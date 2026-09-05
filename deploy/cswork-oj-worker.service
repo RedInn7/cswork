@@ -1,0 +1,29 @@
+[Unit]
+Description=cswork durable algorithm judge worker
+After=network.target docker.service cswork.service
+Wants=cswork.service
+
+[Service]
+Type=simple
+User=cswork
+Group=cswork
+WorkingDirectory=/srv/cswork/current
+EnvironmentFile=/etc/cswork/cswork.env
+EnvironmentFile=/etc/cswork/oj.env
+ExecStart=/opt/cswork/runtime/node /srv/cswork/current/oj-worker/index.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=25
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/cswork
+MemoryMax=512M
+CPUQuota=100%
+TasksMax=64
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

@@ -19,6 +19,7 @@ npm run dev -- --host 127.0.0.1 --port 4317
 
 ```sh
 npm run typecheck
+npm run test:oj
 npm run build
 HOST=127.0.0.1 PORT=4317 npm start
 ```
@@ -42,7 +43,7 @@ HOST=127.0.0.1 PORT=4317 npm start
 - **账号**：Better Auth。服务器 CLI 初始化老师；密码开放登录但关闭公开密码注册。Google、GitHub 和邮箱验证码配置完成后支持新学员注册；只有已验证邮箱且命中服务器白名单的用户才能成为老师。
 - **第三方登录**：配置 `GOOGLE_CLIENT_ID/SECRET`、`GITHUB_CLIENT_ID/SECRET`；回调地址为正式域名下 `/api/auth/callback/google`、`/api/auth/callback/github`。为 cswork 单独创建 OAuth 应用，不复用 CSGrad 的身份后端。
 - **验证码**：配置 `RESEND_API_KEY`、已验证发件域名的 `MAIL_FROM`；有效期 5 分钟，最多 5 次尝试。
-- **算法判题**：独立 Judge0 Linux 沙箱，至少修补版 1.13.1；设置 HTTPS `JUDGE0_URL`、`JUDGE0_TOKEN` 和从该实例 `/languages` 获取的 `JUDGE0_LANGUAGE_IDS`。不复用同机其他产品的判题进程或题库。
+- **算法判题**：Monaco 编辑器、BullMQ 持久化队列、独立 go-judge 1.12.3 沙箱，支持 C++20、Python、Java 和 Go。教师可管理测试点、保存草稿并发布不可变版本；提交支持逐点结果、取消与自动重试。部署见 [OJ 运行时](docs/oj-runtime.md) 和 [判题开发说明](docs/OJ.md)。
 - **视频**：独立 Cloudflare Stream 配置 `STREAM_ACCOUNT_ID`、`STREAM_API_TOKEN`，老师发布时填写 UID 并强制签名播放。它是可选视频提供商，应用和数据仍在自有服务器。撤权后已有视频令牌最长保留 1 小时。
 - **收费**：Stripe Checkout，配置 `STRIPE_SECRET_KEY`、`STRIPE_PRICE_GOMALL`、`STRIPE_WEBHOOK_SECRET`。Webhook `/api/stripe/webhook` 订阅 `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`charge.refunded`。正式收款前必须在测试环境验收成功/取消、100% 优惠、重复/乱序事件、全额和部分退款。
 

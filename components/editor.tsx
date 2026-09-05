@@ -105,6 +105,8 @@ export function CodeEditor({
   const options: EditorProps['options'] = {
     ariaLabel: readOnly ? '历史提交代码，只读' : '代码编辑器',
     automaticLayout: true,
+    // Keep keyboard, clipboard and accessibility behavior consistent across browser hosts.
+    editContext: false,
     fontFamily: '"SFMono-Regular", Consolas, "Liberation Mono", monospace',
     fontSize: settings.fontSize,
     lineHeight: 1.65,
@@ -177,6 +179,7 @@ export function CodeDiff({
 }) {
   const { runtime, error, retry } = useMonacoRuntime();
   const options: DiffEditorProps['options'] = {
+    editContext: false,
     readOnly: true,
     originalEditable: false,
     automaticLayout: true,

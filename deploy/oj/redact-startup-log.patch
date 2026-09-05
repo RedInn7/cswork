@@ -1,0 +1,21 @@
+diff --git a/cmd/go-judge/main.go b/cmd/go-judge/main.go
+--- a/cmd/go-judge/main.go
++++ b/cmd/go-judge/main.go
+@@ -59,7 +59,7 @@ func main() {
+ 	initLogger(conf)
+ 	defer logger.Sync()
+ 	if ce := logger.Check(zap.InfoLevel, "Config loaded"); ce != nil {
+-		ce.Write(zap.String("config", fmt.Sprintf("%+v", conf)))
++		ce.Write(zap.String("config", "loaded; credentials omitted"))
+ 	}
+ 	warnIfNotLinux()
+ 
+@@ -331,7 +331,7 @@ func newRESTServer(conf *config.Config, w worker.Worker, fs filestore.FileStore, envConf map[string]any) *gin.Engine {
+ 	// Add auth token
+ 	if conf.AuthToken != "" {
+ 		r.Use(tokenAuth(conf.AuthToken))
+-		logger.Info("Attach token auth", zap.String("token", conf.AuthToken))
++		logger.Info("Attach token auth")
+ 	}
+ 
+ 	// Rest Handle

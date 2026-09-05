@@ -1,0 +1,47 @@
+# This is an ARM64 policy, compiled into the submitted process, not the daemon.
+# Namespaces, cgroups, non-root credentials, and filesystem mounts are separate
+# controls. Keep threading available for Java/Go; stop privileged kernel APIs.
+default_action: allow
+syscalls:
+  - action: errno
+    names:
+      - socket
+      - connect
+      - bind
+      - listen
+      - accept
+      - accept4
+      - mount
+      - umount2
+      - pivot_root
+      - unshare
+      - setns
+      - ptrace
+      - bpf
+      - keyctl
+      - add_key
+      - request_key
+      - perf_event_open
+      - userfaultfd
+      - open_by_handle_at
+      - name_to_handle_at
+      - kexec_load
+      - kexec_file_load
+      - init_module
+      - finit_module
+      - delete_module
+      - reboot
+      - swapon
+      - swapoff
+      - io_uring_setup
+      - io_uring_enter
+      - io_uring_register
+      - process_vm_readv
+      - process_vm_writev
+  - action: errno
+    names_with_args:
+      - name: clone
+        arguments:
+          - argument: 0
+            operation: BitsSet
+            value: 0x7e020000
