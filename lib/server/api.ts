@@ -17,7 +17,8 @@ import {
   auditStatement,
 } from './http';
 import { seed } from './seed';
-import { problems } from '@/lib/problems';
+import { ensureOjSeed, listPublishedProblems } from './oj-problems';
+import { handleOj } from './oj-api';
 import { judgeReady, submit, result } from './judge';
 import { playback, ensurePrivate } from './video';
 import { uploadAttachment, downloadAttachment } from './files';
@@ -52,13 +53,13 @@ async function bootstrap(p: Person | null) {
   return {
     person: p,
     courses: cs,
-    problems,
+    problems: await listPublishedProblems(),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
       : [],
     submissions: p
       ? await rows(
-          'SELECT id,problem_id,language,status,passed,total,runtime,memory,created_at FROM submissions WHERE user_id=? ORDER BY created_at DESC LIMIT 100',
+          'SELECT id,problem_id,language,status,passed,total,runtime,memory,created_at FROM submissions WHERE user_id=? AND mode=\'judge\' ORDER BY created_at DESC LIMIT 100',
           p.id,
         )
       : [],
@@ -97,9 +98,14 @@ export async function handle(request: Request) {
     }
     if (request.method !== 'GET') sameOrigin(request);
     await seed();
+    await ensureOjSeed();
     const p = await person(request),
       db = database(),
       now = Date.now();
+    if (resource === 'oj') {
+      requirePerson(p);
+      return await handleOj(request, p, path.slice(1));
+    }
     if (request.method === 'GET') {
       if (resource === 'bootstrap') return json(await bootstrap(p));
       requirePerson(p);
@@ -215,7 +221,7 @@ export async function handle(request: Request) {
             "SELECT r.*,p.name FROM reviews r JOIN profiles p ON p.id=r.user_id ORDER BY CASE WHEN r.status='pending' THEN 0 ELSE 1 END,r.created_at ASC LIMIT 100",
           ),
           struggles: await rows(
-            "SELECT s.user_id,p.name,s.problem_id,(SELECT recent.id FROM submissions recent WHERE recent.user_id=s.user_id AND recent.problem_id=s.problem_id ORDER BY recent.created_at DESC LIMIT 1) as latest_submission_id,COUNT(*) as failures,MAX(s.created_at) as last_attempt FROM submissions s JOIN profiles p ON p.id=s.user_id WHERE s.status IN ('wrong_answer','time_limit','runtime_error','compile_error') AND s.created_at>? AND NOT EXISTS(SELECT 1 FROM submissions ok WHERE ok.user_id=s.user_id AND ok.problem_id=s.problem_id AND ok.status='accepted') GROUP BY s.user_id,s.problem_id HAVING COUNT(*)>=3 ORDER BY failures DESC LIMIT 50",
+            "SELECT s.user_id,p.name,s.problem_id,(SELECT recent.id FROM submissions recent WHERE recent.user_id=s.user_id AND recent.problem_id=s.problem_id AND recent.mode='judge' ORDER BY recent.created_at DESC LIMIT 1) as latest_submission_id,COUNT(*) as failures,MAX(s.created_at) as last_attempt FROM submissions s JOIN profiles p ON p.id=s.user_id WHERE s.mode='judge' AND s.status IN ('wrong_answer','time_limit','memory_limit','output_limit','runtime_error','compile_error') AND s.created_at>? AND NOT EXISTS(SELECT 1 FROM submissions ok WHERE ok.user_id=s.user_id AND ok.problem_id=s.problem_id AND ok.mode='judge' AND ok.status='accepted') GROUP BY s.user_id,s.problem_id HAVING COUNT(*)>=3 ORDER BY failures DESC LIMIT 50",
             now - 7 * 86400000,
           ),
           grants: await rows(

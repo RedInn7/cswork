@@ -134,6 +134,13 @@ export async function api<T = any>(path: string, data?: unknown): Promise<T> {
 }
 export const statusNames: Record<string, string> = {
   accepted: '已通过',
+  queued: '排队中',
+  compiling: '编译中',
+  running: '运行中',
+  finished: '运行完成',
+  cancelled: '已取消',
+  memory_limit: '超出内存限制',
+  output_limit: '超出输出限制',
   wrong_answer: '答案错误',
   compile_error: '编译错误',
   time_limit: '超出时间限制',
