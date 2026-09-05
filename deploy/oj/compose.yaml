@@ -1,0 +1,65 @@
+name: cswork-oj
+services:
+  sandbox:
+    build: .
+    image: cswork-go-judge:1.12.3-seccomp
+    container_name: cswork-oj-sandbox
+    restart: unless-stopped
+    cgroup: private
+    cap_add: [SYS_ADMIN]
+    cap_drop: [NET_RAW]
+    # Nested user namespaces need to mount their own /proc. The actual submitted
+    # process receives go-judge's readonly proc + masked paths + seccomp filter.
+    security_opt:
+      - apparmor=unconfined
+      - systempaths=unconfined
+      - no-new-privileges:true
+      - seccomp=/srv/cswork/oj/docker-seccomp.json
+    ports: ['127.0.0.1:5050:5050']
+    environment:
+      ES_AUTH_TOKEN: ${GO_JUDGE_TOKEN:?Missing GO_JUDGE_TOKEN}
+      GOMAXPROCS: '2'
+      GOMEMLIMIT: 512MiB
+    mem_limit: 4g
+    memswap_limit: 4g
+    cpus: 2
+    pids_limit: 512
+    shm_size: 512m
+    tmpfs: ['/tmp:rw,nosuid,nodev,size=768m']
+    networks: [judge]
+    healthcheck:
+      test: ['CMD', '/usr/bin/python3', '-c', 'import os,urllib.request; urllib.request.urlopen(urllib.request.Request("http://127.0.0.1:5050/version",headers={"Authorization":"Bearer "+os.environ["ES_AUTH_TOKEN"]}),timeout=3).close()']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+  redis:
+    image: redis:8.2-alpine@sha256:30abb90e62f14b737010746def3ba99cc79fe19dcdb3d37b41f21fc62e7da19d
+    container_name: cswork-oj-redis
+    restart: unless-stopped
+    ports: ['127.0.0.1:6381:6379']
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Missing REDIS_PASSWORD}
+    command: ['/bin/sh', '-c', 'exec redis-server --appendonly yes --appendfsync everysec --maxmemory 256mb --maxmemory-policy noeviction --requirepass "$$REDIS_PASSWORD"']
+    volumes: ['redis-data:/data']
+    mem_limit: 384m
+    memswap_limit: 384m
+    cpus: 0.5
+    pids_limit: 32
+    security_opt: [no-new-privileges:true]
+    networks: [judge]
+    healthcheck:
+      test: ['CMD-SHELL', 'REDISCLI_AUTH="$$REDIS_PASSWORD" redis-cli ping | grep -q PONG']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: json-file
+      options: {max-size: 10m, max-file: '3'}
+networks:
+  judge: {}
+volumes:
+  redis-data:

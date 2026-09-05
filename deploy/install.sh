@@ -34,6 +34,20 @@ PY
   chown root:cswork /etc/cswork/cswork.env
 fi
 
+# Only the OJ worker receives execution credentials. The web process needs configuration
+# for admission and reads health from SQLite; credentials are never returned by an API.
+if [[ -f /etc/cswork/oj.env ]]; then
+  python3 - <<'PY'
+from pathlib import Path
+p=Path('/etc/cswork/cswork.env')
+keys={'GO_JUDGE_URL','GO_JUDGE_TOKEN','REDIS_URL','OJ_LANGUAGE_VERSIONS','OJ_ENABLED'}
+existing=[line for line in p.read_text().splitlines() if line.split('=',1)[0] not in keys]
+p.write_text('\n'.join(existing+['OJ_ENABLED=true'])+'\n')
+p.chmod(0o640)
+PY
+  chown root:cswork /etc/cswork/cswork.env
+fi
+
 # Take an online SQLite backup before applying future migrations.
 if [[ -f /var/lib/cswork/cswork.sqlite ]]; then
   cd "$source_dir"
@@ -53,6 +67,8 @@ if [[ ! -d "$target" ]]; then
   chmod -R a+rX "$target"
 fi
 previous=$(readlink -f /srv/cswork/current || true)
+worker_was_active=$(systemctl is-active cswork-oj-worker.service || true)
+if [[ "$worker_was_active" == active ]]; then systemctl stop cswork-oj-worker.service; fi
 ln -s "$target" /srv/cswork/current.next
 mv -Tf /srv/cswork/current.next /srv/cswork/current
 install -m 644 "$source_dir/deploy/cswork.service" /etc/systemd/system/cswork.service
@@ -73,11 +89,39 @@ if [[ "$ready" != true ]]; then
     ln -s "$previous" /srv/cswork/current.rollback
     mv -Tf /srv/cswork/current.rollback /srv/cswork/current
     systemctl restart cswork.service
+    if [[ -f "$previous/oj-worker/index.mjs" ]]; then systemctl restart cswork-oj-worker.service; fi
   else
     systemctl stop cswork.service
   fi
   echo 'cswork failed its startup check; previous release restored when available.'
   exit 1
+fi
+
+if [[ -f "$target/oj-worker/index.mjs" && -f /etc/cswork/oj.env ]]; then
+  install -m 644 "$source_dir/deploy/cswork-oj-worker.service" /etc/systemd/system/cswork-oj-worker.service
+  systemctl daemon-reload
+  systemctl enable cswork-oj-worker.service
+  worker_started_at=$(date +%s)000
+  worker_ready=false
+  if systemctl restart cswork-oj-worker.service; then
+    for attempt in {1..30}; do
+      if systemctl is-active --quiet cswork-oj-worker.service && WORKER_STARTED_AT="$worker_started_at" "$node_binary" --env-file=/etc/cswork/cswork.env --input-type=module -e 'import Database from "better-sqlite3"; const db=new Database(process.env.DATABASE_PATH,{readonly:true}); const r=db.prepare("SELECT healthy,heartbeat_at FROM oj_runtime WHERE id=?").get("worker"); db.close(); process.exit(r?.healthy && r.heartbeat_at>=Number(process.env.WORKER_STARTED_AT) && Date.now()-r.heartbeat_at<15000 ? 0 : 1)'; then
+        worker_ready=true; break
+      fi
+      sleep 1
+    done
+  fi
+  if [[ "$worker_ready" != true ]]; then
+    systemctl stop cswork-oj-worker.service
+    if [[ -n "$previous" ]]; then
+      ln -s "$previous" /srv/cswork/current.rollback
+      mv -Tf /srv/cswork/current.rollback /srv/cswork/current
+      systemctl restart cswork.service
+      if [[ -f "$previous/oj-worker/index.mjs" ]]; then systemctl restart cswork-oj-worker.service; fi
+    fi
+    echo 'OJ worker health check failed; previous application release restored.'
+    exit 1
+  fi
 fi
 
 # Existing certificate configuration is retained on later releases.
@@ -86,6 +130,9 @@ if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
   created_config=true
 fi
+# Teacher problem imports accept at most 8 MiB plus a small JSON envelope.
+# Attachment and all other application limits remain enforced in their own handlers.
+sed -i 's/client_max_body_size 3m;/client_max_body_size 9m;/' /etc/nginx/sites-available/cswork
 created_link=false
 if [[ ! -e /etc/nginx/sites-enabled/cswork ]]; then
   ln -s /etc/nginx/sites-available/cswork /etc/nginx/sites-enabled/cswork

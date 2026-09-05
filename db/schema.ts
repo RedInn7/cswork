@@ -6,6 +6,7 @@ import {
   index,
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
+export * from './oj-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -230,14 +231,56 @@ export const submissions = sqliteTable(
     runtime: real('runtime'),
     memory: integer('memory'),
     message: text('message'),
+    mode: text('mode').notNull().default('judge'),
+    problemVersionId: text('problem_version_id'),
+    idempotencyKey: text('idempotency_key'),
+    requestHash: text('request_hash'),
+    customInput: text('custom_input'),
+    compileOutput: text('compile_output'),
+    score: integer('score').notNull().default(0),
+    attempt: integer('attempt').notNull().default(0),
+    cancelRequested: integer('cancel_requested').notNull().default(0),
+    startedAt: integer('started_at'),
+    finishedAt: integer('finished_at'),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },
   (t) => [
     index('submission_user_time').on(t.userId, t.createdAt),
     index('submission_problem').on(t.problemId),
+    uniqueIndex('submission_idempotency').on(t.userId, t.idempotencyKey),
+    index('submission_queue').on(t.status, t.createdAt),
   ],
 );
+export const ojResults = sqliteTable(
+  'oj_results',
+  {
+    submissionId: text('submission_id')
+      .notNull()
+      .references(() => submissions.id, { onDelete: 'cascade' }),
+    ordinal: integer('ordinal').notNull(),
+    status: text('status').notNull(),
+    runtimeMs: real('runtime_ms'),
+    memoryKb: integer('memory_kb'),
+    stdout: text('stdout'),
+    stderr: text('stderr'),
+    hidden: integer('hidden').notNull(),
+  },
+  (t) => [uniqueIndex('oj_result_case').on(t.submissionId, t.ordinal)],
+);
+export const ojOutbox = sqliteTable('oj_outbox', {
+  submissionId: text('submission_id')
+    .primaryKey()
+    .references(() => submissions.id, { onDelete: 'cascade' }),
+  dispatchedAt: integer('dispatched_at'),
+  createdAt: integer('created_at').notNull(),
+});
+export const ojRuntime = sqliteTable('oj_runtime', {
+  id: text('id').primaryKey(),
+  heartbeatAt: integer('heartbeat_at').notNull(),
+  healthy: integer('healthy').notNull(),
+  details: text('details').notNull(),
+});
 export const reviews = sqliteTable(
   'reviews',
   {

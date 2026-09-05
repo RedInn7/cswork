@@ -44,6 +44,7 @@ import {
   date,
 } from '@/lib/types';
 import { Heading, Empty, type Navigate } from './learning';
+import { OjAdmin } from './oj-admin';
 export function TeacherView({
   boot,
   navigate,
@@ -137,6 +138,7 @@ export function TeacherView({
           <TabsTrigger value="queue">待处理</TabsTrigger>
           <TabsTrigger value="students">学员与权限</TabsTrigger>
           <TabsTrigger value="publish">课程发布</TabsTrigger>
+          <TabsTrigger value="problems">题库管理</TabsTrigger>
           <TabsTrigger value="services">服务状态</TabsTrigger>
         </TabsList>
         <TabsContent value="queue">
@@ -487,6 +489,9 @@ export function TeacherView({
               </form>
             )}
           </div>
+        </TabsContent>
+        <TabsContent value="problems">
+          <OjAdmin boot={boot} />
         </TabsContent>
         <TabsContent value="services">
           <div className="form-card">
