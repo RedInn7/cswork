@@ -1,28 +1,19 @@
 import { existsSync, writeFileSync } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-if (!existsSync('.dev.vars')) {
+if (!existsSync('.env')) {
   writeFileSync(
-    '.dev.vars',
-    `APP_URL=http://localhost:4317\nBETTER_AUTH_SECRET=${randomBytes(32).toString('hex')}\nENABLE_CHATGPT_AUTH=true\nADMIN_EMAILS=seedy@sites.test\n`,
+    '.env',
+    `APP_URL=http://localhost:4317\nHOST=127.0.0.1\nPORT=4317\nBETTER_AUTH_SECRET=${randomBytes(48).toString('base64url')}\nADMIN_EMAILS=teacher@cswork.test\nDATABASE_PATH=data/cswork.sqlite\nATTACHMENTS_PATH=data/attachments\n`,
     { mode: 0o600 },
-  );
-  console.log(
-    'Created local-only environment. No production services enabled.',
   );
 }
 const result = spawnSync(
-  'npx',
-  [
-    'wrangler',
-    'd1',
-    'migrations',
-    'apply',
-    'DB',
-    '--local',
-    '--config',
-    'wrangler.local.json',
-  ],
+  process.execPath,
+  ['--env-file=.env', 'scripts/migrate.mjs'],
   { stdio: 'inherit' },
 );
 if (result.status !== 0) process.exit(result.status || 1);
+console.log(
+  'Create a local teacher: npm run admin:create -- teacher@cswork.test',
+);

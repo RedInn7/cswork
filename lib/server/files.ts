@@ -1,14 +1,18 @@
-import { env } from 'cloudflare:workers';
+import { mkdir, writeFile, readFile, unlink } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
 import { database } from './env';
 import { HttpError, json, one } from './http';
 import type { Person } from './auth';
 const MAX = 2 * 1024 * 1024;
+function attachmentPath(id: string) {
+  if (!/^[a-f0-9-]{36}$/.test(id)) throw new HttpError(404, '附件不存在');
+  return join(resolve(process.env.ATTACHMENTS_PATH || 'data/attachments'), id);
+}
 export async function uploadAttachment(
   request: Request,
   p: Person,
   ticketId: string,
 ) {
-  if (!env.FILES) throw new HttpError(503, '附件存储暂不可用');
   const name = (new URL(request.url).searchParams.get('name') || '')
     .split(/[\\/]/)
     .pop()!
@@ -44,9 +48,11 @@ export async function uploadAttachment(
     offset += chunk.byteLength;
   }
   const id = crypto.randomUUID();
-  await env.FILES.put(`tickets/${id}`, bytes, {
-    httpMetadata: { contentType: 'application/octet-stream' },
+  await mkdir(resolve(process.env.ATTACHMENTS_PATH || 'data/attachments'), {
+    recursive: true,
+    mode: 0o700,
   });
+  await writeFile(attachmentPath(id), bytes, { flag: 'wx', mode: 0o600 });
   try {
     await database()
       .prepare(
@@ -55,16 +61,21 @@ export async function uploadAttachment(
       .bind(id, ticketId, p.id, name, size, Date.now())
       .run();
   } catch (e) {
-    await env.FILES.delete(`tickets/${id}`);
+    await unlink(attachmentPath(id));
     throw e;
   }
   return json({ id, name, size }, 201);
 }
 export async function downloadAttachment(id: string, name: string) {
-  if (!env.FILES) throw new HttpError(503, '附件存储暂不可用');
-  const object = await env.FILES.get(`tickets/${id}`);
-  if (!object) throw new HttpError(404, '附件不存在');
-  return new Response(object.body, {
+  let content: Buffer;
+  try {
+    content = await readFile(attachmentPath(id));
+  } catch (e) {
+    if ((e as NodeJS.ErrnoException).code === 'ENOENT')
+      throw new HttpError(404, '附件不存在');
+    throw e;
+  }
+  return new Response(new Uint8Array(content), {
     headers: {
       'Content-Type': 'application/octet-stream',
       'Content-Disposition': `attachment; filename*=UTF-8''${encodeURIComponent(name)}`,

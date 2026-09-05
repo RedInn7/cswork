@@ -74,7 +74,7 @@ export async function checkout(p: Person, courseId: string) {
       success_url: `${origin()}/?view=courses&payment=success`,
       cancel_url: `${origin()}/?view=courses&payment=cancelled`,
       allow_promotion_codes: true,
-      integration_identifier: 'sde_academy_abcdefgh',
+      integration_identifier: 'cswork_abcdefgh',
     },
     { idempotencyKey: `course:${id}` },
   );

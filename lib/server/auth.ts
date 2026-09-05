@@ -4,7 +4,6 @@ import { emailOTP } from 'better-auth/plugins';
 import { getDb } from '@/db';
 import * as schema from '@/db/schema';
 import { setting, origin, database } from './env';
-import { getChatGPTUser } from '@/app/chatgpt-auth';
 export type Person = {
   id: string;
   email: string;
@@ -16,9 +15,16 @@ export function auth() {
   const secret = setting('BETTER_AUTH_SECRET');
   if (secret.length < 32) throw new Error('Authentication is not configured');
   return betterAuth({
-    appName: 'SDE Academy',
+    appName: 'cswork',
     baseURL: origin(),
     secret,
+    // Production only listens on loopback; nginx overwrites this header.
+    advanced: { ipAddress: { ipAddressHeaders: ['x-real-ip'] } },
+    emailAndPassword: {
+      enabled: true,
+      disableSignUp: true,
+      minPasswordLength: 12,
+    },
     database: drizzleAdapter(getDb(), {
       provider: 'sqlite',
       schema,
@@ -42,7 +48,7 @@ export function auth() {
           }
         : {}),
     },
-    account: { accountLinking: { enabled: true, allowDifferentEmails: false } },
+    account: { identityStrategy: 'provider-id', accountLinking: { enabled: true, allowDifferentEmails: false } },
     rateLimit: { enabled: true, storage: 'database', window: 60, max: 30 },
     plugins: [
       emailOTP({
@@ -61,7 +67,7 @@ export function auth() {
             body: JSON.stringify({
               from: setting('MAIL_FROM'),
               to: [email],
-              subject: 'SDE Academy 登录验证码',
+              subject: 'cswork 登录验证码',
               text: `你的验证码是 ${otp}，5 分钟内有效。如果不是你发起的登录，请忽略。`,
             }),
           });
@@ -86,17 +92,6 @@ export async function person(request: Request): Promise<Person | null> {
         email: s.user.email.toLowerCase(),
         name: s.user.name,
         verified: s.user.emailVerified,
-      };
-  }
-  // Optional owner preview uses the platform's verified identity, never a browser-supplied role.
-  if (!identity && setting('ENABLE_CHATGPT_AUTH') === 'true') {
-    const u = await getChatGPTUser();
-    if (u)
-      identity = {
-        id: `chatgpt:${u.userId}`,
-        email: u.email.toLowerCase(),
-        name: u.fullName || u.email.split('@')[0],
-        verified: true,
       };
   }
   if (!identity) return null;
