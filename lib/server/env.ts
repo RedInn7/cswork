@@ -1,12 +1,9 @@
-import { env } from 'cloudflare:workers';
+import { queries } from '@/db/sqlite';
 export function setting(key: string): string {
-  const value =
-    (env as unknown as Record<string, unknown>)[key] ?? process.env[key];
-  return typeof value === 'string' ? value : '';
+  return process.env[key] || '';
 }
-export function database(): D1Database {
-  if (!env.DB) throw new Error('DB unavailable');
-  return env.DB;
+export function database() {
+  return queries;
 }
 export function origin(): string {
   return setting('APP_URL') || 'http://localhost:4317';

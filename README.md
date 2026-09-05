@@ -1,53 +1,49 @@
-# SDE Academy
+# cswork
 
-一个把课程、算法练习和私密辅导连起来的 SDE 学习平台。基于 React/Vinext、Cloudflare Workers/D1、Better Auth、CodeMirror 和 Video.js。判题复用独立 Judge0，收费使用 Stripe Checkout。
+独立的 SDE 学习与辅导平台：17 份 GoMall 课件、笔记与进度、算法练习、工程作业评审、私密工单和附件、教师待处理工作台、课程授权与版本通知。
+
+cswork 与 CSGrad 只共用服务器硬件，不共享品牌、账号、数据库、接口或应用进程。本地平台代码位于 `cswork/platform`；同目录已有的 MediaCMS 项目与数据没有被覆盖。
 
 ## 本地运行
 
-需要 Node >=22.13、npm。代码执行沙箱不在本机启动。
+需要 Node 22.13+，生产使用 Node 22。判题在独立沙箱中执行，不在 Web 进程中执行学生代码。
 
 ```sh
 npm ci
 node scripts/setup-local.mjs
+npm run admin:create -- teacher@cswork.test
 npm run dev -- --host 127.0.0.1 --port 4317
 ```
 
-访问 `http://localhost:4317/`。点击“登录 / 注册 → 进入站点所有者预览”，本地 Sites 插件只在 localhost 注入 `seedy@sites.test` 测试身份。该身份在本地环境文件中是老师，可直接体验课程、笔记、工单、作业、授权和版本发布。该测试身份不会自动成为生产管理员。
-
-第一次初始化后不要重新手动执行初始 SQL；使用 migrations apply 做增量迁移。`scripts/setup-local.mjs` 只创建缺失的本地环境文件，不会改动已有凭据。
-
-## 验证
+访问 `http://localhost:4317/`。老师的随机初始密码写入仅本机用户可读的 `.local/owner-login.txt`，通过登录窗口的密码入口登录。初始化不会重置已有用户或覆盖凭据文件。
 
 ```sh
 npm run typecheck
-npm run test:integration # 需要上面的本地服务，隔离测试学员并在结束时清理
 npm run build
+HOST=127.0.0.1 PORT=4317 npm start
 ```
 
-集成测试实际调用 HTTP API，覆盖匿名访问、已验证邮箱授权、跨学员数据隔离、私密工单及附件、老师回复、作业评审、课程版本发布与重复版本冲突、CSRF、搜索、撤权与外部服务不可用场景。它不冒充 OAuth 提供商、支付平台或远程沙箱验收。测试账号和业务数据自动清理；上传的测试文件保留在本地 R2 模拟器中，不进入线上存储。
+`npm start` 启动正式 standalone Node 服务。数据位于 `DATABASE_PATH` 和 `ATTACHMENTS_PATH`，均在构建输出之外。SQLite 使用 WAL、外键和原子批事务，附件通过权限检查后下载，不暴露静态目录。
 
-## 内容维护
+## 验证
 
-```sh
-node scripts/import-course.mjs /path/to/gomall
-```
+在独立测试数据库初始化后运行正式服务，再运行 `npm run test:integration`。测试使用 `.env` 中第一个管理员邮箱创建临时老师，因此不要对已有真实管理员或生产数据库运行；结束时删除测试账号、工单与附件。详见 [验收记录](docs/VALIDATION.md)。
 
-只导入讲师拥有的 17 份课件。首次访问时在 D1 中创建课程；已有线上课件不随源码重新导入被覆盖，新版本由教师工作台发布。视频不存在时如实显示待发布，禁止使用无关演示视频替代。
+## 服务器发布
 
-原始 Gomall 工程实验位于教学仓库 `exercises/`，有题面、学生骨架和公开测试；学生在自己的 GitHub 仓库完成后交 PR 评审。平台原创算法题与工程实验分别建模。
+生产由 nginx → `127.0.0.1:4317` → cswork systemd 服务提供。使用独立 Linux 用户、运行时副本、版本目录、数据目录和 TLS 证书，所有服务端变量位于 `/etc/cswork/cswork.env`。操作步骤、备份和回滚见 [部署说明](docs/DEPLOYMENT.md)。
 
-## 生产接入
+旧 Sites 地址仅为历史私有原型；当前源码已经迁移到正式 Node 部署，移除了 Sites 身份头信任与 Cloudflare D1/R2 运行依赖。
 
-复制 `.env.example` 中的键到部署平台的环境配置，敏感值用 Secret。`.dev.vars`、`.env*` 不得提交。
+## 内容与服务接入
 
-1. `APP_URL` 使用正式 HTTPS origin，`BETTER_AUTH_SECRET` 为独立生成的至少 32 字符随机值，`ADMIN_EMAILS` 为经过验证的老师邮箱白名单。
-2. Google/GitHub OAuth 回调分别为 `/api/auth/callback/google` 和 `/api/auth/callback/github`。GitHub 需要可验证的邮箱；绑定入口在账号页。
-3. 邮箱验证码需要 `RESEND_API_KEY` 与已验证发件域名的 `MAIL_FROM`。验证码 5 分钟有效，最多 5 次尝试。
-4. Judge0 部署在独立 Linux 沙箱主机，最低修补版 1.13.1，限制入口与网络。设置 HTTPS `JUDGE0_URL`、`JUDGE0_TOKEN`，从该实例 `/languages` 读取 ID 后配置 `JUDGE0_LANGUAGE_IDS`，格式如 `{"python":实际ID,"go":实际ID,"java":实际ID,"cpp":实际ID}`。不要直接复制旧版教程 ID。
-5. Cloudflare Stream 设置 `STREAM_ACCOUNT_ID` 和具有 Stream 编辑/签名权限的 `STREAM_API_TOKEN`。在教师发布页填写视频 UID，平台将强制其私密播放。
-6. Stripe 配置 `STRIPE_SECRET_KEY`（推荐最小权限受限密钥）、`STRIPE_PRICE_GOMALL` 和 `STRIPE_WEBHOOK_SECRET`。Webhook 地址 `/api/stripe/webhook`，订阅 `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`charge.refunded`。用测试环境验证成功、取消、100% 优惠、重复事件、全额/部分退款和通知乱序后再启用正式收费。
-7. 对外开放前关闭 `ENABLE_CHATGPT_AUTH`，启用自己的 Google/GitHub/邮箱登录。确认定价、税务和退款政策，完成真实学员邮箱认领与正式视频/判题联调。
+`node scripts/import-course.mjs /path/to/gomall` 导入课件源文件。首次初始化数据库时创建课程；后续线上版本通过教师工作台发布，不会因重新构建覆盖现有课件。真实视频尚未导入时明确显示待发布。Go 工程实验在 Gomall 的 `exercises/` 中，学生交 GitHub PR 评审；算法题单独建模。
 
-工单附件存入私有 R2，通过登录与工单权限检查后下载；每个工单最多 10 个附件，每个最多 2MB。站内通知不自动发送外部邮件。签名视频已有令牌在撤权后最多保留 1 小时。D1 数据库与 R2 附件存储绑定定义在 `.openai/hosting.json`，源代码独立于 Gomall 商城。
+- **账号**：Better Auth。服务器 CLI 初始化老师；密码开放登录但关闭公开密码注册。Google、GitHub 和邮箱验证码配置完成后支持新学员注册；只有已验证邮箱且命中服务器白名单的用户才能成为老师。
+- **第三方登录**：配置 `GOOGLE_CLIENT_ID/SECRET`、`GITHUB_CLIENT_ID/SECRET`；回调地址为正式域名下 `/api/auth/callback/google`、`/api/auth/callback/github`。为 cswork 单独创建 OAuth 应用，不复用 CSGrad 的身份后端。
+- **验证码**：配置 `RESEND_API_KEY`、已验证发件域名的 `MAIL_FROM`；有效期 5 分钟，最多 5 次尝试。
+- **算法判题**：独立 Judge0 Linux 沙箱，至少修补版 1.13.1；设置 HTTPS `JUDGE0_URL`、`JUDGE0_TOKEN` 和从该实例 `/languages` 获取的 `JUDGE0_LANGUAGE_IDS`。不复用同机其他产品的判题进程或题库。
+- **视频**：独立 Cloudflare Stream 配置 `STREAM_ACCOUNT_ID`、`STREAM_API_TOKEN`，老师发布时填写 UID 并强制签名播放。它是可选视频提供商，应用和数据仍在自有服务器。撤权后已有视频令牌最长保留 1 小时。
+- **收费**：Stripe Checkout，配置 `STRIPE_SECRET_KEY`、`STRIPE_PRICE_GOMALL`、`STRIPE_WEBHOOK_SECRET`。Webhook `/api/stripe/webhook` 订阅 `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`charge.refunded`。正式收款前必须在测试环境验收成功/取消、100% 优惠、重复/乱序事件、全额和部分退款。
 
-更多取舍与许可证见 [docs/DECISIONS.md](docs/DECISIONS.md)。
+没有凭据的服务会明确提示暂不可用。站内通知不会自动向学员发送外部邮件。正式开放注册和收费前还需确定独立域名、课程定价、退款政策并完成上述联调。

@@ -1,25 +1,24 @@
 import assert from 'node:assert/strict';
-import { DatabaseSync } from 'node:sqlite';
-import { readFileSync, readdirSync } from 'node:fs';
+import Database from 'better-sqlite3';
+import { readFileSync, unlinkSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { hashPassword } from 'better-auth/crypto';
 import { createHmac, randomUUID } from 'node:crypto';
 const base = process.env.TEST_URL || 'http://localhost:4317';
 if (new URL(base).hostname !== 'localhost')
   throw new Error('Integration fixtures may only run on localhost');
-const dbdir = '.wrangler/state/v3/d1/miniflare-D1DatabaseObject';
-const file = readdirSync(dbdir).find(
-  (f) => f.endsWith('.sqlite') && f !== 'metadata.sqlite',
+const db = new Database(
+  resolve(process.env.TEST_DATABASE_PATH || 'data/cswork.sqlite'),
 );
-const db = new DatabaseSync(`${dbdir}/${file}`);
-const secret = readFileSync('.dev.vars', 'utf8').match(
-  /^BETTER_AUTH_SECRET=(.+)$/m,
-)[1];
+const localEnv = readFileSync('.env', 'utf8');
+const secret = localEnv.match(/^BETTER_AUTH_SECRET=(.+)$/m)[1];
 const prefix = 'integration:' + randomUUID();
 const created = [];
 const testLesson = prefix + ':lesson';
 let checks = 0;
-function identity(name, verified = true) {
+function identity(name, verified = true, accountEmail) {
   const uid = prefix + ':' + name,
-    email = `${name}.${prefix.slice(-8)}@example.test`,
+    email = accountEmail || `${name}.${prefix.slice(-8)}@example.test`,
     token = randomUUID();
   const now = Date.now();
   db.prepare(
@@ -60,8 +59,12 @@ async function req(path, { user, data, status = 200, origin = base } = {}) {
   checks++;
   return result;
 }
-const teacher = { cookie: '__sites_local_auth=1' };
 try {
+  const teacher = identity(
+    'teacher',
+    true,
+    localEnv.match(/^ADMIN_EMAILS=(.+)$/m)[1].split(',')[0],
+  );
   const a = identity('alice'),
     b = identity('bob'),
     unverified = identity('unverified', false);
@@ -73,6 +76,42 @@ try {
   await req('teacher', { user: a, status: 403 });
   const ab = await req('bootstrap', { user: a });
   assert.equal(ab.person.email, a.email);
+  const password = 'test-only-' + randomUUID();
+  db.prepare(
+    'INSERT INTO account(id,account_id,provider_id,issuer,user_id,password,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',
+  ).run(
+    randomUUID(),
+    a.uid,
+    'credential',
+    'local:credential',
+    a.uid,
+    await hashPassword(password),
+    Date.now(),
+    Date.now(),
+  );
+  await req('auth/sign-in/email', {
+    data: { email: a.email, password: 'incorrect-password' },
+    status: 401,
+  });
+  const signIn = await fetch(base + '/api/auth/sign-in/email', {
+    method: 'POST',
+    headers: { Origin: base, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: a.email, password }),
+  });
+  assert.equal(signIn.status, 200, await signIn.clone().text());
+  const loginCookie = signIn.headers
+    .getSetCookie()
+    .map((cookie) => cookie.split(';')[0])
+    .join('; ');
+  assert.equal(
+    (await req('bootstrap', { user: { cookie: loginCookie } })).person.email,
+    a.email,
+  );
+  checks++;
+  await req('auth/sign-up/email', {
+    data: { email: 'self-admin@example.test', password, name: 'admin' },
+    status: 400,
+  });
   assert.equal(ab.courses[0].has_access, false);
   await req('lessons/00-overview', { user: a, status: 403 });
   const grant = await req('teacher/grants', {
@@ -279,11 +318,11 @@ try {
   await req('releases/' + release.id + '/read', { user: a, data: {} });
   await req('teacher/revoke', { user: teacher, data: { id: grant.id } });
   await req('lessons/00-overview', { user: a, status: 403 });
-  // Raw identity headers cannot impersonate a teacher through the local Sites middleware.
+  // Self-hosted code never trusts identity headers, even without a Sites gateway.
   const spoof = await fetch(base + '/api/teacher', {
     headers: {
-      'oai-authenticated-user-id': 'local_seedy',
-      'oai-authenticated-user-email': 'seedy@sites.test',
+      'oai-authenticated-user-id': teacher.uid,
+      'oai-authenticated-user-email': teacher.email,
     },
   });
   assert.equal(spoof.status, 401);
@@ -293,6 +332,22 @@ try {
   );
 } finally {
   for (const uid of created) {
+    for (const file of db
+      .prepare(
+        'SELECT id FROM attachments WHERE ticket_id IN (SELECT id FROM tickets WHERE user_id=?)',
+      )
+      .all(uid)) {
+      try {
+        unlinkSync(
+          join(
+            resolve(process.env.TEST_ATTACHMENTS_PATH || 'data/attachments'),
+            file.id,
+          ),
+        );
+      } catch (e) {
+        if (e.code !== 'ENOENT') throw e;
+      }
+    }
     db.prepare(
       'DELETE FROM attachments WHERE ticket_id IN (SELECT id FROM tickets WHERE user_id=?)',
     ).run(uid);

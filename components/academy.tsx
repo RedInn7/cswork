@@ -281,7 +281,7 @@ export function Academy() {
               <Terminal size={21} />
             </span>
             <span>
-              SDE<span className="brand-light"> Academy</span>
+              cs<span className="brand-light">work</span>
               <small>BUILD. LEARN. SHIP.</small>
             </span>
           </a>

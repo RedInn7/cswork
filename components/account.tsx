@@ -32,6 +32,7 @@ export function LoginDialog({
   onSuccess: () => Promise<void>;
 }) {
   const [email, setEmail] = useState(''),
+    [password, setPassword] = useState(''),
     [sent, setSent] = useState(false),
     [otp, setOtp] = useState(''),
     [error, setError] = useState(''),
@@ -51,7 +52,7 @@ export function LoginDialog({
     <Dialog open={open} onOpenChange={(v) => !v && close()}>
       <DialogContent className="login-dialog">
         <DialogHeader>
-          <span className="login-mark">S</span>
+          <span className="login-mark">c</span>
           <DialogTitle>继续你的学习旅程。</DialogTitle>
           <DialogDescription>
             新学员可以直接注册。已有学员请使用购买时的邮箱。
@@ -157,15 +158,55 @@ export function LoginDialog({
         ) : (
           <p className="muted">邮箱和第三方登录会在配置完成后开放。</p>
         )}
-        {boot.services.chatgpt && (
-          <a
-            className="preview-login"
-            href="/signin-with-chatgpt?return_to=%2F"
+        <details
+          className="password-login"
+          open={
+            !boot.services.google &&
+            !boot.services.github &&
+            !boot.services.email
+          }
+        >
+          <summary>已有账号，使用密码登录</summary>
+          <form
+            className="stack-form"
+            onSubmit={(e) => {
+              e.preventDefault();
+              void run(async () => {
+                const result = await authClient.signIn.email({
+                  email,
+                  password,
+                });
+                if (result.error)
+                  throw new Error(result.error.message || '登录失败');
+                setPassword('');
+                await onSuccess();
+                close();
+              });
+            }}
           >
-            进入站点所有者预览
-            <ArrowRight size={14} />
-          </a>
-        )}
+            <label htmlFor="password-email">邮箱</label>
+            <Input
+              id="password-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="username"
+              required
+            />
+            <label htmlFor="account-password">密码</label>
+            <Input
+              id="account-password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+              required
+            />
+            <Button type="submit" disabled={busy}>
+              {busy ? '正在登录…' : '登录 cswork'}
+            </Button>
+          </form>
+        </details>
         {error && (
           <p className="error-text" role="alert">
             {error}
@@ -213,7 +254,7 @@ export function AccountView({
             <Button
               key={provider}
               variant="outline"
-              disabled={!boot.services[provider] || p.id.startsWith('chatgpt:')}
+              disabled={!boot.services[provider]}
               onClick={async () => {
                 const r = await authClient.linkSocial({
                   provider,
@@ -229,10 +270,6 @@ export function AccountView({
           <Button
             variant="ghost"
             onClick={async () => {
-              if (p.id.startsWith('chatgpt:')) {
-                location.assign('/signout-with-chatgpt?return_to=%2F');
-                return;
-              }
               await authClient.signOut();
               await refresh();
             }}

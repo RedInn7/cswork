@@ -76,7 +76,7 @@ async function bootstrap(p: Person | null) {
         setting('GITHUB_CLIENT_ID') && setting('GITHUB_CLIENT_SECRET')
       ),
       email: !!(setting('RESEND_API_KEY') && setting('MAIL_FROM')),
-      chatgpt: setting('ENABLE_CHATGPT_AUTH') === 'true',
+      password: true,
       judge: judgeReady(),
       checkout: !!(
         setting('STRIPE_SECRET_KEY') &&
