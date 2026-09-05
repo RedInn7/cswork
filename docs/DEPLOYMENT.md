@@ -1,5 +1,7 @@
 # cswork 独立部署
 
+当前访问地址：[cswork](https://cswork.192.18.137.70.sslip.io)。已在 2026-09-05 完成 HTTPS、登录、重启持久化及备份验证。初始老师账号为 `capsfly7@gmail.com`；凭据已交付所有者本地受保护文件，服务器的明文初始凭据副本已删除。
+
 主机 `ubuntu@192.18.137.70` 与 CSGrad 相同，但只新增以下 cswork 资源：
 
 | 项目                 | 路径或名称                                                           |
@@ -29,6 +31,8 @@ sudo /opt/cswork/runtime/node --env-file=/etc/cswork/cswork.env scripts/create-a
 ```
 
 初始化管理员只执行一次，拒绝覆盖已有账号。随机初始密码写入 `/var/lib/cswork/initial-login.txt`（0600），交付所有者后删除服务器上的明文副本。所有者通过密码入口登录；Google/GitHub 必须为 cswork 单独配置。
+
+首次交付前可运行 `sudo /opt/cswork/runtime/node --env-file=/etc/cswork/cswork.env scripts/smoke-production.mjs`，它从上述临时凭据文件验证真实 HTTPS 登录、权限、CSRF、Cookie 作用域和退出，并清理自身会话。临时文件删除后不再重跑此脚本，不应为测试重置老师密码。
 
 临时域名使用 `cswork.192.18.137.70.sslip.io`，它不在 csgrad.com 下。正式域名准备好后，将 A 记录指向该服务器，更新 nginx 的 cswork vhost、单独签发证书、修改 APP_URL 和 OAuth 回调，再重启 cswork。不得把新配置写到 CSGrad vhost。
 
