@@ -1,7 +1,600 @@
 'use client';
-import {useEffect,useState} from 'react';import {Inbox,MessageSquare,GitPullRequest,TriangleAlert,Users,ArrowRight,Check,ExternalLink,Plus,RefreshCw} from 'lucide-react';
-import {Button} from '@/components/ui/button';import {Input} from '@/components/ui/input';import {NativeSelect,NativeSelectOption} from '@/components/ui/native-select';import {Tabs,TabsList,TabsTrigger,TabsContent} from '@/components/ui/tabs';import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';import {Checkbox} from '@/components/ui/checkbox';import {Table,TableBody,TableCell,TableHead,TableHeader,TableRow} from '@/components/ui/table';
-import {api,type Boot,type Review,type Lesson,statusNames,date} from '@/lib/types';import {Heading,Empty,type Navigate} from './learning';
-export function TeacherView({boot,navigate}:{boot:Boot;navigate:Navigate}){const[data,setData]=useState<any>(null),[error,setError]=useState(''),[busy,setBusy]=useState(false),[review,setReview]=useState<Review|null>(null),[message,setMessage]=useState(''),[selectedLesson,setSelectedLesson]=useState(''),[editing,setEditing]=useState<any>(null),[important,setImportant]=useState(true);async function load(){try{setData(await api('teacher'));setError('')}catch(e){setError((e as Error).message)}}useEffect(()=>{void load()},[]);
-async function action(fn:()=>Promise<void>){setBusy(true);setError('');setMessage('');try{await fn();await load();setMessage('已保存')}catch(e){setError((e as Error).message)}finally{setBusy(false)}}
-if(!data)return <Empty title={error||'正在加载教师工作台…'} action={error?<Button onClick={load}>重试</Button>:undefined}/>;const open=data.tickets.filter((t:any)=>t.status==='open'),pending=data.reviews.filter((r:any)=>r.status==='pending');return <><Heading label="A CLEARER DAY OF TEACHING" title="今天，先解决这些。" description="把精力留给真正需要帮助的学员。" action={<Button variant="outline" onClick={load}><RefreshCw size={15}/>刷新</Button>}/><div className="teacher-stats">{[[MessageSquare,open.length,'未回复工单'],[GitPullRequest,pending.length,'待评审作业'],[TriangleAlert,data.struggles.length,'需要关注'],[Users,data.students.count,'注册学员']].map(([Icon,count,label]:any)=><div className="stat-card" key={label}><Icon size={19}/><strong>{count}</strong><span>{label}</span></div>)}</div>{error&&<div role="alert" className="notice error">{error}</div>}{message&&<p role="status" className="success-text">{message}</p>}<Tabs defaultValue="queue"><TabsList variant="line" className="teacher-tabs"><TabsTrigger value="queue">待处理</TabsTrigger><TabsTrigger value="students">学员与权限</TabsTrigger><TabsTrigger value="publish">课程发布</TabsTrigger><TabsTrigger value="services">服务状态</TabsTrigger></TabsList><TabsContent value="queue"><div className="teacher-queue"><div className="section-title"><h2>未回复工单</h2><span className="muted">优先处理等待更久的问题</span></div>{open.map((t:any)=><div className="queue-row" key={t.id}><span className="avatar">{t.name.slice(0,1)}</span><button className="queue-main" onClick={()=>navigate('tickets',{ticket:t.id})}><strong>{t.title}</strong><small>{t.name} · {Math.max(0,Math.floor((Date.now()-t.updated_at)/3600000))} 小时前</small></button><NativeSelect aria-label={`分配工单 ${t.title}`} value={t.assigned_to||''} disabled={busy} onChange={e=>action(()=>api(`tickets/${t.id}/status`,{status:'open',assignedTo:e.target.value||null}))}><NativeSelectOption value="">未分配</NativeSelectOption>{data.staff.map((s:any)=><NativeSelectOption key={s.id} value={s.id}>{s.name}</NativeSelectOption>)}</NativeSelect><Button variant="ghost" onClick={()=>navigate('tickets',{ticket:t.id})}>回复<ArrowRight size={15}/></Button></div>)}{!open.length&&<Empty title="没有等待回复的问题" description="所有新问题会自动出现在这里。"/>}<div className="section-title"><h2>待评审作业</h2></div>{pending.map((r:any)=><div className="queue-row" key={r.id}><GitPullRequest size={20}/><div className="queue-main"><strong>{boot.courses.flatMap(c=>c.lessons).find(l=>l.id===r.lesson_id)?.title}</strong><small>{r.name} · {date(r.created_at)}</small></div><a href={r.url} target="_blank" rel="noreferrer"><ExternalLink size={16}/><span className="sr-only">查看代码</span></a><Button variant="outline" onClick={()=>setReview(r)}>开始评审</Button></div>)}{!pending.length&&<Empty title="没有待评审作业"/>}<div className="section-title"><h2>反复失败的练习</h2><span className="muted">近 7 天失败至少 3 次，且尚未通过</span></div>{data.struggles.map((s:any)=><div className="queue-row" key={s.user_id+s.problem_id}><TriangleAlert size={19}/><div className="queue-main"><strong>{s.name} · {boot.problems.find(p=>p.id===s.problem_id)?.title}</strong><small>{s.failures} 次未通过</small></div><Button variant="ghost" onClick={()=>navigate('problem',{problem:s.problem_id})}>查看题目<ArrowRight size={15}/></Button></div>)}{!data.struggles.length&&<p className="quiet-empty">暂时没有需要关注的反复失败记录。</p>}<div className="section-title"><h2>其他工单</h2></div>{data.tickets.filter((t:any)=>t.status!=='open').map((t:any)=><button className="lesson-row" key={t.id} onClick={()=>navigate('tickets',{ticket:t.id})}><MessageSquare size={15}/><span>{t.name} · {t.title}</span><span className="tag">{statusNames[t.status]}</span><ArrowRight size={15}/></button>)}</div></TabsContent><TabsContent value="students"><div className="form-card"><h2>开通现有学员</h2><p className="muted">使用购买记录中的邮箱；学员验证同一邮箱后自动获得权限。</p><form className="inline-form" onSubmit={e=>{e.preventDefault();const form=e.currentTarget,fd=new FormData(form);void action(async()=>{await api('teacher/grants',{email:fd.get('email'),courseId:fd.get('courseId'),expiresAt:null});form.reset()})}}><Input type="email" name="email" aria-label="学员邮箱" placeholder="student@example.com" required/><NativeSelect name="courseId" aria-label="授权课程"><NativeSelectOption value="gomall">当前 SDE 完整课程 · 永久</NativeSelectOption><NativeSelectOption value="*">全部课程（含未来课程）· 永久</NativeSelectOption></NativeSelect><Button type="submit" disabled={busy}><Plus size={15}/>开通权限</Button></form></div><Table><TableHeader><TableRow><TableHead>学员邮箱</TableHead><TableHead>课程权限</TableHead><TableHead>状态</TableHead><TableHead>操作</TableHead></TableRow></TableHeader><TableBody>{data.grants.map((g:any)=><TableRow key={g.id}><TableCell>{g.email}</TableCell><TableCell>{g.course_id==='*'?'全部课程':'SDE 完整课程'}</TableCell><TableCell>{g.revoked_at?'已撤销':'有效'}</TableCell><TableCell>{!g.revoked_at&&<Button variant="ghost" disabled={busy} onClick={()=>action(()=>api('teacher/revoke',{id:g.id}))}>撤销权限</Button>}</TableCell></TableRow>)}</TableBody></Table></TabsContent><TabsContent value="publish"><div className="form-card"><h2>发布课程新版本</h2><p className="muted">保留旧版课件，并生成学员可见的课程更新。版本号不可重复。</p><label className="field-label">选择章节<NativeSelect value={selectedLesson} onChange={async e=>{const value=e.target.value;setSelectedLesson(value);setEditing(null);if(value)try{setEditing(await api('lessons/'+value))}catch(e){setError((e as Error).message)}}}><NativeSelectOption value="">请选择要更新的章节</NativeSelectOption>{boot.courses.flatMap(c=>c.lessons).map(l=><NativeSelectOption key={l.id} value={l.id}>{l.title}</NativeSelectOption>)}</NativeSelect></label>{editing&&<form key={editing.id} className="stack-form" onSubmit={e=>{e.preventDefault();const fd=new FormData(e.currentTarget);void action(async()=>{await api('teacher/publish',{lessonId:editing.id,version:fd.get('version'),title:fd.get('title'),summary:fd.get('summary'),body:fd.get('body'),streamUid:String(fd.get('streamUid')||'').trim()||null,important});setEditing(await api('lessons/'+editing.id))})}}><div className="form-columns"><label>新版本号<Input name="version" required placeholder="1.0.1" pattern="[0-9]+\.[0-9]+\.[0-9]+"/></label><label>更新标题<Input name="title" required maxLength={180} placeholder="例如：补充并发退款的处理说明"/></label></div><label>更新说明<textarea name="summary" required rows={3} maxLength={12000} placeholder="告诉学员哪里变了，是否需要重新学习。"/></label><label>课件正文（Markdown）<textarea className="source-editor" name="body" defaultValue={editing.body} required rows={12} maxLength={100000}/></label><label>Cloudflare Stream 视频 UID<Input name="streamUid" defaultValue={editing.stream_uid||''} placeholder={editing.has_video?'已有视频；留空会移除本章视频，请填写原 UID 或新 UID':'尚未发布视频，可留空'} pattern="[a-f0-9]{32}"/></label><label className="checkbox-label"><Checkbox checked={important} onCheckedChange={v=>setImportant(!!v)}/>重要更新，提醒学员查看</label><Button disabled={busy} type="submit">发布新版本<ArrowRight size={15}/></Button></form>}</div></TabsContent><TabsContent value="services"><div className="form-card"><h2>上线准备</h2><p className="muted">接入后对应能力自动开放。未连接的服务不会产生模拟结果。</p><div className="service-grid">{Object.entries({google:'Google 登录',github:'GitHub 登录',email:'邮箱验证码',video:'课程视频',judge:'算法判题',checkout:'课程购买'}).map(([key,label])=><div className="service-row" key={key}><span>{label}</span><span className={'tag '+(data.services[key]?'success-text':'')}>{data.services[key]?'已配置':'待连接'}</span></div>)}</div></div></TabsContent></Tabs><Dialog open={!!review} onOpenChange={v=>!v&&setReview(null)}><DialogContent className="wide-dialog"><DialogHeader><DialogTitle>作业评审</DialogTitle><DialogDescription>给出明确、可行动的反馈，帮助学员完成下一次修改。</DialogDescription></DialogHeader>{review&&<form className="stack-form" onSubmit={e=>{e.preventDefault();const fd=new FormData(e.currentTarget);void action(async()=>{await api('reviews/'+review.id,{status:fd.get('status'),feedback:fd.get('feedback')});setReview(null)})}}><a href={review.url} target="_blank" rel="noreferrer">查看 GitHub 提交<ExternalLink size={14}/></a><p>{review.note}</p><label>评审结论<NativeSelect name="status"><NativeSelectOption value="changes_requested">需要修改</NativeSelectOption><NativeSelectOption value="approved">评审通过</NativeSelectOption></NativeSelect></label><label>反馈<textarea name="feedback" rows={6} maxLength={12000} required placeholder="指出具体问题、解释原因，并给出下一步建议。"/></label><Button type="submit" disabled={busy}>提交评审反馈</Button></form>}</DialogContent></Dialog></>}
+import { useEffect, useRef, useState } from 'react';
+import {
+  Inbox,
+  MessageSquare,
+  GitPullRequest,
+  TriangleAlert,
+  Users,
+  ArrowRight,
+  Check,
+  ExternalLink,
+  Plus,
+  RefreshCw,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from '@/components/ui/native-select';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import {
+  api,
+  type Boot,
+  type Review,
+  type Lesson,
+  statusNames,
+  date,
+} from '@/lib/types';
+import { Heading, Empty, type Navigate } from './learning';
+export function TeacherView({
+  boot,
+  navigate,
+}: {
+  boot: Boot;
+  navigate: Navigate;
+}) {
+  const selectionRequest = useRef(0);
+  const [data, setData] = useState<any>(null),
+    [error, setError] = useState(''),
+    [busy, setBusy] = useState(false),
+    [review, setReview] = useState<Review | null>(null),
+    [message, setMessage] = useState(''),
+    [selectedLesson, setSelectedLesson] = useState(''),
+    [editing, setEditing] = useState<any>(null),
+    [important, setImportant] = useState(true);
+  const [inspect, setInspect] = useState<any>(null);
+  async function load() {
+    try {
+      setData(await api('teacher'));
+      setError('');
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
+  useEffect(() => {
+    void load();
+  }, []);
+  async function action(fn: () => Promise<void>) {
+    setBusy(true);
+    setError('');
+    setMessage('');
+    try {
+      await fn();
+      await load();
+      setMessage('已保存');
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  }
+  if (!data)
+    return (
+      <Empty
+        title={error || '正在加载教师工作台…'}
+        action={error ? <Button onClick={load}>重试</Button> : undefined}
+      />
+    );
+  const open = data.tickets.filter((t: any) => t.status === 'open'),
+    pending = data.reviews.filter((r: any) => r.status === 'pending');
+  return (
+    <>
+      <Heading
+        label="A CLEARER DAY OF TEACHING"
+        title="今天，先解决这些。"
+        description="把精力留给真正需要帮助的学员。"
+        action={
+          <Button variant="outline" onClick={load}>
+            <RefreshCw size={15} />
+            刷新
+          </Button>
+        }
+      />
+      <div className="teacher-stats">
+        {[
+          [MessageSquare, open.length, '未回复工单'],
+          [GitPullRequest, pending.length, '待评审作业'],
+          [TriangleAlert, data.struggles.length, '需要关注'],
+          [Users, data.students.count, '注册学员'],
+        ].map(([Icon, count, label]: any) => (
+          <div className="stat-card" key={label}>
+            <Icon size={19} />
+            <strong>{count}</strong>
+            <span>{label}</span>
+          </div>
+        ))}
+      </div>
+      {error && (
+        <div role="alert" className="notice error">
+          {error}
+        </div>
+      )}
+      {message && (
+        <p role="status" className="success-text">
+          {message}
+        </p>
+      )}
+      <Tabs defaultValue="queue">
+        <TabsList variant="line" className="teacher-tabs">
+          <TabsTrigger value="queue">待处理</TabsTrigger>
+          <TabsTrigger value="students">学员与权限</TabsTrigger>
+          <TabsTrigger value="publish">课程发布</TabsTrigger>
+          <TabsTrigger value="services">服务状态</TabsTrigger>
+        </TabsList>
+        <TabsContent value="queue">
+          <div className="teacher-queue">
+            <div className="section-title">
+              <h2>未回复工单</h2>
+              <span className="muted">优先处理等待更久的问题</span>
+            </div>
+            {open.map((t: any) => (
+              <div className="queue-row" key={t.id}>
+                <span className="avatar">{t.name.slice(0, 1)}</span>
+                <button
+                  className="queue-main"
+                  onClick={() => navigate('tickets', { ticket: t.id })}
+                >
+                  <strong>{t.title}</strong>
+                  <small>
+                    {t.name} ·{' '}
+                    {Math.max(
+                      0,
+                      Math.floor((Date.now() - t.updated_at) / 3600000),
+                    )}{' '}
+                    小时前
+                  </small>
+                </button>
+                <NativeSelect
+                  aria-label={`分配工单 ${t.title}`}
+                  value={t.assigned_to || ''}
+                  disabled={busy}
+                  onChange={(e) =>
+                    action(() =>
+                      api(`tickets/${t.id}/status`, {
+                        status: 'open',
+                        assignedTo: e.target.value || null,
+                      }),
+                    )
+                  }
+                >
+                  <NativeSelectOption value="">未分配</NativeSelectOption>
+                  {data.staff.map((s: any) => (
+                    <NativeSelectOption key={s.id} value={s.id}>
+                      {s.name}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate('tickets', { ticket: t.id })}
+                >
+                  回复
+                  <ArrowRight size={15} />
+                </Button>
+              </div>
+            ))}
+            {!open.length && (
+              <Empty
+                title="没有等待回复的问题"
+                description="所有新问题会自动出现在这里。"
+              />
+            )}
+            <div className="section-title">
+              <h2>待评审作业</h2>
+            </div>
+            {pending.map((r: any) => (
+              <div className="queue-row" key={r.id}>
+                <GitPullRequest size={20} />
+                <div className="queue-main">
+                  <strong>
+                    {
+                      boot.courses
+                        .flatMap((c) => c.lessons)
+                        .find((l) => l.id === r.lesson_id)?.title
+                    }
+                  </strong>
+                  <small>
+                    {r.name} · {date(r.created_at)}
+                  </small>
+                </div>
+                <a href={r.url} target="_blank" rel="noreferrer">
+                  <ExternalLink size={16} />
+                  <span className="sr-only">查看代码</span>
+                </a>
+                <Button variant="outline" onClick={() => setReview(r)}>
+                  开始评审
+                </Button>
+              </div>
+            ))}
+            {!pending.length && <Empty title="没有待评审作业" />}
+            <div className="section-title">
+              <h2>反复失败的练习</h2>
+              <span className="muted">近 7 天失败至少 3 次，且尚未通过</span>
+            </div>
+            {data.struggles.map((s: any) => (
+              <div className="queue-row" key={s.user_id + s.problem_id}>
+                <TriangleAlert size={19} />
+                <div className="queue-main">
+                  <strong>
+                    {s.name} ·{' '}
+                    {boot.problems.find((p) => p.id === s.problem_id)?.title}
+                  </strong>
+                  <small>{s.failures} 次未通过</small>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={async () => {
+                    try {
+                      setInspect(
+                        await api('submissions/' + s.latest_submission_id),
+                      );
+                    } catch (e) {
+                      setError((e as Error).message);
+                    }
+                  }}
+                >
+                  查看提交
+                  <ArrowRight size={15} />
+                </Button>
+              </div>
+            ))}
+            {!data.struggles.length && (
+              <p className="quiet-empty">暂时没有需要关注的反复失败记录。</p>
+            )}
+            <div className="section-title">
+              <h2>其他工单</h2>
+            </div>
+            {data.tickets
+              .filter((t: any) => t.status !== 'open')
+              .map((t: any) => (
+                <button
+                  className="lesson-row"
+                  key={t.id}
+                  onClick={() => navigate('tickets', { ticket: t.id })}
+                >
+                  <MessageSquare size={15} />
+                  <span>
+                    {t.name} · {t.title}
+                  </span>
+                  <span className="tag">{statusNames[t.status]}</span>
+                  <ArrowRight size={15} />
+                </button>
+              ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="students">
+          <div className="form-card">
+            <h2>开通现有学员</h2>
+            <p className="muted">
+              使用购买记录中的邮箱；学员验证同一邮箱后自动获得权限。
+            </p>
+            <form
+              className="inline-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const form = e.currentTarget,
+                  fd = new FormData(form);
+                void action(async () => {
+                  await api('teacher/grants', {
+                    email: fd.get('email'),
+                    courseId: fd.get('courseId'),
+                    expiresAt: null,
+                  });
+                  form.reset();
+                });
+              }}
+            >
+              <Input
+                type="email"
+                name="email"
+                aria-label="学员邮箱"
+                placeholder="student@example.com"
+                required
+              />
+              <NativeSelect name="courseId" aria-label="授权课程">
+                <NativeSelectOption value="gomall">
+                  当前 SDE 完整课程 · 永久
+                </NativeSelectOption>
+                <NativeSelectOption value="*">
+                  全部课程（含未来课程）· 永久
+                </NativeSelectOption>
+              </NativeSelect>
+              <Button type="submit" disabled={busy}>
+                <Plus size={15} />
+                开通权限
+              </Button>
+            </form>
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>学员邮箱</TableHead>
+                <TableHead>课程权限</TableHead>
+                <TableHead>状态</TableHead>
+                <TableHead>操作</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.grants.map((g: any) => (
+                <TableRow key={g.id}>
+                  <TableCell>{g.email}</TableCell>
+                  <TableCell>
+                    {g.course_id === '*' ? '全部课程' : 'SDE 完整课程'}
+                  </TableCell>
+                  <TableCell>{g.revoked_at ? '已撤销' : '有效'}</TableCell>
+                  <TableCell>
+                    {!g.revoked_at && (
+                      <Button
+                        variant="ghost"
+                        disabled={busy}
+                        onClick={() =>
+                          action(() => api('teacher/revoke', { id: g.id }))
+                        }
+                      >
+                        撤销权限
+                      </Button>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TabsContent>
+        <TabsContent value="publish">
+          <div className="form-card">
+            <h2>发布课程新版本</h2>
+            <p className="muted">
+              保留旧版课件，并生成学员可见的课程更新。版本号不可重复。
+            </p>
+            <label className="field-label">
+              选择章节
+              <NativeSelect
+                value={selectedLesson}
+                disabled={busy}
+                onChange={async (e) => {
+                  const value = e.target.value;
+                  const requestId = ++selectionRequest.current;
+                  setSelectedLesson(value);
+                  setEditing(null);
+                  if (value)
+                    try {
+                      const lesson = await api('lessons/' + value);
+                      if (requestId === selectionRequest.current)
+                        setEditing(lesson);
+                    } catch (e) {
+                      if (requestId === selectionRequest.current)
+                        setError((e as Error).message);
+                    }
+                }}
+              >
+                <NativeSelectOption value="">
+                  请选择要更新的章节
+                </NativeSelectOption>
+                {boot.courses
+                  .flatMap((c) => c.lessons)
+                  .map((l) => (
+                    <NativeSelectOption key={l.id} value={l.id}>
+                      {l.title}
+                    </NativeSelectOption>
+                  ))}
+              </NativeSelect>
+            </label>
+            {editing && editing.id === selectedLesson && (
+              <form
+                key={editing.id + ':' + editing.version}
+                className="stack-form"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const fd = new FormData(e.currentTarget);
+                  void action(async () => {
+                    await api('teacher/publish', {
+                      lessonId: editing.id,
+                      version: fd.get('version'),
+                      title: fd.get('title'),
+                      summary: fd.get('summary'),
+                      body: fd.get('body'),
+                      streamUid:
+                        String(fd.get('streamUid') || '').trim() || null,
+                      important,
+                    });
+                    setEditing(await api('lessons/' + editing.id));
+                  });
+                }}
+              >
+                <div className="form-columns">
+                  <label>
+                    新版本号
+                    <Input
+                      name="version"
+                      required
+                      placeholder="1.0.1"
+                      pattern="[0-9]+\.[0-9]+\.[0-9]+"
+                    />
+                  </label>
+                  <label>
+                    更新标题
+                    <Input
+                      name="title"
+                      required
+                      maxLength={180}
+                      placeholder="例如：补充并发退款的处理说明"
+                    />
+                  </label>
+                </div>
+                <label>
+                  更新说明
+                  <textarea
+                    name="summary"
+                    required
+                    rows={3}
+                    maxLength={12000}
+                    placeholder="告诉学员哪里变了，是否需要重新学习。"
+                  />
+                </label>
+                <label>
+                  课件正文（Markdown）
+                  <textarea
+                    className="source-editor"
+                    name="body"
+                    defaultValue={editing.body}
+                    required
+                    rows={12}
+                    maxLength={100000}
+                  />
+                </label>
+                <label>
+                  Cloudflare Stream 视频 UID
+                  <Input
+                    name="streamUid"
+                    defaultValue={editing.stream_uid || ''}
+                    placeholder={
+                      editing.has_video
+                        ? '已有视频；留空会移除本章视频，请填写原 UID 或新 UID'
+                        : '尚未发布视频，可留空'
+                    }
+                    pattern="[a-f0-9]{32}"
+                  />
+                </label>
+                <label className="checkbox-label">
+                  <Checkbox
+                    checked={important}
+                    onCheckedChange={(v) => setImportant(!!v)}
+                  />
+                  重要更新，提醒学员查看
+                </label>
+                <Button disabled={busy} type="submit">
+                  发布新版本
+                  <ArrowRight size={15} />
+                </Button>
+              </form>
+            )}
+          </div>
+        </TabsContent>
+        <TabsContent value="services">
+          <div className="form-card">
+            <h2>上线准备</h2>
+            <p className="muted">
+              接入后对应能力自动开放。未连接的服务不会产生模拟结果。
+            </p>
+            <div className="service-grid">
+              {Object.entries({
+                google: 'Google 登录',
+                github: 'GitHub 登录',
+                email: '邮箱验证码',
+                video: '课程视频',
+                judge: '算法判题',
+                checkout: '课程购买',
+              }).map(([key, label]) => (
+                <div className="service-row" key={key}>
+                  <span>{label}</span>
+                  <span
+                    className={
+                      'tag ' + (data.services[key] ? 'success-text' : '')
+                    }
+                  >
+                    {data.services[key] ? '已配置' : '待连接'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
+      <Dialog open={!!review} onOpenChange={(v) => !v && setReview(null)}>
+        <DialogContent className="wide-dialog">
+          <DialogHeader>
+            <DialogTitle>作业评审</DialogTitle>
+            <DialogDescription>
+              给出明确、可行动的反馈，帮助学员完成下一次修改。
+            </DialogDescription>
+          </DialogHeader>
+          {review && (
+            <form
+              className="stack-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                const fd = new FormData(e.currentTarget);
+                void action(async () => {
+                  await api('reviews/' + review.id, {
+                    status: fd.get('status'),
+                    feedback: fd.get('feedback'),
+                  });
+                  setReview(null);
+                });
+              }}
+            >
+              <a href={review.url} target="_blank" rel="noreferrer">
+                查看 GitHub 提交
+                <ExternalLink size={14} />
+              </a>
+              <p>{review.note}</p>
+              <label>
+                评审结论
+                <NativeSelect name="status">
+                  <NativeSelectOption value="changes_requested">
+                    需要修改
+                  </NativeSelectOption>
+                  <NativeSelectOption value="approved">
+                    评审通过
+                  </NativeSelectOption>
+                </NativeSelect>
+              </label>
+              <label>
+                反馈
+                <textarea
+                  name="feedback"
+                  rows={6}
+                  maxLength={12000}
+                  required
+                  placeholder="指出具体问题、解释原因，并给出下一步建议。"
+                />
+              </label>
+              <Button type="submit" disabled={busy}>
+                提交评审反馈
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
+      <Dialog open={!!inspect} onOpenChange={(v) => !v && setInspect(null)}>
+        <DialogContent className="wide-dialog">
+          <DialogHeader>
+            <DialogTitle>查看学员提交</DialogTitle>
+            <DialogDescription>
+              {inspect
+                ? `${statusNames[inspect.status]} · ${inspect.language}`
+                : ''}
+            </DialogDescription>
+          </DialogHeader>
+          {inspect && (
+            <div className="prose-content">
+              <p>
+                通过 {inspect.passed} / {inspect.total} 组用例
+              </p>
+              <pre>{inspect.code}</pre>
+              {inspect.message && <pre>{inspect.message}</pre>}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}

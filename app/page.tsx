@@ -1,2 +1,4 @@
 import { Academy } from '@/components/academy';
-export default function Home() { return <Academy />; }
+export default function Home() {
+  return <Academy />;
+}

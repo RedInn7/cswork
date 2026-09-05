@@ -1,21 +1,765 @@
 'use client';
-import {useCallback,useEffect,useRef,useState} from 'react';
-import {ArrowUpRight,BookOpen,Code2,LayoutDashboard,LifeBuoy,Bell,Play,ArrowRight,Check,Terminal,GraduationCap,GitPullRequest,Search,Settings,Inbox,Bookmark,ChevronRight} from 'lucide-react';import type {LucideIcon} from 'lucide-react';
-import {SidebarProvider,Sidebar,SidebarHeader,SidebarContent,SidebarFooter,SidebarMenu,SidebarMenuItem,SidebarMenuButton,SidebarGroup,SidebarGroupLabel,SidebarInset,SidebarTrigger} from '@/components/ui/sidebar';import {Button} from '@/components/ui/button';import {Progress} from '@/components/ui/progress';import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogDescription} from '@/components/ui/dialog';import {Input} from '@/components/ui/input';
-import {api,type Boot,type Lesson,date} from '@/lib/types';import {CourseList,LessonReader,ProblemList,ProblemWorkspace,Empty,Heading,type Navigate} from './learning';import {TicketComposer,TicketView,ReviewsView,ReleasesView} from './support';import {TeacherView} from './teacher';import {LoginDialog,AccountView} from './account';import {registerAcademyTools} from '@/lib/webmcp';
-const nav:[LucideIcon,string,string][]=[[LayoutDashboard,'学习概览','home'],[BookOpen,'我的课程','courses'],[Code2,'算法练习','problems'],[GitPullRequest,'工程作业','reviews'],[LifeBuoy,'我的工单','tickets'],[Bell,'课程更新','releases']];
-const initial:Boot={person:null,courses:[],problems:[],progress:[],submissions:[],notifications:[],services:{}};
-export function Academy(){const[boot,setBoot]=useState<Boot>(initial),[loading,setLoading]=useState(true),[error,setError]=useState(''),[view,setView]=useState('home'),[params,setParams]=useState<Record<string,string>>({}),[login,setLogin]=useState(false),[ticketContext,setTicketContext]=useState<Record<string,string>|null>(null),[search,setSearch]=useState(false),[query,setQuery]=useState(''),[results,setResults]=useState<any[]>([]),[searching,setSearching]=useState(false),[notificationOpen,setNotificationOpen]=useState(false);const refresh=useCallback(async()=>{const next=await api<Boot>('bootstrap');setBoot(next);setLoading(false);setError('')},[]);
-useEffect(()=>{refresh().catch(e=>{setError(e.message);setLoading(false)});const sync=()=>{const p=Object.fromEntries(new URLSearchParams(location.search));setParams(p);setView(p.view||'home')};sync();window.addEventListener('popstate',sync);return()=>window.removeEventListener('popstate',sync)},[refresh]);
-const navigate:Navigate=useCallback((next,extra={})=>{setView(next);setParams({view:next,...extra});history.pushState(null,'','/?'+new URLSearchParams({view:next,...extra}));window.scrollTo({top:0,behavior:'instant'})},[]);
-useEffect(()=>{if(!search||!query.trim()){setResults([]);return}let cancelled=false;const timer=setTimeout(async()=>{setSearching(true);try{const found=await api<any[]>('search?q='+encodeURIComponent(query));if(!cancelled)setResults(found)}catch(e){if(!cancelled)setError((e as Error).message)}finally{if(!cancelled)setSearching(false)}},300);return()=>{cancelled=true;clearTimeout(timer)}},[query,search]);
-const bootRef=useRef(boot);bootRef.current=boot;useEffect(()=>registerAcademyTools(()=>bootRef.current,navigate),[navigate]);
-function ask(context:Record<string,string>={}){if(!boot.person){setLogin(true);return}setTicketContext(context)}
-const selectedProblem=boot.problems.find(p=>p.id===params.problem),unread=boot.notifications.filter(n=>!n.read_at).length;
-function content(){if(loading)return <Home boot={boot} navigate={navigate} login={()=>setLogin(true)}/>;if(error&&!boot.courses.length)return <Empty title="学习空间暂时无法加载" description={error} action={<Button onClick={()=>refresh().catch(e=>setError(e.message))}>重新加载</Button>}/>;if(!boot.person&&!['home','courses','problems','problem'].includes(view))return <Empty title="登录后继续学习" description="进度、笔记与老师的反馈会跟随你的账号保存。" action={<Button onClick={()=>setLogin(true)}>登录 / 注册<ArrowRight size={15}/></Button>}/>;
-switch(view){case 'courses':return <CourseList boot={boot} navigate={navigate} login={()=>setLogin(true)}/>;case 'lesson':return <LessonReader key={params.lesson} id={params.lesson||boot.courses[0]?.lessons[0]?.id||''} boot={boot} navigate={navigate} ask={ask} refresh={refresh}/>;case 'problems':return <ProblemList boot={boot} navigate={navigate}/>;case 'problem':return selectedProblem?<ProblemWorkspace key={selectedProblem.id} problem={selectedProblem} boot={boot} navigate={navigate} ask={ask} refresh={refresh}/>:<Empty title="请选择一道题目" action={<Button onClick={()=>navigate('problems')}>进入题库</Button>}/>;case 'tickets':return <TicketView key={params.ticket||'list'} boot={boot} selected={params.ticket} navigate={navigate} ask={()=>ask()}/>;case 'reviews':return <ReviewsView boot={boot} lessonId={params.lesson}/>;case 'releases':return <ReleasesView navigate={navigate}/>;case 'teacher':return boot.person?.role==='teacher'?<TeacherView boot={boot} navigate={navigate}/>:<Empty title="仅老师可以访问工作台"/>;case 'account':return <AccountView boot={boot} refresh={refresh}/>;default:return <Home boot={boot} navigate={navigate} login={()=>setLogin(true)}/>}}
-return <SidebarProvider><Sidebar className="academy-sidebar"><SidebarHeader><a className="brand" href="/" onClick={e=>{e.preventDefault();navigate('home')}}><span className="brand-mark"><Terminal size={21}/></span><span>SDE<span className="brand-light"> Academy</span><small>BUILD. LEARN. SHIP.</small></span></a></SidebarHeader><SidebarContent><SidebarGroup><SidebarGroupLabel>学习空间</SidebarGroupLabel><SidebarMenu>{nav.map(([Icon,label,key])=><SidebarMenuItem key={key}><SidebarMenuButton isActive={view===key||view==='lesson'&&key==='courses'||view==='problem'&&key==='problems'} onClick={()=>navigate(key)}><Icon size={18}/><span>{label}</span></SidebarMenuButton></SidebarMenuItem>)}</SidebarMenu></SidebarGroup>{boot.person?.role==='teacher'&&<SidebarGroup><SidebarGroupLabel>教学管理</SidebarGroupLabel><SidebarMenu><SidebarMenuItem><SidebarMenuButton isActive={view==='teacher'} onClick={()=>navigate('teacher')}><Inbox size={18}/>教师工作台</SidebarMenuButton></SidebarMenuItem></SidebarMenu></SidebarGroup>}</SidebarContent><SidebarFooter><div className="mentor-card"><GraduationCap size={21}/><strong>一步一步，写出好代码。</strong><p>课程、练习和反馈，都在这里。</p></div><button className="profile" onClick={()=>boot.person?navigate('account'):setLogin(true)}><span className="avatar">{boot.person?.name.slice(0,1)||'S'}</span><div><strong>{boot.person?.name||'登录学习空间'}</strong><small>{boot.person?.role==='teacher'?'老师账号':boot.person?'SDE 学员':'保存进度，开始学习'}</small></div><Settings size={15}/></button></SidebarFooter></Sidebar><SidebarInset className="workspace"><header className="topbar"><div className="flex items-center gap-3"><SidebarTrigger/><span>{nav.find(n=>n[2]===view)?.[1]||({lesson:'课程学习',problem:'算法练习',teacher:'教师工作台',account:'账号设置'} as Record<string,string>)[view]||'学习概览'}</span></div><div className="topbar-actions"><button className="search-shortcut" onClick={()=>boot.person?setSearch(true):setLogin(true)}><Search size={15}/><span>搜索课程内容</span><kbd>搜索</kbd></button><Button size="icon" variant="ghost" aria-label={`通知，${unread} 条未读`} onClick={()=>boot.person?setNotificationOpen(true):setLogin(true)} className="notification-button"><Bell size={18}/>{unread>0&&<i/>}</Button>{!boot.person&&<Button onClick={()=>setLogin(true)}>登录 / 注册</Button>}</div></header><main id="main-content" className={'page '+(['lesson','problem'].includes(view)?'page-wide':'')}>{error&&boot.courses.length>0&&<p role="alert" className="notice error">{error}</p>}{params.payment==='success'&&<p className="notice">支付结果正在确认。课程权限会在支付平台确认后自动更新。<Button variant="ghost" onClick={()=>refresh().catch(e=>setError(e.message))}>刷新权限</Button></p>}{content()}</main></SidebarInset><LoginDialog open={login} close={()=>setLogin(false)} boot={boot} onSuccess={refresh}/><TicketComposer context={ticketContext} close={()=>setTicketContext(null)} onCreated={id=>navigate('tickets',{ticket:id})} boot={boot}/><Dialog open={search} onOpenChange={setSearch}><DialogContent className="wide-dialog"><DialogHeader><DialogTitle>搜索课程内容</DialogTitle><DialogDescription>搜索讲义中的知识点，直接回到对应章节。</DialogDescription></DialogHeader><Input autoFocus value={query} onChange={e=>setQuery(e.target.value)} aria-label="搜索课程内容" placeholder="试试：幂等、库存、JWT…"/><div className="search-results">{searching?<p>正在搜索…</p>:results.map(r=><button key={r.id} onClick={()=>{setSearch(false);navigate('lesson',{lesson:r.id})}}><FileSearchTitle title={r.title}/><p>{r.snippet}</p></button>)}{query&&!searching&&!results.length&&<p className="muted">没有找到匹配内容。</p>}</div></DialogContent></Dialog><Dialog open={notificationOpen} onOpenChange={setNotificationOpen}><DialogContent className="wide-dialog"><DialogHeader><DialogTitle>你的消息</DialogTitle><DialogDescription>老师的回复与作业评审反馈。</DialogDescription></DialogHeader><div className="search-results">{boot.notifications.map(n=><button key={n.id} onClick={async()=>{try{await api('notifications',{id:n.id});await refresh();setNotificationOpen(false);const dest=Object.fromEntries(new URL(n.href,location.origin).searchParams);const {view:next,...extra}=dest;navigate(next||'home',extra)}catch(e){setError((e as Error).message)}}}><strong>{!n.read_at&&<span className="status-dot"/>}{n.title}</strong><p>{n.body}</p><small>{date(n.created_at)}</small></button>)}{!boot.notifications.length&&<Empty title="暂时没有新消息"/>}</div></DialogContent></Dialog></SidebarProvider>}
-function FileSearchTitle({title}:{title:string}){return <strong><BookOpen size={16}/>{title}<ChevronRight size={15}/></strong>}
-function Home({boot,navigate,login}:{boot:Boot;navigate:Navigate;login:()=>void}){const course=boot.courses[0],all=course?.lessons||[],latest=[...boot.progress].sort((a,b)=>b.updated_at-a.updated_at)[0],resume=all.find(l=>l.id===latest?.lesson_id)||all[0],done=boot.progress.filter(p=>p.completed).length,passed=new Set(boot.submissions.filter(s=>s.status==='accepted').map(s=>s.problem_id)).size;function start(l?:Lesson){if(!boot.person){login();return}if(course?.has_access&&l)navigate('lesson',{lesson:l.id});else navigate('courses')}
-return <><Heading label="YOUR NEXT CHAPTER" title={boot.person?'专注今天的进步。':'从这里，成为更好的工程师。'} description="从一段代码开始，把知识变成解决问题的能力。" action={<span className="tag"><span className="status-dot"/>SDE 课程</span>}/><section className="continue-card"><div><span className="overline">{latest?'继续你的学习':'从这里开始'}</span><h2>{latest?resume?.title:'GoMall 后端工程实战'}</h2><p>{latest?resume?.summary:'沿着真实的交易链路，掌握 Go 后端与系统设计。'}</p><div className="course-meta"><span>Go / Gin</span><span>系统设计</span><span>配套代码练习</span></div><Button className="primary-light" onClick={()=>start(resume)}><Play size={16} fill="currentColor"/>{latest?'继续学习':'进入第一章'}<ArrowRight size={16}/></Button></div><div className="terminal-card" aria-hidden="true"><div className="terminal-top"><span/><span/><span/><small>your-next-chapter.go</small></div><pre><em>func</em> main() {'{'}{'\n'}  learn.<b>Understand</b>(){'\n'}  code.<b>Build</b>(){'\n'}  you.<b>Grow</b>(){'\n'}{'}'}</pre><div className="terminal-bottom"><Check size={13}/> Ready for your next step</div></div></section>{boot.person&&<div className="learning-stats"><div><BookOpen size={18}/><span>已完成课时</span><strong>{done}<small> / {all.length}</small></strong></div><div><Code2 size={18}/><span>算法已通过</span><strong>{passed}<small> / {boot.problems.length}</small></strong></div><div><Bookmark size={18}/><span>我的收藏</span><strong>{boot.progress.filter(p=>p.bookmarked).length}</strong></div></div>}<div className="section-title"><h2>你的学习路径</h2><button className="text-link" onClick={()=>navigate('courses')}>完整课程<ArrowRight size={14}/></button></div><div className="path-grid">{[['01','后端工程基础','用户认证、接口设计与业务建模','Go · Gin · JWT','后端基础'],['02','交易与资金系统','支付、清算、结算与一致性','事务 · 幂等 · Outbox','交易系统'],['03','搜索与系统进阶','商品检索、库存和高并发','搜索 · 库存 · 流量治理','搜索与进阶']].map(([n,title,desc,tags,section])=>{const ls=all.filter(l=>l.section===section),completed=ls.filter(l=>boot.progress.some(p=>p.lesson_id===l.id&&p.completed)).length;return <button className="path-card" key={n} onClick={()=>start(ls[0])}><div className="path-top"><span>{n}</span><ArrowUpRight size={20}/></div><h3>{title}</h3><p>{desc}</p><small>{tags}</small><Progress value={ls.length?completed/ls.length*100:0}/><div className="path-progress"><span>{completed} / {ls.length} 课已完成</span><span>{ls.length?Math.round(completed/ls.length*100):0}%</span></div></button>})}</div><div className="home-bottom"><section><div className="section-title"><h2>下一道，练起来。</h2><button className="text-link" onClick={()=>navigate('problems')}>全部练习<ArrowRight size={14}/></button></div><div className="quick-problems">{boot.problems.slice(0,3).map((p,i)=><button key={p.id} onClick={()=>navigate('problem',{problem:p.id})}><span className="quick-number">0{i+1}</span><div><strong>{p.title}</strong><small>{p.tags.join(' · ')}</small></div><span className={'difficulty '+(p.difficulty==='中等'?'medium':'')}>{p.difficulty}</span><ChevronRight size={16}/></button>)}</div></section><section><div className="section-title"><h2>学习支持</h2></div><div className="help-card"><LifeBuoy size={23}/><h3>把疑问留在这里。</h3><p>与老师私密沟通，每个问题都能回到对应的章节或代码。</p><Button variant="outline" onClick={()=>boot.person?navigate('tickets'):login()}>我的工单<ArrowRight size={15}/></Button></div></section></div>{boot.progress.some(p=>p.bookmarked)&&<><div className="section-title"><h2>收藏的章节</h2></div>{all.filter(l=>boot.progress.some(p=>p.lesson_id===l.id&&p.bookmarked)).map(l=><button className="lesson-row" key={l.id} onClick={()=>start(l)}><Bookmark size={16}/>{l.title}<ArrowRight size={15}/></button>)}</>}
-</>}
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ArrowUpRight,
+  BookOpen,
+  Code2,
+  LayoutDashboard,
+  LifeBuoy,
+  Bell,
+  Play,
+  ArrowRight,
+  Check,
+  Terminal,
+  GraduationCap,
+  GitPullRequest,
+  Search,
+  Settings,
+  Inbox,
+  Bookmark,
+  ChevronRight,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarInset,
+  SidebarTrigger,
+  useSidebar,
+} from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { api, type Boot, type Lesson, date } from '@/lib/types';
+import {
+  CourseList,
+  LessonReader,
+  ProblemList,
+  ProblemWorkspace,
+  Empty,
+  Heading,
+  type Navigate,
+} from './learning';
+import {
+  TicketComposer,
+  TicketView,
+  ReviewsView,
+  ReleasesView,
+} from './support';
+import { TeacherView } from './teacher';
+import { LoginDialog, AccountView } from './account';
+import { registerAcademyTools } from '@/lib/webmcp';
+const nav: [LucideIcon, string, string][] = [
+  [LayoutDashboard, '学习概览', 'home'],
+  [BookOpen, '我的课程', 'courses'],
+  [Code2, '算法练习', 'problems'],
+  [GitPullRequest, '工程作业', 'reviews'],
+  [LifeBuoy, '我的工单', 'tickets'],
+  [Bell, '课程更新', 'releases'],
+];
+const initial: Boot = {
+  person: null,
+  courses: [],
+  problems: [],
+  progress: [],
+  submissions: [],
+  notifications: [],
+  services: {},
+};
+export function Academy() {
+  const [boot, setBoot] = useState<Boot>(initial),
+    [loading, setLoading] = useState(true),
+    [error, setError] = useState(''),
+    [view, setView] = useState('home'),
+    [params, setParams] = useState<Record<string, string>>({}),
+    [login, setLogin] = useState(false),
+    [ticketContext, setTicketContext] = useState<Record<string, string> | null>(
+      null,
+    ),
+    [search, setSearch] = useState(false),
+    [query, setQuery] = useState(''),
+    [results, setResults] = useState<any[]>([]),
+    [searching, setSearching] = useState(false),
+    [notificationOpen, setNotificationOpen] = useState(false);
+  const refresh = useCallback(async () => {
+    const next = await api<Boot>('bootstrap');
+    setBoot(next);
+    setLoading(false);
+    setError('');
+  }, []);
+  useEffect(() => {
+    refresh().catch((e) => {
+      setError(e.message);
+      setLoading(false);
+    });
+    const sync = () => {
+      const p = Object.fromEntries(new URLSearchParams(location.search));
+      setParams(p);
+      setView(p.view || 'home');
+    };
+    sync();
+    window.addEventListener('popstate', sync);
+    return () => window.removeEventListener('popstate', sync);
+  }, [refresh]);
+  const navigate: Navigate = useCallback((next, extra = {}) => {
+    setView(next);
+    setParams({ view: next, ...extra });
+    history.pushState(
+      null,
+      '',
+      '/?' + new URLSearchParams({ view: next, ...extra }),
+    );
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+  useEffect(() => {
+    if (!search || !query.trim()) {
+      setResults([]);
+      return;
+    }
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      setSearching(true);
+      try {
+        const found = await api<any[]>('search?q=' + encodeURIComponent(query));
+        if (!cancelled) setResults(found);
+      } catch (e) {
+        if (!cancelled) setError((e as Error).message);
+      } finally {
+        if (!cancelled) setSearching(false);
+      }
+    }, 300);
+    return () => {
+      cancelled = true;
+      clearTimeout(timer);
+    };
+  }, [query, search]);
+  const bootRef = useRef(boot);
+  bootRef.current = boot;
+  useEffect(
+    () => registerAcademyTools(() => bootRef.current, navigate),
+    [navigate],
+  );
+  function ask(context: Record<string, string> = {}) {
+    if (!boot.person) {
+      setLogin(true);
+      return;
+    }
+    setTicketContext(context);
+  }
+  const selectedProblem = boot.problems.find((p) => p.id === params.problem),
+    unread = boot.notifications.filter((n) => !n.read_at).length;
+  function content() {
+    if (loading)
+      return (
+        <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
+      );
+    if (error && !boot.courses.length)
+      return (
+        <Empty
+          title="学习空间暂时无法加载"
+          description={error}
+          action={
+            <Button onClick={() => refresh().catch((e) => setError(e.message))}>
+              重新加载
+            </Button>
+          }
+        />
+      );
+    if (
+      !boot.person &&
+      !['home', 'courses', 'problems', 'problem'].includes(view)
+    )
+      return (
+        <Empty
+          title="登录后继续学习"
+          description="进度、笔记与老师的反馈会跟随你的账号保存。"
+          action={
+            <Button onClick={() => setLogin(true)}>
+              登录 / 注册
+              <ArrowRight size={15} />
+            </Button>
+          }
+        />
+      );
+    switch (view) {
+      case 'courses':
+        return (
+          <CourseList
+            boot={boot}
+            navigate={navigate}
+            login={() => setLogin(true)}
+          />
+        );
+      case 'lesson':
+        return (
+          <LessonReader
+            key={params.lesson}
+            id={params.lesson || boot.courses[0]?.lessons[0]?.id || ''}
+            boot={boot}
+            navigate={navigate}
+            ask={ask}
+            refresh={refresh}
+          />
+        );
+      case 'problems':
+        return <ProblemList boot={boot} navigate={navigate} />;
+      case 'problem':
+        return selectedProblem ? (
+          <ProblemWorkspace
+            key={selectedProblem.id}
+            problem={selectedProblem}
+            boot={boot}
+            navigate={navigate}
+            ask={ask}
+            refresh={refresh}
+          />
+        ) : (
+          <Empty
+            title="请选择一道题目"
+            action={
+              <Button onClick={() => navigate('problems')}>进入题库</Button>
+            }
+          />
+        );
+      case 'tickets':
+        return (
+          <TicketView
+            key={params.ticket || 'list'}
+            boot={boot}
+            selected={params.ticket}
+            navigate={navigate}
+            ask={() => ask()}
+          />
+        );
+      case 'reviews':
+        return <ReviewsView boot={boot} lessonId={params.lesson} />;
+      case 'releases':
+        return <ReleasesView navigate={navigate} />;
+      case 'teacher':
+        return boot.person?.role === 'teacher' ? (
+          <TeacherView boot={boot} navigate={navigate} />
+        ) : (
+          <Empty title="仅老师可以访问工作台" />
+        );
+      case 'account':
+        return <AccountView boot={boot} refresh={refresh} />;
+      default:
+        return (
+          <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
+        );
+    }
+  }
+  return (
+    <SidebarProvider>
+      <CloseMobileNavigation view={view} />
+      <Sidebar className="academy-sidebar">
+        <SidebarHeader>
+          <a
+            className="brand"
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('home');
+            }}
+          >
+            <span className="brand-mark">
+              <Terminal size={21} />
+            </span>
+            <span>
+              SDE<span className="brand-light"> Academy</span>
+              <small>BUILD. LEARN. SHIP.</small>
+            </span>
+          </a>
+        </SidebarHeader>
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>学习空间</SidebarGroupLabel>
+            <SidebarMenu>
+              {nav.map(([Icon, label, key]) => (
+                <SidebarMenuItem key={key}>
+                  <SidebarMenuButton
+                    isActive={
+                      view === key ||
+                      (view === 'lesson' && key === 'courses') ||
+                      (view === 'problem' && key === 'problems')
+                    }
+                    onClick={() => navigate(key)}
+                  >
+                    <Icon size={18} />
+                    <span>{label}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
+          {boot.person?.role === 'teacher' && (
+            <SidebarGroup>
+              <SidebarGroupLabel>教学管理</SidebarGroupLabel>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    isActive={view === 'teacher'}
+                    onClick={() => navigate('teacher')}
+                  >
+                    <Inbox size={18} />
+                    教师工作台
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
+        </SidebarContent>
+        <SidebarFooter>
+          <div className="mentor-card">
+            <GraduationCap size={21} />
+            <strong>一步一步，写出好代码。</strong>
+            <p>课程、练习和反馈，都在这里。</p>
+          </div>
+          <button
+            className="profile"
+            onClick={() => (boot.person ? navigate('account') : setLogin(true))}
+          >
+            <span className="avatar">
+              {boot.person?.name.slice(0, 1) || 'S'}
+            </span>
+            <div>
+              <strong>{boot.person?.name || '登录学习空间'}</strong>
+              <small>
+                {boot.person?.role === 'teacher'
+                  ? '老师账号'
+                  : boot.person
+                    ? 'SDE 学员'
+                    : '保存进度，开始学习'}
+              </small>
+            </div>
+            <Settings size={15} />
+          </button>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset className="workspace">
+        <header className="topbar">
+          <div className="flex items-center gap-3">
+            <SidebarTrigger />
+            <span>
+              {nav.find((n) => n[2] === view)?.[1] ||
+                (
+                  {
+                    lesson: '课程学习',
+                    problem: '算法练习',
+                    teacher: '教师工作台',
+                    account: '账号设置',
+                  } as Record<string, string>
+                )[view] ||
+                '学习概览'}
+            </span>
+          </div>
+          <div className="topbar-actions">
+            <button
+              className="search-shortcut"
+              onClick={() => (boot.person ? setSearch(true) : setLogin(true))}
+            >
+              <Search size={15} />
+              <span>搜索课程内容</span>
+              <kbd>搜索</kbd>
+            </button>
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={`通知，${unread} 条未读`}
+              onClick={() =>
+                boot.person ? setNotificationOpen(true) : setLogin(true)
+              }
+              className="notification-button"
+            >
+              <Bell size={18} />
+              {unread > 0 && <i />}
+            </Button>
+            {!boot.person && (
+              <Button onClick={() => setLogin(true)}>登录 / 注册</Button>
+            )}
+          </div>
+        </header>
+        <main
+          id="main-content"
+          className={
+            'page ' + (['lesson', 'problem'].includes(view) ? 'page-wide' : '')
+          }
+        >
+          {error && boot.courses.length > 0 && (
+            <p role="alert" className="notice error">
+              {error}
+            </p>
+          )}
+          {params.payment === 'success' && (
+            <p className="notice">
+              支付结果正在确认。课程权限会在支付平台确认后自动更新。
+              <Button
+                variant="ghost"
+                onClick={() => refresh().catch((e) => setError(e.message))}
+              >
+                刷新权限
+              </Button>
+            </p>
+          )}
+          {content()}
+        </main>
+      </SidebarInset>
+      <LoginDialog
+        open={login}
+        close={() => setLogin(false)}
+        boot={boot}
+        onSuccess={refresh}
+      />
+      <TicketComposer
+        context={ticketContext}
+        close={() => setTicketContext(null)}
+        onCreated={(id) => navigate('tickets', { ticket: id })}
+        boot={boot}
+      />
+      <Dialog open={search} onOpenChange={setSearch}>
+        <DialogContent className="wide-dialog">
+          <DialogHeader>
+            <DialogTitle>搜索课程内容</DialogTitle>
+            <DialogDescription>
+              搜索讲义中的知识点，直接回到对应章节。
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            autoFocus
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            aria-label="搜索课程内容"
+            placeholder="试试：幂等、库存、JWT…"
+          />
+          <div className="search-results">
+            {searching ? (
+              <p>正在搜索…</p>
+            ) : (
+              results.map((r) => (
+                <button
+                  key={r.id}
+                  onClick={() => {
+                    setSearch(false);
+                    navigate('lesson', { lesson: r.id });
+                  }}
+                >
+                  <FileSearchTitle title={r.title} />
+                  <p>{r.snippet}</p>
+                </button>
+              ))
+            )}
+            {query && !searching && !results.length && (
+              <p className="muted">没有找到匹配内容。</p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={notificationOpen} onOpenChange={setNotificationOpen}>
+        <DialogContent className="wide-dialog">
+          <DialogHeader>
+            <DialogTitle>你的消息</DialogTitle>
+            <DialogDescription>老师的回复与作业评审反馈。</DialogDescription>
+          </DialogHeader>
+          <div className="search-results">
+            {boot.notifications.map((n) => (
+              <button
+                key={n.id}
+                onClick={async () => {
+                  try {
+                    await api('notifications', { id: n.id });
+                    await refresh();
+                    setNotificationOpen(false);
+                    const dest = Object.fromEntries(
+                      new URL(n.href, location.origin).searchParams,
+                    );
+                    const { view: next, ...extra } = dest;
+                    navigate(next || 'home', extra);
+                  } catch (e) {
+                    setError((e as Error).message);
+                  }
+                }}
+              >
+                <strong>
+                  {!n.read_at && <span className="status-dot" />}
+                  {n.title}
+                </strong>
+                <p>{n.body}</p>
+                <small>{date(n.created_at)}</small>
+              </button>
+            ))}
+            {!boot.notifications.length && <Empty title="暂时没有新消息" />}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </SidebarProvider>
+  );
+}
+function FileSearchTitle({ title }: { title: string }) {
+  return (
+    <strong>
+      <BookOpen size={16} />
+      {title}
+      <ChevronRight size={15} />
+    </strong>
+  );
+}
+function Home({
+  boot,
+  navigate,
+  login,
+}: {
+  boot: Boot;
+  navigate: Navigate;
+  login: () => void;
+}) {
+  const course = boot.courses[0],
+    all = course?.lessons || [],
+    latest = [...boot.progress].sort((a, b) => b.updated_at - a.updated_at)[0],
+    resume = all.find((l) => l.id === latest?.lesson_id) || all[0],
+    done = boot.progress.filter((p) => p.completed).length,
+    passed = new Set(
+      boot.submissions
+        .filter((s) => s.status === 'accepted')
+        .map((s) => s.problem_id),
+    ).size;
+  function start(l?: Lesson) {
+    if (!boot.person) {
+      login();
+      return;
+    }
+    if (course?.has_access && l) navigate('lesson', { lesson: l.id });
+    else navigate('courses');
+  }
+  return (
+    <>
+      <Heading
+        label="YOUR NEXT CHAPTER"
+        title={boot.person ? '专注今天的进步。' : '从这里，成为更好的工程师。'}
+        description="从一段代码开始，把知识变成解决问题的能力。"
+        action={
+          <span className="tag">
+            <span className="status-dot" />
+            SDE 课程
+          </span>
+        }
+      />
+      <section className="continue-card">
+        <div>
+          <span className="overline">
+            {latest ? '继续你的学习' : '从这里开始'}
+          </span>
+          <h2>{latest ? resume?.title : 'GoMall 后端工程实战'}</h2>
+          <p>
+            {latest
+              ? resume?.summary
+              : '沿着真实的交易链路，掌握 Go 后端与系统设计。'}
+          </p>
+          <div className="course-meta">
+            <span>Go / Gin</span>
+            <span>系统设计</span>
+            <span>配套代码练习</span>
+          </div>
+          <Button className="primary-light" onClick={() => start(resume)}>
+            <Play size={16} fill="currentColor" />
+            {latest ? '继续学习' : '进入第一章'}
+            <ArrowRight size={16} />
+          </Button>
+        </div>
+        <div className="terminal-card" aria-hidden="true">
+          <div className="terminal-top">
+            <span />
+            <span />
+            <span />
+            <small>your-next-chapter.go</small>
+          </div>
+          <pre>
+            <em>func</em> main() {'{'}
+            {'\n'} learn.<b>Understand</b>(){'\n'} code.<b>Build</b>(){'\n'}{' '}
+            you.<b>Grow</b>(){'\n'}
+            {'}'}
+          </pre>
+          <div className="terminal-bottom">
+            <Check size={13} /> Ready for your next step
+          </div>
+        </div>
+      </section>
+      {boot.person && (
+        <div className="learning-stats">
+          <div>
+            <BookOpen size={18} />
+            <span>已完成课时</span>
+            <strong>
+              {done}
+              <small> / {all.length}</small>
+            </strong>
+          </div>
+          <div>
+            <Code2 size={18} />
+            <span>算法已通过</span>
+            <strong>
+              {passed}
+              <small> / {boot.problems.length}</small>
+            </strong>
+          </div>
+          <div>
+            <Bookmark size={18} />
+            <span>我的收藏</span>
+            <strong>{boot.progress.filter((p) => p.bookmarked).length}</strong>
+          </div>
+        </div>
+      )}
+      <div className="section-title">
+        <h2>你的学习路径</h2>
+        <button className="text-link" onClick={() => navigate('courses')}>
+          完整课程
+          <ArrowRight size={14} />
+        </button>
+      </div>
+      <div className="path-grid">
+        {[
+          [
+            '01',
+            '后端工程基础',
+            '用户认证、接口设计与业务建模',
+            'Go · Gin · JWT',
+            '后端基础',
+          ],
+          [
+            '02',
+            '交易与资金系统',
+            '支付、清算、结算与一致性',
+            '事务 · 幂等 · Outbox',
+            '交易系统',
+          ],
+          [
+            '03',
+            '搜索与系统进阶',
+            '商品检索、库存和高并发',
+            '搜索 · 库存 · 流量治理',
+            '搜索与进阶',
+          ],
+        ].map(([n, title, desc, tags, section]) => {
+          const ls = all.filter((l) => l.section === section),
+            completed = ls.filter((l) =>
+              boot.progress.some((p) => p.lesson_id === l.id && p.completed),
+            ).length;
+          return (
+            <button className="path-card" key={n} onClick={() => start(ls[0])}>
+              <div className="path-top">
+                <span>{n}</span>
+                <ArrowUpRight size={20} />
+              </div>
+              <h3>{title}</h3>
+              <p>{desc}</p>
+              <small>{tags}</small>
+              <Progress value={ls.length ? (completed / ls.length) * 100 : 0} />
+              <div className="path-progress">
+                <span>
+                  {completed} / {ls.length} 课已完成
+                </span>
+                <span>
+                  {ls.length ? Math.round((completed / ls.length) * 100) : 0}%
+                </span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+      <div className="home-bottom">
+        <section>
+          <div className="section-title">
+            <h2>下一道，练起来。</h2>
+            <button className="text-link" onClick={() => navigate('problems')}>
+              全部练习
+              <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="quick-problems">
+            {boot.problems.slice(0, 3).map((p, i) => (
+              <button
+                key={p.id}
+                onClick={() => navigate('problem', { problem: p.id })}
+              >
+                <span className="quick-number">0{i + 1}</span>
+                <div>
+                  <strong>{p.title}</strong>
+                  <small>{p.tags.join(' · ')}</small>
+                </div>
+                <span
+                  className={
+                    'difficulty ' + (p.difficulty === '中等' ? 'medium' : '')
+                  }
+                >
+                  {p.difficulty}
+                </span>
+                <ChevronRight size={16} />
+              </button>
+            ))}
+          </div>
+        </section>
+        <section>
+          <div className="section-title">
+            <h2>学习支持</h2>
+          </div>
+          <div className="help-card">
+            <LifeBuoy size={23} />
+            <h3>把疑问留在这里。</h3>
+            <p>与老师私密沟通，每个问题都能回到对应的章节或代码。</p>
+            <Button
+              variant="outline"
+              onClick={() => (boot.person ? navigate('tickets') : login())}
+            >
+              我的工单
+              <ArrowRight size={15} />
+            </Button>
+          </div>
+        </section>
+      </div>
+      {boot.progress.some((p) => p.bookmarked) && (
+        <>
+          <div className="section-title">
+            <h2>收藏的章节</h2>
+          </div>
+          {all
+            .filter((l) =>
+              boot.progress.some((p) => p.lesson_id === l.id && p.bookmarked),
+            )
+            .map((l) => (
+              <button
+                className="lesson-row"
+                key={l.id}
+                onClick={() => start(l)}
+              >
+                <Bookmark size={16} />
+                {l.title}
+                <ArrowRight size={15} />
+              </button>
+            ))}
+        </>
+      )}
+    </>
+  );
+}
+
+function CloseMobileNavigation({ view }: { view: string }) {
+  const { setOpenMobile } = useSidebar();
+  useEffect(() => {
+    setOpenMobile(false);
+  }, [view, setOpenMobile]);
+  return null;
+}

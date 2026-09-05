@@ -1,7 +1,80 @@
 'use client';
-import {useEffect,useRef,useState} from 'react';
-import {api} from '@/lib/types';
-import {Button} from '@/components/ui/button';
+import { useEffect, useRef, useState } from 'react';
+import { api } from '@/lib/types';
+import { Button } from '@/components/ui/button';
 import 'video.js/dist/video-js.css';
-export function Player({lessonId,position,onProgress}:{lessonId:string;position:number;onProgress:(n:number)=>void}){const host=useRef<HTMLDivElement>(null),callback=useRef(onProgress),[error,setError]=useState(''),[retry,setRetry]=useState(0);callback.current=onProgress;
-useEffect(()=>{let disposed=false;let player:any;setError('');(async()=>{try{const [{url},{default:videojs}]=await Promise.all([api<{url:string}>(`lessons/${lessonId}/video`),import('video.js')]);if(disposed||!host.current)return;const el=document.createElement('video-js');el.classList.add('vjs-big-play-centered');host.current.appendChild(el);player=videojs(el,{controls:true,fluid:true,preload:'metadata',playbackRates:[.75,1,1.25,1.5,1.75,2],sources:[{src:url,type:'application/x-mpegURL'}]});player.on('loadedmetadata',()=>player.currentTime(position));let saved=0;player.on('timeupdate',()=>{if(Date.now()-saved>15000){saved=Date.now();callback.current(player.currentTime()||0)}});player.on('pause',()=>callback.current(player.currentTime()||0));player.on('error',()=>setError('视频暂时无法播放，请重新加载。'));}catch(e){if(!disposed)setError((e as Error).message)}})();return()=>{disposed=true;if(player&&!player.isDisposed())player.dispose()}},[lessonId,retry]);return <div><div ref={host} className="video-host"/>{error&&<div className="notice">{error}<Button variant="outline" onClick={()=>setRetry(x=>x+1)}>重新加载</Button></div>}</div>}
+export function Player({
+  lessonId,
+  position,
+  onProgress,
+}: {
+  lessonId: string;
+  position: number;
+  onProgress: (n: number) => void;
+}) {
+  const host = useRef<HTMLDivElement>(null),
+    callback = useRef(onProgress),
+    latestPosition = useRef(position),
+    [error, setError] = useState(''),
+    [retry, setRetry] = useState(0);
+  callback.current = onProgress;
+  useEffect(() => {
+    let disposed = false;
+    let player: any;
+    setError('');
+    void (async () => {
+      try {
+        const [{ url }, { default: videojs }] = await Promise.all([
+          api<{ url: string }>(`lessons/${lessonId}/video`),
+          import('video.js'),
+        ]);
+        if (disposed || !host.current) return;
+        const el = document.createElement('video-js');
+        el.classList.add('vjs-big-play-centered');
+        host.current.appendChild(el);
+        player = videojs(el, {
+          controls: true,
+          fluid: true,
+          preload: 'metadata',
+          playbackRates: [0.75, 1, 1.25, 1.5, 1.75, 2],
+          sources: [{ src: url, type: 'application/x-mpegURL' }],
+        });
+        player.on('loadedmetadata', () =>
+          player.currentTime(latestPosition.current),
+        );
+        let saved = 0;
+        player.on('timeupdate', () => {
+          latestPosition.current = player.currentTime() || 0;
+          if (Date.now() - saved > 15000) {
+            saved = Date.now();
+            callback.current(player.currentTime() || 0);
+          }
+        });
+        player.on('pause', () => callback.current(player.currentTime() || 0));
+        player.on('error', () => setError('视频暂时无法播放，请重新加载。'));
+      } catch (e) {
+        if (!disposed) setError((e as Error).message);
+      }
+    })();
+    return () => {
+      disposed = true;
+      if (player && !player.isDisposed()) {
+        if (player.readyState() > 0) callback.current(latestPosition.current);
+        player.dispose();
+      }
+    };
+  }, [lessonId, retry]);
+  return (
+    <div>
+      <div ref={host} className="video-host" />
+      {error && (
+        <div className="notice">
+          {error}
+          <Button variant="outline" onClick={() => setRetry((x) => x + 1)}>
+            重新加载
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
