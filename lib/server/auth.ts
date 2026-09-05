@@ -48,7 +48,10 @@ export function auth() {
           }
         : {}),
     },
-    account: { identityStrategy: 'provider-id', accountLinking: { enabled: true, allowDifferentEmails: false } },
+    account: {
+      identityStrategy: 'provider-id',
+      accountLinking: { enabled: true, allowDifferentEmails: false },
+    },
     rateLimit: { enabled: true, storage: 'database', window: 60, max: 30 },
     plugins: [
       emailOTP({

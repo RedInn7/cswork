@@ -81,16 +81,23 @@ if [[ "$ready" != true ]]; then
 fi
 
 # Existing certificate configuration is retained on later releases.
+created_config=false
 if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
-  ln -s /etc/nginx/sites-available/cswork /etc/nginx/sites-enabled/cswork
-  if ! nginx -t; then
-    unlink /etc/nginx/sites-enabled/cswork
-    echo 'cswork nginx entry failed validation; existing nginx stays running.'
-    exit 1
-  fi
-systemctl reload nginx
+  created_config=true
 fi
+created_link=false
+if [[ ! -e /etc/nginx/sites-enabled/cswork ]]; then
+  ln -s /etc/nginx/sites-available/cswork /etc/nginx/sites-enabled/cswork
+  created_link=true
+fi
+if ! nginx -t; then
+  if [[ "$created_link" == true ]]; then unlink /etc/nginx/sites-enabled/cswork; fi
+  if [[ "$created_config" == true ]]; then unlink /etc/nginx/sites-available/cswork; fi
+  echo 'cswork nginx entry failed validation; existing nginx stays running.'
+  exit 1
+fi
+systemctl reload nginx
 install -m 644 "$source_dir/deploy/cswork-backup.service" /etc/systemd/system/cswork-backup.service
 install -m 644 "$source_dir/deploy/cswork-backup.timer" /etc/systemd/system/cswork-backup.timer
 systemctl daemon-reload
