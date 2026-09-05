@@ -17,7 +17,7 @@
 
 ## 2026-09-05：Monaco 与真实 OJ 升级
 
-以下应用结果在同一服务器的独立 staging 数据库、`localhost:4318` 应用及测试队列上取得；go-judge/Redis 容器已在服务器实际部署。本轮应用生产发布结果由发布步骤另行补充。
+以下全面回归在同一服务器的独立 staging 数据库、`localhost:4318` 应用及测试队列上取得；随后完成生产发布与下方线上验证。
 
 - Node/ARM64 正式构建成功，包含 self-hosted Monaco worker 与独立 BullMQ worker 制品。
 - 最终 TypeScript 全项目检查通过。题库与提交 14 组测试通过，覆盖真实 SQLite 迁移、权限、快照不可变、并发发布及 26 个测试点的独立参考算法校验，见 [题库测试](../tests/oj-problems.test.ts) 与 [提交测试](../tests/oj-submissions.test.ts)。
@@ -30,3 +30,14 @@
 - **390 × 844** 手机视口下，题面/代码分屏正常，Monaco 加载成功，运行与提交按钮可见；`document.scrollWidth = innerWidth = 390`，未发生页面横向溢出。检查后已恢复原视口。
 - 独立agent复查并修复取消任务崩溃后占用名额、固定总超时误伤合法长题集。实际联调修复BullMQ6的ioredis可选peer漏打包和go-judge输出限制分类。
 - Vinext升级至1.0.0-beta.9，DOMPurify固定3.4.14，Undici补丁更新；npm audit已无high/critical，剩余4项moderate均来自Drizzle构建工具的旧esbuild链路，不在standalone请求运行路径中。
+
+### 本轮生产发布
+
+2026-09-05 23:43 UTC 发布 `0f5b46f361ba24df9b2551003e79904da59647f4`，访问地址仍为 [cswork](https://cswork.192.18.137.70.sslip.io)。由已提交源码在服务器完成 ARM64 生产构建；迁移前数据库及附件备份成功，迁移完成后应用和 OJ worker 均通过启动健康检查。
+
+- `cswork.service`、`cswork-oj-worker.service`、nginx 均 active，独立 go-judge/Redis 容器均 healthy，运行时只监听 loopback 5050/6381。
+- 现有老师账号真实 HTTPS 登录、host-only Secure/HttpOnly Cookie、教师权限、匿名拒绝、CSRF 和退出后会话失效再次通过，没有重置原账号或密码。
+- 线上 OJ 报告 available，返回 C++/Python/Java/Go 四种真实版本；授权题目和教师 4 题列表正常，匿名 OJ 状态请求返回 401。
+- 经线上 API 创建一次自定义测试运行，实际由生产队列和 worker 执行 Python，输入 `1 2 3`，返回 `finished`、输出 `6`，耗时约 13 ms。该运行不计正式提交、题目通过或学员学习进度。
+- CSGrad 的 HTTPS 仍为 200；未修改其应用、配置或证书。部署后空闲应用内存约 99 MiB、worker 48 MiB，分别受 1 GiB 与 512 MiB 上限约束。
+- 已停止本轮专属 staging web/worker 并关闭临时验收页面；未停止其他项目服务。

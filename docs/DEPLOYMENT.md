@@ -1,6 +1,6 @@
 # cswork 独立部署
 
-当前访问地址：[cswork](https://cswork.192.18.137.70.sslip.io)。前版已在 2026-09-05 完成 HTTPS、登录、重启持久化及备份验证。初始老师账号为 `capsfly7@gmail.com`；凭据已交付所有者本地受保护文件，服务器的明文初始凭据副本已删除。本轮 Monaco/OJ 应用的 staging 验收与实际运行时部署见 [验收记录](VALIDATION.md)；应用生产发布结果另行记录。
+当前访问地址：[cswork](https://cswork.192.18.137.70.sslip.io)。2026-09-05 已部署 Monaco/OJ 应用 `0f5b46f361ba24df9b2551003e79904da59647f4`，真实生产队列执行、HTTPS、原老师登录及服务隔离验证通过，详见 [验收记录](VALIDATION.md)。老师账号为 `capsfly7@gmail.com`；凭据已交付所有者本地受保护文件，服务器的明文初始凭据副本已删除，本轮未重置账号。
 
 主机 `ubuntu@192.18.137.70` 与 CSGrad 相同，但只新增以下 cswork 资源：
 
