@@ -413,3 +413,71 @@ void test('offline publication rejects an old source manifest before publishing'
     'v2',
   );
 });
+
+void test('practice status isolates user, round and formal mode; acceptance survives later failures', async () => {
+  const db = sqlite();
+  const { ensurePracticeRound, changePracticeRound } =
+    await import('../lib/server/practice-rounds');
+  for (const id of ['progress-a', 'progress-b']) {
+    db.prepare(
+      `INSERT INTO user(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,1,1,1)`,
+    ).run(id, id, `${id}@example.test`);
+  }
+  db.prepare(
+    "UPDATE study_library SET judge_problem_id='lc-3' WHERE id='lc-3'",
+  ).run();
+  const round = ensurePracticeRound('progress-a');
+  const otherRound = ensurePracticeRound('progress-b');
+  const add = (
+    id: string,
+    user: string,
+    roundId: string,
+    mode: string,
+    status: string,
+  ) => {
+    db.prepare(`INSERT INTO submissions(id,user_id,problem_id,language,code,status,total,mode,practice_round_id,created_at,updated_at)
+      VALUES(?,?,'lc-3','python','pass',?,1,?,?,1,1)`).run(
+      id,
+      user,
+      status,
+      mode,
+      roundId,
+    );
+  };
+  const page = (status = '') =>
+    listStudyLibrary(new URLSearchParams({ q: '3', status }), 'progress-a');
+  const item = () =>
+    page().items[0] as {
+      solved: boolean;
+      progressStatus: string;
+      judging: boolean;
+    };
+  add('other-accepted', 'progress-b', otherRound, 'judge', 'accepted');
+  add('own-run', 'progress-a', round, 'run', 'accepted');
+  assert.equal(item().progressStatus, 'not_started');
+  assert.equal(page('not_started').total, 1);
+  add('own-pending', 'progress-a', round, 'judge', 'queued');
+  assert.equal(item().progressStatus, 'attempted');
+  assert.equal(item().judging, true);
+  assert.equal(page('attempted').total, 1);
+  db.prepare(
+    "UPDATE submissions SET status='wrong_answer' WHERE id='own-pending'",
+  ).run();
+  assert.equal(item().judging, false);
+  assert.equal(item().solved, false);
+  add('own-accepted', 'progress-a', round, 'judge', 'accepted');
+  add('later-wrong', 'progress-a', round, 'judge', 'wrong_answer');
+  assert.equal(item().progressStatus, 'solved');
+  assert.equal(item().solved, true);
+  assert.equal(page('todo').total, 0);
+  assert.equal(page('solved').total, 1);
+  assert.equal(page('attempted').total, 0);
+  changePracticeRound('progress-a', {
+    action: 'create',
+    idempotencyKey: 'status-round-next-0001',
+  });
+  assert.equal(item().progressStatus, 'not_started');
+  assert.equal(page('todo').total, 1);
+  changePracticeRound('progress-a', { action: 'activate', roundId: round });
+  assert.equal(item().progressStatus, 'solved');
+});

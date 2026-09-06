@@ -112,27 +112,41 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   const roundState = userId
     ? practiceRoundState(userId)
     : { rounds: [], activeRoundId: null, currentRound: null };
-  const solved = new Set(
+  // A later failed submission never erases an earlier acceptance in this round.
+  // Runs, other users and other rounds do not contribute to practice progress.
+  const progress = new Map(
     userId
       ? (
           db
-            .prepare(
-              `SELECT DISTINCT s.problem_id FROM submissions s
-    JOIN study_library l ON l.judge_problem_id=s.problem_id
-    WHERE s.user_id=? AND s.practice_round_id=? AND s.status='accepted' AND s.mode='judge'
-      AND l.number IN (SELECT value FROM json_each(?))`,
-            )
+            .prepare(`SELECT s.problem_id,
+          MAX(s.status='accepted') AS solved,
+          MAX(s.status IN ('pending','submitting','queued','compiling','running','judging','processing')) AS pending
+        FROM submissions s JOIN study_library l ON l.judge_problem_id=s.problem_id
+        WHERE s.user_id=? AND s.practice_round_id=? AND s.mode='judge'
+          AND l.number IN (SELECT value FROM json_each(?))
+        GROUP BY s.problem_id`)
             .all(userId, roundState.activeRoundId, numbers) as {
             problem_id: string;
+            solved: number;
+            pending: number;
           }[]
-        ).map((row) => row.problem_id)
+        ).map((row) => [row.problem_id, row] as const)
       : [],
   );
   const all = rows
     .map((row) => ({
       ...summary(row),
       selection: curatedByNumber.get(row.number)!,
-      solved: !!row.judge_problem_id && solved.has(row.judge_problem_id),
+      solved:
+        !!row.judge_problem_id && !!progress.get(row.judge_problem_id)?.solved,
+      progressStatus:
+        row.judge_problem_id && progress.get(row.judge_problem_id)?.solved
+          ? 'solved'
+          : row.judge_problem_id && progress.has(row.judge_problem_id)
+            ? 'attempted'
+            : 'not_started',
+      judging:
+        !!row.judge_problem_id && !!progress.get(row.judge_problem_id)?.pending,
     }))
     .sort((a, b) => a.selection.order - b.selection.order);
   const q = (params.get('q') || '').trim().slice(0, 180).toLocaleLowerCase();
@@ -155,9 +169,11 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
           ? item.solved
           : status === 'todo'
             ? !item.solved
-            : status === 'ready'
-              ? item.caseStatus === 'verified'
-              : false)),
+            : status === 'attempted' || status === 'not_started'
+              ? item.progressStatus === status
+              : status === 'ready'
+                ? item.caseStatus === 'verified'
+                : false)),
   );
   const page = Math.max(
     1,

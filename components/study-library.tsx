@@ -5,6 +5,10 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
+  Circle,
+  CircleCheck,
+  Clock3,
+  CircleDashed,
   ChevronLeft,
   ChevronRight,
   Copy,
@@ -29,6 +33,8 @@ type LibraryItem = {
   caseCount: number;
   judgeProblemId: string | null;
   solved?: boolean;
+  progressStatus?: 'solved' | 'attempted' | 'not_started';
+  judging?: boolean;
   selection?: {
     order: number;
     sectionSlug: string;
@@ -231,8 +237,27 @@ export function StudyLibrary({
       if (!roundPending.current) setRetry((value) => value + 1);
     };
     window.addEventListener('focus', refreshProgress);
-    return () => window.removeEventListener('focus', refreshProgress);
+    window.addEventListener(
+      'cswork:practice-progress-changed',
+      refreshProgress,
+    );
+    return () => {
+      window.removeEventListener('focus', refreshProgress);
+      window.removeEventListener(
+        'cswork:practice-progress-changed',
+        refreshProgress,
+      );
+    };
   }, []);
+  useEffect(() => {
+    if (roundBusy || !data?.items.some((item) => item.judging)) return;
+    // A learner may leave the editor while the worker is still judging.
+    // Poll only the visible page, and stop as soon as its verdicts finish.
+    const timer = window.setInterval(() => {
+      if (!roundPending.current) setRetry((value) => value + 1);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [data, roundBusy, page, search, difficulty, section, stage, status]);
   useEffect(() => {
     if (roundBusy) return;
     let current = true;
@@ -744,6 +769,12 @@ export function StudyLibrary({
                 <option value="solved">
                   {t('已通过', 'Solved this round')}
                 </option>
+                <option value="attempted">
+                  {t('已尝试 · 未通过', 'Attempted · Not solved')}
+                </option>
+                <option value="not_started">
+                  {t('未开始', 'Not started')}
+                </option>
                 <option value="ready">
                   {t('可站内判题', 'Ready to submit')}
                 </option>
@@ -801,6 +832,9 @@ export function StudyLibrary({
               <button
                 type="button"
                 className="study-row"
+                data-progress={
+                  item.solved ? 'solved' : item.progressStatus || 'not_started'
+                }
                 key={item.id}
                 onClick={() => {
                   if (canJudge(item))
@@ -828,12 +862,32 @@ export function StudyLibrary({
                   )}
                 </span>
                 <span className="study-row-end">
-                  {item.solved && (
-                    <span className="study-ready">
-                      <Check size={13} />
-                      {t('已通过', 'Solved this round')}
-                    </span>
-                  )}
+                  <span
+                    className="study-progress"
+                    data-progress={
+                      item.solved
+                        ? 'solved'
+                        : item.progressStatus || 'not_started'
+                    }
+                    title={t('当前轮刷题进度', 'Progress in the current round')}
+                  >
+                    {item.solved ? (
+                      <CircleCheck size={16} />
+                    ) : item.judging ? (
+                      <Clock3 size={16} />
+                    ) : item.progressStatus === 'attempted' ? (
+                      <CircleDashed size={16} />
+                    ) : (
+                      <Circle size={16} />
+                    )}
+                    {item.solved
+                      ? t('已通过', 'Solved')
+                      : item.judging
+                        ? t('判题中', 'Judging')
+                        : item.progressStatus === 'attempted'
+                          ? t('未通过', 'Not solved')
+                          : t('未开始', 'Not started')}
+                  </span>
                   <span
                     className="study-level"
                     data-level={item.difficulty.toLowerCase()}
@@ -844,10 +898,7 @@ export function StudyLibrary({
                     className={canJudge(item) ? 'study-ready' : 'study-pending'}
                   >
                     {canJudge(item) ? (
-                      <>
-                        <Check size={13} />
-                        {t('站内判题', 'Practice here')}
-                      </>
+                      <>{t('开始练习', 'Practice')}</>
                     ) : item.caseStatus === 'missing' ? (
                       t('测试数据待补充', 'Test cases pending')
                     ) : (

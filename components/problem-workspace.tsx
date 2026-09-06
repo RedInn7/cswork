@@ -259,6 +259,8 @@ function Workspace({
     };
   }, [userId]);
   const [submission, setSubmission] = useState<OJSubmission | null>(null);
+  const [success, setSuccess] = useState<OJSubmission | null>(null);
+  const announcedSuccess = useRef<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [cancelling, setCancelling] = useState(false);
   const [error, setError] = useState('');
@@ -504,6 +506,31 @@ function Workspace({
   }, [activeStorageKey, boot.person?.id]);
 
   useEffect(() => {
+    if (!submission || activeStatuses.has(submission.status)) return;
+    // The POST acknowledgement may already say accepted but has no test details.
+    if (submission.status === 'accepted' && submission.total <= 0) return;
+    try {
+      sessionStorage.removeItem(activeStorageKey);
+    } catch {}
+    if (submission.mode !== 'judge' || submission.status !== 'accepted') return;
+    if (announcedSuccess.current === submission.id) return;
+    announcedSuccess.current = submission.id;
+    const receiptKey = `${activeStorageKey}:success`;
+    try {
+      if (sessionStorage.getItem(receiptKey) === submission.id) return;
+      sessionStorage.setItem(receiptKey, submission.id);
+    } catch {
+      /* Feedback still works when browser storage is unavailable. */
+    }
+    setSuccess(submission);
+    setHistory((items) => [
+      submission,
+      ...items.filter((item) => item.id !== submission.id),
+    ]);
+    window.dispatchEvent(new Event('cswork:practice-progress-changed'));
+  }, [submission, activeStorageKey]);
+
+  useEffect(() => {
     if (!submission || !activeStatuses.has(submission.status) || pollPaused)
       return;
     const controller = new AbortController();
@@ -619,6 +646,7 @@ function Workspace({
     showConsole('result');
     setMobilePane('editor');
     setError('');
+    setSuccess(null);
     setPollPaused(false);
     persistDraft();
     const payload = {
@@ -1486,6 +1514,36 @@ function Workspace({
           </button>
         </div>
       </div>
+      {success && (
+        <div className="cs-accepted-banner" role="status" aria-live="polite">
+          <CircleCheck size={32} aria-hidden="true" />
+          <div>
+            <strong>
+              {english ? 'Accepted. Nicely done!' : '通过了，做得好！'}
+            </strong>
+            <p>
+              {english
+                ? 'Your solution passed all test cases.'
+                : '你的解答已通过全部测试用例。'}
+              {success.total > 0 && ` ${success.passed} / ${success.total}`}
+            </p>
+          </div>
+          <button
+            className="cs-accepted-library"
+            onClick={() => navigate('problems')}
+          >
+            {english ? 'View progress' : '查看刷题进度'}
+            <ChevronRight size={16} />
+          </button>
+          <button
+            className="cs-accepted-dismiss"
+            aria-label={english ? 'Dismiss success message' : '收起通过提示'}
+            onClick={() => setSuccess(null)}
+          >
+            <X size={18} />
+          </button>
+        </div>
+      )}
       {problemError && (
         <div className="cs-workspace-notice" role="alert">
           题目配置加载失败：{problemError}
