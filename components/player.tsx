@@ -1,31 +1,208 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import type VideoJsPlayer from 'video.js/dist/types/player';
 import { api } from '@/lib/types';
+import {
+  initialAsset,
+  playbackTarget,
+  progressReceiver,
+  seekPosition,
+} from '@/lib/playback-state';
 import { Button } from '@/components/ui/button';
 import 'video.js/dist/video-js.css';
+import '@/app/media.css';
+
+type Video = { id: string; name: string; url: string; mimeType: string };
+type Catalog = {
+  lessonId: string;
+  attempt: number;
+  items: Video[];
+  stream: boolean;
+};
+type ProgressCallback = (position: number, assetId?: string | null) => void;
 export function Player({
   lessonId,
   position,
+  assetId,
   onProgress,
 }: {
   lessonId: string;
   position: number;
-  onProgress: (n: number) => void;
+  assetId?: string | null;
+  onProgress: ProgressCallback;
 }) {
-  const host = useRef<HTMLDivElement>(null),
-    callback = useRef(onProgress),
-    latestPosition = useRef(position),
-    [error, setError] = useState(''),
-    [retry, setRetry] = useState(0);
-  callback.current = onProgress;
+  const host = useRef<HTMLDivElement>(null);
+  const callback = useRef({ lessonId, callback: onProgress });
+  useLayoutEffect(() => {
+    callback.current = { lessonId, callback: onProgress };
+  }, [lessonId, onProgress]);
+  const positions = useRef(new Map<string, number>()),
+    appliedTarget = useRef(new Set<string>());
+  const [catalog, setCatalog] = useState<Catalog | null>(null),
+    [selection, setSelection] = useState<{
+      lessonId: string;
+      assetId: string | null;
+    } | null>(null),
+    [attempt, setAttempt] = useState(0);
+  const [state, setState] = useState({
+    lessonId,
+    attempt: -1,
+    assetId: null as string | null,
+    waiting: true,
+    error: '',
+  });
+  const target = playbackTarget(
+    typeof location === 'undefined' ? '' : location.search,
+    lessonId,
+  );
+  const currentCatalog =
+    catalog?.lessonId === lessonId && catalog.attempt === attempt
+      ? catalog
+      : null;
+  const selected = currentCatalog
+    ? selection?.lessonId === lessonId &&
+      (selection.assetId === null ||
+        currentCatalog.items.some((v) => v.id === selection.assetId))
+      ? selection.assetId
+      : initialAsset(
+          currentCatalog.items.map((v) => v.id),
+          assetId,
+          target,
+        )
+    : null;
+  const isCurrent =
+    state.lessonId === lessonId &&
+    state.attempt === attempt &&
+    state.assetId === selected;
+  const waiting = !isCurrent || state.waiting,
+    error = isCurrent ? state.error : '';
   useEffect(() => {
-    let disposed = false;
-    let player: any;
-    setError('');
+    let active = true;
+    api<{ items: Video[]; stream: boolean }>(`lessons/${lessonId}/videos`)
+      .then((result) => {
+        if (!active) return;
+        setCatalog({ ...result, lessonId, attempt });
+        if (!result.items.length && !result.stream)
+          setState({
+            lessonId,
+            attempt,
+            assetId: null,
+            waiting: false,
+            error: '视频尚未发布。你可以先阅读课件。',
+          });
+      })
+      .catch((e) => {
+        if (active)
+          setState({
+            lessonId,
+            attempt,
+            assetId: null,
+            waiting: false,
+            error: (e as Error).message,
+          });
+      });
+    return () => {
+      active = false;
+    };
+  }, [lessonId, attempt]);
+  useEffect(() => {
+    if (
+      !currentCatalog ||
+      (!currentCatalog.items.length && !currentCatalog.stream) ||
+      !host.current
+    )
+      return;
+    let disposed = false,
+      player: VideoJsPlayer | undefined,
+      renewal: ReturnType<typeof setTimeout> | undefined;
+    let saved = 0,
+      refreshing = false,
+      ready = false;
+    const owner = lessonId,
+      currentId = selected,
+      capturedCallback = onProgress;
+    const positionKey = `${owner}:${currentId || 'stream'}`;
+    const targetKey = `${owner}:${target?.assetId || ''}:${target?.position ?? ''}`;
+    const seekToQuestion =
+      target &&
+      (!target.assetId || target.assetId === currentId) &&
+      !appliedTarget.current.has(targetKey);
+    const initialPosition = seekToQuestion
+      ? target.position
+      : (positions.current.get(positionKey) ??
+        (currentId === (assetId || null) ||
+        (!assetId && currentId === currentCatalog.items[0]?.id)
+          ? position
+          : 0));
+    let lastPosition = initialPosition;
+    const update = (waiting: boolean, error = '') => {
+      if (!disposed)
+        setState({
+          lessonId: owner,
+          attempt,
+          assetId: currentId,
+          waiting,
+          error,
+        });
+    };
+    async function source() {
+      const local = currentCatalog!.items.find((v) => v.id === currentId);
+      return local
+        ? { url: local.url, type: local.mimeType, expiresIn: null }
+        : api<{ url: string; type?: string; expiresIn: number | null }>(
+            `lessons/${owner}/video`,
+          );
+    }
+    function schedule(seconds: number | null) {
+      if (renewal) clearTimeout(renewal);
+      if (seconds)
+        renewal = setTimeout(
+          () => void renewSource(),
+          Math.max(30, seconds - 120) * 1000,
+        );
+    }
+    async function renewSource() {
+      if (disposed || !player || refreshing) return;
+      refreshing = true;
+      const paused = player.paused(),
+        at = player.currentTime() ?? lastPosition;
+      try {
+        const next = await source();
+        if (disposed || !player) return;
+        ready = false;
+        player.src({
+          src: next.url,
+          type: next.type || 'application/x-mpegURL',
+        });
+        player.one('loadedmetadata', () => {
+          if (disposed || !player) return;
+          player.currentTime(seekPosition(at, player.duration() || 0));
+          ready = true;
+          update(false);
+          if (!paused) void player.play()?.catch(() => {});
+        });
+        schedule(next.expiresIn);
+      } catch (e) {
+        update(false, (e as Error).message);
+      } finally {
+        refreshing = false;
+      }
+    }
+    const save = () => {
+      if (!ready || !player || player.isDisposed() || !player.readyState())
+        return;
+      lastPosition = player.currentTime() ?? lastPosition;
+      positions.current.set(positionKey, lastPosition);
+      progressReceiver(
+        owner,
+        capturedCallback,
+        callback.current,
+      )(lastPosition, currentId);
+    };
     void (async () => {
       try {
-        const [{ url }, { default: videojs }] = await Promise.all([
-          api<{ url: string }>(`lessons/${lessonId}/video`),
+        const [next, { default: videojs }] = await Promise.all([
+          source(),
           import('video.js'),
         ]);
         if (disposed || !host.current) return;
@@ -37,40 +214,82 @@ export function Player({
           fluid: true,
           preload: 'metadata',
           playbackRates: [0.75, 1, 1.25, 1.5, 1.75, 2],
-          sources: [{ src: url, type: 'application/x-mpegURL' }],
+          sources: [
+            { src: next.url, type: next.type || 'application/x-mpegURL' },
+          ],
         });
-        player.on('loadedmetadata', () =>
-          player.currentTime(latestPosition.current),
-        );
-        let saved = 0;
+        player.one('loadedmetadata', () => {
+          if (disposed || !player) return;
+          player.currentTime(
+            seekPosition(initialPosition, player.duration() || 0),
+          );
+          ready = true;
+          if (seekToQuestion) appliedTarget.current.add(targetKey);
+          update(false);
+        });
         player.on('timeupdate', () => {
-          latestPosition.current = player.currentTime() || 0;
+          if (!ready || !player) return;
+          lastPosition = player.currentTime() ?? lastPosition;
+          positions.current.set(positionKey, lastPosition);
           if (Date.now() - saved > 15000) {
             saved = Date.now();
-            callback.current(player.currentTime() || 0);
+            save();
           }
         });
-        player.on('pause', () => callback.current(player.currentTime() || 0));
-        player.on('error', () => setError('视频暂时无法播放，请重新加载。'));
+        player.on('pause', save);
+        player.on('ended', save);
+        player.on('error', () =>
+          update(false, '视频暂时无法播放，请重新加载。'),
+        );
+        schedule(next.expiresIn);
       } catch (e) {
-        if (!disposed) setError((e as Error).message);
+        update(false, (e as Error).message);
       }
     })();
+    const visibility = () => {
+      if (document.visibilityState === 'hidden') save();
+    };
+    document.addEventListener('visibilitychange', visibility);
+    window.addEventListener('pagehide', save);
     return () => {
       disposed = true;
+      if (renewal) clearTimeout(renewal);
+      document.removeEventListener('visibilitychange', visibility);
+      window.removeEventListener('pagehide', save);
       if (player && !player.isDisposed()) {
-        if (player.readyState() > 0) callback.current(latestPosition.current);
+        save();
+        ready = false;
         player.dispose();
       }
     };
-  }, [lessonId, retry]);
+    // Saved progress changes on every timeupdate; only a catalog/selection change should recreate a player.
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessonId, selected, currentCatalog, attempt]);
   return (
     <div>
+      {currentCatalog && currentCatalog.items.length > 1 && (
+        <fieldset className="video-playlist" aria-label="章节视频列表">
+          {currentCatalog.items.map((video, index) => (
+            <button
+              type="button"
+              key={video.id}
+              aria-pressed={selected === video.id}
+              onClick={() => setSelection({ lessonId, assetId: video.id })}
+            >
+              {index + 1}. {video.name.replace(/\.(mp4|webm)$/i, '')}
+            </button>
+          ))}
+        </fieldset>
+      )}
       <div ref={host} className="video-host" />
+      {waiting && !error && <output className="muted">正在加载视频…</output>}
       {error && (
-        <div className="notice">
+        <div className="notice" role="alert">
           {error}
-          <Button variant="outline" onClick={() => setRetry((x) => x + 1)}>
+          <Button
+            variant="outline"
+            onClick={() => setAttempt((value) => value + 1)}
+          >
             重新加载
           </Button>
         </div>
