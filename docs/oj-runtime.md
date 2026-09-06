@@ -66,3 +66,5 @@ stdout/stderr collector 应使用 `pipe: true`。另外必须优先处理 `fileE
 runner 全局 output/copy-out 上限为 64 MiB，仍按题目单独限制。worker 同时处理一个提交，Node heap 3072 MiB，systemd MemoryHigh 3 GiB、MemoryMax 4 GiB；快照总输入和答案不超过 128 MiB。输入每项仍 4 MiB，公开样例仍 32 KiB。Nginx 只为已鉴权教师题目保存路径提供较大请求额度，其余请求沿用原限制。
 
 部署时必须同时更新 runner 镜像、web/worker bundle、worker systemd 单元和专用 Nginx snippet；只部署网页无法解除旧 runner 的 16 MiB 硬上限。先等在途判题结束再替换 runner，并核验实际进程参数、服务健康和运行检查。
+
+另在隔离数据库和受限临时 web 服务上实测 133,694,172 字节（约 127.50 MiB）题包，含一个精确 64 MiB 的隐藏答案。导入、发布、公开接口隐藏字段省略全部通过；cgroup MemoryPeak 2,642,690,048 字节（2.46 GiB），high/max/oom/oom_kill 事件均为 0。因此 web 也采用 heap 3072 MiB、MemoryHigh 3 GiB、MemoryMax 4 GiB，不能继续使用旧 1 GiB 额度。
