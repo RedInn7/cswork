@@ -323,15 +323,17 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     }
     assert.match(
       document.querySelector('.cs-accepted-banner').textContent,
-      /通过了.*2 \/ 2/,
+      /Accepted/,
     );
     assert.ok(
       document.querySelector('.cs-accepted-banner').closest('[role="dialog"]'),
       'formal AC must open a result dialog, not only an inline banner',
     );
     assert.equal(progressEvents, 1);
-    await click(button('查看刷题进度'));
-    assert.equal(navigations.at(-1), 'problems');
+    assert.equal(
+      document.querySelector('.cs-accepted-banner').textContent.trim(),
+      'Accepted',
+    );
     await click(document.querySelector('[aria-label="收起通过提示"]'));
     await click(button('题目描述'));
     await choose('题面语言', 'en');
@@ -344,7 +346,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     await click(button('Submit'));
     assert.match(
       document.querySelector('.cs-accepted-banner').textContent,
-      /2 \/ 2/,
+      /Accepted/,
     );
     assert.equal(progressEvents, 2);
     sessionStorage.setItem('cswork:oj:active:student:lc-1', freshSubmission.id);

@@ -1606,168 +1606,38 @@ button.cs-statement-pill[aria-expanded='true'] {
   }
 }
 
-.cs-accepted-banner {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
-  padding: 16px 18px;
-  margin: 0 0 12px;
-  border: 1px solid #b8dfc8;
-  border-radius: 12px;
-  background: #edf9f1;
-  color: #167443;
-  animation: cs-accepted-enter 220ms ease-out;
-}
-.cs-accepted-banner > svg {
-  flex-shrink: 0;
-}
-.cs-accepted-banner strong {
-  font-size: 18px;
-  line-height: 1.4;
-}
-.cs-accepted-banner p {
-  margin: 4px 0 0;
-  font-size: 13px;
-  line-height: 1.5;
-}
-.cs-accepted-library {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-left: auto;
-  padding: 8px 11px;
-  border-radius: 7px;
-  border: 1px solid #aad8bd;
-  background: transparent;
-  color: inherit;
-  font-size: 13px;
-  white-space: nowrap;
-}
-.cs-accepted-dismiss {
-  padding: 5px;
-  border: 0;
-  color: inherit;
-  background: transparent;
-}
-.cs-workspace[data-theme='dark'] .cs-accepted-banner {
-  background: #142b21;
-  color: #89dfae;
-  border-color: #306347;
-}
-.cs-workspace[data-theme='dark'] .cs-accepted-library {
-  border-color: #306347;
-}
-@keyframes cs-accepted-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .cs-accepted-banner {
-    animation: none;
-  }
-}
-@media (max-width: 600px) {
-  .cs-accepted-banner {
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 12px;
-  }
-  .cs-accepted-banner > div {
-    flex: 1;
-  }
-  .cs-accepted-library {
-    margin-left: 42px;
-    order: 2;
-  }
-  .cs-accepted-banner strong {
-    font-size: 16px;
-  }
-}
-
-/* Formal submission feedback is a modal so it is visible at any scroll position. */
 .cs-accepted-dialog {
-  width: min(440px, calc(100vw - 32px));
-  max-width: 440px;
+  width: min(420px, calc(100vw - 32px));
+  max-width: 420px;
   padding: 0;
+  border-radius: 14px;
   overflow: hidden;
-  border-radius: 20px;
 }
-.cs-accepted-dialog .cs-accepted-banner {
+.cs-accepted-banner {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  padding: 38px 26px 26px;
-  margin: 0;
-  border: 0;
-  border-radius: 0;
-  background: linear-gradient(180deg, #edfaf2, #fff 76%);
-  color: #166534;
+  padding: 56px 24px;
   text-align: center;
-}
-.cs-accepted-seal {
-  display: grid;
-  place-items: center;
-  width: 76px;
-  height: 76px;
-  border-radius: 50%;
-  background: #d8f6e3;
-  box-shadow: 0 0 0 8px #e7f9ee;
+  background: #fff;
 }
 .cs-accepted-dialog .cs-accepted-title {
-  color: #15803d;
-  font-size: 48px;
-  font-weight: 800;
-  letter-spacing: -2px;
-  line-height: 1.2;
-}
-.cs-accepted-title span {
-  display: block;
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0;
-}
-.cs-accepted-dialog [data-slot='dialog-description'] {
-  color: #50645a;
-  line-height: 1.7;
-}
-.cs-accepted-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-  margin-top: 6px;
-}
-.cs-accepted-dialog .cs-accepted-library,
-.cs-accepted-continue {
-  justify-content: center;
   margin: 0;
-  padding: 11px 15px;
-  border-radius: 10px;
-  font-size: 14px;
-  cursor: pointer;
+  color: #15803d;
+  font-size: clamp(36px, 9vw, 52px);
+  font-weight: 650;
+  line-height: 1.2;
+  letter-spacing: -1.5px;
 }
-.cs-accepted-continue {
-  border: 1px solid #15803d;
-  color: #fff;
-  background: #15803d;
-}
-.cs-accepted-dialog .cs-accepted-dismiss {
+.cs-accepted-dismiss {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 10px;
+  right: 10px;
+  padding: 6px;
+  border: 0;
+  background: transparent;
+  color: #748094;
   cursor: pointer;
 }
-.cs-accepted-dialog button:focus-visible {
-  outline: 3px solid #4ade80;
-  outline-offset: 3px;
+.cs-accepted-dismiss:focus-visible {
+  outline: 2px solid #15803d;
+  outline-offset: 2px;
 }
