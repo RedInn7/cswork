@@ -36,6 +36,7 @@ test('curated practice UI preserves language and round history, deduplicates cli
   const rounds = [{ id: 'one', number: 1, createdAt: 1, solved: 12 }];
   let activeRoundId = 'one';
   let failCreate = true;
+  let pendingVerdict = null;
   let pendingResolve;
   const mutations = [];
   const requests = [];
@@ -46,8 +47,30 @@ test('curated practice UI preserves language and round history, deduplicates cli
   });
   const page = () => ({
     ...roundState(),
-    items: [],
-    total: 0,
+    items: ['solved', 'attempted', 'not_started'].map(
+      (progressStatus, index) => ({
+        id: `lc-${index + 1}`,
+        number: index + 1,
+        titleZh: `题目${index + 1}`,
+        titleEn: `Problem ${index + 1}`,
+        difficulty: 'Easy',
+        topics: [],
+        caseStatus: 'verified',
+        judgeProblemId: `lc-${index + 1}`,
+        progressStatus:
+          activeRoundId === 'one'
+            ? index === 1 && pendingVerdict === 'accepted'
+              ? 'solved'
+              : progressStatus
+            : 'not_started',
+        solved:
+          activeRoundId === 'one' &&
+          (progressStatus === 'solved' ||
+            (index === 1 && pendingVerdict === 'accepted')),
+        judging: index === 1 && pendingVerdict === 'queued',
+      }),
+    ),
+    total: 3,
     page: 1,
     pageSize: 30,
     topics: [],
@@ -110,6 +133,22 @@ test('curated practice UI preserves language and round history, deduplicates cli
     );
     await settle();
     assert.match(document.body.textContent, /灵神题单精选/);
+    assert.deepEqual(
+      [...document.querySelectorAll('.study-progress')].map(
+        (node) => node.textContent,
+      ),
+      ['已通过', '未通过', '未开始'],
+    );
+    assert.equal(
+      document.querySelectorAll('.study-row[data-progress="solved"]').length,
+      1,
+    );
+    const beforeRefresh = requests.length;
+    await act(async () =>
+      window.dispatchEvent(new Event('cswork:practice-progress-changed')),
+    );
+    await settle();
+    assert.ok(requests.length > beforeRefresh);
     assert.doesNotMatch(document.body.textContent, /全部灵神题单|课程练习/);
     assert.ok(
       requests.every(
@@ -142,6 +181,10 @@ test('curated practice UI preserves language and round history, deduplicates cli
     await act(async () => pendingResolve());
     await settle();
     assert.equal(document.querySelector('#practice-round').value, 'two');
+    assert.equal(
+      document.querySelectorAll('.study-row[data-progress="solved"]').length,
+      0,
+    );
     assert.match(document.body.textContent, /Round 1 · 12\/500/);
     assert.match(document.body.textContent, /Round 2 · 0\/500/);
     assert.equal(sessionStorage.getItem('cswork:practice:create-key'), null);
@@ -150,6 +193,31 @@ test('curated practice UI preserves language and round history, deduplicates cli
     assert.match(document.body.textContent, /Solved in round 1/);
     assert.match(document.body.textContent, /12 \/ 500/);
     assert.equal(rounds.length, 2);
+    pendingVerdict = 'queued';
+    await act(async () => window.dispatchEvent(new Event('focus')));
+    await settle();
+    assert.match(
+      document.querySelectorAll('.study-progress')[1].textContent,
+      /Judging/,
+    );
+    pendingVerdict = 'accepted';
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 3100));
+    });
+    await settle();
+    assert.equal(
+      document.querySelectorAll('.study-progress')[1].textContent,
+      'Solved',
+    );
+    const requestsAfterVerdict = requests.length;
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 3100));
+    });
+    assert.equal(
+      requests.length,
+      requestsAfterVerdict,
+      'polling stops when the visible verdicts finish',
+    );
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;
