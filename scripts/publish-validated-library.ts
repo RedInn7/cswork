@@ -11,7 +11,7 @@ import {
   problemChecksum,
 } from '../lib/server/oj-problems';
 import type { Person } from '../lib/server/auth';
-import { parseOjSetOutput } from '../lib/oj-types';
+import { parseOjSetOutput, parseOjMultisetOutput } from '../lib/oj-types';
 
 const manifestFile = process.argv[2];
 const email = process.argv[3]?.toLowerCase();
@@ -42,13 +42,20 @@ const teacher: Person = {
 };
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
 const resultKindSchema = z
-  .enum(['integer', 'string', 'integer-array', 'integer-set', 'string-set'])
+  .enum([
+    'integer',
+    'string',
+    'integer-array',
+    'integer-set',
+    'string-set',
+    'integer-multiset',
+  ])
   .default('integer');
 const oracleEncodingSchema = z
   .enum(['legacy-integer', 'jsonl-v1'])
   .default('legacy-integer');
 const checkerSchema = z
-  .enum(['tokens', 'exact', 'int-set', 'string-set'])
+  .enum(['tokens', 'exact', 'int-set', 'string-set', 'int-multiset'])
   .default('tokens');
 const resourceLimitsSchema = z
   .object({
@@ -178,6 +185,7 @@ for (const record of manifest.problems) {
     throw new Error('Verification report provenance does not match manifest');
 }
 function validExpectedShape(kind: string, value: string) {
+  if (kind === 'integer-multiset') return parseOjMultisetOutput(value) !== null;
   if (kind === 'string') {
     const normalized = value.replace(/\r\n/g, '\n');
     return (
@@ -218,7 +226,9 @@ function typedOracleResult(kind: string, value: unknown): boolean {
   if (kind === 'string-set') {
     if (!value.every((v) => text(v) && !/[\r\n]/.test(v))) return false;
   } else if (
-    (kind !== 'integer-array' && kind !== 'integer-set') ||
+    (kind !== 'integer-array' &&
+      kind !== 'integer-set' &&
+      kind !== 'integer-multiset') ||
     !value.every((v) => typeof v === 'bigint')
   )
     return false;
@@ -245,6 +255,7 @@ const packages = manifest.problems.map((record) => {
     string: 'exact',
     'integer-array': 'tokens',
     'integer-set': 'int-set',
+    'integer-multiset': 'int-multiset',
     'string-set': 'string-set',
   }[record.resultKind];
   if (

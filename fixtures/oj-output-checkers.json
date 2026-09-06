@@ -537,6 +537,196 @@
       "matches": false,
       "actualValid": false,
       "expectedValid": true
+    },
+    {
+      "name": "multiset reordered duplicates",
+      "checker": "int-multiset",
+      "actual": "5\n2 1 2 -3 1\n",
+      "expected": "5\n1 1 2 2 -3\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset decimal aliases retain multiplicity",
+      "checker": "int-multiset",
+      "actual": "5\n+001 01 1 -0 +000\n",
+      "expected": "5\n0 1 0 1 1\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset beyond floating precision",
+      "checker": "int-multiset",
+      "actual": "3\n9007199254740993 9007199254740992 9007199254740993\n",
+      "expected": "3\n9007199254740993 9007199254740993 9007199254740992\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset huge decimal normalization",
+      "checker": "int-multiset",
+      "actual": "2\n+0000000999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "2\n999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset distinct huge decimals do not round",
+      "checker": "int-multiset",
+      "actual": "2\n9007199254740992 9007199254740992\n",
+      "expected": "2\n9007199254740992 9007199254740993\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset duplicate removed",
+      "checker": "int-multiset",
+      "actual": "2\n1 2\n",
+      "expected": "3\n1 1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset equal count wrong frequency",
+      "checker": "int-multiset",
+      "actual": "4\n1 1 1 2\n",
+      "expected": "4\n1 1 2 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset extra duplicate",
+      "checker": "int-multiset",
+      "actual": "4\n1 1 2 2\n",
+      "expected": "3\n1 1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset empty",
+      "checker": "int-multiset",
+      "actual": "0\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset CRLF and ASCII whitespace",
+      "checker": "int-multiset",
+      "actual": "3\r\n1\t1\u000b-2\f",
+      "expected": "3\n-2 1 1\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset header too large",
+      "checker": "int-multiset",
+      "actual": "1000001\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset header leading zero",
+      "checker": "int-multiset",
+      "actual": "02\n1 1\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset header count missing token",
+      "checker": "int-multiset",
+      "actual": "3\n1 1\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset header count extra token",
+      "checker": "int-multiset",
+      "actual": "1\n1 1\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset malformed expected count",
+      "checker": "int-multiset",
+      "actual": "2\n1 1\n",
+      "expected": "3\n1 1\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": false
+    },
+    {
+      "name": "multiset float rejected",
+      "checker": "int-multiset",
+      "actual": "2\n1.0 1\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset exponent rejected",
+      "checker": "int-multiset",
+      "actual": "2\n1e0 1\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset unicode space rejected",
+      "checker": "int-multiset",
+      "actual": "2\n1 1\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset NUL rejected",
+      "checker": "int-multiset",
+      "actual": "2\n1 1\u0000\n",
+      "expected": "2\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset lone surrogate rejected",
+      "checker": "int-multiset",
+      "actual": "1\n\ud800\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "multiset header terminator required",
+      "checker": "int-multiset",
+      "actual": "0",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
     }
-  ]
+  ],
+  "integerMultisetElement": "signed decimal digits; signs and leading zeroes normalized; duplicates retained with exact multiplicity"
 }

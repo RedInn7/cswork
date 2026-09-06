@@ -1,5 +1,9 @@
 import type { Language } from '@/lib/problems';
-import { parseOjSetOutput, type OjProblemSpec } from '@/lib/oj-types';
+import {
+  parseOjSetOutput,
+  parseOjMultisetOutput,
+  type OjProblemSpec,
+} from '@/lib/oj-types';
 
 type EngineFile =
   | { content: string }
@@ -259,10 +263,25 @@ export function matchesOutput(
 ) {
   if (checker === 'exact')
     return actual.replace(/\r\n/g, '\n') === expected.replace(/\r\n/g, '\n');
+  if (checker === 'int-multiset') {
+    const a = parseOjMultisetOutput(actual),
+      b = parseOjMultisetOutput(expected);
+    return (
+      a !== null &&
+      b !== null &&
+      a.size === b.size &&
+      [...a].every(([value, count]) => b.get(value) === count)
+    );
+  }
   if (checker === 'int-set' || checker === 'string-set') {
     const a = parseOjSetOutput(actual, checker);
     const b = parseOjSetOutput(expected, checker);
-    return a !== null && b !== null && a.size === b.size && [...a].every((v) => b.has(v));
+    return (
+      a !== null &&
+      b !== null &&
+      a.size === b.size &&
+      [...a].every((v) => b.has(v))
+    );
   }
   // A stale worker must never silently interpret a new checker as token equality.
   if (checker !== 'tokens') return false;

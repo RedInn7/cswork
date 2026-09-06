@@ -2,10 +2,11 @@
 import json
 import math
 import re
+from collections import Counter
 
-KINDS = ('integer', 'string', 'integer-array', 'integer-set', 'string-set')
+KINDS = ('integer', 'string', 'integer-array', 'integer-set', 'string-set', 'integer-multiset')
 CHECKERS = {'integer':'tokens', 'string':'exact', 'integer-array':'tokens',
-            'integer-set':'int-set', 'string-set':'string-set'}
+            'integer-set':'int-set', 'string-set':'string-set', 'integer-multiset':'int-multiset'}
 MAX_OUTPUT_BYTES = 4 * 1024 * 1024
 MAX_ORACLE_BYTES = 32 * 1024 * 1024
 MAX_SET_ITEMS = 1_000_000
@@ -36,7 +37,7 @@ def validate_result(kind, value):
     else:
         if type(value) is not list or len(value)>MAX_SET_ITEMS:
             raise ValueError('Expected a bounded result array')
-        if kind in ('integer-array','integer-set'):
+        if kind in ('integer-array','integer-set','integer-multiset'):
             if any(type(v) is not int for v in value):
                 raise ValueError('Integer arrays cannot contain bool/float/string values')
         elif any(not valid_text(v) or '\n' in v or '\r' in v for v in value):
@@ -71,7 +72,7 @@ def decimal(value):
 
 def parse_set_output(output,checker):
     """Exactly mirrors parseOjSetOutput; no float coercion or permissive deduping."""
-    if checker not in ('int-set','string-set') or not valid_text(output):
+    if checker not in ('int-set','string-set','int-multiset') or not valid_text(output):
         return None
     normalized=output.replace('\r\n','\n')
     if '\n' not in normalized:
@@ -80,7 +81,7 @@ def parse_set_output(output,checker):
     if not COUNT.fullmatch(header) or int(header)>MAX_SET_ITEMS:
         return None
     count=int(header)
-    if checker=='int-set':
+    if checker in ('int-set','int-multiset'):
         values=[v for v in ASCII_SPACE.split(body) if v]
         if len(values)!=count:
             return None
@@ -94,6 +95,7 @@ def parse_set_output(output,checker):
         values=[] if body=='' else body[:-1].split('\n')
         if len(values)!=count:
             return None
+    if checker=='int-multiset':return Counter(values)
     unique=set(values)
     return unique if len(unique)==count else None
 
@@ -105,7 +107,7 @@ def compare_output(checker,actual,expected):
         return actual.replace('\r\n','\n')==expected.replace('\r\n','\n')
     if checker=='tokens':
         return [v for v in ASCII_SPACE.split(actual) if v]==[v for v in ASCII_SPACE.split(expected) if v]
-    if checker in ('int-set','string-set'):
+    if checker in ('int-set','string-set','int-multiset'):
         left,right=parse_set_output(actual,checker),parse_set_output(expected,checker)
         return left is not None and right is not None and left==right
     return False
@@ -114,7 +116,7 @@ def compare_output(checker,actual,expected):
 def validate_expected_output(kind,output):
     if not valid_text(output):
         raise ValueError('Invalid or oversized formal expected output')
-    if kind in ('integer-set','string-set'):
+    if kind in ('integer-set','string-set','integer-multiset'):
         if parse_set_output(output,CHECKERS[kind]) is None:
             raise ValueError('Invalid counted set expected output')
     elif kind=='integer':
@@ -137,6 +139,7 @@ def validate_expected_output(kind,output):
 def same_result(kind,actual,expected):
     validate_result(kind,actual)
     validate_result(kind,expected)
+    if kind=='integer-multiset':return Counter(actual)==Counter(expected)
     return set(actual)==set(expected) if kind.endswith('-set') else actual==expected
 
 

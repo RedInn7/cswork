@@ -5,6 +5,7 @@ import { matchesOutput } from '../lib/server/oj-engine';
 import {
   ojImportSchema,
   parseOjSetOutput,
+  parseOjMultisetOutput,
   OJ_MAX_CASE_BYTES,
   type OjProblemSpec,
 } from '../lib/oj-types';
@@ -36,7 +37,16 @@ for (const item of fixtures.cases) {
       ),
       item.matches,
     );
-    if (item.checker === 'int-set' || item.checker === 'string-set') {
+    if (item.checker === 'int-multiset') {
+      assert.equal(
+        parseOjMultisetOutput(item.actual) !== null,
+        item.actualValid,
+      );
+      assert.equal(
+        parseOjMultisetOutput(item.expected) !== null,
+        item.expectedValid,
+      );
+    } else if (item.checker === 'int-set' || item.checker === 'string-set') {
       assert.equal(
         parseOjSetOutput(item.actual, item.checker) !== null,
         item.actualValid,
@@ -85,7 +95,8 @@ function payload(checker: string, expectedOutput: string) {
 
 void test('import validates counted-set expected answers before publishing', () => {
   for (const item of fixtures.cases) {
-    if (item.checker !== 'int-set' && item.checker !== 'string-set') continue;
+    if (!['int-set', 'string-set', 'int-multiset'].includes(item.checker))
+      continue;
     assert.equal(
       ojImportSchema.safeParse(payload(item.checker, item.actual)).success,
       item.actualValid,
@@ -126,4 +137,18 @@ void test('import does not admit executable checker payloads or options', () => 
     }).success,
     false,
   );
+});
+
+void test('multiset parser retains normalized multiplicities and enforces byte limits', () => {
+  const values = parseOjMultisetOutput('5\n1 +01 1 -0 0\n');
+  assert.ok(values);
+  assert.equal(values.get('1'), 3);
+  assert.equal(values.get('0'), 2);
+  assert.equal(values.size, 2);
+  assert.equal(
+    parseOjMultisetOutput('1\n' + '9'.repeat(OJ_MAX_CASE_BYTES)),
+    null,
+  );
+  assert.equal(parseOjSetOutput('2\n1 1\n', 'int-set'), null);
+  assert.equal(matchesOutput('2\n2 1\n', '2\n1 2\n', 'tokens'), false);
 });

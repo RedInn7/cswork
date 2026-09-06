@@ -355,6 +355,13 @@ const intSolutions = {
   go: `package main\nimport("bufio";"fmt";"os")\nfunc main(){in:=bufio.NewReader(os.Stdin);var n int;fmt.Fscan(in,&n);a:=make([]int64,n);for i:=range a{fmt.Fscan(in,&a[i])};out:=bufio.NewWriter(os.Stdout);defer out.Flush();fmt.Fprintln(out,n);for i:=n-1;i>=0;i--{fmt.Fprint(out,a[i]," ")};fmt.Fprintln(out)}\n`,
   java: `import java.util.*; public class Main{public static void main(String[]args){Scanner s=new Scanner(System.in);int n=s.nextInt();long[]a=new long[n];for(int i=0;i<n;i++)a[i]=s.nextLong();System.out.println(n);for(int i=n-1;i>=0;i--)System.out.print(a[i]+" ");System.out.println();}}\n`,
 };
+// These intentionally wrong solutions model treating a multiset as a set.
+const intDeduplicateSolutions = {
+  python: `import sys\na=list(map(int,sys.stdin.buffer.read().split()))[1:]; a=sorted(set(a))\nprint(len(a)); print(*a)\n`,
+  cpp: `#include <iostream>\n#include <set>\nusing namespace std;int main(){int n;cin>>n;set<long long>a;for(int i=0;i<n;i++){long long v;cin>>v;a.insert(v);}cout<<a.size()<<'\\n';for(auto v:a)cout<<v<<' ';cout<<'\\n';}\n`,
+  go: `package main\nimport("bufio";"fmt";"os")\nfunc main(){in:=bufio.NewReader(os.Stdin);var n int;fmt.Fscan(in,&n);a:=map[int64]bool{};for i:=0;i<n;i++{var v int64;fmt.Fscan(in,&v);a[v]=true};out:=bufio.NewWriter(os.Stdout);defer out.Flush();fmt.Fprintln(out,len(a));for v:=range a{fmt.Fprint(out,v," ")};fmt.Fprintln(out)}\n`,
+  java: `import java.util.*;public class Main{public static void main(String[]args){Scanner s=new Scanner(System.in);int n=s.nextInt();Set<Long>a=new TreeSet<>();for(int i=0;i<n;i++)a.add(s.nextLong());System.out.println(a.size());for(long v:a)System.out.print(v+" ");System.out.println();}}\n`,
+};
 try {
   teacher = identity('teacher', true);
   await startWorker();
@@ -391,6 +398,57 @@ try {
     intId,
     'python',
     'import sys\na=sys.stdin.read().split(); a[2]=a[1]; print(a[0]); print(*a[1:])\n',
+    'wrong_answer',
+  );
+  const multisetInputs = [
+    '5\n9007199254740993 0 9007199254740993 -2 0\n',
+    '6\n-9223372036854775808 7 7 7 -9223372036854775808 0\n',
+  ];
+  const multisetId = await publish(
+    'int-multiset',
+    'int-multiset',
+    multisetInputs.map((text) => [text, text]),
+  );
+  // Exercise both AC and clean WA through HTTP in every supported language.
+  // Keep only two compilers/runners active at a time, as with the set fixtures.
+  for (const { name, solutions, expected } of [
+    { name: 'reordered', solutions: intSolutions, expected: 'accepted' },
+    {
+      name: 'deduplicated',
+      solutions: intDeduplicateSolutions,
+      expected: 'wrong_answer',
+    },
+  ]) {
+    for (let i = 0; i < languages.length; i += 2) {
+      const results = await Promise.allSettled(
+        languages
+          .slice(i, i + 2)
+          .map((language) =>
+            verdict(
+              `multiset-${name}-${language}`,
+              multisetId,
+              language,
+              solutions[language],
+              expected,
+            ),
+          ),
+      );
+      const failure = results.find((result) => result.status === 'rejected');
+      if (failure) throw failure.reason;
+    }
+  }
+  await verdict(
+    'multiset-wrong-count',
+    multisetId,
+    'python',
+    'import sys\na=sys.stdin.read().split(); print(int(a[0])+1); print(*a[1:])\n',
+    'wrong_answer',
+  );
+  await verdict(
+    'multiset-wrong-multiplicity',
+    multisetId,
+    'python',
+    'import sys\na=sys.stdin.read().split(); a[-1]=a[1]; print(a[0]); print(*a[1:])\n',
     'wrong_answer',
   );
   const strings = ['3\n\n \n alpha \n', '4\n\n  \n beta\ngamma \n'];
