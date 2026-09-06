@@ -1,4 +1,15 @@
+import {
+  SEMANTIC_CHECKERS,
+  semanticCheckerId,
+  type SemanticChecker,
+} from './oj-semantic-contract';
+import { matchesSemantic } from './oj-semantic-checkers';
 import { z } from 'zod';
+import {
+  asciiTokens,
+  parseIntegerRowCollection,
+  type IntegerRowChecker,
+} from './oj-result-shapes';
 import type { Language, Problem } from './problems';
 
 /** Resource units match the judge protocol: seconds for CPU and KiB for sizes. */
@@ -6,7 +17,17 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   id: string;
   courseId: string;
   outputLimit: number;
-  checker: 'tokens' | 'exact' | 'int-set' | 'string-set' | 'int-multiset';
+  checker:
+    | 'tokens'
+    | 'exact'
+    | 'int-set'
+    | 'string-set'
+    | 'int-multiset'
+    | 'int-row-set'
+    | 'int-bag-row-set'
+    | 'int-row-multiset'
+    | SemanticChecker;
+  semanticId?: number;
   languages: Language[];
 };
 
@@ -77,52 +98,59 @@ export type OjTeacherProblem = {
   versions: OjProblemVersion[];
 };
 
-export const OJ_MAX_IMPORT_BYTES = 8 * 1024 * 1024;
+export const OJ_MAX_IMPORT_BYTES = 128 * 1024 * 1024;
 export const OJ_MAX_CASE_BYTES = 4 * 1024 * 1024;
+export const OJ_MAX_EXPECTED_BYTES = 64 * 1024 * 1024;
 export const OJ_MAX_CASES = 64;
 /** Fixed, non-executable counted-set protocol shared by import and judging. */
 export const OJ_MAX_SET_ITEMS = 1_000_000;
 function parseCountedValues(
   output: string,
   checker: 'int-set' | 'string-set',
-): string[] | null {
+): ReadonlyMap<string, number> | null {
   if (
     output.includes('\0') ||
-    // Unicode mode matches lone surrogates, while valid pairs (emoji) stay intact.
-    // Reject before TextEncoder can silently replace an invalid code point.
     /[\uD800-\uDFFF]/u.test(output) ||
-    new TextEncoder().encode(output).byteLength > OJ_MAX_CASE_BYTES
+    new TextEncoder().encode(output).byteLength > OJ_MAX_EXPECTED_BYTES
   )
     return null;
   const normalized = output.replace(/\r\n/g, '\n');
   const newline = normalized.indexOf('\n');
   if (newline < 0) return null;
   const header = normalized.slice(0, newline);
-  if (!/^(0|[1-9][0-9]{0,6})$/.test(header)) return null;
-  const count = Number(header);
-  if (count > OJ_MAX_SET_ITEMS) return null;
-  const body = normalized.slice(newline + 1);
-  let values: string[];
-  if (checker === 'int-set') {
-    values = body.split(/[\t\n\v\f\r ]+/).filter(Boolean);
-    if (values.length !== count) return null;
-    for (let i = 0; i < values.length; i++) {
-      const value = values[i];
-      if (!/^[+-]?[0-9]+$/.test(value)) return null;
-      // Decimal normalization avoids Number rounding and expensive huge BigInts.
-      const negative = value[0] === '-';
-      const digits = value.replace(/^[+-]/, '').replace(/^0+/, '') || '0';
-      values[i] = negative && digits !== '0' ? '-' + digits : digits;
-    }
-  } else if (checker === 'string-set') {
-    if (!normalized.endsWith('\n') || body.includes('\r')) return null;
-    // Remove precisely one record terminator; preserve empty string elements.
-    values = body === '' ? [] : body.slice(0, -1).split('\n');
-    if (values.length !== count) return null;
-  } else {
+  if (
+    !/^(0|[1-9][0-9]{0,6})$/.test(header) ||
+    Number(header) > OJ_MAX_SET_ITEMS
+  )
     return null;
+  const count = Number(header),
+    values = new Map<string, number>();
+  let seen = 0;
+  const add = (value: string) => {
+    seen++;
+    if (seen > count) return false;
+    values.set(value, (values.get(value) || 0) + 1);
+    return true;
+  };
+  if (checker === 'int-set') {
+    for (const token of asciiTokens(normalized.slice(newline + 1))) {
+      if (!/^[+-]?[0-9]+$/.test(token)) return null;
+      const digits = token.replace(/^[+-]/, '').replace(/^0+/, '') || '0';
+      if (!add(token.startsWith('-') && digits !== '0' ? '-' + digits : digits))
+        return null;
+    }
+  } else {
+    if (!normalized.endsWith('\n')) return null;
+    let start = newline + 1;
+    while (start < normalized.length) {
+      const end = normalized.indexOf('\n', start);
+      if (end < 0) return null;
+      const value = normalized.slice(start, end);
+      if (value.includes('\r') || !add(value)) return null;
+      start = end + 1;
+    }
   }
-  return values;
+  return seen === count ? values : null;
 }
 
 export function parseOjSetOutput(
@@ -131,17 +159,13 @@ export function parseOjSetOutput(
 ): ReadonlySet<string> | null {
   const values = parseCountedValues(output, checker);
   if (values === null) return null;
-  const unique = new Set(values);
-  return unique.size === values.length ? unique : null;
+  for (const count of values.values()) if (count !== 1) return null;
+  return new Set(values.keys());
 }
 export function parseOjMultisetOutput(
   output: string,
 ): ReadonlyMap<string, number> | null {
-  const values = parseCountedValues(output, 'int-set');
-  if (values === null) return null;
-  const counts = new Map<string, number>();
-  for (const value of values) counts.set(value, (counts.get(value) || 0) + 1);
-  return counts;
+  return parseCountedValues(output, 'int-set');
 }
 
 const identifier = z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/);
@@ -150,7 +174,7 @@ const testcase = z
   .object({
     name: z.string().trim().min(1).max(100),
     input: z.string().max(OJ_MAX_CASE_BYTES),
-    expectedOutput: z.string().max(OJ_MAX_CASE_BYTES),
+    expectedOutput: z.string().max(OJ_MAX_EXPECTED_BYTES),
     hidden: z.boolean(),
     weight: z.number().int().min(1).max(100),
   })
@@ -191,14 +215,19 @@ export const ojImportSchema = z
         hints: z.array(limitedText(2000)).max(10),
         timeLimit: z.number().min(0.1).max(10),
         memoryLimit: z.number().int().min(16384).max(524288),
-        outputLimit: z.number().int().min(1).max(4096),
+        outputLimit: z.number().int().min(1).max(65536),
         checker: z.enum([
           'tokens',
           'exact',
           'int-set',
           'string-set',
           'int-multiset',
+          'int-row-set',
+          'int-bag-row-set',
+          'int-row-multiset',
+          ...SEMANTIC_CHECKERS,
         ]),
+        semanticId: z.number().int().optional(),
         languages: z
           .array(z.enum(['python', 'go', 'java', 'cpp']))
           .min(1)
@@ -239,7 +268,48 @@ export const ojImportSchema = z
         message: '测试点名称不能重复',
         path: ['cases'],
       });
+    const semanticId = semanticCheckerId(data.problem.checker);
+    if (
+      (semanticId !== null &&
+        (data.problem.semanticId !== semanticId ||
+          data.problem.id !== `lc-${semanticId}`)) ||
+      (semanticId === null && data.problem.semanticId !== undefined)
+    )
+      ctx.addIssue({
+        code: 'custom',
+        message: '语义判题器必须绑定对应题号',
+        path: ['problem', 'checker'],
+      });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        semanticId !== null &&
+        !matchesSemantic(
+          semanticId,
+          c.expectedOutput,
+          c.expectedOutput,
+          c.input,
+        )
+      )
+        ctx.addIssue({
+          code: 'custom',
+          message: '语义判题输入或预期答案不合法',
+          path: ['cases', index, 'expectedOutput'],
+        });
+
+      if (
+        ['int-row-set', 'int-bag-row-set', 'int-row-multiset'].includes(
+          data.problem.checker,
+        ) &&
+        parseIntegerRowCollection(
+          c.expectedOutput,
+          data.problem.checker as IntegerRowChecker,
+        ) === null
+      )
+        ctx.addIssue({
+          code: 'custom',
+          message: '整数行集合格式无效：请检查行数、每行长度及重复行',
+          path: ['cases', index, 'expectedOutput'],
+        });
       if (
         data.problem.checker === 'int-multiset' &&
         parseOjMultisetOutput(c.expectedOutput) === null
@@ -261,7 +331,8 @@ export const ojImportSchema = z
         });
       for (const key of ['input', 'expectedOutput'] as const) {
         if (
-          new TextEncoder().encode(c[key]).byteLength > OJ_MAX_CASE_BYTES ||
+          new TextEncoder().encode(c[key]).byteLength >
+            (key === 'input' ? OJ_MAX_CASE_BYTES : OJ_MAX_EXPECTED_BYTES) ||
           c[key].includes('\0')
         )
           ctx.addIssue({

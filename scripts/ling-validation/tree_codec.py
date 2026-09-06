@@ -45,8 +45,13 @@ def to_level_order(root):
         return []
     queue = deque([root])
     result = []
+    visited=set()
     while queue:
         node = queue.popleft()
+        if node is not None:
+            if id(node) in visited or len(visited)>=100000 or type(node.val)is not int:
+                raise ValueError('Invalid, shared, cyclic or oversized output tree')
+            visited.add(id(node))
         result.append(node.val if node is not None else None)
         if node is not None:
             queue.extend((node.left, node.right))

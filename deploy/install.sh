@@ -144,13 +144,14 @@ fi
 
 # Existing certificate configuration is retained on later releases.
 install -m 644 "$source_dir/deploy/nginx-media.conf" /etc/nginx/snippets/cswork-media.conf
+install -m 644 "$source_dir/deploy/nginx-oj-import.conf" /etc/nginx/snippets/cswork-oj-import.conf
 created_config=false
 if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
   created_config=true
 fi
-# Teacher problem imports accept at most 8 MiB plus a small JSON envelope.
-# Attachment and all other application limits remain enforced in their own handlers.
+# Preserve the existing general request limit. Only the exact teacher save
+# location in cswork-oj-import.conf accepts a 128 MiB package plus its envelope.
 sed -i 's/client_max_body_size 3m;/client_max_body_size 9m;/' /etc/nginx/sites-available/cswork
 python3 "$source_dir/deploy/configure-nginx.py" /etc/nginx/sites-available/cswork
 created_link=false

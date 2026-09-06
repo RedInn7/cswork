@@ -31,6 +31,7 @@ import {
   ojImportSchema,
   OJ_MAX_IMPORT_BYTES,
   OJ_MAX_CASE_BYTES,
+  OJ_MAX_EXPECTED_BYTES,
   OJ_MAX_CASES,
   type OjProblemPackage,
   type OjProblemSpec,
@@ -231,7 +232,18 @@ export function OjAdmin({
     value: OjProblemSpec[K],
   ) {
     setPayload((old) =>
-      old ? { ...old, problem: { ...old.problem, [key]: value } } : old,
+      old
+        ? {
+            ...old,
+            problem: {
+              ...old.problem,
+              [key]: value,
+              ...(key === 'checker' && !String(value).startsWith('semantic-lc-')
+                ? { semanticId: undefined }
+                : {}),
+            },
+          }
+        : old,
     );
     setDirty(true);
     setNotice('');
@@ -270,7 +282,7 @@ export function OjAdmin({
     setNotice('');
     try {
       if (file.size > OJ_MAX_IMPORT_BYTES)
-        throw new Error('题目文件最多 8 MiB');
+        throw new Error('题目文件最多 128 MiB');
       const value: unknown = JSON.parse(await file.text());
       const parsed = ojImportSchema.safeParse(value);
       if (!parsed.success) throw new Error(validationMessage(parsed));
@@ -406,8 +418,15 @@ export function OjAdmin({
     setBusy(true);
     setError('');
     try {
-      if (file.size > OJ_MAX_CASE_BYTES)
-        throw new Error('单个测试文件最多 4 MiB');
+      if (
+        file.size >
+        (key === 'input' ? OJ_MAX_CASE_BYTES : OJ_MAX_EXPECTED_BYTES)
+      )
+        throw new Error(
+          key === 'input'
+            ? '单个输入文件最多 4 MiB'
+            : '单个答案文件最多 64 MiB',
+        );
       const text = new TextDecoder('utf-8', { fatal: true }).decode(
         await file.arrayBuffer(),
       );
@@ -1073,7 +1092,7 @@ export function OjAdmin({
                         ))}
                         <p className="oj-admin-muted">
                           隐藏测试的输入、预期输出和程序输出不会展示给学员。公开样例每项最多
-                          32 KiB；隐藏测试每项最多 4 MiB。
+                          32 KiB；隐藏输入最多 4 MiB，答案最多 64 MiB。
                         </p>
                       </div>
                     )}
@@ -1127,13 +1146,13 @@ export function OjAdmin({
                           id="oj-admin-output-limit"
                           type="number"
                           min={1}
-                          max={4096}
+                          max={65536}
                           value={spec.outputLimit}
                           onChange={(e) =>
                             updateSpec('outputLimit', e.target.valueAsNumber)
                           }
                         />
-                        <small>每个测试点 1–4096 KiB。</small>
+                        <small>每个测试点 1–65536 KiB。</small>
                       </label>
                     </div>
                     <label>
@@ -1160,9 +1179,23 @@ export function OjAdmin({
                         <option value="string-set">
                           字符串集合 · 每行一项，顺序不限
                         </option>
+                        <option value="int-row-set">
+                          整数行集合 · 行顺序不限
+                        </option>
+                        <option value="int-bag-row-set">
+                          整数行集合 · 行内外顺序不限，保留行内次数
+                        </option>
+                        <option value="int-row-multiset">
+                          整数行多重集合 · 保留重复行次数
+                        </option>
+                        {spec.checker.startsWith('semantic-lc-') && (
+                          <option value={spec.checker}>
+                            本题专用规则 · 接受多种正确答案
+                          </option>
+                        )}
                       </select>
                       <small>
-                        {
+                        {(
                           {
                             tokens:
                               '每个词元的内容和顺序必须一致；数字 1 与 1.0 视为不同。',
@@ -1171,10 +1204,17 @@ export function OjAdmin({
                               '首行只写元素数量，其后写对应数量的整数；顺序不限，重复整数不通过。',
                             'int-multiset':
                               '首行写元素总数，其后写整数；顺序不限，每个整数的出现次数必须正确。',
+                            'int-bag-row-set':
+                              '先写行数，每行先写长度再写整数；行内外顺序不限，行内重复次数必须正确，禁止等价重复行。',
+                            'int-row-multiset':
+                              '先写行数，每行先写长度再写整数；行顺序不限，保留行内顺序和每行出现次数。',
+                            'int-row-set':
+                              '先写行数，每行先写长度再写整数；行顺序不限，每行内部顺序保留，不得重复行。',
                             'string-set':
                               '首行只写元素数量，其后每行一个字符串，末尾必须换行；保留空串和空格，禁止重复。',
-                          }[spec.checker]
-                        }
+                          } as Record<string, string>
+                        )[spec.checker] ||
+                          '按本题输入和约束验证答案，接受符合要求的不同结果。'}
                       </small>
                     </label>
                     <div className="oj-admin-language-options">

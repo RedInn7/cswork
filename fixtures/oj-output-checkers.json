@@ -1,6 +1,6 @@
 {
   "protocolVersion": 1,
-  "maxOutputBytes": 4194304,
+  "maxOutputBytes": 67108864,
   "maxSetItems": 1000000,
   "countHeader": "canonical nonnegative decimal, no surrounding whitespace",
   "integerElement": "signed decimal digits; leading + and zeroes normalized; duplicates after normalization rejected",
@@ -143,7 +143,7 @@
     {
       "name": "integer rejects unicode digit",
       "checker": "int-set",
-      "actual": "1\n１\n",
+      "actual": "1\n\uff11\n",
       "expected": "1\n1\n",
       "matches": false,
       "actualValid": false,
@@ -152,7 +152,7 @@
     {
       "name": "integer rejects unicode whitespace",
       "checker": "int-set",
-      "actual": "2\n1 2\n",
+      "actual": "2\n1\u00a02\n",
       "expected": "1\n1\n",
       "matches": false,
       "actualValid": false,
@@ -323,7 +323,7 @@
     {
       "name": "string Unicode whitespace preserved",
       "checker": "string-set",
-      "actual": "1\na b\n",
+      "actual": "1\na\u00a0b\n",
       "expected": "1\na b\n",
       "matches": false,
       "actualValid": true,
@@ -461,7 +461,7 @@
     {
       "name": "legacy tokens reject NBSP separator",
       "checker": "tokens",
-      "actual": "1 2",
+      "actual": "1\u00a02",
       "expected": "1 2",
       "matches": false
     },
@@ -496,8 +496,8 @@
     {
       "name": "string valid supplementary Unicode preserved",
       "checker": "string-set",
-      "actual": "2\n😀\n𐐷\n",
-      "expected": "2\n𐐷\n😀\n",
+      "actual": "2\n\ud83d\ude00\n\ud801\udc37\n",
+      "expected": "2\n\ud801\udc37\n\ud83d\ude00\n",
       "matches": true,
       "actualValid": true,
       "expectedValid": true
@@ -524,7 +524,7 @@
       "name": "string rejects reversed surrogate pair",
       "checker": "string-set",
       "actual": "1\n\udc00\ud800\n",
-      "expected": "1\n😀\n",
+      "expected": "1\n\ud83d\ude00\n",
       "matches": false,
       "actualValid": false,
       "expectedValid": true
@@ -532,8 +532,8 @@
     {
       "name": "string rejects surrogate after valid emoji",
       "checker": "string-set",
-      "actual": "1\n😀\ud800\n",
-      "expected": "1\n😀\n",
+      "actual": "1\n\ud83d\ude00\ud800\n",
+      "expected": "1\n\ud83d\ude00\n",
       "matches": false,
       "actualValid": false,
       "expectedValid": true
@@ -694,7 +694,7 @@
     {
       "name": "multiset unicode space rejected",
       "checker": "int-multiset",
-      "actual": "2\n1 1\n",
+      "actual": "2\n1\u00a01\n",
       "expected": "2\n1 1\n",
       "matches": false,
       "actualValid": false,
@@ -726,7 +726,650 @@
       "matches": false,
       "actualValid": false,
       "expectedValid": true
+    },
+    {
+      "name": "int-row-set row order ignored",
+      "checker": "int-row-set",
+      "actual": "2\n2 1 2\n1 3\n",
+      "expected": "2\n1 3\n2 1 2\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set inner order retained",
+      "checker": "int-row-set",
+      "actual": "1\n2 2 1\n",
+      "expected": "1\n2 1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set different boundaries same flatten",
+      "checker": "int-row-set",
+      "actual": "2\n1 1\n2 2 3\n",
+      "expected": "2\n2 1 2\n1 3\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set repeated values within row valid",
+      "checker": "int-row-set",
+      "actual": "1\n3 1 1 2\n",
+      "expected": "1\n3 1 1 2\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set empty set",
+      "checker": "int-row-set",
+      "actual": "0\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set one empty row",
+      "checker": "int-row-set",
+      "actual": "1\n0\n",
+      "expected": "1\n0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set empty row differs empty set",
+      "checker": "int-row-set",
+      "actual": "1\n0\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set empty row reorder",
+      "checker": "int-row-set",
+      "actual": "2\n0\n1 2\n",
+      "expected": "2\n1 2\n0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set duplicate rows invalid",
+      "checker": "int-row-set",
+      "actual": "2\n2 1 2\n2 1 2\n",
+      "expected": "1\n2 1 2\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set duplicate empty rows",
+      "checker": "int-row-set",
+      "actual": "2\n0\n0\n",
+      "expected": "1\n0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set normalized zero duplicate",
+      "checker": "int-row-set",
+      "actual": "2\n1 -0\n1 +000\n",
+      "expected": "1\n1 0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set normalized huge duplicate",
+      "checker": "int-row-set",
+      "actual": "2\n1 +00999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set huge normalization",
+      "checker": "int-row-set",
+      "actual": "1\n2 +00999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 -000\n",
+      "expected": "1\n2 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999 0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set huge adjacent identity",
+      "checker": "int-row-set",
+      "actual": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999998\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set row count missing",
+      "checker": "int-row-set",
+      "actual": "2\n1 3\n",
+      "expected": "1\n1 3\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set row length missing",
+      "checker": "int-row-set",
+      "actual": "1\n2 3\n",
+      "expected": "1\n1 3\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set extra tokens",
+      "checker": "int-row-set",
+      "actual": "0\n1\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set negative length",
+      "checker": "int-row-set",
+      "actual": "1\n-1\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set noncanonical length",
+      "checker": "int-row-set",
+      "actual": "1\n01 3\n",
+      "expected": "1\n1 3\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set null rejected",
+      "checker": "int-row-set",
+      "actual": "1\n1 null\n",
+      "expected": "1\n1 0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set float rejected",
+      "checker": "int-row-set",
+      "actual": "1\n1 1.0\n",
+      "expected": "1\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set bool rejected",
+      "checker": "int-row-set",
+      "actual": "1\n1 true\n",
+      "expected": "1\n1 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set ascii whitespace",
+      "checker": "int-row-set",
+      "actual": " 2\r\n 0\u000b1\t+003\f",
+      "expected": "2\n1 3\n0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set unicode whitespace rejected",
+      "checker": "int-row-set",
+      "actual": "1\n1\u00a03\n",
+      "expected": "1\n1 3\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set nul rejected",
+      "checker": "int-row-set",
+      "actual": "1\n1 3\u0000",
+      "expected": "1\n1 3\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set surrogate rejected",
+      "checker": "int-row-set",
+      "actual": "1\n1 \ud800\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set outer count ceiling",
+      "checker": "int-row-set",
+      "actual": "1000001\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set inner count ceiling",
+      "checker": "int-row-set",
+      "actual": "1\n1000001\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-set invalid expected duplicate",
+      "checker": "int-row-set",
+      "actual": "1\n1 0\n",
+      "expected": "2\n1 0\n1 -0\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": false
+    },
+    {
+      "name": "int-bag-row-set outer reordered",
+      "checker": "int-bag-row-set",
+      "actual": "2\n2 1 2\n0\n",
+      "expected": "2\n0\n2 1 2\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set inner reordered",
+      "checker": "int-bag-row-set",
+      "actual": "1\n2 2 1\n",
+      "expected": "1\n2 1 2\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set inner count preserved",
+      "checker": "int-bag-row-set",
+      "actual": "1\n3 1 1 2\n",
+      "expected": "1\n3 1 2 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set inner count missing",
+      "checker": "int-bag-row-set",
+      "actual": "1\n2 1 2\n",
+      "expected": "1\n3 1 1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set same flatten different rows",
+      "checker": "int-bag-row-set",
+      "actual": "2\n1 1\n2 2 3\n",
+      "expected": "2\n2 1 2\n1 3\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set empty set",
+      "checker": "int-bag-row-set",
+      "actual": "0\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set empty row",
+      "checker": "int-bag-row-set",
+      "actual": "1\n0\n",
+      "expected": "1\n0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set empty versus empty row",
+      "checker": "int-bag-row-set",
+      "actual": "0\n",
+      "expected": "1\n0\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set duplicate empty rows",
+      "checker": "int-bag-row-set",
+      "actual": "2\n0\n0\n",
+      "expected": "2\n0\n0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": false
+    },
+    {
+      "name": "int-bag-row-set row multiplicity mismatch",
+      "checker": "int-bag-row-set",
+      "actual": "2\n1 2\n1 2\n",
+      "expected": "1\n1 2\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set row multiplicity same total",
+      "checker": "int-bag-row-set",
+      "actual": "3\n1 1\n1 1\n1 2\n",
+      "expected": "3\n1 1\n1 2\n1 2\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": false
+    },
+    {
+      "name": "int-bag-row-set equivalent reversed rows",
+      "checker": "int-bag-row-set",
+      "actual": "2\n2 1 2\n2 2 1\n",
+      "expected": "2\n2 1 2\n2 2 1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": false
+    },
+    {
+      "name": "int-bag-row-set normalized duplicate rows",
+      "checker": "int-bag-row-set",
+      "actual": "2\n2 -0 +00999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n2 +000 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "2\n2 0 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n2 0 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": false
+    },
+    {
+      "name": "int-bag-row-set huge identity",
+      "checker": "int-bag-row-set",
+      "actual": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999998\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set null",
+      "checker": "int-bag-row-set",
+      "actual": "1\n1 null\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set wrong length",
+      "checker": "int-bag-row-set",
+      "actual": "1\n2 1\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set extra rows",
+      "checker": "int-bag-row-set",
+      "actual": "0\n0\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set noncanonical count",
+      "checker": "int-bag-row-set",
+      "actual": "01\n0\n",
+      "expected": "1\n0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set unicode whitespace",
+      "checker": "int-bag-row-set",
+      "actual": "1\n1\u00a02\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-bag-row-set float",
+      "checker": "int-bag-row-set",
+      "actual": "1\n1 2.0\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset outer reordered",
+      "checker": "int-row-multiset",
+      "actual": "2\n2 1 2\n0\n",
+      "expected": "2\n0\n2 1 2\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset inner reordered",
+      "checker": "int-row-multiset",
+      "actual": "1\n2 2 1\n",
+      "expected": "1\n2 1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset inner count preserved",
+      "checker": "int-row-multiset",
+      "actual": "1\n3 1 1 2\n",
+      "expected": "1\n3 1 2 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset inner count missing",
+      "checker": "int-row-multiset",
+      "actual": "1\n2 1 2\n",
+      "expected": "1\n3 1 1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset same flatten different rows",
+      "checker": "int-row-multiset",
+      "actual": "2\n1 1\n2 2 3\n",
+      "expected": "2\n2 1 2\n1 3\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset empty set",
+      "checker": "int-row-multiset",
+      "actual": "0\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset empty row",
+      "checker": "int-row-multiset",
+      "actual": "1\n0\n",
+      "expected": "1\n0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset empty versus empty row",
+      "checker": "int-row-multiset",
+      "actual": "0\n",
+      "expected": "1\n0\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset duplicate empty rows",
+      "checker": "int-row-multiset",
+      "actual": "2\n0\n0\n",
+      "expected": "2\n0\n0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset row multiplicity mismatch",
+      "checker": "int-row-multiset",
+      "actual": "2\n1 2\n1 2\n",
+      "expected": "1\n1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset row multiplicity same total",
+      "checker": "int-row-multiset",
+      "actual": "3\n1 1\n1 1\n1 2\n",
+      "expected": "3\n1 1\n1 2\n1 2\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset equivalent reversed rows",
+      "checker": "int-row-multiset",
+      "actual": "2\n2 1 2\n2 2 1\n",
+      "expected": "2\n2 1 2\n2 2 1\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset normalized duplicate rows",
+      "checker": "int-row-multiset",
+      "actual": "2\n2 -0 +00999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n2 +000 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "2\n2 0 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n2 0 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset huge identity",
+      "checker": "int-row-multiset",
+      "actual": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999\n",
+      "expected": "1\n1 999999999999999999999999999999999999999999999999999999999999999999999999999999999999999998\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset null",
+      "checker": "int-row-multiset",
+      "actual": "1\n1 null\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset wrong length",
+      "checker": "int-row-multiset",
+      "actual": "1\n2 1\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset extra rows",
+      "checker": "int-row-multiset",
+      "actual": "0\n0\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset noncanonical count",
+      "checker": "int-row-multiset",
+      "actual": "01\n0\n",
+      "expected": "1\n0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset unicode whitespace",
+      "checker": "int-row-multiset",
+      "actual": "1\n1\u00a02\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "int-row-multiset float",
+      "checker": "int-row-multiset",
+      "actual": "1\n1 2.0\n",
+      "expected": "0\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "unknown checker fails closed",
+      "checker": "unknown",
+      "actual": "1 2",
+      "expected": "1 2",
+      "matches": false
+    },
+    {
+      "name": "tokens NUL is not whitespace",
+      "checker": "tokens",
+      "actual": "1\u0000 2",
+      "expected": "1 2",
+      "matches": false
+    },
+    {
+      "name": "tokens Unicode space is not separator",
+      "checker": "tokens",
+      "actual": "1\u00a02",
+      "expected": "1 2",
+      "matches": false
     }
   ],
-  "integerMultisetElement": "signed decimal digits; signs and leading zeroes normalized; duplicates retained with exact multiplicity"
+  "integerMultisetElement": "signed decimal digits; signs and leading zeroes normalized; duplicates retained with exact multiplicity",
+  "maxRowValues": 16000000
 }

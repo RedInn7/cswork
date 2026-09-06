@@ -58,3 +58,11 @@ stdout/stderr collector 应使用 `pipe: true`。另外必须优先处理 `fileE
 实际工具链：g++ 14.2.0（C++20）、Python 3.13.5、OpenJDK 21.0.12.1、Go 1.24.4；go-judge 本身由 Go 1.26.8 构建。两个容器健康检查通过，端口只监听 127.0.0.1。验证期间服务器可用内存约 20GB。没有更改或重启 CSGrad、宿主 cgroup/sysctl 或 Docker daemon。
 
 参见 [官方 API](https://docs.goj.ac/api)、[资源配置](https://docs.goj.ac/configuration)、[挂载规范](https://docs.goj.ac/mount)。go-judge 为 MIT，构建启用的 Elastic seccomp 组件为 Apache-2.0；固定 Redis 8.x 可按其 AGPLv3 选项使用。保留镜像内许可证；不能将旧 Hydro 镜像中的已撤回 go-judge 版本用于部署。
+
+## 大答案验收与发布要求
+
+2026-09-06 在独立 5051 runner、隔离队列上完成 36 个判题结果和 423 次 HTTP 请求检查：Python/C++/Java/Go 集合与整数行规则通过；21,688,897 字节隐藏答案正确判为 AC，超出题目 32 MiB 限额判为 OLE。worker 峰值 RSS 为 774,568 KiB；隐藏 stdout/stderr 未持久化或回传。
+
+runner 全局 output/copy-out 上限为 64 MiB，仍按题目单独限制。worker 同时处理一个提交，Node heap 3072 MiB，systemd MemoryHigh 3 GiB、MemoryMax 4 GiB；快照总输入和答案不超过 128 MiB。输入每项仍 4 MiB，公开样例仍 32 KiB。Nginx 只为已鉴权教师题目保存路径提供较大请求额度，其余请求沿用原限制。
+
+部署时必须同时更新 runner 镜像、web/worker bundle、worker systemd 单元和专用 Nginx snippet；只部署网页无法解除旧 runner 的 16 MiB 硬上限。先等在途判题结束再替换 runner，并核验实际进程参数、服务健康和运行检查。

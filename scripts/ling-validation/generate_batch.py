@@ -9,22 +9,30 @@ import re
 from pathlib import Path
 from result_contract import KINDS, CHECKERS, validate_result, format_result, resource_limits, MAX_ORACLE_BYTES
 from reference_adapters import ADAPTERS
+from semantic_checkers import SEMANTIC_KINDS, matches_semantic
 
 BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1', 'selected_arrays1', 'selected_dp1', 'selected_windows1', 'selected_inplace1')
 BATCHES += ('selected_trees1','selected_arrays2')
 BATCHES += ('selected_dp2',)
 BATCHES += ('selected_lists1',)
+BATCHES += ('selected_graphs1','selected_search1')
+BATCHES += ('selected_trees2',)
+BATCHES += ('selected_design1','selected_structured1','selected_enumeration1','selected_semantic1','selected_final_basic')
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 REFERENCE_FILES.update({1235:'Solution2.py',2008:'Solution2.py',2140:'Solution2.py',2369:'Solution2.py',1438:'Solution3.py'})
+REFERENCE_FILES[1466]='Solution2.py'
 SECONDARY_REFERENCE_FILES = {1416: 'restore-the-array.py', 2466: 'count-ways-to-build-good-strings.py'}
 SECONDARY_REFERENCE_FILES[726]='number-of-atoms.py'
+SECONDARY_REFERENCE_FILES[220]='contains-duplicate-iii.py'
 SECONDARY_REFERENCE_REASONS = {
+    220: 'Primary reference requires unavailable SortedSet. Reviewed secondary OrderedDict bucket implementation uses standard-library Python 3 and preserves the original limits and oracle checks.',
     726: 'Primary Python file and README implementation are absent. Reviewed secondary Counter-stack parser has one Python 2 compatibility call: top.iteritems() is changed to top.items() only in the sandbox wrapper; original source hash is retained.',
     1416: 'Primary local source and README code blocks are empty. Reviewed secondary implementation uses rolling dynamic programming; xrange is explicitly aliased to range in the sandbox wrapper.',
     2466: 'Primary cached recursive implementation raises RecursionError on the 100000-length bound in the sandbox; no iterative Python alternative is present in the primary source. Reviewed secondary iterative DP preserves the maximum-size cases; xrange is explicitly aliased to range.',
 }
 REFERENCE_REASONS = {
+    1466: 'Primary recursive generator-based DFS exits unsuccessfully on legal 50000-node chains in go-judge. Reviewed iterative BFS reference preserves all maximum-size pressure cases and limits.',
     1235: 'Primary cached recursive reference raises RecursionError on the 50000-job upper bound in the sandbox. Reviewed iterative finish-time sorted DP with bisect_right preserves all pressure cases.',
     2008: 'Primary cached recursive reference raises RecursionError on 30000 compatible rides in the sandbox. Reviewed iterative finish-time sorted DP preserves the exact 3000030000 pressure answer.',
     2140: 'Primary cached recursive reference raises RecursionError at 100000 questions in the sandbox. Reviewed iterative suffix DP preserves maximum-size cases and 64-bit answers.',
@@ -72,11 +80,15 @@ def result_settings(spec):
     kind=spec.get('resultKind','integer')
     if kind not in KINDS:
         raise ValueError('Unsupported result kind')
-    encoding=spec.get('oracleEncoding','legacy-integer' if kind=='integer' else 'jsonl-v1')
+    semantic=spec.get('semanticId')
+    if semantic is not None and (type(semantic)is not int or SEMANTIC_KINDS.get(semantic)!=kind):raise ValueError('Invalid semantic result contract')
+    encoding=spec.get('oracleEncoding','legacy-integer' if kind=='integer' and semantic is None else 'jsonl-v1')
+    if semantic is not None and encoding!='jsonl-v1':raise ValueError('Semantic oracle requires JSONL')
     if encoding not in ('legacy-integer','jsonl-v1') or kind!='integer' and encoding!='jsonl-v1':
         raise ValueError('Non-integer results require jsonl-v1')
-    checker=spec.get('checker',CHECKERS[kind])
-    if checker!=CHECKERS[kind]:
+    required=f'semantic-lc-{semantic}' if semantic is not None else CHECKERS[kind]
+    checker=spec.get('checker',required)
+    if checker!=required:
         raise ValueError('Result kind and checker disagree')
     return kind,encoding,checker
 
@@ -88,7 +100,11 @@ def typed_result(spec,value):
 def answer(spec, args):
     return typed_result(spec,spec['oracle'](checked_args(spec, args)))
 
-def reference_source(root, pid, secondary=None):
+def reference_source(root, pid, secondary=None, authored=None):
+    if pid==212:
+        if authored is None:raise ValueError('212 requires explicitly reviewed authored reference directory')
+        path=authored/'lc-212.py'
+        return path,path.read_text()
     if pid in SECONDARY_REFERENCE_FILES:
         if secondary is None:
             raise ValueError(f'{pid} requires the explicitly reviewed secondary reference directory')
@@ -114,6 +130,11 @@ def reference_source(root, pid, secondary=None):
     raise ValueError(f'Missing Python reference for {pid}')
 
 def wrapper(spec, source):
+    design_class=spec.get('designClass')
+    design_methods=spec.get('designMethods',[])
+    if design_class is not None:
+        if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*',design_class) or type(design_methods)is not list or not design_methods or any(type(m)is not str or not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*',m) for m in design_methods) or len(set(design_methods))!=len(design_methods):
+            raise ValueError('Invalid design class or methods')
     list_args=spec.get('listArgs',[])
     list_array_args=spec.get('listArrayArgs',[])
     linked_result=spec.get('resultLinked','none')
@@ -123,21 +144,23 @@ def wrapper(spec, source):
     if len(set(list_args+list_array_args))!=len(list_args+list_array_args) or linked_result not in ('none','return','arg0'):
         raise ValueError('Invalid linked-list adapter')
     linked_setup=''
-    if list_args or list_array_args or linked_result!='none':
+    if list_args or list_array_args or linked_result!='none' or design_class:
         linked_source=Path(__file__).with_name('linked_codec.py').read_text()
         linked_setup='\n_cswork_lists = {}\nexec('+repr(linked_source)+', _cswork_lists)\nListNode = _cswork_lists["ListNode"]\n'
     tree_args=spec.get('treeArgs',[])
+    tree_result=spec.get('resultTree','none')
+    if tree_result not in ('none','return','arg0'):raise ValueError('Invalid tree result adapter')
     if type(tree_args)is not list or any(type(i)is not int or i<0 for i in tree_args) or len(set(tree_args))!=len(tree_args):
         raise ValueError('Invalid tree argument positions')
     tree_setup=''
-    if tree_args:
+    if tree_args or tree_result!='none':
         tree_source=Path(__file__).with_name('tree_codec.py').read_text()
         tree_setup='\n_cswork_trees = {}\nexec('+repr(tree_source)+', _cswork_trees)\nTreeNode = _cswork_trees["TreeNode"]\n'
     adapter=spec.get('resultAdapter','return')
     if adapter not in ADAPTERS:raise ValueError('Unknown result adapter')
     adapter_source=Path(__file__).with_name('reference_adapters.py').read_text()
     adapter_setup='\n_cswork_adapters = {}\nexec('+repr(adapter_source)+', _cswork_adapters)\n'
-    method = spec['method']
+    method = spec.get('method',design_class)
     if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*', method):
         raise ValueError('Invalid reference method')
     future = []
@@ -165,6 +188,21 @@ def wrapper(spec, source):
         print(json.dumps(result, ensure_ascii=False, allow_nan=False))
     else:
         sys.stdout.write(_cswork_contract['format_result']({kind!r}, result))"""
+    invocation=f'result = Solution().{method}(*args)'
+    if design_class:
+        invocation=f'''operations, parameters = args
+    if not operations or operations[0]!={design_class!r} or len(operations)!=len(parameters):
+        raise ValueError('Invalid design operation sequence')
+    instance = {design_class}(*parameters[0])
+    result = [None]
+    for operation, params in zip(operations[1:],parameters[1:]):
+        if operation not in {design_methods!r}:
+            raise ValueError('Undeclared design operation')
+        value = getattr(instance,operation)(*params)
+        if type(value) is bool: value = int(value)
+        if value is not None and type(value) is not int:
+            raise ValueError('Design result must be integer, boolean or void')
+        result.append(value)'''
     tail = f'''
 def _cswork_answer(args):
     for index in {list_args!r}:
@@ -173,7 +211,9 @@ def _cswork_answer(args):
         args[index] = [_cswork_lists['from_values'](values) for values in args[index]]
     for index in {tree_args!r}:
         args[index] = _cswork_trees['from_level_order'](args[index])
-    result = Solution().{method}(*args)
+    {invocation}
+    if {tree_result!r} != 'none':
+        result = _cswork_trees['to_level_order'](args[0] if {tree_result!r} == 'arg0' else result)
     if {linked_result!r} != 'none':
         result = _cswork_lists['to_values'](args[0] if {linked_result!r} == 'arg0' else result)
     result = _cswork_adapters['adapt_result']({adapter!r}, result, args)
@@ -191,14 +231,21 @@ if __name__ == '__main__':
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
-def build(pid, spec, library, references, out, secondary=None):
+def build(pid, spec, library, references, out, secondary=None, authored=None):
     if pid not in library:
         raise ValueError(f'{pid} is outside the Ling study list')
     origin = library[pid]
     kind,encoding,checker=result_settings(spec)
     limits=resource_limits(spec)
-    if spec['method'] != origin['signature']['name'].strip():
+    if spec.get('designClass'):
+        signature=origin['signature']
+        if not signature.get('systemdesign') or spec['designClass']!=signature.get('classname') or set(spec['designMethods'])!={m['name'] for m in signature['methods']}:
+            raise ValueError(f'Design interface does not match source metadata: {pid}')
+    elif spec['method'] != origin['signature']['name'].strip():
         raise ValueError(f'Reference method does not match source metadata: {pid}')
+    semantic=spec.get('semanticId')
+    if semantic is not None and semantic!=pid:raise ValueError('Semantic checker must match source problem identity')
+    semantic_metadata={'semanticId':semantic} if semantic is not None else {}
     rng = random.Random(20260906 + pid)
     formal = []
     for i, args in enumerate(spec['edges']):
@@ -218,13 +265,15 @@ def build(pid, spec, library, references, out, secondary=None):
         if not isinstance(stdin, str) or len(stdin.encode()) > 4*1024*1024 or '\0' in stdin:
             raise ValueError('Input encoding exceeds the OJ contract')
         expected_output=format_result(kind,expected)
+        if semantic is not None:
+            if json.loads(stdin)!=args or not matches_semantic(semantic,expected_output,expected_output,stdin):raise ValueError('Semantic input or oracle does not match declared contract')
         if len(expected_output.encode('utf-8'))>limits['outputLimit']*1024:
             raise ValueError('Expected output exceeds declared output limit')
         cases.append(dict(name='样例 1' if i == 0 else name, input=stdin,
             expectedOutput=expected_output, hidden=i != 0, weight=1))
     small = [checked_args(spec, spec['random_args'](rng)) for _ in range(120)]
-    oracle = dict(args=small, expected=[answer(spec, args) for args in small],resultKind=kind,oracleEncoding=encoding)
-    path, source = reference_source(references, pid, secondary)
+    oracle = dict(args=small, expected=[answer(spec, args) for args in small],resultKind=kind,oracleEncoding=encoding,**semantic_metadata)
+    path, source = reference_source(references, pid, secondary, authored)
     compatible_source=source
     if pid==726:
         if source.count('top.iteritems()')!=1:
@@ -245,12 +294,12 @@ def build(pid, spec, library, references, out, secondary=None):
         explanation=explanation_zh, hints=[],
         translations={'en':dict(title=spec['titleEn'],description=spec['descriptionEn'],input=spec['inputEn'],
             output=spec['outputEn'],explanation=explanation_en,hints=[])},
-        **limits, checker=checker,
+        **limits, **semantic_metadata, checker=checker,
         languages=['python','go','java','cpp']),cases=cases)
     raw = (json.dumps(pkg,ensure_ascii=False,indent=2)+'\n').encode()
     mutation_raw = (json.dumps(spec['mutants'],ensure_ascii=False,indent=2)+'\n').encode()
-    if len(raw)>8*1024*1024:
-        raise ValueError('Package exceeds 8 MiB')
+    if len(raw)>128*1024*1024:
+        raise ValueError('Package exceeds 128 MiB')
     ident=f'lc-{pid}'
     (out/(ident+'.candidate.json')).write_bytes(raw)
     (out/(ident+'.reference.py')).write_text(wrapped)
@@ -260,6 +309,8 @@ def build(pid, spec, library, references, out, secondary=None):
     (out/(ident+'.oracle.json')).write_bytes(oracle_raw)
     (out/(ident+'.mutants.json')).write_bytes(mutation_raw)
     selection = {}
+    if pid==212:
+        selection=dict(referenceSelection=dict(strategy='explicit-reviewed-authored',provider='cswork',selectedFile=path.name,reason='Downloaded reference exceeded the declared 2-second CPU limit on a legal 12x12 board and 30000-word case. Independently authored Trie search deletes exhausted branches; original pressure and limits are preserved. Small-instance oracle and semantic wrong programs remain independent.'))
     if pid in SECONDARY_REFERENCE_FILES:
         selection = dict(referenceSelection=dict(strategy='explicit-reviewed-secondary',
             provider='kamyu104/LeetCode', license='MIT', selectedFile=path.name,
@@ -269,7 +320,7 @@ def build(pid, spec, library, references, out, secondary=None):
         selection = dict(referenceSelection=dict(strategy='explicit-reviewed-override',
             selectedFile=path.name, rejectedFile=rejected.name,
             rejectedSourceSha256=sha(rejected.read_bytes()), reason=REFERENCE_REASONS[pid]))
-    return dict(**selection, id=ident, sourceUrl=origin['sourceEnUrl'], sourceUrlZh=origin['sourceUrl'],
+    return dict(**selection, **semantic_metadata, id=ident, sourceUrl=origin['sourceEnUrl'], sourceUrlZh=origin['sourceUrl'],
         reference=str(path), referenceSha256=sha(source.encode()), wrapperSha256=sha(wrapped.encode()),
         packageSha256=sha(raw), mutantsSha256=sha(mutation_raw), oracleSha256=sha(oracle_raw), formalCases=len(cases),
         oracleCases=len(small), resultKind=kind, oracleEncoding=encoding,
@@ -281,6 +332,7 @@ def main():
     parser.add_argument('--library',type=Path,required=True)
     parser.add_argument('--references',type=Path,required=True)
     parser.add_argument('--secondary-references',type=Path)
+    parser.add_argument('--authored-references',type=Path)
     parser.add_argument('--out',type=Path,required=True)
     parser.add_argument('--ids',help='Optional comma-separated retry subset')
     args=parser.parse_args()
@@ -301,7 +353,7 @@ def main():
         library[number]=row
     records=[]
     for pid in sorted(wanted):
-        records.append(build(pid,specs[pid],library,args.references,args.out,args.secondary_references))
+        records.append(build(pid,specs[pid],library,args.references,args.out,args.secondary_references,args.authored_references))
         print(f'Generated lc-{pid}: {records[-1]["formalCases"]} formal, 120 oracle',flush=True)
     temporary=args.out/'.manifest.json.tmp'
     temporary.write_text(json.dumps(dict(seed=20260906,batch=args.batch,problems=records),ensure_ascii=False,indent=2)+'\n')

@@ -16,6 +16,6 @@ printf '+cpu +memory +pids\n' > /sys/fs/cgroup/cgroup.subtree_control
 exec /opt/go-judge \
   -http-addr=:5050 -no-fallback -parallelism=2 -pre-fork=2 \
   -net-share=false -container-cred-start=1536 -file-timeout=10m \
-  -output-limit=16m -copy-out-limit=16m -open-file-limit=128 \
+  -output-limit=64m -copy-out-limit=64m -open-file-limit=128 \
   -src-prefix=/nonexistent \
   -enable-cpu-rate -mount-conf=/opt/mount.yaml -seccomp-conf=/opt/seccomp.yaml
