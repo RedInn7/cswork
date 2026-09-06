@@ -78,7 +78,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     lessonId: 'lesson',
     title: '两数之和',
     difficulty: '简单',
-    tags: [],
+    tags: ['灵神题单', '数组'],
     description: 'DUPLICATE SUMMARY',
     input: 'ACM INPUT',
     output: 'ACM OUTPUT',
@@ -183,6 +183,21 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       null,
     );
     assert.equal(editor().value, templates.python);
+    assert.equal(
+      document.querySelector('.cs-statement-heading h2').textContent,
+      '1. 两数之和',
+    );
+    assert.ok(document.querySelector('.cs-statement-solved'));
+    assert.equal(document.querySelector('#problem-topics'), null);
+    await click(button('主题'));
+    assert.equal(document.querySelector('#problem-topics').textContent, '数组');
+    await click(button('主题'));
+    await choose('题面语言', 'en');
+    assert.equal(
+      document.querySelector('.cs-statement-heading h2').textContent,
+      '1. Two Sum',
+    );
+    await choose('题面语言', 'zh');
     assert.equal(
       document.querySelector('[aria-label="提交模式"]').value,
       'leetcode',
