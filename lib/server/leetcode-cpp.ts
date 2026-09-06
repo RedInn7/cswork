@@ -38,6 +38,60 @@ function cleanSnippet(snippet: string) {
   return snippet.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
 }
 
+// Restrict the lighter transport to a complete, ordinary official interface.
+// Anything we do not recognize keeps the general graph transport.
+function usesValueOnlyInterface(snippet: string, source: string) {
+  const platformType = /\b(?:TreeNode|ListNode|Node|Interval|MountainArray)\b/;
+  if (platformType.test(cleanSnippet(source))) return false;
+  const clean = cleanSnippet(snippet).trim();
+  const method =
+    /^class\s+Solution\s*\{\s*public:\s*([\w\s:<>,&]+?)\s+\w+\s*\(([^()]*)\)\s*\{\s*\}\s*};$/.exec(
+      clean,
+    );
+  if (!method) return false;
+  const valueType = (type: string): boolean => {
+    const value = type
+      .trim()
+      .replace(/^const\s+/, '')
+      .replace(/&$/, '')
+      .trim();
+    if (
+      /^(?:void|bool|char|int|long long|double|string|std::string)$/.test(value)
+    )
+      return true;
+    const vector = /^(?:std::)?vector\s*<([\s\S]+)>$/.exec(value);
+    return !!vector && valueType(vector[1]) && vector[1].trim() !== 'void';
+  };
+  if (!valueType(method[1])) return false;
+  try {
+    return constructorTypes(method[2]).every(valueType);
+  } catch {
+    return false;
+  }
+}
+
+function runtimeFor(snippet: string, source: string) {
+  const runtime = asset('runtime.hpp');
+  if (!usesValueOnlyInterface(snippet, source)) return runtime;
+  const start = runtime.indexOf('void Graph::load(const Json& input){');
+  const end = runtime.indexOf('template<class T> struct Method;', start);
+  if (start < 0 || end < 0) return runtime;
+  // Keep the same wire format, and fail closed if a graph is unexpectedly sent.
+  // Standard classes remain available; only unreachable transport is omitted.
+  return (
+    runtime.slice(0, start) +
+    `void Graph::load(const Json& input){
+    if(!input.array().empty())throw runtime_error("Unexpected graph for value-only interface");
+}
+Json Graph::serialize(){
+    if(!nodes.empty())throw runtime_error("Unexpected graph result for value-only interface");
+    return Json::Array{};
+}
+` +
+    runtime.slice(end)
+  );
+}
+
 function interfaceOf(snippet: string) {
   const clean = cleanSnippet(snippet);
   const className = /\bclass\s+(\w+)/.exec(clean)?.[1];
@@ -135,7 +189,7 @@ export function buildLeetCodeCpp(
 #line 1 "solution.cpp"
 ${source}
 #line 1 "cswork-driver.cpp"
-${asset('runtime.hpp')}
+${runtimeFor(snippet, source)}
 int main() {
   try {
     ios::sync_with_stdio(false);
