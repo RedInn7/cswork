@@ -244,7 +244,9 @@ export function StudyLibrary({
                     ? judgeAccess
                       ? '可以在 cswork 编写并提交'
                       : '站内练习需先开通对应课程'
-                    : '测试数据校验中'}
+                    : detail.caseStatus === 'missing'
+                      ? '测试数据待补充'
+                      : '测试数据待校验'}
                 </strong>
                 <p>
                   {canJudge(detail)
@@ -439,8 +441,10 @@ export function StudyLibrary({
                         <Check size={13} />
                         站内判题
                       </>
+                    ) : item.caseStatus === 'missing' ? (
+                      '测试数据待补充'
                     ) : (
-                      '测试数据校验中'
+                      '测试数据待校验'
                     )}
                   </span>
                 </span>
