@@ -126,6 +126,11 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   let pendingReads = 0;
   let terminalReads = 0;
   let freshSubmission;
+  let holdPost = false;
+  let releasePost;
+  let failWatch = false;
+  let watchReads = 0;
+  let failDetailOnce = false;
   let submitted = 0;
   let progressEvents = 0;
   const navigations = [];
@@ -135,6 +140,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   );
   globalThis.fetch = async (url, init) => {
     if (url.endsWith('/submissions') && init?.method === 'POST') {
+      if (holdPost)
+        await new Promise((resolve) => {
+          releasePost = resolve;
+        });
       const body = JSON.parse(init.body);
       freshSubmission = {
         ...historical,
@@ -145,9 +154,21 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       return Response.json({ id: freshSubmission.id, status: acknowledgement });
     }
     if (url.includes('/submissions/fresh-')) {
+      if (failDetailOnce) {
+        failDetailOnce = false;
+        throw new TypeError('detail unavailable');
+      }
+      if (url.includes('?wait=1')) {
+        watchReads++;
+        if (failWatch) throw new TypeError('watch unavailable');
+      }
       if (pendingReads-- > 0) {
         // The server finishes immediately after this in-flight snapshot.
-        return Response.json({ ...freshSubmission, status: 'judging' });
+        return Response.json({
+          ...freshSubmission,
+          status: 'judging',
+          watchToken: 'pending-1',
+        });
       }
       terminalReads++;
       return Response.json(freshSubmission);
@@ -292,7 +313,19 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       'sample runs must not celebrate',
     );
     outcome = 'wrong_answer';
-    await click(button('提交'));
+    holdPost = true;
+    await act(async () => button('提交').click());
+    assert.match(
+      document.querySelector('.cs-submitting').textContent,
+      /正在提交/,
+    );
+    assert.equal(
+      document.querySelector('.cs-result-content'),
+      null,
+      'previous result is cleared while uploading',
+    );
+    holdPost = false;
+    await act(async () => releasePost());
     assert.equal(document.querySelector('.cs-accepted-banner'), null);
     outcome = 'accepted';
     pendingReads = 1;
@@ -302,20 +335,15 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       await act(async () => {
         button('提交').click();
       });
-      const completedReadsBeforePoll = terminalReads;
-      await act(async () => t.mock.timers.tick(749));
-      assert.equal(terminalReads, completedReadsBeforePoll);
-      assert.equal(document.querySelector('.cs-accepted-banner'), null);
-      await act(async () => t.mock.timers.tick(1));
-      assert.equal(terminalReads, completedReadsBeforePoll + 1);
       assert.ok(
         document.querySelector('.cs-accepted-banner'),
-        'completed judge result should become visible after the 750ms poll and React flush',
+        'completed watch response must render immediately without a 750ms polling delay',
       );
+      const completedReadsBeforePoll = terminalReads;
       await act(async () => t.mock.timers.tick(3000));
       assert.equal(
         terminalReads,
-        completedReadsBeforePoll + 1,
+        completedReadsBeforePoll,
         'terminal feedback must stop polling',
       );
     } finally {
@@ -330,6 +358,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       'formal AC must open a result dialog, not only an inline banner',
     );
     assert.equal(progressEvents, 1);
+    assert.ok(watchReads > 0, 'active submission uses the watch endpoint');
     assert.equal(
       document.querySelector('.cs-accepted-banner').textContent.trim(),
       'Accepted',
@@ -349,6 +378,41 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       /Accepted/,
     );
     assert.equal(progressEvents, 2);
+    await click(
+      document.querySelector('[aria-label="Dismiss success message"]'),
+    );
+    failWatch = true;
+    pendingReads = 1;
+    t.mock.timers.enable({ apis: ['setTimeout'] });
+    try {
+      await act(async () => button('Submit').click());
+      assert.equal(document.querySelector('.cs-accepted-banner'), null);
+      await act(async () => t.mock.timers.tick(750));
+      assert.ok(
+        document.querySelector('.cs-accepted-banner'),
+        'unavailable watch falls back to ordinary polling',
+      );
+    } finally {
+      t.mock.timers.reset();
+      failWatch = false;
+    }
+    await click(
+      document.querySelector('[aria-label="Dismiss success message"]'),
+    );
+    failDetailOnce = true;
+    t.mock.timers.enable({ apis: ['setTimeout'] });
+    try {
+      await act(async () => button('Submit').click());
+      assert.equal(document.querySelector('.cs-accepted-banner'), null);
+      await act(async () => t.mock.timers.tick(750));
+      assert.ok(
+        document.querySelector('.cs-accepted-banner'),
+        'terminal POST receipt still retries missing details',
+      );
+      assert.equal(document.querySelector('.cs-inline-error'), null);
+    } finally {
+      t.mock.timers.reset();
+    }
     sessionStorage.setItem('cswork:oj:active:student:lc-1', freshSubmission.id);
     await act(async () =>
       root.render(

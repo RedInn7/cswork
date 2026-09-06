@@ -25,6 +25,7 @@ import {
 import {
   createSubmission,
   submissionDetail,
+  waitForSubmission,
   submissionHistory,
   cancelSubmission,
   ojStatus,
@@ -67,6 +68,12 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
       });
     }
     if (resource === 'submissions') {
+      if (id && url.searchParams.get('wait') === '1') {
+        await limit(p, 'oj-watch', 360);
+        const after = url.searchParams.get('after') || '';
+        if (after.length > 160) throw new HttpError(400, '无效的进度标记');
+        return json(await waitForSubmission(p, id, after, request.signal));
+      }
       await limit(p, 'oj-read', 240);
       return json(
         id

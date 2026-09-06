@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { setTimeout as delay } from 'node:timers/promises';
 import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import type { Language } from '@/lib/problems';
@@ -211,6 +212,96 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
       : null,
   };
 }
+// Only public state participates: no source code, test inputs or hidden outputs.
+function watchToken(
+  s: Pick<
+    SubmissionRow,
+    | 'status'
+    | 'passed'
+    | 'total'
+    | 'attempt'
+    | 'cancel_requested'
+    | 'updated_at'
+  >,
+) {
+  return [
+    s.status,
+    s.passed,
+    s.total,
+    s.attempt,
+    s.cancel_requested,
+    s.updated_at,
+  ].join(':');
+}
+const waitingByUser = new Map<string, number>();
+// Bounded connection-independent history also coalesces tokens that became stale
+// while a response was in flight. It contains no submission content.
+const lastWatchReply = new Map<string, { status: string; at: number }>();
+export async function waitForSubmission(
+  p: Person,
+  id: string,
+  after: string,
+  signal: AbortSignal,
+  timeoutMs = 3_000,
+) {
+  signal.throwIfAborted();
+  // Authorize before retaining a connection or reading any progress.
+  const initial = owned(p, id);
+  const key = `${p.id}:${id}`;
+  const previous = lastWatchReply.get(key);
+  const started = performance.now();
+  const progressAfter = previous ? previous.at + 500 : started + 500;
+  const reply = async () => {
+    const detail = await submissionDetail(p, id);
+    lastWatchReply.delete(key);
+    lastWatchReply.set(key, { status: detail.status, at: performance.now() });
+    if (lastWatchReply.size > 1024)
+      lastWatchReply.delete(lastWatchReply.keys().next().value!);
+    return detail;
+  };
+  if (
+    !ACTIVE.includes(initial.status) ||
+    (watchToken(initial) !== after &&
+      (!previous ||
+        previous.status !== initial.status ||
+        started >= progressAfter))
+  )
+    return reply();
+  const waiting = waitingByUser.get(p.id) ?? 0;
+  if (waiting >= 2) throw new HttpError(429, '等待中的请求过多，请稍后重试');
+  waitingByUser.set(p.id, waiting + 1);
+  // Vinext's current Node bridge does not propagate socket disconnects into
+  // Request.signal. Keep a short hard bound even when abort is unavailable.
+  const deadline = performance.now() + Math.min(3_000, Math.max(0, timeoutMs));
+  // Fetch only state on each tick; full cases are materialized once on return.
+  const query = sqlite().prepare(
+    'SELECT user_id,status,passed,total,attempt,cancel_requested,updated_at FROM submissions WHERE id=?',
+  );
+  try {
+    while (performance.now() < deadline) {
+      await delay(
+        Math.min(100, Math.max(1, deadline - performance.now())),
+        undefined,
+        { signal },
+      );
+      const current = query.get(id) as SubmissionRow | undefined;
+      if (!current || (current.user_id !== p.id && p.role !== 'teacher'))
+        throw new HttpError(404, '提交不存在');
+      if (
+        !ACTIVE.includes(current.status) ||
+        current.status !== initial.status ||
+        (watchToken(current) !== after && performance.now() >= progressAfter)
+      )
+        break;
+    }
+    signal.throwIfAborted();
+    return reply();
+  } finally {
+    const remaining = (waitingByUser.get(p.id) ?? 1) - 1;
+    if (remaining) waitingByUser.set(p.id, remaining);
+    else waitingByUser.delete(p.id);
+  }
+}
 export async function submissionDetail(p: Person, id: string) {
   const s = owned(p, id);
   const snapshot = s.problem_version_id
@@ -287,6 +378,7 @@ export async function submissionDetail(p: Person, id: string) {
       : undefined;
   return {
     ...summary(s),
+    watchToken: watchToken(s),
     code: s.code,
     cases,
     compileOutput: s.compile_output ?? '',

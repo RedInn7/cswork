@@ -266,6 +266,7 @@ function Workspace({
   const [cancelling, setCancelling] = useState(false);
   const [error, setError] = useState('');
   const [pollPaused, setPollPaused] = useState(false);
+  const [watchFallback, setWatchFallback] = useState(false);
   const [pollRevision, setPollRevision] = useState(0);
   const [loadingSubmission, setLoadingSubmission] = useState<string | null>(
     null,
@@ -532,17 +533,24 @@ function Workspace({
   }, [submission, activeStorageKey]);
 
   useEffect(() => {
-    if (!submission || !activeStatuses.has(submission.status) || pollPaused)
+    if (
+      !submission ||
+      !activeStatuses.has(submission.status) ||
+      pollPaused ||
+      submitting
+    )
       return;
     const controller = new AbortController();
-    const timer = setTimeout(async () => {
+    const watching = Boolean(submission.watchToken) && !watchFallback;
+    const read = async () => {
       try {
         const item = await ojRequest<OJSubmission>(
-          `submissions/${submission.id}`,
+          `submissions/${submission.id}${watching ? `?wait=1&after=${encodeURIComponent(submission.watchToken!)}` : ''}`,
           undefined,
           controller.signal,
         );
         if (controller.signal.aborted) return;
+        setError('');
         setSubmission(item);
         if (!activeStatuses.has(item.status)) {
           setHistoryRevision((n) => n + 1);
@@ -555,16 +563,28 @@ function Workspace({
         }
       } catch (e) {
         if (!controller.signal.aborted) {
-          setError((e as Error).message);
-          setPollPaused(true);
+          if (watching) setWatchFallback(true);
+          else {
+            setError((e as Error).message);
+            setPollPaused(true);
+          }
         }
       }
-    }, 750);
+    };
+    const timer = watching ? undefined : setTimeout(read, 750);
+    if (watching) void read();
     return () => {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [submission, pollPaused, pollRevision, activeStorageKey]);
+  }, [
+    submission,
+    pollPaused,
+    pollRevision,
+    activeStorageKey,
+    watchFallback,
+    submitting,
+  ]);
 
   function updateCode(next: string) {
     if (next === draft.current.code) return;
@@ -644,11 +664,13 @@ function Workspace({
     }
     busyRef.current = true;
     setSubmitting(true);
+    setSubmission(null);
     showConsole('result');
     setMobilePane('editor');
     setError('');
     setSuccess(null);
     setPollPaused(false);
+    setWatchFallback(false);
     persistDraft();
     const payload = {
       problemId: problem.id,
@@ -677,7 +699,9 @@ function Workspace({
       if (!alive.current) return;
       setSubmission({
         id: result.id,
-        status: result.status,
+        // A POST receipt has no result details; even a reused terminal job must
+        // remain queryable if its first detail request fails.
+        status: activeStatuses.has(result.status) ? result.status : 'pending',
         problem_id: problem.id,
         language,
         code,
@@ -1405,6 +1429,15 @@ function Workspace({
                     </>
                   )}
                 </>
+              ) : submitting && !submission ? (
+                <div
+                  className="cs-processing cs-submitting"
+                  role="status"
+                  aria-live="polite"
+                >
+                  <LoaderCircle size={20} className="cs-spin" />
+                  <p>{english ? 'Submitting…' : '正在提交…'}</p>
+                </div>
               ) : submission ? (
                 <SubmissionResult
                   submission={submission}
@@ -1437,6 +1470,7 @@ function Workspace({
               onClick={() => {
                 setError('');
                 setPollPaused(false);
+                setWatchFallback(false);
                 setPollRevision((n) => n + 1);
               }}
             >

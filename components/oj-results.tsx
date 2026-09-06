@@ -96,6 +96,9 @@ export function SubmissionResult({
   const cases = submission.cases || [];
   const current = cases[selected] || cases[0];
   const running = activeStatuses.has(submission.status);
+  const completedCases = cases.filter(
+    (item) => !activeStatuses.has(item.status) && item.status !== 'skipped',
+  ).length;
   const runtime =
     submission.runtimeMs ??
     (typeof submission.runtime === 'number' ? submission.runtime * 1000 : null);
@@ -116,6 +119,12 @@ export function SubmissionResult({
             )}
             {submission.queuedPosition != null && running && (
               <> · 队列位置 {submission.queuedPosition}</>
+            )}
+            {running && submission.total > 0 && (
+              <>
+                {' '}
+                · 已完成 {completedCases} / {submission.total} 个测试点
+              </>
             )}
           </span>
         </div>
