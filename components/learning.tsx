@@ -161,8 +161,12 @@ export function CourseList({
               )}
               <Tabs defaultValue="curriculum">
                 <TabsList variant="line">
-                  <TabsTrigger value="curriculum">课程目录</TabsTrigger>
-                  <TabsTrigger value="about">课程介绍</TabsTrigger>
+                  <TabsTrigger value="curriculum">
+                    {knowledge ? '主题目录' : '课程目录'}
+                  </TabsTrigger>
+                  <TabsTrigger value="about">
+                    {knowledge ? '阅读说明' : '课程介绍'}
+                  </TabsTrigger>
                 </TabsList>
                 <TabsContent value="curriculum">
                   {[
@@ -178,7 +182,7 @@ export function CourseList({
                               (l) => (l.section || '课程内容') === section,
                             ).length
                           }{' '}
-                          课
+                          {knowledge ? '篇' : '课'}
                         </small>
                       </div>
                       {c.lessons
@@ -253,18 +257,30 @@ export function CourseList({
                 </TabsContent>
                 <TabsContent value="about">
                   <div className="prose-content">
-                    <h3>关于本课程</h3>
+                    <h3>{knowledge ? '关于这些知识点' : '关于本课程'}</h3>
                     <p>{c.summary}</p>
-                    <h3>你会如何学习</h3>
+                    <h3>{knowledge ? '练习与进度' : '你会如何学习'}</h3>
                     <p>
-                      先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过
-                      GitHub 仓库或 PR
-                      交给老师评审。遇到问题时，直接从当前章节发起私密工单。
+                      {knowledge ? (
+                        '每篇正文后有配套题目、提示和当前轮次的通过状态。阅读标记与做题进度分别保存；提交通过后，题目会显示绿色勾选。'
+                      ) : (
+                        <>
+                          先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过
+                          GitHub 仓库或 PR
+                          交给老师评审。遇到问题时，直接从当前章节发起私密工单。
+                        </>
+                      )}
                     </p>
-                    <h3>课程权益</h3>
+                    <h3>{knowledge ? '访问权限' : '课程权益'}</h3>
                     <p>
-                      现有付费学员由老师按原购买记录开通当前 SDE
-                      课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。
+                      {knowledge ? (
+                        '已开通的学员可以阅读讲义、保存笔记，并在原有算法题库权限内完成配套练习。'
+                      ) : (
+                        <>
+                          现有付费学员由老师按原购买记录开通当前 SDE
+                          课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。
+                        </>
+                      )}
                     </p>
                   </div>
                 </TabsContent>
@@ -459,7 +475,11 @@ export function LessonReader({
           {interviewChapter ? '算法知识点' : course?.title || '我的课程'}
         </button>
         <ChevronRight size={14} />
-        <span>第 {String(lesson.position).padStart(2, '0')} 课</span>
+        <span>
+          {interviewChapter ? '主题' : '第'}{' '}
+          {String(lesson.position).padStart(2, '0')}
+          {interviewChapter ? '' : ' 课'}
+        </span>
       </div>
       <div className="reader-heading">
         <div>
