@@ -1101,3 +1101,344 @@
     transition: none;
   }
 }
+
+/* Focused problem workspace: keep writing, running and inspecting in one view. */
+.cs-workspace {
+  --cs-surface: #fff;
+  --cs-surface-soft: #f8f9fb;
+  --cs-canvas: #eef0f3;
+}
+.cs-workspace.expanded {
+  padding: 0 8px 8px;
+  background: var(--cs-canvas);
+}
+.cs-workspace .cs-workspace-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  min-height: 52px;
+  gap: 16px;
+  margin: 0;
+  padding: 4px 8px;
+}
+.cs-workspace .cs-workspace-heading {
+  gap: 10px;
+}
+.cs-workspace.expanded .cs-workspace-header {
+  margin-bottom: 0;
+}
+.cs-workspace-heading > div {
+  min-width: 0;
+}
+.cs-workspace .cs-workspace-header h1 {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.cs-workspace-eyebrow {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  margin-bottom: 2px;
+}
+.cs-workspace .cs-back {
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+}
+.cs-workspace .cs-workspace-run-actions {
+  gap: 6px;
+  justify-content: center;
+}
+.cs-workspace-run-actions > button {
+  height: 32px;
+  padding-inline: 14px;
+  font-size: 12px;
+  border-radius: 7px;
+  box-shadow: none;
+  white-space: nowrap;
+}
+.cs-workspace .cs-workspace-navigation {
+  justify-content: flex-end;
+  gap: 2px;
+}
+.cs-workspace-navigation .cs-top-button {
+  gap: 5px;
+  padding: 7px;
+  font-size: 11px;
+}
+.cs-workspace .cs-main-panels,
+.cs-workspace .cs-mobile-body {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+.cs-statement-pane,
+.cs-workbench {
+  border: 1px solid var(--cs-border);
+  border-radius: 9px;
+  overflow: hidden;
+  background: var(--cs-surface);
+}
+.cs-main-panels > [data-panel] {
+  overflow: hidden;
+}
+.cs-workspace .cs-separator {
+  background: var(--cs-canvas);
+  border: 0;
+}
+.cs-workspace .cs-separator.vertical {
+  width: 8px;
+}
+.cs-workspace .cs-separator.horizontal {
+  height: 8px;
+}
+.cs-workspace .cs-separator::after {
+  opacity: 0.55;
+}
+.cs-workspace .cs-separator:hover,
+.cs-workspace .cs-separator:focus-visible,
+.cs-workspace .cs-separator[data-separator='active'] {
+  background: #d6e1fa;
+}
+.cs-workspace .cs-pane-tabs {
+  background: var(--cs-surface-soft);
+  height: 40px;
+  padding-inline: 10px;
+}
+.cs-workspace .cs-pane-tabs > button {
+  padding-inline: 10px;
+  color: var(--cs-muted);
+}
+.cs-workspace .cs-pane-tabs > button.active {
+  color: var(--cs-blue);
+}
+.cs-code-caption {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 39px;
+  padding: 0 14px;
+  flex-shrink: 0;
+  background: var(--cs-surface-soft);
+  border-bottom: 1px solid var(--cs-border);
+  font-size: 12px;
+}
+.cs-code-caption > svg {
+  color: var(--cs-blue);
+}
+.cs-code-caption > strong {
+  font-weight: 600;
+}
+.cs-code-caption > span {
+  margin-left: auto;
+  color: var(--cs-muted);
+  font-size: 11px;
+}
+.cs-workspace .cs-editor-toolbar {
+  height: 36px;
+  padding: 0 8px;
+  background: var(--cs-surface);
+}
+.cs-workspace .cs-editor-controls {
+  width: 100%;
+  gap: 3px;
+}
+.cs-workspace .cs-editor-controls > select {
+  margin-right: auto;
+  max-width: min(50%, 260px);
+  min-width: 80px;
+  font-size: 12px;
+  color: var(--cs-muted);
+  background: var(--cs-surface);
+}
+.cs-workspace .cs-editor-controls > button {
+  flex-shrink: 0;
+}
+.cs-workspace .cs-editor-status {
+  font-size: 10px;
+  gap: 10px;
+  min-height: 26px;
+  background: var(--cs-surface-soft);
+  color: var(--cs-muted);
+}
+.cs-workspace .cs-console {
+  background: var(--cs-surface);
+}
+.cs-console-header {
+  display: flex;
+  align-items: center;
+  height: 42px;
+  min-height: 42px;
+  flex-shrink: 0;
+  background: var(--cs-surface-soft);
+  border-bottom: 1px solid var(--cs-border);
+}
+.cs-console-header .cs-pane-tabs {
+  flex: 1;
+  min-width: 0;
+  border-bottom: 0;
+  height: 100%;
+}
+.cs-console-toggle {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 28px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  color: var(--cs-muted);
+}
+.cs-console-toggle:hover {
+  color: var(--cs-blue);
+  background: #eaf0fc;
+}
+.cs-console.is-collapsed {
+  overflow: hidden;
+}
+.cs-console-scroll[hidden] {
+  display: none;
+}
+.cs-workspace .cs-statement-scroll {
+  padding: 22px 24px 32px;
+}
+.cs-workspace .cs-statement-scroll h2 {
+  font-size: 22px;
+  margin-top: 13px;
+}
+.cs-workspace .cs-problem-prose {
+  font-size: 14px;
+  line-height: 1.85;
+}
+.cs-workspace .cs-workspace-notice {
+  margin-bottom: 8px;
+}
+body:has(.cs-workspace.expanded) [data-slot='sidebar'],
+body:has(.cs-workspace.expanded) .workspace > .topbar,
+body:has(.cs-workspace.expanded) .workspace > footer {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cs-workspace[data-theme='dark'] {
+  --cs-border: #303947;
+  --cs-text: #dce2ec;
+  --cs-muted: #a0adbf;
+  --cs-blue: #91afff;
+  --cs-surface: #171d27;
+  --cs-surface-soft: #202733;
+  --cs-canvas: #10151d;
+}
+.cs-workspace[data-theme='dark'] .cs-code-caption,
+.cs-workspace[data-theme='dark'] .cs-workspace-header {
+  color: var(--cs-text);
+}
+.cs-workspace[data-theme='dark']
+  .cs-workspace-run-actions
+  > button:first-child {
+  background: var(--cs-surface-soft);
+  border-color: var(--cs-border);
+  color: var(--cs-text);
+}
+.cs-workspace[data-theme='dark'] .cs-top-button,
+.cs-workspace[data-theme='dark'] .cs-problem-prose,
+.cs-workspace[data-theme='dark'] .cs-problem-prose h3,
+.cs-workspace[data-theme='dark'] .cs-hints p,
+.cs-workspace[data-theme='dark'] .cs-output-block pre {
+  color: var(--cs-text);
+}
+.cs-workspace[data-theme='dark'] .cs-output-block,
+.cs-workspace[data-theme='dark'] .cs-hints,
+.cs-workspace[data-theme='dark'] .cs-custom-input,
+.cs-workspace[data-theme='dark'] .cs-segmented,
+.cs-workspace[data-theme='dark'] .cs-mobile-nav > button,
+.cs-workspace[data-theme='dark'] .cs-workspace-notice {
+  background: var(--cs-surface-soft);
+  border-color: var(--cs-border);
+  color: var(--cs-muted);
+}
+.cs-workspace[data-theme='dark'] .cs-segmented > button.active,
+.cs-workspace[data-theme='dark'] .cs-mobile-nav > button.active,
+.cs-workspace[data-theme='dark'] .cs-top-button:hover,
+.cs-workspace[data-theme='dark'] .cs-back:hover,
+.cs-workspace[data-theme='dark'] .cs-console-toggle:hover {
+  background: #2b3851;
+  color: var(--cs-blue);
+}
+.cs-workspace[data-theme='dark'] .cs-console {
+  --cs-border: #303947;
+}
+.cs-workspace[data-theme='dark'] .cs-topic-tag,
+.cs-workspace[data-theme='dark'] .cs-course-link {
+  border-color: var(--cs-border);
+  color: var(--cs-muted);
+}
+@media (max-width: 1100px) {
+  .cs-workspace-navigation .cs-top-button > span {
+    display: none;
+  }
+  .cs-workspace .cs-editor-status {
+    gap: 8px;
+    font-size: 9px;
+  }
+}
+@media (max-width: 540px) {
+  .cs-workspace.expanded {
+    padding: 0 5px 5px;
+  }
+  .cs-workspace .cs-workspace-header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 8px;
+    padding: 6px 3px;
+  }
+  .cs-workspace .cs-workspace-run-actions {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .cs-workspace-run-actions > button {
+    flex: 1;
+  }
+  .cs-workspace .cs-workspace-navigation {
+    grid-column: 2;
+    grid-row: 1;
+  }
+  .cs-workspace .cs-mobile-nav {
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+  .cs-workspace .cs-mobile-nav > button {
+    padding: 6px;
+  }
+  .cs-workspace .cs-statement-scroll {
+    padding: 18px;
+  }
+  .cs-workspace .cs-editor-status > span:nth-child(3),
+  .cs-workspace .cs-editor-status > span:nth-child(4) {
+    display: none;
+  }
+  .cs-workspace .cs-editor-status > span:nth-child(2) {
+    display: inline;
+  }
+  .cs-workspace .cs-sample-pair {
+    grid-template-columns: 1fr;
+  }
+}
+.cs-code-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.cs-code-panel > .cs-code-area {
+  flex: 1;
+  height: auto;
+  min-height: 0;
+}

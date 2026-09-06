@@ -5,12 +5,15 @@ import {
   Panel,
   Separator,
   useDefaultLayout,
+  usePanelRef,
 } from 'react-resizable-panels';
 import {
   ArrowLeft,
   BookOpen,
   Check,
   ChevronRight,
+  ChevronDown,
+  ChevronUp,
   Code2,
   Download,
   FileText,
@@ -148,7 +151,9 @@ function Workspace({
   const [mobilePane, setMobilePane] = useState<'statement' | 'editor'>(
     'statement',
   );
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
+  const consolePanel = usePanelRef();
+  const [consoleCollapsed, setConsoleCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [shortcutOpen, setShortcutOpen] = useState(false);
   const [replaceRequest, setReplaceRequest] = useState<ReplaceRequest | null>(
@@ -258,6 +263,16 @@ function Workspace({
     panelIds: ['code', 'console'],
     storage: safeLayoutStorage,
   });
+
+  function showConsole(tab: 'input' | 'result') {
+    setBottomTab(tab);
+    consolePanel.current?.expand();
+  }
+
+  // The mobile editor mounts only when selected; open results after that mount.
+  useEffect(() => {
+    if (bottomTab === 'result') consolePanel.current?.expand();
+  }, [submission?.id, mobilePane, bottomTab, consolePanel]);
 
   const persistDraft = useCallback((notify = true) => {
     if (!draft.current.key || !draftDirty.current) return;
@@ -496,6 +511,8 @@ function Workspace({
     }
     busyRef.current = true;
     setSubmitting(true);
+    showConsole('result');
+    setMobilePane('editor');
     setError('');
     setPollPaused(false);
     persistDraft();
@@ -799,11 +816,12 @@ function Workspace({
 
   const workbench = (
     <section className="cs-workbench" data-theme={settings.theme}>
+      <div className="cs-code-caption">
+        <Code2 size={15} />
+        <strong>代码</strong>
+        <span>{languageFiles[language]}</span>
+      </div>
       <div className="cs-editor-toolbar">
-        <div className="cs-file-label">
-          <Code2 size={15} />
-          <span>{languageFiles[language]}</span>
-        </div>
         <div className="cs-editor-controls">
           <select
             aria-label="编程语言"
@@ -863,66 +881,129 @@ function Workspace({
         className="cs-code-console"
         {...verticalLayout}
       >
-        <Panel id="code" defaultSize="66%" minSize="25%">
-          <div className="cs-code-area">
-            {ready ? (
-              <CodeEditor
-                key={language}
-                value={code}
-                language={language}
-                problemId={problem.id}
-                onIntelligenceStatus={setIntelligence}
-                onSuggestReady={(action) => {
-                  suggest.current = action;
-                }}
-                onChange={updateCode}
-                path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${languageFiles[language]}`}
-                settings={settings}
-                onRun={() => submit('run')}
-                onSubmit={() => submit('judge')}
-                onSave={persistDraft}
-                onCursor={(line, column) => setCursor({ line, column })}
-              />
-            ) : (
-              <div className="cs-editor-loading">正在恢复草稿…</div>
-            )}
+        <Panel id="code" defaultSize="70%" minSize="48px">
+          <div className="cs-code-panel">
+            <div className="cs-code-area">
+              {ready ? (
+                <CodeEditor
+                  key={language}
+                  value={code}
+                  language={language}
+                  problemId={problem.id}
+                  onIntelligenceStatus={setIntelligence}
+                  onSuggestReady={(action) => {
+                    suggest.current = action;
+                  }}
+                  onChange={updateCode}
+                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${languageFiles[language]}`}
+                  settings={settings}
+                  onRun={() => submit('run')}
+                  onSubmit={() => submit('judge')}
+                  onSave={persistDraft}
+                  onCursor={(line, column) => setCursor({ line, column })}
+                />
+              ) : (
+                <div className="cs-editor-loading">正在恢复草稿…</div>
+              )}
+            </div>
+            <div className="cs-editor-status">
+              <span
+                role="status"
+                title={intelligence.message}
+                className={`cs-intelligence-status ${intelligence.state === 'unavailable' ? 'cs-unsaved' : ''}`}
+              >
+                {intelligence.message}
+              </span>
+              <span className={saveError ? 'cs-unsaved' : ''}>
+                <i />
+                {saveStatus}
+              </span>
+              <span>
+                Ln {cursor.line}, Col {cursor.column}
+              </span>
+              <span>
+                {(codeBytes / 1024).toFixed(1)} / {maxCodeBytes / 1024} KB
+              </span>
+              <button
+                aria-label="键盘快捷键"
+                title="键盘快捷键"
+                onClick={() => setShortcutOpen(true)}
+              >
+                <Keyboard size={14} />
+              </button>
+            </div>
           </div>
         </Panel>
         <Separator
           className="cs-separator horizontal"
           aria-label="调整编辑器与控制台高度"
         />
-        <Panel id="console" defaultSize="34%" minSize="18%">
-          <section className="cs-console">
-            <div
-              className="cs-pane-tabs"
-              role="tablist"
-              aria-label="测试控制台"
-            >
-              <button
-                role="tab"
-                aria-selected={bottomTab === 'input'}
-                className={bottomTab === 'input' ? 'active' : ''}
-                onClick={() => setBottomTab('input')}
+        <Panel
+          id="console"
+          panelRef={consolePanel}
+          defaultSize="30%"
+          minSize="100px"
+          collapsible
+          collapsedSize="42px"
+          onResize={() => {
+            // ResizeObserver runs after the panel store applies its new layout.
+            // A short expanded panel must not be mistaken for a collapsed one.
+            setConsoleCollapsed(consolePanel.current?.isCollapsed() ?? false);
+          }}
+        >
+          <section
+            className={`cs-console ${consoleCollapsed ? 'is-collapsed' : ''}`}
+          >
+            <div className="cs-console-header">
+              <div
+                className="cs-pane-tabs"
+                role="tablist"
+                aria-label="测试控制台"
               >
-                <Terminal size={14} />
-                测试用例
-              </button>
+                <button
+                  role="tab"
+                  aria-selected={bottomTab === 'input'}
+                  className={bottomTab === 'input' ? 'active' : ''}
+                  onClick={() => showConsole('input')}
+                >
+                  <Terminal size={14} />
+                  测试用例
+                </button>
+                <button
+                  role="tab"
+                  aria-selected={bottomTab === 'result'}
+                  className={bottomTab === 'result' ? 'active' : ''}
+                  onClick={() => showConsole('result')}
+                >
+                  {pending ? (
+                    <LoaderCircle size={14} className="cs-spin" />
+                  ) : (
+                    <Check size={14} />
+                  )}
+                  运行结果
+                </button>
+              </div>
               <button
-                role="tab"
-                aria-selected={bottomTab === 'result'}
-                className={bottomTab === 'result' ? 'active' : ''}
-                onClick={() => setBottomTab('result')}
+                className="cs-console-toggle"
+                aria-label={
+                  consoleCollapsed ? '展开测试控制台' : '收起测试控制台'
+                }
+                aria-expanded={!consoleCollapsed}
+                title={consoleCollapsed ? '展开测试控制台' : '收起测试控制台'}
+                onClick={() => {
+                  if (consolePanel.current?.isCollapsed())
+                    consolePanel.current.expand();
+                  else consolePanel.current?.collapse();
+                }}
               >
-                {pending ? (
-                  <LoaderCircle size={14} className="cs-spin" />
+                {consoleCollapsed ? (
+                  <ChevronUp size={16} />
                 ) : (
-                  <Check size={14} />
+                  <ChevronDown size={16} />
                 )}
-                运行结果
               </button>
             </div>
-            <div className="cs-console-scroll">
+            <div className="cs-console-scroll" hidden={consoleCollapsed}>
               {bottomTab === 'input' ? (
                 <>
                   <div className="cs-input-toolbar">
@@ -1012,32 +1093,6 @@ function Workspace({
           </section>
         </Panel>
       </Group>
-      <div className="cs-editor-status">
-        <span
-          role="status"
-          title={intelligence.message}
-          className={`cs-intelligence-status ${intelligence.state === 'unavailable' ? 'cs-unsaved' : ''}`}
-        >
-          {intelligence.message}
-        </span>
-        <span className={saveError ? 'cs-unsaved' : ''}>
-          <i />
-          {saveStatus}
-        </span>
-        <span>
-          Ln {cursor.line}, Col {cursor.column}
-        </span>
-        <span>
-          {(codeBytes / 1024).toFixed(1)} / {maxCodeBytes / 1024} KB
-        </span>
-        <button
-          aria-label="键盘快捷键"
-          title="键盘快捷键"
-          onClick={() => setShortcutOpen(true)}
-        >
-          <Keyboard size={14} />
-        </button>
-      </div>
       {saveError && (
         <div className="cs-inline-error" role="alert">
           {saveError}
@@ -1069,53 +1124,16 @@ function Workspace({
           代码超过 {maxCodeBytes / 1024} KB 限制，请缩短后再提交。
         </div>
       )}
-      <div className="cs-editor-actions">
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={() =>
-            ask({
-              lessonId: problem.lessonId,
-              ...(submission ? { submissionId: submission.id } : {}),
-            })
-          }
-        >
-          <MessageSquare size={15} />
-          <span className="cs-ask-label">向老师提问</span>
-        </Button>
-        <div>
-          <Button
-            variant="outline"
-            disabled={
-              disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
-            }
-            onClick={() => submit('run')}
-            title="Ctrl / ⌘ + Enter"
-          >
-            <Play size={15} />
-            运行
-          </Button>
-          <Button
-            disabled={disabled}
-            onClick={() => submit('judge')}
-            title="Ctrl / ⌘ + Shift + Enter"
-          >
-            {submitting ? (
-              <LoaderCircle size={15} className="cs-spin" />
-            ) : (
-              <Send size={15} />
-            )}
-            {submitting ? '正在提交' : '提交解答'}
-          </Button>
-        </div>
-      </div>
     </section>
   );
 
   return (
-    <div className={`cs-workspace ${expanded ? 'expanded' : ''}`}>
+    <div
+      className={`cs-workspace ${expanded ? 'expanded' : ''}`}
+      data-theme={settings.theme}
+    >
       <div className="cs-workspace-header">
-        <div>
+        <div className="cs-workspace-heading">
           <button
             className="cs-back"
             aria-label="返回题库"
@@ -1124,13 +1142,58 @@ function Workspace({
             <ArrowLeft size={18} />
           </button>
           <div>
-            <span className="cs-workspace-eyebrow">CSWORK / PRACTICE</span>
+            <span className="cs-workspace-eyebrow">cswork / 题库</span>
             <h1>{problem.title}</h1>
           </div>
         </div>
-        <div>
+        <div className="cs-workspace-run-actions">
+          <Button
+            variant="outline"
+            disabled={
+              disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
+            }
+            onClick={() => submit('run')}
+            title="Ctrl / ⌘ + Enter"
+          >
+            {pending && submission?.mode === 'run' ? (
+              <LoaderCircle size={15} className="cs-spin" />
+            ) : (
+              <Play size={15} />
+            )}
+            运行
+          </Button>
+          <Button
+            disabled={disabled}
+            onClick={() => submit('judge')}
+            title="Ctrl / ⌘ + Shift + Enter"
+          >
+            {submitting || (draftActive && submission?.mode === 'judge') ? (
+              <LoaderCircle size={15} className="cs-spin" />
+            ) : (
+              <Send size={15} />
+            )}
+            {submitting ? '正在提交' : '提交解答'}
+          </Button>
+        </div>
+        <div className="cs-workspace-navigation">
           <button
             className="cs-top-button"
+            aria-label="向老师提问"
+            title="向老师提问"
+            onClick={() =>
+              ask({
+                lessonId: problem.lessonId,
+                ...(submission ? { submissionId: submission.id } : {}),
+              })
+            }
+          >
+            <MessageSquare size={15} />
+            <span>向老师提问</span>
+          </button>
+          <button
+            className="cs-top-button"
+            aria-label="相关课程"
+            title="相关课程"
             onClick={() => navigate('lesson', { lesson: problem.lessonId })}
           >
             <BookOpen size={15} />
@@ -1199,14 +1262,22 @@ function Workspace({
             className={`cs-main-panels ${settings.layout}`}
             {...horizontalLayout}
           >
-            <Panel id="statement" defaultSize="40%" minSize="24%">
+            <Panel
+              id="statement"
+              defaultSize="45%"
+              minSize={settings.layout === 'vertical' ? '140px' : '24%'}
+            >
               {description}
             </Panel>
             <Separator
               className={`cs-separator ${settings.layout === 'horizontal' ? 'vertical' : 'horizontal'}`}
               aria-label="调整题面与编辑器大小"
             />
-            <Panel id="workbench" defaultSize="60%" minSize="35%">
+            <Panel
+              id="workbench"
+              defaultSize="55%"
+              minSize={settings.layout === 'vertical' ? '250px' : '35%'}
+            >
               {workbench}
             </Panel>
           </Group>
