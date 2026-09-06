@@ -1,0 +1,1 @@
+ALTER TABLE `oj_precompile` ADD `language` text DEFAULT 'cpp' NOT NULL;

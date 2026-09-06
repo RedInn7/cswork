@@ -526,7 +526,7 @@ function precompileTick() {
         draft.coding_mode === 'leetcode'
           ? leetcodeSource(
               draft.problem_id,
-              'cpp',
+              draft.language,
               draft.code,
               spec.memoryLimit,
             ).source
@@ -535,13 +535,14 @@ function precompileTick() {
       const started = performance.now();
       const result = await compiledPrograms.warm(
         draft.user_id,
-        'cpp',
+        draft.language,
         source,
         interrupted,
       );
       console.info(
         JSON.stringify({
           event: 'oj_precompile',
+          language: draft.language,
           result,
           durationMs: Math.round(performance.now() - started),
         }),

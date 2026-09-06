@@ -326,6 +326,7 @@ export const ojPrecompile = sqliteTable(
     problemVersionId: text('problem_version_id').notNull(),
     code: text('code').notNull(),
     codingMode: text('coding_mode').notNull(),
+    language: text('language').notNull().default('cpp'),
     createdAt: integer('created_at').notNull(),
     expiresAt: integer('expires_at').notNull(),
   },

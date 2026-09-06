@@ -55,7 +55,7 @@ export function useIdlePrecompile({
       !enabled ||
       !userId ||
       userId === 'guest' ||
-      language !== 'cpp' ||
+      language === 'python' ||
       !meaningful ||
       meaningful === comparable(template)
     ) {
