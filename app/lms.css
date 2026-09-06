@@ -37,6 +37,97 @@
   overflow-wrap: anywhere;
   min-width: 0;
 }
+/* Course handouts use a reading hierarchy independent of compact messages. */
+.lms-markdown.lecture-markdown {
+  color: #374151;
+  font-size: 16px;
+  line-height: 1.85;
+}
+.lms-markdown.lecture-markdown h1 {
+  color: #111827;
+  font-size: clamp(24px, 3vw, 30px);
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  margin: 4px 0 28px;
+}
+.lms-markdown.lecture-markdown h2 {
+  color: #111827;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 44px 0 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #dce2e9;
+}
+.lms-markdown.lecture-markdown h3 {
+  color: #24354b;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.55;
+  margin: 30px 0 14px;
+}
+.lms-markdown.lecture-markdown h4,
+.lms-markdown.lecture-markdown h5,
+.lms-markdown.lecture-markdown h6 {
+  color: #24354b;
+  font-size: 17px;
+  font-weight: 700;
+  margin: 24px 0 12px;
+}
+.lms-markdown.lecture-markdown strong {
+  color: #111827;
+  font-weight: 700;
+}
+.lms-markdown.lecture-markdown p {
+  margin: 16px 0;
+}
+.lms-markdown.lecture-markdown li {
+  margin: 8px 0;
+}
+.lms-markdown.lecture-markdown a {
+  color: #1d4ed8;
+  text-decoration-thickness: 1px;
+}
+.lms-markdown.lecture-markdown :not(pre) > code {
+  color: #9d174d;
+  background: #f5f3f5;
+  border: 1px solid #e6e1e5;
+  padding: 2px 5px;
+  font-size: 0.875em;
+}
+.lms-markdown.lecture-markdown pre {
+  color: #e2e8f0;
+  background: #172033;
+  border-color: #172033;
+  padding: 20px;
+  margin: 24px 0;
+}
+.lms-markdown.lecture-markdown pre code {
+  color: inherit;
+  font-size: 14px;
+  line-height: 1.75;
+}
+.lms-markdown.lecture-markdown blockquote {
+  color: #475569;
+  background: #f1f5fb;
+  border-left: 4px solid #5278b8;
+  padding: 14px 20px;
+  margin: 24px 0;
+}
+.lms-markdown.lecture-markdown th {
+  color: #172033;
+  background: #edf2f7;
+  font-weight: 700;
+}
+.lms-markdown.lecture-markdown td {
+  color: #374151;
+}
+@media (max-width: 640px) {
+  .lms-markdown.lecture-markdown h2 { font-size: 21px; }
+  .lms-markdown.lecture-markdown h3 { font-size: 18px; }
+  .lms-markdown.lecture-markdown pre { padding: 16px; }
+}
 .lms-code-preview {
   height: 360px;
   min-height: 240px;
