@@ -14,6 +14,7 @@ import { Button } from './ui/button';
 import { api } from '@/lib/types';
 import type { LmsPage } from '@/lib/lms-types';
 import { CourseDiagram } from './course-diagram';
+import { AlgorithmDemo } from './algorithm-demo';
 export function formText(form: FormData, name: string): string {
   const value = form.get(name);
   return typeof value === 'string' ? value : '';
@@ -28,6 +29,13 @@ const markdownComponents: Components = {
     if (
       blocks.length === 1 &&
       isValidElement<{ className?: string; children?: unknown }>(code) &&
+      code.props.className?.split(/\s+/).includes('language-algorithm-demo') &&
+      typeof code.props.children === 'string'
+    )
+      return <AlgorithmDemo kind={code.props.children.trim()} />;
+    if (
+      blocks.length === 1 &&
+      isValidElement<{ className?: string; children?: unknown }>(code) &&
       code.props.className?.split(/\s+/).includes('language-mermaid') &&
       typeof code.props.children === 'string'
     )
@@ -35,7 +43,11 @@ const markdownComponents: Components = {
     return <pre>{children}</pre>;
   },
   a: ({ href, children }) => (
-    <a href={href} target="_blank" rel="noreferrer">
+    <a
+      href={href}
+      target={href?.startsWith('/?view=') ? undefined : '_blank'}
+      rel="noreferrer"
+    >
       {children}
     </a>
   ),

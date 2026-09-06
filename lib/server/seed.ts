@@ -1,12 +1,15 @@
 /// <reference types="vite/client" />
 import { database } from './env';
 import catalog from '@/content/catalog.json';
+import interviewCatalog from '@/content/interview-catalog.json';
+import { seedInterview } from './seed-interview';
 const bodies = import.meta.glob('/content/lectures/*.md', {
   eager: true,
   query: '?raw',
   import: 'default',
 }) as Record<string, string>;
 export async function seed() {
+  seedInterview(interviewCatalog, bodies);
   const db = database();
   if (await db.prepare("SELECT id FROM courses WHERE id='gomall'").first())
     return;
