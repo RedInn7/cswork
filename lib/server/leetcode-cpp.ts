@@ -7,9 +7,19 @@ const asset = (file: string) =>
 function context(problemId: number, snippet?: string, source?: string) {
   const raw = asset('context.hpp');
   const used = snippet === undefined ? null : cleanSnippet(snippet);
-  const definitions = [...raw.matchAll(/^(?:struct|class) (\w+) \{[\s\S]*?^};/gm)]
-    .filter((match) => used === null || new RegExp(`\\b${match[1]}\\b`).test(used))
-    .filter((match) => !source || !new RegExp(`\\b(?:struct|class)\\s+${match[1]}\\s*\\{`).test(cleanSnippet(source)))
+  const definitions = [
+    ...raw.matchAll(/^(?:struct|class) (\w+) \{[\s\S]*?^};/gm),
+  ]
+    .filter(
+      (match) => used === null || new RegExp(`\\b${match[1]}\\b`).test(used),
+    )
+    .filter(
+      (match) =>
+        !source ||
+        !new RegExp(`\\b(?:struct|class)\\s+${match[1]}\\s*\\{`).test(
+          cleanSnippet(source),
+        ),
+    )
     .map((match) => {
       let definition = match[0];
       if (problemId === 430 && match[1] === 'Node') {
@@ -32,15 +42,17 @@ function interfaceOf(snippet: string) {
   const clean = cleanSnippet(snippet);
   const className = /\bclass\s+(\w+)/.exec(clean)?.[1];
   if (!className) throw new Error('LeetCode C++ template has no class');
-  const methods = [...clean.matchAll(/\b(\w+)\s*\(([^)]*)\)\s*(?:const\s*)?\{/g)]
-    .map((match) => ({ name: match[1], parameters: match[2] }));
+  const methods = [
+    ...clean.matchAll(/\b(\w+)\s*\(([^)]*)\)\s*(?:const\s*)?\{/g),
+  ].map((match) => ({ name: match[1], parameters: match[2] }));
   return { className, methods };
 }
 
 function constructorTypes(parameters: string): string[] {
   if (!parameters.trim()) return [];
   const parts: string[] = [];
-  let start = 0, depth = 0;
+  let start = 0,
+    depth = 0;
   for (let i = 0; i < parameters.length; i++) {
     if (parameters[i] === '<') depth++;
     if (parameters[i] === '>') depth--;
@@ -51,19 +63,32 @@ function constructorTypes(parameters: string): string[] {
   }
   parts.push(parameters.slice(start));
   return parts.map((part) => {
-    const type = part.trim().replace(/\b[A-Za-z_]\w*\s*$/, '').trim();
-    if (!type || /[;{}#]/.test(type)) throw new Error('Invalid C++ constructor type');
+    const type = part
+      .trim()
+      .replace(/\b[A-Za-z_]\w*\s*$/, '')
+      .trim();
+    if (!type || /[;{}#]/.test(type))
+      throw new Error('Invalid C++ constructor type');
     return type;
   });
 }
 
-export function getLeetCodeCppTemplate(problemId: number, snippet: string): string {
+export function getLeetCodeCppTemplate(
+  problemId: number,
+  snippet: string,
+): string {
   interfaceOf(snippet);
-  return `${context(problemId, snippet)}\n${snippet.trim()}\n`;
+  // Platform types and standard headers belong to the judge/LSP context.
+  // Official node declarations are comments preceding the actual solution class.
+  return `${snippet.trim().replace(/^(?:\/\*[\s\S]*?\*\/\s*|\/\/[^\n]*(?:\n|$)\s*)+/, '')}\n`;
 }
 
 /** Produce native source only. Compilation and execution belong to go-judge. */
-export function buildLeetCodeCpp(problemId: number, source: string, snippet: string): string {
+export function buildLeetCodeCpp(
+  problemId: number,
+  source: string,
+  snippet: string,
+): string {
   const { className, methods } = interfaceOf(snippet);
   let body: string;
   if (problemId === 297 || problemId === 449) {
@@ -79,16 +104,21 @@ export function buildLeetCodeCpp(problemId: number, source: string, snippet: str
     answer = {result, request.at("args")};`;
   } else if (className === 'Solution') {
     const method = methods.find((method) => method.name !== className)?.name;
-    if (!method) throw new Error('LeetCode C++ template has no solution method');
+    if (!method)
+      throw new Error('LeetCode C++ template has no solution method');
     body = `Solution instance; answer = call(graph, instance, &Solution::${method}, request.at("args"));`;
   } else {
     const constructor = methods.find((method) => method.name === className);
-    if (!constructor) throw new Error('LeetCode C++ design template has no constructor');
+    if (!constructor)
+      throw new Error('LeetCode C++ design template has no constructor');
     const types = constructorTypes(constructor.parameters);
     const allowed = methods.filter((method) => method.name !== className);
-    const dispatch = allowed.map(({ name }, index) =>
-      `${index ? 'else ' : ''}if (operation == "${name}") result.push_back(call(graph, *instance, &${className}::${name}, parameters[i]).result);`,
-    ).join('\n      ');
+    const dispatch = allowed
+      .map(
+        ({ name }, index) =>
+          `${index ? 'else ' : ''}if (operation == "${name}") result.push_back(call(graph, *instance, &${className}::${name}, parameters[i]).result);`,
+      )
+      .join('\n      ');
     body = `const auto& operations = request.at("operations").array();
     const auto& parameters = request.at("parameters").array();
     if (operations.empty() || operations.size() != parameters.size() || operations[0].str() != "${className}") throw runtime_error("Invalid design trace");
@@ -133,3 +163,5 @@ int main() {
 }
 `;
 }
+
+export { context as getLeetCodeCppContext };

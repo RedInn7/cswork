@@ -176,6 +176,12 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       ),
     );
     await settle();
+    assert.ok(button('运行').closest('.cs-code-caption'));
+    assert.ok(button('提交').closest('.cs-code-caption'));
+    assert.equal(
+      document.querySelector('.cs-workspace-header .cs-editor-run-actions'),
+      null,
+    );
     assert.equal(editor().value, templates.python);
     assert.equal(
       document.querySelector('[aria-label="提交模式"]').value,

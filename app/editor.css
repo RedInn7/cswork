@@ -1114,7 +1114,7 @@
 }
 .cs-workspace .cs-workspace-header {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   min-height: 52px;
   gap: 16px;
   margin: 0;
@@ -1152,15 +1152,19 @@
   border-radius: 6px;
   background: transparent;
 }
-.cs-workspace .cs-workspace-run-actions {
-  gap: 6px;
-  justify-content: center;
+.cs-editor-run-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  flex-shrink: 0;
 }
-.cs-workspace-run-actions > button {
-  height: 32px;
-  padding-inline: 14px;
-  font-size: 12px;
-  border-radius: 7px;
+.cs-editor-run-actions > button {
+  height: 27px;
+  padding-inline: 9px;
+  gap: 5px;
+  font-size: 11px;
+  border-radius: 5px;
   box-shadow: none;
   white-space: nowrap;
 }
@@ -1238,9 +1242,11 @@
   font-weight: 600;
 }
 .cs-code-caption > span {
-  margin-left: auto;
   color: var(--cs-muted);
   font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .cs-workspace .cs-editor-toolbar {
   height: 36px;
@@ -1342,7 +1348,7 @@ body:has(.cs-workspace.expanded) .workspace > footer {
   color: var(--cs-text);
 }
 .cs-workspace[data-theme='dark']
-  .cs-workspace-run-actions
+  .cs-editor-run-actions
   > button:first-child {
   background: var(--cs-surface-soft);
   border-color: var(--cs-border);
@@ -1399,12 +1405,11 @@ body:has(.cs-workspace.expanded) .workspace > footer {
     gap: 5px 8px;
     padding: 6px 3px;
   }
-  .cs-workspace .cs-workspace-run-actions {
-    grid-column: 1 / -1;
-    grid-row: 2;
+  .cs-code-caption {
+    padding-inline: 9px;
   }
-  .cs-workspace-run-actions > button {
-    flex: 1;
+  .cs-code-caption > span {
+    display: none;
   }
   .cs-workspace .cs-workspace-navigation {
     grid-column: 2;

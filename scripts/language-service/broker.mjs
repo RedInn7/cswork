@@ -71,7 +71,12 @@ export class LanguageSession {
     this.dead = false;
     this.tail = Promise.resolve();
     this.timeoutMs = requestTimeoutMs;
-    const args = dockerArguments(this.name, this.language, image);
+    const args = dockerArguments(
+      this.name,
+      this.language,
+      image,
+      identity.cppContext,
+    );
     args[0] = 'create';
     this.creating = exec('docker', args, {
       timeout: 20000,
@@ -489,6 +494,12 @@ export function createBroker({
           'Document session closed; open a new editor document',
         );
       let session = sessions.get(key);
+      if (session && session.cppContext !== body.cppContext) {
+        if (session.pending)
+          throw new BrokerError(409, 'C++ context update pending');
+        await remove(key, session);
+        session = sessions.get(key);
+      }
       if (!session) {
         // No await between the capacity check and reservation.
         if (
@@ -501,6 +512,7 @@ export function createBroker({
             'Language service is busy; close another editor or retry shortly',
           );
         session = makeSession(body);
+        session.cppContext = body.cppContext;
         sessions.set(key, session);
       }
       try {

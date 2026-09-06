@@ -14,6 +14,10 @@ case "$1" in
     ;;
   cpp)
     printf '%s\n' '-std=c++20' '-Wall' '-Wextra' > /workspace/compile_flags.txt
+    if [ -n "${CSWORK_CPP_CONTEXT:-}" ]; then
+      printf '%s' "$CSWORK_CPP_CONTEXT" | base64 -d > /workspace/leetcode.hpp
+      printf '%s\n' '-include' '/workspace/leetcode.hpp' >> /workspace/compile_flags.txt
+    fi
     : > /workspace/main.cpp
     exec clangd-19 --background-index=false --clang-tidy=false --header-insertion=never --pch-storage=memory -j=1 --log=error
     ;;

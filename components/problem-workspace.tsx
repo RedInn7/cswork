@@ -1009,6 +1009,41 @@ function Workspace({
         <Code2 size={15} />
         <strong>代码</strong>
         <span>{editorFile}</span>
+        <div className="cs-editor-run-actions">
+          <Button
+            variant="ghost"
+            disabled={
+              disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
+            }
+            onClick={() => submit('run')}
+            title="Ctrl / ⌘ + Enter"
+          >
+            {pending && submission?.mode === 'run' ? (
+              <LoaderCircle size={15} className="cs-spin" />
+            ) : (
+              <Play size={15} />
+            )}
+            {english ? 'Run' : '运行'}
+          </Button>
+          <Button
+            disabled={disabled}
+            onClick={() => submit('judge')}
+            title="Ctrl / ⌘ + Shift + Enter"
+          >
+            {submitting || (draftActive && submission?.mode === 'judge') ? (
+              <LoaderCircle size={15} className="cs-spin" />
+            ) : (
+              <Send size={15} />
+            )}
+            {submitting
+              ? english
+                ? 'Submitting'
+                : '正在提交'
+              : english
+                ? 'Submit'
+                : '提交'}
+          </Button>
+        </div>
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
@@ -1379,41 +1414,6 @@ function Workspace({
             </span>
             <h1>{statement.title}</h1>
           </div>
-        </div>
-        <div className="cs-workspace-run-actions">
-          <Button
-            variant="outline"
-            disabled={
-              disabled || (inputMode === 'custom' && stdinBytes > maxStdinBytes)
-            }
-            onClick={() => submit('run')}
-            title="Ctrl / ⌘ + Enter"
-          >
-            {pending && submission?.mode === 'run' ? (
-              <LoaderCircle size={15} className="cs-spin" />
-            ) : (
-              <Play size={15} />
-            )}
-            {english ? 'Run' : '运行'}
-          </Button>
-          <Button
-            disabled={disabled}
-            onClick={() => submit('judge')}
-            title="Ctrl / ⌘ + Shift + Enter"
-          >
-            {submitting || (draftActive && submission?.mode === 'judge') ? (
-              <LoaderCircle size={15} className="cs-spin" />
-            ) : (
-              <Send size={15} />
-            )}
-            {submitting
-              ? english
-                ? 'Submitting'
-                : '正在提交'
-              : english
-                ? 'Submit'
-                : '提交解答'}
-          </Button>
         </div>
         <div className="cs-workspace-navigation">
           <button

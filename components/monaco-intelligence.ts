@@ -80,7 +80,14 @@ export function attachIntelligence(
   status: (value: IntelligenceStatus) => void,
 ): Monaco.IDisposable {
   register(monaco);
-  const identity = { problemId, language, documentId: crypto.randomUUID() };
+  const identity = {
+    problemId,
+    language,
+    documentId: crypto.randomUUID(),
+    codingMode: model.uri.path.split('/').includes('leetcode')
+      ? 'leetcode'
+      : 'acm',
+  };
   let disposed = false;
   let started = false;
   let timer: ReturnType<typeof setTimeout>;
