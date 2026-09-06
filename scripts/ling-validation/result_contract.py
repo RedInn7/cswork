@@ -8,11 +8,13 @@ from itertools import zip_longest
 KINDS = ('integer', 'string', 'integer-array', 'integer-set', 'string-set', 'integer-multiset')
 KINDS += ('nullable-integer-array','integer-rows')
 KINDS += ('integer-row-set','integer-bag-row-set','integer-row-multiset')
+KINDS += ('json-string-array','json-string-rows','float','float-array')
 ROW_KINDS = ('integer-row-set','integer-bag-row-set','integer-row-multiset')
 CHECKERS = {'integer':'tokens', 'string':'exact', 'integer-array':'tokens',
             'integer-set':'int-set', 'string-set':'string-set', 'integer-multiset':'int-multiset'}
 CHECKERS.update({'nullable-integer-array':'tokens','integer-rows':'tokens'})
 CHECKERS.update({kind:kind.replace('integer-','int-') for kind in ROW_KINDS})
+CHECKERS.update({'float':'float','float-array':'float-array'})
 MAX_OUTPUT_BYTES = 64 * 1024 * 1024
 MAX_ORACLE_BYTES = 32 * 1024 * 1024
 MAX_SET_ITEMS = 1_000_000
@@ -40,9 +42,19 @@ def validate_result(kind, value):
     """Strict typed oracle records; bool is not an integer result or array element."""
     if kind not in KINDS:
         raise ValueError('Unknown result kind')
-    if kind == 'integer':
+    if kind in ('float','float-array'):
+        values=[value] if kind=='float' else value
+        if type(values)is not list or len(values)>99999 or any(type(v) not in (int,float) or not math.isfinite(v) for v in values):raise ValueError('Expected bounded finite float result')
+    elif kind == 'integer':
         if type(value) is not int:
             raise ValueError('Expected an integer result')
+    elif kind in ('json-string-array','json-string-rows'):
+        if type(value)is not list or len(value)>MAX_SET_ITEMS:raise ValueError('Expected bounded JSON string array')
+        strings=value
+        if kind=='json-string-rows':
+            if any(type(row)is not list for row in value) or sum(map(len,value))>MAX_ROW_VALUES:raise ValueError('Expected bounded JSON string rows')
+            strings=(v for row in value for v in row)
+        if any(not valid_text(v) for v in strings):raise ValueError('Expected valid JSON strings')
     elif kind == 'string':
         if not valid_text(value) or '\r' in value or '\n' in value:
             raise ValueError('Expected a bounded single-line string without NUL/CR/LF')
@@ -70,8 +82,10 @@ def validate_result(kind, value):
 def format_result(kind, value):
     """Canonical stdout for stdin-mode reference wrappers and formal expected data."""
     validate_result(kind,value)
-    if kind=='integer':
+    if kind in ('integer','float'):
         result=str(value)+'\n'
+    elif kind in ('json-string-array','json-string-rows'):
+        result=json.dumps(value,ensure_ascii=False,separators=(',',':'),allow_nan=False)+'\n'
     elif kind=='string':
         result=value+'\n'
     elif kind=='string-set':
@@ -130,6 +144,18 @@ def parse_set_output(output,checker):
 
 
 def compare_output(checker,actual,expected,input=None):
+    from complex_design_semantics import IDS as COMPLEX_IDS,matches_complex_design
+    complex_id=next((pid for pid in COMPLEX_IDS if checker==f'design-lc-{pid}'),None)
+    if complex_id is not None:return matches_complex_design(complex_id,actual,expected,input)
+    if checker in ('float','float-array'):
+        from float_checkers import matches_floats
+        return matches_floats(actual,expected,checker=='float-array')
+    if checker=='fraction-lc-166':
+        from fraction_checker import matches_fraction
+        return matches_fraction(actual,input) and matches_fraction(expected,input)
+    from string_structures import string_structure_checker_id,matches_string_structure
+    string_id=string_structure_checker_id(checker)
+    if string_id is not None:return matches_string_structure(string_id,actual,expected)
     from semantic_checkers import semantic_checker_id,matches_semantic
     pid=semantic_checker_id(checker)
     if pid is not None:return isinstance(input,str) and matches_semantic(pid,actual,expected,input)
@@ -151,7 +177,14 @@ def compare_output(checker,actual,expected,input=None):
 def validate_expected_output(kind,output):
     if not valid_text(output):
         raise ValueError('Invalid or oversized formal expected output')
-    if kind in ROW_KINDS:
+    if kind in ('float','float-array'):
+        from float_checkers import parse_floats
+        if parse_floats(output,kind=='float-array') is None:raise ValueError('Invalid finite float output')
+    elif kind in ('json-string-array','json-string-rows'):
+        normalized=output.replace('\r\n','\n')
+        if not normalized.endswith('\n') or '\n' in normalized[:-1] or '\r' in normalized:raise ValueError('Expected one terminated JSON line')
+        validate_result(kind,json.loads(normalized))
+    elif kind in ROW_KINDS:
         if parse_row_collection(output,CHECKERS[kind]) is None:raise ValueError('Invalid integer row set')
     elif kind in ('integer-set','string-set','integer-multiset'):
         if parse_set_output(output,CHECKERS[kind]) is None:
@@ -222,13 +255,20 @@ def parse_row_set(output):
     return None if rows is None else set(rows)
 
 
-def compare_batch(stdout,expected,kind='integer',encoding='legacy-integer',semantic_id=None,args=None):
+def compare_batch(stdout,expected,kind='integer',encoding='legacy-integer',semantic_id=None,args=None,string_structure_id=None,checker=None,complex_design_id=None):
     """JSONL preserves one result per invocation; never flatten nested results."""
     if not isinstance(stdout,str) or not isinstance(expected,list):
         return False
     try:
         for value in expected:
             validate_result(kind,value)
+        if complex_design_id is not None:
+            from complex_design_semantics import IDS as COMPLEX_IDS
+            if type(complex_design_id)is not int or complex_design_id not in COMPLEX_IDS or kind!='string' or encoding!='jsonl-v1' or not isinstance(args,list) or len(args)!=len(expected) or checker!=f'design-lc-{complex_design_id}':return False
+        if string_structure_id is not None:
+            from string_structures import STRING_STRUCTURE_KINDS
+            if type(string_structure_id)is not int or STRING_STRUCTURE_KINDS.get(string_structure_id)!=kind or encoding!='jsonl-v1':return False
+        elif kind in ('json-string-array','json-string-rows'):return False
         if semantic_id is not None:
             from semantic_checkers import SEMANTIC_KINDS
             if type(semantic_id)is not int or SEMANTIC_KINDS.get(semantic_id)!=kind or encoding!='jsonl-v1' or not isinstance(args,list) or len(args)!=len(expected):return False
@@ -246,7 +286,19 @@ def compare_batch(stdout,expected,kind='integer',encoding='legacy-integer',seman
             return False
         for index,(line,value) in enumerate(zip(lines,expected)):
             decoded=json.loads(line,parse_constant=lambda value: (_ for _ in ()).throw(ValueError('Non-finite JSON')))
-            if semantic_id is not None:
+            if complex_design_id is not None:
+                validate_result(kind,decoded)
+                if not compare_output(checker,format_result(kind,decoded),format_result(kind,value),json.dumps(args[index],allow_nan=False)):return False
+            elif checker=='fraction-lc-166':
+                validate_result(kind,decoded)
+                if kind!='string' or not isinstance(args,list) or len(args)!=len(expected) or not compare_output(checker,format_result(kind,decoded),format_result(kind,value),json.dumps(args[index],allow_nan=False)):return False
+            elif kind in ('float','float-array'):
+                validate_result(kind,decoded)
+                if not compare_output(CHECKERS[kind],format_result(kind,decoded),format_result(kind,value)):return False
+            elif string_structure_id is not None:
+                validate_result(kind,decoded)
+                if not compare_output(f'strings-lc-{string_structure_id}',format_result(kind,decoded),format_result(kind,value)):return False
+            elif semantic_id is not None:
                 validate_result(kind,decoded)
                 if not compare_output(f'semantic-lc-{semantic_id}',format_result(kind,decoded),format_result(kind,value),json.dumps(args[index],allow_nan=False)):return False
             elif not same_result(kind,decoded,value):

@@ -1,4 +1,24 @@
 import {
+  COMPLEX_DESIGN_CHECKERS,
+  complexDesignCheckerId,
+} from '../lib/oj-complex-contract';
+import { matchesComplexDesign } from '../lib/oj-complex-design-checkers';
+import { parseFiniteFloats } from '../lib/oj-float-checkers';
+import { matchesFractionDecimal } from '../lib/oj-fraction-checker';
+import {
+  STRING_STRUCTURE_CHECKERS,
+  stringStructureCheckerId,
+  stringStructureKind,
+} from '../lib/oj-string-contract';
+import {
+  parseStringStructure,
+  validStringStructure,
+} from '../lib/oj-string-structures';
+import {
+  validSpecialIdentity,
+  validAuxiliaryIdentity,
+} from '../lib/oj-special-contract';
+import {
   SEMANTIC_CHECKERS,
   SEMANTIC_RESULT_KINDS,
   semanticCheckerId,
@@ -73,6 +93,10 @@ const resultKindSchema = z
     'integer-row-set',
     'integer-bag-row-set',
     'integer-row-multiset',
+    'json-string-array',
+    'json-string-rows',
+    'float',
+    'float-array',
   ])
   .default('integer');
 const oracleEncodingSchema = z
@@ -80,6 +104,9 @@ const oracleEncodingSchema = z
   .default('legacy-integer');
 const checkerSchema = z
   .enum([
+    'float',
+    'float-array',
+    'fraction-lc-166',
     'tokens',
     'exact',
     'int-set',
@@ -89,6 +116,8 @@ const checkerSchema = z
     'int-bag-row-set',
     'int-row-multiset',
     ...SEMANTIC_CHECKERS,
+    ...STRING_STRUCTURE_CHECKERS,
+    ...COMPLEX_DESIGN_CHECKERS,
   ])
   .default('tokens');
 const resourceLimitsSchema = z
@@ -126,6 +155,10 @@ const manifest = z
           oracleEncoding: oracleEncodingSchema,
           checker: checkerSchema,
           semanticId: z.number().int().optional(),
+          specialId: z.number().int().optional(),
+          auxiliaryId: z.number().int().optional(),
+          complexDesignId: z.number().int().optional(),
+          stringStructureId: z.number().int().optional(),
           resourceLimits: resourceLimitsSchema,
         }),
       )
@@ -156,6 +189,10 @@ const report = z
           oracleEncoding: oracleEncodingSchema,
           checker: checkerSchema,
           semanticId: z.number().int().optional(),
+          specialId: z.number().int().optional(),
+          auxiliaryId: z.number().int().optional(),
+          complexDesignId: z.number().int().optional(),
+          stringStructureId: z.number().int().optional(),
           resourceLimits: resourceLimitsSchema,
           checks: z.array(z.object({ passed: z.literal(true) })),
         }),
@@ -192,6 +229,10 @@ for (const record of manifest.problems) {
     entry?.oracleEncoding !== record.oracleEncoding ||
     entry?.checker !== record.checker ||
     entry?.semanticId !== record.semanticId ||
+    entry?.specialId !== record.specialId ||
+    entry?.auxiliaryId !== record.auxiliaryId ||
+    entry?.complexDesignId !== record.complexDesignId ||
+    entry?.stringStructureId !== record.stringStructureId ||
     entry?.resourceLimits.timeLimit !== record.resourceLimits.timeLimit ||
     entry?.resourceLimits.memoryLimit !== record.resourceLimits.memoryLimit ||
     entry?.resourceLimits.outputLimit !== record.resourceLimits.outputLimit ||
@@ -222,6 +263,13 @@ for (const record of manifest.problems) {
     throw new Error('Verification report provenance does not match manifest');
 }
 function validExpectedShape(kind: string, value: string) {
+  if (kind === 'float' || kind === 'float-array')
+    return parseFiniteFloats(value, kind === 'float-array') !== null;
+  if (kind === 'json-string-array' || kind === 'json-string-rows')
+    return (
+      parseStringStructure(kind === 'json-string-array' ? 68 : 49, value) !==
+      null
+    );
   if (
     ['integer-row-set', 'integer-bag-row-set', 'integer-row-multiset'].includes(
       kind,
@@ -274,6 +322,14 @@ function validExpectedShape(kind: string, value: string) {
   return tokens.next().done === true;
 }
 function typedOracleResult(kind: string, value: unknown): boolean {
+  const finite = (v: unknown) =>
+    (typeof v === 'number' || typeof v === 'bigint') &&
+    Number.isFinite(Number(v));
+  if (kind === 'float') return finite(value);
+  if (kind === 'float-array')
+    return Array.isArray(value) && value.length <= 99999 && value.every(finite);
+  if (kind === 'json-string-array' || kind === 'json-string-rows')
+    return validStringStructure(kind === 'json-string-array' ? 68 : 49, value);
   if (
     ['integer-row-set', 'integer-bag-row-set', 'integer-row-multiset'].includes(
       kind,
@@ -361,6 +417,38 @@ const packages = manifest.problems.map((record) => {
   if (createHash('sha256').update(raw).digest('hex') !== record.packageSha256)
     throw new Error(`Changed verified package: ${record.problemId}`);
   const payload = validateProblemPackage(JSON.parse(raw.toString('utf8')));
+  if (!validSpecialIdentity(record.specialId, record.problemId))
+    throw new Error('Invalid special adapter identity');
+  if (!validAuxiliaryIdentity(record.auxiliaryId, record.problemId))
+    throw new Error('Invalid auxiliary identity');
+  const complexId = complexDesignCheckerId(record.checker);
+  if (
+    (complexId !== null &&
+      (record.complexDesignId !== complexId ||
+        record.problemId !== `lc-${complexId}` ||
+        record.resultKind !== 'string' ||
+        record.oracleEncoding !== 'jsonl-v1')) ||
+    (complexId === null && record.complexDesignId !== undefined)
+  )
+    throw new Error('Invalid fixed complex design binding');
+  const fraction = record.checker === 'fraction-lc-166';
+  if (
+    fraction &&
+    (record.problemId !== 'lc-166' ||
+      record.resultKind !== 'string' ||
+      record.oracleEncoding !== 'jsonl-v1')
+  )
+    throw new Error('Invalid fraction identity');
+  const stringId = stringStructureCheckerId(record.checker);
+  if (
+    (stringId !== null &&
+      (record.stringStructureId !== stringId ||
+        record.problemId !== `lc-${stringId}` ||
+        stringStructureKind(stringId) !== record.resultKind ||
+        record.oracleEncoding !== 'jsonl-v1')) ||
+    (stringId === null && record.stringStructureId !== undefined)
+  )
+    throw new Error('Invalid fixed string checker binding');
   const semanticId = semanticCheckerId(record.checker);
   if (
     (semanticId !== null &&
@@ -374,7 +462,7 @@ const packages = manifest.problems.map((record) => {
       'Semantic identity or result type does not match verification',
     );
   const requiredChecker =
-    semanticId !== null
+    complexId !== null || fraction || stringId !== null || semanticId !== null
       ? record.checker
       : {
           integer: 'tokens',
@@ -388,9 +476,17 @@ const packages = manifest.problems.map((record) => {
           'integer-bag-row-set': 'int-bag-row-set',
           'integer-row-multiset': 'int-row-multiset',
           'string-set': 'string-set',
+          float: 'float',
+          'float-array': 'float-array',
+          'json-string-array': undefined,
+          'json-string-rows': undefined,
         }[record.resultKind];
   if (
     payload.problem.semanticId !== record.semanticId ||
+    payload.problem.specialId !== record.specialId ||
+    payload.problem.auxiliaryId !== record.auxiliaryId ||
+    payload.problem.complexDesignId !== record.complexDesignId ||
+    payload.problem.stringStructureId !== record.stringStructureId ||
     payload.problem.checker !== requiredChecker ||
     payload.problem.checker !== record.checker ||
     payload.problem.timeLimit !== record.resourceLimits.timeLimit ||
@@ -446,10 +542,30 @@ const packages = manifest.problems.map((record) => {
       resultKind?: unknown;
       oracleEncoding?: unknown;
       semanticId?: unknown;
+      specialId?: unknown;
+      auxiliaryId?: unknown;
+      complexDesignId?: unknown;
+      stringStructureId?: unknown;
       args?: unknown;
       expected?: unknown;
     };
     if (
+      oracle.stringStructureId !==
+        (record.stringStructureId === undefined
+          ? undefined
+          : BigInt(record.stringStructureId)) ||
+      oracle.complexDesignId !==
+        (record.complexDesignId === undefined
+          ? undefined
+          : BigInt(record.complexDesignId)) ||
+      oracle.auxiliaryId !==
+        (record.auxiliaryId === undefined
+          ? undefined
+          : BigInt(record.auxiliaryId)) ||
+      oracle.specialId !==
+        (record.specialId === undefined
+          ? undefined
+          : BigInt(record.specialId)) ||
       oracle.semanticId !==
         (record.semanticId === undefined
           ? undefined
@@ -467,6 +583,40 @@ const packages = manifest.problems.map((record) => {
       throw new Error(
         'Oracle type or count does not match verified result protocol',
       );
+    if (complexId !== null) {
+      const args = oracle.args as unknown[];
+      if (
+        !(oracle.expected as unknown[]).every((value, index) =>
+          matchesComplexDesign(
+            complexId,
+            String(value) + '\n',
+            String(value) + '\n',
+            JSON.stringify(args[index], (_key, v: unknown) => {
+              if (typeof v !== 'bigint') return v;
+              const n = Number(v);
+              if (!Number.isSafeInteger(n))
+                throw new Error('Unsafe complex oracle integer');
+              return n;
+            }),
+          ),
+        )
+      )
+        throw new Error('Invalid complex oracle input or result');
+    }
+    if (fraction) {
+      const args = oracle.args as unknown[];
+      if (
+        !(oracle.expected as unknown[]).every((value, index) =>
+          matchesFractionDecimal(
+            String(value) + '\n',
+            JSON.stringify(args[index], (_key, v: unknown) =>
+              typeof v === 'bigint' ? Number(v) : v,
+            ),
+          ),
+        )
+      )
+        throw new Error('Invalid fraction oracle arguments or expected value');
+    }
     if (semanticId !== null) {
       const args = oracle.args as unknown[];
       if (

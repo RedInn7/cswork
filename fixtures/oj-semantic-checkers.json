@@ -1056,6 +1056,110 @@
       "expected": "0\n",
       "actual": "0\n",
       "accepted": false
+    },
+    {
+      "name": "708 insert before wrap",
+      "id": 708,
+      "input": "[[3,4,1],2]",
+      "expected": "4\n3 4 1 2\n",
+      "actual": "4\n3 4 1 2\n",
+      "accepted": true
+    },
+    {
+      "name": "708 unsorted wrap",
+      "id": 708,
+      "input": "[[3,4,1],2]",
+      "expected": "4\n3 4 1 2\n",
+      "actual": "4\n3 1 2 4\n",
+      "accepted": false
+    },
+    {
+      "name": "708 head rotated",
+      "id": 708,
+      "input": "[[3,4,1],2]",
+      "expected": "4\n3 4 1 2\n",
+      "actual": "4\n1 2 3 4\n",
+      "accepted": false
+    },
+    {
+      "name": "708 missing inserted node",
+      "id": 708,
+      "input": "[[3,4,1],2]",
+      "expected": "4\n3 4 1 2\n",
+      "actual": "3\n3 4 1\n",
+      "accepted": false
+    },
+    {
+      "name": "708 equal cycle",
+      "id": 708,
+      "input": "[[1,1],1]",
+      "expected": "3\n1 1 1\n",
+      "actual": "3\n1 1 1\n",
+      "accepted": true
+    },
+    {
+      "name": "708 empty original",
+      "id": 708,
+      "input": "[[],5]",
+      "expected": "1\n5\n",
+      "actual": "1\n5\n",
+      "accepted": true
+    },
+    {
+      "name": "708 wrong inserted value",
+      "id": 708,
+      "input": "[[],5]",
+      "expected": "1\n5\n",
+      "actual": "1\n6\n",
+      "accepted": false
+    },
+    {
+      "name": "652 first representatives",
+      "id": 652,
+      "input": "[[1,2,3,4,null,2,4,null,null,4]]",
+      "expected": "2\n1 3\n",
+      "actual": "2\n1 3\n",
+      "accepted": true
+    },
+    {
+      "name": "652 alternate representatives reversed",
+      "id": 652,
+      "input": "[[1,2,3,4,null,2,4,null,null,4]]",
+      "expected": "2\n1 3\n",
+      "actual": "2\n6 4\n",
+      "accepted": true
+    },
+    {
+      "name": "652 duplicate structural class",
+      "id": 652,
+      "input": "[[1,2,3,4,null,2,4,null,null,4]]",
+      "expected": "2\n1 3\n",
+      "actual": "2\n3 5\n",
+      "accepted": false
+    },
+    {
+      "name": "652 missing class",
+      "id": 652,
+      "input": "[[1,2,3,4,null,2,4,null,null,4]]",
+      "expected": "2\n1 3\n",
+      "actual": "1\n3\n",
+      "accepted": false
+    },
+    {
+      "name": "652 nonduplicate subtree",
+      "id": 652,
+      "input": "[[1,2,3,4,null,2,4,null,null,4]]",
+      "expected": "2\n1 3\n",
+      "actual": "2\n0 3\n",
+      "accepted": false
+    },
+    {
+      "name": "652 invalid node identity",
+      "id": 652,
+      "input": "[[1,2,3,4,null,2,4,null,null,4]]",
+      "expected": "2\n1 3\n",
+      "actual": "2\n1 9\n",
+      "accepted": false
     }
   ]
 }

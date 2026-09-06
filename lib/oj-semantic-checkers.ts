@@ -1,7 +1,7 @@
 /** Fixed validators for problems whose correct answer is not unique. */
 export const SEMANTIC_IDS = [
   5, 1044, 1092, 1249, 767, 1405, 162, 324, 870, 368, 210, 269, 373, 2392, 701,
-  108, 450, 109, 1171,
+  108, 450, 109, 1171, 708, 652,
 ] as const;
 export type SemanticId = (typeof SEMANTIC_IDS)[number];
 
@@ -46,7 +46,8 @@ function rows(output: string): number[][] | null {
 }
 function line(output: string): string | null {
   const normalized = output.replace(/\r\n/g, '\n');
-  return normalized.endsWith('\n') && !/[\r\n\0]/.test(normalized.slice(0, -1))
+  return normalized.endsWith('\n') &&
+    !['\r', '\n', '\0'].some((c) => normalized.slice(0, -1).includes(c))
     ? normalized.slice(0, -1)
     : null;
 }
@@ -159,6 +160,73 @@ export function matchesSemantic(
   try {
     const args: unknown[] = JSON.parse(input);
     if (!Array.isArray(args)) return false;
+    if (id === 708) {
+      if (
+        args.length !== 2 ||
+        !Array.isArray(args[0]) ||
+        !args[0].every(Number.isSafeInteger) ||
+        !Number.isSafeInteger(args[1])
+      )
+        return false;
+      const original = args[0] as number[],
+        value = args[1] as number,
+        got = integers(actual);
+      if (!got || got.length !== original.length + 1) return false;
+      if (!original.length) return got[0] === value;
+      if (
+        got[0] !== original[0] ||
+        got.filter((v, i) => v > got[(i + 1) % got.length]).length > 1
+      )
+        return false;
+      let j = 0,
+        skipped = false;
+      for (const v of got) {
+        if (j < original.length && v === original[j]) j++;
+        else if (!skipped && v === value) skipped = true;
+        else return false;
+      }
+      return j === original.length && skipped;
+    }
+    if (id === 652) {
+      if (args.length !== 1) return false;
+      const root = tree(args[0]),
+        got = integers(actual);
+      if (root === false || !got) return false;
+      const nodes: Node[] = root ? [root] : [];
+      for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].l) nodes.push(nodes[i].l!);
+        if (nodes[i].r) nodes.push(nodes[i].r!);
+      }
+      const signatures = new Map<string, number>(),
+        byNode = new Map<Node, number>(),
+        counts = new Map<number, number>();
+      for (let i = nodes.length - 1; i >= 0; i--) {
+        const n = nodes[i],
+          key = JSON.stringify([
+            n.v,
+            n.l ? byNode.get(n.l) : 0,
+            n.r ? byNode.get(n.r) : 0,
+          ]);
+        if (!signatures.has(key)) signatures.set(key, signatures.size + 1);
+        const signature = signatures.get(key)!;
+        byNode.set(n, signature);
+        counts.set(signature, (counts.get(signature) || 0) + 1);
+      }
+      const wanted = new Set(
+        [...counts]
+          .filter(([, count]) => count > 1)
+          .map(([signature]) => signature),
+      );
+      if (
+        got.some((i) => i < 0 || i >= nodes.length) ||
+        got.length !== wanted.size
+      )
+        return false;
+      return (
+        new Set(got.map((i) => byNode.get(nodes[i]))).size === wanted.size &&
+        got.every((i) => wanted.has(byNode.get(nodes[i])!))
+      );
+    }
     if ([5, 1044, 1092, 1249, 767, 1405, 269].includes(id)) {
       const got = line(actual),
         want = line(expected);
@@ -167,7 +235,7 @@ export function matchesSemantic(
         return (
           got.length === want.length &&
           (args[0] as string).includes(got) &&
-          got === [...got].reverse().join('')
+          got === Array.from(got).reverse().join('')
         );
       if (id === 1044) {
         const s = args[0] as string,
@@ -200,22 +268,23 @@ export function matchesSemantic(
       if (id === 767)
         return want === ''
           ? got === ''
-          : sameBag([...got], [...(args[0] as string)]) &&
-              ![...got].some((c, i) => i > 0 && c === got[i - 1]);
+          : sameBag(Array.from(got), Array.from(args[0] as string)) &&
+              !Array.from(got).some((c, i) => i > 0 && c === got[i - 1]);
       if (id === 1405)
         return (
           got.length === want.length &&
           !/[^abc]|aaa|bbb|ccc/.test(got) &&
           ['a', 'b', 'c'].every(
             (c, i) =>
-              [...got].filter((x) => x === c).length <= (args[i] as number),
+              Array.from(got).filter((x) => x === c).length <=
+              (args[i] as number),
           )
         );
       const words = args[0] as string[];
       if (!want.length) return !got.length;
       const letters = [...new Set(words.join(''))];
-      if (!sameBag([...got], letters)) return false;
-      const position = new Map([...got].map((c, i) => [c, i]));
+      if (!sameBag(Array.from(got), letters)) return false;
+      const position = new Map(Array.from(got).map((c, i) => [c, i]));
       for (let i = 1; i < words.length; i++) {
         const a = words[i - 1],
           b = words[i];
@@ -266,7 +335,7 @@ export function matchesSemantic(
       }
       if (id === 368) {
         const nums = new Set(args[0] as number[]),
-          sorted = [...got].sort((a, b) => a - b);
+          sorted = Array.from(got).sort((a, b) => a - b);
         return (
           got.length === want.length &&
           new Set(got).size === got.length &&

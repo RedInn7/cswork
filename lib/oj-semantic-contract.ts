@@ -17,6 +17,8 @@ export const SEMANTIC_RESULT_KINDS: Record<SemanticId, string> = {
   368: 'integer-array',
   210: 'integer-array',
   1171: 'integer-array',
+  708: 'integer-array',
+  652: 'integer-array',
   373: 'integer-rows',
   2392: 'integer-rows',
   701: 'nullable-integer-array',

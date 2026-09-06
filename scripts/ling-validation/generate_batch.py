@@ -9,6 +9,9 @@ import re
 from pathlib import Path
 from result_contract import KINDS, CHECKERS, validate_result, format_result, resource_limits, MAX_ORACLE_BYTES
 from reference_adapters import ADAPTERS
+from complex_design_semantics import IDS as COMPLEX_IDS, CLASSES as COMPLEX_CLASSES, METHODS as COMPLEX_METHODS, matches_complex_design
+from string_structures import STRING_STRUCTURE_KINDS
+from special_node_codec import SPECIAL_IDS
 from semantic_checkers import SEMANTIC_KINDS, matches_semantic
 
 BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1', 'selected_arrays1', 'selected_dp1', 'selected_windows1', 'selected_inplace1')
@@ -17,7 +20,7 @@ BATCHES += ('selected_dp2',)
 BATCHES += ('selected_lists1',)
 BATCHES += ('selected_graphs1','selected_search1')
 BATCHES += ('selected_trees2',)
-BATCHES += ('selected_design1','selected_structured1','selected_enumeration1','selected_semantic1','selected_final_basic')
+BATCHES += ('selected_design1','selected_structured1','selected_enumeration1','selected_semantic1','selected_final_basic','selected_nodes1','selected_strings1','selected_final6','selected_complex_design1')
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 REFERENCE_FILES.update({1235:'Solution2.py',2008:'Solution2.py',2140:'Solution2.py',2369:'Solution2.py',1438:'Solution3.py'})
@@ -44,9 +47,14 @@ REFERENCE_REASONS = {
     1510: 'Downloaded cached recursive Solution.py raises RecursionError at n=100000 in the Python sandbox despite the raised recursion limit. Reviewed Solution2.py uses iterative dynamic programming; maximum-size cases are preserved.',
     1971: 'Downloaded Solution.py checks vis but never adds a visited node; DFS can recurse forever along an undirected edge. Sandbox validation exposed the failure. Reviewed Solution2.py uses BFS and records visited nodes.',
 }
+AUTHORED_REFERENCES = {
+ 37: dict(sha256='425bcbf60b182bc238d5fd704030d29adf6eab345255d7ba2fdc9ff55a09be13',reason='Downloaded Sudoku reference exceeded the unchanged 2-second CPU limit on a legal uniquely solvable sparse puzzle. Reviewed authored exact-cover solver preserves all original constraints and pressure; independently checked on 226 model cases and independently reviewed on 171 puzzles.'),
+ 2353: dict(sha256='171dc263bb1da624dca0dd5500e13d260feb57d010f452c370ab5876746e8037',reason='Primary FoodRatings reference depends on unavailable SortedList; secondary also depends on SortedList and Python-2 izip. Reviewed authored standard-library heap with revision-based lazy invalidation passed independent scanning-model comparisons on 144 traces of 100 operations and a 20000-food/20000-operation pressure.',source='397e8b69805b14e794593e4dd423f800453120e4296b60a3dfd341fc7f81602c',readmeEn='8832b30cbb314d5b23d1ccddc656fcca39da025dcd5c21a8e0523d4ed3a2f1be',readmeZh='dca2cde63165e70de104195080384e85708b2dec4dbd94ebe693bd7fa72818a5'),
+}
 PREFIX = '''from operator import *
 from string import ascii_lowercase
-from random import randint
+from random import randint, choice
+import random
 from typing import *
 from collections import *
 from functools import *
@@ -80,13 +88,22 @@ def result_settings(spec):
     kind=spec.get('resultKind','integer')
     if kind not in KINDS:
         raise ValueError('Unsupported result kind')
+    complex_id=spec.get('complexDesignId')
+    if complex_id is not None and (type(complex_id)is not int or complex_id not in COMPLEX_IDS or kind!='string' or spec.get('semanticId') is not None or spec.get('stringStructureId') is not None):raise ValueError('Invalid complex design contract')
+    strings=spec.get('stringStructureId')
+    if strings is not None and (type(strings)is not int or STRING_STRUCTURE_KINDS.get(strings)!=kind):raise ValueError('Invalid string structure contract')
+    if kind.startswith('json-string-') and strings is None:raise ValueError('Missing fixed string checker')
     semantic=spec.get('semanticId')
+    if strings is not None and semantic is not None:raise ValueError('Conflicting checker metadata')
     if semantic is not None and (type(semantic)is not int or SEMANTIC_KINDS.get(semantic)!=kind):raise ValueError('Invalid semantic result contract')
     encoding=spec.get('oracleEncoding','legacy-integer' if kind=='integer' and semantic is None else 'jsonl-v1')
     if semantic is not None and encoding!='jsonl-v1':raise ValueError('Semantic oracle requires JSONL')
     if encoding not in ('legacy-integer','jsonl-v1') or kind!='integer' and encoding!='jsonl-v1':
         raise ValueError('Non-integer results require jsonl-v1')
-    required=f'semantic-lc-{semantic}' if semantic is not None else CHECKERS[kind]
+    required=f'design-lc-{complex_id}' if complex_id is not None else f'strings-lc-{strings}' if strings is not None else f'semantic-lc-{semantic}' if semantic is not None else CHECKERS[kind]
+    if spec.get('checker')=='fraction-lc-166':
+        if kind!='string' or complex_id is not None or semantic is not None or strings is not None:raise ValueError('Invalid fraction result contract')
+        required='fraction-lc-166'
     checker=spec.get('checker',required)
     if checker!=required:
         raise ValueError('Result kind and checker disagree')
@@ -101,6 +118,11 @@ def answer(spec, args):
     return typed_result(spec,spec['oracle'](checked_args(spec, args)))
 
 def reference_source(root, pid, secondary=None, authored=None):
+    if pid in AUTHORED_REFERENCES:
+        if authored is None:raise ValueError(f'{pid} requires explicitly reviewed authored reference directory')
+        path=authored/f'lc-{pid}.py'
+        if sha(path.read_bytes())!=AUTHORED_REFERENCES[pid]['sha256']:raise ValueError('Authored reference changed since review')
+        return path,path.read_text()
     if pid==212:
         if authored is None:raise ValueError('212 requires explicitly reviewed authored reference directory')
         path=authored/'lc-212.py'
@@ -130,6 +152,26 @@ def reference_source(root, pid, secondary=None, authored=None):
     raise ValueError(f'Missing Python reference for {pid}')
 
 def wrapper(spec, source):
+    complex_id=spec.get('complexDesignId')
+    if complex_id is not None and (type(complex_id)is not int or complex_id not in COMPLEX_IDS):raise ValueError('Unknown complex design adapter')
+    complex_setup=''
+    if complex_id is not None:
+        helpers='\n'.join(Path(__file__).with_name(name).read_text() for name in ('tree_codec.py','complex_design_semantics.py'))
+        codec=Path(__file__).with_name('complex_design_codec.py').read_text()
+        codec='\n'.join(line for line in codec.splitlines() if not line.startswith(('from complex_design_semantics import','from tree_codec import')))
+        complex_setup='\n_cswork_complex = {}\nexec('+repr(helpers+'\n'+codec)+', _cswork_complex)\nTreeNode = _cswork_complex["TreeNode"]\n'
+    auxiliary=spec.get('auxiliaryId')
+    if auxiliary is not None and (type(auxiliary)is not int or auxiliary not in (1095,759)):raise ValueError('Unknown auxiliary adapter')
+    auxiliary_setup=''
+    if auxiliary is not None:
+        helper=Path(__file__).with_name('auxiliary_codec.py').read_text()
+        auxiliary_setup='\n_cswork_auxiliary = {}\nexec('+repr(helper)+', _cswork_auxiliary)\nMountainArray = _cswork_auxiliary["MountainArray"]\nInterval = _cswork_auxiliary["Interval"]\n'
+    special=spec.get('specialId')
+    if special is not None and (type(special)is not int or special not in SPECIAL_IDS):raise ValueError('Unknown special node adapter')
+    special_setup=''
+    if special is not None:
+        special_source=Path(__file__).with_name('special_node_codec.py').read_text()
+        special_setup='\n_cswork_special = {}\nexec('+repr(special_source)+', _cswork_special)\nglobals().update(_cswork_special["special_symbols"]('+repr(special)+'))\n'
     design_class=spec.get('designClass')
     design_methods=spec.get('designMethods',[])
     if design_class is not None:
@@ -160,7 +202,11 @@ def wrapper(spec, source):
     if adapter not in ADAPTERS:raise ValueError('Unknown result adapter')
     adapter_source=Path(__file__).with_name('reference_adapters.py').read_text()
     adapter_setup='\n_cswork_adapters = {}\nexec('+repr(adapter_source)+', _cswork_adapters)\n'
-    method = spec.get('method',design_class)
+    if auxiliary is not None and (special is not None or tree_args or list_args or list_array_args or tree_result!='none' or linked_result!='none' or design_class or adapter!='return'):raise ValueError('Conflicting auxiliary adapter')
+    if special is not None and (tree_args or list_args or list_array_args or tree_result!='none' or linked_result!='none' or design_class or adapter!='return'):
+        raise ValueError('Special node adapter cannot be combined with other adapters')
+    if complex_id is not None and (special is not None or auxiliary is not None or tree_args or list_args or list_array_args or tree_result!='none' or linked_result!='none' or design_class or adapter!='return'):raise ValueError('Conflicting complex design adapter')
+    method = spec.get('method',COMPLEX_CLASSES.get(complex_id,design_class))
     if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*', method):
         raise ValueError('Invalid reference method')
     future = []
@@ -189,6 +235,16 @@ def wrapper(spec, source):
     else:
         sys.stdout.write(_cswork_contract['format_result']({kind!r}, result))"""
     invocation=f'result = Solution().{method}(*args)'
+    if complex_id is not None:
+        invocation=f"result = _cswork_complex['run_complex_design']({complex_id!r}, globals(), args)"
+    if auxiliary is not None:
+        invocation=f'''call_args = _cswork_auxiliary['prepare_args']({auxiliary!r}, args)
+    result = Solution().{method}(*call_args)
+    result = _cswork_auxiliary['prepare_result']({auxiliary!r}, result)'''
+    if special is not None:
+        invocation=f'''call_args, context = _cswork_special['prepare_special']({special!r}, args)
+    result = Solution().{method}(*call_args)
+    result = _cswork_special['finish_special']({special!r}, result, context)'''
     if design_class:
         invocation=f'''operations, parameters = args
     if not operations or operations[0]!={design_class!r} or len(operations)!=len(parameters):
@@ -226,7 +282,7 @@ if __name__ == '__main__':
     else:
 '''
     parse = '\n'.join('        ' + line for line in spec['parse'].splitlines())
-    return '\n'.join(future) + '\n' + PREFIX + tree_setup + linked_setup + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
+    return '\n'.join(future) + '\n' + PREFIX + complex_setup + auxiliary_setup + tree_setup + linked_setup + special_setup + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
@@ -237,7 +293,14 @@ def build(pid, spec, library, references, out, secondary=None, authored=None):
     origin = library[pid]
     kind,encoding,checker=result_settings(spec)
     limits=resource_limits(spec)
-    if spec.get('designClass'):
+    complex_id=spec.get('complexDesignId')
+    if complex_id is not None:
+        signature=origin['signature']
+        if complex_id in (297,449):
+            expected_signature={'name':'Codec' if complex_id==297 else 'CodecDriver','params':[{'name':'root','type':'TreeNode'}],'return':{'type':'string' if complex_id==297 else 'TreeNode'},'manual':True}
+            if complex_id!=pid or signature!=expected_signature:raise ValueError('Codec source signature mismatch')
+        elif complex_id!=pid or not signature.get('systemdesign') or signature.get('classname')!=COMPLEX_CLASSES[complex_id] or {m['name'] for m in signature['methods']}!=COMPLEX_METHODS[complex_id]:raise ValueError('Complex design source signature mismatch')
+    elif spec.get('designClass'):
         signature=origin['signature']
         if not signature.get('systemdesign') or spec['designClass']!=signature.get('classname') or set(spec['designMethods'])!={m['name'] for m in signature['methods']}:
             raise ValueError(f'Design interface does not match source metadata: {pid}')
@@ -246,6 +309,20 @@ def build(pid, spec, library, references, out, secondary=None, authored=None):
     semantic=spec.get('semanticId')
     if semantic is not None and semantic!=pid:raise ValueError('Semantic checker must match source problem identity')
     semantic_metadata={'semanticId':semantic} if semantic is not None else {}
+    if complex_id is not None:semantic_metadata['complexDesignId']=complex_id
+    if checker=='fraction-lc-166' and pid!=166:raise ValueError('Fraction checker identity mismatch')
+    auxiliary=spec.get('auxiliaryId')
+    if auxiliary is not None:
+        if type(auxiliary)is not int or auxiliary not in (1095,759) or auxiliary!=pid:raise ValueError('Auxiliary identity mismatch')
+        semantic_metadata['auxiliaryId']=auxiliary
+    strings=spec.get('stringStructureId')
+    if strings is not None:
+        if strings!=pid:raise ValueError('String checker must match source identity')
+        semantic_metadata['stringStructureId']=strings
+    special=spec.get('specialId')
+    if special is not None:
+        if type(special)is not int or special not in SPECIAL_IDS or special!=pid:raise ValueError('Special adapter must match source identity')
+        semantic_metadata['specialId']=special
     rng = random.Random(20260906 + pid)
     formal = []
     for i, args in enumerate(spec['edges']):
@@ -265,6 +342,10 @@ def build(pid, spec, library, references, out, secondary=None, authored=None):
         if not isinstance(stdin, str) or len(stdin.encode()) > 4*1024*1024 or '\0' in stdin:
             raise ValueError('Input encoding exceeds the OJ contract')
         expected_output=format_result(kind,expected)
+        if complex_id is not None and (json.loads(stdin)!=args or not matches_complex_design(complex_id,expected_output,expected_output,stdin)):raise ValueError('Invalid complex design input or oracle')
+        if checker=='fraction-lc-166':
+            from fraction_checker import matches_fraction
+            if json.loads(stdin)!=args or not matches_fraction(expected_output,stdin):raise ValueError('Invalid fraction input or expected')
         if semantic is not None:
             if json.loads(stdin)!=args or not matches_semantic(semantic,expected_output,expected_output,stdin):raise ValueError('Semantic input or oracle does not match declared contract')
         if len(expected_output.encode('utf-8'))>limits['outputLimit']*1024:
@@ -311,6 +392,14 @@ def build(pid, spec, library, references, out, secondary=None, authored=None):
     selection = {}
     if pid==212:
         selection=dict(referenceSelection=dict(strategy='explicit-reviewed-authored',provider='cswork',selectedFile=path.name,reason='Downloaded reference exceeded the declared 2-second CPU limit on a legal 12x12 board and 30000-word case. Independently authored Trie search deletes exhausted branches; original pressure and limits are preserved. Small-instance oracle and semantic wrong programs remain independent.'))
+    if pid in AUTHORED_REFERENCES:
+        review=AUTHORED_REFERENCES[pid]
+        directories=list(references.glob(f'*/*{pid:04d}.*'))
+        if len(directories)!=1:raise ValueError('Original reference directory ambiguous')
+        directory=directories[0]
+        originals={key:sha((directory/name).read_bytes()) for key,name in [('source','Solution.py'),('readmeEn','README_EN.md'),('readmeZh','README.md')]}
+        if any(key in review and review[key]!=value for key,value in originals.items()):raise ValueError('Original reference or README changed since authored review')
+        selection=dict(referenceSelection=dict(strategy='explicit-reviewed-authored',provider='cswork',selectedFile=path.name,reason=review['reason'],originalLocalSourceSha256=originals['source'],originalReadmeEnSha256=originals['readmeEn'],originalReadmeZhSha256=originals['readmeZh']))
     if pid in SECONDARY_REFERENCE_FILES:
         selection = dict(referenceSelection=dict(strategy='explicit-reviewed-secondary',
             provider='kamyu104/LeetCode', license='MIT', selectedFile=path.name,

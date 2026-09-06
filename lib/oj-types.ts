@@ -1,4 +1,22 @@
 import {
+  COMPLEX_DESIGN_CHECKERS,
+  complexDesignCheckerId,
+  type ComplexDesignChecker,
+} from './oj-complex-contract';
+import { matchesComplexDesign } from './oj-complex-design-checkers';
+import { parseFiniteFloats } from './oj-float-checkers';
+import { matchesFractionDecimal } from './oj-fraction-checker';
+import {
+  STRING_STRUCTURE_CHECKERS,
+  stringStructureCheckerId,
+  type StringStructureChecker,
+} from './oj-string-contract';
+import { parseStringStructure } from './oj-string-structures';
+import {
+  validSpecialIdentity,
+  validAuxiliaryIdentity,
+} from './oj-special-contract';
+import {
   SEMANTIC_CHECKERS,
   semanticCheckerId,
   type SemanticChecker,
@@ -18,6 +36,9 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   courseId: string;
   outputLimit: number;
   checker:
+    | 'float'
+    | 'float-array'
+    | 'fraction-lc-166'
     | 'tokens'
     | 'exact'
     | 'int-set'
@@ -26,8 +47,14 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'int-row-set'
     | 'int-bag-row-set'
     | 'int-row-multiset'
-    | SemanticChecker;
+    | SemanticChecker
+    | StringStructureChecker
+    | ComplexDesignChecker;
   semanticId?: number;
+  specialId?: number;
+  auxiliaryId?: number;
+  complexDesignId?: number;
+  stringStructureId?: number;
   languages: Language[];
 };
 
@@ -217,6 +244,9 @@ export const ojImportSchema = z
         memoryLimit: z.number().int().min(16384).max(524288),
         outputLimit: z.number().int().min(1).max(65536),
         checker: z.enum([
+          'float',
+          'float-array',
+          'fraction-lc-166',
           'tokens',
           'exact',
           'int-set',
@@ -226,8 +256,14 @@ export const ojImportSchema = z
           'int-bag-row-set',
           'int-row-multiset',
           ...SEMANTIC_CHECKERS,
+          ...STRING_STRUCTURE_CHECKERS,
+          ...COMPLEX_DESIGN_CHECKERS,
         ]),
         semanticId: z.number().int().optional(),
+        specialId: z.number().int().optional(),
+        auxiliaryId: z.number().int().optional(),
+        complexDesignId: z.number().int().optional(),
+        stringStructureId: z.number().int().optional(),
         languages: z
           .array(z.enum(['python', 'go', 'java', 'cpp']))
           .min(1)
@@ -268,6 +304,51 @@ export const ojImportSchema = z
         message: '测试点名称不能重复',
         path: ['cases'],
       });
+    if (!validSpecialIdentity(data.problem.specialId, data.problem.id))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'specialId'],
+        message: 'Invalid fixed node adapter identity',
+      });
+    if (!validAuxiliaryIdentity(data.problem.auxiliaryId, data.problem.id))
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'auxiliaryId'],
+        message: 'Invalid auxiliary identity',
+      });
+    if (
+      data.problem.checker === 'fraction-lc-166' &&
+      data.problem.id !== 'lc-166'
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'checker'],
+        message: 'Invalid fraction identity',
+      });
+    const complexId = complexDesignCheckerId(data.problem.checker);
+    if (
+      (complexId !== null &&
+        (data.problem.complexDesignId !== complexId ||
+          data.problem.id !== `lc-${complexId}`)) ||
+      (complexId === null && data.problem.complexDesignId !== undefined)
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'checker'],
+        message: 'Invalid fixed design binding',
+      });
+    const stringId = stringStructureCheckerId(data.problem.checker);
+    if (
+      (stringId !== null &&
+        (data.problem.stringStructureId !== stringId ||
+          data.problem.id !== `lc-${stringId}`)) ||
+      (stringId === null && data.problem.stringStructureId !== undefined)
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'checker'],
+        message: 'Invalid fixed string checker binding',
+      });
     const semanticId = semanticCheckerId(data.problem.checker);
     if (
       (semanticId !== null &&
@@ -281,6 +362,51 @@ export const ojImportSchema = z
         path: ['problem', 'checker'],
       });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        complexId !== null &&
+        !matchesComplexDesign(
+          complexId,
+          c.expectedOutput,
+          c.expectedOutput,
+          c.input,
+        )
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid design input or expected result',
+        });
+      if (
+        (data.problem.checker === 'float' ||
+          data.problem.checker === 'float-array') &&
+        parseFiniteFloats(
+          c.expectedOutput,
+          data.problem.checker === 'float-array',
+        ) === null
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid finite float expected output',
+        });
+      if (
+        data.problem.checker === 'fraction-lc-166' &&
+        !matchesFractionDecimal(c.expectedOutput, c.input)
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid fraction input or expected output',
+        });
+      if (
+        stringId !== null &&
+        parseStringStructure(stringId, c.expectedOutput) === null
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid JSON string result',
+        });
       if (
         semanticId !== null &&
         !matchesSemantic(

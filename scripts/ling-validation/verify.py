@@ -4,6 +4,9 @@ import argparse,datetime,hashlib,json,os,re,urllib.request,urllib.parse
 from pathlib import Path
 import math
 from functools import partial
+from complex_design_semantics import IDS as COMPLEX_IDS,matches_complex_design
+from special_node_codec import SPECIAL_IDS
+from string_structures import STRING_STRUCTURE_KINDS
 from semantic_checkers import SEMANTIC_KINDS,matches_semantic
 from result_contract import KINDS, CHECKERS, compare_output, compare_batch, validate_result, format_result, validate_expected_output, resource_limits, MAX_ORACLE_BYTES
 
@@ -83,12 +86,31 @@ def snapshot_inputs(data, source_hashes_path):
         checker = problem.get('checker','tokens')
         if item.get('checker',checker)!=checker or item.get('resourceLimits',limits)!=limits:
             raise ValueError('Manifest runtime contract differs from package: '+ident)
+        complex_id=item.get('complexDesignId')
+        if complex_id is not None and (type(complex_id)is not int or complex_id not in COMPLEX_IDS or ident!=f'lc-{complex_id}' or kind!='string' or encoding!='jsonl-v1'):raise ValueError('Invalid complex design binding')
+        if problem.get('complexDesignId')!=complex_id or oracle.get('complexDesignId')!=complex_id:raise ValueError('Complex design metadata mismatch')
+        auxiliary=item.get('auxiliaryId')
+        if auxiliary is not None and (type(auxiliary)is not int or auxiliary not in (1095,759) or ident!=f'lc-{auxiliary}'):raise ValueError('Invalid auxiliary identity')
+        if problem.get('auxiliaryId')!=auxiliary or oracle.get('auxiliaryId')!=auxiliary:raise ValueError('Auxiliary metadata mismatch')
+        special=item.get('specialId')
+        if special is not None and (type(special)is not int or special not in SPECIAL_IDS or ident!=f'lc-{special}'):raise ValueError('Invalid special adapter identity')
+        if problem.get('specialId')!=special or oracle.get('specialId')!=special:raise ValueError('Special adapter metadata mismatch')
+        strings=item.get('stringStructureId')
+        if strings is not None and (type(strings)is not int or STRING_STRUCTURE_KINDS.get(strings)!=kind or ident!=f'lc-{strings}' or encoding!='jsonl-v1'):raise ValueError('Invalid fixed string checker binding')
+        if kind.startswith('json-string-') and strings is None:raise ValueError('Missing fixed string checker')
+        if problem.get('stringStructureId')!=strings or oracle.get('stringStructureId')!=strings:raise ValueError('String checker metadata mismatch')
         semantic=item.get('semanticId')
+        if semantic is not None and strings is not None:raise ValueError('Conflicting checker metadata')
         if semantic is not None:
             if type(semantic)is not int or SEMANTIC_KINDS.get(semantic)!=kind or ident!=f'lc-{semantic}' or encoding!='jsonl-v1':raise ValueError('Invalid semantic problem binding: '+ident)
         if problem.get('semanticId')!=semantic or oracle.get('semanticId')!=semantic:raise ValueError('Semantic metadata differs from generation manifest: '+ident)
         if package.get('problem',{}).get('id')!=ident:raise ValueError('Package identity differs from manifest')
-        if checker != (f'semantic-lc-{semantic}' if semantic is not None else CHECKERS[kind]):
+        if complex_id is not None and (semantic is not None or strings is not None or special is not None or auxiliary is not None):raise ValueError('Conflicting fixed protocol metadata')
+        required=(f'design-lc-{complex_id}' if complex_id is not None else f'strings-lc-{strings}' if strings is not None else f'semantic-lc-{semantic}' if semantic is not None else CHECKERS[kind])
+        if checker=='fraction-lc-166':
+            if ident!='lc-166' or kind!='string' or encoding!='jsonl-v1' or complex_id is not None or semantic is not None or strings is not None:raise ValueError('Invalid fraction identity')
+            required=checker
+        if checker != required:
             raise ValueError('Result kind does not match formal output checker: '+ident)
         if (oracle.get('resultKind',None if encoding=='jsonl-v1' else kind)!=kind
                 or oracle.get('oracleEncoding',None if encoding=='jsonl-v1' else encoding)!=encoding):
@@ -106,6 +128,10 @@ def snapshot_inputs(data, source_hashes_path):
             raise ValueError('Each oracle invocation must be a positional argument list')
         for index,value in enumerate(expected):
             validate_result(kind,value)
+            if complex_id is not None and not matches_complex_design(complex_id,format_result(kind,value),format_result(kind,value),json.dumps(args[index])):raise ValueError('Invalid complex design oracle')
+            if checker=='fraction-lc-166':
+                from fraction_checker import matches_fraction
+                if not matches_fraction(format_result(kind,value),json.dumps(args[index])):raise ValueError('Invalid fraction oracle')
             if semantic is not None:
                 output=format_result(kind,value)
                 if not matches_semantic(semantic,output,output,json.dumps(args[index],allow_nan=False)):raise ValueError('Semantic oracle arguments or result are invalid')
@@ -113,6 +139,10 @@ def snapshot_inputs(data, source_hashes_path):
             if not isinstance(case,dict) or not isinstance(case.get('input'),str):
                 raise ValueError('Invalid formal case')
             validate_expected_output(kind,case.get('expectedOutput'))
+            if complex_id is not None and not matches_complex_design(complex_id,case['expectedOutput'],case['expectedOutput'],case['input']):raise ValueError('Invalid complex design case')
+            if checker=='fraction-lc-166':
+                from fraction_checker import matches_fraction
+                if not matches_fraction(case['expectedOutput'],case['input']):raise ValueError('Invalid fraction case')
             if semantic is not None and not matches_semantic(semantic,case['expectedOutput'],case['expectedOutput'],case['input']):raise ValueError('Invalid semantic case input or expected output')
             if len(case['expectedOutput'].encode('utf-8'))>limits['outputLimit']*1024:
                 raise ValueError('Expected output exceeds declared runtime output limit')
@@ -180,7 +210,7 @@ def main():
                 entry['checks'].append(check_mutation(mutation, pkg['cases'], runner, checker))
             entry['checks'].append({'name': str(entry['counts']['oracle']) + ' independent small-instance oracle comparisons',
                 'oracleOutputLimitKiB': ORACLE_OUTPUT_BYTES//1024,
-                'status': v['status'], 'passed': v['status']=='Accepted' and compare_batch(v.get('files',{}).get('stdout',''),oracle['expected'],entry['resultKind'],entry['oracleEncoding'],entry.get('semanticId'),oracle['args']),
+                'status': v['status'], 'passed': v['status']=='Accepted' and compare_batch(v.get('files',{}).get('stdout',''),oracle['expected'],entry['resultKind'],entry['oracleEncoding'],entry.get('semanticId'),oracle['args'],entry.get('stringStructureId'),entry['checker'],entry.get('complexDesignId')),
                 'cpuNs': v.get('time'), 'memoryBytes': v.get('memory')})
             for case in pkg['cases']:
                 v = runner(src, case['input'])
@@ -220,6 +250,10 @@ def main():
         counts=e['counts'], resultKind=e['resultKind'], oracleEncoding=e['oracleEncoding'],
         checker=e['checker'], resourceLimits=e['resourceLimits'],
         **({'semanticId':e['semanticId']} if 'semanticId' in e else {}),
+        **({'specialId':e['specialId']} if 'specialId' in e else {}),
+        **({'auxiliaryId':e['auxiliaryId']} if 'auxiliaryId' in e else {}),
+        **({'complexDesignId':e['complexDesignId']} if 'complexDesignId' in e else {}),
+        **({'stringStructureId':e['stringStructureId']} if 'stringStructureId' in e else {}),
         sourceUrl=e['sourceUrl'], sourceUrlZh=e['sourceUrlZh']) for e in report['problems']]
     (a.data / 'verified-manifest.json').write_text(json.dumps(
         {'verifiedAt':report['finishedAt'], 'sourceHashesFileSha256':report['sourceHashesFileSha256'],
