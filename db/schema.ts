@@ -299,19 +299,38 @@ export const ojResults = sqliteTable(
   },
   (t) => [uniqueIndex('oj_result_case').on(t.submissionId, t.ordinal)],
 );
-export const ojOutbox = sqliteTable('oj_outbox', {
-  submissionId: text('submission_id')
-    .primaryKey()
-    .references(() => submissions.id, { onDelete: 'cascade' }),
-  dispatchedAt: integer('dispatched_at'),
-  createdAt: integer('created_at').notNull(),
-}, (t) => [index('oj_outbox_dispatch').on(t.dispatchedAt, t.createdAt)]);
+export const ojOutbox = sqliteTable(
+  'oj_outbox',
+  {
+    submissionId: text('submission_id')
+      .primaryKey()
+      .references(() => submissions.id, { onDelete: 'cascade' }),
+    dispatchedAt: integer('dispatched_at'),
+    createdAt: integer('created_at').notNull(),
+  },
+  (t) => [index('oj_outbox_dispatch').on(t.dispatchedAt, t.createdAt)],
+);
 export const ojRuntime = sqliteTable('oj_runtime', {
   id: text('id').primaryKey(),
   heartbeatAt: integer('heartbeat_at').notNull(),
   healthy: integer('healthy').notNull(),
   details: text('details').notNull(),
 });
+// Short-lived drafts awaiting best-effort compilation; never submission history.
+export const ojPrecompile = sqliteTable(
+  'oj_precompile',
+  {
+    userId: text('user_id').primaryKey(),
+    generation: text('generation').notNull(),
+    problemId: text('problem_id').notNull(),
+    problemVersionId: text('problem_version_id').notNull(),
+    code: text('code').notNull(),
+    codingMode: text('coding_mode').notNull(),
+    createdAt: integer('created_at').notNull(),
+    expiresAt: integer('expires_at').notNull(),
+  },
+  (t) => [index('oj_precompile_expiry').on(t.expiresAt)],
+);
 export const reviews = sqliteTable(
   'reviews',
   {

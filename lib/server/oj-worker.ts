@@ -1,6 +1,17 @@
 import { orderedCaseResults, caseConcurrency } from './oj-case-stream';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
+import { PrecompileScheduler } from './oj-precompile-scheduler';
+import {
+  precompileEnabled,
+  nextPrecompileDraft,
+  precompileDraftCurrent,
+  consumePrecompileDraft,
+  hasForegroundSubmissions,
+  prunePrecompileDrafts,
+  PRECOMPILE_TIMEOUT_MS,
+} from './oj-precompile';
+import type { OjProblemSpec } from '@/lib/oj-types';
 import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
 import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
@@ -51,6 +62,7 @@ const queue = new Queue(QUEUE, {
 });
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
+const precompiles = new PrecompileScheduler();
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
@@ -88,6 +100,14 @@ function update(
     .run(...Object.values(fields), Date.now(), id, attempt);
 }
 async function judge(job: Job<{ submissionId: string }>) {
+  const release = await precompiles.enterForeground();
+  try {
+    return await judgeSubmission(job);
+  } finally {
+    release();
+  }
+}
+async function judgeSubmission(job: Job<{ submissionId: string }>) {
   const id = job.data.submissionId;
   const initial = submissionRow(id);
   if (!initial || !ACTIVE.includes(initial.status)) return;
@@ -166,6 +186,7 @@ async function judge(job: Job<{ submissionId: string }>) {
             snapshot.spec.memoryLimit,
           )
         : { source: claimed.code };
+    const compileStarted = performance.now();
     const compiled = await compiledPrograms.acquire(
       claimed.user_id,
       claimed.language,
@@ -173,6 +194,14 @@ async function judge(job: Job<{ submissionId: string }>) {
       controller.signal,
     );
     compilation = compiled;
+    console.info(
+      JSON.stringify({
+        event: 'oj_compile',
+        submissionId: id,
+        cacheHit: compiled.cacheHit,
+        durationMs: Math.round(performance.now() - compileStarted),
+      }),
+    );
     program = compiled.program;
     program.bridgeSource = wrapped.bridgeSource;
     program.leetcodeInput =
@@ -379,6 +408,7 @@ async function maintenance() {
   maintaining = true;
   try {
     await compiledPrograms.prune();
+    prunePrecompileDrafts();
     // Recover cancelled attempts after a worker crash, including when Redis/runner is down.
     const cancelled = db
       .prepare(
@@ -462,15 +492,84 @@ const dispatchTimer = setInterval(() => {
       // The durable outbox remains pending. Maintenance owns health/recovery.
     });
 }, OJ_DISPATCH_INTERVAL_MS);
+function precompileTick() {
+  if (
+    stopping ||
+    !engineAvailable ||
+    !precompileEnabled() ||
+    hasForegroundSubmissions()
+  ) {
+    void precompiles.cancelBackground();
+    return;
+  }
+  if (!precompiles.canStart) return;
+  const draft = nextPrecompileDraft();
+  if (!draft) return;
+  precompiles.start(draft.generation, async (signal) => {
+    const outdated = setInterval(() => {
+      if (!precompileDraftCurrent(draft) || hasForegroundSubmissions())
+        void precompiles.cancelBackground(draft.generation);
+    }, OJ_DISPATCH_INTERVAL_MS);
+    const timeout = AbortSignal.timeout(PRECOMPILE_TIMEOUT_MS);
+    const interrupted = AbortSignal.any([signal, timeout]);
+    try {
+      const version = db
+        .prepare(
+          'SELECT spec_json FROM oj_problem_versions WHERE id=? AND problem_id=?',
+        )
+        .get(draft.problem_version_id, draft.problem_id) as
+        | { spec_json: string }
+        | undefined;
+      if (!version) return;
+      const spec = JSON.parse(version.spec_json) as OjProblemSpec;
+      const source =
+        draft.coding_mode === 'leetcode'
+          ? leetcodeSource(
+              draft.problem_id,
+              'cpp',
+              draft.code,
+              spec.memoryLimit,
+            ).source
+          : draft.code;
+      interrupted.throwIfAborted();
+      const started = performance.now();
+      const result = await compiledPrograms.warm(
+        draft.user_id,
+        'cpp',
+        source,
+        interrupted,
+      );
+      console.info(
+        JSON.stringify({
+          event: 'oj_precompile',
+          result,
+          durationMs: Math.round(performance.now() - started),
+        }),
+      );
+    } finally {
+      clearInterval(outdated);
+      consumePrecompileDraft(draft);
+    }
+  });
+}
+const precompileTimer = setInterval(() => {
+  try {
+    precompileTick();
+  } catch {
+    /* Optional acceleration never stops judging. */
+  }
+}, OJ_DISPATCH_INTERVAL_MS);
 async function stop() {
   if (stopping) return;
   stopping = true;
   clearInterval(timer);
   clearInterval(dispatchTimer);
+  clearInterval(precompileTimer);
   for (const controller of controllers.values()) controller.abort();
   const force = setTimeout(() => process.exit(1), 20000);
   force.unref();
   await outboxDispatcher.stop();
+  await precompiles.close();
   await worker.close();
   await compiledPrograms.close();
   await queue.close();

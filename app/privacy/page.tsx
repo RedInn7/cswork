@@ -24,7 +24,7 @@ export default function PrivacyPage() {
           cswork
           是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
         </p>
-        <p className="privacy-updated">更新于 2026 年 9 月 5 日</p>
+        <p className="privacy-updated">更新于 2026 年 9 月 6 日</p>
 
         <section aria-labelledby="privacy-account">
           <h2 id="privacy-account">账户与第三方登录</h2>
@@ -52,6 +52,10 @@ export default function PrivacyPage() {
           </p>
           <p>
             算法判题会把提交的代码与测试输入交给平台的隔离执行环境运行。你在工单或作业中主动提供的外部链接，则仍由对应网站按其自身设置控制访问。
+          </p>
+          <p>
+            为缩短运行和提交的等待时间，登录后编辑 C++
+            代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
           </p>
         </section>
 

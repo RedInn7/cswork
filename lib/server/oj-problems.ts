@@ -154,6 +154,26 @@ const libraryJudgeGate = `NOT EXISTS (
       OR l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id))
 )`;
 
+/** Compilation needs an authorized version and interface, never hidden test data. */
+export async function getCompileProblem(p: Person, problemId: string) {
+  const problem = await one<ProblemRow>(
+    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+    problemId,
+  );
+  if (!problem?.current_version_id)
+    throw new HttpError(404, '题目不存在或尚未发布');
+  await requireCourse(p, problem.course_id);
+  const version = await one<{ spec_json: string }>(
+    'SELECT spec_json FROM oj_problem_versions WHERE id=?',
+    problem.current_version_id,
+  );
+  if (!version) throw new HttpError(404, '题目版本不存在');
+  return {
+    versionId: problem.current_version_id,
+    spec: JSON.parse(version.spec_json) as OjProblemSpec,
+  };
+}
+
 /** Submission creation checks the version's own course permission before snapshotting. */
 export async function getJudgeProblem(p: Person, problemId: string) {
   const problem = await one<ProblemRow>(
