@@ -34,6 +34,7 @@ export type OJCase = {
   stderr?: string;
 };
 export type OJSubmission = {
+  watchToken?: string;
   id: string;
   problem_id: string;
   language: Language;
