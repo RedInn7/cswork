@@ -316,16 +316,9 @@ function cleanup() {
           0,
           'Refusing to remove foreign versions',
         );
-        db.prepare(
-          'UPDATE oj_problems SET published=0,current_version_id=NULL WHERE id=?',
-        ).run(id);
-        db.prepare(
-          'DELETE FROM oj_test_cases WHERE version_id IN (SELECT id FROM oj_problem_versions WHERE problem_id=?)',
-        ).run(id);
-        db.prepare('DELETE FROM oj_problem_versions WHERE problem_id=?').run(
-          id,
-        );
-        db.prepare('DELETE FROM oj_problems WHERE id=?').run(id);
+        // Published versions and cases are immutable, including test fixtures.
+        // Withdraw this run's synthetic problems while retaining their history.
+        db.prepare('UPDATE oj_problems SET published=0 WHERE id=?').run(id);
       }
       for (const { uid, email } of identities) {
         db.prepare('DELETE FROM grants WHERE email=? AND source=?').run(
