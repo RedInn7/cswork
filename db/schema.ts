@@ -12,6 +12,8 @@ export * from './commerce-schema';
 export * from './media-schema';
 export * from './enrollment-schema';
 export * from './study-library-schema';
+export * from './practice-round-schema';
+import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -249,6 +251,10 @@ export const submissions = sqliteTable(
     message: text('message'),
     mode: text('mode').notNull().default('judge'),
     problemVersionId: text('problem_version_id'),
+    practiceRoundId: text('practice_round_id').references(
+      () => practiceRounds.id,
+      { onDelete: 'restrict' },
+    ),
     idempotencyKey: text('idempotency_key'),
     requestHash: text('request_hash'),
     customInput: text('custom_input'),
@@ -264,6 +270,13 @@ export const submissions = sqliteTable(
   (t) => [
     index('submission_user_time').on(t.userId, t.createdAt),
     index('submission_problem').on(t.problemId),
+    index('submission_round_progress').on(
+      t.userId,
+      t.practiceRoundId,
+      t.mode,
+      t.status,
+      t.problemId,
+    ),
     uniqueIndex('submission_idempotency').on(t.userId, t.idempotencyKey),
     index('submission_queue').on(t.status, t.createdAt),
   ],

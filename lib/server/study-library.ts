@@ -1,5 +1,6 @@
 import { sqlite } from '@/db/sqlite';
 import { HttpError } from './http';
+import { practiceRoundState } from './practice-rounds';
 import {
   curatedByNumber,
   curatedEntries,
@@ -47,7 +48,8 @@ function summary(row: LibraryRow) {
 }
 export function listStudyLibrary(params: URLSearchParams, userId?: string) {
   const collection = params.get('collection');
-  if (collection === LING_CURATED_ID) return listCuratedLibrary(params, userId);
+  if (!collection || collection === LING_CURATED_ID)
+    return listCuratedLibrary(params, userId);
   if (collection && collection !== 'all') throw new HttpError(400, '未知题单');
   const db = sqlite();
   const q = (params.get('q') || '').trim().slice(0, 180);
@@ -102,18 +104,27 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
   const db = sqlite();
   const numbers = JSON.stringify(curatedEntries.map((entry) => entry.number));
   const rows = db
-    .prepare(`SELECT ${columns} FROM study_library l
-    WHERE l.number IN (SELECT value FROM json_each(?))`)
+    .prepare(
+      `SELECT ${columns} FROM study_library l
+    WHERE l.number IN (SELECT value FROM json_each(?))`,
+    )
     .all(numbers) as LibraryRow[];
+  const roundState = userId
+    ? practiceRoundState(userId)
+    : { rounds: [], activeRoundId: null, currentRound: null };
   const solved = new Set(
     userId
       ? (
           db
-            .prepare(`SELECT DISTINCT s.problem_id FROM submissions s
+            .prepare(
+              `SELECT DISTINCT s.problem_id FROM submissions s
     JOIN study_library l ON l.judge_problem_id=s.problem_id
-    WHERE s.user_id=? AND s.status='accepted' AND s.mode='judge'
-      AND l.number IN (SELECT value FROM json_each(?))`)
-            .all(userId, numbers) as { problem_id: string }[]
+    WHERE s.user_id=? AND s.practice_round_id=? AND s.status='accepted' AND s.mode='judge'
+      AND l.number IN (SELECT value FROM json_each(?))`,
+            )
+            .all(userId, roundState.activeRoundId, numbers) as {
+            problem_id: string;
+          }[]
         ).map((row) => row.problem_id)
       : [],
   );
@@ -158,6 +169,7 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     page,
     pageSize: 30,
     topics: [],
+    ...roundState,
     collection: {
       id: LING_CURATED_ID,
       title: LING_CURATED_TITLE,
@@ -197,6 +209,9 @@ export function getStudyLibrary(id: string) {
     sourceEnUrl: payload.sourceEnUrl,
     attribution: payload.attribution,
     signature: payload.signature,
-    caseSummary: { total: row.case_count, withExpected: row.expected_count },
+    caseSummary: {
+      total: row.case_count,
+      withExpected: row.expected_count,
+    },
   };
 }

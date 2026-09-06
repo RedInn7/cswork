@@ -4,6 +4,7 @@ import { sqlite } from '@/db/sqlite';
 import type { Language } from '@/lib/problems';
 import type { Person } from './auth';
 import { HttpError, limit } from './http';
+import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
 import { getJudgeProblem } from './oj-problems';
 
 export const MAX_CODE_BYTES = 65536;
@@ -14,6 +15,7 @@ export type SubmissionRow = {
   user_id: string;
   problem_id: string;
   problem_version_id: string | null;
+  practice_round_id: string | null;
   language: Language;
   code: string;
   status: string;
@@ -120,8 +122,12 @@ export async function createSubmission(p: Person, value: unknown) {
         : d.stdin !== undefined
           ? 1
           : snapshot.cases.filter((c) => !c.hidden).length;
+    const practiceRoundId =
+      d.mode === 'judge' && isSelectedProblem(d.problemId)
+        ? ensurePracticeRound(p.id)
+        : null;
     db.prepare(
-      'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
     ).run(
       id,
       p.id,
@@ -137,6 +143,7 @@ export async function createSubmission(p: Person, value: unknown) {
       total,
       now,
       now,
+      practiceRoundId,
     );
     db.prepare(
       'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
@@ -146,8 +153,7 @@ export async function createSubmission(p: Person, value: unknown) {
 }
 export function submissionRow(id: string) {
   return sqlite().prepare('SELECT * FROM submissions WHERE id=?').get(id) as
-    | SubmissionRow
-    | undefined;
+    SubmissionRow | undefined;
 }
 function owned(p: Person, id: string) {
   const s = submissionRow(id);
@@ -155,7 +161,7 @@ function owned(p: Person, id: string) {
     throw new HttpError(404, '提交不存在');
   return s;
 }
-function summary(s: SubmissionRow) {
+function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
   return {
     id: s.id,
     problem_id: s.problem_id,
@@ -175,6 +181,19 @@ function summary(s: SubmissionRow) {
     message: s.message,
     attempt: s.attempt,
     problemVersion: s.problem_version_id,
+    practiceRoundId: s.practice_round_id,
+    practiceRoundNumber: s.practice_round_id
+      ? (roundNumbers?.get(s.practice_round_id) ??
+        (
+          sqlite()
+            .prepare(
+              'SELECT number FROM practice_rounds WHERE id=? AND user_id=?',
+            )
+            .get(s.practice_round_id, s.user_id) as
+            { number: number } | undefined
+        )?.number ??
+        null)
+      : null,
   };
 }
 export async function submissionDetail(p: Person, id: string) {
@@ -270,7 +289,10 @@ export function submissionHistory(
   if (cursor) {
     try {
       before = z
-        .object({ time: z.number().int().nonnegative(), id: z.string().uuid() })
+        .object({
+          time: z.number().int().nonnegative(),
+          id: z.string().uuid(),
+        })
         .parse(JSON.parse(Buffer.from(cursor, 'base64url').toString()));
     } catch {
       throw new HttpError(400, '分页游标无效');
@@ -293,8 +315,15 @@ export function submissionHistory(
     .all(...params) as SubmissionRow[];
   const items = found.slice(0, 20);
   const last = items.at(-1);
+  const roundNumbers = new Map(
+    (
+      sqlite()
+        .prepare('SELECT id,number FROM practice_rounds WHERE user_id=?')
+        .all(p.id) as { id: string; number: number }[]
+    ).map((r) => [r.id, r.number]),
+  );
   return {
-    items: items.map(summary),
+    items: items.map((s) => summary(s, roundNumbers)),
     nextCursor:
       found.length > 20 && last
         ? Buffer.from(
@@ -316,8 +345,7 @@ export function ojStatus() {
   const r = sqlite()
     .prepare("SELECT * FROM oj_runtime WHERE id='worker'")
     .get() as
-    | { heartbeat_at: number; healthy: number; details: string }
-    | undefined;
+    { heartbeat_at: number; healthy: number; details: string } | undefined;
   const counts = sqlite()
     .prepare(
       "SELECT SUM(status='queued') as queued,SUM(status IN ('compiling','running')) as active FROM submissions WHERE status IN ('queued','compiling','running')",
@@ -334,7 +362,9 @@ export function ojStatus() {
     maxStdinBytes: MAX_STDIN_BYTES,
     languageVersions: r
       ? ((
-          JSON.parse(r.details) as { languageVersions?: Record<string, string> }
+          JSON.parse(r.details) as {
+            languageVersions?: Record<string, string>;
+          }
         ).languageVersions ?? {})
       : {},
   };

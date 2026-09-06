@@ -33,11 +33,25 @@ type LibraryItem = {
     order: number;
     sectionSlug: string;
     sectionTitle: string;
+    sectionTitleEn?: string;
     stage: string;
+    stageEn?: string;
     reason: string;
+    reasonEn?: string;
   } | null;
 };
-type LibraryPage = {
+type PracticeRound = {
+  id: string;
+  number: number;
+  createdAt: number;
+  solved: number;
+};
+type RoundState = {
+  rounds: PracticeRound[];
+  activeRoundId: string;
+  currentRound: Omit<PracticeRound, 'solved'>;
+};
+type LibraryPage = RoundState & {
   items: LibraryItem[];
   total: number;
   page: number;
@@ -50,7 +64,13 @@ type LibraryPage = {
     available: number;
     ready: number;
     solved: number;
-    sections: { slug: string; title: string; total: number; solved: number }[];
+    sections: {
+      slug: string;
+      title: string;
+      titleEn?: string;
+      total: number;
+      solved: number;
+    }[];
   };
 };
 type LibraryDetail = LibraryItem & {
@@ -99,8 +119,13 @@ export function StudyLibrary({
 }) {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
-  const [topic, setTopic] = useState('');
-  const [collection, setCollection] = useState('ling-selected-500');
+  const collection = 'ling-selected-500';
+  const [roundBusy, setRoundBusy] = useState(false);
+  const [roundError, setRoundError] = useState('');
+  const [roundNotice, setRoundNotice] = useState('');
+  const roundPending = useRef(false);
+  const createKey = useRef<string | null>(null);
+  const listRequest = useRef(0);
   const [section, setSection] = useState('');
   const [stage, setStage] = useState('');
   const [status, setStatus] = useState('');
@@ -118,11 +143,81 @@ export function StudyLibrary({
   const [english, setEnglish] = useState(false);
   const [copyMessage, setCopyMessage] = useState('');
   const detailHeading = useRef<HTMLHeadingElement>(null);
+  const t = (zh: string, en: string) => (english ? en : zh);
+  const difficultyName = (value: string) =>
+    english
+      ? (
+          {
+            简单: 'Easy',
+            中等: 'Medium',
+            困难: 'Hard',
+            easy: 'Easy',
+            medium: 'Medium',
+            hard: 'Hard',
+          } as Record<string, string>
+        )[value] || value
+      : difficultyLabels[value] || value;
+
+  async function changeRound(roundId?: string) {
+    if (roundPending.current) return;
+    roundPending.current = true;
+    ++listRequest.current;
+    setRoundBusy(true);
+    setRoundError('');
+    setRoundNotice('');
+    try {
+      if (!roundId && !createKey.current) {
+        let savedKey: string | null = null;
+        try {
+          savedKey = sessionStorage.getItem('cswork:practice:create-key');
+        } catch {}
+        createKey.current = savedKey || crypto.randomUUID();
+        try {
+          sessionStorage.setItem(
+            'cswork:practice:create-key',
+            createKey.current,
+          );
+        } catch {}
+      }
+      const result = await api<RoundState>(
+        'oj/practice-rounds',
+        roundId
+          ? { action: 'activate', roundId }
+          : { action: 'create', idempotencyKey: createKey.current },
+      );
+      if (!roundId) {
+        createKey.current = null;
+        try {
+          sessionStorage.removeItem('cswork:practice:create-key');
+        } catch {}
+      }
+      setData((previous) => (previous ? { ...previous, ...result } : previous));
+      setRoundNotice(roundId ? 'activated' : 'created');
+      setPage(1);
+    } catch (reason) {
+      setRoundError(
+        reason instanceof Error ? reason.message : 'Request failed',
+      );
+    } finally {
+      roundPending.current = false;
+      setRoundBusy(false);
+      setRetry((value) => value + 1);
+    }
+  }
 
   useEffect(() => {
-    try {
-      setEnglish(localStorage.getItem('cswork:problem:locale') === 'en');
-    } catch {}
+    const syncLanguage = () => {
+      try {
+        setEnglish(localStorage.getItem('cswork:problem:locale') === 'en');
+      } catch {}
+    };
+    syncLanguage();
+    window.addEventListener('storage', syncLanguage);
+    window.addEventListener('focus', syncLanguage);
+    return () => {
+      window.removeEventListener('storage', syncLanguage);
+      window.removeEventListener('focus', syncLanguage);
+    };
   }, []);
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -132,12 +227,24 @@ export function StudyLibrary({
     return () => clearTimeout(timer);
   }, [query]);
   useEffect(() => {
+    const refreshProgress = () => {
+      if (!roundPending.current) setRetry((value) => value + 1);
+    };
+    window.addEventListener('focus', refreshProgress);
+    return () => window.removeEventListener('focus', refreshProgress);
+  }, []);
+  useEffect(() => {
+    if (roundBusy) return;
     let current = true;
-    setLoading(true);
-    setError('');
+    const request = ++listRequest.current;
+    queueMicrotask(() => {
+      if (current && request === listRequest.current) {
+        setLoading(true);
+        setError('');
+      }
+    });
     const params = new URLSearchParams({
       q: search,
-      topic,
       difficulty,
       page: String(page),
       collection,
@@ -147,20 +254,20 @@ export function StudyLibrary({
     });
     api<LibraryPage>(`oj/library?${params}`)
       .then((result) => {
-        if (current) setData(result);
+        if (current && request === listRequest.current) setData(result);
       })
       .catch((reason: Error) => {
-        if (current) setError(reason.message);
+        if (current && request === listRequest.current)
+          setError(reason.message);
       })
       .finally(() => {
-        if (current) setLoading(false);
+        if (current && request === listRequest.current) setLoading(false);
       });
     return () => {
       current = false;
     };
   }, [
     search,
-    topic,
     difficulty,
     page,
     retry,
@@ -168,17 +275,22 @@ export function StudyLibrary({
     section,
     stage,
     status,
+    roundBusy,
   ]);
   useEffect(() => {
     let current = true;
-    setDetail(null);
-    setDetailError('');
-    setCopyMessage('');
-    if (!selected) {
-      setDetailLoading(false);
-      return;
-    }
-    setDetailLoading(true);
+    queueMicrotask(() => {
+      if (current) {
+        setDetail(null);
+        setDetailError('');
+        setCopyMessage('');
+        setDetailLoading(!!selected);
+      }
+    });
+    if (!selected)
+      return () => {
+        current = false;
+      };
     api<LibraryDetail>(`oj/library/${encodeURIComponent(selected)}`)
       .then((result) => {
         if (current) setDetail(result);
@@ -205,9 +317,9 @@ export function StudyLibrary({
   }
   const languageControl = (
     <label className="study-language">
-      题面语言
+      {t('题面语言', 'Language')}
       <select
-        aria-label="题单题面语言"
+        aria-label={t('题单语言', 'Collection language')}
         value={english ? 'en' : 'zh'}
         onChange={(event) => changeLanguage(event.target.value)}
       >
@@ -231,16 +343,21 @@ export function StudyLibrary({
     const fallbackBody =
       detail && (detail.descriptionZh || detail.descriptionEn);
     return (
-      <section className="study-library study-detail">
+      <section
+        className="study-library study-detail"
+        lang={english ? 'en' : 'zh'}
+      >
         <div className="study-detail-toolbar">
           <Button variant="ghost" onClick={() => setSelected(null)}>
             <ArrowLeft size={16} />
-            返回题单
+            {t('返回题单', 'Back to collection')}
           </Button>
           {languageControl}
         </div>
         {detailLoading && (
-          <output className="study-state">正在加载题面…</output>
+          <output className="study-state">
+            {t('正在加载题面…', 'Loading problem…')}
+          </output>
         )}
         {detailError && (
           <div className="study-state" role="alert">
@@ -249,7 +366,7 @@ export function StudyLibrary({
               variant="outline"
               onClick={() => setDetailRetry((n) => n + 1)}
             >
-              重试
+              {t('重试', 'Retry')}
             </Button>
           </div>
         )}
@@ -265,20 +382,36 @@ export function StudyLibrary({
                   className="study-level"
                   data-level={detail.difficulty.toLowerCase()}
                 >
-                  {difficultyLabels[detail.difficulty] || detail.difficulty}
+                  {difficultyName(detail.difficulty)}
                 </span>
-                {detail.topics.map((item) => (
-                  <span key={item}>{item}</span>
-                ))}
+                {detail.selection && (
+                  <span>
+                    {english
+                      ? detail.selection.sectionTitleEn ||
+                        detail.selection.sectionTitle
+                      : detail.selection.sectionTitle}
+                  </span>
+                )}
               </div>
             </header>
             {detail.selection && (
               <aside className="study-selection-note">
                 <strong>
-                  灵神题单精选 · {detail.selection.sectionTitle} ·{' '}
-                  {detail.selection.stage}
+                  {t('灵神题单精选', 'Ling’s Curated 500')} ·{' '}
+                  {english
+                    ? detail.selection.sectionTitleEn ||
+                      detail.selection.sectionTitle
+                    : detail.selection.sectionTitle}{' '}
+                  ·{' '}
+                  {english
+                    ? detail.selection.stageEn || detail.selection.stage
+                    : detail.selection.stage}
                 </strong>
-                <p>{detail.selection.reason}</p>
+                <p>
+                  {english
+                    ? detail.selection.reasonEn || detail.selection.reason
+                    : detail.selection.reason}
+                </p>
               </aside>
             )}
             <div className="study-judge-status">
@@ -286,18 +419,33 @@ export function StudyLibrary({
                 <strong>
                   {canJudge(detail)
                     ? judgeAccess
-                      ? '可以在 cswork 编写并提交'
-                      : '站内练习需先开通对应课程'
+                      ? t(
+                          '可以在 cswork 编写并提交',
+                          'Write and submit on cswork',
+                        )
+                      : t(
+                          '站内练习需先开通对应课程',
+                          'Course access is required to submit',
+                        )
                     : detail.caseStatus === 'missing'
-                      ? '测试数据待补充'
-                      : '测试数据待校验'}
+                      ? t('测试数据待补充', 'Test cases pending')
+                      : t('测试数据待校验', 'Test verification pending')}
                 </strong>
                 <p>
                   {canJudge(detail)
                     ? judgeAccess
-                      ? '站内判题使用已验证的测试数据。'
-                      : '仍可查看原题，并前往 LeetCode 练习。'
-                    : '题面已可阅读。测试数据验证完成前，请前往原题练习。'}
+                      ? t(
+                          '站内判题使用已验证的测试数据。',
+                          'Submissions run against verified test cases.',
+                        )
+                      : t(
+                          '仍可查看原题，并前往 LeetCode 练习。',
+                          'You can still read the statement and practice on LeetCode.',
+                        )
+                    : t(
+                        '题面已可阅读。测试数据验证完成前，请前往原题练习。',
+                        'Read the statement here and practice on LeetCode until tests are verified.',
+                      )}
                 </p>
               </div>
               {canJudge(detail) && judgeAccess && (
@@ -306,7 +454,7 @@ export function StudyLibrary({
                     navigate('problem', { problem: detail.judgeProblemId! })
                   }
                 >
-                  进入站内判题
+                  {t('进入站内判题', 'Start coding')}
                   <ArrowRight size={16} />
                 </Button>
               )}
@@ -323,14 +471,21 @@ export function StudyLibrary({
                     onClick={async () => {
                       try {
                         await navigator.clipboard.writeText(source);
-                        setCopyMessage('原题链接已复制');
+                        setCopyMessage(
+                          t('原题链接已复制', 'Original problem link copied'),
+                        );
                       } catch {
-                        setCopyMessage('复制失败，请使用打开原题链接');
+                        setCopyMessage(
+                          t(
+                            '复制失败，请使用打开原题链接',
+                            'Could not copy. Use the original problem link.',
+                          ),
+                        );
                       }
                     }}
                   >
                     <Copy size={14} />
-                    复制链接
+                    {t('复制链接', 'Copy link')}
                   </button>
                 </>
               )}
@@ -348,7 +503,14 @@ export function StudyLibrary({
               lang={body ? (english ? 'en' : 'zh') : undefined}
             >
               <LessonMarkdown
-                body={body || fallbackBody || '题面暂不可用，请查看原题。'}
+                body={
+                  body ||
+                  fallbackBody ||
+                  t(
+                    '题面暂不可用，请查看原题。',
+                    'Statement unavailable. Open the original problem.',
+                  )
+                }
               />
             </article>
             <footer className="study-attribution">{detail.attribution}</footer>
@@ -363,19 +525,16 @@ export function StudyLibrary({
     Math.ceil((data?.total || 0) / (data?.pageSize || 30)),
   );
   return (
-    <section className="study-library">
+    <section className="study-library" lang={english ? 'en' : 'zh'}>
       <header className="study-library-heading">
         <div>
           <span className="study-kicker">STEP BY STEP</span>
-          <h2>
-            {collection === 'ling-selected-500'
-              ? '灵神题单精选'
-              : '跟着题单，稳步练习。'}
-          </h2>
+          <h2>{t('灵神题单精选', 'Ling’s Curated 500')}</h2>
           <p>
-            {collection === 'ling-selected-500'
-              ? '面向美国 SDE 编程面试，从基础到进阶练习 500 道题。由 cswork 从灵神题单中筛选与编排。'
-              : '按专题找到下一道题。中英题面随时切换，验证完成的题目可直接在站内提交。'}
+            {t(
+              '面向美国 SDE 编程面试，从基础到进阶练习 500 道题。由 cswork 从灵神题单中筛选与编排。',
+              '500 problems for US SDE coding interviews, from fundamentals to advanced topics. Selected and organized by cswork from Ling’s study lists.',
+            )}
           </p>
         </div>
         {languageControl}
@@ -386,105 +545,148 @@ export function StudyLibrary({
         !error && (
           <div className="study-curated-overview">
             <div>
-              <span>站内通过</span>
+              <span>
+                {t(
+                  `第 ${data.currentRound?.number || 1} 轮通过`,
+                  `Solved in round ${data.currentRound?.number || 1}`,
+                )}
+              </span>
               <strong>
                 {data.collection.solved}
                 <small> / {data.collection.total}</small>
               </strong>
               <progress
-                aria-label="精选题单站内通过进度"
+                aria-label={t('本轮通过进度', 'Current round progress')}
                 value={data.collection.solved}
                 max={data.collection.total}
               />
             </div>
             <div>
-              <span>站内判题已开放</span>
+              <span>{t('站内判题已开放', 'Ready to submit')}</span>
               <strong>
                 {data.collection.ready}
-                <small> 道</small>
+                <small> {t('道', 'problems')}</small>
               </strong>
               <p>
                 {data.collection.ready === data.collection.total
-                  ? '全部精选题目均可在站内运行、提交和查看判题结果。'
-                  : '其余题目可先阅读双语题面，前往原题练习。'}
+                  ? t(
+                      '全部精选题目均可在站内运行、提交和查看判题结果。',
+                      'Run, submit, and view results for every selected problem here.',
+                    )
+                  : t(
+                      '其余题目可先阅读双语题面，前往原题练习。',
+                      'For remaining problems, read the bilingual statement and practice at the source.',
+                    )}
               </p>
             </div>
             <div>
-              <span>练习方法</span>
+              <span>{t('练习方法', 'Practice approach')}</span>
               <p>
-                先独立推导，再写代码验证；能解释复杂度、边界情况，并在复习时重新做出。
+                {t(
+                  '先独立推导，再写代码验证；能解释复杂度、边界情况，并在复习时重新做出。',
+                  'Reason through the solution, then verify it in code. Explain complexity and edge cases, and solve it again when reviewing.',
+                )}
               </p>
             </div>
           </div>
         )}
-      <div className="study-filters">
-        <label>
-          题单
-          <select
-            aria-label="选择题单"
-            value={collection}
-            onChange={(event) => {
-              setCollection(event.target.value);
-              setTopic('');
-              setSection('');
-              setStage('');
-              setStatus('');
-              setPage(1);
-            }}
-          >
-            <option value="ling-selected-500">灵神题单精选 · 500</option>
-            <option value="all">全部灵神题单</option>
-          </select>
-        </label>
+      {data?.currentRound && (
+        <div className="study-rounds" aria-busy={roundBusy}>
+          <div className="study-rounds-copy">
+            <strong>{t('我的刷题进度', 'My practice rounds')}</strong>
+            <p>
+              {t(
+                '每轮单独记录通过进度；新开一轮会从零开始，历史进度和提交记录保留。',
+                'Each round tracks its own progress. Start fresh while keeping every earlier round and submission.',
+              )}
+            </p>
+          </div>
+          <div className="study-round-actions">
+            <label htmlFor="practice-round">
+              {t('当前轮次', 'Current round')}
+            </label>
+            <select
+              id="practice-round"
+              value={data.activeRoundId}
+              disabled={roundBusy || loading}
+              onChange={(event) => void changeRound(event.target.value)}
+            >
+              {data.rounds.map((round) => (
+                <option key={round.id} value={round.id}>
+                  {t(`第 ${round.number} 轮`, `Round ${round.number}`)} ·{' '}
+                  {round.solved}/{data.collection?.total || 500}
+                </option>
+              ))}
+            </select>
+            <Button
+              variant="outline"
+              disabled={roundBusy || loading}
+              onClick={() => void changeRound()}
+            >
+              {roundBusy
+                ? t('正在更新…', 'Updating…')
+                : t('新开一轮', 'Start a new round')}
+            </Button>
+          </div>
+          {roundNotice && (
+            <output className="study-round-feedback">
+              {roundNotice === 'created'
+                ? t(
+                    '新一轮已开启，之前的进度已保留。',
+                    'New round started. Your earlier progress is saved.',
+                  )
+                : t(
+                    '已切换轮次，可继续这一轮的练习。',
+                    'Round switched. Continue practicing in this round.',
+                  )}
+            </output>
+          )}
+          {roundError && (
+            <p className="study-round-feedback error-text" role="alert">
+              {t(
+                '更新失败，请重试。',
+                'Could not update your round. Please retry.',
+              )}{' '}
+              {roundError}
+            </p>
+          )}
+        </div>
+      )}
+      <fieldset className="study-filters" disabled={roundBusy}>
+        <legend className="sr-only">{t('筛选题目', 'Filter problems')}</legend>
         <div className="study-search">
           <Search size={17} />
           <Input
-            aria-label="搜索灵神题单"
-            placeholder="搜索题号、中英文名称…"
+            aria-label={t('搜索灵神题单', 'Search curated problems')}
+            placeholder={t(
+              '搜索题号、中英文名称…',
+              'Search number or Chinese / English title…',
+            )}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
         </div>
-        {collection === 'all' ? (
-          <label>
-            专题
-            <select
-              value={topic}
-              onChange={(event) => {
-                setTopic(event.target.value);
-                setPage(1);
-              }}
-            >
-              <option value="">全部专题</option>
-              {data?.topics.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : (
-          <label>
-            专题
-            <select
-              aria-label="精选专题"
-              value={section}
-              onChange={(event) => {
-                setSection(event.target.value);
-                setPage(1);
-              }}
-            >
-              <option value="">全部专题</option>
-              {data?.collection?.sections.map((item) => (
-                <option key={item.slug} value={item.slug}>
-                  {item.title} · {item.solved}/{item.total}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
         <label>
-          难度
+          {t('专题', 'Topic')}
+          <select
+            aria-label={t('精选专题', 'Curated topic')}
+            value={section}
+            onChange={(event) => {
+              setSection(event.target.value);
+              setPage(1);
+            }}
+          >
+            <option value="">{t('全部专题', 'All topics')}</option>
+            {data?.collection?.sections.map((item) => (
+              <option key={item.slug} value={item.slug}>
+                {english ? item.titleEn || item.title : item.title} ·{' '}
+                {item.solved}/{item.total}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label>
+          {t('难度', 'Difficulty')}
           <select
             value={difficulty}
             onChange={(event) => {
@@ -492,16 +694,16 @@ export function StudyLibrary({
               setPage(1);
             }}
           >
-            <option value="">全部难度</option>
-            <option value="简单">简单</option>
-            <option value="中等">中等</option>
-            <option value="困难">困难</option>
+            <option value="">{t('全部难度', 'All difficulties')}</option>
+            <option value="简单">{t('简单', 'Easy')}</option>
+            <option value="中等">{t('中等', 'Medium')}</option>
+            <option value="困难">{t('困难', 'Hard')}</option>
           </select>
         </label>
         {collection === 'ling-selected-500' && (
           <>
             <label>
-              阶段
+              {t('阶段', 'Stage')}
               <select
                 value={stage}
                 onChange={(event) => {
@@ -509,16 +711,25 @@ export function StudyLibrary({
                   setPage(1);
                 }}
               >
-                <option value="">全部阶段</option>
+                <option value="">{t('全部阶段', 'All stages')}</option>
                 {['基础', '核心', '进阶'].map((item) => (
                   <option key={item} value={item}>
-                    {item}
+                    {t(
+                      item,
+                      (
+                        {
+                          基础: 'Foundation',
+                          核心: 'Core',
+                          进阶: 'Advanced',
+                        } as Record<string, string>
+                      )[item] || item,
+                    )}
                   </option>
                 ))}
               </select>
             </label>
             <label>
-              进度
+              {t('进度', 'Progress')}
               <select
                 value={status}
                 onChange={(event) => {
@@ -526,41 +737,53 @@ export function StudyLibrary({
                   setPage(1);
                 }}
               >
-                <option value="">全部题目</option>
-                <option value="todo">尚未通过</option>
-                <option value="solved">已通过</option>
-                <option value="ready">可站内判题</option>
+                <option value="">{t('全部题目', 'All problems')}</option>
+                <option value="todo">
+                  {t('尚未通过', 'Not solved this round')}
+                </option>
+                <option value="solved">
+                  {t('已通过', 'Solved this round')}
+                </option>
+                <option value="ready">
+                  {t('可站内判题', 'Ready to submit')}
+                </option>
               </select>
             </label>
           </>
         )}
-      </div>
+      </fieldset>
       <div className="study-result-summary" aria-live="polite">
         {loading
-          ? '正在查找题目…'
+          ? t('正在查找题目…', 'Finding problems…')
           : error
-            ? '暂时无法加载'
-            : `共 ${data?.total || 0} 道题`}
+            ? t('暂时无法加载', 'Unable to load right now')
+            : t(`共 ${data?.total || 0} 道题`, `${data?.total || 0} problems`)}
       </div>
       {error ? (
         <div className="study-state" role="alert">
           <p>{error}</p>
           <Button variant="outline" onClick={() => setRetry((n) => n + 1)}>
-            重新加载
+            {t('重新加载', 'Reload')}
           </Button>
         </div>
       ) : loading ? (
-        <output className="study-state">正在加载题单…</output>
+        <output className="study-state">
+          {t('正在加载题单…', 'Loading collection…')}
+        </output>
       ) : !data?.items.length ? (
         <div className="study-state">
-          <h3>没有找到匹配的题目</h3>
-          <p>换个关键词，或清除筛选后再试。</p>
+          <h3>{t('没有找到匹配的题目', 'No matching problems')}</h3>
+          <p>
+            {t(
+              '换个关键词，或清除筛选后再试。',
+              'Try another search or clear your filters.',
+            )}
+          </p>
           <Button
             variant="outline"
             onClick={() => {
               setQuery('');
               setSearch('');
-              setTopic('');
               setDifficulty('');
               setSection('');
               setStage('');
@@ -568,7 +791,7 @@ export function StudyLibrary({
               setPage(1);
             }}
           >
-            清除筛选
+            {t('清除筛选', 'Clear filters')}
           </Button>
         </div>
       ) : (
@@ -589,12 +812,14 @@ export function StudyLibrary({
                   </span>
                   <span className="study-row-topics">
                     {collection === 'ling-selected-500' && item.selection
-                      ? `${item.selection.order.toString().padStart(3, '0')} · ${item.selection.sectionTitle} · ${item.selection.stage}`
+                      ? `${item.selection.order.toString().padStart(3, '0')} · ${english ? item.selection.sectionTitleEn || item.selection.sectionTitle : item.selection.sectionTitle} · ${english ? item.selection.stageEn || item.selection.stage : item.selection.stage}`
                       : item.topics.slice(0, 3).join(' · ')}
                   </span>
                   {collection === 'ling-selected-500' && item.selection && (
                     <span className="study-row-purpose">
-                      {item.selection.reason}
+                      {english
+                        ? item.selection.reasonEn || item.selection.reason
+                        : item.selection.reason}
                     </span>
                   )}
                 </span>
@@ -602,14 +827,14 @@ export function StudyLibrary({
                   {item.solved && (
                     <span className="study-ready">
                       <Check size={13} />
-                      已通过
+                      {t('已通过', 'Solved this round')}
                     </span>
                   )}
                   <span
                     className="study-level"
                     data-level={item.difficulty.toLowerCase()}
                   >
-                    {difficultyLabels[item.difficulty] || item.difficulty}
+                    {difficultyName(item.difficulty)}
                   </span>
                   <span
                     className={canJudge(item) ? 'study-ready' : 'study-pending'}
@@ -617,12 +842,12 @@ export function StudyLibrary({
                     {canJudge(item) ? (
                       <>
                         <Check size={13} />
-                        站内判题
+                        {t('站内判题', 'Practice here')}
                       </>
                     ) : item.caseStatus === 'missing' ? (
-                      '测试数据待补充'
+                      t('测试数据待补充', 'Test cases pending')
                     ) : (
-                      '测试数据待校验'
+                      t('测试数据待校验', 'Test verification pending')
                     )}
                   </span>
                 </span>
@@ -630,26 +855,32 @@ export function StudyLibrary({
               </button>
             ))}
           </div>
-          <nav className="study-pagination" aria-label="题单分页">
+          <nav
+            className="study-pagination"
+            aria-label={t('题单分页', 'Problem pagination')}
+          >
             <Button
               variant="outline"
               disabled={page <= 1}
               onClick={() => setPage((n) => n - 1)}
-              aria-label="上一页"
+              aria-label={t('上一页', 'Previous page')}
             >
               <ChevronLeft size={16} />
-              上一页
+              {t('上一页', 'Previous')}
             </Button>
             <span>
-              第 {data.page} / {pages} 页
+              {t(
+                `第 ${data.page} / ${pages} 页`,
+                `Page ${data.page} of ${pages}`,
+              )}
             </span>
             <Button
               variant="outline"
               disabled={page >= pages}
               onClick={() => setPage((n) => n + 1)}
-              aria-label="下一页"
+              aria-label={t('下一页', 'Next page')}
             >
-              下一页
+              {t('下一页', 'Next')}
               <ChevronRight size={16} />
             </Button>
           </nav>

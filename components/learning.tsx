@@ -12,12 +12,10 @@ import {
   FileText,
   Video,
   GitPullRequest,
-  Search,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress as ProgressBar } from '@/components/ui/progress';
-import { Input } from '@/components/ui/input';
 import { api, type Boot, type Lesson, date } from '@/lib/types';
 import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
@@ -677,125 +675,11 @@ export function ProblemList({
   boot: Boot;
   navigate: Navigate;
 }) {
-  const [collection, setCollection] = useState('library');
-  const [q, setQ] = useState(''),
-    [filter, setFilter] = useState('all');
-  const passed = new Set(
-    boot.submissions
-      .filter((s) => s.status === 'accepted')
-      .map((s) => s.problem_id),
-  );
-  const list = boot.problems.filter(
-    (p) =>
-      (p.title + p.tags.join('')).toLowerCase().includes(q.toLowerCase()) &&
-      (filter === 'all' ||
-        (filter === 'solved' && passed.has(p.id)) ||
-        (filter === 'todo' && !passed.has(p.id))),
-  );
   return (
-    <>
-      <Heading
-        label="PRACTICE MAKES PROGRESS"
-        title="把思路，写成答案。"
-        description="按专题练习算法与数据结构，准备 SDE 编程面试。"
-        action={
-          collection === 'course' ? (
-            <span className="tag">
-              已通过 {passed.size} / {boot.problems.length}
-            </span>
-          ) : undefined
-        }
-      />
-      <Tabs
-        value={collection}
-        onValueChange={(value) => setCollection(String(value))}
-        className="study-collection-tabs"
-      >
-        <TabsList aria-label="练习题库">
-          <TabsTrigger value="library">灵神题单精选</TabsTrigger>
-          <TabsTrigger value="course">课程练习</TabsTrigger>
-        </TabsList>
-      </Tabs>
-      {collection === 'library' ? (
-        <StudyLibrary
-          navigate={navigate}
-          availableProblemIds={boot.problems.map((problem) => problem.id)}
-        />
-      ) : (
-        <>
-          <div className="toolbar">
-            <div className="search-field">
-              <Search size={16} />
-              <Input
-                aria-label="搜索题目"
-                placeholder="搜索题目、知识点…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-              />
-            </div>
-            <Tabs value={filter} onValueChange={(v) => setFilter(String(v))}>
-              <TabsList>
-                <TabsTrigger value="all">全部题目</TabsTrigger>
-                <TabsTrigger value="todo">待完成</TabsTrigger>
-                <TabsTrigger value="solved">已通过</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-          <div className="problem-table">
-            <div className="problem-table-head">
-              <span>状态</span>
-              <span>题目</span>
-              <span>知识点</span>
-              <span>难度</span>
-            </div>
-            {list.map((p, i) => (
-              <button
-                key={p.id}
-                className="problem-table-row"
-                onClick={() => navigate('problem', { problem: p.id })}
-              >
-                <span
-                  className={
-                    'problem-check ' + (passed.has(p.id) ? 'done' : '')
-                  }
-                >
-                  {passed.has(p.id) ? <Check size={16} /> : <span />}
-                </span>
-                <span>
-                  <small>{String(i + 1).padStart(3, '0')}</small>
-                  <strong>{p.title}</strong>
-                </span>
-                <span className="problem-tags">
-                  {p.tags.map((t) => (
-                    <em key={t}>{t}</em>
-                  ))}
-                </span>
-                <span
-                  className={
-                    'difficulty ' + (p.difficulty === '中等' ? 'medium' : '')
-                  }
-                >
-                  {p.difficulty}
-                </span>
-              </button>
-            ))}
-            {!list.length && (
-              <Empty
-                title="没有找到匹配的题目"
-                description="试试其他关键词，或切换题目状态。"
-              />
-            )}
-          </div>
-          <div className="notice">
-            <Code2 size={18} />
-            <span>
-              支持
-              Go、Python、Java、C++。使用标准输入输出，判题在独立沙箱中进行。
-            </span>
-          </div>
-        </>
-      )}
-    </>
+    <StudyLibrary
+      navigate={navigate}
+      availableProblemIds={boot.problems.map((problem) => problem.id)}
+    />
   );
 }
 export { ProblemWorkspace } from './problem-workspace';

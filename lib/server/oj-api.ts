@@ -1,4 +1,9 @@
 import { z } from 'zod';
+import {
+  changePracticeRound,
+  practiceRoundState,
+  isSelectedProblem,
+} from './practice-rounds';
 import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
 import { getStudyLibrary, listStudyLibrary } from './study-library';
@@ -31,10 +36,17 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
         id ? getStudyLibrary(id) : listStudyLibrary(url.searchParams, p.id),
       );
     }
+    if (resource === 'practice-rounds' && !id) {
+      await limit(p, 'library-read', 120);
+      return json(practiceRoundState(p.id));
+    }
     if (resource === 'status') return json(ojStatus());
     if (resource === 'problems' && id)
       return json({
         ...(await getPublishedProblem(p, id)),
+        practiceRound: isSelectedProblem(id)
+          ? practiceRoundState(p.id).currentRound
+          : null,
         maxCodeBytes: MAX_CODE_BYTES,
         maxStdinBytes: MAX_STDIN_BYTES,
         judgeAvailable: ojStatus().available,
@@ -65,6 +77,16 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
   if (resource === 'intelligence' && (!id || id === 'close') && !action)
     return handleEditorIntelligence(request, p, id === 'close');
   await limit(p, 'oj-write', 40);
+  if (resource === 'practice-rounds' && !id) {
+    let data: unknown;
+    try {
+      data = JSON.parse(await boundedText(request, 2000));
+    } catch (e) {
+      if (e instanceof HttpError) throw e;
+      throw new HttpError(400, '无效的 JSON');
+    }
+    return json(changePracticeRound(p.id, data));
+  }
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));
   if (resource === 'submissions' && !id) {

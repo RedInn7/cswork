@@ -128,6 +128,30 @@ function Workspace({
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
   const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [practiceRound, setPracticeRound] =
+    useState<OJProblem['practiceRound']>(null);
+  const [roundRefresh, setRoundRefresh] = useState(0);
+  useEffect(() => {
+    if (!problem.practiceRound) return;
+    let current = true;
+    const update = () => {
+      void ojRequest<{ currentRound: { id: string; number: number } }>(
+        'practice-rounds',
+      )
+        .then((state) => {
+          if (current) setPracticeRound(state.currentRound);
+        })
+        .catch(() => {
+          if (current) setPracticeRound(null);
+        });
+    };
+    update();
+    window.addEventListener('focus', update);
+    return () => {
+      current = false;
+      window.removeEventListener('focus', update);
+    };
+  }, [problem.practiceRound, roundRefresh]);
   const [statementLocale, setStatementLocale] = useState<ProblemLocale>('zh');
   useEffect(() => {
     setStatementLocale(
@@ -573,6 +597,7 @@ function Workspace({
       const detail = await ojRequest<OJSubmission>(`submissions/${result.id}`);
       if (alive.current) {
         setSubmission(detail);
+        setRoundRefresh((value) => value + 1);
         if (!activeStatuses.has(detail.status))
           void latestRefresh.current().catch(() => {});
       }
@@ -649,7 +674,11 @@ function Workspace({
 
   const description = (
     <section className="cs-statement-pane">
-      <div className="cs-pane-tabs" role="tablist" aria-label="题目资料">
+      <div
+        className="cs-pane-tabs"
+        role="tablist"
+        aria-label={english ? 'Problem information' : '题目资料'}
+      >
         <button
           role="tab"
           aria-selected={leftTab === 'statement'}
@@ -657,7 +686,7 @@ function Workspace({
           onClick={() => setLeftTab('statement')}
         >
           <FileText size={15} />
-          题目描述
+          {english ? 'Description' : '题目描述'}
         </button>
         <button
           role="tab"
@@ -666,7 +695,7 @@ function Workspace({
           onClick={() => setLeftTab('history')}
         >
           <History size={15} />
-          提交记录
+          {english ? 'Submissions' : '提交记录'}
         </button>
       </div>
       <div className="cs-statement-scroll">
@@ -680,7 +709,7 @@ function Workspace({
                 marginBottom: 16,
               }}
             >
-              <span>题面语言</span>
+              <span>{english ? 'Statement language' : '题面语言'}</span>
               <select
                 aria-label="题面语言"
                 value={statementLocale}
@@ -789,7 +818,11 @@ function Workspace({
         ) : (
           <div className="cs-history-pane">
             <div className="cs-history-heading">
-              <span>你的全部提交与测试运行</span>
+              <span>
+                {english
+                  ? 'All rounds: submissions and runs'
+                  : '所有轮次的提交与测试运行'}
+              </span>
               <button
                 title="刷新提交记录"
                 aria-label="刷新提交记录"
@@ -810,8 +843,12 @@ function Workspace({
             {!history.length && !historyLoading && (
               <div className="cs-empty">
                 <History size={26} />
-                <h3>还没有提交记录</h3>
-                <p>运行样例检查思路，再提交全部测试点。</p>
+                <h3>{english ? 'No submissions yet' : '还没有提交记录'}</h3>
+                <p>
+                  {english
+                    ? 'Run the examples, then submit against all test cases.'
+                    : '运行样例检查思路，再提交全部测试点。'}
+                </p>
               </div>
             )}
             {history.map((item) => (
@@ -820,9 +857,14 @@ function Workspace({
                   <Verdict submission={item} />
                   <span>
                     {item.mode === 'run'
-                      ? '测试运行'
-                      : `${item.passed} / ${item.total} 通过`}{' '}
+                      ? english
+                        ? 'Test run'
+                        : '测试运行'
+                      : `${item.passed} / ${item.total} ${english ? 'passed' : '通过'}`}{' '}
                     · {item.language}
+                    {item.practiceRoundNumber
+                      ? ` · ${english ? 'Round ' + item.practiceRoundNumber : '第 ' + item.practiceRoundNumber + ' 轮'}`
+                      : ''}
                   </span>
                   <time dateTime={new Date(item.created_at).toISOString()}>
                     {new Date(item.created_at).toLocaleString('zh-CN', {
@@ -1198,7 +1240,12 @@ function Workspace({
             <ArrowLeft size={18} />
           </button>
           <div>
-            <span className="cs-workspace-eyebrow">cswork / 题库</span>
+            <span className="cs-workspace-eyebrow">
+              cswork / {english ? 'Practice' : '题库'}
+              {practiceRound
+                ? ` · ${english ? 'Round ' + practiceRound.number : '第 ' + practiceRound.number + ' 轮'}`
+                : ''}
+            </span>
             <h1>{statement.title}</h1>
           </div>
         </div>
@@ -1216,7 +1263,7 @@ function Workspace({
             ) : (
               <Play size={15} />
             )}
-            运行
+            {english ? 'Run' : '运行'}
           </Button>
           <Button
             disabled={disabled}
@@ -1228,7 +1275,13 @@ function Workspace({
             ) : (
               <Send size={15} />
             )}
-            {submitting ? '正在提交' : '提交解答'}
+            {submitting
+              ? english
+                ? 'Submitting'
+                : '正在提交'
+              : english
+                ? 'Submit'
+                : '提交解答'}
           </Button>
         </div>
         <div className="cs-workspace-navigation">

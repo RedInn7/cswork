@@ -9,6 +9,7 @@ export type OJProblem = Problem & {
   languageVersions?: Partial<Record<Language, string>>;
   samples?: { name: string; input: string; expectedOutput: string }[];
   judgeAvailable?: boolean;
+  practiceRound?: { id: string; number: number } | null;
 };
 export type OJCase = {
   ordinal: number;
@@ -41,6 +42,8 @@ export type OJSubmission = {
   message?: string;
   queuedPosition?: number;
   problemVersion?: string;
+  practiceRoundId?: string | null;
+  practiceRoundNumber?: number | null;
 };
 export type SubmissionPage = {
   items: OJSubmission[];
