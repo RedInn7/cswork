@@ -49,6 +49,12 @@ class ComplexDesignOne(unittest.TestCase):
    self.assertEqual(args[0][-8000:],['getRandom']*8000)
    self.assertEqual(Counter(json.loads(want)[-8000:]),frequencies)
    self.assertEqual(Counter(json.loads(p['oracle'](args))[-8000:]),frequencies)
+ def test_mkdir_requires_new_target(self):
+  for calls in [[('mkdir',['/'])],[('mkdir',['/a']),('mkdir',['/a'])],[('mkdir',['/a/b']),('mkdir',['/a'])],[('addContentToFile',['/f','x']),('mkdir',['/f'])]]:
+   with self.subTest(calls=calls),self.assertRaises(AssertionError):b.validate(588,b.trace(588,[],calls))
+  args=b.trace(588,[],[('ls',['/']),('mkdir',['/a/b']),('ls',['/']),('ls',['/a']),('ls',['/a/b'])])
+  b.validate(588,args)
+  self.assertEqual(b.oracle_model(588,args),[None,[],None,['a'],['b'],[]])
  def test_constraint_failures(self):
   bad=[(173,b.trace(173,[[1]],[('next',[]),('next',[])])),(981,b.trace(981,[],[('set',['a','x',2]),('set',['b','y',2])])),(295,b.trace(295,[],[('findMedian',[])])),(588,b.trace(588,[],[('readContentFromFile',['/missing'])])),(432,b.trace(432,[],[('dec',['a'])])),(380,b.trace(380,[],[('getRandom',[])])),(381,b.trace(381,[],[('getRandom',[])])),(449,b.trace(449,[],[('roundTrip',[[1,2]])]))]
   for pid,args in bad:
