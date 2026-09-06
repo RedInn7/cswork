@@ -36,7 +36,8 @@ class BatchTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'method does not match'):
                 generate_batch.build(1,spec,{1:origin},root,root)
             origin['signature']['name']='solve '
-            generate_batch.build(1,spec,{1:origin},root,root)
+            item=generate_batch.build(1,spec,{1:origin},root,root)
+            self.assertEqual(item['oracleSha256'],hashlib.sha256((root/'lc-1.oracle.json').read_bytes()).hexdigest())
             self.assertEqual(json.loads((root/'lc-1.candidate.json').read_text())['problem']['difficulty'],'困难')
 
     def test_scalar_contract(self):
@@ -155,5 +156,95 @@ class ManifestBoundaryTests(unittest.TestCase):
             argv=['coverage.py','--library',str(root/'missing'),'--source-hashes',str(root/'hashes'),'--output',str(output)]
             with patch.object(sys,'argv',argv),self.assertRaises(FileNotFoundError):coverage.main()
             self.assertFalse(output.exists())
+
+
+
+
+class TypedBatchTests(unittest.TestCase):
+    def test_authored_wrappers_emit_jsonl_records_and_counted_formal_output(self):
+        for kind,value,formal in [('string','a b','a b\n'),
+                ('integer-array',[1,2,1],'3\n1 2 1\n'),
+                ('integer-set',[2,1],'2\n2 1\n'),
+                ('string-set',['','a b'],'2\n\na b\n')]:
+            with self.subTest(kind=kind):
+                spec={'method':'solve','resultKind':kind,'parse':'args=json.loads(sys.stdin.read())'}
+                code=wrapper(spec,'class Solution:\n    def solve(self,x): return x\n')
+                for batch in (False,True):
+                    output=io.StringIO()
+                    stdin=json.dumps([[value],[value]] if batch else [value])
+                    with patch.object(sys,'argv',['fixture']+(['--batch'] if batch else [])),patch.object(sys,'stdin',io.StringIO(stdin)),contextlib.redirect_stdout(output):
+                        exec(code,{'__name__':'__main__'})
+                    if batch:self.assertEqual([json.loads(line) for line in output.getvalue().splitlines()],[value,value])
+                    else:self.assertEqual(output.getvalue(),formal)
+        with self.assertRaises(ValueError):generate_batch.result_settings({'resultKind':'string','oracleEncoding':'legacy-integer'})
+        with self.assertRaises(ValueError):generate_batch.result_settings({'resultKind':'integer-set','checker':'tokens'})
+
+    def test_typed_package_generation_is_bound_to_snapshot_and_output_limit(self):
+        import verify
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);folder=root/'group'/'0001.Fixture';folder.mkdir(parents=True)
+            (folder/'Solution.py').write_text('class Solution:\n    def solve(self,x): return x\n')
+            spec=dict(method='solve',resultKind='integer-array',titleZh='测试',titleEn='Fixture',
+                descriptionZh='测试',descriptionEn='Fixture',inputZh='数组',inputEn='Array',
+                outputZh='数组',outputEn='Array',edges=[[[1,2]]],pressure=[([[3]],[3])],
+                validate=lambda a:True,oracle=lambda a:a[0],random_args=lambda r:[[1,2]],
+                encode=lambda a:json.dumps(a)+'\n',parse='args=json.loads(sys.stdin.read())',
+                mutants=[{'name':'wrong','source':'print(0)'}],outputLimit=1)
+            origin=dict(signature={'name':'solve'},difficulty='简单',sourceUrl='https://example.test/zh',sourceEnUrl='https://example.test/en')
+            item=generate_batch.build(1,spec,{1:origin},root,root)
+            (root/'manifest.json').write_text(json.dumps({'problems':[item]}))
+            hashes=root/'hashes.json';hashes.write_text(json.dumps({'lc-1':'a'*64}))
+            _,prepared=verify.snapshot_inputs(root,hashes)
+            self.assertEqual(prepared[0][0]['resultKind'],'integer-array')
+            self.assertEqual(prepared[0][0]['resourceLimits']['outputLimit'],1)
+            self.assertEqual(prepared[0][0]['oracleEncoding'],'jsonl-v1')
+            opath=root/'lc-1.oracle.json';oracle=json.loads(opath.read_text())
+            original_raw=opath.read_bytes()
+            self.assertEqual(item['oracleSha256'],hashlib.sha256(original_raw).hexdigest())
+            self.assertEqual(oracle['resultKind'],'integer-array')
+            self.assertEqual(oracle['oracleEncoding'],'jsonl-v1')
+            for change in ('missing-kind','wrong-kind','bool-element','missing-record'):
+                bad=json.loads(json.dumps(oracle))
+                if change=='missing-kind':del bad['resultKind']
+                if change=='wrong-kind':bad['resultKind']='integer-set'
+                if change=='bool-element':bad['expected'][0]=[True]
+                if change=='missing-record':bad['expected'].pop()
+                opath.write_text(json.dumps(bad))
+                # Rebind to reach metadata/type checks rather than fail at byte integrity.
+                item['oracleSha256']=hashlib.sha256(opath.read_bytes()).hexdigest()
+                (root/'manifest.json').write_text(json.dumps({'problems':[item]}))
+                with self.subTest(change=change),self.assertRaises(ValueError):verify.snapshot_inputs(root,hashes)
+            opath.write_bytes(original_raw)
+            too_large={**spec,'resultKind':'string','oracle':lambda a:'a'*1025,'pressure':[([[1]],'a'*1025)]}
+            with self.assertRaisesRegex(ValueError,'output limit'):generate_batch.build(1,too_large,{1:origin},root,root)
+
+
+
+
+    def test_coverage_binds_typed_oracle_sidecar_and_runtime_contract(self):
+        for fault in ('none','wrong-kind','missing-metadata','changed-oracle','bool-element','short-oracle','changed-limit'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as directory:
+                root=Path(directory);path,manifest,report=ManifestBoundaryTests().make_verification(root)
+                item=manifest['problems'][0];entry=report['problems'][0]
+                limits={'timeLimit':2,'memoryLimit':262144,'outputLimit':64}
+                oracle={'args':[[1]]*120,'expected':[[1]]*120,'resultKind':'integer-array','oracleEncoding':'jsonl-v1'}
+                package={'problem':{'id':'lc-1','checker':'tokens',**limits},'cases':[{'expectedOutput':'1\n1\n'}]*2}
+                raw=json.dumps(package).encode();(root/'lc-1.json').write_bytes(raw)
+                for record in (item,entry):
+                    record.update(resultKind='integer-array',oracleEncoding='jsonl-v1',checker='tokens',resourceLimits=limits.copy())
+                    record['packageSha256']=record['inputBytesSha256']=hashlib.sha256(raw).hexdigest()
+                if fault=='wrong-kind':item['resultKind']=entry['resultKind']='integer'
+                if fault=='missing-metadata':del item['oracleEncoding']
+                if fault=='bool-element':oracle['expected'][0]=[True]
+                if fault=='short-oracle':oracle['expected'].pop()
+                if fault=='changed-limit':
+                    for record in (item,entry):record['resourceLimits']['outputLimit']=128
+                oracle_raw=json.dumps(oracle).encode();(root/'lc-1.oracle.json').write_bytes(oracle_raw)
+                item['oracleSha256']=entry['oracleSha256']=hashlib.sha256(oracle_raw).hexdigest()
+                if fault=='changed-oracle':(root/'lc-1.oracle.json').write_bytes(oracle_raw+b' ')
+                path.write_text(json.dumps(manifest));(root/'verification-report.json').write_text(json.dumps(report))
+                if fault=='none':self.assertEqual(coverage.verified_records(path,{'lc-1':'a'*64},{'lc-1'}),{'lc-1'})
+                else:
+                    with self.assertRaises(ValueError):coverage.verified_records(path,{'lc-1':'a'*64},{'lc-1'})
 
 if __name__=='__main__':unittest.main()

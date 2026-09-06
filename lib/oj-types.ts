@@ -6,7 +6,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   id: string;
   courseId: string;
   outputLimit: number;
-  checker: 'tokens' | 'exact';
+  checker: 'tokens' | 'exact' | 'int-set' | 'string-set';
   languages: Language[];
 };
 
@@ -80,6 +80,51 @@ export type OjTeacherProblem = {
 export const OJ_MAX_IMPORT_BYTES = 8 * 1024 * 1024;
 export const OJ_MAX_CASE_BYTES = 4 * 1024 * 1024;
 export const OJ_MAX_CASES = 64;
+/** Fixed, non-executable counted-set protocol shared by import and judging. */
+export const OJ_MAX_SET_ITEMS = 1_000_000;
+export function parseOjSetOutput(
+  output: string,
+  checker: 'int-set' | 'string-set',
+): ReadonlySet<string> | null {
+  if (
+    output.includes('\0') ||
+    // Unicode mode matches lone surrogates, while valid pairs (emoji) stay intact.
+    // Reject before TextEncoder can silently replace an invalid code point.
+    /[\uD800-\uDFFF]/u.test(output) ||
+    new TextEncoder().encode(output).byteLength > OJ_MAX_CASE_BYTES
+  ) return null;
+  const normalized = output.replace(/\r\n/g, '\n');
+  const newline = normalized.indexOf('\n');
+  if (newline < 0) return null;
+  const header = normalized.slice(0, newline);
+  if (!/^(0|[1-9][0-9]{0,6})$/.test(header)) return null;
+  const count = Number(header);
+  if (count > OJ_MAX_SET_ITEMS) return null;
+  const body = normalized.slice(newline + 1);
+  let values: string[];
+  if (checker === 'int-set') {
+    values = body.split(/[\t\n\v\f\r ]+/).filter(Boolean);
+    if (values.length !== count) return null;
+    for (let i = 0; i < values.length; i++) {
+      const value = values[i];
+      if (!/^[+-]?[0-9]+$/.test(value)) return null;
+      // Decimal normalization avoids Number rounding and expensive huge BigInts.
+      const negative = value[0] === '-';
+      const digits = value.replace(/^[+-]/, '').replace(/^0+/, '') || '0';
+      values[i] = negative && digits !== '0' ? '-' + digits : digits;
+    }
+  } else if (checker === 'string-set') {
+    if (!normalized.endsWith('\n') || body.includes('\r')) return null;
+    // Remove precisely one record terminator; preserve empty string elements.
+    values = body === '' ? [] : body.slice(0, -1).split('\n');
+    if (values.length !== count) return null;
+  } else {
+    return null;
+  }
+  const unique = new Set(values);
+  return unique.size === count ? unique : null;
+}
+
 const identifier = z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/);
 const limitedText = (length: number) => z.string().min(1).max(length);
 const testcase = z
@@ -128,7 +173,7 @@ export const ojImportSchema = z
         timeLimit: z.number().min(0.1).max(10),
         memoryLimit: z.number().int().min(16384).max(524288),
         outputLimit: z.number().int().min(1).max(4096),
-        checker: z.enum(['tokens', 'exact']),
+        checker: z.enum(['tokens', 'exact', 'int-set', 'string-set']),
         languages: z
           .array(z.enum(['python', 'go', 'java', 'cpp']))
           .min(1)
@@ -170,6 +215,14 @@ export const ojImportSchema = z
         path: ['cases'],
       });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        (data.problem.checker === 'int-set' || data.problem.checker === 'string-set') &&
+        parseOjSetOutput(c.expectedOutput, data.problem.checker) === null
+      ) ctx.addIssue({
+        code: 'custom',
+        message: '集合预期输出格式无效：请检查首行数量、重复项及行格式',
+        path: ['cases', index, 'expectedOutput'],
+      });
       for (const key of ['input', 'expectedOutput'] as const) {
         if (
           new TextEncoder().encode(c[key]).byteLength > OJ_MAX_CASE_BYTES ||

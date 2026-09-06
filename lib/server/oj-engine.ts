@@ -1,5 +1,5 @@
 import type { Language } from '@/lib/problems';
-import type { OjProblemSpec } from '@/lib/oj-types';
+import { parseOjSetOutput, type OjProblemSpec } from '@/lib/oj-types';
 
 type EngineFile =
   | { content: string }
@@ -255,10 +255,17 @@ export function engineVerdict(result: EngineResult): string {
 export function matchesOutput(
   actual: string,
   expected: string,
-  checker: 'tokens' | 'exact',
+  checker: OjProblemSpec['checker'],
 ) {
   if (checker === 'exact')
     return actual.replace(/\r\n/g, '\n') === expected.replace(/\r\n/g, '\n');
+  if (checker === 'int-set' || checker === 'string-set') {
+    const a = parseOjSetOutput(actual, checker);
+    const b = parseOjSetOutput(expected, checker);
+    return a !== null && b !== null && a.size === b.size && [...a].every((v) => b.has(v));
+  }
+  // A stale worker must never silently interpret a new checker as token equality.
+  if (checker !== 'tokens') return false;
   // ASCII whitespace is the conventional OJ token separator; do not trim arbitrary Unicode.
   const tokens = (s: string) => s.split(/[\t\n\v\f\r ]+/).filter(Boolean);
   const a = tokens(actual),

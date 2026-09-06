@@ -26,6 +26,38 @@ class ProvenanceTests(unittest.TestCase):
             'mutantsSha256': hashlib.sha256(mutants).hexdigest(),
             'formalCases':2, 'oracleCases':120}]}))
 
+    def test_legacy_oracle_hash_is_optional_but_declared_hash_is_strict(self):
+        snapshot_inputs(self.data,self.hashes)
+        path=self.data/'manifest.json'
+        manifest=json.loads(path.read_text())
+        digest=hashlib.sha256((self.data/'lc-3.oracle.json').read_bytes()).hexdigest()
+        manifest['problems'][0]['oracleSha256']=digest
+        path.write_text(json.dumps(manifest))
+        snapshot_inputs(self.data,self.hashes)
+        for value in (None,False,'a'*63,'z'*64,'b'*64):
+            manifest['problems'][0]['oracleSha256']=value
+            path.write_text(json.dumps(manifest))
+            with self.subTest(value=value),self.assertRaisesRegex(ValueError,'Oracle bytes'):
+                snapshot_inputs(self.data,self.hashes)
+
+    def test_jsonl_requires_generation_hash_and_rejects_preverification_tampering(self):
+        path=self.data/'manifest.json';opath=self.data/'lc-3.oracle.json'
+        manifest=json.loads(path.read_text());item=manifest['problems'][0]
+        item.update(resultKind='integer',oracleEncoding='jsonl-v1')
+        oracle=json.loads(opath.read_text())
+        oracle.update(resultKind='integer',oracleEncoding='jsonl-v1')
+        opath.write_text(json.dumps(oracle))
+        path.write_text(json.dumps(manifest))
+        with self.assertRaisesRegex(ValueError,'requires generation-time'):
+            snapshot_inputs(self.data,self.hashes)
+        item['oracleSha256']=hashlib.sha256(opath.read_bytes()).hexdigest()
+        path.write_text(json.dumps(manifest))
+        snapshot_inputs(self.data,self.hashes)
+        oracle['expected'][0]=2
+        opath.write_text(json.dumps(oracle))
+        with self.assertRaisesRegex(ValueError,'Oracle bytes'):
+            snapshot_inputs(self.data,self.hashes)
+
     def test_source_hash_is_required_and_strict(self):
         for value in [{}, {'lc-3':'a'*63}, {'lc-3':'z'*64}, {'lc-3':None}]:
             self.hashes.write_text(json.dumps(value))

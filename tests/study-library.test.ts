@@ -154,6 +154,11 @@ void test('offline publication rejects an old source manifest before publishing'
   const { createOjSeedPackages } = await import('../scripts/seed-oj-data.mjs');
   const payload = createOjSeedPackages(problems)[0];
   payload.problem.id = 'lc-3';
+  Object.assign(payload.problem, {
+    timeLimit: 2,
+    memoryLimit: 262144,
+    outputLimit: 64,
+  });
   const raw = JSON.stringify(payload);
   writeFileSync(resolve(dir, 'lc-3.json'), raw);
   sqlite()
@@ -264,6 +269,138 @@ void test('offline publication rejects an old source manifest before publishing'
     const rejected = invokePublisher();
     assert.notEqual(rejected.status, 0, fault);
     assert.match(rejected.stderr, expected, fault);
+  }
+  for (const fault of [
+    'manifest-kind',
+    'report-limit',
+    'checker',
+    'limits',
+    'array-shape',
+  ]) {
+    const manifestChanges: Record<string, unknown> = {};
+    const reportChanges: Record<string, unknown> = {};
+    if (fault === 'manifest-kind')
+      Object.assign(manifestChanges, {
+        resultKind: 'string',
+        oracleEncoding: 'jsonl-v1',
+      });
+    if (fault === 'report-limit')
+      Object.assign(reportChanges, {
+        resourceLimits: { timeLimit: 3, memoryLimit: 262144, outputLimit: 64 },
+      });
+    if (fault === 'checker') {
+      const protocol = {
+        resultKind: 'string',
+        oracleEncoding: 'jsonl-v1',
+        checker: 'exact',
+      };
+      Object.assign(manifestChanges, protocol);
+      Object.assign(reportChanges, protocol);
+    }
+    if (fault === 'limits') {
+      const limits = {
+        resourceLimits: { timeLimit: 2, memoryLimit: 262144, outputLimit: 128 },
+      };
+      Object.assign(manifestChanges, limits);
+      Object.assign(reportChanges, limits);
+    }
+    if (fault === 'array-shape') {
+      const protocol = {
+        resultKind: 'integer-array',
+        oracleEncoding: 'jsonl-v1',
+      };
+      Object.assign(manifestChanges, protocol);
+      Object.assign(reportChanges, protocol);
+    }
+    writeFileSync(
+      resolve(dir, 'manifest.json'),
+      JSON.stringify({
+        ...manifest,
+        problems: manifest.problems.map((record) => ({
+          ...record,
+          ...manifestChanges,
+        })),
+      }),
+    );
+    writeFileSync(
+      resolve(dir, 'verification-report.json'),
+      JSON.stringify({
+        ...report,
+        problems: report.problems.map((record) => ({
+          ...record,
+          ...reportChanges,
+        })),
+      }),
+    );
+    const rejected = invokePublisher();
+    assert.notEqual(rejected.status, 0, fault);
+    assert.match(
+      rejected.stderr,
+      fault === 'array-shape'
+        ? /Expected output does not match/
+        : /Verification result protocol does not match/,
+      fault,
+    );
+  }
+  for (const [kind, expectedValue, expectedError] of [
+    ['integer-array', '[]', /Source library changed or is missing/],
+    [
+      'integer-array',
+      '[9007199254740993]',
+      /Source library changed or is missing/,
+    ],
+    ['integer-array', '[true]', /Oracle type or count/],
+    ['integer-array', '[1.0]', /Oracle type or count/],
+    ['string', '"🙂"', /Source library changed or is missing/],
+    ['string', '"a\\nb"', /Oracle type or count/],
+    ['string', '"\\ud800"', /Oracle type or count/],
+  ] as const) {
+    const typedPayload = structuredClone(payload);
+    typedPayload.problem.checker = kind === 'string' ? 'exact' : 'tokens';
+    for (const c of typedPayload.cases)
+      c.expectedOutput = kind === 'string' ? 'line\n' : '0\n';
+    const typedRaw = JSON.stringify(typedPayload);
+    const typedHash = createHash('sha256').update(typedRaw).digest('hex');
+    writeFileSync(resolve(dir, 'lc-3.json'), typedRaw);
+    const oracleRaw =
+      '{"resultKind":' +
+      JSON.stringify(kind) +
+      ',"oracleEncoding":"jsonl-v1","args":[' +
+      Array(120).fill('[]').join(',') +
+      '],"expected":[' +
+      Array(120).fill(expectedValue).join(',') +
+      ']}';
+    const oracleHash = createHash('sha256').update(oracleRaw).digest('hex');
+    const fields = {
+      resultKind: kind,
+      oracleEncoding: 'jsonl-v1',
+      checker: typedPayload.problem.checker,
+      packageSha256: typedHash,
+      inputBytesSha256: typedHash,
+      oracleSha256: oracleHash,
+    };
+    writeFileSync(resolve(dir, 'lc-3.oracle.json'), oracleRaw);
+    writeFileSync(
+      resolve(dir, 'manifest.json'),
+      JSON.stringify({
+        ...manifest,
+        problems: manifest.problems.map((record) => ({ ...record, ...fields })),
+      }),
+    );
+    writeFileSync(
+      resolve(dir, 'verification-report.json'),
+      JSON.stringify({
+        ...report,
+        problems: report.problems.map((record) => ({ ...record, ...fields })),
+      }),
+    );
+    const rejected = invokePublisher();
+    assert.notEqual(rejected.status, 0);
+    assert.match(rejected.stderr, expectedError, expectedValue);
+    if (expectedValue === '[]') {
+      writeFileSync(resolve(dir, 'lc-3.oracle.json'), oracleRaw + ' ');
+      assert.match(invokePublisher().stderr, /Changed verified oracle/);
+    }
   }
   assert.equal(
     (

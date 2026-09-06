@@ -1151,11 +1151,16 @@ export function OjAdmin({
                           按词元比较 · 忽略多余空格与换行
                         </option>
                         <option value="exact">精确比较 · 包含空格与换行</option>
+                        <option value="int-set">整数集合 · 顺序不限，禁止重复</option>
+                        <option value="string-set">字符串集合 · 每行一项，顺序不限</option>
                       </select>
                       <small>
-                        {spec.checker === 'tokens'
-                          ? '每个词元的内容和顺序必须一致；数字 1 与 1.0 视为不同。'
-                          : '输出必须与预期文本逐字一致，包括末尾换行。'}
+                        {{
+                          tokens: '每个词元的内容和顺序必须一致；数字 1 与 1.0 视为不同。',
+                          exact: '输出必须与预期文本逐字一致，包括末尾换行。',
+                          'int-set': '首行只写元素数量，其后写对应数量的整数；顺序不限，重复整数不通过。',
+                          'string-set': '首行只写元素数量，其后每行一个字符串，末尾必须换行；保留空串和空格，禁止重复。',
+                        }[spec.checker]}
                       </small>
                     </label>
                     <div className="oj-admin-language-options">

@@ -6,6 +6,7 @@ import json
 import re
 from collections import Counter
 from pathlib import Path
+from result_contract import KINDS, CHECKERS, resource_limits, validate_result, validate_expected_output, MAX_ORACLE_BYTES
 
 
 def category(signature):
@@ -73,6 +74,42 @@ def verified_records(manifest, hashes, allowed):
                 or not isinstance(package.get('cases'),list) or len(package['cases'])!=counts['formal']):
             raise ValueError('Stale or invalid verification: '+ident)
         entry=entries.get(ident,{})
+        contract_keys=('resultKind','oracleEncoding','checker','resourceLimits')
+        modern=any(key in record for record in (item,entry) for key in contract_keys)
+        if modern and any(key not in record for record in (item,entry) for key in contract_keys):
+            raise ValueError('Partially missing result contract: '+ident)
+        kind=item.get('resultKind','integer')
+        encoding=item.get('oracleEncoding','legacy-integer')
+        problem=package.get('problem',{})
+        limits=resource_limits(problem)
+        checker=problem.get('checker','tokens')
+        if (kind not in KINDS or encoding not in ('legacy-integer','jsonl-v1')
+                or kind!='integer' and encoding!='jsonl-v1' or checker!=CHECKERS[kind]):
+            raise ValueError('Invalid result contract: '+ident)
+        if modern:
+            if any(item[key]!=entry.get(key) for key in contract_keys):
+                raise ValueError('Result contract report mismatch: '+ident)
+            if (item['checker']!=checker or item['resourceLimits']!=limits
+                    or resource_limits(item['resourceLimits'])!=limits):
+                raise ValueError('Result contract differs from package: '+ident)
+        if encoding=='jsonl-v1':
+            oracle_path=manifest.parent/(ident+'.oracle.json')
+            if oracle_path.resolve().parent!=manifest.parent.resolve():
+                raise ValueError('Oracle must remain beside manifest')
+            oracle_raw=oracle_path.read_bytes()
+            if len(oracle_raw)>MAX_ORACLE_BYTES or hashlib.sha256(oracle_raw).hexdigest()!=item.get('oracleSha256'):
+                raise ValueError('Oracle bytes differ from verification: '+ident)
+            oracle=json.loads(oracle_raw)
+            expected=oracle.get('expected');args=oracle.get('args')
+            if (oracle.get('resultKind')!=kind or oracle.get('oracleEncoding')!=encoding
+                    or not isinstance(args,list) or not isinstance(expected,list)
+                    or len(args)!=counts['oracle'] or len(expected)!=counts['oracle']
+                    or any(type(a) is not list for a in args)):
+                raise ValueError('Invalid typed oracle metadata or counts: '+ident)
+            for value in expected:validate_result(kind,value)
+        if encoding=='jsonl-v1':
+            for case in package['cases']:
+                validate_expected_output(kind,case.get('expectedOutput'))
         checks=entry.get('checks')
         if (entry.get('status')!='verified' or entry.get('counts')!=counts
                 or not isinstance(checks,list)
