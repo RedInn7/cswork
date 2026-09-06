@@ -18,7 +18,6 @@ import {
   Check,
   Terminal,
   GraduationCap,
-  GitPullRequest,
   Search,
   Settings,
   Inbox,
@@ -79,7 +78,6 @@ const nav: [LucideIcon, string, string][] = [
   [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
   [Code2, '算法练习', 'problems'],
-  [GitPullRequest, '工程作业', 'reviews'],
   [LifeBuoy, '我的工单', 'tickets'],
 ];
 const initial: Boot = {
