@@ -1,4 +1,4 @@
-# 灵神题单首批判题数据验证
+# 灵神题单判题数据验证
 
 题单目录和可判题状态独立。本工具为 3、11、35、53、69、121、198、209、322、1456 创建可复现的候选数据；只有当前 go-judge 沙箱验证通过后才生成正式包和发布清单。704 不在当前本地题单中，未冒充题单成员导入。
 
@@ -27,7 +27,30 @@ python3 verify.py --data /private/path/ling-verified-packages \
 
 候选文件后缀为 `.candidate.json`。单题所有检查通过才复制为 `lc-N.json`；发布必须验证最新 `verified-manifest.json` 中 `verified`、数据 SHA-256 和报告，不应仅根据 `lc-N.json` 文件存在就发布。重跑开始会删除旧发布清单，各题验证前删除旧正式包，避免旧通过结果掩盖新失败；仍必须以本次报告为准。
 
-## 题目协议和比较
+## 分批扩充
+
+新增题目通过 `batches/` 中逐题编写的模块接入。模块声明完整输入约束、标准输入解析、独立小样本 oracle、边界、数学构造的上限答案和常见错误程序；共享生成器不从旧测试集推测答案。普通整数/布尔结果采用严格 token 比较，布尔输出约定为 `0` 或 `1`。树、链表、设计类、多解和浮点题需要相应输入与比较协议，不能直接套用标量模块。
+
+```sh
+python3 scripts/ling-validation/generate_batch.py --batch arrays \
+  --library .local/ling-library.jsonl \
+  --references '/path/to/local/doocs/solution' \
+  --out .local/ling-batches/arrays
+```
+
+同样支持 `dp` 和 `graphs`。每个批次都必须经过上述沙箱验证流程。参考包装器只在沙箱内提高递归深度，保留大连通图压力，并仍受 CPU 和内存限制。生成器执行前清除旧清单，全部生成成功后才写入本次清单。
+
+`coverage.py` 对完整本地题单逐题登记，可重复传入 `--verified` 合并已通过批次。它核查源题 hash、实际包与验证报告。输出中的 `sandbox-verified` 表示沙箱验证通过，不代表已发布到生产；生产可用数量需要另查数据库当前版本绑定。不得把已生成候选或未覆盖题目计为已完成。
+
+```sh
+python3 scripts/ling-validation/coverage.py --library .local/ling-library.jsonl \
+  --source-hashes .local/ling-source-hashes.json \
+  --verified .local/ling-verified-packages/verified-manifest.json \
+  --verified .local/ling-batches/arrays/verified-manifest.json \
+  --output .local/ling-coverage.json
+```
+
+## 原首批协议
 
 学员编写普通 stdin/stdout 程序，支持 Python、C++、Java、Go。数组使用 `n` 加空格分隔整数；多参数写入第一行；字符串独占一行，题号 3 保留空格和空串。输出均为单个整数，使用精确整数 token 比较，不接受全局数组排序或其他宽松容错。
 
