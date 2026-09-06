@@ -6,6 +6,8 @@ import type {
   OnMount,
 } from '@monaco-editor/react';
 import type { Language } from '@/lib/problems';
+import type { IntelligenceStatus } from '@/lib/editor-intelligence';
+import { attachIntelligence } from './monaco-intelligence';
 import {
   defaultEditorSettings,
   type EditorSettings,
@@ -52,6 +54,9 @@ export type CodeEditorProps = {
   onSubmit?: () => void;
   onSave?: () => void;
   onCursor?: (line: number, column: number) => void;
+  problemId?: string;
+  onIntelligenceStatus?: (status: IntelligenceStatus) => void;
+  onSuggestReady?: (suggest: (() => void) | null) => void;
 };
 export function CodeEditor({
   value,
@@ -64,6 +69,9 @@ export function CodeEditor({
   onSubmit,
   onSave,
   onCursor,
+  problemId,
+  onIntelligenceStatus,
+  onSuggestReady,
 }: CodeEditorProps) {
   const { runtime, error, retry } = useMonacoRuntime();
   const callbacks = useRef({ onRun, onSubmit, onSave, onCursor });
@@ -100,7 +108,22 @@ export function CodeEditor({
         );
       }),
     ];
-    cleanup.current = () => actions.forEach((action) => action.dispose());
+    const model = editor.getModel();
+    if (!readOnly && problemId && model) {
+      actions.push(
+        attachIntelligence(monaco, model, problemId, language, (status) =>
+          onIntelligenceStatus?.(status),
+        ),
+      );
+      onSuggestReady?.(() => {
+        editor.focus();
+        editor.trigger('cswork', 'editor.action.triggerSuggest', {});
+      });
+    }
+    cleanup.current = () => {
+      actions.forEach((action) => action.dispose());
+      onSuggestReady?.(null);
+    };
   };
   const options: EditorProps['options'] = {
     ariaLabel: readOnly ? '历史提交代码，只读' : '代码编辑器',
@@ -125,6 +148,11 @@ export function CodeEditor({
     contextmenu: true,
     detectIndentation: false,
     accessibilitySupport: 'auto',
+    quickSuggestions: { other: true, comments: false, strings: false },
+    quickSuggestionsDelay: 250,
+    suggestOnTriggerCharacters: true,
+    parameterHints: { enabled: true },
+    wordBasedSuggestions: problemId ? 'off' : 'currentDocument',
   };
   return (
     <div className="cs-editor-host" data-theme={settings.theme}>

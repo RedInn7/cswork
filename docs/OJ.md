@@ -4,7 +4,7 @@ cswork 使用 Monaco Editor 作为浏览器编辑器、BullMQ 作为持久化任
 
 ## 学员工作区
 
-- 自托管 Monaco 与 editor worker，无 CDN；四种语言的语法高亮、括号匹配、折叠、查找替换、多光标、快捷键和代码 diff。当前没有接入语言服务器，Python/Go/Java 的语义补全与项目级诊断不在本版本能力范围。
+- 自托管 Monaco 与 editor worker，无 CDN；四种语言的语法高亮、括号匹配、折叠、查找替换、多光标、快捷键和代码 diff。Python、Go、C++、Java 通过独立语言服务器提供成员/函数补全、参数提示和悬停说明；Python、Go、C++ 另有实时诊断，Java 的编译错误通过运行/提交查看。可点击「代码补全」或按 Ctrl + Space；状态栏显示服务启动、就绪或暂不可用。
 - 可拖动题面、编辑区与控制台分隔条；窄屏切换题面和代码；字体、主题、Tab 宽度、自动换行独立保存。
 - 草稿按账号、题目与语言隔离；离开/切换前保存，可下载代码、确认后恢复模板。历史提交可查看源码并与当前草稿比较，查看历史不会停止正在运行的提交。
 - “运行”支持公开样例和自定义标准输入；“提交”执行发布版本全部测试点。自定义运行不影响通过题数与老师的反复失败提醒。
@@ -32,18 +32,20 @@ worker 每 5 秒把未完成提交投递到 BullMQ，使用 submission ID 作为
 
 ## API
 
-| 接口 | 用途 |
-|---|---|
-| `GET /api/oj/status` | 已登录用户查看 worker 心跳、排队数和语言版本 |
-| `GET /api/oj/problems/:id` | 检查课程授权后返回公开题面与样例 |
-| `POST /api/oj/submissions` | `{problemId,language,code,mode,idempotencyKey,stdin?}` |
-| `GET /api/oj/submissions?problemId=&cursor=` | 当前用户历史，游标分页，每页20条 |
-| `GET /api/oj/submissions/:id` | 提交详情；本人或老师可见 |
-| `POST /api/oj/submissions/:id/cancel` | 幂等取消 |
-| `GET /api/oj/admin/problems[/:id]` | 教师题库与草稿/版本 |
-| `POST /api/oj/admin/problems/save` | `{payload,expectedRevision}` |
-| `POST /api/oj/admin/problems/:id/publish` | `{expectedRevision}` |
-| `POST /api/oj/admin/problems/:id/restore` | `{versionId,expectedRevision}` |
+| 接口                                         | 用途                                                                      |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
+| `GET /api/oj/status`                         | 已登录用户查看 worker 心跳、排队数和语言版本                              |
+| `GET /api/oj/problems/:id`                   | 检查课程授权后返回公开题面与样例                                          |
+| `POST /api/oj/intelligence`                  | 已授权题目的 completion/hover/signature/diagnostics；用户身份由服务端注入 |
+| `POST /api/oj/intelligence/close`            | 释放当前编辑会话；页面退出与闲置超时也会回收                              |
+| `POST /api/oj/submissions`                   | `{problemId,language,code,mode,idempotencyKey,stdin?}`                    |
+| `GET /api/oj/submissions?problemId=&cursor=` | 当前用户历史，游标分页，每页20条                                          |
+| `GET /api/oj/submissions/:id`                | 提交详情；本人或老师可见                                                  |
+| `POST /api/oj/submissions/:id/cancel`        | 幂等取消                                                                  |
+| `GET /api/oj/admin/problems[/:id]`           | 教师题库与草稿/版本                                                       |
+| `POST /api/oj/admin/problems/save`           | `{payload,expectedRevision}`                                              |
+| `POST /api/oj/admin/problems/:id/publish`    | `{expectedRevision}`                                                      |
+| `POST /api/oj/admin/problems/:id/restore`    | `{versionId,expectedRevision}`                                            |
 
 `mode` 只有 `judge`/`run`。`run` 缺省 stdin 表示公开样例；明确传入 stdin（包括空字符串）表示自定义输入。运行成功终态 `finished`，正式通过 `accepted`，其余状态见 `lib/oj-client.ts`。
 
@@ -52,7 +54,16 @@ worker 每 5 秒把未完成提交投递到 BullMQ，使用 submission ID 作为
 ```sh
 npm run typecheck
 npm run test:oj
+npm run test:editor
 npm run build
 ```
 
 单元/数据库测试使用临时 SQLite，并运行真实迁移；覆盖权限、幂等、取消、隐藏数据、checker、不可变版本、CAS冲突和严格导入。完整 HTTP 与真实四语言执行验收通过 `tests/oj-integration.mjs` 在隔离环境进行。运行时安装后的语言、内存、CPU、输出、网络/文件隔离和 Redis 持久化验证使用 `deploy/oj/verify-runtime.py`。
+
+## 语言分析的边界
+
+安装、健康检查与回滚见 [语言服务运维说明](language-service.md)。
+
+语言服务只分析当前题目的单个源文件和标准库，不执行学员代码，也不安装用户依赖。浏览器只使用补全的文本编辑，不执行 LSP 命令或工作区修改。真实运行和评测始终由独立 OJ 完成；编辑器提示不能替代编译与测试结果。
+
+每个账号、题目、语言和打开的编辑器拥有独立容器，没有网络和业务目录挂载。单机最多同时 4 个语言会话，每人最多 2 个；闲置 3 分钟释放，首次启动可能需要等待，Java 通常较慢。补全请求限每人每分钟 240 次，和判题提交配额分开。代码上限 64 KiB，补全最多 100 项，响应上限 1 MiB。

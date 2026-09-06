@@ -1,0 +1,31 @@
+[Unit]
+Description=cswork isolated language service broker
+After=docker.service network.target
+Requires=docker.service
+
+[Service]
+Type=simple
+User=cswork-lsp
+Group=cswork-lsp
+SupplementaryGroups=docker
+WorkingDirectory=/srv/cswork-language-service
+EnvironmentFile=/etc/cswork/language-service.env
+ExecStart=/opt/cswork/runtime/node /srv/cswork-language-service/scripts/language-service/broker.mjs
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_UNIX AF_INET
+UMask=0077
+MemoryMax=384M
+TasksMax=64
+LimitNOFILE=512
+
+[Install]
+WantedBy=multi-user.target
