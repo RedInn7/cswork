@@ -26,7 +26,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { api, type Boot } from '@/lib/types';
-import { languages } from '@/lib/problems';
+import { languages, type ProblemStatement } from '@/lib/problems';
 import {
   ojImportSchema,
   OJ_MAX_IMPORT_BYTES,
@@ -708,6 +708,7 @@ export function OjAdmin({
                         >
                           <option>简单</option>
                           <option>中等</option>
+                          <option>困难</option>
                         </select>
                       </label>
                       <label htmlFor="oj-admin-tags">
@@ -787,6 +788,103 @@ export function OjAdmin({
                       />
                       <small>学员按需展开；最多 10 条。</small>
                     </label>
+                    <fieldset>
+                      <legend>英文题面 / English statement</legend>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={!!spec.translations?.en}
+                          onChange={(event) => {
+                            updateSpec(
+                              'translations',
+                              event.target.checked
+                                ? {
+                                    en: {
+                                      title: '',
+                                      description: '',
+                                      input: '',
+                                      output: '',
+                                      explanation: '',
+                                      hints: [],
+                                    },
+                                  }
+                                : undefined,
+                            );
+                          }}
+                        />
+                        提供完整英文题面
+                      </label>
+                      <p>
+                        不启用时，学员切换英文会看到中文回退提示。样例数据和判题设置共用，不随题面语言改变。
+                      </p>
+                      {spec.translations?.en &&
+                        (
+                          [
+                            'title',
+                            'description',
+                            'input',
+                            'output',
+                            'explanation',
+                            'hints',
+                          ] as const
+                        ).map((field) => {
+                          const labels: Record<keyof ProblemStatement, string> =
+                            {
+                              title: 'Title',
+                              description: 'Description',
+                              input: 'Input format',
+                              output: 'Output format',
+                              explanation: 'Example explanation',
+                              hints: 'Hints (one per line)',
+                            };
+                          const translation = spec.translations!.en!;
+                          return (
+                            <label
+                              key={field}
+                              style={{ display: 'grid', gap: 8, marginTop: 16 }}
+                            >
+                              {labels[field]}
+                              <textarea
+                                lang="en"
+                                rows={
+                                  field === 'description'
+                                    ? 6
+                                    : field === 'title'
+                                      ? 1
+                                      : 3
+                                }
+                                maxLength={
+                                  field === 'title'
+                                    ? 180
+                                    : field === 'description'
+                                      ? 60000
+                                      : field === 'hints'
+                                        ? 20009
+                                        : 12000
+                                }
+                                value={
+                                  field === 'hints'
+                                    ? translation.hints.join('\n')
+                                    : translation[field]
+                                }
+                                onChange={(event) =>
+                                  updateSpec('translations', {
+                                    en: {
+                                      ...translation,
+                                      [field]:
+                                        field === 'hints'
+                                          ? event.target.value
+                                            ? event.target.value.split('\n')
+                                            : []
+                                          : event.target.value,
+                                    },
+                                  })
+                                }
+                              />
+                            </label>
+                          );
+                        })}
+                    </fieldset>
                   </div>
                 )}
                 {tab === 'cases' && (

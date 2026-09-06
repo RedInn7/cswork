@@ -12,10 +12,28 @@ export const starters: Record<Language, string> = {
   java: 'import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        Scanner in = new Scanner(System.in);\n        // 在这里实现你的解法\n    }\n}\n',
   cpp: '#include <bits/stdc++.h>\nusing namespace std;\n\nint main() {\n    ios::sync_with_stdio(false);\n    cin.tie(nullptr);\n    // 在这里实现你的解法\n    return 0;\n}\n',
 };
+export type ProblemStatement = {
+  title: string;
+  description: string;
+  input: string;
+  output: string;
+  explanation: string;
+  hints: string[];
+};
+export type ProblemLocale = 'zh' | 'en';
+export function problemStatement(
+  problem: Problem,
+  locale: ProblemLocale,
+): ProblemStatement {
+  return locale === 'en' && problem.translations?.en
+    ? problem.translations.en
+    : problem;
+}
 export type Problem = {
   id: string;
   title: string;
-  difficulty: '简单' | '中等';
+  difficulty: '简单' | '中等' | '困难';
+  translations?: { en?: ProblemStatement };
   tags: string[];
   description: string;
   input: string;

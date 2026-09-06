@@ -21,6 +21,8 @@ import { Input } from '@/components/ui/input';
 import { api, type Boot, type Lesson, date } from '@/lib/types';
 import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
+import { StudyLibrary } from './study-library';
+import '@/app/study-library.css';
 import {
   Dialog,
   DialogContent,
@@ -675,6 +677,7 @@ export function ProblemList({
   boot: Boot;
   navigate: Navigate;
 }) {
+  const [collection, setCollection] = useState('course');
   const [q, setQ] = useState(''),
     [filter, setFilter] = useState('all');
   const passed = new Set(
@@ -701,73 +704,95 @@ export function ProblemList({
           </span>
         }
       />
-      <div className="toolbar">
-        <div className="search-field">
-          <Search size={16} />
-          <Input
-            aria-label="搜索题目"
-            placeholder="搜索题目、知识点…"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-          />
-        </div>
-        <Tabs value={filter} onValueChange={(v) => setFilter(String(v))}>
-          <TabsList>
-            <TabsTrigger value="all">全部题目</TabsTrigger>
-            <TabsTrigger value="todo">待完成</TabsTrigger>
-            <TabsTrigger value="solved">已通过</TabsTrigger>
-          </TabsList>
-        </Tabs>
-      </div>
-      <div className="problem-table">
-        <div className="problem-table-head">
-          <span>状态</span>
-          <span>题目</span>
-          <span>知识点</span>
-          <span>难度</span>
-        </div>
-        {list.map((p, i) => (
-          <button
-            key={p.id}
-            className="problem-table-row"
-            onClick={() => navigate('problem', { problem: p.id })}
-          >
-            <span
-              className={'problem-check ' + (passed.has(p.id) ? 'done' : '')}
-            >
-              {passed.has(p.id) ? <Check size={16} /> : <span />}
-            </span>
+      <Tabs
+        value={collection}
+        onValueChange={(value) => setCollection(String(value))}
+        className="study-collection-tabs"
+      >
+        <TabsList aria-label="练习题库">
+          <TabsTrigger value="course">课程练习</TabsTrigger>
+          <TabsTrigger value="library">灵神题单</TabsTrigger>
+        </TabsList>
+      </Tabs>
+      {collection === 'library' ? (
+        <StudyLibrary
+          navigate={navigate}
+          availableProblemIds={boot.problems.map((problem) => problem.id)}
+        />
+      ) : (
+        <>
+          <div className="toolbar">
+            <div className="search-field">
+              <Search size={16} />
+              <Input
+                aria-label="搜索题目"
+                placeholder="搜索题目、知识点…"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+              />
+            </div>
+            <Tabs value={filter} onValueChange={(v) => setFilter(String(v))}>
+              <TabsList>
+                <TabsTrigger value="all">全部题目</TabsTrigger>
+                <TabsTrigger value="todo">待完成</TabsTrigger>
+                <TabsTrigger value="solved">已通过</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          <div className="problem-table">
+            <div className="problem-table-head">
+              <span>状态</span>
+              <span>题目</span>
+              <span>知识点</span>
+              <span>难度</span>
+            </div>
+            {list.map((p, i) => (
+              <button
+                key={p.id}
+                className="problem-table-row"
+                onClick={() => navigate('problem', { problem: p.id })}
+              >
+                <span
+                  className={
+                    'problem-check ' + (passed.has(p.id) ? 'done' : '')
+                  }
+                >
+                  {passed.has(p.id) ? <Check size={16} /> : <span />}
+                </span>
+                <span>
+                  <small>{String(i + 1).padStart(3, '0')}</small>
+                  <strong>{p.title}</strong>
+                </span>
+                <span className="problem-tags">
+                  {p.tags.map((t) => (
+                    <em key={t}>{t}</em>
+                  ))}
+                </span>
+                <span
+                  className={
+                    'difficulty ' + (p.difficulty === '中等' ? 'medium' : '')
+                  }
+                >
+                  {p.difficulty}
+                </span>
+              </button>
+            ))}
+            {!list.length && (
+              <Empty
+                title="没有找到匹配的题目"
+                description="试试其他关键词，或切换题目状态。"
+              />
+            )}
+          </div>
+          <div className="notice">
+            <Code2 size={18} />
             <span>
-              <small>{String(i + 1).padStart(3, '0')}</small>
-              <strong>{p.title}</strong>
+              支持
+              Go、Python、Java、C++。使用标准输入输出，判题在独立沙箱中进行。
             </span>
-            <span className="problem-tags">
-              {p.tags.map((t) => (
-                <em key={t}>{t}</em>
-              ))}
-            </span>
-            <span
-              className={
-                'difficulty ' + (p.difficulty === '中等' ? 'medium' : '')
-              }
-            >
-              {p.difficulty}
-            </span>
-          </button>
-        ))}
-        {!list.length && (
-          <Empty
-            title="没有找到匹配的题目"
-            description="试试其他关键词，或切换题目状态。"
-          />
-        )}
-      </div>
-      <div className="notice">
-        <Code2 size={18} />
-        <span>
-          支持 Go、Python、Java、C++。使用标准输入输出，判题在独立沙箱中进行。
-        </span>
-      </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

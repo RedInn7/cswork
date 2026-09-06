@@ -1,0 +1,110 @@
+import { sqlite } from '@/db/sqlite';
+import { HttpError } from './http';
+
+type LibraryRow = {
+  id: string;
+  number: number;
+  slug: string;
+  title_zh: string;
+  title_en: string;
+  difficulty: string;
+  topics_json: string;
+  case_count: number;
+  expected_count: number;
+  judge_problem_id: string | null;
+  ready: number;
+};
+const columns = `l.id,l.number,l.slug,l.title_zh,l.title_en,l.difficulty,l.topics_json,
+  l.case_count,l.expected_count,l.judge_problem_id,
+  CASE WHEN EXISTS(
+    SELECT 1 FROM oj_problems p WHERE p.id=l.judge_problem_id AND p.published=1
+      AND l.verified_hash=l.content_hash || ':' || p.current_version_id
+  ) THEN 1 ELSE 0 END AS ready`;
+function summary(row: LibraryRow) {
+  return {
+    id: row.id,
+    number: row.number,
+    slug: row.slug,
+    titleZh: row.title_zh,
+    titleEn: row.title_en,
+    difficulty: row.difficulty,
+    topics: JSON.parse(row.topics_json) as string[],
+    caseStatus: row.ready
+      ? 'verified'
+      : row.case_count
+        ? 'unverified'
+        : 'missing',
+    caseCount: row.case_count,
+    judgeProblemId: row.ready ? row.judge_problem_id : null,
+  };
+}
+export function listStudyLibrary(params: URLSearchParams) {
+  const db = sqlite();
+  const q = (params.get('q') || '').trim().slice(0, 180);
+  const topic = (params.get('topic') || '').slice(0, 100);
+  const difficulty = (params.get('difficulty') || '').slice(0, 10);
+  const page = Math.max(
+    1,
+    Math.min(10000, Number.parseInt(params.get('page') || '1', 10) || 1),
+  );
+  const where: string[] = [];
+  const values: (string | number)[] = [];
+  if (q) {
+    // Escape LIKE metacharacters: search is literal, not a user-supplied SQL pattern.
+    const like = `%${q.replace(/[\\%_]/g, '\\$&')}%`;
+    where.push(
+      `(l.title_zh LIKE ? ESCAPE '\\' OR l.title_en LIKE ? ESCAPE '\\' OR l.slug LIKE ? ESCAPE '\\' OR CAST(l.number AS TEXT)=?)`,
+    );
+    values.push(like, like, like, q);
+  }
+  if (topic) {
+    where.push('EXISTS(SELECT 1 FROM json_each(l.topics_json) WHERE value=?)');
+    values.push(topic);
+  }
+  if (difficulty) {
+    where.push('l.difficulty=?');
+    values.push(difficulty);
+  }
+  const clause = where.length ? ` WHERE ${where.join(' AND ')}` : '';
+  const total = (
+    db
+      .prepare(`SELECT COUNT(*) AS n FROM study_library l${clause}`)
+      .get(...values) as { n: number }
+  ).n;
+  const items = (
+    db
+      .prepare(
+        `SELECT ${columns} FROM study_library l${clause} ORDER BY l.number LIMIT 30 OFFSET ?`,
+      )
+      .all(...values, (page - 1) * 30) as LibraryRow[]
+  ).map(summary);
+  const topics = (
+    db
+      .prepare(
+        'SELECT DISTINCT value AS name FROM study_library, json_each(topics_json) ORDER BY value',
+      )
+      .all() as { name: string }[]
+  ).map((t) => t.name);
+  return { items, total, page, pageSize: 30, topics };
+}
+export function getStudyLibrary(id: string) {
+  if (!/^lc-\d{1,6}$/.test(id)) throw new HttpError(404, '题目不存在');
+  const row = sqlite()
+    .prepare(
+      `SELECT ${columns},l.payload_json FROM study_library l WHERE l.id=?`,
+    )
+    .get(id) as (LibraryRow & { payload_json: string }) | undefined;
+  if (!row) throw new HttpError(404, '题目不存在');
+  const payload = JSON.parse(row.payload_json);
+  // Never serialize the source reference solutions, local paths, candidate inputs or answers.
+  return {
+    ...summary(row),
+    descriptionZh: payload.descriptionZh,
+    descriptionEn: payload.descriptionEn,
+    sourceUrl: payload.sourceUrl,
+    sourceEnUrl: payload.sourceEnUrl,
+    attribution: payload.attribution,
+    signature: payload.signature,
+    caseSummary: { total: row.case_count, withExpected: row.expected_count },
+  };
+}

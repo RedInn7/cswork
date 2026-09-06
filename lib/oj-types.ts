@@ -102,7 +102,23 @@ export const ojImportSchema = z
         courseId: identifier,
         lessonId: identifier,
         title: z.string().trim().min(1).max(180),
-        difficulty: z.enum(['简单', '中等']),
+        difficulty: z.enum(['简单', '中等', '困难']),
+        translations: z
+          .object({
+            en: z
+              .object({
+                title: z.string().trim().min(1).max(180),
+                description: limitedText(60000),
+                input: limitedText(12000),
+                output: limitedText(12000),
+                explanation: z.string().max(12000),
+                hints: z.array(limitedText(2000)).max(10),
+              })
+              .strict()
+              .optional(),
+          })
+          .strict()
+          .optional(),
         tags: z.array(z.string().trim().min(1).max(30)).min(1).max(12),
         description: limitedText(60000),
         input: limitedText(12000),

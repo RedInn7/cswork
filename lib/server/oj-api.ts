@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
+import { getStudyLibrary, listStudyLibrary } from './study-library';
 import { boundedText, HttpError, json, limit, requireTeacher } from './http';
 import {
   getPublishedProblem,
@@ -24,6 +25,12 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
   if (request.method === 'GET') {
+    if (resource === 'library') {
+      await limit(p, 'library-read', 120);
+      return json(
+        id ? getStudyLibrary(id) : listStudyLibrary(url.searchParams),
+      );
+    }
     if (resource === 'status') return json(ojStatus());
     if (resource === 'problems' && id)
       return json({

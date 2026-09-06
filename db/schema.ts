@@ -11,6 +11,7 @@ export * from './lms-schema';
 export * from './commerce-schema';
 export * from './media-schema';
 export * from './enrollment-schema';
+export * from './study-library-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),

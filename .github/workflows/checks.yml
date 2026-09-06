@@ -27,6 +27,7 @@ jobs:
       - run: node --test tests/import-gomall-videos.test.mjs
       - run: node --test tests/backup.test.mjs
       - run: npm run test:oj
+      - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts
       - run: npm run test:editor
       - run: npm run test:request-lifecycle
       - run: python3 tests/deploy-nginx.test.py
