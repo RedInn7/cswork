@@ -81,7 +81,6 @@ const nav: [LucideIcon, string, string][] = [
   [Code2, '算法练习', 'problems'],
   [GitPullRequest, '工程作业', 'reviews'],
   [LifeBuoy, '我的工单', 'tickets'],
-  [Bell, '课程更新', 'releases'],
 ];
 const initial: Boot = {
   person: null,
