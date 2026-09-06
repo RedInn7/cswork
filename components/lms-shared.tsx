@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import Markdown from 'react-markdown';
+import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from './ui/button';
 import { api } from '@/lib/types';
@@ -19,45 +19,44 @@ export function formText(form: FormData, name: string): string {
   return typeof value === 'string' ? value : '';
 }
 
+// Stable renderer identities preserve diagram zoom/dialog state when learning
+// progress or bootstrap data refreshes the parent component.
+const markdownComponents: Components = {
+  pre: ({ children }) => {
+    const blocks = Children.toArray(children);
+    const code = blocks[0];
+    if (
+      blocks.length === 1 &&
+      isValidElement<{ className?: string; children?: unknown }>(code) &&
+      code.props.className?.split(/\s+/).includes('language-mermaid') &&
+      typeof code.props.children === 'string'
+    )
+      return <CourseDiagram source={code.props.children} />;
+    return <pre>{children}</pre>;
+  },
+  a: ({ href, children }) => (
+    <a href={href} target="_blank" rel="noreferrer">
+      {children}
+    </a>
+  ),
+  img: ({ src, alt }) =>
+    typeof src === 'string' ? (
+      <a href={src} target="_blank" rel="noreferrer">
+        {/* oxlint-disable-next-line nextjs/no-img-element -- Markdown can contain authenticated images with unknown dimensions; keep the original browser request. */}
+        <img
+          src={src}
+          alt={alt || '课程图示'}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+        />
+      </a>
+    ) : null,
+};
+
 export function LessonMarkdown({ body }: { body: string }) {
   return (
     <article className="prose-content lms-markdown">
-      <Markdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          pre: ({ children }) => {
-            const blocks = Children.toArray(children);
-            const code = blocks[0];
-            if (
-              blocks.length === 1 &&
-              isValidElement<{ className?: string; children?: unknown }>(
-                code,
-              ) &&
-              code.props.className?.split(/\s+/).includes('language-mermaid') &&
-              typeof code.props.children === 'string'
-            )
-              return <CourseDiagram source={code.props.children} />;
-            return <pre>{children}</pre>;
-          },
-          a: ({ href, children }) => (
-            <a href={href} target="_blank" rel="noreferrer">
-              {children}
-            </a>
-          ),
-          img: ({ src, alt }) =>
-            typeof src === 'string' ? (
-              <a href={src} target="_blank" rel="noreferrer">
-                {/* oxlint-disable-next-line nextjs/no-img-element -- Markdown can contain authenticated images with unknown dimensions; keep the original browser request. */}
-                <img
-                  src={src}
-                  alt={alt || '课程图示'}
-                  loading="lazy"
-                  referrerPolicy="no-referrer"
-                />
-              </a>
-            ) : null,
-        }}
-      >
+      <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
         {body}
       </Markdown>
     </article>

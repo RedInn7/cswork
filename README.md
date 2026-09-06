@@ -50,13 +50,13 @@ HOST=127.0.0.1 PORT=4317 npm start
 
 `node scripts/import-course.mjs /path/to/gomall` 导入课件源文件。首次初始化数据库时创建课程；后续线上版本通过教师工作台发布，不会因重新构建覆盖现有课件。10 段已录制视频对应 8 个章节，导入采用不可变媒体、整批事务和重复执行保护，见 [视频导入说明](docs/IMPORT-GOMALL-VIDEOS.md)。尚未录制的章节明确显示待发布。Go 工程实验在 Gomall 的 `exercises/` 中，学生交 GitHub PR 评审；算法题单独建模。
 
-- **账号**：Better Auth。服务器 CLI 初始化老师；密码开放登录但关闭未经验证的公开密码注册。邀请链接可完成入学；Google、GitHub 和邮箱验证码配置完成后支持公开注册。只有已验证邮箱且命中服务器白名单的用户才能成为老师。账号页支持昵称、设备会话、关联身份、改密与验证码找回。
+- **账号**：Better Auth。服务器 CLI 初始化老师；密码开放登录但关闭未经验证的公开密码注册。邀请链接可完成入学；Google、GitHub 已在正式站配置并支持公开注册；邮箱验证码需额外邮件凭据。只有已验证邮箱且命中服务器白名单的用户才能成为老师。账号页支持昵称、设备会话、关联身份、改密与验证码找回。
 - **第三方登录**：配置 `GOOGLE_CLIENT_ID/SECRET`、`GITHUB_CLIENT_ID/SECRET`；回调地址为正式域名下 `/api/auth/callback/google`、`/api/auth/callback/github`。为 cswork 单独创建 OAuth 应用，不复用 CSGrad 的身份后端。
 - **验证码**：配置 `RESEND_API_KEY`、已验证发件域名的 `MAIL_FROM`；有效期 5 分钟，最多 5 次尝试。
 - **算法判题**：Monaco 编辑器、BullMQ 持久化队列、独立 go-judge 1.12.3 沙箱，支持 C++20、Python、Java 和 Go。教师可管理测试点、保存草稿并发布不可变版本；提交支持逐点结果、取消与自动重试。部署见 [OJ 运行时](docs/oj-runtime.md) 和 [判题开发说明](docs/OJ.md)。
 - **视频**：Video.js 播放自有服务器上的 MP4/WebM。每个播放请求检查课程权限，正式环境通过 Nginx internal/X-Accel-Redirect 支持拖动和 Range 传输；应用不把整段视频读入内存。可选 Cloudflare Stream 仍支持签名播放与续签，已有 Stream 令牌撤权后最长保留 1 小时。
 - **收费**：Stripe Checkout，配置 `STRIPE_SECRET_KEY`、`STRIPE_WEBHOOK_SECRET`；教师为各课程绑定 Price，`STRIPE_PRICE_GOMALL` 兼容旧配置。Webhook `/api/stripe/webhook` 订阅 `checkout.session.completed`、`checkout.session.async_payment_succeeded`、`checkout.session.async_payment_failed`、`checkout.session.expired`、`charge.refunded`、`refund.created`、`refund.updated`、`refund.failed`。测试环境凭据与正式收款完全分开。
 
-没有凭据的服务会明确提示暂不可用。站内通知不会自动向学员发送外部邮件。正式开放注册和收费前还需确定独立域名、课程定价、退款政策并完成上述联调。
+没有凭据的服务会明确提示暂不可用。站内通知不会自动向学员发送外部邮件。当前可使用 Google/GitHub 注册及邀请入学。正式收费仍需确定课程定价、退款政策并配置生产 Stripe；品牌域名和邮件服务待所有者提供。
 
 GitHub Actions 在 PR 和 main 上验证类型、业务测试、备份/导入回归、判题模块和正式构建。真实 HTTP、沙箱执行和浏览器验收见 [验收记录](docs/VALIDATION.md)；备份恢复见 [完整性说明](docs/BACKUP-INTEGRITY.md)。

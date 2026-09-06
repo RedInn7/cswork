@@ -1,6 +1,6 @@
 # cswork 独立部署
 
-当前访问地址：[cswork](https://cswork.192.18.137.70.sslip.io)。2026-09-05 已部署 Monaco/OJ 应用 `0f5b46f361ba24df9b2551003e79904da59647f4`，真实生产队列执行、HTTPS、原老师登录及服务隔离验证通过，详见 [验收记录](VALIDATION.md)。老师账号为 `capsfly7@gmail.com`；凭据已交付所有者本地受保护文件，服务器的明文初始凭据副本已删除，本轮未重置账号。
+当前访问地址：[cswork](https://cswork.192.18.137.70.sslip.io)。2026-09-06 已部署完整课程平台及后续图表稳定性修复（功能基线 `cccfff3d5db6882d61663a8f84a9b58b9d7b2613`，当前精确应用版本记录在 `/srv/cswork/current/REVISION`），Google/GitHub 真实登录、10 段私有视频、现有 17 位 SDE 学员授权、HTTPS、原老师登录及服务隔离验证通过，详见 [验收记录](VALIDATION.md)。老师账号为 `capsfly7@gmail.com`；凭据已交付所有者本地受保护文件，服务器的明文初始凭据副本已删除，本轮未重置账号。
 
 主机 `ubuntu@192.18.137.70` 与 CSGrad 相同，但只新增以下 cswork 资源：
 
@@ -75,3 +75,11 @@ Web 服务仅可写 `/var/lib/cswork` 与 `/srv/cswork/media`，内存上限 1GB
 安装器设置 `MEDIA_PATH=/srv/cswork/media`、`MEDIA_X_ACCEL_PREFIX=/__cswork_media/`，并只在 cswork 实际代理 location 所在的 server 块插入独立媒体配置，保留原来的 HTTPS 证书和 HTTP 跳转。应用授权后发送内部重定向，Nginx 负责文件传输；直接访问 `/__cswork_media/` 应返回 404。不要把数据库父目录设为 www-data 可读。
 
 本地与 staging 不设置 `MEDIA_X_ACCEL_PREFIX`，Node 流式处理 Range。真实视频导入完成后，验证生产匿名播放被拒绝、老师/授权学员 Range 返回 206、撤权后新请求被拒绝。导入和文件归属步骤见 [视频导入](IMPORT-GOMALL-VIDEOS.md)。
+
+## 已启用的身份与学员入口
+
+Google 使用独立 cswork 项目，OAuth 已设为外部正式版，只请求 openid/email/profile。GitHub 使用独立 cswork OAuth App，只请求只读资料与邮箱；两者回调均指向本域 /api/auth/callback/<provider>，密钥只存服务器受保护环境文件。Google 授权页当前按临时域名显示 sslip.io；正式品牌域名准备好后需同步更改回调、主页和隐私链接。
+
+现有老师用 capsfly7@gmail.com 的 Google 或原密码登录。所有者 GitHub 的主邮箱是另一个邮箱，按独立身份建立学员账号，不自动获得教师权限；没有强制合并不同邮箱。17 位现有 SDE 学员已按原邮箱开通当前 GoMall 课程，未来课程不自动授权；一次性邀请链接仅保存于所有者本地受保护文件，尚未发送。
+
+生产未配置正式 Stripe 售价或邮件凭据。测试环境已通过独立 Stripe 沙盒真实支付与全额退款，不将测试商品或密钥迁入生产。邮件验证码暂未开放，学员可以第三方登录或使用老师邀请激活。
