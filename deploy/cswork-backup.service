@@ -9,8 +9,11 @@ EnvironmentFile=/etc/cswork/cswork.env
 ExecStart=/opt/cswork/runtime/node /srv/cswork/current/scripts/backup.mjs
 NoNewPrivileges=true
 PrivateTmp=true
-ProtectSystem=strict
+# Keep media and backups on the same mount so immutable files can be hard-linked.
+# Strict with writable path exceptions creates separate mounts (EXDEV), forcing
+# large video copies whose dirty page cache can exhaust this unit's memory limit.
+ProtectSystem=full
+ReadOnlyPaths=/srv/cswork/releases /opt/cswork
 ProtectHome=true
-ReadWritePaths=/var/lib/cswork
 MemoryMax=256M
 Nice=10

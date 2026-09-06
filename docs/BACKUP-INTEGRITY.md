@@ -16,3 +16,16 @@
 备份目录中的 `.backup.lock` 只协调备份进程，不阻塞学员上传请求。若进程被强制终止或主机重启，先确认锁中记录的备份进程已经结束，再删除遗留锁和 `.backup-pending-*` 临时目录。没有完成标记的本轮输出不能用于恢复；已有完整备份不应删除。成功备份后保留最近 14 天的快照与归档，媒体对象继续保留，避免破坏其他快照的引用。
 
 媒体导入后的服务用户归属验证见 [视频导入说明](IMPORT-GOMALL-VIDEOS.md)。同机备份用于误删和发布回滚，异地备份应一起复制完成标记、对应的三个文件及媒体对象。
+
+## 生产备份服务验证：2026-09-06 UTC
+
+导入 10 个真实视频后，原 `ProtectSystem=strict` 配合 `ReadWritePaths=/var/lib/cswork` 将媒体和备份路径置于不同挂载点。生产 systemd 探针确认硬链接返回 `EXDEV`；即使把媒体目录也加入可写路径，仍会返回该错误。备份因而复制视频，失败时内核记录文件缓存为 259,620,864 字节，其中约 58 MB 为脏页、201 MB 正在回写，触发备份服务自己的 256 MiB 限制。
+
+`cswork-backup.service` 改用 `ProtectSystem=full`，单独将 `/srv/cswork/releases` 和 `/opt/cswork` 设为只读，移除造成跨挂载点的可写路径例外。服务仍以 `cswork` 用户运行，保留 `NoNewPrivileges`、`PrivateTmp`、`ProtectHome` 和 `MemoryMax=256M`；未改备份脚本或重启网站。
+
+安装 unit 并重新加载 systemd 后，直接启动生产 timer 对应的 `cswork-backup.service`，连续四次成功。已验证：
+
+- 首两次完成标记为 `cswork-2026-09-06T00-46-12-379Z-complete.json` 与 `cswork-2026-09-06T00-46-13-545Z-complete.json`；两个 SQLite 快照均通过完整性检查，包含 17 条有效课程授权和 10 个媒体资产。
+- 10 个媒体对象均与源文件的设备号及 inode 相同；第二次及后续运行继续复用这些 inode，没有重新复制视频。媒体权限保持 `0640`。
+- 后两次运行期间，从实际服务 cgroup 的 `memory.peak` 采样到 34,701,312 和 36,532,224 字节，约 33.09 与 34.84 MiB；内存上限始终为 256 MiB。服务退出后 `systemctl show MemoryPeak` 不保留该值，因此使用运行期间的内核计数。
+- 之前的 8 个备份文件 SHA-256 校验保持不变。确认旧进程已结束、成功媒体清单未引用失败对象后，仅清理本次 OOM 留下的两个复制文件、`.backup-pending-NUy886` 和死锁文件；验证结束没有待完成目录或锁残留，timer 保持启用。
