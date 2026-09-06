@@ -231,7 +231,7 @@ export function LoginDialog({
   const cooldown = useCooldown();
   useEffect(() => {
     if (open) {
-      setMode(boot.services.email ? 'otp' : 'password');
+      setMode('password');
       setError('');
       setMessage('');
       setSent(false);
@@ -262,57 +262,22 @@ export function LoginDialog({
     setSent(true);
     cooldown.start();
   }
-  const registration =
-    boot.services.email || boot.services.google || boot.services.github;
   return (
     <Dialog open={open} onOpenChange={(v) => !v && close()}>
       <DialogContent className="login-dialog">
         <DialogHeader>
           <span className="login-mark">c</span>
           <DialogTitle>
-            {mode === 'reset' ? '找回你的账号。' : '继续你的学习旅程。'}
+            {mode === 'reset' ? '找回你的账号。' : '登录 cswork'}
           </DialogTitle>
           <DialogDescription>
-            {registration
-              ? '使用购买时的邮箱。首次邮箱验证或第三方登录会创建账号。'
-              : '已有账号可用密码登录。新学员请使用老师提供的激活链接。'}
+            {boot.services.email
+              ? '支持 QQ、163、Gmail 等个人邮箱。新用户可通过邮箱验证码注册。'
+              : '支持 QQ、163、Gmail 等个人邮箱。已有账号可直接用邮箱和密码登录。'}
           </DialogDescription>
         </DialogHeader>
         {mode !== 'reset' && (
           <>
-            <div className="login-providers">
-              {(['google', 'github'] as const)
-                .filter((provider) => boot.services[provider])
-                .map((provider) => (
-                  <Button
-                    key={provider}
-                    variant="outline"
-                    disabled={busy}
-                    onClick={() =>
-                      void run(async () => {
-                        check(
-                          (
-                            await authClient.signIn.social({
-                              provider,
-                              callbackURL:
-                                location.pathname +
-                                location.search +
-                                location.hash,
-                              errorCallbackURL:
-                                '/?view=account&auth_error=1' + location.hash,
-                            })
-                          ).error,
-                        );
-                      })
-                    }
-                  >
-                    <span className={provider === 'google' ? 'google-g' : ''}>
-                      {provider === 'google' ? 'G' : '⌘'}
-                    </span>
-                    使用 {provider === 'google' ? 'Google' : 'GitHub'} 登录
-                  </Button>
-                ))}
-            </div>
             {boot.services.email && (
               <div className="commerce-tabs" aria-label="登录方式">
                 <Button
@@ -322,7 +287,7 @@ export function LoginDialog({
                     setError('');
                   }}
                 >
-                  邮箱验证码
+                  邮箱注册 / 验证码
                 </Button>
                 <Button
                   variant={mode === 'password' ? 'secondary' : 'ghost'}
@@ -331,7 +296,7 @@ export function LoginDialog({
                     setError('');
                   }}
                 >
-                  密码登录
+                  邮箱密码登录
                 </Button>
               </div>
             )}
@@ -361,7 +326,7 @@ export function LoginDialog({
               }}
             >
               <label>
-                邮箱
+                个人邮箱
                 <Input
                   type="email"
                   autoComplete="username"
@@ -449,9 +414,45 @@ export function LoginDialog({
               </Button>
             ) : (
               <p className="muted">
-                邮箱验证码暂未开放。忘记密码请联系老师，已有账号的密码不会被老师直接重置。
+                首次使用请打开老师提供的激活链接，设置密码后即可登录。邮箱验证码注册和找回密码暂未开放。
               </p>
             )}
+            {(boot.services.google || boot.services.github) && (
+              <p className="muted">或使用第三方账号登录</p>
+            )}
+            <div className="login-providers">
+              {(['google', 'github'] as const)
+                .filter((provider) => boot.services[provider])
+                .map((provider) => (
+                  <Button
+                    key={provider}
+                    variant="outline"
+                    disabled={busy}
+                    onClick={() =>
+                      void run(async () => {
+                        check(
+                          (
+                            await authClient.signIn.social({
+                              provider,
+                              callbackURL:
+                                location.pathname +
+                                location.search +
+                                location.hash,
+                              errorCallbackURL:
+                                '/?view=account&auth_error=1' + location.hash,
+                            })
+                          ).error,
+                        );
+                      })
+                    }
+                  >
+                    <span className={provider === 'google' ? 'google-g' : ''}>
+                      {provider === 'google' ? 'G' : '⌘'}
+                    </span>
+                    使用 {provider === 'google' ? 'Google' : 'GitHub'} 登录
+                  </Button>
+                ))}
+            </div>
           </>
         )}
         {mode === 'reset' && (
