@@ -10,6 +10,13 @@ export type OJProblem = Problem & {
   samples?: { name: string; input: string; expectedOutput: string }[];
   judgeAvailable?: boolean;
   practiceRound?: { id: string; number: number } | null;
+  sourceStatement?: {
+    descriptionZh: string;
+    descriptionEn: string;
+    sourceUrl: string;
+    sourceEnUrl: string;
+    attribution: string;
+  } | null;
 };
 export type OJCase = {
   ordinal: number;
