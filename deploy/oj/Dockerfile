@@ -18,6 +18,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /opt /tmp/go-judge /dev/shm/go-judge \
     && chmod 1777 /tmp
+COPY build-cpp-pch.sh /tmp/build-cpp-pch.sh
+RUN sh /tmp/build-cpp-pch.sh && rm /tmp/build-cpp-pch.sh
 COPY --from=builder /go-judge /opt/go-judge
 COPY --from=builder /src/LICENSE /opt/LICENSE.go-judge
 COPY mount.yaml seccomp.yaml entrypoint.sh /opt/

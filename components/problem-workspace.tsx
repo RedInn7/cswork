@@ -53,6 +53,7 @@ import {
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
 import { StatementMarkdown } from './statement-markdown';
+import { LeetCodeSamples } from './leetcode-samples';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
@@ -1359,11 +1360,11 @@ function Workspace({
                         <span>运行时检查全部 {samples.length} 个公开样例</span>
                       </div>
                       {codingMode === 'leetcode' ? (
-                        <p className="cs-console-note">
-                          {english
-                            ? 'Run calls your function or class using the public test cases. See the full statement for the original examples.'
-                            : '运行会自动将公开测试数据传给你的函数或类。原题示例可在左侧完整题面查看。'}
-                        </p>
+                        <LeetCodeSamples
+                          problemId={problem.id}
+                          sample={sample}
+                          english={english}
+                        />
                       ) : (
                         <div className="cs-sample-pair">
                           <CopyBlock label="标准输入" value={sample.input} />
@@ -1515,34 +1516,59 @@ function Workspace({
         </div>
       </div>
       {success && (
-        <div className="cs-accepted-banner" role="status" aria-live="polite">
-          <CircleCheck size={32} aria-hidden="true" />
-          <div>
-            <strong>
-              {english ? 'Accepted. Nicely done!' : '通过了，做得好！'}
-            </strong>
-            <p>
-              {english
-                ? 'Your solution passed all test cases.'
-                : '你的解答已通过全部测试用例。'}
-              {success.total > 0 && ` ${success.passed} / ${success.total}`}
-            </p>
-          </div>
-          <button
-            className="cs-accepted-library"
-            onClick={() => navigate('problems')}
-          >
-            {english ? 'View progress' : '查看刷题进度'}
-            <ChevronRight size={16} />
-          </button>
-          <button
-            className="cs-accepted-dismiss"
-            aria-label={english ? 'Dismiss success message' : '收起通过提示'}
-            onClick={() => setSuccess(null)}
-          >
-            <X size={18} />
-          </button>
-        </div>
+        <Dialog
+          open
+          onOpenChange={(open) => {
+            if (!open) setSuccess(null);
+          }}
+        >
+          <DialogContent className="cs-accepted-dialog" showCloseButton={false}>
+            <div className="cs-accepted-banner">
+              <div className="cs-accepted-seal">
+                <CircleCheck size={44} aria-hidden="true" />
+              </div>
+              <DialogHeader>
+                <DialogTitle className="cs-accepted-title">
+                  AC <span>Accepted</span>
+                </DialogTitle>
+                <strong>{english ? 'All tests passed' : '通过了！'}</strong>
+                <DialogDescription>
+                  {english
+                    ? 'Your solution passed all test cases.'
+                    : '你的解答已通过全部测试用例。'}
+                  {success.total > 0 && ` ${success.passed} / ${success.total}`}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="cs-accepted-actions">
+                <button
+                  className="cs-accepted-continue"
+                  onClick={() => {
+                    setSuccess(null);
+                    showConsole('result');
+                  }}
+                >
+                  {english ? 'View result' : '查看判题详情'}
+                </button>
+                <button
+                  className="cs-accepted-library"
+                  onClick={() => navigate('problems')}
+                >
+                  {english ? 'View progress' : '查看刷题进度'}
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+              <button
+                className="cs-accepted-dismiss"
+                aria-label={
+                  english ? 'Dismiss success message' : '收起通过提示'
+                }
+                onClick={() => setSuccess(null)}
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
       {problemError && (
         <div className="cs-workspace-notice" role="alert">
