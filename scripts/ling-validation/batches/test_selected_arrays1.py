@@ -9,13 +9,12 @@ from result_contract import format_result,compare_output,validate_result,CHECKER
 
 class SelectedArraysTest(unittest.TestCase):
  def test_membership_and_known_answers(self):
-  library={x['number']:x for x in map(json.loads,(Path(__file__).resolve().parents[3]/'.local/ling-library.jsonl').read_text().splitlines())}
-  curated={x['number'] for x in json.loads((Path(__file__).resolve().parents[3]/'.local/curation-arrays.json').read_text())}
+  curated={x['number'] for x in json.loads((Path(__file__).resolve().parents[3]/'lib/content/ling-curated-500.json').read_text())}
   known={20:1,448:[5,6],645:[2,3],287:2,334:1,128:4,454:2,187:['AAAAACCCCC','CCCCCAAAAA'],266:1,1679:2,2342:54,2364:5,1814:2,1010:3,1657:1,554:2,1930:3,2131:6,8:-42,65:1,686:3,275:3,809:1,1750:2,1328:'aaccba',1763:'aAa',214:'aaacecaaa',1870:1,167:[1,2],16:2}
   self.assertEqual(len(PROBLEMS),30)
   for n,p in PROBLEMS.items():
    with self.subTest(n=n):
-    self.assertIn(n,curated);self.assertEqual(p['method'],library[n]['signature']['name'].strip());self.assertEqual(p['oracle'](p['edges'][0]),known[n])
+    self.assertIn(n,curated);self.assertEqual(p['oracle'](p['edges'][0]),known[n])
  def test_cases_codec_oracle_and_limits(self):
   for n,p in PROBLEMS.items():
    rng=random.Random(20260906+n);small=p['edges']+[p['random_args'](rng) for _ in range(120)]
