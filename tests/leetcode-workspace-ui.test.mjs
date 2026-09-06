@@ -121,7 +121,34 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     compileOutput: '',
   };
   const originalFetch = globalThis.fetch;
-  globalThis.fetch = async (url) => {
+  let outcome = 'accepted';
+  let acknowledgement = 'queued';
+  let pendingReads = 0;
+  let freshSubmission;
+  let submitted = 0;
+  let progressEvents = 0;
+  const navigations = [];
+  window.addEventListener(
+    'cswork:practice-progress-changed',
+    () => progressEvents++,
+  );
+  globalThis.fetch = async (url, init) => {
+    if (url.endsWith('/submissions') && init?.method === 'POST') {
+      const body = JSON.parse(init.body);
+      freshSubmission = {
+        ...historical,
+        id: `fresh-${++submitted}`,
+        mode: body.mode,
+        status: outcome,
+      };
+      return Response.json({ id: freshSubmission.id, status: acknowledgement });
+    }
+    if (url.includes('/submissions/fresh-'))
+      return Response.json(
+        pendingReads-- > 0
+          ? { ...freshSubmission, status: 'judging' }
+          : freshSubmission,
+      );
     if (url.includes('/submissions/old-acm')) return Response.json(historical);
     if (url.includes('/submissions'))
       return Response.json({ items: [historical], nextCursor: null });
@@ -169,7 +196,9 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
         createElement(ProblemWorkspace, {
           problem,
           boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
-          navigate() {},
+          navigate(path) {
+            navigations.push(path);
+          },
           ask() {},
           refresh: async () => {},
         }),
@@ -236,6 +265,67 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.equal(editor().value, historical.code);
     await choose('提交模式', 'leetcode');
     assert.equal(editor().value, templates.python);
+    assert.equal(
+      document.querySelector('.cs-accepted-banner'),
+      null,
+      'history must not celebrate',
+    );
+    await click(button('运行'));
+    assert.equal(
+      document.querySelector('.cs-accepted-banner'),
+      null,
+      'sample runs must not celebrate',
+    );
+    outcome = 'wrong_answer';
+    await click(button('提交'));
+    assert.equal(document.querySelector('.cs-accepted-banner'), null);
+    outcome = 'accepted';
+    pendingReads = 1;
+    await click(button('提交'));
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 1700));
+    });
+    assert.match(
+      document.querySelector('.cs-accepted-banner').textContent,
+      /通过了.*2 \/ 2/,
+    );
+    assert.equal(progressEvents, 1);
+    await click(button('查看刷题进度'));
+    assert.equal(navigations.at(-1), 'problems');
+    await click(document.querySelector('[aria-label="收起通过提示"]'));
+    await click(button('题目描述'));
+    await choose('题面语言', 'en');
+    assert.equal(
+      document.querySelector('.cs-accepted-banner'),
+      null,
+      'dismissed feedback must not replay',
+    );
+    acknowledgement = 'accepted';
+    await click(button('Submit'));
+    assert.match(
+      document.querySelector('.cs-accepted-banner').textContent,
+      /2 \/ 2/,
+    );
+    assert.equal(progressEvents, 2);
+    sessionStorage.setItem('cswork:oj:active:student:lc-1', freshSubmission.id);
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          key: 'reloaded',
+          problem,
+          boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
+          navigate() {},
+          ask() {},
+          refresh: async () => {},
+        }),
+      ),
+    );
+    await settle();
+    assert.equal(
+      document.querySelector('.cs-accepted-banner'),
+      null,
+      'receipt prevents replay after reload',
+    );
   } finally {
     await act(async () => root.unmount());
     globalThis.fetch = originalFetch;
