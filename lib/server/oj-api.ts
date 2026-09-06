@@ -28,7 +28,7 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);
       return json(
-        id ? getStudyLibrary(id) : listStudyLibrary(url.searchParams),
+        id ? getStudyLibrary(id) : listStudyLibrary(url.searchParams, p.id),
       );
     }
     if (resource === 'status') return json(ojStatus());
