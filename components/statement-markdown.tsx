@@ -4,6 +4,24 @@ import React, { Children, isValidElement } from 'react';
 import Markdown, { type Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+function proseText(children: React.ReactNode) {
+  return Children.toArray(children).flatMap((child, index) => {
+    if (typeof child !== 'string') return [child];
+    const parts: React.ReactNode[] = [];
+    let start = 0;
+    for (const match of child.matchAll(/\*\*([^*\n]*?\S)[ \t]+\*\*/g)) {
+      parts.push(child.slice(start, match.index));
+      parts.push(
+        <strong key={`${index}:${match.index}`}>{match[1]}</strong>,
+        ' ',
+      );
+      start = match.index! + match[0].length;
+    }
+    parts.push(child.slice(start));
+    return parts;
+  });
+}
+
 const components: Components = {
   p: ({ children }) => {
     const parts = Children.toArray(children);
@@ -36,8 +54,9 @@ const components: Components = {
           </p>
         );
     }
-    return <p>{children}</p>;
+    return <p>{proseText(children)}</p>;
   },
+  li: ({ children }) => <li>{proseText(children)}</li>,
   pre: ({ children }) => {
     const code = Children.toArray(children)[0];
     if (

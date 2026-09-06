@@ -27,3 +27,6 @@ final result: passed
 
 ## Follow-up polish
 - Imported mathematical exponent notation remains as supplied; mathematical typesetting is outside this visual change.
+
+## Production follow-up
+Live bilingual and narrow-pane navigation verified after PR28 deployment. Chinese content exposed an imported malformed strong marker (`**text **`) that remained literal. The statement renderer now repairs this only in prose text nodes, preserving code blocks. `.local/statement-preview/repaired-zh.jpg` confirms the corrected Chinese rendering. No remaining P0/P1/P2 findings.
