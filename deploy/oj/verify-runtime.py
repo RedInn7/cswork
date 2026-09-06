@@ -79,7 +79,14 @@ try:
     check('memory' in flat and 'pids' in flat and 'cpu' in flat, 'cgroup controllers available')
     check('"cgroupType": 2' in flat, 'cgroup v2 active without rusage fallback')
     logs = subprocess.check_output(['docker', 'logs', '--tail', '1000', 'cswork-oj-sandbox'], stderr=subprocess.STDOUT).decode()
-    check('loaded seccomp filter' in logs, 'compiled seccomp policy loaded')
+    # Startup log lines may have rotated after many submissions. Verify the
+    # kernel state of a fresh sandbox process instead of historical log text.
+    accepted(python('''from pathlib import Path
+status = dict(line.split(':', 1) for line in Path('/proc/self/status').read_text().splitlines())
+assert status['Seccomp'].strip() == '2'
+assert status['NoNewPrivs'].strip() == '1'
+print('active')
+'''), 'seccomp filter active in fresh sandbox process', 'active\n')
     check(token not in logs, 'runner token absent from runtime logs')
     inspect = json.loads(subprocess.check_output(['docker', 'inspect', 'cswork-oj-sandbox']))[0]
     host = inspect['HostConfig']
