@@ -117,6 +117,19 @@ void test('new generation replaces only its owner and old completion cannot remo
   assert.equal(nextPrecompileDraft()?.generation, second.generation);
   assert.equal(precompileDraftCurrent(second), true);
 });
+void test('Java and Go drafts preserve language and replace an identical-text draft from another language', async () => {
+  const code = '// exact editor text';
+  for (const language of ['cpp', 'java', 'go']) {
+    const previous = nextPrecompileDraft();
+    assert.deepEqual(
+      await requestPrecompile(student, request({ language, code })),
+      { status: 'queued' },
+    );
+    const draft = nextPrecompileDraft()!;
+    assert.equal(draft.language, language);
+    if (previous) assert.notEqual(draft.generation, previous.generation);
+  }
+});
 void test('expired drafts are removed and full mailbox skips new owners', async () => {
   await requestPrecompile(student, request());
   const draft = nextPrecompileDraft()!;
@@ -124,7 +137,7 @@ void test('expired drafts are removed and full mailbox skips new owners', async 
   assert.equal(precompileDraftCurrent(draft), false);
   assert.equal(nextPrecompileDraft(), undefined);
   const insert = sqlite().prepare(
-    'INSERT INTO oj_precompile VALUES(?,?,?,?,?,?,?,?)',
+    'INSERT INTO oj_precompile(user_id,generation,problem_id,problem_version_id,code,coding_mode,created_at,expires_at) VALUES(?,?,?,?,?,?,?,?)',
   );
   for (let i = 0; i < 32; i++)
     insert.run(

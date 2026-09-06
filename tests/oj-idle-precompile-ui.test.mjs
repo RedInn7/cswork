@@ -129,14 +129,13 @@ void test('idle precompile remains optional, debounced, private to the draft and
     );
 
     await t.test(
-      'skips unavailable, guest, non-C++, blank and unchanged-template drafts',
+      'skips unavailable, guest, Python, blank and unchanged-template drafts',
       async () => {
         for (const changes of [
           { enabled: false },
           { userId: 'guest' },
           { userId: '' },
           { language: 'python' },
-          { language: 'java' },
           { code: ' \n /* just a note */ // no code' },
           { code: base.template },
           {
@@ -146,6 +145,18 @@ void test('idle precompile remains optional, debounced, private to the draft and
           await reset(changes);
           await tick(3000);
           assert.equal(calls.length, 0, JSON.stringify(changes));
+        }
+      },
+    );
+
+    await t.test(
+      'Java and Go use the same bounded idle preparation lifecycle',
+      async () => {
+        for (const language of ['java', 'go']) {
+          await reset({ language });
+          await tick(2500);
+          assert.equal(calls.length, 1);
+          assert.equal(calls[0].body.language, language);
         }
       },
     );

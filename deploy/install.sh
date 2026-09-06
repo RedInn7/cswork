@@ -87,6 +87,12 @@ fi
 previous=$(readlink -f /srv/cswork/current || true)
 worker_was_active=$(systemctl is-active cswork-oj-worker.service || true)
 if [[ "$worker_was_active" == active ]]; then systemctl stop cswork-oj-worker.service; fi
+clear_precompile_drafts() {
+  # Drafts are optional, short-lived work. Never let a prior worker interpret a
+  # mailbox format introduced by a newer release during deployment or rollback.
+  "$node_binary" --env-file=/etc/cswork/cswork.env --input-type=module -e 'import Database from "better-sqlite3"; const db=new Database(process.env.DATABASE_PATH); if(db.prepare("SELECT 1 FROM sqlite_master WHERE type=? AND name=?").get("table","oj_precompile")) db.prepare("DELETE FROM oj_precompile").run(); db.close();'
+}
+clear_precompile_drafts
 ln -s "$target" /srv/cswork/current.next
 mv -Tf /srv/cswork/current.next /srv/cswork/current
 install -m 644 "$source_dir/deploy/cswork.service" /etc/systemd/system/cswork.service
@@ -107,6 +113,7 @@ if [[ "$ready" != true ]]; then
     ln -s "$previous" /srv/cswork/current.rollback
     mv -Tf /srv/cswork/current.rollback /srv/cswork/current
     systemctl restart cswork.service
+    clear_precompile_drafts
     if [[ -f "$previous/oj-worker/index.mjs" ]]; then systemctl restart cswork-oj-worker.service; fi
   else
     systemctl stop cswork.service
@@ -135,6 +142,7 @@ if [[ -f "$target/oj-worker/index.mjs" && -f /etc/cswork/oj.env ]]; then
       ln -s "$previous" /srv/cswork/current.rollback
       mv -Tf /srv/cswork/current.rollback /srv/cswork/current
       systemctl restart cswork.service
+      clear_precompile_drafts
       if [[ -f "$previous/oj-worker/index.mjs" ]]; then systemctl restart cswork-oj-worker.service; fi
     fi
     echo 'OJ worker health check failed; previous application release restored.'
