@@ -305,7 +305,7 @@ export const ojOutbox = sqliteTable('oj_outbox', {
     .references(() => submissions.id, { onDelete: 'cascade' }),
   dispatchedAt: integer('dispatched_at'),
   createdAt: integer('created_at').notNull(),
-});
+}, (t) => [index('oj_outbox_dispatch').on(t.dispatchedAt, t.createdAt)]);
 export const ojRuntime = sqliteTable('oj_runtime', {
   id: text('id').primaryKey(),
   heartbeatAt: integer('heartbeat_at').notNull(),
