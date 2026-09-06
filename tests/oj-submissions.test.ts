@@ -27,7 +27,11 @@ const student: Person = {
   verified: true,
   role: 'student',
 };
-const other: Person = { ...student, id: 'other', email: 'other@example.test' };
+const other: Person = {
+  ...student,
+  id: 'other',
+  email: 'other@example.test',
+};
 const teacher: Person = { ...student, id: 'teacher', role: 'teacher' };
 const request = (extra = {}) => ({
   problemId: 'watch-intervals',
@@ -186,4 +190,62 @@ test('answer checkers distinguish token equivalence from exact output and map en
     engineVerdict({ status: 'Output Limit Exceeded' }),
     'output_limit',
   );
+});
+test('formal submissions bind the selected round once, including retries after switching', async () => {
+  const { changePracticeRound, practiceRoundState } =
+    await import('../lib/server/practice-rounds');
+  const { curatedEntries } = await import('../lib/ling-curated');
+  // Bind a known published fixture to the selected collection without changing its judge package.
+  sqlite()
+    .prepare(
+      `INSERT INTO study_library(id,number,slug,title_zh,title_en,difficulty,topics_json,payload_json,content_hash,case_count,expected_count,judge_problem_id,imported_at)
+    VALUES('round-test',?,'round-test','测试','Test','简单','[]','{}','hash',0,0,'watch-intervals',1)`,
+    )
+    .run(curatedEntries[0].number);
+  sqlite()
+    .prepare(
+      "UPDATE submissions SET status='cancelled' WHERE status IN ('queued','compiling','running')",
+    )
+    .run();
+  sqlite().prepare('DELETE FROM limits').run();
+  process.env.OJ_ENABLED = 'true';
+  sqlite()
+    .prepare(
+      "UPDATE study_library SET verified_hash=content_hash || ':' || (SELECT current_version_id FROM oj_problems WHERE id='watch-intervals') WHERE id='round-test'",
+    )
+    .run();
+  const first = practiceRoundState(student.id);
+  const input = request();
+  const submitted = await createSubmission(student, input);
+  const second = changePracticeRound(student.id, {
+    action: 'create',
+    idempotencyKey: randomUUID(),
+  });
+  assert.equal(
+    (await submissionDetail(student, submitted.id)).practiceRoundId,
+    first.activeRoundId,
+  );
+  assert.deepEqual(await createSubmission(student, input), submitted);
+  sqlite()
+    .prepare("UPDATE submissions SET status='accepted' WHERE id=?")
+    .run(submitted.id);
+  assert.equal(
+    practiceRoundState(student.id).rounds.find(
+      (r) => r.id === second.activeRoundId,
+    )?.solved,
+    0,
+  );
+  assert.equal(
+    practiceRoundState(student.id).rounds.find(
+      (r) => r.id === first.activeRoundId,
+    )?.solved,
+    1,
+  );
+  const next = await createSubmission(student, request());
+  assert.equal(
+    (await submissionDetail(student, next.id)).practiceRoundId,
+    second.activeRoundId,
+  );
+  const run = await createSubmission(student, request({ mode: 'run' }));
+  assert.equal((await submissionDetail(student, run.id)).practiceRoundId, null);
 });
