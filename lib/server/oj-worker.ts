@@ -1,3 +1,4 @@
+import { orderedCaseResults, caseConcurrency } from './oj-case-stream';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
 import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
@@ -125,7 +126,9 @@ async function judge(job: Job<{ submissionId: string }>) {
       controller.abort();
   }, 400);
   let program: CompiledProgram | undefined;
-  let compilation: Awaited<ReturnType<CompiledProgramCache['acquire']>> | undefined;
+  let compilation:
+    | Awaited<ReturnType<CompiledProgramCache['acquire']>>
+    | undefined;
   let invalidateCompilation = false;
   try {
     const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
@@ -204,15 +207,28 @@ async function judge(job: Job<{ submissionId: string }>) {
             },
           ]
         : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden);
-    if (program.leetcodeInput && ['lc-297', 'lc-449'].includes(snapshot.spec.id)) {
+    if (
+      program.leetcodeInput &&
+      ['lc-297', 'lc-449'].includes(snapshot.spec.id)
+    ) {
       // The codec driver still receives two isolated serialize/deserialize
       // phases; the custom editor accepts the original level-order tree.
       try {
         const tree: unknown = JSON.parse(claimed.custom_input!);
-        if (!Array.isArray(tree)) throw new Error('Expected a level-order tree');
-        cases[0].input = JSON.stringify([['Codec', 'roundTrip'], [[], [tree]]]) + '\n';
+        if (!Array.isArray(tree))
+          throw new Error('Expected a level-order tree');
+        cases[0].input =
+          JSON.stringify([
+            ['Codec', 'roundTrip'],
+            [[], [tree]],
+          ]) + '\n';
       } catch {
-        update(id, attempt, { status: 'runtime_error', message: 'Codec 自定义输入应是一行 JSON 层序树数组，例如 [1,2,3,null,4]。', finished_at: Date.now() });
+        update(id, attempt, {
+          status: 'runtime_error',
+          message:
+            'Codec 自定义输入应是一行 JSON 层序树数组，例如 [1,2,3,null,4]。',
+          finished_at: Date.now(),
+        });
         return;
       }
     }
@@ -222,21 +238,25 @@ async function judge(job: Job<{ submissionId: string }>) {
       memory = 0,
       overall = 'accepted';
     const totalWeight = cases.reduce((sum, c) => sum + c.weight, 0);
-    for (const c of cases) {
+    const executeCase = async (c: (typeof cases)[number]) => {
       current(id, attempt, controller.signal);
-      // Codec submissions use the same two fresh executions for judge, sample
-      // runs and custom traces; decoding never receives the original tree.
-      const result =
-        snapshot.spec.checker === 'design-lc-297' ||
+      // Codec decoding still runs in a fresh sandbox and never sees the tree.
+      return snapshot.spec.checker === 'design-lc-297' ||
         snapshot.spec.checker === 'design-lc-449'
-          ? await runCodecRoundTrip(
-              program,
-              c.input,
-              snapshot.spec,
-              controller.signal,
-              run,
-            )
-          : await run(program, c.input, snapshot.spec, controller.signal);
+        ? runCodecRoundTrip(
+            program!,
+            c.input,
+            snapshot.spec,
+            controller.signal,
+            run,
+          )
+        : run(program!, c.input, snapshot.spec, controller.signal);
+    };
+    for await (const { item: c, result } of orderedCaseResults(
+      cases,
+      executeCase,
+      caseConcurrency(snapshot.spec.memoryLimit),
+    )) {
       current(id, attempt, controller.signal);
       let status = engineVerdict(result);
       if (

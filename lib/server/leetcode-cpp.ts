@@ -31,7 +31,7 @@ function context(problemId: number, snippet?: string, source?: string) {
       const guard = `CSWORK_LEETCODE_${match[1].toUpperCase()}`;
       return `#ifndef ${guard}\n#define ${guard}\n${definition}\n#endif`;
     });
-  return `#include <bits/stdc++.h>\nusing namespace std;\n${definitions.join('\n')}\n`;
+  return `#if __has_include("/usr/local/include/cswork/stdc++.hpp")\n#include "/usr/local/include/cswork/stdc++.hpp"\n#else\n#include <bits/stdc++.h>\n#endif\nusing namespace std;\n${definitions.join('\n')}\n`;
 }
 
 function cleanSnippet(snippet: string) {

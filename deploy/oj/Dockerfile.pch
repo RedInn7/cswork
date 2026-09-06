@@ -1,0 +1,7 @@
+# Small, reproducible upgrade of an already installed and verified runner image.
+# Pass the installed image's immutable sha256 ID as BASE_IMAGE. Full fresh builds
+# use Dockerfile, which invokes the same script.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY build-cpp-pch.sh /tmp/build-cpp-pch.sh
+RUN sh /tmp/build-cpp-pch.sh && rm /tmp/build-cpp-pch.sh
