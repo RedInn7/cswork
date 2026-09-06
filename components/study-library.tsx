@@ -802,7 +802,11 @@ export function StudyLibrary({
                 type="button"
                 className="study-row"
                 key={item.id}
-                onClick={() => setSelected(item.id)}
+                onClick={() => {
+                  if (canJudge(item))
+                    navigate('problem', { problem: item.judgeProblemId! });
+                  else setSelected(item.id);
+                }}
               >
                 <span className="study-number">{item.number}</span>
                 <span className="study-row-main">
