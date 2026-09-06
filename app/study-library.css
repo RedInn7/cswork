@@ -151,30 +151,31 @@
   font-size: 12px;
 }
 .study-list {
-  border: 1px solid #e2e6ea;
-  border-radius: 12px;
-  overflow: hidden;
+  padding: 4px;
   background: white;
 }
 .study-row {
   display: grid;
   width: 100%;
-  grid-template-columns: 48px minmax(0, 1fr) 116px 18px;
+  grid-template-columns: 22px minmax(0, 1fr) 64px;
   align-items: center;
-  gap: 16px;
-  padding: 19px 22px;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 16px;
   text-align: left;
   border: 0;
-  border-bottom: 1px solid #edf0f2;
+  border-radius: 9px;
   background: transparent;
   cursor: pointer;
   transition: background 0.15s;
 }
-.study-row:last-child {
-  border-bottom: 0;
+.study-row:nth-child(odd) {
+  background: #f7f8f9;
 }
-.study-row:hover {
-  background: #f7faf9;
+.study-row:hover,
+.study-row:focus-visible {
+  background: #202124;
+  color: #fff;
 }
 .study-number {
   color: #89949c;
@@ -182,16 +183,18 @@
   font-variant-numeric: tabular-nums;
 }
 .study-row-main {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: block;
   min-width: 0;
 }
 .study-row-main strong {
-  color: #27343e;
-  font-size: 14px;
-  font-weight: 600;
-  overflow-wrap: anywhere;
+  display: block;
+  color: inherit;
+  font-size: 15px;
+  line-height: 28px;
+  font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .study-row-secondary {
   color: #818b93;
@@ -395,15 +398,15 @@
     max-width: 180px;
   }
   .study-row {
-    grid-template-columns: 30px minmax(0, 1fr) 108px;
-    gap: 10px;
-    padding: 17px 12px;
+    grid-template-columns: 20px minmax(0, 1fr) 48px;
+    gap: 8px;
+    padding: 10px 8px;
   }
   .study-row-arrow {
     display: none;
   }
   .study-row-main strong {
-    font-size: 13px;
+    font-size: 14px;
   }
   .study-row-secondary {
     font-size: 11px;
@@ -496,27 +499,50 @@
   }
 }
 
-/* A stable status column distinguishes personal progress from judge availability. */
+/* Keep status in a fixed slot so titles align even before a first submission. */
 .study-progress {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 9px;
-  border-radius: 7px;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
   color: #64717c;
-  background: #f1f3f5;
-  font-size: 12px;
-  font-weight: 600;
   white-space: nowrap;
 }
 .study-progress[data-progress='solved'] {
-  color: #176649;
-  background: #e5f5ec;
+  color: #159947;
 }
 .study-progress[data-progress='attempted'] {
-  color: #8b5a14;
-  background: #fff3db;
+  color: #77818a;
 }
-.study-row[data-progress='solved'] {
-  box-shadow: inset 3px 0 #36a773;
+.study-row .study-level {
+  justify-self: end;
+  background: transparent;
+  padding: 0;
+  color: #087f83;
+  font-size: 13px;
+  line-height: 24px;
+  white-space: nowrap;
+}
+.study-row .study-level[data-level='medium'],
+.study-row .study-level[data-level='中等'] {
+  color: #9b6900;
+}
+.study-row .study-level[data-level='hard'],
+.study-row .study-level[data-level='困难'] {
+  color: #d63740;
+}
+.study-row:is(:hover, :focus-visible) .study-level {
+  color: #39d4d6;
+}
+.study-row:is(:hover, :focus-visible) .study-level[data-level='medium'],
+.study-row:is(:hover, :focus-visible) .study-level[data-level='中等'] {
+  color: #ffc43d;
+}
+.study-row:is(:hover, :focus-visible) .study-level[data-level='hard'],
+.study-row:is(:hover, :focus-visible) .study-level[data-level='困难'] {
+  color: #ff747c;
+}
+.study-row:is(:hover, :focus-visible) .study-progress[data-progress='solved'] {
+  color: #35d96c;
 }

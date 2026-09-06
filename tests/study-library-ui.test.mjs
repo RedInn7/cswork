@@ -40,6 +40,10 @@ test('curated practice UI preserves language and round history, deduplicates cli
   let pendingResolve;
   const mutations = [];
   const requests = [];
+  const navigations = [];
+  const longTitleZh = '不含重复字符的最长子字符串及其边界情况';
+  const longTitleEn =
+    'Longest Substring Without Repeating Characters and Its Boundary Cases';
   const roundState = () => ({
     rounds: [...rounds],
     activeRoundId,
@@ -51,8 +55,8 @@ test('curated practice UI preserves language and round history, deduplicates cli
       (progressStatus, index) => ({
         id: `lc-${index + 1}`,
         number: index + 1,
-        titleZh: `题目${index + 1}`,
-        titleEn: `Problem ${index + 1}`,
+        titleZh: index === 2 ? longTitleZh : `题目${index + 1}`,
+        titleEn: index === 2 ? longTitleEn : `Problem ${index + 1}`,
         difficulty: 'Easy',
         topics: [],
         caseStatus: 'verified',
@@ -128,7 +132,10 @@ test('curated practice UI preserves language and round history, deduplicates cli
   try {
     await act(async () =>
       root.render(
-        createElement(StudyLibrary, { navigate() {}, availableProblemIds: [] }),
+        createElement(StudyLibrary, {
+          navigate: (...args) => navigations.push(args),
+          availableProblemIds: [],
+        }),
       ),
     );
     await settle();
@@ -143,6 +150,28 @@ test('curated practice UI preserves language and round history, deduplicates cli
       document.querySelectorAll('.study-row[data-progress="solved"]').length,
       1,
     );
+    const rows = [...document.querySelectorAll('.study-row')];
+    assert.deepEqual(
+      [...rows[0].children].map((node) => node.className),
+      ['study-progress', 'study-row-main', 'study-level'],
+      'each compact row contains only status, numbered title, and difficulty',
+    );
+    assert.equal(
+      rows[0].querySelector('.study-row-main').textContent,
+      '1. 题目1',
+    );
+    assert.equal(
+      rows[0].querySelector('.study-progress .sr-only').textContent,
+      '已通过',
+    );
+    assert.equal(rows[1].querySelector('.study-progress').title, '未通过');
+    assert.equal(rows[2].querySelector('.study-progress svg'), null);
+    assert.equal(
+      rows[2].querySelector('.study-row-main').title,
+      `3. ${longTitleZh}`,
+    );
+    await act(async () => rows[0].click());
+    assert.deepEqual(navigations, [['problem', { problem: 'lc-1' }]]);
     const beforeRefresh = requests.length;
     await act(async () =>
       window.dispatchEvent(new Event('cswork:practice-progress-changed')),
@@ -162,6 +191,13 @@ test('curated practice UI preserves language and round history, deduplicates cli
     assert.match(document.body.textContent, /Arrays/);
     assert.match(document.body.textContent, /All difficulties/);
     assert.equal(localStorage.getItem('cswork:problem:locale'), 'en');
+    const englishTitle = document.querySelectorAll('.study-row-main')[2];
+    assert.equal(englishTitle.textContent, `3. ${longTitleEn}`);
+    assert.equal(
+      englishTitle.title,
+      `3. ${longTitleEn}`,
+      'full long title remains available',
+    );
     const start = button('Start a new round');
     await act(async () => {
       start.click();
