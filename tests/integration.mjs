@@ -276,7 +276,8 @@ try {
   });
   assert.equal((await req('bootstrap', { user: a })).submissions.length, 0);
   await req('lessons/00-overview/video', { user: a, status: 404 });
-  await req('checkout', { user: a, data: { courseId: 'gomall' }, status: 503 });
+  await req('checkout', { user: a, data: { courseId: 'gomall' }, status: 409 });
+  await req('checkout', { user: b, data: { courseId: 'gomall' }, status: 503 });
   db.prepare(
     'INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES(?,?,?,?,?,?,?,?,?)',
   ).run(

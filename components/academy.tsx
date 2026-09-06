@@ -1,5 +1,11 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   ArrowUpRight,
   BookOpen,
@@ -45,7 +51,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { api, type Boot, type Lesson, date } from '@/lib/types';
+import { api, type Boot, type Lesson } from '@/lib/types';
 import {
   CourseList,
   LessonReader,
@@ -64,6 +70,11 @@ import {
 import { TeacherView } from './teacher';
 import { LoginDialog, AccountView } from './account';
 import { registerAcademyTools } from '@/lib/webmcp';
+import Link from 'next/link';
+import { CheckoutFeedback } from './checkout-feedback';
+import { EnrollmentClaim } from './enrollment';
+import { NotificationsPane } from './lms-notifications';
+import '@/app/lms.css';
 const nav: [LucideIcon, string, string][] = [
   [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
@@ -81,6 +92,7 @@ const initial: Boot = {
   notifications: [],
   services: {},
 };
+type SearchResult = { id: string; title: string; snippet: string };
 export function Academy() {
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
@@ -93,7 +105,7 @@ export function Academy() {
     ),
     [search, setSearch] = useState(false),
     [query, setQuery] = useState(''),
-    [results, setResults] = useState<any[]>([]),
+    [results, setResults] = useState<SearchResult[]>([]),
     [searching, setSearching] = useState(false),
     [notificationOpen, setNotificationOpen] = useState(false);
   const refresh = useCallback(async () => {
@@ -103,6 +115,7 @@ export function Academy() {
     setError('');
   }, []);
   useEffect(() => {
+    // oxlint-disable-next-line react/react-compiler -- Initial bootstrap and the history subscription synchronize this SPA with external browser state.
     refresh().catch((e) => {
       setError(e.message);
       setLoading(false);
@@ -116,26 +129,52 @@ export function Academy() {
     window.addEventListener('popstate', sync);
     return () => window.removeEventListener('popstate', sync);
   }, [refresh]);
+  useEffect(() => {
+    const loginAgain = () => setLogin(true);
+    window.addEventListener('cswork:auth-required', loginAgain);
+    return () => window.removeEventListener('cswork:auth-required', loginAgain);
+  }, []);
+  const personId = boot.person?.id;
+  useEffect(() => {
+    if (!personId) return;
+    const update = () => {
+      if (document.visibilityState === 'visible')
+        void refresh().catch(() => {});
+    };
+    const timer = setInterval(update, 45000);
+    window.addEventListener('focus', update);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      clearInterval(timer);
+      window.removeEventListener('focus', update);
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, [personId, refresh]);
   const navigate: Navigate = useCallback((next, extra = {}) => {
     setView(next);
     setParams({ view: next, ...extra });
     history.pushState(
       null,
       '',
-      '/?' + new URLSearchParams({ view: next, ...extra }),
+      '/?' +
+        new URLSearchParams({ view: next, ...extra }) +
+        (new URLSearchParams(location.hash.slice(1)).has('invite')
+          ? location.hash
+          : ''),
     );
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, []);
   useEffect(() => {
     if (!search || !query.trim()) {
-      setResults([]);
       return;
     }
     let cancelled = false;
     const timer = setTimeout(async () => {
       setSearching(true);
       try {
-        const found = await api<any[]>('search?q=' + encodeURIComponent(query));
+        const found = await api<SearchResult[]>(
+          'search?q=' + encodeURIComponent(query),
+        );
         if (!cancelled) setResults(found);
       } catch (e) {
         if (!cancelled) setError((e as Error).message);
@@ -149,7 +188,9 @@ export function Academy() {
     };
   }, [query, search]);
   const bootRef = useRef(boot);
-  bootRef.current = boot;
+  useLayoutEffect(() => {
+    bootRef.current = boot;
+  }, [boot]);
   useEffect(
     () => registerAcademyTools(() => bootRef.current, navigate),
     [navigate],
@@ -162,7 +203,9 @@ export function Academy() {
     setTicketContext(context);
   }
   const selectedProblem = boot.problems.find((p) => p.id === params.problem),
-    unread = boot.notifications.filter((n) => !n.read_at).length;
+    unread =
+      boot.unreadNotifications ??
+      boot.notifications.filter((n) => !n.read_at).length;
   function content() {
     if (loading)
       return (
@@ -203,6 +246,7 @@ export function Academy() {
             boot={boot}
             navigate={navigate}
             login={() => setLogin(true)}
+            ask={ask}
           />
         );
       case 'lesson':
@@ -249,10 +293,15 @@ export function Academy() {
       case 'reviews':
         return <ReviewsView boot={boot} lessonId={params.lesson} />;
       case 'releases':
-        return <ReleasesView navigate={navigate} />;
+        return <ReleasesView navigate={navigate} refresh={refresh} />;
       case 'teacher':
         return boot.person?.role === 'teacher' ? (
-          <TeacherView boot={boot} navigate={navigate} />
+          <TeacherView
+            key={params.tab || 'teacher'}
+            boot={boot}
+            navigate={navigate}
+            refresh={refresh}
+          />
         ) : (
           <Empty title="仅老师可以访问工作台" />
         );
@@ -269,7 +318,7 @@ export function Academy() {
       <CloseMobileNavigation view={view} />
       <Sidebar className="academy-sidebar">
         <SidebarHeader>
-          <a
+          <Link
             className="brand"
             href="/"
             onClick={(e) => {
@@ -284,7 +333,7 @@ export function Academy() {
               cs<span className="brand-light">work</span>
               <small>BUILD. LEARN. SHIP.</small>
             </span>
-          </a>
+          </Link>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
@@ -405,19 +454,41 @@ export function Academy() {
               {error}
             </p>
           )}
-          {params.payment === 'success' && (
+          {!!params.auth_error && (
+            <p className="notice" role="alert">
+              第三方登录或账号绑定未完成，请重新尝试。你也可以使用邮箱登录。
+            </p>
+          )}
+          {params.payment === 'success' && boot.person && params.session_id && (
+            <CheckoutFeedback sessionId={params.session_id} refresh={refresh} />
+          )}
+          {params.payment === 'success' && !params.session_id && (
             <p className="notice">
-              支付结果正在确认。课程权限会在支付平台确认后自动更新。
-              <Button
-                variant="ghost"
-                onClick={() => refresh().catch((e) => setError(e.message))}
-              >
-                刷新权限
+              请在账号的购买记录中查看付款状态。
+              <Button variant="link" onClick={() => navigate('account')}>
+                查看订单
               </Button>
             </p>
           )}
+          {params.payment === 'cancelled' && (
+            <p className="notice">
+              你已退出结账。需要时可从课程页面或购买记录继续支付。
+            </p>
+          )}
+          {!loading && (
+            <EnrollmentClaim
+              person={boot.person}
+              onSuccess={refresh}
+              onLogin={() => setLogin(true)}
+            />
+          )}
           {content()}
         </main>
+        <footer className="px-6 pb-6 text-xs text-muted-foreground">
+          <Link href="/privacy" className="underline underline-offset-4">
+            隐私说明
+          </Link>
+        </footer>
       </SidebarInset>
       <LoginDialog
         open={login}
@@ -440,9 +511,12 @@ export function Academy() {
             </DialogDescription>
           </DialogHeader>
           <Input
-            autoFocus
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setResults([]);
+              setSearching(false);
+            }}
             aria-label="搜索课程内容"
             placeholder="试试：幂等、库存、JWT…"
           />
@@ -473,37 +547,17 @@ export function Academy() {
         <DialogContent className="wide-dialog">
           <DialogHeader>
             <DialogTitle>你的消息</DialogTitle>
-            <DialogDescription>老师的回复与作业评审反馈。</DialogDescription>
+            <DialogDescription>
+              老师的回复、作业评审和课程重要更新。
+            </DialogDescription>
           </DialogHeader>
-          <div className="search-results">
-            {boot.notifications.map((n) => (
-              <button
-                key={n.id}
-                onClick={async () => {
-                  try {
-                    await api('notifications', { id: n.id });
-                    await refresh();
-                    setNotificationOpen(false);
-                    const dest = Object.fromEntries(
-                      new URL(n.href, location.origin).searchParams,
-                    );
-                    const { view: next, ...extra } = dest;
-                    navigate(next || 'home', extra);
-                  } catch (e) {
-                    setError((e as Error).message);
-                  }
-                }}
-              >
-                <strong>
-                  {!n.read_at && <span className="status-dot" />}
-                  {n.title}
-                </strong>
-                <p>{n.body}</p>
-                <small>{date(n.created_at)}</small>
-              </button>
-            ))}
-            {!boot.notifications.length && <Empty title="暂时没有新消息" />}
-          </div>
+          {notificationOpen && boot.person && (
+            <NotificationsPane
+              refresh={refresh}
+              navigate={navigate}
+              close={() => setNotificationOpen(false)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </SidebarProvider>
@@ -527,11 +581,26 @@ function Home({
   navigate: Navigate;
   login: () => void;
 }) {
-  const course = boot.courses[0],
-    all = course?.lessons || [],
-    latest = [...boot.progress].sort((a, b) => b.updated_at - a.updated_at)[0],
-    resume = all.find((l) => l.id === latest?.lesson_id) || all[0],
-    done = boot.progress.filter((p) => p.completed).length,
+  const all = boot.courses.flatMap((c) => c.lessons),
+    accessible = boot.courses
+      .filter((c) => c.has_access)
+      .flatMap((c) => c.lessons),
+    latest = [...boot.progress]
+      .filter((p) => accessible.some((l) => l.id === p.lesson_id))
+      .sort((a, b) => b.updated_at - a.updated_at)[0],
+    resume =
+      all.find((l) => l.id === latest?.lesson_id) ||
+      accessible.find(
+        (l) => !boot.progress.some((p) => p.lesson_id === l.id && p.completed),
+      ) ||
+      accessible[0] ||
+      all[0],
+    course =
+      boot.courses.find((c) => c.lessons.some((l) => l.id === resume?.id)) ||
+      boot.courses[0],
+    done = accessible.filter((l) =>
+      boot.progress.some((p) => p.lesson_id === l.id && p.completed),
+    ).length,
     passed = new Set(
       boot.submissions
         .filter((s) => s.status === 'accepted')
@@ -542,7 +611,13 @@ function Home({
       login();
       return;
     }
-    if (course?.has_access && l) navigate('lesson', { lesson: l.id });
+    if (
+      l &&
+      boot.courses.some(
+        (c) => c.has_access && c.lessons.some((item) => item.id === l.id),
+      )
+    )
+      navigate('lesson', { lesson: l.id });
     else navigate('courses');
   }
   return (
@@ -563,15 +638,15 @@ function Home({
           <span className="overline">
             {latest ? '继续你的学习' : '从这里开始'}
           </span>
-          <h2>{latest ? resume?.title : 'GoMall 后端工程实战'}</h2>
+          <h2>{latest ? resume?.title : course?.title || '你的下一门课程'}</h2>
           <p>
             {latest
               ? resume?.summary
-              : '沿着真实的交易链路，掌握 Go 后端与系统设计。'}
+              : course?.summary || '课程准备完成后，可以从这里进入学习。'}
           </p>
           <div className="course-meta">
-            <span>Go / Gin</span>
-            <span>系统设计</span>
+            <span>{course?.lessons.length || 0} 个章节</span>
+            <span>课件与配套视频</span>
             <span>配套代码练习</span>
           </div>
           <Button className="primary-light" onClick={() => start(resume)}>
@@ -605,7 +680,7 @@ function Home({
             <span>已完成课时</span>
             <strong>
               {done}
-              <small> / {all.length}</small>
+              <small> / {accessible.length}</small>
             </strong>
           </div>
           <div>
@@ -632,29 +707,14 @@ function Home({
       </div>
       <div className="path-grid">
         {[
-          [
-            '01',
-            '后端工程基础',
-            '用户认证、接口设计与业务建模',
-            'Go · Gin · JWT',
-            '后端基础',
-          ],
-          [
-            '02',
-            '交易与资金系统',
-            '支付、清算、结算与一致性',
-            '事务 · 幂等 · Outbox',
-            '交易系统',
-          ],
-          [
-            '03',
-            '搜索与系统进阶',
-            '商品检索、库存和高并发',
-            '搜索 · 库存 · 流量治理',
-            '搜索与进阶',
-          ],
-        ].map(([n, title, desc, tags, section]) => {
-          const ls = all.filter((l) => l.section === section),
+          ...new Set(
+            (course?.lessons || []).map((l) => l.section || '课程内容'),
+          ),
+        ].map((section, index) => {
+          const n = String(index + 1).padStart(2, '0'),
+            ls = (course?.lessons || []).filter(
+              (l) => (l.section || '课程内容') === section,
+            ),
             completed = ls.filter((l) =>
               boot.progress.some((p) => p.lesson_id === l.id && p.completed),
             ).length;
@@ -664,9 +724,9 @@ function Home({
                 <span>{n}</span>
                 <ArrowUpRight size={20} />
               </div>
-              <h3>{title}</h3>
-              <p>{desc}</p>
-              <small>{tags}</small>
+              <h3>{section}</h3>
+              <p>{ls[0]?.summary || '按章节推进，完成配套练习。'}</p>
+              <small>{course?.title}</small>
               <Progress value={ls.length ? (completed / ls.length) * 100 : 0} />
               <div className="path-progress">
                 <span>

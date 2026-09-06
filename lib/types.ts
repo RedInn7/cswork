@@ -19,6 +19,9 @@ export type Lesson = {
   body?: string;
   progress?: Progress | null;
   versions?: { version: string; created_at: number }[];
+  revision?: number;
+  published?: number;
+  media_asset_id?: string | null;
 };
 export type Course = {
   id: string;
@@ -28,11 +31,17 @@ export type Course = {
   published: number;
   has_access: boolean;
   lessons: Lesson[];
+  position?: number;
+  revision?: number;
+  price_id?: string | null;
+  purchase_available?: boolean;
+  price?: { amount: number; currency: string; display: string } | null;
 };
 export type Progress = {
   lesson_id: string;
   completed: number;
   position: number;
+  video_asset_id?: string | null;
   note: string;
   bookmarked: number;
   updated_at: number;
@@ -65,10 +74,12 @@ export type Boot = {
   progress: Progress[];
   submissions: Submission[];
   notifications: Notification[];
+  unreadNotifications?: number;
   services: Record<string, boolean>;
 };
 export type Ticket = {
   attachments?: {
+    user_id?: string;
     id: string;
     name: string;
     size: number;
@@ -79,8 +90,10 @@ export type Ticket = {
   title: string;
   body: string;
   lesson_id: string | null;
+  course_id?: string | null;
   submission_id: string | null;
   video_position: number | null;
+  video_asset_id?: string | null;
   status: string;
   assigned_to: string | null;
   created_at: number;
@@ -117,21 +130,51 @@ export type Release = {
   created_at: number;
   is_read: number;
 };
-export async function api<T = any>(path: string, data?: unknown): Promise<T> {
+export async function api<T = unknown>(
+  path: string,
+  data?: unknown,
+): Promise<T> {
   const r = await fetch('/api/' + path, {
     method: data === undefined ? 'GET' : 'POST',
     headers: data === undefined ? {} : { 'Content-Type': 'application/json' },
     body: data === undefined ? undefined : JSON.stringify(data),
   });
-  let result: any;
+  let result: unknown;
   try {
     result = await r.json();
   } catch {
     throw new Error('服务暂时不可用，请稍后重试');
   }
-  if (!r.ok) throw new Error(result.error || '操作失败');
-  return result;
+  if (!r.ok) {
+    if (r.status === 401 && typeof window !== 'undefined')
+      window.dispatchEvent(new Event('cswork:auth-required'));
+    const message =
+      result &&
+      typeof result === 'object' &&
+      'error' in result &&
+      typeof result.error === 'string'
+        ? result.error
+        : '操作失败';
+    throw new ApiError(message, r.status, result);
+  }
+  return result as T;
 }
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public status: number,
+    public details: unknown,
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+export type PageResult<T> = {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+};
 export const statusNames: Record<string, string> = {
   accepted: '已通过',
   queued: '排队中',

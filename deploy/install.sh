@@ -15,6 +15,7 @@ id cswork >/dev/null 2>&1 || useradd --system --user-group --home-dir /var/lib/c
 install -d -m 755 /srv/cswork/releases /opt/cswork/runtime /var/www/cswork-acme
 install -d -m 700 -o cswork -g cswork /var/lib/cswork /var/lib/cswork/attachments /var/lib/cswork/backups
 install -d -m 750 -o root -g cswork /etc/cswork
+install -d -m 2750 -o cswork -g www-data /srv/cswork/media
 install -m 755 "$node_binary" /opt/cswork/runtime/node.next
 mv -f /opt/cswork/runtime/node.next /opt/cswork/runtime/node
 
@@ -34,6 +35,20 @@ PY
   chown root:cswork /etc/cswork/cswork.env
 fi
 
+# Only the independent media directory is readable by nginx; database/attachments
+# remain private. Existing external Stream settings, if any, are preserved.
+python3 - <<'PY'
+from pathlib import Path
+p=Path('/etc/cswork/cswork.env')
+lines=p.read_text().splitlines()
+keys={line.split('=',1)[0] for line in lines}
+for key,value in [('MEDIA_PATH','/srv/cswork/media'),('MEDIA_X_ACCEL_PREFIX','/__cswork_media/'),('MEDIA_MAX_BYTES','10737418240'),('ATTACHMENTS_MAX_BYTES','1073741824')]:
+    if key not in keys: lines.append(key+'='+value)
+p.write_text('\n'.join(lines)+'\n')
+p.chmod(0o640)
+PY
+chown root:cswork /etc/cswork/cswork.env
+
 # Only the OJ worker receives execution credentials. The web process needs configuration
 # for admission and reads health from SQLite; credentials are never returned by an API.
 if [[ -f /etc/cswork/oj.env ]]; then
@@ -52,6 +67,9 @@ fi
 if [[ -f /var/lib/cswork/cswork.sqlite ]]; then
   cd "$source_dir"
   "$node_binary" --env-file=/etc/cswork/cswork.env scripts/backup.mjs
+  # The installer runs as root; the daily timer runs as cswork. Preserve media
+  # inode groups because backup objects may be hard links read by nginx.
+  chown -R cswork /var/lib/cswork/backups
 fi
 cd "$source_dir"
 "$node_binary" --env-file=/etc/cswork/cswork.env scripts/migrate.mjs
@@ -125,6 +143,7 @@ if [[ -f "$target/oj-worker/index.mjs" && -f /etc/cswork/oj.env ]]; then
 fi
 
 # Existing certificate configuration is retained on later releases.
+install -m 644 "$source_dir/deploy/nginx-media.conf" /etc/nginx/snippets/cswork-media.conf
 created_config=false
 if [[ ! -f /etc/nginx/sites-available/cswork ]]; then
   sed "s/CSWORK_HOSTNAME/$domain/g" "$source_dir/deploy/nginx.conf.template" > /etc/nginx/sites-available/cswork
@@ -133,6 +152,7 @@ fi
 # Teacher problem imports accept at most 8 MiB plus a small JSON envelope.
 # Attachment and all other application limits remain enforced in their own handlers.
 sed -i 's/client_max_body_size 3m;/client_max_body_size 9m;/' /etc/nginx/sites-available/cswork
+python3 "$source_dir/deploy/configure-nginx.py" /etc/nginx/sites-available/cswork
 created_link=false
 if [[ ! -e /etc/nginx/sites-enabled/cswork ]]; then
   ln -s /etc/nginx/sites-available/cswork /etc/nginx/sites-enabled/cswork

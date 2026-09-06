@@ -10,6 +10,7 @@
 | 应用                 | `/srv/cswork/releases/<commit>/`，`/srv/cswork/current` 指向当前版本                  |
 | 独立 Node 运行时     | `/opt/cswork/runtime/node`，初始复制已安装的 Node 22.22.2                             |
 | SQLite / 附件        | `/var/lib/cswork/cswork.sqlite` / `/var/lib/cswork/attachments/`                      |
+| 私有视频             | `/srv/cswork/media/`，目录 cswork:www-data 2750，文件 0640                            |
 | 配置                 | `/etc/cswork/cswork.env`，root:cswork 0640                                            |
 | nginx                | `/etc/nginx/sites-available/cswork`，独立 vhost                                       |
 | 应用监听             | `127.0.0.1:4317`，不直接暴露公网                                                      |
@@ -63,8 +64,14 @@ sudo systemctl start cswork-backup.service
 sudo systemctl list-timers cswork-backup.timer
 ```
 
-数据库备份使用 SQLite 在线 backup API，附件与快照分开归档。备份都在同一主机，尚不等于异地灾备；需独立复制到受控备份存储。恢复数据库前停止 cswork 和 cswork-oj-worker，保留当前数据副本，再用选定 SQLite 快照和对应附件归档恢复并修正文件归属。版本切换不会自动回退已应用的数据库迁移。
+数据库备份使用 SQLite 在线 backup API，按快照固定附件清单并保留文件后归档；视频以不可变对象复用。升级后的备份必须具有 `-complete.json` 完成标记，详见 [备份完整性与恢复](BACKUP-INTEGRITY.md)。备份都在同一主机，尚不等于异地灾备；需独立复制到受控备份存储。恢复数据库前停止 cswork 和 cswork-oj-worker，保留当前数据副本，再用同一时间戳的快照、附件归档及视频清单恢复并修正文件归属。版本切换不会自动回退已应用的数据库迁移。
 
 Redis 使用独立 AOF 数据卷与 `noeviction`，应用以 SQLite/outbox 恢复未完成任务；不要执行 `docker compose down -v` 或清空生产 Redis。默认运行时验证不重启容器，AOF 重启验证只能在没有运行任务的维护窗口执行，见 [运行时维护与恢复](oj-runtime.md#组件与维护)。
 
-Web 服务仅可写 `/var/lib/cswork`，内存上限 1GB、CPU 上限 150%；worker 单独限制为 512MiB、100% CPU，两者均不读取 CSGrad 的服务目录。执行器容器另有独立资源上限，见运行时说明。修改运行时、域名或数据路径后重新执行对应验证，不复制其他网站的密钥或账户数据。
+Web 服务仅可写 `/var/lib/cswork` 与 `/srv/cswork/media`，内存上限 1GB、CPU 上限 150%；worker 单独限制为 512MiB、100% CPU，两者均不读取 CSGrad 的服务目录。执行器容器另有独立资源上限，见运行时说明。修改运行时、域名或数据路径后重新执行对应验证，不复制其他网站的密钥或账户数据。
+
+## 视频服务
+
+安装器设置 `MEDIA_PATH=/srv/cswork/media`、`MEDIA_X_ACCEL_PREFIX=/__cswork_media/`，并只在 cswork 实际代理 location 所在的 server 块插入独立媒体配置，保留原来的 HTTPS 证书和 HTTP 跳转。应用授权后发送内部重定向，Nginx 负责文件传输；直接访问 `/__cswork_media/` 应返回 404。不要把数据库父目录设为 www-data 可读。
+
+本地与 staging 不设置 `MEDIA_X_ACCEL_PREFIX`，Node 流式处理 Range。真实视频导入完成后，验证生产匿名播放被拒绝、老师/授权学员 Range 返回 206、撤权后新请求被拒绝。导入和文件归属步骤见 [视频导入](IMPORT-GOMALL-VIDEOS.md)。

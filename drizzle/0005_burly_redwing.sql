@@ -1,0 +1,1 @@
+ALTER TABLE `tickets` ADD `video_asset_id` text;

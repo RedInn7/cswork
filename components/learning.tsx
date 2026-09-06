@@ -6,40 +6,39 @@ import {
   Check,
   ChevronRight,
   Code2,
-  Play,
   Lock,
   Bookmark,
   MessageSquare,
   FileText,
   Video,
-  RotateCcw,
-  Send,
-  Lightbulb,
   GitPullRequest,
   Search,
 } from 'lucide-react';
-import Markdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Progress as ProgressBar } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from '@/components/ui/native-select';
 import { api, type Boot, type Lesson, date } from '@/lib/types';
-import type { Problem } from '@/lib/problems';
 import { Player } from './player';
+import { LessonMarkdown, LessonNotes } from './lms-shared';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from './ui/dialog';
 export type Navigate = (view: string, extra?: Record<string, string>) => void;
 export function CourseList({
   boot,
   navigate,
   login,
+  ask,
 }: {
   boot: Boot;
   navigate: Navigate;
   login: () => void;
+  ask: (context: Record<string, string>) => void;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState('');
@@ -63,7 +62,6 @@ export function CourseList({
                 <p>{c.summary}</p>
                 <div className="course-meta">
                   <span>{c.lessons.length} 个章节</span>
-                  <span>Go / Gin</span>
                   <span>配套算法与工程实验</span>
                   <span>v{c.version}</span>
                 </div>
@@ -78,7 +76,11 @@ export function CourseList({
                     <span className="muted">
                       完成 {done} / {c.lessons.length} 课
                     </span>
-                    <ProgressBar value={(done / c.lessons.length) * 100} />
+                    <ProgressBar
+                      value={
+                        c.lessons.length ? (done / c.lessons.length) * 100 : 0
+                      }
+                    />
                   </>
                 ) : (
                   <>
@@ -89,12 +91,23 @@ export function CourseList({
                           login();
                           return;
                         }
+                        if (!(c.purchase_available ?? boot.services.checkout)) {
+                          ask({
+                            courseId: c.id,
+                            title: `申请开通：${c.title}`,
+                            body: `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
+                          });
+                          return;
+                        }
                         setBusy(true);
                         setError('');
                         try {
-                          const { url } = await api('checkout', {
-                            courseId: c.id,
-                          });
+                          const { url } = await api<{ url: string }>(
+                            'checkout',
+                            {
+                              courseId: c.id,
+                            },
+                          );
                           location.assign(url);
                         } catch (e) {
                           setError((e as Error).message);
@@ -103,7 +116,9 @@ export function CourseList({
                         }
                       }}
                     >
-                      {boot.services.checkout ? '购买课程' : '申请开通'}
+                      {(c.purchase_available ?? boot.services.checkout)
+                        ? `购买课程${c.price ? ' · ' + c.price.display : ''}`
+                        : '申请开通'}
                       <ArrowRight size={15} />
                     </Button>
                     <small>现有学员使用购买时的邮箱登录</small>
@@ -122,18 +137,24 @@ export function CourseList({
                 <TabsTrigger value="about">课程介绍</TabsTrigger>
               </TabsList>
               <TabsContent value="curriculum">
-                {['后端基础', '交易系统', '搜索与进阶'].map((section, i) => (
+                {[
+                  ...new Set(c.lessons.map((l) => l.section || '课程内容')),
+                ].map((section, i) => (
                   <div className="chapter-group" key={section}>
                     <div className="chapter-heading">
                       <span>0{i + 1}</span>
                       <h3>{section}</h3>
                       <small>
-                        {c.lessons.filter((l) => l.section === section).length}{' '}
+                        {
+                          c.lessons.filter(
+                            (l) => (l.section || '课程内容') === section,
+                          ).length
+                        }{' '}
                         课
                       </small>
                     </div>
                     {c.lessons
-                      .filter((l) => l.section === section)
+                      .filter((l) => (l.section || '课程内容') === section)
                       .map((l) => {
                         const complete = boot.progress.some(
                           (p) => p.lesson_id === l.id && p.completed,
@@ -146,9 +167,11 @@ export function CourseList({
                               c.has_access
                                 ? navigate('lesson', { lesson: l.id })
                                 : boot.person
-                                  ? setError(
-                                      '请联系老师开通，或在购买开放后下单。',
-                                    )
+                                  ? ask({
+                                      courseId: c.id,
+                                      title: `申请开通：${c.title}`,
+                                      body: `希望学习「${c.title}」，请老师核实并开通课程。`,
+                                    })
                                   : login()
                             }
                           >
@@ -196,12 +219,8 @@ export function CourseList({
               </TabsContent>
               <TabsContent value="about">
                 <div className="prose-content">
-                  <h3>适合谁学习</h3>
-                  <p>
-                    已经了解 Go
-                    基础语法，希望从接口开发走向完整后端系统的学员。建议先熟悉
-                    HTTP、SQL 和 Git 的基本使用。
-                  </p>
+                  <h3>关于本课程</h3>
+                  <p>{c.summary}</p>
                   <h3>你会如何学习</h3>
                   <p>
                     先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过
@@ -216,6 +235,11 @@ export function CourseList({
                 </div>
               </TabsContent>
             </Tabs>
+            {!c.lessons.length && (
+              <p className="quiet-empty">
+                老师正在准备课程内容，发布后会出现在这里。
+              </p>
+            )}
           </section>
         );
       })}
@@ -277,9 +301,18 @@ export function LessonReader({
 }) {
   const [lesson, setLesson] = useState<Lesson | null>(null),
     [error, setError] = useState(''),
-    [note, setNote] = useState(''),
     [saving, setSaving] = useState(false),
-    [saved, setSaved] = useState('');
+    [loadRetry, setLoadRetry] = useState(0),
+    [tab, setTab] = useState(
+      new URLSearchParams(
+        typeof location === 'undefined' ? '' : location.search,
+      ).has('t')
+        ? 'video'
+        : 'handout',
+    ),
+    [historyVersion, setHistoryVersion] = useState(''),
+    [historyBody, setHistoryBody] = useState<string | null>(null),
+    [historyError, setHistoryError] = useState('');
   const pos = useRef(0);
   useEffect(() => {
     let active = true;
@@ -287,7 +320,6 @@ export function LessonReader({
       .then((l) => {
         if (active) {
           setLesson(l);
-          setNote(l.progress?.note || '');
           pos.current = l.progress?.position || 0;
         }
       })
@@ -295,10 +327,25 @@ export function LessonReader({
     return () => {
       active = false;
     };
-  }, [id]);
+  }, [id, loadRetry]);
+  useEffect(() => {
+    if (!historyVersion) return;
+    let active = true;
+    api<{ body: string }>(
+      `lms/lessons/${encodeURIComponent(id)}/versions/${encodeURIComponent(historyVersion)}`,
+    )
+      .then((data) => {
+        if (active) setHistoryBody(data.body);
+      })
+      .catch((e) => {
+        if (active) setHistoryError(e.message);
+      });
+    return () => {
+      active = false;
+    };
+  }, [id, historyVersion]);
   async function save(data: Record<string, unknown>) {
     setSaving(true);
-    setSaved('');
     setError('');
     try {
       await api('progress', { lessonId: id, ...data });
@@ -312,6 +359,7 @@ export function LessonReader({
                 position: l.progress?.position || 0,
                 note: l.progress?.note || '',
                 bookmarked: l.progress?.bookmarked || 0,
+                ...l.progress,
                 updated_at: Date.now(),
                 ...data,
                 ...(typeof data.completed === 'boolean'
@@ -325,7 +373,6 @@ export function LessonReader({
           : l,
       );
       await refresh();
-      setSaved('已保存');
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -336,17 +383,34 @@ export function LessonReader({
     return (
       <Empty
         title={error}
-        action={<Button onClick={() => navigate('courses')}>返回课程</Button>}
+        action={
+          <div className="form-actions">
+            <Button
+              onClick={() => {
+                setError('');
+                setLoadRetry((n) => n + 1);
+              }}
+            >
+              重新加载
+            </Button>
+            <Button variant="outline" onClick={() => navigate('courses')}>
+              返回课程
+            </Button>
+          </div>
+        }
       />
     );
   if (!lesson) return <div className="loading-state">正在加载课件…</div>;
-  const all = boot.courses.flatMap((c) => c.lessons),
+  const course = boot.courses.find((c) => c.id === lesson.course_id),
+    all = course?.lessons || [],
     related = boot.problems.filter((p) => p.lessonId === id),
     next = all[all.findIndex((l) => l.id === id) + 1];
   return (
     <>
       <div className="breadcrumb">
-        <button onClick={() => navigate('courses')}>GoMall 后端工程实战</button>
+        <button onClick={() => navigate('courses')}>
+          {course?.title || '我的课程'}
+        </button>
         <ChevronRight size={14} />
         <span>第 {String(lesson.position).padStart(2, '0')} 课</span>
       </div>
@@ -360,6 +424,7 @@ export function LessonReader({
         <Button
           variant="outline"
           aria-label={lesson.progress?.bookmarked ? '取消收藏' : '收藏章节'}
+          disabled={saving}
           onClick={() => save({ bookmarked: !lesson.progress?.bookmarked })}
         >
           <Bookmark
@@ -370,7 +435,7 @@ export function LessonReader({
       </div>
       <div className="learning-layout">
         <section className="reader-card">
-          <Tabs defaultValue="handout">
+          <Tabs value={tab} onValueChange={(value) => setTab(String(value))}>
             <TabsList variant="line" className="reader-tabs">
               <TabsTrigger value="handout">
                 <FileText size={15} />
@@ -390,40 +455,38 @@ export function LessonReader({
               </TabsTrigger>
             </TabsList>
             <TabsContent value="handout">
-              <article className="prose-content">
-                <Markdown
-                  remarkPlugins={[remarkGfm]}
-                  components={{
-                    a: ({ children, href }) => (
-                      <a href={href} target="_blank" rel="noreferrer">
-                        {children}
-                      </a>
-                    ),
-                    img: ({ src, alt }) => (
-                      <a
-                        href={typeof src === 'string' ? src : undefined}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        查看图示：{alt || '课程图示'}
-                      </a>
-                    ),
-                  }}
-                >
-                  {lesson.body || ''}
-                </Markdown>
-              </article>
+              <LessonMarkdown body={lesson.body || ''} />
             </TabsContent>
             <TabsContent value="video">
               {lesson.has_video ? (
                 <Player
                   lessonId={id}
                   position={lesson.progress?.position || 0}
-                  onProgress={(n) => {
+                  assetId={lesson.progress?.video_asset_id}
+                  onProgress={(n, assetId) => {
                     pos.current = n;
-                    api('progress', { lessonId: id, position: n }).catch((e) =>
-                      setError(e.message),
+                    setLesson((current) =>
+                      current
+                        ? {
+                            ...current,
+                            progress: {
+                              lesson_id: id,
+                              completed: 0,
+                              note: '',
+                              bookmarked: 0,
+                              updated_at: Date.now(),
+                              ...current.progress,
+                              position: n,
+                              video_asset_id: assetId,
+                            },
+                          }
+                        : current,
                     );
+                    api('progress', {
+                      lessonId: id,
+                      position: n,
+                      videoAssetId: assetId,
+                    }).catch((e) => setError(e.message));
                   }}
                 />
               ) : (
@@ -434,24 +497,29 @@ export function LessonReader({
               )}
             </TabsContent>
             <TabsContent value="notes">
-              <div className="notes-pane">
-                <label htmlFor="lesson-note">
-                  记下思路、疑问和你自己的理解
-                </label>
-                <textarea
-                  id="lesson-note"
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  placeholder="这一章我学到了…"
-                  maxLength={20000}
-                />
-                <Button disabled={saving} onClick={() => save({ note })}>
-                  {saving ? '保存中…' : '保存笔记'}
-                </Button>
-                <span role="status" className="muted">
-                  {saved}
-                </span>
-              </div>
+              <LessonNotes
+                userId={boot.person!.id}
+                lessonId={id}
+                initial={lesson.progress?.note || ''}
+                onSaved={(note) =>
+                  setLesson((current) =>
+                    current
+                      ? {
+                          ...current,
+                          progress: {
+                            lesson_id: id,
+                            completed: 0,
+                            position: 0,
+                            bookmarked: 0,
+                            updated_at: Date.now(),
+                            ...current.progress,
+                            note,
+                          },
+                        }
+                      : current,
+                  )
+                }
+              />
             </TabsContent>
             <TabsContent value="practice">
               <div className="practice-pane">
@@ -546,6 +614,9 @@ export function LessonReader({
                 ask({
                   lessonId: id,
                   videoPosition: String(Math.floor(pos.current)),
+                  ...(lesson.progress?.video_asset_id
+                    ? { videoAssetId: lesson.progress.video_asset_id }
+                    : {}),
                 })
               }
             >
@@ -556,14 +627,44 @@ export function LessonReader({
           <div className="side-card">
             <h3>课件版本</h3>
             {lesson.versions?.slice(0, 5).map((v) => (
-              <div className="version-line" key={v.version}>
+              <button
+                className="version-line lms-version-link"
+                key={v.version}
+                onClick={() => {
+                  setHistoryBody(null);
+                  setHistoryError('');
+                  setHistoryVersion(v.version);
+                }}
+              >
                 <span>v{v.version}</span>
                 <span>{date(v.created_at)}</span>
-              </div>
+              </button>
             ))}
           </div>
         </aside>
       </div>
+      <Dialog
+        open={!!historyVersion}
+        onOpenChange={(open) => !open && setHistoryVersion('')}
+      >
+        <DialogContent className="wide-dialog lms-history-dialog">
+          <DialogHeader>
+            <DialogTitle>课件 v{historyVersion}</DialogTitle>
+            <DialogDescription>
+              查看已发布的历史课件，当前学习进度保持不变。
+            </DialogDescription>
+          </DialogHeader>
+          {historyError ? (
+            <p role="alert" className="error-text">
+              {historyError}
+            </p>
+          ) : historyBody === null ? (
+            <output>正在加载版本…</output>
+          ) : (
+            <LessonMarkdown body={historyBody} />
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -79,12 +79,10 @@ export async function rows<T = Record<string, unknown>>(
   sql: string,
   ...values: (string | number | null)[]
 ): Promise<T[]> {
-  return (
-    await database()
-      .prepare(sql)
-      .bind(...values)
-      .all<T>()
-  ).results;
+  return database()
+    .prepare(sql)
+    .bind(...values)
+    .all<T>().results;
 }
 export async function one<T = Record<string, unknown>>(
   sql: string,
@@ -99,10 +97,11 @@ export async function allowed(p: Person, courseId: string) {
   if (p.role === 'teacher') return true;
   if (!p.verified) return false;
   return !!(await one(
-    "SELECT id FROM grants WHERE email=? AND (course_id=? OR course_id='*') AND revoked_at IS NULL AND (expires_at IS NULL OR expires_at>?) LIMIT 1",
+    "SELECT g.id FROM grants g WHERE g.email=? AND (g.course_id=? OR g.course_id='*') AND g.revoked_at IS NULL AND (g.expires_at IS NULL OR g.expires_at>?) AND EXISTS(SELECT 1 FROM courses c WHERE c.id=? AND c.published=1) LIMIT 1",
     p.email,
     courseId,
     Date.now(),
+    courseId,
   ));
 }
 export async function requireCourse(p: Person, courseId: string) {
@@ -116,8 +115,12 @@ export async function limit(
   seconds = 60,
 ) {
   const now = Date.now();
+  if (now > nextLimitCleanup) {
+    database().prepare('DELETE FROM limits WHERE expires_at<?').bind(now).run();
+    nextLimitCleanup = now + 600000;
+  }
   const key = `${p.id}:${action}:${Math.floor(now / (seconds * 1000))}`;
-  const result = await database()
+  const result = database()
     .prepare(
       'INSERT INTO limits (key,count,expires_at) VALUES (?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 RETURNING count',
     )
@@ -126,6 +129,7 @@ export async function limit(
   if (result && result.count > max)
     throw new HttpError(429, '操作有些频繁，请稍后再试');
 }
+let nextLimitCleanup = 0;
 export function auditStatement(p: Person, action: string, target: string) {
   return database()
     .prepare(

@@ -2,6 +2,7 @@ server {
     listen 80;
     server_name CSWORK_HOSTNAME;
     client_max_body_size 9m;
+    include /etc/nginx/snippets/cswork-media.conf;
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/cswork-acme;
     }

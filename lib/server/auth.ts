@@ -1,9 +1,11 @@
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { emailOTP } from 'better-auth/plugins';
+import { APIError } from 'better-auth/api';
 import { getDb } from '@/db';
 import * as schema from '@/db/schema';
 import { setting, origin, database } from './env';
+import { sendAuthOTP } from './mail';
 export type Person = {
   id: string;
   email: string;
@@ -24,12 +26,37 @@ export function auth() {
       enabled: true,
       disableSignUp: true,
       minPasswordLength: 12,
+      maxPasswordLength: 128,
+      revokeSessionsOnPasswordReset: true,
     },
     database: drizzleAdapter(getDb(), {
       provider: 'sqlite',
       schema,
       transaction: false,
     }),
+    databaseHooks: {
+      user: {
+        create: {
+          before: async (user) => ({
+            data: { ...user, name: user.name.trim().slice(0, 80) || '学员' },
+          }),
+        },
+        update: {
+          before: async (user) => {
+            if (user.name === undefined) return { data: user };
+            if (
+              typeof user.name !== 'string' ||
+              !user.name.trim() ||
+              user.name.trim().length > 80
+            )
+              throw new APIError('BAD_REQUEST', {
+                message: '昵称需为 1–80 个字符',
+              });
+            return { data: { ...user, name: user.name.trim() } };
+          },
+        },
+      },
+    },
     socialProviders: {
       ...(setting('GOOGLE_CLIENT_ID') && setting('GOOGLE_CLIENT_SECRET')
         ? {
@@ -58,24 +85,8 @@ export function auth() {
         otpLength: 6,
         expiresIn: 300,
         allowedAttempts: 5,
-        async sendVerificationOTP({ email, otp }) {
-          if (!setting('RESEND_API_KEY') || !setting('MAIL_FROM'))
-            throw new Error('Email sign-in is not configured');
-          const response = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${setting('RESEND_API_KEY')}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              from: setting('MAIL_FROM'),
-              to: [email],
-              subject: 'cswork 登录验证码',
-              text: `你的验证码是 ${otp}，5 分钟内有效。如果不是你发起的登录，请忽略。`,
-            }),
-          });
-          if (!response.ok) throw new Error('邮件发送失败，请稍后重试');
-        },
+        storeOTP: 'hashed',
+        sendVerificationOTP: sendAuthOTP,
       }),
     ],
   });

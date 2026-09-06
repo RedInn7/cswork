@@ -7,6 +7,10 @@ import {
   uniqueIndex,
 } from 'drizzle-orm/sqlite-core';
 export * from './oj-schema';
+export * from './lms-schema';
+export * from './commerce-schema';
+export * from './media-schema';
+export * from './enrollment-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -93,6 +97,8 @@ export const courses = sqliteTable('courses', {
   version: text('version').notNull(),
   priceId: text('price_id'),
   published: integer('published').notNull().default(1),
+  revision: integer('revision').notNull().default(1),
+  position: integer('position').notNull().default(0),
 });
 export const lessons = sqliteTable(
   'lessons',
@@ -108,6 +114,9 @@ export const lessons = sqliteTable(
     body: text('body').notNull(),
     version: text('version').notNull(),
     streamUid: text('stream_uid'),
+    videoAssetIds: text('video_asset_ids').notNull().default('[]'),
+    published: integer('published').notNull().default(1),
+    revision: integer('revision').notNull().default(1),
     updatedAt: integer('updated_at').notNull(),
   },
   (t) => [index('lesson_order').on(t.courseId, t.position)],
@@ -136,6 +145,7 @@ export const progress = sqliteTable(
     position: real('position').notNull().default(0),
     note: text('note').notNull().default(''),
     bookmarked: integer('bookmarked').notNull().default(0),
+    videoAssetId: text('video_asset_id'),
     updatedAt: integer('updated_at').notNull(),
   },
   (t) => [uniqueIndex('progress_user_lesson').on(t.userId, t.lessonId)],
@@ -150,6 +160,9 @@ export const tickets = sqliteTable(
     lessonId: text('lesson_id'),
     submissionId: text('submission_id'),
     videoPosition: real('video_position'),
+    courseId: text('course_id'),
+    videoAssetId: text('video_asset_id'),
+    revision: integer('revision').notNull().default(1),
     status: text('status').notNull().default('open'),
     assignedTo: text('assigned_to'),
     createdAt: integer('created_at').notNull(),
@@ -191,6 +204,8 @@ export const revisions = sqliteTable(
     version: text('version').notNull(),
     body: text('body').notNull(),
     streamUid: text('stream_uid'),
+    snapshotJson: text('snapshot_json'),
+    createdBy: text('created_by'),
     createdAt: integer('created_at').notNull(),
   },
   (t) => [uniqueIndex('revision_version').on(t.lessonId, t.version)],
@@ -292,6 +307,7 @@ export const reviews = sqliteTable(
     status: text('status').notNull().default('pending'),
     feedback: text('feedback'),
     reviewedBy: text('reviewed_by'),
+    revision: integer('revision').notNull().default(1),
     createdAt: integer('created_at').notNull(),
     updatedAt: integer('updated_at').notNull(),
   },
@@ -307,6 +323,13 @@ export const orders = sqliteTable('orders', {
   status: text('status').notNull(),
   amount: integer('amount'),
   currency: text('currency'),
+  priceId: text('price_id'),
+  updatedAt: integer('updated_at').notNull().default(0),
+  paidAt: integer('paid_at'),
+  amountRefunded: integer('amount_refunded').notNull().default(0),
+  receiptUrl: text('receipt_url'),
+  lastError: text('last_error'),
+  accessRevokedAt: integer('access_revoked_at'),
   createdAt: integer('created_at').notNull(),
 });
 export const webhookEvents = sqliteTable('webhook_events', {
