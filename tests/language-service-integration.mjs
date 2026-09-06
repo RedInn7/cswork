@@ -154,3 +154,68 @@ const health = await fetch(url + '/health', {
   headers: { Authorization: `Bearer ${token}` },
 }).then((res) => res.json());
 console.log(`Complete; live sessions=${health.sessions}`);
+
+// The visible document starts at class on line 1; clangd sees the platform
+// headers through -include, without adding lines to the user's document.
+if (
+  !process.env.LSP_LANGUAGES ||
+  process.env.LSP_LANGUAGES.split(',').includes('cpp')
+) {
+  const identity = { ownerId, documentId: randomUUID(), language: 'cpp' };
+  const cppContext =
+    '#include <bits/stdc++.h>\nusing namespace std;\nstruct ListNode { int val; ListNode* next; };\n';
+  try {
+    const code =
+      'class Solution {\npublic:\nvoid test(ListNode* head) {\nvector<int> values;\nvalues.\n}\n};';
+    let result;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      result = await call('/v1/request', {
+        ...identity,
+        cppContext,
+        code,
+        version: 1,
+        action: 'completion',
+        position: { line: 4, character: 7 },
+      });
+      if (result.result.items.some((item) => /push_back/.test(item.label)))
+        break;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+    assert.ok(
+      result.result.items.some((item) => /push_back/.test(item.label)),
+      'hidden header vector completion',
+    );
+    const invalid =
+      'class Solution {\npublic:\nint test(ListNode* head) { return missing_value; }\n};';
+    let diagnostics;
+    for (let attempt = 0; attempt < 5; attempt++) {
+      diagnostics = await call('/v1/request', {
+        ...identity,
+        cppContext,
+        code: invalid,
+        version: 2,
+        action: 'diagnostics',
+      });
+      if (diagnostics.diagnosticsVersion === 2) break;
+    }
+    const error = diagnostics.diagnostics.find((item) =>
+      item.message.includes('missing_value'),
+    );
+    assert.ok(error, JSON.stringify(diagnostics));
+    assert.equal(
+      error.range.start.line,
+      2,
+      'diagnostics keep visible document line numbers',
+    );
+    assert.ok(
+      !diagnostics.diagnostics.some((item) =>
+        /unknown type name.*ListNode/.test(item.message),
+      ),
+    );
+    console.log(
+      'PASS cpp hidden headers: semantic completion and unshifted diagnostics',
+    );
+  } finally {
+    await call('/v1/close', identity);
+  }
+}

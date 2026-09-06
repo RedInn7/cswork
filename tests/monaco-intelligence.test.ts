@@ -28,6 +28,7 @@ void test('language providers discard stale/cancelled results and isolate docume
     let code = 'math.';
     let listener: (() => void) | undefined;
     const model = {
+      uri: { path: '/draft/user/lc-1/leetcode/solution.cpp' },
       getVersionId: () => version,
       getValue: () => code,
       isDisposed: () => false,

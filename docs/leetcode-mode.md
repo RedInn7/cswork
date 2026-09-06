@@ -13,3 +13,5 @@ LeetCode 模式沿用原有已验证的测试用例和 checker。Python 驱动�
 修改任何驱动后运行 `python3 scripts/leetcode-mode/export.py`，重新生成公开模板与适配资产。资产含 native 驱动源码摘要，提交绑定整个资产的 SHA-256。部署时 worker 先停止，防止新旧驱动混用；若排队提交的驱动版本已变化，保留代码并提示重新提交。
 
 验证包括 `tests/coding-mode.test.ts`、`tests/leetcode-workspace-ui.test.mjs`、`tests/oj-library-gate.test.ts` 和 `scripts/leetcode-mode/test_runtime.py`。真实 HTTP/worker 测试位于 `tests/leetcode-mode-http.mjs`，只能针对空的独立测试数据库和测试专用队列运行。
+
+C++ LeetCode 模板从类定义开始，标准库头文件、命名空间和节点声明由判题与 clangd 隐藏上下文补齐。clangd 使用 forced include，编辑器正文与诊断行号不变；ACM 仍由学员管理头文件。未修改的旧普通 C++ 模板自动精简，已有解答完整保留。修改语言服务 entrypoint 后需发布对应容器镜像并更新 CSWORK_LSP_IMAGE，再部署 broker 和 web。

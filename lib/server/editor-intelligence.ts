@@ -3,10 +3,13 @@ import type { Person } from './auth';
 import { boundedText, HttpError, json, limit } from './http';
 import { setting } from './env';
 import { getPublishedProblem } from './oj-problems';
+import { leetcodeContract } from './leetcode-mode';
+import { getLeetCodeCppContext } from './leetcode-cpp';
 
 const documentSchema = z.object({
   problemId: z.string().min(1).max(100),
   documentId: z.uuid(),
+  codingMode: z.enum(['leetcode', 'acm']).default('acm'),
   language: z.enum(['python', 'go', 'cpp', 'java']),
 });
 const requestSchema = documentSchema
@@ -111,12 +114,26 @@ export async function handleEditorIntelligence(
   const { endpoint, token } = brokerConfig();
   // Neither ownership nor a filesystem URI can be supplied by a browser. Closing
   // an owned document is allowed after revocation, but cannot read its contents.
+  const contract =
+    data.codingMode === 'leetcode' && data.language === 'cpp'
+      ? leetcodeContract(data.problemId)
+      : null;
   const payload = {
     ...data,
     ownerId: p.id,
-    documentId: `${data.problemId}:${data.documentId}`,
+    documentId: `${data.problemId}:${data.codingMode === 'leetcode' ? 'leetcode:' : ''}${data.documentId}`,
+    ...(!close && contract
+      ? {
+          cppContext: getLeetCodeCppContext(
+            contract.number,
+            contract.templates.cpp,
+            'code' in data ? data.code : undefined,
+          ),
+        }
+      : {}),
   };
   delete (payload as { problemId?: string }).problemId;
+  delete (payload as { codingMode?: string }).codingMode;
   try {
     const response = await fetch(
       `${endpoint}/v1/${close ? 'close' : 'request'}`,

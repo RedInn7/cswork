@@ -79,6 +79,13 @@ export function validateRequest(body) {
     )
       throw new BrokerError(400, 'Invalid UTF-16 position');
   }
+  if (
+    body.cppContext !== undefined &&
+    (body.language !== 'cpp' ||
+      typeof body.cppContext !== 'string' ||
+      Buffer.byteLength(body.cppContext) > 32768)
+  )
+    throw new BrokerError(400, 'Invalid C++ context');
   const allowed = new Set([
     'ownerId',
     'documentId',
@@ -87,12 +94,13 @@ export function validateRequest(body) {
     'version',
     'action',
     'position',
+    'cppContext',
   ]);
   if (Object.keys(body).some((k) => !allowed.has(k)))
     throw new BrokerError(400, 'Unknown request field');
   return key;
 }
-export function dockerArguments(name, language, image) {
+export function dockerArguments(name, language, image, cppContext) {
   if (!Object.hasOwn(LANGUAGES, language))
     throw new BrokerError(400, 'Unsupported language');
   return [
@@ -131,6 +139,12 @@ export function dockerArguments(name, language, image) {
     '/workspace:rw,noexec,nosuid,nodev,size=268435456,uid=10001,gid=10001,mode=0700',
     '--tmpfs',
     '/tmp:rw,noexec,nosuid,nodev,size=268435456,uid=10001,gid=10001,mode=0700',
+    ...(language === 'cpp' && cppContext
+      ? [
+          '--env',
+          `CSWORK_CPP_CONTEXT=${Buffer.from(cppContext).toString('base64')}`,
+        ]
+      : []),
     image,
     language,
   ];
@@ -205,14 +219,12 @@ export function safeResult(action, result) {
   return null;
 }
 export function safeDiagnostics(items) {
-  return (Array.isArray(items) ? items : [])
-    .slice(0, 100)
-    .map((item) => ({
-      range: item.range,
-      severity: item.severity,
-      code: item.code,
-      source: item.source,
-      message: String(item.message).slice(0, 8000),
-      tags: item.tags,
-    }));
+  return (Array.isArray(items) ? items : []).slice(0, 100).map((item) => ({
+    range: item.range,
+    severity: item.severity,
+    code: item.code,
+    source: item.source,
+    message: String(item.message).slice(0, 8000),
+    tags: item.tags,
+  }));
 }

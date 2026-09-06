@@ -41,6 +41,24 @@ test('LeetCode drafts cannot restore or overwrite legacy ACM programs', () => {
     );
     assert.notEqual(draftStorageKey('other', 'lc-1', 'python', 'leetcode'), lc);
     assert.notEqual(draftStorageKey('u', 'lc-1', 'java', 'leetcode'), lc);
+    const cppKey = draftStorageKey('u', 'lc-146', 'cpp', 'leetcode');
+    const cppTemplate = leetcodeTemplates('lc-146')!.cpp;
+    const oldStarter =
+      '#include <bits/stdc++.h>\nusing namespace std;\n\n\n' + cppTemplate;
+    writeEditorDraft(cppKey, oldStarter);
+    assert.equal(
+      readEditorDraft('u', 'lc-146', 'cpp', 'leetcode', cppTemplate).code,
+      cppTemplate,
+    );
+    const edited = oldStarter.replace(
+      'int get(int key) {',
+      'int get(int key) { return -1;',
+    );
+    writeEditorDraft(cppKey, edited);
+    assert.equal(
+      readEditorDraft('u', 'lc-146', 'cpp', 'leetcode', cppTemplate).code,
+      edited,
+    );
   } finally {
     delete (globalThis as { localStorage?: unknown }).localStorage;
   }
@@ -50,6 +68,8 @@ test('every selected question has a public official-interface template in four l
   for (const item of selected) {
     const id = `lc-${item.number}`;
     const templates = leetcodeTemplates(id)!;
+    assert.match(templates.cpp, /^class\s+\w+\s*\{/);
+    assert.doesNotMatch(templates.cpp, /#include|using namespace std|#ifndef/);
     assert.ok(leetcodeContract(id));
     for (const lang of ['python', 'cpp', 'go', 'java'] as const) {
       assert.ok(templates[lang].trim(), `${id} ${lang}`);

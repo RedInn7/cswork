@@ -67,6 +67,17 @@ export function readEditorDraft(
     try {
       const value = JSON.parse(raw);
       if (typeof value.code === 'string' && Number.isFinite(value.updatedAt)) {
+        // Upgrade only untouched old C++ starters; never rewrite a student's code.
+        if (
+          codingMode === 'leetcode' &&
+          language === 'cpp' &&
+          value.code.replace(
+            /^#include <bits\/stdc\+\+\.h>\r?\nusing namespace std;\s*/,
+            '',
+          ) === template
+        ) {
+          return { code: template, updatedAt: value.updatedAt };
+        }
         return { code: value.code, updatedAt: value.updatedAt };
       }
     } catch {

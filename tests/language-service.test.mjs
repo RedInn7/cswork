@@ -249,3 +249,78 @@ await test('failed container removal retains the capacity reservation until conf
     await broker.close();
   }
 });
+
+await test('C++ hidden context is bounded, isolated and passed as data without shifting source', () => {
+  const cppContext = '#include <bits/stdc++.h>\nusing namespace std;\n';
+  const cpp = { ...input, language: 'cpp', cppContext };
+  assert.doesNotThrow(() => validateRequest(cpp));
+  assert.throws(() => validateRequest({ ...input, cppContext }));
+  assert.throws(() =>
+    validateRequest({ ...cpp, cppContext: 'x'.repeat(32769) }),
+  );
+  const args = dockerArguments(
+    'cswork-lsp-fixed',
+    'cpp',
+    'cswork-language-service:1',
+    cppContext,
+  );
+  const value = args[args.indexOf('--env') + 1];
+  assert.equal(
+    Buffer.from(value.slice('CSWORK_CPP_CONTEXT='.length), 'base64').toString(),
+    cppContext,
+  );
+  assert.equal(
+    dockerArguments(
+      'cswork-lsp-fixed',
+      'cpp',
+      'cswork-language-service:1',
+    ).includes('--env'),
+    false,
+  );
+});
+
+await test('changing hidden node context replaces only its idle document session', async () => {
+  let created = 0,
+    closed = 0;
+  const broker = createBroker({
+    token: 'x'.repeat(40),
+    makeSession: (body) => ({
+      ownerId: body.ownerId,
+      pending: 0,
+      lastUsed: Date.now(),
+      createdAt: Date.now(),
+      id: ++created,
+      async run() {
+        return { id: this.id };
+      },
+      async close() {
+        closed++;
+      },
+    }),
+  });
+  await new Promise((resolve) => broker.server.listen(0, '127.0.0.1', resolve));
+  const send = async (cppContext) => {
+    const response = await fetch(
+      `http://127.0.0.1:${broker.server.address().port}/v1/request`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${'x'.repeat(40)}`,
+        },
+        body: JSON.stringify({ ...input, language: 'cpp', cppContext }),
+      },
+    );
+    assert.equal(response.status, 200);
+    return response.json();
+  };
+  try {
+    assert.equal((await send('struct ListNode {};')).id, 1);
+    assert.equal((await send('struct ListNode {};')).id, 1);
+    assert.equal((await send('')).id, 2);
+    assert.equal(closed, 1);
+    assert.equal(broker.sessions.size, 1);
+  } finally {
+    await broker.close();
+  }
+});
