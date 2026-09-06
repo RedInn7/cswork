@@ -455,7 +455,7 @@ export function LessonReader({
               </TabsTrigger>
             </TabsList>
             <TabsContent value="handout">
-              <LessonMarkdown body={lesson.body || ''} />
+              <LessonMarkdown body={lesson.body || ''} lecture />
             </TabsContent>
             <TabsContent value="video">
               {lesson.has_video ? (
@@ -661,7 +661,7 @@ export function LessonReader({
           ) : historyBody === null ? (
             <output>正在加载版本…</output>
           ) : (
-            <LessonMarkdown body={historyBody} />
+            <LessonMarkdown body={historyBody} lecture />
           )}
         </DialogContent>
       </Dialog>

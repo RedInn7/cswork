@@ -53,9 +53,17 @@ const markdownComponents: Components = {
     ) : null,
 };
 
-export function LessonMarkdown({ body }: { body: string }) {
+export function LessonMarkdown({
+  body,
+  lecture = false,
+}: {
+  body: string;
+  lecture?: boolean;
+}) {
   return (
-    <article className="prose-content lms-markdown">
+    <article
+      className={`prose-content lms-markdown${lecture ? ' lecture-markdown' : ''}`}
+    >
       <Markdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
         {body}
       </Markdown>
