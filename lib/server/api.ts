@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import type { Course, Lesson } from '@/lib/types';
+import type { TicketRow } from './lms-records';
 import { person, type Person } from './auth';
 import { database, setting } from './env';
 import {
@@ -14,52 +16,86 @@ import {
   allowed,
   HttpError,
   limit,
-  auditStatement,
 } from './http';
 import { seed } from './seed';
 import { ensureOjSeed, listPublishedProblems } from './oj-problems';
 import { handleOj } from './oj-api';
 import { judgeReady, submit, result } from './judge';
-import { playback, ensurePrivate } from './video';
+import { playback } from './video';
+import { handleLms } from './lms';
+import { handleMedia } from './media';
+import { handleEnrollment } from './enrollment';
+import { handleCommerce, annotateCommerceCourses } from './commerce';
+import { liveLesson, courseAccess } from './lms-common';
+import {
+  ticketDetail,
+  replyTicket,
+  changeTicket,
+  createReview,
+  feedbackReview,
+  releasePage,
+} from './lms-support';
+import { grantCourse, revokeGrant, dashboard } from './lms-roster';
+import { lessonEditor, saveLessonDraft, publishLesson } from './lms-courses';
 import { uploadAttachment, downloadAttachment } from './files';
 const id = z.string().min(1).max(100),
   short = z.string().trim().min(1).max(180),
   long = z.string().trim().min(1).max(12000);
 const lessonSelect =
-  'id,course_id,title,summary,section,position,version,stream_uid IS NOT NULL as has_video,updated_at';
+  'id,course_id,title,summary,section,position,version,published,revision,(stream_uid IS NOT NULL OR json_array_length(video_asset_ids)>0) as has_video,updated_at';
 async function ticketFor(p: Person, id: string) {
-  const t = await one<any>('SELECT * FROM tickets WHERE id=?', id);
+  const t = await one<TicketRow>('SELECT * FROM tickets WHERE id=?', id);
   if (!t || (t.user_id !== p.id && p.role !== 'teacher'))
     throw new HttpError(404, '工单不存在');
   return t;
 }
-async function lessonFor(p: Person, id: string) {
-  const l = await one<any>('SELECT * FROM lessons WHERE id=?', id);
-  if (!l) throw new HttpError(404, '章节不存在');
-  await requireCourse(p, l.course_id);
-  return l;
+const lessonFor = liveLesson;
+function services() {
+  const google = !!(
+    setting('GOOGLE_CLIENT_ID') && setting('GOOGLE_CLIENT_SECRET')
+  );
+  const github = !!(
+    setting('GITHUB_CLIENT_ID') && setting('GITHUB_CLIENT_SECRET')
+  );
+  const email = !!(setting('RESEND_API_KEY') && setting('MAIL_FROM'));
+  return {
+    google,
+    github,
+    email,
+    password: true,
+    registration: email || google || github,
+    passwordReset: email,
+    judge: judgeReady(),
+    video: !!(
+      setting('MEDIA_PATH') ||
+      (setting('STREAM_API_TOKEN') && setting('STREAM_ACCOUNT_ID'))
+    ),
+    checkout: !!(
+      setting('STRIPE_SECRET_KEY') && setting('STRIPE_WEBHOOK_SECRET')
+    ),
+  };
 }
 async function bootstrap(p: Person | null) {
-  const cs = await rows<any>(
-    'SELECT id,title,summary,version,published FROM courses WHERE published=1',
+  const cs = await rows<Course & { revision: number; position: number }>(
+    `SELECT id,title,summary,version,published,revision,position FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
   );
   for (const c of cs) {
     c.has_access = p ? await allowed(p, c.id) : false;
-    c.lessons = await rows(
-      `SELECT ${lessonSelect} FROM lessons WHERE course_id=? ORDER BY position`,
+    c.lessons = await rows<Lesson>(
+      `SELECT ${lessonSelect} FROM lessons WHERE course_id=? ${p?.role === 'teacher' ? '' : 'AND published=1'} ORDER BY position,id`,
       c.id,
     );
   }
   return {
     person: p,
-    courses: cs,
+    courses: await annotateCommerceCourses(cs, p),
     problems: await listPublishedProblems(),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
       : [],
     submissions: p
       ? await rows(
-          'SELECT id,problem_id,language,status,passed,total,runtime,memory,created_at FROM submissions WHERE user_id=? AND mode=\'judge\' ORDER BY created_at DESC LIMIT 100',
+          "SELECT id,problem_id,language,status,passed,total,runtime,memory,created_at FROM submissions WHERE user_id=? AND mode='judge' ORDER BY created_at DESC LIMIT 100",
           p.id,
         )
       : [],
@@ -69,22 +105,15 @@ async function bootstrap(p: Person | null) {
           p.id,
         )
       : [],
-    services: {
-      google: !!(
-        setting('GOOGLE_CLIENT_ID') && setting('GOOGLE_CLIENT_SECRET')
-      ),
-      github: !!(
-        setting('GITHUB_CLIENT_ID') && setting('GITHUB_CLIENT_SECRET')
-      ),
-      email: !!(setting('RESEND_API_KEY') && setting('MAIL_FROM')),
-      password: true,
-      judge: judgeReady(),
-      checkout: !!(
-        setting('STRIPE_SECRET_KEY') &&
-        setting('STRIPE_PRICE_GOMALL') &&
-        setting('STRIPE_WEBHOOK_SECRET')
-      ),
-    },
+    unreadNotifications: p
+      ? (
+          await one<{ count: number }>(
+            'SELECT COUNT(*) AS count FROM notifications WHERE user_id=? AND read_at IS NULL',
+            p.id,
+          )
+        )?.count || 0
+      : 0,
+    services: services(),
   };
 }
 export async function handle(request: Request) {
@@ -102,6 +131,15 @@ export async function handle(request: Request) {
     const p = await person(request),
       db = database(),
       now = Date.now();
+    for (const handler of [
+      handleEnrollment,
+      handleMedia,
+      handleCommerce,
+      handleLms,
+    ]) {
+      const response = await handler(request, p, path);
+      if (response) return response;
+    }
     if (resource === 'oj') {
       requirePerson(p);
       return await handleOj(request, p, path.slice(1));
@@ -110,10 +148,11 @@ export async function handle(request: Request) {
       if (resource === 'bootstrap') return json(await bootstrap(p));
       requirePerson(p);
       if (resource === 'attachments' && resourceId) {
-        const attachment = await one<any>(
-          'SELECT * FROM attachments WHERE id=?',
-          resourceId,
-        );
+        const attachment = await one<{
+          id: string;
+          ticket_id: string;
+          name: string;
+        }>('SELECT * FROM attachments WHERE id=?', resourceId);
         if (!attachment) throw new HttpError(404, '附件不存在');
         await ticketFor(p, attachment.ticket_id);
         return await downloadAttachment(attachment.id, attachment.name);
@@ -128,7 +167,10 @@ export async function handle(request: Request) {
         return json({
           ...l,
           stream_uid: p.role === 'teacher' ? l.stream_uid : undefined,
-          has_video: !!l.stream_uid,
+          video_asset_ids: p.role === 'teacher' ? l.video_asset_ids : undefined,
+          has_video: !!(
+            l.stream_uid || JSON.parse(l.video_asset_ids || '[]').length
+          ),
           progress: await one(
             'SELECT * FROM progress WHERE user_id=? AND lesson_id=?',
             p.id,
@@ -143,10 +185,19 @@ export async function handle(request: Request) {
       if (resource === 'search') {
         const q = (url.searchParams.get('q') || '').trim().slice(0, 100);
         if (!q) return json([]);
-        const ls = await rows<any>(
-          'SELECT id,course_id,title,summary,body FROM lessons WHERE title LIKE ? OR body LIKE ? LIMIT 30',
-          `%${q}%`,
-          `%${q}%`,
+        const access = courseAccess(p, 'l.course_id');
+        const pattern = `%${q.replace(/[\\%_]/g, '\\$&')}%`;
+        const ls = await rows<{
+          id: string;
+          course_id: string;
+          title: string;
+          summary: string;
+          body: string;
+        }>(
+          `SELECT l.id,l.course_id,l.title,l.summary,l.body FROM lessons l WHERE ${access.sql} ${p.role === 'teacher' ? '' : 'AND l.published=1'} AND (l.title LIKE ? ESCAPE '\\' OR l.body LIKE ? ESCAPE '\\') ORDER BY l.position,l.id LIMIT 30`,
+          ...access.args,
+          pattern,
+          pattern,
         );
         const found = [];
         for (const l of ls)
@@ -166,18 +217,7 @@ export async function handle(request: Request) {
       }
       if (resource === 'tickets') {
         if (resourceId) {
-          const t = await ticketFor(p, resourceId);
-          return json({
-            ...t,
-            attachments: await rows(
-              'SELECT id,name,size,created_at FROM attachments WHERE ticket_id=? ORDER BY created_at',
-              t.id,
-            ),
-            replies: await rows(
-              'SELECT r.*,p.name,p.role FROM replies r JOIN profiles p ON p.id=r.user_id WHERE ticket_id=? ORDER BY created_at',
-              t.id,
-            ),
-          });
+          return json(await ticketDetail(p, resourceId));
         }
         return json(
           await rows(
@@ -186,15 +226,8 @@ export async function handle(request: Request) {
           ),
         );
       }
-      if (resource === 'releases') {
-        const rs = await rows<any>(
-          'SELECT r.*,EXISTS(SELECT 1 FROM release_reads rr WHERE rr.release_id=r.id AND rr.user_id=?) as is_read FROM releases r ORDER BY created_at DESC LIMIT 100',
-          p.id,
-        );
-        const result = [];
-        for (const r of rs) if (await allowed(p, r.course_id)) result.push(r);
-        return json(result);
-      }
+      if (resource === 'releases')
+        return json((await releasePage(p, url)).items);
       if (resource === 'submissions' && resourceId)
         return json(await result(p, resourceId));
       if (resource === 'reviews')
@@ -233,14 +266,8 @@ export async function handle(request: Request) {
           students: await one(
             "SELECT COUNT(*) as count FROM profiles WHERE role='student'",
           ),
-          services: {
-            video: !!setting('STREAM_API_TOKEN'),
-            judge: judgeReady(),
-            google: !!setting('GOOGLE_CLIENT_ID'),
-            github: !!setting('GITHUB_CLIENT_ID'),
-            email: !!setting('RESEND_API_KEY'),
-            checkout: !!setting('STRIPE_SECRET_KEY'),
-          },
+          counts: (await dashboard(p)).counts,
+          services: services(),
         });
       }
       throw new HttpError(404, '页面不存在');
@@ -258,23 +285,31 @@ export async function handle(request: Request) {
         .object({
           lessonId: id,
           completed: z.boolean().optional(),
-          position: z.number().finite().min(0).max(86400).optional(),
+          position: z.number().min(0).max(86400).optional(),
           note: z.string().max(20000).optional(),
           bookmarked: z.boolean().optional(),
+          videoAssetId: id.nullable().optional(),
         })
         .parse(data);
-      await lessonFor(p, d.lessonId);
-      const fields: Record<string, string | number> = {};
+      const lesson = await lessonFor(p, d.lessonId);
+      if (
+        d.videoAssetId &&
+        !(JSON.parse(lesson.video_asset_ids || '[]') as string[]).includes(
+          d.videoAssetId,
+        )
+      )
+        throw new HttpError(400, '视频不属于此章节');
+      const fields: Record<string, string | number | null> = {};
+      if (d.videoAssetId !== undefined) fields.video_asset_id = d.videoAssetId;
       if (d.completed !== undefined) fields.completed = d.completed ? 1 : 0;
       if (d.position !== undefined) fields.position = d.position;
       if (d.note !== undefined) fields.note = d.note;
       if (d.bookmarked !== undefined) fields.bookmarked = d.bookmarked ? 1 : 0;
       const keys = Object.keys(fields);
       if (!keys.length) throw new HttpError(400, '没有需要保存的内容');
-      await db
-        .prepare(
-          `INSERT INTO progress(user_id,lesson_id,updated_at,${keys.join(',')}) VALUES(?,?,?,${keys.map(() => '?').join(',')}) ON CONFLICT(user_id,lesson_id) DO UPDATE SET updated_at=excluded.updated_at,${keys.map((k) => `${k}=excluded.${k}`).join(',')}`,
-        )
+      db.prepare(
+        `INSERT INTO progress(user_id,lesson_id,updated_at,${keys.join(',')}) VALUES(?,?,?,${keys.map(() => '?').join(',')}) ON CONFLICT(user_id,lesson_id) DO UPDATE SET updated_at=excluded.updated_at,${keys.map((k) => `${k}=excluded.${k}`).join(',')}`,
+      )
         .bind(p.id, d.lessonId, now, ...Object.values(fields))
         .run();
       return json({ saved: true });
@@ -286,32 +321,44 @@ export async function handle(request: Request) {
             title: short,
             body: long,
             lessonId: id.optional(),
+            courseId: id.optional(),
             submissionId: id.optional(),
-            videoPosition: z.number().finite().min(0).max(86400).optional(),
+            videoPosition: z.number().min(0).max(86400).optional(),
+            videoAssetId: id.optional(),
           })
           .parse(data);
         await limit(p, 'ticket', 10, 3600);
-        if (d.lessonId) await lessonFor(p, d.lessonId);
+        const ticketLesson=d.lessonId?await lessonFor(p,d.lessonId):null;
+        if(d.videoAssetId&&(!ticketLesson||!(JSON.parse(ticketLesson.video_asset_ids) as string[]).includes(d.videoAssetId))) throw new HttpError(400,'视频不属于此章节');
+        if (
+          d.courseId &&
+          !(await one(
+            `SELECT id FROM courses WHERE id=? ${p.role === 'teacher' ? '' : 'AND published=1'}`,
+            d.courseId,
+          ))
+        )
+          throw new HttpError(404, '课程不存在');
         if (d.submissionId) {
-          const s = await one<any>(
+          const s = await one<{ user_id: string }>(
             'SELECT user_id FROM submissions WHERE id=?',
             d.submissionId,
           );
           if (!s || s.user_id !== p.id) throw new HttpError(404, '提交不存在');
         }
         const tid = crypto.randomUUID();
-        await db
-          .prepare(
-            'INSERT INTO tickets(id,user_id,title,body,lesson_id,submission_id,video_position,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?)',
-          )
+        db.prepare(
+            'INSERT INTO tickets(id,user_id,title,body,lesson_id,course_id,submission_id,video_position,video_asset_id,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+        )
           .bind(
             tid,
             p.id,
             d.title,
             d.body,
             d.lessonId || null,
+            d.courseId || null,
             d.submissionId || null,
             d.videoPosition ?? null,
+            d.videoAssetId || null,
             'open',
             now,
             now,
@@ -319,65 +366,12 @@ export async function handle(request: Request) {
           .run();
         return json({ id: tid }, 201);
       }
-      const t = await ticketFor(p, resourceId);
       if (action === 'reply') {
-        const d = z.object({ body: long }).parse(data);
-        const statements = [
-          db
-            .prepare(
-              'INSERT INTO replies(id,ticket_id,user_id,body,created_at) VALUES(?,?,?,?,?)',
-            )
-            .bind(crypto.randomUUID(), t.id, p.id, d.body, now),
-          db
-            .prepare('UPDATE tickets SET status=?,updated_at=? WHERE id=?')
-            .bind(p.role === 'teacher' ? 'waiting' : 'open', now, t.id),
-        ];
-        if (p.role === 'teacher' && t.user_id !== p.id)
-          statements.push(
-            db
-              .prepare(
-                'INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,?,?,?,?,?)',
-              )
-              .bind(
-                crypto.randomUUID(),
-                t.user_id,
-                '老师回复了你的问题',
-                t.title,
-                `/?view=tickets&ticket=${t.id}`,
-                now,
-              ),
-          );
-        await db.batch(statements);
+        await replyTicket(p, resourceId, data, true);
         return json({ saved: true });
       }
       if (action === 'status') {
-        const d = z
-          .object({
-            status: z.enum(['open', 'resolved']),
-            assignedTo: z.string().nullable().optional(),
-          })
-          .parse(data);
-        if (d.assignedTo !== undefined) {
-          requireTeacher(p);
-          if (
-            d.assignedTo &&
-            !(await one(
-              "SELECT id FROM profiles WHERE id=? AND role='teacher'",
-              d.assignedTo,
-            ))
-          )
-            throw new HttpError(400, '请选择老师');
-          await db
-            .prepare('UPDATE tickets SET assigned_to=? WHERE id=?')
-            .bind(d.assignedTo, t.id)
-            .run();
-        }
-        await db.batch([
-          db
-            .prepare('UPDATE tickets SET status=?,updated_at=? WHERE id=?')
-            .bind(d.status, now, t.id),
-          auditStatement(p, 'ticket.status', t.id),
-        ]);
+        await changeTicket(p, resourceId, data, true);
         return json({ saved: true });
       }
     }
@@ -393,82 +387,27 @@ export async function handle(request: Request) {
       return json(await submit(p, d.problemId, d.language, d.code), 201);
     }
     if (resource === 'reviews' && request.method === 'POST') {
-      if (!resourceId) {
-        const d = z
-          .object({
-            lessonId: id,
-            url: z
-              .string()
-              .url()
-              .max(1000)
-              .refine(
-                (s) => /^https:\/\/github\.com\/[^/]+\/[^/]+(?:\/.*)?$/.test(s),
-                '请提供 GitHub 仓库或 PR 链接',
-              ),
-            note: z.string().trim().max(6000),
-          })
-          .parse(data);
-        await lessonFor(p, d.lessonId);
-        await limit(p, 'review', 10, 3600);
-        const rid = crypto.randomUUID();
-        await db
-          .prepare(
-            'INSERT INTO reviews(id,user_id,lesson_id,url,note,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',
-          )
-          .bind(rid, p.id, d.lessonId, d.url, d.note, 'pending', now, now)
-          .run();
-        return json({ id: rid }, 201);
-      }
-      requireTeacher(p);
-      const d = z
-        .object({
-          status: z.enum(['approved', 'changes_requested']),
-          feedback: long,
-        })
-        .parse(data);
-      const r = await one<any>('SELECT * FROM reviews WHERE id=?', resourceId);
-      if (!r) throw new HttpError(404, '作业不存在');
-      await db.batch([
-        db
-          .prepare(
-            'UPDATE reviews SET status=?,feedback=?,reviewed_by=?,updated_at=? WHERE id=?',
-          )
-          .bind(d.status, d.feedback, p.id, now, r.id),
-        db
-          .prepare(
-            'INSERT INTO notifications(id,user_id,title,body,href,created_at) VALUES(?,?,?,?,?,?)',
-          )
-          .bind(
-            crypto.randomUUID(),
-            r.user_id,
-            '作业评审已完成',
-            d.feedback.slice(0, 180),
-            '/?view=reviews',
-            now,
-          ),
-        auditStatement(p, 'review.feedback', r.id),
-      ]);
+      if (!resourceId) return json(await createReview(p, data), 201);
+      await feedbackReview(p, resourceId, data, true);
       return json({ saved: true });
     }
     if (resource === 'notifications' && request.method === 'POST') {
       const d = z.object({ id }).parse(data);
-      await db
-        .prepare('UPDATE notifications SET read_at=? WHERE id=? AND user_id=?')
+      db.prepare('UPDATE notifications SET read_at=? WHERE id=? AND user_id=?')
         .bind(now, d.id, p.id)
         .run();
       return json({ saved: true });
     }
     if (resource === 'releases' && resourceId && action === 'read') {
-      const r = await one<any>(
+      const r = await one<{ course_id: string }>(
         'SELECT course_id FROM releases WHERE id=?',
         resourceId,
       );
       if (!r) throw new HttpError(404, '更新不存在');
       await requireCourse(p, r.course_id);
-      await db
-        .prepare(
-          'INSERT OR IGNORE INTO release_reads(user_id,release_id) VALUES(?,?)',
-        )
+      db.prepare(
+        'INSERT OR IGNORE INTO release_reads(user_id,release_id) VALUES(?,?)',
+      )
         .bind(p.id, resourceId)
         .run();
       return json({ saved: true });
@@ -481,39 +420,9 @@ export async function handle(request: Request) {
     }
     if (resource === 'teacher') {
       requireTeacher(p);
-      if (resourceId === 'grants') {
-        const d = z
-          .object({
-            email: z
-              .string()
-              .email()
-              .max(254)
-              .transform((s) => s.toLowerCase()),
-            courseId: z.enum(['gomall', '*']).default('gomall'),
-            expiresAt: z.number().int().positive().nullable().default(null),
-          })
-          .parse(data);
-        const gid = crypto.randomUUID();
-        await db.batch([
-          db
-            .prepare(
-              'INSERT INTO grants(id,email,course_id,source,expires_at,created_at) VALUES(?,?,?,?,?,?)',
-            )
-            .bind(gid, d.email, d.courseId, 'instructor', d.expiresAt, now),
-          auditStatement(p, 'grant.create', gid),
-        ]);
-        return json({ id: gid }, 201);
-      }
-      if (resourceId === 'revoke') {
-        const d = z.object({ id }).parse(data);
-        await db.batch([
-          db
-            .prepare('UPDATE grants SET revoked_at=? WHERE id=?')
-            .bind(now, d.id),
-          auditStatement(p, 'grant.revoke', d.id),
-        ]);
-        return json({ saved: true });
-      }
+      if (resourceId === 'grants') return json(await grantCourse(p, data), 201);
+      if (resourceId === 'revoke')
+        return json(await revokeGrant(p, z.object({ id }).parse(data).id));
       if (resourceId === 'publish') {
         const d = z
           .object({
@@ -532,52 +441,35 @@ export async function handle(request: Request) {
             important: z.boolean(),
           })
           .parse(data);
-        const l = await lessonFor(p, d.lessonId);
-        if (d.streamUid) await ensurePrivate(d.streamUid);
-        if (
-          await one(
-            'SELECT id FROM revisions WHERE lesson_id=? AND version=?',
-            l.id,
-            d.version,
-          )
-        )
-          throw new HttpError(409, '此版本已经发布，请使用新的版本号');
-        const rid = crypto.randomUUID();
-        await db.batch([
-          db
-            .prepare(
-              'INSERT INTO revisions(id,lesson_id,version,body,stream_uid,created_at) VALUES(?,?,?,?,?,?)',
-            )
-            .bind(
-              crypto.randomUUID(),
-              l.id,
-              d.version,
-              d.body,
-              d.streamUid,
-              now,
-            ),
-          db
-            .prepare(
-              'UPDATE lessons SET body=?,version=?,stream_uid=?,updated_at=? WHERE id=?',
-            )
-            .bind(d.body, d.version, d.streamUid, now, l.id),
-          db
-            .prepare(
-              'INSERT INTO releases(id,course_id,lesson_id,version,title,body,important,created_at) VALUES(?,?,?,?,?,?,?,?)',
-            )
-            .bind(
-              rid,
-              l.course_id,
-              l.id,
-              d.version,
-              d.title,
-              d.summary,
-              d.important ? 1 : 0,
-              now,
-            ),
-          auditStatement(p, 'lesson.publish', l.id),
-        ]);
-        return json({ id: rid }, 201);
+        const editor = await lessonEditor(p, d.lessonId);
+        if (editor.draft.hasChanges)
+          throw new HttpError(
+            409,
+            '此章节已有未发布草稿，请在课程管理中继续编辑',
+          );
+        const saved = await saveLessonDraft(p, d.lessonId, {
+          expectedRevision: editor.draft.revision,
+          title: editor.draft.title,
+          summary: editor.draft.summary,
+          section: editor.draft.section,
+          position: editor.draft.position,
+          body: d.body,
+          streamUid: d.streamUid,
+          videoAssetIds: d.streamUid ? [] : editor.draft.videoAssetIds,
+        });
+        await publishLesson(p, d.lessonId, {
+          expectedRevision: saved.draft.revision,
+          version: d.version,
+          releaseTitle: d.title,
+          releaseSummary: d.summary,
+          important: d.important,
+        });
+        const released = await one<{ id: string }>(
+          'SELECT id FROM releases WHERE lesson_id=? AND version=? ORDER BY created_at DESC LIMIT 1',
+          d.lessonId,
+          d.version,
+        );
+        return json({ id: released!.id }, 201);
       }
     }
     throw new HttpError(404, '操作不存在');
