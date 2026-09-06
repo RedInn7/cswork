@@ -190,6 +190,54 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     },
   };
 }
+function publicSourceUrl(value: string | null) {
+  if (!value) return '';
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' &&
+      ['leetcode.cn', 'leetcode.com'].includes(url.hostname) &&
+      !url.username &&
+      !url.password
+      ? url.href
+      : '';
+  } catch {
+    return '';
+  }
+}
+
+/** Display-only source text; never merge it into the immutable judge spec. */
+export function getStudySourceStatement(judgeProblemId: string) {
+  const row = sqlite()
+    .prepare(
+      `SELECT
+         json_extract(payload_json,'$.descriptionZh') AS descriptionZh,
+         json_extract(payload_json,'$.descriptionEn') AS descriptionEn,
+         json_extract(payload_json,'$.sourceUrl') AS sourceUrl,
+         json_extract(payload_json,'$.sourceEnUrl') AS sourceEnUrl,
+         json_extract(payload_json,'$.attribution') AS attribution
+       FROM study_library WHERE judge_problem_id=? LIMIT 1`,
+    )
+    .get(judgeProblemId) as
+    | {
+        descriptionZh: string | null;
+        descriptionEn: string | null;
+        sourceUrl: string | null;
+        sourceEnUrl: string | null;
+        attribution: string | null;
+      }
+    | undefined;
+  if (!row || (!row.descriptionZh && !row.descriptionEn)) return null;
+  // Only these public fields leave the source payload. Reference solutions,
+  // local file paths, candidate cases and answers must remain server-side.
+  return {
+    descriptionZh: row.descriptionZh || '',
+    descriptionEn: row.descriptionEn || '',
+    sourceUrl: publicSourceUrl(row.sourceUrl),
+    sourceEnUrl: publicSourceUrl(row.sourceEnUrl),
+    attribution: row.attribution || '',
+  };
+}
+
 export function getStudyLibrary(id: string) {
   if (!/^lc-\d{1,6}$/.test(id)) throw new HttpError(404, '题目不存在');
   const row = sqlite()

@@ -26,6 +26,8 @@ const {
 } = await import('../lib/server/oj-problems');
 const { createSubmission, cancelSubmission } =
   await import('../lib/server/oj-submissions');
+const { handleOj } = await import('../lib/server/oj-api');
+const { getStudySourceStatement } = await import('../lib/server/study-library');
 const student: Person = {
   id: 'gate-student',
   name: 'Student',
@@ -177,6 +179,119 @@ void test('validated canonical and mapped library questions allow public read an
         .get(submitted.id),
     );
     await cancelSubmission(student, submitted.id);
+  }
+});
+
+void test('workspace serves full bilingual statements separately without changing judge data or leaking private source fields', async () => {
+  const sourceStatement = {
+    descriptionZh: '完整题意\n\n**示例：**\n\n约束条件：`1 <= n <= 100`。',
+    descriptionEn:
+      'Full statement\n\n**Example:**\n\nConstraints: `1 <= n <= 100`.',
+    sourceUrl: 'https://leetcode.cn/problems/test/',
+    sourceEnUrl: 'https://leetcode.com/problems/test/',
+    attribution: 'LeetCode; doocs/leetcode, CC-BY-SA-4.0',
+  };
+  const snapshot = () => ({
+    versions: sqlite()
+      .prepare('SELECT * FROM oj_problem_versions ORDER BY id')
+      .all(),
+    cases: sqlite().prepare('SELECT * FROM oj_test_cases ORDER BY id').all(),
+    hashes: sqlite()
+      .prepare(
+        'SELECT id,content_hash,verified_hash FROM study_library ORDER BY id',
+      )
+      .all(),
+  });
+  try {
+    sqlite()
+      .prepare('UPDATE study_library SET payload_json=?')
+      .run(
+        JSON.stringify({
+          ...sourceStatement,
+          reference: {
+            path: '/private/reference.py',
+            source: 'SECRET-SOLUTION',
+          },
+          cases: [{ input: 'SECRET-INPUT', expected: 'SECRET-ANSWER' }],
+          codeSnippets: [{ code: 'SECRET-SNIPPET' }],
+          signature: { privateField: 'SECRET-SIGNATURE' },
+        }),
+      );
+    const before = snapshot();
+    for (const id of [libraryId, aliasId]) {
+      const response = await handleOj(
+        new Request(`https://cswork.test/api/oj/problems/${id}`),
+        student,
+        ['problems', id],
+      );
+      const detail = await response.json();
+      assert.deepEqual(detail.sourceStatement, sourceStatement);
+      assert.equal(detail.description, 'Print one.');
+      assert.equal(detail.input, 'No input.');
+      assert.equal(detail.output, 'One integer.');
+      assert.deepEqual(detail.samples, [
+        { name: 'sample', input: '', expectedOutput: '1\n' },
+      ]);
+      assert.doesNotMatch(
+        JSON.stringify(detail),
+        /SECRET-|\/private\/|private-fixture/,
+      );
+    }
+    assert.deepEqual(snapshot(), before);
+    for (const unsafeUrl of [
+      'javascript:alert(1)',
+      'https://leetcode.com.evil.test/problems/test/',
+      'http://leetcode.cn/problems/test/',
+      'https://name:password@leetcode.com/problems/test/',
+    ]) {
+      sqlite()
+        .prepare('UPDATE study_library SET payload_json=? WHERE id=?')
+        .run(
+          JSON.stringify({
+            ...sourceStatement,
+            sourceUrl: unsafeUrl,
+            sourceEnUrl: unsafeUrl,
+          }),
+          libraryId,
+        );
+      const source = getStudySourceStatement(libraryId);
+      assert.equal(source?.sourceUrl, '');
+      assert.equal(source?.sourceEnUrl, '');
+      assert.equal(source?.descriptionZh, sourceStatement.descriptionZh);
+    }
+    assert.equal(getStudySourceStatement('unknown'), null);
+    assert.equal(getStudySourceStatement(courseId), null);
+    const courseResponse = await handleOj(
+      new Request(`https://cswork.test/api/oj/problems/${courseId}`),
+      student,
+      ['problems', courseId],
+    );
+    assert.equal((await courseResponse.json()).sourceStatement, null);
+    await assert.rejects(
+      handleOj(
+        new Request(`https://cswork.test/api/oj/problems/${libraryId}`),
+        { ...student, email: 'not-entitled@example.test' },
+        ['problems', libraryId],
+      ),
+      (e: unknown) =>
+        Boolean(
+          e && typeof e === 'object' && 'status' in e && e.status === 403,
+        ),
+    );
+    sqlite()
+      .prepare('UPDATE study_library SET verified_hash=NULL WHERE id=?')
+      .run(libraryId);
+    await assert.rejects(
+      handleOj(
+        new Request(`https://cswork.test/api/oj/problems/${libraryId}`),
+        student,
+        ['problems', libraryId],
+      ),
+      status404,
+    );
+  } finally {
+    sqlite().prepare("UPDATE study_library SET payload_json='{}'").run();
+    restore();
   }
 });
 

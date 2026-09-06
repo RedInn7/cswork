@@ -50,6 +50,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { LessonMarkdown } from './lms-shared';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
   CopyBlock,
@@ -160,6 +161,18 @@ function Workspace({
   }, []);
   const statement = problemStatement(problem, statementLocale);
   const english = statementLocale === 'en' && !!problem.translations?.en;
+  const sourceBody = problem.sourceStatement
+    ? english
+      ? problem.sourceStatement.descriptionEn ||
+        problem.sourceStatement.descriptionZh
+      : problem.sourceStatement.descriptionZh ||
+        problem.sourceStatement.descriptionEn
+    : '';
+  const sourceUrl = problem.sourceStatement
+    ? english
+      ? problem.sourceStatement.sourceEnUrl
+      : problem.sourceStatement.sourceUrl
+    : '';
   const [settings, setSettings] = useState<EditorSettings>(
     defaultEditorSettings,
   );
@@ -756,6 +769,29 @@ function Workspace({
               {problem.version && <span>v{problem.version}</span>}
             </div>
             <div className="cs-problem-prose">
+              {sourceBody && (
+                <>
+                  <p>
+                    {english
+                      ? 'The full problem below includes the original examples and constraints. For submissions here, read standard input and write standard output using the cswork format below; you do not submit only the original function or class.'
+                      : '下方保留完整题意、原题示例与约束。在本站提交时，请按下方「本站提交格式」读取标准输入、输出结果，不是只提交原题中的函数或类。'}
+                  </p>
+                  <LessonMarkdown body={sourceBody} />
+                  {problem.sourceStatement?.attribution && (
+                    <p>{problem.sourceStatement.attribution}</p>
+                  )}
+                  {sourceUrl && (
+                    <p>
+                      <a href={sourceUrl} target="_blank" rel="noreferrer">
+                        {english ? 'Original problem' : '原题链接'}
+                      </a>
+                    </p>
+                  )}
+                  <h3>
+                    {english ? 'cswork submission format' : '本站提交格式'}
+                  </h3>
+                </>
+              )}
               <p style={{ whiteSpace: 'pre-wrap' }}>{statement.description}</p>
               <h3>{english ? 'Input' : '输入格式'}</h3>
               <p style={{ whiteSpace: 'pre-wrap' }}>{statement.input}</p>

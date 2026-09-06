@@ -6,7 +6,11 @@ import {
 } from './practice-rounds';
 import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
-import { getStudyLibrary, listStudyLibrary } from './study-library';
+import {
+  getStudyLibrary,
+  getStudySourceStatement,
+  listStudyLibrary,
+} from './study-library';
 import { boundedText, HttpError, json, limit, requireTeacher } from './http';
 import {
   getPublishedProblem,
@@ -41,9 +45,13 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
       return json(practiceRoundState(p.id));
     }
     if (resource === 'status') return json(ojStatus());
-    if (resource === 'problems' && id)
+    if (resource === 'problems' && id) {
+      // Entitlement, publication and validation gates apply before source text
+      // is read. Full statements supplement, never replace, the judge protocol.
+      const problem = await getPublishedProblem(p, id);
       return json({
-        ...(await getPublishedProblem(p, id)),
+        ...problem,
+        sourceStatement: getStudySourceStatement(id),
         practiceRound: isSelectedProblem(id)
           ? practiceRoundState(p.id).currentRound
           : null,
@@ -52,6 +60,7 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
         judgeAvailable: ojStatus().available,
         languageVersions: ojStatus().languageVersions,
       });
+    }
     if (resource === 'submissions') {
       await limit(p, 'oj-read', 240);
       return json(
