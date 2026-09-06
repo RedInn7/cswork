@@ -28,8 +28,7 @@ jobs:
       - run: node --test tests/backup.test.mjs
       - run: npm run test:oj
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts
-      - run: python3 scripts/ling-validation/test_generate.py
-      - run: python3 scripts/ling-validation/test_verify.py
+      - run: python3 -m unittest discover -s scripts/ling-validation -p 'test_*.py'
       - run: python3 tests/import-ling-library.test.py
       - run: npm run test:editor
       - run: npm run test:request-lifecycle

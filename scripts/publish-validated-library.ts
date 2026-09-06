@@ -1,6 +1,6 @@
 /** Teacher-only offline publication of hash-bound, sandbox-validated packages. */
-import { readFileSync } from 'node:fs';
-import { dirname, resolve, basename } from 'node:path';
+import { readFileSync, realpathSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { sqlite } from '../db/sqlite';
@@ -40,32 +40,121 @@ const teacher: Person = {
   verified: true,
 };
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
+const countsSchema = z.object({
+  formal: z.number().int().min(2).max(64),
+  oracle: z.number().int().min(120),
+  negativeControls: z.number().int().min(2),
+});
 const manifest = z
   .object({
-    problems: z.array(
-      z.object({
-        problemId: z.string().regex(/^lc-\d+$/),
-        packageFile: z.string(),
-        packageSha256: hash,
-        sourceContentHash: hash,
-        verified: z.literal(true),
-        referenceSha256: hash,
-        runnerSha256: hash,
-        mutationSha256: hash,
-        counts: z.object({
-          formal: z.number().int().min(2),
-          oracle: z.number().int().min(120),
-          negativeControls: z.number().int().min(2),
+    verifiedAt: z.string().min(1),
+    sourceHashesFileSha256: hash,
+    problems: z
+      .array(
+        z.object({
+          problemId: z.string().regex(/^lc-\d+$/),
+          packageFile: z.string(),
+          packageSha256: hash,
+          sourceContentHash: hash,
+          verified: z.literal(true),
+          referenceSha256: hash,
+          runnerSha256: hash,
+          mutationSha256: hash,
+          inputBytesSha256: hash,
+          referenceBytesSha256: hash,
+          oracleSha256: hash,
+          counts: countsSchema,
         }),
-      }),
-    ),
+      )
+      .min(1),
   })
   .parse(JSON.parse(readFileSync(manifestFile, 'utf8')));
+const report = z
+  .object({
+    allPassed: z.literal(true),
+    engine: z.literal('go-judge'),
+    finishedAt: z.string().min(1),
+    sourceHashesFileSha256: hash,
+    problems: z
+      .array(
+        z.object({
+          id: z.string().regex(/^lc-\d+$/),
+          status: z.literal('verified'),
+          sourceContentHash: hash,
+          packageSha256: hash,
+          referenceSha256: hash,
+          wrapperSha256: hash,
+          inputBytesSha256: hash,
+          referenceBytesSha256: hash,
+          oracleSha256: hash,
+          mutationSha256: hash,
+          counts: countsSchema,
+          checks: z.array(z.object({ passed: z.literal(true) })),
+        }),
+      )
+      .min(1),
+  })
+  .parse(
+    JSON.parse(
+      readFileSync(
+        resolve(dirname(manifestFile), 'verification-report.json'),
+        'utf8',
+      ),
+    ),
+  );
+if (
+  report.finishedAt !== manifest.verifiedAt ||
+  report.sourceHashesFileSha256 !== manifest.sourceHashesFileSha256
+)
+  throw new Error('Verification report does not match manifest run');
+const reportEntries = new Map(
+  report.problems.map((entry) => [entry.id, entry]),
+);
+if (
+  reportEntries.size !== report.problems.length ||
+  new Set(manifest.problems.map((entry) => entry.problemId)).size !==
+    manifest.problems.length ||
+  reportEntries.size !== manifest.problems.length
+)
+  throw new Error('Duplicate or mismatched verification identities');
+for (const record of manifest.problems) {
+  const entry = reportEntries.get(record.problemId);
+  if (
+    !entry ||
+    entry.counts.formal !== record.counts.formal ||
+    entry.counts.oracle !== record.counts.oracle ||
+    entry.counts.negativeControls !== record.counts.negativeControls ||
+    entry.checks.length !==
+      record.counts.formal + record.counts.negativeControls + 1
+  )
+    throw new Error('Verification report checks do not match manifest');
+  if (
+    entry.sourceContentHash !== record.sourceContentHash ||
+    entry.packageSha256 !== record.packageSha256 ||
+    entry.referenceSha256 !== record.referenceSha256 ||
+    entry.wrapperSha256 !== record.runnerSha256 ||
+    entry.inputBytesSha256 !== record.inputBytesSha256 ||
+    entry.referenceBytesSha256 !== record.referenceBytesSha256 ||
+    entry.oracleSha256 !== record.oracleSha256 ||
+    entry.mutationSha256 !== record.mutationSha256 ||
+    record.inputBytesSha256 !== record.packageSha256 ||
+    record.referenceBytesSha256 !== record.runnerSha256
+  )
+    throw new Error('Verification report provenance does not match manifest');
+}
 // Validate every package before making any change.
 const packages = manifest.problems.map((record) => {
-  if (record.packageFile !== basename(record.packageFile))
-    throw new Error('Package must be beside manifest');
-  const raw = readFileSync(resolve(dirname(manifestFile), record.packageFile));
+  if (record.packageFile !== `${record.problemId}.json`)
+    throw new Error(
+      'Package must have its exact problem filename beside manifest',
+    );
+  const packagePath = resolve(dirname(manifestFile), record.packageFile);
+  if (
+    dirname(realpathSync(packagePath)) !==
+    realpathSync(dirname(resolve(manifestFile)))
+  )
+    throw new Error('Package must not escape manifest directory');
+  const raw = readFileSync(packagePath);
   if (createHash('sha256').update(raw).digest('hex') !== record.packageSha256)
     throw new Error(`Changed verified package: ${record.problemId}`);
   const payload = validateProblemPackage(JSON.parse(raw.toString('utf8')));
