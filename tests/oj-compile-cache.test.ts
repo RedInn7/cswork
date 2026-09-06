@@ -35,7 +35,7 @@ function fixture(capacity = 2) {
     },
   };
 }
-test('run then submit unchanged code reuses compilation, but per-submission flags stay independent', async () => {
+void test('run then submit unchanged code reuses compilation, but per-submission flags stay independent', async () => {
   const f = fixture();
   const sample = await f.get();
   sample.program.bridgeSource = 'bridge';
@@ -50,7 +50,7 @@ test('run then submit unchanged code reuses compilation, but per-submission flag
   await f.cache.close();
   assert.deepEqual(f.removed, ['1']);
 });
-test('changed code, driver, language or owner must compile independently', async () => {
+void test('changed code, driver, language or owner must compile independently', async () => {
   const f = fixture(8);
   for (const [owner, source] of [
     ['alice', 'one'],
@@ -60,12 +60,17 @@ test('changed code, driver, language or owner must compile independently', async
     const p = await f.get(owner, source);
     await p.release();
   }
-  const java = await f.cache.acquire('alice', 'java', 'one', new AbortController().signal);
+  const java = await f.cache.acquire(
+    'alice',
+    'java',
+    'one',
+    new AbortController().signal,
+  );
   await java.release();
   assert.equal(f.calls(), 4);
   await f.cache.close();
 });
-test('failures and expired or evicted binaries do not survive; active leases are not evicted', async () => {
+void test('failures and expired or evicted binaries do not survive; active leases are not evicted', async () => {
   const f = fixture(1);
   const first = await f.get();
   const other = await f.get('bob');
@@ -89,7 +94,7 @@ test('failures and expired or evicted binaries do not survive; active leases are
   await f.cache.close();
   assert.equal(new Set(f.removed).size, f.removed.length);
 });
-test('overlapping identical misses never orphan a compiled binary', async () => {
+void test('overlapping identical misses never orphan a compiled binary', async () => {
   const f = fixture(2);
   const [first, second] = await Promise.all([f.get(), f.get()]);
   await first.release();
@@ -98,4 +103,134 @@ test('overlapping identical misses never orphan a compiled binary', async () => 
   assert.equal(f.calls(), 2);
   assert.equal(f.removed.length, 2);
   assert.equal(new Set(f.removed).size, 2);
+});
+void test('warming uses exact owner/source key and foreground acquisition promotes the entry', async () => {
+  const f = fixture(3),
+    signal = new AbortController().signal;
+  assert.equal(await f.cache.warm('alice', 'cpp', 'warm', signal), 'warmed');
+  assert.equal(await f.cache.warm('alice', 'cpp', 'warm', signal), 'cached');
+  const acquired = await f.get('alice', 'warm');
+  assert.equal(acquired.cacheHit, true);
+  await acquired.release();
+  await f.cache.warm('bob', 'cpp', 'one', signal);
+  await f.cache.warm('bob', 'cpp', 'two', signal);
+  await f.cache.warm('bob', 'cpp', 'three', signal);
+  const again = await f.get('alice', 'warm');
+  assert.equal(again.cacheHit, true);
+  await again.release();
+  assert.equal(f.calls(), 4);
+  await f.cache.close();
+});
+void test('eight full foreground slots retain their binaries while two independent warm slots rotate', async () => {
+  const f = fixture(8),
+    signal = new AbortController().signal;
+  for (let i = 0; i < 8; i++) {
+    const p = await f.get('alice', `formal-${i}`);
+    await p.release();
+  }
+  for (const source of ['warm-a', 'warm-b'])
+    assert.equal(await f.cache.warm('alice', 'cpp', source, signal), 'warmed');
+  assert.deepEqual(f.removed, []);
+  assert.equal(f.calls(), 10);
+  assert.equal(await f.cache.warm('alice', 'cpp', 'warm-c', signal), 'warmed');
+  assert.deepEqual(f.removed, ['9']);
+  for (let i = 0; i < 8; i++) {
+    const p = await f.get('alice', `formal-${i}`);
+    assert.equal(p.cacheHit, true);
+    await p.release();
+  }
+  const promoted = await f.get('alice', 'warm-c');
+  assert.equal(promoted.cacheHit, true);
+  await promoted.release();
+  assert.deepEqual(f.removed, ['9', '1']);
+  const another = await f.get('alice', 'formal-extra');
+  await another.release();
+  assert.deepEqual(f.removed, ['9', '1', '2']);
+  assert.equal(await f.cache.warm('alice', 'cpp', 'warm-b', signal), 'cached');
+  await f.cache.close();
+  assert.equal(new Set(f.removed).size, f.calls());
+});
+void test('promotion never evicts leased foreground binaries and disabled caches skip warming', async () => {
+  const f = fixture(1),
+    signal = new AbortController().signal;
+  const held = await f.get('alice', 'held');
+  await f.cache.warm('alice', 'cpp', 'warm', signal);
+  const warm = await f.get('alice', 'warm');
+  assert.equal(warm.cacheHit, true);
+  assert.deepEqual(f.removed, []);
+  await warm.release();
+  assert.deepEqual(f.removed, ['2']);
+  await held.release();
+  const again = await f.get('alice', 'held');
+  assert.equal(again.cacheHit, true);
+  await again.release();
+  await f.cache.close();
+  const disabled = fixture(0);
+  assert.equal(
+    await disabled.cache.warm('alice', 'cpp', 'source', signal),
+    'skipped',
+  );
+  assert.equal(disabled.calls(), 0);
+  await disabled.cache.close();
+});
+void test('aborted warm results are disposed even when compiler resolves after cancellation', async () => {
+  let finish!: () => void;
+  const removed: string[] = [];
+  const cache = new CompiledProgramCache(
+    async (language, source) => {
+      await new Promise<void>((resolve) => {
+        finish = resolve;
+      });
+      return {
+        result: { status: 'Accepted' },
+        program: { language, source, cache: { main: 'late' } },
+      };
+    },
+    async (program) => {
+      removed.push(program.cache.main);
+    },
+  );
+  const controller = new AbortController();
+  const pending = cache.warm('alice', 'cpp', 'source', controller.signal);
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(
+    await cache.warm('bob', 'cpp', 'other', new AbortController().signal),
+    'skipped',
+  );
+  controller.abort();
+  finish();
+  await assert.rejects(pending, { name: 'AbortError' });
+  assert.deepEqual(removed, ['late']);
+  await cache.close();
+});
+void test('warm errors do not remain cached and closing during compilation disposes the result', async () => {
+  const f = fixture(2),
+    signal = new AbortController().signal;
+  assert.equal(await f.cache.warm('alice', 'cpp', 'bad', signal), 'failed');
+  assert.deepEqual(f.removed, ['1']);
+  await f.cache.close();
+  assert.equal(await f.cache.warm('alice', 'cpp', 'late', signal), 'skipped');
+  assert.equal(f.calls(), 1);
+  let finish!: () => void,
+    disposed = 0;
+  const cache = new CompiledProgramCache(
+    async (language, source) => {
+      await new Promise<void>((resolve) => {
+        finish = resolve;
+      });
+      return {
+        result: { status: 'Accepted' },
+        program: { language, source, cache: { main: 'late' } },
+      };
+    },
+    async () => {
+      disposed++;
+    },
+  );
+  const pending = cache.warm('alice', 'cpp', 'source', signal);
+  await new Promise((resolve) => setImmediate(resolve));
+  await cache.close();
+  finish();
+  assert.equal(await pending, 'skipped');
+  assert.equal(disposed, 1);
 });

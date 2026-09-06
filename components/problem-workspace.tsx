@@ -52,6 +52,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import { useIdlePrecompile } from '@/hooks/use-idle-precompile';
 import { StatementMarkdown } from './statement-markdown';
 import { LeetCodeSamples } from './leetcode-samples';
 import type { CodingMode } from '@/lib/coding-mode';
@@ -320,6 +321,20 @@ function Workspace({
     codeBytes > maxCodeBytes ||
     !accessible ||
     languageUnavailable;
+  const cancelPrecompile = useIdlePrecompile({
+    enabled:
+      !!boot.person &&
+      !!loadedProblem &&
+      !disabled &&
+      problem.judgeAvailable === true &&
+      (!problem.codingModes || problem.codingModes.includes(codingMode)),
+    userId,
+    problemId: problem.id,
+    language,
+    codingMode,
+    code,
+    template: templateFor(language, codingMode),
+  });
   const horizontalLayout = useDefaultLayout({
     id: `cswork:oj:columns:${userId}:${settings.layout}`,
     panelIds: ['statement', 'workbench'],
@@ -662,6 +677,7 @@ function Workspace({
       setError(`自定义输入不能超过 ${Math.floor(maxStdinBytes / 1024)} KB。`);
       return;
     }
+    cancelPrecompile();
     busyRef.current = true;
     setSubmitting(true);
     setSubmission(null);

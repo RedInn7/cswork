@@ -7,6 +7,7 @@ import {
 } from './practice-rounds';
 import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
+import { requestPrecompile } from './oj-precompile';
 import {
   getStudyLibrary,
   getStudySourceStatement,
@@ -97,6 +98,16 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
   if (request.method !== 'POST') throw new HttpError(404, '判题接口不存在');
   if (resource === 'intelligence' && (!id || id === 'close') && !action)
     return handleEditorIntelligence(request, p, id === 'close');
+  if (resource === 'precompile' && !id) {
+    let data: unknown;
+    try {
+      data = JSON.parse(await boundedText(request, 800000));
+    } catch (error) {
+      if (error instanceof HttpError) throw error;
+      throw new HttpError(400, '无效的 JSON');
+    }
+    return json(await requestPrecompile(p, data), 202);
+  }
   await limit(p, 'oj-write', 40);
   if (resource === 'practice-rounds' && !id) {
     let data: unknown;
