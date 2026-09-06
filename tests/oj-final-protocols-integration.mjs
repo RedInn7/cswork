@@ -278,7 +278,7 @@ async function verdict(name, problemId, language, code, expected, customInput) {
     if (!active.has(detail.status)) break;
     await delay(800);
   }
-  assert.equal(detail?.status, expected, `${name}: unexpected verdict`);
+  assert.equal(detail?.status, customInput !== undefined && expected === 'accepted' ? 'finished' : expected, `${name}: unexpected verdict`);
   assert.ok(
     db
       .prepare('SELECT dispatched_at FROM oj_outbox WHERE submission_id=?')
