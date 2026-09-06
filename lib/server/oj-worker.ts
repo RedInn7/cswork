@@ -1,4 +1,5 @@
 import { orderedCaseResults, caseConcurrency } from './oj-case-stream';
+import { persistCase } from './oj-case-store';
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { CompiledProgramCache } from './oj-compile-cache';
 import { PrecompileScheduler } from './oj-precompile-scheduler';
@@ -307,31 +308,34 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
         memoryKb = Math.max(0, Math.ceil((result.memory || 0) / 1024));
       runtime = Math.max(runtime, runtimeMs / 1000);
       memory = Math.max(memory, memoryKb);
-      db.transaction(() => {
-        current(id, attempt, controller.signal);
-        db.prepare(
-          'INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,?,?,?,?,?,?,?)',
-        ).run(
-          id,
-          c.ordinal,
-          claimed.mode === 'run' &&
+      persistCase(
+        db,
+        () => {
+          current(id, attempt, controller.signal);
+        },
+        {
+          submissionId: id,
+          attempt,
+          ordinal: c.ordinal,
+          status:
+            claimed.mode === 'run' &&
             c.expectedOutput === null &&
             status === 'accepted'
-            ? 'finished'
-            : status,
+              ? 'finished'
+              : status,
           runtimeMs,
           memoryKb,
-          c.hidden ? null : (result.files?.stdout || '').slice(0, 65536),
-          c.hidden ? null : (result.files?.stderr || '').slice(0, 65536),
-          Number(c.hidden),
-        );
-        update(id, attempt, {
+          stdout: result.files?.stdout,
+          stderr: result.files?.stderr,
+          hidden: c.hidden,
+        },
+        {
           passed,
           runtime,
           memory,
           score: Math.round((weight / totalWeight) * 100),
-        });
-      })();
+        },
+      );
       // Expensive resource failures stop this submission; unexecuted cases are explicitly skipped.
       if (
         [
@@ -363,6 +367,25 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       });
       return;
     }
+    // Keep diagnostic categories, never source, test data, SQL parameters or
+    // exception messages. A transient storage failure must remain identifiable.
+    const category = (value: unknown) =>
+      typeof value === 'string' && /^[A-Za-z_0-9]{1,64}$/.test(value)
+        ? value
+        : undefined;
+    console.error(
+      JSON.stringify({
+        event: 'oj_attempt_error',
+        submissionId: id,
+        attempt,
+        errorType: category(error instanceof Error ? error.name : undefined),
+        code: category(
+          error && typeof error === 'object' && 'code' in error
+            ? error.code
+            : undefined,
+        ),
+      }),
+    );
     if (stopping || job.attemptsMade + 1 < MAX_ATTEMPTS) {
       update(id, attempt, {
         status: 'queued',
