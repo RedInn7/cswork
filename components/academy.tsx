@@ -17,7 +17,6 @@ import {
   ArrowRight,
   Check,
   Terminal,
-  GraduationCap,
   Search,
   Settings,
   Inbox,
@@ -74,10 +73,12 @@ import { CheckoutFeedback } from './checkout-feedback';
 import { EnrollmentClaim } from './enrollment';
 import { NotificationsPane } from './lms-notifications';
 import '@/app/lms.css';
+import { isKnowledgeLesson } from '@/lib/interview-curriculum';
 const nav: [LucideIcon, string, string][] = [
   [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
-  [Code2, '算法练习', 'problems'],
+  [Code2, '算法题库', 'problems'],
+  [BookOpen, '算法知识点', 'knowledge'],
   [LifeBuoy, '我的工单', 'tickets'],
 ];
 const initial: Boot = {
@@ -222,7 +223,7 @@ export function Academy() {
       );
     if (
       !boot.person &&
-      !['home', 'courses', 'problems', 'problem'].includes(view)
+      !['home', 'courses', 'knowledge', 'problems', 'problem'].includes(view)
     )
       return (
         <Empty
@@ -238,9 +239,11 @@ export function Academy() {
       );
     switch (view) {
       case 'courses':
+      case 'knowledge':
         return (
           <CourseList
             boot={boot}
+            knowledge={view === 'knowledge'}
             navigate={navigate}
             login={() => setLogin(true)}
             ask={ask}
@@ -341,7 +344,11 @@ export function Academy() {
                   <SidebarMenuButton
                     isActive={
                       view === key ||
-                      (view === 'lesson' && key === 'courses') ||
+                      (view === 'lesson' &&
+                        key ===
+                          (isKnowledgeLesson(params.lesson)
+                            ? 'knowledge'
+                            : 'courses')) ||
                       (view === 'problem' && key === 'problems')
                     }
                     onClick={() => navigate(key)}
@@ -371,11 +378,6 @@ export function Academy() {
           )}
         </SidebarContent>
         <SidebarFooter>
-          <div className="mentor-card">
-            <GraduationCap size={21} />
-            <strong>一步一步，写出好代码。</strong>
-            <p>课程、练习和反馈，都在这里。</p>
-          </div>
           <button
             className="profile"
             onClick={() => (boot.person ? navigate('account') : setLogin(true))}
@@ -405,8 +407,10 @@ export function Academy() {
               {nav.find((n) => n[2] === view)?.[1] ||
                 (
                   {
-                    lesson: '课程学习',
-                    problem: '算法练习',
+                    lesson: isKnowledgeLesson(params.lesson)
+                      ? '算法知识点'
+                      : '课程学习',
+                    problem: '算法题库',
                     teacher: '教师工作台',
                     account: '账号设置',
                   } as Record<string, string>

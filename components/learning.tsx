@@ -21,6 +21,12 @@ import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
 import { StudyLibrary } from './study-library';
 import interviewCatalog from '@/content/interview-catalog.json';
+import {
+  INTERVIEW_COURSE_ID,
+  isKnowledgeLesson,
+} from '@/lib/interview-curriculum';
+import { KnowledgeExercises } from './knowledge-exercises';
+import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
 import {
   Dialog,
@@ -35,221 +41,242 @@ export function CourseList({
   navigate,
   login,
   ask,
+  knowledge = false,
 }: {
   boot: Boot;
   navigate: Navigate;
   login: () => void;
   ask: (context: Record<string, string>) => void;
+  knowledge?: boolean;
 }) {
   const [busy, setBusy] = useState(false),
     [error, setError] = useState('');
   return (
     <>
       <Heading
-        label="THE CURRICULUM"
-        title="把知识，连成体系。"
-        description="沿着真实的业务链路，循序渐进地学习。"
+        label={knowledge ? 'ALGORITHMS' : 'THE CURRICULUM'}
+        title={knowledge ? '算法知识点' : '我的课程'}
+        description={
+          knowledge
+            ? '原理、推导、代码与练习。按主题查阅，也可以从基础开始读。'
+            : '课程讲义、视频与配套练习。'
+        }
       />
-      {boot.courses.map((c) => {
-        const done = c.lessons.filter((l) =>
-          boot.progress.some((p) => p.lesson_id === l.id && p.completed),
-        ).length;
-        return (
-          <section className="course-detail" key={c.id}>
-            <div className="course-detail-head">
-              <div>
-                <span className="tag">SDE · 系列课程</span>
-                <h2>{c.title}</h2>
-                <p>{c.summary}</p>
-                <div className="course-meta">
-                  <span>{c.lessons.length} 个章节</span>
-                  <span>配套算法与工程实验</span>
-                  <span>v{c.version}</span>
+      {boot.courses
+        .filter((c) =>
+          knowledge
+            ? c.id === INTERVIEW_COURSE_ID
+            : c.id !== INTERVIEW_COURSE_ID,
+        )
+        .map((c) => {
+          const done = c.lessons.filter((l) =>
+            boot.progress.some((p) => p.lesson_id === l.id && p.completed),
+          ).length;
+          return (
+            <section className="course-detail" key={c.id}>
+              <div className="course-detail-head">
+                <div>
+                  <span className="tag">
+                    {knowledge ? 'SDE · 算法知识' : 'SDE · 系列课程'}
+                  </span>
+                  <h2>{c.title}</h2>
+                  <p>{c.summary}</p>
+                  <div className="course-meta">
+                    <span>
+                      {c.lessons.length} 个{knowledge ? '主题' : '章节'}
+                    </span>
+                    <span>
+                      {knowledge ? '交互图解与题目练习' : '配套算法与工程实验'}
+                    </span>
+                    <span>v{c.version}</span>
+                  </div>
+                </div>
+                <div className="course-access">
+                  {c.has_access ? (
+                    <>
+                      <span className="success-text">
+                        <Check size={16} />
+                        已开通
+                      </span>
+                      <span className="muted">
+                        {knowledge ? '已读' : '完成'} {done} /{' '}
+                        {c.lessons.length} {knowledge ? '篇' : '课'}
+                      </span>
+                      <ProgressBar
+                        value={
+                          c.lessons.length ? (done / c.lessons.length) * 100 : 0
+                        }
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        disabled={busy}
+                        onClick={async () => {
+                          if (!boot.person) {
+                            login();
+                            return;
+                          }
+                          if (
+                            !(c.purchase_available ?? boot.services.checkout)
+                          ) {
+                            ask({
+                              courseId: c.id,
+                              title: `申请开通：${c.title}`,
+                              body: `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
+                            });
+                            return;
+                          }
+                          setBusy(true);
+                          setError('');
+                          try {
+                            const { url } = await api<{ url: string }>(
+                              'checkout',
+                              {
+                                courseId: c.id,
+                              },
+                            );
+                            location.assign(url);
+                          } catch (e) {
+                            setError((e as Error).message);
+                          } finally {
+                            setBusy(false);
+                          }
+                        }}
+                      >
+                        {(c.purchase_available ?? boot.services.checkout)
+                          ? `购买课程${c.price ? ' · ' + c.price.display : ''}`
+                          : '申请开通'}
+                        <ArrowRight size={15} />
+                      </Button>
+                      <small>现有学员使用购买时的邮箱登录</small>
+                    </>
+                  )}
                 </div>
               </div>
-              <div className="course-access">
-                {c.has_access ? (
-                  <>
-                    <span className="success-text">
-                      <Check size={16} />
-                      已开通
-                    </span>
-                    <span className="muted">
-                      完成 {done} / {c.lessons.length} 课
-                    </span>
-                    <ProgressBar
-                      value={
-                        c.lessons.length ? (done / c.lessons.length) * 100 : 0
-                      }
-                    />
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      disabled={busy}
-                      onClick={async () => {
-                        if (!boot.person) {
-                          login();
-                          return;
-                        }
-                        if (!(c.purchase_available ?? boot.services.checkout)) {
-                          ask({
-                            courseId: c.id,
-                            title: `申请开通：${c.title}`,
-                            body: `希望开通「${c.title}」。\n购买记录或需要老师核实的信息：\n`,
-                          });
-                          return;
-                        }
-                        setBusy(true);
-                        setError('');
-                        try {
-                          const { url } = await api<{ url: string }>(
-                            'checkout',
-                            {
-                              courseId: c.id,
-                            },
+              {error && (
+                <div role="alert" className="notice">
+                  {error}
+                </div>
+              )}
+              <Tabs defaultValue="curriculum">
+                <TabsList variant="line">
+                  <TabsTrigger value="curriculum">课程目录</TabsTrigger>
+                  <TabsTrigger value="about">课程介绍</TabsTrigger>
+                </TabsList>
+                <TabsContent value="curriculum">
+                  {[
+                    ...new Set(c.lessons.map((l) => l.section || '课程内容')),
+                  ].map((section, i) => (
+                    <div className="chapter-group" key={section}>
+                      <div className="chapter-heading">
+                        <span>0{i + 1}</span>
+                        <h3>{section}</h3>
+                        <small>
+                          {
+                            c.lessons.filter(
+                              (l) => (l.section || '课程内容') === section,
+                            ).length
+                          }{' '}
+                          课
+                        </small>
+                      </div>
+                      {c.lessons
+                        .filter((l) => (l.section || '课程内容') === section)
+                        .map((l) => {
+                          const complete = boot.progress.some(
+                            (p) => p.lesson_id === l.id && p.completed,
                           );
-                          location.assign(url);
-                        } catch (e) {
-                          setError((e as Error).message);
-                        } finally {
-                          setBusy(false);
-                        }
-                      }}
-                    >
-                      {(c.purchase_available ?? boot.services.checkout)
-                        ? `购买课程${c.price ? ' · ' + c.price.display : ''}`
-                        : '申请开通'}
-                      <ArrowRight size={15} />
-                    </Button>
-                    <small>现有学员使用购买时的邮箱登录</small>
-                  </>
-                )}
-              </div>
-            </div>
-            {error && (
-              <div role="alert" className="notice">
-                {error}
-              </div>
-            )}
-            <Tabs defaultValue="curriculum">
-              <TabsList variant="line">
-                <TabsTrigger value="curriculum">课程目录</TabsTrigger>
-                <TabsTrigger value="about">课程介绍</TabsTrigger>
-              </TabsList>
-              <TabsContent value="curriculum">
-                {[
-                  ...new Set(c.lessons.map((l) => l.section || '课程内容')),
-                ].map((section, i) => (
-                  <div className="chapter-group" key={section}>
-                    <div className="chapter-heading">
-                      <span>0{i + 1}</span>
-                      <h3>{section}</h3>
-                      <small>
-                        {
-                          c.lessons.filter(
-                            (l) => (l.section || '课程内容') === section,
-                          ).length
-                        }{' '}
-                        课
-                      </small>
-                    </div>
-                    {c.lessons
-                      .filter((l) => (l.section || '课程内容') === section)
-                      .map((l) => {
-                        const complete = boot.progress.some(
-                          (p) => p.lesson_id === l.id && p.completed,
-                        );
-                        return (
-                          <button
-                            className="lesson-row"
-                            key={l.id}
-                            onClick={() =>
-                              c.has_access
-                                ? navigate('lesson', { lesson: l.id })
-                                : boot.person
-                                  ? ask({
-                                      courseId: c.id,
-                                      title: `申请开通：${c.title}`,
-                                      body: `希望学习「${c.title}」，请老师核实并开通课程。`,
-                                    })
-                                  : login()
-                            }
-                          >
-                            <span
-                              className={
-                                'lesson-indicator ' + (complete ? 'done' : '')
+                          return (
+                            <button
+                              className="lesson-row"
+                              key={l.id}
+                              onClick={() =>
+                                c.has_access
+                                  ? navigate('lesson', { lesson: l.id })
+                                  : boot.person
+                                    ? ask({
+                                        courseId: c.id,
+                                        title: `申请开通：${c.title}`,
+                                        body: `希望学习「${c.title}」，请老师核实并开通课程。`,
+                                      })
+                                    : login()
                               }
                             >
-                              {complete ? (
-                                <Check size={15} />
-                              ) : (
-                                String(l.position).padStart(2, '0')
+                              <span
+                                className={
+                                  'lesson-indicator ' + (complete ? 'done' : '')
+                                }
+                              >
+                                {complete ? (
+                                  <Check size={15} />
+                                ) : (
+                                  String(l.position).padStart(2, '0')
+                                )}
+                              </span>
+                              <span className="lesson-row-title">
+                                <strong>{l.title}</strong>
+                                <small>{l.summary}</small>
+                              </span>
+                              <span className="resource-label">
+                                <FileText size={13} />
+                                讲义
+                              </span>
+                              {!!l.has_video && (
+                                <span className="resource-label">
+                                  <Video size={13} />
+                                  视频
+                                </span>
                               )}
-                            </span>
-                            <span className="lesson-row-title">
-                              <strong>{l.title}</strong>
-                              <small>{l.summary}</small>
-                            </span>
-                            <span className="resource-label">
-                              <FileText size={13} />
-                              讲义
-                            </span>
-                            {!!l.has_video && (
-                              <span className="resource-label">
-                                <Video size={13} />
-                                视频
-                              </span>
-                            )}
-                            {boot.problems.some(
-                              (p) =>
-                                p.lessonId === l.id ||
-                                interviewCatalog
-                                  .find((chapter) => chapter.id === l.id)
-                                  ?.homeworkProblemIds.includes(p.id),
-                            ) && (
-                              <span className="resource-label">
-                                <Code2 size={13} />
-                                练习
-                              </span>
-                            )}
-                            {c.has_access ? (
-                              <ChevronRight size={16} />
-                            ) : (
-                              <Lock size={15} />
-                            )}
-                          </button>
-                        );
-                      })}
+                              {boot.problems.some(
+                                (p) =>
+                                  p.lessonId === l.id ||
+                                  interviewCatalog
+                                    .find((chapter) => chapter.id === l.id)
+                                    ?.homeworkProblemIds.includes(p.id),
+                              ) && (
+                                <span className="resource-label">
+                                  <Code2 size={13} />
+                                  练习
+                                </span>
+                              )}
+                              {c.has_access ? (
+                                <ChevronRight size={16} />
+                              ) : (
+                                <Lock size={15} />
+                              )}
+                            </button>
+                          );
+                        })}
+                    </div>
+                  ))}
+                </TabsContent>
+                <TabsContent value="about">
+                  <div className="prose-content">
+                    <h3>关于本课程</h3>
+                    <p>{c.summary}</p>
+                    <h3>你会如何学习</h3>
+                    <p>
+                      先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过
+                      GitHub 仓库或 PR
+                      交给老师评审。遇到问题时，直接从当前章节发起私密工单。
+                    </p>
+                    <h3>课程权益</h3>
+                    <p>
+                      现有付费学员由老师按原购买记录开通当前 SDE
+                      课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。
+                    </p>
                   </div>
-                ))}
-              </TabsContent>
-              <TabsContent value="about">
-                <div className="prose-content">
-                  <h3>关于本课程</h3>
-                  <p>{c.summary}</p>
-                  <h3>你会如何学习</h3>
-                  <p>
-                    先读讲义理解业务规则，再跟随配套代码完成工程练习。算法题在独立判题环境运行，项目作业通过
-                    GitHub 仓库或 PR
-                    交给老师评审。遇到问题时，直接从当前章节发起私密工单。
-                  </p>
-                  <h3>课程权益</h3>
-                  <p>
-                    现有付费学员由老师按原购买记录开通当前 SDE
-                    课程。视频按章节发布；课件修订会记录版本并在课程更新中说明。新增课程单独授权。
-                  </p>
-                </div>
-              </TabsContent>
-            </Tabs>
-            {!c.lessons.length && (
-              <p className="quiet-empty">
-                老师正在准备课程内容，发布后会出现在这里。
-              </p>
-            )}
-          </section>
-        );
-      })}
+                </TabsContent>
+              </Tabs>
+              {!c.lessons.length && (
+                <p className="quiet-empty">
+                  老师正在准备课程内容，发布后会出现在这里。
+                </p>
+              )}
+            </section>
+          );
+        })}
     </>
   );
 }
@@ -311,9 +338,10 @@ export function LessonReader({
     [saving, setSaving] = useState(false),
     [loadRetry, setLoadRetry] = useState(0),
     [tab, setTab] = useState(
-      new URLSearchParams(
-        typeof location === 'undefined' ? '' : location.search,
-      ).has('t')
+      !isKnowledgeLesson(id) &&
+        new URLSearchParams(
+          typeof location === 'undefined' ? '' : location.search,
+        ).has('t')
         ? 'video'
         : 'handout',
     ),
@@ -400,8 +428,13 @@ export function LessonReader({
             >
               重新加载
             </Button>
-            <Button variant="outline" onClick={() => navigate('courses')}>
-              返回课程
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate(isKnowledgeLesson(id) ? 'knowledge' : 'courses')
+              }
+            >
+              {isKnowledgeLesson(id) ? '返回知识点' : '返回课程'}
             </Button>
           </div>
         }
@@ -420,8 +453,10 @@ export function LessonReader({
   return (
     <>
       <div className="breadcrumb">
-        <button onClick={() => navigate('courses')}>
-          {course?.title || '我的课程'}
+        <button
+          onClick={() => navigate(interviewChapter ? 'knowledge' : 'courses')}
+        >
+          {interviewChapter ? '算法知识点' : course?.title || '我的课程'}
         </button>
         <ChevronRight size={14} />
         <span>第 {String(lesson.position).padStart(2, '0')} 课</span>
@@ -451,7 +486,7 @@ export function LessonReader({
             <TabsList variant="line" className="reader-tabs">
               <TabsTrigger value="handout">
                 <FileText size={15} />
-                课件
+                {interviewChapter ? '知识讲解' : '课件'}
               </TabsTrigger>
               {!interviewChapter && (
                 <TabsTrigger value="video">
@@ -463,13 +498,22 @@ export function LessonReader({
                 <Bookmark size={15} />
                 我的笔记
               </TabsTrigger>
-              <TabsTrigger value="practice">
-                <Code2 size={15} />
-                课后练习
-              </TabsTrigger>
+              {!interviewChapter && (
+                <TabsTrigger value="practice">
+                  <Code2 size={15} />
+                  课后练习
+                </TabsTrigger>
+              )}
             </TabsList>
             <TabsContent value="handout">
               <LessonMarkdown body={lesson.body || ''} lecture />
+              {interviewChapter && (
+                <KnowledgeExercises
+                  lessonId={id}
+                  navigate={navigate}
+                  userId={boot.person?.id}
+                />
+              )}
             </TabsContent>
             <TabsContent value="video">
               {lesson.has_video ? (
@@ -597,14 +641,20 @@ export function LessonReader({
               onClick={() => save({ completed: !lesson.progress?.completed })}
             >
               <Check size={16} />
-              {lesson.progress?.completed ? '已完成本课' : '标记本课完成'}
+              {interviewChapter
+                ? lesson.progress?.completed
+                  ? '已读'
+                  : '标记已读'
+                : lesson.progress?.completed
+                  ? '已完成本课'
+                  : '标记本课完成'}
             </Button>
             {next && (
               <Button
                 variant="ghost"
                 onClick={() => navigate('lesson', { lesson: next.id })}
               >
-                下一课
+                {interviewChapter ? '下一知识点' : '下一课'}
                 <ArrowRight size={16} />
               </Button>
             )}
@@ -631,8 +681,12 @@ export function LessonReader({
           </div>
           <div className="help-card">
             <MessageSquare size={22} />
-            <h3>卡住了？一起解决。</h3>
-            <p>问题仅你和老师可见，会附上当前章节与播放位置。</p>
+            <h3>{interviewChapter ? '问题与反馈' : '卡住了？一起解决。'}</h3>
+            <p>
+              {interviewChapter
+                ? '问题仅你和老师可见，会附上当前知识点。'
+                : '问题仅你和老师可见，会附上当前章节与播放位置。'}
+            </p>
             <Button
               variant="outline"
               onClick={() =>

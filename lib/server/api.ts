@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getKnowledgeProgress } from './knowledge-progress';
 import type { Course, Lesson } from '@/lib/types';
 import type { TicketRow } from './lms-records';
 import { person, type Person } from './auth';
@@ -147,6 +148,14 @@ export async function handle(request: Request) {
     if (request.method === 'GET') {
       if (resource === 'bootstrap') return json(await bootstrap(p));
       requirePerson(p);
+      if (resource === 'knowledge' && resourceId === 'progress') {
+        return json(
+          await getKnowledgeProgress(
+            p,
+            new URL(request.url).searchParams.get('lesson') || '',
+          ),
+        );
+      }
       if (resource === 'attachments' && resourceId) {
         const attachment = await one<{
           id: string;
@@ -328,8 +337,15 @@ export async function handle(request: Request) {
           })
           .parse(data);
         await limit(p, 'ticket', 10, 3600);
-        const ticketLesson=d.lessonId?await lessonFor(p,d.lessonId):null;
-        if(d.videoAssetId&&(!ticketLesson||!(JSON.parse(ticketLesson.video_asset_ids) as string[]).includes(d.videoAssetId))) throw new HttpError(400,'视频不属于此章节');
+        const ticketLesson = d.lessonId ? await lessonFor(p, d.lessonId) : null;
+        if (
+          d.videoAssetId &&
+          (!ticketLesson ||
+            !(JSON.parse(ticketLesson.video_asset_ids) as string[]).includes(
+              d.videoAssetId,
+            ))
+        )
+          throw new HttpError(400, '视频不属于此章节');
         if (
           d.courseId &&
           !(await one(
@@ -347,7 +363,7 @@ export async function handle(request: Request) {
         }
         const tid = crypto.randomUUID();
         db.prepare(
-            'INSERT INTO tickets(id,user_id,title,body,lesson_id,course_id,submission_id,video_position,video_asset_id,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
+          'INSERT INTO tickets(id,user_id,title,body,lesson_id,course_id,submission_id,video_position,video_asset_id,status,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',
         )
           .bind(
             tid,
