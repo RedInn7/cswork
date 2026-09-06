@@ -6,9 +6,7 @@ import {
   ArrowRight,
   Check,
   Circle,
-  CircleCheck,
   Clock3,
-  CircleDashed,
   ChevronLeft,
   ChevronRight,
   Copy,
@@ -842,44 +840,31 @@ export function StudyLibrary({
                   else setSelected(item.id);
                 }}
               >
-                <span className="study-number">{item.number}</span>
-                <span className="study-row-main">
-                  <strong>{title(item, english)}</strong>
-                  <span className="study-row-secondary">
-                    {english ? item.titleZh : item.titleEn}
-                  </span>
-                  <span className="study-row-topics">
-                    {collection === 'ling-selected-500' && item.selection
-                      ? `${item.selection.order.toString().padStart(3, '0')} · ${english ? item.selection.sectionTitleEn || item.selection.sectionTitle : item.selection.sectionTitle} · ${english ? item.selection.stageEn || item.selection.stage : item.selection.stage}`
-                      : item.topics.slice(0, 3).join(' · ')}
-                  </span>
-                  {collection === 'ling-selected-500' && item.selection && (
-                    <span className="study-row-purpose">
-                      {english
-                        ? item.selection.reasonEn || item.selection.reason
-                        : item.selection.reason}
-                    </span>
-                  )}
-                </span>
-                <span className="study-row-end">
-                  <span
-                    className="study-progress"
-                    data-progress={
-                      item.solved
-                        ? 'solved'
-                        : item.progressStatus || 'not_started'
-                    }
-                    title={t('当前轮刷题进度', 'Progress in the current round')}
-                  >
-                    {item.solved ? (
-                      <CircleCheck size={16} />
-                    ) : item.judging ? (
-                      <Clock3 size={16} />
-                    ) : item.progressStatus === 'attempted' ? (
-                      <CircleDashed size={16} />
-                    ) : (
-                      <Circle size={16} />
-                    )}
+                <span
+                  className="study-progress"
+                  data-progress={
+                    item.solved
+                      ? 'solved'
+                      : item.progressStatus || 'not_started'
+                  }
+                  title={
+                    item.solved
+                      ? t('已通过', 'Solved')
+                      : item.judging
+                        ? t('判题中', 'Judging')
+                        : item.progressStatus === 'attempted'
+                          ? t('未通过', 'Not solved')
+                          : t('未开始', 'Not started')
+                  }
+                >
+                  {item.solved ? (
+                    <Check size={18} aria-hidden="true" />
+                  ) : item.judging ? (
+                    <Clock3 size={18} aria-hidden="true" />
+                  ) : item.progressStatus === 'attempted' ? (
+                    <Circle size={18} aria-hidden="true" />
+                  ) : null}
+                  <span className="sr-only">
                     {item.solved
                       ? t('已通过', 'Solved')
                       : item.judging
@@ -888,25 +873,21 @@ export function StudyLibrary({
                           ? t('未通过', 'Not solved')
                           : t('未开始', 'Not started')}
                   </span>
-                  <span
-                    className="study-level"
-                    data-level={item.difficulty.toLowerCase()}
-                  >
-                    {difficultyName(item.difficulty)}
-                  </span>
-                  <span
-                    className={canJudge(item) ? 'study-ready' : 'study-pending'}
-                  >
-                    {canJudge(item) ? (
-                      <>{t('开始练习', 'Practice')}</>
-                    ) : item.caseStatus === 'missing' ? (
-                      t('测试数据待补充', 'Test cases pending')
-                    ) : (
-                      t('测试数据待校验', 'Test verification pending')
-                    )}
-                  </span>
                 </span>
-                <ChevronRight className="study-row-arrow" size={17} />
+                <span
+                  className="study-row-main"
+                  title={`${item.number}. ${title(item, english)}`}
+                >
+                  <strong>
+                    {item.number}. {title(item, english)}
+                  </strong>
+                </span>
+                <span
+                  className="study-level"
+                  data-level={item.difficulty.toLowerCase()}
+                >
+                  {difficultyName(item.difficulty)}
+                </span>
               </button>
             ))}
           </div>

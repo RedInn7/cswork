@@ -1,32 +1,31 @@
-# Problem statement layout QA
+# Compact practice list — design QA
 
-final result: passed
+- Source visual truth: `.local/compact-list/reference.png` (user screenshot, original 1322 × 1510 pixels).
+- Implementation screenshots: `.local/compact-list/comparison.jpg`, `.local/compact-list/mobile.jpg`.
+- Reference normalized to 661 × 755 CSS pixels (2× source). Real StudyLibrary component rendered with current CSS at 661px, displayed beside the source at equal 0.57 comparison scale in the in-app browser. Comparison capture: 795 × 906 pixels. Focused mobile frame: 375 × 812 CSS pixels at 1× within the same capture viewport.
+- State: English, first row highlighted, same first 15 problem names and solved/attempted/unstarted states. Preview data is a fixture and does not create production submissions.
 
-## Visual target and evidence
-- User target: `/var/folders/7c/r4hwfvc92w36gxfm_gs3fvzw0000gn/T/codex-clipboard-53a556bc-8c87-48a8-a443-b6690888abbf.png`.
-- Combined reference/implementation screenshot: `.local/statement-preview/comparison.jpg`.
-- Rendered actual Workspace and StatementMarkdown: http://127.0.0.1:4388/comparison.html .
-- Browser viewport: 1117 × 906 CSS pixels. Source: 1322 × 1422 pixels, normalized to 661 × 711 CSS pixels. Actual statement panel: 661 CSS pixels. Both comparison columns receive the same 0.8 scale to fit the browser.
-- State: English Two Sum, light theme. Preview uses an explicitly labeled mock accepted submission; production completion remains derived from real formal submissions. Description/Submission tabs and language switch are existing product controls outside the supplied crop.
+## Findings
+
+No actionable P0/P1/P2 findings remain.
+
+- Typography: existing Arial/system sans stack, 15px desktop / 14px mobile, single-line title with ellipsis; full title retained in accessible text and hover title. Reference uses roughly 16px. Difference is intentional to fit the existing sidebar layout.
+- Layout: 48px row height, fixed status slot and difficulty column. Number and title align consistently with empty status slots. 15 rows fit in approximately the same height as the normalized reference. Removed secondary title, section/stage, learning reason and readiness/action labels.
+- Colors: alternate near-white rows, dark hover/focus row, green solved check, neutral attempted circle, teal/amber/red difficulty. Amber is darker than the screenshot for legibility on white. English Medium remains spelled out rather than Med.
+- Assets: no raster assets in the requested list. Existing Lucide Check/Circle/Clock3 match the reference's simple outline symbols. No generated assets or custom SVG drawings needed.
+- Content: titles respect current language; existing actual per-round verdicts retained. Current selection order and filtering stay unchanged.
+- Responsive: focused 375px iframe capture confirms long English names truncate without displacing difficulty or causing horizontal overflow. Rows remain 48px touch targets.
 
 ## Comparison history
-1. Preview fixture initially omitted the workspace ancestor, so scoped typography/tokens did not apply. Fixed preview wrapper and serialized English selector state; no production defect was inferred from this fixture error.
-2. First normalized comparison found smaller sample text and looser body leading than the reference. Increased example text from 14 to 16 px and reduced body leading from 1.75 to 1.6. Recaptured the combined view.
-3. Final combined capture checked title, difficulty pill, body paragraphs, inline code, all three examples, and constraints. No actionable P0/P1/P2 issues remain. These details are legible in the combined screenshot, so a separate focused crop was unnecessary.
 
-## Fidelity surfaces
-- Typography: 26 px heading, 16 px body and examples, bold input/output labels. Existing product font stack retained. Original imported wording and emphasis retained rather than substituting the screenshot's wording.
-- Spacing: title precedes tools; natural paragraphs; white examples with a thin left rule. Existing split-pane padding causes occasional extra wrapping versus the reference crop; this is intentional for the actual workspace.
-- Colors: neutral white surface, subtle code chips and dividers, semantic difficulty/success colors; existing dark-theme tokens preserved.
-- Images/icons: no raster illustration in the reference. Existing icon library supplies topic/hint/check icons. Original problem diagrams remain rendered when present.
-- Content: complete bilingual statement, examples and constraints retained. No fake company data, source badges or irrelevant version metadata. Topics/hints appear only with relevant data.
+Initial comparison frame was wider than the in-app viewport and clipped the right-hand reference comparison. Reduced the comparison canvas scale equally for both images, then recaptured the full comparison. This was a QA capture correction, not an application layout issue. No visual implementation fixes required after comparison.
 
-## Interaction verification
-- Actual React Workspace test covers title, accepted state, topic expansion/collapse, bilingual selection, mode switching, and independent drafts.
-- TypeScript validation passed. Production browser verification follows deployment; the local SSR preview intentionally stubs the editor and does not claim to exercise authentication or judging.
+## Verification
+
+Actual React UI regression test covers localized long titles, compact three-column markup, direct navigation, status accessibility, progress refresh, judging-to-accepted polling and round/filter behavior. TypeScript and production build checked before release. Browser visual comparisons use real component output with fixture API data; live navigation/filter verification follows deployment.
 
 ## Follow-up polish
-- Imported mathematical exponent notation remains as supplied; mathematical typesetting is outside this visual change.
 
-## Production follow-up
-Live bilingual and narrow-pane navigation verified after PR28 deployment. Chinese content exposed an imported malformed strong marker (`**text **`) that remained literal. The statement renderer now repairs this only in prose text nodes, preserving code blocks. `.local/statement-preview/repaired-zh.jpg` confirms the corrected Chinese rendering. No remaining P0/P1/P2 findings.
+No required follow-ups. Project-wide header/overview layout is outside this row-density request.
+
+final result: passed
