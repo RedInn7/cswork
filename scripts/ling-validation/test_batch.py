@@ -77,6 +77,13 @@ class ManifestBoundaryTests(unittest.TestCase):
         with patch.object(sys,'argv',['fixture']),contextlib.redirect_stdout(output):exec(code,{'__name__':'__main__'})
         self.assertEqual(output.getvalue(),'2\n')
 
+    def test_modular_pow_keeps_builtin_semantics(self):
+        source='class Solution:\n    def solve(self,n): return pow(5,n,17)\n'
+        code=wrapper({'method':'solve','parse':'args=[100]'},source)
+        output=io.StringIO()
+        with patch.object(sys,'argv',['fixture']),contextlib.redirect_stdout(output):exec(code,{'__name__':'__main__'})
+        self.assertEqual(output.getvalue(),str(pow(5,100,17))+'\n')
+
     def make_verification(self,root):
         digest='a'*64
         raw=json.dumps({'problem':{'id':'lc-1'},'cases':[{},{}]}).encode()
