@@ -11,6 +11,8 @@ import {
   ArrowLeft,
   BookOpen,
   Check,
+  CircleCheck,
+  Tag,
   ChevronRight,
   ChevronDown,
   ChevronUp,
@@ -50,7 +52,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
-import { LessonMarkdown } from './lms-shared';
+import { StatementMarkdown } from './statement-markdown';
 import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
@@ -206,6 +208,8 @@ function Workspace({
   const [sampleIndex, setSampleIndex] = useState(0);
   const [recovering, setRecovering] = useState(false);
   const [hintCount, setHintCount] = useState(0);
+  const [topicsOpen, setTopicsOpen] = useState(false);
+  const [hintsOpen, setHintsOpen] = useState(false);
   const [narrow, setNarrow] = useState(false);
   const [mobilePane, setMobilePane] = useState<'statement' | 'editor'>(
     'statement',
@@ -770,38 +774,30 @@ function Workspace({
       <div className="cs-statement-scroll">
         {leftTab === 'statement' ? (
           <>
-            <label
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 8,
-                marginBottom: 16,
-              }}
-            >
-              <span>{english ? 'Statement language' : '题面语言'}</span>
-              <select
-                aria-label="题面语言"
-                value={statementLocale}
-                onChange={(event) => {
-                  const next = event.target.value as ProblemLocale;
-                  setStatementLocale(next);
-                  safeLayoutStorage.setItem('cswork:problem:locale', next);
-                  setHintCount(0);
-                }}
-              >
-                <option value="zh">中文</option>
-                <option value="en">English</option>
-              </select>
-            </label>
-            {statementLocale === 'en' && !english && (
-              <output>
-                English translation is not available yet. Showing the Chinese
-                statement. / 本题暂无英文题面，显示中文。
-              </output>
-            )}
-            <div className="cs-statement-title">
+            <div className="cs-statement-heading">
+              <h2>
+                {problem.id.match(/^lc-(\d+)$/)?.[1]
+                  ? `${problem.id.slice(3)}. `
+                  : ''}
+                {statement.title}
+              </h2>
+              {history.some(
+                (item) =>
+                  item.mode === 'judge' &&
+                  item.status === 'accepted' &&
+                  (!problem.practiceRound ||
+                    (!!practiceRound &&
+                      item.practiceRoundId === practiceRound.id)),
+              ) && (
+                <span className="cs-statement-solved">
+                  {english ? 'Solved' : '已通过'}
+                  <CircleCheck size={18} />
+                </span>
+              )}
+            </div>
+            <div className="cs-statement-tools">
               <span
-                className={`difficulty ${problem.difficulty === '中等' ? 'medium' : ''}`}
+                className={`cs-statement-pill cs-statement-difficulty ${problem.difficulty === '中等' ? 'medium' : problem.difficulty === '困难' ? 'hard' : 'easy'}`}
               >
                 {english
                   ? { 简单: 'Easy', 中等: 'Medium', 困难: 'Hard' }[
@@ -809,29 +805,70 @@ function Workspace({
                     ]
                   : problem.difficulty}
               </span>
-              {problem.tags.map((tag) => (
-                <span className="cs-topic-tag" key={tag}>
-                  {tag}
-                </span>
-              ))}
+              {problem.tags.some(
+                (tag) => !/灵神|题单|leetcode|来源/i.test(tag),
+              ) && (
+                <button
+                  className="cs-statement-pill"
+                  aria-expanded={topicsOpen}
+                  aria-controls="problem-topics"
+                  onClick={() => setTopicsOpen((open) => !open)}
+                >
+                  <Tag size={15} />
+                  {english ? 'Topics' : '主题'}
+                </button>
+              )}
+              {!sourceBody && statement.hints.length > 0 && (
+                <button
+                  className="cs-statement-pill"
+                  aria-expanded={hintsOpen}
+                  aria-controls="problem-hints"
+                  onClick={() => {
+                    setHintsOpen((open) => !open);
+                    setHintCount((count) => Math.max(count, 1));
+                  }}
+                >
+                  <Lightbulb size={15} />
+                  {english ? 'Hint' : '提示'}
+                </button>
+              )}
+              <select
+                className="cs-statement-language"
+                aria-label="题面语言"
+                value={statementLocale}
+                onChange={(event) => {
+                  const next = event.target.value as ProblemLocale;
+                  setStatementLocale(next);
+                  safeLayoutStorage.setItem('cswork:problem:locale', next);
+                  setHintCount(0);
+                  setHintsOpen(false);
+                }}
+              >
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+              </select>
             </div>
-            <h2>{statement.title}</h2>
-            <div className="cs-limits">
-              <span>{problem.timeLimit} s</span>
-              <span>{problem.memoryLimit / 1024} MB</span>
-              <span>
-                {codingMode === 'leetcode'
-                  ? 'LeetCode'
-                  : english
-                    ? 'Standard input / output'
-                    : '标准输入 / 输出'}
-              </span>
-              {problem.version && <span>v{problem.version}</span>}
-            </div>
+            {topicsOpen && (
+              <div className="cs-statement-topics" id="problem-topics">
+                {problem.tags
+                  .filter((tag) => !/灵神|题单|leetcode|来源/i.test(tag))
+                  .map((tag) => (
+                    <span className="cs-statement-pill" key={tag}>
+                      {tag}
+                    </span>
+                  ))}
+              </div>
+            )}
+            {statementLocale === 'en' && !english && (
+              <output className="cs-statement-language-note">
+                English translation is not available yet. Showing the Chinese
+                statement. / 本题暂无英文题面，显示中文。
+              </output>
+            )}
             <div className="cs-problem-prose">
               {sourceBody && (
                 <>
-                  <LessonMarkdown body={sourceBody} />
+                  <StatementMarkdown body={sourceBody} />
                   {codingMode === 'acm' && (
                     <h3>
                       {english ? 'cswork submission format' : '本站提交格式'}
@@ -872,8 +909,8 @@ function Workspace({
                 </>
               )}
             </div>
-            {!sourceBody && statement.hints.length > 0 && (
-              <div className="cs-hints">
+            {!sourceBody && hintsOpen && statement.hints.length > 0 && (
+              <div className="cs-hints" id="problem-hints">
                 <div>
                   <Lightbulb size={17} />
                   <strong>{english ? 'Hints' : '思路提示'}</strong>
@@ -1656,7 +1693,10 @@ function SettingsDialog({
             <select
               value={settings.fontSize}
               onChange={(event) =>
-                change({ ...settings, fontSize: Number(event.target.value) })
+                change({
+                  ...settings,
+                  fontSize: Number(event.target.value),
+                })
               }
             >
               {[12, 13, 14, 15, 16, 18, 20].map((size) => (
