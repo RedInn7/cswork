@@ -1,0 +1,7 @@
+# Incremental upgrade of an existing verified runner. BASE_IMAGE must be its
+# immutable sha256 ID; fresh installations use the main Dockerfile.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY cpp-json-v1 /tmp/cpp-json-v1
+COPY build-cpp-json.sh /tmp/build-cpp-json.sh
+RUN sh /tmp/build-cpp-json.sh /tmp/cpp-json-v1 && rm -r /tmp/cpp-json-v1 /tmp/build-cpp-json.sh

@@ -1,5 +1,5 @@
 import { readFileSync, mkdirSync, writeFileSync } from 'node:fs';
-import { buildLeetCodeCpp, getLeetCodeCppTemplate } from '../../../lib/server/leetcode-cpp';
+import { buildLeetCodeCpp, getLeetCodeCppTemplate, getLeetCodeCppRuntime } from '../../../lib/server/leetcode-cpp';
 const contracts = JSON.parse(readFileSync('lib/content/leetcode-contracts.json','utf8')).problems;
 const out = process.argv[2];
 if (!out) throw new Error('Output directory required');
@@ -26,7 +26,7 @@ const tests = cases.map(([id, source, input, expected],i)=>{
 });
 writeFileSync(`${out}/cases.json`,JSON.stringify(tests));
 const context=readFileSync('scripts/leetcode-mode/cpp/context.hpp','utf8');
-const runtime=readFileSync('scripts/leetcode-mode/cpp/runtime.hpp','utf8');
+const runtime=getLeetCodeCppRuntime();
 const entries=Object.entries(contracts) as [string,{templates:{cpp:string}}][];
 const batches=[];
 for(let offset=0;offset<entries.length;offset+=25){
