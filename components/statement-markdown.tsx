@@ -44,6 +44,10 @@ function proseText(children: React.ReactNode) {
   });
 }
 
+function StatementStrong({ children }: { children?: React.ReactNode }) {
+  return <strong>{mathText(children)}</strong>;
+}
+
 const components: Components = {
   p: ({ children }) => {
     const parts = Children.toArray(children);
@@ -51,7 +55,7 @@ const components: Components = {
     if (
       parts.length === 1 &&
       isValidElement<{ children?: unknown }>(only) &&
-      only.type === 'strong' &&
+      (only.type === 'strong' || only.type === StatementStrong) &&
       typeof only.props.children === 'string' &&
       /^(?:Example\s*\d*|Constraints|Follow[- ]up|示例\s*[一二三四五\d]*|提示|约束|进阶)\s*[:：]?$/i.test(
         only.props.children.trim(),
@@ -80,7 +84,7 @@ const components: Components = {
   },
   li: ({ children }) => <li>{proseText(children)}</li>,
   code: ({ children }) => <code>{mathText(children)}</code>,
-  strong: ({ children }) => <strong>{mathText(children)}</strong>,
+  strong: StatementStrong,
   em: ({ children }) => <em>{mathText(children)}</em>,
   pre: ({ children }) => {
     const code = Children.toArray(children)[0];
