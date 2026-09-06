@@ -10,8 +10,14 @@ from pathlib import Path
 
 BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3')
 # Reviewed source correction, never automatic trial-and-error selection.
-REFERENCE_FILES = {309: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
+REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
+SECONDARY_REFERENCE_FILES = {1416: 'restore-the-array.py', 2466: 'count-ways-to-build-good-strings.py'}
+SECONDARY_REFERENCE_REASONS = {
+    1416: 'Primary local source and README code blocks are empty. Reviewed secondary implementation uses rolling dynamic programming; xrange is explicitly aliased to range in the sandbox wrapper.',
+    2466: 'Primary cached recursive implementation raises RecursionError on the 100000-length bound in the sandbox; no iterative Python alternative is present in the primary source. Reviewed secondary iterative DP preserves the maximum-size cases; xrange is explicitly aliased to range.',
+}
 REFERENCE_REASONS = {
+    552: 'Downloaded cached recursive Solution.py raises RecursionError at n=100000 in the sandbox. Reviewed Solution2.py uses iterative attendance-state dynamic programming; maximum-size cases are preserved.',
     309: 'Downloaded cached recursive Solution.py raises RecursionError at the 5000-day upper bound in the sandbox. Reviewed Solution2.py uses iterative cooldown dynamic programming; maximum-size cases are preserved.',
     714: 'Downloaded cached recursive Solution.py raises RecursionError at the 50000-day upper bound in the sandbox. Reviewed Solution2.py uses iterative transaction-fee dynamic programming; maximum-size cases are preserved.',
     1510: 'Downloaded cached recursive Solution.py raises RecursionError at n=100000 in the Python sandbox despite the raised recursion limit. Reviewed Solution2.py uses iterative dynamic programming; maximum-size cases are preserved.',
@@ -28,6 +34,7 @@ from heapq import *
 from builtins import pow
 import sys, json, math, collections, functools, itertools, bisect, heapq, string
 sys.setrecursionlimit(1_000_000)
+xrange = range
 '''
 
 def integer(value):
@@ -49,7 +56,12 @@ def checked_args(spec, args):
 def answer(spec, args):
     return integer(spec['oracle'](checked_args(spec, args)))
 
-def reference_source(root, pid):
+def reference_source(root, pid, secondary=None):
+    if pid in SECONDARY_REFERENCE_FILES:
+        if secondary is None:
+            raise ValueError(f'{pid} requires the explicitly reviewed secondary reference directory')
+        path = secondary / SECONDARY_REFERENCE_FILES[pid]
+        return path, path.read_text()
     matches = list(root.glob(f'*/*{pid:04d}.*'))
     if len(matches) != 1:
         raise ValueError(f'Expected exactly one reference directory for {pid}')
@@ -99,7 +111,7 @@ if __name__ == '__main__':
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
 
-def build(pid, spec, library, references, out):
+def build(pid, spec, library, references, out, secondary=None):
     if pid not in library:
         raise ValueError(f'{pid} is outside the Ling study list')
     origin = library[pid]
@@ -127,7 +139,7 @@ def build(pid, spec, library, references, out):
             expectedOutput=str(expected)+'\n', hidden=i != 0, weight=1))
     small = [checked_args(spec, spec['random_args'](rng)) for _ in range(120)]
     oracle = dict(args=small, expected=[answer(spec, args) for args in small])
-    path, source = reference_source(references, pid)
+    path, source = reference_source(references, pid, secondary)
     wrapped = wrapper(spec, source)
     mutations=spec['mutants']
     if (not isinstance(mutations,list) or not mutations
@@ -155,6 +167,10 @@ def build(pid, spec, library, references, out):
     (out/(ident+'.oracle.json')).write_text(json.dumps(oracle))
     (out/(ident+'.mutants.json')).write_bytes(mutation_raw)
     selection = {}
+    if pid in SECONDARY_REFERENCE_FILES:
+        selection = dict(referenceSelection=dict(strategy='explicit-reviewed-secondary',
+            provider='kamyu104/LeetCode', license='MIT', selectedFile=path.name,
+            reason=SECONDARY_REFERENCE_REASONS[pid]))
     if pid in REFERENCE_FILES:
         rejected = path.parent/'Solution.py'
         selection = dict(referenceSelection=dict(strategy='explicit-reviewed-override',
@@ -170,6 +186,7 @@ def main():
     parser.add_argument('--batch',choices=BATCHES,required=True)
     parser.add_argument('--library',type=Path,required=True)
     parser.add_argument('--references',type=Path,required=True)
+    parser.add_argument('--secondary-references',type=Path)
     parser.add_argument('--out',type=Path,required=True)
     parser.add_argument('--ids',help='Optional comma-separated retry subset')
     args=parser.parse_args()
@@ -190,7 +207,7 @@ def main():
         library[number]=row
     records=[]
     for pid in sorted(wanted):
-        records.append(build(pid,specs[pid],library,args.references,args.out))
+        records.append(build(pid,specs[pid],library,args.references,args.out,args.secondary_references))
         print(f'Generated lc-{pid}: {records[-1]["formalCases"]} formal, 120 oracle',flush=True)
     temporary=args.out/'.manifest.json.tmp'
     temporary.write_text(json.dumps(dict(seed=20260906,batch=args.batch,problems=records),ensure_ascii=False,indent=2)+'\n')

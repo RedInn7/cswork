@@ -14,6 +14,15 @@ import coverage
 from generate_batch import integer, checked_args, answer, wrapper
 
 class BatchTests(unittest.TestCase):
+    def test_secondary_reference_requires_explicit_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            with self.assertRaisesRegex(ValueError,'secondary reference directory'):
+                generate_batch.reference_source(root,1416)
+            with self.assertRaises(FileNotFoundError):generate_batch.reference_source(root,1416,root)
+            p=root/'restore-the-array.py';p.write_text('class Solution: pass\n')
+            self.assertEqual(generate_batch.reference_source(root,1416,root),(p,p.read_text()))
+
     def test_source_metadata_controls_identity_and_difficulty(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);folder=root/'group'/'0001.Fixture';folder.mkdir(parents=True)
