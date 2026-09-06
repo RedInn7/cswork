@@ -250,6 +250,8 @@ export const submissions = sqliteTable(
     memory: integer('memory'),
     message: text('message'),
     mode: text('mode').notNull().default('judge'),
+    codingMode: text('coding_mode').notNull().default('acm'),
+    harnessVersion: text('harness_version'),
     problemVersionId: text('problem_version_id'),
     practiceRoundId: text('practice_round_id').references(
       () => practiceRounds.id,

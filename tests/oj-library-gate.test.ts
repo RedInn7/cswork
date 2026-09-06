@@ -182,6 +182,109 @@ void test('validated canonical and mapped library questions allow public read an
   }
 });
 
+void test('LeetCode submissions preserve raw code, isolate request identity and expose mode in history', async () => {
+  const person = { ...student, id: 'coding-mode-student' };
+  const selectedVersion = await publish('lc-1');
+  sqlite()
+    .prepare(
+      "INSERT INTO study_library(id,number,slug,title_zh,title_en,difficulty,topics_json,payload_json,content_hash,case_count,expected_count,judge_problem_id,verified_hash,imported_at) VALUES('lc-1',1,'two-sum','两数之和','Two Sum','简单','[]','{}','source',2,2,'lc-1',?,0)",
+    )
+    .run(`source:${selectedVersion}`);
+  const raw =
+    'class Solution:\n    def twoSum(self, nums, target):\n        return [0, 1]\n';
+  const key = randomUUID();
+  const legacy = await createSubmission(person, {
+    ...input('lc-1'),
+    code: raw,
+    idempotencyKey: key,
+  });
+  await cancelSubmission(person, legacy.id);
+  const lc = await createSubmission(person, {
+    ...input('lc-1'),
+    code: raw,
+    codingMode: 'leetcode',
+  });
+  await cancelSubmission(person, lc.id);
+  const row = (id: string) =>
+    sqlite()
+      .prepare(
+        'SELECT code,coding_mode,harness_version,request_hash FROM submissions WHERE id=?',
+      )
+      .get(id) as {
+      code: string;
+      coding_mode: string;
+      harness_version: string | null;
+      request_hash: string;
+    };
+  assert.equal(row(legacy.id).coding_mode, 'acm');
+  assert.equal(row(legacy.id).harness_version, null);
+  assert.equal(row(lc.id).coding_mode, 'leetcode');
+  assert.match(row(lc.id).harness_version || '', /^[a-f0-9]{64}$/);
+  assert.equal(row(lc.id).code, raw);
+  assert.notEqual(row(legacy.id).request_hash, row(lc.id).request_hash);
+  await assert.rejects(
+    createSubmission(person, {
+      ...input('lc-1'),
+      code: raw,
+      codingMode: 'leetcode',
+      idempotencyKey: key,
+    }),
+    (e: unknown) =>
+      Boolean(e && typeof e === 'object' && 'status' in e && e.status === 409),
+  );
+  const replay = await createSubmission(person, {
+    ...input('lc-1'),
+    code: raw,
+    codingMode: 'acm',
+    idempotencyKey: key,
+  });
+  assert.equal(replay.id, legacy.id);
+  const detail = await handleOj(
+    new Request(`https://cswork.test/api/oj/submissions/${lc.id}`),
+    person,
+    ['submissions', lc.id],
+  );
+  const body = await detail.json();
+  assert.equal(body.codingMode, 'leetcode');
+  assert.equal(body.code, raw);
+  const history = await handleOj(
+    new Request('https://cswork.test/api/oj/submissions?problemId=lc-1'),
+    person,
+    ['submissions'],
+  );
+  const items = (await history.json()).items;
+  assert.equal(
+    items.find((item: { id: string }) => item.id === lc.id).codingMode,
+    'leetcode',
+  );
+  assert.equal(
+    items.find((item: { id: string }) => item.id === legacy.id).codingMode,
+    'acm',
+  );
+  const supported = await handleOj(
+    new Request('https://cswork.test/api/oj/problems/lc-1'),
+    person,
+    ['problems', 'lc-1'],
+  );
+  const supportedBody = await supported.json();
+  assert.deepEqual(supportedBody.codingModes, ['leetcode', 'acm']);
+  assert.match(
+    supportedBody.leetcodeTemplates.python,
+    /def twoSum\(self, nums: List\[int\], target: int\) -> List\[int\]:/,
+  );
+  const unsupported = await handleOj(
+    new Request(`https://cswork.test/api/oj/problems/${courseId}`),
+    person,
+    ['problems', courseId],
+  );
+  assert.deepEqual((await unsupported.json()).codingModes, ['acm']);
+  await assert.rejects(
+    createSubmission(person, { ...input(courseId), codingMode: 'leetcode' }),
+    (e: unknown) =>
+      Boolean(e && typeof e === 'object' && 'status' in e && e.status === 400),
+  );
+});
+
 void test('workspace serves full bilingual statements separately without changing judge data or leaking private source fields', async () => {
   const sourceStatement = {
     descriptionZh: '完整题意\n\n**示例：**\n\n约束条件：`1 <= n <= 100`。',

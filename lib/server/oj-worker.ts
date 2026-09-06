@@ -1,4 +1,5 @@
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
+import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
@@ -139,12 +140,37 @@ async function judge(job: Job<{ submissionId: string }>) {
       totalSeconds * 1000,
     );
     current(id, attempt, controller.signal);
+    if (
+      claimed.coding_mode === 'leetcode' &&
+      claimed.harness_version !== LEETCODE_HARNESS_VERSION
+    ) {
+      update(id, attempt, {
+        status: 'system_error',
+        message: '函数驱动版本已更新，请重新提交；原代码已保留。',
+        finished_at: Date.now(),
+      });
+      return;
+    }
+    const wrapped =
+      claimed.coding_mode === 'leetcode'
+        ? leetcodeSource(
+            snapshot.spec.id,
+            claimed.language,
+            claimed.code,
+            snapshot.spec.memoryLimit,
+          )
+        : { source: claimed.code };
     const compiled = await compile(
       claimed.language,
-      claimed.code,
+      wrapped.source,
       controller.signal,
     );
     program = compiled.program;
+    program.bridgeSource = wrapped.bridgeSource;
+    program.leetcodeInput =
+      claimed.coding_mode === 'leetcode' &&
+      claimed.mode === 'run' &&
+      claimed.custom_input !== null;
     current(id, attempt, controller.signal);
     if (compiled.result.status !== 'Accepted') {
       update(id, attempt, {
@@ -173,6 +199,18 @@ async function judge(job: Job<{ submissionId: string }>) {
             },
           ]
         : snapshot.cases.filter((c) => claimed.mode === 'judge' || !c.hidden);
+    if (program.leetcodeInput && ['lc-297', 'lc-449'].includes(snapshot.spec.id)) {
+      // The codec driver still receives two isolated serialize/deserialize
+      // phases; the custom editor accepts the original level-order tree.
+      try {
+        const tree: unknown = JSON.parse(claimed.custom_input!);
+        if (!Array.isArray(tree)) throw new Error('Expected a level-order tree');
+        cases[0].input = JSON.stringify([['Codec', 'roundTrip'], [[], [tree]]]) + '\n';
+      } catch {
+        update(id, attempt, { status: 'runtime_error', message: 'Codec 自定义输入应是一行 JSON 层序树数组，例如 [1,2,3,null,4]。', finished_at: Date.now() });
+        return;
+      }
+    }
     let passed = 0,
       weight = 0,
       runtime = 0,

@@ -1,4 +1,5 @@
 import type { Problem, Language } from './problems';
+import type { CodingMode } from './coding-mode';
 
 export type OJProblem = Problem & {
   courseId?: string;
@@ -9,6 +10,9 @@ export type OJProblem = Problem & {
   languageVersions?: Partial<Record<Language, string>>;
   samples?: { name: string; input: string; expectedOutput: string }[];
   judgeAvailable?: boolean;
+  codingModes?: CodingMode[];
+  leetcodeTemplates?: Partial<Record<Language, string>>;
+  leetcodeInputHelp?: { zh: string; en: string } | null;
   practiceRound?: { id: string; number: number } | null;
   sourceStatement?: {
     descriptionZh: string;
@@ -33,6 +37,7 @@ export type OJSubmission = {
   id: string;
   problem_id: string;
   language: Language;
+  codingMode?: CodingMode;
   status: string;
   mode: 'judge' | 'run';
   passed: number;

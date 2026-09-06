@@ -51,6 +51,7 @@ import {
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
 import { LessonMarkdown } from './lms-shared';
+import type { CodingMode } from '@/lib/coding-mode';
 import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
   CopyBlock,
@@ -93,7 +94,12 @@ type WorkspaceProps = {
   ask: (context: Record<string, string>) => void;
   refresh: () => Promise<void>;
 };
-type ReplaceRequest = { code: string; language: Language; title: string };
+type ReplaceRequest = {
+  code: string;
+  language: Language;
+  title: string;
+  codingMode: CodingMode;
+};
 const safeLayoutStorage = {
   getItem(key: string) {
     try {
@@ -129,6 +135,8 @@ function Workspace({
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
   const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [codingMode, setCodingMode] = useState<CodingMode>('leetcode');
+  const [loadedProblem, setLoadedProblem] = useState<OJProblem | null>(null);
   const [practiceRound, setPracticeRound] =
     useState<OJProblem['practiceRound']>(null);
   const [roundRefresh, setRoundRefresh] = useState(0);
@@ -168,15 +176,19 @@ function Workspace({
       : problem.sourceStatement.descriptionZh ||
         problem.sourceStatement.descriptionEn
     : '';
-  const sourceUrl = problem.sourceStatement
-    ? english
-      ? problem.sourceStatement.sourceEnUrl
-      : problem.sourceStatement.sourceUrl
-    : '';
   const [settings, setSettings] = useState<EditorSettings>(
     defaultEditorSettings,
   );
   const [language, setLanguage] = useState<Language>('python');
+  const editorFile =
+    codingMode === 'leetcode'
+      ? {
+          python: 'solution.py',
+          cpp: 'solution.cpp',
+          java: 'Solution.java',
+          go: 'solution.go',
+        }[language]
+      : languageFiles[language];
   const [code, setCode] = useState(starters.python);
   const [ready, setReady] = useState(false);
   const [saveStatus, setSaveStatus] = useState('准备草稿…');
@@ -340,18 +352,35 @@ function Workspace({
   }, []);
 
   useEffect(() => {
+    if (!loadedProblem) return;
     alive.current = true;
     setSettings(readEditorSettings(userId));
     let chosen: Language = 'python';
+    const initialMode: CodingMode = loadedProblem.codingModes?.includes(
+      'leetcode',
+    )
+      ? 'leetcode'
+      : 'acm';
+    setCodingMode(initialMode);
+    const template = (lang: Language) =>
+      initialMode === 'leetcode'
+        ? loadedProblem.leetcodeTemplates?.[lang] || ''
+        : starters[lang];
     try {
       const storedLanguage = localStorage.getItem(
         `cswork:editor:language:${userId}`,
       );
       if (languages.some((item) => item.id === storedLanguage))
         chosen = storedLanguage as Language;
-      const stored = readEditorDraft(userId, initialProblem.id, chosen);
+      const stored = readEditorDraft(
+        userId,
+        initialProblem.id,
+        chosen,
+        initialMode,
+        template(chosen),
+      );
       draft.current = {
-        key: draftStorageKey(userId, initialProblem.id, chosen),
+        key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
         code: stored.code,
       };
       setLanguage(chosen);
@@ -361,9 +390,11 @@ function Workspace({
       );
     } catch {
       draft.current = {
-        key: draftStorageKey(userId, initialProblem.id, chosen),
-        code: starters[chosen],
+        key: draftStorageKey(userId, initialProblem.id, chosen, initialMode),
+        code: template(chosen),
       };
+      setLanguage(chosen);
+      setCode(template(chosen));
       setSaveError('浏览器存储不可用。你仍可编写代码，请及时下载备份。');
     }
     setReady(true);
@@ -379,7 +410,7 @@ function Workspace({
       window.removeEventListener('pagehide', save);
       document.removeEventListener('visibilitychange', visibility);
     };
-  }, [userId, initialProblem.id, persistDraft]);
+  }, [userId, initialProblem.id, persistDraft, loadedProblem]);
 
   useEffect(() => {
     const query = window.matchMedia('(max-width: 900px)');
@@ -404,7 +435,10 @@ function Workspace({
       undefined,
       controller.signal,
     )
-      .then(setProblem)
+      .then((next) => {
+        setProblem(next);
+        setLoadedProblem((previous) => previous || next);
+      })
       .catch((e) => {
         if (!controller.signal.aborted) setProblemError((e as Error).message);
       });
@@ -509,21 +543,41 @@ function Workspace({
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => persistDraft(), 350);
   }
-  function switchLanguage(next: Language, override?: string) {
+  function templateFor(next: Language, mode: CodingMode) {
+    return mode === 'leetcode'
+      ? problem.leetcodeTemplates?.[next] || ''
+      : starters[next];
+  }
+  function switchLanguage(
+    next: Language,
+    override?: string,
+    mode: CodingMode = codingMode,
+  ) {
     persistDraft();
-    let nextCode = starters[next];
+    let nextCode = templateFor(next, mode);
     try {
-      nextCode = readEditorDraft(userId, problem.id, next).code;
+      nextCode = readEditorDraft(
+        userId,
+        problem.id,
+        next,
+        mode,
+        templateFor(next, mode),
+      ).code;
       localStorage.setItem(`cswork:editor:language:${userId}`, next);
     } catch {
       setSaveError('浏览器存储不可用，请及时下载代码备份。');
     }
     draft.current = {
-      key: draftStorageKey(userId, problem.id, next),
+      key: draftStorageKey(userId, problem.id, next, mode),
       code: override ?? nextCode,
     };
     draftDirty.current = override !== undefined;
     setLanguage(next);
+    if (mode !== codingMode) {
+      setStdin('');
+      setInputMode('sample');
+    }
+    setCodingMode(mode);
     setCode(override ?? nextCode);
     setCursor({ line: 1, column: 1 });
     persistDraft();
@@ -542,7 +596,7 @@ function Workspace({
     );
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `${problem.id}-${languageFiles[language]}`;
+    anchor.download = `${problem.id}-${codingMode}-${editorFile}`;
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -567,6 +621,7 @@ function Workspace({
       problemId: problem.id,
       language,
       code,
+      codingMode,
       mode,
       ...(mode === 'run' && inputMode === 'custom' ? { stdin } : {}),
     };
@@ -593,6 +648,7 @@ function Workspace({
         problem_id: problem.id,
         language,
         code,
+        codingMode,
         mode,
         passed: 0,
         total: 0,
@@ -764,92 +820,89 @@ function Workspace({
               <span>{problem.timeLimit} s</span>
               <span>{problem.memoryLimit / 1024} MB</span>
               <span>
-                {english ? 'Standard input / output' : '标准输入 / 输出'}
+                {codingMode === 'leetcode'
+                  ? 'LeetCode'
+                  : english
+                    ? 'Standard input / output'
+                    : '标准输入 / 输出'}
               </span>
               {problem.version && <span>v{problem.version}</span>}
             </div>
             <div className="cs-problem-prose">
               {sourceBody && (
                 <>
-                  <p>
-                    {english
-                      ? 'The full problem below includes the original examples and constraints. For submissions here, read standard input and write standard output using the cswork format below; you do not submit only the original function or class.'
-                      : '下方保留完整题意、原题示例与约束。在本站提交时，请按下方「本站提交格式」读取标准输入、输出结果，不是只提交原题中的函数或类。'}
-                  </p>
                   <LessonMarkdown body={sourceBody} />
-                  {problem.sourceStatement?.attribution && (
-                    <p>{problem.sourceStatement.attribution}</p>
+                  {codingMode === 'acm' && (
+                    <h3>
+                      {english ? 'cswork submission format' : '本站提交格式'}
+                    </h3>
                   )}
-                  {sourceUrl && (
-                    <p>
-                      <a href={sourceUrl} target="_blank" rel="noreferrer">
-                        {english ? 'Original problem' : '原题链接'}
-                      </a>
-                    </p>
-                  )}
-                  <h3>
-                    {english ? 'cswork submission format' : '本站提交格式'}
-                  </h3>
                 </>
               )}
-              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.description}</p>
-              <h3>{english ? 'Input' : '输入格式'}</h3>
-              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.input}</p>
-              <h3>{english ? 'Output' : '输出格式'}</h3>
-              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
-              <h3>{english ? 'Examples' : '样例'}</h3>
-              {samples.map((item) => (
-                <div key={item.name}>
-                  <h4>{samples.length > 1 ? item.name : null}</h4>
-                  <CopyBlock
-                    label={english ? 'Input' : '输入'}
-                    value={item.input}
-                  />
-                  <CopyBlock
-                    label={english ? 'Output' : '输出'}
-                    value={item.expectedOutput}
-                  />
+              {codingMode === 'acm' && (
+                <>
+                  {!sourceBody && (
+                    <p style={{ whiteSpace: 'pre-wrap' }}>
+                      {statement.description}
+                    </p>
+                  )}
+                  <h3>{english ? 'Input' : '输入格式'}</h3>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{statement.input}</p>
+                  <h3>{english ? 'Output' : '输出格式'}</h3>
+                  <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
+                  <h3>{english ? 'Examples' : '样例'}</h3>
+                  {samples.map((item) => (
+                    <div key={item.name}>
+                      <h4>{samples.length > 1 ? item.name : null}</h4>
+                      <CopyBlock
+                        label={english ? 'Input' : '输入'}
+                        value={item.input}
+                      />
+                      <CopyBlock
+                        label={english ? 'Output' : '输出'}
+                        value={item.expectedOutput}
+                      />
+                    </div>
+                  ))}
+                  {!sourceBody && (
+                    <p style={{ whiteSpace: 'pre-wrap' }}>
+                      {statement.explanation}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+            {!sourceBody && statement.hints.length > 0 && (
+              <div className="cs-hints">
+                <div>
+                  <Lightbulb size={17} />
+                  <strong>{english ? 'Hints' : '思路提示'}</strong>
+                  <span>
+                    {Math.min(hintCount, statement.hints.length)} /{' '}
+                    {statement.hints.length}
+                  </span>
                 </div>
-              ))}
-              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.explanation}</p>
-            </div>
-            <div className="cs-hints">
-              <div>
-                <Lightbulb size={17} />
-                <strong>{english ? 'Hints' : '思路提示'}</strong>
-                <span>
-                  {Math.min(hintCount, statement.hints.length)} /{' '}
-                  {statement.hints.length}
-                </span>
+                {statement.hints.slice(0, hintCount).map((hint, index) => (
+                  <p key={hint}>
+                    <b>{index + 1}</b>
+                    {hint}
+                  </p>
+                ))}
+                <button
+                  disabled={hintCount >= statement.hints.length}
+                  onClick={() => setHintCount((n) => n + 1)}
+                >
+                  {hintCount >= statement.hints.length
+                    ? english
+                      ? 'All hints shown'
+                      : '已展开全部提示'
+                    : english
+                      ? 'Show next hint'
+                      : '需要时，展开下一条'}
+                  <ChevronRight size={14} />
+                </button>
               </div>
-              {statement.hints.slice(0, hintCount).map((hint, index) => (
-                <p key={hint}>
-                  <b>{index + 1}</b>
-                  {hint}
-                </p>
-              ))}
-              <button
-                disabled={hintCount >= statement.hints.length}
-                onClick={() => setHintCount((n) => n + 1)}
-              >
-                {hintCount >= statement.hints.length
-                  ? english
-                    ? 'All hints shown'
-                    : '已展开全部提示'
-                  : english
-                    ? 'Show next hint'
-                    : '需要时，展开下一条'}
-                <ChevronRight size={14} />
-              </button>
-            </div>
-            <button
-              className="cs-course-link"
-              onClick={() => navigate('lesson', { lesson: problem.lessonId })}
-            >
-              <BookOpen size={16} />
-              <span>回到相关课程</span>
-              <ChevronRight size={15} />
-            </button>
+            )}
           </>
         ) : (
           <div className="cs-history-pane">
@@ -898,6 +951,8 @@ function Workspace({
                         : '测试运行'
                       : `${item.passed} / ${item.total} ${english ? 'passed' : '通过'}`}{' '}
                     · {item.language}
+                    {' · '}
+                    {item.codingMode === 'leetcode' ? 'LeetCode' : 'ACM'}
                     {item.practiceRoundNumber
                       ? ` · ${english ? 'Round ' + item.practiceRoundNumber : '第 ' + item.practiceRoundNumber + ' 轮'}`
                       : ''}
@@ -953,10 +1008,27 @@ function Workspace({
       <div className="cs-code-caption">
         <Code2 size={15} />
         <strong>代码</strong>
-        <span>{languageFiles[language]}</span>
+        <span>{editorFile}</span>
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
+          <select
+            aria-label="提交模式"
+            value={codingMode}
+            disabled={!ready}
+            onChange={(event) =>
+              switchLanguage(
+                language,
+                undefined,
+                event.target.value as CodingMode,
+              )
+            }
+          >
+            {(problem.codingModes || ['acm']).includes('leetcode') && (
+              <option value="leetcode">LeetCode</option>
+            )}
+            <option value="acm">ACM</option>
+          </select>
           <select
             aria-label="编程语言"
             value={language}
@@ -987,7 +1059,8 @@ function Workspace({
             onClick={() =>
               setReplaceRequest({
                 language,
-                code: starters[language],
+                codingMode,
+                code: templateFor(language, codingMode),
                 title: '重置当前语言的代码？',
               })
             }
@@ -1020,7 +1093,7 @@ function Workspace({
             <div className="cs-code-area">
               {ready ? (
                 <CodeEditor
-                  key={language}
+                  key={`${codingMode}:${language}`}
                   value={code}
                   language={language}
                   problemId={problem.id}
@@ -1029,7 +1102,7 @@ function Workspace({
                     suggest.current = action;
                   }}
                   onChange={updateCode}
-                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${languageFiles[language]}`}
+                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}
                   settings={settings}
                   onRun={() => submit('run')}
                   onSubmit={() => submit('judge')}
@@ -1185,25 +1258,47 @@ function Workspace({
                         )}
                         <span>运行时检查全部 {samples.length} 个公开样例</span>
                       </div>
-                      <div className="cs-sample-pair">
-                        <CopyBlock label="标准输入" value={sample.input} />
-                        <CopyBlock
-                          label="期望输出"
-                          value={sample.expectedOutput}
-                        />
-                      </div>
+                      {codingMode === 'leetcode' ? (
+                        <p className="cs-console-note">
+                          {english
+                            ? 'Run calls your function or class using the public test cases. See the full statement for the original examples.'
+                            : '运行会自动将公开测试数据传给你的函数或类。原题示例可在左侧完整题面查看。'}
+                        </p>
+                      ) : (
+                        <div className="cs-sample-pair">
+                          <CopyBlock label="标准输入" value={sample.input} />
+                          <CopyBlock
+                            label="期望输出"
+                            value={sample.expectedOutput}
+                          />
+                        </div>
+                      )}
                     </>
                   ) : (
                     <>
                       <textarea
                         className="cs-custom-input"
-                        aria-label="自定义标准输入"
+                        aria-label={
+                          codingMode === 'leetcode'
+                            ? '自定义函数参数'
+                            : '自定义标准输入'
+                        }
                         value={stdin}
                         onChange={(event) => setStdin(event.target.value)}
-                        placeholder="在这里输入数据，支持空输入。"
+                        placeholder={
+                          codingMode === 'leetcode'
+                            ? '按题目参数顺序，每行输入一个 JSON 值。例如两数之和：\n[2,7,11,15]\n9'
+                            : '在这里输入数据，支持空输入。'
+                        }
                         spellCheck={false}
                       />
                       <p className="cs-console-note">
+                        {codingMode === 'leetcode' &&
+                          (problem.leetcodeInputHelp
+                            ? problem.leetcodeInputHelp[english ? 'en' : 'zh']
+                            : ['lc-297', 'lc-449'].includes(problem.id)
+                              ? 'Codec 题输入一行 JSON 层序树数组，例如 [1,2,3,null,4]，平台会分别验证序列化和反序列化。'
+                              : '每行一个 JSON 参数；设计题第一行操作名数组，第二行对应参数数组。树和链表使用原题的数组表示。')}
                         自定义输入展示程序输出；提交时会运行题目的全部测试点。
                       </p>
                     </>
@@ -1481,7 +1576,11 @@ function Workspace({
             <AlertDialogAction
               onClick={() => {
                 if (replaceRequest)
-                  switchLanguage(replaceRequest.language, replaceRequest.code);
+                  switchLanguage(
+                    replaceRequest.language,
+                    replaceRequest.code,
+                    replaceRequest.codingMode,
+                  );
                 setReplaceRequest(null);
               }}
             >
@@ -1502,6 +1601,7 @@ function Workspace({
           setReplaceRequest({
             code: item.code,
             language: item.language,
+            codingMode: item.codingMode || 'acm',
             title: '恢复这份提交代码？',
           });
         }}
