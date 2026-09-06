@@ -84,8 +84,8 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     output: 'ACM OUTPUT',
     explanation: '',
     hints: [],
-    sampleIn: 'sample',
-    sampleOut: 'result',
+    sampleIn: '4\n2 7 11 15\n9\n',
+    sampleOut: '2\n0 1\n',
     languages: ['python', 'java'],
     translations: {
       en: {
@@ -215,6 +215,18 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       null,
     );
     assert.equal(editor().value, templates.python);
+    assert.match(
+      document.querySelector('.cs-sample-pair').textContent,
+      /nums = \[2,7,11,15\]/,
+    );
+    assert.match(
+      document.querySelector('.cs-sample-pair').textContent,
+      /target = 9/,
+    );
+    assert.match(
+      document.querySelector('.cs-sample-pair').textContent,
+      /\[0,1\]/,
+    );
     assert.equal(
       document.querySelector('.cs-statement-heading h2').textContent,
       '1. 两数之和',
@@ -312,6 +324,10 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.match(
       document.querySelector('.cs-accepted-banner').textContent,
       /通过了.*2 \/ 2/,
+    );
+    assert.ok(
+      document.querySelector('.cs-accepted-banner').closest('[role="dialog"]'),
+      'formal AC must open a result dialog, not only an inline banner',
     );
     assert.equal(progressEvents, 1);
     await click(button('查看刷题进度'));

@@ -1690,3 +1690,84 @@ button.cs-statement-pill[aria-expanded='true'] {
     font-size: 16px;
   }
 }
+
+/* Formal submission feedback is a modal so it is visible at any scroll position. */
+.cs-accepted-dialog {
+  width: min(440px, calc(100vw - 32px));
+  max-width: 440px;
+  padding: 0;
+  overflow: hidden;
+  border-radius: 20px;
+}
+.cs-accepted-dialog .cs-accepted-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 38px 26px 26px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: linear-gradient(180deg, #edfaf2, #fff 76%);
+  color: #166534;
+  text-align: center;
+}
+.cs-accepted-seal {
+  display: grid;
+  place-items: center;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #d8f6e3;
+  box-shadow: 0 0 0 8px #e7f9ee;
+}
+.cs-accepted-dialog .cs-accepted-title {
+  color: #15803d;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.2;
+}
+.cs-accepted-title span {
+  display: block;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.cs-accepted-dialog [data-slot='dialog-description'] {
+  color: #50645a;
+  line-height: 1.7;
+}
+.cs-accepted-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 6px;
+}
+.cs-accepted-dialog .cs-accepted-library,
+.cs-accepted-continue {
+  justify-content: center;
+  margin: 0;
+  padding: 11px 15px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.cs-accepted-continue {
+  border: 1px solid #15803d;
+  color: #fff;
+  background: #15803d;
+}
+.cs-accepted-dialog .cs-accepted-dismiss {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  cursor: pointer;
+}
+.cs-accepted-dialog button:focus-visible {
+  outline: 3px solid #4ade80;
+  outline-offset: 3px;
+}
