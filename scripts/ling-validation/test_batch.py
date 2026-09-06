@@ -14,6 +14,31 @@ import coverage
 from generate_batch import integer, checked_args, answer, wrapper
 
 class BatchTests(unittest.TestCase):
+    def test_secondary_reference_requires_explicit_directory(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            with self.assertRaisesRegex(ValueError,'secondary reference directory'):
+                generate_batch.reference_source(root,1416)
+            with self.assertRaises(FileNotFoundError):generate_batch.reference_source(root,1416,root)
+            p=root/'restore-the-array.py';p.write_text('class Solution: pass\n')
+            self.assertEqual(generate_batch.reference_source(root,1416,root),(p,p.read_text()))
+
+    def test_source_metadata_controls_identity_and_difficulty(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);folder=root/'group'/'0001.Fixture';folder.mkdir(parents=True)
+            (folder/'Solution.py').write_text('class Solution:\n    def solve(self,x): return x\n')
+            spec=dict(method='solve',difficulty='简单',titleZh='测试',titleEn='Fixture',
+                descriptionZh='测试',descriptionEn='Fixture',inputZh='整数',inputEn='Integer',
+                outputZh='整数',outputEn='Integer',edges=[[1]],pressure=[([2],2)],
+                validate=lambda a: True,oracle=lambda a:a[0],random_args=lambda r:[1],
+                encode=lambda a:str(a[0])+'\n',parse='args=[1]',mutants=[{'name':'wrong','source':'print(0)'}])
+            origin=dict(signature={'name':'other'},difficulty='困难',sourceUrl='https://example.test/zh',sourceEnUrl='https://example.test/en')
+            with self.assertRaisesRegex(ValueError,'method does not match'):
+                generate_batch.build(1,spec,{1:origin},root,root)
+            origin['signature']['name']='solve '
+            generate_batch.build(1,spec,{1:origin},root,root)
+            self.assertEqual(json.loads((root/'lc-1.candidate.json').read_text())['problem']['difficulty'],'困难')
+
     def test_scalar_contract(self):
         self.assertEqual(integer(True),1)
         for bad in (1.0,'1',None,[],{}):
