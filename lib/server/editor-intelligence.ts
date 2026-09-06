@@ -127,7 +127,7 @@ export async function handleEditorIntelligence(
           cppContext: getLeetCodeCppContext(
             contract.number,
             contract.templates.cpp,
-            'code' in data ? data.code : undefined,
+            'code' in data && typeof data.code === 'string' ? data.code : undefined,
           ),
         }
       : {}),
