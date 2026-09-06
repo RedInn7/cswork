@@ -3,8 +3,8 @@ import json
 import re
 from collections import Counter
 
-SEMANTIC_IDS=(5,1044,1092,1249,767,1405,162,324,870,368,210,269,373,2392,701,108,450,109,1171)
-SEMANTIC_KINDS={**{i:'string' for i in (5,1044,1092,1249,767,1405,269)},162:'integer',**{i:'integer-array' for i in (324,870,368,210,1171)},373:'integer-rows',2392:'integer-rows',**{i:'nullable-integer-array' for i in (701,108,450,109)}}
+SEMANTIC_IDS=(5,1044,1092,1249,767,1405,162,324,870,368,210,269,373,2392,701,108,450,109,1171,708,652)
+SEMANTIC_KINDS={**{i:'string' for i in (5,1044,1092,1249,767,1405,269)},162:'integer',**{i:'integer-array' for i in (324,870,368,210,1171,708,652)},373:'integer-rows',2392:'integer-rows',**{i:'nullable-integer-array' for i in (701,108,450,109)}}
 
 def semantic_checker_id(checker):
  for pid in SEMANTIC_IDS:
@@ -90,6 +90,29 @@ def matches_semantic(pid,actual,expected,input):
   def bad_constant(x):raise ValueError('non JSON constant')
   args=json.loads(input,parse_constant=bad_constant)
   if type(args)is not list or type(pid)is not int:return False
+  if pid==708:
+   if len(args)!=2 or type(args[0])is not list or any(type(v)is not int or abs(v)>MAX_SAFE for v in args[0]) or type(args[1])is not int:return False
+   original,value=args;got=integers(actual)
+   if len(got)!=len(original)+1:return False
+   if not original:return got==[value]
+   if got[0]!=original[0] or sum(got[i]>got[(i+1)%len(got)] for i in range(len(got)))>1:return False
+   j=0;skipped=False
+   for v in got:
+    if j<len(original) and v==original[j]:j+=1
+    elif not skipped and v==value:skipped=True
+    else:return False
+   return j==len(original) and skipped
+  if pid==652:
+   if len(args)!=1:return False
+   nodes=tree(args[0]);got=integers(actual)
+   signatures={};by_node={None:0};counts=Counter()
+   for i in range(len(nodes)-1,-1,-1):
+    v,left,right=nodes[i];key=(v,by_node[left],by_node[right])
+    signature=signatures.setdefault(key,len(signatures)+1);by_node[i]=signature;counts[signature]+=1
+   wanted={signature for signature,count in counts.items() if count>1}
+   if any(i<0 or i>=len(nodes) for i in got):return False
+   actual_signatures=[by_node[i] for i in got]
+   return len(actual_signatures)==len(wanted) and set(actual_signatures)==wanted
   if pid in (5,1044,1092,1249,767,1405,269):
    got,want=line(actual),line(expected)
    if pid==5:return len(got)==len(want) and got in args[0] and got==got[::-1]
@@ -121,7 +144,7 @@ def matches_semantic(pid,actual,expected,input):
   if pid==162:
    value=re.sub('^'+SPACE+'+|'+SPACE+'+$','',actual);i=number(value);nums=args[0]
    return 0<=i<len(nums) and (i==0 or nums[i]>nums[i-1]) and (i==len(nums)-1 or nums[i]>nums[i+1])
-  if pid in (324,870,368,210,1171):
+  if pid in (324,870,368,210,1171,708,652):
    got,want=integers(actual),integers(expected)
    if pid==324:return Counter(got)==Counter(args[0]) and all(v>got[i-1] if i%2 else v<got[i-1] for i,v in enumerate(got) if i)
    if pid==870:return Counter(got)==Counter(args[0]) and sum(x>y for x,y in zip(got,args[1]))==sum(x>y for x,y in zip(want,args[1]))

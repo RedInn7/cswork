@@ -1,0 +1,226 @@
+[
+  {
+    "name": "scalar ordinary",
+    "actual": "1.234567",
+    "expected": "1.234568",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "relative large",
+    "actual": "1000000001",
+    "expected": "1000000000",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "outside",
+    "actual": "1.001",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "infinite",
+    "actual": "Infinity",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "nan",
+    "actual": "NaN",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "overflow",
+    "actual": "1e309",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "hex",
+    "actual": "0x10",
+    "expected": "16",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "unicode",
+    "actual": "\u00a01",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "empty",
+    "actual": "",
+    "expected": "0",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "extra",
+    "actual": "1 1",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "vector",
+    "actual": "3\n1 -1 2.000001",
+    "expected": "3\n1 -1 2",
+    "array": true,
+    "matches": true
+  },
+  {
+    "name": "unknown sentinel",
+    "actual": "1 -0.999999",
+    "expected": "1 -1",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "count",
+    "actual": "2 1",
+    "expected": "1 1",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "no count",
+    "actual": "1",
+    "expected": "1 1",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "empty vector",
+    "actual": "0",
+    "expected": "0",
+    "array": true,
+    "matches": true
+  },
+  {
+    "name": "signed zero",
+    "actual": "-0",
+    "expected": "+0",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "fraction exponent",
+    "actual": ".5e+2",
+    "expected": "50.",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "negative relative",
+    "actual": "-1000000001",
+    "expected": "-1000000000",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "negative unknown not approximate",
+    "actual": "1 -1.000000001",
+    "expected": "1 -1",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "vector order retained",
+    "actual": "2 2 1",
+    "expected": "2 1 2",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "bool",
+    "actual": "true",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "bare decimal",
+    "actual": ".",
+    "expected": "0",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "negative zero vector",
+    "actual": "2 -0 +0",
+    "expected": "2 0 -0",
+    "array": true,
+    "matches": true
+  },
+  {
+    "name": "noncanonical count",
+    "actual": "01 1",
+    "expected": "1 1",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "signed count",
+    "actual": "+1 1",
+    "expected": "1 1",
+    "array": true,
+    "matches": false
+  },
+  {
+    "name": "huge exponent",
+    "actual": "1e999999999999",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "nullbyte",
+    "actual": "1\u0000",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "newline spaces",
+    "actual": "\t1\r\n",
+    "expected": "1",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "Unicode digits",
+    "actual": "\u0661",
+    "expected": "1",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "unknown expected nan",
+    "actual": "1",
+    "expected": "NaN",
+    "array": false,
+    "matches": false
+  },
+  {
+    "name": "finite tiny",
+    "actual": "1e-300",
+    "expected": "0",
+    "array": false,
+    "matches": true
+  },
+  {
+    "name": "empty vector extra",
+    "actual": "0 1",
+    "expected": "0",
+    "array": true,
+    "matches": false
+  }
+]

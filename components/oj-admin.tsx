@@ -238,8 +238,20 @@ export function OjAdmin({
             problem: {
               ...old.problem,
               [key]: value,
-              ...(key === 'checker' && !String(value).startsWith('semantic-lc-')
+              ...(key === 'checker' &&
+              typeof value === 'string' &&
+              !value.startsWith('semantic-lc-')
                 ? { semanticId: undefined }
+                : {}),
+              ...(key === 'checker' &&
+              typeof value === 'string' &&
+              !value.startsWith('strings-lc-')
+                ? { stringStructureId: undefined }
+                : {}),
+              ...(key === 'checker' &&
+              typeof value === 'string' &&
+              !value.startsWith('design-lc-')
+                ? { complexDesignId: undefined }
                 : {}),
             },
           }
@@ -1185,10 +1197,19 @@ export function OjAdmin({
                         <option value="int-bag-row-set">
                           整数行集合 · 行内外顺序不限，保留行内次数
                         </option>
+                        <option value="float">有限浮点数 · 固定误差范围</option>
+                        <option value="float-array">
+                          有序浮点数组 · 固定误差范围
+                        </option>
                         <option value="int-row-multiset">
                           整数行多重集合 · 保留重复行次数
                         </option>
-                        {spec.checker.startsWith('semantic-lc-') && (
+                        {[
+                          'semantic-lc-',
+                          'strings-lc-',
+                          'design-lc-',
+                          'fraction-lc-',
+                        ].some((prefix) => spec.checker.startsWith(prefix)) && (
                           <option value={spec.checker}>
                             本题专用规则 · 接受多种正确答案
                           </option>

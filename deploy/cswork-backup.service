@@ -15,5 +15,6 @@ PrivateTmp=true
 ProtectSystem=full
 ReadOnlyPaths=/srv/cswork/releases /opt/cswork
 ProtectHome=true
-MemoryMax=256M
+# SQLite judge datasets grow with hidden cases. Leave room for snapshot pages.
+MemoryMax=1G
 Nice=10

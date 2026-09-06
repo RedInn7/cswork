@@ -1,3 +1,4 @@
+import { runCodecRoundTrip } from './oj-codec-roundtrip';
 import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
@@ -180,12 +181,19 @@ async function judge(job: Job<{ submissionId: string }>) {
     const totalWeight = cases.reduce((sum, c) => sum + c.weight, 0);
     for (const c of cases) {
       current(id, attempt, controller.signal);
-      const result = await run(
-        program,
-        c.input,
-        snapshot.spec,
-        controller.signal,
-      );
+      // Codec submissions use the same two fresh executions for judge, sample
+      // runs and custom traces; decoding never receives the original tree.
+      const result =
+        snapshot.spec.checker === 'design-lc-297' ||
+        snapshot.spec.checker === 'design-lc-449'
+          ? await runCodecRoundTrip(
+              program,
+              c.input,
+              snapshot.spec,
+              controller.signal,
+              run,
+            )
+          : await run(program, c.input, snapshot.spec, controller.signal);
       current(id, attempt, controller.signal);
       let status = engineVerdict(result);
       if (

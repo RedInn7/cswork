@@ -1,3 +1,9 @@
+import { complexDesignCheckerId } from '@/lib/oj-complex-contract';
+import { matchesComplexDesign } from '@/lib/oj-complex-design-checkers';
+import { matchesFiniteFloats } from '@/lib/oj-float-checkers';
+import { matchesFractionDecimal } from '@/lib/oj-fraction-checker';
+import { stringStructureCheckerId } from '@/lib/oj-string-contract';
+import { matchesStringStructure } from '@/lib/oj-string-structures';
 import { semanticCheckerId } from '@/lib/oj-semantic-contract';
 import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { Language } from '@/lib/problems';
@@ -253,6 +259,8 @@ export function engineVerdict(result: EngineResult): string {
   switch (result.status) {
     case 'Accepted':
       return 'accepted';
+    case 'Wrong Answer':
+      return 'wrong_answer';
     case 'Time Limit Exceeded':
       return 'time_limit';
     case 'Memory Limit Exceeded':
@@ -269,6 +277,23 @@ export function matchesOutput(
   checker: OjProblemSpec['checker'],
   input?: string,
 ) {
+  const complexId = complexDesignCheckerId(checker);
+  if (complexId !== null)
+    return (
+      typeof input === 'string' &&
+      matchesComplexDesign(complexId, actual, expected, input)
+    );
+  if (checker === 'float' || checker === 'float-array')
+    return matchesFiniteFloats(actual, expected, checker === 'float-array');
+  if (checker === 'fraction-lc-166')
+    return (
+      typeof input === 'string' &&
+      matchesFractionDecimal(actual, input) &&
+      matchesFractionDecimal(expected, input)
+    );
+  const stringId = stringStructureCheckerId(checker);
+  if (stringId !== null)
+    return matchesStringStructure(stringId, actual, expected);
   const semanticId = semanticCheckerId(checker);
   if (semanticId !== null)
     return (
