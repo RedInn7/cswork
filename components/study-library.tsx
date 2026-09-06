@@ -403,7 +403,11 @@ export function StudyLibrary({
                 {data.collection.ready}
                 <small> 道</small>
               </strong>
-              <p>其余题目可先阅读双语题面，前往原题练习。</p>
+              <p>
+                {data.collection.ready === data.collection.total
+                  ? '全部精选题目均可在站内运行、提交和查看判题结果。'
+                  : '其余题目可先阅读双语题面，前往原题练习。'}
+              </p>
             </div>
             <div>
               <span>练习方法</span>
