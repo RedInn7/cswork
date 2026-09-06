@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && chmod 1777 /tmp
 COPY build-cpp-pch.sh /tmp/build-cpp-pch.sh
 RUN sh /tmp/build-cpp-pch.sh && rm /tmp/build-cpp-pch.sh
+COPY cpp-json-v1 /tmp/cpp-json-v1
+COPY build-cpp-json.sh /tmp/build-cpp-json.sh
+RUN sh /tmp/build-cpp-json.sh /tmp/cpp-json-v1 && rm -r /tmp/cpp-json-v1 /tmp/build-cpp-json.sh
 COPY --from=builder /go-judge /opt/go-judge
 COPY --from=builder /src/LICENSE /opt/LICENSE.go-judge
 COPY mount.yaml seccomp.yaml entrypoint.sh /opt/

@@ -109,6 +109,18 @@ print('active')
     for stdin, expected in [('1 2\n', '3\n'), ('-8 12\n', '4\n')]:
         accepted(run(['main'], {'main': {'fileId': binary}}, stdin=stdin), 'C++ cached executable passes independent testcase', expected)
 
+    json_source = '''#include "/usr/local/include/cswork/json-v1.hpp"
+int main(){std::string input;std::getline(std::cin,input);auto value=cswork::Parser(input).parse();cswork::dump(std::cout,value);}
+'''
+    result = run(['/usr/bin/g++', '-std=c++20', '-O2', '-pipe', 'main.cpp',
+                  '/usr/local/lib/cswork/libjson-v1.a', '-o', 'main'],
+                 {'main.cpp': {'content': json_source}}, cpu=20, clock=30, memory=1024, cached_out=['main'])
+    accepted(result, 'versioned trusted JSON archive links with the installed header')
+    accepted(run(['main'], {'main': {'fileId': result['fileIds']['main']}},
+                 stdin='[null,true,-9223372036854775808,"中文",[1,2]]\n'),
+             'precompiled JSON preserves numeric, Unicode and nested values',
+             '[null,true,-9223372036854775808,"中文",[1,2]]')
+
     accepted(python('a,b=map(int,input().split());print(a+b)\n', stdin='2 7\n'), 'Python isolated execution', '9\n')
     java = 'public class Main { public static void main(String[] a) { java.util.Scanner s=new java.util.Scanner(System.in); System.out.println(s.nextLong()+s.nextLong()); } }'
     result = run(['/bin/sh', '-c', '/usr/bin/javac -J-Xmx512m -J-XX:ActiveProcessorCount=1 -encoding UTF-8 Main.java && /usr/bin/jar cf main.jar *.class'],

@@ -131,15 +131,23 @@ export async function compile(
   signal: AbortSignal,
 ) {
   const commands: Record<Language, string[]> = {
-    cpp: [
-      '/usr/bin/g++',
-      '-std=c++20',
-      '-O2',
-      '-pipe',
-      'main.cpp',
-      '-o',
-      'main',
-    ],
+    cpp: source.includes('// CSWORK_CPP_JSON_RUNTIME_V1')
+      ? [
+          '/bin/sh',
+          '-c',
+          // Only fixed, trusted paths enter this command; source stays in copyIn.
+          // Older runner images compile the complete inline fallback unchanged.
+          'if test -r /usr/local/include/cswork/json-v1.hpp && test -r /usr/local/lib/cswork/libjson-v1.a; then exec /usr/bin/g++ -std=c++20 -O2 -pipe -DCSWORK_PRECOMPILED_JSON_V1 main.cpp /usr/local/lib/cswork/libjson-v1.a -o main; else exec /usr/bin/g++ -std=c++20 -O2 -pipe main.cpp -o main; fi',
+        ]
+      : [
+          '/usr/bin/g++',
+          '-std=c++20',
+          '-O2',
+          '-pipe',
+          'main.cpp',
+          '-o',
+          'main',
+        ],
     go: ['/usr/bin/go', 'build', '-trimpath', '-o', 'main', 'main.go'],
     java: [
       '/bin/sh',

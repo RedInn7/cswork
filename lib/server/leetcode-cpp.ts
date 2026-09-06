@@ -4,6 +4,31 @@ import { join } from 'node:path';
 const asset = (file: string) =>
   readFileSync(join(process.cwd(), 'scripts/leetcode-mode/cpp', file), 'utf8');
 
+/** Same JSON implementation in the trusted image and older-image fallback. */
+export function getLeetCodeCppJsonRuntime(): string {
+  const root = join(process.cwd(), 'deploy/oj/cpp-json-v1');
+  const header = readFileSync(join(root, 'json-runtime.hpp'), 'utf8');
+  const implementation = readFileSync(
+    join(root, 'json-runtime.cpp'),
+    'utf8',
+  ).replace('#include "json-runtime.hpp"', '');
+  return `// CSWORK_CPP_JSON_RUNTIME_V1
+#if defined(CSWORK_PRECOMPILED_JSON_V1)
+#include "/usr/local/include/cswork/json-v1.hpp"
+#else
+${header}
+#define CSWORK_JSON_INLINE inline
+${implementation}
+#undef CSWORK_JSON_INLINE
+#endif
+`;
+}
+
+/** Standalone verification drivers use the same JSON and graph transport. */
+export function getLeetCodeCppRuntime(): string {
+  return getLeetCodeCppJsonRuntime() + asset('runtime.hpp');
+}
+
 function context(problemId: number, snippet?: string, source?: string) {
   const raw = asset('context.hpp');
   const used = snippet === undefined ? null : cleanSnippet(snippet);
@@ -186,6 +211,7 @@ export function buildLeetCodeCpp(
     answer = {result, request.at("args")};`;
   }
   return `${context(problemId, undefined, source)}
+${getLeetCodeCppJsonRuntime()}
 #line 1 "solution.cpp"
 ${source}
 #line 1 "cswork-driver.cpp"

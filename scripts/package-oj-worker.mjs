@@ -12,7 +12,12 @@ const target = resolve('dist/standalone/oj-worker');
 mkdirSync(target, { recursive: true });
 copyFileSync('dist/oj-worker/index.mjs', join(target, 'index.mjs'));
 // Reviewed language drivers are runtime assets, never executable imports from the library.
-cpSync('scripts/leetcode-mode', 'dist/standalone/scripts/leetcode-mode', { recursive: true });
+cpSync('scripts/leetcode-mode', 'dist/standalone/scripts/leetcode-mode', {
+  recursive: true,
+});
+cpSync('deploy/oj/cpp-json-v1', 'dist/standalone/deploy/oj/cpp-json-v1', {
+  recursive: true,
+});
 // Bundle JavaScript with Vite; preserve BullMQ's Lua files and its exact locked dependency tree.
 function copyPackage(name, from, destination, ancestors = new Set()) {
   const require = createRequire(join(from, 'package.json'));
