@@ -125,13 +125,6 @@ def main():
     sol_root = root / 'leetcode solution/solution 1/solution'
     directories = {int(path.name.split('.')[0]): path for path in sol_root.glob('*/*')
                    if path.is_dir() and path.name.split('.')[0].isdigit()}
-    case_paths = {}
-    for path in sorted((root / 'testcase-generator/regen_v2/inputs').glob('*.json')):
-        value = json.loads(path.read_text())
-        slug = value.get('slug')
-        if slug in case_paths:
-            raise ValueError(f'Duplicate case slug: {slug}')
-        case_paths[slug] = path
     args.output.parent.mkdir(parents=True, exist_ok=True)
     counts = {'problems': 0, 'withCandidateCases': 0, 'candidateCases': 0, 'casesWithOutput': 0}
     hashes = {}
@@ -164,14 +157,9 @@ def main():
                 item = root / 'leetcode solution/solution 2' / language / (slug + ext)
                 if item.exists():
                     references.append({'provider': 'kamyu104/LeetCode-Solutions', 'license': 'MIT', **record(item)})
+            # Legacy testcase-generator data is deliberately never opened or indexed.
+            # Judge data must be generated and independently verified in a separate pipeline.
             cases = []
-            case_path = case_paths.get(slug)
-            if case_path:
-                provenance = record(case_path)
-                for candidate in json.loads(case_path.read_text()).get('testcases', []):
-                    if not isinstance(candidate, dict) or not isinstance(candidate.get('input'), str):
-                        raise ValueError(f'Invalid candidate input: {case_path}')
-                    cases.append({**candidate, 'sourceFile': provenance['path'], 'verification': 'unverified'})
             signature = source.get('metaData') or '{}'
             signature = json.loads(signature) if isinstance(signature, str) else signature
             value = {
@@ -183,7 +171,7 @@ def main():
                 'attribution': f"题单：{curriculum['author']} · {curriculum['source']}；原题：LeetCode；题面整理：doocs/leetcode (https://github.com/doocs/leetcode)，CC-BY-SA-4.0；改编：HTML 转 Markdown，仅保留题面，不含题解。",
                 'signature': signature, 'codeSnippets': source.get('codeSnippets', []),
                 'reference': {'files': references}, 'cases': cases,
-                'caseStatus': 'unverified' if cases else 'missing',
+                'caseStatus': 'missing',
             }
             line = json.dumps(value, ensure_ascii=False, separators=(',', ':')) + '\n'
             byte_length = len(line.encode('utf-8'))
@@ -198,7 +186,7 @@ def main():
                 'sourceRoot': str(root), 'snapshot': 'Local downloaded snapshot; not claimed current',
                 'topics': [{'title': title, 'sourceUrl': topic['url'], 'problemCount': len(topic['problems'])}
                            for title, topic in curriculum['topics'].items()],
-                'counts': counts, 'judgeReady': 0, 'validation': 'Candidates only; no solutions executed by importer',
+                'counts': counts, 'judgeReady': 0, 'validation': 'No test data imported; legacy testcase-generator excluded; no solutions executed by importer',
                 'oversizedRecords': oversized, 'importable': not oversized, 'outputSha256': sha(args.output), 'sourceFilesSha256': hashes}
     manifest_path = args.output.with_name(args.output.stem + '-manifest.json')
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n')

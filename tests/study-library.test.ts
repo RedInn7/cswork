@@ -31,8 +31,8 @@ const source = {
   signature: { name: 'lengthOfLongestSubstring' },
   codeSnippets: [],
   reference: { path: '/private/solution.py' },
-  cases: [{ input: 'hidden-input', output: 'secret-answer' }],
-  caseStatus: 'unverified',
+  cases: [],
+  caseStatus: 'missing',
 };
 const file = resolve(dir, 'source.jsonl');
 before(() => {
@@ -43,15 +43,26 @@ after(() => {
   sqlite().close();
   rmSync(dir, { recursive: true, force: true });
 });
-test('import is idempotent and never promotes unverified candidate answers', () => {
+test('metadata import is idempotent and never enables judging', () => {
   loadStudyLibrary(sqlite(), file);
   loadStudyLibrary(sqlite(), file);
   const list = listStudyLibrary(new URLSearchParams('q=3'));
   assert.equal(list.total, 1);
-  assert.equal(list.items[0].caseStatus, 'unverified');
+  assert.equal(list.items[0].caseStatus, 'missing');
   assert.equal(list.items[0].judgeProblemId, null);
 });
 test('public detail excludes hidden cases and reference solutions; supports bilingual search and topics', () => {
+  // Simulate the legacy row being retired, not a newly permitted import.
+  sqlite()
+    .prepare(
+      "UPDATE study_library SET payload_json=?,case_count=1,expected_count=1 WHERE id='lc-3'",
+    )
+    .run(
+      JSON.stringify({
+        ...source,
+        cases: [{ input: 'hidden-input', output: 'secret-answer' }],
+      }),
+    );
   const detail = getStudyLibrary('lc-3');
   assert.equal(detail.descriptionEn, 'Statement');
   assert.deepEqual(detail.caseSummary, { total: 1, withExpected: 1 });
@@ -70,6 +81,35 @@ test('public detail excludes hidden cases and reference solutions; supports bili
   );
   assert.equal(listStudyLibrary(new URLSearchParams({ q: '%' })).total, 0);
   assert.throws(() => getStudyLibrary('../lc-3'));
+  loadStudyLibrary(sqlite(), file);
+  assert.deepEqual(getStudyLibrary('lc-3').caseSummary, {
+    total: 0,
+    withExpected: 0,
+  });
+  assert.deepEqual(
+    JSON.parse(
+      (
+        sqlite()
+          .prepare("SELECT payload_json FROM study_library WHERE id='lc-3'")
+          .get() as { payload_json: string }
+      ).payload_json,
+    ).cases,
+    [],
+  );
+});
+test('legacy candidate inputs and supplied answers are rejected atomically', () => {
+  writeFileSync(
+    file,
+    JSON.stringify({ ...source, id: 'lc-4', number: 4, slug: 'new-problem' }) +
+      '\n' +
+      JSON.stringify({
+        ...source,
+        cases: [{ input: 'legacy input', output: 'untrusted answer' }],
+        caseStatus: 'unverified',
+      }),
+  );
+  assert.throws(() => loadStudyLibrary(sqlite(), file));
+  assert.equal(listStudyLibrary(new URLSearchParams()).total, 1);
 });
 test('invalid batch rolls back completely', () => {
   writeFileSync(
@@ -107,7 +147,7 @@ test('verification expires when the source snapshot or published judge version c
     JSON.stringify({ ...source, descriptionEn: 'Changed constraints' }),
   );
   loadStudyLibrary(db, file);
-  assert.equal(getStudyLibrary('lc-3').caseStatus, 'unverified');
+  assert.equal(getStudyLibrary('lc-3').caseStatus, 'missing');
 });
 test('offline publication rejects an old source manifest before publishing', async () => {
   const { problems } = await import('../lib/problems');
@@ -131,10 +171,11 @@ test('offline publication rejects an old source manifest before publishing', asy
         verified: true,
         referenceSha256: '1'.repeat(64),
         runnerSha256: '2'.repeat(64),
+        mutationSha256: '3'.repeat(64),
         counts: {
           formal: payload.cases.length,
           oracle: 120,
-          negativeControls: 1,
+          negativeControls: 2,
         },
       },
     ],
