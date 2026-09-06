@@ -57,6 +57,24 @@ class ResultContractTests(unittest.TestCase):
         self.assertFalse(contract.compare_batch('true\n',[1],'integer','jsonl-v1'))
         self.assertFalse(contract.compare_batch('1\n',[1],'integer','unknown'))
 
+    def test_multiset_typed_records_preserve_counts_and_big_integers(self):
+        huge=10**100+3
+        value=[huge,2,huge,-1,2]
+        text=contract.format_result('integer-multiset',value)
+        self.assertEqual(text,'5\n'+str(huge)+' 2 '+str(huge)+' -1 2\n')
+        contract.validate_expected_output('integer-multiset',text)
+        encoded=json.dumps([2,huge,-1,huge,2])+'\n'
+        self.assertTrue(contract.compare_batch(encoded,[value],'integer-multiset','jsonl-v1'))
+        for wrong in ([huge,2,-1],[huge,huge,huge,-1,2],[True,2,2],[1.0,2,2],['1',2,2]):
+            self.assertFalse(contract.compare_batch(json.dumps(wrong)+'\n',[value],'integer-multiset','jsonl-v1'))
+        for wrong in ([True],[1.0],['1'],{},[None]):
+            with self.assertRaises(ValueError):contract.validate_result('integer-multiset',wrong)
+        self.assertFalse(contract.compare_batch('[1,1]\n',[ [1,1] ],'integer-multiset','legacy-integer'))
+        self.assertFalse(contract.compare_batch('[1,1]\n[2]\n',[[1,1]],'integer-multiset','jsonl-v1'))
+        self.assertFalse(contract.compare_batch('[1,1]\n',[[1,1],[2]],'integer-multiset','jsonl-v1'))
+        with self.assertRaises(ValueError):contract.validate_expected_output('integer-multiset','3\n1 1\n')
+        self.assertIsNone(contract.parse_set_output('1\n'+'9'*contract.MAX_OUTPUT_BYTES,'int-multiset'))
+
     def test_formal_string_is_one_terminated_line(self):
         for text in ('\n','\r\n',' a \n',' a \r\n'):
             contract.validate_expected_output('string',text)

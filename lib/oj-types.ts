@@ -6,7 +6,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   id: string;
   courseId: string;
   outputLimit: number;
-  checker: 'tokens' | 'exact' | 'int-set' | 'string-set';
+  checker: 'tokens' | 'exact' | 'int-set' | 'string-set' | 'int-multiset';
   languages: Language[];
 };
 
@@ -82,17 +82,18 @@ export const OJ_MAX_CASE_BYTES = 4 * 1024 * 1024;
 export const OJ_MAX_CASES = 64;
 /** Fixed, non-executable counted-set protocol shared by import and judging. */
 export const OJ_MAX_SET_ITEMS = 1_000_000;
-export function parseOjSetOutput(
+function parseCountedValues(
   output: string,
   checker: 'int-set' | 'string-set',
-): ReadonlySet<string> | null {
+): string[] | null {
   if (
     output.includes('\0') ||
     // Unicode mode matches lone surrogates, while valid pairs (emoji) stay intact.
     // Reject before TextEncoder can silently replace an invalid code point.
     /[\uD800-\uDFFF]/u.test(output) ||
     new TextEncoder().encode(output).byteLength > OJ_MAX_CASE_BYTES
-  ) return null;
+  )
+    return null;
   const normalized = output.replace(/\r\n/g, '\n');
   const newline = normalized.indexOf('\n');
   if (newline < 0) return null;
@@ -121,8 +122,26 @@ export function parseOjSetOutput(
   } else {
     return null;
   }
+  return values;
+}
+
+export function parseOjSetOutput(
+  output: string,
+  checker: 'int-set' | 'string-set',
+): ReadonlySet<string> | null {
+  const values = parseCountedValues(output, checker);
+  if (values === null) return null;
   const unique = new Set(values);
-  return unique.size === count ? unique : null;
+  return unique.size === values.length ? unique : null;
+}
+export function parseOjMultisetOutput(
+  output: string,
+): ReadonlyMap<string, number> | null {
+  const values = parseCountedValues(output, 'int-set');
+  if (values === null) return null;
+  const counts = new Map<string, number>();
+  for (const value of values) counts.set(value, (counts.get(value) || 0) + 1);
+  return counts;
 }
 
 const identifier = z.string().regex(/^[a-z0-9][a-z0-9-]{0,79}$/);
@@ -173,7 +192,13 @@ export const ojImportSchema = z
         timeLimit: z.number().min(0.1).max(10),
         memoryLimit: z.number().int().min(16384).max(524288),
         outputLimit: z.number().int().min(1).max(4096),
-        checker: z.enum(['tokens', 'exact', 'int-set', 'string-set']),
+        checker: z.enum([
+          'tokens',
+          'exact',
+          'int-set',
+          'string-set',
+          'int-multiset',
+        ]),
         languages: z
           .array(z.enum(['python', 'go', 'java', 'cpp']))
           .min(1)
@@ -216,13 +241,24 @@ export const ojImportSchema = z
       });
     for (const [index, c] of data.cases.entries()) {
       if (
-        (data.problem.checker === 'int-set' || data.problem.checker === 'string-set') &&
+        data.problem.checker === 'int-multiset' &&
+        parseOjMultisetOutput(c.expectedOutput) === null
+      )
+        ctx.addIssue({
+          code: 'custom',
+          message: '多重集合预期输出格式无效：数量与各值的出现次数必须正确',
+          path: ['cases', index, 'expectedOutput'],
+        });
+      if (
+        (data.problem.checker === 'int-set' ||
+          data.problem.checker === 'string-set') &&
         parseOjSetOutput(c.expectedOutput, data.problem.checker) === null
-      ) ctx.addIssue({
-        code: 'custom',
-        message: '集合预期输出格式无效：请检查首行数量、重复项及行格式',
-        path: ['cases', index, 'expectedOutput'],
-      });
+      )
+        ctx.addIssue({
+          code: 'custom',
+          message: '集合预期输出格式无效：请检查首行数量、重复项及行格式',
+          path: ['cases', index, 'expectedOutput'],
+        });
       for (const key of ['input', 'expectedOutput'] as const) {
         if (
           new TextEncoder().encode(c[key]).byteLength > OJ_MAX_CASE_BYTES ||

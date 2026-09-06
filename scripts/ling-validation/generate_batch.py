@@ -8,16 +8,23 @@ import random
 import re
 from pathlib import Path
 from result_contract import KINDS, CHECKERS, validate_result, format_result, resource_limits, MAX_ORACLE_BYTES
+from reference_adapters import ADAPTERS
 
-BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1')
+BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1', 'selected_arrays1', 'selected_dp1', 'selected_windows1', 'selected_inplace1')
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
+REFERENCE_FILES.update({1235:'Solution2.py',2008:'Solution2.py',2140:'Solution2.py',2369:'Solution2.py',1438:'Solution3.py'})
 SECONDARY_REFERENCE_FILES = {1416: 'restore-the-array.py', 2466: 'count-ways-to-build-good-strings.py'}
 SECONDARY_REFERENCE_REASONS = {
     1416: 'Primary local source and README code blocks are empty. Reviewed secondary implementation uses rolling dynamic programming; xrange is explicitly aliased to range in the sandbox wrapper.',
     2466: 'Primary cached recursive implementation raises RecursionError on the 100000-length bound in the sandbox; no iterative Python alternative is present in the primary source. Reviewed secondary iterative DP preserves the maximum-size cases; xrange is explicitly aliased to range.',
 }
 REFERENCE_REASONS = {
+    1235: 'Primary cached recursive reference raises RecursionError on the 50000-job upper bound in the sandbox. Reviewed iterative finish-time sorted DP with bisect_right preserves all pressure cases.',
+    2008: 'Primary cached recursive reference raises RecursionError on 30000 compatible rides in the sandbox. Reviewed iterative finish-time sorted DP preserves the exact 3000030000 pressure answer.',
+    2140: 'Primary cached recursive reference raises RecursionError at 100000 questions in the sandbox. Reviewed iterative suffix DP preserves maximum-size cases and 64-bit answers.',
+    2369: 'Primary cached recursive reference raises RecursionError at 100000 values in the sandbox. Reviewed iterative prefix DP preserves maximum-size cases.',
+    1438: 'Primary reference requires unavailable SortedList and raises NameError in the sandbox. Reviewed Solution3.py uses standard-library min/max deques and a nonshrinking maximum window, preserving all cases and limits.',
     552: 'Downloaded cached recursive Solution.py raises RecursionError at n=100000 in the sandbox. Reviewed Solution2.py uses iterative attendance-state dynamic programming; maximum-size cases are preserved.',
     309: 'Downloaded cached recursive Solution.py raises RecursionError at the 5000-day upper bound in the sandbox. Reviewed Solution2.py uses iterative cooldown dynamic programming; maximum-size cases are preserved.',
     714: 'Downloaded cached recursive Solution.py raises RecursionError at the 50000-day upper bound in the sandbox. Reviewed Solution2.py uses iterative transaction-fee dynamic programming; maximum-size cases are preserved.',
@@ -25,6 +32,8 @@ REFERENCE_REASONS = {
     1971: 'Downloaded Solution.py checks vis but never adds a visited node; DFS can recurse forever along an undirected edge. Sandbox validation exposed the failure. Reviewed Solution2.py uses BFS and records visited nodes.',
 }
 PREFIX = '''from operator import *
+from string import ascii_lowercase
+from random import randint
 from typing import *
 from collections import *
 from functools import *
@@ -100,6 +109,10 @@ def reference_source(root, pid, secondary=None):
     raise ValueError(f'Missing Python reference for {pid}')
 
 def wrapper(spec, source):
+    adapter=spec.get('resultAdapter','return')
+    if adapter not in ADAPTERS:raise ValueError('Unknown result adapter')
+    adapter_source=Path(__file__).with_name('reference_adapters.py').read_text()
+    adapter_setup='\n_cswork_adapters = {}\nexec('+repr(adapter_source)+', _cswork_adapters)\n'
     method = spec['method']
     if not re.fullmatch(r'[A-Za-z][A-Za-z0-9_]*', method):
         raise ValueError('Invalid reference method')
@@ -131,6 +144,7 @@ def wrapper(spec, source):
     tail = f'''
 def _cswork_answer(args):
     result = Solution().{method}(*args)
+    result = _cswork_adapters['adapt_result']({adapter!r}, result, args)
 {result_body}
 
 if __name__ == '__main__':
@@ -140,7 +154,7 @@ if __name__ == '__main__':
     else:
 '''
     parse = '\n'.join('        ' + line for line in spec['parse'].splitlines())
-    return '\n'.join(future) + '\n' + PREFIX + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
+    return '\n'.join(future) + '\n' + PREFIX + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
@@ -222,7 +236,7 @@ def build(pid, spec, library, references, out, secondary=None):
         reference=str(path), referenceSha256=sha(source.encode()), wrapperSha256=sha(wrapped.encode()),
         packageSha256=sha(raw), mutantsSha256=sha(mutation_raw), oracleSha256=sha(oracle_raw), formalCases=len(cases),
         oracleCases=len(small), resultKind=kind, oracleEncoding=encoding,
-        checker=checker, resourceLimits=limits, status='candidate')
+        checker=checker, resourceLimits=limits, referenceResultAdapter=spec.get('resultAdapter','return'), status='candidate')
 
 def main():
     parser=argparse.ArgumentParser()
