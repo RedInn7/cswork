@@ -10,8 +10,10 @@ from pathlib import Path
 
 BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2')
 # Reviewed source correction, never automatic trial-and-error selection.
-REFERENCE_FILES = {1510: 'Solution2.py', 1971: 'Solution2.py'}
+REFERENCE_FILES = {309: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 REFERENCE_REASONS = {
+    309: 'Downloaded cached recursive Solution.py raises RecursionError at the 5000-day upper bound in the sandbox. Reviewed Solution2.py uses iterative cooldown dynamic programming; maximum-size cases are preserved.',
+    714: 'Downloaded cached recursive Solution.py raises RecursionError at the 50000-day upper bound in the sandbox. Reviewed Solution2.py uses iterative transaction-fee dynamic programming; maximum-size cases are preserved.',
     1510: 'Downloaded cached recursive Solution.py raises RecursionError at n=100000 in the Python sandbox despite the raised recursion limit. Reviewed Solution2.py uses iterative dynamic programming; maximum-size cases are preserved.',
     1971: 'Downloaded Solution.py checks vis but never adds a visited node; DFS can recurse forever along an undirected edge. Sandbox validation exposed the failure. Reviewed Solution2.py uses BFS and records visited nodes.',
 }
