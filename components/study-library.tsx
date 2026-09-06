@@ -28,6 +28,14 @@ type LibraryItem = {
   caseStatus: 'unverified' | 'missing' | 'verified';
   caseCount: number;
   judgeProblemId: string | null;
+  solved?: boolean;
+  selection?: {
+    order: number;
+    sectionSlug: string;
+    sectionTitle: string;
+    stage: string;
+    reason: string;
+  } | null;
 };
 type LibraryPage = {
   items: LibraryItem[];
@@ -35,6 +43,15 @@ type LibraryPage = {
   page: number;
   pageSize: number;
   topics: string[];
+  collection?: {
+    id: string;
+    title: string;
+    total: number;
+    available: number;
+    ready: number;
+    solved: number;
+    sections: { slug: string; title: string; total: number; solved: number }[];
+  };
 };
 type LibraryDetail = LibraryItem & {
   descriptionZh: string;
@@ -83,6 +100,10 @@ export function StudyLibrary({
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [topic, setTopic] = useState('');
+  const [collection, setCollection] = useState('ling-selected-500');
+  const [section, setSection] = useState('');
+  const [stage, setStage] = useState('');
+  const [status, setStatus] = useState('');
   const [difficulty, setDifficulty] = useState('');
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LibraryPage | null>(null);
@@ -119,6 +140,10 @@ export function StudyLibrary({
       topic,
       difficulty,
       page: String(page),
+      collection,
+      section,
+      stage,
+      status,
     });
     api<LibraryPage>(`oj/library?${params}`)
       .then((result) => {
@@ -133,7 +158,17 @@ export function StudyLibrary({
     return () => {
       current = false;
     };
-  }, [search, topic, difficulty, page, retry]);
+  }, [
+    search,
+    topic,
+    difficulty,
+    page,
+    retry,
+    collection,
+    section,
+    stage,
+    status,
+  ]);
   useEffect(() => {
     let current = true;
     setDetail(null);
@@ -237,6 +272,15 @@ export function StudyLibrary({
                 ))}
               </div>
             </header>
+            {detail.selection && (
+              <aside className="study-selection-note">
+                <strong>
+                  灵神题单精选 · {detail.selection.sectionTitle} ·{' '}
+                  {detail.selection.stage}
+                </strong>
+                <p>{detail.selection.reason}</p>
+              </aside>
+            )}
             <div className="study-judge-status">
               <div>
                 <strong>
@@ -323,14 +367,71 @@ export function StudyLibrary({
       <header className="study-library-heading">
         <div>
           <span className="study-kicker">STEP BY STEP</span>
-          <h2>跟着题单，稳步练习。</h2>
+          <h2>
+            {collection === 'ling-selected-500'
+              ? '灵神题单精选'
+              : '跟着题单，稳步练习。'}
+          </h2>
           <p>
-            按专题找到下一道题。中英题面随时切换，验证完成的题目可直接在站内提交。
+            {collection === 'ling-selected-500'
+              ? '面向美国 SDE 编程面试，从基础到进阶练习 500 道题。由 cswork 从灵神题单中筛选与编排。'
+              : '按专题找到下一道题。中英题面随时切换，验证完成的题目可直接在站内提交。'}
           </p>
         </div>
         {languageControl}
       </header>
+      {collection === 'ling-selected-500' &&
+        data?.collection &&
+        !loading &&
+        !error && (
+          <div className="study-curated-overview">
+            <div>
+              <span>站内通过</span>
+              <strong>
+                {data.collection.solved}
+                <small> / {data.collection.total}</small>
+              </strong>
+              <progress
+                aria-label="精选题单站内通过进度"
+                value={data.collection.solved}
+                max={data.collection.total}
+              />
+            </div>
+            <div>
+              <span>站内判题已开放</span>
+              <strong>
+                {data.collection.ready}
+                <small> 道</small>
+              </strong>
+              <p>其余题目可先阅读双语题面，前往原题练习。</p>
+            </div>
+            <div>
+              <span>练习方法</span>
+              <p>
+                先独立推导，再写代码验证；能解释复杂度、边界情况，并在复习时重新做出。
+              </p>
+            </div>
+          </div>
+        )}
       <div className="study-filters">
+        <label>
+          题单
+          <select
+            aria-label="选择题单"
+            value={collection}
+            onChange={(event) => {
+              setCollection(event.target.value);
+              setTopic('');
+              setSection('');
+              setStage('');
+              setStatus('');
+              setPage(1);
+            }}
+          >
+            <option value="ling-selected-500">灵神题单精选 · 500</option>
+            <option value="all">全部灵神题单</option>
+          </select>
+        </label>
         <div className="study-search">
           <Search size={17} />
           <Input
@@ -340,23 +441,44 @@ export function StudyLibrary({
             onChange={(event) => setQuery(event.target.value)}
           />
         </div>
-        <label>
-          专题
-          <select
-            value={topic}
-            onChange={(event) => {
-              setTopic(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="">全部专题</option>
-            {data?.topics.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </label>
+        {collection === 'all' ? (
+          <label>
+            专题
+            <select
+              value={topic}
+              onChange={(event) => {
+                setTopic(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">全部专题</option>
+              {data?.topics.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <label>
+            专题
+            <select
+              aria-label="精选专题"
+              value={section}
+              onChange={(event) => {
+                setSection(event.target.value);
+                setPage(1);
+              }}
+            >
+              <option value="">全部专题</option>
+              {data?.collection?.sections.map((item) => (
+                <option key={item.slug} value={item.slug}>
+                  {item.title} · {item.solved}/{item.total}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
         <label>
           难度
           <select
@@ -372,6 +494,42 @@ export function StudyLibrary({
             <option value="困难">困难</option>
           </select>
         </label>
+        {collection === 'ling-selected-500' && (
+          <>
+            <label>
+              阶段
+              <select
+                value={stage}
+                onChange={(event) => {
+                  setStage(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">全部阶段</option>
+                {['基础', '核心', '进阶'].map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              进度
+              <select
+                value={status}
+                onChange={(event) => {
+                  setStatus(event.target.value);
+                  setPage(1);
+                }}
+              >
+                <option value="">全部题目</option>
+                <option value="todo">尚未通过</option>
+                <option value="solved">已通过</option>
+                <option value="ready">可站内判题</option>
+              </select>
+            </label>
+          </>
+        )}
       </div>
       <div className="study-result-summary" aria-live="polite">
         {loading
@@ -400,6 +558,9 @@ export function StudyLibrary({
               setSearch('');
               setTopic('');
               setDifficulty('');
+              setSection('');
+              setStage('');
+              setStatus('');
               setPage(1);
             }}
           >
@@ -423,10 +584,23 @@ export function StudyLibrary({
                     {english ? item.titleZh : item.titleEn}
                   </span>
                   <span className="study-row-topics">
-                    {item.topics.slice(0, 3).join(' · ')}
+                    {collection === 'ling-selected-500' && item.selection
+                      ? `${item.selection.order.toString().padStart(3, '0')} · ${item.selection.sectionTitle} · ${item.selection.stage}`
+                      : item.topics.slice(0, 3).join(' · ')}
                   </span>
+                  {collection === 'ling-selected-500' && item.selection && (
+                    <span className="study-row-purpose">
+                      {item.selection.reason}
+                    </span>
+                  )}
                 </span>
                 <span className="study-row-end">
+                  {item.solved && (
+                    <span className="study-ready">
+                      <Check size={13} />
+                      已通过
+                    </span>
+                  )}
                   <span
                     className="study-level"
                     data-level={item.difficulty.toLowerCase()}

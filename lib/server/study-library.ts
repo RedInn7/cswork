@@ -1,5 +1,12 @@
 import { sqlite } from '@/db/sqlite';
 import { HttpError } from './http';
+import {
+  curatedByNumber,
+  curatedEntries,
+  curatedSections,
+  LING_CURATED_ID,
+  LING_CURATED_TITLE,
+} from '@/lib/ling-curated';
 
 type LibraryRow = {
   id: string;
@@ -38,7 +45,10 @@ function summary(row: LibraryRow) {
     judgeProblemId: row.ready ? row.judge_problem_id : null,
   };
 }
-export function listStudyLibrary(params: URLSearchParams) {
+export function listStudyLibrary(params: URLSearchParams, userId?: string) {
+  const collection = params.get('collection');
+  if (collection === LING_CURATED_ID) return listCuratedLibrary(params, userId);
+  if (collection && collection !== 'all') throw new HttpError(400, '未知题单');
   const db = sqlite();
   const q = (params.get('q') || '').trim().slice(0, 180);
   const topic = (params.get('topic') || '').slice(0, 100);
@@ -87,6 +97,87 @@ export function listStudyLibrary(params: URLSearchParams) {
   ).map((t) => t.name);
   return { items, total, page, pageSize: 30, topics };
 }
+
+function listCuratedLibrary(params: URLSearchParams, userId?: string) {
+  const db = sqlite();
+  const numbers = JSON.stringify(curatedEntries.map((entry) => entry.number));
+  const rows = db
+    .prepare(`SELECT ${columns} FROM study_library l
+    WHERE l.number IN (SELECT value FROM json_each(?))`)
+    .all(numbers) as LibraryRow[];
+  const solved = new Set(
+    userId
+      ? (
+          db
+            .prepare(`SELECT DISTINCT s.problem_id FROM submissions s
+    JOIN study_library l ON l.judge_problem_id=s.problem_id
+    WHERE s.user_id=? AND s.status='accepted' AND s.mode='judge'
+      AND l.number IN (SELECT value FROM json_each(?))`)
+            .all(userId, numbers) as { problem_id: string }[]
+        ).map((row) => row.problem_id)
+      : [],
+  );
+  const all = rows
+    .map((row) => ({
+      ...summary(row),
+      selection: curatedByNumber.get(row.number)!,
+      solved: !!row.judge_problem_id && solved.has(row.judge_problem_id),
+    }))
+    .sort((a, b) => a.selection.order - b.selection.order);
+  const q = (params.get('q') || '').trim().slice(0, 180).toLocaleLowerCase();
+  const section = params.get('section') || '';
+  const difficulty = params.get('difficulty') || '';
+  const stage = params.get('stage') || '';
+  const status = params.get('status') || '';
+  const filtered = all.filter(
+    (item) =>
+      (!q ||
+        [item.titleZh, item.titleEn, item.slug].some((value) =>
+          value.toLocaleLowerCase().includes(q),
+        ) ||
+        String(item.number) === q) &&
+      (!section || item.selection.sectionSlug === section) &&
+      (!difficulty || item.difficulty === difficulty) &&
+      (!stage || item.selection.stage === stage) &&
+      (!status ||
+        (status === 'solved'
+          ? item.solved
+          : status === 'todo'
+            ? !item.solved
+            : status === 'ready'
+              ? item.caseStatus === 'verified'
+              : false)),
+  );
+  const page = Math.max(
+    1,
+    Math.min(10000, Number.parseInt(params.get('page') || '1', 10) || 1),
+  );
+  return {
+    items: filtered.slice((page - 1) * 30, page * 30),
+    total: filtered.length,
+    page,
+    pageSize: 30,
+    topics: [],
+    collection: {
+      id: LING_CURATED_ID,
+      title: LING_CURATED_TITLE,
+      total: curatedEntries.length,
+      available: all.length,
+      ready: all.filter((item) => item.caseStatus === 'verified').length,
+      solved: all.filter((item) => item.solved).length,
+      sections: curatedSections.map((section) => {
+        const items = all.filter(
+          (item) => item.selection.sectionSlug === section.slug,
+        );
+        return {
+          ...section,
+          total: items.length,
+          solved: items.filter((item) => item.solved).length,
+        };
+      }),
+    },
+  };
+}
 export function getStudyLibrary(id: string) {
   if (!/^lc-\d{1,6}$/.test(id)) throw new HttpError(404, '题目不存在');
   const row = sqlite()
@@ -99,6 +190,7 @@ export function getStudyLibrary(id: string) {
   // Never serialize the source reference solutions, local paths, candidate inputs or answers.
   return {
     ...summary(row),
+    selection: curatedByNumber.get(row.number) || null,
     descriptionZh: payload.descriptionZh,
     descriptionEn: payload.descriptionEn,
     sourceUrl: payload.sourceUrl,

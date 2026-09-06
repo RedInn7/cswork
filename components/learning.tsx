@@ -677,7 +677,7 @@ export function ProblemList({
   boot: Boot;
   navigate: Navigate;
 }) {
-  const [collection, setCollection] = useState('course');
+  const [collection, setCollection] = useState('library');
   const [q, setQ] = useState(''),
     [filter, setFilter] = useState('all');
   const passed = new Set(
@@ -697,11 +697,13 @@ export function ProblemList({
       <Heading
         label="PRACTICE MAKES PROGRESS"
         title="把思路，写成答案。"
-        description="从真实业务出发，练习算法与数据结构。"
+        description="按专题练习算法与数据结构，准备 SDE 编程面试。"
         action={
-          <span className="tag">
-            已通过 {passed.size} / {boot.problems.length}
-          </span>
+          collection === 'course' ? (
+            <span className="tag">
+              已通过 {passed.size} / {boot.problems.length}
+            </span>
+          ) : undefined
         }
       />
       <Tabs
@@ -710,8 +712,8 @@ export function ProblemList({
         className="study-collection-tabs"
       >
         <TabsList aria-label="练习题库">
+          <TabsTrigger value="library">灵神题单精选</TabsTrigger>
           <TabsTrigger value="course">课程练习</TabsTrigger>
-          <TabsTrigger value="library">灵神题单</TabsTrigger>
         </TabsList>
       </Tabs>
       {collection === 'library' ? (

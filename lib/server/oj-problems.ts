@@ -140,10 +140,24 @@ export async function loadJudgeSnapshot(
   return snapshot;
 }
 
+/**
+ * A library entry is judgeable only while its source and published version match
+ * the validated import. Match its canonical ID too: clearing the association
+ * must not turn an existing library question into an unrestricted course one.
+ * IS NOT makes missing hashes/associations fail closed without affecting normal
+ * course questions that have no matching library entry.
+ */
+const libraryJudgeGate = `NOT EXISTS (
+  SELECT 1 FROM study_library l
+  WHERE (l.judge_problem_id=p.id OR l.id=p.id)
+    AND (l.judge_problem_id IS NOT p.id
+      OR l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id))
+)`;
+
 /** Submission creation checks the version's own course permission before snapshotting. */
 export async function getJudgeProblem(p: Person, problemId: string) {
   const problem = await one<ProblemRow>(
-    'SELECT * FROM oj_problems WHERE id=? AND published=1',
+    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
   );
   if (!problem?.current_version_id)
@@ -183,14 +197,14 @@ async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
 /** Public catalogue: statements and declared samples are public, hidden cases never are. */
 export async function listPublishedProblems(): Promise<OjPublicProblem[]> {
   const versions = await rows<VersionRow>(
-    'SELECT v.* FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id WHERE p.published=1 ORDER BY p.created_at,p.id',
+    `SELECT v.* FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id WHERE p.published=1 AND ${libraryJudgeGate} ORDER BY p.created_at,p.id`,
   );
   return Promise.all(versions.map(publicProblem));
 }
 
 export async function getPublishedProblem(p: Person, problemId: string) {
   const pr = await one<ProblemRow>(
-    'SELECT * FROM oj_problems WHERE id=? AND published=1',
+    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
   );
   if (!pr?.current_version_id) throw new HttpError(404, '题目不存在或尚未发布');
