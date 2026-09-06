@@ -43,7 +43,7 @@ after(() => {
   sqlite().close();
   rmSync(dir, { recursive: true, force: true });
 });
-test('metadata import is idempotent and never enables judging', () => {
+void test('metadata import is idempotent and never enables judging', () => {
   loadStudyLibrary(sqlite(), file);
   loadStudyLibrary(sqlite(), file);
   const list = listStudyLibrary(new URLSearchParams('q=3'));
@@ -51,7 +51,7 @@ test('metadata import is idempotent and never enables judging', () => {
   assert.equal(list.items[0].caseStatus, 'missing');
   assert.equal(list.items[0].judgeProblemId, null);
 });
-test('public detail excludes hidden cases and reference solutions; supports bilingual search and topics', () => {
+void test('public detail excludes hidden cases and reference solutions; supports bilingual search and topics', () => {
   // Simulate the legacy row being retired, not a newly permitted import.
   sqlite()
     .prepare(
@@ -97,7 +97,7 @@ test('public detail excludes hidden cases and reference solutions; supports bili
     [],
   );
 });
-test('legacy candidate inputs and supplied answers are rejected atomically', () => {
+void test('legacy candidate inputs and supplied answers are rejected atomically', () => {
   writeFileSync(
     file,
     JSON.stringify({ ...source, id: 'lc-4', number: 4, slug: 'new-problem' }) +
@@ -111,7 +111,7 @@ test('legacy candidate inputs and supplied answers are rejected atomically', () 
   assert.throws(() => loadStudyLibrary(sqlite(), file));
   assert.equal(listStudyLibrary(new URLSearchParams()).total, 1);
 });
-test('invalid batch rolls back completely', () => {
+void test('invalid batch rolls back completely', () => {
   writeFileSync(
     file,
     JSON.stringify({ ...source, id: 'lc-4', number: 4, slug: 'new-problem' }) +
@@ -121,7 +121,7 @@ test('invalid batch rolls back completely', () => {
   assert.throws(() => loadStudyLibrary(sqlite(), file));
   assert.equal(listStudyLibrary(new URLSearchParams()).total, 1);
 });
-test('verification expires when the source snapshot or published judge version changes', () => {
+void test('verification expires when the source snapshot or published judge version changes', () => {
   const db = sqlite();
   db.prepare(
     `INSERT INTO oj_problems(id,course_id,lesson_id,current_version_id,published,created_at,updated_at) VALUES('lc-3','gomall','00-overview','v1',1,1,1)`,
@@ -149,7 +149,7 @@ test('verification expires when the source snapshot or published judge version c
   loadStudyLibrary(db, file);
   assert.equal(getStudyLibrary('lc-3').caseStatus, 'missing');
 });
-test('offline publication rejects an old source manifest before publishing', async () => {
+void test('offline publication rejects an old source manifest before publishing', async () => {
   const { problems } = await import('../lib/problems');
   const { createOjSeedPackages } = await import('../scripts/seed-oj-data.mjs');
   const payload = createOjSeedPackages(problems)[0];
@@ -162,6 +162,8 @@ test('offline publication rejects an old source manifest before publishing', asy
     )
     .run();
   const manifest = {
+    verifiedAt: '2026-09-06T00:00:00.000Z',
+    sourceHashesFileSha256: '4'.repeat(64),
     problems: [
       {
         problemId: 'lc-3',
@@ -172,6 +174,9 @@ test('offline publication rejects an old source manifest before publishing', asy
         referenceSha256: '1'.repeat(64),
         runnerSha256: '2'.repeat(64),
         mutationSha256: '3'.repeat(64),
+        inputBytesSha256: createHash('sha256').update(raw).digest('hex'),
+        referenceBytesSha256: '2'.repeat(64),
+        oracleSha256: '5'.repeat(64),
         counts: {
           formal: payload.cases.length,
           oracle: 120,
@@ -180,25 +185,86 @@ test('offline publication rejects an old source manifest before publishing', asy
       },
     ],
   };
-  writeFileSync(resolve(dir, 'manifest.json'), JSON.stringify(manifest));
-  const child = spawnSync(
-    process.execPath,
-    [
-      '--import',
-      'tsx',
-      'scripts/publish-validated-library.ts',
-      resolve(dir, 'manifest.json'),
-      'teacher@example.test',
+  const record = manifest.problems[0];
+  const report = {
+    allPassed: true,
+    engine: 'go-judge',
+    finishedAt: manifest.verifiedAt,
+    sourceHashesFileSha256: manifest.sourceHashesFileSha256,
+    problems: [
+      {
+        id: record.problemId,
+        status: 'verified',
+        counts: record.counts,
+        sourceContentHash: record.sourceContentHash,
+        packageSha256: record.packageSha256,
+        referenceSha256: record.referenceSha256,
+        wrapperSha256: record.runnerSha256,
+        inputBytesSha256: record.inputBytesSha256,
+        referenceBytesSha256: record.referenceBytesSha256,
+        oracleSha256: record.oracleSha256,
+        mutationSha256: record.mutationSha256,
+        checks: Array.from(
+          { length: record.counts.formal + record.counts.negativeControls + 1 },
+          () => ({ passed: true }),
+        ),
+      },
     ],
-    {
-      cwd: resolve('.'),
-      env: { ...process.env, ADMIN_EMAILS: 'teacher@example.test' },
-      encoding: 'utf8',
-      timeout: 20000,
-    },
+  };
+  writeFileSync(resolve(dir, 'manifest.json'), JSON.stringify(manifest));
+  writeFileSync(
+    resolve(dir, 'verification-report.json'),
+    JSON.stringify(report),
   );
+  const invokePublisher = () =>
+    spawnSync(
+      process.execPath,
+      [
+        '--import',
+        'tsx',
+        'scripts/publish-validated-library.ts',
+        resolve(dir, 'manifest.json'),
+        'teacher@example.test',
+      ],
+      {
+        cwd: resolve('.'),
+        env: { ...process.env, ADMIN_EMAILS: 'teacher@example.test' },
+        encoding: 'utf8',
+        timeout: 20000,
+      },
+    );
+  const child = invokePublisher();
   assert.notEqual(child.status, 0);
   assert.match(child.stderr, /Source library changed or is missing/);
+  // Every defect must be rejected by the report boundary, before even checking
+  // the deliberately stale source. Thus a stale source cannot mask a missing check.
+  for (const [fault, expected] of [
+    ['missing', /ENOENT/],
+    ['failed', /allPassed/],
+    ['missing-check', /checks do not match/],
+    ['failed-check', /passed/],
+    ['provenance', /provenance does not match/],
+    ['duplicate', /Duplicate or mismatched/],
+    ['run', /does not match manifest run/],
+  ] as const) {
+    const bad = structuredClone(report);
+    if (fault === 'failed') bad.allPassed = false;
+    if (fault === 'missing-check') bad.problems[0].checks.pop();
+    if (fault === 'failed-check') bad.problems[0].checks[0].passed = false;
+    if (fault === 'provenance') bad.problems[0].oracleSha256 = '6'.repeat(64);
+    if (fault === 'duplicate')
+      bad.problems.push(structuredClone(bad.problems[0]));
+    if (fault === 'run') bad.finishedAt = 'another-run';
+    if (fault === 'missing') rmSync(resolve(dir, 'verification-report.json'));
+    else
+      writeFileSync(
+        resolve(dir, 'verification-report.json'),
+        JSON.stringify(bad),
+      );
+    const rejected = invokePublisher();
+    assert.notEqual(rejected.status, 0, fault);
+    assert.match(rejected.stderr, expected, fault);
+  }
   assert.equal(
     (
       sqlite()
