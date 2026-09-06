@@ -12,6 +12,8 @@ from reference_adapters import ADAPTERS
 
 BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1', 'selected_arrays1', 'selected_dp1', 'selected_windows1', 'selected_inplace1')
 BATCHES += ('selected_trees1','selected_arrays2')
+BATCHES += ('selected_dp2',)
+BATCHES += ('selected_lists1',)
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 REFERENCE_FILES.update({1235:'Solution2.py',2008:'Solution2.py',2140:'Solution2.py',2369:'Solution2.py',1438:'Solution3.py'})
@@ -112,6 +114,18 @@ def reference_source(root, pid, secondary=None):
     raise ValueError(f'Missing Python reference for {pid}')
 
 def wrapper(spec, source):
+    list_args=spec.get('listArgs',[])
+    list_array_args=spec.get('listArrayArgs',[])
+    linked_result=spec.get('resultLinked','none')
+    for positions in (list_args,list_array_args):
+        if type(positions)is not list or any(type(i)is not int or i<0 for i in positions):
+            raise ValueError('Invalid linked-list argument positions')
+    if len(set(list_args+list_array_args))!=len(list_args+list_array_args) or linked_result not in ('none','return','arg0'):
+        raise ValueError('Invalid linked-list adapter')
+    linked_setup=''
+    if list_args or list_array_args or linked_result!='none':
+        linked_source=Path(__file__).with_name('linked_codec.py').read_text()
+        linked_setup='\n_cswork_lists = {}\nexec('+repr(linked_source)+', _cswork_lists)\nListNode = _cswork_lists["ListNode"]\n'
     tree_args=spec.get('treeArgs',[])
     if type(tree_args)is not list or any(type(i)is not int or i<0 for i in tree_args) or len(set(tree_args))!=len(tree_args):
         raise ValueError('Invalid tree argument positions')
@@ -153,9 +167,15 @@ def wrapper(spec, source):
         sys.stdout.write(_cswork_contract['format_result']({kind!r}, result))"""
     tail = f'''
 def _cswork_answer(args):
+    for index in {list_args!r}:
+        args[index] = _cswork_lists['from_values'](args[index])
+    for index in {list_array_args!r}:
+        args[index] = [_cswork_lists['from_values'](values) for values in args[index]]
     for index in {tree_args!r}:
         args[index] = _cswork_trees['from_level_order'](args[index])
     result = Solution().{method}(*args)
+    if {linked_result!r} != 'none':
+        result = _cswork_lists['to_values'](args[0] if {linked_result!r} == 'arg0' else result)
     result = _cswork_adapters['adapt_result']({adapter!r}, result, args)
 {result_body}
 
@@ -166,7 +186,7 @@ if __name__ == '__main__':
     else:
 '''
     parse = '\n'.join('        ' + line for line in spec['parse'].splitlines())
-    return '\n'.join(future) + '\n' + PREFIX + tree_setup + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
+    return '\n'.join(future) + '\n' + PREFIX + tree_setup + linked_setup + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
