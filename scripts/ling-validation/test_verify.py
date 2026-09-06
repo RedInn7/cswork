@@ -13,7 +13,7 @@ class ProvenanceTests(unittest.TestCase):
         self.data = Path(self.temp.name)
         self.hashes = self.data / 'source-hashes.json'
         self.hashes.write_text(json.dumps({'lc-3': 'a' * 64}))
-        raw = json.dumps({'cases': [{'name': str(i), 'input':'1\n', 'expectedOutput':'1\n'} for i in range(2)]}).encode()
+        raw = json.dumps({'problem': {'id': 'lc-3'}, 'cases': [{'name': str(i), 'input':'1\n', 'expectedOutput':'1\n'} for i in range(2)]}).encode()
         ref = b'# never executed\n'
         mutants = b'[{"name":"wrong algorithm","source":"print(0)"}]'
         (self.data / 'lc-3.candidate.json').write_bytes(raw)

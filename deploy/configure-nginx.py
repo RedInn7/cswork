@@ -6,7 +6,7 @@ from pathlib import Path
 
 def with_media_location(text: str) -> str:
     text = re.sub(
-        r"^[ \t]*include /etc/nginx/snippets/cswork-media\.conf;[ \t]*\n",
+        r"^[ \t]*include /etc/nginx/snippets/cswork-(?:media|oj-import)\.conf;[ \t]*\n",
         "", text, flags=re.M,
     )
     pattern = r"(?m)^([ \t]*)location / \{\s*\n[ \t]*proxy_pass http://127\.0\.0\.1:4317;"
@@ -14,7 +14,8 @@ def with_media_location(text: str) -> str:
     if len(matches) != 1:
         raise ValueError("Cannot uniquely locate the cswork proxy; refusing to rewrite nginx")
     start, indent = matches[0].start(), matches[0].group(1)
-    return text[:start] + indent + "include /etc/nginx/snippets/cswork-media.conf;\n" + text[start:]
+    return (text[:start] + indent + "include /etc/nginx/snippets/cswork-media.conf;\n"
+            + indent + "include /etc/nginx/snippets/cswork-oj-import.conf;\n" + text[start:])
 
 
 if __name__ == "__main__":

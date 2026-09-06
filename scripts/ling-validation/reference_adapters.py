@@ -1,9 +1,17 @@
 """Authored fixed adapters for LeetCode's in-place result conventions."""
-ADAPTERS=('return','arg0','prefix-arg0','matrix-arg0','characters-arg0')
+ADAPTERS=('return','arg0','prefix-arg0','matrix-arg0','characters-arg0','boolean-array','integer-rows')
 
 def adapt_result(adapter,result,args):
     if adapter not in ADAPTERS:raise ValueError('Unknown reference result adapter')
     if adapter=='return':return result
+    if adapter=='integer-rows':
+        if type(result) not in (list,tuple) or any(type(row) not in (list,tuple) or any(type(v)is not int for v in row) for row in result):
+            raise ValueError('Expected integer rows with list or tuple containers')
+        return [list(row) for row in result]
+    if adapter=='boolean-array':
+        if type(result)is not list or any(type(v)is not bool for v in result):
+            raise ValueError('Expected boolean array')
+        return [int(v) for v in result]
     if not isinstance(args,list) or not args or not isinstance(args[0],list):
         raise ValueError('In-place adapter requires a first array argument')
     values=args[0]

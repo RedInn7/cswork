@@ -2,6 +2,10 @@ import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
 import { loadJudgeSnapshot, ensureOjSeed } from './oj-problems';
 import { seed } from './seed';
+import {
+  assertSnapshotBudget,
+  OJ_WORKER_CONCURRENCY,
+} from './oj-worker-policy';
 import { ACTIVE, submissionRow, type SubmissionRow } from './oj-submissions';
 import {
   compile,
@@ -120,6 +124,7 @@ async function judge(job: Job<{ submissionId: string }>) {
   let program: CompiledProgram | undefined;
   try {
     const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
+    assertSnapshotBudget(snapshot.cases);
     const caseCount =
       claimed.mode === 'run' && claimed.custom_input !== null
         ? 1
@@ -190,6 +195,7 @@ async function judge(job: Job<{ submissionId: string }>) {
           result.files?.stdout || '',
           c.expectedOutput,
           snapshot.spec.checker,
+          c.input,
         )
       )
         status = 'wrong_answer';
@@ -277,7 +283,7 @@ async function judge(job: Job<{ submissionId: string }>) {
 }
 const worker = new Worker<{ submissionId: string }>(QUEUE, judge, {
   connection: { ...connection, maxRetriesPerRequest: null },
-  concurrency: 2,
+  concurrency: OJ_WORKER_CONCURRENCY,
   autorun: false,
   lockDuration: 60000,
   stalledInterval: 30000,
@@ -390,4 +396,4 @@ async function stop() {
 }
 process.on('SIGTERM', () => void stop());
 process.on('SIGINT', () => void stop());
-console.log('cswork OJ worker started: BullMQ, concurrency 2, go-judge');
+console.log('cswork OJ worker started: BullMQ, concurrency 1, go-judge');

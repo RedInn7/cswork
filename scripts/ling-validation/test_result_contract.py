@@ -17,7 +17,8 @@ class ResultContractTests(unittest.TestCase):
                 self.assertEqual(contract.compare_output(case['checker'],case['actual'],case['expected']),case['matches'])
                 for side in ('actual','expected'):
                     if side+'Valid' in case:
-                        self.assertEqual(contract.parse_set_output(case[side],case['checker']) is not None,case[side+'Valid'])
+                        parsed=contract.parse_row_collection(case[side],case['checker']) if case['checker'] in ('int-row-set','int-bag-row-set','int-row-multiset') else contract.parse_set_output(case[side],case['checker'])
+                        self.assertEqual(parsed is not None,case[side+'Valid'])
 
     def test_counted_canonical_outputs_preserve_empty_elements(self):
         values=[('integer',-3,'-3\n'),('string','','\n'),('string',' a ',' a \n'),
@@ -75,6 +76,49 @@ class ResultContractTests(unittest.TestCase):
         with self.assertRaises(ValueError):contract.validate_expected_output('integer-multiset','3\n1 1\n')
         self.assertIsNone(contract.parse_set_output('1\n'+'9'*contract.MAX_OUTPUT_BYTES,'int-multiset'))
 
+    def test_row_set_jsonl_and_resource_bounds(self):
+        huge=10**100+7
+        expected=[[1,2],[],[huge,0]]
+        self.assertTrue(contract.compare_batch(json.dumps([[],[huge,0],[1,2]])+'\n',[expected],'integer-row-set','jsonl-v1'))
+        for bad in ([[2,1],[],[huge,0]],[[1],[2],[],[huge,0]],[[1,2],[],[huge,0],[]],[[True]],[[1.0]],[[None]],[[[1]]],None):
+            self.assertFalse(contract.compare_batch(json.dumps(bad)+'\n',[expected],'integer-row-set','jsonl-v1'))
+        for bad in ([[True]],[[1.0]],[[None]],[[[1]]],[[],[]],[[0],[-0]]):
+            with self.assertRaises(ValueError):contract.validate_result('integer-row-set',bad)
+        contract.validate_result('integer-row-set',[[1,1],[]])
+        self.assertIsNone(contract.parse_row_set('1\n1 '+'9'*contract.MAX_OUTPUT_BYTES))
+        self.assertEqual(contract.parse_row_set('0'+' '*(contract.MAX_OUTPUT_BYTES-1)),set())
+        self.assertIsNone(contract.parse_row_set('0'+' '*contract.MAX_OUTPUT_BYTES))
+        with patch.object(contract,'MAX_ROW_VALUES',3):
+            self.assertIsNone(contract.parse_row_set('2\n2 1 2\n2 3 4\n'))
+            self.assertIsNotNone(contract.parse_row_set('2\n2 1 2\n1 3\n'))
+            with self.assertRaises(ValueError):contract.validate_result('integer-row-set',[[1,2],[3,4]])
+        cases=[dict(name='sample',input='',expectedOutput='2\n2 1 2\n1 3\n')]
+        runner=lambda *_:{'status':'Accepted','files':{'stdout':'2\n1 3\n2 1 2\n'}}
+        self.assertFalse(verify.check_mutation({'name':'rows reordered','source':'authored'},cases,runner,'int-row-set')['passed'])
+        runner=lambda *_:{'status':'Accepted','files':{'stdout':'2\n2 2 1\n1 3\n'}}
+        self.assertTrue(verify.check_mutation({'name':'inner order wrong','source':'authored'},cases,runner,'int-row-set')['passed'])
+
+    def test_bag_rows_and_row_multisets_typed_jsonl(self):
+        bag='integer-bag-row-set';multi='integer-row-multiset'
+        def match(actual,expected,kind):return contract.compare_batch(json.dumps(actual)+'\n',[expected],kind,'jsonl-v1')
+        self.assertTrue(match([[2,1,1],[]],[[],[1,2,1]],bag))
+        self.assertFalse(match([[1,2,2]],[[1,1,2]],bag))
+        self.assertFalse(match([[1,2],[2,1]],[[1,2]],bag))
+        self.assertFalse(match([[1],[2,3]],[[1,2],[3]],bag))
+        self.assertTrue(match([[1,2],[],[1,2]],[[1,2],[1,2],[]],multi))
+        self.assertFalse(match([[1,2]],[[1,2],[1,2]],multi))
+        self.assertFalse(match([[1],[1],[2]],[[1],[2],[2]],multi))
+        self.assertFalse(match([[2,1]],[[1,2]],multi))
+        for kind in (bag,multi):
+            self.assertTrue(match([[10**100,0]],[[10**100,0]],kind))
+            for bad in ([[True]],[[None]],[[1.0]],[[[1]]]):
+                with self.assertRaises(ValueError):contract.validate_result(kind,bad)
+            contract.validate_expected_output(kind,contract.format_result(kind,[[1,1],[]]))
+            with patch.object(contract,'MAX_ROW_VALUES',3):
+                with self.assertRaises(ValueError):contract.validate_result(kind,[[1,2],[3,4]])
+        with self.assertRaises(ValueError):contract.validate_result(bag,[[0],[-0]])
+        contract.validate_result(multi,[[0],[-0],[],[]])
+
     def test_formal_string_is_one_terminated_line(self):
         for text in ('\n','\r\n',' a \n',' a \r\n'):
             contract.validate_expected_output('string',text)
@@ -97,20 +141,20 @@ class ResultContractTests(unittest.TestCase):
     def test_declared_resource_limits_are_applied_to_go_judge(self):
         response=io.BytesIO(b'[{"status":"Accepted","files":{"stdout":"ok"}}]')
         with patch.object(verify.urllib.request,'urlopen',return_value=response) as mocked:
-            verify.run('# authored, not executed','',True,problem={'timeLimit':0.25,'memoryLimit':32768,'outputLimit':4096})
+            verify.run('# authored, not executed','',True,problem={'timeLimit':0.25,'memoryLimit':32768,'outputLimit':65536})
         request=mocked.call_args.args[0]
         cmd=json.loads(request.data)['cmd'][0]
         self.assertEqual(cmd['cpuLimit'],250000000)
         self.assertEqual(cmd['clockLimit'],3000000000)
         self.assertEqual(cmd['memoryLimit'],32768*1024)
-        self.assertEqual(cmd['files'][1]['max'],4096*1024)
+        self.assertEqual(cmd['files'][1]['max'],65536*1024)
         self.assertEqual(cmd['files'][2]['max'],65536)
         self.assertIn('--batch',cmd['args'])
 
     def test_explicit_invalid_limits_never_fall_back_to_defaults(self):
         for field,values in [('timeLimit',[None,True,0,10.1,float('nan')]),
                              ('memoryLimit',[None,True,16383,524289,262144.0]),
-                             ('outputLimit',[None,True,0,4097,64.0])]:
+                             ('outputLimit',[None,True,0,65537,64.0])]:
             for value in values:
                 with self.subTest(field=field,value=value),self.assertRaises(ValueError):
                     contract.resource_limits({field:value})

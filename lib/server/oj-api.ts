@@ -81,7 +81,12 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
     requireTeacher(p);
     let data: unknown;
     try {
-      data = JSON.parse(await boundedText(request, OJ_MAX_IMPORT_BYTES + 1000));
+      data = JSON.parse(
+        await boundedText(
+          request,
+          action === 'save' && !operation ? OJ_MAX_IMPORT_BYTES + 1000 : 150000,
+        ),
+      );
     } catch (e) {
       if (e instanceof HttpError) throw e;
       throw new HttpError(400, '无效的题目 JSON');

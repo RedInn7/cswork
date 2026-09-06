@@ -10,7 +10,7 @@ Group=cswork
 WorkingDirectory=/srv/cswork/current
 EnvironmentFile=/etc/cswork/cswork.env
 EnvironmentFile=/etc/cswork/oj.env
-ExecStart=/opt/cswork/runtime/node /srv/cswork/current/oj-worker/index.mjs
+ExecStart=/opt/cswork/runtime/node --max-old-space-size=3072 /srv/cswork/current/oj-worker/index.mjs
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=25
@@ -20,7 +20,11 @@ PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/cswork
-MemoryMax=512M
+
+# A single job may compare a 128 MiB package with a 64 MiB answer.
+# Keep pressure below the hard cap; other services retain their own cgroups.
+MemoryHigh=3G
+MemoryMax=4G
 CPUQuota=100%
 TasksMax=64
 LimitNOFILE=4096

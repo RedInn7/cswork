@@ -29,6 +29,18 @@ server {
         misplaced = original.replace("    listen 80;", "    listen 80;\n    include /etc/nginx/snippets/cswork-media.conf;")
         self.assertEqual(module.with_media_location(misplaced), result)
 
+    def test_large_import_is_exact_and_does_not_expand_other_routes(self):
+        snippet = (path.parent / "nginx-oj-import.conf").read_text()
+        template = (path.parent / "nginx.conf.template").read_text()
+        self.assertIn("location = /api/oj/admin/problems/save {", snippet)
+        self.assertEqual(snippet.count("location "), 1)
+        self.assertIn("client_max_body_size 129m;", snippet)
+        self.assertIn("proxy_request_buffering off;", snippet)
+        self.assertIn("client_max_body_size 9m;", template)
+        result = module.with_media_location(template)
+        self.assertEqual(result.count("include /etc/nginx/snippets/cswork-oj-import.conf;"), 1)
+        self.assertEqual(module.with_media_location(result), result)
+
     def test_new_install_and_unknown_config(self):
         template = (path.parent / "nginx.conf.template").read_text()
         self.assertEqual(module.with_media_location(module.with_media_location(template)), module.with_media_location(template))

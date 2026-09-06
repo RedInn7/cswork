@@ -4,14 +4,20 @@ import argparse,datetime,hashlib,json,os,re,urllib.request,urllib.parse
 from pathlib import Path
 import math
 from functools import partial
-from result_contract import KINDS, CHECKERS, compare_output, compare_batch, validate_result, validate_expected_output, resource_limits, MAX_ORACLE_BYTES
+from semantic_checkers import SEMANTIC_KINDS,matches_semantic
+from result_contract import KINDS, CHECKERS, compare_output, compare_batch, validate_result, format_result, validate_expected_output, resource_limits, MAX_ORACLE_BYTES
+
+ORACLE_OUTPUT_BYTES = 64 * 1024 * 1024
 
 def run(source,stdin,batch=False,problem=None):
     limits=resource_limits({} if problem is None else problem)
     url=os.environ.get('GO_JUDGE_URL','http://127.0.0.1:5050').rstrip('/')
     parsed=urllib.parse.urlparse(url)
     if parsed.scheme!='https' and not(parsed.scheme=='http' and parsed.hostname in ('localhost','127.0.0.1','::1')):raise ValueError('Require loopback or HTTPS')
-    cpu=limits['timeLimit'];clock=max(3,cpu*3);output=limits['outputLimit']*1024
+    cpu=limits['timeLimit'];clock=max(3,cpu*3)
+    # One batch contains at least 120 invocations. Its transport budget is
+    # independent of the unchanged per-invocation formal stdout limit.
+    output=ORACLE_OUTPUT_BYTES if batch else limits['outputLimit']*1024
     cmd=dict(args=['/usr/bin/python3','main.py']+(['--batch'] if batch else []),env=['PATH=/usr/bin:/bin','HOME=/w','LANG=C.UTF-8'],files=[{'content':stdin},{'name':'stdout','max':output,'pipe':True},{'name':'stderr','max':min(output,65536),'pipe':True}],cpuLimit=math.ceil(cpu*1_000_000_000),clockLimit=math.ceil(clock*1_000_000_000),memoryLimit=limits['memoryLimit']*1024,procLimit=16,copyIn={'main.py':{'content':source}})
     req=urllib.request.Request(url+'/run',data=json.dumps({'cmd':[cmd]}).encode(),headers={'Content-Type':'application/json','Authorization':'Bearer '+os.environ.get('GO_JUDGE_TOKEN','')})
     with urllib.request.urlopen(req,timeout=max(20,clock+10)) as response:results=json.load(response)
@@ -77,7 +83,12 @@ def snapshot_inputs(data, source_hashes_path):
         checker = problem.get('checker','tokens')
         if item.get('checker',checker)!=checker or item.get('resourceLimits',limits)!=limits:
             raise ValueError('Manifest runtime contract differs from package: '+ident)
-        if checker != CHECKERS[kind]:
+        semantic=item.get('semanticId')
+        if semantic is not None:
+            if type(semantic)is not int or SEMANTIC_KINDS.get(semantic)!=kind or ident!=f'lc-{semantic}' or encoding!='jsonl-v1':raise ValueError('Invalid semantic problem binding: '+ident)
+        if problem.get('semanticId')!=semantic or oracle.get('semanticId')!=semantic:raise ValueError('Semantic metadata differs from generation manifest: '+ident)
+        if package.get('problem',{}).get('id')!=ident:raise ValueError('Package identity differs from manifest')
+        if checker != (f'semantic-lc-{semantic}' if semantic is not None else CHECKERS[kind]):
             raise ValueError('Result kind does not match formal output checker: '+ident)
         if (oracle.get('resultKind',None if encoding=='jsonl-v1' else kind)!=kind
                 or oracle.get('oracleEncoding',None if encoding=='jsonl-v1' else encoding)!=encoding):
@@ -93,12 +104,16 @@ def snapshot_inputs(data, source_hashes_path):
             raise ValueError('Formal case count must match manifest and be between 2 and 64: ' + ident)
         if encoding=='jsonl-v1' and any(type(a) is not list for a in args):
             raise ValueError('Each oracle invocation must be a positional argument list')
-        for value in expected:
+        for index,value in enumerate(expected):
             validate_result(kind,value)
+            if semantic is not None:
+                output=format_result(kind,value)
+                if not matches_semantic(semantic,output,output,json.dumps(args[index],allow_nan=False)):raise ValueError('Semantic oracle arguments or result are invalid')
         for case in cases:
             if not isinstance(case,dict) or not isinstance(case.get('input'),str):
                 raise ValueError('Invalid formal case')
             validate_expected_output(kind,case.get('expectedOutput'))
+            if semantic is not None and not matches_semantic(semantic,case['expectedOutput'],case['expectedOutput'],case['input']):raise ValueError('Invalid semantic case input or expected output')
             if len(case['expectedOutput'].encode('utf-8'))>limits['outputLimit']*1024:
                 raise ValueError('Expected output exceeds declared runtime output limit')
         mutations = json.loads(mutation_raw)
@@ -129,7 +144,7 @@ def check_mutation(mutation, cases, runner=run, checker='tokens'):
     attempts = []
     for case in cases:
         result = runner(mutation['source'], case['input'])
-        killed = result['status'] == 'Accepted' and not compare_output(checker,result.get('files',{}).get('stdout',''),case['expectedOutput'])
+        killed = result['status'] == 'Accepted' and not compare_output(checker,result.get('files',{}).get('stdout',''),case['expectedOutput'],case['input'])
         attempts.append({'case': case['name'], 'status': result['status'], 'killed': killed})
         if killed:
             break
@@ -159,17 +174,18 @@ def main():
             negative = runner('print(-999999999999)\n', pkg['cases'][0]['input'])
             entry['checks'].append({'name': 'incorrect constant-output rejection',
                 'status': negative['status'], 'passed': negative['status'] == 'Accepted'
-                and not compare_output(checker,negative.get('files',{}).get('stdout',''),pkg['cases'][0]['expectedOutput'])})
+                and not compare_output(checker,negative.get('files',{}).get('stdout',''),pkg['cases'][0]['expectedOutput'],pkg['cases'][0]['input'])})
             v = runner(src, json.dumps(oracle['args']), True)
             for mutation in mutations:
                 entry['checks'].append(check_mutation(mutation, pkg['cases'], runner, checker))
             entry['checks'].append({'name': str(entry['counts']['oracle']) + ' independent small-instance oracle comparisons',
-                'status': v['status'], 'passed': v['status']=='Accepted' and compare_batch(v.get('files',{}).get('stdout',''),oracle['expected'],entry['resultKind'],entry['oracleEncoding']),
+                'oracleOutputLimitKiB': ORACLE_OUTPUT_BYTES//1024,
+                'status': v['status'], 'passed': v['status']=='Accepted' and compare_batch(v.get('files',{}).get('stdout',''),oracle['expected'],entry['resultKind'],entry['oracleEncoding'],entry.get('semanticId'),oracle['args']),
                 'cpuNs': v.get('time'), 'memoryBytes': v.get('memory')})
             for case in pkg['cases']:
                 v = runner(src, case['input'])
                 entry['checks'].append({'name': case['name'], 'status': v['status'],
-                    'passed': v['status']=='Accepted' and compare_output(checker,v.get('files',{}).get('stdout',''),case['expectedOutput']),
+                    'passed': v['status']=='Accepted' and compare_output(checker,v.get('files',{}).get('stdout',''),case['expectedOutput'],case['input']),
                     'cpuNs': v.get('time'), 'memoryBytes': v.get('memory')})
             if all(c['passed'] for c in entry['checks']):
                 entry['status'] = 'verified'
@@ -203,6 +219,7 @@ def main():
         oracleSha256=e['oracleSha256'], mutationSha256=e['mutationSha256'],
         counts=e['counts'], resultKind=e['resultKind'], oracleEncoding=e['oracleEncoding'],
         checker=e['checker'], resourceLimits=e['resourceLimits'],
+        **({'semanticId':e['semanticId']} if 'semanticId' in e else {}),
         sourceUrl=e['sourceUrl'], sourceUrlZh=e['sourceUrlZh']) for e in report['problems']]
     (a.data / 'verified-manifest.json').write_text(json.dumps(
         {'verifiedAt':report['finishedAt'], 'sourceHashesFileSha256':report['sourceHashesFileSha256'],

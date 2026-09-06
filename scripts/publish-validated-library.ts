@@ -1,5 +1,11 @@
+import {
+  SEMANTIC_CHECKERS,
+  SEMANTIC_RESULT_KINDS,
+  semanticCheckerId,
+} from '../lib/oj-semantic-contract';
+import { matchesSemantic, type SemanticId } from '../lib/oj-semantic-checkers';
 /** Teacher-only offline publication of hash-bound, sandbox-validated packages. */
-import { readFileSync, realpathSync } from 'node:fs';
+import { readFileSync, realpathSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
@@ -11,7 +17,20 @@ import {
   problemChecksum,
 } from '../lib/server/oj-problems';
 import type { Person } from '../lib/server/auth';
-import { parseOjSetOutput, parseOjMultisetOutput } from '../lib/oj-types';
+import {
+  OJ_MAX_IMPORT_BYTES,
+  OJ_MAX_EXPECTED_BYTES,
+  parseOjSetOutput,
+  parseOjMultisetOutput,
+} from '../lib/oj-types';
+import {
+  asciiTokens,
+  validStructuredOutput,
+  validStructuredResult,
+  parseIntegerRowCollection,
+  validIntegerRowCollectionResult,
+  type IntegerRowChecker,
+} from '../lib/oj-result-shapes';
 
 const manifestFile = process.argv[2];
 const email = process.argv[3]?.toLowerCase();
@@ -49,19 +68,34 @@ const resultKindSchema = z
     'integer-set',
     'string-set',
     'integer-multiset',
+    'nullable-integer-array',
+    'integer-rows',
+    'integer-row-set',
+    'integer-bag-row-set',
+    'integer-row-multiset',
   ])
   .default('integer');
 const oracleEncodingSchema = z
   .enum(['legacy-integer', 'jsonl-v1'])
   .default('legacy-integer');
 const checkerSchema = z
-  .enum(['tokens', 'exact', 'int-set', 'string-set', 'int-multiset'])
+  .enum([
+    'tokens',
+    'exact',
+    'int-set',
+    'string-set',
+    'int-multiset',
+    'int-row-set',
+    'int-bag-row-set',
+    'int-row-multiset',
+    ...SEMANTIC_CHECKERS,
+  ])
   .default('tokens');
 const resourceLimitsSchema = z
   .object({
     timeLimit: z.number().min(0.1).max(10),
     memoryLimit: z.number().int().min(16384).max(524288),
-    outputLimit: z.number().int().min(1).max(4096),
+    outputLimit: z.number().int().min(1).max(65536),
   })
   .default({ timeLimit: 2, memoryLimit: 262144, outputLimit: 64 });
 const countsSchema = z.object({
@@ -91,6 +125,7 @@ const manifest = z
           resultKind: resultKindSchema,
           oracleEncoding: oracleEncodingSchema,
           checker: checkerSchema,
+          semanticId: z.number().int().optional(),
           resourceLimits: resourceLimitsSchema,
         }),
       )
@@ -120,6 +155,7 @@ const report = z
           resultKind: resultKindSchema,
           oracleEncoding: oracleEncodingSchema,
           checker: checkerSchema,
+          semanticId: z.number().int().optional(),
           resourceLimits: resourceLimitsSchema,
           checks: z.array(z.object({ passed: z.literal(true) })),
         }),
@@ -155,6 +191,7 @@ for (const record of manifest.problems) {
     entry?.resultKind !== record.resultKind ||
     entry?.oracleEncoding !== record.oracleEncoding ||
     entry?.checker !== record.checker ||
+    entry?.semanticId !== record.semanticId ||
     entry?.resourceLimits.timeLimit !== record.resourceLimits.timeLimit ||
     entry?.resourceLimits.memoryLimit !== record.resourceLimits.memoryLimit ||
     entry?.resourceLimits.outputLimit !== record.resourceLimits.outputLimit ||
@@ -185,6 +222,19 @@ for (const record of manifest.problems) {
     throw new Error('Verification report provenance does not match manifest');
 }
 function validExpectedShape(kind: string, value: string) {
+  if (
+    ['integer-row-set', 'integer-bag-row-set', 'integer-row-multiset'].includes(
+      kind,
+    )
+  )
+    return (
+      parseIntegerRowCollection(
+        value,
+        kind.replace('integer-', 'int-') as IntegerRowChecker,
+      ) !== null
+    );
+  if (kind === 'nullable-integer-array' || kind === 'integer-rows')
+    return validStructuredOutput(kind, value);
   if (kind === 'integer-multiset') return parseOjMultisetOutput(value) !== null;
   if (kind === 'string') {
     const normalized = value.replace(/\r\n/g, '\n');
@@ -202,24 +252,41 @@ function validExpectedShape(kind: string, value: string) {
         kind === 'integer-set' ? 'int-set' : 'string-set',
       ) !== null
     );
-  const tokens = value.split(/[\t\n\v\f\r ]+/).filter(Boolean);
+  const tokens = asciiTokens(value);
+  const first = tokens.next().value;
   if (kind === 'integer')
-    return tokens.length === 1 && /^[+-]?[0-9]+$/.test(tokens[0]);
-  if (kind !== 'integer-array' || !/^(0|[1-9][0-9]*)$/.test(tokens[0] || ''))
+    return (
+      first !== undefined &&
+      /^[+-]?[0-9]+$/.test(first) &&
+      tokens.next().done === true
+    );
+  if (
+    kind !== 'integer-array' ||
+    !first ||
+    !/^(0|[1-9][0-9]*)$/.test(first) ||
+    Number(first) > 1000000
+  )
     return false;
-  const count = Number(tokens[0]);
-  return (
-    count <= 1000000 &&
-    tokens.length === count + 1 &&
-    tokens.slice(1).every((v) => /^[+-]?[0-9]+$/.test(v))
-  );
+  for (let i = 0; i < Number(first); i++) {
+    const token = tokens.next().value;
+    if (token === undefined || !/^[+-]?[0-9]+$/.test(token)) return false;
+  }
+  return tokens.next().done === true;
 }
 function typedOracleResult(kind: string, value: unknown): boolean {
+  if (
+    ['integer-row-set', 'integer-bag-row-set', 'integer-row-multiset'].includes(
+      kind,
+    )
+  )
+    return validIntegerRowCollectionResult(kind, value);
+  if (kind === 'nullable-integer-array' || kind === 'integer-rows')
+    return validStructuredResult(kind, value);
   const text = (v: unknown): v is string =>
     typeof v === 'string' &&
     !v.includes('\0') &&
     !/[\uD800-\uDFFF]/u.test(v) &&
-    Buffer.byteLength(v, 'utf8') <= 4 * 1024 * 1024;
+    Buffer.byteLength(v, 'utf8') <= OJ_MAX_EXPECTED_BYTES;
   if (kind === 'integer') return typeof value === 'bigint';
   if (kind === 'string') return text(value) && !/[\r\n]/.test(value);
   if (!Array.isArray(value) || value.length > 1000000) return false;
@@ -234,6 +301,48 @@ function typedOracleResult(kind: string, value: unknown): boolean {
     return false;
   return !kind.endsWith('-set') || new Set(value).size === value.length;
 }
+function semanticOracleValid(
+  id: SemanticId,
+  args: unknown,
+  value: unknown,
+): boolean {
+  try {
+    const json = (v: unknown) =>
+      JSON.stringify(v, (_key, x: unknown) => {
+        if (typeof x !== 'bigint') return x;
+        const n = Number(x);
+        if (!Number.isSafeInteger(n))
+          throw new Error('Unsafe semantic integer');
+        return n;
+      });
+    const result = JSON.parse(json(value)) as
+      | string
+      | number
+      | Array<number | null>
+      | number[][];
+    const kind = SEMANTIC_RESULT_KINDS[id];
+    const output =
+      kind === 'string'
+        ? String(result) + '\n'
+        : kind === 'integer'
+          ? String(result) + '\n'
+          : kind === 'integer-rows'
+            ? String((result as number[][]).length) +
+              '\n' +
+              (result as number[][])
+                .map((row) => String(row.length) + ' ' + row.join(' ') + '\n')
+                .join('')
+            : String((result as Array<number | null>).length) +
+              '\n' +
+              (result as Array<number | null>)
+                .map((v) => (v === null ? 'null' : String(v)))
+                .join(' ') +
+              '\n';
+    return matchesSemantic(id, output, output, json(args));
+  } catch {
+    return false;
+  }
+}
 // Validate every package before making any change.
 const packages = manifest.problems.map((record) => {
   if (record.packageFile !== `${record.problemId}.json`)
@@ -246,19 +355,42 @@ const packages = manifest.problems.map((record) => {
     realpathSync(dirname(resolve(manifestFile)))
   )
     throw new Error('Package must not escape manifest directory');
+  if (statSync(packagePath).size > OJ_MAX_IMPORT_BYTES)
+    throw new Error('Package exceeds 128 MiB');
   const raw = readFileSync(packagePath);
   if (createHash('sha256').update(raw).digest('hex') !== record.packageSha256)
     throw new Error(`Changed verified package: ${record.problemId}`);
   const payload = validateProblemPackage(JSON.parse(raw.toString('utf8')));
-  const requiredChecker = {
-    integer: 'tokens',
-    string: 'exact',
-    'integer-array': 'tokens',
-    'integer-set': 'int-set',
-    'integer-multiset': 'int-multiset',
-    'string-set': 'string-set',
-  }[record.resultKind];
+  const semanticId = semanticCheckerId(record.checker);
   if (
+    (semanticId !== null &&
+      (record.semanticId !== semanticId ||
+        record.problemId !== `lc-${semanticId}` ||
+        record.oracleEncoding !== 'jsonl-v1' ||
+        SEMANTIC_RESULT_KINDS[semanticId] !== record.resultKind)) ||
+    (semanticId === null && record.semanticId !== undefined)
+  )
+    throw new Error(
+      'Semantic identity or result type does not match verification',
+    );
+  const requiredChecker =
+    semanticId !== null
+      ? record.checker
+      : {
+          integer: 'tokens',
+          string: 'exact',
+          'integer-array': 'tokens',
+          'integer-set': 'int-set',
+          'integer-multiset': 'int-multiset',
+          'nullable-integer-array': 'tokens',
+          'integer-rows': 'tokens',
+          'integer-row-set': 'int-row-set',
+          'integer-bag-row-set': 'int-bag-row-set',
+          'integer-row-multiset': 'int-row-multiset',
+          'string-set': 'string-set',
+        }[record.resultKind];
+  if (
+    payload.problem.semanticId !== record.semanticId ||
     payload.problem.checker !== requiredChecker ||
     payload.problem.checker !== record.checker ||
     payload.problem.timeLimit !== record.resourceLimits.timeLimit ||
@@ -289,6 +421,8 @@ const packages = manifest.problems.map((record) => {
       realpathSync(dirname(resolve(manifestFile)))
     )
       throw new Error('Oracle must not escape manifest directory');
+    if (statSync(oraclePath).size > 32 * 1024 * 1024)
+      throw new Error('Oracle exceeds 32 MiB');
     const oracleRaw = readFileSync(oraclePath);
     if (
       oracleRaw.byteLength > 32 * 1024 * 1024 ||
@@ -311,10 +445,15 @@ const packages = manifest.problems.map((record) => {
     ) as {
       resultKind?: unknown;
       oracleEncoding?: unknown;
+      semanticId?: unknown;
       args?: unknown;
       expected?: unknown;
     };
     if (
+      oracle.semanticId !==
+        (record.semanticId === undefined
+          ? undefined
+          : BigInt(record.semanticId)) ||
       oracle.resultKind !== record.resultKind ||
       oracle.oracleEncoding !== record.oracleEncoding ||
       !Array.isArray(oracle.args) ||
@@ -328,6 +467,15 @@ const packages = manifest.problems.map((record) => {
       throw new Error(
         'Oracle type or count does not match verified result protocol',
       );
+    if (semanticId !== null) {
+      const args = oracle.args as unknown[];
+      if (
+        !(oracle.expected as unknown[]).every((value, index) =>
+          semanticOracleValid(semanticId, args[index], value),
+        )
+      )
+        throw new Error('Semantic oracle is not valid for its bound arguments');
+    }
   }
   if (
     !db

@@ -1,4 +1,11 @@
+import { semanticCheckerId } from '@/lib/oj-semantic-contract';
+import { matchesSemantic } from '@/lib/oj-semantic-checkers';
 import type { Language } from '@/lib/problems';
+import {
+  asciiTokens,
+  parseIntegerRowCollection,
+  type IntegerRowChecker,
+} from '@/lib/oj-result-shapes';
 import {
   parseOjSetOutput,
   parseOjMultisetOutput,
@@ -260,34 +267,48 @@ export function matchesOutput(
   actual: string,
   expected: string,
   checker: OjProblemSpec['checker'],
+  input?: string,
 ) {
+  const semanticId = semanticCheckerId(checker);
+  if (semanticId !== null)
+    return (
+      typeof input === 'string' &&
+      matchesSemantic(semanticId, actual, expected, input)
+    );
+  if (
+    ['int-row-set', 'int-bag-row-set', 'int-row-multiset'].includes(checker)
+  ) {
+    const a = parseIntegerRowCollection(actual, checker as IntegerRowChecker),
+      b = parseIntegerRowCollection(expected, checker as IntegerRowChecker);
+    if (a === null || b === null || a.size !== b.size) return false;
+    for (const [row, count] of a) if (b.get(row) !== count) return false;
+    return true;
+  }
   if (checker === 'exact')
     return actual.replace(/\r\n/g, '\n') === expected.replace(/\r\n/g, '\n');
   if (checker === 'int-multiset') {
     const a = parseOjMultisetOutput(actual),
       b = parseOjMultisetOutput(expected);
-    return (
-      a !== null &&
-      b !== null &&
-      a.size === b.size &&
-      [...a].every(([value, count]) => b.get(value) === count)
-    );
+    if (a === null || b === null || a.size !== b.size) return false;
+    for (const [value, count] of a) if (b.get(value) !== count) return false;
+    return true;
   }
   if (checker === 'int-set' || checker === 'string-set') {
     const a = parseOjSetOutput(actual, checker);
     const b = parseOjSetOutput(expected, checker);
-    return (
-      a !== null &&
-      b !== null &&
-      a.size === b.size &&
-      [...a].every((v) => b.has(v))
-    );
+    if (a === null || b === null || a.size !== b.size) return false;
+    for (const value of a) if (!b.has(value)) return false;
+    return true;
   }
   // A stale worker must never silently interpret a new checker as token equality.
   if (checker !== 'tokens') return false;
   // ASCII whitespace is the conventional OJ token separator; do not trim arbitrary Unicode.
-  const tokens = (s: string) => s.split(/[\t\n\v\f\r ]+/).filter(Boolean);
-  const a = tokens(actual),
-    b = tokens(expected);
-  return a.length === b.length && a.every((v, i) => v === b[i]);
+  const a = asciiTokens(actual),
+    b = asciiTokens(expected);
+  while (true) {
+    const left = a.next(),
+      right = b.next();
+    if (left.done || right.done) return left.done === right.done;
+    if (left.value !== right.value) return false;
+  }
 }

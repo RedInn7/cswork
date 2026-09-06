@@ -3,6 +3,7 @@ server {
     server_name CSWORK_HOSTNAME;
     client_max_body_size 9m;
     include /etc/nginx/snippets/cswork-media.conf;
+    include /etc/nginx/snippets/cswork-oj-import.conf;
     location ^~ /.well-known/acme-challenge/ {
         root /var/www/cswork-acme;
     }
