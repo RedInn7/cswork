@@ -966,11 +966,11 @@ function Workspace({
             <Settings2 size={16} />
           </button>
           <button
-            title="触发代码补全（Ctrl + Space）"
+            title="自动补全默认开启；点击可手动触发（Ctrl + Space）"
             className="cs-suggest-trigger"
             onClick={() => suggest.current?.()}
           >
-            代码补全
+            触发补全
           </button>
         </div>
       </div>
@@ -1411,7 +1411,7 @@ function Workspace({
               ['运行样例 / 自定义输入', 'Ctrl / ⌘ + Enter'],
               ['提交全部测试点', 'Ctrl / ⌘ + Shift + Enter'],
               ['保存当前草稿', 'Ctrl / ⌘ + S'],
-              ['代码补全', 'Ctrl + Space（或点击「代码补全」）'],
+              ['代码补全', '默认自动开启；Ctrl + Space（或点击「触发补全」）'],
               ['参数提示', 'Ctrl / ⌘ + Shift + Space'],
               ['查找', 'Ctrl / ⌘ + F'],
               ['命令面板', 'F1'],
