@@ -1,4 +1,6 @@
 import { runCodecRoundTrip } from './oj-codec-roundtrip';
+import { CompiledProgramCache } from './oj-compile-cache';
+import { createOutboxDispatcher, OJ_DISPATCH_INTERVAL_MS } from './oj-dispatch';
 import { leetcodeSource, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import { Queue, Worker, type Job } from 'bullmq';
 import { sqlite } from '@/db/sqlite';
@@ -10,9 +12,7 @@ import {
 } from './oj-worker-policy';
 import { ACTIVE, submissionRow, type SubmissionRow } from './oj-submissions';
 import {
-  compile,
   run,
-  cleanup,
   engineHealth,
   engineVerdict,
   matchesOutput,
@@ -49,6 +49,7 @@ const queue = new Queue(QUEUE, {
   },
 });
 const controllers = new Map<string, AbortController>();
+const compiledPrograms = new CompiledProgramCache();
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
@@ -124,6 +125,8 @@ async function judge(job: Job<{ submissionId: string }>) {
       controller.abort();
   }, 400);
   let program: CompiledProgram | undefined;
+  let compilation: Awaited<ReturnType<CompiledProgramCache['acquire']>> | undefined;
+  let invalidateCompilation = false;
   try {
     const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
     assertSnapshotBudget(snapshot.cases);
@@ -160,11 +163,13 @@ async function judge(job: Job<{ submissionId: string }>) {
             snapshot.spec.memoryLimit,
           )
         : { source: claimed.code };
-    const compiled = await compile(
+    const compiled = await compiledPrograms.acquire(
+      claimed.user_id,
       claimed.language,
       wrapped.source,
       controller.signal,
     );
+    compilation = compiled;
     program = compiled.program;
     program.bridgeSource = wrapped.bridgeSource;
     program.leetcodeInput =
@@ -296,6 +301,8 @@ async function judge(job: Job<{ submissionId: string }>) {
       finished_at: Date.now(),
     });
   } catch (error) {
+    // A restarted runner may have discarded cached file IDs. The bounded job retry must recompile.
+    invalidateCompilation = true;
     const latest = submissionRow(id);
     if (error instanceof LostAttempt || !latest || latest.attempt !== attempt)
       return;
@@ -324,7 +331,7 @@ async function judge(job: Job<{ submissionId: string }>) {
     clearTimeout(deadline);
     clearInterval(monitor);
     if (controllers.get(id) === controller) controllers.delete(id);
-    if (program) await cleanup(program);
+    if (compilation) await compilation.release(invalidateCompilation);
   }
 }
 const worker = new Worker<{ submissionId: string }>(QUEUE, judge, {
@@ -351,6 +358,7 @@ async function maintenance() {
   if (maintaining || stopping) return;
   maintaining = true;
   try {
+    await compiledPrograms.prune();
     // Recover cancelled attempts after a worker crash, including when Redis/runner is down.
     const cancelled = db
       .prepare(
@@ -425,14 +433,26 @@ void worker.run().catch(() => {
 });
 await maintenance();
 const timer = setInterval(() => void maintenance(), 5000);
+const outboxDispatcher = createOutboxDispatcher(db, (id) =>
+  queue.add('judge', { submissionId: id }, { jobId: id }),
+);
+const dispatchTimer = setInterval(() => {
+  if (!stopping && engineAvailable)
+    void outboxDispatcher.drain().catch(() => {
+      // The durable outbox remains pending. Maintenance owns health/recovery.
+    });
+}, OJ_DISPATCH_INTERVAL_MS);
 async function stop() {
   if (stopping) return;
   stopping = true;
   clearInterval(timer);
+  clearInterval(dispatchTimer);
   for (const controller of controllers.values()) controller.abort();
   const force = setTimeout(() => process.exit(1), 20000);
   force.unref();
+  await outboxDispatcher.stop();
   await worker.close();
+  await compiledPrograms.close();
   await queue.close();
   db.prepare(
     "UPDATE oj_runtime SET healthy=0,heartbeat_at=? WHERE id='worker'",

@@ -558,7 +558,7 @@ function Workspace({
           setPollPaused(true);
         }
       }
-    }, 1500);
+    }, 750);
     return () => {
       clearTimeout(timer);
       controller.abort();

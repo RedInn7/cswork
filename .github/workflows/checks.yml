@@ -27,6 +27,7 @@ jobs:
       - run: node --test tests/import-gomall-videos.test.mjs
       - run: node --test tests/backup.test.mjs
       - run: npm run test:oj
+      - run: npx tsx --test tests/oj-dispatch.test.ts tests/oj-compile-cache.test.ts
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/study-library-ui.test.mjs

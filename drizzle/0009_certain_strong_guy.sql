@@ -1,0 +1,1 @@
+CREATE INDEX `oj_outbox_dispatch` ON `oj_outbox` (`dispatched_at`,`created_at`);

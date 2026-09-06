@@ -32,7 +32,7 @@ register(
   import.meta.url,
 );
 
-test('workspace uses official LeetCode defaults and preserves separate mode and language drafts', async () => {
+test('workspace uses official LeetCode defaults and preserves separate mode and language drafts', async (t) => {
   const dom = new JSDOM('<!doctype html><div id="root"></div>', {
     url: 'https://cswork.test/',
   });
@@ -124,6 +124,7 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
   let outcome = 'accepted';
   let acknowledgement = 'queued';
   let pendingReads = 0;
+  let terminalReads = 0;
   let freshSubmission;
   let submitted = 0;
   let progressEvents = 0;
@@ -143,12 +144,14 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
       };
       return Response.json({ id: freshSubmission.id, status: acknowledgement });
     }
-    if (url.includes('/submissions/fresh-'))
-      return Response.json(
-        pendingReads-- > 0
-          ? { ...freshSubmission, status: 'judging' }
-          : freshSubmission,
-      );
+    if (url.includes('/submissions/fresh-')) {
+      if (pendingReads-- > 0) {
+        // The server finishes immediately after this in-flight snapshot.
+        return Response.json({ ...freshSubmission, status: 'judging' });
+      }
+      terminalReads++;
+      return Response.json(freshSubmission);
+    }
     if (url.includes('/submissions/old-acm')) return Response.json(historical);
     if (url.includes('/submissions'))
       return Response.json({ items: [historical], nextCursor: null });
@@ -281,10 +284,31 @@ test('workspace uses official LeetCode defaults and preserves separate mode and 
     assert.equal(document.querySelector('.cs-accepted-banner'), null);
     outcome = 'accepted';
     pendingReads = 1;
-    await click(button('提交'));
-    await act(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1700));
-    });
+    t.mock.timers.enable({ apis: ['setTimeout'] });
+    try {
+      // Flush the POST and initial pending GET without advancing polling time.
+      await act(async () => {
+        button('提交').click();
+      });
+      const completedReadsBeforePoll = terminalReads;
+      await act(async () => t.mock.timers.tick(749));
+      assert.equal(terminalReads, completedReadsBeforePoll);
+      assert.equal(document.querySelector('.cs-accepted-banner'), null);
+      await act(async () => t.mock.timers.tick(1));
+      assert.equal(terminalReads, completedReadsBeforePoll + 1);
+      assert.ok(
+        document.querySelector('.cs-accepted-banner'),
+        'completed judge result should become visible after the 750ms poll and React flush',
+      );
+      await act(async () => t.mock.timers.tick(3000));
+      assert.equal(
+        terminalReads,
+        completedReadsBeforePoll + 1,
+        'terminal feedback must stop polling',
+      );
+    } finally {
+      t.mock.timers.reset();
+    }
     assert.match(
       document.querySelector('.cs-accepted-banner').textContent,
       /通过了.*2 \/ 2/,
