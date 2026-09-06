@@ -8,10 +8,13 @@ import random
 import re
 from pathlib import Path
 
-BATCHES = ('arrays', 'dp', 'graphs')
+BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2')
 # Reviewed source correction, never automatic trial-and-error selection.
-REFERENCE_FILES = {1971: 'Solution2.py'}
-REFERENCE_REASONS = {1971: 'Downloaded Solution.py checks vis but never adds a visited node; DFS can recurse forever along an undirected edge. Sandbox validation exposed the failure. Reviewed Solution2.py uses BFS and records visited nodes.'}
+REFERENCE_FILES = {1510: 'Solution2.py', 1971: 'Solution2.py'}
+REFERENCE_REASONS = {
+    1510: 'Downloaded cached recursive Solution.py raises RecursionError at n=100000 in the Python sandbox despite the raised recursion limit. Reviewed Solution2.py uses iterative dynamic programming; maximum-size cases are preserved.',
+    1971: 'Downloaded Solution.py checks vis but never adds a visited node; DFS can recurse forever along an undirected edge. Sandbox validation exposed the failure. Reviewed Solution2.py uses BFS and records visited nodes.',
+}
 PREFIX = '''from operator import *
 from typing import *
 from collections import *
@@ -20,6 +23,7 @@ from itertools import *
 from bisect import *
 from math import *
 from heapq import *
+from builtins import pow
 import sys, json, math, collections, functools, itertools, bisect, heapq, string
 sys.setrecursionlimit(1_000_000)
 '''

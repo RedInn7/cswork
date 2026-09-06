@@ -23,5 +23,12 @@ class GraphBatchTests(unittest.TestCase):
     def test_numeric_pressure_constants_when_bounded(self):
         for pid in (191,461,762,693,868,1342,1486,2169,2413,2427,476,1009,2652,137):
             for a,y in PROBLEMS[pid]['pressure']:self.assertEqual(PROBLEMS[pid]['oracle'](a),y,pid)
+    def test_complement_respects_strict_billion_bound(self):
+        p=PROBLEMS[1009]
+        with self.assertRaises(AssertionError):p['validate']([1000000000])
+        p['validate']([999999999])
+        self.assertEqual(p['oracle']([999999999]),73741824)
+        self.assertEqual(p['pressure'],[([999999999],73741824)])
+        for language in ('inputZh','inputEn'):self.assertIn('999999999',p[language])
 
 if __name__=='__main__':unittest.main()

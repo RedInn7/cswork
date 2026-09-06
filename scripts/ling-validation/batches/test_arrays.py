@@ -9,6 +9,12 @@ from .arrays import PROBLEMS, validate
 
 
 class ArrayFixturesTest(unittest.TestCase):
+    def test_original_value_limits(self):
+        validate(914,[[9999,9999]])
+        validate(961,[[10000,10000,0,1]])
+        for pid,args in ((914,[[10000,10000]]),(961,[[10001,10001,0,1]])):
+            with self.subTest(pid=pid),self.assertRaises(AssertionError):validate(pid,args)
+
     def test_known_answers(self):
         known={28:0,33:4,125:1,136:1,153:1,154:0,169:3,219:1,409:7,455:1,459:1,485:3,521:3,561:4,605:1,628:6,674:3,680:1,696:6,724:3,796:1,844:1,852:1,860:1,914:1,925:1,961:3,976:5,1004:6,1005:5}
         self.assertEqual(set(known),set(PROBLEMS))
