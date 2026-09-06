@@ -8,7 +8,7 @@ import random
 import re
 from pathlib import Path
 
-BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2')
+BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3')
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 REFERENCE_REASONS = {
@@ -103,6 +103,8 @@ def build(pid, spec, library, references, out):
     if pid not in library:
         raise ValueError(f'{pid} is outside the Ling study list')
     origin = library[pid]
+    if spec['method'] != origin['signature']['name'].strip():
+        raise ValueError(f'Reference method does not match source metadata: {pid}')
     rng = random.Random(20260906 + pid)
     formal = []
     for i, args in enumerate(spec['edges']):
@@ -136,7 +138,7 @@ def build(pid, spec, library, references, out):
     explanation_zh = spec.get('explanationZh', '按题意计算样例答案。站内采用上述标准输入输出格式。')
     explanation_en = spec.get('explanationEn', 'Compute the answer according to the definition. Use the standard input/output format above.')
     pkg = dict(schemaVersion=1, problem=dict(id=f'lc-{pid}', courseId='gomall', lessonId='00-overview',
-        title=spec['titleZh'], difficulty=spec['difficulty'], tags=['灵神题单'],
+        title=spec['titleZh'], difficulty=origin['difficulty'], tags=['灵神题单'],
         description=spec['descriptionZh'], input=spec['inputZh'], output=spec['outputZh'],
         explanation=explanation_zh, hints=[],
         translations={'en':dict(title=spec['titleEn'],description=spec['descriptionEn'],input=spec['inputEn'],
