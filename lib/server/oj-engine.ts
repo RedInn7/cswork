@@ -148,7 +148,14 @@ export async function compile(
           '-o',
           'main',
         ],
-    go: ['/usr/bin/go', 'build', '-trimpath', '-o', 'main', 'main.go'],
+    go: [
+      '/bin/sh',
+      '-c',
+      // The image contains only trusted standard-library objects, mounted
+      // read-only. A user-package miss still compiles in the private sandbox.
+      // Older images retain the fresh /tmp cache from the command environment.
+      'if test -r /usr/local/lib/cswork/go-stdlib-cache-v1/cswork-toolchain-v1; then export GOCACHE=/usr/local/lib/cswork/go-stdlib-cache-v1; fi; exec /usr/bin/go build -trimpath -o main main.go',
+    ],
     java: [
       '/bin/sh',
       '-c',

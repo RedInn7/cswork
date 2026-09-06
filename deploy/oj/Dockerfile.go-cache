@@ -1,0 +1,5 @@
+# Incremental rollout candidate. Build with the immutable current image ID.
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+COPY build-go-cache.sh /tmp/build-go-cache.sh
+RUN sh /tmp/build-go-cache.sh && rm /tmp/build-go-cache.sh
