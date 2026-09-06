@@ -18,3 +18,7 @@ test('code examples, XOR, identifiers, money and malformed scripts remain litera
   assert.equal(doc.querySelectorAll('sup,sub').length, 0);
   for (const raw of ['a ^ b','a^2','snake_case','$1','$3','a_{，}','a_{ }']) assert.ok(doc.body.textContent.includes(raw));
 });
+test('example and constraint labels retain their heading semantics', () => {
+  const doc = render('**Example 1:**\n\n**Constraints:**\n\n**示例 1：**\n\n**提示：**');
+  assert.deepEqual([...doc.querySelectorAll('h3')].map(x => x.textContent), ['Example 1:', 'Constraints:', '示例 1：', '提示：']);
+});
