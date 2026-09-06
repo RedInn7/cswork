@@ -11,11 +11,14 @@ from result_contract import KINDS, CHECKERS, validate_result, format_result, res
 from reference_adapters import ADAPTERS
 
 BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1', 'selected_arrays1', 'selected_dp1', 'selected_windows1', 'selected_inplace1')
+BATCHES += ('selected_trees1','selected_arrays2')
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 REFERENCE_FILES.update({1235:'Solution2.py',2008:'Solution2.py',2140:'Solution2.py',2369:'Solution2.py',1438:'Solution3.py'})
 SECONDARY_REFERENCE_FILES = {1416: 'restore-the-array.py', 2466: 'count-ways-to-build-good-strings.py'}
+SECONDARY_REFERENCE_FILES[726]='number-of-atoms.py'
 SECONDARY_REFERENCE_REASONS = {
+    726: 'Primary Python file and README implementation are absent. Reviewed secondary Counter-stack parser has one Python 2 compatibility call: top.iteritems() is changed to top.items() only in the sandbox wrapper; original source hash is retained.',
     1416: 'Primary local source and README code blocks are empty. Reviewed secondary implementation uses rolling dynamic programming; xrange is explicitly aliased to range in the sandbox wrapper.',
     2466: 'Primary cached recursive implementation raises RecursionError on the 100000-length bound in the sandbox; no iterative Python alternative is present in the primary source. Reviewed secondary iterative DP preserves the maximum-size cases; xrange is explicitly aliased to range.',
 }
@@ -109,6 +112,13 @@ def reference_source(root, pid, secondary=None):
     raise ValueError(f'Missing Python reference for {pid}')
 
 def wrapper(spec, source):
+    tree_args=spec.get('treeArgs',[])
+    if type(tree_args)is not list or any(type(i)is not int or i<0 for i in tree_args) or len(set(tree_args))!=len(tree_args):
+        raise ValueError('Invalid tree argument positions')
+    tree_setup=''
+    if tree_args:
+        tree_source=Path(__file__).with_name('tree_codec.py').read_text()
+        tree_setup='\n_cswork_trees = {}\nexec('+repr(tree_source)+', _cswork_trees)\nTreeNode = _cswork_trees["TreeNode"]\n'
     adapter=spec.get('resultAdapter','return')
     if adapter not in ADAPTERS:raise ValueError('Unknown result adapter')
     adapter_source=Path(__file__).with_name('reference_adapters.py').read_text()
@@ -143,6 +153,8 @@ def wrapper(spec, source):
         sys.stdout.write(_cswork_contract['format_result']({kind!r}, result))"""
     tail = f'''
 def _cswork_answer(args):
+    for index in {tree_args!r}:
+        args[index] = _cswork_trees['from_level_order'](args[index])
     result = Solution().{method}(*args)
     result = _cswork_adapters['adapt_result']({adapter!r}, result, args)
 {result_body}
@@ -154,7 +166,7 @@ if __name__ == '__main__':
     else:
 '''
     parse = '\n'.join('        ' + line for line in spec['parse'].splitlines())
-    return '\n'.join(future) + '\n' + PREFIX + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
+    return '\n'.join(future) + '\n' + PREFIX + tree_setup + adapter_setup + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
@@ -193,7 +205,12 @@ def build(pid, spec, library, references, out, secondary=None):
     small = [checked_args(spec, spec['random_args'](rng)) for _ in range(120)]
     oracle = dict(args=small, expected=[answer(spec, args) for args in small],resultKind=kind,oracleEncoding=encoding)
     path, source = reference_source(references, pid, secondary)
-    wrapped = wrapper(spec, source)
+    compatible_source=source
+    if pid==726:
+        if source.count('top.iteritems()')!=1:
+            raise ValueError('Reviewed Python 2 compatibility source changed')
+        compatible_source=source.replace('top.iteritems()','top.items()')
+    wrapped = wrapper(spec, compatible_source)
     mutations=spec['mutants']
     if (not isinstance(mutations,list) or not mutations
             or any(not isinstance(m,dict) or not isinstance(m.get('name'),str)
