@@ -51,10 +51,11 @@ const manifest = z
         verified: z.literal(true),
         referenceSha256: hash,
         runnerSha256: hash,
+        mutationSha256: hash,
         counts: z.object({
           formal: z.number().int().min(2),
-          oracle: z.number().int().min(1),
-          negativeControls: z.number().int().min(1),
+          oracle: z.number().int().min(120),
+          negativeControls: z.number().int().min(2),
         }),
       }),
     ),

@@ -1,4 +1,4 @@
-/** Offline, idempotent import. Candidate tests never enable judging. */
+/** Offline, idempotent metadata import. Tests must use the fresh-validation pipeline. */
 import { readFileSync, statSync, writeFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
@@ -33,8 +33,8 @@ const source = z
     signature: z.unknown(),
     codeSnippets: z.array(z.unknown()),
     reference: z.unknown(),
-    cases: z.array(z.record(z.string(), z.unknown())).max(1000),
-    caseStatus: z.enum(['unverified', 'missing']),
+    cases: z.array(z.never()).max(0),
+    caseStatus: z.literal('missing'),
   })
   .strict();
 

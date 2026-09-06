@@ -3,6 +3,7 @@
 import argparse, hashlib, json, random
 from pathlib import Path
 from collections import deque
+from mutants import for_problem
 
 IDS = [3, 11, 35, 53, 121, 198, 209, 322, 69, 1456]
 METHODS = ['lengthOfLongestSubstring','maxArea','searchInsert','maxSubArray','maxProfit','rob','minSubArrayLen','coinChange','mySqrt','maxVowels']
@@ -78,12 +79,16 @@ def main():
     for pid in IDS:
         r=random.Random(20260905+pid);sourcepath=next(a.references.glob(f'*/*{pid:04d}.*'+'/Solution.py'));source=sourcepath.read_text();slug=sourcepath.parent.name.split('.',1)[1];slug='-'.join(slug.lower().split()).replace('(', '').replace(')', '')
         z,e,zd,ed,zi,ei=META[pid];base=dict(title=z,description=zd,input=zi,output='输出一个整数和换行。',explanation='样例遵循上述定义；下标均从 0 开始。',hints=[])
-        formal=[(x,brute(pid,x),'边界 '+str(i)) for i,x in enumerate(EDGE[pid])]+[(x,brute(pid,x),'固定种子随机 '+str(i)) for i in range(24) for x in [random_args(pid,r)]]+[(x,y,'规模上限 '+str(i)) for i,(x,y) in enumerate(PRESSURE[pid])]
+        edges = EDGE[pid] + ([[[1,3,4],6]] if pid == 322 else [])
+        formal=[(x,brute(pid,x),'边界 '+str(i)) for i,x in enumerate(edges)]+[(x,brute(pid,x),'固定种子随机 '+str(i)) for i in range(24) for x in [random_args(pid,r)]]+[(x,y,'规模上限 '+str(i)) for i,(x,y) in enumerate(PRESSURE[pid])]
         cases=[dict(name='样例 1' if i==0 else n,input=encode(pid,x),expectedOutput=str(y)+'\n',hidden=i!=0,weight=1) for i,(x,y,n) in enumerate(formal)]
         pkg=dict(schemaVersion=1,problem=dict(id=f'lc-{pid}',courseId='gomall',lessonId='00-overview',difficulty='简单' if pid in (35,121,69) else '中等',tags=['灵神题单'],**base,translations={'en':dict(title=e,description=ed,input=ei,output='Print one integer followed by a newline.',explanation='The sample follows the definition above. All indices are zero-based.',hints=[])},timeLimit=2,memoryLimit=262144,outputLimit=64,checker='tokens',languages=['python','go','java','cpp']),cases=cases)
         # Packages are candidates until sandbox validation has passed.
         raw=json.dumps(pkg,ensure_ascii=False,indent=2)+'\n';(a.out/f'lc-{pid}.candidate.json').write_text(raw);wrapped=wrapper(pid,source);(a.out/f'lc-{pid}.reference.py').write_text(wrapped)
         small=[random_args(pid,r) for _ in range(120)];(a.out/f'lc-{pid}.oracle.json').write_text(json.dumps({'args':small,'expected':[brute(pid,x) for x in small]}))
+        mutant_raw = json.dumps(for_problem(pid), ensure_ascii=False, indent=2) + '\n'
+        (a.out/f'lc-{pid}.mutants.json').write_text(mutant_raw)
         records.append(dict(id=f'lc-{pid}',sourceUrl=f'https://leetcode.com/problems/{slug}/',sourceUrlZh=f'https://leetcode.cn/problems/{slug}/',reference=str(sourcepath),referenceSha256=hashlib.sha256(source.encode()).hexdigest(),wrapperSha256=hashlib.sha256(wrapped.encode()).hexdigest(),packageSha256=hashlib.sha256(raw.encode()).hexdigest(),formalCases=len(cases),oracleCases=len(small),status='candidate'))
+        records[-1]['mutantsSha256'] = hashlib.sha256(mutant_raw.encode()).hexdigest()
     (a.out/'manifest.json').write_text(json.dumps(dict(seed=20260905,attribution='Problem identities: LeetCode; study list: endlesscheng; private reference solutions: local doocs/leetcode; statements and test fixtures authored for cswork.',problems=records),ensure_ascii=False,indent=2)+'\n');print('Generated',len(records),'candidate packages; no reference code executed.')
 if __name__=='__main__':main()

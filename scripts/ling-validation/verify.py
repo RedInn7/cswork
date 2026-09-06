@@ -31,6 +31,8 @@ def snapshot_inputs(data, source_hashes_path):
         return raw
     hashes = json.loads(capture(source_hashes_path))
     manifest = json.loads(capture(data / 'manifest.json'))
+    if not manifest.get('problems'):
+        raise ValueError('Generation manifest must contain problems')
     prepared = []
     for item in manifest['problems']:
         ident = item['id']
@@ -40,12 +42,33 @@ def snapshot_inputs(data, source_hashes_path):
         raw = capture(data / (ident + '.candidate.json'))
         reference = capture(data / (ident + '.reference.py'))
         oracle_raw = capture(data / (ident + '.oracle.json'))
+        mutation_raw = capture(data / (ident + '.mutants.json'))
         if digest(raw) != item['packageSha256'] or digest(reference) != item['wrapperSha256']:
             raise ValueError('Input bytes do not match generation manifest: ' + ident)
+        if digest(mutation_raw) != item.get('mutantsSha256'):
+            raise ValueError('Mutation bytes do not match generation manifest: ' + ident)
+        oracle = json.loads(oracle_raw)
+        cases = json.loads(raw).get('cases')
+        args, expected = oracle.get('args'), oracle.get('expected')
+        if (not isinstance(args, list) or not isinstance(expected, list)
+                or len(args) < 120 or len(args) != len(expected)
+                or type(item.get('oracleCases')) is not int or len(args) != item['oracleCases']):
+            raise ValueError('Oracle must contain matching declared arguments and answers, at least 120: ' + ident)
+        if (not isinstance(cases, list) or not 2 <= len(cases) <= 64
+                or type(item.get('formalCases')) is not int or len(cases) != item['formalCases']):
+            raise ValueError('Formal case count must match manifest and be between 2 and 64: ' + ident)
+        mutations = json.loads(mutation_raw)
+        if (not isinstance(mutations, list) or not mutations
+                or any(not isinstance(m, dict) or not isinstance(m.get('name'), str)
+                       or not m['name'].strip() or not isinstance(m.get('source'), str)
+                       or not m['source'].strip() for m in mutations)):
+            raise ValueError('At least one named incorrect program is required: ' + ident)
         entry = {**item, 'sourceContentHash': source_hash,
                  'inputBytesSha256': digest(raw), 'referenceBytesSha256': digest(reference),
-                 'oracleSha256': digest(oracle_raw), 'checks': [], 'status': 'failed'}
-        prepared.append((entry, raw, reference.decode('utf-8'), json.loads(oracle_raw)))
+                 'oracleSha256': digest(oracle_raw), 'mutationSha256': digest(mutation_raw),
+                 'counts': {'formal': len(cases), 'oracle': len(args), 'negativeControls': 1 + len(mutations)},
+                 'checks': [], 'status': 'failed'}
+        prepared.append((entry, raw, reference.decode('utf-8'), oracle, mutations))
     return snapshots, prepared
 
 
@@ -53,6 +76,20 @@ def assert_unchanged(snapshots):
     for path, expected in snapshots.items():
         if digest(path.read_bytes()) != expected:
             raise ValueError('Validation input changed during sandbox execution: ' + path.name)
+
+
+def check_mutation(mutation, cases, runner=run):
+    """A crash is not proof of wrong-answer coverage; require a clean wrong output."""
+    attempts = []
+    for case in cases:
+        result = runner(mutation['source'], case['input'])
+        killed = result['status'] == 'Accepted' and not checked(result, case['expectedOutput'].split())
+        attempts.append({'case': case['name'], 'status': result['status'], 'killed': killed})
+        if killed:
+            break
+    return {'name': 'common incorrect algorithm: ' + mutation['name'],
+            'passed': any(a['killed'] for a in attempts), 'attempts': attempts,
+            'programSha256': digest(mutation['source'].encode())}
 
 
 def main():
@@ -66,7 +103,7 @@ def main():
               'engine': 'go-judge', 'concurrency': 1,
               'sourceHashesFileSha256': snapshots[a.source_hashes], 'problems': []}
     failed = False
-    for entry, raw, src, oracle in prepared:
+    for entry, raw, src, oracle, mutations in prepared:
         ident = entry['id']
         (a.data / (ident + '.json')).unlink(missing_ok=True)
         pkg = json.loads(raw)
@@ -76,7 +113,9 @@ def main():
                 'status': negative['status'], 'passed': negative['status'] == 'Accepted'
                 and not checked(negative, pkg['cases'][0]['expectedOutput'].split())})
             v = run(src, json.dumps(oracle['args']), True)
-            entry['checks'].append({'name': '120 independent small-instance oracle comparisons',
+            for mutation in mutations:
+                entry['checks'].append(check_mutation(mutation, pkg['cases']))
+            entry['checks'].append({'name': str(entry['counts']['oracle']) + ' independent small-instance oracle comparisons',
                 'status': v['status'], 'passed': checked(v, oracle['expected']),
                 'cpuNs': v.get('time'), 'memoryBytes': v.get('memory')})
             for case in pkg['cases']:
@@ -107,14 +146,14 @@ def main():
     if failed:
         raise SystemExit(1)
     # Write the frozen bytes actually executed, never recopy a potentially changed source.
-    for entry, raw, _, _ in prepared:
+    for entry, raw, _, _, _ in prepared:
         (a.data / (entry['id'] + '.json')).write_bytes(raw)
     publish = [dict(problemId=e['id'], packageFile=e['id'] + '.json',
         packageSha256=e['packageSha256'], verified=True, sourceContentHash=e['sourceContentHash'],
         referenceSha256=e['referenceSha256'], runnerSha256=e['wrapperSha256'],
         inputBytesSha256=e['inputBytesSha256'], referenceBytesSha256=e['referenceBytesSha256'],
-        oracleSha256=e['oracleSha256'],
-        counts={'formal':e['formalCases'],'oracle':e['oracleCases'],'negativeControls':1},
+        oracleSha256=e['oracleSha256'], mutationSha256=e['mutationSha256'],
+        counts=e['counts'],
         sourceUrl=e['sourceUrl'], sourceUrlZh=e['sourceUrlZh']) for e in report['problems']]
     (a.data / 'verified-manifest.json').write_text(json.dumps(
         {'verifiedAt':report['finishedAt'], 'sourceHashesFileSha256':report['sourceHashesFileSha256'],
