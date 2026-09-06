@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { Person } from './auth';
+import { handleEditorIntelligence } from './editor-intelligence';
 import { boundedText, HttpError, json, limit, requireTeacher } from './http';
 import {
   getPublishedProblem,
@@ -54,6 +55,8 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
     }
   }
   if (request.method !== 'POST') throw new HttpError(404, '判题接口不存在');
+  if (resource === 'intelligence' && (!id || id === 'close') && !action)
+    return handleEditorIntelligence(request, p, id === 'close');
   await limit(p, 'oj-write', 40);
   if (resource === 'submissions' && id && action === 'cancel')
     return json(await cancelSubmission(p, id));

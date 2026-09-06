@@ -47,6 +47,7 @@ import {
   AlertDialogTitle,
 } from './ui/alert-dialog';
 import { CodeEditor } from './editor';
+import type { IntelligenceStatus } from '@/lib/editor-intelligence';
 import {
   CopyBlock,
   SubmissionCodeDialog,
@@ -131,6 +132,11 @@ function Workspace({
   const [saveStatus, setSaveStatus] = useState('准备草稿…');
   const [saveError, setSaveError] = useState('');
   const [cursor, setCursor] = useState({ line: 1, column: 1 });
+  const [intelligence, setIntelligence] = useState<IntelligenceStatus>({
+    state: 'idle',
+    message: '语言服务待启动',
+  });
+  const suggest = useRef<(() => void) | null>(null);
   const [leftTab, setLeftTab] = useState<'statement' | 'history'>('statement');
   const [bottomTab, setBottomTab] = useState<'input' | 'result'>('input');
   const [inputMode, setInputMode] = useState<'sample' | 'custom'>('sample');
@@ -843,6 +849,13 @@ function Workspace({
           >
             <Settings2 size={16} />
           </button>
+          <button
+            title="触发代码补全（Ctrl + Space）"
+            className="cs-suggest-trigger"
+            onClick={() => suggest.current?.()}
+          >
+            代码补全
+          </button>
         </div>
       </div>
       <Group
@@ -857,6 +870,11 @@ function Workspace({
                 key={language}
                 value={code}
                 language={language}
+                problemId={problem.id}
+                onIntelligenceStatus={setIntelligence}
+                onSuggestReady={(action) => {
+                  suggest.current = action;
+                }}
                 onChange={updateCode}
                 path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${languageFiles[language]}`}
                 settings={settings}
@@ -995,6 +1013,13 @@ function Workspace({
         </Panel>
       </Group>
       <div className="cs-editor-status">
+        <span
+          role="status"
+          title={intelligence.message}
+          className={`cs-intelligence-status ${intelligence.state === 'unavailable' ? 'cs-unsaved' : ''}`}
+        >
+          {intelligence.message}
+        </span>
         <span className={saveError ? 'cs-unsaved' : ''}>
           <i />
           {saveStatus}
@@ -1206,6 +1231,8 @@ function Workspace({
               ['运行样例 / 自定义输入', 'Ctrl / ⌘ + Enter'],
               ['提交全部测试点', 'Ctrl / ⌘ + Shift + Enter'],
               ['保存当前草稿', 'Ctrl / ⌘ + S'],
+              ['代码补全', 'Ctrl + Space（或点击「代码补全」）'],
+              ['参数提示', 'Ctrl / ⌘ + Shift + Space'],
               ['查找', 'Ctrl / ⌘ + F'],
               ['命令面板', 'F1'],
               ['注释 / 取消注释', 'Ctrl / ⌘ + /'],

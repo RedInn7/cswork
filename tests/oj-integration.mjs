@@ -11,7 +11,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { setTimeout as delay } from 'node:timers/promises';
 import Database from 'better-sqlite3';
-import { Queue } from 'bullmq';
+import { removeOwnTestQueueJobs } from './oj-queue-cleanup.mjs';
 
 const base = new URL(process.env.TEST_URL || 'http://localhost:4318');
 if (
@@ -248,39 +248,26 @@ async function expectVerdict(name, language, code, expected, mode = 'run') {
   return { user, item, detail };
 }
 async function removeOwnQueueJobs() {
-  if (!submissionIds.size) return;
-  const url = new URL(process.env.REDIS_URL || 'redis://127.0.0.1:6381');
-  const queue = new Queue(queueName, {
-    connection: {
-      host: url.hostname,
-      port: Number(url.port || 6379),
-      username: decodeURIComponent(url.username) || undefined,
-      password: decodeURIComponent(url.password) || undefined,
-      db: Number(url.pathname.slice(1) || 0),
-      ...(url.protocol === 'rediss:' ? { tls: {} } : {}),
-      connectTimeout: 5000,
-      maxRetriesPerRequest: 1,
-      enableOfflineQueue: false,
+  await removeOwnTestQueueJobs(
+    queueName,
+    submissionIds,
+    process.env.REDIS_URL,
+    (count) => {
+      console.log(
+        `Waiting for ${count} test-worker job lease(s) to expire before cleanup…`,
+      );
     },
-  });
-  queue.on('error', () => {});
-  try {
-    for (const id of submissionIds) {
-      const job = await queue.getJob(id);
-      if (job) await job.remove().catch(() => {}); // A crashed active lease expires naturally; never flush Redis.
-    }
-  } finally {
-    await queue.close();
-  }
+  );
 }
 async function cleanup() {
   if (cleaning) return;
   cleaning = true;
   await stopWorker();
   for (const child of children) child.kill('SIGKILL');
-  await removeOwnQueueJobs().catch((e) =>
-    console.error('Test job cleanup:', e.message),
-  );
+  await removeOwnQueueJobs().catch((e) => {
+    console.error('Test job cleanup:', e.message);
+    process.exitCode = 1;
+  });
   const remove = db.transaction(() => {
     for (const { uid, email } of identities) {
       db.prepare('DELETE FROM submissions WHERE user_id=?').run(uid);
