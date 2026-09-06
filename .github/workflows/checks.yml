@@ -24,6 +24,7 @@ jobs:
       - run: npm run typecheck
       - run: npm run test:platform
       - run: npm run test:diagrams
+      - run: npx tsx --test tests/interview-course.test.ts tests/algorithm-demo.test.ts
       - run: node --test tests/import-gomall-videos.test.mjs
       - run: node --test tests/backup.test.mjs
       - run: npm run test:oj

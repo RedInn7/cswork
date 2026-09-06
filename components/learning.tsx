@@ -20,6 +20,7 @@ import { api, type Boot, type Lesson, date } from '@/lib/types';
 import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
 import { StudyLibrary } from './study-library';
+import interviewCatalog from '@/content/interview-catalog.json';
 import '@/app/study-library.css';
 import {
   Dialog,
@@ -200,7 +201,13 @@ export function CourseList({
                                 视频
                               </span>
                             )}
-                            {boot.problems.some((p) => p.lessonId === l.id) && (
+                            {boot.problems.some(
+                              (p) =>
+                                p.lessonId === l.id ||
+                                interviewCatalog
+                                  .find((chapter) => chapter.id === l.id)
+                                  ?.homeworkProblemIds.includes(p.id),
+                            ) && (
                               <span className="resource-label">
                                 <Code2 size={13} />
                                 练习
@@ -403,7 +410,12 @@ export function LessonReader({
   if (!lesson) return <div className="loading-state">正在加载课件…</div>;
   const course = boot.courses.find((c) => c.id === lesson.course_id),
     all = course?.lessons || [],
-    related = boot.problems.filter((p) => p.lessonId === id),
+    interviewChapter = interviewCatalog.find((chapter) => chapter.id === id),
+    related = boot.problems.filter(
+      (p) =>
+        p.lessonId === id ||
+        interviewChapter?.homeworkProblemIds.includes(p.id),
+    ),
     next = all[all.findIndex((l) => l.id === id) + 1];
   return (
     <>
@@ -441,10 +453,12 @@ export function LessonReader({
                 <FileText size={15} />
                 课件
               </TabsTrigger>
-              <TabsTrigger value="video">
-                <Video size={15} />
-                课程视频
-              </TabsTrigger>
+              {!interviewChapter && (
+                <TabsTrigger value="video">
+                  <Video size={15} />
+                  课程视频
+                </TabsTrigger>
+              )}
               <TabsTrigger value="notes">
                 <Bookmark size={15} />
                 我的笔记
@@ -539,20 +553,31 @@ export function LessonReader({
                   ))
                 ) : (
                   <p className="muted">
-                    本章先完成讲义中的工程练习，也可以进入算法题库巩固基础。
+                    {interviewChapter
+                      ? '请先取得对应算法题库的课程权限，再完成讲义中的训练。'
+                      : '本章先完成讲义中的工程练习，也可以进入算法题库巩固基础。'}
                   </p>
                 )}
-                <h3>提交工程作业</h3>
-                <p className="muted">
-                  把你的实现提交到 GitHub 仓库或 PR，交给老师评审。
-                </p>
-                <Button
-                  variant="outline"
-                  onClick={() => navigate('reviews', { lesson: id })}
-                >
-                  <GitPullRequest size={16} />
-                  提交作业
-                </Button>
+                {!interviewChapter && (
+                  <>
+                    <h3>提交工程作业</h3>
+                    <p className="muted">
+                      把你的实现提交到 GitHub 仓库或 PR，交给老师评审。
+                    </p>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate('reviews', { lesson: id })}
+                    >
+                      <GitPullRequest size={16} />
+                      提交作业
+                    </Button>
+                  </>
+                )}
+                {interviewChapter && (
+                  <p className="muted">
+                    按讲义中的训练目标完成作业，提交后查看判题结果。复盘时在「我的笔记」记录不变量、复杂度和一个容易遗漏的边界条件。
+                  </p>
+                )}
                 <Button variant="ghost" onClick={() => navigate('problems')}>
                   浏览算法题库
                   <ArrowRight size={15} />
