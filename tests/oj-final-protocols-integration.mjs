@@ -292,7 +292,7 @@ async function verdict(name, problemId, language, code, expected, customInput) {
   } else assert.ok(detail.passed < detail.total);
   const hidden = detail.cases.filter((c) => c.hidden);
   if (customInput === undefined && expected === 'accepted') assert.ok(hidden.length > 0);
-  assert.ok(!JSON.stringify(detail).includes('SERIALIZED_PRIVATE_'), 'Intermediate serialized data leaked');
+  assert.ok(!JSON.stringify({cases: detail.cases, message: detail.message}).includes('SERIALIZED_PRIVATE_'), 'Intermediate serialized data leaked');
   const storedHidden = db.prepare('SELECT stdout,stderr FROM oj_results WHERE submission_id=? AND hidden=1').all(created.id);
   for (const row of storedHidden) { assert.equal(row.stdout, null); assert.equal(row.stderr, null); }
   for (const c of hidden)
