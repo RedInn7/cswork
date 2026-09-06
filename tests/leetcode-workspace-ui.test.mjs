@@ -1,0 +1,223 @@
+import assert from 'node:assert/strict';
+import { test } from 'node:test';
+import { register, createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { JSDOM } from 'jsdom';
+import { createElement, act } from 'react';
+
+const react = pathToFileURL(
+  createRequire(import.meta.url).resolve('react'),
+).href;
+const prefix = `import React from ${JSON.stringify(react)};`;
+const mocks = {
+  editor:
+    prefix +
+    `export function CodeEditor(p){return React.createElement('textarea',{'aria-label':'test editor',value:p.value,onInput:e=>p.onChange(e.currentTarget.value)});} export function CodeDiff(){return null;}`,
+  markdown:
+    prefix +
+    `export function LessonMarkdown({children,body}){return React.createElement('div',null,body||children);}`,
+  panels:
+    prefix +
+    `export const Group=({children})=>React.createElement('div',null,children);export const Panel=Group;export const Separator=()=>null;export const useDefaultLayout=()=>({});export const usePanelRef=()=>React.useRef({expand(){},collapse(){},isCollapsed(){return false;}});`,
+  dialog:
+    prefix +
+    `export const Dialog=({open,children})=>open?React.createElement('div',{role:'dialog'},children):null;export const DialogContent=({children})=>React.createElement('div',null,children);export const DialogDescription=DialogContent;export const DialogHeader=DialogContent;export const DialogTitle=DialogContent;`,
+  alert:
+    prefix +
+    `export const AlertDialog=({open,children})=>open?React.createElement('div',{role:'alertdialog'},children):null;export const AlertDialogContent=({children})=>React.createElement('div',null,children);export const AlertDialogDescription=AlertDialogContent;export const AlertDialogHeader=AlertDialogContent;export const AlertDialogFooter=AlertDialogContent;export const AlertDialogTitle=AlertDialogContent;export const AlertDialogAction=({children,onClick})=>React.createElement('button',{onClick},children);export const AlertDialogCancel=AlertDialogAction;`,
+};
+register(
+  `data:text/javascript,${encodeURIComponent(`const mocks=${JSON.stringify(mocks)};export async function resolve(s,c,n){if(s==='react-resizable-panels')return {url:'mock:panels',shortCircuit:true};return n(s,c);}export async function load(u,c,n){if(u==='mock:panels')return {format:'module',source:mocks.panels,shortCircuit:true};if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};for(const [suffix,key] of [['/components/editor.tsx','editor'],['/components/lms-shared.tsx','markdown'],['/components/ui/dialog.tsx','dialog'],['/components/ui/alert-dialog.tsx','alert']])if(u.endsWith(suffix))return {format:'module',source:mocks[key],shortCircuit:true};return n(u,c);}`)}`,
+  import.meta.url,
+);
+
+test('workspace uses official LeetCode defaults and preserves separate mode and language drafts', async () => {
+  const dom = new JSDOM('<!doctype html><div id="root"></div>', {
+    url: 'https://cswork.test/',
+  });
+  for (const name of [
+    'window',
+    'document',
+    'HTMLElement',
+    'Element',
+    'Node',
+    'Event',
+    'MouseEvent',
+    'localStorage',
+    'sessionStorage',
+    'navigator',
+  ])
+    Object.defineProperty(globalThis, name, {
+      configurable: true,
+      value: dom.window[name],
+    });
+  window.matchMedia = () => ({
+    matches: false,
+    addEventListener() {},
+    removeEventListener() {},
+  });
+  globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+  const { createRoot } = await import('react-dom/client');
+  const { ProblemWorkspace } =
+    await import('../components/problem-workspace.tsx');
+  const { draftStorageKey } = await import('../lib/editor-settings.ts');
+  const contract = JSON.parse(
+    readFileSync(
+      new URL('../lib/content/leetcode-contracts.json', import.meta.url),
+      'utf8',
+    ),
+  ).problems['lc-1'];
+  const templates = {
+    python: contract.pythonTemplate,
+    java: contract.templates.java,
+  };
+  const problem = {
+    id: 'lc-1',
+    courseId: 'gomall',
+    lessonId: 'lesson',
+    title: '两数之和',
+    difficulty: '简单',
+    tags: [],
+    description: 'DUPLICATE SUMMARY',
+    input: 'ACM INPUT',
+    output: 'ACM OUTPUT',
+    explanation: '',
+    hints: [],
+    sampleIn: 'sample',
+    sampleOut: 'result',
+    languages: ['python', 'java'],
+    translations: {
+      en: {
+        title: 'Two Sum',
+        description: 'DUPLICATE SUMMARY',
+        input: 'ACM INPUT',
+        output: 'ACM OUTPUT',
+        explanation: '',
+        hints: [],
+      },
+    },
+    codingModes: ['leetcode', 'acm'],
+    leetcodeTemplates: templates,
+    sourceStatement: {
+      descriptionZh: 'COMPLETE ORIGINAL DESCRIPTION',
+      descriptionEn: 'COMPLETE ORIGINAL DESCRIPTION',
+      attribution: 'ATTRIBUTION MUST NOT SHOW',
+      sourceUrl: 'https://leetcode.cn/problems/two-sum/',
+    },
+  };
+  const historical = {
+    id: 'old-acm',
+    problemId: 'lc-1',
+    language: 'python',
+    codingMode: 'acm',
+    code: 'print("historic ACM")',
+    mode: 'judge',
+    status: 'accepted',
+    passed: 2,
+    total: 2,
+    created_at: 1,
+    results: [],
+    compileOutput: '',
+  };
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async (url) => {
+    if (url.includes('/submissions/old-acm')) return Response.json(historical);
+    if (url.includes('/submissions'))
+      return Response.json({ items: [historical], nextCursor: null });
+    if (url.includes('/status'))
+      return Response.json({ available: true, languageVersions: {} });
+    return Response.json(problem);
+  };
+  localStorage.setItem(
+    draftStorageKey('student', 'lc-1', 'python', 'acm'),
+    'print("legacy ACM")',
+  );
+  const root = createRoot(document.getElementById('root'));
+  const settle = () =>
+    act(async () => {
+      await new Promise((r) => setTimeout(r, 10));
+    });
+  const button = (text) =>
+    [...document.querySelectorAll('button')].find(
+      (n) => n.textContent.trim() === text,
+    );
+  const editor = () => document.querySelector('[aria-label="test editor"]');
+  const choose = async (label, value) => {
+    const element = document.querySelector(`[aria-label="${label}"]`);
+    assert.ok(element, label);
+    await act(async () => {
+      element.value = value;
+      element.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await settle();
+  };
+  const edit = async (value) => {
+    await act(async () => {
+      editor().value = value;
+      editor().dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  };
+  const click = async (node) => {
+    assert.ok(node);
+    await act(async () => node.click());
+    await settle();
+  };
+  try {
+    await act(async () =>
+      root.render(
+        createElement(ProblemWorkspace, {
+          problem,
+          boot: { person: { id: 'student', role: 'teacher' }, courses: [] },
+          navigate() {},
+          ask() {},
+          refresh: async () => {},
+        }),
+      ),
+    );
+    await settle();
+    assert.equal(editor().value, templates.python);
+    assert.equal(
+      document.querySelector('[aria-label="提交模式"]').value,
+      'leetcode',
+    );
+    assert.match(document.body.textContent, /COMPLETE ORIGINAL DESCRIPTION/);
+    assert.doesNotMatch(
+      document.body.textContent,
+      /DUPLICATE SUMMARY|ATTRIBUTION MUST NOT SHOW|返回课程|查看课程|展开提示/,
+    );
+    assert.doesNotMatch(document.body.textContent, /ACM INPUT|ACM OUTPUT/);
+    await edit('# my LC draft');
+    await choose('提交模式', 'acm');
+    assert.equal(editor().value, 'print("legacy ACM")');
+    await edit('print("new ACM")');
+    await choose('提交模式', 'leetcode');
+    assert.equal(editor().value, '# my LC draft');
+    await choose('编程语言', 'java');
+    assert.equal(editor().value, templates.java);
+    await edit('// java LC draft');
+    await choose('编程语言', 'python');
+    assert.equal(editor().value, '# my LC draft');
+    await click(document.querySelector('[aria-label="重置为语言模板"]'));
+    await click(button('确认替换'));
+    assert.equal(editor().value, templates.python);
+    await choose('提交模式', 'acm');
+    assert.equal(editor().value, 'print("new ACM")');
+    await choose('提交模式', 'leetcode');
+    await click(button('提交记录'));
+    await click(button('代码'));
+    await click(button('恢复到编辑器'));
+    await click(button('确认替换'));
+    assert.equal(
+      document.querySelector('[aria-label="提交模式"]').value,
+      'acm',
+    );
+    assert.equal(editor().value, historical.code);
+    await choose('提交模式', 'leetcode');
+    assert.equal(editor().value, templates.python);
+  } finally {
+    await act(async () => root.unmount());
+    globalThis.fetch = originalFetch;
+    dom.window.close();
+  }
+});

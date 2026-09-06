@@ -48,6 +48,8 @@ export type CompiledProgram = {
   language: Language;
   source: string;
   cache: Record<string, string>;
+  bridgeSource?: string;
+  leetcodeInput?: boolean;
 };
 export class EngineFailure extends Error {}
 const sourceNames: Record<Language, string> = {
@@ -198,8 +200,13 @@ export async function run(
   const memoryBytes = spec.memoryLimit * 1024;
   const heap = Math.max(8, Math.floor((spec.memoryLimit / 1024) * 0.6));
   const args =
-    program.language === 'python'
-      ? ['/usr/bin/python3', '-I', 'main.py']
+    program.bridgeSource || program.language === 'python'
+      ? [
+          '/usr/bin/python3',
+          '-I',
+          program.bridgeSource ? 'bridge.py' : 'main.py',
+          ...(program.leetcodeInput ? ['--leetcode-input'] : []),
+        ]
       : program.language === 'java'
         ? [
             '/usr/bin/java',
@@ -222,6 +229,8 @@ export async function run(
             { fileId },
           ]),
         );
+  if (program.bridgeSource)
+    Object.assign(copyIn, { 'bridge.py': { content: program.bridgeSource } });
   return execute(
     {
       ...limits(

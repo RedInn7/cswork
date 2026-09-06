@@ -6,6 +6,8 @@ import type { Person } from './auth';
 import { HttpError, limit } from './http';
 import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
 import { getJudgeProblem } from './oj-problems';
+import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
+import type { CodingMode } from '@/lib/coding-mode';
 
 export const MAX_CODE_BYTES = 65536;
 export const MAX_STDIN_BYTES = 65536;
@@ -20,6 +22,8 @@ export type SubmissionRow = {
   code: string;
   status: string;
   mode: 'judge' | 'run';
+  coding_mode: CodingMode;
+  harness_version: string | null;
   custom_input: string | null;
   request_hash: string | null;
   passed: number;
@@ -50,6 +54,7 @@ const inputSchema = z
     language: z.enum(['python', 'go', 'java', 'cpp']),
     code: z.string().min(1).max(MAX_CODE_BYTES),
     mode: z.enum(['judge', 'run']).default('judge'),
+    codingMode: z.enum(['leetcode', 'acm']).default('acm'),
     stdin: z.string().max(MAX_STDIN_BYTES).optional(),
     idempotencyKey: z.string().regex(/^[a-zA-Z0-9_-]{16,100}$/),
   })
@@ -68,6 +73,8 @@ export async function createSubmission(p: Person, value: unknown) {
   const snapshot = await getJudgeProblem(p, d.problemId);
   if (!snapshot.spec.languages.includes(d.language))
     throw new HttpError(400, '此题未开放该语言');
+  if (d.codingMode === 'leetcode' && !leetcodeContract(d.problemId))
+    throw new HttpError(400, '此题未开放 LeetCode 模式');
   const hash = createHash('sha256')
     .update(
       JSON.stringify([
@@ -76,6 +83,9 @@ export async function createSubmission(p: Person, value: unknown) {
         d.code,
         d.mode,
         d.stdin ?? null,
+        ...(d.codingMode === 'leetcode'
+          ? [d.codingMode, LEETCODE_HARNESS_VERSION]
+          : []),
       ]),
     )
     .digest('hex');
@@ -127,7 +137,7 @@ export async function createSubmission(p: Person, value: unknown) {
         ? ensurePracticeRound(p.id)
         : null;
     db.prepare(
-      'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+      'INSERT INTO submissions(id,user_id,problem_id,problem_version_id,language,code,status,mode,custom_input,idempotency_key,request_hash,total,created_at,updated_at,practice_round_id,coding_mode,harness_version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
     ).run(
       id,
       p.id,
@@ -144,6 +154,8 @@ export async function createSubmission(p: Person, value: unknown) {
       now,
       now,
       practiceRoundId,
+      d.codingMode,
+      d.codingMode === 'leetcode' ? LEETCODE_HARNESS_VERSION : null,
     );
     db.prepare(
       'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
@@ -153,7 +165,8 @@ export async function createSubmission(p: Person, value: unknown) {
 }
 export function submissionRow(id: string) {
   return sqlite().prepare('SELECT * FROM submissions WHERE id=?').get(id) as
-    SubmissionRow | undefined;
+    | SubmissionRow
+    | undefined;
 }
 function owned(p: Person, id: string) {
   const s = submissionRow(id);
@@ -167,6 +180,7 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
     problem_id: s.problem_id,
     language: s.language,
     mode: s.mode,
+    codingMode: s.coding_mode || 'acm',
     status: s.status,
     passed: s.passed,
     total: s.total,
@@ -190,7 +204,8 @@ function summary(s: SubmissionRow, roundNumbers?: Map<string, number>) {
               'SELECT number FROM practice_rounds WHERE id=? AND user_id=?',
             )
             .get(s.practice_round_id, s.user_id) as
-            { number: number } | undefined
+            | { number: number }
+            | undefined
         )?.number ??
         null)
       : null,
@@ -345,7 +360,8 @@ export function ojStatus() {
   const r = sqlite()
     .prepare("SELECT * FROM oj_runtime WHERE id='worker'")
     .get() as
-    { heartbeat_at: number; healthy: number; details: string } | undefined;
+    | { heartbeat_at: number; healthy: number; details: string }
+    | undefined;
   const counts = sqlite()
     .prepare(
       "SELECT SUM(status='queued') as queued,SUM(status IN ('compiling','running')) as active FROM submissions WHERE status IN ('queued','compiling','running')",

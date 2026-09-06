@@ -1,4 +1,5 @@
 import { starters, type Language } from './problems';
+import type { CodingMode } from './coding-mode';
 
 export type EditorSettings = {
   theme: 'light' | 'dark';
@@ -46,17 +47,21 @@ export function draftStorageKey(
   userId: string,
   problemId: string,
   language: Language,
+  codingMode: CodingMode = 'acm',
 ) {
-  return `cswork:editor:draft:${userId}:${problemId}:${language}`;
+  const key = `cswork:editor:draft:${userId}:${problemId}:${language}`;
+  return codingMode === 'acm' ? key : `${key}:leetcode`;
 }
 
 export function readEditorDraft(
   userId: string,
   problemId: string,
   language: Language,
+  codingMode: CodingMode = 'acm',
+  template = starters[language],
 ): EditorDraft {
   const raw = localStorage.getItem(
-    draftStorageKey(userId, problemId, language),
+    draftStorageKey(userId, problemId, language, codingMode),
   );
   if (raw) {
     try {
@@ -69,10 +74,11 @@ export function readEditorDraft(
       return { code: raw, updatedAt: 0 };
     }
   }
-  const previous = localStorage.getItem(
-    `sde:${userId}:${problemId}:${language}`,
-  );
-  return { code: previous ?? starters[language], updatedAt: 0 };
+  const previous =
+    codingMode === 'acm'
+      ? localStorage.getItem(`sde:${userId}:${problemId}:${language}`)
+      : null;
+  return { code: previous ?? template, updatedAt: 0 };
 }
 
 export function writeEditorDraft(key: string, code: string): EditorDraft {

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { leetcodeTemplates, leetcodeContract } from './leetcode-mode';
 import {
   changePracticeRound,
   practiceRoundState,
@@ -49,8 +50,12 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
       // Entitlement, publication and validation gates apply before source text
       // is read. Full statements supplement, never replace, the judge protocol.
       const problem = await getPublishedProblem(p, id);
+      const templates = leetcodeTemplates(id);
       return json({
         ...problem,
+        codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
+        leetcodeTemplates: templates,
+        leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
         sourceStatement: getStudySourceStatement(id),
         practiceRound: isSelectedProblem(id)
           ? practiceRoundState(p.id).currentRound
