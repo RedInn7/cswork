@@ -11,6 +11,7 @@ import {
   problemChecksum,
 } from '../lib/server/oj-problems';
 import type { Person } from '../lib/server/auth';
+import { parseOjSetOutput } from '../lib/oj-types';
 
 const manifestFile = process.argv[2];
 const email = process.argv[3]?.toLowerCase();
@@ -40,6 +41,22 @@ const teacher: Person = {
   verified: true,
 };
 const hash = z.string().regex(/^[a-f0-9]{64}$/);
+const resultKindSchema = z
+  .enum(['integer', 'string', 'integer-array', 'integer-set', 'string-set'])
+  .default('integer');
+const oracleEncodingSchema = z
+  .enum(['legacy-integer', 'jsonl-v1'])
+  .default('legacy-integer');
+const checkerSchema = z
+  .enum(['tokens', 'exact', 'int-set', 'string-set'])
+  .default('tokens');
+const resourceLimitsSchema = z
+  .object({
+    timeLimit: z.number().min(0.1).max(10),
+    memoryLimit: z.number().int().min(16384).max(524288),
+    outputLimit: z.number().int().min(1).max(4096),
+  })
+  .default({ timeLimit: 2, memoryLimit: 262144, outputLimit: 64 });
 const countsSchema = z.object({
   formal: z.number().int().min(2).max(64),
   oracle: z.number().int().min(120),
@@ -64,6 +81,10 @@ const manifest = z
           referenceBytesSha256: hash,
           oracleSha256: hash,
           counts: countsSchema,
+          resultKind: resultKindSchema,
+          oracleEncoding: oracleEncodingSchema,
+          checker: checkerSchema,
+          resourceLimits: resourceLimitsSchema,
         }),
       )
       .min(1),
@@ -89,6 +110,10 @@ const report = z
           oracleSha256: hash,
           mutationSha256: hash,
           counts: countsSchema,
+          resultKind: resultKindSchema,
+          oracleEncoding: oracleEncodingSchema,
+          checker: checkerSchema,
+          resourceLimits: resourceLimitsSchema,
           checks: z.array(z.object({ passed: z.literal(true) })),
         }),
       )
@@ -120,6 +145,16 @@ if (
 for (const record of manifest.problems) {
   const entry = reportEntries.get(record.problemId);
   if (
+    entry?.resultKind !== record.resultKind ||
+    entry?.oracleEncoding !== record.oracleEncoding ||
+    entry?.checker !== record.checker ||
+    entry?.resourceLimits.timeLimit !== record.resourceLimits.timeLimit ||
+    entry?.resourceLimits.memoryLimit !== record.resourceLimits.memoryLimit ||
+    entry?.resourceLimits.outputLimit !== record.resourceLimits.outputLimit ||
+    (record.resultKind !== 'integer' && record.oracleEncoding !== 'jsonl-v1')
+  )
+    throw new Error('Verification result protocol does not match manifest');
+  if (
     !entry ||
     entry.counts.formal !== record.counts.formal ||
     entry.counts.oracle !== record.counts.oracle ||
@@ -142,6 +177,53 @@ for (const record of manifest.problems) {
   )
     throw new Error('Verification report provenance does not match manifest');
 }
+function validExpectedShape(kind: string, value: string) {
+  if (kind === 'string') {
+    const normalized = value.replace(/\r\n/g, '\n');
+    return (
+      normalized.endsWith('\n') &&
+      !/[\r\n]/.test(normalized.slice(0, -1)) &&
+      !normalized.includes('\0') &&
+      !/[\uD800-\uDFFF]/u.test(normalized)
+    );
+  }
+  if (kind === 'integer-set' || kind === 'string-set')
+    return (
+      parseOjSetOutput(
+        value,
+        kind === 'integer-set' ? 'int-set' : 'string-set',
+      ) !== null
+    );
+  const tokens = value.split(/[\t\n\v\f\r ]+/).filter(Boolean);
+  if (kind === 'integer')
+    return tokens.length === 1 && /^[+-]?[0-9]+$/.test(tokens[0]);
+  if (kind !== 'integer-array' || !/^(0|[1-9][0-9]*)$/.test(tokens[0] || ''))
+    return false;
+  const count = Number(tokens[0]);
+  return (
+    count <= 1000000 &&
+    tokens.length === count + 1 &&
+    tokens.slice(1).every((v) => /^[+-]?[0-9]+$/.test(v))
+  );
+}
+function typedOracleResult(kind: string, value: unknown): boolean {
+  const text = (v: unknown): v is string =>
+    typeof v === 'string' &&
+    !v.includes('\0') &&
+    !/[\uD800-\uDFFF]/u.test(v) &&
+    Buffer.byteLength(v, 'utf8') <= 4 * 1024 * 1024;
+  if (kind === 'integer') return typeof value === 'bigint';
+  if (kind === 'string') return text(value) && !/[\r\n]/.test(value);
+  if (!Array.isArray(value) || value.length > 1000000) return false;
+  if (kind === 'string-set') {
+    if (!value.every((v) => text(v) && !/[\r\n]/.test(v))) return false;
+  } else if (
+    (kind !== 'integer-array' && kind !== 'integer-set') ||
+    !value.every((v) => typeof v === 'bigint')
+  )
+    return false;
+  return !kind.endsWith('-set') || new Set(value).size === value.length;
+}
 // Validate every package before making any change.
 const packages = manifest.problems.map((record) => {
   if (record.packageFile !== `${record.problemId}.json`)
@@ -158,11 +240,84 @@ const packages = manifest.problems.map((record) => {
   if (createHash('sha256').update(raw).digest('hex') !== record.packageSha256)
     throw new Error(`Changed verified package: ${record.problemId}`);
   const payload = validateProblemPackage(JSON.parse(raw.toString('utf8')));
+  const requiredChecker = {
+    integer: 'tokens',
+    string: 'exact',
+    'integer-array': 'tokens',
+    'integer-set': 'int-set',
+    'string-set': 'string-set',
+  }[record.resultKind];
+  if (
+    payload.problem.checker !== requiredChecker ||
+    payload.problem.checker !== record.checker ||
+    payload.problem.timeLimit !== record.resourceLimits.timeLimit ||
+    payload.problem.memoryLimit !== record.resourceLimits.memoryLimit ||
+    payload.problem.outputLimit !== record.resourceLimits.outputLimit
+  )
+    throw new Error(
+      'Verification result protocol does not match package checker',
+    );
   if (
     payload.problem.id !== record.problemId ||
     payload.cases.length !== record.counts.formal
   )
     throw new Error('Verification manifest does not match package');
+  if (
+    !payload.cases.every((c) =>
+      validExpectedShape(record.resultKind, c.expectedOutput),
+    )
+  )
+    throw new Error('Expected output does not match verified result type');
+  if (record.oracleEncoding === 'jsonl-v1') {
+    const oraclePath = resolve(
+      dirname(manifestFile),
+      `${record.problemId}.oracle.json`,
+    );
+    if (
+      dirname(realpathSync(oraclePath)) !==
+      realpathSync(dirname(resolve(manifestFile)))
+    )
+      throw new Error('Oracle must not escape manifest directory');
+    const oracleRaw = readFileSync(oraclePath);
+    if (
+      oracleRaw.byteLength > 32 * 1024 * 1024 ||
+      createHash('sha256').update(oracleRaw).digest('hex') !==
+        record.oracleSha256
+    )
+      throw new Error('Changed verified oracle');
+    // Node 22 source-aware parsing preserves arbitrarily large integer literals.
+    // Exponents/decimal notation remain Number and fail the strict integer check.
+    const oracle = JSON.parse(
+      oracleRaw.toString('utf8'),
+      (_key: string, value: unknown, context?: { source?: string }) => {
+        if (typeof value !== 'number') return value;
+        if (!context?.source)
+          throw new Error('Oracle requires source-aware JSON parsing');
+        return /^-?[0-9]+$/.test(context.source)
+          ? BigInt(context.source)
+          : value;
+      },
+    ) as {
+      resultKind?: unknown;
+      oracleEncoding?: unknown;
+      args?: unknown;
+      expected?: unknown;
+    };
+    if (
+      oracle.resultKind !== record.resultKind ||
+      oracle.oracleEncoding !== record.oracleEncoding ||
+      !Array.isArray(oracle.args) ||
+      !Array.isArray(oracle.expected) ||
+      oracle.args.length !== record.counts.oracle ||
+      oracle.expected.length !== record.counts.oracle ||
+      !oracle.expected.every((value) =>
+        typedOracleResult(record.resultKind, value),
+      )
+    )
+      throw new Error(
+        'Oracle type or count does not match verified result protocol',
+      );
+  }
   if (
     !db
       .prepare('SELECT id FROM study_library WHERE id=? AND content_hash=?')

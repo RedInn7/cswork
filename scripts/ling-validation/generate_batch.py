@@ -7,8 +7,9 @@ import json
 import random
 import re
 from pathlib import Path
+from result_contract import KINDS, CHECKERS, validate_result, format_result, resource_limits, MAX_ORACLE_BYTES
 
-BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3')
+BATCHES = ('arrays', 'dp', 'graphs', 'arrays2', 'dp2', 'graphs2', 'arrays3', 'dp3', 'graphs3', 'mixed1')
 # Reviewed source correction, never automatic trial-and-error selection.
 REFERENCE_FILES = {309: 'Solution2.py', 552: 'Solution2.py', 714: 'Solution2.py', 1510: 'Solution2.py', 1971: 'Solution2.py'}
 SECONDARY_REFERENCE_FILES = {1416: 'restore-the-array.py', 2466: 'count-ways-to-build-good-strings.py'}
@@ -53,8 +54,25 @@ def checked_args(spec, args):
         raise ValueError('Arguments violate declared constraints')
     return value
 
+def result_settings(spec):
+    kind=spec.get('resultKind','integer')
+    if kind not in KINDS:
+        raise ValueError('Unsupported result kind')
+    encoding=spec.get('oracleEncoding','legacy-integer' if kind=='integer' else 'jsonl-v1')
+    if encoding not in ('legacy-integer','jsonl-v1') or kind!='integer' and encoding!='jsonl-v1':
+        raise ValueError('Non-integer results require jsonl-v1')
+    checker=spec.get('checker',CHECKERS[kind])
+    if checker!=CHECKERS[kind]:
+        raise ValueError('Result kind and checker disagree')
+    return kind,encoding,checker
+
+def typed_result(spec,value):
+    kind,_,_=result_settings(spec)
+    if kind=='integer':return integer(value)
+    return validate_result(kind,value)
+
 def answer(spec, args):
-    return integer(spec['oracle'](checked_args(spec, args)))
+    return typed_result(spec,spec['oracle'](checked_args(spec, args)))
 
 def reference_source(root, pid, secondary=None):
     if pid in SECONDARY_REFERENCE_FILES:
@@ -92,12 +110,28 @@ def wrapper(spec, source):
             future.append(line)
         else:
             lines.append(line)
+    kind,encoding,_=result_settings(spec)
+    contract=''
+    if kind=='integer' and encoding=='legacy-integer':
+        result_body="""    if type(result) not in (int, bool):
+        raise TypeError('Expected an integer or boolean result')
+    print(int(result))"""
+    else:
+        # Embed only authored contract code; downloaded sources remain inert until
+        # the produced wrapper is submitted to the existing sandbox.
+        contract_source=Path(__file__).with_name('result_contract.py').read_text()
+        contract='\n_cswork_contract = {}\nexec('+repr(contract_source)+', _cswork_contract)\n'
+        result_body=f"""    if {kind!r} == 'integer' and type(result) is bool:
+        result = int(result)
+    _cswork_contract['validate_result']({kind!r}, result)
+    if '--batch' in sys.argv:
+        print(json.dumps(result, ensure_ascii=False, allow_nan=False))
+    else:
+        sys.stdout.write(_cswork_contract['format_result']({kind!r}, result))"""
     tail = f'''
 def _cswork_answer(args):
     result = Solution().{method}(*args)
-    if type(result) not in (int, bool):
-        raise TypeError('Expected an integer or boolean result')
-    print(int(result))
+{result_body}
 
 if __name__ == '__main__':
     if '--batch' in sys.argv:
@@ -106,7 +140,7 @@ if __name__ == '__main__':
     else:
 '''
     parse = '\n'.join('        ' + line for line in spec['parse'].splitlines())
-    return '\n'.join(future) + '\n' + PREFIX + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
+    return '\n'.join(future) + '\n' + PREFIX + contract + '\n'.join(lines) + tail + parse + '\n        _cswork_answer(args)\n'
 
 def sha(raw):
     return hashlib.sha256(raw).hexdigest()
@@ -115,6 +149,8 @@ def build(pid, spec, library, references, out, secondary=None):
     if pid not in library:
         raise ValueError(f'{pid} is outside the Ling study list')
     origin = library[pid]
+    kind,encoding,checker=result_settings(spec)
+    limits=resource_limits(spec)
     if spec['method'] != origin['signature']['name'].strip():
         raise ValueError(f'Reference method does not match source metadata: {pid}')
     rng = random.Random(20260906 + pid)
@@ -127,7 +163,7 @@ def build(pid, spec, library, references, out, secondary=None):
         args = checked_args(spec, spec['random_args'](rng))
         formal.append((args, answer(spec, args), f'固定种子随机 {i+1}'))
     for i, (args, expected) in enumerate(spec['pressure']):
-        formal.append((checked_args(spec, args), integer(expected), f'规模上限 {i+1}'))
+        formal.append((checked_args(spec, args), typed_result(spec,expected), f'规模上限 {i+1}'))
     if not 2 <= len(formal) <= 64 or not spec['pressure']:
         raise ValueError('Require 2–64 formal cases including pressure coverage')
     cases = []
@@ -135,10 +171,13 @@ def build(pid, spec, library, references, out, secondary=None):
         stdin = spec['encode'](args)
         if not isinstance(stdin, str) or len(stdin.encode()) > 4*1024*1024 or '\0' in stdin:
             raise ValueError('Input encoding exceeds the OJ contract')
+        expected_output=format_result(kind,expected)
+        if len(expected_output.encode('utf-8'))>limits['outputLimit']*1024:
+            raise ValueError('Expected output exceeds declared output limit')
         cases.append(dict(name='样例 1' if i == 0 else name, input=stdin,
-            expectedOutput=str(expected)+'\n', hidden=i != 0, weight=1))
+            expectedOutput=expected_output, hidden=i != 0, weight=1))
     small = [checked_args(spec, spec['random_args'](rng)) for _ in range(120)]
-    oracle = dict(args=small, expected=[answer(spec, args) for args in small])
+    oracle = dict(args=small, expected=[answer(spec, args) for args in small],resultKind=kind,oracleEncoding=encoding)
     path, source = reference_source(references, pid, secondary)
     wrapped = wrapper(spec, source)
     mutations=spec['mutants']
@@ -155,7 +194,7 @@ def build(pid, spec, library, references, out, secondary=None):
         explanation=explanation_zh, hints=[],
         translations={'en':dict(title=spec['titleEn'],description=spec['descriptionEn'],input=spec['inputEn'],
             output=spec['outputEn'],explanation=explanation_en,hints=[])},
-        timeLimit=spec.get('timeLimit',2), memoryLimit=262144, outputLimit=64, checker='tokens',
+        **limits, checker=checker,
         languages=['python','go','java','cpp']),cases=cases)
     raw = (json.dumps(pkg,ensure_ascii=False,indent=2)+'\n').encode()
     mutation_raw = (json.dumps(spec['mutants'],ensure_ascii=False,indent=2)+'\n').encode()
@@ -164,7 +203,10 @@ def build(pid, spec, library, references, out, secondary=None):
     ident=f'lc-{pid}'
     (out/(ident+'.candidate.json')).write_bytes(raw)
     (out/(ident+'.reference.py')).write_text(wrapped)
-    (out/(ident+'.oracle.json')).write_text(json.dumps(oracle))
+    oracle_raw=json.dumps(oracle,ensure_ascii=False,allow_nan=False).encode('utf-8')
+    if len(oracle_raw)>MAX_ORACLE_BYTES:
+        raise ValueError('Oracle sidecar exceeds 32 MiB')
+    (out/(ident+'.oracle.json')).write_bytes(oracle_raw)
     (out/(ident+'.mutants.json')).write_bytes(mutation_raw)
     selection = {}
     if pid in SECONDARY_REFERENCE_FILES:
@@ -178,8 +220,9 @@ def build(pid, spec, library, references, out, secondary=None):
             rejectedSourceSha256=sha(rejected.read_bytes()), reason=REFERENCE_REASONS[pid]))
     return dict(**selection, id=ident, sourceUrl=origin['sourceEnUrl'], sourceUrlZh=origin['sourceUrl'],
         reference=str(path), referenceSha256=sha(source.encode()), wrapperSha256=sha(wrapped.encode()),
-        packageSha256=sha(raw), mutantsSha256=sha(mutation_raw), formalCases=len(cases),
-        oracleCases=len(small), status='candidate')
+        packageSha256=sha(raw), mutantsSha256=sha(mutation_raw), oracleSha256=sha(oracle_raw), formalCases=len(cases),
+        oracleCases=len(small), resultKind=kind, oracleEncoding=encoding,
+        checker=checker, resourceLimits=limits, status='candidate')
 
 def main():
     parser=argparse.ArgumentParser()

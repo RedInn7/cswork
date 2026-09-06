@@ -1,0 +1,542 @@
+{
+  "protocolVersion": 1,
+  "maxOutputBytes": 4194304,
+  "maxSetItems": 1000000,
+  "countHeader": "canonical nonnegative decimal, no surrounding whitespace",
+  "integerElement": "signed decimal digits; leading + and zeroes normalized; duplicates after normalization rejected",
+  "cases": [
+    {
+      "name": "integer order ignored",
+      "checker": "int-set",
+      "actual": "3\n9 -2 0\n",
+      "expected": "3\n0 9 -2\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer decimal normalization",
+      "checker": "int-set",
+      "actual": "3\n+001 -0002 -0",
+      "expected": "3\n1 -2 0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer CRLF",
+      "checker": "int-set",
+      "actual": "2\r\n1\t2\r\n",
+      "expected": "2\n2 1\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer empty",
+      "checker": "int-set",
+      "actual": "0\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer empty whitespace",
+      "checker": "int-set",
+      "actual": "0\n \t\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer arbitrary precision",
+      "checker": "int-set",
+      "actual": "2\n9007199254740993 -999999999999999999999999999999\n",
+      "expected": "2\n-999999999999999999999999999999 9007199254740993\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer precision difference",
+      "checker": "int-set",
+      "actual": "1\n9007199254740992\n",
+      "expected": "1\n9007199254740993\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects duplicate",
+      "checker": "int-set",
+      "actual": "2\n1 1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects normalized duplicate",
+      "checker": "int-set",
+      "actual": "2\n1 +01\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects zero duplicate",
+      "checker": "int-set",
+      "actual": "2\n0 -0\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects missing item",
+      "checker": "int-set",
+      "actual": "2\n1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects extra item",
+      "checker": "int-set",
+      "actual": "1\n1 2\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects decimal fraction",
+      "checker": "int-set",
+      "actual": "1\n1.0\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects exponent",
+      "checker": "int-set",
+      "actual": "1\n1e0\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects hex",
+      "checker": "int-set",
+      "actual": "1\n0x1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects unicode digit",
+      "checker": "int-set",
+      "actual": "1\n１\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects unicode whitespace",
+      "checker": "int-set",
+      "actual": "2\n1 2\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects bad sign",
+      "checker": "int-set",
+      "actual": "1\n--1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects header spaces",
+      "checker": "int-set",
+      "actual": " 1\n1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects header plus",
+      "checker": "int-set",
+      "actual": "+1\n1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects header leading zero",
+      "checker": "int-set",
+      "actual": "01\n1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects negative count",
+      "checker": "int-set",
+      "actual": "-1\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects count too large",
+      "checker": "int-set",
+      "actual": "1000001\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects missing header newline",
+      "checker": "int-set",
+      "actual": "0",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer rejects NUL",
+      "checker": "int-set",
+      "actual": "1\n1\u0000\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "integer invalid expected rejected",
+      "checker": "int-set",
+      "actual": "1\n1\n",
+      "expected": "2\n1 +01\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": false
+    },
+    {
+      "name": "string order ignored",
+      "checker": "string-set",
+      "actual": "2\nbeta\nalpha\n",
+      "expected": "2\nalpha\nbeta\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string CRLF",
+      "checker": "string-set",
+      "actual": "2\r\na\r\nb\r\n",
+      "expected": "2\nb\na\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string empty set",
+      "checker": "string-set",
+      "actual": "0\n",
+      "expected": "0\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string empty member",
+      "checker": "string-set",
+      "actual": "1\n\n",
+      "expected": "1\n\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string empty and whitespace members",
+      "checker": "string-set",
+      "actual": "3\n \n\n  \n",
+      "expected": "3\n\n  \n \n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string literal quotes and slash",
+      "checker": "string-set",
+      "actual": "2\n\"quoted\"\na\\b\n",
+      "expected": "2\na\\b\n\"quoted\"\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string leading space significant",
+      "checker": "string-set",
+      "actual": "1\n a\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string internal spaces significant",
+      "checker": "string-set",
+      "actual": "1\na  b\n",
+      "expected": "1\na b\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string numeric spelling significant",
+      "checker": "string-set",
+      "actual": "1\n01\n",
+      "expected": "1\n1\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string Unicode whitespace preserved",
+      "checker": "string-set",
+      "actual": "1\na b\n",
+      "expected": "1\na b\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects duplicate",
+      "checker": "string-set",
+      "actual": "2\na\na\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects duplicate empty",
+      "checker": "string-set",
+      "actual": "2\n\n\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects missing item",
+      "checker": "string-set",
+      "actual": "2\na\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects extra item",
+      "checker": "string-set",
+      "actual": "1\na\nb\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects extra blank line",
+      "checker": "string-set",
+      "actual": "1\na\n\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects empty set extra blank line",
+      "checker": "string-set",
+      "actual": "0\n\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects missing trailing newline",
+      "checker": "string-set",
+      "actual": "1\na",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects bare CR",
+      "checker": "string-set",
+      "actual": "1\na\rb\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects NUL",
+      "checker": "string-set",
+      "actual": "1\na\u0000b\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects header spaces",
+      "checker": "string-set",
+      "actual": "1 \na\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects header leading zero",
+      "checker": "string-set",
+      "actual": "01\na\n",
+      "expected": "1\na\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string invalid expected rejected",
+      "checker": "string-set",
+      "actual": "1\na\n",
+      "expected": "2\na\na\n",
+      "matches": false,
+      "actualValid": true,
+      "expectedValid": false
+    },
+    {
+      "name": "legacy tokens ASCII whitespace",
+      "checker": "tokens",
+      "actual": "1 \r\n 2\t",
+      "expected": "1 2\n",
+      "matches": true
+    },
+    {
+      "name": "legacy tokens preserve order",
+      "checker": "tokens",
+      "actual": "2 1\n",
+      "expected": "1 2\n",
+      "matches": false
+    },
+    {
+      "name": "legacy tokens decimal spellings differ",
+      "checker": "tokens",
+      "actual": "1.0",
+      "expected": "1",
+      "matches": false
+    },
+    {
+      "name": "legacy tokens reject NBSP separator",
+      "checker": "tokens",
+      "actual": "1 2",
+      "expected": "1 2",
+      "matches": false
+    },
+    {
+      "name": "legacy exact CRLF",
+      "checker": "exact",
+      "actual": "a\r\n",
+      "expected": "a\n",
+      "matches": true
+    },
+    {
+      "name": "legacy exact final newline significant",
+      "checker": "exact",
+      "actual": "a",
+      "expected": "a\n",
+      "matches": false
+    },
+    {
+      "name": "legacy exact empty",
+      "checker": "exact",
+      "actual": "",
+      "expected": "",
+      "matches": true
+    },
+    {
+      "name": "unknown checker fail closed",
+      "checker": "future-checker",
+      "actual": "same",
+      "expected": "same",
+      "matches": false
+    },
+    {
+      "name": "string valid supplementary Unicode preserved",
+      "checker": "string-set",
+      "actual": "2\n😀\n𐐷\n",
+      "expected": "2\n𐐷\n😀\n",
+      "matches": true,
+      "actualValid": true,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects lone high surrogate",
+      "checker": "string-set",
+      "actual": "1\n\ud800\n",
+      "expected": "1\n\ud800\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": false
+    },
+    {
+      "name": "string rejects lone low surrogate",
+      "checker": "string-set",
+      "actual": "1\n\udfff\n",
+      "expected": "1\n\udfff\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": false
+    },
+    {
+      "name": "string rejects reversed surrogate pair",
+      "checker": "string-set",
+      "actual": "1\n\udc00\ud800\n",
+      "expected": "1\n😀\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    },
+    {
+      "name": "string rejects surrogate after valid emoji",
+      "checker": "string-set",
+      "actual": "1\n😀\ud800\n",
+      "expected": "1\n😀\n",
+      "matches": false,
+      "actualValid": false,
+      "expectedValid": true
+    }
+  ]
+}

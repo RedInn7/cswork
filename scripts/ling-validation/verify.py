@@ -2,17 +2,21 @@
 """Run private references ONLY through an existing authenticated go-judge sandbox."""
 import argparse,datetime,hashlib,json,os,re,urllib.request,urllib.parse
 from pathlib import Path
+import math
+from functools import partial
+from result_contract import KINDS, CHECKERS, compare_output, compare_batch, validate_result, validate_expected_output, resource_limits, MAX_ORACLE_BYTES
 
-def run(source,stdin,batch=False):
+def run(source,stdin,batch=False,problem=None):
+    limits=resource_limits({} if problem is None else problem)
     url=os.environ.get('GO_JUDGE_URL','http://127.0.0.1:5050').rstrip('/')
     parsed=urllib.parse.urlparse(url)
     if parsed.scheme!='https' and not(parsed.scheme=='http' and parsed.hostname in ('localhost','127.0.0.1','::1')):raise ValueError('Require loopback or HTTPS')
-    cmd=dict(args=['/usr/bin/python3','main.py']+(['--batch'] if batch else []),env=['PATH=/usr/bin:/bin','HOME=/w','LANG=C.UTF-8'],files=[{'content':stdin},{'name':'stdout','max':65536,'pipe':True},{'name':'stderr','max':65536,'pipe':True}],cpuLimit=2_000_000_000,clockLimit=6_000_000_000,memoryLimit=268435456,procLimit=16,copyIn={'main.py':{'content':source}})
+    cpu=limits['timeLimit'];clock=max(3,cpu*3);output=limits['outputLimit']*1024
+    cmd=dict(args=['/usr/bin/python3','main.py']+(['--batch'] if batch else []),env=['PATH=/usr/bin:/bin','HOME=/w','LANG=C.UTF-8'],files=[{'content':stdin},{'name':'stdout','max':output,'pipe':True},{'name':'stderr','max':min(output,65536),'pipe':True}],cpuLimit=math.ceil(cpu*1_000_000_000),clockLimit=math.ceil(clock*1_000_000_000),memoryLimit=limits['memoryLimit']*1024,procLimit=16,copyIn={'main.py':{'content':source}})
     req=urllib.request.Request(url+'/run',data=json.dumps({'cmd':[cmd]}).encode(),headers={'Content-Type':'application/json','Authorization':'Bearer '+os.environ.get('GO_JUDGE_TOKEN','')})
-    with urllib.request.urlopen(req,timeout=20) as response:results=json.load(response)
+    with urllib.request.urlopen(req,timeout=max(20,clock+10)) as response:results=json.load(response)
     if len(results)!=1:raise RuntimeError('Unexpected sandbox response')
-    v=results[0]
-    return v
+    return results[0]
 
 def checked(result,expected):
     actual=result.get('files',{}).get('stdout','').split()
@@ -34,8 +38,12 @@ def snapshot_inputs(data, source_hashes_path):
     if not manifest.get('problems'):
         raise ValueError('Generation manifest must contain problems')
     prepared = []
+    seen = set()
     for item in manifest['problems']:
         ident = item['id']
+        if not isinstance(ident,str) or not re.fullmatch(r'lc-[1-9][0-9]*',ident) or ident in seen:
+            raise ValueError('Duplicate or invalid problem identity')
+        seen.add(ident)
         source_hash = hashes.get(ident) if isinstance(hashes, dict) else None
         if not isinstance(source_hash, str) or not re.fullmatch(r'[0-9a-f]{64}', source_hash):
             raise ValueError('Missing or invalid sourceContentHash for ' + ident)
@@ -47,8 +55,34 @@ def snapshot_inputs(data, source_hashes_path):
             raise ValueError('Input bytes do not match generation manifest: ' + ident)
         if digest(mutation_raw) != item.get('mutantsSha256'):
             raise ValueError('Mutation bytes do not match generation manifest: ' + ident)
+        if len(oracle_raw)>MAX_ORACLE_BYTES:
+            raise ValueError('Oracle sidecar exceeds 32 MiB')
         oracle = json.loads(oracle_raw)
-        cases = json.loads(raw).get('cases')
+        package = json.loads(raw)
+        problem = package.get('problem',{})
+        limits = resource_limits(problem)
+        kind = item.get('resultKind','integer')
+        encoding = item.get('oracleEncoding','legacy-integer')
+        if kind not in KINDS or encoding not in ('legacy-integer','jsonl-v1') or kind!='integer' and encoding!='jsonl-v1':
+            raise ValueError('Invalid result kind or oracle encoding: '+ident)
+        # Only historical legacy-integer manifests may omit the generation-time hash.
+        # Every declared hash binds the independent oracle before sandbox execution.
+        if 'oracleSha256' in item:
+            oracle_hash=item['oracleSha256']
+            if (not isinstance(oracle_hash,str) or not re.fullmatch(r'[0-9a-f]{64}',oracle_hash)
+                    or digest(oracle_raw)!=oracle_hash):
+                raise ValueError('Oracle bytes do not match generation manifest: '+ident)
+        elif encoding=='jsonl-v1':
+            raise ValueError('JSONL oracle requires generation-time oracleSha256: '+ident)
+        checker = problem.get('checker','tokens')
+        if item.get('checker',checker)!=checker or item.get('resourceLimits',limits)!=limits:
+            raise ValueError('Manifest runtime contract differs from package: '+ident)
+        if checker != CHECKERS[kind]:
+            raise ValueError('Result kind does not match formal output checker: '+ident)
+        if (oracle.get('resultKind',None if encoding=='jsonl-v1' else kind)!=kind
+                or oracle.get('oracleEncoding',None if encoding=='jsonl-v1' else encoding)!=encoding):
+            raise ValueError('Oracle metadata differs from generation manifest: '+ident)
+        cases = package.get('cases')
         args, expected = oracle.get('args'), oracle.get('expected')
         if (not isinstance(args, list) or not isinstance(expected, list)
                 or len(args) < 120 or len(args) != len(expected)
@@ -57,6 +91,16 @@ def snapshot_inputs(data, source_hashes_path):
         if (not isinstance(cases, list) or not 2 <= len(cases) <= 64
                 or type(item.get('formalCases')) is not int or len(cases) != item['formalCases']):
             raise ValueError('Formal case count must match manifest and be between 2 and 64: ' + ident)
+        if encoding=='jsonl-v1' and any(type(a) is not list for a in args):
+            raise ValueError('Each oracle invocation must be a positional argument list')
+        for value in expected:
+            validate_result(kind,value)
+        for case in cases:
+            if not isinstance(case,dict) or not isinstance(case.get('input'),str):
+                raise ValueError('Invalid formal case')
+            validate_expected_output(kind,case.get('expectedOutput'))
+            if len(case['expectedOutput'].encode('utf-8'))>limits['outputLimit']*1024:
+                raise ValueError('Expected output exceeds declared runtime output limit')
         mutations = json.loads(mutation_raw)
         if (not isinstance(mutations, list) or not mutations
                 or any(not isinstance(m, dict) or not isinstance(m.get('name'), str)
@@ -64,6 +108,8 @@ def snapshot_inputs(data, source_hashes_path):
                        or not m['source'].strip() for m in mutations)):
             raise ValueError('At least one named incorrect program is required: ' + ident)
         entry = {**item, 'sourceContentHash': source_hash,
+                 'resultKind':kind, 'oracleEncoding':encoding, 'checker':checker,
+                 'resourceLimits':limits,
                  'inputBytesSha256': digest(raw), 'referenceBytesSha256': digest(reference),
                  'oracleSha256': digest(oracle_raw), 'mutationSha256': digest(mutation_raw),
                  'counts': {'formal': len(cases), 'oracle': len(args), 'negativeControls': 1 + len(mutations)},
@@ -78,12 +124,12 @@ def assert_unchanged(snapshots):
             raise ValueError('Validation input changed during sandbox execution: ' + path.name)
 
 
-def check_mutation(mutation, cases, runner=run):
+def check_mutation(mutation, cases, runner=run, checker='tokens'):
     """A crash is not proof of wrong-answer coverage; require a clean wrong output."""
     attempts = []
     for case in cases:
         result = runner(mutation['source'], case['input'])
-        killed = result['status'] == 'Accepted' and not checked(result, case['expectedOutput'].split())
+        killed = result['status'] == 'Accepted' and not compare_output(checker,result.get('files',{}).get('stdout',''),case['expectedOutput'])
         attempts.append({'case': case['name'], 'status': result['status'], 'killed': killed})
         if killed:
             break
@@ -107,21 +153,23 @@ def main():
         ident = entry['id']
         (a.data / (ident + '.json')).unlink(missing_ok=True)
         pkg = json.loads(raw)
+        runner = partial(run,problem=entry['resourceLimits'])
+        checker = entry['checker']
         try:
-            negative = run('print(-999999999999)\n', pkg['cases'][0]['input'])
+            negative = runner('print(-999999999999)\n', pkg['cases'][0]['input'])
             entry['checks'].append({'name': 'incorrect constant-output rejection',
                 'status': negative['status'], 'passed': negative['status'] == 'Accepted'
-                and not checked(negative, pkg['cases'][0]['expectedOutput'].split())})
-            v = run(src, json.dumps(oracle['args']), True)
+                and not compare_output(checker,negative.get('files',{}).get('stdout',''),pkg['cases'][0]['expectedOutput'])})
+            v = runner(src, json.dumps(oracle['args']), True)
             for mutation in mutations:
-                entry['checks'].append(check_mutation(mutation, pkg['cases']))
+                entry['checks'].append(check_mutation(mutation, pkg['cases'], runner, checker))
             entry['checks'].append({'name': str(entry['counts']['oracle']) + ' independent small-instance oracle comparisons',
-                'status': v['status'], 'passed': checked(v, oracle['expected']),
+                'status': v['status'], 'passed': v['status']=='Accepted' and compare_batch(v.get('files',{}).get('stdout',''),oracle['expected'],entry['resultKind'],entry['oracleEncoding']),
                 'cpuNs': v.get('time'), 'memoryBytes': v.get('memory')})
             for case in pkg['cases']:
-                v = run(src, case['input'])
+                v = runner(src, case['input'])
                 entry['checks'].append({'name': case['name'], 'status': v['status'],
-                    'passed': checked(v, case['expectedOutput'].split()),
+                    'passed': v['status']=='Accepted' and compare_output(checker,v.get('files',{}).get('stdout',''),case['expectedOutput']),
                     'cpuNs': v.get('time'), 'memoryBytes': v.get('memory')})
             if all(c['passed'] for c in entry['checks']):
                 entry['status'] = 'verified'
@@ -153,7 +201,8 @@ def main():
         referenceSha256=e['referenceSha256'], runnerSha256=e['wrapperSha256'],
         inputBytesSha256=e['inputBytesSha256'], referenceBytesSha256=e['referenceBytesSha256'],
         oracleSha256=e['oracleSha256'], mutationSha256=e['mutationSha256'],
-        counts=e['counts'],
+        counts=e['counts'], resultKind=e['resultKind'], oracleEncoding=e['oracleEncoding'],
+        checker=e['checker'], resourceLimits=e['resourceLimits'],
         sourceUrl=e['sourceUrl'], sourceUrlZh=e['sourceUrlZh']) for e in report['problems']]
     (a.data / 'verified-manifest.json').write_text(json.dumps(
         {'verifiedAt':report['finishedAt'], 'sourceHashesFileSha256':report['sourceHashesFileSha256'],
