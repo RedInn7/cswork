@@ -1522,41 +1522,13 @@ function Workspace({
             if (!open) setSuccess(null);
           }}
         >
-          <DialogContent className="cs-accepted-dialog" showCloseButton={false}>
+          <DialogContent
+            className="cs-accepted-dialog"
+            showCloseButton={false}
+            aria-describedby={undefined}
+          >
             <div className="cs-accepted-banner">
-              <div className="cs-accepted-seal">
-                <CircleCheck size={44} aria-hidden="true" />
-              </div>
-              <DialogHeader>
-                <DialogTitle className="cs-accepted-title">
-                  AC <span>Accepted</span>
-                </DialogTitle>
-                <strong>{english ? 'All tests passed' : '通过了！'}</strong>
-                <DialogDescription>
-                  {english
-                    ? 'Your solution passed all test cases.'
-                    : '你的解答已通过全部测试用例。'}
-                  {success.total > 0 && ` ${success.passed} / ${success.total}`}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="cs-accepted-actions">
-                <button
-                  className="cs-accepted-continue"
-                  onClick={() => {
-                    setSuccess(null);
-                    showConsole('result');
-                  }}
-                >
-                  {english ? 'View result' : '查看判题详情'}
-                </button>
-                <button
-                  className="cs-accepted-library"
-                  onClick={() => navigate('problems')}
-                >
-                  {english ? 'View progress' : '查看刷题进度'}
-                  <ChevronRight size={16} />
-                </button>
-              </div>
+              <DialogTitle className="cs-accepted-title">Accepted</DialogTitle>
               <button
                 className="cs-accepted-dismiss"
                 aria-label={
