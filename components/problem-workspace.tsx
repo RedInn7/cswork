@@ -180,6 +180,15 @@ function Workspace({
     defaultEditorSettings,
   );
   const [language, setLanguage] = useState<Language>('python');
+  const editorFile =
+    codingMode === 'leetcode'
+      ? {
+          python: 'solution.py',
+          cpp: 'solution.cpp',
+          java: 'Solution.java',
+          go: 'solution.go',
+        }[language]
+      : languageFiles[language];
   const [code, setCode] = useState(starters.python);
   const [ready, setReady] = useState(false);
   const [saveStatus, setSaveStatus] = useState('准备草稿…');
@@ -587,7 +596,7 @@ function Workspace({
     );
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `${problem.id}-${languageFiles[language]}`;
+    anchor.download = `${problem.id}-${codingMode}-${editorFile}`;
     anchor.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
@@ -999,7 +1008,7 @@ function Workspace({
       <div className="cs-code-caption">
         <Code2 size={15} />
         <strong>代码</strong>
-        <span>{languageFiles[language]}</span>
+        <span>{editorFile}</span>
       </div>
       <div className="cs-editor-toolbar">
         <div className="cs-editor-controls">
@@ -1093,7 +1102,7 @@ function Workspace({
                     suggest.current = action;
                   }}
                   onChange={updateCode}
-                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${languageFiles[language]}`}
+                  path={`cswork://draft/${encodeURIComponent(userId)}/${problem.id}/${codingMode}/${editorFile}`}
                   settings={settings}
                   onRun={() => submit('run')}
                   onSubmit={() => submit('judge')}
