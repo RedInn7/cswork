@@ -60,6 +60,8 @@ import {
 import {
   languages,
   starters,
+  problemStatement,
+  type ProblemLocale,
   type Language,
   type Problem,
 } from '@/lib/problems';
@@ -126,6 +128,14 @@ function Workspace({
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
   const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [statementLocale, setStatementLocale] = useState<ProblemLocale>('zh');
+  useEffect(() => {
+    setStatementLocale(
+      safeLayoutStorage.getItem('cswork:problem:locale') === 'en' ? 'en' : 'zh',
+    );
+  }, []);
+  const statement = problemStatement(problem, statementLocale);
+  const english = statementLocale === 'en' && !!problem.translations?.en;
   const [settings, setSettings] = useState<EditorSettings>(
     defaultEditorSettings,
   );
@@ -662,11 +672,44 @@ function Workspace({
       <div className="cs-statement-scroll">
         {leftTab === 'statement' ? (
           <>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                marginBottom: 16,
+              }}
+            >
+              <span>题面语言</span>
+              <select
+                aria-label="题面语言"
+                value={statementLocale}
+                onChange={(event) => {
+                  const next = event.target.value as ProblemLocale;
+                  setStatementLocale(next);
+                  safeLayoutStorage.setItem('cswork:problem:locale', next);
+                  setHintCount(0);
+                }}
+              >
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+              </select>
+            </label>
+            {statementLocale === 'en' && !english && (
+              <output>
+                English translation is not available yet. Showing the Chinese
+                statement. / 本题暂无英文题面，显示中文。
+              </output>
+            )}
             <div className="cs-statement-title">
               <span
                 className={`difficulty ${problem.difficulty === '中等' ? 'medium' : ''}`}
               >
-                {problem.difficulty}
+                {english
+                  ? { 简单: 'Easy', 中等: 'Medium', 困难: 'Hard' }[
+                      problem.difficulty
+                    ]
+                  : problem.difficulty}
               </span>
               {problem.tags.map((tag) => (
                 <span className="cs-topic-tag" key={tag}>
@@ -674,50 +717,63 @@ function Workspace({
                 </span>
               ))}
             </div>
-            <h2>{problem.title}</h2>
+            <h2>{statement.title}</h2>
             <div className="cs-limits">
               <span>{problem.timeLimit} s</span>
               <span>{problem.memoryLimit / 1024} MB</span>
-              <span>标准输入 / 输出</span>
+              <span>
+                {english ? 'Standard input / output' : '标准输入 / 输出'}
+              </span>
               {problem.version && <span>v{problem.version}</span>}
             </div>
             <div className="cs-problem-prose">
-              <p>{problem.description}</p>
-              <h3>输入格式</h3>
-              <p>{problem.input}</p>
-              <h3>输出格式</h3>
-              <p>{problem.output}</p>
-              <h3>样例</h3>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.description}</p>
+              <h3>{english ? 'Input' : '输入格式'}</h3>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.input}</p>
+              <h3>{english ? 'Output' : '输出格式'}</h3>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
+              <h3>{english ? 'Examples' : '样例'}</h3>
               {samples.map((item) => (
                 <div key={item.name}>
                   <h4>{samples.length > 1 ? item.name : null}</h4>
-                  <CopyBlock label="输入" value={item.input} />
-                  <CopyBlock label="输出" value={item.expectedOutput} />
+                  <CopyBlock
+                    label={english ? 'Input' : '输入'}
+                    value={item.input}
+                  />
+                  <CopyBlock
+                    label={english ? 'Output' : '输出'}
+                    value={item.expectedOutput}
+                  />
                 </div>
               ))}
-              <p>{problem.explanation}</p>
+              <p style={{ whiteSpace: 'pre-wrap' }}>{statement.explanation}</p>
             </div>
             <div className="cs-hints">
               <div>
                 <Lightbulb size={17} />
-                <strong>思路提示</strong>
+                <strong>{english ? 'Hints' : '思路提示'}</strong>
                 <span>
-                  {hintCount} / {problem.hints.length}
+                  {Math.min(hintCount, statement.hints.length)} /{' '}
+                  {statement.hints.length}
                 </span>
               </div>
-              {problem.hints.slice(0, hintCount).map((hint, index) => (
+              {statement.hints.slice(0, hintCount).map((hint, index) => (
                 <p key={hint}>
                   <b>{index + 1}</b>
                   {hint}
                 </p>
               ))}
               <button
-                disabled={hintCount >= problem.hints.length}
+                disabled={hintCount >= statement.hints.length}
                 onClick={() => setHintCount((n) => n + 1)}
               >
-                {hintCount >= problem.hints.length
-                  ? '已展开全部提示'
-                  : '需要时，展开下一条'}
+                {hintCount >= statement.hints.length
+                  ? english
+                    ? 'All hints shown'
+                    : '已展开全部提示'
+                  : english
+                    ? 'Show next hint'
+                    : '需要时，展开下一条'}
                 <ChevronRight size={14} />
               </button>
             </div>
@@ -1143,7 +1199,7 @@ function Workspace({
           </button>
           <div>
             <span className="cs-workspace-eyebrow">cswork / 题库</span>
-            <h1>{problem.title}</h1>
+            <h1>{statement.title}</h1>
           </div>
         </div>
         <div className="cs-workspace-run-actions">
