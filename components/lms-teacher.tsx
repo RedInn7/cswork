@@ -30,7 +30,6 @@ import { ReviewDetailDialog, SubmissionLink } from './lms-support';
 import { CourseAdmin } from './course-admin';
 import { OjAdmin } from './oj-admin';
 import { CommerceAdmin } from './commerce-admin';
-import { EnrollmentAdmin } from './enrollment-admin';
 
 export function TeacherView({
   boot,
@@ -65,7 +64,6 @@ export function TeacherView({
           <TeacherQueue boot={boot} navigate={navigate} />
         </TabsContent>
         <TabsContent value="students">
-          <EnrollmentAdmin courses={boot.courses} />
           <Grants
             courses={boot.courses}
             initialEmail={params.get('email') || ''}
