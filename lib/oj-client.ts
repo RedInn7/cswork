@@ -100,6 +100,37 @@ export function verdict(status: string, mode?: string) {
   return verdictNames[status] || status;
 }
 
+export type OJReceipt = Pick<OJSubmission, 'id' | 'status'> &
+  Partial<OJSubmission>;
+
+/** Accept rich receipts from new workers, retaining rolling-deploy compatibility. */
+export async function submitOJ(
+  payload: unknown,
+  signal: AbortSignal,
+  onReceipt?: (receipt: OJReceipt) => void,
+): Promise<OJSubmission> {
+  const receipt = await ojRequest<OJReceipt>('submissions', payload, signal);
+  signal.throwIfAborted();
+  onReceipt?.(receipt);
+  if (
+    typeof receipt.problem_id === 'string' &&
+    typeof receipt.language === 'string' &&
+    (receipt.mode === 'run' || receipt.mode === 'judge') &&
+    typeof receipt.passed === 'number' &&
+    typeof receipt.total === 'number' &&
+    typeof receipt.created_at === 'number' &&
+    Array.isArray(receipt.cases)
+  )
+    return receipt as OJSubmission;
+  const detail = await ojRequest<OJSubmission>(
+    `submissions/${encodeURIComponent(receipt.id)}`,
+    undefined,
+    signal,
+  );
+  signal.throwIfAborted();
+  return detail;
+}
+
 export async function ojRequest<T>(
   path: string,
   data?: unknown,
