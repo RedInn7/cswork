@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { compile } from '../lib/server/oj-engine';
 
-void test('Go reads the optional immutable standard-library cache and keeps user source out of the shell', async () => {
+void test('Go gives cache trimming private writable metadata while reusing immutable stdlib objects', async () => {
   const original = globalThis.fetch;
   let command:
     | {
@@ -30,9 +30,11 @@ void test('Go reads the optional immutable standard-library cache and keeps user
     );
     assert.ok(
       command!.args[2].includes(
-        'export GOCACHE=/usr/local/lib/cswork/go-stdlib-cache-v1',
+        'cp -rs --no-preserve=mode /usr/local/lib/cswork/go-stdlib-cache-v1/. /tmp/go-cache',
       ),
     );
+    assert.ok(command!.args[2].includes('rm -f /tmp/go-cache/trim.txt'));
+    assert.ok(!command!.args[2].includes('export GOCACHE='));
     assert.ok(
       command!.args[2].endsWith(
         'exec /usr/bin/go build -trimpath -o main main.go',

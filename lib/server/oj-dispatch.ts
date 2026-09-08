@@ -1,6 +1,8 @@
 import type Database from 'better-sqlite3';
 
-export const OJ_DISPATCH_INTERVAL_MS = 200;
+// At most 20 indexed reads/sec while idle; overlapping drains are coalesced.
+// Keep polling bounded while avoiding a 200ms post-submit scheduling gap.
+export const OJ_DISPATCH_INTERVAL_MS = 50;
 
 /** Fast path only; the worker's full reconciliation still recovers Redis loss. */
 export function createOutboxDispatcher(
@@ -12,7 +14,9 @@ export function createOutboxDispatcher(
   const pending = db.prepare(
     "SELECT s.id FROM oj_outbox o JOIN submissions s ON s.id=o.submission_id WHERE o.dispatched_at IS NULL AND s.status='queued' AND s.cancel_requested=0 ORDER BY o.created_at LIMIT 128",
   );
-  const markDispatched = db.prepare('UPDATE oj_outbox SET dispatched_at=? WHERE submission_id=?');
+  const markDispatched = db.prepare(
+    'UPDATE oj_outbox SET dispatched_at=? WHERE submission_id=?',
+  );
   async function dispatch() {
     for (const { id } of pending.all() as { id: string }[]) {
       if (stopped) break;

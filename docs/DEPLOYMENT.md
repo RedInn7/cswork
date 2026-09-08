@@ -47,7 +47,7 @@ sudo /opt/cswork/runtime/node --env-file=/etc/cswork/cswork.env scripts/create-a
 
 安装器保留已有环境文件和 TLS 配置。第一次使用随机独立 BETTER_AUTH_SECRET；迁移前备份 SQLite，生成新版本目录后切换软链接，启动失败或健康检查超时回退原应用。nginx -t 失败时不会 reload 现有服务。
 
-启用 OJ 后，Web 配置只保留 `OJ_ENABLED=true`，不向 Web 进程提供 `GO_JUDGE_TOKEN` 或 `REDIS_URL`。`cswork-oj-worker.service` 额外加载 root 保护的 `/etc/cswork/oj.env`，与应用共享 cswork 的 SQLite/outbox，使用独立 Redis 和默认队列 `cswork-judge-v1`。生产只运行一个 worker 服务，内部并发为 2；不要同时手工启动另一份生产 worker。
+启用 OJ 后，Web 配置只保留 `OJ_ENABLED=true`，不向 Web 进程提供 `GO_JUDGE_TOKEN` 或 `REDIS_URL`。`cswork-oj-worker.service` 额外加载 root 保护的 `/etc/cswork/oj.env`，与应用共享 cswork 的 SQLite/outbox，使用独立 Redis 和默认队列 `cswork-judge-v1`。生产只运行一个 worker 服务，同时处理一个提交；每个提交最多并行两个独立测试点，大内存题仍串行。不要同时手工启动另一份生产 worker。
 
 发布时安装器先停止旧 worker，再切换 `/srv/cswork/current`。除 Web 健康检查外，还要求新 worker 产生本次启动之后的健康心跳；任一检查失败，恢复旧应用软链接并在旧版本包含 worker 时重新启动它。回滚实现见 [应用安装器](../deploy/install.sh)，服务约束见 [worker unit](../deploy/cswork-oj-worker.service)。回滚应用不会撤销数据库迁移；恢复数据须使用迁移前备份。
 

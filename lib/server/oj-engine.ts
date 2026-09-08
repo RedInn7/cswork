@@ -151,10 +151,12 @@ export async function compile(
     go: [
       '/bin/sh',
       '-c',
-      // The image contains only trusted standard-library objects, mounted
-      // read-only. A user-package miss still compiles in the private sandbox.
-      // Older images retain the fresh /tmp cache from the command environment.
-      'if test -r /usr/local/lib/cswork/go-stdlib-cache-v1/cswork-toolchain-v1; then export GOCACHE=/usr/local/lib/cswork/go-stdlib-cache-v1; fi; exec /usr/bin/go build -trimpath -o main main.go',
+      // Go's cache Close writes trim.txt even when compilation only reads
+      // stdlib objects. Keep directory/trim/user-package writes private and
+      // symlink trusted objects from the read-only image instead of copying
+      // ~164 MiB into every sandbox's bounded /tmp. Old images use an empty
+      // private cache. Never point writable GOCACHE at the shared seed itself.
+      'if test -r /usr/local/lib/cswork/go-stdlib-cache-v1/cswork-toolchain-v1; then mkdir -p /tmp/go-cache && cp -rs --no-preserve=mode /usr/local/lib/cswork/go-stdlib-cache-v1/. /tmp/go-cache && rm -f /tmp/go-cache/trim.txt /tmp/go-cache/README || exit 1; fi; exec /usr/bin/go build -trimpath -o main main.go',
     ],
     java: [
       '/bin/sh',

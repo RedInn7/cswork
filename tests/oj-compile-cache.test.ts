@@ -3,6 +3,49 @@ import { test } from 'node:test';
 import { CompiledProgramCache } from '../lib/server/oj-compile-cache';
 import type { compile } from '../lib/server/oj-engine';
 
+void test('default cache retains a ten-learner run-to-submit burst without recompiling', async () => {
+  let calls = 0;
+  const compiler: typeof compile = async (language, source) => ({
+    result: { status: 'Accepted' },
+    program: { language, source, cache: { main: String(++calls) } },
+  });
+  const cache = new CompiledProgramCache(compiler, async () => {});
+  try {
+    for (let round = 0; round < 2; round++) {
+      for (let learner = 0; learner < 10; learner++) {
+        const acquired = await cache.acquire(
+          `learner-${learner}`, 'cpp', 'same reviewed solution', new AbortController().signal,
+        );
+        if (round) assert.equal(acquired.cacheHit, true);
+        await acquired.release();
+      }
+    }
+    assert.equal(calls, 10, 'all ten isolated owners should compile only once');
+  } finally {
+    await cache.close();
+  }
+});
+
+void test('default cache still evicts beyond sixteen entries and cleans every artifact', async () => {
+  let calls = 0;
+  const removed: string[] = [];
+  const cache = new CompiledProgramCache(async (language, source) => ({
+    result: { status: 'Accepted' },
+    program: { language, source, cache: { main: String(++calls) } },
+  }), async (program) => { removed.push(program.cache.main); });
+  for (let i = 0; i < 17; i++) {
+    const item = await cache.acquire(`learner-${i}`, 'cpp', 'source', new AbortController().signal);
+    await item.release();
+  }
+  assert.deepEqual(removed, ['1']);
+  const last = await cache.acquire('learner-16', 'cpp', 'source', new AbortController().signal);
+  assert.equal(last.cacheHit, true);
+  await last.release();
+  await cache.close();
+  assert.equal(new Set(removed).size, 17);
+  assert.equal(removed.length, 17);
+});
+
 function fixture(capacity = 2) {
   let clock = 0,
     calls = 0;

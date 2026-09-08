@@ -1,7 +1,18 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
-import { createOutboxDispatcher } from '../lib/server/oj-dispatch';
+import {
+  createOutboxDispatcher,
+  OJ_DISPATCH_INTERVAL_MS,
+} from '../lib/server/oj-dispatch';
+
+test('outbox timer bounds dispatch wait to 50ms without busy polling', () => {
+  assert.ok(OJ_DISPATCH_INTERVAL_MS <= 50);
+  assert.ok(
+    OJ_DISPATCH_INTERVAL_MS >= 50,
+    'at most 20 indexed drains per second',
+  );
+});
 
 function fixture() {
   const db = new Database(':memory:');
@@ -21,7 +32,9 @@ test('dispatches committed undispatched queued rows immediately with stable job 
   assert.deepEqual(calls, ['fresh']);
   assert.ok(
     (
-      db.prepare('SELECT dispatched_at FROM oj_outbox WHERE submission_id=?').get('fresh') as {
+      db
+        .prepare('SELECT dispatched_at FROM oj_outbox WHERE submission_id=?')
+        .get('fresh') as {
         dispatched_at: number;
       }
     ).dispatched_at,
@@ -40,7 +53,9 @@ test('Redis failure preserves outbox and retry reuses the same submission ID', a
   await assert.rejects(dispatch.drain(), /offline/);
   assert.equal(
     (
-      db.prepare('SELECT dispatched_at FROM oj_outbox WHERE submission_id=?').get('fresh') as {
+      db
+        .prepare('SELECT dispatched_at FROM oj_outbox WHERE submission_id=?')
+        .get('fresh') as {
         dispatched_at: null;
       }
     ).dispatched_at,
@@ -91,12 +106,9 @@ test('actual createSubmission commits outbox before dispatch; idempotent retries
   const db = sqlite();
   try {
     migrate(drizzle(db), { migrationsFolder: resolve('drizzle') });
-    db.prepare('INSERT INTO courses(id,title,summary,version,published) VALUES(?,?,?,?,1)').run(
-      'gomall',
-      'GoMall',
-      'Tests',
-      '1',
-    );
+    db.prepare(
+      'INSERT INTO courses(id,title,summary,version,published) VALUES(?,?,?,?,1)',
+    ).run('gomall', 'GoMall', 'Tests', '1');
     for (const id of [
       '00-overview',
       '07-product-search',
@@ -108,13 +120,9 @@ test('actual createSubmission commits outbox before dispatch; idempotent retries
       ).run(id, 'gomall', id, '', 'chapter', '', '1');
     }
     await ensureOjSeed();
-    db.prepare('INSERT INTO grants(id,email,course_id,source,created_at) VALUES(?,?,?,?,?)').run(
-      'grant',
-      'student@example.test',
-      '*',
-      'test',
-      Date.now(),
-    );
+    db.prepare(
+      'INSERT INTO grants(id,email,course_id,source,created_at) VALUES(?,?,?,?,?)',
+    ).run('grant', 'student@example.test', '*', 'test', Date.now());
     const person = {
       id: 'student',
       name: 'Student',
@@ -137,14 +145,16 @@ test('actual createSubmission commits outbox before dispatch; idempotent retries
     const dispatcher = createOutboxDispatcher(db, async (id) => {
       assert.equal(
         (
-          committed.prepare('SELECT status FROM submissions WHERE id=?').get(id) as
-            | { status: string }
-            | undefined
+          committed
+            .prepare('SELECT status FROM submissions WHERE id=?')
+            .get(id) as { status: string } | undefined
         )?.status,
         'queued',
       );
       assert.ok(
-        committed.prepare('SELECT submission_id FROM oj_outbox WHERE submission_id=?').get(id),
+        committed
+          .prepare('SELECT submission_id FROM oj_outbox WHERE submission_id=?')
+          .get(id),
       );
       ids.push(id);
     });

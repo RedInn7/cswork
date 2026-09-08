@@ -129,7 +129,11 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
       if (e instanceof HttpError) throw e;
       throw new HttpError(400, '无效的 JSON');
     }
-    return json(await createSubmission(p, data), 201);
+    const created = await createSubmission(p, data);
+    // Reuse the owner-checked public projection for both fresh submissions and
+    // idempotent replays. Clients can watch immediately without a detail GET;
+    // hidden case inputs/outputs never enter the response.
+    return json(await submissionDetail(p, created.id), 201);
   }
   if (resource === 'admin' && id === 'problems') {
     requireTeacher(p);

@@ -84,11 +84,14 @@ import {
 } from '@/lib/editor-settings';
 import {
   activeStatuses,
+  cancelOJ,
   ojRequest,
+  submitOJ,
   type OJProblem,
   type OJSubmission,
   type SubmissionPage,
 } from '@/lib/oj-client';
+import { FeedbackTiming } from '@/lib/oj-feedback-timing';
 import '@/app/editor.css';
 
 type WorkspaceProps = {
@@ -277,6 +280,9 @@ function Workspace({
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const alive = useRef(false);
   const busyRef = useRef(false);
+  const submitController = useRef<AbortController | null>(null);
+  const cancelController = useRef<AbortController | null>(null);
+  const feedbackTiming = useRef<FeedbackTiming | null>(null);
   const latestRefresh = useRef(refresh);
   latestRefresh.current = refresh;
   const idempotency = useRef<{ fingerprint: string; key: string } | null>(null);
@@ -430,6 +436,9 @@ function Workspace({
     return () => {
       persistDraft(false);
       alive.current = false;
+      submitController.current?.abort();
+      cancelController.current?.abort();
+      feedbackTiming.current?.cancel();
       window.removeEventListener('pagehide', save);
       document.removeEventListener('visibilitychange', visibility);
     };
@@ -548,11 +557,34 @@ function Workspace({
   }, [submission, activeStorageKey]);
 
   useEffect(() => {
+    if (!submission || activeStatuses.has(submission.status)) return;
+    // Run after the terminal result's React commit and a browser paint opportunity.
+    // Hidden tabs are excluded: a delayed background frame is not visible feedback.
+    if (document.visibilityState !== 'visible') {
+      feedbackTiming.current?.cancel();
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const frame = requestAnimationFrame(() => {
+      timer = setTimeout(() => {
+        if (document.visibilityState === 'visible')
+          feedbackTiming.current?.finish(submission.id, submission.status);
+        else feedbackTiming.current?.cancel();
+      }, 0);
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      clearTimeout(timer);
+    };
+  }, [submission]);
+
+  useEffect(() => {
     if (
       !submission ||
       !activeStatuses.has(submission.status) ||
       pollPaused ||
-      submitting
+      submitting ||
+      cancelling
     )
       return;
     const controller = new AbortController();
@@ -599,6 +631,7 @@ function Workspace({
     activeStorageKey,
     watchFallback,
     submitting,
+    cancelling,
   ]);
 
   function updateCode(next: string) {
@@ -678,6 +711,12 @@ function Workspace({
       return;
     }
     cancelPrecompile();
+    feedbackTiming.current ??= new FeedbackTiming(performance);
+    feedbackTiming.current.start(mode);
+    const controller = new AbortController();
+    submitController.current?.abort();
+    cancelController.current?.abort();
+    submitController.current = controller;
     busyRef.current = true;
     setSubmitting(true);
     setSubmission(null);
@@ -704,61 +743,77 @@ function Workspace({
       idempotency.current = { fingerprint, key: crypto.randomUUID() };
     }
     try {
-      const result = await ojRequest<{ id: string; status: string }>(
-        'submissions',
+      const detail = await submitOJ(
         {
           ...payload,
           idempotencyKey: idempotency.current.key,
         },
+        controller.signal,
+        (result) => {
+          if (!alive.current || controller.signal.aborted) return;
+          idempotency.current = null;
+          feedbackTiming.current?.bind(result.id);
+          setSubmission({
+            id: result.id,
+            // A POST receipt has no result details; even a reused terminal job must
+            // remain queryable if its first detail request fails.
+            status: activeStatuses.has(result.status)
+              ? result.status
+              : 'pending',
+            problem_id: problem.id,
+            language,
+            code,
+            codingMode,
+            mode,
+            passed: 0,
+            total: 0,
+            created_at: Date.now(),
+          });
+          try {
+            sessionStorage.setItem(activeStorageKey, result.id);
+          } catch {
+            /* Server history remains available. */
+          }
+          setBottomTab('result');
+          setMobilePane('editor');
+          setHistoryRevision((n) => n + 1);
+        },
       );
-      idempotency.current = null;
-      if (!alive.current) return;
-      setSubmission({
-        id: result.id,
-        // A POST receipt has no result details; even a reused terminal job must
-        // remain queryable if its first detail request fails.
-        status: activeStatuses.has(result.status) ? result.status : 'pending',
-        problem_id: problem.id,
-        language,
-        code,
-        codingMode,
-        mode,
-        passed: 0,
-        total: 0,
-        created_at: Date.now(),
-      });
-      try {
-        sessionStorage.setItem(activeStorageKey, result.id);
-      } catch {
-        /* Server history remains available. */
-      }
-      setBottomTab('result');
-      setMobilePane('editor');
-      setHistoryRevision((n) => n + 1);
-      // Fetch even an immediately completed, idempotently reused submission.
-      const detail = await ojRequest<OJSubmission>(`submissions/${result.id}`);
-      if (alive.current) {
+      if (alive.current && !controller.signal.aborted) {
         setSubmission(detail);
         setRoundRefresh((value) => value + 1);
         if (!activeStatuses.has(detail.status))
           void latestRefresh.current().catch(() => {});
       }
     } catch (e) {
-      if (alive.current) setError((e as Error).message);
+      if (alive.current && !controller.signal.aborted)
+        setError((e as Error).message);
     } finally {
-      busyRef.current = false;
-      if (alive.current) setSubmitting(false);
+      if (submitController.current === controller) {
+        busyRef.current = false;
+        if (alive.current) setSubmitting(false);
+      }
     }
   }
   async function cancel() {
-    if (!submission || cancelling) return;
+    if (!submission || cancelling || cancelController.current) return;
+    const controller = new AbortController();
+    cancelController.current = controller;
+    const submittingRequest = submitController.current;
+    submittingRequest?.abort();
+    submitController.current = null;
+    busyRef.current = false;
+    setSubmitting(false);
+    feedbackTiming.current?.cancel();
     setCancelling(true);
     setError('');
     try {
-      await ojRequest(`submissions/${submission.id}/cancel`, {});
-      const item = await ojRequest<OJSubmission>(
-        `submissions/${submission.id}`,
+      const item = await cancelOJ(
+        submission.id,
+        submittingRequest,
+        controller.signal,
       );
+      if (!alive.current || controller.signal.aborted) return;
       setSubmission(item);
       setPollPaused(false);
       setHistoryRevision((n) => n + 1);
@@ -768,9 +823,13 @@ function Workspace({
         } catch {}
       }
     } catch (e) {
-      setError((e as Error).message);
+      if (alive.current && !controller.signal.aborted)
+        setError((e as Error).message);
     } finally {
-      setCancelling(false);
+      if (cancelController.current === controller) {
+        cancelController.current = null;
+        if (alive.current) setCancelling(false);
+      }
     }
   }
   async function inspect(item: OJSubmission) {

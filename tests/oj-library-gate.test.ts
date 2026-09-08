@@ -182,6 +182,61 @@ void test('validated canonical and mapped library questions allow public read an
   }
 });
 
+void test('POST returns watch-ready detail for new and replayed submissions without exposing hidden cases', async () => {
+  const payload = input(libraryId);
+  const post = () =>
+    handleOj(
+      new Request('https://cswork.test/api/oj/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      }),
+      student,
+      ['submissions'],
+    );
+  const response = await post();
+  assert.equal(response.status, 201);
+  const created = await response.json();
+  try {
+    assert.equal(created.code, payload.code);
+    assert.equal(typeof created.watchToken, 'string');
+    assert.equal(created.total, 2);
+    assert.equal(created.cases.length, 2);
+    assert.doesNotMatch(JSON.stringify(created), /private-fixture/);
+    const detail = await handleOj(
+      new Request(`https://cswork.test/api/oj/submissions/${created.id}`),
+      student,
+      ['submissions', created.id],
+    );
+    assert.deepEqual(created, await detail.json());
+    assert.deepEqual(await (await post()).json(), created);
+    await cancelSubmission(student, created.id);
+    const replay = await (await post()).json();
+    assert.equal(replay.id, created.id);
+    assert.equal(replay.status, 'cancelled');
+    assert.equal(typeof replay.watchToken, 'string');
+    assert.doesNotMatch(JSON.stringify(replay), /private-fixture/);
+    sqlite()
+      .prepare("UPDATE submissions SET status='accepted',passed=2 WHERE id=?")
+      .run(created.id);
+    sqlite()
+      .prepare(
+        "INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,1,'accepted',1,1,'PRIVATE-STDOUT','PRIVATE-STDERR',1)",
+      )
+      .run(created.id);
+    const completed = await (await post()).json();
+    assert.equal(completed.status, 'accepted');
+    assert.equal(completed.passed, 2);
+    assert.equal(completed.cases[1].status, 'accepted');
+    assert.doesNotMatch(
+      JSON.stringify(completed),
+      /private-fixture|PRIVATE-STDOUT|PRIVATE-STDERR/,
+    );
+  } finally {
+    await cancelSubmission(student, created.id);
+  }
+});
+
 void test('LeetCode submissions preserve raw code, isolate request identity and expose mode in history', async () => {
   const person = { ...student, id: 'coding-mode-student' };
   const selectedVersion = await publish('lc-1');
