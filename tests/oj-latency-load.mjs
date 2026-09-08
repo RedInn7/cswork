@@ -3,7 +3,8 @@
  * Optional: TEST_LANGUAGES=cpp,java,go,python TEST_CONCURRENCY=1,5,10
  * TEST_ROUNDS=3 TEST_GROUPS=cold,warm TEST_TIMEOUT_MS=180000 TEST_HARNESS_VERSION.
  * Inherit Redis/runner credentials from the caller; never print them.
- * Warm means primed, not guaranteed hit: 10 distinct sources exceed 8 slots.
+ * Warm means primed, not guaranteed hit: the baseline has only 8 slots;
+ * candidate capacities and evictions are observed, never assumed.
  */
 import assert from 'node:assert/strict';
 import { randomUUID, createHash } from 'node:crypto';
@@ -112,7 +113,7 @@ try {
     for (let round=0; round<rounds; round++) {
       const sources = Array.from({length:count}, () => `${codes[language]}\n${language === 'python' ? '#' : '//'} latency-probe-${randomUUID()}\n`);
       if (group === 'warm') {
-        // Prime all distinct binaries; capacity eviction at 10 is intentional.
+        // Prime distinct binaries; actual capacity eviction remains observable.
         for (const code of sources) assert((await batch(language,[code]))[0].correct, 'Warmup must pass every case');
       }
       measured.push(...await batch(language,sources));
