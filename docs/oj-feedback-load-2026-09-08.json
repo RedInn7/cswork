@@ -1,0 +1,1186 @@
+{
+  "date": "2026-09-08",
+  "scope": "isolated worker, full 28-case Two Sum, one burst per group; excludes API/network/browser",
+  "baselineRevision": "8aafc407b406525938818183da100bb1f3de7dac",
+  "candidateRevision": "c3809a3",
+  "baseline": [
+    {
+      "language": "cpp",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 2670,
+        "p95": 2670
+      },
+      "queueMs": {
+        "p50": 182,
+        "p95": 182
+      },
+      "executionMs": {
+        "p50": 2488,
+        "p95": 2488
+      },
+      "compileMs": {
+        "p50": 1449,
+        "p95": 1449
+      },
+      "workerPeakRssKb": 132216
+    },
+    {
+      "language": "cpp",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 1,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1119,
+        "p95": 1119
+      },
+      "queueMs": {
+        "p50": 92,
+        "p95": 92
+      },
+      "executionMs": {
+        "p50": 1027,
+        "p95": 1027
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 148080
+    },
+    {
+      "language": "cpp",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 7427,
+        "p95": 12323
+      },
+      "queueMs": {
+        "p50": 5002,
+        "p95": 9884
+      },
+      "executionMs": {
+        "p50": 2439,
+        "p95": 2451
+      },
+      "compileMs": {
+        "p50": 1421,
+        "p95": 1441
+      },
+      "workerPeakRssKb": 153684
+    },
+    {
+      "language": "cpp",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 5,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3162,
+        "p95": 5204
+      },
+      "queueMs": {
+        "p50": 2147,
+        "p95": 4193
+      },
+      "executionMs": {
+        "p50": 1015,
+        "p95": 1027
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 160008
+    },
+    {
+      "language": "cpp",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 12216,
+        "p95": 24424
+      },
+      "queueMs": {
+        "p50": 9824,
+        "p95": 22006
+      },
+      "executionMs": {
+        "p50": 2437,
+        "p95": 2475
+      },
+      "compileMs": {
+        "p50": 1423,
+        "p95": 1441
+      },
+      "workerPeakRssKb": 161648
+    },
+    {
+      "language": "cpp",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 12472,
+        "p95": 24755
+      },
+      "queueMs": {
+        "p50": 9937,
+        "p95": 22319
+      },
+      "executionMs": {
+        "p50": 2461,
+        "p95": 2535
+      },
+      "compileMs": {
+        "p50": 1430,
+        "p95": 1491
+      },
+      "workerPeakRssKb": 165784
+    },
+    {
+      "language": "java",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 4117,
+        "p95": 4117
+      },
+      "queueMs": {
+        "p50": 157,
+        "p95": 157
+      },
+      "executionMs": {
+        "p50": 3960,
+        "p95": 3960
+      },
+      "compileMs": {
+        "p50": 1391,
+        "p95": 1391
+      },
+      "workerPeakRssKb": 166220
+    },
+    {
+      "language": "java",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 1,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 2674,
+        "p95": 2674
+      },
+      "queueMs": {
+        "p50": 200,
+        "p95": 200
+      },
+      "executionMs": {
+        "p50": 2474,
+        "p95": 2474
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 166836
+    },
+    {
+      "language": "java",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 11530,
+        "p95": 19141
+      },
+      "queueMs": {
+        "p50": 7763,
+        "p95": 15359
+      },
+      "executionMs": {
+        "p50": 3801,
+        "p95": 3861
+      },
+      "compileMs": {
+        "p50": 1283,
+        "p95": 1356
+      },
+      "workerPeakRssKb": 166924
+    },
+    {
+      "language": "java",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 5,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 7721,
+        "p95": 12708
+      },
+      "queueMs": {
+        "p50": 5180,
+        "p95": 10211
+      },
+      "executionMs": {
+        "p50": 2541,
+        "p95": 2587
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 166980
+    },
+    {
+      "language": "java",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 19152,
+        "p95": 38419
+      },
+      "queueMs": {
+        "p50": 15320,
+        "p95": 34550
+      },
+      "executionMs": {
+        "p50": 3832,
+        "p95": 3900
+      },
+      "compileMs": {
+        "p50": 1310,
+        "p95": 1390
+      },
+      "workerPeakRssKb": 166980
+    },
+    {
+      "language": "java",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 19060,
+        "p95": 38254
+      },
+      "queueMs": {
+        "p50": 15252,
+        "p95": 34437
+      },
+      "executionMs": {
+        "p50": 3817,
+        "p95": 3872
+      },
+      "compileMs": {
+        "p50": 1327,
+        "p95": 1371
+      },
+      "workerPeakRssKb": 166980
+    },
+    {
+      "language": "python",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1088,
+        "p95": 1088
+      },
+      "queueMs": {
+        "p50": 6,
+        "p95": 6
+      },
+      "executionMs": {
+        "p50": 1082,
+        "p95": 1082
+      },
+      "compileMs": {
+        "p50": 37,
+        "p95": 37
+      },
+      "workerPeakRssKb": 166980
+    },
+    {
+      "language": "python",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1153,
+        "p95": 1153
+      },
+      "queueMs": {
+        "p50": 38,
+        "p95": 38
+      },
+      "executionMs": {
+        "p50": 1115,
+        "p95": 1115
+      },
+      "compileMs": {
+        "p50": 50,
+        "p95": 50
+      },
+      "workerPeakRssKb": 166980
+    },
+    {
+      "language": "python",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3331,
+        "p95": 5513
+      },
+      "queueMs": {
+        "p50": 2244,
+        "p95": 4427
+      },
+      "executionMs": {
+        "p50": 1087,
+        "p95": 1129
+      },
+      "compileMs": {
+        "p50": 41,
+        "p95": 43
+      },
+      "workerPeakRssKb": 166980
+    },
+    {
+      "language": "python",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3407,
+        "p95": 5613
+      },
+      "queueMs": {
+        "p50": 2312,
+        "p95": 4495
+      },
+      "executionMs": {
+        "p50": 1095,
+        "p95": 1118
+      },
+      "compileMs": {
+        "p50": 41,
+        "p95": 42
+      },
+      "workerPeakRssKb": 167196
+    },
+    {
+      "language": "python",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 5541,
+        "p95": 11093
+      },
+      "queueMs": {
+        "p50": 4443,
+        "p95": 10000
+      },
+      "executionMs": {
+        "p50": 1100,
+        "p95": 1122
+      },
+      "compileMs": {
+        "p50": 40,
+        "p95": 45
+      },
+      "workerPeakRssKb": 167512
+    },
+    {
+      "language": "python",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 5520,
+        "p95": 10972
+      },
+      "queueMs": {
+        "p50": 4432,
+        "p95": 9881
+      },
+      "executionMs": {
+        "p50": 1088,
+        "p95": 1107
+      },
+      "compileMs": {
+        "p50": 40,
+        "p95": 46
+      },
+      "workerPeakRssKb": 169636
+    }
+  ],
+  "candidate": [
+    {
+      "language": "cpp",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 2464,
+        "p95": 2464
+      },
+      "queueMs": {
+        "p50": 52,
+        "p95": 52
+      },
+      "executionMs": {
+        "p50": 2412,
+        "p95": 2412
+      },
+      "compileMs": {
+        "p50": 1411,
+        "p95": 1411
+      },
+      "workerPeakRssKb": 120408
+    },
+    {
+      "language": "cpp",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 1,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1027,
+        "p95": 1027
+      },
+      "queueMs": {
+        "p50": 20,
+        "p95": 20
+      },
+      "executionMs": {
+        "p50": 1007,
+        "p95": 1007
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 140868
+    },
+    {
+      "language": "cpp",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 7361,
+        "p95": 12232
+      },
+      "queueMs": {
+        "p50": 4907,
+        "p95": 9772
+      },
+      "executionMs": {
+        "p50": 2453,
+        "p95": 2460
+      },
+      "compileMs": {
+        "p50": 1422,
+        "p95": 1444
+      },
+      "workerPeakRssKb": 146632
+    },
+    {
+      "language": "cpp",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 5,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3089,
+        "p95": 5123
+      },
+      "queueMs": {
+        "p50": 2071,
+        "p95": 4097
+      },
+      "executionMs": {
+        "p50": 1017,
+        "p95": 1026
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 153120
+    },
+    {
+      "language": "cpp",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 12275,
+        "p95": 24511
+      },
+      "queueMs": {
+        "p50": 9806,
+        "p95": 22104
+      },
+      "executionMs": {
+        "p50": 2441,
+        "p95": 2525
+      },
+      "compileMs": {
+        "p50": 1425,
+        "p95": 1453
+      },
+      "workerPeakRssKb": 156560
+    },
+    {
+      "language": "cpp",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 10,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 5128,
+        "p95": 10223
+      },
+      "queueMs": {
+        "p50": 4113,
+        "p95": 9211
+      },
+      "executionMs": {
+        "p50": 1015,
+        "p95": 1030
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 160416
+    },
+    {
+      "language": "java",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3770,
+        "p95": 3770
+      },
+      "queueMs": {
+        "p50": 43,
+        "p95": 43
+      },
+      "executionMs": {
+        "p50": 3727,
+        "p95": 3727
+      },
+      "compileMs": {
+        "p50": 1264,
+        "p95": 1264
+      },
+      "workerPeakRssKb": 160508
+    },
+    {
+      "language": "java",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 1,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 2538,
+        "p95": 2538
+      },
+      "queueMs": {
+        "p50": 47,
+        "p95": 47
+      },
+      "executionMs": {
+        "p50": 2491,
+        "p95": 2491
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 160860
+    },
+    {
+      "language": "java",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 11397,
+        "p95": 19012
+      },
+      "queueMs": {
+        "p50": 7578,
+        "p95": 15189
+      },
+      "executionMs": {
+        "p50": 3811,
+        "p95": 3823
+      },
+      "compileMs": {
+        "p50": 1305,
+        "p95": 1377
+      },
+      "workerPeakRssKb": 160940
+    },
+    {
+      "language": "java",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 5,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 7767,
+        "p95": 12816
+      },
+      "queueMs": {
+        "p50": 5158,
+        "p95": 10324
+      },
+      "executionMs": {
+        "p50": 2552,
+        "p95": 2628
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 160940
+    },
+    {
+      "language": "java",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 18361,
+        "p95": 36529
+      },
+      "queueMs": {
+        "p50": 14747,
+        "p95": 32907
+      },
+      "executionMs": {
+        "p50": 3655,
+        "p95": 3726
+      },
+      "compileMs": {
+        "p50": 1147,
+        "p95": 1169
+      },
+      "workerPeakRssKb": 160940
+    },
+    {
+      "language": "java",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 10,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 12796,
+        "p95": 25588
+      },
+      "queueMs": {
+        "p50": 10228,
+        "p95": 23099
+      },
+      "executionMs": {
+        "p50": 2527,
+        "p95": 2632
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 160940
+    },
+    {
+      "language": "go",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1395,
+        "p95": 1395
+      },
+      "queueMs": {
+        "p50": 11,
+        "p95": 11
+      },
+      "executionMs": {
+        "p50": 1384,
+        "p95": 1384
+      },
+      "compileMs": {
+        "p50": 292,
+        "p95": 292
+      },
+      "workerPeakRssKb": 160940
+    },
+    {
+      "language": "go",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 1,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1124,
+        "p95": 1124
+      },
+      "queueMs": {
+        "p50": 12,
+        "p95": 12
+      },
+      "executionMs": {
+        "p50": 1112,
+        "p95": 1112
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 160940
+    },
+    {
+      "language": "go",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 4243,
+        "p95": 7126
+      },
+      "queueMs": {
+        "p50": 2841,
+        "p95": 5672
+      },
+      "executionMs": {
+        "p50": 1402,
+        "p95": 1454
+      },
+      "compileMs": {
+        "p50": 291,
+        "p95": 298
+      },
+      "workerPeakRssKb": 161056
+    },
+    {
+      "language": "go",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 5,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3321,
+        "p95": 5529
+      },
+      "queueMs": {
+        "p50": 2243,
+        "p95": 4423
+      },
+      "executionMs": {
+        "p50": 1102,
+        "p95": 1123
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 161388
+    },
+    {
+      "language": "go",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 7097,
+        "p95": 14124
+      },
+      "queueMs": {
+        "p50": 5693,
+        "p95": 12714
+      },
+      "executionMs": {
+        "p50": 1404,
+        "p95": 1442
+      },
+      "compileMs": {
+        "p50": 289,
+        "p95": 300
+      },
+      "workerPeakRssKb": 161684
+    },
+    {
+      "language": "go",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 10,
+      "cacheMisses": 0,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 5560,
+        "p95": 11147
+      },
+      "queueMs": {
+        "p50": 4475,
+        "p95": 10027
+      },
+      "executionMs": {
+        "p50": 1115,
+        "p95": 1132
+      },
+      "compileMs": {
+        "p50": 0,
+        "p95": 0
+      },
+      "workerPeakRssKb": 162984
+    },
+    {
+      "language": "python",
+      "concurrency": 1,
+      "group": "cold",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1178,
+        "p95": 1178
+      },
+      "queueMs": {
+        "p50": 32,
+        "p95": 32
+      },
+      "executionMs": {
+        "p50": 1146,
+        "p95": 1146
+      },
+      "compileMs": {
+        "p50": 42,
+        "p95": 42
+      },
+      "workerPeakRssKb": 163268
+    },
+    {
+      "language": "python",
+      "concurrency": 1,
+      "group": "warm",
+      "samples": 1,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 1,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 1150,
+        "p95": 1150
+      },
+      "queueMs": {
+        "p50": 46,
+        "p95": 46
+      },
+      "executionMs": {
+        "p50": 1104,
+        "p95": 1104
+      },
+      "compileMs": {
+        "p50": 38,
+        "p95": 38
+      },
+      "workerPeakRssKb": 163268
+    },
+    {
+      "language": "python",
+      "concurrency": 5,
+      "group": "cold",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3354,
+        "p95": 5581
+      },
+      "queueMs": {
+        "p50": 2248,
+        "p95": 4471
+      },
+      "executionMs": {
+        "p50": 1107,
+        "p95": 1112
+      },
+      "compileMs": {
+        "p50": 41,
+        "p95": 46
+      },
+      "workerPeakRssKb": 163800
+    },
+    {
+      "language": "python",
+      "concurrency": 5,
+      "group": "warm",
+      "samples": 5,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 5,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 3301,
+        "p95": 5507
+      },
+      "queueMs": {
+        "p50": 2217,
+        "p95": 4400
+      },
+      "executionMs": {
+        "p50": 1093,
+        "p95": 1107
+      },
+      "compileMs": {
+        "p50": 39,
+        "p95": 42
+      },
+      "workerPeakRssKb": 165104
+    },
+    {
+      "language": "python",
+      "concurrency": 10,
+      "group": "cold",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 5514,
+        "p95": 11091
+      },
+      "queueMs": {
+        "p50": 4422,
+        "p95": 9966
+      },
+      "executionMs": {
+        "p50": 1093,
+        "p95": 1155
+      },
+      "compileMs": {
+        "p50": 41,
+        "p95": 45
+      },
+      "workerPeakRssKb": 165472
+    },
+    {
+      "language": "python",
+      "concurrency": 10,
+      "group": "warm",
+      "samples": 10,
+      "errors": 0,
+      "retries": 0,
+      "cacheHits": 0,
+      "cacheMisses": 10,
+      "unknownCache": 0,
+      "totalMs": {
+        "p50": 5517,
+        "p95": 11008
+      },
+      "queueMs": {
+        "p50": 4393,
+        "p95": 9949
+      },
+      "executionMs": {
+        "p50": 1097,
+        "p95": 1124
+      },
+      "compileMs": {
+        "p50": 41,
+        "p95": 51
+      },
+      "workerPeakRssKb": 165472
+    }
+  ]
+}
