@@ -80,8 +80,10 @@ export class CompiledProgramCache {
   constructor(
     private compiler = compile,
     private dispose = cleanup,
-    // Foreground budget; up to two additional entries are reserved for warming.
-    private capacity = 8,
+    // Bounded run-to-submit working set for a small class. Each compiler emits
+    // at most one 16 MiB cached artifact: 16 foreground + 2 warm <= 288 MiB.
+    // This does not increase simultaneous compiles, cases, or worker jobs.
+    private capacity = 16,
     private ttlMs = 5 * 60_000,
     private now = Date.now,
   ) {}
