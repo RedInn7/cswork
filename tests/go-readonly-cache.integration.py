@@ -3,6 +3,8 @@
 GO_JUDGE_URL must explicitly point to the candidate runner. GO_JUDGE_TOKEN may be
 provided directly or loaded from OJ_ENV_FILE (default /etc/cswork/oj.env).
 Every generated executable is removed in finally; stdlib cache is only read.
+For the production engine command and full seed-digest regression, also run
+go-cache-isolation.integration.ts against the isolated runner on port 5053.
 """
 import json
 import os
@@ -33,10 +35,18 @@ def request(path, body=None, method=None):
 
 
 def execute(args, source=None, compiling=False):
+    if compiling:
+        # Writable metadata/user-package entries belong to this sandbox. The
+        # image seed stays read-only; never set GOCACHE directly to CACHE.
+        args = ['/bin/sh', '-c',
+                'mkdir -p /tmp/go-cache && '
+                'cp -rs --no-preserve=mode ' + CACHE + '/. /tmp/go-cache && '
+                'rm -f /tmp/go-cache/trim.txt /tmp/go-cache/README && '
+                'exec /usr/bin/go build -trimpath -o main main.go']
     return request('/run', {'cmd': [{
         'args': args,
         'env': ['PATH=/usr/bin:/bin', 'HOME=/w', 'LANG=C.UTF-8', 'TZ=UTC',
-                'GOCACHE=' + CACHE, 'GOPATH=/tmp/go', 'GOTOOLCHAIN=local',
+                'GOCACHE=/tmp/go-cache', 'GOPATH=/tmp/go', 'GOTOOLCHAIN=local',
                 'GOPROXY=off', 'GOSUMDB=off', 'CGO_ENABLED=0', 'GOMAXPROCS=2'],
         'files': [{'content': ''}, {'name': 'stdout', 'max': 65536, 'pipe': True},
                   {'name': 'stderr', 'max': 65536, 'pipe': True}],
@@ -94,7 +104,7 @@ for label, source in cases:
         file_id = compiled['fileIds']['main']
         result = execute(['main'], {'main': {'fileId': file_id}})
         assert result['status'] == 'Accepted' and result['files']['stdout'] == label + '\n', result
-        print('PASS readonly main-package miss and stdlib import: ' + label, flush=True)
+        print('PASS private main-package cache miss and readonly stdlib import: ' + label, flush=True)
     finally:
         for file_id in compiled.get('fileIds', {}).values():
             request('/file/' + urllib.parse.quote(file_id, safe=''), method='DELETE')
