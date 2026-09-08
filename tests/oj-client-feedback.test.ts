@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { submitOJ, type OJSubmission } from '../lib/oj-client';
+import { cancelOJ, submitOJ, type OJSubmission } from '../lib/oj-client';
 import { FeedbackTiming } from '../lib/oj-feedback-timing';
 
 const detail: OJSubmission = {
@@ -109,6 +109,49 @@ test('aborted POST cannot publish a stale receipt or start a detail request', as
       submitOJ({}, controller.signal, () => assert.fail('stale receipt')),
       { name: 'AbortError' },
     );
+  } finally {
+    globalThis.fetch = original;
+  }
+});
+
+test('cancel wins over a legacy detail response arriving after cancellation', async () => {
+  const original = globalThis.fetch;
+  const submitting = new AbortController();
+  let resolveStale!: (response: Response) => void;
+  let detailStarted!: () => void;
+  const started = new Promise<void>((resolve) => {
+    detailStarted = resolve;
+  });
+  let detailRequests = 0;
+  globalThis.fetch = async (path) => {
+    if (String(path).endsWith('/cancel')) return Response.json({ ok: true });
+    if (String(path).endsWith('/submissions'))
+      return Response.json({ id: 's1', status: 'queued' });
+    if (++detailRequests === 1) {
+      detailStarted();
+      // Deliberately ignore abort like a response already delivered by the transport.
+      return new Promise<Response>((resolve) => {
+        resolveStale = resolve;
+      });
+    }
+    return Response.json({ ...detail, status: 'cancelled' });
+  };
+  let displayed = 'pending';
+  try {
+    const pending = submitOJ({}, submitting.signal).then((result) => {
+      displayed = result.status;
+    });
+    await started;
+    const cancelled = await cancelOJ(
+      's1',
+      submitting,
+      new AbortController().signal,
+    );
+    displayed = cancelled.status;
+    resolveStale(Response.json({ ...detail, status: 'running' }));
+    await assert.rejects(pending, { name: 'AbortError' });
+    assert.equal(displayed, 'cancelled');
+    assert.equal(submitting.signal.aborted, true);
   } finally {
     globalThis.fetch = original;
   }

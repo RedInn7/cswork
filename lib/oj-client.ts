@@ -131,6 +131,20 @@ export async function submitOJ(
   return detail;
 }
 
+/** Abort any in-flight legacy receipt detail before publishing cancellation. */
+export async function cancelOJ(
+  id: string,
+  submitting: AbortController | null,
+  signal: AbortSignal,
+): Promise<OJSubmission> {
+  submitting?.abort();
+  const path = `submissions/${encodeURIComponent(id)}`;
+  await ojRequest(`${path}/cancel`, {}, signal);
+  const detail = await ojRequest<OJSubmission>(path, undefined, signal);
+  signal.throwIfAborted();
+  return detail;
+}
+
 export async function ojRequest<T>(
   path: string,
   data?: unknown,

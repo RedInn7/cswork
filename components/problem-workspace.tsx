@@ -84,6 +84,7 @@ import {
 } from '@/lib/editor-settings';
 import {
   activeStatuses,
+  cancelOJ,
   ojRequest,
   submitOJ,
   type OJProblem,
@@ -798,18 +799,18 @@ function Workspace({
     if (!submission || cancelling || cancelController.current) return;
     const controller = new AbortController();
     cancelController.current = controller;
+    const submittingRequest = submitController.current;
+    submittingRequest?.abort();
+    submitController.current = null;
+    busyRef.current = false;
+    setSubmitting(false);
     feedbackTiming.current?.cancel();
     setCancelling(true);
     setError('');
     try {
-      await ojRequest(
-        `submissions/${submission.id}/cancel`,
-        {},
-        controller.signal,
-      );
-      const item = await ojRequest<OJSubmission>(
-        `submissions/${submission.id}`,
-        undefined,
+      const item = await cancelOJ(
+        submission.id,
+        submittingRequest,
         controller.signal,
       );
       if (!alive.current || controller.signal.aborted) return;
