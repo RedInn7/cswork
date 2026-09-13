@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-5",
+  "title": "含共同数字的最大分组",
+  "explanation": "## 思路\n\n分别统计数字 0..9 出现在多少个数组元素中。对一个数先给十位加一，仅当个位不同于十位时再给个位加一。最大的计数就是答案。\n\n## 为什么正确\n\n任何合法分组必有一个所有成员共有的数字 d，成员数不超过包含 d 的元素数。反过来，全部包含 d 的元素必能组成合法分组，因此十个计数的最大值同时给出上界和可实现解。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    counts = [0]*10\n    for value in map(int, data[1:]):\n        tens, ones = divmod(value, 10)\n        counts[tens] += 1\n        if ones != tens: counts[ones] += 1\n    return max(counts)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#5-shared-digit-group-two-digit-numbers",
+  "sourceContentHash": "bb5724e5d660c79e756050f21f4cbe3c43e0a6dec814a72d509c86d95f88b216",
+  "author": "CSWork"
+}

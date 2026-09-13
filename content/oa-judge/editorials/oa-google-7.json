@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-7",
+  "title": "区间加一的最少次数",
+  "explanation": "## 思路\n\n第一个位置需要 arr[0] 次操作。后续位置只有比前一个位置更高时，才需要新开始 arr[i]−arr[i−1] 次操作。把所有正增量相加。\n\n## 为什么正确\n\n令 arr[−1]=0。每个上升处至少要新开始对应增量的区间，因为跨越前一位置的操作最多只有 arr[i−1] 次。这给出下界。扫描数组，在上升处开始新区间，在下降处结束足够多的区间，就能达到目标且操作数恰等于这个下界，故最优。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。使用 64 位整数保存答案。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    answer = 0; previous = 0\n    for current in map(int, data[1:]):\n        answer += max(0, current-previous)\n        previous = current\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#7-array-transformation-steps-early-career",
+  "sourceContentHash": "4f3d99e8416d15b6889f46fbbc612247db524ccad288b4b5da8f10c41e83971f",
+  "author": "CSWork"
+}

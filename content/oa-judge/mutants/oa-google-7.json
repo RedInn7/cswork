@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把下降也计入",
+    "code": "def solve(data):\n    answer = 0; previous = 0\n    for current in map(int, data[1:]):\n        answer += abs(current-previous)\n        previous = current\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "逐点累加",
+    "code": "def solve(data):\n    answer = 0; previous = 0\n    for current in map(int, data[1:]):\n        answer += current\n        previous = current\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

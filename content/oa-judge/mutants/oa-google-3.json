@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许负硬币",
+    "code": "def solve(data):\n    table = 0; answer = 0\n    for event in data[0]:\n        if event == 'i': table += 1\n        elif event == 'd': table = table-1\n        else:\n            answer += table\n            table = 0\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "结算后不清空",
+    "code": "def solve(data):\n    table = 0; answer = 0\n    for event in data[0]:\n        if event == 'i': table += 1\n        elif event == 'd': table = max(0, table-1)\n        else:\n            answer += table\n            table = table\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

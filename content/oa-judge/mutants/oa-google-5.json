@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复计算相同数字",
+    "code": "def solve(data):\n    counts = [0]*10\n    for value in map(int, data[1:]):\n        tens, ones = divmod(value, 10)\n        counts[tens] += 1\n        if True: counts[ones] += 1\n    return max(counts)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略个位",
+    "code": "def solve(data):\n    counts = [0]*10\n    for value in map(int, data[1:]):\n        tens, ones = divmod(value, 10)\n        counts[tens] += 1\n        if False: counts[ones] += 1\n    return max(counts)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

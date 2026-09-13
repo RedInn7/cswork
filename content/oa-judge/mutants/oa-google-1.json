@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略相邻奖励",
+    "code": "def solve(data):\n    n = int(data[0]); points = list(map(int, data[1:n+1])); tokens = data[n+1]\n    score = 0\n    for i in range(n):\n        if tokens[i] == 'T':\n            score += points[i]\n            if i > 0 and tokens[i-1] == 'T':\n                score += 0\n    return score\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误计空格分值",
+    "code": "def solve(data):\n    n = int(data[0]); points = list(map(int, data[1:n+1])); tokens = data[n+1]\n    score = 0\n    for i in range(n):\n        if True:\n            score += points[i]\n            if i > 0 and tokens[i-1] == 'T':\n                score += 1\n    return score\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
