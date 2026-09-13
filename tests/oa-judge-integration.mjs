@@ -15,6 +15,36 @@ import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { Queue } from 'bullmq';
 
+// Public firstFailure contract: each field is capped at 32 KiB, without
+// splitting a UTF-8 character (oj-case-store.ts / submissionDetail).
+// Check exact content for small fields and the exact bounded prefix for large
+// fields, including the explicit truncation flag; never relax the server cap.
+function assertFailureField(failure, field, original) {
+  const limit = 32768;
+  let bytes = 0;
+  const prefix = [];
+  for (const character of original) {
+    const size = Buffer.byteLength(character, 'utf8');
+    if (bytes + size > limit) break;
+    prefix.push(character);
+    bytes += size;
+  }
+  assert.equal(
+    failure[field],
+    prefix.join(''),
+    `${field}: exact UTF-8-safe feedback prefix`,
+  );
+  assert(
+    Buffer.byteLength(failure[field], 'utf8') <= limit,
+    `${field}: feedback exceeds 32 KiB`,
+  );
+  assert.equal(
+    failure.truncated[field],
+    Buffer.byteLength(original, 'utf8') > limit,
+    `${field}: truncation flag`,
+  );
+}
+
 const root = resolve('.');
 const runner = new URL(process.env.GO_JUDGE_URL || 'http://invalid');
 assert(
@@ -42,11 +72,16 @@ const registry = JSON.parse(
 const batchName = process.argv[2];
 if (batchName) assert.match(batchName, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 const selected = batchName
-  ? JSON.parse(readFileSync(`content/oa-judge/batches/${batchName}.json`, 'utf8'))
+  ? JSON.parse(
+      readFileSync(`content/oa-judge/batches/${batchName}.json`, 'utf8'),
+    )
   : registry;
 assert(selected.items.length >= 2 && selected.items.length <= 100);
 for (const entry of selected.items)
-  assert.deepEqual(registry.items.find((item) => item.id === entry.id), entry);
+  assert.deepEqual(
+    registry.items.find((item) => item.id === entry.id),
+    entry,
+  );
 assert.deepEqual(
   JSON.parse(
     readFileSync(join(artifact, 'content/oa-judge/registry.json'), 'utf8'),
@@ -323,9 +358,14 @@ try {
     );
     assert.equal(feedback.status, 'wrong_answer');
     assert.equal(feedback.firstFailure.ordinal, 0);
-    assert.equal(feedback.firstFailure.stdin, pkg.cases[0].input);
-    assert.equal(feedback.firstFailure.expected, pkg.cases[0].expectedOutput);
-    assert.equal(feedback.firstFailure.stdout.trim(), '-1');
+    assertFailureField(feedback.firstFailure, 'stdin', pkg.cases[0].input);
+    assertFailureField(
+      feedback.firstFailure,
+      'expected',
+      pkg.cases[0].expectedOutput,
+    );
+    assertFailureField(feedback.firstFailure, 'stdout', '-1\n');
+    assertFailureField(feedback.firstFailure, 'stderr', '');
     assert.equal(feedback.passed, 0);
     assert.equal(
       db
@@ -394,14 +434,18 @@ try {
   );
   assert.equal(hiddenFeedback.status, 'wrong_answer');
   assert.equal(hiddenFeedback.firstFailure.ordinal, hiddenOrdinal);
-  assert.equal(
-    hiddenFeedback.firstFailure.stdin,
+  assertFailureField(
+    hiddenFeedback.firstFailure,
+    'stdin',
     firstPackage.cases[hiddenOrdinal].input,
   );
-  assert.equal(
-    hiddenFeedback.firstFailure.expected,
+  assertFailureField(
+    hiddenFeedback.firstFailure,
+    'expected',
     firstPackage.cases[hiddenOrdinal].expectedOutput,
   );
+  assertFailureField(hiddenFeedback.firstFailure, 'stdout', '-1');
+  assertFailureField(hiddenFeedback.firstFailure, 'stderr', '');
   assert.equal(
     db
       .prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?')
