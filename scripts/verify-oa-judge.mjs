@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { batchName, loadScope } from './oa-judge/aggregate-batches.mjs';
+import { matchesOaOutput } from './oa-judge/output-checker.mjs';
 
 const root = resolve('content/oa-judge');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -37,11 +38,11 @@ const report = {
   problems: [],
   finishedAt: '',
 };
-const equal = (a, b) =>
-  a.trim().split(/\s+/).join(' ') === b.trim().split(/\s+/).join(' ');
 async function run(code, input, spec) {
   assert(
-    spec.checker === 'tokens' && spec.timeLimit > 0 && spec.timeLimit <= 10,
+    ['tokens', 'exact'].includes(spec.checker) &&
+      spec.timeLimit > 0 &&
+      spec.timeLimit <= 10,
   );
   assert(spec.memoryLimit >= 16384 && spec.memoryLimit <= 524288);
   assert(spec.outputLimit > 0 && spec.outputLimit <= 65536);
@@ -110,7 +111,11 @@ for (const item of registry.data.items) {
     const result = await run(reference, test.input, pkg.data.problem);
     assert.equal(result.status, 'Accepted', item.id + ' reference runtime');
     assert(
-      equal(result.files?.stdout || '', test.expectedOutput),
+      matchesOaOutput(
+        result.files?.stdout || '',
+        test.expectedOutput,
+        pkg.data.problem.checker,
+      ),
       item.id + ' reference output',
     );
     passed++;
@@ -127,7 +132,13 @@ for (const item of registry.data.items) {
         'Accepted',
         item.id + ' mutant must run normally',
       );
-      if (!equal(result.files?.stdout || '', test.expectedOutput)) {
+      if (
+        !matchesOaOutput(
+          result.files?.stdout || '',
+          test.expectedOutput,
+          pkg.data.problem.checker,
+        )
+      ) {
         detected = true;
         break;
       }

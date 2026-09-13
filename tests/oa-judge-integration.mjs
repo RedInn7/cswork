@@ -287,6 +287,7 @@ try {
     payload('oa-unknown-fixture-1', 'print(-1)'),
   );
   const failures = [];
+  const wrongOutput = 'CSWORK_DELIBERATE_WRONG_ANSWER';
   for (const [index, item] of selected.items.entries()) {
     const student = students[index];
     const pkg = JSON.parse(
@@ -299,6 +300,15 @@ try {
     const detail = await request(`/api/oj/oa-library/${item.id}`, student);
     assert.equal(detail.judgeStatus, 'ready');
     assert.equal(detail.judgeProblemId, item.id);
+    assert(detail.statement.includes(pkg.problem.description));
+    assert(detail.statement.includes(pkg.problem.input));
+    assert(detail.statement.includes(pkg.problem.output));
+    for (const sample of pkg.cases.filter((c) => !c.hidden)) {
+      assert(detail.statement.includes(sample.input.trim()));
+      assert(detail.statement.includes(sample.expectedOutput.trim()));
+    }
+    assert(!('cases' in detail), 'No hidden test suite in OA reader');
+    assert(pkg.cases.every((c) => c.expectedOutput.trim() !== wrongOutput));
     const editorial = await request(
       `/api/oj/oa-library/${item.id}/solution`,
       student,
@@ -344,7 +354,7 @@ try {
       '/api/oj/submissions',
       student,
       201,
-      payload(item.id, 'print(-1)\n'),
+      payload(item.id, `print(${JSON.stringify(wrongOutput)})\n`),
     );
     await until(
       () =>
@@ -364,7 +374,7 @@ try {
       'expected',
       pkg.cases[0].expectedOutput,
     );
-    assertFailureField(feedback.firstFailure, 'stdout', '-1\n');
+    assertFailureField(feedback.firstFailure, 'stdout', wrongOutput + '\n');
     assertFailureField(feedback.firstFailure, 'stderr', '');
     assert.equal(feedback.passed, 0);
     assert.equal(
@@ -411,7 +421,7 @@ try {
       .filter((c) => !c.hidden)
       .map((c) => [c.input, c.expectedOutput]),
   );
-  const bad = `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), '-1'), end='')\n`;
+  const bad = `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), ${JSON.stringify(wrongOutput)}), end='')\n`;
   const hiddenOrdinal = firstPackage.cases.findIndex(
     (c) => c.hidden && !(c.input in known),
   );
@@ -444,7 +454,7 @@ try {
     'expected',
     firstPackage.cases[hiddenOrdinal].expectedOutput,
   );
-  assertFailureField(hiddenFeedback.firstFailure, 'stdout', '-1');
+  assertFailureField(hiddenFeedback.firstFailure, 'stdout', wrongOutput);
   assertFailureField(hiddenFeedback.firstFailure, 'stderr', '');
   assert.equal(
     db
