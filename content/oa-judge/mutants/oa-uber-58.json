@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只进行一轮",
+    "code": "def solve(d):\n    s=d[0]\n    while True:\n        result=[];changed=False;i=0\n        while i<len(s):\n            j=i+1\n            while j<len(s) and s[j]==s[i]:j+=1\n            changed|=j-i>1;result.append(str(int(s[i])*(j-i)));i=j\n        if not changed:return s\n        return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "丢弃前导零",
+    "code": "def solve(d):\n    s=d[0]\n    while True:\n        result=[];changed=False;i=0\n        while i<len(s):\n            j=i+1\n            while j<len(s) and s[j]==s[i]:j+=1\n            changed|=j-i>1;result.append(str(int(s[i])*(j-i)));i=j\n        if not changed:return str(int(s))\n        s=''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

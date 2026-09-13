@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-53",
+  "title": "最少删除形成计数分组",
+  "explanation": "## 思路\n\n从后向前DP。当前位置可删除，成本1+dp[i+1]；或用它作组头，保留紧随的a[i]个元素，成本dp[i+a[i]+1]，后者需不越界。\n\n## 正确性\n\n任何非空合法剩余序列的首元素都作组头。若保留i作组头，选择紧接着的a[i]个元素不会比跨过一些元素更差：被选为组内内容的数值无要求，改用更早元素可少删除并给后续留下更多可选元素。故最优解可只考虑该完整连续组，和删除i两种情况穷尽最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);dp=[0]*(n+1)\n    for i in range(n-1,-1,-1):\n        dp[i]=1+dp[i+1];end=i+a[i]+1\n        if end<=n:dp[i]=min(dp[i],dp[end])\n    return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#53-minimum-operations-to-make-sequence-harmonious",
+  "sourceContentHash": "3032b711800bb078a2e247def51701989bee7856bb567c9f519141f46ff9f88e",
+  "author": "CSWork"
+}

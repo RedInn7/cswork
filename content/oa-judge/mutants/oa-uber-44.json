@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把1也视为质数",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if n==1:return '1'\n    sieve=bytearray(b'\\1')*n;sieve[0]=sieve[1]=0\n    for p in range(2,int(n**0.5)+1):\n        if sieve[p]:sieve[p*p:n:p]=b'\\0'*(((n-1-p*p)//p)+1)\n    packed=bytearray((n+7)//8)\n    for i in range(2,n):\n        if sieve[i]:packed[i//8]|=1<<(i%8)\n    primes=int.from_bytes(packed,'little')|2;pending=1;i=0\n    while pending:\n        if pending&1==0:\n            gap=(pending&-pending).bit_length()-1;pending>>=gap;i+=gap\n        if i==n-1:return '1'\n        bound=min(a[i],n-1-i)\n        if bound>=2:pending|=primes&((1<<(bound+1))-1)\n        if pending.bit_length()==n-i:return '1'\n        pending>>=1;i+=1\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许超过最大步长一格",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if n==1:return '1'\n    sieve=bytearray(b'\\1')*n;sieve[0]=sieve[1]=0\n    for p in range(2,int(n**0.5)+1):\n        if sieve[p]:sieve[p*p:n:p]=b'\\0'*(((n-1-p*p)//p)+1)\n    packed=bytearray((n+7)//8)\n    for i in range(2,n):\n        if sieve[i]:packed[i//8]|=1<<(i%8)\n    primes=int.from_bytes(packed,'little');pending=1;i=0\n    while pending:\n        if pending&1==0:\n            gap=(pending&-pending).bit_length()-1;pending>>=gap;i+=gap\n        if i==n-1:return '1'\n        bound=min(a[i]+1,n-1-i)\n        if bound>=2:pending|=primes&((1<<(bound+1))-1)\n        if pending.bit_length()==n-i:return '1'\n        pending>>=1;i+=1\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

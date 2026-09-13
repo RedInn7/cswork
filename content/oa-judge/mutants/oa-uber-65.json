@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同一单词自身也计数",
+    "code": "from bisect import bisect_left\ndef solve(d):\n    words=sorted(d[1:]);answer=0\n    for i,word in enumerate(words):answer+=bisect_left(words,word+'{')-i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只数相同词",
+    "code": "from bisect import bisect_left\ndef solve(d):\n    words=sorted(d[1:]);answer=0\n    for i,word in enumerate(words):answer+=bisect_left(words,word+'a')-i-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

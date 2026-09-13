@@ -1,0 +1,10 @@
+[
+  {
+    "name": "强弱排名颠倒",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));rounds=[]\n    while len(a)>1:\n        a=[max(a[i:i+2]) for i in range(0,len(a),2)];rounds.append(str(len(a))+' '+' '.join(map(str,a)))\n    return str(len(rounds))+'\\n'+'\\n'.join(rounds)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重复输出初始轮",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));rounds=[str(len(a))+' '+' '.join(map(str,a))]\n    while len(a)>1:\n        a=[min(a[i:i+2]) for i in range(0,len(a),2)];rounds.append(str(len(a))+' '+' '.join(map(str,a)))\n    return str(len(rounds))+'\\n'+'\\n'.join(rounds)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

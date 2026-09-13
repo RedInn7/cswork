@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-48",
+  "title": "全1最大正方形面积",
+  "explanation": "## 思路\n\n按行滚动DP，当前位置为1时，以它为右下角的最大边长是左、上、左上三者最小值加1。\n\n## 正确性\n\n边长s正方形需要上述三个边长至少s−1的正方形与当前1共同覆盖；三者最小值加1可构成正方形，且更大必使至少一侧不足。对全部右下角取最大边长平方。\n\n## 复杂度\n\n时间O(nm)，除输入外空间O(m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);previous=[0]*(m+1);best=0\n    for row in d[2:]:\n        current=[0]*(m+1)\n        for j,c in enumerate(row,1):\n            if c=='1':current[j]=1+min(previous[j],previous[j-1],current[j-1]);best=max(best,current[j])\n        previous=current\n    return str(best*best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#48-maximal-square-area",
+  "sourceContentHash": "9b781fb2c58542a4a428af6e7de43a90c52c88deaf1073b871df937484206268",
+  "author": "CSWork"
+}

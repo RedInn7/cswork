@@ -1,0 +1,10 @@
+[
+  {
+    "name": "组头误计入内容长度",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);dp=[0]*(n+1)\n    for i in range(n-1,-1,-1):\n        dp[i]=1+dp[i+1];end=i+a[i]\n        if end<=n:dp[i]=min(dp[i],dp[end])\n    return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不接受恰好末尾",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);dp=[0]*(n+1)\n    for i in range(n-1,-1,-1):\n        dp[i]=1+dp[i+1];end=i+a[i]+1\n        if end<n:dp[i]=min(dp[i],dp[end])\n    return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

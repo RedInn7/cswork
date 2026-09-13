@@ -1,0 +1,10 @@
+[
+  {
+    "name": "固定根0",
+    "code": "def solve(d):\n    n=int(d[0]);graph=[[] for _ in range(n)]\n    for i in range(1,len(d),2):\n        a,b=map(int,d[i:i+2]);graph[a].append((b,0));graph[b].append((a,1))\n    parent=[-1]*n;order=[0];cost=[0]*n;initial=0\n    for v in order:\n        for w,reverse in graph[v]:\n            if w==parent[v]:continue\n            parent[w]=v;cost[w]=reverse;initial+=reverse;order.append(w)\n    answer=[initial]*n\n    for v in order[1:]:answer[v]=answer[parent[v]]+1-2*cost[v]\n    return str(answer[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "换根符号错误",
+    "code": "def solve(d):\n    n=int(d[0]);graph=[[] for _ in range(n)]\n    for i in range(1,len(d),2):\n        a,b=map(int,d[i:i+2]);graph[a].append((b,0));graph[b].append((a,1))\n    parent=[-1]*n;order=[0];cost=[0]*n;initial=0\n    for v in order:\n        for w,reverse in graph[v]:\n            if w==parent[v]:continue\n            parent[w]=v;cost[w]=reverse;initial+=reverse;order.append(w)\n    answer=[initial]*n\n    for v in order[1:]:answer[v]=answer[parent[v]]-1+2*cost[v]\n    return str(min(answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

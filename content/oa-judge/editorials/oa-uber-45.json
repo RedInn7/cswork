@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-45",
+  "title": "相邻升降模式匹配次数",
+  "explanation": "## 思路\n\n先将数组相邻比较结果化为−1/0/1序列，再用KMP统计模式出现次数，允许重叠。\n\n## 正确性\n\n长度m+1的原子数组唯一对应长m的比较序列，两者匹配条件逐项等价。KMP失配跳转只跳过不可能的起点，因此不漏、不重。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:n+2]));pattern=list(map(int,d[n+2:]));failure=[0]*m;j=0\n    for i in range(1,m):\n        while j and pattern[i]!=pattern[j]:j=failure[j-1]\n        if pattern[i]==pattern[j]:j+=1\n        failure[i]=j\n    j=answer=0\n    for i in range(n-1):\n        value=(a[i+1]>a[i])-(a[i+1]<a[i])\n        while j and value!=pattern[j]:j=failure[j-1]\n        if value==pattern[j]:j+=1\n        if j==m:answer+=1;j=failure[j-1]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#45-match-subarray-to-pattern",
+  "sourceContentHash": "1f375bec186d000c5a30ce9006b58adac3e3504743b93c18e91306e8d9eb8e90",
+  "author": "CSWork"
+}

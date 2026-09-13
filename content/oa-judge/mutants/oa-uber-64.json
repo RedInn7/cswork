@@ -1,0 +1,10 @@
+[
+  {
+    "name": "两条件取或",
+    "code": "def solve(d):\n    total=count=0\n    for c in d[0]:total+=ord(c)-48;count+=c=='7'\n    return str(int(total%3==0 or count>=2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只接受恰好两个7",
+    "code": "def solve(d):\n    total=count=0\n    for c in d[0]:total+=ord(c)-48;count+=c=='7'\n    return str(int(total%3==0 and count==2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

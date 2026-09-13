@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3 2\naba\n0 1\n1 2\n0 2\n0 1\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "2 1\naa\n0 1\n0 1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "4 1\nabcd\n0 1\n0 2\n0 3\n1 2\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 9\nc\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "9 14\ndcbbbbcda\n1 0\n2 0\n3 1\n4 2\n5 4\n6 4\n7 5\n8 3\n8 6\n5 0\n2 1\n5 4\n3 2\n2 0\n0 0\n7 1\n0 8\n2 3\n7 6\n2 0\n6 6\n8 3\n",
+    "expectedOutput": "0\n0\n0\n1\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "12 7\nccdddbbcdbba\n1 0\n2 1\n3 2\n4 2\n5 0\n6 3\n7 5\n8 0\n9 3\n10 3\n11 1\n9 2\n6 8\n2 9\n4 8\n2 3\n2 8\n11 10\n",
+    "expectedOutput": "1\n0\n1\n1\n1\n1\n0\n"
+  },
+  {
+    "input": "12 10\ncbbbdadadcbd\n1 0\n2 0\n3 1\n4 3\n5 0\n6 0\n7 6\n8 2\n9 3\n10 6\n11 2\n5 5\n6 10\n4 2\n6 2\n9 9\n4 3\n11 2\n2 5\n6 8\n3 3\n",
+    "expectedOutput": "1\n0\n0\n0\n1\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "2 9\nda\n1 0\n1 0\n1 1\n1 0\n0 1\n0 0\n0 0\n0 0\n1 1\n0 0\n",
+    "expectedOutput": "0\n1\n0\n0\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "8 13\nbbccdbdc\n1 0\n2 0\n3 0\n4 0\n5 0\n6 2\n7 6\n6 0\n7 3\n0 6\n2 2\n3 1\n5 6\n6 5\n0 3\n2 5\n0 6\n0 6\n2 7\n1 2\n",
+    "expectedOutput": "0\n0\n0\n1\n1\n0\n0\n0\n1\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "8 6\nadacbdad\n1 0\n2 0\n3 0\n4 3\n5 4\n6 3\n7 0\n4 5\n6 6\n3 2\n1 3\n1 0\n1 1\n",
+    "expectedOutput": "0\n1\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "1 4\na\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n"
+  },
+  {
+    "input": "12 10\ndaabaccaadbc\n1 0\n2 1\n3 1\n4 2\n5 4\n6 4\n7 4\n8 2\n9 4\n10 5\n11 7\n9 0\n1 10\n11 0\n6 11\n1 2\n11 6\n3 5\n2 2\n5 9\n7 10\n",
+    "expectedOutput": "1\n0\n0\n1\n1\n1\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "11 14\ncadbcbaacad\n1 0\n2 1\n3 0\n4 3\n5 1\n6 2\n7 5\n8 6\n9 5\n10 3\n6 7\n10 8\n8 10\n2 0\n9 3\n3 10\n7 6\n6 4\n3 1\n2 3\n9 0\n0 6\n10 9\n10 8\n",
+    "expectedOutput": "0\n1\n1\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "7 10\ncaaabcd\n1 0\n2 1\n3 0\n4 1\n5 2\n6 0\n4 6\n4 1\n5 6\n6 4\n4 6\n4 4\n1 1\n1 5\n5 1\n5 6\n",
+    "expectedOutput": "0\n0\n1\n0\n0\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "3 12\ncbb\n1 0\n2 0\n2 1\n0 0\n1 2\n2 2\n1 1\n1 2\n0 2\n2 2\n0 1\n0 0\n1 2\n2 2\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n0\n1\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "6 6\nbaabaa\n1 0\n2 1\n3 2\n4 3\n5 0\n3 5\n5 1\n4 1\n4 4\n2 3\n1 5\n",
+    "expectedOutput": "1\n1\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "2 5\nbd\n1 0\n0 0\n1 0\n0 0\n0 0\n1 0\n",
+    "expectedOutput": "1\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "10 14\nbbccbaccdd\n1 0\n2 0\n3 0\n4 2\n5 2\n6 3\n7 2\n8 1\n9 5\n9 9\n8 4\n9 0\n9 7\n4 8\n1 0\n7 7\n4 1\n3 0\n9 8\n2 6\n9 7\n4 4\n0 6\n",
+    "expectedOutput": "1\n0\n0\n0\n0\n1\n1\n0\n0\n0\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "2 3\ncb\n1 0\n0 1\n0 0\n0 0\n",
+    "expectedOutput": "0\n1\n1\n"
+  },
+  {
+    "input": "9 8\nbcdacabbc\n1 0\n2 1\n3 1\n4 0\n5 1\n6 1\n7 2\n8 4\n0 5\n5 0\n3 2\n3 5\n2 8\n0 3\n7 3\n4 1\n",
+    "expectedOutput": "0\n0\n0\n1\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "8 5\ndbcaabad\n1 0\n2 0\n3 1\n4 3\n5 0\n6 3\n7 4\n0 4\n4 2\n5 3\n4 7\n0 3\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "7 7\naadcddd\n1 0\n2 0\n3 0\n4 0\n5 2\n6 5\n1 6\n1 5\n4 0\n4 5\n5 3\n6 3\n0 0\n",
+    "expectedOutput": "1\n1\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "10 12\ndcabbccaac\n1 0\n2 0\n3 1\n4 0\n5 4\n6 1\n7 5\n8 5\n9 8\n5 1\n5 7\n1 4\n9 5\n9 2\n0 5\n2 7\n0 2\n8 6\n8 5\n5 6\n1 9\n",
+    "expectedOutput": "0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "6 9\ncaadda\n1 0\n2 1\n3 2\n4 3\n5 3\n0 2\n0 1\n1 0\n1 5\n2 4\n0 2\n2 5\n0 2\n0 1\n",
+    "expectedOutput": "1\n0\n0\n0\n1\n1\n1\n1\n0\n"
+  },
+  {
+    "input": "12 1\ndcbcdbcbbcdd\n1 0\n2 0\n3 0\n4 1\n5 3\n6 3\n7 2\n8 1\n9 3\n10 9\n11 3\n1 0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 4\ncbbc\n1 0\n2 1\n3 0\n2 2\n0 2\n0 0\n1 3\n",
+    "expectedOutput": "1\n1\n1\n1\n"
+  },
+  {
+    "input": "3 12\nadc\n1 0\n2 1\n0 0\n0 2\n1 1\n1 1\n0 0\n1 1\n0 2\n1 0\n0 1\n2 0\n0 1\n1 0\n",
+    "expectedOutput": "1\n0\n1\n1\n1\n1\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "3 12\nbda\n1 0\n2 0\n2 2\n2 1\n1 1\n0 0\n0 0\n0 1\n2 2\n0 0\n0 0\n2 2\n0 2\n1 0\n",
+    "expectedOutput": "1\n0\n1\n1\n1\n0\n1\n1\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "4 10\naabb\n1 0\n2 0\n3 0\n0 3\n3 1\n2 0\n1 0\n2 3\n2 2\n1 2\n1 2\n2 2\n0 1\n",
+    "expectedOutput": "0\n1\n0\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "2 2\nad\n1 0\n0 1\n1 0\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "10 14\nbbbbcaabbc\n1 0\n2 1\n3 1\n4 0\n5 3\n6 1\n7 4\n8 6\n9 5\n6 4\n4 5\n8 0\n2 8\n5 0\n3 9\n1 9\n2 8\n1 1\n8 3\n4 7\n7 3\n3 4\n3 6\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "4 12\ndcca\n1 0\n2 1\n3 1\n0 2\n2 2\n1 0\n0 3\n3 2\n1 2\n2 0\n3 1\n1 3\n2 1\n1 3\n2 2\n",
+    "expectedOutput": "1\n1\n0\n0\n1\n1\n1\n0\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "1 12\na\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "12 5\nbccbdcababad\n1 0\n2 0\n3 0\n4 1\n5 0\n6 5\n7 2\n8 7\n9 7\n10 8\n11 7\n7 10\n6 11\n10 3\n5 11\n0 0\n",
+    "expectedOutput": "1\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "1 1\nc\n0 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2 15\ndd\n1 0\n0 0\n0 0\n1 0\n1 0\n1 1\n0 1\n0 0\n0 1\n0 1\n1 0\n1 0\n1 1\n0 0\n0 1\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "8 11\nbdacbbba\n1 0\n2 0\n3 1\n4 1\n5 1\n6 0\n7 1\n5 5\n4 3\n2 6\n1 4\n3 0\n4 7\n1 1\n2 5\n0 4\n0 5\n5 2\n",
+    "expectedOutput": "1\n0\n1\n0\n0\n0\n1\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "5 1\nddccc\n1 0\n2 1\n3 2\n4 0\n1 1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "10 4\ndcbbdaddbc\n1 0\n2 0\n3 2\n4 3\n5 3\n6 5\n7 4\n8 5\n9 8\n5 7\n0 5\n8 9\n7 8\n",
+    "expectedOutput": "0\n0\n0\n1\n"
+  },
+  {
+    "input": "10 15\ndcbcbdddcb\n1 0\n2 1\n3 0\n4 1\n5 1\n6 3\n7 3\n8 5\n9 1\n7 6\n6 1\n2 8\n4 9\n0 8\n6 6\n4 0\n4 9\n8 9\n0 4\n1 2\n8 1\n4 8\n8 9\n5 2\n",
+    "expectedOutput": "1\n1\n0\n1\n1\n1\n0\n1\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "5 6\nbdadc\n1 0\n2 1\n3 0\n4 1\n2 1\n2 3\n4 2\n0 1\n2 1\n3 2\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "3 1\naba\n1 0\n2 0\n0 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 4\nccb\n1 0\n2 1\n1 2\n1 0\n1 1\n2 1\n",
+    "expectedOutput": "0\n1\n1\n0\n"
+  },
+  {
+    "input": "8 3\naaadacab\n1 0\n2 1\n3 2\n4 3\n5 3\n6 1\n7 4\n4 6\n4 2\n0 5\n",
+    "expectedOutput": "1\n1\n0\n"
+  },
+  {
+    "input": "5 4\nddaad\n1 0\n2 0\n3 1\n4 3\n4 1\n3 0\n1 0\n0 2\n",
+    "expectedOutput": "1\n1\n1\n0\n"
+  },
+  {
+    "input": "4 4\nbcbd\n1 0\n2 1\n3 2\n1 0\n0 1\n0 3\n0 3\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "3 9\nbdd\n1 0\n2 0\n2 1\n1 2\n2 1\n0 0\n2 2\n2 0\n1 0\n1 2\n2 1\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "10 5\ncbbaccbddb\n1 0\n2 0\n3 0\n4 2\n5 0\n6 2\n7 3\n8 4\n9 3\n5 5\n7 7\n9 3\n9 2\n0 3\n",
+    "expectedOutput": "1\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "12 11\ndcbbacdccddc\n1 0\n2 1\n3 0\n4 2\n5 0\n6 0\n7 6\n8 5\n9 3\n10 9\n11 9\n7 5\n5 11\n0 0\n2 7\n10 5\n1 2\n9 5\n1 0\n11 10\n7 5\n4 9\n",
+    "expectedOutput": "1\n1\n1\n1\n0\n0\n0\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "10 15\nbdadaccdab\n1 0\n2 0\n3 0\n4 2\n5 2\n6 0\n7 5\n8 1\n9 8\n1 6\n5 3\n1 1\n7 0\n1 7\n6 1\n4 3\n6 6\n2 7\n6 3\n2 5\n8 8\n8 0\n4 0\n8 9\n",
+    "expectedOutput": "0\n0\n1\n0\n0\n0\n0\n1\n0\n0\n0\n1\n0\n1\n0\n"
+  },
+  {
+    "input": "8 2\nbdaadabb\n1 0\n2 0\n3 0\n4 0\n5 4\n6 4\n7 4\n1 5\n7 4\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "9 8\ncccadcddd\n1 0\n2 0\n3 2\n4 3\n5 1\n6 0\n7 6\n8 2\n6 0\n0 3\n0 6\n2 1\n2 4\n3 2\n7 6\n2 4\n",
+    "expectedOutput": "0\n1\n0\n1\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "10 3\nabcccddddc\n1 0\n2 0\n3 1\n4 1\n5 1\n6 2\n7 0\n8 0\n9 2\n0 9\n2 6\n8 4\n",
+    "expectedOutput": "1\n0\n0\n"
+  },
+  {
+    "input": "10 10\ndbddaacbca\n1 0\n2 1\n3 0\n4 2\n5 4\n6 1\n7 3\n8 1\n9 1\n3 7\n5 2\n3 5\n9 6\n5 7\n7 9\n0 8\n5 3\n1 2\n5 1\n",
+    "expectedOutput": "0\n1\n0\n0\n1\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "4 11\ndaaa\n1 0\n2 0\n3 2\n2 0\n0 2\n3 1\n3 0\n2 2\n2 0\n0 3\n0 1\n3 0\n2 2\n2 2\n",
+    "expectedOutput": "0\n0\n0\n1\n1\n0\n1\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "11 3\nbbbccdbaacb\n1 0\n2 1\n3 0\n4 1\n5 0\n6 1\n7 0\n8 6\n9 6\n10 1\n8 8\n4 2\n3 8\n",
+    "expectedOutput": "1\n1\n0\n"
+  },
+  {
+    "input": "12 2\nccaacbadddac\n1 0\n2 0\n3 1\n4 2\n5 1\n6 3\n7 3\n8 7\n9 2\n10 3\n11 4\n0 11\n11 4\n",
+    "expectedOutput": "0\n1\n"
+  },
+  {
+    "input": "4 14\nadbb\n1 0\n2 1\n3 0\n0 3\n3 3\n2 3\n3 3\n1 1\n0 2\n3 3\n3 1\n3 3\n2 1\n1 2\n1 1\n2 2\n0 2\n",
+    "expectedOutput": "0\n1\n0\n1\n1\n0\n1\n0\n1\n0\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "3 5\ncdb\n1 0\n2 0\n2 0\n1 0\n2 2\n1 0\n1 2\n",
+    "expectedOutput": "0\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "11 4\nabbbbdbbcdd\n1 0\n2 1\n3 2\n4 3\n5 1\n6 2\n7 1\n8 0\n9 3\n10 2\n1 2\n8 0\n4 9\n5 7\n",
+    "expectedOutput": "1\n0\n1\n1\n"
+  },
+  {
+    "input": "2 9\nbb\n1 0\n0 0\n1 1\n1 0\n0 0\n0 1\n1 0\n1 1\n1 1\n1 1\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "5 8\ncadbd\n1 0\n2 1\n3 2\n4 0\n1 0\n2 1\n1 4\n0 2\n0 4\n1 3\n2 1\n1 3\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "8 2\ncdddaacb\n1 0\n2 1\n3 2\n4 0\n5 1\n6 4\n7 2\n7 0\n0 3\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "2 12\nac\n1 0\n0 0\n1 0\n0 0\n0 0\n0 1\n1 1\n1 0\n0 1\n1 0\n0 1\n0 1\n1 1\n",
+    "expectedOutput": "1\n0\n1\n1\n0\n1\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "5 13\nbdaad\n1 0\n2 1\n3 2\n4 0\n1 0\n3 1\n1 3\n3 2\n1 3\n1 4\n3 4\n1 4\n2 3\n4 2\n0 2\n0 2\n0 1\n",
+    "expectedOutput": "0\n1\n1\n1\n1\n1\n1\n1\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "11 14\ndababacccba\n1 0\n2 1\n3 1\n4 3\n5 1\n6 2\n7 6\n8 3\n9 2\n10 3\n7 6\n1 2\n3 0\n4 4\n5 1\n6 9\n3 8\n6 3\n7 6\n6 5\n3 3\n5 5\n9 4\n9 8\n",
+    "expectedOutput": "1\n0\n1\n1\n1\n1\n0\n0\n1\n0\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "6 1\nbbacda\n1 0\n2 1\n3 2\n4 1\n5 1\n2 4\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 7\ncacdbdddcc\n1 0\n2 0\n3 2\n4 1\n5 0\n6 0\n7 5\n8 2\n9 6\n3 7\n1 2\n2 8\n7 2\n7 8\n1 0\n0 1\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "10 15\nbdaabdadcc\n1 0\n2 1\n3 0\n4 0\n5 3\n6 1\n7 5\n8 1\n9 1\n0 5\n4 2\n5 2\n7 1\n0 3\n2 2\n0 8\n2 9\n0 9\n5 3\n4 7\n8 9\n4 0\n5 0\n3 8\n",
+    "expectedOutput": "0\n0\n1\n0\n0\n1\n0\n0\n0\n0\n1\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "5 7\nabcaa\n1 0\n2 0\n3 1\n4 3\n4 1\n2 0\n0 2\n3 3\n3 4\n2 4\n4 4\n",
+    "expectedOutput": "1\n0\n0\n1\n1\n0\n1\n"
+  },
+  {
+    "input": "11 6\ndccdbbcacbb\n1 0\n2 1\n3 2\n4 3\n5 1\n6 5\n7 6\n8 2\n9 7\n10 0\n8 7\n4 0\n2 5\n8 1\n0 3\n2 8\n",
+    "expectedOutput": "0\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "5 15\ncbcdd\n1 0\n2 0\n3 1\n4 2\n3 0\n3 4\n3 2\n0 3\n1 1\n0 1\n0 2\n2 3\n3 1\n1 4\n4 1\n0 1\n2 2\n4 1\n1 4\n",
+    "expectedOutput": "0\n1\n0\n0\n1\n0\n1\n0\n0\n0\n0\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "3 3\ndcc\n1 0\n2 0\n2 1\n0 0\n2 2\n",
+    "expectedOutput": "1\n1\n1\n"
+  },
+  {
+    "input": "4 15\nacad\n1 0\n2 1\n3 0\n3 3\n1 2\n1 1\n0 3\n1 1\n1 0\n3 2\n3 2\n0 1\n1 3\n2 3\n1 3\n0 2\n0 3\n3 0\n",
+    "expectedOutput": "1\n0\n1\n0\n1\n0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "10 13\nbdbbdadadc\n1 0\n2 1\n3 2\n4 1\n5 3\n6 5\n7 6\n8 6\n9 8\n5 6\n3 7\n0 2\n1 3\n2 7\n3 1\n9 0\n1 0\n4 2\n1 8\n9 5\n1 8\n1 5\n",
+    "expectedOutput": "0\n0\n1\n1\n1\n1\n0\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "6 5\nbaddca\n1 0\n2 0\n3 1\n4 0\n5 3\n1 2\n4 1\n0 1\n4 0\n0 0\n",
+    "expectedOutput": "0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "1 15\na\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "6 6\nadcbbc\n1 0\n2 0\n3 1\n4 3\n5 3\n3 1\n0 5\n4 5\n4 5\n2 5\n4 3\n",
+    "expectedOutput": "0\n0\n1\n1\n0\n1\n"
+  },
+  {
+    "input": "7 9\naaaaabc\n1 0\n2 0\n3 2\n4 3\n5 2\n6 4\n0 4\n3 0\n1 5\n2 2\n3 4\n6 5\n2 0\n3 0\n1 5\n",
+    "expectedOutput": "1\n1\n0\n1\n1\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "6 8\naaaddb\n1 0\n2 0\n3 0\n4 0\n5 1\n4 3\n1 0\n5 5\n0 0\n3 5\n3 4\n4 5\n3 3\n",
+    "expectedOutput": "1\n1\n1\n1\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "12 1\ndbbddbabcccd\n1 0\n2 1\n3 1\n4 0\n5 1\n6 1\n7 4\n8 4\n9 8\n10 0\n11 3\n10 0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 3\ndaadcdcdbd\n1 0\n2 0\n3 2\n4 2\n5 3\n6 5\n7 6\n8 0\n9 6\n0 1\n3 4\n4 2\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "4 15\ncddd\n1 0\n2 1\n3 1\n2 2\n0 1\n2 1\n3 0\n2 1\n0 0\n3 1\n2 2\n1 1\n2 0\n0 2\n3 1\n1 3\n1 1\n0 1\n",
+    "expectedOutput": "1\n0\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n0\n"
+  },
+  {
+    "input": "5 13\nbaabd\n1 0\n2 0\n3 2\n4 2\n1 3\n4 4\n4 1\n3 4\n3 3\n3 2\n3 2\n0 3\n4 4\n3 4\n3 3\n1 3\n2 4\n",
+    "expectedOutput": "1\n1\n0\n0\n1\n0\n0\n1\n1\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "10 2\nbabbbcacdb\n1 0\n2 0\n3 0\n4 0\n5 2\n6 0\n7 5\n8 1\n9 8\n0 8\n4 6\n",
+    "expectedOutput": "0\n1\n"
+  },
+  {
+    "input": "9 5\ncdaabadbb\n1 0\n2 1\n3 2\n4 0\n5 0\n6 2\n7 4\n8 1\n1 4\n0 7\n6 7\n5 0\n2 2\n",
+    "expectedOutput": "0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "12 5\ncaccddcdcbca\n1 0\n2 0\n3 2\n4 3\n5 3\n6 3\n7 4\n8 5\n9 4\n10 4\n11 6\n4 1\n8 0\n1 7\n8 2\n6 8\n",
+    "expectedOutput": "0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "2 6\ndc\n1 0\n0 0\n0 0\n1 1\n0 1\n1 1\n0 0\n",
+    "expectedOutput": "1\n1\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "7 13\ndbdbacd\n1 0\n2 0\n3 1\n4 3\n5 2\n6 1\n4 2\n6 1\n6 5\n2 5\n2 1\n6 1\n3 5\n1 0\n2 5\n2 2\n4 3\n4 6\n6 1\n",
+    "expectedOutput": "1\n0\n0\n0\n1\n0\n1\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "6 4\ncdbbca\n1 0\n2 0\n3 2\n4 2\n5 3\n4 0\n0 3\n0 3\n1 1\n",
+    "expectedOutput": "1\n1\n1\n1\n"
+  },
+  {
+    "input": "7 12\ndbbdacd\n1 0\n2 0\n3 2\n4 2\n5 0\n6 1\n6 4\n4 2\n5 2\n0 1\n3 0\n2 6\n2 5\n0 6\n3 4\n1 3\n1 5\n0 2\n",
+    "expectedOutput": "1\n0\n0\n0\n1\n1\n0\n1\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "8 12\ncbaaaadd\n1 0\n2 1\n3 2\n4 3\n5 4\n6 0\n7 2\n7 3\n6 7\n0 1\n1 4\n4 5\n0 1\n2 1\n1 2\n5 6\n2 0\n1 1\n7 0\n",
+    "expectedOutput": "1\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "1 7\nd\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "12 9\ncbabdaccadca\n1 0\n2 0\n3 2\n4 1\n5 1\n6 1\n7 4\n8 1\n9 4\n10 7\n11 0\n11 11\n8 7\n2 5\n3 7\n1 9\n7 9\n6 4\n0 1\n2 5\n",
+    "expectedOutput": "1\n0\n0\n0\n1\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "11 7\ncbcaccaddad\n1 0\n2 1\n3 1\n4 1\n5 0\n6 4\n7 2\n8 7\n9 1\n10 1\n1 1\n4 3\n10 10\n3 9\n0 6\n9 5\n3 10\n",
+    "expectedOutput": "1\n0\n1\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "2 15\nca\n1 0\n0 0\n0 1\n1 0\n1 0\n1 0\n1 1\n1 0\n1 0\n1 1\n0 0\n1 1\n0 0\n0 0\n0 0\n1 1\n",
+    "expectedOutput": "1\n0\n0\n0\n0\n1\n0\n0\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "3 12\ncab\n1 0\n2 0\n2 0\n0 1\n0 1\n0 2\n1 2\n1 0\n2 2\n0 0\n0 0\n2 0\n0 1\n1 2\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n1\n1\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "5 15\nbcbcd\n1 0\n2 0\n3 2\n4 0\n1 4\n2 0\n4 1\n4 4\n0 3\n3 1\n4 0\n3 4\n4 1\n4 2\n2 4\n4 1\n0 0\n0 2\n2 0\n",
+    "expectedOutput": "0\n1\n0\n1\n1\n1\n0\n0\n0\n1\n1\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "8 15\ncdcbaacd\n1 0\n2 1\n3 2\n4 2\n5 1\n6 3\n7 3\n6 0\n3 7\n7 3\n3 6\n3 6\n0 7\n3 6\n2 7\n1 5\n4 2\n3 7\n7 6\n7 5\n5 4\n3 5\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "2 14\ndc\n1 0\n0 0\n0 1\n1 0\n1 1\n0 1\n0 0\n0 0\n1 0\n0 1\n0 1\n1 1\n0 1\n1 0\n1 0\n",
+    "expectedOutput": "1\n0\n0\n1\n0\n1\n1\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "3 1\ncad\n1 0\n2 0\n1 2\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12 6\nabbababddadd\n1 0\n2 0\n3 1\n4 0\n5 3\n6 5\n7 1\n8 5\n9 0\n10 9\n11 2\n10 4\n8 10\n8 0\n5 11\n4 4\n7 1\n",
+    "expectedOutput": "0\n1\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "11 6\nbdcacbbccbd\n1 0\n2 0\n3 0\n4 2\n5 0\n6 3\n7 1\n8 0\n9 4\n10 5\n0 9\n1 4\n8 0\n10 4\n9 2\n5 4\n",
+    "expectedOutput": "1\n0\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "3 12\nabb\n1 0\n2 0\n1 0\n1 1\n2 2\n2 0\n0 0\n0 0\n1 0\n2 2\n0 1\n2 1\n2 1\n1 1\n",
+    "expectedOutput": "0\n1\n1\n0\n1\n1\n0\n1\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "8 3\nacacabbd\n1 0\n2 1\n3 0\n4 1\n5 2\n6 0\n7 5\n7 1\n5 1\n6 2\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "5 4\nbbcac\n1 0\n2 1\n3 0\n4 2\n4 0\n4 3\n4 2\n1 1\n",
+    "expectedOutput": "1\n1\n1\n1\n"
+  },
+  {
+    "input": "10 6\nababcdcbda\n1 0\n2 0\n3 1\n4 3\n5 2\n6 0\n7 3\n8 5\n9 2\n2 3\n7 7\n1 6\n5 7\n3 0\n4 6\n",
+    "expectedOutput": "1\n1\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "11 5\nbadaabdbbca\n1 0\n2 1\n3 2\n4 2\n5 1\n6 0\n7 4\n8 6\n9 8\n10 3\n9 9\n8 10\n3 9\n4 8\n6 7\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "6 1\ncdaabc\n1 0\n2 1\n3 2\n4 1\n5 4\n5 4\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 8\ndabacb\n1 0\n2 0\n3 2\n4 0\n5 1\n0 5\n5 3\n0 5\n2 5\n3 5\n1 2\n2 4\n1 2\n",
+    "expectedOutput": "0\n1\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "8 8\ndaabbcbc\n1 0\n2 1\n3 2\n4 2\n5 4\n6 2\n7 0\n4 5\n7 6\n2 2\n1 2\n7 1\n5 0\n2 1\n5 4\n",
+    "expectedOutput": "0\n0\n1\n1\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "9 4\naacacbccd\n1 0\n2 0\n3 2\n4 3\n5 2\n6 3\n7 0\n8 3\n2 1\n0 5\n6 7\n0 7\n",
+    "expectedOutput": "1\n0\n1\n0\n"
+  },
+  {
+    "input": "1 11\nd\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "4 4\naccd\n1 0\n2 1\n3 2\n3 2\n2 3\n3 0\n1 3\n",
+    "expectedOutput": "0\n0\n0\n1\n"
+  },
+  {
+    "input": "12 3\nbbcbccbaaccc\n1 0\n2 1\n3 0\n4 1\n5 0\n6 0\n7 0\n8 2\n9 2\n10 0\n11 2\n9 0\n4 11\n9 11\n",
+    "expectedOutput": "1\n0\n1\n"
+  },
+  {
+    "input": "4 1\ncbba\n1 0\n2 0\n3 2\n3 0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 1\ncdbccdcabc\n1 0\n2 0\n3 1\n4 1\n5 1\n6 2\n7 5\n8 1\n9 2\n1 8\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12 7\nacdcbbdabcad\n1 0\n2 0\n3 1\n4 1\n5 3\n6 4\n7 2\n8 5\n9 3\n10 3\n11 7\n0 11\n7 0\n1 3\n3 1\n8 6\n8 3\n8 0\n",
+    "expectedOutput": "1\n1\n1\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "11 14\nbcaabaacada\n1 0\n2 0\n3 2\n4 0\n5 0\n6 4\n7 1\n8 0\n9 8\n10 1\n7 6\n6 10\n7 3\n2 6\n1 8\n0 5\n8 10\n5 7\n6 3\n9 0\n8 6\n1 8\n7 7\n4 7\n",
+    "expectedOutput": "1\n1\n1\n1\n0\n0\n0\n0\n1\n0\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "12 12\nbaabcabbbada\n1 0\n2 1\n3 1\n4 1\n5 3\n6 5\n7 4\n8 7\n9 3\n10 0\n11 1\n3 5\n10 6\n2 9\n1 9\n11 6\n6 9\n0 10\n10 3\n8 11\n9 5\n6 0\n3 11\n",
+    "expectedOutput": "0\n0\n0\n1\n1\n1\n0\n0\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "7 2\nbcdabdc\n1 0\n2 0\n3 1\n4 3\n5 1\n6 1\n1 6\n2 3\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "3 14\ncdc\n1 0\n2 1\n2 2\n1 2\n1 2\n2 0\n0 0\n1 1\n0 0\n2 0\n0 2\n0 1\n0 2\n0 1\n2 0\n1 0\n",
+    "expectedOutput": "1\n0\n0\n1\n1\n1\n1\n1\n1\n0\n1\n0\n1\n0\n"
+  },
+  {
+    "input": "5 8\nbaddb\n1 0\n2 0\n3 2\n4 3\n0 0\n2 3\n2 4\n1 1\n4 4\n2 0\n0 3\n2 3\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "10 7\naaaddaaddb\n1 0\n2 0\n3 1\n4 3\n5 1\n6 3\n7 6\n8 4\n9 1\n7 6\n8 3\n3 9\n2 7\n5 0\n6 7\n9 3\n",
+    "expectedOutput": "0\n1\n0\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "3 7\ndcc\n1 0\n2 0\n1 1\n0 0\n0 0\n2 1\n1 2\n1 0\n0 1\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "10 3\nbadbdacdad\n1 0\n2 1\n3 1\n4 3\n5 1\n6 2\n7 4\n8 5\n9 6\n9 6\n5 4\n4 8\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "12 15\nccdbbdccaabd\n1 0\n2 0\n3 0\n4 3\n5 4\n6 4\n7 5\n8 5\n9 7\n10 1\n11 9\n11 1\n6 9\n11 9\n1 8\n4 6\n11 6\n1 11\n11 11\n11 4\n10 0\n9 8\n9 0\n9 5\n10 4\n2 6\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n0\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "5 9\ndcabd\n1 0\n2 0\n3 0\n4 1\n2 4\n3 0\n2 4\n2 2\n3 0\n3 4\n3 1\n2 1\n3 3\n",
+    "expectedOutput": "0\n0\n0\n1\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "3 12\ndba\n1 0\n2 0\n2 1\n0 1\n2 1\n2 0\n0 1\n1 2\n1 2\n1 0\n0 0\n2 0\n1 2\n2 2\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "9 15\ncddbadcba\n1 0\n2 0\n3 2\n4 0\n5 2\n6 1\n7 4\n8 6\n6 1\n4 2\n7 4\n6 0\n7 4\n5 1\n6 3\n0 8\n1 2\n8 7\n1 8\n4 0\n4 4\n8 2\n1 6\n",
+    "expectedOutput": "0\n0\n0\n1\n0\n0\n1\n0\n1\n0\n0\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "8 4\nbbbddcbc\n1 0\n2 1\n3 1\n4 2\n5 4\n6 1\n7 6\n3 4\n1 2\n7 5\n4 0\n",
+    "expectedOutput": "1\n1\n0\n0\n"
+  },
+  {
+    "input": "12 1\nbbaacacddabc\n1 0\n2 1\n3 1\n4 0\n5 2\n6 5\n7 2\n8 6\n9 7\n10 1\n11 6\n9 10\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "9 14\nadaaadbcb\n1 0\n2 0\n3 0\n4 1\n5 1\n6 3\n7 0\n8 7\n3 3\n2 0\n4 6\n4 1\n8 2\n3 0\n6 8\n2 5\n0 7\n2 1\n0 3\n7 6\n3 3\n0 7\n",
+    "expectedOutput": "1\n1\n0\n0\n0\n1\n1\n1\n0\n1\n1\n0\n1\n0\n"
+  },
+  {
+    "input": "11 13\nbcddbcabccd\n1 0\n2 0\n3 0\n4 3\n5 3\n6 1\n7 5\n8 4\n9 3\n10 6\n8 10\n7 7\n8 2\n9 0\n4 7\n10 10\n1 8\n0 10\n2 1\n2 7\n6 5\n5 5\n9 9\n",
+    "expectedOutput": "1\n1\n1\n0\n0\n1\n1\n0\n0\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "7 12\ncadabba\n1 0\n2 1\n3 0\n4 2\n5 1\n6 3\n4 5\n5 1\n0 1\n5 3\n3 3\n4 0\n3 4\n1 1\n3 1\n1 5\n0 5\n1 3\n",
+    "expectedOutput": "0\n0\n0\n0\n1\n0\n0\n1\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "5 2\naabcd\n1 0\n2 1\n3 0\n4 3\n0 3\n3 4\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "1 6\nd\n0 0\n0 0\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "10 12\nccdbbaaaca\n1 0\n2 0\n3 2\n4 3\n5 4\n6 0\n7 3\n8 3\n9 6\n7 6\n7 8\n7 2\n0 6\n3 7\n0 8\n7 6\n7 7\n0 5\n6 8\n9 3\n0 7\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "8 15\nbadcddbd\n1 0\n2 1\n3 0\n4 1\n5 0\n6 2\n7 1\n3 2\n1 5\n4 5\n3 4\n2 5\n7 7\n6 7\n0 2\n2 6\n0 5\n7 3\n7 2\n7 1\n3 6\n2 6\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "6 7\nbbcada\n1 0\n2 0\n3 2\n4 0\n5 4\n5 3\n4 4\n4 3\n4 1\n2 2\n1 5\n1 2\n",
+    "expectedOutput": "0\n1\n0\n1\n1\n0\n1\n"
+  },
+  {
+    "input": "1 2\nd\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n"
+  },
+  {
+    "input": "1 4\nc\n0 0\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n"
+  },
+  {
+    "input": "11 11\nadcccdbbada\n1 0\n2 1\n3 1\n4 0\n5 0\n6 1\n7 4\n8 0\n9 2\n10 3\n7 6\n6 10\n4 3\n10 4\n1 6\n1 9\n3 0\n8 1\n8 6\n5 7\n9 10\n",
+    "expectedOutput": "0\n0\n0\n1\n0\n1\n0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "11 1\nbdcddbacadd\n1 0\n2 1\n3 1\n4 3\n5 2\n6 5\n7 5\n8 0\n9 8\n10 3\n5 8\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 13\nbcaccadcdc\n1 0\n2 1\n3 0\n4 1\n5 3\n6 3\n7 4\n8 1\n9 0\n5 1\n0 7\n0 1\n9 2\n3 4\n8 3\n6 0\n5 3\n4 2\n4 6\n0 4\n9 5\n7 5\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "9 14\nbccbbbbbc\n1 0\n2 1\n3 0\n4 1\n5 3\n6 5\n7 5\n8 5\n0 3\n5 2\n4 2\n2 2\n2 6\n5 7\n5 7\n5 4\n7 5\n0 6\n6 1\n0 0\n7 3\n3 6\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "6 3\nbdadaa\n1 0\n2 0\n3 1\n4 1\n5 3\n5 0\n4 1\n4 1\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "10 8\ndcaddacccc\n1 0\n2 0\n3 0\n4 1\n5 2\n6 1\n7 0\n8 4\n9 8\n6 5\n4 1\n8 1\n0 6\n6 3\n3 3\n1 4\n4 7\n",
+    "expectedOutput": "1\n0\n1\n1\n1\n1\n0\n1\n"
+  },
+  {
+    "input": "8 7\ndcbdbaaa\n1 0\n2 1\n3 2\n4 2\n5 3\n6 0\n7 1\n6 0\n0 0\n1 6\n7 0\n0 3\n4 3\n2 7\n",
+    "expectedOutput": "0\n1\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "2 15\ncd\n1 0\n1 0\n0 0\n0 0\n0 1\n1 1\n0 0\n0 1\n1 1\n1 0\n0 1\n1 1\n1 0\n0 1\n0 1\n0 0\n",
+    "expectedOutput": "0\n1\n1\n0\n1\n1\n0\n1\n0\n0\n1\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "9 11\naabbadcbd\n1 0\n2 1\n3 2\n4 0\n5 3\n6 0\n7 4\n8 1\n2 7\n8 0\n2 4\n8 0\n1 3\n1 2\n2 3\n4 1\n4 6\n0 4\n7 3\n",
+    "expectedOutput": "1\n1\n0\n1\n1\n0\n1\n1\n1\n1\n0\n"
+  },
+  {
+    "input": "3 8\ndaa\n1 0\n2 0\n1 1\n2 1\n0 1\n0 1\n0 2\n0 0\n1 0\n2 1\n",
+    "expectedOutput": "1\n1\n0\n0\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "8 14\nbcdcdacd\n1 0\n2 1\n3 2\n4 3\n5 1\n6 4\n7 1\n0 4\n0 0\n1 0\n0 4\n5 4\n5 6\n0 3\n3 2\n6 0\n5 1\n2 7\n2 0\n7 5\n6 4\n",
+    "expectedOutput": "1\n1\n0\n1\n1\n0\n0\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "10 1\nddddcddbdc\n1 0\n2 1\n3 1\n4 1\n5 0\n6 1\n7 6\n8 3\n9 4\n3 7\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 2\naa\n1 0\n1 0\n1 1\n",
+    "expectedOutput": "1\n1\n"
+  },
+  {
+    "input": "8 9\ndcaacdcd\n1 0\n2 1\n3 0\n4 2\n5 1\n6 0\n7 1\n2 3\n4 6\n4 6\n0 1\n7 1\n2 2\n6 7\n6 7\n1 6\n",
+    "expectedOutput": "0\n0\n0\n0\n0\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "1 3\nc\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n"
+  },
+  {
+    "input": "6 4\nddcdda\n1 0\n2 0\n3 0\n4 1\n5 3\n3 0\n0 4\n0 3\n0 1\n",
+    "expectedOutput": "1\n1\n1\n1\n"
+  },
+  {
+    "input": "2 5\ndd\n1 0\n1 0\n1 1\n0 0\n0 0\n0 0\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "1 1\nc\n0 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6 15\ndcdbad\n1 0\n2 0\n3 2\n4 3\n5 3\n1 2\n2 4\n0 1\n0 0\n4 5\n2 0\n5 2\n3 0\n0 5\n5 0\n0 3\n4 5\n2 5\n3 2\n0 4\n",
+    "expectedOutput": "1\n0\n0\n1\n0\n1\n1\n1\n0\n0\n1\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "2 12\naa\n1 0\n0 1\n1 0\n0 0\n0 1\n1 1\n1 0\n0 0\n1 0\n0 0\n1 1\n0 1\n1 1\n",
+    "expectedOutput": "1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "3 10\ncca\n1 0\n2 1\n0 1\n1 0\n0 1\n2 1\n2 0\n1 1\n2 2\n0 2\n0 2\n0 2\n",
+    "expectedOutput": "1\n1\n1\n0\n1\n1\n1\n1\n1\n1\n"
+  }
+]

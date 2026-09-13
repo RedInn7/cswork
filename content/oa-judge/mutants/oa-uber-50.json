@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只返回整段f",
+    "code": "from array import array\ndef solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));best=[array('I',[0])*n for _ in range(n)]\n    for i,v in enumerate(a):best[i][i]=v\n    previous=a\n    for size in range(2,n+1):\n        current=[]\n        for left in range(n-size+1):\n            right=left+size-1;value=previous[left]^previous[left+1];current.append(value);best[left][right]=value\n        previous=current\n    return '\\n'.join(str(best[int(d[i])][int(d[i+1])]) for i in range(2+n,len(d),2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏右侧子区间",
+    "code": "from array import array\ndef solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));best=[array('I',[0])*n for _ in range(n)]\n    for i,v in enumerate(a):best[i][i]=v\n    previous=a\n    for size in range(2,n+1):\n        current=[]\n        for left in range(n-size+1):\n            right=left+size-1;value=previous[left]^previous[left+1];current.append(value);best[left][right]=max(value,best[left][right-1])\n        previous=current\n    return '\\n'.join(str(best[int(d[i])][int(d[i+1])]) for i in range(2+n,len(d),2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

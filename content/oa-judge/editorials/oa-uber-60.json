@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-60",
+  "title": "被最多灯照亮的最左坐标",
+  "explanation": "## 思路\n\n对整数坐标，在左端加1、右端加1的位置减1，按坐标合并事件并扫描覆盖数；只在严格刷新最大覆盖时记录坐标。\n\n## 正确性\n\n闭区间事件保持右端仍计数。覆盖数仅在这些边界改变，最高覆盖区间的最左端一定是整数事件点；递增扫描且只在严格提高时更新，恰保留并列时最左点。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    events={}\n    for i in range(1,len(d),2):\n        x,r=map(int,d[i:i+2]);events[x-r]=events.get(x-r,0)+1;events[x+r+1]=events.get(x+r+1,0)-1\n    count=best=0;answer=0\n    for position in sorted(events):\n        count+=events[position]\n        if count>best:best=count;answer=position\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#60-find-point-illuminated-by-most-lamps",
+  "sourceContentHash": "908a3e0d8fd454c2cbbcd79291d9fd3a8e560d70d1731a86c760eb5215525e04",
+  "author": "CSWork"
+}

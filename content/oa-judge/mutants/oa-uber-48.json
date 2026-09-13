@@ -1,0 +1,10 @@
+[
+  {
+    "name": "返回边长非面积",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);previous=[0]*(m+1);best=0\n    for row in d[2:]:\n        current=[0]*(m+1)\n        for j,c in enumerate(row,1):\n            if c=='1':current[j]=1+min(previous[j],previous[j-1],current[j-1]);best=max(best,current[j])\n        previous=current\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略左上约束",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);previous=[0]*(m+1);best=0\n    for row in d[2:]:\n        current=[0]*(m+1)\n        for j,c in enumerate(row,1):\n            if c=='1':current[j]=1+min(previous[j],current[j-1]);best=max(best,current[j])\n        previous=current\n    return str(best*best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

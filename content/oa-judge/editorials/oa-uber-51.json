@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-51",
+  "title": "任选根后的最少边反转",
+  "explanation": "## 思路\n\n先以0为根计算反向边数，再换根：沿原本正向父子边把根移向子节点时需多反转1条，原本反向则少1条。\n\n## 正确性\n\n相邻换根只改变它们之间那条边的目标方向，其他边相对于根的方向需求不变，因此代价变化恰为±1。遍历所有节点得到全部根代价，取最小。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);graph=[[] for _ in range(n)]\n    for i in range(1,len(d),2):\n        a,b=map(int,d[i:i+2]);graph[a].append((b,0));graph[b].append((a,1))\n    parent=[-1]*n;order=[0];cost=[0]*n;initial=0\n    for v in order:\n        for w,reverse in graph[v]:\n            if w==parent[v]:continue\n            parent[w]=v;cost[w]=reverse;initial+=reverse;order.append(w)\n    answer=[initial]*n\n    for v in order[1:]:answer[v]=answer[parent[v]]+1-2*cost[v]\n    return str(min(answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#51-minimum-edge-reversals-to-root-a-tree",
+  "sourceContentHash": "2ef2d758e6d9b9705ccbbb76c412a09ce91b97f31ffc500a51c63d623c04772d",
+  "author": "CSWork"
+}

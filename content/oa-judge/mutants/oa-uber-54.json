@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不检查首尾下降",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if all(a[i]<a[i+1] for i in range(n-1)):return '0'\n    breaks=[i for i in range(n-1) if a[i]>a[(i+1)%n]]\n    return str(n-breaks[0]-1) if len(breaks)==1 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "左右移动混淆",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if all(a[i]<a[i+1] for i in range(n-1)):return '0'\n    breaks=[i for i in range(n) if a[i]>a[(i+1)%n]]\n    return str(breaks[0]+1) if len(breaks)==1 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-46",
+  "title": "组合旋转和对角反射",
+  "explanation": "## 思路\n\n不反复移动整个矩阵，维护原坐标映射的两个方向向量和原点。每次操作变换原点和向量，最终按得到的坐标映射一次填入结果矩阵。\n\n## 正确性\n\n旋转与反射都是仿射变换，原点与两个单位向量唯一确定整个坐标映射。逐次对映射应用相同变换等价于对所有元素应用变换，最后一次填入恰是全部操作复合结果。\n\n## 复杂度\n\n时间O(q+n²)，空间O(n²)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from itertools import islice\ndef solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n*n]));origin=(0,0);dr=(1,0);dc=(0,1)\n    for token in islice(d,2+n*n,None):\n        kind=int(token)\n        if kind==0:origin=(origin[1],n-1-origin[0]);dr=(dr[1],-dr[0]);dc=(dc[1],-dc[0])\n        elif kind==1:origin=origin[::-1];dr=dr[::-1];dc=dc[::-1]\n        else:origin=(n-1-origin[1],n-1-origin[0]);dr=(-dr[1],-dr[0]);dc=(-dc[1],-dc[0])\n    result=[[0]*n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):result[origin[0]+i*dr[0]+j*dc[0]][origin[1]+i*dr[1]+j*dc[1]]=a[i*n+j]\n    return '\\n'.join(' '.join(map(str,row)) for row in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#46-matrix-transformation",
+  "sourceContentHash": "a109a111452d111f9b27e9c55fd08e9cd808259bfd9d09b9670b81f6b6d5e8fe",
+  "author": "CSWork"
+}

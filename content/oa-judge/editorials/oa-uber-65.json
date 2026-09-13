@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-65",
+  "title": "相同或互为前缀的单词对",
+  "explanation": "## 思路\n\n按字典序排序。以每个词为较前者，所有以它开头的词形成连续区间，可二分word加字符{的插入位置作为区间右端；仅统计当前位置之后的词。\n\n## 正确性\n\n小写字母都小于{，所以以word为前缀的字符串恰好落在[word,word+{)之间。任意合法无序对在排序后较短词或相同词的一次查询中恰好出现一次，不合法对不会进入此前缀区间。\n\n## 复杂度\n\n时间O(总字符数·log n)，空间O(总字符数+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_left\ndef solve(d):\n    words=sorted(d[1:]);answer=0\n    for i,word in enumerate(words):answer+=bisect_left(words,word+'{')-i-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#65-word-pairs",
+  "sourceContentHash": "279fd974bb09927c9da0a11292aa40e8e01e71d29eb0fb01382f0a768fe8f270",
+  "author": "CSWork"
+}

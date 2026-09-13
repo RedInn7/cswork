@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-56",
+  "title": "预算内最大串行吞吐量",
+  "explanation": "## 思路\n\n二分目标吞吐T。服务i至少扩容ceil(T/base[i])−1次，逐项累加最低花费；超过预算则不可行。\n\n## 正确性\n\n为达到流水线目标，所有服务都必须达到T，各服务最低扩容量独立且唯一，花费求和就是必要且充分成本。该成本随T单调不减，因此二分取得最大可行值。\n\n## 复杂度\n\n时间O(n log U)，空间O(n)，U=min(base[i]×(1+budget//cost[i]))。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,budget=map(int,d[:2]);base=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));low=min(base);high=min(v*(1+budget//c) for v,c in zip(base,cost))\n    while low<high:\n        target=(low+high+1)//2;spent=0\n        for v,c in zip(base,cost):\n            spent+=max(0,(target-1)//v)*c\n            if spent>budget:break\n        if spent<=budget:low=target\n        else:high=target-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#56-pipeline-throughput-maximization-under-budget",
+  "sourceContentHash": "6d26feefd77fd5b10bd5d68632ab85dfad60821cfcd1e44c2c83b5cfbdfa8cf6",
+  "author": "CSWork"
+}
