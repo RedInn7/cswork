@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-135",
+  "title": "任意分配游戏所需的最小统一硬盘容量",
+  "explanation": "## 思路\n\n二分容量，用子集DP判断能否装入至多N个箱子。状态保存装完该子集的最少箱数，以及此箱数下最后一箱最小用量；枚举最后加入哪个游戏。\n\n## 正确性证明\n\n相同已选集合中，较少箱数优先，箱数相同时最后箱更空不劣，这个字典序最小状态足以支配其他安排。枚举最后加入项构造全部装箱顺序，得到最少箱数。若少于N，因为m≥N且每项独立，可拆分非空箱至恰N箱而不增容量。可行性随容量单调，二分得最优。\n\n## 复杂度\n\n时间O(m·2^m·log S)，空间O(2^m)，S为总大小。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    m,children=map(int,d[:2]);games=list(map(int,d[2:]));total=sum(games);lo=max(max(games),(total+children-1)//children);hi=total\n    def feasible(capacity):\n        dp=[(m+1,0)]*(1<<m);dp[0]=(1,0)\n        for mask in range(1,1<<m):\n            best=(m+1,0);bits=mask\n            while bits:\n                bit=bits&-bits;i=bit.bit_length()-1;rides,load=dp[mask^bit]\n                candidate=(rides,load+games[i]) if load+games[i]<=capacity else (rides+1,games[i])\n                if candidate<best:best=candidate\n                bits-=bit\n            dp[mask]=best\n        return dp[-1][0]<=children\n    while lo<hi:\n        middle=(lo+hi)//2\n        if feasible(middle):hi=middle\n        else:lo=middle+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#135-minimum-memory-for-hard-drives",
+  "sourceContentHash": "e09fdb2c13c677afbed23244c270c12c42f42c0ba627ee465c1973a6d339fa28",
+  "author": "CSWork"
+}

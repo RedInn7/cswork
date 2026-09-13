@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-48",
+  "title": "双车桥的最少删车数",
+  "explanation": "## 思路\n\n扫描并保留当前最后一辆。单车超载直接删；若与最后一辆合计超载，必须删两者之一，保留较轻者；否则接在后面。\n\n## 正确性\n\n相邻两辆超载时至少删一辆，保留较轻的不会降低未来兼容性。若替换旧尾车，新车更轻，和旧尾之前车辆也仍兼容。交换论证使每步选择可扩展为最优方案。\n\n## 复杂度\n\n时间O(N)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    capacity=int(d[1]);last=None;removed=0\n    for token in d[2:]:\n        weight=int(token)\n        if weight>capacity:removed+=1;continue\n        if last is not None and last+weight>capacity:removed+=1;last=min(last,weight)\n        else:last=weight\n    return str(removed)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#48-minimum-cars-to-remove",
+  "sourceContentHash": "771385b5dd8d7eb882e68d72865fcb85a99df8f94a4adcf8830b67f33f22ba94",
+  "author": "CSWork"
+}

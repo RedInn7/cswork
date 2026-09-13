@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-64",
+  "title": "含至少两个7且能被3整除",
+  "explanation": "## 思路\n\n扫描求各位数字和以及7的次数，检查数位和模3是否为0且计数至少2。\n\n## 正确性\n\n十进制位权10的任意次幂模3都为1，因此整数模3等于数位和模3；另外独立统计7的次数，合取实现两条件。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    total=count=0\n    for c in d[0]:total+=ord(c)-48;count+=c=='7'\n    return str(int(total%3==0 and count>=2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#64-valid-string-check",
+  "sourceContentHash": "1f3086f5336479e83aa0471c7f9c42a56fa28bbc55eb56465c9d5f1ec23b1b0f",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-56",
+  "title": "全部下标对异或值的乘积",
+  "explanation": "## 思路\n\n有重复值时存在异或为0的因子，答案立即为0。否则对长度4096的值频率做整数异或沃尔什变换、逐项平方、再次变换并除4096，得到每种异或值的有序对数；非零异或的无序对数为其一半，按计数做模幂乘积。\n\n## 正确性\n\n异或变换把异或卷积变成逐点乘积，逆变换给出满足x XOR y=v的有序对数。v非零时没有同下标，交换两端恰好形成两个有序对，故除2即i<j计数。对各v分组相乘等价于原全部因子乘积；重复值的0因子分支也准确。\n\n## 复杂度\n\n时间O(各组N之和+T·4096 log4096+T·4096 logN)，空间O(4096)，不计输入解析。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    cursor=1;answers=[];mod=1000000007;size=4096\n    def transform(a):\n        width=1\n        while width<size:\n            for start in range(0,size,2*width):\n                for i in range(start,start+width):\n                    x,y=a[i],a[i+width];a[i]=x+y;a[i+width]=x-y\n            width*=2\n    for _ in range(int(d[0])):\n        n=int(d[cursor]);cursor+=1;freq=[0]*size;duplicate=False\n        for i in range(cursor,cursor+n):\n            v=int(d[i]);duplicate|=freq[v]>0;freq[v]+=1\n        cursor+=n\n        if duplicate:answers.append('0');continue\n        transform(freq)\n        for i in range(size):freq[i]*=freq[i]\n        transform(freq);answer=1\n        for v in range(1,size):answer=answer*pow(v,freq[v]//size//2,mod)%mod\n        answers.append(str(answer))\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#56-product-of-xor-of-all-good-pairs",
+  "sourceContentHash": "39a34e238a80d2aff58e228270fdf424eee9634fbb4ca99595d70be27df2fb29",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "交换两种反射",
+    "code": "from itertools import islice\ndef solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n*n]));origin=(0,0);dr=(1,0);dc=(0,1)\n    for token in islice(d,2+n*n,None):\n        kind=int(token)\n        if kind==0:origin=(origin[1],n-1-origin[0]);dr=(dr[1],-dr[0]);dc=(dc[1],-dc[0])\n        elif kind==2:origin=origin[::-1];dr=dr[::-1];dc=dc[::-1]\n        else:origin=(n-1-origin[1],n-1-origin[0]);dr=(-dr[1],-dr[0]);dc=(-dc[1],-dc[0])\n    result=[[0]*n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):result[origin[0]+i*dr[0]+j*dc[0]][origin[1]+i*dr[1]+j*dc[1]]=a[i*n+j]\n    return '\\n'.join(' '.join(map(str,row)) for row in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "倒序处理变换",
+    "code": "from itertools import islice\ndef solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n*n]));origin=(0,0);dr=(1,0);dc=(0,1)\n    for token in reversed(d[2+n*n:]):\n        kind=int(token)\n        if kind==0:origin=(origin[1],n-1-origin[0]);dr=(dr[1],-dr[0]);dc=(dc[1],-dc[0])\n        elif kind==1:origin=origin[::-1];dr=dr[::-1];dc=dc[::-1]\n        else:origin=(n-1-origin[1],n-1-origin[0]);dr=(-dr[1],-dr[0]);dc=(-dc[1],-dc[0])\n    result=[[0]*n for _ in range(n)]\n    for i in range(n):\n        for j in range(n):result[origin[0]+i*dr[0]+j*dc[0]][origin[1]+i*dr[1]+j*dc[1]]=a[i*n+j]\n    return '\\n'.join(' '.join(map(str,row)) for row in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

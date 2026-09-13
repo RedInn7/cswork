@@ -57,6 +57,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-quadratic-minimum'
     | 'oa-compatible-groups'
     | 'oa-football-top-two'
+    | 'oa-regional-maxima'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -270,6 +271,7 @@ export const ojImportSchema = z
           'oa-quadratic-minimum',
           'oa-compatible-groups',
           'oa-football-top-two',
+          'oa-regional-maxima',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -318,7 +320,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-compatible-groups' &&
         data.problem.id !== 'oa-uber-34') ||
       (data.problem.checker === 'oa-football-top-two' &&
-        data.problem.id !== 'oa-uber-38')
+        data.problem.id !== 'oa-uber-38') ||
+      (data.problem.checker === 'oa-regional-maxima' &&
+        data.problem.id !== 'oa-uber-57')
     )
       ctx.addIssue({
         code: 'custom',

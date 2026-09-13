@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-59",
+  "title": "雨水首次到达各格的时间",
+  "explanation": "## 思路\n\n把允许流动方向当作有向边，用广度优先搜索计算从起点到每格的最短边数。\n\n## 正确性\n\n每次扩散耗时1，长度t的合法路径可在时间t使终点湿润，反之首次湿润过程产生同长合法路径。BFS按距离逐层扩展，第一次访问就是最短距离。\n\n## 复杂度\n\n时间O(nm)，空间O(nm)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(d):\n    n,m,sr,sc=map(int,d[:4]);grid=[list(map(int,d[4+i*m:4+(i+1)*m])) for i in range(n)];dist=[[-1]*m for _ in range(n)];dist[sr][sc]=0;queue=deque([(sr,sc)])\n    while queue:\n        i,j=queue.popleft()\n        for a,b in ((i-1,j),(i+1,j),(i,j-1),(i,j+1)):\n            if 0<=a<n and 0<=b<m and dist[a][b]<0 and grid[a][b]<=grid[i][j]:dist[a][b]=dist[i][j]+1;queue.append((a,b))\n    return '\\n'.join(' '.join(map(str,row)) for row in dist)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#59-simulate-water-flow",
+  "sourceContentHash": "5a5d1100a1a01e162f598a19c374a04dccd66765ac9d61edf2b239e3de850b83",
+  "author": "CSWork"
+}

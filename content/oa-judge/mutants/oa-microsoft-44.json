@@ -1,0 +1,10 @@
+[
+  {
+    "name": "零位数错误",
+    "code": "def solve(d):\n    prev2=prev=0;last=0\n    for token in d[1:]:\n        value=int(token);current=max(prev+value,prev2+last*(10**(0 if value==0 else len(token)))+value);prev2,prev=prev,current;last=value\n    return str(prev)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误仅按两位数拼接",
+    "code": "def solve(d):\n    prev2=prev=0;last=0\n    for token in d[1:]:\n        value=int(token);current=max(prev+value,prev2+last*(10)+value);prev2,prev=prev,current;last=value\n    return str(prev)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

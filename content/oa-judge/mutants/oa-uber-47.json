@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把自己算作其他人",
+    "code": "def solve(d):\n    n=int(d[0]);difference=[0]*(n+2)\n    for i in range(1,len(d),2):left,right=map(int,d[i:i+2]);difference[left]+=1;difference[right+1]-=1\n    count=answer=0\n    for others in range(n):\n        count+=difference[others]\n        if count>=others:answer=others\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "右端误作开区间",
+    "code": "def solve(d):\n    n=int(d[0]);difference=[0]*(n+2)\n    for i in range(1,len(d),2):left,right=map(int,d[i:i+2]);difference[left]+=1;difference[right]-=1\n    count=answer=0\n    for others in range(n):\n        count+=difference[others]\n        if count>=others+1:answer=others+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

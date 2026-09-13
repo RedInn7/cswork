@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-50",
+  "title": "区间内的最大逐层异或值",
+  "explanation": "## 思路\n\n按长度计算f(l,r)=f(l,r−1) xor f(l+1,r)。同时best(l,r)取f(l,r)、best(l,r−1)、best(l+1,r)的最大值，保留紧凑无符号整数表回答查询。\n\n## 正确性\n\n异或金字塔最后一步正是左右两个长一层子数组的f异或。一个[l,r]内部子区间要么为整段，要么缺左端或右端，故best递推穷尽所有子区间。长度递增保证依赖已知。\n\n## 复杂度\n\n预处理时间O(n²)，每次查询O(1)，空间O(n²)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from array import array\ndef solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));best=[array('I',[0])*n for _ in range(n)]\n    for i,v in enumerate(a):best[i][i]=v\n    previous=a\n    for size in range(2,n+1):\n        current=[]\n        for left in range(n-size+1):\n            right=left+size-1;value=previous[left]^previous[left+1];current.append(value);best[left][right]=max(value,best[left][right-1],best[left+1][right])\n        previous=current\n    return '\\n'.join(str(best[int(d[i])][int(d[i+1])]) for i in range(2+n,len(d),2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#50-maximum-xor-for-each-query",
+  "sourceContentHash": "4863e6356ec1b1aa394ff734e3409457b0fd34afe04cb2fd8f5d2b339ab56a45",
+  "author": "CSWork"
+}

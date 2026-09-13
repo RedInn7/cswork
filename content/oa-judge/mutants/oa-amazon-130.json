@@ -1,0 +1,10 @@
+[
+  {
+    "name": "直接自然排序",
+    "code": "def solve(d):\n    rank={c:i for i,c in enumerate(d[0])};values=['' if s=='-' else s for s in d[2:]]\n    values.sort(key=lambda s:s)\n    return ' '.join(s or '-' for s in values)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "删除重复项",
+    "code": "def solve(d):\n    rank={c:i for i,c in enumerate(d[0])};values=['' if s=='-' else s for s in d[2:]]\n    values=list(set(values));values.sort(key=lambda s:bytes(rank[c] for c in s))\n    return ' '.join(s or '-' for s in values)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

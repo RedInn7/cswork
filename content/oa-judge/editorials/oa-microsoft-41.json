@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-41",
+  "title": "最多K次加减后的三分位最大差",
+  "explanation": "## 思路\n\n排序后只需降低最小N/3个数的最大值，或提高最大N/3个数的最小值。两侧每提高差值1的代价都是当前极值组大小；代价随扩展单调增加，用堆合并两侧的代价段，优先购买便宜的增量。\n\n## 正确性\n\n达到给定较低分位时，选原本最小的一组降低代价最小；上分位同理，两组互不相交。每侧极值跨越下一个数值时组大小增大，边际代价非递减。把两条有序代价序列归并，前缀花费最小，因此预算内购买的差值增量最多。\n\n## 复杂度\n\n时间O(N log N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_right\n    import heapq\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));m=n//3;answer=a[-m]-a[m-1]\n    sides=[sorted(-v for v in a[:m]),a[-m:]];heap=[]\n    for side,b in enumerate(sides):heap.append((bisect_right(b,b[0]),side,b[0]))\n    heapq.heapify(heap)\n    while k and heap:\n        count,side,level=heapq.heappop(heap);b=sides[side];distance=b[count]-level if count<m else k+1\n        increase=min(distance,k//count);answer+=increase;k-=increase*count\n        if increase<distance:break\n        level+=increase;heapq.heappush(heap,(bisect_right(b,level),side,level))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#41-maximizing-difference-in-array-elements-with-moves",
+  "sourceContentHash": "74bee5351163b0062f6a345ce1cd9510b59de430ae8addfa41ee6ef3c66b5fad",
+  "author": "CSWork"
+}

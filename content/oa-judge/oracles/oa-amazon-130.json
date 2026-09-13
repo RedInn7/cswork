@@ -1,0 +1,654 @@
+[
+  {
+    "input": "9AacB\n7\nBBBBa\nBBBB9\nB9ca\nAa999\nB9A\nB\nB9A\n",
+    "expectedOutput": "Aa999 B B9A B9A B9ca BBBB9 BBBBa\n"
+  },
+  {
+    "input": "yYaAbBl\n6\nYay\nyaY\nlyab\nlyab\nb\nbay\n",
+    "expectedOutput": "yaY Yay b bay lyab lyab\n"
+  },
+  {
+    "input": "ba\n5\n-\na\nb\nba\n-\n",
+    "expectedOutput": "- - b ba a\n"
+  },
+  {
+    "input": "09aZAb\n3\n-\n-\na\n",
+    "expectedOutput": "- - a\n"
+  },
+  {
+    "input": "bA\n1\n-\n",
+    "expectedOutput": "-\n"
+  },
+  {
+    "input": "0ZA9b\n2\n9Z0b\nA\n",
+    "expectedOutput": "A 9Z0b\n"
+  },
+  {
+    "input": "9AZ0ba\n3\n-\naa99\n-\n",
+    "expectedOutput": "- - aa99\n"
+  },
+  {
+    "input": "Z9aAb0\n3\n0A90\nAa\na9bZ0Z\n",
+    "expectedOutput": "a9bZ0Z Aa 0A90\n"
+  },
+  {
+    "input": "AZ9a0b\n7\n0AZ0b0\nAA90a\naA09ab\n9b\n9bb9\nbaAb\nbA\n",
+    "expectedOutput": "AA90a 9b 9bb9 aA09ab 0AZ0b0 bA baAb\n"
+  },
+  {
+    "input": "ZA09\n5\nZA99A\nZ900\n09Z9\n9AAZ\nZ0A0\n",
+    "expectedOutput": "ZA99A Z0A0 Z900 09Z9 9AAZ\n"
+  },
+  {
+    "input": "ZAb\n6\nbb\nZbAbZ\n-\nAZbbbZ\nAAAZZb\nA\n",
+    "expectedOutput": "- ZbAbZ A AZbbbZ AAAZZb bb\n"
+  },
+  {
+    "input": "ZbA0a\n4\nZZbAZ\naA0\n0Z\n0aAa\n",
+    "expectedOutput": "ZZbAZ 0Z 0aAa aA0\n"
+  },
+  {
+    "input": "Z9Ab\n5\nbZAA9\nA99Z\nA\n9AZAAb\nZ99\n",
+    "expectedOutput": "Z99 9AZAAb A A99Z bZAA9\n"
+  },
+  {
+    "input": "ab\n7\naabbba\n-\n-\nabbbab\n-\nbab\nbabba\n",
+    "expectedOutput": "- - - aabbba abbbab bab babba\n"
+  },
+  {
+    "input": "A\n5\nAAA\nAAA\nAAAAA\nAAAAA\nAAAA\n",
+    "expectedOutput": "AAA AAA AAAA AAAAA AAAAA\n"
+  },
+  {
+    "input": "90AZa\n4\n00\nA9A9\nZA9a9\n-\n",
+    "expectedOutput": "- 00 A9A9 ZA9a9\n"
+  },
+  {
+    "input": "9\n7\n9\n9\n99999\n99\n-\n99999\n999999\n",
+    "expectedOutput": "- 9 9 99 99999 99999 999999\n"
+  },
+  {
+    "input": "9ZbaA0\n3\n9b\n900\n9\n",
+    "expectedOutput": "9 9b 900\n"
+  },
+  {
+    "input": "Ab0Z\n5\n-\nAAZ\nAbbZ00\nb0b\nZbA0\n",
+    "expectedOutput": "- AAZ AbbZ00 b0b ZbA0\n"
+  },
+  {
+    "input": "Zba09A\n5\n0baAZ\n9b0A0a\nZ\n9\nZab9\n",
+    "expectedOutput": "Z Zab9 0baAZ 9 9b0A0a\n"
+  },
+  {
+    "input": "A9\n2\n9AA9A\n9\n",
+    "expectedOutput": "9 9AA9A\n"
+  },
+  {
+    "input": "aA9b\n6\nAAAA\nAb\nAAb9\na9a9b\n99\n9A9Aba\n",
+    "expectedOutput": "a9a9b AAAA AAb9 Ab 9A9Aba 99\n"
+  },
+  {
+    "input": "9ZAab0\n4\nA\naAaa\nZ\n-\n",
+    "expectedOutput": "- Z A aAaa\n"
+  },
+  {
+    "input": "ab\n8\nabaa\naa\n-\nb\na\n-\nbaa\nb\n",
+    "expectedOutput": "- - a aa abaa b b baa\n"
+  },
+  {
+    "input": "AbZa\n3\nZbZbaZ\nZb\nZbAZA\n",
+    "expectedOutput": "Zb ZbAZA ZbZbaZ\n"
+  },
+  {
+    "input": "Z9\n1\n99ZZ9\n",
+    "expectedOutput": "99ZZ9\n"
+  },
+  {
+    "input": "aAb0\n1\nbAabbA\n",
+    "expectedOutput": "bAabbA\n"
+  },
+  {
+    "input": "bA\n7\n-\n-\nAbAA\nbAAA\nAA\nAb\nb\n",
+    "expectedOutput": "- - b bAAA Ab AbAA AA\n"
+  },
+  {
+    "input": "9bA\n2\nA9A9\nb9A\n",
+    "expectedOutput": "b9A A9A9\n"
+  },
+  {
+    "input": "90AaZb\n2\nb9\n-\n",
+    "expectedOutput": "- b9\n"
+  },
+  {
+    "input": "Zab0A\n2\nb\nA0b0b\n",
+    "expectedOutput": "b A0b0b\n"
+  },
+  {
+    "input": "9Zb0\n3\n-\n9b0\nZ\n",
+    "expectedOutput": "- 9b0 Z\n"
+  },
+  {
+    "input": "9bZaA\n3\n9\n-\n-\n",
+    "expectedOutput": "- - 9\n"
+  },
+  {
+    "input": "Zb\n5\nZbZbb\nbZb\nbbZ\nZb\nZZb\n",
+    "expectedOutput": "ZZb Zb ZbZbb bZb bbZ\n"
+  },
+  {
+    "input": "b9\n8\n9\n9\n-\nbb\nb99b9b\n9bb9\n-\nbb9b9\n",
+    "expectedOutput": "- - bb bb9b9 b99b9b 9 9 9bb9\n"
+  },
+  {
+    "input": "bZ0a9\n3\naZ\naa\nbaZb\n",
+    "expectedOutput": "baZb aZ aa\n"
+  },
+  {
+    "input": "bA\n6\n-\nAbbbbb\nbbAbA\nbbbA\n-\nbbAbA\n",
+    "expectedOutput": "- - bbbA bbAbA bbAbA Abbbbb\n"
+  },
+  {
+    "input": "9bZ\n6\nb9bbZb\nb\nbZ99Z\nZ99bbZ\n9b\nbZb\n",
+    "expectedOutput": "9b b b9bbZb bZ99Z bZb Z99bbZ\n"
+  },
+  {
+    "input": "9Z\n7\n9\n999ZZ\nZ9999\n99\n9Z9ZZ\n9\n9ZZ9\n",
+    "expectedOutput": "9 9 99 999ZZ 9Z9ZZ 9ZZ9 Z9999\n"
+  },
+  {
+    "input": "a0Zb9\n7\n09bba\n0a0\n-\nb09b\nbaZ9\nbZ9\nb\n",
+    "expectedOutput": "- 0a0 09bba b baZ9 b09b bZ9\n"
+  },
+  {
+    "input": "0\n8\n00\n000\n00000\n00000\n00\n-\n000000\n000000\n",
+    "expectedOutput": "- 00 00 000 00000 00000 000000 000000\n"
+  },
+  {
+    "input": "9A0ab\n1\n-\n",
+    "expectedOutput": "-\n"
+  },
+  {
+    "input": "09AZ\n1\n-\n",
+    "expectedOutput": "-\n"
+  },
+  {
+    "input": "bAZ9a0\n3\nb9\nA0Zba\nbb0Z0\n",
+    "expectedOutput": "bb0Z0 b9 A0Zba\n"
+  },
+  {
+    "input": "9aZ0\n5\n9\n9\na0Za\naa\nZa9\n",
+    "expectedOutput": "9 9 aa a0Za Za9\n"
+  },
+  {
+    "input": "0\n7\n00\n0\n0\n00\n000000\n-\n00000\n",
+    "expectedOutput": "- 0 0 00 00 00000 000000\n"
+  },
+  {
+    "input": "0AaZ9\n3\nA9\n9AZZ\nA0Z\n",
+    "expectedOutput": "A0Z A9 9AZZ\n"
+  },
+  {
+    "input": "9ZaAb\n2\nZ\nA\n",
+    "expectedOutput": "Z A\n"
+  },
+  {
+    "input": "aAbZ9\n2\nZb\naaaa\n",
+    "expectedOutput": "aaaa Zb\n"
+  },
+  {
+    "input": "b09Z\n3\nZb\nbZ99Z0\n9Z9\n",
+    "expectedOutput": "bZ99Z0 9Z9 Zb\n"
+  },
+  {
+    "input": "Z\n1\nZZZZZ\n",
+    "expectedOutput": "ZZZZZ\n"
+  },
+  {
+    "input": "abZ09A\n5\nZZAZ\n-\na90Abb\nab\nZb0Aa\n",
+    "expectedOutput": "- ab a90Abb Zb0Aa ZZAZ\n"
+  },
+  {
+    "input": "aA09\n5\nAa\nA90\n-\n-\nA\n",
+    "expectedOutput": "- - A Aa A90\n"
+  },
+  {
+    "input": "09ZA\n2\nA0009\nAA00A9\n",
+    "expectedOutput": "A0009 AA00A9\n"
+  },
+  {
+    "input": "a\n5\naaaa\naaa\na\naaaaaa\na\n",
+    "expectedOutput": "a a aaa aaaa aaaaaa\n"
+  },
+  {
+    "input": "Z\n5\nZZZZZ\nZ\nZZ\n-\nZZZZZ\n",
+    "expectedOutput": "- Z ZZ ZZZZZ ZZZZZ\n"
+  },
+  {
+    "input": "bA0Z\n5\n00AZZ\n0ZZ\nA0AA0\n0A00\n-\n",
+    "expectedOutput": "- A0AA0 0A00 00AZZ 0ZZ\n"
+  },
+  {
+    "input": "0Z\n2\nZZ\n0Z\n",
+    "expectedOutput": "0Z ZZ\n"
+  },
+  {
+    "input": "a\n7\n-\naaaaaa\naaa\naaaa\naaaaaa\n-\naaaaaa\n",
+    "expectedOutput": "- - aaa aaaa aaaaaa aaaaaa aaaaaa\n"
+  },
+  {
+    "input": "ZA\n4\nA\n-\n-\nZAZAAZ\n",
+    "expectedOutput": "- - ZAZAAZ A\n"
+  },
+  {
+    "input": "Aa09bZ\n1\n-\n",
+    "expectedOutput": "-\n"
+  },
+  {
+    "input": "b\n7\nbbbbbb\nbbbbb\n-\nb\nb\nbbbb\n-\n",
+    "expectedOutput": "- - b b bbbb bbbbb bbbbbb\n"
+  },
+  {
+    "input": "9Z\n8\nZ\n-\nZZ9\nZ9ZZ\n9\nZ\n99Z99\nZ99Z\n",
+    "expectedOutput": "- 9 99Z99 Z Z Z99Z Z9ZZ ZZ9\n"
+  },
+  {
+    "input": "Zab9\n3\n99b\nZ\nZ\n",
+    "expectedOutput": "Z Z 99b\n"
+  },
+  {
+    "input": "9aA\n8\naa\nAa\naa\na9Aa\n-\nA\naaA9\na\n",
+    "expectedOutput": "- a a9Aa aa aa aaA9 A Aa\n"
+  },
+  {
+    "input": "Zba9\n2\na9Z\nZZ\n",
+    "expectedOutput": "ZZ a9Z\n"
+  },
+  {
+    "input": "9Zb\n8\nb9\nbbbZ9\n99bb99\nb9\nZZ9b\n99Z\n-\n9Z9Z\n",
+    "expectedOutput": "- 99Z 99bb99 9Z9Z ZZ9b b9 b9 bbbZ9\n"
+  },
+  {
+    "input": "A0aZ9\n7\na\nZ\na\nA\nAAZ\n0A99A0\n-\n",
+    "expectedOutput": "- A AAZ 0A99A0 a a Z\n"
+  },
+  {
+    "input": "b0aZA9\n1\n-\n",
+    "expectedOutput": "-\n"
+  },
+  {
+    "input": "0Aba\n6\nabAa0A\naab0A\naba0A\nbAAa0A\na00aAb\nbbA\n",
+    "expectedOutput": "bAAa0A bbA a00aAb abAa0A aba0A aab0A\n"
+  },
+  {
+    "input": "AaZ\n8\na\n-\n-\n-\nAAZZZ\nAaaZZ\nZaAZ\na\n",
+    "expectedOutput": "- - - AAZZZ AaaZZ a a ZaAZ\n"
+  },
+  {
+    "input": "abAZ9\n5\naa9A\n9A9AZ\nbAa\n9bbZaa\nbZ\n",
+    "expectedOutput": "aa9A bAa bZ 9bbZaa 9A9AZ\n"
+  },
+  {
+    "input": "A\n5\nA\nAAAA\nA\nAAAA\nAA\n",
+    "expectedOutput": "A A AA AAAA AAAA\n"
+  },
+  {
+    "input": "Ab9a\n4\n9Ab\nAaba\nAaAbb\nA9\n",
+    "expectedOutput": "A9 AaAbb Aaba 9Ab\n"
+  },
+  {
+    "input": "0\n2\n-\n0000\n",
+    "expectedOutput": "- 0000\n"
+  },
+  {
+    "input": "AbaZ9\n3\nZA\nabAbAa\naaba\n",
+    "expectedOutput": "abAbAa aaba ZA\n"
+  },
+  {
+    "input": "9AZa\n4\n9Z\n9a\nA9Zaa\nZa9A\n",
+    "expectedOutput": "9Z 9a A9Zaa Za9A\n"
+  },
+  {
+    "input": "Z0A9\n1\n99A0\n",
+    "expectedOutput": "99A0\n"
+  },
+  {
+    "input": "9ZabA\n3\nA\nbAAa\nA9\n",
+    "expectedOutput": "bAAa A A9\n"
+  },
+  {
+    "input": "a9ZA\n6\naZA9A\n-\n-\nZ9aZa9\nZAAaZ\nAAaZ9\n",
+    "expectedOutput": "- - aZA9A Z9aZa9 ZAAaZ AAaZ9\n"
+  },
+  {
+    "input": "A0\n3\nA0\n0AA0A0\nA\n",
+    "expectedOutput": "A A0 0AA0A0\n"
+  },
+  {
+    "input": "Ab\n3\nAA\nAbbAb\nbbAAb\n",
+    "expectedOutput": "AA AbbAb bbAAb\n"
+  },
+  {
+    "input": "bA\n3\nbbb\nAAbAA\nbbAb\n",
+    "expectedOutput": "bbb bbAb AAbAA\n"
+  },
+  {
+    "input": "b9AZ\n2\n-\n9AAAAb\n",
+    "expectedOutput": "- 9AAAAb\n"
+  },
+  {
+    "input": "0ab\n3\nbbba0\nabbb\n-\n",
+    "expectedOutput": "- abbb bbba0\n"
+  },
+  {
+    "input": "AZb09a\n5\n9a09Za\n99a99\n0AaAaZ\nZb\n-\n",
+    "expectedOutput": "- Zb 0AaAaZ 99a99 9a09Za\n"
+  },
+  {
+    "input": "b\n2\nbbb\nbb\n",
+    "expectedOutput": "bb bbb\n"
+  },
+  {
+    "input": "AZab90\n7\n0\nZAAZb\nbbab\na90A\n990a99\na\nba\n",
+    "expectedOutput": "ZAAZb a a90A ba bbab 990a99 0\n"
+  },
+  {
+    "input": "09abAZ\n4\n9Z\naZZb\n0aa\n0Zaab\n",
+    "expectedOutput": "0aa 0Zaab 9Z aZZb\n"
+  },
+  {
+    "input": "A\n7\nAAAAA\n-\nA\nAAA\n-\nA\nAAAAAA\n",
+    "expectedOutput": "- - A A AAA AAAAA AAAAAA\n"
+  },
+  {
+    "input": "bAZ0\n6\n0Z0\nAZA\nbb\nZZ0Ab\n0ZAb\n-\n",
+    "expectedOutput": "- bb AZA ZZ0Ab 0ZAb 0Z0\n"
+  },
+  {
+    "input": "AZ90\n2\nZ90Z00\n-\n",
+    "expectedOutput": "- Z90Z00\n"
+  },
+  {
+    "input": "aZAb\n3\nAZ\nZZbZbA\nAab\n",
+    "expectedOutput": "ZZbZbA Aab AZ\n"
+  },
+  {
+    "input": "Ab9\n5\nAA\n-\n-\n9\n9999b\n",
+    "expectedOutput": "- - AA 9 9999b\n"
+  },
+  {
+    "input": "AaZ0\n3\nAZ0aAa\nA\naZaZAa\n",
+    "expectedOutput": "A AZ0aAa aZaZAa\n"
+  },
+  {
+    "input": "b0\n5\nbb\n0bbb\nbbbb\nbb\nbbb0b\n",
+    "expectedOutput": "bb bb bbbb bbb0b 0bbb\n"
+  },
+  {
+    "input": "ba0A9Z\n8\n-\nbZ909\n00\n-\n9b9a\n0\nZ0Z\n-\n",
+    "expectedOutput": "- - - bZ909 0 00 9b9a Z0Z\n"
+  },
+  {
+    "input": "b0a9ZA\n2\n9AAAbb\nbZ9\n",
+    "expectedOutput": "bZ9 9AAAbb\n"
+  },
+  {
+    "input": "90bZa\n3\n0\na9\n0b0\n",
+    "expectedOutput": "0 0b0 a9\n"
+  },
+  {
+    "input": "9A\n7\n99A9\nA\nA\nAA9A9\nAAAAA9\n-\n99A\n",
+    "expectedOutput": "- 99A 99A9 A A AA9A9 AAAAA9\n"
+  },
+  {
+    "input": "90b\n2\n0\nb9b0b\n",
+    "expectedOutput": "0 b9b0b\n"
+  },
+  {
+    "input": "AZa09\n8\nA\nA\n-\nAaa\nZaAa\nA9a0\n-\n-\n",
+    "expectedOutput": "- - - A A Aaa A9a0 ZaAa\n"
+  },
+  {
+    "input": "Z\n2\n-\nZZZZZ\n",
+    "expectedOutput": "- ZZZZZ\n"
+  },
+  {
+    "input": "Za0A9\n5\n0a9aa\n-\n9Z0\naa9ZZ\n0Z\n",
+    "expectedOutput": "- aa9ZZ 0Z 0a9aa 9Z0\n"
+  },
+  {
+    "input": "0a\n8\naa\n00\n-\n-\n0a000a\n0a0\n00a0\na\n",
+    "expectedOutput": "- - 00 00a0 0a0 0a000a a aa\n"
+  },
+  {
+    "input": "Z\n6\nZZ\nZZ\n-\nZZZZZZ\nZZ\nZZ\n",
+    "expectedOutput": "- ZZ ZZ ZZ ZZ ZZZZZZ\n"
+  },
+  {
+    "input": "b0a\n6\nbb0\n-\n-\nab0ab\n0a\n-\n",
+    "expectedOutput": "- - - bb0 0a ab0ab\n"
+  },
+  {
+    "input": "A\n3\nAAA\nAAAAAA\nAA\n",
+    "expectedOutput": "AA AAA AAAAAA\n"
+  },
+  {
+    "input": "bA09\n1\n90\n",
+    "expectedOutput": "90\n"
+  },
+  {
+    "input": "baZA0\n3\nZ\na\n-\n",
+    "expectedOutput": "- a Z\n"
+  },
+  {
+    "input": "0Z\n8\nZ\n000\n00Z00\n00\nZ\nZ\n0ZZ0ZZ\n000Z\n",
+    "expectedOutput": "00 000 000Z 00Z00 0ZZ0ZZ Z Z Z\n"
+  },
+  {
+    "input": "0a\n8\n0\n0aaaa\n00a\n00aa\n0aa\n00\n0\na0aa0\n",
+    "expectedOutput": "0 0 00 00a 00aa 0aa 0aaaa a0aa0\n"
+  },
+  {
+    "input": "aZ\n2\n-\nZaZZZ\n",
+    "expectedOutput": "- ZaZZZ\n"
+  },
+  {
+    "input": "0\n2\n000\n000\n",
+    "expectedOutput": "000 000\n"
+  },
+  {
+    "input": "ZA0ba\n6\n-\n0Z\n-\naZa\nbZaZa0\n0aab\n",
+    "expectedOutput": "- - 0Z 0aab bZaZa0 aZa\n"
+  },
+  {
+    "input": "aAb\n1\nb\n",
+    "expectedOutput": "b\n"
+  },
+  {
+    "input": "9a\n5\naaa99a\n99aaaa\n9a9\na99a\n99aa\n",
+    "expectedOutput": "99aa 99aaaa 9a9 a99a aaa99a\n"
+  },
+  {
+    "input": "A0Zb9a\n3\nZZb\n000A9\nZ\n",
+    "expectedOutput": "000A9 Z ZZb\n"
+  },
+  {
+    "input": "ZAba09\n4\n0AZA0\n9aZ\naZAA\nbAZA\n",
+    "expectedOutput": "bAZA aZAA 0AZA0 9aZ\n"
+  },
+  {
+    "input": "Z0b\n6\nbZZZb\nb\n00b0Z\n-\nZb\n0\n",
+    "expectedOutput": "- Zb 0 00b0Z b bZZZb\n"
+  },
+  {
+    "input": "Aab9Z0\n3\n-\n-\nZ99b\n",
+    "expectedOutput": "- - Z99b\n"
+  },
+  {
+    "input": "09bZA\n3\n0A\nZZ\n9A9\n",
+    "expectedOutput": "0A 9A9 ZZ\n"
+  },
+  {
+    "input": "0Z9abA\n8\nbA\n9ZbZ\nZA99A9\nA\n0ZbZ00\nZZ9ZbZ\n-\n-\n",
+    "expectedOutput": "- - 0ZbZ00 ZZ9ZbZ ZA99A9 9ZbZ bA A\n"
+  },
+  {
+    "input": "A09bZa\n6\na\na0\na9A\nA0\naZ\nA\n",
+    "expectedOutput": "A A0 a a0 a9A aZ\n"
+  },
+  {
+    "input": "a0A9Z\n5\n-\n-\n9ZA9Z9\n9Z90A\n0a\n",
+    "expectedOutput": "- - 0a 9ZA9Z9 9Z90A\n"
+  },
+  {
+    "input": "b0A9Za\n8\n9ZAZZa\nAA9ZZa\n-\n0ZaZ0Z\nbaZaa\n9AbZZ\na0\n0bAA\n",
+    "expectedOutput": "- baZaa 0bAA 0ZaZ0Z AA9ZZa 9AbZZ 9ZAZZa a0\n"
+  },
+  {
+    "input": "bZ0aA\n5\nA\n00bZ\nZ\nZbbZZ\n0Z\n",
+    "expectedOutput": "Z ZbbZZ 0Z 00bZ A\n"
+  },
+  {
+    "input": "9\n6\n9999\n9999\n9\n9\n9\n999999\n",
+    "expectedOutput": "9 9 9 9999 9999 999999\n"
+  },
+  {
+    "input": "A0Zb\n4\nAZb00A\nZ\nAZ\nAZ\n",
+    "expectedOutput": "AZ AZ AZb00A Z\n"
+  },
+  {
+    "input": "0bZ9aA\n3\nb0A\na\nbZabb\n",
+    "expectedOutput": "b0A bZabb a\n"
+  },
+  {
+    "input": "9a\n4\naaaaaa\n-\n9\n-\n",
+    "expectedOutput": "- - 9 aaaaaa\n"
+  },
+  {
+    "input": "b09Za\n8\nZ\n9Z0a\n-\n99b0\n-\nZZZ0\n00000\naaZ0ba\n",
+    "expectedOutput": "- - 00000 99b0 9Z0a Z ZZZ0 aaZ0ba\n"
+  },
+  {
+    "input": "AZ\n4\nAA\nZAAAA\nZAZAAA\nAZAAAA\n",
+    "expectedOutput": "AA AZAAAA ZAAAA ZAZAAA\n"
+  },
+  {
+    "input": "bZA\n6\nbA\nAZ\nAbZZ\nZZZ\nAbZZbZ\n-\n",
+    "expectedOutput": "- bA ZZZ AbZZ AbZZbZ AZ\n"
+  },
+  {
+    "input": "ZaA0\n3\n-\n0aAa\na0Aa\n",
+    "expectedOutput": "- a0Aa 0aAa\n"
+  },
+  {
+    "input": "baAZ90\n8\nZ009\naZaZ0a\n9a\nAA0\n9\nZa9\nA\nZaa\n",
+    "expectedOutput": "aZaZ0a A AA0 Zaa Za9 Z009 9 9a\n"
+  },
+  {
+    "input": "Z0bA\n1\nAZZZ\n",
+    "expectedOutput": "AZZZ\n"
+  },
+  {
+    "input": "bA\n7\nbA\nbAAAb\nbAA\nAb\nAAAAAA\nAbb\nAAbAbA\n",
+    "expectedOutput": "bA bAA bAAAb Ab Abb AAbAbA AAAAAA\n"
+  },
+  {
+    "input": "ab0Z\n5\nZ\n0\na\n0ZbZ0a\n0baa\n",
+    "expectedOutput": "a 0 0baa 0ZbZ0a Z\n"
+  },
+  {
+    "input": "09ZAab\n1\naZA00a\n",
+    "expectedOutput": "aZA00a\n"
+  },
+  {
+    "input": "90aAbZ\n6\nAa9aa\n9\n-\n-\nZ9aA\n-\n",
+    "expectedOutput": "- - - 9 Aa9aa Z9aA\n"
+  },
+  {
+    "input": "bAZ0a\n2\n0Z\nbZ0\n",
+    "expectedOutput": "bZ0 0Z\n"
+  },
+  {
+    "input": "b\n2\nb\nbbbbbb\n",
+    "expectedOutput": "b bbbbbb\n"
+  },
+  {
+    "input": "9Z\n4\nZ99\n99Z\n-\n9Z99Z\n",
+    "expectedOutput": "- 99Z 9Z99Z Z99\n"
+  },
+  {
+    "input": "bZ0A9a\n3\n09A0\n99\n-\n",
+    "expectedOutput": "- 09A0 99\n"
+  },
+  {
+    "input": "abZ9\n4\nb9\n99\n9\nZabaZa\n",
+    "expectedOutput": "b9 ZabaZa 9 99\n"
+  },
+  {
+    "input": "Z09ab\n7\n99bbb0\n0Z90\n090b\nbba9ZZ\n0\naba0\nZ9Z\n",
+    "expectedOutput": "Z9Z 0 0Z90 090b 99bbb0 aba0 bba9ZZ\n"
+  },
+  {
+    "input": "9Z\n8\n9Z9\n99ZZ9Z\n9ZZ9\n9Z9ZZZ\nZ999Z\n99ZZ\nZZ99ZZ\nZ999Z\n",
+    "expectedOutput": "99ZZ 99ZZ9Z 9Z9 9Z9ZZZ 9ZZ9 Z999Z Z999Z ZZ99ZZ\n"
+  },
+  {
+    "input": "Za\n5\n-\naZ\nZ\nZa\naZaaa\n",
+    "expectedOutput": "- Z Za aZ aZaaa\n"
+  },
+  {
+    "input": "Zba0\n7\naZZab\naZa0\naZ0abZ\naa000a\n0Z\n0aa\naab\n",
+    "expectedOutput": "aZZab aZa0 aZ0abZ aab aa000a 0Z 0aa\n"
+  },
+  {
+    "input": "a\n1\n-\n",
+    "expectedOutput": "-\n"
+  },
+  {
+    "input": "aA90bZ\n3\n-\nAabaA\nbAa9a0\n",
+    "expectedOutput": "- AabaA bAa9a0\n"
+  },
+  {
+    "input": "ZbAa0\n2\n0\nZaA\n",
+    "expectedOutput": "ZaA 0\n"
+  },
+  {
+    "input": "ZA0a\n8\n-\nAaZ00\nAAaaA\na00Z\nZ\nA00Z\n0a\nZaa0\n",
+    "expectedOutput": "- Z Zaa0 AAaaA A00Z AaZ00 0a a00Z\n"
+  },
+  {
+    "input": "Z0a9b\n6\nZ\naa009\n9a0Z\nZZZa0b\n-\na\n",
+    "expectedOutput": "- Z ZZZa0b a aa009 9a0Z\n"
+  },
+  {
+    "input": "ba0A\n1\nAbaa0a\n",
+    "expectedOutput": "Abaa0a\n"
+  },
+  {
+    "input": "AZ0b\n5\n-\nZZ0\n-\n0Z\nAb\n",
+    "expectedOutput": "- - Ab ZZ0 0Z\n"
+  },
+  {
+    "input": "0Z9A\n3\nA\n00A\n-\n",
+    "expectedOutput": "- 00A A\n"
+  },
+  {
+    "input": "Z9b0Aa\n2\nZ00Z0\n0\n",
+    "expectedOutput": "Z00Z0 0\n"
+  },
+  {
+    "input": "Z\n2\nZZ\nZZ\n",
+    "expectedOutput": "ZZ ZZ\n"
+  },
+  {
+    "input": "A90ab\n4\nbaA\nAaA\nb9b09a\n-\n",
+    "expectedOutput": "- AaA b9b09a baA\n"
+  },
+  {
+    "input": "0ba\n1\na0baa\n",
+    "expectedOutput": "a0baa\n"
+  },
+  {
+    "input": "a9\n2\n9a9a\naa9a\n",
+    "expectedOutput": "aa9a 9a9a\n"
+  }
+]

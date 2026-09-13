@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-44",
+  "title": "按质数步长向后跳跃",
+  "explanation": "## 思路\n\n筛出小于n的质数并存成大整数位集。待处理位置使用相对当前下标的位集表示：截取不超过跳长的质数位并合入，随后右移跳过已处理位置；避免每次把整段质数左移到绝对下标。\n\n## 正确性\n\n只有允许的质数步长会产生新位置，所以不会误报。每条边严格向后，递增处理已达位置是拓扑传播；从0可达的所有路径按长度归纳最终都会被标记。\n\n## 复杂度\n\n筛法O(n log log n)；位集传播最坏O(n²/W)机器字操作，空间O(n)，W为大整数内部字位数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if n==1:return '1'\n    sieve=bytearray(b'\\1')*n;sieve[0]=sieve[1]=0\n    for p in range(2,int(n**0.5)+1):\n        if sieve[p]:sieve[p*p:n:p]=b'\\0'*(((n-1-p*p)//p)+1)\n    packed=bytearray((n+7)//8)\n    for i in range(2,n):\n        if sieve[i]:packed[i//8]|=1<<(i%8)\n    primes=int.from_bytes(packed,'little');pending=1;i=0\n    while pending:\n        if pending&1==0:\n            gap=(pending&-pending).bit_length()-1;pending>>=gap;i+=gap\n        if i==n-1:return '1'\n        bound=min(a[i],n-1-i)\n        if bound>=2:pending|=primes&((1<<(bound+1))-1)\n        if pending.bit_length()==n-i:return '1'\n        pending>>=1;i+=1\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#44-jump-game-with-prime-step-rule",
+  "sourceContentHash": "e24b03122168a9ca443e11a0d6dbf5f8cef4de01fcb94ea89b81aa4cbe02cecb",
+  "author": "CSWork"
+}

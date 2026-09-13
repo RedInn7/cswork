@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-57",
+  "title": "排除原始角点的区域最大值",
+  "explanation": "## 思路\n\n建立二维区间最大值树。每个区域去角后拆为中间完整矩形与上下边界两段，至多查询三个矩形；原始边界越界就不查该段，不把裁剪后的角误删。\n\n## 正确性\n\n中间行不含任何原始角，上下原始边界行仅须排除左右端点，这三个区域的并集恰好是定义区域。二维树返回各矩形最大值，与本格比较可精确判断，零格直接排除。\n\n## 复杂度\n\n建树O(NM)，每格O(log N log M)查询，空间O(NM)；N、M为行列上取整到2的幂。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);grid=[list(map(int,d[2+i*m:2+(i+1)*m])) for i in range(n)];nr=1;nc=1\n    while nr<n:nr*=2\n    while nc<m:nc*=2\n    tree=[[0]*(2*nc) for _ in range(2*nr)]\n    for i,row in enumerate(grid):\n        for j,v in enumerate(row):tree[nr+i][nc+j]=v\n        for j in range(nc-1,0,-1):tree[nr+i][j]=max(tree[nr+i][j*2],tree[nr+i][j*2+1])\n    for i in range(nr-1,0,-1):\n        for j in range(1,2*nc):tree[i][j]=max(tree[2*i][j],tree[2*i+1][j])\n    def query(top,bottom,left,right):\n        if top>bottom or left>right:return 0\n        top+=nr;bottom+=nr+1;result=0\n        while top<bottom:\n            nodes=[]\n            if top&1:nodes.append(top);top+=1\n            if bottom&1:bottom-=1;nodes.append(bottom)\n            for node in nodes:\n                a,b=left+nc,right+nc+1\n                while a<b:\n                    if a&1:result=max(result,tree[node][a]);a+=1\n                    if b&1:b-=1;result=max(result,tree[node][b])\n                    a//=2;b//=2\n            top//=2;bottom//=2\n        return result\n    found=[]\n    for i in range(n):\n        for j in range(m):\n            v=grid[i][j]\n            if v==0:continue\n            biggest=query(max(0,i-v+1),min(n-1,i+v-1),max(0,j-v),min(m-1,j+v))\n            for row in (i-v,i+v):\n                if 0<=row<n:biggest=max(biggest,query(row,row,max(0,j-v+1),min(m-1,j+v-1)))\n            if biggest<=v:found.append((i,j))\n    return str(len(found))+'\\n'+'\\n'.join(f'{i} {j}' for i,j in found)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#57-regional-maximum-finder",
+  "sourceContentHash": "4360d56cb83bebc64eca7d3e40f2491f19a018f28efd79a8f900e1a6206609d4",
+  "author": "CSWork"
+}

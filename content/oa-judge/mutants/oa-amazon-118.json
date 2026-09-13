@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忘计原字符串",
+    "code": "def solve(d):\n    count={};answer=0\n    for i,c in enumerate(d[0]):answer+=i-count.get(c,0);count[c]=count.get(c,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "相同端点也计",
+    "code": "def solve(d):\n    count={};answer=1\n    for i,c in enumerate(d[0]):answer+=i;count[c]=count.get(c,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

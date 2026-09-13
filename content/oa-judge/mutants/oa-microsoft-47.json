@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不考虑首位反转",
+    "code": "def solve(d):\n    s,t=d;direction=0;same=opposite=0\n    for a,b in zip(s,t):\n        if a==b:continue\n        sign=1 if a>b else -1\n        if not direction:direction=sign\n        elif sign==direction:same+=1\n        else:opposite+=1\n    return str(same if direction else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "首位交换不计次数",
+    "code": "def solve(d):\n    s,t=d;direction=0;same=opposite=0\n    for a,b in zip(s,t):\n        if a==b:continue\n        sign=1 if a>b else -1\n        if not direction:direction=sign\n        elif sign==direction:same+=1\n        else:opposite+=1\n    return str(min(same,opposite) if direction else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

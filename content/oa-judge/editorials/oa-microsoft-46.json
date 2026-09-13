@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-46",
+  "title": "删除最少骨牌形成匹配链",
+  "explanation": "## 思路\n\ndp[v]保存以点数v结尾的最长合法子序列。遇到(l,r)，用旧dp[l]+1更新dp[r]，其余状态不变。\n\n## 正确性\n\n合法子序列若使用当前骨牌，其前一块必以l结尾；不使用当前骨牌则保留旧状态。所有合法选择都在递推中，最长保留数与最少删除数互补。\n\n## 复杂度\n\n时间O(N)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);dp=[0]*7\n    for i in range(1,len(d),2):\n        left,right=int(d[i]),int(d[i+1]);candidate=dp[left]+1;dp[right]=max(dp[right],candidate)\n    return str(n-max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#46-minimum-domino-removals",
+  "sourceContentHash": "ba0a219a29c35fbe6f8e7f4b0a651f57860b6ed27f56914f2e0535371d848b7f",
+  "author": "CSWork"
+}

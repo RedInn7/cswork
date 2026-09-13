@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查紧邻前置",
+    "code": "def solve(d):\n    n=int(d[0]);required=list(map(int,d[1:n+1]));position=[0]*(n+1)\n    for i in range(n):position[int(d[n+1+i])]=i\n    maximum=-1;answer=0\n    for v in required:\n        answer+=position[v]<maximum;maximum=position[v]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误统计位置不一致",
+    "code": "def solve(d):\n    n=int(d[0]);required=list(map(int,d[1:n+1]));position=[0]*(n+1)\n    for i in range(n):position[int(d[n+1+i])]=i\n    maximum=-1;answer=0\n    for v in required:\n        answer+=position[v]<maximum;maximum=max(maximum,position[v])\n    return str(sum(position[v]!=i for i,v in enumerate(required)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-63",
+  "title": "相邻淘汰赛的每轮晋级名单",
+  "explanation": "## 思路\n\n每轮两两取最小值，落单元素直接保留，记录新名单并继续。\n\n## 正确性\n\n每对的最小排名就是该场胜者，按原顺序生成符合下一轮安排。归纳应用各轮规则得到全部正确名单；总人数按约半数递减，处理总量为线性。\n\n## 复杂度\n\n时间O(n)，空间O(n)，含全部输出名单。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));rounds=[]\n    while len(a)>1:\n        a=[min(a[i:i+2]) for i in range(0,len(a),2)];rounds.append(str(len(a))+' '+' '.join(map(str,a)))\n    return str(len(rounds))+'\\n'+'\\n'.join(rounds)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#63-tournament-rounds-by-rank",
+  "sourceContentHash": "f176577403c499c4ecf6c87163d8eed4658c2387e464fc0d12d1705da3075721",
+  "author": "CSWork"
+}

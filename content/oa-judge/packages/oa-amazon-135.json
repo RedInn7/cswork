@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-amazon-135",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "任意分配游戏所需的最小统一硬盘容量",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Amazon"
+    ],
+    "description": "把全部游戏分给N个孩子，每个游戏不可拆分，每个孩子至少一个。允许任意分组，不要求原数组连续。所有硬盘容量相同，求能容纳分配的最小容量。来源无规模，本站采用可精确求解的小规模，不以连续划分替代任意分配。\n\n标准I/O与题解由本站独立编写；注明本站的范围不是来源原约束。",
+    "input": "第一行m N，第二行m个游戏大小。本站1≤N≤m≤15，1≤大小≤10⁹；这些上界不是来源提供的约束。",
+    "output": "输出一个整数答案。",
+    "explanation": "样例1：分为6+7、12+1、10，最大13；容量12时12独占，10最多配1，6与7又不能同盘，至少需要4盘，最优13。样例2：必有一个孩子拿两个8，容量16。样例3：每人一个，容量取最大9。",
+    "hints": [
+      "二分容量，用子集DP判断能否装入至多N个箱子。状态保存装完该子集的最少箱数，以及此箱数下最后一箱最小用量；枚举最后加入哪个游戏。"
+    ],
+    "timeLimit": 10,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5 3\n6 7 10 12 1\n",
+      "expectedOutput": "13\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3 2\n8 8 8\n",
+      "expectedOutput": "16\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3 3\n3 9 2\n",
+      "expectedOutput": "9\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "15 8\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+      "expectedOutput": "2000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "15 3\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "15 15\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+      "expectedOutput": "1000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "15 1\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+      "expectedOutput": "15000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "5 5\n9 9 2 2 12\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "4 1\n10 9 4 5\n",
+      "expectedOutput": "28\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "3 1\n12 10 7\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "7 3\n12 11 1 11 7 5 10\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "7 5\n3 2 3 8 6 9 10\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "1 1\n12\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "2 2\n7 12\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "4 4\n9 6 5 11\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "2 1\n5 6\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "1 1\n7\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "7 1\n3 4 7 1 8 8 6\n",
+      "expectedOutput": "37\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "6 4\n2 1 6 2 10 2\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "5 1\n4 9 8 10 3\n",
+      "expectedOutput": "34\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "2 1\n10 7\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "2 1\n5 4\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "7 2\n10 11 12 6 1 3 3\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "3 1\n9 2 11\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "5 5\n3 10 5 3 12\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "6 4\n10 3 4 1 12 12\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "5 1\n4 5 4 3 1\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "2 1\n7 7\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "5 1\n3 6 12 5 4\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "3 3\n12 6 10\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "5 2\n5 8 11 11 8\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-125",
+  "title": "中段单一字符的特殊DNA子串",
+  "explanation": "## 思路\n\n游程编码。一个长度L的同字符段内部贡献L(L−1)/2。不同首尾与中间字符的情形，恰好对应三个连续游程且两侧字符相同，每个中间段贡献1。\n\n## 正确性证明\n\n完全同字符子串全由段内计数得到。其他合法子串的中间必须是完整的单一游程，首尾只能各取相邻段靠近它的一个字符；两侧相同才成立且没有其他选择。两类不相交，覆盖全部合法子串。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    runs=[]\n    for c in d[0]:\n        if runs and runs[-1][0]==c:runs[-1][1]+=1\n        else:runs.append([c,1])\n    answer=sum(n*(n-1)//2 for c,n in runs)\n    answer+=sum(runs[i-1][0]==runs[i+1][0] for i in range(1,len(runs)-1))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#125-count-special-substrings-in-a-dna-sequence",
+  "sourceContentHash": "de499c456a1e7d850ea9d0e34daab7f91708d840141862e0f214414e0ccbf6c2",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-55",
+  "title": "按整词裁剪通知",
+  "explanation": "## 思路\n\n先判断整条是否放得下。否则依次保留前缀单词，只要前缀长度加4不超过K就继续，最终补省略号；一个也放不下则返回三个点。\n\n## 正确性\n\n通知必须是原消息的整词前缀加后缀。前缀长度随保留词数严格增加，最长不超限前缀就是最优；整条消息无需后缀时优先完整显示。\n\n## 复杂度\n\n时间O(消息长度)，空间O(消息长度)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    first,message=d.split('\\n',1);k=int(first)\n    if len(message)<=k:return message\n    chosen=[];length=0\n    for word in message.split(' '):\n        candidate=length+len(word)+(1 if chosen else 0)\n        if candidate+4>k:break\n        chosen.append(word);length=candidate\n    return ' '.join(chosen)+' ...' if chosen else '...'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#55-prepare-notification",
+  "sourceContentHash": "aba032206fd4c2aad48f940b9059300f06beeda4b45e943d197d3249178ae836",
+  "author": "CSWork"
+}

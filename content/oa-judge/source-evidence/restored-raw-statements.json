@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "reason": "Upstream scripts/parse_fastprep.py strips <[^>]+> after replacing code tags, so mathematical comparisons can swallow intervening statement text. Our catalog hash is preserved; these immutable raw files supplement the authored interpretation, not imported solutions.",
+  "items": [
+    {
+      "id": "oa-microsoft-56",
+      "path": "fastprep/Microsoft/microsoft-product-of-xor-of-all-good-pairs.md",
+      "gitBlobSha": "a3dab6858f185fad9e6761ad8962bd5b31ba0e16",
+      "catalogContentHash": "39a34e238a80d2aff58e228270fdf424eee9634fbb4ca99595d70be27df2fb29",
+      "restoredRules": [
+        "All unordered index pairs 0 <= i < j < N contribute A[i] XOR A[j]; multiply modulo 1000000007.",
+        "1 <= T <= 10, 2 <= N <= 100000, 1 <= A[i] <= 3000."
+      ]
+    },
+    {
+      "id": "oa-uber-61",
+      "path": "fastprep/Uber/uber-sum-of-scores-of-built-arrays.md",
+      "gitBlobSha": "eb5dc1ac6936ac9b1937f7b4e9d311ce1a4de0c6",
+      "catalogContentHash": "c4cd59533f22c2c415f2d2534b93904e904af4cdd0c40fa847fdff21a7ca2aad",
+      "restoredRules": [
+        "Each position independently chooses a prime from its inclusive interval; sum all resulting array products modulo 1000000007.",
+        "Every interval contains at least one prime; low <= high, N <= 100000, endpoints <= 1000000."
+      ],
+      "sampleCorrections": [
+        "Source example 2 contains [1,1], which violates the stated prime-existence guarantee; do not treat it as a valid test.",
+        "Source example 3 evaluates to 6350, not 30."
+      ]
+    }
+  ]
+}

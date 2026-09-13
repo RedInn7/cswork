@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-54",
+  "title": "排成升序的最少循环右移",
+  "explanation": "## 思路\n\n已升序则0，否则在循环相邻关系中检查下降边。恰有一条下降边时，在它之后切开可得到升序，右移n−切点次。\n\n## 正确性\n\n循环右移保留所有循环相邻关系，只改变哪条边成为末尾到开头。严格升序的不同元素循环中恰有一条下降边，因此只有一个下降边是可行的充要条件，切点也唯一。\n\n## 复杂度\n\n时间O(n)，空间O(n)保存输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if all(a[i]<a[i+1] for i in range(n-1)):return '0'\n    breaks=[i for i in range(n) if a[i]>a[(i+1)%n]]\n    return str(n-breaks[0]-1) if len(breaks)==1 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#54-minimum-right-shifts-to-sort-the-array",
+  "sourceContentHash": "d1325d7a7ca58c181aed7a7247d9352a70286900c04832f0f49e562b3ab42b06",
+  "author": "CSWork"
+}

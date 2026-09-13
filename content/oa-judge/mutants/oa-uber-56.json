@@ -1,0 +1,10 @@
+[
+  {
+    "name": "整倍目标也多买一次",
+    "code": "def solve(d):\n    n,budget=map(int,d[:2]);base=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));low=min(base);high=min(v*(1+budget//c) for v,c in zip(base,cost))\n    while low<high:\n        target=(low+high+1)//2;spent=0\n        for v,c in zip(base,cost):\n            spent+=max(0,target//v)*c\n            if spent>budget:break\n        if spent<=budget:low=target\n        else:high=target-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "恰好预算不接受",
+    "code": "def solve(d):\n    n,budget=map(int,d[:2]);base=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));low=min(base);high=min(v*(1+budget//c) for v,c in zip(base,cost))\n    while low<high:\n        target=(low+high+1)//2;spent=0\n        for v,c in zip(base,cost):\n            spent+=max(0,(target-1)//v)*c\n            if spent>budget:break\n        if spent<budget:low=target\n        else:high=target-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

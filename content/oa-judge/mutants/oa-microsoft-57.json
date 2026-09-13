@@ -1,0 +1,10 @@
+[
+  {
+    "name": "让关闭商家参选",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);rows=[tuple(map(int,d[i:i+3])) for i in range(2,len(d),3)];order=sorted((i for i in range(n) if True),key=lambda i:(-rows[i][0],rows[i][1],i))\n    return ' '.join(map(str,order[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "距离优先级反向",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);rows=[tuple(map(int,d[i:i+3])) for i in range(2,len(d),3)];order=sorted((i for i in range(n) if rows[i][2]),key=lambda i:(-rows[i][0],-rows[i][1],i))\n    return ' '.join(map(str,order[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

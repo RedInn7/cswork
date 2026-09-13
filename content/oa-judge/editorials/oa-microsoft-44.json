@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-44",
+  "title": "不重叠相邻数字拼接的最大总和",
+  "explanation": "## 思路\n\n前缀DP：最后一个元素单独保留，或者最后两个原始元素拼成一项，取两种总和较大值。\n\n## 正确性\n\n任何合法划分的最后一组只能含1或2个原始元素。去掉它得到更短前缀的合法最优子问题，两种递推穷尽所有可能且保证无重叠。\n\n## 复杂度\n\n时间O(N)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    prev2=prev=0;last=0\n    for token in d[1:]:\n        value=int(token);current=max(prev+value,prev2+last*(10**len(token))+value);prev2,prev=prev,current;last=value\n    return str(prev)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#44-maximum-sum-after-merges",
+  "sourceContentHash": "1a2f30019addd964a4b18057b486b6f8897010667d281b5da0cc19f273d5d77c",
+  "author": "CSWork"
+}

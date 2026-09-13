@@ -58,6 +58,7 @@ async function run(code, input, spec) {
       'oa-quadratic-minimum',
       'oa-compatible-groups',
       'oa-football-top-two',
+      'oa-regional-maxima',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

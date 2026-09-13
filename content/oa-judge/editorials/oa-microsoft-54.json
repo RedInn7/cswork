@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-54",
+  "title": "两行路径最大值的最小可能值",
+  "explanation": "## 思路\n\n维护上行前缀最大、下行后缀最大。枚举唯一向下移动的列，路径最大值为两者较大值，取所有列中的最小值。\n\n## 正确性\n\n每条合法路径恰有一次向下移动，此前经过上行前缀、此后经过下行后缀。每个下移列都对应唯一合法路径，枚举它们即可不重不漏地取最优。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));suffix=[0]*n;suffix[-1]=b[-1]\n    for i in range(n-2,-1,-1):suffix[i]=max(b[i],suffix[i+1])\n    prefix=a[0];answer=10**30\n    for i in range(n):prefix=max(prefix,a[i]);answer=min(answer,max(prefix,suffix[i]))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#54-optimal-path-in-a-grid",
+  "sourceContentHash": "a9fd1df14a65f01f6c3cb58f2c78a13b300fbad449996d3fe6f751ccfead661a",
+  "author": "CSWork"
+}

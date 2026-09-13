@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-117",
+  "title": "无向图的连通分量数",
+  "explanation": "## 思路\n\n并查集合并每条边的两个端点；初始有n个分量，每次合并不同根减少一个。\n\n## 正确性证明\n\n初始每点独立，加入边只会把其端点所在的两个分量连通。根不同则恰好减少一个，根相同不变；所有边处理完就是图的连通关系。\n\n## 复杂度\n\n时间O((n+m)α(n))，空间O(n+m)含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);p=list(range(n));size=[1]*n;answer=n\n    def root(a):\n        while p[a]!=a:p[a]=p[p[a]];a=p[a]\n        return a\n    for i in range(2,len(d),2):\n        a,b=root(int(d[i])),root(int(d[i+1]))\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            p[b]=a;size[a]+=size[b];answer-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#117-count-connected-components",
+  "sourceContentHash": "b79b2e394f3854911f280da73472d0d14115c55f920cafcf182c44e70635c4dd",
+  "author": "CSWork"
+}

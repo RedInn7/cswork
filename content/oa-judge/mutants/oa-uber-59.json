@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不能流向等高",
+    "code": "from collections import deque\ndef solve(d):\n    n,m,sr,sc=map(int,d[:4]);grid=[list(map(int,d[4+i*m:4+(i+1)*m])) for i in range(n)];dist=[[-1]*m for _ in range(n)];dist[sr][sc]=0;queue=deque([(sr,sc)])\n    while queue:\n        i,j=queue.popleft()\n        for a,b in ((i-1,j),(i+1,j),(i,j-1),(i,j+1)):\n            if 0<=a<n and 0<=b<m and dist[a][b]<0 and grid[a][b]<grid[i][j]:dist[a][b]=dist[i][j]+1;queue.append((a,b))\n    return '\\n'.join(' '.join(map(str,row)) for row in dist)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把起点时间记为1",
+    "code": "from collections import deque\ndef solve(d):\n    n,m,sr,sc=map(int,d[:4]);grid=[list(map(int,d[4+i*m:4+(i+1)*m])) for i in range(n)];dist=[[-1]*m for _ in range(n)];dist[sr][sc]=1;queue=deque([(sr,sc)])\n    while queue:\n        i,j=queue.popleft()\n        for a,b in ((i-1,j),(i+1,j),(i,j-1),(i,j+1)):\n            if 0<=a<n and 0<=b<m and dist[a][b]<0 and grid[a][b]<=grid[i][j]:dist[a][b]=dist[i][j]+1;queue.append((a,b))\n    return '\\n'.join(' '.join(map(str,row)) for row in dist)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
