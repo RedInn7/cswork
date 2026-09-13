@@ -49,6 +49,6 @@ test('authored OA packages and displayed solutions match sandbox-verified immuta
     assert(evidence.oracle >= 120 && new Set(evidence.killed).size >= 2);
     assert.equal(evidence.passed, evidence.oracle + pkg.cases.length);
     assert(pkg.cases.filter((c) => c.hidden).length >= 20);
-    assert.match(entry.editorial, /正确性/);
+    assert.match(entry.editorial, /为什么正确/);
   }
 });
