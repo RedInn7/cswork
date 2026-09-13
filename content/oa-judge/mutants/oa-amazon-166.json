@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉右端对齐",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,k=map(int,d[:2]);rows=sorted(tuple(map(int,d[i:i+3])) for i in range(2,len(d),3));starts=[r[0] for r in rows];prefix=[0]\n    for l,r,v in rows:prefix.append(prefix[-1]+(r-l+1)*v)\n    def integral(x):\n        i=bisect_right(starts,x)-1\n        if i<0:return 0\n        l,r,v=rows[i];return prefix[i]+(min(x,r)-l+1)*v\n    answer=0\n    for l,r,v in rows:\n        for start in (l,):\n            answer=max(answer,integral(start+k-1)-integral(start-1))\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "先取模再比较",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,k=map(int,d[:2]);rows=sorted(tuple(map(int,d[i:i+3])) for i in range(2,len(d),3));starts=[r[0] for r in rows];prefix=[0]\n    for l,r,v in rows:prefix.append(prefix[-1]+(r-l+1)*v)\n    def integral(x):\n        i=bisect_right(starts,x)-1\n        if i<0:return 0\n        l,r,v=rows[i];return prefix[i]+(min(x,r)-l+1)*v\n    answer=0\n    for l,r,v in rows:\n        for start in (l,max(1,r-k+1)):\n            answer=max(answer,(integral(start+k-1)-integral(start-1))%1000000007)\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

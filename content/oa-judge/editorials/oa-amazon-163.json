@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-163",
+  "title": "品类不重复且数量递增的最多批次",
+  "explanation": "## 思路\n\n数量升序处理，累计可用件数。若能支付下一批的三角总需求，就增加1个批次；每加入一种品类至多增1批。\n\n## 正确性证明\n\nk批若可行，可把批大小缩成1..k。该阶梯形需求的品类容量匹配条件为：对每个t≤k，容量截断和sum(min(a_i,t))至少为最后t批所需的t(2k−t+1)/2。容量升序扫描时，已处理品类的最优批数只会增加至多1；新容量不小于之前容量，除总件数条件外的截断条件由上一轮可行条件和排序保证。因此累计件数达到(k+1)(k+2)/2时恰可增一批，否则不可能。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    total=groups=0\n    for v in sorted(map(int,d[1:])):\n        total+=v\n        if total>=(groups+1)*(groups+2)//2:groups+=1\n    return str(groups)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#163-find-maximum-number-of-batches",
+  "sourceContentHash": "c0554f29a064fe740a58b27f9ca176b03f18a7b61c7a02492c88ee0dbb91248f",
+  "author": "CSWork"
+}

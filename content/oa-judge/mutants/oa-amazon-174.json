@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误把端点算入",
+    "code": "def solve(d):\n    last={};answer=10**30\n    for i,token in enumerate(d[1:]):\n        v=int(token)\n        if v in last:answer=min(answer,i-last[v]+1)\n        last[v]=i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只记首次而非最近出现",
+    "code": "def solve(d):\n    last={};answer=10**30\n    for i,token in enumerate(d[1:]):\n        v=int(token)\n        if v in last:answer=min(answer,i-last[v]-1)\n        last.setdefault(v,i)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

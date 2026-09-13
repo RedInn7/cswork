@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不排序直接配对",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=sorted(map(int,d[n+1:]));return str(sum(abs(x-y) for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忘记绝对值",
+    "code": "def solve(d):\n    n=int(d[0]);a=sorted(map(int,d[1:n+1]));b=sorted(map(int,d[n+1:]));return str(sum(x-y for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

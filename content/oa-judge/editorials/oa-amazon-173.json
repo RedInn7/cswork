@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-173",
+  "title": "保持相邻差绝对值总和的最少机器",
+  "explanation": "## 思路\n\n去掉连续相等值。若只剩一个则答案1，否则保留首尾以及严格上升下降切换的转折点。\n\n## 正确性证明\n\n在单调连续段内，端点差等于全部相邻差和，删除内部点不改变目标。跨过严格转折点会让三角不等式严格，从而损失总和且其他删除不可能补回，因此每个转折必须保留；总变差非零时首尾极值也必须各保留一个。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=[]\n    for token in d[1:]:\n        v=int(token)\n        if not a or v!=a[-1]:a.append(v)\n    if len(a)==1:return '1'\n    answer=2\n    for i in range(1,len(a)-1):\n        if (a[i]-a[i-1])*(a[i+1]-a[i])<0:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#173-find-minimum-machines-size",
+  "sourceContentHash": "4f3f82e70f2aabadcc09e04be67643ba9054d5acccefa9dde5c2f981925ed98a",
+  "author": "CSWork"
+}

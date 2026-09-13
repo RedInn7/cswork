@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-164",
+  "title": "前端性能严格更高的最多配对",
+  "explanation": "## 思路\n\n分别排序，用最小尚未使用且能胜过当前后端的前端配对。\n\n## 正确性证明\n\n若最小前端不够大，它也不能胜过更大的后端，可跳过；若可配对，某个最优方案可以交换配对使这两个最小可用元素成对而不减少数量。重复交换给出贪心最优性。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=sorted(map(int,d[1:1+n]));b=sorted(map(int,d[1+n:]));j=0\n    for v in a:\n        if j<n and v>b[j]:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#164-find-maximum-pairs",
+  "sourceContentHash": "d3a2653241c9b88fedf21bc82e69d9e5e73358a43a264106122417bbfbbccf98",
+  "author": "CSWork"
+}

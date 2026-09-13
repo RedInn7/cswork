@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-174",
+  "title": "相同首尾子数组的最小非端点值数量",
+  "explanation": "## 思路\n\n每个值只比较相邻两次出现的下标差减1，取最小。\n\n## 正确性证明\n\n若有效区间内端点值出现多于两次，它的非端点值数量等于相邻同值出现间隙中的其他元素数之和，非负和不小于其中任意最小项。因此某一对相邻出现就能取得不更差答案，只需枚举这些对。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    last={};answer=10**30\n    for i,token in enumerate(d[1:]):\n        v=int(token)\n        if v in last:answer=min(answer,i-last[v]-1)\n        last[v]=i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#174-find-minimum-possible-variance",
+  "sourceContentHash": "306666de0dce53f31b69411834f6c759ee9c552b4162e1e33d1577a7611460a6",
+  "author": "CSWork"
+}

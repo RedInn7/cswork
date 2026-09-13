@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按需求总量排序",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));costs=sorted(b);answer=0\n    for cost in costs:\n        if cost>q:break\n        q-=cost;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "恰好用完预算也拒绝",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));costs=sorted(max(0,y-x) for x,y in zip(a,b));answer=0\n    for cost in costs:\n        if cost>=q:break\n        q-=cost;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

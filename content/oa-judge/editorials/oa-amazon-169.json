@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-169",
+  "title": "每趟送两件或三件同重量包裹",
+  "explanation": "## 思路\n\n按重量计数；出现1件则无解，否则每种用ceil(数量/3)趟。\n\n## 正确性证明\n\n不同重量不能混装，分别求解后相加。每趟最多3件产生ceil(c/3)下界；余数0全用3，余数2加一趟2，余数1且c≥4把一个3和剩余1改成两个2，均达到下界。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(d[1:])\n    if 1 in counts.values():return '-1'\n    return str(sum((c+2)//3 for c in counts.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#169-find-minimum-trips",
+  "sourceContentHash": "76d4ed44d12904076acdbf825409fd2096892ed0cd320e0e5b218b84444f9fc3",
+  "author": "CSWork"
+}

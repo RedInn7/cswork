@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把相等算胜过",
+    "code": "def solve(d):\n    n=int(d[0]);a=sorted(map(int,d[1:1+n]));b=sorted(map(int,d[1+n:]));j=0\n    for v in a:\n        if j<n and v>=b[j]:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不排序原输入",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=sorted(map(int,d[1+n:]));j=0\n    for v in a:\n        if j<n and v>b[j]:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

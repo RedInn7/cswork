@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不限制每品类最多新增一批",
+    "code": "def solve(d):\n    total=groups=0\n    for v in sorted(map(int,d[1:])):\n        total+=v\n        while total>=(groups+1)*(groups+2)//2:groups+=1\n    return str(groups)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "总件数恰好够仍拒绝",
+    "code": "def solve(d):\n    total=groups=0\n    for v in sorted(map(int,d[1:])):\n        total+=v\n        if total>(groups+1)*(groups+2)//2:groups+=1\n    return str(groups)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

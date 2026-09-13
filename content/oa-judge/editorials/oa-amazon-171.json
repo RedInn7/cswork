@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-171",
+  "title": "每天读连续k章的最少天数",
+  "explanation": "## 思路\n\n每章需要ceil(页数/p)次覆盖，从左到右扫描，不足则选择能覆盖它且尽量靠右的合法k章窗口，批量补足。\n\n## 正确性证明\n\n最左未满足章节的缺口是任何方案必须提供的覆盖次数。把这些覆盖移动到仍包含它的最右合法窗口，不影响已处理章节的完成，也尽可能帮助未处理的章节，故不劣。差分记录覆盖到期时间，批量执行而非逐天模拟。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k,p=map(int,d[:3]);a=list(map(int,d[3:]));ends=[0]*(n+1);active=answer=0\n    for i,v in enumerate(a):\n        active-=ends[i];need=(v+p-1)//p\n        if need>active:\n            delta=need-active;answer+=delta;active+=delta;start=min(i,n-k);ends[start+k]+=delta\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#171-find-minimum-days",
+  "sourceContentHash": "0253cc27a67520cebb63ec53538734f1f52ec37b92fb75e79c2bb722008bc5ef",
+  "author": "CSWork"
+}

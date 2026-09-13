@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-158",
+  "title": "从地面起跳访问全部石头的最大热量",
+  "explanation": "## 思路\n\n高度排序，从剩余最高、最低、次高、次低依次访问，累加相邻平方差，包含第一次从0起跳。\n\n## 正确性证明\n\n设当前高度x不大于全部剩余高度，M为剩余最大值。任一后续顺序x,a,…,b,M,c,…可把a到M的子段反转，得到x,M,b,…,a,c,…；内部边因平方差对称而不变，两条边的收益变化为2(M−a)(c−x)≥0。若M本来在末尾，则只把边x到a换成x到M，同样不降。因此存在最优方案下一步选择M。当前不小于全部剩余高度时，对称证明下一步可选剩余最小。起点0满足首个条件，逐步固定前缀得到交替极值贪心最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));lo=0;hi=len(a)-1;at=answer=0;highest=True\n    while lo<=hi:\n        if highest:v=a[hi];hi-=1\n        else:v=a[lo];lo+=1\n        answer+=(v-at)**2;at=v;highest=not highest\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#158-find-maximum-calories",
+  "sourceContentHash": "79a3fa36e9c72b40c0ceb205c18f5666326c1534d150c8abe2b8698b137ea8a1",
+  "author": "CSWork"
+}

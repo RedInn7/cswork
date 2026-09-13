@@ -1,0 +1,10 @@
+[
+  {
+    "name": "向下取整页数",
+    "code": "def solve(d):\n    n,k,p=map(int,d[:3]);a=list(map(int,d[3:]));ends=[0]*(n+1);active=answer=0\n    for i,v in enumerate(a):\n        active-=ends[i];need=v//p\n        if need>active:\n            delta=need-active;answer+=delta;active+=delta;start=min(i,n-k);ends[start+k]+=delta\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错当每天可独立跳选章节",
+    "code": "def solve(d):\n    n,k,p=map(int,d[:3]);a=list(map(int,d[3:]));ends=[0]*(n+1);active=answer=0\n    for i,v in enumerate(a):\n        active-=ends[i];need=(v+p-1)//p\n        if need>active:\n            delta=need-active;answer+=delta;active+=delta;start=min(i,n-k);ends[start+k]+=delta\n    return str(max((v+p-1)//p for v in a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

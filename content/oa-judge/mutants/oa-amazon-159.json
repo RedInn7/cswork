@@ -1,0 +1,10 @@
+[
+  {
+    "name": "并列不计数",
+    "code": "def solve(d):\n    freq=[0]*26;totals=[0]*26\n    for c in d[0]:\n        freq[ord(c)-97]+=1;top=max(freq)\n        for i in range(26):\n            if freq[i]==top and freq.count(top)==1:totals[i]+=1\n    return str(max(totals))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只返回最终出现次数",
+    "code": "def solve(d):\n    freq=[0]*26;totals=[0]*26\n    for c in d[0]:\n        freq[ord(c)-97]+=1;top=max(freq)\n        for i in range(26):\n            if freq[i]==top:totals[i]+=1\n    return str(max(freq))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

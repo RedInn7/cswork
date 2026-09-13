@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-166",
+  "title": "连续袋子窗口的最大金额",
+  "explanation": "## 思路\n\n排序后建立区间累计金额，可二分求到任意位置的前缀金额。只需测试窗口左端对齐区间左端、或右端对齐区间右端的候选。\n\n## 正确性证明\n\n窗口平移一格，金额变化是新进入值减离开值。若窗口两端未触及分段变化点，变化斜率恒定，最大值可移到边界而不降低。上升结束只可能在右端离开正区间或左端进入正区间，因此这些对齐候选覆盖最优点；前缀积分精确计算每个窗口。金额比较在取模前完成。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_right\n    n,k=map(int,d[:2]);rows=sorted(tuple(map(int,d[i:i+3])) for i in range(2,len(d),3));starts=[r[0] for r in rows];prefix=[0]\n    for l,r,v in rows:prefix.append(prefix[-1]+(r-l+1)*v)\n    def integral(x):\n        i=bisect_right(starts,x)-1\n        if i<0:return 0\n        l,r,v=rows[i];return prefix[i]+(min(x,r)-l+1)*v\n    answer=0\n    for l,r,v in rows:\n        for start in (l,max(1,r-k+1)):\n            answer=max(answer,integral(start+k-1)-integral(start-1))\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#166-find-maximum-total-amount-sde-i-fungible-",
+  "sourceContentHash": "8912eff2f45405b9fd715ec8dc3c0823fb374fd3741479a37cedfc9482b8dd63",
+  "author": "CSWork"
+}
