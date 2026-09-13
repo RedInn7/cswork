@@ -29,6 +29,21 @@ install -d -m 700 "$rollback"
 cp -a /etc/systemd/system/cswork-oj-worker.service "$rollback/worker.service"
 cp -a /srv/cswork/oj/compose.yaml "$rollback/compose.yaml"
 queue() { "$node" --env-file=/etc/cswork/cswork.env --env-file=/etc/cswork/oj.env "$source_dir/deploy/oj-queue-control.cjs" "$1"; }
+wait_for_judge() {
+  local started=$1
+  for attempt in {1..30}; do
+    if [[ $(docker inspect -f '{{.State.Health.Status}}' cswork-oj-sandbox) == healthy ]] &&
+      systemctl is-active --quiet cswork-oj-worker.service &&
+      STARTED="$started" "$node" --env-file=/etc/cswork/cswork.env --input-type=module -e '
+        import {createRequire} from "node:module";
+        const Database=createRequire("/srv/cswork/current/package.json")("better-sqlite3");
+        const db=new Database(process.env.DATABASE_PATH,{readonly:true});
+        const row=db.prepare("SELECT healthy,heartbeat_at FROM oj_runtime WHERE id=?").get("worker");db.close();
+        process.exit(row?.healthy && row.heartbeat_at>=Number(process.env.STARTED) && Date.now()-row.heartbeat_at<15000 ? 0 : 1);'; then return 0; fi
+    sleep 1
+  done
+  return 1
+}
 queue status | "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{if(JSON.parse(text).paused){console.error("Queue is already paused; preserve maintenance and abort");process.exit(1)}})'
 paused=false
 renamed=false
@@ -56,7 +71,9 @@ finish() {
     install -m 644 "$rollback/worker.service" /etc/systemd/system/cswork-oj-worker.service || recovery_failed=true
     install -m 644 "$rollback/compose.yaml" /srv/cswork/oj/compose.yaml || recovery_failed=true
     systemctl daemon-reload || recovery_failed=true
+    recovery_started=$("$node" -p 'Date.now()')
     systemctl start cswork-oj-worker.service || recovery_failed=true
+    wait_for_judge "$recovery_started" || recovery_failed=true
     if [[ "$recovery_failed" != true ]]; then echo 'Previous judge configuration restored.'; fi
   fi
   if [[ "$recovery_failed" == true ]]; then
@@ -103,19 +120,9 @@ switched=true
 install -m 644 "$source_dir/deploy/cswork-oj-worker.service" /etc/systemd/system/cswork-oj-worker.service
 install -m 644 "$source_dir/deploy/oj/compose.yaml" /srv/cswork/oj/compose.yaml
 systemctl daemon-reload
-started=$(date +%s)000
+started=$("$node" -p 'Date.now()')
 systemctl start cswork-oj-worker.service
-ready=false
-for attempt in {1..30}; do
-  if STARTED="$started" "$node" --env-file=/etc/cswork/cswork.env --input-type=module -e '
-    import {createRequire} from "node:module";
-    const Database=createRequire("/srv/cswork/current/package.json")("better-sqlite3");
-    const db=new Database(process.env.DATABASE_PATH,{readonly:true});
-    const row=db.prepare("SELECT healthy,heartbeat_at FROM oj_runtime WHERE id=?").get("worker");db.close();
-    process.exit(row?.healthy && row.heartbeat_at>=Number(process.env.STARTED) && Date.now()-row.heartbeat_at<15000 ? 0 : 1);'; then ready=true; break; fi
-  sleep 1
-done
-[[ "$ready" == true ]] || { echo 'New worker health check failed'; exit 1; }
+wait_for_judge "$started" || { echo 'New worker health check failed'; exit 1; }
 curl -fsS --max-time 10 http://127.0.0.1:4317/api/bootstrap >/dev/null
 complete=true
 echo "Judge capacity release healthy: $release; rollback retained: $base"
