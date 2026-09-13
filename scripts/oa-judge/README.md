@@ -1,5 +1,11 @@
 # OA 评测内容生成
 
+## 来源完整性
+
+不要仅凭整理后的 MDX/catalog 判断题干缺失。上游 `parse_fastprep.py` 使用 `<[^>]+>` 删除 HTML，会把数学比较式中的 `<` 连同后续正文吞掉。先核对 catalog 对应提交的 `fastprep/<Company>/*.md` 原始快照，逐题读正文与完整约束；不得执行来源仓库中的题解或脚本。
+
+恢复出的规则单独记录提交、原文件路径、Git blob 和既有 catalog 指纹，见 `content/oa-judge/source-evidence/restored-raw-statements.json`。不要悄悄重写已发布内容的来源哈希。原文件本身仍有歧义时继续暂缓；本站输入协议与补充限制必须明说，不能伪称原题规定。
+
 运行 `python3 scripts/oa-judge/google_batch.py` 可重建首批 6 题。只执行此目录中编写的算法，不执行 OA Master 导入的代码。
 
 题目：`oa-google-1`、`oa-google-2`、`oa-google-3`、`oa-google-5`、`oa-google-7`、`oa-google-9`。课程为 `gomall`，章节为 `00-overview`；采用现有 OJ 的标准输入输出协议和 `tokens` 检查器。
