@@ -1,0 +1,10 @@
+[
+  {
+    "name": "配对错误包含应单独分配的大项",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]); a=sorted(map(int,d[2:])); pairs=n-k; answer=a[-1]\n    for i in range(pairs): answer=max(answer,a[i]+a[n-1-i])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略单件容量",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]); a=sorted(map(int,d[2:])); pairs=n-k; answer=0\n    for i in range(pairs): answer=max(answer,a[i]+a[2*pairs-1-i])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

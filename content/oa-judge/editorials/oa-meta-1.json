@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-1",
+  "title": "刚性图形下落需要移除的障碍",
+  "explanation": "## 思路\n\n下移距离由图形最底格确定。每个星号沿本列扫过一个行区间，用列差分合并区间，再数被覆盖的障碍。\n\n## 为什么正确\n\n最底格抵达底行前必须恰好经过每个中间位移；任何扫过位置的障碍都必须删。删去扫过位置的所有障碍后每一步都无碰撞，因此统计这些不同障碍既必要又充分。\n\n## 复杂度\n\n时间和空间 O(RC)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bottom=max(i for i in range(rows) if '*' in board[i]); distance=rows-1-bottom; answer=0\n    for j in range(cols):\n        diff=[0]*(rows+1)\n        for i in range(rows):\n            if board[i][j]=='*':diff[i+1]+=1; diff[i+distance+1]-=1\n        active=0\n        for i in range(rows):\n            active+=diff[i]\n            if active and board[i][j]=='#':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#1-falling-figure--min-obstacles-to-remove",
+  "sourceContentHash": "64c170f3d0e7adfe05723c8bcdc7d6dae5bb4eb7d95345d102ae2e2dbc4b4ae3",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不去重",
+    "code": "def solve(data):\n    sizes=list(map(int,data[:3])); arrays=[]; offset=3\n    for size in sizes:arrays.append(list(map(int,data[offset:offset+size]))); offset+=size\n    indices=[0,0,0]; answer=[]\n    while True:\n        candidates=[(arrays[i][indices[i]],i) for i in range(3) if indices[i]<sizes[i]]\n        if not candidates:break\n        value,source=min(candidates)\n        if True:answer.append(value)\n        indices[source]+=1\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉第三个数组",
+    "code": "def solve(data):\n    sizes=list(map(int,data[:3])); arrays=[]; offset=3\n    for size in sizes:arrays.append(list(map(int,data[offset:offset+size]))); offset+=size\n    indices=[0,0,0]; answer=[]\n    while True:\n        candidates=[(arrays[i][indices[i]],i) for i in range(2) if indices[i]<sizes[i]]\n        if not candidates:break\n        value,source=min(candidates)\n        if not answer or answer[-1]!=value:answer.append(value)\n        indices[source]+=1\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

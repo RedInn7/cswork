@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-16",
+  "title": "等价商品包的最大数量",
+  "explanation": "## 思路\n\n枚举 T=1..2max(cost)，统计单件价格为T的包。对每对不同互补价格取较小频次，相同价格取频次的一半。\n\n## 正确性证明\n\n固定T后，一个价格只可能与唯一互补价格配对，各对互不共享商品。正价格意味着单件T不能参与双件T包。因此每组独立取最大包数并求和，再枚举T即可。\n\n## 复杂度\n\n时间 O(n+V²)，空间 O(V)，V≤2000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:])); v=max(a); freq=[0]*(2*v+1)\n    for value in a: freq[value]+=1\n    answer=0\n    for t in range(1,2*v+1):\n        count=freq[t]\n        for x in range(max(1,t-v),min(v,(t-1)//2)+1): count+=min(freq[x],freq[t-x])\n        if t%2==0: count+=freq[t//2]//2\n        answer=max(answer,count)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#16-find-maximum-packages",
+  "sourceContentHash": "953b3e20a4845cd537061822d0e4038bf033b002fd8693837836e04767a4539f",
+  "author": "CSWork"
+}

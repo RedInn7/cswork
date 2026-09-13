@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-12",
+  "title": "数轴障碍与区间可用性",
+  "explanation": "## 思路\n\n预读所有放置坐标并离散化，用树状数组记录已放置数量。两个二分下标之间的区间计数为零时可放置。\n\n## 为什么正确\n\n离散化只保留可能有障碍的坐标，不改变大小关系。左边界使用 lower_bound(x)，右边界使用 lower_bound(x+size)，其差分恰好统计半开区间内已执行的放置操作，不会包含未来的障碍或右端点。\n\n## 复杂度\n\n时间 O(q log q)，额外空间 O(q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    from bisect import bisect_left\n    q=int(data[0]); cursor=1; ops=[]\n    for _ in range(q):\n        t=int(data[cursor]); size=2 if t==1 else 3; ops.append(tuple(map(int,data[cursor:cursor+size]))); cursor+=size\n    coords=sorted(o[1] for o in ops if o[0]==1); bit=[0]*(len(coords)+1); result=[]\n    def prefix(i):\n        total=0\n        while i:total+=bit[i]; i-=i&-i\n        return total\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit):bit[i]+=1; i+=i&-i\n        else:\n            left=bisect_left(coords,op[1]); right=bisect_left(coords,op[1]+op[2])\n            result.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#12-build-blocks-and-obstacles-on-a-number-line",
+  "sourceContentHash": "fac47682957122c374d0f2e86eb79ccd15090dc98bf4defe3969a54f01ea8f62",
+  "author": "CSWork"
+}

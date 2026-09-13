@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-3",
+  "title": "最长自足真子串",
+  "explanation": "## 思路\n\n合法左端必为某个字符的首次出现位置，最多26种。分别向右扫描，维护所见字符的最右出现位置；遇到首次出现早于左端的字符就停止。\n\n## 正确性证明\n\n左端字符若还出现在左边，区间必不自足。扫描时若发现字符出现在左端之前，任何继续扩展都无法修复；否则扫描到当前所有字符的最后出现位置后，区间恰好包含它们全部出现。枚举所有可能左端及右端，并排除整个串，因此不会漏解。\n\n## 复杂度\n\n时间 O(26n)，空间 O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0]; first={}; last={}; answer=0\n    for i,c in enumerate(s):\n        if c not in first: first[c]=i\n        last[c]=i\n    for start in first.values():\n        end=start\n        for i in range(start,len(s)):\n            c=s[i]\n            if first[c]<start: break\n            end=max(end,last[c])\n            if i==end and i-start+1<len(s): answer=max(answer,i-start+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#3-self-sufficient-substring",
+  "sourceContentHash": "4f0756cf991a8c2f4d911e81138e28ee4e93c2d51f48316c49a78922f41cd68e",
+  "author": "CSWork"
+}

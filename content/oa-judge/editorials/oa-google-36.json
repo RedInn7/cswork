@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-36",
+  "title": "连续入住的最早一天",
+  "explanation": "## 思路\n\n用每个已占连续段的两个端点记录段长。新增位置 x 时读取左、右邻居的段长，合成新段并更新两个外端点。\n\n## 正确性\n\n新位置左右若已占用，则相邻位置必然分别为左段的右端点和右段的左端点；保存的段长准确。新占用只会连接这两段和自身，不影响其它段。第一次合成长度至少 M 的段即为最早满足的一天。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,m=map(int,data[:2]);length=[0]*(n+2)\n    for day,x in enumerate(map(int,data[2:]),1):\n        left=length[x-1];right=length[x+1];total=left+right+1\n        length[x]=total;length[x-left]=total;length[x+right]=total\n        if total>=m:return str(day)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#36-happy-neighborhood",
+  "sourceContentHash": "f2d720d421038f1ab8e51fa51d4d95c22ad8aef59a69116f57a3b1849f539557",
+  "author": "CSWork"
+}

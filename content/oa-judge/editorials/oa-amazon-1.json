@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-1",
+  "title": "所有连续服务器段的漏洞总值",
+  "explanation": "## 思路\n\n单调栈为每个最大值分配左右边界。左边找严格大于、右边找大于等于，重复最大值只归属一个位置。\n\n## 正确性证明\n\n令左右可扩展数量为 L、R。所有包含该位置且由它负责的段，长度总和为 Σ(a+b−1)=LR(L+R)/2。乘以该元素并累加，每个连续段恰好统计一次。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:])); n=len(a); left=[-1]*n; right=[n]*n; stack=[]\n    for i,v in enumerate(a):\n        while stack and a[stack[-1]]<=v: stack.pop()\n        if stack: left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]<a[i]: stack.pop()\n        if stack: right[i]=stack[-1]\n        stack.append(i)\n    answer=0\n    for i,v in enumerate(a):\n        l=i-left[i]; r=right[i]-i\n        answer+=v*l*r*(l+r)//2\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#1-system-vulnerabilities",
+  "sourceContentHash": "87acd25991ba82c223f4c830cae6e4a5d0dc48da6c578e51188712c78606d83d",
+  "author": "CSWork"
+}

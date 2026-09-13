@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把等于零视为失败",
+    "code": "def solve(d):\n    a=list(map(int,d[1:])); prefix=[0]\n    for v in a: prefix.append(prefix[-1]+v)\n    stop=[len(prefix)]*len(prefix); stack=[]\n    for i,v in enumerate(prefix):\n        while stack and prefix[stack[-1]]>=v: stop[stack.pop()]=i\n        stack.append(i)\n    return str(max(stop[i]-i-1 for i in range(len(a))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把失败元素计入",
+    "code": "def solve(d):\n    a=list(map(int,d[1:])); prefix=[0]\n    for v in a: prefix.append(prefix[-1]+v)\n    stop=[len(prefix)]*len(prefix); stack=[]\n    for i,v in enumerate(prefix):\n        while stack and prefix[stack[-1]]>v: stop[stack.pop()]=i\n        stack.append(i)\n    return str(max(stop[i]-i for i in range(len(a))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

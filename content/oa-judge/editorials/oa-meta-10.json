@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-10",
+  "title": "三位数的三个数字互不相同",
+  "explanation": "## 思路\n\n遍历区间，将每个数字转为三位字符，集合大小为3则计数。\n\n## 为什么正确\n\n集合恰好包含不同的数字字符，大小为3当且仅当三位两两不同；闭区间枚举每个整数一次。\n\n## 复杂度\n\n时间 O(right−left+1)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    left,right=map(int,data)\n    return str(sum(len(set(str(v)))==3 for v in range(left,right+1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#10-three-digit-numbers-with-all-distinct-digits",
+  "sourceContentHash": "90208f7703463eb8ad8d65c8ffa9420a23ebd5a4c59fc0522b5f3709f44dd5c2",
+  "author": "CSWork"
+}

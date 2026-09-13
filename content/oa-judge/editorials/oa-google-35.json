@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-35",
+  "title": "优先收藏的图片流",
+  "explanation": "## 思路\n\n构造时仅建收藏集合，保留两个游标。先推进收藏游标，之后扫描原列表并跳过收藏项，耗尽输出 NULL。\n\n## 正确性\n\n第一阶段恰好按收藏次序输出所有收藏。第二阶段按原次序扫描，集合检查排除所有已经输出的收藏，而每个非收藏都被输出一次。游标单向推进保证后续调用不会重复或越界返回图片。\n\n## 复杂度\n\n构造 O(m)，共 q 次调用 O(n+m+q)，额外空间 O(m)（不计输入输出）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,m,q=map(int,data[:3]);images=data[3:3+n];favs=data[3+n:];marked=set(favs);first=0;second=0;answer=[]\n    for _ in range(q):\n        if first<m:answer.append(favs[first]);first+=1\n        else:\n            while second<n and images[second] in marked:second+=1\n            if second<n:answer.append(images[second]);second+=1\n            else:answer.append('NULL')\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#35-get-next-image-for-l4",
+  "sourceContentHash": "759cfe7fb02df211ddb8c340f47dfa9ab048ed7c53ac4ffbea6e16d5dc4f604e",
+  "author": "CSWork"
+}

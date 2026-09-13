@@ -1,0 +1,10 @@
+[
+  {
+    "name": "未删除指定边",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);edges=[(int(data[i])-1,int(data[i+1])-1) for i in range(2,2+2*(n-1),2)]\n    deleted={(int(data[i])-1,int(data[i+1])-1) for i in range(2+2*(n-1),len(data),2)}\n    parent=list(range(n));size=[1]*n\n    def find(x):\n        while x!=parent[x]:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for a,b in edges:\n        if False:continue\n        a=find(a);b=find(b)\n        if size[a]<size[b]:a,b=b,a\n        parent[b]=a;size[a]+=size[b]\n    result=sorted(size[i] for i in range(n) if parent[i]==i)\n    return ' '.join([str(len(result))]+list(map(str,result)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忘记累计分量大小",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);edges=[(int(data[i])-1,int(data[i+1])-1) for i in range(2,2+2*(n-1),2)]\n    deleted={(int(data[i])-1,int(data[i+1])-1) for i in range(2+2*(n-1),len(data),2)}\n    parent=list(range(n));size=[1]*n\n    def find(x):\n        while x!=parent[x]:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for a,b in edges:\n        if (a,b) in deleted:continue\n        a=find(a);b=find(b)\n        if size[a]<size[b]:a,b=b,a\n        parent[b]=a;size[a]+=0\n    result=sorted(size[i] for i in range(n) if parent[i]==i)\n    return ' '.join([str(len(result))]+list(map(str,result)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

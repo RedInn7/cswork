@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-34",
+  "title": "扣除免打扰时间的会议区间",
+  "explanation": "## 思路\n\n先按起点排序合并覆盖区间，再从每段中扣去免打扰区间，保留左、右非空部分。\n\n## 正确性\n\n排序后的区间与当前段相接或相交时，其并集仍是一段，否则必须新开一段。获得完整会议并集后，与免打扰区间求差只可能留下其左侧和右侧两部分；保留全部非空部分恰是要求的时间集合。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]);intervals=sorted((int(data[1+2*i]),int(data[2+2*i])) for i in range(n));ds,de=map(int,data[1+2*n:]);merged=[]\n    for a,b in intervals:\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    result=[]\n    for a,b in merged:\n        if b<=ds or a>=de:result.append((a,b))\n        else:\n            if a<ds:result.append((a,ds))\n            if b>de:result.append((de,b))\n    return ' '.join([str(len(result))]+[str(v) for pair in result for v in pair])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#34-get-meeting-intervals-google-bangalore",
+  "sourceContentHash": "424c7856173e2a76b208a0a3631d929da688de5c37df1e966d485d37958923d8",
+  "author": "CSWork"
+}

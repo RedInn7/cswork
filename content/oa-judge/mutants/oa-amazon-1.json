@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏段长",
+    "code": "def solve(d):\n    a=list(map(int,d[1:])); n=len(a); left=[-1]*n; right=[n]*n; stack=[]\n    for i,v in enumerate(a):\n        while stack and a[stack[-1]]<=v: stack.pop()\n        if stack: left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]<a[i]: stack.pop()\n        if stack: right[i]=stack[-1]\n        stack.append(i)\n    answer=0\n    for i,v in enumerate(a):\n        l=i-left[i]; r=right[i]-i\n        answer+=v*l*r\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重复最大值重复归属",
+    "code": "def solve(d):\n    a=list(map(int,d[1:])); n=len(a); left=[-1]*n; right=[n]*n; stack=[]\n    for i,v in enumerate(a):\n        while stack and a[stack[-1]]<=v: stack.pop()\n        if stack: left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]<=a[i]: stack.pop()\n        if stack: right[i]=stack[-1]\n        stack.append(i)\n    answer=0\n    for i,v in enumerate(a):\n        l=i-left[i]; r=right[i]-i\n        answer+=v*l*r*(l+r)//2\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

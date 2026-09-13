@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-6",
+  "title": "切比雪夫距离内的碰撞对象对",
+  "explanation": "## 思路\n\n依次读入坐标，查找九个相邻整数坐标已有的对象数量并累加，再记录当前对象。\n\n## 为什么正确\n\n整数坐标下，合法的横纵差值只能分别是 −1、0、1。九个坐标查找恰好包含所有此前与当前对象碰撞的对象。每对仅在较晚对象加入时计数一次，重复坐标通过频次计数。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]); values=list(map(int,data[1:])); seen={}; answer=0\n    for i in range(n):\n        x,y=values[2*i:2*i+2]\n        for dx in (-1,0,1):\n            for dy in (-1,0,1):answer+=seen.get((x+dx,y+dy),0)\n        seen[x,y]=seen.get((x,y),0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#6-count-colliding-object-pairs",
+  "sourceContentHash": "52b2161adae0b1a27429728cc8f53f12bbd076afded5af3723e3836c412d58c2",
+  "author": "CSWork"
+}

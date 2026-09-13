@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-11",
+  "title": "最长且字典序最小的正则表达式",
+  "explanation": "## 思路\n\n寻找最右侧满足z[i]既不同于x[i]也不同于y[i]的位置。各位置都输出完整26字母组，只在选中位置去掉z[i]。\n\n## 正确性证明\n\n匹配n个字符最多有n个组，每组最多26字母加括号。排除z必须至少一个位置不包含z[i]，且该字符不能是x[i]或y[i]。只删一个字母达到最长长度。组内升序字典序最小，完整组比删字母组字典序小（包括删Z时Z小于右括号），故唯一缺失应尽量靠右。\n\n## 复杂度\n\n时间与输出空间 O(26n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a,b,c=d; chosen=-1; alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n    for i in range(len(a)):\n        if c[i]!=a[i] and c[i]!=b[i]: chosen=i\n    if chosen<0: return '-1'\n    full='['+alphabet+']'; short='['+alphabet.replace(c[chosen],'')+']'\n    return full*chosen+short+full*(len(a)-chosen-1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#11-find-longest-regex",
+  "sourceContentHash": "c5cc2b64195c346cbfee19e915603eefdf4782498ca012730f8b3a87ab10cdd8",
+  "author": "CSWork"
+}

@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-meta-7",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "元音位置循环右移",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Meta",
+      "字符串"
+    ],
+    "description": "将字符串中小写元音 a、e、i、o、u 的字符按出现顺序循环右移一位：每个元音移到下一个元音位置，最后一个移到第一个位置。其它字符位置不变。没有元音时原样输出。\n\n输入格式、样例与评测数据由 CSWork 整理编写。",
+    "input": "一行长度1..1000的ASCII可打印文本，可含空格；仅小写aeiou视作元音。",
+    "output": "按题意输出答案；多项结果按顺序空格分隔，空数组输出空行。",
+    "explanation": "样例1：codesignal的元音按顺序为o、e、i、a，右移后是a、o、e、i，填回原元音位置得到cadosegnil。输出须完整保留原有空格，并以换行结尾。",
+    "hints": [
+      "提取元音字符并右旋一位，再依次填回原来的元音位置。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "codesignal\n",
+      "expectedOutput": "cadosegnil\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "plain text\n",
+      "expectedOutput": "plean tixt\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "xyz\n",
+      "expectedOutput": "xyz\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaae\n",
+      "expectedOutput": "eaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        \n",
+      "expectedOutput": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        \n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "  a   e  \n",
+      "expectedOutput": "  e   a  \n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "e?bi?9!A?bc!0uaece0ab19acaa99 A1o0auA00i!\n",
+      "expectedOutput": "i?be?9!A?bc!0iuace0eb19acaa99 A1a0oaA00u!\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "b e?eeAaa\n",
+      "expectedOutput": "b a?eeAea\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "oAuiAe! bua!c99c10?!oee1eA?oia !A?o9i01! cAi0A?a01Aui?i a1\n",
+      "expectedOutput": "aAouAi! beu!c99c10?!aoe1eA?eoi !A?a9o01! cAi0A?i01Aau?i i1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "oee?9?11b0?0ebeiciu!0Ac? ooe0AbeA9ou0u!o9ou?9!A\n",
+      "expectedOutput": "uoe?9?11b0?0ebeecii!0Ac? uoo0AbeA9eo0u!u9oo?9!A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "c uec!0a1 ?aa!90cbba!eA!b\n",
+      "expectedOutput": "c euc!0e1 ?aa!90cbba!aA!b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "oo?acic?o909i9u!aAb0ce?i?\n",
+      "expectedOutput": "io?ocac?i909o9i!uAb0ca?e?\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "ou0ouii eoe1A1coee0ba1??aio!aoee9e10eac Acieb\n",
+      "expectedOutput": "eo0uoui ieo1A1ceoe0be1??aai!oaoe9e10eec Acaib\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "!!i1  ! 11i!00uaacae\n",
+      "expectedOutput": "!!e1  ! 11i!00iuacaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "uaAbuA?b!o9ebA0u9ueb!cAeeb010eo1! !ioe b\n",
+      "expectedOutput": "euAbaA?b!u9obA0e9uub!cAeeb010ee1! !oio b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "bb!o!A9 eb0ai  b b0 e 0?Au a1o\n",
+      "expectedOutput": "bb!o!A9 ob0ea  b b0 i 0?Ae u1a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "0AAu9eAo9a1Ae? 09o!? ?iiae uacoiica!!1ciie\n",
+      "expectedOutput": "0AAe9uAe9o1Aa? 09e!? ?oiia eucaoici!!1caii\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "Aaeicob?1!? ii\n",
+      "expectedOutput": "Aiaecib?1!? oi\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "AeAucAb!01Aao11\n",
+      "expectedOutput": "AoAecAb!01Aua11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "1 Aiu 9!1!o!90ci01!0900c?a?ii9ibe 0eoA0u\n",
+      "expectedOutput": "1 Aui 9!1!u!90co01!0900c?i?ai9ibi 0eeA0o\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "91o1u bAc??b0Aeboee1?a0uucAocAc!9e!u1auoa ioooA aceAo ?\n",
+      "expectedOutput": "91o1o bAc??b0Aubeoe1?e0aucAucAc!9o!e1uauo aiooA ocaAe ?\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "a! b\n",
+      "expectedOutput": "a! b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": " 1o1cuiuou 9bicb !Aueu??a!!e!\n",
+      "expectedOutput": " 1e1couiuo 9bucb !Aiue??u!!a!\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "0!Aeo9!i!09A!99ecA ? ?1!\n",
+      "expectedOutput": "0!Aee9!o!09A!99icA ? ?1!\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "1A ! ? 0ou uo!A1ui9a9 1oobi?b0o!iAiu0\n",
+      "expectedOutput": "1A ! ? 0uo uu!A1ou9i9 1aobo?b0i!oAii0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "aA19 obbeAca ac!bei90ubi i\n",
+      "expectedOutput": "iA19 abboAce ac!bae90ibu i\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "ee\n",
+      "expectedOutput": "ee\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "0?1auA!?Ae?eoo ?!0o!c0 bi99! !u0oaA0ubaio90?io!ibo\n",
+      "expectedOutput": "0?1oaA!?Au?eeo ?!0o!c0 bo99! !i0uoA0abuai90?oi!obi\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "i0ui0 b  uc!1bAoob0 oc1!ao\n",
+      "expectedOutput": "o0iu0 b  ic!1bAuob0 oc1!oa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "A909b0ocbA1?!0bo1aica09Acb   aiioe?b9a9iaob0!oou?o\n",
+      "expectedOutput": "A909b0ocbA1?!0bo1oaci09Acb   aaiio?b9e9aiab0!ooo?u\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

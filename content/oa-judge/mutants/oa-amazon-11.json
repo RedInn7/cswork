@@ -1,0 +1,10 @@
+[
+  {
+    "name": "选最左可删位置",
+    "code": "def solve(d):\n    a,b,c=d; chosen=-1; alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n    for i in range(len(a)):\n        if c[i]!=a[i] and c[i]!=b[i]: chosen=i if chosen<0 else chosen\n    if chosen<0: return '-1'\n    full='['+alphabet+']'; short='['+alphabet.replace(c[chosen],'')+']'\n    return full*chosen+short+full*(len(a)-chosen-1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "没有去掉字符",
+    "code": "def solve(d):\n    a,b,c=d; chosen=-1; alphabet='ABCDEFGHIJKLMNOPQRSTUVWXYZ'\n    for i in range(len(a)):\n        if c[i]!=a[i] and c[i]!=b[i]: chosen=i\n    if chosen<0: return '-1'\n    full='['+alphabet+']'; short='['+alphabet+']'\n    return full*chosen+short+full*(len(a)-chosen-1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把1当作翻转目标",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); left=zeros=best=0\n    for right,x in enumerate(a):\n        if x==1:zeros+=1\n        while zeros>k:\n            if a[left]==1:zeros-=1\n            left+=1\n        best=max(best,right-left+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "窗口长度少一",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); left=zeros=best=0\n    for right,x in enumerate(a):\n        if x==0:zeros+=1\n        while zeros>k:\n            if a[left]==0:zeros-=1\n            left+=1\n        best=max(best,right-left)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

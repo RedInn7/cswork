@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把差一当重复",
+    "code": "def solve(data):\n    dp={}; answer=0\n    for v in map(int,data[1:]):\n        dp[v]=max(dp.get(v,0),dp.get(v,0)+1); answer=max(answer,dp[v])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误排序破坏原序",
+    "code": "def solve(data):\n    dp={}; answer=0\n    for v in sorted(map(int,data[1:])):\n        dp[v]=max(dp.get(v,0),dp.get(v-1,0)+1); answer=max(answer,dp[v])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

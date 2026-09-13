@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只做前缀匹配",
+    "code": "def solve(data):\n    pattern=data[0];slots=[];i=0\n    while i<len(pattern):\n        if pattern[i]=='[':\n            j=pattern.index(']',i);slots.append(set(pattern[i+1:j]));i=j+1\n        else:slots.append({pattern[i]});i+=1\n    matches=[w for w in data[2:] if len(w)>=len(slots) and all(c in allowed for c,allowed in zip(w,slots))]\n    return ' '.join([str(len(matches))]+matches)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "集合只保留首字母",
+    "code": "def solve(data):\n    pattern=data[0];slots=[];i=0\n    while i<len(pattern):\n        if pattern[i]=='[':\n            j=pattern.index(']',i);slots.append(set(pattern[i+1:i+2]));i=j+1\n        else:slots.append({pattern[i]});i+=1\n    matches=[w for w in data[2:] if len(w)==len(slots) and all(c in allowed for c,allowed in zip(w,slots))]\n    return ' '.join([str(len(matches))]+matches)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

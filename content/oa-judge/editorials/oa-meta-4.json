@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-4",
+  "title": "最早的共同空闲会议时间",
+  "explanation": "## 思路\n\n按区间起点排序，维护已扫过忙碌时间的最右端；每个区间前的空隙足够长便返回其起点。\n\n## 为什么正确\n\n所有员工共同空闲等价于不属于任一忙碌区间。排序扫描不断合并重叠忙时，检查到的空隙按时间递增；第一个长度足够的空隙必然最早。\n\n## 复杂度\n\n时间 O(b log b)，空间 O(b)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    count,length=map(int,data[:2]); values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); end=0\n    for start,finish in intervals:\n        if start-end>=length:return str(end)\n        end=max(end,finish)\n    return str(end if 1440-end>=length else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#4-earliest-common-meeting-slot",
+  "sourceContentHash": "b023c0234dd99709469766da8a5abdca0f6cd34d71ffb465de9703f05a98e385",
+  "author": "CSWork"
+}

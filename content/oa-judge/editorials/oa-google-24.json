@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-24",
+  "title": "每步加一的最长子序列",
+  "explanation": "## 思路\n\ndp[v] 为当前前缀以 v 结尾的最优长度。扫描到 v 时，用 dp[v−1]+1 更新 dp[v]。\n\n## 正确性\n\n任何以本次 v 结尾且长度大于一的合法子序列，其倒数第二项必须是之前出现的 v−1；其最优长度已保存在 dp[v−1]。追加 v 获得最佳候选，和旧值取最大保留前缀不变量。\n\n## 复杂度\n\n期望时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    dp={}; answer=0\n    for v in map(int,data[1:]):\n        dp[v]=max(dp.get(v,0),dp.get(v-1,0)+1); answer=max(answer,dp[v])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#24-find-max-length-of-subsequence",
+  "sourceContentHash": "8fe8f19f389c6e40517a1c65f7d0b9c7fcc06dae5c7a7b9faa2a10455afb2fa3",
+  "author": "CSWork"
+}

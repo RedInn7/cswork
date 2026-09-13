@@ -1,0 +1,654 @@
+[
+  {
+    "input": "4 2 5\ni1 i2 i3 i4\ni3 i1\n",
+    "expectedOutput": "i3 i1 i2 i4 NULL\n"
+  },
+  {
+    "input": "1 0 2\na\n\n",
+    "expectedOutput": "a NULL\n"
+  },
+  {
+    "input": "2 2 2\na b\nb a\n",
+    "expectedOutput": "b a\n"
+  },
+  {
+    "input": "13 5 6\ni7 i5 i11 i12 i6 i8 i3 i0 i4 i2 i10 i9 i1\ni6 i2 i3 i12 i1\n",
+    "expectedOutput": "i6 i2 i3 i12 i1 i7\n"
+  },
+  {
+    "input": "15 3 7\ni9 i4 i11 i7 i0 i10 i13 i6 i5 i14 i3 i2 i12 i1 i8\ni1 i10 i13\n",
+    "expectedOutput": "i1 i10 i13 i9 i4 i11 i7\n"
+  },
+  {
+    "input": "5 5 6\ni2 i3 i0 i1 i4\ni3 i0 i2 i4 i1\n",
+    "expectedOutput": "i3 i0 i2 i4 i1 NULL\n"
+  },
+  {
+    "input": "11 7 7\ni8 i9 i0 i10 i1 i7 i5 i3 i2 i4 i6\ni6 i0 i4 i5 i9 i2 i10\n",
+    "expectedOutput": "i6 i0 i4 i5 i9 i2 i10\n"
+  },
+  {
+    "input": "5 3 2\ni3 i4 i0 i2 i1\ni3 i2 i1\n",
+    "expectedOutput": "i3 i2\n"
+  },
+  {
+    "input": "4 4 3\ni3 i1 i0 i2\ni1 i2 i0 i3\n",
+    "expectedOutput": "i1 i2 i0\n"
+  },
+  {
+    "input": "15 11 18\ni7 i3 i11 i9 i10 i1 i14 i8 i2 i4 i5 i6 i12 i13 i0\ni3 i0 i14 i12 i2 i11 i6 i9 i8 i13 i5\n",
+    "expectedOutput": "i3 i0 i14 i12 i2 i11 i6 i9 i8 i13 i5 i7 i10 i1 i4 NULL NULL NULL\n"
+  },
+  {
+    "input": "9 7 8\ni7 i2 i5 i6 i1 i8 i3 i0 i4\ni5 i0 i7 i2 i1 i4 i8\n",
+    "expectedOutput": "i5 i0 i7 i2 i1 i4 i8 i6\n"
+  },
+  {
+    "input": "10 0 13\ni9 i1 i0 i7 i6 i4 i8 i5 i2 i3\n\n",
+    "expectedOutput": "i9 i1 i0 i7 i6 i4 i8 i5 i2 i3 NULL NULL NULL\n"
+  },
+  {
+    "input": "7 0 3\ni3 i5 i4 i1 i6 i0 i2\n\n",
+    "expectedOutput": "i3 i5 i4\n"
+  },
+  {
+    "input": "12 10 2\ni11 i2 i6 i4 i7 i8 i5 i1 i0 i3 i9 i10\ni0 i10 i6 i7 i5 i3 i11 i9 i2 i4\n",
+    "expectedOutput": "i0 i10\n"
+  },
+  {
+    "input": "2 1 5\ni0 i1\ni0\n",
+    "expectedOutput": "i0 i1 NULL NULL NULL\n"
+  },
+  {
+    "input": "14 12 15\ni10 i12 i0 i8 i4 i2 i5 i7 i13 i6 i11 i9 i3 i1\ni9 i6 i5 i11 i13 i10 i2 i8 i1 i3 i0 i12\n",
+    "expectedOutput": "i9 i6 i5 i11 i13 i10 i2 i8 i1 i3 i0 i12 i4 i7 NULL\n"
+  },
+  {
+    "input": "1 0 2\ni0\n\n",
+    "expectedOutput": "i0 NULL\n"
+  },
+  {
+    "input": "14 12 8\ni8 i9 i0 i13 i5 i4 i12 i1 i7 i11 i2 i6 i10 i3\ni11 i13 i7 i12 i4 i0 i5 i3 i2 i10 i8 i1\n",
+    "expectedOutput": "i11 i13 i7 i12 i4 i0 i5 i3\n"
+  },
+  {
+    "input": "10 2 6\ni6 i3 i4 i7 i8 i9 i2 i0 i1 i5\ni6 i8\n",
+    "expectedOutput": "i6 i8 i3 i4 i7 i9\n"
+  },
+  {
+    "input": "6 0 6\ni1 i3 i0 i5 i2 i4\n\n",
+    "expectedOutput": "i1 i3 i0 i5 i2 i4\n"
+  },
+  {
+    "input": "3 2 6\ni1 i0 i2\ni1 i0\n",
+    "expectedOutput": "i1 i0 i2 NULL NULL NULL\n"
+  },
+  {
+    "input": "10 4 9\ni9 i1 i6 i0 i7 i3 i5 i2 i8 i4\ni1 i4 i7 i8\n",
+    "expectedOutput": "i1 i4 i7 i8 i9 i6 i0 i3 i5\n"
+  },
+  {
+    "input": "11 9 7\ni9 i2 i0 i7 i8 i4 i1 i10 i6 i3 i5\ni9 i6 i0 i3 i4 i5 i7 i8 i1\n",
+    "expectedOutput": "i9 i6 i0 i3 i4 i5 i7\n"
+  },
+  {
+    "input": "9 5 8\ni2 i8 i0 i3 i4 i1 i7 i6 i5\ni2 i4 i6 i7 i8\n",
+    "expectedOutput": "i2 i4 i6 i7 i8 i0 i3 i1\n"
+  },
+  {
+    "input": "9 5 7\ni2 i5 i4 i8 i3 i1 i7 i6 i0\ni0 i4 i5 i6 i1\n",
+    "expectedOutput": "i0 i4 i5 i6 i1 i2 i8\n"
+  },
+  {
+    "input": "12 8 4\ni7 i6 i9 i1 i10 i4 i11 i5 i8 i0 i2 i3\ni9 i5 i7 i4 i2 i6 i3 i11\n",
+    "expectedOutput": "i9 i5 i7 i4\n"
+  },
+  {
+    "input": "7 1 9\ni3 i1 i5 i4 i0 i6 i2\ni6\n",
+    "expectedOutput": "i6 i3 i1 i5 i4 i0 i2 NULL NULL\n"
+  },
+  {
+    "input": "5 5 5\ni4 i1 i3 i0 i2\ni3 i0 i1 i2 i4\n",
+    "expectedOutput": "i3 i0 i1 i2 i4\n"
+  },
+  {
+    "input": "12 7 4\ni5 i3 i6 i8 i9 i11 i1 i4 i7 i10 i0 i2\ni6 i1 i8 i3 i0 i10 i9\n",
+    "expectedOutput": "i6 i1 i8 i3\n"
+  },
+  {
+    "input": "5 5 3\ni4 i3 i1 i0 i2\ni1 i3 i2 i4 i0\n",
+    "expectedOutput": "i1 i3 i2\n"
+  },
+  {
+    "input": "12 2 12\ni0 i1 i6 i9 i10 i5 i3 i8 i7 i11 i4 i2\ni10 i6\n",
+    "expectedOutput": "i10 i6 i0 i1 i9 i5 i3 i8 i7 i11 i4 i2\n"
+  },
+  {
+    "input": "4 0 6\ni2 i0 i3 i1\n\n",
+    "expectedOutput": "i2 i0 i3 i1 NULL NULL\n"
+  },
+  {
+    "input": "13 0 7\ni1 i3 i5 i12 i4 i11 i10 i7 i0 i8 i2 i6 i9\n\n",
+    "expectedOutput": "i1 i3 i5 i12 i4 i11 i10\n"
+  },
+  {
+    "input": "10 1 12\ni5 i7 i0 i9 i1 i4 i8 i6 i3 i2\ni9\n",
+    "expectedOutput": "i9 i5 i7 i0 i1 i4 i8 i6 i3 i2 NULL NULL\n"
+  },
+  {
+    "input": "3 2 1\ni2 i1 i0\ni0 i2\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "6 3 5\ni2 i1 i0 i4 i5 i3\ni4 i5 i1\n",
+    "expectedOutput": "i4 i5 i1 i2 i0\n"
+  },
+  {
+    "input": "10 2 10\ni3 i6 i8 i7 i5 i0 i1 i4 i9 i2\ni6 i4\n",
+    "expectedOutput": "i6 i4 i3 i8 i7 i5 i0 i1 i9 i2\n"
+  },
+  {
+    "input": "12 4 12\ni5 i7 i6 i1 i9 i8 i4 i0 i2 i11 i10 i3\ni0 i10 i3 i6\n",
+    "expectedOutput": "i0 i10 i3 i6 i5 i7 i1 i9 i8 i4 i2 i11\n"
+  },
+  {
+    "input": "12 0 6\ni6 i7 i10 i1 i8 i11 i3 i9 i5 i2 i4 i0\n\n",
+    "expectedOutput": "i6 i7 i10 i1 i8 i11\n"
+  },
+  {
+    "input": "15 5 15\ni13 i5 i10 i12 i8 i11 i6 i14 i2 i9 i7 i4 i0 i3 i1\ni11 i9 i8 i10 i13\n",
+    "expectedOutput": "i11 i9 i8 i10 i13 i5 i12 i6 i14 i2 i7 i4 i0 i3 i1\n"
+  },
+  {
+    "input": "8 4 8\ni3 i0 i1 i5 i4 i2 i6 i7\ni0 i4 i5 i2\n",
+    "expectedOutput": "i0 i4 i5 i2 i3 i1 i6 i7\n"
+  },
+  {
+    "input": "9 5 2\ni4 i5 i3 i8 i0 i2 i7 i6 i1\ni5 i1 i8 i6 i4\n",
+    "expectedOutput": "i5 i1\n"
+  },
+  {
+    "input": "9 1 9\ni2 i4 i7 i0 i8 i5 i1 i3 i6\ni8\n",
+    "expectedOutput": "i8 i2 i4 i7 i0 i5 i1 i3 i6\n"
+  },
+  {
+    "input": "14 7 1\ni8 i7 i3 i4 i0 i5 i12 i11 i10 i2 i9 i13 i1 i6\ni9 i6 i8 i0 i7 i13 i4\n",
+    "expectedOutput": "i9\n"
+  },
+  {
+    "input": "4 4 1\ni3 i1 i2 i0\ni0 i2 i1 i3\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "10 7 10\ni5 i2 i7 i4 i9 i3 i1 i8 i6 i0\ni5 i6 i9 i3 i8 i2 i0\n",
+    "expectedOutput": "i5 i6 i9 i3 i8 i2 i0 i7 i4 i1\n"
+  },
+  {
+    "input": "13 2 7\ni10 i5 i0 i12 i8 i2 i7 i1 i9 i4 i11 i3 i6\ni9 i4\n",
+    "expectedOutput": "i9 i4 i10 i5 i0 i12 i8\n"
+  },
+  {
+    "input": "4 1 5\ni0 i1 i2 i3\ni1\n",
+    "expectedOutput": "i1 i0 i2 i3 NULL\n"
+  },
+  {
+    "input": "9 5 3\ni8 i0 i5 i7 i2 i6 i4 i3 i1\ni5 i2 i6 i0 i3\n",
+    "expectedOutput": "i5 i2 i6\n"
+  },
+  {
+    "input": "15 13 6\ni8 i5 i14 i12 i6 i3 i11 i10 i9 i4 i2 i1 i7 i13 i0\ni11 i12 i0 i2 i7 i3 i5 i6 i8 i13 i10 i4 i9\n",
+    "expectedOutput": "i11 i12 i0 i2 i7 i3\n"
+  },
+  {
+    "input": "10 8 13\ni1 i9 i5 i2 i3 i8 i0 i4 i7 i6\ni2 i1 i5 i6 i3 i0 i4 i9\n",
+    "expectedOutput": "i2 i1 i5 i6 i3 i0 i4 i9 i8 i7 NULL NULL NULL\n"
+  },
+  {
+    "input": "12 4 5\ni10 i0 i11 i9 i3 i8 i1 i7 i5 i2 i6 i4\ni6 i9 i5 i1\n",
+    "expectedOutput": "i6 i9 i5 i1 i10\n"
+  },
+  {
+    "input": "5 3 6\ni2 i3 i1 i4 i0\ni3 i2 i4\n",
+    "expectedOutput": "i3 i2 i4 i1 i0 NULL\n"
+  },
+  {
+    "input": "12 1 5\ni9 i6 i3 i2 i1 i5 i11 i0 i8 i4 i10 i7\ni4\n",
+    "expectedOutput": "i4 i9 i6 i3 i2\n"
+  },
+  {
+    "input": "1 0 4\ni0\n\n",
+    "expectedOutput": "i0 NULL NULL NULL\n"
+  },
+  {
+    "input": "10 5 4\ni9 i6 i2 i3 i7 i8 i4 i0 i5 i1\ni3 i5 i1 i0 i8\n",
+    "expectedOutput": "i3 i5 i1 i0\n"
+  },
+  {
+    "input": "4 4 6\ni0 i1 i3 i2\ni3 i1 i0 i2\n",
+    "expectedOutput": "i3 i1 i0 i2 NULL NULL\n"
+  },
+  {
+    "input": "1 1 3\ni0\ni0\n",
+    "expectedOutput": "i0 NULL NULL\n"
+  },
+  {
+    "input": "15 12 13\ni13 i1 i0 i4 i7 i5 i6 i3 i9 i12 i8 i10 i14 i11 i2\ni10 i6 i8 i12 i13 i7 i14 i0 i1 i5 i3 i2\n",
+    "expectedOutput": "i10 i6 i8 i12 i13 i7 i14 i0 i1 i5 i3 i2 i4\n"
+  },
+  {
+    "input": "11 5 8\ni0 i4 i7 i2 i5 i8 i3 i9 i1 i6 i10\ni7 i10 i4 i0 i1\n",
+    "expectedOutput": "i7 i10 i4 i0 i1 i2 i5 i8\n"
+  },
+  {
+    "input": "10 0 2\ni3 i0 i7 i8 i2 i4 i5 i6 i1 i9\n\n",
+    "expectedOutput": "i3 i0\n"
+  },
+  {
+    "input": "10 2 11\ni4 i7 i1 i5 i2 i3 i6 i9 i0 i8\ni4 i1\n",
+    "expectedOutput": "i4 i1 i7 i5 i2 i3 i6 i9 i0 i8 NULL\n"
+  },
+  {
+    "input": "15 4 11\ni0 i4 i14 i9 i5 i12 i2 i3 i13 i10 i7 i8 i6 i11 i1\ni1 i10 i2 i6\n",
+    "expectedOutput": "i1 i10 i2 i6 i0 i4 i14 i9 i5 i12 i3\n"
+  },
+  {
+    "input": "6 5 3\ni5 i2 i3 i0 i4 i1\ni4 i5 i3 i2 i1\n",
+    "expectedOutput": "i4 i5 i3\n"
+  },
+  {
+    "input": "14 6 7\ni6 i12 i7 i8 i1 i4 i9 i5 i10 i0 i11 i13 i3 i2\ni1 i6 i10 i12 i7 i4\n",
+    "expectedOutput": "i1 i6 i10 i12 i7 i4 i8\n"
+  },
+  {
+    "input": "2 2 2\ni0 i1\ni0 i1\n",
+    "expectedOutput": "i0 i1\n"
+  },
+  {
+    "input": "12 8 1\ni3 i5 i2 i0 i10 i6 i7 i11 i1 i9 i4 i8\ni1 i4 i10 i8 i0 i6 i2 i3\n",
+    "expectedOutput": "i1\n"
+  },
+  {
+    "input": "15 11 9\ni5 i10 i6 i12 i7 i3 i2 i14 i0 i9 i13 i8 i11 i1 i4\ni0 i5 i12 i13 i6 i2 i4 i10 i11 i1 i3\n",
+    "expectedOutput": "i0 i5 i12 i13 i6 i2 i4 i10 i11\n"
+  },
+  {
+    "input": "14 14 4\ni4 i10 i2 i1 i3 i5 i12 i9 i13 i7 i6 i8 i11 i0\ni7 i9 i0 i1 i11 i2 i4 i10 i13 i6 i5 i12 i8 i3\n",
+    "expectedOutput": "i7 i9 i0 i1\n"
+  },
+  {
+    "input": "5 4 4\ni0 i4 i2 i3 i1\ni2 i0 i3 i1\n",
+    "expectedOutput": "i2 i0 i3 i1\n"
+  },
+  {
+    "input": "7 0 7\ni1 i2 i0 i6 i5 i4 i3\n\n",
+    "expectedOutput": "i1 i2 i0 i6 i5 i4 i3\n"
+  },
+  {
+    "input": "15 7 2\ni12 i10 i6 i3 i5 i14 i2 i11 i7 i9 i13 i8 i0 i4 i1\ni6 i14 i2 i13 i3 i11 i10\n",
+    "expectedOutput": "i6 i14\n"
+  },
+  {
+    "input": "3 0 5\ni0 i2 i1\n\n",
+    "expectedOutput": "i0 i2 i1 NULL NULL\n"
+  },
+  {
+    "input": "8 5 7\ni4 i0 i3 i1 i7 i6 i5 i2\ni6 i5 i1 i2 i7\n",
+    "expectedOutput": "i6 i5 i1 i2 i7 i4 i0\n"
+  },
+  {
+    "input": "11 11 13\ni0 i2 i1 i6 i5 i10 i8 i9 i4 i7 i3\ni4 i2 i3 i10 i8 i7 i0 i1 i9 i5 i6\n",
+    "expectedOutput": "i4 i2 i3 i10 i8 i7 i0 i1 i9 i5 i6 NULL NULL\n"
+  },
+  {
+    "input": "1 1 1\ni0\ni0\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "12 6 7\ni8 i5 i3 i4 i0 i6 i7 i1 i9 i10 i2 i11\ni6 i2 i8 i7 i5 i9\n",
+    "expectedOutput": "i6 i2 i8 i7 i5 i9 i3\n"
+  },
+  {
+    "input": "1 1 2\ni0\ni0\n",
+    "expectedOutput": "i0 NULL\n"
+  },
+  {
+    "input": "14 14 15\ni0 i2 i1 i10 i9 i11 i12 i8 i4 i13 i3 i5 i7 i6\ni2 i1 i7 i5 i10 i11 i4 i8 i0 i12 i6 i9 i13 i3\n",
+    "expectedOutput": "i2 i1 i7 i5 i10 i11 i4 i8 i0 i12 i6 i9 i13 i3 NULL\n"
+  },
+  {
+    "input": "15 10 11\ni3 i9 i4 i11 i13 i14 i6 i8 i0 i12 i10 i7 i2 i1 i5\ni4 i7 i14 i6 i8 i5 i10 i9 i13 i2\n",
+    "expectedOutput": "i4 i7 i14 i6 i8 i5 i10 i9 i13 i2 i3\n"
+  },
+  {
+    "input": "10 1 12\ni3 i4 i5 i9 i8 i6 i1 i7 i0 i2\ni7\n",
+    "expectedOutput": "i7 i3 i4 i5 i9 i8 i6 i1 i0 i2 NULL NULL\n"
+  },
+  {
+    "input": "15 11 4\ni8 i13 i0 i14 i10 i12 i11 i7 i5 i4 i2 i6 i1 i9 i3\ni5 i12 i10 i1 i7 i11 i13 i3 i4 i2 i14\n",
+    "expectedOutput": "i5 i12 i10 i1\n"
+  },
+  {
+    "input": "14 2 5\ni11 i0 i9 i1 i6 i5 i3 i2 i8 i13 i4 i7 i10 i12\ni11 i2\n",
+    "expectedOutput": "i11 i2 i0 i9 i1\n"
+  },
+  {
+    "input": "5 5 2\ni1 i4 i0 i3 i2\ni0 i2 i1 i3 i4\n",
+    "expectedOutput": "i0 i2\n"
+  },
+  {
+    "input": "2 2 3\ni1 i0\ni1 i0\n",
+    "expectedOutput": "i1 i0 NULL\n"
+  },
+  {
+    "input": "14 8 6\ni4 i9 i12 i2 i6 i10 i5 i1 i0 i13 i3 i11 i7 i8\ni7 i6 i1 i8 i10 i12 i11 i4\n",
+    "expectedOutput": "i7 i6 i1 i8 i10 i12\n"
+  },
+  {
+    "input": "12 9 9\ni8 i6 i0 i3 i1 i2 i5 i11 i7 i4 i9 i10\ni6 i9 i8 i1 i7 i11 i2 i10 i5\n",
+    "expectedOutput": "i6 i9 i8 i1 i7 i11 i2 i10 i5\n"
+  },
+  {
+    "input": "15 7 17\ni9 i4 i11 i14 i0 i7 i12 i10 i2 i6 i3 i5 i8 i13 i1\ni10 i5 i1 i13 i2 i7 i11\n",
+    "expectedOutput": "i10 i5 i1 i13 i2 i7 i11 i9 i4 i14 i0 i12 i6 i3 i8 NULL NULL\n"
+  },
+  {
+    "input": "10 4 4\ni6 i4 i8 i3 i5 i1 i2 i0 i7 i9\ni7 i9 i5 i4\n",
+    "expectedOutput": "i7 i9 i5 i4\n"
+  },
+  {
+    "input": "14 5 15\ni10 i9 i1 i7 i3 i2 i0 i13 i6 i12 i11 i5 i8 i4\ni4 i10 i1 i12 i13\n",
+    "expectedOutput": "i4 i10 i1 i12 i13 i9 i7 i3 i2 i0 i6 i11 i5 i8 NULL\n"
+  },
+  {
+    "input": "3 2 5\ni2 i0 i1\ni1 i2\n",
+    "expectedOutput": "i1 i2 i0 NULL NULL\n"
+  },
+  {
+    "input": "14 1 15\ni7 i10 i3 i9 i0 i12 i13 i2 i6 i8 i5 i11 i4 i1\ni5\n",
+    "expectedOutput": "i5 i7 i10 i3 i9 i0 i12 i13 i2 i6 i8 i11 i4 i1 NULL\n"
+  },
+  {
+    "input": "15 3 12\ni0 i6 i4 i1 i3 i8 i7 i13 i14 i10 i9 i5 i2 i11 i12\ni0 i14 i6\n",
+    "expectedOutput": "i0 i14 i6 i4 i1 i3 i8 i7 i13 i10 i9 i5\n"
+  },
+  {
+    "input": "15 14 15\ni4 i5 i13 i0 i12 i11 i14 i1 i8 i7 i9 i3 i2 i6 i10\ni4 i2 i11 i8 i6 i10 i3 i5 i9 i1 i14 i12 i0 i7\n",
+    "expectedOutput": "i4 i2 i11 i8 i6 i10 i3 i5 i9 i1 i14 i12 i0 i7 i13\n"
+  },
+  {
+    "input": "3 3 4\ni1 i2 i0\ni1 i2 i0\n",
+    "expectedOutput": "i1 i2 i0 NULL\n"
+  },
+  {
+    "input": "10 5 12\ni2 i4 i5 i9 i3 i1 i0 i6 i7 i8\ni9 i1 i2 i6 i8\n",
+    "expectedOutput": "i9 i1 i2 i6 i8 i4 i5 i3 i0 i7 NULL NULL\n"
+  },
+  {
+    "input": "13 13 7\ni6 i9 i2 i3 i7 i5 i8 i12 i4 i1 i10 i11 i0\ni5 i11 i4 i2 i3 i10 i1 i9 i8 i7 i12 i0 i6\n",
+    "expectedOutput": "i5 i11 i4 i2 i3 i10 i1\n"
+  },
+  {
+    "input": "5 0 4\ni0 i3 i2 i4 i1\n\n",
+    "expectedOutput": "i0 i3 i2 i4\n"
+  },
+  {
+    "input": "2 1 4\ni0 i1\ni0\n",
+    "expectedOutput": "i0 i1 NULL NULL\n"
+  },
+  {
+    "input": "14 5 2\ni9 i1 i11 i8 i13 i3 i5 i6 i10 i12 i0 i2 i4 i7\ni7 i3 i0 i4 i10\n",
+    "expectedOutput": "i7 i3\n"
+  },
+  {
+    "input": "2 2 5\ni0 i1\ni0 i1\n",
+    "expectedOutput": "i0 i1 NULL NULL NULL\n"
+  },
+  {
+    "input": "13 8 9\ni9 i11 i3 i12 i6 i7 i1 i0 i5 i8 i10 i2 i4\ni5 i6 i3 i7 i2 i4 i0 i11\n",
+    "expectedOutput": "i5 i6 i3 i7 i2 i4 i0 i11 i9\n"
+  },
+  {
+    "input": "1 1 3\ni0\ni0\n",
+    "expectedOutput": "i0 NULL NULL\n"
+  },
+  {
+    "input": "11 8 12\ni3 i10 i6 i0 i4 i2 i8 i9 i1 i5 i7\ni1 i4 i2 i7 i9 i6 i10 i0\n",
+    "expectedOutput": "i1 i4 i2 i7 i9 i6 i10 i0 i3 i8 i5 NULL\n"
+  },
+  {
+    "input": "2 0 2\ni1 i0\n\n",
+    "expectedOutput": "i1 i0\n"
+  },
+  {
+    "input": "10 4 4\ni6 i3 i5 i7 i0 i9 i2 i8 i1 i4\ni5 i8 i3 i6\n",
+    "expectedOutput": "i5 i8 i3 i6\n"
+  },
+  {
+    "input": "1 1 1\ni0\ni0\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "7 7 5\ni1 i0 i3 i5 i2 i4 i6\ni4 i6 i5 i1 i2 i0 i3\n",
+    "expectedOutput": "i4 i6 i5 i1 i2\n"
+  },
+  {
+    "input": "2 2 1\ni1 i0\ni0 i1\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "1 1 2\ni0\ni0\n",
+    "expectedOutput": "i0 NULL\n"
+  },
+  {
+    "input": "8 6 7\ni7 i3 i4 i5 i1 i0 i2 i6\ni0 i5 i7 i2 i1 i4\n",
+    "expectedOutput": "i0 i5 i7 i2 i1 i4 i3\n"
+  },
+  {
+    "input": "9 0 11\ni2 i4 i0 i5 i3 i7 i1 i8 i6\n\n",
+    "expectedOutput": "i2 i4 i0 i5 i3 i7 i1 i8 i6 NULL NULL\n"
+  },
+  {
+    "input": "8 3 1\ni7 i1 i6 i2 i4 i3 i0 i5\ni2 i0 i4\n",
+    "expectedOutput": "i2\n"
+  },
+  {
+    "input": "6 0 6\ni1 i5 i3 i2 i4 i0\n\n",
+    "expectedOutput": "i1 i5 i3 i2 i4 i0\n"
+  },
+  {
+    "input": "6 4 6\ni3 i0 i1 i5 i4 i2\ni3 i1 i4 i2\n",
+    "expectedOutput": "i3 i1 i4 i2 i0 i5\n"
+  },
+  {
+    "input": "13 1 14\ni11 i1 i5 i6 i10 i4 i12 i9 i7 i8 i0 i2 i3\ni4\n",
+    "expectedOutput": "i4 i11 i1 i5 i6 i10 i12 i9 i7 i8 i0 i2 i3 NULL\n"
+  },
+  {
+    "input": "8 8 1\ni6 i5 i0 i4 i2 i3 i1 i7\ni1 i6 i0 i4 i3 i2 i5 i7\n",
+    "expectedOutput": "i1\n"
+  },
+  {
+    "input": "4 0 4\ni2 i0 i3 i1\n\n",
+    "expectedOutput": "i2 i0 i3 i1\n"
+  },
+  {
+    "input": "5 5 1\ni4 i0 i1 i2 i3\ni2 i4 i1 i0 i3\n",
+    "expectedOutput": "i2\n"
+  },
+  {
+    "input": "5 0 8\ni2 i3 i4 i0 i1\n\n",
+    "expectedOutput": "i2 i3 i4 i0 i1 NULL NULL NULL\n"
+  },
+  {
+    "input": "4 1 2\ni1 i0 i3 i2\ni1\n",
+    "expectedOutput": "i1 i0\n"
+  },
+  {
+    "input": "1 1 1\ni0\ni0\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "2 2 2\ni0 i1\ni0 i1\n",
+    "expectedOutput": "i0 i1\n"
+  },
+  {
+    "input": "2 1 5\ni0 i1\ni1\n",
+    "expectedOutput": "i1 i0 NULL NULL NULL\n"
+  },
+  {
+    "input": "10 10 8\ni1 i8 i9 i4 i0 i2 i7 i6 i5 i3\ni8 i6 i9 i3 i4 i1 i7 i5 i0 i2\n",
+    "expectedOutput": "i8 i6 i9 i3 i4 i1 i7 i5\n"
+  },
+  {
+    "input": "8 1 8\ni1 i3 i7 i6 i2 i4 i0 i5\ni2\n",
+    "expectedOutput": "i2 i1 i3 i7 i6 i4 i0 i5\n"
+  },
+  {
+    "input": "3 1 6\ni1 i0 i2\ni2\n",
+    "expectedOutput": "i2 i1 i0 NULL NULL NULL\n"
+  },
+  {
+    "input": "1 0 3\ni0\n\n",
+    "expectedOutput": "i0 NULL NULL\n"
+  },
+  {
+    "input": "7 3 6\ni4 i3 i6 i2 i5 i1 i0\ni1 i2 i5\n",
+    "expectedOutput": "i1 i2 i5 i4 i3 i6\n"
+  },
+  {
+    "input": "5 4 8\ni1 i2 i0 i4 i3\ni0 i2 i3 i4\n",
+    "expectedOutput": "i0 i2 i3 i4 i1 NULL NULL NULL\n"
+  },
+  {
+    "input": "2 0 2\ni0 i1\n\n",
+    "expectedOutput": "i0 i1\n"
+  },
+  {
+    "input": "6 4 4\ni5 i3 i0 i2 i4 i1\ni0 i1 i5 i4\n",
+    "expectedOutput": "i0 i1 i5 i4\n"
+  },
+  {
+    "input": "12 3 1\ni0 i2 i6 i4 i1 i7 i9 i11 i5 i8 i3 i10\ni0 i1 i10\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "13 11 7\ni3 i6 i9 i5 i10 i0 i2 i7 i12 i1 i8 i4 i11\ni7 i3 i8 i11 i1 i2 i4 i9 i0 i5 i12\n",
+    "expectedOutput": "i7 i3 i8 i11 i1 i2 i4\n"
+  },
+  {
+    "input": "7 1 1\ni3 i4 i0 i2 i6 i5 i1\ni3\n",
+    "expectedOutput": "i3\n"
+  },
+  {
+    "input": "1 0 4\ni0\n\n",
+    "expectedOutput": "i0 NULL NULL NULL\n"
+  },
+  {
+    "input": "12 11 8\ni4 i7 i5 i10 i11 i1 i3 i8 i9 i0 i2 i6\ni10 i2 i5 i6 i1 i11 i8 i7 i4 i0 i3\n",
+    "expectedOutput": "i10 i2 i5 i6 i1 i11 i8 i7\n"
+  },
+  {
+    "input": "8 6 11\ni6 i5 i0 i1 i2 i3 i4 i7\ni1 i5 i4 i6 i0 i2\n",
+    "expectedOutput": "i1 i5 i4 i6 i0 i2 i3 i7 NULL NULL NULL\n"
+  },
+  {
+    "input": "1 1 4\ni0\ni0\n",
+    "expectedOutput": "i0 NULL NULL NULL\n"
+  },
+  {
+    "input": "2 1 1\ni0 i1\ni0\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "2 2 1\ni1 i0\ni0 i1\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "1 1 1\ni0\ni0\n",
+    "expectedOutput": "i0\n"
+  },
+  {
+    "input": "13 11 9\ni5 i11 i2 i9 i4 i7 i6 i10 i1 i3 i12 i8 i0\ni7 i9 i3 i10 i11 i6 i5 i4 i12 i2 i1\n",
+    "expectedOutput": "i7 i9 i3 i10 i11 i6 i5 i4 i12\n"
+  },
+  {
+    "input": "2 2 1\ni0 i1\ni1 i0\n",
+    "expectedOutput": "i1\n"
+  },
+  {
+    "input": "10 9 7\ni7 i5 i1 i6 i4 i9 i3 i8 i0 i2\ni0 i8 i7 i3 i6 i5 i2 i9 i4\n",
+    "expectedOutput": "i0 i8 i7 i3 i6 i5 i2\n"
+  },
+  {
+    "input": "8 3 6\ni3 i4 i7 i1 i6 i5 i0 i2\ni1 i2 i5\n",
+    "expectedOutput": "i1 i2 i5 i3 i4 i7\n"
+  },
+  {
+    "input": "3 1 5\ni2 i1 i0\ni2\n",
+    "expectedOutput": "i2 i1 i0 NULL NULL\n"
+  },
+  {
+    "input": "1 0 2\ni0\n\n",
+    "expectedOutput": "i0 NULL\n"
+  },
+  {
+    "input": "1 1 2\ni0\ni0\n",
+    "expectedOutput": "i0 NULL\n"
+  },
+  {
+    "input": "7 2 1\ni0 i1 i6 i2 i4 i5 i3\ni6 i2\n",
+    "expectedOutput": "i6\n"
+  },
+  {
+    "input": "2 0 2\ni1 i0\n\n",
+    "expectedOutput": "i1 i0\n"
+  },
+  {
+    "input": "9 8 3\ni5 i2 i4 i0 i6 i3 i1 i7 i8\ni5 i7 i6 i3 i8 i2 i4 i1\n",
+    "expectedOutput": "i5 i7 i6\n"
+  },
+  {
+    "input": "14 14 5\ni3 i8 i0 i2 i9 i11 i4 i1 i10 i12 i5 i6 i7 i13\ni13 i6 i7 i1 i2 i10 i3 i0 i5 i11 i4 i12 i9 i8\n",
+    "expectedOutput": "i13 i6 i7 i1 i2\n"
+  },
+  {
+    "input": "8 1 4\ni0 i3 i6 i1 i2 i5 i7 i4\ni4\n",
+    "expectedOutput": "i4 i0 i3 i6\n"
+  },
+  {
+    "input": "11 7 2\ni3 i4 i1 i0 i6 i7 i8 i10 i5 i2 i9\ni8 i6 i0 i2 i5 i9 i3\n",
+    "expectedOutput": "i8 i6\n"
+  },
+  {
+    "input": "13 3 16\ni2 i6 i9 i11 i5 i1 i12 i4 i3 i8 i0 i10 i7\ni0 i6 i1\n",
+    "expectedOutput": "i0 i6 i1 i2 i9 i11 i5 i12 i4 i3 i8 i10 i7 NULL NULL NULL\n"
+  },
+  {
+    "input": "4 3 7\ni3 i1 i0 i2\ni0 i3 i1\n",
+    "expectedOutput": "i0 i3 i1 i2 NULL NULL NULL\n"
+  },
+  {
+    "input": "9 2 9\ni1 i5 i6 i7 i3 i0 i2 i8 i4\ni0 i1\n",
+    "expectedOutput": "i0 i1 i5 i6 i7 i3 i2 i8 i4\n"
+  },
+  {
+    "input": "12 2 8\ni6 i1 i10 i0 i9 i2 i3 i5 i8 i11 i4 i7\ni7 i1\n",
+    "expectedOutput": "i7 i1 i6 i10 i0 i9 i2 i3\n"
+  },
+  {
+    "input": "1 1 2\ni0\ni0\n",
+    "expectedOutput": "i0 NULL\n"
+  },
+  {
+    "input": "2 2 4\ni0 i1\ni0 i1\n",
+    "expectedOutput": "i0 i1 NULL NULL\n"
+  },
+  {
+    "input": "12 1 9\ni7 i11 i4 i9 i0 i1 i6 i3 i8 i5 i10 i2\ni4\n",
+    "expectedOutput": "i4 i7 i11 i9 i0 i1 i6 i3 i8\n"
+  },
+  {
+    "input": "10 8 9\ni0 i6 i3 i7 i8 i5 i1 i2 i4 i9\ni5 i7 i8 i1 i4 i3 i0 i6\n",
+    "expectedOutput": "i5 i7 i8 i1 i4 i3 i0 i6 i2\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "旋转时只转置",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); offset=2; a=[]\n    for _ in range(rows):a.append(list(map(int,data[offset:offset+cols]))); offset+=cols\n    q=int(data[offset]); offset+=1\n    for _ in range(q):\n        t=data[offset]; offset+=1\n        if t=='rotate90Clockwise':a=[list(row) for row in zip(*a)]\n        elif t=='swapRows':\n            i,j=map(int,data[offset:offset+2]); offset+=2; a[i],a[j]=a[j],a[i]\n        elif t=='swapColumns':\n            i,j=map(int,data[offset:offset+2]); offset+=2\n            for row in a:row[i],row[j]=row[j],row[i]\n        elif t=='reverseRow':\n            i=int(data[offset]); offset+=1; a[i].reverse()\n        else:\n            j=int(data[offset]); offset+=1\n            for i in range(len(a)//2):a[i][j],a[-1-i][j]=a[-1-i][j],a[i][j]\n    return f'{len(a)} {len(a[0])}\\n'+'\\n'.join(' '.join(map(str,row)) for row in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "行反转无效",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); offset=2; a=[]\n    for _ in range(rows):a.append(list(map(int,data[offset:offset+cols]))); offset+=cols\n    q=int(data[offset]); offset+=1\n    for _ in range(q):\n        t=data[offset]; offset+=1\n        if t=='rotate90Clockwise':a=[list(row) for row in zip(*a[::-1])]\n        elif t=='swapRows':\n            i,j=map(int,data[offset:offset+2]); offset+=2; a[i],a[j]=a[j],a[i]\n        elif t=='swapColumns':\n            i,j=map(int,data[offset:offset+2]); offset+=2\n            for row in a:row[i],row[j]=row[j],row[i]\n        elif t=='reverseRow':\n            i=int(data[offset]); offset+=1; a[i].sort()\n        else:\n            j=int(data[offset]); offset+=1\n            for i in range(len(a)//2):a[i][j],a[-1-i][j]=a[-1-i][j],a[i][j]\n    return f'{len(a)} {len(a[0])}\\n'+'\\n'.join(' '.join(map(str,row)) for row in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

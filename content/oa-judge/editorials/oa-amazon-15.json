@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-15",
+  "title": "订单区间中的较小商品数量",
+  "explanation": "## 思路\n\n用差分计算每个位置被覆盖次数。按商品值排序并累加覆盖次数，对查询二分寻找第一个不小于查询值的位置。\n\n## 正确性证明\n\n区间差分的前缀和等于每个位置被贡献的次数。排序不改变多重集合；严格小于查询值的项恰好位于 lower_bound 之前，累加这些位置的权重得到答案。\n\n## 复杂度\n\n时间 O((n+q)log n+m)，空间 O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left\n    n,m,q=map(int,d[:3]); a=list(map(int,d[3:3+n])); diff=[0]*(n+1); pos=3+n\n    for _ in range(m):\n        l,r=map(int,d[pos:pos+2]); pos+=2; diff[l]+=1; diff[r+1]-=1\n    pairs=[]; count=0\n    for i,v in enumerate(a):\n        count+=diff[i]; pairs.append((v,count))\n    pairs.sort(); values=[v for v,c in pairs]; prefix=[0]\n    for v,c in pairs: prefix.append(prefix[-1]+c)\n    return ' '.join(str(prefix[bisect_left(values,int(t))]) for t in d[pos:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#15-get-smaller-items",
+  "sourceContentHash": "e91d6d9df0780215096eaf78fe924f67fecf6f7178f672c907540e2dbe29cf36",
+  "author": "CSWork"
+}

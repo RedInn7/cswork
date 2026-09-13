@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-5",
+  "title": "所有前缀和非负的最长子段",
+  "explanation": "## 思路\n\n对前缀和数组找每个位置右侧第一个严格更小的前缀和。它之前的元素均可选，遇到它即失败。\n\n## 正确性证明\n\n子段从 l 开始时，每个前缀非负等价于之后的前缀和始终≥S[l]。第一个严格小于 S[l] 的位置恰好是第一个不合法的终点。单调栈逐一确定这些位置，计算最长有效长度即可。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:])); prefix=[0]\n    for v in a: prefix.append(prefix[-1]+v)\n    stop=[len(prefix)]*len(prefix); stack=[]\n    for i,v in enumerate(prefix):\n        while stack and prefix[stack[-1]]>v: stop[stack.pop()]=i\n        stack.append(i)\n    return str(max(stop[i]-i-1 for i in range(len(a))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#5-consistency-score",
+  "sourceContentHash": "da001287191150089de604df802f9fa43a7e2f15f183efd3cada2e9e6191bcd3",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等值也当严格最大",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); vals=list(map(int,data[2:])); result=[]\n    for i in range(rows):\n        for j in range(cols):\n            v=vals[i*cols+j]\n            if not v:continue\n            ok=True\n            for x in range(max(0,i-v),min(rows,i+v+1)):\n                for y in range(max(0,j-v),min(cols,j+v+1)):\n                    if (x==i and y==j) or (abs(x-i)==v and abs(y-j)==v):continue\n                    if vals[x*cols+y]>v:ok=False; break\n                if not ok:break\n            if ok:result.append((i,j))\n    return str(len(result))+''.join(f'\\n{i} {j}' for i,j in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "没有排除原正方形角落",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); vals=list(map(int,data[2:])); result=[]\n    for i in range(rows):\n        for j in range(cols):\n            v=vals[i*cols+j]\n            if not v:continue\n            ok=True\n            for x in range(max(0,i-v),min(rows,i+v+1)):\n                for y in range(max(0,j-v),min(cols,j+v+1)):\n                    if (x==i and y==j) or False:continue\n                    if vals[x*cols+y]>=v:ok=False; break\n                if not ok:break\n            if ok:result.append((i,j))\n    return str(len(result))+''.join(f'\\n{i} {j}' for i,j in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

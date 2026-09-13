@@ -3,7 +3,11 @@ import { resolve } from 'node:path';
 import { z } from 'zod';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
-import { oaJudgeRegistry, oaReadyProblemIds } from './oa-judge';
+import {
+  oaJudgeRegistry,
+  oaReadyProblemIds,
+  oaVerifiedStatement,
+} from './oa-judge';
 
 const slug = z
   .string()
@@ -204,9 +208,10 @@ export async function handleOaLibrary(
     return json(data.solution(id));
   }
   const ready = await oaReadyProblemIds();
-  return json(
-    id
-      ? data.detail(id, ready)
-      : data.list(new URL(request.url).searchParams, ready),
-  );
+  if (id) {
+    const detail = data.detail(id, ready);
+    if (ready.has(id)) detail.statement = await oaVerifiedStatement(id);
+    return json(detail);
+  }
+  return json(data.list(new URL(request.url).searchParams, ready));
 }

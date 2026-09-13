@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-25",
+  "title": "追加包裹后的最小最大负载",
+  "explanation": "## 思路\n\n答案是原最大负载与所有包裹总数除以n向上取整的较大者。\n\n## 正确性证明\n\n最大值不可能低于原最大负载，也不可能低于平均负载向上取整。取两者较大值M时，所有初始值≤M，剩余容量nM−sum(a)≥extra；逐个填入即可容纳全部新增包裹，因此下界可达。\n\n## 复杂度\n\n时间 O(n)，除输入外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,extra=map(int,d[:2]); a=list(map(int,d[2:])); total=sum(a)+extra\n    return str(max(max(a),(total+n-1)//n))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#25-find-minimum-maximum",
+  "sourceContentHash": "6f574f480feca3495d6beeaba286b1a816c7ea0fe951a538a27d59064f00f94b",
+  "author": "CSWork"
+}

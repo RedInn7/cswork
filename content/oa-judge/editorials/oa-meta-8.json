@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-8",
+  "title": "每次建房后的最长连续房屋",
+  "explanation": "## 思路\n\n哈希表保存已占用位置和每段两端的长度。新位置将左右相邻段合并，并更新新段两端及全局最大值。\n\n## 为什么正确\n\n新位置尚未占用时，相邻已占用位置必是对应段的端点，记录的长度可直接使用。合并长度是左段长度+1+右段长度；只需修改新段端点供之后查找。重复插入不改变集合。\n\n## 复杂度\n\n期望时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    lengths={}; best=0; answers=[]\n    for x in map(int,data[1:]):\n        if x not in lengths:\n            left=lengths.get(x-1,0); right=lengths.get(x+1,0); total=left+right+1\n            lengths[x]=total; lengths[x-left]=total; lengths[x+right]=total; best=max(best,total)\n        answers.append(best)\n    return ' '.join(map(str,answers))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#8-longest-contiguous-house-segment-after-each-build",
+  "sourceContentHash": "e6d1fd99841d2fa41da87d729b2f37bc177fea7c27df04538ecf12751fc4245d",
+  "author": "CSWork"
+}

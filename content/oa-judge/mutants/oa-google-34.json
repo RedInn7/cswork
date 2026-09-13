@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相接区间未合并",
+    "code": "def solve(data):\n    n=int(data[0]);intervals=sorted((int(data[1+2*i]),int(data[2+2*i])) for i in range(n));ds,de=map(int,data[1+2*n:]);merged=[]\n    for a,b in intervals:\n        if merged and a<merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    result=[]\n    for a,b in merged:\n        if b<=ds or a>=de:result.append((a,b))\n        else:\n            if a<ds:result.append((a,ds))\n            if b>de:result.append((de,b))\n    return ' '.join([str(len(result))]+[str(v) for pair in result for v in pair])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "丢掉免打扰右侧会议",
+    "code": "def solve(data):\n    n=int(data[0]);intervals=sorted((int(data[1+2*i]),int(data[2+2*i])) for i in range(n));ds,de=map(int,data[1+2*n:]);merged=[]\n    for a,b in intervals:\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    result=[]\n    for a,b in merged:\n        if b<=ds or a>=de:result.append((a,b))\n        else:\n            if a<ds:result.append((a,ds))\n            if False:result.append((de,b))\n    return ' '.join([str(len(result))]+[str(v) for pair in result for v in pair])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
