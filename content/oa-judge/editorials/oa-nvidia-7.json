@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-7",
+  "title": "按点分路径读取嵌套字典",
+  "explanation": "## 思路\n\n从根开始逐段查找字典键；失败立即返回null，成功序列化当前值。\n\n## 正确性\n\n处理前i段后当前值恰为该前缀路径所指值。若无法在对象中访问下一键，完整路径不存在；否则不变式继续成立。最后一段后返回值而非其真假性。独立oracle枚举所有可通过字典键到达的路径及值，再查询路径表。\n\n## 复杂度\n\n解析与输出时间O(B)，查询O(路径字符数)期望，空间O(B)，B是输入输出字节数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import json\ndef solve(raw):\n    document,path=raw.split('\\n',1);path=path.rstrip('\\r\\n');value=json.loads(document)\n    for key in path.split('.'):\n        if not isinstance(value,dict) or key not in value:\n            value=None;break\n        value=value[key]\n    return json.dumps(value,ensure_ascii=False,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nvidia#7-dynamic-path-accessor",
+  "sourceContentHash": "9dfe3f929165f1dc53291f88f3cef0a09eba60afb8071eb68d982603e342a927",
+  "author": "CSWork"
+}

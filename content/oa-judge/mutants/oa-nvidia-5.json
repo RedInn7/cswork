@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许结果变大",
+    "code": "def solve(d):\n    s=d[0]\n    for i in range(len(s)//2):\n        if s[i]!='a':return s[:i]+'a'+s[i+1:]\n    return s[:-1]+'b'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误改变中间字符",
+    "code": "def solve(d):\n    s=d[0]\n    for i in range((len(s)+1)//2):\n        if s[i]!='a':return s[:i]+'a'+s[i+1:]\n    return 'IMPOSSIBLE'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

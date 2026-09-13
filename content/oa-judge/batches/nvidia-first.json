@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-nvidia-1",
+      "sourceContentHash": "94022a83366e0df0e9fd9c9c8ecd84fb9e9ec418e24a5ae04ae70e2a4fb68af5",
+      "packageChecksum": "6e24b0f66307a2f70a61526f9ef95cd25b72fa9c7bcf266278f1435306ac6315",
+      "editorial": "## 思路\n\n每个原元素被计入N−1次，总和T=sum(pref)/(N−1)，逐项答案T−pref[i]。\n\n## 正确性\n\n所有等式相加唯一确定T，逐项作差唯一还原数组；代回原等式可验证。独立小数据对照从p[0]−p[i]=a[i]−a[0]求首项，再逐项直接求排除自身和核验。\n\n## 复杂度\n\n时间O(N)，除输入输出外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);p=list(map(int,d[1:]));total=sum(p)//(n-1)\n    return ' '.join(str(total-v) for v in p)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nvidia-2",
+      "sourceContentHash": "c22fcb57f4c6d7f1a8112c1e1631964477f1c6e3de2aae1fe14ce73cdcc46a51",
+      "packageChecksum": "0a6d330652c85baeced5f806fc7afc3521b786b20df5c97257a3f75d55e78bb1",
+      "editorial": "## 思路\n\n遍历右端点r，用前缀和减去下标≤r−K的最小前缀和。\n\n## 正确性\n\n固定右端点的全部合法左端点恰对应前缀下标0..r−K；减去最小前缀取得该右端点最优，再枚举右端点求全局最优。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));p=[0]\n    for v in a:p.append(p[-1]+v)\n    minimum=0;answer=None\n    for r in range(k,n+1):\n        minimum=min(minimum,p[r-k]);value=p[r]-minimum\n        answer=value if answer is None else max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nvidia-3",
+      "sourceContentHash": "5cb663b03503e299d1a9cd7b1d724275a2d73c53bab346d34c361fbc45c6e940",
+      "packageChecksum": "7e9cfd3d1eb201f718865662f6780a9f791d7b5dafa971e54e98000bae5f39a3",
+      "editorial": "## 思路\n\n首项等于pref[0]，其余为相邻前缀异或。\n\n## 正确性\n\n共同前缀中的元素各异或两次抵消，仅余当前元素，故每项唯一确定。独立oracle重新遍历已还原全部元素求前缀，而非相邻输入公式。\n\n## 复杂度\n\n时间O(N)，除输入输出外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from itertools import islice\ndef solve(d):\n    previous=0;answer=[]\n    for token in islice(d,1,None):\n        value=int(token);answer.append(str(previous^value));previous=value\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nvidia-4",
+      "sourceContentHash": "de5e141d5fe660cd7ec52520890e2bd36ab4a7fef9df1e3112acaa17099451cd",
+      "packageChecksum": "996fda50a4d162b4752bda14de8a60e872ba6c9d6cb3eb991fcc8a49bd78eff6",
+      "editorial": "## 思路\n\n先求总和，枚举前N−1个切分位置，比较前缀和与剩余和。\n\n## 正确性\n\n合法切分与前N−1个下标一一对应，严格比较即题目要求。\n\n## 复杂度\n\n时间O(N)，除输入外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);left=0;answer=0\n    for i in range(len(a)-1):\n        left+=a[i]\n        if left>total-left:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nvidia-5",
+      "sourceContentHash": "09d5152f1d46a5d9df92e94a2b0ce7942f7a25dcb094e7dc96a9fff3be5c0f76",
+      "packageChecksum": "713e537b26c5132bdeed8dd02cc0eb0e104aa62d8066b0927512fc1399de0aab",
+      "editorial": "## 思路\n\n把前半首个非a字符改为a；找不到就不可能。不能使用末位改b的常见变体，本题明确要求变小。\n\n## 正确性\n\n最早能降低的位置给出字典序最优修改；改为a制造不对称。若前半全a，对称后半也全a，只有可能较大的中心能降低，但改中心仍为回文，故无解。\n\n## 复杂度\n\n时间O(N)，输出空间O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0]\n    for i in range(len(s)//2):\n        if s[i]!='a':return s[:i]+'a'+s[i+1:]\n    return 'IMPOSSIBLE'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nvidia-6",
+      "sourceContentHash": "92d76fefc524169d315c0b6dc23e5d7c44ad624c4c136cf6aa77702412dd153b",
+      "packageChecksum": "92547d5f46842bed4a64446dad4617217ff617a95f682b3710e7e16909af0e26",
+      "editorial": "## 思路\n\n统计全部字符可提供的相同字符对数，按每串floor(长度/2)的需求升序消耗预算。\n\n## 正确性\n\n交换能实现字符池任意排列。每个回文需floor(长度/2)对相同字符，奇数串中心用任意剩余字符。选定对后，剩余字符数一定足以填满所有中心和未选择字符串，必要时拆剩余字符对即可。因此只有对数预算约束。每串收益相同，优先最小需求的交换论证保证最大数量。\n\n## 复杂度\n\n时间O(总字符数+N log N)，额外空间O(N+26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\ndef solve(d):\n    words=d[1:];counts=Counter()\n    for s in words:counts.update(s)\n    pairs=sum(v//2 for v in counts.values());answer=0\n    for needed in sorted(len(s)//2 for s in words):\n        if needed>pairs:break\n        pairs-=needed;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nvidia-7",
+      "sourceContentHash": "9dfe3f929165f1dc53291f88f3cef0a09eba60afb8071eb68d982603e342a927",
+      "packageChecksum": "b2352a44fa908f3c86708d8710963a65534da0632abcb5ff6f785aa76d15db60",
+      "editorial": "## 思路\n\n从根开始逐段查找字典键；失败立即返回null，成功序列化当前值。\n\n## 正确性\n\n处理前i段后当前值恰为该前缀路径所指值。若无法在对象中访问下一键，完整路径不存在；否则不变式继续成立。最后一段后返回值而非其真假性。独立oracle枚举所有可通过字典键到达的路径及值，再查询路径表。\n\n## 复杂度\n\n解析与输出时间O(B)，查询O(路径字符数)期望，空间O(B)，B是输入输出字节数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\ndef solve(raw):\n    document,path=raw.split('\\n',1);path=path.rstrip('\\r\\n');value=json.loads(document)\n    for key in path.split('.'):\n        if not isinstance(value,dict) or key not in value:\n            value=None;break\n        value=value[key]\n    return json.dumps(value,ensure_ascii=False,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

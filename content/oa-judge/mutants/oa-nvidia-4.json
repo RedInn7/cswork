@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误接受相等",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);left=0;answer=0\n    for i in range(len(a)-1):\n        left+=a[i]\n        if left>=total-left:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏最后切分",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);left=0;answer=0\n    for i in range(len(a)-2):\n        left+=a[i]\n        if left>total-left:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
