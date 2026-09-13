@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-4",
+  "title": "前缀字母循环递增",
+  "explanation": "## 思路\n\n用差分数组记录每次前缀加1，扫描前缀和得到每个位置总递增次数，再对26取模。\n\n## 正确性证明\n\n各位置的递增是可交换的模26加法。每次在0加1、在k减1，前缀和恰统计覆盖该位置的操作次数，因此一次扫描等价于全部操作。\n\n## 复杂度\n\n时间O(|s|+m)，空间O(|s|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0]; diff=[0]*(len(s)+1)\n    for k in map(int,d[2:]):diff[0]+=1;diff[k]-=1\n    count=0;result=[]\n    for i,c in enumerate(s):count+=diff[i];result.append(chr(97+(ord(c)-97+count)%26))\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#4-roll-operation-on-string",
+  "sourceContentHash": "141b8f58c42a3ea1168902b5f4a53dd426bbd97a72f6f964dfe3547bfd3c7349",
+  "author": "CSWork"
+}

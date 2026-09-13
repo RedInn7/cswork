@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-77",
+  "title": "多玩家三连棋逐步状态",
+  "explanation": "## 思路\n\n用数组存棋盘。新子落下后仅检查经过它的四条方向，每边最多看2格。先判断已有赢家和重复落子。\n\n## 正确性\n\n此前尚无胜者，新增三连一定包含本次新增格。四个方向枚举全部直线，每侧最多2格足够判断是否构成长度3。状态判断顺序与规则一致。\n\n## 复杂度\n\n时间O(n²+m)，空间O(n²)，每步胜负检查O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k,m=map(int,data[:3]);v=list(map(int,data[3:]));board=[0]*(n*n);occupied=0;winner=False;answer=[]\n    for i in range(0,len(v),3):\n        player,r,c=v[i:i+3];cell=r*n+c\n        if winner:answer.append('Game Over');continue\n        if board[cell]:answer.append('Invalid Move');continue\n        board[cell]=player;occupied+=1\n        for dr,dc in ((1,0),(0,1),(1,1),(1,-1)):\n            count=1\n            for direction in (-1,1):\n                for step in (1,2):\n                    a,b=r+direction*step*dr,c+direction*step*dc\n                    if not(0<=a<n and 0<=b<n) or board[a*n+b]!=player:break\n                    count+=1\n            if count>=3:winner=True\n        answer.append(f'Player {player} won' if winner else ('Draw' if occupied==n*n else 'In Progress'))\n    return '\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#77-tic-tac-toe-game-status",
+  "sourceContentHash": "bf2c7d8e603f95dc8bee2a9e13ffeb1cb7a7f06cfd440cf17cfcf3a8248f3467",
+  "author": "CSWork"
+}

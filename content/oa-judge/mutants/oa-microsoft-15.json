@@ -1,0 +1,10 @@
+[
+  {
+    "name": "总只选择一个人",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));v=max(a);freq=[0]*(v+2)\n    for x in a:freq[x]+=1\n    prefix=[0]*(v+2)\n    for x in range(1,v+1):prefix[x]=prefix[x-1]+freq[x]\n    following=[v+1]*(v+2);last=v+1\n    for x in range(v,0,-1):\n        following[x]=last\n        if freq[x]<=1:last=x\n    best=0;lo=hi=1\n    for left in range(1,v+1):\n        if not freq[left]:continue\n        stop=following[left];right=stop if stop<=v and freq[stop]==1 else stop-1;count=prefix[right]-prefix[left-1]\n        if count>best:best=count;lo=left;hi=right\n    result=list(range(lo,hi+1))\n    for x in range(hi,lo-1,-1):result.extend([x]*(freq[x]-1))\n    return '1\\n'+str(a[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "排序后忽略首尾差",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));v=max(a);freq=[0]*(v+2)\n    for x in a:freq[x]+=1\n    prefix=[0]*(v+2)\n    for x in range(1,v+1):prefix[x]=prefix[x-1]+freq[x]\n    following=[v+1]*(v+2);last=v+1\n    for x in range(v,0,-1):\n        following[x]=last\n        if freq[x]<=1:last=x\n    best=0;lo=hi=1\n    for left in range(1,v+1):\n        if not freq[left]:continue\n        stop=following[left];right=stop if stop<=v and freq[stop]==1 else stop-1;count=prefix[right]-prefix[left-1]\n        if count>best:best=count;lo=left;hi=right\n    result=list(range(lo,hi+1))\n    for x in range(hi,lo-1,-1):result.extend([x]*(freq[x]-1))\n    return str(len(result))+'\\n'+' '.join(map(str,sorted(result)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

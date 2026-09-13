@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏相邻奖励",
+    "code": "def solve(data):\n    n=int(data[0]);a=list(map(int,data[1:n+1]));s=data[-1];answer=0\n    for i,c in enumerate(s):\n        if c=='T':answer+=a[i]\n        if i and s[i-1:i+1]=='TT':answer+=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "空格也获得基础分",
+    "code": "def solve(data):\n    n=int(data[0]);a=list(map(int,data[1:n+1]));s=data[-1];answer=0\n    for i,c in enumerate(s):\n        if True:answer+=a[i]\n        if i and s[i-1:i+1]=='TT':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

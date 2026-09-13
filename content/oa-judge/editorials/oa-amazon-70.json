@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-70",
+  "title": "按序访问环形无人机枢纽的最短总时间",
+  "explanation": "## 思路\n\n前缀和给出枢纽在线性展开上的位置，每次相邻请求的距离取两方向弧长最小值。\n\n## 正确性证明\n\n无负边环上两点最短路径只可能是顺时针或逆时针简单弧。每步必须到达指定枢纽，下一步起点固定，因此逐步最小化可以独立相加。\n\n## 复杂度\n\n时间O(m+n)，空间O(m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    m,n=map(int,d[:2]);edges=list(map(int,d[2:2+m]));prefix=[0]\n    for w in edges:prefix.append(prefix[-1]+w)\n    previous=0;answer=0\n    for index in range(2+m,len(d)):\n        current=int(d[index])-1;distance=abs(prefix[current]-prefix[previous]);answer+=min(distance,prefix[-1]-distance);previous=current\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#70-compute-min-delivery-time-circular-drone-hubs",
+  "sourceContentHash": "a3499a9c7642502b90e61d9e9a41e6ef97267857c51141ef1844dbd229757ae4",
+  "author": "CSWork"
+}

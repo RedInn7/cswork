@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-69",
+  "title": "合并质量类别使同值连续的最低费用",
+  "explanation": "## 思路\n\n用最后出现位置划分最小封闭块，类似按字符最后位置分段。每块所有值必须合并为一种，选择该块原频次最高者保留，费用=块长−最大频次。\n\n## 正确性证明\n\n若某值两次出现夹住另一值，最终保留该值时中间位置必须同值；即使先改名，全局替换也不能拆开同类位置。因此相互交错的出现区间闭包必须成为同类。不同封闭块没有共享值，可独立合并。保留某类原值无需支付该类频次，其余每个位置至少改一次，选最高频次达到最低费用。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));last={v:i for i,v in enumerate(a)};counts={};end=0;start=0;largest=0;answer=0\n    for i,v in enumerate(a):\n        end=max(end,last[v]);counts[v]=counts.get(v,0)+1;largest=max(largest,counts[v])\n        if i==end:answer+=i-start+1-largest;start=i+1;counts={};largest=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#69-get-min-amount-contiguous-quality",
+  "sourceContentHash": "d9be2de68c11794bd8f4b7c47467dc8c7bf0074d34d80a7d25c9ec5744c2fd3e",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许忽略已有字母",
+    "code": "def solve(data):\n    h,w=map(int,data[:2]);g=data[2:2+h];word=data[-1]\n    rows=g+[''.join(g[r][c] for r in range(h)) for c in range(w)]\n    for row in rows:\n        for part in row.split('#'):\n            if len(part)==len(word) and True:return '1'\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许反向填入",
+    "code": "def solve(data):\n    h,w=map(int,data[:2]);g=data[2:2+h];word=data[-1]\n    rows=g+[''.join(g[r][c] for r in range(h)) for c in range(w)]\n    for row in rows:\n        for part in row.split('#')+[p[::-1] for p in row.split('#')]:\n            if len(part)==len(word) and all(a=='_' or a==b for a,b in zip(part,word)):return '1'\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

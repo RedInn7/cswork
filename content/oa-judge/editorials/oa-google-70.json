@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-70",
+  "title": "所有子串重排成回文的修改总数",
+  "explanation": "## 思路\n\n单个子串代价为奇数频次字母数除以2向下取整。对每个字母，前缀奇偶性不同的两前缀数量为zero·one，累计即所有子串奇数频次总数。再减去奇数长度子串数，最后除2。\n\n## 正确性\n\n每次替换最多消去两个奇数频次，因此代价下界floor(odd/2)，把一奇数字母改为另一奇数字母即可达到。子串字母频次奇偶等于两端前缀奇偶异或；odd的奇偶等于子串长度奇偶，所以减去奇数长度子串个数可统一实现向下取整。\n\n## 复杂度\n\n时间O(26n)，空间O(26)，答案需64位整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    s=data[0];n=len(s);parity=[0]*26;ones=[0]*26\n    for c in s:\n        parity[ord(c)-97]^=1\n        for j in range(26):ones[j]+=parity[j]\n    odd=sum(v*(n+1-v) for v in ones);odd_lengths=((n+2)//2)*((n+1)//2)\n    return str((odd-odd_lengths)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#70-dna-sequencing",
+  "sourceContentHash": "bf334bd30b87c8b4ab5cf75d3376b56753d519a447804d0b601e948b3836b59e",
+  "author": "CSWork"
+}

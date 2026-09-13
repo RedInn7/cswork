@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-72",
+  "title": "单行键盘的输入时间",
+  "explanation": "## 思路\n\n预处理每个字母的位置，顺次累加与上个位置的距离。\n\n## 正确性\n\n每个字符的目标位置唯一，当前手指位置由上个字符确定，因此每次必要移动量就是两位置之差，求和即总时间。\n\n## 复杂度\n\n时间O(26+n)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    layout,word=data;position={c:i for i,c in enumerate(layout)};current=0;answer=0\n    for c in word:\n        answer+=abs(position[c]-current);current=position[c]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#72-time-to-type-a-string",
+  "sourceContentHash": "f4eb15cb57dac89633606d2ae21cff13d45da6ac02af9857aa643a917d55816e",
+  "author": "CSWork"
+}

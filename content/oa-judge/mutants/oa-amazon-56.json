@@ -1,0 +1,10 @@
+[
+  {
+    "name": "零数量误作一次方",
+    "code": "def solve(d):\n    s=d[0];n=len(s);prefix=[0]\n    for c in s:prefix.append(prefix[-1]+(c=='1'))\n    answer=0;k=1\n    while k*k+k<=n:\n        length=2*k\n        for end in range(length,n+1):answer+=prefix[end]-prefix[end-length]==k\n        k+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉最后一个窗口",
+    "code": "def solve(d):\n    s=d[0];n=len(s);prefix=[0]\n    for c in s:prefix.append(prefix[-1]+(c=='1'))\n    answer=0;k=1\n    while k*k+k<=n:\n        length=k*k+k\n        for end in range(length,n):answer+=prefix[end]-prefix[end-length]==k\n        k+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

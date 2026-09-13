@@ -1,0 +1,10 @@
+[
+  {
+    "name": "自由对也强制颜色",
+    "code": "def solve(d):\n    s=d[0];last=None;runs=0\n    for i in range(0,len(s),2):\n        if s[i]!=last:runs+=1;last=s[i]\n    return str(max(1,runs))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "全自由返回0",
+    "code": "def solve(d):\n    s=d[0];last=None;runs=0\n    for i in range(0,len(s),2):\n        if s[i]==s[i+1] and s[i]!=last:runs+=1;last=s[i]\n    return str(runs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

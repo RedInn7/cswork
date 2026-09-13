@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把已经相同的也计操作",
+    "code": "def solve(d):\n    s=d[0];counts={s[-1]:1};answer=0\n    for i in range(len(s)-2,-1,-1):\n        c=s[i]\n        if c==s[i+1]:answer+=len(s)-i-1;counts={c:len(s)-i-1}\n        counts[c]=counts.get(c,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只替换紧邻的一个字符",
+    "code": "def solve(d):\n    s=d[0];counts={s[-1]:1};answer=0\n    for i in range(len(s)-2,-1,-1):\n        c=s[i]\n        if c==s[i+1]:answer+=int(len(s)-i-1>counts.get(c,0));counts={c:len(s)-i-1}\n        counts[c]=counts.get(c,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

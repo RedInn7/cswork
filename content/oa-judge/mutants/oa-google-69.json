@@ -1,0 +1,10 @@
+[
+  {
+    "name": "热度升序",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);products=[(data[2+2*i],int(data[3+2*i])) for i in range(n)];word=data[-1];answer=[[] for _ in word]\n    for name,score in sorted(products,key=lambda p:(p[1],p[0])):\n        for i in range(min(len(name),len(word))):\n            if name[i]!=word[i]:break\n            if len(answer[i])<k:answer[i].append(name)\n    return '\\n'.join(str(len(row))+(' '+' '.join(row) if row else '') for row in answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "并列名称逆序",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);products=[(data[2+2*i],int(data[3+2*i])) for i in range(n)];word=data[-1];answer=[[] for _ in word]\n    for name,score in sorted(products,key=lambda p:(p[1],p[0]),reverse=True):\n        for i in range(min(len(name),len(word))):\n            if name[i]!=word[i]:break\n            if len(answer[i])<k:answer[i].append(name)\n    return '\\n'.join(str(len(row))+(' '+' '.join(row) if row else '') for row in answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

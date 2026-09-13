@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-58",
+  "title": "最少翻转下的最少偶数连续段",
+  "explanation": "## 思路\n\n把串按原位置每两位分组。00、11无需翻转且最少翻转时必须保留；01、10必须翻1位，可任选00/11。忽略自由组，统计被迫组字符变化数加1；全自由则1段。\n\n## 正确性证明\n\n所有偶数极大段边界必在偶数位置，故每个位置对必须相同，各对最少翻转独立确定。自由对可填为左右某种颜色，不会增加超过被迫颜色变化所需的段数；每次被迫颜色变化至少增加一段，下界可达。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];last=None;runs=0\n    for i in range(0,len(s),2):\n        if s[i]==s[i+1] and s[i]!=last:runs+=1;last=s[i]\n    return str(max(1,runs))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#58-segmentify-min-even-length-subsegments",
+  "sourceContentHash": "b593f71bc695539f345e64fd1c5a9b05aa9ced14d1167afe1dd890eb761b7163",
+  "author": "CSWork"
+}

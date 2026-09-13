@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-9",
+  "title": "给图节点赋值后的最大边和",
+  "explanation": "## 思路\n\n每个节点赋值会在总和里出现度数次，把较大的值分配给较大的度数即可。\n\n## 正确性证明\n\n若度数d1<d2却给前者更大值v1>v2，交换后总和增加(d2−d1)(v1−v2)≥0。不断交换得到度数与值同序配对最优。\n\n## 复杂度\n\n时间O(N log N+M)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);degree=[0]*n;edges=list(map(int,d[2:]))\n    for v in edges:degree[v-1]+=1\n    degree.sort()\n    return str(sum((i+1)*v for i,v in enumerate(degree)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#9-assign-values",
+  "sourceContentHash": "4583698d8f4270b97aa6651a37226fc6246f1fc8a9c5b58f3ea52b41ff537624",
+  "author": "CSWork"
+}

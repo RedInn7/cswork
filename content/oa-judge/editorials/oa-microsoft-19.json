@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-19",
+  "title": "两块等长木板覆盖孔洞",
+  "explanation": "## 思路\n\n排序后枚举两块木板覆盖的左右分组边界，长度至少是两组跨度的较大值，并至少为1。\n\n## 正确性证明\n\n一块木板覆盖连续坐标区间，因此任意可行方案都能按排序顺序分为由两板各覆盖的一段。固定分界时每段两端跨度就是所需最小长度；枚举全部分界即得全局最优。\n\n## 复杂度\n\n时间O(N log N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));answer=max(1,a[-1]-a[0])\n    for i in range(1,len(a)):answer=min(answer,max(1,a[i-1]-a[0],a[-1]-a[i]))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#19-shortest-board-length-to-cover-holes",
+  "sourceContentHash": "7cc8a58e580dd4821a504d04705ab64d3926b662292285dee526a2373d7c3216",
+  "author": "CSWork"
+}

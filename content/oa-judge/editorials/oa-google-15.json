@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-15",
+  "title": "引爆一枚炸弹的最大连锁数量",
+  "explanation": "## 思路\n\n先计算有向邻接位集（包含自身），用位集版传递闭包合并经每个中间点可到达的所有点，最后求最大位数。\n\n## 正确性\n\n初始位集包含零步和一步可达点。处理中间点k时，对能到k的起点合并k的可达集合，恰好加入以k为新增中间点的路径。逐步覆盖全部中间点后，每一行就是完整连锁集合。\n\n## 复杂度\n\n距离建图O(n²)；闭包O(n³/W)位操作，W为机器字长；空间O(n²/W)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]);v=list(map(int,data[1:]));a=list(zip(v[::3],v[1::3],v[2::3]));reach=[]\n    for x,y,r in a:\n        bits=0\n        for j,(u,v,s) in enumerate(a):\n            if (x-u)**2+(y-v)**2<=r*r:bits|=1<<j\n        reach.append(bits)\n    for k in range(n):\n        bit=1<<k;row=reach[k]\n        for i in range(n):\n            if reach[i]&bit:reach[i]|=row\n    return str(max(row.bit_count() for row in reach))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#15-detonate-bombs-with-chain-reactions",
+  "sourceContentHash": "cad1ea53b2b5521f512e79cc01e494868ab821af9a93de207f89cc6703c45216",
+  "author": "CSWork"
+}

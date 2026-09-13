@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同分选最大编号",
+    "code": "def solve(data):\n    n,m=map(int,data[:2]);friends=[set() for _ in range(n)];v=list(map(int,data[2:]))\n    for i in range(0,len(v),2):\n        a,b=v[i]-1,v[i+1]-1;friends[a].add(b);friends[b].add(a)\n    answer=[]\n    for i in range(n):\n        counts={};own=friends[i]\n        for middle in own:\n            for candidate in friends[middle]:\n                if candidate!=i and candidate not in own:counts[candidate]=counts.get(candidate,0)+1\n        if counts:best=min(counts,key=lambda j:(-counts[j],-j))\n        else:\n            best=0\n            while best<n and (best==i or best in own):best+=1\n        answer.append(best+1 if best<n else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "拒绝零共同好友候选",
+    "code": "def solve(data):\n    n,m=map(int,data[:2]);friends=[set() for _ in range(n)];v=list(map(int,data[2:]))\n    for i in range(0,len(v),2):\n        a,b=v[i]-1,v[i+1]-1;friends[a].add(b);friends[b].add(a)\n    answer=[]\n    for i in range(n):\n        counts={};own=friends[i]\n        for middle in own:\n            for candidate in friends[middle]:\n                if candidate!=i and candidate not in own:counts[candidate]=counts.get(candidate,0)+1\n        if counts:best=min(counts,key=lambda j:(-counts[j],j))\n        else:\n            best=n\n            while best<n and (best==i or best in own):best+=1\n        answer.append(best+1 if best<n else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

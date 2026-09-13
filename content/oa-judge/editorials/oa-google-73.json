@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-73",
+  "title": "按共同好友数推荐朋友",
+  "explanation": "## 思路\n\n遍历每个人的好友的好友，计数所有非好友候选；有正计数时按数量和编号取最优。若没有正计数，找最小非自己非好友编号即可。\n\n## 正确性\n\n候选与当前用户每个共同好友对应一条二跳路径，枚举准确计数。未出现候选均为0，不能胜过正数；若全部为0，编号最小的合法候选就是答案。\n\n## 复杂度\n\n时间O(n+Σ degree²)，上界O(n+30m)；空间O(n+m)，局部计数最多225项。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,m=map(int,data[:2]);friends=[set() for _ in range(n)];v=list(map(int,data[2:]))\n    for i in range(0,len(v),2):\n        a,b=v[i]-1,v[i+1]-1;friends[a].add(b);friends[b].add(a)\n    answer=[]\n    for i in range(n):\n        counts={};own=friends[i]\n        for middle in own:\n            for candidate in friends[middle]:\n                if candidate!=i and candidate not in own:counts[candidate]=counts.get(candidate,0)+1\n        if counts:best=min(counts,key=lambda j:(-counts[j],j))\n        else:\n            best=0\n            while best<n and (best==i or best in own):best+=1\n        answer.append(best+1 if best<n else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#73-social-media-friend-recommendation",
+  "sourceContentHash": "e6d384ad84b2f01d300c905de563e1546a30fc6f457b93bc6bacc17b52202cfe",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等边界被拒绝",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a);suffix=a.copy()\n    for i in range(n-2,-1,-1):suffix[i]=min(suffix[i],suffix[i+1])\n    largest=a[0];answer=0\n    for i in range(n-1):\n        largest=max(largest,a[i])\n        if largest<suffix[i+1]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只比较相邻两项",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a);suffix=a.copy()\n    for i in range(n-2,-1,-1):suffix[i]=min(suffix[i],suffix[i+1])\n    largest=a[0];answer=0\n    for i in range(n-1):\n        largest=a[i]\n        if largest<=suffix[i+1]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

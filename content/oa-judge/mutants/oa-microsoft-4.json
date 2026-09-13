@@ -1,0 +1,10 @@
+[
+  {
+    "name": "少滚动前缀最后一位",
+    "code": "def solve(d):\n    s=d[0]; diff=[0]*(len(s)+1)\n    for k in map(int,d[2:]):diff[0]+=1;diff[k-1]-=1\n    count=0;result=[]\n    for i,c in enumerate(s):count+=diff[i];result.append(chr(97+(ord(c)-97+count)%26))\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "多递增一次",
+    "code": "def solve(d):\n    s=d[0]; diff=[0]*(len(s)+1)\n    for k in map(int,d[2:]):diff[0]+=1;diff[k]-=1\n    count=0;result=[]\n    for i,c in enumerate(s):count+=diff[i];result.append(chr(97+(ord(c)-96+count)%26))\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只允许右移",
+    "code": "def solve(d):\n    s=d[0];start=int(d[1]);difference=s.count('a')-s.count('b');answer=10**9\n    if difference==0:return '0'\n    for direction in (1,):\n        delta=difference;pos=start;steps=0\n        while 0<=pos+direction<=len(s):\n            edge=pos if direction==1 else pos-1;delta+=-2 if s[edge]=='a' else 2;pos+=direction;steps+=1\n            if delta==0:answer=min(answer,steps)\n    return str(answer if answer<10**9 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "将a翻转方向算反",
+    "code": "def solve(d):\n    s=d[0];start=int(d[1]);difference=s.count('a')-s.count('b');answer=10**9\n    if difference==0:return '0'\n    for direction in (-1,1):\n        delta=difference;pos=start;steps=0\n        while 0<=pos+direction<=len(s):\n            edge=pos if direction==1 else pos-1;delta+=2 if s[edge]=='a' else -2;pos+=direction;steps+=1\n            if delta==0:answer=min(answer,steps)\n    return str(answer if answer<10**9 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

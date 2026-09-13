@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-7",
+  "title": "右侧首个不高于原价的折扣",
+  "explanation": "## 思路\n\n从右向左维护单调栈，弹掉比当前价高的元素后，栈顶就是右侧第一个不高于当前价的价格。\n\n## 正确性证明\n\n弹出的更贵商品不可能给当前商品折扣；同时被更靠左且不更贵的商品遮挡，未来也不再需要。栈顶因此恰为最近合法折扣，逐件统计即得总价。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));stack=[];total=0;full=[]\n    for i in range(len(a)-1,-1,-1):\n        while stack and stack[-1]>a[i]:stack.pop()\n        if stack:total+=a[i]-stack[-1]\n        else:total+=a[i];full.append(i)\n        stack.append(a[i])\n    full.reverse()\n    return str(total)+'\\n'+str(len(full))+(' '+' '.join(map(str,full)) if full else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#7-sum-of-final-prices-next-lower-or-equal",
+  "sourceContentHash": "ba9dd669bb3640eb6c7592e8ce4114137ed091d6cbaf26f6a89cddde485cf36a",
+  "author": "CSWork"
+}

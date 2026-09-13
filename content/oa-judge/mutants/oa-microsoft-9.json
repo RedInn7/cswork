@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把最大值给最小度数",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);degree=[0]*n;edges=list(map(int,d[2:]))\n    for v in edges:degree[v-1]+=1\n    degree.sort(reverse=True)\n    return str(sum((i+1)*v for i,v in enumerate(degree)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "赋值从0开始",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);degree=[0]*n;edges=list(map(int,d[2:]))\n    for v in edges:degree[v-1]+=1\n    degree.sort()\n    return str(sum(i*v for i,v in enumerate(degree)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

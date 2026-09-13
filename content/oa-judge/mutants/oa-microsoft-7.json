@@ -1,0 +1,10 @@
+[
+  {
+    "name": "严格小于才折扣",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));stack=[];total=0;full=[]\n    for i in range(len(a)-1,-1,-1):\n        while stack and stack[-1]>=a[i]:stack.pop()\n        if stack:total+=a[i]-stack[-1]\n        else:total+=a[i];full.append(i)\n        stack.append(a[i])\n    full.reverse()\n    return str(total)+'\\n'+str(len(full))+(' '+' '.join(map(str,full)) if full else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "全部原价出售",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));stack=[];total=0;full=[]\n    for i in range(len(a)-1,-1,-1):\n        while stack and stack[-1]>a[i]:stack.pop()\n        if stack:total+=a[i]\n        else:total+=a[i];full.append(i)\n        stack.append(a[i])\n    full.reverse()\n    return str(total)+'\\n'+str(len(full))+(' '+' '.join(map(str,full)) if full else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

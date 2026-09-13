@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许相等放同组",
+    "code": "from bisect import bisect_left\ndef solve(data):\n    tails=[]\n    for x in map(int,data[1:]):\n        i=bisect_left(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(len(tails))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每个元素单独开组",
+    "code": "from bisect import bisect_right\ndef solve(data):\n    tails=[]\n    for x in map(int,data[1:]):\n        i=len(tails)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(len(tails))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-12",
+  "title": "是否存在按编号逐个经过的路径",
+  "explanation": "## 思路\n\n收集端点差为1的边，检查是否齐全覆盖N−1对相邻编号。\n\n## 正确性证明\n\n规定路径的每一条边必然是(i,i+1)，所以这些边都存在是必要条件；全部存在时按编号走就是可行路径，也是充分条件。\n\n## 复杂度\n\n时间O(N+M)，空间O(N+M)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);edges=list(map(int,d[2:]));adjacent=set()\n    for i in range(0,len(edges),2):\n        a,b=edges[i:i+2]\n        if abs(a-b)==1:adjacent.add(min(a,b))\n    return str(int(len(adjacent)==n-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#12-check-path-presence",
+  "sourceContentHash": "4726e50ea69c0eb16be32482ea6e7f1b03f120f5fc75a00eeee1eba8d762c3a9",
+  "author": "CSWork"
+}

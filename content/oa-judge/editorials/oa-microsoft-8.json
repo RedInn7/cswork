@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-8",
+  "title": "距离所有房屋都足够近的空地",
+  "explanation": "## 思路\n\n对所有房屋维护x+y和x−y的最小、最大值；检查每块空地与四个极值的差是否均≤K。\n\n## 正确性证明\n\n曼哈顿距离等于x+y和x−y两种变换坐标差绝对值的最大值。与所有房屋的最大距离只由这四个极值决定，因此检查四个不等式充要。\n\n## 复杂度\n\n时间O(RC)，空间O(RC)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    rows,cols,k=map(int,d[:3]);a=list(map(int,d[3:]));houses=[(i//cols+i%cols,i//cols-i%cols) for i,v in enumerate(a) if v]\n    if not houses:return str(rows*cols)\n    minp=min(p for p,q in houses);maxp=max(p for p,q in houses);minq=min(q for p,q in houses);maxq=max(q for p,q in houses);answer=0\n    for index,v in enumerate(a):\n        i,j=divmod(index,cols);p=i+j;q=i-j\n        if v==0 and max(p-minp,maxp-p,q-minq,maxq-q)<=k:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#8-find-suitable-locations",
+  "sourceContentHash": "442b629a783941351fac3ee2c822c65b4eee5825f5df2f2cbafab9c469e4fbe1",
+  "author": "CSWork"
+}

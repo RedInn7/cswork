@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-18",
+  "title": "按位或结果出现在原数组的子数组",
+  "explanation": "## 思路\n\n维护所有以当前位置结尾的不同OR及其出现次数。新增元素与上一轮各OR再或一次，合并相同状态后统计结果在全局值集合中的次数。\n\n## 正确性证明\n\n每个结束于当前位置的子数组，要么是单元素，要么在上一个结尾子数组后追加当前值。转移一一覆盖并按计数合并，不重不漏。OR只会增添二进制位，因此每轮不同状态至多约31种。\n\n## 复杂度\n\n时间O(30n)，空间O(n+30)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));allowed=set(a);previous={};answer=0\n    for value in a:\n        current={value:1}\n        for old,count in previous.items():key=old|value;current[key]=current.get(key,0)+count\n        answer+=sum(count for key,count in current.items() if key in allowed);previous=current\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#18-count-subarrays-with-bitwise-or-present",
+  "sourceContentHash": "4ba71117268600356cfbc68fede8b96c296ce872ea9a774c0c22dbfe2bc3c6ea",
+  "author": "CSWork"
+}

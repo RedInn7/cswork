@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许同字母边",
+    "code": "def solve(d):\n    n=int(d[0]); s=d[1]; parent=list(map(int,d[2:])); children=[[] for _ in range(n)]; root=parent.index(-1)\n    for i,p in enumerate(parent):\n        if p>=0:children[p].append(i)\n    order=[root]\n    for u in order:order.extend(children[u])\n    down=[1]*n; best=1\n    for u in reversed(order):\n        first=second=0\n        for v in children[u]:\n            if False:continue\n            length=down[v]\n            if length>first:first,second=length,first\n            elif length>second:second=length\n        down[u]=first+1; best=max(best,first+second+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只统计单链",
+    "code": "def solve(d):\n    n=int(d[0]); s=d[1]; parent=list(map(int,d[2:])); children=[[] for _ in range(n)]; root=parent.index(-1)\n    for i,p in enumerate(parent):\n        if p>=0:children[p].append(i)\n    order=[root]\n    for u in order:order.extend(children[u])\n    down=[1]*n; best=1\n    for u in reversed(order):\n        first=second=0\n        for v in children[u]:\n            if s[v]==s[u]:continue\n            length=down[v]\n            if length>first:first,second=length,first\n            elif length>second:second=length\n        down[u]=first+1; best=max(best,first+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

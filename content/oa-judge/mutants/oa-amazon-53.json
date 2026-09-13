@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把区间极差省略",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));n=len(a);previous=[0]*n\n    for length in range(2,n+1):\n        current=[0]*(n-length+1)\n        for left in range(n-length+1):current[left]=min(previous[left],previous[left+1])\n        previous=current\n    return str(previous[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "选较差子问题",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));n=len(a);previous=[0]*n\n    for length in range(2,n+1):\n        current=[0]*(n-length+1)\n        for left in range(n-length+1):current[left]=a[left+length-1]-a[left]+max(previous[left],previous[left+1])\n        previous=current\n    return str(previous[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

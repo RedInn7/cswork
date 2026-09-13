@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-12",
+  "title": "将单词填入完整横向或纵向空位",
+  "explanation": "## 思路\n\n按#拆开每一行及每一列；仅检查与单词等长的段，逐字符确认是空位或目标字母。\n\n## 正确性\n\n合法位置必恰好对应一段被墙或边界包围的行段或列段；反之长度相同且全部字符兼容的段一定能填入。枚举全部这些段既不遗漏也不会接受部分段。\n\n## 复杂度\n\n时间O(rc)，空间O(rc)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    h,w=map(int,data[:2]);g=data[2:2+h];word=data[-1]\n    rows=g+[''.join(g[r][c] for r in range(h)) for c in range(w)]\n    for row in rows:\n        for part in row.split('#'):\n            if len(part)==len(word) and all(a=='_' or a==b for a,b in zip(part,word)):return '1'\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#12-can-fit-the-word",
+  "sourceContentHash": "898d9d323c94316ec0540244128ac54e22e6cdd71a656629c8ae4b44a5040fe8",
+  "author": "CSWork"
+}

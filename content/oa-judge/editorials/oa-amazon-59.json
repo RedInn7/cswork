@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-59",
+  "title": "共享跳过次数的最多出库奖励",
+  "explanation": "## 思路\n\n对每仓库存取完整轮次后的正余数r=(v−1)mod(p+q)+1，赢它需floor((r−1)/p)次跳过。按所需次数从小到大购买奖励。\n\n## 正确性证明\n\n完整不跳过轮次不影响轮到谁，最后正余数阶段你每多出库一次需同事跳过一次，最少额外次数是ceil(r/p)−1。把跳过放得更早可交换到末阶段，不降低必要次数。各奖励价值都为1，用最低成本优先能达到最大数量。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,p,q,budget=map(int,d[:4]);costs=sorted(((int(v)-1)%(p+q))//p for v in d[4:]);answer=0\n    for c in costs:\n        if c>budget:break\n        budget-=c;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#59-get-maximum-credits-dispatch-strategy",
+  "sourceContentHash": "1f4b86e0c0f72754a20a986b8c2d77d27a4529d62f59e64702d3088ba34174ca",
+  "author": "CSWork"
+}

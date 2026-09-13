@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-10",
+  "title": "移动棋子让a与b数量相同",
+  "explanation": "## 思路\n\n一条边最终是否翻转仅由终点与起点是否在它两侧决定；枚举向左和向右直走的每个终点并检查字母数平衡。\n\n## 正确性证明\n\n回走同一条边两次抵消，任何走法最终翻转的边恰是起点到终点之间的连续段。直达终点的距离最小，所以枚举所有直线路径已覆盖全部可能最终状态。奇数长度不可能平分。\n\n## 复杂度\n\n时间O(N)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];start=int(d[1]);difference=s.count('a')-s.count('b');answer=10**9\n    if difference==0:return '0'\n    for direction in (-1,1):\n        delta=difference;pos=start;steps=0\n        while 0<=pos+direction<=len(s):\n            edge=pos if direction==1 else pos-1;delta+=-2 if s[edge]=='a' else 2;pos+=direction;steps+=1\n            if delta==0:answer=min(answer,steps)\n    return str(answer if answer<10**9 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#10-balance-the-game-board",
+  "sourceContentHash": "cc60f5916f2557e81b329c87e4a11350647fe2ff33d7e6903857437d8b0c8e6b",
+  "author": "CSWork"
+}

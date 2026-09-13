@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-57",
+  "title": "最多不相交连线",
+  "explanation": "## 思路\n\n求最长非降子序列；使用upper_bound维护每个长度的最小末尾值，允许相等值延长。\n\n## 正确性证明\n\n按起点顺序选择连线后，不相交等价于目标值非降。最小末尾值不削弱任何未来扩展，二分找到第一个严格大于当前值的位置更新即可保持各长度最优末尾。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_right\n    tails=[]\n    for value in map(int,d[1:]):\n        i=bisect_right(tails,value)\n        if i==len(tails):tails.append(value)\n        else:tails[i]=value\n    return str(len(tails))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#57-get-max-matching-match-the-column",
+  "sourceContentHash": "581b5c46578e0b181db6639bc1aa62f2bc52a218d1567524a65afebc9c2a1a74",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相接端点不能延伸",
+    "code": "def solve(data):\n    n,m=map(int,data[:2]);v=list(map(int,data[2:]));targets=sorted(zip(v[:2*n:2],v[1:2*n:2]));sat=sorted(zip(v[2*n::2],v[2*n+1::2]));end=-10**30;index=answer=0\n    for left,right in targets:\n        if end>=right:continue\n        point=max(left,end)\n        while point<right:\n            far=point\n            while index<m and sat[index][0]<point:\n                far=max(far,sat[index][1]);index+=1\n            if far<=point:return '-1'\n            answer+=1;end=far;point=far\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把目标数当成所需卫星数",
+    "code": "def solve(data):\n    n,m=map(int,data[:2]);v=list(map(int,data[2:]));targets=sorted(zip(v[:2*n:2],v[1:2*n:2]));sat=sorted(zip(v[2*n::2],v[2*n+1::2]));end=-10**30;index=answer=0\n    for left,right in targets:\n        if end>=right:continue\n        point=max(left,end)\n        while point<right:\n            far=point\n            while index<m and sat[index][0]<=point:\n                far=max(far,sat[index][1]);index+=1\n            if far<=point:return '-1'\n            answer+=1;end=far;point=far\n    return str(n)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

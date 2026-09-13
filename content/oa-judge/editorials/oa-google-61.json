@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-61",
+  "title": "仅平移等价的岛屿种类",
+  "explanation": "## 思路\n\n遍历连通块，将块内每个坐标减去首次访问坐标并排序，元组作为形状签名。\n\n## 正确性\n\n连通块遍历完整且互不重复。同形状在平移后所有相对坐标相同；反过来签名相同意味着存在同一个平移向量让所有格子一一重合。\n\n## 复杂度\n\n时间O(rc log(rc))，空间O(rc)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    h,w=map(int,data[:2]);g=data[2:];seen=set();shapes=set()\n    for r in range(h):\n        for c in range(w):\n            if g[r][c]!='1' or (r,c) in seen:continue\n            seen.add((r,c));stack=[(r,c)];points=[]\n            while stack:\n                x,y=stack.pop();points.append((x-r,y-c))\n                for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):\n                    a,b=x+dx,y+dy\n                    if 0<=a<h and 0<=b<w and g[a][b]=='1' and (a,b) not in seen:seen.add((a,b));stack.append((a,b))\n            shapes.add(tuple(sorted(points)))\n    return str(len(shapes))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#61-number-of-distinct-islands-for-l5-",
+  "sourceContentHash": "f7cc6c63c4896758190997ff1dbbd0300078b36b48efea9038ebd6471e375328",
+  "author": "CSWork"
+}

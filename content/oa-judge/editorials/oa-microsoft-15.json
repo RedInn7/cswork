@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-15",
+  "title": "构造最大平衡圆",
+  "explanation": "## 思路\n\n一个可选的连续身高区间，其内部每个身高必须至少有两人，两个端点可只有一人。用前缀频次和、下一个频次≤1的位置找最大区间，再升序各取一个、降序输出剩余人。\n\n## 正确性证明\n\n环若包含最小与最大身高，中间每种身高必须沿环的两条不同路径各出现一次，否则无法从低走到高再返回。反过来，内部频次至少2时，升序一遍再沿剩余人降序返回可以构造合法环。对每个左端，最远合法右端由首个频次≤1的位置确定，正频次使取最远最优；枚举左端得到最大人数。\n\n## 复杂度\n\n时间O(n+V)，空间O(n+V)，V为最大身高。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));v=max(a);freq=[0]*(v+2)\n    for x in a:freq[x]+=1\n    prefix=[0]*(v+2)\n    for x in range(1,v+1):prefix[x]=prefix[x-1]+freq[x]\n    following=[v+1]*(v+2);last=v+1\n    for x in range(v,0,-1):\n        following[x]=last\n        if freq[x]<=1:last=x\n    best=0;lo=hi=1\n    for left in range(1,v+1):\n        if not freq[left]:continue\n        stop=following[left];right=stop if stop<=v and freq[stop]==1 else stop-1;count=prefix[right]-prefix[left-1]\n        if count>best:best=count;lo=left;hi=right\n    result=list(range(lo,hi+1))\n    for x in range(hi,lo-1,-1):result.extend([x]*(freq[x]-1))\n    return str(len(result))+'\\n'+' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#15-construct-maximum-balanced-circle",
+  "sourceContentHash": "09fac385909fa8294fc2d3b6e0652f4f557993beebcba290bb3299f6aa5b9425",
+  "author": "CSWork"
+}

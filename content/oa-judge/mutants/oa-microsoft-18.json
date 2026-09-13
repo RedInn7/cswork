@@ -1,0 +1,10 @@
+[
+  {
+    "name": "丢失同OR的子数组次数",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));allowed=set(a);previous={};answer=0\n    for value in a:\n        current={value:1}\n        for old,count in previous.items():key=old|value;current[key]=current.get(key,0)+count\n        answer+=sum(1 for key in current if key in allowed);previous=current\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把或误写成与",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));allowed=set(a);previous={};answer=0\n    for value in a:\n        current={value:1}\n        for old,count in previous.items():key=old&value;current[key]=current.get(key,0)+count\n        answer+=sum(count for key,count in current.items() if key in allowed);previous=current\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

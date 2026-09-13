@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只按面积判同形",
+    "code": "def solve(data):\n    h,w=map(int,data[:2]);g=data[2:];seen=set();shapes=set()\n    for r in range(h):\n        for c in range(w):\n            if g[r][c]!='1' or (r,c) in seen:continue\n            seen.add((r,c));stack=[(r,c)];points=[]\n            while stack:\n                x,y=stack.pop();points.append((x-r,y-c))\n                for dx,dy in ((1,0),(-1,0),(0,1),(0,-1)):\n                    a,b=x+dx,y+dy\n                    if 0<=a<h and 0<=b<w and g[a][b]=='1' and (a,b) not in seen:seen.add((a,b));stack.append((a,b))\n            shapes.add(len(points))\n    return str(len(shapes))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误将斜对角连通",
+    "code": "def solve(data):\n    h,w=map(int,data[:2]);g=data[2:];seen=set();shapes=set()\n    for r in range(h):\n        for c in range(w):\n            if g[r][c]!='1' or (r,c) in seen:continue\n            seen.add((r,c));stack=[(r,c)];points=[]\n            while stack:\n                x,y=stack.pop();points.append((x-r,y-c))\n                for dx,dy in ((1,0),(-1,0),(0,1),(0,-1),(1,1),(-1,-1),(1,-1),(-1,1)):\n                    a,b=x+dx,y+dy\n                    if 0<=a<h and 0<=b<w and g[a][b]=='1' and (a,b) not in seen:seen.add((a,b));stack.append((a,b))\n            shapes.add(tuple(sorted(points)))\n    return str(len(shapes))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

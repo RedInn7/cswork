@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-1",
+  "title": "树上相邻字母不同的最长路径",
+  "explanation": "## 思路\n\n按逆遍历序处理子树，维护每个节点向下的最长合法链。取可连接的两个最长子链组成经过该点的路径。\n\n## 正确性证明\n\n任意简单路径存在唯一最高节点，在该节点处最多由两个不同子树的向下链组成。排除相同字母边后，选择两条最长链恰好最优；枚举所有最高节点即可覆盖全部路径。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]); s=d[1]; parent=list(map(int,d[2:])); children=[[] for _ in range(n)]; root=parent.index(-1)\n    for i,p in enumerate(parent):\n        if p>=0:children[p].append(i)\n    order=[root]\n    for u in order:order.extend(children[u])\n    down=[1]*n; best=1\n    for u in reversed(order):\n        first=second=0\n        for v in children[u]:\n            if s[v]==s[u]:continue\n            length=down[v]\n            if length>first:first,second=length,first\n            elif length>second:second=length\n        down[u]=first+1; best=max(best,first+second+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#1-longest-path-with-alternating-letters-in-tree",
+  "sourceContentHash": "c342cb80c9ccc2fd63f29de36a4a50cfaecc5e0a92be09f245186fadf702ff94",
+  "author": "CSWork"
+}

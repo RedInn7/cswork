@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-66",
+  "title": "保序合并两串的最少逆序对",
+  "explanation": "## 思路\n\ndp[i,j]表示用完前i、j字符的最小逆序数。追加某个字符时，新增逆序数等于两已用前缀中比它大的字符数；预处理各前缀对26字母的较大计数，滚动DP。\n\n## 正确性证明\n\n任意合并最后一位来自其中一串。去掉它得到对应前缀状态，新增逆序对恰是之前较大字符到它的配对，且与之前交错顺序无关。因此两种转移取小覆盖所有合法合并。\n\n## 复杂度\n\n时间O(nm+26(n+m))，空间O(26(n+m)+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a,b=d;n=len(a);m=len(b)\n    def greater(s):\n        rows=[[0]*26];counts=[0]*26\n        for c in s:\n            counts[ord(c)-97]+=1;row=[0]*26;total=0\n            for k in range(25,-1,-1):row[k]=total;total+=counts[k]\n            rows.append(row)\n        return rows\n    ga=greater(a);gb=greater(b);previous=[0]*(m+1)\n    for j in range(1,m+1):previous[j]=previous[j-1]+gb[j-1][ord(b[j-1])-97]\n    for i in range(1,n+1):\n        ca=ord(a[i-1])-97;current=[0]*(m+1);current[0]=previous[0]+ga[i-1][ca]\n        for j in range(1,m+1):\n            cb=ord(b[j-1])-97\n            current[j]=min(previous[j]+ga[i-1][ca]+gb[j][ca],current[j-1]+ga[i][cb]+gb[j-1][cb])\n        previous=current\n    return str(previous[m])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#66-get-minimum-conflicts-merge-branches",
+  "sourceContentHash": "4d8264be23c06086e897dc2929a9e2c0fec0383d4105b19e17c2bea3b4864665",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只允许删除中心位置",
+    "code": "def solve(d):\n    s=d[0];left=(len(s)-1)//2;right=len(s)//2;center=s[left]\n    while left>0 and s[left-1]==center:left-=1\n    while right+1<len(s) and s[right+1]==center:right+=1\n    return str(1 if len(s)%2 else 2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "返回中心字符总频次",
+    "code": "def solve(d):\n    s=d[0];left=(len(s)-1)//2;right=len(s)//2;center=s[left]\n    while left>0 and s[left-1]==center:left-=1\n    while right+1<len(s) and s[right+1]==center:right+=1\n    return str(s.count(center))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-76",
+  "title": "单词贪心分行与两端对齐",
+  "explanation": "## 思路\n\n按最少单空格贪心收集每行单词。非尾行按空格总数除以间隙数分配，最后行使用单空格并右侧补齐。\n\n## 正确性\n\n取最长可容纳前缀严格符合尽可能多单词的规则。均分商保证各间隙相差不超过1，余数给左侧满足偏左规则；末行与单词行按规定补齐，输出唯一。\n\n## 复杂度\n\n时间O(输出字符数)，空间O(输出字符数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,width=map(int,data[:2]);words=data[2:];answer=[];i=0\n    while i<n:\n        end=i;letters=0\n        while end<n and letters+len(words[end])+(end-i)<=width:letters+=len(words[end]);end+=1\n        count=end-i\n        if end==n or count==1:line=' '.join(words[i:end]).ljust(width)\n        else:\n            base,extra=divmod(width-letters,count-1)\n            line=''.join(words[j]+' '*(base+(j-i<extra)) for j in range(i,end-1))+words[end-1]\n        answer.append(line);i=end\n    return str(len(answer))+'\\n'+'\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#76-text-justification",
+  "sourceContentHash": "8032ab1193845236203d36fc240b35130a853d8dc4359a34a758527bf7ea2c5a",
+  "author": "CSWork"
+}
