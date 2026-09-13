@@ -32,5 +32,5 @@ node scripts/import-oa-master.mjs /path/to/authorized/OA-Master
 
 - `node --test --test-concurrency=1 tests/oa-import.test.mjs`
 - `node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs`
-- `OA_SOURCE_ROOT=/path/to/authorized/OA-Master node --test tests/oa-import.test.mjs`：源重建与已提交数据一致性。
+- `OA_MASTER_SOURCE=/path/to/authorized/OA-Master node --test tests/oa-import.test.mjs`：源重建与已提交数据一致性。
 - `npm run build && node tests/oa-library-http.mjs`：全新临时数据库中的真实 HTTP 登录保护、分页、题面/题解分离、私有文件不可下载、原算法 API 回归。该测试不使用正式账号、密钥或数据库。
