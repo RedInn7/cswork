@@ -219,6 +219,9 @@ try {
       .get(),
   );
   await request('/api/oj/oa-library', null, 401);
+  const readyList = await request('/api/oj/oa-library?ready=1', students[0]);
+  assert.equal(readyList.total, 6);
+  assert(readyList.items.every(item => item.judgeStatus === 'ready' && item.judgeProblemId === item.id));
   const payload = (id, code, mode = 'judge') => ({
     problemId: id,
     language: 'python',
