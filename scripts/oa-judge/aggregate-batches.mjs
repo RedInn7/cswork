@@ -55,6 +55,7 @@ export function aggregateBatches(root) {
   }
   return { schemaVersion: 1, items };
 }
+/** @param {string} root @param {string | null} [batch] */
 export function loadScope(root, batch = null) {
   const runtime = readRegistry(resolve(root, 'registry.json'));
   if (!batch) return { ...runtime, batch: null };
@@ -72,6 +73,7 @@ export function loadScope(root, batch = null) {
     );
   return { ...selected, batch };
 }
+/** @param {string} root @param {string | null} [batch] */
 export function defaultReportPath(root, batch = null) {
   if (!batch) return resolve(root, 'sandbox-report.json');
   const path = resolve(root, 'reports', batchName(batch) + '.json');
