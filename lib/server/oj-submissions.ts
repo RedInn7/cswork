@@ -9,7 +9,7 @@ import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
 import { getJudgeProblem } from './oj-problems';
 import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
-import { boundedFeedback } from './oj-case-store';
+import { boundedFeedback, FEEDBACK_BYTES } from './oj-case-store';
 
 export const MAX_CODE_BYTES = 65536;
 export const MAX_STDIN_BYTES = 65536;
@@ -385,11 +385,15 @@ export async function submissionDetail(p: Person, id: string) {
   if (failed && failed.status === s.status && failed.stdout !== null) {
     const definition = sqlite()
       .prepare(
-        'SELECT input,expected_output FROM oj_test_cases WHERE version_id=? AND ordinal=?',
+        'SELECT substr(input,1,?) AS input,substr(expected_output,1,?) AS expected_output FROM oj_test_cases WHERE version_id=? AND ordinal=?',
       )
-      .get(s.problem_version_id, failed.ordinal) as
-      | { input: string; expected_output: string | null }
-      | undefined;
+      // Bound data crossing into JS before applying the exact UTF-8 byte cap.
+      .get(
+        FEEDBACK_BYTES + 1,
+        FEEDBACK_BYTES + 1,
+        s.problem_version_id,
+        failed.ordinal,
+      ) as { input: string; expected_output: string | null } | undefined;
     if (definition) {
       const stdin = boundedFeedback(definition.input),
         expected = boundedFeedback(definition.expected_output ?? ''),

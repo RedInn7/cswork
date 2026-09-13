@@ -51,18 +51,21 @@ try {
   db.pragma('busy_timeout = 5000');
   const original = db.prepare("SELECT * FROM submissions WHERE problem_id='lc-1' ORDER BY created_at DESC LIMIT 1").get();
   assert(original, 'Existing lc-1 submission required only to bind a copied account');
-  const version = db.prepare("SELECT v.* FROM oj_problem_versions v JOIN oj_problems p ON p.current_version_id=v.id WHERE p.id='lc-1'").get();
-  assert(version, 'Published lc-1 version required');
+  const baselineVersion = db.prepare("SELECT v.* FROM oj_problem_versions v JOIN oj_problems p ON p.current_version_id=v.id WHERE p.id='lc-1'").get();
+  assert(baselineVersion, 'Published lc-1 version required');
   // All mutation is confined to the private online backup; no copied jobs run.
   db.exec("DELETE FROM oj_outbox; DELETE FROM oj_precompile; UPDATE submissions SET status='cancelled',finished_at=0 WHERE status IN ('queued','compiling','running'); DELETE FROM oj_runtime;");
-  const spec = { ...JSON.parse(version.spec_json), timeLimit: 3, memoryLimit: 131072, checker: 'tokens' };
+  const spec = { ...JSON.parse(baselineVersion.spec_json), timeLimit: 3, memoryLimit: 131072, checker: 'tokens' };
   const cases = Array.from({ length: 5 }, (_, ordinal) => ({ name: `synthetic-${ordinal}`, input: `${ordinal}\n`, expectedOutput: `${ordinal}\n`, hidden: ordinal >= 2, weight: 1 }));
   // Match loadJudgeSnapshot/problemChecksum property order exactly.
   const checksum = createHash('sha256').update(JSON.stringify({ schemaVersion: 1, problem: spec, cases })).digest('hex');
+  const revision = db.prepare('SELECT max(revision)+1 AS revision FROM oj_problem_versions WHERE problem_id=?').get(baselineVersion.problem_id).revision;
+  const version = { ...baselineVersion, id: randomUUID(), revision, spec_json: JSON.stringify(spec), checksum, created_at: Date.now() };
   db.transaction(() => {
-    db.prepare('DELETE FROM oj_test_cases WHERE version_id=?').run(version.id);
+    // Publish a fresh immutable version, inserting its cases before sealing it.
+    insert('oj_problem_versions', version);
     for (const [ordinal, c] of cases.entries()) insert('oj_test_cases', { id: randomUUID(), version_id: version.id, ordinal, input: c.input, expected_output: c.expectedOutput, hidden: Number(c.hidden), weight: c.weight, name: c.name });
-    db.prepare('UPDATE oj_problem_versions SET spec_json=?,checksum=? WHERE id=?').run(JSON.stringify(spec), checksum, version.id);
+    db.prepare('UPDATE oj_problems SET current_version_id=? WHERE id=?').run(version.id, version.problem_id);
   })();
   worker = spawn(process.execPath, [entry], { env: { ...process.env, DATABASE_PATH: databasePath, OJ_QUEUE_NAME: queueName, OJ_PRECOMPILE_ENABLED: 'false' }, stdio: ['ignore', 'pipe', 'pipe'] });
   // Drain logs without exposing copied account identifiers, programs or secrets.

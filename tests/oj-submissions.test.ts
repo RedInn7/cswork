@@ -185,6 +185,28 @@ test('only terminal first failure exposes bounded counterexample to owner and te
     detail.firstFailure,
   );
   await assert.rejects(submissionDetail(other, saved.id), status(404));
+  sqlite().exec('SAVEPOINT oversized_feedback');
+  try {
+    // Test fixture only; rollback below restores the immutable-case trigger.
+    sqlite().exec('DROP TRIGGER oj_case_immutable_update');
+    sqlite()
+      .prepare(
+        'UPDATE oj_test_cases SET input=?,expected_output=? WHERE version_id=? AND ordinal=?',
+      )
+      .run(
+        '🙂'.repeat(40000),
+        'x'.repeat(100000),
+        raw.problem_version_id,
+        secret.ordinal,
+      );
+    const bounded = (await submissionDetail(student, saved.id)).firstFailure!;
+    assert.equal(bounded.stdin, '🙂'.repeat(8192));
+    assert.equal(bounded.expected, 'x'.repeat(32768));
+    assert.equal(bounded.truncated.stdin, true);
+    assert.equal(bounded.truncated.expected, true);
+  } finally {
+    sqlite().exec('ROLLBACK TO oversized_feedback; RELEASE oversized_feedback');
+  }
   sqlite()
     .prepare('UPDATE oj_results SET stdout=NULL WHERE submission_id=?')
     .run(saved.id);
