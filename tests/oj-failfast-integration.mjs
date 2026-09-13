@@ -5,12 +5,13 @@
  * port 5053 or 5054. Never point this test at the production runner.
  */
 import assert from 'node:assert/strict';
-import { randomUUID, createHash } from 'node:crypto';
+import { randomUUID, createHash, createHmac } from 'node:crypto';
 import { mkdtempSync, chmodSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { spawn, execFileSync } from 'node:child_process';
 import { setTimeout as delay } from 'node:timers/promises';
+import { createServer } from 'node:net';
 import Database from 'better-sqlite3';
 import { Queue } from 'bullmq';
 
@@ -19,13 +20,17 @@ assert(['localhost', '127.0.0.1', '[::1]'].includes(runner.hostname) && ['5053',
 const sourcePath = resolve(process.env.SOURCE_DATABASE_PATH || 'missing');
 const entry = resolve(process.env.TEST_WORKER_ENTRY || 'missing');
 assert(existsSync(sourcePath) && existsSync(entry), 'Source database and worker entry required');
+const webEntry = process.env.TEST_WEB_ENTRY ? resolve(process.env.TEST_WEB_ENTRY) : null;
+assert(!webEntry || existsSync(webEntry), 'Optional web entry must exist');
+const webOrigin = 'http://127.0.0.1:4318';
+const authSecret = randomUUID() + randomUUID();
 const latencyLimit = Number(process.env.TEST_FAILFAST_LIMIT_MS || 3500);
 assert(latencyLimit >= 500 && latencyLimit < 5000, 'Latency limit must be below the 5-second sleeping neighbour');
 const dir = mkdtempSync(join(tmpdir(), 'cswork-oj-failfast-'));
 chmodSync(dir, 0o700);
 const databasePath = join(dir, 'probe.sqlite');
 const queueName = `cswork-oj-test-${randomUUID()}`;
-let db, worker, queue, sampler, stopped = false, peakRssKb = 0;
+let db, worker, web, owner, other, queue, sampler, stopped = false, peakRssKb = 0;
 const interrupt = () => { stopped = true; };
 process.on('SIGINT', interrupt);
 process.on('SIGTERM', interrupt);
@@ -51,6 +56,18 @@ try {
   db.pragma('busy_timeout = 5000');
   const original = db.prepare("SELECT * FROM submissions WHERE problem_id='lc-1' ORDER BY created_at DESC LIMIT 1").get();
   assert(original, 'Existing lc-1 submission required only to bind a copied account');
+  if (webEntry) {
+    const identity = (name) => {
+      const uid = randomUUID(), token = randomUUID(), now = Date.now();
+      db.prepare('INSERT INTO user(id,name,email,email_verified,created_at,updated_at) VALUES(?,?,?,?,?,?)').run(uid, name, `${uid}@example.test`, 1, now, now);
+      db.prepare('INSERT INTO session(id,expires_at,token,created_at,updated_at,user_id) VALUES(?,?,?,?,?,?)').run(randomUUID(), now + 3600000, token, now, now, uid);
+      const signature = createHmac('sha256', authSecret).update(token).digest('base64');
+      return { uid, cookie: `better-auth.session_token=${encodeURIComponent(token + '.' + signature)}` };
+    };
+    owner = identity('synthetic-owner');
+    other = identity('synthetic-other');
+    original.user_id = owner.uid;
+  }
   const baselineVersion = db.prepare("SELECT v.* FROM oj_problem_versions v JOIN oj_problems p ON p.current_version_id=v.id WHERE p.id='lc-1'").get();
   assert(baselineVersion, 'Published lc-1 version required');
   // All mutation is confined to the private online backup; no copied jobs run.
@@ -72,6 +89,29 @@ try {
   worker.stdout.on('data', () => {});
   worker.stderr.on('data', () => {});
   worker.on('error', () => { stopped = true; });
+  if (webEntry) {
+    // No production auth/provider/mail configuration enters the web process.
+    await new Promise((resolvePort, rejectPort) => {
+      const probe = createServer();
+      probe.once('error', rejectPort);
+      probe.listen(4318, '127.0.0.1', () => probe.close(resolvePort));
+    });
+    const webEnv = { PATH: process.env.PATH, NODE_ENV: 'production', HOSTNAME: '127.0.0.1', PORT: '4318', APP_URL: webOrigin, BETTER_AUTH_SECRET: authSecret, ADMIN_EMAILS: '', DATABASE_PATH: databasePath, OJ_QUEUE_NAME: queueName, REDIS_URL: process.env.REDIS_URL || 'redis://127.0.0.1:6381', OJ_PRECOMPILE_ENABLED: 'false' };
+    web = spawn(process.execPath, [webEntry], { env: webEnv, stdio: ['ignore', 'pipe', 'pipe'] });
+    web.stdout.on('data', () => {});
+    web.stderr.on('data', () => {});
+    web.on('error', () => { stopped = true; });
+    const deadline = Date.now() + 30000;
+    let ready = false;
+    while (Date.now() < deadline && !ready) {
+      assert(web.exitCode === null && web.signalCode === null, 'Isolated web process exited (port 4318 must be free)');
+      try { const response = await fetch(`${webOrigin}/api/submissions/nonexistent`, { signal: AbortSignal.timeout(1500) }); ready = response.status === 401; } catch { /* Await own web startup. */ }
+      if (!ready) await delay(100);
+    }
+    assert(ready, 'Isolated web startup timed out');
+    await delay(100);
+    assert(web.exitCode === null && web.signalCode === null, 'Isolated web did not retain its listener');
+  }
   sampler = setInterval(() => {
     try {
       const rss = Number(execFileSync('ps', ['-o', 'rss=', '-p', String(worker.pid)], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], timeout: 1000 }).trim()) || 0;
@@ -124,6 +164,26 @@ try {
   assert.equal(samples.terminal.passed, 1);
   assert.deepEqual(samples.results.map(c => c.ordinal), [0, 1]);
   assert.deepEqual(samples.results.map(c => c.status), ['wrong_answer', 'accepted']);
+  if (webEntry) {
+    const request = async (id, identity, expectedStatus) => {
+      const response = await fetch(`${webOrigin}/api/submissions/${id}`, { headers: identity ? { Cookie: identity.cookie } : {}, signal: AbortSignal.timeout(5000) });
+      assert.equal(response.status, expectedStatus, 'Submission HTTP authorization/status mismatch');
+      return expectedStatus === 200 ? response.json() : null;
+    };
+    const feedback = await request(later.id, owner, 200);
+    assert.equal(feedback.firstFailure.ordinal, 2);
+    assert.equal(feedback.firstFailure.stdin.trim(), '2');
+    assert.equal(feedback.firstFailure.expected.trim(), '2');
+    assert.equal(feedback.firstFailure.stdout.trim(), '999');
+    for (const c of feedback.cases.filter(c => c.hidden)) {
+      for (const key of ['stdin', 'expected', 'stdout', 'stderr']) assert(!Object.hasOwn(c, key), 'Hidden case array must not expose feedback fields');
+    }
+    await request(later.id, other, 404);
+    await request(later.id, null, 401);
+    const runFeedback = await request(samples.id, owner, 200);
+    assert.equal(runFeedback.firstFailure, undefined);
+    console.log(JSON.stringify({ event: 'failfast_http_verified', ownerFeedback: true, hiddenCasesRedacted: true, otherUserStatus: 404, anonymousStatus: 401, runHasNoFirstFailure: true }));
+  }
   // Observe past the slow neighbour's natural exit: it must never persist later results.
   await delay(Math.max(0, early.terminal.created_at + 5500 - Date.now()));
   assert.equal(db.prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?').get(early.id).n, 1);
@@ -131,6 +191,12 @@ try {
   console.log(JSON.stringify({ event: 'failfast_complete', scenarios: 5, peakRssKb, scope: 'private database + real worker + dedicated runner; not API/browser E2E' }));
 } finally {
   clearInterval(sampler);
+  if (web && web.exitCode === null && web.signalCode === null) {
+    web.kill('SIGTERM');
+    const deadline = Date.now() + 5000;
+    while (web.exitCode === null && web.signalCode === null && Date.now() < deadline) await delay(100);
+    if (web.exitCode === null && web.signalCode === null) { const exited = new Promise(r => web.once('exit', r)); web.kill('SIGKILL'); await exited; }
+  }
   if (worker && worker.exitCode === null && worker.signalCode === null) {
     worker.kill('SIGTERM');
     const deadline = Date.now() + 15000;
