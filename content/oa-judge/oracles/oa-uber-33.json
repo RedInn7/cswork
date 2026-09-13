@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3 3\na b c\n3 a b\n7 b c\n9 a c\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "1 0\nalone\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 0\na b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 0\nuser0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 2\nuser0 user1 user2 user3 user4 user5 user6 user7\n16 user4 user4\n7 user3 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 12\nuser0 user1\n19 user1 user1\n13 user1 user0\n8 user1 user0\n9 user0 user1\n17 user1 user1\n9 user0 user1\n15 user0 user1\n13 user0 user0\n12 user0 user1\n13 user1 user0\n6 user1 user1\n15 user1 user1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "5 8\nuser0 user1 user2 user3 user4\n4 user4 user1\n12 user1 user3\n0 user2 user1\n8 user4 user3\n9 user1 user2\n6 user2 user0\n20 user4 user0\n14 user4 user3\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "5 0\nuser0 user1 user2 user3 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 8\nuser0\n20 user0 user0\n19 user0 user0\n18 user0 user0\n20 user0 user0\n4 user0 user0\n12 user0 user0\n8 user0 user0\n1 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 6\nuser0 user1 user2 user3 user4 user5\n15 user3 user2\n5 user0 user4\n0 user2 user0\n13 user5 user5\n1 user2 user2\n20 user1 user3\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 9\nuser0 user1 user2 user3 user4 user5 user6\n8 user2 user5\n20 user3 user2\n12 user3 user2\n20 user1 user5\n1 user5 user6\n14 user4 user4\n5 user6 user5\n11 user1 user6\n10 user1 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 2\nuser0 user1 user2 user3 user4\n16 user1 user1\n15 user4 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 8\nuser0 user1 user2 user3 user4 user5 user6 user7\n11 user4 user4\n12 user7 user0\n11 user4 user6\n1 user5 user5\n9 user7 user7\n11 user7 user6\n16 user7 user5\n12 user2 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 6\nuser0 user1 user2 user3 user4 user5\n2 user4 user5\n17 user2 user3\n5 user3 user4\n3 user1 user1\n14 user5 user0\n6 user5 user1\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "2 12\nuser0 user1\n5 user1 user0\n10 user1 user1\n16 user0 user0\n16 user0 user1\n18 user1 user1\n0 user1 user1\n0 user1 user0\n0 user0 user1\n13 user0 user1\n17 user1 user0\n20 user0 user0\n5 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 1\nuser0\n2 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 13\nuser0 user1 user2 user3 user4 user5\n8 user4 user0\n13 user1 user2\n0 user5 user2\n5 user0 user5\n4 user2 user2\n20 user1 user2\n17 user2 user3\n16 user5 user1\n1 user4 user2\n19 user0 user3\n11 user1 user2\n11 user4 user5\n16 user3 user5\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "7 9\nuser0 user1 user2 user3 user4 user5 user6\n11 user1 user4\n3 user0 user2\n5 user3 user1\n16 user1 user1\n2 user0 user0\n9 user5 user2\n2 user5 user3\n3 user1 user6\n20 user3 user5\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "6 15\nuser0 user1 user2 user3 user4 user5\n4 user0 user2\n10 user3 user4\n1 user0 user2\n3 user5 user1\n15 user1 user5\n3 user2 user5\n7 user4 user3\n1 user2 user0\n10 user1 user2\n10 user4 user4\n2 user4 user2\n10 user2 user0\n17 user4 user1\n0 user4 user5\n18 user2 user0\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "3 7\nuser0 user1 user2\n4 user0 user2\n5 user0 user2\n17 user2 user2\n5 user0 user2\n19 user2 user0\n18 user1 user2\n3 user0 user1\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "4 3\nuser0 user1 user2 user3\n13 user2 user1\n0 user0 user0\n18 user3 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 9\nuser0 user1 user2\n12 user2 user2\n6 user2 user0\n10 user0 user0\n12 user1 user1\n7 user1 user2\n13 user0 user0\n15 user1 user1\n17 user0 user1\n3 user0 user1\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "8 0\nuser0 user1 user2 user3 user4 user5 user6 user7\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 15\nuser0 user1 user2 user3 user4\n5 user4 user1\n11 user2 user0\n19 user2 user0\n1 user3 user1\n10 user4 user3\n8 user2 user1\n14 user1 user0\n15 user3 user2\n8 user2 user1\n5 user1 user3\n9 user0 user4\n15 user3 user2\n9 user1 user2\n5 user3 user3\n5 user3 user4\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "4 15\nuser0 user1 user2 user3\n10 user2 user0\n14 user0 user3\n2 user2 user3\n19 user3 user0\n19 user1 user1\n20 user0 user0\n4 user0 user2\n19 user1 user2\n4 user2 user1\n0 user0 user1\n8 user2 user3\n15 user3 user2\n17 user3 user2\n19 user0 user0\n3 user0 user0\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "3 4\nuser0 user1 user2\n17 user0 user1\n4 user2 user1\n6 user2 user2\n2 user1 user1\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "1 13\nuser0\n20 user0 user0\n13 user0 user0\n14 user0 user0\n19 user0 user0\n13 user0 user0\n1 user0 user0\n5 user0 user0\n6 user0 user0\n18 user0 user0\n2 user0 user0\n16 user0 user0\n14 user0 user0\n8 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 1\nuser0 user1 user2 user3 user4\n3 user3 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 13\nuser0 user1 user2\n12 user0 user1\n18 user2 user0\n20 user2 user1\n14 user0 user1\n1 user0 user1\n11 user1 user0\n19 user2 user1\n13 user0 user1\n2 user0 user0\n16 user2 user0\n10 user1 user1\n7 user0 user2\n16 user2 user2\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "6 8\nuser0 user1 user2 user3 user4 user5\n11 user2 user4\n6 user0 user4\n8 user0 user2\n15 user5 user4\n9 user3 user0\n17 user5 user4\n14 user4 user2\n1 user2 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 3\nuser0 user1 user2 user3 user4 user5\n1 user4 user1\n12 user2 user4\n0 user1 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 9\nuser0 user1 user2 user3\n6 user3 user2\n8 user2 user0\n17 user3 user3\n20 user0 user3\n19 user0 user3\n5 user3 user1\n14 user1 user0\n12 user0 user2\n1 user3 user2\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "1 6\nuser0\n10 user0 user0\n4 user0 user0\n18 user0 user0\n10 user0 user0\n18 user0 user0\n19 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 11\nuser0 user1\n19 user0 user0\n16 user0 user1\n4 user1 user1\n3 user1 user0\n13 user1 user0\n10 user1 user1\n4 user0 user0\n7 user0 user1\n1 user1 user0\n5 user1 user1\n4 user1 user0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "3 8\nuser0 user1 user2\n2 user2 user1\n14 user0 user1\n18 user0 user0\n7 user2 user1\n8 user2 user2\n7 user2 user1\n14 user1 user2\n7 user0 user1\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "5 4\nuser0 user1 user2 user3 user4\n7 user4 user3\n15 user3 user1\n11 user4 user2\n0 user3 user0\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "4 11\nuser0 user1 user2 user3\n7 user3 user1\n20 user0 user2\n1 user2 user2\n6 user2 user1\n15 user0 user3\n1 user2 user3\n15 user3 user2\n4 user0 user3\n15 user3 user2\n10 user0 user3\n6 user1 user1\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "8 15\nuser0 user1 user2 user3 user4 user5 user6 user7\n6 user3 user5\n1 user4 user2\n11 user0 user4\n20 user7 user0\n16 user7 user6\n8 user5 user2\n4 user2 user7\n11 user0 user7\n6 user0 user1\n5 user2 user6\n18 user2 user3\n15 user0 user1\n11 user3 user7\n13 user3 user3\n14 user0 user6\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "5 14\nuser0 user1 user2 user3 user4\n2 user4 user0\n14 user3 user0\n14 user1 user1\n15 user0 user0\n18 user1 user0\n1 user2 user4\n17 user4 user2\n11 user0 user0\n15 user1 user3\n1 user0 user1\n19 user4 user0\n20 user2 user1\n3 user3 user2\n10 user4 user3\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "3 1\nuser0 user1 user2\n7 user0 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 7\nuser0 user1 user2 user3 user4\n17 user3 user1\n2 user4 user0\n3 user1 user4\n5 user1 user0\n13 user2 user1\n9 user4 user2\n9 user3 user1\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "7 1\nuser0 user1 user2 user3 user4 user5 user6\n14 user4 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 4\nuser0 user1 user2 user3 user4 user5\n17 user4 user1\n17 user0 user3\n10 user1 user3\n13 user0 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 2\nuser0 user1 user2 user3 user4 user5 user6 user7\n8 user5 user7\n18 user7 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 7\nuser0 user1 user2 user3 user4 user5 user6 user7\n1 user5 user2\n11 user3 user2\n1 user3 user2\n15 user5 user1\n15 user3 user6\n20 user4 user2\n18 user5 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 7\nuser0 user1 user2\n3 user2 user2\n4 user1 user0\n15 user2 user1\n13 user2 user2\n3 user1 user2\n17 user1 user1\n19 user2 user1\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "1 6\nuser0\n2 user0 user0\n11 user0 user0\n0 user0 user0\n0 user0 user0\n20 user0 user0\n7 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 12\nuser0 user1 user2 user3 user4 user5 user6\n15 user0 user1\n0 user1 user1\n1 user5 user3\n11 user5 user0\n16 user4 user4\n16 user6 user2\n11 user4 user5\n0 user0 user3\n14 user1 user5\n0 user4 user6\n16 user0 user4\n17 user4 user2\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "4 9\nuser0 user1 user2 user3\n15 user0 user0\n13 user3 user3\n12 user1 user3\n13 user0 user2\n11 user1 user2\n1 user1 user2\n12 user2 user3\n18 user3 user0\n20 user3 user0\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "2 8\nuser0 user1\n1 user1 user0\n2 user0 user1\n6 user0 user1\n7 user0 user0\n7 user0 user1\n1 user0 user0\n2 user0 user0\n15 user1 user1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "7 2\nuser0 user1 user2 user3 user4 user5 user6\n12 user4 user0\n2 user3 user6\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 12\nuser0 user1 user2 user3 user4\n10 user1 user1\n19 user3 user1\n10 user3 user0\n0 user2 user0\n2 user3 user0\n0 user2 user0\n16 user1 user4\n15 user3 user3\n13 user1 user4\n16 user1 user3\n7 user3 user1\n18 user0 user3\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "7 3\nuser0 user1 user2 user3 user4 user5 user6\n2 user4 user3\n3 user1 user6\n0 user1 user3\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 0\nuser0 user1 user2 user3 user4 user5 user6 user7\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 13\nuser0 user1 user2 user3 user4 user5 user6 user7\n5 user2 user5\n6 user5 user2\n17 user7 user2\n11 user1 user4\n19 user5 user7\n3 user0 user4\n18 user7 user1\n13 user4 user3\n1 user1 user6\n12 user7 user0\n2 user3 user1\n1 user4 user6\n11 user6 user0\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "2 6\nuser0 user1\n1 user0 user0\n17 user0 user1\n14 user0 user1\n6 user1 user0\n5 user1 user0\n19 user0 user1\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "2 5\nuser0 user1\n13 user1 user1\n1 user1 user1\n19 user1 user0\n11 user0 user0\n13 user1 user1\n",
+    "expectedOutput": "19\n"
+  },
+  {
+    "input": "4 15\nuser0 user1 user2 user3\n1 user2 user0\n20 user2 user3\n9 user0 user2\n7 user2 user1\n5 user3 user0\n5 user1 user3\n16 user2 user2\n8 user1 user0\n2 user3 user0\n13 user2 user2\n2 user3 user3\n6 user0 user2\n3 user0 user3\n6 user1 user1\n17 user1 user3\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "5 9\nuser0 user1 user2 user3 user4\n16 user2 user1\n2 user0 user2\n4 user3 user1\n0 user3 user0\n11 user4 user0\n17 user4 user3\n12 user4 user4\n7 user1 user1\n14 user4 user1\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "6 2\nuser0 user1 user2 user3 user4 user5\n13 user2 user2\n4 user0 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 5\nuser0 user1 user2 user3 user4 user5 user6 user7\n5 user0 user4\n6 user5 user0\n2 user6 user6\n7 user3 user4\n0 user3 user7\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 5\nuser0 user1\n15 user1 user1\n4 user1 user0\n8 user1 user0\n17 user0 user1\n2 user1 user0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "6 3\nuser0 user1 user2 user3 user4 user5\n15 user1 user1\n12 user0 user3\n10 user5 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 8\nuser0 user1\n16 user1 user0\n8 user1 user1\n15 user0 user1\n11 user0 user1\n15 user1 user0\n2 user0 user1\n2 user0 user0\n20 user0 user0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2 3\nuser0 user1\n12 user1 user0\n0 user1 user1\n18 user1 user1\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "4 15\nuser0 user1 user2 user3\n9 user0 user3\n20 user1 user0\n16 user0 user0\n9 user0 user1\n3 user1 user0\n4 user1 user0\n7 user2 user0\n12 user1 user1\n14 user0 user1\n1 user2 user0\n5 user0 user3\n18 user2 user3\n8 user2 user3\n6 user2 user0\n15 user0 user1\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "3 5\nuser0 user1 user2\n14 user2 user2\n6 user0 user0\n2 user1 user2\n3 user0 user1\n19 user0 user2\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "6 6\nuser0 user1 user2 user3 user4 user5\n0 user0 user4\n7 user4 user0\n17 user1 user2\n1 user2 user4\n19 user4 user5\n11 user2 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 9\nuser0 user1 user2 user3 user4 user5 user6\n10 user1 user1\n0 user2 user2\n5 user1 user2\n14 user4 user5\n5 user5 user2\n18 user2 user2\n17 user6 user1\n12 user4 user5\n1 user4 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 3\nuser0 user1 user2 user3 user4\n18 user4 user0\n8 user2 user0\n20 user3 user3\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 12\nuser0 user1\n19 user1 user0\n3 user1 user1\n11 user0 user0\n19 user1 user0\n1 user0 user0\n17 user1 user1\n1 user1 user1\n1 user1 user0\n6 user1 user0\n1 user1 user0\n6 user0 user1\n4 user1 user1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2 15\nuser0 user1\n14 user0 user1\n5 user1 user0\n2 user1 user1\n16 user1 user1\n6 user1 user0\n18 user1 user0\n9 user0 user1\n14 user0 user1\n6 user1 user1\n0 user1 user0\n2 user1 user0\n0 user0 user1\n11 user1 user1\n1 user1 user1\n14 user1 user1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 4\nuser0\n7 user0 user0\n4 user0 user0\n18 user0 user0\n17 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 11\nuser0 user1 user2 user3 user4 user5 user6\n14 user6 user1\n17 user1 user2\n0 user4 user0\n20 user0 user6\n9 user6 user2\n15 user0 user1\n3 user0 user2\n2 user2 user6\n1 user6 user3\n3 user6 user4\n1 user0 user5\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "7 10\nuser0 user1 user2 user3 user4 user5 user6\n18 user3 user6\n11 user4 user1\n5 user1 user0\n5 user2 user0\n16 user4 user1\n12 user5 user4\n12 user0 user2\n17 user4 user2\n6 user4 user1\n13 user2 user6\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "8 4\nuser0 user1 user2 user3 user4 user5 user6 user7\n1 user0 user3\n13 user7 user0\n2 user4 user0\n0 user3 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 2\nuser0 user1 user2 user3\n2 user3 user3\n11 user3 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 4\nuser0\n10 user0 user0\n14 user0 user0\n3 user0 user0\n19 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 2\nuser0\n8 user0 user0\n10 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 15\nuser0 user1 user2 user3 user4 user5\n13 user3 user4\n11 user1 user3\n3 user5 user0\n13 user3 user1\n3 user0 user3\n1 user2 user4\n1 user5 user1\n20 user0 user0\n11 user3 user2\n18 user1 user3\n13 user1 user4\n19 user5 user0\n10 user2 user0\n11 user0 user4\n15 user4 user1\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "6 4\nuser0 user1 user2 user3 user4 user5\n20 user1 user3\n1 user2 user0\n10 user4 user5\n16 user4 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 6\nuser0 user1\n20 user0 user0\n11 user1 user0\n12 user1 user1\n18 user0 user1\n15 user0 user1\n19 user1 user1\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "6 12\nuser0 user1 user2 user3 user4 user5\n2 user4 user0\n5 user3 user1\n18 user3 user2\n17 user5 user5\n2 user0 user1\n13 user2 user4\n1 user1 user5\n1 user4 user0\n18 user1 user4\n10 user5 user5\n11 user3 user5\n6 user1 user1\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "7 11\nuser0 user1 user2 user3 user4 user5 user6\n3 user6 user0\n3 user1 user2\n7 user2 user5\n12 user5 user4\n2 user1 user2\n4 user5 user3\n18 user6 user5\n11 user5 user2\n1 user6 user1\n2 user6 user0\n1 user4 user2\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "1 14\nuser0\n3 user0 user0\n11 user0 user0\n5 user0 user0\n19 user0 user0\n14 user0 user0\n12 user0 user0\n17 user0 user0\n1 user0 user0\n12 user0 user0\n14 user0 user0\n10 user0 user0\n19 user0 user0\n7 user0 user0\n17 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 9\nuser0 user1 user2 user3 user4 user5\n7 user0 user4\n13 user3 user0\n1 user3 user3\n10 user1 user5\n6 user1 user1\n7 user3 user0\n6 user3 user5\n14 user2 user3\n7 user0 user1\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "1 13\nuser0\n14 user0 user0\n17 user0 user0\n16 user0 user0\n13 user0 user0\n20 user0 user0\n19 user0 user0\n7 user0 user0\n12 user0 user0\n7 user0 user0\n7 user0 user0\n4 user0 user0\n10 user0 user0\n16 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 1\nuser0 user1 user2 user3 user4 user5 user6\n4 user6 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 15\nuser0 user1 user2 user3 user4 user5 user6\n5 user5 user5\n14 user1 user3\n12 user3 user0\n8 user2 user3\n19 user5 user4\n0 user1 user1\n0 user0 user5\n18 user1 user4\n11 user5 user4\n9 user2 user6\n5 user1 user1\n14 user0 user5\n11 user2 user5\n0 user4 user6\n11 user3 user5\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "1 9\nuser0\n12 user0 user0\n13 user0 user0\n3 user0 user0\n5 user0 user0\n10 user0 user0\n4 user0 user0\n4 user0 user0\n6 user0 user0\n16 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 0\nuser0 user1 user2 user3\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 0\nuser0 user1 user2 user3 user4 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 8\nuser0 user1\n7 user1 user1\n7 user1 user0\n14 user1 user0\n13 user0 user1\n20 user0 user1\n7 user0 user0\n1 user1 user0\n12 user0 user0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "5 13\nuser0 user1 user2 user3 user4\n0 user1 user2\n6 user0 user3\n6 user4 user4\n12 user1 user4\n11 user1 user1\n19 user1 user3\n8 user2 user1\n13 user1 user1\n1 user0 user1\n17 user1 user3\n5 user0 user0\n0 user3 user2\n20 user3 user0\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "6 12\nuser0 user1 user2 user3 user4 user5\n15 user1 user0\n9 user3 user1\n1 user1 user0\n12 user5 user1\n11 user4 user0\n18 user3 user0\n19 user3 user1\n9 user1 user2\n6 user1 user5\n10 user0 user0\n2 user4 user5\n16 user1 user2\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "8 7\nuser0 user1 user2 user3 user4 user5 user6 user7\n14 user4 user7\n12 user1 user6\n5 user5 user4\n12 user7 user3\n8 user7 user0\n2 user1 user7\n8 user5 user6\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 9\nuser0 user1 user2 user3 user4 user5 user6\n12 user6 user3\n19 user0 user6\n1 user1 user2\n4 user1 user5\n13 user6 user2\n5 user3 user2\n15 user0 user0\n4 user1 user3\n2 user3 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 9\nuser0 user1 user2 user3 user4\n4 user4 user0\n4 user2 user1\n3 user4 user1\n16 user4 user4\n5 user3 user2\n0 user3 user3\n11 user2 user0\n17 user3 user2\n11 user3 user4\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "4 5\nuser0 user1 user2 user3\n6 user3 user1\n16 user1 user2\n15 user3 user3\n19 user3 user0\n5 user0 user2\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "4 7\nuser0 user1 user2 user3\n6 user3 user1\n1 user3 user0\n4 user1 user2\n20 user3 user0\n13 user1 user2\n3 user3 user3\n19 user2 user2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "8 7\nuser0 user1 user2 user3 user4 user5 user6 user7\n2 user7 user6\n6 user0 user1\n1 user3 user3\n17 user0 user0\n17 user6 user3\n6 user4 user5\n13 user3 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 9\nuser0 user1 user2 user3 user4 user5\n14 user4 user0\n8 user0 user5\n1 user3 user1\n2 user5 user0\n3 user3 user3\n16 user1 user1\n5 user0 user5\n1 user3 user3\n2 user2 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 3\nuser0 user1 user2 user3 user4 user5\n10 user3 user5\n11 user1 user3\n6 user0 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 14\nuser0 user1 user2 user3 user4\n15 user1 user4\n17 user0 user0\n1 user4 user1\n10 user4 user4\n15 user2 user4\n9 user2 user2\n16 user1 user3\n9 user3 user4\n0 user0 user2\n7 user2 user1\n13 user1 user2\n5 user3 user1\n10 user0 user3\n3 user1 user3\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "7 4\nuser0 user1 user2 user3 user4 user5 user6\n9 user3 user0\n6 user6 user1\n1 user2 user1\n2 user4 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 12\nuser0 user1 user2\n15 user1 user0\n11 user2 user2\n14 user0 user0\n11 user1 user0\n4 user2 user2\n17 user2 user0\n4 user0 user0\n9 user2 user0\n3 user2 user2\n10 user0 user0\n13 user1 user2\n16 user2 user2\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "4 7\nuser0 user1 user2 user3\n4 user1 user2\n9 user3 user0\n14 user1 user1\n19 user1 user0\n13 user0 user3\n15 user1 user3\n1 user0 user1\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "6 2\nuser0 user1 user2 user3 user4 user5\n4 user5 user2\n8 user5 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 5\nuser0 user1\n10 user1 user0\n5 user1 user1\n8 user0 user0\n2 user1 user1\n6 user0 user0\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "6 4\nuser0 user1 user2 user3 user4 user5\n13 user1 user2\n15 user5 user4\n10 user0 user4\n6 user0 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 8\nuser0 user1 user2 user3 user4 user5 user6\n1 user5 user2\n10 user6 user2\n8 user6 user0\n2 user1 user1\n6 user3 user5\n4 user3 user0\n1 user0 user5\n11 user2 user5\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 15\nuser0 user1\n8 user0 user0\n11 user1 user1\n17 user1 user1\n12 user1 user1\n1 user0 user1\n11 user1 user1\n20 user0 user1\n3 user0 user0\n5 user0 user1\n3 user1 user1\n17 user0 user0\n13 user0 user0\n7 user0 user0\n16 user0 user0\n20 user0 user1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "4 8\nuser0 user1 user2 user3\n17 user2 user3\n15 user2 user3\n4 user1 user2\n20 user3 user3\n4 user3 user0\n12 user3 user0\n6 user0 user3\n7 user3 user2\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "1 5\nuser0\n2 user0 user0\n7 user0 user0\n5 user0 user0\n14 user0 user0\n14 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 8\nuser0 user1 user2 user3 user4 user5 user6 user7\n17 user6 user4\n4 user1 user4\n7 user3 user6\n13 user1 user0\n8 user7 user0\n16 user1 user0\n3 user3 user2\n15 user0 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 11\nuser0 user1 user2 user3 user4 user5\n17 user0 user3\n19 user3 user3\n3 user1 user3\n4 user1 user0\n18 user3 user3\n8 user0 user1\n0 user0 user2\n8 user4 user2\n17 user4 user2\n17 user0 user3\n0 user5 user3\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "8 13\nuser0 user1 user2 user3 user4 user5 user6 user7\n16 user0 user0\n15 user1 user4\n10 user2 user3\n4 user2 user4\n17 user1 user6\n12 user5 user2\n3 user2 user3\n20 user3 user6\n12 user3 user4\n11 user1 user7\n19 user1 user5\n17 user7 user6\n11 user2 user7\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 10\nuser0 user1 user2\n15 user0 user2\n11 user2 user2\n13 user1 user2\n4 user2 user0\n14 user0 user0\n5 user0 user2\n20 user0 user2\n8 user1 user2\n10 user2 user0\n2 user0 user2\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "3 12\nuser0 user1 user2\n14 user2 user0\n15 user0 user0\n1 user0 user2\n13 user0 user2\n10 user0 user2\n5 user0 user0\n12 user1 user0\n17 user1 user0\n14 user2 user1\n6 user0 user1\n13 user1 user0\n13 user0 user1\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "3 0\nuser0 user1 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 9\nuser0 user1 user2 user3 user4 user5\n6 user0 user3\n9 user3 user2\n16 user3 user1\n10 user1 user3\n13 user2 user2\n1 user4 user3\n6 user3 user1\n4 user2 user5\n10 user4 user2\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "5 10\nuser0 user1 user2 user3 user4\n7 user1 user0\n18 user0 user1\n11 user3 user1\n11 user4 user1\n15 user1 user4\n8 user3 user1\n18 user2 user2\n1 user3 user0\n6 user3 user1\n0 user2 user1\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "7 5\nuser0 user1 user2 user3 user4 user5 user6\n4 user6 user2\n18 user3 user5\n8 user4 user0\n16 user3 user2\n2 user3 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 7\nuser0 user1 user2 user3\n5 user0 user1\n0 user2 user1\n13 user0 user3\n4 user0 user2\n3 user1 user0\n6 user2 user1\n18 user0 user2\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "2 4\nuser0 user1\n7 user1 user0\n2 user1 user0\n8 user0 user1\n19 user1 user0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8 1\nuser0 user1 user2 user3 user4 user5 user6 user7\n14 user0 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 13\nuser0 user1 user2 user3 user4\n20 user0 user1\n6 user3 user2\n11 user1 user2\n8 user1 user4\n19 user0 user4\n6 user1 user1\n5 user3 user0\n15 user1 user0\n12 user3 user0\n5 user0 user1\n5 user0 user3\n11 user3 user3\n4 user4 user2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "1 6\nuser0\n16 user0 user0\n10 user0 user0\n3 user0 user0\n15 user0 user0\n17 user0 user0\n17 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 3\nuser0 user1 user2 user3 user4\n0 user3 user4\n5 user4 user2\n17 user3 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 6\nuser0 user1 user2 user3 user4\n0 user1 user0\n1 user2 user1\n1 user2 user0\n11 user2 user3\n19 user3 user1\n15 user1 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 0\nuser0 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 4\nuser0 user1 user2 user3 user4 user5\n15 user1 user2\n17 user2 user3\n14 user5 user1\n17 user4 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 10\nuser0 user1 user2 user3 user4 user5 user6 user7\n8 user2 user0\n0 user6 user1\n8 user3 user0\n12 user1 user3\n8 user1 user3\n16 user3 user2\n9 user6 user7\n1 user4 user0\n5 user2 user5\n7 user4 user6\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "7 1\nuser0 user1 user2 user3 user4 user5 user6\n3 user5 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 5\nuser0 user1 user2\n19 user2 user2\n13 user1 user2\n15 user2 user1\n1 user1 user2\n2 user1 user0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8 5\nuser0 user1 user2 user3 user4 user5 user6 user7\n0 user1 user4\n16 user1 user4\n1 user0 user1\n5 user6 user5\n15 user1 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 4\nuser0 user1 user2 user3 user4\n1 user2 user3\n3 user2 user4\n5 user0 user0\n13 user0 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 7\nuser0 user1\n1 user0 user1\n14 user0 user0\n12 user1 user1\n7 user1 user0\n4 user1 user1\n15 user0 user0\n7 user0 user0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6 4\nuser0 user1 user2 user3 user4 user5\n18 user0 user5\n8 user1 user3\n16 user3 user5\n19 user2 user3\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 14\nuser0 user1 user2 user3 user4 user5 user6 user7\n6 user6 user6\n2 user5 user6\n0 user5 user1\n10 user1 user1\n4 user5 user1\n14 user2 user5\n18 user5 user5\n17 user6 user0\n20 user2 user6\n18 user0 user2\n11 user4 user3\n18 user0 user4\n9 user2 user3\n13 user3 user7\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "7 14\nuser0 user1 user2 user3 user4 user5 user6\n7 user4 user3\n4 user3 user2\n0 user6 user5\n14 user3 user1\n15 user5 user3\n10 user5 user2\n17 user2 user1\n10 user1 user6\n4 user6 user4\n10 user1 user1\n5 user6 user4\n15 user0 user3\n16 user1 user1\n15 user0 user4\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "2 4\nuser0 user1\n5 user1 user0\n5 user0 user1\n3 user0 user0\n2 user0 user1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1 2\nuser0\n2 user0 user0\n15 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 0\nuser0 user1 user2 user3 user4 user5 user6\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 1\nuser0 user1 user2 user3 user4 user5 user6 user7\n12 user6 user7\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 13\nuser0 user1 user2 user3 user4 user5\n12 user1 user4\n20 user4 user5\n7 user0 user1\n6 user0 user3\n1 user2 user2\n1 user1 user2\n16 user3 user0\n4 user1 user2\n6 user2 user0\n20 user5 user1\n17 user2 user5\n5 user5 user4\n0 user2 user0\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "7 2\nuser0 user1 user2 user3 user4 user5 user6\n7 user5 user4\n20 user2 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 8\nuser0 user1 user2 user3 user4\n8 user3 user0\n0 user3 user1\n15 user4 user3\n12 user3 user0\n11 user4 user3\n18 user3 user3\n12 user4 user4\n16 user4 user4\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 9\nuser0 user1 user2 user3\n4 user1 user0\n11 user1 user3\n17 user0 user0\n9 user1 user3\n12 user0 user3\n17 user0 user2\n11 user0 user3\n16 user1 user2\n0 user1 user0\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "3 4\nuser0 user1 user2\n0 user1 user0\n6 user2 user1\n4 user1 user1\n18 user0 user2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "3 1\nuser0 user1 user2\n9 user1 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 11\nuser0\n13 user0 user0\n16 user0 user0\n15 user0 user0\n3 user0 user0\n9 user0 user0\n5 user0 user0\n16 user0 user0\n8 user0 user0\n3 user0 user0\n20 user0 user0\n8 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 1\nuser0 user1 user2 user3 user4 user5\n11 user3 user0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 6\nuser0 user1\n16 user1 user0\n13 user0 user1\n1 user1 user1\n17 user0 user0\n18 user0 user0\n11 user1 user0\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "6 13\nuser0 user1 user2 user3 user4 user5\n15 user3 user0\n4 user4 user4\n7 user3 user4\n20 user0 user5\n13 user2 user2\n20 user2 user3\n3 user2 user5\n7 user1 user5\n19 user3 user1\n7 user2 user3\n16 user5 user0\n19 user2 user2\n0 user0 user4\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "7 9\nuser0 user1 user2 user3 user4 user5 user6\n6 user3 user0\n1 user4 user2\n16 user2 user5\n2 user4 user6\n20 user4 user4\n16 user2 user6\n16 user2 user5\n0 user6 user0\n7 user3 user3\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 0\nuser0 user1 user2 user3 user4 user5 user6 user7\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 12\nuser0 user1 user2 user3 user4 user5\n12 user4 user0\n4 user4 user2\n9 user3 user5\n14 user2 user4\n2 user4 user5\n11 user0 user0\n14 user3 user1\n4 user2 user4\n0 user4 user4\n18 user3 user3\n10 user0 user5\n18 user2 user5\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "1 5\nuser0\n6 user0 user0\n20 user0 user0\n11 user0 user0\n12 user0 user0\n8 user0 user0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 7\nuser0 user1 user2 user3 user4 user5 user6 user7\n15 user2 user4\n10 user5 user2\n10 user6 user6\n8 user1 user2\n13 user6 user7\n16 user1 user0\n5 user0 user2\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 12\nuser0 user1 user2 user3 user4 user5 user6 user7\n12 user7 user4\n13 user1 user0\n19 user1 user1\n19 user0 user4\n4 user3 user6\n19 user2 user2\n0 user7 user6\n2 user3 user1\n20 user7 user6\n18 user4 user6\n17 user4 user1\n16 user7 user1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 10\nuser0 user1\n9 user1 user1\n2 user1 user1\n6 user0 user0\n5 user0 user1\n17 user0 user1\n18 user1 user1\n20 user0 user1\n16 user1 user1\n10 user1 user0\n11 user1 user1\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "5 6\nuser0 user1 user2 user3 user4\n12 user2 user3\n19 user2 user1\n11 user1 user1\n10 user1 user3\n1 user2 user2\n13 user3 user3\n",
+    "expectedOutput": "-1\n"
+  }
+]

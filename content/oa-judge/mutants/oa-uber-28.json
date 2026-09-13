@@ -1,0 +1,10 @@
+[
+  {
+    "name": "向上错误允许横距w",
+    "code": "from math import isqrt\ndef solve(d):\n    n,m,w=map(int,d[:3]);grid=d[3:];mod=998244353;radius=w\n    incoming=[int(c=='X') for c in grid[-1]]\n    def transfer(values,row,distance):\n        prefix=[0]\n        for value in values:prefix.append((prefix[-1]+value)%mod)\n        return [(prefix[min(m,j+distance+1)]-prefix[max(0,j-distance)])%mod if row[j]=='X' else 0 for j in range(m)]\n    for i in range(n-1,-1,-1):\n        finished=transfer(incoming,grid[i],w)\n        if i:incoming=transfer(finished,grid[i-1],radius)\n    return str(sum(finished)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不允许同层第二抓点",
+    "code": "from math import isqrt\ndef solve(d):\n    n,m,w=map(int,d[:3]);grid=d[3:];mod=998244353;radius=isqrt(w*w-1)\n    incoming=[int(c=='X') for c in grid[-1]]\n    def transfer(values,row,distance):\n        prefix=[0]\n        for value in values:prefix.append((prefix[-1]+value)%mod)\n        return [(prefix[min(m,j+distance+1)]-prefix[max(0,j-distance)])%mod if row[j]=='X' else 0 for j in range(m)]\n    for i in range(n-1,-1,-1):\n        finished=incoming\n        if i:incoming=transfer(finished,grid[i-1],radius)\n    return str(sum(finished)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

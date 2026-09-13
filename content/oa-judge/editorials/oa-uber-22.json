@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-22",
+  "title": "每步截断的生命值",
+  "explanation": "## 思路\n\n按顺序模拟，每步先相加再截断。\n\n## 正确性\n\n归纳看，每次更新都与题意完全相同；不能把变化先求和，因为中间截断会丢弃溢出的部分。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    health=int(d[1])\n    for i in range(2,len(d)):health=max(0,min(100,health+int(d[i])))\n    return str(health)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#22-character-health-in-a-video-game",
+  "sourceContentHash": "db20909f346602ca43b2149a67b23e8f746b6d72599f93db1a80379a4203d22f",
+  "author": "CSWork"
+}

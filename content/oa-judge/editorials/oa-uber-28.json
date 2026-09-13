@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-28",
+  "title": "每层至多两个抓点的攀墙路线",
+  "explanation": "## 思路\n\n按行从下到上处理。进入本行的路径数，经半径w的横向窗口求和得到本行最后抓点的路径数（含不横移）。向上换行时横距最多isqrt(w²−1)，再做窗口求和。两类窗口均用前缀和。\n\n## 正确性\n\n每条合法路线在一行内要么只有最后抓点，要么有唯一的第一个和不同的最后抓点；横向窗口把这些情形各计一次。相邻行高差1，距离约束等价于横距平方≤w²−1。逐层转移精确拼接全部且仅合法路线。\n\n## 复杂度\n\n时间O(nm)，除输入网格外空间O(m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from math import isqrt\ndef solve(d):\n    n,m,w=map(int,d[:3]);grid=d[3:];mod=998244353;radius=isqrt(w*w-1)\n    incoming=[int(c=='X') for c in grid[-1]]\n    def transfer(values,row,distance):\n        prefix=[0]\n        for value in values:prefix.append((prefix[-1]+value)%mod)\n        return [(prefix[min(m,j+distance+1)]-prefix[max(0,j-distance)])%mod if row[j]=='X' else 0 for j in range(m)]\n    for i in range(n-1,-1,-1):\n        finished=transfer(incoming,grid[i],w)\n        if i:incoming=transfer(finished,grid[i-1],radius)\n    return str(sum(finished)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#28-count-routes",
+  "sourceContentHash": "10ad1d667453bbdd11e30d7071d3dfd099622685333b367a2bee874cb489268a",
+  "author": "CSWork"
+}

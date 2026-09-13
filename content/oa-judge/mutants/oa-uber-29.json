@@ -1,0 +1,10 @@
+[
+  {
+    "name": "严格大于k",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));counts={};pairs=left=answer=0\n    for right,v in enumerate(a):\n        pairs+=counts.get(v,0);counts[v]=counts.get(v,0)+1\n        while pairs>k:\n            answer+=n-right;old=a[left];counts[old]-=1;pairs-=counts[old];left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误每次只加一",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));counts={};pairs=left=answer=0\n    for right,v in enumerate(a):\n        pairs+=counts.get(v,0);counts[v]=counts.get(v,0)+1\n        while pairs>=k:\n            answer+=1;old=a[left];counts[old]-=1;pairs-=counts[old];left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

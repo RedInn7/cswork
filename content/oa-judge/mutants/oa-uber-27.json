@@ -1,0 +1,10 @@
+[
+  {
+    "name": "包含拐点本身",
+    "code": "def solve(d):\n    n,m,magic,mod=map(int,d);rows=[0]*n;cols=[0]*m\n    for i in range(n):\n        for j in range(m):\n            if ((i+j*magic)%mod)%2:rows[i]+=1;cols[j]+=1\n    answer=0\n    for i in range(n):\n        for j in range(m):\n            if ((i+j*magic)%mod)%2:answer+=rows[i]*cols[j]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误除以三",
+    "code": "def solve(d):\n    n,m,magic,mod=map(int,d);rows=[0]*n;cols=[0]*m\n    for i in range(n):\n        for j in range(m):\n            if ((i+j*magic)%mod)%2:rows[i]+=1;cols[j]+=1\n    answer=0\n    for i in range(n):\n        for j in range(m):\n            if ((i+j*magic)%mod)%2:answer+=(rows[i]-1)*(cols[j]-1)\n    return str(answer//3)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

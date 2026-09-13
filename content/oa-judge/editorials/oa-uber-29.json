@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-29",
+  "title": "至少k对相同元素的子数组",
+  "explanation": "## 思路\n\n双指针维护窗口和频次。新元素增加与其原频次相同的配对数；窗口满足k时，该左端对应当前及所有更远右端都有效，计数后移走左端。\n\n## 正确性\n\n向右扩展不会减少配对数。当某左端首次达到k时，所有更长窗口都有效且之前无效，贡献n−right。每个左端只移走一次，贡献之间不重不漏。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));counts={};pairs=left=answer=0\n    for right,v in enumerate(a):\n        pairs+=counts.get(v,0);counts[v]=counts.get(v,0)+1\n        while pairs>=k:\n            answer+=n-right;old=a[left];counts[old]-=1;pairs-=counts[old];left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#29-count-the-number-of-good-subarrays",
+  "sourceContentHash": "b4cffa5e9e62162765f12c640812c691dda0f112494d12af168de69d2a092926",
+  "author": "CSWork"
+}

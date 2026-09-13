@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-31",
+  "title": "拆除房屋后的连续街区数",
+  "explanation": "## 思路\n\n集合判断被删位置左右是否有房屋。两侧都有时一个街区拆成两个，增加1；都没有时孤立街区消失，减1；仅一侧存在时不变。\n\n## 正确性\n\n只有含被删房屋的街区可能变化，其他街区保持。左右是否存在穷尽三类情况，因此按left+right−1更新正确。初始每个无左邻的房屋恰好代表一个街区。\n\n## 复杂度\n\n时间O(n+q)期望，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);houses=set(map(int,d[2:2+n]));segments=sum(v-1 not in houses for v in houses);result=[]\n    for i in range(2+n,len(d)):\n        v=int(d[i]);left=v-1 in houses;right=v+1 in houses;segments+=left+right-1;houses.remove(v);result.append(str(segments))\n    return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#31-counting-segments-after-house-removals",
+  "sourceContentHash": "9106166598c82496f3fe02bb8903052a715b845310d2e104b11f0c61f4ff572e",
+  "author": "CSWork"
+}

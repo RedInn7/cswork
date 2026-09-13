@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不按时间处理",
+    "code": "def solve(d):\n    n,m=map(int,d[:2])\n    if n==1:return '0'\n    ids={d[i+2]:i for i in range(n)};parent=list(range(n));size=[1]*n;components=n\n    def find(v):\n        while parent[v]!=v:parent[v]=parent[parent[v]];v=parent[v]\n        return v\n    logs=[(int(d[i]),ids[d[i+1]],ids[d[i+2]]) for i in range(n+2,len(d),3)];logs.reverse()\n    for time,u,v in logs:\n        a,b=find(u),find(v)\n        if a==b:continue\n        if size[a]<size[b]:a,b=b,a\n        parent[b]=a;size[a]+=size[b];components-=1\n        if components==1:return str(time)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "过早认为连通",
+    "code": "def solve(d):\n    n,m=map(int,d[:2])\n    if n==1:return '0'\n    ids={d[i+2]:i for i in range(n)};parent=list(range(n));size=[1]*n;components=n\n    def find(v):\n        while parent[v]!=v:parent[v]=parent[parent[v]];v=parent[v]\n        return v\n    logs=[(int(d[i]),ids[d[i+1]],ids[d[i+2]]) for i in range(n+2,len(d),3)];logs.sort()\n    for time,u,v in logs:\n        a,b=find(u),find(v)\n        if a==b:continue\n        if size[a]<size[b]:a,b=b,a\n        parent[b]=a;size[a]+=size[b];components-=1\n        if components<=2:return str(time)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

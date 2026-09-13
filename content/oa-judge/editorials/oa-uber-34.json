@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-34",
+  "title": "接驾地点和时间兼容的最少分组",
+  "explanation": "## 思路\n\n按地点拆分，组内按时间排序。每次从最早尚未分组请求开始，向后拿最多两个且时间差≤10的请求。最后整理组内ID和组间原下标顺序。\n\n## 正确性\n\n在任一地点，最早请求所在组可交换成包含最早可兼容的至多3个请求：把较早请求放到最早组不会超出窗口，被换出的较晚请求放回较晚组也不破坏已有时间跨度。若最早组未满而存在可兼容请求，移入不会增加组数。因而存在以该贪心组开头的最优解，对剩余请求归纳；不同地点不能混组，各自最优相加。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import defaultdict\ndef solve(d):\n    lines=d.split('\\n');n=int(lines[0]);locations=defaultdict(list)\n    for i in range(n):\n        identifier,time=lines[1+2*i].split();hour,minute=map(int,time.split(':'));locations[lines[2+2*i]].append((hour*60+minute,i,int(identifier)))\n    groups=[]\n    for rides in locations.values():\n        rides.sort();i=0\n        while i<len(rides):\n            start=i;i+=1\n            while i<len(rides) and i-start<3 and rides[i][0]-rides[start][0]<=10:i+=1\n            selected=rides[start:i];groups.append((min(v[1] for v in selected),sorted(v[2] for v in selected)))\n    groups.sort()\n    return str(len(groups))+'\\n'+'\\n'.join(str(len(ids))+' '+' '.join(map(str,ids)) for _,ids in groups)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#34-ride-sharing-service-efficient-batching",
+  "sourceContentHash": "fc71b37f571a8e6fc1b9ef2dd7c9bcd1ca2c16ad9ccd0933a9589748c0bd8ac2",
+  "author": "CSWork"
+}

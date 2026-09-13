@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只在最后截断",
+    "code": "def solve(d):\n    health=int(d[1])\n    for i in range(2,len(d)):health+=int(d[i])\n    return str(health)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏上限",
+    "code": "def solve(d):\n    health=int(d[1])\n    for i in range(2,len(d)):health=max(0,health+int(d[i]))\n    return str(health)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

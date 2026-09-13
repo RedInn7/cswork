@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-23",
+  "title": "距离二以内接人并返回起点",
+  "explanation": "## 思路\n\n先不断剥去无乘客叶子，再同时剥去两层叶子。剩余树的每条边必须往返一次，答案为剩余边数的两倍。\n\n## 正确性\n\n无乘客叶子不必访问，也不影响接客。剩余树的外侧乘客可从向内两步处接到，因此剥去两层；再内侧的每条边两侧都有无法在同一侧覆盖的乘客，必须穿越。闭合树上路线对每条使用边至少走两次，遍历剩余树达到该下界；无边时原地即可。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(d):\n    n=int(d[0]);flags=list(map(int,d[1:n+1]));graph=[[] for _ in range(n)]\n    for i in range(n+1,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);graph[a].append(b);graph[b].append(a)\n    degree=list(map(len,graph));alive=[True]*n;remaining=n-1;queue=deque(i for i in range(n) if degree[i]<=1 and flags[i]==0)\n    while queue:\n        v=queue.popleft()\n        if not alive[v]:continue\n        alive[v]=False\n        for w in graph[v]:\n            if alive[w]:remaining-=1;degree[w]-=1\n            else:continue\n            if degree[w]<=1 and flags[w]==0:queue.append(w)\n    queue=deque(i for i in range(n) if alive[i] and degree[i]<=1)\n    for _ in range(2):\n        for _ in range(len(queue)):\n            v=queue.popleft();alive[v]=False\n            for w in graph[v]:\n                if alive[w]:remaining-=1;degree[w]-=1\n                else:continue\n                if degree[w]==1:queue.append(w)\n    return str(2*max(0,remaining))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#23-uber-circular-shuttle-optimization",
+  "sourceContentHash": "70043df8927abfaff2b86420dff82299073b1d6f9c16e6c9914756fe5b1a526c",
+  "author": "CSWork"
+}

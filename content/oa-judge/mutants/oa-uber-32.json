@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按耗时排序",
+    "code": "def solve(d):\n    tasks=[(int(d[i+1]),int(d[i])) for i in range(1,len(d),2)];tasks.sort(key=lambda item:item[1]);time=0\n    for deadline,duration in tasks:\n        time+=duration\n        if time>deadline:return '-1'\n    return str(time)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不接受恰好截止",
+    "code": "def solve(d):\n    tasks=[(int(d[i+1]),int(d[i])) for i in range(1,len(d),2)];tasks.sort();time=0\n    for deadline,duration in tasks:\n        time+=duration\n        if time>=deadline:return '-1'\n    return str(time)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
