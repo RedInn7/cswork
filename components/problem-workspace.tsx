@@ -34,7 +34,7 @@ import {
   X,
 } from 'lucide-react';
 import { Button } from './ui/button';
-import { OaEditorial } from './oa-library';
+import { OaCompanyBadge, OaEditorial } from './oa-library';
 import {
   Dialog,
   DialogContent,
@@ -914,6 +914,9 @@ function Workspace({
         )}
       </div>
       <div className="cs-statement-scroll">
+        {problem.id.startsWith('oa-') && (
+          <OaCompanyBadge key={problem.id} problemId={problem.id} />
+        )}
         {leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
         ) : leftTab === 'statement' ? (
