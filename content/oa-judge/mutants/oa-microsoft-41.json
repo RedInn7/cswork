@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略分位移动代价",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    import heapq\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));m=n//3;answer=a[-m]-a[m-1]\n    sides=[sorted(-v for v in a[:m]),a[-m:]];heap=[]\n    for side,b in enumerate(sides):heap.append((bisect_right(b,b[0]),side,b[0]))\n    heapq.heapify(heap)\n    while k and heap:\n        count,side,level=heapq.heappop(heap);b=sides[side];distance=b[count]-level if count<m else k+1\n        increase=min(distance,k);answer+=increase;k-=increase*count\n        if increase<distance:break\n        level+=increase;heapq.heappush(heap,(bisect_right(b,level),side,level))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏原始差",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    import heapq\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));m=n//3;answer=0\n    sides=[sorted(-v for v in a[:m]),a[-m:]];heap=[]\n    for side,b in enumerate(sides):heap.append((bisect_right(b,b[0]),side,b[0]))\n    heapq.heapify(heap)\n    while k and heap:\n        count,side,level=heapq.heappop(heap);b=sides[side];distance=b[count]-level if count<m else k+1\n        increase=min(distance,k//count);answer+=increase;k-=increase*count\n        if increase<distance:break\n        level+=increase;heapq.heappush(heap,(bisect_right(b,level),side,level))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

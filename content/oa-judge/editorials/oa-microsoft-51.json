@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-51",
+  "title": "相邻交换聚拢全部红球",
+  "explanation": "## 思路\n\n红球原位置p[i]保持相对顺序，目标为连续位置start+i；令b[i]=p[i]−i，最小化到同一start的绝对距离和，取中位数。\n\n## 正确性\n\n同色球无需互换，按原顺序匹配目标位置可避免交叉。每次相邻红白交换让一红球移动一步，总代价恰是位移和；绝对距离和在中位数最小。b已非递减，中位数可直接取得。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    positions=[]\n    for i,c in enumerate(d[0]):\n        if c=='R':positions.append(i-len(positions))\n    if not positions:return '0'\n    middle=positions[len(positions)//2];answer=sum(abs(v-middle) for v in positions)\n    return str(answer if answer<=1000000000 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#51-minimum-swaps-required-to-group-all-red-balls-together",
+  "sourceContentHash": "70b565646792209860145c90e3a2620013e34da033a8b11480309dd6e8b1b9df",
+  "author": "CSWork"
+}

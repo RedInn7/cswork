@@ -1,0 +1,10 @@
+[
+  {
+    "name": "反转链内容顺序",
+    "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);records={};ends=set()\n    for i in range(n):\n        start,end=lines[1+2*i].split();records[start]=(end,lines[2+2*i]);ends.add(end)\n    current=next(key for key in records if key not in ends);result=[]\n    for _ in range(n):end,payload=records[current];result.append(payload);current=end\n    return ''.join(reversed(result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "错误裁去内容空格",
+    "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);records={};ends=set()\n    for i in range(n):\n        start,end=lines[1+2*i].split();records[start]=(end,lines[2+2*i]);ends.add(end)\n    current=next(key for key in records if key not in ends);result=[]\n    for _ in range(n):end,payload=records[current];result.append(payload.strip());current=end\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

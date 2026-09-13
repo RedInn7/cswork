@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-53",
+  "title": "按首尾键唯一链接后拼接内容",
+  "explanation": "## 思路\n\n用start映射记录，找不出现在end集合的起始键，从它沿end逐条走并收集payload，最后一次拼接。\n\n## 正确性\n\n唯一链的首键无前驱，其他起始键均有前驱，因此起点唯一。每次按end查下一条正好满足规定顺序，走N步恰覆盖全部记录，拼接即答案。\n\n## 复杂度\n\n时间O(输入字节数)，空间O(输入字节数+N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);records={};ends=set()\n    for i in range(n):\n        start,end=lines[1+2*i].split();records[start]=(end,lines[2+2*i]);ends.add(end)\n    current=next(key for key in records if key not in ends);result=[]\n    for _ in range(n):end,payload=records[current];result.append(payload);current=end\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#53-order-records-by-matching-start-and-end",
+  "sourceContentHash": "e1f3e2da693b722ad2055dd619896a118c339e5919bef95b2405ac9be36d5003",
+  "author": "CSWork"
+}

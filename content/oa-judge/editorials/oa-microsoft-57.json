@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-57",
+  "title": "营业商家的前K名",
+  "explanation": "## 思路\n\n过滤未营业商家，按三个排名关键字排序，取前K个下标。\n\n## 正确性\n\n过滤恰好排除所有不可选项；排序逐级使用题目规定的比较优先级，所得前缀就是唯一合法的前K名。\n\n## 复杂度\n\n时间O(N log N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);rows=[tuple(map(int,d[i:i+3])) for i in range(2,len(d),3)];order=sorted((i for i in range(n) if rows[i][2]),key=lambda i:(-rows[i][0],rows[i][1],i))\n    return ' '.join(map(str,order[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#57-rank-open-businesses",
+  "sourceContentHash": "29d844348c7eed8ffd7f09dea1ad523f9326a49b76192004145dda3cb372453d",
+  "author": "CSWork"
+}

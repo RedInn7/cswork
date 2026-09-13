@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏省略号前空格",
+    "code": "def solve(d):\n    first,message=d.split('\\n',1);k=int(first)\n    if len(message)<=k:return message\n    chosen=[];length=0\n    for word in message.split(' '):\n        candidate=length+len(word)+(1 if chosen else 0)\n        if candidate+4>k:break\n        chosen.append(word);length=candidate\n    return ' '.join(chosen)+'...' if chosen else '...'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "容量判断漏一个空格",
+    "code": "def solve(d):\n    first,message=d.split('\\n',1);k=int(first)\n    if len(message)<=k:return message\n    chosen=[];length=0\n    for word in message.split(' '):\n        candidate=length+len(word)+(1 if chosen else 0)\n        if candidate+3>k:break\n        chosen.append(word);length=candidate\n    return ' '.join(chosen)+' ...' if chosen else '...'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

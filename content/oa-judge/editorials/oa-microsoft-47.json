@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-47",
+  "title": "两整数差值最小时的最少同位交换",
+  "explanation": "## 思路\n\n首个不同位置决定大小，之后所有不同位置都应反向抵消这一差值。分别计算保持首位不交换、交换首位两种方案的交换次数，取较小。\n\n## 正确性\n\n首个不同位至少贡献一个当前位权，所有后位差值总和严格小于它，无法改变大小关系。固定该位方向后，每个后位独立选择反向贡献才能使绝对差最小。两种首位方向互为整串交换，差相同，比较其最少交换次数即可。\n\n## 复杂度\n\n时间O(N)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,t=d;direction=0;same=opposite=0\n    for a,b in zip(s,t):\n        if a==b:continue\n        sign=1 if a>b else -1\n        if not direction:direction=sign\n        elif sign==direction:same+=1\n        else:opposite+=1\n    return str(min(same,opposite+1) if direction else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#47-minimize-difference-between-two-numbers",
+  "sourceContentHash": "c957decd6b05fe172d6bc8ad2066a51f2478baf719f0bcda868601abb2167d3a",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-49",
+  "title": "两行红白数量平衡的最少替换",
+  "explanation": "## 思路\n\n单边?必须补成对侧相反颜色，固定同色列直接无解。双?暂留空；完成强制填充后，若上行R比W多d，就用d个双?列填上W下R，反之亦然。\n\n## 正确性\n\n两格列只能为RW、WR或??。单?列的填法唯一。双?列每次花2步让上行差值改变1；因此至少需要|差值|列，并且有足够空列时这样填就达到下界，下行同步平衡。\n\n## 复杂度\n\n时间O(N)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a,b=d[1:];difference=empty=answer=0\n    for x,y in zip(a,b):\n        if x==y=='?':empty+=1;continue\n        if x==y:return '-1'\n        if x=='?':x='W' if y=='R' else 'R';answer+=1\n        if y=='?':answer+=1\n        difference+=1 if x=='R' else -1\n    return str(answer+2*abs(difference)) if abs(difference)<=empty else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#49-minimum-replacements-required-to-make-a-matrix-balanced",
+  "sourceContentHash": "9878f77241c2f63057d69a24cd779f68f559b2350d6053f670ff2aa74c3d53f9",
+  "author": "CSWork"
+}

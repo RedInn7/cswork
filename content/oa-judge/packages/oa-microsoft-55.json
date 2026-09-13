@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-microsoft-55",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "按整词裁剪通知",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Microsoft"
+    ],
+    "description": "消息由单空格分隔的英文单词组成。超过K字符时，从末尾删掉若干整词，并添加“ ...”（空格加三个ASCII句点）；无词能保留则只显示“...”。求最长合法通知。源样例的省略号空格存在矛盾，按正文明确的单空格规则校正。\n\n本站标准输入输出协议；来源未给出的范围已明确标注。",
+    "input": "第一行K（3..500），第二行message（1..500字符），仅英文字母与空格，无首尾或连续空格。",
+    "output": "输出完整通知及一个结束换行。",
+    "explanation": "样例1：保留And now后加空格与三个点，输出“And now ...”；再保留here会长16。样例2：任何词加后缀都超4，只能“...”。样例3：整句长11，不超过20，原样返回。",
+    "hints": [
+      "先判断整条是否放得下。否则依次保留前缀单词，只要前缀长度加4不超过K就继续，最终补省略号；一个也放不下则返回三个点。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "15\nAnd now here is my secret\n",
+      "expectedOutput": "And now ...\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4\nsuper dog\n",
+      "expectedOutput": "...\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "20\nhow are you\n",
+      "expectedOutput": "how are you\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "3\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "500\na a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n",
+      "expectedOutput": "a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "19\ncZY bc aYa b ZaaYZ ZaZZcX Z ZZcZXa\n",
+      "expectedOutput": "cZY bc aYa b ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "10\ncba XXX XacaYY ZYbZXc\n",
+      "expectedOutput": "cba ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "33\nYc ZY bYYZ ccX abZc bY\n",
+      "expectedOutput": "Yc ZY bYYZ ccX abZc bY\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "6\naaYaX cacb\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "34\nbXXbXY YcZb aZYcc X caXXXa\n",
+      "expectedOutput": "bXXbXY YcZb aZYcc X caXXXa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "9\nXXc Z cZbc caY\n",
+      "expectedOutput": "XXc Z ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "10\nXaZc\n",
+      "expectedOutput": "XaZc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "11\nZZac YYYXX YY aYcbc Z a\n",
+      "expectedOutput": "ZZac ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "9\nZXc a XacXX ZXYX a bbZcbX\n",
+      "expectedOutput": "ZXc a ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "10\nYbZZ ab ZbZYca ca XYc\n",
+      "expectedOutput": "YbZZ ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "29\nZZcaa YZXaa X aZc cb X\n",
+      "expectedOutput": "ZZcaa YZXaa X aZc cb X\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "29\nXY ZXXYb Z aYZa acYb baaYXc ZZY bZcab\n",
+      "expectedOutput": "XY ZXXYb Z aYZa acYb ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "32\nZZ XXXX cZaZc ZY cbY cXab ZaXaXX\n",
+      "expectedOutput": "ZZ XXXX cZaZc ZY cbY cXab ZaXaXX\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "20\nX XbbXZ YXX cZYZ\n",
+      "expectedOutput": "X XbbXZ YXX cZYZ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "18\nccb XYYY caZYbZ b baYb\n",
+      "expectedOutput": "ccb XYYY ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "14\nc bYZZX bZcbY ab\n",
+      "expectedOutput": "c bYZZX ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "30\nbbYYab a ZX ZYX\n",
+      "expectedOutput": "bbYYab a ZX ZYX\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "7\nX c cXZ acbZca XXYXZa YXZ cabXY YZZX\n",
+      "expectedOutput": "X c ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "28\nZZ Zbaba\n",
+      "expectedOutput": "ZZ Zbaba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "6\naXbXYc YZX bXcX\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "8\naaZZX\n",
+      "expectedOutput": "aaZZX\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "11\nacZ ZbY YaXZY caZbaX Xc ab\n",
+      "expectedOutput": "acZ ZbY ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "8\naa XZX X ZbbbXa c bbXYb\n",
+      "expectedOutput": "aa ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "29\nZab abbcc b bbXXbY\n",
+      "expectedOutput": "Zab abbcc b bbXXbY\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

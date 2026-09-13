@@ -1,0 +1,10 @@
+[
+  {
+    "name": "双问号只算一步",
+    "code": "def solve(d):\n    n=int(d[0]);a,b=d[1:];difference=empty=answer=0\n    for x,y in zip(a,b):\n        if x==y=='?':empty+=1;continue\n        if x==y:return '-1'\n        if x=='?':x='W' if y=='R' else 'R';answer+=1\n        if y=='?':answer+=1\n        difference+=1 if x=='R' else -1\n    return str(answer+abs(difference)) if abs(difference)<=empty else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略空列容量",
+    "code": "def solve(d):\n    n=int(d[0]);a,b=d[1:];difference=empty=answer=0\n    for x,y in zip(a,b):\n        if x==y=='?':empty+=1;continue\n        if x==y:return '-1'\n        if x=='?':x='W' if y=='R' else 'R';answer+=1\n        if y=='?':answer+=1\n        difference+=1 if x=='R' else -1\n    return str(answer+2*abs(difference)) if True else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
