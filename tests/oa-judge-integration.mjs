@@ -3,7 +3,14 @@
  * This intentionally does not run in CI. Never reads or copies a production DB.
  */
 import assert from 'node:assert/strict';
-import { mkdtempSync, chmodSync, readFileSync, rmSync } from 'node:fs';
+import {
+  mkdtempSync,
+  chmodSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  statfsSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join, dirname } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -192,6 +199,20 @@ async function request(path, user, status = 200, data) {
   return result;
 }
 try {
+  // SQLite publication can temporarily hold the main DB, WAL and transaction
+  // copies. Refuse to start before that can exhaust a shared production disk.
+  const storage = statfsSync(dir, { bigint: true });
+  const packageBytes = selected.items.reduce(
+    (total, item) =>
+      total +
+      BigInt(statSync(`content/oa-judge/packages/${item.id}.json`).size),
+    0n,
+  );
+  const requiredBytes = 512n * 1024n * 1024n + packageBytes * 6n;
+  assert(
+    storage.bavail * storage.bsize >= requiredBytes,
+    'Insufficient disk reserve for isolated OA publication; free rebuildable cache before testing',
+  );
   await new Promise((accept, reject) => {
     const probe = createServer();
     probe.once('error', reject);
