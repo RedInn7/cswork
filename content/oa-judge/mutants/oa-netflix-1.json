@@ -1,0 +1,10 @@
+[
+  {
+    "name": "UNDO恢复零而非前态",
+    "code": "def solve(d):\n    history=[];value=0;out=[];i=1\n    for _ in range(int(d[0])):\n        cmd=d[i];i+=1\n        if cmd in ('ADD','MUL'):\n            history.append(value);x=int(d[i]);i+=1\n            value=value+x if cmd=='ADD' else value*x\n        elif cmd=='UNDO':history.pop();value=0\n        else:out.append(value)\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "乘法误执行加法",
+    "code": "def solve(d):\n    history=[];value=0;out=[];i=1\n    for _ in range(int(d[0])):\n        cmd=d[i];i+=1\n        if cmd in ('ADD','MUL'):\n            history.append(value);x=int(d[i]);i+=1\n            value=value+x\n        elif cmd=='UNDO':value=history.pop()\n        else:out.append(value)\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

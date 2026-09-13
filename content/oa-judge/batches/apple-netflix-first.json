@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-apple-1",
+      "sourceContentHash": "a943f204775c06a78c867db42b3a022d3eb51ba98c5374cf3f067755163e895d",
+      "packageChecksum": "211a5704ae7dd2ddeeb4fd3ffae066e43a3ef92a1f463c960e1559eb501388c3",
+      "editorial": "## 思路\n\n找到数组最后一个0。扫描时，在其之前遇1便进入删除状态，遇0退出；最后一个0之后的1不可能闭合，因此全部保留。\n\n## 正确性\n\n每个被删除的区间必须有一个后继0。最后一个0前的1必能闭合，删除状态一直保持到遇到的第一个0，正好包含整段；之后开始新的独立扫描。最后一个0后不可能形成完整区间。所有其他元素按扫描顺序加入结果，恰为所需列表。\n\n## 复杂度\n\n时间O(n)，结果空间O(n)，除输入和输出外额外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);last=-1\n    for i in range(n):\n        if int(d[i+1])==0:last=i\n    result=[];skip=False\n    for i in range(n):\n        v=int(d[i+1])\n        if v==1 and i<last:skip=True\n        if not skip:result.append(v)\n        if v==0:skip=False\n    return str(len(result))+'\\n'+' '.join(map(str,result))+'\\n'+str(sum(result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-netflix-1",
+      "sourceContentHash": "267fc34e68b4083c22c21045df948a35361fa5fa1baf7bd845f69501d0ad89ea",
+      "packageChecksum": "481e6603e02da3bd3fc969e5188fe7d13ceec92b44aeb6c535c80e568d06efe8",
+      "editorial": "## 思路\n\n每次ADD或MUL之前，将当前状态压入栈；UNDO弹出栈顶并恢复，PRINT只记录当前状态。\n\n## 正确性\n\n栈中依次保存所有尚未撤销变更发生前的状态。新增变更压入其前态，保持不变量；UNDO恢复最后一个前态并删掉对应栈项，恰好撤销最近变更。乘零也无需逆运算。PRINT不变更状态或栈。归纳得到全部输出正确。\n\n## 复杂度\n\n每条命令O(1)，总时间O(q)，历史与输出空间O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    history=[];value=0;out=[];i=1\n    for _ in range(int(d[0])):\n        cmd=d[i];i+=1\n        if cmd in ('ADD','MUL'):\n            history.append(value);x=int(d[i]);i+=1\n            value=value+x if cmd=='ADD' else value*x\n        elif cmd=='UNDO':value=history.pop()\n        else:out.append(value)\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-netflix-2",
+      "sourceContentHash": "e0df87fada995bab462edb49a909d989c8f613c0bfb4ff65ccac66135c61b380",
+      "packageChecksum": "7161c7fca49ea74b60e637fbb20c9f6816cc85af411688ee04e83cf46806371d",
+      "editorial": "## 思路\n\n逐组取出成员分数，降序排序后累加前k项。\n\n## 正确性\n\n任何选中较小分数却未选中较大分数的k元素集合，都可交换二者且不减少总分。反复交换可得到前k大，因此它们的和就是该组最高总分。各组独立计算，并保持输入顺序。\n\n## 复杂度\n\n设总成员数M，时间O(N+Σm log m)，除输入输出外空间O(max m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,g,k=map(int,d[:3]);scores=[float(d[i+3]) for i in range(n)];pos=n+3;out=[]\n    for _ in range(g):\n        m=int(d[pos]);pos+=1\n        values=[scores[int(d[pos+i])] for i in range(m)];pos+=m\n        values.sort(reverse=True);out.append(sum(values[:k]))\n    return str(g)+'\\n'+' '.join(format(v,'.12g') for v in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+def solve(d):
+    history=[];value=0;out=[];i=1
+    for _ in range(int(d[0])):
+        cmd=d[i];i+=1
+        if cmd in ('ADD','MUL'):
+            history.append(value);x=int(d[i]);i+=1
+            value=value+x if cmd=='ADD' else value*x
+        elif cmd=='UNDO':history.pop();value=0
+        else:out.append(value)
+    return str(len(out))+'\n'+'\n'.join(map(str,out))
+
+if __name__ == "__main__":
+    import sys
+    print(solve(sys.stdin.read().split()))

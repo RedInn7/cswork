@@ -1,0 +1,10 @@
+[
+  {
+    "name": "丢弃未闭合尾段",
+    "code": "def solve(d):\n    n=int(d[0]);last=-1\n    for i in range(n):\n        if int(d[i+1])==0:last=i\n    result=[];skip=False\n    for i in range(n):\n        v=int(d[i+1])\n        if v==1:skip=True\n        if not skip:result.append(v)\n        if v==0:skip=False\n    return str(len(result))+'\\n'+' '.join(map(str,result))+'\\n'+str(sum(result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误保留闭合零",
+    "code": "def solve(d):\n    n=int(d[0]);last=-1\n    for i in range(n):\n        if int(d[i+1])==0:last=i\n    result=[];skip=False\n    for i in range(n):\n        v=int(d[i+1])\n        if v==1 and i<last:skip=True\n        if not skip or v==0:result.append(v)\n        if v==0:skip=False\n    return str(len(result))+'\\n'+' '.join(map(str,result))+'\\n'+str(sum(result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
