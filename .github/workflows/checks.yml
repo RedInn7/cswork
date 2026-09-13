@@ -38,6 +38,10 @@ jobs:
       - run: node --import tsx --test tests/oj-failfast-ui.test.mjs
       - run: node --check tests/oj-failfast-integration.mjs
       - run: node --check tests/oj-latency-load.mjs
+      - run: node --test tests/oj-capacity-config.test.mjs
+      - run: node --check tests/oj-capacity-benchmark.mjs
+      - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh
+      - run: node --check deploy/oj-queue-control.cjs
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
       - run: node --import tsx --test tests/study-library-ui.test.mjs
