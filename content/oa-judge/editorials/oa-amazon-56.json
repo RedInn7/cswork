@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-56",
+  "title": "零的数量等于一的数量平方的子串",
+  "explanation": "## 思路\n\n若1有k个，则子串长度必须为k²+k。枚举满足此长度≤n的k≥1，用1的前缀和检查全部固定长度窗口。\n\n## 正确性证明\n\n非空合法串不能有0个1，否则0也必须0个。每个合法串有唯一正整数k及唯一长度k²+k；前缀和条件确保1恰有k个，其余k²个均为0。因此枚举不重不漏。\n\n## 复杂度\n\n时间O(n√n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];n=len(s);prefix=[0]\n    for c in s:prefix.append(prefix[-1]+(c=='1'))\n    answer=0;k=1\n    while k*k+k<=n:\n        length=k*k+k\n        for end in range(length,n+1):answer+=prefix[end]-prefix[end-length]==k\n        k+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#56-special-strings-binary-substrings",
+  "sourceContentHash": "a0bdcc89514ca065d298fd7548c4713cfce96cdc03193ec7b75bff61fa6f7a43",
+  "author": "CSWork"
+}

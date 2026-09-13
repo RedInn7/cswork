@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-68",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "棋盘代币与相邻奖励",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Google"
+    ],
+    "description": "T表示有代币，E表示空格。有代币格获得对应points分，每对相邻且都有代币的格子额外获得1分，求总分。\n\n标准输入输出由CSWork整理；标注本站的数值范围属于本站评测约定。",
+    "input": "第一行n（1..100），第二行n个points（1..1000），第三行长度n的TE串。",
+    "output": "输出题目要求的答案。",
+    "explanation": "样例1：有代币格分数3+2+3=8，末两格奖励1，总分9。样例2：分数2+1+2=5，两个相邻对奖励2，总分7。样例3：基础8分加三个相邻奖励，总分11。",
+    "hints": [
+      "累加所有T格子的分数，再统计相邻TT的数量。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5\n3 4 5 2 3\nTEETT\n",
+      "expectedOutput": "9\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "5\n3 2 1 2 2\nETTTE\n",
+      "expectedOutput": "7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\n2 2 2 2\nTTTT\n",
+      "expectedOutput": "11\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "100\n1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000\nTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT\n",
+      "expectedOutput": "100099\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "100\n1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000 1000\nEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "6\n248 993 670 26 919 11\nTEEETE\n",
+      "expectedOutput": "1167\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "9\n196 119 923 274 589 656 785 681 657\nTEETTEEEE\n",
+      "expectedOutput": "1060\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "6\n142 643 340 134 511 882\nTTTEET\n",
+      "expectedOutput": "2009\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "7\n96 507 759 228 861 775 820\nTETTEET\n",
+      "expectedOutput": "1904\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "2\n969 332\nEE\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "2\n328 808\nET\n",
+      "expectedOutput": "808\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "3\n957 495 374\nETE\n",
+      "expectedOutput": "495\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "2\n646 387\nTT\n",
+      "expectedOutput": "1034\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "9\n698 868 832 918 721 595 909 880 110\nTTTEETEET\n",
+      "expectedOutput": "3105\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "6\n210 447 175 948 208 852\nEETTEE\n",
+      "expectedOutput": "1124\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "9\n917 298 525 899 498 746 210 254 209\nTTEEETEET\n",
+      "expectedOutput": "2171\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "4\n272 973 56 109\nEEET\n",
+      "expectedOutput": "109\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "9\n623 576 869 427 327 25 106 301 148\nTETEEETTT\n",
+      "expectedOutput": "2049\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "8\n275 33 686 378 167 130 654 157\nTEETTTTE\n",
+      "expectedOutput": "1607\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "2\n805 524\nTE\n",
+      "expectedOutput": "805\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "5\n455 414 700 523 472\nTTETT\n",
+      "expectedOutput": "1866\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "8\n765 644 179 161 774 901 270 929\nETETETET\n",
+      "expectedOutput": "2635\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "1\n393\nE\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "5\n793 480 932 50 590\nEEETT\n",
+      "expectedOutput": "641\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "6\n694 347 330 59 642 450\nTTEETE\n",
+      "expectedOutput": "1684\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "4\n299 304 387 331\nTTTE\n",
+      "expectedOutput": "992\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "7\n160 421 675 138 598 904 770\nETETETT\n",
+      "expectedOutput": "2234\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "8\n426 712 396 336 145 177 481 980\nTTTEEETT\n",
+      "expectedOutput": "2998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "8\n925 999 452 555 879 921 600 324\nEEEETTTT\n",
+      "expectedOutput": "2727\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

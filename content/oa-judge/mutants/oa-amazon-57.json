@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等目标不能延长",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    tails=[]\n    for value in map(int,d[1:]):\n        i=bisect_left(tails,value)\n        if i==len(tails):tails.append(value)\n        else:tails[i]=value\n    return str(len(tails))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "先排序破坏起点顺序",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    tails=[]\n    for value in sorted(map(int,d[1:])):\n        i=bisect_right(tails,value)\n        if i==len(tails):tails.append(value)\n        else:tails[i]=value\n    return str(len(tails))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

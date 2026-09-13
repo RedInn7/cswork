@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每次从原点出发",
+    "code": "def solve(data):\n    layout,word=data;position={c:i for i,c in enumerate(layout)};current=0;answer=0\n    for c in word:\n        answer+=abs(position[c]-current);current=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略向左移动",
+    "code": "def solve(data):\n    layout,word=data;position={c:i for i,c in enumerate(layout)};current=0;answer=0\n    for c in word:\n        answer+=max(0,position[c]-current);current=position[c]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

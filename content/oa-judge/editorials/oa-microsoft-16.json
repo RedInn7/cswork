@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-16",
+  "title": "首个大写字母之前的小写种类数",
+  "explanation": "## 思路\n\n扫描遇到首个大写就停止，之前的小写加入集合。\n\n## 正确性证明\n\n扫描范围恰好是定义的前缀，集合去掉重复，因此集合大小就是不同小写字母种数。\n\n## 复杂度\n\n时间O(N)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    seen=set()\n    for c in d:\n        if 'A'<=c<='Z':break\n        if 'a'<=c<='z':seen.add(c)\n    return str(len(seen))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#16-count-characters-before-uppercase",
+  "sourceContentHash": "69dd0a72d98bfaa4d66905ccde9f09dc70552b7091072c364fc2334da3ed3611",
+  "author": "CSWork"
+}

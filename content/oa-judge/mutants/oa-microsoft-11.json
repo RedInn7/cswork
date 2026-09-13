@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略末尾进位",
+    "code": "def solve(d):\n    from itertools import islice\n    carry=answer=0\n    for value in map(int,islice(d,1,None)):total=value+carry;answer+=total%2;carry=total//2\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不接受上一堆进位",
+    "code": "def solve(d):\n    from itertools import islice\n    carry=answer=0\n    for value in map(int,islice(d,1,None)):total=value;answer+=total%2;carry=total//2\n    return str(answer+carry.bit_count())\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

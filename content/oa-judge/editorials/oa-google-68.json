@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-68",
+  "title": "棋盘代币与相邻奖励",
+  "explanation": "## 思路\n\n累加所有T格子的分数，再统计相邻TT的数量。\n\n## 正确性\n\n基础分按格子独立累计；每个相邻对只在其右端点处计算一次，既不遗漏也不重复。\n\n## 复杂度\n\n时间O(n)，空间O(n)（含输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]);a=list(map(int,data[1:n+1]));s=data[-1];answer=0\n    for i,c in enumerate(s):\n        if c=='T':answer+=a[i]\n        if i and s[i-1:i+1]=='TT':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#68-score-points",
+  "sourceContentHash": "4b7124461ec4a44b76045bc95cc36002ebc2aec9b63f851a4469c8e214f346b5",
+  "author": "CSWork"
+}

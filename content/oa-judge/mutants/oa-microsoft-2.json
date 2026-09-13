@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把所有候选都当强迫",
+    "code": "def solve(d):\n    n=int(d[0]); a=list(map(int,d[1:1+n])); b=list(map(int,d[1+n:])); forced=set(a)|set(b); answer=1\n    while answer in forced:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只检查A数组",
+    "code": "def solve(d):\n    n=int(d[0]); a=list(map(int,d[1:1+n])); b=list(map(int,d[1+n:])); forced=set(a); answer=1\n    while answer in forced:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

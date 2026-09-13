@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不扣奇长度子串",
+    "code": "def solve(data):\n    s=data[0];n=len(s);parity=[0]*26;ones=[0]*26\n    for c in s:\n        parity[ord(c)-97]^=1\n        for j in range(26):ones[j]+=parity[j]\n    odd=sum(v*(n+1-v) for v in ones);odd_lengths=((n+2)//2)*((n+1)//2)\n    return str(odd//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误向上取整",
+    "code": "def solve(data):\n    s=data[0];n=len(s);parity=[0]*26;ones=[0]*26\n    for c in s:\n        parity[ord(c)-97]^=1\n        for j in range(26):ones[j]+=parity[j]\n    odd=sum(v*(n+1-v) for v in ones);odd_lengths=((n+2)//2)*((n+1)//2)\n    return str((odd+odd_lengths)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

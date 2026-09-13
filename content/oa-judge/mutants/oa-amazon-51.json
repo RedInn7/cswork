@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏最终请求",
+    "code": "def solve(d):\n    from functools import cmp_to_key\n    n,k=map(int,d[:2]); r=list(map(int,d[2:2+n])); h=list(map(int,d[2+n:])); jobs=[((v+k-1)//k,w) for v,w in zip(h,r)]\n    jobs.sort(key=cmp_to_key(lambda a,b:a[0]*b[1]-b[0]*a[1])); elapsed=0;answer=0\n    for duration,weight in jobs:elapsed+=duration;answer+=elapsed*weight\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "比率逆序",
+    "code": "def solve(d):\n    from functools import cmp_to_key\n    n,k=map(int,d[:2]); r=list(map(int,d[2:2+n])); h=list(map(int,d[2+n:])); jobs=[((v+k-1)//k,w) for v,w in zip(h,r)]\n    jobs.sort(key=cmp_to_key(lambda a,b:b[0]*a[1]-a[0]*b[1])); elapsed=0;answer=1\n    for duration,weight in jobs:elapsed+=duration;answer+=elapsed*weight\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

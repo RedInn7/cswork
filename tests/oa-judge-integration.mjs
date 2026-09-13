@@ -314,6 +314,20 @@ for value in d[2:]:prefix.append(prefix[-1]+value)
 answers=[format((prefix[i+w]-prefix[i])/w,'.9e') for i in range(max(0,n-w+1))]
 print(len(answers)); print(' '.join(answers))
 `,
+    'oa-microsoft-15': `import sys
+from collections import Counter
+d=list(map(int,sys.stdin.read().split())); counts=Counter(d[1:]); current=best=0; previous=None; start=0; bounds=None
+for height in sorted(counts):
+    if previous is None or height!=previous+1: current=0; start=height
+    current+=counts[height]
+    if current>=best: best=current; bounds=(start,height)
+    if counts[height]==1: current=1; start=height
+    previous=height
+left,right=bounds; circle=[]
+for height in range(left,right+1): circle.append(height); counts[height]-=1
+for height in range(right,left-1,-1): circle.extend([height]*counts[height])
+circle.reverse(); print(len(circle)); print(*circle)
+`,
   };
   const wrongOutput = 'CSWORK_DELIBERATE_WRONG_ANSWER';
   for (const [index, item] of selected.items.entries()) {
@@ -325,6 +339,18 @@ print(len(answers)); print(' '.join(answers))
       `content/oa-judge/references/${item.id}.py`,
       'utf8',
     );
+    if (item.id === 'oa-google-17') {
+      equivalentPrograms[item.id] = `import io,contextlib,math
+capture=io.StringIO()
+with contextlib.redirect_stdout(capture):
+    exec(${JSON.stringify(reference)}, {'__name__':'__main__'})
+cells=capture.getvalue().split()
+if cells==['null']: print('null')
+else:
+    n=math.isqrt(len(cells))
+    for row in range(n): print(' '.join(cells[(n-1-column)*n+row] for column in range(n)))
+`;
+    }
     const detail = await request(`/api/oj/oa-library/${item.id}`, student);
     assert.equal(detail.judgeStatus, 'ready');
     assert.equal(detail.judgeProblemId, item.id);

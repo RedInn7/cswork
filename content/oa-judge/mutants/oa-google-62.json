@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把大于也算合格",
+    "code": "from collections import Counter\ndef solve(data):\n    s=data[0];right=Counter(s);left=set();answer=0\n    for i in range(len(s)-1):\n        c=s[i]\n        left.add(c);right[c]-=1\n        if right[c]==0:del right[c]\n        if len(left)>=len(right):answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉最后合法切口",
+    "code": "from collections import Counter\ndef solve(data):\n    s=data[0];right=Counter(s);left=set();answer=0\n    for i in range(len(s)-2):\n        c=s[i]\n        left.add(c);right[c]-=1\n        if right[c]==0:del right[c]\n        if len(left)==len(right):answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

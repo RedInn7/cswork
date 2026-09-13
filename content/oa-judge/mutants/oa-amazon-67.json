@@ -1,0 +1,10 @@
+[
+  {
+    "name": "频次逆序",
+    "code": "def solve(d):\n    from collections import Counter\n    a=list(map(int,d[1:]));counts=Counter(a);a.sort(key=lambda v:(-counts[v],v))\n    return ' '.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同频编号逆序",
+    "code": "def solve(d):\n    from collections import Counter\n    a=list(map(int,d[1:]));counts=Counter(a);a.sort(key=lambda v:(counts[v],-v))\n    return ' '.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

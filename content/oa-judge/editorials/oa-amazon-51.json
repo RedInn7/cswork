@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-51",
+  "title": "服务器全部关闭前的最少请求",
+  "explanation": "## 思路\n\n服务器需要p=ceil(health/k)次攻击，权重为request。按p/request升序连续处理服务器，用整数交叉乘积比较比率。\n\n## 正确性证明\n\n任意穿插攻击方案可按完成顺序连续处理服务器，使每台完成时间不更晚，故存在不穿插最优解。相邻任务i先于j比反序少的费用由p_i w_j−p_j w_i决定；按该比率排序消除所有逆序即可最优。总请求为Σ完成时间×request，再加最终1。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from functools import cmp_to_key\n    n,k=map(int,d[:2]); r=list(map(int,d[2:2+n])); h=list(map(int,d[2+n:])); jobs=[((v+k-1)//k,w) for v,w in zip(h,r)]\n    jobs.sort(key=cmp_to_key(lambda a,b:a[0]*b[1]-b[0]*a[1])); elapsed=0;answer=1\n    for duration,weight in jobs:elapsed+=duration;answer+=elapsed*weight\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#51-get-min-requests-server-reliability-drill",
+  "sourceContentHash": "370c477357100c5d754e09f0aaa8ab5f0df376f06647af705a87385b5cf7c8d7",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉爆炸半径边界",
+    "code": "def solve(data):\n    n=int(data[0]);v=list(map(int,data[1:]));a=list(zip(v[::3],v[1::3],v[2::3]));reach=[]\n    for x,y,r in a:\n        bits=0\n        for j,(u,v,s) in enumerate(a):\n            if (x-u)**2+(y-v)**2<r*r:bits|=1<<j\n        reach.append(bits)\n    for k in range(n):\n        bit=1<<k;row=reach[k]\n        for i in range(n):\n            if reach[i]&bit:reach[i]|=row\n    return str(max(row.bit_count() for row in reach))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把传播看成无向",
+    "code": "def solve(data):\n    n=int(data[0]);v=list(map(int,data[1:]));a=list(zip(v[::3],v[1::3],v[2::3]));reach=[]\n    for x,y,r in a:\n        bits=0\n        for j,(u,v,s) in enumerate(a):\n            if (x-u)**2+(y-v)**2<=max(r,s)**2:bits|=1<<j\n        reach.append(bits)\n    for k in range(n):\n        bit=1<<k;row=reach[k]\n        for i in range(n):\n            if reach[i]&bit:reach[i]|=row\n    return str(max(row.bit_count() for row in reach))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

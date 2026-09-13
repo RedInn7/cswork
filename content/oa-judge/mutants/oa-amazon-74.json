@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略极值唯一性",
+    "code": "def solve(d):\n    s=d[0]\n    if all(s[i-1]<=s[i] for i in range(1,len(s))):return '0'\n    lo=min(s);hi=max(s)\n    if s[0]==lo or s[-1]==hi:return '1'\n    if s[0]==hi and s[-1]==lo:return '3'\n    return '2'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "所有未排好都需3次",
+    "code": "def solve(d):\n    s=d[0]\n    if all(s[i-1]<=s[i] for i in range(1,len(s))):return '0'\n    lo=min(s);hi=max(s)\n    if s[0]==lo or s[-1]==hi:return '1'\n    if s[0]==hi and s[-1]==lo and s.count(lo)==1 and s.count(hi)==1:return '3'\n    return '3'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

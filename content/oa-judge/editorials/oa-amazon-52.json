@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-52",
+  "title": "新增一段配送区域后的最少连通块",
+  "explanation": "## 思路\n\n先合并已有相交区间。一个新增区间能连接连续多个块，当且仅当末块左端−首块右端≤k，用双指针找最多连接块数。\n\n## 正确性证明\n\n跨首末块的最短桥从首块右端到末块左端；中间块必被桥穿过，所以条件充要。桥若连了t块，则连通块减少t−1。滑动窗口对有序端点求最大t即可。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]); intervals=sorted((int(d[i]),int(d[i+1])) for i in range(2,len(d),2)); merged=[]\n    for a,b in intervals:\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#52-minimum-sets-adding-one-delivery-zone",
+  "sourceContentHash": "239019484054fc0868a29e6370fa2fad5d86d9766f72a2650690a4c2729d4396",
+  "author": "CSWork"
+}

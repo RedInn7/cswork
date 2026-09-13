@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-55",
+  "title": "删除一位后仍回文的下标数",
+  "explanation": "## 思路\n\n找包含字符串中心的连续相同字符块，答案为其长度。\n\n## 正确性证明\n\n删去中心相同字符块内任一位置，左右对称字符仍匹配。若删除块外位置，由于原串回文，对齐会沿删除点向中心错位，要求途经字符全部相同，直到中心；这恰会要求被删位置也属于中心块，矛盾。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];left=(len(s)-1)//2;right=len(s)//2;center=s[left]\n    while left>0 and s[left-1]==center:left-=1\n    while right+1<len(s) and s[right+1]==center:right+=1\n    return str(right-left+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#55-count-removable-indices",
+  "sourceContentHash": "eb9e49dee1b2284f1a05c5b98267db65d860b4524d24cb6c38f1dda2bbae046e",
+  "author": "CSWork"
+}

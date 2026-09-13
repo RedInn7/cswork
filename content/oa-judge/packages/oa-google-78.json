@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-78",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "保持相邻不同的三色字符串变换",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Google"
+    ],
+    "description": "两个等长字符串只含x、y、z，且相邻字符都不同。每步修改一个位置成另外一种字符，中间字符串也必须相邻不同。求从起点到目标的最少步数，不可达输出−1。源题没有数值范围；本站采用可完整搜索的范围，非法的重复相邻字符示例不作为合法输入。\n\n标准输入输出由CSWork整理；标注本站的数值范围属于本站评测约定。",
+    "input": "第一行n，第二行起始串，第三行目标串。本站1≤n≤12，两串长度n，均只含xyz且相邻不同。",
+    "output": "输出题目要求的答案。",
+    "explanation": "样例1：zxyz→zxyx→zxzx→zxzy→zyzy→zyxy→zyxz，每步合法，共6步，完整状态图确认无法更少。样例2：xy→xz→yz→yx，共3步；两步会经过xx或yy，不合法。样例3：直接把x改成z，1步。",
+    "hints": [
+      "从起点BFS。对每个位置尝试另外两种颜色，只要与左右邻居不同就加入下一状态；首次到达目标的距离为答案。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4\nzxyz\nzyxz\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2\nxy\nyx\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1\nx\nz\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "12\nxyxyxyxyxyxy\nyxyxyxyxyxyx\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "12\nxyzxyzxyzxyz\nzyxzyxzyxzyx\n",
+      "expectedOutput": "38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "1\nz\nx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "4\nxzxz\nzyzx\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "5\nxzyxy\nzxyzy\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "6\nyxyzyx\nyxzyxz\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "5\nxyxyx\nxyzxz\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "1\nz\nx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "3\nxyz\nyzy\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "4\nxyzy\nxzxy\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "2\nyz\nxy\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "4\nyxzy\nzyxy\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "1\nx\nx\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "3\nyzx\nzxz\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "4\nxzyz\nyxzx\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "3\nyzy\nxzy\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "2\nyz\nzx\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "2\nyx\nzx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "4\nxyzy\nxzyx\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "1\nx\ny\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "2\nxy\nxz\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "1\ny\nx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "2\nyx\nzx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "6\nzxzxyx\nzyxzxy\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "2\nxz\nxz\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "5\nzxzyz\nzyxzy\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

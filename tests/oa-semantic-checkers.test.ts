@@ -157,6 +157,169 @@ test('window averages accept numeric tolerance, including negative one, and vali
     }
 });
 
+test('balanced circles match an independent exhaustive subset-path oracle', () => {
+  // Enumerate paths of individual people. No interval/frequency theorem is
+  // used in this oracle; closing the last edge determines a valid circle.
+  const oracle = (heights: number[]) => {
+    let best: number[] = [];
+    for (let start = 0; start < heights.length; start++) {
+      const seen = new Set<number>();
+      const visit = (mask: number, last: number, path: number[]) => {
+        const key = mask * heights.length + last;
+        if (seen.has(key)) return;
+        seen.add(key);
+        if (
+          Math.abs(heights[last] - heights[start]) <= 1 &&
+          path.length > best.length
+        )
+          best = [...path];
+        for (let next = 0; next < heights.length; next++)
+          if (
+            !(mask & (1 << next)) &&
+            Math.abs(heights[last] - heights[next]) <= 1
+          )
+            visit(mask | (1 << next), next, [...path, heights[next]]);
+      };
+      visit(1 << start, start, [heights[start]]);
+    }
+    return best;
+  };
+  const check = (
+    actual: string,
+    expected: string,
+    input: string,
+    valid: boolean,
+  ) => {
+    assert.equal(
+      matchesOutput(actual, expected, 'oa-balanced-circle', input),
+      valid,
+    );
+    assert.equal(
+      matchesOaOutput(actual, expected, 'oa-balanced-circle', input),
+      valid,
+    );
+  };
+  for (let encoded = 1; encoded < 3 ** 5; encoded++) {
+    let value = encoded;
+    const heights: number[] = [];
+    for (let height = 1; height <= 5; height++) {
+      for (let copies = value % 3; copies > 0; copies--) heights.push(height);
+      value = Math.floor(value / 3);
+    }
+    if (heights.length > 8) continue;
+    const circle = oracle(heights);
+    const input = `${heights.length}\n${heights.join(' ')}`;
+    const expected = `${circle.length}\n${circle.join(' ')}`;
+    check(expected, expected, input, true);
+    check(
+      `${circle.length} ${[...circle].reverse().join(' ')}`,
+      expected,
+      input,
+      true,
+    );
+    if (circle.length > 1) check(`1 ${circle[0]}`, expected, input, false);
+  }
+  check('4 1 2 3 2', '4 2 3 2 1', '4\n1 2 2 3', true);
+  check('4 1 2 2 3', '4 1 2 3 2', '4\n1 2 2 3', false); // broken closing edge
+  check('4 2 2 2 2', '4 1 2 3 2', '4\n1 2 2 3', false); // reuses people
+  check('4 1 2 3 2', '3 1 2 2', '4\n1 2 2 3', false); // stale nonoptimal expected
+  for (const out of ['', '0', '1 1 2', '1 NaN', '1 Infinity', '1 0x1', '1 1.0'])
+    check(out, '1 1', '1\n1', false);
+  check('1 200001', '1 200001', '1\n200001', false);
+  const n = 200000;
+  const allEqual = `${n} ${Array(n).fill(200000).join(' ')}`;
+  check(allEqual, allEqual, allEqual, true);
+  check(
+    '2 199999 200000',
+    '2 1 2',
+    `${n}\n${Array.from({ length: n }, (_, i) => i + 1).join(' ')}`,
+    true,
+  );
+});
+
+test('magic squares accept every valid arrangement, not just one construction', () => {
+  const reference = '8 1 6\n3 5 7\n4 9 2';
+  const check = (
+    actual: string,
+    expected: string,
+    input: string,
+    valid: boolean,
+  ) => {
+    assert.equal(
+      matchesOutput(actual, expected, 'oa-magic-square', input),
+      valid,
+    );
+    assert.equal(
+      matchesOaOutput(actual, expected, 'oa-magic-square', input),
+      valid,
+    );
+  };
+  check('1', '1', '1', true);
+  check(' null\r\n', 'null', '2', true);
+  for (const impossible of ['NULL', '-1', '0', 'null 1', '\u00a0null'])
+    check(impossible, 'null', '2', false);
+  check(reference, reference, '3 3', false);
+  check(reference, reference, '51', false);
+  check(reference, reference, '0', false);
+  check(Array(9).fill('5').join(' '), reference, '3', false);
+  check(reference, '1 5 9 6 7 2 8 3 4', '3', false);
+  let accepted = 0,
+    candidates = 0;
+  const visit = (cells: number[], used: number) => {
+    if (
+      cells.length &&
+      cells.length % 3 === 0 &&
+      cells.slice(-3).reduce((a, b) => a + b, 0) !== 15
+    )
+      return;
+    if (cells.length === 9) {
+      candidates++;
+      const lines = [
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+      ];
+      const valid = lines.every(
+        (line) => line.reduce((sum, index) => sum + cells[index], 0) === 15,
+      );
+      check(cells.join(' '), reference, '3', valid);
+      if (valid) accepted++;
+      return;
+    }
+    for (let value = 1; value <= 9; value++)
+      if (!(used & (1 << value))) visit([...cells, value], used | (1 << value));
+  };
+  visit([], 0);
+  assert.equal(accepted, 8);
+  assert(candidates > accepted);
+  const four = [16, 2, 3, 13, 5, 11, 10, 8, 9, 7, 6, 12, 4, 14, 15, 1];
+  check([...four].reverse().join(' '), four.join(' '), '4', true);
+  // Large odd-order positive control, built independently by the Siamese walk.
+  const n = 49,
+    square = Array(n * n).fill(0);
+  let row = 0,
+    column = Math.floor(n / 2);
+  for (let value = 1; value <= n * n; value++) {
+    square[row * n + column] = value;
+    const nextRow = (row + n - 1) % n,
+      nextColumn = (column + 1) % n;
+    if (square[nextRow * n + nextColumn]) row = (row + 1) % n;
+    else {
+      row = nextRow;
+      column = nextColumn;
+    }
+  }
+  check(square.join(' '), [...square].reverse().join(' '), String(n), true);
+  check(
+    Array(2500).fill(1).join(' '),
+    Array(2500).fill(1).join(' '),
+    '50',
+    false,
+  );
+});
+
 test('fixed OA checkers cannot be assigned to other question identities', () => {
   const pkg = JSON.parse(
     readFileSync('content/oa-judge/packages/oa-google-1.json', 'utf8'),
@@ -165,6 +328,8 @@ test('fixed OA checkers cannot be assigned to other question identities', () => 
     ['oa-peak-index', 'oa-meta-17'],
     ['oa-closest-pair', 'oa-meta-16'],
     ['oa-window-averages', 'oa-meta-23'],
+    ['oa-balanced-circle', 'oa-microsoft-15'],
+    ['oa-magic-square', 'oa-google-17'],
   ]) {
     assert(
       ojImportSchema.safeParse({

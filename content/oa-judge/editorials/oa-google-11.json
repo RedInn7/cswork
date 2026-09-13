@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-11",
+  "title": "覆盖全部监测区域的最少卫星",
+  "explanation": "## 思路\n\n目标与卫星分别排序。扫描目标的最左未覆盖点，从起点不晚于该点的卫星中选择终点最远者；已选择范围可以跨过目标之间的空隙。\n\n## 正确性\n\n覆盖当前点且向右延伸的下一颗卫星，必须从该点或更早开始。把任何可行方案的下一颗换为终点最远者不会减少后续覆盖。每步交换保持不劣，逐个消除所有目标的未覆盖部分；无卫星延伸时该点右侧确实无法覆盖。\n\n## 复杂度\n\n时间O(n log n+m log m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,m=map(int,data[:2]);v=list(map(int,data[2:]));targets=sorted(zip(v[:2*n:2],v[1:2*n:2]));sat=sorted(zip(v[2*n::2],v[2*n+1::2]));end=-10**30;index=answer=0\n    for left,right in targets:\n        if end>=right:continue\n        point=max(left,end)\n        while point<right:\n            far=point\n            while index<m and sat[index][0]<=point:\n                far=max(far,sat[index][1]);index+=1\n            if far<=point:return '-1'\n            answer+=1;end=far;point=far\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#11-calculate-minimum-satellites-required",
+  "sourceContentHash": "a39f25eadb1410fe795a1756fd13343dc85ec77371fe7d14ceb514a0fcd69ef9",
+  "author": "CSWork"
+}

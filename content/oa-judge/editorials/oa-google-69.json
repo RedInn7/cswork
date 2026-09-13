@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-69",
+  "title": "按热度排序的前缀搜索建议",
+  "explanation": "## 思路\n\n先按统一排名排序产品。对每个产品计算与搜索串的最长公共前缀，向对应各前缀尚未满k项的结果列表追加该产品。\n\n## 正确性\n\n排名顺序扫描时，每个前缀收到的就是所有匹配产品的排名顺序；只保留前k项，故每个列表恰为该前缀的最优建议。\n\n## 复杂度\n\n排序比较最坏O(n log n·L)，匹配O(名称总长)，空间O(名称总长+搜索串长度·k)，L是最大名称长度。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]);products=[(data[2+2*i],int(data[3+2*i])) for i in range(n)];word=data[-1];answer=[[] for _ in word]\n    for name,score in sorted(products,key=lambda p:(-p[1],p[0])):\n        for i in range(min(len(name),len(word))):\n            if name[i]!=word[i]:break\n            if len(answer[i])<k:answer[i].append(name)\n    return '\\n'.join(str(len(row))+(' '+' '.join(row) if row else '') for row in answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#69-search-suggestions-system",
+  "sourceContentHash": "f5dbb1c985f48361b9b8cbb0519dff01f18f1513addf9c562ab9f93f533f98d0",
+  "author": "CSWork"
+}

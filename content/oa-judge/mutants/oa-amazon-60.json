@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不检查内部值重数",
+    "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(map(int,d[1:]));keys=sorted(counts);best=current=0;previous=None\n    for value in keys:\n        if previous is None or value!=previous+1:current=counts[value]\n        elif False:current=counts[previous]+counts[value]\n        else:current+=counts[value]\n        best=max(best,current);previous=value\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略不同值缺口",
+    "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(map(int,d[1:]));keys=sorted(counts);best=current=0;previous=None\n    for value in keys:\n        if previous is None or False:current=counts[value]\n        elif counts[previous]==1:current=counts[previous]+counts[value]\n        else:current+=counts[value]\n        best=max(best,current);previous=value\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

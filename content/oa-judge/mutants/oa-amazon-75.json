@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复覆盖计两次",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));s=d[n+1];dp=[0,-10**30]\n    for i in range(n-1,-1,-1):\n        nxt=[-10**30,-10**30]\n        for incoming in (0,1):\n            if s[i]=='0':nxt[0]=max(nxt[0],dp[incoming]+(a[i] if incoming else 0))\n            else:\n                nxt[0]=max(nxt[0],dp[incoming]+a[i]*(1+incoming))\n                if i>0:nxt[1]=max(nxt[1],dp[incoming]+(a[i] if incoming else 0))\n        dp=nxt\n    return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "禁止左移",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));s=d[n+1];dp=[0,-10**30]\n    for i in range(n-1,-1,-1):\n        nxt=[-10**30,-10**30]\n        for incoming in (0,1):\n            if s[i]=='0':nxt[0]=max(nxt[0],dp[incoming]+(a[i] if incoming else 0))\n            else:\n                nxt[0]=max(nxt[0],dp[incoming]+a[i])\n                if False:nxt[1]=max(nxt[1],dp[incoming]+(a[i] if incoming else 0))\n        dp=nxt\n    return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

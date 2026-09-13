@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { batchName, loadScope } from './oa-judge/aggregate-batches.mjs';
 import { matchesOaOutput } from './oa-judge/output-checker.mjs';
+import { OA_SEMANTIC_IDS } from '../lib/oa-semantic-checkers.mjs';
 
 const root = resolve('content/oa-judge');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -47,6 +48,8 @@ async function run(code, input, spec) {
       'oa-closest-pair',
       'oa-peak-index',
       'oa-window-averages',
+      'oa-balanced-circle',
+      'oa-magic-square',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,
@@ -89,6 +92,12 @@ for (const item of registry.data.items) {
   const pkg = read(resolve(root, 'packages', item.id + '.json'));
   assert.equal(hash(JSON.stringify(pkg.data)), item.packageChecksum);
   assert.equal(pkg.data.problem.id, item.id);
+  if (Object.hasOwn(OA_SEMANTIC_IDS, pkg.data.problem.checker))
+    assert.equal(
+      item.id,
+      OA_SEMANTIC_IDS[pkg.data.problem.checker],
+      'Fixed OA checker identity mismatch',
+    );
   const reference = readFileSync(
     resolve(root, 'references', item.id + '.py'),
     'utf8',

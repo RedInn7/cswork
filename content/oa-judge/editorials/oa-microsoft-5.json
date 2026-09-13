@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-5",
+  "title": "两名实习生的最大总奖励",
+  "explanation": "## 思路\n\n先把全部任务给第二人，再选第一人相对第二人的收益差最大的k项。\n\n## 正确性证明\n\n任意分配都等于第二人全做的总和加上k项收益差。若选了较小差却漏了更大差，交换必不变差，因此选前k大最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));gain=sorted((x-y for x,y in zip(a,b)),reverse=True)\n    return str(sum(b)+sum(gain[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#5-intern-tasks--max-combined-reward-points",
+  "sourceContentHash": "231172e68734532427c043fe80c94e26b569f39575e793bde099f1b4bd3af606",
+  "author": "CSWork"
+}

@@ -1,0 +1,9 @@
+def solve(d):
+    s=d[0];last=None;runs=0
+    for i in range(0,len(s),2):
+        if s[i]==s[i+1] and s[i]!=last:runs+=1;last=s[i]
+    return str(runs)
+
+if __name__ == "__main__":
+    import sys
+    print(solve(sys.stdin.read().split()))

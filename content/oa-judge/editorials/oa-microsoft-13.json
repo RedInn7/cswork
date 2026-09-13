@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-13",
+  "title": "清洁机器人最终清扫格数",
+  "explanation": "## 思路\n\n记录位置和方向组成的状态，遇到重复状态时停止；用单独标记记录不同访问格。\n\n## 正确性证明\n\n运动完全由当前位置、方向和固定地图决定，重复状态之后会循环，不会再发现新格。总状态只有4NM个，因此在有限模拟后即可得到全部清洁格。\n\n## 复杂度\n\n时间O(NM)，空间O(NM)，使用紧凑字节数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    rows,cols=map(int,d[:2]);board=d[2:];seen=bytearray(rows*cols*4);clean=bytearray(rows*cols);i=j=direction=answer=0;moves=((0,1),(1,0),(0,-1),(-1,0))\n    while not seen[(i*cols+j)*4+direction]:\n        seen[(i*cols+j)*4+direction]=1\n        if not clean[i*cols+j]:clean[i*cols+j]=1;answer+=1\n        di,dj=moves[direction];a,b=i+di,j+dj\n        if 0<=a<rows and 0<=b<cols and board[a][b]=='.':i,j=a,b\n        else:direction=(direction+1)%4\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#13-cleaning-robot",
+  "sourceContentHash": "7361633b34bdb8d992f706f84ebab86db4fc9ac004eeeb4b200a9bf21ea6aab7",
+  "author": "CSWork"
+}

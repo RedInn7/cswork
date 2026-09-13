@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-17",
+  "title": "构造任意合法幻方",
+  "explanation": "## 思路\n\n奇数阶使用上移右移、冲突则下移的Siamese构造；4的倍数阶按4×4位置模式取互补数；其他偶数阶由四个奇数阶块和特定列交换构造。2阶无解。\n\n## 正确性\n\n奇数构造按n个一组循环覆盖所有格子，并平衡各行列与对角线。双偶阶把关于中心互补的数成对选取，保证各线平均数为(n²+1)/2。单偶阶四块分别平移0、2m²、3m²、m²，交换左k列和最右k−1列平衡上下半区，并在中间行调整首列与第k列以平衡对角线；交换不改变数值全集。最终所有线之和为n(n²+1)/2。2阶若四个数互不相同，行列同时等和将强制两个数相等，故无解。\n\n## 复杂度\n\n时间O(n²)，空间O(n²)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def odd(n):\n    a=[[0]*n for _ in range(n)];r=0;c=n//2\n    for value in range(1,n*n+1):\n        a[r][c]=value;nr=(r-1)%n;nc=(c+1)%n\n        if a[nr][nc]:r=(r+1)%n\n        else:r,c=nr,nc\n    return a\ndef construct(n):\n    if n%2:return odd(n)\n    if n%4==0:\n        return [[(n*n+1-(r*n+c+1)) if r%4==c%4 or r%4+c%4==3 else r*n+c+1 for c in range(n)] for r in range(n)]\n    m=n//2;k=(n-2)//4;base=odd(m);a=[[base[r%m][c%m]+((0 if c<m else 2) if r<m else (3 if c<m else 1))*m*m for c in range(n)] for r in range(n)]\n    for r in range(m):\n        for c in list(range(k))+list(range(n-k+1,n)):a[r][c],a[r+m][c]=a[r+m][c],a[r][c]\n    for c in (0,k):a[k][c],a[k+m][c]=a[k+m][c],a[k][c]\n    return a\ndef solve(data):\n    n=int(data[0])\n    if n==2:return 'null'\n    a=construct(n)\n    return '\\n'.join(' '.join(map(str,row)) for row in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#17-fill-matrix",
+  "sourceContentHash": "58663a383c5443b63c80809c42804f2d4d1d76fe56b4ced0609bc2a956090136",
+  "author": "CSWork"
+}

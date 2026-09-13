@@ -1,0 +1,10 @@
+[
+  {
+    "name": "长度相等不允许",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]); intervals=sorted((int(d[i]),int(d[i+1])) for i in range(2,len(d),2)); merged=[]\n    for a,b in intervals:\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>=k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把端点差1视为相接",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]); intervals=sorted((int(d[i]),int(d[i+1])) for i in range(2,len(d),2)); merged=[]\n    for a,b in intervals:\n        if merged and a<=merged[-1][1]+1:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

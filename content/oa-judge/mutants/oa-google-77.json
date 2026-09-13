@@ -1,0 +1,10 @@
+[
+  {
+    "name": "要求n连才赢",
+    "code": "def solve(data):\n    n,k,m=map(int,data[:3]);v=list(map(int,data[3:]));board=[0]*(n*n);occupied=0;winner=False;answer=[]\n    for i in range(0,len(v),3):\n        player,r,c=v[i:i+3];cell=r*n+c\n        if winner:answer.append('Game Over');continue\n        if board[cell]:answer.append('Invalid Move');continue\n        board[cell]=player;occupied+=1\n        for dr,dc in ((1,0),(0,1),(1,1),(1,-1)):\n            count=1\n            for direction in (-1,1):\n                for step in (1,2):\n                    a,b=r+direction*step*dr,c+direction*step*dc\n                    if not(0<=a<n and 0<=b<n) or board[a*n+b]!=player:break\n                    count+=1\n            if count>=n:winner=True\n        answer.append(f'Player {player} won' if winner else ('Draw' if occupied==n*n else 'In Progress'))\n    return '\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "覆盖已占用格",
+    "code": "def solve(data):\n    n,k,m=map(int,data[:3]);v=list(map(int,data[3:]));board=[0]*(n*n);occupied=0;winner=False;answer=[]\n    for i in range(0,len(v),3):\n        player,r,c=v[i:i+3];cell=r*n+c\n        if winner:answer.append('Game Over');continue\n        if False:answer.append('Invalid Move');continue\n        board[cell]=player;occupied+=1\n        for dr,dc in ((1,0),(0,1),(1,1),(1,-1)):\n            count=1\n            for direction in (-1,1):\n                for step in (1,2):\n                    a,b=r+direction*step*dr,c+direction*step*dc\n                    if not(0<=a<n and 0<=b<n) or board[a*n+b]!=player:break\n                    count+=1\n            if count>=3:winner=True\n        answer.append(f'Player {player} won' if winner else ('Draw' if occupied==n*n else 'In Progress'))\n    return '\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

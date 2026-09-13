@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按贵的仓库先选",
+    "code": "def solve(d):\n    n,p,q,budget=map(int,d[:4]);costs=sorted((((int(v)-1)%(p+q))//p for v in d[4:]),reverse=True);answer=0\n    for c in costs:\n        if c>budget:break\n        budget-=c;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "正余数错作零余数",
+    "code": "def solve(d):\n    n,p,q,budget=map(int,d[:4]);costs=sorted((int(v)%(p+q))//p for v in d[4:]);answer=0\n    for c in costs:\n        if c>budget:break\n        budget-=c;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

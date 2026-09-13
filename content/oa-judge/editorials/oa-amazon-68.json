@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-68",
+  "title": "容量每次减半的包裹配送",
+  "explanation": "## 思路\n\n包裹按重量降序。每次取当前最大容量卡车，足够则送出并将容量减半放回堆，否则失败。\n\n## 正确性证明\n\n每台车提供递减槽位C、floor(C/2)、…，只能按此前缀使用。最大堆依次枚举所有槽位中最大的可用值，因为后续槽位不会大于其前驱，得到全局降序槽位。若最大剩余槽位小于最大剩余包裹则必无解，否则按降序匹配达到可行性最优。\n\n## 复杂度\n\n时间O(n+m log n+m log m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import heapq\n    n,m=map(int,d[:2]);heap=[-int(v) for v in d[2:2+n]];heapq.heapify(heap)\n    for weight in sorted(map(int,d[2+n:]),reverse=True):\n        capacity=-heapq.heappop(heap)\n        if capacity<weight:return '0'\n        heapq.heappush(heap,-(capacity//2))\n    return '1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#68-can-all-packages-be-delivered",
+  "sourceContentHash": "d116b035112f2246d92a1054a023e03395edf68af766b28b8234cb82e29f1f5e",
+  "author": "CSWork"
+}

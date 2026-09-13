@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-20",
+  "title": "两个数组的公平分割数",
+  "explanation": "## 思路\n\n先比较两个数组总和，必须相等且为偶数；再同步累计两个前缀，统计两者都等于总和一半的位置。\n\n## 正确性证明\n\n四段全相等必使两总和相等且每个前缀占其一半。反之两个前缀都达到同一半值时，两个后缀也等于该值，因此条件充要。只检查非空切分。\n\n## 复杂度\n\n时间O(N)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));total=sum(a)\n    if total!=sum(b) or total%2:return '0'\n    left=right=answer=0\n    for i in range(n-1):\n        left+=a[i];right+=b[i]\n        if left==right==total//2:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#20-find-fair-indexes",
+  "sourceContentHash": "f4b3e23b4f009b8fe7c5c92ea89d53df665db800213e90f149278fbddc3ebc5f",
+  "author": "CSWork"
+}

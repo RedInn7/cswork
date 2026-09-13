@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-74",
+  "title": "分别排序两段后整体有序的切分数",
+  "explanation": "## 思路\n\n预处理每个后缀的最小值，扫描前缀最大值，满足前缀最大≤后缀最小的切口有效。\n\n## 正确性\n\n两段内部排序后已经非降，唯一可能的逆序发生在段间；前段最大不超过后段最小恰好排除所有段间逆序。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a);suffix=a.copy()\n    for i in range(n-2,-1,-1):suffix[i]=min(suffix[i],suffix[i+1])\n    largest=a[0];answer=0\n    for i in range(n-1):\n        largest=max(largest,a[i])\n        if largest<=suffix[i+1]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#74-split-and-sort-array",
+  "sourceContentHash": "d354933cc3f0a4c55bef7316b423bd713e5e193628704f09d72a8bb878a9fbba",
+  "author": "CSWork"
+}

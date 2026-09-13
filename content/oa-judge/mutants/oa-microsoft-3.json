@@ -1,0 +1,10 @@
+[
+  {
+    "name": "直接排序而不保留顺序",
+    "code": "def solve(d):\n    from collections import Counter\n    s=d[0]; remaining=Counter(s); required={c for c,n in remaining.items() if n%2}; stack=[]; used=set()\n    for c in s:\n        remaining[c]-=1\n        if c not in required or c in used:continue\n        while stack and stack[-1]>c and remaining[stack[-1]]>0:used.remove(stack.pop())\n        stack.append(c);used.add(c)\n    return ''.join(sorted(required))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "保留偶频字符",
+    "code": "def solve(d):\n    from collections import Counter\n    s=d[0]; remaining=Counter(s); required={c for c,n in remaining.items() if True}; stack=[]; used=set()\n    for c in s:\n        remaining[c]-=1\n        if c not in required or c in used:continue\n        while stack and stack[-1]>c and remaining[stack[-1]]>0:used.remove(stack.pop())\n        stack.append(c);used.add(c)\n    return ''.join(stack)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

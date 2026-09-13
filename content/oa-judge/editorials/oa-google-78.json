@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-78",
+  "title": "保持相邻不同的三色字符串变换",
+  "explanation": "## 思路\n\n从起点BFS。对每个位置尝试另外两种颜色，只要与左右邻居不同就加入下一状态；首次到达目标的距离为答案。\n\n## 正确性\n\n每个合法单字符修改恰好对应状态图的一条边，边权均为1；枚举位置和替代字符得到全部且仅有合法边，BFS得到最少操作数。\n\n## 复杂度\n\n合法状态数至多3·2^(n−1)。时间O(n²·2^n)（包含字符串复制），空间O(n·2^n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(data):\n    n=int(data[0]);start,target=data[1:];q=deque([(start,0)]);seen={start}\n    while q:\n        s,d=q.popleft()\n        if s==target:return str(d)\n        for i in range(n):\n            for c in 'xyz':\n                if c==s[i] or (i and s[i-1]==c) or (i+1<n and s[i+1]==c):continue\n                t=s[:i]+c+s[i+1:]\n                if t not in seen:seen.add(t);q.append((t,d+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#78-transform-string-google-india",
+  "sourceContentHash": "d9f0d2f6d8bc41271ec89e305ce4a999693bab3957dcc8e4affdfd890a3814e7",
+  "author": "CSWork"
+}

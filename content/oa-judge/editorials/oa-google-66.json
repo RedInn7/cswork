@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-66",
+  "title": "在时限内走到网格终点",
+  "explanation": "## 思路\n\n广度优先搜索最短距离；抵达终点时比较与时限，超过时限的层无需继续扩展。\n\n## 正确性\n\n每条边费用都为1，BFS按距离递增处理，所以首次抵达终点就是最少用时；存在时限内方案当且仅当该距离不超过时限。\n\n## 复杂度\n\n时间O(rc)，空间O(rc)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(data):\n    h,w,limit=map(int,data[:3]);g=data[3:];q=deque([(0,0,0)]);seen={(0,0)}\n    while q:\n        r,c,d=q.popleft()\n        if (r,c)==(h-1,w-1):return 'Yes' if d<=limit else 'No'\n        if d>=limit:continue\n        for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n            a,b=r+dr,c+dc\n            if 0<=a<h and 0<=b<w and g[a][b]=='.' and (a,b) not in seen:seen.add((a,b));q.append((a,b,d+1))\n    return 'No'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#66-reach-the-end-in-time",
+  "sourceContentHash": "11bb8c13c93e5a7f0fa78af4c809c7c735c0e22b8d6c42ccc123056bf28999aa",
+  "author": "CSWork"
+}

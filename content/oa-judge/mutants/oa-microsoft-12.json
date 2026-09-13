@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查边数是否足够",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);edges=list(map(int,d[2:]));adjacent=set()\n    for i in range(0,len(edges),2):\n        a,b=edges[i:i+2]\n        if abs(a-b)==1:adjacent.add(min(a,b))\n    return str(int(m>=n-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "要求多一条相邻边",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);edges=list(map(int,d[2:]));adjacent=set()\n    for i in range(0,len(edges),2):\n        a,b=edges[i:i+2]\n        if abs(a-b)==1:adjacent.add(min(a,b))\n    return str(int(len(adjacent)==n))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉跨串逆序",
+    "code": "def solve(d):\n    a,b=d;n=len(a);m=len(b)\n    def greater(s):\n        rows=[[0]*26];counts=[0]*26\n        for c in s:\n            counts[ord(c)-97]+=1;row=[0]*26;total=0\n            for k in range(25,-1,-1):row[k]=total;total+=counts[k]\n            rows.append(row)\n        return rows\n    ga=greater(a);gb=greater(b);previous=[0]*(m+1)\n    for j in range(1,m+1):previous[j]=previous[j-1]+gb[j-1][ord(b[j-1])-97]\n    for i in range(1,n+1):\n        ca=ord(a[i-1])-97;current=[0]*(m+1);current[0]=previous[0]+ga[i-1][ca]\n        for j in range(1,m+1):\n            cb=ord(b[j-1])-97\n            current[j]=min(previous[j]+ga[i-1][ca],current[j-1]+ga[i][cb]+gb[j-1][cb])\n        previous=current\n    return str(previous[m])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误选择较大费用",
+    "code": "def solve(d):\n    a,b=d;n=len(a);m=len(b)\n    def greater(s):\n        rows=[[0]*26];counts=[0]*26\n        for c in s:\n            counts[ord(c)-97]+=1;row=[0]*26;total=0\n            for k in range(25,-1,-1):row[k]=total;total+=counts[k]\n            rows.append(row)\n        return rows\n    ga=greater(a);gb=greater(b);previous=[0]*(m+1)\n    for j in range(1,m+1):previous[j]=previous[j-1]+gb[j-1][ord(b[j-1])-97]\n    for i in range(1,n+1):\n        ca=ord(a[i-1])-97;current=[0]*(m+1);current[0]=previous[0]+ga[i-1][ca]\n        for j in range(1,m+1):\n            cb=ord(b[j-1])-97\n            current[j]=max(previous[j]+ga[i-1][ca]+gb[j][ca],current[j-1]+ga[i][cb]+gb[j-1][cb])\n        previous=current\n    return str(previous[m])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

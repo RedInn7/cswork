@@ -1,0 +1,654 @@
+[
+  {
+    "input": "7 3\napple 80\nappetizer 70\napplication 90\napp 90\napply 85\nbanana 60\nappstore 90\napp\n",
+    "expectedOutput": "3 app application appstore\n3 app application appstore\n3 app application appstore\n"
+  },
+  {
+    "input": "3 2\na 2\nab 3\nac 3\nab\n",
+    "expectedOutput": "2 ab ac\n1 ab\n"
+  },
+  {
+    "input": "1 3\ncat 1\ndog\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "9 6\naaa 0\nab 3\nbbb 2\nc 2\ncca 0\nbaa 3\nbba 0\nbca 4\na 3\nbad\n",
+    "expectedOutput": "4 bca baa bbb bba\n1 baa\n0\n"
+  },
+  {
+    "input": "7 3\nacc 0\nbab 2\ncb 1\nbbc 1\ncab 4\nba 3\naac 4\nb\n",
+    "expectedOutput": "3 ba bab bbc\n"
+  },
+  {
+    "input": "7 5\ncc 3\nca 4\naac 4\ncba 3\nbca 5\nacb 3\nbb 4\ndbd\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "1 6\nbbb 5\ncbba\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "7 1\nbab 0\nccb 4\ncac 4\ncc 0\nac 3\ncab 1\naab 3\ncb\n",
+    "expectedOutput": "1 cac\n0\n"
+  },
+  {
+    "input": "1 6\nacb 3\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 2\nb 1\nbca 3\naac 4\nca 2\nabb 4\ncab 0\naa 1\nbab 3\ncbb 3\ndd\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "11 6\nbab 5\nabc 5\nc 4\naac 1\ncaa 3\ncbb 4\ncba 4\na 2\nca 1\ncac 4\ncca 5\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 1\nca 3\ncaa 1\nbca 4\ncba 3\nbcc 3\ndda\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "9 4\nabc 0\nc 2\naca 2\ncb 5\naa 1\nbcc 3\nac 1\naac 0\nacb 1\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 2\ncbc 2\nb 0\nbc\n",
+    "expectedOutput": "1 b\n0\n"
+  },
+  {
+    "input": "10 2\naab 1\nbba 2\nbbb 0\naba 4\nbca 5\nab 1\nca 4\ncca 4\naca 4\naa 5\ndacc\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "11 2\nbc 0\naba 4\naca 3\nba 2\nccb 1\nbaa 1\naa 2\ncc 4\nccc 2\nb 2\nbba 3\ndac\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "4 3\nca 4\nbc 3\naca 3\nab 3\na\n",
+    "expectedOutput": "2 ab aca\n"
+  },
+  {
+    "input": "4 3\naaa 4\ncaa 5\nabb 1\nb 5\ndc\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "11 6\nbcb 5\nc 4\nccb 2\naa 3\ncaa 2\nbaa 1\nbbb 4\nacc 5\naab 3\ncca 0\nbca 5\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "8 4\ncc 1\nac 3\nc 0\naa 2\ncab 4\nb 5\ncb 4\nbb 1\ndd\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "7 4\nccb 5\naab 4\nbab 4\nbbc 2\nba 0\nbcc 3\nc 1\na\n",
+    "expectedOutput": "1 aab\n"
+  },
+  {
+    "input": "6 6\nbcc 5\naac 3\ncab 5\ncca 0\ncbc 4\naca 2\ndc\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "11 1\ncb 5\nbc 5\ncca 0\nabc 4\nab 4\nbba 5\nca 4\nbaa 0\nccc 3\naca 5\nacc 3\nba\n",
+    "expectedOutput": "1 bba\n1 baa\n"
+  },
+  {
+    "input": "10 3\ncca 0\nbca 4\nca 2\ncb 0\nb 0\naab 4\nba 5\naac 5\nbcb 0\nbaa 3\nadbc\n",
+    "expectedOutput": "2 aac aab\n0\n0\n0\n"
+  },
+  {
+    "input": "6 1\nab 3\nbca 2\ncbc 3\nbaa 4\naac 1\nbb 5\ncad\n",
+    "expectedOutput": "1 cbc\n0\n0\n"
+  },
+  {
+    "input": "1 6\na 4\nacd\n",
+    "expectedOutput": "1 a\n0\n0\n"
+  },
+  {
+    "input": "10 5\nbb 5\ncac 3\ncca 2\naaa 3\naa 0\nbba 0\nac 0\ncc 5\ncb 1\nabc 1\ndaa\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "1 1\ncca 5\ncc\n",
+    "expectedOutput": "1 cca\n1 cca\n"
+  },
+  {
+    "input": "1 2\nbcc 3\ndb\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "4 3\nabc 5\ncb 2\nbc 3\nbcc 3\nccdd\n",
+    "expectedOutput": "1 cb\n0\n0\n0\n"
+  },
+  {
+    "input": "2 4\naa 2\ncba 2\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "10 3\nba 5\ncac 5\naaa 4\nbab 0\nbba 0\ncca 5\ncbb 4\nbbc 3\nacb 1\ncab 4\nbaba\n",
+    "expectedOutput": "3 ba bbc bab\n2 ba bab\n1 bab\n0\n"
+  },
+  {
+    "input": "1 2\nc 5\naadc\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "11 5\naba 0\ncb 2\nbac 4\nac 2\nbcb 0\ncab 4\nab 0\ncc 5\na 3\nacb 0\ncbb 3\nddb\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "9 3\nacc 4\nbca 2\naab 1\ncc 3\nabc 5\nba 3\ncba 0\naca 1\nac 4\nc\n",
+    "expectedOutput": "2 cc cba\n"
+  },
+  {
+    "input": "1 2\nbbc 2\na\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 6\nbbb 0\nbaa 2\nacb 2\ncbc 4\nbcb 0\nc 5\ncbb 2\nccb 1\naca 4\ncb\n",
+    "expectedOutput": "4 c cbc cbb ccb\n2 cbc cbb\n"
+  },
+  {
+    "input": "11 5\ncb 2\ncbc 3\naba 5\naab 2\ncaa 0\nbbb 2\nbaa 0\na 2\nccc 3\naaa 1\ncac 5\nb\n",
+    "expectedOutput": "2 bbb baa\n"
+  },
+  {
+    "input": "5 3\naaa 3\nbaa 5\nbac 5\nbbc 2\nbbb 1\nbc\n",
+    "expectedOutput": "3 baa bac bbc\n0\n"
+  },
+  {
+    "input": "10 3\nbaa 3\nacc 4\naba 4\nabb 5\naa 1\ncb 3\nbc 1\naab 0\nab 4\nbac 0\nbdd\n",
+    "expectedOutput": "3 baa bc bac\n0\n0\n"
+  },
+  {
+    "input": "5 2\naa 5\ncbb 4\nbcc 4\nbbc 2\ncba 1\nb\n",
+    "expectedOutput": "2 bcc bbc\n"
+  },
+  {
+    "input": "8 6\nccc 5\nbba 0\nbb 0\ncaa 1\nbaa 1\naba 3\nacc 3\naab 1\nbbd\n",
+    "expectedOutput": "3 baa bb bba\n2 bb bba\n0\n"
+  },
+  {
+    "input": "4 4\nabc 2\nc 3\naab 0\nacb 0\nddd\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "12 6\nbc 5\nacc 2\nabc 1\nbac 3\nb 3\ncba 5\naca 4\na 5\ncac 3\naa 1\nccb 2\ncbb 3\nacba\n",
+    "expectedOutput": "5 a aca acc aa abc\n2 aca acc\n0\n0\n"
+  },
+  {
+    "input": "4 2\nccc 4\ncaa 3\nbcc 4\nab 5\nc\n",
+    "expectedOutput": "2 ccc caa\n"
+  },
+  {
+    "input": "6 6\ncbb 1\naab 2\nbaa 5\nccc 0\ncac 3\nacb 0\ncc\n",
+    "expectedOutput": "3 cac cbb ccc\n1 ccc\n"
+  },
+  {
+    "input": "9 1\naca 0\nabc 2\nccc 3\naba 1\nb 3\nbac 4\nacc 2\na 3\ncb 1\nba\n",
+    "expectedOutput": "1 bac\n1 bac\n"
+  },
+  {
+    "input": "1 1\ncb 0\ndad\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "9 2\naca 5\nabc 2\nb 5\nbbb 5\nbab 5\na 5\naaa 2\nbb 2\ncc 0\nbbcd\n",
+    "expectedOutput": "2 b bab\n2 bbb bb\n0\n0\n"
+  },
+  {
+    "input": "3 5\ncab 1\nabc 0\nc 0\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "6 3\naac 2\nbcb 3\nac 3\naba 5\naa 3\nbba 1\nba\n",
+    "expectedOutput": "2 bcb bba\n0\n"
+  },
+  {
+    "input": "1 1\ncba 5\ncbdd\n",
+    "expectedOutput": "1 cba\n1 cba\n0\n0\n"
+  },
+  {
+    "input": "5 3\ncc 0\nbac 0\nab 4\naa 3\nb 0\nbc\n",
+    "expectedOutput": "2 b bac\n0\n"
+  },
+  {
+    "input": "11 6\nba 5\naa 4\nc 0\ncbb 5\nccc 4\ncab 4\nbb 2\naca 1\nccb 3\nac 0\nca 0\ndca\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "11 4\naa 3\naac 2\ncbc 2\naab 4\nbcb 3\ncbb 1\naaa 4\ncac 2\na 0\nc 4\nca 3\nb\n",
+    "expectedOutput": "1 bcb\n"
+  },
+  {
+    "input": "5 1\nbab 2\nabc 1\ncbb 3\nbaa 0\nab 1\ndca\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "1 6\na 3\nbd\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "6 2\nbcc 2\ncac 5\naac 0\nccb 3\nbc 4\nacc 5\ncbd\n",
+    "expectedOutput": "2 cac ccb\n0\n0\n"
+  },
+  {
+    "input": "12 4\nbcb 5\nbc 0\ncab 3\nbca 1\ncb 0\ncca 3\ncbc 2\naab 3\nacb 2\nbac 3\nbab 4\nabc 2\ndbdc\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "6 6\nca 1\nbaa 3\nbcc 1\nccc 0\nab 5\naba 4\ncabb\n",
+    "expectedOutput": "2 ca ccc\n1 ca\n0\n0\n"
+  },
+  {
+    "input": "8 5\nbbc 4\ncbb 2\nabc 1\nbcb 0\nabb 1\nc 1\ncaa 0\ncac 0\nbb\n",
+    "expectedOutput": "2 bbc bcb\n1 bbc\n"
+  },
+  {
+    "input": "11 1\nacb 3\nba 3\ncc 1\na 2\ncca 1\nbac 3\nbca 0\naaa 4\nbcc 2\ncaa 4\nbab 2\na\n",
+    "expectedOutput": "1 aaa\n"
+  },
+  {
+    "input": "3 2\nccb 0\nacc 5\nc 0\naacb\n",
+    "expectedOutput": "1 acc\n0\n0\n0\n"
+  },
+  {
+    "input": "11 1\nac 2\nca 2\naca 5\nabb 4\nbbc 1\nbc 2\nab 4\nbbb 3\naab 1\ncca 5\nccb 4\nadad\n",
+    "expectedOutput": "1 aca\n0\n0\n0\n"
+  },
+  {
+    "input": "7 1\naaa 5\naba 4\nac 2\ncbc 2\nbaa 5\ncba 1\nbca 2\nbcca\n",
+    "expectedOutput": "1 baa\n1 bca\n0\n0\n"
+  },
+  {
+    "input": "10 6\ncaa 5\naba 2\naaa 5\nc 1\ncc 1\nacb 5\nccc 1\nba 2\naa 0\nbba 0\nb\n",
+    "expectedOutput": "2 ba bba\n"
+  },
+  {
+    "input": "3 6\ncb 0\nabb 3\nbba 2\ncdbb\n",
+    "expectedOutput": "1 cb\n0\n0\n0\n"
+  },
+  {
+    "input": "5 3\nabc 4\nccc 2\nbca 4\nbac 3\nba 1\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "5 4\nb 1\nc 2\na 5\nba 1\nbbb 3\na\n",
+    "expectedOutput": "1 a\n"
+  },
+  {
+    "input": "10 4\nba 5\nbcb 3\nbb 2\nccb 2\nab 3\nbac 3\nbab 3\nb 4\nabb 4\nacb 5\naa\n",
+    "expectedOutput": "3 acb abb ab\n0\n"
+  },
+  {
+    "input": "3 4\nacb 0\ncab 5\nbcb 5\nb\n",
+    "expectedOutput": "1 bcb\n"
+  },
+  {
+    "input": "4 2\naac 1\nbac 4\ncb 2\nbab 5\na\n",
+    "expectedOutput": "1 aac\n"
+  },
+  {
+    "input": "10 3\nbaa 2\nacc 0\ncab 1\nccb 3\nabb 0\nbab 4\nba 5\naac 0\ncbc 4\ncc 3\nbaac\n",
+    "expectedOutput": "3 ba bab baa\n3 ba bab baa\n1 baa\n0\n"
+  },
+  {
+    "input": "1 3\ncbb 5\naccc\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "11 3\naaa 1\nacb 0\naab 2\nacc 3\nca 5\nab 1\nb 2\ncc 1\ncaa 5\ncca 1\nc 0\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 2\nbb 1\nabb 5\naba 5\ncca 2\nca 4\naac 4\ncaa 0\nbbc 4\nccc 5\nac 2\ncb 0\nb\n",
+    "expectedOutput": "2 bbc bb\n"
+  },
+  {
+    "input": "8 5\nabb 4\naaa 3\ncbc 3\na 4\ncbb 3\ncc 2\nbca 3\nca 4\nbad\n",
+    "expectedOutput": "1 bca\n0\n0\n"
+  },
+  {
+    "input": "9 6\ncac 5\nbab 1\ncba 5\nbaa 3\nba 4\nabb 2\nccb 3\nb 0\nbac 1\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "10 4\nacb 5\nbbc 5\nba 2\ncab 4\naab 5\ncc 0\ncac 5\nabc 4\ncbb 1\nca 1\nbcc\n",
+    "expectedOutput": "2 bbc ba\n0\n0\n"
+  },
+  {
+    "input": "4 3\naca 5\naaa 4\nccb 5\naac 3\nccdd\n",
+    "expectedOutput": "1 ccb\n1 ccb\n0\n0\n"
+  },
+  {
+    "input": "10 1\nc 4\nbb 1\naaa 1\nbaa 2\ncca 2\nbba 2\nbcc 1\naa 3\nbcb 0\naca 0\nbdad\n",
+    "expectedOutput": "1 baa\n0\n0\n0\n"
+  },
+  {
+    "input": "11 5\ncaa 2\naa 5\nbac 1\ncbb 4\nccb 5\ncba 2\nac 3\nbca 1\nb 1\ncac 3\nba 0\nccab\n",
+    "expectedOutput": "5 ccb cbb cac caa cba\n1 ccb\n0\n0\n"
+  },
+  {
+    "input": "9 6\ncc 3\na 4\ncbc 3\nab 0\nbca 1\nbaa 5\nccc 0\nac 4\nabb 5\na\n",
+    "expectedOutput": "4 abb a ac ab\n"
+  },
+  {
+    "input": "10 6\nbac 4\ncc 5\nbbc 1\nac 4\nabc 3\nccb 2\nc 4\nbca 3\ncbc 3\nabb 1\ncb\n",
+    "expectedOutput": "4 cc c cbc ccb\n1 cbc\n"
+  },
+  {
+    "input": "12 6\nbba 5\naac 0\ncbc 5\nbc 5\nbab 2\nba 4\nbbb 4\ncbb 3\ncba 5\nccc 3\nacb 5\naab 0\nca\n",
+    "expectedOutput": "4 cba cbc cbb ccc\n0\n"
+  },
+  {
+    "input": "2 2\nbcc 1\ncc 3\ndac\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "5 4\ncbc 2\nbac 0\nab 2\naa 4\nbba 2\nbd\n",
+    "expectedOutput": "2 bba bac\n0\n"
+  },
+  {
+    "input": "8 1\naca 1\nbbc 3\ncb 5\ncba 4\naaa 0\ncca 1\nccc 1\nba 3\na\n",
+    "expectedOutput": "1 aca\n"
+  },
+  {
+    "input": "2 5\ncca 4\nbbc 5\ndcdb\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "6 4\nbcb 5\ncab 5\ncbc 2\naba 2\naa 0\nabc 0\nbdd\n",
+    "expectedOutput": "1 bcb\n0\n0\n"
+  },
+  {
+    "input": "9 2\nc 1\naaa 3\naca 5\naa 3\ncca 0\nba 2\nbca 1\nccb 5\nbba 2\nbd\n",
+    "expectedOutput": "2 ba bba\n0\n"
+  },
+  {
+    "input": "1 2\ncbb 1\ncb\n",
+    "expectedOutput": "1 cbb\n1 cbb\n"
+  },
+  {
+    "input": "1 6\nbab 2\nad\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "10 5\nabc 2\nacc 3\naba 0\nac 1\naa 1\naab 1\ncbc 5\ncbb 0\nbb 5\naac 1\nbcbd\n",
+    "expectedOutput": "1 bb\n0\n0\n0\n"
+  },
+  {
+    "input": "11 3\ncaa 4\nbbb 0\nbc 5\ncac 3\nacc 1\nbaa 3\ncca 0\ncab 2\nbcc 2\nbcb 0\naab 1\naa\n",
+    "expectedOutput": "2 aab acc\n1 aab\n"
+  },
+  {
+    "input": "5 2\naca 4\ncca 2\nccb 2\nbcc 1\nbac 3\nc\n",
+    "expectedOutput": "2 cca ccb\n"
+  },
+  {
+    "input": "3 6\nbb 1\nc 1\ncbb 5\nacac\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "10 5\nbcc 3\nab 4\nbbb 3\nbbc 4\nbcb 4\nbc 2\ncac 0\nca 0\naca 4\nc 0\nbcac\n",
+    "expectedOutput": "5 bbc bcb bbb bcc bc\n3 bcb bcc bc\n0\n0\n"
+  },
+  {
+    "input": "10 2\ncac 2\nc 4\nbab 4\nbbc 4\nbcc 2\nbaa 3\naca 1\nab 1\ncbb 3\nac 2\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 6\naca 3\nabb 1\ncab 1\nbab 4\nabc 5\nccc 5\ncca 2\naac 5\ncb 4\nacb 0\na\n",
+    "expectedOutput": "5 aac abc aca abb acb\n"
+  },
+  {
+    "input": "12 4\ncab 1\ncca 5\naac 2\nbc 3\nbcc 2\nccc 5\nbaa 4\naca 5\nbba 0\ncaa 1\naa 2\nacb 4\nbac\n",
+    "expectedOutput": "4 baa bc bcc bba\n1 baa\n0\n"
+  },
+  {
+    "input": "9 4\nccb 2\nbaa 0\nbca 4\naac 1\nb 1\naba 3\ncbb 0\na 3\naa 3\nb\n",
+    "expectedOutput": "3 bca b baa\n"
+  },
+  {
+    "input": "3 4\ncc 5\ncab 0\ncac 5\nbbd\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "8 5\ncc 4\nbbb 1\nbac 1\nc 5\ncb 3\nbcc 2\nb 3\nacb 3\nbcac\n",
+    "expectedOutput": "4 b bcc bac bbb\n1 bcc\n0\n0\n"
+  },
+  {
+    "input": "4 1\ncc 0\nccb 3\nba 4\ncba 0\nbac\n",
+    "expectedOutput": "1 ba\n1 ba\n0\n"
+  },
+  {
+    "input": "2 3\naaa 4\nbba 1\ncba\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "5 2\naca 2\nbbb 4\nbcb 4\nb 5\nca 5\na\n",
+    "expectedOutput": "1 aca\n"
+  },
+  {
+    "input": "4 2\nccb 4\nbcb 4\ncaa 2\nabc 5\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 6\na 2\ncbb 1\nac 3\nbbb 4\nad\n",
+    "expectedOutput": "2 ac a\n0\n"
+  },
+  {
+    "input": "5 1\nbca 4\nbaa 3\naac 2\nba 0\nbb 4\nbabd\n",
+    "expectedOutput": "1 bb\n1 baa\n0\n0\n"
+  },
+  {
+    "input": "10 1\naca 5\nbcb 3\nba 2\nbba 3\nbcc 2\ncb 4\nbbb 5\nacb 2\na 5\nabc 5\ndabd\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "11 4\nbca 0\nbaa 5\na 4\nabb 0\ncbc 0\nacb 3\naac 3\nbbc 0\ncca 3\nccc 2\ncb 0\ndbc\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "11 2\nbbb 1\ncbc 4\ncbb 3\nacc 3\nacb 3\nb 1\naaa 1\naab 4\nbac 1\nccb 5\nbbc 5\nc\n",
+    "expectedOutput": "2 ccb cbc\n"
+  },
+  {
+    "input": "5 2\nbca 0\nccc 3\nbbb 5\nabb 0\naac 1\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 3\nbab 1\nbaa 4\nb 2\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "3 2\nccc 2\ncb 5\nab 2\na\n",
+    "expectedOutput": "1 ab\n"
+  },
+  {
+    "input": "3 4\nabb 2\nacc 2\nbab 1\nbbbd\n",
+    "expectedOutput": "1 bab\n0\n0\n0\n"
+  },
+  {
+    "input": "6 5\nba 2\nab 2\nac 5\nacb 2\naa 4\nbaa 3\ndcaa\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "5 1\ncc 4\nb 0\nbca 2\naca 4\nca 3\nca\n",
+    "expectedOutput": "1 cc\n1 ca\n"
+  },
+  {
+    "input": "4 4\nccb 5\ncbb 2\ncac 2\ncaa 2\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 3\nbaa 4\ncca 2\naaa 2\nbb 4\nabb 5\ncaa 0\nac 5\nbbb 1\nbdda\n",
+    "expectedOutput": "3 baa bb bbb\n0\n0\n0\n"
+  },
+  {
+    "input": "4 1\nbba 5\ncac 2\nb 3\nccc 2\ncca\n",
+    "expectedOutput": "1 cac\n1 ccc\n0\n"
+  },
+  {
+    "input": "12 4\ncbb 3\nccc 1\nacb 2\na 3\nabb 0\nbca 4\nbbb 3\naba 5\naac 3\nbc 1\ncca 3\naa 1\ncb\n",
+    "expectedOutput": "3 cbb cca ccc\n1 cbb\n"
+  },
+  {
+    "input": "5 1\ncaa 2\nbb 5\nbc 0\naa 5\naca 1\ndcd\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "3 5\nac 3\nccc 1\nacb 1\ndcac\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "9 6\nbca 0\ncbc 5\nacb 2\ncb 3\nacc 2\nbb 0\nbaa 0\nbab 5\nbcb 5\ncccc\n",
+    "expectedOutput": "2 cbc cb\n0\n0\n0\n"
+  },
+  {
+    "input": "8 5\naaa 1\nbca 3\nbbb 2\nba 5\nabb 5\nbba 0\nc 0\naa 1\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 6\ncca 2\nbb 2\nbaa 5\nccc 2\nbba 2\nabc\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "7 5\naab 0\nabc 2\nbab 0\nc 1\nab 3\nacc 3\nccc 1\nc\n",
+    "expectedOutput": "2 c ccc\n"
+  },
+  {
+    "input": "11 4\nbcc 0\ncba 3\nc 4\nccb 5\nbac 5\nacc 1\na 1\naca 0\nac 1\naac 2\ncaa 3\ncda\n",
+    "expectedOutput": "4 ccb c caa cba\n0\n0\n"
+  },
+  {
+    "input": "8 3\ncaa 2\naaa 1\nbca 2\nbbb 1\ncbc 0\naba 1\nbcc 4\ncba 1\nad\n",
+    "expectedOutput": "2 aaa aba\n0\n"
+  },
+  {
+    "input": "5 5\ncac 1\nbba 0\ncba 4\naac 1\nb 1\nb\n",
+    "expectedOutput": "2 b bba\n"
+  },
+  {
+    "input": "6 1\nbbc 2\nbaa 5\naaa 4\nbba 0\nca 2\ncab 4\ndacb\n",
+    "expectedOutput": "0\n0\n0\n0\n"
+  },
+  {
+    "input": "6 3\nbcb 5\naba 5\na 3\nbbc 3\nbcc 3\naca 3\nb\n",
+    "expectedOutput": "3 bcb bbc bcc\n"
+  },
+  {
+    "input": "8 4\nacb 2\naa 4\nbbc 3\nab 4\naba 3\nbcc 1\naaa 0\nc 2\na\n",
+    "expectedOutput": "4 aa ab aba acb\n"
+  },
+  {
+    "input": "5 5\ncab 2\nacb 0\naaa 1\nbb 1\nbac 1\nda\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "8 1\naca 1\ncab 4\naaa 0\ncba 3\naac 2\nbcb 0\ncc 0\nba 4\ndca\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "10 3\naba 2\ncbc 3\naaa 4\ncca 5\nab 3\ncac 0\ncbb 4\nbbc 1\na 0\ncb 0\nacd\n",
+    "expectedOutput": "3 aaa ab aba\n0\n0\n"
+  },
+  {
+    "input": "11 5\ncc 2\nab 0\ncbb 1\nabb 2\nbba 1\nba 4\ncca 1\ncaa 2\ncac 4\ncab 1\nacb 1\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 1\nbc 5\nba 4\ncd\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "7 3\naba 4\nb 4\nccc 5\ncc 2\naaa 2\ncaa 5\nbcb 2\nb\n",
+    "expectedOutput": "2 b bcb\n"
+  },
+  {
+    "input": "2 4\nb 1\ncbc 0\nbbbd\n",
+    "expectedOutput": "1 b\n0\n0\n0\n"
+  },
+  {
+    "input": "11 4\naa 1\nbc 4\ncb 1\naab 0\nbbc 4\nbca 5\nacb 0\nb 5\nbac 4\nbba 3\ncab 5\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 4\ncac 0\nbb 2\nabb 4\ncbb 1\nacb 4\naa 5\nb 2\naac 4\nab 5\nbbc 2\naaa 5\nacb\n",
+    "expectedOutput": "4 aa aaa ab aac\n1 acb\n1 acb\n"
+  },
+  {
+    "input": "6 4\nbb 2\ncb 0\ncca 1\ncab 0\naaa 1\ncbc 5\nb\n",
+    "expectedOutput": "1 bb\n"
+  },
+  {
+    "input": "5 5\nab 0\nabb 0\nba 2\nccb 3\naba 3\nba\n",
+    "expectedOutput": "1 ba\n1 ba\n"
+  },
+  {
+    "input": "11 4\naca 3\nbba 5\nacc 1\nbaa 1\nbcc 3\nabc 0\nbcb 2\nab 0\nbc 3\nc 1\ncbc 1\nba\n",
+    "expectedOutput": "4 bba bc bcc bcb\n1 baa\n"
+  },
+  {
+    "input": "11 4\nbcc 0\nbab 0\naaa 2\nab 2\nbcb 3\nca 3\naab 0\ncac 0\nacb 4\naa 2\nc 0\ncd\n",
+    "expectedOutput": "3 ca c cac\n0\n"
+  },
+  {
+    "input": "11 5\ncca 1\nc 4\naca 0\ncac 2\nccb 1\nca 5\nba 2\nabc 1\na 4\ncbc 0\nbb 2\nb\n",
+    "expectedOutput": "2 ba bb\n"
+  },
+  {
+    "input": "11 6\nccc 4\nc 4\ncb 2\nab 5\ncbb 4\nbbc 3\ncac 5\nbaa 0\nbb 5\nbc 3\nbac 4\nb\n",
+    "expectedOutput": "5 bb bac bbc bc baa\n"
+  },
+  {
+    "input": "5 5\naab 3\nbc 3\ncac 1\nabb 5\ncb 3\ncc\n",
+    "expectedOutput": "2 cb cac\n0\n"
+  },
+  {
+    "input": "6 6\ncb 3\nab 4\naac 4\ncca 4\nbca 5\ncac 1\na\n",
+    "expectedOutput": "2 aac ab\n"
+  },
+  {
+    "input": "10 3\ncbb 1\ncba 1\nba 2\nbcc 4\nbac 2\nbba 4\naaa 4\nbbc 1\naba 4\nbcb 4\naac\n",
+    "expectedOutput": "2 aaa aba\n1 aaa\n0\n"
+  },
+  {
+    "input": "9 3\nbbc 5\ncab 3\naac 0\nbab 3\naa 3\naab 3\nacc 3\nacb 0\na 2\nccac\n",
+    "expectedOutput": "1 cab\n0\n0\n0\n"
+  },
+  {
+    "input": "10 6\nca 3\nac 3\nbcc 1\nacc 0\nbca 4\nbb 0\nccc 0\nbba 3\ncca 4\nbaa 1\ndbd\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "7 6\nac 0\nbb 2\nacb 1\nbab 2\nb 3\naaa 3\ncc 0\naacc\n",
+    "expectedOutput": "3 aaa acb ac\n1 aaa\n0\n0\n"
+  },
+  {
+    "input": "3 6\nba 1\nbc 5\naac 4\ndc\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "10 2\nccc 0\nccb 1\naba 1\ncc 4\naaa 1\ncac 4\ncbc 3\nbbb 0\nab 3\naa 1\ncdd\n",
+    "expectedOutput": "2 cac cc\n0\n0\n"
+  },
+  {
+    "input": "6 3\nca 2\nab 3\nabb 3\naac 0\naba 4\ncac 0\nd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 1\ncba 4\na 3\nbca 2\nb 5\nbcc 5\nbb 2\nab 3\ncaa 3\ncbc 2\nbac 1\nbdbd\n",
+    "expectedOutput": "1 b\n0\n0\n0\n"
+  },
+  {
+    "input": "5 6\ncac 3\nbac 2\nbba 4\nccb 5\nbbb 0\ndca\n",
+    "expectedOutput": "0\n0\n0\n"
+  },
+  {
+    "input": "1 1\ncbb 5\ncba\n",
+    "expectedOutput": "1 cbb\n1 cbb\n0\n"
+  },
+  {
+    "input": "6 6\naba 4\nbca 0\nbab 1\nbb 1\nca 1\nbcc 0\nbbd\n",
+    "expectedOutput": "4 bab bb bca bcc\n1 bb\n0\n"
+  }
+]

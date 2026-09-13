@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-75",
+  "title": "划分为严格递减子序列的最少数量",
+  "explanation": "## 思路\n\n维护各条递减序列的末尾值并排序。新值x接到末尾大于x且最小的一条上；不存在时新建一条。用upper_bound二分更新。\n\n## 正确性\n\n可接入的序列中选择最小的较大末尾，会保留其他更大末尾供未来元素使用，交换论证不劣。等价地维护最长非降子序列的最小末尾：该子序列的元素必须位于不同递减组，贪心使用的组数恰好达到此下界。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_right\ndef solve(data):\n    tails=[]\n    for x in map(int,data[1:]):\n        i=bisect_right(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(len(tails))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#75-decreasing-subsequences",
+  "sourceContentHash": "d9b908d85acc3c52b37674e6bf39a2b46a52e1035876844ed3e70ef3eb03dfc0",
+  "author": "CSWork"
+}

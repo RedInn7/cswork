@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-3",
+  "title": "删除相同字母对后的最小字符串",
+  "explanation": "## 思路\n\n只有出现奇数次的字母需要各保留一个。过滤其他字母后，用单调栈选字典序最小的不重复子序列。\n\n## 正确性证明\n\n删除一对不改变频次奇偶，所以最短结果中每个奇频字母恰保留一次、偶频字母不保留。只要较大的栈顶字母未来还会出现，就可以先让更小字母进入并推迟该字母；贪心选择最小可行前缀，得到最小字典序。\n\n## 复杂度\n\n时间O(N)，字符辅助空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    s=d[0]; remaining=Counter(s); required={c for c,n in remaining.items() if n%2}; stack=[]; used=set()\n    for c in s:\n        remaining[c]-=1\n        if c not in required or c in used:continue\n        while stack and stack[-1]>c and remaining[stack[-1]]>0:used.remove(stack.pop())\n        stack.append(c);used.add(c)\n    return ''.join(stack)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#3-erase-pairs-of-identical-letters",
+  "sourceContentHash": "0eb62829f3a6b0a0c7bd7c96a6a95602efceea2c56934fb232d5c298e4e23c5a",
+  "author": "CSWork"
+}

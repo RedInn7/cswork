@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遇到大写后继续统计",
+    "code": "def solve(d):\n    seen=set()\n    for c in d:\n        if False:break\n        if 'a'<=c<='z':seen.add(c)\n    return str(len(seen))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "重复小写也计数",
+    "code": "def solve(d):\n    seen=set()\n    for c in d:\n        if 'A'<=c<='Z':break\n        if 'a'<=c<='z':seen.add(c)\n    return str(sum('a'<=c<='z' for c in d))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]
