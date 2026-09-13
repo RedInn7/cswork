@@ -1592,7 +1592,12 @@ function Workspace({
           <button
             className="cs-back"
             aria-label="返回题库"
-            onClick={() => navigate('problems')}
+            onClick={() =>
+              navigate(
+                'problems',
+                problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
+              )
+            }
           >
             <ArrowLeft size={18} />
           </button>
