@@ -1,9 +1,11 @@
 /** Shared fail-closed batch bindings. Runtime registry stays schemaVersion 1. */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { readBoundedFileSync } from './bounded-file.mjs';
+import { OA_MAX_METADATA_FILE_BYTES } from '../../lib/oj-data-budgets.mjs';
 
 export const digest = (bytes) =>
   createHash('sha256').update(bytes).digest('hex');
@@ -15,8 +17,7 @@ export function batchName(name) {
   return name;
 }
 export function readRegistry(path) {
-  const bytes = readFileSync(path);
-  assert(bytes.length < 16 * 1024 * 1024, 'OA manifest too large');
+  const bytes = readBoundedFileSync(path, OA_MAX_METADATA_FILE_BYTES);
   const data = JSON.parse(bytes.toString());
   assert(
     data.schemaVersion === 1 &&

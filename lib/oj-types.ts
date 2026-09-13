@@ -29,6 +29,18 @@ import {
   type IntegerRowChecker,
 } from './oj-result-shapes';
 import type { Language, Problem } from './problems';
+import {
+  OJ_MAX_CASE_BYTES,
+  OJ_MAX_EXPECTED_BYTES,
+  OJ_MAX_CASES,
+  OJ_MAX_PUBLIC_CASE_BYTES,
+} from './oj-data-budgets.mjs';
+export {
+  OJ_MAX_IMPORT_BYTES,
+  OJ_MAX_CASE_BYTES,
+  OJ_MAX_EXPECTED_BYTES,
+  OJ_MAX_CASES,
+} from './oj-data-budgets.mjs';
 
 /** Resource units match the judge protocol: seconds for CPU and KiB for sizes. */
 export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
@@ -42,6 +54,9 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-balanced-circle'
     | 'oa-magic-square'
     | 'oa-newspaper'
+    | 'oa-quadratic-minimum'
+    | 'oa-compatible-groups'
+    | 'oa-football-top-two'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -131,10 +146,6 @@ export type OjTeacherProblem = {
   versions: OjProblemVersion[];
 };
 
-export const OJ_MAX_IMPORT_BYTES = 128 * 1024 * 1024;
-export const OJ_MAX_CASE_BYTES = 4 * 1024 * 1024;
-export const OJ_MAX_EXPECTED_BYTES = 64 * 1024 * 1024;
-export const OJ_MAX_CASES = 64;
 /** Fixed, non-executable counted-set protocol shared by import and judging. */
 export const OJ_MAX_SET_ITEMS = 1_000_000;
 function parseCountedValues(
@@ -256,6 +267,9 @@ export const ojImportSchema = z
           'oa-balanced-circle',
           'oa-magic-square',
           'oa-newspaper',
+          'oa-quadratic-minimum',
+          'oa-compatible-groups',
+          'oa-football-top-two',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -298,7 +312,13 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-magic-square' &&
         data.problem.id !== 'oa-google-17') ||
       (data.problem.checker === 'oa-newspaper' &&
-        data.problem.id !== 'oa-uber-6')
+        data.problem.id !== 'oa-uber-6') ||
+      (data.problem.checker === 'oa-quadratic-minimum' &&
+        data.problem.id !== 'oa-uber-25') ||
+      (data.problem.checker === 'oa-compatible-groups' &&
+        data.problem.id !== 'oa-uber-34') ||
+      (data.problem.checker === 'oa-football-top-two' &&
+        data.problem.id !== 'oa-uber-38')
     )
       ctx.addIssue({
         code: 'custom',
@@ -509,8 +529,10 @@ export const ojImportSchema = z
         });
       if (
         !c.hidden &&
-        (new TextEncoder().encode(c.input).byteLength > 32768 ||
-          new TextEncoder().encode(c.expectedOutput).byteLength > 32768)
+        (new TextEncoder().encode(c.input).byteLength >
+          OJ_MAX_PUBLIC_CASE_BYTES ||
+          new TextEncoder().encode(c.expectedOutput).byteLength >
+            OJ_MAX_PUBLIC_CASE_BYTES)
       )
         ctx.addIssue({
           code: 'custom',

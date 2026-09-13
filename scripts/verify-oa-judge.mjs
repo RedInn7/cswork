@@ -1,17 +1,21 @@
 /** Verify authored programs only in go-judge; never run reference code on the host. */
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { batchName, loadScope } from './oa-judge/aggregate-batches.mjs';
 import { matchesOaOutput } from './oa-judge/output-checker.mjs';
 import { OA_SEMANTIC_IDS } from '../lib/oa-semantic-checkers.mjs';
+import {
+  OJ_MAX_IMPORT_BYTES,
+  OA_MAX_METADATA_FILE_BYTES,
+} from '../lib/oj-data-budgets.mjs';
+import { readBoundedFileSync } from './oa-judge/bounded-file.mjs';
 
 const root = resolve('content/oa-judge');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const read = (path) => {
-  const bytes = readFileSync(path);
-  assert(bytes.length < 16 * 1024 * 1024);
+const read = (path, maximumBytes = OA_MAX_METADATA_FILE_BYTES) => {
+  const bytes = readBoundedFileSync(path, maximumBytes);
   return { bytes, data: JSON.parse(bytes), sha256: hash(bytes) };
 };
 const args = process.argv.slice(2);
@@ -51,6 +55,9 @@ async function run(code, input, spec) {
       'oa-balanced-circle',
       'oa-magic-square',
       'oa-newspaper',
+      'oa-quadratic-minimum',
+      'oa-compatible-groups',
+      'oa-football-top-two',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,
@@ -90,7 +97,10 @@ async function run(code, input, spec) {
 }
 for (const item of registry.data.items) {
   assert(/^oa-[a-z0-9-]+$/.test(item.id));
-  const pkg = read(resolve(root, 'packages', item.id + '.json'));
+  const pkg = read(
+    resolve(root, 'packages', item.id + '.json'),
+    OJ_MAX_IMPORT_BYTES,
+  );
   assert.equal(hash(JSON.stringify(pkg.data)), item.packageChecksum);
   assert.equal(pkg.data.problem.id, item.id);
   if (Object.hasOwn(OA_SEMANTIC_IDS, pkg.data.problem.checker))
@@ -99,10 +109,10 @@ for (const item of registry.data.items) {
       OA_SEMANTIC_IDS[pkg.data.problem.checker],
       'Fixed OA checker identity mismatch',
     );
-  const reference = readFileSync(
+  const reference = readBoundedFileSync(
     resolve(root, 'references', item.id + '.py'),
-    'utf8',
-  );
+    OA_MAX_METADATA_FILE_BYTES,
+  ).toString('utf8');
   assert.equal(
     item.authoredSolutions.length,
     1,

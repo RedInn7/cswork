@@ -14,6 +14,7 @@ import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { Queue } from 'bullmq';
+import { probeLargeInputs } from './oj-large-input-probe.mjs';
 
 // Public firstFailure contract: each field is capped at 32 KiB, without
 // splitting a UTF-8 character (oj-case-store.ts / submissionDetail).
@@ -108,7 +109,7 @@ const env = {
   PORT: '4318',
   OJ_ENABLED: 'true',
   OJ_QUEUE_NAME: queueName,
-  OJ_WORKER_CONCURRENCY: '1',
+  OJ_WORKER_CONCURRENCY: process.env.TEST_LARGE_INPUT === '1' ? '2' : '1',
   OJ_PRECOMPILE_ENABLED: 'false',
   GO_JUDGE_URL: runner.href,
   GO_JUDGE_TOKEN: process.env.GO_JUDGE_TOKEN,
@@ -563,6 +564,8 @@ else:
       .filter((c) => c.hidden)
       .every((c) => !('stdin' in c) && !('expected' in c)),
   );
+  if (process.env.TEST_LARGE_INPUT === '1')
+    await probeLargeInputs({ db, request, identity, until, web, worker });
   console.log(
     JSON.stringify({
       event: 'oa_judge_integration_complete',

@@ -436,7 +436,7 @@ export function OjAdmin({
       )
         throw new Error(
           key === 'input'
-            ? '单个输入文件最多 4 MiB'
+            ? '单个隐藏输入文件最多 32 MiB（公开样例最多 32 KiB）'
             : '单个答案文件最多 64 MiB',
         );
       const text = new TextDecoder('utf-8', { fatal: true }).decode(
@@ -1104,7 +1104,7 @@ export function OjAdmin({
                         ))}
                         <p className="oj-admin-muted">
                           隐藏测试的输入、预期输出和程序输出不会展示给学员。公开样例每项最多
-                          32 KiB；隐藏输入最多 4 MiB，答案最多 64 MiB。
+                          32 KiB；隐藏输入最多 32 MiB，答案最多 64 MiB。
                         </p>
                       </div>
                     )}

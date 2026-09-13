@@ -254,7 +254,7 @@ void test('typed row collections preserve bigint values, cells and multiplicitie
 
 void test('large expected output allowance keeps input and public samples bounded', () => {
   assert.equal(OJ_MAX_IMPORT_BYTES, 128 * 1024 * 1024);
-  assert.equal(OJ_MAX_CASE_BYTES, 4 * 1024 * 1024);
+  assert.equal(OJ_MAX_CASE_BYTES, 32 * 1024 * 1024);
   assert.equal(OJ_MAX_EXPECTED_BYTES, 64 * 1024 * 1024);
   const data = payload('tokens', '0\n');
   data.problem.outputLimit = 65536;

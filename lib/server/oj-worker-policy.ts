@@ -1,3 +1,10 @@
+import {
+  OJ_MAX_IMPORT_BYTES,
+  OJ_MAX_CASE_BYTES,
+  OJ_MAX_EXPECTED_BYTES,
+  OJ_LARGE_SNAPSHOT_BYTES,
+} from '../oj-data-budgets.mjs';
+
 /** Deliberately bounded for the shared four-core host; invalid overrides fail closed. */
 export function workerConcurrency(
   value = process.env.OJ_WORKER_CONCURRENCY,
@@ -21,7 +28,7 @@ export function exclusiveSubmission(
     memoryLimitKb <= 0 ||
     !Number.isFinite(outputLimitKb) ||
     outputLimitKb <= 0 ||
-    snapshotBytes > 8 * 1024 * 1024 ||
+    snapshotBytes > OJ_LARGE_SNAPSHOT_BYTES ||
     memoryLimitKb > 512 * 1024 ||
     outputLimitKb > 8 * 1024
   );
@@ -81,10 +88,6 @@ export class SubmissionAdmission {
     }
   }
 }
-const SNAPSHOT_BYTES = 128 * 1024 * 1024;
-const INPUT_BYTES = 4 * 1024 * 1024;
-const OUTPUT_BYTES = 64 * 1024 * 1024;
-
 /** Defense in depth for immutable snapshots; never include private data in errors. */
 export function assertSnapshotBudget(
   cases: readonly { input: string; expectedOutput: string }[],
@@ -94,7 +97,11 @@ export function assertSnapshotBudget(
     const input = Buffer.byteLength(c.input, 'utf8');
     const output = Buffer.byteLength(c.expectedOutput, 'utf8');
     total += input + output;
-    if (input > INPUT_BYTES || output > OUTPUT_BYTES || total > SNAPSHOT_BYTES)
+    if (
+      input > OJ_MAX_CASE_BYTES ||
+      output > OJ_MAX_EXPECTED_BYTES ||
+      total > OJ_MAX_IMPORT_BYTES
+    )
       throw new Error('Judge snapshot exceeds its bounded data budget');
   }
 }
