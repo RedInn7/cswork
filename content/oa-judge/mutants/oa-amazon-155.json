@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误接受整串",
+    "code": "def solve(d):\n    s=d[0];first={};last={}\n    for i,c in enumerate(s):first.setdefault(c,i);last[c]=i\n    answer=0;n=len(s)\n    for left in first.values():\n        end=left\n        for right in range(left,n):\n            c=s[right]\n            if first[c]<left:break\n            end=max(end,last[c])\n            if right>=end:answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "缺少外部先前出现检查",
+    "code": "def solve(d):\n    s=d[0];first={};last={}\n    for i,c in enumerate(s):first.setdefault(c,i);last[c]=i\n    answer=0;n=len(s)\n    for left in first.values():\n        end=left\n        for right in range(left,n):\n            c=s[right]\n            if False:break\n            end=max(end,last[c])\n            if right>=end and right-left+1<n:answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

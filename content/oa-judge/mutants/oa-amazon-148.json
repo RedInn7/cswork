@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误使用0-based",
+    "code": "def solve(d):\n    from collections import Counter\n    s=d[0];count=Counter(s)\n    return str(next((i for i,c in enumerate(s) if count[c]==1),-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "返回最后唯一字符",
+    "code": "def solve(d):\n    from collections import Counter\n    s=d[0];count=Counter(s)\n    return str(max((i+1 for i,c in enumerate(s) if count[c]==1),default=-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-147",
+  "title": "首个非正前缀和的下标",
+  "explanation": "## 思路\n\n累加前缀和，首次遇到≤0立即返回当前0-based下标。\n\n## 正确性证明\n\n第i次累加恰为0..i前缀和，按下标递增检查，首次成功必是最早；全未成功则不存在。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    total=0\n    for i,token in enumerate(d[1:]):\n        total+=int(token)\n        if total<=0:return str(i)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#147-find-first-index-where-prefix-sum-becomes-non-positive",
+  "sourceContentHash": "db3ee2a877b61357dabfc84199e134bf037950e74a6a12b6f873304b96976dee",
+  "author": "CSWork"
+}

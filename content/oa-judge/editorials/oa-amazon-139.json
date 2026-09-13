@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-139",
+  "title": "插入最少整数消除所有零和连续段",
+  "explanation": "## 思路\n\n扫描当前未分隔段的前缀和集合。加入当前项后发生前缀重复，就在当前项前插入分隔值，重开一个只含当前项的新段。\n\n## 正确性证明\n\n前缀重复等价于存在零和段，任何合法插入方案必须在该段内部插入。按最早结束的冲突选择其最后一个内部间隙，不比选择更早间隙影响更少未来冲突，故贪心最优。每个分隔值可统一取原数组绝对值总和加1，任何跨分隔段的和严格正，保证切段方案确实能实现。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    seen={0};prefix=answer=0\n    for token in d[1:]:\n        v=int(token)\n        if v==0:return '-1'\n        if prefix+v in seen:answer+=1;seen={0};prefix=0\n        prefix+=v;seen.add(prefix)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#139-ensure-non-zero-load-sum",
+  "sourceContentHash": "1b47e7fd42432b56b5d5b3a7307c68fe3adfb6d9723266b2dcf803704b0f5d5f",
+  "author": "CSWork"
+}

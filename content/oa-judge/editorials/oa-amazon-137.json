@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-137",
+  "title": "按请求顺序飞行的环线最短总时间",
+  "explanation": "## 思路\n\n前缀和给出顺向展开距离d，每段选择min(d,总周长−d)，并更新当前站。\n\n## 正确性证明\n\n相邻请求之间必须从确定的起点走到确定终点，正边权环的最短路径是两条简单弧之一。各段的终点固定，不存在跨段取舍，分别选最短后相加即全局最优。\n\n## 复杂度\n\n时间O(m+q)，空间O(m+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for v in d[2:2+n]:prefix.append(prefix[-1]+int(v))\n    at=answer=0;total=prefix[-1]\n    for token in d[2+n:]:\n        target=int(token)-1;distance=abs(prefix[target]-prefix[at]);answer+=min(distance,total-distance);at=target\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#137-drone-delivery-route",
+  "sourceContentHash": "1cf402a20c025cb449ba5eaee165c3b2caab53ab19a952932fbd41a38d295676",
+  "author": "CSWork"
+}

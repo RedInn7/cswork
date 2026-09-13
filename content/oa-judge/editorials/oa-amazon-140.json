@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-140",
+  "title": "整串交换字母后能否变成目标",
+  "explanation": "## 思路\n\n逐位置建立原字符到目标字符及反向映射；任一方向冲突则不可能，否则可行。\n\n## 正确性证明\n\n全局字母交换组成字母表的置换，必保留任意两个位置字符是否相等。双向一致映射正是这种相等模式保持；它可扩充成整个26字母表的置换，而任意置换都可分解为两两交换，所以条件也充分。\n\n## 复杂度\n\n时间O(总字符数)，空间O(总输入大小)，每对辅助映射O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    answers=[]\n    for i in range(1,len(d),2):\n        a,b=d[i:i+2];forward={};back={};ok=True\n        for x,y in zip(a,b):\n            if x in forward and forward[x]!=y or y in back and back[y]!=x:ok=False;break\n            forward[x]=y;back[y]=x\n        answers.append('1' if ok else '0')\n    return ' '.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#140-equal-products",
+  "sourceContentHash": "9a4abe9e3e341ca1686913df26c3fe8660c3d020b5ee0008ce04eb961a298ecb",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-136",
+  "title": "新增包裹后的最优车辆负载分配",
+  "explanation": "## 思路\n\n最优上限C为原最大值与总负载向上平均的较大者。按输入顺序尽量把每辆车填到C，直到新增包裹分完。\n\n## 正确性证明\n\n任何方案最大值至少是原最大值，且至少为总和除n的上整。取这两者的最大值C后，总剩余容量nC−原总和≥P，因此逐车填充必能完成。所得最大值达到不可突破下界，是最优方案。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,p=map(int,d[:2]);a=list(map(int,d[2:]));cap=max(max(a),(sum(a)+p+n-1)//n)\n    for i in range(n):\n        put=min(p,cap-a[i]);a[i]+=put;p-=put\n    return ' '.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#136-distribute-packages",
+  "sourceContentHash": "6fe8def2e8f217574370320a5b3a10e87a9db8198d0c9ab287259b234cb079b4",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-138",
+  "title": "限流网关丢弃的请求数量",
+  "explanation": "## 思路\n\n第i个请求若与i−3同秒，或与i−20间隔小于10，或与i−60间隔小于60就超限。三个条件取或。\n\n## 正确性证明\n\n时间有序，因此最近某窗口请求数超过阈值，当且仅当往前阈值个请求仍在窗口中。直接使用原请求下标自然包含被丢弃项；按或计数避免多规则重复计。\n\n## 复杂度\n\n时间O(n)，空间O(n)保存输入；不复制整份整数数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    answer=0\n    for i in range(1,len(d)):\n        t=int(d[i]);answer+=(i>3 and t==int(d[i-3])) or (i>20 and t-int(d[i-20])<10) or (i>60 and t-int(d[i-60])<60)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#138-dropped-requests",
+  "sourceContentHash": "82722c3b7ecbaf989b5360438cd9e21f0c2b5016ce2b3a7cf0bf92e871acf277",
+  "author": "CSWork"
+}

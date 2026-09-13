@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-152",
+  "title": "每个连续窗口的第k小漏洞值",
+  "explanation": "## 思路\n\n将所有值压缩成秩，Fenwick树保存当前窗口各秩的出现次数。移动窗口时删一加一，二进制提升找累计计数首次≥k的秩。\n\n## 正确性证明\n\n树中计数恰是当前窗口的多重集合。前缀计数单调，第k小值的秩正是首次前缀计数达到k的秩；二进制提升保留累计<k的最大前缀，后一秩就是答案。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]));values=sorted(set(a));rank={v:i+1 for i,v in enumerate(values)};size=len(values);tree=[0]*(size+1)\n    def update(index,delta):\n        while index<=size:tree[index]+=delta;index+=index&-index\n    def kth():\n        index=0;target=k;step=1<<(size.bit_length()-1)\n        while step:\n            following=index+step\n            if following<=size and tree[following]<target:index=following;target-=tree[following]\n            step>>=1\n        return values[index]\n    for i in range(m):update(rank[a[i]],1)\n    answer=[kth()]\n    for i in range(m,n):update(rank[a[i-m]],-1);update(rank[a[i]],1);answer.append(kth())\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#152-find-kth-minimum-vulnerability",
+  "sourceContentHash": "82d7ab3ba7c2714f578ddcf112e5b57a9cb7538d97b87c23ae2f7db217f9323e",
+  "author": "CSWork"
+}

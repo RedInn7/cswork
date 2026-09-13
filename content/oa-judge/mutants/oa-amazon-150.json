@@ -1,0 +1,10 @@
+[
+  {
+    "name": "窗口左端错排除",
+    "code": "def solve(d):\n    n,m,q,w=map(int,d[:4]);logs=sorted((int(d[i+1]),int(d[i])-1) for i in range(4,4+2*m,2));queries=list(map(int,d[4+2*m:]));frequency=[0]*n;active=left=right=0;answer=[0]*q\n    for index in sorted(range(q),key=lambda i:queries[i]):\n        time=queries[index]\n        while right<m and logs[right][0]<=time:\n            skill=logs[right][1];active+=frequency[skill]==0;frequency[skill]+=1;right+=1\n        while left<right and logs[left][0]<=time-w:\n            skill=logs[left][1];frequency[skill]-=1;active-=frequency[skill]==0;left+=1\n        answer[index]=n-active\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "按日志数量计活跃",
+    "code": "def solve(d):\n    n,m,q,w=map(int,d[:4]);logs=sorted((int(d[i+1]),int(d[i])-1) for i in range(4,4+2*m,2));queries=list(map(int,d[4+2*m:]));frequency=[0]*n;active=left=right=0;answer=[0]*q\n    for index in sorted(range(q),key=lambda i:queries[i]):\n        time=queries[index]\n        while right<m and logs[right][0]<=time:\n            skill=logs[right][1];active+=1;frequency[skill]+=1;right+=1\n        while left<right and logs[left][0]<time-w:\n            skill=logs[left][1];frequency[skill]-=1;active-=frequency[skill]==0;left+=1\n        answer[index]=n-active\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

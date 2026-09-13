@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-150",
+  "title": "查询时间窗口内未被使用的技能数",
+  "explanation": "## 思路\n\n日志按时间排序，查询也按时间排序。双指针维护窗口中的日志，每技能记录频次并维护活跃技能数；答案=总技能数−活跃数。\n\n## 正确性证明\n\n按升序查询移动窗口时，所有时间≤q的新日志加入，所有时间<q−window的旧日志删除，恰好保留闭区间内日志。频次从0到1与1到0更新不同技能数，避免重复日志重复计活跃。\n\n## 复杂度\n\n时间O(m log m+q log q)，空间O(numSkills+m+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,q,w=map(int,d[:4]);logs=sorted((int(d[i+1]),int(d[i])-1) for i in range(4,4+2*m,2));queries=list(map(int,d[4+2*m:]));frequency=[0]*n;active=left=right=0;answer=[0]*q\n    for index in sorted(range(q),key=lambda i:queries[i]):\n        time=queries[index]\n        while right<m and logs[right][0]<=time:\n            skill=logs[right][1];active+=frequency[skill]==0;frequency[skill]+=1;right+=1\n        while left<right and logs[left][0]<time-w:\n            skill=logs[left][1];frequency[skill]-=1;active-=frequency[skill]==0;left+=1\n        answer[index]=n-active\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#150-find-idle-skills-query",
+  "sourceContentHash": "fa155776c956f69da2fbabee21566b9e4aa882445195f0117975a5148198b651",
+  "author": "CSWork"
+}

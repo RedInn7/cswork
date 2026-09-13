@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查正向映射",
+    "code": "def solve(d):\n    answers=[]\n    for i in range(1,len(d),2):\n        a,b=d[i:i+2];forward={};back={};ok=True\n        for x,y in zip(a,b):\n            if x in forward and forward[x]!=y:ok=False;break\n            forward[x]=y;back[y]=x\n        answers.append('1' if ok else '0')\n    return ' '.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不允许更换字母名称",
+    "code": "def solve(d):\n    answers=[]\n    for i in range(1,len(d),2):\n        a,b=d[i:i+2];forward={};back={};ok=True\n        for x,y in zip(a,b):\n            if x in forward and forward[x]!=y or y in back and back[y]!=x:ok=False;break\n            forward[x]=y;back[y]=x\n        answers.append('1' if a==b else '0')\n    return ' '.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

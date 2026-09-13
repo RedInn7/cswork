@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许答案0",
+    "code": "def solve(d):\n    from math import gcd\n    n,budget=map(int,d[:2]);a=list(map(int,d[2:]));table=[a];width=1\n    while 2*width<=n:\n        previous=table[-1];table.append([gcd(previous[i],previous[i+width]) for i in range(n-2*width+1)]);width*=2\n    def feasible(limit):\n        length=limit+1\n        if length>n:return True\n        level=length.bit_length()-1;offset=length-(1<<level);row=table[level];i=used=0\n        while i+length<=n:\n            if gcd(row[i],row[i+offset])>1:\n                used+=1\n                if used>budget:return False\n                i+=length\n            else:i+=1\n        return True\n    lo,hi=1,n\n    while lo<hi:\n        middle=(lo+hi)//2\n        if feasible(middle):hi=middle\n        else:lo=middle+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "预算多算一次",
+    "code": "def solve(d):\n    from math import gcd\n    n,budget=map(int,d[:2]);a=list(map(int,d[2:]));table=[a];width=1\n    while 2*width<=n:\n        previous=table[-1];table.append([gcd(previous[i],previous[i+width]) for i in range(n-2*width+1)]);width*=2\n    def feasible(limit):\n        length=limit+1\n        if length>n:return True\n        level=length.bit_length()-1;offset=length-(1<<level);row=table[level];i=used=0\n        while i+length<=n:\n            if gcd(row[i],row[i+offset])>1:\n                used+=1\n                if used>=budget:return False\n                i+=length\n            else:i+=1\n        return True\n    lo,hi=0,n\n    while lo<hi:\n        middle=(lo+hi)//2\n        if feasible(middle):hi=middle\n        else:lo=middle+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
