@@ -8,6 +8,7 @@ import {
 import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
 import { requestPrecompile } from './oj-precompile';
+import { handleOaLibrary } from './oa-library';
 import {
   getStudyLibrary,
   getStudySourceStatement,
@@ -36,6 +37,7 @@ import {
 export async function handleOj(request: Request, p: Person, path: string[]) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
+  if (resource === 'oa-library') return handleOaLibrary(request, p, path.slice(1));
   if (request.method === 'GET') {
     if (resource === 'library') {
       await limit(p, 'library-read', 120);

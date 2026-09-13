@@ -1,0 +1,218 @@
+.algorithm-library-switch {
+  display: flex;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0 14px;
+  flex-wrap: wrap;
+}
+.algorithm-library-switch button,
+.oa-library button:not(.oa-row) {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 14px;
+  background: var(--card);
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 13px;
+}
+.algorithm-library-switch button[aria-pressed='true'] {
+  background: var(--foreground);
+  color: var(--background);
+}
+.algorithm-library-switch span {
+  font-size: 11px;
+  margin-left: 7px;
+  opacity: 0.7;
+}
+.oa-library {
+  color: var(--foreground);
+}
+.oa-library button:focus-visible,
+.algorithm-library-switch button:focus-visible,
+.oa-library input:focus-visible,
+.oa-library a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+.oa-library button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.oa-library .study-filters,
+.oa-library .study-list,
+.oa-library select {
+  background: var(--card);
+  color: var(--foreground);
+  border-color: var(--border);
+}
+.oa-library .study-library-heading p,
+.oa-library .study-kicker,
+.oa-library .study-result-summary,
+.oa-library label {
+  color: var(--muted-foreground);
+}
+.oa-search {
+  flex: 1;
+  min-width: 0;
+}
+.oa-search input {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid var(--border);
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+}
+.oa-row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr) 70px;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  text-align: left;
+  padding: 18px 12px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.oa-row:hover {
+  background: var(--muted);
+}
+.oa-company,
+.oa-title small {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.oa-title strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+.oa-title small {
+  display: block;
+  margin-top: 5px;
+}
+.oa-badge {
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 4px 6px;
+  text-align: center;
+}
+.oa-source {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  display: flex;
+  gap: 16px;
+  padding: 0 0 20px;
+}
+.oa-library a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.oa-back {
+  margin-top: 20px;
+}
+.oa-markdown {
+  line-height: 1.85;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.oa-markdown p,
+.oa-markdown ul,
+.oa-markdown ol,
+.oa-markdown pre,
+.oa-markdown blockquote {
+  margin: 16px 0;
+}
+.oa-markdown ul,
+.oa-markdown ol {
+  padding-left: 24px;
+}
+.oa-markdown ul {
+  list-style: disc;
+}
+.oa-markdown ol {
+  list-style: decimal;
+}
+.oa-markdown h1,
+.oa-markdown h2,
+.oa-markdown h3 {
+  font-weight: 650;
+  margin: 24px 0 12px;
+}
+.oa-markdown h1 {
+  font-size: 24px;
+}
+.oa-markdown h2 {
+  font-size: 20px;
+}
+.oa-markdown h3 {
+  font-size: 17px;
+}
+.oa-markdown pre,
+.oa-code {
+  padding: 16px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+  max-width: 100%;
+  font-size: 12px;
+  line-height: 1.75;
+  white-space: pre;
+}
+.oa-markdown table {
+  display: block;
+  overflow: auto;
+  border-collapse: collapse;
+}
+.oa-markdown th,
+.oa-markdown td {
+  border: 1px solid var(--border);
+  padding: 8px;
+}
+.oa-solution {
+  border-top: 1px solid var(--border);
+  padding: 24px 0;
+  margin-top: 30px;
+}
+.oa-code-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 0;
+  font-size: 12px;
+}
+.oa-code-toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 600px) {
+  .oa-row {
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+  }
+  .oa-company {
+    grid-column: 1/-1;
+  }
+  .oa-library .study-filters {
+    align-items: stretch;
+  }
+  .oa-search {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+  }
+  .oa-library .study-pagination {
+    gap: 8px;
+  }
+  .oa-library .study-pagination button {
+    padding: 8px;
+  }
+  .oa-library .study-pagination span {
+    font-size: 12px;
+  }
+}
