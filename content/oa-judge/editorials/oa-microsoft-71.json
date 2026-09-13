@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-71",
+  "title": "字符模式与非空子串的双射匹配",
+  "explanation": "## 思路\n\n回溯处理模式与文本的位置。已有映射时只验证该固定串；未映射时枚举当前位置所有非空前缀，跳过已被其他字符占用的串，再递归。\n\n## 正确性\n\n合法映射对当前字符要么已经确定，要么必须是未消费文本的一段非空前缀。枚举所有这种前缀不漏解，反向集合拒绝多对一；当两串同时结束时匹配完整，其他终止情况均非法。\n\n## 复杂度\n\n时间O(|s|²·2^|s|)保守上界，空间O(|s|+|pattern|)，完整长度上限20。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    pattern,s=d;mapping={};used=set()\n    def visit(i,j):\n        if i==len(pattern):return j==len(s)\n        if len(s)-j<len(pattern)-i:return False\n        c=pattern[i]\n        if c in mapping:\n            word=mapping[c];return s.startswith(word,j) and visit(i+1,j+len(word))\n        for end in range(j+1,len(s)-(len(pattern)-i-1)+1):\n            word=s[j:end]\n            if word in used:continue\n            mapping[c]=word;used.add(word)\n            if visit(i+1,end):return True\n            used.remove(word);del mapping[c]\n        return False\n    return str(int(visit(0,0)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#71-word-pattern-ii-round-1-lc-291-",
+  "sourceContentHash": "45dbac6ef7cac55484adf055d0baa0d5e860c2600c61cc0b7f0f0f0b8e7fd0bb",
+  "author": "CSWork"
+}

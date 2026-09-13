@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-microsoft-61",
+      "sourceContentHash": "7092bb197cd00eae111c2a2ab26689b171a3c92b0100b14ffff771ba0fff4981",
+      "packageChecksum": "57cbaf2495b5e658bdd9de5595410852cd1c889d58947e98430537fcfeb0794c",
+      "editorial": "## 思路\n\n预处理每个前缀、后缀的压缩长度以及边界连续段长度。枚举删除窗口，两侧不同字符时直接相加，相同时去掉两段旧成本，再加合并段成本。\n\n## 正确性\n\n删除只能改变左右边界相接的两个连续段，其他压缩段完全不变。记录边界段长度即可精确计算合并差额。枚举全部N−K+1个合法起点，取最小即覆盖全部操作。\n\n## 复杂度\n\n时间O(N log N)字符级上界（计算至多7位十进制长度）；固定约束下O(N)。空间O(N)，四个紧凑整数数组。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\ndef solve(d):\n    k=int(d[0]);s=d[1];n=len(s)\n    def cost(v):return v if v<2 else len(str(v))+1\n    prefix=array('I',[0])*(n+1);suffix=array('I',[0])*(n+1);left=array('I',[0])*(n+1);right=array('I',[0])*(n+1)\n    for i in range(n):\n        run=left[i] if i and s[i]==s[i-1] else 0;left[i+1]=run+1;prefix[i+1]=prefix[i]+cost(run+1)-cost(run)\n    for i in range(n-1,-1,-1):\n        run=right[i+1] if i+1<n and s[i]==s[i+1] else 0;right[i]=run+1;suffix[i]=suffix[i+1]+cost(run+1)-cost(run)\n    answer=n\n    for l in range(n-k+1):\n        r=l+k;value=prefix[l]+suffix[r]\n        if l and r<n and s[l-1]==s[r]:value+=cost(left[l]+right[r])-cost(left[l])-cost(right[r])\n        answer=min(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-62",
+      "sourceContentHash": "cbb671298d24029a394196ffea8ba8f32bda670643c54a0ac7f6777fa0006334",
+      "packageChecksum": "7bb3459dcfc7713d85ae759a0ce5121eee8fdc3a3d8a53877e514ace485d4b03",
+      "editorial": "## 思路\n\n先取总面积平方根L。偶数边长只受总面积约束；奇数L至少需要2L−1块单位砖，如果不足就降为L−1。\n\n## 正确性\n\n边长L最多容纳floor(L/2)²块大砖，其余格子用单位砖即可。偶数L若大砖不足，总面积约束保证单位砖补足；奇数L除了总面积外，还必须填满2L−1个不能由最大大砖阵列覆盖的边缘格。L不合法时L−1是偶数且面积更小，因此必合法且最优。\n\n## 复杂度\n\n时间O(log(m+4n))整数平方根，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from math import isqrt\ndef solve(d):\n    small,big=map(int,d);side=isqrt(small+4*big)\n    if side%2 and small<2*side-1:side-=1\n    return str(side)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-63",
+      "sourceContentHash": "0827e1088d482eb09d6df2eec904a143ea0dd28da7a2b2e39e8d935d9754160b",
+      "packageChecksum": "e45242b44a8e8025c698510265b3eb437745c99358ae1478f173817de327573a",
+      "editorial": "## 思路\n\n按上限从大到小分配，每栋取不超过上限且严格小于已分配高度的最大整数，再放回原下标。\n\n## 正确性\n\n若两个上限按降序排列但分配高度逆序，交换这两个高度仍满足上限。因此存在按上限排序后高度严格递减的最优方案。按序将每项尽量提高到min(上限,前项−1)不会挤占任何已选高度，并逐项支配所有可行递减方案，总和最优。\n\n## 复杂度\n\n时间O(N log N)，空间O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));order=sorted(range(len(a)),key=lambda i:-a[i]);result=[0]*len(a);previous=10**9+1\n    for i in order:previous=min(a[i],previous-1);result[i]=previous\n    return ' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-64",
+      "sourceContentHash": "b0a47e7b149d8b752f3ed374793af51b2af4e5a2f3056be16d8196fdabed032b",
+      "packageChecksum": "0125ebf85b18d954ec6b0045f0fc5f4941e5cf8092a5205de1986183325768c3",
+      "editorial": "## 思路\n\n计算KMP前缀函数，最后一项就是完整串的最长真边界长度。\n\n## 正确性\n\n前缀函数在每个位置记录以该位置结束的前缀的最长真边界。失配时只能退到已匹配前缀的更短边界，递归候选链穷尽所有可能，最终末项即所求。\n\n## 复杂度\n\n时间O(N)，空间O(N)，使用紧凑整数数组。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\ndef solve(d):\n    s=d[0];prefix=array('I',[0])*len(s);j=0\n    for i in range(1,len(s)):\n        while j and s[i]!=s[j]:j=prefix[j-1]\n        if s[i]==s[j]:j+=1\n        prefix[i]=j\n    return str(prefix[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-65",
+      "sourceContentHash": "2b589b34f2f3279077895f811db8712e0ba054aa9e8608ebb5289d1645aa45df",
+      "packageChecksum": "fce5bb3f1bbdb9750a4b91ce77f5c83fce95d705a699bb8696000cb19632ffe1",
+      "editorial": "## 思路\n\n前缀DP维护使用至多0、1、2、3块时最大和。最后元素可以不盖；或者用一块覆盖最后两格，并接在两格前、少一块的最优方案后。\n\n## 正确性\n\n合法方案若覆盖最后格，其最后瓷砖必须覆盖末两格，前面不能重叠；否则属于更短前缀。两个分支穷尽所有方案，零初始化允许不使用负收益瓷砖。\n\n## 复杂度\n\n时间O(3N)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));before2=[0]*4;before=[0]*4\n    for i,value in enumerate(a):\n        current=before.copy()\n        if i:\n            for k in range(1,4):current[k]=max(before[k],before2[k-1]+a[i-1]+value)\n        before2,before=before,current\n    return str(before[3])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-67",
+      "sourceContentHash": "90f662d31bc9fe5f642c3a7c563c895c31433c9d670997c22f8e6832737b80df",
+      "packageChecksum": "8e6570c91f103d824cefdceedf4c25af255c5e8bd7b7027abfcf66e4d640f47e",
+      "editorial": "## 思路\n\n最高值只能在峰顶使用一次，其他每种值最多在左右各出现一次。因此答案是1加上非最大值的min(频次,2)之和。\n\n## 正确性\n\n同一值在严格单调的一侧至多出现一次，最大值只能当唯一峰顶，给出该上界。选择最大值为峰，把每种较小值的一份升序放左侧，若有第二份就降序放右侧，恰好达到上界。\n\n## 复杂度\n\n时间O(N)期望，空间O(不同值个数)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\ndef solve(d):\n    counts=Counter(map(int,d[1:]));highest=max(counts)\n    return str(1+sum(min(v,2) for key,v in counts.items() if key!=highest))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-70",
+      "sourceContentHash": "2986617469c40f0420a70a92e4d5ca8fc9349024dad52645a47b5fe2cd03d178",
+      "packageChecksum": "a41aa81d2954921ae4ff43f97b121fcff9a8b2d24d4cb3d67f8583fe12811692",
+      "editorial": "## 思路\n\n记录每种字母最后一次小写位置和第一次大写位置；两者都存在且前者更小则合格。\n\n## 正确性\n\n全部小写先于全部大写等价于最晚小写先于最早大写。每种字母单独检查这一充要条件，累加即为不同合格字母种数。\n\n## 复杂度\n\n时间O(N+26)，空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];last=[-1]*26;first=[len(s)]*26\n    for i,c in enumerate(s):\n        if c.islower():last[ord(c)-97]=i\n        else:first[ord(c)-65]=min(first[ord(c)-65],i)\n    return str(sum(last[i]>=0 and first[i]<len(s) and last[i]<first[i] for i in range(26)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-71",
+      "sourceContentHash": "45dbac6ef7cac55484adf055d0baa0d5e860c2600c61cc0b7f0f0f0b8e7fd0bb",
+      "packageChecksum": "0b16b0d6e1811f71dc879f9c80a89f4e29f25a0b8eb291c69b5740231c5c6b12",
+      "editorial": "## 思路\n\n回溯处理模式与文本的位置。已有映射时只验证该固定串；未映射时枚举当前位置所有非空前缀，跳过已被其他字符占用的串，再递归。\n\n## 正确性\n\n合法映射对当前字符要么已经确定，要么必须是未消费文本的一段非空前缀。枚举所有这种前缀不漏解，反向集合拒绝多对一；当两串同时结束时匹配完整，其他终止情况均非法。\n\n## 复杂度\n\n时间O(|s|²·2^|s|)保守上界，空间O(|s|+|pattern|)，完整长度上限20。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    pattern,s=d;mapping={};used=set()\n    def visit(i,j):\n        if i==len(pattern):return j==len(s)\n        if len(s)-j<len(pattern)-i:return False\n        c=pattern[i]\n        if c in mapping:\n            word=mapping[c];return s.startswith(word,j) and visit(i+1,j+len(word))\n        for end in range(j+1,len(s)-(len(pattern)-i-1)+1):\n            word=s[j:end]\n            if word in used:continue\n            mapping[c]=word;used.add(word)\n            if visit(i+1,end):return True\n            used.remove(word);del mapping[c]\n        return False\n    return str(int(visit(0,0)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

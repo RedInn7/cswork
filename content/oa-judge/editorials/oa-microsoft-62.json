@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-62",
+  "title": "大小方砖拼出的最大正方形边长",
+  "explanation": "## 思路\n\n先取总面积平方根L。偶数边长只受总面积约束；奇数L至少需要2L−1块单位砖，如果不足就降为L−1。\n\n## 正确性\n\n边长L最多容纳floor(L/2)²块大砖，其余格子用单位砖即可。偶数L若大砖不足，总面积约束保证单位砖补足；奇数L除了总面积外，还必须填满2L−1个不能由最大大砖阵列覆盖的边缘格。L不合法时L−1是偶数且面积更小，因此必合法且最优。\n\n## 复杂度\n\n时间O(log(m+4n))整数平方根，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from math import isqrt\ndef solve(d):\n    small,big=map(int,d);side=isqrt(small+4*big)\n    if side%2 and small<2*side-1:side-=1\n    return str(side)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#62-side-largest-square",
+  "sourceContentHash": "cbb671298d24029a394196ffea8ba8f32bda670643c54a0ac7f6777fa0006334",
+  "author": "CSWork"
+}

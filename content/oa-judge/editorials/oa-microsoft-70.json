@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-70",
+  "title": "小写全部先于大写的字母种数",
+  "explanation": "## 思路\n\n记录每种字母最后一次小写位置和第一次大写位置；两者都存在且前者更小则合格。\n\n## 正确性\n\n全部小写先于全部大写等价于最晚小写先于最早大写。每种字母单独检查这一充要条件，累加即为不同合格字母种数。\n\n## 复杂度\n\n时间O(N+26)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];last=[-1]*26;first=[len(s)]*26\n    for i,c in enumerate(s):\n        if c.islower():last[ord(c)-97]=i\n        else:first[ord(c)-65]=min(first[ord(c)-65],i)\n    return str(sum(last[i]>=0 and first[i]<len(s) and last[i]<first[i] for i in range(26)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#70-valid-mixed-case-letters",
+  "sourceContentHash": "2986617469c40f0420a70a92e4d5ca8fc9349024dad52645a47b5fe2cd03d178",
+  "author": "CSWork"
+}

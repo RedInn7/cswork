@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-microsoft-62",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "大小方砖拼出的最大正方形边长",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Microsoft"
+    ],
+    "description": "有m块1×1和n块2×2方砖，可选部分方砖在网格上无重叠、无空隙地拼正方形，求最大整数边长。\n\n本站标准输入输出协议；来源未给出的范围已明确标注。",
+    "input": "一行m n，0≤m,n≤10⁹。原范围下界写1，但源例明确包含0，本站同时保留零砖情况。",
+    "output": "输出一个整数答案。",
+    "explanation": "样例1：8块单位砖只能拼边长2，9格不足。样例2：三块大砖加四块小砖填满4×4。样例3：只用大砖，最大偶数边长8，用16块，余2块。",
+    "hints": [
+      "先取总面积平方根L。偶数边长只受总面积约束；奇数L至少需要2L−1块单位砖，如果不足就降为L−1。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "8 0\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4 3\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "0 18\n",
+      "expectedOutput": "8\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "1000000000 1000000000\n",
+      "expectedOutput": "70710\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "0 1000000000\n",
+      "expectedOutput": "63244\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "0 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "4 0\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "9 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "0 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "7 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "10 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "0 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "8 0\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "4 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "10 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "3 0\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "5 0\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "9 0\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "4 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "0 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "0 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "7 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "0 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "1 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "0 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "2 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "10 0\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "10 0\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "5 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

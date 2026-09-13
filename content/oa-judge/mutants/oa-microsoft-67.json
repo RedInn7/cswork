@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复使用峰值",
+    "code": "from collections import Counter\ndef solve(d):\n    counts=Counter(map(int,d[1:]));highest=max(counts)\n    return str(1+sum(min(v,2) for key,v in counts.items() if True))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每种值仅用一次",
+    "code": "from collections import Counter\ndef solve(d):\n    counts=Counter(map(int,d[1:]));highest=max(counts)\n    return str(1+sum(min(v,1) for key,v in counts.items() if key!=highest))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

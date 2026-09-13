@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只考虑面积",
+    "code": "from math import isqrt\ndef solve(d):\n    small,big=map(int,d);side=isqrt(small+4*big)\n    if False:side-=1\n    return str(side)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "大砖误算面积二",
+    "code": "from math import isqrt\ndef solve(d):\n    small,big=map(int,d);side=isqrt(small+2*big)\n    if side%2 and small<2*side-1:side-=1\n    return str(side)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
