@@ -9,6 +9,7 @@ import { ensurePracticeRound, isSelectedProblem } from './practice-rounds';
 import { getJudgeProblem } from './oj-problems';
 import { leetcodeContract, LEETCODE_HARNESS_VERSION } from './leetcode-mode';
 import type { CodingMode } from '@/lib/coding-mode';
+import { boundedFeedback } from './oj-case-store';
 
 export const MAX_CODE_BYTES = 65536;
 export const MAX_STDIN_BYTES = 65536;
@@ -366,6 +367,50 @@ export async function submissionDetail(p: Person, id: string) {
         : {}),
     };
   });
+  const failed =
+    s.mode === 'judge' &&
+    !ACTIVE.includes(s.status) &&
+    [
+      'wrong_answer',
+      'time_limit',
+      'memory_limit',
+      'output_limit',
+      'runtime_error',
+    ].includes(s.status)
+      ? results.find((r) => r.status !== 'accepted' && r.status !== 'finished')
+      : undefined;
+  let firstFailure;
+  // Old hidden results have no captured output. Do not invent a counterexample
+  // for those rows, or reveal any additional cases in the version snapshot.
+  if (failed && failed.status === s.status && failed.stdout !== null) {
+    const definition = sqlite()
+      .prepare(
+        'SELECT input,expected_output FROM oj_test_cases WHERE version_id=? AND ordinal=?',
+      )
+      .get(s.problem_version_id, failed.ordinal) as
+      | { input: string; expected_output: string | null }
+      | undefined;
+    if (definition) {
+      const stdin = boundedFeedback(definition.input),
+        expected = boundedFeedback(definition.expected_output ?? ''),
+        stdout = boundedFeedback(failed.stdout),
+        stderr = boundedFeedback(failed.stderr ?? '');
+      firstFailure = {
+        ordinal: failed.ordinal,
+        status: failed.status,
+        stdin: stdin.text,
+        expected: expected.text,
+        stdout: stdout.text,
+        stderr: stderr.text,
+        truncated: {
+          stdin: stdin.truncated,
+          expected: expected.truncated,
+          stdout: stdout.truncated,
+          stderr: stderr.truncated,
+        },
+      };
+    }
+  }
   const position =
     s.status === 'queued'
       ? (
@@ -381,6 +426,7 @@ export async function submissionDetail(p: Person, id: string) {
     watchToken: watchToken(s),
     code: s.code,
     cases,
+    firstFailure,
     compileOutput: s.compile_output ?? '',
     queuedPosition: position,
     cancelRequested: Boolean(s.cancel_requested),

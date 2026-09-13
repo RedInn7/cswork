@@ -5,6 +5,29 @@ import {
   caseConcurrency,
 } from '../lib/server/oj-case-stream';
 const turn = () => new Promise((resolve) => setImmediate(resolve));
+test('early failure aborts active neighbour without launching later cases', async () => {
+  const controller = new AbortController();
+  const started: number[] = [];
+  for await (const _ of orderedCaseResults(
+    [0, 1, 2],
+    async (n) => {
+      started.push(n);
+      if (n === 1)
+        await new Promise<void>((resolve) => {
+          controller.signal.addEventListener('abort', () => resolve(), {
+            once: true,
+          });
+          setTimeout(resolve, 100);
+        });
+      return n;
+    },
+    2,
+    () => controller.abort(),
+  ))
+    break;
+  assert.equal(controller.signal.aborted, true);
+  assert.deepEqual(started, [0, 1]);
+});
 test('two cases run concurrently, results remain in order, all cases execute', async () => {
   const release = new Map<number, (value: number) => void>();
   const started: number[] = [],

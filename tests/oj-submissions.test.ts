@@ -141,6 +141,70 @@ test('hidden test data and internal identifiers never reach submission responses
   await assert.rejects(submissionDetail(other, saved.id), status(404));
   await cancelSubmission(teacher, saved.id);
 });
+test('only terminal first failure exposes bounded counterexample to owner and teacher', async () => {
+  const saved = await createSubmission(student, request());
+  const raw = sqlite()
+    .prepare('SELECT problem_version_id FROM submissions WHERE id=?')
+    .get(saved.id) as { problem_version_id: string };
+  const secret = sqlite()
+    .prepare(
+      'SELECT ordinal,input FROM oj_test_cases WHERE version_id=? AND hidden=1 ORDER BY ordinal LIMIT 1',
+    )
+    .get(raw.problem_version_id) as { ordinal: number; input: string };
+  sqlite()
+    .prepare(
+      'INSERT INTO oj_results(submission_id,ordinal,status,runtime_ms,memory_kb,stdout,stderr,hidden) VALUES(?,?,?,?,?,?,?,?)',
+    )
+    .run(
+      saved.id,
+      secret.ordinal,
+      'wrong_answer',
+      1,
+      1,
+      '中'.repeat(20000),
+      '',
+      1,
+    );
+  assert.equal(
+    (await submissionDetail(student, saved.id)).firstFailure,
+    undefined,
+  );
+  sqlite()
+    .prepare("UPDATE submissions SET status='wrong_answer' WHERE id=?")
+    .run(saved.id);
+  const detail = await submissionDetail(student, saved.id);
+  assert.equal(detail.firstFailure?.ordinal, secret.ordinal);
+  assert.equal(detail.firstFailure?.stdin, secret.input);
+  assert.equal(detail.firstFailure?.truncated.stdout, true);
+  assert.ok(Buffer.byteLength(detail.firstFailure!.stdout) <= 32768);
+  assert.equal(detail.firstFailure!.stdout.includes('\uFFFD'), false);
+  for (const c of detail.cases.filter((c) => c.hidden))
+    assert.equal('stdin' in c, false);
+  assert.deepEqual(
+    (await submissionDetail(teacher, saved.id)).firstFailure,
+    detail.firstFailure,
+  );
+  await assert.rejects(submissionDetail(other, saved.id), status(404));
+  sqlite()
+    .prepare('UPDATE oj_results SET stdout=NULL WHERE submission_id=?')
+    .run(saved.id);
+  assert.equal(
+    (await submissionDetail(student, saved.id)).firstFailure,
+    undefined,
+  );
+  sqlite()
+    .prepare("UPDATE submissions SET mode='run' WHERE id=?")
+    .run(saved.id);
+  assert.equal(
+    (await submissionDetail(student, saved.id)).firstFailure,
+    undefined,
+  );
+  sqlite()
+    .prepare('DELETE FROM oj_results WHERE submission_id=?')
+    .run(saved.id);
+  sqlite().prepare('DELETE FROM oj_outbox WHERE submission_id=?').run(saved.id);
+  sqlite().prepare('DELETE FROM submissions WHERE id=?').run(saved.id);
+});
 test('custom runs preserve empty stdin and do not use hidden cases', async () => {
   const saved = await createSubmission(
     teacher,

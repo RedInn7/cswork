@@ -7,6 +7,45 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { persistCase, type CaseRecord } from '../lib/server/oj-case-store';
+import { boundedFeedback } from '../lib/server/oj-case-store';
+
+test('first failure and bounded diagnostic become durable atomically', () => {
+  const f = fixture();
+  try {
+    f.db.exec(
+      'ALTER TABLE submissions ADD COLUMN status TEXT; ALTER TABLE submissions ADD COLUMN finished_at INTEGER',
+    );
+    persistCase(
+      f.db,
+      f.guard,
+      {
+        ...f.record,
+        status: 'wrong_answer',
+        terminalFailure: true,
+        stdout: '中'.repeat(40000),
+      },
+      f.progress,
+    );
+    const row = f.db
+      .prepare('SELECT stdout FROM oj_results WHERE ordinal=23')
+      .get() as { stdout: string };
+    assert.ok(Buffer.byteLength(row.stdout) <= 32769);
+    const feedback = boundedFeedback(row.stdout);
+    assert.equal(feedback.truncated, true);
+    assert.ok(Buffer.byteLength(feedback.text) <= 32768);
+    assert.equal(feedback.text.includes('\uFFFD'), false);
+    assert.equal(
+      (
+        f.db.prepare('SELECT status FROM submissions').get() as {
+          status: string;
+        }
+      ).status,
+      'wrong_answer',
+    );
+  } finally {
+    f.close();
+  }
+});
 
 function fixture() {
   const dir = mkdtempSync(join(tmpdir(), 'oj-case-store-'));

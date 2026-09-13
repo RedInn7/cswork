@@ -3,6 +3,7 @@ export async function* orderedCaseResults<T, R>(
   cases: readonly T[],
   execute: (item: T) => Promise<R>,
   concurrency: 1 | 2,
+  cancelPending?: () => void,
 ): AsyncGenerator<{ item: T; result: R }> {
   type Outcome = { ok: true; result: R } | { ok: false; error: unknown };
   const pending = new Map<number, Promise<Outcome>>();
@@ -30,6 +31,7 @@ export async function* orderedCaseResults<T, R>(
       if (next < cases.length) start(next++);
     }
   } finally {
+    if (pending.size) cancelPending?.();
     // A TLE/abort/exception must finish its already-started neighbour before
     // compiled files are released or another submission is allowed to start.
     await Promise.all(pending.values());
