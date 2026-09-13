@@ -1,7 +1,8 @@
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
-import { HttpError, rows } from './http';
+import { HttpError, one, rows } from './http';
+import { formatOaVerifiedStatement } from '../oa-verified-statement';
 
 const digest = z.string().regex(/^[a-f0-9]{64}$/);
 const registrySchema = z.object({
@@ -115,6 +116,22 @@ export async function requireOaJudgeReady(id: string) {
   );
   if (!versions[0] || !oaJudgeRegistry().isReady(versions[0]))
     throw new HttpError(409, '这道 OA 题的测试数据尚未校验完成，暂不能评测');
+}
+
+/** Reading and submitting must use the same corrected rules and visible samples. */
+export async function oaVerifiedStatement(id: string) {
+  const version = await one<OaPublishedVersion & { version_id: string }>(
+    'SELECT p.id,v.id AS version_id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id=?',
+    id,
+  );
+  if (!version || !oaJudgeRegistry().isReady(version))
+    throw new HttpError(409, '这道 OA 题的版本正在校验，请刷新后重试');
+  const spec = JSON.parse(version.spec_json);
+  const samples = await rows<{ input: string; expectedOutput: string }>(
+    'SELECT input,expected_output AS expectedOutput FROM oj_test_cases WHERE version_id=? AND hidden=0 ORDER BY ordinal',
+    version.version_id,
+  );
+  return formatOaVerifiedStatement(spec, samples);
 }
 
 export function assertOaVersionReady(
