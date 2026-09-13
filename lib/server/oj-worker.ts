@@ -22,6 +22,8 @@ import { seed } from './seed';
 import {
   assertSnapshotBudget,
   OJ_WORKER_CONCURRENCY,
+  exclusiveSubmission,
+  SubmissionAdmission,
 } from './oj-worker-policy';
 import { ACTIVE, submissionRow, type SubmissionRow } from './oj-submissions';
 import {
@@ -64,6 +66,7 @@ const queue = new Queue(QUEUE, {
 const controllers = new Map<string, AbortController>();
 const compiledPrograms = new CompiledProgramCache();
 const precompiles = new PrecompileScheduler();
+const admission = new SubmissionAdmission(OJ_WORKER_CONCURRENCY);
 let stopping = false;
 let maintaining = false;
 let engineAvailable = false;
@@ -101,11 +104,54 @@ function update(
     .run(...Object.values(fields), Date.now(), id, attempt);
 }
 async function judge(job: Job<{ submissionId: string }>) {
-  const release = await precompiles.enterForeground();
+  const row = submissionRow(job.data.submissionId);
+  if (!row || !ACTIVE.includes(row.status)) return;
+  const budget = db
+    .prepare(
+      `SELECT COALESCE((SELECT SUM(length(CAST(input AS BLOB)) + length(CAST(expected_output AS BLOB)))
+      FROM oj_test_cases WHERE version_id=v.id),0) AS bytes,
+      json_extract(v.spec_json,'$.memoryLimit') AS memoryLimit,
+      json_extract(v.spec_json,'$.outputLimit') AS outputLimit
+      FROM oj_problem_versions v WHERE v.id=?`,
+    )
+    .get(row.problem_version_id) as
+    | { bytes: number; memoryLimit: number; outputLimit: number }
+    | undefined;
+  const waiting = new AbortController();
+  const monitor = setInterval(() => {
+    const latest = submissionRow(row.id);
+    if (stopping || !latest || latest.cancel_requested) waiting.abort();
+  }, 400);
+  let releaseAdmission: (() => void) | undefined;
+  let releaseForeground: (() => void) | undefined;
   try {
+    releaseAdmission = await admission.acquire(
+      !budget ||
+        exclusiveSubmission(
+          budget.bytes,
+          budget.memoryLimit,
+          budget.outputLimit,
+        ),
+      waiting.signal,
+    );
+    releaseForeground = await precompiles.enterForeground();
+    clearInterval(monitor);
     return await judgeSubmission(job);
+  } catch (error) {
+    if (!waiting.signal.aborted) throw error;
+    const latest = submissionRow(row.id);
+    if (latest?.cancel_requested && ACTIVE.includes(latest.status)) {
+      update(row.id, latest.attempt, {
+        status: 'cancelled',
+        finished_at: Date.now(),
+      });
+      return;
+    }
+    throw new Error('Judge admission interrupted');
   } finally {
-    release();
+    clearInterval(monitor);
+    releaseForeground?.();
+    releaseAdmission?.();
   }
 }
 async function judgeSubmission(job: Job<{ submissionId: string }>) {
@@ -490,7 +536,10 @@ async function maintenance() {
     ).run(
       Date.now(),
       Number(engineAvailable),
-      JSON.stringify({ languageVersions: safeVersions() }),
+      JSON.stringify({
+        languageVersions: safeVersions(),
+        submissionConcurrency: OJ_WORKER_CONCURRENCY,
+      }),
     );
     maintaining = false;
   }

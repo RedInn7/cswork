@@ -2,7 +2,7 @@ name: cswork-oj
 services:
   sandbox:
     build: .
-    image: cswork-go-judge:1.12.3-seccomp
+    image: cswork-go-judge:1.12.3-seccomp-capacity4
     container_name: cswork-oj-sandbox
     restart: unless-stopped
     cgroup: private
@@ -18,11 +18,13 @@ services:
     ports: ['127.0.0.1:5050:5050']
     environment:
       ES_AUTH_TOKEN: ${GO_JUDGE_TOKEN:?Missing GO_JUDGE_TOKEN}
-      GOMAXPROCS: '2'
+      GOMAXPROCS: '${OJ_RUNNER_GOMAXPROCS:-3}'
       GOMEMLIMIT: 512MiB
+      OJ_RUNNER_PARALLELISM: '${OJ_RUNNER_PARALLELISM:-4}'
     mem_limit: 4g
     memswap_limit: 4g
-    cpus: 2
+    # Four execution slots share three CPU cores; the web/worker retain headroom.
+    cpus: '${OJ_RUNNER_CPUS:-3}'
     pids_limit: 512
     shm_size: 512m
     tmpfs: ['/tmp:rw,nosuid,nodev,size=768m']

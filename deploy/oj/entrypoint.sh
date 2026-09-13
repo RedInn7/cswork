@@ -1,5 +1,10 @@
 #!/bin/sh
 set -eu
+OJ_RUNNER_PARALLELISM=${OJ_RUNNER_PARALLELISM:-4}
+case "$OJ_RUNNER_PARALLELISM" in
+  1|2|4) ;;
+  *) printf '%s\n' 'OJ_RUNNER_PARALLELISM must be 1, 2, or 4' >&2; exit 64 ;;
+esac
 # Docker's private cgroup namespace scopes this filesystem to this container.
 # Never bind the host cgroup root or use host cgroup/pid/network namespaces.
 test "$(stat -fc %T /sys/fs/cgroup)" = cgroup2fs
@@ -14,7 +19,8 @@ mkdir -p /sys/fs/cgroup/cswork
 printf '%s\n' "$$" > /sys/fs/cgroup/cswork/cgroup.procs
 printf '+cpu +memory +pids\n' > /sys/fs/cgroup/cgroup.subtree_control
 exec /opt/go-judge \
-  -http-addr=:5050 -no-fallback -parallelism=2 -pre-fork=2 \
+  -http-addr=:5050 -no-fallback \
+  -parallelism="$OJ_RUNNER_PARALLELISM" -pre-fork="$OJ_RUNNER_PARALLELISM" \
   -net-share=false -container-cred-start=1536 -file-timeout=10m \
   -output-limit=64m -copy-out-limit=64m -open-file-limit=128 \
   -src-prefix=/nonexistent \

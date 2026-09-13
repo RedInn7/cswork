@@ -14,7 +14,10 @@ void test('default cache retains a ten-learner run-to-submit burst without recom
     for (let round = 0; round < 2; round++) {
       for (let learner = 0; learner < 10; learner++) {
         const acquired = await cache.acquire(
-          `learner-${learner}`, 'cpp', 'same reviewed solution', new AbortController().signal,
+          `learner-${learner}`,
+          'cpp',
+          'same reviewed solution',
+          new AbortController().signal,
         );
         if (round) assert.equal(acquired.cacheHit, true);
         await acquired.release();
@@ -29,16 +32,31 @@ void test('default cache retains a ten-learner run-to-submit burst without recom
 void test('default cache still evicts beyond sixteen entries and cleans every artifact', async () => {
   let calls = 0;
   const removed: string[] = [];
-  const cache = new CompiledProgramCache(async (language, source) => ({
-    result: { status: 'Accepted' },
-    program: { language, source, cache: { main: String(++calls) } },
-  }), async (program) => { removed.push(program.cache.main); });
+  const cache = new CompiledProgramCache(
+    async (language, source) => ({
+      result: { status: 'Accepted' },
+      program: { language, source, cache: { main: String(++calls) } },
+    }),
+    async (program) => {
+      removed.push(program.cache.main);
+    },
+  );
   for (let i = 0; i < 17; i++) {
-    const item = await cache.acquire(`learner-${i}`, 'cpp', 'source', new AbortController().signal);
+    const item = await cache.acquire(
+      `learner-${i}`,
+      'cpp',
+      'source',
+      new AbortController().signal,
+    );
     await item.release();
   }
   assert.deepEqual(removed, ['1']);
-  const last = await cache.acquire('learner-16', 'cpp', 'source', new AbortController().signal);
+  const last = await cache.acquire(
+    'learner-16',
+    'cpp',
+    'source',
+    new AbortController().signal,
+  );
   assert.equal(last.cacheHit, true);
   await last.release();
   await cache.close();
@@ -146,6 +164,56 @@ void test('overlapping identical misses never orphan a compiled binary', async (
   assert.equal(f.calls(), 2);
   assert.equal(f.removed.length, 2);
   assert.equal(new Set(f.removed).size, 2);
+});
+void test('cancelling one concurrent cold compile does not abort or poison its identical neighbour', async () => {
+  const pending: { signal: AbortSignal; resolve: () => void }[] = [];
+  const removed: string[] = [];
+  const cache = new CompiledProgramCache(
+    async (language, source, signal) => {
+      assert.ok(signal);
+      const artifact = String(pending.length + 1);
+      await new Promise<void>((resolve, reject) => {
+        pending.push({ signal, resolve });
+        signal.addEventListener('abort', () => reject(signal.reason), {
+          once: true,
+        });
+      });
+      return {
+        result: { status: 'Accepted' },
+        program: { language, source, cache: { main: artifact } },
+      };
+    },
+    async (program) => {
+      removed.push(program.cache.main);
+    },
+  );
+  const firstController = new AbortController();
+  const first = cache.acquire('alice', 'cpp', 'same', firstController.signal);
+  const rejected = assert.rejects(first, /cancel one/);
+  const second = cache.acquire(
+    'alice',
+    'cpp',
+    'same',
+    new AbortController().signal,
+  );
+  while (pending.length !== 2)
+    await new Promise((resolve) => setImmediate(resolve));
+  firstController.abort(new Error('cancel one'));
+  await rejected;
+  assert.equal(pending[1].signal.aborted, false);
+  pending[1].resolve();
+  const retained = await second;
+  await retained.release();
+  const hit = await cache.acquire(
+    'alice',
+    'cpp',
+    'same',
+    new AbortController().signal,
+  );
+  assert.equal(hit.cacheHit, true);
+  await hit.release();
+  await cache.close();
+  assert.deepEqual(removed, ['2']);
 });
 void test('warming uses exact owner/source key and foreground acquisition promotes the entry', async () => {
   const f = fixture(3),

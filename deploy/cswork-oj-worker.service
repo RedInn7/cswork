@@ -21,11 +21,12 @@ ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/lib/cswork
 
-# A single job may compare a 128 MiB package with a 64 MiB answer.
-# Keep pressure below the hard cap; other services retain their own cgroups.
+# Large snapshots are admitted exclusively by the worker; ordinary jobs overlap.
+# The runner gets three CPUs; retain this one-core cap for Node's coordinator.
 MemoryHigh=3G
 MemoryMax=4G
 CPUQuota=100%
+CPUWeight=50
 TasksMax=64
 LimitNOFILE=4096
 
