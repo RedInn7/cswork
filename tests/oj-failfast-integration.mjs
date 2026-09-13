@@ -96,7 +96,7 @@ try {
       probe.once('error', rejectPort);
       probe.listen(4318, '127.0.0.1', () => probe.close(resolvePort));
     });
-    const webEnv = { PATH: process.env.PATH, NODE_ENV: 'production', HOSTNAME: '127.0.0.1', PORT: '4318', APP_URL: webOrigin, BETTER_AUTH_SECRET: authSecret, ADMIN_EMAILS: '', DATABASE_PATH: databasePath, OJ_QUEUE_NAME: queueName, REDIS_URL: process.env.REDIS_URL || 'redis://127.0.0.1:6381', OJ_PRECOMPILE_ENABLED: 'false' };
+    const webEnv = { PATH: process.env.PATH, NODE_OPTIONS: '--max-old-space-size=768', NODE_ENV: 'production', HOST: '127.0.0.1', PORT: '4318', APP_URL: webOrigin, BETTER_AUTH_SECRET: authSecret, ADMIN_EMAILS: '', DATABASE_PATH: databasePath, OJ_QUEUE_NAME: queueName, OJ_PRECOMPILE_ENABLED: 'false' };
     web = spawn(process.execPath, [webEntry], { env: webEnv, stdio: ['ignore', 'pipe', 'pipe'] });
     web.stdout.on('data', () => {});
     web.stderr.on('data', () => {});
@@ -188,7 +188,7 @@ try {
   await delay(Math.max(0, early.terminal.created_at + 5500 - Date.now()));
   assert.equal(db.prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?').get(early.id).n, 1);
   assert.equal(db.prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?').get(later.id).n, 3);
-  console.log(JSON.stringify({ event: 'failfast_complete', scenarios: 5, peakRssKb, scope: 'private database + real worker + dedicated runner; not API/browser E2E' }));
+  console.log(JSON.stringify({ event: 'failfast_complete', scenarios: 5, peakRssKb, scope: webEntry ? 'private database + real worker + dedicated runner + authenticated result HTTP; not browser E2E' : 'private database + real worker + dedicated runner; not API/browser E2E' }));
 } finally {
   clearInterval(sampler);
   if (web && web.exitCode === null && web.signalCode === null) {
