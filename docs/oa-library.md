@@ -29,6 +29,25 @@ node scripts/import-oa-master.mjs /path/to/authorized/OA-Master
 
 完整数据作为私有服务端运行文件打包至 `content/oa-master/`，不放进 `public/`、浏览器脚本或初始 HTML。Markdown 不执行原始 HTML/JS；外链仅允许无凭证的 HTTPS，不自动加载外站图片。
 
+已开放评测的题目，阅读页从同一个已发布版本读取校正版题意、输入输出和公开样例，不再显示源快照中的错误样例。查询限定 `hidden=0`，不会把隐藏测试或解题提示混入题面。
+
+## 2026-09-12 扩展批次
+
+新增 46 份独立编写题包：Google 14、Amazon 15、Meta 17。共 138 个公开样例、1,209 个隐藏测试、7,498 个独立对照输入和 93 个错误程序。对照计数含与公开样例重复的输入，不代表全部互不相同。
+
+原站参考代码未执行。按明确题意重新编写参考解、中文题解和暴力/直接模拟对照；源样例有算术错误时校正，并在逐题审阅记录中注明。不同作者交叉审阅后，再由真实 go-judge 运行同一份展示代码。错误程序必须正常退出且输出错误，崩溃不算有效负控。
+
+Meta7 的空格有语义，使用生产已有的 `exact` 检查器，只统一 CRLF，不去除首尾空格或换行。验证工具与生产检查器有对齐回归。生成器统一 UTF-8 流式解码，防止跨数据块中文损坏。
+
+全量覆盖表：`content/oa-judge/coverage.json`。它区分 `sandbox_verified`、`awaiting_sandbox`、`blocked`、`unreviewed`，不把入库或本地自测当成线上可提交。更新与校验：
+
+```sh
+node scripts/oa-judge/coverage.mjs
+node scripts/oa-judge/coverage.mjs --check
+```
+
+本轮审阅后仍有 13 题阻塞、1,553 题未审阅，不能称为全量完成。阻塞详情在 `content/oa-judge/reviews/`：包括源题缺失/矛盾、多解检查器未实现，以及 Google29 尚缺验证过的高效算法。它们保持不可提交。
+
 ## 验证
 
 - `node --test --test-concurrency=1 tests/oa-import.test.mjs`
