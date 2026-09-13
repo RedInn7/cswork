@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-20",
+  "title": "子数组的最小值加最大值",
+  "explanation": "## 思路\n\n只需枚举每一对相邻元素，取它们的和的最大值。\n\n## 为什么正确\n\n任取一个合法区间，取其中最大元素 M，它在区间内至少有一个相邻元素 x。因为 x 不小于整个区间的最小值 m，所以这对相邻元素的和 M+x≥M+m。因而任意长区间都不优于某个长度为 2 的区间。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:])); return str(max(a[i]+a[i+1] for i in range(len(a)-1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#20-find-contiguous-subarray-with-largest-min-plus-max-interview",
+  "sourceContentHash": "78a3d13a3a73e710a16bed2ac9f7c09f75f2d42605045613967f940842f72eb5",
+  "author": "CSWork"
+}

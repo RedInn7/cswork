@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉商1",
+    "code": "def solve(data):\n    n=int(data[0]); k=1; answer=0\n    while k<n:\n        quotient=n//k; answer+=quotient; k=n//quotient+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误乘以区间长度",
+    "code": "def solve(data):\n    n=int(data[0]); k=1; answer=0\n    while k<=n:\n        quotient=n//k; answer+=quotient*(n//quotient-k+1); k=n//quotient+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

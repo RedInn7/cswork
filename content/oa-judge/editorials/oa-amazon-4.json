@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-4",
+  "title": "前缀加减归零",
+  "explanation": "## 思路\n\n从右向左考虑：最后一位需要 |arr[n−1]| 次整段操作；之后相邻值差的绝对值决定还需多少次更短前缀操作。答案为 |arr[n−1]|+Σ|arr[i]−arr[i+1]|。\n\n## 为什么正确\n\n设末尾补一个0，差分 d[i]=arr[i]−arr[i+1]。对长度 i+1 的前缀加减1，只改变 d[i]，其它差分不变。因此每个差分必须至少操作 |d[i]| 次，且逐一消去每个差分能达到这个下界。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:])); answer=abs(a[-1])\n    for i in range(len(a)-1):answer+=abs(a[i]-a[i+1])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#4-cart-prefix-zero",
+  "sourceContentHash": "66e9f30a00008b8232f7c67bfced663b2b0ce1965ba620d05999bd98423a2e39",
+  "author": "CSWork"
+}

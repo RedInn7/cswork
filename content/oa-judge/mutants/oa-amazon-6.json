@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不按最优次序取数",
+    "code": "def solve(data):\n    points=list(map(int,data[1:])); difference=0\n    for i,value in enumerate(points):difference+=value if i%2==0 else -value\n    return str(abs(difference))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只计算最大最小差",
+    "code": "def solve(data):\n    points=sorted(map(int,data[1:]),reverse=True); difference=0\n    for i,value in enumerate(points):difference+=value if i%2==0 else -value\n    return str(max(points)-min(points))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

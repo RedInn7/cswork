@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-8",
+  "title": "不同整除商的总和",
+  "explanation": "## 思路\n\n从 k=1 开始。当前商 q=n//k 在整个区间 [k,n//q] 内不变，加一次q后直接跳到 n//q+1。\n\n## 为什么正确\n\nfloor(n/k)=q 等价于 n/(q+1)<k≤n/q，所以给出的右端点正好是当前商连续区间的末尾。各区间无重叠、无遗漏，且商值严格递减，累加一次即可去重。\n\n## 复杂度\n\n时间 O(√n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]); k=1; answer=0\n    while k<=n:\n        quotient=n//k; answer+=quotient; k=n//quotient+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#8-data-dependence-sum",
+  "sourceContentHash": "040b9b027c8ee9a6fe0f753b96c02c82a16c49608f9a90cfddf5faba83fa9a68",
+  "author": "CSWork"
+}

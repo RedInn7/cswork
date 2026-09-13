@@ -4,6 +4,41 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Navigate } from './learning';
+import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
+
+/** Text remains the accessible identity; the logo is only a visual aid. */
+export function CompanyIdentity({
+  slug,
+  name,
+}: {
+  slug: string;
+  name: string;
+}) {
+  const [failedAsset, setFailedAsset] = useState<string | null>(null);
+  const asset = Object.hasOwn(companyLogos, slug)
+    ? companyLogos[slug]
+    : undefined;
+  return (
+    <span className="oa-company-identity">
+      <span className="oa-company-logo" aria-hidden="true">
+        {asset && failedAsset !== asset ? (
+          <img
+            src={asset}
+            alt=""
+            width={20}
+            height={20}
+            loading="lazy"
+            decoding="async"
+            onError={() => setFailedAsset(asset)}
+          />
+        ) : (
+          <span className="oa-company-initials">{companyInitials(name)}</span>
+        )}
+      </span>
+      <span className="oa-company-name">{name}</span>
+    </span>
+  );
+}
 
 type Item = {
   id: string;
@@ -98,6 +133,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [company, setCompany] = useState('');
+  const [companySearch, setCompanySearch] = useState('');
   const [readyOnly, setReadyOnly] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Page | null>(null);
@@ -366,6 +402,16 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
       </section>
     );
   const pages = data ? Math.max(1, Math.ceil(data.total / data.pageSize)) : 1;
+  const chooseCompany = (slug: string) => {
+    setCompany(slug);
+    setPage(1);
+  };
+  const companyTotal = companies.reduce((total, item) => total + item.count, 0);
+  const visibleCompanies = companies.filter((item) =>
+    item.name
+      .toLocaleLowerCase()
+      .includes(companySearch.trim().toLocaleLowerCase()),
+  );
   return (
     <section className="study-library oa-library" aria-label="OA 题目">
       <header className="study-library-heading">
@@ -378,120 +424,207 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
           </p>
         </div>
       </header>
-      <div className="study-filters">
-        <label>
-          <input
-            type="checkbox"
-            checked={readyOnly}
-            onChange={(event) => {
-              setReadyOnly(event.target.checked);
-              setPage(1);
-            }}
-          />
-          只看可练习
-        </label>
-        <label className="oa-search">
-          搜索题目
-          <input
-            type="search"
-            value={query}
-            placeholder="输入题目名称"
-            onChange={(event) => setQuery(event.target.value)}
-          />
-        </label>
-        <label>
-          公司
-          <select
-            value={company}
-            onChange={(event) => {
-              setCompany(event.target.value);
-              setPage(1);
-            }}
-          >
-            <option value="">全部公司</option>
-            {companies.map((item) => (
-              <option key={item.slug} value={item.slug}>
-                {item.name} ({item.count})
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-      {loading ? (
-        <p className="study-state" role="status">
-          正在加载 OA 题目…
-        </p>
-      ) : error ? (
-        <div className="study-state" role="alert">
-          {error} {retryButton}
-        </div>
-      ) : (
-        data && (
-          <>
-            <p className="study-result-summary" role="status">
-              共 {data.total} 道 OA 题目 · 来源 OA Master
-            </p>
-            {data.items.length === 0 ? (
-              <p className="study-state">
-                没有找到匹配题目，试试其他关键词或公司。
-              </p>
-            ) : (
-              <div className="study-list">
-                {data.items.map((item) => (
-                  <button
-                    type="button"
-                    className="oa-row"
-                    key={item.id}
-                    onClick={() =>
-                      item.judgeStatus === 'ready' &&
-                      item.judgeProblemId &&
-                      navigate
-                        ? navigate('problem', { problem: item.judgeProblemId })
-                        : setSelected(item.id)
-                    }
-                  >
-                    <span className="oa-company">{item.companyName}</span>
-                    <span className="oa-title">
-                      <strong>{item.title}</strong>
-                      <small>
-                        {item.languages
-                          .map((lang) => languageNames[lang] || lang)
-                          .join(' · ')}
-                      </small>
-                    </span>
-                    <span className="oa-badge">
-                      OA 题目 ·{' '}
-                      {item.judgeStatus === 'ready' ? '可练习' : '准备中'}
-                    </span>
-                  </button>
+      <div className="oa-browser">
+        <aside className="oa-company-sidebar" aria-label="按公司筛选">
+          <div className="oa-company-heading">
+            <h3>公司</h3>
+            <span>{companies.length} 类</span>
+          </div>
+          <label className="oa-company-search">
+            搜索公司
+            <input
+              type="search"
+              value={companySearch}
+              placeholder="输入公司名称"
+              onChange={(event) => setCompanySearch(event.target.value)}
+            />
+          </label>
+          <nav className="oa-company-nav" aria-label="OA 公司">
+            <button
+              type="button"
+              aria-pressed={!company}
+              onClick={() => chooseCompany('')}
+            >
+              <span>全部公司</span>
+              <span>{companyTotal}</span>
+            </button>
+            <div className="oa-company-options">
+              {visibleCompanies.map((item) => (
+                <button
+                  type="button"
+                  key={item.slug}
+                  aria-pressed={company === item.slug}
+                  onClick={() => chooseCompany(item.slug)}
+                >
+                  <CompanyIdentity slug={item.slug} name={item.name} />
+                  <span>{item.count}</span>
+                </button>
+              ))}
+              {!visibleCompanies.length && <p role="status">没有匹配的公司</p>}
+            </div>
+          </nav>
+          <p className="oa-company-caption">数量为收录题目总数</p>
+        </aside>
+        <div className="oa-browser-results">
+          <div className="study-filters">
+            <label>
+              <input
+                type="checkbox"
+                checked={readyOnly}
+                onChange={(event) => {
+                  setReadyOnly(event.target.checked);
+                  setPage(1);
+                }}
+              />
+              只看可练习
+            </label>
+            <label className="oa-search">
+              搜索题目
+              <input
+                type="search"
+                value={query}
+                placeholder="输入题目名称"
+                onChange={(event) => setQuery(event.target.value)}
+              />
+            </label>
+            <label className="oa-company-mobile">
+              公司
+              <select
+                value={company}
+                onChange={(event) => chooseCompany(event.target.value)}
+              >
+                <option value="">全部公司</option>
+                {companies.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name} ({item.count})
+                  </option>
                 ))}
-              </div>
-            )}
-            {data.total > 0 && (
-              <nav className="study-pagination" aria-label="OA 题目分页">
-                <button
-                  type="button"
-                  disabled={page <= 1}
-                  onClick={() => setPage((n) => n - 1)}
-                >
-                  上一页
-                </button>
-                <span>
-                  第 {data.page} / {pages} 页
-                </span>
-                <button
-                  type="button"
-                  disabled={page >= pages}
-                  onClick={() => setPage((n) => n + 1)}
-                >
-                  下一页
-                </button>
-              </nav>
-            )}
-          </>
-        )
-      )}
+              </select>
+            </label>
+          </div>
+          {loading ? (
+            <p className="study-state" role="status">
+              正在加载 OA 题目…
+            </p>
+          ) : error ? (
+            <div className="study-state" role="alert">
+              {error} {retryButton}
+            </div>
+          ) : (
+            data && (
+              <>
+                <p className="study-result-summary" role="status">
+                  共 {data.total} 道 OA 题目 · 来源 OA Master
+                </p>
+                {data.items.length === 0 ? (
+                  <p className="study-state">
+                    没有找到匹配题目，试试其他关键词或公司。
+                  </p>
+                ) : (
+                  <div className="study-list">
+                    {data.items.map((item) => (
+                      <button
+                        type="button"
+                        className="oa-row"
+                        key={item.id}
+                        onClick={() =>
+                          item.judgeStatus === 'ready' &&
+                          item.judgeProblemId &&
+                          navigate
+                            ? navigate('problem', {
+                                problem: item.judgeProblemId,
+                              })
+                            : setSelected(item.id)
+                        }
+                      >
+                        <span className="oa-company">
+                          <CompanyIdentity
+                            slug={item.companySlug}
+                            name={item.companyName}
+                          />
+                        </span>
+                        <span className="oa-title">
+                          <strong>{item.title}</strong>
+                          <small>
+                            {item.languages
+                              .map((lang) => languageNames[lang] || lang)
+                              .join(' · ')}
+                          </small>
+                        </span>
+                        <span className="oa-badge">
+                          OA 题目 ·{' '}
+                          {item.judgeStatus === 'ready' ? '可练习' : '准备中'}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {data.total > 0 && (
+                  <nav className="study-pagination" aria-label="OA 题目分页">
+                    <button
+                      type="button"
+                      disabled={page <= 1}
+                      onClick={() => setPage((n) => n - 1)}
+                    >
+                      上一页
+                    </button>
+                    <span>
+                      第 {data.page} / {pages} 页
+                    </span>
+                    <button
+                      type="button"
+                      disabled={page >= pages}
+                      onClick={() => setPage((n) => n + 1)}
+                    >
+                      下一页
+                    </button>
+                  </nav>
+                )}
+              </>
+            )
+          )}
+        </div>
+      </div>
     </section>
+  );
+}
+
+/** Company identity comes from the authenticated catalogue, never an ID guess. */
+export function OaCompanyBadge({ problemId }: { problemId: string }) {
+  const [identity, setIdentity] = useState<{
+    id: string;
+    companyName: string;
+    companySlug: string;
+  } | null>(null);
+  useEffect(() => {
+    const controller = new AbortController();
+    setIdentity(null);
+    read<Detail>('/' + encodeURIComponent(problemId), controller.signal)
+      .then((value) => {
+        if (!controller.signal.aborted && value.id === problemId)
+          setIdentity({
+            id: value.id,
+            companyName: value.companyName,
+            companySlug: value.companySlug,
+          });
+      })
+      .catch(() => {
+        /* Optional identity must not block the problem workspace. */
+      });
+    return () => controller.abort();
+  }, [problemId]);
+  return (
+    <div className="oa-workspace-company">
+      <span className="oa-badge">OA 题目</span>
+      {identity?.id === problemId && (
+        <strong>
+          <CompanyIdentity
+            slug={identity.companySlug}
+            name={identity.companyName}
+          />
+        </strong>
+      )}
+    </div>
   );
 }
 

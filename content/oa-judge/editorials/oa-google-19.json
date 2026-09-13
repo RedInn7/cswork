@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-19",
+  "title": "最长一致日志片段",
+  "explanation": "## 思路\n\n用滑动窗口维护所有玩家出现次数不超过 k。加入新玩家后，若其次数超过 k，则移动左端直到合法，记录最长窗口。\n\n## 为什么正确\n\n对于“所有频数≤k”的条件，合法窗口的左端可以单调移动，因此滑窗找到最大长度。其最大窗口必含频数恰为 k 的玩家：否则若不是全数组可继续扩展；若是全数组，至少一个玩家的全局频数就是 k。因此该最大长度满足原题的等号条件。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    from collections import Counter\n    a=list(map(int,data[1:])); limit=min(Counter(a).values()); counts=Counter(); left=0; answer=0\n    for right,value in enumerate(a):\n        counts[value]+=1\n        while counts[value]>limit:counts[a[left]]-=1; left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#19-find-consistent-logs",
+  "sourceContentHash": "6603b99615d1791f43b3144d4078827d87557587fed4b8bf6eb0dc79ed185fa6",
+  "author": "CSWork"
+}

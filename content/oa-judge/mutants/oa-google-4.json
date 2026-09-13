@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略可达性",
+    "code": "def solve(data):\n    board=data[0]; answer=0\n    for residue in range(3):\n        started=False\n        for cell in board[residue::3]:\n            if cell=='T': started=True\n            elif cell=='C': answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把跳跃距离当成1",
+    "code": "def solve(data):\n    board=data[0]; answer=0\n    for residue in range(1):\n        started=False\n        for cell in board[residue::3]:\n            if cell=='T': started=True\n            elif cell=='C' and started: answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

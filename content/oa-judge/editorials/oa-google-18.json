@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-18",
+  "title": "每栋房屋最近的商店",
+  "explanation": "## 思路\n\n排序商店位置。二分查找每栋房屋的插入位置，只需比较左右相邻商店。\n\n## 为什么正确\n\n位于房屋左边的商店中最靠右者距离最小，右边同理；任何其它商店都不会更近。比较这两个候选并按位置打破平局即可。\n\n## 复杂度\n\n时间 O(m log m+n log m)，额外空间 O(m+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    import bisect\n    n,m=map(int,data[:2]); houses=list(map(int,data[2:2+n])); stores=sorted(map(int,data[2+n:])); result=[]\n    for house in houses:\n        index=bisect.bisect_left(stores,house); candidates=[]\n        if index<m:candidates.append(stores[index])\n        if index>0:candidates.append(stores[index-1])\n        result.append(str(min(candidates,key=lambda s:(abs(s-house),s))))\n    return ' '.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#18-stores-and-houses",
+  "sourceContentHash": "2fdce5212b08f9715d4e94f1c214218c809f92c56fcdbaf1a2b4239c7a6cd471",
+  "author": "CSWork"
+}

@@ -2,6 +2,78 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "oa-amazon-2",
+      "sourceContentHash": "97b8ab65dfbf7549d73626fd3e10d2208c4242c5638f3edc4c5b917010984c18",
+      "packageChecksum": "3220fc0aef1e7be8fc40a6556575b8455933c2f64f4aafaee32a3aa008af1aa6",
+      "editorial": "## 思路\n\n将技能值排序。每次取还未分配的最低值作为新班起点，将所有不超过起点+maxSpread 的后续学员放入这个班。\n\n## 为什么正确\n\n最低未分配技能值必须进入一个班，该班不能包含超过它加 maxSpread 的值。把允许范围内的所有学员都放入同一班不会增加班数：从其它班移走这些学员不会使它们失效。故存在最优解采用当前贪心班级，对剩余学员递推即可。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)（包括排序后的数组）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,spread=map(int,data[:2]); levels=sorted(map(int,data[2:])); classes=0; start=None\n    for level in levels:\n        if start is None or level-start>spread:classes+=1; start=level\n    return str(classes)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-4",
+      "sourceContentHash": "66e9f30a00008b8232f7c67bfced663b2b0ce1965ba620d05999bd98423a2e39",
+      "packageChecksum": "c2a2f359fb0e8d6353feba38d38fec590f5573989ba0e51ed6439dba344c4548",
+      "editorial": "## 思路\n\n从右向左考虑：最后一位需要 |arr[n−1]| 次整段操作；之后相邻值差的绝对值决定还需多少次更短前缀操作。答案为 |arr[n−1]|+Σ|arr[i]−arr[i+1]|。\n\n## 为什么正确\n\n设末尾补一个0，差分 d[i]=arr[i]−arr[i+1]。对长度 i+1 的前缀加减1，只改变 d[i]，其它差分不变。因此每个差分必须至少操作 |d[i]| 次，且逐一消去每个差分能达到这个下界。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:])); answer=abs(a[-1])\n    for i in range(len(a)-1):answer+=abs(a[i]-a[i+1])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-6",
+      "sourceContentHash": "d0a845ce9acf65504c9962e209184ba16b680772bf8b4cb159775ecc109399bc",
+      "packageChecksum": "29c63a3d168c91d6728087d3228304e6c1e7d7e3e82fcefe56b4fd451ec8b667",
+      "editorial": "## 思路\n\n所有分值之和固定，因此最大化自己得分等价于最小化对手得分。按分值降序排列，两名玩家交替取数，计算交替和。\n\n## 为什么正确\n\n对剩余数字个数归纳。在降序排列 a 中，先取最大值的分差是 a0−a1+a2−…；先取其它位置 j 后，按归纳假设剩余数字同样交替取。将两个表达式相减，可按相邻降序项配对，所得差非负。因此总存在先取最大值的最优选择，归纳成立。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)（排序和输入存储）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    points=sorted(map(int,data[1:]),reverse=True); difference=0\n    for i,value in enumerate(points):difference+=value if i%2==0 else -value\n    return str(abs(difference))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-8",
+      "sourceContentHash": "040b9b027c8ee9a6fe0f753b96c02c82a16c49608f9a90cfddf5faba83fa9a68",
+      "packageChecksum": "c6974f2961862c175bf55c769102482419fea284c855c833a4676f663978afb5",
+      "editorial": "## 思路\n\n从 k=1 开始。当前商 q=n//k 在整个区间 [k,n//q] 内不变，加一次q后直接跳到 n//q+1。\n\n## 为什么正确\n\nfloor(n/k)=q 等价于 n/(q+1)<k≤n/q，所以给出的右端点正好是当前商连续区间的末尾。各区间无重叠、无遗漏，且商值严格递减，累加一次即可去重。\n\n## 复杂度\n\n时间 O(√n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]); k=1; answer=0\n    while k<=n:\n        quotient=n//k; answer+=quotient; k=n//quotient+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-13",
+      "sourceContentHash": "f8a7964b779cdd72a90837a3e7e1beb31b547146ead64b8f699654deafb1a297",
+      "packageChecksum": "1385215d393b4bf3bf374c641f0db0372124aaf6c201b9c7d093ece6a70432f5",
+      "editorial": "## 思路\n\n设 prefix[i] 是前 i 项和。对子段[l,r]，条件是 arr[l]=arr[r] 且 prefix[l]+2×arr[l]=prefix[r]。遍历右端r时，先把l=r−2加入哈希表，再查询(arr[r],prefix[r])。\n\n## 为什么正确\n\n内部和为 prefix[r]−prefix[l+1]，而 prefix[l+1]=prefix[l]+arr[l]，移项得到哈希键条件。查询前恰好插入所有 l≤r−2 的左端，保证长度至少3。每个合法左右端组合被统计一次。\n\n## 复杂度\n\n期望时间 O(n)，额外空间 O(n)。使用64位整数保存前缀和和答案。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:])); prefix=[0]\n    for value in a:prefix.append(prefix[-1]+value)\n    counts={}; answer=0\n    for right in range(2,len(a)):\n        left=right-2; key=(a[left],prefix[left]+2*a[left]); counts[key]=counts.get(key,0)+1\n        answer+=counts.get((a[right],prefix[right]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-18",
+      "sourceContentHash": "694325525f583d671fec70b3cbee27444e3ae8077648ef204d07f7ab65f0e5d3",
+      "packageChecksum": "94f1d3198575a5f6fe8689b4b23e7b8cb5ef7a88a71da6982c965d998bbdb045",
+      "editorial": "## 思路\n\n排序负载，用左指针维护与当前右端负载相差不超过m的范围。对每个右端，新增 right−left 对。\n\n## 为什么正确\n\n排序后，右端与区间[left,right)内每项的差都不超过m，更左侧的项都不合法。因此 right−left 正好是以当前项作为较右下标的合法对数，每对只在其右端被统计一次。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)（排序后的数组）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,threshold=map(int,data[:2]); values=sorted(map(int,data[2:])); left=0; answer=0\n    for right in range(n):\n        while left<right and values[right]-values[left]>threshold:left+=1\n        answer+=right-left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-google-1",
       "sourceContentHash": "8d30f23d0f5154d1554118830a3620c1e3f234564b1d7b9f2695b793d887eaa1",
       "packageChecksum": "f7985aa4fd73e152bf3628c1adab1283404285cf1d1c71c26e5bbaeae83b2b17",
@@ -70,6 +142,126 @@
         {
           "language": "python",
           "code": "def solve(data):\n    best = [0,-1,-1,-1]\n    for digit in map(int, data[1:]):\n        for count in range(3,0,-1):\n            if best[count-1] >= 0:\n                best[count] = max(best[count], best[count-1]*10+digit)\n    return max(best[1:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-4",
+      "sourceContentHash": "c4a25089fe4cdae3c8299c2f30ef4cfbe185d29b890d44f5247a716943893dec",
+      "packageChecksum": "649937f74161f1f658faaee8c016ec3bef77a63dbe0349562ba1bf3c7169e724",
+      "editorial": "## 思路\n\n把下标按模 3 分成三条互不影响的链。每条链只统计最左棋子右侧的金币。\n\n## 为什么正确\n\n棋子只能停在同一余数类，因此最左棋子左侧的金币永远不可达。链上从右到左依次移动棋子到无法继续的位置，较右棋子不会阻止较左棋子收集它们之间的金币，最终能收集最左棋子之后的全部金币。三条链结果相加。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（字符串切片）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    board=data[0]; answer=0\n    for residue in range(3):\n        started=False\n        for cell in board[residue::3]:\n            if cell=='T': started=True\n            elif cell=='C' and started: answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-6",
+      "sourceContentHash": "3a93aaf92dd9dfb450cd70f99c1af192926bd15534e44c486f416d1223f68571",
+      "packageChecksum": "10bc42d00fcef6d6cb01f837d654805d3984d4508a4554aa9cf657bc94d4b501",
+      "editorial": "## 思路\n\n用迭代遍历对树进行黑白染色，分别维护两种颜色的最小值和最大值。\n\n## 为什么正确\n\n至少两个节点的树含边，因此至少需要两组。按深度奇偶分组可行，而且连通树的二染色除交换颜色外唯一，所以这两个颜色组就是最少组数下的分组。单节点单独处理。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]); values=list(map(int,data[1:n+1]))\n    if n==1:return '0'\n    edges=list(map(int,data[n+1:])); graph=[[] for _ in range(n)]\n    for i in range(0,len(edges),2):\n        a,b=edges[i]-1,edges[i+1]-1; graph[a].append(b); graph[b].append(a)\n    low=[10**18,10**18]; high=[0,0]; stack=[(0,-1,0)]\n    while stack:\n        u,parent,color=stack.pop(); low[color]=min(low[color],values[u]); high[color]=max(high[color],values[u])\n        for v in graph[u]:\n            if v!=parent:stack.append((v,u,1-color))\n    return str(sum(high[i]-low[i] for i in range(2)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-8",
+      "sourceContentHash": "36ebe1be5205cbe0b10aceba7d7508822373fe9f56135b62e105785fed64f484",
+      "packageChecksum": "63b4ea191e2a81c8d0ed5cb6c9f2f12096901f5fe2f98c7d21615aec29b71214",
+      "editorial": "## 思路\n\n用哈希表记录每位访客占用的柜子，最小堆保存已释放的编号；没有可复用编号时使用递增的新编号。\n\n## 为什么正确\n\n未使用过的柜子编号都不小于 next，已释放柜子的最小编号由堆顶给出且小于 next。因此每次分配恰为所有空闲柜子的最小值。仅在分配时更新答案，便保留了最后一次分配结果。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    import heapq\n    occupied={}; free=[]; next_id=1; answer=0\n    for visitor in data[1:]:\n        if visitor in occupied:heapq.heappush(free,occupied.pop(visitor))\n        else:\n            if free:answer=heapq.heappop(free)\n            else:answer=next_id; next_id+=1\n            occupied[visitor]=answer\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-10",
+      "sourceContentHash": "40d57769f08ec108d9eeb16c4582168899c5e7eb7624912dbb01072c0221564f",
+      "packageChecksum": "f5ab93988284bbcd77577a56e0980e8961ca6b6b29f1bd83071693746a637c35",
+      "editorial": "## 思路\n\n允许删除 n−k 位。维护单调栈，新数字更大时，只要仍可删除，就弹掉末尾较小数字。最后截取前 k 位。\n\n## 为什么正确\n\n若仍可删除，保留位于较大数字之前的较小数字会使第一个不同位更小；删去它只会改善结果。不能再弹出时保留当前前缀，剩余删除量从尾部去掉。因此逐步获得字典序最大的 k 位子序列。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]); remove=n-k; stack=[]\n    for digit in data[2:]:\n        while remove and stack and stack[-1]<digit:stack.pop(); remove-=1\n        stack.append(digit)\n    return ''.join(stack[:k]).lstrip('0') or '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-13",
+      "sourceContentHash": "004809fae240ffcd6a2d112782a0147034f1b131480814a2d0c746fdb503f5d0",
+      "packageChecksum": "3c21983199c95cfe6c755c30bcfdff3973668783a2ad8ad0d6bcfc781bc53630",
+      "editorial": "## 思路\n\n枚举每份披萨，以及不加配料、加一种和加两种不同下标配料。用 (绝对差值, 总价) 比较候选。\n\n## 为什么正确\n\n任何合法订单都恰好包含一份披萨和一个大小不超过 2 的配料集合，枚举完整覆盖这些集合且不重复使用同一种配料。比较规则先最小差值后最小价格，与题意一致。\n\n## 复杂度\n\n时间 O(nm²+n)，额外空间 O(m²+1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,m,target=map(int,data[:3]); pizzas=list(map(int,data[3:3+n])); toppings=list(map(int,data[3+n:])); answer=pizzas[0]\n    for pizza in pizzas:\n        extras=[0]+toppings+[toppings[i]+toppings[j] for i in range(m) for j in range(i+1,m)]\n        for extra in extras:\n            cost=pizza+extra\n            if (abs(cost-target),cost)<(abs(answer-target),answer):answer=cost\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-14",
+      "sourceContentHash": "c7b385d949525a217505f7f19ef2a21630bd060bee9be067d5e937f527393bee",
+      "packageChecksum": "34ff947fe8d2d1d69e328cf190fbd1b7d22f2591371bd639abe7a8e125d8b8c5",
+      "editorial": "## 思路\n\ndp[s] 记录已填写若干位后数字和为 s 的数量。每填一位，把每个旧状态向添加数字 0..9 的状态转移。\n\n## 为什么正确\n\n初始只有空代码一种、数字和为零。每个长度加一的代码都唯一来自删除最后一位得到的旧代码和该末位数字，因此转移不会重计或漏计。完成四位后的 dp[S] 就是答案。\n\n## 复杂度\n\n时间 O(4×37×10)，额外空间 O(37)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    target=int(data[0]); dp=[0]*37; dp[0]=1\n    for position in range(4):\n        next_dp=[0]*37\n        for total in range(37):\n            for digit in range(10):\n                if total+digit<37:next_dp[total+digit]+=dp[total]\n        dp=next_dp\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-16",
+      "sourceContentHash": "ff0a92b5b9258ca6aa9f427f631058fd048724c010d3b55a7b6b089650ecda45",
+      "packageChecksum": "8785d93bbf10f6920c2bf06fd9ace2c4a4ce7462d9dc993325fc57459c3cbc8e",
+      "editorial": "## 思路\n\n词法扫描出 add、sub、有符号整数和右括号。用操作栈和数值栈，在右括号出现时弹出两个值完成一次运算，避免深层递归。\n\n## 为什么正确\n\n遇到右括号时，其两个参数的子表达式已经完成求值，数值栈顶依次是右参数和左参数。按最近未完成操作计算并压回，等价替换整个子表达式。自内向外消去全部运算后只剩总结果。\n\n## 复杂度\n\n时间 O(L)，额外空间 O(L)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    import re\n    expression=' '.join(data); operations=[]; values=[]\n    for token in re.findall(r'add|sub|-?\\d+|\\)',expression):\n        if token in ('add','sub'):operations.append(token)\n        elif token==')':\n            right=values.pop(); left=values.pop(); op=operations.pop()\n            values.append(left+right if op=='add' else left-right)\n        else:values.append(int(token))\n    return str(values[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-18",
+      "sourceContentHash": "2fdce5212b08f9715d4e94f1c214218c809f92c56fcdbaf1a2b4239c7a6cd471",
+      "packageChecksum": "3375adda4395ce93202ab6a2c32d4428e2cfb7c17df3906654771bda5ad91ce4",
+      "editorial": "## 思路\n\n排序商店位置。二分查找每栋房屋的插入位置，只需比较左右相邻商店。\n\n## 为什么正确\n\n位于房屋左边的商店中最靠右者距离最小，右边同理；任何其它商店都不会更近。比较这两个候选并按位置打破平局即可。\n\n## 复杂度\n\n时间 O(m log m+n log m)，额外空间 O(m+n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    import bisect\n    n,m=map(int,data[:2]); houses=list(map(int,data[2:2+n])); stores=sorted(map(int,data[2+n:])); result=[]\n    for house in houses:\n        index=bisect.bisect_left(stores,house); candidates=[]\n        if index<m:candidates.append(stores[index])\n        if index>0:candidates.append(stores[index-1])\n        result.append(str(min(candidates,key=lambda s:(abs(s-house),s))))\n    return ' '.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-19",
+      "sourceContentHash": "6603b99615d1791f43b3144d4078827d87557587fed4b8bf6eb0dc79ed185fa6",
+      "packageChecksum": "639068d765a7bfcbd5b4f26832a13532df19003fb0338e2df7e5aac8f01c3be0",
+      "editorial": "## 思路\n\n用滑动窗口维护所有玩家出现次数不超过 k。加入新玩家后，若其次数超过 k，则移动左端直到合法，记录最长窗口。\n\n## 为什么正确\n\n对于“所有频数≤k”的条件，合法窗口的左端可以单调移动，因此滑窗找到最大长度。其最大窗口必含频数恰为 k 的玩家：否则若不是全数组可继续扩展；若是全数组，至少一个玩家的全局频数就是 k。因此该最大长度满足原题的等号条件。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    from collections import Counter\n    a=list(map(int,data[1:])); limit=min(Counter(a).values()); counts=Counter(); left=0; answer=0\n    for right,value in enumerate(a):\n        counts[value]+=1\n        while counts[value]>limit:counts[a[left]]-=1; left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-20",
+      "sourceContentHash": "78a3d13a3a73e710a16bed2ac9f7c09f75f2d42605045613967f940842f72eb5",
+      "packageChecksum": "8c40b9db6a2f22dfbb07844b8f928627432bce250c3b751031e471de385716b9",
+      "editorial": "## 思路\n\n只需枚举每一对相邻元素，取它们的和的最大值。\n\n## 为什么正确\n\n任取一个合法区间，取其中最大元素 M，它在区间内至少有一个相邻元素 x。因为 x 不小于整个区间的最小值 m，所以这对相邻元素的和 M+x≥M+m。因而任意长区间都不优于某个长度为 2 的区间。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:])); return str(max(a[i]+a[i+1] for i in range(len(a)-1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
         }
       ]
     }

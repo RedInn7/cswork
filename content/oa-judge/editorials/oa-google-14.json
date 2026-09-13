@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-14",
+  "title": "数字和为 S 的四位代码",
+  "explanation": "## 思路\n\ndp[s] 记录已填写若干位后数字和为 s 的数量。每填一位，把每个旧状态向添加数字 0..9 的状态转移。\n\n## 为什么正确\n\n初始只有空代码一种、数字和为零。每个长度加一的代码都唯一来自删除最后一位得到的旧代码和该末位数字，因此转移不会重计或漏计。完成四位后的 dp[S] 就是答案。\n\n## 复杂度\n\n时间 O(4×37×10)，额外空间 O(37)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    target=int(data[0]); dp=[0]*37; dp[0]=1\n    for position in range(4):\n        next_dp=[0]*37\n        for total in range(37):\n            for digit in range(10):\n                if total+digit<37:next_dp[total+digit]+=dp[total]\n        dp=next_dp\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#14-count-four-digit-codes-with-sum-s",
+  "sourceContentHash": "c7b385d949525a217505f7f19ef2a21630bd060bee9be067d5e937f527393bee",
+  "author": "CSWork"
+}

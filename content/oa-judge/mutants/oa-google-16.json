@@ -1,0 +1,10 @@
+[
+  {
+    "name": "减法顺序相反",
+    "code": "def solve(data):\n    import re\n    expression=' '.join(data); operations=[]; values=[]\n    for token in re.findall(r'add|sub|-?\\d+|\\)',expression):\n        if token in ('add','sub'):operations.append(token)\n        elif token==')':\n            right=values.pop(); left=values.pop(); op=operations.pop()\n            values.append(left+right if op=='add' else right-left)\n        else:values.append(int(token))\n    return str(values[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把减法当加法",
+    "code": "def solve(data):\n    import re\n    expression=' '.join(data); operations=[]; values=[]\n    for token in re.findall(r'add|sub|-?\\d+|\\)',expression):\n        if token in ('add','sub'):operations.append(token)\n        elif token==')':\n            right=values.pop(); left=values.pop(); op=operations.pop()\n            values.append(left+right if op=='add' else left+right)\n        else:values.append(int(token))\n    return str(values[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

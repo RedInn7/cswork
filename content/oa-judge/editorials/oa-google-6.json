@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-6",
+  "title": "树的二分组费用",
+  "explanation": "## 思路\n\n用迭代遍历对树进行黑白染色，分别维护两种颜色的最小值和最大值。\n\n## 为什么正确\n\n至少两个节点的树含边，因此至少需要两组。按深度奇偶分组可行，而且连通树的二染色除交换颜色外唯一，所以这两个颜色组就是最少组数下的分组。单节点单独处理。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]); values=list(map(int,data[1:n+1]))\n    if n==1:return '0'\n    edges=list(map(int,data[n+1:])); graph=[[] for _ in range(n)]\n    for i in range(0,len(edges),2):\n        a,b=edges[i]-1,edges[i+1]-1; graph[a].append(b); graph[b].append(a)\n    low=[10**18,10**18]; high=[0,0]; stack=[(0,-1,0)]\n    while stack:\n        u,parent,color=stack.pop(); low[color]=min(low[color],values[u]); high[color]=max(high[color],values[u])\n        for v in graph[u]:\n            if v!=parent:stack.append((v,u,1-color))\n    return str(sum(high[i]-low[i] for i in range(2)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#6-divide-tree-nodes",
+  "sourceContentHash": "3a93aaf92dd9dfb450cd70f99c1af192926bd15534e44c486f416d1223f68571",
+  "author": "CSWork"
+}

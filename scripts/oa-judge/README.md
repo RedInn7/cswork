@@ -13,7 +13,7 @@
 - `mutants/`：每题两个有明确错误的完整程序。
 - `negative-controls/`：同一批错误程序的单独 Python 文件，方便复现。
 - `validation.json`：确定性本地验证结果，不代表已通过真实评测沙箱。
-- `registry.json`：题目来源指纹、与 JavaScript `JSON.stringify` 一致的包校验值、本站题解。
+- `batches/first-google.json`：首批题目来源指纹、与 JavaScript `JSON.stringify` 一致的包校验值、本站题解。生成器不再覆盖主 registry。
 
 ## 独立验证方法
 
@@ -31,3 +31,18 @@
 输入格式由本站明确整理，不声称是原 OA 平台的原始 I/O。当前六题的算法规则和数值范围有完整来源题面，来源内容哈希随题解记录。原站不完整或有矛盾的题目没有进入这批评测。
 
 本地通过后，仍须由发布流程完成真实沙箱验证，并把包、参考程序、独立对照数据与错误程序的指纹绑定到报告。未通过发布校验的内容不能显示为可提交题目。
+
+## 分批验证与发布
+
+`batches/` 只存题目清单，普通本地验证结果放 `validation/`。添加新批次后执行：
+
+```sh
+node scripts/oa-judge/aggregate-batches.mjs
+node scripts/verify-oa-judge.mjs --batch google-next
+node --import tsx --test tests/oa-judge-content.test.ts
+node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
+```
+
+真实沙箱地址和鉴权凭证通过环境变量配置，不写入报告或代码。批次报告保存在 `reports/<batch>.json`，绑定本批次及每条题目，新增其它批次不会使既有证据失效。首批兼容原始 `sandbox-report.json`，其文件指纹仍必须匹配。发布者必须是已验证的配置教师；缺失证据、重复 ID、题包或题解变化都拒绝发布。
+
+端到端验收使用 `node tests/oa-judge-integration.mjs google-next`，只写全新临时数据库和独立队列，不接触真实学员数据。

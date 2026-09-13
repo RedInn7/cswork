@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不复用柜子",
+    "code": "def solve(data):\n    import heapq\n    occupied={}; free=[]; next_id=1; answer=0\n    for visitor in data[1:]:\n        if visitor in occupied:heapq.heappush(free,occupied.pop(visitor))\n        else:\n            if False:answer=heapq.heappop(free)\n            else:answer=next_id; next_id+=1\n            occupied[visitor]=answer\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把访客重复当新增",
+    "code": "def solve(data):\n    import heapq\n    occupied={}; free=[]; next_id=1; answer=0\n    for visitor in data[1:]:\n        if False:heapq.heappush(free,occupied.pop(visitor))\n        else:\n            if free:answer=heapq.heappop(free)\n            else:answer=next_id; next_id+=1\n            occupied[visitor]=answer\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

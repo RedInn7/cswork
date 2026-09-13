@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只填三位",
+    "code": "def solve(data):\n    target=int(data[0]); dp=[0]*37; dp[0]=1\n    for position in range(3):\n        next_dp=[0]*37\n        for total in range(37):\n            for digit in range(10):\n                if total+digit<37:next_dp[total+digit]+=dp[total]\n        dp=next_dp\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉数字9",
+    "code": "def solve(data):\n    target=int(data[0]); dp=[0]*37; dp[0]=1\n    for position in range(4):\n        next_dp=[0]*37\n        for total in range(37):\n            for digit in range(9):\n                if total+digit<37:next_dp[total+digit]+=dp[total]\n        dp=next_dp\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

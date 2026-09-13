@@ -1,0 +1,10 @@
+[
+  {
+    "name": "前缀公式少一个端点",
+    "code": "def solve(data):\n    a=list(map(int,data[1:])); prefix=[0]\n    for value in a:prefix.append(prefix[-1]+value)\n    counts={}; answer=0\n    for right in range(2,len(a)):\n        left=right-2; key=(a[left],prefix[left]+a[left]); counts[key]=counts.get(key,0)+1\n        answer+=counts.get((a[right],prefix[right]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不检查两端值相同",
+    "code": "def solve(data):\n    a=list(map(int,data[1:])); prefix=[0]\n    for value in a:prefix.append(prefix[-1]+value)\n    counts={}; answer=0\n    for right in range(2,len(a)):\n        left=right-2; key=(0,prefix[left]+2*a[left]); counts[key]=counts.get(key,0)+1\n        answer+=counts.get((0,prefix[right]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

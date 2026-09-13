@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-amazon-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "不同整除商的总和",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Amazon",
+      "整除分块",
+      "数学"
+    ],
+    "description": "给定正整数 n，考虑所有正整数 k 产生的 floor(n/k)。对出现过的不同商值求和。k 可以大于 n，此时商为0，但不会影响总和。每个商值只计一次。\n\n标准输入格式、样例和评测数据由 CSWork 编写。",
+    "input": "输入 n（1..10¹⁰），使用64位整数保存结果。",
+    "output": "输出一个整数，表示题目要求的答案。",
+    "explanation": "n=5时不同商为5、2、1、0，总和为8。",
+    "hints": [
+      "从 k=1 开始。当前商 q=n//k 在整个区间 [k,n//q] 内不变，加一次q后直接跳到 n//q+1。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5\n",
+      "expectedOutput": "8\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "10\n",
+      "expectedOutput": "21\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "10000000000\n",
+      "expectedOutput": "125901361610\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "100\n",
+      "expectedOutput": "336\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "89\n",
+      "expectedOutput": "283\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "64\n",
+      "expectedOutput": "200\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "75\n",
+      "expectedOutput": "237\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "95\n",
+      "expectedOutput": "309\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "63\n",
+      "expectedOutput": "189\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "108\n",
+      "expectedOutput": "359\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "127\n",
+      "expectedOutput": "434\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "53\n",
+      "expectedOutput": "155\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "7\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "165\n",
+      "expectedOutput": "586\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "9\n",
+      "expectedOutput": "19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "133\n",
+      "expectedOutput": "464\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "54\n",
+      "expectedOutput": "159\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "133\n",
+      "expectedOutput": "464\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "149\n",
+      "expectedOutput": "522\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "15\n",
+      "expectedOutput": "33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "125\n",
+      "expectedOutput": "427\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "169\n",
+      "expectedOutput": "611\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "176\n",
+      "expectedOutput": "634\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "22\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "16\n",
+      "expectedOutput": "39\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "85\n",
+      "expectedOutput": "274\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "58\n",
+      "expectedOutput": "176\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "8\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

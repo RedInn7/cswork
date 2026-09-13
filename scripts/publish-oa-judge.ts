@@ -11,17 +11,30 @@ import {
   publishProblemDraft,
 } from '../lib/server/oj-problems';
 import type { Person } from '../lib/server/auth';
+import {
+  batchName,
+  loadScope,
+  defaultReportPath,
+  assertScopeEvidence,
+} from './oa-judge/aggregate-batches.mjs';
 
 const root = resolve('content/oa-judge');
 const digest = (data: string | Buffer) =>
   createHash('sha256').update(data).digest('hex');
 const load = (name: string) => readFileSync(resolve(root, name));
-const registryBytes = load('registry.json'),
-  registry = JSON.parse(registryBytes.toString());
-const report = JSON.parse(
-  readFileSync(process.argv[2] || resolve(root, 'sandbox-report.json'), 'utf8'),
+const args = process.argv.slice(2);
+const batch = args[0] === '--batch' ? batchName(args.splice(0, 2)[1]) : null;
+assert(
+  args.length <= 2 && !args.some((arg) => arg.startsWith('--')),
+  'Usage: publish-oa-judge.ts [--batch NAME] [REPORT] EMAIL',
 );
-const email = process.argv[3]?.toLowerCase();
+if (batch)
+  assert.equal(args.length, 1, 'Usage: publish-oa-judge.ts --batch NAME EMAIL');
+const scope = loadScope(root, batch);
+const registry = scope.data;
+const reportPath = args.length === 2 ? args[0] : defaultReportPath(root, batch);
+const report = JSON.parse(readFileSync(reportPath, 'utf8'));
+const email = args.at(-1)?.toLowerCase();
 assert(
   email &&
     (process.env.ADMIN_EMAILS || '')
@@ -30,15 +43,7 @@ assert(
       .includes(email),
   'Configured teacher required',
 );
-assert(
-  report.schemaVersion === 1 &&
-    report.engine === 'go-judge' &&
-    report.allPassed === true,
-);
-assert.equal(report.registrySha256, digest(registryBytes));
-assert(
-  registry.items.length > 0 && report.problems.length === registry.items.length,
-);
+assertScopeEvidence(scope, report);
 const source = JSON.parse(
   readFileSync('content/oa-master/catalog.json', 'utf8'),
 );

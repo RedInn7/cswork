@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-18",
+  "title": "近似负载的进程对数",
+  "explanation": "## 思路\n\n排序负载，用左指针维护与当前右端负载相差不超过m的范围。对每个右端，新增 right−left 对。\n\n## 为什么正确\n\n排序后，右端与区间[left,right)内每项的差都不超过m，更左侧的项都不合法。因此 right−left 正好是以当前项作为较右下标的合法对数，每对只在其右端被统计一次。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)（排序后的数组）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,threshold=map(int,data[:2]); values=sorted(map(int,data[2:])); left=0; answer=0\n    for right in range(n):\n        while left<right and values[right]-values[left]>threshold:left+=1\n        answer+=right-left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#18-get-computational-equivalents",
+  "sourceContentHash": "694325525f583d671fec70b3cbee27444e3ae8077648ef204d07f7ab65f0e5d3",
+  "author": "CSWork"
+}
