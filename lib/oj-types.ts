@@ -60,6 +60,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-regional-maxima'
     | 'oa-optimal-loads'
     | 'oa-optimal-distinct'
+    | 'oa-dictionary-path'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -276,6 +277,7 @@ export const ojImportSchema = z
           'oa-regional-maxima',
           'oa-optimal-loads',
           'oa-optimal-distinct',
+          'oa-dictionary-path',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -330,7 +332,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-optimal-loads' &&
         data.problem.id !== 'oa-amazon-136') ||
       (data.problem.checker === 'oa-optimal-distinct' &&
-        data.problem.id !== 'oa-microsoft-63')
+        data.problem.id !== 'oa-microsoft-63') ||
+      (data.problem.checker === 'oa-dictionary-path' &&
+        data.problem.id !== 'oa-nvidia-7')
     )
       ctx.addIssue({
         code: 'custom',

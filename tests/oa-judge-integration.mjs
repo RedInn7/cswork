@@ -369,6 +369,7 @@ circle.reverse(); print(len(circle)); print(*circle)
     'oa-uber-57',
     'oa-amazon-136',
     'oa-microsoft-63',
+    'oa-nvidia-7',
   ])
     if (selected.items.some((item) => item.id === id))
       equivalentPrograms[id] = readFileSync(
