@@ -38,7 +38,7 @@ jobs:
       - run: node --import tsx --test tests/oj-failfast-ui.test.mjs
       - run: node --check tests/oj-failfast-integration.mjs
       - run: node --check tests/oj-latency-load.mjs
-      - run: node --test tests/oj-capacity-config.test.mjs
+      - run: node --test tests/oj-capacity-config.test.mjs tests/oj-capacity-release.test.mjs
       - run: node --check tests/oj-capacity-benchmark.mjs
       - run: node --check tests/oj-capacity-admission-integration.mjs
       - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh

@@ -46,6 +46,7 @@ wait_for_judge() {
 }
 queue status | "$node" -e 'let text="";process.stdin.on("data",v=>text+=v);process.stdin.on("end",()=>{if(JSON.parse(text).paused){console.error("Queue is already paused; preserve maintenance and abort");process.exit(1)}})'
 paused=false
+worker_touched=false
 renamed=false
 runner_stopped=false
 switched=false
@@ -55,7 +56,7 @@ finish() {
   trap - EXIT
   set +e
   recovery_failed=false
-  if [[ "$complete" != true ]]; then
+  if [[ "$complete" != true && "$worker_touched" == true ]]; then
     systemctl stop cswork-oj-worker.service || recovery_failed=true
     if [[ "$renamed" == true ]]; then
       docker rm -f cswork-oj-sandbox >/dev/null 2>&1 || true
@@ -86,6 +87,7 @@ finish() {
 trap finish EXIT
 paused=true
 queue pause
+worker_touched=true
 systemctl stop cswork-oj-worker.service
 runner_stopped=true
 docker stop -t 20 cswork-oj-sandbox >/dev/null
