@@ -221,7 +221,11 @@ try {
   await request('/api/oj/oa-library', null, 401);
   const readyList = await request('/api/oj/oa-library?ready=1', students[0]);
   assert.equal(readyList.total, 6);
-  assert(readyList.items.every(item => item.judgeStatus === 'ready' && item.judgeProblemId === item.id));
+  assert(
+    readyList.items.every(
+      (item) => item.judgeStatus === 'ready' && item.judgeProblemId === item.id,
+    ),
+  );
   const payload = (id, code, mode = 'judge') => ({
     problemId: id,
     language: 'python',
@@ -274,7 +278,11 @@ try {
           .get(submitted.id);
         return row?.finished_at !== null ? row : null;
       });
-      assert.equal(terminal.status, 'accepted', `${item.id} ${mode}`);
+      assert.equal(
+        terminal.status,
+        mode === 'run' ? 'finished' : 'accepted',
+        `${item.id} ${mode}`,
+      );
       const feedback = await request(
         `/api/oj/submissions/${submitted.id}`,
         student,
@@ -347,11 +355,65 @@ try {
       1,
       'Later cases persisted after first failure',
     );
+  // A program that memorizes public samples must fail on a hidden case and
+  // expose only that first counterexample, never the rest of the hidden suite.
+  const first = registry.items[0];
+  const firstPackage = JSON.parse(
+    readFileSync(`content/oa-judge/packages/${first.id}.json`, 'utf8'),
+  );
+  const known = Object.fromEntries(
+    firstPackage.cases
+      .filter((c) => !c.hidden)
+      .map((c) => [c.input, c.expectedOutput]),
+  );
+  const bad = `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), '-1'), end='')\n`;
+  const hiddenOrdinal = firstPackage.cases.findIndex(
+    (c) => c.hidden && !(c.input in known),
+  );
+  assert(hiddenOrdinal >= 3);
+  const hiddenSubmit = await request(
+    '/api/oj/submissions',
+    students[0],
+    201,
+    payload(first.id, bad),
+  );
+  await until(
+    () =>
+      db
+        .prepare('SELECT finished_at FROM submissions WHERE id=?')
+        .get(hiddenSubmit.id)?.finished_at !== null,
+  );
+  const hiddenFeedback = await request(
+    `/api/oj/submissions/${hiddenSubmit.id}`,
+    students[0],
+  );
+  assert.equal(hiddenFeedback.status, 'wrong_answer');
+  assert.equal(hiddenFeedback.firstFailure.ordinal, hiddenOrdinal);
+  assert.equal(
+    hiddenFeedback.firstFailure.stdin,
+    firstPackage.cases[hiddenOrdinal].input,
+  );
+  assert.equal(
+    hiddenFeedback.firstFailure.expected,
+    firstPackage.cases[hiddenOrdinal].expectedOutput,
+  );
+  assert.equal(
+    db
+      .prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?')
+      .get(hiddenSubmit.id).n,
+    hiddenOrdinal + 1,
+  );
+  assert(
+    hiddenFeedback.cases
+      .filter((c) => c.hidden)
+      .every((c) => !('stdin' in c) && !('expected' in c)),
+  );
   console.log(
     JSON.stringify({
       event: 'oa_judge_integration_complete',
       problems: 6,
-      submissions: 18,
+      submissions: 19,
+      hiddenCounterexampleVerified: true,
       scope:
         'fresh SQLite + isolated queue + real built web/worker + dedicated runner',
       productionDataUsed: false,
