@@ -304,7 +304,8 @@ def main():
     validation=dict(schemaVersion=1,seed=20260912,sourceCommit=catalog["source"]["commit"],
                     note="Deterministic authored references; source solutions are never executed. Large structured expected values are checked explicitly. This report is not a sandbox acceptance claim.",problems=report)
     (OUT / "validation.json").write_text(json.dumps(validation,ensure_ascii=False,indent=2)+'\n')
-    (OUT / "registry.json").write_text(json.dumps(dict(schemaVersion=1,items=registry),ensure_ascii=False,indent=2)+'\n')
+    (OUT / "batches").mkdir(exist_ok=True)
+    (OUT / "batches" / "first-google.json").write_text(json.dumps(dict(schemaVersion=1,items=registry),ensure_ascii=False,indent=2)+'\n')
 
 
 if __name__ == "__main__":
