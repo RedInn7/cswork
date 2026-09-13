@@ -15,6 +15,77 @@ import { digest } from '../scripts/oa-judge/aggregate-batches.mjs';
 const id = 'oa-fixture-1';
 const batch = 'fixture';
 
+function resolutionFixture(t, options) {
+  const f = fixture(t, options);
+  f.json(resolve(f.root, 'reviews', batch + '.json'), {
+    schemaVersion: 1,
+    items: [
+      {
+        id,
+        status: 'blocked',
+        reason: 'Multiple valid answers require a semantic checker.',
+      },
+    ],
+  });
+  mkdirSync(resolve(f.root, 'resolutions'));
+  const item = {
+    id,
+    batch,
+    sourceContentHash: f.entry.sourceContentHash,
+    previousReason: 'Multiple valid answers require a semantic checker.',
+    reason:
+      'Added a fixed semantic checker and independently authored reference and tests.',
+  };
+  const save = () =>
+    f.json(resolve(f.root, 'resolutions', 'resolved.json'), {
+      schemaVersion: 1,
+      items: [item],
+    });
+  save();
+  return { ...f, item, save };
+}
+
+test('a blocked review can be resolved without rewriting history or claiming unverified success', (t) => {
+  const f = resolutionFixture(t, { report: false });
+  assert.equal(f.run().items[0].status, 'awaiting_sandbox');
+  f.saveReport();
+  assert.equal(f.run().items[0].status, 'sandbox_verified');
+  assert.equal(
+    JSON.parse(readFileSync(resolve(f.root, 'reviews', batch + '.json')))
+      .items[0].status,
+    'blocked',
+  );
+});
+
+for (const field of [
+  'batch',
+  'sourceContentHash',
+  'previousReason',
+  'id',
+  'reason',
+])
+  test('resolution rejects invalid ' + field, (t) => {
+    const f = resolutionFixture(t);
+    f.item[field] = field === 'reason' ? '' : 'invalid';
+    f.save();
+    assert.throws(f.run);
+  });
+
+test('duplicate resolutions and resolutions of nonblocked reviews are rejected', (t) => {
+  const f = resolutionFixture(t);
+  f.json(resolve(f.root, 'resolutions', 'resolved.json'), {
+    schemaVersion: 1,
+    items: [f.item, f.item],
+  });
+  assert.throws(f.run, /Duplicate resolution/);
+  f.save();
+  f.json(resolve(f.root, 'reviews', batch + '.json'), {
+    schemaVersion: 1,
+    items: [{ id, status: 'authored', reason: f.item.previousReason }],
+  });
+  assert.throws(f.run, /Resolution must address a blocked review/);
+});
+
 /** Minimal immutable-evidence fixture; never reads or writes production content. */
 function fixture(t, { report = true } = {}) {
   const directory = mkdtempSync(resolve(tmpdir(), 'cswork-oa-coverage-'));

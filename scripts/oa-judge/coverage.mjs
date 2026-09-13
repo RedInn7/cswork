@@ -117,6 +117,52 @@ export function coverage(
       });
     }
   }
+  // Preserve historical blocked reviews; an explicit source-bound resolution
+  // may replace their current decision only after a real package is registered.
+  const resolutions = resolve(root, 'resolutions');
+  const resolved = new Set();
+  if (existsSync(resolutions))
+    for (const file of readdirSync(resolutions)
+      .filter((name) => name.endsWith('.json'))
+      .sort()) {
+      const document = JSON.parse(
+        readFileSync(resolve(resolutions, file), 'utf8'),
+      );
+      assert.equal(document.schemaVersion, 1);
+      for (const item of document.items) {
+        assert(!resolved.has(item.id), 'Duplicate resolution: ' + item.id);
+        assert(source.has(item.id), 'Unknown resolved ID: ' + item.id);
+        const previous = decisions.get(item.id);
+        assert(
+          previous?.status === 'blocked',
+          'Resolution must address a blocked review: ' + item.id,
+        );
+        assert.equal(
+          item.previousReason,
+          previous.reason,
+          'Stale blocked reason: ' + item.id,
+        );
+        assert.equal(
+          item.sourceContentHash,
+          source.get(item.id).contentHash,
+          'Stale resolution source: ' + item.id,
+        );
+        assert(
+          typeof item.reason === 'string' && item.reason.trim(),
+          'Resolution reason required',
+        );
+        assert(
+          prepared.has(item.id) && prepared.get(item.id).batch === item.batch,
+          'Resolution requires its registered batch: ' + item.id,
+        );
+        decisions.set(item.id, {
+          id: item.id,
+          status: 'authored',
+          reason: item.reason,
+        });
+        resolved.add(item.id);
+      }
+    }
   const items = catalog.items.map((item) => {
     const decision = decisions.get(item.id);
     const authored = prepared.get(item.id);

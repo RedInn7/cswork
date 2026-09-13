@@ -36,6 +36,9 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
   courseId: string;
   outputLimit: number;
   checker:
+    | 'oa-closest-pair'
+    | 'oa-peak-index'
+    | 'oa-window-averages'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -244,6 +247,9 @@ export const ojImportSchema = z
         memoryLimit: z.number().int().min(16384).max(524288),
         outputLimit: z.number().int().min(1).max(65536),
         checker: z.enum([
+          'oa-closest-pair',
+          'oa-peak-index',
+          'oa-window-averages',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -274,6 +280,19 @@ export const ojImportSchema = z
   })
   .strict()
   .superRefine((data, ctx) => {
+    if (
+      (data.problem.checker === 'oa-closest-pair' &&
+        data.problem.id !== 'oa-meta-16') ||
+      (data.problem.checker === 'oa-peak-index' &&
+        data.problem.id !== 'oa-meta-17') ||
+      (data.problem.checker === 'oa-window-averages' &&
+        data.problem.id !== 'oa-meta-23')
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['problem', 'checker'],
+        message: 'Invalid fixed OA checker identity',
+      });
     if (!data.cases.some((c) => !c.hidden))
       ctx.addIssue({
         code: 'custom',
