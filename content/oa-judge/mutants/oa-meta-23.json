@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏最后窗口",
+    "code": "def solve(data):\n    n,w=map(int,data[:2]); a=list(map(int,data[2:])); result=[]\n    def rounded(total):\n        scaled=(2*abs(total)*1000000+w)//(2*w)\n        sign='-' if total<0 and scaled else ''\n        return f'{sign}{scaled//1000000}.{scaled%1000000:06d}'\n    total=sum(a[:w])\n    if w<=n:\n        result.append(rounded(total))\n        for i in range(w,n-1):total+=a[i]-a[i-w]; result.append(rounded(total))\n    return str(len(result))+('\\n'+' '.join(result) if result else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略负号",
+    "code": "def solve(data):\n    n,w=map(int,data[:2]); a=list(map(int,data[2:])); result=[]\n    def rounded(total):\n        scaled=(2*abs(total)*1000000+w)//(2*w)\n        sign=''\n        return f'{sign}{scaled//1000000}.{scaled%1000000:06d}'\n    total=sum(a[:w])\n    if w<=n:\n        result.append(rounded(total))\n        for i in range(w,n):total+=a[i]-a[i-w]; result.append(rounded(total))\n    return str(len(result))+('\\n'+' '.join(result) if result else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

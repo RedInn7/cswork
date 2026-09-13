@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-59",
+  "title": "二进制一右移的最大总费用",
+  "explanation": "## 思路\n\n移动距离总和恒等于逆序对数。额外的每次操作加1，最多为每段原始连续0左侧的1数量之和。扫描时每遇0加此前1数，若是0段首项则再加一次此前1数。\n\n## 正确性\n\n每次右移只交换被移动1与经过的0，所有1最终在右边，每个原始10逆序对必须且只会交换一次。一个1最多对每个原始0段产生一次操作，故操作次数受前述和约束。从左到右处理0段，并逐个移动其左侧的1，能保留后续0段且达到该次数上界，两部分相加就是最大费用。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    s=data[0];ones=0;answer=0;previous='0'\n    for char in s:\n        if char=='1':ones+=1\n        else:\n            answer+=ones\n            if previous=='1':answer+=ones\n        previous=char\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#59-move-bits-to-right",
+  "sourceContentHash": "941bedbe85dc560223d01b3acbe920de8c0948b0b6ddbb5227fcc3726725e2ac",
+  "author": "CSWork"
+}

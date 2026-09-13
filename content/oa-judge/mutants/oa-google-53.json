@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同刻归还不能复用",
+    "code": "def solve(data):\n    import heapq\n    values=list(map(int,data[1:]));requests=list(zip(values[::2],values[1::2]));busy=[];free=[];cars=[]\n    for p,r in sorted(requests):\n        while busy and busy[0][0]<p:\n            end,car=heapq.heappop(busy);heapq.heappush(free,car)\n        if free:car=heapq.heappop(free)\n        else:car=len(cars);cars.append([])\n        cars[car].append((p,r));heapq.heappush(busy,(r,car))\n    return str(len(cars))+'\\n'+'\\n'.join(f'{i}: '+' '.join(f'({p},{r})' for p,r in car) for i,car in enumerate(cars))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "从不复用空闲车",
+    "code": "def solve(data):\n    import heapq\n    values=list(map(int,data[1:]));requests=list(zip(values[::2],values[1::2]));busy=[];free=[];cars=[]\n    for p,r in sorted(requests):\n        while busy and busy[0][0]<=p:\n            end,car=heapq.heappop(busy);heapq.heappush(free,car)\n        if False:car=heapq.heappop(free)\n        else:car=len(cars);cars.append([])\n        cars[car].append((p,r));heapq.heappush(busy,(r,car))\n    return str(len(cars))+'\\n'+'\\n'.join(f'{i}: '+' '.join(f'({p},{r})' for p,r in car) for i,car in enumerate(cars))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

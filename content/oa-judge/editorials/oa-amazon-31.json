@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-31",
+  "title": "购物车追加与首次删除",
+  "explanation": "## 思路\n\n给每次追加分配唯一递增位置。共享next数组把相同商品的位置连起来，字典只保存每种商品的头尾索引；删除时移动头索引并标记。最后顺序输出未删除位置。\n\n## 正确性证明\n\n同种商品索引链按加入先后排列，删除链头恰是首次当前出现。全局位置递增保留购物车顺序，过滤删除标记后就是最终结果。所有商品共用索引数组，不为每个不同值创建独立deque。\n\n## 复杂度\n\n时间O(n+q)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]); values=[]; removed=[]; following=[]; head={}; tail={}\n    for token in d[2:]:\n        v=int(token)\n        if v>0:\n            index=len(values); previous=tail.get(v,-1)\n            if previous>=0: following[previous]=index\n            else: head[v]=index\n            tail[v]=index; values.append(v); removed.append(False); following.append(-1)\n        else:\n            value=-v; index=head[value]; head[value]=following[index]; removed[index]=True\n            if head[value]<0: tail[value]=-1\n    answer=[v for i,v in enumerate(values) if not removed[i]]\n    return ' '.join(map(str,[len(answer)]+answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#31-find-final-cart",
+  "sourceContentHash": "10fac9aa1e463fd9a684c00472528100a4d7b47e1f8a952f5742625b4c3e5a7b",
+  "author": "CSWork"
+}

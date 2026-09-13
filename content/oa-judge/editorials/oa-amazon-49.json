@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-49",
+  "title": "突变字符同时删除左邻的稳定时间",
+  "explanation": "## 思路\n\n每个突变字符依次消耗它左边直到上一个突变字符之间的连续普通字符段。答案为所有突变字符前普通段长度的最大值，末尾普通段不会被消耗。\n\n## 正确性证明\n\n突变字符始终保留，彼此阻断，故其左侧普通段由它每轮恰好删除一个，各段同时独立缩短。完成所有段需要最长段长度，突变字符右边的尾段永远不被删除。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,c=d;run=answer=0\n    for v in s:\n        if v==c:answer=max(answer,run);run=0\n        else:run+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#49-find-time-mutation-removal",
+  "sourceContentHash": "6abe438bfc39f31841819582e5c57ec8cebe9ac83228a94c533d131951328c9f",
+  "author": "CSWork"
+}

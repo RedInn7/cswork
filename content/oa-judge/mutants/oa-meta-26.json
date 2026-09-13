@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不能向左走",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bad=-10**9; previous=[bad]*cols\n    if board[0][0]=='x':return '-1'\n    previous[0]=0\n    for row in board:\n        left=[bad]*cols; right=[bad]*cols\n        for j in range(cols):\n            if row[j]=='!':\n                best=max(previous[j],left[j-1] if j else bad)\n                if best!=bad:left[j]=best+1\n        for j in range(cols-1,-1,-1):\n            if row[j]=='!':\n                best=max(previous[j],right[j+1] if j+1<cols else bad)\n                if best!=bad:right[j]=best+1\n        previous=left\n    return str(previous[-1] if previous[-1]!=bad else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把障碍也当安全格",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bad=-10**9; previous=[bad]*cols\n    if board[0][0]=='x':return '-1'\n    previous[0]=0\n    for row in board:\n        left=[bad]*cols; right=[bad]*cols\n        for j in range(cols):\n            if True:\n                best=max(previous[j],left[j-1] if j else bad)\n                if best!=bad:left[j]=best+1\n        for j in range(cols-1,-1,-1):\n            if True:\n                best=max(previous[j],right[j+1] if j+1<cols else bad)\n                if best!=bad:right[j]=best+1\n        previous=[max(a,b) for a,b in zip(left,right)]\n    return str(previous[-1] if previous[-1]!=bad else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

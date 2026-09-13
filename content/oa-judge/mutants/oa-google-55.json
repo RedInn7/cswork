@@ -1,0 +1,10 @@
+[
+  {
+    "name": "份数向下取整",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));limit=a[-1];answer=0\n    for i in range(len(a)-2,-1,-1):\n        value=a[i];parts=max(1,value//limit);answer+=parts-1;limit=value//parts\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "下一上界取最大份",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));limit=a[-1];answer=0\n    for i in range(len(a)-2,-1,-1):\n        value=a[i];parts=max(1,(value+limit-1)//limit);answer+=parts-1;limit=(value+parts-1)//parts\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

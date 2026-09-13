@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-53",
+  "title": "租车请求的最少车辆规范分配",
+  "explanation": "## 思路\n\n用忙碌最小堆按归还时间管理车辆，空闲最小堆按编号管理。每处理请求先释放所有已归还车辆，再取最小空闲编号或新车。\n\n## 正确性\n\n只有归还时间≤pickup的车可复用，忙堆完整释放这批车。空闲堆恰好按规范给出最小编号。新建时所有已有车都在使用，当前重叠请求数量需要再增加一辆，因此新建是必要的，最终数量最少。\n\n## 复杂度\n\n时间O(n log n)，空间O(n+输出大小)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    import heapq\n    values=list(map(int,data[1:]));requests=list(zip(values[::2],values[1::2]));busy=[];free=[];cars=[]\n    for p,r in sorted(requests):\n        while busy and busy[0][0]<=p:\n            end,car=heapq.heappop(busy);heapq.heappush(free,car)\n        if free:car=heapq.heappop(free)\n        else:car=len(cars);cars.append([])\n        cars[car].append((p,r));heapq.heappush(busy,(r,car))\n    return str(len(cars))+'\\n'+'\\n'.join(f'{i}: '+' '.join(f'({p},{r})' for p,r in car) for i,car in enumerate(cars))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#53-minimum-cars-for-rental-requests",
+  "sourceContentHash": "6b5c6f4e69770339a010ec13bb80de66860d0873a8d6f5f882185773423615a4",
+  "author": "CSWork"
+}

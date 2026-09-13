@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-25",
+  "title": "距离上一班公交发车的分钟数",
+  "explanation": "## 思路\n\n把时间转成从零点起的分钟数，扫描出严格早于当前时间的最大发车时间。\n\n## 正确性证明\n\n时间转换保持同一天内先后顺序。最大发车分钟数就是已发车的最后一班，两者相减为经过分钟数；没有候选则无车已发。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    def minutes(s):\n        h,m=map(int,s.split(':')); return h*60+m\n    now=minutes(data[-1]); latest=-1\n    for s in data[1:-1]:\n        t=minutes(s)\n        if t<now:latest=max(latest,t)\n    return str(now-latest if latest>=0 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#25-buses-in-a-bustling-town",
+  "sourceContentHash": "ac34c9b36d50759d8552de01ef552349979162367fba9cb11d551388681f730f",
+  "author": "CSWork"
+}

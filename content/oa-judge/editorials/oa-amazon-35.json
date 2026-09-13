@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-35",
+  "title": "不同水果配对消除后的最少剩余",
+  "explanation": "## 思路\n\n设最大频次为f。答案max(2f−n,n mod 2)。\n\n## 正确性证明\n\n若最多种类占多数，其余n−f个最多各消去一个该种类，必剩2f−n且可达到。否则可反复配对当前最多的两类，不会形成无法继续配对的过大多数，最终只受奇偶限制剩0或1。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    a=list(map(int,d[1:])); n=len(a); largest=max(Counter(a).values())\n    return str(max(2*largest-n,n%2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#35-fruit-crush-get-min-fruits",
+  "sourceContentHash": "fafecf2c1f96d59c6985eac0900af66f6805263b16da1db053b115117dc7d624",
+  "author": "CSWork"
+}

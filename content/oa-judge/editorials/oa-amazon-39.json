@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-39",
+  "title": "按不同费用递增到互异尺寸",
+  "explanation": "## 思路\n\n从小到大分配最终尺寸，把原尺寸不大于当前值的项目加入最大费用堆。当前尺寸优先给单位费用最大者。\n\n## 正确性证明\n\n已可安排的两个项目中，若更便宜者占当前位而更贵者延后，交换后减少或保持费用且均满足只能增加。故总存在最优方案按最大费用优先。堆为空时跳到下一个原尺寸，不会错过可用项目。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import heapq\n    n=int(d[0]); sizes=list(map(int,d[1:n+1])); costs=list(map(int,d[n+1:])); items=sorted(zip(sizes,costs)); heap=[]; i=0; pos=0; answer=0\n    while i<n or heap:\n        if not heap: pos=max(pos,items[i][0])\n        while i<n and items[i][0]<=pos:\n            start,cost=items[i]; heapq.heappush(heap,(-cost,start)); i+=1\n        negative,start=heapq.heappop(heap); answer+=(pos-start)*(-negative); pos+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#39-get-minimal-cost-distinct-sizes",
+  "sourceContentHash": "6a2fe8f92738cc43ffa45826625777dce73b41478927e1dc7a90a5ddad4ab53a",
+  "author": "CSWork"
+}

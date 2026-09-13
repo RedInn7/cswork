@@ -1,0 +1,10 @@
+[
+  {
+    "name": "位索引差一",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));bits=1;low=0\n    for value in a:\n        if value>=0:bits|=bits<<value\n        else:bits=(bits<<(-value))|bits;low+=value\n    total=sum(a);limit=total//2-low;reachable=bits&((1<<(limit+1))-1)\n    chosen=reachable.bit_length()+low\n    return str(abs(total-2*chosen))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只返回总和绝对值",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));bits=1;low=0\n    for value in a:\n        if value>=0:bits|=bits<<value\n        else:bits=(bits<<(-value))|bits;low+=value\n    total=sum(a);limit=total//2-low;reachable=bits&((1<<(limit+1))-1)\n    chosen=reachable.bit_length()-1+low\n    return str(abs(total))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

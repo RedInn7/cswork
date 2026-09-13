@@ -1,0 +1,10 @@
+[
+  {
+    "name": "移动后不递增",
+    "code": "def solve(d):\n    s=d[0]; minimum=10; counts=[0]*10\n    for c in reversed(s):\n        value=int(c)\n        if value>minimum: counts[value]+=1\n        else: counts[value]+=1; minimum=value\n    return ''.join(str(i)*counts[i] for i in range(10))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把相等数字也移动",
+    "code": "def solve(d):\n    s=d[0]; minimum=10; counts=[0]*10\n    for c in reversed(s):\n        value=int(c)\n        if value>=minimum: counts[min(value+1,9)]+=1\n        else: counts[value]+=1; minimum=value\n    return ''.join(str(i)*counts[i] for i in range(10))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

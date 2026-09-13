@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-51",
+  "title": "两台服务器的最小负载差",
+  "explanation": "## 思路\n\n用整数位集合记录可达子集和；负载为负时同步移动表示区间的下界。最后找不超过总和一半的最大可达和。\n\n## 正确性\n\n加入一个负载时，每个子集要么不选它、要么选它，位移并集完整表示新子集和。分给第一台的任意子集和x对应差|S−2x|。互补子集保证最优值可在x≤⌊S/2⌋中取得，在这一侧x越大越好。\n\n## 复杂度\n\n设A为绝对值总和，时间约O(nA/w+A/w)，空间O(A/w)，w为大整数内部机器字宽。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:]));bits=1;low=0\n    for value in a:\n        if value>=0:bits|=bits<<value\n        else:bits=(bits<<(-value))|bits;low+=value\n    total=sum(a);limit=total//2-low;reachable=bits&((1<<(limit+1))-1)\n    chosen=reachable.bit_length()-1+low\n    return str(abs(total-2*chosen))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#51-minimize-absolute-difference-of-server-loads",
+  "sourceContentHash": "99b912248ec18bf0121fe570f591f45272ea2ec4fdcb3b9f0da9d21ed04155b3",
+  "author": "CSWork"
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-meta-16",
+      "sourceContentHash": "272c0dfc3765d093a90caeabaeb9a08b1ee9826de8b17fc406c62f27d30db29f",
+      "packageChecksum": "73cbe70aba9ed6eab7352a11f28e1443b84e7d7731ed03836ab371c8017b42be",
+      "editorial": "## 思路\n\n双指针从数组两端开始，维护当前最小绝对差。和小于目标时左指针右移，否则右指针左移，始终保证两个下标不同。\n\n## 正确性证明\n\n当当前和小于目标时，固定左指针并减小右指针只会让和更小，无法改善当前差，因此可以舍弃该左端；和不小于目标时，固定右端并增加左端也不会更好，可以舍弃该右端。每次记录当前候选，最终保留全局最优值对。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,target=map(int,data[:2]); a=list(map(int,data[2:])); left=0; right=n-1; distance=None; answer=(a[0],a[-1])\n    while left<right:\n        total=a[left]+a[right]; delta=abs(total-target)\n        if distance is None or delta<distance:distance=delta; answer=(a[left],a[right])\n        if total<target:left+=1\n        else:right-=1\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-17",
+      "sourceContentHash": "870324628eadc04a56c4b691d9c98bbe4f274a4da5b40871aeea92b180b81612",
+      "packageChecksum": "5c64b0a950a8df6c048563cf5a74323035bb1f5f034529f5c923c5d5c4282308",
+      "editorial": "## 思路\n\n二分比较中点与右邻居。中点更小时，右半边存在峰；否则左半边连同中点存在峰。\n\n## 正确性证明\n\n沿上升方向前进必然遇到下降位置或数组边界，那里就是峰。二分始终保留一个含峰区间：上升时舍弃中点及左侧，下降时保留中点及左半侧。区间只剩一个下标时该点即为峰。\n\n## 复杂度\n\n时间O(log n)，除输入存储外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]); a=list(map(int,data[1:])); left=0; right=n-1\n    while left<right:\n        middle=(left+right)//2\n        if a[middle]<a[middle+1]:left=middle+1\n        else:right=middle\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

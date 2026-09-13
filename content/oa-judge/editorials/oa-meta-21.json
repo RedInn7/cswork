@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-21",
+  "title": "嵌套列表的深度加权和",
+  "explanation": "## 思路\n\n解析列表后，用显式栈保存列表及深度；整数贡献数值乘深度，子列表以深度加一入栈。\n\n## 正确性证明\n\n每个整数仅由其直接父列表访问一次。栈中深度从最外层1开始，进入子列表恰增加1，等于包含该整数的列表数，因此累加得到定义的加权和。\n\n## 复杂度\n\n时间O(L)，额外空间O(L)，L为输入长度；不依赖深层递归遍历。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    import json\n    stack=[(json.loads(data),1)]; total=0\n    while stack:\n        values,depth=stack.pop()\n        for value in values:\n            if isinstance(value,list):stack.append((value,depth+1))\n            else:total+=value*depth\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#21-nested-list-weight-sum-for-e4",
+  "sourceContentHash": "6ced9e282b36235ee74b7246cea1cacdc1ae8fb1897a992636b1e960cb2b64e7",
+  "author": "CSWork"
+}

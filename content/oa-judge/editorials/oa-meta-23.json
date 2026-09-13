@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-23",
+  "title": "滑动窗口平均值",
+  "explanation": "## 思路\n\n用滑动和更新窗口总和。将总和绝对值放大10⁶倍，使用整数除法和余数实现六位小数四舍五入，避免二进制浮点误差。\n\n## 正确性证明\n\n第一个窗口直接求和，右移时减去离开的元素、加上进入的元素，保持准确窗口总和。除以w得到平均值，整数倍缩放后按余数是否至少为w/2加一，得到六位小数；舍入误差不超过0.5×10⁻⁶，满足允许绝对误差。\n\n## 复杂度\n\n时间O(n)，除输入和输出外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,w=map(int,data[:2]); a=list(map(int,data[2:])); result=[]\n    def rounded(total):\n        scaled=(2*abs(total)*1000000+w)//(2*w)\n        sign='-' if total<0 and scaled else ''\n        return f'{sign}{scaled//1000000}.{scaled%1000000:06d}'\n    total=sum(a[:w])\n    if w<=n:\n        result.append(rounded(total))\n        for i in range(w,n):total+=a[i]-a[i-w]; result.append(rounded(total))\n    return str(len(result))+('\\n'+' '.join(result) if result else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#23-sliding-window-average",
+  "sourceContentHash": "540f5474d1e0eed9c32414fc03b80c92ac44a750551453d1d91a98f0364e722f",
+  "author": "CSWork"
+}

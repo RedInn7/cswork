@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不计算深度权重",
+    "code": "def solve(data):\n    import json\n    stack=[(json.loads(data),1)]; total=0\n    while stack:\n        values,depth=stack.pop()\n        for value in values:\n            if isinstance(value,list):stack.append((value,depth+1))\n            else:total+=value\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "最外层深度为0",
+    "code": "def solve(data):\n    import json\n    stack=[(json.loads(data),0)]; total=0\n    while stack:\n        values,depth=stack.pop()\n        for value in values:\n            if isinstance(value,list):stack.append((value,depth+1))\n            else:total+=value*depth\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按升序阅读",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=False); prefix=answer=0\n    for v in a: prefix+=v;answer+=prefix\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略负记忆值",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True); prefix=answer=0\n    for v in a: prefix+=max(v,0);answer+=prefix\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉右端点",
+    "code": "def solve(data):\n    left,right=map(int,data); count=0\n    for value in range(left,right):\n        a=value//100; b=value//10%10; c=value%10\n        if a!=b and a!=c and b!=c:count+=1\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只检查相邻两位",
+    "code": "def solve(data):\n    left,right=map(int,data); count=0\n    for value in range(left,right+1):\n        a=value//100; b=value//10%10; c=value%10\n        if a!=b and b!=c:count+=1\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

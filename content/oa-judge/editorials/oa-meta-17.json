@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-17",
+  "title": "查找任意峰值下标",
+  "explanation": "## 思路\n\n二分比较中点与右邻居。中点更小时，右半边存在峰；否则左半边连同中点存在峰。\n\n## 正确性证明\n\n沿上升方向前进必然遇到下降位置或数组边界，那里就是峰。二分始终保留一个含峰区间：上升时舍弃中点及左侧，下降时保留中点及左半侧。区间只剩一个下标时该点即为峰。\n\n## 复杂度\n\n时间O(log n)，除输入存储外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]); a=list(map(int,data[1:])); left=0; right=n-1\n    while left<right:\n        middle=(left+right)//2\n        if a[middle]<a[middle+1]:left=middle+1\n        else:right=middle\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#17-find-peak-element",
+  "sourceContentHash": "870324628eadc04a56c4b691d9c98bbe4f274a4da5b40871aeea92b180b81612",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "等于当前时间也算已发车",
+    "code": "def solve(data):\n    def minutes(s):\n        h,m=map(int,s.split(':')); return h*60+m\n    now=minutes(data[-1]); latest=-1\n    for s in data[1:-1]:\n        t=minutes(s)\n        if t<=now:latest=max(latest,t)\n    return str(now-latest if latest>=0 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "选择最早班车",
+    "code": "def solve(data):\n    def minutes(s):\n        h,m=map(int,s.split(':')); return h*60+m\n    now=minutes(data[-1]); latest=-1\n    for s in data[1:-1]:\n        t=minutes(s)\n        if t<now:latest=t if latest<0 else min(latest,t)\n    return str(now-latest if latest>=0 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

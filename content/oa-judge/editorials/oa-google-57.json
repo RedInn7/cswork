@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-57",
+  "title": "同下标交换使两数组严格递增",
+  "explanation": "## 思路\n\n维护处理到当前下标、不交换/交换当前对的最小代价。根据相邻两对是否同方向递增或交叉递增，从前一状态转移。\n\n## 正确性\n\n当前是否合法只依赖前一对最后的两个值及当前是否交换。两状态记录所有之前合法方案的最小代价，直连与交叉条件恰好覆盖四种相邻交换组合，因此归纳覆盖全部合法方案。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]);a=list(map(int,data[1:n+1]));b=list(map(int,data[n+1:]));keep=0;swap=1;inf=n+1\n    for i in range(1,n):\n        next_keep=next_swap=inf\n        if a[i]>a[i-1] and b[i]>b[i-1]:next_keep=min(next_keep,keep);next_swap=min(next_swap,swap+1)\n        if a[i]>b[i-1] and b[i]>a[i-1]:next_keep=min(next_keep,swap);next_swap=min(next_swap,keep+1)\n        keep,swap=next_keep,next_swap\n    answer=min(keep,swap)\n    return str(answer if answer<=n else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#57-relative-sort-google-singapore",
+  "sourceContentHash": "e30344619f61d6948491071caa367aa5a380150ce686ae772a628b8b326ae438",
+  "author": "CSWork"
+}

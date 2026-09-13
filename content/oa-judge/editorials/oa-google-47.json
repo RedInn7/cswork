@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-47",
+  "title": "至多反号一次的最小绝对和",
+  "explanation": "## 思路\n\n先计算总和S，不改的候选是|S|。将元素x反号后总和为S−2x，扫描所有元素取最小绝对值。\n\n## 正确性\n\n合法方案只有不修改或选择某个下标反号，扫描完整枚举所有方案；S−2x准确表示移除原x并加入−x后的总和。取最小值必最优。\n\n## 复杂度\n\n时间 O(n)，除输入外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:]));total=sum(a);answer=abs(total)\n    for value in a:answer=min(answer,abs(total-2*value))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#47-minimum-absolute-sum",
+  "sourceContentHash": "1f862785cd002f8995b9bc29838d1bacb79fdd0a1c70501798e76d4c4551da12",
+  "author": "CSWork"
+}

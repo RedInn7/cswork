@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-31",
+  "title": "按升降模式匹配连续子数组",
+  "explanation": "## 思路\n\n把数组转换为相邻比较序列，用KMP匹配模式。匹配成功后回退到最长真前后缀，使重叠匹配也被统计。\n\n## 正确性证明\n\n每个原数组窗口与其相邻比较序列唯一对应。KMP逐个位置维护能匹配的最长模式前缀，失配回退不丢失任何可能匹配，完整匹配对应一个合法窗口。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,m=map(int,data[:2]); a=list(map(int,data[2:2+n])); p=list(map(int,data[2+n:])); prefix=[0]*m\n    for i in range(1,m):\n        j=prefix[i-1]\n        while j and p[i]!=p[j]:j=prefix[j-1]\n        if p[i]==p[j]:j+=1\n        prefix[i]=j\n    matched=answer=0\n    for i in range(n-1):\n        value=(a[i+1]>a[i])-(a[i+1]<a[i])\n        while matched and value!=p[matched]:matched=prefix[matched-1]\n        if value==p[matched]:matched+=1\n        if matched==m:answer+=1; matched=prefix[matched-1]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#31-find-how-many-subarrays-match-the-pattern",
+  "sourceContentHash": "a248727c1f7fe87067c0ea4bb5849a2df57904b7efb43ef76dc54505da8ed31f",
+  "author": "CSWork"
+}

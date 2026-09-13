@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-27",
+  "title": "距离最近的斐波那契数",
+  "explanation": "## 思路\n\n生成相邻斐波那契数，直到后一项不小于N；比较这两个数到N的距离。\n\n## 正确性证明\n\n序列非递减，夹住N的相邻两项分别是其左、右最近候选；其它项距离不会更小，因此取两者最小距离。\n\n## 复杂度\n\n时间O(log(N+1))，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]); a,b=0,1\n    while b<n:a,b=b,a+b\n    return str(min(n-a,b-n))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#27-closest-land-mark",
+  "sourceContentHash": "8e526090198ab69e5696f7bb0075bdb931e8019748067788359f6dad7159270d",
+  "author": "CSWork"
+}

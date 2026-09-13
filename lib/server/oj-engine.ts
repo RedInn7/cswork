@@ -1,4 +1,8 @@
 import { complexDesignCheckerId } from '@/lib/oj-complex-contract';
+import {
+  OA_SEMANTIC_IDS,
+  matchesOaSemantic,
+} from '../oa-semantic-checkers.mjs';
 import { matchesComplexDesign } from '@/lib/oj-complex-design-checkers';
 import { matchesFiniteFloats } from '@/lib/oj-float-checkers';
 import { matchesFractionDecimal } from '@/lib/oj-fraction-checker';
@@ -303,6 +307,11 @@ export function matchesOutput(
   checker: OjProblemSpec['checker'],
   input?: string,
 ) {
+  if (Object.hasOwn(OA_SEMANTIC_IDS, checker))
+    return (
+      typeof input === 'string' &&
+      matchesOaSemantic(checker, actual, expected, input)
+    );
   const complexId = complexDesignCheckerId(checker);
   if (complexId !== null)
     return (

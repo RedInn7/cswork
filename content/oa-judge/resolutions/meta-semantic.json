@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-meta-16",
+      "batch": "meta-semantic",
+      "sourceContentHash": "272c0dfc3765d093a90caeabaeb9a08b1ee9826de8b17fc406c62f27d30db29f",
+      "previousReason": "最近和可能有多组，原题没有等距时固定输出规则；当前 tokens 检查器会错判其它合法对，需要专用 checker。",
+      "reason": "新增固定身份语义检查器，接受全部合法最优值对及其逆序。穷举独立小输入最优集合，验证正常错误程序与多答案正控。"
+    },
+    {
+      "id": "oa-meta-17",
+      "batch": "meta-semantic",
+      "sourceContentHash": "870324628eadc04a56c4b691d9c98bbe4f274a4da5b40871aeea92b180b81612",
+      "previousReason": "原题明确允许任意峰值，当前 tokens 检查器会错判其它合法峰值，需要专用 checker；不能擅自改为最左峰值。",
+      "reason": "新增固定身份语义检查器，接受任意合法峰值下标。独立枚举全部峰值集合，验证正常错误程序与反向二分多答案正控。"
+    }
+  ]
+}

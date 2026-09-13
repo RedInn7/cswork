@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许公共种类等于阈值",
+    "code": "def solve(d):\n    s=d[0]; m=int(d[1]); left=[0]*26; right=[0]*26; answer=0\n    for c in s: right[ord(c)-97]+=1\n    for c in s[:-1]:\n        k=ord(c)-97; left[k]+=1; right[k]-=1\n        answer+=sum(a>0 and b>0 for a,b in zip(left,right))>=m\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把同字符多次出现当种类",
+    "code": "def solve(d):\n    s=d[0]; m=int(d[1]); left=[0]*26; right=[0]*26; answer=0\n    for c in s: right[ord(c)-97]+=1\n    for c in s[:-1]:\n        k=ord(c)-97; left[k]+=1; right[k]-=1\n        answer+=sum(min(a,b) for a,b in zip(left,right))>m\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

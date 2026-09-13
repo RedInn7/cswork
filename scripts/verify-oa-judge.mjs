@@ -40,7 +40,14 @@ const report = {
 };
 async function run(code, input, spec) {
   assert(
-    ['tokens', 'exact'].includes(spec.checker) &&
+    [
+      'tokens',
+      'exact',
+      'float',
+      'oa-closest-pair',
+      'oa-peak-index',
+      'oa-window-averages',
+    ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,
   );
@@ -115,6 +122,7 @@ for (const item of registry.data.items) {
         result.files?.stdout || '',
         test.expectedOutput,
         pkg.data.problem.checker,
+        test.input,
       ),
       item.id + ' reference output',
     );
@@ -137,6 +145,7 @@ for (const item of registry.data.items) {
           result.files?.stdout || '',
           test.expectedOutput,
           pkg.data.problem.checker,
+          test.input,
         )
       ) {
         detected = true;

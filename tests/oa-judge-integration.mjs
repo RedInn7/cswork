@@ -287,6 +287,34 @@ try {
     payload('oa-unknown-fixture-1', 'print(-1)'),
   );
   const failures = [];
+  const equivalentPrograms = {
+    // Independent correct implementations with deliberately different choices
+    // or formatting. These must be accepted by the real built worker too.
+    'oa-meta-16': `import sys, bisect
+d=list(map(int,sys.stdin.read().split())); n,k=d[:2]; a=d[2:]; best=None; pair=None
+for i in range(n-1):
+    at=bisect.bisect_left(a,k-a[i],i+1)
+    for j in (at-1,at):
+        if i<j<n:
+            error=abs(a[i]+a[j]-k)
+            if best is None or error<=best: best=error; pair=(a[j],a[i])
+print(*pair)
+`,
+    'oa-meta-17': `import sys
+d=list(map(int,sys.stdin.read().split())); a=d[1:][::-1]; lo=0; hi=len(a)-1
+while lo<hi:
+    mid=(lo+hi)//2
+    if a[mid]<a[mid+1]:lo=mid+1
+    else:hi=mid
+print(len(a)-1-lo)
+`,
+    'oa-meta-23': `import sys
+d=list(map(int,sys.stdin.read().split())); n,w=d[:2]; prefix=[0]
+for value in d[2:]:prefix.append(prefix[-1]+value)
+answers=[format((prefix[i+w]-prefix[i])/w,'.9e') for i in range(max(0,n-w+1))]
+print(len(answers)); print(' '.join(answers))
+`,
+  };
   const wrongOutput = 'CSWORK_DELIBERATE_WRONG_ANSWER';
   for (const [index, item] of selected.items.entries()) {
     const student = students[index];
@@ -347,6 +375,37 @@ try {
           .prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?')
           .get(submitted.id).n,
         count,
+      );
+    }
+    if (equivalentPrograms[item.id]) {
+      const submitted = await request(
+        '/api/oj/submissions',
+        student,
+        201,
+        payload(item.id, equivalentPrograms[item.id]),
+      );
+      await until(
+        () =>
+          db
+            .prepare('SELECT finished_at FROM submissions WHERE id=?')
+            .get(submitted.id)?.finished_at !== null,
+      );
+      const feedback = await request(
+        `/api/oj/submissions/${submitted.id}`,
+        student,
+      );
+      assert.equal(
+        feedback.status,
+        'accepted',
+        `${item.id}: equivalent output rejected`,
+      );
+      assert.equal(feedback.passed, pkg.cases.length);
+      console.log(
+        JSON.stringify({
+          event: 'oa_equivalent_answer_verified',
+          id: item.id,
+          cases: pkg.cases.length,
+        }),
       );
     }
     const start = Date.now();
@@ -471,7 +530,7 @@ try {
     JSON.stringify({
       event: 'oa_judge_integration_complete',
       problems: selected.items.length,
-      submissions: selected.items.length * 3 + 1,
+      submissions: db.prepare('SELECT count(*) AS n FROM submissions').get().n,
       hiddenCounterexampleVerified: true,
       scope:
         'fresh SQLite + isolated queue + real built web/worker + dedicated runner',

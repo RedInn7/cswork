@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-43",
+  "title": "相同删除和的最多操作数",
+  "explanation": "## 思路\n\n第一次删除和只可能是三个候选值。固定每个值，按剩余区间长度做动态规划；三个删除方向分别转移到缩短2的区间，用滚动数组保存前一层。\n\n## 正确性\n\n任何合法首次操作属于三种方向，其和必在候选中。固定和后，区间状态的首步仍只有三种，合法方向得到1加剩余区间最优次数。按长度递增完整求解，最后取三个候选的最大值即覆盖全部可能序列。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a)\n    if n<2:return '0'\n    answer=0\n    for target in {a[0]+a[1],a[-2]+a[-1],a[0]+a[-1]}:\n        previous=[0]*(n+2)\n        for length in range(2+n%2,n+1,2):\n            current=[0]*(n+2)\n            for left in range(n-length+1):\n                right=left+length-1;best=0\n                if a[left]+a[left+1]==target:best=max(best,1+previous[left+2])\n                if a[right-1]+a[right]==target:best=max(best,1+previous[left])\n                if a[left]+a[right]==target:best=max(best,1+previous[left+1])\n                current[left]=best\n            previous=current\n        answer=max(answer,previous[0])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#43-maximum-number-of-moves-with-same-result-sum",
+  "sourceContentHash": "cc418920a05863d4c9d9ff1e2cd05726030873ebc619dd65b47b5bcdb61612c5",
+  "author": "CSWork"
+}

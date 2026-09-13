@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-55",
+  "title": "拆分为非降数组的最少操作",
+  "explanation": "## 思路\n\n从右向左处理。右侧允许的上界为limit，当前值v至少需ceil(v/limit)份；尽量均分这些份，新的最左值为floor(v/份数)，作为下一步上界。\n\n## 正确性\n\n每份≤limit保证接上已处理后缀，因此最少份数下界为ceil(v/limit)。将v均分为相差至多1的非降份可以达到该下界，并最大化最左份，使之前的元素约束最宽。逐步保留最优且最宽松的后缀，得到全局最少拆分次数；k份需k−1次拆分。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:]));limit=a[-1];answer=0\n    for i in range(len(a)-2,-1,-1):\n        value=a[i];parts=max(1,(value+limit-1)//limit);answer+=parts-1;limit=value//parts\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#55-minimum-number-of-split-operations-to-make-array-sorted",
+  "sourceContentHash": "971edc614d56ec933eadad1b231489844d4db0c0dc4da02c9e63c41406e27a34",
+  "author": "CSWork"
+}

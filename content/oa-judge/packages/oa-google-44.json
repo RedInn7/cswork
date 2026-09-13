@@ -1,0 +1,251 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-44",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "补全最大的合法时间",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Google",
+      "贪心"
+    ],
+    "description": "输入24小时制 hh:mm，将所有 ? 换成数字，使时间最大。已有数字不能改变；保证至少有一种合法补全。合法时间从00:00到23:59。原站 ?2:22 的结果23:22改变了固定数字，本站校正为22:22。\n\n输入输出与样例由CSWork整理；标注本站的数值范围属于本站评测约定。",
+    "input": "一行长度5的模式 hh:mm，各数位为数字或 ?，中间固定为冒号。",
+    "output": "输出题目要求的答案。",
+    "explanation": "样例1：小时十位不能取2（24不合法），只能取1，分钟末位取9，得到14:59。样例2：只补最后一位9，得到23:59。样例3：固定小时个位是2，补十位2得到22:22，不能改成23。",
+    "hints": [
+      "从高位到低位选最大可行数字。小时十位能取2时取2，否则取1；再由小时十位决定个位上限。分钟十位取5、个位取9。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "?4:5?\n",
+      "expectedOutput": "14:59\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "23:5?\n",
+      "expectedOutput": "23:59\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "?2:22\n",
+      "expectedOutput": "22:22\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "??:??\n",
+      "expectedOutput": "23:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "0?:??\n",
+      "expectedOutput": "09:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "2?:??\n",
+      "expectedOutput": "23:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "00:00\n",
+      "expectedOutput": "00:00\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "18:4?\n",
+      "expectedOutput": "18:49\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "1?:??\n",
+      "expectedOutput": "19:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "1?:?7\n",
+      "expectedOutput": "19:57\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "??:36\n",
+      "expectedOutput": "23:36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "?3:?5\n",
+      "expectedOutput": "23:55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "0?:?5\n",
+      "expectedOutput": "09:55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "16:4?\n",
+      "expectedOutput": "16:49\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "??:12\n",
+      "expectedOutput": "23:12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "1?:30\n",
+      "expectedOutput": "19:30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "??:1?\n",
+      "expectedOutput": "23:19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "21:5?\n",
+      "expectedOutput": "21:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "1?:2?\n",
+      "expectedOutput": "19:29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "?3:53\n",
+      "expectedOutput": "23:53\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "0?:??\n",
+      "expectedOutput": "09:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "2?:?9\n",
+      "expectedOutput": "23:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "06:01\n",
+      "expectedOutput": "06:01\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "??:?6\n",
+      "expectedOutput": "23:56\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "??:3?\n",
+      "expectedOutput": "23:39\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "1?:?8\n",
+      "expectedOutput": "19:58\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "??:?9\n",
+      "expectedOutput": "23:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "??:??\n",
+      "expectedOutput": "23:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "?6:??\n",
+      "expectedOutput": "16:59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "1?:24\n",
+      "expectedOutput": "19:24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "18:0?\n",
+      "expectedOutput": "18:09\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

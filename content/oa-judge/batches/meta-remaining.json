@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-meta-21",
+      "sourceContentHash": "6ced9e282b36235ee74b7246cea1cacdc1ae8fb1897a992636b1e960cb2b64e7",
+      "packageChecksum": "f49be287111c1a05bb73736f0441b9aa65bcab9cdb823ce4e43ffcd09e39ee7b",
+      "editorial": "## 思路\n\n解析列表后，用显式栈保存列表及深度；整数贡献数值乘深度，子列表以深度加一入栈。\n\n## 正确性证明\n\n每个整数仅由其直接父列表访问一次。栈中深度从最外层1开始，进入子列表恰增加1，等于包含该整数的列表数，因此累加得到定义的加权和。\n\n## 复杂度\n\n时间O(L)，额外空间O(L)，L为输入长度；不依赖深层递归遍历。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    import json\n    stack=[(json.loads(data),1)]; total=0\n    while stack:\n        values,depth=stack.pop()\n        for value in values:\n            if isinstance(value,list):stack.append((value,depth+1))\n            else:total+=value*depth\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-22",
+      "sourceContentHash": "679c2efab66d84f7ba4b3c9b48b9738b9f54c95914de88192082718117e27277",
+      "packageChecksum": "b5495bc7e818f96b3b101ccc3b390bfacd1fa012894cca9b68fea7a0f7c45883",
+      "editorial": "## 思路\n\n维护辅音计数，每逢n的倍数，把字符向后移到下一个非元音英文字母，超过z则从a继续找；最后恢复原大小写。\n\n## 正确性证明\n\n只对辅音增加计数，因此被替换位置恰好是第n、2n、3n…个辅音。按字母循环查找并跳过元音正好得到题目给定的下一个辅音，其它字符保持原样。\n\n## 复杂度\n\n时间O(L)，输出空间O(L)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    first,message=data.split('\\n',1); n=int(first); count=0; result=[]\n    for ch in message:\n        lower=ch.lower()\n        if 'a'<=lower<='z' and lower not in 'aeiou':\n            count+=1\n            if count%n==0:\n                value=(ord(lower)-96)%26\n                while chr(97+value) in 'aeiou':value=(value+1)%26\n                changed=chr(97+value); ch=changed.upper() if ch.isupper() else changed\n        result.append(ch)\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-23",
+      "sourceContentHash": "540f5474d1e0eed9c32414fc03b80c92ac44a750551453d1d91a98f0364e722f",
+      "packageChecksum": "23d15ed58192692c59c0755931ebeeef5df4077f08bd00ee4f89f72d597c5758",
+      "editorial": "## 思路\n\n用滑动和更新窗口总和。将总和绝对值放大10⁶倍，使用整数除法和余数实现六位小数四舍五入，避免二进制浮点误差。\n\n## 正确性证明\n\n第一个窗口直接求和，右移时减去离开的元素、加上进入的元素，保持准确窗口总和。除以w得到平均值，整数倍缩放后按余数是否至少为w/2加一，得到六位小数；舍入误差不超过0.5×10⁻⁶，满足允许绝对误差。\n\n## 复杂度\n\n时间O(n)，除输入和输出外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,w=map(int,data[:2]); a=list(map(int,data[2:])); result=[]\n    def rounded(total):\n        scaled=(2*abs(total)*1000000+w)//(2*w)\n        sign='-' if total<0 and scaled else ''\n        return f'{sign}{scaled//1000000}.{scaled%1000000:06d}'\n    total=sum(a[:w])\n    if w<=n:\n        result.append(rounded(total))\n        for i in range(w,n):total+=a[i]-a[i-w]; result.append(rounded(total))\n    return str(len(result))+('\\n'+' '.join(result) if result else '')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-25",
+      "sourceContentHash": "ac34c9b36d50759d8552de01ef552349979162367fba9cb11d551388681f730f",
+      "packageChecksum": "6a1028ad601d0f6a70401da1a38a61fe33092b08d2c1d32bb5d139f2da0d8737",
+      "editorial": "## 思路\n\n把时间转成从零点起的分钟数，扫描出严格早于当前时间的最大发车时间。\n\n## 正确性证明\n\n时间转换保持同一天内先后顺序。最大发车分钟数就是已发车的最后一班，两者相减为经过分钟数；没有候选则无车已发。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    def minutes(s):\n        h,m=map(int,s.split(':')); return h*60+m\n    now=minutes(data[-1]); latest=-1\n    for s in data[1:-1]:\n        t=minutes(s)\n        if t<now:latest=max(latest,t)\n    return str(now-latest if latest>=0 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-26",
+      "sourceContentHash": "e57909197d36d92957cb9f822e5c928ba47eb53cfd471921282244b1db6946b9",
+      "packageChecksum": "6716db82bf605f522d7080ca256380ce6b58f19c3e15ec4f339a619655c89e51",
+      "editorial": "## 思路\n\n逐行动态规划。每行从上一行下降进入，分别进行一次从左向右和从右向左的扫描，取每个位置的较大值，作为下一行入口。\n\n## 正确性证明\n\n路径不向上，因此每行只访问一次；在同一行改变水平移动方向必然重访格子，不合法。因此每行的路径是向左或向右的一段，两次扫描完整覆盖。下一行合并两方向的最大值不会重用本行格子，动态规划恰好枚举全部合法路线。\n\n## 复杂度\n\n时间O(RC)，除输入外空间O(C)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bad=-10**9; previous=[bad]*cols\n    if board[0][0]=='x':return '-1'\n    previous[0]=0\n    for row in board:\n        left=[bad]*cols; right=[bad]*cols\n        for j in range(cols):\n            if row[j]=='!':\n                best=max(previous[j],left[j-1] if j else bad)\n                if best!=bad:left[j]=best+1\n        for j in range(cols-1,-1,-1):\n            if row[j]=='!':\n                best=max(previous[j],right[j+1] if j+1<cols else bad)\n                if best!=bad:right[j]=best+1\n        previous=[max(a,b) for a,b in zip(left,right)]\n    return str(previous[-1] if previous[-1]!=bad else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-27",
+      "sourceContentHash": "8e526090198ab69e5696f7bb0075bdb931e8019748067788359f6dad7159270d",
+      "packageChecksum": "e932d6f46b80ce379e5d96478569705e2e449e64030f6d88a368bb1d7e10a8bc",
+      "editorial": "## 思路\n\n生成相邻斐波那契数，直到后一项不小于N；比较这两个数到N的距离。\n\n## 正确性证明\n\n序列非递减，夹住N的相邻两项分别是其左、右最近候选；其它项距离不会更小，因此取两者最小距离。\n\n## 复杂度\n\n时间O(log(N+1))，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]); a,b=0,1\n    while b<n:a,b=b,a+b\n    return str(min(n-a,b-n))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-28",
+      "sourceContentHash": "fe3b464a7f0d3b1fb9bac05a3c3ea1f4255ecde0dc05d3f1ac276b0316d839d7",
+      "packageChecksum": "2aedb9542904b7159c5c57ccbbc238ca87432231f9af4baa032c99cd02ecefc6",
+      "editorial": "## 思路\n\n把所有区间按起点排序，维护当前合并段：新起点不超过当前右端时扩展右端，否则开始新的段。\n\n## 正确性证明\n\n排序后若新起点大于当前右端，后续区间也不能填补这个缺口，当前段可以确定输出。否则两段相交，其并集是最左端到较大右端，合并不会丢失或增加被覆盖位置。\n\n## 复杂度\n\n时间O((n+m)log(n+m))，空间O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); result=[]\n    for left,right in intervals:\n        if result and left<=result[-1][1]:result[-1][1]=max(result[-1][1],right)\n        else:result.append([left,right])\n    return str(len(result))+''.join(f'\\n{a} {b}' for a,b in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-29",
+      "sourceContentHash": "d6b90bf15bdc1916a05a6aef8ce85dbcbb862bb895a019cb4c8ccd57d6d1ba17",
+      "packageChecksum": "de0a454f48de3236439d6a2a76bf0d5503e1f45a5aa0c8575f5a6c0ab6b81bd6",
+      "editorial": "## 思路\n\n直接枚举区间中的整数，拆出百位、十位、个位并检查三个两两不等条件。\n\n## 正确性证明\n\n闭区间枚举每个候选一次，三个不等式成立恰好表示任意两位不同，因此没有遗漏或重复计数。\n\n## 复杂度\n\n时间O(right−left+1)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    left,right=map(int,data); count=0\n    for value in range(left,right+1):\n        a=value//100; b=value//10%10; c=value%10\n        if a!=b and a!=c and b!=c:count+=1\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-31",
+      "sourceContentHash": "a248727c1f7fe87067c0ea4bb5849a2df57904b7efb43ef76dc54505da8ed31f",
+      "packageChecksum": "b76855e9360b828967f91da483e5ae4dfa14c60f34f12ff7a407410c2fa3a667",
+      "editorial": "## 思路\n\n把数组转换为相邻比较序列，用KMP匹配模式。匹配成功后回退到最长真前后缀，使重叠匹配也被统计。\n\n## 正确性证明\n\n每个原数组窗口与其相邻比较序列唯一对应。KMP逐个位置维护能匹配的最长模式前缀，失配回退不丢失任何可能匹配，完整匹配对应一个合法窗口。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,m=map(int,data[:2]); a=list(map(int,data[2:2+n])); p=list(map(int,data[2+n:])); prefix=[0]*m\n    for i in range(1,m):\n        j=prefix[i-1]\n        while j and p[i]!=p[j]:j=prefix[j-1]\n        if p[i]==p[j]:j+=1\n        prefix[i]=j\n    matched=answer=0\n    for i in range(n-1):\n        value=(a[i+1]>a[i])-(a[i+1]<a[i])\n        while matched and value!=p[matched]:matched=prefix[matched-1]\n        if value==p[matched]:matched+=1\n        if matched==m:answer+=1; matched=prefix[matched-1]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}
