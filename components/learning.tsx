@@ -771,13 +771,16 @@ export function LessonReader({
 export function ProblemList({
   boot,
   navigate,
+  library,
 }: {
   boot: Boot;
   navigate: Navigate;
+  library?: string;
 }) {
   return (
     <AlgorithmLibrary
       navigate={navigate}
+      collection={library}
       availableProblemIds={boot.problems.map((problem) => problem.id)}
     />
   );

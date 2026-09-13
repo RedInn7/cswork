@@ -52,7 +52,9 @@ function safeLink(value: string | undefined) {
   if (!value) return undefined;
   try {
     const url = new URL(value);
-    return url.protocol === 'https:' ? url.href : undefined;
+    return url.protocol === 'https:' && !url.username && !url.password
+      ? url.href
+      : undefined;
   } catch {
     return undefined;
   }
@@ -186,9 +188,8 @@ export function OaLibrary() {
       重试
     </button>
   );
-  const code = solution?.solutions.find(
-    (item) => item.language === language,
-  )?.code;
+  const codeBlocks =
+    solution?.solutions.filter((item) => item.language === language) || [];
   const currentDetail = detail?.id === selected ? detail : null;
   if (selected)
     return (
@@ -278,42 +279,53 @@ export function OaLibrary() {
                                   copyGeneration.current++;
                                 }}
                               >
-                                {solution.solutions.map((item) => (
-                                  <option
-                                    value={item.language}
-                                    key={item.language}
-                                  >
-                                    {languageNames[item.language] ||
-                                      item.language}
+                                {[
+                                  ...new Set(
+                                    solution.solutions.map(
+                                      (item) => item.language,
+                                    ),
+                                  ),
+                                ].map((value) => (
+                                  <option value={value} key={value}>
+                                    {languageNames[value] || value}
                                   </option>
                                 ))}
                               </select>
                             </label>
-                            <button
-                              type="button"
-                              onClick={async () => {
-                                const generation = ++copyGeneration.current;
-                                try {
-                                  await navigator.clipboard.writeText(
-                                    code || '',
-                                  );
-                                  if (generation === copyGeneration.current)
-                                    setCopyMessage('已复制');
-                                } catch {
-                                  if (generation === copyGeneration.current)
-                                    setCopyMessage(
-                                      '复制失败，请手动选择代码复制',
-                                    );
-                                }
-                              }}
-                            >
-                              复制代码
-                            </button>
                             <span role="status">{copyMessage}</span>
                           </div>
-                          <pre className="oa-code">
-                            <code>{code}</code>
-                          </pre>
+                          {codeBlocks.map((block, index) => (
+                            <div key={`${language}-${index}`}>
+                              {codeBlocks.length > 1 && (
+                                <h4>参考代码 {index + 1}</h4>
+                              )}
+                              <button
+                                type="button"
+                                onClick={async () => {
+                                  const generation = ++copyGeneration.current;
+                                  try {
+                                    await navigator.clipboard.writeText(
+                                      block.code,
+                                    );
+                                    if (generation === copyGeneration.current)
+                                      setCopyMessage('已复制');
+                                  } catch {
+                                    if (generation === copyGeneration.current)
+                                      setCopyMessage(
+                                        '复制失败，请手动选择代码复制',
+                                      );
+                                  }
+                                }}
+                              >
+                                {codeBlocks.length > 1
+                                  ? `复制代码 ${index + 1}`
+                                  : '复制代码'}
+                              </button>
+                              <pre className="oa-code">
+                                <code>{block.code}</code>
+                              </pre>
+                            </div>
+                          ))}
                         </>
                       )}
                     </>

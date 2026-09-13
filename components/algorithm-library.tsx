@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { StudyLibrary } from './study-library';
 import { OaLibrary } from './oa-library';
 import type { Navigate } from './learning';
@@ -8,22 +7,23 @@ import type { Navigate } from './learning';
 export function AlgorithmLibrary(props: {
   navigate: Navigate;
   availableProblemIds: string[];
+  collection?: string;
 }) {
-  const [section, setSection] = useState<'leetcode' | 'oa'>('leetcode');
+  const section = props.collection === 'oa' ? 'oa' : 'leetcode';
   return (
     <div className="algorithm-library">
       <nav className="algorithm-library-switch" aria-label="算法题库">
         <button
           type="button"
           aria-pressed={section === 'leetcode'}
-          onClick={() => setSection('leetcode')}
+          onClick={() => props.navigate('problems')}
         >
           算法题单
         </button>
         <button
           type="button"
           aria-pressed={section === 'oa'}
-          onClick={() => setSection('oa')}
+          onClick={() => props.navigate('problems', { library: 'oa' })}
         >
           OA 题目 <span>OA Master</span>
         </button>

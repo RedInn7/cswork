@@ -261,7 +261,13 @@ export function Academy() {
           />
         );
       case 'problems':
-        return <ProblemList boot={boot} navigate={navigate} />;
+        return (
+          <ProblemList
+            boot={boot}
+            navigate={navigate}
+            library={params.library}
+          />
+        );
       case 'problem':
         return selectedProblem ? (
           <ProblemWorkspace

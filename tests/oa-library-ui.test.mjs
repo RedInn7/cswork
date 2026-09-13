@@ -84,6 +84,7 @@ test('OA library reveals solutions only on request, supports language/copy and c
       solutions: [
         { language: 'python', code: 'print(1)' },
         { language: 'java', code: 'return 2;' },
+        { language: 'java', code: 'return 3;' },
       ],
     });
     assert.match(document.body.textContent, /Reference explanation/);
@@ -107,6 +108,10 @@ test('OA library reveals solutions only on request, supports language/copy and c
     });
     await click('复制代码');
     assert.equal(copied, 'return 2;');
+    assert.equal(document.querySelectorAll('select option').length, 2);
+    assert.equal(document.querySelectorAll('.oa-code code').length, 2);
+    await click('复制代码 2');
+    assert.equal(copied, 'return 3;');
     await click('收起参考题解');
     assert.doesNotMatch(document.body.textContent, /Reference explanation/);
     await click('返回 OA');
