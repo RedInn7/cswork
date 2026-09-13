@@ -35,6 +35,8 @@ jobs:
       - run: node --import tsx --test tests/oj-idle-precompile-ui.test.mjs
       - run: npx tsx --test tests/oj-submission-watch.test.ts tests/leetcode-cpp-value-transport.test.ts tests/leetcode-cpp-static-runtime.test.ts
       - run: npx tsx --test tests/oj-client-feedback.test.ts
+      - run: node --import tsx --test tests/oj-failfast-ui.test.mjs
+      - run: node --check tests/oj-failfast-integration.mjs
       - run: node --check tests/oj-latency-load.mjs
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts

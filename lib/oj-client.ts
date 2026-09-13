@@ -51,6 +51,17 @@ export type OJSubmission = {
   created_at: number;
   code?: string;
   cases?: OJCase[];
+  firstFailure?: {
+    ordinal: number;
+    status: string;
+    stdin: string;
+    expected: string;
+    stdout: string;
+    stderr: string;
+    truncated: Partial<
+      Record<'stdin' | 'expected' | 'stdout' | 'stderr', boolean>
+    >;
+  };
   compileOutput?: string;
   message?: string;
   queuedPosition?: number;

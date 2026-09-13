@@ -1,5 +1,20 @@
 import type Database from 'better-sqlite3';
 
+export const FEEDBACK_BYTES = 32768;
+export function boundedFeedback(value: string, limit = FEEDBACK_BYTES) {
+  const bytes = Buffer.from(value);
+  let end = Math.min(limit, bytes.length);
+  while (end < bytes.length && end > 0 && (bytes[end] & 0xc0) === 0x80) end--;
+  return {
+    text: bytes.subarray(0, end).toString('utf8'),
+    truncated: bytes.length > limit,
+  };
+}
+function capturedFeedback(value = '') {
+  // Retain enough original bytes to detect truncation across a UTF-8 boundary.
+  return boundedFeedback(value, FEEDBACK_BYTES + 4).text;
+}
+
 export type CaseRecord = {
   submissionId: string;
   attempt: number;
@@ -10,6 +25,7 @@ export type CaseRecord = {
   stdout?: string;
   stderr?: string;
   hidden: boolean;
+  terminalFailure?: boolean;
 };
 export type CaseProgress = {
   passed: number;
@@ -39,8 +55,16 @@ export function persistCase(
       record.status,
       record.runtimeMs,
       record.memoryKb,
-      record.hidden ? null : (record.stdout ?? '').slice(0, 65536),
-      record.hidden ? null : (record.stderr ?? '').slice(0, 65536),
+      record.terminalFailure
+        ? capturedFeedback(record.stdout)
+        : record.hidden
+          ? null
+          : (record.stdout ?? '').slice(0, 65536),
+      record.terminalFailure
+        ? capturedFeedback(record.stderr)
+        : record.hidden
+          ? null
+          : (record.stderr ?? '').slice(0, 65536),
       Number(record.hidden),
     );
     const updated = db
@@ -57,5 +81,16 @@ export function persistCase(
         record.attempt,
       );
     if (updated.changes !== 1) throw new Error('Submission attempt changed');
+    if (record.terminalFailure) {
+      db.prepare(
+        'UPDATE submissions SET status=?,finished_at=?,updated_at=? WHERE id=? AND attempt=?',
+      ).run(
+        record.status,
+        Date.now(),
+        Date.now(),
+        record.submissionId,
+        record.attempt,
+      );
+    }
   }).immediate();
 }

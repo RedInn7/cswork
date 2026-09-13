@@ -151,6 +151,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
     | Awaited<ReturnType<CompiledProgramCache['acquire']>>
     | undefined;
   let invalidateCompilation = false;
+  let terminalFailureCommitted = false;
   try {
     const snapshot = await loadJudgeSnapshot(claimed.problem_version_id!);
     assertSnapshotBudget(snapshot.cases);
@@ -268,24 +269,24 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       memory = 0,
       overall = 'accepted';
     const totalWeight = cases.reduce((sum, c) => sum + c.weight, 0);
+    const caseController = new AbortController();
+    const caseSignal = AbortSignal.any([
+      controller.signal,
+      caseController.signal,
+    ]);
     const executeCase = async (c: (typeof cases)[number]) => {
       current(id, attempt, controller.signal);
       // Codec decoding still runs in a fresh sandbox and never sees the tree.
       return snapshot.spec.checker === 'design-lc-297' ||
         snapshot.spec.checker === 'design-lc-449'
-        ? runCodecRoundTrip(
-            program!,
-            c.input,
-            snapshot.spec,
-            controller.signal,
-            run,
-          )
-        : run(program!, c.input, snapshot.spec, controller.signal);
+        ? runCodecRoundTrip(program!, c.input, snapshot.spec, caseSignal, run)
+        : run(program!, c.input, snapshot.spec, caseSignal);
     };
     for await (const { item: c, result } of orderedCaseResults(
       cases,
       executeCase,
       caseConcurrency(snapshot.spec.memoryLimit),
+      () => caseController.abort(),
     )) {
       current(id, attempt, controller.signal);
       let status = engineVerdict(result);
@@ -328,6 +329,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
           stdout: result.files?.stdout,
           stderr: result.files?.stderr,
           hidden: c.hidden,
+          terminalFailure: claimed.mode === 'judge' && status !== 'accepted',
         },
         {
           passed,
@@ -336,8 +338,11 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
           score: Math.round((weight / totalWeight) * 100),
         },
       );
+      if (claimed.mode === 'judge' && status !== 'accepted')
+        terminalFailureCommitted = true;
       // Expensive resource failures stop this submission; unexecuted cases are explicitly skipped.
       if (
+        (claimed.mode === 'judge' && status !== 'accepted') ||
         [
           'time_limit',
           'memory_limit',
@@ -347,6 +352,7 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       )
         break;
     }
+    if (terminalFailureCommitted) return;
     current(id, attempt, controller.signal);
     update(id, attempt, {
       status:
@@ -354,6 +360,8 @@ async function judgeSubmission(job: Job<{ submissionId: string }>) {
       finished_at: Date.now(),
     });
   } catch (error) {
+    // A published verdict is immutable even if shutdown interrupts cleanup.
+    if (terminalFailureCommitted) return;
     // A restarted runner may have discarded cached file IDs. The bounded job retry must recompile.
     invalidateCompilation = true;
     const latest = submissionRow(id);

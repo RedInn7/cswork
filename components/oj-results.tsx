@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Check,
   Clock3,
@@ -42,11 +42,20 @@ export function Verdict({
         <Check size={14} />
       ) : null}
       {verdict(submission.status, submission.mode)}
+      {submission.status === 'wrong_answer' && ' · Wrong Answer'}
     </span>
   );
 }
 
-export function CopyBlock({ label, value }: { label: string; value: string }) {
+export function CopyBlock({
+  label,
+  value,
+  truncated,
+}: {
+  label: string;
+  value: string;
+  truncated?: boolean;
+}) {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState(false);
   useEffect(() => {
@@ -75,6 +84,9 @@ export function CopyBlock({ label, value }: { label: string; value: string }) {
         </button>
       </div>
       <pre tabIndex={0}>{value || '（空）'}</pre>
+      {truncated && (
+        <small>内容过长，仅显示部分内容；复制也只包含当前显示的内容。</small>
+      )}
       {error && <small role="status">复制失败，请选中文字后复制。</small>}
     </div>
   );
@@ -91,14 +103,50 @@ export function SubmissionResult({
   cancelling?: boolean;
   inspect?: () => void;
 }) {
-  const [selected, setSelected] = useState(0);
-  useEffect(() => setSelected(0), [submission.id]);
   const cases = submission.cases || [];
+  const firstFailure = cases.findIndex((item) =>
+    [
+      'wrong_answer',
+      'runtime_error',
+      'time_limit',
+      'memory_limit',
+      'output_limit',
+    ].includes(item.status),
+  );
+  const [selected, setSelected] = useState(Math.max(0, firstFailure));
+  const selection = useRef({
+    id: submission.id,
+    failureShown: firstFailure >= 0,
+  });
+  useEffect(() => {
+    if (selection.current.id !== submission.id) {
+      selection.current = {
+        id: submission.id,
+        failureShown: firstFailure >= 0,
+      };
+      setSelected(Math.max(0, firstFailure));
+    } else if (firstFailure >= 0 && !selection.current.failureShown) {
+      selection.current.failureShown = true;
+      setSelected(firstFailure);
+    }
+  }, [submission.id, firstFailure]);
   const current = cases[selected] || cases[0];
   const running = activeStatuses.has(submission.status);
+  const diagnostic =
+    !running &&
+    submission.mode === 'judge' &&
+    submission.firstFailure?.ordinal === current?.ordinal &&
+    submission.firstFailure?.status === current?.status
+      ? submission.firstFailure
+      : undefined;
+  const output = diagnostic || current;
   const completedCases = cases.filter(
     (item) => !activeStatuses.has(item.status) && item.status !== 'skipped',
   ).length;
+  const passedCases = cases.filter((item) =>
+    ['accepted', 'finished'].includes(item.status),
+  ).length;
+  const skippedCases = cases.filter((item) => item.status === 'skipped').length;
   const runtime =
     submission.runtimeMs ??
     (typeof submission.runtime === 'number' ? submission.runtime * 1000 : null);
@@ -113,8 +161,8 @@ export function SubmissionResult({
             {submission.mode === 'judge' && !running && (
               <>
                 {' '}
-                · {submission.passed} / {submission.total} 个测试点
-                {submission.score != null && <> · {submission.score} 分</>}
+                · 已通过 {submission.passed} / {submission.total} 个测试点
+                {skippedCases > 0 && <> · {skippedCases} 个未运行</>}
               </>
             )}
             {submission.queuedPosition != null && running && (
@@ -123,7 +171,8 @@ export function SubmissionResult({
             {running && submission.total > 0 && (
               <>
                 {' '}
-                · 已完成 {completedCases} / {submission.total} 个测试点
+                · 已检查 {completedCases} / {submission.total} 个测试点，
+                {passedCases} 个通过
               </>
             )}
           </span>
@@ -160,13 +209,25 @@ export function SubmissionResult({
       {submission.message && (
         <p className="cs-result-message">{submission.message}</p>
       )}
+      {submission.mode === 'judge' && firstFailure >= 0 && skippedCases > 0 && (
+        <p className="cs-result-message">
+          发现未通过的测试点，已停止后续评测。下方可查看失败原因。
+        </p>
+      )}
       {submission.compileOutput && (
         <CopyBlock label="编译输出" value={submission.compileOutput} />
       )}
-      {running && !cases.length && (
+      {running && (
         <div className="cs-processing">
-          <LoaderCircle size={20} className="cs-spin" />
-          <p>任务已保存。你可以继续编辑，结果会自动更新。</p>
+          <p role="status">
+            {submission.status === 'compiling'
+              ? '正在编译代码，完成后开始检查测试点。'
+              : ['pending', 'queued', 'submitting'].includes(submission.status)
+                ? '提交已收到，正在等待评测资源。你可以继续编辑。'
+                : submission.mode === 'judge'
+                  ? '正在逐项检查；全部通过才会显示通过，遇到错误立即停止并显示结果。'
+                  : '正在运行测试，输出会自动更新。'}
+          </p>
         </div>
       )}
       {!!cases.length && (
@@ -181,6 +242,7 @@ export function SubmissionResult({
                 type="button"
                 role="tab"
                 aria-selected={selected === index}
+                aria-label={`测试点 ${test.ordinal + 1}：${verdict(test.status, submission.mode)}`}
                 aria-controls={`case-result-${submission.id}`}
                 id={`case-${submission.id}-${index}`}
                 key={test.ordinal}
@@ -190,6 +252,8 @@ export function SubmissionResult({
                 <span className="cs-case-dot" />
                 {test.hidden ? <LockKeyhole size={12} /> : null}测试点{' '}
                 {test.ordinal + 1}
+                {' · '}
+                {verdict(test.status, submission.mode)}
               </button>
             ))}
           </div>
@@ -208,24 +272,40 @@ export function SubmissionResult({
                   <span>{(current.memoryKb / 1024).toFixed(1)} MB</span>
                 )}
               </div>
-              {current.hidden ? (
+              {current.hidden && !diagnostic ? (
                 <p className="cs-hidden-case">
                   <LockKeyhole size={15} />
                   隐藏测试点仅显示判题结果和资源用量。
                 </p>
               ) : (
                 <div className="cs-case-output">
-                  {current.stdin !== undefined && (
-                    <CopyBlock label="输入" value={current.stdin} />
+                  {output.stdin !== undefined && (
+                    <CopyBlock
+                      label="输入"
+                      value={output.stdin}
+                      truncated={diagnostic?.truncated?.stdin}
+                    />
                   )}
-                  {current.expected !== undefined && (
-                    <CopyBlock label="期望输出" value={current.expected} />
+                  {output.expected !== undefined && (
+                    <CopyBlock
+                      label="期望输出"
+                      value={output.expected}
+                      truncated={diagnostic?.truncated?.expected}
+                    />
                   )}
-                  {current.stdout !== undefined && (
-                    <CopyBlock label="实际输出" value={current.stdout} />
+                  {output.stdout !== undefined && (
+                    <CopyBlock
+                      label="实际输出"
+                      value={output.stdout}
+                      truncated={diagnostic?.truncated?.stdout}
+                    />
                   )}
-                  {current.stderr && (
-                    <CopyBlock label="标准错误" value={current.stderr} />
+                  {output.stderr && (
+                    <CopyBlock
+                      label="标准错误"
+                      value={output.stderr}
+                      truncated={diagnostic?.truncated?.stderr}
+                    />
                   )}
                 </div>
               )}

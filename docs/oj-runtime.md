@@ -47,7 +47,7 @@ Redis 开启 AOF，`appendfsync everysec`、`maxmemory-policy noeviction`。这�
 
 编译后 `copyOutCached` 返回 `fileIds`，测试点通过 `copyIn: { "main": { "fileId": "..." } }` 引用同一可执行文件，不重复编译。Java 固定执行 `javac Main.java` 后将所有 `.class` 放入 `main.jar`，不能只缓存 Main.class 而丢失内部类。固定 shell 片段不拼接学员代码，源码只通过 `copyIn` 内容传递。Go 使用 `GOTOOLCHAIN=local`、`GOPROXY=off`、临时 GOCACHE。
 
-执行器的 `Accepted` 只表示程序正常退出，业务 worker 仍要比较输出。编译失败归编译错误；运行失败区分时间、内存、输出、运行错误；执行器自身异常归系统错误。隐藏测试输入和预期答案只在服务端，不回传给学员。HTTP 连接取消会传播到执行上下文；worker 在 finally 中释放本任务的编译产物租约；同账号同源码的成功编译可在最多 8 项、5 分钟缓存中复用，过期、淘汰、故障与停机时删除。执行器的 10 分钟 TTL 仍是崩溃兜底。
+执行器的 `Accepted` 只表示程序正常退出，业务 worker 仍要比较输出。编译失败归编译错误；运行失败区分时间、内存、输出、运行错误；执行器自身异常归系统错误。隐藏测试默认不回传；正式提交首错停止后，仅本人和老师可读取该首个失败用例的限长诊断，其他隐藏测试仍保密，详见[首错反馈规则](oj-first-failure-feedback.md)。HTTP 连接取消会传播到执行上下文；worker 在 finally 中释放本任务的编译产物租约；同账号同源码的成功编译可在最多 16 项前台、2 项后台、5 分钟缓存中复用，过期、淘汰、故障与停机时删除。执行器的 10 分钟 TTL 仍是崩溃兜底。
 
 stdout/stderr collector 应使用 `pipe: true`。另外必须优先处理 `fileError` 的 `CollectSizeExceeded` / `CopyOutSizeExceeded`：上游可能在输出超限时同时返回 `Nonzero Exit Status`（例如 Python 捕获文件过大错误），只映射顶层 status 会误报成普通运行错误。
 
