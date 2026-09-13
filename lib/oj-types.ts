@@ -41,6 +41,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-window-averages'
     | 'oa-balanced-circle'
     | 'oa-magic-square'
+    | 'oa-newspaper'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -254,6 +255,7 @@ export const ojImportSchema = z
           'oa-window-averages',
           'oa-balanced-circle',
           'oa-magic-square',
+          'oa-newspaper',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -294,7 +296,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-balanced-circle' &&
         data.problem.id !== 'oa-microsoft-15') ||
       (data.problem.checker === 'oa-magic-square' &&
-        data.problem.id !== 'oa-google-17')
+        data.problem.id !== 'oa-google-17') ||
+      (data.problem.checker === 'oa-newspaper' &&
+        data.problem.id !== 'oa-uber-6')
     )
       ctx.addIssue({
         code: 'custom',

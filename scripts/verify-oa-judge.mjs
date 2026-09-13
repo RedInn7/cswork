@@ -50,6 +50,7 @@ async function run(code, input, spec) {
       'oa-window-averages',
       'oa-balanced-circle',
       'oa-magic-square',
+      'oa-newspaper',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,
