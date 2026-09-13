@@ -140,7 +140,10 @@ export async function probeLargeInputs({
         )
         .all(item.id);
       assert.equal(results.length, 2);
-      const times = results.map((r) => {
+      // Successful hidden-case diagnostics must stay private; use the public
+      // case for sandbox concurrency and DB timestamps for full admission.
+      assert.equal(results[1].stderr, null);
+      const times = results.slice(0, 1).map((r) => {
         const m = /^CAPACITY (\d+) (\d+)$/m.exec(r.stderr);
         assert(m);
         return [BigInt(m[1]), BigInt(m[2])];

@@ -341,6 +341,12 @@ for height in range(right,left-1,-1): circle.extend([height]*counts[height])
 circle.reverse(); print(len(circle)); print(*circle)
 `,
   };
+  for (const id of ['oa-uber-25', 'oa-uber-34', 'oa-uber-38'])
+    if (selected.items.some((item) => item.id === id))
+      equivalentPrograms[id] = readFileSync(
+        `content/oa-judge/positive-controls/${id}.py`,
+        'utf8',
+      );
   const wrongOutput = 'CSWORK_DELIBERATE_WRONG_ANSWER';
   for (const [index, item] of selected.items.entries()) {
     const student = students[index];
