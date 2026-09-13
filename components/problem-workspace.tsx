@@ -34,6 +34,7 @@ import {
   X,
 } from 'lucide-react';
 import { Button } from './ui/button';
+import { OaEditorial } from './oa-library';
 import {
   Dialog,
   DialogContent,
@@ -206,7 +207,9 @@ function Workspace({
     message: '语言服务待启动',
   });
   const suggest = useRef<(() => void) | null>(null);
-  const [leftTab, setLeftTab] = useState<'statement' | 'history'>('statement');
+  const [leftTab, setLeftTab] = useState<'statement' | 'history' | 'editorial'>(
+    'statement',
+  );
   const [bottomTab, setBottomTab] = useState<'input' | 'result'>('input');
   const [inputMode, setInputMode] = useState<'sample' | 'custom'>('sample');
   const [stdin, setStdin] = useState('');
@@ -898,9 +901,22 @@ function Workspace({
           <History size={15} />
           {english ? 'Submissions' : '提交记录'}
         </button>
+        {problem.id.startsWith('oa-') && (
+          <button
+            role="tab"
+            className={leftTab === 'editorial' ? 'active' : ''}
+            aria-selected={leftTab === 'editorial'}
+            onClick={() => setLeftTab('editorial')}
+          >
+            <BookOpen size={15} />
+            {english ? 'Solution' : '题解'}
+          </button>
+        )}
       </div>
       <div className="cs-statement-scroll">
-        {leftTab === 'statement' ? (
+        {leftTab === 'editorial' ? (
+          <OaEditorial key={problem.id} problemId={problem.id} />
+        ) : leftTab === 'statement' ? (
           <>
             <div className="cs-statement-heading">
               <h2>
@@ -1576,7 +1592,12 @@ function Workspace({
           <button
             className="cs-back"
             aria-label="返回题库"
-            onClick={() => navigate('problems')}
+            onClick={() =>
+              navigate(
+                'problems',
+                problem.id.startsWith('oa-') ? { library: 'oa' } : undefined,
+              )
+            }
           >
             <ArrowLeft size={18} />
           </button>

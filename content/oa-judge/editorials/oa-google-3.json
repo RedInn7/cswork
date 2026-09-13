@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-3",
+  "title": "硬币游戏的累计奖励",
+  "explanation": "## 思路\n\n用 table 记录桌面硬币数，answer 记录已经赢得的数量。d 时把 table 限制在非负数；w 时先结算，再将 table 清零。\n\n## 为什么正确\n\n处理每个前缀后，table 恰好是尚未结算的桌面硬币数，answer 恰好是此前所有 w 的奖励。三种更新分别对应规则，保持不变量。结束时只输出 answer，故不会把未赢得的剩余硬币算入。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    table = 0; answer = 0\n    for event in data[0]:\n        if event == 'i': table += 1\n        elif event == 'd': table = max(0, table-1)\n        else:\n            answer += table\n            table = 0\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#3-coin-game-round-based-stack",
+  "sourceContentHash": "e944fd04e14a2fb3e69da0faf2942e041c603fea159953301bef03abe4fa7eb8",
+  "author": "CSWork"
+}

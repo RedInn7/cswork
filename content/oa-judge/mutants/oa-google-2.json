@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许重叠",
+    "code": "def solve(data):\n    n = int(data[0]); a = list(map(int, data[1:])); i = 0; answer = 0\n    while i + 2 < n:\n        if a[i] + a[i+1] + a[i+2] == 0:\n            answer += 1\n            i += 1\n        else:\n            i += 1\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉末尾三元组",
+    "code": "def solve(data):\n    n = int(data[0]); a = list(map(int, data[1:])); i = 0; answer = 0\n    while i + 3 < n:\n        if a[i] + a[i+1] + a[i+2] == 0:\n            answer += 1\n            i += 3\n        else:\n            i += 1\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

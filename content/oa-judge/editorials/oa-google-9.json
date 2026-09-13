@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-9",
+  "title": "按原顺序组成最大的三位数",
+  "explanation": "## 思路\n\nbest[k] 保存已处理前缀中恰好选 k 位可组成的最大值。读入数字 d 时，倒序更新 best[k]=max(best[k],best[k−1]×10+d)，避免一个数字被用多次。\n\n## 为什么正确\n\n对前缀长度归纳。恰选 k 位的最优解要么不用当前数字，来自旧 best[k]；要么以它结尾，由前缀中最优的 k−1 位追加该数字得到。两种情况完整且互斥。倒序确保读取的是上一个前缀的状态。最后取 1..3 位状态的最大值即符合“最多三位”。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    best = [0,-1,-1,-1]\n    for digit in map(int, data[1:]):\n        for count in range(3,0,-1):\n            if best[count-1] >= 0:\n                best[count] = max(best[count], best[count-1]*10+digit)\n    return max(best[1:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#9-biggest-number-from-digits",
+  "sourceContentHash": "17f8e18b004e5d126f472a2acb63546f53420efed0528c7d492c80fe7b32e504",
+  "author": "CSWork"
+}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import type { Navigate } from './learning';
 
 type Item = {
   id: string;
@@ -12,7 +13,8 @@ type Item = {
   title: string;
   sourceUrl: string;
   languages: string[];
-  judgeStatus: 'reading_only';
+  judgeStatus: 'reading_only' | 'ready';
+  judgeProblemId?: string;
 };
 type Page = {
   items: Item[];
@@ -42,7 +44,11 @@ async function read<T>(path: string, signal: AbortSignal): Promise<T> {
     if (response.status === 401)
       window.dispatchEvent(new Event('cswork:auth-required'));
     throw new Error(
-      response.status === 401 ? '请登录后查看 OA 题目' : '加载失败，请重试',
+      response.status === 401
+        ? '请登录后查看 OA 题目'
+        : response.status === 409
+          ? '本题题解与评测数据正在准备中'
+          : '加载失败，请重试',
     );
   }
   return response.json();
@@ -88,10 +94,11 @@ export function OaMarkdown({ body }: { body: string }) {
   );
 }
 
-export function OaLibrary() {
+export function OaLibrary({ navigate }: { navigate?: Navigate }) {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
   const [company, setCompany] = useState('');
+  const [readyOnly, setReadyOnly] = useState(true);
   const [page, setPage] = useState(1);
   const [data, setData] = useState<Page | null>(null);
   const [companies, setCompanies] = useState<Page['companies']>([]);
@@ -124,6 +131,7 @@ export function OaLibrary() {
       q: search,
       company,
       page: String(page),
+      ready: readyOnly ? '1' : '0',
     });
     read<Page>('?' + params, controller.signal)
       .then((value) => {
@@ -139,7 +147,7 @@ export function OaLibrary() {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, [search, company, page, retry]);
+  }, [search, company, page, retry, readyOnly]);
   useEffect(() => {
     const controller = new AbortController();
     setDetail(null);
@@ -217,7 +225,25 @@ export function OaLibrary() {
                 <h2 ref={heading} tabIndex={-1}>
                   {currentDetail.title}
                 </h2>
-                <p>题面与参考题解 · 暂不支持在线评测</p>
+                <p>
+                  {currentDetail.judgeStatus === 'ready'
+                    ? '运行样例、提交代码，查看评测结果。'
+                    : '评测准备中，暂可阅读原题。'}
+                </p>
+                {currentDetail.judgeStatus === 'ready' &&
+                  currentDetail.judgeProblemId &&
+                  navigate && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate('problem', {
+                          problem: currentDetail.judgeProblemId!,
+                        })
+                      }
+                    >
+                      开始练习
+                    </button>
+                  )}
               </div>
             </header>
             <div className="oa-source">
@@ -239,100 +265,102 @@ export function OaLibrary() {
                 原站未提供独立题面，可查看题解或原站。
               </p>
             )}
-            <section className="oa-solution" aria-label="参考题解">
-              <button
-                type="button"
-                aria-expanded={solutionOpen}
-                aria-controls="oa-solution-body"
-                onClick={() => setSolutionOpen((value) => !value)}
-              >
-                {solutionOpen ? '收起参考题解' : '查看参考题解'}
-              </button>
-              {solutionOpen && (
-                <div id="oa-solution-body">
-                  {solutionError ? (
-                    <div role="alert">
-                      {solutionError} {retryButton}
-                    </div>
-                  ) : !solution ? (
-                    <p role="status">正在加载题解…</p>
-                  ) : (
-                    <>
-                      {solution.explanation.trim() ? (
-                        <OaMarkdown body={solution.explanation} />
-                      ) : (
-                        <p className="oa-source">原站未提供独立思路讲解。</p>
-                      )}
-                      {solution.solutions.length === 0 && (
-                        <p className="oa-source">本题未提供参考代码。</p>
-                      )}
-                      {solution.solutions.length > 0 && (
-                        <>
-                          <div className="oa-code-toolbar">
-                            <label>
-                              代码语言{' '}
-                              <select
-                                value={language}
-                                onChange={(event) => {
-                                  setLanguage(event.target.value);
-                                  setCopyMessage('');
-                                  copyGeneration.current++;
-                                }}
-                              >
-                                {[
-                                  ...new Set(
-                                    solution.solutions.map(
-                                      (item) => item.language,
+            {currentDetail.judgeStatus === 'ready' && (
+              <section className="oa-solution" aria-label="题解">
+                <button
+                  type="button"
+                  aria-expanded={solutionOpen}
+                  aria-controls="oa-solution-body"
+                  onClick={() => setSolutionOpen((value) => !value)}
+                >
+                  {solutionOpen ? '收起题解' : '查看题解'}
+                </button>
+                {solutionOpen && (
+                  <div id="oa-solution-body">
+                    {solutionError ? (
+                      <div role="alert">
+                        {solutionError} {retryButton}
+                      </div>
+                    ) : !solution ? (
+                      <p role="status">正在加载题解…</p>
+                    ) : (
+                      <>
+                        {solution.explanation.trim() ? (
+                          <OaMarkdown body={solution.explanation} />
+                        ) : (
+                          <p className="oa-source">题解正在准备中。</p>
+                        )}
+                        {solution.solutions.length === 0 && (
+                          <p className="oa-source">本题未提供参考代码。</p>
+                        )}
+                        {solution.solutions.length > 0 && (
+                          <>
+                            <div className="oa-code-toolbar">
+                              <label>
+                                代码语言{' '}
+                                <select
+                                  value={language}
+                                  onChange={(event) => {
+                                    setLanguage(event.target.value);
+                                    setCopyMessage('');
+                                    copyGeneration.current++;
+                                  }}
+                                >
+                                  {[
+                                    ...new Set(
+                                      solution.solutions.map(
+                                        (item) => item.language,
+                                      ),
                                     ),
-                                  ),
-                                ].map((value) => (
-                                  <option value={value} key={value}>
-                                    {languageNames[value] || value}
-                                  </option>
-                                ))}
-                              </select>
-                            </label>
-                            <span role="status">{copyMessage}</span>
-                          </div>
-                          {codeBlocks.map((block, index) => (
-                            <div key={`${language}-${index}`}>
-                              {codeBlocks.length > 1 && (
-                                <h4>参考代码 {index + 1}</h4>
-                              )}
-                              <button
-                                type="button"
-                                onClick={async () => {
-                                  const generation = ++copyGeneration.current;
-                                  try {
-                                    await navigator.clipboard.writeText(
-                                      block.code,
-                                    );
-                                    if (generation === copyGeneration.current)
-                                      setCopyMessage('已复制');
-                                  } catch {
-                                    if (generation === copyGeneration.current)
-                                      setCopyMessage(
-                                        '复制失败，请手动选择代码复制',
-                                      );
-                                  }
-                                }}
-                              >
-                                {codeBlocks.length > 1
-                                  ? `复制代码 ${index + 1}`
-                                  : '复制代码'}
-                              </button>
-                              <pre className="oa-code">
-                                <code>{block.code}</code>
-                              </pre>
+                                  ].map((value) => (
+                                    <option value={value} key={value}>
+                                      {languageNames[value] || value}
+                                    </option>
+                                  ))}
+                                </select>
+                              </label>
+                              <span role="status">{copyMessage}</span>
                             </div>
-                          ))}
-                        </>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </section>
+                            {codeBlocks.map((block, index) => (
+                              <div key={`${language}-${index}`}>
+                                {codeBlocks.length > 1 && (
+                                  <h4>代码 {index + 1}</h4>
+                                )}
+                                <button
+                                  type="button"
+                                  onClick={async () => {
+                                    const generation = ++copyGeneration.current;
+                                    try {
+                                      await navigator.clipboard.writeText(
+                                        block.code,
+                                      );
+                                      if (generation === copyGeneration.current)
+                                        setCopyMessage('已复制');
+                                    } catch {
+                                      if (generation === copyGeneration.current)
+                                        setCopyMessage(
+                                          '复制失败，请手动选择代码复制',
+                                        );
+                                    }
+                                  }}
+                                >
+                                  {codeBlocks.length > 1
+                                    ? `复制代码 ${index + 1}`
+                                    : '复制代码'}
+                                </button>
+                                <pre className="oa-code">
+                                  <code>{block.code}</code>
+                                </pre>
+                              </div>
+                            ))}
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+              </section>
+            )}
           </>
         )}
       </section>
@@ -345,11 +373,23 @@ export function OaLibrary() {
           <span className="study-kicker">ONLINE ASSESSMENT · OA MASTER</span>
           <h2>OA 题目</h2>
           <p>
-            按公司查找笔试题，阅读题面、思路和多语言参考代码。与算法题单分开，暂不支持在线评测。
+            按公司查找 OA
+            题，完成样例和提交。已验证的题目可直接练习，其余题目的评测数据正在准备中。
           </p>
         </div>
       </header>
       <div className="study-filters">
+        <label>
+          <input
+            type="checkbox"
+            checked={readyOnly}
+            onChange={(event) => {
+              setReadyOnly(event.target.checked);
+              setPage(1);
+            }}
+          />
+          只看可练习
+        </label>
         <label className="oa-search">
           搜索题目
           <input
@@ -402,7 +442,13 @@ export function OaLibrary() {
                     type="button"
                     className="oa-row"
                     key={item.id}
-                    onClick={() => setSelected(item.id)}
+                    onClick={() =>
+                      item.judgeStatus === 'ready' &&
+                      item.judgeProblemId &&
+                      navigate
+                        ? navigate('problem', { problem: item.judgeProblemId })
+                        : setSelected(item.id)
+                    }
                   >
                     <span className="oa-company">{item.companyName}</span>
                     <span className="oa-title">
@@ -413,7 +459,10 @@ export function OaLibrary() {
                           .join(' · ')}
                       </small>
                     </span>
-                    <span className="oa-badge">OA 题目</span>
+                    <span className="oa-badge">
+                      OA 题目 ·{' '}
+                      {item.judgeStatus === 'ready' ? '可练习' : '准备中'}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -442,6 +491,49 @@ export function OaLibrary() {
           </>
         )
       )}
+    </section>
+  );
+}
+
+/** Mounted only after the learner selects the editorial tab. */
+export function OaEditorial({ problemId }: { problemId: string }) {
+  const [data, setData] = useState<Solution | null>(null);
+  const [error, setError] = useState('');
+  const [attempt, setAttempt] = useState(0);
+  useEffect(() => {
+    const controller = new AbortController();
+    setData(null);
+    setError('');
+    read<Solution>(
+      '/' + encodeURIComponent(problemId) + '/solution',
+      controller.signal,
+    )
+      .then((value) => {
+        if (!controller.signal.aborted) setData(value);
+      })
+      .catch((reason) => {
+        if (!controller.signal.aborted) setError(reason.message);
+      });
+    return () => controller.abort();
+  }, [problemId, attempt]);
+  if (error)
+    return (
+      <div role="alert">
+        {error} <button onClick={() => setAttempt((n) => n + 1)}>重试</button>
+      </div>
+    );
+  if (!data) return <p role="status">正在加载题解…</p>;
+  return (
+    <section aria-label="题解" className="oa-solution">
+      <OaMarkdown body={data.explanation} />
+      {data.solutions.map((solution, index) => (
+        <div key={solution.language + index}>
+          <h3>{languageNames[solution.language] || solution.language}</h3>
+          <pre className="oa-code">
+            <code>{solution.code}</code>
+          </pre>
+        </div>
+      ))}
     </section>
   );
 }

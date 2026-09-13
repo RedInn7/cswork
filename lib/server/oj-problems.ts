@@ -13,6 +13,11 @@ import { createOjSeedPackages } from '../../scripts/seed-oj-data.mjs';
 import type { Person } from './auth';
 import { database } from './env';
 import {
+  oaJudgeRegistry,
+  requireOaJudgeReady,
+  assertOaVersionReady,
+} from './oa-judge';
+import {
   HttpError,
   one,
   rows,
@@ -156,6 +161,7 @@ const libraryJudgeGate = `NOT EXISTS (
 
 /** Compilation needs an authorized version and interface, never hidden test data. */
 export async function getCompileProblem(p: Person, problemId: string) {
+  await requireOaJudgeReady(problemId);
   const problem = await one<ProblemRow>(
     `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
@@ -163,11 +169,12 @@ export async function getCompileProblem(p: Person, problemId: string) {
   if (!problem?.current_version_id)
     throw new HttpError(404, '题目不存在或尚未发布');
   await requireCourse(p, problem.course_id);
-  const version = await one<{ spec_json: string }>(
-    'SELECT spec_json FROM oj_problem_versions WHERE id=?',
+  const version = await one<{ spec_json: string; checksum: string }>(
+    'SELECT spec_json,checksum FROM oj_problem_versions WHERE id=?',
     problem.current_version_id,
   );
   if (!version) throw new HttpError(404, '题目版本不存在');
+  assertOaVersionReady(problemId, version.checksum, version.spec_json);
   return {
     versionId: problem.current_version_id,
     spec: JSON.parse(version.spec_json) as OjProblemSpec,
@@ -176,6 +183,7 @@ export async function getCompileProblem(p: Person, problemId: string) {
 
 /** Submission creation checks the version's own course permission before snapshotting. */
 export async function getJudgeProblem(p: Person, problemId: string) {
+  await requireOaJudgeReady(problemId);
   const problem = await one<ProblemRow>(
     `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
@@ -183,7 +191,13 @@ export async function getJudgeProblem(p: Person, problemId: string) {
   if (!problem?.current_version_id)
     throw new HttpError(404, '题目不存在或尚未发布');
   await requireCourse(p, problem.course_id);
-  return loadJudgeSnapshot(problem.current_version_id);
+  const snapshot = await loadJudgeSnapshot(problem.current_version_id);
+  assertOaVersionReady(
+    problemId,
+    snapshot.checksum,
+    JSON.stringify(snapshot.spec),
+  );
+  return snapshot;
 }
 
 async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
@@ -219,10 +233,24 @@ export async function listPublishedProblems(): Promise<OjPublicProblem[]> {
   const versions = await rows<VersionRow>(
     `SELECT v.* FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id WHERE p.published=1 AND ${libraryJudgeGate} ORDER BY p.created_at,p.id`,
   );
-  return Promise.all(versions.map(publicProblem));
+  const trusted = oaJudgeRegistry();
+  return Promise.all(
+    versions
+      .filter(
+        (version) =>
+          !version.problem_id.startsWith('oa-') ||
+          trusted.isReady({
+            id: version.problem_id,
+            checksum: version.checksum,
+            spec_json: version.spec_json,
+          }),
+      )
+      .map(publicProblem),
+  );
 }
 
 export async function getPublishedProblem(p: Person, problemId: string) {
+  await requireOaJudgeReady(problemId);
   const pr = await one<ProblemRow>(
     `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
     problemId,
@@ -234,6 +262,7 @@ export async function getPublishedProblem(p: Person, problemId: string) {
     pr.current_version_id,
   );
   if (!v) throw new HttpError(404, '题目版本不存在');
+  assertOaVersionReady(problemId, v.checksum, v.spec_json);
   return publicProblem(v);
 }
 

@@ -37,6 +37,8 @@ jobs:
       - run: npx tsx --test tests/oj-client-feedback.test.ts
       - run: node --import tsx --test tests/oj-failfast-ui.test.mjs
       - run: node --check tests/oj-failfast-integration.mjs
+      - run: node --check tests/oa-judge-integration.mjs
+      - run: node --import tsx --test --test-concurrency=1 tests/oa-judge.test.ts tests/oa-judge-gate.test.ts tests/oa-judge-content.test.ts
       - run: node --check tests/oj-latency-load.mjs
       - run: node --test tests/oj-capacity-config.test.mjs tests/oj-capacity-release.test.mjs
       - run: node --check tests/oj-capacity-benchmark.mjs

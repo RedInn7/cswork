@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-2",
+  "title": "互不重叠的零和三元组",
+  "explanation": "## 思路\n\n从左到右找第一个和为 0 的三元组，选中后直接跳过它的三个位置；否则向右移动一格。\n\n## 为什么正确\n\n所有候选区间长度相同，最先开始的候选也最先结束。把任意最优方案的第一个区间替换为最先结束的候选，不会与后续区间产生重叠。对剩余后缀重复交换论证，贪心选择保持最优。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n = int(data[0]); a = list(map(int, data[1:])); i = 0; answer = 0\n    while i + 2 < n:\n        if a[i] + a[i+1] + a[i+2] == 0:\n            answer += 1\n            i += 3\n        else:\n            i += 1\n    return answer\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#2-triplet-sum-zero-disjoint-consecutive-triplets",
+  "sourceContentHash": "509e46757e4e07bb2a0713cee4beb84c4dbd50123a2e843dbeb5713d48eba1e2",
+  "author": "CSWork"
+}

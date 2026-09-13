@@ -47,16 +47,13 @@ void test('OA library paginates and searches metadata without leaking bodies or 
     ),
   );
 });
-void test('statement and actively requested reference solution are separate projections', () => {
+void test('statement never exposes imported reference solutions', () => {
   const library = createOaLibrary(fixture());
   const detail = library.detail('oa-meta-1');
   assert.equal(detail.statement, 'STATEMENT-SENTINEL');
   assert(!JSON.stringify(detail).includes('SOLUTION-SENTINEL'));
   assert(!JSON.stringify(detail).includes('PRIVATE-CODE-SENTINEL'));
-  assert.equal(
-    library.solution('oa-meta-1').solutions[0].code,
-    'PRIVATE-CODE-SENTINEL',
-  );
+  assert.throws(() => library.solution('oa-meta-1'), { status: 409 });
   for (const id of ['lc-1', '../catalog.json', 'oa-meta-999']) {
     assert.throws(() => library.detail(id));
     assert.throws(() => library.solution(id));

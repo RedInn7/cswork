@@ -28,7 +28,11 @@ export function AlgorithmLibrary(props: {
           OA 题目 <span>OA Master</span>
         </button>
       </nav>
-      {section === 'oa' ? <OaLibrary /> : <StudyLibrary {...props} />}
+      {section === 'oa' ? (
+        <OaLibrary navigate={props.navigate} />
+      ) : (
+        <StudyLibrary {...props} />
+      )}
     </div>
   );
 }

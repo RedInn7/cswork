@@ -94,6 +94,7 @@ try {
   for (const path of [
     '/content/oa-master/catalog.json',
     '/content/oa-master/manifest.json',
+    '/content/oa-judge/registry.json',
     '/oa-master/catalog.json',
   ])
     await req(path, 404, false);
@@ -115,10 +116,20 @@ try {
   const detail = await (await req(`/api/oj/oa-library/${first.id}`)).json();
   assert.equal(detail.statement, first.statement);
   assert(!('solutions' in detail) && !('explanation' in detail));
-  const solution = await (
-    await req(`/api/oj/oa-library/${first.id}/solution`)
-  ).json();
-  assert.deepEqual(solution.solutions, first.solutions);
+  const authored = JSON.parse(
+    readFileSync('content/oa-judge/registry.json', 'utf8'),
+  ).items;
+  const verified = authored.find(
+    (item) =>
+      item.id === first.id && item.sourceContentHash === first.contentHash,
+  );
+  if (verified) {
+    const solution = await (
+      await req(`/api/oj/oa-library/${first.id}/solution`)
+    ).json();
+    assert.deepEqual(solution.solutions, verified.authoredSolutions);
+    assert.equal(solution.explanation, verified.editorial);
+  } else await req(`/api/oj/oa-library/${first.id}/solution`, 409);
   await req('/api/oj/oa-library/oa-missing-1', 404);
   await req('/api/oj/oa-library?company=not-a-company', 400);
   await req('/api/oj/oa-library/' + first.id + '/solution/extra', 404);

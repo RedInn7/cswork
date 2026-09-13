@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { z } from 'zod';
 import type { Person } from './auth';
 import { HttpError, json, limit, requirePerson } from './http';
+import { oaJudgeRegistry, oaReadyProblemIds } from './oa-judge';
 
 const slug = z
   .string()
@@ -51,7 +52,7 @@ const schema = z.object({
     .max(20000),
 });
 type Item = z.infer<typeof schema>['items'][number];
-function summary(item: Item) {
+function summary(item: Item, ready: ReadonlySet<string> = new Set()) {
   // Explicit projection: titles/languages only, never statements or reference code.
   return {
     id: item.id,
@@ -61,11 +62,25 @@ function summary(item: Item) {
     title: item.title,
     sourceUrl: item.sourceUrl,
     languages: item.languages,
-    judgeStatus: 'reading_only' as const,
+    judgeStatus: ready.has(item.id)
+      ? ('ready' as const)
+      : ('reading_only' as const),
+    ...(ready.has(item.id) ? { judgeProblemId: item.id } : {}),
   };
 }
 
-export function createOaLibrary(input: unknown) {
+export function createOaLibrary(
+  input: unknown,
+  options: {
+    solution?: (
+      id: string,
+      sourceContentHash: string,
+    ) => {
+      explanation: string;
+      solutions: { language: string; code: string }[];
+    };
+  } = {},
+) {
   const catalog = schema.parse(input);
   const companies = new Map(
     catalog.companies.map((company) => [company.slug, company]),
@@ -101,7 +116,7 @@ export function createOaLibrary(input: unknown) {
     return item;
   }
   return {
-    list(params: URLSearchParams) {
+    list(params: URLSearchParams, ready: ReadonlySet<string> = new Set()) {
       const query = (params.get('q') || '')
         .trim()
         .slice(0, 180)
@@ -115,6 +130,7 @@ export function createOaLibrary(input: unknown) {
         : 1;
       const found = catalog.items.filter(
         (item) =>
+          (params.get('ready') !== '1' || ready.has(item.id)) &&
           (!company || item.companySlug === company) &&
           (!query ||
             `${item.id} ${item.title} ${item.companyName} ${item.number}`
@@ -122,7 +138,9 @@ export function createOaLibrary(input: unknown) {
               .includes(query)),
       );
       return {
-        items: found.slice((page - 1) * 30, page * 30).map(summary),
+        items: found
+          .slice((page - 1) * 30, page * 30)
+          .map((item) => summary(item, ready)),
         total: found.length,
         page,
         pageSize: 30,
@@ -134,17 +152,19 @@ export function createOaLibrary(input: unknown) {
         },
       };
     },
-    detail(id: string) {
+    detail(id: string, ready: ReadonlySet<string> = new Set()) {
       const item = find(id);
       return {
-        ...summary(item),
+        ...summary(item, ready),
         statement: item.statement,
         contentHash: item.contentHash,
       };
     },
     solution(id: string) {
       const item = find(id);
-      return { explanation: item.explanation, solutions: item.solutions };
+      if (!options.solution)
+        throw new HttpError(409, '这道题的题解正在校验，暂未开放');
+      return options.solution(id, item.contentHash);
     },
   };
 }
@@ -155,7 +175,10 @@ export function oaLibrary() {
     const file = resolve('content/oa-master/catalog.json');
     if (statSync(file).size > 64 * 1024 * 1024)
       throw new Error('OA catalog exceeds size budget');
-    library = createOaLibrary(JSON.parse(readFileSync(file, 'utf8')));
+    library = createOaLibrary(JSON.parse(readFileSync(file, 'utf8')), {
+      solution: (id, sourceContentHash) =>
+        oaJudgeRegistry().solution(id, sourceContentHash),
+    });
   }
   return library;
 }
@@ -176,11 +199,14 @@ export async function handleOaLibrary(
     throw new HttpError(404, 'OA 接口不存在');
   await limit(person, 'oa-library-read', 120);
   const data = oaLibrary();
+  // Reference snippets in the imported source are never returned by the live API.
+  if (id && action === 'solution') {
+    return json(data.solution(id));
+  }
+  const ready = await oaReadyProblemIds();
   return json(
     id
-      ? action === 'solution'
-        ? data.solution(id)
-        : data.detail(id)
-      : data.list(new URL(request.url).searchParams),
+      ? data.detail(id, ready)
+      : data.list(new URL(request.url).searchParams, ready),
   );
 }
