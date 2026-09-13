@@ -147,6 +147,8 @@ void test('new Uber semantic checker names remain bound to their exact problem I
     ['oa-compatible-groups', 'oa-uber-34'],
     ['oa-football-top-two', 'oa-uber-38'],
     ['oa-regional-maxima', 'oa-uber-57'],
+    ['oa-optimal-loads', 'oa-amazon-136'],
+    ['oa-optimal-distinct', 'oa-microsoft-63'],
   ]) {
     const p = payload('1');
     p.problem.checker = checker;
