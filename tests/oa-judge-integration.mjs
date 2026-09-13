@@ -362,7 +362,14 @@ for height in range(right,left-1,-1): circle.extend([height]*counts[height])
 circle.reverse(); print(len(circle)); print(*circle)
 `,
   };
-  for (const id of ['oa-uber-25', 'oa-uber-34', 'oa-uber-38', 'oa-uber-57'])
+  for (const id of [
+    'oa-uber-25',
+    'oa-uber-34',
+    'oa-uber-38',
+    'oa-uber-57',
+    'oa-amazon-136',
+    'oa-microsoft-63',
+  ])
     if (selected.items.some((item) => item.id === id))
       equivalentPrograms[id] = readFileSync(
         `content/oa-judge/positive-controls/${id}.py`,

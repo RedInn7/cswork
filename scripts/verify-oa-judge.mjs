@@ -59,6 +59,8 @@ async function run(code, input, spec) {
       'oa-compatible-groups',
       'oa-football-top-two',
       'oa-regional-maxima',
+      'oa-optimal-loads',
+      'oa-optimal-distinct',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

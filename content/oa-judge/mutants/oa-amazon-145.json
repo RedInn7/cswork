@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不保留前导零",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));length=len(a)\n    while length>2:\n        for i in range(length-1):a[i]=(a[i]+a[i+1])%10\n        length-=1\n    return str(a[0]*10+a[1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "加错成自身两倍",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));length=len(a)\n    while length>2:\n        for i in range(length-1):a[i]=(a[i]+a[i])%10\n        length-=1\n    return str(a[0])+str(a[1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-64",
+  "title": "最长公共真前后缀长度",
+  "explanation": "## 思路\n\n计算KMP前缀函数，最后一项就是完整串的最长真边界长度。\n\n## 正确性\n\n前缀函数在每个位置记录以该位置结束的前缀的最长真边界。失配时只能退到已匹配前缀的更短边界，递归候选链穷尽所有可能，最终末项即所求。\n\n## 复杂度\n\n时间O(N)，空间O(N)，使用紧凑整数数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from array import array\ndef solve(d):\n    s=d[0];prefix=array('I',[0])*len(s);j=0\n    for i in range(1,len(s)):\n        while j and s[i]!=s[j]:j=prefix[j-1]\n        if s[i]==s[j]:j+=1\n        prefix[i]=j\n    return str(prefix[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#64-str-with-longest-len",
+  "sourceContentHash": "b0a47e7b149d8b752f3ed374793af51b2af4e5a2f3056be16d8196fdabed032b",
+  "author": "CSWork"
+}

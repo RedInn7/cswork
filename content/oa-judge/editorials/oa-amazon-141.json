@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-141",
+  "title": "同原始时长任务逐次减半后的总耗时",
+  "explanation": "## 思路\n\n字典按原始时长保存该组下次执行时长；取出累加，再更新为向上除2。\n\n## 正确性证明\n\n每组所有未执行任务始终有相同时长；一次组内执行使它们统一更新，其他组不受影响。按原时长作为键恰好维持这一组别不变量，逐次累加得到真实总耗时。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    next_time={};total=0\n    for token in d[1:]:\n        original=int(token);value=next_time.get(original,original);total+=value;next_time[original]=(value+1)//2\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#141-amazon-execute-processes-aka-aws-processor",
+  "sourceContentHash": "3812d27215b68ef8b9484f865c42eb8aced0a91fb71cf89b412dccdc748958ca",
+  "author": "CSWork"
+}

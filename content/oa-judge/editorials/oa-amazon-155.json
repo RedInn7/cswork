@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-155",
+  "title": "字符不在外部出现的最长真子串",
+  "explanation": "## 思路\n\n左端只能是某个字符的首次位置，至多26种。逐个向右扫描，出现某字符首次位置早于左端则停止；维护见过字符的最末位置，当右端覆盖它们全部时得到闭合段，排除整串后取最大。\n\n## 正确性证明\n\n合法左端字符在外部不能出现，因此左端一定为其首次出现。扫描若包含先前出现的字符则这个左端再延长也无法合法。其他情况下只需所有已含字符的最后一次出现都落在段内，即右端达到其最大末位置；这是充分必要条件。枚举所有可能左端与右端后取最大不漏解。\n\n## 复杂度\n\n时间O(26n)，空间O(n)含输入，辅助O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];first={};last={}\n    for i,c in enumerate(s):first.setdefault(c,i);last[c]=i\n    answer=0;n=len(s)\n    for left in first.values():\n        end=left\n        for right in range(left,n):\n            c=s[right]\n            if first[c]<left:break\n            end=max(end,last[c])\n            if right>=end and right-left+1<n:answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#155-find-the-longest-isolated-substring-length",
+  "sourceContentHash": "ab25f044a61fc60f933171b6d82dc68b010fd01df2f131e658d2cfde858e37f3",
+  "author": "CSWork"
+}

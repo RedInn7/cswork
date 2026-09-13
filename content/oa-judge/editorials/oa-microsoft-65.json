@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-65",
+  "title": "最多三块双格瓷砖的最大覆盖和",
+  "explanation": "## 思路\n\n前缀DP维护使用至多0、1、2、3块时最大和。最后元素可以不盖；或者用一块覆盖最后两格，并接在两格前、少一块的最优方案后。\n\n## 正确性\n\n合法方案若覆盖最后格，其最后瓷砖必须覆盖末两格，前面不能重叠；否则属于更短前缀。两个分支穷尽所有方案，零初始化允许不使用负收益瓷砖。\n\n## 复杂度\n\n时间O(3N)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));before2=[0]*4;before=[0]*4\n    for i,value in enumerate(a):\n        current=before.copy()\n        if i:\n            for k in range(1,4):current[k]=max(before[k],before2[k-1]+a[i-1]+value)\n        before2,before=before,current\n    return str(before[3])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#65-maximum-sum-with-tiles",
+  "sourceContentHash": "2b589b34f2f3279077895f811db8712e0ba054aa9e8608ebb5289d1645aa45df",
+  "author": "CSWork"
+}

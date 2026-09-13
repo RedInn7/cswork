@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每次错误从起点出发",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for v in d[2:2+n]:prefix.append(prefix[-1]+int(v))\n    at=answer=0;total=prefix[-1]\n    for token in d[2+n:]:\n        target=int(token)-1;distance=abs(prefix[target]-prefix[at]);answer+=min(distance,total-distance);at=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只走展开方向",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for v in d[2:2+n]:prefix.append(prefix[-1]+int(v))\n    at=answer=0;total=prefix[-1]\n    for token in d[2+n:]:\n        target=int(token)-1;distance=abs(prefix[target]-prefix[at]);answer+=distance;at=target\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

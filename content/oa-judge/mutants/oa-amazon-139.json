@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重开段漏空前缀",
+    "code": "def solve(d):\n    seen={0};prefix=answer=0\n    for token in d[1:]:\n        v=int(token)\n        if v==0:return '-1'\n        if prefix+v in seen:answer+=1;seen=set();prefix=0\n        prefix+=v;seen.add(prefix)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把0当可插入解决",
+    "code": "def solve(d):\n    seen={0};prefix=answer=0\n    for token in d[1:]:\n        v=int(token)\n        if v==0:return '1'\n        if prefix+v in seen:answer+=1;seen={0};prefix=0\n        prefix+=v;seen.add(prefix)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

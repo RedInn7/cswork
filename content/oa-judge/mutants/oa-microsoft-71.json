@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误禁止字符复用",
+    "code": "def solve(d):\n    pattern,s=d;mapping={};used=set()\n    def visit(i,j):\n        if i==len(pattern):return j==len(s)\n        if len(s)-j<len(pattern)-i:return False\n        c=pattern[i]\n        if c in mapping:\n            word=mapping[c];return False\n        for end in range(j+1,len(s)-(len(pattern)-i-1)+1):\n            word=s[j:end]\n            if word in used:continue\n            mapping[c]=word;used.add(word)\n            if visit(i+1,end):return True\n            used.remove(word);del mapping[c]\n        return False\n    return str(int(visit(0,0)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看模式耗尽忽略剩余字符",
+    "code": "def solve(d):\n    pattern,s=d;mapping={};used=set()\n    def visit(i,j):\n        if i==len(pattern):return True\n        if len(s)-j<len(pattern)-i:return False\n        c=pattern[i]\n        if c in mapping:\n            word=mapping[c];return s.startswith(word,j) and visit(i+1,j+len(word))\n        for end in range(j+1,len(s)-(len(pattern)-i-1)+1):\n            word=s[j:end]\n            if word in used:continue\n            mapping[c]=word;used.add(word)\n            if visit(i+1,end):return True\n            used.remove(word);del mapping[c]\n        return False\n    return str(int(visit(0,0)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

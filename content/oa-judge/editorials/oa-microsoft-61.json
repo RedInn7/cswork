@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-61",
+  "title": "删除连续K字符后的最短压缩长度",
+  "explanation": "## 思路\n\n预处理每个前缀、后缀的压缩长度以及边界连续段长度。枚举删除窗口，两侧不同字符时直接相加，相同时去掉两段旧成本，再加合并段成本。\n\n## 正确性\n\n删除只能改变左右边界相接的两个连续段，其他压缩段完全不变。记录边界段长度即可精确计算合并差额。枚举全部N−K+1个合法起点，取最小即覆盖全部操作。\n\n## 复杂度\n\n时间O(N log N)字符级上界（计算至多7位十进制长度）；固定约束下O(N)。空间O(N)，四个紧凑整数数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from array import array\ndef solve(d):\n    k=int(d[0]);s=d[1];n=len(s)\n    def cost(v):return v if v<2 else len(str(v))+1\n    prefix=array('I',[0])*(n+1);suffix=array('I',[0])*(n+1);left=array('I',[0])*(n+1);right=array('I',[0])*(n+1)\n    for i in range(n):\n        run=left[i] if i and s[i]==s[i-1] else 0;left[i+1]=run+1;prefix[i+1]=prefix[i]+cost(run+1)-cost(run)\n    for i in range(n-1,-1,-1):\n        run=right[i+1] if i+1<n and s[i]==s[i+1] else 0;right[i]=run+1;suffix[i]=suffix[i+1]+cost(run+1)-cost(run)\n    answer=n\n    for l in range(n-k+1):\n        r=l+k;value=prefix[l]+suffix[r]\n        if l and r<n and s[l-1]==s[r]:value+=cost(left[l]+right[r])-cost(left[l])-cost(right[r])\n        answer=min(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#61-shortest-compressed-string-after-removal",
+  "sourceContentHash": "7092bb197cd00eae111c2a2ab26689b171a3c92b0100b14ffff771ba0fff4981",
+  "author": "CSWork"
+}

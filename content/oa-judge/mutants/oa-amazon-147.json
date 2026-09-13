@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把等于0排除",
+    "code": "def solve(d):\n    total=0\n    for i,token in enumerate(d[1:]):\n        total+=int(token)\n        if total<0:return str(i)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误返回1-based",
+    "code": "def solve(d):\n    total=0\n    for i,token in enumerate(d[1:]):\n        total+=int(token)\n        if total<=0:return str(i+1)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

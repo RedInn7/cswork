@@ -1,0 +1,10 @@
+[
+  {
+    "name": "除2向下取整",
+    "code": "def solve(d):\n    next_time={};total=0\n    for token in d[1:]:\n        original=int(token);value=next_time.get(original,original);total+=value;next_time[original]=value//2\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每次都按原值减半",
+    "code": "def solve(d):\n    next_time={};total=0\n    for token in d[1:]:\n        original=int(token);value=next_time.get(original,original);total+=value;next_time[original]=(original+1)//2\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

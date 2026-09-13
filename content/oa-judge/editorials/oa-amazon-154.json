@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-154",
+  "title": "修改有限元素后的最小GCD漏洞长度",
+  "explanation": "## 思路\n\n修改成1最有利。二分容许长度L，所有原GCD>1的长度L+1窗口都必须被修改点命中；从左到右贪心修改首个未命中坏窗口的右端。GCD稀疏表O(1)查询窗口。\n\n## 正确性证明\n\n改为1会消除包含该位置的全部坏段，且不制造新坏段，故不劣于其他修改值。存在长于L的坏段当且仅当有坏的L+1窗口。对于按右端排序的区间，选择首个未命中区间的最右点是标准最优覆盖贪心；所需修改数≤预算即长度L可行，可行性单调。\n\n## 复杂度\n\n时间O(n log n)，空间O(n log n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from math import gcd\n    n,budget=map(int,d[:2]);a=list(map(int,d[2:]));table=[a];width=1\n    while 2*width<=n:\n        previous=table[-1];table.append([gcd(previous[i],previous[i+width]) for i in range(n-2*width+1)]);width*=2\n    def feasible(limit):\n        length=limit+1\n        if length>n:return True\n        level=length.bit_length()-1;offset=length-(1<<level);row=table[level];i=used=0\n        while i+length<=n:\n            if gcd(row[i],row[i+offset])>1:\n                used+=1\n                if used>budget:return False\n                i+=length\n            else:i+=1\n        return True\n    lo,hi=0,n\n    while lo<hi:\n        middle=(lo+hi)//2\n        if feasible(middle):hi=middle\n        else:lo=middle+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#154-find-least-possible-vulnerability",
+  "sourceContentHash": "d95b7b5b91924e2f80dcb6b76fb0ffa31dd86db000848f3731dadc3651283c33",
+  "author": "CSWork"
+}

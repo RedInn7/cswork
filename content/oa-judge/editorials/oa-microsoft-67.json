@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-67",
+  "title": "任意重排可得到的最长尖峰",
+  "explanation": "## 思路\n\n最高值只能在峰顶使用一次，其他每种值最多在左右各出现一次。因此答案是1加上非最大值的min(频次,2)之和。\n\n## 正确性\n\n同一值在严格单调的一侧至多出现一次，最大值只能当唯一峰顶，给出该上界。选择最大值为峰，把每种较小值的一份升序放左侧，若有第二份就降序放右侧，恰好达到上界。\n\n## 复杂度\n\n时间O(N)期望，空间O(不同值个数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(d):\n    counts=Counter(map(int,d[1:]));highest=max(counts)\n    return str(1+sum(min(v,2) for key,v in counts.items() if key!=highest))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#67-the-longest-spike",
+  "sourceContentHash": "90f662d31bc9fe5f642c3a7c563c895c31433c9d670997c22f8e6832737b80df",
+  "author": "CSWork"
+}

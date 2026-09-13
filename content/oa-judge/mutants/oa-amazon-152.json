@@ -1,0 +1,10 @@
+[
+  {
+    "name": "移动时不删除离开元素",
+    "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]));values=sorted(set(a));rank={v:i+1 for i,v in enumerate(values)};size=len(values);tree=[0]*(size+1)\n    def update(index,delta):\n        while index<=size:tree[index]+=delta;index+=index&-index\n    def kth():\n        index=0;target=k;step=1<<(size.bit_length()-1)\n        while step:\n            following=index+step\n            if following<=size and tree[following]<target:index=following;target-=tree[following]\n            step>>=1\n        return values[index]\n    for i in range(m):update(rank[a[i]],1)\n    answer=[kth()]\n    for i in range(m,n):update(rank[a[i-m]],0);update(rank[a[i]],1);answer.append(kth())\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误把k当从0计数",
+    "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]));values=sorted(set(a));rank={v:i+1 for i,v in enumerate(values)};size=len(values);tree=[0]*(size+1)\n    def update(index,delta):\n        while index<=size:tree[index]+=delta;index+=index&-index\n    def kth():\n        index=0;target=max(1,k-1);step=1<<(size.bit_length()-1)\n        while step:\n            following=index+step\n            if following<=size and tree[following]<target:index=following;target-=tree[following]\n            step>>=1\n        return values[index]\n    for i in range(m):update(rank[a[i]],1)\n    answer=[kth()]\n    for i in range(m,n):update(rank[a[i-m]],-1);update(rank[a[i]],1);answer.append(kth())\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "仅比较当前字符",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);rows=d[2:];groups=[0]*n;answer=[]\n    for j in range(m):\n        ids={};counts={};next_groups=[]\n        for i in range(n):\n            key=rows[i][j];group=ids.setdefault(key,len(ids));next_groups.append(group);counts[group]=counts.get(group,0)+1\n        groups=next_groups;answer.append(max(counts.values()))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重复字符串只计一次",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);rows=list(dict.fromkeys(d[2:]));n=len(rows);groups=[0]*n;answer=[]\n    for j in range(m):\n        ids={};counts={};next_groups=[]\n        for i in range(n):\n            key=(groups[i],rows[i][j]);group=ids.setdefault(key,len(ids));next_groups.append(group);counts[group]=counts.get(group,0)+1\n        groups=next_groups;answer.append(max(counts.values()))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

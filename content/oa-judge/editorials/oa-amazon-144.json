@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-144",
+  "title": "每种前缀长度的最大出现次数",
+  "explanation": "## 思路\n\n逐列细化前缀分组：新组由旧前缀组编号和当前字符唯一确定，统计每组人数并取最大。\n\n## 正确性证明\n\n长度j+1前缀相同，当且仅当长度j前缀相同且当前字符相同。因此组编号的逐列更新准确表示前缀相等关系，每列最大组人数就是要求。无需保存全部前缀或百万字典树节点。\n\n## 复杂度\n\n时间O(nm)，空间O(nm)含输入，额外O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);rows=d[2:];groups=[0]*n;answer=[]\n    for j in range(m):\n        ids={};counts={};next_groups=[]\n        for i in range(n):\n            key=(groups[i],rows[i][j]);group=ids.setdefault(key,len(ids));next_groups.append(group);counts[group]=counts.get(group,0)+1\n        groups=next_groups;answer.append(max(counts.values()))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#144-find-dominance",
+  "sourceContentHash": "c858197e4cfe9bea47905cd75dbb3698c072b1131a215e2a82d04800f853ad00",
+  "author": "CSWork"
+}
