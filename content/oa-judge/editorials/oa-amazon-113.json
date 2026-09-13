@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-113",
+  "title": "同字符与异字符配对删除的最小费用",
+  "explanation": "## 思路\n\n若同类便宜，尽可能做同类对，数量为各频次整除2之和；若异类便宜，强制同类对只有max(0,最大频次−n/2)个，其余均做异类。\n\n## 正确性证明\n\n同类最大数量分别由各类频次决定且可同时达到；剩余奇数项可两两异类配。异类便宜时，最多类超过半数的超额必须内部配对，其他情况能全部跨类匹配，因此强制同类数为最大频次−总对数的非负部分。\n\n## 复杂度\n\n时间O(n)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    s=d[0];x,y=map(int,d[1:]);counts=Counter(s);pairs=len(s)//2\n    same=sum(f//2 for f in counts.values()) if x<=y else max(0,max(counts.values())-pairs)\n    return str(same*x+(pairs-same)*y)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#113-cleanup-dataset",
+  "sourceContentHash": "6d47ce052df68b65f672681b8ba50542f8d3b0312d5a3283993140c4fae24e20",
+  "author": "CSWork"
+}

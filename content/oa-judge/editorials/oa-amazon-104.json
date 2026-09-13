@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-104",
+  "title": "最多改一天办公地点的最大工资",
+  "explanation": "## 思路\n\n从右往左DP，状态为右边最高等级及是否已修改。当前位置枚举保留或修改成五种等级，按与右侧最高等级比较决定正负贡献。\n\n## 正确性证明\n\n已处理后缀对当前工资仅通过最高等级影响，修改额度只需一个布尔位。逐位置枚举全部合法字符选择并累加正负贡献，覆盖所有最多一次修改的方案。\n\n## 复杂度\n\n时间O(25n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];values=[1,10,100,1000,10000];dp={(-1,0):0}\n    for old in reversed(s):\n        original=ord(old)-65;new={}\n        for (highest,used),score in dp.items():\n            for c in range(5):\n                changed=used+(c!=original)\n                if changed>1:continue\n                key=(max(highest,c),changed);candidate=score+(values[c] if c>=highest else -values[c]);new[key]=max(new.get(key,-10**30),candidate)\n        dp=new\n    return str(max(dp.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#104-calculate-max-salary",
+  "sourceContentHash": "6ff4ebb6b332077a2b79744ce8282099e2798c1199087a265e5c3ddf12c4bcb8",
+  "author": "CSWork"
+}

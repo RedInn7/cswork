@@ -1,0 +1,10 @@
+[
+  {
+    "name": "始终优先同类",
+    "code": "def solve(d):\n    from collections import Counter\n    s=d[0];x,y=map(int,d[1:]);counts=Counter(s);pairs=len(s)//2\n    same=sum(f//2 for f in counts.values()) if True else max(0,max(counts.values())-pairs)\n    return str(same*x+(pairs-same)*y)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略强制同类对",
+    "code": "def solve(d):\n    from collections import Counter\n    s=d[0];x,y=map(int,d[1:]);counts=Counter(s);pairs=len(s)//2\n    same=sum(f//2 for f in counts.values()) if x<=y else 0\n    return str(same*x+(pairs-same)*y)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

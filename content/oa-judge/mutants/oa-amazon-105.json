@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误向下取整",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));remaining=n-k+1;j=remaining//2\n    middle=2*a[j] if remaining%2 else a[j-1]+a[j]\n    return str(sum(a[remaining:])+middle//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "给最小项独占通道",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));remaining=n-k+1;j=remaining//2\n    middle=2*a[j] if remaining%2 else a[j-1]+a[j]\n    return str(sum(a[:k-1])+(middle+1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

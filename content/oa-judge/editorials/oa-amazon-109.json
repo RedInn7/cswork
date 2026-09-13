@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-109",
+  "title": "能否用恰好给定交换次数排好排列",
+  "explanation": "## 思路\n\n最少交换数为n减置换环数；n≥2时，次数至少最小值且奇偶相同就可行，因为额外两步可交换同一对再换回。n=1没有任何合法交换。\n\n## 正确性证明\n\n一次交换使环数增减1，因此最少n−cycles步且交换次数奇偶固定。每个环可用长度−1步排好，额外偶数步用抵消交换补齐，充分性成立；单元素情况须单独处理。\n\n## 复杂度\n\n时间O(n+q)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));seen=bytearray(n);cycles=0\n    for i in range(n):\n        if seen[i]:continue\n        cycles+=1;j=i\n        while not seen[j]:seen[j]=1;j=p[j]-1\n    minimum=n-cycles\n    return ''.join('1' if n>1 and int(v)>=minimum and (int(v)-minimum)%2==0 else '0' for v in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#109-can-sort-permutation-in-given-moves",
+  "sourceContentHash": "e69b124af07cfe509fc97356cd69a70b7cf1895c08c7c2e2409e6678d08e1d0e",
+  "author": "CSWork"
+}

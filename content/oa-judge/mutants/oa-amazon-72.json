@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略不兼容",
+    "code": "def solve(d):\n    n,m,x=map(int,d[:3]);a=list(map(int,d[3:3+n]));b=list(map(int,d[3+n:3+n+m]));bad=set();pos=3+n+m\n    for i in range(pos,len(d),2):bad.add((int(d[i])-1,int(d[i+1])-1))\n    order=sorted(range(m),key=lambda j:b[j],reverse=True);answer=0\n    for i,v in enumerate(a):\n        for j in order:\n            if True:answer=max(answer,v+b[j]);break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "优先最便宜功能",
+    "code": "def solve(d):\n    n,m,x=map(int,d[:3]);a=list(map(int,d[3:3+n]));b=list(map(int,d[3+n:3+n+m]));bad=set();pos=3+n+m\n    for i in range(pos,len(d),2):bad.add((int(d[i])-1,int(d[i+1])-1))\n    order=sorted(range(m),key=lambda j:b[j],reverse=False);answer=0\n    for i,v in enumerate(a):\n        for j in order:\n            if (i,j) not in bad:answer=max(answer,v+b[j]);break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

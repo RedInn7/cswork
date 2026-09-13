@@ -1,0 +1,10 @@
+[
+  {
+    "name": "负数除法错误向下取整",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));answer=-10**30\n    for divide in (False,True):\n        before=inside=after=-10**30\n        for v in a:\n            changed=v//k if divide else v*k\n            after=max(inside+v,after+v);inside=max(changed,before+changed,inside+changed);before=max(v,before+v)\n            answer=max(answer,inside,after)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许空子数组",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for divide in (False,True):\n        before=inside=after=-10**30\n        for v in a:\n            changed=(abs(v)//k)*(1 if v>=0 else -1) if divide else v*k\n            after=max(inside+v,after+v);inside=max(changed,before+changed,inside+changed);before=max(v,before+v)\n            answer=max(answer,inside,after)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许同下标自配",
+    "code": "def solve(d):\n    from collections import Counter\n    n,t=map(int,d[:2]);counts=Counter(map(int,d[2:]));answer=0\n    for a,c in counts.items():\n        b=t-a\n        if a<=b and b in counts:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "按有序数值对计数",
+    "code": "def solve(d):\n    from collections import Counter\n    n,t=map(int,d[:2]);counts=Counter(map(int,d[2:]));answer=0\n    for a,c in counts.items():\n        b=t-a\n        if b in counts and (a!=b or c>=2):answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
