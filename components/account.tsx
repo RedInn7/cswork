@@ -427,6 +427,9 @@ export function LoginDialog({
                   <Button
                     key={provider}
                     variant="outline"
+                    className={
+                      provider === 'google' ? 'google-signin' : undefined
+                    }
                     disabled={busy}
                     onClick={() =>
                       void run(async () => {
@@ -446,9 +449,18 @@ export function LoginDialog({
                       })
                     }
                   >
-                    <span className={provider === 'google' ? 'google-g' : ''}>
-                      {provider === 'google' ? 'G' : '⌘'}
-                    </span>
+                    {provider === 'google' ? (
+                      <img
+                        src="/auth/google-g.png"
+                        width={20}
+                        height={20.4}
+                        alt=""
+                        aria-hidden="true"
+                        className="google-signin-icon"
+                      />
+                    ) : (
+                      <span aria-hidden="true">⌘</span>
+                    )}
                     使用 {provider === 'google' ? 'Google' : 'GitHub'} 登录
                   </Button>
                 ))}
