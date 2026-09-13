@@ -446,3 +446,12 @@ test('fixed OA checkers cannot be assigned to other question identities', () => 
     );
   }
 });
+
+test('teacher checker selector preserves the fixed OA option', () => {
+  const source = readFileSync('components/oj-admin.tsx', 'utf8');
+  assert.match(
+    source,
+    /'oa-',\s*\]\.some\(\(prefix\) => spec\.checker\.startsWith\(prefix\)\)/,
+  );
+  assert.match(source, /<option value=\{spec\.checker\}>\s*本题专用规则/);
+});
