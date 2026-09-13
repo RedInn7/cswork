@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-14",
+  "title": "相隔至少指定位置的最小高度差",
+  "explanation": "## 思路\n\n按高度排序，双指针窗口内用两个单调队列维护原下标的最小值和最大值。当两下标之差达到gap时，记录高度跨度并缩小左边界。\n\n## 正确性\n\n一个高度区间含有合法位置对，当且仅当其中最大与最小原下标相差至少gap。排序窗口跨度是其中所有高度差的上界；任何最优对的高度区间一定被双指针检查到或被更窄可行窗口替代，因此最小可行窗口宽度就是最优差。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(d):\n    n,gap=map(int,d[:2]);a=list(map(int,d[2:]));ranked=sorted((v,i) for i,v in enumerate(a));minimum=deque();maximum=deque();left=0;answer=10**30\n    for right,(_,index) in enumerate(ranked):\n        while minimum and ranked[minimum[-1]][1]>=index:minimum.pop()\n        while maximum and ranked[maximum[-1]][1]<=index:maximum.pop()\n        minimum.append(right);maximum.append(right)\n        while ranked[maximum[0]][1]-ranked[minimum[0]][1]>=gap:\n            answer=min(answer,ranked[right][0]-ranked[left][0])\n            if minimum[0]==left:minimum.popleft()\n            if maximum[0]==left:maximum.popleft()\n            left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#14-mountain-peaks--min-difference-with-viewinggap",
+  "sourceContentHash": "b2e01c76e6bc89ca3c006327585cbe7197a65fe6bf60c9f904eaa63bfd97d3f0",
+  "author": "CSWork"
+}

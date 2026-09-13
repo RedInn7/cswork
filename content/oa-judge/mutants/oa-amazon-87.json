@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排除左闭端点",
+    "code": "def solve(d):\n    n,m,q,w=map(int,d[:4]);logs=sorted((int(d[5+2*i]),int(d[4+2*i])) for i in range(m));queries=sorted((int(v),i) for i,v in enumerate(d[4+2*m:]));counts=[0]*(n+1);left=right=active=0;answer=[0]*q\n    for t,index in queries:\n        while right<m and logs[right][0]<=t:\n            skill=logs[right][1];active+=counts[skill]==0;counts[skill]+=1;right+=1\n        while left<right and logs[left][0]<=t-w:\n            skill=logs[left][1];counts[skill]-=1;active-=counts[skill]==0;left+=1\n        answer[index]=n-active\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "查询顺序错误反转",
+    "code": "def solve(d):\n    n,m,q,w=map(int,d[:4]);logs=sorted((int(d[5+2*i]),int(d[4+2*i])) for i in range(m));queries=sorted((int(v),i) for i,v in enumerate(d[4+2*m:]));counts=[0]*(n+1);left=right=active=0;answer=[0]*q\n    for t,index in queries:\n        while right<m and logs[right][0]<=t:\n            skill=logs[right][1];active+=counts[skill]==0;counts[skill]+=1;right+=1\n        while left<right and logs[left][0]<t-w:\n            skill=logs[left][1];counts[skill]-=1;active-=counts[skill]==0;left+=1\n        answer[len(answer)-1-index]=n-active\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

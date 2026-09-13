@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-90",
+  "title": "相邻和模十的两位加密",
+  "explanation": "## 思路\n\n直接逐层计算相邻和，每层长度减少1，最终拼接两位。\n\n## 正确性证明\n\n一次变换严格按原层相邻项生成下一层，重复n−2次后长度恰为2，因此模拟与定义一致。独立对照使用二项式系数加权的闭式表达式。\n\n## 复杂度\n\n时间O(n²)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]))\n    while len(a)>2:a=[(a[i]+a[i+1])%10 for i in range(len(a)-1)]\n    return ''.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#90-findnumber--pascal-encryption",
+  "sourceContentHash": "78d02855276d5f73a843710de853b6980732a1cfe3ec2e7f76207b351226125d",
+  "author": "CSWork"
+}

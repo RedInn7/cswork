@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只允许全偶数掩码",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);letters=d[2];g=[[] for _ in range(n)];offset=3\n    for _ in range(n-1):\n        a,b=map(int,d[offset:offset+2]);offset+=2;g[a].append(b);g[b].append(a)\n    answers=[0]*n;counts={0:1};stack=[(0,-1,0,False)]\n    while stack:\n        node,parent,mask,exit=stack.pop()\n        if exit:\n            counts[mask]-=1\n            if counts[mask]==0:del counts[mask]\n            continue\n        mask^=1<<(ord(letters[node])-97);answers[node]=counts.get(mask,0);counts[mask]=counts.get(mask,0)+1;stack.append((node,parent,mask,True))\n        for child in g[node]:\n            if child!=parent:stack.append((child,node,mask,False))\n    return ' '.join(str(answers[int(q)]) for q in d[offset:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "计入兄弟路径的前缀",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);letters=d[2];g=[[] for _ in range(n)];offset=3\n    for _ in range(n-1):\n        a,b=map(int,d[offset:offset+2]);offset+=2;g[a].append(b);g[b].append(a)\n    answers=[0]*n;counts={0:1};stack=[(0,-1,0,False)]\n    while stack:\n        node,parent,mask,exit=stack.pop()\n        if exit:\n            counts[mask]-=0\n            if counts[mask]==0:del counts[mask]\n            continue\n        mask^=1<<(ord(letters[node])-97);answers[node]=counts.get(mask,0)+sum(counts.get(mask^(1<<bit),0) for bit in range(26));counts[mask]=counts.get(mask,0)+1;stack.append((node,parent,mask,True))\n        for child in g[node]:\n            if child!=parent:stack.append((child,node,mask,False))\n    return ' '.join(str(answers[int(q)]) for q in d[offset:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

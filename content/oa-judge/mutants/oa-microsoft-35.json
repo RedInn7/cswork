@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只尝试前两数目标",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if n<2:return '0'\n    answer=0\n    for target in {a[0]+a[1]}:\n        dp=[[0]*n for _ in range(n)]\n        for length in range(2,n+1):\n            for left in range(n-length+1):\n                right=left+length-1;best=0\n                if a[left]+a[left+1]==target:best=max(best,1+(dp[left+2][right] if length>2 else 0))\n                if a[right-1]+a[right]==target:best=max(best,1+(dp[left][right-2] if length>2 else 0))\n                if a[left]+a[right]==target:best=max(best,1+(dp[left+1][right-1] if length>2 else 0))\n                dp[left][right]=best\n        answer=max(answer,dp[0][-1])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "禁止首尾配对",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    if n<2:return '0'\n    answer=0\n    for target in {a[0]+a[1],a[-2]+a[-1],a[0]+a[-1]}:\n        dp=[[0]*n for _ in range(n)]\n        for length in range(2,n+1):\n            for left in range(n-length+1):\n                right=left+length-1;best=0\n                if a[left]+a[left+1]==target:best=max(best,1+(dp[left+2][right] if length>2 else 0))\n                if a[right-1]+a[right]==target:best=max(best,1+(dp[left][right-2] if length>2 else 0))\n                if False:best=max(best,1+(dp[left+1][right-1] if length>2 else 0))\n                dp[left][right]=best\n        answer=max(answer,dp[0][-1])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-28",
+  "title": "跳过至多K节课的最少在校时间",
+  "explanation": "## 思路\n\n每一天枚举跳过数量，对剩余连续的一段课程索引求最短覆盖宽度；再按天做跳课预算背包。\n\n## 正确性证明\n\n固定保留课程数时，若首末之间跳过了课，可用中间课替换外部课而不扩大跨度，因此只需连续课程索引块。各天费用独立，通过预算分配DP枚举全部跳课方案。\n\n## 复杂度\n\n时间O(NM²+NK²)，空间O(K+M)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from itertools import islice\n    n,m,k=map(int,d[:3]);dp=[0]+[10**9]*k\n    for row in islice(d,3,None):\n        pos=[i for i,c in enumerate(row) if c=='1'];count=len(pos);cost=[]\n        for skip in range(min(k,count)+1):\n            keep=count-skip;cost.append(0 if keep==0 else min(pos[i+keep-1]-pos[i]+1 for i in range(skip+1)))\n        new=[10**9]*(k+1)\n        for used in range(k+1):\n            for skip,value in enumerate(cost[:k-used+1]):new[used+skip]=min(new[used+skip],dp[used]+value)\n        dp=new\n    return str(min(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#28-get-minimum-time",
+  "sourceContentHash": "0f66cbce48fdac40261efdb885be0384b83848e1caf2026c26c1aa5344b9e917",
+  "author": "CSWork"
+}

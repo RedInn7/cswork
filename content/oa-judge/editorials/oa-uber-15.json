@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-15",
+  "title": "末位为3的质数跳跃最高得分",
+  "explanation": "## 思路\n\n用筛法求小于n且末位为3的质数，和步长1一起作为合法转移。动态规划dp[i]=cell[i]+max(dp[i−step])。\n\n## 正确性\n\n每条到达i的路线都来自某个合法步长的前一格，且前缀最优可替换任何次优前缀。下标严格增加，按顺序递推覆盖所有路线，dp[n−1]即最优。\n\n## 复杂度\n\n时间O(n log log n+n·π₃(n))，空间O(n)，π₃(n)为小于n且末位3的质数数量。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);prime=bytearray(b'\\1')*n\n    for p in range(2,n):\n        if prime[p]:\n            for multiple in range(p*p,n,p):prime[multiple]=0\n    steps=[1]+[p for p in range(3,n,10) if prime[p]];dp=[-10**30]*n;dp[0]=0\n    for i in range(1,n):dp[i]=a[i]+max(dp[i-p] for p in steps if p<=i)\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#15-prime-jumps--maximum-game-score",
+  "sourceContentHash": "90dac29ac7d6cba55e62e12f7b9bdb727acd885905c3a6f5bb63e56db51095e3",
+  "author": "CSWork"
+}

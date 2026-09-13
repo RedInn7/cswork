@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-10",
+  "title": "拼接成访问码的有序下标对",
+  "explanation": "## 思路\n\n统计每个整数标准十进制串的频次，枚举目标串的每个分割点，乘两部分频次；两部分相同时扣除同一个下标。\n\n## 正确性\n\n每个合法拼接有唯一分割点，两个部分必须分别在片段中。不同值时任意两个下标可配，相同值时有c(c−1)种有序对，所以分割计数完整且不重复。\n\n## 复杂度\n\n时间O(n+目标长度²)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(d):\n    n=int(d[0]);counts=Counter(str(int(v)) for v in d[1:n+1]);target=str(int(d[-1]));answer=0\n    for i in range(1,len(target)):\n        a,b=target[:i],target[i:];left=counts[a];right=counts[b]\n        answer+=left*(right-(a==b))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#10-spy-access-code-fragments",
+  "sourceContentHash": "e2b5f0adf298951c9b688b563b26cfff0c828e0748c2ba9425fdbb49602ca1ee",
+  "author": "CSWork"
+}

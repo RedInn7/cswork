@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误包含右端",
+    "code": "from bisect import bisect_left\ndef solve(d):\n    q=int(d[0]);ops=[];i=1\n    for _ in range(q):\n        kind=int(d[i]);length=2 if kind==1 else 3;ops.append(tuple(map(int,d[i:i+length])));i+=length\n    coordinates=sorted({op[1] for op in ops if op[0]==1});tree=[0]*(len(coordinates)+1);seen=set();answer=[]\n    def prefix(end):\n        result=0\n        while end:result+=tree[end];end-=end&-end\n        return result\n    for op in ops:\n        if op[0]==1:\n            if op[1] in seen:continue\n            seen.add(op[1]);index=bisect_left(coordinates,op[1])+1\n            while index<len(tree):tree[index]+=1;index+=index&-index\n        else:\n            left=bisect_left(coordinates,op[1]-op[2]);right=bisect_left(coordinates,op[1]+1);answer.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误排除左端",
+    "code": "from bisect import bisect_left\ndef solve(d):\n    q=int(d[0]);ops=[];i=1\n    for _ in range(q):\n        kind=int(d[i]);length=2 if kind==1 else 3;ops.append(tuple(map(int,d[i:i+length])));i+=length\n    coordinates=sorted({op[1] for op in ops if op[0]==1});tree=[0]*(len(coordinates)+1);seen=set();answer=[]\n    def prefix(end):\n        result=0\n        while end:result+=tree[end];end-=end&-end\n        return result\n    for op in ops:\n        if op[0]==1:\n            if op[1] in seen:continue\n            seen.add(op[1]);index=bisect_left(coordinates,op[1])+1\n            while index<len(tree):tree[index]+=1;index+=index&-index\n        else:\n            left=bisect_left(coordinates,op[1]-op[2]+1);right=bisect_left(coordinates,op[1]);answer.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

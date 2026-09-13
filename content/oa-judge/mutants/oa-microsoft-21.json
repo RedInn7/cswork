@@ -1,0 +1,10 @@
+[
+  {
+    "name": "偶数取上中位数",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);rank=n*(n+1)//4+1;lo=1;hi=len(set(a))\n    while lo<hi:\n        k=(lo+hi)//2;counts={};left=total=0\n        for right,value in enumerate(a):\n            counts[value]=counts.get(value,0)+1\n            while len(counts)>k:\n                old=a[left];counts[old]-=1;left+=1\n                if counts[old]==0:del counts[old]\n            total+=right-left+1\n        if total>=rank:hi=k\n        else:lo=k+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看整个数组",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);rank=(n*(n+1)//2+1)//2;lo=1;hi=len(set(a))\n    while lo<hi:\n        k=(lo+hi)//2;counts={};left=total=0\n        for right,value in enumerate(a):\n            counts[value]=counts.get(value,0)+1\n            while len(counts)>k:\n                old=a[left];counts[old]-=1;left+=1\n                if counts[old]==0:del counts[old]\n            total+=right-left+1\n        if total>=rank:hi=k\n        else:lo=k+1\n    return str(len(set(a)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

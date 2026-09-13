@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每天最多买一卷",
+    "code": "def solve(d):\n    n=int(d[0]);stock=bytearray(n+1);next_volume=1;answer=[]\n    for v in map(int,d[1:]):\n        stock[v]=1;start=next_volume\n        if next_volume<=n and stock[next_volume]:next_volume+=1\n        answer.append(' '.join(map(str,range(start,next_volume))) if start<next_volume else '-1')\n    return '\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不检查前置卷直接购买",
+    "code": "def solve(d):\n    n=int(d[0]);stock=bytearray(n+1);next_volume=1;answer=[]\n    for v in map(int,d[1:]):\n        stock[v]=1;start=next_volume\n        while next_volume<=n and stock[next_volume]:next_volume+=1\n        answer.append(str(v))\n    return '\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

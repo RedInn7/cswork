@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-91",
+  "title": "未知二进制位的最小子序列错误数",
+  "explanation": "## 思路\n\n若x>y，反转串并交换费用。此后x≤y，存在未知位先0后1的最优方案。开始全部未知取1，然后从左到右逐个改0，用左右0/1计数更新费用，取所有分界点最小值。\n\n## 正确性证明\n\n当x≤y，若两个未知位为先1后0，将它们交换，外侧贡献不变，两位置及中间字符的总变化为(x−y)乘非负数量，因此不会更差。反复交换可得未知位单调方案。扫描枚举所有这种方案，按涉及当前位的全部左右配对计算费用变化，故得到全局最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)（反转及工作字符串）；费用使用大整数，最后取模。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];x,y=map(int,d[1:])\n    if x>y:s=s[::-1];x,y=y,x\n    t=s.replace('!','1');zero=one=cost=0\n    for c in t:\n        if c=='0':cost+=one*y;zero+=1\n        else:cost+=zero*x;one+=1\n    best=cost;left0=left1=0;right0=zero;right1=one\n    for c in s:\n        if c=='0':right0-=1;left0+=1\n        elif c=='1':right1-=1;left1+=1\n        else:\n            right1-=1;cost+=left1*y+right1*x-left0*x-right0*y\n            left0+=1;best=min(best,cost)\n    return str(best%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#91-getminerrors",
+  "sourceContentHash": "ff746d139efd48590a100cd2f79b81a6f4cc7843e21118dfc15ad6d51acd5159",
+  "author": "CSWork"
+}

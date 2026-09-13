@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉当前订单最后一小时",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    a=list(map(int,d[1:]));ordered=sorted(a);prefix=[0]\n    for value in ordered:prefix.append(prefix[-1]+value)\n    bit=[0]*(max(a)+1);answer=0\n    for i,value in enumerate(a):\n        index=value\n        while index<len(bit):bit[index]+=1;index+=index&-index\n        less=0;index=value-1\n        while index:less+=bit[index];index-=index&-index\n        split=bisect_left(ordered,value);before=prefix[split]+(len(a)-split)*(value-1)\n        answer+=before+i-less\n    return str(answer%1000000000)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "模数写成10亿加7",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    a=list(map(int,d[1:]));ordered=sorted(a);prefix=[0]\n    for value in ordered:prefix.append(prefix[-1]+value)\n    bit=[0]*(max(a)+1);answer=0\n    for i,value in enumerate(a):\n        index=value\n        while index<len(bit):bit[index]+=1;index+=index&-index\n        less=0;index=value-1\n        while index:less+=bit[index];index-=index&-index\n        split=bisect_left(ordered,value);before=prefix[split]+(len(a)-split)*(value-1)\n        answer+=before+i+1-less\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

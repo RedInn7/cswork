@@ -1,0 +1,10 @@
+[
+  {
+    "name": "占用时长多算一秒",
+    "code": "def solve(d):\n    import heapq\n    n,m=map(int,d[:2]);idle=list(range(n));heapq.heapify(idle);busy=[];now=0;answer=[]\n    for i,length in enumerate(map(int,d[2:])):\n        now=max(now,i)\n        if not idle:now=max(now,busy[0][0])\n        while busy and busy[0][0]<=now:\n            end,server=heapq.heappop(busy);heapq.heappush(idle,server)\n        server=heapq.heappop(idle);answer.append(server);heapq.heappush(busy,(now+length+1,server))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "轮流编号不考虑释放",
+    "code": "def solve(d):\n    import heapq\n    n,m=map(int,d[:2]);idle=list(range(n));heapq.heapify(idle);busy=[];now=0;answer=[]\n    for i,length in enumerate(map(int,d[2:])):\n        now=max(now,i)\n        if not idle:now=max(now,busy[0][0])\n        while busy and busy[0][0]<=now:\n            end,server=heapq.heappop(busy);heapq.heappush(idle,server)\n        server=heapq.heappop(idle);answer.append(server);heapq.heappush(busy,(now+length,server))\n    return ' '.join(str(i%n) for i in range(m))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

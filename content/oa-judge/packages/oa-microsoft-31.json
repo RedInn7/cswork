@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-microsoft-31",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "用两个栈实现先进先出队列",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Microsoft"
+    ],
+    "description": "队列初始为空，仅使用两个栈实现push、pop、peek、empty。每次操作输出其返回值，push输出null；本站不另计构造函数输出。评测检查行为，栈使用限制请在实现中遵守。\n\n本站独立编写标准I/O、样例、题解和评测。",
+    "input": "第一行操作数Q（1..100），随后Q行：push x（1..9）、pop、peek或empty；pop和peek保证队列非空。",
+    "output": "一行输出Q个返回值，以空格分隔，使用null、true、false或整数。",
+    "explanation": "样例1：依次返回null、null、1、1、false，最后队列还剩2。\n\n样例2：初始队列为空，返回true。\n\n样例3：入队9后取出9，最后为空，返回null、9、true。",
+    "hints": [
+      "入队栈记录新元素，出队栈为空时把入队栈全部倒入，出队和查看操作出队栈顶。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5\npush 1\npush 2\npeek\npop\nempty\n",
+      "expectedOutput": "null null 1 1 false\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\nempty\n",
+      "expectedOutput": "true\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3\npush 9\npop\nempty\n",
+      "expectedOutput": "null 9 true\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "100\npush 1\npush 2\npush 3\npush 4\npush 5\npush 6\npush 7\npush 8\npush 9\npush 1\npush 2\npush 3\npush 4\npush 5\npush 6\npush 7\npush 8\npush 9\npush 1\npush 2\npush 3\npush 4\npush 5\npush 6\npush 7\npush 8\npush 9\npush 1\npush 2\npush 3\npush 4\npush 5\npush 6\npush 7\npush 8\npush 9\npush 1\npush 2\npush 3\npush 4\npush 5\npush 6\npush 7\npush 8\npush 9\npush 1\npush 2\npush 3\npush 4\npush 5\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\npop\n",
+      "expectedOutput": "null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null null 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "19\nempty\npush 7\nempty\npop\npush 9\npush 6\npeek\npush 8\npeek\npop\npeek\nempty\npeek\nempty\nempty\nempty\npush 6\npeek\npop\n",
+      "expectedOutput": "true null false 7 null null 9 null 9 9 6 false 6 false false false null 6 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "26\npush 8\npeek\npush 4\npeek\npush 1\npeek\npush 2\nempty\npop\npeek\npush 4\nempty\nempty\npush 7\npop\npeek\npop\npush 3\npeek\npush 3\npush 9\npeek\nempty\npop\nempty\npush 1\n",
+      "expectedOutput": "null 8 null 8 null 8 null false 8 4 null false false null 4 1 1 null 2 null null 2 false 2 false null\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "6\npush 1\nempty\npop\nempty\nempty\npush 7\n",
+      "expectedOutput": "null false 1 true true null\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "14\nempty\nempty\nempty\npush 2\npush 6\npop\npush 8\npush 7\npush 8\npeek\nempty\npush 2\npeek\npeek\n",
+      "expectedOutput": "true true true null null 2 null null null 6 false null 6 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "30\npush 8\npush 6\npop\npeek\npush 5\nempty\nempty\npeek\npop\npop\nempty\nempty\npush 6\npeek\npop\npush 2\nempty\npush 4\nempty\npush 3\npeek\nempty\npush 2\npeek\npeek\npop\npush 4\npush 9\nempty\nempty\n",
+      "expectedOutput": "null null 8 6 null false false 6 6 5 true true null 6 6 null false null false null 2 false null 2 2 2 null null false false\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "5\npush 8\npush 6\npop\npush 2\npop\n",
+      "expectedOutput": "null null 8 null 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "27\nempty\nempty\nempty\nempty\npush 6\npop\nempty\npush 2\npeek\nempty\npush 8\nempty\npeek\npeek\npop\npush 2\npop\npeek\nempty\npeek\nempty\npeek\npush 4\npush 9\npeek\npeek\nempty\n",
+      "expectedOutput": "true true true true null 6 true null 2 false null false 2 2 2 null 8 2 false 2 false 2 null null 2 2 false\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "19\npush 4\npush 2\npop\nempty\npop\nempty\nempty\nempty\npush 3\nempty\nempty\nempty\nempty\npop\nempty\npush 6\nempty\npush 3\nempty\n",
+      "expectedOutput": "null null 4 false 2 true true true null false false false false 3 true null false null false\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "6\nempty\npush 8\npeek\npush 2\nempty\npush 6\n",
+      "expectedOutput": "true null 8 null false null\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "14\nempty\nempty\npush 2\npeek\npop\nempty\npush 5\nempty\npush 7\npush 5\npush 4\npop\npop\npop\n",
+      "expectedOutput": "true true null 2 2 true null false null null null 5 7 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "7\npush 6\npop\npush 2\nempty\npush 4\npop\npeek\n",
+      "expectedOutput": "null 6 null false null 2 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "10\nempty\npush 4\npeek\npop\npush 5\npeek\npeek\nempty\nempty\npop\n",
+      "expectedOutput": "true null 4 4 null 5 5 false false 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "8\npush 1\npop\nempty\npush 9\npop\npush 9\npush 1\npop\n",
+      "expectedOutput": "null 1 true null 9 null null 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "3\nempty\nempty\nempty\n",
+      "expectedOutput": "true true true\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "30\nempty\nempty\npush 3\npop\nempty\npush 9\nempty\nempty\npeek\npush 8\npop\npeek\nempty\npop\nempty\nempty\npush 2\nempty\npeek\npop\npush 2\npop\nempty\npush 8\npop\npush 7\npop\npush 2\npop\npush 4\n",
+      "expectedOutput": "true true null 3 true null false false 9 null 9 8 false 8 true true null false 2 2 null 2 true null 8 null 7 null 2 null\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "8\npush 8\npop\npush 6\npop\npush 7\npeek\npeek\nempty\n",
+      "expectedOutput": "null 8 null 6 null 7 7 false\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "8\npush 1\npush 9\nempty\npush 7\npop\nempty\npeek\npop\n",
+      "expectedOutput": "null null false null 1 false 9 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "16\npush 5\npop\nempty\nempty\npush 6\npeek\npop\nempty\nempty\npush 9\nempty\npop\npush 8\npeek\nempty\npop\n",
+      "expectedOutput": "null 5 true true null 6 6 true true null false 9 null 8 false 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "8\nempty\npush 6\npeek\npush 2\npop\nempty\npeek\npop\n",
+      "expectedOutput": "true null 6 null 6 false 2 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "8\nempty\nempty\npush 7\npush 4\npeek\nempty\npop\npop\n",
+      "expectedOutput": "true true null null 7 false 7 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "30\nempty\nempty\npush 7\nempty\npop\npush 2\npush 9\npush 6\npush 2\npush 6\nempty\npeek\npeek\nempty\nempty\npush 2\npop\npeek\nempty\npush 8\npop\npush 4\npop\npush 2\nempty\npeek\npop\nempty\npeek\nempty\n",
+      "expectedOutput": "true true null false 7 null null null null null false 2 2 false false null 2 9 false null 9 null 6 null false 2 2 false 6 false\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "17\npush 4\npop\nempty\npush 3\nempty\npeek\nempty\nempty\npush 3\npop\npush 9\nempty\npush 9\npush 1\npush 9\npush 1\nempty\n",
+      "expectedOutput": "null 4 true null false 3 false false null 3 null false null null null null false\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "24\nempty\nempty\npush 3\npop\npush 1\npeek\npop\npush 8\npush 2\npop\npeek\npush 2\npush 3\npush 3\npeek\nempty\npeek\npop\npeek\npush 6\nempty\npop\nempty\npeek\n",
+      "expectedOutput": "true true null 3 null 1 1 null null 8 2 null null null 2 false 2 2 2 null false 2 false 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "8\nempty\npush 7\npeek\npop\nempty\nempty\nempty\nempty\n",
+      "expectedOutput": "true null 7 7 true true true true\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "4\nempty\nempty\nempty\nempty\n",
+      "expectedOutput": "true true true true\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "23\nempty\npush 6\npop\npush 2\npush 4\npeek\nempty\npush 6\npush 3\nempty\npeek\npeek\nempty\npop\npeek\npeek\nempty\npush 5\nempty\nempty\npeek\npop\npop\n",
+      "expectedOutput": "true null 6 null null 2 false null null false 2 2 false 2 4 4 false null false false 4 4 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "8\npush 4\npush 7\npop\npop\nempty\nempty\nempty\npush 5\n",
+      "expectedOutput": "null null 4 7 true true true null\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "13\npush 2\npop\nempty\nempty\nempty\nempty\nempty\nempty\nempty\npush 5\nempty\npop\npush 1\n",
+      "expectedOutput": "null 2 true true true true true true true null false 5 null\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

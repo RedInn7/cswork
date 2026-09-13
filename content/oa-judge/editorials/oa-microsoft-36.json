@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-36",
+  "title": "两条装配线能生产的最多汽车",
+  "explanation": "## 思路\n\n按时长升序试着加入前缀，用位集合维护这批车分配给第一线的可达总时长。存在总时长s≤X且总和−s≤Y即该前缀可生产。\n\n## 正确性证明\n\n任意k辆可行时，将所选较长车换成未选较短车不会让任何线超时，因此最短k辆也可行。位集合精确枚举每辆放第一或第二线的所有子集和；最长可行前缀即最优辆数。\n\n## 复杂度\n\n时间O(N log N+NX/w)，位集合空间O(X/w)，另存输入O(N)，w为机器字宽。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,x,y=map(int,d[:3]);a=sorted(map(int,d[3:]));bits=1;mask=(1<<(x+1))-1;total=answer=0\n    for i,value in enumerate(a):\n        total+=value\n        if total>x+y:break\n        bits=(bits|(bits<<value))&mask\n        if bits>>max(0,total-y):answer=i+1\n        else:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#36-maximize-number-of-produced-cars",
+  "sourceContentHash": "94fcc88d2a47165adaa94b4fbf17cd596e1be0d263a8859767fe7fd62deba0e4",
+  "author": "CSWork"
+}

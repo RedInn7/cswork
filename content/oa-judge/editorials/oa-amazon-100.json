@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-100",
+  "title": "每天按前置卷号购买新书",
+  "explanation": "## 思路\n\n布尔数组记录已到货，next维护最小未购买卷。每天标记新卷后，从next连续购买所有已到货卷。\n\n## 正确性证明\n\n已拥有的卷始终是1..next−1。next未到货时更大卷均缺前置条件，不能买；next到货则应买并继续，直到首个缺货卷。每卷指针经过一次。\n\n## 复杂度\n\n时间O(n)，空间O(n)（含输出）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);stock=bytearray(n+1);next_volume=1;answer=[]\n    for v in map(int,d[1:]):\n        stock[v]=1;start=next_volume\n        while next_volume<=n and stock[next_volume]:next_volume+=1\n        answer.append(' '.join(map(str,range(start,next_volume))) if start<next_volume else '-1')\n    return '\\n'.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#100-buy-volumes-order-books-",
+  "sourceContentHash": "877ec8d7732aed7c503bbe5f4d2fef3fa190adfb49185841f9beff96d21c396b",
+  "author": "CSWork"
+}

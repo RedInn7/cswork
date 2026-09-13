@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-27",
+  "title": "最多翻倍K次后的最大按位或",
+  "explanation": "## 思路\n\n所有翻倍集中到某一个元素；前缀和后缀OR使每个候选的剩余元素OR可常数时间取得。\n\n## 正确性证明\n\n设最优分配中最终最高非零位属于x。把其它元素所用次数转给x：若确有转移，x的最高位严格升高，超过原答案所有位，结果更大。因此存在全部次数作用于一个元素的最优解。全零时结论也成立。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));suffix=[0]*(n+1)\n    for i in range(n-1,-1,-1):suffix[i]=suffix[i+1]|a[i]\n    prefix=answer=0\n    for i,value in enumerate(a):answer=max(answer,prefix|(value<<k)|suffix[i+1]);prefix|=value\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#27-get-max-or-sum",
+  "sourceContentHash": "1b3e53a0367d635c3d877128708171a4d2d2b93f09604cc2f6abd53e9321754c",
+  "author": "CSWork"
+}

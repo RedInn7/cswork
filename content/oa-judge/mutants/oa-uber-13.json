@@ -1,0 +1,10 @@
+[
+  {
+    "name": "左右对齐颠倒",
+    "code": "def solve(d):\n    lines=d.splitlines();width,p=map(int,lines[0].split());index=1;result=['*'*(width+2)]\n    for _ in range(p):\n        align,count=lines[index].split();count=int(count);index+=1;current=''\n        def render(text):return '*'+(text.ljust(width) if align=='RIGHT' else text.rjust(width))+'*'\n        for word in lines[index:index+count]:\n            candidate=word if not current else current+' '+word\n            if len(candidate)>width:result.append(render(current));current=word\n            else:current=candidate\n        result.append(render(current));index+=count\n    result.append('*'*(width+2));return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "删除必要的行内空格",
+    "code": "def solve(d):\n    lines=d.splitlines();width,p=map(int,lines[0].split());index=1;result=['*'*(width+2)]\n    for _ in range(p):\n        align,count=lines[index].split();count=int(count);index+=1;current=''\n        def render(text):return '*'+(text if align=='LEFT' else text.rjust(width))+'*'\n        for word in lines[index:index+count]:\n            candidate=word if not current else current+' '+word\n            if len(candidate)>width:result.append(render(current));current=word\n            else:current=candidate\n        result.append(render(current));index+=count\n    result.append('*'*(width+2));return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

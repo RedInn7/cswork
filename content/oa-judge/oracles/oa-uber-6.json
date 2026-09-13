@@ -1,0 +1,654 @@
+[
+  {
+    "input": "16 3\n2 Hello world\n3 How areYou doing\n7 Please look and align to the center\n",
+    "expectedOutput": "********************\n*      Hello       *\n*      world       *\n*       How        *\n*      areYou      *\n*      doing       *\n*      Please      *\n*       look       *\n*       and        *\n*      align       *\n*        to        *\n*       the        *\n*      center      *\n********************\n"
+  },
+  {
+    "input": "5 1\n3 a b c\n",
+    "expectedOutput": "*********\n*   a   *\n*   b   *\n*   c   *\n*********\n"
+  },
+  {
+    "input": "6 1\n1 abc\n",
+    "expectedOutput": "**********\n*  abc   *\n**********\n"
+  },
+  {
+    "input": "15 1\n2 ba0 c*c9a9aabcbbc0\n",
+    "expectedOutput": "*******************\n*       ba0       *\n* c*c9a9aabcbbc0  *\n*******************\n"
+  },
+  {
+    "input": "7 3\n1 99\n9 a 09*0b bac9*0 9ab* 0 b9* b*bc aba*900 9\n3 c9 a*cb a*aac\n",
+    "expectedOutput": "***********\n*   99    *\n*    a    *\n*  09*0b  *\n* bac9*0  *\n*  9ab*   *\n*    0    *\n*   b9*   *\n*  b*bc   *\n* aba*900 *\n*    9    *\n*   c9    *\n*  a*cb   *\n*  a*aac  *\n***********\n"
+  },
+  {
+    "input": "12 5\n1 a0*b\n5 * c9c0ccc0a *ba00cc *c9*ca0**0ca 9cbcaa9cc***\n9 9*9**9bb b00*90c*bc 99bca0cb9 999a 0900cbaa9aac c*9ccb9c**0 ca**0b*c c*bb**b 090c09cc*acb\n6 9 ccccc9a0c0bb a*c9 cbb99a9caacb ac*cb0ba c99*aab*b9\n9 bb09 9*c**9 b*c9*b*0b**c b9b*c090c* 00c**a9c90cb *9a c00a90b 90*acca 0\n",
+    "expectedOutput": "****************\n*     a0*b     *\n*      *       *\n*  c9c0ccc0a   *\n*   *ba00cc    *\n* *c9*ca0**0ca *\n* 9cbcaa9cc*** *\n*   9*9**9bb   *\n*  b00*90c*bc  *\n*  99bca0cb9   *\n*     999a     *\n* 0900cbaa9aac *\n* c*9ccb9c**0  *\n*   ca**0b*c   *\n*   c*bb**b    *\n* 090c09cc*acb *\n*      9       *\n* ccccc9a0c0bb *\n*     a*c9     *\n* cbb99a9caacb *\n*   ac*cb0ba   *\n*  c99*aab*b9  *\n*     bb09     *\n*    9*c**9    *\n* b*c9*b*0b**c *\n*  b9b*c090c*  *\n* 00c**a9c90cb *\n*     *9a      *\n*   c00a90b    *\n*   90*acca    *\n*      0       *\n****************\n"
+  },
+  {
+    "input": "10 2\n9 c0 cb*b9c0cb0 ab*0a*9c *b c0c*b*abba aa9c0c*c **0a9 *a9*9a** ac09\n5 bc9c ccabbcc9a **a9c* *909c*a** caab*0c*\n",
+    "expectedOutput": "**************\n*     c0     *\n* cb*b9c0cb0 *\n*  ab*0a*9c  *\n*     *b     *\n* c0c*b*abba *\n*  aa9c0c*c  *\n*   **0a9    *\n*  *a9*9a**  *\n*    ac09    *\n*    bc9c    *\n* ccabbcc9a  *\n*   **a9c*   *\n* *909c*a**  *\n*  caab*0c*  *\n**************\n"
+  },
+  {
+    "input": "15 5\n4 ab *0*bb 9*aba9099c9009 ab9bcc*99aaa*99\n8 0c baa90*0c b 9*0cacc** a0bc* 99bb9*ab 9990990 9c\n10 b0aca*9b*9ac aab9* 0ca00baacb90c *ccc*9bcc*c 0ba**0bc 9bca*9*b9c09b0a ccc0*0 *90a 0baaaccbc9*a 0b9b09*a\n7 cacb*a c99c*b90ab0ca90 abb9*aaa0caaac a* 9b cb9c** a*ac90*b*\n5 **a*09 9*ba*b0ba00cc9 c0b *ac0bc0cb0b009c 00a0ba9\n",
+    "expectedOutput": "*******************\n*       ab        *\n*      *0*bb      *\n* 9*aba9099c9009  *\n* ab9bcc*99aaa*99 *\n*       0c        *\n*    baa90*0c     *\n*        b        *\n*    9*0cacc**    *\n*      a0bc*      *\n*    99bb9*ab     *\n*     9990990     *\n*       9c        *\n*  b0aca*9b*9ac   *\n*      aab9*      *\n*  0ca00baacb90c  *\n*   *ccc*9bcc*c   *\n*    0ba**0bc     *\n* 9bca*9*b9c09b0a *\n*     ccc0*0      *\n*      *90a       *\n*  0baaaccbc9*a   *\n*    0b9b09*a     *\n*     cacb*a      *\n* c99c*b90ab0ca90 *\n* abb9*aaa0caaac  *\n*       a*        *\n*       9b        *\n*     cb9c**      *\n*    a*ac90*b*    *\n*     **a*09      *\n* 9*ba*b0ba00cc9  *\n*       c0b       *\n* *ac0bc0cb0b009c *\n*     00a0ba9     *\n*******************\n"
+  },
+  {
+    "input": "8 2\n8 9a0 9a 009**0c 9b0b9a9 b cb0 90ab9 9a90\n3 c9 0*b*c b0\n",
+    "expectedOutput": "************\n*   9a0    *\n*    9a    *\n* 009**0c  *\n* 9b0b9a9  *\n*    b     *\n*   cb0    *\n*  90ab9   *\n*   9a90   *\n*    c9    *\n*  0*b*c   *\n*    b0    *\n************\n"
+  },
+  {
+    "input": "7 5\n2 *b9cba0 0a*\n5 a00*9b 90 9a99 a*0*9aa c*ac*0\n5 0a0b 090bac cb*90 009* 90*0ab\n5 *a90 bbc0a 00 cab0aca *b\n9 9*9*0b* bc acb0 b0cc* *b b00c b9a990 a9c *\n",
+    "expectedOutput": "***********\n* *b9cba0 *\n*   0a*   *\n* a00*9b  *\n*   90    *\n*  9a99   *\n* a*0*9aa *\n* c*ac*0  *\n*  0a0b   *\n* 090bac  *\n*  cb*90  *\n*  009*   *\n* 90*0ab  *\n*  *a90   *\n*  bbc0a  *\n*   00    *\n* cab0aca *\n*   *b    *\n* 9*9*0b* *\n*   bc    *\n*  acb0   *\n*  b0cc*  *\n*   *b    *\n*  b00c   *\n* b9a990  *\n*   a9c   *\n*    *    *\n***********\n"
+  },
+  {
+    "input": "9 2\n3 9b0bacccc *b*9 cc09b\n4 cbb9ab 9bb *0cc c99*b9a\n",
+    "expectedOutput": "*************\n* 9b0bacccc *\n*   *b*9    *\n*   cc09b   *\n*  cbb9ab   *\n*    9bb    *\n*   *0cc    *\n*  c99*b9a  *\n*************\n"
+  },
+  {
+    "input": "10 5\n2 0** *0accc0\n8 9a *b9*0a90ba a9bbb09* ca9*cb 9099*00a c*9ba*b cc0 *9a\n1 ac0\n9 9*c 9c09ca 0bbcc*a bc*c99*c 9*9 b90 a *caaac 90ca9\n6 c9c9*c0 ** ac *009acba **9b9c0 c\n",
+    "expectedOutput": "**************\n*    0**     *\n*  *0accc0   *\n*     9a     *\n* *b9*0a90ba *\n*  a9bbb09*  *\n*   ca9*cb   *\n*  9099*00a  *\n*  c*9ba*b   *\n*    cc0     *\n*    *9a     *\n*    ac0     *\n*    9*c     *\n*   9c09ca   *\n*  0bbcc*a   *\n*  bc*c99*c  *\n*    9*9     *\n*    b90     *\n*     a      *\n*   *caaac   *\n*   90ca9    *\n*  c9c9*c0   *\n*     **     *\n*     ac     *\n*  *009acba  *\n*  **9b9c0   *\n*     c      *\n**************\n"
+  },
+  {
+    "input": "10 2\n1 a9\n2 9cbb90b0* b\n",
+    "expectedOutput": "**************\n*     a9     *\n* 9cbb90b0*  *\n*     b      *\n**************\n"
+  },
+  {
+    "input": "14 5\n6 0c0aacb acbb9* ab bc* cb*c 9*\n9 b**c 0c0ba*0c*9 *a00 0a9*aa9c a*0acb* *b9bb *a9* acc99c ab\n8 *09* 9*b* 09*a0ca90ca*0 90**bb9b0c 90cc9cb909b0b9 0b 0cb*b9b9c c9bc0000\n5 9accca*b90*** c99c*9 b9*9b*ccc*c9 cbbb*c*cc*bca bb990*ca\n2 0990abbb0*9 *bc\n",
+    "expectedOutput": "******************\n*    0c0aacb     *\n*     acbb9*     *\n*       ab       *\n*      bc*       *\n*      cb*c      *\n*       9*       *\n*      b**c      *\n*   0c0ba*0c*9   *\n*      *a00      *\n*    0a9*aa9c    *\n*    a*0acb*     *\n*     *b9bb      *\n*      *a9*      *\n*     acc99c     *\n*       ab       *\n*      *09*      *\n*      9*b*      *\n* 09*a0ca90ca*0  *\n*   90**bb9b0c   *\n* 90cc9cb909b0b9 *\n*       0b       *\n*   0cb*b9b9c    *\n*    c9bc0000    *\n* 9accca*b90***  *\n*     c99c*9     *\n*  b9*9b*ccc*c9  *\n* cbbb*c*cc*bca  *\n*    bb990*ca    *\n*  0990abbb0*9   *\n*      *bc       *\n******************\n"
+  },
+  {
+    "input": "14 1\n8 ccc90*a0b**0ab ac* *c*ccaa9ac 9*09aca*ba a09 aca a099c*bac 0ac*0**b\n",
+    "expectedOutput": "******************\n* ccc90*a0b**0ab *\n*      ac*       *\n*   *c*ccaa9ac   *\n*   9*09aca*ba   *\n*      a09       *\n*      aca       *\n*   a099c*bac    *\n*    0ac*0**b    *\n******************\n"
+  },
+  {
+    "input": "10 5\n5 0b**b c90b0cb0 ca9*0* a 0\n6 ba 09c00**b0 bbbac99 90bb** babccccb *b\n2 0a*c0a90 9a*a9c\n3 0ccb9 9a9ba*0c 909abba\n7 c cbaa0c9**c *a*9ab0b* c0b0c00a 0c*cb999** 09c 9*9ac9ba\n",
+    "expectedOutput": "**************\n*   0b**b    *\n*  c90b0cb0  *\n*   ca9*0*   *\n*     a      *\n*     0      *\n*     ba     *\n* 09c00**b0  *\n*  bbbac99   *\n*   90bb**   *\n*  babccccb  *\n*     *b     *\n*  0a*c0a90  *\n*   9a*a9c   *\n*   0ccb9    *\n*  9a9ba*0c  *\n*  909abba   *\n*     c      *\n* cbaa0c9**c *\n* *a*9ab0b*  *\n*  c0b0c00a  *\n* 0c*cb999** *\n*    09c     *\n*  9*9ac9ba  *\n**************\n"
+  },
+  {
+    "input": "11 1\n6 c*b9bbac* baaa0b*bba *a9 9000cbba 99baa009a 00009c0ca\n",
+    "expectedOutput": "***************\n*  c*b9bbac*  *\n* baaa0b*bba  *\n*     *a9     *\n*  9000cbba   *\n*  99baa009a  *\n*  00009c0ca  *\n***************\n"
+  },
+  {
+    "input": "8 2\n6 9*ccb a9bb900 b*a00b 09a0 *cb0ba* cc9a9\n9 900*9*9a ca*90ca 909ba0** a9*900c b99*cc a 90b*c0ac c0a0c0 0*00\n",
+    "expectedOutput": "************\n*  9*ccb   *\n* a9bb900  *\n*  b*a00b  *\n*   09a0   *\n* *cb0ba*  *\n*  cc9a9   *\n* 900*9*9a *\n* ca*90ca  *\n* 909ba0** *\n* a9*900c  *\n*  b99*cc  *\n*    a     *\n* 90b*c0ac *\n*  c0a0c0  *\n*   0*00   *\n************\n"
+  },
+  {
+    "input": "5 1\n10 aab0 ba*09 00ccc ab a 9 caa90 *cb0* aa9 c\n",
+    "expectedOutput": "*********\n* aab0  *\n* ba*09 *\n* 00ccc *\n*  ab   *\n*   a   *\n*   9   *\n* caa90 *\n* *cb0* *\n*  aa9  *\n*   c   *\n*********\n"
+  },
+  {
+    "input": "6 5\n1 b\n1 ab\n5 00a9 90 b b90*0* ac999a\n4 *a *bcac* * b\n2 cb **\n",
+    "expectedOutput": "**********\n*   b    *\n*   ab   *\n*  00a9  *\n*   90   *\n*   b    *\n* b90*0* *\n* ac999a *\n*   *a   *\n* *bcac* *\n*   *    *\n*   b    *\n*   cb   *\n*   **   *\n**********\n"
+  },
+  {
+    "input": "11 5\n8 **b00ba0*00 *0*caa0ca9 a0b09 9*cab 9a*0 a*09b9*aa0 *0a909c09a0 9bc0*9c\n7 099ba*b aac9* 0 *0999b9a acc*9b90ba **cba0 ab9\n4 cb90 0b0000b0cb 9*90c0 a090cca9bac\n7 9ba99**009a 9b09 c90ab000c b9ab*c0 a99a9bbcca c90a9a09c*a bbc9099\n2 0*c*ccb *c0c\n",
+    "expectedOutput": "***************\n* **b00ba0*00 *\n* *0*caa0ca9  *\n*    a0b09    *\n*    9*cab    *\n*    9a*0     *\n* a*09b9*aa0  *\n* *0a909c09a0 *\n*   9bc0*9c   *\n*   099ba*b   *\n*    aac9*    *\n*      0      *\n*  *0999b9a   *\n* acc*9b90ba  *\n*   **cba0    *\n*     ab9     *\n*    cb90     *\n* 0b0000b0cb  *\n*   9*90c0    *\n* a090cca9bac *\n* 9ba99**009a *\n*    9b09     *\n*  c90ab000c  *\n*   b9ab*c0   *\n* a99a9bbcca  *\n* c90a9a09c*a *\n*   bbc9099   *\n*   0*c*ccb   *\n*    *c0c     *\n***************\n"
+  },
+  {
+    "input": "12 1\n6 99a* 00*b9 0bcc9aac9b 9c**0 bcbcc* b0ccab\n",
+    "expectedOutput": "****************\n*     99a*     *\n*    00*b9     *\n*  0bcc9aac9b  *\n*    9c**0     *\n*    bcbcc*    *\n*    b0ccab    *\n****************\n"
+  },
+  {
+    "input": "5 2\n2 9 ccca\n7 ac9* 9*0a *ccb b0 9b a0a c0b*\n",
+    "expectedOutput": "*********\n*   9   *\n* ccca  *\n* ac9*  *\n* 9*0a  *\n* *ccb  *\n*  b0   *\n*  9b   *\n*  a0a  *\n* c0b*  *\n*********\n"
+  },
+  {
+    "input": "13 3\n4 9b9 909bca0 b*0bbba99c* **a00\n10 c*a9b 0abc0c00 0c**a*00a0 c090aa0b0b 9acc0cabab0*a ac090 b090c*0cc*0c c9* *0 c*9a\n6 0c*ca b9099c*c0b b0**9ca 0 cc9b0*0****b* 090\n",
+    "expectedOutput": "*****************\n*      9b9      *\n*    909bca0    *\n*  b*0bbba99c*  *\n*     **a00     *\n*     c*a9b     *\n*   0abc0c00    *\n*  0c**a*00a0   *\n*  c090aa0b0b   *\n* 9acc0cabab0*a *\n*     ac090     *\n* b090c*0cc*0c  *\n*      c9*      *\n*      *0       *\n*     c*9a      *\n*     0c*ca     *\n*  b9099c*c0b   *\n*    b0**9ca    *\n*       0       *\n* cc9b0*0****b* *\n*      090      *\n*****************\n"
+  },
+  {
+    "input": "8 5\n7 c9*009 * cbaca0 00aa 9ac9bc0 a0aaa aa9babcb\n7 ac b cc *a0c 0*bac b0c b0*9a\n5 *b0bc bb0c *9b0c0 bb 0\n5 b0 *0* ba*09ba 9babc0b0 *c*b**9*\n1 999\n",
+    "expectedOutput": "************\n*  c9*009  *\n*    *     *\n*  cbaca0  *\n*   00aa   *\n* 9ac9bc0  *\n*  a0aaa   *\n* aa9babcb *\n*    ac    *\n*    b     *\n*    cc    *\n*   *a0c   *\n*  0*bac   *\n*   b0c    *\n*  b0*9a   *\n*  *b0bc   *\n*   bb0c   *\n*  *9b0c0  *\n*    bb    *\n*    0     *\n*    b0    *\n*   *0*    *\n* ba*09ba  *\n* 9babc0b0 *\n* *c*b**9* *\n*   999    *\n************\n"
+  },
+  {
+    "input": "9 4\n3 09*9*cc** *b990cb90 0b**bcba\n8 **aac**c *9a0cb*a* bc c*c0a*0 *cac*b0 0b990c0c c9bbb a0*0c9\n7 b9*** cbab acb9* *a0c0c 0c ba90c cb0b\n9 a**0b ***9009a 90*9 a* caaab000* cab9*b0c 09c0a aaba9c a\n",
+    "expectedOutput": "*************\n* 09*9*cc** *\n* *b990cb90 *\n* 0b**bcba  *\n* **aac**c  *\n* *9a0cb*a* *\n*    bc     *\n*  c*c0a*0  *\n*  *cac*b0  *\n* 0b990c0c  *\n*   c9bbb   *\n*  a0*0c9   *\n*   b9***   *\n*   cbab    *\n*   acb9*   *\n*  *a0c0c   *\n*    0c     *\n*   ba90c   *\n*   cb0b    *\n*   a**0b   *\n* ***9009a  *\n*   90*9    *\n*    a*     *\n* caaab000* *\n* cab9*b0c  *\n*   09c0a   *\n*  aaba9c   *\n*     a     *\n*************\n"
+  },
+  {
+    "input": "12 5\n6 * c*ab**caa *bbac0 a*c0c0*b9b 09bb *\n4 abc0cca 9a90bcb cb09c9a 09b\n8 ba*0c9c*c* 9 **b c*0acac 0c ca*a9cbb99b9 90*a c\n8 a9*bcb0cba9b a0b*9a*09 9a aa*a* 9*9 9c0*99 a9c*b 0a9c\n10 aa 099900c0a 99 *b0 bcca09 a*ca0b*9*0 *aa9bbaaa*9a cc*baba99 *a 0\n",
+    "expectedOutput": "****************\n*      *       *\n*  c*ab**caa   *\n*    *bbac0    *\n*  a*c0c0*b9b  *\n*     09bb     *\n*      *       *\n*   abc0cca    *\n*   9a90bcb    *\n*   cb09c9a    *\n*     09b      *\n*  ba*0c9c*c*  *\n*      9       *\n*     **b      *\n*   c*0acac    *\n*      0c      *\n* ca*a9cbb99b9 *\n*     90*a     *\n*      c       *\n* a9*bcb0cba9b *\n*  a0b*9a*09   *\n*      9a      *\n*    aa*a*     *\n*     9*9      *\n*    9c0*99    *\n*    a9c*b     *\n*     0a9c     *\n*      aa      *\n*  099900c0a   *\n*      99      *\n*     *b0      *\n*    bcca09    *\n*  a*ca0b*9*0  *\n* *aa9bbaaa*9a *\n*  cc*baba99   *\n*      *a      *\n*      0       *\n****************\n"
+  },
+  {
+    "input": "9 4\n1 bc*a*ab\n5 a9c9* acccc a0 0b c9b*b\n8 c*cbba* abb9acb 9b 999c0bb 00*a*b b**00cc 0 a*c*\n8 9*ab0b* 0 caa9c9ac9 a9cbb9 c *babc b9 a9ab\n",
+    "expectedOutput": "*************\n*  bc*a*ab  *\n*   a9c9*   *\n*   acccc   *\n*    a0     *\n*    0b     *\n*   c9b*b   *\n*  c*cbba*  *\n*  abb9acb  *\n*    9b     *\n*  999c0bb  *\n*  00*a*b   *\n*  b**00cc  *\n*     0     *\n*   a*c*    *\n*  9*ab0b*  *\n*     0     *\n* caa9c9ac9 *\n*  a9cbb9   *\n*     c     *\n*   *babc   *\n*    b9     *\n*   a9ab    *\n*************\n"
+  },
+  {
+    "input": "8 3\n8 *b c 0bb0* cb c*ab*0b 0a0*9b09 b a\n10 **90b09 bbba bba*9 c*0bbcb b*0a*0 9 baaa9* a*a00*b b ab\n9 b0c99aa bbbcc9 00b00bc* 0 *0ccb9ac c0 cb*9c c9**bbba 0*c\n",
+    "expectedOutput": "************\n*    *b    *\n*    c     *\n*  0bb0*   *\n*    cb    *\n* c*ab*0b  *\n* 0a0*9b09 *\n*    b     *\n*    a     *\n* **90b09  *\n*   bbba   *\n*  bba*9   *\n* c*0bbcb  *\n*  b*0a*0  *\n*    9     *\n*  baaa9*  *\n* a*a00*b  *\n*    b     *\n*    ab    *\n* b0c99aa  *\n*  bbbcc9  *\n* 00b00bc* *\n*    0     *\n* *0ccb9ac *\n*    c0    *\n*  cb*9c   *\n* c9**bbba *\n*   0*c    *\n************\n"
+  },
+  {
+    "input": "14 2\n10 c0 9ca**baaa9*0 cc*0*b000*0 a0999**b0bc9b9 90a* 99c9b0*b c0c a0*bbb90b*c09 c*9a *a*a9a9*9bb9c\n10 aac0 9*c09c bcb *9c*c*c 9*caac*ca **ac a*99c9ab0 * *00ca9b0*bc 00bca\n",
+    "expectedOutput": "******************\n*       c0       *\n*  9ca**baaa9*0  *\n*  cc*0*b000*0   *\n* a0999**b0bc9b9 *\n*      90a*      *\n*    99c9b0*b    *\n*      c0c       *\n* a0*bbb90b*c09  *\n*      c*9a      *\n* *a*a9a9*9bb9c  *\n*      aac0      *\n*     9*c09c     *\n*      bcb       *\n*    *9c*c*c     *\n*   9*caac*ca    *\n*      **ac      *\n*   a*99c9ab0    *\n*       *        *\n*  *00ca9b0*bc   *\n*     00bca      *\n******************\n"
+  },
+  {
+    "input": "10 5\n2 0a09 b0b0ab*c\n7 99* c cbbb0**0a 0ac*cc*9ca 00b0aa* a bb00b90\n8 9a9* b c9a9b b*c**bcac *c*99c9 0* c*c9 abc9\n6 *0c0a 0*c0 9bc*b099b9 0*9* ccacab*bb* a*9ca\n2 b ac0\n",
+    "expectedOutput": "**************\n*    0a09    *\n*  b0b0ab*c  *\n*    99*     *\n*     c      *\n* cbbb0**0a  *\n* 0ac*cc*9ca *\n*  00b0aa*   *\n*     a      *\n*  bb00b90   *\n*    9a9*    *\n*     b      *\n*   c9a9b    *\n* b*c**bcac  *\n*  *c*99c9   *\n*     0*     *\n*    c*c9    *\n*    abc9    *\n*   *0c0a    *\n*    0*c0    *\n* 9bc*b099b9 *\n*    0*9*    *\n* ccacab*bb* *\n*   a*9ca    *\n*     b      *\n*    ac0     *\n**************\n"
+  },
+  {
+    "input": "12 3\n1 99b*09\n7 ca*9c a99ca0cc9bac 9b*ac9*90*90 cb0*c***99*c 0 *cc9b9ac b0b0090909c\n1 cc00\n",
+    "expectedOutput": "****************\n*    99b*09    *\n*    ca*9c     *\n* a99ca0cc9bac *\n* 9b*ac9*90*90 *\n* cb0*c***99*c *\n*      0       *\n*   *cc9b9ac   *\n* b0b0090909c  *\n*     cc00     *\n****************\n"
+  },
+  {
+    "input": "8 1\n3 9a*9*cba baac9a **\n",
+    "expectedOutput": "************\n* 9a*9*cba *\n*  baac9a  *\n*    **    *\n************\n"
+  },
+  {
+    "input": "15 4\n7 **9*c*09b 0aa*a* cacaac**c 90ba00c09 c*b9c0ba**bb c9acc0 cb9b00\n9 0a 99a900bc0 c 0caab0abbb**b*a c**ba99 a *a9b*a0a**c 09bbcc9*bc9bc9 a0b9abc0bc**c\n1 *c0*bc*\n2 99abb 909cc*\n",
+    "expectedOutput": "*******************\n*    **9*c*09b    *\n*     0aa*a*      *\n*    cacaac**c    *\n*    90ba00c09    *\n*  c*b9c0ba**bb   *\n*     c9acc0      *\n*     cb9b00      *\n*       0a        *\n*    99a900bc0    *\n*        c        *\n* 0caab0abbb**b*a *\n*     c**ba99     *\n*        a        *\n*   *a9b*a0a**c   *\n* 09bbcc9*bc9bc9  *\n*  a0b9abc0bc**c  *\n*     *c0*bc*     *\n*      99abb      *\n*     909cc*      *\n*******************\n"
+  },
+  {
+    "input": "11 4\n2 a99c009a0ab a*9c9*9cc\n5 b0a*c*09**a 0ca9b 9c0bcc00 c0ccab*099 9cc0\n8 a*b0c0 b*0c*9a a*c9ba9 **b*a9b0*b0 aa* 09*bb cbccc0ba0 *c9b99*c0*a\n5 9a a099a aa9c9 c*b*c99ac a0b*b**b\n",
+    "expectedOutput": "***************\n* a99c009a0ab *\n*  a*9c9*9cc  *\n* b0a*c*09**a *\n*    0ca9b    *\n*  9c0bcc00   *\n* c0ccab*099  *\n*    9cc0     *\n*   a*b0c0    *\n*   b*0c*9a   *\n*   a*c9ba9   *\n* **b*a9b0*b0 *\n*     aa*     *\n*    09*bb    *\n*  cbccc0ba0  *\n* *c9b99*c0*a *\n*     9a      *\n*    a099a    *\n*    aa9c9    *\n*  c*b*c99ac  *\n*  a0b*b**b   *\n***************\n"
+  },
+  {
+    "input": "13 2\n7 b9099ab 0900 90acb 0 900a0b00 9aa0 0bb*c*090\n6 0b9**9a0c *a b*9ab*ac****9 b00b9a 0acc0* cc**b9aa\n",
+    "expectedOutput": "*****************\n*    b9099ab    *\n*     0900      *\n*     90acb     *\n*       0       *\n*   900a0b00    *\n*     9aa0      *\n*   0bb*c*090   *\n*   0b9**9a0c   *\n*      *a       *\n* b*9ab*ac****9 *\n*    b00b9a     *\n*    0acc0*     *\n*   cc**b9aa    *\n*****************\n"
+  },
+  {
+    "input": "10 5\n6 b b bb0000 999*0a9cb* b*99aa0 c*099\n8 9c**ba 9*0*cb c*c*99cb9 b00cbcc * 9c9acc0bc ba90c 909a0\n2 ba900cab b*c*0a\n9 0ab 99c999 ba9 0c 9*caa09aa 9b*0cbb*0* b b0*aba*9b9 99bb\n4 bcc9ac*bc9 cc099 c*c0009 0*a00\n",
+    "expectedOutput": "**************\n*     b      *\n*     b      *\n*   bb0000   *\n* 999*0a9cb* *\n*  b*99aa0   *\n*   c*099    *\n*   9c**ba   *\n*   9*0*cb   *\n* c*c*99cb9  *\n*  b00cbcc   *\n*     *      *\n* 9c9acc0bc  *\n*   ba90c    *\n*   909a0    *\n*  ba900cab  *\n*   b*c*0a   *\n*    0ab     *\n*   99c999   *\n*    ba9     *\n*     0c     *\n* 9*caa09aa  *\n* 9b*0cbb*0* *\n*     b      *\n* b0*aba*9b9 *\n*    99bb    *\n* bcc9ac*bc9 *\n*   cc099    *\n*  c*c0009   *\n*   0*a00    *\n**************\n"
+  },
+  {
+    "input": "10 4\n5 abbb909 bcb 909ab09 b00a*c*ba 9*cba00\n1 c0bc\n3 0b9bb*9b9 cb9c00b*b0 c\n3 *cabc* 000 9*b9b0\n",
+    "expectedOutput": "**************\n*  abbb909   *\n*    bcb     *\n*  909ab09   *\n* b00a*c*ba  *\n*  9*cba00   *\n*    c0bc    *\n* 0b9bb*9b9  *\n* cb9c00b*b0 *\n*     c      *\n*   *cabc*   *\n*    000     *\n*   9*b9b0   *\n**************\n"
+  },
+  {
+    "input": "9 5\n7 99 9a99c90a *c9***ba ca0bb09 *9a00aac c0*09b *0ba9bb*\n10 b099c a*9c* * a0c00 9**c*0*a *c**0ca9b cbc9ab*a0 b0 9ac*b*9 *0abcab\n3 bb99bcc0 ac*090* cbcc\n3 90ca0a9c cab **\n2 0bb 0ca0b99b\n",
+    "expectedOutput": "*************\n*    99     *\n* 9a99c90a  *\n* *c9***ba  *\n*  ca0bb09  *\n* *9a00aac  *\n*  c0*09b   *\n* *0ba9bb*  *\n*   b099c   *\n*   a*9c*   *\n*     *     *\n*   a0c00   *\n* 9**c*0*a  *\n* *c**0ca9b *\n* cbc9ab*a0 *\n*    b0     *\n*  9ac*b*9  *\n*  *0abcab  *\n* bb99bcc0  *\n*  ac*090*  *\n*   cbcc    *\n* 90ca0a9c  *\n*    cab    *\n*    **     *\n*    0bb    *\n* 0ca0b99b  *\n*************\n"
+  },
+  {
+    "input": "6 2\n6 **00* bb90a0 0*0a9 a*a 90*ca ba\n10 0bb*a a00*a * ab*a *ccc ac*a*c bab 99c 9cb0 *acc\n",
+    "expectedOutput": "**********\n* **00*  *\n* bb90a0 *\n* 0*0a9  *\n*  a*a   *\n* 90*ca  *\n*   ba   *\n* 0bb*a  *\n* a00*a  *\n*   *    *\n*  ab*a  *\n*  *ccc  *\n* ac*a*c *\n*  bab   *\n*  99c   *\n*  9cb0  *\n*  *acc  *\n**********\n"
+  },
+  {
+    "input": "8 1\n10 a*cc a99a*aa0 0c*cbb bba0000b 9 0 99a9b0 *c9b*0 b9bba*aa 9*0b*\n",
+    "expectedOutput": "************\n*   a*cc   *\n* a99a*aa0 *\n*  0c*cbb  *\n* bba0000b *\n*    9     *\n*    0     *\n*  99a9b0  *\n*  *c9b*0  *\n* b9bba*aa *\n*  9*0b*   *\n************\n"
+  },
+  {
+    "input": "14 3\n10 cccaa90a*bb bc0ca9bab09ab* 09*00a*c0a 9 cb*9c09 9*0b**c c*0a9ab00 900bbab0990c a**0cc0*b 9*0\n4 b*aa09cb***** 009**ac9ccbaac c90*0*0 cba0cc90aac\n6 ccbbab9*a00 *9*90**ab* 90*9cc9*9b a0cc9*bc*9cb*9 b*c99bca9 *ca00b9a9a0b\n",
+    "expectedOutput": "******************\n*  cccaa90a*bb   *\n* bc0ca9bab09ab* *\n*   09*00a*c0a   *\n*       9        *\n*    cb*9c09     *\n*    9*0b**c     *\n*   c*0a9ab00    *\n*  900bbab0990c  *\n*   a**0cc0*b    *\n*      9*0       *\n* b*aa09cb*****  *\n* 009**ac9ccbaac *\n*    c90*0*0     *\n*  cba0cc90aac   *\n*  ccbbab9*a00   *\n*   *9*90**ab*   *\n*   90*9cc9*9b   *\n* a0cc9*bc*9cb*9 *\n*   b*c99bca9    *\n*  *ca00b9a9a0b  *\n******************\n"
+  },
+  {
+    "input": "15 1\n8 00ba0b09 ab9 *c90acbabc90ca9 cb*a a aa99cbb*cac09 bba009c*00 b*9*0cb00\n",
+    "expectedOutput": "*******************\n*    00ba0b09     *\n*       ab9       *\n* *c90acbabc90ca9 *\n*      cb*a       *\n*        a        *\n*  aa99cbb*cac09  *\n*   bba009c*00    *\n*    b*9*0cb00    *\n*******************\n"
+  },
+  {
+    "input": "8 4\n6 b0bc9a*b cc 90bb 999*b** c*a0900 a0c0**\n2 b**b9 *9*0*9b0\n10 c0000c 90caac c000bb99 *9a b 0**0a99 ab*b* b9c *00c ba0\n2 cbcaa0 *bca9cbc\n",
+    "expectedOutput": "************\n* b0bc9a*b *\n*    cc    *\n*   90bb   *\n* 999*b**  *\n* c*a0900  *\n*  a0c0**  *\n*  b**b9   *\n* *9*0*9b0 *\n*  c0000c  *\n*  90caac  *\n* c000bb99 *\n*   *9a    *\n*    b     *\n* 0**0a99  *\n*  ab*b*   *\n*   b9c    *\n*   *00c   *\n*   ba0    *\n*  cbcaa0  *\n* *bca9cbc *\n************\n"
+  },
+  {
+    "input": "10 5\n6 *ca0 b9c09 * bbcc*a acc 0*9***b\n8 aacbcb90 9099*00ca * accab bbcb**9ca c009ba b**aba90 bbab\n6 cbba* 9c9*b *abcb cba0 cb9b*ac9 0bb9c90aaa\n9 aca*cbb0 9090c ac0bc 9090* *b0cb a*09c9ba a* bc 9\n5 0a**09* * b90a9aa9 a b\n",
+    "expectedOutput": "**************\n*    *ca0    *\n*   b9c09    *\n*     *      *\n*   bbcc*a   *\n*    acc     *\n*  0*9***b   *\n*  aacbcb90  *\n* 9099*00ca  *\n*     *      *\n*   accab    *\n* bbcb**9ca  *\n*   c009ba   *\n*  b**aba90  *\n*    bbab    *\n*   cbba*    *\n*   9c9*b    *\n*   *abcb    *\n*    cba0    *\n*  cb9b*ac9  *\n* 0bb9c90aaa *\n*  aca*cbb0  *\n*   9090c    *\n*   ac0bc    *\n*   9090*    *\n*   *b0cb    *\n*  a*09c9ba  *\n*     a*     *\n*     bc     *\n*     9      *\n*  0a**09*   *\n*     *      *\n*  b90a9aa9  *\n*     a      *\n*     b      *\n**************\n"
+  },
+  {
+    "input": "11 3\n9 *ab09c *bc b0c9 *9*0*a9aa0b a*acca90*00 c**9bb cacbb 9**a *9c\n7 accbbc ac 9 * 9a9a9cb9cb * cccc*c00b\n2 *babb*0bb0 9abc\n",
+    "expectedOutput": "***************\n*   *ab09c    *\n*     *bc     *\n*    b0c9     *\n* *9*0*a9aa0b *\n* a*acca90*00 *\n*   c**9bb    *\n*    cacbb    *\n*    9**a     *\n*     *9c     *\n*   accbbc    *\n*     ac      *\n*      9      *\n*      *      *\n* 9a9a9cb9cb  *\n*      *      *\n*  cccc*c00b  *\n* *babb*0bb0  *\n*    9abc     *\n***************\n"
+  },
+  {
+    "input": "5 2\n2 cb*b* 9\n6 9 00a0 90b cc accba c\n",
+    "expectedOutput": "*********\n* cb*b* *\n*   9   *\n*   9   *\n* 00a0  *\n*  90b  *\n*  cc   *\n* accba *\n*   c   *\n*********\n"
+  },
+  {
+    "input": "6 2\n9 ccc0 * 9 b**b* bb9c9 *0 c0bc c9ba9 9b9\n9 cb ba 9c b*9c* c*b 99*c*b cbcaaa ac aa*c\n",
+    "expectedOutput": "**********\n*  ccc0  *\n*   *    *\n*   9    *\n* b**b*  *\n* bb9c9  *\n*   *0   *\n*  c0bc  *\n* c9ba9  *\n*  9b9   *\n*   cb   *\n*   ba   *\n*   9c   *\n* b*9c*  *\n*  c*b   *\n* 99*c*b *\n* cbcaaa *\n*   ac   *\n*  aa*c  *\n**********\n"
+  },
+  {
+    "input": "14 2\n10 *c0c* 9 cb*b 0aa abccc*c0a*cc cabbb* b99abb9bba0*bb b0c*c9c0a a0 0bccc9**0\n9 bb*ccc*c0 *9cabbb *a009bcb*0a a a*c b9ab*b9*90b 9*a0*990b 0 a\n",
+    "expectedOutput": "******************\n*     *c0c*      *\n*       9        *\n*      cb*b      *\n*      0aa       *\n*  abccc*c0a*cc  *\n*     cabbb*     *\n* b99abb9bba0*bb *\n*   b0c*c9c0a    *\n*       a0       *\n*   0bccc9**0    *\n*   bb*ccc*c0    *\n*    *9cabbb     *\n*  *a009bcb*0a   *\n*       a        *\n*      a*c       *\n*  b9ab*b9*90b   *\n*   9*a0*990b    *\n*       0        *\n*       a        *\n******************\n"
+  },
+  {
+    "input": "8 5\n3 caab**0a ac9a 9*c\n3 0bca 9a*c0 cb\n9 ca*ca ab0*0acb aa 9* 9cc* *9ac*0*a a*bbb** b9b9b* b0cc90\n3 b*ab 9 aa**b*0*\n5 *0* ab0abc09 0*b0ab 9 b0*ca\n",
+    "expectedOutput": "************\n* caab**0a *\n*   ac9a   *\n*   9*c    *\n*   0bca   *\n*  9a*c0   *\n*    cb    *\n*  ca*ca   *\n* ab0*0acb *\n*    aa    *\n*    9*    *\n*   9cc*   *\n* *9ac*0*a *\n* a*bbb**  *\n*  b9b9b*  *\n*  b0cc90  *\n*   b*ab   *\n*    9     *\n* aa**b*0* *\n*   *0*    *\n* ab0abc09 *\n*  0*b0ab  *\n*    9     *\n*  b0*ca   *\n************\n"
+  },
+  {
+    "input": "9 3\n1 **abcbbb\n3 cbb bc90b99 9\n2 b* *b\n",
+    "expectedOutput": "*************\n* **abcbbb  *\n*    cbb    *\n*  bc90b99  *\n*     9     *\n*    b*     *\n*    *b     *\n*************\n"
+  },
+  {
+    "input": "8 3\n9 * *cac9*c c09 ca*cc0* bbbac acb9*0*a 9accb00 c c\n3 ** a cc\n8 b00cc bb*abab0 ** *c*9b *9bb0cb* 9090 c*9*0c9* 0*0a0\n",
+    "expectedOutput": "************\n*    *     *\n* *cac9*c  *\n*   c09    *\n* ca*cc0*  *\n*  bbbac   *\n* acb9*0*a *\n* 9accb00  *\n*    c     *\n*    c     *\n*    **    *\n*    a     *\n*    cc    *\n*  b00cc   *\n* bb*abab0 *\n*    **    *\n*  *c*9b   *\n* *9bb0cb* *\n*   9090   *\n* c*9*0c9* *\n*  0*0a0   *\n************\n"
+  },
+  {
+    "input": "12 5\n3 b9*c9ab0* 9c0a 9*c0\n10 0ab c*cb aa** *909cbca *c0*cc99909a 99c0c*b9c bab9bcc*a909 0* ca99*cc9cc c99\n10 * c b0aa*a990 cab*99*b09*b a b0 ac*acc bc0bb9000*ab bba90*00*b 90a90ccba\n8 b9*c b0a9*990 abacbcaac0 90**caba9*c bb a0cb99a *b0c0900b 0c\n7 bbb999 9 a9c9 00a9 c09cc*ab9a 90*ac9 0*b0*\n",
+    "expectedOutput": "****************\n*  b9*c9ab0*   *\n*     9c0a     *\n*     9*c0     *\n*     0ab      *\n*     c*cb     *\n*     aa**     *\n*   *909cbca   *\n* *c0*cc99909a *\n*  99c0c*b9c   *\n* bab9bcc*a909 *\n*      0*      *\n*  ca99*cc9cc  *\n*     c99      *\n*      *       *\n*      c       *\n*  b0aa*a990   *\n* cab*99*b09*b *\n*      a       *\n*      b0      *\n*    ac*acc    *\n* bc0bb9000*ab *\n*  bba90*00*b  *\n*  90a90ccba   *\n*     b9*c     *\n*   b0a9*990   *\n*  abacbcaac0  *\n* 90**caba9*c  *\n*      bb      *\n*   a0cb99a    *\n*  *b0c0900b   *\n*      0c      *\n*    bbb999    *\n*      9       *\n*     a9c9     *\n*     00a9     *\n*  c09cc*ab9a  *\n*    90*ac9    *\n*    0*b0*     *\n****************\n"
+  },
+  {
+    "input": "5 2\n5 c9c** *a*b *a9bb a 9baa\n1 909ba\n",
+    "expectedOutput": "*********\n* c9c** *\n* *a*b  *\n* *a9bb *\n*   a   *\n* 9baa  *\n* 909ba *\n*********\n"
+  },
+  {
+    "input": "13 1\n9 b0a* b*0*a9909acb0 *9c99ab9 ab*9*0b00b9aa bc* 9 aab009c99cba acba9ac**a90 a00a*c*c*\n",
+    "expectedOutput": "*****************\n*     b0a*      *\n* b*0*a9909acb0 *\n*   *9c99ab9    *\n* ab*9*0b00b9aa *\n*      bc*      *\n*       9       *\n* aab009c99cba  *\n* acba9ac**a90  *\n*   a00a*c*c*   *\n*****************\n"
+  },
+  {
+    "input": "10 4\n5 b9b*0b*0c0 0b0b 0 0** aa0b00\n6 0 *cbc0**c9b 9 *bbaab9b 999cb9 9ab999ab*\n3 b*0*ac9cc9 9ca9b9c0 *\n8 cac 0*ca99c* b0ac 0b0 09bbc*c9 baac9ab 9 *0*c\n",
+    "expectedOutput": "**************\n* b9b*0b*0c0 *\n*    0b0b    *\n*     0      *\n*    0**     *\n*   aa0b00   *\n*     0      *\n* *cbc0**c9b *\n*     9      *\n*  *bbaab9b  *\n*   999cb9   *\n* 9ab999ab*  *\n* b*0*ac9cc9 *\n*  9ca9b9c0  *\n*     *      *\n*    cac     *\n*  0*ca99c*  *\n*    b0ac    *\n*    0b0     *\n*  09bbc*c9  *\n*  baac9ab   *\n*     9      *\n*    *0*c    *\n**************\n"
+  },
+  {
+    "input": "5 5\n3 0cb0 ab 0\n3 b bbcc 9\n5 9c9a 0aac c0b b 0\n4 09a ac9*9 9** 9\n1 cbc\n",
+    "expectedOutput": "*********\n* 0cb0  *\n*  ab   *\n*   0   *\n*   b   *\n* bbcc  *\n*   9   *\n* 9c9a  *\n* 0aac  *\n*  c0b  *\n*   b   *\n*   0   *\n*  09a  *\n* ac9*9 *\n*  9**  *\n*   9   *\n*  cbc  *\n*********\n"
+  },
+  {
+    "input": "5 1\n7 *c b* c9* *b *9b 0 0*c0\n",
+    "expectedOutput": "*********\n*  *c   *\n*  b*   *\n*  c9*  *\n*  *b   *\n*  *9b  *\n*   0   *\n* 0*c0  *\n*********\n"
+  },
+  {
+    "input": "15 3\n1 cab*a0\n8 0c a9b* cbcac *0c*b9ca*cbaca9 aca90b0cb*09 *0b*90bc 0bbc9a9c ac*bbacaca0\n7 9c00aba caa 09bbaab0ab0 0b b*9cb*9 0bbc** 0bc9bb9a*cab**0\n",
+    "expectedOutput": "*******************\n*     cab*a0      *\n*       0c        *\n*      a9b*       *\n*      cbcac      *\n* *0c*b9ca*cbaca9 *\n*  aca90b0cb*09   *\n*    *0b*90bc     *\n*    0bbc9a9c     *\n*   ac*bbacaca0   *\n*     9c00aba     *\n*       caa       *\n*   09bbaab0ab0   *\n*       0b        *\n*     b*9cb*9     *\n*     0bbc**      *\n* 0bc9bb9a*cab**0 *\n*******************\n"
+  },
+  {
+    "input": "5 1\n4 aba ccaac 9b9b cb\n",
+    "expectedOutput": "*********\n*  aba  *\n* ccaac *\n* 9b9b  *\n*  cb   *\n*********\n"
+  },
+  {
+    "input": "7 3\n8 *a *cc0a 9b0*b b b ca9a*a aaac *0b*\n3 *a*0 0 *ac\n4 cc**9bb c00*b0 00b0999 c*ac\n",
+    "expectedOutput": "***********\n*   *a    *\n*  *cc0a  *\n*  9b0*b  *\n*    b    *\n*    b    *\n* ca9a*a  *\n*  aaac   *\n*  *0b*   *\n*  *a*0   *\n*    0    *\n*   *ac   *\n* cc**9bb *\n* c00*b0  *\n* 00b0999 *\n*  c*ac   *\n***********\n"
+  },
+  {
+    "input": "9 3\n3 *99a09*c b* 9b0\n3 *0cb*c0*9 0caba0009 cba9c0\n3 ac*bab *a*99c 9\n",
+    "expectedOutput": "*************\n* *99a09*c  *\n*    b*     *\n*    9b0    *\n* *0cb*c0*9 *\n* 0caba0009 *\n*  cba9c0   *\n*  ac*bab   *\n*  *a*99c   *\n*     9     *\n*************\n"
+  },
+  {
+    "input": "14 1\n4 b9a c**099b9cab*b* abb9c a9c**\n",
+    "expectedOutput": "******************\n*      b9a       *\n* c**099b9cab*b* *\n*     abb9c      *\n*     a9c**      *\n******************\n"
+  },
+  {
+    "input": "6 4\n8 0 b009 *99c 09009b 0 b0a99a 99b9* c*b\n9 0aacbc 9a 0a00cb 090 9ab 00*a cc abb *bab\n5 * 0 c0 c00 0*bb\n7 ab*9a a9b0 b90 aa ab abb00 0\n",
+    "expectedOutput": "**********\n*   0    *\n*  b009  *\n*  *99c  *\n* 09009b *\n*   0    *\n* b0a99a *\n* 99b9*  *\n*  c*b   *\n* 0aacbc *\n*   9a   *\n* 0a00cb *\n*  090   *\n*  9ab   *\n*  00*a  *\n*   cc   *\n*  abb   *\n*  *bab  *\n*   *    *\n*   0    *\n*   c0   *\n*  c00   *\n*  0*bb  *\n* ab*9a  *\n*  a9b0  *\n*  b90   *\n*   aa   *\n*   ab   *\n* abb00  *\n*   0    *\n**********\n"
+  },
+  {
+    "input": "9 3\n4 baa * ba9 bc*909a0a\n9 *b*99b99 a* *00*0 9bca90 acc cab90 c*0090b a0090caaa 0ba\n9 0 b b9cb* 9cb bc 9*cc0c0b b*ba*9b 0 99cab00\n",
+    "expectedOutput": "*************\n*    baa    *\n*     *     *\n*    ba9    *\n* bc*909a0a *\n* *b*99b99  *\n*    a*     *\n*   *00*0   *\n*  9bca90   *\n*    acc    *\n*   cab90   *\n*  c*0090b  *\n* a0090caaa *\n*    0ba    *\n*     0     *\n*     b     *\n*   b9cb*   *\n*    9cb    *\n*    bc     *\n* 9*cc0c0b  *\n*  b*ba*9b  *\n*     0     *\n*  99cab00  *\n*************\n"
+  },
+  {
+    "input": "12 4\n1 9b\n7 bb*ab*a099a* b** 9b a9c9c**a9b*b 0a a90909bcc cca9cb0*\n9 0 c*9b**bc 9a0 9a0 0c *9 b9abb9090c*c 9ac0*c900a a9c0909ab*a0\n10 0a0bc9a0ccac c99cb0c* 09**0b bb**cacb a**9b990 **b*c0b c*9bcc 0aaaa0a 9*0 0a09ca90bc\n",
+    "expectedOutput": "****************\n*      9b      *\n* bb*ab*a099a* *\n*     b**      *\n*      9b      *\n* a9c9c**a9b*b *\n*      0a      *\n*  a90909bcc   *\n*   cca9cb0*   *\n*      0       *\n*   c*9b**bc   *\n*     9a0      *\n*     9a0      *\n*      0c      *\n*      *9      *\n* b9abb9090c*c *\n*  9ac0*c900a  *\n* a9c0909ab*a0 *\n* 0a0bc9a0ccac *\n*   c99cb0c*   *\n*    09**0b    *\n*   bb**cacb   *\n*   a**9b990   *\n*   **b*c0b    *\n*    c*9bcc    *\n*   0aaaa0a    *\n*     9*0      *\n*  0a09ca90bc  *\n****************\n"
+  },
+  {
+    "input": "10 1\n9 a0******9b bc0ab bcc0**bb0c **acccaa9 *c b0 bcca9** *99*0 *acc0*9\n",
+    "expectedOutput": "**************\n* a0******9b *\n*   bc0ab    *\n* bcc0**bb0c *\n* **acccaa9  *\n*     *c     *\n*     b0     *\n*  bcca9**   *\n*   *99*0    *\n*  *acc0*9   *\n**************\n"
+  },
+  {
+    "input": "11 2\n10 b*90900c*b9 **c0acb 0a*a9b99 bb 009090*ab b9**9 c 9 99*a0c c**b00c*\n9 cb9 *90ac09bcb9 0aabc00 aab09*c9a a90cbcb 900c*9* c*00c*0* 0*cc0*0 bbcb099\n",
+    "expectedOutput": "***************\n* b*90900c*b9 *\n*   **c0acb   *\n*  0a*a9b99   *\n*     bb      *\n*  009090*ab  *\n*    b9**9    *\n*      c      *\n*      9      *\n*   99*a0c    *\n*  c**b00c*   *\n*     cb9     *\n* *90ac09bcb9 *\n*   0aabc00   *\n*  aab09*c9a  *\n*   a90cbcb   *\n*   900c*9*   *\n*  c*00c*0*   *\n*   0*cc0*0   *\n*   bbcb099   *\n***************\n"
+  },
+  {
+    "input": "10 1\n3 a*b caac9b*99 0**990\n",
+    "expectedOutput": "**************\n*    a*b     *\n* caac9b*99  *\n*   0**990   *\n**************\n"
+  },
+  {
+    "input": "7 2\n10 aacc0bc a9* 0b*0aac 0*0c0ac *bb*b** aa*9a bc *a c *9c0\n8 b0*b 0cc *b0a bca 00b0a0* cab90 99*a 0cc*b0b\n",
+    "expectedOutput": "***********\n* aacc0bc *\n*   a9*   *\n* 0b*0aac *\n* 0*0c0ac *\n* *bb*b** *\n*  aa*9a  *\n*   bc    *\n*   *a    *\n*    c    *\n*  *9c0   *\n*  b0*b   *\n*   0cc   *\n*  *b0a   *\n*   bca   *\n* 00b0a0* *\n*  cab90  *\n*  99*a   *\n* 0cc*b0b *\n***********\n"
+  },
+  {
+    "input": "15 5\n3 9aac0aba**aba bc09bb90cb c0b*aaab99\n7 00b9b bbcb99bbac c**c*9a 0**cbb0 c9c9aa9**c bc*cab*ba*a9 *bc0\n5 0b0a0ab9cb bacba0abb**cbba a09a *b9a0*babbac*0a c*90*99\n5 b*bb99a00 bb0*9cac***** 99b**bb*b0b* 00a c*9*ba*c0\n10 900*0*c0*c*09b a00b0*0a90 cb00ac*c90* abb0abb9 aaa0*ba 0*aba00c *0babb90a9cc*c 0*a*0a*c*a9 b9bac*cacb9 **aa09009\n",
+    "expectedOutput": "*******************\n*  9aac0aba**aba  *\n*   bc09bb90cb    *\n*   c0b*aaab99    *\n*      00b9b      *\n*   bbcb99bbac    *\n*     c**c*9a     *\n*     0**cbb0     *\n*   c9c9aa9**c    *\n*  bc*cab*ba*a9   *\n*      *bc0       *\n*   0b0a0ab9cb    *\n* bacba0abb**cbba *\n*      a09a       *\n* *b9a0*babbac*0a *\n*     c*90*99     *\n*    b*bb99a00    *\n*  bb0*9cac*****  *\n*  99b**bb*b0b*   *\n*       00a       *\n*    c*9*ba*c0    *\n* 900*0*c0*c*09b  *\n*   a00b0*0a90    *\n*   cb00ac*c90*   *\n*    abb0abb9     *\n*     aaa0*ba     *\n*    0*aba00c     *\n* *0babb90a9cc*c  *\n*   0*a*0a*c*a9   *\n*   b9bac*cacb9   *\n*    **aa09009    *\n*******************\n"
+  },
+  {
+    "input": "6 3\n7 b 9a*9* c0bb 000*a 0a99* a0c b\n1 *0c\n8 bb9b b*bc acc9** 90b 90 b0* 9*0c9a 0a9*9\n",
+    "expectedOutput": "**********\n*   b    *\n* 9a*9*  *\n*  c0bb  *\n* 000*a  *\n* 0a99*  *\n*  a0c   *\n*   b    *\n*  *0c   *\n*  bb9b  *\n*  b*bc  *\n* acc9** *\n*  90b   *\n*   90   *\n*  b0*   *\n* 9*0c9a *\n* 0a9*9  *\n**********\n"
+  },
+  {
+    "input": "6 3\n10 9cb09c b09 *ac9ab 90a00c a9b b9c bac a9 ab99* 009caa\n1 9099*\n4 ca*09 bb0 c*b009 bbc\n",
+    "expectedOutput": "**********\n* 9cb09c *\n*  b09   *\n* *ac9ab *\n* 90a00c *\n*  a9b   *\n*  b9c   *\n*  bac   *\n*   a9   *\n* ab99*  *\n* 009caa *\n* 9099*  *\n* ca*09  *\n*  bb0   *\n* c*b009 *\n*  bbc   *\n**********\n"
+  },
+  {
+    "input": "5 1\n10 9 *c 0 000 c cc *a* ab90 * *c\n",
+    "expectedOutput": "*********\n*   9   *\n*  *c   *\n*   0   *\n*  000  *\n*   c   *\n*  cc   *\n*  *a*  *\n* ab90  *\n*   *   *\n*  *c   *\n*********\n"
+  },
+  {
+    "input": "12 5\n7 *b0c9bcc*acc *90ba*b* a0cbc*a*b0b b9a c 00*b9090b 99c*\n3 b9a**0 90b0ba9ccb9 0acc0b9b0*0c\n5 accc* ba9cc bbc*a*c9a b00b00999*ca a*cb9aa9999*\n8 a00*ba99c 9abcba0cb90 ab0a0c0a a*c9099*0ccc 0 c9bc 0bc0*0bb09 ba0a90a**c9a\n2 ccc9*00a ***9\n",
+    "expectedOutput": "****************\n* *b0c9bcc*acc *\n*   *90ba*b*   *\n* a0cbc*a*b0b  *\n*     b9a      *\n*      c       *\n*  00*b9090b   *\n*     99c*     *\n*    b9a**0    *\n* 90b0ba9ccb9  *\n* 0acc0b9b0*0c *\n*    accc*     *\n*    ba9cc     *\n*  bbc*a*c9a   *\n* b00b00999*ca *\n* a*cb9aa9999* *\n*  a00*ba99c   *\n* 9abcba0cb90  *\n*   ab0a0c0a   *\n* a*c9099*0ccc *\n*      0       *\n*     c9bc     *\n*  0bc0*0bb09  *\n* ba0a90a**c9a *\n*   ccc9*00a   *\n*     ***9     *\n****************\n"
+  },
+  {
+    "input": "12 4\n7 bb0* bb*b*bbc 09*009cb 9999c *99c99* a 0900cc09b\n4 **c b bbaa*9b99 9*b*ccb\n1 9caaccba00\n3 9a0c*bb 09cba*cc a*909*a\n",
+    "expectedOutput": "****************\n*     bb0*     *\n*   bb*b*bbc   *\n*   09*009cb   *\n*    9999c     *\n*   *99c99*    *\n*      a       *\n*  0900cc09b   *\n*     **c      *\n*      b       *\n*  bbaa*9b99   *\n*   9*b*ccb    *\n*  9caaccba00  *\n*   9a0c*bb    *\n*   09cba*cc   *\n*   a*909*a    *\n****************\n"
+  },
+  {
+    "input": "8 4\n3 cc0 cb90ca aaa\n6 *9a *a* b**9 b9c*ac *9999bc ab0*9\n8 a0* b0b0 acabb aaa*00bc 9bb99 babb 0**b09 09c\n10 *990cc** bc0c9 a *0*0b9 *a 0ab99 a000ab* 9 a *ccc\n",
+    "expectedOutput": "************\n*   cc0    *\n*  cb90ca  *\n*   aaa    *\n*   *9a    *\n*   *a*    *\n*   b**9   *\n*  b9c*ac  *\n* *9999bc  *\n*  ab0*9   *\n*   a0*    *\n*   b0b0   *\n*  acabb   *\n* aaa*00bc *\n*  9bb99   *\n*   babb   *\n*  0**b09  *\n*   09c    *\n* *990cc** *\n*  bc0c9   *\n*    a     *\n*  *0*0b9  *\n*    *a    *\n*  0ab99   *\n* a000ab*  *\n*    9     *\n*    a     *\n*   *ccc   *\n************\n"
+  },
+  {
+    "input": "11 1\n9 a0* c0090 0c0b9a9a0b* 9cc c09**9 9a9090ab 9a 9* 00\n",
+    "expectedOutput": "***************\n*     a0*     *\n*    c0090    *\n* 0c0b9a9a0b* *\n*     9cc     *\n*   c09**9    *\n*  9a9090ab   *\n*     9a      *\n*     9*      *\n*     00      *\n***************\n"
+  },
+  {
+    "input": "6 5\n2 c* 0bbab\n3 c*c90 *c 9a0\n9 bb0ca 0c 9ba a*9** c ccc acc0b9 a99* a9b\n6 bbbacb 9bac 0ab 0099* 9b9c00 bcacc*\n1 00\n",
+    "expectedOutput": "**********\n*   c*   *\n* 0bbab  *\n* c*c90  *\n*   *c   *\n*  9a0   *\n* bb0ca  *\n*   0c   *\n*  9ba   *\n* a*9**  *\n*   c    *\n*  ccc   *\n* acc0b9 *\n*  a99*  *\n*  a9b   *\n* bbbacb *\n*  9bac  *\n*  0ab   *\n* 0099*  *\n* 9b9c00 *\n* bcacc* *\n*   00   *\n**********\n"
+  },
+  {
+    "input": "12 4\n5 *a0c9ccb*09b 0*09acb 9a0c*c 0aa 0\n10 b9*ca*c 999 *9bb999bc** bacbbb 0*a9aabbcc a00c0aa* * 9*c0bb99c* **ccb0a0ac0c ac\n8 * ac a*c0c9b*ab9 *9bb9*0c b*9 b ac*9c 99bb990cc**\n5 90c*9***ba* bb**bbb0 9aa*0b0ccb* c 9*9b**90\n",
+    "expectedOutput": "****************\n* *a0c9ccb*09b *\n*   0*09acb    *\n*    9a0c*c    *\n*     0aa      *\n*      0       *\n*   b9*ca*c    *\n*     999      *\n* *9bb999bc**  *\n*    bacbbb    *\n*  0*a9aabbcc  *\n*   a00c0aa*   *\n*      *       *\n*  9*c0bb99c*  *\n* **ccb0a0ac0c *\n*      ac      *\n*      *       *\n*      ac      *\n* a*c0c9b*ab9  *\n*   *9bb9*0c   *\n*     b*9      *\n*      b       *\n*    ac*9c     *\n* 99bb990cc**  *\n* 90c*9***ba*  *\n*   bb**bbb0   *\n* 9aa*0b0ccb*  *\n*      c       *\n*   9*9b**90   *\n****************\n"
+  },
+  {
+    "input": "7 3\n5 a*9 90cb 09c b9c a*0*00\n6 bb9c 9 *aa0*9 a0*0c* c c*9**9*\n2 bb 090*a9\n",
+    "expectedOutput": "***********\n*   a*9   *\n*  90cb   *\n*   09c   *\n*   b9c   *\n* a*0*00  *\n*  bb9c   *\n*    9    *\n* *aa0*9  *\n* a0*0c*  *\n*    c    *\n* c*9**9* *\n*   bb    *\n* 090*a9  *\n***********\n"
+  },
+  {
+    "input": "7 5\n2 000bb9 9*a0\n5 * c *0accba *b* b9b**c9\n7 **9a0c 0 a09 c90a099 a0b00 *c0 9\n4 c9b9ba c9c0a*9 bac9c0 9a\n4 cb000 b 9 ab*bb0c\n",
+    "expectedOutput": "***********\n* 000bb9  *\n*  9*a0   *\n*    *    *\n*    c    *\n* *0accba *\n*   *b*   *\n* b9b**c9 *\n* **9a0c  *\n*    0    *\n*   a09   *\n* c90a099 *\n*  a0b00  *\n*   *c0   *\n*    9    *\n* c9b9ba  *\n* c9c0a*9 *\n* bac9c0  *\n*   9a    *\n*  cb000  *\n*    b    *\n*    9    *\n* ab*bb0c *\n***********\n"
+  },
+  {
+    "input": "7 1\n6 0ba*b b09 0900*c 00 *b9 *cc0\n",
+    "expectedOutput": "***********\n*  0ba*b  *\n*   b09   *\n* 0900*c  *\n*   00    *\n*   *b9   *\n*  *cc0   *\n***********\n"
+  },
+  {
+    "input": "12 5\n10 bb9*abb99 b999aa9a c 9*aa99b 0acb*b***ba *c*a9bbcbc9 c 99bc ca bc90b00*ca99\n6 0b0bb9 ab9b99 0b *90c*b9b a0a09* c*b9aa0a0\n10 b9b900 *c*b99a bbc9 0c0a00cbb*c0 a 9ab9b**90* a9** bc90c990a*00 **9bc *ba09\n10 *a9090*0a* *0a aa0*9ba9** aabc*a0 b0bca9b09b9 *aab ca0*b9* aaca90 b0cb09 c*c*a***\n2 0*a*cbc0cb0b 99abcbcac\n",
+    "expectedOutput": "****************\n*  bb9*abb99   *\n*   b999aa9a   *\n*      c       *\n*   9*aa99b    *\n* 0acb*b***ba  *\n* *c*a9bbcbc9  *\n*      c       *\n*     99bc     *\n*      ca      *\n* bc90b00*ca99 *\n*    0b0bb9    *\n*    ab9b99    *\n*      0b      *\n*   *90c*b9b   *\n*    a0a09*    *\n*  c*b9aa0a0   *\n*    b9b900    *\n*   *c*b99a    *\n*     bbc9     *\n* 0c0a00cbb*c0 *\n*      a       *\n*  9ab9b**90*  *\n*     a9**     *\n* bc90c990a*00 *\n*    **9bc     *\n*    *ba09     *\n*  *a9090*0a*  *\n*     *0a      *\n*  aa0*9ba9**  *\n*   aabc*a0    *\n* b0bca9b09b9  *\n*     *aab     *\n*   ca0*b9*    *\n*    aaca90    *\n*    b0cb09    *\n*   c*c*a***   *\n* 0*a*cbc0cb0b *\n*  99abcbcac   *\n****************\n"
+  },
+  {
+    "input": "11 5\n2 b0a* *ac*\n7 *0b0a0ba0cb 9b9*c *a*0*a0 0 0a9a9*0c 0c*bbc00bc cb0\n10 99b9*c*0*bc a0b99bb0*09 abaa*9cb0a0 ac*bcba0 cb* 0bba0*09 9b* 0ac*b *b099*0bcb ac\n8 bbcccbbb*b *ac90909c 9*9acc00 aa*a** 0acb*cb*b9 b0a 0cba0 *c\n8 c9c*9* caba cca*ca0c ba ac 0a*c009a* *bcab* 00b*b*c*99a\n",
+    "expectedOutput": "***************\n*    b0a*     *\n*    *ac*     *\n* *0b0a0ba0cb *\n*    9b9*c    *\n*   *a*0*a0   *\n*      0      *\n*  0a9a9*0c   *\n* 0c*bbc00bc  *\n*     cb0     *\n* 99b9*c*0*bc *\n* a0b99bb0*09 *\n* abaa*9cb0a0 *\n*  ac*bcba0   *\n*     cb*     *\n*  0bba0*09   *\n*     9b*     *\n*    0ac*b    *\n* *b099*0bcb  *\n*     ac      *\n* bbcccbbb*b  *\n*  *ac90909c  *\n*  9*9acc00   *\n*   aa*a**    *\n* 0acb*cb*b9  *\n*     b0a     *\n*    0cba0    *\n*     *c      *\n*   c9c*9*    *\n*    caba     *\n*  cca*ca0c   *\n*     ba      *\n*     ac      *\n*  0a*c009a*  *\n*   *bcab*    *\n* 00b*b*c*99a *\n***************\n"
+  },
+  {
+    "input": "6 3\n6 0abc c*09 a*c 0c* *ac0* 9a9a09\n5 **cb9* bb9a * c a9\n6 900cba 90 ca**** ca 00*9*a cbb*\n",
+    "expectedOutput": "**********\n*  0abc  *\n*  c*09  *\n*  a*c   *\n*  0c*   *\n* *ac0*  *\n* 9a9a09 *\n* **cb9* *\n*  bb9a  *\n*   *    *\n*   c    *\n*   a9   *\n* 900cba *\n*   90   *\n* ca**** *\n*   ca   *\n* 00*9*a *\n*  cbb*  *\n**********\n"
+  },
+  {
+    "input": "15 2\n7 *a9 0cba09cab cbb cc*0*bbc c99aaaaba**00cc aa*b0c0bcca*90 9bcb9900a*\n6 ac0*ccb00 0cabcc 000*00*0a0*0a 0cc09a0*aa*cc09 b9a9c0 0a*90ba0b9*aa\n",
+    "expectedOutput": "*******************\n*       *a9       *\n*    0cba09cab    *\n*       cbb       *\n*    cc*0*bbc     *\n* c99aaaaba**00cc *\n* aa*b0c0bcca*90  *\n*   9bcb9900a*    *\n*    ac0*ccb00    *\n*     0cabcc      *\n*  000*00*0a0*0a  *\n* 0cc09a0*aa*cc09 *\n*     b9a9c0      *\n*  0a*90ba0b9*aa  *\n*******************\n"
+  },
+  {
+    "input": "15 3\n6 c9 *ba9 9**c0 999 90*bc***cc0c bbb\n10 c ba*0*b*bbb9baa ab9a 0c*c*a *09b9a*a99c* 0bb*a900bb990 cbab*bacc0*a *a09b*a0 00a9*b09ac9 9990bbab0ac\n5 0*aa0c0*c*b cbc*b9acbc*c 0bab*ccc9 *99 09aa**aacaa\n",
+    "expectedOutput": "*******************\n*       c9        *\n*      *ba9       *\n*      9**c0      *\n*       999       *\n*  90*bc***cc0c   *\n*       bbb       *\n*        c        *\n* ba*0*b*bbb9baa  *\n*      ab9a       *\n*     0c*c*a      *\n*  *09b9a*a99c*   *\n*  0bb*a900bb990  *\n*  cbab*bacc0*a   *\n*    *a09b*a0     *\n*   00a9*b09ac9   *\n*   9990bbab0ac   *\n*   0*aa0c0*c*b   *\n*  cbc*b9acbc*c   *\n*    0bab*ccc9    *\n*       *99       *\n*   09aa**aacaa   *\n*******************\n"
+  },
+  {
+    "input": "12 2\n2 ca 9*aa9a9cac\n10 *99**abcccb b99aaa 9ac99a090a9c 0b9* c**9*ba0c0* a*ca* *0a*b*00bb 9ba9*ba *c09cca *0cc0cb**9\n",
+    "expectedOutput": "****************\n*      ca      *\n*  9*aa9a9cac  *\n* *99**abcccb  *\n*    b99aaa    *\n* 9ac99a090a9c *\n*     0b9*     *\n* c**9*ba0c0*  *\n*    a*ca*     *\n*  *0a*b*00bb  *\n*   9ba9*ba    *\n*   *c09cca    *\n*  *0cc0cb**9  *\n****************\n"
+  },
+  {
+    "input": "9 5\n10 0c c*a9ac* a*a*9 ***00b ca0*a0bbc *acbb 0090 9b0*cc9 *ac9*0 **0cccac\n8 0bcaac*0 * *bb 0bcb*c*9 * *bb*c b 00000c0*c\n10 009 c 99*bba b9**9abac 99c9c0a0 9b000cc* 9 *0a0b0cac *a999 bcb0**a*\n9 c9ba9ac 0c9b 0*aaa*b a9c9a*b ac9b0a bb 090b*ba9 ac*90* **0*a\n4 *ca**9 acb0ccaa0 b0*0 9\n",
+    "expectedOutput": "*************\n*    0c     *\n*  c*a9ac*  *\n*   a*a*9   *\n*  ***00b   *\n* ca0*a0bbc *\n*   *acbb   *\n*   0090    *\n*  9b0*cc9  *\n*  *ac9*0   *\n* **0cccac  *\n* 0bcaac*0  *\n*     *     *\n*    *bb    *\n* 0bcb*c*9  *\n*     *     *\n*   *bb*c   *\n*     b     *\n* 00000c0*c *\n*    009    *\n*     c     *\n*  99*bba   *\n* b9**9abac *\n* 99c9c0a0  *\n* 9b000cc*  *\n*     9     *\n* *0a0b0cac *\n*   *a999   *\n* bcb0**a*  *\n*  c9ba9ac  *\n*   0c9b    *\n*  0*aaa*b  *\n*  a9c9a*b  *\n*  ac9b0a   *\n*    bb     *\n* 090b*ba9  *\n*  ac*90*   *\n*   **0*a   *\n*  *ca**9   *\n* acb0ccaa0 *\n*   b0*0    *\n*     9     *\n*************\n"
+  },
+  {
+    "input": "15 2\n2 bb c90a0\n1 0b*0c0bcc\n",
+    "expectedOutput": "*******************\n*       bb        *\n*      c90a0      *\n*    0b*0c0bcc    *\n*******************\n"
+  },
+  {
+    "input": "12 5\n9 *0c0ba*99c* **cb*0c bc9cacbc*9*9 c*09*090aa **0a b0 c*a*aa0c*9ac c *b*999b\n10 * 90baccba9aca cc0 00c9*b 09bca9*cc0aa 9c9b*0* 9 ac0a 9*99c cac9c0\n7 c090c*b999 0 00a90b9**b ba9accbb* *cba 9999ab bc**0b9ba\n7 90*a**b90* *9b9bab9*0 09*b*a9b09a * acb*aca*a* 9b99ac9a aa0*000b0\n1 9a0b9\n",
+    "expectedOutput": "****************\n* *0c0ba*99c*  *\n*   **cb*0c    *\n* bc9cacbc*9*9 *\n*  c*09*090aa  *\n*     **0a     *\n*      b0      *\n* c*a*aa0c*9ac *\n*      c       *\n*   *b*999b    *\n*      *       *\n* 90baccba9aca *\n*     cc0      *\n*    00c9*b    *\n* 09bca9*cc0aa *\n*   9c9b*0*    *\n*      9       *\n*     ac0a     *\n*    9*99c     *\n*    cac9c0    *\n*  c090c*b999  *\n*      0       *\n*  00a90b9**b  *\n*  ba9accbb*   *\n*     *cba     *\n*    9999ab    *\n*  bc**0b9ba   *\n*  90*a**b90*  *\n*  *9b9bab9*0  *\n* 09*b*a9b09a  *\n*      *       *\n*  acb*aca*a*  *\n*   9b99ac9a   *\n*  aa0*000b0   *\n*    9a0b9     *\n****************\n"
+  },
+  {
+    "input": "6 2\n6 a00*9b *aaba a9a*c 9 b* 0abbb\n1 a*\n",
+    "expectedOutput": "**********\n* a00*9b *\n* *aaba  *\n* a9a*c  *\n*   9    *\n*   b*   *\n* 0abbb  *\n*   a*   *\n**********\n"
+  },
+  {
+    "input": "13 2\n1 b*c*9\n4 a90b09 9abbb*9 90bb*b090bcca c9bba0b\n",
+    "expectedOutput": "*****************\n*     b*c*9     *\n*    a90b09     *\n*    9abbb*9    *\n* 90bb*b090bcca *\n*    c9bba0b    *\n*****************\n"
+  },
+  {
+    "input": "10 1\n5 c00a9bbc aa*b0ca9 a9caa9c*c *cc0 *a\n",
+    "expectedOutput": "**************\n*  c00a9bbc  *\n*  aa*b0ca9  *\n* a9caa9c*c  *\n*    *cc0    *\n*     *a     *\n**************\n"
+  },
+  {
+    "input": "11 1\n10 9bc0009cb*0 0cca0b 9*b9bbba0a c9 cb *90acaa* 0aca acc0bca* baacc9*ac bc9c90a0\n",
+    "expectedOutput": "***************\n* 9bc0009cb*0 *\n*   0cca0b    *\n* 9*b9bbba0a  *\n*     c9      *\n*     cb      *\n*  *90acaa*   *\n*    0aca     *\n*  acc0bca*   *\n*  baacc9*ac  *\n*  bc9c90a0   *\n***************\n"
+  },
+  {
+    "input": "8 2\n3 *9* 9bb99b90 ccca**\n3 99* 9 0*9\n",
+    "expectedOutput": "************\n*   *9*    *\n* 9bb99b90 *\n*  ccca**  *\n*   99*    *\n*    9     *\n*   0*9    *\n************\n"
+  },
+  {
+    "input": "15 1\n3 b9b9aba**90*9 9bbc 00*999a0bc0090*\n",
+    "expectedOutput": "*******************\n*  b9b9aba**90*9  *\n*      9bbc       *\n* 00*999a0bc0090* *\n*******************\n"
+  },
+  {
+    "input": "6 4\n3 0999ca ba0 0b90\n6 aac a90 99ca*b a90aca 99ab ba90\n6 99b * *9c0c a**b9 ac c*a**\n8 * a *ba000 9b9aa bab ac0 *09* 9\n",
+    "expectedOutput": "**********\n* 0999ca *\n*  ba0   *\n*  0b90  *\n*  aac   *\n*  a90   *\n* 99ca*b *\n* a90aca *\n*  99ab  *\n*  ba90  *\n*  99b   *\n*   *    *\n* *9c0c  *\n* a**b9  *\n*   ac   *\n* c*a**  *\n*   *    *\n*   a    *\n* *ba000 *\n* 9b9aa  *\n*  bab   *\n*  ac0   *\n*  *09*  *\n*   9    *\n**********\n"
+  },
+  {
+    "input": "8 1\n10 c 9accb c099* b*caab ba*9bac *cbc** bcba9b cc0c bcb 9\n",
+    "expectedOutput": "************\n*    c     *\n*  9accb   *\n*  c099*   *\n*  b*caab  *\n* ba*9bac  *\n*  *cbc**  *\n*  bcba9b  *\n*   cc0c   *\n*   bcb    *\n*    9     *\n************\n"
+  },
+  {
+    "input": "15 5\n3 c bcbc abaa0a09*0*a\n6 *aca09abaab0aca bb*9c**9000**b 9a0 0*c9acb*9900 *b900c acbbc9a*b**0\n10 0 ca c *0cbcac9 c 00* **90b9*cabaa 9b*90b9*c*b00c *c*999b**0acc aa\n6 cbc9bab90b0 c9cba0*9cb ccba99 **b9c0*ac0aacb 9***ccc* cbcc0*0*bb999\n8 caa* c*c*c0*baac0ca *ca00 9a*b**99**b9baa 0bbaca* *0 9b cc0cb***99b9*b*\n",
+    "expectedOutput": "*******************\n*        c        *\n*      bcbc       *\n*  abaa0a09*0*a   *\n* *aca09abaab0aca *\n* bb*9c**9000**b  *\n*       9a0       *\n*  0*c9acb*9900   *\n*     *b900c      *\n*  acbbc9a*b**0   *\n*        0        *\n*       ca        *\n*        c        *\n*    *0cbcac9     *\n*        c        *\n*       00*       *\n*  **90b9*cabaa   *\n* 9b*90b9*c*b00c  *\n*  *c*999b**0acc  *\n*       aa        *\n*   cbc9bab90b0   *\n*   c9cba0*9cb    *\n*     ccba99      *\n* **b9c0*ac0aacb  *\n*    9***ccc*     *\n*  cbcc0*0*bb999  *\n*      caa*       *\n* c*c*c0*baac0ca  *\n*      *ca00      *\n* 9a*b**99**b9baa *\n*     0bbaca*     *\n*       *0        *\n*       9b        *\n* cc0cb***99b9*b* *\n*******************\n"
+  },
+  {
+    "input": "7 3\n4 a cc0a*c a*aa cb*900b\n2 a0a0b0 0*0a*\n4 cba 0a0a b0 b09a\n",
+    "expectedOutput": "***********\n*    a    *\n* cc0a*c  *\n*  a*aa   *\n* cb*900b *\n* a0a0b0  *\n*  0*0a*  *\n*   cba   *\n*  0a0a   *\n*   b0    *\n*  b09a   *\n***********\n"
+  },
+  {
+    "input": "12 4\n2 a9 *90c9\n3 c* aa0 a9ab*c\n3 * a0*0aa 0*\n4 bc0 000*c0a** ac 9c*a0bb9c\n",
+    "expectedOutput": "****************\n*      a9      *\n*    *90c9     *\n*      c*      *\n*     aa0      *\n*    a9ab*c    *\n*      *       *\n*    a0*0aa    *\n*      0*      *\n*     bc0      *\n*  000*c0a**   *\n*      ac      *\n*  9c*a0bb9c   *\n****************\n"
+  },
+  {
+    "input": "6 5\n3 b0 0cb *bc\n4 bb* 0ca9c b*b99 bc9\n5 0b*0b 0c*a 9b 0 ba\n5 b9* 9a 0 b*9c*a *c\n4 9ca09 b 9 *\n",
+    "expectedOutput": "**********\n*   b0   *\n*  0cb   *\n*  *bc   *\n*  bb*   *\n* 0ca9c  *\n* b*b99  *\n*  bc9   *\n* 0b*0b  *\n*  0c*a  *\n*   9b   *\n*   0    *\n*   ba   *\n*  b9*   *\n*   9a   *\n*   0    *\n* b*9c*a *\n*   *c   *\n* 9ca09  *\n*   b    *\n*   9    *\n*   *    *\n**********\n"
+  },
+  {
+    "input": "15 5\n1 a\n8 0a*a990*0acaa 999b0aa*ba c9aa**b990 99a***b0 b9*000*abc*cb *0aaca *a00bab9ca0a0b0 9aac*9c9cb**c\n8 0*cbb099c9909a c 9ac9*0*b0b0abb *90*0 b*c* 99c ba*9*b0ca90b c0a9b900\n6 c90bab b0*b090c0*c* 00c 9c09a0 ccc ab\n4 0*0*ccb*09 0b**b0baaa 9ababc0*** ca90*0cbbacc0c\n",
+    "expectedOutput": "*******************\n*        a        *\n*  0a*a990*0acaa  *\n*   999b0aa*ba    *\n*   c9aa**b990    *\n*    99a***b0     *\n*  b9*000*abc*cb  *\n*     *0aaca      *\n* *a00bab9ca0a0b0 *\n*  9aac*9c9cb**c  *\n* 0*cbb099c9909a  *\n*        c        *\n* 9ac9*0*b0b0abb  *\n*      *90*0      *\n*      b*c*       *\n*       99c       *\n*  ba*9*b0ca90b   *\n*    c0a9b900     *\n*     c90bab      *\n*  b0*b090c0*c*   *\n*       00c       *\n*     9c09a0      *\n*       ccc       *\n*       ab        *\n*   0*0*ccb*09    *\n*   0b**b0baaa    *\n*   9ababc0***    *\n* ca90*0cbbacc0c  *\n*******************\n"
+  },
+  {
+    "input": "8 1\n6 c*ab* a*9 099 0cca*c*b ccab 0b0c*\n",
+    "expectedOutput": "************\n*  c*ab*   *\n*   a*9    *\n*   099    *\n* 0cca*c*b *\n*   ccab   *\n*  0b0c*   *\n************\n"
+  },
+  {
+    "input": "13 1\n8 0a*a*ccccc *00c*a c099b0ac*9 0ac99*b0ba *0*09c0cb *99ccabb0a9bb 9acc0*c0 *abac0c*0\n",
+    "expectedOutput": "*****************\n*  0a*a*ccccc   *\n*    *00c*a     *\n*  c099b0ac*9   *\n*  0ac99*b0ba   *\n*   *0*09c0cb   *\n* *99ccabb0a9bb *\n*   9acc0*c0    *\n*   *abac0c*0   *\n*****************\n"
+  },
+  {
+    "input": "11 2\n1 *c\n8 b9b*909* abb0c90a baaba00*b cacbc0 0* *b0ab9a 9c*a* 9cc99\n",
+    "expectedOutput": "***************\n*     *c      *\n*  b9b*909*   *\n*  abb0c90a   *\n*  baaba00*b  *\n*   cacbc0    *\n*     0*      *\n*   *b0ab9a   *\n*    9c*a*    *\n*    9cc99    *\n***************\n"
+  },
+  {
+    "input": "13 1\n2 *9b0ca c9*a9\n",
+    "expectedOutput": "*****************\n*    *9b0ca     *\n*     c9*a9     *\n*****************\n"
+  },
+  {
+    "input": "8 4\n7 c9 9a*b9a 9** c0c0*9bc b0a a *bbb99a0\n3 *0 0b09ac 09c\n5 990*b* ba 9 *bbb c\n4 0c00ca* cba0099* c00b 0\n",
+    "expectedOutput": "************\n*    c9    *\n*  9a*b9a  *\n*   9**    *\n* c0c0*9bc *\n*   b0a    *\n*    a     *\n* *bbb99a0 *\n*    *0    *\n*  0b09ac  *\n*   09c    *\n*  990*b*  *\n*    ba    *\n*    9     *\n*   *bbb   *\n*    c     *\n* 0c00ca*  *\n* cba0099* *\n*   c00b   *\n*    0     *\n************\n"
+  },
+  {
+    "input": "7 5\n4 *a0aba *99c *90c cba9bc0\n5 0a0ca0 c9cb b00b0 99 09bc99c\n5 9 0ac*bb* c*9 9* aac\n10 * * bb*a9* ccbc9*c a**ca* c0 baac999 b *bbb90a 0c00*\n1 bb0ba\n",
+    "expectedOutput": "***********\n* *a0aba  *\n*  *99c   *\n*  *90c   *\n* cba9bc0 *\n* 0a0ca0  *\n*  c9cb   *\n*  b00b0  *\n*   99    *\n* 09bc99c *\n*    9    *\n* 0ac*bb* *\n*   c*9   *\n*   9*    *\n*   aac   *\n*    *    *\n*    *    *\n* bb*a9*  *\n* ccbc9*c *\n* a**ca*  *\n*   c0    *\n* baac999 *\n*    b    *\n* *bbb90a *\n*  0c00*  *\n*  bb0ba  *\n***********\n"
+  },
+  {
+    "input": "6 3\n9 a9c *** aab9* cb000 b*9* c 9*b* cab 90b*\n3 b acb 09a9\n2 abcab* 9\n",
+    "expectedOutput": "**********\n*  a9c   *\n*  ***   *\n* aab9*  *\n* cb000  *\n*  b*9*  *\n*   c    *\n*  9*b*  *\n*  cab   *\n*  90b*  *\n*   b    *\n*  acb   *\n*  09a9  *\n* abcab* *\n*   9    *\n**********\n"
+  },
+  {
+    "input": "8 2\n4 bba*b9c b9cbcca a9b**a 00*bcc\n9 9c cbb9 b0b 9900c*cb ab9cc* a9** 9 a9a c0*a0*c\n",
+    "expectedOutput": "************\n* bba*b9c  *\n* b9cbcca  *\n*  a9b**a  *\n*  00*bcc  *\n*    9c    *\n*   cbb9   *\n*   b0b    *\n* 9900c*cb *\n*  ab9cc*  *\n*   a9**   *\n*    9     *\n*   a9a    *\n* c0*a0*c  *\n************\n"
+  },
+  {
+    "input": "7 5\n5 0b0a 9*b *0 9* 09\n9 c0aaa 9 09b* *9909 a09*9 ab*9* ba00cc0 ccb0bc 0*c*09\n3 a99 bc09ba *\n6 abaa9 a9c9a90 b9*c*0a 99caa a99c bcc9\n5 cb*a0*9 cbcb*c0 b0a*bcc c9a9 a9***c*\n",
+    "expectedOutput": "***********\n*  0b0a   *\n*   9*b   *\n*   *0    *\n*   9*    *\n*   09    *\n*  c0aaa  *\n*    9    *\n*  09b*   *\n*  *9909  *\n*  a09*9  *\n*  ab*9*  *\n* ba00cc0 *\n* ccb0bc  *\n* 0*c*09  *\n*   a99   *\n* bc09ba  *\n*    *    *\n*  abaa9  *\n* a9c9a90 *\n* b9*c*0a *\n*  99caa  *\n*  a99c   *\n*  bcc9   *\n* cb*a0*9 *\n* cbcb*c0 *\n* b0a*bcc *\n*  c9a9   *\n* a9***c* *\n***********\n"
+  },
+  {
+    "input": "14 4\n3 c99c0 a0ac0aa0c09aa0 cc9c0aabcca9c\n9 9 ab9a90c9 *a0ca 09**0* 9c*abaa c** b9b*b9bbb*b cba0*bbab b00**ba00ba0b\n6 b00 c9ba00b0c0a*0* a*cc00 0c00*bacc*b a0 acba000*\n7 a0ab*0b0c9c** 90**a**cbbcb*9 ***0aa*abc*aa c9*990aaac ac0c000c9*0c b9*0b90a9b 90ba\n",
+    "expectedOutput": "******************\n*     c99c0      *\n* a0ac0aa0c09aa0 *\n* cc9c0aabcca9c  *\n*       9        *\n*    ab9a90c9    *\n*     *a0ca      *\n*     09**0*     *\n*    9c*abaa     *\n*      c**       *\n*  b9b*b9bbb*b   *\n*   cba0*bbab    *\n* b00**ba00ba0b  *\n*      b00       *\n* c9ba00b0c0a*0* *\n*     a*cc00     *\n*  0c00*bacc*b   *\n*       a0       *\n*    acba000*    *\n* a0ab*0b0c9c**  *\n* 90**a**cbbcb*9 *\n* ***0aa*abc*aa  *\n*   c9*990aaac   *\n*  ac0c000c9*0c  *\n*   b9*0b90a9b   *\n*      90ba      *\n******************\n"
+  },
+  {
+    "input": "12 1\n1 b0c9c99*c9*\n",
+    "expectedOutput": "****************\n* b0c9c99*c9*  *\n****************\n"
+  },
+  {
+    "input": "12 2\n7 ccba* c0099ccb* b90 b90acacc a b**ba* b0c*c\n7 **b a ab*bb0b0*b ccaaa* 0 c* 9b\n",
+    "expectedOutput": "****************\n*    ccba*     *\n*  c0099ccb*   *\n*     b90      *\n*   b90acacc   *\n*      a       *\n*    b**ba*    *\n*    b0c*c     *\n*     **b      *\n*      a       *\n*  ab*bb0b0*b  *\n*    ccaaa*    *\n*      0       *\n*      c*      *\n*      9b      *\n****************\n"
+  },
+  {
+    "input": "11 1\n4 a0*b0 0 ac*b*9* 9c9\n",
+    "expectedOutput": "***************\n*    a0*b0    *\n*      0      *\n*   ac*b*9*   *\n*     9c9     *\n***************\n"
+  },
+  {
+    "input": "15 2\n8 c0cb*b**90cc 0b*aa*9cb 9*999*cc* b*9abba***90 * bc90*ca9b99 999c 0\n2 a*9**bccbc 9ccbc9bb*b*b\n",
+    "expectedOutput": "*******************\n*  c0cb*b**90cc   *\n*    0b*aa*9cb    *\n*    9*999*cc*    *\n*  b*9abba***90   *\n*        *        *\n*   bc90*ca9b99   *\n*      999c       *\n*        0        *\n*   a*9**bccbc    *\n*  9ccbc9bb*b*b   *\n*******************\n"
+  },
+  {
+    "input": "9 3\n3 aabcbb0 99*9* 0ac*0cc9\n8 0ab0b * ccb*9ab a* 0baa9b9b b0b9ccac 0bc*b0 9c\n4 abac9 a0* bb0a cacb0\n",
+    "expectedOutput": "*************\n*  aabcbb0  *\n*   99*9*   *\n* 0ac*0cc9  *\n*   0ab0b   *\n*     *     *\n*  ccb*9ab  *\n*    a*     *\n* 0baa9b9b  *\n* b0b9ccac  *\n*  0bc*b0   *\n*    9c     *\n*   abac9   *\n*    a0*    *\n*   bb0a    *\n*   cacb0   *\n*************\n"
+  },
+  {
+    "input": "8 4\n3 a bbba**b9 bb0ca\n9 a9 bbc9c*b c*ac 9*b*9c bc9*b 0b*a 9 9c0c0 cbb9*0\n8 09 aa*bc b00b aa*aba b9**9* **aa0 b 9*c\n10 9aca0 cba*ac a0cbc9 00bbb cbcc*a0a bba99aa 9bbca9bc 0a ab*c**b 9900*b\n",
+    "expectedOutput": "************\n*    a     *\n* bbba**b9 *\n*  bb0ca   *\n*    a9    *\n* bbc9c*b  *\n*   c*ac   *\n*  9*b*9c  *\n*  bc9*b   *\n*   0b*a   *\n*    9     *\n*  9c0c0   *\n*  cbb9*0  *\n*    09    *\n*  aa*bc   *\n*   b00b   *\n*  aa*aba  *\n*  b9**9*  *\n*  **aa0   *\n*    b     *\n*   9*c    *\n*  9aca0   *\n*  cba*ac  *\n*  a0cbc9  *\n*  00bbb   *\n* cbcc*a0a *\n* bba99aa  *\n* 9bbca9bc *\n*    0a    *\n* ab*c**b  *\n*  9900*b  *\n************\n"
+  },
+  {
+    "input": "14 3\n2 aa0*a0aa0 a0a99ba*b9\n10 0 b0aab bb0b090aa9c*b 9b00ba0 *acc a999*9a9 **cb0**a0*c9** 0a c9* ab9b0**9ba*\n5 9c*ab*9*0a*9 9b cc0999c*b0*a 9a*9**abaa acc0b0c\n",
+    "expectedOutput": "******************\n*   aa0*a0aa0    *\n*   a0a99ba*b9   *\n*       0        *\n*     b0aab      *\n* bb0b090aa9c*b  *\n*    9b00ba0     *\n*      *acc      *\n*    a999*9a9    *\n* **cb0**a0*c9** *\n*       0a       *\n*      c9*       *\n*  ab9b0**9ba*   *\n*  9c*ab*9*0a*9  *\n*       9b       *\n*  cc0999c*b0*a  *\n*   9a*9**abaa   *\n*    acc0b0c     *\n******************\n"
+  },
+  {
+    "input": "8 3\n7 b*9 9bcccab b 9cbb9ca cc0acb *0*99 a**c9*00\n9 bca9 0b c9* **900 09* 00b0b 0**ca cc0 *a*0a9b\n9 0 00ba9c9b b*baaa9* 9aa00 *9b9 9cbca0a 0cbb0 *bb *9b\n",
+    "expectedOutput": "************\n*   b*9    *\n* 9bcccab  *\n*    b     *\n* 9cbb9ca  *\n*  cc0acb  *\n*  *0*99   *\n* a**c9*00 *\n*   bca9   *\n*    0b    *\n*   c9*    *\n*  **900   *\n*   09*    *\n*  00b0b   *\n*  0**ca   *\n*   cc0    *\n* *a*0a9b  *\n*    0     *\n* 00ba9c9b *\n* b*baaa9* *\n*  9aa00   *\n*   *9b9   *\n* 9cbca0a  *\n*  0cbb0   *\n*   *bb    *\n*   *9b    *\n************\n"
+  },
+  {
+    "input": "10 4\n3 c 0 acca\n5 aa a*99c9b0* *ab9*c0 9*a0 b*999cb\n9 *aaa ca*9baacac b a0 bcaa*a999 ac00c9 a99a9b bca*b*c0 cb*a*\n1 c0\n",
+    "expectedOutput": "**************\n*     c      *\n*     0      *\n*    acca    *\n*     aa     *\n* a*99c9b0*  *\n*  *ab9*c0   *\n*    9*a0    *\n*  b*999cb   *\n*    *aaa    *\n* ca*9baacac *\n*     b      *\n*     a0     *\n* bcaa*a999  *\n*   ac00c9   *\n*   a99a9b   *\n*  bca*b*c0  *\n*   cb*a*    *\n*     c0     *\n**************\n"
+  },
+  {
+    "input": "14 5\n1 90*9a0900aa\n4 b0cb9c bb bb 9ab0a9b0c\n8 0c*a*0cc0*9 0*b0b90c*b0 *ab*a0*cab cab*99b*aba0 90cca0b9*a0ba* a9cb**a*cc0* bbab9*c *b9\n6 9**b0c99c09 *c9c9c9c0*ac9 c0c*c00aac*c *ac9c 90 bc0b\n4 *aa**ab*a0 0 c 90**\n",
+    "expectedOutput": "******************\n*  90*9a0900aa   *\n*     b0cb9c     *\n*       bb       *\n*       bb       *\n*   9ab0a9b0c    *\n*  0c*a*0cc0*9   *\n*  0*b0b90c*b0   *\n*   *ab*a0*cab   *\n*  cab*99b*aba0  *\n* 90cca0b9*a0ba* *\n*  a9cb**a*cc0*  *\n*    bbab9*c     *\n*      *b9       *\n*  9**b0c99c09   *\n* *c9c9c9c0*ac9  *\n*  c0c*c00aac*c  *\n*     *ac9c      *\n*       90       *\n*      bc0b      *\n*   *aa**ab*a0   *\n*       0        *\n*       c        *\n*      90**      *\n******************\n"
+  },
+  {
+    "input": "6 4\n8 cca99 999 a*a ba 9a*bcb a0c 0**bba *\n6 **ba0* 99cc0c ac0*b9 c c999 bb0b*b\n5 0bcb0 *9 90a9 *99b9* a0ca9*\n4 0 a accc aba*ba\n",
+    "expectedOutput": "**********\n* cca99  *\n*  999   *\n*  a*a   *\n*   ba   *\n* 9a*bcb *\n*  a0c   *\n* 0**bba *\n*   *    *\n* **ba0* *\n* 99cc0c *\n* ac0*b9 *\n*   c    *\n*  c999  *\n* bb0b*b *\n* 0bcb0  *\n*   *9   *\n*  90a9  *\n* *99b9* *\n* a0ca9* *\n*   0    *\n*   a    *\n*  accc  *\n* aba*ba *\n**********\n"
+  },
+  {
+    "input": "9 2\n1 b9b\n5 a9c* *00bb*9c0 0*0 b a09*9bcb0\n",
+    "expectedOutput": "*************\n*    b9b    *\n*   a9c*    *\n* *00bb*9c0 *\n*    0*0    *\n*     b     *\n* a09*9bcb0 *\n*************\n"
+  },
+  {
+    "input": "9 3\n7 00c00b* ba9c09c acb9*abb 0ca9 b0ca a0a9b*ac acc0a9b9b\n2 cb*aa9 acb9**\n9 *9c*0900c 9** 0ba90b9a* 90*0 0a90a9a0* 0*bca*c ca0acab **c *bba*\n",
+    "expectedOutput": "*************\n*  00c00b*  *\n*  ba9c09c  *\n* acb9*abb  *\n*   0ca9    *\n*   b0ca    *\n* a0a9b*ac  *\n* acc0a9b9b *\n*  cb*aa9   *\n*  acb9**   *\n* *9c*0900c *\n*    9**    *\n* 0ba90b9a* *\n*   90*0    *\n* 0a90a9a0* *\n*  0*bca*c  *\n*  ca0acab  *\n*    **c    *\n*   *bba*   *\n*************\n"
+  },
+  {
+    "input": "11 2\n8 c99 *aca09bba9a ba b0a009 9ba* ba 0bca09b9 abc*9\n5 *a9ca 0a*90aaa 0* 0ba00ab9 0bcab9*bb*\n",
+    "expectedOutput": "***************\n*     c99     *\n* *aca09bba9a *\n*     ba      *\n*   b0a009    *\n*    9ba*     *\n*     ba      *\n*  0bca09b9   *\n*    abc*9    *\n*    *a9ca    *\n*  0a*90aaa   *\n*     0*      *\n*  0ba00ab9   *\n* 0bcab9*bb*  *\n***************\n"
+  },
+  {
+    "input": "6 2\n5 c *b 9a cab bb\n4 09ac0a bb bba9bc *\n",
+    "expectedOutput": "**********\n*   c    *\n*   *b   *\n*   9a   *\n*  cab   *\n*   bb   *\n* 09ac0a *\n*   bb   *\n* bba9bc *\n*   *    *\n**********\n"
+  },
+  {
+    "input": "6 5\n4 bc 0c 0 c9a\n8 acc a*b aaa* 0c9*9 ca9 a 0 b*a\n6 0cb a*9bb0 b* 0* b*bbbb 9b0b9\n10 ccb9b cbbac ab0a b0ba9 a9aa a c0 0a09b c *\n1 cb909b\n",
+    "expectedOutput": "**********\n*   bc   *\n*   0c   *\n*   0    *\n*  c9a   *\n*  acc   *\n*  a*b   *\n*  aaa*  *\n* 0c9*9  *\n*  ca9   *\n*   a    *\n*   0    *\n*  b*a   *\n*  0cb   *\n* a*9bb0 *\n*   b*   *\n*   0*   *\n* b*bbbb *\n* 9b0b9  *\n* ccb9b  *\n* cbbac  *\n*  ab0a  *\n* b0ba9  *\n*  a9aa  *\n*   a    *\n*   c0   *\n* 0a09b  *\n*   c    *\n*   *    *\n* cb909b *\n**********\n"
+  },
+  {
+    "input": "9 1\n10 0c 9bc99c90 9* c00caac0c 90*b *00 **099ba0 *ca9c bc0b a0a\n",
+    "expectedOutput": "*************\n*    0c     *\n* 9bc99c90  *\n*    9*     *\n* c00caac0c *\n*   90*b    *\n*    *00    *\n* **099ba0  *\n*   *ca9c   *\n*   bc0b    *\n*    a0a    *\n*************\n"
+  },
+  {
+    "input": "5 3\n4 ccbb0 cac9 a**9 9\n8 cc*b ab*c c0 cc0 *9b **0a 0**00 c0b\n4 0b*cc 9*ba b0bc 0*b\n",
+    "expectedOutput": "*********\n* ccbb0 *\n* cac9  *\n* a**9  *\n*   9   *\n* cc*b  *\n* ab*c  *\n*  c0   *\n*  cc0  *\n*  *9b  *\n* **0a  *\n* 0**00 *\n*  c0b  *\n* 0b*cc *\n* 9*ba  *\n* b0bc  *\n*  0*b  *\n*********\n"
+  },
+  {
+    "input": "13 4\n6 *00bba9*c*ba0 c9 a0*9 b9cba0**c9 a*0*b9c990 90b0c9c*cba\n9 9caaaca0ba **b* a*a*abcc0ac0c 90* 090 bbbbb9a*b9cb 990bb*bc*0a09 0**a9a0 c9*9*0c*\n6 0*ac9ab*9c 0aabacb 9cc *0*b b *ac0bac99c\n7 0c**ac a0cbc0aba*bc bbc99*9bb9b90 9*acbba*c*09b 9 bbb99b **a9cac9\n",
+    "expectedOutput": "*****************\n* *00bba9*c*ba0 *\n*      c9       *\n*     a0*9      *\n*  b9cba0**c9   *\n*  a*0*b9c990   *\n*  90b0c9c*cba  *\n*  9caaaca0ba   *\n*     **b*      *\n* a*a*abcc0ac0c *\n*      90*      *\n*      090      *\n* bbbbb9a*b9cb  *\n* 990bb*bc*0a09 *\n*    0**a9a0    *\n*   c9*9*0c*    *\n*  0*ac9ab*9c   *\n*    0aabacb    *\n*      9cc      *\n*     *0*b      *\n*       b       *\n*  *ac0bac99c   *\n*    0c**ac     *\n* a0cbc0aba*bc  *\n* bbc99*9bb9b90 *\n* 9*acbba*c*09b *\n*       9       *\n*    bbb99b     *\n*   **a9cac9    *\n*****************\n"
+  },
+  {
+    "input": "15 5\n7 09ca c 9*c9c*90b bb0ab*9 09a 9b**a99ba0abc9 00\n6 9*b*9b***a*0b9 bc0aba9*0*c a9a09ccb *0ca9c**0** 9ca9ab ab00\n4 0b*900*bc9cb ba9a90bbb09 0a0b a*ab*9c9ba90cb0\n1 a*0a9c99\n9 c* 9abb09c00b*acc* 9bc9bbab c** *00 cc0b9ca* c99aab90 * aa\n",
+    "expectedOutput": "*******************\n*      09ca       *\n*        c        *\n*    9*c9c*90b    *\n*     bb0ab*9     *\n*       09a       *\n* 9b**a99ba0abc9  *\n*       00        *\n* 9*b*9b***a*0b9  *\n*   bc0aba9*0*c   *\n*    a9a09ccb     *\n*   *0ca9c**0**   *\n*     9ca9ab      *\n*      ab00       *\n*  0b*900*bc9cb   *\n*   ba9a90bbb09   *\n*      0a0b       *\n* a*ab*9c9ba90cb0 *\n*    a*0a9c99     *\n*       c*        *\n* 9abb09c00b*acc* *\n*    9bc9bbab     *\n*       c**       *\n*       *00       *\n*    cc0b9ca*     *\n*    c99aab90     *\n*        *        *\n*       aa        *\n*******************\n"
+  },
+  {
+    "input": "11 1\n2 *99b cc0*c099aa\n",
+    "expectedOutput": "***************\n*    *99b     *\n* cc0*c099aa  *\n***************\n"
+  },
+  {
+    "input": "14 4\n6 b9 b*9c00b99 aca90b*b00ab 90bbac 0b*b0* *0b*ca*\n7 * aa**9baa09bb9 9 b0cb0**a ca9ac0 ba9c cc**99a\n2 9*b bbaac**90c9\n10 0a0ac009a00c 9a0a0acaa09b *acccb90*a9a9 abccca0**090 *bc990 abba*a0cb9*** 0c9*cc c*009cb*a ba9**a0 a0c9\n",
+    "expectedOutput": "******************\n*       b9       *\n*   b*9c00b99    *\n*  aca90b*b00ab  *\n*     90bbac     *\n*     0b*b0*     *\n*    *0b*ca*     *\n*       *        *\n* aa**9baa09bb9  *\n*       9        *\n*    b0cb0**a    *\n*     ca9ac0     *\n*      ba9c      *\n*    cc**99a     *\n*      9*b       *\n*  bbaac**90c9   *\n*  0a0ac009a00c  *\n*  9a0a0acaa09b  *\n* *acccb90*a9a9  *\n*  abccca0**090  *\n*     *bc990     *\n* abba*a0cb9***  *\n*     0c9*cc     *\n*   c*009cb*a    *\n*    ba9**a0     *\n*      a0c9      *\n******************\n"
+  },
+  {
+    "input": "15 3\n1 bbb\n5 99b0cc9990bc9 9a9a9*cc9 bb90b ca0*a9cb0c*b *0c0\n5 caabc90c c**0a *0baa* c*00b c*aa9*aa\n",
+    "expectedOutput": "*******************\n*       bbb       *\n*  99b0cc9990bc9  *\n*    9a9a9*cc9    *\n*      bb90b      *\n*  ca0*a9cb0c*b   *\n*      *0c0       *\n*    caabc90c     *\n*      c**0a      *\n*     *0baa*      *\n*      c*00b      *\n*    c*aa9*aa     *\n*******************\n"
+  },
+  {
+    "input": "5 3\n8 c*ab0 a90cc aa*b **0* a*a *0900 a c*cab\n4 aab0 cbb 0*9 cc\n6 0a9b9 c*ba b a*9a* aba0 b\n",
+    "expectedOutput": "*********\n* c*ab0 *\n* a90cc *\n* aa*b  *\n* **0*  *\n*  a*a  *\n* *0900 *\n*   a   *\n* c*cab *\n* aab0  *\n*  cbb  *\n*  0*9  *\n*  cc   *\n* 0a9b9 *\n* c*ba  *\n*   b   *\n* a*9a* *\n* aba0  *\n*   b   *\n*********\n"
+  },
+  {
+    "input": "15 2\n9 ca**b00cbbbc b**0c*b0cb0 90c*bcc0ca9 9a9bcaaac99a99 *ccaac900 ccc9cb0900999b9 ba9bc*9*a 9cc*a 9bb9\n1 aca00b0acaa\n",
+    "expectedOutput": "*******************\n*  ca**b00cbbbc   *\n*   b**0c*b0cb0   *\n*   90c*bcc0ca9   *\n* 9a9bcaaac99a99  *\n*    *ccaac900    *\n* ccc9cb0900999b9 *\n*    ba9bc*9*a    *\n*      9cc*a      *\n*      9bb9       *\n*   aca00b0acaa   *\n*******************\n"
+  },
+  {
+    "input": "10 3\n8 b0ca cbbcb bca0 *9b*c0 a0*9ab b9 9cbcbb* *99\n10 a90 ca9*b*a 0 *ba** c0**bbbba 0 0 *aac 9*c*ba* c0c9*\n4 0c9b*aa* bb99c*a** cb* 9*cc9cbcba\n",
+    "expectedOutput": "**************\n*    b0ca    *\n*   cbbcb    *\n*    bca0    *\n*   *9b*c0   *\n*   a0*9ab   *\n*     b9     *\n*  9cbcbb*   *\n*    *99     *\n*    a90     *\n*  ca9*b*a   *\n*     0      *\n*   *ba**    *\n* c0**bbbba  *\n*     0      *\n*     0      *\n*    *aac    *\n*  9*c*ba*   *\n*   c0c9*    *\n*  0c9b*aa*  *\n* bb99c*a**  *\n*    cb*     *\n* 9*cc9cbcba *\n**************\n"
+  },
+  {
+    "input": "9 3\n7 cca0c9bb* c99ca09 a ccb0 ccbb9 baacc 09b0b900b\n4 c* 0 *90b0aa 90caa\n4 b0b* 9c a*0ccac 9*c\n",
+    "expectedOutput": "*************\n* cca0c9bb* *\n*  c99ca09  *\n*     a     *\n*   ccb0    *\n*   ccbb9   *\n*   baacc   *\n* 09b0b900b *\n*    c*     *\n*     0     *\n*  *90b0aa  *\n*   90caa   *\n*   b0b*    *\n*    9c     *\n*  a*0ccac  *\n*    9*c    *\n*************\n"
+  },
+  {
+    "input": "5 4\n5 a 99 00aa9 b 0b0\n6 b* a** aa bb c*a 9c*b*\n10 9ba a*ab 9* c * * *9* 9** 0*a*b 9ba\n10 b b*b **ab* 009 0c*9 ac0*0 a0ab b baaa *ac\n",
+    "expectedOutput": "*********\n*   a   *\n*  99   *\n* 00aa9 *\n*   b   *\n*  0b0  *\n*  b*   *\n*  a**  *\n*  aa   *\n*  bb   *\n*  c*a  *\n* 9c*b* *\n*  9ba  *\n* a*ab  *\n*  9*   *\n*   c   *\n*   *   *\n*   *   *\n*  *9*  *\n*  9**  *\n* 0*a*b *\n*  9ba  *\n*   b   *\n*  b*b  *\n* **ab* *\n*  009  *\n* 0c*9  *\n* ac0*0 *\n* a0ab  *\n*   b   *\n* baaa  *\n*  *ac  *\n*********\n"
+  },
+  {
+    "input": "13 3\n3 acb*ba **9ab0*b*9c *0bbc*00c9bca\n8 9ac *99a*cbbc abb090*b **9c*aba0caac **9ab9*0 ** 0a*0c9c99 aa\n7 *9 cc0 b0 *9ab9aca0*b ba09 *b9*000 9aaac0bcb0abb\n",
+    "expectedOutput": "*****************\n*    acb*ba     *\n*  **9ab0*b*9c  *\n* *0bbc*00c9bca *\n*      9ac      *\n*   *99a*cbbc   *\n*   abb090*b    *\n* **9c*aba0caac *\n*   **9ab9*0    *\n*      **       *\n*   0a*0c9c99   *\n*      aa       *\n*      *9       *\n*      cc0      *\n*      b0       *\n*  *9ab9aca0*b  *\n*     ba09      *\n*    *b9*000    *\n* 9aaac0bcb0abb *\n*****************\n"
+  },
+  {
+    "input": "9 1\n8 9b*aa0b9c a9a90 0ca*b0*cc b ac*0ca ac *a9ac09b c\n",
+    "expectedOutput": "*************\n* 9b*aa0b9c *\n*   a9a90   *\n* 0ca*b0*cc *\n*     b     *\n*  ac*0ca   *\n*    ac     *\n* *a9ac09b  *\n*     c     *\n*************\n"
+  },
+  {
+    "input": "8 4\n4 a9bcb9b 9*abca* c c9ab**\n5 *c0a0a c*0c a0*9cc 9a* *0\n8 c00bc 9a09 9a*a0bbb 9c **009cc9 0*a00 9990bbb c*\n6 0*0c0cb b b b*9*b c0a00** bab*99\n",
+    "expectedOutput": "************\n* a9bcb9b  *\n* 9*abca*  *\n*    c     *\n*  c9ab**  *\n*  *c0a0a  *\n*   c*0c   *\n*  a0*9cc  *\n*   9a*    *\n*    *0    *\n*  c00bc   *\n*   9a09   *\n* 9a*a0bbb *\n*    9c    *\n* **009cc9 *\n*  0*a00   *\n* 9990bbb  *\n*    c*    *\n* 0*0c0cb  *\n*    b     *\n*    b     *\n*  b*9*b   *\n* c0a00**  *\n*  bab*99  *\n************\n"
+  },
+  {
+    "input": "8 5\n9 9*9* ***0abba cc009b99 aa0009** b0a *c*a 9bb* 000 c*\n5 b9*a9b0c *a c aa 9bb0*\n6 **aa9 a*0a9 acb9* 90*cb0b *99*bba bac\n6 90 00b*c *9b0* 9a 9*c*b* 0abb0a0\n5 * aa b9c0cb ac b\n",
+    "expectedOutput": "************\n*   9*9*   *\n* ***0abba *\n* cc009b99 *\n* aa0009** *\n*   b0a    *\n*   *c*a   *\n*   9bb*   *\n*   000    *\n*    c*    *\n* b9*a9b0c *\n*    *a    *\n*    c     *\n*    aa    *\n*  9bb0*   *\n*  **aa9   *\n*  a*0a9   *\n*  acb9*   *\n* 90*cb0b  *\n* *99*bba  *\n*   bac    *\n*    90    *\n*  00b*c   *\n*  *9b0*   *\n*    9a    *\n*  9*c*b*  *\n* 0abb0a0  *\n*    *     *\n*    aa    *\n*  b9c0cb  *\n*    ac    *\n*    b     *\n************\n"
+  },
+  {
+    "input": "8 4\n7 *a0b* c b*9999 cb9c9*bb aca aac9bc*0 90a9*\n5 abbc bbb9b9a 0b*00 9cb*b a9b*a\n2 *0*b90 9*\n4 ba9b909 c99ba b*a b*c*00bb\n",
+    "expectedOutput": "************\n*  *a0b*   *\n*    c     *\n*  b*9999  *\n* cb9c9*bb *\n*   aca    *\n* aac9bc*0 *\n*  90a9*   *\n*   abbc   *\n* bbb9b9a  *\n*  0b*00   *\n*  9cb*b   *\n*  a9b*a   *\n*  *0*b90  *\n*    9*    *\n* ba9b909  *\n*  c99ba   *\n*   b*a    *\n* b*c*00bb *\n************\n"
+  },
+  {
+    "input": "6 5\n9 cca *a * *c0* ac9c 9bb*** c0b0c9 99c 99*\n8 0a * * 0cb ac*ba0 0 cac 99b*\n10 0aab b ca 0*b9c c* ab* aaa0 aaac0 *9 b*a0\n9 c99 *0*9*c c9c0 a9b90 9 caa9a9 9a009 *0a ccc*9\n6 0*9* b cb9990 9b0009 *09ca9 *\n",
+    "expectedOutput": "**********\n*  cca   *\n*   *a   *\n*   *    *\n*  *c0*  *\n*  ac9c  *\n* 9bb*** *\n* c0b0c9 *\n*  99c   *\n*  99*   *\n*   0a   *\n*   *    *\n*   *    *\n*  0cb   *\n* ac*ba0 *\n*   0    *\n*  cac   *\n*  99b*  *\n*  0aab  *\n*   b    *\n*   ca   *\n* 0*b9c  *\n*   c*   *\n*  ab*   *\n*  aaa0  *\n* aaac0  *\n*   *9   *\n*  b*a0  *\n*  c99   *\n* *0*9*c *\n*  c9c0  *\n* a9b90  *\n*   9    *\n* caa9a9 *\n* 9a009  *\n*  *0a   *\n* ccc*9  *\n*  0*9*  *\n*   b    *\n* cb9990 *\n* 9b0009 *\n* *09ca9 *\n*   *    *\n**********\n"
+  },
+  {
+    "input": "9 2\n7 9c *c 9*a 9999*cb a** a9a999ac* bbab0*a\n7 09ccb *9b* 9ca00b *a9b bcba90c0b ab9b b*bc0**a0\n",
+    "expectedOutput": "*************\n*    9c     *\n*    *c     *\n*    9*a    *\n*  9999*cb  *\n*    a**    *\n* a9a999ac* *\n*  bbab0*a  *\n*   09ccb   *\n*   *9b*    *\n*  9ca00b   *\n*   *a9b    *\n* bcba90c0b *\n*   ab9b    *\n* b*bc0**a0 *\n*************\n"
+  },
+  {
+    "input": "8 2\n7 00*a**bc 0 c* 0c a090 a9c a0*900a\n10 b b9 9b b 0a0*9* 9cc 0b0b99ca a* bcb b0\n",
+    "expectedOutput": "************\n* 00*a**bc *\n*    0     *\n*    c*    *\n*    0c    *\n*   a090   *\n*   a9c    *\n* a0*900a  *\n*    b     *\n*    b9    *\n*    9b    *\n*    b     *\n*  0a0*9*  *\n*   9cc    *\n* 0b0b99ca *\n*    a*    *\n*   bcb    *\n*    b0    *\n************\n"
+  },
+  {
+    "input": "15 3\n1 0b9c\n7 c*bb0999aa*bc* *0c0ac90ca*ab **9*0aa999*bb0 090acaa00ac0c a09babb9b bcba ac0ac900**999\n3 090aca9a0*cc *0bb0a99aa* *9\n",
+    "expectedOutput": "*******************\n*      0b9c       *\n* c*bb0999aa*bc*  *\n*  *0c0ac90ca*ab  *\n* **9*0aa999*bb0  *\n*  090acaa00ac0c  *\n*    a09babb9b    *\n*      bcba       *\n*  ac0ac900**999  *\n*  090aca9a0*cc   *\n*   *0bb0a99aa*   *\n*       *9        *\n*******************\n"
+  },
+  {
+    "input": "12 1\n1 *c0a9b*a9*b\n",
+    "expectedOutput": "****************\n* *c0a9b*a9*b  *\n****************\n"
+  },
+  {
+    "input": "9 4\n1 aa*90a9c\n8 ab*c9 *bac09*c accc9*9 bbabc 00c 9a b099 00cc\n10 *ac9a ba 9cb0b*bb *c c9*0a*990 *9b *0***09ba 9c9 0c cc0a\n3 a9*c*bbb* 0*b0*9 a9*acc**a\n",
+    "expectedOutput": "*************\n* aa*90a9c  *\n*   ab*c9   *\n* *bac09*c  *\n*  accc9*9  *\n*   bbabc   *\n*    00c    *\n*    9a     *\n*   b099    *\n*   00cc    *\n*   *ac9a   *\n*    ba     *\n* 9cb0b*bb  *\n*    *c     *\n* c9*0a*990 *\n*    *9b    *\n* *0***09ba *\n*    9c9    *\n*    0c     *\n*   cc0a    *\n* a9*c*bbb* *\n*  0*b0*9   *\n* a9*acc**a *\n*************\n"
+  },
+  {
+    "input": "13 2\n9 cb*ba*0acb* a*909b*b0a99c c9bbcb* ac*9c9*ccbc0* bb*b 09aabc9bc 0abbbc9 aa 0cba\n6 cb ab0cb*c 9cbc**00b bb9*b99c b0aa0a90bbc c**a9a\n",
+    "expectedOutput": "*****************\n*  cb*ba*0acb*  *\n* a*909b*b0a99c *\n*    c9bbcb*    *\n* ac*9c9*ccbc0* *\n*     bb*b      *\n*   09aabc9bc   *\n*    0abbbc9    *\n*      aa       *\n*     0cba      *\n*      cb       *\n*    ab0cb*c    *\n*   9cbc**00b   *\n*   bb9*b99c    *\n*  b0aa0a90bbc  *\n*    c**a9a     *\n*****************\n"
+  },
+  {
+    "input": "12 5\n3 9*a a9cbac9cbca a9cc090c\n9 b 9 *9b9c9c ba00a*c9c90* b9ac0a9ba 9*c9* b99 a0c 00a0c9a**ba0\n5 *9c bcaaaa0c*90 9baab0b a* 0b0bab0b000\n4 0ccc 0**9b0a0aa *acac ccab0b\n2 0*b*bb9c 99*aa\n",
+    "expectedOutput": "****************\n*     9*a      *\n* a9cbac9cbca  *\n*   a9cc090c   *\n*      b       *\n*      9       *\n*   *9b9c9c    *\n* ba00a*c9c90* *\n*  b9ac0a9ba   *\n*    9*c9*     *\n*     b99      *\n*     a0c      *\n* 00a0c9a**ba0 *\n*     *9c      *\n* bcaaaa0c*90  *\n*   9baab0b    *\n*      a*      *\n* 0b0bab0b000  *\n*     0ccc     *\n*  0**9b0a0aa  *\n*    *acac     *\n*    ccab0b    *\n*   0*b*bb9c   *\n*    99*aa     *\n****************\n"
+  },
+  {
+    "input": "13 3\n5 ***0b0*c *b 9c9b* c9b 0ca\n2 ***00cc9a90a bbcbcb9\n5 cac9c9ab** b00c 90c0bc90a b abcc00cab\n",
+    "expectedOutput": "*****************\n*   ***0b0*c    *\n*      *b       *\n*     9c9b*     *\n*      c9b      *\n*      0ca      *\n* ***00cc9a90a  *\n*    bbcbcb9    *\n*  cac9c9ab**   *\n*     b00c      *\n*   90c0bc90a   *\n*       b       *\n*   abcc00cab   *\n*****************\n"
+  },
+  {
+    "input": "11 3\n9 a* ** c009aca990 *0a *c9*9c9b* 0*0 babacc09c** *b 0acc0\n9 c*b* *a*a09b 0**0cb b0* ba0ba00 9bcc*c 00ac9 a0a090c*a99 9baba909ab0\n6 b9a* ab*b0*aa0c **0*0 aab*bc cab9b** ba0009c0a9*\n",
+    "expectedOutput": "***************\n*     a*      *\n*     **      *\n* c009aca990  *\n*     *0a     *\n*  *c9*9c9b*  *\n*     0*0     *\n* babacc09c** *\n*     *b      *\n*    0acc0    *\n*    c*b*     *\n*   *a*a09b   *\n*   0**0cb    *\n*     b0*     *\n*   ba0ba00   *\n*   9bcc*c    *\n*    00ac9    *\n* a0a090c*a99 *\n* 9baba909ab0 *\n*    b9a*     *\n* ab*b0*aa0c  *\n*    **0*0    *\n*   aab*bc    *\n*   cab9b**   *\n* ba0009c0a9* *\n***************\n"
+  },
+  {
+    "input": "9 5\n8 99a*9090 9bc9aa* bba9bba b09* a999a099* aa 0ab* c9\n4 *9cc b*0b *9*0*b*c 0ab0a\n10 c*accb c9 ccb*9c*9 ba 00 c0 99 0b0b** *90a acb0*c*\n4 c9ab*b **c**0* c0a9 a0*****\n9 099 0aa0099a b0ab c9aa9b 0 aab*9b 90a00 *** ab\n",
+    "expectedOutput": "*************\n* 99a*9090  *\n*  9bc9aa*  *\n*  bba9bba  *\n*   b09*    *\n* a999a099* *\n*    aa     *\n*   0ab*    *\n*    c9     *\n*   *9cc    *\n*   b*0b    *\n* *9*0*b*c  *\n*   0ab0a   *\n*  c*accb   *\n*    c9     *\n* ccb*9c*9  *\n*    ba     *\n*    00     *\n*    c0     *\n*    99     *\n*  0b0b**   *\n*   *90a    *\n*  acb0*c*  *\n*  c9ab*b   *\n*  **c**0*  *\n*   c0a9    *\n*  a0*****  *\n*    099    *\n* 0aa0099a  *\n*   b0ab    *\n*  c9aa9b   *\n*     0     *\n*  aab*9b   *\n*   90a00   *\n*    ***    *\n*    ab     *\n*************\n"
+  },
+  {
+    "input": "5 4\n1 a\n8 09 b9b a*099 *99 ab *a0ab cba 09a\n4 09* 0000a c a\n2 a cca9*\n",
+    "expectedOutput": "*********\n*   a   *\n*  09   *\n*  b9b  *\n* a*099 *\n*  *99  *\n*  ab   *\n* *a0ab *\n*  cba  *\n*  09a  *\n*  09*  *\n* 0000a *\n*   c   *\n*   a   *\n*   a   *\n* cca9* *\n*********\n"
+  },
+  {
+    "input": "11 2\n6 *b9 9* b *b 90bc* bb0cc90\n7 0*9c0c ba0**ac bca90 9* bb9bab9 *c*aa* a0aab\n",
+    "expectedOutput": "***************\n*     *b9     *\n*     9*      *\n*      b      *\n*     *b      *\n*    90bc*    *\n*   bb0cc90   *\n*   0*9c0c    *\n*   ba0**ac   *\n*    bca90    *\n*     9*      *\n*   bb9bab9   *\n*   *c*aa*    *\n*    a0aab    *\n***************\n"
+  },
+  {
+    "input": "15 3\n10 c9*0 bab9a09aac*9a* 0bcaa9a0* b0ac*aba9099b0c *a90*90bca** cacccbaa99*9 09 aac*9cb0ab90c0 0c**a0b9b 900abb***c*a9\n10 0b09bbbbb90bc a0bc090900b9c ***a*0 0 9a*bcb *ac0 *0a00aa9 aa *99 ba9\n9 ab90*c9cacb0 a0ac9a c0a0cba 0099 9 a9 9bb0*0a0* 0c00aa0c*c9bc* 0*b*900b0*a*\n",
+    "expectedOutput": "*******************\n*      c9*0       *\n* bab9a09aac*9a*  *\n*    0bcaa9a0*    *\n* b0ac*aba9099b0c *\n*  *a90*90bca**   *\n*  cacccbaa99*9   *\n*       09        *\n* aac*9cb0ab90c0  *\n*    0c**a0b9b    *\n*  900abb***c*a9  *\n*  0b09bbbbb90bc  *\n*  a0bc090900b9c  *\n*     ***a*0      *\n*        0        *\n*     9a*bcb      *\n*      *ac0       *\n*    *0a00aa9     *\n*       aa        *\n*       *99       *\n*       ba9       *\n*  ab90*c9cacb0   *\n*     a0ac9a      *\n*     c0a0cba     *\n*      0099       *\n*        9        *\n*       a9        *\n*    9bb0*0a0*    *\n* 0c00aa0c*c9bc*  *\n*  0*b*900b0*a*   *\n*******************\n"
+  },
+  {
+    "input": "10 5\n7 a9909ca0c 0ba*c b90009cc babc9 99bc*0 0****b*09 0\n7 aa*0cc90c9 00***a0 a* b*0*b909 caa99*b 0ca*090c** 099bb0c9\n4 00a0 0a9 00c*b c*a09\n10 ccab*9*9a *b90c*cb a 9*a *acaa a* ccaa9 9b0c b0 a\n5 9c b *c0 c0c0b0 a0*bab90\n",
+    "expectedOutput": "**************\n* a9909ca0c  *\n*   0ba*c    *\n*  b90009cc  *\n*   babc9    *\n*   99bc*0   *\n* 0****b*09  *\n*     0      *\n* aa*0cc90c9 *\n*  00***a0   *\n*     a*     *\n*  b*0*b909  *\n*  caa99*b   *\n* 0ca*090c** *\n*  099bb0c9  *\n*    00a0    *\n*    0a9     *\n*   00c*b    *\n*   c*a09    *\n* ccab*9*9a  *\n*  *b90c*cb  *\n*     a      *\n*    9*a     *\n*   *acaa    *\n*     a*     *\n*   ccaa9    *\n*    9b0c    *\n*     b0     *\n*     a      *\n*     9c     *\n*     b      *\n*    *c0     *\n*   c0c0b0   *\n*  a0*bab90  *\n**************\n"
+  }
+]

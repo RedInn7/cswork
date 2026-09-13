@@ -1,0 +1,10 @@
+[
+  {
+    "name": "三个元音也计数",
+    "code": "def solve(d):\n    s=d;count=answer=0\n    for i,c in enumerate(s):\n        count+=c in 'aeiou'\n        if i>=3:count-=s[i-3] in 'aeiou'\n        if i>=2 and count>=2:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "遗漏首个窗口",
+    "code": "def solve(d):\n    s=d;count=answer=0\n    for i,c in enumerate(s):\n        count+=c in 'aeiou'\n        if i>=3:count-=s[i-3] in 'aeiou'\n        if i>=3 and count==2:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

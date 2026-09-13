@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-18",
+  "title": "排列的连续前缀集合掩码",
+  "explanation": "## 思路\n\n求每个值的位置，依次加入1..k并维护最左、最右位置；两位置跨度恰好为k即连续。\n\n## 正确性\n\n排列没有重复，已有k个不同位置，若最大与最小位置之间恰容纳k格，则中间没有缺失位置；反过来任何连续k格的跨度必为k，故条件充要。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);position=[0]*(n+1)\n    for i,value in enumerate(map(int,d[1:])):position[value]=i\n    left=n;right=-1;answer=[]\n    for k in range(1,n+1):left=min(left,position[k]);right=max(right,position[k]);answer.append('1' if right-left+1==k else '0')\n    return ''.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#18-balanced-prefix-sets-in-a-permutation",
+  "sourceContentHash": "4de00d21a4bd189af6a05df097dd58cec328bf9d77f123a2afc7416b8ba763f5",
+  "author": "CSWork"
+}

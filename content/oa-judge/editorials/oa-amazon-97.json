@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-97",
+  "title": "请求排队时分配最小空闲编号服务器",
+  "explanation": "## 思路\n\n空闲编号小根堆，加忙碌(结束时间,编号)小根堆。处理每个请求时推进到到达时间；无空闲则推进到最早结束时间，再释放所有到时服务器，取最小编号。\n\n## 正确性证明\n\n两堆分别精确表示当前空闲和忙碌状态。等待时刻由最早结束时间唯一确定，释放所有同时结束者后编号堆保证正确破同分；请求按输入顺序处理，已经排队的先处理。\n\n## 复杂度\n\n时间O((servers+n)log servers)，空间O(servers+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import heapq\n    n,m=map(int,d[:2]);idle=list(range(n));heapq.heapify(idle);busy=[];now=0;answer=[]\n    for i,length in enumerate(map(int,d[2:])):\n        now=max(now,i)\n        if not idle:now=max(now,busy[0][0])\n        while busy and busy[0][0]<=now:\n            end,server=heapq.heappop(busy);heapq.heappush(idle,server)\n        server=heapq.heappop(idle);answer.append(server);heapq.heappush(busy,(now+length,server))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#97-assign-tasks-to-servers",
+  "sourceContentHash": "83cd7cb983205c1846d945f5e2312e82e5b34942f6222f5e0d8b7012ff1ba704",
+  "author": "CSWork"
+}

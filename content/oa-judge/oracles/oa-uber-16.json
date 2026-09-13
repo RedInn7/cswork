@@ -1,0 +1,654 @@
+[
+  {
+    "input": "7 3\nabcacbc\n0 1\n1 2\n2 3\n2 4\n4 5\n4 6\n6 5 3\n",
+    "expectedOutput": "3 4 1\n"
+  },
+  {
+    "input": "3 2\naaa\n0 1\n1 2\n2 0\n",
+    "expectedOutput": "3 1\n"
+  },
+  {
+    "input": "2 1\nab\n0 1\n1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "4 1\nbdcc\n1 0\n2 0\n3 2\n2\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "9 4\nbdccabddd\n1 0\n2 1\n3 0\n4 1\n5 1\n6 4\n7 0\n8 0\n6 7 2 3\n",
+    "expectedOutput": "2 1 1 1\n"
+  },
+  {
+    "input": "12 8\nbbbdababdbda\n1 0\n2 0\n3 0\n4 2\n5 2\n6 5\n7 3\n8 3\n9 6\n10 6\n11 1\n8 10 1 4 6 6 11 9\n",
+    "expectedOutput": "3 1 2 2 2 2 2 3\n"
+  },
+  {
+    "input": "9 6\nbdbaaadba\n1 0\n2 0\n3 2\n4 1\n5 2\n6 2\n7 5\n8 3\n0 6 4 6 6 1\n",
+    "expectedOutput": "1 2 1 2 2 1\n"
+  },
+  {
+    "input": "1 1\nc\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2 10\nad\n1 0\n1 0 0 1 1 0 1 0 1 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "6 12\ncabadb\n1 0\n2 0\n3 0\n4 1\n5 3\n1 5 2 4 0 5 4 3 2 4 5 2\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 9\nacdcacab\n1 0\n2 0\n3 0\n4 1\n5 2\n6 0\n7 3\n6 1 0 6 6 5 3 3 2\n",
+    "expectedOutput": "2 1 1 2 2 1 1 1 1\n"
+  },
+  {
+    "input": "7 6\nbbcddcb\n1 0\n2 1\n3 0\n4 1\n5 0\n6 3\n4 5 2 1 2 2\n",
+    "expectedOutput": "2 1 2 2 2 2\n"
+  },
+  {
+    "input": "1 4\nd\n0 0 0 0\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "5 2\naacdd\n1 0\n2 0\n3 2\n4 2\n1 2\n",
+    "expectedOutput": "2 1\n"
+  },
+  {
+    "input": "3 11\nbdd\n1 0\n2 0\n1 0 0 1 2 1 0 1 1 1 1\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "12 5\ndbcacdadddaa\n1 0\n2 0\n3 2\n4 0\n5 1\n6 4\n7 6\n8 5\n9 4\n10 8\n11 10\n5 10 5 11 6\n",
+    "expectedOutput": "2 2 2 5 1\n"
+  },
+  {
+    "input": "2 1\ncd\n1 0\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6 3\nbcccdd\n1 0\n2 0\n3 1\n4 3\n5 0\n3 0 0\n",
+    "expectedOutput": "3 1 1\n"
+  },
+  {
+    "input": "5 7\ndcddc\n1 0\n2 1\n3 1\n4 3\n1 1 2 4 3 3 0\n",
+    "expectedOutput": "1 1 2 3 2 2 1\n"
+  },
+  {
+    "input": "11 3\ndacabcaaabc\n1 0\n2 0\n3 1\n4 3\n5 4\n6 2\n7 0\n8 1\n9 4\n10 8\n1 2 0\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "11 11\naaacbddbbda\n1 0\n2 0\n3 1\n4 3\n5 0\n6 0\n7 6\n8 5\n9 7\n10 6\n1 2 1 7 6 1 4 1 6 7 0\n",
+    "expectedOutput": "2 2 2 1 1 2 1 2 1 1 1\n"
+  },
+  {
+    "input": "11 8\ncdbcdaabbbb\n1 0\n2 0\n3 1\n4 2\n5 1\n6 2\n7 5\n8 4\n9 5\n10 7\n7 4 9 0 6 4 10 7\n",
+    "expectedOutput": "1 1 1 1 1 1 3 1\n"
+  },
+  {
+    "input": "11 10\nbcbcbcbdcdd\n1 0\n2 0\n3 0\n4 2\n5 4\n6 2\n7 1\n8 3\n9 5\n10 7\n0 0 6 0 6 3 9 1 6 3\n",
+    "expectedOutput": "1 1 3 1 3 1 1 1 3 1\n"
+  },
+  {
+    "input": "8 1\ndaaccabc\n1 0\n2 1\n3 1\n4 1\n5 1\n6 4\n7 1\n6\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "7 6\ncaaccad\n1 0\n2 1\n3 1\n4 0\n5 3\n6 1\n0 4 4 6 5 1\n",
+    "expectedOutput": "1 2 2 1 3 1\n"
+  },
+  {
+    "input": "7 11\nccddabd\n1 0\n2 1\n3 2\n4 3\n5 2\n6 2\n0 2 5 1 6 2 2 0 1 0 6\n",
+    "expectedOutput": "1 2 1 2 4 2 2 1 2 1 4\n"
+  },
+  {
+    "input": "2 3\ndc\n1 0\n1 0 0\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "10 3\ncabcdaddac\n1 0\n2 0\n3 1\n4 2\n5 1\n6 4\n7 3\n8 2\n9 3\n2 8 8\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "9 1\nbabadbcca\n1 0\n2 0\n3 2\n4 2\n5 2\n6 1\n7 4\n8 6\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "10 5\naadaabcccc\n1 0\n2 1\n3 2\n4 1\n5 1\n6 1\n7 5\n8 5\n9 0\n4 0 7 9 2\n",
+    "expectedOutput": "3 1 1 1 2\n"
+  },
+  {
+    "input": "1 12\nb\n0 0 0 0 0 0 0 0 0 0 0 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 11\nada\n1 0\n2 0\n0 1 0 1 1 2 1 0 0 2 1\n",
+    "expectedOutput": "1 1 1 1 1 2 1 1 1 2 1\n"
+  },
+  {
+    "input": "4 10\ncada\n1 0\n2 0\n3 2\n0 3 1 2 2 1 0 3 2 2\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 2\ndcba\n1 0\n2 0\n3 1\n2 0\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "4 9\nacda\n1 0\n2 0\n3 2\n0 1 3 3 2 1 3 3 2\n",
+    "expectedOutput": "1 1 2 2 1 1 2 2 1\n"
+  },
+  {
+    "input": "11 6\nbdabbbddadb\n1 0\n2 1\n3 2\n4 2\n5 2\n6 4\n7 0\n8 0\n9 6\n10 7\n1 1 10 2 2 8\n",
+    "expectedOutput": "1 1 2 1 1 1\n"
+  },
+  {
+    "input": "3 1\nbcd\n1 0\n2 0\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "8 3\nccddccad\n1 0\n2 0\n3 2\n4 3\n5 3\n6 4\n7 4\n0 0 2\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "3 4\naba\n1 0\n2 0\n1 0 1 0\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "4 4\nbcdc\n1 0\n2 0\n3 0\n3 1 3 3\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "10 4\nddbdcddcbd\n1 0\n2 0\n3 1\n4 0\n5 4\n6 4\n7 6\n8 7\n9 1\n8 8 2 3\n",
+    "expectedOutput": "2 2 1 3\n"
+  },
+  {
+    "input": "3 1\nddd\n1 0\n2 1\n1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "6 1\nbbbdad\n1 0\n2 0\n3 0\n4 2\n5 0\n3\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "12 10\nbcbaccdcbddd\n1 0\n2 0\n3 0\n4 0\n5 3\n6 0\n7 2\n8 4\n9 0\n10 7\n11 1\n2 7 5 3 11 4 6 9 4 3\n",
+    "expectedOutput": "2 2 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "5 7\ncdccb\n1 0\n2 0\n3 1\n4 0\n2 0 4 2 0 2 2\n",
+    "expectedOutput": "2 1 1 2 1 2 2\n"
+  },
+  {
+    "input": "5 8\ndbadd\n1 0\n2 1\n3 0\n4 1\n0 2 0 0 3 3 2 3\n",
+    "expectedOutput": "1 1 1 1 2 2 1 2\n"
+  },
+  {
+    "input": "9 2\ndcccabdcd\n1 0\n2 0\n3 2\n4 0\n5 1\n6 4\n7 3\n8 4\n1 0\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "6 7\nabdbbd\n1 0\n2 0\n3 0\n4 3\n5 0\n4 5 3 3 5 1 0\n",
+    "expectedOutput": "3 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "12 8\ndbbccbcbacdc\n1 0\n2 1\n3 2\n4 1\n5 4\n6 1\n7 0\n8 2\n9 6\n10 2\n11 1\n5 0 7 8 9 11 4 2\n",
+    "expectedOutput": "2 1 1 2 3 1 1 3\n"
+  },
+  {
+    "input": "11 1\naacdddaadda\n1 0\n2 0\n3 1\n4 2\n5 3\n6 2\n7 5\n8 1\n9 7\n10 7\n10\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "12 1\nadcccdaaadad\n1 0\n2 0\n3 1\n4 1\n5 0\n6 1\n7 6\n8 5\n9 7\n10 7\n11 9\n8\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2 7\ncc\n1 0\n0 0 1 1 1 1 1\n",
+    "expectedOutput": "1 1 2 2 2 2 2\n"
+  },
+  {
+    "input": "11 4\ndcbcbacaada\n1 0\n2 0\n3 2\n4 1\n5 3\n6 3\n7 4\n8 5\n9 3\n10 7\n6 2 7 0\n",
+    "expectedOutput": "3 1 1 1\n"
+  },
+  {
+    "input": "6 9\ndadbcd\n1 0\n2 0\n3 0\n4 0\n5 0\n0 3 4 1 2 5 3 3 0\n",
+    "expectedOutput": "1 1 1 1 2 2 1 1 1\n"
+  },
+  {
+    "input": "7 4\nbaddcac\n1 0\n2 0\n3 0\n4 1\n5 1\n6 4\n2 5 3 3\n",
+    "expectedOutput": "1 3 1 1\n"
+  },
+  {
+    "input": "4 12\nccbb\n1 0\n2 0\n3 0\n2 0 1 1 3 0 2 0 0 1 1 0\n",
+    "expectedOutput": "1 1 2 2 1 1 1 1 1 2 2 1\n"
+  },
+  {
+    "input": "8 3\naddcccdd\n1 0\n2 1\n3 0\n4 0\n5 1\n6 2\n7 2\n1 1 3\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "10 11\nacacbcdacd\n1 0\n2 1\n3 2\n4 0\n5 1\n6 3\n7 6\n8 2\n9 1\n4 8 4 7 9 0 5 6 5 1 2\n",
+    "expectedOutput": "1 3 1 2 1 1 3 2 3 1 2\n"
+  },
+  {
+    "input": "6 8\nddcccd\n1 0\n2 0\n3 2\n4 3\n5 0\n1 0 0 0 4 3 4 0\n",
+    "expectedOutput": "2 1 1 1 3 3 3 1\n"
+  },
+  {
+    "input": "7 10\ndadcadb\n1 0\n2 1\n3 1\n4 0\n5 0\n6 0\n3 4 4 4 6 3 1 5 2 4\n",
+    "expectedOutput": "1 1 1 1 1 1 1 2 2 1\n"
+  },
+  {
+    "input": "6 3\ndbbdcc\n1 0\n2 0\n3 0\n4 2\n5 0\n0 1 3\n",
+    "expectedOutput": "1 1 2\n"
+  },
+  {
+    "input": "9 10\nddadbdbcc\n1 0\n2 0\n3 2\n4 1\n5 2\n6 4\n7 1\n8 0\n6 3 7 2 2 8 6 5 6 1\n",
+    "expectedOutput": "4 2 2 1 1 1 4 2 4 2\n"
+  },
+  {
+    "input": "11 2\nadbaddbcaba\n1 0\n2 0\n3 1\n4 1\n5 2\n6 0\n7 5\n8 4\n9 0\n10 5\n5 2\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "11 7\nadadaadbacc\n1 0\n2 1\n3 1\n4 1\n5 3\n6 5\n7 2\n8 0\n9 6\n10 5\n4 7 2 9 8 7 10\n",
+    "expectedOutput": "2 1 2 1 2 1 2\n"
+  },
+  {
+    "input": "1 3\nd\n0 0 0\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "5 8\ncbcdb\n1 0\n2 1\n3 1\n4 3\n0 3 4 4 4 3 1 0\n",
+    "expectedOutput": "1 1 2 2 2 1 1 1\n"
+  },
+  {
+    "input": "5 7\ncbcab\n1 0\n2 0\n3 2\n4 0\n0 2 3 1 1 3 4\n",
+    "expectedOutput": "1 2 2 1 1 2 1\n"
+  },
+  {
+    "input": "3 9\nbad\n1 0\n2 1\n2 0 2 1 2 2 0 2 2\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 9\nbcabcbdb\n1 0\n2 0\n3 1\n4 1\n5 1\n6 0\n7 0\n0 1 6 1 3 1 1 1 4\n",
+    "expectedOutput": "1 1 1 1 2 1 1 1 3\n"
+  },
+  {
+    "input": "6 10\ncdccba\n1 0\n2 0\n3 0\n4 2\n5 4\n3 1 1 2 3 1 1 4 4 4\n",
+    "expectedOutput": "2 1 1 2 2 1 1 2 2 2\n"
+  },
+  {
+    "input": "4 6\nbcab\n1 0\n2 0\n3 1\n1 0 0 3 1 0\n",
+    "expectedOutput": "1 1 1 2 1 1\n"
+  },
+  {
+    "input": "3 3\ncaa\n1 0\n2 0\n0 0 2\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "11 9\nbcaabdcdaac\n1 0\n2 1\n3 0\n4 0\n5 0\n6 3\n7 2\n8 6\n9 2\n10 9\n6 8 9 2 6 10 10 9 4\n",
+    "expectedOutput": "1 2 3 1 1 4 4 3 2\n"
+  },
+  {
+    "input": "10 12\ncdddacbccb\n1 0\n2 1\n3 1\n4 2\n5 3\n6 4\n7 1\n8 1\n9 2\n9 4 5 8 3 1 1 2 4 2 0 0\n",
+    "expectedOutput": "2 2 3 2 3 1 1 3 2 3 1 1\n"
+  },
+  {
+    "input": "6 7\naadccd\n1 0\n2 1\n3 1\n4 0\n5 2\n1 0 3 2 1 0 4\n",
+    "expectedOutput": "2 1 2 2 2 1 1\n"
+  },
+  {
+    "input": "1 3\na\n0 0 0\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "1 5\nd\n0 0 0 0 0\n",
+    "expectedOutput": "1 1 1 1 1\n"
+  },
+  {
+    "input": "2 3\nab\n1 0\n1 0 1\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "11 5\ncbacccaabdc\n1 0\n2 1\n3 1\n4 2\n5 0\n6 2\n7 6\n8 7\n9 1\n10 8\n2 2 3 3 0\n",
+    "expectedOutput": "1 1 2 2 1\n"
+  },
+  {
+    "input": "3 2\nabc\n1 0\n2 1\n1 2\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "8 1\nccdcabcb\n1 0\n2 1\n3 2\n4 1\n5 4\n6 1\n7 2\n4\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "11 9\ncbbaccbadcc\n1 0\n2 0\n3 2\n4 2\n5 4\n6 1\n7 4\n8 6\n9 7\n10 3\n8 4 10 4 1 1 3 3 7\n",
+    "expectedOutput": "2 2 1 2 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 4\ndaadadada\n1 0\n2 0\n3 0\n4 0\n5 2\n6 3\n7 0\n8 6\n4 5 0 7\n",
+    "expectedOutput": "1 2 1 2\n"
+  },
+  {
+    "input": "7 6\nccaabad\n1 0\n2 0\n3 2\n4 0\n5 0\n6 3\n4 1 0 2 3 5\n",
+    "expectedOutput": "1 2 1 1 3 1\n"
+  },
+  {
+    "input": "11 9\nabddbbcdacc\n1 0\n2 0\n3 1\n4 3\n5 2\n6 4\n7 0\n8 3\n9 3\n10 8\n0 1 2 3 1 1 5 8 5\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "11 12\naccbbdaacac\n1 0\n2 1\n3 1\n4 2\n5 2\n6 4\n7 5\n8 1\n9 2\n10 6\n10 9 4 4 3 2 4 6 9 5 1 5\n",
+    "expectedOutput": "1 3 2 2 1 3 2 2 3 2 1 2\n"
+  },
+  {
+    "input": "8 2\ncdadcacd\n1 0\n2 0\n3 2\n4 0\n5 3\n6 2\n7 2\n3 5\n",
+    "expectedOutput": "1 2\n"
+  },
+  {
+    "input": "6 11\nbcbada\n1 0\n2 1\n3 2\n4 1\n5 1\n3 2 4 5 4 4 2 5 3 2 2\n",
+    "expectedOutput": "1 2 1 1 1 1 2 1 1 2 2\n"
+  },
+  {
+    "input": "3 8\nbad\n1 0\n2 1\n1 0 1 0 1 2 0 2\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 1\nbbdccdabb\n1 0\n2 0\n3 2\n4 3\n5 4\n6 1\n7 3\n8 5\n7\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2 9\ncc\n1 0\n1 0 1 1 0 0 0 0 0\n",
+    "expectedOutput": "2 1 2 2 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 1\nbcc\n1 0\n2 0\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "1 11\nd\n0 0 0 0 0 0 0 0 0 0 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 5\nbcacdddd\n1 0\n2 0\n3 0\n4 0\n5 0\n6 3\n7 6\n3 1 6 7 6\n",
+    "expectedOutput": "1 1 1 3 1\n"
+  },
+  {
+    "input": "7 2\nbadabdb\n1 0\n2 1\n3 2\n4 3\n5 0\n6 5\n6 3\n",
+    "expectedOutput": "2 2\n"
+  },
+  {
+    "input": "6 8\ndacaab\n1 0\n2 0\n3 0\n4 0\n5 3\n1 4 4 5 1 3 2 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "10 5\nacdcacabba\n1 0\n2 1\n3 1\n4 3\n5 3\n6 3\n7 5\n8 3\n9 0\n7 7 0 5 9\n",
+    "expectedOutput": "2 2 1 3 2\n"
+  },
+  {
+    "input": "11 8\ncbbbaadadbd\n1 0\n2 1\n3 1\n4 0\n5 0\n6 2\n7 6\n8 4\n9 2\n10 0\n0 5 8 5 2 0 5 5\n",
+    "expectedOutput": "1 1 1 1 3 1 1 1\n"
+  },
+  {
+    "input": "11 4\nbbdaddcbddc\n1 0\n2 1\n3 1\n4 2\n5 3\n6 1\n7 6\n8 5\n9 2\n10 2\n4 6 4 9\n",
+    "expectedOutput": "4 2 4 4\n"
+  },
+  {
+    "input": "4 3\ncddc\n1 0\n2 0\n3 2\n3 3 2\n",
+    "expectedOutput": "2 2 1\n"
+  },
+  {
+    "input": "1 4\nb\n0 0 0 0\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "5 12\ncccad\n1 0\n2 0\n3 1\n4 0\n2 2 2 2 4 0 0 1 0 2 2 3\n",
+    "expectedOutput": "2 2 2 2 1 1 1 2 1 2 2 2\n"
+  },
+  {
+    "input": "4 7\nbddd\n1 0\n2 0\n3 0\n1 3 1 0 2 0 3\n",
+    "expectedOutput": "1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "10 2\nadaadadddc\n1 0\n2 1\n3 0\n4 1\n5 4\n6 2\n7 5\n8 3\n9 6\n2 9\n",
+    "expectedOutput": "2 2\n"
+  },
+  {
+    "input": "4 9\ncddc\n1 0\n2 0\n3 0\n1 3 0 1 2 0 0 3 1\n",
+    "expectedOutput": "1 2 1 1 1 1 1 2 1\n"
+  },
+  {
+    "input": "2 3\naa\n1 0\n0 0 0\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "11 4\ncdcdaaadbbb\n1 0\n2 0\n3 2\n4 0\n5 2\n6 5\n7 3\n8 2\n9 2\n10 5\n5 5 8 4\n",
+    "expectedOutput": "2 2 2 1\n"
+  },
+  {
+    "input": "5 4\nbbcbc\n1 0\n2 0\n3 1\n4 2\n0 2 1 1\n",
+    "expectedOutput": "1 1 2 2\n"
+  },
+  {
+    "input": "8 3\nacaabaaa\n1 0\n2 0\n3 1\n4 3\n5 4\n6 2\n7 1\n2 6 4\n",
+    "expectedOutput": "2 3 1\n"
+  },
+  {
+    "input": "4 6\nbdad\n1 0\n2 0\n3 2\n0 2 0 0 0 0\n",
+    "expectedOutput": "1 1 1 1 1 1\n"
+  },
+  {
+    "input": "6 5\nadabad\n1 0\n2 1\n3 0\n4 1\n5 0\n4 3 1 4 0\n",
+    "expectedOutput": "2 1 1 2 1\n"
+  },
+  {
+    "input": "10 12\nbcacbcdddb\n1 0\n2 1\n3 1\n4 2\n5 4\n6 0\n7 0\n8 3\n9 3\n0 3 6 8 3 1 9 3 0 2 2 9\n",
+    "expectedOutput": "1 3 1 2 3 1 3 3 1 1 1 3\n"
+  },
+  {
+    "input": "3 5\ncbb\n1 0\n2 1\n1 1 1 0 2\n",
+    "expectedOutput": "1 1 1 1 3\n"
+  },
+  {
+    "input": "10 5\naaababaada\n1 0\n2 0\n3 0\n4 2\n5 0\n6 3\n7 6\n8 3\n9 5\n0 1 8 0 5\n",
+    "expectedOutput": "1 2 1 1 1\n"
+  },
+  {
+    "input": "11 11\ndcbcacdbdad\n1 0\n2 1\n3 1\n4 0\n5 1\n6 3\n7 3\n8 7\n9 1\n10 4\n0 1 8 5 1 3 2 9 0 3 1\n",
+    "expectedOutput": "1 1 2 3 1 3 1 1 1 3 1\n"
+  },
+  {
+    "input": "11 8\nbaccbdcbccd\n1 0\n2 0\n3 2\n4 2\n5 4\n6 2\n7 3\n8 1\n9 5\n10 1\n0 1 7 6 0 7 1 7\n",
+    "expectedOutput": "1 1 3 3 1 3 1 3\n"
+  },
+  {
+    "input": "11 10\nbcccaccbaba\n1 0\n2 1\n3 0\n4 3\n5 0\n6 0\n7 0\n8 5\n9 1\n10 5\n3 8 9 1 3 7 3 7 5 7\n",
+    "expectedOutput": "1 1 2 1 1 2 1 2 1 2\n"
+  },
+  {
+    "input": "5 4\ndbbdc\n1 0\n2 1\n3 2\n4 1\n4 0 2 3\n",
+    "expectedOutput": "1 1 3 3\n"
+  },
+  {
+    "input": "4 4\nbcad\n1 0\n2 1\n3 0\n3 1 0 3\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "9 8\ndbcddbbbc\n1 0\n2 1\n3 0\n4 0\n5 1\n6 1\n7 1\n8 1\n4 4 3 8 1 7 7 6\n",
+    "expectedOutput": "2 2 2 1 1 3 3 3\n"
+  },
+  {
+    "input": "12 12\ncaacbccabbca\n1 0\n2 0\n3 1\n4 0\n5 4\n6 1\n7 6\n8 4\n9 1\n10 7\n11 4\n1 8 11 11 0 4 6 2 7 4 10 1\n",
+    "expectedOutput": "1 3 1 1 1 1 2 1 3 1 4 1\n"
+  },
+  {
+    "input": "3 8\nbba\n1 0\n2 0\n2 2 1 0 0 1 2 1\n",
+    "expectedOutput": "1 1 2 1 1 2 1 2\n"
+  },
+  {
+    "input": "5 9\nddcda\n1 0\n2 1\n3 0\n4 0\n1 3 1 0 0 2 2 3 3\n",
+    "expectedOutput": "2 2 2 1 1 2 2 2 2\n"
+  },
+  {
+    "input": "2 10\nad\n1 0\n0 0 1 0 0 0 1 0 0 1\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 11\ndcda\n1 0\n2 1\n3 1\n1 2 0 0 0 1 2 0 0 3 1\n",
+    "expectedOutput": "1 2 1 1 1 1 2 1 1 1 1\n"
+  },
+  {
+    "input": "5 1\nabcdb\n1 0\n2 0\n3 1\n4 3\n4\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "3 1\nacc\n1 0\n2 1\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "8 10\ncbbaabba\n1 0\n2 0\n3 2\n4 1\n5 1\n6 0\n7 4\n7 7 1 6 5 1 0 3 3 4\n",
+    "expectedOutput": "3 3 1 1 3 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 3\ndcadaaab\n1 0\n2 1\n3 0\n4 3\n5 4\n6 1\n7 2\n2 3 5\n",
+    "expectedOutput": "1 2 4\n"
+  },
+  {
+    "input": "4 10\ndbba\n1 0\n2 1\n3 0\n0 1 1 0 1 0 3 0 2 3\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 3 1\n"
+  },
+  {
+    "input": "10 10\nccbcdadbaa\n1 0\n2 1\n3 2\n4 0\n5 3\n6 4\n7 3\n8 7\n9 0\n3 4 1 7 7 7 4 3 6 1\n",
+    "expectedOutput": "2 1 2 4 4 4 1 2 3 2\n"
+  },
+  {
+    "input": "5 2\nccccb\n1 0\n2 1\n3 0\n4 3\n4 4\n",
+    "expectedOutput": "2 2\n"
+  },
+  {
+    "input": "11 5\nbdbcadcddaa\n1 0\n2 0\n3 1\n4 1\n5 0\n6 5\n7 2\n8 3\n9 8\n10 3\n3 9 1 7 4\n",
+    "expectedOutput": "1 1 1 2 1\n"
+  },
+  {
+    "input": "9 1\ncdaccbacc\n1 0\n2 1\n3 2\n4 2\n5 2\n6 3\n7 0\n8 2\n7\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "10 3\ndcaaddaccd\n1 0\n2 1\n3 2\n4 2\n5 4\n6 1\n7 2\n8 2\n9 4\n3 9 9\n",
+    "expectedOutput": "3 3 3\n"
+  },
+  {
+    "input": "1 4\na\n0 0 0 0\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "1 5\nd\n0 0 0 0 0\n",
+    "expectedOutput": "1 1 1 1 1\n"
+  },
+  {
+    "input": "3 8\nccc\n1 0\n2 0\n2 2 2 0 2 1 2 1\n",
+    "expectedOutput": "2 2 2 1 2 2 2 2\n"
+  },
+  {
+    "input": "4 2\ncbcc\n1 0\n2 1\n3 1\n3 3\n",
+    "expectedOutput": "2 2\n"
+  },
+  {
+    "input": "8 1\nacbaaacb\n1 0\n2 0\n3 0\n4 0\n5 4\n6 2\n7 4\n3\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "7 6\ndbcaaaa\n1 0\n2 1\n3 1\n4 2\n5 2\n6 5\n0 4 1 1 4 2\n",
+    "expectedOutput": "1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 4\nabbbcdddd\n1 0\n2 0\n3 2\n4 2\n5 0\n6 1\n7 0\n8 7\n2 0 6 7\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "4 7\ndbcb\n1 0\n2 0\n3 1\n3 1 2 2 3 2 2\n",
+    "expectedOutput": "3 1 1 1 3 1 1\n"
+  },
+  {
+    "input": "12 3\nbdcdcaccbdbc\n1 0\n2 1\n3 2\n4 2\n5 4\n6 5\n7 1\n8 4\n9 0\n10 8\n11 2\n7 10 0\n",
+    "expectedOutput": "1 5 1\n"
+  },
+  {
+    "input": "5 2\ndcaab\n1 0\n2 0\n3 1\n4 1\n2 1\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "1 4\nb\n0 0 0 0\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "9 2\nbbacabcca\n1 0\n2 1\n3 2\n4 0\n5 0\n6 2\n7 1\n8 4\n8 8\n",
+    "expectedOutput": "3 3\n"
+  },
+  {
+    "input": "4 10\ndcdb\n1 0\n2 0\n3 2\n3 1 2 0 1 0 2 1 0 3\n",
+    "expectedOutput": "2 1 2 1 1 1 2 1 1 2\n"
+  },
+  {
+    "input": "2 2\ncc\n1 0\n1 0\n",
+    "expectedOutput": "2 1\n"
+  },
+  {
+    "input": "1 1\na\n0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "5 10\ncbdad\n1 0\n2 1\n3 1\n4 0\n3 3 4 1 4 0 2 2 1 1\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 6\ndbcbdcba\n1 0\n2 0\n3 2\n4 2\n5 1\n6 0\n7 0\n5 2 6 0 6 3\n",
+    "expectedOutput": "1 1 1 1 1 1\n"
+  },
+  {
+    "input": "1 6\na\n0 0 0 0 0 0\n",
+    "expectedOutput": "1 1 1 1 1 1\n"
+  },
+  {
+    "input": "7 4\nacbadda\n1 0\n2 0\n3 1\n4 2\n5 0\n6 4\n5 5 6 6\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "3 1\ndcd\n1 0\n2 0\n2\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "12 9\ndabbdacbaccc\n1 0\n2 1\n3 0\n4 1\n5 3\n6 4\n7 6\n8 7\n9 0\n10 0\n11 6\n9 10 3 1 10 3 10 3 7\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 8\nbdbabbaad\n1 0\n2 0\n3 1\n4 3\n5 2\n6 5\n7 0\n8 3\n2 8 6 7 0 7 7 1\n",
+    "expectedOutput": "2 2 2 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 9\ncdb\n1 0\n2 1\n1 0 0 0 1 1 1 1 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 2\ndbaddcaac\n1 0\n2 0\n3 1\n4 1\n5 0\n6 0\n7 0\n8 6\n7 3\n",
+    "expectedOutput": "1 2\n"
+  },
+  {
+    "input": "2 8\nda\n1 0\n1 1 0 1 1 1 1 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 9\nabc\n1 0\n2 0\n0 1 0 1 0 2 2 2 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "2 10\nad\n1 0\n0 0 0 1 0 0 1 1 1 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 5\ndcdadbaa\n1 0\n2 1\n3 2\n4 2\n5 2\n6 4\n7 6\n4 2 6 3 2\n",
+    "expectedOutput": "3 2 2 1 2\n"
+  }
+]

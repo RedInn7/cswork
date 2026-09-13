@@ -1,0 +1,10 @@
+[
+  {
+    "name": "区间终点错误排除",
+    "code": "def solve(d):\n    n,target=map(int,d[:2]);events={}\n    for i in range(2,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);events[a]=events.get(a,0)+1;events[b]=events.get(b,0)-1\n    active=total=0;previous=0\n    for t,delta in sorted(events.items()):\n        contribution=active*(t-previous)\n        if active and total+contribution>=target:return str(previous+(target-total+active-1)//active-1)\n        total+=contribution;active+=delta;previous=t\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "达到秒数多算一秒",
+    "code": "def solve(d):\n    n,target=map(int,d[:2]);events={}\n    for i in range(2,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);events[a]=events.get(a,0)+1;events[b+1]=events.get(b+1,0)-1\n    active=total=0;previous=0\n    for t,delta in sorted(events.items()):\n        contribution=active*(t-previous)\n        if active and total+contribution>=target:return str(previous+(target-total+active-1)//active)\n        total+=contribution;active+=delta;previous=t\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,654 @@
+[
+  {
+    "input": "16 3\nLEFT 2\nhello\nworld\nRIGHT 3\nHow\nareYou\ndoing\nRIGHT 3\nPlease look\nand align\nto right\n",
+    "expectedOutput": "******************\n*hello world     *\n*How areYou doing*\n*     Please look*\n*       and align*\n*        to right*\n******************\n"
+  },
+  {
+    "input": "5 1\nLEFT 3\na\nb\nc\n",
+    "expectedOutput": "*******\n*a b c*\n*******\n"
+  },
+  {
+    "input": "5 1\nRIGHT 2\na b\ncc\n",
+    "expectedOutput": "*******\n*  a b*\n*   cc*\n*******\n"
+  },
+  {
+    "input": "7 1\nLEFT 2\ncab\nc\n",
+    "expectedOutput": "*********\n*cab c  *\n*********\n"
+  },
+  {
+    "input": "6 1\nRIGHT 4\nc\nc\nabb\nc\n",
+    "expectedOutput": "********\n*   c c*\n* abb c*\n********\n"
+  },
+  {
+    "input": "11 3\nRIGHT 1\nbbcc\nLEFT 2\nab\nbbbb\nRIGHT 5\nccbb\nbabba\nc\nca\nab\n",
+    "expectedOutput": "*************\n*       bbcc*\n*ab bbbb    *\n* ccbb babba*\n*    c ca ab*\n*************\n"
+  },
+  {
+    "input": "7 2\nLEFT 4\ncaa\nbaca\nacacc\ncccc\nRIGHT 2\nc\ncccaa\n",
+    "expectedOutput": "*********\n*caa    *\n*baca   *\n*acacc  *\n*cccc   *\n*c cccaa*\n*********\n"
+  },
+  {
+    "input": "7 2\nLEFT 4\ncac\nbacca\nbcba\nbabaa\nLEFT 5\naac\nab\nca\nbaccb\nb\n",
+    "expectedOutput": "*********\n*cac    *\n*bacca  *\n*bcba   *\n*babaa  *\n*aac ab *\n*ca     *\n*baccb b*\n*********\n"
+  },
+  {
+    "input": "5 3\nRIGHT 1\nabccb\nRIGHT 3\ncc\ncc\naccb\nLEFT 5\naacac\nc\nbba\nca\ncccb\n",
+    "expectedOutput": "*******\n*abccb*\n*cc cc*\n* accb*\n*aacac*\n*c bba*\n*ca   *\n*cccb *\n*******\n"
+  },
+  {
+    "input": "12 2\nLEFT 5\nc\nba\nabca\ncac\na\nLEFT 1\nbac\n",
+    "expectedOutput": "**************\n*c ba abca   *\n*cac a       *\n*bac         *\n**************\n"
+  },
+  {
+    "input": "8 2\nLEFT 4\nbabbc\nacba\ncbcbb\nc\nRIGHT 3\nca\nc\na\n",
+    "expectedOutput": "**********\n*babbc   *\n*acba    *\n*cbcbb c *\n*  ca c a*\n**********\n"
+  },
+  {
+    "input": "5 1\nLEFT 4\ncac\naab\nccbac\nbbac\n",
+    "expectedOutput": "*******\n*cac  *\n*aab  *\n*ccbac*\n*bbac *\n*******\n"
+  },
+  {
+    "input": "11 1\nLEFT 5\ncac\naca\nacaaa\nbba\nba\n",
+    "expectedOutput": "*************\n*cac aca    *\n*acaaa bba  *\n*ba         *\n*************\n"
+  },
+  {
+    "input": "10 4\nLEFT 3\naccaa\nb\nba\nLEFT 3\ncccb\nbb\nabbbb\nLEFT 4\nbaaac\naccca\nb\nc\nRIGHT 4\ncbc\nacb\naab\naaabb\n",
+    "expectedOutput": "************\n*accaa b ba*\n*cccb bb   *\n*abbbb     *\n*baaac     *\n*accca b c *\n*   cbc acb*\n* aab aaabb*\n************\n"
+  },
+  {
+    "input": "7 4\nRIGHT 5\nbca\ncbaa\ncbcc\nabb\nbcb\nRIGHT 3\ncac\nb\nccbbb\nLEFT 1\nca\nRIGHT 2\nacacb\na\n",
+    "expectedOutput": "*********\n*    bca*\n*   cbaa*\n*   cbcc*\n*abb bcb*\n*  cac b*\n*  ccbbb*\n*ca     *\n*acacb a*\n*********\n"
+  },
+  {
+    "input": "6 3\nRIGHT 1\nc\nLEFT 5\nbba\nbcac\naca\nbcabb\nca\nLEFT 3\nac\naaa\nccc\n",
+    "expectedOutput": "********\n*     c*\n*bba   *\n*bcac  *\n*aca   *\n*bcabb *\n*ca    *\n*ac aaa*\n*ccc   *\n********\n"
+  },
+  {
+    "input": "5 1\nLEFT 4\nbbaac\naca\ncbaca\nb\n",
+    "expectedOutput": "*******\n*bbaac*\n*aca  *\n*cbaca*\n*b    *\n*******\n"
+  },
+  {
+    "input": "9 1\nLEFT 1\ncaaa\n",
+    "expectedOutput": "***********\n*caaa     *\n***********\n"
+  },
+  {
+    "input": "11 4\nRIGHT 4\nac\nababb\nabbab\nb\nRIGHT 4\nccb\ncc\nbba\nb\nLEFT 4\naca\nc\na\nbcb\nLEFT 4\nb\ncbc\ncac\ncb\n",
+    "expectedOutput": "*************\n*   ac ababb*\n*    abbab b*\n* ccb cc bba*\n*          b*\n*aca c a bcb*\n*b cbc cac  *\n*cb         *\n*************\n"
+  },
+  {
+    "input": "10 1\nLEFT 2\ncbb\na\n",
+    "expectedOutput": "************\n*cbb a     *\n************\n"
+  },
+  {
+    "input": "7 2\nRIGHT 4\nb\ncacb\nacccc\nacaba\nRIGHT 3\ncaaaa\nc\naca\n",
+    "expectedOutput": "*********\n* b cacb*\n*  acccc*\n*  acaba*\n*caaaa c*\n*    aca*\n*********\n"
+  },
+  {
+    "input": "10 1\nRIGHT 4\naacb\ncaacb\na\ncb\n",
+    "expectedOutput": "************\n*aacb caacb*\n*      a cb*\n************\n"
+  },
+  {
+    "input": "10 2\nRIGHT 3\nb\naa\ncabc\nLEFT 1\nbc\n",
+    "expectedOutput": "************\n* b aa cabc*\n*bc        *\n************\n"
+  },
+  {
+    "input": "8 2\nRIGHT 4\naac\nb\nc\nb\nLEFT 3\nb\nabcab\nbaa\n",
+    "expectedOutput": "**********\n* aac b c*\n*       b*\n*b abcab *\n*baa     *\n**********\n"
+  },
+  {
+    "input": "11 4\nLEFT 2\ncbcc\nb\nRIGHT 5\ncba\ncba\nc\nbcab\nb\nLEFT 4\ncbc\nbc\ncbaa\nbca\nRIGHT 1\nb\n",
+    "expectedOutput": "*************\n*cbcc b     *\n*  cba cba c*\n*     bcab b*\n*cbc bc cbaa*\n*bca        *\n*          b*\n*************\n"
+  },
+  {
+    "input": "6 4\nRIGHT 5\nbaac\na\nac\nbaa\na\nRIGHT 1\nabba\nLEFT 4\nccbaa\nacbba\nb\nbcb\nLEFT 4\ncbb\nbac\nba\na\n",
+    "expectedOutput": "********\n*baac a*\n*ac baa*\n*     a*\n*  abba*\n*ccbaa *\n*acbba *\n*b bcb *\n*cbb   *\n*bac ba*\n*a     *\n********\n"
+  },
+  {
+    "input": "5 4\nRIGHT 4\ncc\nb\naa\nacbca\nRIGHT 1\ncb\nLEFT 2\nc\nbaa\nLEFT 4\nccabb\ncca\nbcaa\naab\n",
+    "expectedOutput": "*******\n* cc b*\n*   aa*\n*acbca*\n*   cb*\n*c baa*\n*ccabb*\n*cca  *\n*bcaa *\n*aab  *\n*******\n"
+  },
+  {
+    "input": "5 4\nLEFT 4\ncb\nbba\naabc\ncbaab\nLEFT 1\nab\nRIGHT 5\na\ncbb\nacab\naaca\naca\nRIGHT 4\na\ncaaba\ncc\nacacc\n",
+    "expectedOutput": "*******\n*cb   *\n*bba  *\n*aabc *\n*cbaab*\n*ab   *\n*a cbb*\n* acab*\n* aaca*\n*  aca*\n*    a*\n*caaba*\n*   cc*\n*acacc*\n*******\n"
+  },
+  {
+    "input": "8 2\nRIGHT 2\nbb\ncab\nLEFT 1\naaa\n",
+    "expectedOutput": "**********\n*  bb cab*\n*aaa     *\n**********\n"
+  },
+  {
+    "input": "7 2\nLEFT 5\nbaab\nac\nccaba\naba\nc\nRIGHT 4\nb\nbbcac\ncc\ncbaba\n",
+    "expectedOutput": "*********\n*baab ac*\n*ccaba  *\n*aba c  *\n*b bbcac*\n*     cc*\n*  cbaba*\n*********\n"
+  },
+  {
+    "input": "9 3\nLEFT 5\nccbca\nbc\nbaa\nbcc\ncc\nLEFT 1\ncbbb\nLEFT 3\nbbcbc\nbcb\naabc\n",
+    "expectedOutput": "***********\n*ccbca bc *\n*baa bcc  *\n*cc       *\n*cbbb     *\n*bbcbc bcb*\n*aabc     *\n***********\n"
+  },
+  {
+    "input": "12 4\nLEFT 5\nbba\nba\nacc\nbbbba\na\nRIGHT 1\nc\nRIGHT 1\nbcb\nLEFT 3\nbcabc\ncb\nccba\n",
+    "expectedOutput": "**************\n*bba ba acc  *\n*bbbba a     *\n*           c*\n*         bcb*\n*bcabc cb    *\n*ccba        *\n**************\n"
+  },
+  {
+    "input": "6 1\nLEFT 1\nca\n",
+    "expectedOutput": "********\n*ca    *\n********\n"
+  },
+  {
+    "input": "8 3\nRIGHT 4\nca\nccc\nabaa\ncacc\nRIGHT 3\nbcbbb\nb\ncaaa\nLEFT 3\ncab\nbb\ncab\n",
+    "expectedOutput": "**********\n*  ca ccc*\n*    abaa*\n*    cacc*\n* bcbbb b*\n*    caaa*\n*cab bb  *\n*cab     *\n**********\n"
+  },
+  {
+    "input": "8 4\nRIGHT 1\na\nRIGHT 3\ncbaac\na\na\nRIGHT 3\naabc\nbc\ncab\nLEFT 5\ncba\nac\nba\nbbc\nbbb\n",
+    "expectedOutput": "**********\n*       a*\n* cbaac a*\n*       a*\n* aabc bc*\n*     cab*\n*cba ac  *\n*ba bbc  *\n*bbb     *\n**********\n"
+  },
+  {
+    "input": "7 4\nRIGHT 4\nbbab\na\nacc\nab\nRIGHT 3\ncc\nab\nbb\nRIGHT 1\ncabb\nLEFT 4\nabcab\nacbcc\nc\nc\n",
+    "expectedOutput": "*********\n* bbab a*\n* acc ab*\n*  cc ab*\n*     bb*\n*   cabb*\n*abcab  *\n*acbcc c*\n*c      *\n*********\n"
+  },
+  {
+    "input": "8 3\nLEFT 3\nbcccc\nbaa\nb\nLEFT 2\naacb\na\nLEFT 5\nc\nbbcbb\nb\nca\nc\n",
+    "expectedOutput": "**********\n*bcccc   *\n*baa b   *\n*aacb a  *\n*c bbcbb *\n*b ca c  *\n**********\n"
+  },
+  {
+    "input": "7 3\nRIGHT 4\nbcacb\nababb\ncbaaa\ncaca\nRIGHT 1\nccaac\nRIGHT 3\nc\nccbb\nb\n",
+    "expectedOutput": "*********\n*  bcacb*\n*  ababb*\n*  cbaaa*\n*   caca*\n*  ccaac*\n* c ccbb*\n*      b*\n*********\n"
+  },
+  {
+    "input": "9 4\nLEFT 5\nbbbc\nbbbc\nbabaa\ncac\naa\nLEFT 1\nbcaa\nRIGHT 4\naabcb\nac\nb\naaa\nLEFT 2\nc\nccabc\n",
+    "expectedOutput": "***********\n*bbbc bbbc*\n*babaa cac*\n*aa       *\n*bcaa     *\n* aabcb ac*\n*    b aaa*\n*c ccabc  *\n***********\n"
+  },
+  {
+    "input": "5 1\nLEFT 4\nb\nbc\ncaac\nabc\n",
+    "expectedOutput": "*******\n*b bc *\n*caac *\n*abc  *\n*******\n"
+  },
+  {
+    "input": "8 4\nLEFT 4\ncb\ncb\nca\ncaa\nRIGHT 2\nbac\nab\nLEFT 4\nacbb\nacabc\nb\nbaa\nLEFT 4\nc\nab\nab\nacc\n",
+    "expectedOutput": "**********\n*cb cb ca*\n*caa     *\n*  bac ab*\n*acbb    *\n*acabc b *\n*baa     *\n*c ab ab *\n*acc     *\n**********\n"
+  },
+  {
+    "input": "5 3\nRIGHT 1\nca\nLEFT 5\nb\ncb\nbcaa\nb\nbbacc\nRIGHT 5\nc\nbbba\nabc\nccc\nabbcc\n",
+    "expectedOutput": "*******\n*   ca*\n*b cb *\n*bcaa *\n*b    *\n*bbacc*\n*    c*\n* bbba*\n*  abc*\n*  ccc*\n*abbcc*\n*******\n"
+  },
+  {
+    "input": "11 1\nRIGHT 4\ncbbc\nabaab\nabbc\nccbac\n",
+    "expectedOutput": "*************\n* cbbc abaab*\n* abbc ccbac*\n*************\n"
+  },
+  {
+    "input": "11 2\nRIGHT 1\na\nRIGHT 3\ncb\nbca\nbac\n",
+    "expectedOutput": "*************\n*          a*\n* cb bca bac*\n*************\n"
+  },
+  {
+    "input": "7 2\nRIGHT 2\nbabb\nba\nLEFT 5\nbaba\naacaa\nabaa\nac\ncc\n",
+    "expectedOutput": "*********\n*babb ba*\n*baba   *\n*aacaa  *\n*abaa ac*\n*cc     *\n*********\n"
+  },
+  {
+    "input": "6 3\nLEFT 2\nabb\nabbc\nLEFT 2\nbbcba\ncccca\nRIGHT 1\ncab\n",
+    "expectedOutput": "********\n*abb   *\n*abbc  *\n*bbcba *\n*cccca *\n*   cab*\n********\n"
+  },
+  {
+    "input": "12 4\nRIGHT 3\nbbac\nbb\nac\nRIGHT 2\nbab\na\nLEFT 4\ncb\naaa\nabaa\nbbbaa\nRIGHT 5\naa\nc\nbabc\nc\nbaac\n",
+    "expectedOutput": "**************\n*  bbac bb ac*\n*       bab a*\n*cb aaa abaa *\n*bbbaa       *\n* aa c babc c*\n*        baac*\n**************\n"
+  },
+  {
+    "input": "9 1\nLEFT 1\naca\n",
+    "expectedOutput": "***********\n*aca      *\n***********\n"
+  },
+  {
+    "input": "8 3\nLEFT 4\naacb\nacc\nccccb\ncbb\nLEFT 3\nbaba\nbba\naac\nLEFT 5\na\nbbab\nbcba\nacb\nab\n",
+    "expectedOutput": "**********\n*aacb acc*\n*ccccb   *\n*cbb     *\n*baba bba*\n*aac     *\n*a bbab  *\n*bcba acb*\n*ab      *\n**********\n"
+  },
+  {
+    "input": "7 2\nLEFT 2\nbccca\ncb\nLEFT 1\nacc\n",
+    "expectedOutput": "*********\n*bccca  *\n*cb     *\n*acc    *\n*********\n"
+  },
+  {
+    "input": "11 3\nRIGHT 5\nbaa\ncb\nac\nbbcca\nba\nLEFT 3\nb\nc\ncbbaa\nLEFT 3\nacbaa\nabcc\ncaabb\n",
+    "expectedOutput": "*************\n*  baa cb ac*\n*   bbcca ba*\n*b c cbbaa  *\n*acbaa abcc *\n*caabb      *\n*************\n"
+  },
+  {
+    "input": "7 1\nLEFT 5\nbcab\nbb\nb\nabbc\ncab\n",
+    "expectedOutput": "*********\n*bcab bb*\n*b abbc *\n*cab    *\n*********\n"
+  },
+  {
+    "input": "9 1\nLEFT 3\nca\nccbcb\nbca\n",
+    "expectedOutput": "***********\n*ca ccbcb *\n*bca      *\n***********\n"
+  },
+  {
+    "input": "5 1\nLEFT 3\ncba\ncb\ncccb\n",
+    "expectedOutput": "*******\n*cba  *\n*cb   *\n*cccb *\n*******\n"
+  },
+  {
+    "input": "12 4\nLEFT 4\nbbcac\nc\ncbca\nba\nRIGHT 1\ncbcc\nRIGHT 5\ncb\nca\nacbc\naacb\nc\nLEFT 1\nccbca\n",
+    "expectedOutput": "**************\n*bbcac c cbca*\n*ba          *\n*        cbcc*\n*  cb ca acbc*\n*      aacb c*\n*ccbca       *\n**************\n"
+  },
+  {
+    "input": "10 1\nLEFT 3\nbc\nbbba\ncb\n",
+    "expectedOutput": "************\n*bc bbba cb*\n************\n"
+  },
+  {
+    "input": "10 3\nRIGHT 4\nbacc\nbbb\ncbb\nbcbaa\nLEFT 4\nbcacc\naac\ncb\nab\nRIGHT 5\nabcb\nb\nbb\nba\ncbc\n",
+    "expectedOutput": "************\n*  bacc bbb*\n* cbb bcbaa*\n*bcacc aac *\n*cb ab     *\n* abcb b bb*\n*    ba cbc*\n************\n"
+  },
+  {
+    "input": "9 4\nRIGHT 3\nc\ncb\nca\nRIGHT 5\nc\naccba\nbabb\nabaa\na\nRIGHT 5\nbccb\nccb\nbc\ncc\nbab\nLEFT 3\naa\nacbab\naaa\n",
+    "expectedOutput": "***********\n*  c cb ca*\n*  c accba*\n*babb abaa*\n*        a*\n* bccb ccb*\n*bc cc bab*\n*aa acbab *\n*aaa      *\n***********\n"
+  },
+  {
+    "input": "6 1\nRIGHT 5\nacaa\nbcc\nbcba\na\nbca\n",
+    "expectedOutput": "********\n*  acaa*\n*   bcc*\n*bcba a*\n*   bca*\n********\n"
+  },
+  {
+    "input": "5 1\nLEFT 1\nbbc\n",
+    "expectedOutput": "*******\n*bbc  *\n*******\n"
+  },
+  {
+    "input": "10 4\nRIGHT 2\nbbcaa\nbbb\nRIGHT 1\nccbbb\nLEFT 2\naacc\na\nLEFT 5\nbb\nbc\naa\nbbab\nc\n",
+    "expectedOutput": "************\n* bbcaa bbb*\n*     ccbbb*\n*aacc a    *\n*bb bc aa  *\n*bbab c    *\n************\n"
+  },
+  {
+    "input": "5 1\nLEFT 4\ncbab\naabb\nbca\ncca\n",
+    "expectedOutput": "*******\n*cbab *\n*aabb *\n*bca  *\n*cca  *\n*******\n"
+  },
+  {
+    "input": "6 2\nLEFT 1\naa\nLEFT 2\nabac\nc\n",
+    "expectedOutput": "********\n*aa    *\n*abac c*\n********\n"
+  },
+  {
+    "input": "7 2\nLEFT 4\nb\nabb\nbabbb\nabc\nRIGHT 2\nc\nabb\n",
+    "expectedOutput": "*********\n*b abb  *\n*babbb  *\n*abc    *\n*  c abb*\n*********\n"
+  },
+  {
+    "input": "9 4\nRIGHT 5\nb\nacb\nbb\nb\ncb\nLEFT 1\ncca\nRIGHT 2\nc\na\nRIGHT 3\nbcbb\nc\nabb\n",
+    "expectedOutput": "***********\n* b acb bb*\n*     b cb*\n*cca      *\n*      c a*\n*   bcbb c*\n*      abb*\n***********\n"
+  },
+  {
+    "input": "7 1\nLEFT 2\nbcaba\ncab\n",
+    "expectedOutput": "*********\n*bcaba  *\n*cab    *\n*********\n"
+  },
+  {
+    "input": "9 1\nLEFT 1\nbcab\n",
+    "expectedOutput": "***********\n*bcab     *\n***********\n"
+  },
+  {
+    "input": "5 1\nRIGHT 1\ncbcb\n",
+    "expectedOutput": "*******\n* cbcb*\n*******\n"
+  },
+  {
+    "input": "10 3\nLEFT 2\ncbba\nccbca\nLEFT 2\nccb\nbbab\nRIGHT 5\ncccb\nabca\nc\nb\nb\n",
+    "expectedOutput": "************\n*cbba ccbca*\n*ccb bbab  *\n* cccb abca*\n*     c b b*\n************\n"
+  },
+  {
+    "input": "7 4\nRIGHT 4\nab\nb\ncbcbc\nbaccb\nLEFT 1\nabbbb\nLEFT 4\naa\nba\ncac\nac\nRIGHT 4\naa\nbc\ncbb\nacaa\n",
+    "expectedOutput": "*********\n*   ab b*\n*  cbcbc*\n*  baccb*\n*abbbb  *\n*aa ba  *\n*cac ac *\n*  aa bc*\n*    cbb*\n*   acaa*\n*********\n"
+  },
+  {
+    "input": "12 1\nRIGHT 3\naabbb\nbb\naabbb\n",
+    "expectedOutput": "**************\n*    aabbb bb*\n*       aabbb*\n**************\n"
+  },
+  {
+    "input": "5 1\nRIGHT 4\ncca\naba\ncc\nbcca\n",
+    "expectedOutput": "*******\n*  cca*\n*  aba*\n*   cc*\n* bcca*\n*******\n"
+  },
+  {
+    "input": "7 1\nRIGHT 5\nbcacb\na\nacbcb\naaaab\nb\n",
+    "expectedOutput": "*********\n*bcacb a*\n*  acbcb*\n*aaaab b*\n*********\n"
+  },
+  {
+    "input": "7 1\nLEFT 4\ncb\ncaacc\nccaca\nabb\n",
+    "expectedOutput": "*********\n*cb     *\n*caacc  *\n*ccaca  *\n*abb    *\n*********\n"
+  },
+  {
+    "input": "12 3\nLEFT 1\nb\nRIGHT 2\nabb\nacaaa\nRIGHT 3\nabac\na\naac\n",
+    "expectedOutput": "**************\n*b           *\n*   abb acaaa*\n*  abac a aac*\n**************\n"
+  },
+  {
+    "input": "12 3\nRIGHT 4\nbab\nca\ncba\naa\nRIGHT 2\nbbba\nab\nRIGHT 1\nbcab\n",
+    "expectedOutput": "**************\n*  bab ca cba*\n*          aa*\n*     bbba ab*\n*        bcab*\n**************\n"
+  },
+  {
+    "input": "5 1\nLEFT 3\nca\nbb\ncbcaa\n",
+    "expectedOutput": "*******\n*ca bb*\n*cbcaa*\n*******\n"
+  },
+  {
+    "input": "9 1\nRIGHT 3\nbc\nbaca\nb\n",
+    "expectedOutput": "***********\n*bc baca b*\n***********\n"
+  },
+  {
+    "input": "11 4\nLEFT 4\nb\nbba\nabca\nb\nLEFT 5\nb\nabbb\naaaa\nac\nacc\nRIGHT 2\nccb\nbcac\nRIGHT 5\nabbbc\ncab\nbac\ncbaca\ncaa\n",
+    "expectedOutput": "*************\n*b bba abca *\n*b          *\n*b abbb aaaa*\n*ac acc     *\n*   ccb bcac*\n*  abbbc cab*\n*  bac cbaca*\n*        caa*\n*************\n"
+  },
+  {
+    "input": "11 1\nLEFT 4\na\nab\nbaba\nacbbc\n",
+    "expectedOutput": "*************\n*a ab baba  *\n*acbbc      *\n*************\n"
+  },
+  {
+    "input": "7 3\nLEFT 2\nab\nacaba\nLEFT 1\nacaba\nLEFT 3\naaac\nabac\nc\n",
+    "expectedOutput": "*********\n*ab     *\n*acaba  *\n*acaba  *\n*aaac   *\n*abac c *\n*********\n"
+  },
+  {
+    "input": "10 3\nRIGHT 3\nbb\nbbc\naaac\nRIGHT 2\nc\na\nLEFT 2\nb\nccbc\n",
+    "expectedOutput": "************\n*    bb bbc*\n*      aaac*\n*       c a*\n*b ccbc    *\n************\n"
+  },
+  {
+    "input": "10 4\nRIGHT 5\nbcaa\nbca\nbc\ncccac\nab\nRIGHT 1\ncc\nLEFT 1\nb\nLEFT 1\ncca\n",
+    "expectedOutput": "************\n*  bcaa bca*\n*  bc cccac*\n*        ab*\n*        cc*\n*b         *\n*cca       *\n************\n"
+  },
+  {
+    "input": "10 3\nRIGHT 4\nbcc\ncacaa\na\nbc\nLEFT 4\nab\ncc\naac\nbbba\nRIGHT 3\nab\nc\ncabc\n",
+    "expectedOutput": "************\n* bcc cacaa*\n*      a bc*\n*ab cc aac *\n*bbba      *\n* ab c cabc*\n************\n"
+  },
+  {
+    "input": "6 1\nRIGHT 3\nb\na\nc\n",
+    "expectedOutput": "********\n* b a c*\n********\n"
+  },
+  {
+    "input": "10 4\nRIGHT 3\nbaaca\nabac\nca\nLEFT 2\nc\nbb\nLEFT 3\nba\nbab\ncac\nRIGHT 2\nccaa\ncacbc\n",
+    "expectedOutput": "************\n*baaca abac*\n*        ca*\n*c bb      *\n*ba bab cac*\n*ccaa cacbc*\n************\n"
+  },
+  {
+    "input": "5 4\nLEFT 2\ncb\ncbab\nLEFT 2\nbacc\ncca\nRIGHT 4\nbaca\nbb\nccba\nab\nRIGHT 4\naaba\nbbbac\ncbc\naa\n",
+    "expectedOutput": "*******\n*cb   *\n*cbab *\n*bacc *\n*cca  *\n* baca*\n*   bb*\n* ccba*\n*   ab*\n* aaba*\n*bbbac*\n*  cbc*\n*   aa*\n*******\n"
+  },
+  {
+    "input": "8 3\nLEFT 1\nabba\nLEFT 1\ncbcb\nLEFT 5\nac\nba\ncbaa\nbc\nbbbba\n",
+    "expectedOutput": "**********\n*abba    *\n*cbcb    *\n*ac ba   *\n*cbaa bc *\n*bbbba   *\n**********\n"
+  },
+  {
+    "input": "12 1\nLEFT 5\nbc\ncb\ncb\naabca\ncccbc\n",
+    "expectedOutput": "**************\n*bc cb cb    *\n*aabca cccbc *\n**************\n"
+  },
+  {
+    "input": "6 3\nLEFT 2\nbcab\nbabab\nRIGHT 2\ncacab\nbabbc\nLEFT 4\nb\nbb\nca\nc\n",
+    "expectedOutput": "********\n*bcab  *\n*babab *\n* cacab*\n* babbc*\n*b bb  *\n*ca c  *\n********\n"
+  },
+  {
+    "input": "9 4\nLEFT 4\nacccb\na\nb\nccc\nLEFT 5\nabc\nbbac\ncbcc\nc\nacaca\nRIGHT 5\ncccb\ncbc\ncab\nacc\nb\nRIGHT 3\nacc\nc\nc\n",
+    "expectedOutput": "***********\n*acccb a b*\n*ccc      *\n*abc bbac *\n*cbcc c   *\n*acaca    *\n* cccb cbc*\n*cab acc b*\n*  acc c c*\n***********\n"
+  },
+  {
+    "input": "7 4\nRIGHT 2\nbcc\ncccca\nLEFT 1\nbbbb\nRIGHT 5\ncbcba\nabaca\nabc\nb\nac\nRIGHT 1\nacbb\n",
+    "expectedOutput": "*********\n*    bcc*\n*  cccca*\n*bbbb   *\n*  cbcba*\n*  abaca*\n*  abc b*\n*     ac*\n*   acbb*\n*********\n"
+  },
+  {
+    "input": "10 2\nLEFT 2\ncba\nbacc\nRIGHT 4\nb\ncc\nb\nbbbc\n",
+    "expectedOutput": "************\n*cba bacc  *\n*    b cc b*\n*      bbbc*\n************\n"
+  },
+  {
+    "input": "8 4\nLEFT 3\nccaa\ncb\nbcabb\nLEFT 4\ncb\ncc\nbc\nccc\nRIGHT 2\ncbbba\naaaba\nRIGHT 3\ncc\nabaa\nbb\n",
+    "expectedOutput": "**********\n*ccaa cb *\n*bcabb   *\n*cb cc bc*\n*ccc     *\n*   cbbba*\n*   aaaba*\n* cc abaa*\n*      bb*\n**********\n"
+  },
+  {
+    "input": "6 3\nLEFT 2\naab\naca\nRIGHT 1\naabab\nLEFT 5\nbccbb\naa\nb\na\na\n",
+    "expectedOutput": "********\n*aab   *\n*aca   *\n* aabab*\n*bccbb *\n*aa b a*\n*a     *\n********\n"
+  },
+  {
+    "input": "10 2\nLEFT 3\nbca\ncc\naa\nLEFT 4\nb\nbc\naa\nbbb\n",
+    "expectedOutput": "************\n*bca cc aa *\n*b bc aa   *\n*bbb       *\n************\n"
+  },
+  {
+    "input": "8 4\nRIGHT 1\nbbac\nRIGHT 5\nbbb\nacac\nccca\ncbcba\na\nRIGHT 1\na\nLEFT 1\nba\n",
+    "expectedOutput": "**********\n*    bbac*\n*bbb acac*\n*    ccca*\n* cbcba a*\n*       a*\n*ba      *\n**********\n"
+  },
+  {
+    "input": "10 4\nLEFT 3\nb\nacab\ncaa\nRIGHT 1\na\nLEFT 1\ncbcbc\nRIGHT 1\ncbbc\n",
+    "expectedOutput": "************\n*b acab caa*\n*         a*\n*cbcbc     *\n*      cbbc*\n************\n"
+  },
+  {
+    "input": "10 3\nRIGHT 4\ncac\nc\ncac\ncabbb\nRIGHT 5\nacbb\nbac\nab\nb\nbbb\nLEFT 4\ncbbac\na\ncccb\nbbaac\n",
+    "expectedOutput": "************\n* cac c cac*\n*     cabbb*\n*  acbb bac*\n*  ab b bbb*\n*cbbac a   *\n*cccb bbaac*\n************\n"
+  },
+  {
+    "input": "12 1\nRIGHT 1\nac\n",
+    "expectedOutput": "**************\n*          ac*\n**************\n"
+  },
+  {
+    "input": "12 4\nLEFT 3\ncbcc\nb\ncccbc\nLEFT 5\ncba\ncab\nbaa\nac\na\nLEFT 1\nb\nLEFT 1\nc\n",
+    "expectedOutput": "**************\n*cbcc b cccbc*\n*cba cab baa *\n*ac a        *\n*b           *\n*c           *\n**************\n"
+  },
+  {
+    "input": "9 1\nLEFT 5\nba\nbcb\nc\ncbccb\na\n",
+    "expectedOutput": "***********\n*ba bcb c *\n*cbccb a  *\n***********\n"
+  },
+  {
+    "input": "8 3\nLEFT 4\nc\nc\nbcb\nbc\nRIGHT 2\ncaaac\nbacaa\nRIGHT 2\nab\nc\n",
+    "expectedOutput": "**********\n*c c bcb *\n*bc      *\n*   caaac*\n*   bacaa*\n*    ab c*\n**********\n"
+  },
+  {
+    "input": "5 4\nRIGHT 1\naacc\nLEFT 1\naa\nRIGHT 4\nc\ncab\nba\ncb\nLEFT 2\nbcca\naba\n",
+    "expectedOutput": "*******\n* aacc*\n*aa   *\n*c cab*\n*ba cb*\n*bcca *\n*aba  *\n*******\n"
+  },
+  {
+    "input": "7 4\nLEFT 2\nbacb\ncabc\nRIGHT 2\nbcacb\nc\nRIGHT 3\naa\nab\ncb\nLEFT 5\naba\nbbc\na\nbcca\nbc\n",
+    "expectedOutput": "*********\n*bacb   *\n*cabc   *\n*bcacb c*\n*  aa ab*\n*     cb*\n*aba bbc*\n*a bcca *\n*bc     *\n*********\n"
+  },
+  {
+    "input": "10 2\nLEFT 2\nb\ncc\nRIGHT 3\nacb\ncab\nb\n",
+    "expectedOutput": "************\n*b cc      *\n* acb cab b*\n************\n"
+  },
+  {
+    "input": "9 2\nLEFT 5\nbbbb\ncbb\nac\naa\ncbb\nLEFT 2\ncabb\nabcac\n",
+    "expectedOutput": "***********\n*bbbb cbb *\n*ac aa cbb*\n*cabb     *\n*abcac    *\n***********\n"
+  },
+  {
+    "input": "5 1\nRIGHT 4\nbb\nbcaac\ncca\ncabc\n",
+    "expectedOutput": "*******\n*   bb*\n*bcaac*\n*  cca*\n* cabc*\n*******\n"
+  },
+  {
+    "input": "12 4\nRIGHT 2\naacb\na\nLEFT 2\naab\nccbcb\nLEFT 3\ncca\na\nabc\nRIGHT 5\naccb\nbc\nb\nbb\naab\n",
+    "expectedOutput": "**************\n*      aacb a*\n*aab ccbcb   *\n*cca a abc   *\n*accb bc b bb*\n*         aab*\n**************\n"
+  },
+  {
+    "input": "9 2\nLEFT 3\nac\nbcb\nbbab\nLEFT 2\nab\ncc\n",
+    "expectedOutput": "***********\n*ac bcb   *\n*bbab     *\n*ab cc    *\n***********\n"
+  },
+  {
+    "input": "8 4\nLEFT 2\nba\nbbba\nLEFT 2\nabca\nabcca\nLEFT 2\ncacaa\naa\nLEFT 3\nbbcbc\nabc\nabbcb\n",
+    "expectedOutput": "**********\n*ba bbba *\n*abca    *\n*abcca   *\n*cacaa aa*\n*bbcbc   *\n*abc     *\n*abbcb   *\n**********\n"
+  },
+  {
+    "input": "8 2\nRIGHT 1\ncbba\nRIGHT 2\nca\ncba\n",
+    "expectedOutput": "**********\n*    cbba*\n*  ca cba*\n**********\n"
+  },
+  {
+    "input": "7 2\nRIGHT 3\nbaa\naa\nccb\nRIGHT 4\nc\naaa\nccab\nbacc\n",
+    "expectedOutput": "*********\n* baa aa*\n*    ccb*\n*  c aaa*\n*   ccab*\n*   bacc*\n*********\n"
+  },
+  {
+    "input": "9 4\nRIGHT 2\nbc\nc\nLEFT 2\naa\nbabac\nRIGHT 2\nb\nb\nLEFT 5\nacba\nbcbab\na\na\naa\n",
+    "expectedOutput": "***********\n*     bc c*\n*aa babac *\n*      b b*\n*acba     *\n*bcbab a a*\n*aa       *\n***********\n"
+  },
+  {
+    "input": "9 4\nRIGHT 5\naacb\nbcbc\nc\nba\naaaac\nRIGHT 2\na\nca\nLEFT 5\nc\na\ncbc\na\nabbab\nRIGHT 4\naaba\nbcba\na\naac\n",
+    "expectedOutput": "***********\n*aacb bcbc*\n*     c ba*\n*    aaaac*\n*     a ca*\n*c a cbc a*\n*abbab    *\n*aaba bcba*\n*    a aac*\n***********\n"
+  },
+  {
+    "input": "10 4\nLEFT 2\nbbcc\ncbcca\nLEFT 3\naccbc\na\nca\nLEFT 2\ncbc\nccab\nLEFT 4\naaba\nabcc\nac\na\n",
+    "expectedOutput": "************\n*bbcc cbcca*\n*accbc a ca*\n*cbc ccab  *\n*aaba abcc *\n*ac a      *\n************\n"
+  },
+  {
+    "input": "12 3\nRIGHT 1\nabbba\nRIGHT 5\nac\nb\naccbc\na\nbca\nLEFT 2\nbabc\nbacb\n",
+    "expectedOutput": "**************\n*       abbba*\n*ac b accbc a*\n*         bca*\n*babc bacb   *\n**************\n"
+  },
+  {
+    "input": "7 4\nRIGHT 1\naccb\nLEFT 1\nbbaa\nRIGHT 4\ncacc\ncc\nab\nbca\nRIGHT 4\naacac\nba\nab\ncb\n",
+    "expectedOutput": "*********\n*   accb*\n*bbaa   *\n*cacc cc*\n* ab bca*\n*  aacac*\n*  ba ab*\n*     cb*\n*********\n"
+  },
+  {
+    "input": "6 4\nLEFT 2\nbb\nbcaa\nLEFT 2\nab\nbaac\nLEFT 2\nca\nbc\nRIGHT 2\nabac\na\n",
+    "expectedOutput": "********\n*bb    *\n*bcaa  *\n*ab    *\n*baac  *\n*ca bc *\n*abac a*\n********\n"
+  },
+  {
+    "input": "5 2\nLEFT 5\nabac\ncbcc\ncabcb\naac\nb\nLEFT 3\na\nac\naacc\n",
+    "expectedOutput": "*******\n*abac *\n*cbcc *\n*cabcb*\n*aac b*\n*a ac *\n*aacc *\n*******\n"
+  },
+  {
+    "input": "9 2\nRIGHT 5\nab\nabba\nab\nac\nacca\nLEFT 5\naa\nabcb\nb\ncaba\naca\n",
+    "expectedOutput": "***********\n*  ab abba*\n*    ab ac*\n*     acca*\n*aa abcb b*\n*caba aca *\n***********\n"
+  },
+  {
+    "input": "8 2\nLEFT 2\nccaab\nbaa\nLEFT 2\nca\nccbcc\n",
+    "expectedOutput": "**********\n*ccaab   *\n*baa     *\n*ca ccbcc*\n**********\n"
+  },
+  {
+    "input": "11 4\nLEFT 1\nbcaa\nLEFT 4\nbcb\nc\nac\ncc\nLEFT 3\ncbaaa\ncc\na\nRIGHT 2\nbaab\ncaac\n",
+    "expectedOutput": "*************\n*bcaa       *\n*bcb c ac cc*\n*cbaaa cc a *\n*  baab caac*\n*************\n"
+  },
+  {
+    "input": "9 2\nLEFT 2\nba\nc\nLEFT 1\nbbba\n",
+    "expectedOutput": "***********\n*ba c     *\n*bbba     *\n***********\n"
+  },
+  {
+    "input": "8 3\nRIGHT 2\nbab\nbcaa\nRIGHT 1\nb\nRIGHT 3\nbb\nca\naacac\n",
+    "expectedOutput": "**********\n*bab bcaa*\n*       b*\n*   bb ca*\n*   aacac*\n**********\n"
+  },
+  {
+    "input": "8 2\nRIGHT 1\na\nLEFT 5\nb\ncbbca\nab\nccca\nacabc\n",
+    "expectedOutput": "**********\n*       a*\n*b cbbca *\n*ab ccca *\n*acabc   *\n**********\n"
+  },
+  {
+    "input": "5 4\nRIGHT 4\nccb\nbaccc\naa\nbbb\nLEFT 1\naac\nRIGHT 5\nbbac\nbbbb\ncb\nca\nbb\nLEFT 4\nc\ncaabb\naaa\nbc\n",
+    "expectedOutput": "*******\n*  ccb*\n*baccc*\n*   aa*\n*  bbb*\n*aac  *\n* bbac*\n* bbbb*\n*cb ca*\n*   bb*\n*c    *\n*caabb*\n*aaa  *\n*bc   *\n*******\n"
+  },
+  {
+    "input": "12 1\nRIGHT 5\ncabc\ncbba\nb\nc\nc\n",
+    "expectedOutput": "**************\n* cabc cbba b*\n*         c c*\n**************\n"
+  },
+  {
+    "input": "7 4\nRIGHT 4\naaab\ncc\nab\nbbc\nLEFT 2\ncbb\nbcc\nRIGHT 2\na\ncbba\nLEFT 2\nb\ncbbc\n",
+    "expectedOutput": "*********\n*aaab cc*\n* ab bbc*\n*cbb bcc*\n* a cbba*\n*b cbbc *\n*********\n"
+  },
+  {
+    "input": "5 2\nLEFT 3\ncbbc\nab\naa\nLEFT 2\nbabca\nb\n",
+    "expectedOutput": "*******\n*cbbc *\n*ab aa*\n*babca*\n*b    *\n*******\n"
+  },
+  {
+    "input": "11 4\nLEFT 2\nc\nbcbba\nLEFT 4\nbbcba\ncbbb\nc\nbbb\nRIGHT 2\nbb\ncbc\nLEFT 5\ncbc\na\nc\naaa\nbcac\n",
+    "expectedOutput": "*************\n*c bcbba    *\n*bbcba cbbb *\n*c bbb      *\n*     bb cbc*\n*cbc a c aaa*\n*bcac       *\n*************\n"
+  },
+  {
+    "input": "8 2\nLEFT 2\nc\nbccc\nRIGHT 1\ncbbca\n",
+    "expectedOutput": "**********\n*c bccc  *\n*   cbbca*\n**********\n"
+  },
+  {
+    "input": "10 3\nRIGHT 3\naaac\nbb\nccccc\nLEFT 3\nb\nb\nacb\nRIGHT 4\nacc\nbcbb\nac\nbaacc\n",
+    "expectedOutput": "************\n*   aaac bb*\n*     ccccc*\n*b b acb   *\n*  acc bcbb*\n*  ac baacc*\n************\n"
+  },
+  {
+    "input": "7 2\nLEFT 4\nacbb\nacbab\ncacac\ncc\nLEFT 2\nbbc\nbc\n",
+    "expectedOutput": "*********\n*acbb   *\n*acbab  *\n*cacac  *\n*cc     *\n*bbc bc *\n*********\n"
+  },
+  {
+    "input": "8 1\nRIGHT 2\nc\nbcc\n",
+    "expectedOutput": "**********\n*   c bcc*\n**********\n"
+  },
+  {
+    "input": "7 4\nLEFT 2\nb\nccaab\nRIGHT 1\nccb\nLEFT 4\nbbcbb\nbb\nc\ncbac\nLEFT 3\nc\nb\nab\n",
+    "expectedOutput": "*********\n*b ccaab*\n*    ccb*\n*bbcbb  *\n*bb c   *\n*cbac   *\n*c b ab *\n*********\n"
+  },
+  {
+    "input": "8 3\nRIGHT 3\naaa\nbcaa\nabab\nRIGHT 5\nb\nab\ncbca\ncbc\nccbbb\nRIGHT 4\nc\ncbc\naa\nacbaa\n",
+    "expectedOutput": "**********\n*aaa bcaa*\n*    abab*\n*    b ab*\n*cbca cbc*\n*   ccbbb*\n*c cbc aa*\n*   acbaa*\n**********\n"
+  },
+  {
+    "input": "6 1\nRIGHT 5\naaca\naba\na\naa\nbcb\n",
+    "expectedOutput": "********\n*  aaca*\n* aba a*\n*aa bcb*\n********\n"
+  },
+  {
+    "input": "10 4\nRIGHT 3\nbcab\nbbbcc\ncaaca\nRIGHT 2\na\na\nLEFT 4\nc\ncaabb\nab\nccbca\nRIGHT 4\ncc\nca\nbaaa\nbcbac\n",
+    "expectedOutput": "************\n*bcab bbbcc*\n*     caaca*\n*       a a*\n*c caabb ab*\n*ccbca     *\n*cc ca baaa*\n*     bcbac*\n************\n"
+  },
+  {
+    "input": "9 4\nLEFT 5\nb\nb\naaba\nabaab\ncca\nLEFT 4\nacca\ncb\nccbb\ncbbcc\nLEFT 4\ncbcaa\nb\ncacb\nccb\nLEFT 1\nccb\n",
+    "expectedOutput": "***********\n*b b aaba *\n*abaab cca*\n*acca cb  *\n*ccbb     *\n*cbbcc    *\n*cbcaa b  *\n*cacb ccb *\n*ccb      *\n***********\n"
+  },
+  {
+    "input": "8 3\nLEFT 3\na\nacba\nbaba\nLEFT 1\ncc\nRIGHT 1\ncbca\n",
+    "expectedOutput": "**********\n*a acba  *\n*baba    *\n*cc      *\n*    cbca*\n**********\n"
+  },
+  {
+    "input": "6 2\nRIGHT 2\nca\na\nLEFT 1\naca\n",
+    "expectedOutput": "********\n*  ca a*\n*aca   *\n********\n"
+  },
+  {
+    "input": "6 1\nLEFT 4\naaaca\nbccaa\nbc\ncaa\n",
+    "expectedOutput": "********\n*aaaca *\n*bccaa *\n*bc caa*\n********\n"
+  },
+  {
+    "input": "5 3\nLEFT 4\ncb\nc\nb\naabc\nLEFT 5\nacca\nbb\nbcccc\nab\nbaa\nRIGHT 2\naaab\na\n",
+    "expectedOutput": "*******\n*cb c *\n*b    *\n*aabc *\n*acca *\n*bb   *\n*bcccc*\n*ab   *\n*baa  *\n* aaab*\n*    a*\n*******\n"
+  },
+  {
+    "input": "10 2\nRIGHT 1\nba\nRIGHT 4\nbacbc\ncccbb\nbcc\nc\n",
+    "expectedOutput": "************\n*        ba*\n*     bacbc*\n* cccbb bcc*\n*         c*\n************\n"
+  },
+  {
+    "input": "5 3\nLEFT 1\nabccb\nRIGHT 2\ncc\nb\nRIGHT 3\nbbba\nbcaa\nbb\n",
+    "expectedOutput": "*******\n*abccb*\n* cc b*\n* bbba*\n* bcaa*\n*   bb*\n*******\n"
+  },
+  {
+    "input": "10 3\nRIGHT 4\nacbaa\nbcc\na\nc\nRIGHT 4\nbbb\nacb\ncb\nbbc\nRIGHT 5\ncb\nbb\naa\ncccb\nbca\n",
+    "expectedOutput": "************\n* acbaa bcc*\n*       a c*\n*bbb acb cb*\n*       bbc*\n*  cb bb aa*\n*  cccb bca*\n************\n"
+  },
+  {
+    "input": "7 2\nRIGHT 2\nccbb\nbb\nRIGHT 2\na\ncbbcb\n",
+    "expectedOutput": "*********\n*ccbb bb*\n*a cbbcb*\n*********\n"
+  },
+  {
+    "input": "12 3\nLEFT 2\nbaccb\nca\nLEFT 3\nba\nacabb\na\nRIGHT 1\ncbc\n",
+    "expectedOutput": "**************\n*baccb ca    *\n*ba acabb a  *\n*         cbc*\n**************\n"
+  },
+  {
+    "input": "5 4\nLEFT 3\naa\nbac\naaaba\nLEFT 2\nabcba\nca\nLEFT 1\nb\nRIGHT 5\nbc\naa\nbabcc\naacb\nbabab\n",
+    "expectedOutput": "*******\n*aa   *\n*bac  *\n*aaaba*\n*abcba*\n*ca   *\n*b    *\n*bc aa*\n*babcc*\n* aacb*\n*babab*\n*******\n"
+  },
+  {
+    "input": "7 3\nLEFT 4\ncacc\nabaa\nbbcb\naacba\nRIGHT 1\nabcb\nRIGHT 1\nccba\n",
+    "expectedOutput": "*********\n*cacc   *\n*abaa   *\n*bbcb   *\n*aacba  *\n*   abcb*\n*   ccba*\n*********\n"
+  },
+  {
+    "input": "11 3\nRIGHT 5\naaaa\ncbcc\naa\naaa\nacca\nLEFT 4\nccaba\nc\ncab\nbb\nRIGHT 3\nbcb\nbb\nbcac\n",
+    "expectedOutput": "*************\n*  aaaa cbcc*\n*aa aaa acca*\n*ccaba c cab*\n*bb         *\n*bcb bb bcac*\n*************\n"
+  },
+  {
+    "input": "6 3\nLEFT 4\nac\ncb\nabbc\nbcac\nLEFT 3\nc\nbba\nccc\nLEFT 4\na\nbcca\nababb\na\n",
+    "expectedOutput": "********\n*ac cb *\n*abbc  *\n*bcac  *\n*c bba *\n*ccc   *\n*a bcca*\n*ababb *\n*a     *\n********\n"
+  },
+  {
+    "input": "11 4\nLEFT 4\nca\naccaa\ncaaa\na\nLEFT 2\nacaa\nacabc\nRIGHT 5\ncbaab\nb\nccbbc\naa\nc\nLEFT 5\nca\nc\ncbb\nab\nabbcc\n",
+    "expectedOutput": "*************\n*ca accaa   *\n*caaa a     *\n*acaa acabc *\n*    cbaab b*\n* ccbbc aa c*\n*ca c cbb ab*\n*abbcc      *\n*************\n"
+  },
+  {
+    "input": "9 4\nLEFT 3\nccc\nba\nccaca\nRIGHT 4\na\ncabbb\naccab\nbc\nLEFT 4\ncccaa\nabcaa\nba\ncc\nLEFT 1\nc\n",
+    "expectedOutput": "***********\n*ccc ba   *\n*ccaca    *\n*  a cabbb*\n* accab bc*\n*cccaa    *\n*abcaa ba *\n*cc       *\n*c        *\n***********\n"
+  },
+  {
+    "input": "12 4\nLEFT 2\nbaa\ncbcc\nRIGHT 4\ncca\nbb\naa\ncbbb\nRIGHT 3\ncacc\ncb\ncb\nLEFT 1\nca\n",
+    "expectedOutput": "**************\n*baa cbcc    *\n*   cca bb aa*\n*        cbbb*\n*  cacc cb cb*\n*ca          *\n**************\n"
+  },
+  {
+    "input": "6 4\nRIGHT 3\nbabba\nabb\nccac\nLEFT 4\na\nb\ncb\nc\nLEFT 5\nbcaba\nab\na\nba\nb\nLEFT 2\nbbab\naca\n",
+    "expectedOutput": "********\n* babba*\n*   abb*\n*  ccac*\n*a b cb*\n*c     *\n*bcaba *\n*ab a  *\n*ba b  *\n*bbab  *\n*aca   *\n********\n"
+  },
+  {
+    "input": "8 4\nLEFT 5\nccb\ncba\ncc\nbacab\nacca\nLEFT 4\ncba\na\nbb\nbcbba\nLEFT 1\nacaba\nRIGHT 2\nab\nabcc\n",
+    "expectedOutput": "**********\n*ccb cba *\n*cc bacab*\n*acca    *\n*cba a bb*\n*bcbba   *\n*acaba   *\n* ab abcc*\n**********\n"
+  },
+  {
+    "input": "12 3\nRIGHT 2\ncbbbc\ncbaba\nRIGHT 4\nc\na\ncc\nc\nLEFT 4\nb\nbaaa\nacb\naab\n",
+    "expectedOutput": "**************\n* cbbbc cbaba*\n*    c a cc c*\n*b baaa acb  *\n*aab         *\n**************\n"
+  },
+  {
+    "input": "7 4\nRIGHT 3\nbcb\nb\nc\nLEFT 5\nacbc\na\nc\nb\nbcab\nLEFT 5\nb\naa\ncbbb\naabaa\ncbba\nLEFT 4\nbccbc\nb\nac\naa\n",
+    "expectedOutput": "*********\n*bcb b c*\n*acbc a *\n*c b    *\n*bcab   *\n*b aa   *\n*cbbb   *\n*aabaa  *\n*cbba   *\n*bccbc b*\n*ac aa  *\n*********\n"
+  },
+  {
+    "input": "9 4\nRIGHT 1\nbca\nLEFT 1\nba\nRIGHT 3\nbc\nac\naac\nRIGHT 5\nbbccb\nab\ncccac\ncabaa\naac\n",
+    "expectedOutput": "***********\n*      bca*\n*ba       *\n*bc ac aac*\n* bbccb ab*\n*    cccac*\n*cabaa aac*\n***********\n"
+  },
+  {
+    "input": "5 4\nRIGHT 5\naa\nbac\ncbaca\nc\nb\nLEFT 1\ncaa\nLEFT 4\nabb\nca\nb\naa\nRIGHT 1\nbbcb\n",
+    "expectedOutput": "*******\n*   aa*\n*  bac*\n*cbaca*\n*  c b*\n*caa  *\n*abb  *\n*ca b *\n*aa   *\n* bbcb*\n*******\n"
+  },
+  {
+    "input": "5 2\nRIGHT 5\nccbcb\nccbbc\nbcb\ncbb\ncc\nLEFT 5\nbba\ncab\nc\nbaab\nbcaca\n",
+    "expectedOutput": "*******\n*ccbcb*\n*ccbbc*\n*  bcb*\n*  cbb*\n*   cc*\n*bba  *\n*cab c*\n*baab *\n*bcaca*\n*******\n"
+  }
+]

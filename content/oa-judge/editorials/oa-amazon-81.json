@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-81",
+  "title": "主机不小于备机的最大内存",
+  "explanation": "## 思路\n\n排序后选最大的n/2台为主机，其余为备机。\n\n## 正确性证明\n\n任何选择都只有n/2台主机，其和不超过最大的一半。较小一半中的每个值都≤较大一半中的每个值，因此任意一一匹配均满足备机≤主机，达到上界。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));return str(sum(a[len(a)//2:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#81-maximum-system-memory-capacity-primary-backup-pairing",
+  "sourceContentHash": "f5fabfaa03749586e1859aa113890b71e73a54697087be5cc96ba3e08a29bd8a",
+  "author": "CSWork"
+}

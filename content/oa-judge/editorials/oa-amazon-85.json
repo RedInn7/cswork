@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-85",
+  "title": "有限自增次数下最大的子集按位与",
+  "explanation": "## 思路\n\n从高位到低位尝试答案掩码。计算每个数至少加多少能包含掩码所有1位，取最小m个成本之和≤k即可保留该位。\n\n## 正确性证明\n\n若x缺少的最高要求位是b，最小可行y保留b以上前缀，将b置1，再只保留低位掩码要求，低位其余清零。更小y必不满足该位或更高前缀。各项成本独立，选m个最小成本判断是否可行；从高位贪心保证按整数大小字典序最优。\n\n## 复杂度\n\n时间O(31n log n)，空间O(n)；额外处理不超过31位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k,m=map(int,d[:3]);a=list(map(int,d[3:]));answer=0\n    for b in range(30,-1,-1):\n        mask=answer|(1<<b);costs=[]\n        for x in a:\n            missing=mask&~x\n            if not missing:costs.append(0);continue\n            bit=missing.bit_length()-1\n            y=((x>>(bit+1))<<(bit+1))|(1<<bit)|(mask&((1<<bit)-1))\n            costs.append(y-x)\n        costs.sort()\n        if sum(costs[:m])<=k:answer=mask\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#85-get-max-rating-bitwise-and-subset",
+  "sourceContentHash": "2c1623ae7bd8cd388d44a45a612c161fca0c16e52cdfb1633f00755a944d7ab5",
+  "author": "CSWork"
+}

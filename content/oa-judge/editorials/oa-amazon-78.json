@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-78",
+  "title": "同等级且组大小接近的最少分组",
+  "explanation": "## 思路\n\n枚举较小组大小b，从最小等级频次递减。对频次f，用ceil(f/(b+1))组；仅当这些组各至少b项可行。第一个全可行b给出最少总组数。\n\n## 正确性证明\n\n固定b时组数至少ceil(f/(b+1))。若f≥该组数×b，把剩余项每组补1就能组成b或b+1大小；若不足，增加组数只会提高最低需求。b越大各频次所需最少组数不增加，故递减时第一个可行值最优。\n\n## 复杂度\n\n时间O(n)：不同等级数×最小频次≤n；空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    frequencies=list(Counter(map(int,d[1:])).values())\n    for b in range(min(frequencies),0,-1):\n        answer=0\n        for f in frequencies:\n            count=(f+b)//(b+1)\n            if count*b>f:break\n            answer+=count\n        else:return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#78-find-minimum-groups-security-grade-grouping",
+  "sourceContentHash": "20809bd89f4e4792eb9b0f91db100b5da13d04b3afe6abdc59a630e1493f492a",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "高度差多算1",
+    "code": "from collections import deque\ndef solve(d):\n    n,gap=map(int,d[:2]);a=list(map(int,d[2:]));ranked=sorted((v,i) for i,v in enumerate(a));minimum=deque();maximum=deque();left=0;answer=10**30\n    for right,(_,index) in enumerate(ranked):\n        while minimum and ranked[minimum[-1]][1]>=index:minimum.pop()\n        while maximum and ranked[maximum[-1]][1]<=index:maximum.pop()\n        minimum.append(right);maximum.append(right)\n        while ranked[maximum[0]][1]-ranked[minimum[0]][1]>=gap:\n            answer=min(answer,ranked[right][0]-ranked[left][0]+1)\n            if minimum[0]==left:minimum.popleft()\n            if maximum[0]==left:maximum.popleft()\n            left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略要求的距离",
+    "code": "from collections import deque\ndef solve(d):\n    n,gap=map(int,d[:2]);gap=1;a=list(map(int,d[2:]));ranked=sorted((v,i) for i,v in enumerate(a));minimum=deque();maximum=deque();left=0;answer=10**30\n    for right,(_,index) in enumerate(ranked):\n        while minimum and ranked[minimum[-1]][1]>=index:minimum.pop()\n        while maximum and ranked[maximum[-1]][1]<=index:maximum.pop()\n        minimum.append(right);maximum.append(right)\n        while ranked[maximum[0]][1]-ranked[minimum[0]][1]>=gap:\n            answer=min(answer,ranked[right][0]-ranked[left][0])\n            if minimum[0]==left:minimum.popleft()\n            if maximum[0]==left:maximum.popleft()\n            left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-40",
+  "title": "清空连续R个货架后最多保留几类",
+  "explanation": "## 思路\n\n先把首个删除窗口从全局频次中扣掉，再滑动窗口：旧左端恢复、新右端删除，维护剩余正频次种数。\n\n## 正确性证明\n\n维护频次始终恰为窗口之外每类数量，进出窗口时只需判断频次是否跨过0即可更新种数。枚举所有连续删除窗口并取最大覆盖所有合法方案。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n,r=map(int,d[:2]);a=list(map(int,d[2:]));counts=Counter(a[r:]);distinct=len(counts);answer=distinct\n    for right in range(r,n):\n        left=right-r\n        if counts[a[left]]==0:distinct+=1\n        counts[a[left]]+=1;counts[a[right]]-=1\n        if counts[a[right]]==0:distinct-=1\n        answer=max(answer,distinct)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#40-maximize-types-after-freeing-shelves",
+  "sourceContentHash": "1f1c9cc139a789bbd3f69e71522dc42a167811801a8ae45b90e9e334ff6e6f75",
+  "author": "CSWork"
+}

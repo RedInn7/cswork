@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-87",
+  "title": "闭区间请求窗口中的失活技能数",
+  "explanation": "## 思路\n\n日志按时间排序，查询也排序并保留原下标。双指针加入时间≤q的日志，移除时间<q−window的日志，用每种技能的频次维护活跃数。\n\n## 正确性证明\n\n排序后查询窗口两端单调向右，每条日志恰加入、移出至多一次。频次正好对应当前闭区间中该技能的请求数，非零频次数量就是活跃技能数，技能总数减去它即答案。\n\n## 复杂度\n\n时间O(m log m+q log q)，空间O(numSkills+m+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,q,w=map(int,d[:4]);logs=sorted((int(d[5+2*i]),int(d[4+2*i])) for i in range(m));queries=sorted((int(v),i) for i,v in enumerate(d[4+2*m:]));counts=[0]*(n+1);left=right=active=0;answer=[0]*q\n    for t,index in queries:\n        while right<m and logs[right][0]<=t:\n            skill=logs[right][1];active+=counts[skill]==0;counts[skill]+=1;right+=1\n        while left<right and logs[left][0]<t-w:\n            skill=logs[left][1];counts[skill]-=1;active-=counts[skill]==0;left+=1\n        answer[index]=n-active\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#87-get-stale-skill-count",
+  "sourceContentHash": "e229165b8c043a75c643e53b2f988d25ac168fd4bb7d6b68f539648a040c95ec",
+  "author": "CSWork"
+}

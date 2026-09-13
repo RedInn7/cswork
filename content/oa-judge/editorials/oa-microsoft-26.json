@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-26",
+  "title": "删除一个字符后的字典序最小串",
+  "explanation": "## 思路\n\n删除第一个严格大于后一个字符的位置；如果不存在下降，删除末位。\n\n## 正确性证明\n\n首个下降之前的字符非降，删除更早位置不会优于保留较小的当前字符；在首个下降处删除使第一个不同位置变小。没有下降时保留最长前缀并删末位最优。\n\n## 复杂度\n\n时间O(N)，输出空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];cut=len(s)-1\n    for i in range(len(s)-1):\n        if s[i]>s[i+1]:cut=i;break\n    return s[:cut]+s[cut+1:]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#26-get-alphabetically-smallest-string",
+  "sourceContentHash": "9d1e125397704c11f8bb6aae7d679404462530f4ce71aa9701d3b47612fc7ab4",
+  "author": "CSWork"
+}

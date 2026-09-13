@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-21",
+  "title": "所有子数组不同值数量的中位数",
+  "explanation": "## 思路\n\n二分答案k，用滑动窗口统计不同值至多k的子数组数量，判断是否达到下中位数排名。\n\n## 正确性证明\n\n不同值至多k的窗口可用单调左端维护，每个右端贡献窗口长度。计数随k不减；第一个计数达到目标排名的k恰为所求顺序统计量。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);rank=(n*(n+1)//2+1)//2;lo=1;hi=len(set(a))\n    while lo<hi:\n        k=(lo+hi)//2;counts={};left=total=0\n        for right,value in enumerate(a):\n            counts[value]=counts.get(value,0)+1\n            while len(counts)>k:\n                old=a[left];counts[old]-=1;left+=1\n                if counts[old]==0:del counts[old]\n            total+=right-left+1\n        if total>=rank:hi=k\n        else:lo=k+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#21-find-array-uniqueness-median",
+  "sourceContentHash": "96fa14011ce89377a122f0298e4347b728061d738ebcb05c306b33f23530654b",
+  "author": "CSWork"
+}

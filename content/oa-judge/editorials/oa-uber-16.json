@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-16",
+  "title": "到祖先路径能重排成回文的数量",
+  "explanation": "## 思路\n\nDFS维护根路径字母的异或掩码，以及当前路径各祖先的父节点前缀掩码频次。当前前缀与候选掩码异或为0或某个单比特时计数，共查27种；回溯时移除当前掩码。\n\n## 正确性\n\nq到v的字符奇偶掩码恰等于根到q前缀异或根到parent(v)前缀。频次表仅含当前祖先链上的这些父前缀，查0与26种单比特差异准确枚举所有回文重排路径。回溯删除保证不会混入兄弟子树。\n\n## 复杂度\n\n时间O(26n+m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);letters=d[2];g=[[] for _ in range(n)];offset=3\n    for _ in range(n-1):\n        a,b=map(int,d[offset:offset+2]);offset+=2;g[a].append(b);g[b].append(a)\n    answers=[0]*n;counts={0:1};stack=[(0,-1,0,False)]\n    while stack:\n        node,parent,mask,exit=stack.pop()\n        if exit:\n            counts[mask]-=1\n            if counts[mask]==0:del counts[mask]\n            continue\n        mask^=1<<(ord(letters[node])-97);answers[node]=counts.get(mask,0)+sum(counts.get(mask^(1<<bit),0) for bit in range(26));counts[mask]=counts.get(mask,0)+1;stack.append((node,parent,mask,True))\n        for child in g[node]:\n            if child!=parent:stack.append((child,node,mask,False))\n    return ' '.join(str(answers[int(q)]) for q in d[offset:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#16-disk-storage--palindromepaths-on-rooted-tree",
+  "sourceContentHash": "6c25a51d936172a381317d09c692990a29c5f8a7a598f604bf9782896311bebc",
+  "author": "CSWork"
+}

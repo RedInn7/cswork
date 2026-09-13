@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-95",
+  "title": "字典序大于系统密码的子序列数量",
+  "explanation": "## 思路\n\ndp[j]记录恰好等于system前j字符的子序列数，greater记录已经大于的数量。每个新字符让greater倍增；等前缀后接更大字符或完整system后接任意字符也变为greater；等前缀DP倒序更新。\n\n## 正确性证明\n\n每个子序列唯一分为使用或不使用当前字符。已经更大则任意追加仍更大；首次不同必须由相等前缀接更大字符产生，完整system后继续追加也更大。倒序保证当前字符只用一次，分类互斥且覆盖所有符合子序列。\n\n## 复杂度\n\n时间O(|customer|·|system|)，空间O(|system|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    c,s=d;m=len(s);mod=1000000007;dp=[1]+[0]*m;greater=0\n    for ch in c:\n        greater=(greater*2+dp[m])%mod\n        for j in range(m-1,-1,-1):\n            if ch>s[j]:greater=(greater+dp[j])%mod\n            elif ch==s[j]:dp[j+1]=(dp[j+1]+dp[j])%mod\n    return str(greater)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#95-countsecurepasswordvariations",
+  "sourceContentHash": "8e11d997ad4702dcbe2501e347cee9ffaf665bbc302c6803e7fe8de7037c0234",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许跳过全部课程",
+    "code": "def solve(d):\n    from itertools import islice\n    n,m,k=map(int,d[:3]);dp=[0]+[10**9]*k\n    for row in islice(d,3,None):\n        pos=[i for i,c in enumerate(row) if c=='1'];count=len(pos);cost=[]\n        for skip in range(min(k,count)+1):\n            keep=count-skip;cost.append(1 if keep==0 else min(pos[i+keep-1]-pos[i]+1 for i in range(skip+1)))\n        new=[10**9]*(k+1)\n        for used in range(k+1):\n            for skip,value in enumerate(cost[:k-used+1]):new[used+skip]=min(new[used+skip],dp[used]+value)\n        dp=new\n    return str(min(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "覆盖宽度漏加1",
+    "code": "def solve(d):\n    from itertools import islice\n    n,m,k=map(int,d[:3]);dp=[0]+[10**9]*k\n    for row in islice(d,3,None):\n        pos=[i for i,c in enumerate(row) if c=='1'];count=len(pos);cost=[]\n        for skip in range(min(k,count)+1):\n            keep=count-skip;cost.append(0 if keep==0 else min(pos[i+keep-1]-pos[i] for i in range(skip+1)))\n        new=[10**9]*(k+1)\n        for used in range(k+1):\n            for skip,value in enumerate(cost[:k-used+1]):new[used+skip]=min(new[used+skip],dp[used]+value)\n        dp=new\n    return str(min(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

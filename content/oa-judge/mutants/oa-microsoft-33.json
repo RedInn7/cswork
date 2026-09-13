@@ -1,0 +1,10 @@
+[
+  {
+    "name": "共享边只减1",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for i in range(n):\n        for j in range(m):\n            if a[i*m+j]:\n                answer+=4\n                if i and a[(i-1)*m+j]:answer-=1\n                if j and a[i*m+j-1]:answer-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏横向共享边",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for i in range(n):\n        for j in range(m):\n            if a[i*m+j]:\n                answer+=4\n                if i and a[(i-1)*m+j]:answer-=2\n                if False:answer-=2\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
