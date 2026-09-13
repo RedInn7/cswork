@@ -112,7 +112,7 @@ export async function probeLargeInputs({
           codingMode: 'acm',
           mode: 'judge',
           idempotencyKey: randomUUID(),
-          code: 'import sys,time\ndata=sys.stdin.buffer.read()\nstart=time.time_ns()\ntime.sleep(0.1)\nprint(len(data))\nprint("CAPACITY",start,time.time_ns(),file=sys.stderr)\n',
+          code: 'import sys,time\ndata=sys.stdin.buffer.read()\nstart=time.time_ns()\ntime.sleep(0.3)\nprint(len(data))\nprint("CAPACITY",start,time.time_ns(),file=sys.stderr)\n',
         });
         return { ...result, user, large };
       }),
@@ -147,6 +147,9 @@ export async function probeLargeInputs({
       });
       intervals.push({
         large: item.large,
+        times,
+        startedAt: terminal.started_at,
+        finishedAt: terminal.finished_at,
         start: times[0][0],
         end: times.at(-1)[1],
       });
@@ -155,12 +158,33 @@ export async function probeLargeInputs({
       for (let j = i + 1; j < intervals.length; j++) {
         const a = intervals[i],
           b = intervals[j];
-        if (a.large || b.large)
+        if (a.large || b.large) {
           assert(
             a.end <= b.start || b.end <= a.start,
             'Large input must retain exclusive execution',
           );
+          assert(
+            a.finishedAt <= b.startedAt || b.finishedAt <= a.startedAt,
+            'Large input worker lifetimes must remain exclusive',
+          );
+        }
       }
+    const normal = intervals.filter((v) => !v.large);
+    assert(
+      normal.some((a, i) =>
+        normal
+          .slice(i + 1)
+          .some((b) =>
+            a.times.some(([start, end]) =>
+              b.times.some(
+                ([otherStart, otherEnd]) =>
+                  start < otherEnd && otherStart < end,
+              ),
+            ),
+          ),
+      ),
+      'Ordinary test cases must still execute concurrently',
+    );
     sample();
     assert(
       peaks.web < 4 * 1024 * 1024 && peaks.worker < 4 * 1024 * 1024,

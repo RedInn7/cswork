@@ -52,6 +52,9 @@ jobs:
       - run: node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs
       - run: node --import tsx --test tests/oa-verified-statement.test.ts tests/oa-output-checker.test.ts
       - run: node --import tsx --test tests/oa-semantic-checkers.test.ts
+      - run: node --test tests/oa-uber-semantic-checkers.test.mjs tests/oa-bounded-file.test.mjs
+      - run: node --import tsx --test --test-concurrency=1 tests/oj-input-capacity.test.ts tests/oj-import-budget.test.ts
+      - run: node --check tests/oj-large-input-probe.mjs
       - run: node scripts/oa-judge/coverage.mjs --check
       - run: node --test tests/oa-coverage.test.mjs
       - run: node --test tests/oa-authoring-utf8.test.mjs
