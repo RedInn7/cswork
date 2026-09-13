@@ -1,0 +1,10 @@
+[
+  {
+    "name": "覆盖次数丢失",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    n,m,q=map(int,d[:3]); a=list(map(int,d[3:3+n])); diff=[0]*(n+1); pos=3+n\n    for _ in range(m):\n        l,r=map(int,d[pos:pos+2]); pos+=2; diff[l]+=1; diff[r+1]-=1\n    pairs=[]; count=0\n    for i,v in enumerate(a):\n        count+=diff[i]; pairs.append((v,min(count,1)))\n    pairs.sort(); values=[v for v,c in pairs]; prefix=[0]\n    for v,c in pairs: prefix.append(prefix[-1]+c)\n    return ' '.join(str(prefix[bisect_left(values,int(t))]) for t in d[pos:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误计相等值",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,m,q=map(int,d[:3]); a=list(map(int,d[3:3+n])); diff=[0]*(n+1); pos=3+n\n    for _ in range(m):\n        l,r=map(int,d[pos:pos+2]); pos+=2; diff[l]+=1; diff[r+1]-=1\n    pairs=[]; count=0\n    for i,v in enumerate(a):\n        count+=diff[i]; pairs.append((v,count))\n    pairs.sort(); values=[v for v,c in pairs]; prefix=[0]\n    for v,c in pairs: prefix.append(prefix[-1]+c)\n    return ' '.join(str(prefix[bisect_right(values,int(t))]) for t in d[pos:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

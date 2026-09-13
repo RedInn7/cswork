@@ -1,0 +1,10 @@
+[
+  {
+    "name": "收藏排序破坏给定顺序",
+    "code": "def solve(data):\n    n,m,q=map(int,data[:3]);images=data[3:3+n];favs=sorted(data[3+n:]);marked=set(favs);first=0;second=0;answer=[]\n    for _ in range(q):\n        if first<m:answer.append(favs[first]);first+=1\n        else:\n            while second<n and images[second] in marked:second+=1\n            if second<n:answer.append(images[second]);second+=1\n            else:answer.append('NULL')\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "非收藏阶段重复输出收藏",
+    "code": "def solve(data):\n    n,m,q=map(int,data[:3]);images=data[3:3+n];favs=data[3+n:];marked=set(favs);first=0;second=0;answer=[]\n    for _ in range(q):\n        if first<m:answer.append(favs[first]);first+=1\n        else:\n            while second<n and False:second+=1\n            if second<n:answer.append(images[second]);second+=1\n            else:answer.append('NULL')\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

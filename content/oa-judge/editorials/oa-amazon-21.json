@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-21",
+  "title": "等步长排列匹配",
+  "explanation": "## 思路\n\n按下标模p分链，在每条链上维护长度m的滑动窗口及字符频次，与目标频次比较。\n\n## 正确性证明\n\n每个合法起点恰好对应一条余数链的一个完整窗口，频次相等当且仅当字符可排列成目标串。每个窗口统计一次，所以答案不重不漏。\n\n## 复杂度\n\n时间 O(26n)，空间 O(n+26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,t=d[:2]; p=int(d[2]); m=len(t); target=[0]*26; answer=0\n    for c in t: target[ord(c)-97]+=1\n    for r in range(min(p,len(s))):\n        chain=s[r::p]; count=[0]*26\n        for i,c in enumerate(chain):\n            count[ord(c)-97]+=1\n            if i>=m: count[ord(chain[i-m])-97]-=1\n            if i>=m-1 and count==target: answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#21-find-score-p-matching",
+  "sourceContentHash": "f313ed2c107695985c5ba72568fba6defa550bd00f86a1f44d653aef054d7b46",
+  "author": "CSWork"
+}

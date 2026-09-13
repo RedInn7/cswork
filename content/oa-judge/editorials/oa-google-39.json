@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-39",
+  "title": "最长优先的字典分词",
+  "explanation": "## 思路\n\n构建 Trie，每个终止节点只记录第一次标识。从当前位置向下查找，保存最后遇到的终止节点；最长匹配存在则输出并跳过它，否则输出原字符。\n\n## 正确性\n\nTrie 上沿文本的唯一路径完整枚举所有匹配词条，最深终止节点对应最长词条。只初始化空终止标记保留首次映射。每步选择符合题意的唯一输出并正确前进，归纳得到完整贪心分词。\n\n## 复杂度\n\n时间 O(字典总长度+文本长度×最长词长)，空间 O(字典总长度+输出大小)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    text=data[0];children=[{}];terminal=[None]\n    for j in range(2,len(data),2):\n        word,identifier=data[j:j+2];node=0\n        for char in word:\n            if char not in children[node]:children[node][char]=len(children);children.append({});terminal.append(None)\n            node=children[node][char]\n        if terminal[node] is None:terminal[node]=identifier\n    answer=[];i=0\n    while i<len(text):\n        node=0;j=i;end=i;found=None\n        while j<len(text) and text[j] in children[node]:\n            node=children[node][text[j]];j+=1\n            if terminal[node] is not None:found=terminal[node];end=j\n        if found is None:answer.append(text[i]);i+=1\n        else:answer.append(found);i=end\n    return ' '.join([str(len(answer))]+answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#39-longest-dictionary-tokenization",
+  "sourceContentHash": "4d0321ac16710b4a6eed035d57e3362f423faca2951be03b7f0f3d279b79777c",
+  "author": "CSWork"
+}

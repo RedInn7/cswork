@@ -1,0 +1,10 @@
+[
+  {
+    "name": "空隙恰好够也拒绝",
+    "code": "def solve(data):\n    count,length=map(int,data[:2]); values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); end=0\n    for start,finish in intervals:\n        if start-end>length:return str(end)\n        end=max(end,finish)\n    return str(end if 1440-end>=length else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略最后空隙",
+    "code": "def solve(data):\n    count,length=map(int,data[:2]); values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); end=0\n    for start,finish in intervals:\n        if start-end>=length:return str(end)\n        end=max(end,finish)\n    return str(-1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

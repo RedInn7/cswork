@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-22",
+  "title": "交替删除后的最后字符",
+  "explanation": "## 思路\n\n幸存的原下标始终是等差数列。维护首项 head、间隔 step、剩余数量 count；左删必定移动首项，右删仅在数量为奇数时移动首项。\n\n## 正确性\n\n每轮保留等差数列的一半项，因此新间隔翻倍。左删删除原首项；右删时，当且仅当项数为奇数才删掉原首项。按此更新直至仅一项，其原下标对 |S| 取模就是对应字符。\n\n## 复杂度\n\n时间 O(log(|S|K))，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    s=data[0]; count=len(s)*int(data[1]); head=0; step=1; left=True\n    while count>1:\n        if left or count%2:head+=step\n        count//=2; step*=2; left=not left\n    return s[head%len(s)]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#22-find-last-character",
+  "sourceContentHash": "14379e16f5c400321a9aead8d2261842a507d811eaa93e5b9a13fe74242cf98c",
+  "author": "CSWork"
+}

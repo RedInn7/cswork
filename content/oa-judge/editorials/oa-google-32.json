@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-32",
+  "title": "字符集合模式的完整匹配",
+  "explanation": "## 思路\n\n解析成逐位置允许的字符集合。只检查长度相同、且每位字符属于对应集合的候选。\n\n## 正确性\n\n每个模式单元恰好消费一个字符，因此匹配串长度必须等于单元数。单元互不依赖，逐位满足集合关系又是完整匹配的充分条件。逐个检查原列表自然保留顺序与重复项。\n\n## 复杂度\n\n时间 O(|pattern|+Σ|word|)，空间 O(|pattern|+输出大小)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    pattern=data[0];slots=[];i=0\n    while i<len(pattern):\n        if pattern[i]=='[':\n            j=pattern.index(']',i);slots.append(set(pattern[i+1:j]));i=j+1\n        else:slots.append({pattern[i]});i+=1\n    matches=[w for w in data[2:] if len(w)==len(slots) and all(c in allowed for c,allowed in zip(w,slots))]\n    return ' '.join([str(len(matches))]+matches)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#32-generate-pattern-matching-strings-early-career",
+  "sourceContentHash": "566f045b8713fdc5df1c0fc05bc2c4630d16a5919163ebe24c29f2482d022718",
+  "author": "CSWork"
+}

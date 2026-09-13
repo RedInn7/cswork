@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-27",
+  "title": "最长非降连续段",
+  "explanation": "## 思路\n\n维护以当前元素结尾的非降段长度，下降时重置为 1，否则递增。\n\n## 正确性\n\n当前值不小于前值时可以且只能扩展前一非降尾段；发生下降时任何跨越这条边的段都不合法，只能从当前元素重新开始。全程最大尾段长度覆盖所有连续段。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)（不计输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:])); current=answer=1\n    for i in range(1,len(a)):\n        previous,v=a[i-1],a[i]\n        current=current+1 if previous<=v else 1; answer=max(answer,current)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#27-find-maximum-length-of-non-decreasing-subarray-part-1",
+  "sourceContentHash": "2eadbb916f5be07e1dce15a5e922ef6e2cf9a7c4a5066dc30350d1aa087b612c",
+  "author": "CSWork"
+}

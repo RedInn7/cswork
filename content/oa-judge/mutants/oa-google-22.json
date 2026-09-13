@@ -1,0 +1,10 @@
+[
+  {
+    "name": "右删时忽略奇数首项",
+    "code": "def solve(data):\n    s=data[0]; count=len(s)*int(data[1]); head=0; step=1; left=True\n    while count>1:\n        if left:head+=step\n        count//=2; step*=2; left=not left\n    return s[head%len(s)]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每轮都从左删",
+    "code": "def solve(data):\n    s=data[0]; count=len(s)*int(data[1]); head=0; step=1; left=True\n    while count>1:\n        if left or count%2:head+=step\n        count//=2; step*=2; left=True\n    return s[head%len(s)]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

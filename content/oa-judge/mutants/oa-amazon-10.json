@@ -1,0 +1,10 @@
+[
+  {
+    "name": "丢失前导零",
+    "code": "def solve(d):\n    a=list(map(int,d[1:])); degree=len(a)-2\n    small=[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]\n    def coefficient(i):\n        n=degree; k=i; mod5=1\n        while n or k:\n            u=n%5; v=k%5\n            if v>u: mod5=0; break\n            mod5=mod5*small[u][v]%5; n//=5; k//=5\n        mod2=1 if i&degree==i else 0\n        return mod5 if mod5%2==mod2 else mod5+5\n    first=second=0\n    for i in range(degree+1):\n        c=coefficient(i); first=(first+c*a[i])%10; second=(second+c*a[i+1])%10\n    return str(first*10+second)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看模5系数",
+    "code": "def solve(d):\n    a=list(map(int,d[1:])); degree=len(a)-2\n    small=[[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]\n    def coefficient(i):\n        n=degree; k=i; mod5=1\n        while n or k:\n            u=n%5; v=k%5\n            if v>u: mod5=0; break\n            mod5=mod5*small[u][v]%5; n//=5; k//=5\n        mod2=1 if i&degree==i else 0\n        return mod5\n    first=second=0\n    for i in range(degree+1):\n        c=coefficient(i); first=(first+c*a[i])%10; second=(second+c*a[i+1])%10\n    return str(first)+str(second)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-2",
+  "title": "统计 k 的非负整数次幂",
+  "explanation": "## 思路\n\n对每个数反复除去因子 k，最终等于 1 时计数。\n\n## 为什么正确\n\nk≥2，因此每次整除严格减小数值。能恰好除到 1 等价于原数为 k 的非负整数次幂；1 无需除法，是 k⁰。\n\n## 复杂度\n\n时间 O(n logₖ M)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]); answer=0\n    for value in map(int,data[2:]):\n        while value>1 and value%k==0:value//=k\n        if value==1:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#2-count-powers-of-k-in-readings",
+  "sourceContentHash": "ed0a1af04c8bdfe69b3cc165618ba7281f96343c566081e9aa93785efdef2b68",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-24",
+  "title": "带行数额限制的矩阵选数",
+  "explanation": "## 思路\n\n每行仅保留最大的factor[i]个元素，再从所有候选中取最大的x个。\n\n## 正确性证明\n\n若某行选中了较小元素却未选择更大元素，交换后行数额不变且总和不减。因此存在最优解只使用每行前factor[i]项。所有候选总数在每行上都已满足上限，它们的任意子集合法，故选全局最大的x项最优。\n\n## 复杂度\n\n时间 O(n² log(n²))，空间 O(n²)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,x=map(int,d[:2]); factor=list(map(int,d[2:2+n])); pos=2+n; candidates=[]\n    for limit in factor:\n        row=sorted(map(int,d[pos:pos+n]),reverse=True); pos+=n; candidates.extend(row[:limit])\n    if len(candidates)<x: return '-1'\n    candidates.sort(reverse=True)\n    return str(sum(candidates[:x]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#24-find-max-value-matrix-compression",
+  "sourceContentHash": "e0878e8e6742772885136c851333c0dbf6462558884c243bea4192c6cd802b9b",
+  "author": "CSWork"
+}

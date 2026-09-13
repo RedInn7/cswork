@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉右侧合并",
+    "code": "def solve(data):\n    lengths={}; best=0; answers=[]\n    for x in map(int,data[1:]):\n        if x not in lengths:\n            left=lengths.get(x-1,0); right=0; total=left+right+1\n            lengths[x]=total; lengths[x-left]=total; lengths[x+right]=total; best=max(best,total)\n        answers.append(best)\n    return ' '.join(map(str,answers))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重复建房也合并",
+    "code": "def solve(data):\n    lengths={}; best=0; answers=[]\n    for x in map(int,data[1:]):\n        if True:\n            left=lengths.get(x-1,0); right=lengths.get(x+1,0); total=left+right+1\n            lengths[x]=total; lengths[x-left]=total; lengths[x+right]=total; best=max(best,total)\n        answers.append(best)\n    return ' '.join(map(str,answers))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

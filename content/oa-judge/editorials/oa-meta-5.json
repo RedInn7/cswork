@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-5",
+  "title": "含高频值的最长连续子数组",
+  "explanation": "## 思路\n\n统计整个数组的频次。只要存在频次大于k，整个数组就是最优；否则任何子数组都不可能满足。\n\n## 为什么正确\n\n扩展区间不会降低已有值的出现次数，因此存在合法子数组就必然有合法的完整数组。反之，全数组所有值都不超过k时，更短区间也不可能超过k。\n\n## 复杂度\n\n期望时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    from collections import Counter\n    n,k=map(int,data[:2]); counts=Counter(data[2:])\n    return str(n if max(counts.values())>k else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#5-longest-subarray-with-value-frequency--threshold",
+  "sourceContentHash": "0c372b188daf97a56efc91c58daacb9a2d79ca91fa82ba6d6ab414e9835c9a75",
+  "author": "CSWork"
+}

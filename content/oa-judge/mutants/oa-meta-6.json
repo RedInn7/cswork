@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉边界距离1",
+    "code": "def solve(data):\n    n=int(data[0]); values=list(map(int,data[1:])); seen={}; answer=0\n    for i in range(n):\n        x,y=values[2*i:2*i+2]\n        for dx in (0,):\n            for dy in (0,):answer+=seen.get((x+dx,y+dy),0)\n        seen[x,y]=seen.get((x,y),0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重复坐标只算一个",
+    "code": "def solve(data):\n    n=int(data[0]); values=list(map(int,data[1:])); seen={}; answer=0\n    for i in range(n):\n        x,y=values[2*i:2*i+2]\n        for dx in (-1,0,1):\n            for dy in (-1,0,1):answer+=seen.get((x+dx,y+dy),0)\n        seen[x,y]=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

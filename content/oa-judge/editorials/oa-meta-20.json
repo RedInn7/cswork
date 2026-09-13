@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-20",
+  "title": "合并三个有序数组并去重",
+  "explanation": "## 思路\n\n维护三个指针，每次取尚未消费的最小值，只有不同于输出末尾时才追加，之后推进提供此值的指针。\n\n## 为什么正确\n\n每个输入已有序，因此未消费元素的最小值必在三个指针处。不断取最小值保证输出非递减，相等值在归并顺序中相邻，跳过重复尾值恰好保留每个不同整数一次。\n\n## 复杂度\n\n时间 O(n+m+k)，额外空间为输出 O(n+m+k)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    sizes=list(map(int,data[:3])); arrays=[]; offset=3\n    for size in sizes:arrays.append(list(map(int,data[offset:offset+size]))); offset+=size\n    indices=[0,0,0]; answer=[]\n    while True:\n        candidates=[(arrays[i][indices[i]],i) for i in range(3) if indices[i]<sizes[i]]\n        if not candidates:break\n        value,source=min(candidates)\n        if not answer or answer[-1]!=value:answer.append(value)\n        indices[source]+=1\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#20-merge-three-sorted-arrays",
+  "sourceContentHash": "c31d70f6d6002775ddcb33f942a0a78e7fa02ea44aab0c1e1e84342f1c6babaf",
+  "author": "CSWork"
+}

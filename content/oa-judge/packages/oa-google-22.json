@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-22",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "交替删除后的最后字符",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Google",
+      "数学",
+      "模拟"
+    ],
+    "description": "把字符串 S 重复 K 次。从左侧开始删除第 1、3、5…个字符；下一轮从右侧开始删除第 1、3、5…个字符。左右交替进行，剩一个字符时停止，输出它。\n\n标准输入输出、样例与测试由 CSWork 编写；标注“本站”的范围为评测约定，不声称是原始面试限制。",
+    "input": "第一行 S（1..100 个英文字母、数字或 $ # & *），第二行 K（1..10000）。",
+    "output": "按题意输出答案，多次查询结果依次以空格分隔。",
+    "explanation": "样例1：abcd 重复3次，三轮后依次剩 bdbdbd、bbb、b。样例2：按左右交替删除，最终留下 &。样例3：开始时只有 Z，无须删除。",
+    "hints": [
+      "幸存的原下标始终是等差数列。维护首项 head、间隔 step、剩余数量 count；左删必定移动首项，右删仅在数量为奇数时移动首项。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "abcd\n3\n",
+      "expectedOutput": "b\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "j#k&h\n5\n",
+      "expectedOutput": "&\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "Z\n1\n",
+      "expectedOutput": "Z\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n10000\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "ab\n1\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "abc\n1\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "bb2#2\n3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "b\n4\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "b#a1\n4\n",
+      "expectedOutput": "#\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "11b1\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "bb\n6\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "#a\n5\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "2c#ac\n7\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "2bc#ccb\n7\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "c1b#\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "a#aaab#\n3\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "b##\n3\n",
+      "expectedOutput": "#\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "1\n7\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "#\n6\n",
+      "expectedOutput": "#\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "c2c22#\n6\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "ca#c21\n2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "cc2a\n6\n",
+      "expectedOutput": "c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "a####b\n2\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "1c2\n6\n",
+      "expectedOutput": "c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "a1aa#\n5\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "ca#\n2\n",
+      "expectedOutput": "c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "1#2a22#\n1\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "#a\n2\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "#11a1b\n2\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "2#a2bac\n1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

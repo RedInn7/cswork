@@ -1,0 +1,10 @@
+[
+  {
+    "name": "平均值向下取整",
+    "code": "def solve(d):\n    n,extra=map(int,d[:2]); a=list(map(int,d[2:])); total=sum(a)+extra\n    return str(max(max(a),total//n))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略初始最大值",
+    "code": "def solve(d):\n    n,extra=map(int,d[:2]); a=list(map(int,d[2:])); total=sum(a)+extra\n    return str((total+n-1)//n)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

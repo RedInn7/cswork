@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等错误断开",
+    "code": "def solve(data):\n    a=list(map(int,data[1:])); current=answer=1\n    for i in range(1,len(a)):\n        previous,v=a[i-1],a[i]\n        current=current+1 if previous<v else 1; answer=max(answer,current)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "下降不重置",
+    "code": "def solve(data):\n    a=list(map(int,data[1:])); current=answer=1\n    for i in range(1,len(a)):\n        previous,v=a[i-1],a[i]\n        current=current+1 if previous<=v else current; answer=max(answer,current)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

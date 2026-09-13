@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略行上限",
+    "code": "def solve(d):\n    n,x=map(int,d[:2]); factor=list(map(int,d[2:2+n])); pos=2+n; candidates=[]\n    for limit in factor:\n        row=sorted(map(int,d[pos:pos+n]),reverse=True); pos+=n; candidates.extend(row)\n    if len(candidates)<x: return '-1'\n    candidates.sort(reverse=True)\n    return str(sum(candidates[:x]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不足也输出总和",
+    "code": "def solve(d):\n    n,x=map(int,d[:2]); factor=list(map(int,d[2:2+n])); pos=2+n; candidates=[]\n    for limit in factor:\n        row=sorted(map(int,d[pos:pos+n]),reverse=True); pos+=n; candidates.extend(row[:limit])\n    if len(candidates)<x: return str(sum(candidates))\n    candidates.sort(reverse=True)\n    return str(sum(candidates[:x]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

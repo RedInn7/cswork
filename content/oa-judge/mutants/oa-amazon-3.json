@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许完整字符串",
+    "code": "def solve(d):\n    s=d[0]; first={}; last={}; answer=0\n    for i,c in enumerate(s):\n        if c not in first: first[c]=i\n        last[c]=i\n    for start in first.values():\n        end=start\n        for i in range(start,len(s)):\n            c=s[i]\n            if first[c]<start: break\n            end=max(end,last[c])\n            if i==end and i-start+1<=len(s): answer=max(answer,i-start+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只尝试首个左端",
+    "code": "def solve(d):\n    s=d[0]; first={}; last={}; answer=0\n    for i,c in enumerate(s):\n        if c not in first: first[c]=i\n        last[c]=i\n    for start in [0]:\n        end=start\n        for i in range(start,len(s)):\n            c=s[i]\n            if first[c]<start: break\n            end=max(end,last[c])\n            if i==end and i-start+1<len(s): answer=max(answer,i-start+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

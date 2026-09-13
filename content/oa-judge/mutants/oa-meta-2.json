@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排除k的0次幂",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]); answer=0\n    for value in map(int,data[2:]):\n        if value==1:continue\n        while value>1 and value%k==0:value//=k\n        if value==1:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只检验一次整除",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]); answer=0\n    for value in map(int,data[2:]):\n        if value>1 and value%k==0:value//=k\n        if value==1:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

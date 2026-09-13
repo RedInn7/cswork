@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-25",
+  "title": "数组最高出现次数",
+  "explanation": "## 思路\n\n哈希表累加每个值的出现次数，取最大计数。\n\n## 正确性\n\n每个元素恰好给自己的计数加一，最终每个计数等于该值的真实频率，最大计数就是要求。\n\n## 复杂度\n\n期望时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    counts={}\n    for v in map(int,data[1:]):counts[v]=counts.get(v,0)+1\n    return str(max(counts.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#25-find-maximum-frequency-of-number",
+  "sourceContentHash": "003eb65eda8f5abc456692431a5ddd03de96f7d7976f7a928e0210a5f39abf06",
+  "author": "CSWork"
+}

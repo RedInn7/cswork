@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-13",
+  "title": "大写与小写字母数量之差",
+  "explanation": "## 思路\n\n扫描字符，大写加一，小写减一，其他字符不改变累计值。\n\n## 为什么正确\n\n每个大写字符贡献 +1，每个小写字符贡献 −1，其他字符贡献零。逐个相加就是两个计数之差。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    answer=0\n    for ch in data:\n        if 'A'<=ch<='Z':answer+=1\n        elif 'a'<=ch<='z':answer-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#13-compute-difference-between-uppercase-and-lowercase-letters",
+  "sourceContentHash": "0ec3367e3d1897bfef6db762f3068fa1c61a0bd81704a5c63eab62f475eaec08",
+  "author": "CSWork"
+}

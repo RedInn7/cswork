@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误包括右端点",
+    "code": "def solve(data):\n    from bisect import bisect_left\n    q=int(data[0]); cursor=1; ops=[]\n    for _ in range(q):\n        t=int(data[cursor]); size=2 if t==1 else 3; ops.append(tuple(map(int,data[cursor:cursor+size]))); cursor+=size\n    coords=sorted(o[1] for o in ops if o[0]==1); bit=[0]*(len(coords)+1); result=[]\n    def prefix(i):\n        total=0\n        while i:total+=bit[i]; i-=i&-i\n        return total\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit):bit[i]+=1; i+=i&-i\n        else:\n            left=bisect_left(coords,op[1]); right=bisect_left(coords,op[1]+op[2]+1)\n            result.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "检查结果颠倒",
+    "code": "def solve(data):\n    from bisect import bisect_left\n    q=int(data[0]); cursor=1; ops=[]\n    for _ in range(q):\n        t=int(data[cursor]); size=2 if t==1 else 3; ops.append(tuple(map(int,data[cursor:cursor+size]))); cursor+=size\n    coords=sorted(o[1] for o in ops if o[0]==1); bit=[0]*(len(coords)+1); result=[]\n    def prefix(i):\n        total=0\n        while i:total+=bit[i]; i-=i&-i\n        return total\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit):bit[i]+=1; i+=i&-i\n        else:\n            left=bisect_left(coords,op[1]); right=bisect_left(coords,op[1]+op[2])\n            result.append('0' if prefix(right)==prefix(left) else '1')\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

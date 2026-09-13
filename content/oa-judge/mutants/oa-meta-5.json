@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把严格大于当大于等于",
+    "code": "def solve(data):\n    from collections import Counter\n    n,k=map(int,data[:2]); counts=Counter(data[2:])\n    return str(n if max(counts.values())>=k else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "输出最大频次而非区间长度",
+    "code": "def solve(data):\n    from collections import Counter\n    n,k=map(int,data[:2]); counts=Counter(data[2:])\n    return str(max(counts.values()) if max(counts.values())>k else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

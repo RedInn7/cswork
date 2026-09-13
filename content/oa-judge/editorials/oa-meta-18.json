@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-18",
+  "title": "第 k 个缺失的正整数",
+  "explanation": "## 思路\n\n在下标 i 处，缺失个数是 a[i]−i−1。二分第一个缺失个数达到 k 的位置，结果为 k 加该下标；不存在时下标取 n。\n\n## 为什么正确\n\n严格递增保证缺失计数单调。插入点左侧的数组元素都在答案之前，右侧都在答案之后；若左侧共有 i 个已存在数字，答案之前及自身共有 k 个缺失数字，故答案为 k+i。\n\n## 复杂度\n\n二分时间 O(log n)，输入存储 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); lo=0; hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if a[mid]-mid-1<k:lo=mid+1\n        else:hi=mid\n    return str(k+lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#18-kth-missing-positive-number-for-e4-",
+  "sourceContentHash": "45e2a41972f68d21c81d836000e936c3b1597c4ffb2672a5bff0a4a5f0cf4ba9",
+  "author": "CSWork"
+}

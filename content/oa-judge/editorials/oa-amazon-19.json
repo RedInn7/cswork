@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-19",
+  "title": "选择服务器类型的最大健康值",
+  "explanation": "## 思路\n\n按类型累加健康值，对各类总和降序排序并取前m类。\n\n## 正确性证明\n\n每类要么全选要么全不选，类间无其它限制且健康值为正。若选中的类比未选中的某类总和小，交换不会变差。最终必可取总和最大的至多m类。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]); h=list(map(int,d[2:2+n])); t=list(map(int,d[2+n:])); totals={}\n    for value,kind in zip(h,t): totals[kind]=totals.get(kind,0)+value\n    return str(sum(sorted(totals.values(),reverse=True)[:m]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#19-find-max-health-sum",
+  "sourceContentHash": "a33c00dd87bd2f15a0a839c90609230505cec1e60304983d61efffd6a83b1e83",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-19",
+  "title": "最多翻转 k 个零后的连续一",
+  "explanation": "## 思路\n\n滑动窗口维护其中零的数量，超过 k 时收缩左端，记录所有合法窗口的最大长度。\n\n## 为什么正确\n\n一段区间可全部变成 1 当且仅当零数量不超过 k。对于每个右端，收缩后的左端给出以该右端结尾的最长合法窗口；扫描全部右端便包含全局最优段。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); left=zeros=best=0\n    for right,x in enumerate(a):\n        if x==0:zeros+=1\n        while zeros>k:\n            if a[left]==0:zeros-=1\n            left+=1\n        best=max(best,right-left+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#19-max-consecutive-ones-iii-for-e5-",
+  "sourceContentHash": "f584a5e79b73bfff39db37f43d3b5cf4196f317b9cfd761c41fa140c67b94140",
+  "author": "CSWork"
+}

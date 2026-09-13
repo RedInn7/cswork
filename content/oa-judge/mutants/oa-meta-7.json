@@ -1,0 +1,14 @@
+[
+  {
+    "name": "循环方向反了",
+    "code": "def solve(data):\n    vowels=[c for c in data if c in 'aeiou']\n    if not vowels:return data\n    rotated=iter(vowels[1:]+vowels[:1])\n    return ''.join(next(rotated) if c in 'aeiou' else c for c in data)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+  },
+  {
+    "name": "完全不移动元音",
+    "code": "def solve(data):\n    vowels=[c for c in data if c in 'aeiou']\n    if not vowels:return data\n    rotated=iter(vowels)\n    return ''.join(next(rotated) if c in 'aeiou' else c for c in data)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+  },
+  {
+    "name": "删除或压缩空格",
+    "code": "def solve(data):\n    vowels=[c for c in data if c in 'aeiou']\n    if not vowels:return data\n    rotated=iter(vowels[-1:]+vowels[:-1])\n    return ' '.join(''.join(next(rotated) if c in 'aeiou' else c for c in data).split())\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+  }
+]

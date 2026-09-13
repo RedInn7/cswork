@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-meta-13",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "大写与小写字母数量之差",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Meta",
+      "字符串"
+    ],
+    "description": "统计文本的大写英文字母数量减去小写英文字母数量。数字、空格和标点忽略。空字符串的结果为 0。\n\n输入格式、样例与评测数据由 CSWork 整理编写。",
+    "input": "一行长度 0..100 的 ASCII 可打印字符（可含空格）；保留整行，不对内容去首尾空格。",
+    "output": "按题意输出答案；多项结果按顺序空格分隔，空数组输出空行。",
+    "explanation": "样例1：CodeSignal有2个大写字母C、S和8个小写字母，因此输出2−8=−6。",
+    "hints": [
+      "扫描字符，大写加一，小写减一，其他字符不改变累计值。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "CodeSignal\n",
+      "expectedOutput": "-6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "a\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n",
+      "expectedOutput": "100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n",
+      "expectedOutput": "-100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "                                                                                                    \n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "c1b 9?!9X90 b1YaYaZX99!?X09abX1Y9 ZXXX? 00\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "bbY\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "cYc!0 Zc ? 1Z011aa191b9cab?ZYX?0!Y1bYb0X0X!0 ?Z01c!1XY?Zac\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "9?? a?bX ??XX1c 911b ?XbZZab c!9Zb!cX!X!X 9aXX\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "b0?bbZa?9? ZZYc00cbb\n",
+      "expectedOutput": "-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": " b9?b  !Z1b9 0aYYca9Ya9c1Z ? Z0a11Xc?b09\n",
+      "expectedOutput": "-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "bX !0?9b0?b?Zc? ?0bZ 1 a0YXaYZ!aZ1cc0Z01?bZb9 9X91\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "Xc?Y1ac090bYZZ?a9cZ Ya9XbYcaab ?Y9ZbXb009 9XXbb9YX0baZ9?ZacbZa? ab1!c9Zac0b01 aaY\n",
+      "expectedOutput": "-9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "b!1aa\n",
+      "expectedOutput": "-3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "b 1c 09!1ZZYXYbXb!c90?b90bX !1Z09bba?!YcY?X?!!cY9aZaa  ccZaY!9bcZ?19 YXa0cbY1!XXY09a\n",
+      "expectedOutput": "-2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "!!1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "XbaY?0cZX?00Y?1Z1cX!X0cY1?19Yaa9X9caZ aac  Y\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": " bcc1YaZaa0XZXbZ!Z\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "?a1!Y 0bX0XX\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "ZXX!Xa!1?090aYaXb1Y\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "ZZY  0abb!9?Y X?1?XYYa?bcaX\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "XcYZ?c!b? Y  0a 1Y  cZc9caaY1!?XXaZc9Z Yaaa?Z 1090Y9\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "Z9 X\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "c1a Z!ZaZ1?10 109cZ09 c09X??0?  Xccb9bca? ?c Z0!0c101ZaY?Xb09XcX\n",
+      "expectedOutput": "-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "!b!!1!acZ!!1Ya!0Z?cbY9Y0cbb0bZ0b1c1b?1?X1bc0b90?Y9XaXXYbcZ9!Z 9Z0!Y?Y9  bY9acZXX01YXXYXX 9? cc?X0b\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "XYbYZ91bZ 99?? X0abcc9Z9 Ybca0cc10Z 1?ab??bb!Xcac 0Y \n",
+      "expectedOutput": "-7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "!baY9cb9b1Z1ZYXc!1!9Z?Z1 b?aY0 9!0c 1Y!1b cc991!aYcZX9cc9 01?Xa!bba00Zacb?1cZ a0Z?cY9YX!YaZbc 190XY \n",
+      "expectedOutput": "-6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "Z0?a001Y   Z 9a0?11cca9cXXXZ!19YcZ  Xc?YYb XZ\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "?b9b91!!1Y?Z0ba??ZXX !ZX b1X11!cZ1bZ!ac\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

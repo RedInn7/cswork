@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-31",
+  "title": "子树后序字符串回文查询",
+  "explanation": "## 思路\n\n迭代后序遍历把每棵子树映射到整串的连续区间；对整串做奇、偶长度 Manacher，直接检查查询区间所需的回文半径。\n\n## 正确性\n\n后序遍历在离开某节点前连续处理完它的所有后代，所以记录的区间恰是题意字符串。Manacher 分别记录每个中心能扩展的最大奇/偶回文；一个区间回文当且仅当其中心的半径覆盖整个区间。全程只做字符相等比较，不依赖哈希碰撞假设。\n\n## 复杂度\n\n排序邻接表 O(n log n)，遍历和 Manacher O(n)，查询 O(q)，空间 O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,q=map(int,data[:2]); chars=data[2]; g=[[] for _ in range(n)]; pos=3\n    for _ in range(n-1):\n        u=int(data[pos])-1;v=int(data[pos+1])-1;pos+=2;g[u].append(v);g[v].append(u)\n    start=[0]*n;end=[0]*n;s=[];stack=[(0,-1,False)]\n    while stack:\n        u,p,exit=stack.pop()\n        if exit:s.append(chars[u]);end[u]=len(s);continue\n        start[u]=len(s);stack.append((u,p,True))\n        for v in sorted(g[u],reverse=True):\n            if v!=p:stack.append((v,u,False))\n    odd=[0]*n;l=0;r=-1\n    for i in range(n):\n        k=1 if i>r else min(odd[l+r-i],r-i+1)\n        while i-k>=0 and i+k<n and s[i-k]==s[i+k]:k+=1\n        odd[i]=k\n        if i+k-1>r:l=i-k+1;r=i+k-1\n    even=[0]*n;l=0;r=-1\n    for i in range(n):\n        k=0 if i>r else min(even[l+r-i+1],r-i+1)\n        while i-k-1>=0 and i+k<n and s[i-k-1]==s[i+k]:k+=1\n        even[i]=k\n        if i+k-1>r:l=i-k;r=i+k-1\n    answer=[]\n    for token in data[pos:]:\n        u=int(token)-1;a=start[u];b=end[u];length=b-a;center=(a+b)//2\n        ok=odd[center]>=length//2+1 if length%2 else even[center]>=length//2\n        answer.append('1' if ok else '0')\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#31-find-palindromes",
+  "sourceContentHash": "b28519390cdb3f51242aa7f40843f252d7689d67c2d13b260244d499d0f5484a",
+  "author": "CSWork"
+}

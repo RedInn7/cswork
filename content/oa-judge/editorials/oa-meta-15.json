@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-15",
+  "title": "排除角落的局部极大值",
+  "explanation": "## 思路\n\n枚举每个非零格，将检查范围裁剪到矩阵内，逐格判断，跳过中心和原正方形角点。\n\n## 为什么正确\n\n范围裁剪只去掉不存在的格子。循环恰好覆盖所有按规则应比较的格子，出现≥v则不满足严格极大，否则满足。按行列顺序扫描使输出有序。\n\n## 复杂度\n\n时间 O((RC)²)，除输出外空间 O(RC)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    rows,cols=map(int,data[:2]); vals=list(map(int,data[2:])); result=[]\n    for i in range(rows):\n        for j in range(cols):\n            v=vals[i*cols+j]\n            if not v:continue\n            ok=True\n            for x in range(max(0,i-v),min(rows,i+v+1)):\n                for y in range(max(0,j-v),min(cols,j+v+1)):\n                    if (x==i and y==j) or (abs(x-i)==v and abs(y-j)==v):continue\n                    if vals[x*cols+y]>=v:ok=False; break\n                if not ok:break\n            if ok:result.append((i,j))\n    return str(len(result))+''.join(f'\\n{i} {j}' for i,j in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#15-find-all-local-maximums",
+  "sourceContentHash": "485bec968fa16e9292c6198f3a0ea371cb376e3dc3fe3d1018d97fe4c48322ff",
+  "author": "CSWork"
+}

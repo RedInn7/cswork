@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-33",
+  "title": "删除二叉树边后的分量大小",
+  "explanation": "## 思路\n\n忽略被删除的边，用并查集合并其余边，统计各根大小并排序。\n\n## 正确性\n\n未删除的边两端必须在同一分量，并查集把且仅把由这些边可达的节点合并。最终根对应各连通分量，集合大小即节点数。排序仅规定展示顺序，不改变分量结果。\n\n## 复杂度\n\n时间 O(n α(n)+n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]);edges=[(int(data[i])-1,int(data[i+1])-1) for i in range(2,2+2*(n-1),2)]\n    deleted={(int(data[i])-1,int(data[i+1])-1) for i in range(2+2*(n-1),len(data),2)}\n    parent=list(range(n));size=[1]*n\n    def find(x):\n        while x!=parent[x]:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for a,b in edges:\n        if (a,b) in deleted:continue\n        a=find(a);b=find(b)\n        if size[a]<size[b]:a,b=b,a\n        parent[b]=a;size[a]+=size[b]\n    result=sorted(size[i] for i in range(n) if parent[i]==i)\n    return ' '.join([str(len(result))]+list(map(str,result)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#33-get-components-in-forest-for-virtual-interview",
+  "sourceContentHash": "4ba05e7dc2a762d8c57955e2d0359aa0b86ba439a5cb43ab70328d1f4bce387e",
+  "author": "CSWork"
+}

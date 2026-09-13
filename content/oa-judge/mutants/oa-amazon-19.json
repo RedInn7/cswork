@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同类只保留最大值",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]); h=list(map(int,d[2:2+n])); t=list(map(int,d[2+n:])); totals={}\n    for value,kind in zip(h,t): totals[kind]=max(totals.get(kind,0),value)\n    return str(sum(sorted(totals.values(),reverse=True)[:m]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "选最小健康值类别",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]); h=list(map(int,d[2:2+n])); t=list(map(int,d[2+n:])); totals={}\n    for value,kind in zip(h,t): totals[kind]=totals.get(kind,0)+value\n    return str(sum(sorted(totals.values(),reverse=False)[:m]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

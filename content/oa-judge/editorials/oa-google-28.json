@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-28",
+  "title": "树的最小最远距离",
+  "explanation": "## 思路\n\n两次广度优先搜索得到树直径 D，答案为 ⌈D/2⌉。\n\n## 正确性\n\n直径两端距离为 D，任一点到这两端至少一个的距离不小于 ⌈D/2⌉。直径中央节点到任何点的距离不超过该值，否则可以拼出比 D 更长的路径。因此直径中央节点达到此下界。树上从任一点寻找最远点可得到一个直径端点，再次搜索得到直径。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data[0]); g=[[] for _ in range(n)]\n    for i in range(1,len(data),2):\n        u=int(data[i])-1;v=int(data[i+1])-1;g[u].append(v);g[v].append(u)\n    def farthest(root):\n        dist=[-1]*n;dist[root]=0;queue=[root]\n        for u in queue:\n            for v in g[u]:\n                if dist[v]<0:dist[v]=dist[u]+1;queue.append(v)\n        return queue[-1],dist[queue[-1]]\n    u,_=farthest(0);_,diameter=farthest(u)\n    return str((diameter+1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#28-find-min-distance-to-furthest-node-google-tokyo",
+  "sourceContentHash": "e617096117086f1f5e0bbf8ce14fd4018fc6c52a2183b16f196d15c7939ba24a",
+  "author": "CSWork"
+}

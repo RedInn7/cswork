@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-meta-1",
+      "sourceContentHash": "64c170f3d0e7adfe05723c8bcdc7d6dae5bb4eb7d95345d102ae2e2dbc4b4ae3",
+      "packageChecksum": "0e5dcf2298f7781e5aae38f235cd42ea2de9c4d149841f4c74794569862544e7",
+      "editorial": "## 思路\n\n下移距离由图形最底格确定。每个星号沿本列扫过一个行区间，用列差分合并区间，再数被覆盖的障碍。\n\n## 为什么正确\n\n最底格抵达底行前必须恰好经过每个中间位移；任何扫过位置的障碍都必须删。删去扫过位置的所有障碍后每一步都无碰撞，因此统计这些不同障碍既必要又充分。\n\n## 复杂度\n\n时间和空间 O(RC)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bottom=max(i for i in range(rows) if '*' in board[i]); distance=rows-1-bottom; answer=0\n    for j in range(cols):\n        diff=[0]*(rows+1)\n        for i in range(rows):\n            if board[i][j]=='*':diff[i+1]+=1; diff[i+distance+1]-=1\n        active=0\n        for i in range(rows):\n            active+=diff[i]\n            if active and board[i][j]=='#':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-2",
+      "sourceContentHash": "ed0a1af04c8bdfe69b3cc165618ba7281f96343c566081e9aa93785efdef2b68",
+      "packageChecksum": "f405c1a99df7561252fd8af2aee9a5277c729e6c1ae63eb5ae064fd674794b47",
+      "editorial": "## 思路\n\n对每个数反复除去因子 k，最终等于 1 时计数。\n\n## 为什么正确\n\nk≥2，因此每次整除严格减小数值。能恰好除到 1 等价于原数为 k 的非负整数次幂；1 无需除法，是 k⁰。\n\n## 复杂度\n\n时间 O(n logₖ M)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]); answer=0\n    for value in map(int,data[2:]):\n        while value>1 and value%k==0:value//=k\n        if value==1:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-3",
+      "sourceContentHash": "96f98a4c36d187721fdfee2e4d929a7ef248ea456868438583b53d56042581e1",
+      "packageChecksum": "d1fd97bce70390eb505cf9e25a1e7655b8cf836e06cb872d9a22b707a39528c1",
+      "editorial": "## 思路\n\n将相邻比较转换成 −1、0、1 序列，用 KMP 匹配整个模式，成功后按前缀函数回退以保留重叠匹配。\n\n## 为什么正确\n\n长度 m+1 的原数组窗口与长度 m 的相邻符号窗口一一对应。KMP 的状态是已扫描序列后缀与模式前缀的最大匹配长度；失配回退保留所有可能的前缀，达到 m 恰好对应一个合法窗口。\n\n## 复杂度\n\n时间 O(n+m)，额外空间 O(m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,m=map(int,data[:2]); a=list(map(int,data[2:2+n])); p=list(map(int,data[2+n:])); pi=[0]*m\n    for i in range(1,m):\n        j=pi[i-1]\n        while j and p[i]!=p[j]:j=pi[j-1]\n        if p[i]==p[j]:j+=1\n        pi[i]=j\n    answer=j=0\n    for i in range(n-1):\n        v=(a[i+1]>a[i])-(a[i+1]<a[i])\n        while j and v!=p[j]:j=pi[j-1]\n        if v==p[j]:j+=1\n        if j==m:answer+=1; j=pi[j-1]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-4",
+      "sourceContentHash": "b023c0234dd99709469766da8a5abdca0f6cd34d71ffb465de9703f05a98e385",
+      "packageChecksum": "7cca3716517aa4c564f088b5654a2aca364de54190f89b07798518f98e12789e",
+      "editorial": "## 思路\n\n按区间起点排序，维护已扫过忙碌时间的最右端；每个区间前的空隙足够长便返回其起点。\n\n## 为什么正确\n\n所有员工共同空闲等价于不属于任一忙碌区间。排序扫描不断合并重叠忙时，检查到的空隙按时间递增；第一个长度足够的空隙必然最早。\n\n## 复杂度\n\n时间 O(b log b)，空间 O(b)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    count,length=map(int,data[:2]); values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); end=0\n    for start,finish in intervals:\n        if start-end>=length:return str(end)\n        end=max(end,finish)\n    return str(end if 1440-end>=length else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-5",
+      "sourceContentHash": "0c372b188daf97a56efc91c58daacb9a2d79ca91fa82ba6d6ab414e9835c9a75",
+      "packageChecksum": "1ba8d9d7199e28aa4261cb17b409eb9f781c6aec7446c505e37921b230c6cdc7",
+      "editorial": "## 思路\n\n统计整个数组的频次。只要存在频次大于k，整个数组就是最优；否则任何子数组都不可能满足。\n\n## 为什么正确\n\n扩展区间不会降低已有值的出现次数，因此存在合法子数组就必然有合法的完整数组。反之，全数组所有值都不超过k时，更短区间也不可能超过k。\n\n## 复杂度\n\n期望时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    from collections import Counter\n    n,k=map(int,data[:2]); counts=Counter(data[2:])\n    return str(n if max(counts.values())>k else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-6",
+      "sourceContentHash": "52b2161adae0b1a27429728cc8f53f12bbd076afded5af3723e3836c412d58c2",
+      "packageChecksum": "cfc715977fa552b8426c0b1ff98602ffed9e24647e1a7698c978c780ea708ae8",
+      "editorial": "## 思路\n\n依次读入坐标，查找九个相邻整数坐标已有的对象数量并累加，再记录当前对象。\n\n## 为什么正确\n\n整数坐标下，合法的横纵差值只能分别是 −1、0、1。九个坐标查找恰好包含所有此前与当前对象碰撞的对象。每对仅在较晚对象加入时计数一次，重复坐标通过频次计数。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]); values=list(map(int,data[1:])); seen={}; answer=0\n    for i in range(n):\n        x,y=values[2*i:2*i+2]\n        for dx in (-1,0,1):\n            for dy in (-1,0,1):answer+=seen.get((x+dx,y+dy),0)\n        seen[x,y]=seen.get((x,y),0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-7",
+      "sourceContentHash": "eed5b1ca47c08d2601782c6525c3e5c610990137280b567eb9c61f83aef2dbe0",
+      "packageChecksum": "68c5ee077f626a95d479a890b9f1358548db02b4b87a1f3ce9197c6c4cd71fa7",
+      "editorial": "## 思路\n\n提取元音字符并右旋一位，再依次填回原来的元音位置。\n\n## 为什么正确\n\n旋转后的第一个元音来自原末尾，第i个来自原i−1个，恰好实现每个原元音移到下一位置。仅替换元音位置，其他字符不变。\n\n## 复杂度\n\n时间和额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    vowels=[c for c in data if c in 'aeiou']\n    if not vowels:return data\n    rotated=iter(vowels[-1:]+vowels[:-1])\n    return ''.join(next(rotated) if c in 'aeiou' else c for c in data)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-8",
+      "sourceContentHash": "e6d1fd99841d2fa41da87d729b2f37bc177fea7c27df04538ecf12751fc4245d",
+      "packageChecksum": "218d66879a73edffebcdbc698f9f9b884551f5c78dc22f1e6659b3a6db8e70f3",
+      "editorial": "## 思路\n\n哈希表保存已占用位置和每段两端的长度。新位置将左右相邻段合并，并更新新段两端及全局最大值。\n\n## 为什么正确\n\n新位置尚未占用时，相邻已占用位置必是对应段的端点，记录的长度可直接使用。合并长度是左段长度+1+右段长度；只需修改新段端点供之后查找。重复插入不改变集合。\n\n## 复杂度\n\n期望时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    lengths={}; best=0; answers=[]\n    for x in map(int,data[1:]):\n        if x not in lengths:\n            left=lengths.get(x-1,0); right=lengths.get(x+1,0); total=left+right+1\n            lengths[x]=total; lengths[x-left]=total; lengths[x+right]=total; best=max(best,total)\n        answers.append(best)\n    return ' '.join(map(str,answers))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-9",
+      "sourceContentHash": "4200f8c06cf88218a65d06f9a3b403abf0f6991b4fc401a75dc2101598b7ea61",
+      "packageChecksum": "2ef53937966cd0bcc170e894d7cab6b89229b70c18546417146fdc1184b28b3d",
+      "editorial": "## 思路\n\n交换操作直接交换对应元素，反转操作倒序对应行或列，旋转将第j列自下向上变成新第j行。\n\n## 为什么正确\n\n逐个操作应用其定义的坐标置换。顺时针旋转把旧(i,j)映到(j,R−1−i)，列从底到顶恰好构成新行。按顺序组合全部置换得到最终矩阵。\n\n## 复杂度\n\n时间 O(qRC)，额外空间 O(RC)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    rows,cols=map(int,data[:2]); offset=2; a=[]\n    for _ in range(rows):a.append(list(map(int,data[offset:offset+cols]))); offset+=cols\n    q=int(data[offset]); offset+=1\n    for _ in range(q):\n        t=data[offset]; offset+=1\n        if t=='rotate90Clockwise':a=[list(row) for row in zip(*a[::-1])]\n        elif t=='swapRows':\n            i,j=map(int,data[offset:offset+2]); offset+=2; a[i],a[j]=a[j],a[i]\n        elif t=='swapColumns':\n            i,j=map(int,data[offset:offset+2]); offset+=2\n            for row in a:row[i],row[j]=row[j],row[i]\n        elif t=='reverseRow':\n            i=int(data[offset]); offset+=1; a[i].reverse()\n        else:\n            j=int(data[offset]); offset+=1\n            for i in range(len(a)//2):a[i][j],a[-1-i][j]=a[-1-i][j],a[i][j]\n    return f'{len(a)} {len(a[0])}\\n'+'\\n'.join(' '.join(map(str,row)) for row in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-10",
+      "sourceContentHash": "90208f7703463eb8ad8d65c8ffa9420a23ebd5a4c59fc0522b5f3709f44dd5c2",
+      "packageChecksum": "5b367d6682c2fe569e367133886f4cbaff5827fc7715db63a207e50a2ed7e801",
+      "editorial": "## 思路\n\n遍历区间，将每个数字转为三位字符，集合大小为3则计数。\n\n## 为什么正确\n\n集合恰好包含不同的数字字符，大小为3当且仅当三位两两不同；闭区间枚举每个整数一次。\n\n## 复杂度\n\n时间 O(right−left+1)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    left,right=map(int,data)\n    return str(sum(len(set(str(v)))==3 for v in range(left,right+1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-12",
+      "sourceContentHash": "fac47682957122c374d0f2e86eb79ccd15090dc98bf4defe3969a54f01ea8f62",
+      "packageChecksum": "7f1854f83663d8fb7fa7712f63125ebe902688ed8317c1b78d9c389c5f0b2d87",
+      "editorial": "## 思路\n\n预读所有放置坐标并离散化，用树状数组记录已放置数量。两个二分下标之间的区间计数为零时可放置。\n\n## 为什么正确\n\n离散化只保留可能有障碍的坐标，不改变大小关系。左边界使用 lower_bound(x)，右边界使用 lower_bound(x+size)，其差分恰好统计半开区间内已执行的放置操作，不会包含未来的障碍或右端点。\n\n## 复杂度\n\n时间 O(q log q)，额外空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    from bisect import bisect_left\n    q=int(data[0]); cursor=1; ops=[]\n    for _ in range(q):\n        t=int(data[cursor]); size=2 if t==1 else 3; ops.append(tuple(map(int,data[cursor:cursor+size]))); cursor+=size\n    coords=sorted(o[1] for o in ops if o[0]==1); bit=[0]*(len(coords)+1); result=[]\n    def prefix(i):\n        total=0\n        while i:total+=bit[i]; i-=i&-i\n        return total\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit):bit[i]+=1; i+=i&-i\n        else:\n            left=bisect_left(coords,op[1]); right=bisect_left(coords,op[1]+op[2])\n            result.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-13",
+      "sourceContentHash": "0ec3367e3d1897bfef6db762f3068fa1c61a0bd81704a5c63eab62f475eaec08",
+      "packageChecksum": "437db85124ee65943d5ed8d9d259b9651234d12038f7f1b959f105c67ab5aae1",
+      "editorial": "## 思路\n\n扫描字符，大写加一，小写减一，其他字符不改变累计值。\n\n## 为什么正确\n\n每个大写字符贡献 +1，每个小写字符贡献 −1，其他字符贡献零。逐个相加就是两个计数之差。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    answer=0\n    for ch in data:\n        if 'A'<=ch<='Z':answer+=1\n        elif 'a'<=ch<='z':answer-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-14",
+      "sourceContentHash": "1a8fc69ae380fb756d02a7a49507d32c47a7e29e04925ef5bcd9b2cbe703af55",
+      "packageChecksum": "aabd0486113a6a4f3c28fb0af6eeeb4e618f2fbfd2c042224114a373e71aba45",
+      "editorial": "## 思路\n\n枚举行列下标和d，确定该对角线合法的行下标范围。偶数d逆序行下标，奇数d正序。\n\n## 为什么正确\n\n每格属于唯一的对角线d=i+j，合法行范围保证不越界且完整覆盖。按d递增并交替行方向，恰好符合给定遍历规则。\n\n## 复杂度\n\n时间和输出空间 O(RC)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    rows,cols=map(int,data[:2]); a=list(map(int,data[2:])); answer=[]\n    for d in range(rows+cols-1):\n        low=max(0,d-cols+1); high=min(rows-1,d); indices=range(high,low-1,-1) if d%2==0 else range(low,high+1)\n        for i in indices:answer.append(a[i*cols+d-i])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-15",
+      "sourceContentHash": "485bec968fa16e9292c6198f3a0ea371cb376e3dc3fe3d1018d97fe4c48322ff",
+      "packageChecksum": "0a6b15fa91c8f61bd7b9d256d614abdd8748169d93d6f9af4fc3cf9b67adccac",
+      "editorial": "## 思路\n\n枚举每个非零格，将检查范围裁剪到矩阵内，逐格判断，跳过中心和原正方形角点。\n\n## 为什么正确\n\n范围裁剪只去掉不存在的格子。循环恰好覆盖所有按规则应比较的格子，出现≥v则不满足严格极大，否则满足。按行列顺序扫描使输出有序。\n\n## 复杂度\n\n时间 O((RC)²)，除输出外空间 O(RC)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    rows,cols=map(int,data[:2]); vals=list(map(int,data[2:])); result=[]\n    for i in range(rows):\n        for j in range(cols):\n            v=vals[i*cols+j]\n            if not v:continue\n            ok=True\n            for x in range(max(0,i-v),min(rows,i+v+1)):\n                for y in range(max(0,j-v),min(cols,j+v+1)):\n                    if (x==i and y==j) or (abs(x-i)==v and abs(y-j)==v):continue\n                    if vals[x*cols+y]>=v:ok=False; break\n                if not ok:break\n            if ok:result.append((i,j))\n    return str(len(result))+''.join(f'\\n{i} {j}' for i,j in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-18",
+      "sourceContentHash": "45e2a41972f68d21c81d836000e936c3b1597c4ffb2672a5bff0a4a5f0cf4ba9",
+      "packageChecksum": "87e46784b3dd995a8283f4ad4be4c466385f279365431929fcd32acb9f1da6ef",
+      "editorial": "## 思路\n\n在下标 i 处，缺失个数是 a[i]−i−1。二分第一个缺失个数达到 k 的位置，结果为 k 加该下标；不存在时下标取 n。\n\n## 为什么正确\n\n严格递增保证缺失计数单调。插入点左侧的数组元素都在答案之前，右侧都在答案之后；若左侧共有 i 个已存在数字，答案之前及自身共有 k 个缺失数字，故答案为 k+i。\n\n## 复杂度\n\n二分时间 O(log n)，输入存储 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); lo=0; hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if a[mid]-mid-1<k:lo=mid+1\n        else:hi=mid\n    return str(k+lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-19",
+      "sourceContentHash": "f584a5e79b73bfff39db37f43d3b5cf4196f317b9cfd761c41fa140c67b94140",
+      "packageChecksum": "c18cbf12f356dd5c6ef1f70d085d6d60eea779521f4eb45b85c1aa10f69f57da",
+      "editorial": "## 思路\n\n滑动窗口维护其中零的数量，超过 k 时收缩左端，记录所有合法窗口的最大长度。\n\n## 为什么正确\n\n一段区间可全部变成 1 当且仅当零数量不超过 k。对于每个右端，收缩后的左端给出以该右端结尾的最长合法窗口；扫描全部右端便包含全局最优段。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); left=zeros=best=0\n    for right,x in enumerate(a):\n        if x==0:zeros+=1\n        while zeros>k:\n            if a[left]==0:zeros-=1\n            left+=1\n        best=max(best,right-left+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-meta-20",
+      "sourceContentHash": "c31d70f6d6002775ddcb33f942a0a78e7fa02ea44aab0c1e1e84342f1c6babaf",
+      "packageChecksum": "42699f63bd6435466f445bb8a7f813d4d4edfa7210ef92f487d8acbeb3700955",
+      "editorial": "## 思路\n\n维护三个指针，每次取尚未消费的最小值，只有不同于输出末尾时才追加，之后推进提供此值的指针。\n\n## 为什么正确\n\n每个输入已有序，因此未消费元素的最小值必在三个指针处。不断取最小值保证输出非递减，相等值在归并顺序中相邻，跳过重复尾值恰好保留每个不同整数一次。\n\n## 复杂度\n\n时间 O(n+m+k)，额外空间为输出 O(n+m+k)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    sizes=list(map(int,data[:3])); arrays=[]; offset=3\n    for size in sizes:arrays.append(list(map(int,data[offset:offset+size]))); offset+=size\n    indices=[0,0,0]; answer=[]\n    while True:\n        candidates=[(arrays[i][indices[i]],i) for i in range(3) if indices[i]<sizes[i]]\n        if not candidates:break\n        value,source=min(candidates)\n        if not answer or answer[-1]!=value:answer.append(value)\n        indices[source]+=1\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

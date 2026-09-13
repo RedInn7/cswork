@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-20",
+  "title": "三台服务器中位吞吐量之和",
+  "explanation": "## 思路\n\n降序排序。取 floor(n/3) 组，依次选第2、4、6……大的数作中位数，每个更大的配对数作最大值，剩余小数作第三个成员。\n\n## 正确性证明\n\n第j大的组中位数需要至少2j个数不小于它（每组中位数及最大值），故至多为全局第2j大。所述构造同时达到全部这些上界，且剩余数足够给每组配一个最小值。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True); groups=len(a)//3\n    return str(sum(a[2*i+1] for i in range(groups)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#20-get-max-throughput",
+  "sourceContentHash": "19a296e4c586cbb0a554e175259aea0bd6543c0138f3b2ae2739fdd0d7e4c09d",
+  "author": "CSWork"
+}

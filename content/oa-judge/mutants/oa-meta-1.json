@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略下落距离",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bottom=max(i for i in range(rows) if '*' in board[i]); distance=0; answer=0\n    for j in range(cols):\n        diff=[0]*(rows+1)\n        for i in range(rows):\n            if board[i][j]=='*':diff[i+1]+=1; diff[i+distance+1]-=1\n        active=0\n        for i in range(rows):\n            active+=diff[i]\n            if active and board[i][j]=='#':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把没有扫过的障碍也删除",
+    "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bottom=max(i for i in range(rows) if '*' in board[i]); distance=rows-1-bottom; answer=0\n    for j in range(cols):\n        diff=[0]*(rows+1)\n        for i in range(rows):\n            if board[i][j]=='*':diff[i+1]+=1; diff[i+distance+1]-=1\n        active=0\n        for i in range(rows):\n            active+=diff[i]\n            if board[i][j]=='#':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

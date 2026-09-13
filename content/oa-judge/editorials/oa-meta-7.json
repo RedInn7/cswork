@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-7",
+  "title": "元音位置循环右移",
+  "explanation": "## 思路\n\n提取元音字符并右旋一位，再依次填回原来的元音位置。\n\n## 为什么正确\n\n旋转后的第一个元音来自原末尾，第i个来自原i−1个，恰好实现每个原元音移到下一位置。仅替换元音位置，其他字符不变。\n\n## 复杂度\n\n时间和额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    vowels=[c for c in data if c in 'aeiou']\n    if not vowels:return data\n    rotated=iter(vowels[-1:]+vowels[:-1])\n    return ''.join(next(rotated) if c in 'aeiou' else c for c in data)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().rstrip(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#7-cyclic-vowel-shift",
+  "sourceContentHash": "eed5b1ca47c08d2601782c6525c3e5c610990137280b567eb9c61f83aef2dbe0",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉最后完整窗口",
+    "code": "def solve(d):\n    s,t=d[:2]; p=int(d[2]); m=len(t); target=[0]*26; answer=0\n    for c in t: target[ord(c)-97]+=1\n    for r in range(min(p,len(s))):\n        chain=s[r::p]; count=[0]*26\n        for i,c in enumerate(chain):\n            count[ord(c)-97]+=1\n            if i>=m: count[ord(chain[i-m])-97]-=1\n            if i>=m and count==target: answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略步长",
+    "code": "def solve(d):\n    s,t=d[:2]; p=1; m=len(t); target=[0]*26; answer=0\n    for c in t: target[ord(c)-97]+=1\n    for r in range(min(p,len(s))):\n        chain=s[r::p]; count=[0]*26\n        for i,c in enumerate(chain):\n            count[ord(c)-97]+=1\n            if i>=m: count[ord(chain[i-m])-97]-=1\n            if i>=m-1 and count==target: answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

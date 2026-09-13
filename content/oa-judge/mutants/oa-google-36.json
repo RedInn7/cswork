@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉入住当天",
+    "code": "def solve(data):\n    n,m=map(int,data[:2]);length=[0]*(n+2)\n    for day,x in enumerate(map(int,data[2:]),0):\n        left=length[x-1];right=length[x+1];total=left+right+1\n        length[x]=total;length[x-left]=total;length[x+right]=total\n        if total>=m:return str(day)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只计算左边连续段",
+    "code": "def solve(data):\n    n,m=map(int,data[:2]);length=[0]*(n+2)\n    for day,x in enumerate(map(int,data[2:]),1):\n        left=length[x-1];right=0;total=left+right+1\n        length[x]=total;length[x-left]=total;length[x+right]=total\n        if total>=m:return str(day)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

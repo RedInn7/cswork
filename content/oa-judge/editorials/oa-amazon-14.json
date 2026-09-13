@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-14",
+  "title": "循环递增后的密码子序列",
+  "explanation": "## 思路\n\n从左到右扫描新密码，当前字符或其后继能匹配旧密码当前字符时立即匹配。\n\n## 正确性证明\n\n字符选择互相独立。任何可行匹配的第一个位置都不会早于贪心选择的位置，用更早位置替换不会减少剩余可用字符。依次交换可得完整贪心匹配；不能匹配完整旧密码则不存在可行解。\n\n## 复杂度\n\n时间 O(n+m)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,t=d; j=0\n    for c in s:\n        if c==t[j] or chr((ord(c)-96)%26+97)==t[j]: j+=1\n        if j==len(t): return 'YES'\n    return 'NO'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#14-find-similarities-password-subsequence",
+  "sourceContentHash": "9aced074ad62c61f73290f3157102b90703f0cbd5aff2d9842a5b465ceddda8e",
+  "author": "CSWork"
+}

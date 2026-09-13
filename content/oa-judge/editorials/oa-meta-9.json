@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-9",
+  "title": "矩阵机器人的变换命令",
+  "explanation": "## 思路\n\n交换操作直接交换对应元素，反转操作倒序对应行或列，旋转将第j列自下向上变成新第j行。\n\n## 为什么正确\n\n逐个操作应用其定义的坐标置换。顺时针旋转把旧(i,j)映到(j,R−1−i)，列从底到顶恰好构成新行。按顺序组合全部置换得到最终矩阵。\n\n## 复杂度\n\n时间 O(qRC)，额外空间 O(RC)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    rows,cols=map(int,data[:2]); offset=2; a=[]\n    for _ in range(rows):a.append(list(map(int,data[offset:offset+cols]))); offset+=cols\n    q=int(data[offset]); offset+=1\n    for _ in range(q):\n        t=data[offset]; offset+=1\n        if t=='rotate90Clockwise':a=[list(row) for row in zip(*a[::-1])]\n        elif t=='swapRows':\n            i,j=map(int,data[offset:offset+2]); offset+=2; a[i],a[j]=a[j],a[i]\n        elif t=='swapColumns':\n            i,j=map(int,data[offset:offset+2]); offset+=2\n            for row in a:row[i],row[j]=row[j],row[i]\n        elif t=='reverseRow':\n            i=int(data[offset]); offset+=1; a[i].reverse()\n        else:\n            j=int(data[offset]); offset+=1\n            for i in range(len(a)//2):a[i][j],a[-1-i][j]=a[-1-i][j],a[i][j]\n    return f'{len(a)} {len(a[0])}\\n'+'\\n'.join(' '.join(map(str,row)) for row in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#9-robot-matrix-commands",
+  "sourceContentHash": "4200f8c06cf88218a65d06f9a3b403abf0f6991b4fc401a75dc2101598b7ea61",
+  "author": "CSWork"
+}

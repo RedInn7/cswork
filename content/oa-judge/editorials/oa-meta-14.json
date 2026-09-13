@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-14",
+  "title": "矩阵交替对角线遍历",
+  "explanation": "## 思路\n\n枚举行列下标和d，确定该对角线合法的行下标范围。偶数d逆序行下标，奇数d正序。\n\n## 为什么正确\n\n每格属于唯一的对角线d=i+j，合法行范围保证不越界且完整覆盖。按d递增并交替行方向，恰好符合给定遍历规则。\n\n## 复杂度\n\n时间和输出空间 O(RC)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    rows,cols=map(int,data[:2]); a=list(map(int,data[2:])); answer=[]\n    for d in range(rows+cols-1):\n        low=max(0,d-cols+1); high=min(rows-1,d); indices=range(high,low-1,-1) if d%2==0 else range(low,high+1)\n        for i in indices:answer.append(a[i*cols+d-i])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#14-diagonal-traverse-for-e4-",
+  "sourceContentHash": "1a8fc69ae380fb756d02a7a49507d32c47a7e29e04925ef5bcd9b2cbe703af55",
+  "author": "CSWork"
+}

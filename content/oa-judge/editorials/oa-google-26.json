@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-26",
+  "title": "修改一次后的最长非降连续段",
+  "explanation": "## 思路\n\n计算每点结尾和开头的未修改非降段长度。修改一个点时，分别考虑只接左段、只接右段，以及左右相邻值允许桥接时合并两段。\n\n## 正确性\n\n最优连续段不含修改点时已被原始非降段覆盖；含修改点时，它两侧必须各自非降。两侧都非空时存在可放的中间整数恰当且仅当左邻值不大于右邻值。枚举修改点和这三类情况覆盖全部方案。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:])); n=len(a); left=[1]*n; right=[1]*n\n    for i in range(1,n):\n        if a[i-1]<=a[i]:left[i]=left[i-1]+1\n    for i in range(n-2,-1,-1):\n        if a[i]<=a[i+1]:right[i]=right[i+1]+1\n    answer=max(left)\n    for i in range(n):\n        l=left[i-1] if i else 0; r=right[i+1] if i+1<n else 0\n        answer=max(answer,l+1,r+1)\n        if 0<i<n-1 and a[i-1]<=a[i+1]:answer=max(answer,l+r+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#26-longest-non-decreasing-subarray-part-2",
+  "sourceContentHash": "b2e47c07ec720419096a8a54916f94a58a3b45d0e16c8758e58404b0a4c39779",
+  "author": "CSWork"
+}

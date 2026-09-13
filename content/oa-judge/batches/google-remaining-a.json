@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-google-22",
+      "sourceContentHash": "14379e16f5c400321a9aead8d2261842a507d811eaa93e5b9a13fe74242cf98c",
+      "packageChecksum": "586523154445b8d4ffffd2c76d787008aaa6d2cc75728e1d1fd5f7e7f9d3b89c",
+      "editorial": "## 思路\n\n幸存的原下标始终是等差数列。维护首项 head、间隔 step、剩余数量 count；左删必定移动首项，右删仅在数量为奇数时移动首项。\n\n## 正确性\n\n每轮保留等差数列的一半项，因此新间隔翻倍。左删删除原首项；右删时，当且仅当项数为奇数才删掉原首项。按此更新直至仅一项，其原下标对 |S| 取模就是对应字符。\n\n## 复杂度\n\n时间 O(log(|S|K))，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    s=data[0]; count=len(s)*int(data[1]); head=0; step=1; left=True\n    while count>1:\n        if left or count%2:head+=step\n        count//=2; step*=2; left=not left\n    return s[head%len(s)]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-23",
+      "sourceContentHash": "61c8b1a3f5207130b119a20859b1a27795d84c64aa75336fcdeab2504d527590",
+      "packageChecksum": "74a09c5383112e538eab11ab747aef84b27e6d27001bc16ef19aaad210b51e26",
+      "editorial": "## 思路\n\n按等级维护最小和最大心率，最后取最大极差。\n\n## 正确性\n\n一次扫描将每条记录只计入自己的等级，更新后的两个极值准确覆盖该组全部记录。对各组 max−min 取最大即为题意。\n\n## 复杂度\n\n期望时间 O(n)，空间 O(g)，g 为等级数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    groups={}\n    for i in range(1,len(data),2):\n        v=int(data[i]); c=data[i+1]\n        lo,hi=groups.get(c,(v,v)); groups[c]=(min(lo,v),max(hi,v))\n    return str(max(hi-lo for lo,hi in groups.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-24",
+      "sourceContentHash": "8fe8f19f389c6e40517a1c65f7d0b9c7fcc06dae5c7a7b9faa2a10455afb2fa3",
+      "packageChecksum": "5f790747067144e387883a2c02c0672c85336b49f39acd1f23bf2d012a8a5a4d",
+      "editorial": "## 思路\n\ndp[v] 为当前前缀以 v 结尾的最优长度。扫描到 v 时，用 dp[v−1]+1 更新 dp[v]。\n\n## 正确性\n\n任何以本次 v 结尾且长度大于一的合法子序列，其倒数第二项必须是之前出现的 v−1；其最优长度已保存在 dp[v−1]。追加 v 获得最佳候选，和旧值取最大保留前缀不变量。\n\n## 复杂度\n\n期望时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    dp={}; answer=0\n    for v in map(int,data[1:]):\n        dp[v]=max(dp.get(v,0),dp.get(v-1,0)+1); answer=max(answer,dp[v])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-25",
+      "sourceContentHash": "003eb65eda8f5abc456692431a5ddd03de96f7d7976f7a928e0210a5f39abf06",
+      "packageChecksum": "dbd508796855dbc912f680c18cd5a20d8f934d0a1a3fe0e4c796c5c8b40393bd",
+      "editorial": "## 思路\n\n哈希表累加每个值的出现次数，取最大计数。\n\n## 正确性\n\n每个元素恰好给自己的计数加一，最终每个计数等于该值的真实频率，最大计数就是要求。\n\n## 复杂度\n\n期望时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    counts={}\n    for v in map(int,data[1:]):counts[v]=counts.get(v,0)+1\n    return str(max(counts.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-26",
+      "sourceContentHash": "b2e47c07ec720419096a8a54916f94a58a3b45d0e16c8758e58404b0a4c39779",
+      "packageChecksum": "6ab66f74b2cd5411315bfe4a949d96fdcc74fbc490453b5ab5cd93f87b677f45",
+      "editorial": "## 思路\n\n计算每点结尾和开头的未修改非降段长度。修改一个点时，分别考虑只接左段、只接右段，以及左右相邻值允许桥接时合并两段。\n\n## 正确性\n\n最优连续段不含修改点时已被原始非降段覆盖；含修改点时，它两侧必须各自非降。两侧都非空时存在可放的中间整数恰当且仅当左邻值不大于右邻值。枚举修改点和这三类情况覆盖全部方案。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:])); n=len(a); left=[1]*n; right=[1]*n\n    for i in range(1,n):\n        if a[i-1]<=a[i]:left[i]=left[i-1]+1\n    for i in range(n-2,-1,-1):\n        if a[i]<=a[i+1]:right[i]=right[i+1]+1\n    answer=max(left)\n    for i in range(n):\n        l=left[i-1] if i else 0; r=right[i+1] if i+1<n else 0\n        answer=max(answer,l+1,r+1)\n        if 0<i<n-1 and a[i-1]<=a[i+1]:answer=max(answer,l+r+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-27",
+      "sourceContentHash": "2eadbb916f5be07e1dce15a5e922ef6e2cf9a7c4a5066dc30350d1aa087b612c",
+      "packageChecksum": "b99215354877e4802061e0758cba980b5202ee5a27c0f965612a9b05b675504e",
+      "editorial": "## 思路\n\n维护以当前元素结尾的非降段长度，下降时重置为 1，否则递增。\n\n## 正确性\n\n当前值不小于前值时可以且只能扩展前一非降尾段；发生下降时任何跨越这条边的段都不合法，只能从当前元素重新开始。全程最大尾段长度覆盖所有连续段。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)（不计输入）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:])); current=answer=1\n    for i in range(1,len(a)):\n        previous,v=a[i-1],a[i]\n        current=current+1 if previous<=v else 1; answer=max(answer,current)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-28",
+      "sourceContentHash": "e617096117086f1f5e0bbf8ce14fd4018fc6c52a2183b16f196d15c7939ba24a",
+      "packageChecksum": "9ed0a5abad1f2f68ff74ee5d83d016d3e741f7f77646900b50b06326a2ff1165",
+      "editorial": "## 思路\n\n两次广度优先搜索得到树直径 D，答案为 ⌈D/2⌉。\n\n## 正确性\n\n直径两端距离为 D，任一点到这两端至少一个的距离不小于 ⌈D/2⌉。直径中央节点到任何点的距离不超过该值，否则可以拼出比 D 更长的路径。因此直径中央节点达到此下界。树上从任一点寻找最远点可得到一个直径端点，再次搜索得到直径。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]); g=[[] for _ in range(n)]\n    for i in range(1,len(data),2):\n        u=int(data[i])-1;v=int(data[i+1])-1;g[u].append(v);g[v].append(u)\n    def farthest(root):\n        dist=[-1]*n;dist[root]=0;queue=[root]\n        for u in queue:\n            for v in g[u]:\n                if dist[v]<0:dist[v]=dist[u]+1;queue.append(v)\n        return queue[-1],dist[queue[-1]]\n    u,_=farthest(0);_,diameter=farthest(u)\n    return str((diameter+1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-31",
+      "sourceContentHash": "b28519390cdb3f51242aa7f40843f252d7689d67c2d13b260244d499d0f5484a",
+      "packageChecksum": "443deab8e0d5e585b8a37b68d3843cc23ec8b322efa176031e1419984a0fef79",
+      "editorial": "## 思路\n\n迭代后序遍历把每棵子树映射到整串的连续区间；对整串做奇、偶长度 Manacher，直接检查查询区间所需的回文半径。\n\n## 正确性\n\n后序遍历在离开某节点前连续处理完它的所有后代，所以记录的区间恰是题意字符串。Manacher 分别记录每个中心能扩展的最大奇/偶回文；一个区间回文当且仅当其中心的半径覆盖整个区间。全程只做字符相等比较，不依赖哈希碰撞假设。\n\n## 复杂度\n\n排序邻接表 O(n log n)，遍历和 Manacher O(n)，查询 O(q)，空间 O(n+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,q=map(int,data[:2]); chars=data[2]; g=[[] for _ in range(n)]; pos=3\n    for _ in range(n-1):\n        u=int(data[pos])-1;v=int(data[pos+1])-1;pos+=2;g[u].append(v);g[v].append(u)\n    start=[0]*n;end=[0]*n;s=[];stack=[(0,-1,False)]\n    while stack:\n        u,p,exit=stack.pop()\n        if exit:s.append(chars[u]);end[u]=len(s);continue\n        start[u]=len(s);stack.append((u,p,True))\n        for v in sorted(g[u],reverse=True):\n            if v!=p:stack.append((v,u,False))\n    odd=[0]*n;l=0;r=-1\n    for i in range(n):\n        k=1 if i>r else min(odd[l+r-i],r-i+1)\n        while i-k>=0 and i+k<n and s[i-k]==s[i+k]:k+=1\n        odd[i]=k\n        if i+k-1>r:l=i-k+1;r=i+k-1\n    even=[0]*n;l=0;r=-1\n    for i in range(n):\n        k=0 if i>r else min(even[l+r-i+1],r-i+1)\n        while i-k-1>=0 and i+k<n and s[i-k-1]==s[i+k]:k+=1\n        even[i]=k\n        if i+k-1>r:l=i-k;r=i+k-1\n    answer=[]\n    for token in data[pos:]:\n        u=int(token)-1;a=start[u];b=end[u];length=b-a;center=(a+b)//2\n        ok=odd[center]>=length//2+1 if length%2 else even[center]>=length//2\n        answer.append('1' if ok else '0')\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-32",
+      "sourceContentHash": "566f045b8713fdc5df1c0fc05bc2c4630d16a5919163ebe24c29f2482d022718",
+      "packageChecksum": "ccaa10c16f24a698985f6823fd9adcccb3ccaa4be3cfc5c66b1aa51748ba1f84",
+      "editorial": "## 思路\n\n解析成逐位置允许的字符集合。只检查长度相同、且每位字符属于对应集合的候选。\n\n## 正确性\n\n每个模式单元恰好消费一个字符，因此匹配串长度必须等于单元数。单元互不依赖，逐位满足集合关系又是完整匹配的充分条件。逐个检查原列表自然保留顺序与重复项。\n\n## 复杂度\n\n时间 O(|pattern|+Σ|word|)，空间 O(|pattern|+输出大小)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    pattern=data[0];slots=[];i=0\n    while i<len(pattern):\n        if pattern[i]=='[':\n            j=pattern.index(']',i);slots.append(set(pattern[i+1:j]));i=j+1\n        else:slots.append({pattern[i]});i+=1\n    matches=[w for w in data[2:] if len(w)==len(slots) and all(c in allowed for c,allowed in zip(w,slots))]\n    return ' '.join([str(len(matches))]+matches)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-33",
+      "sourceContentHash": "4ba05e7dc2a762d8c57955e2d0359aa0b86ba439a5cb43ab70328d1f4bce387e",
+      "packageChecksum": "4fc0b63972a0ecd548250eaed232cd0dd4b64795266bb3e165ca86b8e5867994",
+      "editorial": "## 思路\n\n忽略被删除的边，用并查集合并其余边，统计各根大小并排序。\n\n## 正确性\n\n未删除的边两端必须在同一分量，并查集把且仅把由这些边可达的节点合并。最终根对应各连通分量，集合大小即节点数。排序仅规定展示顺序，不改变分量结果。\n\n## 复杂度\n\n时间 O(n α(n)+n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]);edges=[(int(data[i])-1,int(data[i+1])-1) for i in range(2,2+2*(n-1),2)]\n    deleted={(int(data[i])-1,int(data[i+1])-1) for i in range(2+2*(n-1),len(data),2)}\n    parent=list(range(n));size=[1]*n\n    def find(x):\n        while x!=parent[x]:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for a,b in edges:\n        if (a,b) in deleted:continue\n        a=find(a);b=find(b)\n        if size[a]<size[b]:a,b=b,a\n        parent[b]=a;size[a]+=size[b]\n    result=sorted(size[i] for i in range(n) if parent[i]==i)\n    return ' '.join([str(len(result))]+list(map(str,result)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-34",
+      "sourceContentHash": "424c7856173e2a76b208a0a3631d929da688de5c37df1e966d485d37958923d8",
+      "packageChecksum": "812b016379c3525d491473bec81afbb007614572df3f7de02ed1752c8e77fe31",
+      "editorial": "## 思路\n\n先按起点排序合并覆盖区间，再从每段中扣去免打扰区间，保留左、右非空部分。\n\n## 正确性\n\n排序后的区间与当前段相接或相交时，其并集仍是一段，否则必须新开一段。获得完整会议并集后，与免打扰区间求差只可能留下其左侧和右侧两部分；保留全部非空部分恰是要求的时间集合。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]);intervals=sorted((int(data[1+2*i]),int(data[2+2*i])) for i in range(n));ds,de=map(int,data[1+2*n:]);merged=[]\n    for a,b in intervals:\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    result=[]\n    for a,b in merged:\n        if b<=ds or a>=de:result.append((a,b))\n        else:\n            if a<ds:result.append((a,ds))\n            if b>de:result.append((de,b))\n    return ' '.join([str(len(result))]+[str(v) for pair in result for v in pair])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-35",
+      "sourceContentHash": "759cfe7fb02df211ddb8c340f47dfa9ab048ed7c53ac4ffbea6e16d5dc4f604e",
+      "packageChecksum": "7ea1d08cec72c22029746bf12844eb4cbd274420f21e636eb63b322fa3197dbb",
+      "editorial": "## 思路\n\n构造时仅建收藏集合，保留两个游标。先推进收藏游标，之后扫描原列表并跳过收藏项，耗尽输出 NULL。\n\n## 正确性\n\n第一阶段恰好按收藏次序输出所有收藏。第二阶段按原次序扫描，集合检查排除所有已经输出的收藏，而每个非收藏都被输出一次。游标单向推进保证后续调用不会重复或越界返回图片。\n\n## 复杂度\n\n构造 O(m)，共 q 次调用 O(n+m+q)，额外空间 O(m)（不计输入输出）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,m,q=map(int,data[:3]);images=data[3:3+n];favs=data[3+n:];marked=set(favs);first=0;second=0;answer=[]\n    for _ in range(q):\n        if first<m:answer.append(favs[first]);first+=1\n        else:\n            while second<n and images[second] in marked:second+=1\n            if second<n:answer.append(images[second]);second+=1\n            else:answer.append('NULL')\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-36",
+      "sourceContentHash": "f2d720d421038f1ab8e51fa51d4d95c22ad8aef59a69116f57a3b1849f539557",
+      "packageChecksum": "8358e53d3b04790c26811319f52c9bac78bda8812e24c530eaa7a0bd66efe02d",
+      "editorial": "## 思路\n\n用每个已占连续段的两个端点记录段长。新增位置 x 时读取左、右邻居的段长，合成新段并更新两个外端点。\n\n## 正确性\n\n新位置左右若已占用，则相邻位置必然分别为左段的右端点和右段的左端点；保存的段长准确。新占用只会连接这两段和自身，不影响其它段。第一次合成长度至少 M 的段即为最早满足的一天。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,m=map(int,data[:2]);length=[0]*(n+2)\n    for day,x in enumerate(map(int,data[2:]),1):\n        left=length[x-1];right=length[x+1];total=left+right+1\n        length[x]=total;length[x-left]=total;length[x+right]=total\n        if total>=m:return str(day)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-39",
+      "sourceContentHash": "4d0321ac16710b4a6eed035d57e3362f423faca2951be03b7f0f3d279b79777c",
+      "packageChecksum": "c915922a1c40f633d4589ad1561bc11a13a070e91e5c2bdbd1316c791bffe7bf",
+      "editorial": "## 思路\n\n构建 Trie，每个终止节点只记录第一次标识。从当前位置向下查找，保存最后遇到的终止节点；最长匹配存在则输出并跳过它，否则输出原字符。\n\n## 正确性\n\nTrie 上沿文本的唯一路径完整枚举所有匹配词条，最深终止节点对应最长词条。只初始化空终止标记保留首次映射。每步选择符合题意的唯一输出并正确前进，归纳得到完整贪心分词。\n\n## 复杂度\n\n时间 O(字典总长度+文本长度×最长词长)，空间 O(字典总长度+输出大小)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    text=data[0];children=[{}];terminal=[None]\n    for j in range(2,len(data),2):\n        word,identifier=data[j:j+2];node=0\n        for char in word:\n            if char not in children[node]:children[node][char]=len(children);children.append({});terminal.append(None)\n            node=children[node][char]\n        if terminal[node] is None:terminal[node]=identifier\n    answer=[];i=0\n    while i<len(text):\n        node=0;j=i;end=i;found=None\n        while j<len(text) and text[j] in children[node]:\n            node=children[node][text[j]];j+=1\n            if terminal[node] is not None:found=terminal[node];end=j\n        if found is None:answer.append(text[i]);i+=1\n        else:answer.append(found);i=end\n    return ' '.join([str(len(answer))]+answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

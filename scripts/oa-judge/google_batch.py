@@ -286,7 +286,7 @@ def main():
                        hints=[spec["idea"]],timeLimit=2,memoryLimit=262144,outputLimit=1024,
                        checker="tokens",languages=["python","go","java","cpp"])
         package = dict(schemaVersion=1,problem=problem,cases=cases)
-        normalized = subprocess.run(["node", "--import", "tsx", "-e", "const {ojImportSchema}=require('./lib/oj-types.ts');let s='';process.stdin.on('data',c=>s+=c);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(ojImportSchema.parse(JSON.parse(s)))));"], cwd=ROOT,input=json.dumps(package,ensure_ascii=False),text=True,capture_output=True,check=True).stdout
+        normalized = subprocess.run(["node", "--import", "tsx", "-e", "const {ojImportSchema}=require('./lib/oj-types.ts');let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',c=>s+=c);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(ojImportSchema.parse(JSON.parse(s)))));"], cwd=ROOT,input=json.dumps(package,ensure_ascii=False),text=True,capture_output=True,check=True).stdout
         package = json.loads(normalized)
         (OUT / "packages" / f"{identifier}.json").write_text(json.dumps(package,ensure_ascii=False,indent=2)+'\n')
         editorial = dict(schemaVersion=1,id=identifier,title=spec["title"],

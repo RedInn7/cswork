@@ -1,0 +1,10 @@
+[
+  {
+    "name": "缺失计数差一",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); lo=0; hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if a[mid]-mid<k:lo=mid+1\n        else:hi=mid\n    return str(k+lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "越过恰好第k个",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]); a=list(map(int,data[2:])); lo=0; hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if a[mid]-mid-1<=k:lo=mid+1\n        else:hi=mid\n    return str(k+lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
