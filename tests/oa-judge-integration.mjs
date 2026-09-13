@@ -39,11 +39,14 @@ const workerEntry = resolve(
 const registry = JSON.parse(
   readFileSync('content/oa-judge/registry.json', 'utf8'),
 );
-assert.equal(
-  registry.items.length,
-  6,
-  'Expected the reviewed six-question batch',
-);
+const batchName = process.argv[2];
+if (batchName) assert.match(batchName, /^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+const selected = batchName
+  ? JSON.parse(readFileSync(`content/oa-judge/batches/${batchName}.json`, 'utf8'))
+  : registry;
+assert(selected.items.length >= 2 && selected.items.length <= 100);
+for (const entry of selected.items)
+  assert.deepEqual(registry.items.find((item) => item.id === entry.id), entry);
 assert.deepEqual(
   JSON.parse(
     readFileSync(join(artifact, 'content/oa-judge/registry.json'), 'utf8'),
@@ -168,7 +171,7 @@ try {
   db.prepare(
     "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('00-overview','gomall','Test','','test',0,'','1',0)",
   ).run();
-  const students = registry.items.map(() => {
+  const students = selected.items.map(() => {
     const email = `student-${randomUUID()}@example.test`;
     const user = identity(email);
     db.prepare(
@@ -181,7 +184,9 @@ try {
       '--import',
       'tsx',
       'scripts/publish-oa-judge.ts',
-      resolve('content/oa-judge/sandbox-report.json'),
+      ...(batchName
+        ? ['--batch', batchName]
+        : [resolve('content/oa-judge/sandbox-report.json')]),
       teacherEmail,
     ],
     root,
@@ -198,7 +203,7 @@ try {
   assert.equal(
     db.prepare('SELECT count(*) AS n FROM oj_problems WHERE published=1').get()
       .n,
-    6,
+    selected.items.length,
   );
   worker = child([workerEntry], artifact);
   web = child([webEntry], artifact);
@@ -220,7 +225,7 @@ try {
   );
   await request('/api/oj/oa-library', null, 401);
   const readyList = await request('/api/oj/oa-library?ready=1', students[0]);
-  assert.equal(readyList.total, 6);
+  assert.equal(readyList.total, selected.items.length);
   assert(
     readyList.items.every(
       (item) => item.judgeStatus === 'ready' && item.judgeProblemId === item.id,
@@ -238,7 +243,7 @@ try {
     '/api/oj/submissions',
     null,
     401,
-    payload(registry.items[0].id, 'print(-1)'),
+    payload(selected.items[0].id, 'print(-1)'),
   );
   await request(
     '/api/oj/submissions',
@@ -247,7 +252,7 @@ try {
     payload('oa-unknown-fixture-1', 'print(-1)'),
   );
   const failures = [];
-  for (const [index, item] of registry.items.entries()) {
+  for (const [index, item] of selected.items.entries()) {
     const student = students[index];
     const pkg = JSON.parse(
       readFileSync(`content/oa-judge/packages/${item.id}.json`, 'utf8'),
@@ -357,7 +362,7 @@ try {
     );
   // A program that memorizes public samples must fail on a hidden case and
   // expose only that first counterexample, never the rest of the hidden suite.
-  const first = registry.items[0];
+  const first = selected.items[0];
   const firstPackage = JSON.parse(
     readFileSync(`content/oa-judge/packages/${first.id}.json`, 'utf8'),
   );
@@ -411,8 +416,8 @@ try {
   console.log(
     JSON.stringify({
       event: 'oa_judge_integration_complete',
-      problems: 6,
-      submissions: 19,
+      problems: selected.items.length,
+      submissions: selected.items.length * 3 + 1,
       hiddenCounterexampleVerified: true,
       scope:
         'fresh SQLite + isolated queue + real built web/worker + dedicated runner',
