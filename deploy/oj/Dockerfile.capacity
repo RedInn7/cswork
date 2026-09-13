@@ -1,0 +1,5 @@
+# Apply the entrypoint change without rebuilding the unchanged language toolchains.
+# Production builds must override this tag with the inspected image ID/digest.
+ARG BASE_IMAGE=cswork-go-judge:1.12.3-seccomp
+FROM ${BASE_IMAGE}
+COPY --chmod=755 entrypoint.sh /opt/entrypoint.sh
