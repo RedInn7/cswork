@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-10",
+  "title": "选取 k 位组成最大整数",
+  "explanation": "## 思路\n\n允许删除 n−k 位。维护单调栈，新数字更大时，只要仍可删除，就弹掉末尾较小数字。最后截取前 k 位。\n\n## 为什么正确\n\n若仍可删除，保留位于较大数字之前的较小数字会使第一个不同位更小；删去它只会改善结果。不能再弹出时保留当前前缀，剩余删除量从尾部去掉。因此逐步获得字典序最大的 k 位子序列。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]); remove=n-k; stack=[]\n    for digit in data[2:]:\n        while remove and stack and stack[-1]<digit:stack.pop(); remove-=1\n        stack.append(digit)\n    return ''.join(stack[:k]).lstrip('0') or '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#10-build-maximum-integer-from-subarray-google-india",
+  "sourceContentHash": "40d57769f08ec108d9eeb16c4582168899c5e7eb7624912dbb01072c0221564f",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-16",
+  "title": "嵌套加减表达式求值",
+  "explanation": "## 思路\n\n词法扫描出 add、sub、有符号整数和右括号。用操作栈和数值栈，在右括号出现时弹出两个值完成一次运算，避免深层递归。\n\n## 为什么正确\n\n遇到右括号时，其两个参数的子表达式已经完成求值，数值栈顶依次是右参数和左参数。按最近未完成操作计算并压回，等价替换整个子表达式。自内向外消去全部运算后只剩总结果。\n\n## 复杂度\n\n时间 O(L)，额外空间 O(L)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    import re\n    expression=' '.join(data); operations=[]; values=[]\n    for token in re.findall(r'add|sub|-?\\d+|\\)',expression):\n        if token in ('add','sub'):operations.append(token)\n        elif token==')':\n            right=values.pop(); left=values.pop(); op=operations.pop()\n            values.append(left+right if op=='add' else left-right)\n        else:values.append(int(token))\n    return str(values[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#16-evaluate-a-nested-math-expression",
+  "sourceContentHash": "ff0a92b5b9258ca6aa9f427f631058fd048724c010d3b55a7b6b089650ecda45",
+  "author": "CSWork"
+}

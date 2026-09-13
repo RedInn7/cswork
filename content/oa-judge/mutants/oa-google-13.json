@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许同种配料两份",
+    "code": "def solve(data):\n    n,m,target=map(int,data[:3]); pizzas=list(map(int,data[3:3+n])); toppings=list(map(int,data[3+n:])); answer=pizzas[0]\n    for pizza in pizzas:\n        extras=[0]+toppings+[toppings[i]+toppings[j] for i in range(m) for j in range(i,m)]\n        for extra in extras:\n            cost=pizza+extra\n            if (abs(cost-target),cost)<(abs(answer-target),answer):answer=cost\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只允许一种配料",
+    "code": "def solve(data):\n    n,m,target=map(int,data[:3]); pizzas=list(map(int,data[3:3+n])); toppings=list(map(int,data[3+n:])); answer=pizzas[0]\n    for pizza in pizzas:\n        extras=[0]+toppings+[toppings[i]+toppings[j] for i in range(m) for j in range(m,m)]\n        for extra in extras:\n            cost=pizza+extra\n            if (abs(cost-target),cost)<(abs(answer-target),answer):answer=cost\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

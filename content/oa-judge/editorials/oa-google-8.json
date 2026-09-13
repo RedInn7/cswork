@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-8",
+  "title": "最小编号储物柜",
+  "explanation": "## 思路\n\n用哈希表记录每位访客占用的柜子，最小堆保存已释放的编号；没有可复用编号时使用递增的新编号。\n\n## 为什么正确\n\n未使用过的柜子编号都不小于 next，已释放柜子的最小编号由堆顶给出且小于 next。因此每次分配恰为所有空闲柜子的最小值。仅在分配时更新答案，便保留了最后一次分配结果。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    import heapq\n    occupied={}; free=[]; next_id=1; answer=0\n    for visitor in data[1:]:\n        if visitor in occupied:heapq.heappush(free,occupied.pop(visitor))\n        else:\n            if free:answer=heapq.heappop(free)\n            else:answer=next_id; next_id+=1\n            occupied[visitor]=answer\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#8-assign-locker",
+  "sourceContentHash": "36ebe1be5205cbe0b10aceba7d7508822373fe9f56135b62e105785fed64f484",
+  "author": "CSWork"
+}

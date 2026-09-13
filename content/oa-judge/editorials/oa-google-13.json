@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-13",
+  "title": "最接近预算的披萨订单",
+  "explanation": "## 思路\n\n枚举每份披萨，以及不加配料、加一种和加两种不同下标配料。用 (绝对差值, 总价) 比较候选。\n\n## 为什么正确\n\n任何合法订单都恰好包含一份披萨和一个大小不超过 2 的配料集合，枚举完整覆盖这些集合且不重复使用同一种配料。比较规则先最小差值后最小价格，与题意一致。\n\n## 复杂度\n\n时间 O(nm²+n)，额外空间 O(m²+1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,m,target=map(int,data[:3]); pizzas=list(map(int,data[3:3+n])); toppings=list(map(int,data[3+n:])); answer=pizzas[0]\n    for pizza in pizzas:\n        extras=[0]+toppings+[toppings[i]+toppings[j] for i in range(m) for j in range(i+1,m)]\n        for extra in extras:\n            cost=pizza+extra\n            if (abs(cost-target),cost)<(abs(answer-target),answer):answer=cost\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#13-pizza-shop-google-tokyo",
+  "sourceContentHash": "004809fae240ffcd6a2d112782a0147034f1b131480814a2d0c746fdb503f5d0",
+  "author": "CSWork"
+}

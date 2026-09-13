@@ -1,0 +1,10 @@
+[
+  {
+    "name": "强制全部不重复",
+    "code": "def solve(data):\n    from collections import Counter\n    a=list(map(int,data[1:])); limit=1; counts=Counter(); left=0; answer=0\n    for right,value in enumerate(a):\n        counts[value]+=1\n        while counts[value]>limit:counts[a[left]]-=1; left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "使用全局最大频数",
+    "code": "def solve(data):\n    from collections import Counter\n    a=list(map(int,data[1:])); limit=max(Counter(a).values()); counts=Counter(); left=0; answer=0\n    for right,value in enumerate(a):\n        counts[value]+=1\n        while counts[value]>limit:counts[a[left]]-=1; left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
