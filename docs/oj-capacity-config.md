@@ -25,3 +25,11 @@ docker build -f deploy/oj/Dockerfile.capacity \
 先暂停并排空评测队列，再使用新 compose 重建 sandbox，核验健康检查和参数，最后恢复队列。保留旧镜像及旧 compose 用于回退。`Dockerfile.capacity` 不适合跨工具链版本更新；全新安装继续使用完整 Dockerfile。完整重建也使用新标签 `cswork-go-judge:1.12.3-seccomp-capacity4`，与 compose 保持一致。
 
 对照测试分别记录排队时间、反馈 P50/P95、单位时间完成数，以及 sandbox cgroup 的 CPU 累计时间/墙钟时间、节流时间和网页响应时间。不要把本机配置检查当作线上容量验证。
+
+## 本次无数据库变更的发布
+
+`deploy/oj-capacity-release.sh <新提交SHA> <线上基准SHA> <已测worker绝对路径>` 仅适用于已经审查确认不改变网页、依赖或数据库结构的 worker 更新。先核对基准与变更范围、构建文件的 SHA-256，再运行。它复制旧发布的网页和依赖，仅替换 worker，记录 `RELEASE_KIND` 和基准 SHA；不执行迁移，也不改动或删除现有数据库备份。完整更新仍使用原有 `deploy/install.sh` 的备份与迁移流程。
+
+发布会拒绝原本已暂停的队列，排空正在评测的任务，再切换 runner/worker。失败恢复旧容器、配置与发布目录；只有 runner 健康且 worker 出现新的健康心跳后才恢复队列。旧 runner 停止保留用于回退，不占运行内存。网页服务不重启。
+
+并发开关 `OJ_WORKER_CONCURRENCY` 只接受 1 或 2，默认 2。快照大于 8 MiB、输出上限大于 8 MiB，或执行内存上限大于 512 MiB 的提交独占 worker，FIFO 等待可取消。此限制保留原来的大任务单提交内存边界，并非允许任意数量大任务并行。

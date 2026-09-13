@@ -97,6 +97,10 @@ set +a
 export ES_AUTH_TOKEN="$GO_JUDGE_TOKEN"
 # Same security, network and resource settings as the reviewed compose service.
 docker run -d --name cswork-oj-sandbox --restart unless-stopped \
+  --label com.docker.compose.project=cswork-oj --label com.docker.compose.service=sandbox \
+  --label com.docker.compose.container-number=1 --label com.docker.compose.oneoff=False \
+  --label com.docker.compose.project.working_dir=/srv/cswork/oj \
+  --label com.docker.compose.project.config_files=/srv/cswork/oj/compose.yaml \
   --network cswork-oj_judge --network-alias sandbox \
   --cgroupns private --cap-add SYS_ADMIN --cap-drop NET_RAW \
   --security-opt apparmor=unconfined --security-opt systempaths=unconfined \
