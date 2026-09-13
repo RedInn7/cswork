@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略交换奇偶",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));seen=bytearray(n);cycles=0\n    for i in range(n):\n        if seen[i]:continue\n        cycles+=1;j=i\n        while not seen[j]:seen[j]=1;j=p[j]-1\n    minimum=n-cycles\n    return ''.join('1' if n>1 and int(v)>=minimum else '0' for v in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "单元素也允许空转",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));seen=bytearray(n);cycles=0\n    for i in range(n):\n        if seen[i]:continue\n        cycles+=1;j=i\n        while not seen[j]:seen[j]=1;j=p[j]-1\n    minimum=n-cycles\n    return ''.join('1' if int(v)>=minimum and (int(v)-minimum)%2==0 else '0' for v in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-61",
+      "batch": "amazon-remaining-e",
+      "sourceContentHash": "c11a1bc53a141016ed6484c1f00e4d83c21b90165052fa927285e0105d8f23c9",
+      "previousReason": "原n可到10⁶，其1..n排列标准十进制输入约6.9MB，必超过当前单用例4MiB限制；不能悄悄缩小约束。",
+      "reason": "隐藏输入统一扩容至32MiB，保留原百万排列范围，使用完整上界输入、独立小规模oracle和错误程序验证；仅在真实沙箱报告通过后开放。"
+    },
+    {
+      "id": "oa-amazon-72",
+      "batch": "amazon-remaining-e",
+      "sourceContentHash": "8edbee154303a12a582888500ec0b8560007abec32297f656b3714314f920a99",
+      "previousReason": "算法已独立验证，但n=m=100000、X=200000、价格10⁹且不兼容对为高编号时，合法标准输入超过4MiB限制；现有较小编码大例不足以覆盖，需统一扩容后再接入，不缩小原约束。",
+      "reason": "隐藏输入统一扩容至32MiB，保留n=m=100000、X=200000、价格10⁹范围，补足最长编码边界，使用独立oracle和错误程序验证；仅在真实沙箱报告通过后开放。"
+    },
+    {
+      "id": "oa-amazon-94",
+      "batch": "amazon-remaining-e",
+      "sourceContentHash": "a7600ae8a76040c270cb44bf5cac1da220821be1e0d4656d568ee23009167612",
+      "previousReason": "n=500000且数值10⁹的合法输入约5.5MB，超过当前4MiB输入限制。",
+      "reason": "隐藏输入统一扩容至32MiB，保留50万项和10⁹数值范围，使用完整上界输入、独立oracle和错误程序验证；仅在真实沙箱报告通过后开放。"
+    }
+  ]
+}

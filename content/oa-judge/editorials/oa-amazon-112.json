@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-112",
+  "title": "多次环线最短距离之和",
+  "explanation": "## 思路\n\n前缀和给出线性展开中的距离d，环上最短为min(d,周长−d)，逐查询相加。\n\n## 正确性证明\n\n正边权环的最短路径一定是不绕圈的两条简单弧之一，前缀差和周长补数恰好是两弧长度。查询互相独立，因此分别最小化后求和。\n\n## 复杂度\n\n时间O(n+q)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for i in range(2,2+n):prefix.append(prefix[-1]+int(d[i]))\n    total=0\n    for i in range(2+n,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);distance=abs(prefix[a]-prefix[b]);total+=min(distance,prefix[-1]-distance)\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#112-circular-route-query-distance",
+  "sourceContentHash": "ce96a93613b338ac895b17f95d10ae3ad5fe90642d5a2ad12c0598439adfbeb2",
+  "author": "CSWork"
+}

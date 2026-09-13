@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-30",
+  "title": "可更新数组的两数和计数",
+  "explanation": "## 思路\n\n维护b的频次。更新先减旧值频次再加新值；查询枚举a的每个数，累加target减该数在b中的次数。\n\n## 正确性\n\n固定a下标时，b中所有补数下标都是且仅是合法搭配。不同a下标对应不同对，因此频次数相加准确；更新前后频次与数组保持一致。\n\n## 复杂度\n\n时间O(nb+q·na)，空间O(nb+q+na)，其中查询存储属于输入解析。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(d):\n    na,nb,q=map(int,d[:3]);a=list(map(int,d[3:3+na]));b=list(map(int,d[3+na:3+na+nb]));counts=Counter(b);cursor=3+na+nb;result=[]\n    for _ in range(q):\n        kind=int(d[cursor]);cursor+=1\n        if kind==0:\n            index,x=map(int,d[cursor:cursor+2]);cursor+=2;counts[b[index]]-=1;b[index]+=x;counts[b[index]]+=1\n        else:\n            target=int(d[cursor]);cursor+=1;result.append(str(sum(counts.get(target-v,0) for v in a)))\n    return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#30-count-ways-to-reach-a-sum",
+  "sourceContentHash": "72a1c7a52b98e878fdeda4f25f0d352dbf3e6348d583ad7c1a65252856b2bcda",
+  "author": "CSWork"
+}

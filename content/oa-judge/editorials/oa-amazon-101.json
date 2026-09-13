@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-101",
+  "title": "拼接子数组中比未使用值小的元素总数",
+  "explanation": "## 思路\n\n差分求每个原下标在拼接数组中的出现次数。按数值排序并合并同值组，累计更小值的带权出现次数，每个未用位置贡献该前缀权重。\n\n## 正确性证明\n\n拼接中每个下标的重数等于覆盖它的区间数。按相同值整组先查询后加入，只统计严格更小值；覆盖次数为0恰好就是未使用位置，因此带权前缀求和与显式拼接完全相同。\n\n## 复杂度\n\n时间O(n log n+m)，空间O(n)，无需生成长度可能nm的拼接数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));diff=[0]*(n+1)\n    for i in range(2+n,len(d),2):l,r=int(d[i]),int(d[i+1]);diff[l]+=1;diff[r+1]-=1\n    active=0;items=[]\n    for i,v in enumerate(a):active+=diff[i];items.append((v,active))\n    items.sort();prefix=answer=0;i=0\n    while i<n:\n        j=i;weight=unused=0\n        while j<n and items[j][0]==items[i][0]:weight+=items[j][1];unused+=items[j][1]==0;j+=1\n        answer+=unused*prefix;prefix+=weight;i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#101-calculate-beauty-values",
+  "sourceContentHash": "fc5442e922516e125c4bd89da5be9f8500aa06b8a11e59910323863c9e10cd47",
+  "author": "CSWork"
+}

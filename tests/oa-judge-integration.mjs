@@ -3,7 +3,14 @@
  * This intentionally does not run in CI. Never reads or copies a production DB.
  */
 import assert from 'node:assert/strict';
-import { mkdtempSync, chmodSync, readFileSync, rmSync } from 'node:fs';
+import {
+  mkdtempSync,
+  chmodSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  statfsSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, join, dirname } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -14,6 +21,7 @@ import Database from 'better-sqlite3';
 import { drizzle } from 'drizzle-orm/better-sqlite3';
 import { migrate } from 'drizzle-orm/better-sqlite3/migrator';
 import { Queue } from 'bullmq';
+import { probeLargeInputs } from './oj-large-input-probe.mjs';
 
 // Public firstFailure contract: each field is capped at 32 KiB, without
 // splitting a UTF-8 character (oj-case-store.ts / submissionDetail).
@@ -108,7 +116,7 @@ const env = {
   PORT: '4318',
   OJ_ENABLED: 'true',
   OJ_QUEUE_NAME: queueName,
-  OJ_WORKER_CONCURRENCY: '1',
+  OJ_WORKER_CONCURRENCY: process.env.TEST_LARGE_INPUT === '1' ? '2' : '1',
   OJ_PRECOMPILE_ENABLED: 'false',
   GO_JUDGE_URL: runner.href,
   GO_JUDGE_TOKEN: process.env.GO_JUDGE_TOKEN,
@@ -191,6 +199,20 @@ async function request(path, user, status = 200, data) {
   return result;
 }
 try {
+  // SQLite publication can temporarily hold the main DB, WAL and transaction
+  // copies. Refuse to start before that can exhaust a shared production disk.
+  const storage = statfsSync(dir, { bigint: true });
+  const packageBytes = selected.items.reduce(
+    (total, item) =>
+      total +
+      BigInt(statSync(`content/oa-judge/packages/${item.id}.json`).size),
+    0n,
+  );
+  const requiredBytes = 512n * 1024n * 1024n + packageBytes * 6n;
+  assert(
+    storage.bavail * storage.bsize >= requiredBytes,
+    'Insufficient disk reserve for isolated OA publication; free rebuildable cache before testing',
+  );
   await new Promise((accept, reject) => {
     const probe = createServer();
     probe.once('error', reject);
@@ -340,6 +362,12 @@ for height in range(right,left-1,-1): circle.extend([height]*counts[height])
 circle.reverse(); print(len(circle)); print(*circle)
 `,
   };
+  for (const id of ['oa-uber-25', 'oa-uber-34', 'oa-uber-38'])
+    if (selected.items.some((item) => item.id === id))
+      equivalentPrograms[id] = readFileSync(
+        `content/oa-judge/positive-controls/${id}.py`,
+        'utf8',
+      );
   const wrongOutput = 'CSWORK_DELIBERATE_WRONG_ANSWER';
   for (const [index, item] of selected.items.entries()) {
     const student = students[index];
@@ -563,6 +591,8 @@ else:
       .filter((c) => c.hidden)
       .every((c) => !('stdin' in c) && !('expected' in c)),
   );
+  if (process.env.TEST_LARGE_INPUT === '1')
+    await probeLargeInputs({ db, request, identity, until, web, worker });
   console.log(
     JSON.stringify({
       event: 'oa_judge_integration_complete',

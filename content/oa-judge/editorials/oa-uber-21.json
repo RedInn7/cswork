@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-21",
+  "title": "成对开放国家后的可达数总和",
+  "explanation": "## 思路\n\nR数为偶数时可全部开放。为奇数时只需留下一个R。删除每个候选R后，其每个相邻连通块都给块内起点提供一个可达规模；Euler序把这些块表示为子树区间或子树补集，用区间取最大值聚合。\n\n## 正确性\n\n更多开放不会降低可达数，因此偶数R全开、奇数R只留一个必有最优解。删除v后的每个子树分支大小为size[c]，父方向为n−size[v]。覆盖所有候选v的各分支并对每个起点取最大，恰好枚举所有最优方案。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);s=d[1]\n    if s.count('R')%2==0:return str(n*n)\n    graph=[[] for _ in range(n)]\n    for i in range(2,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);graph[a].append(b);graph[b].append(a)\n    parent=[-1]*n;order=[];stack=[0]\n    while stack:\n        v=stack.pop();order.append(v)\n        for w in graph[v]:\n            if w!=parent[v]:parent[w]=v;stack.append(w)\n    position=[0]*n;size=[1]*n\n    for i,v in enumerate(order):position[v]=i\n    for v in reversed(order[1:]):size[parent[v]]+=size[v]\n    base=1\n    while base<n:base*=2\n    lazy=[0]*(2*base)\n    def update(left,right,value):\n        left+=base;right+=base\n        while left<right:\n            if left&1:lazy[left]=max(lazy[left],value);left+=1\n            if right&1:right-=1;lazy[right]=max(lazy[right],value)\n            left//=2;right//=2\n    for v in range(n):\n        if s[v]!='R':continue\n        update(0,position[v],n-size[v]);update(position[v]+size[v],n,n-size[v])\n        for w in graph[v]:\n            if parent[w]==v:update(position[w],position[w]+size[w],size[w])\n    for i in range(1,base):lazy[2*i]=max(lazy[2*i],lazy[i]);lazy[2*i+1]=max(lazy[2*i+1],lazy[i])\n    return str(sum(lazy[base:base+n]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#21-calculate-visited-countries",
+  "sourceContentHash": "f3b196adde19c78fbc6b88483fa6b2ae2c142ce82e0a2f87d199d968087d36d7",
+  "author": "CSWork"
+}

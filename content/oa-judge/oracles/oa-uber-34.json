@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\n4 10:00\nMain Gate\n1 10:10\nMain Gate\n3 10:20\nMain Gate\n",
+    "expectedOutput": "2\n1 4\n2 1 3\n"
+  },
+  {
+    "input": "4\n8 00:00\nA\n2 00:00\nA\n5 00:00\nA\n1 00:00\nA\n",
+    "expectedOutput": "2\n1 8\n3 1 2 5\n"
+  },
+  {
+    "input": "2\n10 00:00\nA\n11 00:00\nB\n",
+    "expectedOutput": "2\n1 10\n1 11\n"
+  },
+  {
+    "input": "8\n1 00:03\nA\n2 00:07\nA\n3 00:20\nA\n4 00:01\nB\n5 00:04\nB\n6 00:08\nB\n7 00:24\nB\n8 00:26\nA\n",
+    "expectedOutput": "4\n2 1 2\n2 3 8\n3 4 5 6\n1 7\n"
+  },
+  {
+    "input": "4\n1 00:02\nA\n2 00:23\nA\n3 00:23\nA\n4 00:12\nB\n",
+    "expectedOutput": "3\n1 1\n2 2 3\n1 4\n"
+  },
+  {
+    "input": "7\n1 00:26\nB\n2 00:02\nA\n3 00:28\nB\n4 00:15\nB\n5 00:01\nA\n6 00:02\nB\n7 00:18\nA\n",
+    "expectedOutput": "5\n2 1 3\n2 2 5\n1 4\n1 6\n1 7\n"
+  },
+  {
+    "input": "4\n1 00:27\nB\n2 00:23\nB\n3 00:10\nB\n4 00:19\nB\n",
+    "expectedOutput": "2\n2 1 2\n2 3 4\n"
+  },
+  {
+    "input": "6\n1 00:17\nB\n2 00:22\nB\n3 00:07\nA\n4 00:30\nB\n5 00:28\nA\n6 00:22\nB\n",
+    "expectedOutput": "4\n1 1\n3 2 4 6\n1 3\n1 5\n"
+  },
+  {
+    "input": "5\n1 00:24\nB\n2 00:10\nB\n3 00:26\nB\n4 00:05\nA\n5 00:21\nA\n",
+    "expectedOutput": "4\n2 1 3\n1 2\n1 4\n1 5\n"
+  },
+  {
+    "input": "2\n1 00:11\nB\n2 00:25\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "6\n1 00:24\nA\n2 00:10\nA\n3 00:05\nB\n4 00:08\nA\n5 00:25\nB\n6 00:28\nA\n",
+    "expectedOutput": "4\n2 1 6\n2 2 4\n1 3\n1 5\n"
+  },
+  {
+    "input": "6\n1 00:23\nB\n2 00:28\nB\n3 00:30\nB\n4 00:30\nB\n5 00:19\nA\n6 00:27\nB\n",
+    "expectedOutput": "3\n2 1 2\n3 3 4 6\n1 5\n"
+  },
+  {
+    "input": "1\n1 00:14\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "6\n1 00:15\nA\n2 00:11\nA\n3 00:24\nA\n4 00:24\nB\n5 00:28\nA\n6 00:28\nA\n",
+    "expectedOutput": "3\n2 1 2\n3 3 5 6\n1 4\n"
+  },
+  {
+    "input": "4\n1 00:04\nB\n2 00:04\nA\n3 00:19\nA\n4 00:05\nB\n",
+    "expectedOutput": "3\n2 1 4\n1 2\n1 3\n"
+  },
+  {
+    "input": "7\n1 00:00\nA\n2 00:18\nA\n3 00:09\nA\n4 00:27\nA\n5 00:19\nB\n6 00:09\nB\n7 00:19\nB\n",
+    "expectedOutput": "3\n2 1 3\n2 2 4\n3 5 6 7\n"
+  },
+  {
+    "input": "4\n1 00:04\nA\n2 00:24\nA\n3 00:02\nB\n4 00:30\nB\n",
+    "expectedOutput": "4\n1 1\n1 2\n1 3\n1 4\n"
+  },
+  {
+    "input": "6\n1 00:02\nA\n2 00:30\nA\n3 00:01\nB\n4 00:15\nA\n5 00:03\nB\n6 00:11\nB\n",
+    "expectedOutput": "4\n1 1\n1 2\n3 3 5 6\n1 4\n"
+  },
+  {
+    "input": "8\n1 00:12\nB\n2 00:28\nA\n3 00:03\nB\n4 00:30\nB\n5 00:17\nB\n6 00:03\nB\n7 00:16\nB\n8 00:17\nA\n",
+    "expectedOutput": "5\n3 1 3 6\n1 2\n1 4\n2 5 7\n1 8\n"
+  },
+  {
+    "input": "7\n1 00:01\nB\n2 00:22\nA\n3 00:22\nA\n4 00:25\nA\n5 00:16\nB\n6 00:22\nB\n7 00:08\nA\n",
+    "expectedOutput": "4\n1 1\n3 2 3 4\n2 5 6\n1 7\n"
+  },
+  {
+    "input": "4\n1 00:07\nA\n2 00:17\nA\n3 00:11\nA\n4 00:25\nA\n",
+    "expectedOutput": "2\n2 1 3\n2 2 4\n"
+  },
+  {
+    "input": "5\n1 00:18\nB\n2 00:18\nB\n3 00:14\nA\n4 00:13\nB\n5 00:01\nB\n",
+    "expectedOutput": "3\n3 1 2 4\n1 3\n1 5\n"
+  },
+  {
+    "input": "8\n1 00:03\nA\n2 00:16\nA\n3 00:11\nB\n4 00:05\nA\n5 00:14\nA\n6 00:28\nA\n7 00:11\nA\n8 00:06\nA\n",
+    "expectedOutput": "4\n3 1 4 7\n3 2 5 8\n1 3\n1 6\n"
+  },
+  {
+    "input": "8\n1 00:27\nB\n2 00:18\nB\n3 00:15\nA\n4 00:02\nB\n5 00:01\nA\n6 00:22\nB\n7 00:10\nA\n8 00:05\nA\n",
+    "expectedOutput": "4\n3 1 2 6\n1 3\n1 4\n3 5 7 8\n"
+  },
+  {
+    "input": "1\n1 00:30\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "3\n1 00:25\nA\n2 00:19\nA\n3 00:22\nB\n",
+    "expectedOutput": "2\n2 1 2\n1 3\n"
+  },
+  {
+    "input": "4\n1 00:14\nA\n2 00:30\nB\n3 00:29\nA\n4 00:19\nB\n",
+    "expectedOutput": "4\n1 1\n1 2\n1 3\n1 4\n"
+  },
+  {
+    "input": "5\n1 00:21\nA\n2 00:25\nB\n3 00:16\nB\n4 00:13\nA\n5 00:28\nA\n",
+    "expectedOutput": "3\n2 1 4\n2 2 3\n1 5\n"
+  },
+  {
+    "input": "1\n1 00:13\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "6\n1 00:05\nA\n2 00:30\nA\n3 00:04\nB\n4 00:00\nA\n5 00:08\nA\n6 00:17\nB\n",
+    "expectedOutput": "4\n3 1 4 5\n1 2\n1 3\n1 6\n"
+  },
+  {
+    "input": "4\n1 00:18\nB\n2 00:16\nA\n3 00:13\nA\n4 00:26\nA\n",
+    "expectedOutput": "3\n1 1\n2 2 3\n1 4\n"
+  },
+  {
+    "input": "7\n1 00:15\nA\n2 00:19\nA\n3 00:22\nA\n4 00:19\nA\n5 00:09\nA\n6 00:30\nA\n7 00:08\nB\n",
+    "expectedOutput": "4\n1 1\n3 2 4 5\n2 3 6\n1 7\n"
+  },
+  {
+    "input": "5\n1 00:30\nB\n2 00:26\nA\n3 00:20\nB\n4 00:29\nA\n5 00:03\nA\n",
+    "expectedOutput": "3\n2 1 3\n2 2 4\n1 5\n"
+  },
+  {
+    "input": "8\n1 00:04\nB\n2 00:19\nA\n3 00:05\nA\n4 00:30\nA\n5 00:09\nA\n6 00:26\nA\n7 00:17\nA\n8 00:29\nA\n",
+    "expectedOutput": "4\n1 1\n2 2 7\n2 3 5\n3 4 6 8\n"
+  },
+  {
+    "input": "6\n1 00:21\nA\n2 00:12\nA\n3 00:11\nA\n4 00:04\nA\n5 00:03\nA\n6 00:23\nA\n",
+    "expectedOutput": "3\n2 1 2\n3 3 4 5\n1 6\n"
+  },
+  {
+    "input": "8\n1 00:19\nB\n2 00:24\nB\n3 00:02\nA\n4 00:05\nB\n5 00:21\nA\n6 00:24\nA\n7 00:05\nB\n8 00:21\nB\n",
+    "expectedOutput": "4\n3 1 2 8\n1 3\n2 4 7\n2 5 6\n"
+  },
+  {
+    "input": "4\n1 00:29\nB\n2 00:25\nB\n3 00:21\nB\n4 00:05\nB\n",
+    "expectedOutput": "2\n3 1 2 3\n1 4\n"
+  },
+  {
+    "input": "2\n1 00:02\nA\n2 00:17\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "6\n1 00:23\nA\n2 00:13\nA\n3 00:29\nB\n4 00:30\nB\n5 00:04\nA\n6 00:06\nB\n",
+    "expectedOutput": "4\n1 1\n2 2 5\n2 3 4\n1 6\n"
+  },
+  {
+    "input": "4\n1 00:14\nA\n2 00:27\nB\n3 00:28\nA\n4 00:01\nA\n",
+    "expectedOutput": "4\n1 1\n1 2\n1 3\n1 4\n"
+  },
+  {
+    "input": "8\n1 00:09\nA\n2 00:26\nA\n3 00:11\nB\n4 00:16\nB\n5 00:26\nA\n6 00:09\nA\n7 00:24\nA\n8 00:05\nA\n",
+    "expectedOutput": "3\n3 1 6 8\n3 2 5 7\n2 3 4\n"
+  },
+  {
+    "input": "4\n1 00:09\nA\n2 00:29\nB\n3 00:08\nA\n4 00:22\nA\n",
+    "expectedOutput": "3\n2 1 3\n1 2\n1 4\n"
+  },
+  {
+    "input": "8\n1 00:09\nB\n2 00:24\nA\n3 00:20\nA\n4 00:22\nA\n5 00:15\nA\n6 00:15\nB\n7 00:02\nA\n8 00:05\nA\n",
+    "expectedOutput": "4\n2 1 6\n1 2\n3 3 4 5\n2 7 8\n"
+  },
+  {
+    "input": "3\n1 00:21\nB\n2 00:04\nA\n3 00:19\nB\n",
+    "expectedOutput": "2\n2 1 3\n1 2\n"
+  },
+  {
+    "input": "5\n1 00:29\nA\n2 00:09\nA\n3 00:16\nA\n4 00:15\nA\n5 00:26\nB\n",
+    "expectedOutput": "3\n1 1\n3 2 3 4\n1 5\n"
+  },
+  {
+    "input": "1\n1 00:18\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "7\n1 00:30\nB\n2 00:17\nB\n3 00:11\nB\n4 00:08\nB\n5 00:07\nB\n6 00:10\nA\n7 00:08\nA\n",
+    "expectedOutput": "4\n1 1\n1 2\n3 3 4 5\n2 6 7\n"
+  },
+  {
+    "input": "2\n1 00:28\nB\n2 00:03\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "1\n1 00:22\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "6\n1 00:26\nA\n2 00:10\nA\n3 00:22\nA\n4 00:23\nA\n5 00:27\nB\n6 00:15\nB\n",
+    "expectedOutput": "4\n3 1 3 4\n1 2\n1 5\n1 6\n"
+  },
+  {
+    "input": "6\n1 00:26\nB\n2 00:21\nB\n3 00:22\nB\n4 00:27\nB\n5 00:08\nB\n6 00:00\nA\n",
+    "expectedOutput": "4\n1 1\n3 2 3 4\n1 5\n1 6\n"
+  },
+  {
+    "input": "6\n1 00:29\nA\n2 00:05\nA\n3 00:24\nA\n4 00:01\nA\n5 00:17\nA\n6 00:27\nA\n",
+    "expectedOutput": "3\n1 1\n2 2 4\n3 3 5 6\n"
+  },
+  {
+    "input": "7\n1 00:08\nB\n2 00:26\nB\n3 00:15\nA\n4 00:01\nA\n5 00:15\nA\n6 00:00\nA\n7 00:09\nB\n",
+    "expectedOutput": "4\n2 1 7\n1 2\n2 3 5\n2 4 6\n"
+  },
+  {
+    "input": "4\n1 00:23\nA\n2 00:26\nA\n3 00:21\nB\n4 00:25\nB\n",
+    "expectedOutput": "2\n2 1 2\n2 3 4\n"
+  },
+  {
+    "input": "5\n1 00:01\nA\n2 00:14\nB\n3 00:10\nB\n4 00:29\nA\n5 00:17\nB\n",
+    "expectedOutput": "3\n1 1\n3 2 3 5\n1 4\n"
+  },
+  {
+    "input": "4\n1 00:03\nB\n2 00:29\nA\n3 00:01\nB\n4 00:20\nB\n",
+    "expectedOutput": "3\n2 1 3\n1 2\n1 4\n"
+  },
+  {
+    "input": "1\n1 00:12\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "2\n1 00:21\nA\n2 00:14\nA\n",
+    "expectedOutput": "1\n2 1 2\n"
+  },
+  {
+    "input": "7\n1 00:30\nB\n2 00:05\nB\n3 00:10\nB\n4 00:15\nB\n5 00:06\nA\n6 00:24\nB\n7 00:00\nB\n",
+    "expectedOutput": "4\n1 1\n3 2 3 7\n2 4 6\n1 5\n"
+  },
+  {
+    "input": "2\n1 00:10\nB\n2 00:18\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "7\n1 00:21\nA\n2 00:15\nB\n3 00:14\nA\n4 00:28\nB\n5 00:15\nB\n6 00:23\nB\n7 00:28\nB\n",
+    "expectedOutput": "3\n2 1 3\n2 2 5\n3 4 6 7\n"
+  },
+  {
+    "input": "1\n1 00:07\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "8\n1 00:27\nB\n2 00:27\nB\n3 00:09\nA\n4 00:10\nB\n5 00:23\nB\n6 00:09\nB\n7 00:03\nA\n8 00:25\nA\n",
+    "expectedOutput": "4\n3 1 2 5\n2 3 7\n2 4 6\n1 8\n"
+  },
+  {
+    "input": "2\n1 00:17\nA\n2 00:28\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "2\n1 00:05\nB\n2 00:16\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "1\n1 00:08\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "1\n1 00:17\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "7\n1 00:16\nB\n2 00:24\nA\n3 00:10\nB\n4 00:16\nB\n5 00:25\nB\n6 00:23\nA\n7 00:16\nB\n",
+    "expectedOutput": "3\n2 1 3\n2 2 6\n3 4 5 7\n"
+  },
+  {
+    "input": "5\n1 00:29\nA\n2 00:12\nA\n3 00:13\nA\n4 00:00\nA\n5 00:08\nA\n",
+    "expectedOutput": "3\n1 1\n2 2 3\n2 4 5\n"
+  },
+  {
+    "input": "3\n1 00:28\nB\n2 00:01\nB\n3 00:27\nB\n",
+    "expectedOutput": "2\n2 1 3\n1 2\n"
+  },
+  {
+    "input": "4\n1 00:00\nA\n2 00:18\nB\n3 00:02\nA\n4 00:10\nA\n",
+    "expectedOutput": "2\n3 1 3 4\n1 2\n"
+  },
+  {
+    "input": "6\n1 00:16\nB\n2 00:24\nB\n3 00:23\nA\n4 00:00\nB\n5 00:15\nB\n6 00:06\nA\n",
+    "expectedOutput": "4\n3 1 2 5\n1 3\n1 4\n1 6\n"
+  },
+  {
+    "input": "8\n1 00:06\nA\n2 00:23\nB\n3 00:07\nB\n4 00:05\nB\n5 00:21\nB\n6 00:03\nA\n7 00:19\nB\n8 00:27\nA\n",
+    "expectedOutput": "4\n2 1 6\n3 2 5 7\n2 3 4\n1 8\n"
+  },
+  {
+    "input": "6\n1 00:22\nB\n2 00:27\nB\n3 00:23\nA\n4 00:24\nA\n5 00:19\nA\n6 00:24\nB\n",
+    "expectedOutput": "2\n3 1 2 6\n3 3 4 5\n"
+  },
+  {
+    "input": "2\n1 00:05\nA\n2 00:08\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "6\n1 00:25\nA\n2 00:10\nB\n3 00:18\nB\n4 00:07\nB\n5 00:17\nA\n6 00:07\nA\n",
+    "expectedOutput": "4\n1 1\n2 2 3\n1 4\n2 5 6\n"
+  },
+  {
+    "input": "6\n1 00:08\nA\n2 00:02\nB\n3 00:16\nA\n4 00:15\nB\n5 00:24\nA\n6 00:28\nA\n",
+    "expectedOutput": "4\n2 1 3\n1 2\n1 4\n2 5 6\n"
+  },
+  {
+    "input": "2\n1 00:10\nB\n2 00:14\nB\n",
+    "expectedOutput": "1\n2 1 2\n"
+  },
+  {
+    "input": "7\n1 00:22\nA\n2 00:12\nB\n3 00:29\nA\n4 00:03\nB\n5 00:21\nB\n6 00:25\nB\n7 00:02\nB\n",
+    "expectedOutput": "3\n2 1 3\n3 2 4 7\n2 5 6\n"
+  },
+  {
+    "input": "4\n1 00:25\nB\n2 00:19\nB\n3 00:04\nA\n4 00:07\nA\n",
+    "expectedOutput": "2\n2 1 2\n2 3 4\n"
+  },
+  {
+    "input": "2\n1 00:07\nB\n2 00:18\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "6\n1 00:15\nB\n2 00:00\nA\n3 00:22\nB\n4 00:24\nB\n5 00:04\nB\n6 00:07\nB\n",
+    "expectedOutput": "3\n3 1 3 4\n1 2\n2 5 6\n"
+  },
+  {
+    "input": "5\n1 00:05\nB\n2 00:04\nB\n3 00:07\nB\n4 00:02\nB\n5 00:25\nA\n",
+    "expectedOutput": "3\n1 1\n3 2 3 4\n1 5\n"
+  },
+  {
+    "input": "4\n1 00:21\nB\n2 00:03\nB\n3 00:07\nB\n4 00:15\nA\n",
+    "expectedOutput": "3\n1 1\n2 2 3\n1 4\n"
+  },
+  {
+    "input": "5\n1 00:02\nA\n2 00:26\nB\n3 00:24\nA\n4 00:26\nA\n5 00:26\nA\n",
+    "expectedOutput": "3\n1 1\n1 2\n3 3 4 5\n"
+  },
+  {
+    "input": "3\n1 00:16\nB\n2 00:29\nB\n3 00:11\nB\n",
+    "expectedOutput": "2\n2 1 3\n1 2\n"
+  },
+  {
+    "input": "5\n1 00:18\nB\n2 00:24\nA\n3 00:03\nB\n4 00:22\nB\n5 00:22\nA\n",
+    "expectedOutput": "3\n2 1 4\n2 2 5\n1 3\n"
+  },
+  {
+    "input": "1\n1 00:23\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "7\n1 00:07\nA\n2 00:28\nB\n3 00:01\nB\n4 00:02\nB\n5 00:15\nB\n6 00:05\nA\n7 00:28\nB\n",
+    "expectedOutput": "4\n2 1 6\n2 2 7\n2 3 4\n1 5\n"
+  },
+  {
+    "input": "8\n1 00:01\nA\n2 00:23\nA\n3 00:11\nB\n4 00:05\nB\n5 00:08\nB\n6 00:15\nB\n7 00:30\nA\n8 00:27\nB\n",
+    "expectedOutput": "5\n1 1\n2 2 7\n1 3\n3 4 5 6\n1 8\n"
+  },
+  {
+    "input": "3\n1 00:25\nB\n2 00:27\nB\n3 00:00\nA\n",
+    "expectedOutput": "2\n2 1 2\n1 3\n"
+  },
+  {
+    "input": "3\n1 00:29\nA\n2 00:07\nA\n3 00:16\nB\n",
+    "expectedOutput": "3\n1 1\n1 2\n1 3\n"
+  },
+  {
+    "input": "2\n1 00:05\nA\n2 00:26\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "4\n1 00:05\nB\n2 00:24\nB\n3 00:01\nA\n4 00:21\nA\n",
+    "expectedOutput": "4\n1 1\n1 2\n1 3\n1 4\n"
+  },
+  {
+    "input": "5\n1 00:27\nB\n2 00:04\nB\n3 00:20\nB\n4 00:15\nB\n5 00:00\nB\n",
+    "expectedOutput": "3\n1 1\n2 2 5\n2 3 4\n"
+  },
+  {
+    "input": "7\n1 00:04\nA\n2 00:23\nB\n3 00:30\nB\n4 00:22\nA\n5 00:22\nA\n6 00:09\nA\n7 00:11\nA\n",
+    "expectedOutput": "3\n3 1 6 7\n2 2 3\n2 4 5\n"
+  },
+  {
+    "input": "4\n1 00:22\nB\n2 00:09\nB\n3 00:03\nA\n4 00:11\nA\n",
+    "expectedOutput": "3\n1 1\n1 2\n2 3 4\n"
+  },
+  {
+    "input": "4\n1 00:07\nA\n2 00:04\nB\n3 00:10\nB\n4 00:12\nA\n",
+    "expectedOutput": "2\n2 1 4\n2 2 3\n"
+  },
+  {
+    "input": "8\n1 00:16\nB\n2 00:14\nA\n3 00:23\nB\n4 00:19\nB\n5 00:24\nB\n6 00:10\nA\n7 00:09\nB\n8 00:28\nA\n",
+    "expectedOutput": "4\n2 1 7\n2 2 6\n3 3 4 5\n1 8\n"
+  },
+  {
+    "input": "2\n1 00:14\nA\n2 00:01\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "7\n1 00:14\nA\n2 00:00\nB\n3 00:25\nA\n4 00:23\nA\n5 00:05\nB\n6 00:24\nA\n7 00:06\nB\n",
+    "expectedOutput": "3\n1 1\n3 2 5 7\n3 3 4 6\n"
+  },
+  {
+    "input": "7\n1 00:04\nA\n2 00:25\nA\n3 00:05\nA\n4 00:02\nB\n5 00:05\nA\n6 00:17\nB\n7 00:07\nB\n",
+    "expectedOutput": "4\n3 1 3 5\n1 2\n1 4\n2 6 7\n"
+  },
+  {
+    "input": "1\n1 00:18\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "6\n1 00:19\nA\n2 00:15\nA\n3 00:16\nB\n4 00:18\nB\n5 00:07\nA\n6 00:16\nB\n",
+    "expectedOutput": "3\n1 1\n2 2 5\n3 3 4 6\n"
+  },
+  {
+    "input": "2\n1 00:27\nA\n2 00:06\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "4\n1 00:20\nB\n2 00:09\nB\n3 00:25\nB\n4 00:04\nB\n",
+    "expectedOutput": "2\n2 1 3\n2 2 4\n"
+  },
+  {
+    "input": "5\n1 00:01\nA\n2 00:23\nA\n3 00:13\nB\n4 00:04\nB\n5 00:05\nB\n",
+    "expectedOutput": "3\n1 1\n1 2\n3 3 4 5\n"
+  },
+  {
+    "input": "8\n1 00:26\nB\n2 00:29\nB\n3 00:01\nB\n4 00:17\nA\n5 00:21\nB\n6 00:09\nA\n7 00:12\nA\n8 00:18\nA\n",
+    "expectedOutput": "4\n3 1 2 5\n1 3\n1 4\n3 6 7 8\n"
+  },
+  {
+    "input": "2\n1 00:23\nA\n2 00:05\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "5\n1 00:28\nB\n2 00:05\nB\n3 00:00\nA\n4 00:06\nA\n5 00:24\nA\n",
+    "expectedOutput": "4\n1 1\n1 2\n2 3 4\n1 5\n"
+  },
+  {
+    "input": "8\n1 00:09\nB\n2 00:00\nB\n3 00:14\nB\n4 00:05\nA\n5 00:23\nB\n6 00:27\nB\n7 00:27\nB\n8 00:13\nA\n",
+    "expectedOutput": "4\n2 1 2\n1 3\n2 4 8\n3 5 6 7\n"
+  },
+  {
+    "input": "5\n1 00:02\nA\n2 00:30\nA\n3 00:06\nB\n4 00:14\nB\n5 00:13\nB\n",
+    "expectedOutput": "3\n1 1\n1 2\n3 3 4 5\n"
+  },
+  {
+    "input": "3\n1 00:15\nA\n2 00:23\nB\n3 00:13\nB\n",
+    "expectedOutput": "2\n1 1\n2 2 3\n"
+  },
+  {
+    "input": "3\n1 00:10\nA\n2 00:26\nA\n3 00:07\nB\n",
+    "expectedOutput": "3\n1 1\n1 2\n1 3\n"
+  },
+  {
+    "input": "1\n1 00:21\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "1\n1 00:02\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "3\n1 00:05\nB\n2 00:13\nB\n3 00:17\nA\n",
+    "expectedOutput": "2\n2 1 2\n1 3\n"
+  },
+  {
+    "input": "3\n1 00:26\nB\n2 00:18\nA\n3 00:30\nB\n",
+    "expectedOutput": "2\n2 1 3\n1 2\n"
+  },
+  {
+    "input": "6\n1 00:10\nB\n2 00:15\nB\n3 00:28\nB\n4 00:16\nA\n5 00:18\nA\n6 00:03\nA\n",
+    "expectedOutput": "4\n2 1 2\n1 3\n2 4 5\n1 6\n"
+  },
+  {
+    "input": "3\n1 00:23\nA\n2 00:15\nA\n3 00:02\nA\n",
+    "expectedOutput": "2\n2 1 2\n1 3\n"
+  },
+  {
+    "input": "5\n1 00:07\nA\n2 00:10\nA\n3 00:12\nB\n4 00:00\nA\n5 00:07\nA\n",
+    "expectedOutput": "3\n1 1\n3 2 4 5\n1 3\n"
+  },
+  {
+    "input": "7\n1 00:24\nB\n2 00:08\nA\n3 00:03\nB\n4 00:09\nB\n5 00:20\nB\n6 00:20\nB\n7 00:17\nB\n",
+    "expectedOutput": "4\n1 1\n1 2\n2 3 4\n3 5 6 7\n"
+  },
+  {
+    "input": "7\n1 00:14\nB\n2 00:22\nB\n3 00:29\nB\n4 00:23\nA\n5 00:00\nA\n6 00:14\nB\n7 00:00\nA\n",
+    "expectedOutput": "4\n2 1 6\n2 2 3\n1 4\n2 5 7\n"
+  },
+  {
+    "input": "8\n1 00:01\nB\n2 00:28\nB\n3 00:01\nB\n4 00:12\nB\n5 00:13\nA\n6 00:09\nB\n7 00:27\nB\n8 00:15\nA\n",
+    "expectedOutput": "4\n2 1 3\n2 2 7\n2 4 6\n2 5 8\n"
+  },
+  {
+    "input": "2\n1 00:18\nA\n2 00:19\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "2\n1 00:05\nA\n2 00:00\nA\n",
+    "expectedOutput": "1\n2 1 2\n"
+  },
+  {
+    "input": "5\n1 00:25\nB\n2 00:25\nB\n3 00:28\nA\n4 00:25\nB\n5 00:25\nB\n",
+    "expectedOutput": "3\n1 1\n3 2 4 5\n1 3\n"
+  },
+  {
+    "input": "1\n1 00:14\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "5\n1 00:27\nB\n2 00:14\nA\n3 00:20\nA\n4 00:04\nA\n5 00:11\nB\n",
+    "expectedOutput": "4\n1 1\n2 2 3\n1 4\n1 5\n"
+  },
+  {
+    "input": "7\n1 00:24\nA\n2 00:17\nA\n3 00:18\nA\n4 00:01\nB\n5 00:22\nA\n6 00:14\nB\n7 00:13\nA\n",
+    "expectedOutput": "4\n2 1 2\n3 3 5 7\n1 4\n1 6\n"
+  },
+  {
+    "input": "5\n1 00:02\nB\n2 00:06\nB\n3 00:23\nA\n4 00:15\nB\n5 00:12\nA\n",
+    "expectedOutput": "4\n1 1\n2 2 4\n1 3\n1 5\n"
+  },
+  {
+    "input": "5\n1 00:30\nB\n2 00:08\nB\n3 00:24\nA\n4 00:26\nA\n5 00:06\nA\n",
+    "expectedOutput": "4\n1 1\n1 2\n2 3 4\n1 5\n"
+  },
+  {
+    "input": "8\n1 00:12\nB\n2 00:13\nA\n3 00:18\nB\n4 00:16\nA\n5 00:14\nB\n6 00:06\nB\n7 00:22\nA\n8 00:30\nB\n",
+    "expectedOutput": "4\n2 1 3\n3 2 4 7\n2 5 6\n1 8\n"
+  },
+  {
+    "input": "5\n1 00:26\nA\n2 00:07\nA\n3 00:12\nB\n4 00:17\nA\n5 00:15\nB\n",
+    "expectedOutput": "3\n1 1\n2 2 4\n2 3 5\n"
+  },
+  {
+    "input": "7\n1 00:06\nB\n2 00:01\nB\n3 00:19\nA\n4 00:14\nB\n5 00:28\nB\n6 00:06\nB\n7 00:10\nB\n",
+    "expectedOutput": "4\n2 1 2\n1 3\n3 4 6 7\n1 5\n"
+  },
+  {
+    "input": "6\n1 00:24\nB\n2 00:07\nA\n3 00:21\nB\n4 00:22\nB\n5 00:13\nA\n6 00:23\nA\n",
+    "expectedOutput": "3\n3 1 3 4\n1 2\n2 5 6\n"
+  },
+  {
+    "input": "7\n1 00:18\nB\n2 00:27\nA\n3 00:11\nB\n4 00:14\nB\n5 00:23\nB\n6 00:00\nA\n7 00:29\nA\n",
+    "expectedOutput": "4\n2 1 3\n2 2 7\n2 4 5\n1 6\n"
+  },
+  {
+    "input": "1\n1 00:19\nB\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "2\n1 00:07\nA\n2 00:19\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "3\n1 00:07\nB\n2 00:23\nB\n3 00:29\nA\n",
+    "expectedOutput": "3\n1 1\n1 2\n1 3\n"
+  },
+  {
+    "input": "2\n1 00:16\nA\n2 00:24\nB\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "4\n1 00:09\nA\n2 00:02\nA\n3 00:23\nA\n4 00:02\nA\n",
+    "expectedOutput": "2\n3 1 2 4\n1 3\n"
+  },
+  {
+    "input": "1\n1 00:28\nA\n",
+    "expectedOutput": "1\n1 1\n"
+  },
+  {
+    "input": "6\n1 00:14\nA\n2 00:00\nA\n3 00:28\nA\n4 00:29\nB\n5 00:02\nA\n6 00:29\nB\n",
+    "expectedOutput": "4\n1 1\n2 2 5\n1 3\n2 4 6\n"
+  },
+  {
+    "input": "4\n1 00:08\nB\n2 00:05\nB\n3 00:02\nA\n4 00:03\nA\n",
+    "expectedOutput": "2\n2 1 2\n2 3 4\n"
+  },
+  {
+    "input": "7\n1 00:06\nB\n2 00:01\nA\n3 00:13\nA\n4 00:21\nB\n5 00:24\nB\n6 00:20\nB\n7 00:08\nA\n",
+    "expectedOutput": "4\n1 1\n1 2\n2 3 7\n3 4 5 6\n"
+  },
+  {
+    "input": "5\n1 00:11\nA\n2 00:30\nB\n3 00:18\nA\n4 00:06\nA\n5 00:16\nA\n",
+    "expectedOutput": "3\n2 1 3\n1 2\n2 4 5\n"
+  },
+  {
+    "input": "2\n1 00:24\nB\n2 00:15\nB\n",
+    "expectedOutput": "1\n2 1 2\n"
+  },
+  {
+    "input": "8\n1 00:21\nA\n2 00:09\nA\n3 00:11\nA\n4 00:00\nB\n5 00:00\nA\n6 00:10\nA\n7 00:03\nA\n8 00:18\nA\n",
+    "expectedOutput": "4\n1 1\n3 2 3 8\n1 4\n3 5 6 7\n"
+  },
+  {
+    "input": "2\n1 00:15\nB\n2 00:05\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "4\n1 00:15\nA\n2 00:30\nB\n3 00:13\nA\n4 00:19\nB\n",
+    "expectedOutput": "3\n2 1 3\n1 2\n1 4\n"
+  },
+  {
+    "input": "3\n1 00:13\nA\n2 00:24\nA\n3 00:00\nB\n",
+    "expectedOutput": "3\n1 1\n1 2\n1 3\n"
+  },
+  {
+    "input": "8\n1 00:25\nB\n2 00:04\nB\n3 00:21\nB\n4 00:00\nA\n5 00:23\nA\n6 00:23\nA\n7 00:27\nA\n8 00:00\nB\n",
+    "expectedOutput": "4\n2 1 3\n2 2 8\n1 4\n3 5 6 7\n"
+  },
+  {
+    "input": "3\n1 00:12\nB\n2 00:26\nB\n3 00:27\nB\n",
+    "expectedOutput": "2\n1 1\n2 2 3\n"
+  },
+  {
+    "input": "2\n1 00:25\nA\n2 00:12\nA\n",
+    "expectedOutput": "2\n1 1\n1 2\n"
+  },
+  {
+    "input": "7\n1 00:10\nA\n2 00:23\nB\n3 00:24\nA\n4 00:07\nA\n5 00:27\nA\n6 00:25\nA\n7 00:28\nA\n",
+    "expectedOutput": "4\n2 1 4\n1 2\n1 3\n3 5 6 7\n"
+  },
+  {
+    "input": "8\n1 00:23\nA\n2 00:08\nA\n3 00:13\nA\n4 00:24\nB\n5 00:23\nB\n6 00:21\nA\n7 00:04\nB\n8 00:15\nB\n",
+    "expectedOutput": "4\n2 1 6\n2 2 3\n3 4 5 8\n1 7\n"
+  },
+  {
+    "input": "8\n1 00:05\nB\n2 00:29\nA\n3 00:26\nA\n4 00:21\nA\n5 00:16\nB\n6 00:20\nA\n7 00:12\nA\n8 00:26\nA\n",
+    "expectedOutput": "4\n1 1\n3 2 3 8\n3 4 6 7\n1 5\n"
+  },
+  {
+    "input": "3\n1 00:10\nB\n2 00:20\nB\n3 00:23\nA\n",
+    "expectedOutput": "2\n2 1 2\n1 3\n"
+  },
+  {
+    "input": "7\n1 00:15\nB\n2 00:18\nA\n3 00:27\nB\n4 00:02\nA\n5 00:13\nA\n6 00:27\nA\n7 00:19\nA\n",
+    "expectedOutput": "5\n1 1\n2 2 5\n1 3\n1 4\n2 6 7\n"
+  },
+  {
+    "input": "6\n1 00:30\nB\n2 00:27\nA\n3 00:15\nB\n4 00:00\nB\n5 00:06\nB\n6 00:24\nB\n",
+    "expectedOutput": "4\n1 1\n1 2\n2 3 6\n2 4 5\n"
+  },
+  {
+    "input": "3\n1 00:05\nB\n2 00:02\nB\n3 00:28\nA\n",
+    "expectedOutput": "2\n2 1 2\n1 3\n"
+  },
+  {
+    "input": "3\n1 00:07\nA\n2 00:19\nB\n3 00:24\nB\n",
+    "expectedOutput": "2\n1 1\n2 2 3\n"
+  }
+]

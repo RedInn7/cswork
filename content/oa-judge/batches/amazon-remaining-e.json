@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-61",
+      "sourceContentHash": "c11a1bc53a141016ed6484c1f00e4d83c21b90165052fa927285e0105d8f23c9",
+      "packageChecksum": "650adeb038f63b5602253cc8a739af215badcdfcbf79647e2ee3639f90db2669",
+      "editorial": "## 思路\n\n记录每个编号的位置。开始需要一轮；每次pos[v+1]<pos[v]必须重新扫描，增加一轮。\n\n## 正确性证明\n\n在同一轮中只能访问位置递增的编号。相邻编号位置下降时无法继续本轮，必须且只须开启下一轮，因此答案为位置下降次数加1。\n\n## 复杂度\n\n时间O(n)，辅助空间O(n)，位置用紧凑整数数组。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from array import array\n    n=int(d[0]);position=array('i',[0])*(n+1)\n    for i in range(1,n+1):position[int(d[i])]=i\n    return str(1+sum(position[v+1]<position[v] for v in range(1,n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-72",
+      "sourceContentHash": "8edbee154303a12a582888500ec0b8560007abec32297f656b3714314f920a99",
+      "packageChecksum": "f7fbb0c77f5825e52324baaf2d748ad9469d9329e8905d3c9f57e66dbd9549ef",
+      "editorial": "## 思路\n\n功能按价格降序，每个套餐扫描到第一个兼容功能。所有失败检查总数≤X，取各套餐最优总价的最大值。\n\n## 正确性证明\n\n固定套餐时第一个合法功能最贵；每次跳过都对应一条不同的不兼容边，全部套餐扫描中最多X次失败和n次成功，所以既完整枚举最优值又不退化为nm枚举。\n\n## 复杂度\n\n时间O(m log m+n+X)，空间O(n+m+X)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m,x=map(int,d[:3]);a=list(map(int,d[3:3+n]));b=list(map(int,d[3+n:3+n+m]));bad=set();pos=3+n+m\n    for i in range(pos,len(d),2):bad.add((int(d[i])-1,int(d[i+1])-1))\n    order=sorted(range(m),key=lambda j:b[j],reverse=True);answer=0\n    for i,v in enumerate(a):\n        for j in order:\n            if (i,j) not in bad:answer=max(answer,v+b[j]);break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-94",
+      "sourceContentHash": "a7600ae8a76040c270cb44bf5cac1da220821be1e0d4656d568ee23009167612",
+      "packageChecksum": "d407872e046e2551f34966f718694c755c9b6296da1bc349cfde4cf7c6f498e7",
+      "editorial": "## 思路\n\n统计频次，枚举每个不同a，只在a≤target−a且补数存在时计数；相等时检查频次至少2。\n\n## 正确性证明\n\n每个合法无序数值对有唯一较小端a，因此不重不漏；频次约束恰好保证能选两个不同下标。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import Counter\n    n,t=map(int,d[:2]);counts=Counter(map(int,d[2:]));answer=0\n    for a,c in counts.items():\n        b=t-a\n        if a<=b and b in counts and (a!=b or c>=2):answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-101",
+      "sourceContentHash": "fc5442e922516e125c4bd89da5be9f8500aa06b8a11e59910323863c9e10cd47",
+      "packageChecksum": "5709a88140c9b1594b4ce468b50a407d4dc8ad75b445a3e25b670575e2a7684f",
+      "editorial": "## 思路\n\n差分求每个原下标在拼接数组中的出现次数。按数值排序并合并同值组，累计更小值的带权出现次数，每个未用位置贡献该前缀权重。\n\n## 正确性证明\n\n拼接中每个下标的重数等于覆盖它的区间数。按相同值整组先查询后加入，只统计严格更小值；覆盖次数为0恰好就是未使用位置，因此带权前缀求和与显式拼接完全相同。\n\n## 复杂度\n\n时间O(n log n+m)，空间O(n)，无需生成长度可能nm的拼接数组。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));diff=[0]*(n+1)\n    for i in range(2+n,len(d),2):l,r=int(d[i]),int(d[i+1]);diff[l]+=1;diff[r+1]-=1\n    active=0;items=[]\n    for i,v in enumerate(a):active+=diff[i];items.append((v,active))\n    items.sort();prefix=answer=0;i=0\n    while i<n:\n        j=i;weight=unused=0\n        while j<n and items[j][0]==items[i][0]:weight+=items[j][1];unused+=items[j][1]==0;j+=1\n        answer+=unused*prefix;prefix+=weight;i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-103",
+      "sourceContentHash": "acee9e77870232e14ce66ae941e09cabd55cf1c37e21172f38f396eca075c652",
+      "packageChecksum": "059810f95850fd00577d0cb2c86759db53a4d1b99a7d5f1f8ff69fec760b669b",
+      "editorial": "## 思路\n\n分别处理乘法和除法，用三状态连续子数组DP表示尚未进入修改区间、正在修改、已经离开。取至少含一个修改位置的最大子数组和。\n\n## 正确性证明\n\n任何与修改区间相交的最终子数组按原值段、修改段、原值段划分，三状态枚举其全部形式。也总存在最优解让修改与目标子数组相交：若目标和非负，直接把目标区间乘因子不劣；若所有非空子数组和负，单独除最大元素不劣。因此不漏掉操作在目标外的更优解。\n\n## 复杂度\n\n时间O(n)，空间O(n)保存数组，DP额外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));answer=-10**30\n    for divide in (False,True):\n        before=inside=after=-10**30\n        for v in a:\n            changed=(abs(v)//k)*(1 if v>=0 else -1) if divide else v*k\n            after=max(inside+v,after+v);inside=max(changed,before+changed,inside+changed);before=max(v,before+v)\n            answer=max(answer,inside,after)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-104",
+      "sourceContentHash": "6ff4ebb6b332077a2b79744ce8282099e2798c1199087a265e5c3ddf12c4bcb8",
+      "packageChecksum": "d8b05095c0dadfed7d0f3afe2121b7bb8f7228a14d4d1b5ca0d0cc7945a9633e",
+      "editorial": "## 思路\n\n从右往左DP，状态为右边最高等级及是否已修改。当前位置枚举保留或修改成五种等级，按与右侧最高等级比较决定正负贡献。\n\n## 正确性证明\n\n已处理后缀对当前工资仅通过最高等级影响，修改额度只需一个布尔位。逐位置枚举全部合法字符选择并累加正负贡献，覆盖所有最多一次修改的方案。\n\n## 复杂度\n\n时间O(25n)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];values=[1,10,100,1000,10000];dp={(-1,0):0}\n    for old in reversed(s):\n        original=ord(old)-65;new={}\n        for (highest,used),score in dp.items():\n            for c in range(5):\n                changed=used+(c!=original)\n                if changed>1:continue\n                key=(max(highest,c),changed);candidate=score+(values[c] if c>=highest else -values[c]);new[key]=max(new.get(key,-10**30),candidate)\n        dp=new\n    return str(max(dp.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-105",
+      "sourceContentHash": "315e4f7365bc54e7529fb4e2d08616865e34c6398bf321c15919a3f70dc1e5a3",
+      "packageChecksum": "ec004aa4f7c495f9dc13d38b663d7c17f050502b0020980b5129203b584201da",
+      "editorial": "## 思路\n\n将最大的k−1项各自独占通道，剩余较小项组成最后一个通道。累加独占值与最后组中位数，使用两倍整数避免浮点。\n\n## 正确性证明\n\n若有两个多项组，可以将其中较高中位数对应的较大元素提为独占组，并把其余元素合入另一组，经过按序配对的中位数比较，总和不下降。重复使至多一组多项；独占元素取最大k−1项最优，余组取其中位数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));remaining=n-k+1;j=remaining//2\n    middle=2*a[j] if remaining%2 else a[j-1]+a[j]\n    return str(sum(a[remaining:])+(middle+1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-107",
+      "sourceContentHash": "66029a4121fabe31964103babe5bc1e7c38fe5b4564f8e11edbcb6d60260a389",
+      "packageChecksum": "b3e2d1a73d11746e83fae45e470c2ae3fb6f5b174d7b473154890bfc5db27ff5",
+      "editorial": "## 思路\n\n预处理每个位置相同坐标的最右端A、B，前缀和将车辆分为[0,A)、[A,B)、[B,n)，分别到两座附加站与末站；每段距离为数量×站位置−区间位置和。\n\n## 正确性证明\n\n先扩展到相同坐标的最右端，保证同坐标车辆全部原地加油，不会被错误送到下一站。排序保证扩展后每段的指定站就是最近的前方站。三段覆盖全部车辆且不重复，前缀和准确求和。\n\n## 复杂度\n\n预处理O(n)，每查询O(1)，空间O(n+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));prefix=[0]\n    for v in p:prefix.append(prefix[-1]+v)\n    end=list(range(1,n+1))\n    for j in range(n-2,-1,-1):\n        if p[j]==p[j+1]:end[j]=end[j+1]\n    answer=[]\n    for i in range(2+n,len(d),2):\n        a,b=end[int(d[i])-1],end[int(d[i+1])-1];answer.append(a*p[a-1]+(b-a)*p[b-1]+(n-b)*p[-1]-prefix[n])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-108",
+      "sourceContentHash": "8ede69d2fe8d72f0fb8255c0ff64830f68217ad65643de8e69b2299ecff4005c",
+      "packageChecksum": "9cbd44f01372b69c7f723904a3913d764dbf08233de2411566f87f22a26854e2",
+      "editorial": "## 思路\n\n第i个包裹最迟可在min(i+1,n−i)天被选，是单位耗时且有截止日的带权选择。按截止日递增加入小根堆，超过当前天数就去掉最小权重。\n\n## 正确性证明\n\n截止日≤d的已选包裹最多d个，且该条件充分保证按截止日调度。扫描同截止日任务时若超过容量，移除最小权重是交换后不劣的选择；所有截止日前缀可行，堆的总和最大。非负权重使最终可选满全部天数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    import heapq\n    a=list(map(int,d[1:]));n=len(a);heap=[]\n    for day in range(1,(n+1)//2+1):\n        heapq.heappush(heap,a[day-1])\n        if day-1!=n-day:heapq.heappush(heap,a[n-day])\n        while len(heap)>day:heapq.heappop(heap)\n    return str(sum(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-109",
+      "sourceContentHash": "e69b124af07cfe509fc97356cd69a70b7cf1895c08c7c2e2409e6678d08e1d0e",
+      "packageChecksum": "1e35c1b912277c3aeda7640343c784f0df746a5d78de4ea4a02d93718216b2d3",
+      "editorial": "## 思路\n\n最少交换数为n减置换环数；n≥2时，次数至少最小值且奇偶相同就可行，因为额外两步可交换同一对再换回。n=1没有任何合法交换。\n\n## 正确性证明\n\n一次交换使环数增减1，因此最少n−cycles步且交换次数奇偶固定。每个环可用长度−1步排好，额外偶数步用抵消交换补齐，充分性成立；单元素情况须单独处理。\n\n## 复杂度\n\n时间O(n+q)，空间O(n+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));seen=bytearray(n);cycles=0\n    for i in range(n):\n        if seen[i]:continue\n        cycles+=1;j=i\n        while not seen[j]:seen[j]=1;j=p[j]-1\n    minimum=n-cycles\n    return ''.join('1' if n>1 and int(v)>=minimum and (int(v)-minimum)%2==0 else '0' for v in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-110",
+      "sourceContentHash": "f5d7234736899d42d3e3390555d14a8b1f517fc57b53455c4b29f0fab5d25760",
+      "packageChecksum": "f8eead38aecc84545218b71564cb4a205b49c0023e04239dc6aef02955d701a4",
+      "editorial": "## 思路\n\n排序后两仓服务区域由一个切口分成连续两段。单段最优在中位数，使用前缀和O(1)计算段距离，枚举全部切口。\n\n## 正确性证明\n\n对固定两仓，最近仓归属沿数轴至多切换一次；单仓绝对距离和在中位数最小。所以某最优方案对应一个连续切口和两边中位数，枚举包含它。也枚举空段，兼容只有一个中心。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=sorted(map(int,d[1:]));n=len(a);prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def cost(l,r):\n        if l==r:return 0\n        m=(l+r)//2\n        return a[m]*(m-l)-(prefix[m]-prefix[l])+(prefix[r]-prefix[m+1])-a[m]*(r-m-1)\n    return str(min(cost(0,i)+cost(i,n) for i in range(n+1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-111",
+      "sourceContentHash": "c786407d819d219afb0f3e3a910e405abdfe1d016e7c4821d432b3160a189ae1",
+      "packageChecksum": "58bd9d6b1d8423c1d98ae6ca098ec60b51def88392dcacd4aa30ec9d76a5d436",
+      "editorial": "## 思路\n\n按结束时间排序，dp记录前若干场最优值；每场二分找到结束严格小于本场开始的场数，比较选它或跳过。\n\n## 正确性证明\n\n任何最优方案要么不含当前最后结束场，要么其之前所有场都结束严格早于当前开始。两种情况分别由dp前项和兼容前缀加当前收益表示，归纳得到全局最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from bisect import bisect_left\n    n=int(d[0]);s=list(map(int,d[1:1+n]));duration=list(map(int,d[1+n:1+2*n]));v=list(map(int,d[1+2*n:]));jobs=sorted((a+b,a,c) for a,b,c in zip(s,duration,v));ends=[j[0] for j in jobs];dp=[0]\n    for end,start,value in jobs:\n        compatible=bisect_left(ends,start);dp.append(max(dp[-1],dp[compatible]+value))\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-112",
+      "sourceContentHash": "ce96a93613b338ac895b17f95d10ae3ad5fe90642d5a2ad12c0598439adfbeb2",
+      "packageChecksum": "be668d90bb10e7debfa3213d28a4bdc15270c5dc396d309d0a4fe52ed04bd5ad",
+      "editorial": "## 思路\n\n前缀和给出线性展开中的距离d，环上最短为min(d,周长−d)，逐查询相加。\n\n## 正确性证明\n\n正边权环的最短路径一定是不绕圈的两条简单弧之一，前缀差和周长补数恰好是两弧长度。查询互相独立，因此分别最小化后求和。\n\n## 复杂度\n\n时间O(n+q)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for i in range(2,2+n):prefix.append(prefix[-1]+int(d[i]))\n    total=0\n    for i in range(2+n,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);distance=abs(prefix[a]-prefix[b]);total+=min(distance,prefix[-1]-distance)\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-113",
+      "sourceContentHash": "6d47ce052df68b65f672681b8ba50542f8d3b0312d5a3283993140c4fae24e20",
+      "packageChecksum": "53efb2f5130ec9dbea3081cf5fed199ae33a3a93495d14bfebc13b8dd2c37d78",
+      "editorial": "## 思路\n\n若同类便宜，尽可能做同类对，数量为各频次整除2之和；若异类便宜，强制同类对只有max(0,最大频次−n/2)个，其余均做异类。\n\n## 正确性证明\n\n同类最大数量分别由各类频次决定且可同时达到；剩余奇数项可两两异类配。异类便宜时，最多类超过半数的超额必须内部配对，其他情况能全部跨类匹配，因此强制同类数为最大频次−总对数的非负部分。\n\n## 复杂度\n\n时间O(n)，空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import Counter\n    s=d[0];x,y=map(int,d[1:]);counts=Counter(s);pairs=len(s)//2\n    same=sum(f//2 for f in counts.values()) if x<=y else max(0,max(counts.values())-pairs)\n    return str(same*x+(pairs-same)*y)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-115",
+      "sourceContentHash": "6911c0ecd9acfee4dbd91e401ccfe89a0780664307924c40a2b17254e71ee31d",
+      "packageChecksum": "e0e4601bb4574fad99d4c5761f1c10cd7d4739b383458e3d38c32fae94290339",
+      "editorial": "## 思路\n\n每类字符一半放左半串并按字母升序，唯一奇数频次字符放中间，右半串为左半串逆序。\n\n## 正确性证明\n\n任何回文必须两侧配对，因此每个字符在左半边的数量固定为频次整除2。左半边按字典序升序即最小，中心字符也由奇数频次唯一确定，右半边被镜像约束固定。\n\n## 复杂度\n\n时间O(n+26)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(d[0]);left=''.join(c*(counts[c]//2) for c in sorted(counts));middle=''.join(c for c in sorted(counts) if counts[c]%2)\n    return left+middle+left[::-1]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

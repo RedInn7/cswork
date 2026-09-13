@@ -1,0 +1,10 @@
+[
+  {
+    "name": "仅走展开方向",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for i in range(2,2+n):prefix.append(prefix[-1]+int(d[i]))\n    total=0\n    for i in range(2+n,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);distance=abs(prefix[a]-prefix[b]);total+=distance\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误选较长方向",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);prefix=[0]\n    for i in range(2,2+n):prefix.append(prefix[-1]+int(d[i]))\n    total=0\n    for i in range(2+n,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);distance=abs(prefix[a]-prefix[b]);total+=max(distance,prefix[-1]-distance)\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

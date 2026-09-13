@@ -1,0 +1,10 @@
+[
+  {
+    "name": "更新不减旧频次",
+    "code": "from collections import Counter\ndef solve(d):\n    na,nb,q=map(int,d[:3]);a=list(map(int,d[3:3+na]));b=list(map(int,d[3+na:3+na+nb]));counts=Counter(b);cursor=3+na+nb;result=[]\n    for _ in range(q):\n        kind=int(d[cursor]);cursor+=1\n        if kind==0:\n            index,x=map(int,d[cursor:cursor+2]);cursor+=2;b[index]+=x;counts[b[index]]+=1\n        else:\n            target=int(d[cursor]);cursor+=1;result.append(str(sum(counts.get(target-v,0) for v in a)))\n    return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误按值而非下标计数",
+    "code": "from collections import Counter\ndef solve(d):\n    na,nb,q=map(int,d[:3]);a=list(map(int,d[3:3+na]));b=list(map(int,d[3+na:3+na+nb]));counts=Counter(b);cursor=3+na+nb;result=[]\n    for _ in range(q):\n        kind=int(d[cursor]);cursor+=1\n        if kind==0:\n            index,x=map(int,d[cursor:cursor+2]);cursor+=2;counts[b[index]]-=1;b[index]+=x;counts[b[index]]+=1\n        else:\n            target=int(d[cursor]);cursor+=1;result.append(str(sum(int(counts.get(target-v,0)>0) for v in a)))\n    return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

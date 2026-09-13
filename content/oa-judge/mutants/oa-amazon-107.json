@@ -1,0 +1,10 @@
+[
+  {
+    "name": "所有车辆只去末站",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));prefix=[0]\n    for v in p:prefix.append(prefix[-1]+v)\n    end=list(range(1,n+1))\n    for j in range(n-2,-1,-1):\n        if p[j]==p[j+1]:end[j]=end[j+1]\n    answer=[]\n    for i in range(2+n,len(d),2):\n        a,b=end[int(d[i])-1],end[int(d[i+1])-1];answer.append(n*p[-1]-prefix[n])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "总距离取绝对值坐标和",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);p=list(map(int,d[2:2+n]));prefix=[0]\n    for v in p:prefix.append(prefix[-1]+v)\n    end=list(range(1,n+1))\n    for j in range(n-2,-1,-1):\n        if p[j]==p[j+1]:end[j]=end[j+1]\n    answer=[]\n    for i in range(2+n,len(d),2):\n        a,b=end[int(d[i])-1],end[int(d[i+1])-1];answer.append(a*p[a-1]+(b-a)*p[b-1]+(n-b)*p[-1]-abs(prefix[n]))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

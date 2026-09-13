@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-38",
+  "title": "足球联赛的前两名",
+  "explanation": "## 思路\n\n按积分、净胜球的降序排序球队，下标只用来选出一个确定的合法并列代表，取前两个。\n\n## 正确性\n\n排序关键字就是题目排名规则，因此首位与次位分别不低于所有尚未选中球队；完全相同的关键字之间任意次序都符合题目。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=[list(map(int,d[1+i*n:1+(i+1)*n])) for i in range(4)]\n    order=sorted(range(n),key=lambda i:(-3*a[0][i]-a[1][i],-a[2][i]+a[3][i],i))\n    return f'{order[0]} {order[1]}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#38-find-top-two-teams",
+  "sourceContentHash": "3b9b6c5bf5e981fd89d9dd4f5153fff72488c80b3a78e47cc2f1270193f53ac6",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-72",
+  "title": "不兼容约束下套餐与功能最大价格",
+  "explanation": "## 思路\n\n功能按价格降序，每个套餐扫描到第一个兼容功能。所有失败检查总数≤X，取各套餐最优总价的最大值。\n\n## 正确性证明\n\n固定套餐时第一个合法功能最贵；每次跳过都对应一条不同的不兼容边，全部套餐扫描中最多X次失败和n次成功，所以既完整枚举最优值又不退化为nm枚举。\n\n## 复杂度\n\n时间O(m log m+n+X)，空间O(n+m+X)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,x=map(int,d[:3]);a=list(map(int,d[3:3+n]));b=list(map(int,d[3+n:3+n+m]));bad=set();pos=3+n+m\n    for i in range(pos,len(d),2):bad.add((int(d[i])-1,int(d[i+1])-1))\n    order=sorted(range(m),key=lambda j:b[j],reverse=True);answer=0\n    for i,v in enumerate(a):\n        for j in order:\n            if (i,j) not in bad:answer=max(answer,v+b[j]);break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#72-get-maximum-cost-subscription-plan",
+  "sourceContentHash": "8edbee154303a12a582888500ec0b8560007abec32297f656b3714314f920a99",
+  "author": "CSWork"
+}

@@ -4,10 +4,10 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 215,
+    "sandbox_verified": 246,
     "awaiting_sandbox": 0,
-    "blocked": 56,
-    "unreviewed": 1363
+    "blocked": 60,
+    "unreviewed": 1328
   },
   "items": [
     {
@@ -1155,8 +1155,9 @@
     {
       "id": "oa-amazon-61",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "原n可到10⁶，其1..n排列标准十进制输入约6.9MB，必超过当前单用例4MiB限制；不能悄悄缩小约束。"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "隐藏输入统一扩容至32MiB，保留原百万排列范围，使用完整上界输入、独立小规模oracle和错误程序验证；仅在真实沙箱报告通过后开放。"
     },
     {
       "id": "oa-amazon-62",
@@ -1227,8 +1228,9 @@
     {
       "id": "oa-amazon-72",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "算法已独立验证，但n=m=100000、X=200000、价格10⁹且不兼容对为高编号时，合法标准输入超过4MiB限制；现有较小编码大例不足以覆盖，需统一扩容后再接入，不缩小原约束。"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "隐藏输入统一扩容至32MiB，保留n=m=100000、X=200000、价格10⁹范围，补足最长编码边界，使用独立oracle和错误程序验证；仅在真实沙箱报告通过后开放。"
     },
     {
       "id": "oa-amazon-73",
@@ -1373,8 +1375,9 @@
     {
       "id": "oa-amazon-94",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "n=500000且数值10⁹的合法输入约5.5MB，超过当前4MiB输入限制。"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "隐藏输入统一扩容至32MiB，保留50万项和10⁹数值范围，使用完整上界输入、独立oracle和错误程序验证；仅在真实沙箱报告通过后开放。"
     },
     {
       "id": "oa-amazon-95",
@@ -1420,77 +1423,104 @@
     {
       "id": "oa-amazon-101",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "拼接保留重叠区间重复元素；未用下标指未被任何区间覆盖。缺省范围标为本站。"
     },
     {
       "id": "oa-amazon-102",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "未明确同一股票条目能否反复购买；0/1背包与无限购买答案不同，不能只凭可能错误的110样例限定每股一次。"
     },
     {
       "id": "oa-amazon-103",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-104",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-105",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "每通道非空、0.5向上取整由原示例明确；不把原文single packet误解为每组恰一项。"
     },
     {
       "id": "oa-amazon-106",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "未明确end station具体坐标以及是否每次停最近前方站；按常见末点为终点解释第二示例不是18，不能借107题规则补全。"
     },
     {
       "id": "oa-amazon-107",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-108",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-109",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "第二例最少3步，moves1/2/3答案001而非011。"
     },
     {
       "id": "oa-amazon-110",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-111",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "严格end<start由原文before与第二例4共同支持，不按可首尾相接的另一版本处理。"
     },
     {
       "id": "oa-amazon-112",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-113",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-114",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "美丽度条件中比较对象与不等号被截断，单个例子不足以恢复定义。"
     },
     {
       "id": "oa-amazon-115",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-e",
+      "reason": "独立算法/样例/暴力oracle/最大范围/语义负控验证；未执行来源题解。"
     },
     {
       "id": "oa-amazon-116",
@@ -4857,102 +4887,138 @@
     {
       "id": "oa-uber-21",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-22",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-23",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-24",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "补全合法引用链最终到达cmd的输入保证，同时支持前向与后向引用，不限制为历史条目。"
     },
     {
       "id": "oa-uber-25",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "输出最小点而非函数值；精确半微单位语义检查接受舍入中点两种结果。"
     },
     {
       "id": "oa-uber-26",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文没有可定义的条件，仅给[1,2,3]结果1，无法知道在统计什么。"
     },
     {
       "id": "oa-uber-27",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-28",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-29",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-30",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-31",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "按连续整数房屋定义修正源样例，删除不存在房屋不属于本站合法输入。"
     },
     {
       "id": "oa-uber-32",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-33",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-34",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "接受全部最优兼容分组，不能用固定贪心分组作为唯一答案。"
     },
     {
       "id": "oa-uber-35",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "主体截断于Design assignment behavior row n，两个样例不足以定义一般情况下的最远距离目标和操作规则，不能凭结果补题。"
     },
     {
       "id": "oa-uber-36",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "题干截断于Given two arrays of strictly i；仅凭[123,4,5,955]和[12345,63,95,2]输出3不能确定比较规则。"
     },
     {
       "id": "oa-uber-37",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "正文明确，已编写独立参考和暴力对照、真实最大规模及两个正常退出错误程序。"
     },
     {
       "id": "oa-uber-38",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "完全同积分同净胜球不擅加下标排名规则，语义检查允许所有合法前二。"
     },
     {
       "id": "oa-uber-39",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "来源允许1000万条命令；即使全部使用最短ADD a换行，每条6字节也达6000万字节，超过32MiB单输入限制，不能擅自缩小源事件上限。"
     },
     {
       "id": "oa-uber-40",
       "company": "uber",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "uber-next",
+      "reason": "保留源100万条上限；未定义的字符串长度明确为本站单行1MiB、总输入32MiB协议，保留空格和空日志。"
     },
     {
       "id": "oa-uber-41",

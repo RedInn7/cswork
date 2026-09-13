@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误去除首尾空格",
+    "code": "from collections import Counter\ndef solve(d):\n    lines=d.split('\\n');n=int(lines[0]);logs=[line.strip() for line in lines[1:1+n]];counts=Counter(logs)\n    return next((line for line in logs if counts[line]==1),'')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "返回最后唯一项",
+    "code": "from collections import Counter\ndef solve(d):\n    lines=d.split('\\n');n=int(lines[0]);logs=lines[1:1+n];counts=Counter(logs)\n    return next((line for line in reversed(logs) if counts[line]==1),'')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

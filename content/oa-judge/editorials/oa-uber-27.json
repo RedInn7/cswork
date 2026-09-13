@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-27",
+  "title": "生成花圃中的直角三点",
+  "explanation": "## 思路\n\n先统计每行每列的花数，再以每朵花为唯一拐点，贡献(行花数−1)×(列花数−1)。\n\n## 正确性\n\n固定拐点后，同行和同列另外两点彼此不同，每种选择恰构成一个L。三个非共线直角点唯一确定拐点，因此求和没有重复。\n\n## 复杂度\n\n时间O(nm)，额外空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,magic,mod=map(int,d);rows=[0]*n;cols=[0]*m\n    for i in range(n):\n        for j in range(m):\n            if ((i+j*magic)%mod)%2:rows[i]+=1;cols[j]+=1\n    answer=0\n    for i in range(n):\n        for j in range(m):\n            if ((i+j*magic)%mod)%2:answer+=(rows[i]-1)*(cols[j]-1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#27-count-l-shaped-plots",
+  "sourceContentHash": "f2232e145f555ffa2e5a5afb04e69ffc8cedf28d56583208524c351a8070cb11",
+  "author": "CSWork"
+}

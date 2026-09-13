@@ -45,7 +45,10 @@ export function validateProblemPackage(value: unknown): OjProblemPackage {
     !serialized ||
     Buffer.byteLength(serialized, 'utf8') > OJ_MAX_IMPORT_BYTES
   )
-    throw new HttpError(413, '题目文件最多 8 MiB');
+    throw new HttpError(
+      413,
+      `题目文件最多 ${OJ_MAX_IMPORT_BYTES / 1024 / 1024} MiB`,
+    );
   return ojImportSchema.parse(value);
 }
 export function problemChecksum(payload: OjProblemPackage) {

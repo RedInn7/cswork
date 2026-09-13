@@ -1,0 +1,10 @@
+[
+  {
+    "name": "平局积分漏算",
+    "code": "def solve(d):\n    n=int(d[0]);a=[list(map(int,d[1+i*n:1+(i+1)*n])) for i in range(4)]\n    order=sorted(range(n),key=lambda i:(-3*a[0][i],-a[2][i]+a[3][i],i))\n    return f'{order[0]} {order[1]}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "净胜球误按进球数",
+    "code": "def solve(d):\n    n=int(d[0]);a=[list(map(int,d[1+i*n:1+(i+1)*n])) for i in range(4)]\n    order=sorted(range(n),key=lambda i:(-3*a[0][i]-a[1][i],-a[2][i],i))\n    return f'{order[0]} {order[1]}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

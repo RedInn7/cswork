@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相同等级也视为更高",
+    "code": "def solve(d):\n    s=d[0];values=[1,10,100,1000,10000];dp={(-1,0):0}\n    for old in reversed(s):\n        original=ord(old)-65;new={}\n        for (highest,used),score in dp.items():\n            for c in range(5):\n                changed=used+(c!=original)\n                if changed>1:continue\n                key=(max(highest,c),changed);candidate=score+(values[c] if c>highest else -values[c]);new[key]=max(new.get(key,-10**30),candidate)\n        dp=new\n    return str(max(dp.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许修改多天",
+    "code": "def solve(d):\n    s=d[0];values=[1,10,100,1000,10000];dp={(-1,0):0}\n    for old in reversed(s):\n        original=ord(old)-65;new={}\n        for (highest,used),score in dp.items():\n            for c in range(5):\n                changed=used+(c!=original)\n                if changed>2:continue\n                key=(max(highest,c),changed);candidate=score+(values[c] if c>=highest else -values[c]);new[key]=max(new.get(key,-10**30),candidate)\n        dp=new\n    return str(max(dp.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

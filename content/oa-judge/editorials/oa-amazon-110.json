@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-110",
+  "title": "两座仓库的最小总距离",
+  "explanation": "## 思路\n\n排序后两仓服务区域由一个切口分成连续两段。单段最优在中位数，使用前缀和O(1)计算段距离，枚举全部切口。\n\n## 正确性证明\n\n对固定两仓，最近仓归属沿数轴至多切换一次；单仓绝对距离和在中位数最小。所以某最优方案对应一个连续切口和两边中位数，枚举包含它。也枚举空段，兼容只有一个中心。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));n=len(a);prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def cost(l,r):\n        if l==r:return 0\n        m=(l+r)//2\n        return a[m]*(m-l)-(prefix[m]-prefix[l])+(prefix[r]-prefix[m+1])-a[m]*(r-m-1)\n    return str(min(cost(0,i)+cost(i,n) for i in range(n+1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#110-minimize-sum-of-distances-to-warehouses",
+  "sourceContentHash": "f5d7234736899d42d3e3390555d14a8b1f517fc57b53455c4b29f0fab5d25760",
+  "author": "CSWork"
+}

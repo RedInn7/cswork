@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误返回区间右端",
+    "code": "from decimal import Decimal,localcontext,ROUND_HALF_UP\ndef solve(d):\n    answers=[]\n    with localcontext() as ctx:\n        ctx.prec=60\n        for i in range(1,len(d),5):\n            a,b,c,left,right=map(Decimal,d[i:i+5])\n            def f(x):return (a*x+b)*x+c\n            for _ in range(160):\n                x=left+(right-left)/3;y=right-(right-left)/3\n                if f(x)<f(y):right=y\n                else:left=x\n            point=Decimal(d[i+4]);answers.append(format(point.quantize(Decimal('0.000001'),rounding=ROUND_HALF_UP),'f'))\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把函数值当最小点",
+    "code": "from decimal import Decimal,localcontext,ROUND_HALF_UP\ndef solve(d):\n    answers=[]\n    with localcontext() as ctx:\n        ctx.prec=60\n        for i in range(1,len(d),5):\n            a,b,c,left,right=map(Decimal,d[i:i+5])\n            def f(x):return (a*x+b)*x+c\n            for _ in range(160):\n                x=left+(right-left)/3;y=right-(right-left)/3\n                if f(x)<f(y):right=y\n                else:left=x\n            point=f((left+right)/2);answers.append(format(point.quantize(Decimal('0.000001'),rounding=ROUND_HALF_UP),'f'))\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

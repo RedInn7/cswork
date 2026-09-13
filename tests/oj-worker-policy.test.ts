@@ -89,7 +89,7 @@ void test('snapshot limits count UTF-8 bytes and preserve the smaller input boun
   assert.throws(
     () =>
       assertSnapshotBudget([
-        { input: 'é'.repeat(2 * 1024 * 1024 + 1), expectedOutput: '' },
+        { input: 'é'.repeat(16 * 1024 * 1024 + 1), expectedOutput: '' },
       ]),
     /bounded data budget/,
   );

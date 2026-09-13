@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重叠区间只计一次",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));diff=[0]*(n+1)\n    for i in range(2+n,len(d),2):l,r=int(d[i]),int(d[i+1]);diff[l]+=1;diff[r+1]-=1\n    active=0;items=[]\n    for i,v in enumerate(a):active+=diff[i];items.append((v,active))\n    items.sort();prefix=answer=0;i=0\n    while i<n:\n        j=i;weight=unused=0\n        while j<n and items[j][0]==items[i][0]:weight+=int(items[j][1]>0);unused+=items[j][1]==0;j+=1\n        answer+=unused*prefix;prefix+=weight;i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误把相等值也计入",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));diff=[0]*(n+1)\n    for i in range(2+n,len(d),2):l,r=int(d[i]),int(d[i+1]);diff[l]+=1;diff[r+1]-=1\n    active=0;items=[]\n    for i,v in enumerate(a):active+=diff[i];items.append((v,active))\n    items.sort();prefix=answer=0;i=0\n    while i<n:\n        j=i;weight=unused=0\n        while j<n and items[j][0]==items[i][0]:weight+=items[j][1];unused+=items[j][1]==0;j+=1\n        prefix+=weight;answer+=unused*prefix;i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

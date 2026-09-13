@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-25",
+  "title": "凸二次函数的区间最小点",
+  "explanation": "## 思路\n\n用高精度Decimal三分搜索，仅通过函数求值不断缩小包含最小点的区间，最后四舍五入到六位。\n\n## 正确性\n\nA>0保证严格凸性；两三分点的函数值比较能排除远离最小点的一侧，包含最小点的区间长度每轮缩至2/3。160轮后初始至多2×10⁶的区间远小于10⁻⁶；精确中点舍入两侧都合法，高精度避免浮点相消影响判断。\n\n## 复杂度\n\n时间O(q·160)，除输入和输出外空间O(1)；Decimal使用60位固定精度。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from decimal import Decimal,localcontext,ROUND_HALF_UP\ndef solve(d):\n    answers=[]\n    with localcontext() as ctx:\n        ctx.prec=60\n        for i in range(1,len(d),5):\n            a,b,c,left,right=map(Decimal,d[i:i+5])\n            def f(x):return (a*x+b)*x+c\n            for _ in range(160):\n                x=left+(right-left)/3;y=right-(right-left)/3\n                if f(x)<f(y):right=y\n                else:left=x\n            point=(left+right)/2;answers.append(format(point.quantize(Decimal('0.000001'),rounding=ROUND_HALF_UP),'f'))\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#25-convex-function-minimization",
+  "sourceContentHash": "f72c8437bcf840a510884a5541ca95ea13d5b9cc4490dff21e6e107e53a2bee1",
+  "author": "CSWork"
+}

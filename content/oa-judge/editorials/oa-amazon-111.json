@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-111",
+  "title": "放映结束严格早于下一场的最大观众量",
+  "explanation": "## 思路\n\n按结束时间排序，dp记录前若干场最优值；每场二分找到结束严格小于本场开始的场数，比较选它或跳过。\n\n## 正确性证明\n\n任何最优方案要么不含当前最后结束场，要么其之前所有场都结束严格早于当前开始。两种情况分别由dp前项和兼容前缀加当前收益表示，归纳得到全局最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left\n    n=int(d[0]);s=list(map(int,d[1:1+n]));duration=list(map(int,d[1+n:1+2*n]));v=list(map(int,d[1+2*n:]));jobs=sorted((a+b,a,c) for a,b,c in zip(s,duration,v));ends=[j[0] for j in jobs];dp=[0]\n    for end,start,value in jobs:\n        compatible=bisect_left(ends,start);dp.append(max(dp[-1],dp[compatible]+value))\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#111-cinema-shows",
+  "sourceContentHash": "c786407d819d219afb0f3e3a910e405abdfe1d016e7c4821d432b3160a189ae1",
+  "author": "CSWork"
+}
