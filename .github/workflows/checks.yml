@@ -40,6 +40,7 @@ jobs:
       - run: node --check tests/oj-latency-load.mjs
       - run: node --test tests/oj-capacity-config.test.mjs
       - run: node --check tests/oj-capacity-benchmark.mjs
+      - run: node --check tests/oj-capacity-admission-integration.mjs
       - run: bash -n tests/oj-capacity-benchmark.sh deploy/oj-capacity-release.sh
       - run: node --check deploy/oj-queue-control.cjs
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts
