@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-33",
+  "title": "单个岛屿的周长",
+  "explanation": "## 思路\n\n每个陆地先贡献4，每条与上方或左方陆地共享的边减2。\n\n## 正确性证明\n\n单格四边中，每条内部共享边被两格重复统计且不属于外周，所以应减2。只向上向左检查恰将每条共享边处理一次。\n\n## 复杂度\n\n时间O(NM)，空间O(NM)存储输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for i in range(n):\n        for j in range(m):\n            if a[i*m+j]:\n                answer+=4\n                if i and a[(i-1)*m+j]:answer-=2\n                if j and a[i*m+j-1]:answer-=2\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#33-island-perimeter-round-3-lc-463-",
+  "sourceContentHash": "9189777e693122b127efb09ab0c851ca10983b1bd9f8b57bc3792f82f0974f0f",
+  "author": "CSWork"
+}

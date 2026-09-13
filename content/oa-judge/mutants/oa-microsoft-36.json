@@ -1,0 +1,10 @@
+[
+  {
+    "name": "先生产耗时最长的",
+    "code": "def solve(d):\n    n,x,y=map(int,d[:3]);a=sorted(map(int,d[3:]),reverse=True);bits=1;mask=(1<<(x+1))-1;total=answer=0\n    for i,value in enumerate(a):\n        total+=value\n        if total>x+y:break\n        bits=(bits|(bits<<value))&mask\n        if bits>>max(0,total-y):answer=i+1\n        else:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看总工时忽略不能换线",
+    "code": "def solve(d):\n    n,x,y=map(int,d[:3]);a=sorted(map(int,d[3:]));bits=1;mask=(1<<(x+1))-1;total=answer=0\n    for i,value in enumerate(a):\n        total+=value\n        if total>x+y:break\n        bits=(bits|(bits<<value))&mask\n        if True:answer=i+1\n        else:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-13",
+  "title": "分段左右对齐的星号文本框",
+  "explanation": "## 思路\n\n逐段累积当前行字符串，放不下下一条目时输出当前行，再开始新行。按标记补齐一侧空格并加边框。\n\n## 正确性\n\n每次仅在加入下一条目会超宽时换行，因此恰为规定贪心分行；每行原始字符顺序不变，所缺空格全部放入指定侧，得到唯一排版。\n\n## 复杂度\n\n时间O(输入与输出字符数)，空间O(输入与输出字符数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    lines=d.splitlines();width,p=map(int,lines[0].split());index=1;result=['*'*(width+2)]\n    for _ in range(p):\n        align,count=lines[index].split();count=int(count);index+=1;current=''\n        def render(text):return '*'+(text.ljust(width) if align=='LEFT' else text.rjust(width))+'*'\n        for word in lines[index:index+count]:\n            candidate=word if not current else current+' '+word\n            if len(candidate)>width:result.append(render(current));current=word\n            else:current=candidate\n        result.append(render(current));index+=count\n    result.append('*'*(width+2));return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#13-newspaper-page-leftright-alignment",
+  "sourceContentHash": "ef22ce0ade39ea36dd83a4addca4c6d47d37a83cbddd7d23ff3cb844b89fb717",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "任意含零都算",
+    "code": "def solve(d):\n    from itertools import islice\n    return str(sum(int('0' in str(int(v))) for v in islice(d,1,None)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏整数零",
+    "code": "def solve(d):\n    from itertools import islice\n    return str(sum(str(int(v)).count('0')%2 if int(v)!=0 else 0 for v in islice(d,1,None)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

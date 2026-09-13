@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-2",
+  "title": "动态障碍与右端开区间查询",
+  "explanation": "## 思路\n\n预读所有插入坐标并离散化，用树状数组维护是否已插入。用二分得到左右边界对应排名，查询区间障碍数量。\n\n## 正确性\n\n树状数组前缀和统计指定排名以前的已设置坐标，右端用lower_bound排除x，左端同样用lower_bound包含x−size；两者差为0恰好无障碍。\n\n## 复杂度\n\n时间O(q log q)，空间O(q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_left\ndef solve(d):\n    q=int(d[0]);ops=[];i=1\n    for _ in range(q):\n        kind=int(d[i]);length=2 if kind==1 else 3;ops.append(tuple(map(int,d[i:i+length])));i+=length\n    coordinates=sorted({op[1] for op in ops if op[0]==1});tree=[0]*(len(coordinates)+1);seen=set();answer=[]\n    def prefix(end):\n        result=0\n        while end:result+=tree[end];end-=end&-end\n        return result\n    for op in ops:\n        if op[0]==1:\n            if op[1] in seen:continue\n            seen.add(op[1]);index=bisect_left(coordinates,op[1])+1\n            while index<len(tree):tree[index]+=1;index+=index&-index\n        else:\n            left=bisect_left(coordinates,op[1]-op[2]);right=bisect_left(coordinates,op[1]);answer.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#2-obstacles-and-blocks-on-a-number-line",
+  "sourceContentHash": "8326209a9fbc07d2fce06da210a822d01f5a95335c7f5042009739726dc2d20a",
+  "author": "CSWork"
+}

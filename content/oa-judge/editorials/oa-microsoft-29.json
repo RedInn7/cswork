@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-29",
+  "title": "动态替换后的好子序列数量总和",
+  "explanation": "## 思路\n\n按质因数容斥：每个平方自由因子d>1贡献−μ(d)(2^count[d]−1)。更新仅改变旧值、新值的这些因子计数。预处理最小质因子与2的幂。\n\n## 正确性证明\n\n一个子序列若共同质因数集合非空，容斥的非空质因数组合系数和为1，否则为0；因此贡献之和恰好统计GCD大于1的子序列。单点更新只有能整除被替换值的因子受影响，逐项删旧加新保持不变量。\n\n## 复杂度\n\n时间O(V log V+(N+Q)·2^ω)，空间O(V+N+Q)，V≤100000且ω≤6。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import math\ndef solve(d):\n    from collections import Counter\n    from functools import lru_cache\n    MOD=1000000007;n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));raw=list(map(int,d[2+n:]));limit=max(a+raw[1::2]);spf=list(range(limit+1))\n    for p in range(2,math.isqrt(limit)+1):\n        if spf[p]==p:\n            for v in range(p*p,limit+1,p):\n                if spf[v]==v:spf[v]=p\n    radical=[1]*(limit+1)\n    for value in range(2,limit+1):\n        p=spf[value];quotient=value//p;radical[value]=radical[quotient]*(1 if quotient%p==0 else p)\n    @lru_cache(maxsize=1024)\n    def factors(value):\n        primes=[]\n        while value>1:\n            p=spf[value];primes.append(p)\n            while value%p==0:value//=p\n        terms=[(1,1)]\n        for p in primes:terms.extend([(v*p,-sign) for v,sign in terms])\n        return tuple(terms[1:])\n    powers=[1]*(n+1)\n    for i in range(n):powers[i+1]=powers[i]*2%MOD\n    counts=[0]*(limit+1)\n    for value,frequency in Counter(a).items():\n        for divisor,sign in factors(radical[value]):counts[divisor]+=frequency\n    current=0\n    for divisor in range(2,limit+1):\n        if counts[divisor]:\n            terms=factors(divisor)\n            if terms and terms[-1][0]==divisor:current-=terms[-1][1]*(powers[counts[divisor]]-1)\n    current%=MOD;answer=0\n    for i in range(0,len(raw),2):\n        index,value=raw[i]-1,raw[i+1];old=a[index]\n        if radical[old]!=radical[value]:\n            for number,delta in ((old,-1),(value,1)):\n                for divisor,sign in factors(radical[number]):\n                    current+=sign*(powers[counts[divisor]]-1);counts[divisor]+=delta;current-=sign*(powers[counts[divisor]]-1)\n            current%=MOD\n        a[index]=value\n        answer+=current\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#29-great-subsequences",
+  "sourceContentHash": "ec90b7da3ea60af83ee887c20acdcdcc3d7e25cf4bd94031fd35719b9eb08336",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-1",
+  "title": "总和被k整除的最长连续区间",
+  "explanation": "## 思路\n\n记录每种前缀和余数首次出现的位置；相同余数的两个前缀之间就是合法区间。\n\n## 正确性\n\n两前缀之差被k整除当且仅当余数相同。固定右端时最早的相同余数给出最长长度；扫描全部右端取最大即最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);first={0:0};remainder=answer=0\n    for i,value in enumerate(map(int,d[2:]),1):\n        remainder=(remainder+value)%k\n        if remainder in first:answer=max(answer,i-first[remainder])\n        else:first[remainder]=i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#1-stable-transaction-periods",
+  "sourceContentHash": "69702b9d980e76ec08524b1c4915dbe6df1806ca34dd4b28dadef395948b27b1",
+  "author": "CSWork"
+}

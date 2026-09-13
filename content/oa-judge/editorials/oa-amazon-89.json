@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-89",
+  "title": "配送网格中的最短路径",
+  "explanation": "## 思路\n\n用一维距离数组和索引队列做BFS，只进入非0格，每格首次入队时标记。\n\n## 正确性证明\n\n所有移动代价都是1，BFS按距离递增访问，每格首次距离最短；处理到9即得到最短路线。队列耗尽则没有可达目的地。\n\n## 复杂度\n\n时间O(rc)，空间O(rc)，使用紧凑整数数组保存队列和距离。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from array import array\n    h,w=map(int,d[:2]);g=''.join(d[2:]);distance=array('i',[-1])*(h*w);distance[0]=0;q=array('i',[0]);head=0\n    while head<len(q):\n        cell=q[head];head+=1\n        if g[cell]=='9':return str(distance[cell])\n        r,c=divmod(cell,w)\n        for nxt in (cell-w if r else -1,cell+w if r+1<h else -1,cell-1 if c else -1,cell+1 if c+1<w else -1):\n            if nxt>=0 and g[nxt]!='0' and distance[nxt]<0:distance[nxt]=distance[cell]+1;q.append(nxt)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#89-amazon-fresh--delivery-grid-bfs",
+  "sourceContentHash": "7cf61993b038f6204a932b28077c81dd984d6156743d2532899e07c72793f655",
+  "author": "CSWork"
+}

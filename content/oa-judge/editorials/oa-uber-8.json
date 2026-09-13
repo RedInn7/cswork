@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-8",
+  "title": "恰有两个元音的三字符子串",
+  "explanation": "## 思路\n\n维护最近三个字符的元音数，窗口长度达到3后若计数为2就累加。\n\n## 正确性\n\n每个长度3窗口在右端扫描到达时恰好检查一次；加入新字符并移除三格之前字符保持窗口元音数准确。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d;count=answer=0\n    for i,c in enumerate(s):\n        count+=c in 'aeiou'\n        if i>=3:count-=s[i-3] in 'aeiou'\n        if i>=2 and count==2:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#8-substrings-of-length-3-with-exactly-two-vowels",
+  "sourceContentHash": "387a11d510328bf5e5ae686f0ed2af60e6581bf2555ba35269b336d8a524e668",
+  "author": "CSWork"
+}

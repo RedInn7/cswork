@@ -1,0 +1,10 @@
+[
+  {
+    "name": "取最贵m项成本",
+    "code": "def solve(d):\n    n,k,m=map(int,d[:3]);a=list(map(int,d[3:]));answer=0\n    for b in range(30,-1,-1):\n        mask=answer|(1<<b);costs=[]\n        for x in a:\n            missing=mask&~x\n            if not missing:costs.append(0);continue\n            bit=missing.bit_length()-1\n            y=((x>>(bit+1))<<(bit+1))|(1<<bit)|(mask&((1<<bit)-1))\n            costs.append(y-x)\n        costs.sort()\n        if sum(costs[-m:])<=k:answer=mask\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "恰好预算错误拒绝",
+    "code": "def solve(d):\n    n,k,m=map(int,d[:3]);a=list(map(int,d[3:]));answer=0\n    for b in range(30,-1,-1):\n        mask=answer|(1<<b);costs=[]\n        for x in a:\n            missing=mask&~x\n            if not missing:costs.append(0);continue\n            bit=missing.bit_length()-1\n            y=((x>>(bit+1))<<(bit+1))|(1<<bit)|(mask&((1<<bit)-1))\n            costs.append(y-x)\n        costs.sort()\n        if sum(costs[:m])<k:answer=mask\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

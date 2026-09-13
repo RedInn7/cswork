@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-38",
+  "title": "两个不同行不同列车的最大得分",
+  "explanation": "## 思路\n\n逐行处理，记录先前所有行中按不同列区分的最大两个分数。当前格选其中列不同的最佳值配对，再将本行加入候选。\n\n## 正确性证明\n\n当前行与历史行必不同行，列冲突最多排除历史最佳候选的一列，故不同列前两名足够。先查询整行再更新排除同一行配对；每对车都在其较晚行被枚举。\n\n## 复杂度\n\n时间O(NM)，空间O(NM)存输入，候选额外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));best=[(-10**30,-1),(-10**30,-2)];answer=-10**30\n    for i in range(n):\n        for j in range(m):answer=max(answer,a[i*m+j]+max(score for score,col in best if col!=j))\n        for j in range(m):\n            candidates={col:score for score,col in best};candidates[j]=max(candidates.get(j,-10**30),a[i*m+j]);best=sorted((score,col) for col,score in candidates.items())[-2:]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#38-maximum-sum-of-two-non-attacking-rooks",
+  "sourceContentHash": "e538e4ac1a7d150d7a299b42c0f2e5503dd756fd92208cbbf5182d09547ab3a2",
+  "author": "CSWork"
+}

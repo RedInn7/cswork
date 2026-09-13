@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-6",
+  "title": "任意合法分行的段落星框排版",
+  "explanation": "## 思路\n\n参考方案选择每行贪心放尽可能多的词；一般非段末行用商与余数均分空格，段末或单词行计算左右居中空格。其他合法分行同样正确。\n\n## 正确性\n\n词序与段落边界在依次处理时保持不变；每行长度受放入条件保证。空格商余数分配满足均匀且左侧优先；居中用左右差不超过1、右侧不短于左侧。加外边距及星框后得到满足全部要求的合法输出。\n\n## 复杂度\n\n时间O(输出长度)，空间O(输出长度)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    width,p=map(int,d[:2]);index=2;result=['*'*(width+4)]\n    for _ in range(p):\n        count=int(d[index]);words=d[index+1:index+1+count];index+=count+1;start=0\n        while start<count:\n            end=start;letters=0\n            while end<count and letters+len(words[end])+end-start<=width:letters+=len(words[end]);end+=1\n            row=words[start:end]\n            if end==count or len(row)==1:\n                content=' '.join(row);padding=width-len(content);left=padding//2;content=' '*left+content+' '*(padding-left)\n            else:\n                gaps=len(row)-1;base,extra=divmod(width-letters,gaps);content=''.join(word+(' '*(base+(i<extra)) if i<gaps else '') for i,word in enumerate(row))\n            result.append('* '+content+' *');start=end\n    result.append(result[0]);return '\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#6-newspaper-text-justification",
+  "sourceContentHash": "0c433aeb611e840334e81722795db400c96392e0cc4ce018b3beb6ba0b1fa40c",
+  "author": "CSWork"
+}

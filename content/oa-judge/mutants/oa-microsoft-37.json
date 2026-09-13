@@ -1,0 +1,10 @@
+[
+  {
+    "name": "跳过无法履行的近订单",
+    "code": "def solve(d):\n    n,budget=map(int,d[:2]);distance=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));orders=sorted(zip(distance,cost));answer=0\n    for _,value in orders:\n        if value>budget:continue\n        budget-=value;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同距离需求降序",
+    "code": "def solve(d):\n    n,budget=map(int,d[:2]);distance=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));orders=sorted(zip(distance,cost),key=lambda x:(x[0],-x[1]));answer=0\n    for _,value in orders:\n        if value>budget:break\n        budget-=value;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

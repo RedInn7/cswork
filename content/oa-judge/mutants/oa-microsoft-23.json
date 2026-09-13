@@ -1,0 +1,10 @@
+[
+  {
+    "name": "总改成白色",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);answer=0\n    for i in range((n+1)//2):\n        for j in range((m+1)//2):\n            cells={(i,j),(n-1-i,j),(i,m-1-j),(n-1-i,m-1-j)};black=sum(d[2+a][b]=='B' for a,b in cells)\n            answer+=black\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误遗漏中间行列",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);answer=0\n    for i in range(n//2):\n        for j in range((m+1)//2):\n            cells={(i,j),(n-1-i,j),(i,m-1-j),(n-1-i,m-1-j)};black=sum(d[2+a][b]=='B' for a,b in cells)\n            answer+=min(black,len(cells)-black)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

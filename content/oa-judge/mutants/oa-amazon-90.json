@@ -1,0 +1,10 @@
+[
+  {
+    "name": "丢失前导零",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]))\n    while len(a)>2:a=[(a[i]+a[i+1])%10 for i in range(len(a)-1)]\n    return str(int(''.join(map(str,a))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "相邻相加错误为相乘",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]))\n    while len(a)>2:a=[(a[i]*a[i+1])%10 for i in range(len(a)-1)]\n    return ''.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

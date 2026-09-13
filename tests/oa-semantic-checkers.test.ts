@@ -320,6 +320,106 @@ test('magic squares accept every valid arrangement, not just one construction', 
   );
 });
 
+test('newspaper accepts different legal line breaks and rejects incorrect layout', () => {
+  const frame = (rows: string[], width = 7) =>
+    [
+      '*'.repeat(width + 4),
+      ...rows.map((row) => '* ' + row + ' *'),
+      '*'.repeat(width + 4),
+    ].join('\n');
+  const input = '7 1\n4 a bb c d\n';
+  const packed = frame(['a  bb c', '   d   ']);
+  const single = frame(['   a   ', '  bb   ', '   c   ', '   d   ']);
+  const accepts = (actual: string, expected = packed, data = input) => {
+    const result = matchesOaSemantic('oa-newspaper', actual, expected, data);
+    assert.equal(matchesOutput(actual, expected, 'oa-newspaper', data), result);
+    assert.equal(
+      matchesOaOutput(actual, expected, 'oa-newspaper', data),
+      result,
+    );
+    return result;
+  };
+  assert(accepts(single));
+  assert(accepts(packed.replace(/\n/g, '\r\n') + '\r\n'));
+  for (const wrong of [
+    frame(['a bb  c', '   d   ']), // extra gap must go left
+    frame([' a bb c', '   d   ']), // nonlast line must be justified
+    frame(['a  bb c', 'd      ']), // last line must be centered
+    frame(['a  bb c', '  d    ']),
+    frame(['a  bb c']),
+    frame(['a  bb d', '   c   ']),
+    single + '\n\n',
+    single.replace('***********', '**********'),
+    single.replace('  bb   ', '\tbb    '),
+  ])
+    assert(!accepts(wrong), JSON.stringify(wrong));
+  assert(!accepts(single, 'invalid reference'));
+  const two = '7 2\n1 a\n1 bb\n';
+  assert(
+    accepts(frame(['   a   ', '  bb   ']), frame(['   a   ', '  bb   ']), two),
+  );
+  assert(!accepts(frame([' a bb  ']), frame(['   a   ', '  bb   ']), two));
+  for (const badInput of [
+    '4 1 1 a',
+    '51 1 1 a',
+    '7 0',
+    '7 21',
+    '7 1 0',
+    '7 1 11 a',
+    '7 1 1 abcdefgh',
+    '7 1 1 a extra',
+    '7 1 1 é',
+  ])
+    assert(!accepts(single, packed, badInput));
+  const maximum =
+    '50 20\n' +
+    Array(20)
+      .fill('10 ' + Array(10).fill('x'.repeat(50)).join(' '))
+      .join('\n');
+  const maxOutput = frame(Array(200).fill('x'.repeat(50)), 50);
+  assert(accepts(maxOutput, maxOutput, maximum));
+  const stars = frame(['*****'], 5);
+  assert(accepts(stars, stars, '5 1 1 *****'));
+  assert(!accepts(single + 'x'.repeat(32768)));
+  assert(!accepts(single, packed, input + ' '.repeat(16384)));
+});
+
+test('newspaper accepts all feasible partitions of a paragraph', () => {
+  const words = ['a', 'bb', 'c', 'd'];
+  const input = '7 1\n4 ' + words.join(' ') + '\n';
+  const boxed = (rows: string[]) =>
+    ['***********', ...rows.map((s) => '* ' + s + ' *'), '***********'].join(
+      '\n',
+    );
+  const centered = (s: string) =>
+    ' '.repeat(Math.floor((7 - s.length) / 2)) +
+    s +
+    ' '.repeat(Math.ceil((7 - s.length) / 2));
+  const baseline = boxed(words.map(centered));
+  let feasible = 0;
+  for (let mask = 0; mask < 8; mask++) {
+    const groups: string[][] = [[]];
+    words.forEach((word, i) => {
+      groups.at(-1)!.push(word);
+      if (i < 3 && mask & (1 << i)) groups.push([]);
+    });
+    if (groups.some((group) => group.join(' ').length > 7)) continue;
+    const rows = groups.map((group, index) => {
+      if (index === groups.length - 1 || group.length === 1)
+        return centered(group.join(' '));
+      const gaps = Array(group.length - 1).fill(1);
+      let remaining = 7 - group.join(' ').length;
+      for (let i = 0; remaining > 0; i++, remaining--) gaps[i % gaps.length]++;
+      return group
+        .map((word, i) => word + (i < gaps.length ? ' '.repeat(gaps[i]) : ''))
+        .join('');
+    });
+    assert(matchesOaSemantic('oa-newspaper', boxed(rows), baseline, input));
+    feasible++;
+  }
+  assert.equal(feasible, 7);
+});
+
 test('fixed OA checkers cannot be assigned to other question identities', () => {
   const pkg = JSON.parse(
     readFileSync('content/oa-judge/packages/oa-google-1.json', 'utf8'),
@@ -330,6 +430,7 @@ test('fixed OA checkers cannot be assigned to other question identities', () => 
     ['oa-window-averages', 'oa-meta-23'],
     ['oa-balanced-circle', 'oa-microsoft-15'],
     ['oa-magic-square', 'oa-google-17'],
+    ['oa-newspaper', 'oa-uber-6'],
   ]) {
     assert(
       ojImportSchema.safeParse({
@@ -344,4 +445,13 @@ test('fixed OA checkers cannot be assigned to other question identities', () => 
       }).success,
     );
   }
+});
+
+test('teacher checker selector preserves the fixed OA option', () => {
+  const source = readFileSync('components/oj-admin.tsx', 'utf8');
+  assert.match(
+    source,
+    /'oa-',\s*\]\.some\(\(prefix\) => spec\.checker\.startsWith\(prefix\)\)/,
+  );
+  assert.match(source, /<option value=\{spec\.checker\}>\s*本题专用规则/);
 });

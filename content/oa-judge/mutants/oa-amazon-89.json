@@ -1,0 +1,10 @@
+[
+  {
+    "name": "路径长度多算起点",
+    "code": "def solve(d):\n    from array import array\n    h,w=map(int,d[:2]);g=''.join(d[2:]);distance=array('i',[-1])*(h*w);distance[0]=1;q=array('i',[0]);head=0\n    while head<len(q):\n        cell=q[head];head+=1\n        if g[cell]=='9':return str(distance[cell])\n        r,c=divmod(cell,w)\n        for nxt in (cell-w if r else -1,cell+w if r+1<h else -1,cell-1 if c else -1,cell+1 if c+1<w else -1):\n            if nxt>=0 and g[nxt]!='0' and distance[nxt]<0:distance[nxt]=distance[cell]+1;q.append(nxt)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "障碍也可走",
+    "code": "def solve(d):\n    from array import array\n    h,w=map(int,d[:2]);g=''.join(d[2:]);distance=array('i',[-1])*(h*w);distance[0]=0;q=array('i',[0]);head=0\n    while head<len(q):\n        cell=q[head];head+=1\n        if g[cell]=='9':return str(distance[cell])\n        r,c=divmod(cell,w)\n        for nxt in (cell-w if r else -1,cell+w if r+1<h else -1,cell-1 if c else -1,cell+1 if c+1<w else -1):\n            if nxt>=0 and True and distance[nxt]<0:distance[nxt]=distance[cell]+1;q.append(nxt)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

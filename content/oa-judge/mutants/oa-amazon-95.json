@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏完整前缀后的扩展",
+    "code": "def solve(d):\n    c,s=d;m=len(s);mod=1000000007;dp=[1]+[0]*m;greater=0\n    for ch in c:\n        greater=(greater*2)%mod\n        for j in range(m-1,-1,-1):\n            if ch>s[j]:greater=(greater+dp[j])%mod\n            elif ch==s[j]:dp[j+1]=(dp[j+1]+dp[j])%mod\n    return str(greater)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同一字符重复匹配",
+    "code": "def solve(d):\n    c,s=d;m=len(s);mod=1000000007;dp=[1]+[0]*m;greater=0\n    for ch in c:\n        greater=(greater*2+dp[m])%mod\n        for j in range(m):\n            if ch>s[j]:greater=(greater+dp[j])%mod\n            elif ch==s[j]:dp[j+1]=(dp[j+1]+dp[j])%mod\n    return str(greater)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

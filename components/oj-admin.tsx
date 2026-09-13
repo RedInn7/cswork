@@ -1209,6 +1209,7 @@ export function OjAdmin({
                           'strings-lc-',
                           'design-lc-',
                           'fraction-lc-',
+                          'oa-',
                         ].some((prefix) => spec.checker.startsWith(prefix)) && (
                           <option value={spec.checker}>
                             本题专用规则 · 接受多种正确答案

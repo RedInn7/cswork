@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重叠不变号只去重",
+    "code": "def solve(d):\n    n,k,l=map(int,d[:3]);a=list(map(int,d[3:]));prefix=[0]\n    for value in a:prefix.append(prefix[-1]+value)\n    answer=-10**30\n    for i in range(n-k+1):\n        leftsum=prefix[i+k]-prefix[i]\n        for j in range(n-l+1):\n            start=max(i,j);end=min(i+k,j+l);overlap=prefix[end]-prefix[start] if start<end else 0\n            answer=max(answer,leftsum+prefix[j+l]-prefix[j]-overlap)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误允许空选择",
+    "code": "def solve(d):\n    n,k,l=map(int,d[:3]);a=list(map(int,d[3:]));prefix=[0]\n    for value in a:prefix.append(prefix[-1]+value)\n    answer=0\n    for i in range(n-k+1):\n        leftsum=prefix[i+k]-prefix[i]\n        for j in range(n-l+1):\n            start=max(i,j);end=min(i+k,j+l);overlap=prefix[end]-prefix[start] if start<end else 0\n            answer=max(answer,leftsum+prefix[j+l]-prefix[j]-3*overlap)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

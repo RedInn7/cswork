@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-30",
+  "title": "轮转制作订单的总等待时间",
+  "explanation": "## 思路\n\n订单i完成前共经历T[i]−1整轮，贡献Σmin(T[j],T[i]−1)，再加本轮在i之前且还未完成的订单数。排序前缀和求前半项，树状数组统计后半项。\n\n## 正确性证明\n\n在前T[i]−1轮，每个订单恰消耗min(T[j],T[i]−1)小时；最后一轮原顺序不变，只处理下标≤i且T[j]≥T[i]者。这两部分不重不漏，累加各完成时间即得总等待。\n\n## 复杂度\n\n时间O(N log N+N log V)，空间O(N+V)，V≤10000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left\n    a=list(map(int,d[1:]));ordered=sorted(a);prefix=[0]\n    for value in ordered:prefix.append(prefix[-1]+value)\n    bit=[0]*(max(a)+1);answer=0\n    for i,value in enumerate(a):\n        index=value\n        while index<len(bit):bit[index]+=1;index+=index&-index\n        less=0;index=value-1\n        while index:less+=bit[index];index-=index&-index\n        split=bisect_left(ordered,value);before=prefix[split]+(len(a)-split)*(value-1)\n        answer+=before+i+1-less\n    return str(answer%1000000000)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#30-total-waiting-time-for-handmade-items",
+  "sourceContentHash": "5277c574c6ed0f3ab634ecb08bd5a17738e33d7f622778aa19e1fcaf0a797974",
+  "author": "CSWork"
+}

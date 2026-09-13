@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-76",
+  "title": "累计使用量达到阈值的最早整数秒",
+  "explanation": "## 思路\n\n在start记录+1、end+1记录−1事件，按时间排序。相邻事件之间活跃数固定，按段累计；阈值落在段内时用向上取整求最少秒数。\n\n## 正确性证明\n\n事件变更准确描述每秒是否仍在闭区间内。固定活跃数c的L秒贡献cL；若目标落在该段，需要ceil(剩余额度/c)秒，得到最早达到时刻。所有段不足时只能返回−1。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,target=map(int,d[:2]);events={}\n    for i in range(2,len(d),2):\n        a,b=int(d[i]),int(d[i+1]);events[a]=events.get(a,0)+1;events[b+1]=events.get(b+1,0)-1\n    active=total=0;previous=0\n    for t,delta in sorted(events.items()):\n        contribution=active*(t-previous)\n        if active and total+contribution>=target:return str(previous+(target-total+active-1)//active-1)\n        total+=contribution;active+=delta;previous=t\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#76-get-min-time-earliest-time-usage--max",
+  "sourceContentHash": "4384e2b0bd7d42925025d91854c7b727459af684dc4aa16c1ac382d1890e8c54",
+  "author": "CSWork"
+}

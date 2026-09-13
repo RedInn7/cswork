@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只翻倍第一项",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));suffix=[0]*(n+1)\n    for i in range(n-1,-1,-1):suffix[i]=suffix[i+1]|a[i]\n    prefix=answer=0\n    for i,value in list(enumerate(a))[:1]:answer=max(answer,prefix|(value<<k)|suffix[i+1]);prefix|=value\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "倍数误作加法",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));suffix=[0]*(n+1)\n    for i in range(n-1,-1,-1):suffix[i]=suffix[i+1]|a[i]\n    prefix=answer=0\n    for i,value in enumerate(a):answer=max(answer,prefix|(value+k)|suffix[i+1]);prefix|=value\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

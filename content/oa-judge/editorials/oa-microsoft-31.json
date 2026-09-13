@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-31",
+  "title": "用两个栈实现先进先出队列",
+  "explanation": "## 思路\n\n入队栈记录新元素，出队栈为空时把入队栈全部倒入，出队和查看操作出队栈顶。\n\n## 正确性证明\n\n倒栈把最近入队的顺序反转，最早元素成为出队栈顶。只在出队栈空时倒入保证旧元素始终先于新元素，每个元素最多搬运一次。\n\n## 复杂度\n\n均摊每操作O(1)，空间O(Q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    incoming=[];outgoing=[];out=[];i=1\n    while i<len(d):\n        op=d[i];i+=1\n        if op=='push':incoming.append(d[i]);i+=1;out.append('null')\n        elif op=='empty':out.append('true' if not incoming and not outgoing else 'false')\n        else:\n            if not outgoing:\n                while incoming:outgoing.append(incoming.pop())\n            out.append(outgoing.pop() if op=='pop' else outgoing[-1])\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#31-implement-queue-using-stacks-round-2-lc-232",
+  "sourceContentHash": "aa04767f03c9de062db1867f035cfb6b4be1c433b343c7955adb723b2674f95b",
+  "author": "CSWork"
+}

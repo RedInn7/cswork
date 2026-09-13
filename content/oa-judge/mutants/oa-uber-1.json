@@ -1,0 +1,10 @@
+[
+  {
+    "name": "覆盖最早余数位置",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);first={0:0};remainder=answer=0\n    for i,value in enumerate(map(int,d[2:]),1):\n        remainder=(remainder+value)%k\n        if remainder in first:answer=max(answer,i-first[remainder])\n        first[remainder]=i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不加入空前缀",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);first={};remainder=answer=0\n    for i,value in enumerate(map(int,d[2:]),1):\n        remainder=(remainder+value)%k\n        if remainder in first:answer=max(answer,i-first[remainder])\n        else:first[remainder]=i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

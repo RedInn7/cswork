@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查首个窗口",
+    "code": "def solve(d):\n    from collections import Counter\n    n,r=map(int,d[:2]);a=list(map(int,d[2:]));counts=Counter(a[r:]);distinct=len(counts);answer=distinct\n    for right in range(r,n):\n        left=right-r\n        if counts[a[left]]==0:distinct+=1\n        counts[a[left]]+=1;counts[a[right]]-=1\n        if counts[a[right]]==0:distinct-=1\n        answer=answer\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误把删除全部算一类",
+    "code": "def solve(d):\n    from collections import Counter\n    n,r=map(int,d[:2]);a=list(map(int,d[2:]));counts=Counter(a[r:]);distinct=len(counts);answer=distinct\n    for right in range(r,n):\n        left=right-r\n        if counts[a[left]]==0:distinct+=1\n        counts[a[left]]+=1;counts[a[right]]-=1\n        if counts[a[right]]==0:distinct-=1\n        answer=max(answer,distinct)\n    return str(max(1,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

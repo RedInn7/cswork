@@ -1,0 +1,10 @@
+[
+  {
+    "name": "入队错误反向",
+    "code": "def solve(d):\n    incoming=[];outgoing=[];out=[];i=1\n    while i<len(d):\n        op=d[i];i+=1\n        if op=='push':incoming.insert(0,d[i]);i+=1;out.append('null')\n        elif op=='empty':out.append('true' if not incoming and not outgoing else 'false')\n        else:\n            if not outgoing:\n                while incoming:outgoing.append(incoming.pop())\n            out.append(outgoing.pop() if op=='pop' else outgoing[-1])\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "空状态颠倒",
+    "code": "def solve(d):\n    incoming=[];outgoing=[];out=[];i=1\n    while i<len(d):\n        op=d[i];i+=1\n        if op=='push':incoming.append(d[i]);i+=1;out.append('null')\n        elif op=='empty':out.append('false' if not incoming and not outgoing else 'true')\n        else:\n            if not outgoing:\n                while incoming:outgoing.append(incoming.pop())\n            out.append(outgoing.pop() if op=='pop' else outgoing[-1])\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

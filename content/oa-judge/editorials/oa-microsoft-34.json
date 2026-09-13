@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-34",
+  "title": "树上相邻字符不同的最长路径",
+  "explanation": "## 思路\n\n自底向上求每个节点向下合法链长，选择可以连接的两个最长子链更新答案。\n\n## 正确性证明\n\n路径的最高节点唯一，其余部分最多分属两个子树。相同字母边不能连接，选不同字母子链中的最长两条即可得到经过该最高点的最优路径，枚举全部节点覆盖全局最优。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);parents=list(map(int,d[1:n+1]));s=d[n+1];children=[[] for _ in range(n)]\n    for i in range(1,n):children[parents[i]].append(i)\n    order=[0]\n    for u in order:order.extend(children[u])\n    down=[1]*n;best=1\n    for u in reversed(order):\n        first=second=0\n        for v in children[u]:\n            if s[u]==s[v]:continue\n            length=down[v]\n            if length>first:first,second=length,first\n            elif length>second:second=length\n        down[u]=first+1;best=max(best,first+second+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/microsoft#34-longest-path-with-different-adjacent-characters",
+  "sourceContentHash": "afb81e65af5ef39a41c42eb0f1b38d27ca9fe07aa28aa42ca535de0ab5ca4fdc",
+  "author": "CSWork"
+}

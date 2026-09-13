@@ -288,6 +288,17 @@ try {
   );
   const failures = [];
   const equivalentPrograms = {
+    'oa-uber-6': `import sys
+d=sys.stdin.read().split();w,p=map(int,d[:2]);i=2
+print('*'*(w+4))
+for _ in range(p):
+ n=int(d[i]);i+=1
+ for word in d[i:i+n]:
+  extra=w-len(word)
+  print('* '+' '*(extra//2)+word+' '*((extra+1)//2)+' *')
+ i+=n
+print('*'*(w+4))
+`,
     // Independent correct implementations with deliberately different choices
     // or formatting. These must be accepted by the real built worker too.
     'oa-meta-16': `import sys, bisect

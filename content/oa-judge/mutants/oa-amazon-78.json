@@ -1,0 +1,10 @@
+[
+  {
+    "name": "强迫全部组等大",
+    "code": "def solve(d):\n    from collections import Counter\n    frequencies=list(Counter(map(int,d[1:])).values())\n    for b in range(min(frequencies),0,-1):\n        answer=0\n        for f in frequencies:\n            count=(f+b-1)//b\n            if count*b>f:break\n            answer+=count\n        else:return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略每组最小大小",
+    "code": "def solve(d):\n    from collections import Counter\n    frequencies=list(Counter(map(int,d[1:])).values())\n    for b in range(min(frequencies),0,-1):\n        answer=0\n        for f in frequencies:\n            count=(f+b)//(b+1)\n            if False:break\n            answer+=count\n        else:return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

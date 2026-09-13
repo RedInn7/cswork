@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-5",
+  "title": "按优先级兑换和消耗资源的周期数",
+  "explanation": "## 思路\n\n每次兑换消耗固定数量P，故可兑换floor(P/rate)次。每次兑换还产生一个需要消耗的A，总周期为初始A数加两倍兑换次数。\n\n## 正确性\n\nP只会减少且仅在兑换时减少，不存在其他产生P的动作，因此兑换总数固定。所有初始与新生A最终各被消耗一次，两类动作相加即得周期数。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    rate=int(d[1]);items=d[2]\n    return str(items.count('A')+2*(items.count('P')//rate))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#5-resources-ap-conversion-cycles",
+  "sourceContentHash": "a7f2a8299324450cd336a0110237d5549757baa946e7ca0b8c12f172b702ebbb",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "故障字符不参与间隔删除",
+    "code": "def solve(d):\n    s,f=d;previous=0;answer=0\n    for i,c in enumerate(s):\n        if c==f:answer=max(answer,max(0,i-previous-1));previous=i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看故障次数",
+    "code": "def solve(d):\n    s,f=d;previous=0;answer=0\n    for i,c in enumerate(s):\n        if c==f:answer=max(answer,i-previous);previous=i\n    return str(s.count(f))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
