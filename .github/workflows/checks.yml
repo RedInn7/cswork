@@ -59,6 +59,6 @@ jobs:
       - run: npm run test:editor
       - run: npm run test:request-lifecycle
       - run: python3 tests/deploy-nginx.test.py
-      - run: bash -n deploy/install.sh
+      - run: bash -n deploy/install.sh deploy/app-only-release.sh
       - run: npm run build
       - run: node tests/oa-library-http.mjs
