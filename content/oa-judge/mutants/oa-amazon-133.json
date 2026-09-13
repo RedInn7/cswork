@@ -1,0 +1,10 @@
+[
+  {
+    "name": "余数0错当免费",
+    "code": "def solve(d):\n    n,a,b,budget=map(int,d[:4]);cost=sorted(max(0,(int(v)%(a+b)-1)//a) for v in d[4:]);answer=0\n    for value in cost:\n        if value>budget:break\n        budget-=value;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "优先昂贵仓",
+    "code": "def solve(d):\n    n,a,b,budget=map(int,d[:4]);cost=sorted(((int(v)-1)%(a+b))//a for v in d[4:]);answer=0\n    for value in reversed(cost):\n        if value>budget:break\n        budget-=value;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

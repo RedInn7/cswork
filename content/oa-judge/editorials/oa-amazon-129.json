@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-129",
+  "title": "同步向右解锁后的最大字典序序列",
+  "explanation": "## 思路\n\n扫描计算每个元素距离左侧最近初始1的距离，即解锁轮次；按轮次记录最大值，再对每一轮维护已经解锁值的最大值。\n\n## 正确性证明\n\n每轮可用集合的变化完全由初始状态和时间决定，不受选择影响。故当前选择最大值不会损害任何后续选择，按字典序逐位贪心最优。距离恰是同步向右传播所需轮数，初始首个1左侧永远不可用。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));state=d[2+n];unlock=[0]*n;distance=n\n    for i,c in enumerate(state):\n        distance=0 if c=='1' else distance+1\n        if distance<n:unlock[distance]=max(unlock[distance],a[i])\n    if not unlock[0]:return '-1'\n    current=0;answer=[]\n    for step in range(m):\n        if step<n:current=max(current,unlock[step])\n        answer.append(current)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#129-create-array-generator-service",
+  "sourceContentHash": "8b72fee3615ca4b4e72e20d228ed572f68bb2bad2d263756fc58a12366cb805e",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-121",
+  "title": "连续三次错误后的服务器更换次数",
+  "explanation": "## 思路\n\n每台服务器保存连续错误次数，success归零，错误加一达到3就换机并归零。\n\n## 正确性证明\n\n计数不变量是当前新服务器在最近success之后连续失败次数。替换后使用全新服务器，因此也从零开始。每次恰在第三个错误时计一次，完整模拟所有替换。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    streak=[0]*int(d[0]);answer=0\n    for j in range(2,len(d),2):\n        i=int(d[j])-1;streak[i]=streak[i]+1 if d[j+1]=='error' else 0\n        if streak[i]==3:answer+=1;streak[i]=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#121-count-faults",
+  "sourceContentHash": "31b6dc72bc0cf433a69c70a2d4f3ecdb30900d73a9d07a647f13ebf91fa11dbd",
+  "author": "CSWork"
+}

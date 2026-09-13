@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-134",
+  "title": "单点改价与全局保底后的最终价格",
+  "explanation": "## 思路\n\n倒序处理，记录后续全局保底的最大值；第一次遇到某下标单点赋值就确定其最终值=max(赋值,后续保底)，忽略更早赋值。未遇赋值者用初始价格。\n\n## 正确性证明\n\n最后一次单点赋值覆盖该点此前的全部操作，而它之后的保底操作等价于取所有下限最大值。倒序第一次赋值正是最后赋值，维护的最大值恰为后续保底，所以每点结果正确。\n\n## 复杂度\n\n时间O(n+q)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);initial=list(map(int,d[2:2+n]));answer=[None]*n;floor=0\n    for j in range(len(d)-3,1+n,-3):\n        typ,x,v=map(int,d[j:j+3])\n        if typ==2:floor=max(floor,v)\n        elif answer[x-1] is None:answer[x-1]=max(v,floor)\n    for i in range(n):\n        if answer[i] is None:answer[i]=max(initial[i],floor)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#134-discount-events",
+  "sourceContentHash": "4a28b920dbac247d1062dd13163bd71d14cf8c94a0f873ae592effb3a1f554b4",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "后续单点也被较早保底覆盖",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);initial=list(map(int,d[2:2+n]));answer=[None]*n;floor=0\n    for j in range(len(d)-3,1+n,-3):\n        typ,x,v=map(int,d[j:j+3])\n        if typ==2:floor=max(floor,v)\n        elif answer[x-1] is None:answer[x-1]=max(v,floor)\n    for i in range(n):\n        answer[i]=max(initial[i] if answer[i] is None else answer[i],floor)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "倒序覆盖最后赋值",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);initial=list(map(int,d[2:2+n]));answer=[None]*n;floor=0\n    for j in range(len(d)-3,1+n,-3):\n        typ,x,v=map(int,d[j:j+3])\n        if typ==2:floor=max(floor,v)\n        elif True:answer[x-1]=max(v,floor)\n    for i in range(n):\n        if answer[i] is None:answer[i]=max(initial[i],floor)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按数组重复计数",
+    "code": "def solve(d):\n    k=int(d[1]);values=set(map(int,d[2:]));return str(sum(a+k in values for a in map(int,d[2:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不允许自配",
+    "code": "def solve(d):\n    k=int(d[1]);values=set(map(int,d[2:]));return str(sum(a+k in values and k!=0 for a in values))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只算奇数中心",
+    "code": "def solve(d):\n    s=d[0];n=len(s);answer=0\n    for center in range(0,2*n-1,2):\n        left=center//2;right=(center+1)//2\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏单字符",
+    "code": "def solve(d):\n    s=d[0];n=len(s);answer=0\n    for center in range(2*n-1):\n        left=center//2;right=(center+1)//2\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n    return str(answer-n)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

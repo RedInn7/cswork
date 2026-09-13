@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每条边都扣一",
+    "code": "def solve(d):\n    n=int(d[0]);p=list(range(n));size=[1]*n;answer=n\n    def root(a):\n        while p[a]!=a:p[a]=p[p[a]];a=p[a]\n        return a\n    for i in range(2,len(d),2):\n        a,b=root(int(d[i])),root(int(d[i+1]))\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            p[b]=a;size[a]+=size[b];answer-=1\n    return str(n-int(d[1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏孤立点",
+    "code": "def solve(d):\n    n=int(d[0]);p=list(range(n));size=[1]*n;answer=n\n    def root(a):\n        while p[a]!=a:p[a]=p[p[a]];a=p[a]\n        return a\n    for i in range(2,len(d),2):\n        a,b=root(int(d[i])),root(int(d[i+1]))\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            p[b]=a;size[a]+=size[b];answer-=1\n    return str(answer-sum(size[i]==1 and p[i]==i for i in range(n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

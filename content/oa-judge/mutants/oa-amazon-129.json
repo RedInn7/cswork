@@ -1,0 +1,10 @@
+[
+  {
+    "name": "提前一轮解锁",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));state=d[2+n];unlock=[0]*n;distance=n\n    for i,c in enumerate(state):\n        distance=0 if c=='1' else distance+1\n        if distance<n:unlock[max(0,distance-1)]=max(unlock[max(0,distance-1)],a[i])\n    if not unlock[0]:return '-1'\n    current=0;answer=[]\n    for step in range(m):\n        if step<n:current=max(current,unlock[step])\n        answer.append(current)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "永远只用初始集合",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));state=d[2+n];unlock=[0]*n;distance=n\n    for i,c in enumerate(state):\n        distance=0 if c=='1' else distance+1\n        if distance<n:unlock[distance]=max(unlock[distance],a[i])\n    if not unlock[0]:return '-1'\n    current=0;answer=[]\n    for step in range(m):\n        if step==0:current=max(current,unlock[step])\n        answer.append(current)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

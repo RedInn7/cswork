@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-133",
+  "title": "同事有限跳过次数下最多拿分",
+  "explanation": "## 思路\n\n无跳过完整轮次每次消耗a+b。将库存余数r变为1..a+b，每仓拿分最少需要(r−1)//a次跳过。将这些成本排序，尽量购买低成本的1分。\n\n## 正确性证明\n\n跳过可以推迟到决定最后出货者的末段而不增加所需次数。余数r若大于a，你每多出货一次需要同事跳过一次，最少ceil(r/a)−1次。每仓独立提供价值相同的1分，交换任一较贵已选仓与较便宜未选仓不降分且不增总成本，故按成本排序最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,a,b,budget=map(int,d[:4]);cost=sorted(((int(v)-1)%(a+b))//a for v in d[4:]);answer=0\n    for value in cost:\n        if value>budget:break\n        budget-=value;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#133-determine-the-best-skipping-strategy",
+  "sourceContentHash": "ea9d5e8ecdde4ac9992f69c55aba86ae4a3ca673eb40c9a108cf362e0dc50eb4",
+  "author": "CSWork"
+}

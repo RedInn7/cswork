@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只看总和平均与最大项",
+    "code": "def solve(d):\n    m,children=map(int,d[:2]);games=list(map(int,d[2:]));total=sum(games);lo=max(max(games),(total+children-1)//children);hi=total\n    def feasible(capacity):\n        dp=[(m+1,0)]*(1<<m);dp[0]=(1,0)\n        for mask in range(1,1<<m):\n            best=(m+1,0);bits=mask\n            while bits:\n                bit=bits&-bits;i=bit.bit_length()-1;rides,load=dp[mask^bit]\n                candidate=(rides,load+games[i]) if load+games[i]<=capacity else (rides+1,games[i])\n                if candidate<best:best=candidate\n                bits-=bit\n            dp[mask]=best\n        return dp[-1][0]<=children\n    while lo<hi:\n        middle=(lo+hi)//2\n        if feasible(middle):hi=middle\n        else:lo=middle+1\n    return str(max(max(games),(total+children-1)//children))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "容量只取最大单项",
+    "code": "def solve(d):\n    m,children=map(int,d[:2]);games=list(map(int,d[2:]));total=sum(games);lo=max(max(games),(total+children-1)//children);hi=total\n    def feasible(capacity):\n        dp=[(m+1,0)]*(1<<m);dp[0]=(1,0)\n        for mask in range(1,1<<m):\n            best=(m+1,0);bits=mask\n            while bits:\n                bit=bits&-bits;i=bit.bit_length()-1;rides,load=dp[mask^bit]\n                candidate=(rides,load+games[i]) if load+games[i]<=capacity else (rides+1,games[i])\n                if candidate<best:best=candidate\n                bits-=bit\n            dp[mask]=best\n        return dp[-1][0]<=children\n    while lo<hi:\n        middle=(lo+hi)//2\n        if feasible(middle):hi=middle\n        else:lo=middle+1\n    return str(max(games))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-119",
+  "title": "恰有字符占一半的子串数",
+  "explanation": "## 思路\n\n对每种字符，把它记为+1、其他记为−1，相等前缀和对数统计它恰占一半。唯一重计情形是仅两种字符且数量相同；对每个字符对合并出现位置，在不含其他字符的连续段内做平衡计数并扣除。\n\n## 正确性证明\n\n单字符平衡与它的频次等于长度一半等价。非空子串不可能有三种字符都占一半；有两种时必定不含其他字符。逐字符对恰扣除这些多算一次的子串，得到每个合法子串一次。每个位置在字符对合并中最多参与25次。\n\n## 复杂度\n\n时间O(26n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];positions={}\n    for i,c in enumerate(s):positions.setdefault(c,[]).append(i)\n    answer=0\n    for c in positions:\n        balance=0;seen={0:1}\n        for v in s:\n            balance+=1 if v==c else -1;answer+=seen.get(balance,0);seen[balance]=seen.get(balance,0)+1\n    keys=list(positions)\n    for a in range(len(keys)):\n        for b in range(a):\n            x,y=positions[keys[a]],positions[keys[b]];i=j=0;previous=-2;balance=0;seen={0:1}\n            while i<len(x) or j<len(y):\n                if j==len(y) or i<len(x) and x[i]<y[j]:p=x[i];i+=1;step=1\n                else:p=y[j];j+=1;step=-1\n                if p!=previous+1:balance=0;seen={0:1}\n                balance+=step;answer-=seen.get(balance,0);seen[balance]=seen.get(balance,0)+1;previous=p\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#119-count-dominant-substrings",
+  "sourceContentHash": "5ab9912b38a94d5ea047132d7750199e18d023fa61b73968f297d08b48873416",
+  "author": "CSWork"
+}

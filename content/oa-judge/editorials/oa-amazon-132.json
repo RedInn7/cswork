@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-132",
+  "title": "每个班次结束后剩余的任务数",
+  "explanation": "## 思路\n\n任务时长前缀和记录完成时间。累加当前批已经用时，二分已完成任务数；达到总时长则输出0并清零，为下班重启准备。\n\n## 正确性证明\n\n批内顺序且任务时长为正，累计时间达到某前缀当且仅当前若干任务完成。二分统计不大于当前时间的前缀得到完成数。达到全批后按来源样例丢弃超额并重置，其余班次则继续累计，保持进度不变量。\n\n## 复杂度\n\n时间O(n+m log n)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_right\n    n,m=map(int,d[:2]);prefix=[];total=0\n    for v in d[2:2+n]:total+=int(v);prefix.append(total)\n    elapsed=0;answer=[]\n    for v in d[2+n:]:\n        elapsed+=int(v)\n        if elapsed>=total:answer.append(0);elapsed=0\n        else:answer.append(n-bisect_right(prefix,elapsed))\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#132-compute-remaining-tasks",
+  "sourceContentHash": "93d97e0816a82437fb5ee629e482b96b1ee8ba025a80ba8c29ae1eba64a68de9",
+  "author": "CSWork"
+}

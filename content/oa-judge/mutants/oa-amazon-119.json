@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不扣双字符重复",
+    "code": "def solve(d):\n    s=d[0];positions={}\n    for i,c in enumerate(s):positions.setdefault(c,[]).append(i)\n    answer=0\n    for c in positions:\n        balance=0;seen={0:1}\n        for v in s:\n            balance+=1 if v==c else -1;answer+=seen.get(balance,0);seen[balance]=seen.get(balance,0)+1\n    keys=list(positions)\n    for a in range(len(keys)):\n        for b in range(a):\n            x,y=positions[keys[a]],positions[keys[b]];i=j=0;previous=-2;balance=0;seen={0:1}\n            while i<len(x) or j<len(y):\n                if j==len(y) or i<len(x) and x[i]<y[j]:p=x[i];i+=1;step=1\n                else:p=y[j];j+=1;step=-1\n                if p!=previous+1:balance=0;seen={0:1}\n                balance+=step;answer-=0;seen[balance]=seen.get(balance,0)+1;previous=p\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重计部分扣两次",
+    "code": "def solve(d):\n    s=d[0];positions={}\n    for i,c in enumerate(s):positions.setdefault(c,[]).append(i)\n    answer=0\n    for c in positions:\n        balance=0;seen={0:1}\n        for v in s:\n            balance+=1 if v==c else -1;answer+=seen.get(balance,0);seen[balance]=seen.get(balance,0)+1\n    keys=list(positions)\n    for a in range(len(keys)):\n        for b in range(a):\n            x,y=positions[keys[a]],positions[keys[b]];i=j=0;previous=-2;balance=0;seen={0:1}\n            while i<len(x) or j<len(y):\n                if j==len(y) or i<len(x) and x[i]<y[j]:p=x[i];i+=1;step=1\n                else:p=y[j];j+=1;step=-1\n                if p!=previous+1:balance=0;seen={0:1}\n                balance+=step;answer-=2*seen.get(balance,0);seen[balance]=seen.get(balance,0)+1;previous=p\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

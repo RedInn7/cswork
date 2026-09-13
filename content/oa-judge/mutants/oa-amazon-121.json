@@ -1,0 +1,10 @@
+[
+  {
+    "name": "成功不清零",
+    "code": "def solve(d):\n    streak=[0]*int(d[0]);answer=0\n    for j in range(2,len(d),2):\n        i=int(d[j])-1;streak[i]=streak[i]+1 if d[j+1]=='error' else streak[i]\n        if streak[i]==3:answer+=1;streak[i]=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "换机后不重置",
+    "code": "def solve(d):\n    streak=[0]*int(d[0]);answer=0\n    for j in range(2,len(d),2):\n        i=int(d[j])-1;streak[i]=streak[i]+1 if d[j+1]=='error' else 0\n        if streak[i]==3:answer+=1;streak[i]=3\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

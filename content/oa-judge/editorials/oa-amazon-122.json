@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-122",
+  "title": "差为k的不同数值对",
+  "explanation": "## 思路\n\n去重后对每个a查询a+k是否存在。\n\n## 正确性证明\n\nk固定后a唯一确定b，集合中每个满足条件的a恰好对应一个不同数值对。自配不要求两个下标，所以k=0也直接适用。\n\n## 复杂度\n\n期望时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    k=int(d[1]);values=set(map(int,d[2:]));return str(sum(a+k in values for a in values))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#122-counting-pairs",
+  "sourceContentHash": "26930f6c7127be649e4a8b611e9b289c51c223fc20df63d4703a62c5d9f80eee",
+  "author": "CSWork"
+}

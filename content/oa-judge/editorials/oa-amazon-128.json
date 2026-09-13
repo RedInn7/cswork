@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-128",
+  "title": "用两轮四轮车组成车队的方法数",
+  "explanation": "## 思路\n\n奇数无解；偶数时四轮车可取0到w//4，余轮数唯一确定两轮车数量。\n\n## 正确性证明\n\n两种车总轮数必为偶数。固定四轮车数后两轮车数被方程唯一确定，取值区间恰保证其非负，故偶数答案为w//4+1。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):return ' '.join(str(w//4+1 if w%2==0 else 0) for w in map(int,d[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#128-count-ways-to-select-fleet",
+  "sourceContentHash": "25fa81ea28958d3dca8322a942ae8e6016077638869636d1d9466af2c54460d2",
+  "author": "CSWork"
+}
