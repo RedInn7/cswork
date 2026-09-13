@@ -1,0 +1,10 @@
+[
+  {
+    "name": "颠倒剩余商品次序",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]); values=[]; removed=[]; following=[]; head={}; tail={}\n    for token in d[2:]:\n        v=int(token)\n        if v>0:\n            index=len(values); previous=tail.get(v,-1)\n            if previous>=0: following[previous]=index\n            else: head[v]=index\n            tail[v]=index; values.append(v); removed.append(False); following.append(-1)\n        else:\n            value=-v; index=head[value]; head[value]=following[index]; removed[index]=True\n            if head[value]<0: tail[value]=-1\n    answer=[v for i,v in enumerate(values) if not removed[i]]\n    return ' '.join(map(str,[len(answer)]+answer[::-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "删除后仍输出该位置",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]); values=[]; removed=[]; following=[]; head={}; tail={}\n    for token in d[2:]:\n        v=int(token)\n        if v>0:\n            index=len(values); previous=tail.get(v,-1)\n            if previous>=0: following[previous]=index\n            else: head[v]=index\n            tail[v]=index; values.append(v); removed.append(False); following.append(-1)\n        else:\n            value=-v; index=head[value]; head[value]=following[index]; removed[index]=False\n            if head[value]<0: tail[value]=-1\n    answer=[v for i,v in enumerate(values) if not removed[i]]\n    return ' '.join(map(str,[len(answer)]+answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

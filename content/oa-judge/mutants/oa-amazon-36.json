@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不排序中心",
+    "code": "def solve(d):\n    n=int(d[0]); a=list(map(int,d[1:1+n])); b=sorted(map(int,d[1+n:]))\n    return str(sum(abs(x-y) for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "目的地逆序",
+    "code": "def solve(d):\n    n=int(d[0]); a=sorted(map(int,d[1:1+n])); b=sorted(map(int,d[1+n:]),reverse=True)\n    return str(sum(abs(x-y) for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

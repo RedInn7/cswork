@@ -1,0 +1,10 @@
+[
+  {
+    "name": "切口少算左端",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));weights=sorted(a[i+1] for i in range(n-1));base=a[0]+a[-1]\n    smallest=base+sum(weights[:k-1]);largest=base+sum(weights[len(weights)-(k-1):])\n    return f'{smallest} {largest}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "最大费用也取最小切口",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));weights=sorted(a[i]+a[i+1] for i in range(n-1));base=a[0]+a[-1]\n    smallest=base+sum(weights[:k-1]);largest=smallest\n    return f'{smallest} {largest}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

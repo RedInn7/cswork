@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-google-42",
+      "sourceContentHash": "54bdfd31feefd06e44a00d895d7b659ff38bdd50da41d5baa95da20a47867164",
+      "packageChecksum": "dfa1813e7b9d01e0cfecc09b0cb0fcba4ed6f733db5db8f9e49ba63f41dfd363",
+      "editorial": "## 思路\n\n按从大到小排序，求前 k 项之和，使用64位整数。\n\n## 正确性\n\n若选中的元素小于未选中的元素，交换二者会增加总和。因此最优方案可以且必须取得最大的k项（相等项互换不影响答案）。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]);a=sorted(map(int,data[2:]),reverse=True)\n    return str(sum(a[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-43",
+      "sourceContentHash": "cc418920a05863d4c9d9ff1e2cd05726030873ebc619dd65b47b5bcdb61612c5",
+      "packageChecksum": "23d22f8aae7d4084f3342c0699e854fa266fa1e34825e0f91a247ec4f387b82b",
+      "editorial": "## 思路\n\n第一次删除和只可能是三个候选值。固定每个值，按剩余区间长度做动态规划；三个删除方向分别转移到缩短2的区间，用滚动数组保存前一层。\n\n## 正确性\n\n任何合法首次操作属于三种方向，其和必在候选中。固定和后，区间状态的首步仍只有三种，合法方向得到1加剩余区间最优次数。按长度递增完整求解，最后取三个候选的最大值即覆盖全部可能序列。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a)\n    if n<2:return '0'\n    answer=0\n    for target in {a[0]+a[1],a[-2]+a[-1],a[0]+a[-1]}:\n        previous=[0]*(n+2)\n        for length in range(2+n%2,n+1,2):\n            current=[0]*(n+2)\n            for left in range(n-length+1):\n                right=left+length-1;best=0\n                if a[left]+a[left+1]==target:best=max(best,1+previous[left+2])\n                if a[right-1]+a[right]==target:best=max(best,1+previous[left])\n                if a[left]+a[right]==target:best=max(best,1+previous[left+1])\n                current[left]=best\n            previous=current\n        answer=max(answer,previous[0])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-44",
+      "sourceContentHash": "020870410b91803fb5bd6b0092077abd8eeab544bb5c0ba2f6354101551af263",
+      "packageChecksum": "49fc3422c4d490dd86bccce29941621acfe37f76c8996fa5aeecea1165242074",
+      "editorial": "## 思路\n\n从高位到低位选最大可行数字。小时十位能取2时取2，否则取1；再由小时十位决定个位上限。分钟十位取5、个位取9。\n\n## 正确性\n\n时间比较等价于数位字典序比较。每步保留已定数位，取仍存在合法后缀的最大数位，使第一个不同位尽量大。小时约束只涉及两位，分钟上限独立，因此这些选择得到最大合法时间。\n\n## 复杂度\n\n时间与空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    s=list(data[0])\n    if s[0]=='?':s[0]='2' if s[1]=='?' or s[1]<='3' else '1'\n    if s[1]=='?':s[1]='3' if s[0]=='2' else '9'\n    if s[3]=='?':s[3]='5'\n    if s[4]=='?':s[4]='9'\n    return ''.join(s)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-47",
+      "sourceContentHash": "1f862785cd002f8995b9bc29838d1bacb79fdd0a1c70501798e76d4c4551da12",
+      "packageChecksum": "a71dfe9fc0165a61632d39c95528004e29728ab9a59ba846794ec6c5bdb8cde0",
+      "editorial": "## 思路\n\n先计算总和S，不改的候选是|S|。将元素x反号后总和为S−2x，扫描所有元素取最小绝对值。\n\n## 正确性\n\n合法方案只有不修改或选择某个下标反号，扫描完整枚举所有方案；S−2x准确表示移除原x并加入−x后的总和。取最小值必最优。\n\n## 复杂度\n\n时间 O(n)，除输入外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:]));total=sum(a);answer=abs(total)\n    for value in a:answer=min(answer,abs(total-2*value))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-51",
+      "sourceContentHash": "99b912248ec18bf0121fe570f591f45272ea2ec4fdcb3b9f0da9d21ed04155b3",
+      "packageChecksum": "2a78d3f7513b7b3f9f14c36f55658caf54dac8a941203ee441dff4a4a33d0383",
+      "editorial": "## 思路\n\n用整数位集合记录可达子集和；负载为负时同步移动表示区间的下界。最后找不超过总和一半的最大可达和。\n\n## 正确性\n\n加入一个负载时，每个子集要么不选它、要么选它，位移并集完整表示新子集和。分给第一台的任意子集和x对应差|S−2x|。互补子集保证最优值可在x≤⌊S/2⌋中取得，在这一侧x越大越好。\n\n## 复杂度\n\n设A为绝对值总和，时间约O(nA/w+A/w)，空间O(A/w)，w为大整数内部机器字宽。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:]));bits=1;low=0\n    for value in a:\n        if value>=0:bits|=bits<<value\n        else:bits=(bits<<(-value))|bits;low+=value\n    total=sum(a);limit=total//2-low;reachable=bits&((1<<(limit+1))-1)\n    chosen=reachable.bit_length()-1+low\n    return str(abs(total-2*chosen))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-53",
+      "sourceContentHash": "6b5c6f4e69770339a010ec13bb80de66860d0873a8d6f5f882185773423615a4",
+      "packageChecksum": "daf9676e50ee61756df15f5099947ae38b018fd4887c701ba6bdeb7528e88b0a",
+      "editorial": "## 思路\n\n用忙碌最小堆按归还时间管理车辆，空闲最小堆按编号管理。每处理请求先释放所有已归还车辆，再取最小空闲编号或新车。\n\n## 正确性\n\n只有归还时间≤pickup的车可复用，忙堆完整释放这批车。空闲堆恰好按规范给出最小编号。新建时所有已有车都在使用，当前重叠请求数量需要再增加一辆，因此新建是必要的，最终数量最少。\n\n## 复杂度\n\n时间O(n log n)，空间O(n+输出大小)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    import heapq\n    values=list(map(int,data[1:]));requests=list(zip(values[::2],values[1::2]));busy=[];free=[];cars=[]\n    for p,r in sorted(requests):\n        while busy and busy[0][0]<=p:\n            end,car=heapq.heappop(busy);heapq.heappush(free,car)\n        if free:car=heapq.heappop(free)\n        else:car=len(cars);cars.append([])\n        cars[car].append((p,r));heapq.heappush(busy,(r,car))\n    return str(len(cars))+'\\n'+'\\n'.join(f'{i}: '+' '.join(f'({p},{r})' for p,r in car) for i,car in enumerate(cars))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-54",
+      "sourceContentHash": "8f3151bc421bae8bbf8e20a530db9b86d79b17182e15428553465f6ebf4096be",
+      "packageChecksum": "fd7179a4e7dc21ff83068eefaa5388311bc4f853398d03f8dd0e2ec680f7ecc9",
+      "editorial": "## 思路\n\n分别固定0101…、1010…两种目标。从左到右维护有效翻转奇偶性；当前位不符时必须从当前位置开启窗口，窗口越界则该目标无解。\n\n## 正确性\n\n处理当前位置时，更早起点的翻转已定，更晚起点无法改变当前位，因此不符时从当前位置翻转是唯一选择。重复翻同一窗口两次可抵消，不可能减少次数。每个目标的唯一贪心序列最优，取两目标最小值。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n,k=map(int,data[:2]);s=data[2];best=n+1\n    for first in (0,1):\n        end=[0]*(n+1);parity=0;count=0;possible=True\n        for i,char in enumerate(s):\n            parity^=end[i]\n            if (int(char)^parity)!=(first^(i%2)):\n                if i+k>n:possible=False;break\n                parity^=1;end[i+k]^=1;count+=1\n        if possible:best=min(best,count)\n    return str(best if best<=n else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-55",
+      "sourceContentHash": "971edc614d56ec933eadad1b231489844d4db0c0dc4da02c9e63c41406e27a34",
+      "packageChecksum": "c3d06d6057d5f653f92d437cbac187f228573b7f173809dd6da46643e5d9dd0d",
+      "editorial": "## 思路\n\n从右向左处理。右侧允许的上界为limit，当前值v至少需ceil(v/limit)份；尽量均分这些份，新的最左值为floor(v/份数)，作为下一步上界。\n\n## 正确性\n\n每份≤limit保证接上已处理后缀，因此最少份数下界为ceil(v/limit)。将v均分为相差至多1的非降份可以达到该下界，并最大化最左份，使之前的元素约束最宽。逐步保留最优且最宽松的后缀，得到全局最少拆分次数；k份需k−1次拆分。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    a=list(map(int,data[1:]));limit=a[-1];answer=0\n    for i in range(len(a)-2,-1,-1):\n        value=a[i];parts=max(1,(value+limit-1)//limit);answer+=parts-1;limit=value//parts\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-57",
+      "sourceContentHash": "e30344619f61d6948491071caa367aa5a380150ce686ae772a628b8b326ae438",
+      "packageChecksum": "d0e052455be3a05a41762c15caa9e19d11887b4884f25e45a1e3153394833bde",
+      "editorial": "## 思路\n\n维护处理到当前下标、不交换/交换当前对的最小代价。根据相邻两对是否同方向递增或交叉递增，从前一状态转移。\n\n## 正确性\n\n当前是否合法只依赖前一对最后的两个值及当前是否交换。两状态记录所有之前合法方案的最小代价，直连与交叉条件恰好覆盖四种相邻交换组合，因此归纳覆盖全部合法方案。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data[0]);a=list(map(int,data[1:n+1]));b=list(map(int,data[n+1:]));keep=0;swap=1;inf=n+1\n    for i in range(1,n):\n        next_keep=next_swap=inf\n        if a[i]>a[i-1] and b[i]>b[i-1]:next_keep=min(next_keep,keep);next_swap=min(next_swap,swap+1)\n        if a[i]>b[i-1] and b[i]>a[i-1]:next_keep=min(next_keep,swap);next_swap=min(next_swap,keep+1)\n        keep,swap=next_keep,next_swap\n    answer=min(keep,swap)\n    return str(answer if answer<=n else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-58",
+      "sourceContentHash": "a1692ff47c6feb18119f60d3c082e9af1f4de015e8306c9fc51772eba4b46aca",
+      "packageChecksum": "e453ad0405de0ccf872d5a00d111aaeb28eab085f77fa694beb2cda439c60946",
+      "editorial": "## 思路\n\n只统计+记录中的房间，按预订次数降序、房间名升序选择最优房间。\n\n## 正确性\n\n每个+记录对应一次真实预订，与该房间是否最终空闲无关。累加所有+即累计次数，选择最大计数及最小名字恰好对应两级排序规则。\n\n## 复杂度\n\n时间O(n+260)，空间O(260)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    counts={}\n    for op in data[1:]:\n        if op[0]=='+':counts[op[1:]]=counts.get(op[1:],0)+1\n    return min(counts,key=lambda room:(-counts[room],room))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-59",
+      "sourceContentHash": "941bedbe85dc560223d01b3acbe920de8c0948b0b6ddbb5227fcc3726725e2ac",
+      "packageChecksum": "b93655d391e446e8f7cdc8e6ad99467c5faf3f11aa32e4c9f48e982cb8a3d55d",
+      "editorial": "## 思路\n\n移动距离总和恒等于逆序对数。额外的每次操作加1，最多为每段原始连续0左侧的1数量之和。扫描时每遇0加此前1数，若是0段首项则再加一次此前1数。\n\n## 正确性\n\n每次右移只交换被移动1与经过的0，所有1最终在右边，每个原始10逆序对必须且只会交换一次。一个1最多对每个原始0段产生一次操作，故操作次数受前述和约束。从左到右处理0段，并逐个移动其左侧的1，能保留后续0段且达到该次数上界，两部分相加就是最大费用。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    s=data[0];ones=0;answer=0;previous='0'\n    for char in s:\n        if char=='1':ones+=1\n        else:\n            answer+=ones\n            if previous=='1':answer+=ones\n        previous=char\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

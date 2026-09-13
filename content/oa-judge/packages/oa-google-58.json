@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-58",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "预订次数最多的酒店房间",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Google",
+      "哈希表"
+    ],
+    "description": "酒店楼层0..9，每层房间A..Z。+表示预订，−表示退房。序列合法且初始全部空闲。输出累计预订次数最多的房间（不计退房次数），并列时选字典序最小的房间。\n\n输入输出与样例由CSWork整理；标注本站的数值范围属于本站评测约定。",
+    "input": "第一行n（1..600），随后n行三字符记录，例如+0A或-0A，保证每次预订前空闲、退房前已预订。",
+    "output": "输出题目要求的答案。",
+    "explanation": "样例1：1A预订两次，0B一次，输出1A。样例2：各一次，字典序0A更小。样例3：1A累计两次，多于0A的一次，不是比较最终房间占用状态。",
+    "hints": [
+      "只统计+记录中的房间，按预订次数降序、房间名升序选择最优房间。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4\n+1A\n-1A\n+1A\n+0B\n",
+      "expectedOutput": "1A\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2\n+9Z\n+0A\n",
+      "expectedOutput": "0A\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "5\n+0A\n-0A\n+1A\n-1A\n+1A\n",
+      "expectedOutput": "1A\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "600\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n+9Z\n-9Z\n",
+      "expectedOutput": "9Z\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "260\n+0A\n+0B\n+0C\n+0D\n+0E\n+0F\n+0G\n+0H\n+0I\n+0J\n+0K\n+0L\n+0M\n+0N\n+0O\n+0P\n+0Q\n+0R\n+0S\n+0T\n+0U\n+0V\n+0W\n+0X\n+0Y\n+0Z\n+1A\n+1B\n+1C\n+1D\n+1E\n+1F\n+1G\n+1H\n+1I\n+1J\n+1K\n+1L\n+1M\n+1N\n+1O\n+1P\n+1Q\n+1R\n+1S\n+1T\n+1U\n+1V\n+1W\n+1X\n+1Y\n+1Z\n+2A\n+2B\n+2C\n+2D\n+2E\n+2F\n+2G\n+2H\n+2I\n+2J\n+2K\n+2L\n+2M\n+2N\n+2O\n+2P\n+2Q\n+2R\n+2S\n+2T\n+2U\n+2V\n+2W\n+2X\n+2Y\n+2Z\n+3A\n+3B\n+3C\n+3D\n+3E\n+3F\n+3G\n+3H\n+3I\n+3J\n+3K\n+3L\n+3M\n+3N\n+3O\n+3P\n+3Q\n+3R\n+3S\n+3T\n+3U\n+3V\n+3W\n+3X\n+3Y\n+3Z\n+4A\n+4B\n+4C\n+4D\n+4E\n+4F\n+4G\n+4H\n+4I\n+4J\n+4K\n+4L\n+4M\n+4N\n+4O\n+4P\n+4Q\n+4R\n+4S\n+4T\n+4U\n+4V\n+4W\n+4X\n+4Y\n+4Z\n+5A\n+5B\n+5C\n+5D\n+5E\n+5F\n+5G\n+5H\n+5I\n+5J\n+5K\n+5L\n+5M\n+5N\n+5O\n+5P\n+5Q\n+5R\n+5S\n+5T\n+5U\n+5V\n+5W\n+5X\n+5Y\n+5Z\n+6A\n+6B\n+6C\n+6D\n+6E\n+6F\n+6G\n+6H\n+6I\n+6J\n+6K\n+6L\n+6M\n+6N\n+6O\n+6P\n+6Q\n+6R\n+6S\n+6T\n+6U\n+6V\n+6W\n+6X\n+6Y\n+6Z\n+7A\n+7B\n+7C\n+7D\n+7E\n+7F\n+7G\n+7H\n+7I\n+7J\n+7K\n+7L\n+7M\n+7N\n+7O\n+7P\n+7Q\n+7R\n+7S\n+7T\n+7U\n+7V\n+7W\n+7X\n+7Y\n+7Z\n+8A\n+8B\n+8C\n+8D\n+8E\n+8F\n+8G\n+8H\n+8I\n+8J\n+8K\n+8L\n+8M\n+8N\n+8O\n+8P\n+8Q\n+8R\n+8S\n+8T\n+8U\n+8V\n+8W\n+8X\n+8Y\n+8Z\n+9A\n+9B\n+9C\n+9D\n+9E\n+9F\n+9G\n+9H\n+9I\n+9J\n+9K\n+9L\n+9M\n+9N\n+9O\n+9P\n+9Q\n+9R\n+9S\n+9T\n+9U\n+9V\n+9W\n+9X\n+9Y\n+9Z\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "3\n+0A\n+1A\n-1A\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "6\n+0A\n+1B\n+2A\n-0A\n+0B\n-0B\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "15\n+0B\n+2A\n+2C\n-2C\n+2B\n+1C\n+1B\n-2A\n+2A\n+2C\n-1B\n-2C\n+0A\n+1B\n+0C\n",
+      "expectedOutput": "1B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "47\n+1A\n-1A\n+1C\n+2B\n+1A\n+1B\n+0B\n+2C\n+2A\n-1A\n+1A\n-2A\n-2B\n+2A\n-1A\n-2C\n+0C\n+2C\n-0C\n-0B\n+0A\n-2A\n+1A\n+2A\n-0A\n-2A\n+2A\n-1C\n+1C\n+0A\n-1B\n-0A\n-1A\n+1B\n+0C\n+1A\n+2B\n+0B\n-2A\n-1A\n-0B\n-1B\n-1C\n+1B\n+2A\n+0A\n-1B\n",
+      "expectedOutput": "1A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "42\n+2A\n+1A\n+0A\n+1B\n-1A\n+0C\n+1C\n+0B\n+2C\n-0C\n-2A\n+1A\n+0C\n+2A\n-0B\n-1C\n-1B\n+1B\n+0B\n-2A\n-2C\n-1A\n+2A\n+1A\n-1A\n+1C\n+2C\n-1C\n-0C\n+1C\n+2B\n-1C\n-1B\n+0C\n+1C\n-2C\n+1A\n+2C\n-2C\n-1A\n+1A\n-1A\n",
+      "expectedOutput": "1A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "34\n+2A\n-2A\n+0A\n+2C\n+1B\n-2C\n-1B\n+1B\n+0B\n+0C\n+2B\n+2C\n+1A\n-1B\n-0A\n-2C\n+2A\n-1A\n-2A\n-0B\n+2A\n+1A\n+1C\n+0B\n+1B\n-2B\n+2B\n-2A\n-2B\n+2B\n-1A\n+2C\n+2A\n-2B\n",
+      "expectedOutput": "2A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "29\n+0B\n-0B\n+1A\n-1A\n+1C\n+0A\n+2B\n+1A\n-0A\n+2C\n-2B\n-1A\n+0B\n-0B\n-2C\n-1C\n+1A\n+1C\n+0A\n-1C\n-1A\n+0B\n+1A\n-1A\n+2A\n-0B\n-2A\n-0A\n+1A\n",
+      "expectedOutput": "1A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "13\n+2B\n-2B\n+1B\n-1B\n+1B\n+2B\n-1B\n+0A\n+1C\n+0C\n-0C\n+0C\n-0A\n",
+      "expectedOutput": "0C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "37\n+1B\n+0C\n+0A\n+1C\n+0B\n-1B\n+2B\n+2A\n-0B\n-0C\n+0B\n-1C\n+0C\n-2A\n+1C\n+1B\n-0A\n+2A\n+2C\n-2A\n+2A\n+1A\n+0A\n-0B\n-0C\n-0A\n-1B\n+0B\n-1A\n+0C\n-2B\n-2A\n+0A\n+2A\n+2B\n+1B\n-0B\n",
+      "expectedOutput": "2A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "24\n+1C\n+0A\n-0A\n-1C\n+2A\n+0A\n+0B\n+1B\n-1B\n+2C\n-2C\n+2C\n-2A\n+2B\n+1A\n-0B\n-2C\n+2A\n-2A\n+2A\n-0A\n+0B\n-2A\n+1B\n",
+      "expectedOutput": "2A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "5\n+0A\n+1C\n-0A\n-1C\n+1B\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "45\n+1B\n+1A\n-1B\n+1B\n+2B\n-2B\n-1A\n+2C\n+0A\n+2A\n+1C\n+0C\n-1C\n-0C\n+2B\n-1B\n-2A\n-2C\n-0A\n+0B\n-2B\n+2A\n+1B\n-0B\n+2C\n+1A\n-1B\n-2A\n+0A\n+2A\n+2B\n+0C\n+0B\n-0B\n+1C\n-0C\n-2B\n+0C\n-0C\n+1B\n-1A\n-0A\n-1B\n-2C\n-2A\n",
+      "expectedOutput": "1B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "47\n+2C\n+1A\n+2A\n+1B\n-1B\n-1A\n-2C\n+2C\n+1C\n-1C\n+1C\n+0C\n-1C\n-0C\n-2C\n+1A\n+1B\n-2A\n-1A\n+2A\n+2C\n+2B\n+0B\n+0A\n-2C\n-2B\n-1B\n+2C\n+1B\n+1A\n-1B\n-0A\n-2C\n+1B\n+2B\n+2C\n-1A\n+1A\n+1C\n-2B\n-2C\n+2B\n+2C\n+0C\n-2A\n-1A\n+0A\n",
+      "expectedOutput": "2C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "16\n+0C\n+0A\n+1C\n+0B\n+1A\n-0B\n+2B\n-0A\n+2A\n-1C\n-2B\n+0A\n+2C\n-2A\n+2A\n+0B\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "16\n+1A\n-1A\n+2B\n-2B\n+0B\n+2B\n+1C\n+1B\n+0A\n-2B\n-1B\n+1B\n-0B\n-0A\n+0C\n+2B\n",
+      "expectedOutput": "2B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "31\n+2A\n+1B\n+0A\n+2C\n-1B\n+0B\n-2C\n+1B\n+2C\n-0A\n+0C\n-0B\n+1C\n+0A\n-1B\n+2B\n-2C\n-1C\n-2A\n+1B\n+1A\n-1A\n+2A\n+1C\n+1A\n+0B\n-2B\n-1A\n-1C\n+1A\n+2C\n",
+      "expectedOutput": "1A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "9\n+2B\n+0A\n-0A\n-2B\n+0C\n+2C\n-2C\n+1B\n+0A\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "26\n+0B\n+1C\n-0B\n-1C\n+2B\n+0A\n+1B\n-1B\n+2C\n+1C\n-2B\n+1A\n+0B\n+0C\n+2A\n-2C\n-0B\n-2A\n-0A\n+1B\n+0B\n-0B\n+0A\n-1B\n-0C\n-1A\n",
+      "expectedOutput": "0B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "49\n+2B\n+2C\n-2C\n+0C\n+1A\n-0C\n+0C\n+2A\n+1B\n-1A\n-2B\n+1C\n-1B\n+0B\n-0C\n+0C\n-0C\n-1C\n-0B\n+1C\n+0A\n-0A\n+0B\n+2B\n-2A\n+1B\n-2B\n+2B\n+2C\n-2B\n+1A\n+0C\n+0A\n-2C\n-0A\n+2A\n-1C\n+0A\n-0A\n-2A\n+2C\n-1B\n+1C\n-0B\n-0C\n+2B\n+0C\n-2C\n-1A\n",
+      "expectedOutput": "0C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "46\n+1A\n+1B\n-1A\n+1C\n+0B\n+2C\n+2B\n-1C\n-2C\n+2C\n-1B\n+1B\n-2B\n-2C\n+1A\n-1A\n+0A\n-1B\n+2A\n-2A\n+2C\n+2B\n-2B\n+1A\n+1B\n+0C\n-0A\n-0B\n+0A\n-0A\n-1A\n+2B\n-2C\n+0B\n+2A\n+1A\n-2A\n-0B\n-2B\n-1B\n+0B\n-0C\n+0A\n-0A\n+2C\n+2B\n",
+      "expectedOutput": "1A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "19\n+2A\n+2C\n+1A\n+1B\n+1C\n-1B\n+0C\n+0A\n-2C\n+1B\n-1C\n+1C\n-1C\n+0B\n+1C\n-0C\n-1A\n-1B\n-0B\n",
+      "expectedOutput": "1C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "6\n+0C\n+2B\n+0B\n+1C\n+2C\n-0C\n",
+      "expectedOutput": "0B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "23\n+0C\n+2B\n+2C\n-2C\n-0C\n+1A\n+0A\n-0A\n+1B\n-1B\n+1C\n+2C\n-1C\n-2C\n+2A\n+1B\n+2C\n-2A\n-2C\n+2C\n+0B\n+2A\n-1B\n",
+      "expectedOutput": "2C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "8\n+2A\n-2A\n+0A\n+1A\n+0C\n+1C\n+0B\n-0B\n",
+      "expectedOutput": "0A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "30\n+0C\n+2A\n-0C\n+0C\n-0C\n+0A\n+1C\n+1A\n+2C\n+0C\n-0A\n-1A\n-0C\n+0A\n-2C\n+0B\n-1C\n+2B\n+1B\n+1A\n-2A\n-0B\n-1B\n-2B\n+0C\n+0B\n+2A\n-0C\n-0B\n+0B\n",
+      "expectedOutput": "0C\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

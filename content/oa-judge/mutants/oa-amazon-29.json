@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏算最后一段",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]); a=list(map(int,d[2:2+n])); prefix=[0]\n    for v in a: prefix.append(prefix[-1]+v)\n    answer=[]\n    for j in range(2+n,len(d),2):\n        u,v=map(int,d[j:j+2]); total=0; start=0\n        for end in (u,v):\n            total+=(end-start)*a[end-1]-(prefix[end]-prefix[start]); start=end\n        answer.append(str(total))\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错把枢纽编号作容量",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]); a=list(map(int,d[2:2+n])); prefix=[0]\n    for v in a: prefix.append(prefix[-1]+v)\n    answer=[]\n    for j in range(2+n,len(d),2):\n        u,v=map(int,d[j:j+2]); total=0; start=0\n        for end in (u,v,n):\n            total+=(end-start)*end-(prefix[end]-prefix[start]); start=end\n        answer.append(str(total))\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

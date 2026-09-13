@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-40",
+  "title": "箱子堆达到最小极差的最少搬运",
+  "explanation": "## 思路\n\n最终每堆只能是平均值向下取整或向上取整，较大目标分给原本较大的堆。排序后计算超过目标的箱子总数。\n\n## 正确性证明\n\n固定总量下最小极差为0或1，因此最终目标由商和余数确定。把较大的目标给较大的原值不会增加总绝对偏差（交换不等式），故排序匹配最优。多余箱子总数等于缺少箱子数，每次搬运恰消去一份多余，达到下界。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:])); n=len(a); low,extra=divmod(sum(a),n); answer=0\n    for i,v in enumerate(a):\n        target=low+(i>=n-extra); answer+=max(0,v-target)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#40-get-fewest-operations-box-balancing",
+  "sourceContentHash": "9eebbd4c8060f1616ef9dbddd33acdd163416e834871793725928c53f4d44f36",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-41",
+  "title": "任意阅读顺序的最大累计记忆分",
+  "explanation": "## 思路\n\n按记忆值降序阅读，累加每一步的前缀和。\n\n## 正确性证明\n\n第i个读到的值会被计入后面n−i+1次得分，权重依次递减。较大值乘较大权重的交换不等式对负数同样成立，因此降序最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True); prefix=answer=0\n    for v in a: prefix+=v;answer+=prefix\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#41-maximize-total-memory-points",
+  "sourceContentHash": "64d48b3746fffc2361b76708fe40922040ae5f5495335556f4d67f5aaa958e48",
+  "author": "CSWork"
+}

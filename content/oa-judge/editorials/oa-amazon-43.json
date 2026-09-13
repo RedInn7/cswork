@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-43",
+  "title": "定长子序列中位数的最大与最小值",
+  "explanation": "## 思路\n\n数组排序。最小中位数来自最小的k项，最大中位数来自最大的k项。\n\n## 正确性证明\n\n任意k项的第j小不可能小于全局第j小，也不可能大于全局第n−k+j小。这两个界分别由最小k项和最大k项达到。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:])); middle=(k-1)//2\n    return f'{a[n-k+middle]} {a[middle]}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#43-medians",
+  "sourceContentHash": "a77db7f28536f044f137f35d44deaede598b701e05afefe479a122f982147928",
+  "author": "CSWork"
+}

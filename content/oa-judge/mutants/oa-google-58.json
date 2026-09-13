@@ -1,0 +1,10 @@
+[
+  {
+    "name": "并列时选择最大名字",
+    "code": "def solve(data):\n    counts={}\n    for op in data[1:]:\n        if op[0]=='+':counts[op[1:]]=counts.get(op[1:],0)+1\n    return max(counts,key=lambda room:(counts[room],room))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把退房也计为预订",
+    "code": "def solve(data):\n    counts={}\n    for op in data[1:]:\n        if True:counts[op[1:]]=counts.get(op[1:],0)+1\n    return min(counts,key=lambda room:(-counts[room],room))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

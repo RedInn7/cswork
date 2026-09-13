@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许频次等于种类",
+    "code": "def solve(d):\n    s=d[0];answer=0\n    for start in range(len(s)):\n        count=[0]*7; distinct=maximum=0\n        for end in range(start,min(len(s),start+49)):\n            k=ord(s[end])-97\n            if count[k]==0:distinct+=1\n            count[k]+=1;maximum=max(maximum,count[k]);answer+=maximum<distinct\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "窗口上界误用7",
+    "code": "def solve(d):\n    s=d[0];answer=0\n    for start in range(len(s)):\n        count=[0]*7; distinct=maximum=0\n        for end in range(start,min(len(s),start+7)):\n            k=ord(s[end])-97\n            if count[k]==0:distinct+=1\n            count[k]+=1;maximum=max(maximum,count[k]);answer+=maximum<=distinct\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

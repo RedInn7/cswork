@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-26",
+  "title": "洞穴中不可回头的最长路线",
+  "explanation": "## 思路\n\n逐行动态规划。每行从上一行下降进入，分别进行一次从左向右和从右向左的扫描，取每个位置的较大值，作为下一行入口。\n\n## 正确性证明\n\n路径不向上，因此每行只访问一次；在同一行改变水平移动方向必然重访格子，不合法。因此每行的路径是向左或向右的一段，两次扫描完整覆盖。下一行合并两方向的最大值不会重用本行格子，动态规划恰好枚举全部合法路线。\n\n## 复杂度\n\n时间O(RC)，除输入外空间O(C)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    rows,cols=map(int,data[:2]); board=data[2:]; bad=-10**9; previous=[bad]*cols\n    if board[0][0]=='x':return '-1'\n    previous[0]=0\n    for row in board:\n        left=[bad]*cols; right=[bad]*cols\n        for j in range(cols):\n            if row[j]=='!':\n                best=max(previous[j],left[j-1] if j else bad)\n                if best!=bad:left[j]=best+1\n        for j in range(cols-1,-1,-1):\n            if row[j]=='!':\n                best=max(previous[j],right[j+1] if j+1<cols else bad)\n                if best!=bad:right[j]=best+1\n        previous=[max(a,b) for a,b in zip(left,right)]\n    return str(previous[-1] if previous[-1]!=bad else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#26-cave-advanture",
+  "sourceContentHash": "e57909197d36d92957cb9f822e5c928ba47eb53cfd471921282244b1db6946b9",
+  "author": "CSWork"
+}

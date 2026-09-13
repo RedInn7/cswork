@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉新相邻边",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));prefix=[0]\n    for i in range(1,n):prefix.append(prefix[-1]+abs(a[i]-a[i-1]))\n    answer=prefix[-1]\n    for start in range(n-k+1):\n        end=start+k-1;lo=max(0,start-1);hi=min(n-1,end+1)\n        cost=prefix[-1]-(prefix[hi]-prefix[lo])\n        if start>0 and end+1<n:cost+=0\n        answer=min(answer,cost)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不枚举删尾窗口",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));prefix=[0]\n    for i in range(1,n):prefix.append(prefix[-1]+abs(a[i]-a[i-1]))\n    answer=prefix[-1]\n    for start in range(n-k):\n        end=start+k-1;lo=max(0,start-1);hi=min(n-1,end+1)\n        cost=prefix[-1]-(prefix[hi]-prefix[lo])\n        if start>0 and end+1<n:cost+=abs(a[end+1]-a[start-1])\n        answer=min(answer,cost)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

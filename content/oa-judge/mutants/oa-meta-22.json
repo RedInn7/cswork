@@ -1,0 +1,14 @@
+[
+  {
+    "name": "所有辅音都替换",
+    "code": "def solve(data):\n    first,message=data.split('\\n',1); n=int(first); count=0; result=[]\n    for ch in message:\n        lower=ch.lower()\n        if 'a'<=lower<='z' and lower not in 'aeiou':\n            count+=1\n            if True:\n                value=(ord(lower)-96)%26\n                while chr(97+value) in 'aeiou':value=(value+1)%26\n                changed=chr(97+value); ch=changed.upper() if ch.isupper() else changed\n        result.append(ch)\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "丢掉原大小写",
+    "code": "def solve(data):\n    first,message=data.split('\\n',1); n=int(first); count=0; result=[]\n    for ch in message:\n        lower=ch.lower()\n        if 'a'<=lower<='z' and lower not in 'aeiou':\n            count+=1\n            if count%n==0:\n                value=(ord(lower)-96)%26\n                while chr(97+value) in 'aeiou':value=(value+1)%26\n                changed=chr(97+value); ch=changed\n        result.append(ch)\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  },
+  {
+    "name": "压缩空格",
+    "code": "def solve(data):\n    first,message=data.split('\\n',1); n=int(first); count=0; result=[]\n    for ch in message:\n        lower=ch.lower()\n        if 'a'<=lower<='z' and lower not in 'aeiou':\n            count+=1\n            if count%n==0:\n                value=(ord(lower)-96)%26\n                while chr(97+value) in 'aeiou':value=(value+1)%26\n                changed=chr(97+value); ch=changed.upper() if ch.isupper() else changed\n        result.append(ch)\n    return ' '.join(''.join(result).split())\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略每次操作固定费用",
+    "code": "def solve(data):\n    s=data[0];ones=0;answer=0;previous='0'\n    for char in s:\n        if char=='1':ones+=1\n        else:\n            answer+=ones\n            if False:answer+=ones\n        previous=char\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每个0都多算一次操作",
+    "code": "def solve(data):\n    s=data[0];ones=0;answer=0;previous='0'\n    for char in s:\n        if char=='1':ones+=1\n        else:\n            answer+=ones\n            if True:answer+=ones\n        previous=char\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

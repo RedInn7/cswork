@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-45",
+  "title": "不同地点商品的最少发货次数",
+  "explanation": "## 思路\n\n设最多地点出现f次，答案max(f,⌈n/2⌉)。\n\n## 正确性证明\n\n每次最多发2个，至少⌈n/2⌉次；同地点不能配对，最多地点的f个商品至少分f次。若有多数地点，先与其它地点配对再单发剩余；否则可以配成至多一个单项，达到较大下界。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    a=list(map(int,d[1:])); n=len(a)\n    return str(max(max(Counter(a).values()),(n+1)//2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#45-min-operations-to-ship-products",
+  "sourceContentHash": "713cd8056ca88f52463725a048ae615c7077ebbdce242f537cb98a3ec3bb5348",
+  "author": "CSWork"
+}

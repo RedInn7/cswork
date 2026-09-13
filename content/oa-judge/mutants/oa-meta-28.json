@@ -1,0 +1,10 @@
+[
+  {
+    "name": "端点相同不合并",
+    "code": "def solve(data):\n    values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); result=[]\n    for left,right in intervals:\n        if result and left<result[-1][1]:result[-1][1]=max(result[-1][1],right)\n        else:result.append([left,right])\n    return str(len(result))+''.join(f'\\n{a} {b}' for a,b in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "缩小右边界",
+    "code": "def solve(data):\n    values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); result=[]\n    for left,right in intervals:\n        if result and left<=result[-1][1]:result[-1][1]=min(result[-1][1],right)\n        else:result.append([left,right])\n    return str(len(result))+''.join(f'\\n{a} {b}' for a,b in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

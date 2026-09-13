@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-28",
+  "title": "合并两个互不重叠的区间列表",
+  "explanation": "## 思路\n\n把所有区间按起点排序，维护当前合并段：新起点不超过当前右端时扩展右端，否则开始新的段。\n\n## 正确性证明\n\n排序后若新起点大于当前右端，后续区间也不能填补这个缺口，当前段可以确定输出。否则两段相交，其并集是最左端到较大右端，合并不会丢失或增加被覆盖位置。\n\n## 复杂度\n\n时间O((n+m)log(n+m))，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    values=list(map(int,data[2:])); intervals=sorted(zip(values[::2],values[1::2])); result=[]\n    for left,right in intervals:\n        if result and left<=result[-1][1]:result[-1][1]=max(result[-1][1],right)\n        else:result.append([left,right])\n    return str(len(result))+''.join(f'\\n{a} {b}' for a,b in result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#28-combine-two-vectors-of-intervals-mle",
+  "sourceContentHash": "fe3b464a7f0d3b1fb9bac05a3c3ea1f4255ecde0dc05d3f1ac276b0316d839d7",
+  "author": "CSWork"
+}

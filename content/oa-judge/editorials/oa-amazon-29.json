@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-29",
+  "title": "新增枢纽的仓库连接成本",
+  "explanation": "## 思路\n\n用前缀和分别计算连接到A、B、n的三段，每段成本为段长×枢纽容量−段内容量和。\n\n## 正确性证明\n\n最近右侧枢纽把仓库恰分成[1,A]、[A+1,B]、[B+1,n]，每段枢纽相同，逐项成本求和得到公式。查询之间相互独立。\n\n## 复杂度\n\n时间O(n+q)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]); a=list(map(int,d[2:2+n])); prefix=[0]\n    for v in a: prefix.append(prefix[-1]+v)\n    answer=[]\n    for j in range(2+n,len(d),2):\n        u,v=map(int,d[j:j+2]); total=0; start=0\n        for end in (u,v,n):\n            total+=(end-start)*a[end-1]-(prefix[end]-prefix[start]); start=end\n        answer.append(str(total))\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#29-get-min-connection-cost",
+  "sourceContentHash": "0b90f6f843369be7af1f12ed7a52047321d4863c3585629b3956840b4a6362c7",
+  "author": "CSWork"
+}

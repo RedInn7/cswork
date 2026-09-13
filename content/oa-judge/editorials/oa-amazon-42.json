@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-42",
+  "title": "四个方向都有邻居的空闲机器人",
+  "explanation": "## 思路\n\n每行记录最小最大x，每列记录最小最大y。某点严格处于两组极值之间则空闲。\n\n## 正确性证明\n\n行最小x小于当前x当且仅当存在左邻，行最大x大于当前x当且仅当存在右邻；列同理。四个严格比较恰好对应全部必要充分条件。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    values=list(map(int,d[1:])); points=list(zip(values[::2],values[1::2])); rows={}; cols={}\n    for x,y in points:\n        lo,hi=rows.get(y,(x,x)); rows[y]=(min(lo,x),max(hi,x))\n        lo,hi=cols.get(x,(y,y)); cols[x]=(min(lo,y),max(hi,y))\n    return str(sum(rows[y][0]<x<rows[y][1] and cols[x][0]<y<cols[x][1] for x,y in points))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#42-get-number-idle-robots",
+  "sourceContentHash": "98d11acdc7c7e8f709720ed648b9e3004837055e6b023444d689930a1b5bead2",
+  "author": "CSWork"
+}

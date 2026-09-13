@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-30",
+  "title": "公共字符种类超过阈值的切分",
+  "explanation": "## 思路\n\n左右频次随切分点移动更新，每次统计左右频次都非零的字母数。\n\n## 正确性证明\n\n移动一个字符后频次数组恰对应当前左右子串。一个字母属于交集当且仅当两边频次均正。逐个枚举所有非空切分，按严格阈值计数。\n\n## 复杂度\n\n时间O(26n)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0]; m=int(d[1]); left=[0]*26; right=[0]*26; answer=0\n    for c in s: right[ord(c)-97]+=1\n    for c in s[:-1]:\n        k=ord(c)-97; left[k]+=1; right[k]-=1\n        answer+=sum(a>0 and b>0 for a,b in zip(left,right))>m\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#30-count-valid-splits",
+  "sourceContentHash": "36aabbba0fd9cc8c1269e4fb0d4af38b4982c73f41b8e6b2910491b72f1c3355",
+  "author": "CSWork"
+}

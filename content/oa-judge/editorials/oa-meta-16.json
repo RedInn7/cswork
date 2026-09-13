@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-16",
+  "title": "最接近目标和的两个数",
+  "explanation": "## 思路\n\n双指针从数组两端开始，维护当前最小绝对差。和小于目标时左指针右移，否则右指针左移，始终保证两个下标不同。\n\n## 正确性证明\n\n当当前和小于目标时，固定左指针并减小右指针只会让和更小，无法改善当前差，因此可以舍弃该左端；和不小于目标时，固定右端并增加左端也不会更好，可以舍弃该右端。每次记录当前候选，最终保留全局最优值对。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,target=map(int,data[:2]); a=list(map(int,data[2:])); left=0; right=n-1; distance=None; answer=(a[0],a[-1])\n    while left<right:\n        total=a[left]+a[right]; delta=abs(total-target)\n        if distance is None or delta<distance:distance=delta; answer=(a[left],a[right])\n        if total<target:left+=1\n        else:right-=1\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#16-find-pair-closest-to-k-for-e5-",
+  "sourceContentHash": "272c0dfc3765d093a90caeabaeb9a08b1ee9826de8b17fc406c62f27d30db29f",
+  "author": "CSWork"
+}

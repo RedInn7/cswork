@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-22",
+  "title": "替换每第n个辅音",
+  "explanation": "## 思路\n\n维护辅音计数，每逢n的倍数，把字符向后移到下一个非元音英文字母，超过z则从a继续找；最后恢复原大小写。\n\n## 正确性证明\n\n只对辅音增加计数，因此被替换位置恰好是第n、2n、3n…个辅音。按字母循环查找并跳过元音正好得到题目给定的下一个辅音，其它字符保持原样。\n\n## 复杂度\n\n时间O(L)，输出空间O(L)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    first,message=data.split('\\n',1); n=int(first); count=0; result=[]\n    for ch in message:\n        lower=ch.lower()\n        if 'a'<=lower<='z' and lower not in 'aeiou':\n            count+=1\n            if count%n==0:\n                value=(ord(lower)-96)%26\n                while chr(97+value) in 'aeiou':value=(value+1)%26\n                changed=chr(97+value); ch=changed.upper() if ch.isupper() else changed\n        result.append(ch)\n    return ''.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().removesuffix(\"\\n\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#22-replace-every-nth-consonant",
+  "sourceContentHash": "679c2efab66d84f7ba4b3c9b48b9738b9f54c95914de88192082718117e27277",
+  "author": "CSWork"
+}

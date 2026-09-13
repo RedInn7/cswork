@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只允许0开头目标",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);s=data[2];best=n+1\n    for first in (0,):\n        end=[0]*(n+1);parity=0;count=0;possible=True\n        for i,char in enumerate(s):\n            parity^=end[i]\n            if (int(char)^parity)!=(first^(i%2)):\n                if i+k>n:possible=False;break\n                parity^=1;end[i+k]^=1;count+=1\n        if possible:best=min(best,count)\n    return str(best if best<=n else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "窗口到边界也拒绝",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);s=data[2];best=n+1\n    for first in (0,1):\n        end=[0]*(n+1);parity=0;count=0;possible=True\n        for i,char in enumerate(s):\n            parity^=end[i]\n            if (int(char)^parity)!=(first^(i%2)):\n                if i+k>=n:possible=False;break\n                parity^=1;end[i+k]^=1;count+=1\n        if possible:best=min(best,count)\n    return str(best if best<=n else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-50",
+  "title": "删除定长连续段后的最小系统成本",
+  "explanation": "## 思路\n\n前缀和保存相邻边成本。枚举删除窗口，减掉被删的内部及连接边，再在左右两侧都存在时加上新连接边。\n\n## 正确性证明\n\n删除区间后，区间外原相邻边保持不变；涉及删除元素的边全部消失；仅可能新增左邻到右邻的一条边。前缀和准确求消失边权，对所有合法起点取最小即可。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));prefix=[0]\n    for i in range(1,n):prefix.append(prefix[-1]+abs(a[i]-a[i-1]))\n    answer=prefix[-1]\n    for start in range(n-k+1):\n        end=start+k-1;lo=max(0,start-1);hi=min(n-1,end+1)\n        cost=prefix[-1]-(prefix[hi]-prefix[lo])\n        if start>0 and end+1<n:cost+=abs(a[end+1]-a[start-1])\n        answer=min(answer,cost)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#50-minimize-system-cost",
+  "sourceContentHash": "cdba6df42026507802a20d652f71544567bde0f214e75fee98e8a8b9a8803973",
+  "author": "CSWork"
+}

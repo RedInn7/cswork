@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把所有目标都向下取整",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:])); n=len(a); low,extra=divmod(sum(a),n); answer=0\n    for i,v in enumerate(a):\n        target=low; answer+=max(0,v-target)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把流入也重复计数",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:])); n=len(a); low,extra=divmod(sum(a),n); answer=0\n    for i,v in enumerate(a):\n        target=low+(i>=n-extra); answer+=abs(v-target)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

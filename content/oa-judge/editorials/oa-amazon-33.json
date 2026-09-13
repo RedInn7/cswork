@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-33",
+  "title": "环形服务器的最短遍历时间",
+  "explanation": "## 思路\n\n排序并去重待访问点，找相邻点之间最大的环上间隔，答案为环长减最大间隔。\n\n## 正确性证明\n\n去掉最大间隔后，其余弧连通且包含所有目标，沿弧走一遍即可。任意最短走法若覆盖整环，至少耗时环长；否则经过边构成包含所有目标的一段弧，未走部分不能跨过目标，长度不超过最大间隔。因此该构造最短。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    total,n=map(int,d[:2]); a=sorted(set(map(int,d[2:]))); gap=a[0]+total-a[-1]\n    for i in range(1,len(a)): gap=max(gap,a[i]-a[i-1])\n    return str(total-gap)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#33-find-min-sync-time-circular-servers",
+  "sourceContentHash": "edfc453a92deef37ebc88601eb66af4b050be468930d9b7f88267c10e75b35da",
+  "author": "CSWork"
+}

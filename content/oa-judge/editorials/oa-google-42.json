@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-42",
+  "title": "选取 k 项的最大总功率",
+  "explanation": "## 思路\n\n按从大到小排序，求前 k 项之和，使用64位整数。\n\n## 正确性\n\n若选中的元素小于未选中的元素，交换二者会增加总和。因此最优方案可以且必须取得最大的k项（相等项互换不影响答案）。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,k=map(int,data[:2]);a=sorted(map(int,data[2:]),reverse=True)\n    return str(sum(a[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#42-maximize-power-values-sum",
+  "sourceContentHash": "54bdfd31feefd06e44a00d895d7b659ff38bdd50da41d5baa95da20a47867164",
+  "author": "CSWork"
+}

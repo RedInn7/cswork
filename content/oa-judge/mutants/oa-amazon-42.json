@@ -1,0 +1,10 @@
+[
+  {
+    "name": "方向比较不严格",
+    "code": "def solve(d):\n    values=list(map(int,d[1:])); points=list(zip(values[::2],values[1::2])); rows={}; cols={}\n    for x,y in points:\n        lo,hi=rows.get(y,(x,x)); rows[y]=(min(lo,x),max(hi,x))\n        lo,hi=cols.get(x,(y,y)); cols[x]=(min(lo,y),max(hi,y))\n    return str(sum(rows[y][0]<=x<=rows[y][1] and cols[x][0]<=y<=cols[x][1] for x,y in points))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只检查水平方向",
+    "code": "def solve(d):\n    values=list(map(int,d[1:])); points=list(zip(values[::2],values[1::2])); rows={}; cols={}\n    for x,y in points:\n        lo,hi=rows.get(y,(x,x)); rows[y]=(min(lo,x),max(hi,x))\n        lo,hi=cols.get(x,(y,y)); cols[x]=(min(lo,y),max(hi,y))\n    return str(sum(rows[y][0]<x<rows[y][1] for x,y in points))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

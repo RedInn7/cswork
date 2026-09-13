@@ -1,0 +1,654 @@
+[
+  {
+    "input": "4\n+1A\n-1A\n+1A\n+0B\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "2\n+9Z\n+0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "5\n+0A\n-0A\n+1A\n-1A\n+1A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "6\n+0A\n+1B\n+2A\n-0A\n+0B\n-0B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "15\n+0B\n+2A\n+2C\n-2C\n+2B\n+1C\n+1B\n-2A\n+2A\n+2C\n-1B\n-2C\n+0A\n+1B\n+0C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "47\n+1A\n-1A\n+1C\n+2B\n+1A\n+1B\n+0B\n+2C\n+2A\n-1A\n+1A\n-2A\n-2B\n+2A\n-1A\n-2C\n+0C\n+2C\n-0C\n-0B\n+0A\n-2A\n+1A\n+2A\n-0A\n-2A\n+2A\n-1C\n+1C\n+0A\n-1B\n-0A\n-1A\n+1B\n+0C\n+1A\n+2B\n+0B\n-2A\n-1A\n-0B\n-1B\n-1C\n+1B\n+2A\n+0A\n-1B\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "42\n+2A\n+1A\n+0A\n+1B\n-1A\n+0C\n+1C\n+0B\n+2C\n-0C\n-2A\n+1A\n+0C\n+2A\n-0B\n-1C\n-1B\n+1B\n+0B\n-2A\n-2C\n-1A\n+2A\n+1A\n-1A\n+1C\n+2C\n-1C\n-0C\n+1C\n+2B\n-1C\n-1B\n+0C\n+1C\n-2C\n+1A\n+2C\n-2C\n-1A\n+1A\n-1A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "34\n+2A\n-2A\n+0A\n+2C\n+1B\n-2C\n-1B\n+1B\n+0B\n+0C\n+2B\n+2C\n+1A\n-1B\n-0A\n-2C\n+2A\n-1A\n-2A\n-0B\n+2A\n+1A\n+1C\n+0B\n+1B\n-2B\n+2B\n-2A\n-2B\n+2B\n-1A\n+2C\n+2A\n-2B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "29\n+0B\n-0B\n+1A\n-1A\n+1C\n+0A\n+2B\n+1A\n-0A\n+2C\n-2B\n-1A\n+0B\n-0B\n-2C\n-1C\n+1A\n+1C\n+0A\n-1C\n-1A\n+0B\n+1A\n-1A\n+2A\n-0B\n-2A\n-0A\n+1A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "13\n+2B\n-2B\n+1B\n-1B\n+1B\n+2B\n-1B\n+0A\n+1C\n+0C\n-0C\n+0C\n-0A\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "37\n+1B\n+0C\n+0A\n+1C\n+0B\n-1B\n+2B\n+2A\n-0B\n-0C\n+0B\n-1C\n+0C\n-2A\n+1C\n+1B\n-0A\n+2A\n+2C\n-2A\n+2A\n+1A\n+0A\n-0B\n-0C\n-0A\n-1B\n+0B\n-1A\n+0C\n-2B\n-2A\n+0A\n+2A\n+2B\n+1B\n-0B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "24\n+1C\n+0A\n-0A\n-1C\n+2A\n+0A\n+0B\n+1B\n-1B\n+2C\n-2C\n+2C\n-2A\n+2B\n+1A\n-0B\n-2C\n+2A\n-2A\n+2A\n-0A\n+0B\n-2A\n+1B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "5\n+0A\n+1C\n-0A\n-1C\n+1B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "45\n+1B\n+1A\n-1B\n+1B\n+2B\n-2B\n-1A\n+2C\n+0A\n+2A\n+1C\n+0C\n-1C\n-0C\n+2B\n-1B\n-2A\n-2C\n-0A\n+0B\n-2B\n+2A\n+1B\n-0B\n+2C\n+1A\n-1B\n-2A\n+0A\n+2A\n+2B\n+0C\n+0B\n-0B\n+1C\n-0C\n-2B\n+0C\n-0C\n+1B\n-1A\n-0A\n-1B\n-2C\n-2A\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "47\n+2C\n+1A\n+2A\n+1B\n-1B\n-1A\n-2C\n+2C\n+1C\n-1C\n+1C\n+0C\n-1C\n-0C\n-2C\n+1A\n+1B\n-2A\n-1A\n+2A\n+2C\n+2B\n+0B\n+0A\n-2C\n-2B\n-1B\n+2C\n+1B\n+1A\n-1B\n-0A\n-2C\n+1B\n+2B\n+2C\n-1A\n+1A\n+1C\n-2B\n-2C\n+2B\n+2C\n+0C\n-2A\n-1A\n+0A\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "16\n+0C\n+0A\n+1C\n+0B\n+1A\n-0B\n+2B\n-0A\n+2A\n-1C\n-2B\n+0A\n+2C\n-2A\n+2A\n+0B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "16\n+1A\n-1A\n+2B\n-2B\n+0B\n+2B\n+1C\n+1B\n+0A\n-2B\n-1B\n+1B\n-0B\n-0A\n+0C\n+2B\n",
+    "expectedOutput": "2B\n"
+  },
+  {
+    "input": "31\n+2A\n+1B\n+0A\n+2C\n-1B\n+0B\n-2C\n+1B\n+2C\n-0A\n+0C\n-0B\n+1C\n+0A\n-1B\n+2B\n-2C\n-1C\n-2A\n+1B\n+1A\n-1A\n+2A\n+1C\n+1A\n+0B\n-2B\n-1A\n-1C\n+1A\n+2C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "9\n+2B\n+0A\n-0A\n-2B\n+0C\n+2C\n-2C\n+1B\n+0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "26\n+0B\n+1C\n-0B\n-1C\n+2B\n+0A\n+1B\n-1B\n+2C\n+1C\n-2B\n+1A\n+0B\n+0C\n+2A\n-2C\n-0B\n-2A\n-0A\n+1B\n+0B\n-0B\n+0A\n-1B\n-0C\n-1A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "49\n+2B\n+2C\n-2C\n+0C\n+1A\n-0C\n+0C\n+2A\n+1B\n-1A\n-2B\n+1C\n-1B\n+0B\n-0C\n+0C\n-0C\n-1C\n-0B\n+1C\n+0A\n-0A\n+0B\n+2B\n-2A\n+1B\n-2B\n+2B\n+2C\n-2B\n+1A\n+0C\n+0A\n-2C\n-0A\n+2A\n-1C\n+0A\n-0A\n-2A\n+2C\n-1B\n+1C\n-0B\n-0C\n+2B\n+0C\n-2C\n-1A\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "46\n+1A\n+1B\n-1A\n+1C\n+0B\n+2C\n+2B\n-1C\n-2C\n+2C\n-1B\n+1B\n-2B\n-2C\n+1A\n-1A\n+0A\n-1B\n+2A\n-2A\n+2C\n+2B\n-2B\n+1A\n+1B\n+0C\n-0A\n-0B\n+0A\n-0A\n-1A\n+2B\n-2C\n+0B\n+2A\n+1A\n-2A\n-0B\n-2B\n-1B\n+0B\n-0C\n+0A\n-0A\n+2C\n+2B\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "19\n+2A\n+2C\n+1A\n+1B\n+1C\n-1B\n+0C\n+0A\n-2C\n+1B\n-1C\n+1C\n-1C\n+0B\n+1C\n-0C\n-1A\n-1B\n-0B\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "6\n+0C\n+2B\n+0B\n+1C\n+2C\n-0C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "23\n+0C\n+2B\n+2C\n-2C\n-0C\n+1A\n+0A\n-0A\n+1B\n-1B\n+1C\n+2C\n-1C\n-2C\n+2A\n+1B\n+2C\n-2A\n-2C\n+2C\n+0B\n+2A\n-1B\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "8\n+2A\n-2A\n+0A\n+1A\n+0C\n+1C\n+0B\n-0B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "30\n+0C\n+2A\n-0C\n+0C\n-0C\n+0A\n+1C\n+1A\n+2C\n+0C\n-0A\n-1A\n-0C\n+0A\n-2C\n+0B\n-1C\n+2B\n+1B\n+1A\n-2A\n-0B\n-1B\n-2B\n+0C\n+0B\n+2A\n-0C\n-0B\n+0B\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "26\n+0C\n+0A\n+0B\n-0A\n+1A\n-1A\n+0A\n+2B\n-0C\n-0B\n+0B\n+0C\n-0B\n+1C\n-2B\n-0A\n+2B\n+2C\n+0A\n+0B\n+1B\n-0B\n+1A\n-1A\n+2A\n-0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "3\n+2C\n+0B\n-0B\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "39\n+0C\n+2B\n-2B\n+0A\n+0B\n+2A\n+2B\n-0B\n-0A\n-0C\n+1B\n+2C\n-2B\n+2B\n-2C\n+0C\n+0A\n-2A\n+0B\n-1B\n+2C\n+1C\n-1C\n-0C\n+1C\n-1C\n-2C\n+0C\n+2A\n+2C\n+1C\n+1B\n-0B\n-0C\n+0C\n-1C\n+1A\n-1B\n+1B\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "8\n+0C\n+1A\n+1C\n-1A\n+2B\n-2B\n+1B\n+2A\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "5\n+2C\n-2C\n+0A\n+1C\n-0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "13\n+1A\n+0A\n+1C\n+1B\n+2B\n-0A\n-1C\n-2B\n+0C\n+0A\n+0B\n-1B\n-0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "6\n+2B\n+2C\n-2C\n+0C\n+2C\n-2B\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "40\n+2B\n+0A\n+0C\n-0A\n+2A\n-2B\n+1A\n+0A\n+2B\n+0B\n+1C\n-1A\n-2B\n+2B\n-0A\n+0A\n-0B\n-1C\n+0B\n+1B\n-0A\n-0C\n+0C\n-0B\n-2B\n-2A\n+0A\n-0C\n+2C\n+0B\n-0B\n-1B\n+1C\n-1C\n+2A\n+2B\n-2B\n+0C\n-0C\n+1A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "9\n+0C\n+2A\n+0B\n-0C\n+0C\n-2A\n+1A\n-0C\n+2C\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "40\n+2C\n+1A\n+1C\n-1C\n+1C\n-2C\n+0B\n-1A\n-0B\n+2C\n+2B\n+0A\n+1B\n+0C\n-1B\n+1B\n-1B\n-2B\n+2B\n-0C\n+2A\n+1A\n-2C\n-1C\n+1B\n+1C\n-1B\n+0B\n-2A\n+2C\n-1C\n-0B\n+1C\n+0B\n-2C\n+2C\n+0C\n-2C\n-2B\n+1B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "6\n+1C\n+0C\n+2B\n+1A\n-0C\n+0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "1\n+1B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "27\n+1C\n-1C\n+2A\n+2C\n+1B\n-2C\n+1A\n+0A\n+1C\n+0C\n+0B\n-1B\n+2C\n+1B\n-0C\n-1B\n-1C\n-1A\n+1B\n+0C\n-2C\n-0A\n+2B\n+1A\n-0C\n+0A\n+2C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "20\n+1C\n+2A\n-1C\n+0B\n+0A\n+2C\n+1C\n+1A\n-0A\n+1B\n-2A\n+0A\n-1C\n-1B\n+1C\n-0B\n+2B\n+0C\n-0A\n-2B\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "20\n+2B\n-2B\n+1C\n+2A\n+1A\n+0B\n-0B\n+0C\n+1B\n-2A\n-1A\n+0B\n+1A\n-1A\n+2B\n+1A\n-1C\n+2C\n-1A\n+0A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "12\n+1A\n+1B\n+2B\n+2A\n+0A\n+2C\n-2A\n-1B\n-0A\n+0C\n+2A\n-2C\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "11\n+1C\n+2B\n+2C\n+0A\n-2C\n+1B\n-1B\n+0C\n-0A\n+0B\n+1B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "8\n+1B\n+2A\n+0B\n-1B\n+2B\n-0B\n-2A\n+0C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "40\n+2B\n+1C\n-2B\n+0A\n+2A\n+0B\n+0C\n-1C\n-0A\n+1B\n-1B\n+2B\n-0C\n+1B\n+0A\n+2C\n-1B\n+1C\n-1C\n-0A\n+0A\n-0B\n-2C\n+1A\n+0B\n-2B\n-0A\n+1B\n-1B\n+1C\n-2A\n+0A\n+2B\n-2B\n+2A\n-0A\n-1C\n+2C\n+0A\n+2B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "15\n+2A\n+1A\n+1C\n+0B\n-0B\n+2B\n+1B\n-1C\n-1B\n-2A\n+1B\n+2C\n+2A\n-1A\n+0C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "42\n+0B\n+1C\n+0A\n-1C\n+1B\n+1C\n-1C\n+2A\n-2A\n+1A\n+2B\n+0C\n-1B\n+2C\n-0C\n-2B\n+1C\n-0B\n+0B\n-2C\n-1C\n-0A\n-1A\n+1B\n+0C\n+1C\n+1A\n-1C\n+2A\n-1B\n+1B\n+2B\n-1B\n-2B\n+0A\n-0B\n-1A\n+1B\n+1C\n-0A\n+2C\n-2A\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "39\n+0B\n+1B\n-0B\n+2C\n+0B\n-1B\n+1B\n+0A\n-2C\n+0C\n+2C\n+1A\n-0C\n+1C\n+2A\n-0B\n-1C\n+2B\n-2A\n+1C\n+2A\n-1B\n-0A\n-2C\n+0C\n+2C\n-2C\n-2B\n+2B\n+0A\n+2C\n-2A\n+0B\n+2A\n-0A\n-2B\n+1B\n+2B\n+0A\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "11\n+1B\n+0C\n-1B\n+0B\n-0C\n+0A\n+2B\n-0A\n+2C\n+2A\n+0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "28\n+2B\n+0B\n+0A\n+0C\n-0C\n-0B\n+0C\n-0C\n-2B\n+1A\n+0B\n+1C\n-1A\n+2B\n+1B\n-2B\n+1A\n-0A\n+2B\n-1A\n+2C\n-1C\n-1B\n+0C\n-0C\n-2C\n+1A\n+2C\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "2\n+0B\n+1C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "50\n+0A\n+2C\n+0B\n+0C\n+1A\n-0A\n+2B\n-0C\n+0A\n+0C\n-2C\n+2C\n-2C\n+2C\n+1B\n-2C\n-0A\n+0A\n-1A\n-0C\n+2C\n-0A\n-2B\n+2A\n-0B\n-2C\n+2B\n+1A\n-1B\n-1A\n+1B\n+0B\n-2B\n-2A\n-0B\n+0C\n-1B\n+2A\n+2B\n-2A\n-0C\n+0A\n-0A\n+0B\n-0B\n+2C\n-2C\n+1B\n+2A\n+2C\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "14\n+1A\n+0A\n+1C\n+0C\n+2B\n-0A\n-0C\n+0C\n+0A\n+2A\n-1A\n-0C\n-0A\n+2C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "6\n+0C\n+1A\n+0A\n-0C\n-0A\n+2B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "44\n+0A\n+1A\n+2B\n-2B\n+1B\n+2A\n-2A\n+2A\n-2A\n+2A\n-1B\n+2B\n-2A\n+1C\n+2A\n-1C\n+2C\n-2C\n+0B\n+1B\n+2C\n-2B\n-0B\n+0C\n+0B\n-1A\n+1A\n-1A\n-1B\n-2C\n+2B\n+1C\n+1B\n+1A\n-2A\n+2A\n-1C\n-0A\n+1C\n-0C\n+0A\n+0C\n-1A\n-1B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "19\n+1B\n+1C\n+2B\n+0B\n-1C\n-0B\n+0B\n-0B\n+0C\n-1B\n+0B\n+1B\n-0C\n-0B\n+0A\n+1A\n+0C\n+0B\n+2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "28\n+0B\n+2A\n+2C\n+0A\n+0C\n+2B\n-0A\n-2C\n-0C\n+0A\n-0A\n-2A\n-2B\n+2A\n+0A\n+0C\n-2A\n+1A\n+1B\n+2B\n+2A\n-1A\n+1C\n+1A\n-0A\n-1A\n-1C\n-2A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "37\n+2C\n+1A\n+0B\n+2A\n+0A\n+1C\n-0B\n-0A\n+0C\n+1B\n+0A\n-0C\n-2C\n+2B\n+0B\n-2A\n+2A\n+2C\n-0B\n-2B\n+0C\n-2C\n-0C\n+0B\n-0B\n-2A\n+2A\n-1A\n+2B\n-2A\n-1C\n+1C\n+2A\n-2A\n+0C\n-1C\n+1A\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "45\n+1B\n+0B\n-0B\n+1C\n+0B\n+0C\n-0C\n+1A\n-1B\n+1B\n+2A\n-0B\n+0A\n-0A\n+0A\n-0A\n-1B\n+2C\n+1B\n+0A\n-1C\n-2C\n-2A\n+0B\n-0A\n+2A\n+1C\n-2A\n+2A\n-0B\n+0A\n-2A\n+2C\n-1A\n-0A\n+2B\n-2C\n-1C\n+1A\n-1A\n-1B\n+1A\n-2B\n+2C\n+0B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "23\n+0C\n+2A\n+0A\n-2A\n+2C\n+2A\n+2B\n-0C\n-2C\n-2B\n+2C\n-2C\n+2B\n+1B\n-2B\n+1A\n-0A\n+0C\n-2A\n+2A\n-0C\n-1A\n+0C\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "16\n+2B\n+0A\n-0A\n+1C\n+0B\n+1A\n+0C\n-0C\n-1A\n-0B\n+1A\n+0B\n-1C\n+0A\n-1A\n+0C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "16\n+2C\n+1A\n+0B\n+2B\n-2C\n-2B\n+1B\n+1C\n+2C\n-1A\n+1A\n-1A\n+1A\n+0C\n-2C\n+2B\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "33\n+1C\n+2A\n-1C\n+0A\n+1A\n+1C\n-2A\n+0C\n+1B\n-1A\n+0B\n-0C\n+1A\n-1B\n+2B\n+2C\n+1B\n+2A\n-0A\n-1B\n+0A\n-1C\n+1B\n-1B\n-0B\n+1C\n-1A\n-0A\n+1B\n+0A\n-2C\n-1C\n+1A\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "33\n+2B\n+1A\n+2A\n+0A\n+1C\n-0A\n-2B\n-1A\n+1B\n-1C\n+2C\n+1C\n-1C\n-1B\n+0A\n+0C\n+0B\n+1A\n-1A\n-0B\n+2B\n+1B\n+1A\n-2A\n-2B\n+1C\n+0B\n-0C\n+2A\n-2C\n-1A\n-1B\n-1C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "5\n+0B\n+1C\n-0B\n+0B\n+0C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "47\n+0B\n+0C\n-0C\n+0C\n+2C\n-0B\n+2A\n+0A\n+0B\n+2B\n-0B\n-0A\n+1C\n+0B\n-0B\n+1B\n-0C\n+0B\n-2C\n-2A\n+2C\n+0C\n+1A\n+2A\n-2A\n-1A\n-0C\n+2A\n-2B\n+2B\n+1A\n+0C\n-1B\n-0B\n-1C\n+1C\n-1C\n-0C\n-2C\n+0B\n-0B\n+1B\n-1B\n+1B\n-1A\n+1A\n-1A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "17\n+2A\n+1A\n+1C\n+2B\n-1C\n+1C\n+1B\n-1A\n-2A\n+0A\n-0A\n+1A\n+2C\n+2A\n-2A\n+0B\n-1C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "49\n+0B\n+0A\n+2B\n+2C\n-2B\n+1C\n+2B\n-1C\n+0C\n-2B\n-0C\n-2C\n+2A\n+0C\n+1A\n+2C\n-0C\n+0C\n+1C\n-0C\n-1C\n-0B\n-2C\n-1A\n+0B\n-0B\n+2C\n+2B\n-2C\n+0B\n-2A\n+2C\n+1B\n-2C\n-0A\n+2C\n+1C\n+1A\n+0A\n-1A\n-0A\n-1B\n+0C\n-2B\n+2B\n-1C\n-0C\n-2C\n+0C\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "13\n+2B\n+1A\n+1B\n+2A\n+0C\n-0C\n+0B\n-1B\n+0A\n-0A\n-0B\n-2B\n+1B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "48\n+1B\n+0A\n-0A\n+2C\n+0C\n+0A\n+1A\n-0C\n+2A\n-2A\n-1A\n-2C\n+2C\n+2B\n+0B\n-0A\n-1B\n+1B\n+0A\n-2B\n-1B\n-0A\n+0C\n+2B\n+2A\n-2B\n+1B\n-2A\n+2A\n-1B\n+1B\n-1B\n+2B\n-0B\n+1C\n-2A\n-1C\n+0B\n-2C\n+1A\n+0A\n+1B\n-0C\n-0A\n-1A\n+2C\n+2A\n-2C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "20\n+2B\n+1B\n+2C\n+0B\n+0C\n-0B\n-1B\n+1C\n+0B\n+1A\n-1A\n-1C\n+2A\n+1B\n-0C\n-2C\n+1C\n-2B\n-0B\n+2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "32\n+1B\n+0B\n+2C\n+0C\n+2B\n-0B\n-0C\n+0C\n-0C\n+0A\n-0A\n+0C\n+1C\n-1C\n-1B\n+1B\n+0B\n-1B\n-2C\n-0C\n+0C\n+1C\n-0C\n+1B\n+0A\n-1B\n+2C\n-1C\n-2B\n+1A\n+1B\n+2A\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "43\n+1B\n+0C\n+1A\n-1B\n+0B\n-0B\n+2B\n-2B\n+2C\n-2C\n+2A\n-1A\n-0C\n+1A\n-1A\n+2C\n+0C\n+1A\n-1A\n+1B\n+0A\n+1A\n+1C\n+2B\n-0A\n-1B\n+0A\n-1A\n+1A\n-0A\n-1C\n-2B\n+0B\n-2A\n+0A\n-0A\n+1C\n-0C\n+0C\n-1A\n+1B\n+1A\n+2B\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "2\n+1A\n-1A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "17\n+2A\n+2B\n+1A\n+0B\n+1C\n+1B\n+0C\n-0B\n+0B\n-2B\n-1B\n-1C\n-0C\n+1B\n-1B\n+0A\n-1A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "50\n+2B\n+0B\n+1B\n-1B\n-2B\n+2A\n+0C\n+1A\n+0A\n+1B\n-1B\n-0B\n+2C\n-2A\n-1A\n+1C\n+2B\n-2B\n-2C\n+1B\n-0C\n+1A\n+2C\n-2C\n+0B\n-1A\n+2C\n+1A\n-1B\n-2C\n-0B\n+0B\n+2B\n-1A\n+2A\n+1A\n-2B\n-0A\n-0B\n+2B\n+0B\n+2C\n+0C\n-2C\n-1C\n+2C\n-0C\n-2A\n-0B\n+1C\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "32\n+1A\n-1A\n+0B\n+1A\n-0B\n+0C\n-1A\n+0B\n+2A\n+1C\n-2A\n+2A\n+1A\n+1B\n+2C\n-1C\n+1C\n-0B\n-0C\n+2B\n-1C\n-2C\n+1C\n-2B\n-2A\n+0A\n+2B\n-2B\n-1A\n+2A\n-0A\n+0A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "23\n+0B\n+2A\n+2B\n+2C\n-0B\n-2A\n+1C\n-2C\n+2C\n+1A\n+2A\n+1B\n+0B\n-2A\n-1A\n+0A\n-1B\n+1A\n-2C\n-1A\n-1C\n+1A\n-0A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "29\n+2B\n+2A\n+2C\n-2B\n+1B\n+0A\n-2C\n-2A\n+2B\n+0B\n+2C\n-1B\n-0A\n-0B\n+1C\n-1C\n+0C\n+1C\n+0A\n-2C\n+1A\n-1C\n-0C\n+2A\n+1B\n+0B\n-0B\n-2A\n-2B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "31\n+0B\n+1B\n+1A\n+2B\n-2B\n+2C\n-0B\n-1A\n+0B\n+1C\n-1B\n+0C\n+2A\n+2B\n+0A\n-2A\n+1B\n-0B\n-2C\n+1A\n+0B\n+2A\n+2C\n-1A\n-0A\n+1A\n-0B\n-1B\n-0C\n-2B\n-2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "46\n+2B\n+0B\n+1C\n+1A\n+1B\n+2A\n-0B\n+0A\n-1C\n-2B\n+1C\n+0C\n-1A\n+1A\n-0A\n-1B\n+0B\n+0A\n-1C\n+1C\n-1A\n+1B\n+2C\n+1A\n-0B\n-1A\n-1C\n+2B\n-1B\n+0B\n-2A\n-0A\n+0A\n-0B\n+2A\n+0B\n-0A\n-2C\n+1C\n+2C\n-0C\n-0B\n-1C\n+1C\n+1B\n-1B\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "5\n+0A\n+1A\n+1C\n+2C\n+0B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "3\n+2A\n+1B\n+1C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "4\n+0B\n+1B\n+2C\n-2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "37\n+1A\n+0A\n+2A\n+0C\n-1A\n-2A\n+1C\n+1A\n+2B\n-2B\n+1B\n-1C\n-0A\n+2A\n-1B\n-2A\n+0B\n-0C\n-1A\n+2C\n+0C\n+0A\n+2B\n-2C\n+1B\n+1A\n-1B\n+2C\n-2C\n-1A\n+1A\n+2C\n+1B\n-1B\n+1B\n+1C\n-1C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "5\n+2C\n+0A\n+1A\n+0C\n-2C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "37\n+2C\n+0B\n+0A\n-0A\n+2B\n+1A\n-0B\n+1C\n-1A\n+1A\n+0B\n-2C\n+0C\n+0A\n-0A\n-1C\n+2A\n+1B\n-1A\n+2C\n-2C\n-1B\n+1A\n+2C\n-2C\n-2B\n-0B\n+0B\n+2B\n+0A\n-2A\n-2B\n+2B\n+1B\n-0C\n-0B\n+1C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "15\n+2A\n+0B\n+2B\n-0B\n+0B\n+2C\n-2C\n+0A\n-0B\n+2C\n+1C\n+0C\n-0A\n-0C\n-2B\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "27\n+0A\n-0A\n+2C\n+0A\n+0B\n+1C\n-1C\n+1C\n+2A\n+0C\n+1B\n-2A\n-1C\n-2C\n+2A\n-1B\n-0B\n+2C\n-0C\n-2A\n+2B\n-2B\n+1B\n-1B\n+1B\n+2B\n+0C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "42\n+0B\n-0B\n+1A\n+2C\n+0C\n+2B\n+0B\n+1B\n+0A\n-0C\n-1B\n+1C\n+2A\n+0C\n-0C\n-2C\n+2C\n+1B\n+0C\n-1A\n-2A\n+1A\n-2C\n-0A\n+0A\n-0A\n-2B\n-1B\n+1B\n-1B\n+2C\n-0B\n+2B\n-2C\n+1B\n-1B\n-2B\n+2B\n-1C\n+0B\n+1C\n+0A\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "36\n+0B\n-0B\n+1B\n+0A\n+2C\n+2A\n-2A\n+2A\n-2A\n+1C\n+0C\n-1B\n+1B\n-2C\n+0B\n-0B\n+2B\n-0C\n-1B\n+0B\n-0B\n+0C\n-1C\n+2C\n+1A\n-2C\n-1A\n+1B\n-1B\n-0C\n-2B\n-0A\n+2C\n+0C\n+1A\n-2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "29\n+1C\n-1C\n+1C\n+0A\n-0A\n-1C\n+0B\n+0A\n+2B\n-0B\n+1B\n+2A\n-0A\n-2B\n-2A\n+0C\n+0B\n-0B\n+2C\n+2B\n+1C\n-2C\n+1A\n+2C\n+0A\n-0A\n-1C\n+0A\n-0A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "30\n+2B\n+1B\n-2B\n+2B\n+1C\n+2A\n+1A\n-1B\n+2C\n+0A\n-2B\n+2B\n-0A\n+0B\n+1B\n+0C\n-0B\n-0C\n-2B\n-1B\n-1C\n-2A\n+0B\n+0C\n+1C\n-1C\n+1B\n-1B\n+0A\n-0C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "40\n+1B\n+1A\n+2A\n+0B\n-1B\n+1C\n+0C\n+2B\n-0B\n+0B\n+0A\n-2A\n-0B\n-0C\n+2A\n-1A\n+1B\n+2C\n-2C\n-2A\n+1A\n+0C\n-0A\n-2B\n+2C\n+2B\n-2C\n+2C\n+2A\n-1C\n-1B\n-0C\n+0A\n-2A\n+0B\n+1B\n+2A\n-2B\n+2B\n-1A\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "19\n+0A\n+1A\n+2C\n-0A\n-1A\n+0A\n-2C\n+1B\n-0A\n+2A\n+2C\n+1C\n-2A\n+0A\n+2B\n+2A\n-2A\n-2B\n+0C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "36\n+2A\n+1C\n+0B\n+2C\n+1A\n-1A\n-1C\n-0B\n-2A\n+0B\n+2A\n+2B\n-2C\n-0B\n+1B\n+1A\n-1B\n+0C\n+2C\n-2A\n+0B\n+1B\n+0A\n-2C\n-0A\n-0C\n+2C\n+0C\n-2C\n+2C\n-1B\n+0A\n-2C\n-1A\n-0A\n+2A\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "34\n+0B\n+2A\n+0A\n+1C\n-0B\n+0B\n-2A\n-1C\n+2A\n+1B\n-0A\n-0B\n-2A\n+1C\n+2C\n-1B\n+2A\n+0C\n+1B\n+0A\n-0A\n-0C\n+0A\n-1C\n-2C\n-1B\n+1A\n+0C\n-0C\n+1B\n-2A\n+2B\n+0B\n+0C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "29\n+1C\n+0B\n-1C\n+1C\n+2B\n-1C\n+1C\n-2B\n-1C\n+2B\n+2A\n-0B\n+0B\n-2A\n-0B\n+2C\n+1B\n+0A\n-0A\n+1A\n-2C\n-2B\n+0C\n+1C\n-1C\n+0B\n+2C\n+2B\n-2B\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "24\n+2C\n-2C\n+1B\n+0A\n+1C\n+1A\n+0C\n-1C\n-0C\n+2A\n+2B\n-2A\n-0A\n+2A\n-2A\n-1A\n+1A\n-1B\n+0A\n-1A\n+2A\n-2A\n+0B\n+1B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "39\n+0B\n+1B\n-0B\n-1B\n+2A\n+1B\n+1A\n-1B\n+0B\n-0B\n-2A\n+1B\n-1B\n-1A\n+2C\n-2C\n+1C\n+2C\n+1B\n-2C\n+0C\n+0B\n-1C\n-0B\n-0C\n+1C\n+2B\n-1B\n+2A\n+2C\n+0B\n+0C\n+1A\n-1A\n-2A\n+0A\n+2A\n-0A\n-2A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "38\n+2A\n+2B\n+0A\n+1B\n+2C\n+1C\n-1B\n-1C\n+0B\n+1A\n+1C\n-2A\n-1A\n+1A\n+1B\n-0B\n+0C\n-1B\n-0A\n-0C\n+0C\n+0B\n-2C\n-1C\n+2C\n-1A\n+1C\n-2C\n+1A\n-2B\n-1A\n+0A\n+2B\n+1A\n+2A\n-1A\n-0C\n-0A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "41\n+0B\n+2B\n+0A\n+1C\n+1A\n-0A\n+2C\n-1A\n+2A\n-0B\n+0A\n+1A\n-0A\n-2C\n-2A\n+2A\n-2B\n+0A\n+0C\n-1A\n-2A\n-0A\n+0B\n+2B\n+2C\n+1A\n+2A\n-0C\n-0B\n-1A\n+1A\n+0C\n+0B\n-0C\n+0A\n+0C\n-2B\n+1B\n-0B\n-2C\n-0C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "2\n+1B\n+0C\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "35\n+0A\n+0B\n+2C\n+1A\n+2B\n-1A\n-0B\n-2B\n-0A\n-2C\n+0A\n-0A\n+0C\n+1B\n+1C\n+2B\n-0C\n+2A\n+0A\n+1A\n-0A\n-2A\n-2B\n+2C\n+0A\n+2A\n+2B\n+0B\n-2A\n-2B\n-1C\n-2C\n-1A\n+1A\n+2B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "38\n+2A\n-2A\n+2A\n+2C\n+1B\n+0C\n+0B\n-0C\n+0A\n+0C\n-0A\n-2A\n-0C\n+1C\n+0C\n-2C\n+2A\n+0A\n-1B\n+2B\n-0A\n+1B\n-0B\n-0C\n+2C\n-2B\n-1B\n+0B\n-2A\n+2B\n-1C\n+1B\n-0B\n+2A\n+0A\n+1A\n-2B\n-1A\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "43\n+0B\n+1B\n+2B\n+2C\n-0B\n+0C\n-2B\n+0B\n+2A\n-0B\n+0A\n+1C\n-2A\n+2B\n-1C\n-0C\n-1B\n-2B\n-0A\n+1B\n+1A\n+0C\n-2C\n+2C\n-2C\n+0B\n-0B\n+0B\n-1B\n-1A\n-0B\n+1C\n+2A\n+1B\n+0B\n-2A\n-0B\n-1C\n-1B\n+2C\n+0B\n+1A\n+2A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "8\n+2B\n+1A\n-1A\n+1A\n+0C\n+2C\n-0C\n+2A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "38\n+0B\n+1B\n+2C\n-0B\n+0A\n+2B\n-2B\n+2A\n+0B\n+0C\n-0B\n-2A\n+0B\n-0B\n+2B\n-2B\n+0B\n+2A\n+1A\n-1A\n-2C\n+1A\n+2B\n+1C\n-0B\n-1C\n+0B\n-0B\n+0B\n-0C\n-0A\n-0B\n+1C\n-1B\n-2B\n+0C\n-0C\n+2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "36\n+2B\n+2C\n+1C\n-1C\n+0A\n-0A\n+0A\n-2C\n+2C\n-2C\n+0B\n+0C\n+1C\n-1C\n-0B\n-2B\n-0A\n+0A\n-0C\n+0C\n-0C\n+1B\n-0A\n+2C\n+1A\n-2C\n-1A\n+2B\n-1B\n+2C\n-2C\n-2B\n+0C\n+1A\n+2A\n+0B\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "39\n+2A\n+2C\n-2A\n+1C\n+2A\n+0C\n-0C\n+1A\n-1C\n+1B\n-1A\n+0A\n-2A\n+2A\n+0B\n+0C\n-2C\n-1B\n-2A\n+1B\n+2A\n-0C\n-1B\n-0B\n-2A\n+1C\n+0B\n+0C\n+1A\n-1C\n-0C\n-0A\n+1C\n+2B\n-0B\n-1C\n-2B\n+0A\n+0B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "25\n+2A\n+1C\n+2C\n-2A\n-2C\n+0B\n+2A\n-2A\n-0B\n+2C\n+0C\n+2A\n+2B\n+1A\n-1C\n-2C\n-1A\n-2A\n-2B\n+0A\n+1C\n+2A\n-0C\n+2B\n+1A\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "41\n+1A\n+2C\n+2B\n-2C\n+1C\n-1A\n+0B\n-2B\n+1A\n+2C\n+0C\n-0C\n-0B\n+1B\n+2B\n+2A\n-2B\n+0B\n-2C\n+0C\n+0A\n-1B\n-1A\n-2A\n-0B\n-0A\n+2B\n+0A\n-1C\n-0C\n+1C\n+2A\n+0B\n+1B\n+1A\n-1B\n-2B\n+1B\n+2B\n+0C\n-0A\n",
+    "expectedOutput": "2B\n"
+  },
+  {
+    "input": "2\n+1B\n+2B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "30\n+1A\n+0B\n+1B\n-1B\n+2B\n+0A\n-0B\n+2C\n-1A\n+1A\n-2B\n-0A\n+0B\n-1A\n-0B\n+1C\n-1C\n+2B\n+2A\n+0C\n+0A\n-0C\n+0C\n-2B\n+1A\n-0A\n+1B\n-2A\n+2B\n+0B\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "4\n+0C\n+1A\n+0B\n-1A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "9\n+1C\n+2A\n+0A\n-1C\n-2A\n+0C\n+1A\n-0C\n+2C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "10\n+1B\n+2C\n+1A\n+0A\n+0B\n-1B\n-0A\n+1C\n+2A\n+1B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "20\n+2B\n+1C\n+1B\n-1C\n+0B\n+1C\n-2B\n+2B\n+2C\n-2B\n-1C\n-1B\n+1A\n-0B\n-1A\n-2C\n+2C\n+1C\n-1C\n+2A\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "36\n+2C\n-2C\n+2C\n+0A\n+2B\n-2C\n+2C\n+0B\n-2C\n+0C\n-0C\n-0A\n-2B\n+2B\n+2C\n-2C\n-2B\n+1B\n+2C\n-0B\n+1C\n+0C\n+1A\n+0B\n-1A\n-1B\n+1B\n-0C\n+2B\n-0B\n+2A\n-2C\n-1C\n+0C\n-1B\n+0B\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "46\n+2C\n+1C\n+1A\n+2A\n+1B\n+0A\n-1C\n-1B\n-1A\n-2C\n-2A\n+2B\n+1C\n-2B\n+2C\n+1A\n-2C\n+0C\n+1B\n+2B\n+2A\n-1C\n+0B\n+2C\n-2B\n-1A\n-0A\n+1A\n+0A\n-1B\n+1C\n-2A\n+2B\n-0B\n+2A\n-1A\n+0B\n-1C\n-2C\n-2A\n+2C\n-2B\n-0A\n-0C\n+1A\n-2C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "18\n+0A\n+2B\n+1C\n+0B\n+1B\n-1B\n-2B\n+0C\n-0C\n-0B\n+1B\n-0A\n-1C\n+2A\n+1A\n+0A\n-1A\n+0C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "8\n+2B\n-2B\n+2C\n+1A\n+1C\n-1A\n+0C\n-1C\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "7\n+2A\n+0A\n+1C\n+0C\n-2A\n+1A\n+2B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "24\n+1B\n+2A\n+0C\n+0A\n-0C\n+1A\n-2A\n-1A\n+2B\n-1B\n-0A\n+1A\n+0A\n+0B\n+2A\n+1B\n+0C\n+1C\n-1B\n-0B\n+1B\n+0B\n-0A\n-0B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "44\n+2B\n+1B\n+2A\n-1B\n+2C\n-2A\n+1C\n-1C\n+0A\n-2C\n-0A\n+0C\n-2B\n+2A\n-0C\n+2B\n+1C\n-2B\n+0B\n-1C\n+1C\n-2A\n-1C\n+1C\n+2A\n+0A\n+2C\n+2B\n+1B\n-1B\n-0A\n+1B\n-1C\n-2C\n+2C\n-1B\n-2A\n-0B\n-2C\n+2A\n+1B\n+1A\n-2B\n-2A\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "27\n+2A\n+0B\n-2A\n+0A\n+1B\n-1B\n+2A\n+2C\n+1C\n-1C\n-2C\n+1B\n+0C\n-0A\n-0B\n+2B\n+0B\n+0A\n-0B\n-0A\n-2A\n+0B\n+1A\n-0B\n+2C\n-1B\n-2C\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "15\n+1C\n+1A\n+2B\n+0B\n+0C\n+2C\n-1C\n+1B\n-1A\n+1A\n-2B\n-1A\n+1A\n-1B\n-0C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "32\n+2C\n+0C\n-2C\n+1A\n+0B\n-1A\n+0A\n+2C\n-0C\n+2B\n+1A\n+2A\n-2C\n-0B\n-0A\n+0B\n+0A\n-2B\n+0C\n-1A\n+1C\n+2B\n+1A\n-2A\n-1A\n-0B\n+0B\n-0C\n+0C\n-0B\n-2B\n-0A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "16\n+2C\n+2B\n+1B\n+2A\n-2A\n+0A\n-2B\n+0C\n+0B\n+1A\n+2B\n-0C\n-1A\n+2A\n+1A\n-2A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "20\n+0B\n+1A\n+2C\n+0A\n+1B\n-2C\n+2C\n-1A\n+0C\n-0C\n+2A\n-1B\n+1A\n+2B\n+1C\n-2C\n-2B\n-2A\n-1A\n+1A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "17\n+2A\n+1B\n-1B\n+1B\n+0C\n-1B\n+2B\n+0B\n-2B\n+1A\n+1C\n+0A\n+2B\n-1A\n+1A\n+1B\n-0B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "32\n+2B\n+0C\n+0A\n+0B\n-0A\n+1B\n+1A\n-1B\n-0C\n-2B\n-1A\n+0A\n+2C\n+1C\n+1A\n+1B\n-1C\n-1B\n-2C\n-0B\n+0C\n+1B\n-0A\n+0A\n-0A\n+2C\n-1A\n+0B\n+1A\n-0B\n+2A\n-1B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "35\n+2C\n+0C\n+2A\n+1B\n-2A\n+0A\n+1C\n+2A\n-0C\n-1C\n+2B\n-1B\n+1C\n-2B\n-1C\n+1C\n-2A\n+2A\n+1A\n+0B\n-1C\n+1B\n+0C\n-0C\n-0B\n+0B\n-2C\n-0B\n+2C\n+0C\n-2C\n+1C\n-1A\n+0B\n-1B\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "18\n+0A\n+1B\n-1B\n+2C\n+0C\n+1C\n+2B\n+2A\n-0C\n+1A\n-1A\n-1C\n-2A\n+1B\n-1B\n+1B\n+2A\n+1A\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "28\n+2B\n+2C\n+1A\n+0A\n-1A\n+1B\n+1C\n-1B\n+1A\n+0B\n-1C\n-0B\n-2C\n+1C\n+2A\n+0B\n-0B\n+0C\n+2C\n-0A\n-0C\n-2C\n+0A\n+2C\n-2B\n-0A\n-1A\n-2A\n",
+    "expectedOutput": "2C\n"
+  },
+  {
+    "input": "43\n+2B\n+1A\n+1C\n+2C\n-1A\n-1C\n+1B\n+0A\n+1C\n-0A\n+0B\n-0B\n-1C\n+0A\n+1A\n+0C\n-0C\n-2B\n-2C\n+2C\n+1C\n+0C\n-0A\n+0B\n-0B\n-1B\n+2A\n+0A\n-1C\n+1B\n-2C\n-0C\n-1A\n+2C\n+2B\n+1C\n+1A\n-0A\n-2A\n-1B\n+2A\n+0B\n+0C\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "40\n+2A\n+2B\n+1A\n+1C\n+0B\n+2C\n-2A\n+0C\n-2C\n-0B\n+1B\n-1B\n+0B\n-2B\n+1B\n+2C\n+2A\n-1A\n+1A\n-1C\n+2B\n-0B\n-1A\n-0C\n-2B\n+2B\n-2A\n+1C\n-2B\n+0B\n+2A\n+1A\n-0B\n-2A\n-1A\n+1A\n-2C\n+2C\n+0B\n+0A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "49\n+2A\n+0C\n+1B\n-1B\n+1B\n+1C\n-0C\n+2B\n-1B\n-2A\n+0B\n+0A\n-0B\n+1A\n+0B\n+1B\n-1B\n+2A\n-0A\n+0C\n-1A\n+0A\n+1B\n+1A\n-0C\n-2B\n-1C\n+0C\n-2A\n-0B\n-1A\n+2A\n+2B\n+1C\n+0B\n-2A\n-1C\n+1A\n-0C\n+2C\n-1B\n-2C\n+2A\n-2B\n-1A\n+1C\n+0C\n+2C\n-2A\n",
+    "expectedOutput": "0C\n"
+  },
+  {
+    "input": "29\n+2B\n+2C\n+1C\n-2B\n+2A\n+0B\n-1C\n+2B\n+1A\n+0A\n-2B\n-1A\n+1C\n+0C\n-0C\n-0B\n-0A\n-2C\n+0C\n+1B\n+0A\n+0B\n-1B\n-1C\n+1A\n+1B\n-0C\n-0B\n+2C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "2\n+2C\n+1C\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "24\n+2C\n+1A\n+2A\n+1B\n-1B\n+1B\n+2B\n-1A\n+0A\n+1A\n-2B\n+0C\n-1A\n-2C\n+0B\n-0B\n-2A\n+1C\n-1B\n-1C\n-0A\n+1C\n+0A\n+1A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "30\n+0A\n+2B\n+1C\n+1A\n+2C\n+2A\n-1C\n-2B\n-2A\n+2A\n+0B\n-1A\n-2C\n+1C\n-0B\n+0C\n-1C\n-2A\n+0B\n+2C\n+1C\n+2B\n-0A\n+2A\n-0C\n+0A\n-0B\n+1A\n+1B\n-0A\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "43\n+0B\n+1A\n+2A\n-1A\n+2C\n-2A\n+0C\n-2C\n+1C\n+0A\n-0C\n+2B\n-0A\n-1C\n+1B\n+0A\n-2B\n+2C\n+1A\n-1B\n-0B\n+0B\n+1B\n-0B\n+1C\n+2A\n-1B\n+2B\n-0A\n-2C\n-1C\n+0B\n+1C\n+0A\n+1B\n-1A\n-2A\n-1B\n+2C\n+1B\n+2A\n-2A\n+0C\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "50\n+1B\n-1B\n+0C\n+1C\n+2A\n+0B\n-0C\n+2C\n-2A\n+0A\n-0B\n+0C\n-2C\n+2C\n+2B\n+1A\n-2C\n-2B\n+2A\n-1C\n-2A\n+2A\n+1C\n+0B\n+2B\n-0A\n-0B\n+0A\n-1A\n-2B\n+0B\n-2A\n+2A\n+2B\n-2B\n+2C\n-0B\n-1C\n+1C\n-0C\n-1C\n+1C\n+1B\n-1B\n-1C\n+0C\n-2A\n+1A\n-1A\n-0A\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "24\n+1C\n+0C\n+0A\n+2B\n+2A\n-0A\n-1C\n+1B\n+1C\n-1B\n-2A\n+1A\n+1B\n-1C\n+2C\n+2A\n-0C\n+0A\n-1B\n+0C\n+1C\n-0C\n+1B\n-1B\n",
+    "expectedOutput": "1B\n"
+  },
+  {
+    "input": "18\n+1A\n+1C\n+0A\n-1C\n+1C\n+1B\n+2B\n-1A\n+2C\n-1B\n+0B\n-0A\n-0B\n+0A\n-0A\n+0B\n+2A\n-1C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "36\n+2B\n+1B\n+0A\n+1A\n+0B\n-2B\n+1C\n-0A\n-1C\n-1B\n+1C\n+2A\n-1A\n+1B\n+2B\n+0A\n+1A\n+0C\n-1A\n+2C\n-2C\n-0A\n-0B\n+0A\n-0C\n-1C\n-2A\n-0A\n-2B\n+2C\n+0B\n+2A\n+1C\n-2A\n+2A\n+0C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "7\n+1A\n+1B\n-1B\n+2B\n-1A\n-2B\n+2A\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "45\n+0A\n-0A\n+0B\n+0C\n+2A\n+0A\n-0A\n-0B\n+1B\n-0C\n+1A\n-1B\n+0C\n-2A\n+2B\n+1C\n+2A\n-2B\n+0B\n-2A\n-0C\n+2B\n+0C\n-1C\n-1A\n+1C\n+2C\n-0B\n-0C\n-2C\n+2C\n-2C\n+2C\n-2C\n-2B\n+2B\n+0B\n-1C\n+1C\n+1A\n+1B\n+0A\n-2B\n-1A\n-1C\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "6\n+1A\n+2B\n+2A\n+1B\n+0B\n-2B\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "36\n+2C\n+0A\n+1B\n-2C\n+2B\n+2A\n+1A\n+0C\n-2A\n-1A\n+2C\n-2B\n+0B\n-0B\n-0A\n+0A\n+1C\n-1C\n-0C\n+2B\n-0A\n+1C\n+2A\n-2A\n+1A\n-1B\n+0B\n-0B\n-1A\n+0B\n-0B\n+1A\n-2C\n+1B\n+2A\n-2A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "31\n+0C\n+2A\n+1A\n+1C\n-0C\n+0C\n-2A\n+0B\n+0A\n-0B\n-0A\n+0A\n+2B\n+1B\n+2C\n+0B\n+2A\n-0C\n-2B\n-1B\n-1A\n+0C\n-1C\n+1A\n-0B\n-2A\n-1A\n+2A\n+0B\n+1A\n-1A\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "14\n+0B\n+2C\n+2B\n+1A\n-1A\n+1A\n+0C\n+2A\n+0A\n-0C\n-2A\n+1C\n-1A\n-2B\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "42\n+1B\n+1A\n+1C\n+2C\n-1C\n+0C\n+2A\n+2B\n-1B\n-2A\n+1B\n+1C\n-2B\n+2A\n+0A\n+0B\n-2C\n-2A\n-1C\n+2A\n-0B\n-2A\n+2A\n+0B\n-0A\n-1B\n+2C\n+1B\n-1A\n+1C\n+1A\n-2C\n-1C\n+2B\n-1A\n+0A\n-0C\n-0B\n-2B\n-1B\n+0B\n-0B\n",
+    "expectedOutput": "2A\n"
+  },
+  {
+    "input": "16\n+1B\n+0B\n+2B\n+0C\n+1C\n+1A\n-1C\n+2C\n-2B\n+2A\n-0C\n-2A\n-0B\n+0B\n-0B\n+0B\n",
+    "expectedOutput": "0B\n"
+  },
+  {
+    "input": "37\n+2C\n+0A\n+0B\n+1A\n-0B\n-0A\n+0A\n+2A\n+1B\n-2C\n-1B\n-0A\n+1B\n+0B\n+0C\n-2A\n-0B\n+1C\n+0A\n+2B\n-1A\n+2A\n-2A\n-0C\n+0B\n+0C\n+2C\n-0C\n+1A\n+2A\n+0C\n-2A\n-2C\n+2C\n-1B\n-0B\n-1A\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "35\n+2B\n+1C\n-2B\n-1C\n+2C\n+0A\n+0C\n-0C\n+1C\n-1C\n+1A\n-1A\n+1A\n-1A\n+0C\n+2A\n-2A\n+1C\n-2C\n+1A\n+2C\n+1B\n-0A\n-1C\n-1A\n+2B\n+0B\n-0C\n+2A\n+0A\n-0B\n-0A\n+1A\n-2A\n-2C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "36\n+2C\n+1B\n+2A\n+1C\n+1A\n-2C\n+2C\n+0B\n-1A\n+2B\n-1B\n-2A\n+2A\n-0B\n-2B\n-1C\n+0A\n-0A\n+0B\n+2B\n-2B\n+1A\n-2C\n-0B\n+0C\n+1C\n-1C\n-1A\n-2A\n+1A\n-0C\n+0A\n+2A\n+2C\n+2B\n+1C\n",
+    "expectedOutput": "1A\n"
+  },
+  {
+    "input": "30\n+1B\n+2C\n+0A\n+0C\n-0A\n-0C\n+0A\n+1A\n+0B\n-1A\n-1B\n-0B\n-2C\n+1A\n+0C\n+2A\n-2A\n-1A\n+0B\n+2C\n-0C\n-0A\n+2B\n+0C\n+1A\n-0B\n-2C\n+0A\n-2B\n+1B\n",
+    "expectedOutput": "0A\n"
+  },
+  {
+    "input": "22\n+1C\n-1C\n+2A\n+1C\n+1B\n-1C\n+1A\n-1B\n+0C\n+2C\n+0A\n+1B\n+1C\n+2B\n-1A\n-2C\n-0C\n-1C\n+0C\n+0B\n+2C\n+1C\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "48\n+2C\n+1B\n+2B\n+0C\n+2A\n-2C\n+0B\n+1C\n-1B\n+0A\n-0B\n-0A\n+1B\n+1A\n-0C\n-1C\n+0C\n-2A\n+1C\n-2B\n+0A\n-1B\n+1B\n-1C\n+2C\n-2C\n+1C\n-0C\n+0B\n+2C\n-1C\n+2B\n-0B\n-2B\n-2C\n+2B\n+2A\n-2B\n+2C\n+1C\n+2B\n-2A\n-1A\n+0C\n+1A\n-0C\n+0B\n-1C\n",
+    "expectedOutput": "1C\n"
+  },
+  {
+    "input": "20\n+1C\n+0A\n+0B\n+2A\n+1B\n-1C\n-2A\n+1A\n-0A\n+2B\n+0C\n-0B\n-1A\n-0C\n-2B\n+2C\n+0C\n+0B\n+1A\n+0A\n",
+    "expectedOutput": "0A\n"
+  }
+]

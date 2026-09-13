@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-58",
+  "title": "预订次数最多的酒店房间",
+  "explanation": "## 思路\n\n只统计+记录中的房间，按预订次数降序、房间名升序选择最优房间。\n\n## 正确性\n\n每个+记录对应一次真实预订，与该房间是否最终空闲无关。累加所有+即累计次数，选择最大计数及最小名字恰好对应两级排序规则。\n\n## 复杂度\n\n时间O(n+260)，空间O(260)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    counts={}\n    for op in data[1:]:\n        if op[0]=='+':counts[op[1:]]=counts.get(op[1:],0)+1\n    return min(counts,key=lambda room:(-counts[room],room))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#58-most-booked-hotel-room",
+  "sourceContentHash": "a1692ff47c6feb18119f60d3c082e9af1f4de015e8306c9fc51772eba4b46aca",
+  "author": "CSWork"
+}

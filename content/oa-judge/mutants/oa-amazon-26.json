@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不减零像素",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]); columns=[0]*m; best=0\n    for row in d[2:]:\n        best=max(best,row.count('1'))\n        for j,c in enumerate(row): columns[j]+=c=='1'\n    return str(2*(best+max(columns)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只检查第一列",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]); columns=[0]*m; best=0\n    for row in d[2:]:\n        best=max(best,row.count('1'))\n        for j,c in enumerate(row): columns[j]+=c=='1'\n    return str(2*(best+columns[0])-n-m)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

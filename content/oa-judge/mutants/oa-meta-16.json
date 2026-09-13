@@ -1,0 +1,10 @@
+[
+  {
+    "name": "总取首尾两个值",
+    "code": "def solve(data):\n    n,target=map(int,data[:2]); a=list(map(int,data[2:])); left=0; right=n-1; distance=None; answer=(a[0],a[-1])\n    while left<right:\n        total=a[left]+a[right]; delta=abs(total-target)\n        if distance is None or delta<distance:distance=delta; answer=(a[left],a[right])\n        if total<target:left+=1\n        else:right-=1\n    return f'{a[0]} {a[-1]}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许重复使用同一下标",
+    "code": "def solve(data):\n    n,target=map(int,data[:2]); a=list(map(int,data[2:])); left=0; right=n-1; distance=None; answer=(a[0],a[-1])\n    while left<right:\n        total=a[left]+a[right]; delta=abs(total-target)\n        if distance is None or delta<distance:distance=delta; answer=(a[left],a[right])\n        if total<target:left+=1\n        else:right-=1\n    value=min(a,key=lambda v:abs(2*v-target)); return f'{value} {value}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

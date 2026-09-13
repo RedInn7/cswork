@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许删除尾部两项",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a)\n    if n<2:return '0'\n    answer=0\n    for target in {a[0]+a[1],a[-2]+a[-1],a[0]+a[-1]}:\n        previous=[0]*(n+2)\n        for length in range(2+n%2,n+1,2):\n            current=[0]*(n+2)\n            for left in range(n-length+1):\n                right=left+length-1;best=0\n                if a[left]+a[left+1]==target:best=max(best,1+previous[left+2])\n                if False:best=max(best,1+previous[left])\n                if a[left]+a[right]==target:best=max(best,1+previous[left+1])\n                current[left]=best\n            previous=current\n        answer=max(answer,previous[0])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "首尾和使用首项两次",
+    "code": "def solve(data):\n    a=list(map(int,data[1:]));n=len(a)\n    if n<2:return '0'\n    answer=0\n    for target in {a[0]+a[1],a[-2]+a[-1],a[0]+a[-1]}:\n        previous=[0]*(n+2)\n        for length in range(2+n%2,n+1,2):\n            current=[0]*(n+2)\n            for left in range(n-length+1):\n                right=left+length-1;best=0\n                if a[left]+a[left+1]==target:best=max(best,1+previous[left+2])\n                if a[right-1]+a[right]==target:best=max(best,1+previous[left])\n                if a[left]+a[left]==target:best=max(best,1+previous[left+1])\n                current[left]=best\n            previous=current\n        answer=max(answer,previous[0])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误选最小k项",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);a=sorted(map(int,data[2:]),reverse=False)\n    return str(sum(a[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉一项",
+    "code": "def solve(data):\n    n,k=map(int,data[:2]);a=sorted(map(int,data[2:]),reverse=True)\n    return str(sum(a[:k-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-29",
+  "title": "区间内三位互异的数字",
+  "explanation": "## 思路\n\n直接枚举区间中的整数，拆出百位、十位、个位并检查三个两两不等条件。\n\n## 正确性证明\n\n闭区间枚举每个候选一次，三个不等式成立恰好表示任意两位不同，因此没有遗漏或重复计数。\n\n## 复杂度\n\n时间O(right−left+1)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    left,right=map(int,data); count=0\n    for value in range(left,right+1):\n        a=value//100; b=value//10%10; c=value%10\n        if a!=b and a!=c and b!=c:count+=1\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/meta#29-count-3-sister-numbers",
+  "sourceContentHash": "d6b90bf15bdc1916a05a6aef8ce85dbcbb862bb895a019cb4c8ccd57d6d1ba17",
+  "author": "CSWork"
+}
