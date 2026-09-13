@@ -18,3 +18,17 @@
 这项修改减少错误提交的等待和评测资源占用，不减少正确解必须通过的测试点，也不解决提交开始前的队列容量瓶颈。多个正确解同时提交仍可能排队。
 
 参考 LeetCode 的失败用例反馈体验（[官方说明](https://support.leetcode.com/hc/en-us/articles/360011834174-I-encountered-Wrong-Answer-Runtime-Error-for-a-specific-test-case-When-I-test-my-code-using-this-test-case-it-produced-the-correct-output-Why)）。这里仍保留 CSWork 每测试点独立沙箱，不复制其同一程序实例执行全部测试的内部方式，也不声称两站性能完全相同。
+
+## 2026-09-12 验证
+
+生产构建和 TypeScript 检查通过；定向测试覆盖事务保存、取消相邻执行、终态通知、权限、Unicode 截断和实际 React 渲染。新回归已加入 CI。
+
+在同一主机、同一 2 CPU / 4 GiB 隔离沙箱中，使用五个合成 Python 测试点验证。原线上 worker `50efbcb` 的第一个用例出错后仍跑了全部五例，反馈 5111 ms。候选运行时代码 `20a348b` 的同场景只保存首个失败结果，反馈 93 ms；已经启动的五秒慢邻居被取消，紧随其后的正确提交 153 ms 完成全部五例。
+
+两例通过后第三例出错，只保存三个结果，反馈 123 ms；普通样例运行仍保存两个样例结果。等待超过慢用例原定结束时间后，没有迟到结果写入。
+
+上述是受控场景单次诊断数据，计时从提交入库到测试程序观察到终态，不含浏览器网络，不代表所有题目的响应时限或长期 P95。
+
+同一私有数据库启动独立 HTTP 服务验证：提交本人可读取第三个隐藏失败用例的输入/预期/实际输出；原 `cases` 隐藏字段全部省略；其他用户 404，匿名 401；普通运行没有 `firstFailure`。测试身份、数据库、队列和沙箱均与生产隔离并自动清理。
+
+复现脚本为 `tests/oj-failfast-integration.mjs`；指定 `SOURCE_DATABASE_PATH`、`TEST_WORKER_ENTRY`、专用 loopback 5053/5054 runner，并通过安全环境注入判题凭据。可选 `TEST_WEB_ENTRY` 启用 loopback 4318 的合成身份 HTTP 验证。不要指向生产 runner 或修改生产测试数据。
