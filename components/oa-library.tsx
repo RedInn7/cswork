@@ -4,6 +4,41 @@ import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Navigate } from './learning';
+import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
+
+/** Text remains the accessible identity; the logo is only a visual aid. */
+export function CompanyIdentity({
+  slug,
+  name,
+}: {
+  slug: string;
+  name: string;
+}) {
+  const [failedAsset, setFailedAsset] = useState<string | null>(null);
+  const asset = Object.hasOwn(companyLogos, slug)
+    ? companyLogos[slug]
+    : undefined;
+  return (
+    <span className="oa-company-identity">
+      <span className="oa-company-logo" aria-hidden="true">
+        {asset && failedAsset !== asset ? (
+          <img
+            src={asset}
+            alt=""
+            width={20}
+            height={20}
+            loading="lazy"
+            decoding="async"
+            onError={() => setFailedAsset(asset)}
+          />
+        ) : (
+          <span className="oa-company-initials">{companyInitials(name)}</span>
+        )}
+      </span>
+      <span className="oa-company-name">{name}</span>
+    </span>
+  );
+}
 
 type Item = {
   id: string;
@@ -421,7 +456,7 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                   aria-pressed={company === item.slug}
                   onClick={() => chooseCompany(item.slug)}
                 >
-                  <span>{item.name}</span>
+                  <CompanyIdentity slug={item.slug} name={item.name} />
                   <span>{item.count}</span>
                 </button>
               ))}
@@ -502,7 +537,12 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                             : setSelected(item.id)
                         }
                       >
-                        <span className="oa-company">{item.companyName}</span>
+                        <span className="oa-company">
+                          <CompanyIdentity
+                            slug={item.companySlug}
+                            name={item.companyName}
+                          />
+                        </span>
                         <span className="oa-title">
                           <strong>{item.title}</strong>
                           <small>
@@ -554,6 +594,7 @@ export function OaCompanyBadge({ problemId }: { problemId: string }) {
   const [identity, setIdentity] = useState<{
     id: string;
     companyName: string;
+    companySlug: string;
   } | null>(null);
   useEffect(() => {
     const controller = new AbortController();
@@ -561,7 +602,11 @@ export function OaCompanyBadge({ problemId }: { problemId: string }) {
     read<Detail>('/' + encodeURIComponent(problemId), controller.signal)
       .then((value) => {
         if (!controller.signal.aborted && value.id === problemId)
-          setIdentity({ id: value.id, companyName: value.companyName });
+          setIdentity({
+            id: value.id,
+            companyName: value.companyName,
+            companySlug: value.companySlug,
+          });
       })
       .catch(() => {
         /* Optional identity must not block the problem workspace. */
@@ -571,7 +616,14 @@ export function OaCompanyBadge({ problemId }: { problemId: string }) {
   return (
     <div className="oa-workspace-company">
       <span className="oa-badge">OA 题目</span>
-      {identity?.id === problemId && <strong>{identity.companyName}</strong>}
+      {identity?.id === problemId && (
+        <strong>
+          <CompanyIdentity
+            slug={identity.companySlug}
+            name={identity.companyName}
+          />
+        </strong>
+      )}
     </div>
   );
 }
