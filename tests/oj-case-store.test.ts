@@ -29,11 +29,13 @@ test('first failure and bounded diagnostic become durable atomically', () => {
     const row = f.db
       .prepare('SELECT stdout FROM oj_results WHERE ordinal=23')
       .get() as { stdout: string };
-    assert.ok(Buffer.byteLength(row.stdout) <= 32769);
+    assert.ok(Buffer.byteLength(row.stdout) <= 32772);
     const feedback = boundedFeedback(row.stdout);
     assert.equal(feedback.truncated, true);
     assert.ok(Buffer.byteLength(feedback.text) <= 32768);
     assert.equal(feedback.text.includes('\uFFFD'), false);
+    assert.equal(feedback.text, '中'.repeat(Math.floor(32768 / 3)));
+    assert.equal(row.stdout.includes(' '), false);
     assert.equal(
       (
         f.db.prepare('SELECT status FROM submissions').get() as {

@@ -11,14 +11,8 @@ export function boundedFeedback(value: string, limit = FEEDBACK_BYTES) {
   };
 }
 function capturedFeedback(value = '') {
-  const bounded = boundedFeedback(value);
-  // One ASCII sentinel preserves truncation information without a schema change.
-  return (
-    bounded.text +
-    (bounded.truncated
-      ? ' '.repeat(FEEDBACK_BYTES + 1 - Buffer.byteLength(bounded.text))
-      : '')
-  );
+  // Retain enough original bytes to detect truncation across a UTF-8 boundary.
+  return boundedFeedback(value, FEEDBACK_BYTES + 4).text;
 }
 
 export type CaseRecord = {
