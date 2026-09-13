@@ -779,6 +779,7 @@ export function ProblemList({
 }) {
   return (
     <AlgorithmLibrary
+      key={boot.person?.id || 'anonymous'}
       navigate={navigate}
       collection={library}
       availableProblemIds={boot.problems.map((problem) => problem.id)}
