@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错把边界相等拆班",
+    "code": "def solve(data):\n    n,spread=map(int,data[:2]); levels=sorted(map(int,data[2:])); classes=0; start=None\n    for level in levels:\n        if start is None or level-start>=spread:classes+=1; start=level\n    return str(classes)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只比较相邻技能",
+    "code": "def solve(data):\n    n,spread=map(int,data[:2]); levels=sorted(map(int,data[2:])); classes=0; start=None\n    for level in levels:\n        if start is None or level-start>spread:classes+=1; start=level\n    return str(1+sum(levels[i]-levels[i-1]>spread for i in range(1,n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

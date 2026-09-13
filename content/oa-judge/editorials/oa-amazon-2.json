@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-2",
+  "title": "技能水平分班",
+  "explanation": "## 思路\n\n将技能值排序。每次取还未分配的最低值作为新班起点，将所有不超过起点+maxSpread 的后续学员放入这个班。\n\n## 为什么正确\n\n最低未分配技能值必须进入一个班，该班不能包含超过它加 maxSpread 的值。把允许范围内的所有学员都放入同一班不会增加班数：从其它班移走这些学员不会使它们失效。故存在最优解采用当前贪心班级，对剩余学员递推即可。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)（包括排序后的数组）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n,spread=map(int,data[:2]); levels=sorted(map(int,data[2:])); classes=0; start=None\n    for level in levels:\n        if start is None or level-start>spread:classes+=1; start=level\n    return str(classes)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#2-group-students",
+  "sourceContentHash": "97b8ab65dfbf7549d73626fd3e10d2208c4242c5638f3edc4c5b917010984c18",
+  "author": "CSWork"
+}

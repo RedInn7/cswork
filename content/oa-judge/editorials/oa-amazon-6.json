@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-6",
+  "title": "最优取数游戏的分差",
+  "explanation": "## 思路\n\n所有分值之和固定，因此最大化自己得分等价于最小化对手得分。按分值降序排列，两名玩家交替取数，计算交替和。\n\n## 为什么正确\n\n对剩余数字个数归纳。在降序排列 a 中，先取最大值的分差是 a0−a1+a2−…；先取其它位置 j 后，按归纳假设剩余数字同样交替取。将两个表达式相减，可按相邻降序项配对，所得差非负。因此总存在先取最大值的最优选择，归纳成立。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)（排序和输入存储）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    points=sorted(map(int,data[1:]),reverse=True); difference=0\n    for i,value in enumerate(points):difference+=value if i%2==0 else -value\n    return str(abs(difference))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#6-get-score-difference",
+  "sourceContentHash": "d0a845ce9acf65504c9962e209184ba16b680772bf8b4cb159775ecc109399bc",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-13",
+  "title": "平衡服务器子段",
+  "explanation": "## 思路\n\n设 prefix[i] 是前 i 项和。对子段[l,r]，条件是 arr[l]=arr[r] 且 prefix[l]+2×arr[l]=prefix[r]。遍历右端r时，先把l=r−2加入哈希表，再查询(arr[r],prefix[r])。\n\n## 为什么正确\n\n内部和为 prefix[r]−prefix[l+1]，而 prefix[l+1]=prefix[l]+arr[l]，移项得到哈希键条件。查询前恰好插入所有 l≤r−2 的左端，保证长度至少3。每个合法左右端组合被统计一次。\n\n## 复杂度\n\n期望时间 O(n)，额外空间 O(n)。使用64位整数保存前缀和和答案。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    a=list(map(int,data[1:])); prefix=[0]\n    for value in a:prefix.append(prefix[-1]+value)\n    counts={}; answer=0\n    for right in range(2,len(a)):\n        left=right-2; key=(a[left],prefix[left]+2*a[left]); counts[key]=counts.get(key,0)+1\n        answer+=counts.get((a[right],prefix[right]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#13-get-total-balanced",
+  "sourceContentHash": "f8a7964b779cdd72a90837a3e7e1beb31b547146ead64b8f699654deafb1a297",
+  "author": "CSWork"
+}

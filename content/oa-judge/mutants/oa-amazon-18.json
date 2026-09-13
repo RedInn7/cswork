@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排除恰好等于阈值",
+    "code": "def solve(data):\n    n,threshold=map(int,data[:2]); values=sorted(map(int,data[2:])); left=0; answer=0\n    for right in range(n):\n        while left<right and values[right]-values[left]>=threshold:left+=1\n        answer+=right-left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把自己也计入",
+    "code": "def solve(data):\n    n,threshold=map(int,data[:2]); values=sorted(map(int,data[2:])); left=0; answer=0\n    for right in range(n):\n        while left<right and values[right]-values[left]>threshold:left+=1\n        answer+=right-left+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
