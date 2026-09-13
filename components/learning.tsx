@@ -19,7 +19,7 @@ import { Progress as ProgressBar } from '@/components/ui/progress';
 import { api, type Boot, type Lesson, date } from '@/lib/types';
 import { Player } from './player';
 import { LessonMarkdown, LessonNotes } from './lms-shared';
-import { StudyLibrary } from './study-library';
+import { AlgorithmLibrary } from './algorithm-library';
 import interviewCatalog from '@/content/interview-catalog.json';
 import {
   INTERVIEW_COURSE_ID,
@@ -28,6 +28,7 @@ import {
 import { KnowledgeExercises } from './knowledge-exercises';
 import '@/app/knowledge-exercises.css';
 import '@/app/study-library.css';
+import '@/app/oa-library.css';
 import {
   Dialog,
   DialogContent,
@@ -775,7 +776,7 @@ export function ProblemList({
   navigate: Navigate;
 }) {
   return (
-    <StudyLibrary
+    <AlgorithmLibrary
       navigate={navigate}
       availableProblemIds={boot.problems.map((problem) => problem.id)}
     />
