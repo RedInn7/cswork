@@ -300,7 +300,7 @@ BLOCKED={24:'原范围20万角色及20万DAG边，但每角色权限列表和字
 def wide_page(i):return '😀'*12+''.join(chr(0x10000+((i>>shift)&31)) for shift in (15,10,5,0))
 for spec in SPECS:
     if spec['id']=='oa-snowflake-37':
-        spec['limits']=spec['limits'].replace('100个Unicode字符','16个Unicode字符（保留原20万条边，最坏UTF-8输入不超过26MB）')
+        spec['limits']=spec['limits'].replace('100个Unicode字符','16个Unicode字符（保留原20万条边，最坏UTF-8输入不超过26,000,500字节）')
         spec['edges'].append((([(wide_page(2*i),wide_page(2*i+1)) for i in range(200000)],wide_page(0),wide_page(399999)),'-1'))
 RAW_NAMES={21:'snowflake-count-minimum-characters',22:'snowflake-count-prime-strings',23:'snowflake-count-ways-to-color-houses',24:'snowflake-effective-role-privileges',25:'snowflake-efficient-cost',26:'snowflake-efficient-deployments',27:'snowflake-find-a',28:'snowflake-find-maximum-number-live-threads',29:'snowflake-find-pod-count',30:'snowflake-find-the-maximum-length-of-a-good-subsequence-i',31:'snowflake-get-earliest-meet-time',32:'snowflake-get-max-beautiful-substrings',33:'snowflake-get-max-upgraded-servers',34:'snowflake-get-maximum-removals',35:'snowflake-max-freq-substr',36:'snowflake-maximum-passengers-collected',37:'snowflake-minimum-clicks-between-wiki-pages',38:'snowflake-minimum-division',39:'snowflake-minimum-index-distance-between-person-and-cake',40:'snowflake-moves'}
 def execute(path,inputs):
