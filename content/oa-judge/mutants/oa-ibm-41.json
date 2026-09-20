@@ -1,0 +1,10 @@
+[
+  {
+    "name": "换冠军连胜从零算",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=0\n        else:wins+=1\n        if wins>=k:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略提前获胜",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=1\n        else:wins+=1\n        if False:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

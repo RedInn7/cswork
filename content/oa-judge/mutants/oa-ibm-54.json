@@ -1,0 +1,10 @@
+[
+  {
+    "name": "去掉重复项",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]<=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    out.extend(a[i:]);out.extend(b[j:]);return ' '.join(map(str,sorted(set(out))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏剩余后缀",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]<=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

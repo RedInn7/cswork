@@ -1,0 +1,10 @@
+[
+  {
+    "name": "结束秒遗漏",
+    "code": "def solve(d):\n    n=int(d[0]);out=[0]*n;stack=[];previous=0\n    for log in d[2:]:\n        v,kind,t=log.split(':');v=int(v);t=int(t)\n        if kind=='start':\n            if stack:out[stack[-1]]+=t-previous\n            stack.append(v);previous=t\n        else:out[stack.pop()]+=t-previous;previous=t+1\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "返回后重复计结束秒",
+    "code": "def solve(d):\n    n=int(d[0]);out=[0]*n;stack=[];previous=0\n    for log in d[2:]:\n        v,kind,t=log.split(':');v=int(v);t=int(t)\n        if kind=='start':\n            if stack:out[stack[-1]]+=t-previous\n            stack.append(v);previous=t\n        else:out[stack.pop()]+=t-previous+1;previous=t\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

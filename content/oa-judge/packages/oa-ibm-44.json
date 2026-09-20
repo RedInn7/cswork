@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ibm-44",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "单线程函数的独占执行时间",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "IBM"
+    ],
+    "description": "给出单线程实际调用日志，计算每个函数所有调用的独占时间。开始日志在该秒开始抢占，结束日志包含该秒，返回后恢复上一层调用，允许递归。\n\n标准输入输出由本站整理，补充数值界和无解编码均明确标注，不冒充来源原约束。",
+    "input": "第一行n m，随后m行id:start/end:timestamp。1≤n≤100，1≤m≤500，ID为0..n−1，时间0..1000且非递减；开始时间各异、结束时间各异，每次开始都有结束。日志表示有效调用栈执行，暂停中的调用不能先结束。",
+    "output": "输出n个整数，依次对应ID 0至n−1。",
+    "explanation": "分别7 4；1；2 1。",
+    "hints": [
+      "维护调用栈和上一个结算时刻；开始时给旧栈顶结算到t前，结束时给当前函数结算到t并将下次时刻置t+1。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2 4\n0:start:0\n1:start:3\n1:end:6\n0:end:10\n",
+      "expectedOutput": "7 4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1 2\n0:start:0\n0:end:0\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2 4\n0:start:0\n1:start:1\n1:end:1\n0:end:2\n",
+      "expectedOutput": "2 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "100 500\n0:start:0\n1:start:1\n2:start:2\n3:start:3\n4:start:4\n5:start:5\n6:start:6\n7:start:7\n8:start:8\n9:start:9\n10:start:10\n11:start:11\n12:start:12\n13:start:13\n14:start:14\n15:start:15\n16:start:16\n17:start:17\n18:start:18\n19:start:19\n20:start:20\n21:start:21\n22:start:22\n23:start:23\n24:start:24\n25:start:25\n26:start:26\n27:start:27\n28:start:28\n29:start:29\n30:start:30\n31:start:31\n32:start:32\n33:start:33\n34:start:34\n35:start:35\n36:start:36\n37:start:37\n38:start:38\n39:start:39\n40:start:40\n41:start:41\n42:start:42\n43:start:43\n44:start:44\n45:start:45\n46:start:46\n47:start:47\n48:start:48\n49:start:49\n50:start:50\n51:start:51\n52:start:52\n53:start:53\n54:start:54\n55:start:55\n56:start:56\n57:start:57\n58:start:58\n59:start:59\n60:start:60\n61:start:61\n62:start:62\n63:start:63\n64:start:64\n65:start:65\n66:start:66\n67:start:67\n68:start:68\n69:start:69\n70:start:70\n71:start:71\n72:start:72\n73:start:73\n74:start:74\n75:start:75\n76:start:76\n77:start:77\n78:start:78\n79:start:79\n80:start:80\n81:start:81\n82:start:82\n83:start:83\n84:start:84\n85:start:85\n86:start:86\n87:start:87\n88:start:88\n89:start:89\n90:start:90\n91:start:91\n92:start:92\n93:start:93\n94:start:94\n95:start:95\n96:start:96\n97:start:97\n98:start:98\n99:start:99\n0:start:100\n1:start:101\n2:start:102\n3:start:103\n4:start:104\n5:start:105\n6:start:106\n7:start:107\n8:start:108\n9:start:109\n10:start:110\n11:start:111\n12:start:112\n13:start:113\n14:start:114\n15:start:115\n16:start:116\n17:start:117\n18:start:118\n19:start:119\n20:start:120\n21:start:121\n22:start:122\n23:start:123\n24:start:124\n25:start:125\n26:start:126\n27:start:127\n28:start:128\n29:start:129\n30:start:130\n31:start:131\n32:start:132\n33:start:133\n34:start:134\n35:start:135\n36:start:136\n37:start:137\n38:start:138\n39:start:139\n40:start:140\n41:start:141\n42:start:142\n43:start:143\n44:start:144\n45:start:145\n46:start:146\n47:start:147\n48:start:148\n49:start:149\n50:start:150\n51:start:151\n52:start:152\n53:start:153\n54:start:154\n55:start:155\n56:start:156\n57:start:157\n58:start:158\n59:start:159\n60:start:160\n61:start:161\n62:start:162\n63:start:163\n64:start:164\n65:start:165\n66:start:166\n67:start:167\n68:start:168\n69:start:169\n70:start:170\n71:start:171\n72:start:172\n73:start:173\n74:start:174\n75:start:175\n76:start:176\n77:start:177\n78:start:178\n79:start:179\n80:start:180\n81:start:181\n82:start:182\n83:start:183\n84:start:184\n85:start:185\n86:start:186\n87:start:187\n88:start:188\n89:start:189\n90:start:190\n91:start:191\n92:start:192\n93:start:193\n94:start:194\n95:start:195\n96:start:196\n97:start:197\n98:start:198\n99:start:199\n0:start:200\n1:start:201\n2:start:202\n3:start:203\n4:start:204\n5:start:205\n6:start:206\n7:start:207\n8:start:208\n9:start:209\n10:start:210\n11:start:211\n12:start:212\n13:start:213\n14:start:214\n15:start:215\n16:start:216\n17:start:217\n18:start:218\n19:start:219\n20:start:220\n21:start:221\n22:start:222\n23:start:223\n24:start:224\n25:start:225\n26:start:226\n27:start:227\n28:start:228\n29:start:229\n30:start:230\n31:start:231\n32:start:232\n33:start:233\n34:start:234\n35:start:235\n36:start:236\n37:start:237\n38:start:238\n39:start:239\n40:start:240\n41:start:241\n42:start:242\n43:start:243\n44:start:244\n45:start:245\n46:start:246\n47:start:247\n48:start:248\n49:start:249\n49:end:250\n48:end:251\n47:end:252\n46:end:253\n45:end:254\n44:end:255\n43:end:256\n42:end:257\n41:end:258\n40:end:259\n39:end:260\n38:end:261\n37:end:262\n36:end:263\n35:end:264\n34:end:265\n33:end:266\n32:end:267\n31:end:268\n30:end:269\n29:end:270\n28:end:271\n27:end:272\n26:end:273\n25:end:274\n24:end:275\n23:end:276\n22:end:277\n21:end:278\n20:end:279\n19:end:280\n18:end:281\n17:end:282\n16:end:283\n15:end:284\n14:end:285\n13:end:286\n12:end:287\n11:end:288\n10:end:289\n9:end:290\n8:end:291\n7:end:292\n6:end:293\n5:end:294\n4:end:295\n3:end:296\n2:end:297\n1:end:298\n0:end:299\n99:end:300\n98:end:301\n97:end:302\n96:end:303\n95:end:304\n94:end:305\n93:end:306\n92:end:307\n91:end:308\n90:end:309\n89:end:310\n88:end:311\n87:end:312\n86:end:313\n85:end:314\n84:end:315\n83:end:316\n82:end:317\n81:end:318\n80:end:319\n79:end:320\n78:end:321\n77:end:322\n76:end:323\n75:end:324\n74:end:325\n73:end:326\n72:end:327\n71:end:328\n70:end:329\n69:end:330\n68:end:331\n67:end:332\n66:end:333\n65:end:334\n64:end:335\n63:end:336\n62:end:337\n61:end:338\n60:end:339\n59:end:340\n58:end:341\n57:end:342\n56:end:343\n55:end:344\n54:end:345\n53:end:346\n52:end:347\n51:end:348\n50:end:349\n49:end:350\n48:end:351\n47:end:352\n46:end:353\n45:end:354\n44:end:355\n43:end:356\n42:end:357\n41:end:358\n40:end:359\n39:end:360\n38:end:361\n37:end:362\n36:end:363\n35:end:364\n34:end:365\n33:end:366\n32:end:367\n31:end:368\n30:end:369\n29:end:370\n28:end:371\n27:end:372\n26:end:373\n25:end:374\n24:end:375\n23:end:376\n22:end:377\n21:end:378\n20:end:379\n19:end:380\n18:end:381\n17:end:382\n16:end:383\n15:end:384\n14:end:385\n13:end:386\n12:end:387\n11:end:388\n10:end:389\n9:end:390\n8:end:391\n7:end:392\n6:end:393\n5:end:394\n4:end:395\n3:end:396\n2:end:397\n1:end:398\n0:end:399\n99:end:400\n98:end:401\n97:end:402\n96:end:403\n95:end:404\n94:end:405\n93:end:406\n92:end:407\n91:end:408\n90:end:409\n89:end:410\n88:end:411\n87:end:412\n86:end:413\n85:end:414\n84:end:415\n83:end:416\n82:end:417\n81:end:418\n80:end:419\n79:end:420\n78:end:421\n77:end:422\n76:end:423\n75:end:424\n74:end:425\n73:end:426\n72:end:427\n71:end:428\n70:end:429\n69:end:430\n68:end:431\n67:end:432\n66:end:433\n65:end:434\n64:end:435\n63:end:436\n62:end:437\n61:end:438\n60:end:439\n59:end:440\n58:end:441\n57:end:442\n56:end:443\n55:end:444\n54:end:445\n53:end:446\n52:end:447\n51:end:448\n50:end:449\n49:end:450\n48:end:451\n47:end:452\n46:end:453\n45:end:454\n44:end:455\n43:end:456\n42:end:457\n41:end:458\n40:end:459\n39:end:460\n38:end:461\n37:end:462\n36:end:463\n35:end:464\n34:end:465\n33:end:466\n32:end:467\n31:end:468\n30:end:469\n29:end:470\n28:end:471\n27:end:472\n26:end:473\n25:end:474\n24:end:475\n23:end:476\n22:end:477\n21:end:478\n20:end:479\n19:end:480\n18:end:481\n17:end:482\n16:end:483\n15:end:484\n14:end:485\n13:end:486\n12:end:487\n11:end:488\n10:end:489\n9:end:490\n8:end:491\n7:end:492\n6:end:493\n5:end:494\n4:end:495\n3:end:496\n2:end:497\n1:end:498\n0:end:499\n",
+      "expectedOutput": "6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 6 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "1 2\n0:start:0\n0:end:1000\n",
+      "expectedOutput": "1001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "100 500\n0:start:0\n0:end:1\n0:start:2\n0:end:3\n0:start:4\n0:end:5\n0:start:6\n0:end:7\n0:start:8\n0:end:9\n0:start:10\n0:end:11\n0:start:12\n0:end:13\n0:start:14\n0:end:15\n0:start:16\n0:end:17\n0:start:18\n0:end:19\n0:start:20\n0:end:21\n0:start:22\n0:end:23\n0:start:24\n0:end:25\n0:start:26\n0:end:27\n0:start:28\n0:end:29\n0:start:30\n0:end:31\n0:start:32\n0:end:33\n0:start:34\n0:end:35\n0:start:36\n0:end:37\n0:start:38\n0:end:39\n0:start:40\n0:end:41\n0:start:42\n0:end:43\n0:start:44\n0:end:45\n0:start:46\n0:end:47\n0:start:48\n0:end:49\n0:start:50\n0:end:51\n0:start:52\n0:end:53\n0:start:54\n0:end:55\n0:start:56\n0:end:57\n0:start:58\n0:end:59\n0:start:60\n0:end:61\n0:start:62\n0:end:63\n0:start:64\n0:end:65\n0:start:66\n0:end:67\n0:start:68\n0:end:69\n0:start:70\n0:end:71\n0:start:72\n0:end:73\n0:start:74\n0:end:75\n0:start:76\n0:end:77\n0:start:78\n0:end:79\n0:start:80\n0:end:81\n0:start:82\n0:end:83\n0:start:84\n0:end:85\n0:start:86\n0:end:87\n0:start:88\n0:end:89\n0:start:90\n0:end:91\n0:start:92\n0:end:93\n0:start:94\n0:end:95\n0:start:96\n0:end:97\n0:start:98\n0:end:99\n0:start:100\n0:end:101\n0:start:102\n0:end:103\n0:start:104\n0:end:105\n0:start:106\n0:end:107\n0:start:108\n0:end:109\n0:start:110\n0:end:111\n0:start:112\n0:end:113\n0:start:114\n0:end:115\n0:start:116\n0:end:117\n0:start:118\n0:end:119\n0:start:120\n0:end:121\n0:start:122\n0:end:123\n0:start:124\n0:end:125\n0:start:126\n0:end:127\n0:start:128\n0:end:129\n0:start:130\n0:end:131\n0:start:132\n0:end:133\n0:start:134\n0:end:135\n0:start:136\n0:end:137\n0:start:138\n0:end:139\n0:start:140\n0:end:141\n0:start:142\n0:end:143\n0:start:144\n0:end:145\n0:start:146\n0:end:147\n0:start:148\n0:end:149\n0:start:150\n0:end:151\n0:start:152\n0:end:153\n0:start:154\n0:end:155\n0:start:156\n0:end:157\n0:start:158\n0:end:159\n0:start:160\n0:end:161\n0:start:162\n0:end:163\n0:start:164\n0:end:165\n0:start:166\n0:end:167\n0:start:168\n0:end:169\n0:start:170\n0:end:171\n0:start:172\n0:end:173\n0:start:174\n0:end:175\n0:start:176\n0:end:177\n0:start:178\n0:end:179\n0:start:180\n0:end:181\n0:start:182\n0:end:183\n0:start:184\n0:end:185\n0:start:186\n0:end:187\n0:start:188\n0:end:189\n0:start:190\n0:end:191\n0:start:192\n0:end:193\n0:start:194\n0:end:195\n0:start:196\n0:end:197\n0:start:198\n0:end:199\n0:start:200\n0:end:201\n0:start:202\n0:end:203\n0:start:204\n0:end:205\n0:start:206\n0:end:207\n0:start:208\n0:end:209\n0:start:210\n0:end:211\n0:start:212\n0:end:213\n0:start:214\n0:end:215\n0:start:216\n0:end:217\n0:start:218\n0:end:219\n0:start:220\n0:end:221\n0:start:222\n0:end:223\n0:start:224\n0:end:225\n0:start:226\n0:end:227\n0:start:228\n0:end:229\n0:start:230\n0:end:231\n0:start:232\n0:end:233\n0:start:234\n0:end:235\n0:start:236\n0:end:237\n0:start:238\n0:end:239\n0:start:240\n0:end:241\n0:start:242\n0:end:243\n0:start:244\n0:end:245\n0:start:246\n0:end:247\n0:start:248\n0:end:249\n0:start:250\n0:end:251\n0:start:252\n0:end:253\n0:start:254\n0:end:255\n0:start:256\n0:end:257\n0:start:258\n0:end:259\n0:start:260\n0:end:261\n0:start:262\n0:end:263\n0:start:264\n0:end:265\n0:start:266\n0:end:267\n0:start:268\n0:end:269\n0:start:270\n0:end:271\n0:start:272\n0:end:273\n0:start:274\n0:end:275\n0:start:276\n0:end:277\n0:start:278\n0:end:279\n0:start:280\n0:end:281\n0:start:282\n0:end:283\n0:start:284\n0:end:285\n0:start:286\n0:end:287\n0:start:288\n0:end:289\n0:start:290\n0:end:291\n0:start:292\n0:end:293\n0:start:294\n0:end:295\n0:start:296\n0:end:297\n0:start:298\n0:end:299\n0:start:300\n0:end:301\n0:start:302\n0:end:303\n0:start:304\n0:end:305\n0:start:306\n0:end:307\n0:start:308\n0:end:309\n0:start:310\n0:end:311\n0:start:312\n0:end:313\n0:start:314\n0:end:315\n0:start:316\n0:end:317\n0:start:318\n0:end:319\n0:start:320\n0:end:321\n0:start:322\n0:end:323\n0:start:324\n0:end:325\n0:start:326\n0:end:327\n0:start:328\n0:end:329\n0:start:330\n0:end:331\n0:start:332\n0:end:333\n0:start:334\n0:end:335\n0:start:336\n0:end:337\n0:start:338\n0:end:339\n0:start:340\n0:end:341\n0:start:342\n0:end:343\n0:start:344\n0:end:345\n0:start:346\n0:end:347\n0:start:348\n0:end:349\n0:start:350\n0:end:351\n0:start:352\n0:end:353\n0:start:354\n0:end:355\n0:start:356\n0:end:357\n0:start:358\n0:end:359\n0:start:360\n0:end:361\n0:start:362\n0:end:363\n0:start:364\n0:end:365\n0:start:366\n0:end:367\n0:start:368\n0:end:369\n0:start:370\n0:end:371\n0:start:372\n0:end:373\n0:start:374\n0:end:375\n0:start:376\n0:end:377\n0:start:378\n0:end:379\n0:start:380\n0:end:381\n0:start:382\n0:end:383\n0:start:384\n0:end:385\n0:start:386\n0:end:387\n0:start:388\n0:end:389\n0:start:390\n0:end:391\n0:start:392\n0:end:393\n0:start:394\n0:end:395\n0:start:396\n0:end:397\n0:start:398\n0:end:399\n0:start:400\n0:end:401\n0:start:402\n0:end:403\n0:start:404\n0:end:405\n0:start:406\n0:end:407\n0:start:408\n0:end:409\n0:start:410\n0:end:411\n0:start:412\n0:end:413\n0:start:414\n0:end:415\n0:start:416\n0:end:417\n0:start:418\n0:end:419\n0:start:420\n0:end:421\n0:start:422\n0:end:423\n0:start:424\n0:end:425\n0:start:426\n0:end:427\n0:start:428\n0:end:429\n0:start:430\n0:end:431\n0:start:432\n0:end:433\n0:start:434\n0:end:435\n0:start:436\n0:end:437\n0:start:438\n0:end:439\n0:start:440\n0:end:441\n0:start:442\n0:end:443\n0:start:444\n0:end:445\n0:start:446\n0:end:447\n0:start:448\n0:end:449\n0:start:450\n0:end:451\n0:start:452\n0:end:453\n0:start:454\n0:end:455\n0:start:456\n0:end:457\n0:start:458\n0:end:459\n0:start:460\n0:end:461\n0:start:462\n0:end:463\n0:start:464\n0:end:465\n0:start:466\n0:end:467\n0:start:468\n0:end:469\n0:start:470\n0:end:471\n0:start:472\n0:end:473\n0:start:474\n0:end:475\n0:start:476\n0:end:477\n0:start:478\n0:end:479\n0:start:480\n0:end:481\n0:start:482\n0:end:483\n0:start:484\n0:end:485\n0:start:486\n0:end:487\n0:start:488\n0:end:489\n0:start:490\n0:end:491\n0:start:492\n0:end:493\n0:start:494\n0:end:495\n0:start:496\n0:end:497\n0:start:498\n0:end:499\n",
+      "expectedOutput": "500 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "4 6\n2:start:0\n3:start:3\n1:start:4\n1:end:6\n3:end:7\n2:end:10\n",
+      "expectedOutput": "0 3 6 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "5 2\n3:start:0\n3:end:3\n",
+      "expectedOutput": "0 0 0 4 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "5 6\n3:start:0\n2:start:2\n2:start:4\n2:end:7\n2:end:9\n3:end:11\n",
+      "expectedOutput": "0 0 8 4 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "3 12\n2:start:0\n2:end:3\n1:start:5\n1:end:8\n1:start:10\n2:start:11\n2:end:12\n2:start:15\n1:start:18\n1:end:21\n2:end:22\n1:end:23\n",
+      "expectedOutput": "0 12 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "5 10\n2:start:0\n2:end:1\n1:start:3\n1:end:4\n1:start:6\n3:start:7\n2:start:9\n2:end:12\n3:end:13\n1:end:14\n",
+      "expectedOutput": "0 4 6 3 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "1 16\n0:start:0\n0:start:3\n0:start:6\n0:start:9\n0:start:10\n0:start:11\n0:start:13\n0:start:16\n0:end:18\n0:end:19\n0:end:20\n0:end:21\n0:end:22\n0:end:23\n0:end:24\n0:end:25\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "5 10\n3:start:0\n0:start:2\n0:end:5\n3:end:6\n2:start:8\n2:end:10\n1:start:11\n0:start:14\n0:end:17\n1:end:18\n",
+      "expectedOutput": "8 4 3 3 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "5 2\n2:start:0\n2:end:1\n",
+      "expectedOutput": "0 0 2 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "1 4\n0:start:0\n0:start:1\n0:end:3\n0:end:6\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "5 10\n4:start:0\n4:end:1\n0:start:2\n0:end:4\n1:start:5\n2:start:6\n0:start:9\n0:end:10\n2:end:11\n1:end:12\n",
+      "expectedOutput": "5 2 4 0 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "4 8\n2:start:0\n2:start:2\n2:end:3\n2:end:6\n2:start:9\n2:end:10\n2:start:12\n2:end:15\n",
+      "expectedOutput": "0 0 13 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "2 10\n1:start:0\n1:end:3\n0:start:6\n0:end:9\n1:start:12\n1:end:13\n0:start:15\n1:start:18\n1:end:19\n0:end:20\n",
+      "expectedOutput": "8 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "1 8\n0:start:0\n0:end:3\n0:start:4\n0:start:5\n0:end:8\n0:end:10\n0:start:13\n0:end:16\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "3 12\n2:start:0\n2:end:2\n2:start:3\n2:start:6\n2:start:8\n2:end:11\n2:end:12\n2:end:15\n2:start:17\n2:start:18\n2:end:19\n2:end:20\n",
+      "expectedOutput": "0 0 20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "3 14\n1:start:0\n1:end:2\n2:start:4\n2:end:6\n0:start:8\n1:start:9\n0:start:11\n0:start:14\n0:end:15\n2:start:18\n2:end:21\n0:end:22\n1:end:23\n0:end:24\n",
+      "expectedOutput": "10 6 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "2 12\n0:start:0\n0:end:1\n1:start:3\n1:start:6\n1:start:7\n1:end:10\n1:start:11\n1:end:14\n1:end:16\n0:start:19\n0:end:20\n1:end:21\n",
+      "expectedOutput": "4 17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "5 10\n4:start:0\n4:end:3\n1:start:5\n0:start:6\n4:start:7\n4:end:8\n0:end:10\n2:start:12\n2:end:14\n1:end:15\n",
+      "expectedOutput": "3 3 3 0 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "4 10\n0:start:0\n0:end:2\n0:start:5\n0:end:7\n2:start:9\n1:start:12\n1:end:13\n0:start:15\n0:end:17\n2:end:19\n",
+      "expectedOutput": "9 2 6 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "2 12\n0:start:0\n0:end:2\n0:start:5\n0:start:7\n1:start:10\n1:end:12\n1:start:13\n1:end:14\n1:start:15\n1:end:18\n0:end:20\n0:end:21\n",
+      "expectedOutput": "11 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "3 14\n2:start:0\n2:end:2\n1:start:3\n2:start:6\n2:end:7\n1:start:10\n1:start:13\n0:start:16\n0:end:18\n0:start:20\n0:end:23\n1:end:24\n1:end:25\n1:end:26\n",
+      "expectedOutput": "7 15 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "3 4\n2:start:0\n2:end:3\n0:start:6\n0:end:7\n",
+      "expectedOutput": "2 0 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "4 2\n1:start:0\n1:end:1\n",
+      "expectedOutput": "0 2 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "5 6\n0:start:0\n4:start:3\n0:start:6\n0:end:8\n4:end:10\n0:end:12\n",
+      "expectedOutput": "8 0 0 0 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "2 4\n1:start:0\n0:start:2\n0:end:4\n1:end:5\n",
+      "expectedOutput": "3 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "4 10\n3:start:0\n0:start:1\n0:end:4\n3:end:7\n3:start:9\n3:end:10\n3:start:13\n3:start:16\n3:end:18\n3:end:21\n",
+      "expectedOutput": "4 0 0 15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "2 6\n1:start:0\n1:end:1\n0:start:2\n1:start:3\n1:end:6\n0:end:8\n",
+      "expectedOutput": "3 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "2 6\n1:start:0\n1:start:3\n1:end:5\n1:end:7\n0:start:9\n0:end:10\n",
+      "expectedOutput": "2 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 31",
+      "input": "2 12\n0:start:0\n1:start:3\n1:end:4\n1:start:6\n0:start:9\n1:start:10\n0:start:13\n0:end:16\n1:end:19\n0:end:22\n1:end:23\n0:end:24\n",
+      "expectedOutput": "13 12\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

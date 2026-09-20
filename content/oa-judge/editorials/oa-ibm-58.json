@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-58",
+  "title": "配平普通括号的最少插入数",
+  "explanation": "## 思路\n\n维护未匹配左括号数量，遇右括号有左则抵消，无左则补一个左；最后补齐剩余左括号的右括号。\n\n## 正确性证明\n\n没有可匹配左括号的右括号必须各补一个左，剩余未匹配左括号必须各补一个右，两部分是必要下界。扫描中即时补左、末尾补右可合法配平并恰达到此下界。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    left=missing=0\n    for c in d[0]:\n        if c=='(':left+=1\n        elif left:left-=1\n        else:missing+=1\n    return str(left+missing)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#58-minimum-insertions-to-balance-a-parentheses-string",
+  "sourceContentHash": "ba84df1310090e25345d7b210c9227ba3a347fe68b62222e78bc38c3b1f09a0c",
+  "author": "CSWork"
+}

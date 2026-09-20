@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-50",
+  "title": "选k个点最大化最小间距",
+  "explanation": "## 思路\n\n排序后二分候选距离，贪心从最左点开始，每次选满足与上次距离至少该值的最早点，判断能否选满k点。\n\n## 正确性证明\n\n固定距离下，将任一可行方案的首点换成最左点不损害后续选择，逐个同理，贪心得到最多可选点。可行性对距离单调，二分最后一个可行整数距离即最优。\n\n## 复杂度\n\n时间O(n log n+n log 10^9)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));low=0;high=a[-1]-a[0]\n    while low<high:\n        mid=(low+high+1)//2;count=1;last=a[0]\n        for v in a[1:]:\n            if v-last>=mid:count+=1;last=v\n        if count>=k:low=mid\n        else:high=mid-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#50-maximize-minimum-distance",
+  "sourceContentHash": "1424c4f7125e5e003f0a90ed89fa284f07f6dc9763a22c850bc4776775b3e952",
+  "author": "CSWork"
+}

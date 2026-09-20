@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ibm-41",
+      "sourceContentHash": "c88cd2f2daa20c3dcc0854d74a7e53ba3c063032a7219b269bd007f250981841",
+      "packageChecksum": "d2a3fe35b7abdb105057164a34de946925711accef076e50ec240f07d7ebf4ee",
+      "editorial": "## 思路\n\n扫描原队列，维护当前冠军和连胜数；换冠军时连胜为1。未达k而扫完后，全局最大势能必将获胜。\n\n## 正确性证明\n\n第一次遇到全局最大值前，队首冠军只会与尚未首次上场的下一人对局，因此单遍模拟精确。一旦最大值成为冠军便永不输，若此前无胜者最终胜者必为它，不必继续模拟巨大k。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=1\n        else:wins+=1\n        if wins>=k:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-42",
+      "sourceContentHash": "2ce52004a54150949b1a33036bda1656c13a08ae872ffe6ad7ef2a072f9db20f",
+      "packageChecksum": "d9167266b4127499bade713a983d4d66f38a7c7a9ab2f7973b3c3cbd3d21c328",
+      "editorial": "## 思路\n\n用(key,timestamp)为复合键建立哈希表，逐个查询。\n\n## 正确性证明\n\n复合键唯一性由同一时刻不重复键保证，写入每个条目后表值恰为该条目的value；保证命中的查询访问相同复合键，必返回对应值。\n\n## 复杂度\n\n时间O(输入字符数)，空间O(n·键长)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);table={};p=2\n    for _ in range(n):\n        t,k,v=d[p:p+3];table[k,t]=v;p+=3\n    out=[]\n    for _ in range(q):\n        k,t=d[p:p+2];out.append(table[k,t]);p+=2\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-43",
+      "sourceContentHash": "c9fe01ada7b1764cd80586505feb3c3a21f0e08b2ae7051194187e3311c8cf59",
+      "packageChecksum": "f34c2477136a1e97faf5c4c2992c81a006c3e2bb19497981d46da95be4d814a1",
+      "editorial": "## 思路\n\n跳过前导a，连续降低接下来的非a段；若全是a则只把最后一位改为z。\n\n## 正确性证明\n\n首次修改非a会降低该位，越早降低字典序越小；跨过a会使当前位增大，因此必须在下一个a前停下，在此前多降低每一位均更优。全a时所有修改都增大，选择最晚且只改一位达到最小。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(d[0]);i=0\n    while i<len(a) and a[i]=='a':i+=1\n    if i==len(a):a[-1]='z'\n    else:\n        while i<len(a) and a[i]!='a':a[i]=chr(ord(a[i])-1);i+=1\n    return ''.join(a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-44",
+      "sourceContentHash": "6e8045bb7573fa97fd4cd3b992d555f875bc705d369a3784d6b868b297692704",
+      "packageChecksum": "b3a8227172d0261f81da8a10943a3e077c268cf774c78771a914e04b4ac54675",
+      "editorial": "## 思路\n\n维护调用栈和上一个结算时刻；开始时给旧栈顶结算到t前，结束时给当前函数结算到t并将下次时刻置t+1。\n\n## 正确性证明\n\n两个相邻事件之间只有栈顶占CPU，结算该完整时间段精确且不重叠。开始不占用旧函数的t秒，结束占用当前函数的t秒，因此分别用t−previous与t−previous+1；更新后未结算区间仍从previous开始，归纳正确。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);out=[0]*n;stack=[];previous=0\n    for log in d[2:]:\n        v,kind,t=log.split(':');v=int(v);t=int(t)\n        if kind=='start':\n            if stack:out[stack[-1]]+=t-previous\n            stack.append(v);previous=t\n        else:out[stack.pop()]+=t-previous+1;previous=t+1\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-45",
+      "sourceContentHash": "7d28eb9e125fb4c10042e1beed7eb8e076ecbeb1e3754f4a788e840cecf64de9",
+      "packageChecksum": "f5a1acbcdb32cd3ddcce70e69fbb3db5bc170391f56e5f27fc1125e5377fe6ac",
+      "editorial": "## 思路\n\n计算总平衡与最小前缀平衡；总平衡必须为0，最低值不小于−1即可。\n\n## 正确性证明\n\n移动不改变左右括号总数，且对任一前缀平衡最多提高1，因此总平衡0且最低≥−1必要。若存在−1，取出首次造成负值的右括号放在末尾，此前前缀原已非负，之后前缀加1也非负，最后总数恢复0；无负值时不用移动。\n\n## 复杂度\n\n时间O(总长度)，逐串额外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    out=[]\n    for s in d[1:]:\n        level=low=0\n        for c in s:level+=1 if c=='(' else -1;low=min(low,level)\n        out.append(int(level==0 and low>=-1))\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-46",
+      "sourceContentHash": "bf5e8a3fbbac8224273b97412bbb18fd3fedf0f013313f36dd5cd7bf0b75dd65",
+      "packageChecksum": "49d9fe9728705c4c04c24a9af27957ec1e9e0f37d648b632364d6655b45a4525",
+      "editorial": "## 思路\n\n全走的终点是三角数T；若某个正三角前缀为禁点，跳过第一步，答案T−1；否则为T。起点禁用单独返回-1。\n\n## 正确性证明\n\n不跳步的每一步位置都是三角数，若不碰禁点便达到所有步长之和上界。若碰禁点至少少走1，得到T−1上界；跳过第一步后各正步位置为三角数减1，相邻正三角数差至少2，绝不等于该正三角禁点，因此上界可达。\n\n## 复杂度\n\n时间O(steps)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,bad=map(int,d)\n    if bad==0:return '-1'\n    total=n*(n+1)//2;hit=any(j*(j+1)//2==bad for j in range(1,n+1))\n    return str(total-int(hit))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-48",
+      "sourceContentHash": "c3c13c0a365c28ef9bcba4654d2b07002655032d018f0646fcb2c6c209fc396e",
+      "packageChecksum": "dcb96df076de643b037f49606e23a1fcaced0d473040c5ee70e698f4f0608913",
+      "editorial": "## 思路\n\n计算每科非负缺口，升序排序，预算优先用于最小缺口。\n\n## 正确性证明\n\n每通过一科贡献均为1。若选择了较大缺口而遗漏较小者，交换后科数不变且用题数不增；反复交换得到最小缺口前缀。贪心取预算可容纳的最长前缀即最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));gaps=sorted(max(0,y-x) for x,y in zip(a,b));answer=0\n    for gap in gaps:\n        if gap>q:break\n        q-=gap;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-49",
+      "sourceContentHash": "f78ac9f02134127bb9bc616f6ab44d43feeb9a7f56a77020775ca6df915e17c5",
+      "packageChecksum": "81c7bb6e426dcac14cdef51c69d6d088e5956926ff54ad190c1516cf82f3d099",
+      "editorial": "## 思路\n\n从高位到低位做双数位DP，维护两数各自上下界是否贴边、a是否已小于b、异或是否仍贴着k，枚举当前两位。\n\n## 正确性证明\n\n各约束只依赖已确定前缀与边界的大小关系，状态保存了所有后续所需信息。每位枚举所有合法比特组合，叶子只接受严格a<b，故所有且仅有可行数对被覆盖；取最大异或和得到最优，无接受路径则-1。\n\n## 复杂度\n\n时间O(2^6·4·log(max(hi,k)))，空间O(2^6·log(max(hi,k)))。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from functools import lru_cache\n    lo,hi,k=map(int,d)\n    @lru_cache(None)\n    def visit(bit,al,ah,bl,bh,less,tight):\n        if bit<0:return 0 if less else -1\n        l=(lo>>bit)&1;h=(hi>>bit)&1;limit=(k>>bit)&1;best=-1\n        for a in (0,1):\n            if al and a<l or ah and a>h:continue\n            for b in (0,1):\n                if bl and b<l or bh and b>h or not less and a>b:continue\n                z=a^b\n                if tight and z>limit:continue\n                rest=visit(bit-1,al and a==l,ah and a==h,bl and b==l,bh and b==h,less or a<b,tight and z==limit)\n                if rest>=0:best=max(best,(z<<bit)+rest)\n        return best\n    return str(visit(max(hi,k).bit_length()-1,True,True,True,True,False,True))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-50",
+      "sourceContentHash": "1424c4f7125e5e003f0a90ed89fa284f07f6dc9763a22c850bc4776775b3e952",
+      "packageChecksum": "e1cdc0488ee490e418e11710105e8df571d99c540da4d3abf9bcce8237ea2b14",
+      "editorial": "## 思路\n\n排序后二分候选距离，贪心从最左点开始，每次选满足与上次距离至少该值的最早点，判断能否选满k点。\n\n## 正确性证明\n\n固定距离下，将任一可行方案的首点换成最左点不损害后续选择，逐个同理，贪心得到最多可选点。可行性对距离单调，二分最后一个可行整数距离即最优。\n\n## 复杂度\n\n时间O(n log n+n log 10^9)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));low=0;high=a[-1]-a[0]\n    while low<high:\n        mid=(low+high+1)//2;count=1;last=a[0]\n        for v in a[1:]:\n            if v-last>=mid:count+=1;last=v\n        if count>=k:low=mid\n        else:high=mid-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-51",
+      "sourceContentHash": "913d4dfa4a8f970bcd1a5f9a7cfa47e22d21ff3854960c96f3ebcbe16b7a3872",
+      "packageChecksum": "0f3e332da6efc02f2f00f6a0cc2b898a4a985ef51cb0420e3c11ba7298c7ddf6",
+      "editorial": "## 思路\n\n滑动窗口维护和与元素频率，长度恰好k且不同值数也为k时更新最大和。\n\n## 正确性证明\n\n每个长度k窗口恰好被访问一次；频率表只维护窗口内元素，因此不同值数为k与全不同等价。对全部合法窗口取最大值，未遇到合法窗口才报告-1。\n\n## 复杂度\n\n时间O(n)，空间O(min(n,k))。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import defaultdict\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq=defaultdict(int);total=0;best=None\n    for i,v in enumerate(a):\n        freq[v]+=1;total+=v\n        if i>=k:\n            old=a[i-k];freq[old]-=1;total-=old\n            if freq[old]==0:del freq[old]\n        if i>=k-1 and len(freq)==k:best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-53",
+      "sourceContentHash": "c44e75174ea58f909281231a4a72d9c4c989089bab4ddccaee994b95336a4c66",
+      "packageChecksum": "314e341d46a0220e6dc636b42b710bec6c13cfd1724867b84ad4f06f8deaffc2",
+      "editorial": "## 思路\n\n排序后双指针交替取右端最大与左端最小，直到相遇。\n\n## 正确性证明\n\n排序区间两端恰为当前所有未使用元素最大和最小；每步取走指定端点后剩余区间仍排序，归纳符合每个次序且不重复使用。\n\n## 复杂度\n\n时间O(n log n)，输出空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=sorted(map(int,d[1:]));l=0;r=len(a)-1;out=[]\n    while l<=r:\n        out.append(a[r]);r-=1\n        if l<=r:out.append(a[l]);l+=1\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-54",
+      "sourceContentHash": "e661774c36fdf6a8d949008574b61d33b2995ffbb4c9928422cac8ff3a6e7509",
+      "packageChecksum": "34b29080b7d8d7deae94f5c5a98ffdbf29a329569761b3fe9292cde4d5eb006c",
+      "editorial": "## 思路\n\n双指针每次输出较小的未使用头元素，一边用完则追加另一边。\n\n## 正确性证明\n\n两数组各自的头是该数组最小未用元素，两头较小者就是全部剩余元素的最小值。逐项输出保持非递减且每次只消耗一个输入位置，最终恰好保留全部2n项。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]<=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    out.extend(a[i:]);out.extend(b[j:]);return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-56",
+      "sourceContentHash": "e11d87e54cf2ce0e94d9cb6419ffc32571a3f62be811109ebe8c5ff5f03676d4",
+      "packageChecksum": "5813adcb818a49436c659d76aa968d9b3249234bc11113f443f55bff04ff9495",
+      "editorial": "## 思路\n\n排序，求相邻差的最小值，再输出所有等于该差的相邻数对。\n\n## 正确性证明\n\n非相邻数之间至少夹一个不同值，其差是至少两个正相邻差之和，严格大于其中任一项，所以最小差只可能发生于相邻项。枚举所有相邻对并筛选即可不重不漏，顺序自然递增。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=sorted(map(int,d[1:]));delta=min(a[i+1]-a[i] for i in range(len(a)-1));pairs=[]\n    for x,y in zip(a,a[1:]):\n        if y-x==delta:pairs.append(f'{x} {y}')\n    return str(len(pairs))+'\\n'+'\\n'.join(pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-57",
+      "sourceContentHash": "04179dd66fbd4c664fcbc9a477f54ae855823d2bf21812d2d90e11576b298707",
+      "packageChecksum": "feb5034ead3876cc863ddb9401c4821f0966315ac80da27de413a91e391fc96f",
+      "editorial": "## 思路\n\n维护当前段出现字符，遇到重复字符就在它前面切开，开始新段。\n\n## 正确性证明\n\n贪心第一段是从起点能取得的最长合法前缀。任意最优方案的首段不可能更长；把它延长到贪心端点，只会删掉或缩短后续若干段，后续段仍合法且段数不增。递归应用得最优。\n\n## 复杂度\n\n时间O(n)，额外空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    seen=set();answer=1\n    for c in d[0]:\n        if c in seen:answer+=1;seen.clear()\n        seen.add(c)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-58",
+      "sourceContentHash": "ba84df1310090e25345d7b210c9227ba3a347fe68b62222e78bc38c3b1f09a0c",
+      "packageChecksum": "f0acf490b9d9e0c67bdf7d389f898fd135ce41d7e2e93f01128ae8dfcc912e54",
+      "editorial": "## 思路\n\n维护未匹配左括号数量，遇右括号有左则抵消，无左则补一个左；最后补齐剩余左括号的右括号。\n\n## 正确性证明\n\n没有可匹配左括号的右括号必须各补一个左，剩余未匹配左括号必须各补一个右，两部分是必要下界。扫描中即时补左、末尾补右可合法配平并恰达到此下界。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    left=missing=0\n    for c in d[0]:\n        if c=='(':left+=1\n        elif left:left-=1\n        else:missing+=1\n    return str(left+missing)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-59",
+      "sourceContentHash": "082bf0ab6e507e8748c2b02e8e0f292b0ac5f3931563f37129382c25a2b345d8",
+      "packageChecksum": "05fcb4303a2298f43b9a019feccb00b665bc5cc5fa272bcbccc4492ea1321691",
+      "editorial": "## 思路\n\n逐个数字逐位累加对应数字字符的绝对差。\n\n## 正确性证明\n\n每次操作只能使一个数位向目标靠近至多1，该位至少需要两数字之差的绝对值次；逐位朝目标改动恰好达到这个下界，数位之间独立，无进位，因此所有下界相加即最优。\n\n## 复杂度\n\n时间O(10n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);answer=0\n    for a,b in zip(d[1:n+1],d[n+1:]):\n        for x,y in zip(a,b):answer+=abs(ord(x)-ord(y))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-60",
+      "sourceContentHash": "4829882e4e6483d97fc52595246a1f170d704a20dede430b83f78134a897ac62",
+      "packageChecksum": "311b852f1e7580db68088c81a871b3d80a6b2bed2d317acc64fb389db15f9963",
+      "editorial": "## 思路\n\n排序后求前缀和，用二分把小于目标与不小于目标的数分开，分别计算增量和减量。\n\n## 正确性证明\n\n单元素至少需要与目标绝对差次且可达到，各元素独立，答案是绝对差总和。分界左侧贡献t·p−前缀和，右侧贡献剩余和−t·(n−p)，因此前缀和公式精确，原数组从未更改确保查询独立。\n\n## 复杂度\n\n预处理O(n log n)，每次O(log n)，空间O(n+q)，答案用64位整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from bisect import bisect_left\n    n,q=map(int,d[:2]);a=sorted(map(int,d[2:n+2]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    out=[]\n    for t in map(int,d[n+2:]):\n        p=bisect_left(a,t);out.append(t*p-prefix[p]+prefix[n]-prefix[p]-t*(n-p))\n    return '\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-61",
+      "sourceContentHash": "1ffdf3a5b49e872a8be83a51c644bccba2b41f3df7c6a2472e2dc0d1a7aa2802",
+      "packageChecksum": "72cd952bea117bc2dfcd685a033ca6390886666f0edeb09594e203b602a4e0c2",
+      "editorial": "## 思路\n\n排序后求前缀和，用二分把小于目标与不小于目标的数分开，分别计算增量和减量。\n\n## 正确性证明\n\n单元素至少需要与目标绝对差次且可达到，各元素独立，答案是绝对差总和。分界左侧贡献t·p−前缀和，右侧贡献剩余和−t·(n−p)，因此前缀和公式精确，原数组从未更改确保查询独立。\n\n## 复杂度\n\n预处理O(n log n)，每次O(log n)，空间O(n+q)，答案用64位整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from bisect import bisect_left\n    n,q=map(int,d[:2]);a=sorted(map(int,d[2:n+2]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    out=[]\n    for t in map(int,d[n+2:]):\n        p=bisect_left(a,t);out.append(t*p-prefix[p]+prefix[n]-prefix[p]-t*(n-p))\n    return '\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

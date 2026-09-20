@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-51",
+  "title": "长度k且无重复元素的最大子数组和",
+  "explanation": "## 思路\n\n滑动窗口维护和与元素频率，长度恰好k且不同值数也为k时更新最大和。\n\n## 正确性证明\n\n每个长度k窗口恰好被访问一次；频率表只维护窗口内元素，因此不同值数为k与全不同等价。对全部合法窗口取最大值，未遇到合法窗口才报告-1。\n\n## 复杂度\n\n时间O(n)，空间O(min(n,k))。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import defaultdict\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq=defaultdict(int);total=0;best=None\n    for i,v in enumerate(a):\n        freq[v]+=1;total+=v\n        if i>=k:\n            old=a[i-k];freq[old]-=1;total-=old\n            if freq[old]==0:del freq[old]\n        if i>=k-1 and len(freq)==k:best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#51-maximize-resource-allocation",
+  "sourceContentHash": "913d4dfa4a8f970bcd1a5f9a7cfa47e22d21ff3854960c96f3ebcbe16b7a3872",
+  "author": "CSWork"
+}

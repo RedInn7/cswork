@@ -1,0 +1,10 @@
+[
+  {
+    "name": "比较整体整数而非逐位",
+    "code": "def solve(d):\n    n=int(d[0]);answer=0\n    for a,b in zip(d[1:n+1],d[n+1:]):\n        answer+=abs(int(a)-int(b))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许数字首尾环绕",
+    "code": "def solve(d):\n    n=int(d[0]);answer=0\n    for a,b in zip(d[1:n+1],d[n+1:]):\n        for x,y in zip(a,b):answer+=min(abs(ord(x)-ord(y)),10-abs(ord(x)-ord(y)))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

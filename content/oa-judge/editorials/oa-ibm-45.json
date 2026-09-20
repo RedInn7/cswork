@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-45",
+  "title": "最多移动一个括号能否配平",
+  "explanation": "## 思路\n\n计算总平衡与最小前缀平衡；总平衡必须为0，最低值不小于−1即可。\n\n## 正确性证明\n\n移动不改变左右括号总数，且对任一前缀平衡最多提高1，因此总平衡0且最低≥−1必要。若存在−1，取出首次造成负值的右括号放在末尾，此前前缀原已非负，之后前缀加1也非负，最后总数恢复0；无负值时不用移动。\n\n## 复杂度\n\n时间O(总长度)，逐串额外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    out=[]\n    for s in d[1:]:\n        level=low=0\n        for c in s:level+=1 if c=='(' else -1;low=min(low,level)\n        out.append(int(level==0 and low>=-1))\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#45-is-convertible-data",
+  "sourceContentHash": "7d28eb9e125fb4c10042e1beed7eb8e076ecbeb1e3754f4a788e840cecf64de9",
+  "author": "CSWork"
+}

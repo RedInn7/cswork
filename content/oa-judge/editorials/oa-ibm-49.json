@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-49",
+  "title": "区间内不超过上限的最大异或",
+  "explanation": "## 思路\n\n从高位到低位做双数位DP，维护两数各自上下界是否贴边、a是否已小于b、异或是否仍贴着k，枚举当前两位。\n\n## 正确性证明\n\n各约束只依赖已确定前缀与边界的大小关系，状态保存了所有后续所需信息。每位枚举所有合法比特组合，叶子只接受严格a<b，故所有且仅有可行数对被覆盖；取最大异或和得到最优，无接受路径则-1。\n\n## 复杂度\n\n时间O(2^6·4·log(max(hi,k)))，空间O(2^6·log(max(hi,k)))。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from functools import lru_cache\n    lo,hi,k=map(int,d)\n    @lru_cache(None)\n    def visit(bit,al,ah,bl,bh,less,tight):\n        if bit<0:return 0 if less else -1\n        l=(lo>>bit)&1;h=(hi>>bit)&1;limit=(k>>bit)&1;best=-1\n        for a in (0,1):\n            if al and a<l or ah and a>h:continue\n            for b in (0,1):\n                if bl and b<l or bh and b>h or not less and a>b:continue\n                z=a^b\n                if tight and z>limit:continue\n                rest=visit(bit-1,al and a==l,ah and a==h,bl and b==l,bh and b==h,less or a<b,tight and z==limit)\n                if rest>=0:best=max(best,(z<<bit)+rest)\n        return best\n    return str(visit(max(hi,k).bit_length()-1,True,True,True,True,False,True))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#49-max-xor",
+  "sourceContentHash": "f78ac9f02134127bb9bc616f6ab44d43feeb9a7f56a77020775ca6df915e17c5",
+  "author": "CSWork"
+}

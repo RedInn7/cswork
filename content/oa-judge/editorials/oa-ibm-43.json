@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-43",
+  "title": "恰好下降一个子串后的最小字符串",
+  "explanation": "## 思路\n\n跳过前导a，连续降低接下来的非a段；若全是a则只把最后一位改为z。\n\n## 正确性证明\n\n首次修改非a会降低该位，越早降低字典序越小；跨过a会使当前位增大，因此必须在下一个a前停下，在此前多降低每一位均更优。全a时所有修改都增大，选择最晚且只改一位达到最小。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(d[0]);i=0\n    while i<len(a) and a[i]=='a':i+=1\n    if i==len(a):a[-1]='z'\n    else:\n        while i<len(a) and a[i]!='a':a[i]=chr(ord(a[i])-1);i+=1\n    return ''.join(a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#43-get-smallest-string",
+  "sourceContentHash": "c9fe01ada7b1764cd80586505feb3c3a21f0e08b2ae7051194187e3311c8cf59",
+  "author": "CSWork"
+}

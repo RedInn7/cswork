@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-46",
+  "title": "避开禁点的最大最终下标",
+  "explanation": "## 思路\n\n全走的终点是三角数T；若某个正三角前缀为禁点，跳过第一步，答案T−1；否则为T。起点禁用单独返回-1。\n\n## 正确性证明\n\n不跳步的每一步位置都是三角数，若不碰禁点便达到所有步长之和上界。若碰禁点至少少走1，得到T−1上界；跳过第一步后各正步位置为三角数减1，相邻正三角数差至少2，绝不等于该正三角禁点，因此上界可达。\n\n## 复杂度\n\n时间O(steps)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,bad=map(int,d)\n    if bad==0:return '-1'\n    total=n*(n+1)//2;hit=any(j*(j+1)//2==bad for j in range(1,n+1))\n    return str(total-int(hit))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#46-max-index",
+  "sourceContentHash": "bf5e8a3fbbac8224273b97412bbb18fd3fedf0f013313f36dd5cd7bf0b75dd65",
+  "author": "CSWork"
+}
