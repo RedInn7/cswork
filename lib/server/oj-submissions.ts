@@ -111,6 +111,8 @@ export async function createSubmission(p: Person, value: unknown) {
     d.mode === 'run' ? 'oj-run' : 'oj-submit',
     d.mode === 'run' ? 12 : 6,
   );
+  // Reserve the writer before reading duplicate/queue state. A deferred WAL
+  // read transaction cannot safely upgrade while the judge is writing results.
   return db.transaction(() => {
     const duplicate = existing();
     if (duplicate) return { id: duplicate.id, status: duplicate.status };
@@ -163,7 +165,7 @@ export async function createSubmission(p: Person, value: unknown) {
       'INSERT INTO oj_outbox(submission_id,created_at) VALUES(?,?)',
     ).run(id, now);
     return { id, status: 'queued' };
-  })();
+  }).immediate();
 }
 export function submissionRow(id: string) {
   return sqlite().prepare('SELECT * FROM submissions WHERE id=?').get(id) as
