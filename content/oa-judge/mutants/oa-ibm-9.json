@@ -1,0 +1,10 @@
+[
+  {
+    "name": "删奇留偶",
+    "code": "def solve(d):\n    class Node:\n        def __init__(self,v=0):self.v=v;self.next=None\n    head=Node();tail=head\n    for v in map(int,d[1:]):tail.next=Node(v);tail=tail.next\n    prev=head\n    while prev.next:\n        if prev.next.v%2!=0:prev.next=prev.next.next\n        else:prev=prev.next\n    out=[];cur=head.next\n    while cur:out.append(cur.v);cur=cur.next\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "反转输出",
+    "code": "def solve(d):\n    class Node:\n        def __init__(self,v=0):self.v=v;self.next=None\n    head=Node();tail=head\n    for v in map(int,d[1:]):tail.next=Node(v);tail=tail.next\n    prev=head\n    while prev.next:\n        if prev.next.v%2==0:prev.next=prev.next.next\n        else:prev=prev.next\n    out=[];cur=head.next\n    while cur:out.append(cur.v);cur=cur.next\n    return str(len(out))+'\\n'+' '.join(map(str,reversed(out)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

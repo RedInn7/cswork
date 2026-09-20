@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-12",
+  "title": "均匀卡包需要补充的最少卡片",
+  "explanation": "## 思路\n\n按数量统计频次，枚举包数2至max(2,最大数量)，成本为Σ频次×((包数−数量%包数)%包数)。\n\n## 正确性证明\n\n固定包数时每类最少补至下个倍数，类之间独立。包数大于最大数量时成本至少n；包数2每类至多补1，总成本不超过n，故无需枚举更大包数。取最小即最优。\n\n## 复杂度\n\n时间O(n+500²)，空间O(500)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(map(int,d[1:]));return str(min(sum(count*((-v)%p) for v,count in counts.items()) for p in range(2,max(2,max(counts))+1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#12-card-packets",
+  "sourceContentHash": "574f791d59d6262663a7e0d8a56bdf7b04e3b43a7c9e53f17b390d1c59ca3626",
+  "author": "CSWork"
+}

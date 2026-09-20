@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只计恰好人数",
+    "code": "def solve(d):\n    n,minimum,lo,hi=map(int,d[:4]);m=sum(lo<=int(v)<=hi for v in d[4:]);choose=1;answer=0\n    for k in range(m+1):\n        if k==minimum:answer+=choose\n        if k<m:choose=choose*(m-k)//(k+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "擅自取模",
+    "code": "def solve(d):\n    n,minimum,lo,hi=map(int,d[:4]);m=sum(lo<=int(v)<=hi for v in d[4:]);choose=1;answer=0\n    for k in range(m+1):\n        if k>=minimum:answer+=choose\n        if k<m:choose=choose*(m-k)//(k+1)\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

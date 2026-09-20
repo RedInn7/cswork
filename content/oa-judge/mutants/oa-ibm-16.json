@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按完整单词比较",
+    "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);freq={};answer=0\n    for s in lines[1:n+1]:\n        mask=s\n        answer+=freq.get(mask,0);freq[mask]=freq.get(mask,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "有序对重复计数",
+    "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);freq={};answer=0\n    for s in lines[1:n+1]:\n        mask=0\n        for c in s:mask|=1<<(ord(c)-97)\n        answer+=freq.get(mask,0);freq[mask]=freq.get(mask,0)+1\n    return str(answer*2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

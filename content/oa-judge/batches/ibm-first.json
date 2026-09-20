@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ibm-1",
+      "sourceContentHash": "ec6452a87a37d14c83ac87f231633982364f87d73d4af108da9beb82579319f4",
+      "packageChecksum": "333bb2c7aba9393980d1c712eefae0237554c6616a8289ef534cff4753f899f8",
+      "editorial": "## 思路\n\n每个不同顶点对对应一条独立可选边，快速幂计算2的n(n−1)/2次方。\n\n## 正确性证明\n\n共有n(n−1)/2个顶点对，每对选有边或无边，所有选择与图一一对应，乘法原理得结论。\n\n## 复杂度\n\n时间O(log n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);return str(pow(2,n*(n-1)//2,1000000007))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-3",
+      "sourceContentHash": "36512c6e4ad7b1f39b84e2b4691bb24141302b4d7b50961428db16d58cdecd90",
+      "packageChecksum": "23a8cc76d76c3fd600c3003ff36e2821dbf3dbae5fc4335f38228fe0535018e5",
+      "editorial": "## 思路\n\n排序后累计相邻差≤1的整段长度，遇更大间隙重新开始。\n\n## 正确性证明\n\n跨越大于1的缺失技能间隙无法形成合法团队；同一无间隙段中的所有人同时选入仍合法，且删去任何人都不能增加人数。因此最长整段最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=sorted(map(int,d[1:]));best=run=1\n    for i in range(1,len(a)):\n        run=run+1 if a[i]-a[i-1]<=1 else 1;best=max(best,run)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-4",
+      "sourceContentHash": "a0cde7de4a581fb1e07a169f19ce794c03b0d85742270daa9ae265f64479697d",
+      "packageChecksum": "cdbc8ec0ab4447bc0c1a1e90036d834f1f80621145809098ae8370ba89adebce",
+      "editorial": "## 思路\n\n分别取奇数、偶数的原序子序列，每步取两队首中较小者。\n\n## 正确性证明\n\n同奇偶相对顺序无法变化，任意两子序列的交错都可通过合法交换实现。两队首奇偶不同故不相等，选择较小头使当前首个差异最小，归纳得到全局字典序最小。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));odd=[v for v in a if v%2];even=[v for v in a if not v%2];i=j=0;out=[]\n    while i<len(odd) and j<len(even):\n        if odd[i]<even[j]:out.append(odd[i]);i+=1\n        else:out.append(even[j]);j+=1\n    out+=odd[i:]+even[j:];return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-5",
+      "sourceContentHash": "1618df155b8337cc2ab7a761595accaf4779f214f641c7393801762943db9532",
+      "packageChecksum": "4ef2931231ca48db336b173c1464e95e2be6571928e30280625cd78fc06a8ccf",
+      "editorial": "## 思路\n\n按下标遍历较长长度，依次检查并追加两串对应字符。\n\n## 正确性证明\n\n每轮恰好追加尚未处理的下一字符，先a后b，缺项跳过；因此既保持各自顺序，又满足交错和余段规则。\n\n## 复杂度\n\n时间O(|a|+|b|)，输出空间O(|a|+|b|)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a,b=d.split('\\n')[:2];out=[]\n    for i in range(max(len(a),len(b))):\n        if i<len(a):out.append(a[i])\n        if i<len(b):out.append(b[i])\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-6",
+      "sourceContentHash": "c6c37a9fdf5808bb1260cef3db54c208aa1e719c49080a4b85364d6110750c87",
+      "packageChecksum": "3167f8dd5890459bc7f3234ad12db6a65220f95399b7a76693ff4fed61f462eb",
+      "editorial": "## 思路\n\n双指针每次输出两个未处理头部较小值，某数组用完后追加另一数组。\n\n## 正确性证明\n\n每个未处理数组的头部是该数组最小剩余值，两头较小者就是全部剩余元素最小值；逐项取出不遗漏重复值，归纳得排序合并。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]<=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    out+=a[i:]+b[j:];return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-7",
+      "sourceContentHash": "abbfb22e6bc900d5b372d3a18361bb9c2aae98d57a4603916ca9fda48f7a5489",
+      "packageChecksum": "d9ee3b087b156cf5cc8ff2e3cf42e2ba3eaab2319e4cd6620291e3648f284ba9",
+      "editorial": "## 思路\n\n给每串标0/1并建前缀和，查询区间做差。\n\n## 正确性证明\n\n单串标记与定义等价，前缀计数减去l之前的计数，恰好留下闭区间内符合项。\n\n## 复杂度\n\n时间O(总输入字符+q)，空间O(n+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);pre=[0]\n    for s in d[2:2+n]:pre.append(pre[-1]+(s[0] in 'aeiou' and s[-1] in 'aeiou'))\n    out=[]\n    for token in d[2+n:]:\n        l,h=map(int,token.split('-'));out.append(pre[h]-pre[l-1])\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-8",
+      "sourceContentHash": "5dbc7a9883cb70ee7e17030b428bbbe4cfcbe7e80472e95af504d7a72dab099a",
+      "packageChecksum": "c9fe0979e95466389f5ee139bbfa16e71a4c7210932ce2f96e683cffa4159f6d",
+      "editorial": "## 思路\n\n按用户和时间排序，数用户变化或相邻间隔大于t的位置。\n\n## 正确性证明\n\n同用户排序后，间隔大于t将会话分断，其余相邻事件连接成恰好的极大连续段，每段首事件贡献1；不同用户首事件分别计数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,t=map(int,d[:2]);events=sorted((d[i],int(d[i+1])) for i in range(2,len(d),2));last=None;answer=0\n    for u,time in events:\n        if last is None or u!=last[0] or time-last[1]>t:answer+=1\n        last=(u,time)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-9",
+      "sourceContentHash": "15b6bd93e8b800db529a76dd9f347927aa0374da3b4fc185f09d8af0e99749bf",
+      "packageChecksum": "13fb0ca935c69fcb32207308dd8bbbc39a58092bc5463174d31cb54cd6775ca2",
+      "editorial": "## 思路\n\n用哨兵节点和前驱指针，遇偶节点接到其后继，遇奇节点前移。\n\n## 正确性证明\n\n前驱之前保留的节点都为奇数且顺序不变。每次仅跳过一个不应保留的偶节点或确认一个奇节点，不遗漏任何节点，结束时恰为目标链表。\n\n## 复杂度\n\n时间O(n)，构建输入链表空间O(n)，删除过程额外O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    class Node:\n        def __init__(self,v=0):self.v=v;self.next=None\n    head=Node();tail=head\n    for v in map(int,d[1:]):tail.next=Node(v);tail=tail.next\n    prev=head\n    while prev.next:\n        if prev.next.v%2==0:prev.next=prev.next.next\n        else:prev=prev.next\n    out=[];cur=head.next\n    while cur:out.append(cur.v);cur=cur.next\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-10",
+      "sourceContentHash": "405def324f333e4106268162c9da252dc68c1cb1e79728a3d4ad9a5527438de2",
+      "packageChecksum": "3767323a524decf7aa631fd3ddcde36d350b82fe077b46f1b322df469058fc21",
+      "editorial": "## 思路\n\n解析数字为精确Decimal，逐个比较键并集；递归保持类型、数组顺序及对象键集合，最后排序差异键。\n\n## 正确性证明\n\n递归在叶上按值及类型判断，在数组上对应所有下标，在对象上对应全部键，因此结构相等判定精确。顶层并集中的每个键在且仅在缺失或值不等时加入，排序得到指定唯一顺序。\n\n## 复杂度\n\n时间O(输入长度+K log K·最大键长)，空间O(输入长度)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    import json\n    from decimal import Decimal\n    a,b=[json.loads(line,parse_int=Decimal,parse_float=Decimal) for line in d.split('\\n')[:2]]\n    def equal(x,y):\n        if type(x) is not type(y):return False\n        if isinstance(x,dict):return x.keys()==y.keys() and all(equal(x[k],y[k]) for k in x)\n        if isinstance(x,list):return len(x)==len(y) and all(equal(u,v) for u,v in zip(x,y))\n        return x==y\n    keys=[]\n    for k in a.keys()|b.keys():\n        if k not in a or k not in b or not equal(a[k],b[k]):keys.append(k)\n    return json.dumps(sorted(keys),ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-11",
+      "sourceContentHash": "911bb8226590508b9e2aab99fd362ee781bda48353cfb5e7ac5a302fc1798c84",
+      "packageChecksum": "ab0772de801c00b5a27215691e2633a67c5ea28d7e2bb7d1c4f4333f20c7d788",
+      "editorial": "## 思路\n\n用(时间,键)二元组建立哈希表，查询直接取值。\n\n## 正确性证明\n\n给定二元组唯一识别缓存记录，哈希表保存每个合法二元组对应原字符串；查询存在的保证使每次读取恰为指定数据。\n\n## 复杂度\n\n期望时间O(输入字符数)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,q=map(int,d[:2]);table={};pos=2\n    for _ in range(n):\n        t,k,v=d[pos:pos+3];pos+=3;table[(t,k)]=v\n    out=[]\n    for _ in range(q):\n        k,t=d[pos:pos+2];pos+=2;out.append(table[(t,k)])\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-12",
+      "sourceContentHash": "574f791d59d6262663a7e0d8a56bdf7b04e3b43a7c9e53f17b390d1c59ca3626",
+      "packageChecksum": "58f4b64ae0c9c0a56966334fef7dd90f4e6e073697273a2141861e9d187daa7c",
+      "editorial": "## 思路\n\n按数量统计频次，枚举包数2至max(2,最大数量)，成本为Σ频次×((包数−数量%包数)%包数)。\n\n## 正确性证明\n\n固定包数时每类最少补至下个倍数，类之间独立。包数大于最大数量时成本至少n；包数2每类至多补1，总成本不超过n，故无需枚举更大包数。取最小即最优。\n\n## 复杂度\n\n时间O(n+500²)，空间O(500)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(map(int,d[1:]));return str(min(sum(count*((-v)%p) for v,count in counts.items()) for p in range(2,max(2,max(counts))+1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-13",
+      "sourceContentHash": "5401a923da1dd73ffbd7d9416ac6ae25fe121e45d015f6723312bda02be7ffa0",
+      "packageChecksum": "0d9d91c6837ce94601fd4ea3d651fea4c02148a3a5f08fd341f0f82952937ed1",
+      "editorial": "## 思路\n\n先判圆心相等；否则比较圆心距离平方与半径和平方、半径差平方。\n\n## 正确性证明\n\n圆周相交的距离条件为|R−r|≤d≤R+r，两端等号恰为相切，中间为两交点；超出范围分别外离或内含。平方对非负数保持大小，同心单独处理避免重合和退化混淆。\n\n## 复杂度\n\n时间O(n)，空间O(n)保存输出。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    out=[]\n    for i in range(1,len(d),6):\n        x,y,r,a,b,s=map(int,d[i:i+6]);v=(x-a)**2+(y-b)**2\n        if v==0:out.append('Concentric')\n        elif v==(r+s)**2 or v==(r-s)**2:out.append('Touching')\n        elif v>(r+s)**2:out.append('Disjoint-Outside')\n        elif v<(r-s)**2:out.append('Disjoint-Inside')\n        else:out.append('Intersecting')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-14",
+      "sourceContentHash": "12e2b5b2b5a1e9f1d1a94c9f2c14c37e700d3901cb5c047ff94e9576987483fe",
+      "packageChecksum": "39f63bcad2a55784933b05e4b56455c4dda15059f74cc6a17bf730dad9a90985",
+      "editorial": "## 思路\n\n维护以当前位置结束的连续下降段长L，新增L−1个合法子数组。\n\n## 正确性证明\n\n结束于当前位置的合法起点恰为本下降段中当前项之前的位置，共L−1个；不同右端点的区间不重复，累加覆盖全部答案。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));run=1;answer=0\n    for i in range(1,len(a)):\n        run=run+1 if a[i]==a[i-1]-1 else 1;answer+=run-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-15",
+      "sourceContentHash": "e45d8da57ee0ef831071e0be0a50c975e4a9691d49e9c1bc60ef8abbb7fa4c4b",
+      "packageChecksum": "5a7dc64dfd57b3ec1ae90c4cab6cd6d7c09753dabb0ad0f75e6c3fc5d516ee88",
+      "editorial": "## 思路\n\n逐层生成不超过high的3的幂与乘5后的值，统计不小于low的值；乘前用除法检查上界。\n\n## 正确性证明\n\n质因数分解唯一，不同指数对给不同值。循环覆盖所有满足上界的指数组合，没有遗漏和重复，随后下界筛选恰为区间答案。\n\n## 复杂度\n\n时间O(log high·log high)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    lo,hi=map(int,d);answer=0;a=1\n    while a<=hi:\n        v=a\n        while v<=hi:\n            if v>=lo:answer+=1\n            if v>hi//5:break\n            v*=5\n        if a>hi//3:break\n        a*=3\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-16",
+      "sourceContentHash": "354e1e634f1d58c2d7f7a41441f400d1095f55bb05a96e68603d30a62b4e3728",
+      "packageChecksum": "7dfe0fda3a068b4f85853367db433d85f95631baee3cbbf96382c3aa924a22e9",
+      "editorial": "## 思路\n\n用26位掩码表示字母集合，逐串累加此前同掩码个数。\n\n## 正确性证明\n\n每位精确记录该字母是否出现，掩码相等当且仅当集合相同；每个下标对在后出现者被扫描时计数一次。\n\n## 复杂度\n\n时间O(总长度+n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);freq={};answer=0\n    for s in lines[1:n+1]:\n        mask=0\n        for c in s:mask|=1<<(ord(c)-97)\n        answer+=freq.get(mask,0);freq[mask]=freq.get(mask,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-17",
+      "sourceContentHash": "ddb04649d6e9821fc9fafa6da027da69c2bec65f2a42afb42c41378db4d60bf1",
+      "packageChecksum": "c06537874b9ebb3e8f4d8102ba6063ad7786092f04715f972b44c55481352989",
+      "editorial": "## 思路\n\n先数合格人数m，再递推组合数C(m,k)，累加k≥minPlayers。采用任意精度整数。\n\n## 正确性证明\n\n有效团队完全是合格下标的子集，大小k有C(m,k)种，不同大小互斥；组合数递推保持精确整除，和即答案。\n\n## 复杂度\n\nO(n+m)次整数运算，整数最多O(m)位；空间O(m)位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,minimum,lo,hi=map(int,d[:4]);m=sum(lo<=int(v)<=hi for v in d[4:]);choose=1;answer=0\n    for k in range(m+1):\n        if k>=minimum:answer+=choose\n        if k<m:choose=choose*(m-k)//(k+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-18",
+      "sourceContentHash": "808fbd135e43431e7fbd881a3bae850278389bdaab7b1985347b528c919e7d7d",
+      "packageChecksum": "c5520be07f82c824d471f977b29866fc60e2d4177029c4fbfa46e63a6c615e6f",
+      "editorial": "## 思路\n\n每个字母至少留一个，频次f需删f−1个，一次最多删2个；选中间出现即可连续两侧删，因此贡献floor(f/2)。\n\n## 正确性证明\n\n任何操作不影响其他字母且保留选中字母，最短串每字母一个。至少ceil((f−1)/2)步；f≥3时选择非两端出现删2个，剩2时删1个，可达到该下界，各字母相加。\n\n## 复杂度\n\n时间O(n)，空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import Counter\n    return str(sum(f//2 for f in Counter(d[0]).values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-19",
+      "sourceContentHash": "9b6fbec30f8669c111fd6637ba8a6a4a58c3957b6a47f7eeece291e9af318c1b",
+      "packageChecksum": "a8db6b78656358d61b98dca8193ab51820b7dcbea9f81af5709a5995032c3c31",
+      "editorial": "## 思路\n\n排序按相同人数v分组，候选为本组人数频次加min(k,严格更大的队伍数)。\n\n## 正确性证明\n\n固定目标v，小于v者无法加入，本来等于v者免费加入，大于v者每个花一次修改。若最优目标不是现有值，提高到最小已入选原人数不会减少可加入者且可省修改，故仅需枚举现有v。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));i=0;answer=0\n    while i<n:\n        j=i+1\n        while j<n and a[j]==a[i]:j+=1\n        answer=max(answer,j-i+min(k,n-j));i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-20",
+      "sourceContentHash": "2d1697ba86ab45ca89e89c5896f9b0d2c4f00acd1af9fdaeacb2c36824e4434e",
+      "packageChecksum": "0b3f0da8bc0384380a17f077f7b39074a8d39ebbd75a3e9ad83959bf1e1f30c5",
+      "editorial": "## 思路\n\n把课表按连续同科目分段。F(s,k)表示s分为k个1..N的正整数，容斥求F；交替段的两科段数相等或相差1，据此求和。\n\n## 正确性证明\n\n减去每段必有的一课后，用隔板计数并容斥排除长度超过N的段，得到F(s,k)=Σ(−1)^j C(k,j)C(s−jN−1,k−1)。相同段数k有两种开头，贡献2F(P,k)F(C,k)；相差1分别贡献F(P,k+1)F(C,k)和F(P,k)F(C,k+1)。任何课表唯一对应这些最大连续段，不重不漏。\n\n## 复杂度\n\n预处理O(2000)，单组最坏O((P²+C²)/N+P+C)，N=1/2有直接公式；相同(s,N)缓存。空间O(2000+缓存大小)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    mod=1000000007;fact=[1]*2001\n    for i in range(1,2001):fact[i]=fact[i-1]*i%mod\n    inv=[1]*2001;inv[-1]=pow(fact[-1],mod-2,mod)\n    for i in range(2000,0,-1):inv[i-1]=inv[i]*i%mod\n    def choose(a,b):return fact[a]*inv[b]%mod*inv[a-b]%mod if 0<=b<=a else 0\n    def parts(s,n):\n        out=[0]*(s+2)\n        for k in range((s+n-1)//n,s+1):\n            if n==1:out[k]=1\n            elif n==2:out[k]=choose(k,s-k)\n            else:\n                value=0\n                for j in range((s-k)//n+1):\n                    term=choose(k,j)*choose(s-j*n-1,k-1)%mod\n                    value+=term if j%2==0 else -term\n                out[k]=value%mod\n        return out\n    cache={};answers=[]\n    for i in range(1,len(d),3):\n        p,c,n=map(int,d[i:i+3])\n        if p>n*(c+1) or c>n*(p+1):answers.append(0);continue\n        if n>=max(p,c):answers.append(choose(p+c,p));continue\n        for s in (p,c):\n            if (s,n) not in cache:cache[(s,n)]=parts(s,n)\n        a=cache[p,n];b=cache[c,n];answer=0\n        for k in range(1,min(p,c)+1):answer=(answer+2*a[k]*b[k]+a[k+1]*b[k]+a[k]*b[k+1])%mod\n        answers.append(answer)\n    return '\\n'.join(map(str,answers))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

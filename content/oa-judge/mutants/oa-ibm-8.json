@@ -1,0 +1,10 @@
+[
+  {
+    "name": "等号也超时",
+    "code": "def solve(d):\n    n,t=map(int,d[:2]);events=sorted((d[i],int(d[i+1])) for i in range(2,len(d),2));last=None;answer=0\n    for u,time in events:\n        if last is None or u!=last[0] or time-last[1]>=t:answer+=1\n        last=(u,time)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略用户",
+    "code": "def solve(d):\n    n,t=map(int,d[:2]);events=sorted((d[i],int(d[i+1])) for i in range(2,len(d),2));last=None;answer=0\n    for u,time in events:\n        if last is None or time-last[1]>t:answer+=1\n        last=(u,time)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

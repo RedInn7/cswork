@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-19",
+  "title": "最多修改k队后的等规模队伍数",
+  "explanation": "## 思路\n\n排序按相同人数v分组，候选为本组人数频次加min(k,严格更大的队伍数)。\n\n## 正确性证明\n\n固定目标v，小于v者无法加入，本来等于v者免费加入，大于v者每个花一次修改。若最优目标不是现有值，提高到最小已入选原人数不会减少可加入者且可省修改，故仅需枚举现有v。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));i=0;answer=0\n    while i<n:\n        j=i+1\n        while j<n and a[j]==a[i]:j+=1\n        answer=max(answer,j-i+min(k,n-j));i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#19-equalize-team-size",
+  "sourceContentHash": "9b6fbec30f8669c111fd6637ba8a6a4a58c3957b6a47f7eeece291e9af318c1b",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-20",
+  "title": "限制连续课时的课程排列数",
+  "explanation": "## 思路\n\n把课表按连续同科目分段。F(s,k)表示s分为k个1..N的正整数，容斥求F；交替段的两科段数相等或相差1，据此求和。\n\n## 正确性证明\n\n减去每段必有的一课后，用隔板计数并容斥排除长度超过N的段，得到F(s,k)=Σ(−1)^j C(k,j)C(s−jN−1,k−1)。相同段数k有两种开头，贡献2F(P,k)F(C,k)；相差1分别贡献F(P,k+1)F(C,k)和F(P,k)F(C,k+1)。任何课表唯一对应这些最大连续段，不重不漏。\n\n## 复杂度\n\n预处理O(2000)，单组最坏O((P²+C²)/N+P+C)，N=1/2有直接公式；相同(s,N)缓存。空间O(2000+缓存大小)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    mod=1000000007;fact=[1]*2001\n    for i in range(1,2001):fact[i]=fact[i-1]*i%mod\n    inv=[1]*2001;inv[-1]=pow(fact[-1],mod-2,mod)\n    for i in range(2000,0,-1):inv[i-1]=inv[i]*i%mod\n    def choose(a,b):return fact[a]*inv[b]%mod*inv[a-b]%mod if 0<=b<=a else 0\n    def parts(s,n):\n        out=[0]*(s+2)\n        for k in range((s+n-1)//n,s+1):\n            if n==1:out[k]=1\n            elif n==2:out[k]=choose(k,s-k)\n            else:\n                value=0\n                for j in range((s-k)//n+1):\n                    term=choose(k,j)*choose(s-j*n-1,k-1)%mod\n                    value+=term if j%2==0 else -term\n                out[k]=value%mod\n        return out\n    cache={};answers=[]\n    for i in range(1,len(d),3):\n        p,c,n=map(int,d[i:i+3])\n        if p>n*(c+1) or c>n*(p+1):answers.append(0);continue\n        if n>=max(p,c):answers.append(choose(p+c,p));continue\n        for s in (p,c):\n            if (s,n) not in cache:cache[(s,n)]=parts(s,n)\n        a=cache[p,n];b=cache[c,n];answer=0\n        for k in range(1,min(p,c)+1):answer=(answer+2*a[k]*b[k]+a[k+1]*b[k]+a[k]*b[k+1])%mod\n        answers.append(answer)\n    return '\\n'.join(map(str,answers))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#20-find-arrangements",
+  "sourceContentHash": "2d1697ba86ab45ca89e89c5896f9b0d2c4f00acd1af9fdaeacb2c36824e4434e",
+  "author": "CSWork"
+}

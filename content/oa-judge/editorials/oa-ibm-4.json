@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-4",
+  "title": "异奇偶相邻交换后的最小优先级序列",
+  "explanation": "## 思路\n\n分别取奇数、偶数的原序子序列，每步取两队首中较小者。\n\n## 正确性证明\n\n同奇偶相对顺序无法变化，任意两子序列的交错都可通过合法交换实现。两队首奇偶不同故不相等，选择较小头使当前首个差异最小，归纳得到全局字典序最小。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));odd=[v for v in a if v%2];even=[v for v in a if not v%2];i=j=0;out=[]\n    while i<len(odd) and j<len(even):\n        if odd[i]<even[j]:out.append(odd[i]);i+=1\n        else:out.append(even[j]);j+=1\n    out+=odd[i:]+even[j:];return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#4-optimal-priority-lexicographic-sort-with-parity-swap",
+  "sourceContentHash": "a0cde7de4a581fb1e07a169f19ce794c03b0d85742270daa9ae265f64479697d",
+  "author": "CSWork"
+}
