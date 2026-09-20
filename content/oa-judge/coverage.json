@@ -4,10 +4,10 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 436,
+    "sandbox_verified": 471,
     "awaiting_sandbox": 0,
-    "blocked": 98,
-    "unreviewed": 1100
+    "blocked": 103,
+    "unreviewed": 1060
   },
   "items": [
     {
@@ -2217,102 +2217,141 @@
     {
       "id": "oa-amazon-216",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "每步可按原价买剩余最左一本、最右一本，或按pairCost合购两端不同的两本。合购最多k次，求买完所有书的最低费用。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-217",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "将每个!独立替换为0或1。每个下标i<j形成的01贡献x、10贡献y；不是只统计相邻字符。最小化完整代价后对1000000007取模。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-218",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "数组长度为偶数。一次任选0≤L≤R<n，计算操作前区间全部元素的异或x，再把区间每个元素同时设为x。求归零的最少操作次数。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-219",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "不同重量的块按数组排列，一次只能交换相邻两块。要求最轻在第一个、最重在最后一个，中间不要求有序，求最少次数。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-220",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "灯泡最初全部亮，从左到右检查：前面仍亮灯泡的亮度和严格大于本灯亮度时，本灯关闭。可任意排列，求最少关闭数。即使按前面全部灯的初始亮度解释，最优答案也相同：被弃灯全放末尾即可。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-221",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "每步只能将任意一个非空前缀全部+1，或任意一个非空后缀全部+1。将source变成target，输出最少次数，无法完成输出−1。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-222",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "删除若干商品，使剩余不同类别数量至多k，求最少删除商品数。同类别商品的不同件均计数。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-223",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始e66f809的amazon-get-min-time-two.md未定义minGap为开始时间差还是中间空闲冷却长度，且无样例。aa,gap=1分别可得2或3；来源解法不足以确定核心规则，保留阻塞。"
     },
     {
       "id": "oa-amazon-224",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "服务器1..total形成单位边环。选择任意起点，用一条连续串行路线走访全部目标服务器，每过一条边耗时1，不是同时向两边广播。目标互异。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-225",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "每件商品的尺寸只能增加，每增加1单位的费用为该商品cost。最后所有商品尺寸必须互异，求最小总费用，不得删除商品。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-226",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "卸下若干箱子，必须保留至少一个，保留尺寸满足max≤capacity*min。求最少卸载数量。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-227",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "可把任意元素修改为正整数，每个改变的位置计一次。要求所有长度k连续子数组的和相同，求最少修改数。原元素允许非正数；未修改的位置不需要变为正数。k≥n时无需修改。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-228",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "卡车必须按输入顺序开始卸货，空闲泊位立即接下一辆；同时开始时按输入顺序分配。所有卡车在T时间内完成，求最少泊位数，不可重排卡车。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-229",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "每类有items[i]件可独立分配的包裹。每车最多C件，每车同一类最多L件。所有包裹均运输，求最少车辆；并非一类必须整批同车。全无包裹需0辆。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-230",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "第i天选择编号1..n的中心。需求比前一天高则编号严格更高，需求低则严格更低，需求相等必须使用相同中心。最小化全部天使用的不同中心数量。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-231",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "一次选择非空前缀，对该前缀所有元素同时+1或−1，求数组全部归零的最少操作数。不是后缀操作。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-232",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "依次通过每关，扣除power[i]血量，任意时刻血量必须严格大于0。可在至多一关用护甲抵消min(armor,power[i])伤害，求最小初始血量。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-233",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "输出1..n的一个排列p，最大化sum(i*data[p[i]])，这里i和p均按1基解释；若多个排列并列，取字典序最小者。原文公式下标0..n为笔误，权重改成0..n−1也只差固定总和，不影响最优排列。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-234",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "每件包裹选择编号1..5的邮票。相邻价格上升要求邮票严格上升，价格下降要求邮票严格下降，价格相等要求邮票编号不同。统计方案数对1000000007取模，无方案输出0。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-235",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-k",
+      "reason": "选择两个不同员工，下标不同即不同人，即使技能相同。统计技能和在[minSkill,maxSkill]闭区间内的无序员工对数。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。"
     },
     {
       "id": "oa-amazon-236",
@@ -3865,102 +3904,138 @@
     {
       "id": "oa-snowflake-1",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "把整条数字串按原顺序分成若干质数，每段没有前导零，质数在2..10⁶内；求方案数模10⁹+7。原快照恢复上界10⁶，非catalog误写的10⁸。"
     },
     {
       "id": "oa-snowflake-2",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "候选文本子串与给定prefix/suffix如何评分不充分，不能据样例猜定义。"
     },
     {
       "id": "oa-snowflake-3",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "每步选非空真后缀移到字符串最前，恰好k步变成目标；不同切点序列分别计数，即使字符串周期相同。答案模10⁹+7。"
     },
     {
       "id": "oa-snowflake-4",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "每天选择一块吃掉floor(w/2)，剩余ceil(w/2)，可以重复选同一块。求d天后最小总重量。"
     },
     {
       "id": "oa-snowflake-5",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "统计所有只含aeiou且五种元音均出现至少一次的连续子串，输出精确整数。"
     },
     {
       "id": "oa-snowflake-6",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始n≤100000不能降至2000；现有来源O(n²)背包无法覆盖完整约束，等待精确可扩展算法。"
     },
     {
       "id": "oa-snowflake-7",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "偶数n间房排成一排，从固定三种颜色中涂色，相邻以及距离两端相同的两间房必须不同色。原始快照明确为不同色，catalog相同色是错误。答案模10⁹+7。"
     },
     {
       "id": "oa-snowflake-8",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "长度n的小写英文串中连续元音最多k个，元音aeiou共5种，辅音21种。计数模10⁹+7。"
     },
     {
       "id": "oa-snowflake-9",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "用0..day_hours替换七位模式中的问号，使一周总工时恰为work_hours。固定数字不变，返回全部方案，字典序升序。保证至少一个合法方案。"
     },
     {
       "id": "oa-snowflake-10",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "每轮从剩余列表前k和后k人的并集中选最高分者，同分选最小下标，删除后继续直到选够t人。求分数和。原标题的轮流两端不符正文，以正文为准。"
     },
     {
       "id": "oa-snowflake-11",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "通话结束时刻与下一通开始相等是否冲突未明确，影响最优值。"
     },
     {
       "id": "oa-snowflake-12",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "从技能数组中选择子序列，相邻元素值不同的次数最多k，求最大长度，不要求连续。"
     },
     {
       "id": "oa-snowflake-13",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "每个粒子最终能量max(energy−barrier,0)，求使总能量≥th的最大非负整数barrier。保证原总能量≥th。"
     },
     {
       "id": "oa-snowflake-14",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "网格空地*、墙#、起点S和终点E。每次向上下左右跳正整数距离，可跨墙但不能落墙。上次跳长>1则下一跳方向必须相同；跳长1后解除限制。必须最后一步长为1落在E才算到达。不能到达输出−1。"
     },
     {
       "id": "oa-snowflake-15",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "一次操作选一个未完成任务执行x秒，所有其他任务执行y秒，其中y<x；累计执行达到所需时间的任务退出。求全部完成最少操作次数。原始快照恢复y<x。"
     },
     {
       "id": "oa-snowflake-16",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "从等长单词集合取字符组成target，所取列下标严格递增，可以重复选同一单词。按所选列和所选单词区分方案，重复单词的不同条目仍是不同选择。答案模10⁹+7。"
     },
     {
       "id": "oa-snowflake-17",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原文两条件比较相同绝对差，却同时要求≤min和>max，互相矛盾，不能当恒0题发布。"
     },
     {
       "id": "oa-snowflake-18",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "给定闭整数区间，求最小整数集合，使每个区间至少包含集合内两个不同整数。原文允许单点区间却未定义无解输出；本站协议明确这种情况输出−1，未删减原合法输入范围。"
     },
     {
       "id": "oa-snowflake-19",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "反复选择非空前缀，把其MEX追加到结果后删除该前缀，直到数组为空。求字典序最大结果；一个数组是另一个数组的真前缀时，较长者更大。MEX是未出现的最小非负整数。"
     },
     {
       "id": "oa-snowflake-20",
       "company": "snowflake",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "snowflake-first",
+      "reason": "求不同点条目之间的最小平方欧氏距离；重合条目距离0。原题提到均匀随机生成，但正确性不能依赖随机性。保留10万点，不缩成2000。"
     },
     {
       "id": "oa-snowflake-21",
