@@ -200,13 +200,34 @@ ARRANGEMENTS='''def solve(d):
                     value+=term if j%2==0 else -term
                 out[k]=value%mod
         return out
-    cache={};answers=[]
-    for i in range(1,len(d),3):
-        p,c,n=map(int,d[i:i+3])
+    cases=[tuple(map(int,d[i:i+3])) for i in range(1,len(d),3)]
+    needs={};cache={};answers=[]
+    for p,c,n in cases:
+        if p>n*(c+1) or c>n*(p+1) or n>=max(p,c):continue
+        needs.setdefault(n,set()).update((p,c))
+    for n,totals in needs.items():
+        maximum=max(totals)
+        # Count both algorithms' work before choosing; shared DP handles many
+        # distinct totals with the same run limit without repeated binomial sums.
+        inclusion=sum((s-k)//n+1 for s in totals for k in range((s+n-1)//n,s+1))
+        cells=sum(min(maximum,n*k)-k+1 for k in range(1,maximum+1))
+        if n<=2 or 5*inclusion<cells:
+            for s in totals:cache[s,n]=parts(s,n)
+            continue
+        for s in totals:cache[s,n]=[0]*(s+2)
+        previous=[0]*(maximum+1);previous[0]=1
+        for k in range(1,maximum+1):
+            current=[0]*(maximum+1);window=0;upper=min(maximum,n*k)
+            for s in range(k,upper+1):
+                window+=previous[s-1]
+                if s>n:window-=previous[s-n-1]
+                window%=mod;current[s]=window
+            for s in totals:
+                if k<=s<=upper:cache[s,n][k]=current[s]
+            previous=current
+    for p,c,n in cases:
         if p>n*(c+1) or c>n*(p+1):answers.append(0);continue
         if n>=max(p,c):answers.append(choose(p+c,p));continue
-        for s in (p,c):
-            if (s,n) not in cache:cache[(s,n)]=parts(s,n)
         a=cache[p,n];b=cache[c,n];answer=0
         for k in range(1,min(p,c)+1):answer=(answer+2*a[k]*b[k]+a[k+1]*b[k]+a[k]*b[k+1])%mod
         answers.append(answer)
@@ -214,6 +235,9 @@ ARRANGEMENTS='''def solve(d):
 '''
 add(20,'限制连续课时的课程排列数','安排恰好P节物理和C节化学，相同科目不能连续超过N节，求不同科目序列数模1000000007。每行独立测试，不给相同科目课时单独身份。','第一行T，随后T行P C N。完整来源范围1≤T≤100，1≤P,C,N≤1000。','把课表按连续同科目分段。F(s,k)表示s分为k个1..N的正整数，容斥求F；交替段的两科段数相等或相差1，据此求和。','减去每段必有的一课后，用隔板计数并容斥排除长度超过N的段，得到F(s,k)=Σ(−1)^j C(k,j)C(s−jN−1,k−1)。相同段数k有两种开头，贡献2F(P,k)F(C,k)；相差1分别贡献F(P,k+1)F(C,k)和F(P,k)F(C,k+1)。任何课表唯一对应这些最大连续段，不重不漏。','预处理O(2000)，单组最坏O((P²+C²)/N+P+C)，N=1/2有直接公式；相同(s,N)缓存。空间O(2000+缓存大小)。',[[(1,1,2)],[(1,2,1)],[(3,1,1),(2,2,1)]],'分别2、1；0 2。',lambda r:[(r.randint(1,7),r.randint(1,7),r.randint(1,7)) for _ in range(r.randint(1,4))],[],lambda rows:str(len(rows))+'\n'+''.join(seq(row)+'\n' for row in rows),arrangements_oracle,ARRANGEMENTS,[('只保留一种开头','2*a[k]*b[k]','a[k]*b[k]'),('遗漏段数差一','+a[k+1]*b[k]+a[k]*b[k+1]','')],1520,time=10)
 arr_spec=SPECS[-1]
+arr_spec['idea']='按连续同科目段计数，F(s,k)表示s分成k个1..N的正整数。将全部测试按N分组，根据预计运算量，在容斥公式和共享滑窗DP之间选择；相同N的所有s共用DP过程，不逐组重复计算。最后组合两科段数相等或差1的情况。'
+arr_spec['proof']+=' 共享DP使用F(s,k)=Σ_{v=1..N}F(s−v,k−1)，按最后一段长度分类不重不漏，初始F(0,0)=1。固定k时前后两个和式仅多一项、少一项，滑动和得到完全相同的F。两条计算路径只改变计算顺序，选择哪条不影响计数。'
+arr_spec['cost']='设同N组需计算的总课时集合为S，M=max(S)，R=|S|。容斥成本A=Σ_{s∈S}Σ_{k=ceil(s/N)..s}(floor((s−k)/N)+1)，共享DP成本B=Σ_{k=1..M}(min(M,Nk)−k+1)+RM，按估计选路径；N=1/2直接公式。每组最多O(M²+RM)，结果组合O(Σmin(P,C))；存储O(2000+Σ已请求s)，没有逐测试重复构造二维表。'
 arr_spec['output']='按输入顺序输出T个整数，每组结果一行，均对1000000007取模。'
 arr_rows=[(p,p-100,3) for p in range(901,1001)];arr_dp=arrange_large_dp(1000,1000,3,[(p,c) for p,c,_ in arr_rows])
 arr_spec['edges']=[(arr_rows,seq(arr_dp[p,c] for p,c,_ in arr_rows)),([(1000,1000,1000)]*100,seq([comb(2000,1000)%MOD]*100)),([(1000,1000,1)]*100,seq([2]*100)),([(1000,1000,2)]*100,seq([arrange_large_dp(1000,1000,2)[1000]]*100))]
