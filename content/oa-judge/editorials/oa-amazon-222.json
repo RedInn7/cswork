@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-222",
+  "title": "删除商品使类别至多k种",
+  "explanation": "## 思路\n\n类别频率降序，保留最多的k类，其余全部删除。\n\n## 正确性证明\n\n固定保留类别集合，保留这些类别全部商品永远不劣。若保留了更低频类别而舍弃更高频类别，交换能增加保留数量，所以最优是频率最高至多k类。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);freq=sorted(Counter(d[2:]).values(),reverse=True);return str(n-sum(freq[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#222-get-minimum-removal",
+  "sourceContentHash": "71a4c78b6c02ef2c259e0f3737cd0946146bc21c2f3d9354a5108fabd7fe86bf",
+  "author": "CSWork"
+}

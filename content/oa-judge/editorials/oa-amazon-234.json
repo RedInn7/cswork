@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-234",
+  "title": "五种邮票的完美包装方案数",
+  "explanation": "## 思路\n\n五状态DP记录最后邮票编号，按相邻价格关系从符合严格比较或不等条件的旧编号转移。\n\n## 正确性证明\n\n单件每种邮票有一种方案。每个更长合法方案唯一分为前缀方案和末邮票，转移条件恰好检查新相邻关系，既不漏计也不重复。逐项归纳后求末状态和就是全部方案。\n\n## 复杂度\n\n时间O(25n)，辅助空间O(5)不含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));dp=[1]*5;mod=1000000007\n    for x,y in zip(a,a[1:]):\n        nxt=[0]*5\n        for j in range(5):\n            for i in range(5):\n                if (j>i if y>x else j<i if y<x else j!=i):nxt[j]=(nxt[j]+dp[i])%mod\n        dp=nxt\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#234-get-number-of-perfect-packaging",
+  "sourceContentHash": "c5f6c005a42832cddf0f15b17d5bf210a457ea922c0daec079fbb5119edc811b",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-224",
+  "title": "环形服务器串行走访的最短时间",
+  "explanation": "## 思路\n\n目标升序，计算包括首尾绕环在内的相邻目标间隔；答案为环长减最大间隔。\n\n## 正确性证明\n\n若路线走遍整个环，显然不优于删除一个间隔后的路线。未走遍整个环的边集合落在某条覆盖全部目标的路径中，路线长度至少为该路径长度。路径能删掉的部分不含目标，最长可删部分正是最大相邻目标圆弧；沿其余路径从一端走到另一端达到下界。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,total=map(int,d[:2]);a=sorted(map(int,d[2:]));gap=a[0]+total-a[-1]\n    for x,y in zip(a,a[1:]):gap=max(gap,y-x)\n    return str(total-gap)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#224-get-minimum-time",
+  "sourceContentHash": "9cd00c699f0d61b786e633639fd58e7cc09d1e89d9845bf7dddf3836ef3617f3",
+  "author": "CSWork"
+}

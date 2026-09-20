@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只按总耗时均分",
+    "code": "def solve(d):\n    import heapq\n    n,t=map(int,d[:2]);a=list(map(int,d[2:]))\n    def valid(k):\n        heap=[0]*k\n        for v in a:heapq.heapreplace(heap,heap[0]+v)\n        return max(heap)<=t\n    lo=1;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum(a)<=mid*t:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不允许恰好完成",
+    "code": "def solve(d):\n    import heapq\n    n,t=map(int,d[:2]);a=list(map(int,d[2:]))\n    def valid(k):\n        heap=[0]*k\n        for v in a:heapq.heapreplace(heap,heap[0]+v)\n        return max(heap)<t\n    lo=1;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if valid(mid):hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

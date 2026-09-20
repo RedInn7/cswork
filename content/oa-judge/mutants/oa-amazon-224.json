@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉绕环的间隔",
+    "code": "def solve(d):\n    n,total=map(int,d[:2]);a=sorted(map(int,d[2:]));gap=0\n    for x,y in zip(a,a[1:]):gap=max(gap,y-x)\n    return str(total-gap)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "固定按编号递增走",
+    "code": "def solve(d):\n    n,total=map(int,d[:2]);a=sorted(map(int,d[2:]));gap=a[0]+total-a[-1]\n    for x,y in zip(a,a[1:]):gap=max(gap,y-x)\n    return str(a[-1]-a[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许改成负数",
+    "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for start in range(min(k,n)):\n        group=a[start::k];freq=Counter(group)\n        if len(freq)>1:answer+=len(group)-max([0]+[count for value,count in freq.items() if True])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看相邻相等",
+    "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for start in range(min(k,n)):\n        group=a[start:start+1];freq=Counter(group)\n        if len(freq)>1:answer+=len(group)-max([0]+[count for value,count in freq.items() if value>0])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

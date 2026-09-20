@@ -1,0 +1,10 @@
+[
+  {
+    "name": "优先固定最低费用",
+    "code": "def solve(d):\n    import heapq\n    n=int(d[0]);a=list(map(int,d[1:1+n]));c=list(map(int,d[1+n:]));items=sorted(zip(a,c));heap=[];i=0;pos=0;answer=0\n    while i<n or heap:\n        if not heap:pos=max(pos,items[i][0])\n        while i<n and items[i][0]<=pos:\n            start,cost=items[i];heapq.heappush(heap,(cost,start,cost));i+=1\n        _,start,cost=heapq.heappop(heap);answer+=(pos-start)*cost;pos+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每件只付一次单位费用",
+    "code": "def solve(d):\n    import heapq\n    n=int(d[0]);a=list(map(int,d[1:1+n]));c=list(map(int,d[1+n:]));items=sorted(zip(a,c));heap=[];i=0;pos=0;answer=0\n    while i<n or heap:\n        if not heap:pos=max(pos,items[i][0])\n        while i<n and items[i][0]<=pos:\n            start,cost=items[i];heapq.heappush(heap,(-cost,start,cost));i+=1\n        _,start,cost=heapq.heappop(heap);answer+=cost if pos>start else 0;pos+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

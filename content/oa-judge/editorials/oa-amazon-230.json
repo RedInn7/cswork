@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-230",
+  "title": "满足相邻需求趋势的最少不同配送中心",
+  "explanation": "## 思路\n\n忽略连续相等需求，求连续严格上升或严格下降段的最大比较次数，加1。\n\n## 正确性证明\n\n长度r的同向比较链需要至少r+1个不同编号。将相等位置缩为一点后，相邻比较形成一条定向路径，其最长有向路径恰是最长同向段。给每点编号为以该点结束的最长有向路径顶点数，严格递增方向满足编号增大且最大编号不超过下界，反向亦满足，因此下界可达到。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)不含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));direction=run=0;best=1\n    for x,y in zip(a,a[1:]):\n        if x==y:continue\n        sign=1 if y>x else -1;run=run+1 if sign==direction else 1;direction=sign;best=max(best,run+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#230-get-minimum-number-of-unique-distribution-centers",
+  "sourceContentHash": "0afb9fa38923d9247abe41734f0e21cadc83272238635802cc909d3132631e7b",
+  "author": "CSWork"
+}

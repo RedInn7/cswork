@@ -1,0 +1,10 @@
+[
+  {
+    "name": "价格相等邮票也相等",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));dp=[1]*5;mod=1000000007\n    for x,y in zip(a,a[1:]):\n        nxt=[0]*5\n        for j in range(5):\n            for i in range(5):\n                if (j>i if y>x else j<i if y<x else j==i):nxt[j]=(nxt[j]+dp[i])%mod\n        dp=nxt\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "价格上升允许同邮票",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));dp=[1]*5;mod=1000000007\n    for x,y in zip(a,a[1:]):\n        nxt=[0]*5\n        for j in range(5):\n            for i in range(5):\n                if (j>=i if y>x else j<i if y<x else j!=i):nxt[j]=(nxt[j]+dp[i])%mod\n        dp=nxt\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

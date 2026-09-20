@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查差值非负",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=[y-x for x,y in zip(a,b)];down=sum(max(0,x-y) for x,y in zip(delta,delta[1:]))\n    return str(-1 if min(delta)<0 else delta[-1]+down)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误将全部需求相加",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=[y-x for x,y in zip(a,b)];down=sum(max(0,x-y) for x,y in zip(delta,delta[1:]))\n    return str(-1 if delta[0]<down else sum(delta))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

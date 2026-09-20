@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-220",
+  "title": "任意排列后的最少关闭灯泡数",
+  "explanation": "## 思路\n\n亮度升序，维护已选保留亮度和sum，遇到v≥sum就保留，否则丢到最终排列末尾。\n\n## 正确性证明\n\n任意可保留序列中，正亮度必非降序，因为后一项至少是之前各项之和；0可以前移。在升序候选中，贪心选择最小的可用下一项，使任意相同选择数的累计和最小，因而最有利于后续继续选择。归纳得到最大保留数，弃灯放末尾不影响它们。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));total=kept=0\n    for v in a:\n        if v>=total:total+=v;kept+=1\n    return str(len(a)-kept)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#220-get-minimum-number-of-bulbs-off",
+  "sourceContentHash": "faceb0f5cbe591c5c800860806574cf3a8d80feaf4670e68cda05c517b670d87",
+  "author": "CSWork"
+}

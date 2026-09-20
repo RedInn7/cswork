@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-226",
+  "title": "卸载最少箱子满足最大最小比例",
+  "explanation": "## 思路\n\n排序后双指针，维护最大值≤capacity乘最小值，最大化窗口长度。\n\n## 正确性证明\n\n固定保留集合的最小最大值，其间所有箱子都可保留且不会破坏条件，所以存在排序连续窗口最优解。右端递增时需移动左端直到满足条件，此时是当前右端的最长合法窗口，取最大覆盖全部最优可能。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));left=best=0\n    for right,v in enumerate(a):\n        while left<right and v>k*a[left]:left+=1\n        best=max(best,right-left+1)\n    return str(n-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#226-get-minimum-boxes",
+  "sourceContentHash": "f9878f26e767b0d1725136c4cf81983febf0a67f3a41a693bfedff81e66e224d",
+  "author": "CSWork"
+}
