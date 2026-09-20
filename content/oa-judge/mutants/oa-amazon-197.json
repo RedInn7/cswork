@@ -1,0 +1,10 @@
+[
+  {
+    "name": "迁出后仍保留",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);places=set(map(int,d[2:2+n]))\n    for i in range(2+n,len(d),2):None;places.add(int(d[i+1]))\n    return ' '.join(map(str,sorted(places)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "输出顺序反转",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);places=set(map(int,d[2:2+n]))\n    for i in range(2+n,len(d),2):places.discard(int(d[i]));places.add(int(d[i+1]))\n    return ' '.join(map(str,sorted(places,reverse=True)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

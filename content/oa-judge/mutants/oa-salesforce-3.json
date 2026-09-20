@@ -1,0 +1,10 @@
+[
+  {
+    "name": "交换前后方向",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));seen=set();before=[]\n    for v in a:before.append('1' if v in seen else '0');seen.add(v)\n    seen=set();after=[]\n    for v in reversed(a):after.append('1' if v in seen else '0');seen.add(v)\n    return ''.join(reversed(after))+'\\n'+''.join(before)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把当前元素也计入",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));seen=set();before=[]\n    for v in a:before.append('1');seen.add(v)\n    seen=set();after=[]\n    for v in reversed(a):after.append('1' if v in seen else '0');seen.add(v)\n    return ''.join(before)+'\\n'+''.join(reversed(after))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

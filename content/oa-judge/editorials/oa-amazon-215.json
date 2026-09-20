@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-215",
+  "title": "有限调整次数内清空评分的最小减量",
+  "explanation": "## 思路\n\n二分x。评分v需要ceil(v/x)次操作，求全部需求和是否≤M。\n\n## 正确性证明\n\n单个评分每次只减少x，至少需要向上取整的次数，反复操作即可达到。各评分独立，需求相加得到恰好最少次数。x增大时各项需求不增，故可行性单调；x=max评分时最多n次，保证可行，二分得到最小值。\n\n## 复杂度\n\n时间O(n log max评分)，空间O(n)，次数累计使用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2;needed=sum((v+mid-1)//mid for v in a)\n        if needed<=m:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#215-tiktok-video-relevance-adjustment",
+  "sourceContentHash": "5ce8dbc07bdecf2d7b95da3208f3dde08cf52246f50de0030531178727c42af7",
+  "author": "CSWork"
+}

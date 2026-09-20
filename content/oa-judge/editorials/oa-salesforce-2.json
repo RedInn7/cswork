@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-2",
+  "title": "双特征模型的各级最低采购成本",
+  "explanation": "## 思路\n\n分别排序01、10、11的费用。将第i便宜的01与第i便宜的10配成一个双特征单位，再与所有11的费用合并排序，逐个求前缀和。\n\n## 正确性\n\n正费用意味着固定选择t个11后，只需各选择k−t个单特征模型且取最便宜者。01和10各自递增，因此对应配对费用也递增；11费用递增。两有序列表的最便宜k项自然满足各列表的前缀依赖，等价于枚举t得到最小成本。00永不改善任何约束。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=[];b=[];both=[]\n    for i in range(n):\n        c=int(d[1+2*i]);f=d[2+2*i]\n        if f=='01':a.append(c)\n        elif f=='10':b.append(c)\n        elif f=='11':both.append(c)\n    a.sort();b.sort();units=sorted(both+[x+y for x,y in zip(a,b)]);out=[];total=0\n    for i in range(n):\n        if i<len(units):total+=units[i];out.append(total)\n        else:out.append(-1)\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#2-ml-models-feature-compatibility-k-capable",
+  "sourceContentHash": "9af3fb88a895760cd5ce610742f569dc9f9471b1397496baabe5e477ebd26bd0",
+  "author": "CSWork"
+}

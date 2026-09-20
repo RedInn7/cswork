@@ -1,0 +1,10 @@
+[
+  {
+    "name": "需求向下取整",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2;needed=sum(v//mid for v in a)\n        if needed<=m:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误只检查总量",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:]));lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2;needed=(sum(a)+mid-1)//mid\n        if needed<=m:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

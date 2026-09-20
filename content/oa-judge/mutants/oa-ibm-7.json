@@ -1,0 +1,10 @@
+[
+  {
+    "name": "首尾只需一个",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);pre=[0]\n    for s in d[2:2+n]:pre.append(pre[-1]+(s[0] in 'aeiou' or s[-1] in 'aeiou'))\n    out=[]\n    for token in d[2+n:]:\n        l,h=map(int,token.split('-'));out.append(pre[h]-pre[l-1])\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏左端点",
+    "code": "def solve(d):\n    n,q=map(int,d[:2]);pre=[0]\n    for s in d[2:2+n]:pre.append(pre[-1]+(s[0] in 'aeiou' and s[-1] in 'aeiou'))\n    out=[]\n    for token in d[2+n:]:\n        l,h=map(int,token.split('-'));out.append(pre[h]-pre[l])\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

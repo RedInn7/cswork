@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许无上升段",
+    "code": "def solve(d):\n    n,lo,hi=map(int,d);width=hi-lo+1\n    if n<3 or n>2*width-1:return '-1'\n    p=max(0,n-width);out=list(range(hi-p,hi+1))+list(range(hi-1,hi-(n-p),-1))\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把允许长度少算一",
+    "code": "def solve(d):\n    n,lo,hi=map(int,d);width=hi-lo+1\n    if n<3 or n>=2*width-1:return '-1'\n    p=max(1,n-width);out=list(range(hi-p,hi+1))+list(range(hi-1,hi-(n-p),-1))\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

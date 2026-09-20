@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-9",
+  "title": "移除链表中的偶数节点",
+  "explanation": "## 思路\n\n用哨兵节点和前驱指针，遇偶节点接到其后继，遇奇节点前移。\n\n## 正确性证明\n\n前驱之前保留的节点都为奇数且顺序不变。每次仅跳过一个不应保留的偶节点或确认一个奇节点，不遗漏任何节点，结束时恰为目标链表。\n\n## 复杂度\n\n时间O(n)，构建输入链表空间O(n)，删除过程额外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    class Node:\n        def __init__(self,v=0):self.v=v;self.next=None\n    head=Node();tail=head\n    for v in map(int,d[1:]):tail.next=Node(v);tail=tail.next\n    prev=head\n    while prev.next:\n        if prev.next.v%2==0:prev.next=prev.next.next\n        else:prev=prev.next\n    out=[];cur=head.next\n    while cur:out.append(cur.v);cur=cur.next\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#9-remove-even-value-nodes-from-linked-list",
+  "sourceContentHash": "15b6bd93e8b800db529a76dd9f347927aa0374da3b4fc185f09d8af0e99749bf",
+  "author": "CSWork"
+}

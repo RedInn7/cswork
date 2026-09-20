@@ -1,0 +1,654 @@
+[
+  {
+    "input": "5 2\naba\nbcb\nece\naa\ne\n1-3\n2-5\n",
+    "expectedOutput": "2 3\n"
+  },
+  {
+    "input": "1 1\na\n1-1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2 1\nab\nba\n1-2\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 3\naeui\naeaoioi\nucoouub\nocaa\ncueiao\nu\ncabaob\n5-7\n4-6\n7-7\n",
+    "expectedOutput": "1 2 0\n"
+  },
+  {
+    "input": "4 10\noo\neaiooeoo\neiac\niuuubaeu\n3-4\n2-2\n4-4\n4-4\n1-4\n1-1\n3-4\n3-4\n1-3\n1-3\n",
+    "expectedOutput": "1 1 1 1 3 1 1 1 2 2\n"
+  },
+  {
+    "input": "3 1\nbccbubeic\nceababeoac\noebe\n3-3\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "11 5\neboe\no\noioob\nb\nbac\neauaiua\nbuobc\nia\neuib\neaua\nbaeaiaaue\n10-11\n4-5\n1-10\n10-10\n1-1\n",
+    "expectedOutput": "1 0 5 1 1\n"
+  },
+  {
+    "input": "9 7\nibciooa\neeeac\nibaue\nobui\noeueuaco\nbceui\ncua\nie\nboiaabe\n4-5\n3-3\n2-5\n3-8\n2-5\n9-9\n7-8\n",
+    "expectedOutput": "2 1 3 4 3 0 1\n"
+  },
+  {
+    "input": "7 6\naobaac\nicioa\nauabeceio\nuubuiabai\nao\niieiooeeb\niiiai\n6-6\n5-7\n5-6\n1-1\n5-7\n7-7\n",
+    "expectedOutput": "0 2 1 0 2 1\n"
+  },
+  {
+    "input": "11 6\nuuaoboaab\nuieeiibu\naecea\neobeibc\necacebbo\nioeccb\nbbooabebaa\nocaiaauboc\nioiu\nacacuce\nuuc\n10-10\n1-11\n11-11\n8-11\n5-8\n10-11\n",
+    "expectedOutput": "1 5 0 2 1 1\n"
+  },
+  {
+    "input": "3 8\noebc\nbobueuuo\nibao\n3-3\n2-3\n3-3\n2-2\n1-1\n1-2\n2-3\n2-2\n",
+    "expectedOutput": "1 1 1 0 0 0 1 0\n"
+  },
+  {
+    "input": "11 3\nuiuaueaub\naba\nuuaiiaueoa\nceiao\ni\naoubeo\neuueii\neacuueac\nuoie\niiuc\ncbocuoeoo\n6-11\n4-7\n5-8\n",
+    "expectedOutput": "3 3 3\n"
+  },
+  {
+    "input": "6 10\nua\noiiuuue\nibouuio\niiau\neee\naeuuocce\n5-5\n3-6\n2-3\n5-6\n6-6\n2-4\n6-6\n3-4\n2-4\n2-2\n",
+    "expectedOutput": "1 4 2 2 1 3 1 2 3 1\n"
+  },
+  {
+    "input": "1 1\nccoeiu\n1-1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 10\nieiieieicc\nuooc\neaiib\noouiacoaec\ni\n3-4\n4-5\n5-5\n1-1\n3-5\n5-5\n3-5\n2-3\n2-2\n4-4\n",
+    "expectedOutput": "0 1 1 0 1 1 1 0 0 0\n"
+  },
+  {
+    "input": "7 9\neeoacu\neoouueba\nuocccbaoi\nuibu\na\nbu\nao\n2-2\n6-7\n5-6\n1-4\n1-4\n5-7\n1-3\n6-7\n7-7\n",
+    "expectedOutput": "1 1 1 4 4 2 3 1 1\n"
+  },
+  {
+    "input": "11 4\ncooec\noeaacubobe\nebi\niocou\niiebioeii\nccuou\nua\nieacuacbi\ncceeeeeiuc\noaiiuaaoii\nauc\n2-8\n4-6\n5-7\n1-2\n",
+    "expectedOutput": "6 2 2 1\n"
+  },
+  {
+    "input": "5 6\neaiabc\na\nce\nieocoaeee\nbeeibu\n4-5\n2-5\n1-4\n2-3\n3-4\n3-5\n",
+    "expectedOutput": "1 2 2 1 1 1\n"
+  },
+  {
+    "input": "7 5\necueiiieio\neii\naiiboiuei\noba\nccu\nioeoo\na\n6-6\n3-7\n4-6\n3-4\n6-6\n",
+    "expectedOutput": "1 4 2 2 1\n"
+  },
+  {
+    "input": "4 7\nuiicb\nceaou\nuciuieabe\nuuaiuubbu\n3-3\n1-1\n2-2\n4-4\n2-2\n3-4\n2-2\n",
+    "expectedOutput": "1 0 0 1 0 2 0\n"
+  },
+  {
+    "input": "2 9\noeaiac\noaiiui\n2-2\n2-2\n2-2\n1-2\n1-1\n2-2\n1-1\n1-2\n2-2\n",
+    "expectedOutput": "1 1 1 1 0 1 0 1 1\n"
+  },
+  {
+    "input": "9 3\nbceeeucbiu\nobeabeeuee\nc\nocabeia\ncoibo\neeocbeibu\nbcbeb\niobaui\ncei\n9-9\n7-9\n4-5\n",
+    "expectedOutput": "0 1 1\n"
+  },
+  {
+    "input": "9 10\naueccac\nuubeauc\neeooccieei\nboiiu\nacbu\naabcoibi\nc\nucaebai\ncuiu\n8-9\n1-8\n9-9\n1-5\n9-9\n8-9\n7-9\n6-9\n2-4\n6-9\n",
+    "expectedOutput": "1 4 0 2 0 1 1 2 1 2\n"
+  },
+  {
+    "input": "10 4\niubc\necboeebb\nioaa\nbuebo\niccceuecub\na\nouiueueou\ncaubbub\nc\nbebeuoe\n6-8\n2-3\n6-6\n4-5\n",
+    "expectedOutput": "2 1 1 0\n"
+  },
+  {
+    "input": "7 4\nau\nubueca\nabcacac\nooucaeeca\nb\nbabe\nbiuiboaobb\n5-7\n2-6\n2-3\n6-7\n",
+    "expectedOutput": "0 2 1 0\n"
+  },
+  {
+    "input": "8 4\nabui\nuacb\noci\nuoeieb\noeebiaib\nbi\nieoaeeu\nioobcaioic\n3-5\n6-8\n5-6\n3-6\n",
+    "expectedOutput": "1 1 0 1\n"
+  },
+  {
+    "input": "1 10\nbbeueoao\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "1 6\ncoubac\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0\n"
+  },
+  {
+    "input": "8 8\nbicioibu\nbouab\nbbiaeaiuo\ncu\nu\noeca\ne\nbo\n1-2\n2-8\n4-4\n1-5\n1-8\n5-5\n4-8\n4-4\n",
+    "expectedOutput": "0 3 0 1 3 1 3 0\n"
+  },
+  {
+    "input": "12 7\ne\noeeocb\neeuoeab\nauba\ncaouobb\necee\nuo\nbuae\noaoco\nbauceu\nicieaobb\ncuaioco\n10-10\n8-9\n2-3\n10-10\n9-9\n12-12\n9-12\n",
+    "expectedOutput": "0 1 0 0 1 0 1\n"
+  },
+  {
+    "input": "2 7\nceiiocibi\neo\n2-2\n1-2\n2-2\n1-1\n2-2\n1-2\n1-1\n",
+    "expectedOutput": "1 1 1 0 1 1 0\n"
+  },
+  {
+    "input": "3 9\nce\niuoeeieb\nei\n3-3\n2-2\n3-3\n1-2\n2-3\n2-2\n2-2\n1-2\n1-2\n",
+    "expectedOutput": "1 0 1 0 1 0 0 0 0\n"
+  },
+  {
+    "input": "4 10\ncbeociae\niocai\nuioiuooo\necei\n2-3\n4-4\n3-4\n3-3\n1-4\n3-3\n1-1\n2-3\n1-2\n4-4\n",
+    "expectedOutput": "2 1 2 1 3 1 0 2 1 1\n"
+  },
+  {
+    "input": "5 3\nuouubcc\na\nbiiecb\nocoe\ncaeoca\n4-4\n3-5\n1-5\n",
+    "expectedOutput": "1 1 2\n"
+  },
+  {
+    "input": "10 7\naiecca\nbaaebeeo\naacuac\nau\noeiuua\neeb\no\ni\nie\nobocuuo\n4-7\n9-9\n7-8\n8-8\n6-6\n2-2\n10-10\n",
+    "expectedOutput": "3 1 2 1 0 0 1\n"
+  },
+  {
+    "input": "10 5\neuiacaiaeb\nucccceco\noceoaac\neoico\niuiieib\nb\naceeecoc\neuba\niiooicuicu\noioaubeaue\n1-6\n4-10\n6-6\n10-10\n1-4\n",
+    "expectedOutput": "2 4 0 1 2\n"
+  },
+  {
+    "input": "12 8\no\nuoiuci\nac\naiciu\nae\naa\nabaueacaei\nabbeuab\nobubb\nacece\nueuioouc\niuboicuii\n12-12\n4-4\n4-11\n6-10\n1-9\n9-12\n7-11\n2-3\n",
+    "expectedOutput": "1 1 5 3 6 2 2 1\n"
+  },
+  {
+    "input": "10 10\neeiecbeaea\nbucoc\neuebuuc\nbiuaoacoi\nauu\nbeiebecab\nc\nbceecaa\nobccacuec\nc\n2-8\n6-7\n4-7\n2-3\n8-8\n6-7\n7-7\n3-3\n6-6\n1-1\n",
+    "expectedOutput": "1 0 1 0 0 0 0 0 0 1\n"
+  },
+  {
+    "input": "11 9\nua\nbibiuuaici\nocaab\nuiioeoaooo\nciiccaei\nouaacci\ncoeuaeubca\naeo\nceicibauc\ncabb\nauooc\n4-6\n4-8\n7-9\n1-2\n7-10\n11-11\n3-6\n4-6\n8-9\n",
+    "expectedOutput": "2 3 1 1 1 0 2 2 1\n"
+  },
+  {
+    "input": "4 10\niibbcoo\naoeico\niuiece\noo\n1-1\n2-3\n2-4\n3-3\n3-4\n4-4\n3-4\n4-4\n2-3\n4-4\n",
+    "expectedOutput": "1 2 3 1 2 1 2 1 2 1\n"
+  },
+  {
+    "input": "10 8\nuab\noae\nibeb\na\ncee\nuocbaucb\nuuc\nacbc\nbieeice\nuub\n6-8\n6-9\n1-10\n5-8\n7-7\n9-9\n1-9\n4-5\n",
+    "expectedOutput": "0 0 2 0 0 0 2 1\n"
+  },
+  {
+    "input": "10 3\naeeaeeibce\nieaiubia\naiabaeoie\noeaue\ncboiuaoaee\ne\ncuoeaaoue\nbccee\nucaaaeuueu\nc\n7-8\n7-8\n4-5\n",
+    "expectedOutput": "0 0 1\n"
+  },
+  {
+    "input": "11 10\noiacccb\ncoi\nebo\neaeeboebua\nobeo\noui\nocecoabi\ncoocecoai\noa\noobioeoice\nubcuouo\n5-10\n8-10\n5-6\n3-9\n5-6\n7-11\n10-10\n4-10\n10-10\n1-7\n",
+    "expectedOutput": "5 2 2 6 2 4 1 6 1 5\n"
+  },
+  {
+    "input": "2 8\noaui\nuib\n2-2\n1-1\n1-1\n2-2\n1-2\n2-2\n1-1\n1-2\n",
+    "expectedOutput": "0 1 1 0 1 0 1 1\n"
+  },
+  {
+    "input": "4 8\nbueobaba\naabebiae\neuuio\neuoiaubo\n1-2\n3-4\n4-4\n3-3\n1-4\n2-4\n2-4\n2-2\n",
+    "expectedOutput": "1 2 1 1 3 3 3 1\n"
+  },
+  {
+    "input": "6 8\nbaiaiui\naobciau\necbac\naboe\naeecc\ncbic\n6-6\n4-6\n3-5\n4-4\n5-6\n1-1\n2-5\n5-6\n",
+    "expectedOutput": "0 1 1 1 0 0 2 0\n"
+  },
+  {
+    "input": "9 3\nib\nbooeaaueob\nboaaeibe\noieae\ncubabiccai\naaiaaa\nuc\neuiiubbci\nboe\n5-7\n5-7\n5-9\n",
+    "expectedOutput": "1 1 2\n"
+  },
+  {
+    "input": "5 1\nbib\nbbcebobooe\nboc\neaob\no\n1-2\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 3\na\ncbbaiobb\neoauice\nebuuoecico\nbaceeoaeb\nubo\nceiiauu\nacubuoa\nc\n6-9\n2-2\n7-8\n",
+    "expectedOutput": "2 0 1\n"
+  },
+  {
+    "input": "4 2\nceaoi\ncbeiiaii\nceiauuc\nbbaeeeub\n3-4\n2-2\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "1 9\neauuauoa\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "1 10\nieeciibeao\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "5 4\nbi\nuoeaceebac\nci\naoa\naboeoiaib\n3-5\n3-4\n2-3\n2-2\n",
+    "expectedOutput": "1 1 0 0\n"
+  },
+  {
+    "input": "4 1\nioueoboiee\naeo\nc\nuui\n1-1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "3 2\nbueebi\nauoaub\naoaebeca\n1-2\n3-3\n",
+    "expectedOutput": "0 1\n"
+  },
+  {
+    "input": "1 4\ne\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1\n"
+  },
+  {
+    "input": "6 8\neieeiceouu\nuei\ncebiiabou\nbeubbiub\nc\nbabibiuo\n5-5\n3-4\n1-4\n1-5\n5-5\n3-5\n1-4\n2-6\n",
+    "expectedOutput": "0 0 2 2 0 0 2 1\n"
+  },
+  {
+    "input": "6 2\nibcib\ni\nee\nieiuuii\nbue\naobou\n5-6\n3-4\n",
+    "expectedOutput": "1 2\n"
+  },
+  {
+    "input": "1 3\ncuibb\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0\n"
+  },
+  {
+    "input": "9 1\neibouoaib\nac\nbccic\neabe\nuaa\niaa\nicueouo\nuiebcaiuc\nbaaaeca\n1-8\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6 6\nio\nooiaeb\nb\neicaicui\niiuboe\niecbobccc\n3-3\n3-6\n3-3\n6-6\n3-3\n6-6\n",
+    "expectedOutput": "0 2 0 0 0 0\n"
+  },
+  {
+    "input": "2 2\neaceouecub\ne\n2-2\n2-2\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "3 10\nobueeuoeb\nboaaa\ncai\n3-3\n3-3\n1-1\n1-2\n3-3\n1-3\n3-3\n1-2\n1-2\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "11 4\necce\noaeoue\naoea\noicaco\ncai\niaoeaao\niceeiioaob\noeaeaueo\neocabbbe\neab\nuoeooce\n4-9\n5-8\n9-9\n11-11\n",
+    "expectedOutput": "4 2 1 1\n"
+  },
+  {
+    "input": "2 1\ni\no\n2-2\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "10 1\nbuccacc\nauc\nieaa\nciaocbieo\neucuoabbea\noiia\nuuo\nucubu\noacaeecba\neiiaaio\n8-10\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "2 4\nuubcacauio\nuo\n1-2\n1-2\n2-2\n2-2\n",
+    "expectedOutput": "2 2 1 1\n"
+  },
+  {
+    "input": "7 4\no\nobeaba\nceoooeec\noabceccb\naaiooabbcb\nceube\nuceauoabbc\n6-7\n6-7\n5-5\n5-7\n",
+    "expectedOutput": "0 0 0 0\n"
+  },
+  {
+    "input": "3 2\nicc\neiooiacou\nciaouoeuoo\n1-2\n2-3\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "4 7\ni\ni\niocbi\nociaub\n4-4\n1-2\n3-3\n1-4\n1-2\n2-4\n2-3\n",
+    "expectedOutput": "0 2 1 3 2 2 2\n"
+  },
+  {
+    "input": "7 9\nui\nuuaioaoe\neeubuiuac\niie\ncba\nieoauau\neu\n4-6\n3-7\n6-6\n1-7\n2-7\n3-5\n1-6\n3-5\n2-7\n",
+    "expectedOutput": "2 3 1 5 4 1 4 1 4\n"
+  },
+  {
+    "input": "11 5\nou\ni\nc\neiacbu\nouaiaiuaoi\necb\ncciac\ncbbcoboca\nae\nboouua\ni\n11-11\n6-6\n9-11\n10-10\n7-10\n",
+    "expectedOutput": "1 0 2 0 1\n"
+  },
+  {
+    "input": "1 2\nauibac\n1-1\n1-1\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "11 1\nbobuauibb\noobb\nicice\nauueea\niii\neeci\nuub\no\ncoibuea\nuoiueueec\neoec\n11-11\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 9\nubcueucuc\nacbcbacbi\neieuuoc\n1-1\n3-3\n1-2\n3-3\n2-3\n1-3\n2-2\n3-3\n3-3\n",
+    "expectedOutput": "0 0 1 0 1 1 1 0 0\n"
+  },
+  {
+    "input": "7 2\nbeucoa\nbie\neeuoo\naeaiob\nba\ncboobaac\nboocio\n4-4\n7-7\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "1 8\ncuuoci\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "7 2\ncbiuiubboo\naouebeiab\nob\noaoiioee\nuieubeobuu\noeoiu\ne\n1-7\n3-3\n",
+    "expectedOutput": "4 0\n"
+  },
+  {
+    "input": "2 8\nbbu\ne\n1-1\n2-2\n2-2\n1-2\n2-2\n1-2\n1-1\n2-2\n",
+    "expectedOutput": "0 1 1 1 1 1 0 1\n"
+  },
+  {
+    "input": "8 6\nuo\nceui\na\nua\noiaee\ncoacbeea\nccucceuab\nbcaucocu\n5-8\n1-2\n5-8\n2-5\n6-7\n7-7\n",
+    "expectedOutput": "1 1 1 3 0 0\n"
+  },
+  {
+    "input": "8 7\nauccoiuae\nocaocba\nbaeaoaea\noieuiebiee\nieuocucia\nououcae\neou\nbicue\n8-8\n2-7\n5-7\n6-8\n4-7\n5-5\n4-8\n",
+    "expectedOutput": "0 5 3 2 4 1 4\n"
+  },
+  {
+    "input": "7 4\niocu\naui\neebboe\nb\nco\nouebuiic\na\n6-7\n1-1\n1-2\n7-7\n",
+    "expectedOutput": "1 1 2 1\n"
+  },
+  {
+    "input": "10 2\nbuabuobca\nabbciee\neo\naouoauebu\neiueuuobea\nue\nuoboaobu\naobo\necbueu\nbbeuuo\n7-10\n6-7\n",
+    "expectedOutput": "3 2\n"
+  },
+  {
+    "input": "1 6\noaeio\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1\n"
+  },
+  {
+    "input": "8 2\naoeuabuooi\nuaob\niuouu\nicaccob\ncu\neoeb\nobbu\neaoiuico\n2-8\n6-6\n",
+    "expectedOutput": "3 0\n"
+  },
+  {
+    "input": "12 8\naoec\nec\nuboe\naeeciubauo\nua\nuio\naba\ne\nocoeicobu\naboub\ncia\ncuuubcuae\n11-12\n11-12\n10-12\n8-8\n2-2\n11-11\n11-12\n4-10\n",
+    "expectedOutput": "0 0 0 1 0 0 0 6\n"
+  },
+  {
+    "input": "4 10\nb\niao\neabeeieoic\nuuae\n2-4\n4-4\n2-4\n1-1\n2-4\n2-4\n2-4\n2-3\n2-3\n4-4\n",
+    "expectedOutput": "2 1 2 0 2 2 2 1 1 1\n"
+  },
+  {
+    "input": "10 6\nba\nbeoeuaecba\na\ni\nbiiace\niicoc\neobabuib\nioacibbee\ni\neuoubo\n2-10\n8-8\n6-6\n7-10\n3-5\n5-8\n",
+    "expectedOutput": "5 1 0 3 2 1\n"
+  },
+  {
+    "input": "8 8\nia\niocu\nec\nebueebc\nieoc\nob\nioe\ncubiiiibec\n5-6\n3-8\n2-8\n6-7\n4-6\n1-2\n4-6\n1-1\n",
+    "expectedOutput": "0 1 2 1 0 2 0 1\n"
+  },
+  {
+    "input": "8 7\niibaec\nbieioec\nacucebeiia\noea\neboeic\noob\noaai\nueaua\n5-5\n6-6\n7-8\n1-3\n3-4\n5-8\n3-4\n",
+    "expectedOutput": "0 0 2 1 2 2 2\n"
+  },
+  {
+    "input": "9 5\nbeibcoebce\nobicb\naco\nbibic\nebaeec\ni\nuec\nbueua\nob\n4-4\n4-4\n2-8\n7-9\n8-9\n",
+    "expectedOutput": "0 0 2 0 0\n"
+  },
+  {
+    "input": "6 1\nuaccecaec\ncouuocb\naceaeoi\nic\niuoccbaa\neaiubc\n5-5\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "9 7\noiio\naue\nic\na\nieobb\nu\niua\ncb\noaee\n1-8\n2-8\n9-9\n6-6\n9-9\n2-5\n2-5\n",
+    "expectedOutput": "5 4 1 1 1 2 2\n"
+  },
+  {
+    "input": "2 2\noucubeb\ncu\n2-2\n1-2\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "3 8\nboueaeeuuo\nib\nuucboeb\n3-3\n2-2\n3-3\n3-3\n1-3\n2-3\n3-3\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "4 3\niuebabuicc\nboeic\nuaieou\niieeicce\n1-3\n2-4\n2-4\n",
+    "expectedOutput": "1 2 2\n"
+  },
+  {
+    "input": "2 1\noubuueee\noia\n2-2\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "10 4\neaeicbi\nececae\neoaiooiaee\nc\noiiiib\nouiocibcc\nobocio\na\neaobuaoo\nob\n10-10\n6-7\n4-4\n7-8\n",
+    "expectedOutput": "0 1 0 2\n"
+  },
+  {
+    "input": "12 8\ncoooae\nbuibubobcb\nbeucicee\na\naau\neucib\neoo\nioaoaceeb\nu\niua\noe\noii\n6-9\n8-11\n8-12\n11-11\n6-6\n8-12\n10-11\n9-10\n",
+    "expectedOutput": "2 3 4 1 0 4 2 2\n"
+  },
+  {
+    "input": "8 6\noobbbaaiab\nau\noi\noi\nuce\ncooebc\nociua\nucuoeuuacc\n2-4\n7-7\n6-6\n5-6\n1-1\n7-8\n",
+    "expectedOutput": "3 1 0 1 0 1\n"
+  },
+  {
+    "input": "3 9\niiau\nauiieaaea\nbueoeo\n2-3\n2-2\n2-3\n1-3\n1-1\n2-3\n1-2\n3-3\n3-3\n",
+    "expectedOutput": "1 1 1 2 1 1 2 0 0\n"
+  },
+  {
+    "input": "8 1\neobuiaoi\nuiiiacebo\ne\nccii\neiab\nceouici\niiiiebcb\nbebebc\n8-8\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 9\nouoc\nuoobiueo\noaauieu\neeuuiuo\n2-3\n3-4\n3-3\n1-4\n1-4\n2-2\n4-4\n3-4\n4-4\n",
+    "expectedOutput": "2 2 1 3 3 1 1 2 1\n"
+  },
+  {
+    "input": "6 3\neccoob\nouueieaob\ncbeuu\nbieoa\ni\nbbioaaa\n6-6\n4-5\n2-3\n",
+    "expectedOutput": "0 1 0\n"
+  },
+  {
+    "input": "2 4\noi\noooicuecb\n1-1\n1-1\n1-2\n2-2\n",
+    "expectedOutput": "1 1 1 0\n"
+  },
+  {
+    "input": "4 1\ncci\niuucioba\nuueiao\nueoac\n4-4\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 3\nubcoeaou\neea\n1-2\n2-2\n2-2\n",
+    "expectedOutput": "2 1 1\n"
+  },
+  {
+    "input": "8 6\nceaoooaca\noioebauu\nbccaaebc\nbe\nab\nbbcbobueae\ncaaucccee\nceec\n4-4\n6-8\n7-8\n3-8\n4-6\n8-8\n",
+    "expectedOutput": "0 0 0 0 0 0\n"
+  },
+  {
+    "input": "2 6\nbbuoi\nce\n2-2\n2-2\n2-2\n1-1\n1-2\n1-2\n",
+    "expectedOutput": "0 0 0 0 0 0\n"
+  },
+  {
+    "input": "9 9\naia\nbibi\niub\ni\nebucocucbb\noiauu\nuoaeabuac\naeaeuiio\ne\n5-8\n9-9\n4-9\n4-6\n9-9\n2-7\n9-9\n6-6\n2-6\n",
+    "expectedOutput": "2 1 4 2 1 2 1 1 2\n"
+  },
+  {
+    "input": "3 3\nouccaiub\ncabobo\nuai\n2-2\n3-3\n2-3\n",
+    "expectedOutput": "0 1 1\n"
+  },
+  {
+    "input": "12 7\noebiuouib\nccceaaauua\nboieaaccea\ncoa\noicoieue\naciieoi\nauao\nbuaiiaco\nucbaa\niiuucb\nocuiuio\noeuucbcae\n4-12\n7-9\n12-12\n1-7\n5-8\n10-10\n6-7\n",
+    "expectedOutput": "6 2 1 3 3 0 2\n"
+  },
+  {
+    "input": "12 9\ncbc\nib\nbbcaeo\necbuaoiu\neeucbbeaua\ncai\nboiiaoea\nab\ncueaac\nooaeab\nuu\nbcceauu\n7-11\n3-3\n1-9\n8-9\n11-11\n6-12\n1-1\n5-6\n7-9\n",
+    "expectedOutput": "1 0 2 0 1 1 0 1 0\n"
+  },
+  {
+    "input": "5 5\nociecucioe\naaubo\noucooicba\nceic\nccbiuc\n1-4\n5-5\n1-5\n1-2\n4-5\n",
+    "expectedOutput": "3 0 3 2 0\n"
+  },
+  {
+    "input": "1 9\nb\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "8 5\ncocuibcc\nubi\ne\nibc\nbuiiociai\neaeeeii\nb\nboeeabbc\n6-8\n2-7\n8-8\n2-7\n1-1\n",
+    "expectedOutput": "1 3 0 3 0\n"
+  },
+  {
+    "input": "4 5\nbaeiucb\ncuauauuii\nieaeiooiu\nu\n1-2\n4-4\n3-3\n4-4\n1-2\n",
+    "expectedOutput": "0 1 1 1 0\n"
+  },
+  {
+    "input": "1 4\nuebuub\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0 0\n"
+  },
+  {
+    "input": "6 7\nceeueou\no\noaieao\nuu\ncecuaoio\nuaceaoouco\n2-3\n2-6\n3-4\n3-6\n5-6\n2-3\n1-5\n",
+    "expectedOutput": "2 4 2 3 1 2 3\n"
+  },
+  {
+    "input": "9 9\neb\niucbo\nbb\nabo\nbbeuiii\nubo\nueieiebiee\nobauaoeu\nouccauuebo\n8-8\n3-7\n4-5\n5-5\n5-5\n5-8\n8-8\n1-9\n8-8\n",
+    "expectedOutput": "1 3 1 0 0 3 1 6 1\n"
+  },
+  {
+    "input": "10 1\nee\nioabbcooo\naboai\nauuecabeuc\neaiueibau\niiauc\naaaocaiuc\nbcucca\nbeieieai\noecaaioaa\n6-7\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 10\nbbacoba\nboaaeabi\n1-2\n2-2\n1-1\n2-2\n2-2\n2-2\n1-1\n2-2\n1-2\n2-2\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "6 7\nbbuuucaba\nuoucauua\niba\naubaucbeuo\ne\nouuuob\n5-5\n5-6\n4-6\n5-5\n5-5\n4-4\n5-6\n",
+    "expectedOutput": "1 1 2 1 1 1 1\n"
+  },
+  {
+    "input": "11 7\nioebecbuo\nba\nbabbe\noi\noaabi\niobboooa\nbeucoaa\neiaocaae\nc\nue\niuoububcbo\n11-11\n10-10\n1-3\n10-11\n2-7\n4-10\n4-5\n",
+    "expectedOutput": "1 1 1 2 3 5 2\n"
+  },
+  {
+    "input": "8 10\ni\nuebco\nii\neb\noeo\nebbeoe\neeaieuia\neecuobb\n5-7\n8-8\n3-5\n8-8\n8-8\n3-7\n6-8\n8-8\n1-7\n4-6\n",
+    "expectedOutput": "3 0 2 0 0 4 2 0 6 2\n"
+  },
+  {
+    "input": "5 4\nueabiab\nuiubueucci\nabbieeiauo\nioauce\noe\n1-2\n2-3\n5-5\n2-2\n",
+    "expectedOutput": "1 2 1 1\n"
+  },
+  {
+    "input": "4 8\nciiicaiu\nucbcc\nc\neoacic\n3-4\n2-2\n1-1\n4-4\n3-3\n1-3\n3-3\n3-3\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "11 6\ncicaui\nai\nbuaub\nabuiaaobi\no\necuoi\nabuaooco\nacuu\nebuuo\nuocaiueeiu\niic\n2-9\n11-11\n9-11\n3-11\n7-8\n2-2\n",
+    "expectedOutput": "7 0 2 7 2 1\n"
+  },
+  {
+    "input": "2 5\nbaeaioooec\nbcaobia\n1-1\n2-2\n1-2\n1-1\n2-2\n",
+    "expectedOutput": "0 0 0 0 0\n"
+  },
+  {
+    "input": "4 10\nccbc\nubeec\nabubeaeua\nbcbuub\n4-4\n4-4\n3-4\n4-4\n2-4\n2-4\n1-4\n1-4\n3-3\n1-2\n",
+    "expectedOutput": "0 0 1 0 1 1 1 1 1 0\n"
+  },
+  {
+    "input": "7 4\nu\ncaoai\nbobcobcu\niocoieo\nuocccouuai\nciooboauac\nabcoauei\n1-4\n6-6\n5-7\n3-3\n",
+    "expectedOutput": "2 0 2 0\n"
+  },
+  {
+    "input": "4 4\na\neoiuiauib\nbeiaoauuuo\nie\n2-2\n1-2\n1-4\n4-4\n",
+    "expectedOutput": "0 1 2 1\n"
+  },
+  {
+    "input": "1 7\nabbiio\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 7\na\naibcuab\neoaaib\n1-1\n1-1\n2-2\n1-2\n1-1\n3-3\n3-3\n",
+    "expectedOutput": "1 1 0 1 1 0 0\n"
+  },
+  {
+    "input": "3 2\naiuc\noob\neeccbc\n2-2\n2-3\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "4 4\naeaouo\ni\nuaebbb\no\n2-2\n4-4\n1-2\n2-2\n",
+    "expectedOutput": "1 1 2 1\n"
+  },
+  {
+    "input": "8 5\niocubuuabo\nbaouu\nococc\ncaace\nbaou\nebe\naccboeb\niaauue\n8-8\n4-7\n3-8\n7-8\n6-8\n",
+    "expectedOutput": "1 1 2 1 2\n"
+  },
+  {
+    "input": "1 7\niuicc\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "2 4\noiebciubob\nccabuubbc\n1-1\n2-2\n1-2\n2-2\n",
+    "expectedOutput": "0 0 0 0\n"
+  },
+  {
+    "input": "11 7\neocbiuecob\noco\ni\neb\niebaau\nbeib\naueacii\naeoeiboe\niu\ncb\ncouoibea\n7-10\n5-6\n10-11\n5-11\n7-7\n11-11\n7-7\n",
+    "expectedOutput": "3 1 0 4 1 0 1\n"
+  },
+  {
+    "input": "8 3\nacc\ncu\niio\nioeco\nc\neuieiaiabe\naab\nocbbe\n2-3\n6-6\n3-5\n",
+    "expectedOutput": "1 1 2\n"
+  },
+  {
+    "input": "4 3\nccee\neeuieoc\nuaia\nuuoob\n3-3\n3-3\n4-4\n",
+    "expectedOutput": "1 1 0\n"
+  },
+  {
+    "input": "3 4\nu\nbb\nou\n1-3\n1-3\n1-3\n3-3\n",
+    "expectedOutput": "2 2 2 1\n"
+  },
+  {
+    "input": "9 4\nbio\nau\nuicaiaebe\nec\ncebaiauba\ne\nu\nbobebeb\nubeca\n5-7\n7-7\n8-9\n4-9\n",
+    "expectedOutput": "2 1 1 3\n"
+  },
+  {
+    "input": "8 1\nuibaaba\nbac\nbeoaabia\nuueacc\noibeou\niu\niouobiuuu\nuoeicc\n5-8\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "9 9\nu\nuaueob\nebaabubo\ni\nob\nu\noi\niibuauca\nabou\n2-9\n2-7\n4-9\n6-9\n8-9\n8-8\n3-9\n2-6\n4-6\n",
+    "expectedOutput": "6 4 5 4 2 1 6 3 2\n"
+  },
+  {
+    "input": "10 8\nibcboouiaa\nou\ncau\nueauaibcob\nu\niiieue\nuueoibaec\nauboub\nioooace\nucioicae\n10-10\n2-3\n10-10\n6-10\n7-8\n8-10\n8-9\n2-8\n",
+    "expectedOutput": "1 1 1 3 0 2 1 3\n"
+  },
+  {
+    "input": "9 3\ncbauiu\nuuu\neuoua\nueoice\nbio\nouauib\nbeubocu\no\nacuoe\n4-9\n8-8\n3-6\n",
+    "expectedOutput": "3 1 2\n"
+  },
+  {
+    "input": "2 7\nciaccue\nueb\n2-2\n1-1\n2-2\n2-2\n1-2\n1-1\n1-2\n",
+    "expectedOutput": "0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "2 10\noeici\nuiaaa\n2-2\n1-2\n1-1\n2-2\n2-2\n1-1\n2-2\n2-2\n2-2\n1-1\n",
+    "expectedOutput": "1 2 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "10 6\ncocbcc\nic\ne\na\nciaaiauob\naouc\nuacuubboao\neooc\nuuuiaooc\nooaba\n3-5\n7-8\n2-2\n1-6\n3-6\n4-9\n",
+    "expectedOutput": "2 1 0 2 2 2\n"
+  },
+  {
+    "input": "9 6\nuacceoau\nob\ni\na\nooeco\naboibuecbo\nobuioai\naoacuiuiua\nae\n4-6\n4-4\n5-6\n3-9\n3-3\n4-5\n",
+    "expectedOutput": "3 1 2 7 1 2\n"
+  },
+  {
+    "input": "1 7\nia\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "1 9\neu\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 5\neuuuo\niocb\nbeeciebbuc\nacuc\no\nbeuiiic\nea\nbuabucieaa\nuboubuc\n2-3\n8-9\n3-6\n3-9\n4-9\n",
+    "expectedOutput": "0 0 1 2 2\n"
+  },
+  {
+    "input": "6 9\neea\ncaouab\naboiaao\niaeoa\nbiubub\niaaic\n6-6\n2-5\n1-5\n2-3\n4-4\n3-5\n6-6\n2-4\n2-5\n",
+    "expectedOutput": "0 2 3 1 1 2 0 2 2\n"
+  },
+  {
+    "input": "10 4\nebioau\nocaobua\nbbaecaa\ncoa\naouacbaiou\niceue\nbuaecbbau\nuoiicauau\nubbuoucaaa\nccbo\n10-10\n4-7\n6-6\n1-3\n",
+    "expectedOutput": "0 2 1 2\n"
+  },
+  {
+    "input": "7 3\nbacbocci\nbiabcb\nciaec\noeao\nbiuieoa\ncbeeccia\niuueouoe\n1-5\n4-5\n1-4\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "2 10\neoieaau\neoici\n2-2\n1-1\n2-2\n1-2\n2-2\n2-2\n2-2\n2-2\n1-1\n2-2\n",
+    "expectedOutput": "1 1 1 2 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 7\nu\nbaocboaicc\naiaieuucei\n2-2\n3-3\n1-3\n1-1\n1-2\n2-2\n1-1\n",
+    "expectedOutput": "0 1 2 1 1 0 1\n"
+  },
+  {
+    "input": "1 6\naeicbbei\n1-1\n1-1\n1-1\n1-1\n1-1\n1-1\n",
+    "expectedOutput": "1 1 1 1 1 1\n"
+  },
+  {
+    "input": "12 3\nuc\na\nabea\noiiioa\neecea\nbucbeoiu\nie\nueb\ni\nbieeacu\nacebbii\nobio\n11-12\n7-7\n11-12\n",
+    "expectedOutput": "2 1 2\n"
+  },
+  {
+    "input": "4 7\nob\ncuaeuicc\noiieeeoeu\nocibbuuc\n2-4\n2-2\n3-4\n2-3\n3-3\n3-4\n4-4\n",
+    "expectedOutput": "1 0 1 1 1 1 0\n"
+  }
+]

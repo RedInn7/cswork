@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-201",
+  "title": "价格和为3的幂的商品对数",
+  "explanation": "## 思路\n\n枚举不超过最大可能和的3的幂。顺序扫描价格，查询此前每个补数的出现次数后，再加入当前价格。\n\n## 正确性证明\n\n合法对有唯一较大下标j及唯一目标幂，处理j时另一价格必为该幂减当前价格，频次查询计入所有此前身份。查询后再插入避免同一商品自配，所有合法对只计一次。\n\n## 复杂度\n\n时间O(n log₃V)，空间O(n)，V为最大价格。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));powers=[];p=1\n    while p<=2*max(a):powers.append(p);p*=3\n    seen={};answer=0\n    for v in a:\n        for p in powers:answer+=seen.get(p-v,0)\n        seen[v]=seen.get(v,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#201-get-max-discount-pairs",
+  "sourceContentHash": "106bb4372d86726c2521f8b472b6159a2788e791fd2469561f0e4d96047ec0df",
+  "author": "CSWork"
+}

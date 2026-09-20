@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-18",
+  "title": "删除左右同字母到最短串的最少操作",
+  "explanation": "## 思路\n\n每个字母至少留一个，频次f需删f−1个，一次最多删2个；选中间出现即可连续两侧删，因此贡献floor(f/2)。\n\n## 正确性证明\n\n任何操作不影响其他字母且保留选中字母，最短串每字母一个。至少ceil((f−1)/2)步；f≥3时选择非两端出现删2个，剩2时删1个，可达到该下界，各字母相加。\n\n## 复杂度\n\n时间O(n)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    return str(sum(f//2 for f in Counter(d[0]).values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#18-get-min-move",
+  "sourceContentHash": "808fbd135e43431e7fbd881a3bae850278389bdaab7b1985347b528c919e7d7d",
+  "author": "CSWork"
+}

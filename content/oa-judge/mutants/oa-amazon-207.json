@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只记第一次前缀",
+    "code": "def solve(d):\n    n=int(d[0]);skills=list(map(int,d[1:1+n]));types=list(map(int,d[1+n:]));minimum={0:0};balance=total=answer=0\n    for value,t in zip(skills,types):\n        balance+=1 if t else -1;total+=value\n        if balance in minimum:answer=max(answer,total-minimum[balance]);minimum[balance]=minimum[balance]\n        else:minimum[balance]=total\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把两类同向累加",
+    "code": "def solve(d):\n    n=int(d[0]);skills=list(map(int,d[1:1+n]));types=list(map(int,d[1+n:]));minimum={0:0};balance=total=answer=0\n    for value,t in zip(skills,types):\n        balance+=1;total+=value\n        if balance in minimum:answer=max(answer,total-minimum[balance]);minimum[balance]=min(minimum[balance],total)\n        else:minimum[balance]=total\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

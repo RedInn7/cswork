@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉1",
+    "code": "def solve(d):\n    lo,hi=map(int,d);answer=0;a=1\n    while a<=hi:\n        v=a\n        while v<=hi:\n            if v>=lo and v!=1:answer+=1\n            if v>hi//5:break\n            v*=5\n        if a>hi//3:break\n        a*=3\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "排除右端点",
+    "code": "def solve(d):\n    lo,hi=map(int,d);answer=0;a=1\n    while a<=hi:\n        v=a\n        while v<=hi:\n            if lo<=v<hi:answer+=1\n            if v>hi//5:break\n            v*=5\n        if a>hi//3:break\n        a*=3\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

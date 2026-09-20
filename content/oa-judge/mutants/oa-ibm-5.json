@@ -1,0 +1,10 @@
+[
+  {
+    "name": "丢失较长尾部",
+    "code": "def solve(d):\n    a,b=d.split('\\n')[:2];out=[]\n    for i in range(min(len(a),len(b))):\n        if i<len(a):out.append(a[i])\n        if i<len(b):out.append(b[i])\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "颠倒两串",
+    "code": "def solve(d):\n    b,a=d.split('\\n')[:2];out=[]\n    for i in range(max(len(a),len(b))):\n        if i<len(a):out.append(a[i])\n        if i<len(b):out.append(b[i])\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-211",
+  "title": "每根至多缩短1后的最大矩形总面积",
+  "explanation": "## 思路\n\n长度降序，若当前两根差≤1就配成较短长度的一条成对边，否则弃掉最大根。取得降序成对边后，最大两边组成矩形，继续向后。\n\n## 正确性证明\n\n若最大两棒差>1，最大棒无法匹配任何剩余棒，必须舍弃。若差≤1，可交换最优配对使它们成对：两棒原先各有伙伴时，交换后其伙伴仍相差至多1；所得最大成对边不减，剩余成对边也不减。只有一棒有伙伴时直接换为两最大棒也不劣。因此贪心得到逐项不小的降序成对边。对a≥b≥c≥d，ab+cd≥ac+bd且≥ad+bc，故最大两边相邻组合最优，奇数条成对边则舍弃最小。面积优化在取模之前。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);pairs=[];i=0\n    while i+1<len(a):\n        if a[i]-a[i+1]<=1:pairs.append(a[i+1]);i+=2\n        else:i+=1\n    answer=sum(pairs[i]*pairs[i+1] for i in range(0,len(pairs)-1,2))\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#211-maximize-total-area-of-rectangles-sde-2",
+  "sourceContentHash": "4478519919cfe75bbed7842ad12a2c05d89d082642e48a3c44f71ca585f16513",
+  "author": "CSWork"
+}

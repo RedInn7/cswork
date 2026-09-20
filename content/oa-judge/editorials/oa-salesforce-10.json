@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-10",
+  "title": "两个等长二进制段的子串数量",
+  "explanation": "## 思路\n\n将字符串按连续相同字符分段，相邻两段长度为a,b时贡献min(a,b)。\n\n## 正确性\n\n每个合法子串恰跨越一个段边界，两侧长度必须相等，可以取1至min(a,b)。不同边界或不同长度确定不同区间，反之所有合法区间均被计数一次。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];previous=0;current=1;answer=0\n    for i in range(1,len(s)):\n        if s[i]==s[i-1]:current+=1\n        else:answer+=min(previous,current);previous=current;current=1\n    return str(answer+min(previous,current))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#10-count-substrings",
+  "sourceContentHash": "7bed77b484cfd25b93b6029865b13a280a3dd77f5aa59cc700f950e31212e651",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-1",
+  "title": "可选边组成的不同图数量",
+  "explanation": "## 思路\n\n每个不同顶点对对应一条独立可选边，快速幂计算2的n(n−1)/2次方。\n\n## 正确性证明\n\n共有n(n−1)/2个顶点对，每对选有边或无边，所有选择与图一一对应，乘法原理得结论。\n\n## 复杂度\n\n时间O(log n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);return str(pow(2,n*(n-1)//2,1000000007))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#1-drawing-edges",
+  "sourceContentHash": "ec6452a87a37d14c83ac87f231633982364f87d73d4af108da9beb82579319f4",
+  "author": "CSWork"
+}

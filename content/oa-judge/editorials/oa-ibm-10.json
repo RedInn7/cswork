@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-10",
+  "title": "两个JSON推荐结果的差异键",
+  "explanation": "## 思路\n\n解析数字为精确Decimal，逐个比较键并集；递归保持类型、数组顺序及对象键集合，最后排序差异键。\n\n## 正确性证明\n\n递归在叶上按值及类型判断，在数组上对应所有下标，在对象上对应全部键，因此结构相等判定精确。顶层并集中的每个键在且仅在缺失或值不等时加入，排序得到指定唯一顺序。\n\n## 复杂度\n\n时间O(输入长度+K log K·最大键长)，空间O(输入长度)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    from decimal import Decimal\n    a,b=[json.loads(line,parse_int=Decimal,parse_float=Decimal) for line in d.split('\\n')[:2]]\n    def equal(x,y):\n        if type(x) is not type(y):return False\n        if isinstance(x,dict):return x.keys()==y.keys() and all(equal(x[k],y[k]) for k in x)\n        if isinstance(x,list):return len(x)==len(y) and all(equal(u,v) for u,v in zip(x,y))\n        return x==y\n    keys=[]\n    for k in a.keys()|b.keys():\n        if k not in a or k not in b or not equal(a[k],b[k]):keys.append(k)\n    return json.dumps(sorted(keys),ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#10-prediction-diff-json-key-recommendations",
+  "sourceContentHash": "405def324f333e4106268162c9da252dc68c1cb1e79728a3d4ad9a5527438de2",
+  "author": "CSWork"
+}

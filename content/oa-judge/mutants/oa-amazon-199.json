@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只尝试一种模板",
+    "code": "def solve(d):\n    s=d[0];k=int(d[1]);answer=0\n    for start in (0,):\n        left=bad=0\n        for right,c in enumerate(s):\n            bad+=int(c)!=((right+start)%2)\n            while bad>k:\n                bad-=int(s[left])!=((left+start)%2);left+=1\n            answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把预算取为0",
+    "code": "def solve(d):\n    s=d[0];k=0;answer=0\n    for start in (0,1):\n        left=bad=0\n        for right,c in enumerate(s):\n            bad+=int(c)!=((right+start)%2)\n            while bad>k:\n                bad-=int(s[left])!=((left+start)%2);left+=1\n            answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

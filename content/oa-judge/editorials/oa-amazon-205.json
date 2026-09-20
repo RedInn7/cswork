@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-205",
+  "title": "固定时隙内可执行的最长程序后缀",
+  "explanation": "## 思路\n\n二分后缀起点，用从左到右的题定算法统计所需时隙数。删除更多前缀不会增加最少时隙数。\n\n## 正确性证明\n\n固定起点时，将当前时隙尽量填满的贪心，其第一个分段末尾不早于任何其他合法分段；逐段归纳得到最少分段数。删除前缀可沿用剩余合法分段，再用贪心只会更少，因此可行起点呈后缀单调，二分找到最早起点即最长程序后缀。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]))\n    def valid(start):\n        slots=1;used=0\n        for i in range(start,n):\n            v=a[i]\n            if used+v>k:slots+=1;used=0\n            used+=v\n            if slots>m:return False\n        return True\n    lo=0;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if valid(mid):hi=mid\n        else:lo=mid+1\n    return str(n-lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#205-get-max-programs",
+  "sourceContentHash": "2faaaa2f4e2fa77eefc6224f0b43ada82fd74e407891a609817afc9d4d0359ef",
+  "author": "CSWork"
+}

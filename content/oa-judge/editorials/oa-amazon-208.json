@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-208",
+  "title": "服务器子集的最大稳定性",
+  "explanation": "## 思路\n\n按availability递减处理，累计reliability，比较当前availability乘累计和。\n\n## 正确性证明\n\n固定最小availability阈值时，所有不低于阈值的服务器均可加入，且正reliability使加入不会减小稳定性。某最优子集的最小availability是一个实际值，扫描到该值全部成员时得到至少同样好的候选；所有候选本身可行，所以最大候选即最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，乘积用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);reliability=list(map(int,d[1:1+n]));availability=list(map(int,d[1+n:]));total=answer=0\n    for value,r in sorted(zip(availability,reliability),reverse=True):total+=r;answer=max(answer,value*total)\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#208-get-maximum-stability",
+  "sourceContentHash": "c779e07dde5d969ecdfc36a0050bec8af42c8e2fc9acae2b9144abc63573f0ae",
+  "author": "CSWork"
+}

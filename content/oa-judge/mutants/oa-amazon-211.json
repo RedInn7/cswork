@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许缩短1",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);pairs=[];i=0\n    while i+1<len(a):\n        if a[i]-a[i+1]==0:pairs.append(a[i+1]);i+=2\n        else:i+=1\n    answer=sum(pairs[i]*pairs[i+1] for i in range(0,len(pairs)-1,2))\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "较长棒作为边长",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);pairs=[];i=0\n    while i+1<len(a):\n        if a[i]-a[i+1]<=1:pairs.append(a[i]);i+=2\n        else:i+=1\n    answer=sum(pairs[i]*pairs[i+1] for i in range(0,len(pairs)-1,2))\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

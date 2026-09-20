@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-16",
+  "title": "指定批次大小的最大效率和",
+  "explanation": "## 思路\n\n令q为大小至少2的组数，将全局最大的q个容量用作组最大值、最小的q个作组最小值，其余元素填入余下名额。\n\n## 正确性\n\n每个非单元素组恰贡献一个最大值和一个最小值，故总和不超过最大q项之和减最小q项之和。把这两组极值各配一个给每个非单组，其余所有容量都在极值之间，任意填满指定余量不改变极值；单元素组占用剩余项，达到上界。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:2+n]));sizes=list(map(int,d[2+n:]));q=sum(x>=2 for x in sizes)\n    return str(sum(a[n-q:])-sum(a[:q]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#16-get-max-efficiency",
+  "sourceContentHash": "f4f2c46615f94ef71cbb7198a5858fe079d87525f4c99817b8ebafe9bb3a41ff",
+  "author": "CSWork"
+}

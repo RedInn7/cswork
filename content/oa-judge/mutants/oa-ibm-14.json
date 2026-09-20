@@ -1,0 +1,10 @@
+[
+  {
+    "name": "所有严格下降都算",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));run=1;answer=0\n    for i in range(1,len(a)):\n        run=run+1 if a[i]<a[i-1] else 1;answer+=run-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "计入单元素",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));run=1;answer=len(a)\n    for i in range(1,len(a)):\n        run=run+1 if a[i]==a[i-1]-1 else 1;answer+=run-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

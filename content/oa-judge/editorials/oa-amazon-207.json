@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-207",
+  "title": "两类员工等人数的最大连续技能和",
+  "explanation": "## 思路\n\n把专业1记+1、0记−1，维护人数差前缀。对每个人数差保存最小技能前缀和，用当前技能和减这个最小值更新答案。\n\n## 正确性证明\n\n两端人数差前缀相等恰好表示区间两类人数相等。固定右端时其技能和固定，减去同人数差的最小历史技能前缀得到最大区间和，其他历史点不可能更好。初始答案0包含空队伍，允许负技能时不能只记最早下标。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);skills=list(map(int,d[1:1+n]));types=list(map(int,d[1+n:]));minimum={0:0};balance=total=answer=0\n    for value,t in zip(skills,types):\n        balance+=1 if t else -1;total+=value\n        if balance in minimum:answer=max(answer,total-minimum[balance]);minimum[balance]=min(minimum[balance],total)\n        else:minimum[balance]=total\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#207-get-max-skill-sum",
+  "sourceContentHash": "fca64163c878e2fb1ba11e0e761b1ecf5b9990ef185ecad85c832094128dcbcf",
+  "author": "CSWork"
+}

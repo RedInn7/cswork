@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-198",
+  "title": "所有日期的最大聚合温差",
+  "explanation": "## 思路\n\n先计算总和，逐日维护前缀。当前后缀为总和减去此前前缀，同时比较当前前缀及后缀。\n\n## 正确性证明\n\n循环到i时此前前缀精确等于第1..i−1天之和，因而总和减它得到含i的后缀；加上当前温差得到含i的前缀。检查所有日期、全部合法候选不重不漏。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入，辅助O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);prefix=0;answer=-10**30\n    for v in a:\n        answer=max(answer,total-prefix);prefix+=v;answer=max(answer,prefix)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#198-get-max-aggregate-temperature-change",
+  "sourceContentHash": "ea607bc240029a157993e04976e1b1088a6fa6ac2b3791a7b4585a3c34a47e83",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-204",
+  "title": "前端严格胜过后端的最多服务器对",
+  "explanation": "## 思路\n\n两组排序，依次用最小能胜过当前最小后端的前端完成一对。\n\n## 正确性证明\n\n过小前端不能胜过当前最小后端，也不能胜过任何剩余后端，可以丢弃。能胜过时，交换某最优方案配对，使当前两者成对不会减少成功对数，重复得到最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=sorted(map(int,d[1:1+n]));b=sorted(map(int,d[1+n:]));j=0\n    for v in a:\n        if j<n and v>b[j]:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#204-get-maximum-pairs",
+  "sourceContentHash": "f67de95919a740907f0cc60720d72b0b28a3d76509aa1f20ce207210e4dfbcea",
+  "author": "CSWork"
+}

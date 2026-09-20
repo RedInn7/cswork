@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把每个0当一次操作",
+    "code": "def solve(d):\n    s=d[0];k=int(d[1]);left=groups=answer=0\n    for right,c in enumerate(s):\n        if c=='0':groups+=1\n        while groups>k:\n            if s[left]=='0' and (left==right or s[left+1]=='1'):groups-=1\n            left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "预算少一",
+    "code": "def solve(d):\n    s=d[0];k=max(0,int(d[1])-1);left=groups=answer=0\n    for right,c in enumerate(s):\n        if c=='0' and (right==0 or s[right-1]=='1'):groups+=1\n        while groups>k:\n            if s[left]=='0' and (left==right or s[left+1]=='1'):groups-=1\n            left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

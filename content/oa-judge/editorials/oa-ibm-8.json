@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-8",
+  "title": "按用户超时划分会话",
+  "explanation": "## 思路\n\n按用户和时间排序，数用户变化或相邻间隔大于t的位置。\n\n## 正确性证明\n\n同用户排序后，间隔大于t将会话分断，其余相邻事件连接成恰好的极大连续段，每段首事件贡献1；不同用户首事件分别计数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,t=map(int,d[:2]);events=sorted((d[i],int(d[i+1])) for i in range(2,len(d),2));last=None;answer=0\n    for u,time in events:\n        if last is None or u!=last[0] or time-last[1]>t:answer+=1\n        last=(u,time)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#8-user-sessions",
+  "sourceContentHash": "5dbc7a9883cb70ee7e17030b428bbbe4cfcbe7e80472e95af504d7a72dab099a",
+  "author": "CSWork"
+}

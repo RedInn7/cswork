@@ -1,0 +1,10 @@
+[
+  {
+    "name": "缺键null混淆",
+    "code": "def solve(d):\n    import json\n    from decimal import Decimal\n    a,b=[json.loads(line,parse_int=Decimal,parse_float=Decimal) for line in d.split('\\n')[:2]]\n    def equal(x,y):\n        if type(x) is not type(y):return False\n        if isinstance(x,dict):return x.keys()==y.keys() and all(equal(x[k],y[k]) for k in x)\n        if isinstance(x,list):return len(x)==len(y) and all(equal(u,v) for u,v in zip(x,y))\n        return x==y\n    keys=[]\n    for k in a.keys()|b.keys():\n        if not equal(a.get(k),b.get(k)):keys.append(k)\n    return json.dumps(sorted(keys),ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "布尔与数值混淆",
+    "code": "def solve(d):\n    import json\n    from decimal import Decimal\n    a,b=[json.loads(line,parse_int=Decimal,parse_float=Decimal) for line in d.split('\\n')[:2]]\n    def equal(x,y):\n        if type(x) is not type(y) and not isinstance(x,(bool,Decimal)):return False\n        if isinstance(x,dict):return x.keys()==y.keys() and all(equal(x[k],y[k]) for k in x)\n        if isinstance(x,list):return len(x)==len(y) and all(equal(u,v) for u,v in zip(x,y))\n        return x==y\n    keys=[]\n    for k in a.keys()|b.keys():\n        if k not in a or k not in b or not equal(a[k],b[k]):keys.append(k)\n    return json.dumps(sorted(keys),ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

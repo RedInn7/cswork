@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-16",
+  "title": "字母集合相同的字符串对",
+  "explanation": "## 思路\n\n用26位掩码表示字母集合，逐串累加此前同掩码个数。\n\n## 正确性证明\n\n每位精确记录该字母是否出现，掩码相等当且仅当集合相同；每个下标对在后出现者被扫描时计数一次。\n\n## 复杂度\n\n时间O(总长度+n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    lines=d.split('\\n');n=int(lines[0]);freq={};answer=0\n    for s in lines[1:n+1]:\n        mask=0\n        for c in s:mask|=1<<(ord(c)-97)\n        answer+=freq.get(mask,0);freq[mask]=freq.get(mask,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#16-count-similar-pairs",
+  "sourceContentHash": "354e1e634f1d58c2d7f7a41441f400d1095f55bb05a96e68603d30a62b4e3728",
+  "author": "CSWork"
+}

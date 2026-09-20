@@ -64,6 +64,7 @@ async function run(code, input, spec) {
       'oa-optimal-distinct',
       'oa-dictionary-path',
       'oa-ipv4-cidr',
+      'oa-json-diff',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

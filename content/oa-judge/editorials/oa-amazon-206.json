@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-206",
+  "title": "删除至多k人后的最长同速连续队伍",
+  "explanation": "## 思路\n\n按速度保存出现下标。每组下标上滑窗，内部需删除人数为positions[r]−positions[l]−(r−l)，保持不超过k。\n\n## 正确性证明\n\n若保留同速的第l到r次出现，则两端间所有其他速度必须删除，所需恰为总跨度减同速人数；删除这些人即可连续。最优段不需要删除其内部同速者，所以只须考虑每组连续出现次数，双指针穷尽合法最长窗口。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);groups={}\n    for i,v in enumerate(map(int,d[2:])):groups.setdefault(v,[]).append(i)\n    answer=0\n    for p in groups.values():\n        left=0\n        for right in range(len(p)):\n            while p[right]-p[left]-(right-left)>k:left+=1\n            answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#206-get-max-racers",
+  "sourceContentHash": "54468522d1bf137813910a8004b04248911b8c200475b65f80c8185155b7c97b",
+  "author": "CSWork"
+}

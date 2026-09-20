@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-5",
+  "title": "交替合并两个密码字符串",
+  "explanation": "## 思路\n\n按下标遍历较长长度，依次检查并追加两串对应字符。\n\n## 正确性证明\n\n每轮恰好追加尚未处理的下一字符，先a后b，缺项跳过；因此既保持各自顺序，又满足交错和余段规则。\n\n## 复杂度\n\n时间O(|a|+|b|)，输出空间O(|a|+|b|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a,b=d.split('\\n')[:2];out=[]\n    for i in range(max(len(a),len(b))):\n        if i<len(a):out.append(a[i])\n        if i<len(b):out.append(b[i])\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#5-new-password-interleave-two-strings",
+  "sourceContentHash": "1618df155b8337cc2ab7a761595accaf4779f214f641c7393801762943db9532",
+  "author": "CSWork"
+}

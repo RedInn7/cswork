@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不扣除区间原目标",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));count=best=0;states={}\n    for v in a:\n        if v==k:count+=1\n        else:\n            old,previous=states.get(v,(0,count));gain=max(1,old+1);states[v]=(gain,count);best=max(best,gain)\n    return str(count+best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略区间外目标",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));count=best=0;states={}\n    for v in a:\n        if v==k:count+=1\n        else:\n            old,previous=states.get(v,(0,count));gain=max(1,old-(count-previous)+1);states[v]=(gain,count);best=max(best,gain)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

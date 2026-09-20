@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉3的0次幂",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));powers=[];p=3\n    while p<=2*max(a):powers.append(p);p*=3\n    seen={};answer=0\n    for v in a:\n        for p in powers:answer+=seen.get(p-v,0)\n        seen[v]=seen.get(v,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "价格身份去重",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));powers=[];p=1\n    while p<=2*max(a):powers.append(p);p*=3\n    seen={};answer=0\n    for v in a:\n        for p in powers:answer+=seen.get(p-v,0)\n        seen[v]=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

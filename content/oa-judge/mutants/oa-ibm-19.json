@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把更小队也算可减少",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));i=0;answer=0\n    while i<n:\n        j=i+1\n        while j<n and a[j]==a[i]:j+=1\n        answer=max(answer,j-i+min(k,i));i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不限制修改数",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));i=0;answer=0\n    while i<n:\n        j=i+1\n        while j<n and a[j]==a[i]:j+=1\n        answer=max(answer,j-i+n-j);i=j\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-3",
+  "title": "相邻技能连续的最大团队",
+  "explanation": "## 思路\n\n排序后累计相邻差≤1的整段长度，遇更大间隙重新开始。\n\n## 正确性证明\n\n跨越大于1的缺失技能间隙无法形成合法团队；同一无间隙段中的所有人同时选入仍合法，且删去任何人都不能增加人数。因此最长整段最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));best=run=1\n    for i in range(1,len(a)):\n        run=run+1 if a[i]-a[i-1]<=1 else 1;best=max(best,run)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#3-find-max-team-size",
+  "sourceContentHash": "36512c6e4ad7b1f39b84e2b4691bb24141302b4d7b50961428db16d58cdecd90",
+  "author": "CSWork"
+}

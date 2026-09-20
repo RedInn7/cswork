@@ -1,0 +1,10 @@
+[
+  {
+    "name": "恰好填满也换时隙",
+    "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]))\n    def valid(start):\n        slots=1;used=0\n        for i in range(start,n):\n            v=a[i]\n            if used+v>=k:slots+=1;used=0\n            used+=v\n            if slots>m:return False\n        return True\n    lo=0;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if valid(mid):hi=mid\n        else:lo=mid+1\n    return str(n-lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误只检查总耗时",
+    "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]))\n    def valid(start):\n        slots=1;used=0\n        for i in range(start,n):\n            v=a[i]\n            if used+v>k:slots+=1;used=0\n            used+=v\n            if slots>m:return False\n        return True\n    lo=0;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum(a[mid:])<=m*k:hi=mid\n        else:lo=mid+1\n    return str(n-lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

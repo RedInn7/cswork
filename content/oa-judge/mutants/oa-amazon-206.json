@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把删除人数也计入",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);groups={}\n    for i,v in enumerate(map(int,d[2:])):groups.setdefault(v,[]).append(i)\n    answer=0\n    for p in groups.values():\n        left=0\n        for right in range(len(p)):\n            while p[right]-p[left]-(right-left)>k:left+=1\n            answer=max(answer,p[right]-p[left]+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "阈值相等也缩窗",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);groups={}\n    for i,v in enumerate(map(int,d[2:])):groups.setdefault(v,[]).append(i)\n    answer=0\n    for p in groups.values():\n        left=0\n        for right in range(len(p)):\n            while p[right]-p[left]-(right-left)>=k:left+=1\n            answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

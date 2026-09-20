@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-12",
+  "title": "作为Y子串的最长X子序列",
+  "explanation": "## 思路\n\n按X字符逐行更新dp[j]：X已处理前缀内，能形成的以Y第j字符结尾的连续片段最大长度。相等可由旧dp[j−1]+1转移，不相等只能跳过X当前字符。\n\n## 正确性\n\n跳过X字符保留旧dp[j]；若用当前字符，必须与Y[j−1]相等且前一个目标字符紧接Y[j−2]，故唯一允许延伸是旧dp[j−1]+1。两种选择覆盖所有子序列方案，同时不允许跳过Y内部字符。取所有结尾最大值即答案。\n\n## 复杂度\n\n时间O(|X||Y|)，空间O(|Y|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    x,y=d;dp=[0]*(len(y)+1)\n    for c in x:\n        for j in range(len(y),0,-1):\n            if c==y[j-1]:dp[j]=max(dp[j],dp[j-1]+1)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#12-find-longest-subsequence-common-to-x-as-substring-in-y",
+  "sourceContentHash": "02bbefb4f84609478290cf778e9f688a4a132a6a22051330b751aaa4fb8c2acb",
+  "author": "CSWork"
+}

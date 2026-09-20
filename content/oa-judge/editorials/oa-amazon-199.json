@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-199",
+  "title": "至多k次单点翻转后的最长交替子串",
+  "explanation": "## 思路\n\n分别匹配全局0101…和1010…模板，用滑窗维护窗口内不匹配位置数不超过k。\n\n## 正确性证明\n\n任意交替子串与这两种全局模板之一一致，修改代价恰为不匹配数。固定模板时窗口扩大不会减少代价，超预算则缩左端，双指针枚举每个右端的最长可行窗口，取两模板最大即答案。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];k=int(d[1]);answer=0\n    for start in (0,1):\n        left=bad=0\n        for right,c in enumerate(s):\n            bad+=int(c)!=((right+start)%2)\n            while bad>k:\n                bad-=int(s[left])!=((left+start)%2);left+=1\n            answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#199-get-max-alternating-music",
+  "sourceContentHash": "da86a7a625d050e38d890d027c463ad951793f1998f82d717349b2e1e1c4fbf5",
+  "author": "CSWork"
+}

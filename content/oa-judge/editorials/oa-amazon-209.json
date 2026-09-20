@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-209",
+  "title": "每天必做任务之外最多安排几个选做任务",
+  "explanation": "## 思路\n\n每个必做任务转成剩余容量H−耗时。容量和选做耗时分别升序，用当前最小选做任务匹配能容纳它的最小容量。\n\n## 正确性证明\n\n容量不足以装最小任务时，也装不下任何其他选做任务，可跳过。足够时，存在最优方案匹配这两个最小可用元素：若原方案交叉匹配可交换而保持可行，否则直接补入不降低数量。反复执行得到最大匹配。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,h=map(int,d[:2]);capacity=sorted(h-int(v) for v in d[2:2+n]);optional=sorted(map(int,d[2+n:]));j=0\n    for cap in capacity:\n        if j<n and optional[j]<=cap:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#209-compute-maximum-scheduled-tasks",
+  "sourceContentHash": "5b195876f99974f785b7c65aca3ddd78d266362c5fd865fa7311dbab0ed8c7a2",
+  "author": "CSWork"
+}

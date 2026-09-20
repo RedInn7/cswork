@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-203",
+  "title": "公共字符受限的最大信息增益",
+  "explanation": "## 思路\n\n预先统计26字母频率，枚举不同字符串对，公共重数合格则更新长度差最大值。\n\n## 正确性证明\n\n每个字母最多能匹配两串频次较小者那么多，且不同字母独立，所以频次较小值之和恰为公共特征数。枚举所有不同下标对穷尽可选方案，合格者取最大，未遇合法对时按本站约定返回−1。\n\n## 复杂度\n\n时间O(总字符数+26n²)，空间O(26n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);words=d[2:];freq=[]\n    for word in words:\n        row=[0]*26\n        for c in word:row[ord(c)-97]+=1\n        freq.append(row)\n    answer=-1\n    for i in range(n):\n        for j in range(i):\n            diff=abs(len(words[i])-len(words[j]))\n            if diff<=answer:continue\n            common=0\n            for a,b in zip(freq[i],freq[j]):\n                common+=min(a,b)\n                if common>k:break\n            if common<=k:answer=max(answer,diff)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#203-get-maximum-information-gain",
+  "sourceContentHash": "79ea0d4b5e2fcc7482b4137bf85f165324a1875fa5f9f2f32368537d426c4d91",
+  "author": "CSWork"
+}
