@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许空片段",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];ending=answer=a[0]\n    for value in a[1:]:\n        ending=max(value,ending+value);answer=max(answer,ending)\n    return str(max(0,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只看单个元素",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];ending=answer=a[0]\n    for value in a[1:]:\n        ending=max(value,ending+value);answer=max(answer,ending)\n    return str(max(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

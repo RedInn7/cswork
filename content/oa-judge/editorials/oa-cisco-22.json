@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-22",
+  "title": "较晚元素减较早元素的最大正差",
+  "explanation": "## 思路\n\n从左到右维护此前最小值，每个元素只与此前最小值尝试配对。\n\n## 正确性证明\n\n固定右端j时，最小左端元素产生最大的差。遍历所有右端覆盖所有可能最优对；答案从0开始，使没有严格正差时按约定输出0。\n\n## 复杂度\n\n时间O(n)，除输入外辅助空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];lowest=None;answer=0\n    for value in a:\n        if lowest is not None:answer=max(answer,value-lowest)\n        lowest=value if lowest is None else min(lowest,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#22-find-maximum-difference",
+  "sourceContentHash": "b68a39e9e3b3403a09ddfbcefed2db9ba58fc291f73cb914fd9f8e65b5f78f92",
+  "author": "CSWork"
+}

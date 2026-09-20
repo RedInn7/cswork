@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-30",
+  "title": "不取相邻罐子的最多巧克力",
+  "explanation": "## 思路\n\n滚动维护前i−2罐与前i−1罐的最优值；当前罐可不取，或加上前i−2罐最优值。\n\n## 正确性证明\n\n最优方案是否取最后一罐形成互斥且穷尽的两类：不取时等于前一位置最优；取时前一罐不能取，故可与前两位置最优相加。归纳得全局最优。\n\n## 复杂度\n\n时间O(n)，除输入外辅助空间O(1)，最大答案5×10^11。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];older=previous=0\n    for value in a:older,previous=previous,max(previous,older+value)\n    return str(previous)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#30-maximum-chocolates-from-jars-leetcode-198",
+  "sourceContentHash": "0a4531d7c53b26349a62b77656fcaeb1fa2277d18feb62f12f5849b67e29664e",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按升序买",
+    "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]),reverse=False)\n    return str(sum(max(0,value-i) for i,value in enumerate(a)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误积分可减成负数",
+    "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]),reverse=True)\n    return str(sum(value-i for i,value in enumerate(a)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

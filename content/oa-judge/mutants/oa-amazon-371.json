@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略未来已知字母",
+    "code": "def solve(raw):\n    import heapq\n    s=raw.strip();counts=[0]*26;missing=0\n    for c in s:\n        if c=='?':missing+=1\n        else:counts[ord(c)-97]+=1\n    heap=[(0,i) for i,v in enumerate(counts)];heapq.heapify(heap);chosen=[0]*26\n    for _ in range(missing):\n        count,i=heapq.heappop(heap);chosen[i]+=1;heapq.heappush(heap,(count+1,i))\n    pool=iter(''.join(chr(i+97)*count for i,count in enumerate(chosen)))\n    return ''.join(next(pool) if c=='?' else c for c in s)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把较大填充字母放前面",
+    "code": "def solve(raw):\n    import heapq\n    s=raw.strip();counts=[0]*26;missing=0\n    for c in s:\n        if c=='?':missing+=1\n        else:counts[ord(c)-97]+=1\n    heap=[(v,i) for i,v in enumerate(counts)];heapq.heapify(heap);chosen=[0]*26\n    for _ in range(missing):\n        count,i=heapq.heappop(heap);chosen[i]+=1;heapq.heappush(heap,(count+1,i))\n    pool=iter(''.join(chr(i+97)*chosen[i] for i in range(25,-1,-1)))\n    return ''.join(next(pool) if c=='?' else c for c in s)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

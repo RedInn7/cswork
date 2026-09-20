@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-27",
+  "title": "删除叶子使所有保留服务器满足祖先限制",
+  "explanation": "## 思路\n\n遍历时维护根路径和D及严格祖先的最小根路径和M。v安全当且仅当D[v]−M≤threshold[v]。节点不安全或父节点已确定删除，则其整个子树必须删除；迭代遍历同时计数。\n\n## 正确性证明\n\n到严格祖先u的路径和为D[v]−D[u]，其最大值为D[v]−M。保留任一节点必须保留所有祖先，故不安全节点以及全部后代不得保留。删去这些子树可由叶到根完成，剩余各点恰满足判定，因此删除数既必要又可实现。负边和负threshold原样参与比较，不截断到0。\n\n## 复杂度\n\n时间O(n)，空间O(n)。邻接表使用紧凑数组、词法流式解析，不递归，路径和使用64位或任意精度整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import re\n    from array import array\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);threshold=array('i',(next(values) for _ in range(n)));head=array('i',[-1])*n;to=array('I');weight=array('i');following=array('i')\n    def edge(u,v,w):\n        to.append(v);weight.append(w);following.append(head[u]);head[u]=len(to)-1\n    for _ in range(n-1):\n        u=next(values)-1;v=next(values)-1;w=next(values);edge(u,v,w);edge(v,u,w)\n    answer=0;stack=[(0,-1,0,0,False)]\n    while stack:\n        u,parent,distance,minimum,removed=stack.pop()\n        removed=removed or (u!=0 and distance-minimum>threshold[u])\n        answer+=removed;minimum=min(minimum,distance);e=head[u]\n        while e!=-1:\n            v=to[e]\n            if v!=parent:stack.append((v,u,distance+weight[e],minimum,removed))\n            e=following[e]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#27-get-minimum-servers",
+  "sourceContentHash": "d72bc7fd9ba8c01ea163eefe9c29b78542d4170d1fbf88bdf3a411c01d1a5b8d",
+  "author": "CSWork"
+}

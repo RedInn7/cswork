@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-365",
+  "title": "全部子数组不同值个数的下中位数",
+  "explanation": "## 思路\n\n目标序号为(T+1)//2，T=n(n+1)/2。二分答案x，滑动窗口累计不同值不超过x的子数组数，达到目标则收缩上界。\n\n## 正确性证明\n\n固定右端，左端移至不同值≤x后，所有更靠右的起点合法，更靠左的不合法，因此右端贡献恰为窗口长度。累计得到≤x的子数组总数，随x单调；第一个累计达到下中位序号的x正是所求顺序统计量。\n\n## 复杂度\n\nO(n log n)时间，O(n)空间，子数组总数用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);target=(n*(n+1)//2+1)//2;lo=1;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2;counts=[0]*(n+1);left=distinct=total=0\n        for right,v in enumerate(a):\n            if not counts[v]:distinct+=1\n            counts[v]+=1\n            while distinct>mid:\n                u=a[left];counts[u]-=1;left+=1\n                if not counts[u]:distinct-=1\n            total+=right-left+1\n        if total>=target:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#365-find-median-of-subarray-uniqueness",
+  "sourceContentHash": "1dc424df2a1b7891d54e851584b2dd6d522d57dfc41215948bb8f011cdb5b069",
+  "author": "CSWork"
+}

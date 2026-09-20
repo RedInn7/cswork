@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏水平线",
+    "code": "def solve(raw):\n    from collections import Counter\n    values=list(map(int,raw.split()));n=values[0];x=values[1:1+n];y=values[1+n:];best=max(Counter(x).values())\n    return str(best if best>=2 else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误允许单点航线",
+    "code": "def solve(raw):\n    from collections import Counter\n    values=list(map(int,raw.split()));n=values[0];x=values[1:1+n];y=values[1+n:];best=max(max(Counter(x).values()),max(Counter(y).values()))\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

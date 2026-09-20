@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-356",
+  "title": "最大库存租赁与最小非零库存收费",
+  "explanation": "## 思路\n\n先降序压平最高平台，到最低正库存之前最小值不变；全部相等后按完整轮与余项收费，降到全1时余下每次均收2。\n\n## 正确性证明\n\n始终从最高项扣1，故前c个最高项会轮流从h降到下一层，t=cq+r步的最大值之和为cq(2h−q+1)/2+r(h−q)，且未碰最低平台时最小值固定。全部c项同高h≥2时一轮第一笔为2h，余c−1笔为2h−1，合计c(2h−1)+1；等差求和可批量跳q轮。降至1以后删去零类但最小非零仍为1，直至售罄每笔2。分段恰覆盖所有请求且收费发生在扣库存前。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，不逐请求循环；收入≤2×10^18。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    data=iter(map(int,raw.split()));n=next(data);left=next(data);a=sorted((v for v in data if v>0),reverse=True)\n    if not a or not left:return '0'\n    low=a[-1];answer=0;c=1;h=a[0]\n    while c<len(a) and left:\n        nxt=a[c];take=min(left,c*(h-nxt));q,r=divmod(take,c)\n        answer+=c*q*(2*h-q+1)//2+r*(h-q)+take*low;left-=take\n        if take<c*(h-nxt):return str(answer)\n        h=nxt;c+=1\n    take=min(left,c*(h-1));q,r=divmod(take,c)\n    answer+=q*(c*(2*h-q)+1)\n    if r:answer+=2*(h-q)+(r-1)*(2*(h-q)-1)\n    left-=take;answer+=2*left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#356-vm-rental-revenue",
+  "sourceContentHash": "c459ca6dda61b9266db028864bb417b70e63826452713ab815ca340f7bdf3a88",
+  "author": "CSWork"
+}

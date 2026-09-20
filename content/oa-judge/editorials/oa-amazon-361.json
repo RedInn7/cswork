@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-361",
+  "title": "至少一端达到最大值的子数组数量",
+  "explanation": "## 思路\n\n分别用单调栈统计末端为最大和首端为最大，遇相等值也弹出以寻找严格更大边界；再用递减分组栈减去两端都为最大的区间。\n\n## 正确性证明\n\n固定端点向内延伸直到第一个严格更大值，恰得到此端为最大值的全部区间。两类计数需包含排除：某值v出现时，弹掉更小组，顶部同值此前c次均与当前位置之间没有更大值，贡献c+1个双端最大区间（含单点）；若顶部不同仅单点。更小组一旦越过当前更大值不能跨过当前再贡献，弹出安全。因此减项准确处理全部重复端点，不只减n。\n\n## 复杂度\n\n时间O(n)，空间O(n)，计数用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];answer=0\n    for values in (a,reversed(a)):\n        stack=[]\n        for i,v in enumerate(values):\n            while stack and stack[-1][1]<=v:stack.pop()\n            answer+=i-(stack[-1][0] if stack else -1);stack.append((i,v))\n    groups=[];both=0\n    for v in a:\n        while groups and groups[-1][0]<v:groups.pop()\n        if groups and groups[-1][0]==v:groups[-1][1]+=1;both+=groups[-1][1]\n        else:groups.append([v,1]);both+=1\n    return str(answer-both)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#361-count-maximum-profitable-groups",
+  "sourceContentHash": "6963fb1ad0a1e204b08aa86ca48720b66b8b0978b687181ec10fcf563828fcd2",
+  "author": "CSWork"
+}

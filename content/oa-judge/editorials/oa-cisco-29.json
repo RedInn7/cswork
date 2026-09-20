@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-29",
+  "title": "返回任意一个最长回文连续子串",
+  "explanation": "## 思路\n\n枚举奇偶中心并向两边扩展。每个中心保留能达到的最长子串，最终输出长度最大的一个。参考程序的内部并列选择不属于输出要求，语义checker接受所有最优结果。\n\n## 正确性证明\n\n任一回文有一个奇数或偶数中心。枚举并最大扩展所有中心必覆盖全局最长回文；返回的候选属于原串且左右字符逐对相等，因而合法且最优。\n\n## 复杂度\n\n时间O(n²)，候选字符串辅助空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();answer=''\n    for middle in range(2*len(s)-1):\n        left=middle//2;right=left+middle%2\n        while left>=0 and right<len(s) and s[left]==s[right]:left-=1;right+=1\n        candidate=s[left+1:right]\n        if len(candidate)>=1 and (len(candidate)>len(answer) or len(candidate)==len(answer) and candidate<answer):answer=candidate\n    return answer or 'None'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#29-longest-palindromic-substring",
+  "sourceContentHash": "eebd8b20eb3f51db3c4ba479b5db235bb2161432ee3dfb71f52209698ed73cea",
+  "author": "CSWork"
+}

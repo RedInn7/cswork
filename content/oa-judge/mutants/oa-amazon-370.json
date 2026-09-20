@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误均值向下取整也计入",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);out=[0]*(n+1)\n    for left in range(n):\n        total=0\n        for right in range(left,n):\n            total+=a[right];size=right-left+1\n            if True:out[total//size]+=1\n    return ' '.join(map(str,out[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误漏掉单元素区间",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);out=[0]*(n+1)\n    for left in range(n):\n        total=0\n        for right in range(left,n):\n            total+=a[right];size=right-left+1\n            if size>1 and total%size==0:out[total//size]+=1\n    return ' '.join(map(str,out[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

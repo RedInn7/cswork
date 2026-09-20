@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-369",
+  "title": "购买后其余奖励递减的最大积分",
+  "explanation": "## 思路\n\n按初始积分降序，第i次购买（从0开始）收益max(0,a[i]−i)，求和。\n\n## 正确性证明\n\n第i个时刻购买初值v的收益仅依赖v和i。对较早时刻i与较晚j、初值x≥y，有max(0,x−i)+max(0,y−j)≥max(0,y−i)+max(0,x−j)，因为相同时间折损对较大初值保留的增益不更小。交换逆序不降低收益，最终降序最优；收益非负，可把未买项放最后而不减少总收益。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，总积分需64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]),reverse=True)\n    return str(sum(max(0,value-i) for i,value in enumerate(a)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#369-compute-maximum-earning-points",
+  "sourceContentHash": "7fa8432bd3db4092a62e42bddb530121f68f75fa8dfa41914c2d71efb5a5dac7",
+  "author": "CSWork"
+}

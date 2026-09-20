@@ -65,6 +65,7 @@ async function run(code, input, spec) {
       'oa-dictionary-path',
       'oa-ipv4-cidr',
       'oa-json-diff',
+      'oa-longest-palindrome',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

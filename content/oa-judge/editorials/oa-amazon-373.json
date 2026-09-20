@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-373",
+  "title": "不同水果成对消除后的最少剩余",
+  "explanation": "## 思路\n\n设最高频次f，答案max(2f−n,n%2)。\n\n## 正确性证明\n\n最高频类型最多被其他n−f项抵消，至少余2f−n；每次删2，剩余还须与n同奇偶。若有过半类型，逐一用其他类型抵消它可达到多数下界。否则n为偶数时将同类分组排序，前后各半对应位置配对，各类不超半数保证每对不同；奇数先留下一项使剩余无过半类型，再同样配对。故恰达到两个下界之最大。\n\n## 复杂度\n\n期望时间O(n)，空间O(不同类型数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    a=list(map(int,raw.split()))[1:];n=len(a);f=max(Counter(a).values())\n    return str(max(2*f-n,n%2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#373-lets-play-crush-fruit-together-",
+  "sourceContentHash": "e726afcbbf47b01b12fccf3d13cda1d9c599f510578e8f91b481af1ca1c2e00b",
+  "author": "CSWork"
+}

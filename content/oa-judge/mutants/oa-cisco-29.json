@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误始终只返回单字符",
+    "code": "def solve(raw):\n    s=raw.strip();answer=''\n    for middle in range(2*len(s)-1):\n        left=middle//2;right=left+middle%2\n        while left>=0 and right<len(s) and s[left]==s[right]:left-=1;right+=1\n        candidate=s[left+1:right]\n        if len(candidate)>=1 and (len(candidate)>len(answer) or len(candidate)==len(answer) and candidate<answer):answer=candidate\n    return s[0]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把原串整体当回文",
+    "code": "def solve(raw):\n    s=raw.strip();answer=''\n    for middle in range(2*len(s)-1):\n        left=middle//2;right=left+middle%2\n        while left>=0 and right<len(s) and s[left]==s[right]:left-=1;right+=1\n        candidate=s[left+1:right]\n        if len(candidate)>=1 and (len(candidate)>len(answer) or len(candidate)==len(answer) and candidate<answer):answer=candidate\n    return s\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

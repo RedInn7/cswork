@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-359",
+  "title": "至多循环后继一次的密码子序列",
+  "explanation": "## 思路\n\n双指针扫描new，若当前字符或它的一次循环后继等于old下一个字符，就立即匹配。\n\n## 正确性证明\n\n每个位置独立决定是否修改，能匹配目标字符的最早位置可替换任意可行方案的较晚匹配位置，并为后续保留不更少位置。因此逐字符最早匹配保持存在可行后缀的性质，最终匹配完old当且仅当可行。\n\n## 复杂度\n\n时间O(全部密码总长度)，额外空间O(请求数)计输出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    out=[]\n    for new,old in json.loads(raw):\n        j=0\n        for c in new:\n            if j<len(old) and (c==old[j] or chr((ord(c)-97+1)%26+97)==old[j]):j+=1\n        out.append('YES' if j==len(old) else 'NO')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#359-check-similar-passwords-also-for-fungile",
+  "sourceContentHash": "e31ad7686ce87228caebed642bfba6331286ffab6a686586d7eb47843c50060c",
+  "author": "CSWork"
+}

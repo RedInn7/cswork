@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-32",
+  "title": "方阵顺时针旋转九十度",
+  "explanation": "## 思路\n\n新矩阵的第c行，就是原矩阵第c列从下到上。紧凑存储原矩阵，逐行生成输出。\n\n## 正确性证明\n\n旋转将原坐标(r,c)映射到(c,N−1−r)，因此固定新行c并按新列递增，恰等价于原行从N−1递减到0。该坐标映射是一一对应，输出每个元素一次且位置正确。\n\n## 复杂度\n\n时间O(N²)，输入及输出存储O(N²)；最坏输出12000000字节，输出上限16MiB。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import re\n    from array import array\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);m=next(values);a=array('i',values)\n    return '\\n'.join(' '.join(str(a[r*n+c]) for r in range(n-1,-1,-1)) for c in range(n))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#32-rotate-matrix",
+  "sourceContentHash": "e3c1b153a432f77d17476140c5e2675476c51abaac6bab4c34be37d3f12f298d",
+  "author": "CSWork"
+}

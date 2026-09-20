@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏不安全祖先导致的整棵子树删除",
+    "code": "def solve(raw):\n    import re\n    from array import array\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);threshold=array('i',(next(values) for _ in range(n)));head=array('i',[-1])*n;to=array('I');weight=array('i');following=array('i')\n    def edge(u,v,w):\n        to.append(v);weight.append(w);following.append(head[u]);head[u]=len(to)-1\n    for _ in range(n-1):\n        u=next(values)-1;v=next(values)-1;w=next(values);edge(u,v,w);edge(v,u,w)\n    answer=0;stack=[(0,-1,0,0,False)]\n    while stack:\n        u,parent,distance,minimum,removed=stack.pop()\n        removed=False or (u!=0 and distance-minimum>threshold[u])\n        answer+=removed;minimum=min(minimum,distance);e=head[u]\n        while e!=-1:\n            v=to[e]\n            if v!=parent:stack.append((v,u,distance+weight[e],minimum,removed))\n            e=following[e]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误禁止负限制并截断为0",
+    "code": "def solve(raw):\n    import re\n    from array import array\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);threshold=array('i',(next(values) for _ in range(n)));head=array('i',[-1])*n;to=array('I');weight=array('i');following=array('i')\n    def edge(u,v,w):\n        to.append(v);weight.append(w);following.append(head[u]);head[u]=len(to)-1\n    for _ in range(n-1):\n        u=next(values)-1;v=next(values)-1;w=next(values);edge(u,v,w);edge(v,u,w)\n    answer=0;stack=[(0,-1,0,0,False)]\n    while stack:\n        u,parent,distance,minimum,removed=stack.pop()\n        removed=removed or (u!=0 and distance-minimum>max(0,threshold[u]))\n        answer+=removed;minimum=min(minimum,distance);e=head[u]\n        while e!=-1:\n            v=to[e]\n            if v!=parent:stack.append((v,u,distance+weight[e],minimum,removed))\n            e=following[e]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

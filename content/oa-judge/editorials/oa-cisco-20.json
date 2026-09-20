@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-20",
+  "title": "逆时针螺旋隔格跳跃的最后落点",
+  "explanation": "## 思路\n\n按四条边依次收缩边界，给访问的格子一个全局从0开始的序号；仅偶数序号更新答案。\n\n## 正确性证明\n\n每轮恰遍历当前外圈且各格只出现一次，删除外圈后的矩形继续遵循同一螺旋方向。单行、单列条件避免重复；全局偶数序号恰对应题意的每隔一个格子落地。最后更新值因此就是最终落点。\n\n## 复杂度\n\n时间O(NM)，除矩阵输入外辅助空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,m=values[:2];a=values[2:];top=left=0;bottom=n-1;right=m-1;index=0;answer=a[0]\n    def visit(r,c):\n        nonlocal index,answer\n        if index%2==0:answer=a[r*m+c]\n        index+=1\n    while top<=bottom and left<=right:\n        for r in range(top,bottom+1):visit(r,left)\n        left+=1\n        for c in range(left,right+1):visit(bottom,c)\n        bottom-=1\n        if left<=right:\n            for r in range(bottom,top-1,-1):visit(r,right)\n            right-=1\n        if top<=bottom:\n            for c in range(right,left-1,-1):visit(top,c)\n            top+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#20-find-last-cell",
+  "sourceContentHash": "f0de1cca0fafe29cb2530348f51643834a3bf9bbc9da8a96345565fd4b60dc27",
+  "author": "CSWork"
+}

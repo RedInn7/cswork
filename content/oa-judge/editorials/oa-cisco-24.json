@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-24",
+  "title": "通过增减与整区迁移匹配三个区域",
+  "explanation": "## 思路\n\n枚举每个初始区域属于目标组0/1/2或不使用。三个目标组非空，组成本为(区域数−1)c+|机器总和−目标|。递归只维护三个和及计数。\n\n## 正确性证明\n\n任一最终选中区域由若干原区域合并而来，三个来源组互不相交且非空。组内至少合并k−1次，净增减至少为总量与目标的绝对差。反过来先合并各组再增减至正目标，恰好达到该下界，且不影响未选区域；枚举因此包含且实现最优操作方案。\n\n## 复杂度\n\n时间O(4^n)，递归辅助空间O(n)，不保留所有分组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];target=values[n+1:n+4];shift=values[-1];totals=[0]*3;counts=[0]*3;answer=10**30\n    def search(i):\n        nonlocal answer\n        if sum(k==0 for k in counts)>n-i:return\n        if i==n:\n            if all(counts):answer=min(answer,sum((counts[g]-1)*shift+abs(totals[g]-target[g]) for g in range(3)))\n            return\n        search(i+1)\n        for g in range(3):\n            totals[g]+=a[i];counts[g]+=1;search(i+1);counts[g]-=1;totals[g]-=a[i]\n    search(0);return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#24-find-minimum-cost-to-shift-machines",
+  "sourceContentHash": "97bcc8282b7e4b709a8af6daccbf5610dbc9dc2600101c69be825631086a2c60",
+  "author": "CSWork"
+}

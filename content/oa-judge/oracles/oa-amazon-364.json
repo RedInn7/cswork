@@ -1,0 +1,654 @@
+[
+  {
+    "input": "\"CBCAAXA\"\n",
+    "expectedOutput": "\"BAX\"\n"
+  },
+  {
+    "input": "\"ZYXZYZY\"\n",
+    "expectedOutput": "\"XYZ\"\n"
+  },
+  {
+    "input": "\"ABCBACDDAA\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"AA \"\n",
+    "expectedOutput": "\"\\u2029\\u0085\"\n"
+  },
+  {
+    "input": "\"B\\u0000A  \"\n",
+    "expectedOutput": "\"\\u0085B\\u0000A\\u2028 \"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2029\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2028\"\n"
+  },
+  {
+    "input": "\" 😀\"\n",
+    "expectedOutput": "\"\\u2029\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"  AA\"\n",
+    "expectedOutput": "\"\\u2029\\u2028\"\n"
+  },
+  {
+    "input": "\"BA  B\"\n",
+    "expectedOutput": "\"A\\u2028 \\u0085\"\n"
+  },
+  {
+    "input": "\"  \"\n",
+    "expectedOutput": "\"\\u2028 \"\n"
+  },
+  {
+    "input": "\"   A\"\n",
+    "expectedOutput": "\"\\u0085\\u2029\\u2028 A\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2029\"\n"
+  },
+  {
+    "input": "\" BB \\u0000 \"\n",
+    "expectedOutput": "\"\\u2028\\u0085\\u0000\"\n"
+  },
+  {
+    "input": "\"😀 AB\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00\\u2029\\u0085AB\"\n"
+  },
+  {
+    "input": "\"BA 😀\"\n",
+    "expectedOutput": "\"BA \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"   BA A\"\n",
+    "expectedOutput": "\" \\u2028B\"\n"
+  },
+  {
+    "input": "\"  BA😀😀B\"\n",
+    "expectedOutput": "\"\\u2029 A\"\n"
+  },
+  {
+    "input": "\"\\u0000😀BA \"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00BA\\u2028\"\n"
+  },
+  {
+    "input": "\" B  B\\u0000\"\n",
+    "expectedOutput": "\" \\u2028\\u2029\\u0000\"\n"
+  },
+  {
+    "input": "\"  ABB\"\n",
+    "expectedOutput": "\"A\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\" \"\n"
+  },
+  {
+    "input": "\"\\u0000\"\n",
+    "expectedOutput": "\"\\u0000\"\n"
+  },
+  {
+    "input": "\"A \"\n",
+    "expectedOutput": "\"\\u0085A \"\n"
+  },
+  {
+    "input": "\"    😀😀\\u0000\"\n",
+    "expectedOutput": "\"\\u2029 \\u0085\\u0000\"\n"
+  },
+  {
+    "input": "\" A \\u0000A😀 A\"\n",
+    "expectedOutput": "\"\\u2028A\\u2029\\u0000\\ud83d\\ude00 \"\n"
+  },
+  {
+    "input": "\"A \"\n",
+    "expectedOutput": "\"A\\u2028\\u0085\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2028\"\n"
+  },
+  {
+    "input": "\"😀\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"A\"\n",
+    "expectedOutput": "\"A\"\n"
+  },
+  {
+    "input": "\"😀\\u0000😀\"\n",
+    "expectedOutput": "\"\\u0000\"\n"
+  },
+  {
+    "input": "\"\\u0000\\u0000\\u0000😀\\u0000B\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00B\"\n"
+  },
+  {
+    "input": "\"B 😀\"\n",
+    "expectedOutput": "\"B \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"  😀 B\"\n",
+    "expectedOutput": "\" \\ud83d\\ude00B\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" \\u0000A    B\"\n",
+    "expectedOutput": "\" \\u0000AB\"\n"
+  },
+  {
+    "input": "\"😀\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u0000B\\u0000\\u0000\"\n",
+    "expectedOutput": "\"\\u0000B\"\n"
+  },
+  {
+    "input": "\"😀 BA  A\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00B\\u2029\"\n"
+  },
+  {
+    "input": "\"\\u0000BBBA\"\n",
+    "expectedOutput": "\"\\u0000BA\\u0085\"\n"
+  },
+  {
+    "input": "\"\\u0000\\u0000   \"\n",
+    "expectedOutput": "\"\\u0085\\u2029\"\n"
+  },
+  {
+    "input": "\" A\"\n",
+    "expectedOutput": "\" A\"\n"
+  },
+  {
+    "input": "\"A  😀 A\"\n",
+    "expectedOutput": "\" \\u2029\\ud83d\\ude00\\u2028\\u0085\"\n"
+  },
+  {
+    "input": "\"   \"\n",
+    "expectedOutput": "\"\\u2028\\u2029 \"\n"
+  },
+  {
+    "input": "\"B\"\n",
+    "expectedOutput": "\"B\"\n"
+  },
+  {
+    "input": "\"😀 BA \"\n",
+    "expectedOutput": "\"\\u0085\\ud83d\\ude00\\u2028BA \"\n"
+  },
+  {
+    "input": "\" B\"\n",
+    "expectedOutput": "\" B\"\n"
+  },
+  {
+    "input": "\"AA\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" 😀 B\"\n",
+    "expectedOutput": "\" \\ud83d\\ude00\\u2029\\u0085B\"\n"
+  },
+  {
+    "input": "\" A😀 \"\n",
+    "expectedOutput": "\"\\u2029A\\ud83d\\ude00 \"\n"
+  },
+  {
+    "input": "\"\\u0000\"\n",
+    "expectedOutput": "\"\\u0000\"\n"
+  },
+  {
+    "input": "\" 😀BA\"\n",
+    "expectedOutput": "\"\\u2028\\ud83d\\ude00BA\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"  \\u0000 A\"\n",
+    "expectedOutput": "\" \\u0000A\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2028\"\n"
+  },
+  {
+    "input": "\"😀😀\"\n",
+    "expectedOutput": "\"\\u0085\"\n"
+  },
+  {
+    "input": "\" \\u0000😀😀 😀\"\n",
+    "expectedOutput": "\"\\u2028\\u0000\\u2029\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u0000😀A\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00A\"\n"
+  },
+  {
+    "input": "\" 😀\\u0000AB\"\n",
+    "expectedOutput": "\"\\u2028\\ud83d\\ude00\\u0000AB\"\n"
+  },
+  {
+    "input": "\"    A\"\n",
+    "expectedOutput": "\"A\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"  A😀 \\u0000\"\n",
+    "expectedOutput": "\" \\u0085A\\ud83d\\ude00\\u0000\"\n"
+  },
+  {
+    "input": "\" 😀 😀    \"\n",
+    "expectedOutput": "\" \\u2028\"\n"
+  },
+  {
+    "input": "\" \\u0000😀\"\n",
+    "expectedOutput": "\"\\u2028\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\" A😀B\"\n",
+    "expectedOutput": "\"\\u2029A\\ud83d\\ude00B\"\n"
+  },
+  {
+    "input": "\" A B\"\n",
+    "expectedOutput": "\"AB\"\n"
+  },
+  {
+    "input": "\"  😀BB\\u0000😀 \"\n",
+    "expectedOutput": "\"\\u2028\\u0000\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\\u0085\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"  B😀  \"\n",
+    "expectedOutput": "\"B\\ud83d\\ude00\\u0085\"\n"
+  },
+  {
+    "input": "\" B\"\n",
+    "expectedOutput": "\"\\u2028B\\u0085\"\n"
+  },
+  {
+    "input": "\"A😀B \"\n",
+    "expectedOutput": "\"\\u0085A\\ud83d\\ude00B \"\n"
+  },
+  {
+    "input": "\"😀 A\\u0000 \"\n",
+    "expectedOutput": "\"\\u0085\\ud83d\\ude00A\\u0000\"\n"
+  },
+  {
+    "input": "\"B😀 \"\n",
+    "expectedOutput": "\"B\\ud83d\\ude00\\u2028\"\n"
+  },
+  {
+    "input": "\"BBA 😀A\"\n",
+    "expectedOutput": "\"\\u0085\\u2029\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"B 😀\"\n",
+    "expectedOutput": "\"B\\u2028\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"😀B\\u0000B\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00\\u0000\"\n"
+  },
+  {
+    "input": "\" AB   \\u0000😀\"\n",
+    "expectedOutput": "\"AB\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"   A  \"\n",
+    "expectedOutput": "\"\\u0085\\u2028A\"\n"
+  },
+  {
+    "input": "\"BA   😀AA\"\n",
+    "expectedOutput": "\"B \\ud83d\\ude00A\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" A \\u0000A \"\n",
+    "expectedOutput": "\"\\u0000\\u0085\\u2029\"\n"
+  },
+  {
+    "input": "\"  \\u0000B   \"\n",
+    "expectedOutput": "\"\\u0085\\u2029\\u0000B\"\n"
+  },
+  {
+    "input": "\"😀  \\u0000B\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00\\u0000B\"\n"
+  },
+  {
+    "input": "\" AA B\\u0000\"\n",
+    "expectedOutput": "\"\\u0085B\\u0000\"\n"
+  },
+  {
+    "input": "\"\\u0000     \"\n",
+    "expectedOutput": "\"\\u0000\\u2028\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" \\u0000\"\n",
+    "expectedOutput": "\"\\u2028\\u0000\"\n"
+  },
+  {
+    "input": "\"B \"\n",
+    "expectedOutput": "\"B \"\n"
+  },
+  {
+    "input": "\"    \"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2029\\u0085\"\n"
+  },
+  {
+    "input": "\"  \\u0000\"\n",
+    "expectedOutput": "\"\\u2028\\u0085\\u2029\\u0000\"\n"
+  },
+  {
+    "input": "\" 😀 \"\n",
+    "expectedOutput": "\" \\ud83d\\ude00\\u2028\"\n"
+  },
+  {
+    "input": "\" 😀 A  😀\"\n",
+    "expectedOutput": "\"\\u0085A\"\n"
+  },
+  {
+    "input": "\"B\\u0000 AA\\u0000\"\n",
+    "expectedOutput": "\"B\\u2028\"\n"
+  },
+  {
+    "input": "\"B   \"\n",
+    "expectedOutput": "\"B\\u2029\"\n"
+  },
+  {
+    "input": "\"A😀😀A \"\n",
+    "expectedOutput": "\"\\u2028\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" B😀\"\n",
+    "expectedOutput": "\"\\u2029B\\u0085\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\" 😀 \"\n",
+    "expectedOutput": "\" \\ud83d\\ude00\\u2028\"\n"
+  },
+  {
+    "input": "\"A  \\u0000BA😀\"\n",
+    "expectedOutput": "\"\\u0000B\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"B    AA\"\n",
+    "expectedOutput": "\"B\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"     AA\"\n",
+    "expectedOutput": "\"\\u0085\\u2028\"\n"
+  },
+  {
+    "input": "\"\\u0000  A  A \"\n",
+    "expectedOutput": "\"\\u0000 \"\n"
+  },
+  {
+    "input": "\"AA\\u0000 😀😀 \"\n",
+    "expectedOutput": "\"\\u0000 \\u2029\"\n"
+  },
+  {
+    "input": "\" A 😀B😀😀\"\n",
+    "expectedOutput": "\"\\u2028A\\u2029B\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"A \\u0000😀 A \"\n",
+    "expectedOutput": "\" \\u0000\\u0085\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"B\"\n",
+    "expectedOutput": "\"B\"\n"
+  },
+  {
+    "input": "\"  \\u0000A\\u0000\\u0000\"\n",
+    "expectedOutput": "\"\\u2028\\u2029\\u0000A\\u0085\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u0085\\u2028\"\n"
+  },
+  {
+    "input": "\" \\u0000\"\n",
+    "expectedOutput": "\" \\u0000\"\n"
+  },
+  {
+    "input": "\"BB😀 \"\n",
+    "expectedOutput": "\"\\u0085\\ud83d\\ude00 \"\n"
+  },
+  {
+    "input": "\"B 😀\"\n",
+    "expectedOutput": "\"B\\u2029\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"B😀 \\u0000  \"\n",
+    "expectedOutput": "\"B\\ud83d\\ude00\\u0000\\u2028\"\n"
+  },
+  {
+    "input": "\"  😀 😀\"\n",
+    "expectedOutput": "\" \"\n"
+  },
+  {
+    "input": "\"AB 😀AA\"\n",
+    "expectedOutput": "\"AB\\u2029\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u0000😀\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\" BB B\"\n",
+    "expectedOutput": "\" B\\u0085\\u2028\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\" \"\n"
+  },
+  {
+    "input": "\"BA😀😀\"\n",
+    "expectedOutput": "\"BA\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\\u0085\"\n"
+  },
+  {
+    "input": "\"A\"\n",
+    "expectedOutput": "\"A\\u0085\"\n"
+  },
+  {
+    "input": "\"B B \"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"\\u0000\\u0000BAB  \"\n",
+    "expectedOutput": "\"\\u0085A\"\n"
+  },
+  {
+    "input": "\"   \\u0000A\\u0000\\u0000\"\n",
+    "expectedOutput": "\"\\u2029\\u0000A\\u0085\"\n"
+  },
+  {
+    "input": "\"A \"\n",
+    "expectedOutput": "\"A\\u2028\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\" \"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2029\"\n"
+  },
+  {
+    "input": "\"\\u0000  \"\n",
+    "expectedOutput": "\"\\u0000\\u2029 \\u0085\"\n"
+  },
+  {
+    "input": "\" B \"\n",
+    "expectedOutput": "\"\\u2029B\\u2028\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\"\\u2029\"\n"
+  },
+  {
+    "input": "\"A  \"\n",
+    "expectedOutput": "\"A\"\n"
+  },
+  {
+    "input": "\"  AA 😀\\u0000😀\"\n",
+    "expectedOutput": "\"\\u2029\\u0000\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"\\u0000 BB 😀\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\\u0085\"\n"
+  },
+  {
+    "input": "\"A\"\n",
+    "expectedOutput": "\"A\"\n"
+  },
+  {
+    "input": "\"A 😀\\u0000A \"\n",
+    "expectedOutput": "\" \\ud83d\\ude00\\u0000\\u2029\\u0085\"\n"
+  },
+  {
+    "input": "\"\\u0000 \\u0000\"\n",
+    "expectedOutput": "\"\\u2029\\u0085\"\n"
+  },
+  {
+    "input": "\"   \"\n",
+    "expectedOutput": "\"\\u2029\"\n"
+  },
+  {
+    "input": "\"\\u0000     \"\n",
+    "expectedOutput": "\"\\u0085\\u0000\\u2028 \\u2029\"\n"
+  },
+  {
+    "input": "\"B 😀 \"\n",
+    "expectedOutput": "\"B \\ud83d\\ude00\\u2028\\u0085\"\n"
+  },
+  {
+    "input": "\"B\"\n",
+    "expectedOutput": "\"\\u0085B\"\n"
+  },
+  {
+    "input": "\" \\u0000😀  \"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\\u2028\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"AA😀 BA \"\n",
+    "expectedOutput": "\"A\\ud83d\\ude00\\u0085B\"\n"
+  },
+  {
+    "input": "\"😀\\u0000   \"\n",
+    "expectedOutput": "\"\\ud83d\\ude00\\u0000 \"\n"
+  },
+  {
+    "input": "\"B  \"\n",
+    "expectedOutput": "\"B\"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\" \"\n"
+  },
+  {
+    "input": "\" \\u0000   \"\n",
+    "expectedOutput": "\"\\u0000\\u2028\\u2029\"\n"
+  },
+  {
+    "input": "\" BABB \"\n",
+    "expectedOutput": "\"AB\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"A B \\u0000 😀\"\n",
+    "expectedOutput": "\"A\\u0085B\\u0000\\u2029\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"😀   😀\"\n",
+    "expectedOutput": "\"\\u2028\"\n"
+  },
+  {
+    "input": "\"  \"\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "\"\"\n",
+    "expectedOutput": "\"\\u0085\"\n"
+  },
+  {
+    "input": "\" A  \"\n",
+    "expectedOutput": "\"A \"\n"
+  },
+  {
+    "input": "\" \"\n",
+    "expectedOutput": "\" \"\n"
+  },
+  {
+    "input": "\"😀A  BBB\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00A\\u2028 B\"\n"
+  }
+]

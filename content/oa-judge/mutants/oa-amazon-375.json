@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误删除后一项保留前一项",
+    "code": "def solve(raw):\n    import heapq\n    a=list(map(int,raw.split()))[1:];groups={}\n    for i,v in enumerate(a):groups.setdefault(v,[]).append(i)\n    heap=[-v for v,ids in groups.items() if len(ids)>=2 and v>0];heapq.heapify(heap)\n    while heap:\n        p=-heapq.heappop(heap);ids=groups[p]\n        if len(ids)<2:continue\n        first=heapq.heappop(ids);second=heapq.heappop(ids);first,second=second,first;a[first]=None;a[second]=p//2\n        if len(ids)>=2:heapq.heappush(heap,-p)\n        q=p//2;target=groups.setdefault(q,[]);heapq.heappush(target,second)\n        if q>0 and len(target)>=2:heapq.heappush(heap,-q)\n    out=[v for v in a if v is not None]\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误上取整优先级",
+    "code": "def solve(raw):\n    import heapq\n    a=list(map(int,raw.split()))[1:];groups={}\n    for i,v in enumerate(a):groups.setdefault(v,[]).append(i)\n    heap=[-v for v,ids in groups.items() if len(ids)>=2 and v>0];heapq.heapify(heap)\n    while heap:\n        p=-heapq.heappop(heap);ids=groups[p]\n        if len(ids)<2:continue\n        first=heapq.heappop(ids);second=heapq.heappop(ids);a[first]=None;a[second]=(p+1)//2\n        if len(ids)>=2:heapq.heappush(heap,-p)\n        q=(p+1)//2;target=groups.setdefault(q,[]);heapq.heappush(target,second)\n        if q>0 and len(target)>=2:heapq.heappush(heap,-q)\n    out=[v for v in a if v is not None]\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

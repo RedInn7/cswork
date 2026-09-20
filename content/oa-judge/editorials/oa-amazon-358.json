@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-358",
+  "title": "补齐括号并最大化套件评分",
+  "explanation": "## 思路\n\n计算原串最低前缀余额及最终余额，确定最低必需左右数量。两种括号分别按分数降序取必需项；之后按成对边际评分和仍为正时继续取。\n\n## 正确性证明\n\n任何负前缀都要求前面补足左括号，至少L=−min(0,最低余额)，最终平衡又要求R=L+最终余额。前置L左、后置R右即可实现。额外选择的左右数必须相等；固定数量时各取最高评分最优，且下一对的边际和非增，所以仅加入正边际即可达到全局最大。\n\n## 复杂度\n\nO(|s|+m log m)时间，O(m)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines=raw.split('\\n');s=lines[0];kit=lines[2];ratings=list(map(int,lines[3].split()));balance=low=0\n    for c in s:balance+=1 if c=='(' else -1;low=min(low,balance)\n    left=-low;right=left+balance;a=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);b=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True)\n    answer=sum(a[:left])+sum(b[:right])\n    while left<len(a) and right<len(b) and a[left]+b[right]>0:answer+=a[left]+b[right];left+=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#358-calculate-efficiency-score",
+  "sourceContentHash": "bf6e311ff6e44473e2222123db0d6850eba3b6531ab09e2870e60477e429a3c4",
+  "author": "CSWork"
+}

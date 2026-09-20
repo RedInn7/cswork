@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误漏掉z循环",
+    "code": "def solve(raw):\n    import json\n    out=[]\n    for new,old in json.loads(raw):\n        j=0\n        for c in new:\n            if j<len(old) and (c==old[j] or chr(ord(c)+1)==old[j]):j+=1\n        out.append('YES' if j==len(old) else 'NO')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误不允许不改字符",
+    "code": "def solve(raw):\n    import json\n    out=[]\n    for new,old in json.loads(raw):\n        j=0\n        for c in new:\n            if j<len(old) and (chr((ord(c)-97+1)%26+97)==old[j]):j+=1\n        out.append('YES' if j==len(old) else 'NO')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

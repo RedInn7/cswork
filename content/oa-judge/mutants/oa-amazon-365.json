@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误取上中位数",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);target=n*(n+1)//4+1;lo=1;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2;counts=[0]*(n+1);left=distinct=total=0\n        for right,v in enumerate(a):\n            if not counts[v]:distinct+=1\n            counts[v]+=1\n            while distinct>mid:\n                u=a[left];counts[u]-=1;left+=1\n                if not counts[u]:distinct-=1\n            total+=right-left+1\n        if total>=target:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把每窗口长度当1计数",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);target=(n*(n+1)//2+1)//2;lo=1;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2;counts=[0]*(n+1);left=distinct=total=0\n        for right,v in enumerate(a):\n            if not counts[v]:distinct+=1\n            counts[v]+=1\n            while distinct>mid:\n                u=a[left];counts[u]-=1;left+=1\n                if not counts[u]:distinct-=1\n            total+=int(right>=left)\n        if total>=target:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

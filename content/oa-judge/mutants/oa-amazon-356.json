@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误固定最小值到最后",
+    "code": "def solve(raw):\n    data=iter(map(int,raw.split()));n=next(data);left=next(data);a=sorted((v for v in data if v>0),reverse=True)\n    if not a or not left:return '0'\n    low=a[-1];answer=0;c=1;h=a[0]\n    while c<len(a) and left:\n        nxt=a[c];take=min(left,c*(h-nxt));q,r=divmod(take,c)\n        answer+=c*q*(2*h-q+1)//2+r*(h-q)+take*low;left-=take\n        if take<c*(h-nxt):return str(answer)\n        h=nxt;c+=1\n    take=min(left,c*(h-1));q,r=divmod(take,c)\n    answer+=q*c*2*h\n    if r:answer+=2*(h-q)+(r-1)*(2*(h-q)-1)\n    left-=take;answer+=2*left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误售罄尾部每次只收1",
+    "code": "def solve(raw):\n    data=iter(map(int,raw.split()));n=next(data);left=next(data);a=sorted((v for v in data if v>0),reverse=True)\n    if not a or not left:return '0'\n    low=a[-1];answer=0;c=1;h=a[0]\n    while c<len(a) and left:\n        nxt=a[c];take=min(left,c*(h-nxt));q,r=divmod(take,c)\n        answer+=c*q*(2*h-q+1)//2+r*(h-q)+take*low;left-=take\n        if take<c*(h-nxt):return str(answer)\n        h=nxt;c+=1\n    take=min(left,c*(h-1));q,r=divmod(take,c)\n    answer+=q*(c*(2*h-q)+1)\n    if r:answer+=2*(h-q)+(r-1)*(2*(h-q)-1)\n    left-=take;answer+=left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

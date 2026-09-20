@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-26",
+  "title": "沿一行或一列寻找给定单词",
+  "explanation": "## 思路\n\n预先建立所有行、列及它们的反向字符串。每个单词构建KMP前缀表，在这些字符串上逐一寻找；同词重复查询缓存结果。\n\n## 正确性证明\n\n所有合法方向恰对应行、列及反向四类，且每条搜索线的连续匹配恰是题意中的不拐弯片段。KMP只跳过已证明不可能成为匹配起点的位置，不改变匹配存在性。\n\n## 复杂度\n\n时间O(KNM+所有词长)，空间O(NM+所有词长)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    rows,words=json.loads(raw);columns=[''.join(row[j] for row in rows) for j in range(len(rows[0]))];lines=rows+columns;lines=lines+[line[::-1] for line in lines];cache={}\n    def contains(line,word,pi):\n        matched=0\n        for ch in line:\n            while matched and ch!=word[matched]:matched=pi[matched-1]\n            if ch==word[matched]:matched+=1\n            if matched==len(word):return True\n        return False\n    output=[]\n    for word in words:\n        if word not in cache:\n            pi=[0]*len(word)\n            for i in range(1,len(word)):\n                k=pi[i-1]\n                while k and word[i]!=word[k]:k=pi[k-1]\n                if word[i]==word[k]:k+=1\n                pi[i]=k\n            cache[word]=any(contains(line,word,pi) for line in lines)\n        output.append('Yes' if cache[word] else 'No')\n    return ' '.join(output)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#26-find-words-in-grid",
+  "sourceContentHash": "0cd3f7f8f83858096b16776fea12c7392c799b6555f4a36a4014e9200a688243",
+  "author": "CSWork"
+}
