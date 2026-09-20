@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误允许前导零",
+    "code": "def solve(d):\n    s=d[0];limit=min(999999,10**min(6,len(s))-1);p=bytearray(b'\\x01')*(limit+1);p[0:2]=b'\\x00\\x00'\n    for v in range(2,math.isqrt(limit)+1):\n        if p[v]:p[v*v:limit+1:v]=b'\\x00'*((limit-v*v)//v+1)\n    dp=[0]*(len(s)+1);dp[0]=1\n    for i,c in enumerate(s):\n        if False:continue\n        value=0\n        for j in range(i,min(len(s),i+6)):\n            value=value*10+int(s[j])\n            if p[value]:dp[j+1]=(dp[j+1]+dp[i])%1000000007\n    return str(dp[-1])\nimport math\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只允许单字符质数",
+    "code": "def solve(d):\n    s=d[0];limit=min(999999,10**min(6,len(s))-1);p=bytearray(b'\\x01')*(limit+1);p[0:2]=b'\\x00\\x00'\n    for v in range(2,math.isqrt(limit)+1):\n        if p[v]:p[v*v:limit+1:v]=b'\\x00'*((limit-v*v)//v+1)\n    dp=[0]*(len(s)+1);dp[0]=1\n    for i,c in enumerate(s):\n        if c=='0':continue\n        value=0\n        for j in range(i,min(len(s),i+1)):\n            value=value*10+int(s[j])\n            if p[value]:dp[j+1]=(dp[j+1]+dp[i])%1000000007\n    return str(dp[-1])\nimport math\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

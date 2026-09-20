@@ -1,0 +1,10 @@
+[
+  {
+    "name": "MEX错误从1开始",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:]));freq=[0]*(n+2)\n    for v in a:freq[v]+=1\n    mex=1\n    while freq[mex]:mex+=1\n    i=0;out=[]\n    while i<n:\n        target=mex;out.append(target);seen=set()\n        while i<n:\n            v=a[i];i+=1;freq[v]-=1\n            if freq[v]==0:mex=min(mex,v)\n            if v<target:seen.add(v)\n            if len(seen)==target:break\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "每轮只删一项",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:]));freq=[0]*(n+2)\n    for v in a:freq[v]+=1\n    mex=0\n    while freq[mex]:mex+=1\n    i=0;out=[]\n    while i<n:\n        target=mex;out.append(target);seen=set()\n        while i<n:\n            v=a[i];i+=1;freq[v]-=1\n            if freq[v]==0:mex=min(mex,v)\n            if v<target:seen.add(v)\n            if True:break\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

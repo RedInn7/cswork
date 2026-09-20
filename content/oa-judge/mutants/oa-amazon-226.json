@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把比例上界改为严格",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));left=best=0\n    for right,v in enumerate(a):\n        while left<right and v>=k*a[left]:left+=1\n        best=max(best,right-left+1)\n    return str(n-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误把删除数当保留数",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));left=best=0\n    for right,v in enumerate(a):\n        while left<right and v>k*a[left]:left+=1\n        best=max(best,right-left+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

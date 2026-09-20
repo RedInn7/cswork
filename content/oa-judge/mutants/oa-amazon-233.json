@@ -1,0 +1,10 @@
+[
+  {
+    "name": "输出错误0基下标",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));order=sorted(range(len(a)),key=lambda i:(a[i],i));return ' '.join(str(i) for i in order)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同值下标倒序",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));order=sorted(range(len(a)),key=lambda i:(a[i],-i));return ' '.join(str(i+1) for i in order)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

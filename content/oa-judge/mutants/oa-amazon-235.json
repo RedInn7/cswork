@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏闭区间下界",
+    "code": "def solve(d):\n    n,low,high=map(int,d[:3]);a=sorted(map(int,d[3:]))\n    def count(k):\n        left=0;right=len(a)-1;answer=0\n        while left<right:\n            if a[left]+a[right]<=k:answer+=right-left;left+=1\n            else:right-=1\n        return answer\n    return str(count(high)-count(low))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "将同技能员工去重",
+    "code": "def solve(d):\n    n,low,high=map(int,d[:3]);a=sorted(set(map(int,d[3:])))\n    def count(k):\n        left=0;right=len(a)-1;answer=0\n        while left<right:\n            if a[left]+a[right]<=k:answer+=right-left;left+=1\n            else:right-=1\n        return answer\n    return str(count(high)-count(low-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

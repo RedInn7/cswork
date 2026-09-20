@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏严格大于零",
+    "code": "def solve(d):\n    n,armor=map(int,d[:2]);a=list(map(int,d[2:]));return str(sum(a)-min(armor,max(a)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "一次护甲错误用于全部关卡",
+    "code": "def solve(d):\n    n,armor=map(int,d[:2]);a=list(map(int,d[2:]));return str(sum(max(0,v-armor) for v in a)+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

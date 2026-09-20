@@ -1,0 +1,10 @@
+[
+  {
+    "name": "保留最少出现类别",
+    "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);freq=sorted(Counter(d[2:]).values(),reverse=False);return str(n-sum(freq[:k]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把类别数当商品数",
+    "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);freq=sorted(Counter(d[2:]).values(),reverse=True);return str(max(0,len(freq)-k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

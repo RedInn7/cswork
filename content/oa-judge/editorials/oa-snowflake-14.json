@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-14",
+  "title": "长跳锁方向的网格最短路",
+  "explanation": "## 思路\n\n以坐标和锁定方向（另有自由态）为状态BFS，枚举允许方向及所有合法落点；长跳锁方向，短跳变自由。\n\n## 正确性\n\n状态精确包含影响未来合法动作的全部历史。每条边对应一步合法跳跃，反之每个合法动作都被枚举。所有边权为1，BFS首次访问目标自由态给出最少步数。只接受自由态确保最后一步长度1。\n\n## 复杂度\n\n时间O(nm(n+m))，空间O(nm)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);g=d[2:];dirs=[(-1,0),(1,0),(0,-1),(0,1)];start=next((i,j) for i in range(n) for j in range(m) if g[i][j]=='S');q=deque([(start[0],start[1],4,0)]);seen={(start[0],start[1],4)}\n    while q:\n        x,y,lock,steps=q.popleft()\n        if g[x][y]=='E' and lock==4:return str(steps)\n        for direction,(dx,dy) in enumerate(dirs):\n            if lock!=4 and direction!=lock:continue\n            a,b=x+dx,y+dy;length=1\n            while 0<=a<n and 0<=b<m:\n                state=(a,b,4 if length==1 else direction)\n                if g[a][b]!='#' and state not in seen:seen.add(state);q.append((*state,steps+1))\n                a+=dx;b+=dy;length+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#14-grid-traversal",
+  "sourceContentHash": "82e8f46b0b0f11d9a48930c000e372f1e7b5b8e0847467b16cdc6dceffd69920",
+  "author": "CSWork"
+}

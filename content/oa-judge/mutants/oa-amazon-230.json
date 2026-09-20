@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等错误打断链",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));direction=run=0;best=1\n    for x,y in zip(a,a[1:]):\n        if x==y:direction=run=0;continue\n        sign=1 if y>x else -1;run=run+1 if sign==direction else 1;direction=sign;best=max(best,run+1)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把不同需求数当中心数",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));direction=run=0;best=1\n    for x,y in zip(a,a[1:]):\n        if x==y:continue\n        sign=1 if y>x else -1;run=run+1 if sign==direction else 1;direction=sign;best=max(best,run+1)\n    return str(len(set(a)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

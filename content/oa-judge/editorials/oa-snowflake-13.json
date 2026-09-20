@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-13",
+  "title": "保持总能量阈值的最大屏障",
+  "explanation": "## 思路\n\n二分最后一个满足总能量不少于阈值的屏障。\n\n## 正确性\n\n每项随屏障增大单调不增，所以合法屏障是前缀；0合法，最大初始能量不合法。二分每步按谓词保留包含最后合法位置的区间，收敛后即为答案。\n\n## 复杂度\n\n时间O(n log maxEnergy)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,threshold=map(int,d[:2]);a=list(map(int,d[2:]));lo=0;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi+1)//2\n        if sum(max(v-mid,0) for v in a)>=threshold:lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#13-cross-the-threshold",
+  "sourceContentHash": "384589ad0a74cf962ed61492906609e6eeb5bfe8bac91b957b9d5a21a1b6851d",
+  "author": "CSWork"
+}

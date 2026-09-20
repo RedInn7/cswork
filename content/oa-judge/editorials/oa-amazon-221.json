@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-221",
+  "title": "仅前缀或后缀加一的最少对齐次数",
+  "explanation": "## 思路\n\n设d=target−source，D为所有相邻下降量之和。若d[0]<D则无解，否则答案d[n−1]+D。\n\n## 正确性证明\n\n每个相邻下降d[i]−d[i+1]>0只能由止于i的前缀操作产生，至少D个这种操作，均贡献首项，因此d[0]≥D必需。按全部下降量安排前缀后，剩余需求非负且单调不降，可由后缀按增量实现；总次数为D+d[n−1]。多用任何抵消的前后缀只会增加次数，下界达到。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=[y-x for x,y in zip(a,b)];down=sum(max(0,x-y) for x,y in zip(delta,delta[1:]))\n    return str(-1 if delta[0]<down else delta[-1]+down)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#221-equalize-the-arrays",
+  "sourceContentHash": "0800d20cbc096835be3428a7c56bc59496f50f805b1e6ea75985ab20dfc3b8a8",
+  "author": "CSWork"
+}

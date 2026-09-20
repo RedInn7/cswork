@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-15",
+  "title": "并行执行任务的最少操作",
+  "explanation": "## 思路\n\n二分操作数t；先给所有任务ty基础执行量，剩余需求按x−y向上取整求额外主任务次数，和不超过t即可。\n\n## 正确性\n\n任何t步安排都至多提供t次主任务额外执行量，故该条件必要。若需求次数和≤t，按这些次数选择仍未完成任务即可，已完成任务的多余预约可替换成其他未完成任务而不减少任何必要执行；全部完成后不必继续，故能在至多t步完成。可行性单调，二分得最小值。\n\n## 复杂度\n\n时间O(n log maxTime)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,x,y=map(int,d[:3]);a=list(map(int,d[3:]));extra=x-y;lo=0;hi=(max(a)+y-1)//y\n    while lo<hi:\n        t=(lo+hi)//2;need=sum(max(0,(v-t*y+extra-1)//extra) for v in a)\n        if need<=t:hi=t\n        else:lo=t+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#15-job-execution",
+  "sourceContentHash": "f2b68b10d03413461c08568b0d1a798dd71535e884ab8d080ce53c888957c425",
+  "author": "CSWork"
+}

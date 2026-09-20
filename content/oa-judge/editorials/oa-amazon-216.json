@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-216",
+  "title": "两端购书优惠的最低总价",
+  "explanation": "## 思路\n\n排序价格，枚举合购次数j，合购最高的2j本，费用为总价减最高2j本之和加j倍pairCost。\n\n## 正确性证明\n\n任意选定的偶数本可实现合购：先单买两端所有未选书，再合购最外两本选书，重复即可。因此固定j时合购最高2j本最优，枚举0..min(k,n//2)得到最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,p,k=map(int,d[:3]);a=sorted(map(int,d[3:]),reverse=True);total=sum(a);answer=total;saved=0\n    for j in range(1,min(k,n//2)+1):\n        saved+=a[2*j-2]+a[2*j-1];answer=min(answer,total-saved+j*p)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#216-get-min-cost",
+  "sourceContentHash": "43b7f4cd67a68569978ddc8d4a678216888fc3be3a2546081dc9a59f2e298a72",
+  "author": "CSWork"
+}

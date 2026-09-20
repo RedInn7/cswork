@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-228",
+  "title": "固定开始顺序的最少卸货泊位",
+  "explanation": "## 思路\n\n二分泊位数。检查d时用最小堆保存各泊位可用时间，每辆车分配给最早空闲者，再检查最晚完成时间。\n\n## 正确性证明\n\n固定泊位数时题定立即开始规则唯一决定每辆开始时间；堆精确模拟最早可用泊位。增加泊位不会使按次序贪心开始的第i辆更晚：用所有已开始任务的完成时刻作归纳，容量增加只会使可开始的时刻提前。因此可行性单调，二分找最小可行值。\n\n## 复杂度\n\n时间O(n log²n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import heapq\n    n,t=map(int,d[:2]);a=list(map(int,d[2:]))\n    def valid(k):\n        heap=[0]*k\n        for v in a:heapq.heapreplace(heap,heap[0]+v)\n        return max(heap)<=t\n    lo=1;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if valid(mid):hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#228-get-minimum-dock-bays",
+  "sourceContentHash": "8b5a8d883d2529360f36dacdfd6ba66c42bcb9602316b7bb7c39a55f8761b58b",
+  "author": "CSWork"
+}

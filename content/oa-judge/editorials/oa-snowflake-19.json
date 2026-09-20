@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-19",
+  "title": "前缀MEX删除的字典序最大结果",
+  "explanation": "## 思路\n\n预先统计后缀频数及MEX；每轮取剩余数组的MEX，并截出首次覆盖0..MEX−1的最短前缀。MEX为0时只删一个。频数归零时向下更新后缀MEX。\n\n## 正确性\n\n任何前缀MEX不可能超过整个剩余数组MEX，覆盖所有较小数字就能达到这个最优首项。达到它后更早结束保留更多元素，任何更长删除方案都能在保留数组首段中兼容，不会改善字典序；剩余最优解因此递归适用。MEX0时保留最多元素使零项最多。每个元素只消费一次，所需集合的总初始化长度不超过n。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:]));freq=[0]*(n+2)\n    for v in a:freq[v]+=1\n    mex=0\n    while freq[mex]:mex+=1\n    i=0;out=[]\n    while i<n:\n        target=mex;out.append(target);seen=set()\n        while i<n:\n            v=a[i];i+=1;freq[v]-=1\n            if freq[v]==0:mex=min(mex,v)\n            if v<target:seen.add(v)\n            if len(seen)==target:break\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#19-array-reduction-algorithm",
+  "sourceContentHash": "f70c934406065c88551faf305401338e90ba5627fae83b67e444d51ac0b28c69",
+  "author": "CSWork"
+}

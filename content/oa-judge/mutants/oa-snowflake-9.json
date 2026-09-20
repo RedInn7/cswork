@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每天错误禁止0",
+    "code": "def solve(d):\n    work,day=map(int,d[:2]);s=d[2];out=[];low=[0]*8;high=[0]*8\n    for i in range(6,-1,-1):low[i]=low[i+1]+(0 if s[i]=='?' else int(s[i]));high[i]=high[i+1]+(day if s[i]=='?' else int(s[i]))\n    def visit(i,remaining,prefix):\n        if remaining<low[i] or remaining>high[i]:return\n        if i==7:out.append(prefix);return\n        choices=range(1,day+1) if s[i]=='?' else [int(s[i])]\n        for value in choices:visit(i+1,remaining-value,prefix+str(value))\n    visit(0,work,'');return str(len(out))+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "结果降序",
+    "code": "def solve(d):\n    work,day=map(int,d[:2]);s=d[2];out=[];low=[0]*8;high=[0]*8\n    for i in range(6,-1,-1):low[i]=low[i+1]+(0 if s[i]=='?' else int(s[i]));high[i]=high[i+1]+(day if s[i]=='?' else int(s[i]))\n    def visit(i,remaining,prefix):\n        if remaining<low[i] or remaining>high[i]:return\n        if i==7:out.append(prefix);return\n        choices=range(day+1) if s[i]=='?' else [int(s[i])]\n        for value in choices:visit(i+1,remaining-value,prefix+str(value))\n    visit(0,work,'');return str(len(out))+'\\n'+'\\n'.join(reversed(out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

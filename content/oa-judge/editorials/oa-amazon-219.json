@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-219",
+  "title": "相邻交换让最轻在首最重在尾",
+  "explanation": "## 思路\n\n最轻下标l加最重距末尾距离n−1−r；若l>r，两者会交叉，减1。\n\n## 正确性证明\n\n每次相邻交换最多使一个极值向目标移动一格，只有两极值直接交换可同时减少两者距离。顺序相反时恰能进行一次这种共同移动，否则不能。先移最轻到首再移最重到尾达到该下界。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));l=a.index(min(a));r=a.index(max(a));return str(l+len(a)-1-r-(l>r))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#219-get-minimum-number-of-moves-aka-weight-lifting-equipments",
+  "sourceContentHash": "fda85f325cc8808e1e8a8fcdcd4d51e83cdb4430d2f5ba349e6a494969f2c991",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-229",
+  "title": "总容量与单类上限下的最少卡车数",
+  "explanation": "## 思路\n\n答案为总件数除C向上取整与最大类别数除L向上取整的较大者。\n\n## 正确性证明\n\n两项显然都是下界。设车数m满足它们，类型到每辆车容量L、车到终点容量C的网络可全部装载：对任意类型子集S，所需sum(S)≤min(总数,|S|*m*L)≤m*min(C,|S|*L)，满足完整二部容量网络的割条件。整数流给出合法逐件装载，所以下界足够。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入，答案用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,c,l=map(int,d[:3]);a=list(map(int,d[3:]));return str(max((sum(a)+c-1)//c,(max(a)+l-1)//l))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#229-compute-least-truck-count",
+  "sourceContentHash": "ca01bec4abd895004e5f22d02c89bca083ba9ae6c0f59dee6d814e8fa0060a70",
+  "author": "CSWork"
+}

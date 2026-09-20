@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-218",
+  "title": "区间赋为原异或值的最少归零操作",
+  "explanation": "## 思路\n\n全零返回0；否则全数组异或为0返回1，其余返回2。\n\n## 正确性证明\n\n一次归零必须覆盖所有非零元素，区间外都是0，所以其异或等于总异或。总异或非零时一次不可能；把整个偶数长数组赋为总异或后，再操作整段，偶数个相同值异或为0，两次总能实现。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)（不含输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));x=0\n    for v in a:x^=v\n    return str(0 if not any(a) else 1 if x==0 else 2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#218-get-minimum-moves-to-zero",
+  "sourceContentHash": "634e3b449316b1502015bdfd24c3c730b52945a1dcdf80dbdc605275e8a14470",
+  "author": "CSWork"
+}

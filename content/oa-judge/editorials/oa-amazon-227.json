@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-227",
+  "title": "修改为正整数使所有k窗口同和",
+  "explanation": "## 思路\n\n相邻窗口相减得a[i]=a[i+k]。按下标模k分组：原本全相同的组不改；其余统一成出现最多的正值，没有正值则全部改为1。\n\n## 正确性证明\n\n所有窗口同和等价于各组内相等，组之间互不干扰。若不修改可保留任何原值；需要改动时目标只能为正整数，因此最多保留该组最高正数频率个位置。每组实现下界后求和即全局最优。\n\n## 复杂度\n\n时间O(n+k)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));answer=0\n    for start in range(min(k,n)):\n        group=a[start::k];freq=Counter(group)\n        if len(freq)>1:answer+=len(group)-max([0]+[count for value,count in freq.items() if value>0])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#227-get-minimum-changes",
+  "sourceContentHash": "34909f80a6144fabbe7f7a0c8ade35bd662360ae6a03f2a0e628cc6f174057dc",
+  "author": "CSWork"
+}

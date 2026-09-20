@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不考虑后面的已知字符",
+    "code": "def solve(d):\n    s=d[0];x,y=map(int,d[1:])\n    if x>y:s=s[::-1];x,y=y,x\n    a=list(s.replace('!','1'));left0=left1=cost=0\n    for c in a:\n        if c=='0':cost+=left1*y;left0+=1\n        else:cost+=left0*x;left1+=1\n    right0=a.count('0');right1=len(a)-right0;left0=left1=0;best=cost\n    for original,c in zip(s,a):\n        if c=='0':right0-=1\n        else:right1-=1\n        if original=='!':cost+=left1*y-left0*x;c='0';best=min(best,cost)\n        if c=='0':left0+=1\n        else:left1+=1\n    return str(best%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只接受全1通配符",
+    "code": "def solve(d):\n    s=d[0];x,y=map(int,d[1:])\n    if x>y:s=s[::-1];x,y=y,x\n    a=list(s.replace('!','1'));left0=left1=cost=0\n    for c in a:\n        if c=='0':cost+=left1*y;left0+=1\n        else:cost+=left0*x;left1+=1\n    right0=a.count('0');right1=len(a)-right0;left0=left1=0;best=cost\n    for original,c in zip(s,a):\n        if c=='0':right0-=1\n        else:right1-=1\n        if original=='!':cost+=left1*y-left0*x+right1*x-right0*y;c='0';best=best\n        if c=='0':left0+=1\n        else:left1+=1\n    return str(best%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-7",
+  "title": "相邻和对称房屋异色",
+  "explanation": "## 思路\n\n从两端向中间逐对涂色：首对6种，之后每对3种。\n\n## 正确性\n\n已涂左右色为不同的a,b，新对(c,d)要求c≠a、d≠b、c≠d。在三色中恰有3种有序选择，且对任意a,b都相同。最内层相邻限制就是对内异色，无额外条件，乘法原理得6×3^(n/2−1)。\n\n## 复杂度\n\n时间O(log n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);return str(6*pow(3,n//2-1,1000000007)%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#7-coloring-houses",
+  "sourceContentHash": "dbe34f26d6185a05114cfe073ea7690cf4a563e5e3ba95843586ca747e373a09",
+  "author": "CSWork"
+}
