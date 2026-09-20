@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-374",
+  "title": "严格晚于出发的最低往返费用",
+  "explanation": "## 思路\n\n扫描返程时间j，把存在的出发j−1加入历史最小值；用此前最小出发费用加本次返程更新答案。\n\n## 正确性证明\n\n处理j时维护的最小值恰覆盖所有存在且i<j的出发航班，固定返程下选择最便宜出发必优。遍历每个实际返程，所有合法组合各落入其返程时刻的比较，故全局最小被覆盖。不同长度时独立检查出发下标，不截短返程列表。\n\n## 复杂度\n\n时间O(n+m)，除输入数组外O(1)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];m=d[n+1];b=d[n+2:];best=None;answer=None\n    for j,value in enumerate(b):\n        if 0<=j-1<n:best=a[j-1] if best is None else min(best,a[j-1])\n        if best is not None:answer=best+value if answer is None else min(answer,best+value)\n    return str(-1 if answer is None else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#374-get-minimum-round-trip-cost",
+  "sourceContentHash": "e21ad15dacb9fe4337605d36bb3039014460b73aebae65c01c5c938c1885fe29",
+  "author": "CSWork"
+}

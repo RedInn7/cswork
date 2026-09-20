@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-372",
+  "title": "无限等差商品中购买指定数量的最低总价",
+  "explanation": "## 思路\n\n最小堆保留每类最便宜未买的一件；每次弹出最小价累加，再放入同类下一价格，共进行m次。\n\n## 正确性证明\n\n正b保证每类价格严格递增，因此任何选到后面件却不选前面更便宜件的方案都可改进。每类前沿最小值就是全体未买商品的最小值，逐次选取它恰得到合并所有递增序列的前m小项，任何其他m项之和不可能更小。\n\n## 复杂度\n\n时间O(n+m log n)，空间O(n)，费用用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];heap=list(zip(a,b));heapq.heapify(heap);answer=0\n    for _ in range(m):\n        price,step=heapq.heappop(heap);answer+=price;heapq.heappush(heap,(price+step,step))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#372-get-minimum-cost",
+  "sourceContentHash": "7500f36e3904111b6ebc6f203348da4df64e25bda9f163b90e7185427b27dfe9",
+  "author": "CSWork"
+}

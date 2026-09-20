@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-357",
+  "title": "运行与等待阈值下的精确配置数量",
+  "explanation": "## 思路\n\n频数前缀F(t)计阈值≤t。固定r，r≤n−r时检查中间禁区与强制人数；否则令M=F(r)−F(n−r)、K=r−F(n−r)，贡献C(M,K)。r递增时M,K均不减，使用组合数相邻递推批量更新，避免每个r重算comb。\n\n## 正确性证明\n\n当r≤w时阈值≤r者只能运行、阈值>w者只能等待，中间阈值两态都不合法，故仅F(r)=F(w)=r贡献1。当r>w时阈值≤w强制运行，阈值>r强制等待，其余M台自由，恰选K台运行有C(M,K)种。不同r配置互斥。沿单调M,K更新组合数：加一行用C(M+1,K)=C(M,K)(M+1)/(M+1−K)，同一行加一列用C(M,K+1)=C(M,K)(M−K)/(K+1)，越界值0在边界K=0或K=M恢复1。由恒等式归纳可得精确计数。\n\n## 复杂度\n\nO(n)次大整数乘除和O(n)频数操作，不是O(n)位复杂度；整数最多O(n)位，频数空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import sys\n    from math import comb\n    if hasattr(sys,'set_int_max_str_digits'):sys.set_int_max_str_digits(0)\n    d=list(map(int,raw.split()));n=d[0];f=[0]*(n+1)\n    for v in d[1:]:f[v]+=1\n    for i in range(1,n+1):f[i]+=f[i-1]\n    answer=sum(f[r]==r and f[n-r]==r for r in range(n//2+1))\n    start=n//2+1;M=f[start]-f[n-start];K=start-f[n-start];value=comb(M,K) if 0<=K<=M else 0\n    for r in range(start,n+1):\n        targetM=f[r]-f[n-r];targetK=r-f[n-r]\n        while M<targetM:\n            M+=1\n            if K==M:value=1\n            elif 0<=K<M:value=value*M//(M-K)\n            else:value=0\n        while K<targetK:\n            K+=1\n            if K==0:value=1\n            elif 0<K<=M:value=value*(M-K+1)//K\n            else:value=0\n        answer+=value\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#357-warehouse-robots-with-threshold",
+  "sourceContentHash": "e52b7ddd454f2b03c97d7d355d793b41e2f25bb2020094861ed861d01bad7432",
+  "author": "CSWork"
+}

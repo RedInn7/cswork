@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-360",
+  "title": "技能跨度受限的最多互不重叠队伍",
+  "explanation": "## 思路\n\n技能排序，最左连续k人可成队则取走整段，否则丢弃当前最小者。\n\n## 正确性证明\n\n若最早k人已超跨度，任何包含最小者的k人队都不合法，只能跳过。任意两个交错的合法k人队，可把合并后的较小k人和较大k人分为两队：较小队跨度不超过原先包含全局最小者的队；较大队若最大值在另一队，其跨度不超过该队，否则不超过包含全局最小者的队。因此反复消除交错可得按所选人员排序的连续分组。现在若全体最早k人可成队，用它替换最优方案首队；后续队员下标均在该首队之后，也必在全体最早k人之后，不受替换影响。于是立即取队不损失最优数量，归纳得算法正确。\n\n## 复杂度\n\nO(n log n)时间，O(n)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k,limit=d[:3];a=sorted(d[3:]);i=answer=0\n    while i+k<=n:\n        if a[i+k-1]-a[i]<=limit:answer+=1;i+=k\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#360-count-max-num-teams",
+  "sourceContentHash": "2677ca9e7acc0f3a0cdf550c45d7b999a2ad516a6ac93e273721fd51b5d3a56d",
+  "author": "CSWork"
+}

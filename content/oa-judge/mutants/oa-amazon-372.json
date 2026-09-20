@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略同类涨价",
+    "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];heap=list(zip(a,b));heapq.heapify(heap);answer=0\n    for _ in range(m):\n        price,step=heapq.heappop(heap);answer+=price;heapq.heappush(heap,(price,step))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误少买一件",
+    "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];heap=list(zip(a,b));heapq.heapify(heap);answer=0\n    for _ in range(m-1):\n        price,step=heapq.heappop(heap);answer+=price;heapq.heappush(heap,(price+step,step))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

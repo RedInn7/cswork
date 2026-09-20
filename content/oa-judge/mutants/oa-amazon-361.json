@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只减去单点",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];answer=0\n    for values in (a,reversed(a)):\n        stack=[]\n        for i,v in enumerate(values):\n            while stack and stack[-1][1]<=v:stack.pop()\n            answer+=i-(stack[-1][0] if stack else -1);stack.append((i,v))\n    groups=[];both=0\n    for v in a:\n        while groups and groups[-1][0]<v:groups.pop()\n        if groups and groups[-1][0]==v:groups[-1][1]+=1;both+=groups[-1][1]\n        else:groups.append([v,1]);both+=1\n    return str(answer-len(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误相等值也挡住边界",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];answer=0\n    for values in (a,reversed(a)):\n        stack=[]\n        for i,v in enumerate(values):\n            while stack and stack[-1][1]<v:stack.pop()\n            answer+=i-(stack[-1][0] if stack else -1);stack.append((i,v))\n    groups=[];both=0\n    for v in a:\n        while groups and groups[-1][0]<v:groups.pop()\n        if groups and groups[-1][0]==v:groups[-1][1]+=1;both+=groups[-1][1]\n        else:groups.append([v,1]);both+=1\n    return str(answer-both)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-375",
+  "title": "按最大重复优先级执行后的剩余队列",
+  "explanation": "## 思路\n\n每个值维护原始下标最小堆；最大堆调度重复正值。每轮取两个最小下标、标记删除前者，将后者压入减半值组，并更新重复候选。\n\n## 正确性证明\n\n删除不改变存活项相对顺序，所以比较原下标与当前队列先后完全一致。值分组堆总保存该值全部存活项，取两最小下标恰符合规则；最大候选堆覆盖所有重复正值，懒惰丢弃不足两项的旧记录，不改变最大合法值选择。每步严格按原规则更新，归纳整个执行及最终按原下标过滤的队列一致。\n\n## 复杂度\n\n至多n−1次成功操作，时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import heapq\n    a=list(map(int,raw.split()))[1:];groups={}\n    for i,v in enumerate(a):groups.setdefault(v,[]).append(i)\n    heap=[-v for v,ids in groups.items() if len(ids)>=2 and v>0];heapq.heapify(heap)\n    while heap:\n        p=-heapq.heappop(heap);ids=groups[p]\n        if len(ids)<2:continue\n        first=heapq.heappop(ids);second=heapq.heappop(ids);a[first]=None;a[second]=p//2\n        if len(ids)>=2:heapq.heappush(heap,-p)\n        q=p//2;target=groups.setdefault(q,[]);heapq.heappush(target,second)\n        if q>0 and len(target)>=2:heapq.heappush(heap,-q)\n    out=[v for v in a if v is not None]\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#375-get-priorities-after-execution",
+  "sourceContentHash": "8fff03b56f0d08f5580d60e38e5c6c31ef08605d7a440a68b2473b340582f4be",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-368",
+  "title": "价格和整除折扣数的下标对数量",
+  "explanation": "## 思路\n\n扫描时先加此前互补余数频数，再增加当前余数。\n\n## 正确性证明\n\n和整除x等价于两个余数互补。扫描j时表仅含i<j的商品，加入其互补频数恰统计全部以j为右端的合法对；不同j不重复，因此答案准确且不会统计自身。\n\n## 复杂度\n\n期望O(n)时间，O(min(n,x))空间，用稀疏字典而非x长度数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x=d[:2];counts={};answer=0\n    for value in d[2:]:\n        r=value%x;answer+=counts.get((-r)%x,0);counts[r]=counts.get(r,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#368-get-discount-pairs",
+  "sourceContentHash": "7ab5f7f5ecf5905ac6f25002f3cbbfcc7e421adf203d6bda3564e3142f791ad5",
+  "author": "CSWork"
+}

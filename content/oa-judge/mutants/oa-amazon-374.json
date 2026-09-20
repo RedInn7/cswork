@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许同一天出发返回",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];m=d[n+1];b=d[n+2:];best=None;answer=None\n    for j,value in enumerate(b):\n        if j<n:best=a[j] if best is None else min(best,a[j])\n        if best is not None:answer=best+value if answer is None else min(answer,best+value)\n    return str(-1 if answer is None else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误截断至两数组公共长度",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];m=d[n+1];b=d[n+2:];best=None;answer=None\n    for j,value in enumerate(b[:n]):\n        if 0<=j-1<n:best=a[j-1] if best is None else min(best,a[j-1])\n        if best is not None:answer=best+value if answer is None else min(answer,best+value)\n    return str(-1 if answer is None else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

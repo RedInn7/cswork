@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-362",
+  "title": "反转固定长度窗口使整串变小的次数",
+  "explanation": "## 思路\n\n窗口外不变，只需从窗口两端向中间比较，第一对不同字符若右侧小于左侧则该反转成功。\n\n## 正确性证明\n\n两字符串在窗口前缀之前完全相同；窗口反转后第j位是原对称位置。当此前配对都相等时，第一个不相等配对正是整串第一个不同位置，其大小唯一决定字典序；全部相等则是回文，反转不严格变小。枚举全部窗口无重漏。\n\n## 复杂度\n\nO(nk)时间，k≤20实际每窗至多10对；除输入字符串外O(1)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    s,k=json.loads(raw);answer=0\n    for start in range(len(s)-k+1):\n        left=start;right=start+k-1\n        while left<right and s[left]==s[right]:left+=1;right-=1\n        if left<right and s[right]<s[left]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#362-count-num-ways",
+  "sourceContentHash": "abb01510f42497e187d5a8e12f70d3e709b2c04fac3ea735e493972eae4159cc",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把回文也计入",
+    "code": "def solve(raw):\n    import json\n    s,k=json.loads(raw);answer=0\n    for start in range(len(s)-k+1):\n        left=start;right=start+k-1\n        while left<right and s[left]==s[right]:left+=1;right-=1\n        if left>=right or s[right]<s[left]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只比较窗口首末字符",
+    "code": "def solve(raw):\n    import json\n    s,k=json.loads(raw);answer=0\n    for start in range(len(s)-k+1):\n        left=start;right=start+k-1\n        while False:left+=1;right-=1\n        if left<right and s[right]<s[left]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

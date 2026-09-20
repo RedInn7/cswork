@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按严格跨度",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k,limit=d[:3];a=sorted(d[3:]);i=answer=0\n    while i+k<=n:\n        if a[i+k-1]-a[i]<limit:answer+=1;i+=k\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误允许人员复用",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k,limit=d[:3];a=sorted(d[3:]);i=answer=0\n    while i+k<=n:\n        if a[i+k-1]-a[i]<=limit:answer+=1;i+=1\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

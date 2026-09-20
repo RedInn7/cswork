@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只看相同余数",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x=d[:2];counts={};answer=0\n    for value in d[2:]:\n        r=value%x;answer+=counts.get(r,0);counts[r]=counts.get(r,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略重复商品身份",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x=d[:2];counts={};answer=0\n    for value in d[2:]:\n        r=value%x;answer+=counts.get((-r)%x,0);counts[r]=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把奇频字符直接排序",
+    "code": "def solve(raw):\n    import json\n    from collections import Counter\n    s=json.loads(raw);remaining=Counter(s);need={c for c,v in remaining.items() if v%2};used=set();stack=[]\n    for c in s:\n        remaining[c]-=1\n        if c not in need or c in used:continue\n        while stack and stack[-1]>c and remaining[stack[-1]]>0:used.remove(stack.pop())\n        stack.append(c);used.add(c)\n    return json.dumps(''.join(sorted(stack)),ensure_ascii=True,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误保留每种字符一次不看奇偶",
+    "code": "def solve(raw):\n    import json\n    from collections import Counter\n    s=json.loads(raw);remaining=Counter(s);need={c for c,v in remaining.items() if v>0};used=set();stack=[]\n    for c in s:\n        remaining[c]-=1\n        if c not in need or c in used:continue\n        while stack and stack[-1]>c and remaining[stack[-1]]>0:used.remove(stack.pop())\n        stack.append(c);used.add(c)\n    return json.dumps(''.join(stack),ensure_ascii=True,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

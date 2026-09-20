@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-366",
+  "title": "替换未知服务器后的最少相邻差异",
+  "explanation": "## 思路\n\n忽略?，只统计剩余固定字符序列的相邻变化次数。\n\n## 正确性证明\n\n相邻固定字符若不同，它们之间无论如何填都至少出现一次变化；若相同可全填该值使变化为0。不同端点间只需在某处切换一次；前后未知段填最近固定值，全未知串任选同值，能同时达到所有独立区间下界。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    previous=None;answer=0\n    for c in raw.strip():\n        if c=='?':continue\n        if previous is not None and previous!=c:answer+=1\n        previous=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#366-find-minimum-inefficienty",
+  "sourceContentHash": "33ce3405d07c8a3f29462d61d4e4e6118adb676d7d79d685951dbb86de4c08fd",
+  "author": "CSWork"
+}

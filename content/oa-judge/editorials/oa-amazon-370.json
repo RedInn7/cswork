@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-370",
+  "title": "每个整数均值对应的连续排名组数",
+  "explanation": "## 思路\n\n枚举左右端点，递增累加区间和；和能被长度整除时给对应均值计数加1。\n\n## 正确性证明\n\n枚举每个左端的全部右端，每个非空连续区间恰出现一次，维护的和由逐项累加准确得到。平均值为整数x当且仅当和=长度×x，整除检查无浮点误差；排列值在1..n内保证均值也在该范围。\n\n## 复杂度\n\n时间O(n²)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);out=[0]*(n+1)\n    for left in range(n):\n        total=0\n        for right in range(left,n):\n            total+=a[right];size=right-left+1\n            if total%size==0:out[total//size]+=1\n    return ' '.join(map(str,out[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#370-get-mean-rank-count",
+  "sourceContentHash": "5bded38135e77b888500f69b270220136db4a88b8c14471ff9277bc6d44b1bab",
+  "author": "CSWork"
+}

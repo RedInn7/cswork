@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只看奇偶",
+    "code": "def solve(raw):\n    from collections import Counter\n    a=list(map(int,raw.split()))[1:];n=len(a);f=max(Counter(a).values())\n    return str(n%2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误允许负剩余",
+    "code": "def solve(raw):\n    from collections import Counter\n    a=list(map(int,raw.split()))[1:];n=len(a);f=max(Counter(a).values())\n    return str(2*f-n)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-364",
+  "title": "任意同字符成对删除后的最短最小串",
+  "explanation": "## 思路\n\n仅奇数频次字符需要各保留一次；对原串扫描，用剩余频次、已选集合和单调栈选择恰含这些字符一次的最小子序列。\n\n## 正确性证明\n\n同字符成对删除保持每种频次奇偶性，最短结果恰是每个奇频字符一次。任何保序选择这些字符各一次的方案都能把其余偶数次删除，故只需最小字典序子序列。扫描到新必需字符时，若栈顶更大且之后仍有该顶字符，可推迟顶字符以让当前较小字符提前，不损失可行性；不能弹的字符要么更小要么最后一次，必须保留。由最早差异交换可知所得是字典序最小的可行序列。\n\n## 复杂度\n\n时间O(n)，空间O(n)，每次栈操作摊还常数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    from collections import Counter\n    s=json.loads(raw);remaining=Counter(s);need={c for c,v in remaining.items() if v%2};used=set();stack=[]\n    for c in s:\n        remaining[c]-=1\n        if c not in need or c in used:continue\n        while stack and stack[-1]>c and remaining[stack[-1]]>0:used.remove(stack.pop())\n        stack.append(c);used.add(c)\n    return json.dumps(''.join(stack),ensure_ascii=True,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#364-erase-pairs",
+  "sourceContentHash": "b8c9df13eaaba4f2e39ff6f755d251ce86ad9fafa834f4902520320e399d6d10",
+  "author": "CSWork"
+}

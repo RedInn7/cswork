@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把未知项强制填0",
+    "code": "def solve(raw):\n    previous=None;answer=0\n    for c in raw.strip().replace('?','0'):\n        if c=='?':continue\n        if previous is not None and previous!=c:answer+=1\n        previous=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误每个不同固定字符贡献2",
+    "code": "def solve(raw):\n    previous=None;answer=0\n    for c in raw.strip():\n        if c=='?':continue\n        if previous is not None and previous!=c:answer+=2\n        previous=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

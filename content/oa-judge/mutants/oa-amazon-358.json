@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误不允许负分最优解",
+    "code": "def solve(raw):\n    lines=raw.split('\\n');s=lines[0];kit=lines[2];ratings=list(map(int,lines[3].split()));balance=low=0\n    for c in s:balance+=1 if c=='(' else -1;low=min(low,balance)\n    left=-low;right=left+balance;a=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);b=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True)\n    answer=sum(a[:left])+sum(b[:right])\n    while left<len(a) and right<len(b) and a[left]+b[right]>0:answer+=a[left]+b[right];left+=1;right+=1\n    return str(max(0,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只补必需括号",
+    "code": "def solve(raw):\n    lines=raw.split('\\n');s=lines[0];kit=lines[2];ratings=list(map(int,lines[3].split()));balance=low=0\n    for c in s:balance+=1 if c=='(' else -1;low=min(low,balance)\n    left=-low;right=left+balance;a=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);b=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True)\n    answer=sum(a[:left])+sum(b[:right])\n    while False:answer+=a[left]+b[right];left+=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
