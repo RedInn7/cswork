@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-23",
+  "title": "一条水平或竖直航线覆盖的最多投放点",
+  "explanation": "## 思路\n\n分别统计每个横坐标和纵坐标出现次数，取最大值，并处理至少两个点的条件。\n\n## 正确性证明\n\n竖线完全由固定横坐标确定，横线完全由固定纵坐标确定；两组频数恰遍历所有可能航线覆盖的记录数。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    values=list(map(int,raw.split()));n=values[0];x=values[1:1+n];y=values[1+n:];best=max(max(Counter(x).values()),max(Counter(y).values()))\n    return str(best if best>=2 else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#23-find-maximum-number-drop-points-connected",
+  "sourceContentHash": "10fd5f0a6473600b7bec37b5ff8b07612d23cd743532f05f1aa7ec0d161ea43e",
+  "author": "CSWork"
+}

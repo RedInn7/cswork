@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-31",
+  "title": "删除链表中大于阈值的节点",
+  "explanation": "## 思路\n\n顺序读取每个节点，仅输出值不超过x的节点；在链表实现中等价于将被删节点的前驱指向其后继。\n\n## 正确性证明\n\n每个值大于x的节点恰被跳过，其余节点恰输出一次；从头到尾顺序不变，因此正是删除目标节点后的链表。\n\n## 复杂度\n\n时间O(n)，输出缓冲O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,x=values[:2];kept=[v for v in values[2:] if v<=x]\n    return ' '.join(map(str,kept))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#31-delete-nodes-greater-than-x",
+  "sourceContentHash": "d977a68e211c0f1b650ef58e2d5fc8d4f868f1009a9c55a15cdf59fb6e06326a",
+  "author": "CSWork"
+}

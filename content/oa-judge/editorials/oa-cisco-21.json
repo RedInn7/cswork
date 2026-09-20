@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-21",
+  "title": "至少两个字符的最长回文及字典序选择",
+  "explanation": "## 思路\n\n枚举奇偶两类回文中心，扩展到不能继续，仅比较该中心的最长候选。\n\n## 正确性证明\n\n每个回文有唯一中心。非最长的同中心回文不可能优于该中心最长者，因此只比较各中心的最长候选不会遗漏全局最优；长度相同时显式取字典序较小者。\n\n## 复杂度\n\n时间O(n²)，候选切片最多O(n)辅助空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();answer=''\n    for middle in range(2*len(s)-1):\n        left=middle//2;right=left+middle%2\n        while left>=0 and right<len(s) and s[left]==s[right]:left-=1;right+=1\n        candidate=s[left+1:right]\n        if len(candidate)>=2 and (len(candidate)>len(answer) or len(candidate)==len(answer) and candidate<answer):answer=candidate\n    return answer or 'None'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#21-find-longest-palindromic-substring",
+  "sourceContentHash": "c15e194cc5142b871ba575fff240c36bdb5ba538da181ea03582701298851035",
+  "author": "CSWork"
+}

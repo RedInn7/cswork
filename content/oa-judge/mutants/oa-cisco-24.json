@@ -1,0 +1,10 @@
+[
+  {
+    "name": "强制所有区域都被使用",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];target=values[n+1:n+4];shift=values[-1];totals=[0]*3;counts=[0]*3;answer=10**30\n    def search(i):\n        nonlocal answer\n        if sum(k==0 for k in counts)>n-i:return\n        if i==n:\n            if all(counts):answer=min(answer,sum((counts[g]-1)*shift+abs(totals[g]-target[g]) for g in range(3)))\n            return\n        pass\n        for g in range(3):\n            totals[g]+=a[i];counts[g]+=1;search(i+1);counts[g]-=1;totals[g]-=a[i]\n    search(0);return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误额外收取每组一次迁移费",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];target=values[n+1:n+4];shift=values[-1];totals=[0]*3;counts=[0]*3;answer=10**30\n    def search(i):\n        nonlocal answer\n        if sum(k==0 for k in counts)>n-i:return\n        if i==n:\n            if all(counts):answer=min(answer,sum(counts[g]*shift+abs(totals[g]-target[g]) for g in range(3)))\n            return\n        search(i+1)\n        for g in range(3):\n            totals[g]+=a[i];counts[g]+=1;search(i+1);counts[g]-=1;totals[g]-=a[i]\n    search(0);return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

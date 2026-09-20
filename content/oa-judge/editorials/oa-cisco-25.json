@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-25",
+  "title": "矩阵中同行最大且同列最小的数",
+  "explanation": "## 思路\n\n逐行扫描维护行最大值的最小值R和各列最小值；最终令C为列最小值的最大值，R=C时输出共同值。\n\n## 正确性证明\n\n每个列最小值不大于每个行最大值，因此C≤R。鞍点存在时其行最大值和列最小值夹在R与C之间，迫使两者相等；反过来取达到R的行和达到C的列，交点夹在同一个值之间，便是合法鞍点。\n\n## 复杂度\n\n时间O(NM)，流式解析额外空间O(M)，不会因一行重复最大值漏解。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import re\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);m=next(values);columns=[10**30]*m;row_bound=10**30\n    for _ in range(n):\n        largest=0\n        for j in range(m):\n            value=next(values);largest=max(largest,value);columns[j]=min(columns[j],value)\n        row_bound=min(row_bound,largest)\n    candidate=max(columns)\n    return str(candidate if candidate==row_bound else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#25-find-number-in-matrix",
+  "sourceContentHash": "d521dd417b47dbd4210837c6e7b925d3c8dc92e5e69532313dd02367100f6c84",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "将列最小值取最小而非最大",
+    "code": "def solve(raw):\n    import re\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);m=next(values);columns=[10**30]*m;row_bound=10**30\n    for _ in range(n):\n        largest=0\n        for j in range(m):\n            value=next(values);largest=max(largest,value);columns[j]=min(columns[j],value)\n        row_bound=min(row_bound,largest)\n    candidate=min(columns)\n    return str(candidate if candidate==row_bound else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "不检查行列兼容性",
+    "code": "def solve(raw):\n    import re\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));n=next(values);m=next(values);columns=[10**30]*m;row_bound=10**30\n    for _ in range(n):\n        largest=0\n        for j in range(m):\n            value=next(values);largest=max(largest,value);columns[j]=min(columns[j],value)\n        row_bound=min(row_bound,largest)\n    candidate=max(columns)\n    return str(candidate)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

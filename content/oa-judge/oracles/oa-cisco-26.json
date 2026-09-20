@@ -1,0 +1,654 @@
+[
+  {
+    "input": "[[\"abc\",\"def\"],[\"cba\",\"ad\",\"ae\"]]\n",
+    "expectedOutput": "Yes Yes No\n"
+  },
+  {
+    "input": "[[\"A a\"],[\"A\",\"a\",\" \"]]\n",
+    "expectedOutput": "Yes Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u0000\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"\\u0000b\\u2028\",\"\\u0000Aa\",\"b\\u0000b\",\"  a\",\" \\ud83d\\ude00A\"],[\" \\ud83d\\ude00ba\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"\\u2028b\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"Aab\\u0000\",\"\\ud83d\\ude00 \\u2028b\"],[\"A\\u0000b\\u2028b\",\"b\\u0000bAA\",\"A\\ud83d\\ude00\\u2028\\u0000a\",\"a  a\\u0000\\u2028\",\"Aa\\ud83d\\ude00 A\",\"  b\\u2028\\u2028\",\"\\u0000\\ud83d\\ude00\\u2028\\ud83d\\ude00b\"]]\n",
+    "expectedOutput": "No No No No No No No\n"
+  },
+  {
+    "input": "[[\"b\\u2028 \",\" \\u0000\\ud83d\\ude00\",\"aA \",\" \\u2028\\ud83d\\ude00\"],[\"a\\u0000\",\"A\",\"\\ud83d\\ude00\\u0000a\",\" \\u2028b\"]]\n",
+    "expectedOutput": "No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\" \",\"a\",\" \"],[\"\\u0000aA\\u2028\\ud83d\\ude00\\ud83d\\ude00\",\"aa\\ud83d\\ude00\\ud83d\\ude00\\u2028\",\"\\ud83d\\ude00A\\u0000 A\\u2028\",\"\\u0000\\u2028 \",\"\\u0000\\u2028\",\" \",\"a a\",\" \"]]\n",
+    "expectedOutput": "No No No No No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"bb\",\"\\u2028A\",\"A\\u2028\"],[\"A\",\" a \",\"\\u0000\\u2028\\ud83d\\ude00\\ud83d\\ude00\\u0000\",\"\\u2028\\ud83d\\ude00\\u0000\\u0000\\u0000\\u2028\",\" Aa\\u0000\\ud83d\\ude00\",\"\\u2028 bA\\ud83d\\ude00\",\"\\u0000A\\ud83d\\ude00A\",\"bb\"]]\n",
+    "expectedOutput": "Yes No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"A \",\"\\u2028a\"],[\"a\\u0000 \\u2028\",\"\\u2028\\u0000Aa\",\"A\\u2028\",\"a\\u0000\\u2028\",\"b\\u0000b\",\" A\"]]\n",
+    "expectedOutput": "No No Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"b\\ud83d\\ude00aa\",\"\\u2028\\u0000a\\u2028\",\"\\u0000a\\ud83d\\ude00\\u2028\",\"\\ud83d\\ude00b\\u2028\\ud83d\\ude00\",\" \\ud83d\\ude00A \"],[\"A\\u2028b\\u2028A\\u2028\",\"a\\ud83d\\ude00\\ud83d\\ude00\\u0000\\u2028A\",\" \\u2028a\",\"ab\",\"a \\u0000 ab\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00A\\ud83d\\ude00\",\"  b\",\"A b\",\"\\u2028A\\u2028\"],[\"aaa\",\"b\\u2028\\u0000\\u2028b\",\" b\\ud83d\\ude00a\",\" \\u2028b\\ud83d\\ude00\",\"A\\u2028\",\"\\u2028 \",\"A\",\"b A\"]]\n",
+    "expectedOutput": "No No No No Yes No Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\"a\"],[\"bA\\u2028\\ud83d\\ude00\",\"A\\ud83d\\ude00\",\" A\",\"b\\u2028\",\" \",\"\\u0000\\ud83d\\ude00a\\u0000\",\"\\ud83d\\ude00\",\"\\u2028\"]]\n",
+    "expectedOutput": "No No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"AAA\",\"\\ud83d\\ude00\\u0000 \",\"aA\\ud83d\\ude00\",\"\\ud83d\\ude00 a\",\"\\u0000\\u0000\\u0000\"],[\"\\ud83d\\ude00\\u2028\\ud83d\\ude00\\u2028\",\"A\",\"\\u0000a\\u2028 a \"]]\n",
+    "expectedOutput": "No Yes No\n"
+  },
+  {
+    "input": "[[\"\\u0000 b\"],[\"b\\u0000\\u2028 a\\u0000\",\"\\ud83d\\ude00\\ud83d\\ude00aA \",\"a Abba\",\"bb\\u0000A\",\"\\u2028\\u2028 \",\"\\ud83d\\ude00\\u0000abA\",\"b \\u0000\"]]\n",
+    "expectedOutput": "No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"A\",\"A\",\"\\u0000\",\"\\u0000\",\"a\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"aAbA\",\"aab\\ud83d\\ude00\"],[\"   A\",\"b\\u0000  \",\"\\u0000\\ud83d\\ude00a\",\"\\ud83d\\ude00\\u0000\",\"b\\ud83d\\ude00A\",\"\\ud83d\\ude00baa\"]]\n",
+    "expectedOutput": "No No No No No Yes\n"
+  },
+  {
+    "input": "[[\" \\u2028b\\u0000\",\"\\u0000\\u2028\\u2028\\u0000\",\"\\u2028\\ud83d\\ude00ab\",\"\\ud83d\\ude00\\u0000 b\",\" bb\\u2028\"],[\"\\ud83d\\ude00\\u2028 \\ud83d\\ude00\",\"\\u0000\\ud83d\\ude00\\u0000\",\"\\u0000 \\u0000a\\ud83d\\ude00\",\"babb\",\"b \"]]\n",
+    "expectedOutput": "No No No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\u2028\\u0000\\u2028A\"],[\" \",\"bA\",\"A\\ud83d\\ude00\\ud83d\\ude00b\\u2028\",\"Ab\\u0000a  \",\"\\u2028\\u2028AAA\",\"A\\u2028\\u0000\\u2028a\"]]\n",
+    "expectedOutput": "No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\ud83d\\ude00\\u2028\\u0000\",\"b\\u0000\\u2028\\u0000\",\"\\u0000\\u2028bb\",\"a\\ud83d\\ude00bb\"],[\"ba\",\"\\u0000a   \",\"b\",\"\\ud83d\\ude00\\u0000\",\"bb\\u2028\\u0000\"]]\n",
+    "expectedOutput": "Yes No Yes Yes Yes\n"
+  },
+  {
+    "input": "[[\" b a\"],[\" A  \\ud83d\\ude00 \",\"  \",\"bA\\u2028Ab\\u2028\",\"\\ud83d\\ude00A\\ud83d\\ude00\",\" \\u0000\"]]\n",
+    "expectedOutput": "No No No No No\n"
+  },
+  {
+    "input": "[[\" \\u0000  a\",\"\\u0000\\u2028\\u0000a\\ud83d\\ude00\",\"ba\\u0000\\u0000b\"],[\" a\",\"A\\u2028 a\",\"aba\\ud83d\\ude00a\",\"AAb \",\"\\u2028 \",\"a  \\u0000 \"]]\n",
+    "expectedOutput": "Yes No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000b\\u2028\",\"a a\",\" A\\u2028\",\"\\u0000b\\ud83d\\ude00\",\"a\\ud83d\\ude00b\"],[\"A\\ud83d\\ude00 \\ud83d\\ude00\\u0000\\u0000\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"bbA\",\"A\\u2028\\ud83d\\ude00\"],[\"Abb\"]]\n",
+    "expectedOutput": "Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\",\"\\u2028\",\"\\u0000\",\"\\ud83d\\ude00\"],[\"a\\u0000a\\u0000b\",\"  A\",\"\\ud83d\\ude00a\"]]\n",
+    "expectedOutput": "No No No\n"
+  },
+  {
+    "input": "[[\"a\\ud83d\\ude00\",\"a\\u0000\"],[\"\\ud83d\\ude00 b\\u2028\",\"\\ud83d\\ude00\\u2028\",\"\\u2028AA\\ud83d\\ude00\",\"aA\",\"\\ud83d\\ude00\",\"A\\ud83d\\ude00a\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No Yes No\n"
+  },
+  {
+    "input": "[[\"aAa\\u0000\",\" \\ud83d\\ude00aA\",\"\\u0000bbA\",\"\\u2028bA\\ud83d\\ude00\",\"\\u2028\\u2028 a\"],[\"\\u2028\",\"\\ud83d\\ude00\\ud83d\\ude00  AA\",\"b\\u2028aa \",\"A \",\"\\ud83d\\ude00a\"]]\n",
+    "expectedOutput": "Yes No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"b\",\"A\",\"\\ud83d\\ude00\"],[\"\\u2028A\\u2028\\u2028\",\"AAa\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u0000\"],[\" \\u0000A bA\",\"\\u2028b\",\" A\\u0000A\",\"A\\u2028A\",\"\\u0000\\u0000\"]]\n",
+    "expectedOutput": "No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00 \\ud83d\\ude00 \",\"\\ud83d\\ude00\\ud83d\\ude00 \\u2028\"],[\"A Aaa\",\" \\ud83d\\ude00 \\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No Yes\n"
+  },
+  {
+    "input": "[[\"a\\u2028\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"\\u0000\\ud83d\\ude00b\\ud83d\\ude00\",\"A\\u2028\\u0000b\",\"ba\\u2028a\"],[\"\\ud83d\\ude00a\\ud83d\\ude00\\u2028A\",\"\\ud83d\\ude00ab\",\"Aab\\u0000\",\"a\\u0000\",\"\\ud83d\\ude00\\ud83d\\ude00\\u2028\",\" a\\u2028\\u2028\\u2028\\ud83d\\ude00\",\"a\\u2028ab\"]]\n",
+    "expectedOutput": "No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\ud83d\\ude00 \",\"b\\u2028 \",\"\\u0000\\ud83d\\ude00A\"],[\"\\u0000A\\ud83d\\ude00 \\u0000\",\" \\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\u2028A\",\" \\u2028b\"]]\n",
+    "expectedOutput": "No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\\ud83d\\ude00A\",\"aab\"],[\"b\\u2028\\ud83d\\ude00\\u2028\\ud83d\\ude00\",\"\\u2028A\\u2028a\\ud83d\\ude00b\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00b\",\"A \",\"  \",\"\\u0000\\ud83d\\ude00\"],[\"\\u2028\\ud83d\\ude00A\\u2028A\",\"\\ud83d\\ude00A\\u2028\\u2028b\\ud83d\\ude00\",\"\\ud83d\\ude00AaAAb\",\"a\",\" \",\"a\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No Yes No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\"],[\" \",\"\\u0000\\u2028\\ud83d\\ude00b\\u0000\",\"\\ud83d\\ude00\\u0000 \",\"\\u0000ab a\",\"\\u2028\\ud83d\\ude00\\u0000aA \",\"\\ud83d\\ude00\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"a\\ud83d\\ude00A\\u0000\",\"AA\\ud83d\\ude00a\",\"\\u0000\\ud83d\\ude00b\\ud83d\\ude00\",\"\\u2028 Aa\"],[\"\\u2028ab\",\"bA \",\"\\ud83d\\ude00\\u2028\\u0000A\",\"\\u2028\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No\n"
+  },
+  {
+    "input": "[[\"a\\ud83d\\ude00bbA\",\"a\\u2028baA\",\"\\u0000 \\u2028\\u0000\\ud83d\\ude00\",\"\\u2028A\\ud83d\\ude00 a\"],[\"b\",\"b  \"]]\n",
+    "expectedOutput": "Yes No\n"
+  },
+  {
+    "input": "[[\"Ab\",\"\\u2028\\ud83d\\ude00\",\"\\ud83d\\ude00 \",\"b\\u2028\"],[\"b\\ud83d\\ude00\",\"b\\u2028\",\"b bbA\",\"\\u2028A\",\"b\\ud83d\\ude00\",\"A \\ud83d\\ude00\",\"\\ud83d\\ude00\\u2028\"]]\n",
+    "expectedOutput": "Yes Yes No Yes Yes No Yes\n"
+  },
+  {
+    "input": "[[\"aaaA\",\" \\u2028b \"],[\" \\ud83d\\ude00\\ud83d\\ude00\\u0000A\",\"A\\u2028\\ud83d\\ude00\",\"Ab\\u2028\\ud83d\\ude00\\ud83d\\ude00 \",\"A\\ud83d\\ude00\",\"a AA\\u2028A\",\"\\u0000  \",\"a\\u0000\",\" b\\u2028 \"]]\n",
+    "expectedOutput": "No No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000b\\u2028\",\"\\u0000bA\",\"a\\ud83d\\ude00b\",\"Ab\\ud83d\\ude00\",\"\\ud83d\\ude00b\\ud83d\\ude00\"],[\"Aa bAA\",\"\\ud83d\\ude00\\u2028\\u0000\",\"\\ud83d\\ude00\\u0000\\u2028\",\"\\ud83d\\ude00\\ud83d\\ude00\\u0000\",\"a\\u0000\\u2028\",\"\\u2028\",\"\\ud83d\\ude00\\u0000\",\"Ab\\u0000\"]]\n",
+    "expectedOutput": "No No No No No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u0000\\ud83d\\ude00\",\"A\\u2028\\u0000\",\"a \\u2028\"],[\"A\",\"aaa\\u2028\\ud83d\\ude00\",\"b\\u0000\",\"a\\u0000\\u0000A\",\"\\u2028\\u0000\",\" \\u0000\",\"A\",\"\\u2028 a\"]]\n",
+    "expectedOutput": "Yes No No No Yes No Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u0000\\ud83d\\ude00a\",\" \\ud83d\\ude00\\ud83d\\ude00\\u2028\",\" \\u0000b \"],[\"Ab\\ud83d\\ude00a\",\"\\u2028ba\\u2028\",\" b\\u0000 \"]]\n",
+    "expectedOutput": "No No Yes\n"
+  },
+  {
+    "input": "[[\"a\",\"a\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"a\\u2028 \"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00  \",\"aa\\ud83d\\ude00\"],[\"\\u0000\\u0000\\u2028\\u2028\",\"A\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"b\\u0000\\u2028b\",\"\\ud83d\\ude00\\u0000ba\",\"\\u0000\\u0000\\u2028\\u2028\",\"\\u0000A\\u0000\\u2028\",\"\\u2028\\ud83d\\ude00Aa\"],[\" ab b\",\"a\",\"\\u2028\\ud83d\\ude00aA\",\"\\u0000a\\ud83d\\ude00A\",\"b\\ud83d\\ude00\\u2028\\ud83d\\ude00\\u0000\",\"b\",\"b\\u2028\\u0000b\"]]\n",
+    "expectedOutput": "No Yes No No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"b  \\ud83d\\ude00\\ud83d\\ude00\",\"\\ud83d\\ude00  ab\",\"Ab\\u0000a\\ud83d\\ude00\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00a\\ud83d\\ude00aa\"],[\"A\",\"\\ud83d\\ude00\\u2028\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"ba\\u0000a\",\" Ab\\u2028\",\"\\ud83d\\ude00\\ud83d\\ude00b \",\"A\\ud83d\\ude00a\\u0000\"],[\"b\\u2028\\u0000b\",\"AbA\\u2028b \",\"\\u2028A\\u0000  \",\"A\\u2028ba\\ud83d\\ude00a\",\" b \",\"A\\u2028\\ud83d\\ude00\",\" \\ud83d\\ude00bA\\u2028\",\"\\u2028bA \"]]\n",
+    "expectedOutput": "No No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"Abb\"],[\"\\u0000  a a\",\"aa\\u0000\",\"\\u2028b Ab\",\"bbb \",\"a \\ud83d\\ude00\\u0000a\",\"\\u0000aA\",\"bbA\"]]\n",
+    "expectedOutput": "No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"b\",\"A\"],[\"\\ud83d\\ude00bA\",\"ba\\u0000b\\u2028\",\"A\\u2028aa \",\"\\ud83d\\ude00A\",\"baa\\u2028 \",\"A\"]]\n",
+    "expectedOutput": "No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"Aa\",\"\\u2028\\ud83d\\ude00\",\"b\\ud83d\\ude00\",\"a\\ud83d\\ude00\"],[\"a\",\"A \\u2028A\\u2028b\",\"\\ud83d\\ude00\\u2028\"]]\n",
+    "expectedOutput": "Yes No Yes\n"
+  },
+  {
+    "input": "[[\"abba \",\"a bbb\",\"\\u0000\\u2028\\u0000\\u0000a\",\"b\\ud83d\\ude00A\\ud83d\\ude00 \"],[\"\\u2028 \\u0000\\u2028\\u0000\",\"\\u0000\\u0000 \\u2028\\u0000\",\"\\u2028\"]]\n",
+    "expectedOutput": "No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\u0000\\u0000  \",\"bbA \\ud83d\\ude00\",\"ba\\u0000A\\u2028\",\"a\\ud83d\\ude00 \\u2028\\u0000\",\"b bAa\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\" \",\"A\",\"A\"],[\"abA\",\"A\"]]\n",
+    "expectedOutput": "No Yes\n"
+  },
+  {
+    "input": "[[\"A\",\"a\"],[\" \",\"A\"]]\n",
+    "expectedOutput": "No Yes\n"
+  },
+  {
+    "input": "[[\"bA \"],[\"\\u2028abb\",\"b\\ud83d\\ude00\\u0000\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u2028ab\",\"\\u0000\\u2028\\u0000a\",\"\\u2028bbA\"],[\"\\ud83d\\ude00A b\",\"\\u0000\",\"aa\\u2028 \",\"A\\u0000\",\"ba\",\"ba\\u2028\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No Yes No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028a \",\"\\u2028  \",\"A\\ud83d\\ude00 \",\"A\\u0000\\u0000\"],[\"\\u0000Aa\",\"\\u0000A\\ud83d\\ude00b\\u0000\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\" b\",\"b\\u0000\",\"\\u0000\\ud83d\\ude00\"],[\"\\ud83d\\ude00A\\u2028bb\",\" \\u2028 \",\" \\u0000\",\"\\u2028bAb \",\" b\",\"ab  \",\"aaA\\u2028\",\"b \"]]\n",
+    "expectedOutput": "No No No No Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\" \",\"\\ud83d\\ude00\",\"\\u0000\",\" \"],[\"\\ud83d\\ude00\\ud83d\\ude00a \\u2028a\",\" \\u2028\\ud83d\\ude00b\\ud83d\\ude00\",\"\\ud83d\\ude00\\ud83d\\ude00a\\u2028\\ud83d\\ude00\",\"\\u0000A\",\" \"]]\n",
+    "expectedOutput": "No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00a\",\"\\ud83d\\ude00\\u2028\",\"A\\u2028\",\"\\u0000A\"],[\"a\\u2028\\u0000\",\"\\u0000b\\u2028\\u2028ab\",\"  \",\"\\ud83d\\ude00aaA\",\"A\\u0000\"]]\n",
+    "expectedOutput": "No No No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\u0000 \",\"Aab\"],[\" \\u2028\\ud83d\\ude00AbA\",\"\\ud83d\\ude00A\",\"Ab\\ud83d\\ude00\\u2028\",\"b\",\"\\u2028\",\"\\u0000\\u2028\\ud83d\\ude00  \\u2028\",\" \\u0000a\"]]\n",
+    "expectedOutput": "No No No Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000\",\"\\ud83d\\ude00\",\"a\",\"\\u2028\"],[\"a\",\"b\\ud83d\\ude00\\ud83d\\ude00 \\u0000\",\"\\u2028 \",\"\\u0000\"]]\n",
+    "expectedOutput": "Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\ud83d\\ude00\\u0000 \\u2028\"],[\"b\\u2028\\u0000b\\u0000b\",\" a\\ud83d\\ude00\",\"b\\u0000A\",\"b \\u2028 \"]]\n",
+    "expectedOutput": "No No No No\n"
+  },
+  {
+    "input": "[[\" a\",\" b\"],[\"abb\\u0000\",\"\\ud83d\\ude00b\",\"bAb\\u2028\\ud83d\\ude00\",\"\\u2028\",\"a\\ud83d\\ude00a\",\"b\",\"\\ud83d\\ude00b\\ud83d\\ude00\\u0000\"]]\n",
+    "expectedOutput": "No No No No No Yes No\n"
+  },
+  {
+    "input": "[[\"\\u2028A \",\"A\\u2028a\",\"\\u0000\\u2028\\u2028\",\"\\ud83d\\ude00A\\ud83d\\ude00\",\" b\\u2028\"],[\"b\\u2028\",\"  a\\ud83d\\ude00\",\"Ab\\ud83d\\ude00\\u2028\\u2028a\",\"\\ud83d\\ude00\\ud83d\\ude00b\\ud83d\\ude00\",\"aba\\ud83d\\ude00A\",\"b  \\u2028\",\"\\u2028\\u2028\\u0000\"]]\n",
+    "expectedOutput": "Yes No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028 b\\u2028a\"],[\"\\u0000 b\\u0000a\\ud83d\\ude00\",\"b\\u2028\\u0000\\u2028aa\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u0000\",\"\\ud83d\\ude00b\",\"\\u0000\\u0000\",\"a\\u2028\",\"\\u2028b\"],[\" aa\",\"\\ud83d\\ude00\\ud83d\\ude00\",\"AaA \\u0000\",\" \\u0000\\u0000a\\u2028\"]]\n",
+    "expectedOutput": "No Yes No No\n"
+  },
+  {
+    "input": "[[\" A\\u2028\",\" aA\"],[\"A \",\"\\u2028A \"]]\n",
+    "expectedOutput": "Yes Yes\n"
+  },
+  {
+    "input": "[[\" \\u0000 \",\"\\u2028\\ud83d\\ude00 \",\" a \",\"\\u2028\\u2028a\",\"aA \"],[\"A \\u0000a\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"Ab\",\"A\\ud83d\\ude00\"],[\"\\ud83d\\ude00  b\",\" \\u2028 \\ud83d\\ude00A\",\"b\\u2028aA\",\"abA\",\"b\\u2028\",\"bA\"]]\n",
+    "expectedOutput": "No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"A\\u2028a\",\"\\ud83d\\ude00a \"],[\"  \\ud83d\\ude00\\ud83d\\ude00\\u2028\",\"\\u2028\\u2028\\ud83d\\ude00\",\" a\",\" A\"]]\n",
+    "expectedOutput": "No No Yes No\n"
+  },
+  {
+    "input": "[[\"ba\\ud83d\\ude00\",\"\\ud83d\\ude00b\\u0000\",\"ab \"],[\"aA\",\"A \\u2028\",\"Aa\\u2028A\\u0000\",\" a\\u2028A \",\"\\ud83d\\ude00\\ud83d\\ude00b\\u2028\",\"\\u2028 \"]]\n",
+    "expectedOutput": "No No No No No No\n"
+  },
+  {
+    "input": "[[\"\\u2028A A\",\"\\ud83d\\ude00aA \",\"\\u2028A\\u0000b\",\"A\\ud83d\\ude00A \",\"\\u2028bbA\"],[\"\\u2028\\u0000 \"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"\\u2028A\\u2028\",\"\\ud83d\\ude00A\\u2028\",\"b b\",\"bb\\ud83d\\ude00\",\"b \\ud83d\\ude00\"],[\"\\u0000\\u0000b A\",\"\\u2028\\u0000a\",\"\\u2028A\\u2028\"]]\n",
+    "expectedOutput": "No No Yes\n"
+  },
+  {
+    "input": "[[\"b\"],[\"\\u2028b\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"b\\u0000b\",\"\\u0000\\u0000A\",\"\\ud83d\\ude00a \"],[\"\\u2028\",\"\\u0000 \\u2028AaA\",\"A\\u0000a\\u2028\",\"\\u2028\\u0000a\\ud83d\\ude00\",\"Aa \\ud83d\\ude00\\u0000\",\"A\",\" a\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00A\",\"\\ud83d\\ude00\\ud83d\\ude00\",\"\\u0000b\",\"bA\"],[\" aaa\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"ba\\u2028\",\"abb\"],[\"\\u0000A \",\"b\\u0000A\\u2028\\ud83d\\ude00\\u0000\",\"ab \\ud83d\\ude00Aa\",\"bba\"]]\n",
+    "expectedOutput": "No No No Yes\n"
+  },
+  {
+    "input": "[[\"ab\\u0000\\u0000\\u0000\",\"\\ud83d\\ude00a \\u0000\\u0000\",\"A\\ud83d\\ude00\\u0000\\u0000A\"],[\"\\ud83d\\ude00\",\"b\\ud83d\\ude00A\\ud83d\\ude00A\",\" \\u2028 \",\"\\ud83d\\ude00 \",\" \"]]\n",
+    "expectedOutput": "Yes No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\ud83d\\ude00\\u0000a \"],[\"\\u2028\\ud83d\\ude00\\u0000\",\"aAA \",\"b\\u0000a   \",\"\\u2028 \",\"\\u0000\",\"b\\ud83d\\ude00\\u0000b\",\"aa \\u2028\\ud83d\\ude00a\",\" a\\u0000\\ud83d\\ude00\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"a \",\"b\\ud83d\\ude00\",\"a\\u2028\"],[\"\\ud83d\\ude00\\ud83d\\ude00\",\"b\",\"\\ud83d\\ude00\\ud83d\\ude00\",\"\\u0000baa\",\"a\",\"\\u2028a\"]]\n",
+    "expectedOutput": "No Yes No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00a\",\"b \"],[\"\\u2028A\",\"\\u0000\",\"\\u2028\\u2028Aa\",\"b \\ud83d\\ude00\\ud83d\\ude00\\u0000\"]]\n",
+    "expectedOutput": "No No No No\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u0000 \\u0000\",\"bAa\\u0000\",\"\\u0000 \\u2028A\",\"\\u2028A\\u2028A\",\" \\ud83d\\ude00\\u2028\\u2028\"],[\"\\u0000a b\\u0000\",\"  \\ud83d\\ude00\",\"A\\u2028A\\u2028\"]]\n",
+    "expectedOutput": "No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000 \\u0000\",\"\\u2028A\\u2028\",\"\\ud83d\\ude00\\ud83d\\ude00\\u2028\",\"\\u0000 A\"],[\"Aa\\u2028 \\u2028\",\" \\u0000 \\ud83d\\ude00a\\ud83d\\ude00\",\"  a\",\" \\ud83d\\ude00A\\ud83d\\ude00a\",\" \\u2028A A\\u0000\"]]\n",
+    "expectedOutput": "No No No No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u0000\"],[\"\\u0000 \\u0000b\",\"\\u0000\",\"b\\u2028\\ud83d\\ude00\",\"\\u0000AA\\u0000\\u0000\\u2028\",\"  \\ud83d\\ude00\",\"\\u0000\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No Yes No No No Yes\n"
+  },
+  {
+    "input": "[[\"b\\u2028\"],[\"baAb\\ud83d\\ude00\",\"A  \",\"\\u2028 \\u2028\\ud83d\\ude00a\",\" \\u0000 \\ud83d\\ude00\\u0000\",\"\\u2028b\",\"AAA\\ud83d\\ude00\\ud83d\\ude00b\",\"b\\u0000A \"]]\n",
+    "expectedOutput": "No No No No Yes No No\n"
+  },
+  {
+    "input": "[[\"b \",\"\\u0000b\",\"\\ud83d\\ude00a\",\"A\\ud83d\\ude00\",\"\\u2028A\"],[\"b\",\" b\"]]\n",
+    "expectedOutput": "Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u0000\\u0000\\u0000\",\"a\\ud83d\\ude00  \",\"\\u2028a\\ud83d\\ude00a\"],[\"A\\u0000\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\"A\",\"\\u2028\"],[\"A\\u0000\\u2028 \",\"\\u2028\\u0000\\ud83d\\ude00 \",\"A\",\"\\ud83d\\ude00A\\ud83d\\ude00A \"]]\n",
+    "expectedOutput": "No No Yes No\n"
+  },
+  {
+    "input": "[[\"Ab\",\"\\u0000\\u2028\",\"b\\u2028\"],[\"\\u0000A\\u0000\\u0000\",\"AbAab\",\"\\u2028 \\ud83d\\ude00 \",\"\\ud83d\\ude00\\u0000\\ud83d\\ude00\\u2028 \",\"\\u2028a\\u2028\",\"\\u2028a\\ud83d\\ude00a\\ud83d\\ude00\\u2028\"]]\n",
+    "expectedOutput": "No No No No No No\n"
+  },
+  {
+    "input": "[[\"\\u0000A\\ud83d\\ude00A\",\"\\u2028b \\ud83d\\ude00\",\"\\ud83d\\ude00A\\u0000A\",\"\\u0000\\u2028\\u2028A\",\"\\u0000\\u2028\\ud83d\\ude00A\"],[\"\\ud83d\\ude00\",\" \",\"b\\u0000A\\u2028 \",\"A\\u0000\\u0000a\\ud83d\\ude00\",\"\\ud83d\\ude00\\u0000Aa\",\" \",\" AA\\u2028 \\u2028\",\"A\\u0000A\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "Yes Yes No No No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\\u0000\\u0000A\\u0000\",\"\\ud83d\\ude00\\ud83d\\ude00a\\ud83d\\ude00\\ud83d\\ude00\"],[\"\\u2028\\ud83d\\ude00\\u2028\\u2028A\",\"\\ud83d\\ude00\",\" \",\"\\u0000\\u0000A\\u2028\\u0000\",\"\\u0000A\\u0000\\u0000\\u2028\"]]\n",
+    "expectedOutput": "No Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00a\",\"a\\u2028\",\"\\u0000\\ud83d\\ude00\",\"\\ud83d\\ude00 \"],[\"\\u2028bab\\u2028\",\"b\",\"\\u2028\\ud83d\\ude00\\ud83d\\ude00\",\"A\\ud83d\\ude00ba\\u2028a\",\" b\",\" \\u0000\\ud83d\\ude00bb\\u2028\",\"\\u2028\\ud83d\\ude00\\u2028\"]]\n",
+    "expectedOutput": "No No No No No No No\n"
+  },
+  {
+    "input": "[[\"bb\",\"A\\u2028\"],[\"a  b\\u2028\\u0000\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\"\\u2028\",\" \",\"\\ud83d\\ude00\",\" \"],[\"b\\ud83d\\ude00 \",\"A \",\" A\\u2028\\ud83d\\ude00\\u0000\\ud83d\\ude00\",\"\\u2028\"]]\n",
+    "expectedOutput": "No No No Yes\n"
+  },
+  {
+    "input": "[[\"A\",\"b\",\"A\",\" \"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"A\",\"\\u0000\",\"\\ud83d\\ude00\",\"a\",\"\\u2028\"],[\"Aa\",\" ba\\u0000a\",\"\\u2028\\u2028b\\u2028\",\"a\\ud83d\\ude00\",\"\\u2028ba\",\"\\ud83d\\ude00\\u0000\",\"\\ud83d\\ude00\\ud83d\\ude00\",\"a\"]]\n",
+    "expectedOutput": "No No No Yes No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"A\\u0000\\u2028\\u0000\",\"b\\u0000A\\u2028\"],[\"A\\u2028\\ud83d\\ude00\",\"aba\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"bA\"],[\"\\u0000\\u2028\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\"],[\" bb\\ud83d\\ude00\\ud83d\\ude00\\u0000\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"a\",\" \",\"A\",\"\\ud83d\\ude00\"],[\"\\ud83d\\ude00\\ud83d\\ude00ba\\u0000\",\"bbb\",\"\\ud83d\\ude00\",\"\\u0000\",\" \"]]\n",
+    "expectedOutput": "No No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u0000 \"],[\"A\\u2028b\\ud83d\\ude00\\u2028\",\"\\u0000\\ud83d\\ude00A aA\",\" \\ud83d\\ude00\\u0000\\ud83d\\ude00\\u2028b\",\"b\",\" \\u2028\\u0000\\ud83d\\ude00\",\"AAb  A\",\"\\u0000\\ud83d\\ude00bb\"]]\n",
+    "expectedOutput": "No No No No No No No\n"
+  },
+  {
+    "input": "[[\"\\u2028ba\\u2028\",\" \\u2028\\u0000a\",\"bA\\u0000\\ud83d\\ude00\",\" \\u0000Ab\"],[\"b\\ud83d\\ude00A\\ud83d\\ude00 \",\"a\\u0000b\",\"\\u0000A\\u0000 \\u0000\",\"A\",\"\\u2028b\\ud83d\\ude00b\\u2028\",\"\\ud83d\\ude00\\u0000Ab\"]]\n",
+    "expectedOutput": "No No No Yes No Yes\n"
+  },
+  {
+    "input": "[[\"b \",\"\\u0000\\u0000\",\"\\u0000b\"],[\"\\u2028\",\"bbA\",\"\\u0000\\ud83d\\ude00A\",\"a\\u0000\",\"b\\u0000\"]]\n",
+    "expectedOutput": "No No No No Yes\n"
+  },
+  {
+    "input": "[[\"A aa\",\"\\u2028b  \",\" \\u2028\\ud83d\\ude00\\u0000\",\"bAAb\",\"AAA\\u2028\"],[\"bab\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"a\\u0000A\",\"b\\u0000A\"],[\"A\",\"A\\u0000b\"]]\n",
+    "expectedOutput": "Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\\ud83d\\ude00\\ud83d\\ude00\"],[\"\\u2028\",\"b\\u0000A\\ud83d\\ude00a\",\"Ab\",\"\\u0000a \\u2028bA\",\"\\u2028\\u0000b\\u0000\",\"b \",\"\\ud83d\\ude00\\ud83d\\ude00\\u2028\"]]\n",
+    "expectedOutput": "Yes No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028AA\",\"Aaa\",\"A\\u2028\\u0000\",\"b \\u2028\",\"\\u0000\\u0000 \"],[\"ba Ab\",\"\\ud83d\\ude00AA\\u2028\",\"a\\ud83d\\ude00a\",\"b\\u2028\",\"Ab\\u0000b\",\"ba\\u2028\\u0000\"]]\n",
+    "expectedOutput": "No No No No No No\n"
+  },
+  {
+    "input": "[[\"A\\u0000 \",\"\\u2028 \\u2028\",\"aA \",\"b b\"],[\"b\\ud83d\\ude00AbAA\",\"A\",\" \\u0000A\"]]\n",
+    "expectedOutput": "No Yes Yes\n"
+  },
+  {
+    "input": "[[\"Ab\\u0000A\",\"aa \\u0000\",\" \\ud83d\\ude00ba\",\"\\ud83d\\ude00\\u2028a \"],[\"  b\",\"A\\u0000a \\u0000\",\"\\ud83d\\ude00a\",\"\\u0000\\u2028\\ud83d\\ude00\\ud83d\\ude00A\",\"abb \\u2028\"]]\n",
+    "expectedOutput": "No No Yes No No\n"
+  },
+  {
+    "input": "[[\" \",\"\\u2028\",\"\\ud83d\\ude00\",\" \",\"\\ud83d\\ude00\"],[\"A\\u2028 \\u0000A\\u0000\",\"b\\u0000\\u0000  b\",\"aaa\",\"A aaba\",\"A\\ud83d\\ude00aab\",\"A\\ud83d\\ude00 b\\u0000\\u0000\"]]\n",
+    "expectedOutput": "No No No No No No\n"
+  },
+  {
+    "input": "[[\"A\\ud83d\\ude00bbb\"],[\"\\u2028b\",\" \",\"\\u2028\\u0000ba\",\"baa\",\"b\\ud83d\\ude00bb\\ud83d\\ude00b\",\"\\u0000\\u0000a\\u0000b\\ud83d\\ude00\",\"bbb\\ud83d\\ude00A\"]]\n",
+    "expectedOutput": "No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\" \\u2028 \",\"b\\u0000a\",\" b\\ud83d\\ude00\",\" \\u2028\\u2028\"],[\" \\u2028aaa\",\"\\u2028\\ud83d\\ude00\",\"aab \\u0000\\u0000\",\"\\u2028b\",\"\\ud83d\\ude00a\",\"\\u2028\\u2028 \"]]\n",
+    "expectedOutput": "No Yes No Yes Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\\u2028a \",\" A \\ud83d\\ude00\",\"AA  \",\"A\\u0000b\\u2028\"],[\"\\ud83d\\ude00\\u0000\\u2028bA\",\"\\u2028b\\u0000A\"]]\n",
+    "expectedOutput": "No Yes\n"
+  },
+  {
+    "input": "[[\"ba\",\"Ab\",\"\\ud83d\\ude00a\",\"b\\u0000\"],[\"\\u2028b\\ud83d\\ude00\\u2028\\ud83d\\ude00\",\"aA\",\"AA\\u2028 Aa\",\"aba\\u2028A\",\"\\u0000aA\\u2028\"]]\n",
+    "expectedOutput": "No No No No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u2028\\u0000\"],[\"\\ud83d\\ude00\",\"\\u0000 a\",\"b\",\" A\\u0000\\u2028a\",\"A\\u0000\\ud83d\\ude00\\u2028A\",\" \\ud83d\\ude00 b\",\"A\\u0000 \\u0000 \"]]\n",
+    "expectedOutput": "Yes No No No No No No\n"
+  },
+  {
+    "input": "[[\" \",\"A\"],[\"b\\u2028A\\u2028\",\"aA\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"aa\",\"Aa\",\"\\ud83d\\ude00\\u2028\"],[\"\\u0000\\u2028\\u0000\",\"\\ud83d\\ude00b \\ud83d\\ude00A\",\"\\u2028\\ud83d\\ude00\\u2028\",\"\\ud83d\\ude00\\ud83d\\ude00\",\"\\u2028bb\",\" \\u0000\\u0000\\u2028\\u0000\",\"bb\\ud83d\\ude00AA\"]]\n",
+    "expectedOutput": "No No No No No No No\n"
+  },
+  {
+    "input": "[[\" b\\ud83d\\ude00\",\"b\\ud83d\\ude00\\u2028\",\"\\u0000\\u2028 \",\"\\ud83d\\ude00a\\u2028\"],[\" A\\ud83d\\ude00\",\"\\u2028a\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No Yes\n"
+  },
+  {
+    "input": "[[\"b\\ud83d\\ude00a\\u2028\"],[\"b\\u2028\\ud83d\\ude00\\ud83d\\ude00a\\ud83d\\ude00\",\"A\\u2028\\u0000a\\ud83d\\ude00\",\"\\ud83d\\ude00b\\u0000\"]]\n",
+    "expectedOutput": "No No No\n"
+  },
+  {
+    "input": "[[\"A\",\"\\u2028\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00\"],[\"ab \\u0000b\",\"\\u2028bAA\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00A\\u2028\",\" \\u0000b\"],[\"b\\u0000\",\"aa\\u2028bab\",\"a\\u0000a\",\"\\u2028A\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "Yes No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028b\",\"\\ud83d\\ude00A\"],[\"A \",\"\\ud83d\\ude00bb\",\"\\ud83d\\ude00\",\"a\\ud83d\\ude00a\",\"bb\\u0000\\u2028\",\"ba\\u0000 \\u0000b\",\"b\\u2028\"]]\n",
+    "expectedOutput": "No No Yes No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000a\",\"\\u2028b\"],[\"\\u2028bA\",\"a\\u2028a\",\" \\u0000\",\"\\u2028bA\\u0000\",\"\\ud83d\\ude00 a\",\"a\\u0000\"]]\n",
+    "expectedOutput": "No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\ud83d\\ude00A\\ud83d\\ude00\\u2028\"],[\"\\u2028\\ud83d\\ude00A\\ud83d\\ude00\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028b\",\"\\u0000a\",\" A\"],[\"\\ud83d\\ude00\\u0000a\",\"\\u0000\",\"\\u2028a\",\"a b\\u2028\\u0000\\u2028\",\"\\u0000 \\u0000\",\"ba\\u0000 \",\"a\\ud83d\\ude00 \",\"b\\u2028\"]]\n",
+    "expectedOutput": "No Yes No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\u2028\\u0000a \",\"bAAbA\",\"bA \\u2028\\u0000\",\"baabb\"],[\" a\\u0000\\u2028a\"]]\n",
+    "expectedOutput": "Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u0000\\ud83d\\ude00\",\"\\ud83d\\ude00\\u0000\\u2028\",\" ba\"],[\"\\u2028 \"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\"\\u2028\\ud83d\\ude00a\\ud83d\\ude00\",\"bb\\u0000b\",\"\\ud83d\\ude00\\u0000bA\"],[\"aAAa\",\"A \\u0000\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\" abA\",\"\\u2028aa \",\"a\\ud83d\\ude00\\ud83d\\ude00a\",\"b\\u0000\\ud83d\\ude00\\u2028\"],[\"a b\\u0000\"]]\n",
+    "expectedOutput": "No\n"
+  },
+  {
+    "input": "[[\" b\\u0000a \"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u2028aa \",\"\\u2028A\\u0000A\\ud83d\\ude00\",\"\\ud83d\\ude00\\u0000A\\u0000 \",\"a\\u0000\\u0000\\u0000\\ud83d\\ude00\"],[\"\\u0000\\ud83d\\ude00\",\"\\u0000A\\u2028 \\ud83d\\ude00\\ud83d\\ude00\",\"bb\\u0000\\ud83d\\ude00\",\"b\\u2028a\",\"\\ud83d\\ude00a\\u0000\\ud83d\\ude00\\ud83d\\ude00 \",\"\\u0000Ab\\u0000 \"]]\n",
+    "expectedOutput": "Yes No No No No No\n"
+  },
+  {
+    "input": "[[\"bb a\",\"Aa\\u0000\\u2028\",\"\\u0000\\u2028\\u2028\\u2028\"],[\"Ab \",\" Aaa\",\"a\",\"A\\u0000bba\",\"aA\\u0000\\u0000\\ud83d\\ude00\",\"bA\\u2028\\u0000a\\u0000\",\" \",\"\\u2028\\u2028\\u2028\\u0000\"]]\n",
+    "expectedOutput": "No No Yes No No No Yes Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u2028\\u0000\\u2028a\",\"\\ud83d\\ude00\\u2028 bA\"],[\"a\\u2028\\u0000\\u2028\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00bb\",\"AA\\u0000\",\"bbb\",\"aA\\ud83d\\ude00\",\"a\\u2028\\u0000\"],[\"b\\u2028 ab \",\"\\u2028\\ud83d\\ude00Ab\\u2028\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"A \",\"\\ud83d\\ude00a\"],[\"bA\",\"bAA A\",\"ba\\ud83d\\ude00\\ud83d\\ude00\\u2028\",\" \"]]\n",
+    "expectedOutput": "No No No Yes\n"
+  },
+  {
+    "input": "[[\"b\\u2028\\u2028\\u0000\",\"\\ud83d\\ude00\\u0000\\u2028b\",\"\\ud83d\\ude00\\u0000b\\u2028\",\"a\\ud83d\\ude00aa\"],[\"\\u2028   b\",\"aa\\u0000\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\"\\u2028\",\"b\",\"\\u2028\",\"\\ud83d\\ude00\"],[\"\\u2028\"]]\n",
+    "expectedOutput": "Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\ud83d\\ude00\\u2028\",\"aab\",\"b\\u0000b\",\"\\u2028b\\u0000\"],[\"\\ud83d\\ude00\",\"b\",\"\\ud83d\\ude00\\u2028\\ud83d\\ude00\\ud83d\\ude00\",\"\\ud83d\\ude00\\u0000\\u2028\\u0000\\u0000\",\"AbaAA\\ud83d\\ude00\",\"\\ud83d\\ude00\\u0000\\u2028ba\"]]\n",
+    "expectedOutput": "Yes Yes No No No No\n"
+  },
+  {
+    "input": "[[\" \",\"\\u0000\",\"A\",\"a\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"a \"],[\"A \",\"\\u0000\\u2028\",\" b   \",\"A\",\"b\\u2028\\ud83d\\ude00\\ud83d\\ude00a\"]]\n",
+    "expectedOutput": "No No No No No\n"
+  },
+  {
+    "input": "[[\"\\u0000\\ud83d\\ude00\\u0000\\u0000\"],[\"\\u0000\\u2028 a\\ud83d\\ude00\",\"\\u0000a \",\"\\ud83d\\ude00b\\u0000b \",\"A\\ud83d\\ude00\",\"aAA\\u2028 \\u0000\",\"\\u0000b\\u2028aA\",\"baa\",\"\\u0000\\u0000\\ud83d\\ude00\\u0000\"]]\n",
+    "expectedOutput": "No No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00a \",\"b\\u2028 \",\"b\\u2028b\",\"aAa\"],[\"\\ud83d\\ude00A\\u0000\",\"\\u2028 \",\"\\ud83d\\ude00\\u0000\",\"\\u0000\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"\\u0000\\u0000a\",\" \\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No Yes No No Yes No No\n"
+  },
+  {
+    "input": "[[\"A\\ud83d\\ude00\\u2028 \",\"\\ud83d\\ude00 bb\"],[\"A\\u0000\\u2028\",\"A\\u0000\",\"AaAA\\u0000\\u0000\",\"\\u2028a\\u2028a\\ud83d\\ude00\",\"bAbaA\\u0000\",\"a\",\" \\u2028\\u0000\",\"bb \\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No No No No Yes\n"
+  },
+  {
+    "input": "[[\"aaAb\",\"\\u0000b\\ud83d\\ude00\\u0000\",\"\\ud83d\\ude00a\\u0000\\u0000\",\" \\u2028\\u2028\\ud83d\\ude00\"],[\"A\\u0000aA\\u0000a\",\"baA \",\" A\",\"\\ud83d\\ude00\\u2028\\u2028 \"]]\n",
+    "expectedOutput": "No No No Yes\n"
+  },
+  {
+    "input": "[[\" aaa\",\"\\u2028aA\\u0000\"],[\" \",\" \\u0000\\u2028\",\"Ab\\ud83d\\ude00bb\",\"a \\u2028\\ud83d\\ude00b\",\"\\u2028A\\ud83d\\ude00aaa\",\"a\\u2028a\",\"\\u2028b\"]]\n",
+    "expectedOutput": "Yes No No No No No No\n"
+  },
+  {
+    "input": "[[\"b\\u0000\\u2028\\ud83d\\ude00\",\" \\u2028bb\"],[\"b\",\"\\u0000a\"]]\n",
+    "expectedOutput": "Yes No\n"
+  },
+  {
+    "input": "[[\" \",\"A\",\"a\"],[\"\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00aA\",\"\\u0000AAb b\",\"A\"]]\n",
+    "expectedOutput": "No No Yes\n"
+  },
+  {
+    "input": "[[\"a\\u0000\\u0000\\u2028\",\"\\u0000A\\u2028A\",\"A\\u0000\\u0000A\"],[\"\\u0000\",\"A \"]]\n",
+    "expectedOutput": "Yes No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00 b\\u0000b\"],[\"\\ud83d\\ude00  \\u2028\\u2028\",\" \",\"A \\u0000\",\"\\u2028A\",\"bab \"]]\n",
+    "expectedOutput": "No Yes No No No\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u2028a\\ud83d\\ude00\",\"\\u0000 \\ud83d\\ude00\\ud83d\\ude00\"],[\"\\u2028A \\u2028a\",\"\\u0000b\",\"bAA\\ud83d\\ude00a\\u2028\",\"a  b\",\"\\ud83d\\ude00a\\u2028\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\u0000a\\u0000\\u2028\\u2028\"],[\"\\u0000\",\"abA\",\"A\\u2028\\u2028\",\"b\",\"b \"]]\n",
+    "expectedOutput": "Yes No No No No\n"
+  },
+  {
+    "input": "[[\"\\u0000\\u0000\",\"Ab\",\" \\u2028\",\"Aa\",\"a \"],[\"aba\",\"\\u0000\\u0000\"]]\n",
+    "expectedOutput": "No Yes\n"
+  },
+  {
+    "input": "[[\"\\u2028\",\"A\"],[\"\\u2028\"]]\n",
+    "expectedOutput": "Yes\n"
+  },
+  {
+    "input": "[[\"Ab\",\"\\ud83d\\ude00\\u2028\",\"\\u2028\\u0000\"],[]]\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "[[\"aab\",\"\\u0000\\u0000a\"],[\"b\\ud83d\\ude00\",\" \",\"A\\u0000A\\ud83d\\ude00a\",\"baa\"]]\n",
+    "expectedOutput": "No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\\u2028\",\"ab\",\"  \",\"\\ud83d\\ude00a\"],[\"Aa\\u0000\\u0000\\u0000\\u2028\",\"a\\u0000a\",\"Ab\\ud83d\\ude00\",\"a\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "No No No Yes\n"
+  },
+  {
+    "input": "[[\"ab b\\ud83d\\ude00\",\"\\u0000AA A\",\"a\\u2028\\ud83d\\ude00 b\",\"\\u0000A\\ud83d\\ude00a\\ud83d\\ude00\"],[\"a\\u2028\",\"A\",\"A\\ud83d\\ude00b\",\"\\u2028aAA\",\"\\u2028A \\ud83d\\ude00aA\",\"\\u2028\\u2028a\\u0000\\u0000\",\"A AA\\u0000\"]]\n",
+    "expectedOutput": "Yes Yes No No No No Yes\n"
+  },
+  {
+    "input": "[[\"\\ud83d\\ude00\",\"\\u2028\",\"\\u2028\",\"\\u0000\"],[\"a\",\"AA\\u0000\\ud83d\\ude00\\ud83d\\ude00b\"]]\n",
+    "expectedOutput": "No No\n"
+  },
+  {
+    "input": "[[\"A\",\" \",\"a\"],[\"\\ud83d\\ude00\\u2028\\u0000\\u2028\\ud83d\\ude00\",\"b\\ud83d\\ude00\",\"\\ud83d\\ude00aba\\ud83d\\ude00 \",\"\\ud83d\\ude00\\u0000\\u0000\\ud83d\\ude00\",\"AbA\",\"\\u0000\",\"\\u2028A\",\"A\"]]\n",
+    "expectedOutput": "No No No No No No No Yes\n"
+  }
+]

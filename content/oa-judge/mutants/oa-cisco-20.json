@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误每格都落地",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,m=values[:2];a=values[2:];top=left=0;bottom=n-1;right=m-1;index=0;answer=a[0]\n    def visit(r,c):\n        nonlocal index,answer\n        if True:answer=a[r*m+c]\n        index+=1\n    while top<=bottom and left<=right:\n        for r in range(top,bottom+1):visit(r,left)\n        left+=1\n        for c in range(left,right+1):visit(bottom,c)\n        bottom-=1\n        if left<=right:\n            for r in range(bottom,top-1,-1):visit(r,right)\n            right-=1\n        if top<=bottom:\n            for c in range(right,left-1,-1):visit(top,c)\n            top+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误落在奇数编号路径格",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,m=values[:2];a=values[2:];top=left=0;bottom=n-1;right=m-1;index=0;answer=a[0]\n    def visit(r,c):\n        nonlocal index,answer\n        if index%2==1:answer=a[r*m+c]\n        index+=1\n    while top<=bottom and left<=right:\n        for r in range(top,bottom+1):visit(r,left)\n        left+=1\n        for c in range(left,right+1):visit(bottom,c)\n        bottom-=1\n        if left<=right:\n            for r in range(bottom,top-1,-1):visit(r,right)\n            right-=1\n        if top<=bottom:\n            for c in range(right,left-1,-1):visit(top,c)\n            top+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

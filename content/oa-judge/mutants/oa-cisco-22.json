@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略先后顺序",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];lowest=None;answer=0\n    for value in a:\n        if lowest is not None:answer=max(answer,value-lowest)\n        lowest=value if lowest is None else min(lowest,value)\n    return str(max(a)-min(a) if a else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只比较相邻元素",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];lowest=None;answer=0\n    for value in a:\n        if lowest is not None:answer=max(answer,value-lowest)\n        lowest=value if lowest is None else value\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-19",
+  "title": "非空连续片段的最大和",
+  "explanation": "## 思路\n\n维护以当前元素结尾的最优非空片段和，再维护所有结尾中的最大值。\n\n## 正确性证明\n\n以i结尾的片段或仅含a[i]，或由以i−1结尾的最优片段接上a[i]。这两类穷尽所有非空片段；首项初始化保证全负情况仍选非空片段。\n\n## 复杂度\n\n时间O(n)，除输入存储外辅助空间O(1)，和使用64位整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];ending=answer=a[0]\n    for value in a[1:]:\n        ending=max(value,ending+value);answer=max(answer,ending)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#19-find-largest-sum-contiguous-subarray",
+  "sourceContentHash": "9f7bafa557a4a6d0cb28f3b9116852f388e2801f2c7ee8ce406a2601fc882e85",
+  "author": "CSWork"
+}
