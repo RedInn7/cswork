@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-salesforce-21",
+      "status": "authored",
+      "reason": "统计0≤i<j<n中同时满足min(|x−y|,|x+y|)≤min(|x|,|y|)及max(|x−y|,|x+y|)≥max(|x|,|y|)的索引对，其中x=a[i]、y=a[j]。重复值按索引分别计数。 输入n和n个整数。完整原界2≤n≤200000，−10^9≤a[i]≤10^9；raw恢复catalog被HTML过滤吞掉的i<j条件。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-get-perfect-pairs-count.md",
+      "rawGitBlob": "9cb4c4d64d07a90d2d707fe5192a5eaf3ef3282d",
+      "rawSha256": "4eca05015a97939203a6871c7fd25ae027ad42fd02ac9db81a6190ae2cc99bf1",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "fastprep/Salesforce/salesforce-find-number-of-perfect-pairs.md",
+          "rawGitBlob": "641aa04021cdccfdd3a2b544ff91db5a5f964fde",
+          "rawSha256": "874dd9dca5e9c528c79be6ee9d1c4257aa188cf4bd8867815b392255f1b4e732"
+        }
+      ],
+      "catalogContentHash": "b85376f43ada85f0801f13038c12f26687cf1dcac134ec688c23d77f5872ddcb"
+    },
+    {
+      "id": "oa-salesforce-22",
+      "status": "authored",
+      "reason": "26位charValue依次对应a..z，0为普通字符，1为特殊字符。求s中普通字符出现次数不超过k的最长连续子串长度，重复普通字符按出现次数计数。 输入三行s、k、charValue。原界1≤|s|≤100000，s为a..z，charValue长26且仅0/1；原length of k是整数参数的笔误，明确1≤k≤|s|。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-get-special-substring.md",
+      "rawGitBlob": "c9dc4db69bad3c2e4e4e97db3847f258b1f77c1d",
+      "rawSha256": "315306b6f856d03efd6b736ccc074ff6a3823d40fdc423cc5f866831bf643eb2",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "1c9ef6cb75933b7e6f195f29b70597d2b65df99853034059a080f5b416b61dd0"
+    },
+    {
+      "id": "oa-salesforce-23",
+      "status": "authored",
+      "reason": "每个功能必须选择开发或集成。开发者足够，所有开发同时开始；集成仅由组长依次完成，且与开发并行进行。求全部功能完成的最短时间。 输入n，随后n个developmentTime和n个integrationTime。原无数值界，本站补充1≤n≤200000，所有时间为0..10^9整数。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-least-hours.md",
+      "rawGitBlob": "8a9c8c5e67c1ea2f6c6ea0d43945b01ed367f904",
+      "rawSha256": "a452bec86353299321c16b8302ead3174321e9d8b2648212a5e20ef500d38928",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "fastprep/Salesforce/salesforce-get-minimum-development-time.md",
+          "rawGitBlob": "40337f5b22a79c870d131206f2f7cefb3aa72fd6",
+          "rawSha256": "315d6126ff199a8cb0ee5777e03e6b95848c5d06535d60b0c0e50b7ca5b81d06"
+        }
+      ],
+      "catalogContentHash": "17e92dbd1b9c6148c541ad8bf46f346ec80952ca7937f8d5c185d0e6b36f0450"
+    },
+    {
+      "id": "oa-salesforce-24",
+      "status": "authored",
+      "reason": "无向图路径的代价是路径中最大的边权，求source到destination的最小代价；不连通输出−1。本站补充source=destination的空路径代价为0。自环及平行边均可出现。 输入N M、M行u v weight，再输入source及destination。原M为1..100000，边权0..10^9，标签1..N。原N上界写成10<sup>5</sup>5，存在多余5，本站公开采用宽容上界1≤N≤10^55覆盖该损坏写法的常见解释，不声称这是来源确定原界。大标签按十进制整数读取，只存出现的节点。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-least-stressful-path.md",
+      "rawGitBlob": "6578c8df5e835b927fb436391006ab67e7d6eab7",
+      "rawSha256": "b9b56638b372b56fc39cbdf6ad9c329ab37335373fabd51682b637ff08e25a34",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "03d175e9639fb8c67f5c94ac42a60588c1356a5cb90204f89f4b573e63fb86ff"
+    },
+    {
+      "id": "oa-salesforce-25",
+      "status": "authored",
+      "reason": "找一个字符串，要求它是X的子序列，同时是Y的连续子串，求最长长度。X可以跳过字符，Y不能跳过字符；无共同字符时输出0。 输入JSON数组[X,Y]。原未给数值或字符域，本站补充每串0..1000个Unicode标量值，允许空串、空白、控制字符和非BMP；不含孤立代理项。JSON编码UTF-8总输入≤25000字节。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-longest-subsequence-which-is-a-substring.md",
+      "rawGitBlob": "0f8924800b3c831cc723392a28a0ae8f6953b2e8",
+      "rawSha256": "466c9461d7cbc0e8b4aa34f02a868e73e21c2925ae10e5dca19f97ad8255f85e",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "fastprep/Salesforce/salesforce-find-longest-subsequence-common-to-x-as-substring-in-y.md",
+          "rawGitBlob": "a4b077427a0df6dbf40bd4bc602711f6e9cc6923",
+          "rawSha256": "b6aea29f1c51fe0e82dfa7f0f86674e26f8426402004436080be708ce0e09444"
+        }
+      ],
+      "catalogContentHash": "20d1b1e85633dc54874e0570b1e2eb2c4511e69803845c08ce0be1271c0cc9d4"
+    },
+    {
+      "id": "oa-salesforce-26",
+      "status": "blocked",
+      "reason": "正文在choose3consecut截断，操作条件及行为缺失。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-max-number-of-operations.md",
+      "rawGitBlob": "e073ef2d970762e59f63280bbfc5d1abd1f176fb",
+      "rawSha256": "58ee948bd8bb812af1986a62ce50e95f108ebd285dc222facb798601850161fe",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "a9c127a2d5a838518d78dc35ab6ba9097a1bc9226ce879020f94c98d448ae340"
+    },
+    {
+      "id": "oa-salesforce-27",
+      "status": "authored",
+      "reason": "按顺序分配任务，初始第一核持锁。持锁核可把当前任务分给自己并交锁，或分给另一核并留锁。双方都最大化自己最终得到的处理时间总和，输出第一核、第二核最终收益。 输入n和n个任务时间。原无数值界，本站补充1≤n≤200000，0≤time[i]≤10^9。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-maximize-sum-of-processed-times.md",
+      "rawGitBlob": "fdeb50703e417a6811fc97f6ed6ac4a7193e9a35",
+      "rawSha256": "52c8efe8888578f0073cb11ed1ffb151e186bd7b61298658a039a7edda28ae5a",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "f262a32a04afed023bcc10ba12b3a7afd96df0c348a195d74c3cf02f68f7cff7"
+    },
+    {
+      "id": "oa-salesforce-28",
+      "status": "blocked",
+      "reason": "报价数组长度n与项目总数numProjects混淆，原ID<n允许不存在项目；未授权改界或忽略这些报价。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-min-cost.md",
+      "rawGitBlob": "a9ef022179acfd6f8f7ec68e18f7a06bce0e4447",
+      "rawSha256": "5b147a76e32d85d01f6fb0cbe1ce0b059f4231d94268810eafb968be8bcb99e0",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "1c3193a33f80a47618092384f3ee779fc4bb037f46f4d1d895c10148b3ab15d7"
+    },
+    {
+      "id": "oa-salesforce-29",
+      "status": "authored",
+      "reason": "数组元素互异。称一个数组几乎升序，当且仅当至多再删一个元素就严格升序。求从给定数组至少删除多少元素，使剩余数组几乎升序。原例解释中的删7应为删1。 输入n和n个互异整数。完整原界1≤n≤100000，1≤a[i]≤10^9。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-min-deletions.md",
+      "rawGitBlob": "1308f1ef99de3b884581045af24fb6dc3b7a9a51",
+      "rawSha256": "ff5a9ec5b64c7590dcc16450ecb4cc24a1d228041ef6ff885fbc12bca2f21c00",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "d2db4a6aca8da7919fd3789e826fc40fca4dd8e8fac2426359ae29b1c46a02d0"
+    },
+    {
+      "id": "oa-salesforce-30",
+      "status": "authored",
+      "reason": "数组元素互异。称一个数组几乎升序，当且仅当至多再删一个元素就严格升序。求从给定数组至少删除多少元素，使剩余数组几乎升序。原文误将[13]与[9,2]拼为[13,9,2]并称合法，依完整定义与同题29纠正：三项下降不是几乎升序。 输入n和n个互异整数。原未给数值界，本站补充1≤n≤100000，−10^9≤a[i]≤10^9。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-min-elements-to-remove-to-make-almost-sorted-array.md",
+      "rawGitBlob": "590ba80b0d384e6184802f44d600f293246e6c04",
+      "rawSha256": "a03e9b64bc7afaaefef3c86053ed4e57b5bddf1bb591f74d174e61b289b42d3e",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "fastprep/Salesforce/salesforce-min-deletions.md",
+          "rawGitBlob": "1308f1ef99de3b884581045af24fb6dc3b7a9a51",
+          "rawSha256": "ff5a9ec5b64c7590dcc16450ecb4cc24a1d228041ef6ff885fbc12bca2f21c00"
+        }
+      ],
+      "catalogContentHash": "e17a55a74bce96501425b1be56300c6ca200111d7b053850985bf610d9515988"
+    },
+    {
+      "id": "oa-salesforce-31",
+      "status": "authored",
+      "reason": "对每个小写英文单词，允许将任意字符替换为任意小写字母，求使相邻字符全部不同时最少替换数。每词独立输出。 输入词数n及n行单词。保留完整原界1≤n≤100，每个单词长度2..100000，字符a..z；不加总长缩水约束，总字符数可以达到10000000。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-minimal-operations.md",
+      "rawGitBlob": "85f16eb2ee05377b0da8eaf70ae46bdda5e7e98d",
+      "rawSha256": "58968948a904ba9f9f832d155ea51a362985dd51f3352fd85831fcc64f75556a",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "96863d917d432072aac948bfcb768532830967ca974c6116dd11acf038cde3af"
+    },
+    {
+      "id": "oa-salesforce-32",
+      "status": "authored",
+      "reason": "给定二进制字符串，至多翻转k个位置，使最长连续相同字符片段尽可能短，输出该最小长度。 输入二进制字符串s和k。完整原界位于正文：1≤|s|≤100000、0≤k≤|s|，不能因Constraints栏为空而丢失。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-minimize-length-of-longest-substring.md",
+      "rawGitBlob": "ae3e7179a3afdf0bb6c457e25b4d7c9593114f6b",
+      "rawSha256": "d6039276032744a25cf9dff3c0f79ec74db3effef028bcde16b01f7ab2edda41",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "fad909d179ecc900f1593287b996fea561c7358352bbe87be4c9e670c68f3596"
+    },
+    {
+      "id": "oa-salesforce-33",
+      "status": "authored",
+      "reason": "保持输入顺序，将数组分为恰好k个非空连续段，每段成本为该段最大元素，求所有段成本之和的最小值。每段对应一个星期的活动。本站补充无解时输出−1，空数组分0段输出0。 输入n k和n个非负整数。原没有数值界，本站补充0≤n,k≤300、0≤a[i]≤10^9。不排除k>n、n=0或k=0，按上述协议处理。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-minimize-total-input-cost.md",
+      "rawGitBlob": "b7915b56ba47175946e4a4f1f14b0e86ef360074",
+      "rawSha256": "268cf93eaa21a493c48edd9ad5eb065ba277014c4701bc0affbbcb3fbbbbb646",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "ffd49fd6511e00a34b6797e09dd61e8fe76bc053a9ad66e57bc9329b878ddf25"
+    },
+    {
+      "id": "oa-salesforce-34",
+      "status": "authored",
+      "reason": "数组元素互异，输出所有绝对差最小的数值对。每对较小值在前，各对按第一项再第二项升序。原例[-1,3,6,-5,0]输出错误：最小差为1，正确唯一数值对是−1与0，不是差3的两对。 输入n和n个互异整数。原没有数值界，本站补充2≤n≤100000，−10^9≤a[i]≤10^9。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-minimum-difference.md",
+      "rawGitBlob": "ca3d93aba8719d4899a51d66f58b87060e425403",
+      "rawSha256": "bd6db26f628041ebc5a144a6c283d9c369cdd57ace0fdb27ebcdbb769bb6eb41",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "7e44a0900dee810c42bd976c5d2bb107d2e882c42311f698262c5230d9f9e8ae"
+    },
+    {
+      "id": "oa-salesforce-35",
+      "status": "authored",
+      "reason": "一根杆已经依次标出所有最终段的长度。机器只能切长度至少minLength的现有杆，每次在一个尚未切开的标记处分成两根。判断是否存在完成全部标记切割的顺序。 输入n、n个段长度和minLength。原没有数值界，catalog中的附加范围无原文依据；本站补充2≤n≤200000、每段1..10^9、1≤minLength≤10^18。n≥2保证确有最后一刀。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-plan-cuts.md",
+      "rawGitBlob": "0a43604144f107da52939b5af224163390104de0",
+      "rawSha256": "332a052c1eb9d980c868e11075c5a7d7d1e3e04f2f5a473a0836b7cdcf872aff",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "6efce3ecf019afc26a82d375153d43bbd0e51a11f70d4056630c103fb86f08bc"
+    },
+    {
+      "id": "oa-salesforce-36",
+      "status": "authored",
+      "reason": "字符串由小写字母和问号组成，每个问号可替换为任意小写字母；固定字母不可改。求替换后无相邻相同字符的方案数，对1000000007取模。 一行s，完整原界1≤|s|≤100000，字符仅a..z或?。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-replace-question-mark-to-avoid-adjacent-duplicates.md",
+      "rawGitBlob": "b3c04a19f8b5f862423cfe70104ea8a3d30e257e",
+      "rawSha256": "f703d281fdfb4e559f44bfb599c7d5eb4295a91fafbbcba26a6c3595e224aeb4",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "a94b733afc27778845e83791973f6aeb2516285affeba5b1a2300ca0a7f56361"
+    },
+    {
+      "id": "oa-salesforce-37",
+      "status": "authored",
+      "reason": "s与t等长且仅含小写字母。把s[i]改为t[i]的成本为ASCII差的绝对值。求一个连续区间，使该区间逐位置转换的总成本≤K，返回最大区间长度；找不到非空区间则0。 输入JSON数组[s,t,K]。原无数字界，本站补充0≤|s|=|t|≤200000、0≤K≤10^9；输入编码总字节≤401000。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-same-substring.md",
+      "rawGitBlob": "5bb283757c8bed950a7e44a8ee7faea3811af8da",
+      "rawSha256": "cd62d2bc47cf8a94f129e6b2f12f1d8e8c7fe971ab331bcb4f6c9fa680f6a5e8",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "5ad81b3d069b80fbad1eb75fea25195c01713b0c87a0da0c95905c86c1f2a949"
+    },
+    {
+      "id": "oa-salesforce-38",
+      "status": "blocked",
+      "reason": "正文缺最大化/最小化/固定分组目标，非官方样例解释不能恢复核心目标。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-schedule-batch-difference.md",
+      "rawGitBlob": "8491cbcec52fa53b3302158f5a0efb5134b1b55f",
+      "rawSha256": "31376bc7454c33ac7f5460e60d8089938632d144d0b9505b90f29c03887ce68a",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "7237b4e001ab5d4855618f3ae589aa0e242012f723ea169f4ae6cf50a4f553d0"
+    },
+    {
+      "id": "oa-salesforce-39",
+      "status": "authored",
+      "reason": "保持输入顺序，将数组分为恰好k个非空连续段，每段成本为该段最大元素，求所有段成本之和的最小值。注意本题并非同名的最小化最大段和问题。本站补充无解时输出−1，空数组分0段输出0。 输入n k和n个非负整数。保留完整原界0≤n,k≤300、0≤a[i]≤100000。不排除k>n、n=0或k=0，按上述协议处理。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-split-array-largest-sum.md",
+      "rawGitBlob": "624d7bbbb3e13a194f45906e025e115d30fb0f61",
+      "rawSha256": "614252b4d3f37b3d010cf7f41910dd33247fa29e4d912e01b43483391e50be79",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "1d3d651961b536e90c79b8cb012405a1c50622be0938a1fabcec5321a2c9d2c2"
+    },
+    {
+      "id": "oa-salesforce-40",
+      "status": "blocked",
+      "reason": "压缩规则正文截断，单个RLE样例不足以恢复完整编码规则。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-string-compression-problem.md",
+      "rawGitBlob": "1ad2b34f9447ec0853ac736418ed0115a2e109c8",
+      "rawSha256": "0c7a8c06192fa9255ad561886f34f26bdc47e98d38798e849097a7ecdbf9495a",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "4c777ee0aebdbaa88e214adc0907cefd3bc86630aeed1446b262c378f6d2af25"
+    },
+    {
+      "id": "oa-salesforce-41",
+      "status": "authored",
+      "reason": "统计长度n的小写英文字符串中不含k个或更多连续相同字母的数量，模1000000007。连续最多只能k−1个，不能误读为允许k个。 输入n k。完整原界1≤n≤100000、1≤k<n，故实际合法n≥2；不能把k≤n或禁止长度改成k+1。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-strings-with-no-k-consecutive-identical-characters.md",
+      "rawGitBlob": "e4f40267a5447a31f9fc344519820f8325bdfe9d",
+      "rawSha256": "8364ea769f5a44dfd922aa520faaf1a8311946a020f915f34e07186ac6f6a083",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "1b41c92ddfd0fb088f90ab1d36b1da21dc62c90b84fc94c4607fcceff2c75472"
+    },
+    {
+      "id": "oa-salesforce-42",
+      "status": "authored",
+      "reason": "工具名称按环形顺序排列，允许重复。当前位于startIndex，每次向左或右移动一个位置，求到任意一个目标名称位置的最少步数；本站补充找不到目标时输出−1。名称完全相等才匹配，不能忽略大小写或空白。 输入JSON数组[tools,startIndex,target]，下标零基。原无数值或字符界，本站补充1≤n≤100000、每个名称及target长0..16 Unicode标量值，允许空名、空白、NUL与非BMP，不含孤立代理项；0≤startIndex<n。整个JSON编码输入≤20000000字节，ASCII转义编码可覆盖完整最坏名字域。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-toolchanger.md",
+      "rawGitBlob": "e28373dba064d7744b827e3b3a0fff33fabd120f",
+      "rawSha256": "424925ae9c119ffc84507162d982bed98fc8156e5d15c068f58a002dada90f11",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "c6cc929fb1b6051a5d790a1b3f6d582353f2448a229efb5cdf3283584e59e453"
+    },
+    {
+      "id": "oa-salesforce-43",
+      "status": "authored",
+      "reason": "塔按顺序排列。从塔y看塔x可见，当且仅当二者之间所有塔的高度严格小于目标塔x。观察者y自身高度不构成限制。对每座塔输出左右两边一共能看见的塔数，不计自身。 输入n和n个高度。原无数值界，本站补充1≤n≤200000、0≤height[i]≤10^9。允许重复高度。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Salesforce/salesforce-visible-towers.md",
+      "rawGitBlob": "b56eb5401e11a287a6298b20e3afe0ad4a2755fb",
+      "rawSha256": "f728792bb915fd96cc9d56dc7dd8c63832d16e41873b409f7b986942b6da1eca",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "aade29eef2c4d67bcb861df556f58081c4b9974e0c20d85288c1187ea0aed38f"
+    }
+  ]
+}

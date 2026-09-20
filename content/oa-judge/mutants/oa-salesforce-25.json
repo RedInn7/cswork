@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误正向原地更新重复使用X字符",
+    "code": "def solve(raw):\n    import json\n    x,y=json.loads(raw);dp=[0]*(len(y)+1)\n    for ch in x:\n        for j in range(1,len(y)+1):\n            if ch==y[j-1]:dp[j]=max(dp[j],dp[j-1]+1)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "交换X与Y的连续性",
+    "code": "def solve(raw):\n    import json\n    y,x=json.loads(raw);dp=[0]*(len(y)+1)\n    for ch in x:\n        for j in range(len(y),0,-1):\n            if ch==y[j-1]:dp[j]=max(dp[j],dp[j-1]+1)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

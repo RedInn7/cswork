@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等高度未阻挡远处同高塔",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);answer=[0]*n\n    for order in (range(n),range(n-1,-1,-1)):\n        stack=[]\n        for i in order:\n            answer[i]+=len(stack)\n            while stack and stack[-1]<a[i]:stack.pop()\n            stack.append(a[i])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉右侧视线",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);answer=[0]*n\n    for order in (range(n),):\n        stack=[]\n        for i in order:\n            answer[i]+=len(stack)\n            while stack and stack[-1]<=a[i]:stack.pop()\n            stack.append(a[i])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

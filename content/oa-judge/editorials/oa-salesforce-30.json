@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-30",
+  "title": "删除最少元素使数组至多再删一次即可升序",
+  "explanation": "## 思路\n\n求严格最长递增子序列长L，答案max(0,n−L−1)。\n\n## 正确性证明\n\n若保留m个元素且再删至多一个就递增，则原数组有长度至少m−1的递增子序列，所以m≤L+1。反过来选一个LIS，再加入任意一个未选元素，就得到删除该额外元素后递增的数组，达到min(n,L+1)。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from bisect import bisect_left\n    a=list(map(int,raw.split()))[1:];tails=[]\n    for x in a:\n        i=bisect_left(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(max(0,len(a)-len(tails)-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#30-min-elements-to-remove-to-make-almost-sorted-array",
+  "sourceContentHash": "e17a55a74bce96501425b1be56300c6ca200111d7b053850985bf610d9515988",
+  "author": "CSWork"
+}

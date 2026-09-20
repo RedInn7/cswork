@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-22",
+  "title": "至多含k个普通字符的最长片段",
+  "explanation": "## 思路\n\n右端递增并累计普通字符数，超过k时移动左端直到合法。\n\n## 正确性证明\n\n普通字符贡献非负，缩短窗口不会增大总数。每个右端的最小合法左端给出该右端最长合法串；枚举所有右端取最大即全局最优。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s,amount,bits=raw.split();k=int(amount);left=normal=answer=0\n    for right,ch in enumerate(s):\n        normal+=bits[ord(ch)-97]=='0'\n        while normal>k:\n            normal-=bits[ord(s[left])-97]=='0';left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#22-get-special-substring-mts",
+  "sourceContentHash": "1c9ef6cb75933b7e6f195f29b70597d2b65df99853034059a080f5b416b61dd0",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-43",
+  "title": "按目标塔高度判定的双向可见数",
+  "explanation": "## 思路\n\n从左向右扫描，栈保留已扫描前缀从右往左看的严格纪录高塔；先把栈长加入当前可见数，再弹出高度≤当前塔的旧纪录并入栈。反向再做一次累加。\n\n## 正确性证明\n\n过去的塔可见恰当其高度严格大于它与当前塔之间所有高度，即该方向的严格纪录高塔。加入当前塔后，所有不高于它的旧纪录被挡住，较高者仍是纪录；单调栈维持这一不变式。左右独立且不相交，结果相加。\n\n## 复杂度\n\n时间O(n)，空间O(n)。原例[5,2,10,1]得到[2,2,3,1]；不要套用双端最小高度的另一种可见规则。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);answer=[0]*n\n    for order in (range(n),range(n-1,-1,-1)):\n        stack=[]\n        for i in order:\n            answer[i]+=len(stack)\n            while stack and stack[-1]<=a[i]:stack.pop()\n            stack.append(a[i])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#43-visible-towers",
+  "sourceContentHash": "aade29eef2c4d67bcb861df556f58081c4b9974e0c20d85288c1187ea0aed38f",
+  "author": "CSWork"
+}

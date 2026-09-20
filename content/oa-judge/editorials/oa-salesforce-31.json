@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-31",
+  "title": "逐词消除相邻相同字符的最少替换数",
+  "explanation": "## 思路\n\n把每个词按连续相同字符分段，长度L的段贡献floor(L/2)。\n\n## 正确性证明\n\n每段内取不相交的相邻字符对，每对至少改一项，给出floor(L/2)下界。隔一个字符修改一次，并选不同于两侧的字母；26字符足够，恰达到下界且不会破坏段间边界。各段相加。\n\n## 复杂度\n\n时间O(全部字符数)，每词扫描O(1)额外状态；最大输入10000104字节。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import io\n    stream=io.StringIO(raw);n=int(stream.readline());result=[]\n    for _ in range(n):\n        word=stream.readline().rstrip('\\r\\n');last=None;run=answer=0\n        for ch in word:\n            if ch==last:run+=1\n            else:answer+=run//2;run=1;last=ch\n        answer+=run//2;result.append(answer)\n    return ' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#31-minimal-operations",
+  "sourceContentHash": "96863d917d432072aac948bfcb768532830967ca974c6116dd11acf038cde3af",
+  "author": "CSWork"
+}

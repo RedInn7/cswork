@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-33",
+  "title": "按顺序分为恰好k段，最小化各段最大值之和",
+  "explanation": "## 思路\n\n按段数动态规划。枚举最后一段的左边界，转移为此前最优成本加最后一段最大值；向左扩展时增量维护最大值。\n\n## 正确性证明\n\n每个合法分段方案具有唯一最后一段起点，去掉最后一段后是前缀恰好少一段的方案。对所有合法起点取最小，并使用归纳已正确的前缀最优值，恰覆盖全部方案。空前缀0段为0，其余不可能状态为无穷。\n\n## 复杂度\n\n时间O(kn²)，滚动空间O(n)，使用64位成本。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,k=values[:2];a=values[2:]\n    if n==0:return '0' if k==0 else '-1'\n    if k<1 or k>n:return '-1'\n    infinity=10**30;previous=[infinity]*(n+1);previous[0]=0\n    for groups in range(1,k+1):\n        current=[infinity]*(n+1)\n        for end in range(groups,n+1):\n            largest=0;best=infinity\n            for start in range(end-1,groups-2,-1):\n                largest=max(largest,a[start]);best=min(best,previous[start]+largest)\n            current[end]=best\n        previous=current\n    return str(previous[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#33-minimize-total-input-cost-for-ltms",
+  "sourceContentHash": "ffd49fd6511e00a34b6797e09dd61e8fe76bc053a9ad66e57bc9329b878ddf25",
+  "author": "CSWork"
+}

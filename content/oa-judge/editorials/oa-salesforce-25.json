@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-25",
+  "title": "X的子序列与Y的连续子串的最大共同长度",
+  "explanation": "## 思路\n\ndp[j]保存已处理X前缀中可作为子序列、且在Y第j个字符结尾的最长连续串。每读X一个字符，按j倒序更新相等位置为max(旧值,dp[j−1]+1)。\n\n## 正确性证明\n\n不使用当前X字符时保留旧状态；使用时必须匹配Y当前位置，之前匹配必须连续结束于Y前一位置。倒序保证读取上一轮状态，不重复使用同一个X字符，两类转移穷尽合法匹配。\n\n## 复杂度\n\n时间O(|X||Y|)，空间O(|Y|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    x,y=json.loads(raw);dp=[0]*(len(y)+1)\n    for ch in x:\n        for j in range(len(y),0,-1):\n            if ch==y[j-1]:dp[j]=max(dp[j],dp[j-1]+1)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#25-longest-subsequence-which-is-a-substring",
+  "sourceContentHash": "20d1b1e85633dc54874e0570b1e2eb2c4511e69803845c08ce0be1271c0cc9d4",
+  "author": "CSWork"
+}

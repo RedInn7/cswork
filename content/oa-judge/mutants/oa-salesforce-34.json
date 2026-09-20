@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只输出一个最优数值对",
+    "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]));best=min(y-x for x,y in zip(a,a[1:]))\n    pairs=[f'{x} {y}' for x,y in zip(a,a[1:]) if y-x==best]\n    return '\\n'.join(pairs[:1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误输出最大差对",
+    "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]));best=max(y-x for x,y in zip(a,a[1:]))\n    pairs=[f'{x} {y}' for x,y in zip(a,a[1:]) if y-x==best]\n    return '\\n'.join(pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

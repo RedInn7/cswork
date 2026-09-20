@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-36",
+  "title": "替换全部问号且无相邻重复的方案数",
+  "explanation": "## 思路\n\n用26状态记录最后字母。当前位置可用字母c的新方案数等于前缀总方案数减去以c结尾的方案数。\n\n## 正确性证明\n\n每个合法新前缀由一个合法旧前缀及不同于其末字母的新字符唯一组成；总数减去同末字母方案恰好排除唯一非法类别。固定字母仅保留对应状态，问号允许全部状态，逐位置归纳。\n\n## 复杂度\n\n时间O(26n)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();mod=1000000007;dp=[int(s[0]=='?' or ord(s[0])-97==c) for c in range(26)]\n    for ch in s[1:]:\n        total=sum(dp)%mod\n        dp=[(total-dp[c])%mod if ch=='?' or ord(ch)-97==c else 0 for c in range(26)]\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#36-replace--to-avoid-adjacent-duplicates",
+  "sourceContentHash": "a94b733afc27778845e83791973f6aeb2516285affeba5b1a2300ca0a7f56361",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-24",
+  "title": "超大稀疏节点标签图的最小瓶颈路径",
+  "explanation": "## 思路\n\n按边权递增合并端点，第一次使起终点同属连通块的边权即答案。用字典压缩出现的节点，绝不按N分配数组。\n\n## 正确性证明\n\n权值不超过W的边组成子图：起终点在该子图连通，当且仅当存在最大边权≤W的路径。按权排序累积连通性，首次连通的W最小；全处理后不连通就没有路径。\n\n## 复杂度\n\n时间O(M log M)，空间O(M)，最多200002个实际标签，与N的数值无关。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import re\n    from array import array\n    values=(int(m.group()) for m in re.finditer(r'\\d+',raw));n=next(values);m=next(values);labels={};parent=array('i');size=array('i');edges=[]\n    def index(x):\n        if x not in labels:labels[x]=len(parent);parent.append(len(parent));size.append(1)\n        return labels[x]\n    for _ in range(m):\n        u=index(next(values));v=index(next(values));w=next(values);edges.append((w,u,v))\n    source=index(next(values));destination=index(next(values))\n    if source==destination:return '0'\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for weight,u,v in sorted(edges):\n        a=find(u);b=find(v)\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            parent[b]=a;size[a]+=size[b]\n        if find(source)==find(destination):return str(weight)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#24-minimize-path-value",
+  "sourceContentHash": "03d175e9639fb8c67f5c94ac42a60588c1356a5cb90204f89f4b573e63fb86ff",
+  "author": "CSWork"
+}

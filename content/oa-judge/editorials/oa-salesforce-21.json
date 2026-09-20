@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-21",
+  "title": "同时满足两条绝对值不等式的索引对",
+  "explanation": "## 思路\n\n取绝对值排序。设a≤b，则两条式子化为b−a≤a和b+a≥b，所以只需b≤2a；双指针统计窗口中的索引对。\n\n## 正确性证明\n\n绝对值和差的较小者为b−a，较大者为b+a。第二式恒真，第一式等价b≤2a。排序不改变索引对数量，每个右端点的合法左端点是连续后缀，滑动左端后累加窗口长度恰好计数一次。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，答案最大19999900000，须64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=list(map(int,raw.split()));a=sorted(abs(x) for x in values[1:]);left=0;answer=0\n    for right,value in enumerate(a):\n        while value>2*a[left]:left+=1\n        answer+=right-left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#21-get-perfect-pairs-count",
+  "sourceContentHash": "b85376f43ada85f0801f13038c12f26687cf1dcac134ec688c23d77f5872ddcb",
+  "author": "CSWork"
+}

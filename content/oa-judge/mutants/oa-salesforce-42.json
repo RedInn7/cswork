@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只允许不绕环距离",
+    "code": "def solve(raw):\n    import json\n    tools,start,target=json.loads(raw);n=len(tools);answer=n\n    for i,name in enumerate(tools):\n        if name==target:\n            distance=abs(i-start);answer=min(answer,distance)\n    return str(-1 if answer==n else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略名称的大小写",
+    "code": "def solve(raw):\n    import json\n    tools,start,target=json.loads(raw);n=len(tools);answer=n\n    for i,name in enumerate(tools):\n        if name.lower()==target.lower():\n            distance=abs(i-start);answer=min(answer,distance,n-distance)\n    return str(-1 if answer==n else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

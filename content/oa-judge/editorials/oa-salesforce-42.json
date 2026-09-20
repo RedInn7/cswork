@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-42",
+  "title": "环形工具架到目标工具的最少移动",
+  "explanation": "## 思路\n\n遍历全部名称匹配位置i，取直线下标距离d与绕环距离n−d中的最小者，再对所有目标位置取最小。\n\n## 正确性证明\n\n固定目标i，最短路径只能沿环的两个方向之一，不重复边；两条长度分别d和n−d。枚举全部目标出现位置便覆盖所有可能终点，因此全局最小值正确。\n\n## 复杂度\n\n时间O(总名称字符数+n)，空间O(输入字节数+n)。最坏ASCII转义名称输入约19.5MB，小于32MiB输入上限。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    tools,start,target=json.loads(raw);n=len(tools);answer=n\n    for i,name in enumerate(tools):\n        if name==target:\n            distance=abs(i-start);answer=min(answer,distance,n-distance)\n    return str(-1 if answer==n else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#42-tool-changer",
+  "sourceContentHash": "c6cc929fb1b6051a5d790a1b3f6d582353f2448a229efb5cdf3283584e59e453",
+  "author": "CSWork"
+}

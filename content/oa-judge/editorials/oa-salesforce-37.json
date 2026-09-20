@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-37",
+  "title": "预算内修改为对应位置字符串的最长片段",
+  "explanation": "## 思路\n\n将位置成本作为非负数组，用双指针维护总成本不超过K的最长窗口。\n\n## 正确性证明\n\n缩小区间不会增加非负成本，右端增加后仅需移动左端直到重新合法。此时左端最小，得到该右端最长合法区间；逐一比较覆盖全局最优。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    s,t,k=json.loads(raw);left=cost=answer=0\n    for right in range(len(s)):\n        cost+=abs(ord(s[right])-ord(t[right]))\n        while cost>k:\n            cost-=abs(ord(s[left])-ord(t[left]));left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#37-same-substring",
+  "sourceContentHash": "5ad81b3d069b80fbad1eb75fea25195c01713b0c87a0da0c95905c86c1f2a949",
+  "author": "CSWork"
+}

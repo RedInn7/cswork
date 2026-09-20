@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误要求直接升序",
+    "code": "def solve(raw):\n    from bisect import bisect_left\n    a=list(map(int,raw.split()))[1:];tails=[]\n    for x in a:\n        i=bisect_left(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(max(0,len(a)-len(tails)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误允许再删两项",
+    "code": "def solve(raw):\n    from bisect import bisect_left\n    a=list(map(int,raw.split()))[1:];tails=[]\n    for x in a:\n        i=bisect_left(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(max(0,len(a)-len(tails)-2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

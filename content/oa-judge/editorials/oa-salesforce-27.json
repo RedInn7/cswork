@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-27",
+  "title": "双核持锁选择博弈的最优收益",
+  "explanation": "## 思路\n\n从后往前维护持锁者相对另一核的最优收益差d，初值0，每项更新为|time−d|。最后由总和S还原两核收益(S+d)/2和(S−d)/2。\n\n## 正确性证明\n\n自取并交锁产生分差time−d，给对方并留锁产生分差d−time。固定总和下最大化个人收益等价于最大化分差，两者较大值即绝对值。倒序归纳成立；并列时两核收益仍由同一总和与分差唯一确定。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)，收益使用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];difference=0\n    for value in reversed(a):difference=abs(value-difference)\n    total=sum(a);return f'{(total+difference)//2} {(total-difference)//2}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#27-maximize-sum-of-processed-times",
+  "sourceContentHash": "f262a32a04afed023bcc10ba12b3a7afd96df0c348a195d74c3cf02f68f7cff7",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-23",
+  "title": "并行开发与串行集成的最短完成时间",
+  "explanation": "## 思路\n\n二分总时间T：开发耗时大于T的功能必须集成，其集成耗时之和不得超过T；其余都开发即可。\n\n## 正确性证明\n\n若开发时间>T便不能开发，给出必须集成集合。其和>T时任何方案不可能在T完成；反之把该集合交给组长、其余并行开发即可在T完成。判定随T单调，因此二分返回最小可行值。\n\n## 复杂度\n\n时间O(n log(1+最大开发时间))，空间O(n)，累加使用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];development=v[1:n+1];integration=v[n+1:];lo=0;hi=max(development)\n    while lo<hi:\n        mid=(lo+hi)//2;required=sum(b for a,b in zip(development,integration) if a>mid)\n        if required<=mid:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#23-least-hours-to-implement-features",
+  "sourceContentHash": "17e92dbd1b9c6148c541ad8bf46f346ec80952ca7937f8d5c185d0e6b36f0450",
+  "author": "CSWork"
+}
