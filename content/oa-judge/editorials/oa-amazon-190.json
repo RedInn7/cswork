@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-190",
+  "title": "包含两个指定值的最少不同数",
+  "explanation": "## 思路\n\n双指针维护窗口频次；每当同时含两目标，就记录不同数并不断缩左端，直至不再同时包含。\n\n## 正确性证明\n\n加入右端后，逐个检查所有尚未检查且可行的左端。较短同右端窗口的不同数不会更多；一旦不可行，更往右的左端也不可行。被先前删除的左端再扩右端只可能增加或保持不同数，不会优于此前已记录值，因此取记录最小值即全局最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,u,v=map(int,d[:3]);a=list(map(int,d[3:]));freq={};left=0;answer=n+1\n    for value in a:\n        freq[value]=freq.get(value,0)+1\n        while u in freq and v in freq:\n            answer=min(answer,len(freq));old=a[left];left+=1;freq[old]-=1\n            if not freq[old]:del freq[old]\n    return str(answer if answer<=n else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#190-amazon-care-get-minimum-score",
+  "sourceContentHash": "b9754e3bde123e5333db1093b993f6256e9c77dd4914703e13e2b2a469819290",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只查完全同名",
+    "code": "def solve(d):\n    from collections import Counter\n    n,m=map(int,d[:2]);real=d[2:2+n];counts=Counter(d[2+n:]);out=sorted(s for s in real if counts[''.join(sorted(s))]>1)\n    return ' '.join(out) if out else 'None'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "一个账户也算重复",
+    "code": "def solve(d):\n    from collections import Counter\n    n,m=map(int,d[:2]);real=d[2:2+n];counts=Counter(''.join(sorted(s)) for s in d[2+n:]);out=sorted(s for s in real if counts[''.join(sorted(s))]>0)\n    return ' '.join(out) if out else 'None'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

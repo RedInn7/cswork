@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同最小字符取最左",
+    "code": "def solve(d):\n    s=d[0];best=len(s)-1;left=right=-1\n    for i in range(len(s)-2,-1,-1):\n        if s[i]>s[best]:left=i;right=best\n        elif s[i]<=s[best]:best=i\n    if left<0:return s\n    return s[:left]+s[right]+s[left:right]+s[right+1:]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "仅旋转到原串开头",
+    "code": "def solve(d):\n    s=d[0];best=len(s)-1;left=right=-1\n    for i in range(len(s)-2,-1,-1):\n        if s[i]>s[best]:left=i;right=best\n        elif s[i]<s[best]:best=i\n    if left<0:return s\n    return s[right]+s[:right]+s[right+1:]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

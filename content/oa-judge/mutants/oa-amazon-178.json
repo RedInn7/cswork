@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只统计增加",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,q=map(int,d[:2]);a=sorted(map(int,d[2:2+n]));pre=[0]\n    for v in a:pre.append(pre[-1]+v)\n    out=[]\n    for t in map(int,d[2+n:]):\n        c=bisect_right(a,t);out.append(c*t-pre[c]+0)\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把绝对值总和取模",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,q=map(int,d[:2]);a=sorted(map(int,d[2:2+n]));pre=[0]\n    for v in a:pre.append(pre[-1]+v)\n    out=[]\n    for t in map(int,d[2+n:]):\n        c=bisect_right(a,t);out.append(c*t-pre[c]+pre[n]-pre[c]-(n-c)*t)\n    return ' '.join(map(lambda v:str(v%1000000007),out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

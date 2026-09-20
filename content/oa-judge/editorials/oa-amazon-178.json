@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-178",
+  "title": "统一反馈数量的调用次数",
+  "explanation": "## 思路\n\n排序建立前缀和；二分目标分隔点，左右两段分别计算增加和减少的总代价。\n\n## 正确性证明\n\n每项至少需要其与目标的绝对差次调用，分别调整可以达到。排序后二分划分不大于目标与大于目标两组，前缀和公式精确求出绝对差总和，查询互不影响。\n\n## 复杂度\n\n时间O(n log n+q log n)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_right\n    n,q=map(int,d[:2]);a=sorted(map(int,d[2:2+n]));pre=[0]\n    for v in a:pre.append(pre[-1]+v)\n    out=[]\n    for t in map(int,d[2+n:]):\n        c=bisect_right(a,t);out.append(c*t-pre[c]+pre[n]-pre[c]-(n-c)*t)\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#178-find-network-calls-also-for-amazon-uk-",
+  "sourceContentHash": "3736f9fdda18e626c91c74017afc25b8cff8cd77afcc33b9801f050e2ee121fe",
+  "author": "CSWork"
+}

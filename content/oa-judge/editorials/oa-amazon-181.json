@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-181",
+  "title": "全部包裹分成平衡对的方案数",
+  "explanation": "## 思路\n\nwt为0时同重组各自完美匹配，乘奇数双阶乘。wt>0时重量按递增处理：当前尚未配对者只能匹配下一重量v+wt，从其剩余身份中选并排列，乘下降阶乘，再扣去被用人数。\n\n## 正确性证明\n\n最小尚未配对重量不可能再匹配更小重量，因此其所有身份必须匹配v+wt。若剩余人数不足则无解；否则选有序不同对象的方案数为P(c,r)，每个完整匹配唯一决定这些对象，递归处理余量不重不漏。wt=0时选定首个身份有c−1个伙伴，递归得(c−1)!!，各重量互不影响。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n,w=map(int,d[:2]);counts=Counter(map(int,d[2:]));mod=1000000007;answer=1\n    if n%2:return '0'\n    if w==0:\n        for c in counts.values():\n            if c%2:return '0'\n            for k in range(1,c,2):answer=answer*k%mod\n    else:\n        for value in sorted(counts):\n            need=counts[value]\n            if not need:continue\n            available=counts.get(value+w,0)\n            if available<need:return '0'\n            for k in range(available-need+1,available+1):answer=answer*k%mod\n            counts[value+w]=available-need\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#181-find-number-of-ways-to-group-parcels-also-for-amazon-japan",
+  "sourceContentHash": "90709c4031ea5e5567f2fc9e45fa3827c296a4189538546ae3395c87b503ee0d",
+  "author": "CSWork"
+}

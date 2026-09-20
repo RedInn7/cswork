@@ -1,0 +1,10 @@
+[
+  {
+    "name": "需求错误向下取整",
+    "code": "def solve(d):\n    n,inc,dec=map(int,d[:3]);a=list(map(int,d[3:]));lo=min(a);hi=sum(a)//n\n    while lo<hi:\n        mid=(lo+hi+1)//2;need=supply=0\n        for v in a:\n            if v<mid:need+=(mid-v)//inc\n            else:supply+=(v-mid)//dec\n        if supply>=need:lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "供给误用增加步长",
+    "code": "def solve(d):\n    n,inc,dec=map(int,d[:3]);a=list(map(int,d[3:]));lo=min(a);hi=sum(a)//n\n    while lo<hi:\n        mid=(lo+hi+1)//2;need=supply=0\n        for v in a:\n            if v<mid:need+=(mid-v+inc-1)//inc\n            else:supply+=(v-mid)//inc\n        if supply>=need:lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

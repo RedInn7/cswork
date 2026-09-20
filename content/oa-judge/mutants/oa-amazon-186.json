@@ -1,0 +1,10 @@
+[
+  {
+    "name": "首次出现忽略单字串",
+    "code": "def solve(d):\n    last={};tail=answer=0\n    for i,c in enumerate(d[0]):tail+=i-last.get(c,0);last[c]=i;answer+=tail\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只输出最长前缀贡献",
+    "code": "def solve(d):\n    last={};tail=answer=0\n    for i,c in enumerate(d[0]):tail+=i-last.get(c,-1);last[c]=i;answer+=tail\n    return str(tail)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
