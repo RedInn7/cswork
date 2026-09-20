@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-256",
+  "title": "全局合并数值使同值连续的最少操作",
+  "explanation": "## 思路\n\n记录每个值最后出现位置，扫描得到最大数量的独立连续区间，答案为原不同值数量减独立区间数量。\n\n## 正确性证明\n\n同值首末之间的全部位置最终必须同色，因此相互覆盖的首末区间形成的每个连通块必须合并成一种值。扫描最远末位置恰好得到这些块；含d种值的块至少需要d−1次合并，逐种替换到同一值也恰需d−1次。求和得到不同值数减块数。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));last={v:i for i,v in enumerate(a)};end=-1;blocks=0\n    for i,v in enumerate(a):\n        end=max(end,last[v])\n        if i==end:blocks+=1\n    return str(len(last)-blocks)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#256-make-value-groups-contiguous",
+  "sourceContentHash": "17f604f3da529a34de3b1f38d0458ee516d2a201413e3849034fb3d2090905ff",
+  "author": "CSWork"
+}

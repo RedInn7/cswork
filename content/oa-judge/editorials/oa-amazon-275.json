@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-275",
+  "title": "按指定顺序删除仍保持递增子序列的最多次数",
+  "explanation": "## 思路\n\n记录每个原下标的删除时刻。给定删除数t，过滤已删除位置，用耐心排序算LIS长度；可行性随t单调不增，先检查t=0，再二分最大可行t。\n\n## 正确性证明\n\n删除只会减少子序列集合，因此若某t不可行，之后全部不可行。耐心排序的tails[l]为已扫描前缀长度l+1递增子序列的最小末值，二分替换保持此不变式，tails长度恰为LIS。由准确判定和单调边界二分得到最大删除数；起始不可行单独返回本站协议−1。\n\n## 复杂度\n\n时间O(n log²n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left\n    n,k=map(int,d[:2]);a=list(map(int,d[2:2+n]));order=list(map(int,d[2+n:]));removed_at=[0]*n\n    for time,index in enumerate(order,1):removed_at[index]=time\n    def feasible(t):\n        tails=[]\n        for i,v in enumerate(a):\n            if removed_at[i]<=t:continue\n            pos=bisect_left(tails,v)\n            if pos==len(tails):tails.append(v)\n            else:tails[pos]=v\n        return len(tails)>=k\n    if not feasible(0):return '-1'\n    low=0;high=n+1\n    while low+1<high:\n        middle=(low+high)//2\n        if feasible(middle):low=middle\n        else:high=middle\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#275-maximum-domino-removals",
+  "sourceContentHash": "fd00a4c05064e2dcb710d524d8bbb423dd259da85e62eb2fdeb597916ff501fc",
+  "author": "CSWork"
+}

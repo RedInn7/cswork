@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏末尾补右括号",
+    "code": "def solve(d):\n    left=missing=0\n    for c in d[0]:\n        if c=='(':left+=1\n        elif left:left-=1\n        else:missing+=1\n    return str(missing)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只算总数差",
+    "code": "def solve(d):\n    left=missing=0\n    for c in d[0]:\n        if c=='(':left+=1\n        elif left:left-=1\n        else:missing+=1\n    return str(abs(d[0].count('(')-d[0].count(')')))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

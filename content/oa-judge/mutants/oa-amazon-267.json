@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误重复计算同城两个单位",
+    "code": "def solve(d):\n    n=int(d[0]);p=list(map(int,d[1:1+n]));unit=d[1+n];dp={0:0}\n    for i,c in enumerate(unit):\n        nxt={}\n        for previous,value in dp.items():\n            for move in ((False,True) if c=='1' and i else (False,)):\n                stay=int(c=='1' and not move);score=value+(p[i-1]*(previous+move) if i else 0);nxt[stay]=max(nxt.get(stay,-1),score)\n        dp=nxt\n    return str(max(value+(p[-1] if stay else 0) for stay,value in dp.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏掉末城保护人口",
+    "code": "def solve(d):\n    n=int(d[0]);p=list(map(int,d[1:1+n]));unit=d[1+n];dp={0:0}\n    for i,c in enumerate(unit):\n        nxt={}\n        for previous,value in dp.items():\n            for move in ((False,True) if c=='1' and i else (False,)):\n                stay=int(c=='1' and not move);score=value+(p[i-1] if i and (previous or move) else 0);nxt[stay]=max(nxt.get(stay,-1),score)\n        dp=nxt\n    return str(max(value for stay,value in dp.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

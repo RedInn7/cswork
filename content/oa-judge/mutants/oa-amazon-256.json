@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只数重复段值",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));last={v:i for i,v in enumerate(a)};end=-1;blocks=0\n    for i,v in enumerate(a):\n        end=max(end,last[v])\n        if i==end:blocks+=1\n    return str(sum(c>1 for c in __import__('collections').Counter(v for i,v in enumerate(a) if i==0 or v!=a[i-1]).values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误数每个值多余出现",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));last={v:i for i,v in enumerate(a)};end=-1;blocks=0\n    for i,v in enumerate(a):\n        end=max(end,last[v])\n        if i==end:blocks+=1\n    return str(len(a)-len(last))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

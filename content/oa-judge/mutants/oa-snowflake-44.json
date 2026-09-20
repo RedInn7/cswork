@@ -1,0 +1,10 @@
+[
+  {
+    "name": "剩余石子向下取整",
+    "code": "import heapq\ndef solve(d):\n    n,k=map(int,d[:2]);heap=[-int(v) for v in d[2:]];heapq.heapify(heap)\n    for _ in range(k):\n        if heap[0]==-1:break\n        value=-heap[0];heapq.heapreplace(heap,-(value//2))\n    return str(-sum(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只移除一次",
+    "code": "import heapq\ndef solve(d):\n    n,k=map(int,d[:2]);heap=[-int(v) for v in d[2:]];heapq.heapify(heap)\n    for _ in range(1):\n        if heap[0]==-1:break\n        value=-heap[0];heapq.heapreplace(heap,-((value+1)//2))\n    return str(-sum(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

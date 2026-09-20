@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-46",
+  "title": "独立左旋后的最大元素下标",
+  "explanation": "## 思路\n\n先找原最大元素下标p；每个查询直接输出(p−r) mod n，规范化为0..n−1。\n\n## 正确性\n\n左移一次使每个位置减少1并对n取模，连续r次减r。最大值身份不随旋转改变，且互异保证唯一，因此跟踪其下标即可。每次从同一个原下标计算确保查询独立。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)含输入输出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));p=max(range(n),key=a.__getitem__);out=[]\n    for r in map(int,d[2+n:]):out.append((p-r)%n)\n    return str(m)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#46-simple-array-rotation-game",
+  "sourceContentHash": "411ad042a894d99a5d7b8063e05d3c4fce66cf924e9add8a0511cf8d7c80f98c",
+  "author": "CSWork"
+}

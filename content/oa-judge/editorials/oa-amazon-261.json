@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-261",
+  "title": "可留余项的三服务器中位数最大总功率",
+  "explanation": "## 思路\n\n降序排序，依次考察第2、第4、…第2⌊n/3⌋项，只累加正数。\n\n## 正确性证明\n\n建q组时，按中位数降序，第j个中位数至少需要2j个不小于它的元素，所以不超过降序第2j项。用最大的2q项成对作最大值与中位数，再配最小q项可同时达到所有上界。q≤⌊n/3⌋，候选中位数依次不增，故只加正贡献即最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);answer=sum(max(0,a[2*j+1]) for j in range(len(a)//3));return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#261-maximize-cluster-power",
+  "sourceContentHash": "f70a39146b3171e919e6bd7adf8944a8d562680c636ce14f5abbd396c4ae7dc1",
+  "author": "CSWork"
+}

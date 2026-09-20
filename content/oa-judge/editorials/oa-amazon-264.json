@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-264",
+  "title": "插入工具括号使平衡的最大评分",
+  "explanation": "## 思路\n\n求最少需要的左括号L和右括号R。两类评分各自降序，先取必需的L/R个，再逐对取左右剩余评分之和为正的配对。\n\n## 正确性证明\n\n最小前缀余额决定至少补L个左括号，最终总余额决定至少补R=L+原余额个右括号；把所有新增左放前、右放后即可实现。额外括号必须左右数量相同。固定数量时取同类最高分最优，排序后的后续配对收益非增，因此正收益对全取、其余不取达到最大。\n\n## 复杂度\n\n时间O(|s|+|kit| log |kit|)，空间O(|kit|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,kit=d[:2];ratings=list(map(int,d[2:]));balance=0;minimum=0\n    for c in s:balance+=1 if c=='(' else -1;minimum=min(minimum,balance)\n    left=-minimum;right=left+balance;opens=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);closes=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True);answer=sum(opens[:left])+sum(closes[:right])\n    for a,b in zip(opens[left:],closes[right:]):answer+=max(0,a+b)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#264-maximize-parentheses-efficiency-score",
+  "sourceContentHash": "ca47015c894115ab756713f2e9d0090b7b17758cf77c02680180224f54acdc8a",
+  "author": "CSWork"
+}

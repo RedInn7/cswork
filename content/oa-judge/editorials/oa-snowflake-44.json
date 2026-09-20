@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-44",
+  "title": "恰好k次移除半堆石子的最小剩余量",
+  "explanation": "## 思路\n\n用负数最大堆，每次取最大堆减去向下取整的一半，放回向上取整的一半。最大值为1时后续操作无变化，可结束。\n\n## 正确性\n\n各石堆的连续操作收益单调不增，每次选择当前最大收益属于全局最优的可行前缀选择。最大石堆产生最大floor(x/2)收益；交换论证可把任意最优方案的首步换成该堆而不变差。全部为1时额外恰好操作只移除0颗，因此提前计算最终和合法。\n\n## 复杂度\n\n时间O(n+k log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\ndef solve(d):\n    n,k=map(int,d[:2]);heap=[-int(v) for v in d[2:]];heapq.heapify(heap)\n    for _ in range(k):\n        if heap[0]==-1:break\n        value=-heap[0];heapq.heapreplace(heap,-((value+1)//2))\n    return str(-sum(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#44-remove-stones-to-minimize-the-total-lc-1962-",
+  "sourceContentHash": "f7fdfe58aa9e18ccd725e4df71ee65a500362400a07b39dba4b906d2e4eed5df",
+  "author": "CSWork"
+}

@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-snowflake-41",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "生成边长后统计免费涂顶方案",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Snowflake"
+    ],
+    "description": "生成n个边长：s[0]=seed，s[i]=s[i−1]+1+((k*s[i−1]+b) mod m)。长和宽均从这些边长中选，面积≤area可免费涂顶。统计有序的长宽组合，交换长宽是另一方案，正方形也计一次。\n\n输入输出由本站整理，原文缺失的数值范围已明确标为本站补充。",
+    "input": "一行seed n k b m area。1≤n≤6000000；1≤seed,k,b,m≤10⁹，1≤area≤10¹⁸；保证每个生成的s[i]也在1..10⁹。n原上界600万不缩小；使用精确整数比较。",
+    "output": "输出题意要求的一个整数。",
+    "explanation": "三个公开样例的答案依次为：5；1；1。样例已以独立枚举、状态搜索或直接模拟核对。",
+    "hints": [
+      "边长每次至少增加1，因此已严格递增。用紧凑32位无符号数组保存，右指针从尾向左移动；每个左边长累计所有符合面积的右边长数。"
+    ],
+    "timeLimit": 10,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2 3 3 3 2 15\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1 1 1 1 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2 2 1 1 1 4\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "1 6000000 1 1 1 1000000000000000000\n",
+      "expectedOutput": "36000000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "1 6000000 1 1 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "1 6000000 1 1 1 6000000\n",
+      "expectedOutput": "94570325\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "1000000000 1 1000000000 1000000000 1000000000 1000000000000000000\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "1 6000000 1000000000 1 1000000000 1000000000000000000\n",
+      "expectedOutput": "36000000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "2 14 14 18 7 4425\n",
+      "expectedOutput": "195\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "5 4 8 11 2 114\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "10 8 17 3 10 2182\n",
+      "expectedOutput": "64\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "9 10 12 3 6 2029\n",
+      "expectedOutput": "100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "14 2 7 5 8 411\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "5 11 7 14 17 2766\n",
+      "expectedOutput": "70\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "10 6 4 11 14 3549\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "13 3 19 11 14 1139\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "6 13 12 16 5 3472\n",
+      "expectedOutput": "169\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "14 10 14 10 7 4817\n",
+      "expectedOutput": "100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "9 3 7 18 14 519\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "9 12 11 5 18 2668\n",
+      "expectedOutput": "35\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "2 8 10 2 3 2476\n",
+      "expectedOutput": "64\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "8 10 11 10 3 103\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "1 8 15 9 2 3077\n",
+      "expectedOutput": "64\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "1 9 5 20 16 2518\n",
+      "expectedOutput": "51\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "9 1 13 7 19 1014\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "2 6 12 13 11 817\n",
+      "expectedOutput": "28\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "10 2 11 18 1 2546\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "3 8 10 2 14 1054\n",
+      "expectedOutput": "45\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "11 13 6 19 6 1336\n",
+      "expectedOutput": "169\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "15 14 8 12 16 1311\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "14 10 2 3 10 4332\n",
+      "expectedOutput": "100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "5 3 17 7 8 4723\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

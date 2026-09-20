@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误降序累积容量",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);total=0;k=0\n    for v in a:\n        total+=v\n        if total>=(k+1)*(k+2)//2:k+=1\n    return str(k)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "严格递增误作同样批量",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));total=0;k=0\n    for v in a:\n        total+=v\n        if total>=(k+1)*(k+2)//2:k+=1\n    return str(sum(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不能等于候选距离",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));low=0;high=a[-1]-a[0]\n    while low<high:\n        mid=(low+high+1)//2;count=1;last=a[0]\n        for v in a[1:]:\n            if v-last>mid:count+=1;last=v\n        if count>=k:low=mid\n        else:high=mid-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏算首个点",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));low=0;high=a[-1]-a[0]\n    while low<high:\n        mid=(low+high+1)//2;count=0;last=a[0]\n        for v in a[1:]:\n            if v-last>=mid:count+=1;last=v\n        if count>=k:low=mid\n        else:high=mid-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

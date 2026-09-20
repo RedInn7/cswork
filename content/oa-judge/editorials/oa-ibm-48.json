@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-48",
+  "title": "有限答题数下最多通过科目",
+  "explanation": "## 思路\n\n计算每科非负缺口，升序排序，预算优先用于最小缺口。\n\n## 正确性证明\n\n每通过一科贡献均为1。若选择了较大缺口而遗漏较小者，交换后科数不变且用题数不增；反复交换得到最小缺口前缀。贪心取预算可容纳的最长前缀即最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));gaps=sorted(max(0,y-x) for x,y in zip(a,b));answer=0\n    for gap in gaps:\n        if gap>q:break\n        q-=gap;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#48-max-subjects-number",
+  "sourceContentHash": "c3c13c0a365c28ef9bcba4654d2b07002655032d018f0646fcb2c6c209fc396e",
+  "author": "CSWork"
+}

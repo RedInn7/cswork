@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同一股票重复购买",
+    "code": "def solve(d):\n    n,saving=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));dp=[0]*(saving+1)\n    for cost,future in zip(a,b):\n        gain=future-cost\n        if gain<=0 or cost>saving:continue\n        for money in range(cost,saving+1):dp[money]=max(dp[money],dp[money-cost]+gain)\n    return str(dp[saving])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把售价当利润",
+    "code": "def solve(d):\n    n,saving=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));dp=[0]*(saving+1)\n    for cost,future in zip(a,b):\n        gain=future\n        if gain<=0 or cost>saving:continue\n        for money in range(saving,cost-1,-1):dp[money]=max(dp[money],dp[money-cost]+gain)\n    return str(dp[saving])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-47",
+  "title": "零位任意翻一后的超位串并集大小",
+  "explanation": "## 思路\n\n布尔数组标记原始掩码。逐位进行SOS子集传播：高半区状态吸收去掉当前位后的低半区状态。最终每个掩码标记是否含至少一个原始子掩码，累加布尔值。\n\n## 正确性\n\n一个结果y可由x生成当且仅当x的每个1位也在y中，即x是y的子掩码。处理前j位后，标记表达只允许在这j位补1能否从某个输入到达；下一位把无该位来源传播到有该位状态，归纳覆盖全部允许补1位置。布尔并合去重，统计正是并集大小。\n\n## 复杂度\n\n时间O(n×2ⁿ+k)，空间O(2ⁿ)字节。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);size=1<<n;reachable=bytearray(size)\n    for x in map(int,d[2:]):reachable[x]=1\n    step=1\n    for _ in range(n):\n        for base in range(0,size,2*step):\n            for low in range(base,base+step):\n                if reachable[low]:reachable[low+step]=1\n        step*=2\n    return str(sum(reachable))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#47-can-you-count-the-bit-strings",
+  "sourceContentHash": "d57985d40019ee255907e9928bd9f100bc0f08f72f5b74cd7dab5deff5a70ea3",
+  "author": "CSWork"
+}

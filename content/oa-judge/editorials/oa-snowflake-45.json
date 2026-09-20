@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-45",
+  "title": "每家公司至多一股的最大预测利润",
+  "explanation": "## 思路\n\n0/1背包：费用为现价，收益为未来价减现价。容量倒序遍历确保股票只买一次，非正收益可跳过。\n\n## 正确性\n\n处理前i支股票时dp[j]为预算≤j可得最大利润，新股票要么不买继承，要么买一次接前层dp[j−cost]+gain。倒序使所引用的小容量仍为前层；费用0时每个容量只更新一次，也恰好买一次。归纳保证最优，初始0表达不投资。\n\n## 复杂度\n\n时间O(n×saving)，空间O(saving)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,saving=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));dp=[0]*(saving+1)\n    for cost,future in zip(a,b):\n        gain=future-cost\n        if gain<=0 or cost>saving:continue\n        for money in range(saving,cost-1,-1):dp[money]=max(dp[money],dp[money-cost]+gain)\n    return str(dp[saving])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#45-selecting-stocks",
+  "sourceContentHash": "d5aff9c1d3a736c6fff6585d72289850c7c17065b990bc2219267dcb0639e4ea",
+  "author": "CSWork"
+}

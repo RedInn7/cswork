@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误最大余量先匹配最短任务",
+    "code": "def solve(d):\n    n,limit=map(int,d[:2]);primary=list(map(int,d[2:2+n]));secondary=sorted(map(int,d[2+n:]));remain=sorted((limit-v for v in primary),reverse=True);j=0\n    for capacity in remain:\n        if j<n and secondary[j]<=capacity:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误禁止恰好填满",
+    "code": "def solve(d):\n    n,limit=map(int,d[:2]);primary=list(map(int,d[2:2+n]));secondary=sorted(map(int,d[2+n:]));remain=sorted(limit-v for v in primary);j=0\n    for capacity in remain:\n        if j<n and secondary[j]<capacity:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

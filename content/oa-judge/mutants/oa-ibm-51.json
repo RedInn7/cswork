@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略全不同约束",
+    "code": "def solve(d):\n    from collections import defaultdict\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq=defaultdict(int);total=0;best=None\n    for i,v in enumerate(a):\n        freq[v]+=1;total+=v\n        if i>=k:\n            old=a[i-k];freq[old]-=1;total-=old\n            if freq[old]==0:del freq[old]\n        if i>=k-1 :best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "用零初始化最佳值",
+    "code": "def solve(d):\n    from collections import defaultdict\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq=defaultdict(int);total=0;best=0\n    for i,v in enumerate(a):\n        freq[v]+=1;total+=v\n        if i>=k:\n            old=a[i-k];freq[old]-=1;total-=old\n            if freq[old]==0:del freq[old]\n        if i>=k-1 and len(freq)==k:best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

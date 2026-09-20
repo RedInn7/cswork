@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-56",
+  "title": "输出全部最小绝对差数对",
+  "explanation": "## 思路\n\n排序，求相邻差的最小值，再输出所有等于该差的相邻数对。\n\n## 正确性证明\n\n非相邻数之间至少夹一个不同值，其差是至少两个正相邻差之和，严格大于其中任一项，所以最小差只可能发生于相邻项。枚举所有相邻对并筛选即可不重不漏，顺序自然递增。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));delta=min(a[i+1]-a[i] for i in range(len(a)-1));pairs=[]\n    for x,y in zip(a,a[1:]):\n        if y-x==delta:pairs.append(f'{x} {y}')\n    return str(len(pairs))+'\\n'+'\\n'.join(pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#56-minimum-difference",
+  "sourceContentHash": "e11d87e54cf2ce0e94d9cb6419ffc32571a3f62be811109ebe8c5ff5f03676d4",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "全局频次当段数",
+    "code": "def solve(d):\n    seen=set();answer=1\n    for c in d[0]:\n        if c in seen:answer+=1;seen.clear()\n        seen.add(c)\n    return str(max(d[0].count(c) for c in set(d[0])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "重复后不清空",
+    "code": "def solve(d):\n    seen=set();answer=1\n    for c in d[0]:\n        if c in seen:answer+=1;pass\n        seen.add(c)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

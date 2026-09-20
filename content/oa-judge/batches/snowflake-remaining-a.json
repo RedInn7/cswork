@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-snowflake-41",
+      "sourceContentHash": "d5f9fa030286800f51b7c2a21ed586749e9cc4ff0c5d33810cfffc015a6d0fbb",
+      "packageChecksum": "a5ca529993a8a214ec166c7bfd5ab1e8beeec56388c6a1454b7f2662399a5357",
+      "editorial": "## 思路\n\n边长每次至少增加1，因此已严格递增。用紧凑32位无符号数组保存，右指针从尾向左移动；每个左边长累计所有符合面积的右边长数。\n\n## 正确性\n\n固定长s[i]时合法宽形成有序数组前缀；长递增后合法宽上界不会增大，故右指针只需左移。每个长下所有宽恰计一次，因此计的是有序组合，不会漏正方形。边长≤10⁹使32位存储安全，乘积和计数用64位或任意精度。\n\n## 复杂度\n\n时间O(n)，边长额外空间4n字节；Python使用array而非600万个整数对象。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\ndef solve(d):\n    seed,n,k,b,m,area=map(int,d);s=array('I',[seed]);value=seed\n    for _ in range(1,n):value+=1+(k*value+b)%m;s.append(value)\n    right=n-1;answer=0\n    for left in range(n):\n        while right>=0 and s[left]*s[right]>area:right-=1\n        if right<0:break\n        answer+=right+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-42",
+      "sourceContentHash": "3ff2849b20794992a6217b079d190c4622f235539e66aedcfd44c7d743e0d3a7",
+      "packageChecksum": "ce85bd96d0dac9ef018cc8b87a8a2f0749f315caa4e788c54fb6ac3d5352bdb5",
+      "editorial": "## 思路\n\n对每条日志先计发送者；若接收者不同才再计接收者。筛出达到阈值者后以整数排序。\n\n## 正确性\n\n同一日志参与用户集合至多两人，条件去重恰使每人每条日志贡献1。频次累计就是参与日志数量，筛选≥threshold和数值排序准确实现要求。\n\n## 复杂度\n\n时间O(n+U log U)，空间O(U)，U≤2n。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,threshold=map(int,d[:2]);counts={}\n    for i in range(n):\n        sender,recipient,amount=map(int,d[2+3*i:5+3*i]);counts[sender]=counts.get(sender,0)+1\n        if recipient!=sender:counts[recipient]=counts.get(recipient,0)+1\n    out=sorted(u for u,count in counts.items() if count>=threshold)\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-43",
+      "sourceContentHash": "eec5283f43c81446b5cb800113e82eb35ee7db412a331087a278bb630dea6a00",
+      "packageChecksum": "549ded4aa764e4a047185f6194c5928af4c2b8dd6776b6aea9fcf29c1e7600f8",
+      "editorial": "## 思路\n\n删除频差2的边得到森林；对每个未访问连通块先遍历到最远端点，再从该端点遍历求块直径，取最大值。\n\n## 正确性\n\n合法路径恰好是删边后森林中的路径。树上从任意点的最远点可作为某条直径端点，从它出发的最大距离是块直径。每个块独立处理，最大块直径即全局答案；单点块贡献0。\n\n## 复杂度\n\n时间O(n)，空间O(n)，迭代遍历不会因十万点链递归溢出。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import deque\ndef solve(d):\n    n=int(d[0]);f=list(map(int,d[1:1+n]));nums=list(map(int,d[1+n:]));adj=[[] for _ in range(n)]\n    for i in range(0,len(nums),2):\n        a,b=nums[i]-1,nums[i+1]-1\n        if abs(f[a]-f[b])<=1:adj[a].append(b);adj[b].append(a)\n    seen=bytearray(n)\n    def farthest(start):\n        q=deque([(start,-1,0)]);best=(start,0)\n        while q:\n            u,parent,length=q.popleft();seen[u]=1\n            if length>best[1]:best=(u,length)\n            for v in adj[u]:\n                if v!=parent:q.append((v,u,length+1))\n        return best\n    answer=0\n    for i in range(n):\n        if not seen[i]:end,_=farthest(i);_,length=farthest(end);answer=max(answer,length)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-44",
+      "sourceContentHash": "f7fdfe58aa9e18ccd725e4df71ee65a500362400a07b39dba4b906d2e4eed5df",
+      "packageChecksum": "197f9765f485b5a8261e0cc79c960ba1a140d358d9465ad16498a5a440d4cb34",
+      "editorial": "## 思路\n\n用负数最大堆，每次取最大堆减去向下取整的一半，放回向上取整的一半。最大值为1时后续操作无变化，可结束。\n\n## 正确性\n\n各石堆的连续操作收益单调不增，每次选择当前最大收益属于全局最优的可行前缀选择。最大石堆产生最大floor(x/2)收益；交换论证可把任意最优方案的首步换成该堆而不变差。全部为1时额外恰好操作只移除0颗，因此提前计算最终和合法。\n\n## 复杂度\n\n时间O(n+k log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\ndef solve(d):\n    n,k=map(int,d[:2]);heap=[-int(v) for v in d[2:]];heapq.heapify(heap)\n    for _ in range(k):\n        if heap[0]==-1:break\n        value=-heap[0];heapq.heapreplace(heap,-((value+1)//2))\n    return str(-sum(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-45",
+      "sourceContentHash": "d5aff9c1d3a736c6fff6585d72289850c7c17065b990bc2219267dcb0639e4ea",
+      "packageChecksum": "42f92ff1de233b011ec8d847d082e4d2941bb0d75946d7c1c85c221b48b96648",
+      "editorial": "## 思路\n\n0/1背包：费用为现价，收益为未来价减现价。容量倒序遍历确保股票只买一次，非正收益可跳过。\n\n## 正确性\n\n处理前i支股票时dp[j]为预算≤j可得最大利润，新股票要么不买继承，要么买一次接前层dp[j−cost]+gain。倒序使所引用的小容量仍为前层；费用0时每个容量只更新一次，也恰好买一次。归纳保证最优，初始0表达不投资。\n\n## 复杂度\n\n时间O(n×saving)，空间O(saving)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,saving=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));dp=[0]*(saving+1)\n    for cost,future in zip(a,b):\n        gain=future-cost\n        if gain<=0 or cost>saving:continue\n        for money in range(saving,cost-1,-1):dp[money]=max(dp[money],dp[money-cost]+gain)\n    return str(dp[saving])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-46",
+      "sourceContentHash": "411ad042a894d99a5d7b8063e05d3c4fce66cf924e9add8a0511cf8d7c80f98c",
+      "packageChecksum": "3deb894dabf2968f7cc2949c653e7f626eb7ef961446b0831d124a9eb5985091",
+      "editorial": "## 思路\n\n先找原最大元素下标p；每个查询直接输出(p−r) mod n，规范化为0..n−1。\n\n## 正确性\n\n左移一次使每个位置减少1并对n取模，连续r次减r。最大值身份不随旋转改变，且互异保证唯一，因此跟踪其下标即可。每次从同一个原下标计算确保查询独立。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)含输入输出。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));p=max(range(n),key=a.__getitem__);out=[]\n    for r in map(int,d[2+n:]):out.append((p-r)%n)\n    return str(m)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-47",
+      "sourceContentHash": "d57985d40019ee255907e9928bd9f100bc0f08f72f5b74cd7dab5deff5a70ea3",
+      "packageChecksum": "704a7c0aaee103cf136d1300f9c3e731444a7a938d2dcc0c73e6fdadf59f5c01",
+      "editorial": "## 思路\n\n布尔数组标记原始掩码。逐位进行SOS子集传播：高半区状态吸收去掉当前位后的低半区状态。最终每个掩码标记是否含至少一个原始子掩码，累加布尔值。\n\n## 正确性\n\n一个结果y可由x生成当且仅当x的每个1位也在y中，即x是y的子掩码。处理前j位后，标记表达只允许在这j位补1能否从某个输入到达；下一位把无该位来源传播到有该位状态，归纳覆盖全部允许补1位置。布尔并合去重，统计正是并集大小。\n\n## 复杂度\n\n时间O(n×2ⁿ+k)，空间O(2ⁿ)字节。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);size=1<<n;reachable=bytearray(size)\n    for x in map(int,d[2:]):reachable[x]=1\n    step=1\n    for _ in range(n):\n        for base in range(0,size,2*step):\n            for low in range(base,base+step):\n                if reachable[low]:reachable[low+step]=1\n        step*=2\n    return str(sum(reachable))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

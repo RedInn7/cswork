@@ -1,0 +1,10 @@
+[
+  {
+    "name": "左旋误作右旋",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));p=max(range(n),key=a.__getitem__);out=[]\n    for r in map(int,d[2+n:]):out.append((p+r)%n)\n    return str(m)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误累计旋转",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));p=max(range(n),key=a.__getitem__);out=[]\n    for r in map(int,d[2+n:]):p=(p-r)%n;out.append(p)\n    return str(m)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

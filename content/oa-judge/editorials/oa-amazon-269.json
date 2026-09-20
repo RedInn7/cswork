@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-269",
+  "title": "可转移非负库存后的最多对应相等位置",
+  "explanation": "## 思路\n\n总库存S不变。若等于目标总和则全匹配；否则按目标值从小到大，用S预算匹配尽可能多位置，但最多n−1个。用值域10000的计数桶实现。\n\n## 正确性证明\n\n任意与原库存同和的非负数组都可由盈余位置向亏缺位置转移得到，每次供给位置都保持合法正余额。匹配一组目标需要至少其值之和的库存，因此选最小值达到最多个数。若总量不等，不能全部匹配，留至少一个位置吸收余量；若它也相等，则匹配数本可增加或全部总量相等，与前提矛盾。故预算上界可达。\n\n## 复杂度\n\n时间O(n+10000)，空间O(10000)不含读取。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));budget=sum(a)\n    if budget==sum(b):return str(n)\n    counts=[0]*10001\n    for v in b:counts[v]+=1\n    answer=0\n    for value in range(1,10001):\n        taken=min(counts[value],budget//value,n-1-answer);answer+=taken;budget-=value*taken\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#269-maximize-similarity",
+  "sourceContentHash": "a667408e7057f3e61fc84f29ad87f7473ceed344b509846d5c5076b6ba0b25a6",
+  "author": "CSWork"
+}

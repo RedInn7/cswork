@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误去重",
+    "code": "def solve(d):\n    a=sorted(set(map(int,d[1:])));l=0;r=len(a)-1;out=[]\n    while l<=r:\n        out.append(a[r]);r-=1\n        if l<=r:out.append(a[l]);l+=1\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "奇数尾项丢失",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));l=0;r=len(a)-1;out=[]\n    while l<r:\n        out.append(a[r]);r-=1\n        if l<=r:out.append(a[l]);l+=1\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

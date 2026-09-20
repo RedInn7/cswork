@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许相同整数",
+    "code": "def solve(d):\n    from functools import lru_cache\n    lo,hi,k=map(int,d)\n    @lru_cache(None)\n    def visit(bit,al,ah,bl,bh,less,tight):\n        if bit<0:return 0\n        l=(lo>>bit)&1;h=(hi>>bit)&1;limit=(k>>bit)&1;best=-1\n        for a in (0,1):\n            if al and a<l or ah and a>h:continue\n            for b in (0,1):\n                if bl and b<l or bh and b>h or not less and a>b:continue\n                z=a^b\n                if tight and z>limit:continue\n                rest=visit(bit-1,al and a==l,ah and a==h,bl and b==l,bh and b==h,less or a<b,tight and z==limit)\n                if rest>=0:best=max(best,(z<<bit)+rest)\n        return best\n    return str(visit(max(hi,k).bit_length()-1,True,True,True,True,False,True))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "排除等于k",
+    "code": "def solve(d):\n    from functools import lru_cache\n    lo,hi,k=map(int,d)\n    @lru_cache(None)\n    def visit(bit,al,ah,bl,bh,less,tight):\n        if bit<0:return 0 if less else -1\n        l=(lo>>bit)&1;h=(hi>>bit)&1;limit=(k>>bit)&1;best=-1\n        for a in (0,1):\n            if al and a<l or ah and a>h:continue\n            for b in (0,1):\n                if bl and b<l or bh and b>h or not less and a>b:continue\n                z=a^b\n                if tight and z>=limit:continue\n                rest=visit(bit-1,al and a==l,ah and a==h,bl and b==l,bh and b==h,less or a<b,tight and z==limit)\n                if rest>=0:best=max(best,(z<<bit)+rest)\n        return best\n    return str(visit(max(hi,k).bit_length()-1,True,True,True,True,False,True))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

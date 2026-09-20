@@ -1,0 +1,10 @@
+[
+  {
+    "name": "全a时不操作",
+    "code": "def solve(d):\n    a=list(d[0]);i=0\n    while i<len(a) and a[i]=='a':i+=1\n    if i==len(a):a[-1]='a'\n    else:\n        while i<len(a) and a[i]!='a':a[i]=chr(ord(a[i])-1);i+=1\n    return ''.join(a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只改一位",
+    "code": "def solve(d):\n    a=list(d[0]);i=0\n    while i<len(a) and a[i]=='a':i+=1\n    if i==len(a):a[-1]='z'\n    else:\n        a[i]=chr(ord(a[i])-1)\n    return ''.join(a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

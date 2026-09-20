@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误丢弃必需负分",
+    "code": "def solve(d):\n    s,kit=d[:2];ratings=list(map(int,d[2:]));balance=0;minimum=0\n    for c in s:balance+=1 if c=='(' else -1;minimum=min(minimum,balance)\n    left=-minimum;right=left+balance;opens=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);closes=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True);answer=sum(max(0,v) for v in opens[:left]+closes[:right])\n    for a,b in zip(opens[left:],closes[right:]):answer+=max(0,a+b)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "额外括号错误各自只取正分",
+    "code": "def solve(d):\n    s,kit=d[:2];ratings=list(map(int,d[2:]));balance=0;minimum=0\n    for c in s:balance+=1 if c=='(' else -1;minimum=min(minimum,balance)\n    left=-minimum;right=left+balance;opens=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);closes=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True);answer=sum(opens[:left])+sum(closes[:right])\n    for a,b in zip(opens[left:],closes[right:]):answer+=max(0,a)+max(0,b)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
