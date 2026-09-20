@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许跨奇偶边界",
+    "code": "def solve(raw):\n    s=raw.strip();out=[];i=0\n    while i<len(s):\n        j=i;counts=[0]*10\n        while j<len(s) and True:counts[int(s[j])]+=1;j+=1\n        for d in range(9,-1,-1):out.append(str(d)*counts[d])\n        i=j\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误升序",
+    "code": "def solve(raw):\n    s=raw.strip();out=[];i=0\n    while i<len(s):\n        j=i;counts=[0]*10\n        while j<len(s) and int(s[j])%2==int(s[i])%2:counts[int(s[j])]+=1;j+=1\n        for d in range(10):out.append(str(d)*counts[d])\n        i=j\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

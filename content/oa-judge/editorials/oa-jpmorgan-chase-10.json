@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-10",
+  "title": "两种规模队伍的最少队数",
+  "explanation": "## 思路\n\n枚举a人队数量，剩余人数若能整除b即可组成方案，取队数最少。\n\n## 正确性证明\n\n任一合法方案的a人队数必在枚举范围；固定它后b人队数量由剩余人数唯一决定，整除检查是合法的充要条件。取所有合法方案最小即最优，无候选则无解。\n\n## 复杂度\n\n时间O(p/a+1)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a,b,p=map(int,raw.split());best=p+1\n    for x in range(p//a+1):\n        rest=p-a*x\n        if rest%b==0:best=min(best,x+rest//b)\n    return str(best if best<=p else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#10-tracks-in-hackathon",
+  "sourceContentHash": "37840f7141eb0b2df4569609432d84375e78b5d8e0391bdb4e26ee86bc23d201",
+  "author": "CSWork"
+}

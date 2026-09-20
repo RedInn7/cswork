@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-6",
+  "title": "两轮四轮车的车队方案数",
+  "explanation": "## 思路\n\n奇数不可行；偶数的四轮车数从0到w//4，每种数量唯一决定两轮车数。\n\n## 正确性证明\n\n两类车辆轮数都是偶数，奇数无解；偶数时每个0..floor(w/4)的四轮车数量都留下非负偶数轮，且对应唯一两轮车数量，所以方案数是floor(w/4)+1。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(0 if w%2 else w//4+1) for w in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#6-choosing-a-fleet-of-vehicles",
+  "sourceContentHash": "9112850651d0dbc163b69fe56598fe3e9a25eb1e75d2c50ac7b63b32d584235d",
+  "author": "CSWork"
+}

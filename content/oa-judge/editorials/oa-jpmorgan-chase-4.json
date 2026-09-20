@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-4",
+  "title": "左右总和相同的枢轴下标",
+  "explanation": "## 思路\n\n维护总和及当前下标之前的前缀和，检查left=total−left−a[i]。\n\n## 正确性证明\n\n遍历到i时left恰为左侧和，总和减left和当前项恰为右侧和，判断充要。正数使左减右随下标严格递增，所以至多一个枢轴，保证有解即可返回。\n\n## 复杂度\n\n时间O(n)，除输入外O(1)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);left=0\n    for i,v in enumerate(a):\n        if left==total-left-v:return str(i)\n        left+=v\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#4-balanced-sum",
+  "sourceContentHash": "25f4c679b918eeda2906f372858a13ed85898e6488dfbf0671eac71ff8c92c10",
+  "author": "CSWork"
+}

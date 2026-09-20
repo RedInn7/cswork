@@ -1,0 +1,10 @@
+[
+  {
+    "name": "价格变化忽略持仓",
+    "code": "def solve(raw):\n    import json\n    holdings={};gain=0;out=[]\n    for line in json.loads(raw):\n        p=line.split();op=p[0]\n        if op=='QUERY':out.append(gain);continue\n        s=p[1];v=int(p[2])\n        if op=='CHANGE':gain+=v\n        else:holdings[s]=holdings.get(s,0)+(v if op=='BUY' else -v)\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "卖出增加持仓",
+    "code": "def solve(raw):\n    import json\n    holdings={};gain=0;out=[]\n    for line in json.loads(raw):\n        p=line.split();op=p[0]\n        if op=='QUERY':out.append(gain);continue\n        s=p[1];v=int(p[2])\n        if op=='CHANGE':gain+=holdings.get(s,0)*v\n        else:holdings[s]=holdings.get(s,0)+(v)\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

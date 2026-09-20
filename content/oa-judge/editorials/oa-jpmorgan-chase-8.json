@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-8",
+  "title": "区间内数字不重复的整数数量",
+  "explanation": "## 思路\n\n一次枚举所有无重复数字的正整数（至多6位）并排序；每次用两次二分统计闭区间内数量。\n\n## 正确性证明\n\nDFS每次选择未用数字且首位非零，因而每个产生数合法；任意合法数按其各位恰对应唯一DFS路径。排序后二分左端前与右端后的下标差恰等于区间中合法数数目。\n\n## 复杂度\n\n预处理O(U log U)，查询O(q log U)，空间O(U+q)；U为不超过百万的合法数数量。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_left,bisect_right\nVALID=None\ndef solve(raw):\n    global VALID\n    if VALID is None:\n        VALID=[]\n        def visit(v,mask):\n            if v:VALID.append(v)\n            for d in range(10):\n                if (not v and not d) or mask>>d&1:continue\n                w=v*10+d\n                if w<=1000000:visit(w,mask|1<<d)\n        visit(0,0);VALID.sort()\n    d=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(bisect_right(VALID,h)-bisect_left(VALID,l)) for l,h in zip(d[::2],d[1::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#8-distinct-digit-numbers",
+  "sourceContentHash": "7d82694bb5a9de89b21c26783d15aaa2ffdfaac524ff5e1da295307e0ab18ab5",
+  "author": "CSWork"
+}

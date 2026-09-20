@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-9",
+  "title": "穿过全部频率过滤器的信号数",
+  "explanation": "## 思路\n\n交集下界取所有下界最大值，上界取所有上界最小值，统计落入其中的信号。\n\n## 正确性证明\n\n信号通过全部过滤器当且仅当不小于每个下界且不大于每个上界，等价于属于最大下界到最小上界的闭区间；逐项计数保留重复信号。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)用于解析。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];v=d[2+n:];left=max(v[::2]);right=min(v[1::2])\n    return str(sum(left<=f<=right for f in a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#9-signal-filter",
+  "sourceContentHash": "3ac13ef30665bc2dd4b5dbd242f27f08b5dbcf7aee82134948172a55f9c4d8aa",
+  "author": "CSWork"
+}
