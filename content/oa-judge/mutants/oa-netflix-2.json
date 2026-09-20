@@ -1,0 +1,10 @@
+[
+  {
+    "name": "选最低k项",
+    "code": "def solve(d):\n    n,g,k=map(int,d[:3]);scores=[float(d[i+3]) for i in range(n)];pos=n+3;out=[]\n    for _ in range(g):\n        m=int(d[pos]);pos+=1\n        values=[scores[int(d[pos+i])] for i in range(m)];pos+=m\n        values.sort();out.append(sum(values[:k]))\n    return str(g)+'\\n'+' '.join(format(v,'.12g') for v in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误将电影组重新排序",
+    "code": "def solve(d):\n    n,g,k=map(int,d[:3]);scores=[float(d[i+3]) for i in range(n)];pos=n+3;out=[]\n    for _ in range(g):\n        m=int(d[pos]);pos+=1\n        values=[scores[int(d[pos+i])] for i in range(m)];pos+=m\n        values.sort(reverse=True);out.append(sum(values[:k]))\n    return str(g)+'\\n'+' '.join(format(v,'.12g') for v in sorted(out,reverse=True))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

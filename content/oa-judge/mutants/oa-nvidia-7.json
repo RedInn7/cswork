@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏最后路径段",
+    "code": "import json\ndef solve(raw):\n    document,path=raw.split('\\n',1);path=path.rstrip('\\r\\n');value=json.loads(document)\n    for key in path.split('.')[:-1]:\n        if not isinstance(value,dict) or key not in value:\n            value=None;break\n        value=value[key]\n    return json.dumps(value,ensure_ascii=False,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "false和零误判缺失",
+    "code": "import json\ndef solve(raw):\n    document,path=raw.split('\\n',1);path=path.rstrip('\\r\\n');value=json.loads(document)\n    for key in path.split('.'):\n        if not isinstance(value,dict) or key not in value:\n            value=None;break\n        value=value[key]\n    return json.dumps(value if value else None,ensure_ascii=False,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

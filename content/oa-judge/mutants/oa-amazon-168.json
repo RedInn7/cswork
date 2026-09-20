@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只选固定朝向",
+    "code": "def solve(d):\n    counts=[0,0]\n    for i,v in enumerate(d[1:]):\n        if int(v)==10**9:counts[i%2]+=1\n    return str(counts[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "相邻不同重量就替换",
+    "code": "def solve(d):\n    counts=[0,0]\n    for i,v in enumerate(d[1:]):\n        if int(v)==10**9:counts[i%2]+=1\n    return str(sum(d[i]!=d[i-1] for i in range(2,len(d))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

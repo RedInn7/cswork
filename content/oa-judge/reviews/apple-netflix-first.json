@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-apple-1",
+      "status": "authored",
+      "reason": "raw与catalog均存在样例错误；正文及例1解释明确保留未闭合尾段，按此规则校正例2总和24、例4保留0/6/2总和8，完整保留原范围。"
+    },
+    {
+      "id": "oa-apple-2",
+      "status": "blocked",
+      "reason": "immutable raw也没有说明j的选择域。任意交换与相邻交换在[3,2,1]分别得14和11。catalog排序解另在[2,3,1]给14而一次不相交交换至多13；不能用该题解补充规则。"
+    },
+    {
+      "id": "oa-netflix-1",
+      "status": "authored",
+      "reason": "raw未给规模/整数范围及空历史UNDO行为；本站明示数值界、所有中间状态signed64、UNDO必有可撤销变更的合法输入保证。"
+    },
+    {
+      "id": "oa-netflix-2",
+      "status": "authored",
+      "reason": "raw无数值约束；明示本站范围及各组至少k个互异合法电影，按原例输出输入组顺序。float-array接受数字等价格式与误差，不锁定小数位。"
+    },
+    {
+      "id": "oa-netflix-3",
+      "status": "blocked",
+      "reason": "immutable raw约束原本截断于A cleanup help，未明确到期端点及now是否单调。SET a 1 5 0后GET a 5的结果未定义；时间倒退时删除策略会改变后续GET结果。暂不擅补TTL业务规则。"
+    }
+  ]
+}

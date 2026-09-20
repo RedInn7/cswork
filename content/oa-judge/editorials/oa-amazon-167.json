@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-167",
+  "title": "删除k个数后的最小最大相邻差",
+  "explanation": "## 思路\n\n排序后只需考虑连续n−k个元素；在相邻差数组上维护长度n−k−1窗口的最大值，再取最小。\n\n## 正确性证明\n\n任意选择有跳过的内部元素时，把所选数压缩为排序序列内连续同样多个元素，可让每条新相邻间隙包含在某条旧间隙中，故最大间隙不增。更直接：若某阈值可行，所选数之间不能跨过大于阈值的原相邻间隙，它们位于同一连续连通块，块长至少n−k，因此存在连续选择也可行。单调队列维护每个窗口最大差。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import deque\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));width=n-k-1\n    if width==0:return '0'\n    gaps=[a[i+1]-a[i] for i in range(n-1)];queue=deque();answer=10**30\n    for i,v in enumerate(gaps):\n        while queue and gaps[queue[-1]]<=v:queue.pop()\n        queue.append(i)\n        while queue[0]<=i-width:queue.popleft()\n        if i>=width-1:answer=min(answer,gaps[queue[0]])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#167-find-min-max-difference",
+  "sourceContentHash": "c820040d01a167d3851268d822f38c731435ec5af39962fe71d54a9435536c93",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-netflix-2",
+  "title": "计算电影组的前k项相似度总分",
+  "explanation": "## 思路\n\n逐组取出成员分数，降序排序后累加前k项。\n\n## 正确性\n\n任何选中较小分数却未选中较大分数的k元素集合，都可交换二者且不减少总分。反复交换可得到前k大，因此它们的和就是该组最高总分。各组独立计算，并保持输入顺序。\n\n## 复杂度\n\n设总成员数M，时间O(N+Σm log m)，除输入输出外空间O(max m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,g,k=map(int,d[:3]);scores=[float(d[i+3]) for i in range(n)];pos=n+3;out=[]\n    for _ in range(g):\n        m=int(d[pos]);pos+=1\n        values=[scores[int(d[pos+i])] for i in range(m)];pos+=m\n        values.sort(reverse=True);out.append(sum(values[:k]))\n    return str(g)+'\\n'+' '.join(format(v,'.12g') for v in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/netflix#2-rank-movies-by-similarity-score-frontend-",
+  "sourceContentHash": "e0df87fada995bab462edb49a909d989c8f613c0bfb4ff65ccac66135c61b380",
+  "author": "CSWork"
+}

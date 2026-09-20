@@ -1,0 +1,654 @@
+[
+  {
+    "input": "4\nADD 5\nMUL 3\nUNDO\nPRINT\n",
+    "expectedOutput": "1\n5\n"
+  },
+  {
+    "input": "5\nADD 7\nMUL 0\nPRINT\nUNDO\nPRINT\n",
+    "expectedOutput": "2\n0\n7\n"
+  },
+  {
+    "input": "8\nADD 2\nPRINT\nADD 4\nUNDO\nMUL -3\nPRINT\nUNDO\nPRINT\n",
+    "expectedOutput": "3\n2\n-6\n2\n"
+  },
+  {
+    "input": "13\nMUL 0\nUNDO\nADD -3\nPRINT\nADD 2\nADD 2\nADD 0\nPRINT\nADD -1\nPRINT\nPRINT\nADD 1\nMUL 2\n",
+    "expectedOutput": "4\n-3\n1\n0\n0\n"
+  },
+  {
+    "input": "1\nADD -3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "24\nMUL 3\nPRINT\nUNDO\nMUL 2\nMUL -1\nMUL 1\nMUL 0\nPRINT\nUNDO\nMUL -3\nPRINT\nADD 3\nADD 0\nPRINT\nUNDO\nADD -1\nADD 2\nMUL -3\nMUL 1\nMUL 0\nMUL 2\nPRINT\nMUL -2\nADD 2\n",
+    "expectedOutput": "5\n0\n0\n0\n3\n0\n"
+  },
+  {
+    "input": "29\nADD 3\nADD -3\nMUL 0\nUNDO\nMUL -1\nMUL -2\nMUL 1\nADD 1\nPRINT\nADD 2\nPRINT\nUNDO\nADD 0\nUNDO\nPRINT\nMUL 1\nPRINT\nADD 3\nUNDO\nUNDO\nMUL 1\nMUL 3\nADD 0\nUNDO\nPRINT\nADD -2\nMUL 3\nADD -3\nUNDO\n",
+    "expectedOutput": "5\n1\n3\n1\n1\n3\n"
+  },
+  {
+    "input": "3\nADD 3\nADD -2\nUNDO\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "7\nPRINT\nMUL 0\nMUL -3\nUNDO\nMUL -3\nUNDO\nPRINT\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "13\nADD 3\nPRINT\nUNDO\nADD -1\nPRINT\nMUL 0\nMUL -3\nMUL 0\nUNDO\nADD -2\nPRINT\nUNDO\nADD -3\n",
+    "expectedOutput": "3\n3\n-1\n-2\n"
+  },
+  {
+    "input": "27\nPRINT\nMUL 0\nUNDO\nADD 2\nUNDO\nMUL -1\nPRINT\nUNDO\nMUL 3\nADD -2\nADD -1\nUNDO\nUNDO\nPRINT\nUNDO\nMUL 3\nADD 2\nPRINT\nADD 1\nADD 2\nADD 0\nADD -1\nPRINT\nPRINT\nUNDO\nMUL -2\nUNDO\n",
+    "expectedOutput": "6\n0\n0\n0\n2\n4\n4\n"
+  },
+  {
+    "input": "11\nMUL 3\nADD 0\nUNDO\nUNDO\nMUL 1\nMUL 2\nPRINT\nUNDO\nPRINT\nUNDO\nPRINT\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "14\nMUL 1\nUNDO\nMUL 0\nPRINT\nUNDO\nADD 2\nMUL 0\nUNDO\nPRINT\nADD 0\nUNDO\nADD -2\nUNDO\nUNDO\n",
+    "expectedOutput": "2\n0\n2\n"
+  },
+  {
+    "input": "6\nPRINT\nADD 2\nMUL 3\nUNDO\nPRINT\nADD 0\n",
+    "expectedOutput": "2\n0\n2\n"
+  },
+  {
+    "input": "27\nMUL 3\nPRINT\nPRINT\nPRINT\nMUL 1\nPRINT\nMUL 3\nUNDO\nADD 0\nADD -2\nADD 3\nADD -3\nUNDO\nUNDO\nADD 0\nMUL 0\nPRINT\nMUL 1\nUNDO\nPRINT\nPRINT\nPRINT\nPRINT\nUNDO\nADD -3\nMUL -3\nUNDO\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "16\nPRINT\nPRINT\nADD -2\nUNDO\nADD 1\nPRINT\nPRINT\nPRINT\nMUL 3\nPRINT\nMUL 2\nPRINT\nMUL 0\nPRINT\nADD 0\nUNDO\n",
+    "expectedOutput": "8\n0\n0\n1\n1\n1\n3\n6\n0\n"
+  },
+  {
+    "input": "9\nPRINT\nPRINT\nMUL 2\nPRINT\nADD 2\nPRINT\nADD -2\nPRINT\nUNDO\n",
+    "expectedOutput": "5\n0\n0\n0\n2\n0\n"
+  },
+  {
+    "input": "15\nADD -3\nADD 0\nMUL -1\nADD 0\nADD -3\nPRINT\nADD -1\nADD -2\nMUL -3\nADD -3\nMUL 3\nUNDO\nPRINT\nPRINT\nADD 3\n",
+    "expectedOutput": "3\n0\n6\n6\n"
+  },
+  {
+    "input": "22\nPRINT\nPRINT\nPRINT\nMUL 3\nMUL -2\nPRINT\nUNDO\nMUL 1\nPRINT\nUNDO\nADD 1\nPRINT\nADD -1\nUNDO\nMUL 0\nADD 1\nADD 3\nADD -2\nMUL 0\nUNDO\nUNDO\nADD 2\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "27\nADD 1\nMUL 1\nMUL 3\nMUL 2\nUNDO\nMUL -3\nMUL -2\nPRINT\nMUL -1\nUNDO\nMUL -1\nPRINT\nADD 2\nUNDO\nADD -2\nUNDO\nADD 1\nADD 2\nADD -1\nUNDO\nMUL 0\nPRINT\nPRINT\nMUL -1\nPRINT\nADD -3\nMUL -2\n",
+    "expectedOutput": "5\n18\n-18\n0\n0\n0\n"
+  },
+  {
+    "input": "1\nMUL -3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "1\nMUL 0\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "22\nMUL 1\nUNDO\nPRINT\nPRINT\nADD 2\nMUL 1\nUNDO\nUNDO\nPRINT\nMUL 1\nUNDO\nPRINT\nMUL -3\nUNDO\nMUL 0\nADD -2\nUNDO\nMUL -1\nADD -1\nPRINT\nUNDO\nMUL -2\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n-1\n"
+  },
+  {
+    "input": "18\nMUL 2\nADD 2\nUNDO\nPRINT\nADD 2\nMUL 0\nMUL 3\nMUL 3\nMUL -2\nADD 3\nUNDO\nMUL 0\nMUL 2\nADD -3\nPRINT\nPRINT\nUNDO\nADD 0\n",
+    "expectedOutput": "3\n0\n-3\n-3\n"
+  },
+  {
+    "input": "8\nADD -1\nMUL 3\nPRINT\nUNDO\nPRINT\nMUL 0\nPRINT\nUNDO\n",
+    "expectedOutput": "3\n-3\n-1\n0\n"
+  },
+  {
+    "input": "25\nPRINT\nPRINT\nADD -2\nPRINT\nUNDO\nMUL 0\nPRINT\nMUL -1\nMUL -1\nADD -2\nUNDO\nPRINT\nPRINT\nMUL 3\nADD 3\nUNDO\nMUL -2\nADD 1\nMUL 3\nUNDO\nPRINT\nMUL -3\nUNDO\nUNDO\nUNDO\n",
+    "expectedOutput": "7\n0\n0\n-2\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "24\nMUL 1\nADD 3\nPRINT\nADD -3\nPRINT\nPRINT\nADD 0\nMUL 3\nMUL -1\nPRINT\nMUL 3\nMUL 1\nUNDO\nPRINT\nMUL 0\nUNDO\nUNDO\nUNDO\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\nADD -3\n",
+    "expectedOutput": "8\n3\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "10\nMUL 1\nPRINT\nPRINT\nUNDO\nADD -2\nUNDO\nADD 0\nUNDO\nMUL 3\nUNDO\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "25\nMUL 0\nUNDO\nPRINT\nADD -3\nUNDO\nMUL 3\nMUL 1\nMUL -1\nMUL -1\nPRINT\nPRINT\nUNDO\nUNDO\nMUL -3\nPRINT\nADD 3\nADD -2\nMUL 3\nPRINT\nMUL 1\nUNDO\nMUL -1\nMUL -1\nPRINT\nADD 3\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n3\n3\n"
+  },
+  {
+    "input": "18\nPRINT\nPRINT\nADD -2\nUNDO\nPRINT\nPRINT\nADD 0\nMUL 3\nPRINT\nUNDO\nADD 0\nMUL 0\nUNDO\nMUL 0\nADD 1\nMUL 2\nPRINT\nPRINT\n",
+    "expectedOutput": "7\n0\n0\n0\n0\n0\n2\n2\n"
+  },
+  {
+    "input": "27\nPRINT\nADD 3\nPRINT\nUNDO\nPRINT\nADD -1\nMUL -1\nMUL 2\nUNDO\nPRINT\nPRINT\nADD 1\nADD 1\nPRINT\nADD -2\nPRINT\nADD -2\nPRINT\nMUL 0\nPRINT\nADD 0\nUNDO\nADD 3\nADD -3\nMUL 1\nPRINT\nADD 3\n",
+    "expectedOutput": "10\n0\n3\n0\n1\n1\n3\n1\n-1\n0\n0\n"
+  },
+  {
+    "input": "18\nMUL 3\nPRINT\nMUL -2\nUNDO\nPRINT\nMUL 0\nMUL -2\nMUL 2\nMUL -1\nPRINT\nPRINT\nADD 1\nPRINT\nMUL 1\nUNDO\nPRINT\nPRINT\nPRINT\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "19\nADD 3\nPRINT\nUNDO\nMUL 0\nPRINT\nADD 3\nUNDO\nMUL -2\nUNDO\nMUL -3\nPRINT\nMUL 3\nMUL -1\nPRINT\nMUL 3\nPRINT\nUNDO\nMUL 2\nUNDO\n",
+    "expectedOutput": "5\n3\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "28\nPRINT\nADD 3\nPRINT\nMUL 0\nUNDO\nPRINT\nADD 3\nPRINT\nPRINT\nADD -2\nMUL 1\nUNDO\nMUL 2\nPRINT\nPRINT\nPRINT\nMUL 0\nMUL 1\nUNDO\nPRINT\nADD -3\nUNDO\nPRINT\nPRINT\nMUL 1\nPRINT\nADD 0\nUNDO\n",
+    "expectedOutput": "12\n0\n3\n3\n6\n6\n8\n8\n8\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "15\nMUL -3\nMUL 0\nMUL -2\nADD 0\nPRINT\nUNDO\nUNDO\nPRINT\nADD -2\nMUL 0\nPRINT\nPRINT\nUNDO\nPRINT\nADD 2\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n-2\n"
+  },
+  {
+    "input": "15\nMUL 1\nMUL -1\nUNDO\nPRINT\nMUL 2\nADD -3\nPRINT\nUNDO\nPRINT\nMUL -2\nMUL 2\nPRINT\nADD 3\nMUL 3\nADD 2\n",
+    "expectedOutput": "4\n0\n-3\n0\n0\n"
+  },
+  {
+    "input": "30\nMUL 2\nADD -3\nADD -3\nPRINT\nADD -3\nADD -1\nMUL 0\nMUL -3\nADD 2\nPRINT\nADD 3\nPRINT\nADD 3\nADD -1\nPRINT\nMUL -3\nMUL 1\nPRINT\nUNDO\nMUL -2\nUNDO\nPRINT\nPRINT\nADD 0\nMUL 1\nUNDO\nUNDO\nMUL -1\nPRINT\nPRINT\n",
+    "expectedOutput": "9\n-6\n2\n5\n7\n-21\n-21\n-21\n21\n21\n"
+  },
+  {
+    "input": "24\nPRINT\nADD 3\nPRINT\nPRINT\nMUL 2\nUNDO\nADD 1\nMUL 1\nUNDO\nADD 1\nMUL -3\nADD -2\nUNDO\nUNDO\nADD 2\nPRINT\nUNDO\nADD 2\nADD 2\nADD 2\nPRINT\nADD 3\nPRINT\nMUL 0\n",
+    "expectedOutput": "6\n0\n3\n3\n7\n11\n14\n"
+  },
+  {
+    "input": "4\nMUL -3\nPRINT\nMUL -1\nADD 0\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "16\nPRINT\nADD 3\nADD -2\nMUL 0\nADD 2\nUNDO\nPRINT\nADD -3\nADD 0\nUNDO\nUNDO\nADD 3\nMUL 2\nUNDO\nUNDO\nADD -3\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "9\nMUL 2\nUNDO\nADD -3\nPRINT\nMUL 3\nADD 2\nPRINT\nMUL 2\nPRINT\n",
+    "expectedOutput": "3\n-3\n-7\n-14\n"
+  },
+  {
+    "input": "2\nADD -1\nMUL 2\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "18\nADD 0\nPRINT\nUNDO\nADD 1\nUNDO\nPRINT\nADD 2\nMUL 0\nPRINT\nADD 0\nADD 0\nUNDO\nMUL -3\nPRINT\nUNDO\nPRINT\nPRINT\nPRINT\n",
+    "expectedOutput": "7\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "18\nMUL 2\nMUL 1\nUNDO\nUNDO\nADD 3\nADD 1\nUNDO\nMUL -1\nPRINT\nPRINT\nPRINT\nUNDO\nADD 1\nADD 3\nPRINT\nUNDO\nADD 2\nADD -3\n",
+    "expectedOutput": "4\n-3\n-3\n-3\n7\n"
+  },
+  {
+    "input": "8\nADD -2\nADD -2\nUNDO\nPRINT\nMUL 2\nMUL 2\nUNDO\nPRINT\n",
+    "expectedOutput": "2\n-2\n-4\n"
+  },
+  {
+    "input": "23\nMUL 1\nUNDO\nPRINT\nMUL 0\nMUL 0\nPRINT\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nADD 1\nUNDO\nUNDO\nADD 0\nMUL -1\nADD 2\nUNDO\nMUL -1\nMUL 2\nUNDO\nADD 0\nPRINT\n",
+    "expectedOutput": "7\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "21\nADD -3\nMUL -1\nADD -1\nUNDO\nPRINT\nADD 2\nPRINT\nMUL -3\nUNDO\nPRINT\nPRINT\nMUL -1\nMUL 1\nUNDO\nMUL -1\nPRINT\nMUL -2\nUNDO\nUNDO\nMUL 3\nMUL -2\n",
+    "expectedOutput": "5\n3\n5\n5\n5\n5\n"
+  },
+  {
+    "input": "1\nMUL 3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "18\nADD -3\nADD -2\nPRINT\nADD -1\nUNDO\nUNDO\nUNDO\nMUL 0\nPRINT\nUNDO\nPRINT\nMUL 0\nADD -2\nUNDO\nMUL 1\nUNDO\nPRINT\nUNDO\n",
+    "expectedOutput": "4\n-5\n0\n0\n0\n"
+  },
+  {
+    "input": "8\nMUL 2\nPRINT\nPRINT\nADD -1\nPRINT\nADD 1\nUNDO\nUNDO\n",
+    "expectedOutput": "3\n0\n0\n-1\n"
+  },
+  {
+    "input": "27\nMUL -3\nADD -2\nMUL -2\nPRINT\nMUL 1\nUNDO\nADD 2\nUNDO\nADD -3\nPRINT\nPRINT\nUNDO\nMUL -1\nPRINT\nPRINT\nPRINT\nADD -3\nUNDO\nMUL 0\nMUL 3\nADD -3\nUNDO\nUNDO\nUNDO\nADD 1\nPRINT\nPRINT\n",
+    "expectedOutput": "8\n4\n1\n1\n-4\n-4\n-4\n-3\n-3\n"
+  },
+  {
+    "input": "29\nADD -2\nMUL -2\nUNDO\nUNDO\nADD 1\nMUL 3\nUNDO\nPRINT\nADD -1\nUNDO\nUNDO\nMUL -3\nUNDO\nMUL -1\nMUL -1\nUNDO\nPRINT\nADD 3\nMUL -3\nPRINT\nUNDO\nMUL -3\nADD -3\nADD 3\nMUL -2\nPRINT\nADD -3\nMUL 0\nUNDO\n",
+    "expectedOutput": "4\n1\n0\n-9\n18\n"
+  },
+  {
+    "input": "6\nPRINT\nADD 1\nUNDO\nMUL 0\nADD 1\nADD 3\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "29\nADD 3\nADD -1\nADD 3\nPRINT\nMUL 1\nPRINT\nADD 3\nMUL 1\nPRINT\nMUL 0\nADD 3\nADD 3\nADD 1\nUNDO\nPRINT\nUNDO\nMUL 3\nPRINT\nADD 1\nADD 0\nMUL 1\nADD 2\nPRINT\nADD 3\nUNDO\nADD -2\nMUL 3\nMUL 2\nPRINT\n",
+    "expectedOutput": "7\n5\n5\n8\n6\n9\n12\n60\n"
+  },
+  {
+    "input": "16\nMUL -1\nPRINT\nMUL 1\nUNDO\nMUL -1\nUNDO\nADD -1\nUNDO\nMUL -1\nMUL 0\nADD -1\nMUL 3\nPRINT\nADD 1\nMUL -2\nPRINT\n",
+    "expectedOutput": "3\n0\n-3\n4\n"
+  },
+  {
+    "input": "12\nPRINT\nADD 3\nMUL 1\nMUL -2\nUNDO\nMUL -2\nADD 2\nMUL 0\nADD 0\nADD 1\nADD 3\nUNDO\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "25\nPRINT\nMUL -2\nPRINT\nPRINT\nADD 0\nMUL 2\nPRINT\nUNDO\nMUL 3\nADD -1\nUNDO\nMUL 0\nPRINT\nADD 1\nUNDO\nUNDO\nADD 1\nMUL -2\nPRINT\nPRINT\nMUL 2\nADD -1\nUNDO\nPRINT\nMUL -2\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n0\n-2\n-2\n-4\n"
+  },
+  {
+    "input": "12\nMUL -3\nUNDO\nADD 2\nPRINT\nUNDO\nADD -3\nMUL -2\nMUL -3\nADD 0\nUNDO\nPRINT\nPRINT\n",
+    "expectedOutput": "3\n2\n-18\n-18\n"
+  },
+  {
+    "input": "1\nPRINT\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "7\nADD 0\nPRINT\nPRINT\nADD 2\nUNDO\nUNDO\nMUL 1\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "6\nMUL 2\nADD -1\nADD -2\nMUL 3\nUNDO\nPRINT\n",
+    "expectedOutput": "1\n-3\n"
+  },
+  {
+    "input": "23\nMUL 1\nADD -1\nPRINT\nMUL 2\nPRINT\nPRINT\nUNDO\nMUL 0\nADD -1\nMUL 3\nPRINT\nUNDO\nUNDO\nMUL -1\nUNDO\nUNDO\nUNDO\nADD 3\nADD 3\nUNDO\nMUL 2\nUNDO\nUNDO\n",
+    "expectedOutput": "4\n-1\n-2\n-2\n-3\n"
+  },
+  {
+    "input": "4\nMUL 3\nMUL -3\nADD 2\nMUL 2\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "18\nPRINT\nADD -1\nUNDO\nADD 3\nMUL 2\nPRINT\nADD -1\nADD 3\nPRINT\nADD 0\nUNDO\nUNDO\nPRINT\nPRINT\nPRINT\nPRINT\nADD 0\nADD -1\n",
+    "expectedOutput": "7\n0\n6\n8\n5\n5\n5\n5\n"
+  },
+  {
+    "input": "11\nMUL -1\nPRINT\nUNDO\nMUL -3\nUNDO\nADD 3\nUNDO\nPRINT\nADD 0\nUNDO\nMUL 1\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "6\nADD -3\nPRINT\nMUL 3\nPRINT\nPRINT\nUNDO\n",
+    "expectedOutput": "3\n-3\n-9\n-9\n"
+  },
+  {
+    "input": "18\nPRINT\nADD 3\nPRINT\nUNDO\nMUL 1\nADD 1\nMUL -2\nPRINT\nUNDO\nUNDO\nMUL 0\nADD 0\nADD 3\nMUL 3\nMUL 2\nPRINT\nADD 3\nUNDO\n",
+    "expectedOutput": "4\n0\n3\n-2\n18\n"
+  },
+  {
+    "input": "4\nMUL 0\nPRINT\nADD -3\nMUL -1\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "25\nADD -2\nUNDO\nPRINT\nPRINT\nMUL -2\nMUL -2\nADD 2\nMUL 0\nMUL 0\nADD 0\nPRINT\nMUL -3\nMUL 3\nUNDO\nADD -2\nUNDO\nADD 2\nUNDO\nUNDO\nUNDO\nUNDO\nUNDO\nADD -3\nPRINT\nPRINT\n",
+    "expectedOutput": "5\n0\n0\n0\n-1\n-1\n"
+  },
+  {
+    "input": "12\nADD 3\nADD -2\nPRINT\nADD 3\nPRINT\nMUL -2\nUNDO\nADD 0\nADD 2\nUNDO\nADD -3\nMUL 0\n",
+    "expectedOutput": "2\n1\n4\n"
+  },
+  {
+    "input": "6\nPRINT\nPRINT\nADD 1\nUNDO\nMUL 0\nUNDO\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "8\nADD -2\nADD -1\nADD 3\nPRINT\nUNDO\nUNDO\nPRINT\nMUL 0\n",
+    "expectedOutput": "2\n0\n-2\n"
+  },
+  {
+    "input": "21\nPRINT\nADD -2\nADD 2\nPRINT\nMUL 2\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\nADD -1\nUNDO\nMUL 3\nADD 2\nPRINT\nMUL 0\nADD 1\nMUL 2\nADD -1\nMUL -2\n",
+    "expectedOutput": "7\n0\n0\n0\n0\n0\n0\n-4\n"
+  },
+  {
+    "input": "28\nMUL 1\nADD -1\nMUL -3\nMUL 2\nUNDO\nPRINT\nPRINT\nPRINT\nPRINT\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\nADD -3\nMUL 2\nPRINT\nMUL 1\nUNDO\nUNDO\nPRINT\nMUL 2\nADD 1\nADD 1\nMUL 0\nMUL 3\nADD -1\n",
+    "expectedOutput": "10\n3\n3\n3\n3\n3\n3\n3\n-1\n-6\n-3\n"
+  },
+  {
+    "input": "16\nMUL 2\nUNDO\nPRINT\nMUL 0\nMUL 0\nADD 2\nMUL 3\nADD 3\nMUL -2\nUNDO\nADD 3\nADD 1\nPRINT\nMUL 1\nADD 2\nUNDO\n",
+    "expectedOutput": "2\n0\n13\n"
+  },
+  {
+    "input": "22\nPRINT\nMUL 1\nUNDO\nADD 1\nADD -2\nADD -2\nUNDO\nUNDO\nADD 3\nADD -1\nMUL 2\nUNDO\nPRINT\nMUL 3\nUNDO\nADD 2\nPRINT\nPRINT\nADD -2\nUNDO\nADD 1\nUNDO\n",
+    "expectedOutput": "4\n0\n3\n5\n5\n"
+  },
+  {
+    "input": "2\nADD 0\nADD -1\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "10\nADD 3\nMUL 2\nPRINT\nMUL 1\nUNDO\nADD 1\nPRINT\nPRINT\nPRINT\nADD 3\n",
+    "expectedOutput": "4\n6\n7\n7\n7\n"
+  },
+  {
+    "input": "1\nPRINT\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "14\nMUL -2\nPRINT\nADD 1\nUNDO\nADD 2\nPRINT\nADD -1\nPRINT\nMUL -2\nUNDO\nPRINT\nPRINT\nPRINT\nMUL 2\n",
+    "expectedOutput": "6\n0\n2\n1\n1\n1\n1\n"
+  },
+  {
+    "input": "3\nADD -2\nUNDO\nPRINT\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "7\nMUL 1\nPRINT\nPRINT\nMUL 2\nUNDO\nMUL -2\nADD -2\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "14\nPRINT\nPRINT\nADD 1\nADD -3\nADD 2\nPRINT\nPRINT\nMUL 2\nADD -2\nPRINT\nADD 0\nPRINT\nMUL -1\nUNDO\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n-2\n-2\n"
+  },
+  {
+    "input": "23\nPRINT\nPRINT\nPRINT\nPRINT\nPRINT\nADD 0\nADD 0\nUNDO\nUNDO\nADD 1\nMUL -1\nADD -1\nPRINT\nMUL -1\nPRINT\nMUL -2\nPRINT\nUNDO\nADD -2\nMUL -2\nMUL 2\nUNDO\nPRINT\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n-2\n2\n-4\n0\n"
+  },
+  {
+    "input": "10\nMUL 2\nADD 1\nUNDO\nUNDO\nMUL 0\nADD 1\nMUL 2\nPRINT\nADD -1\nUNDO\n",
+    "expectedOutput": "1\n2\n"
+  },
+  {
+    "input": "25\nADD 3\nPRINT\nADD -1\nUNDO\nMUL 2\nMUL 3\nADD 3\nPRINT\nADD -1\nMUL -1\nUNDO\nUNDO\nADD 0\nUNDO\nMUL 3\nADD 1\nUNDO\nPRINT\nPRINT\nPRINT\nMUL 2\nADD -1\nADD -2\nUNDO\nADD 1\n",
+    "expectedOutput": "5\n3\n21\n63\n63\n63\n"
+  },
+  {
+    "input": "25\nMUL 1\nUNDO\nMUL -3\nADD 3\nADD 2\nMUL 2\nUNDO\nUNDO\nMUL -3\nMUL 3\nUNDO\nMUL 3\nMUL 0\nPRINT\nPRINT\nPRINT\nUNDO\nUNDO\nPRINT\nUNDO\nUNDO\nADD -2\nMUL -3\nADD -1\nMUL 3\n",
+    "expectedOutput": "4\n0\n0\n0\n-9\n"
+  },
+  {
+    "input": "30\nPRINT\nPRINT\nADD 2\nUNDO\nADD 2\nPRINT\nADD -3\nADD 2\nADD 0\nUNDO\nADD 3\nPRINT\nPRINT\nPRINT\nUNDO\nUNDO\nUNDO\nADD 1\nUNDO\nADD 0\nUNDO\nADD 1\nMUL 1\nPRINT\nADD 3\nADD 1\nMUL 0\nUNDO\nMUL -2\nUNDO\n",
+    "expectedOutput": "7\n0\n0\n2\n4\n4\n4\n3\n"
+  },
+  {
+    "input": "11\nMUL -3\nPRINT\nPRINT\nPRINT\nPRINT\nPRINT\nMUL 0\nMUL 1\nMUL -1\nADD 0\nUNDO\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "5\nADD 2\nADD -1\nMUL 1\nMUL -1\nMUL 2\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "19\nADD 0\nPRINT\nPRINT\nMUL -1\nADD 0\nUNDO\nADD 3\nPRINT\nMUL 1\nPRINT\nUNDO\nMUL -2\nMUL 0\nPRINT\nUNDO\nPRINT\nADD 0\nMUL -2\nUNDO\n",
+    "expectedOutput": "6\n0\n0\n3\n3\n0\n-6\n"
+  },
+  {
+    "input": "7\nPRINT\nADD -3\nADD 3\nMUL 1\nPRINT\nUNDO\nUNDO\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "6\nMUL 3\nPRINT\nMUL -2\nMUL 1\nADD 2\nPRINT\n",
+    "expectedOutput": "2\n0\n2\n"
+  },
+  {
+    "input": "19\nPRINT\nADD 3\nUNDO\nADD 2\nUNDO\nPRINT\nPRINT\nMUL 2\nMUL 2\nUNDO\nADD -1\nPRINT\nPRINT\nUNDO\nUNDO\nMUL -3\nUNDO\nMUL 0\nADD 3\n",
+    "expectedOutput": "5\n0\n0\n0\n-1\n-1\n"
+  },
+  {
+    "input": "21\nMUL -2\nUNDO\nPRINT\nMUL -3\nADD -2\nPRINT\nUNDO\nMUL 3\nPRINT\nMUL -1\nUNDO\nADD -1\nUNDO\nUNDO\nPRINT\nMUL 2\nPRINT\nPRINT\nPRINT\nADD 3\nUNDO\n",
+    "expectedOutput": "7\n0\n-2\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "7\nPRINT\nPRINT\nADD 0\nADD -2\nUNDO\nADD 0\nPRINT\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "13\nMUL 3\nADD -3\nUNDO\nADD 2\nADD -1\nPRINT\nUNDO\nADD -1\nPRINT\nADD -2\nMUL -3\nADD 3\nUNDO\n",
+    "expectedOutput": "2\n1\n1\n"
+  },
+  {
+    "input": "17\nPRINT\nMUL 3\nPRINT\nPRINT\nMUL 2\nPRINT\nUNDO\nUNDO\nMUL 2\nUNDO\nMUL -2\nADD 3\nUNDO\nUNDO\nPRINT\nMUL -3\nMUL -2\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "7\nADD 0\nADD 3\nUNDO\nUNDO\nADD -3\nPRINT\nPRINT\n",
+    "expectedOutput": "2\n-3\n-3\n"
+  },
+  {
+    "input": "26\nMUL -3\nADD 0\nADD 2\nADD 1\nMUL 1\nMUL -2\nADD -2\nADD 2\nMUL 0\nADD -1\nADD -2\nUNDO\nPRINT\nUNDO\nUNDO\nMUL -2\nADD -1\nMUL 0\nADD 1\nUNDO\nMUL -1\nUNDO\nADD 1\nPRINT\nADD -3\nUNDO\n",
+    "expectedOutput": "2\n-1\n1\n"
+  },
+  {
+    "input": "2\nMUL 0\nUNDO\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "4\nADD 2\nUNDO\nPRINT\nPRINT\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "18\nPRINT\nPRINT\nADD -1\nUNDO\nMUL -1\nADD -2\nUNDO\nADD 3\nPRINT\nUNDO\nMUL -1\nMUL 3\nPRINT\nPRINT\nPRINT\nPRINT\nADD -2\nPRINT\n",
+    "expectedOutput": "8\n0\n0\n3\n0\n0\n0\n0\n-2\n"
+  },
+  {
+    "input": "8\nMUL 2\nMUL -2\nPRINT\nUNDO\nMUL 1\nPRINT\nPRINT\nMUL -2\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "9\nADD 1\nADD -3\nMUL 3\nPRINT\nUNDO\nUNDO\nMUL -2\nMUL -1\nMUL -3\n",
+    "expectedOutput": "1\n-6\n"
+  },
+  {
+    "input": "24\nADD -2\nADD -2\nPRINT\nUNDO\nPRINT\nMUL -2\nUNDO\nUNDO\nADD 3\nPRINT\nMUL 2\nADD 0\nUNDO\nMUL 3\nADD 1\nADD -3\nADD -2\nMUL 2\nADD -1\nMUL 3\nMUL 3\nUNDO\nADD 3\nPRINT\n",
+    "expectedOutput": "4\n-4\n-2\n3\n84\n"
+  },
+  {
+    "input": "1\nPRINT\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "27\nPRINT\nADD -2\nADD 1\nADD 2\nPRINT\nPRINT\nMUL -3\nADD -3\nUNDO\nMUL -2\nPRINT\nMUL 0\nADD -2\nMUL -3\nUNDO\nMUL -1\nADD -2\nADD -2\nPRINT\nPRINT\nPRINT\nADD 0\nMUL -2\nUNDO\nUNDO\nPRINT\nUNDO\n",
+    "expectedOutput": "8\n0\n1\n1\n6\n-2\n-2\n-2\n-2\n"
+  },
+  {
+    "input": "27\nPRINT\nPRINT\nPRINT\nMUL 3\nUNDO\nADD 1\nPRINT\nMUL 0\nUNDO\nADD -3\nADD 1\nADD 3\nPRINT\nPRINT\nUNDO\nADD -1\nUNDO\nADD 2\nUNDO\nUNDO\nPRINT\nMUL 1\nUNDO\nPRINT\nMUL 1\nADD 1\nPRINT\n",
+    "expectedOutput": "9\n0\n0\n0\n1\n2\n2\n-2\n-2\n-1\n"
+  },
+  {
+    "input": "22\nADD 3\nPRINT\nADD -3\nUNDO\nPRINT\nADD 1\nPRINT\nMUL 2\nPRINT\nPRINT\nADD 0\nUNDO\nUNDO\nPRINT\nPRINT\nPRINT\nPRINT\nADD 0\nMUL 2\nADD -3\nPRINT\nADD 2\n",
+    "expectedOutput": "10\n3\n3\n4\n8\n8\n4\n4\n4\n4\n5\n"
+  },
+  {
+    "input": "11\nPRINT\nMUL 0\nPRINT\nADD 3\nADD 3\nADD 1\nPRINT\nADD 2\nADD 1\nPRINT\nMUL 0\n",
+    "expectedOutput": "4\n0\n0\n7\n10\n"
+  },
+  {
+    "input": "25\nADD 2\nUNDO\nADD 2\nMUL -1\nMUL 3\nPRINT\nPRINT\nMUL -3\nADD 1\nPRINT\nUNDO\nUNDO\nADD -2\nUNDO\nMUL 1\nMUL 1\nPRINT\nUNDO\nMUL 1\nADD 2\nUNDO\nUNDO\nMUL 3\nADD -2\nPRINT\n",
+    "expectedOutput": "5\n-6\n-6\n19\n-6\n-20\n"
+  },
+  {
+    "input": "28\nADD -3\nUNDO\nPRINT\nPRINT\nMUL 0\nUNDO\nADD 1\nUNDO\nPRINT\nMUL -1\nMUL -1\nUNDO\nUNDO\nADD 2\nUNDO\nMUL 3\nMUL 1\nPRINT\nUNDO\nPRINT\nMUL 2\nUNDO\nUNDO\nMUL 3\nUNDO\nADD 2\nADD -1\nUNDO\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "16\nPRINT\nADD -2\nADD -1\nADD 3\nUNDO\nPRINT\nUNDO\nPRINT\nUNDO\nADD 1\nPRINT\nUNDO\nADD 1\nUNDO\nMUL -3\nPRINT\n",
+    "expectedOutput": "5\n0\n-3\n-2\n1\n0\n"
+  },
+  {
+    "input": "25\nPRINT\nMUL -2\nMUL 2\nADD 2\nUNDO\nADD -1\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\nADD 3\nPRINT\nUNDO\nMUL -1\nMUL -2\nMUL 3\nADD -1\nPRINT\nUNDO\nADD -2\nUNDO\nADD -1\nPRINT\nPRINT\n",
+    "expectedOutput": "8\n0\n-1\n-1\n0\n3\n-1\n-1\n-1\n"
+  },
+  {
+    "input": "13\nADD -2\nADD 3\nMUL 1\nUNDO\nUNDO\nUNDO\nADD -1\nUNDO\nPRINT\nPRINT\nADD 1\nADD -1\nMUL -3\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "24\nADD 2\nUNDO\nPRINT\nMUL -3\nPRINT\nADD -1\nADD 2\nUNDO\nUNDO\nUNDO\nMUL -2\nMUL 3\nUNDO\nUNDO\nMUL -1\nUNDO\nMUL -1\nPRINT\nUNDO\nMUL 0\nPRINT\nUNDO\nMUL -1\nUNDO\n",
+    "expectedOutput": "4\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "23\nMUL 0\nADD 3\nUNDO\nUNDO\nPRINT\nADD 3\nPRINT\nUNDO\nPRINT\nMUL -3\nADD 0\nMUL 1\nADD 0\nMUL -1\nMUL -3\nUNDO\nMUL -1\nUNDO\nADD 0\nUNDO\nPRINT\nMUL 2\nUNDO\n",
+    "expectedOutput": "4\n0\n3\n0\n0\n"
+  },
+  {
+    "input": "7\nPRINT\nPRINT\nADD -2\nPRINT\nUNDO\nPRINT\nADD -1\n",
+    "expectedOutput": "4\n0\n0\n-2\n0\n"
+  },
+  {
+    "input": "2\nADD -3\nADD 0\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "9\nMUL -2\nMUL 2\nMUL -2\nUNDO\nUNDO\nMUL -1\nADD 1\nMUL 3\nADD 0\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "4\nMUL -1\nPRINT\nMUL 0\nPRINT\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "8\nPRINT\nADD 1\nPRINT\nPRINT\nMUL -1\nPRINT\nMUL -2\nMUL 0\n",
+    "expectedOutput": "4\n0\n1\n1\n-1\n"
+  },
+  {
+    "input": "13\nPRINT\nMUL 0\nUNDO\nADD 2\nMUL 1\nADD -3\nMUL -1\nUNDO\nUNDO\nPRINT\nMUL 2\nMUL -3\nUNDO\n",
+    "expectedOutput": "2\n0\n2\n"
+  },
+  {
+    "input": "23\nPRINT\nPRINT\nMUL -1\nUNDO\nMUL 1\nPRINT\nUNDO\nADD 0\nADD 0\nUNDO\nUNDO\nADD 0\nMUL -3\nMUL 0\nUNDO\nADD 3\nPRINT\nMUL 1\nUNDO\nUNDO\nUNDO\nUNDO\nPRINT\n",
+    "expectedOutput": "5\n0\n0\n0\n3\n0\n"
+  },
+  {
+    "input": "8\nADD -2\nADD 3\nPRINT\nADD -2\nMUL 1\nUNDO\nPRINT\nPRINT\n",
+    "expectedOutput": "3\n1\n-1\n-1\n"
+  },
+  {
+    "input": "12\nPRINT\nADD -1\nPRINT\nUNDO\nMUL 2\nUNDO\nPRINT\nADD -1\nMUL -1\nMUL 2\nUNDO\nMUL 2\n",
+    "expectedOutput": "3\n0\n-1\n0\n"
+  },
+  {
+    "input": "30\nMUL 3\nMUL -2\nPRINT\nMUL 1\nADD 2\nMUL 2\nUNDO\nPRINT\nPRINT\nPRINT\nMUL 1\nPRINT\nUNDO\nADD 0\nPRINT\nMUL 2\nMUL -3\nMUL 2\nPRINT\nMUL 2\nPRINT\nMUL 0\nMUL 0\nPRINT\nADD -1\nADD 0\nPRINT\nPRINT\nMUL -3\nPRINT\n",
+    "expectedOutput": "12\n0\n2\n2\n2\n2\n2\n-24\n-48\n0\n-1\n-1\n3\n"
+  },
+  {
+    "input": "15\nADD -2\nUNDO\nADD 1\nPRINT\nMUL 2\nPRINT\nADD -2\nPRINT\nMUL 1\nADD 2\nMUL 2\nADD -3\nMUL 1\nUNDO\nPRINT\n",
+    "expectedOutput": "4\n1\n2\n0\n1\n"
+  },
+  {
+    "input": "11\nMUL 1\nUNDO\nMUL 1\nUNDO\nPRINT\nADD -2\nMUL -3\nMUL 1\nMUL -1\nPRINT\nMUL -1\n",
+    "expectedOutput": "2\n0\n-6\n"
+  },
+  {
+    "input": "7\nADD 3\nPRINT\nPRINT\nADD 3\nPRINT\nMUL 0\nMUL -1\n",
+    "expectedOutput": "3\n3\n3\n6\n"
+  },
+  {
+    "input": "3\nMUL -3\nADD 3\nADD 3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "23\nPRINT\nMUL -3\nMUL 1\nMUL 3\nPRINT\nADD -3\nUNDO\nADD 3\nMUL 0\nPRINT\nUNDO\nPRINT\nUNDO\nMUL 2\nMUL -1\nMUL -2\nMUL 3\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\n",
+    "expectedOutput": "8\n0\n0\n0\n3\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "5\nADD -3\nPRINT\nADD 3\nPRINT\nADD -3\n",
+    "expectedOutput": "2\n-3\n0\n"
+  },
+  {
+    "input": "26\nPRINT\nMUL -1\nADD 2\nADD -3\nMUL 2\nPRINT\nADD -3\nPRINT\nPRINT\nUNDO\nMUL -2\nUNDO\nUNDO\nPRINT\nPRINT\nPRINT\nADD -3\nMUL 0\nMUL -2\nADD -1\nADD 0\nADD -1\nADD 3\nADD -1\nPRINT\nADD -2\n",
+    "expectedOutput": "8\n0\n-2\n-5\n-5\n-1\n-1\n-1\n0\n"
+  },
+  {
+    "input": "24\nMUL -3\nUNDO\nADD -3\nMUL -1\nADD 1\nPRINT\nUNDO\nMUL 0\nUNDO\nMUL -1\nADD -2\nMUL 3\nADD -1\nADD -1\nMUL -3\nADD -3\nMUL -1\nPRINT\nADD -1\nADD -1\nADD 3\nPRINT\nUNDO\nPRINT\n",
+    "expectedOutput": "4\n4\n-48\n-47\n-50\n"
+  },
+  {
+    "input": "21\nMUL -2\nMUL 0\nADD -1\nUNDO\nUNDO\nPRINT\nADD 3\nPRINT\nUNDO\nPRINT\nPRINT\nMUL 2\nMUL 0\nUNDO\nUNDO\nADD -2\nPRINT\nMUL -3\nMUL 1\nADD 3\nPRINT\n",
+    "expectedOutput": "6\n0\n3\n0\n0\n-2\n9\n"
+  },
+  {
+    "input": "22\nADD 0\nADD -3\nMUL 1\nMUL 2\nADD -2\nPRINT\nADD 1\nPRINT\nUNDO\nADD 1\nMUL -3\nPRINT\nUNDO\nPRINT\nMUL -2\nADD -2\nADD -1\nADD 3\nMUL 1\nUNDO\nADD -2\nADD 1\n",
+    "expectedOutput": "4\n-8\n-7\n21\n-7\n"
+  },
+  {
+    "input": "1\nMUL 3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "10\nMUL 0\nUNDO\nPRINT\nADD -3\nADD -2\nADD 2\nPRINT\nPRINT\nPRINT\nUNDO\n",
+    "expectedOutput": "4\n0\n-3\n-3\n-3\n"
+  },
+  {
+    "input": "24\nMUL 3\nUNDO\nPRINT\nPRINT\nMUL 2\nADD -1\nUNDO\nADD -2\nADD 1\nUNDO\nADD 3\nUNDO\nPRINT\nMUL 3\nMUL -2\nADD -3\nUNDO\nUNDO\nPRINT\nPRINT\nPRINT\nUNDO\nUNDO\nUNDO\n",
+    "expectedOutput": "6\n0\n0\n-2\n-6\n-6\n-6\n"
+  },
+  {
+    "input": "24\nMUL 0\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nADD 0\nPRINT\nPRINT\nADD 2\nPRINT\nUNDO\nUNDO\nADD 1\nPRINT\nMUL -3\nADD -3\nPRINT\nUNDO\nMUL 1\nMUL 1\nMUL -3\nPRINT\nADD 0\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n2\n1\n-6\n9\n"
+  },
+  {
+    "input": "26\nADD 3\nUNDO\nADD -3\nMUL -1\nUNDO\nPRINT\nADD -1\nUNDO\nPRINT\nMUL 1\nUNDO\nPRINT\nPRINT\nPRINT\nUNDO\nADD 2\nPRINT\nPRINT\nADD -3\nADD 0\nPRINT\nPRINT\nADD 2\nMUL -1\nPRINT\nADD -2\n",
+    "expectedOutput": "10\n-3\n-3\n-3\n-3\n-3\n2\n2\n-1\n-1\n-1\n"
+  },
+  {
+    "input": "25\nPRINT\nPRINT\nPRINT\nPRINT\nADD 2\nUNDO\nMUL 3\nMUL 2\nPRINT\nPRINT\nMUL 2\nADD -1\nMUL -3\nADD 0\nMUL -1\nPRINT\nUNDO\nUNDO\nPRINT\nPRINT\nMUL -2\nMUL 0\nPRINT\nADD 2\nADD -1\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n-3\n3\n3\n0\n"
+  },
+  {
+    "input": "27\nADD 0\nMUL 2\nADD -1\nMUL -2\nADD -1\nPRINT\nADD -1\nPRINT\nPRINT\nMUL -2\nMUL 2\nPRINT\nUNDO\nMUL -1\nMUL 2\nMUL -2\nUNDO\nUNDO\nADD 0\nPRINT\nUNDO\nUNDO\nUNDO\nADD 0\nPRINT\nMUL 2\nADD -3\n",
+    "expectedOutput": "6\n1\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "28\nADD -3\nMUL 3\nPRINT\nUNDO\nUNDO\nADD -1\nUNDO\nPRINT\nMUL 3\nADD -1\nMUL 1\nUNDO\nADD -2\nPRINT\nADD 2\nUNDO\nPRINT\nUNDO\nMUL 2\nPRINT\nUNDO\nADD -1\nADD 0\nPRINT\nADD -1\nPRINT\nADD -3\nPRINT\n",
+    "expectedOutput": "8\n-9\n0\n-3\n-3\n-2\n-2\n-3\n-6\n"
+  },
+  {
+    "input": "12\nADD 1\nADD -1\nADD 0\nPRINT\nMUL -2\nPRINT\nUNDO\nMUL -2\nUNDO\nUNDO\nADD 2\nADD 1\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "22\nADD 0\nMUL -1\nADD 1\nMUL 2\nADD 1\nMUL -3\nUNDO\nADD -2\nPRINT\nPRINT\nADD -2\nADD -3\nMUL 0\nUNDO\nMUL -3\nADD -2\nMUL 1\nUNDO\nMUL -2\nADD 0\nMUL 0\nPRINT\n",
+    "expectedOutput": "3\n1\n1\n0\n"
+  },
+  {
+    "input": "6\nADD -1\nADD 2\nPRINT\nMUL 3\nPRINT\nMUL -1\n",
+    "expectedOutput": "2\n1\n3\n"
+  },
+  {
+    "input": "17\nPRINT\nADD -3\nMUL 1\nUNDO\nADD -3\nMUL -1\nPRINT\nPRINT\nADD 2\nPRINT\nADD -2\nUNDO\nUNDO\nMUL 2\nADD -1\nUNDO\nMUL -1\n",
+    "expectedOutput": "4\n0\n6\n6\n8\n"
+  },
+  {
+    "input": "2\nMUL 1\nMUL 0\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "26\nMUL 0\nMUL 1\nADD -2\nUNDO\nMUL 1\nADD -1\nPRINT\nADD 3\nMUL 2\nADD -3\nPRINT\nADD 0\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\nMUL 0\nUNDO\nUNDO\nMUL -3\nUNDO\nADD -2\nADD -2\nMUL 1\nPRINT\n",
+    "expectedOutput": "6\n-1\n1\n1\n1\n1\n-2\n"
+  },
+  {
+    "input": "8\nADD 1\nADD -1\nMUL -1\nUNDO\nUNDO\nMUL -1\nMUL 0\nADD -3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "2\nADD 3\nPRINT\n",
+    "expectedOutput": "1\n3\n"
+  },
+  {
+    "input": "28\nMUL -1\nUNDO\nPRINT\nPRINT\nMUL 1\nPRINT\nUNDO\nPRINT\nADD 3\nPRINT\nMUL -3\nADD -1\nPRINT\nPRINT\nADD 0\nADD 3\nADD 0\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nUNDO\nPRINT\nUNDO\nADD 3\nUNDO\nMUL 1\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n3\n-10\n-10\n-7\n-7\n-7\n-7\n-10\n"
+  },
+  {
+    "input": "22\nADD 0\nPRINT\nPRINT\nMUL -2\nPRINT\nUNDO\nMUL 0\nUNDO\nUNDO\nPRINT\nMUL 1\nMUL -2\nUNDO\nUNDO\nPRINT\nPRINT\nPRINT\nMUL 1\nMUL 0\nPRINT\nPRINT\nMUL 2\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "16\nMUL 2\nUNDO\nADD 0\nPRINT\nMUL -1\nMUL 0\nADD 3\nPRINT\nMUL 3\nUNDO\nUNDO\nADD -2\nMUL 3\nADD -3\nMUL 3\nADD -1\n",
+    "expectedOutput": "2\n0\n3\n"
+  },
+  {
+    "input": "2\nMUL -1\nMUL -3\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "14\nPRINT\nADD 3\nPRINT\nADD -2\nUNDO\nMUL 0\nMUL -1\nADD -1\nUNDO\nPRINT\nUNDO\nPRINT\nPRINT\nUNDO\n",
+    "expectedOutput": "5\n0\n3\n0\n0\n0\n"
+  },
+  {
+    "input": "5\nMUL -3\nPRINT\nUNDO\nPRINT\nMUL 2\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "12\nADD 0\nUNDO\nPRINT\nPRINT\nMUL -2\nPRINT\nUNDO\nADD -3\nUNDO\nMUL 1\nADD 3\nMUL 0\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "13\nPRINT\nMUL -1\nPRINT\nADD -1\nADD 1\nUNDO\nADD 2\nMUL 1\nUNDO\nMUL -1\nMUL -1\nADD 3\nPRINT\n",
+    "expectedOutput": "3\n0\n0\n4\n"
+  },
+  {
+    "input": "30\nPRINT\nMUL 0\nUNDO\nPRINT\nADD 1\nADD -1\nUNDO\nUNDO\nPRINT\nPRINT\nADD 1\nPRINT\nUNDO\nADD 0\nMUL -3\nUNDO\nPRINT\nPRINT\nPRINT\nUNDO\nPRINT\nADD -1\nUNDO\nADD -2\nUNDO\nPRINT\nADD 1\nMUL -1\nPRINT\nADD 3\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n-1\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-161",
+  "title": "有限补答次数下最多通过科目",
+  "explanation": "## 思路\n\n求每科非负缺口并升序排列，从最便宜科目开始支付。\n\n## 正确性证明\n\n任意选t科的所需题数至少是最小t个缺口的总和，选择它们恰好达到下界。逐科累加直到超过q得到可行科目数的最大值，零缺口自动计入。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));b=list(map(int,d[2+n:]));costs=sorted(max(0,y-x) for x,y in zip(a,b));answer=0\n    for cost in costs:\n        if cost>q:break\n        q-=cost;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#161-find-maximum-number-of-subjects-passed-as-intern-but-it-may-apply-to-other-interns",
+  "sourceContentHash": "085d50240d4032f209e0c53f8d14379d55e25a8a5524b49da50be4c0042ccec4",
+  "author": "CSWork"
+}

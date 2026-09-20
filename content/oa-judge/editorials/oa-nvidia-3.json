@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-3",
+  "title": "由前缀异或还原数组",
+  "explanation": "## 思路\n\n首项等于pref[0]，其余为相邻前缀异或。\n\n## 正确性\n\n共同前缀中的元素各异或两次抵消，仅余当前元素，故每项唯一确定。独立oracle重新遍历已还原全部元素求前缀，而非相邻输入公式。\n\n## 复杂度\n\n时间O(N)，除输入输出外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from itertools import islice\ndef solve(d):\n    previous=0;answer=[]\n    for token in islice(d,1,None):\n        value=int(token);answer.append(str(previous^value));previous=value\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nvidia#3-reconstruct-array-from-prefix-xor",
+  "sourceContentHash": "5cb663b03503e299d1a9cd7b1d724275a2d73c53bab346d34c361fbc45c6e940",
+  "author": "CSWork"
+}

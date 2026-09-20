@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-172",
+  "title": "服务器与中心一对一匹配的最小总距离",
+  "explanation": "## 思路\n\n两组坐标排序后按同序配对，累加绝对差。\n\n## 正确性证明\n\n若两组各有x≤y、u≤v，交叉配对费用|x−v|+|y−u|不小于同序费用|x−u|+|y−v|。反复消除交叉得到排序同序方案而费用不增，因此最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=sorted(map(int,d[1:n+1]));b=sorted(map(int,d[n+1:]));return str(sum(abs(x-y) for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#172-find-minimum-dist",
+  "sourceContentHash": "cb089365375066d96586927c01c955151c687f8a2d33f91ebee6ecfba6bed07b",
+  "author": "CSWork"
+}

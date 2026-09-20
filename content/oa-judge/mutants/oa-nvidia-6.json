@@ -1,0 +1,10 @@
+[
+  {
+    "name": "先满足最长串",
+    "code": "from collections import Counter\ndef solve(d):\n    words=d[1:];counts=Counter()\n    for s in words:counts.update(s)\n    pairs=sum(v//2 for v in counts.values());answer=0\n    for needed in sorted((len(s)//2 for s in words),reverse=True):\n        if needed>pairs:break\n        pairs-=needed;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "中心也占用字符对",
+    "code": "from collections import Counter\ndef solve(d):\n    words=d[1:];counts=Counter()\n    for s in words:counts.update(s)\n    pairs=sum(v//2 for v in counts.values());answer=0\n    for needed in sorted((len(s)+1)//2 for s in words):\n        if needed>pairs:break\n        pairs-=needed;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

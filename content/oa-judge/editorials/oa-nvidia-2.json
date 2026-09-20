@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-2",
+  "title": "长度至少K的最大连续子数组和",
+  "explanation": "## 思路\n\n遍历右端点r，用前缀和减去下标≤r−K的最小前缀和。\n\n## 正确性\n\n固定右端点的全部合法左端点恰对应前缀下标0..r−K；减去最小前缀取得该右端点最优，再枚举右端点求全局最优。\n\n## 复杂度\n\n时间O(N)，空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));p=[0]\n    for v in a:p.append(p[-1]+v)\n    minimum=0;answer=None\n    for r in range(k,n+1):\n        minimum=min(minimum,p[r-k]);value=p[r]-minimum\n        answer=value if answer is None else max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nvidia#2-maximum-subarray-of-size-at-least-k",
+  "sourceContentHash": "c22fcb57f4c6d7f1a8112c1e1631964477f1c6e3de2aae1fe14ce73cdcc46a51",
+  "author": "CSWork"
+}

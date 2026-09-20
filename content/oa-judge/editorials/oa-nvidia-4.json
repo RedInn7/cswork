@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-4",
+  "title": "左半和大于右半和的切分数",
+  "explanation": "## 思路\n\n先求总和，枚举前N−1个切分位置，比较前缀和与剩余和。\n\n## 正确性\n\n合法切分与前N−1个下标一一对应，严格比较即题目要求。\n\n## 复杂度\n\n时间O(N)，除输入外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);left=0;answer=0\n    for i in range(len(a)-1):\n        left+=a[i]\n        if left>total-left:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nvidia#4-split-array-into-two-subarrays-left-sum--right-sum",
+  "sourceContentHash": "de5e141d5fe660cd7ec52520890e2bd36ab4a7fef9df1e3112acaa17099451cd",
+  "author": "CSWork"
+}

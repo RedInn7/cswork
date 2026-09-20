@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-159",
+  "title": "字符成为前缀最高频的最多次数",
+  "explanation": "## 思路\n\n维护26个频率与累计次数，每加入一个字符，给所有并列最高频字符累加。\n\n## 正确性证明\n\n循环处理的恰为全部非空前缀，频率等于该前缀真实次数；逐个判断等于最大值正好实现并列计数定义，最终取累计最大值。\n\n## 复杂度\n\n时间O(26n)，辅助空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    freq=[0]*26;totals=[0]*26\n    for c in d[0]:\n        freq[ord(c)-97]+=1;top=max(freq)\n        for i in range(26):\n            if freq[i]==top:totals[i]+=1\n    return str(max(totals))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#159-find-maximum-maxima-count",
+  "sourceContentHash": "9fa5132ca774c6f551f686fccfd1820678f717912718397b8a5007a2c6653fd1",
+  "author": "CSWork"
+}

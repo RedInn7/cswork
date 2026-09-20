@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏地面起跳热量",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));lo=0;hi=len(a)-1;at=a[-1];answer=0;highest=True\n    while lo<=hi:\n        if highest:v=a[hi];hi-=1\n        else:v=a[lo];lo+=1\n        answer+=(v-at)**2;at=v;highest=not highest\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只按降序访问",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));lo=0;hi=len(a)-1;at=answer=0;highest=True\n    while lo<=hi:\n        if highest:v=a[hi];hi-=1\n        else:v=a[lo];lo+=1\n        answer+=(v-at)**2;at=v;highest=True\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

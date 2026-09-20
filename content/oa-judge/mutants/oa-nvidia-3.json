@@ -1,0 +1,10 @@
+[
+  {
+    "name": "异或误写加法",
+    "code": "from itertools import islice\ndef solve(d):\n    previous=0;answer=[]\n    for token in islice(d,1,None):\n        value=int(token);answer.append(str(previous+value));previous=value\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "固定与首项异或",
+    "code": "from itertools import islice\ndef solve(d):\n    previous=0;answer=[]\n    for token in islice(d,1,None):\n        value=int(token);answer.append(str(previous^value));previous=int(d[1])\n    return ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "强制顺时针",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:]));average=sum(a)//n;prefix=total=low=high=0\n    for v in a:\n        prefix+=v-average;total+=prefix;low=min(low,prefix);high=max(high,prefix)\n    return str(total-n*low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略回程空缺费用",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:]));average=sum(a)//n;prefix=total=low=high=0\n    for v in a:\n        prefix+=v-average;total+=prefix;low=min(low,prefix);high=max(high,prefix)\n    return str(min(abs(total),abs(total)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

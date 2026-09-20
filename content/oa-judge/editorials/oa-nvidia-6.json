@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-6",
+  "title": "任意交换后最多回文字符串数",
+  "explanation": "## 思路\n\n统计全部字符可提供的相同字符对数，按每串floor(长度/2)的需求升序消耗预算。\n\n## 正确性\n\n交换能实现字符池任意排列。每个回文需floor(长度/2)对相同字符，奇数串中心用任意剩余字符。选定对后，剩余字符数一定足以填满所有中心和未选择字符串，必要时拆剩余字符对即可。因此只有对数预算约束。每串收益相同，优先最小需求的交换论证保证最大数量。\n\n## 复杂度\n\n时间O(总字符数+N log N)，额外空间O(N+26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(d):\n    words=d[1:];counts=Counter()\n    for s in words:counts.update(s)\n    pairs=sum(v//2 for v in counts.values());answer=0\n    for needed in sorted(len(s)//2 for s in words):\n        if needed>pairs:break\n        pairs-=needed;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nvidia#6-palindromic-strings",
+  "sourceContentHash": "92d76fefc524169d315c0b6dc23e5d7c44ad624c4c136cf6aa77702412dd153b",
+  "author": "CSWork"
+}

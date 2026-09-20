@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-157",
+  "title": "补成平衡括号串的最大评分",
+  "explanation": "## 思路\n\n先求必需补的左右括号数，各类评分降序取对应必需个数。此后额外选择必须左右成对，逐对加入正收益。\n\n## 正确性证明\n\n设原串最小前缀为m、总余额为b，任意方案至少补L=max(0,−m)个左括号，补R=L+b个右括号；把左全放前、右全放后可实现。额外数目两类相同。固定选择数取最高分最优，后续配对收益非增，因此只取正收益配对即可。\n\n## 复杂度\n\n时间O(n+m log m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,kit=d[:2];ratings=list(map(int,d[2:]));balance=low=0\n    for c in s:balance+=1 if c=='(' else -1;low=min(low,balance)\n    left=-low;right=left+balance\n    opens=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);closes=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True)\n    answer=sum(opens[:left])+sum(closes[:right])\n    for a,b in zip(opens[left:],closes[right:]):\n        if a+b<=0:break\n        answer+=a+b\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#157-find-max-to-balance",
+  "sourceContentHash": "5982f1052b486ff74ea32191bf1c9381131d5a8a9a16d4f9b110a90c8bfe668d",
+  "author": "CSWork"
+}

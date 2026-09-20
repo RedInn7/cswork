@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-168",
+  "title": "两架不同容量无人机交替配送的最少换件数",
+  "explanation": "## 思路\n\n两容量取最大10^9和次大10^9−1不会比其他选择差。只有重量恰为10^9的包裹会超过较小容量，选这种包裹较少的奇偶位置给小无人机。\n\n## 正确性证明\n\n把任一可用容量对按大小增大到最大两容量不会让此前可送包裹变不可送，故存在使用该对的最优方案。大容量可以送全部包裹，小容量仅不能送重量10^9者；两种交替朝向取较少违规数量即可，替换成1实现下界。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入，辅助O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    counts=[0,0]\n    for i,v in enumerate(d[1:]):\n        if int(v)==10**9:counts[i%2]+=1\n    return str(min(counts))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#168-find-minimum-replacements",
+  "sourceContentHash": "69b81a14dfccdb30d1869f1c462a2231ccf5b3133f54e2cb335df04116c24f14",
+  "author": "CSWork"
+}

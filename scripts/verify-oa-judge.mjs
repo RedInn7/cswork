@@ -49,6 +49,7 @@ async function run(code, input, spec) {
       'tokens',
       'exact',
       'float',
+      'float-array',
       'oa-closest-pair',
       'oa-peak-index',
       'oa-window-averages',
@@ -61,6 +62,7 @@ async function run(code, input, spec) {
       'oa-regional-maxima',
       'oa-optimal-loads',
       'oa-optimal-distinct',
+      'oa-dictionary-path',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "必需负收益也跳过",
+    "code": "def solve(d):\n    s,kit=d[:2];ratings=list(map(int,d[2:]));balance=low=0\n    for c in s:balance+=1 if c=='(' else -1;low=min(low,balance)\n    left=-low;right=left+balance\n    opens=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);closes=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True)\n    answer=0\n    for a,b in zip(opens[left:],closes[right:]):\n        if a+b<=0:break\n        answer+=a+b\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "丢弃可选正收益",
+    "code": "def solve(d):\n    s,kit=d[:2];ratings=list(map(int,d[2:]));balance=low=0\n    for c in s:balance+=1 if c=='(' else -1;low=min(low,balance)\n    left=-low;right=left+balance\n    opens=sorted((v for c,v in zip(kit,ratings) if c=='('),reverse=True);closes=sorted((v for c,v in zip(kit,ratings) if c==')'),reverse=True)\n    answer=sum(opens[:left])+sum(closes[:right])\n    for a,b in zip(opens[left:],closes[right:]):\n        if a+b<=0:break\n        answer+=0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

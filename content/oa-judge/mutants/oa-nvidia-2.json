@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只选恰好K项",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));p=[0]\n    for v in a:p.append(p[-1]+v)\n    minimum=0;answer=None\n    for r in range(k,n+1):\n        minimum=p[r-k];value=p[r]-minimum\n        answer=value if answer is None else max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许空数组",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));p=[0]\n    for v in a:p.append(p[-1]+v)\n    minimum=0;answer=0\n    for r in range(k,n+1):\n        minimum=min(minimum,p[r-k]);value=p[r]-minimum\n        answer=value if answer is None else max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

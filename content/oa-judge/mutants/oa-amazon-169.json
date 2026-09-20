@@ -1,0 +1,10 @@
+[
+  {
+    "name": "四件误判无解",
+    "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(d[1:])\n    if 1 in counts.values() or 4 in counts.values():return '-1'\n    return str(sum((c+2)//3 for c in counts.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "所有批次只装两件",
+    "code": "def solve(d):\n    from collections import Counter\n    counts=Counter(d[1:])\n    if 1 in counts.values():return '-1'\n    return str(sum((c+1)//2 for c in counts.values()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

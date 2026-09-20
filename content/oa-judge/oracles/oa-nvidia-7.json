@@ -1,0 +1,654 @@
+[
+  {
+    "input": "{\"car\":{\"wheels\":2,\"gears\":5}}\ncar.gears\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "{\"a\":{\"z\":false,\"b\":[\"two words\",{\"q\":1}]}}\na\n",
+    "expectedOutput": "{\"z\":false,\"b\":[\"two words\",{\"q\":1}]}\n"
+  },
+  {
+    "input": "{\"a\":[{\"b\":3}]}\na.b\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":{\"c0\":{\"b0\":-7,\"c1\":[1,false,{\"x\":\"value\"}],\"b2\":{\"c0\":false,\"c1\":false,\"c2\":-7,\"c3\":-7}},\"a1\":[1,false,{\"x\":\"value\"}],\"b2\":\"\",\"b3\":{\"a0\":{\"a0\":\"中文 🌱\",\"a1\":\"中文 🌱\",\"b2\":true,\"a3\":false},\"c1\":{\"b0\":\"a\\nb\",\"c1\":-7,\"b2\":\"hello\",\"a3\":0},\"b2\":1,\"c3\":{\"a0\":\"中文 🌱\",\"a1\":1,\"c2\":\"two words\"}}},\"c1\":true,\"b2\":null}\na0.b3.b2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":true,\"c1\":\"two words\"}\nc1\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"a0\":[1,false,{\"x\":\"value\"}],\"c1\":false,\"b2\":-7,\"c3\":\"two words\"}\nc3\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"c0\":null}\nc0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":-7,\"a1\":{\"b0\":\"a\\nb\",\"b1\":{\"a0\":{\"c0\":[1,false,{\"x\":\"value\"}],\"b1\":false,\"a2\":\"hello\",\"a3\":\"hello\"},\"c1\":{\"a0\":null}},\"a2\":\"\"}}\na1.b1.c1.a0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":\"a\\nb\",\"b1\":\"two words\",\"a2\":{\"b0\":\"a\\nb\"}},\"c1\":1,\"b2\":false,\"c3\":0}\nc0.a2.b0\n",
+    "expectedOutput": "\"a\\nb\"\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":true,\"c1\":false,\"b2\":\"two words\"},\"b1\":\"two words\",\"a2\":\"\",\"c3\":\"hello\"}\nb1\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"a0\":[1,false,{\"x\":\"value\"}]}\na0\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"a0\":\"\",\"c1\":{\"a0\":\"hello\",\"c1\":\"中文 🌱\"},\"c2\":1}\nc1\n",
+    "expectedOutput": "{\"a0\":\"hello\",\"c1\":\"中文 🌱\"}\n"
+  },
+  {
+    "input": "{\"b0\":null}\nb0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"two words\"}\nb0\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"a0\":-7,\"b1\":{\"b0\":[1,false,{\"x\":\"value\"}]}}\nb1.b0\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"a0\":\"中文 🌱\",\"b1\":-7,\"b2\":{\"b0\":{\"b0\":true,\"c1\":-7,\"a2\":true,\"a3\":{\"c0\":\"hello\",\"b1\":\"\"}},\"c1\":{\"b0\":{\"b0\":false,\"a1\":\"\"}}},\"c3\":\"a\\nb\"}\na0\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"c0\":1}\nc0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"c0\":{\"a0\":\"two words\",\"a1\":{\"b0\":[1,false,{\"x\":\"value\"}]},\"a2\":\"two words\"}}\nc0.a1\n",
+    "expectedOutput": "{\"b0\":[1,false,{\"x\":\"value\"}]}\n"
+  },
+  {
+    "input": "{\"a0\":false,\"c1\":\"中文 🌱\",\"b2\":\"\"}\nc1\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"c0\":true,\"c1\":false,\"c2\":[1,false,{\"x\":\"value\"}],\"a3\":{\"c0\":false,\"b1\":{\"b0\":1,\"c1\":\"a\\nb\"},\"b2\":\"a\\nb\"}}\na3.c0\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a0\":\"a\\nb\",\"a1\":null,\"b2\":{\"c0\":{\"c0\":{\"c0\":[1,false,{\"x\":\"value\"}],\"a1\":\"中文 🌱\",\"b2\":\"\"},\"c1\":[1,false,{\"x\":\"value\"}],\"a2\":null},\"b1\":null,\"b2\":{\"b0\":0,\"a1\":1,\"a2\":\"中文 🌱\",\"a3\":true}}}\nb2.c0.c1\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":true,\"b1\":{\"c0\":[1,false,{\"x\":\"value\"}]}},\"c1\":{\"c0\":false,\"c1\":\"\"}}\nc0.b1.c0\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"b0\":{\"b0\":\"中文 🌱\",\"c1\":{\"b0\":null,\"b1\":{\"a0\":false,\"a1\":\"\"},\"a2\":{\"a0\":[1,false,{\"x\":\"value\"}],\"b1\":\"hello\",\"b2\":\"hello\",\"b3\":\"\"},\"b3\":0}},\"b1\":0,\"c2\":\"a\\nb\",\"b3\":1}\nb0.c1.b0\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"hello\",\"b1\":true}\nb1\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"c0\":\"中文 🌱\",\"b1\":[1,false,{\"x\":\"value\"}]}\nb1\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"a0\":0}\na0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":{\"b0\":false,\"c1\":-7,\"b2\":\"hello\",\"b3\":false}}}\na0.a0.b2\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"b0\":false}\nb0\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"b0\":\"中文 🌱\",\"b1\":{\"a0\":{\"a0\":\"two words\",\"a1\":{\"a0\":-7,\"b1\":1,\"a2\":\"a\\nb\"}},\"c1\":{\"a0\":\"中文 🌱\",\"b1\":0,\"b2\":{\"c0\":-7,\"a1\":true,\"b2\":false},\"c3\":{\"c0\":\"中文 🌱\",\"a1\":\"中文 🌱\",\"c2\":\"two words\",\"b3\":\"hello\"}},\"a2\":\"two words\"},\"a2\":\"two words\"}\nb1.a0.a1.a0\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"b0\":\"\",\"b1\":1,\"b2\":\"a\\nb\"}\nb2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":\"中文 🌱\",\"b1\":{\"b0\":null}},\"a1\":\"two words\",\"c2\":null}\na0.b1\n",
+    "expectedOutput": "{\"b0\":null}\n"
+  },
+  {
+    "input": "{\"a0\":\"hello\",\"c1\":\"a\\nb\",\"c2\":[1,false,{\"x\":\"value\"}],\"a3\":0}\nc2\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"a0\":null,\"a1\":{\"a0\":true,\"a1\":\"a\\nb\"},\"a2\":true}\na2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":{\"a0\":\"hello\",\"b1\":1,\"b2\":-7,\"c3\":-7},\"b1\":\"a\\nb\",\"b2\":\"two words\"},\"c1\":\"中文 🌱\",\"a2\":[1,false,{\"x\":\"value\"}],\"c3\":-7}\nb0.c0.a0\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":{\"a0\":0},\"b1\":false},\"b1\":{\"b0\":{\"a0\":{\"a0\":-7},\"b1\":null,\"a2\":false},\"c1\":{\"a0\":\"hello\"},\"b2\":\"two words\",\"c3\":\"中文 🌱\"},\"b2\":{\"a0\":[1,false,{\"x\":\"value\"}],\"a1\":{\"a0\":{\"a0\":[1,false,{\"x\":\"value\"}],\"a1\":true,\"c2\":\"two words\"},\"a1\":\"中文 🌱\",\"b2\":{\"c0\":\"a\\nb\",\"a1\":\"two words\",\"b2\":0,\"b3\":\"two words\"},\"a3\":{\"b0\":false}},\"a2\":\"中文 🌱\",\"b3\":-7},\"a3\":0}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"hello\",\"a1\":1}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":-7}\nb0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":false}\nb0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":[1,false,{\"x\":\"value\"}],\"b1\":\"two words\",\"b2\":\"hello\"}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":\"hello\",\"c1\":{\"c0\":\"two words\"},\"c2\":\"a\\nb\",\"b3\":\"two words\"}\nc0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":true,\"a1\":null,\"c2\":\"two words\",\"b3\":false}\nb3.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":-7,\"a1\":null},\"c1\":\"中文 🌱\",\"c2\":{\"a0\":\"hello\",\"c1\":{\"c0\":\"two words\",\"c1\":[1,false,{\"x\":\"value\"}],\"a2\":\"a\\nb\",\"c3\":{\"a0\":\"two words\"}},\"b2\":\"\"}}\nb0\n",
+    "expectedOutput": "{\"c0\":-7,\"a1\":null}\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":\"a\\nb\",\"a1\":\"two words\",\"c2\":\"中文 🌱\",\"a3\":[1,false,{\"x\":\"value\"}]},\"a1\":\"two words\"}\na0\n",
+    "expectedOutput": "{\"a0\":\"a\\nb\",\"a1\":\"two words\",\"c2\":\"中文 🌱\",\"a3\":[1,false,{\"x\":\"value\"}]}\n"
+  },
+  {
+    "input": "{\"b0\":\"a\\nb\"}\nb0\n",
+    "expectedOutput": "\"a\\nb\"\n"
+  },
+  {
+    "input": "{\"c0\":1,\"a1\":\"a\\nb\"}\na1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"hello\",\"a1\":\"a\\nb\",\"a2\":-7,\"c3\":\"\"}\nc3.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"hello\",\"b1\":{\"c0\":{\"b0\":{\"a0\":\"two words\",\"c1\":\"中文 🌱\",\"b2\":0},\"b1\":[1,false,{\"x\":\"value\"}]}}}\nb1.c0.b0\n",
+    "expectedOutput": "{\"a0\":\"two words\",\"c1\":\"中文 🌱\",\"b2\":0}\n"
+  },
+  {
+    "input": "{\"b0\":null,\"c1\":0,\"b2\":false}\nb2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":{\"b0\":\"hello\"},\"c1\":{\"b0\":{\"c0\":\"中文 🌱\"}},\"c2\":{\"a0\":{\"b0\":\"two words\",\"c1\":\"hello\",\"b2\":\"two words\"},\"a1\":\"a\\nb\",\"a2\":\"a\\nb\"},\"b3\":{\"b0\":false}},\"b1\":{\"c0\":0,\"c1\":\"hello\"}}\na0.a0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":1,\"c1\":1,\"a2\":1}\na2\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"c0\":0,\"a1\":\"hello\"}\nc0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"a\\nb\",\"b1\":{\"a0\":{\"b0\":1,\"b1\":1},\"a1\":{\"b0\":-7,\"b1\":{\"c0\":\"hello\"},\"b2\":{\"a0\":false,\"a1\":[1,false,{\"x\":\"value\"}]}},\"a2\":\"中文 🌱\"},\"b2\":\"a\\nb\"}\nb1.a2\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"b0\":{\"a0\":{\"a0\":0,\"a1\":\"a\\nb\",\"b2\":{\"b0\":true,\"c1\":\"\"},\"c3\":-7},\"a1\":\"中文 🌱\"}}\nb0.a0.b2.c1\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"a0\":\"\"}\na0\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"b0\":-7}\nb0\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"a0\":-7,\"c1\":\"two words\"}\na0\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":1,\"c1\":true}}\na0.c1\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":\"a\\nb\",\"b1\":{\"b0\":{\"b0\":[1,false,{\"x\":\"value\"}],\"b1\":\"\",\"c2\":1}},\"a2\":\"\",\"c3\":\"中文 🌱\"},\"b1\":{\"c0\":0,\"b1\":false,\"a2\":\"hello\",\"c3\":\"two words\"},\"c2\":\"中文 🌱\",\"a3\":false}\nb1.a2\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"c0\":0,\"c1\":null,\"c2\":null,\"b3\":\"a\\nb\"}\nc0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"a0\":{\"c0\":true,\"c1\":{\"b0\":{\"a0\":false,\"c1\":true,\"a2\":[1,false,{\"x\":\"value\"}]},\"c1\":\"hello\"},\"c2\":\"hello\"},\"c1\":\"\",\"c2\":-7}\na0.c1.c1\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"b0\":true,\"a1\":{\"c0\":{\"a0\":{\"a0\":1},\"b1\":[1,false,{\"x\":\"value\"}],\"a2\":{\"b0\":\"two words\",\"c1\":[1,false,{\"x\":\"value\"}],\"b2\":null,\"a3\":0}},\"b1\":\"two words\",\"c2\":-7,\"b3\":{\"b0\":null,\"a1\":\"hello\"}}}\na1.b3.b0\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"b0\":\"中文 🌱\"},\"c1\":false}\nc0.b0\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":false,\"c1\":[1,false,{\"x\":\"value\"}],\"a2\":{\"a0\":{\"b0\":\"a\\nb\",\"a1\":\"a\\nb\"},\"b1\":{\"b0\":\"two words\"},\"b2\":{\"a0\":[1,false,{\"x\":\"value\"}],\"c1\":null},\"b3\":1},\"b3\":-7}}\na0.a2.b1.b0\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"c0\":1,\"c1\":0}\nc1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":-7,\"c1\":\"\"},\"b1\":{\"c0\":1,\"a1\":[1,false,{\"x\":\"value\"}],\"b2\":\"two words\",\"a3\":\"\"}}\nb1.a3.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":{\"b0\":\"中文 🌱\",\"b1\":null,\"a2\":false},\"a1\":false,\"b2\":false},\"a1\":false}\nb0.c0.b0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":[1,false,{\"x\":\"value\"}],\"a1\":1},\"b1\":{\"a0\":{\"b0\":{\"b0\":[1,false,{\"x\":\"value\"}],\"a1\":[1,false,{\"x\":\"value\"}]},\"b1\":{\"b0\":0},\"a2\":\"\",\"a3\":\"\"},\"c1\":true,\"c2\":false,\"a3\":0},\"a2\":\"a\\nb\"}\nb1.a0.a3\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"c0\":null,\"c1\":1}\nc0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":1,\"c1\":{\"b0\":\"\"}}\nc1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":null,\"b1\":true,\"c2\":0}}\nc0.c2\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":\"two words\",\"a1\":{\"a0\":{\"c0\":\"a\\nb\",\"c1\":\"a\\nb\",\"a2\":-7,\"b3\":\"中文 🌱\"}},\"a2\":null},\"b1\":false}\na0.a2\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"a\\nb\",\"c1\":{\"b0\":{\"c0\":{\"b0\":\"a\\nb\",\"b1\":0},\"b1\":0,\"a2\":{\"a0\":\"a\\nb\"},\"b3\":1},\"c1\":{\"c0\":{\"c0\":false,\"b1\":-7,\"b2\":\"hello\",\"c3\":true},\"b1\":0,\"b2\":1,\"c3\":{\"c0\":null,\"c1\":\"two words\",\"c2\":\"中文 🌱\",\"a3\":1}}}}\nc1.c1.b2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":1,\"c1\":{\"b0\":\"two words\"}},\"b1\":0}\nb0.c1\n",
+    "expectedOutput": "{\"b0\":\"two words\"}\n"
+  },
+  {
+    "input": "{\"a0\":\"中文 🌱\"}\na0\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"c0\":{\"b0\":{\"c0\":[1,false,{\"x\":\"value\"}]},\"c1\":{\"c0\":null,\"b1\":{\"a0\":1,\"c1\":-7,\"b2\":\"中文 🌱\"}}},\"c1\":\"中文 🌱\",\"b2\":0}\nc0.b0.c0\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"c0\":\"hello\",\"a1\":{\"c0\":{\"a0\":{\"b0\":true,\"b1\":\"中文 🌱\",\"a2\":\"\"}},\"a1\":{\"b0\":\"hello\",\"c1\":\"中文 🌱\",\"c2\":{\"c0\":\"two words\",\"c1\":\"hello\",\"b2\":true,\"c3\":0}},\"c2\":{\"a0\":\"a\\nb\",\"a1\":\"中文 🌱\",\"b2\":\"two words\",\"b3\":{\"c0\":\"\",\"c1\":\"a\\nb\"}}}}\na1.c2\n",
+    "expectedOutput": "{\"a0\":\"a\\nb\",\"a1\":\"中文 🌱\",\"b2\":\"two words\",\"b3\":{\"c0\":\"\",\"c1\":\"a\\nb\"}}\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":{\"b0\":{\"c0\":-7,\"b1\":true,\"b2\":-7,\"a3\":1}},\"c1\":{\"c0\":{\"a0\":null},\"b1\":{\"a0\":\"\"},\"b2\":false},\"c2\":true,\"c3\":null},\"c1\":{\"a0\":true,\"b1\":{\"a0\":\"two words\",\"c1\":null,\"c2\":{\"a0\":false,\"a1\":[1,false,{\"x\":\"value\"}],\"b2\":-7,\"b3\":\"中文 🌱\"},\"a3\":0}},\"a2\":\"a\\nb\"}\nc1.b1.c2.b2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":\"\",\"a1\":{\"a0\":[1,false,{\"x\":\"value\"}]}}\na1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"hello\",\"c1\":-7}\na0\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"c0\":true}\nc0\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"c0\":\"a\\nb\",\"b1\":\"two words\",\"b2\":0,\"a3\":false}\na3\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":true,\"b1\":{\"c0\":\"中文 🌱\",\"c1\":{\"b0\":null,\"b1\":\"two words\"},\"a2\":\"hello\",\"a3\":\"中文 🌱\"}}}\nb0.b1.a2\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"b0\":{\"a0\":{\"b0\":\"hello\"}},\"c1\":{\"b0\":\"中文 🌱\",\"c1\":0},\"a2\":{\"b0\":\"two words\"}}\nc1.c1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"b0\":[1,false,{\"x\":\"value\"}],\"a1\":{\"c0\":-7,\"b1\":{\"b0\":false},\"a2\":{\"a0\":{\"c0\":\"a\\nb\",\"b1\":true,\"b2\":false}}},\"a2\":\"\"}\na1.c0\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"a0\":[1,false,{\"x\":\"value\"}],\"b1\":{\"b0\":\"\",\"a1\":{\"b0\":true,\"a1\":null},\"c2\":[1,false,{\"x\":\"value\"}],\"b3\":\"\"}}\nb1.c2\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"b0\":true,\"b1\":0}\nb0\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"b0\":\"hello\",\"b1\":\"two words\"}\nb1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"two words\",\"b1\":\"中文 🌱\"}\na0\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"b0\":\"two words\"}\nb0\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":true,\"a1\":\"two words\",\"b2\":[1,false,{\"x\":\"value\"}]},\"b1\":\"two words\"}\nb0.c0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":-7,\"a1\":[1,false,{\"x\":\"value\"}],\"b2\":\"中文 🌱\"}\na1\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"a0\":{\"c0\":[1,false,{\"x\":\"value\"}]}}\na0.c0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"a0\":\"中文 🌱\",\"c1\":0,\"a2\":{\"b0\":true,\"b1\":\"two words\"},\"a3\":\"two words\"},\"a1\":-7,\"b2\":{\"b0\":\"a\\nb\",\"c1\":{\"a0\":\"hello\",\"b1\":{\"a0\":true,\"b1\":true,\"c2\":[1,false,{\"x\":\"value\"}]},\"a2\":0},\"b2\":{\"b0\":-7},\"c3\":\"中文 🌱\"},\"c3\":\"hello\"}\nc3\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"c0\":\"a\\nb\",\"c1\":{\"b0\":\"\"}}\nc0\n",
+    "expectedOutput": "\"a\\nb\"\n"
+  },
+  {
+    "input": "{\"c0\":{\"b0\":0}}\nc0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"two words\",\"c1\":{\"a0\":{\"a0\":false,\"c1\":null,\"a2\":{\"b0\":[1,false,{\"x\":\"value\"}],\"b1\":\"a\\nb\"}},\"a1\":{\"b0\":{\"a0\":1,\"b1\":0},\"a1\":true,\"b2\":{\"b0\":[1,false,{\"x\":\"value\"}],\"b1\":\"中文 🌱\"}}},\"a2\":false}\nc1.a1.b2\n",
+    "expectedOutput": "{\"b0\":[1,false,{\"x\":\"value\"}],\"b1\":\"中文 🌱\"}\n"
+  },
+  {
+    "input": "{\"b0\":1,\"b1\":\"hello\",\"c2\":{\"c0\":true,\"b1\":{\"a0\":null,\"a1\":false},\"b2\":[1,false,{\"x\":\"value\"}]}}\nc2.b1.a1\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a0\":{\"c0\":\"\"}}\na0.c0\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"c0\":false,\"c1\":\"hello\"}\nc0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"b0\":{\"a0\":{\"a0\":-7,\"a1\":true,\"c2\":0}}},\"a1\":\"中文 🌱\",\"a2\":{\"a0\":{\"a0\":{\"b0\":null,\"c1\":null,\"c2\":\"hello\"},\"c1\":{\"a0\":\"a\\nb\",\"c1\":[1,false,{\"x\":\"value\"}]}}},\"c3\":{\"c0\":1}}\na2.a0.c1\n",
+    "expectedOutput": "{\"a0\":\"a\\nb\",\"c1\":[1,false,{\"x\":\"value\"}]}\n"
+  },
+  {
+    "input": "{\"c0\":{\"a0\":true},\"b1\":null,\"a2\":{\"c0\":{\"a0\":1}},\"c3\":true}\nc0\n",
+    "expectedOutput": "{\"a0\":true}\n"
+  },
+  {
+    "input": "{\"c0\":\"\",\"a1\":false,\"a2\":{\"a0\":true,\"a1\":\"hello\",\"a2\":\"two words\"}}\na2.a0\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"b0\":1,\"a1\":\"hello\"}\nb0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"b0\":{\"b0\":{\"b0\":false,\"c1\":-7,\"b2\":null,\"c3\":{\"a0\":0,\"b1\":\"a\\nb\"}},\"c1\":0,\"c2\":{\"c0\":0,\"c1\":false,\"a2\":{\"b0\":-7,\"a1\":\"hello\",\"c2\":\"two words\",\"c3\":[1,false,{\"x\":\"value\"}]},\"c3\":\"中文 🌱\"},\"b3\":null},\"b1\":\"a\\nb\",\"b2\":false}\nb0.c1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"b0\":true,\"a1\":0,\"b2\":{\"c0\":{\"c0\":{\"c0\":[1,false,{\"x\":\"value\"}],\"a1\":\"a\\nb\",\"a2\":-7,\"b3\":\"hello\"}},\"c1\":\"\"},\"b3\":{\"b0\":null,\"a1\":{\"c0\":\"a\\nb\"}}}\nb0\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":-7}}\nb0\n",
+    "expectedOutput": "{\"c0\":-7}\n"
+  },
+  {
+    "input": "{\"c0\":[1,false,{\"x\":\"value\"}],\"a1\":{\"a0\":\"hello\",\"a1\":\"hello\",\"a2\":1,\"a3\":\"\"},\"a2\":{\"b0\":null,\"b1\":1},\"b3\":false}\na2.b1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":{\"a0\":{\"c0\":\"中文 🌱\",\"c1\":false}},\"b1\":\"a\\nb\",\"b2\":{\"c0\":{\"c0\":\"hello\",\"b1\":\"中文 🌱\",\"c2\":[1,false,{\"x\":\"value\"}]},\"a1\":true,\"a2\":-7,\"b3\":\"中文 🌱\"},\"a3\":false}}\nc0.b2.c0.c2\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"b0\":{\"a0\":{\"b0\":false,\"a1\":\"中文 🌱\",\"a2\":{\"b0\":1}},\"a1\":-7},\"b1\":{\"c0\":{\"b0\":null,\"c1\":\"hello\"},\"a1\":\"中文 🌱\"},\"a2\":-7,\"a3\":1}\nb0.a0.a1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":-7}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"a0\":{\"c0\":{\"c0\":[1,false,{\"x\":\"value\"}],\"a1\":\"\",\"b2\":false}},\"b1\":null,\"a2\":\"a\\nb\"},\"a1\":\"hello\",\"b2\":0}\na1\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"b0\":\"two words\",\"a1\":{\"b0\":{\"b0\":-7},\"c1\":{\"c0\":{\"a0\":1,\"a1\":-7,\"b2\":\"hello\",\"a3\":\"a\\nb\"},\"a1\":\"two words\"},\"a2\":\"a\\nb\"},\"b2\":{\"b0\":1}}\na1.c1.c0.a3\n",
+    "expectedOutput": "\"a\\nb\"\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":-7,\"a1\":\"hello\",\"a2\":{\"c0\":{\"b0\":\"two words\"},\"b1\":{\"a0\":\"\",\"c1\":-7,\"b2\":null},\"a2\":{\"a0\":\"two words\",\"b1\":\"\",\"b2\":\"a\\nb\",\"a3\":true},\"a3\":1}},\"a1\":0}\nb0.a2.b1\n",
+    "expectedOutput": "{\"a0\":\"\",\"c1\":-7,\"b2\":null}\n"
+  },
+  {
+    "input": "{\"a0\":\"a\\nb\",\"a1\":{\"a0\":null,\"a1\":false},\"b2\":[1,false,{\"x\":\"value\"}],\"c3\":\"a\\nb\"}\na1.a0\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":null,\"a1\":\"中文 🌱\"}\nb0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":-7}\nb0\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"a0\":\"two words\"}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":{\"a0\":{\"b0\":\"中文 🌱\",\"b1\":\"two words\",\"b2\":true},\"a1\":true,\"b2\":\"\"},\"c1\":false,\"a2\":null,\"b3\":[1,false,{\"x\":\"value\"}]}\na0.a0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"b0\":\"中文 🌱\",\"b1\":{\"c0\":\"a\\nb\",\"b1\":\"hello\",\"c2\":\"a\\nb\",\"b3\":{\"a0\":1,\"a1\":1,\"b2\":\"two words\"}},\"b2\":[1,false,{\"x\":\"value\"}]},\"b1\":true,\"b2\":{\"c0\":\"hello\",\"c1\":{\"c0\":{\"b0\":-7},\"c1\":-7,\"c2\":{\"c0\":-7,\"c1\":\"\"}},\"b2\":{\"b0\":{\"b0\":\"hello\",\"a1\":false}},\"c3\":\"中文 🌱\"}}\nb2.c1.c2\n",
+    "expectedOutput": "{\"c0\":-7,\"c1\":\"\"}\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":{\"a0\":null,\"a1\":{\"a0\":\"two words\",\"b1\":-7},\"c2\":\"hello\",\"a3\":{\"b0\":\"hello\",\"a1\":false,\"b2\":1}},\"b1\":\"中文 🌱\",\"a2\":\"hello\",\"a3\":{\"a0\":false}},\"c1\":0,\"b2\":\"hello\",\"a3\":null}\na0.b0.a3.b2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":1,\"a1\":{\"c0\":\"hello\",\"b1\":\"two words\",\"c2\":\"\",\"c3\":\"\"},\"c2\":{\"a0\":{\"a0\":null,\"a1\":{\"a0\":1,\"c1\":false,\"b2\":\"two words\"},\"a2\":\"\",\"c3\":{\"c0\":-7,\"a1\":-7,\"a2\":true}},\"b1\":\"a\\nb\"},\"a3\":\"hello\"}\na3\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"a0\":\"two words\",\"a1\":null,\"a2\":true,\"b3\":1}\na1\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":{\"a0\":\"\"},\"b1\":-7,\"c2\":{\"a0\":\"中文 🌱\",\"a1\":{\"c0\":{\"a0\":false,\"b1\":\"two words\",\"b2\":true}},\"c2\":\"中文 🌱\",\"c3\":{\"a0\":\"\"}},\"c3\":-7}\nc2.a1.c0.b1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":\"two words\",\"c1\":true,\"a2\":\"a\\nb\",\"b3\":null},\"c1\":0,\"b2\":\"中文 🌱\"}\nc1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":0},\"c1\":1,\"c2\":\"中文 🌱\"}\nc1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"c0\":true,\"a1\":\"\"}\na1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":{\"c0\":false,\"a1\":\"\"},\"c1\":{\"c0\":\"hello\"}}}\nc0.c1.c0\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"a0\":null}\na0\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":\"two words\",\"c1\":{\"c0\":true}}\nc1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":\"中文 🌱\",\"b1\":-7,\"a2\":\"a\\nb\"}\nb1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"中文 🌱\",\"c1\":-7,\"a2\":1}\nc1\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"b0\":{\"c0\":\"中文 🌱\",\"c1\":\"中文 🌱\",\"c2\":false,\"c3\":null}}\nb0.c0\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"b0\":0,\"c1\":1,\"c2\":\"a\\nb\",\"a3\":null}\nc1\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"a0\":\"\",\"b1\":{\"a0\":{\"b0\":\"a\\nb\"},\"b1\":\"two words\"},\"b2\":1,\"c3\":-7}\nb1.b1\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"b0\":\"hello\",\"a1\":-7,\"b2\":true}\nb0\n",
+    "expectedOutput": "\"hello\"\n"
+  },
+  {
+    "input": "{\"b0\":0,\"a1\":\"a\\nb\",\"b2\":{\"c0\":\"two words\",\"b1\":\"hello\"},\"b3\":{\"a0\":[1,false,{\"x\":\"value\"}],\"a1\":{\"b0\":0,\"b1\":1,\"b2\":{\"b0\":\"two words\",\"c1\":\"a\\nb\",\"b2\":\"a\\nb\",\"b3\":null}},\"b2\":{\"a0\":0,\"c1\":[1,false,{\"x\":\"value\"}]},\"b3\":0}}\na1\n",
+    "expectedOutput": "\"a\\nb\"\n"
+  },
+  {
+    "input": "{\"a0\":{\"c0\":true},\"c1\":{\"a0\":{\"b0\":\"\",\"b1\":\"\"},\"a1\":\"two words\",\"b2\":{\"a0\":{\"b0\":true},\"a1\":{\"c0\":\"a\\nb\",\"b1\":[1,false,{\"x\":\"value\"}],\"a2\":0},\"c2\":{\"b0\":\"two words\",\"a1\":1,\"c2\":-7,\"a3\":true},\"a3\":[1,false,{\"x\":\"value\"}]}}}\nc1.a1\n",
+    "expectedOutput": "\"two words\"\n"
+  },
+  {
+    "input": "{\"c0\":true,\"c1\":false,\"b2\":\"\"}\nb2\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"c0\":[1,false,{\"x\":\"value\"}],\"a1\":{\"c0\":\"中文 🌱\"},\"b2\":{\"b0\":false,\"c1\":\"a\\nb\",\"a2\":{\"a0\":[1,false,{\"x\":\"value\"}],\"c1\":1,\"c2\":\"中文 🌱\",\"c3\":\"two words\"}}}\nb2.a2.c1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"c0\":\"\"},\"c1\":null,\"b2\":\"hello\"}\nc1\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"a\\nb\",\"b1\":1,\"b2\":false}\nb2.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":\"中文 🌱\",\"a1\":[1,false,{\"x\":\"value\"}],\"b2\":0}\nc0\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"b0\":false,\"b1\":[1,false,{\"x\":\"value\"}],\"c2\":null}\nb0\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"c0\":\"a\\nb\"}\nc0\n",
+    "expectedOutput": "\"a\\nb\"\n"
+  },
+  {
+    "input": "{\"a0\":\"hello\"}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":{\"b0\":\"hello\",\"c1\":\"two words\",\"b2\":null}}\nc0.c1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"c0\":1,\"b1\":true,\"a2\":{\"a0\":{\"c0\":false},\"a1\":-7,\"a2\":{\"c0\":{\"a0\":[1,false,{\"x\":\"value\"}]}}},\"b3\":{\"b0\":\"hello\",\"c1\":-7}}\na2.a1\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":\"hello\"},\"b1\":false,\"c2\":{\"a0\":true,\"a1\":\"hello\",\"c2\":1}}\nc2.c2\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"b0\":1,\"a1\":{\"c0\":{\"c0\":[1,false,{\"x\":\"value\"}]},\"a1\":\"\",\"c2\":true,\"c3\":{\"a0\":\"中文 🌱\",\"b1\":\"two words\",\"c2\":[1,false,{\"x\":\"value\"}]}},\"c2\":\"two words\"}\na1.c3.c2\n",
+    "expectedOutput": "[1,false,{\"x\":\"value\"}]\n"
+  },
+  {
+    "input": "{\"b0\":\"a\\nb\",\"c1\":\"two words\",\"b2\":{\"c0\":{\"a0\":\"two words\",\"a1\":\"a\\nb\"},\"a1\":{\"c0\":{\"b0\":1,\"a1\":\"a\\nb\",\"a2\":false,\"b3\":false},\"b1\":-7},\"b2\":{\"a0\":true,\"b1\":\"a\\nb\",\"a2\":\"two words\",\"c3\":false},\"c3\":\"a\\nb\"},\"b3\":{\"b0\":false}}\nb3.b0\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a0\":{\"b0\":0},\"a1\":true,\"c2\":\"a\\nb\",\"c3\":\"a\\nb\"}\na1\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a0\":[1,false,{\"x\":\"value\"}],\"b1\":{\"a0\":\"hello\",\"a1\":0,\"b2\":-7}}\nb1.b2\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"a0\":\"two words\",\"a1\":\"中文 🌱\",\"b2\":\"\",\"b3\":\"中文 🌱\"}\na1\n",
+    "expectedOutput": "\"中文 🌱\"\n"
+  },
+  {
+    "input": "{\"c0\":1}\nc0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"a0\":\"two words\",\"c1\":0}\nc1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"b0\":-7,\"b1\":true}\nb1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":\"a\\nb\",\"c1\":{\"a0\":false,\"b1\":null},\"b2\":\"two words\",\"a3\":{\"c0\":\"a\\nb\"}}\na0.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a0\":-7,\"c1\":\"\",\"a2\":[1,false,{\"x\":\"value\"}]}\na0\n",
+    "expectedOutput": "-7\n"
+  },
+  {
+    "input": "{\"c0\":{\"b0\":{\"a0\":{\"c0\":\"a\\nb\",\"b1\":true,\"b2\":\"中文 🌱\"},\"a1\":\"hello\"},\"c1\":{\"a0\":{\"b0\":true,\"a1\":null,\"a2\":\"a\\nb\"},\"b1\":\"two words\"}},\"b1\":\"a\\nb\",\"b2\":{\"c0\":{\"c0\":{\"a0\":\"hello\",\"a1\":-7,\"a2\":\"two words\"}},\"a1\":\"two words\",\"a2\":0,\"a3\":\"two words\"}}\nc0.c1.b1.missing\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"b0\":\"a\\nb\",\"b1\":false,\"c2\":true,\"a3\":null}\nb1\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"b0\":\"中文 🌱\",\"c1\":\"\",\"a2\":{\"c0\":\"a\\nb\",\"a1\":true,\"c2\":false,\"a3\":{\"a0\":{\"b0\":1},\"a1\":\"hello\"}},\"a3\":\"a\\nb\"}\nc1\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"b0\":{\"a0\":0},\"b1\":{\"b0\":1,\"c1\":{\"c0\":\"a\\nb\"},\"a2\":\"hello\"}}\nb0\n",
+    "expectedOutput": "{\"a0\":0}\n"
+  },
+  {
+    "input": "{\"a0\":\"two words\",\"b1\":0,\"b2\":null}\nb1\n",
+    "expectedOutput": "0\n"
+  }
+]

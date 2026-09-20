@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-apple-1",
+  "title": "忽略完整的1到0区间",
+  "explanation": "## 思路\n\n找到数组最后一个0。扫描时，在其之前遇1便进入删除状态，遇0退出；最后一个0之后的1不可能闭合，因此全部保留。\n\n## 正确性\n\n每个被删除的区间必须有一个后继0。最后一个0前的1必能闭合，删除状态一直保持到遇到的第一个0，正好包含整段；之后开始新的独立扫描。最后一个0后不可能形成完整区间。所有其他元素按扫描顺序加入结果，恰为所需列表。\n\n## 复杂度\n\n时间O(n)，结果空间O(n)，除输入和输出外额外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);last=-1\n    for i in range(n):\n        if int(d[i+1])==0:last=i\n    result=[];skip=False\n    for i in range(n):\n        v=int(d[i+1])\n        if v==1 and i<last:skip=True\n        if not skip:result.append(v)\n        if v==0:skip=False\n    return str(len(result))+'\\n'+' '.join(map(str,result))+'\\n'+str(sum(result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/apple#1-ignore-sections",
+  "sourceContentHash": "a943f204775c06a78c867db42b3a022d3eb51ba98c5374cf3f067755163e895d",
+  "author": "CSWork"
+}

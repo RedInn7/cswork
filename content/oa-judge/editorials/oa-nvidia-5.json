@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-5",
+  "title": "改一个字符得到更小的非回文串",
+  "explanation": "## 思路\n\n把前半首个非a字符改为a；找不到就不可能。不能使用末位改b的常见变体，本题明确要求变小。\n\n## 正确性\n\n最早能降低的位置给出字典序最优修改；改为a制造不对称。若前半全a，对称后半也全a，只有可能较大的中心能降低，但改中心仍为回文，故无解。\n\n## 复杂度\n\n时间O(N)，输出空间O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0]\n    for i in range(len(s)//2):\n        if s[i]!='a':return s[:i]+'a'+s[i+1:]\n    return 'IMPOSSIBLE'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nvidia#5-break-a-palindrome",
+  "sourceContentHash": "09d5152f1d46a5d9df92e94a2b0ce7942f7a25dcb094e7dc96a9fff3be5c0f76",
+  "author": "CSWork"
+}

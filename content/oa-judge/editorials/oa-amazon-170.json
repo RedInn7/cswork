@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-170",
+  "title": "只沿同一方向运输的环形均分最低费用",
+  "explanation": "## 思路\n\n计算每个容器相对平均值的前缀盈余P。顺时针费用=sum(P)−n min(P)，逆时针=n max(P)−sum(P)，取小者。\n\n## 正确性证明\n\n顺时针边流量满足相邻边流量差等于该容器盈余，因此所有流量为P加统一常数。非负要求常数至少−min(P)，取下界费用最小。逆时针同理以max(P)平移负前缀。两种单向方案取小者，不允许用双向中位数替代。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:]));average=sum(a)//n;prefix=total=low=high=0\n    for v in a:\n        prefix+=v-average;total+=prefix;low=min(low,prefix);high=max(high,prefix)\n    return str(min(total-n*low,n*high-total))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#170-find-minimum-cost",
+  "sourceContentHash": "737e8b1aa08a8b37902c5c3bc4a8cf1c28efdef11f286ce751c8dadee90370f6",
+  "author": "CSWork"
+}
