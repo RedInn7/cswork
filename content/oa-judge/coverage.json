@@ -4,10 +4,10 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 701,
+    "sandbox_verified": 732,
     "awaiting_sandbox": 0,
-    "blocked": 147,
-    "unreviewed": 786
+    "blocked": 151,
+    "unreviewed": 751
   },
   "items": [
     {
@@ -3178,102 +3178,140 @@
     {
       "id": "oa-amazon-356",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每次先收取当前最大库存与最小非零库存之和，再从任意一个最大库存类型租走一台。零库存不参与最小值，最大值并列任选，计算全部请求收入。 第一行n m，第二行n个库存。OCR313给n≤10^6、314给10^5且库存≤10^6；Fastprep明确非负、可全部租完。本站覆盖较广有来源域：1≤n≤10^6，0≤stock[i]≤10^6，0≤m≤sum(stock)≤10^12，不强加sum>m。"
     },
     {
       "id": "oa-amazon-357",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每台机器人有身份且恰处于运行或等待。运行者要求运行总数r≥自身阈值，等待者要求等待总数n−r严格小于自身阈值。求全部合法身份配置数，不对任何模数取模。 第一行n，第二行n个阈值。原界1≤n≤100000，1≤a[i]≤n。原返回int签名不足以容纳实际结果，本站明确输出任意精度十进制整数，最多约30103位。"
     },
     {
       "id": "oa-amazon-358",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "保持原括号串顺序，在任意位置插入套件中尚未用过的括号，使最终串平衡，最大化所用括号评分之和。原串本身分数为0；原文保证存在可行补法，必要负分括号也必须选。 第一行s，第二行m，第三行kit，第四行m个评分；m=0时后两行为空。原严格界1≤|s|≤199999、0≤m≤199999；kit长度m，评分−10^9..10^9，只含左右括号。"
     },
     {
       "id": "oa-amazon-359",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "对每个请求，从new中任选位置各改为字母循环后继一次，也可不选。问old能否成为改后new的子序列；每个位置不能连续改多次。z的后继为a。 输入JSON二维数组，每项[new,old]。原请求数1..10、全部新旧字符串长度总和≤200000、每项旧长≤新长。字符按原a..z循环定义为小写字母；没有单串非空限制，允许空串。"
     },
     {
       "id": "oa-amazon-360",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每队恰好teamSize人，队内最高技能减最低技能不超过maxDiff；每人至多进一队，可有人不参赛。求最多队数。 第一行n teamSize maxDiff，第二行n个skill。原界1≤teamSize≤n≤100000，1≤maxDiff≤10^9，1≤skill[i]≤10^9。"
     },
     {
       "id": "oa-amazon-361",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "统计非空连续子数组，其中首元素或末元素等于子数组最大值即可；允许相等和重复值，同时满足两端的区间只算一次。 第一行n，第二行n个价格。原界1≤n≤500000，1≤a[i]≤10^8。"
     },
     {
       "id": "oa-amazon-362",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "对每个长度k连续窗口分别反转一次，统计反转后整个字符串严格小于原串的窗口位置数。相同文本但位置不同分别计数；不改变的窗口不算。 输入JSON数组[s,k]。原界2≤码点长度≤1000000，1≤k≤min(长度,20)。原文未限定字符集，本站明确Unicode标量字符及码点字典序，允许空白、NUL、非BMP及Unicode分隔字符，JSON编码保存原字符。"
     },
     {
       "id": "oa-amazon-363",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原两条k-spike定义真实截断，单例不能证明完整条件、重复值及k边界；OCR未找到补充，不能照抄catalog猜测。"
     },
     {
       "id": "oa-amazon-364",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每次可删掉任意两个相同字符，不要求相邻；未删字符保持原顺序。先使剩余长度最小，再使剩余串按Unicode码点字典序最小。 输入一个JSON字符串。原文没有长度或字符域上界，本站0≤码点长度≤200000，允许所有Unicode标量字符，包括空白、NUL、非BMP、U+0085/U+2028/U+2029。"
     },
     {
       "id": "oa-amazon-365",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "对所有非空连续子数组计算不同值个数，将这些数排序；总数偶数时取中间两数中的较小者，求这个下中位数。 第一行n，第二行n个数。原完整界位于正文：1≤n≤100000，1≤a[i]≤n，不受末尾N/A占位覆盖。"
     },
     {
       "id": "oa-amazon-366",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "把每个?独立换成0或1，最小化相邻两个字符不同的对数。固定0/1不能改动。 输入一行仅含0、1、?的字符串。原完整界1≤长度≤100000。"
     },
     {
       "id": "oa-amazon-367",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "平局lower id ranked lower含糊且无平局例；重复race/player记录无语义，不能补唯一记录保证规避。"
     },
     {
       "id": "oa-amazon-368",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "统计i<j且prices[i]+prices[j]可被x整除的下标对；商品有身份，重复价格可产生多对，不能把一个商品与自己配对。 第一行n x，第二行n个价格。原界1≤n≤100000，1≤x≤2×10^9，prices[i]≥1；原价格上界只剩上标9而底数缺失，本站明确补价格≤10^9，不宣称为恢复原上界。"
     },
     {
       "id": "oa-amazon-369",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每项商品至多买一次；买某项得到它当前积分，随后其他未买项积分都减1，最低为0。可以选择任意购买顺序和数量，求最多积分。 第一行n，第二行n个初始积分。原界1≤n≤100000，0≤deals[i]≤1000000。"
     },
     {
       "id": "oa-amazon-370",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "数组是1..n的排列；对每个x=1..n，求平均值严格等于x的非空连续子数组数。不同下标区间分别计数。 第一行n，第二行n个互异排名。原界1≤n≤1000，数组恰为1..n排列；不是含重复值的一般数组。"
     },
     {
       "id": "oa-amazon-371",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "把?全部填为小写字母。每个位置代价是它前面相同字母出现次数，总代价最小优先，再使整个结果字典序最小。 输入一行data。原界1≤长度≤100000，至少一个?，其他字符均a..z。"
     },
     {
       "id": "oa-amazon-372",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "第i类第j件价格为a[i]+(j−1)b[i]，每类无限件。恰好买m件，最小化总价。 第一行n m，随后一行n个a、一行n个b。原界1≤n,m≤100000，1≤a[i],b[i]≤100000。"
     },
     {
       "id": "oa-amazon-373",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每步任意选两种不同类型的水果各一个并删除，不要求相邻；不能删除相同类型的一对。求最少剩余个数。 第一行n，第二行n个类型整数。原界1≤n≤100000，1≤类型≤10^9。"
     },
     {
       "id": "oa-amazon-374",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "两数组下标各自代表时间，值是航班费用；返程下标j必须严格大于出发下标i。数组长度可以不同，求最低总价；无合法组合时本站补输出−1，不增加总有解保证。 依次输入出发数组长度n、n个整数、返程数组长度m、m个整数。原文无数值界、非负或等长保证；本站0≤n,m≤200000，费用−10^9..10^9。"
     },
     {
       "id": "oa-amazon-375",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-r",
+      "reason": "每轮找至少出现两次的最大优先级p；不存在或p=0则停止。取该优先级当前队列最前两项，删除前一项，把后一项降为floor(p/2)。其余相对顺序不变，输出最终队列。 第一行n，第二行n个初始优先级。原界1≤n≤100000，1≤初始优先级≤10^9；执行中允许出现0，但不能继续合并0。"
     },
     {
       "id": "oa-amazon-376",
@@ -5553,77 +5591,105 @@
     {
       "id": "oa-cisco-19",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "从整数数组中选择一个非空连续片段，输出元素和的最大值。全负数组也不能选择空片段。 先输入n，随后n个整数。原文未给数值界；本站公开补充1≤n≤200000，−10^9≤a[i]≤10^9。"
     },
     {
       "id": "oa-cisco-20",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "从左上角开始，按向下、向右、向上、向左的逆时针单位格螺旋依次遍历矩阵。起点落地，之后隔过一个路径格再落地；转弯时也连续计数，不重置奇偶。输出最后落地格子的值。 输入N M及N行每行M个整数。原文N/M行列措辞有笔误，本站明确N行M列；原无数值界，补充1≤N,M≤1000、元素−10^9..10^9。"
     },
     {
       "id": "oa-cisco-21",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "字符串仅含大写英文字母。寻找长度至少2的最长连续回文子串；若有多个最长结果，输出字典序最小的字符串；不存在则输出None。 一行大写字母字符串。原文没有长度界，本站补充1≤长度≤1000。"
     },
     {
       "id": "oa-cisco-22",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "在i<j且a[j]>a[i]的元素对中求a[j]−a[i]最大值；没有合法对则输出0。 输入n以及n个整数。原无数值界，本站补充0≤n≤200000，元素−10^9..10^9，空数组也输出0。"
     },
     {
       "id": "oa-cisco-23",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "选择一条水平或竖直直线，不能混合方向或选择斜线；要求覆盖至少两个输入点，输出最多覆盖数，做不到则输出0。重复坐标按输入记录的数量计数。 输入n，再输入n个横坐标与n个纵坐标。恢复完整补充raw中的原界2≤n≤700；坐标无原数值界，本站补充−10^9..10^9。截断主raw以完整同题raw恢复；斜线样例5的另一版本与其自身规则冲突，不采纳。"
     },
     {
       "id": "oa-cisco-24",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "每个区域有正数机器。增加或减少一台成本1，但区域不能减到0；将一个区域全部机器迁到另一区域成本c，源区域消失。最终只需有三个区域的机器数与三个目标一一对应，其他区域可以保留。求最小成本。原样例2输出2是笔误，其步骤和完整补充来源均得到5。 输入n、n个初始数量、3个目标数量、迁移成本c。保留主raw完整原界3≤n≤10、初始和目标1..10^6。原c未给范围，本站补充0≤c≤10^6。辅助raw仅佐证样例5，不将其不同n界混入本题。"
     },
     {
       "id": "oa-cisco-25",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "寻找一个元素，允许并列地大于等于同行所有元素，且小于等于同列所有元素；存在则输出其值，否则−1。多个合法位置的值必相同。 输入N M，随后N行每行M个整数。保留原界1≤N,M≤1000及非负整数；原元素上界缺失，本站补充0..10^9。"
     },
     {
       "id": "oa-cisco-26",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "对每个单词分别判断它能否作为网格中某一行或某一列的连续片段出现，可以正向或反向。不能拐弯或斜走，区分大小写。 输入一个JSON数组[gridRows,words]。原无数值界，本站补充1≤行数、列数≤200，所有行按Unicode码点等长；0≤单词数≤200，每词1..200码点，总词长≤40000。字符为任意Unicode标量值，含空白、NUL和非BMP；不允许孤立代理项。JSON总UTF-8字节≤1000000，生成器使用ASCII转义以完整承载控制字符。"
     },
     {
       "id": "oa-cisco-27",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "服务器组成以1为根的树，边权可负。非根服务器v若到某个严格祖先的路径权值和大于threshold[v]，则不安全。每次只能删除一个非根叶子；求至少删除多少个服务器，使所有保留节点安全。根没有严格祖先，不能删除。 输入n、n个threshold，随后n−1行u v weight。保留完整原界3≤n≤200000，节点1..n，边权和threshold均为−10^9..10^9。输入保证是树。来源第二例含环、缺边权且节点孤立，不用于样例。"
     },
     {
       "id": "oa-cisco-28",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "频数为3/4/5时non-twin究竟指单次、奇数次或非2次没有定义，不能额外限制频数仅1/2。"
     },
     {
       "id": "oa-cisco-29",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "返回原字符串中长度最大的回文连续子串。若存在多个最长答案，任选一个，不能额外要求字典序最小或最早出现；单字符也是回文。 输入一行ASCII英文字母或数字构成的字符串s。保留原界1≤|s|≤1000，区分大小写。"
     },
     {
       "id": "oa-cisco-30",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "每个罐子有非负整数颗巧克力，从一排罐子中取若干罐，不能取相邻两罐，求最多颗数。可以不取任何罐子。 先输入n，再输入n个非负数量。保留原界1≤n≤1000。原值上界缺失，本站补充0..10^9；不采用catalog中无来源的10000上限。"
     },
     {
       "id": "oa-cisco-31",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "按原顺序给出单链表节点值，删除所有值大于x的节点，输出剩余节点，顺序不得改变；等于x的节点保留。 输入n x，随后n个节点值。保留原界1≤n≤100000，1≤x≤100000，节点值1..100000。"
     },
     {
       "id": "oa-cisco-32",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "cisco-tail",
+      "reason": "将给定方阵顺时针旋转90度，输出旋转后的矩阵；方向由原样例确定，不能转为逆时针。 输入N M，要求N=M，随后N行每行M个整数。原界只有方阵要求，没有数值界；本站公开补充1≤N=M≤1000、元素−10^9..10^9。"
     },
     {
       "id": "oa-cisco-33",
       "company": "cisco",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "缺少每次倾倒是最大可能量还是任意整数的核心规则；正数Fi/Si与零样例矛盾，原容量≤500不能改成100硬接。"
     },
     {
       "id": "oa-dell-1",
