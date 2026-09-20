@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-214",
+  "title": "连续货堆严格递增取货的最大总数",
+  "explanation": "## 思路\n\n枚举右端点，右端全取；向左每次取min(本堆容量,右邻所取−1)，变成0时停止，记录累计最大值。\n\n## 正确性证明\n\n固定右端时，最右堆取越多只会放宽左边限制，因此存在最优方案将它取满。固定右侧取数后，当前最大合法值是min(容量,右值−1)，增大当前取数不会损害左侧可行性，反向归纳得到逐项最大方案。继续向左加入正数只增加总量，遇到0后更左也不能取正数。枚举全部右端包含全局最优。\n\n## 复杂度\n\n时间O(n²)，空间O(n)，答案可达约5×10^12，需64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));answer=0\n    for right in range(len(a)):\n        limit=a[right]+1;total=0\n        for left in range(right,-1,-1):\n            limit=min(a[left],limit-1)\n            if limit<=0:break\n            total+=limit\n        answer=max(answer,total)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#214-get-maximum",
+  "sourceContentHash": "b52115469185fa15e1fd828043b6eb29394d3f5b26e9623d076667977a80c0bd",
+  "author": "CSWork"
+}

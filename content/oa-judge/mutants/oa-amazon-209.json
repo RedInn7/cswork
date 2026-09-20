@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许恰好填满",
+    "code": "def solve(d):\n    n,h=map(int,d[:2]);capacity=sorted(h-int(v) for v in d[2:2+n]);optional=sorted(map(int,d[2+n:]));j=0\n    for cap in capacity:\n        if j<n and optional[j]<cap:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "选做任务不排序",
+    "code": "def solve(d):\n    n,h=map(int,d[:2]);capacity=sorted(h-int(v) for v in d[2:2+n]);optional=list(map(int,d[2+n:]));j=0\n    for cap in capacity:\n        if j<n and optional[j]<=cap:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

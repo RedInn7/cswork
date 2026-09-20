@@ -1,0 +1,10 @@
+[
+  {
+    "name": "先取模再比较",
+    "code": "def solve(d):\n    n=int(d[0]);reliability=list(map(int,d[1:1+n]));availability=list(map(int,d[1+n:]));total=answer=0\n    for value,r in sorted(zip(availability,reliability),reverse=True):total+=r;answer=max(answer,value*total%1000000007)\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "按availability升序",
+    "code": "def solve(d):\n    n=int(d[0]);reliability=list(map(int,d[1:1+n]));availability=list(map(int,d[1+n:]));total=answer=0\n    for value,r in sorted(zip(availability,reliability),reverse=False):total+=r;answer=max(answer,value*total)\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

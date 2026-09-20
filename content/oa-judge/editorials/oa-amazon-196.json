@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-196",
+  "title": "最高最低经验配对的不同平均值",
+  "explanation": "## 思路\n\n排序首尾配对，统计两数和的不同值，不做浮点除法。\n\n## 正确性证明\n\n排序两端恰是每轮极值，删除后内部仍有序。两组平均相等当且仅当两数和相等，因此和集合大小就是答案。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));n=len(a)\n    return str(len({a[i]+a[n-1-i] for i in range(n//2)}))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#196-get-exp",
+  "sourceContentHash": "86de9e49ed9e2d33b699f32086cb9a27968abf147007945ad2b2355408b35471",
+  "author": "CSWork"
+}

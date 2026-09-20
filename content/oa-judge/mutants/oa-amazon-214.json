@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许相等",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));answer=0\n    for right in range(len(a)):\n        limit=a[right]+1;total=0\n        for left in range(right,-1,-1):\n            limit=min(a[left],limit)\n            if limit<=0:break\n            total+=limit\n        answer=max(answer,total)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只取原本递增的堆",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));answer=0\n    for right in range(len(a)):\n        limit=a[right]+1;total=0\n        for left in range(right,-1,-1):\n            limit=a[left] if a[left]<limit else 0\n            if limit<=0:break\n            total+=limit\n        answer=max(answer,total)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-212",
+  "title": "一个区间加同一整数后的最多目标值",
+  "explanation": "## 思路\n\n若把某个v≠k变成k，窗口内每个v收益+1，每个原k收益−1，其他值0。维护每个v上次出现时的最优段收益，以及当时累计k数，用累计差惰性扣除中间k，再做Kadane重启。\n\n## 正确性证明\n\n固定非零增量只会把唯一v=k−x变成k，并使原k消失，所以净收益定义精确。最优正收益段可取首尾都是v，两个v之间仅k造成扣分。处理新v时，选择重新从1开始或延续此前最优收益减中间k数再加1，恰是该v的Kadane转移。对每个v只在出现时更新，总访问n次，最大净收益加原k数就是答案。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));count=best=0;states={}\n    for v in a:\n        if v==k:count+=1\n        else:\n            old,previous=states.get(v,(0,count));gain=max(1,old-(count-previous)+1);states[v]=(gain,count);best=max(best,gain)\n    return str(count+best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#212-get-maximum-count",
+  "sourceContentHash": "b8b1bee939e006545709e955131cf8d33cd648df160aa0f8550e2af4c8c4e067",
+  "author": "CSWork"
+}

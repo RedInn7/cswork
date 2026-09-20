@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按字母种类去重",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);words=d[2:];freq=[]\n    for word in words:\n        row=[0]*26\n        for c in word:row[ord(c)-97]+=1\n        freq.append(row)\n    answer=-1\n    for i in range(n):\n        for j in range(i):\n            diff=abs(len(words[i])-len(words[j]))\n            if diff<=answer:continue\n            common=0\n            for a,b in zip(freq[i],freq[j]):\n                common+=int(a>0 and b>0)\n                if common>k:break\n            if common<=k:answer=max(answer,diff)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误排除阈值相等",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);words=d[2:];freq=[]\n    for word in words:\n        row=[0]*26\n        for c in word:row[ord(c)-97]+=1\n        freq.append(row)\n    answer=-1\n    for i in range(n):\n        for j in range(i):\n            diff=abs(len(words[i])-len(words[j]))\n            if diff<=answer:continue\n            common=0\n            for a,b in zip(freq[i],freq[j]):\n                common+=min(a,b)\n                if common>k:break\n            if common<k:answer=max(answer,diff)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-200",
+  "title": "至多k次区间翻转后的最长连续开机段",
+  "explanation": "## 思路\n\n滑窗统计其中0连续段数，保持不超过k，最大化长度。每个0段单独翻转一次就能全变1。\n\n## 正确性证明\n\n把每次翻转区间与目标窗口求交，并在窗口外补0，则希望得到的翻转奇偶串正好在原0段处为1。若有r个0段，该奇偶串有2r个变化边界；一次区间异或仅能提供2个边界，因此至少需要r次，重叠操作也不能突破下界。分别翻转每个0段恰好达到下界。0段数量随右扩不减，滑窗保持不超过k，求出每个右端的最长合法窗口。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];k=int(d[1]);left=groups=answer=0\n    for right,c in enumerate(s):\n        if c=='0' and (right==0 or s[right-1]=='1'):groups+=1\n        while groups>k:\n            if s[left]=='0' and (left==right or s[left+1]=='1'):groups-=1\n            left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#200-max-consecutive-on-servers",
+  "sourceContentHash": "86d964f8ee3b617f6861c44abf3dcdba732e24430b47e18e222d45e375143137",
+  "author": "CSWork"
+}

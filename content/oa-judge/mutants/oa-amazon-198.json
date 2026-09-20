@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许空段",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);prefix=0;answer=0\n    for v in a:\n        answer=max(answer,total-prefix);prefix+=v;answer=max(answer,prefix)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "仅看总和",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));total=sum(a);prefix=0;answer=-10**30\n    for v in a:\n        answer=max(answer,total-prefix);prefix+=v;answer=max(answer,prefix)\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
