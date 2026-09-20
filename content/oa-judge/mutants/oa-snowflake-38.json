@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把相差1的区间自动合并",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);nums=list(map(int,d[2:]));merged=[]\n    for a,b in sorted(zip(nums[::2],nums[1::2])):\n        if merged and a<=merged[-1][1]+1:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "桥长等号错误排除",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);nums=list(map(int,d[2:]));merged=[]\n    for a,b in sorted(zip(nums[::2],nums[1::2])):\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>=k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-39",
+  "title": "人与蛋糕的最小下标距离",
+  "explanation": "## 思路\n\n扫描时保存最近一个人和蛋糕下标，每次遇到非零元素与最近的另一类配对。\n\n## 正确性\n\n以当前元素为右端点的最短有效距离由左侧最近的另一类给出。每个有效对的较大下标会在扫描中成为当前元素，取这些局部最小值的最小值就是全局最小。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    last=[-1,-1,-1];best=len(d)\n    for i,value in enumerate(map(int,d[1:])):\n        if value:\n            other=3-value\n            if last[other]>=0:best=min(best,i-last[other])\n            last[value]=i\n    return str(best if best<len(d) else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#39-minimum-index-distance-between-person-and-cake",
+  "sourceContentHash": "2037e483fa005ed20648fdd5500c249d64e45bb68af1616336518e0eabcdc6ab",
+  "author": "CSWork"
+}

@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-snowflake-21",
+      "status": "authored",
+      "reason": "对每个查询独立从s的开头顺序读取，允许丢弃多余字符并重排选中字符。求能组成该查询的最短读取前缀长度；不能组成输出−1。原文返回值误称substring，正文与例子明确是从首部读取，不是任意滑窗。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-count-minimum-characters.md",
+      "rawGitBlob": "b02a29eda9ac0ee35ec8e2461effb8ce57e1c136",
+      "rawSha256": "382337d97ab4088f6b2e4f8c5c0e62ea82f5960be0b081ae2e5ac6338e7d781c",
+      "catalogContentHash": "37ec7f8bfd1236e4257851c431b6a350965f0e54a99c5e13f5b2c8143d1687e8"
+    },
+    {
+      "id": "oa-snowflake-22",
+      "status": "authored",
+      "reason": "把整条数字串按原顺序分成若干质数，每段没有前导零，质数在2..10⁶内；求方案数模10⁹+7。原快照恢复上界10⁶，非catalog误写的10⁸。 此catalog条目与此前题同源，保留独立题目ID及独立验证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-count-prime-strings.md",
+      "rawGitBlob": "b14b7fd7fd1e0805fd4d4d304121126804daffcd",
+      "rawSha256": "fe1a64c2a991caf9b682636c3a9b8d59187da58b4f4d84b8456f7d49067c66bf",
+      "catalogContentHash": "1789f4cbc7c54f343d5af96e5337a24ed8860d476a7e40aa1b448e6acd477510"
+    },
+    {
+      "id": "oa-snowflake-23",
+      "status": "authored",
+      "reason": "偶数n间房排成一排，从固定三种颜色中涂色，相邻以及距离两端相同的两间房必须不同色。原始快照明确为不同色，catalog相同色是错误。答案模10⁹+7。 此catalog条目与此前题同源，保留独立题目ID及独立验证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-count-ways-to-color-houses.md",
+      "rawGitBlob": "7703e99cd25351633abc911a08240844eb9562c5",
+      "rawSha256": "d00eee375167239d23432850ef8770982d36318892bf4ac82bd2112c4a1dbf2f",
+      "catalogContentHash": "8614d9f01caa8c41476a3a58eaa80104b2038be8f83f86c198c3a5df9f29c850"
+    },
+    {
+      "id": "oa-snowflake-24",
+      "status": "blocked",
+      "reason": "原范围20万角色及20万DAG边，但每角色权限列表和字符串长度均无上限，且要求显式输出全部祖先权限。20万点各有独立权限的链就需约200亿权限项；无法在当前输出/内存预算覆盖完整范围，不以缩小角色数或强加输出总量发布。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-effective-role-privileges.md",
+      "rawGitBlob": "57e33e55736f4bc94a8f2f8fa8d76ac12d378bc5",
+      "rawSha256": "28dcf8f6d5fb95f05416361fc880ac39a038114c2e9055f0f2386638bbdeb68b",
+      "catalogContentHash": "380aa48c67723ecba4e049ab69a72bf1f9b7ea6339d6eee0f13e05c596a195a7"
+    },
+    {
+      "id": "oa-snowflake-25",
+      "status": "authored",
+      "reason": "把整个整数数组按原顺序切成非空连续段，每段长度≤threshold，费用为该段最大值。求所有段费用之和最小值。允许负整数，不能强制分段长度等于上限。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-efficient-cost.md",
+      "rawGitBlob": "3bb19fc08ea0188a98e57eb5708b26cc9a2e76a8",
+      "rawSha256": "72f4e47ce3cb04deb3c5abd349f5a2fdcc6bf074d1551a97139cd44428066ddd",
+      "catalogContentHash": "12cd6b8e186a5262238ebe61971b7f5511974e505dd4d5948e5b1dc06e83553c"
+    },
+    {
+      "id": "oa-snowflake-26",
+      "status": "authored",
+      "reason": "处理器排成一条链，逐个部署。第i个部署时已有0、1或2个相邻处理器部署，分别得到no[i]、one[i]、both[i]。首尾仅一个邻居。最大化所有处理器收益和。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-efficient-deployments.md",
+      "rawGitBlob": "9eb3b8a20a430a6d061133a1d8c6ef36ab5470d8",
+      "rawSha256": "88642c833efc97f9f9d5112d8ce51474ed142895d504db4e8f2c9b3febef4c48",
+      "catalogContentHash": "80e25d99dfd4bfce10e5c5997ac3d6f78e5437fce0882d0e7652f2de9ab0c1df"
+    },
+    {
+      "id": "oa-snowflake-27",
+      "status": "blocked",
+      "reason": "方程在B*C两个分量相等时可能无解或无穷多解，原文无排除保证、无返回约定；两位小数的舍入边界也未定义。保留数学与协议缺失，不仅靠单例假设唯一解。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-find-a.md",
+      "rawGitBlob": "b02e15566e8edb82004971e37d313aaa5d806087",
+      "rawSha256": "2c262072fb9f1d687597381388a2556791301fe4105dbb6cf42fe5692b963f15",
+      "catalogContentHash": "fe7aec7a43e1e92977103ad54f62f6e9f28a569f557cdeafcbefa2921d6489f5"
+    },
+    {
+      "id": "oa-snowflake-28",
+      "status": "blocked",
+      "reason": "原文要求相邻线程数恰差1，但未知节点最少线程数未说明可0还是至少1；这影响最小总和。唯一例子的节点数5、边列表、叙述4节点和4项输出互相不一致，不能凭题解补全定义。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-find-maximum-number-live-threads.md",
+      "rawGitBlob": "c2cc35db3f0546d8c77dbb9d703993d673f1deb2",
+      "rawSha256": "80e3c58bbc07b5dd92a17d95c27091eba387c8c6f7ff4dab92b26045bb3cbff6",
+      "catalogContentHash": "3ef19a7eebb0ed9ec2b2273afa1937ba3dbc08b8a435f5983fc80035da554ae1"
+    },
+    {
+      "id": "oa-snowflake-29",
+      "status": "authored",
+      "reason": "日志[1,p,x]将1基服务p的数量直接设为x，可以减少；[2,−1,x]将所有少于x的数量提升到x。按日志顺序执行，返回最终数组。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-find-pod-count.md",
+      "rawGitBlob": "3a4217912f188c7817910ec2b505887266a0359a",
+      "rawSha256": "41a7cb3dac27e780650af4e5b39cd22afeec53ac2828c33df4719b573364d2b7",
+      "catalogContentHash": "6803e093fa63507a9c2a5725e6b3594fcdf6f144aece33fee4fe364c9d2643b3"
+    },
+    {
+      "id": "oa-snowflake-30",
+      "status": "authored",
+      "reason": "选择最长子序列，使相邻值不相等的次数最多k。可以跳过原数组元素。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-find-the-maximum-length-of-a-good-subsequence-i.md",
+      "rawGitBlob": "056db80d65da8ce968058b17d50c58d82daf0740",
+      "rawSha256": "aabfa1e0e78bb012a26de1da817e5814b9df261c7628adedb4e22ccff849548d",
+      "catalogContentHash": "78ebadd2ea9fbe822cf93a02647e282c37ab32d3899e580217627476ac0244e4"
+    },
+    {
+      "id": "oa-snowflake-31",
+      "status": "authored",
+      "reason": "每条事件格式person action start end，占用起止分钟均包含。求00:00..23:59内所有出现在事件中的人同时空闲的最早连续k分钟时段。无解返回−1，会议不得跨日。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-get-earliest-meet-time.md",
+      "rawGitBlob": "d6fb87e31cf5d0f2150c9a8a7cc2e7032e068834",
+      "rawSha256": "b8220eb39005b0de9f4e5ad94659c9cf04c291014c680514f7c54d83f920d630",
+      "catalogContentHash": "8fad4a8ae3f79da78e45d7dcff95b3f048e16002094647204997adf0aceefea4"
+    },
+    {
+      "id": "oa-snowflake-32",
+      "status": "authored",
+      "reason": "用a..z替换全部点号，最大化所有字符相同的连续子串数量。长度1也计数，固定字符不可改变。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-get-max-beautiful-substrings.md",
+      "rawGitBlob": "1427d7a8a47c5dc57da3bd54aa2f2663ed0e48b3",
+      "rawSha256": "45d52fde6573a9ed0b443e708bb07b757b54e78a859314569fd94e6804fa1c96",
+      "catalogContentHash": "89dcfa8009828e7ed1645c3cbe4f32e48a74bfd5d24522b916ea1663f62d0d95"
+    },
+    {
+      "id": "oa-snowflake-33",
+      "status": "authored",
+      "reason": "各网络独立，初有n台服务器和资金money；出售一台得sell，升级一台花upgrade。被出售服务器不能再升级，求每个网络最多可升级台数。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-get-max-upgraded-servers.md",
+      "rawGitBlob": "1da8f9730300a8aaad1a2d1ea9059fd173581403",
+      "rawSha256": "c644d50406d14006e47d5138d5f24dd48f335756dd53e5c2119262ed2e0f70de",
+      "catalogContentHash": "add66db60666852ddc5d117f8a3693328472a1841cd299eac901e4427005711f"
+    },
+    {
+      "id": "oa-snowflake-34",
+      "status": "authored",
+      "reason": "按照1基原下标排列order逐个删除source字符，原下标不会因删除而重排。target初始保证是source子序列，求最多连续执行前多少次删除后仍是子序列。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-get-maximum-removals.md",
+      "rawGitBlob": "37495e24e5c858784b7a0886e6b1bf918edddec2",
+      "rawSha256": "85d48d822dabaaa14783ba2ed81b10fba6e2e70b95c045cefc3bef724cf835c1",
+      "catalogContentHash": "ef1545c4d912247dc057e06be164cc68cec90bb77d405d236840b80fde997adf"
+    },
+    {
+      "id": "oa-snowflake-35",
+      "status": "authored",
+      "reason": "在长度[minLength,maxLength]且不同字符数≤maxUnique的连续子串中，求同一文本出现次数最大值；允许出现重叠。没有合格子串返回0。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-max-freq-substr.md",
+      "rawGitBlob": "831049cf8d45ec5a143918c47f8ef99da2f55f42",
+      "rawSha256": "1d26fdc41e2dfe87bea0206864c78f973cfb986467ecef0d141891cb46afd139",
+      "catalogContentHash": "b097c83e5220fe36019b172a562f92fd7393858db427117abadcbd0ef40a765b"
+    },
+    {
+      "id": "oa-snowflake-36",
+      "status": "authored",
+      "reason": "从左上到右下仅右/下走，返回仅左/上走。−1为墙，0为空地，1为一个乘客，经过后乘客被带走不重复计。若无合法去程返回0。求最大总人数。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-maximum-passengers-collected.md",
+      "rawGitBlob": "f580c0ddaf212e58307dc08c8f945c9ea9052a89",
+      "rawSha256": "9faa0610c3d4eeb04fd84df4db500931f21e111c61dd3acae390933cd877c52c",
+      "catalogContentHash": "079a26c997d4d9a4caac458d119edd3880feb75be92ec45ebc1c5534db6899de"
+    },
+    {
+      "id": "oa-snowflake-37",
+      "status": "authored",
+      "reason": "每条有向链接一次点击可从u跳到v；get_links(page)返回该页所有出边目标。求start到target最少点击，起终相同为0，不可达为−1。重复链接和自环允许。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-minimum-clicks-between-wiki-pages.md",
+      "rawGitBlob": "1b3fec8a00625bcba19d359e1dec1b5429ea84b8",
+      "rawSha256": "d9a6d4488681543a3b760b80bfae9793d32912bed03ffe3df9c9be3a811556f3",
+      "catalogContentHash": "8926e238f5747242c9b258a816091a72cde7673d52898fa8fa019ef51705cb4c"
+    },
+    {
+      "id": "oa-snowflake-38",
+      "status": "authored",
+      "reason": "给定闭区间，可额外添加恰好一个长度b−a≤k的闭区间。求合并后的最少连通块数；接触同一端点算连通，不把相差1的区间自动连接。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-minimum-division.md",
+      "rawGitBlob": "024bc15753cca3005fcfc36ea877034e658ef608",
+      "rawSha256": "fc4ce274fa8b0db0eea508e40b43d9b386567110400f3c3b497ecbe16599cd3e",
+      "catalogContentHash": "312a002a73ae519e7eee30a3e5e9f9c936b4fbbf18438240f0c96586ffe73cf6"
+    },
+    {
+      "id": "oa-snowflake-39",
+      "status": "authored",
+      "reason": "数组0表示空位，1表示人，2表示蛋糕。求任意一个人与任意一个蛋糕的下标绝对差最小值；缺任何一类返回−1。不是对每个人分配不同蛋糕。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-minimum-index-distance-between-person-and-cake.md",
+      "rawGitBlob": "2a7a630d2d779f301ff6db801fe4bece4e5317ba",
+      "rawSha256": "d064e85d6b8ec0c33b2df27983513f85826bd55d96a47a6cfa75af90168ca02f",
+      "catalogContentHash": "2037e483fa005ed20648fdd5500c249d64e45bb68af1616336518e0eabcdc6ab"
+    },
+    {
+      "id": "oa-snowflake-40",
+      "status": "authored",
+      "reason": "一次可交换任意两个下标的元素，要求所有偶数位于所有奇数前。各自内部不要求排序，不限制为相邻交换。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Snowflake/snowflake-moves.md",
+      "rawGitBlob": "fe16a78cb31a4b0616db2934b834a4a66c3412c4",
+      "rawSha256": "92c2d48a873aff9d1d6f8123f497e65453d27a96c33f913e683ddc6773a4edca",
+      "catalogContentHash": "f2f45d0a834d55e2ebe9f13496c94ad703754d6d6f440de10a70dae036f365dd"
+    }
+  ]
+}

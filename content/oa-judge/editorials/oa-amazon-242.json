@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-242",
+  "title": "技能差限制下的最少学生班级",
+  "explanation": "## 思路\n\n技能排序，每班从最小未分配者开始，吸收所有不超过其技能加maxSpread者。\n\n## 正确性证明\n\n最小未分配技能v所在班不能含超过v+maxSpread的人。把此区间内其他学生全部移到该班不会破坏班内约束，也不会增加其他班数，所以存在最优方案使用贪心第一班。递归处理剩余学生得到最少班数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));answer=0;start=None\n    for v in a:\n        if start is None or v-start>k:answer+=1;start=v\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#242-group-students-as-intern-it-may-apply-to-other-interns",
+  "sourceContentHash": "9cb445e777d82ffb9d13f4f492252890db1bbb0387ea312c29ac1fad76e5c96a",
+  "author": "CSWork"
+}

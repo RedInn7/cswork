@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-22",
+  "title": "预算内拥有最多不同商品",
+  "explanation": "## 思路\n\n去重已拥有编号，从1至n依次购买尚未拥有且买得起的商品，买不起时停止。\n\n## 正确性证明\n\n已拥有不同编号全部免费计入；新增商品各贡献1。若方案买了更贵未拥有商品却不买更便宜者，交换后数量不变且成本不增，反复交换得到按价递增选择的前缀，贪心因此最优。\n\n## 复杂度\n\n时间O(n+m)，空间O(m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,k=map(int,d[:3]);owned=set(map(int,d[3:]));answer=len(owned)\n    for v in range(1,n+1):\n        if v in owned:continue\n        if v>k:break\n        k-=v;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#22-find-max-distinct-items",
+  "sourceContentHash": "bba94e610a2fc5199b7b52f71dd2c904b4dd6ec4ac0b5c206c9082b7d3e8cda9",
+  "author": "CSWork"
+}

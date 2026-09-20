@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-246",
+  "title": "可能成为最终幸存者的库存任务下标",
+  "explanation": "## 思路\n\n数量升序，从左向右累加。每遇当前值大于此前全部值之和，就将候选幸存后缀起点设为当前；最后输出数量不小于该起点值的原下标。\n\n## 正确性证明\n\n若某处前缀总量小于下一数，则前缀任何身份无论先如何合并，都无法击败右边任何任务，因此均不能幸存。最后这样的断点之后，一个候选先吞并比自己小的全部任务，然后按升序吞并更大任务；后续没有断点，当前累计量总足够，等号可选择自己获胜。于是排除的全部不可能、保留的全部可构造。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，累计量用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));b=sorted(a);total=0;threshold=b[0]\n    for v in b:\n        if total<v:threshold=v\n        total+=v\n    return ' '.join(str(i+1) for i,v in enumerate(a) if v>=threshold)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#246-inventory-processes-survival-possibility",
+  "sourceContentHash": "c8ab1eb05f0b42ba0e2631de020c89bf34b87560e853fffebe82e34cee9a4dba",
+  "author": "CSWork"
+}

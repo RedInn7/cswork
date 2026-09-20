@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-38",
+  "title": "增加一个区间后的最少连通块",
+  "explanation": "## 思路\n\n先排序合并已有相交区间，再双指针找能被一段连接的最多连续块：第r块起点减第l块终点≤k。连接w块后总块数减少w−1。\n\n## 正确性\n\n合并后的块严格分离。跨过首末两块的新增段至少要覆盖它们之间的空隙，最短长度为右块左端点减左块右端点；满足时取这两个端点便同时连接中间所有块。最优新增段的所有交块连续，故枚举所有窗口并取最大不会遗漏。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);nums=list(map(int,d[2:]));merged=[]\n    for a,b in sorted(zip(nums[::2],nums[1::2])):\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#38-minimum-segments",
+  "sourceContentHash": "312a002a73ae519e7eee30a3e5e9f9c936b4fbbf18438240f0c96586ffe73cf6",
+  "author": "CSWork"
+}

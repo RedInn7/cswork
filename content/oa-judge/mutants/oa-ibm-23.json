@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不能选空集",
+    "code": "def solve(d):\n    even=-10**18;odd=None\n    for v in map(int,d[1:]):\n        if v%2:even,odd=max(even,odd+v if odd is not None else even),max(odd if odd is not None else v,even+v)\n        else:even,odd=max(even,even+v),None if odd is None else max(odd,odd+v)\n    return str(even)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只累加正偶数",
+    "code": "def solve(d):\n    even=0;odd=None\n    for v in map(int,d[1:]):\n        if v%2:even,odd=max(even,odd+v if odd is not None else even),max(odd if odd is not None else v,even+v)\n        else:even,odd=max(even,even+v),None if odd is None else max(odd,odd+v)\n    return str(sum(max(0,int(v)) for v in d[1:] if int(v)%2==0))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

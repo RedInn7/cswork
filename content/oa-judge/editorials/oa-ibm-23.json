@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-23",
+  "title": "可为空子集的最大偶数和",
+  "explanation": "## 思路\n\n维护已处理前缀可取得的最大偶数和、最大奇数和，每项选择不取或取。\n\n## 正确性证明\n\n初始空集给偶数和0，奇数状态不可达。处理一项时任意子集唯一分为不含该项和包含该项两类；包含时从相应旧奇偶状态加该值。因此逐项转移覆盖全部子集且各奇偶只保留最大者足够。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    even=0;odd=None\n    for v in map(int,d[1:]):\n        if v%2:even,odd=max(even,odd+v if odd is not None else even),max(odd if odd is not None else v,even+v)\n        else:even,odd=max(even,even+v),None if odd is None else max(odd,odd+v)\n    return str(even)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#23-find-maximum-even-sum",
+  "sourceContentHash": "17e72b1637eda91888db6c70f3d4634f8d194b08deb2cee5299cf602e94abbb1",
+  "author": "CSWork"
+}

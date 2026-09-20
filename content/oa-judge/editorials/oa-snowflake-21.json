@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-21",
+  "title": "读取最短前缀以凑出数字串",
+  "explanation": "## 思路\n\n按数字记录出现位置。查询中数字c需要r次，则至少读取到c第r次出现的位置，答案是所有这些位置的最大值。\n\n## 正确性\n\n顺序访问意味着所读字符恰是某个前缀。前缀包含需求当且仅当对每个数字已到达其第r次出现位置。因此各位置的最大值既是必要下界，也足以容纳全部需求。\n\n## 复杂度\n\n时间O(|s|+查询总长+10q)，空间O(|s|+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(d):\n    s=d[0];q=int(d[1]);positions=[[] for _ in range(10)]\n    for i,c in enumerate(s,1):positions[int(c)].append(i)\n    out=[]\n    for j in range(q):\n        length=int(d[2+2*j]);query=d[3+2*j] if length else '';answer=0\n        for c,count in Counter(query).items():\n            p=positions[int(c)]\n            if len(p)<count:answer=-1;break\n            answer=max(answer,p[count-1])\n        out.append(answer)\n    return str(q)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#21-sequential-string",
+  "sourceContentHash": "37ec7f8bfd1236e4257851c431b6a350965f0e54a99c5e13f5b2c8143d1687e8",
+  "author": "CSWork"
+}

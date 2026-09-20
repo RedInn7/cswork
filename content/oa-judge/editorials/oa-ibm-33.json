@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-33",
+  "title": "覆盖零段的最少区间操作",
+  "explanation": "## 思路\n\n从左向右累积零段；首次累计m个0时，将覆盖该位置的k长区间尽量右放并设为1，跳过该区间，清空零计数。\n\n## 正确性证明\n\n遇到第一个全零m窗口，任何可行方案必须操作覆盖其中至少一个位置。将负责此窗口的操作右移到尽可能靠右且仍覆盖窗口的位置，不损失已处理前缀的合法性，并使未来覆盖不减少。尾部不足k时贴右边界。交换后可令最优方案包含贪心操作，递归处理其右侧得到最优。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,k=map(int,d[:3]);s=d[3];i=run=answer=0\n    while i<n:\n        run=run+1 if s[i]=='0' else 0\n        if run==m:answer+=1;i=min(i,n-k)+k;run=0\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#33-get-minimum-operations",
+  "sourceContentHash": "6d98953431acd9e0f4a4a5589406a519ca741505aaadfdb5ee614ee9e751ed26",
+  "author": "CSWork"
+}

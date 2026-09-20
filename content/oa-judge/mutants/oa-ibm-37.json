@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不验证右侧新下降",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);chosen=[False]*n;x=0\n    for i in range(1,n):\n        if a[i]<a[i-1]:chosen[i]=True;x=max(x,a[i-1]-a[i])\n    if any(chosen[i] and chosen[i-1] for i in range(1,n)):return '-1'\n    b=[v+x if chosen[i] else v for i,v in enumerate(a)]\n    return str(x)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏首个下降",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);chosen=[False]*n;x=0\n    for i in range(2,n):\n        if a[i]<a[i-1]:chosen[i]=True;x=max(x,a[i-1]-a[i])\n    if any(chosen[i] and chosen[i-1] for i in range(1,n)):return '-1'\n    b=[v+x if chosen[i] else v for i,v in enumerate(a)]\n    return str(x) if all(b[i]>=b[i-1] for i in range(1,n)) else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

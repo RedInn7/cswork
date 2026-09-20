@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-244",
+  "title": "恶意字符子串数达到阈值的最早时刻",
+  "explanation": "## 思路\n\n逆序撤销攻击，将所有位置从坏变好。维护每个良好连续段两端的长度；激活位置时读取左右长度L、R，新增加的全好子串恰为(L+1)(R+1)。当坏子串数从≥m变为<m，撤销前的时间就是答案。\n\n## 正确性证明\n\n每个全好子串只属于一个全好段，坏子串数等于总子串数减全好子串数。激活位置新产生的子串必须经过该位置，左右各有L+1和R+1种延伸选择，所以增量公式精确。左右邻居若良好必为段边界，边界长度可直接合并更新。正向坏子串数单调增加，逆向首次跌破阈值的前一状态正是最早满足时刻。\n\n## 复杂度\n\n时间O(n)，空间O(n)，子串计数用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from array import array\n    n,m=map(int,d[:2]);order=list(map(int,d[3:]))\n    if m==0:return '1'\n    spans=array('i',[0])*(n+2);bad=n*(n+1)//2\n    for t in range(n,0,-1):\n        p=order[t-1];left=spans[p-1];right=spans[p+1];length=left+right+1\n        spans[p]=1;spans[p-left]=spans[p+right]=length;bad-=(left+1)*(right+1)\n        if bad<m:return str(t)\n    return '1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#244-min-time-after-which-the-password-becomes-irrecoverable",
+  "sourceContentHash": "f7caeda1f0d901fa54ffd17283843b22a52da5d9871fafb3a75ab4d57de455ea",
+  "author": "CSWork"
+}

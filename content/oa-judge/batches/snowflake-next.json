@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-snowflake-21",
+      "sourceContentHash": "37ec7f8bfd1236e4257851c431b6a350965f0e54a99c5e13f5b2c8143d1687e8",
+      "packageChecksum": "72041e9a7f750beb00002fd1d10a00fb31039dfae5659af43f9cdd53b8c4e592",
+      "editorial": "## 思路\n\n按数字记录出现位置。查询中数字c需要r次，则至少读取到c第r次出现的位置，答案是所有这些位置的最大值。\n\n## 正确性\n\n顺序访问意味着所读字符恰是某个前缀。前缀包含需求当且仅当对每个数字已到达其第r次出现位置。因此各位置的最大值既是必要下界，也足以容纳全部需求。\n\n## 复杂度\n\n时间O(|s|+查询总长+10q)，空间O(|s|+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\ndef solve(d):\n    s=d[0];q=int(d[1]);positions=[[] for _ in range(10)]\n    for i,c in enumerate(s,1):positions[int(c)].append(i)\n    out=[]\n    for j in range(q):\n        length=int(d[2+2*j]);query=d[3+2*j] if length else '';answer=0\n        for c,count in Counter(query).items():\n            p=positions[int(c)]\n            if len(p)<count:answer=-1;break\n            answer=max(answer,p[count-1])\n        out.append(answer)\n    return str(q)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-22",
+      "sourceContentHash": "1789f4cbc7c54f343d5af96e5337a24ed8860d476a7e40aa1b448e6acd477510",
+      "packageChecksum": "ddef978a3736d1727d072a75d4e02eaf40063cf1f98bc2533f28d81a5327e941",
+      "editorial": "## 思路\n\n筛出百万内质数；dp[i]为前i个字符的合法划分数，从每个非零起点扩展至多6位。\n\n## 正确性\n\n任何合法最后一段长度至多6且是无前导零质数，移除它得到唯一前缀划分。转移枚举所有合法末段，互不重叠，因此由空前缀一种方案归纳成立。\n\n## 复杂度\n\n时间O(10⁶ log log 10⁶+6n)，空间O(10⁶+n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];limit=min(999999,10**min(6,len(s))-1);p=bytearray(b'\\x01')*(limit+1);p[0:2]=b'\\x00\\x00'\n    for v in range(2,math.isqrt(limit)+1):\n        if p[v]:p[v*v:limit+1:v]=b'\\x00'*((limit-v*v)//v+1)\n    dp=[0]*(len(s)+1);dp[0]=1\n    for i,c in enumerate(s):\n        if c=='0':continue\n        value=0\n        for j in range(i,min(len(s),i+6)):\n            value=value*10+int(s[j])\n            if p[value]:dp[j+1]=(dp[j+1]+dp[i])%1000000007\n    return str(dp[-1])\nimport math\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-23",
+      "sourceContentHash": "8614d9f01caa8c41476a3a58eaa80104b2038be8f83f86c198c3a5df9f29c850",
+      "packageChecksum": "290d861837e5fabf23114d2f9eb060a798aee61fd47e6ae64274163a97de024b",
+      "editorial": "## 思路\n\n从两端向中间逐对涂色：首对6种，之后每对3种。\n\n## 正确性\n\n已涂左右色为不同的a,b，新对(c,d)要求c≠a、d≠b、c≠d。在三色中恰有3种有序选择，且对任意a,b都相同。最内层相邻限制就是对内异色，无额外条件，乘法原理得6×3^(n/2−1)。\n\n## 复杂度\n\n时间O(log n)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);return str(6*pow(3,n//2-1,1000000007)%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-25",
+      "sourceContentHash": "12cd6b8e186a5262238ebe61971b7f5511974e505dd4d5948e5b1dc06e83553c",
+      "packageChecksum": "2b05dac4cdf5daa5f817a53fccfd0d93620951dfcf6b42a2001df10b4d1acd7e",
+      "editorial": "## 思路\n\ndp[i]表示前i项最低费用。逆向枚举最后一段起点，同时维护其最大值，更新dp[i]。\n\n## 正确性\n\n最优分割的最后一段长度必在1..threshold之内，去掉它后前缀也必须最优，否则可替换改善。枚举全部合法末段并取最小，因此递推不漏任何最优解。负费用不影响有限分割上的递推。\n\n## 复杂度\n\n时间O(n×threshold)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));dp=[0]+[10**30]*n\n    for i in range(1,n+1):\n        largest=-10**30;best=10**30\n        for j in range(i-1,max(-1,i-k-1),-1):largest=max(largest,a[j]);best=min(best,dp[j]+largest)\n        dp[i]=best\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-26",
+      "sourceContentHash": "80e25d99dfd4bfce10e5c5997ac3d6f78e5437fce0882d0e7652f2de9ab0c1df",
+      "packageChecksum": "94d11c83cf752279e81d48983f66b0c2b4c0a02dbddfbff672047bd21b6d44ba",
+      "editorial": "## 思路\n\n把相邻边定向为较早→较晚；任意链的定向都无环，可拓扑实现。按边方向做两状态DP，完成当前点的入边数收益。\n\n## 正确性\n\n每种部署顺序产生唯一边定向且收益只依赖各点入度。反过来无向链的任何定向无有向环，均存在拓扑部署序。枚举左右边的两个方向便覆盖全部可实现收益；DP固定右边方向并取最优前缀，末点结算后最优。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)不含输入。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:1+2*n]));c=list(map(int,d[1+2*n:]));values=[a,b,c]\n    if n==1:return str(a[0])\n    dp=[b[0],a[0]]\n    for i in range(1,n-1):dp=[max(dp[left]+values[left+1][i] for left in (0,1)),max(dp[left]+values[left][i] for left in (0,1))]\n    return str(max(dp[left]+values[left][n-1] for left in (0,1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-29",
+      "sourceContentHash": "6803e093fa63507a9c2a5725e6b3594fcdf6f144aece33fee4fe364c9d2643b3",
+      "packageChecksum": "24865b366a6742673b8813122ec1d23212d6e7e8ac5a6e2e16208fa86bab0486",
+      "editorial": "## 思路\n\n逆序处理日志，维护已见全局提升的最大值。遇某服务最后一次单点赋值时确定其最终值；其余服务以初值结合全部提升处理。\n\n## 正确性\n\n最后一次单点赋值覆盖它之前的全部历史，之后的全局提升等价于与后缀阈值最大值取max。逆序第一次遇到该服务赋值正好具有所需后缀值，未遇赋值者保留初值再应用所有提升。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));out=[None]*n;floor=0\n    for i in range(m-1,-1,-1):\n        t,p,x=map(int,d[2+n+3*i:5+n+3*i])\n        if t==2:floor=max(floor,x)\n        elif out[p-1] is None:out[p-1]=max(x,floor)\n    for i in range(n):\n        if out[i] is None:out[i]=max(a[i],floor)\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-30",
+      "sourceContentHash": "78ebadd2ea9fbe822cf93a02647e282c37ab32d3899e580217627476ac0244e4",
+      "packageChecksum": "f53aeab92751064ca3f3e8f1c8a952ce07132a58820a6759543cd22164293a4e",
+      "editorial": "## 思路\n\n维护每个值结尾且最多j次变化的长度dp[value][j]，以及各j的全局最优best[j]。j倒序更新，取同值续接和best[j−1]+1。\n\n## 正确性\n\n同值接续不增加变化；从任意至多j−1次变化的子序列续接最多增一次，因此第二项合法。最优非空子序列删除末尾后，末值相同归第一项，否则归第二项，转移完备。倒序保证当前元素不被重复使用。\n\n## 复杂度\n\n时间O(nk)，空间O(nk)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);table={};best=[0]*(k+1)\n    for value in map(int,d[2:]):\n        if value not in table:table[value]=[0]*(k+1)\n        row=table[value]\n        for j in range(k,-1,-1):\n            row[j]=max(row[j]+1,best[j-1]+1 if j else 1);best[j]=max(best[j],row[j])\n    return str(best[k])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-31",
+      "sourceContentHash": "8fad4a8ae3f79da78e45d7dcff95b3f048e16002094647204997adf0aceefea4",
+      "packageChecksum": "8ef8d3b04ab9c2dedca83117637761a4bfb1eda61bb0b49296af635f52cba7ae",
+      "editorial": "## 思路\n\n事件在分钟轴上做差分[start,end+1)，求每分钟忙碌人数。扫描连续零占用分钟数，首次达到k即最早时段。\n\n## 正确性\n\n所有人空闲当且仅当没有事件覆盖对应分钟。差分前缀和准确统计闭区间占用，连续k个零正好意味着完整会议可进行。按时间递增首次达标最早。\n\n## 复杂度\n\n时间O(n+1440)，空间O(1440)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);diff=[0]*1441\n    def minute(s):h,m=map(int,s.split(':'));return h*60+m\n    for i in range(n):\n        a=minute(d[4+4*i]);b=minute(d[5+4*i]);diff[a]+=1;diff[b+1]-=1\n    busy=run=0\n    for t in range(1440):\n        busy+=diff[t];run=run+1 if busy==0 else 0\n        if run>=k:\n            start=t-k+1;return f'{start//60:02}:{start%60:02}'\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-32",
+      "sourceContentHash": "89dcfa8009828e7ed1645c3cbe4f32e48a74bfd5d24522b916ea1663f62d0d95",
+      "packageChecksum": "472feb62f31167dcb1d05158968f3b4091362e8a21ee5de846f5cd085a295c02",
+      "editorial": "## 思路\n\n把补全后的串分解为同色段，长l贡献l(l+1)/2。前缀DP枚举最后一段，逆向扫描直到碰到第二种固定字母即可停止。\n\n## 正确性\n\n一段可补成同色当且仅当其中固定字符至多一种。所有最终同色段构成合法划分，DP枚举覆盖它；反之任意合法划分可以补全各段，若相邻段同色还会额外增加子串，所以DP不会超过可达最优值。两方向合起来最优相等。\n\n## 复杂度\n\n时间O(n²)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];n=len(s);dp=[0]*(n+1)\n    for end in range(1,n+1):\n        color=None;best=0\n        for start in range(end-1,-1,-1):\n            c=s[start]\n            if c!='.':\n                if color is not None and c!=color:break\n                color=c\n            length=end-start;best=max(best,dp[start]+length*(length+1)//2)\n        dp[end]=best\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-33",
+      "sourceContentHash": "add66db60666852ddc5d117f8a3693328472a1841cd299eac901e4427005711f",
+      "packageChecksum": "305a4214ac938ffe342dd0176b9d90eec9f7b4c34385fe5b97d0a6804dbe5828",
+      "editorial": "## 思路\n\n保留并升级x台时，最多卖n−x台。因此x≤n且x(upgrade+sell)≤money+n×sell，直接向下取整。\n\n## 正确性\n\n升级x台所需资金不超过卖掉所有未升级机器后的最大资金是必要条件；若满足，先卖未升级机器再升级即可实现，所以不等式也是充分条件。取允许的最大整数得到最优。\n\n## 复杂度\n\n时间O(q)，空间O(q)用于输出。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    q=int(d[0]);out=[]\n    for i in range(q):\n        n,m,s,u=map(int,d[1+4*i:5+4*i]);out.append(min(n,(m+n*s)//(u+s)))\n    return str(q)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-34",
+      "sourceContentHash": "ef1545c4d912247dc057e06be164cc68cec90bb77d405d236840b80fde997adf",
+      "packageChecksum": "12480e31ca5a45539952c11532565656e5cc3370b2f575a908d401ca9434eccd",
+      "editorial": "## 思路\n\n为每个位置记录被删时刻，二分删除数。检查时忽略删除时刻≤候选值的位置，用贪心匹配目标子序列。\n\n## 正确性\n\n贪心总取最早可用匹配位置，为后续字符保留最多位置，故准确判定子序列。额外删除不能产生新子序列，所以可行删除数构成前缀，二分得到最后可行值。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s,t=d[:2];order=list(map(int,d[2:]));when=[0]*len(s)\n    for step,pos in enumerate(order,1):when[pos-1]=step\n    def works(count):\n        j=0\n        for i,c in enumerate(s):\n            if when[i]>count and c==t[j]:\n                j+=1\n                if j==len(t):return True\n        return False\n    lo=0;hi=len(s)\n    while lo<hi:\n        mid=(lo+hi+1)//2\n        if works(mid):lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-35",
+      "sourceContentHash": "b097c83e5220fe36019b172a562f92fd7393858db427117abadcbd0ef40a765b",
+      "packageChecksum": "ec4f8a7c549a4da74cc14fef32025e080be6cfd3b5fc4f53a3f1454747b5b949",
+      "editorial": "## 思路\n\n最优只需考虑最短长度L：任一长串的L前缀出现不少且字符种数不多。用滑窗标记合格L窗口，后缀自动机精确统计每个子串出现次数；筛代表长度L的状态。\n\n## 正确性\n\n合法长串的每次出现对应其前缀的一次出现，因此缩短到L不劣。后缀自动机每个状态代表相同结束位置集合、长度处于len(link)+1..len之间的子串；各状态若覆盖L，就代表唯一L长文本。按长度逆序累加后缀链接上的结束计数得到精确出现次数，再用代表位置的滑窗标记检查字符数，取最大即答案，不使用有碰撞哈希。\n\n## 复杂度\n\n时间O(n log n)（状态按长度排序），空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\ndef solve(raw):\n    s,L,H,U=json.loads(raw);trans=[{}];link=[-1];length=[0];occ=[0];first=[-1];last=0\n    for index,c in enumerate(s):\n        cur=len(trans);trans.append({});length.append(length[last]+1);link.append(0);occ.append(1);first.append(index);p=last\n        while p>=0 and c not in trans[p]:trans[p][c]=cur;p=link[p]\n        if p>=0:\n            q=trans[p][c]\n            if length[p]+1==length[q]:link[cur]=q\n            else:\n                clone=len(trans);trans.append(trans[q].copy());length.append(length[p]+1);link.append(link[q]);occ.append(0);first.append(first[q])\n                while p>=0 and trans[p].get(c)==q:trans[p][c]=clone;p=link[p]\n                link[q]=link[cur]=clone\n        last=cur\n    order=sorted(range(1,len(trans)),key=lambda i:length[i],reverse=True)\n    for v in order:occ[link[v]]+=occ[v]\n    counts={};valid=[False]*len(s)\n    for i,c in enumerate(s):\n        counts[c]=counts.get(c,0)+1\n        if i>=L:\n            old=s[i-L];counts[old]-=1\n            if counts[old]==0:del counts[old]\n        if i>=L-1:valid[i]=len(counts)<=U\n    return str(max((occ[v] for v in order if length[link[v]]<L<=length[v] and valid[first[v]]),default=0))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-36",
+      "sourceContentHash": "079a26c997d4d9a4caac458d119edd3880feb75be92ec45ebc1c5534db6899de",
+      "packageChecksum": "44cc75d6748bbfbc48576bbacc4cc617a62393a712247a5928b767992c887d59",
+      "editorial": "## 思路\n\n把返程反向，成为两个人同时从左上走到右下。同步步数t确定列t−行，DP状态仅记录两人的行；同格只加一次乘客。\n\n## 正确性\n\n每条往返路线与一对向右/下的单程路径一一对应。每个格子行列和固定，若两路均经过它则必在同一同步步到达，故同格去重恰好实现只接一次。每步枚举两人各右/下四种前驱覆盖所有路径对。\n\n## 复杂度\n\n时间O(n³)，空间O(n²)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);flat=list(map(int,d[1:]));g=[flat[i*n:(i+1)*n] for i in range(n)];neg=-10**9\n    if g[0][0]<0 or g[-1][-1]<0:return '0'\n    dp=[[neg]*n for _ in range(n)];dp[0][0]=g[0][0]\n    for step in range(1,2*n-1):\n        nxt=[[neg]*n for _ in range(n)]\n        for a in range(max(0,step-n+1),min(n-1,step)+1):\n            if g[a][step-a]<0:continue\n            for b in range(max(0,step-n+1),min(n-1,step)+1):\n                if g[b][step-b]<0:continue\n                value=dp[a][b]\n                if a:value=max(value,dp[a-1][b])\n                if b:value=max(value,dp[a][b-1])\n                if a and b:value=max(value,dp[a-1][b-1])\n                if value>=0:nxt[a][b]=value+g[a][step-a]+(g[b][step-b] if a!=b else 0)\n        dp=nxt\n    return str(max(0,dp[-1][-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-37",
+      "sourceContentHash": "8926e238f5747242c9b258a816091a72cde7673d52898fa8fa019ef51705cb4c",
+      "packageChecksum": "e4708621367223f5eed3a539965010ef93b4287cb26e770f615d29e5e66f96cd",
+      "editorial": "## 思路\n\n构建出边表模拟get_links，然后从start做BFS，第一次发现target时返回层数。\n\n## 正确性\n\n路径上每条边均对应一次点击，BFS逐距离层扩展，首次到达节点的距离最短。只遍历出边不会把单向链接变成反向链接，访问标记避免自环重复。\n\n## 复杂度\n\n时间O(V+m)，空间O(V+m)，另含页面名存储。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import deque\ndef solve(d):\n    m=int(d[0]);adj={}\n    for i in range(m):a,b=d[1+2*i:3+2*i];adj.setdefault(a,[]).append(b)\n    start,target=d[1+2*m:3+2*m];q=deque([(start,0)]);seen={start}\n    def get_links(page):return adj.get(page,[])\n    while q:\n        u,dist=q.popleft()\n        if u==target:return str(dist)\n        for v in get_links(u):\n            if v not in seen:seen.add(v);q.append((v,dist+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-38",
+      "sourceContentHash": "312a002a73ae519e7eee30a3e5e9f9c936b4fbbf18438240f0c96586ffe73cf6",
+      "packageChecksum": "b9d91efa65e851e10b42237e96caac30bcb9c491874a123b4c586a4b31782f2e",
+      "editorial": "## 思路\n\n先排序合并已有相交区间，再双指针找能被一段连接的最多连续块：第r块起点减第l块终点≤k。连接w块后总块数减少w−1。\n\n## 正确性\n\n合并后的块严格分离。跨过首末两块的新增段至少要覆盖它们之间的空隙，最短长度为右块左端点减左块右端点；满足时取这两个端点便同时连接中间所有块。最优新增段的所有交块连续，故枚举所有窗口并取最大不会遗漏。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);nums=list(map(int,d[2:]));merged=[]\n    for a,b in sorted(zip(nums[::2],nums[1::2])):\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;best=1\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>k:left+=1\n        best=max(best,right-left+1)\n    return str(len(merged)-best+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-39",
+      "sourceContentHash": "2037e483fa005ed20648fdd5500c249d64e45bb68af1616336518e0eabcdc6ab",
+      "packageChecksum": "8d633bb4e4e5ab361c797f0cb652cf19756492759b9cdeb09d4ecef3813ba8b4",
+      "editorial": "## 思路\n\n扫描时保存最近一个人和蛋糕下标，每次遇到非零元素与最近的另一类配对。\n\n## 正确性\n\n以当前元素为右端点的最短有效距离由左侧最近的另一类给出。每个有效对的较大下标会在扫描中成为当前元素，取这些局部最小值的最小值就是全局最小。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    last=[-1,-1,-1];best=len(d)\n    for i,value in enumerate(map(int,d[1:])):\n        if value:\n            other=3-value\n            if last[other]>=0:best=min(best,i-last[other])\n            last[value]=i\n    return str(best if best<len(d) else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-snowflake-40",
+      "sourceContentHash": "f2f45d0a834d55e2ebe9f13496c94ad703754d6d6f440de10a70dae036f365dd",
+      "packageChecksum": "4d3f2ee18faf2af73db046da6201e52b65c4bf94c4417133fa1ba72fddffbb4f",
+      "editorial": "## 思路\n\n先统计偶数个数e，前e个位置中的奇数个数就是答案。\n\n## 正确性\n\n前e位中的每个奇数必须离开，一次交换至多纠正其中一个，所以它们个数为下界。后面恰有相同个数错位偶数，将两类逐一交换，每次纠正一对，达到下界。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));even=sum(v%2==0 for v in a);return str(sum(v%2 for v in a[:even]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "闭区间当开区间",
+    "code": "def solve(d):\n    starts=sorted(map(int,d[1::2]));ends=sorted(map(int,d[2::2]));j=0;active=answer=0\n    for start in starts:\n        while j<len(ends) and ends[j]<=start:active-=1;j+=1\n        active+=1;answer=max(answer,active)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只统计不同开始时刻",
+    "code": "def solve(d):\n    starts=sorted(map(int,d[1::2]));ends=sorted(map(int,d[2::2]));j=0;active=answer=0\n    for start in starts:\n        while j<len(ends) and ends[j]<start:active-=1;j+=1\n        active+=1;answer=max(answer,active)\n    return str(len(set(starts)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

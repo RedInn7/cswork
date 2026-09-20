@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把1位也翻转",
+    "code": "def solve(d):\n    k=int(d[1]);out=[]\n    for c in d[2]:\n        if k:out.append('1');k-=1\n        else:out.append('0')\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "优先低位",
+    "code": "def solve(d):\n    k=int(d[1]);out=[]\n    for c in d[2][::-1]:\n        if c=='0' and k:out.append('1');k-=1\n        else:out.append('0')\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

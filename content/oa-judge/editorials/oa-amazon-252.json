@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-252",
+  "title": "内容不同但等频的最长子串对",
+  "explanation": "## 思路\n\n记录每字符首次及最后位置，以及是否出现在两个不同的连续同字符段。对出现于多个段的字符c，候选为last[c]−first[c]，取最大，无候选返回−1。\n\n## 正确性证明\n\n若首末c之间不是全c，两窗口s[f:l]与s[f+1:l+1]仅移走和加入一个c，故等频；若内容相同则f..l全部为c，矛盾，得到候选下界。反之任一合法A=s[i:i+L],B=s[j:j+L]且i<j，等频相减得s[i:j]与s[i+L:j+L]等频。令c=s[i]，右块必有c在q≥i+L，因此其全局首末距离≥L。A不可能单色，否则B等频就与A相同；c的首末区间包含A，故该c跨不同段，属于候选。所有合法长度都不超过最大候选，下界达到即最优。\n\n## 复杂度\n\n时间O(n)，辅助空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];first={};last={};first_run={};last_run={};run=0;previous=None\n    for i,c in enumerate(s):\n        if c!=previous:run+=1;previous=c\n        if c not in first:first[c]=i;first_run[c]=run\n        last[c]=i;last_run[c]=run\n    answer=max([-1]+[last[c]-first[c] for c in first if first_run[c]!=last_run[c]])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#252-longest-perfect-anagrams",
+  "sourceContentHash": "cd48450ecffbf8a5517091613e59c802b808f0a376fced008fdeca2ed6023cce",
+  "author": "CSWork"
+}

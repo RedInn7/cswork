@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-40",
+  "title": "连续段受限的最长AB串",
+  "explanation": "## 思路\n\n先处理连续上限为0的情况。否则如果A超过B所提供的countB+1个槽位容量，就只用槽位能容纳的A；B过多时对称处理；都不过多则全用。\n\n## 正确性证明\n\nb个B将A划分为至多b+1段，所以a≤maxA(b+1)是必要条件，反向同理。两个上限至少1时这两条件也充分：以较多一类分散成至多少数+1段，再分配少数分隔并在段间填充，可使每段不超过上限。若仅一类超容量，保留全部另一类、填满槽位达到最大值；删另一类只会进一步减少容量。两类同时超容量不可能。\n\n## 复杂度\n\n时间O(1)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a,b,ma,mb=map(int,d)\n    if ma==0:return str(min(b,mb))\n    if mb==0:return str(min(a,ma))\n    if a>ma*(b+1):return str(b+ma*(b+1))\n    if b>mb*(a+1):return str(a+mb*(a+1))\n    return str(a+b)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#40-get-optimal-string-length",
+  "sourceContentHash": "54ed694f75b02446e4c8a0e20a8c22a573562f2a798640eca614116c799f2fb4",
+  "author": "CSWork"
+}

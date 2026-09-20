@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只处理重复不处理相邻",
+    "code": "def solve(d):\n    s=d[0];i=1;answer=0\n    while i<len(s):\n        if abs(ord(s[i])-ord(s[i-1]))==0:answer+=1;i+=2\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "被修改点不跳过后边",
+    "code": "def solve(d):\n    s=d[0];i=1;answer=0\n    while i<len(s):\n        if abs(ord(s[i])-ord(s[i-1]))<=1:answer+=1;i+=1\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

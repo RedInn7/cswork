@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-239",
+  "title": "严格更大的最小无相邻重复字符串",
+  "explanation": "## 思路\n\n预处理每个前缀是否相邻合法。从右向左枚举首次改动位置，尝试更大的最小合法字符，再用a或b贪心填最小后缀。\n\n## 正确性证明\n\n任何严格更大结果都有唯一首次不同位置，其保留前缀必须合法；该位置越靠右，结果越小。同位置选最小可用增大字符，此后逐位选不同于前一位的最小字母即可完成。遍历顺序精确按可能最优的优先级，首个结果就是答案。\n\n## 复杂度\n\n时间O(26n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];n=len(s);valid=bytearray(n+1);valid[0]=valid[1]=1\n    for i in range(1,n):valid[i+1]=valid[i] and s[i]!=s[i-1]\n    for i in range(n-1,-1,-1):\n        if not valid[i]:continue\n        for value in range(ord(s[i])+1,123):\n            c=chr(value)\n            if i and c==s[i-1]:continue\n            out=list(s[:i])+[c]\n            for _ in range(i+1,n):out.append('a' if out[-1]!='a' else 'b')\n            return ''.join(out)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#239-get-special-string",
+  "sourceContentHash": "253e8ff3bc1d42a7d7475ced8e9a33b87af12c0477eedfb5072725bd25f633bc",
+  "author": "CSWork"
+}

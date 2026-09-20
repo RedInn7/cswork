@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复元素占位",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);previous=0\n    for v in sorted(map(int,d[2:])):\n        gap=v-previous-1\n        if k<=gap:return str(previous+k)\n        k-=gap;previous=v\n    return str(previous+k)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "从零而非正数开始",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);previous=-1\n    for v in sorted(set(map(int,d[2:]))):\n        gap=v-previous-1\n        if k<=gap:return str(previous+k)\n        k-=gap;previous=v\n    return str(previous+k)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

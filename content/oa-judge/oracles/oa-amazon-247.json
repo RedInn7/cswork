@@ -1,0 +1,654 @@
+[
+  {
+    "input": "ab(e.r)*e\n2\nabbeere\nabefretre\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "..()*e*\n3\ncode\nabeee\ncd\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "(.)*\n4\nac\nand\nbcd\n-\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "abb*\n1\na\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "a.*.*\n5\naabaaba\n-\naa\nb\n-\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "(aa.)*\n1\naaba\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(..)*(.b)*.*a*\n2\naa\nbaaa\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "a\n3\nb\na\nbaa\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "b*\n1\nbaaaab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(bb)*\n1\nbababbaa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b*ba*\n2\n-\n-\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(bbb)*b\n3\nbaabbaba\naaabbaab\na\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": ".b*(b)*\n3\na\na\naaab\n",
+    "expectedOutput": "YES\nYES\nNO\n"
+  },
+  {
+    "input": "(a)*\n5\nbbabbab\naabbbba\n-\nbabaab\nabbabb\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "b*.*.*\n2\nababa\naaabbba\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": ".*\n4\nabbab\nbaab\naaaba\nba\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": ".b*a.\n2\naaa\nbbb\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "b*a*\n1\nb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": ".*.(baa)*\n2\nbabba\nbaaba\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "a*.*\n2\na\nbabaabaa\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": ".*(ab.)*b\n2\nbaa\nbaaabab\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "(a)*\n3\nabababa\n-\nababb\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "(bb.)*\n4\naabaaaab\nabaabab\nb\naa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "b\n4\nbab\nbabbabbb\naaba\nbbaba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(ba)*.*(.)*.*\n4\nbab\nbb\naaaabb\nab\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": ".\n2\nbaaabba\nbaabbb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": ".*(bba)*(aa)*\n2\nbbba\nbb\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "b\n1\nbbb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(bbb)*(b)*.*\n4\n-\n-\nabaabaa\na\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "()*.ba*\n5\nbaa\nab\nabaa\nabbbbb\nbbabbb\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "(b)*.*()*a\n2\nabba\n-\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": ".*\n2\n-\naa\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": ".b\n1\nabb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b(aaa)*a()*\n5\nba\nba\n-\n-\nbaababba\n",
+    "expectedOutput": "YES\nYES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".*.\n3\n-\naa\naabaab\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "(a)*\n3\naabbbbaa\nba\naabbba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": ".\n2\nab\nabb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "bb*\n3\n-\nababb\nbbbaaaaa\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": ".*\n4\naabbbbb\nabaabaaa\nab\nbbb\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "bb\n2\nabbabaa\naabba\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": ".*(aa)*b*b\n4\nbab\nbb\nabbab\naabaabb\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": ".()*()*\n2\naab\nb\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "a*(.)*\n1\n-\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "b*a*(aa.)*\n3\naabbb\n-\nbabb\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "()*(..)*bb*\n5\nbabaaa\n-\nbaaaaba\nabbabb\n-\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "a*\n5\nabbaa\naaaaa\n-\nabbab\nabbb\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "b*a*.\n5\naabaaa\na\nb\nbbbab\na\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "a*.a\n2\nbb\nbbbbaa\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": ".\n1\n-\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "aa*\n3\naaabaa\nabab\nba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": ".\n1\nbba\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b*\n2\n-\nbababaab\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": ".*(.a.)*\n1\nbaaabba\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "a.\n4\nbb\nbaaba\nbbba\nbabb\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "b\n2\nbbba\nab\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": ".b*\n4\nab\nbabbbb\naabaa\nbbbbaaaa\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(...)*bb*(a)*\n1\naabaabba\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "()*a.*\n5\n-\na\nbbaabab\nbabba\nbabaaaa\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".*\n3\n-\n-\nabbbbaaa\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "(a..)*(.)*aa\n3\nabb\naabb\na\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "(ab)*.b*\n1\naa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "ba(bab)*a\n4\nbbabb\nabba\naa\naa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(ba)*\n4\naa\nabbaaa\nbb\nab\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(..a)*a\n2\nbaabbb\na\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "(aab)*(..)*b\n3\nbbbaabbb\nbabb\nba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "aaa*\n4\nabaaabab\nbaba\nbbaa\nbbab\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(a)*\n4\nabbaa\nb\nab\nbbabbbb\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "()*b.(.bb)*\n5\nb\nbb\nba\naaaab\nba\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "(a)*\n4\nbabbbbba\nbabaaba\nabbaaba\nbbb\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".a(a.a)*\n3\nabab\n-\n-\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "aaa\n4\nabaa\naabab\nbbbaabb\nababbaa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "b\n5\nbaab\nbabab\nbbbab\naaaaba\nabb\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "b()*\n4\n-\n-\naababa\nbbabaaaa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(.bb)*a.\n2\naaabaaaa\nabbba\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "b.*.\n5\nbabaaba\nbbb\nb\naababba\nababb\n",
+    "expectedOutput": "YES\nYES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(..b)*\n5\naaabb\nabaaba\naaba\naa\nbbbaaaba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(a)*b*.*b\n4\nbbbb\nabbbb\naaaaab\naabbbb\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "b*a.\n1\n-\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": ".a*.*\n3\na\naabab\nbaaab\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "()*\n1\n-\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "a*a*\n4\nbbabbb\naaaababb\nbbbaba\nbbab\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "a*b*\n2\nb\nab\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": ".*b*\n3\nba\nbabab\nabb\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": ".*a.*.*\n3\nbabb\na\nbababbb\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "(bbb)*\n2\nb\n-\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "ab()*a*\n1\nabbabbaa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "()*.*.\n5\nb\naa\na\n-\n-\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": ".*a*\n3\nababb\nbaabb\nabbab\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "(ba.)*\n4\n-\na\naaaa\nabbabaa\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(.a)*\n2\nbbabbbaa\nb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "()*(bab)*(.)*\n5\nabaababb\nbabbab\nabbaabb\nab\nbbabbaaa\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "a*\n4\nbbb\nbbaa\nabbaabaa\nbaaabab\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "a*(.ba)*a*\n1\nbabaaa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "a*...\n4\naa\n-\n-\naabab\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "b.\n2\naabbbab\nabb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(bb)*a*(b..)*\n1\nbaabbaaa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(ab)*b\n2\nbaa\nbabbba\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(..)*(a)*(b)*\n3\n-\nb\n-\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "aa\n3\naababbb\nbbbab\nbbbaaba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "a*a\n1\naababb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "a*(ab)*a\n5\naaabab\n-\nbb\nabbba\nbba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".\n2\n-\nbab\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(a)*()*\n5\nbaa\nba\naba\naaaaaa\nbaaa\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "(.a)*(ab.)*\n1\nb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b*\n2\nbaaaaba\nabab\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "a.\n2\nbabaaaba\nbaaaba\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "a*.*\n3\naabbbaa\nb\nabababbb\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "(a)*ba()*\n3\naaaaaba\naabaaaa\nbaaaaaaa\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "(b.a)*\n4\nbba\n-\nbba\naba\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "aa*b\n3\naaabbaaa\naaaaaaa\nbabaaabb\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "(bab)*()*.*\n1\n-\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "..bb*\n5\naababab\nababbb\nbbaaab\nababaab\n-\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".(ba)*\n2\nbaaa\nbabbbbba\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(bba)*\n1\nbabbaaba\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "()*\n1\naabb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b.a*.*\n5\nbbabaa\nb\naaaa\nab\nbb\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "(..b)*b(a)*b*\n4\nbabaab\nbaababaa\naa\nbaba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "a*\n1\n-\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": ".(a)*\n5\n-\nbaabbba\nb\n-\naa\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "ab\n5\na\nab\naabaaaba\naabab\nbbbb\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "bb*\n5\nbbbab\nbaabbaa\nabbbb\nbbbba\nabbba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".*()*\n2\na\nabaabba\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "(b)*\n5\n-\naba\naabaaaa\nb\nab\n",
+    "expectedOutput": "YES\nNO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "(a)*(ba)*\n1\nb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b\n4\nbaa\n-\na\n-\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "a*\n5\nbabbaaa\n-\nb\n-\nbab\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\nNO\n"
+  },
+  {
+    "input": ".\n4\nabab\na\naaabbbba\nb\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "()*a*(.b)*\n3\naba\nbaaba\nba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "(..b)*a(a)*a\n3\nbaba\naababaa\nbbbaaba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": ".*()*a*.*\n3\nabb\nbbbaa\nbaa\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "(a.a)*b*\n2\nbbaaba\nabbaaab\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "()*a*.*.\n1\naaba\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "(b)*(ba.)*a*\n3\nbbbba\nbabbabba\nbbba\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "a*()*\n4\nbbabab\nbaa\n-\nabb\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "()*\n1\n-\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "(baa)*\n1\nbabbaabb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "()*\n2\nbaaaaa\na\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(aa)*\n1\nab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(.b)*(a)*\n1\nbb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": ".*()*a*\n3\nb\naba\naabaa\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": ".a*(..b)*\n4\nbabab\nababa\nbaa\nbbb\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "ab\n1\naaaba\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": ".*a\n2\naaaabb\na\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "(..a)*(baa)*\n3\n-\nababaaaa\nb\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "()*(ba)*\n1\nbaa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(b.)*a*a*\n3\nbbbbbb\nb\naabbaab\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "ab*(ab.)*\n1\naababbba\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "b*b*(...)*\n1\nb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "()*(..)*a\n4\naabbaabb\nba\nbabb\nabbba\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "(b)*b*()*b*\n3\nabbbbbb\nab\nababbaab\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "()*(b.)*\n4\naabb\nabbababb\nbaa\nabaa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".*(.ba)*\n2\nbba\naa\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "b*\n4\nab\nbbabbab\nbbaba\naaaba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "(b.)*\n1\naaabab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "(.)*\n4\nbaa\nbbbbb\n-\naba\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": ".*\n3\n-\nab\nbaba\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": ".a\n2\nbab\nabaa\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "(b)*b*b*\n4\nbab\naaabbbaa\nabaa\naa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "a\n5\n-\nabbbb\nabbabba\nbaabaaa\n-\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": ".\n4\nabaabbbb\na\naa\nbbbbaab\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "()*(b)*(a.)*.*\n1\naaaabbab\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": ".a*a*b\n1\nbabb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": ".()*.*\n5\nabaa\nababbbb\na\naa\nbb\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  }
+]

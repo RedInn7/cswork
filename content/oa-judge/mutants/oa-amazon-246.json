@@ -1,0 +1,10 @@
+[
+  {
+    "name": "等量也视为打不过",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));b=sorted(a);total=0;threshold=b[0]\n    for v in b:\n        if total<=v:threshold=v\n        total+=v\n    return ' '.join(str(i+1) for i,v in enumerate(a) if v>=threshold)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误只允许初始最大值幸存",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));b=sorted(a);total=0;threshold=b[0]\n    for v in b:\n        if total<v:threshold=v\n        total+=v\n    return ' '.join(str(i+1) for i,v in enumerate(a) if v==b[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,299 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-236",
+      "status": "authored",
+      "reason": "将小写字符串切成若干非空连续段，每段每个字符最多出现一次，求最少段数。不能重排字符或跳过字符。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-number-redundancy-free.md",
+          "gitBlobSha1": "cca649cf34b4663bd95e6af197caf4957dacaefa",
+          "rawSha256": "6108903fdf896a0ac6a4d247bd14422921b1af4d487f227b42d3640602866504",
+          "catalogContentHash": "3cf00d8786370456e888a1c56c5c835fa52a7851ae4105d4d33e1cc1f07e5b44"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-237",
+      "status": "authored",
+      "reason": "数组值互异。一次选择数组中存在的值x，先放全部小于x的元素，再放全部大于等于x的元素，两组内部各保持当前相对顺序。目标为升序，先最小化操作数，再取阈值序列的字典序最小者；原本有序输出−1。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-operations.md",
+          "gitBlobSha1": "df986b4829a48952ba6422bf67fa10ea25d3f37c",
+          "rawSha256": "48c4a4e9806a468d469208e1da5e6b74a0ecaac79a91cf153864f758f356eee7",
+          "catalogContentHash": "16b153be93705531219a1d6908c87f0920bd1831ab81e858ee595679b08e8ff4"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-238",
+      "status": "blocked",
+      "reason": "原文定义substring为0 or more characters且没有样例，空串恒满足长度=aV+bC，但未明确不计空串、每边界计空串或只计一种空串；a,a=b=0三种结果0/2/1，核心计数规则未定。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-redundant-substrings.md",
+          "gitBlobSha1": "e4cd28127eda89edfa183d970ac0e370d0f8be17",
+          "rawSha256": "004a374b4e59da593cc40ff3426dc8e148bfb12cd07232546b67e904283ee317",
+          "catalogContentHash": "50c1df4ac36549b1f57c9b3aaaa8e69b84a2fa4e030550690be436fcdc68de02"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-239",
+      "status": "authored",
+      "reason": "输出与s同长度、字典序严格大于s、且相邻字符不同的字符串中最小者；不存在输出−1。原串本身可能已有相邻重复，z不能循环成a。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-special-string.md",
+          "gitBlobSha1": "eb3c6dcc3dfb217d3287ca486ed3a2b84db60053",
+          "rawSha256": "ffd6f2e7225240430b425863ec2f4e3763e71494a1be8c0853abced3a677f38f",
+          "catalogContentHash": "253e8ff3bc1d42a7d7475ced8e9a33b87af12c0477eedfb5072725bd25f633bc"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-240",
+      "status": "authored",
+      "reason": "收入数组中每个非空连续期间若包含至多k个不同收入值则稳定，统计所有稳定期间，对1000000007取模。不同起止位置分别计数。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-stable-periods-count.md",
+          "gitBlobSha1": "4800ade5445c688c7cc53667be6bbe4e79dd8077",
+          "rawSha256": "96e9d971ec74d04b8738225d756fcef9ccc67a6c3fc52f4d6ba0f7c832bffd8d",
+          "catalogContentHash": "b5145f01727a7e1a99acfab7cf89f9e3a2004006d8bc010ea9b595edd71dd097"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-241",
+      "status": "authored",
+      "reason": "初始n台服务器，ID也表示该台处理请求数。随后n天，第j天把全部ID为replaced[j]的服务器ID改为newId[j]，输出每一天操作后的ID总和。替换不存在ID或同ID不改变结果。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-total-requests.md",
+          "gitBlobSha1": "b2562463d088a4e5877a7317b020d39030b71b0a",
+          "rawSha256": "eeefb995aea3164244bacdb361832c078bfa1f71ea2e8d8f593b0ecc197b323d",
+          "catalogContentHash": "0add0706518b12545ffb7cfd2735eb6333512962aa62e8fa13a5d95fa6fc7fb9"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-242",
+      "status": "authored",
+      "reason": "将全部学生划分成班级，每班任意两人的技能差不超过maxSpread，求最少班数。分组不要求保持原下标相邻，同技能不同学生均须安排。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-group-students.md",
+          "gitBlobSha1": "ecf2c4e8d902b81338e0dff1adb423684aaf30a7",
+          "rawSha256": "1cd5c8f7eba21fbcf421a78c470cc4db5e8e79733953e48dc8d16076a63e8931",
+          "catalogContentHash": "9cb445e777d82ffb9d13f4f492252890db1bbb0387ea312c29ac1fad76e5c96a"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-243",
+      "status": "authored",
+      "reason": "两组各n人。对每个相同下标对i<j，第一组两人技能和严格大于第二组对应两人技能和时获胜，平局不胜。统计获胜场数，对1000000007取模。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-group1-win-count.md",
+          "gitBlobSha1": "617e95bfb562def6585372a88721cf6b543454e6",
+          "rawSha256": "2412f06d5a1b924beaef8825ef5b529b9831849a24da3a8479092a2f51a6eb76",
+          "catalogContentHash": "7ec3a9a0a737f12c7d8a17608497baa07dabfb17c143662847d5b955e89f1c88"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-244",
+      "status": "authored",
+      "reason": "初始小写密码长度n。第t秒将attackOrder[t]位置（1基）改成*，attackOrder是1..n的排列。损坏子串是至少含一个*的非空连续子串，按起止位置分别计数。求数量首次达到或超过m的秒数。m=0时按来源特别规定输出1。来源正文误写阈值n，据参数m和两例更正。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-help-amazon-find-min-time-again.md",
+          "gitBlobSha1": "d291cd36145449eab21db5921e28e8092e320e92",
+          "rawSha256": "664617d65d3d44bd40afe4bce5878e88b2d6b4523f5100e403fa8a00c40102b2",
+          "catalogContentHash": "f7caeda1f0d901fa54ffd17283843b22a52da5d9871fafb3a75ab4d57de455ea"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-245",
+      "status": "authored",
+      "reason": "两组各n人。对每个相同下标对i<j，第一组两人技能和严格大于第二组对应两人技能和时获胜，平局不胜。统计获胜场数，对1000000007取模。本页索引排版缺失，由同快照amazon-group1-win-count.md的完整正文和相同样例补回对应下标规则。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-how-many-games-did-the-team-win.md",
+          "gitBlobSha1": "25aafd0238257dfbcdaeccc3ca8e9f16dfed4d6e",
+          "rawSha256": "399115d59d8ffbce4ebec779b4362e522e369153d3f60daf7c076e50092d799c",
+          "catalogContentHash": "008104bbf2a2323f5341879c51be176511cf72ab044b1f9540d9c500d4eca541"
+        },
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-group1-win-count.md",
+          "gitBlobSha1": "617e95bfb562def6585372a88721cf6b543454e6",
+          "rawSha256": "2412f06d5a1b924beaef8825ef5b529b9831849a24da3a8479092a2f51a6eb76",
+          "catalogContentHash": "008104bbf2a2323f5341879c51be176511cf72ab044b1f9540d9c500d4eca541"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-246",
+      "status": "authored",
+      "reason": "每次任选两个当前任务交战，机器人多者赢并吸收对方全部机器人；同数量时任一方都可能赢。持续到只剩一个任务，输出至少存在一种过程能最终存活的全部原1基下标，升序排列。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-inventory-processes-survival-possibility.md",
+          "gitBlobSha1": "09106a13c71dd9d7436464f8155532709803519c",
+          "rawSha256": "d885143e7059f5c80bc5870e91b0f079ae68815b62064ec45a0a0ab772660e9b",
+          "catalogContentHash": "c8ab1eb05f0b42ba0e2631de020c89bf34b87560e853fffebe82e34cee9a4dba"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-247",
+      "status": "authored",
+      "reason": "对每个查询判断整个字符串是否匹配正则：小写字母匹配自身，.匹配一个任意小写字母，*表示前一原子重复零次或多次。括号内是字母或.的串，无嵌套无*，括号后必有*，允许空括号()*。每次重复中的.独立匹配。依据正式规则及a(b.d)*、ab(e.r)*e示例，纠正来源孤立错误说明：(.)*可以匹配ac、and、bcd，也能匹配空串。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-is-regex-matching.md",
+          "gitBlobSha1": "cd18136a22af5510c330d70f1012dbbfee6745ce",
+          "rawSha256": "c9dcde889b6f3eb86a97ff5edc738c9927f517d501cbf274e5e40c6235d0c6b9",
+          "catalogContentHash": "ec30d99f712a9ec07521a55d9251dc61103bd19e0b2e7acb42a2294e5363fd75"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-248",
+      "status": "authored",
+      "reason": "把小写字符串切成两个非空连续子串。每一段分别最多删除一个字符，然后可以任意重排；若两段都能组成回文输出YES，否则NO。删除不是必须做；长度1的段可直接保留。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-is-special-sequence.md",
+          "gitBlobSha1": "b04ae63dcd7cea0310b10f512302cdf8fcd305ec",
+          "rawSha256": "0f5c6886a5cbff50d6516f33bc823dfa44ec117e6610dfc0841588bcbb83eed9",
+          "catalogContentHash": "112cd72c4ac53d00590cad1100e04b6fdbc53f76d262578da65e7edae5d1a659"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-249",
+      "status": "authored",
+      "reason": "对数组从左到右的每个长度m连续窗口，输出其中第k小元素，相同数的不同位置分别占一个排序名次。输出顺序按窗口起点递增。原始正文截断，本规则由原始样例明确说明的m=3窗口、第2小及输出顺序恢复。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-kth-smallest-in-subarray.md",
+          "gitBlobSha1": "c2e88be1737aeb2ca10d58fb187a6a0a1c42d535",
+          "rawSha256": "04a37d9c49de3303324df356e16da398a038d89faf2a4d3ab9e7052331c5508f",
+          "catalogContentHash": "6f8c2ce55caeee58bae07c97cd5d94032f72fd8b8eb53f133fb8215488f5bf62"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-250",
+      "status": "authored",
+      "reason": "可重复任选：丢弃当前最左一件；或将当前最左重量加入结果，并移除它及之后的k件。剩余不足k件时一并移除，仍可选取当前件。要求结果重量非增，并在全部可行结果中按字典序最大：首次不同处更大者优先，另一序列为其前缀时更长者优先。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-lexicographically-maximal-resulting-array.md",
+          "gitBlobSha1": "75232fcdc24ad627d1652d14336ad5803bfe4b3b",
+          "rawSha256": "9e533b99ac491e346baf86dca2326603f55cd40dcfe633b1eac843a9ee95c0e4",
+          "catalogContentHash": "9ab365e99761961eedf30412be1f7c8bb2bd3ae7d4a99636aa70fab09e9d2345"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-251",
+      "status": "blocked",
+      "reason": "raw正文真的只剩Giv。第三例说明明确允许替换?后重排，足以否定来源镜像法，但缺少完整操作和字符域定义，不用来源代码擅定完整规则。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-lexicographically-smallest-palindrome-possible.md",
+          "gitBlobSha1": "139683bd6edfaea284159043a119d9f5ff85cac0",
+          "rawSha256": "8f69c237c1d630bcb7d46f441e63ca9c1e93b377deec4b980db6c4013d23486a",
+          "catalogContentHash": "319f953042b4e6a578ab70472b7320729110a6323835329d5532aa01b323e255"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-252",
+      "status": "authored",
+      "reason": "两个字符串各字符出现次数相同，但字符串内容不能完全相同，称为完美异位词对。求原串两个连续子串组成这种对时的最大长度；允许重叠，按内容相同的两个位置不算，若不存在输出−1。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-longest-perfect-anagrams.md",
+          "gitBlobSha1": "62fc1ad88df7cbf5ad22327b69093f7ec400e6b8",
+          "rawSha256": "426f78972cc9b1bed53793b014c9ebd1301c0ef8bb281a6eadd3f59945258aa0",
+          "catalogContentHash": "cd48450ecffbf8a5517091613e59c802b808f0a376fced008fdeca2ed6023cce"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-253",
+      "status": "authored",
+      "reason": "每次只能删除当前最左元素，不能从中间删除。求使剩余数组所有元素互异的最少操作次数；原本互异则0。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-make-all-elements-distinct.md",
+          "gitBlobSha1": "b737687c2c916365a08a9a9a03e09437d08c2df9",
+          "rawSha256": "b5383ad863a4023f617b62ff9a09ecd55ebc6b541f1a3feb09afcf18c734fb6f",
+          "catalogContentHash": "0d11ac3296838eeffdf6d4a28ab0c6837f3a9c8bd60156b143550cd27437eaf2"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-254",
+      "status": "authored",
+      "reason": "每件商品只能增加尺寸，每增加1单位付该商品对应cost。要求最终全部尺寸互异，求最小总费用。所有商品都保留，没有上限限制最终尺寸。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-make-array-distinct.md",
+          "gitBlobSha1": "95883a4c6367119481da19dad08b4a61c5e6363d",
+          "rawSha256": "998e657a31102452b9efbfdc5ac2893ef390423620296daf125aa55f2154750e",
+          "catalogContentHash": "08f5b40be351432ec2c275cc0fa2dee350c10e9aed7e0a2d3d8377e0544bc0b3"
+        },
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-get-minimal-cost.md",
+          "gitBlobSha1": "aa8d52fd2362eee1dc5cbc6b165a7a2cb6c3472a",
+          "rawSha256": "4e97a7959d548ac72619ecf50330c5b437f823ff1a717b34af0d6249ee111db9",
+          "catalogContentHash": "08f5b40be351432ec2c275cc0fa2dee350c10e9aed7e0a2d3d8377e0544bc0b3"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-255",
+      "status": "authored",
+      "reason": "非负数组每次选择正整数x，不超过当前最小非零元素，从每个正元素减去x，原0保持0。求全部归零的最少次数。 原始快照e66f809逐题核对，独立oracle和正常退出语义负控通过。",
+      "sourceEvidence": [
+        {
+          "commit": "e66f809f4c953bce129f68491726176615db6afc",
+          "path": "fastprep/Amazon/amazon-make-array-zero-by-subtracting-equal-amounts.md",
+          "gitBlobSha1": "4b4e4943f730802fbc5012e45f80f3f645eb797d",
+          "rawSha256": "cbec3507a3eeb7a02aa9229af9380846110bc9bad3dbf9829bd04d63129affa2",
+          "catalogContentHash": "af2c1a71953f27f1b1f4a83b28ad4ae80a5019471c246583c97dcfe82c29e523"
+        }
+      ]
+    }
+  ]
+}

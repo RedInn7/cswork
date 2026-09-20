@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-31",
+  "title": "全天所有人可参加的最早会议",
+  "explanation": "## 思路\n\n事件在分钟轴上做差分[start,end+1)，求每分钟忙碌人数。扫描连续零占用分钟数，首次达到k即最早时段。\n\n## 正确性\n\n所有人空闲当且仅当没有事件覆盖对应分钟。差分前缀和准确统计闭区间占用，连续k个零正好意味着完整会议可进行。按时间递增首次达标最早。\n\n## 复杂度\n\n时间O(n+1440)，空间O(1440)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);diff=[0]*1441\n    def minute(s):h,m=map(int,s.split(':'));return h*60+m\n    for i in range(n):\n        a=minute(d[4+4*i]);b=minute(d[5+4*i]);diff[a]+=1;diff[b+1]-=1\n    busy=run=0\n    for t in range(1440):\n        busy+=diff[t];run=run+1 if busy==0 else 0\n        if run>=k:\n            start=t-k+1;return f'{start//60:02}:{start%60:02}'\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#31-meeting-assistant",
+  "sourceContentHash": "8fad4a8ae3f79da78e45d7dcff95b3f048e16002094647204997adf0aceefea4",
+  "author": "CSWork"
+}

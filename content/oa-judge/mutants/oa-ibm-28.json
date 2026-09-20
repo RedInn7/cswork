@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不跳过重复ID",
+    "code": "def solve(d):\n    lines=d.split('\\n');n,k=map(int,lines[0].split());seen=set();out=[]\n    for v in reversed(lines[1:n+1]):\n        if False:continue\n        seen.add(v);out.append(v)\n        if len(out)==k:break\n    if len(out)<k:return '-1'\n    return str(k)+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按最早出现取值",
+    "code": "def solve(d):\n    lines=d.split('\\n');n,k=map(int,lines[0].split());seen=set();out=[]\n    for v in lines[1:n+1]:\n        if v in seen:continue\n        seen.add(v);out.append(v)\n        if len(out)==k:break\n    if len(out)<k:return '-1'\n    return str(k)+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

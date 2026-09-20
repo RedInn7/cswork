@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-snowflake-23",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "相邻和对称房屋异色",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Snowflake"
+    ],
+    "description": "偶数n间房排成一排，从固定三种颜色中涂色，相邻以及距离两端相同的两间房必须不同色。原始快照明确为不同色，catalog相同色是错误。答案模10⁹+7。 此catalog条目与此前题同源，保留独立题目ID及独立验证。\n\n输入输出协议和明确标注的补充约束由本站整理，不执行上游题解。",
+    "input": "一行偶数n，2..100000。",
+    "output": "输出题意要求的一个整数。",
+    "explanation": "三个公开样例的答案依次为：6；18；54。样例由独立枚举、状态搜索或直接模拟复核。",
+    "hints": [
+      "从两端向中间逐对涂色：首对6种，之后每对3种。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "100000\n",
+      "expectedOutput": "756220705\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "99998\n",
+      "expectedOutput": "585406904\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "8\n",
+      "expectedOutput": "162\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "10\n",
+      "expectedOutput": "486\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "8\n",
+      "expectedOutput": "162\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "8\n",
+      "expectedOutput": "162\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "8\n",
+      "expectedOutput": "162\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "8\n",
+      "expectedOutput": "162\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "8\n",
+      "expectedOutput": "162\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "4\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "6\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

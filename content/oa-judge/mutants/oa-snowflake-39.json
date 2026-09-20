@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只考虑人先于蛋糕",
+    "code": "def solve(d):\n    last=[-1,-1,-1];best=len(d)\n    for i,value in enumerate(map(int,d[1:])):\n        if value:\n            other=3-value\n            if value==2 and last[other]>=0:best=min(best,i-last[other])\n            last[value]=i\n    return str(best if best<len(d) else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把空位距离当索引差",
+    "code": "def solve(d):\n    last=[-1,-1,-1];best=len(d)\n    for i,value in enumerate(map(int,d[1:])):\n        if value:\n            other=3-value\n            if last[other]>=0:best=min(best,i-last[other]-1)\n            last[value]=i\n    return str(best if best<len(d) else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

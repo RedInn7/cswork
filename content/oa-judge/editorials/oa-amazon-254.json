@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-254",
+  "title": "增加商品尺寸至互异的最低总费用",
+  "explanation": "## 思路\n\n按原尺寸排序扫描可用坐标，堆里放已到达原尺寸的商品，每次优先固定单位成本最高者；堆空时跳到下个原尺寸。\n\n## 正确性证明\n\n若某坐标可放商品而不放，提前一个未来可放商品只会省费。若当前放低成本而高成本可放者稍后才放，交换两者仍不小于其原尺寸，费用变化为间隔乘低成本减高成本，不增。因此存在每步都与贪心一致的最优分配。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，最终费用用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import heapq\n    n=int(d[0]);a=list(map(int,d[1:1+n]));costs=list(map(int,d[1+n:]));items=sorted(zip(a,costs));heap=[];i=0;pos=0;answer=0\n    while i<n or heap:\n        if not heap:pos=max(pos,items[i][0])\n        while i<n and items[i][0]<=pos:\n            start,cost=items[i];heapq.heappush(heap,(-cost,start,cost));i+=1\n        _,start,cost=heapq.heappop(heap);answer+=(pos-start)*cost;pos+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#254-make-array-distinct-selling-shoes-",
+  "sourceContentHash": "08f5b40be351432ec2c275cc0fa2dee350c10e9aed7e0a2d3d8377e0544bc0b3",
+  "author": "CSWork"
+}

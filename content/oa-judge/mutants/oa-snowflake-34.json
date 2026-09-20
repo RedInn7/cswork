@@ -1,0 +1,10 @@
+[
+  {
+    "name": "删除时刻边界错一",
+    "code": "def solve(d):\n    s,t=d[:2];order=list(map(int,d[2:]));when=[0]*len(s)\n    for step,pos in enumerate(order,1):when[pos-1]=step\n    def works(count):\n        j=0\n        for i,c in enumerate(s):\n            if when[i]>=count and c==t[j]:\n                j+=1\n                if j==len(t):return True\n        return False\n    lo=0;hi=len(s)\n    while lo<hi:\n        mid=(lo+hi+1)//2\n        if works(mid):lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略大小写",
+    "code": "def solve(d):\n    s,t=d[:2];order=list(map(int,d[2:]));when=[0]*len(s)\n    for step,pos in enumerate(order,1):when[pos-1]=step\n    def works(count):\n        j=0\n        for i,c in enumerate(s):\n            if when[i]>count and c.lower()==t[j].lower():\n                j+=1\n                if j==len(t):return True\n        return False\n    lo=0;hi=len(s)\n    while lo<hi:\n        mid=(lo+hi+1)//2\n        if works(mid):lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,654 @@
+[
+  {
+    "input": "5\nA B\nB C\nA D\nD C\nC E\nA C\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1\nA B\nB A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\nA A\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10\n页 页\n页 A\n页 页\nA 页\n0 Z\n0 页\nZ A\n0 0\nb b\nZ 0\nA b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6\n0 Z\nZ 页\nZ 0\nA 页\n0 页\nA b\nb Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nZ b\n0 A\nZ b\nZ 0\n0 A\n0 Z\n0 Z\nb b\n页 Z\nZ 0\n0 A\n页 页\nZ 页\nZ 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "9\nb 页\nb A\nA A\nb Z\n页 0\n0 页\nZ b\n页 0\nb b\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3\nA Z\n页 0\nb A\nb 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\nb b\n页 b\nZ b\nZ 页\nA 页\nA A\nZ 页\n页 页\nb b\nZ A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5\nA 0\n页 页\nA 0\nZ A\nb Z\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4\nA 页\nb 0\n0 A\n0 页\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8\nb A\n0 b\n0 b\nZ b\n0 页\nA 页\nA 页\nA A\nZ b\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "11\nA b\nb 页\nA 0\nA b\nA b\n0 0\nZ A\n0 Z\n页 Z\nA 页\n页 页\nb 页\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "12\nA 页\nZ A\nA b\n页 页\nb Z\nb A\nb A\n页 Z\nZ 页\nA 0\n0 A\n页 Z\nA 页\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\nb 页\nA 0\n页 b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\nb b\nb A\nb 0\nA 页\nA b\nZ Z\nA 0\nZ Z\nb A\nb b\nA A\nZ 0\n0 b\nA 页\n0 b\n页 A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n页 A\nA A\nb 0\n页 页\nb 0\nb A\n0 Z\n0 Z\nb A\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "15\nA Z\nA Z\n页 0\nb 0\nA 页\n页 0\nZ b\n0 b\n0 A\n页 页\nA b\nA 0\n0 b\n0 b\nZ b\nZ 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "11\nZ 页\nZ b\n0 0\nZ 0\nZ b\n页 A\nA A\n0 Z\nZ A\nZ 页\nA 0\n页 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8\nZ b\nZ 0\nb Z\n页 b\nA b\n页 b\n0 A\nZ 0\n0 A\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "15\nZ 页\nb A\n页 A\n页 页\nb A\nb Z\n0 页\nb A\nZ 0\nA 0\nZ 页\n0 页\nZ Z\n页 页\n页 0\nA Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nb 页\nZ 0\nb 页\nA 0\nZ b\n页 A\nb 0\n页 页\nZ Z\n页 A\nA 0\n0 Z\nA 0\nb b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1\n0 A\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "13\nZ 0\n页 页\nb Z\nA 0\n0 A\nA b\nb b\nZ 0\nZ b\nZ A\n页 Z\n0 页\nb 页\n页 Z\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "14\nb 页\n0 0\nA A\nb A\nA 0\n页 b\n0 0\nb b\nZ 页\n0 Z\nA Z\n页 0\nA 页\n0 Z\n页 b\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "1\n页 A\n页 页\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5\nZ Z\nA A\n0 Z\nZ 页\nZ 0\nb Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10\nb A\nZ 页\n页 b\n页 0\n页 A\nA 0\nb 0\nZ 0\n0 页\nZ A\nA 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "10\n页 0\n0 0\nb 0\nA A\nb 0\nZ b\nZ A\nb Z\nA b\nb Z\nZ 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\n0 0\nb 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4\n0 0\n页 Z\nb 0\n页 页\nb b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7\nb A\n0 b\n0 b\n页 页\n页 页\n0 0\n页 b\n页 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4\nb A\nb 0\n页 b\n0 A\n0 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\nZ Z\nb A\nZ 0\n页 b\nA A\nZ b\nZ Z\n0 b\nb A\nZ 页\n0 0\n页 A\n0 Z\n页 页\nb A\n0 A\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "14\nb A\n0 b\n0 A\nZ A\n页 Z\nA 页\nA 页\nA 0\nA A\nZ A\nb 页\nZ 页\n0 0\nb Z\nb 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "13\nb A\nb b\nZ b\n页 0\n0 b\n页 A\n0 页\n页 页\nZ A\n页 b\n页 A\nb Z\nZ 页\n0 Z\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "11\n页 A\n0 Z\nA A\nb 0\nZ A\n页 A\n页 Z\nZ A\n0 A\nb A\nb Z\nb A\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\nb Z\n0 页\n页 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11\n页 b\nb b\nA 0\nA 页\n页 b\nA A\nA Z\n页 页\nZ 0\n页 页\nb A\nZ A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\n页 页\nZ 页\nA 0\nb Z\nb A\nb Z\nb Z\nA 页\n页 页\nb 0\n0 页\nb 页\n0 页\n页 页\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1\nZ A\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\n0 0\nA b\n0 b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\nA 页\nZ 0\nb b\n页 页\n页 Z\n0 0\n页 A\nZ Z\nb b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "14\nb 页\nZ b\nA Z\nA A\nA Z\nZ A\nb Z\n0 Z\nb Z\n0 页\nZ 0\nb 页\nb 页\nb Z\n0 Z\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\nA 页\n页 Z\nA b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nZ A\nZ 0\n页 b\n页 页\n页 A\nA A\n页 A\nb 0\nA Z\nb 0\nA 页\nA Z\nA Z\nZ 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "14\nb A\nA A\nZ 0\nb A\n页 b\nA 0\n0 A\n0 Z\nA Z\nb 0\n页 A\nZ Z\nZ 页\nb 0\nA 页\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "7\nA Z\n页 A\n页 Z\nZ 页\nA A\n页 A\n0 页\nb Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\n0 0\nA 页\n0 b\nZ 页\nA 0\nZ b\nb b\n0 页\nb A\n页 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "14\n0 Z\n0 页\n页 Z\n0 0\nb b\nZ A\nA Z\n0 页\n0 b\n页 页\n0 A\n页 Z\nZ 0\nA b\nA 页\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "1\n页 Z\nZ Z\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "13\nA A\n0 页\n页 0\nA Z\nZ Z\nA b\n页 0\nb Z\nb A\nZ 0\n页 A\nA A\nA Z\nZ 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "9\nb Z\nA A\n页 Z\nZ Z\n0 A\nZ A\nb 页\nA b\n0 b\n0 页\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "5\n0 0\nb 页\n页 b\nA 0\n页 Z\nZ 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\n页 b\n页 b\nZ 页\n0 Z\n页 b\n0 Z\n页 Z\nA Z\n0 A\nZ 页\nZ 0\nb 页\n0 A\n页 页\nA b\n页 A\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "15\nZ b\n0 Z\nZ 0\n页 Z\nZ 页\n0 0\nA 0\nZ 页\n0 A\nb 0\n0 b\nb A\n页 Z\n页 Z\nA Z\nZ 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6\n0 b\n0 A\n页 0\n0 b\n页 0\nb A\nZ Z\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "13\nZ Z\n页 Z\nZ b\n0 Z\n页 Z\nA b\n0 Z\n0 0\nb b\n0 页\nb 0\nA 页\n页 A\n页 0\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "9\n页 A\n0 0\nZ 页\nb b\nZ b\n0 b\nb 0\n页 Z\nb b\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\n页 b\nA 页\nA b\n页 Z\n0 A\n页 A\nZ A\n页 Z\n页 A\nb b\nA A\nZ 页\n页 b\nA A\n页 A\nb b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3\nZ 0\n0 A\nb b\nZ A\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "3\nA A\n0 Z\nA b\n页 A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\n0 b\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\nb 0\nZ Z\nA 0\n0 页\n0 页\n页 b\n页 b\nb 0\nZ 页\n页 0\n0 Z\nA Z\nZ A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n0 0\n页 页\nb A\n0 Z\nA b\n0 0\nb 页\nb 0\nZ 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nA 页\n页 Z\nA b\n0 0\nA 0\n页 0\nZ 0\n页 页\nA 0\nA A\n0 页\n0 b\nA 页\n页 b\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "3\nb b\nA 页\n页 b\n页 A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\n0 Z\n页 页\n0 b\nA 0\nZ b\nb 页\nZ A\nZ 0\nA 0\n页 A\nb Z\nA 页\nZ 0\nA 页\n页 页\n页 Z\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "14\nA A\n页 页\n页 页\nb Z\nb A\nb 页\nZ Z\nA A\nb 0\nZ b\nA A\n0 A\nZ 页\n页 页\n页 b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\n页 0\nA 页\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11\nA 0\n页 页\nZ 页\n页 页\nb 页\n0 A\nb A\nA b\n0 b\nA A\n0 页\nb b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3\nb A\nb Z\nA Z\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12\nb 0\n页 A\nA Z\nb A\n0 b\nA Z\n页 页\n页 页\nZ Z\nb 0\nb b\nb b\nZ 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\nA A\n页 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\nZ A\nb Z\n页 A\n0 A\n页 0\nb Z\nZ Z\nZ b\n0 A\n0 0\nZ Z\nA A\n0 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7\n0 0\nA 0\n0 页\nA 0\nA 页\nA Z\n0 b\n页 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\n0 b\nb A\nb 0\nZ 页\nZ b\n0 0\nb 页\n页 Z\nb Z\nb Z\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6\nb 页\n0 Z\nZ A\nb Z\nb Z\n页 页\nA 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n0 Z\nA 0\nZ Z\nA b\nA A\nb Z\nZ 0\nb 0\n0 Z\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "11\nb 页\n0 b\nZ Z\nA 页\nA 页\nb 0\nA 0\nA 页\n页 Z\n0 页\n0 0\nA Z\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "14\nZ Z\nb 0\nA 0\nA Z\n页 b\nb Z\n0 b\nb 0\n0 b\nb b\nZ Z\nZ A\nb A\nA 0\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12\nZ Z\n页 A\nA 页\nZ Z\n0 b\nZ 0\nb 0\n页 A\nb A\nb 页\n0 页\nA Z\nA 页\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "7\nA 页\nZ Z\n0 Z\nb Z\n0 页\nb Z\n0 A\nA Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\nA 0\nb 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\nb 0\nA b\nA Z\nZ 0\n页 页\n页 页\nb 页\nZ 页\nb 0\nb A\n0 0\nZ 页\n页 b\n页 0\nb Z\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\nA b\n页 b\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10\n0 Z\nA b\nb b\nb A\n0 A\nb b\n0 0\nZ 0\n页 0\nb Z\nb Z\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\nb 0\nA 0\n页 A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5\n0 Z\nZ A\nA b\nb A\nb b\nZ b\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2\n0 b\nb 0\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\n0 A\n0 0\nZ b\n0 A\nb A\nZ A\n0 页\n页 页\n页 b\n页 b\nb b\nZ 0\nZ A\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "5\nZ 页\nA A\nA A\nb b\nb Z\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\nb b\nA 页\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\n0 0\nb 页\nZ 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "14\nA A\nA 页\n页 Z\n页 0\nZ A\n0 b\n页 0\nZ 页\nA 0\n页 0\n页 Z\n0 b\nb 页\n0 页\nb Z\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "11\nb A\n页 Z\n页 页\n页 Z\n页 0\nA A\n0 b\n0 Z\nb b\n页 b\nb 页\nb Z\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "11\nb 0\nb A\nZ 0\nb Z\nA b\nb A\n0 A\nZ 页\n0 0\n页 页\nA 0\n0 A\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\n0 0\n页 Z\nZ b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3\n页 Z\n0 0\nb 0\nb 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "12\nb 0\n页 A\nZ 0\nb b\nb Z\n0 Z\n页 b\nA A\n页 0\n0 0\nb b\nA Z\nb A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7\n页 页\nZ 页\n页 b\nA 页\nZ Z\nZ 0\nZ Z\n页 b\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "4\nA 页\n页 b\n页 0\nb A\nZ 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nA A\n页 Z\n页 页\n页 A\n0 页\nZ A\nA Z\nb 页\nA b\n0 Z\n0 页\n页 Z\nb Z\nZ b\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "6\nZ A\n0 0\nA b\nb Z\nb 页\n页 b\n0 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\nA 页\n0 b\n0 0\nA 页\n页 0\nA 页\n页 页\nb A\nb Z\n0 A\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "13\nZ b\n页 Z\nb b\nb 页\nZ 0\n0 0\nZ b\nb b\n页 Z\nb b\n页 A\n页 0\nA 0\nb 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "14\n0 0\nb Z\nb A\nb 页\n页 b\n页 Z\n页 页\nb b\nb Z\nZ A\nA A\nb b\nZ 页\nb 0\nA 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\n0 页\n0 A\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\n页 Z\nb Z\n页 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\nb A\nb A\nZ 0\nA Z\n0 0\n0 Z\n0 Z\nA A\nZ 0\n0 页\nA 0\nb Z\nA 页\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "10\n0 Z\n页 b\n0 b\n0 页\n0 页\nb A\n页 Z\nb Z\nA 页\n0 0\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11\nZ Z\nZ A\nb 0\nZ b\nb 页\n页 b\n页 b\n0 A\n页 Z\n页 Z\n页 b\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1\nZ 0\n0 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\n页 页\nZ b\nZ Z\nb A\nZ b\n0 A\nZ b\nA 0\nb b\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "14\n0 A\nb Z\n0 A\nZ A\n页 页\nZ A\nZ Z\nA b\nZ 0\nZ b\n页 页\nA Z\n0 页\nZ A\nZ 页\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "7\n0 Z\nb 0\n页 b\nA b\nb 页\nZ 页\n页 0\nA 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "9\n页 A\nb A\n页 b\nZ 0\nZ b\n页 0\nb A\nb A\n页 b\nA b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\nA Z\nZ A\nA 0\nZ Z\nA Z\n页 Z\n0 0\n页 0\n页 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\n0 0\nb A\nA 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7\n页 0\nA 页\nb Z\n0 0\n页 Z\nZ b\n0 A\n页 A\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "12\nb b\nb b\nA A\nZ 0\n0 A\n页 页\nZ Z\n0 页\n0 b\nb b\nA b\nb A\n页 b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nb Z\nb Z\n页 页\n页 页\nA 页\nA 页\nA 0\nZ A\n0 Z\n0 b\n页 页\n页 A\nb Z\nb 0\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "15\n0 A\n页 b\nb 页\nb 0\n页 A\n页 b\n页 0\nA b\nZ 页\nb 页\nZ Z\n0 b\nb 页\nb A\nZ b\nb 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "10\nA A\nZ Z\n0 b\nZ A\nb Z\nZ Z\nZ Z\n页 页\nA b\nA 0\nA 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\nA Z\nA b\n0 A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\nb Z\n0 页\nZ 0\nb 0\n页 A\nZ 0\nA b\n页 A\n页 0\nZ b\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "10\nb Z\n页 页\nZ 0\nA b\n0 0\nb 0\nZ 页\nZ Z\nA 页\n0 b\nZ b\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "12\n0 A\nb 0\n页 Z\nA b\n0 页\n页 A\nA Z\nb Z\nA 页\nZ Z\nA 页\n页 b\n页 A\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "15\nA Z\nA 页\nb 页\nA 页\nZ Z\n页 页\nA 页\n页 Z\nA 0\nA b\nZ Z\nA Z\n页 0\nA Z\nb 页\nZ A\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9\nb Z\nb Z\nA b\n0 A\n0 Z\nb 页\nb A\nZ 0\n页 0\n0 页\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "11\nb 页\nA b\nb A\nZ 页\n页 页\nZ A\nZ Z\n0 Z\nb 0\n0 页\nb b\nA 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1\n页 b\nA Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\nb Z\nb 0\n0 页\n0 页\nb A\n0 页\n0 页\nA 0\n0 b\n0 A\nA Z\n0 页\n页 b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "15\nA 页\n页 A\nA 0\nZ b\n页 A\nb 页\nA Z\nb b\n页 0\nZ Z\nZ b\nA 页\nb 页\n页 0\nA Z\nZ b\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\n0 A\nb 0\n页 页\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3\nZ 页\n页 A\nb 0\nA Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\nA 0\nZ 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\nA Z\nZ A\n页 页\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "13\nZ 0\nZ 页\nb 0\nb 0\n页 0\n页 0\nA A\n页 0\nA Z\nb b\nA 页\nZ 0\nZ 0\nZ Z\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8\n页 b\nZ b\n页 0\nZ b\nZ A\nZ Z\n0 页\nb 0\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\n0 页\nZ 页\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\nb 页\n页 Z\n0 Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10\n0 b\nA b\n0 b\nb 0\n0 Z\n页 b\n页 b\nZ 页\nb b\nb 页\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8\nZ 页\n页 b\n页 A\n0 Z\n0 Z\nb b\nb A\n页 b\nA A\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10\n页 Z\nA A\n0 b\nA 页\n0 Z\n0 0\n0 页\n0 A\nZ 页\nZ 页\n页 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7\n0 A\n页 Z\n页 A\n页 0\nZ A\nb Z\n页 页\nA Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\nb 0\n0 Z\n0 Z\nb 0\nb Z\nb b\nb 0\nZ b\nb 0\nZ 页\n页 0\nb Z\nb Z\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "15\n页 Z\n页 Z\nA A\n0 Z\nA Z\n0 A\nZ 0\nZ 页\n页 b\nZ Z\nZ 页\n0 页\nZ b\nA 0\nZ 页\n页 页\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7\nA 页\n0 Z\n页 b\nZ A\nZ 0\n0 A\nZ 页\nZ 页\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "3\nA A\nZ Z\n0 b\nZ Z\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9\n0 A\nZ Z\nA Z\nA 0\n页 A\n0 0\nA A\nZ b\nA Z\nZ b\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "1\nA b\nb Z\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11\nA 0\nZ A\n页 Z\nA A\nZ Z\nZ b\n0 Z\nA A\nA 0\n0 0\nZ A\n页 A\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8\nb Z\nA 页\nb b\n0 0\nZ Z\nb 页\nZ 页\nA Z\nZ b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1\nZ b\nA 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12\nb 页\n页 A\nA Z\nA A\n页 b\nb 页\nA A\n0 页\n0 页\nb A\n页 页\n页 页\nb 页\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "9\nA A\nZ b\nZ b\nZ 0\n0 0\nZ 0\nb Z\n0 0\nb 0\n页 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "14\nA 0\nZ 页\nZ 0\nA b\n页 A\n页 页\nZ Z\nA 0\n0 A\nA 0\nZ 页\nb Z\n页 b\nA b\n页 0\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2\n页 b\n0 b\nA 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\nb 0\n页 Z\nA 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4\nZ 页\nZ Z\n页 Z\nZ Z\nZ b\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "13\nA b\n页 0\n0 0\nA Z\n0 A\nZ 0\nZ A\n0 A\n0 b\n页 0\nA Z\nb 0\n0 页\nA 页\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "7\n0 页\nZ 0\nZ Z\nA 0\nA 页\n0 Z\n页 A\nZ 页\n",
+    "expectedOutput": "2\n"
+  }
+]

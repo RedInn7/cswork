@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不计前面无用字符",
+    "code": "from collections import Counter\ndef solve(d):\n    s=d[0];q=int(d[1]);positions=[[] for _ in range(10)]\n    for i,c in enumerate(s,1):positions[int(c)].append(i)\n    out=[]\n    for j in range(q):\n        length=int(d[2+2*j]);query=d[3+2*j] if length else '';answer=0\n        for c,count in Counter(query).items():\n            p=positions[int(c)]\n            if len(p)<count:answer=-1;break\n            answer=max(answer,count)\n        out.append(answer)\n    return str(q)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "数字只取首次出现",
+    "code": "from collections import Counter\ndef solve(d):\n    s=d[0];q=int(d[1]);positions=[[] for _ in range(10)]\n    for i,c in enumerate(s,1):positions[int(c)].append(i)\n    out=[]\n    for j in range(q):\n        length=int(d[2+2*j]);query=d[3+2*j] if length else '';answer=0\n        for c,count in Counter(query).items():\n            p=positions[int(c)]\n            if len(p)<count:answer=-1;break\n            answer=max(answer,p[0])\n        out.append(answer)\n    return str(q)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

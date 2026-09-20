@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-253",
+  "title": "只删最左元素使剩余互异的最少次数",
+  "explanation": "## 思路\n\n从右向左将值加入集合；首次遇到已见值的位置i，必须删除到它为止，答案i+1；一直无重复则0。\n\n## 正确性证明\n\n第一次从右遇重复时，i+1..末尾已互异，可以保留。任何起点≤i的后缀都包含a[i]和它后面同值位置，必不合法，所以必须至少删除i+1项。这达到最少次数。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));seen=set()\n    for i in range(len(a)-1,-1,-1):\n        if a[i] in seen:return str(i+1)\n        seen.add(a[i])\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#253-make-all-elements-distinct-amazon-london",
+  "sourceContentHash": "0d11ac3296838eeffdf6d4a28ab0c6837f3a9c8bd60156b143550cd27437eaf2",
+  "author": "CSWork"
+}

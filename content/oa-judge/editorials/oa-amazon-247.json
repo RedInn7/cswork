@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-247",
+  "title": "带分组与星号的完整字符串匹配",
+  "explanation": "## 思路\n\n把字母或点、括号内容解析成原子及是否带*。逐原子DP保存可匹配的查询前缀；无*消耗一次，带*可消耗零次或从同层更短前缀再消耗一次。空()*直接跳过。\n\n## 正确性证明\n\nDP起点仅空前缀可达。无*时每种新前缀唯一来自此前层并匹配一次原子；带*时要么零次继承旧层，要么从同层短一个原子长度的位置继续匹配。按前缀长度递增计算涵盖任意重复次数且没有循环。空原子重复不会改变串，跳过保持语义。最后整个长度可达当且仅当完整匹配。\n\n## 复杂度\n\n时间O(正则长度×总查询长度+q×正则长度)，空间O(最大查询长度+正则长度)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    regex=d[0];words=['' if s=='-' else s for s in d[2:]];atoms=[];i=0\n    while i<len(regex):\n        if regex[i]=='(':\n            end=regex.index(')',i);pat=regex[i+1:end];i=end+1\n        else:pat=regex[i];i+=1\n        star=i<len(regex) and regex[i]=='*'\n        if star:i+=1\n        atoms.append((pat,star))\n    results=[]\n    for word in words:\n        m=len(word);dp=bytearray(m+1);dp[0]=1\n        for pat,star in atoms:\n            if not pat:continue\n            length=len(pat);nxt=bytearray(dp) if star else bytearray(m+1)\n            for end in range(length,m+1):\n                if not (nxt[end-length] if star else dp[end-length]):continue\n                good=True\n                for offset,p in enumerate(pat):\n                    c=word[end-length+offset]\n                    if not(p=='.' or p==c):good=False;break\n                if good:nxt[end]=1\n            dp=nxt\n        results.append('YES' if dp[m] else 'NO')\n    return '\\n'.join(results)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#247-is-regex-matching",
+  "sourceContentHash": "ec30d99f712a9ec07521a55d9251dc61103bd19e0b2e7acb42a2294e5363fd75",
+  "author": "CSWork"
+}

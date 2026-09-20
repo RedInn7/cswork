@@ -1,0 +1,10 @@
+[
+  {
+    "name": "正序更新复用元素",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);table={};best=[0]*(k+1)\n    for value in map(int,d[2:]):\n        if value not in table:table[value]=[0]*(k+1)\n        row=table[value]\n        for j in range(k+1):\n            row[j]=max(row[j]+1,best[j-1]+1 if j else 1);best[j]=max(best[j],row[j])\n    return str(best[k])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略变化预算",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);table={};best=[0]*(k+1)\n    for value in map(int,d[2:]):\n        if value not in table:table[value]=[0]*(k+1)\n        row=table[value]\n        for j in range(k,-1,-1):\n            row[j]=max(row[j]+1,best[j-1]+1 if j else 1);best[j]=max(best[j],row[j])\n    return str(best[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-21",
+  "title": "最长先升后降连续子数组",
+  "explanation": "## 思路\n\n分别计算以每个位置结束的非递减长度和从该位置开始的非递增长度，枚举峰顶相加减一。\n\n## 正确性证明\n\n任意合法区间有一个峰顶，其两侧分别受该位置的两种最大长度限制。反之这两个最大段在峰顶拼接仍合法，故枚举值的最大值恰为最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);up=[1]*n;down=[1]*n\n    for i in range(1,n):\n        if a[i]>=a[i-1]:up[i]=up[i-1]+1\n    for i in range(n-2,-1,-1):\n        if a[i]>=a[i+1]:down[i]=down[i+1]+1\n    return str(max(up[i]+down[i]-1 for i in range(n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#21-find-length-of-longest-bitonic-subarray",
+  "sourceContentHash": "b560bbae06f67dcbfdcd4c078368b2039282e6ad17a06d5eb7295872c6c024f6",
+  "author": "CSWork"
+}

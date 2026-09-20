@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-249",
+  "title": "每个长度m窗口的第k小元素",
+  "explanation": "## 思路\n\n离散化数值，树状数组维护当前窗口每个值的频次。二进制提升找到前缀频次首次达到k的位置；滑动时删除旧元素、加入新元素。\n\n## 正确性证明\n\n树状数组初始恰为第一个窗口频次，每步一次删除加入保持不变式。第k小值的离散坐标就是累计频次首次达到k的坐标，二进制提升找到其前一个累计不足k的最大前缀，因此下一坐标准确。重复元素的频次计入全部身份。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]));values=sorted(set(a));index={v:i+1 for i,v in enumerate(values)};size=len(values);tree=[0]*(size+1)\n    def add(value,delta):\n        i=index[value]\n        while i<=size:tree[i]+=delta;i+=i&-i\n    for v in a[:m]:add(v,1)\n    out=[]\n    for start in range(n-m+1):\n        if start:add(a[start-1],-1);add(a[start+m-1],1)\n        target=k;at=0;step=1<<(size.bit_length()-1)\n        while step:\n            nxt=at+step\n            if nxt<=size and tree[nxt]<target:target-=tree[nxt];at=nxt\n            step//=2\n        out.append(str(values[at]))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#249-kth-smallest-in-subarray",
+  "sourceContentHash": "6f8c2ce55caeee58bae07c97cd5d94032f72fd8b8eb53f133fb8215488f5bf62",
+  "author": "CSWork"
+}

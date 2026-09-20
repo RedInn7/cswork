@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相等时选最晚最大值",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));best=[0]*n;at=n-1\n    for i in range(n-1,-1,-1):\n        if a[i]>a[at]:at=i\n        best[i]=at\n    out=[];i=0\n    while i<n:\n        j=best[i];out.append(str(a[j]));i=j+k+1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只看前k加一件",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));best=[0]*n;at=n-1\n    for i in range(n-1,-1,-1):\n        if a[i]>=a[at]:at=i\n        best[i]=at\n    out=[];i=0\n    while i<n:\n        j=max(range(i,min(n,i+k+1)),key=lambda t:a[t]);out.append(str(a[j]));i=j+k+1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

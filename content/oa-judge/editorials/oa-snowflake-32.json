@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-32",
+  "title": "补全颜色使同色子串最多",
+  "explanation": "## 思路\n\n把补全后的串分解为同色段，长l贡献l(l+1)/2。前缀DP枚举最后一段，逆向扫描直到碰到第二种固定字母即可停止。\n\n## 正确性\n\n一段可补成同色当且仅当其中固定字符至多一种。所有最终同色段构成合法划分，DP枚举覆盖它；反之任意合法划分可以补全各段，若相邻段同色还会额外增加子串，所以DP不会超过可达最优值。两方向合起来最优相等。\n\n## 复杂度\n\n时间O(n²)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];n=len(s);dp=[0]*(n+1)\n    for end in range(1,n+1):\n        color=None;best=0\n        for start in range(end-1,-1,-1):\n            c=s[start]\n            if c!='.':\n                if color is not None and c!=color:break\n                color=c\n            length=end-start;best=max(best,dp[start]+length*(length+1)//2)\n        dp[end]=best\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#32-maximum-substrings",
+  "sourceContentHash": "89dcfa8009828e7ed1645c3cbe4f32e48a74bfd5d24522b916ea1663f62d0d95",
+  "author": "CSWork"
+}

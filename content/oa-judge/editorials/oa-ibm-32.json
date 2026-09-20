@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-32",
+  "title": "执行闭区间进程的最少核心数",
+  "explanation": "## 思路\n\n分别排序开始和结束时刻，用两个指针扫描。开始与结束相等时先处理开始，更新当前并发最大值。\n\n## 正确性证明\n\n任一时刻的同时运行进程都需要不同核心，所以最大并发是下界。按开始时间分配任意空闲核心，只有所有已分配核心仍忙时才新建，新增时正在运行数恰好等于核心数；因此核心数永不超过最大并发，达到下界。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    starts=sorted(map(int,d[1::2]));ends=sorted(map(int,d[2::2]));j=0;active=answer=0\n    for start in starts:\n        while j<len(ends) and ends[j]<start:active-=1;j+=1\n        active+=1;answer=max(answer,active)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#32-get-minimum-cores",
+  "sourceContentHash": "390475da8c6f07da957734763f99843d8875584e742b2e8b2b3eb7f81a7f4a50",
+  "author": "CSWork"
+}

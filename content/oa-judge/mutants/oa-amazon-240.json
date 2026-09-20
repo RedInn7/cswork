@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只算恰好k种",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq={};left=answer=0\n    for right,v in enumerate(a):\n        freq[v]=freq.get(v,0)+1\n        while len(freq)>k:\n            old=a[left];freq[old]-=1;left+=1\n            if not freq[old]:del freq[old]\n        answer+=(right-left+1) if len(freq)==k else 0\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只算单日",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq={};left=answer=0\n    for right,v in enumerate(a):\n        freq[v]=freq.get(v,0)+1\n        while len(freq)>k:\n            old=a[left];freq[old]-=1;left+=1\n            if not freq[old]:del freq[old]\n        answer+=1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
