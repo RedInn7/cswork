@@ -63,6 +63,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-dictionary-path'
     | 'oa-ipv4-cidr'
     | 'oa-json-diff'
+    | 'oa-longest-palindrome'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -282,6 +283,7 @@ export const ojImportSchema = z
           'oa-dictionary-path',
           'oa-ipv4-cidr',
           'oa-json-diff',
+          'oa-longest-palindrome',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -342,7 +344,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-ipv4-cidr' &&
         data.problem.id !== 'oa-openai-9') ||
       (data.problem.checker === 'oa-json-diff' &&
-        data.problem.id !== 'oa-ibm-10')
+        data.problem.id !== 'oa-ibm-10') ||
+      (data.problem.checker === 'oa-longest-palindrome' &&
+        data.problem.id !== 'oa-cisco-29')
     )
       ctx.addIssue({
         code: 'custom',
