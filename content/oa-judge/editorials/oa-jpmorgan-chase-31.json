@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-31",
+  "title": "任意合并两数的最小总成本",
+  "explanation": "## 思路\n\n最小堆反复取最小两项，累计它们的和，再将和入堆。\n\n## 正确性证明\n\n合并过程是二叉树，每个原值贡献自身乘叶深度。可以将两个最小权值放在最深的一对兄弟叶：与更大权交换不会增加总成本。收缩这对叶为权值和，原最优问题变为规模少一的问题并增加固定这次成本，归纳得到最小两项合并贪心。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];heapq.heapify(a);cost=0\n    while len(a)>1:\n        value=heapq.heappop(a)+heapq.heappop(a);cost+=value;heapq.heappush(a,value)\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#31-reduce-the-array-also-for-da",
+  "sourceContentHash": "888f47d7e840b8e2b0ec18de681fc6f8d4e87a93458d3f179302ec7c8290434d",
+  "author": "CSWork"
+}

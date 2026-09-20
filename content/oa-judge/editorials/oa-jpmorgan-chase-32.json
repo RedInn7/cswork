@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-32",
+  "title": "从全零串翻转后缀的最少次数",
+  "explanation": "## 思路\n\n从左到右维护当前有效位，遇目标不同就翻一次后缀并更新有效位。\n\n## 正确性证明\n\n处理到某位时更早位已正确，后续起点更晚的翻转无法改变当前位。若当前与目标不同，必须有一次从此位开始的翻转；若相同则无需。每位选取必需翻转且不破坏前缀，因此达到下界。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';current='0';answer=0\n    for c in s:\n        if c!=current:answer+=1;current=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#32-how-many-flips",
+  "sourceContentHash": "3c66d6116e28f6dbc7804fb2867dd2ac9e7fef18ad146f3ca6b827172b3101df",
+  "author": "CSWork"
+}

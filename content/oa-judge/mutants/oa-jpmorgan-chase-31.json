@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只统计最终值",
+    "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];heapq.heapify(a);cost=0\n    while len(a)>1:\n        value=heapq.heappop(a)+heapq.heappop(a);cost+=value;heapq.heappush(a,value)\n    return str(a[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "选最大两项",
+    "code": "import heapq\ndef solve(raw):\n    a=[-int(v) for v in raw.split()[1:]];heapq.heapify(a);cost=0\n    while len(a)>1:\n        value=heapq.heappop(a)+heapq.heappop(a);cost-=value;heapq.heappush(a,value)\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

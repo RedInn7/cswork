@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-jpmorgan-chase-35",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "闭区间内十进制位互异的数",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "JPMorgan Chase"
+    ],
+    "description": "统计闭区间内十进制各位均不同的非负整数。0用单个数字0表示，计作合法。原正文截断，规则由标题及10..13包含10、12、13的原解释恢复；非负域和0的表示是本站明确协议。\n\n输入输出协议由本站整理，缺失数值界明确标为本站补充。",
+    "input": "一行start end。原文无数值界，本站0≤start≤end≤10^18。",
+    "output": "输出一个整数答案。",
+    "explanation": "三个公开样例的输出依次为：3；11；2。独立枚举或直接模拟已核对这些答案。",
+    "hints": [
+      "数位DP计算不超过上界的合法数，再用F(end)−F(start−1)。状态为位置、已用数字掩码、是否已开始、是否贴上界，前导零不占用数字。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "10 13\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "0 11\n",
+      "expectedOutput": "11\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "98 102\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "0 1000000000000000000\n",
+      "expectedOutput": "8877691\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "1000000000000000000 1000000000000000000\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "9876543210 9876543210\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "0 0\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "9999999999 1000000000000000000\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "380 568\n",
+      "expectedOutput": "135\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "39 151\n",
+      "expectedOutput": "88\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "54 190\n",
+      "expectedOutput": "106\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "166 180\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "333 392\n",
+      "expectedOutput": "43\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "159 329\n",
+      "expectedOutput": "129\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "276 279\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "265 272\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "398 569\n",
+      "expectedOutput": "121\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "397 503\n",
+      "expectedOutput": "77\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "8 123\n",
+      "expectedOutput": "93\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "178 189\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "301 478\n",
+      "expectedOutput": "127\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "176 245\n",
+      "expectedOutput": "47\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "412 518\n",
+      "expectedOutput": "78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "441 450\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "153 226\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "237 426\n",
+      "expectedOutput": "144\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "305 410\n",
+      "expectedOutput": "78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "261 388\n",
+      "expectedOutput": "94\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "414 589\n",
+      "expectedOutput": "125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "499 551\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "332 446\n",
+      "expectedOutput": "80\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "485 500\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

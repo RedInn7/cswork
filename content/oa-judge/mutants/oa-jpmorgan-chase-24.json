@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只允许偶开头",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];totals=[]\n    for first in (0,):\n        cost=0\n        for i,v in enumerate(a):\n            target=first^(i&1)\n            while v%2!=target:v//=2;cost+=1\n        totals.append(cost)\n    return str(min(totals))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "无视多次减半",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];totals=[]\n    for first in (0,1):\n        cost=0\n        for i,v in enumerate(a):\n            target=first^(i&1)\n            if v%2!=target:cost+=1\n        totals.append(cost)\n    return str(min(totals))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

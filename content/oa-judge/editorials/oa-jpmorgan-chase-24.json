@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-24",
+  "title": "逐项减半得到交替奇偶的最少次数",
+  "explanation": "## 思路\n\n最终奇偶仅可能从偶或从奇开始交替。分别计算每项达到对应奇偶所需的最少右移次数，再取两种总和的最小值。\n\n## 正确性证明\n\n固定一种交替模式后，各位置操作互不影响，最低成本等于每项独立首次到达目标奇偶的步数之和。正数不断减半必经过1和0，所以两种奇偶均可达到。所有合法最终数组都属于这两种模式，取最小覆盖全部方案。\n\n## 复杂度\n\n时间O(n log V)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];totals=[]\n    for first in (0,1):\n        cost=0\n        for i,v in enumerate(a):\n            target=first^(i&1)\n            while v%2!=target:v//=2;cost+=1\n        totals.append(cost)\n    return str(min(totals))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#24-get-minimum-operations",
+  "sourceContentHash": "25094c994b7e78969e29f53fa409f5273a3a11ed5a2c4ce5bdcb99ac55879e6c",
+  "author": "CSWork"
+}

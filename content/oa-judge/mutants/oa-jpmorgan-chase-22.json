@@ -1,0 +1,10 @@
+[
+  {
+    "name": "结束端点不占用",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];events=[]\n    for l,h in zip(d[::2],d[1::2]):events.extend(((l,1),(h,-1)))\n    events.sort();active=answer=0\n    for t,delta in events:active+=delta;answer=max(answer,active)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "算总任务数",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];events=[]\n    for l,h in zip(d[::2],d[1::2]):events.extend(((l,1),(h+1,-1)))\n    events.sort();active=answer=0\n    for t,delta in events:active+=delta;answer=max(answer,active)\n    return str(len(d)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

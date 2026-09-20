@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-29",
+  "title": "必须跳到网络外的最大安全值和",
+  "explanation": "## 思路\n\n从右向左计算每个起点到出界的总和，dp[i]=a[i]+dp[i+k]，越界后项视为0；最大dp即答案。\n\n## 正确性证明\n\n从最后k个位置出发只能收自己，递推正确。对其余位置，从i出发必须收a[i]并执行从i+k起的完整过程，因此递推给出唯一合法路径总和。逆序归纳所有起点正确，取最大覆盖全部非空选择。\n\n## 复杂度\n\n时间O(n)，空间O(n)并在输入数组原地累加。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];del d\n    for i in range(n-k-1,-1,-1):a[i]+=a[i+k]\n    return str(max(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#29-maximum-information-da",
+  "sourceContentHash": "d3316b942b5a7a0cbfc087e99a0a64b92f02c11bf4cccc2e811f172ff8e524c1",
+  "author": "CSWork"
+}

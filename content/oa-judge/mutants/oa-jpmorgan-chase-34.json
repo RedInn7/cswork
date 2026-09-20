@@ -1,0 +1,10 @@
+[
+  {
+    "name": "两段长度取最大",
+    "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';previous=current=answer=0;last=''\n    for c in s:\n        if c==last:current+=1\n        else:answer+=max(previous,current);previous=current;current=1;last=c\n    return str(answer+max(previous,current))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏最后边界",
+    "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';previous=current=answer=0;last=''\n    for c in s:\n        if c==last:current+=1\n        else:answer+=min(previous,current);previous=current;current=1;last=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

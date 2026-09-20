@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-23",
+  "title": "从零加一或乘二的最少操作",
+  "explanation": "## 思路\n\n正数的答案为二进制位数减一，再加二进制1的数量；0直接为0。\n\n## 正确性证明\n\n逆向时奇数只能减一，偶数可除二。偶数若先减一，则仍须通过再减一或更长步骤达到下一偶数；把成对加一前移到乘二之前不会增加操作。因此存在按二进制从高位构造的最优路径，每个后续位一次倍增，每个1位一次加一，达到所给次数。\n\n## 复杂度\n\n时间O(n log K)，输出空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(v.bit_length()-1+v.bit_count() if v else 0) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#23-get-minimum-operations",
+  "sourceContentHash": "f9de36953b433ff80a814a9ba4757c10d85d5e9a7e9e027e292e7b800237f121",
+  "author": "CSWork"
+}

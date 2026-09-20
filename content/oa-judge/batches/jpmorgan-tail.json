@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-jpmorgan-chase-21",
+      "sourceContentHash": "40e06ccecf28db36b88899587852a3bf49b7f54be7828e1834061ee4f6a931db",
+      "packageChecksum": "9cff335a58f1ce2720e464fdc902325a03afce461a761723980e786d12777e9c",
+      "editorial": "## 思路\n\n顺序扫描维护栈的长度，遇B且长度非零则消去一个已有字符，否则长度加一。\n\n## 正确性证明\n\n任意删除过程等价于把一个B与它之前一个未消去字符配对，配对区间不能交叉。考虑当前B及最近未配对前驱：若最优方案没有将两者配对，可把它们原先涉及的至多两对改为当前这一对，并在存在两个剩余端点时把它们配成一对，保持右端为B且配对不交叉，不减少删除数。因此可以优先消去这两位。逐前缀执行得到最大配对数，剩余长度最小；AB与BB的左字符均可匹配，所以只需栈长。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.splitlines()[1];left=0\n    for c in s:left=left-1 if c=='B' and left else left+1\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-22",
+      "sourceContentHash": "b8fd646556eefb36946ef549f674403f01f3677c548373035e87d307ba1c0e35",
+      "packageChecksum": "efdbb0d47691c9a267c2476363f6155d99bc5647c3e0d78ece8e117bcef3e986",
+      "editorial": "## 思路\n\n任务起点加一、终点后一时刻减一，按时间排序扫描最大同时运行数量。\n\n## 正确性证明\n\n任何时刻的并发任务必须使用不同机器，最大并发是下界。按起点分配任务，只要已有机器空闲就复用，否则新增；新增时全部旧机器仍忙，恰有对应数量任务并发，故机器数不会超过该下界。扫描线准确计算这个数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];events=[]\n    for l,h in zip(d[::2],d[1::2]):events.extend(((l,1),(h+1,-1)))\n    events.sort();active=answer=0\n    for t,delta in events:active+=delta;answer=max(answer,active)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-23",
+      "sourceContentHash": "f9de36953b433ff80a814a9ba4757c10d85d5e9a7e9e027e292e7b800237f121",
+      "packageChecksum": "169face47e01d5e39d5fae3fa7011ca9d3016b180013ec1ec8458b6eea506e5d",
+      "editorial": "## 思路\n\n正数的答案为二进制位数减一，再加二进制1的数量；0直接为0。\n\n## 正确性证明\n\n逆向时奇数只能减一，偶数可除二。偶数若先减一，则仍须通过再减一或更长步骤达到下一偶数；把成对加一前移到乘二之前不会增加操作。因此存在按二进制从高位构造的最优路径，每个后续位一次倍增，每个1位一次加一，达到所给次数。\n\n## 复杂度\n\n时间O(n log K)，输出空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(v.bit_length()-1+v.bit_count() if v else 0) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-24",
+      "sourceContentHash": "25094c994b7e78969e29f53fa409f5273a3a11ed5a2c4ce5bdcb99ac55879e6c",
+      "packageChecksum": "e0418095fa0e3bd1a7fca5c3d3e02571db6cf1c1c93d640a361f7592703e3936",
+      "editorial": "## 思路\n\n最终奇偶仅可能从偶或从奇开始交替。分别计算每项达到对应奇偶所需的最少右移次数，再取两种总和的最小值。\n\n## 正确性证明\n\n固定一种交替模式后，各位置操作互不影响，最低成本等于每项独立首次到达目标奇偶的步数之和。正数不断减半必经过1和0，所以两种奇偶均可达到。所有合法最终数组都属于这两种模式，取最小覆盖全部方案。\n\n## 复杂度\n\n时间O(n log V)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];totals=[]\n    for first in (0,1):\n        cost=0\n        for i,v in enumerate(a):\n            target=first^(i&1)\n            while v%2!=target:v//=2;cost+=1\n        totals.append(cost)\n    return str(min(totals))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-25",
+      "sourceContentHash": "53c2735b9037eca8700517c840595ac6fac8178f89094f4086c2cb02b520b2ce",
+      "packageChecksum": "f2cbc835b64d712130391448124ab64a89f0b0fd03332c696fc18d2372230d12",
+      "editorial": "## 思路\n\n扫描原队列维护冠军与连胜数，换冠军时从1算起；扫描结束还未结束时返回全局最大势能。\n\n## 正确性证明\n\n最大势能首次成为冠军前，每场对手恰是原队列中下一位尚未上场者，扫描模拟准确。一旦最大势能成为冠军便不会再输；若已扫描完但未达k，今后胜者只能是它。因此无需执行巨大k次比赛。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=1\n        else:wins+=1\n        if wins>=k:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-27",
+      "sourceContentHash": "618390ee9bc5482ce8cb032a40ef3397688623441bdee502c0ddfd9e2877489f",
+      "packageChecksum": "921bd9dfe89a939951bd5be358097d2679047f3c3ead77bbed44089eb21e3d2f",
+      "editorial": "## 思路\n\n先统计26个字母频次，再从左至右找第一个频次为1的位置。\n\n## 正确性证明\n\n统计得到每个字符在全串的精确出现次数，频次为1恰等价于唯一。第二遍按位置递增，第一个满足者必是最早唯一字符，遍历完仍没有则无解。\n\n## 复杂度\n\n时间O(n)，额外空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\ndef solve(raw):\n    s=raw.splitlines()[1];counts=Counter(s)\n    return str(next((i+1 for i,c in enumerate(s) if counts[c]==1),-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-28",
+      "sourceContentHash": "7bc379e7159ca3eaac42ad880f0a5148479aefa287d357f003caf4745937274c",
+      "packageChecksum": "70b63d25e79e01c3772aaa54a5c121dd9f28b2493b3eb07f364f08cd24791026",
+      "editorial": "## 思路\n\n按库存降序排序，把最高的若干种库存一起降到下一层；顾客不足卖完整层时，用除法计算完整下降高度和余数销售，等差求和累计。\n\n## 正确性证明\n\n每种商品提供从初始库存递减到1的价格链。若某销售方案选了较小可用价格而未选更大可用价格，换成后者不减收益，且选价格链前缀仍可实现。因此依次取最高价格最优。分层算法将相同最高价格批量卖出，等价于该贪心；等差和只加速计算，不改变所选价格。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，不依赖m逐件循环。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=sorted(d[2:],reverse=True)\n    if sum(a)<m:return '-1'\n    a.append(0);answer=0\n    for i in range(n):\n        width=i+1;high=a[i];low=a[i+1];available=(high-low)*width\n        take=min(m,available);levels,rest=divmod(take,width)\n        answer+=width*(high+high-levels+1)*levels//2+rest*(high-levels)\n        m-=take\n        if not m:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-29",
+      "sourceContentHash": "d3316b942b5a7a0cbfc087e99a0a64b92f02c11bf4cccc2e811f172ff8e524c1",
+      "packageChecksum": "e83a026c57f260a594ce8094a46fd4d8f0737f89fc880dcc6f03f7b14208c345",
+      "editorial": "## 思路\n\n从右向左计算每个起点到出界的总和，dp[i]=a[i]+dp[i+k]，越界后项视为0；最大dp即答案。\n\n## 正确性证明\n\n从最后k个位置出发只能收自己，递推正确。对其余位置，从i出发必须收a[i]并执行从i+k起的完整过程，因此递推给出唯一合法路径总和。逆序归纳所有起点正确，取最大覆盖全部非空选择。\n\n## 复杂度\n\n时间O(n)，空间O(n)并在输入数组原地累加。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];del d\n    for i in range(n-k-1,-1,-1):a[i]+=a[i+k]\n    return str(max(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-31",
+      "sourceContentHash": "888f47d7e840b8e2b0ec18de681fc6f8d4e87a93458d3f179302ec7c8290434d",
+      "packageChecksum": "c6de1d9a9e71c6fc5c4418a2c687a36c1a0dd5179753570e7b73d589530b134a",
+      "editorial": "## 思路\n\n最小堆反复取最小两项，累计它们的和，再将和入堆。\n\n## 正确性证明\n\n合并过程是二叉树，每个原值贡献自身乘叶深度。可以将两个最小权值放在最深的一对兄弟叶：与更大权交换不会增加总成本。收缩这对叶为权值和，原最优问题变为规模少一的问题并增加固定这次成本，归纳得到最小两项合并贪心。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];heapq.heapify(a);cost=0\n    while len(a)>1:\n        value=heapq.heappop(a)+heapq.heappop(a);cost+=value;heapq.heappush(a,value)\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-32",
+      "sourceContentHash": "3c66d6116e28f6dbc7804fb2867dd2ac9e7fef18ad146f3ca6b827172b3101df",
+      "packageChecksum": "442ee430fb18ee0d97929fa975e272098ba65b512be9cdebdbf7e8b09cfd77c6",
+      "editorial": "## 思路\n\n从左到右维护当前有效位，遇目标不同就翻一次后缀并更新有效位。\n\n## 正确性证明\n\n处理到某位时更早位已正确，后续起点更晚的翻转无法改变当前位。若当前与目标不同，必须有一次从此位开始的翻转；若相同则无需。每位选取必需翻转且不破坏前缀，因此达到下界。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';current='0';answer=0\n    for c in s:\n        if c!=current:answer+=1;current=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-33",
+      "sourceContentHash": "3b0f7d93f6ad46db4e6f2ec5ca043044707c9922f08cc36c783eb7053dbac15c",
+      "packageChecksum": "3f78d10fb4b3f65cbc6cbecebf1df9bc7cc1bc67ed177f63d4afb12fdc4707af",
+      "editorial": "## 思路\n\n值v的目标位置为n−v。遍历这一位置映射的所有环，每个长度L的环贡献L−1。\n\n## 正确性证明\n\n一个交换至多将一个置换环分成两个，最终每个位置独立，故长度L的环至少L−1次；固定环内一个位置依次与其他位置交换即可达到，所有环独立，总和最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:];seen=bytearray(n);answer=0\n    for start in range(n):\n        if seen[start]:continue\n        v=start;length=0\n        while not seen[v]:seen[v]=1;length+=1;v=n-a[v]\n        answer+=length-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-34",
+      "sourceContentHash": "f1e806d948eed3a3230b7c44ca36fb3125a4e17776f771b648e51c3c4167af04",
+      "packageChecksum": "1ec7181490b615fc802ce193c62b52db6a7874b78fb8b5331f020f311e013673",
+      "editorial": "## 思路\n\n维护相邻游程长度，每个游程边界贡献两侧长度的较小值。\n\n## 正确性证明\n\n合法子串恰好跨一个不同字符游程边界；若两侧长度分别x、y，选择两边各k个字符时1≤k≤min(x,y)，每个k唯一。不同边界对应不同子串，因此贡献之和精确且无重复漏计。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';previous=current=answer=0;last=''\n    for c in s:\n        if c==last:current+=1\n        else:answer+=min(previous,current);previous=current;current=1;last=c\n    return str(answer+min(previous,current))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-35",
+      "sourceContentHash": "5e6758b521b25a1b1628d4d8ff2458c47139fc9501b4902d7340322414dcc87e",
+      "packageChecksum": "3517f9450b75aa05798ea4026bd21e8dd12728dcc92e3c707fb19c37a0b2e535",
+      "editorial": "## 思路\n\n数位DP计算不超过上界的合法数，再用F(end)−F(start−1)。状态为位置、已用数字掩码、是否已开始、是否贴上界，前导零不占用数字。\n\n## 正确性证明\n\n每个非负整数对应唯一等长补零表示。开始前的零只是占位，开始后的每个数字必须未在掩码出现，故状态转移恰好生成所有位互异表示且各一次。全未开始路径代表0。贴上界状态保证不超界，终点计数，再用前缀计数相减得到闭区间答案。\n\n## 复杂度\n\n时间O(log U·1024·10)，空间O(log U·1024)，不逐数扫描区间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from functools import lru_cache\ndef count(limit):\n    if limit<0:return 0\n    digits=tuple(map(int,str(limit)))\n    @lru_cache(None)\n    def dp(pos,mask,started,tight):\n        if pos==len(digits):return 1\n        top=digits[pos] if tight else 9;answer=0\n        for d in range(top+1):\n            nt=tight and d==top\n            if not started and d==0:answer+=dp(pos+1,mask,False,nt)\n            elif not mask>>d&1:answer+=dp(pos+1,mask|1<<d,True,nt)\n        return answer\n    return dp(0,0,False,True)\ndef solve(raw):\n    l,h=map(int,raw.split());return str(count(h)-count(l-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

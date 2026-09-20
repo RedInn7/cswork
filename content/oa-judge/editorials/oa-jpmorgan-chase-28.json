@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-28",
+  "title": "按剩余库存定价的最大销售额",
+  "explanation": "## 思路\n\n按库存降序排序，把最高的若干种库存一起降到下一层；顾客不足卖完整层时，用除法计算完整下降高度和余数销售，等差求和累计。\n\n## 正确性证明\n\n每种商品提供从初始库存递减到1的价格链。若某销售方案选了较小可用价格而未选更大可用价格，换成后者不减收益，且选价格链前缀仍可实现。因此依次取最高价格最优。分层算法将相同最高价格批量卖出，等价于该贪心；等差和只加速计算，不改变所选价格。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，不依赖m逐件循环。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=sorted(d[2:],reverse=True)\n    if sum(a)<m:return '-1'\n    a.append(0);answer=0\n    for i in range(n):\n        width=i+1;high=a[i];low=a[i+1];available=(high-low)*width\n        take=min(m,available);levels,rest=divmod(take,width)\n        answer+=width*(high+high-levels+1)*levels//2+rest*(high-levels)\n        m-=take\n        if not m:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#28-maximum-amount",
+  "sourceContentHash": "7bc379e7159ca3eaac42ad880f0a5148479aefa287d357f003caf4745937274c",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉部分层余数",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=sorted(d[2:],reverse=True)\n    if sum(a)<m:return '-1'\n    a.append(0);answer=0\n    for i in range(n):\n        width=i+1;high=a[i];low=a[i+1];available=(high-low)*width\n        take=min(m,available);levels,rest=divmod(take,width)\n        answer+=width*(high+high-levels+1)*levels//2+0\n        m-=take\n        if not m:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每种商品最多出售一件",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=sorted(d[2:],reverse=True)\n    if sum(a)<m:return '-1'\n    a.append(0);answer=0\n    for i in range(n):\n        width=i+1;high=a[i];low=a[i+1];available=(high-low)*width\n        take=min(m,available);levels,rest=divmod(take,width)\n        answer+=width*(high+high-levels+1)*levels//2+rest*(high-levels)\n        m-=take\n        if not m:break\n    return str(sum(sorted(d[2:],reverse=True)[:min(d[1],n)]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

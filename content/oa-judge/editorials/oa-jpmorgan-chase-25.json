@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-25",
+  "title": "首次连续获胜k场的选手",
+  "explanation": "## 思路\n\n扫描原队列维护冠军与连胜数，换冠军时从1算起；扫描结束还未结束时返回全局最大势能。\n\n## 正确性证明\n\n最大势能首次成为冠军前，每场对手恰是原队列中下一位尚未上场者，扫描模拟准确。一旦最大势能成为冠军便不会再输；若已扫描完但未达k，今后胜者只能是它。因此无需执行巨大k次比赛。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=1\n        else:wins+=1\n        if wins>=k:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#25-chess-tournament",
+  "sourceContentHash": "53c2735b9037eca8700517c840595ac6fac8178f89094f4086c2cb02b520b2ce",
+  "author": "CSWork"
+}

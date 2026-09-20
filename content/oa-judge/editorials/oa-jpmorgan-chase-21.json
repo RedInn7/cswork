@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-21",
+  "title": "删除AB或BB后的最短长度",
+  "explanation": "## 思路\n\n顺序扫描维护栈的长度，遇B且长度非零则消去一个已有字符，否则长度加一。\n\n## 正确性证明\n\n任意删除过程等价于把一个B与它之前一个未消去字符配对，配对区间不能交叉。考虑当前B及最近未配对前驱：若最优方案没有将两者配对，可把它们原先涉及的至多两对改为当前这一对，并在存在两个剩余端点时把它们配成一对，保持右端为B且配对不交叉，不减少删除数。因此可以优先消去这两位。逐前缀执行得到最大配对数，剩余长度最小；AB与BB的左字符均可匹配，所以只需栈长。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.splitlines()[1];left=0\n    for c in s:left=left-1 if c=='B' and left else left+1\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#21-substring-removal",
+  "sourceContentHash": "40e06ccecf28db36b88899587852a3bf49b7f54be7828e1834061ee4f6a931db",
+  "author": "CSWork"
+}
