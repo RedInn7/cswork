@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-34",
+  "title": "按指定顺序删除并保留子序列",
+  "explanation": "## 思路\n\n为每个位置记录被删时刻，二分删除数。检查时忽略删除时刻≤候选值的位置，用贪心匹配目标子序列。\n\n## 正确性\n\n贪心总取最早可用匹配位置，为后续字符保留最多位置，故准确判定子序列。额外删除不能产生新子序列，所以可行删除数构成前缀，二分得到最后可行值。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s,t=d[:2];order=list(map(int,d[2:]));when=[0]*len(s)\n    for step,pos in enumerate(order,1):when[pos-1]=step\n    def works(count):\n        j=0\n        for i,c in enumerate(s):\n            if when[i]>count and c==t[j]:\n                j+=1\n                if j==len(t):return True\n        return False\n    lo=0;hi=len(s)\n    while lo<hi:\n        mid=(lo+hi+1)//2\n        if works(mid):lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#34-string-search-also-for-coredatabase-engineering",
+  "sourceContentHash": "ef1545c4d912247dc057e06be164cc68cec90bb77d405d236840b80fde997adf",
+  "author": "CSWork"
+}

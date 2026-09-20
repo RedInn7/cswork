@@ -1,0 +1,10 @@
+[
+  {
+    "name": "结束分钟误作空闲",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);diff=[0]*1441\n    def minute(s):h,m=map(int,s.split(':'));return h*60+m\n    for i in range(n):\n        a=minute(d[4+4*i]);b=minute(d[5+4*i]);diff[a]+=1;diff[b]-=1\n    busy=run=0\n    for t in range(1440):\n        busy+=diff[t];run=run+1 if busy==0 else 0\n        if run>=k:\n            start=t-k+1;return f'{start//60:02}:{start%60:02}'\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "忽略会议完整长度",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);diff=[0]*1441\n    def minute(s):h,m=map(int,s.split(':'));return h*60+m\n    for i in range(n):\n        a=minute(d[4+4*i]);b=minute(d[5+4*i]);diff[a]+=1;diff[b+1]-=1\n    busy=run=0\n    for t in range(1440):\n        busy+=diff[t];run=run+1 if busy==0 else 0\n        if run>=1:\n            start=t-k+1;return f'{start//60:02}:{start%60:02}'\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

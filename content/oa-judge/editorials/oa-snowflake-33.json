@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-33",
+  "title": "出售部分服务器后的最大升级数",
+  "explanation": "## 思路\n\n保留并升级x台时，最多卖n−x台。因此x≤n且x(upgrade+sell)≤money+n×sell，直接向下取整。\n\n## 正确性\n\n升级x台所需资金不超过卖掉所有未升级机器后的最大资金是必要条件；若满足，先卖未升级机器再升级即可实现，所以不等式也是充分条件。取允许的最大整数得到最优。\n\n## 复杂度\n\n时间O(q)，空间O(q)用于输出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    q=int(d[0]);out=[]\n    for i in range(q):\n        n,m,s,u=map(int,d[1+4*i:5+4*i]);out.append(min(n,(m+n*s)//(u+s)))\n    return str(q)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#33-server-investment",
+  "sourceContentHash": "add66db60666852ddc5d117f8a3693328472a1841cd299eac901e4427005711f",
+  "author": "CSWork"
+}

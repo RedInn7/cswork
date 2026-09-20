@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-29",
+  "title": "扩容与单点重置后的Pod数量",
+  "explanation": "## 思路\n\n逆序处理日志，维护已见全局提升的最大值。遇某服务最后一次单点赋值时确定其最终值；其余服务以初值结合全部提升处理。\n\n## 正确性\n\n最后一次单点赋值覆盖它之前的全部历史，之后的全局提升等价于与后缀阈值最大值取max。逆序第一次遇到该服务赋值正好具有所需后缀值，未遇赋值者保留初值再应用所有提升。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));out=[None]*n;floor=0\n    for i in range(m-1,-1,-1):\n        t,p,x=map(int,d[2+n+3*i:5+n+3*i])\n        if t==2:floor=max(floor,x)\n        elif out[p-1] is None:out[p-1]=max(x,floor)\n    for i in range(n):\n        if out[i] is None:out[i]=max(a[i],floor)\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#29-horizontal-pod-autoscaler-infrastructure-automation-internship",
+  "sourceContentHash": "6803e093fa63507a9c2a5725e6b3594fcdf6f144aece33fee4fe364c9d2643b3",
+  "author": "CSWork"
+}

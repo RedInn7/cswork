@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-35",
+  "title": "不同字符受限的最高子串频率",
+  "explanation": "## 思路\n\n最优只需考虑最短长度L：任一长串的L前缀出现不少且字符种数不多。用滑窗标记合格L窗口，后缀自动机精确统计每个子串出现次数；筛代表长度L的状态。\n\n## 正确性\n\n合法长串的每次出现对应其前缀的一次出现，因此缩短到L不劣。后缀自动机每个状态代表相同结束位置集合、长度处于len(link)+1..len之间的子串；各状态若覆盖L，就代表唯一L长文本。按长度逆序累加后缀链接上的结束计数得到精确出现次数，再用代表位置的滑窗标记检查字符数，取最大即答案，不使用有碰撞哈希。\n\n## 复杂度\n\n时间O(n log n)（状态按长度排序），空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import json\ndef solve(raw):\n    s,L,H,U=json.loads(raw);trans=[{}];link=[-1];length=[0];occ=[0];first=[-1];last=0\n    for index,c in enumerate(s):\n        cur=len(trans);trans.append({});length.append(length[last]+1);link.append(0);occ.append(1);first.append(index);p=last\n        while p>=0 and c not in trans[p]:trans[p][c]=cur;p=link[p]\n        if p>=0:\n            q=trans[p][c]\n            if length[p]+1==length[q]:link[cur]=q\n            else:\n                clone=len(trans);trans.append(trans[q].copy());length.append(length[p]+1);link.append(link[q]);occ.append(0);first.append(first[q])\n                while p>=0 and trans[p].get(c)==q:trans[p][c]=clone;p=link[p]\n                link[q]=link[cur]=clone\n        last=cur\n    order=sorted(range(1,len(trans)),key=lambda i:length[i],reverse=True)\n    for v in order:occ[link[v]]+=occ[v]\n    counts={};valid=[False]*len(s)\n    for i,c in enumerate(s):\n        counts[c]=counts.get(c,0)+1\n        if i>=L:\n            old=s[i-L];counts[old]-=1\n            if counts[old]==0:del counts[old]\n        if i>=L-1:valid[i]=len(counts)<=U\n    return str(max((occ[v] for v in order if length[link[v]]<L<=length[v] and valid[first[v]]),default=0))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#35-max-frequency-substring",
+  "sourceContentHash": "b097c83e5220fe36019b172a562f92fd7393858db427117abadcbd0ef40a765b",
+  "author": "CSWork"
+}

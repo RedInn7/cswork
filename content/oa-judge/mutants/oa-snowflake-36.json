@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复收取同格乘客",
+    "code": "def solve(d):\n    n=int(d[0]);flat=list(map(int,d[1:]));g=[flat[i*n:(i+1)*n] for i in range(n)];neg=-10**9\n    if g[0][0]<0 or g[-1][-1]<0:return '0'\n    dp=[[neg]*n for _ in range(n)];dp[0][0]=g[0][0]\n    for step in range(1,2*n-1):\n        nxt=[[neg]*n for _ in range(n)]\n        for a in range(max(0,step-n+1),min(n-1,step)+1):\n            if g[a][step-a]<0:continue\n            for b in range(max(0,step-n+1),min(n-1,step)+1):\n                if g[b][step-b]<0:continue\n                value=dp[a][b]\n                if a:value=max(value,dp[a-1][b])\n                if b:value=max(value,dp[a][b-1])\n                if a and b:value=max(value,dp[a-1][b-1])\n                if value>=0:nxt[a][b]=value+g[a][step-a]+(g[b][step-b])\n        dp=nxt\n    return str(max(0,dp[-1][-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "第一步乘客遗漏",
+    "code": "def solve(d):\n    n=int(d[0]);flat=list(map(int,d[1:]));g=[flat[i*n:(i+1)*n] for i in range(n)];neg=-10**9\n    if g[0][0]<0 or g[-1][-1]<0:return '0'\n    dp=[[neg]*n for _ in range(n)];dp[0][0]=0\n    for step in range(1,2*n-1):\n        nxt=[[neg]*n for _ in range(n)]\n        for a in range(max(0,step-n+1),min(n-1,step)+1):\n            if g[a][step-a]<0:continue\n            for b in range(max(0,step-n+1),min(n-1,step)+1):\n                if g[b][step-b]<0:continue\n                value=dp[a][b]\n                if a:value=max(value,dp[a-1][b])\n                if b:value=max(value,dp[a][b-1])\n                if a and b:value=max(value,dp[a-1][b-1])\n                if value>=0:nxt[a][b]=value+g[a][step-a]+(g[b][step-b] if a!=b else 0)\n        dp=nxt\n    return str(max(0,dp[-1][-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

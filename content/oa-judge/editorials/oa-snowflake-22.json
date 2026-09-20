@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-22",
+  "title": "数字串的质数划分",
+  "explanation": "## 思路\n\n筛出百万内质数；dp[i]为前i个字符的合法划分数，从每个非零起点扩展至多6位。\n\n## 正确性\n\n任何合法最后一段长度至多6且是无前导零质数，移除它得到唯一前缀划分。转移枚举所有合法末段，互不重叠，因此由空前缀一种方案归纳成立。\n\n## 复杂度\n\n时间O(10⁶ log log 10⁶+6n)，空间O(10⁶+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];limit=min(999999,10**min(6,len(s))-1);p=bytearray(b'\\x01')*(limit+1);p[0:2]=b'\\x00\\x00'\n    for v in range(2,math.isqrt(limit)+1):\n        if p[v]:p[v*v:limit+1:v]=b'\\x00'*((limit-v*v)//v+1)\n    dp=[0]*(len(s)+1);dp[0]=1\n    for i,c in enumerate(s):\n        if c=='0':continue\n        value=0\n        for j in range(i,min(len(s),i+6)):\n            value=value*10+int(s[j])\n            if p[value]:dp[j+1]=(dp[j+1]+dp[i])%1000000007\n    return str(dp[-1])\nimport math\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#22-prime-string",
+  "sourceContentHash": "1789f4cbc7c54f343d5af96e5337a24ed8860d476a7e40aa1b448e6acd477510",
+  "author": "CSWork"
+}

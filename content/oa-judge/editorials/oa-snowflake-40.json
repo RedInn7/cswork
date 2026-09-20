@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-40",
+  "title": "任意交换使偶数在前的最少次数",
+  "explanation": "## 思路\n\n先统计偶数个数e，前e个位置中的奇数个数就是答案。\n\n## 正确性\n\n前e位中的每个奇数必须离开，一次交换至多纠正其中一个，所以它们个数为下界。后面恰有相同个数错位偶数，将两类逐一交换，每次纠正一对，达到下界。\n\n## 复杂度\n\n时间O(n)，空间O(n)含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));even=sum(v%2==0 for v in a);return str(sum(v%2 for v in a[:even]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#40-custom-sorted-array",
+  "sourceContentHash": "f2f45d0a834d55e2ebe9f13496c94ad703754d6d6f440de10a70dae036f365dd",
+  "author": "CSWork"
+}

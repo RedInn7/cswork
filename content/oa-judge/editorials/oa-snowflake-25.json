@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-25",
+  "title": "按段最大值付费的最优分割",
+  "explanation": "## 思路\n\ndp[i]表示前i项最低费用。逆向枚举最后一段起点，同时维护其最大值，更新dp[i]。\n\n## 正确性\n\n最优分割的最后一段长度必在1..threshold之内，去掉它后前缀也必须最优，否则可替换改善。枚举全部合法末段并取最小，因此递推不漏任何最优解。负费用不影响有限分割上的递推。\n\n## 复杂度\n\n时间O(n×threshold)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));dp=[0]+[10**30]*n\n    for i in range(1,n+1):\n        largest=-10**30;best=10**30\n        for j in range(i-1,max(-1,i-k-1),-1):largest=max(largest,a[j]);best=min(best,dp[j]+largest)\n        dp[i]=best\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#25-efficient-cost",
+  "sourceContentHash": "12cd6b8e186a5262238ebe61971b7f5511974e505dd4d5948e5b1dc06e83553c",
+  "author": "CSWork"
+}

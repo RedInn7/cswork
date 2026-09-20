@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错把有向边当无向",
+    "code": "from collections import deque\ndef solve(d):\n    m=int(d[0]);adj={}\n    for i in range(m):a,b=d[1+2*i:3+2*i];adj.setdefault(a,[]).append(b);adj.setdefault(b,[]).append(a)\n    start,target=d[1+2*m:3+2*m];q=deque([(start,0)]);seen={start}\n    def get_links(page):return adj.get(page,[])\n    while q:\n        u,dist=q.popleft()\n        if u==target:return str(dist)\n        for v in get_links(u):\n            if v not in seen:seen.add(v);q.append((v,dist+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "起终相同也计一次",
+    "code": "from collections import deque\ndef solve(d):\n    m=int(d[0]);adj={}\n    for i in range(m):a,b=d[1+2*i:3+2*i];adj.setdefault(a,[]).append(b)\n    start,target=d[1+2*m:3+2*m];q=deque([(start,0)]);seen={start}\n    def get_links(page):return adj.get(page,[])\n    while q:\n        u,dist=q.popleft()\n        if u==target:return str(max(1,dist))\n        for v in get_links(u):\n            if v not in seen:seen.add(v);q.append((v,dist+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

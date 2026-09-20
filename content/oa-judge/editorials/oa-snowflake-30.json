@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-30",
+  "title": "相邻变化受限的好子序列",
+  "explanation": "## 思路\n\n维护每个值结尾且最多j次变化的长度dp[value][j]，以及各j的全局最优best[j]。j倒序更新，取同值续接和best[j−1]+1。\n\n## 正确性\n\n同值接续不增加变化；从任意至多j−1次变化的子序列续接最多增一次，因此第二项合法。最优非空子序列删除末尾后，末值相同归第一项，否则归第二项，转移完备。倒序保证当前元素不被重复使用。\n\n## 复杂度\n\n时间O(nk)，空间O(nk)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);table={};best=[0]*(k+1)\n    for value in map(int,d[2:]):\n        if value not in table:table[value]=[0]*(k+1)\n        row=table[value]\n        for j in range(k,-1,-1):\n            row[j]=max(row[j]+1,best[j-1]+1 if j else 1);best[j]=max(best[j],row[j])\n    return str(best[k])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#30-find-the-maximum-length-of-a-good-subsequence-i-lc-3176-",
+  "sourceContentHash": "78ebadd2ea9fbe822cf93a02647e282c37ab32d3899e580217627476ac0244e4",
+  "author": "CSWork"
+}
