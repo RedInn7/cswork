@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把子集误当相等",
+    "code": "def solve(d):\n    n,m=map(int,d[:2])\n    def regions(rows):\n        seen=set();out=set()\n        for start in range(n*m):\n            if start in seen or rows[start//m][start%m]!='1':continue\n            seen.add(start);stack=[start];part=set()\n            while stack:\n                u=stack.pop();part.add(u);r,c=divmod(u,m)\n                for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n                    nr,nc=r+dr,c+dc;v=nr*m+nc\n                    if 0<=nr<n and 0<=nc<m and v not in seen and rows[nr][nc]=='1':\n                        seen.add(v);stack.append(v)\n            out.add(frozenset(part))\n        return out\n    a=regions(d[2:2+n]);b=regions(d[2+n:2+2*n])\n    owner={v:y for y in a for v in y}\n    return str(sum(x<=owner.get(next(iter(x)),frozenset()) for x in b))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只比较块大小",
+    "code": "def solve(d):\n    n,m=map(int,d[:2])\n    def regions(rows):\n        seen=set();out=set()\n        for start in range(n*m):\n            if start in seen or rows[start//m][start%m]!='1':continue\n            seen.add(start);stack=[start];part=set()\n            while stack:\n                u=stack.pop();part.add(u);r,c=divmod(u,m)\n                for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n                    nr,nc=r+dr,c+dc;v=nr*m+nc\n                    if 0<=nr<n and 0<=nc<m and v not in seen and rows[nr][nc]=='1':\n                        seen.add(v);stack.append(v)\n            out.add(frozenset(part))\n        return out\n    a=regions(d[2:2+n]);b=regions(d[2+n:2+2*n])\n    sizes={len(y) for y in a}\n    return str(sum(len(x) in sizes for x in b))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

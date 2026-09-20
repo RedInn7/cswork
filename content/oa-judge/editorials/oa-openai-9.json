@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-9",
+  "title": "连续IPv4地址的最少CIDR覆盖",
+  "explanation": "## 思路\n\n将地址转成64位整数。每步从当前起点取最大的对齐2的幂块，同时不能大于剩余长度。起点0的对齐上限为2³²，不能用lowbit(0)=0。\n\n## 正确性\n\nCIDR区间是二叉前缀树中的结点，其区间任意两个要么不相交要么包含。目标区间内的极大完整子树形成唯一的不相交分解，任何合法覆盖不得跨过这些子树边界，否则会包含目标外地址；每个极大子树至少需要一块。贪心每次取当前最左端允许的最大对齐块，正好依次取出这些极大子树，因此达到此下界。\n\n## 复杂度\n\n最多64个块，时间O(32)，输出空间O(32)，用64位保存2³²。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    start=0\n    for part in d[0].split('.'):start=start*256+int(part)\n    count=int(d[1]);out=[]\n    while count:\n        align=(start&-start) if start else 1<<32\n        size=min(align,1<<(count.bit_length()-1))\n        address='.'.join(str((start>>s)&255) for s in (24,16,8,0))\n        out.append(address+'/'+str(32-(size.bit_length()-1)))\n        start+=size;count-=size\n    return str(len(out))+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/openai#9-ip-address-to-cidr-blocks",
+  "sourceContentHash": "97c3c79aa1e01820542523d5c384eeeb9e908ea505f28d9b36a2ea97cbe860c5",
+  "author": "CSWork"
+}

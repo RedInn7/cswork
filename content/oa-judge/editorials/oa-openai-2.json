@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-2",
+  "title": "统计可共存的连续细菌区间",
+  "explanation": "## 思路\n\n将每对端点排序为a<b，记录每个b对应的最大a。扫描右端r时，左端至少是所有已出现冲突的较小端点最大值加一。累加可选左端数量。\n\n## 正确性\n\n区间[l,r]非法当且仅当存在冲突a<b≤r且l≤a。故合法左端精确满足l>max(a)，该最大值随r维护即可。每个区间按唯一右端计数一次。\n\n## 复杂度\n\n时间O(n+m)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);forbidden=[0]*(n+1)\n    for i in range(m):\n        a,b=map(int,d[2+2*i:4+2*i])\n        if a>b:a,b=b,a\n        forbidden[b]=max(forbidden[b],a)\n    left=1;answer=0\n    for right in range(1,n+1):\n        left=max(left,forbidden[right]+1)\n        answer+=right-left+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/openai#2-bacteria-coexistence-biohazard",
+  "sourceContentHash": "e9d37e8bde4659e7327d4963b67a139143a4210ed0e93867683157501a6eda06",
+  "author": "CSWork"
+}

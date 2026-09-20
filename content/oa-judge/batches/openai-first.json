@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-openai-1",
+      "sourceContentHash": "d361c94789b119eb99555b5078c657012cf64cba5c46c0bc60e66511447868ee",
+      "packageChecksum": "f80bd152727b53c58658dffceb48fa62ca0ebb011f06a042359db1469419062e",
+      "editorial": "## 思路\n\n用迭代遍历提取各连通块的格子编号集合，以不可变集合为键，统计第二张网格中也出现在第一张网格的键。\n\n## 正确性\n\n遍历仅沿四向1格扩展，且直到不能扩展才结束，因此每次恰好提取一个完整连通块。绝对格子编号集合相等当且仅当全部坐标完全相等；集合查找正好实现题意。\n\n## 复杂度\n\n期望时间O(nm)，空间O(nm)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m=map(int,d[:2])\n    def regions(rows):\n        seen=set();out=set()\n        for start in range(n*m):\n            if start in seen or rows[start//m][start%m]!='1':continue\n            seen.add(start);stack=[start];part=set()\n            while stack:\n                u=stack.pop();part.add(u);r,c=divmod(u,m)\n                for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n                    nr,nc=r+dr,c+dc;v=nr*m+nc\n                    if 0<=nr<n and 0<=nc<m and v not in seen and rows[nr][nc]=='1':\n                        seen.add(v);stack.append(v)\n            out.add(frozenset(part))\n        return out\n    a=regions(d[2:2+n]);b=regions(d[2+n:2+2*n])\n    return str(sum(x in a for x in b))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-openai-2",
+      "sourceContentHash": "e9d37e8bde4659e7327d4963b67a139143a4210ed0e93867683157501a6eda06",
+      "packageChecksum": "514bec746190ce754388e9a3d122a96fc785cadff6513261bae66b4c663ebbdf",
+      "editorial": "## 思路\n\n将每对端点排序为a<b，记录每个b对应的最大a。扫描右端r时，左端至少是所有已出现冲突的较小端点最大值加一。累加可选左端数量。\n\n## 正确性\n\n区间[l,r]非法当且仅当存在冲突a<b≤r且l≤a。故合法左端精确满足l>max(a)，该最大值随r维护即可。每个区间按唯一右端计数一次。\n\n## 复杂度\n\n时间O(n+m)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m=map(int,d[:2]);forbidden=[0]*(n+1)\n    for i in range(m):\n        a,b=map(int,d[2+2*i:4+2*i])\n        if a>b:a,b=b,a\n        forbidden[b]=max(forbidden[b],a)\n    left=1;answer=0\n    for right in range(1,n+1):\n        left=max(left,forbidden[right]+1)\n        answer+=right-left+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-openai-3",
+      "sourceContentHash": "59273b8fbdbc7e5eae9a203411ec53b121df0eacfa643b3e491d756e05b6cc95",
+      "packageChecksum": "0565cfa02bca27e0996229ee1ba6f50bc7eb1648ef3d50a071234fbc9c6c78b7",
+      "editorial": "## 思路\n\n先对每个用户频道收集EVENT时间并排序去重，用树状数组保存已处理事件频次。再次按输入顺序处理，EVENT加一，COUNT查询≤t与<t−15的前缀频次之差。\n\n## 正确性\n\n预处理只建立坐标，不增加任何频次。扫描任意位置时树状数组恰含该位置之前已处理EVENT的重数。两次二分得到闭区间的边界，前缀和作差排除过早与未来时间戳，因此包含且仅包含所需事件。每个键独立避免串用户或频道。\n\n## 复杂度\n\n时间O(q log q)，空间O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from bisect import bisect_left,bisect_right\ndef solve(d):\n    q=int(d[0]);coords={};ops=[]\n    for i in range(q):\n        o,u,c,t=d[1+4*i:5+4*i];t=int(t);key=(u,c);ops.append((o,key,t))\n        if o=='EVENT':coords.setdefault(key,[]).append(t)\n    coords={k:sorted(set(v)) for k,v in coords.items()};bits={k:[0]*(len(v)+1) for k,v in coords.items()}\n    def prefix(bit,i):\n        total=0\n        while i:total+=bit[i];i-=i&-i\n        return total\n    out=[]\n    for o,key,t in ops:\n        a=coords.get(key,[]);bit=bits.get(key,[0])\n        if o=='EVENT':\n            i=bisect_left(a,t)+1\n            while i<len(bit):bit[i]+=1;i+=i&-i\n        else:out.append(prefix(bit,bisect_right(a,t))-prefix(bit,bisect_left(a,t-15)))\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-openai-7",
+      "sourceContentHash": "9688d97a03aa88a1615fc9778011efe9d59297bfb718c03cba13635761f6e3af",
+      "packageChecksum": "da80eccd1735be5a94b0ae0109d698a628a7159f599465e17fa513afe8849e12",
+      "editorial": "## 思路\n\n维护每个格子已经感染的邻居数。先找出第1天会感染的格子，之后逐层处理新增感染队列，每格感染时仅通知其至多8个邻居，下一层在次日处理。T=0时所有健康格进入第1层。\n\n## 正确性\n\n初始计数精确表示第0天感染邻居。处理第d层时只把这一天新增感染贡献给邻居，达到阈值的健康格立即标记为待处理，但只能进入第d+1层，因此不会当天继续传播。每格首次达阈值时入队一次，不可能遗漏也不会重复。队列空时不存在还能达阈值的健康格，最后非空层号就是答案。免疫格从不入队也不贡献计数。\n\n## 复杂度\n\n时间O(nm)，空间O(nm)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m,t=map(int,d[:3]);g=[list(row) for row in d[3:]];counts=[[0]*m for _ in range(n)];front=[];days=0\n    def adjacent(r,c):\n        for x in range(max(0,r-1),min(n,r+2)):\n            for y in range(max(0,c-1),min(m,c+2)):\n                if (x,y)!=(r,c):yield x,y\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='X':\n                for x,y in adjacent(r,c):counts[x][y]+=1\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='.' and counts[r][c]>=t:front.append((r,c));g[r][c]='Q'\n    while front:\n        days+=1;following=[]\n        for r,c in front:\n            g[r][c]='X'\n            for x,y in adjacent(r,c):\n                counts[x][y]+=1\n                if g[x][y]=='.' and counts[x][y]>=t:g[x][y]='Q';following.append((x,y))\n        front=following\n    return str(days)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-openai-8",
+      "sourceContentHash": "faf1170fba22ec3200ba1a423919b92bb32944a309f890f10d0403a59c955396",
+      "packageChecksum": "2d07d4ab26b3ab505636c4dc07058532ec096306e22f122734d5f4660de9f992",
+      "editorial": "## 思路\n\n维护每个格子已经感染的邻居数。先找出第1天会感染的格子，之后逐层处理新增感染队列，每格感染时仅通知其至多8个邻居，下一层在次日处理。T=0时所有健康格进入第1层。\n\n## 正确性\n\n初始计数精确表示第0天感染邻居。处理第d层时只把这一天新增感染贡献给邻居，达到阈值的健康格立即标记为待处理，但只能进入第d+1层，因此不会当天继续传播。每格首次达阈值时入队一次，不可能遗漏也不会重复。队列空时不存在还能达阈值的健康格，最后非空层号就是答案。免疫格从不入队也不贡献计数。\n\n## 复杂度\n\n时间O(nm)，空间O(nm)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m,t=map(int,d[:3]);g=[list(row) for row in d[3:]];counts=[[0]*m for _ in range(n)];front=[];days=0\n    def adjacent(r,c):\n        for x in range(max(0,r-1),min(n,r+2)):\n            for y in range(max(0,c-1),min(m,c+2)):\n                if (x,y)!=(r,c):yield x,y\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='X':\n                for x,y in adjacent(r,c):counts[x][y]+=1\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='.' and counts[r][c]>=t:front.append((r,c));g[r][c]='Q'\n    while front:\n        days+=1;following=[]\n        for r,c in front:\n            g[r][c]='X'\n            for x,y in adjacent(r,c):\n                counts[x][y]+=1\n                if g[x][y]=='.' and counts[x][y]>=t:g[x][y]='Q';following.append((x,y))\n        front=following\n    return str(days)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-openai-9",
+      "sourceContentHash": "97c3c79aa1e01820542523d5c384eeeb9e908ea505f28d9b36a2ea97cbe860c5",
+      "packageChecksum": "1a224ea01d0cb32f1230c1ae28cb69eef50080231ede3b1bcdcddf4ddf9cd218",
+      "editorial": "## 思路\n\n将地址转成64位整数。每步从当前起点取最大的对齐2的幂块，同时不能大于剩余长度。起点0的对齐上限为2³²，不能用lowbit(0)=0。\n\n## 正确性\n\nCIDR区间是二叉前缀树中的结点，其区间任意两个要么不相交要么包含。目标区间内的极大完整子树形成唯一的不相交分解，任何合法覆盖不得跨过这些子树边界，否则会包含目标外地址；每个极大子树至少需要一块。贪心每次取当前最左端允许的最大对齐块，正好依次取出这些极大子树，因此达到此下界。\n\n## 复杂度\n\n最多64个块，时间O(32)，输出空间O(32)，用64位保存2³²。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    start=0\n    for part in d[0].split('.'):start=start*256+int(part)\n    count=int(d[1]);out=[]\n    while count:\n        align=(start&-start) if start else 1<<32\n        size=min(align,1<<(count.bit_length()-1))\n        address='.'.join(str((start>>s)&255) for s in (24,16,8,0))\n        out.append(address+'/'+str(32-(size.bit_length()-1)))\n        start+=size;count-=size\n    return str(len(out))+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

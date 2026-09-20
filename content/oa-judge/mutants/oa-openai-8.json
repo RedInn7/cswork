@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误多计算无变化检测日",
+    "code": "def solve(d):\n    n,m,t=map(int,d[:3]);g=[list(row) for row in d[3:]];counts=[[0]*m for _ in range(n)];front=[];days=0\n    def adjacent(r,c):\n        for x in range(max(0,r-1),min(n,r+2)):\n            for y in range(max(0,c-1),min(m,c+2)):\n                if (x,y)!=(r,c):yield x,y\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='X':\n                for x,y in adjacent(r,c):counts[x][y]+=1\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='.' and counts[r][c]>=t:front.append((r,c));g[r][c]='Q'\n    while front:\n        days+=1;following=[]\n        for r,c in front:\n            g[r][c]='X'\n            for x,y in adjacent(r,c):\n                counts[x][y]+=1\n                if g[x][y]=='.' and counts[x][y]>=t:g[x][y]='Q';following.append((x,y))\n        front=following\n    return str(days+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把至少阈值写成严格大于",
+    "code": "def solve(d):\n    n,m,t=map(int,d[:3]);g=[list(row) for row in d[3:]];counts=[[0]*m for _ in range(n)];front=[];days=0\n    def adjacent(r,c):\n        for x in range(max(0,r-1),min(n,r+2)):\n            for y in range(max(0,c-1),min(m,c+2)):\n                if (x,y)!=(r,c):yield x,y\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='X':\n                for x,y in adjacent(r,c):counts[x][y]+=1\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='.' and counts[r][c]>t:front.append((r,c));g[r][c]='Q'\n    while front:\n        days+=1;following=[]\n        for r,c in front:\n            g[r][c]='X'\n            for x,y in adjacent(r,c):\n                counts[x][y]+=1\n                if g[x][y]=='.' and counts[x][y]>t:g[x][y]='Q';following.append((x,y))\n        front=following\n    return str(days)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "前缀长度偏差",
+    "code": "def solve(d):\n    start=0\n    for part in d[0].split('.'):start=start*256+int(part)\n    count=int(d[1]);out=[]\n    while count:\n        align=(start&-start) if start else 1<<32\n        size=min(align,1<<(count.bit_length()-1))\n        address='.'.join(str((start>>s)&255) for s in (24,16,8,0))\n        out.append(address+'/'+str(31-(size.bit_length()-1)))\n        start+=size;count-=size\n    return str(len(out))+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误删最后网段",
+    "code": "def solve(d):\n    start=0\n    for part in d[0].split('.'):start=start*256+int(part)\n    count=int(d[1]);out=[]\n    while count:\n        align=(start&-start) if start else 1<<32\n        size=min(align,1<<(count.bit_length()-1))\n        address='.'.join(str((start>>s)&255) for s in (24,16,8,0))\n        out.append(address+'/'+str(32-(size.bit_length()-1)))\n        start+=size;count-=size\n    return str(len(out)-1)+'\\n'+'\\n'.join(out[:-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

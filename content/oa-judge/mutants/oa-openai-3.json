@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏15分钟闭端点",
+    "code": "from bisect import bisect_left,bisect_right\ndef solve(d):\n    q=int(d[0]);coords={};ops=[]\n    for i in range(q):\n        o,u,c,t=d[1+4*i:5+4*i];t=int(t);key=(u,c);ops.append((o,key,t))\n        if o=='EVENT':coords.setdefault(key,[]).append(t)\n    coords={k:sorted(set(v)) for k,v in coords.items()};bits={k:[0]*(len(v)+1) for k,v in coords.items()}\n    def prefix(bit,i):\n        total=0\n        while i:total+=bit[i];i-=i&-i\n        return total\n    out=[]\n    for o,key,t in ops:\n        a=coords.get(key,[]);bit=bits.get(key,[0])\n        if o=='EVENT':\n            i=bisect_left(a,t)+1\n            while i<len(bit):bit[i]+=1;i+=i&-i\n        else:out.append(prefix(bit,bisect_right(a,t))-prefix(bit,bisect_right(a,t-15)))\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误包含查询时刻后的事件",
+    "code": "from bisect import bisect_left,bisect_right\ndef solve(d):\n    q=int(d[0]);coords={};ops=[]\n    for i in range(q):\n        o,u,c,t=d[1+4*i:5+4*i];t=int(t);key=(u,c);ops.append((o,key,t))\n        if o=='EVENT':coords.setdefault(key,[]).append(t)\n    coords={k:sorted(set(v)) for k,v in coords.items()};bits={k:[0]*(len(v)+1) for k,v in coords.items()}\n    def prefix(bit,i):\n        total=0\n        while i:total+=bit[i];i-=i&-i\n        return total\n    out=[]\n    for o,key,t in ops:\n        a=coords.get(key,[]);bit=bits.get(key,[0])\n        if o=='EVENT':\n            i=bisect_left(a,t)+1\n            while i<len(bit):bit[i]+=1;i+=i&-i\n        else:out.append(prefix(bit,len(a))-prefix(bit,bisect_left(a,t-15)))\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
