@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-20",
+  "title": "删除一个节点阻止恶意软件传播",
+  "explanation": "## 思路\n\n枚举所有待删节点，每次多源BFS模拟剩余图传播，比较最终感染数量与编号。\n\n## 正确性\n\n删除后的传播闭包正是从所有未删感染源可达的节点集合。BFS恰遍历这个集合，因此每个候选费用准确；枚举包括健康割点在内的所有n个节点，按感染数优先、编号次优比较即为全局最优。\n\n## 复杂度\n\n时间O(n(n+m))，额外空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in range(n):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#20-get-node-to-remove",
+  "sourceContentHash": "44e3d3f290215aaa8163d9417c6c9aeaddddd457eac819ecbeb707d6d1893dd2",
+  "author": "CSWork"
+}

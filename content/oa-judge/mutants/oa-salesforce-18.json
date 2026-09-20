@@ -1,0 +1,10 @@
+[
+  {
+    "name": "等于目标工期也强制集成",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));lo=0;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2;needed=sum(y for x,y in zip(a,b) if x>=mid)\n        if needed<=mid:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误只比较最大集成项",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));lo=0;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2;needed=max([y for x,y in zip(a,b) if x>mid]+[0])\n        if needed<=mid:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

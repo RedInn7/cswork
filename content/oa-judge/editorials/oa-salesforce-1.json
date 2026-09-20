@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-1",
+  "title": "三个字符的子序列计数",
+  "explanation": "## 思路\n\n逆序维护匹配模式前0、1、2、3个字符的方案数，初始dp[0]=1。\n\n## 正确性\n\n处理文本前缀后，dp[j]计数从该前缀选位置得到模式前j字符的方案。新字符匹配模式第j位时，可接在旧dp[j−1]的每种方案后；倒序更新确保同一文本位置不会重复使用。加上不选择当前字符的旧方案即保持不变量。\n\n## 复杂度\n\n时间O(文本长)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    pattern,text=d;dp=[1,0,0,0]\n    for c in text:\n        for j in range(3,0,-1):\n            if c==pattern[j-1]:dp[j]+=dp[j-1]\n    return str(dp[3])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#1-string-subsequences",
+  "sourceContentHash": "37bb64b3335470a2f027f1c653b44e8105a7dce4814e8f4c2b6b6f8f0780a176",
+  "author": "CSWork"
+}

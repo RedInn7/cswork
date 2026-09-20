@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-18",
+  "title": "无限并行开发与串行集成的最短工期",
+  "explanation": "## 思路\n\n二分工期T。开发耗时>T的功能必须集成，其集成耗时和≤T时可行；其余全并行开发即可。\n\n## 正确性\n\n任何T内完成方案都必须将开发超时的功能集成，因此此耗时和≤T是必要条件。若条件成立，组长串行集成这些功能，其余从0时刻同时开发，全部≤T，故也充分。可行性随T单调，上界max(developmentTime)可全开发达到。\n\n## 复杂度\n\n时间O(n log maxTime)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:n+1]));b=list(map(int,d[n+1:]));lo=0;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2;needed=sum(y for x,y in zip(a,b) if x>mid)\n        if needed<=mid:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#18-get-minimum-development-time",
+  "sourceContentHash": "aae9d36df5cf4144c477b3dc94c84ae79f11a5259b64700da7da1ae6b58b6ac5",
+  "author": "CSWork"
+}

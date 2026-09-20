@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-9",
+  "title": "指定下标范围内数字不重复的元素",
+  "explanation": "## 思路\n\n逐项仅检查目标下标区间，用10位掩码记录十进制数字，遇重复即无效。0本身是一位数字且合法。\n\n## 正确性\n\n数字掩码在每一步恰记录该元素已出现的数字，重复位等价于重复数字。仅访问闭区间下标并逐个累加，因此既不受区间外值影响，也不会把相同数值不同位置合并。\n\n## 复杂度\n\n时间O(n log V)，空间O(1)，除读入外。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,l,r=map(int,d[:3]);answer=0\n    for token in d[3+l:4+r]:\n        mask=0;valid=True\n        for c in token:\n            bit=1<<int(c)\n            if mask&bit:valid=False;break\n            mask|=bit\n        answer+=valid\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#9-count-numbers-with-unique-digits",
+  "sourceContentHash": "f2acb547a36ce0742ea9d8823653ec6bbb67d662553c07a5d6cd1832c76d03e9",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏右端点",
+    "code": "def solve(d):\n    n,l,r=map(int,d[:3]);answer=0\n    for token in d[3+l:3+r]:\n        mask=0;valid=True\n        for c in token:\n            bit=1<<int(c)\n            if mask&bit:valid=False;break\n            mask|=bit\n        answer+=valid\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误忽略重复零",
+    "code": "def solve(d):\n    n,l,r=map(int,d[:3]);answer=0\n    for token in d[3+l:4+r]:\n        mask=0;valid=True\n        for c in token:\n            bit=1<<int(c)\n            if bit!=1 and mask&bit:valid=False;break\n            mask|=bit\n        answer+=valid\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

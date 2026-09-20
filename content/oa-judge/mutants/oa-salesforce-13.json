@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏交替特判",
+    "code": "def solve(d):\n    s=d[0];k=int(d[1]);n=len(s);bad=sum(c!=('a' if i%2==0 else 'b') for i,c in enumerate(s))\n    if False:return '1'\n    runs=[];count=1\n    for i in range(1,n):\n        if s[i]==s[i-1]:count+=1\n        else:runs.append(count);count=1\n    runs.append(count);lo=2;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum(r//(mid+1) for r in runs)<=k:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把最多翻转写成严格少于",
+    "code": "def solve(d):\n    s=d[0];k=int(d[1]);n=len(s);bad=sum(c!=('a' if i%2==0 else 'b') for i,c in enumerate(s))\n    if min(bad,n-bad)<=k:return '1'\n    runs=[];count=1\n    for i in range(1,n):\n        if s[i]==s[i-1]:count+=1\n        else:runs.append(count);count=1\n    runs.append(count);lo=2;hi=n\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum(r//(mid+1) for r in runs)<k:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

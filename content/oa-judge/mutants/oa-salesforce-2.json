@@ -1,0 +1,10 @@
+[
+  {
+    "name": "配对只支付较贵一项",
+    "code": "def solve(d):\n    n=int(d[0]);a=[];b=[];both=[]\n    for i in range(n):\n        c=int(d[1+2*i]);f=d[2+2*i]\n        if f=='01':a.append(c)\n        elif f=='10':b.append(c)\n        elif f=='11':both.append(c)\n    a.sort();b.sort();units=sorted(both+[max(x,y) for x,y in zip(a,b)]);out=[];total=0\n    for i in range(n):\n        if i<len(units):total+=units[i];out.append(total)\n        else:out.append(-1)\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误把00算作双特征",
+    "code": "def solve(d):\n    n=int(d[0]);a=[];b=[];both=[]\n    for i in range(n):\n        c=int(d[1+2*i]);f=d[2+2*i]\n        if f=='01':a.append(c)\n        elif f=='10':b.append(c)\n        elif f in ('11','00'):both.append(c)\n    a.sort();b.sort();units=sorted(both+[x+y for x,y in zip(a,b)]);out=[];total=0\n    for i in range(n):\n        if i<len(units):total+=units[i];out.append(total)\n        else:out.append(-1)\n    return str(n)+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按正序重复使用X位置",
+    "code": "def solve(d):\n    x,y=d;dp=[0]*(len(y)+1)\n    for c in x:\n        for j in range(1,len(y)+1):\n            if c==y[j-1]:dp[j]=max(dp[j],dp[j-1]+1)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不允许跳过X字符",
+    "code": "def solve(d):\n    x,y=d;dp=[0]*(len(y)+1)\n    for c in x:\n        for j in range(len(y),0,-1):\n            if c==y[j-1]:dp[j]=dp[j-1]+1\n            else:dp[j]=0\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

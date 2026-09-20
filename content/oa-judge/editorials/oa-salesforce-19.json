@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-19",
+  "title": "稀疏高优先级进程的分治调度",
+  "explanation": "## 思路\n\n排序高优先级下标，递归区间携带对应下标范围，用二分划分左右子范围。空区间立即返回normal_time，否则比较直接费用与两半最优费用之和。\n\n## 正确性\n\n每个区间的合法决策只有直接执行或等分，后一种决策两半互相独立且费用相加，因此取两者较小值是完整递推。空区间直接执行最便宜，拆分只增加正费用，可立即剪枝。排序后二分提供精确数量，不会访问没有高优先级的完整大数组。\n\n## 复杂度\n\n时间O(k log k log n)的安全上界，递归栈O(log n)，排序空间O(k)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_left\ndef solve(d):\n    n,k,a,b=map(int,d[:4]);p=sorted(map(int,d[4:]))\n    def visit(start,length,left,right):\n        if left==right:return a\n        direct=b*(right-left)*length\n        if length==1:return direct\n        mid=start+length//2;split=bisect_left(p,mid,left,right)\n        return min(direct,visit(start,length//2,left,split)+visit(mid,length//2,split,right))\n    return str(visit(1,n,0,k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#19-get-minimum-time",
+  "sourceContentHash": "4c1a76ac00e8e05f6edeaf1b73ad802505fbc212f9e9409da757e67196eaeb1e",
+  "author": "CSWork"
+}

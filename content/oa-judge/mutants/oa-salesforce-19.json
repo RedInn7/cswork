@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误将两处理器并行时间取最大",
+    "code": "from bisect import bisect_left\ndef solve(d):\n    n,k,a,b=map(int,d[:4]);p=sorted(map(int,d[4:]))\n    def visit(start,length,left,right):\n        if left==right:return a\n        direct=b*(right-left)*length\n        if length==1:return direct\n        mid=start+length//2;split=bisect_left(p,mid,left,right)\n        return min(direct,max(visit(start,length//2,left,split),visit(mid,length//2,split,right)))\n    return str(visit(1,n,0,k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏乘区间长度",
+    "code": "from bisect import bisect_left\ndef solve(d):\n    n,k,a,b=map(int,d[:4]);p=sorted(map(int,d[4:]))\n    def visit(start,length,left,right):\n        if left==right:return a\n        direct=b*(right-left)\n        if length==1:return direct\n        mid=start+length//2;split=bisect_left(p,mid,left,right)\n        return min(direct,visit(start,length//2,left,split)+visit(mid,length//2,split,right))\n    return str(visit(1,n,0,k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
