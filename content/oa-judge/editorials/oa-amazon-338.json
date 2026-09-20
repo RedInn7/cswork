@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-338",
+  "title": "不含禁用片段的最长评论长度",
+  "explanation": "## 思路\n\n把评论转成小写。枚举右端，检查每个禁用词是否在此结束；若起点p命中，将窗口左端至少移到p+1，再统计长度。\n\n## 正确性证明\n\n合法窗口不能完整包含任何命中区间[p,r]，必须让左端大于p。维护全部历史命中的最大p+1，恰排除所有在当前右端之前结束的禁词，且任何更小左端都会包含某次禁词。故此窗口是每个右端的最长合法窗口，取最大覆盖全局最优。\n\n## 复杂度\n\n时间O(n·词数·最长词长)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=raw.split();s=d[0].lower();words=d[2:];left=answer=0\n    for right in range(len(s)):\n        for word in words:\n            start=right-len(word)+1\n            if start>=0 and s[start:right+1]==word:left=max(left,start+1)\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#338-amazon-review-score",
+  "sourceContentHash": "4728cc10cc785e0b10635845e892e9c84df3390891ce6b58e130faeb234da278",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只数非空行",
+    "code": "def solve(raw):\n    import io\n    stream=io.StringIO(raw);n,m=map(int,stream.readline().split());parent=list(range(n+m));size=[1]*(n+m);active=set()\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for i in range(n):\n        for j,value in enumerate(stream.readline().split()):\n            if value=='1':\n                active.add(i);a,b=find(i),find(n+j)\n                if a!=b:\n                    if size[a]<size[b]:a,b=b,a\n                    parent[b]=a;size[a]+=size[b]\n    return str(len(active))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误空盘也算一个",
+    "code": "def solve(raw):\n    import io\n    stream=io.StringIO(raw);n,m=map(int,stream.readline().split());parent=list(range(n+m));size=[1]*(n+m);active=set()\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for i in range(n):\n        for j,value in enumerate(stream.readline().split()):\n            if value=='1':\n                active.add(i);a,b=find(i),find(n+j)\n                if a!=b:\n                    if size[a]<size[b]:a,b=b,a\n                    parent[b]=a;size[a]+=size[b]\n    return str(max(1,len({find(i) for i in active})))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

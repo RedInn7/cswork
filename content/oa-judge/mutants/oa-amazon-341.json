@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误从最大容量开始消耗最小副任务",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,limit=d[:2];primary=d[2:2+n];secondary=sorted(d[2+n:])\n    if any(v>limit for v in primary):return '-1'\n    answer=0\n    for capacity in sorted((limit-v for v in primary),reverse=True):\n        if answer<n and secondary[answer]<=capacity:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误排除恰好填满",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,limit=d[:2];primary=d[2:2+n];secondary=sorted(d[2+n:])\n    if any(v>limit for v in primary):return '-1'\n    answer=0\n    for capacity in sorted(limit-v for v in primary):\n        if answer<n and secondary[answer]<capacity:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

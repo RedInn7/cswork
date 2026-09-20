@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-351",
+  "title": "带相同任务冷却间隔的最短排程",
+  "explanation": "## 思路\n\n记最高频数f及达到f的字母种数c，答案max(任务总数,(f−1)(cooldown+1)+c)。\n\n## 正确性证明\n\n任务总数是必要下界。选频数f的c种任务，任意两轮同字母必须间隔cooldown+1，最后一轮至少c个位置，得到第二下界。以最高频任务构造f−1个长度至少cooldown+1的块及最后c项，将其余各类均匀放入前面块的空位；因其频数不超过f，能避免同块重复。空位不足时扩大块、不再空闲，全部任务可连续铺满；空位足够时补空闲。因此总长度正好为两个下界的最大值。\n\n## 复杂度\n\n时间O(n+26)，空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    tasks,cool=raw.split();cool=int(cool);freq=Counter(tasks);f=max(freq.values());c=sum(v==f for v in freq.values())\n    return str(max(len(tasks),(f-1)*(cool+1)+c))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#351-task-scheduler",
+  "sourceContentHash": "005975c9a0e58982837455a69edf60cd83a947006ae3d8d0c0ba5c681c264dc2",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误全部相等后最小值不在首步后下降",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,remaining=d[:2];a=sorted(d[2:],reverse=True);minimum=a[-1];answer=0;h=a[0]\n    for count in range(1,n):\n        lower=a[count];take=min(remaining,count*(h-lower));q,r=divmod(take,count)\n        answer+=count*q*(2*h-q+1)//2+r*(h-q)+minimum*take;remaining-=take\n        if remaining==0:return str(answer)\n        h=lower\n    q,r=divmod(remaining,n)\n    answer+=2*n*(q*h-q*(q-1)//2)-0\n    if r:answer+=2*r*(h-q)-(r-1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误尾部不足一轮忽略最小值下降",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,remaining=d[:2];a=sorted(d[2:],reverse=True);minimum=a[-1];answer=0;h=a[0]\n    for count in range(1,n):\n        lower=a[count];take=min(remaining,count*(h-lower));q,r=divmod(take,count)\n        answer+=count*q*(2*h-q+1)//2+r*(h-q)+minimum*take;remaining-=take\n        if remaining==0:return str(answer)\n        h=lower\n    q,r=divmod(remaining,n)\n    answer+=2*n*(q*h-q*(q-1)//2)-q*(n-1)\n    if r:answer+=2*r*(h-q)-0\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

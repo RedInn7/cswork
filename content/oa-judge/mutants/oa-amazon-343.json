@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许非相邻交换",
+    "code": "def solve(raw):\n    target,content=raw.split();m=len(target);answer=0\n    for start in range(len(content)-m+1):\n        word=content[start:start+m];bad=[i for i in range(m) if word[i]!=target[i]]\n        if not bad:answer+=1\n        elif len(bad)==2:\n            i,j=bad\n            if word[i]==target[j] and word[j]==target[i]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉无需交换的窗口",
+    "code": "def solve(raw):\n    target,content=raw.split();m=len(target);answer=0\n    for start in range(len(content)-m+1):\n        word=content[start:start+m];bad=[i for i in range(m) if word[i]!=target[i]]\n        if not bad:answer+=0\n        elif len(bad)==2:\n            i,j=bad\n            if j==i+1 and word[i]==target[j] and word[j]==target[i]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

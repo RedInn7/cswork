@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误同频数降序",
+    "code": "def solve(raw):\n    from collections import Counter\n    counts=Counter(map(int,raw.split()[1:]));out=[]\n    for v in sorted(counts,key=lambda v:(counts[v],-v)):out.extend([str(v)]*counts[v])\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误丢弃重复",
+    "code": "def solve(raw):\n    from collections import Counter\n    counts=Counter(map(int,raw.split()[1:]));out=[]\n    for v in sorted(counts,key=lambda v:(counts[v],v)):out.append(str(v))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-349",
+  "title": "所有不同整除商的和",
+  "explanation": "## 思路\n\n从k=1开始，当前商q=n//k相同的最后除数为n//q；累加一次q，然后跳到该区间之后。\n\n## 正确性证明\n\n整除商随k不增，商q的连续区间终点满足floor(n/k)=q的最大k=n//q。跳过整段只累加一次，不遗漏其他正商；k>n后均为0不必枚举。因此精确得到不同商之和。小除数≤√n只有√n个，大除数对应商≤√n也至多√n种。\n\n## 复杂度\n\n时间O(√n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    n=int(raw);k=1;answer=0\n    while k<=n:\n        q=n//k;answer+=q;k=n//q+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#349-sum-of-all-days-numbers-on-which-the-data-of-the-xth-will-be-dependent",
+  "sourceContentHash": "9782d22b9c452f9d836ad2b8cc6f33b972230373f50c5eb6c666cc1f252a130c",
+  "author": "CSWork"
+}

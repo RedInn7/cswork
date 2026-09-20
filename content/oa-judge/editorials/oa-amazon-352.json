@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-352",
+  "title": "可跳过交易且限制连续同类次数的最大收益",
+  "explanation": "## 思路\n\ndp[c][r]存已处理前缀中以c连续r次结束的最佳收益。遇类型c收益v时，保留跳过状态；其他类型结尾的最佳收益或空序列可接成r=1，同类r−1可接成r。r降序更新，不能在同一轮复用本项。\n\n## 正确性证明\n\n任意合法非空选中序列有唯一末类型和末尾连续次数。选择当前项时，前一选中项或不存在、或为不同类型，此时新连续次数为1；或为同类型且次数少1。这些互斥情形恰为全部转移，跳过维持旧状态。读旧的其他类型最优值并降序更新同类型，保证每个原项最多使用一次。由前缀归纳所有合法子序列都被覆盖，取0及全部状态最大即最优，负分分隔亦保留。\n\n## 复杂度\n\n时间O(n·min(n,k)+26n)，空间O(26·min(n,k))。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines=raw.splitlines();n,k=map(int,lines[0].split());s=lines[1] if n else '';rewards=list(map(int,' '.join(lines[2:]).split()));k=min(k,n)\n    if not k:return '0'\n    negative=-10**30;dp=[[negative]*(k+1) for _ in range(26)];best=[negative]*26\n    for c,value in zip(s,rewards):\n        index=ord(c)-65;other=max([0]+[best[j] for j in range(26) if j!=index]);row=dp[index]\n        for run in range(k,1,-1):row[run]=max(row[run],row[run-1]+value)\n        row[1]=max(row[1],other+value);best[index]=max(row)\n    return str(max(0,max(best)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#352-trader-joe-trades",
+  "sourceContentHash": "bb25cac8de8d9d619621fbd9609f0bc7bc956aaeeca4053cb76dad601baa31db",
+  "author": "CSWork"
+}

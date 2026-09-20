@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-339",
+  "title": "只许吃子的车最后最少剩几枚",
+  "explanation": "## 思路\n\n行和列分别作为二分图顶点，每枚车为连接其所在行列的边。并查集合并全部有车的位置，统计有边的连通分量。\n\n## 正确性证明\n\n一次吃子相当于删除出发车的边，目标车位置继续存在，原连通分量不会与其他分量合并，也不可能把一个非空分量全部删光，故每个至少留一枚。反向构造：有环时删环上一条边仍连通；树有多条边时删叶边仍使剩余边连通。所删边都与某条保留边共用行或列，可让它吃该方向最近的车，棋盘上恰删除出发位置，符合不可越子规则。因此每个分量可逐步减至一枚，达到下界。\n\n## 复杂度\n\n时间O(nm·α(n+m))，额外空间O(n+m)，参考按行读不保存全部车坐标。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import io\n    stream=io.StringIO(raw);n,m=map(int,stream.readline().split());parent=list(range(n+m));size=[1]*(n+m);active=set()\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for i in range(n):\n        for j,value in enumerate(stream.readline().split()):\n            if value=='1':\n                active.add(i);a,b=find(i),find(n+j)\n                if a!=b:\n                    if size[a]<size[b]:a,b=b,a\n                    parent[b]=a;size[a]+=size[b]\n    return str(len({find(i) for i in active}))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#339-minimum-rooks-in-a-peaceful-state-sde-2-phone-interview",
+  "sourceContentHash": "8c60c1e414cf0a504f26cfd3e6747bb130634a24f889dd95326f6efd30d656ed",
+  "author": "CSWork"
+}

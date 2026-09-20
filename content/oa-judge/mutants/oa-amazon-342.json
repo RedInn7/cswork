@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只允许两个相邻不同值",
+    "code": "def solve(raw):\n    from collections import Counter\n    counts=Counter(map(int,raw.split()[1:]));values=sorted(counts);prefix=[0];left=answer=0\n    for i,v in enumerate(values):\n        prefix.append(prefix[-1]+counts[v])\n        if i and v!=values[i-1]+1:left=i\n        elif i and counts[values[i-1]]==1:left=max(left,i-1)\n        answer=max(answer,prefix[-1]-prefix[max(left,i-1)])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略内部单份瓶颈",
+    "code": "def solve(raw):\n    from collections import Counter\n    counts=Counter(map(int,raw.split()[1:]));values=sorted(counts);prefix=[0];left=answer=0\n    for i,v in enumerate(values):\n        prefix.append(prefix[-1]+counts[v])\n        if i and v!=values[i-1]+1:left=i\n        elif False:left=max(left,i-1)\n        answer=max(answer,prefix[-1]-prefix[left])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

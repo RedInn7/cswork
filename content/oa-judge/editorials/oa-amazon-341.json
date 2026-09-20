@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-341",
+  "title": "每天一项主任务时最多安排的副任务",
+  "explanation": "## 思路\n\n主任务对应剩余容量limit−primary，升序排序；副任务同样升序。逐个容量，如果最小未用副任务能放进去就配对，否则跳过该容量。\n\n## 正确性证明\n\n超限主任务必使整体无解。否则最小容量若放不下最小副任务，也放不下其余任务；若放得下，任意最优匹配可交换，让这两个最小可用者成对而不损失数量，因为被交换的更大容量仍容纳原来较大的副任务。因此每步可保持最优，最终匹配数最大。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,limit=d[:2];primary=d[2:2+n];secondary=sorted(d[2+n:])\n    if any(v>limit for v in primary):return '-1'\n    answer=0\n    for capacity in sorted(limit-v for v in primary):\n        if answer<n and secondary[answer]<=capacity:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#341-maximize-secondary-tasks-scheduling",
+  "sourceContentHash": "bb8c000e544a56766ca613194a8a1bf9dccc74392f3be23affb7c522c573a513",
+  "author": "CSWork"
+}

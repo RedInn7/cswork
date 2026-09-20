@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-345",
+  "title": "按自定义Unicode字符顺序排列商品编码",
+  "explanation": "## 思路\n\n建立字符到0..255的顺序映射，把每个字符串变成同长字节排序键，按字节串字典序排序原字符串。\n\n## 正确性证明\n\n映射严格保留order顺序，且每个原字符对应恰一个字节。首个不同码点的比较与首个不同字节完全一致；键长等于码点数，也保留前缀短者优先。因此键排序与目标次序等价，返回原串保留全部字符与重复。\n\n## 复杂度\n\n设总码点数M、编码数n、最大编码长度L。构键O(M)，比较排序最坏O(M+nL log n)，空间O(M+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    order,codes=json.loads(raw);rank={c:i for i,c in enumerate(order)}\n    codes.sort(key=lambda word:bytes(rank[c] for c in word))\n    return json.dumps(codes,ensure_ascii=True,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#345-sort-product-codes",
+  "sourceContentHash": "5f5c95d3969db0d2dbc5cf1ba1d3d63f5ffc6b619c8ca07c8749ac7620aaf64a",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按商出现次数重复累加",
+    "code": "def solve(raw):\n    n=int(raw);k=1;answer=0\n    while k<=n:\n        q=n//k;answer+=q*(n//q-k+1);k=n//q+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误漏掉n本身",
+    "code": "def solve(raw):\n    n=int(raw);k=2;answer=0\n    while k<=n:\n        q=n//k;answer+=q;k=n//q+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

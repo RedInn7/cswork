@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只替换一项",
+    "code": "def solve(raw):\n    from collections import Counter\n    d=list(map(int,raw.split()));n,q=d[:2];counts=Counter(d[2:2+n]);total=sum(d[2:2+n]);out=[]\n    for old,new in zip(d[2+n::2],d[3+n::2]):\n        if old!=new:\n            c=counts.pop(old,0);total+=(new-old)*int(c>0);counts[new]+=c\n        out.append(str(total))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误覆盖目标已有频数",
+    "code": "def solve(raw):\n    from collections import Counter\n    d=list(map(int,raw.split()));n,q=d[:2];counts=Counter(d[2:2+n]);total=sum(d[2:2+n]);out=[]\n    for old,new in zip(d[2+n::2],d[3+n::2]):\n        if old!=new:\n            c=counts.pop(old,0);total+=(new-old)*c;counts[new]=c\n        out.append(str(total))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

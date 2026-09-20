@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误仅数对应位置不同",
+    "code": "def solve(raw):\n    s=raw.strip();target=s[::-1];matched=0\n    for c in s:\n        if matched<len(s) and c==target[matched]:matched+=1\n    return str(sum(a!=b for a,b in zip(s,target)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只能保留公共连续前缀",
+    "code": "def solve(raw):\n    s=raw.strip();target=s[::-1];matched=0\n    for c in s:\n        if matched<len(s) and c==target[matched]:matched+=1\n        else:break\n    return str(len(s)-matched)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
