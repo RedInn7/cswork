@@ -1,0 +1,10 @@
+[
+  {
+    "name": "自转账重复计数",
+    "code": "def solve(d):\n    n,threshold=map(int,d[:2]);counts={}\n    for i in range(n):\n        sender,recipient,amount=map(int,d[2+3*i:5+3*i]);counts[sender]=counts.get(sender,0)+1\n        if True:counts[recipient]=counts.get(recipient,0)+1\n    out=sorted(u for u,count in counts.items() if count>=threshold)\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "ID按字符串排序",
+    "code": "def solve(d):\n    n,threshold=map(int,d[:2]);counts={}\n    for i in range(n):\n        sender,recipient,amount=map(int,d[2+3*i:5+3*i]);counts[sender]=counts.get(sender,0)+1\n        if recipient!=sender:counts[recipient]=counts.get(recipient,0)+1\n    out=sorted((u for u,count in counts.items() if count>=threshold),key=str)\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

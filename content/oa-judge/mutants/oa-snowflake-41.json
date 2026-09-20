@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把有序组合误除二",
+    "code": "from array import array\ndef solve(d):\n    seed,n,k,b,m,area=map(int,d);s=array('I',[seed]);value=seed\n    for _ in range(1,n):value+=1+(k*value+b)%m;s.append(value)\n    right=n-1;answer=0\n    for left in range(n):\n        while right>=0 and s[left]*s[right]>area:right-=1\n        if right<0:break\n        answer+=right+1\n    return str(answer//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "面积等号错误排除",
+    "code": "from array import array\ndef solve(d):\n    seed,n,k,b,m,area=map(int,d);s=array('I',[seed]);value=seed\n    for _ in range(1,n):value+=1+(k*value+b)%m;s.append(value)\n    right=n-1;answer=0\n    for left in range(n):\n        while right>=0 and s[left]*s[right]>=area:right-=1\n        if right<0:break\n        answer+=right+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

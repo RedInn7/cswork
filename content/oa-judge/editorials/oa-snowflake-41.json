@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-41",
+  "title": "生成边长后统计免费涂顶方案",
+  "explanation": "## 思路\n\n边长每次至少增加1，因此已严格递增。用紧凑32位无符号数组保存，右指针从尾向左移动；每个左边长累计所有符合面积的右边长数。\n\n## 正确性\n\n固定长s[i]时合法宽形成有序数组前缀；长递增后合法宽上界不会增大，故右指针只需左移。每个长下所有宽恰计一次，因此计的是有序组合，不会漏正方形。边长≤10⁹使32位存储安全，乘积和计数用64位或任意精度。\n\n## 复杂度\n\n时间O(n)，边长额外空间4n字节；Python使用array而非600万个整数对象。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from array import array\ndef solve(d):\n    seed,n,k,b,m,area=map(int,d);s=array('I',[seed]);value=seed\n    for _ in range(1,n):value+=1+(k*value+b)%m;s.append(value)\n    right=n-1;answer=0\n    for left in range(n):\n        while right>=0 and s[left]*s[right]>area:right-=1\n        if right<0:break\n        answer+=right+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#41-paint-the-ceiling",
+  "sourceContentHash": "d5f9fa030286800f51b7c2a21ed586749e9cc4ff0c5d33810cfffc015a6d0fbb",
+  "author": "CSWork"
+}

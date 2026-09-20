@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-42",
+  "title": "交易日志中的可疑用户",
+  "explanation": "## 思路\n\n对每条日志先计发送者；若接收者不同才再计接收者。筛出达到阈值者后以整数排序。\n\n## 正确性\n\n同一日志参与用户集合至多两人，条件去重恰使每人每条日志贡献1。频次累计就是参与日志数量，筛选≥threshold和数值排序准确实现要求。\n\n## 复杂度\n\n时间O(n+U log U)，空间O(U)，U≤2n。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,threshold=map(int,d[:2]);counts={}\n    for i in range(n):\n        sender,recipient,amount=map(int,d[2+3*i:5+3*i]);counts[sender]=counts.get(sender,0)+1\n        if recipient!=sender:counts[recipient]=counts.get(recipient,0)+1\n    out=sorted(u for u,count in counts.items() if count>=threshold)\n    return str(len(out))+'\\n'+' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#42-process-logs",
+  "sourceContentHash": "3ff2849b20794992a6217b079d190c4622f235539e66aedcfd44c7d743e0d3a7",
+  "author": "CSWork"
+}

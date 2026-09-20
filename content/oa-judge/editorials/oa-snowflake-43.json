@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-43",
+  "title": "兼容无线频率森林的最长距离",
+  "explanation": "## 思路\n\n删除频差2的边得到森林；对每个未访问连通块先遍历到最远端点，再从该端点遍历求块直径，取最大值。\n\n## 正确性\n\n合法路径恰好是删边后森林中的路径。树上从任意点的最远点可作为某条直径端点，从它出发的最大距离是块直径。每个块独立处理，最大块直径即全局答案；单点块贡献0。\n\n## 复杂度\n\n时间O(n)，空间O(n)，迭代遍历不会因十万点链递归溢出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(d):\n    n=int(d[0]);f=list(map(int,d[1:1+n]));nums=list(map(int,d[1+n:]));adj=[[] for _ in range(n)]\n    for i in range(0,len(nums),2):\n        a,b=nums[i]-1,nums[i+1]-1\n        if abs(f[a]-f[b])<=1:adj[a].append(b);adj[b].append(a)\n    seen=bytearray(n)\n    def farthest(start):\n        q=deque([(start,-1,0)]);best=(start,0)\n        while q:\n            u,parent,length=q.popleft();seen[u]=1\n            if length>best[1]:best=(u,length)\n            for v in adj[u]:\n                if v!=parent:q.append((v,u,length+1))\n        return best\n    answer=0\n    for i in range(n):\n        if not seen[i]:end,_=farthest(i);_,length=farthest(end);answer=max(answer,length)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#43-radio-waves",
+  "sourceContentHash": "eec5283f43c81446b5cb800113e82eb35ee7db412a331087a278bb630dea6a00",
+  "author": "CSWork"
+}
