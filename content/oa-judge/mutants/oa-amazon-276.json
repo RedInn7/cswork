@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误要求贷款严格大于还款",
+    "code": "def solve(raw):\n    from bisect import bisect_left\n    data=list(map(int,raw.split()));n=data[0];lender=data[1:n+1];payback=data[n+1:]\n    values=sorted(set(payback));rank={v:i+1 for i,v in enumerate(values)}\n    debts=[rank[v] for v in payback];limits=[bisect_left(values,v) for v in lender]\n    unreachable=len(values)+1;best=bytearray([unreachable])*(1<<n);best[0]=0;answer=0\n    for mask in range(1,1<<n):\n        bits=mask;debt=unreachable\n        while bits:\n            bit=bits&-bits;j=bit.bit_length()-1;bits-=bit\n            if best[mask^bit]<=limits[j] and debts[j]<debt:debt=debts[j]\n        best[mask]=debt\n        if debt!=unreachable:answer=max(answer,mask.bit_count())\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每次贪心选择最小下笔还款",
+    "code": "def solve(raw):\n    data=list(map(int,raw.split()));n=data[0];loans=data[1:n+1];payments=data[n+1:]\n    used=set();current=0\n    while True:\n        choices=[j for j in range(n) if j not in used and loans[j]>=current]\n        if not choices:return str(len(used))\n        j=min(choices,key=lambda j:payments[j]);used.add(j);current=payments[j]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

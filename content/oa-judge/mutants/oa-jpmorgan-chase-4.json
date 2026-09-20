@@ -1,0 +1,10 @@
+[
+  {
+    "name": "枢轴计入右侧",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);left=0\n    for i,v in enumerate(a):\n        if left==total-left:return str(i)\n        left+=v\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "返回1基下标",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);left=0\n    for i,v in enumerate(a):\n        if left==total-left-v:return str(i+1)\n        left+=v\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

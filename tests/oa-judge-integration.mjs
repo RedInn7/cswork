@@ -84,7 +84,7 @@ const selected = batchName
       readFileSync(`content/oa-judge/batches/${batchName}.json`, 'utf8'),
     )
   : registry;
-assert(selected.items.length >= 2 && selected.items.length <= 100);
+assert(selected.items.length >= 1 && selected.items.length <= 100);
 for (const entry of selected.items)
   assert.deepEqual(
     registry.items.find((item) => item.id === entry.id),
@@ -228,14 +228,18 @@ try {
   db.prepare(
     "INSERT INTO lessons(id,course_id,title,summary,section,position,body,version,updated_at) VALUES('00-overview','gomall','Test','','test',0,'','1',0)",
   ).run();
-  const students = selected.items.map(() => {
-    const email = `student-${randomUUID()}@example.test`;
-    const user = identity(email);
-    db.prepare(
-      "INSERT INTO grants(id,email,course_id,source,created_at) VALUES(?,?,'gomall','test',?)",
-    ).run(randomUUID(), email, Date.now());
-    return user;
-  });
+  // Single-problem batches still need a second user for ownership isolation.
+  const students = Array.from(
+    { length: Math.max(2, selected.items.length) },
+    () => {
+      const email = `student-${randomUUID()}@example.test`;
+      const user = identity(email);
+      db.prepare(
+        "INSERT INTO grants(id,email,course_id,source,created_at) VALUES(?,?,'gomall','test',?)",
+      ).run(randomUUID(), email, Date.now());
+      return user;
+    },
+  );
   const publisher = child(
     [
       '--import',

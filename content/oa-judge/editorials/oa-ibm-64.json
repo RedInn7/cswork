@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-64",
+  "title": "按涉及日志数筛选转账用户",
+  "explanation": "## 思路\n\n对每条日志的不同参与用户加一，筛选次数达标的ID并按整数排序。\n\n## 正确性证明\n\n每个用户每条涉及日志恰增一次，自转账用相等判断避免重复。故计数等于涉及日志数，阈值筛选精确，整数排序满足输出次序。\n\n## 复杂度\n\n时间O(n+u log u)，空间O(u)，u≤2n。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=raw.split();n,threshold=map(int,d[:2]);counts={}\n    for p in range(2,len(d),3):\n        a,b=d[p:p+2];counts[a]=counts.get(a,0)+1\n        if b!=a:counts[b]=counts.get(b,0)+1\n    result=sorted((u for u,v in counts.items() if v>=threshold),key=int)\n    return str(len(result))+'\\n'+'\\n'.join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#64-process-logs",
+  "sourceContentHash": "124b58b4373594038893a24604f4e4adba45e39e90972f3102b423f606421286",
+  "author": "CSWork"
+}

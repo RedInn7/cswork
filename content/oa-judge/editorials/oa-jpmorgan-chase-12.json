@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-12",
+  "title": "严格较大的最大一对一配对数",
+  "explanation": "## 思路\n\n将两数组升序排序，用当前最小可用a匹配最小可用b；a不够大就跳过a。\n\n## 正确性证明\n\n若最小a不能胜最小b，它不可能胜任何剩余b，可舍弃。若能胜，存在最优解包含这对：若各自原来与其他元素配对，交换后更大的另一a仍能胜原来与当前a匹配的b；其余情况直接替换不会减少数量。归纳得到贪心最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=sorted(d[1:n+1]);b=sorted(d[n+1:]);j=0\n    for v in a:\n        if j<n and v>b[j]:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#12-pairs",
+  "sourceContentHash": "8a1d053691b454122d60b35473ca4f9b49c5d48d3a47f6acb18294c84e05d364",
+  "author": "CSWork"
+}

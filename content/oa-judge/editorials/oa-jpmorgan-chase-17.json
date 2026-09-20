@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-17",
+  "title": "反复删除AWS后的字符串",
+  "explanation": "## 思路\n\n逐字符入栈，栈末尾出现AWS就删除这三个字符。\n\n## 正确性证明\n\n处理前缀后栈内已无AWS；追加一字符只可能在新后缀形成AWS，删除后其余部分本来已无匹配。AWS没有非空真前缀等于后缀，两个可删匹配不重叠，删除顺序可交换；终止过程有唯一结果，栈给出它。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    stack=[]\n    for c in raw.strip():\n        stack.append(c)\n        if len(stack)>=3 and stack[-3:]==['A','W','S']:del stack[-3:]\n    return ''.join(stack) or '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#17-eliminate-substring",
+  "sourceContentHash": "4cdd8db4746d68bda897e8f64acdbfb05a7d4fd25a06dc0db549006671742fcd",
+  "author": "CSWork"
+}

@@ -1,0 +1,241 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-jpmorgan-chase-1",
+      "status": "blocked",
+      "reason": "原OCR n≤10^8、k≤10^5与整理MDX百万界冲突；最宽原域输入输出约1.2GB，不能缩域上线，需原图证据。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "OA LIST/JPMorganChase/001_image.txt",
+      "rawGitBlob": "dd14f263c88a547503264914098b6000ae1e3a03",
+      "rawSha256": "b42fd405b8d03026463e4622d9e8cd70ffa0a37bfdf16ca92291573a07017479",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "dd0671189338da8df11490e9a9810dbe586808e198d9ffaf8d592e9f44e0dabd"
+    },
+    {
+      "id": "oa-jpmorgan-chase-2",
+      "status": "blocked",
+      "reason": "强制跳到出界与允许中途停止/空选冲突，全负与[5,-10]可区分，不能自定核心规则。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "OA LIST/JPMorganChase/002_image.txt",
+      "rawGitBlob": "2f899c4ed98ef1effeea77661b42178e30f3fdbd",
+      "rawSha256": "7b4afb4f3c4d5208e8c149b9a834dc3a2f639fa03cf6d8112d967129ff004184",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "18b93740a16586b4d735a3ab866bd6f1dd57af418c435bcf024f16deadab4be7"
+    },
+    {
+      "id": "oa-jpmorgan-chase-3",
+      "status": "authored",
+      "reason": "在相邻品类之间切一刀，形成两个非空连续批次；一次把任一品类数量加一或减一，但数量始终为正。求两批总量相等的最少操作数。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "OA LIST/JPMorganChase/008_image.txt",
+      "rawGitBlob": "a17e5cdef94d3247675007a0e7c21a803b4db1af",
+      "rawSha256": "873438aea28254f553e151a671f3d7e3000f629a51a39ff0c56251515870a6b0",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "OA LIST/JPMorganChase/009_image.txt",
+          "rawGitBlob": "39d1b02103107f5bae6f39be216a70f10f31ca6c",
+          "rawSha256": "95e037e42143f5e37b9df0d3e00ca603ba8dc354deff74f7c59f296a51a72d52"
+        },
+        {
+          "rawPath": "OA LIST/JPMorganChase/010_image.txt",
+          "rawGitBlob": "0f9ed42d6988ef7823971f7bdf1a7b944e003775",
+          "rawSha256": "bbaffa042d0d623bf3f362ef21ba7d484512ff239ebc90f5d4ff0136c3105aaa"
+        },
+        {
+          "rawPath": "OA LIST/JPMorganChase/011_image.txt",
+          "rawGitBlob": "99bb9dd21debeaed9575f8b1f1fc0dc02f88e787",
+          "rawSha256": "f739a4b99d571cab5e79928aae349454200cd13e0d3137838966daa6ad3baf6e"
+        }
+      ],
+      "catalogContentHash": "2b5fe33704138b6709c3f0adbe9e6a80ea1ec9e4ad809b6908e0fc8afc8de093"
+    },
+    {
+      "id": "oa-jpmorgan-chase-4",
+      "status": "authored",
+      "reason": "不重排数组，找出其左侧和右侧元素总和相同的枢轴，求0基下标，枢轴本身不计入两侧。保证存在解。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-balanced-sum.md",
+      "rawGitBlob": "bb613727883ab491747b456b650bd682505ee441",
+      "rawSha256": "f523995a8275f934efd7ecd62354d07c8ed18f00169a0d28056c39e5923d9677",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "25f4c679b918eeda2906f372858a13ed85898e6488dfbf0671eac71ff8c92c10"
+    },
+    {
+      "id": "oa-jpmorgan-chase-5",
+      "status": "authored",
+      "reason": "BUY和SELL以当时市价交易，CHANGE是价格变化量，QUERY查询从开始至今的净盈亏，包含尚未售出持仓的浮动盈亏；SELL保证持仓充足。原例输出是占位值，正确查询为120、200。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-calculate-net-profit.md",
+      "rawGitBlob": "ca551979ea302380f87ca6992ad726fea15c1083",
+      "rawSha256": "5b3e13bfb4f4c9da3916d3f8123132ccd5b6c00b18be58a2c58828659b8b3dcc",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "b45a8712240efef9fc0a8a3aa100a0cd9b8855126375112ffe193624bfccd571"
+    },
+    {
+      "id": "oa-jpmorgan-chase-6",
+      "status": "authored",
+      "reason": "每次给出轮子总数，从无限辆两轮车和四轮车中组成车队，只有两类车辆数量不同才视为不同方案，不计算排列。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-choose-fleets.md",
+      "rawGitBlob": "f66be0bb6fa8ad65c63f00e6be7410fa1b8a73f5",
+      "rawSha256": "c933d525f43d97aeb2d24b6c997f014abf845fff9b1e9841c25afe8af2844ad1",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "9112850651d0dbc163b69fe56598fe3e9a25eb1e75d2c50ac7b63b32d584235d"
+    },
+    {
+      "id": "oa-jpmorgan-chase-7",
+      "status": "authored",
+      "reason": "正数事件增加相应数量的线程，−1代表请求。一个请求消耗并销毁一个线程，线程不足时丢弃；求丢弃总数。这不是滑动窗口限流。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-count-dropped-requests.md",
+      "rawGitBlob": "869c31ce728c95e51fec97d315f0e4328dbd6580",
+      "rawSha256": "1a7e4a49d6ecc02f0a9afbc3d60601845a4cf463bd3058a94b6a8202af2260e2",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "8da4f650709a3bb1a093fbb79ed6f0c670bb054d9f83782f608940ae3b9c7497"
+    },
+    {
+      "id": "oa-jpmorgan-chase-8",
+      "status": "authored",
+      "reason": "对每个正整数闭区间，统计十进制表示中没有重复数字的整数。原例[9,84]应为69，原47错误且其列表漏掉84。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-count-numbers.md",
+      "rawGitBlob": "a05ab9bb23b28adea9a0f6ab5aca244e9a1d297f",
+      "rawSha256": "0f58a80d87ac210ded22efdfa83ab20b2638cdf3388080c746ae9f84a4ed924f",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "7d82694bb5a9de89b21c26783d15aaa2ffdfaac524ff5e1da295307e0ab18ab5"
+    },
+    {
+      "id": "oa-jpmorgan-chase-9",
+      "status": "authored",
+      "reason": "每个闭区间过滤器只放行区间内频率。求通过所有过滤器的输入信号数，重复频率按多条信号计。所有过滤器保证有共同范围。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-count-signals.md",
+      "rawGitBlob": "9e7be12f5ff885e9388a69ce70af201403b56e26",
+      "rawSha256": "3ebb85293162a98c876ab3d4177482f479ffb49eb750b9286b3cf002f75c0668",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "3ac13ef30665bc2dd4b5dbd242f27f08b5dbcf7aee82134948172a55f9c4d8aa"
+    },
+    {
+      "id": "oa-jpmorgan-chase-10",
+      "status": "authored",
+      "reason": "每人恰好属于一队，每队人数为a或b。将p人全部分组，求最少队数；无解输出−1。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-count-teams.md",
+      "rawGitBlob": "893f5af5d1f12b6fd24db74a402065e2c6900de6",
+      "rawSha256": "bbe8d804443d12a11ff79917a58ff321a1f045624229982238f9e47affb05e18",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "37840f7141eb0b2df4569609432d84375e78b5d8e0391bdb4e26ee86bc23d201"
+    },
+    {
+      "id": "oa-jpmorgan-chase-11",
+      "status": "authored",
+      "reason": "选择任意非空前缀并整体加整数x，成本为|x|；求使所有元素相等的最小总成本，最终公共值不指定。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-find-minimum-cost.md",
+      "rawGitBlob": "f947ae5a103c6cbc5c9147e05e98764ae4128c66",
+      "rawSha256": "1b5e2bee45e47acefed278ee47d8ca26045e53d826b4a6b1687cf91d3f672688",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "5043cd72c3ec62e2b86269f1cf65dd0448670a5fee0e8f3f525648c241679bd2"
+    },
+    {
+      "id": "oa-jpmorgan-chase-12",
+      "status": "authored",
+      "reason": "从等长数组a、b各取一个元素组成配对，要求a元素严格大于b元素。每个位置至多使用一次，求最大配对数。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-find-num-of-pairs.md",
+      "rawGitBlob": "8a0928458aa976a7919e94e6faa5a1a9449d6a4a",
+      "rawSha256": "c60e872bed74779b0a03db92a880a37078c482a29ac0b53851c04fb2e293b55e",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "8a1d053691b454122d60b35473ca4f9b49c5d48d3a47f6acb18294c84e05d364"
+    },
+    {
+      "id": "oa-jpmorgan-chase-13",
+      "status": "blocked",
+      "reason": "最轻三罐选择、累计中心还是全部重量、边缘处理未定义，原文无例。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-find-sum-weight.md",
+      "rawGitBlob": "285efa43a70fb96f26fbc395bec50ed66575ddd4",
+      "rawSha256": "4448c0514f7660f5b0c97f3b9b0b178db29a51285a47b03a4b9bf26a15dd478a",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "9268e828b23905a5fe406d30fb4f367f9e960878a32952c47bdaa3928fa9d376"
+    },
+    {
+      "id": "oa-jpmorgan-chase-14",
+      "status": "authored",
+      "reason": "每次移除当前数组最小和最大两个元素（必须是两个位置），插入它们的和；本次成本为ceil((min+max)/(max−min+1))。重复至只剩一个元素，求总成本。负数同样按数学向上取整。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-find-total-cost.md",
+      "rawGitBlob": "cff9bbc8fb14b8b1c6506707f2ebb8695d50f7fa",
+      "rawSha256": "72aa38bfc8a207e8c33170999c3cf0bebc6e9203a79acf4600955a1bfc494208",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "37aff2e1a8d1dafb484ea8f6c79f588cd904a0ca04bb698f19b13b7e1a9f63e9"
+    },
+    {
+      "id": "oa-jpmorgan-chase-15",
+      "status": "blocked",
+      "reason": "移除后是否动态拼接邻接未定义；[4,9,1,9,2]两种规则分别3与7。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-find-total-weight.md",
+      "rawGitBlob": "6b9b8903f4c3210bc98cea198a9211ed168c73cf",
+      "rawSha256": "61a37557e0d2e25311569acf2bf25d24c0ba8abe98f2a59fdd232af66c6684c0",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "8dcf342f8ec479422e96c9ada3ec5327fc612b856f0354369b765b68c461b1d8"
+    },
+    {
+      "id": "oa-jpmorgan-chase-16",
+      "status": "authored",
+      "reason": "严格以“# ”开头的是章，以“## ”开头的是节，其余忽略；首个有效标题保证是章。章从1编号，节号在新章重新从1开始，仅去掉固定标记前缀，不修剪标题。没有有效标题时目录为空。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-generate-table-of-contents.md",
+      "rawGitBlob": "b42048ff8a51bf3cea0b7f0db21ba5f61dc3e5d9",
+      "rawSha256": "5aaae6e5cc27e2a9ddd262e7aff788635ce283bb1ab5aa7e8e4e92a22316edb3",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "04983dd33e87032c34eec6fd85f45297ae2c91d1cbb35b4aa453bba99d32b30c"
+    },
+    {
+      "id": "oa-jpmorgan-chase-17",
+      "status": "authored",
+      "reason": "从大写字符串中反复删除AWS，并把删除位置两侧拼接，直到不再出现；结果为空时输出−1。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-get-final-string.md",
+      "rawGitBlob": "710258ff412dc90a92febd5ecb968b81d44db7a5",
+      "rawSha256": "115ca1c6ed0bb72c33526e51b5504ca333314597e97fcee38851ed825c3e6df2",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "4cdd8db4746d68bda897e8f64acdbfb05a7d4fd25a06dc0db549006671742fcd"
+    },
+    {
+      "id": "oa-jpmorgan-chase-18",
+      "status": "authored",
+      "reason": "仅能交换相邻且奇偶相同的两位，可执行任意次。返回最大数字字符串，必须保留全部位数和零。原0082663正确结果为8662003，原样例漏零。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-get-largest-number.md",
+      "rawGitBlob": "26bd5bbe93752a680b13b4f384ac3a4c053e670f",
+      "rawSha256": "96360bc21c76ae81c8d23407c6efee62e4b1b634c164a8ed570e72728e0c6b2e",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "a365bc72b02a9aa0c5cddddbf9d989189c70873494a9de88ff18ec639a2cc435"
+    },
+    {
+      "id": "oa-jpmorgan-chase-19",
+      "status": "authored",
+      "reason": "在无障碍无限平面执行UDLR单位移动，删除任意不必连续的指令，同时保持最终坐标，求最多可删数量。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-get-max-deletions.md",
+      "rawGitBlob": "98b444aeb005b7b2cbe4f59ec8e7952d39a072ae",
+      "rawSha256": "bbfbb9224d7571c2c0f8896428e06b0325cf4eb4aa13c864f0462f99694fe10b",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "d83c63c67f469b8439ad1c4260c657c934e15051516865bfea56390df11e761d"
+    },
+    {
+      "id": "oa-jpmorgan-chase-20",
+      "status": "authored",
+      "reason": "将有重叠的闭区间合并，输出按起点升序的互不重叠区间。同一端点接触也算重叠，但相邻整数端点不相等不算。原例输入含[1,23]，正确结果为[[1,23]]，原输出误按[1,2]计算。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/JPMorgan Chase/jpmorgan-get-merged-intervals.md",
+      "rawGitBlob": "1533ce04511065e30b2bad363a4738f340820c62",
+      "rawSha256": "b3d6224f0a109d8576bd564d569cec98e8a3ab590c12911ed4eda10427d82ea2",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "7d6ea1db997a6f16e22349b25cbbac345c8c95541fe5d4b283a4b3aa172fda42"
+    }
+  ]
+}

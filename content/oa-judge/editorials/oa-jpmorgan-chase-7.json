@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-7",
+  "title": "线程耗尽时丢弃的请求",
+  "explanation": "## 思路\n\n顺序维护可用线程数，请求到达时有线程则减一，否则累计丢弃。\n\n## 正确性证明\n\n处理任何前缀后，可用数恰为已增加线程减去成功请求数；根据其是否为零判定下一请求是否成功与原规则完全一致，归纳得丢弃计数正确。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    free=lost=0\n    for v in map(int,raw.split()[1:]):\n        if v>0:free+=v\n        elif free:free-=1\n        else:lost+=1\n    return str(lost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#7-count-dropped-requests",
+  "sourceContentHash": "8da4f650709a3bb1a093fbb79ed6f0c670bb054d9f83782f608940ae3b9c7497",
+  "author": "CSWork"
+}

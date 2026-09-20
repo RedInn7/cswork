@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-14",
+  "title": "反复合并当前最小值与最大值的成本",
+  "explanation": "## 思路\n\n分别用最小堆、最大堆保存带唯一ID的元素，用有效标记懒删除。每轮取出两个有效极值，计算精确向上取整，加入新元素。\n\n## 正确性证明\n\n有效标记使两个堆所表示的有效元素始终恰为当前多重集合；堆顶清理无效项后就是相应极值。先删除最小值再取最大值保证重复值也来自不同位置。插入两者之和保持集合不变量，归纳每轮与原过程一致。整数恒等式ceil(p/q)=−floor(−p/q)，q>0，适用于负数且不受浮点误差影响。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)；中间结果使用精确整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);small=[(v,i) for i,v in enumerate(a)];large=[(-v,i) for i,v in enumerate(a)];heapq.heapify(small);heapq.heapify(large);alive=[True]*(2*n);cost=0\n    for ident in range(n,2*n-1):\n        while not alive[small[0][1]]:heapq.heappop(small)\n        low,i=heapq.heappop(small);alive[i]=False\n        while not alive[large[0][1]]:heapq.heappop(large)\n        neg,j=heapq.heappop(large);alive[j]=False;high=-neg\n        value=low+high;den=high-low+1;cost+=-((-value)//den)\n        heapq.heappush(small,(value,ident));heapq.heappush(large,(-value,ident))\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#14-find-total-cost",
+  "sourceContentHash": "37aff2e1a8d1dafb484ea8f6c79f588cd904a0ca04bb698f19b13b7e1a9f63e9",
+  "author": "CSWork"
+}

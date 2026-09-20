@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忘记包含自己",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m,q=d[:3];parent=list(range(n+1));size=[1]*(n+1)\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    p=3\n    for _ in range(m):\n        a,b=find(d[p]),find(d[p+1]);p+=2\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            parent[b]=a;size[a]+=size[b]\n    return ' '.join(str(size[find(v)]-1) for v in d[p:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "查询不寻找根",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m,q=d[:3];parent=list(range(n+1));size=[1]*(n+1)\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    p=3\n    for _ in range(m):\n        a,b=find(d[p]),find(d[p+1]);p+=2\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            parent[b]=a;size[a]+=size[b]\n    return ' '.join(str(size[v]) for v in d[p:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

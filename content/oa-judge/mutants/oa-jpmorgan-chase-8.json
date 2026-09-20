@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排除右端点",
+    "code": "from bisect import bisect_left,bisect_right\nVALID=None\ndef solve(raw):\n    global VALID\n    if VALID is None:\n        VALID=[]\n        def visit(v,mask):\n            if v:VALID.append(v)\n            for d in range(10):\n                if (not v and not d) or mask>>d&1:continue\n                w=v*10+d\n                if w<=1000000:visit(w,mask|1<<d)\n        visit(0,0);VALID.sort()\n    d=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(bisect_left(VALID,h)-bisect_left(VALID,l)) for l,h in zip(d[::2],d[1::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "排除左端点",
+    "code": "from bisect import bisect_left,bisect_right\nVALID=None\ndef solve(raw):\n    global VALID\n    if VALID is None:\n        VALID=[]\n        def visit(v,mask):\n            if v:VALID.append(v)\n            for d in range(10):\n                if (not v and not d) or mask>>d&1:continue\n                w=v*10+d\n                if w<=1000000:visit(w,mask|1<<d)\n        visit(0,0);VALID.sort()\n    d=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(bisect_right(VALID,h)-bisect_right(VALID,l)) for l,h in zip(d[::2],d[1::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

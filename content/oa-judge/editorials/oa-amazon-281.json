@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-281",
+  "title": "达到最大在线人数的日期总数",
+  "explanation": "## 思路\n\n在login处差分加1、logout+1处减1，扫描0..100000，更新最大人数及达到它的日期计数。\n\n## 正确性证明\n\n差分前缀和恰计入已开始但未经过退出后一日的用户，即两端包含区间覆盖数。遇更高人数重置天数为1，遇同峰值增加1，较低者忽略，最终不重不漏计所有峰值日。\n\n## 复杂度\n\n时间O(n+100001)，空间O(100002)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);login=list(map(int,d[1:n+1]));logout=list(map(int,d[n+1:]));delta=[0]*100002\n    for a,b in zip(login,logout):delta[a]+=1;delta[b+1]-=1\n    current=best=count=0\n    for day in range(100001):\n        current+=delta[day]\n        if current>best:best=current;count=1\n        elif current==best:count+=1\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#281-maximum-user-traffic",
+  "sourceContentHash": "ea464fb0a1c2e83183eb20a45fa898ad2f6e89de349a859a4b6850685d330f9f",
+  "author": "CSWork"
+}

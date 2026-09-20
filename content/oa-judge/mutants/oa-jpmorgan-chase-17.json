@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只删除首轮原有AWS",
+    "code": "def solve(raw):\n    stack=[]\n    for c in raw.strip():\n        stack.append(c)\n        if len(stack)>=3 and stack[-3:]==['A','W','S']:del stack[-3:]\n    return raw.strip().replace('AWS','') or '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "空结果错误输出0",
+    "code": "def solve(raw):\n    stack=[]\n    for c in raw.strip():\n        stack.append(c)\n        if len(stack)>=3 and stack[-3:]==['A','W','S']:del stack[-3:]\n    return ''.join(stack) or '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

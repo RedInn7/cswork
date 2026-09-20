@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-70",
+  "title": "保留标题原文的章节目录",
+  "explanation": "## 思路\n\n顺序扫描，维护章号和当前节号。遇章递增章号并清零节号，遇节递增节号，拼接编号、一个分隔空格和去掉标记后的原始标题。\n\n## 正确性证明\n\n任意位置的章号等于此前章标题数，节号等于最近章之后的节标题数；对应增量更新保持这两个不变量，因此编号正确。切片只移除固定长度标记，不改变标题任何字符，输出按扫描顺序即原文目录顺序。\n\n## 复杂度\n\n时间O(总输入字符数)，空间O(目录总字符数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    lines=json.loads(raw);chapter=section=0;out=[]\n    for line in lines:\n        if line.startswith('# '):\n            chapter+=1;section=0;out.append(f'{chapter}. '+line[2:])\n        elif line.startswith('## '):\n            section+=1;out.append(f'{chapter}.{section}. '+line[3:])\n    return json.dumps(out,ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#70-table-of-contents",
+  "sourceContentHash": "99049070a075b60f350b936e2f7ae3f0e618a7f3f9262d28d7e6a7b1c44bceb6",
+  "author": "CSWork"
+}

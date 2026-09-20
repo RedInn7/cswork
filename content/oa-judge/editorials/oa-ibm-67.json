@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-67",
+  "title": "边界内执行火星车移动命令",
+  "explanation": "## 思路\n\n维护行列坐标，逐条计算候选坐标，合法才更新。\n\n## 正确性证明\n\n初始坐标正确；每条命令若合法则移动到相邻目标，否则保留原格，恰与题意一致。归纳最终坐标正确，代入给定编号公式即答案。\n\n## 复杂度\n\n时间O(m)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=raw.split();n=int(d[0]);row=column=0\n    for command in d[2:]:\n        dr,dc={'UP':(-1,0),'DOWN':(1,0),'LEFT':(0,-1),'RIGHT':(0,1)}[command]\n        nr,nc=row+dr,column+dc\n        if 0<=nr<n and 0<=nc<n:row,column=nr,nc\n    return str(row*n+column)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#67-rover-move",
+  "sourceContentHash": "a422d16f32ac51805c65b1976feec95b91edc6f63bfca3a656544baea8efa401",
+  "author": "CSWork"
+}

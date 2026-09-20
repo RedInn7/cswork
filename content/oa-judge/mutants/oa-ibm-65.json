@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同容量未按字典序决胜",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];capacity=d[1:n+1];loads=sorted(d[n+1:],reverse=True)\n    order=sorted(range(n),key=lambda i:(capacity[i],i));out=[0]*n\n    for i,v in zip(order,loads):out[i]=v\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "容量负载同向排序",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];capacity=d[1:n+1];loads=sorted(d[n+1:],reverse=False)\n    order=sorted(range(n),key=lambda i:(capacity[i],-i));out=[0]*n\n    for i,v in zip(order,loads):out[i]=v\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-277",
+  "title": "连续货架严格递增取货的最大件数",
+  "explanation": "## 思路\n\n令b[i]=products[i]−i，维护b严格递增的下标栈。弹掉≥当前b的下标；若剩栈顶j，则dp[i]=dp[j]+从products[i]−(i−j)+1到products[i]的等差和；无j时只取最后min(i+1,products[i])个正数。答案max(dp)。\n\n## 正确性证明\n\n固定末尾取其全部库存总不劣，向左最优取量为j+区间b的最小值。最近的较小b位置j之前不受新末尾影响，j+1..i全部由当前b限制且是正递增等差段；其首值严格大于products[j]，可与dp[j]拼接。若没有较小b，整段被当前b限制，只保留正值后缀。因此递推恰算每个右端的最佳方案，取最大覆盖全部子数组。\n\n## 复杂度\n\n时间O(n)，空间O(n)，总件数用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));stack=[];dp=[]\n    for i,v in enumerate(a):\n        while stack and a[stack[-1]]-stack[-1]>=v-i:stack.pop()\n        if stack:j=stack[-1];length=i-j;previous=dp[j]\n        else:length=min(i+1,v);previous=0\n        dp.append(previous+length*(2*v-length+1)//2);stack.append(i)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#277-maximum-number-of-products-you-can-pick",
+  "sourceContentHash": "7685434f59940802df6bc10967087752eaf6fcb93ba6df9ac05e11cbfd9c932c",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "零库存也计一天",
+    "code": "def solve(d):\n    positive=set()\n    for i in range(1,len(d)):\n        value=int(d[i])\n        positive.add(value)\n    return str(len(positive))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同量不同中心错误分别计天",
+    "code": "def solve(d):\n    positive=set()\n    for i in range(1,len(d)):\n        value=int(d[i])\n        if value:positive.add(value)\n    return str(sum(int(v)>0 for v in d[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

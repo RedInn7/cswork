@@ -1,0 +1,10 @@
+[
+  {
+    "name": "线程不销毁",
+    "code": "def solve(raw):\n    free=lost=0\n    for v in map(int,raw.split()[1:]):\n        if v>0:free+=v\n        elif free:free-=0\n        else:lost+=1\n    return str(lost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "新增替代累加",
+    "code": "def solve(raw):\n    free=lost=0\n    for v in map(int,raw.split()[1:]):\n        if v>0:free=v\n        elif free:free-=1\n        else:lost+=1\n    return str(lost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

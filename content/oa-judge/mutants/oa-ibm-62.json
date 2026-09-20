@@ -1,0 +1,10 @@
+[
+  {
+    "name": "仅允许0开头",
+    "code": "def solve(raw):\n    rows=raw.splitlines();n=int(rows[0]);s=rows[1] if n else '';different=0\n    for i,c in enumerate(s):different+=(int(c)!=(i&1))\n    return str(different)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把相邻相同数当答案",
+    "code": "def solve(raw):\n    rows=raw.splitlines();n=int(rows[0]);s=rows[1] if n else '';different=0\n    for i,c in enumerate(s):different+=(int(c)!=(i&1))\n    return str(sum(a==b for a,b in zip(s,s[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

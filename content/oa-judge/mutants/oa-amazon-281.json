@@ -1,0 +1,10 @@
+[
+  {
+    "name": "退出日错误不包含",
+    "code": "def solve(d):\n    n=int(d[0]);login=list(map(int,d[1:n+1]));logout=list(map(int,d[n+1:]));delta=[0]*100002\n    for a,b in zip(login,logout):delta[a]+=1;delta[b]-=1\n    current=best=count=0\n    for day in range(100001):\n        current+=delta[day]\n        if current>best:best=current;count=1\n        elif current==best:count+=1\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误返回最高人数",
+    "code": "def solve(d):\n    n=int(d[0]);login=list(map(int,d[1:n+1]));logout=list(map(int,d[n+1:]));delta=[0]*100002\n    for a,b in zip(login,logout):delta[a]+=1;delta[b+1]-=1\n    current=best=count=0\n    for day in range(100001):\n        current+=delta[day]\n        if current>best:best=current;count=1\n        elif current==best:count+=1\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

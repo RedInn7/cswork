@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-276",
+  "title": "不重复借款时最长不违约天数",
+  "explanation": "## 思路\n\n对每个已用借贷人集合mask，记录可以达到的最小末笔payback。空集合欠款0。枚举最后选的j：只要mask去掉j的最小欠款不超过lender[j]，即可把j放在最后，候选末笔欠款为payback[j]。所有可达集合中最大的元素个数就是答案。将不同payback排序后压为1..r，空集合为0，不可达为r+1；用bytearray存状态，仅占2^n字节。\n\n## 正确性证明\n\n使用同一集合后，后续可用借贷人集合完全相同，剩余现金当天花掉，因此过去只有末笔欠款影响下一天。较小末笔欠款可以执行较大欠款能够执行的任何下一步，所以只保留最小值不会丢失最优后续。对于非空mask，每个合法排列都有某个最后借贷人j，其前缀属于mask去掉j且欠款不超过lender[j]；反过来，若该子集的最小可达欠款满足条件，就存在相应前缀可接上j。故枚举最后一项不重不漏地判定可达并取最小末笔欠款。子集去掉一位的整数值更小，顺序遍历已计算所有依赖。对所有可达mask取大小最大值即最优借款天数；最后一笔不需要能再续借才能计入。秩压缩保留所有大小关系，limits[j]是payback值不超过lender[j]的不同值个数，不可达秩始终大于该阈值。\n\n## 复杂度\n\n时间O(n·2^n+n log n)，空间O(2^n+n)。n=20时恰枚举20·2^19=10,485,760个末项候选，DP数组1,048,576字节；不是以金额为维度，不要求payback≥lender。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from bisect import bisect_right\n    data=list(map(int,raw.split()));n=data[0];lender=data[1:n+1];payback=data[n+1:]\n    values=sorted(set(payback));rank={v:i+1 for i,v in enumerate(values)}\n    debts=[rank[v] for v in payback];limits=[bisect_right(values,v) for v in lender]\n    unreachable=len(values)+1;best=bytearray([unreachable])*(1<<n);best[0]=0;answer=0\n    for mask in range(1,1<<n):\n        bits=mask;debt=unreachable\n        while bits:\n            bit=bits&-bits;j=bit.bit_length()-1;bits-=bit\n            if best[mask^bit]<=limits[j] and debts[j]<debt:debt=debts[j]\n        best[mask]=debt\n        if debt!=unreachable:answer=max(answer,mask.bit_count())\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#276-maximum-number-of-days-to-survive",
+  "sourceContentHash": "2fb9ca46cc952dedf7e97346e1a22f54b3a73336e261c20384388bce1bb3297a",
+  "author": "CSWork"
+}

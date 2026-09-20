@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-16",
+  "title": "保留标题字符的章节目录",
+  "explanation": "## 思路\n\n顺序扫描维护章号、节号，识别章时递增章号并重置节号，识别节时递增节号。\n\n## 正确性证明\n\n扫描任意前缀后，章号等于其中章标题数量，节号等于最后一章后的节数量。两种更新保持该不变量，固定前缀切片不修改任何标题字符，所以格式化结果逐项正确。\n\n## 复杂度\n\n时间O(总字符数)，空间O(目录字符数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    chapter=section=0;out=[]\n    for line in json.loads(raw):\n        if line.startswith('# '):chapter+=1;section=0;out.append(f'{chapter}. '+line[2:])\n        elif line.startswith('## '):section+=1;out.append(f'{chapter}.{section}. '+line[3:])\n    return json.dumps(out,ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#16-generate-table-of-contents",
+  "sourceContentHash": "04983dd33e87032c34eec6fd85f45297ae2c91d1cbb35b4aa453bba99d32b30c",
+  "author": "CSWork"
+}

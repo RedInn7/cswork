@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-71",
+  "title": "查询可见用户所在连通块大小",
+  "explanation": "## 思路\n\n使用按大小合并与路径压缩的并查集，维护每个根的分量大小；查询其根的大小。\n\n## 正确性证明\n\n开始每个用户单独成分量，大小1。每条边只会把其端点的两个连通分量合并，若已经同根则没有新增用户。归纳并查集分组恰等于已处理边的连通分量，根大小精确。处理全部边后，每次查询根大小就是包括自身的可见用户数。\n\n## 复杂度\n\n时间O((n+m+q)α(n))，并查集额外空间O(n)，加输入输出存储为O(n+m+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m,q=d[:3];parent=list(range(n+1));size=[1]*(n+1)\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    p=3\n    for _ in range(m):\n        a,b=find(d[p]),find(d[p+1]);p+=2\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            parent[b]=a;size[a]+=size[b]\n    return ' '.join(str(size[find(v)]) for v in d[p:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#71-visible-profiles-count",
+  "sourceContentHash": "fc6d0db8d2ab27a110d1da37702a6ff7e0028bf7c8ca22c38271f0767a053412",
+  "author": "CSWork"
+}

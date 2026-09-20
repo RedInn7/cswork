@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-18",
+  "title": "相邻同奇偶数字交换后的最大串",
+  "explanation": "## 思路\n\n切成最大连续同奇偶段，每段按数字从大到小输出，用10个桶统计。\n\n## 正确性证明\n\n交换不会跨越不同奇偶边界，因此各段位置范围不变；同段任意排列都能通过相邻交换实现。每段降序在首个不同位置取最大值，给出全串字典序最大，同长度数值比较亦如此。\n\n## 复杂度\n\n时间O(n)，空间O(n)用于输出，桶O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();out=[];i=0\n    while i<len(s):\n        j=i;counts=[0]*10\n        while j<len(s) and int(s[j])%2==int(s[i])%2:counts[int(s[j])]+=1;j+=1\n        for d in range(9,-1,-1):out.append(str(d)*counts[d])\n        i=j\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#18-swap-parity-data-scientist--analytics-",
+  "sourceContentHash": "a365bc72b02a9aa0c5cddddbf9d989189c70873494a9de88ff18ec639a2cc435",
+  "author": "CSWork"
+}

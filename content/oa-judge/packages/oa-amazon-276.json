@@ -1,0 +1,272 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-amazon-276",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "不重复借款时最长不违约天数",
+    "difficulty": "困难",
+    "tags": [
+      "OA",
+      "Amazon",
+      "子集动态规划"
+    ],
+    "description": "每天从一个未使用过的借贷人借款。第i人的贷款额为lender[i]，次日应还payback[i]。第一天可任选一人；以后每天的新贷款必须足够归还上一笔，剩余现金当日花掉、不跨日积累。求最多连续成功借款的天数。最后一天已成功借到即计入，不要求之后还有贷款可还这最后一笔。每个人至多使用一次。\n\n原始来源没有任何数值约束；以下n和金额界是本站明确补充的精确求解范围，不声称来源原界，也没有添加payback≥lender假设。原第三例第二天应借2还2，再欠3，原文字“借1还2”错误。",
+    "input": "第一行n，第二行n个lender，第三行n个payback。本站补充：1≤n≤20，1≤lender[i],payback[i]≤10^9，两数组等长。允许payback小于、等于或大于对应lender。",
+    "output": "输出最大成功借款天数，一个1..n的整数。",
+    "explanation": "样例1按贷款额1→4→8可借3天。样例2按贷款额1→2→5可借3天，恰好还清也合法。样例3按下标2→1→3（从1编号）可借3天，若首日贪心选最小payback的第1人，反而只能借2天。",
+    "hints": [
+      "对每个已用借贷人集合mask，记录可以达到的最小末笔payback。空集合欠款0。枚举最后选的j：只要mask去掉j的最小欠款不超过lender[j]，即可把j放在最后，候选末笔欠款为payback[j]。所有可达集合中最大的元素个数就是答案。将不同payback排序后压为1..r，空集合为0，不可达为r+1；用bytearray存状态，仅占2^n字节。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 131072,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4\n4 6 1 8\n7 10 3 9\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3\n2 1 5\n2 2 5\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3\n100 1 2\n1 100 2\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 1",
+      "input": "20\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n1000000000 998765433 997530866 996296299 995061732 993827165 992592598 991358031 990123464 988888897 987654330 986419763 985185196 983950629 982716062 981481495 980246928 979012361 977777794 976543227\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 2",
+      "input": "20\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 3",
+      "input": "20\n1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 4",
+      "input": "20\n1000000000 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n1 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000 1000000000\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 5",
+      "input": "20\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20\n2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 6",
+      "input": "4\n1 1 1 2\n2 2 2 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 7",
+      "input": "1\n1\n1000000000\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 8",
+      "input": "2\n5 8\n4 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 9",
+      "input": "7\n13 3 9 6 15 8 4\n15 13 3 15 4 12 14\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 10",
+      "input": "5\n1 13 3 7 6\n13 13 1 9 4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 11",
+      "input": "1\n2\n13\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 12",
+      "input": "5\n15 4 11 11 1\n15 9 15 8 9\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 13",
+      "input": "4\n4 2 10 3\n15 15 12 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 14",
+      "input": "7\n10 9 7 2 12 13 11\n6 13 7 5 2 15 9\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 15",
+      "input": "5\n14 3 8 6 11\n14 2 15 4 7\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 16",
+      "input": "7\n15 4 6 8 12 5 6\n8 10 15 12 6 6 11\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 17",
+      "input": "5\n10 2 8 12 1\n11 4 12 3 8\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 18",
+      "input": "4\n1 5 10 3\n8 11 12 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 19",
+      "input": "3\n5 11 6\n7 11 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 20",
+      "input": "5\n11 11 4 5 3\n15 7 8 9 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 21",
+      "input": "4\n4 1 10 6\n1 6 14 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 22",
+      "input": "2\n10 2\n4 8\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 23",
+      "input": "5\n1 1 11 7 4\n2 9 6 14 14\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 24",
+      "input": "5\n1 10 13 12 11\n10 2 4 4 7\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 25",
+      "input": "7\n9 2 8 1 14 2 13\n8 14 5 4 12 7 9\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 26",
+      "input": "5\n12 13 13 9 5\n12 3 10 3 13\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 27",
+      "input": "5\n3 15 7 9 5\n12 13 12 7 12\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 28",
+      "input": "2\n1 1\n13 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 29",
+      "input": "2\n7 11\n15 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 30",
+      "input": "2\n13 15\n12 14\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整边界与组合 31",
+      "input": "6\n12 2 10 13 14 14\n6 13 7 5 8 13\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

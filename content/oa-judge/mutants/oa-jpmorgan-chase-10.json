@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉全a方案",
+    "code": "def solve(raw):\n    a,b,p=map(int,raw.split());best=p+1\n    for x in range(p//a):\n        rest=p-a*x\n        if rest%b==0:best=min(best,x+rest//b)\n    return str(best if best<=p else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "余数也强制分组",
+    "code": "def solve(raw):\n    a,b,p=map(int,raw.split());best=p+1\n    for x in range(p//a+1):\n        rest=p-a*x\n        if True:best=min(best,x+rest//b)\n    return str(best if best<=p else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

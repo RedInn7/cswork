@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-293",
+  "title": "两个数组一对一配对的最小绝对差和",
+  "explanation": "## 思路\n\n分别升序排序，两数组同序配对后累加绝对差。\n\n## 正确性证明\n\n若x≤y且u≤v，则|x−u|+|y−v|≤|x−v|+|y−u|。因此任何交叉配对都可交换为不交叉而费用不增。反复消除交叉得到排序同序配对，恰是算法构造，所以最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，总费用最多2×10^14须64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=sorted(map(int,d[1:n+1]));b=sorted(map(int,d[n+1:]));return str(sum(abs(x-y) for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#293-minimize-sum-of-absolute-differences",
+  "sourceContentHash": "37dbaca43484308db3412e8d243e042fc97d09a2e6bee4b23fb4c9b0d074fb01",
+  "author": "CSWork"
+}

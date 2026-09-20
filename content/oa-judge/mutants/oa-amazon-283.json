@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误必须删光选中字母",
+    "code": "def solve(d):\n    from collections import Counter\n    pwd=Counter(d[0]);target=Counter(d[1]);cost=list(map(int,d[2:]));return str(min(pwd[c]*cost[ord(c)-97] for c,amount in target.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不足判定错误允许保留恰好需求",
+    "code": "def solve(d):\n    from collections import Counter\n    pwd=Counter(d[0]);target=Counter(d[1]);cost=list(map(int,d[2:]));return str(min(max(0,pwd[c]-amount)*cost[ord(c)-97] for c,amount in target.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

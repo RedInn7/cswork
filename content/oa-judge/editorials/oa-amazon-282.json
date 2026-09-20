@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-282",
+  "title": "合并所有相交闭区间",
+  "explanation": "## 思路\n\n按起点排序；若下一个起点≤当前结束，则把当前结束扩为两者最大，否则输出当前并新开一个区间。\n\n## 正确性证明\n\n当前区间表示已扫描最后一个连通块的精确覆盖范围。下一区间若起点不超过其结束，确实相交，应并入；否则按排序后续区间也不可能回接该块，所以可安全封口。归纳给出全部且仅有的最大重叠连通块。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    values=list(map(int,d[1:]));intervals=sorted(zip(values[::2],values[1::2]));out=[]\n    for a,b in intervals:\n        if out and a<=out[-1][1]:out[-1][1]=max(out[-1][1],b)\n        else:out.append([a,b])\n    return str(len(out))+'\\n'+'\\n'.join(str(a)+' '+str(b) for a,b in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#282-merge-intervals",
+  "sourceContentHash": "a52b6f16dd3129d098af54e390d7b6fae7a4844068bbeb60a03f2f2523d88a5c",
+  "author": "CSWork"
+}

@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ibm-67",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "边界内执行火星车移动命令",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "IBM"
+    ],
+    "description": "火星车从n×n网格的左上角出发，按UP、DOWN、LEFT、RIGHT每次移动一格。会越出网格的命令忽略，继续后续命令。返回最终格编号row*n+column，行列从0开始。\n\n输入输出协议由本站整理，缺失的数值约束均明确标为本站补充。",
+    "input": "第一行n m，随后m个命令。完整原界2≤n≤20、1≤m≤20；命令仅为UP、DOWN、LEFT、RIGHT。",
+    "output": "输出一个整数答案。",
+    "explanation": "三个公开样例的输出依次为：12；1；7。独立枚举或直接模拟已核对这些答案。",
+    "hints": [
+      "维护行列坐标，逐条计算候选坐标，合法才更新。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4 6\nRIGHT\nUP\nDOWN\nLEFT\nDOWN\nDOWN\n",
+      "expectedOutput": "12\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2 4\nLEFT\nUP\nRIGHT\nRIGHT\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3 4\nDOWN\nDOWN\nDOWN\nRIGHT\n",
+      "expectedOutput": "7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "20 20\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\n",
+      "expectedOutput": "19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "20 20\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\nDOWN\n",
+      "expectedOutput": "380\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "20 20\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\nUP\nLEFT\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "2 20\nRIGHT\nDOWN\nLEFT\nUP\nRIGHT\nDOWN\nLEFT\nUP\nRIGHT\nDOWN\nLEFT\nUP\nRIGHT\nDOWN\nLEFT\nUP\nRIGHT\nDOWN\nLEFT\nUP\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "2 15\nLEFT\nUP\nRIGHT\nLEFT\nRIGHT\nRIGHT\nDOWN\nUP\nLEFT\nDOWN\nDOWN\nUP\nRIGHT\nLEFT\nDOWN\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "4 8\nLEFT\nLEFT\nRIGHT\nDOWN\nUP\nRIGHT\nLEFT\nRIGHT\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "4 11\nDOWN\nUP\nUP\nUP\nDOWN\nLEFT\nDOWN\nLEFT\nDOWN\nRIGHT\nLEFT\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "4 5\nUP\nDOWN\nRIGHT\nLEFT\nLEFT\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "6 17\nDOWN\nRIGHT\nUP\nRIGHT\nRIGHT\nDOWN\nRIGHT\nUP\nRIGHT\nLEFT\nUP\nRIGHT\nUP\nUP\nDOWN\nDOWN\nRIGHT\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "5 11\nUP\nLEFT\nDOWN\nRIGHT\nDOWN\nDOWN\nUP\nDOWN\nUP\nLEFT\nUP\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "2 18\nDOWN\nDOWN\nRIGHT\nUP\nDOWN\nRIGHT\nRIGHT\nUP\nDOWN\nLEFT\nRIGHT\nLEFT\nDOWN\nDOWN\nDOWN\nRIGHT\nDOWN\nRIGHT\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "5 14\nLEFT\nRIGHT\nRIGHT\nRIGHT\nRIGHT\nUP\nRIGHT\nLEFT\nLEFT\nDOWN\nRIGHT\nDOWN\nLEFT\nLEFT\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "2 16\nUP\nUP\nLEFT\nUP\nDOWN\nUP\nUP\nDOWN\nDOWN\nRIGHT\nRIGHT\nDOWN\nLEFT\nUP\nLEFT\nUP\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "2 1\nUP\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "4 9\nUP\nUP\nRIGHT\nLEFT\nUP\nUP\nLEFT\nLEFT\nLEFT\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "4 7\nLEFT\nRIGHT\nUP\nRIGHT\nRIGHT\nUP\nLEFT\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "5 17\nUP\nRIGHT\nRIGHT\nDOWN\nLEFT\nUP\nUP\nLEFT\nRIGHT\nRIGHT\nRIGHT\nDOWN\nUP\nRIGHT\nUP\nDOWN\nUP\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "3 13\nRIGHT\nDOWN\nDOWN\nRIGHT\nDOWN\nLEFT\nDOWN\nLEFT\nUP\nDOWN\nLEFT\nDOWN\nDOWN\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "6 1\nRIGHT\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "3 4\nRIGHT\nUP\nLEFT\nLEFT\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "5 7\nLEFT\nRIGHT\nUP\nRIGHT\nDOWN\nLEFT\nRIGHT\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "4 14\nLEFT\nLEFT\nDOWN\nDOWN\nUP\nLEFT\nLEFT\nLEFT\nDOWN\nRIGHT\nUP\nLEFT\nLEFT\nLEFT\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "4 20\nDOWN\nDOWN\nUP\nUP\nRIGHT\nUP\nRIGHT\nRIGHT\nLEFT\nRIGHT\nUP\nUP\nDOWN\nRIGHT\nDOWN\nRIGHT\nRIGHT\nDOWN\nRIGHT\nDOWN\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "6 1\nUP\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "2 16\nRIGHT\nUP\nUP\nUP\nUP\nUP\nDOWN\nLEFT\nLEFT\nRIGHT\nLEFT\nDOWN\nUP\nDOWN\nRIGHT\nDOWN\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "2 13\nDOWN\nRIGHT\nUP\nDOWN\nUP\nDOWN\nDOWN\nRIGHT\nLEFT\nUP\nRIGHT\nRIGHT\nDOWN\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "6 19\nLEFT\nDOWN\nUP\nDOWN\nDOWN\nUP\nDOWN\nLEFT\nLEFT\nDOWN\nLEFT\nLEFT\nRIGHT\nDOWN\nUP\nUP\nDOWN\nUP\nRIGHT\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "3 1\nUP\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

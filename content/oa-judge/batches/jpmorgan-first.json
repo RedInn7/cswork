@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-jpmorgan-chase-3",
+      "sourceContentHash": "2b5fe33704138b6709c3f0adbe9e6a80ea1ec9e4ad809b6908e0fc8afc8de093",
+      "packageChecksum": "09ca415cfe3d40b9d79de2159393d6c074a7db3961aec8d75b86c6adf42c5a00",
+      "editorial": "## 思路\n\n扫描每个非空分割点，取左右总量差绝对值的最小值。\n\n## 正确性证明\n\n一次操作最多使两边差缩小1，因此固定分割至少需要差的绝对值次。把较小批次中的任一品类持续增加，恰好这么多次即可相等且始终为正，所以每个分割的下界可达。枚举全部分割得到最优。\n\n## 复杂度\n\n时间O(n)，除输入外O(1)空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);prefix=0;best=total\n    for v in a[:-1]:\n        prefix+=v;best=min(best,abs(2*prefix-total))\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-4",
+      "sourceContentHash": "25f4c679b918eeda2906f372858a13ed85898e6488dfbf0671eac71ff8c92c10",
+      "packageChecksum": "493d63cc9b5695a0c0f9b255846d41f36bebb4d033f81e6b2fc0b17393d95f52",
+      "editorial": "## 思路\n\n维护总和及当前下标之前的前缀和，检查left=total−left−a[i]。\n\n## 正确性证明\n\n遍历到i时left恰为左侧和，总和减left和当前项恰为右侧和，判断充要。正数使左减右随下标严格递增，所以至多一个枢轴，保证有解即可返回。\n\n## 复杂度\n\n时间O(n)，除输入外O(1)空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);left=0\n    for i,v in enumerate(a):\n        if left==total-left-v:return str(i)\n        left+=v\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-5",
+      "sourceContentHash": "b45a8712240efef9fc0a8a3aa100a0cd9b8855126375112ffe193624bfccd571",
+      "packageChecksum": "8c07cb74c9266c297a0479f1ccbe1b1107538d430f115d2f6b4f4d412f374d32",
+      "editorial": "## 思路\n\n维护各股票持仓数和累计损益；买卖只改持仓，变价时损益增加持仓乘变化量。\n\n## 正确性证明\n\n按市价交易时现金变化与持仓市值变化互相抵消，净资产不变；仅价格变化使净资产增加当前持仓乘价格差。初始损益0，按事件归纳维护的值始终等于现金加持仓市值相对初始的变化。\n\n## 复杂度\n\n时间O(输入长度)，空间O(股票数+查询数)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import json\n    holdings={};gain=0;out=[]\n    for line in json.loads(raw):\n        p=line.split();op=p[0]\n        if op=='QUERY':out.append(gain);continue\n        s=p[1];v=int(p[2])\n        if op=='CHANGE':gain+=holdings.get(s,0)*v\n        else:holdings[s]=holdings.get(s,0)+(v if op=='BUY' else -v)\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-6",
+      "sourceContentHash": "9112850651d0dbc163b69fe56598fe3e9a25eb1e75d2c50ac7b63b32d584235d",
+      "packageChecksum": "f51dc1259e91c5ed2f5f012f98277ee5660c69b9413643b0af7fc1ffab3cff80",
+      "editorial": "## 思路\n\n奇数不可行；偶数的四轮车数从0到w//4，每种数量唯一决定两轮车数。\n\n## 正确性证明\n\n两类车辆轮数都是偶数，奇数无解；偶数时每个0..floor(w/4)的四轮车数量都留下非负偶数轮，且对应唯一两轮车数量，所以方案数是floor(w/4)+1。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(0 if w%2 else w//4+1) for w in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-7",
+      "sourceContentHash": "8da4f650709a3bb1a093fbb79ed6f0c670bb054d9f83782f608940ae3b9c7497",
+      "packageChecksum": "29fc93130439ead67109e8d5189fad60680f72ed1febd3901936c7fe8c115b7e",
+      "editorial": "## 思路\n\n顺序维护可用线程数，请求到达时有线程则减一，否则累计丢弃。\n\n## 正确性证明\n\n处理任何前缀后，可用数恰为已增加线程减去成功请求数；根据其是否为零判定下一请求是否成功与原规则完全一致，归纳得丢弃计数正确。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    free=lost=0\n    for v in map(int,raw.split()[1:]):\n        if v>0:free+=v\n        elif free:free-=1\n        else:lost+=1\n    return str(lost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-8",
+      "sourceContentHash": "7d82694bb5a9de89b21c26783d15aaa2ffdfaac524ff5e1da295307e0ab18ab5",
+      "packageChecksum": "bbe01f62f9a1041f5e036be1b64bef14ccd3512a66fa53c18e62dc2d56809391",
+      "editorial": "## 思路\n\n一次枚举所有无重复数字的正整数（至多6位）并排序；每次用两次二分统计闭区间内数量。\n\n## 正确性证明\n\nDFS每次选择未用数字且首位非零，因而每个产生数合法；任意合法数按其各位恰对应唯一DFS路径。排序后二分左端前与右端后的下标差恰等于区间中合法数数目。\n\n## 复杂度\n\n预处理O(U log U)，查询O(q log U)，空间O(U+q)；U为不超过百万的合法数数量。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from bisect import bisect_left,bisect_right\nVALID=None\ndef solve(raw):\n    global VALID\n    if VALID is None:\n        VALID=[]\n        def visit(v,mask):\n            if v:VALID.append(v)\n            for d in range(10):\n                if (not v and not d) or mask>>d&1:continue\n                w=v*10+d\n                if w<=1000000:visit(w,mask|1<<d)\n        visit(0,0);VALID.sort()\n    d=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(bisect_right(VALID,h)-bisect_left(VALID,l)) for l,h in zip(d[::2],d[1::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-9",
+      "sourceContentHash": "3ac13ef30665bc2dd4b5dbd242f27f08b5dbcf7aee82134948172a55f9c4d8aa",
+      "packageChecksum": "eb2c3e0f5cafe9be1fdd9844565477e33ce09b02c966834259cbfa47506410df",
+      "editorial": "## 思路\n\n交集下界取所有下界最大值，上界取所有上界最小值，统计落入其中的信号。\n\n## 正确性证明\n\n信号通过全部过滤器当且仅当不小于每个下界且不大于每个上界，等价于属于最大下界到最小上界的闭区间；逐项计数保留重复信号。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)用于解析。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];v=d[2+n:];left=max(v[::2]);right=min(v[1::2])\n    return str(sum(left<=f<=right for f in a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-10",
+      "sourceContentHash": "37840f7141eb0b2df4569609432d84375e78b5d8e0391bdb4e26ee86bc23d201",
+      "packageChecksum": "9e046f3a12f9f2caf4de2c468c4d10156746c6f4b6868b25d0ee6a8c59b5b917",
+      "editorial": "## 思路\n\n枚举a人队数量，剩余人数若能整除b即可组成方案，取队数最少。\n\n## 正确性证明\n\n任一合法方案的a人队数必在枚举范围；固定它后b人队数量由剩余人数唯一决定，整除检查是合法的充要条件。取所有合法方案最小即最优，无候选则无解。\n\n## 复杂度\n\n时间O(p/a+1)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a,b,p=map(int,raw.split());best=p+1\n    for x in range(p//a+1):\n        rest=p-a*x\n        if rest%b==0:best=min(best,x+rest//b)\n    return str(best if best<=p else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-11",
+      "sourceContentHash": "5043cd72c3ec62e2b86269f1cf65dd0448670a5fee0e8f3f525648c241679bd2",
+      "packageChecksum": "9c03bf581a658579286aa1d13d1ff528157e7391209953b59328f29ff4f7662e",
+      "editorial": "## 思路\n\n答案是所有相邻元素差的绝对值之和。\n\n## 正确性证明\n\n长度i的前缀操作只影响第i个相邻差，其他相邻差不变。消除该差至少付其绝对值，故所有边界之和为下界。从后往前将每个前缀调整到右邻值恰支付这个总和，达到下界；全数组平移不影响相等性且无需使用。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return str(sum(abs(x-y) for x,y in zip(a,a[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-12",
+      "sourceContentHash": "8a1d053691b454122d60b35473ca4f9b49c5d48d3a47f6acb18294c84e05d364",
+      "packageChecksum": "6a137c63b114030a64712537106604d83a80986696c435cd9b254bca059b1675",
+      "editorial": "## 思路\n\n将两数组升序排序，用当前最小可用a匹配最小可用b；a不够大就跳过a。\n\n## 正确性证明\n\n若最小a不能胜最小b，它不可能胜任何剩余b，可舍弃。若能胜，存在最优解包含这对：若各自原来与其他元素配对，交换后更大的另一a仍能胜原来与当前a匹配的b；其余情况直接替换不会减少数量。归纳得到贪心最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=sorted(d[1:n+1]);b=sorted(d[n+1:]);j=0\n    for v in a:\n        if j<n and v>b[j]:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-14",
+      "sourceContentHash": "37aff2e1a8d1dafb484ea8f6c79f588cd904a0ca04bb698f19b13b7e1a9f63e9",
+      "packageChecksum": "f7d659a125777eb4fded7411507e43bd3705f5c0cb01367e6418533141b2634f",
+      "editorial": "## 思路\n\n分别用最小堆、最大堆保存带唯一ID的元素，用有效标记懒删除。每轮取出两个有效极值，计算精确向上取整，加入新元素。\n\n## 正确性证明\n\n有效标记使两个堆所表示的有效元素始终恰为当前多重集合；堆顶清理无效项后就是相应极值。先删除最小值再取最大值保证重复值也来自不同位置。插入两者之和保持集合不变量，归纳每轮与原过程一致。整数恒等式ceil(p/q)=−floor(−p/q)，q>0，适用于负数且不受浮点误差影响。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)；中间结果使用精确整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);small=[(v,i) for i,v in enumerate(a)];large=[(-v,i) for i,v in enumerate(a)];heapq.heapify(small);heapq.heapify(large);alive=[True]*(2*n);cost=0\n    for ident in range(n,2*n-1):\n        while not alive[small[0][1]]:heapq.heappop(small)\n        low,i=heapq.heappop(small);alive[i]=False\n        while not alive[large[0][1]]:heapq.heappop(large)\n        neg,j=heapq.heappop(large);alive[j]=False;high=-neg\n        value=low+high;den=high-low+1;cost+=-((-value)//den)\n        heapq.heappush(small,(value,ident));heapq.heappush(large,(-value,ident))\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-16",
+      "sourceContentHash": "04983dd33e87032c34eec6fd85f45297ae2c91d1cbb35b4aa453bba99d32b30c",
+      "packageChecksum": "4f721bb87a09d710af2d3f577889ff5a500e5e7b3c05c1b67fac0095a2c5a1b1",
+      "editorial": "## 思路\n\n顺序扫描维护章号、节号，识别章时递增章号并重置节号，识别节时递增节号。\n\n## 正确性证明\n\n扫描任意前缀后，章号等于其中章标题数量，节号等于最后一章后的节数量。两种更新保持该不变量，固定前缀切片不修改任何标题字符，所以格式化结果逐项正确。\n\n## 复杂度\n\n时间O(总字符数)，空间O(目录字符数)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import json\n    chapter=section=0;out=[]\n    for line in json.loads(raw):\n        if line.startswith('# '):chapter+=1;section=0;out.append(f'{chapter}. '+line[2:])\n        elif line.startswith('## '):section+=1;out.append(f'{chapter}.{section}. '+line[3:])\n    return json.dumps(out,ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-17",
+      "sourceContentHash": "4cdd8db4746d68bda897e8f64acdbfb05a7d4fd25a06dc0db549006671742fcd",
+      "packageChecksum": "b9323700ff2ed4875cda2881729c32286aceb8d888233c7b2717c773b2061e3d",
+      "editorial": "## 思路\n\n逐字符入栈，栈末尾出现AWS就删除这三个字符。\n\n## 正确性证明\n\n处理前缀后栈内已无AWS；追加一字符只可能在新后缀形成AWS，删除后其余部分本来已无匹配。AWS没有非空真前缀等于后缀，两个可删匹配不重叠，删除顺序可交换；终止过程有唯一结果，栈给出它。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    stack=[]\n    for c in raw.strip():\n        stack.append(c)\n        if len(stack)>=3 and stack[-3:]==['A','W','S']:del stack[-3:]\n    return ''.join(stack) or '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-18",
+      "sourceContentHash": "a365bc72b02a9aa0c5cddddbf9d989189c70873494a9de88ff18ec639a2cc435",
+      "packageChecksum": "80691af3a3acfcee362f083181e39edafffa7d63d5823d0408365522609c6667",
+      "editorial": "## 思路\n\n切成最大连续同奇偶段，每段按数字从大到小输出，用10个桶统计。\n\n## 正确性证明\n\n交换不会跨越不同奇偶边界，因此各段位置范围不变；同段任意排列都能通过相邻交换实现。每段降序在首个不同位置取最大值，给出全串字典序最大，同长度数值比较亦如此。\n\n## 复杂度\n\n时间O(n)，空间O(n)用于输出，桶O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip();out=[];i=0\n    while i<len(s):\n        j=i;counts=[0]*10\n        while j<len(s) and int(s[j])%2==int(s[i])%2:counts[int(s[j])]+=1;j+=1\n        for d in range(9,-1,-1):out.append(str(d)*counts[d])\n        i=j\n    return ''.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-19",
+      "sourceContentHash": "d83c63c67f469b8439ad1c4260c657c934e15051516865bfea56390df11e761d",
+      "packageChecksum": "0cddca6e1b4ff44f6beb69d700f6fdcc85c805616263aef14ef9af52de5369f6",
+      "editorial": "## 思路\n\n保留必要的净竖直和净水平位移，其余相反方向成对删除。\n\n## 正确性证明\n\n任何到达相同终点的路径至少需要曼哈顿距离|U−D|+|L−R|步。分别删除成对UD与LR后，剩余指令数量恰为该距离，且终点不变，达到下界。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip();dx=s.count('R')-s.count('L');dy=s.count('U')-s.count('D')\n    return str(len(s)-abs(dx)-abs(dy))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-20",
+      "sourceContentHash": "7d6ea1db997a6f16e22349b25cbbac345c8c95541fe5d4b283a4b3aa172fda42",
+      "packageChecksum": "d36efe3970b1a9c4a2ee7c6ea9729d7d5d17f3c82d2348c8f8735c56f02a5593",
+      "editorial": "## 思路\n\n按起点排序，维护最后一个合并段；新起点不超过其终点则延伸，否则新开一段。\n\n## 正确性证明\n\n排序后起点晚于当前右端的区间与当前段不重叠，后续起点更晚也不能连接，因此可结算。相交则两者并集恰由较小左端和较大右端表示。归纳保持已输出段互不重叠且完整覆盖已处理区间，最终正确。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];a=sorted(zip(d[::2],d[1::2]));out=[]\n    for l,h in a:\n        if out and l<=out[-1][1]:out[-1][1]=max(out[-1][1],h)\n        else:out.append([l,h])\n    return str(len(out))+'\\n'+'\\n'.join(f'{l} {h}' for l,h in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

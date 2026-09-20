@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-3",
+  "title": "两批货物总量相等的最少调整",
+  "explanation": "## 思路\n\n扫描每个非空分割点，取左右总量差绝对值的最小值。\n\n## 正确性证明\n\n一次操作最多使两边差缩小1，因此固定分割至少需要差的绝对值次。把较小批次中的任一品类持续增加，恰好这么多次即可相等且始终为正，所以每个分割的下界可达。枚举全部分割得到最优。\n\n## 复杂度\n\n时间O(n)，除输入外O(1)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);prefix=0;best=total\n    for v in a[:-1]:\n        prefix+=v;best=min(best,abs(2*prefix-total))\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#3-equalize-consignment-quantities",
+  "sourceContentHash": "2b5fe33704138b6709c3f0adbe9e6a80ea1ec9e4ad809b6908e0fc8afc8de093",
+  "author": "CSWork"
+}

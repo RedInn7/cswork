@@ -1,0 +1,10 @@
+[
+  {
+    "name": "用下取整代替上取整",
+    "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);small=[(v,i) for i,v in enumerate(a)];large=[(-v,i) for i,v in enumerate(a)];heapq.heapify(small);heapq.heapify(large);alive=[True]*(2*n);cost=0\n    for ident in range(n,2*n-1):\n        while not alive[small[0][1]]:heapq.heappop(small)\n        low,i=heapq.heappop(small);alive[i]=False\n        while not alive[large[0][1]]:heapq.heappop(large)\n        neg,j=heapq.heappop(large);alive[j]=False;high=-neg\n        value=low+high;den=high-low+1;cost+=value//den\n        heapq.heappush(small,(value,ident));heapq.heappush(large,(-value,ident))\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "分母多一被遗漏",
+    "code": "import heapq\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);small=[(v,i) for i,v in enumerate(a)];large=[(-v,i) for i,v in enumerate(a)];heapq.heapify(small);heapq.heapify(large);alive=[True]*(2*n);cost=0\n    for ident in range(n,2*n-1):\n        while not alive[small[0][1]]:heapq.heappop(small)\n        low,i=heapq.heappop(small);alive[i]=False\n        while not alive[large[0][1]]:heapq.heappop(large)\n        neg,j=heapq.heappop(large);alive[j]=False;high=-neg\n        value=low+high;den=max(1,high-low);cost+=-((-value)//den)\n        heapq.heappush(small,(value,ident));heapq.heappush(large,(-value,ident))\n    return str(cost)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-62",
+  "title": "最少翻转得到交替二进制串",
+  "explanation": "## 思路\n\n交替串的首位确定后，其余位唯一。统计与0101…的错位数d，另一目标的错位数就是n−d。\n\n## 正确性证明\n\n每个错位至少需要翻转一次，逐个翻转即可达到，所以某个目标所需操作恰为错位数。交替串仅有两种非空形式，取两者最小即全局最优；空串两项都为0。\n\n## 复杂度\n\n时间O(n)，除输入外额外O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    rows=raw.splitlines();n=int(rows[0]);s=rows[1] if n else '';different=0\n    for i,c in enumerate(s):different+=(int(c)!=(i&1))\n    return str(min(different,n-different))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#62-minimum-operations-to-make-alternating-binary-string",
+  "sourceContentHash": "bf64f917867d01ba8d464ff20ba68cfaf49ab53c64f05832e332e5d862646dcb",
+  "author": "CSWork"
+}

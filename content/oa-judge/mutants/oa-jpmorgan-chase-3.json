@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许空批次",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);prefix=0;best=total\n    for v in a[:0]:\n        prefix+=v;best=min(best,abs(2*prefix-total))\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只看中间分割",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];total=sum(a);prefix=0;best=total\n    for v in a[:-1]:\n        prefix+=v;best=min(best,abs(2*prefix-total))\n    return str(abs(2*sum(a[:len(a)//2])-total))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-11",
+  "title": "前缀整体调整的最小总成本",
+  "explanation": "## 思路\n\n答案是所有相邻元素差的绝对值之和。\n\n## 正确性证明\n\n长度i的前缀操作只影响第i个相邻差，其他相邻差不变。消除该差至少付其绝对值，故所有边界之和为下界。从后往前将每个前缀调整到右邻值恰支付这个总和，达到下界；全数组平移不影响相等性且无需使用。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return str(sum(abs(x-y) for x,y in zip(a,a[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#11-minimum-total-cost",
+  "sourceContentHash": "5043cd72c3ec62e2b86269f1cf65dd0448670a5fee0e8f3f525648c241679bd2",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-278",
+  "title": "删至多k名选手后的最长同速连续队伍",
+  "explanation": "## 思路\n\n每个速度单独收集出现位置p。在位置数组上双指针，保证p[r]−p[l]−(r−l)≤k，更新同速人数r−l+1。\n\n## 正确性证明\n\n把p[l]..p[r]之间不同速的人全部删除，费用恰为原长度减同速人数。保留更多该速度者不会增加删除费，故每个最优段对应某个连续出现位置窗口。该费用随右扩不减、左缩不增，双指针枚举每个右端最早合法左端，获得最大人数。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));positions={}\n    for i,v in enumerate(a):positions.setdefault(v,[]).append(i)\n    answer=0\n    for p in positions.values():\n        left=0\n        for right in range(len(p)):\n            while p[right]-p[left]-(right-left)>k:left+=1\n            answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#278-maximum-possible-racers",
+  "sourceContentHash": "7e1898557a850bc265095c4f921accd82b9136b16d22fb8c6bb24d0772bc59cb",
+  "author": "CSWork"
+}

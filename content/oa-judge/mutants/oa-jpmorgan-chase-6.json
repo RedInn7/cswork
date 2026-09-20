@@ -1,0 +1,10 @@
+[
+  {
+    "name": "奇数也可行",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(w//4+1) for w in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉全两轮车",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(0 if w%2 else w//4) for w in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

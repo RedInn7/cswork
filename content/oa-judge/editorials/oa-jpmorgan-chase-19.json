@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-19",
+  "title": "保持终点不变的最多指令删除数",
+  "explanation": "## 思路\n\n保留必要的净竖直和净水平位移，其余相反方向成对删除。\n\n## 正确性证明\n\n任何到达相同终点的路径至少需要曼哈顿距离|U−D|+|L−R|步。分别删除成对UD与LR后，剩余指令数量恰为该距离，且终点不变，达到下界。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();dx=s.count('R')-s.count('L');dy=s.count('U')-s.count('D')\n    return str(len(s)-abs(dx)-abs(dy))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#19-get-max-deletions",
+  "sourceContentHash": "d83c63c67f469b8439ad1c4260c657c934e15051516865bfea56390df11e761d",
+  "author": "CSWork"
+}

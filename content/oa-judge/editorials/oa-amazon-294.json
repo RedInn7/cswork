@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-294",
+  "title": "最多翻m张卡后的最小正面数值范围",
+  "explanation": "## 思路\n\n把每张卡的正反面作为两条带卡号和面标记的事件，按值排序滑窗。窗口需覆盖每张卡至少一面，且窗口内正面数量≥n−m；在有效时缩左端，更新最小值域宽度。\n\n## 正确性证明\n\n给定值域，每卡无一面在内则必不可行。若正面在内就可不翻，否则必须且只需翻到在内的反面，所以最少翻面数等于n减区间内正面数。两个条件因此充要。排序事件窗口覆盖的卡面是某个值域可用卡面的子集；满足条件便给出该宽度可行解，而任何最优值域包含的完整连续事件窗都会被扫描支配，故双指针取到最小宽度。同值事件身份不合并。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:n+2]));b=list(map(int,d[n+2:]));events=sorted([(v,i,1) for i,v in enumerate(a)]+[(v,i,2) for i,v in enumerate(b)]);mask=bytearray(n);covered=front=left=0;answer=max(a)-min(a)\n    for right,(value,i,side) in enumerate(events):\n        covered+=mask[i]==0;mask[i]|=side;front+=side==1\n        while covered==n and front>=n-m:\n            answer=min(answer,value-events[left][0]);_,j,old=events[left];mask[j]^=old;covered-=mask[j]==0;front-=old==1;left+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#294-fortune-telling",
+  "sourceContentHash": "e1dc041781f8454292c3e7a583093446f494e8ace6f0af2b937aa7616b26f1b5",
+  "author": "CSWork"
+}

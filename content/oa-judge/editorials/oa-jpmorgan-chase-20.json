@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-20",
+  "title": "合并重叠闭区间",
+  "explanation": "## 思路\n\n按起点排序，维护最后一个合并段；新起点不超过其终点则延伸，否则新开一段。\n\n## 正确性证明\n\n排序后起点晚于当前右端的区间与当前段不重叠，后续起点更晚也不能连接，因此可结算。相交则两者并集恰由较小左端和较大右端表示。归纳保持已输出段互不重叠且完整覆盖已处理区间，最终正确。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];a=sorted(zip(d[::2],d[1::2]));out=[]\n    for l,h in a:\n        if out and l<=out[-1][1]:out[-1][1]=max(out[-1][1],h)\n        else:out.append([l,h])\n    return str(len(out))+'\\n'+'\\n'.join(f'{l} {h}' for l,h in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#20-merge-intervals",
+  "sourceContentHash": "7d6ea1db997a6f16e22349b25cbbac345c8c95541fe5d4b283a4b3aa172fda42",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-283",
+  "title": "删字符使任何重排都无法包含目标的最低费用",
+  "explanation": "## 思路\n\n计数两串。对每个目标字母c，删掉max(0,countPwd[c]−countTarget[c]+1)个就能让它不足；取各字母所需费用的最小值。\n\n## 正确性证明\n\n任意重排可包含目标，当且仅当每个目标字母数量都足够。要破坏这一条件，至少一种字母必须少于需求，针对它必须删指定次数；因此每个合法方案费用不低于某一候选。只删最低候选对应字母即足以使目标永远无法形成，达到下界。\n\n## 复杂度\n\n时间O(|pwd|+|target|+26)，辅助空间O(26)，费用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    pwd=Counter(d[0]);target=Counter(d[1]);cost=list(map(int,d[2:]));return str(min(max(0,pwd[c]-amount+1)*cost[ord(c)-97] for c,amount in target.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#283-min-cost-to-remove-subsequence-minimal-cost-to-strengthen-password-",
+  "sourceContentHash": "c4c09be976893781af8ae9ba95c2dc03192eacefba24c3302d8da8b680f8250a",
+  "author": "CSWork"
+}

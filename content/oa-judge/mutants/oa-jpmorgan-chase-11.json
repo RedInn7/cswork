@@ -1,0 +1,10 @@
+[
+  {
+    "name": "有符号差抵消",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return str(sum(x-y for x,y in zip(a,a[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "额外要求归零",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return str(abs(a[-1])+sum(abs(x-y) for x,y in zip(a,a[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

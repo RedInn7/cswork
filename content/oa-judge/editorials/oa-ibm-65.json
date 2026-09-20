@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-65",
+  "title": "字典序最小的最低资源负载排列",
+  "explanation": "## 思路\n\n容量从小到大配负载从大到小；同容量位置反向按原下标排序后分配，从而使较小下标获得该组较小负载。\n\n## 正确性证明\n\n若c1<c2而分到l1<l2，交换后费用改变为(c1−c2)(l2−l1)<0，因此最优解不能有这种逆向配对。排序给出各容量组应分到的负载多重集合，相同容量内部交换不改变费用。将每组负载按原下标升序放为非递减，逐个最早差异位置均尽量小，得到全部最低费用解中的字典序最小解。重复负载跨组交换不改变输出。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。参考无需计算可能超过64位的费用总和；论证及oracle使用任意精度整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];capacity=d[1:n+1];loads=sorted(d[n+1:],reverse=True)\n    order=sorted(range(n),key=lambda i:(capacity[i],-i));out=[0]*n\n    for i,v in zip(order,loads):out[i]=v\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#65-rearrange-server-load",
+  "sourceContentHash": "555b46c37242f73a97e6907360fbcc33644fcf7327535dbfed290f81e7b038d0",
+  "author": "CSWork"
+}

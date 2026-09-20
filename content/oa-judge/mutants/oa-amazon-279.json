@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误向下取整",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));remaining=n-k+1;middle=remaining//2;twice=2*sum(a[remaining:])\n    twice+=2*a[middle] if remaining%2 else a[middle-1]+a[middle]\n    return str(twice//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误把最小若干包独立",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]),reverse=True);remaining=n-k+1;middle=remaining//2;twice=2*sum(a[remaining:])\n    twice+=2*a[middle] if remaining%2 else a[middle-1]+a[middle]\n    return str((twice+1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-290",
+  "title": "数量最少且重量最大的严格较重物品集",
+  "explanation": "## 思路\n\n重量降序依次选取，直到已选重量严格超过未选重量；将选出的前缀反转输出升序。\n\n## 正确性证明\n\n固定件数q时最大可能总重量就是最大的q件。若这个上界仍不超过其余重量，任何q件方案都不合法；第一次严格超过时q最少，同时该前缀又达到该q的最大总重量，满足第二目标。输出升序只改变展示顺序。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);total=sum(a);picked=[];weight=0\n    for v in a:\n        picked.append(v);weight+=v\n        if weight>total-weight:break\n    return ' '.join(map(str,picked[::-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#290-optimizing-box-weights",
+  "sourceContentHash": "d228458d8a4f85914e54d532faf3adb22e5d93c88945d567be90f9fc6262bb13",
+  "author": "CSWork"
+}

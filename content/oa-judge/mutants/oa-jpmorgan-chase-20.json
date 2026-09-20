@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相同端点不合并",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];a=sorted(zip(d[::2],d[1::2]));out=[]\n    for l,h in a:\n        if out and l<out[-1][1]:out[-1][1]=max(out[-1][1],h)\n        else:out.append([l,h])\n    return str(len(out))+'\\n'+'\\n'.join(f'{l} {h}' for l,h in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "嵌套缩短右端",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];a=sorted(zip(d[::2],d[1::2]));out=[]\n    for l,h in a:\n        if out and l<=out[-1][1]:out[-1][1]=h\n        else:out.append([l,h])\n    return str(len(out))+'\\n'+'\\n'.join(f'{l} {h}' for l,h in out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
