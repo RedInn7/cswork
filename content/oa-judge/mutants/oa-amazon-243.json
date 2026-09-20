@@ -1,0 +1,10 @@
+[
+  {
+    "name": "平局也算赢",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=sorted(x-y for x,y in zip(a,b));left=0;right=n-1;answer=0\n    while left<right:\n        if delta[left]+delta[right]>=0:answer+=right-left;right-=1\n        else:left+=1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "丢失原下标对应关系",
+    "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=sorted(x-y for x,y in zip(sorted(a),sorted(b)));left=0;right=n-1;answer=0\n    while left<right:\n        if delta[left]+delta[right]>0:answer+=right-left;right-=1\n        else:left+=1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

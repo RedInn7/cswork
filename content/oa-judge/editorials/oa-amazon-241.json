@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-241",
+  "title": "每天批量替换服务器后的总请求数",
+  "explanation": "## 思路\n\n保存ID频次和总和，r改v时将c=count[r]迁移，total+=(v−r)*c，输出更新后总和。\n\n## 正确性证明\n\n频次精确描述全部服务器，操作只影响原ID为r的c台，每台贡献改变v−r。把这c个身份迁移到v，其他频次不变，归纳得到每天状态及总和。r=v时直接保持状态。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n=int(d[0]);a=list(map(int,d[1:1+n]));old=list(map(int,d[1+n:1+2*n]));new=list(map(int,d[1+2*n:]));freq=Counter(a);total=sum(a);out=[]\n    for r,v in zip(old,new):\n        if r!=v:\n            count=freq.pop(r,0);total+=(v-r)*count;freq[v]+=count\n        out.append(str(total))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#241-get-total-requests",
+  "sourceContentHash": "0add0706518b12545ffb7cfd2735eb6333512962aa62e8fa13a5d95fa6fc7fb9",
+  "author": "CSWork"
+}

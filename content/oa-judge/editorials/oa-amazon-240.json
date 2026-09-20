@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-240",
+  "title": "至多k种收入的稳定连续期间数",
+  "explanation": "## 思路\n\n滑动窗口维护每种值频率，超过k种则缩左端；每个右端贡献窗口长度。\n\n## 正确性证明\n\n固定右端时，最左合法起点到右端之间的所有起点都合法，更早起点不合法。窗口右移只能令最早合法起点不向左，因此双指针找到该边界，贡献right−left+1恰好按右端不重不漏统计。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq={};left=answer=0\n    for right,v in enumerate(a):\n        freq[v]=freq.get(v,0)+1\n        while len(freq)>k:\n            old=a[left];freq[old]-=1;left+=1\n            if not freq[old]:del freq[old]\n        answer+=right-left+1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#240-get-stable-periods-count-fungible-",
+  "sourceContentHash": "b5145f01727a7e1a99acfab7cf89f9e3a2004006d8bc010ea9b595edd71dd097",
+  "author": "CSWork"
+}

@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-236",
+      "sourceContentHash": "3cf00d8786370456e888a1c56c5c835fa52a7851ae4105d4d33e1cc1f07e5b44",
+      "packageChecksum": "fcb572bfb5381bcf2868be844d28268613c7059037503cb39a91f36b483f95cd",
+      "editorial": "## 思路\n\n维护当前段的字符集合，下一字符若重复则结束当前段并新开一段，否则继续加入。\n\n## 正确性证明\n\n第一段不能越过第一次重复位置，所以尽可能长的合法前缀不比任何其他第一段短。把任意最优分段的第一段延长到这个前缀，只会删去或缩短后续段而不增加段数。对剩余后缀重复交换论证，贪心达到最少段数。\n\n## 复杂度\n\n时间O(n)，辅助空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];seen=set();answer=1\n    for c in s:\n        if c in seen:answer+=1;seen.clear()\n        seen.add(c)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-237",
+      "sourceContentHash": "16b153be93705531219a1d6908c87f0920bd1831ab81e858ee595679b08e8ff4",
+      "packageChecksum": "16ff6ab4c779412e65ec012d45653a6547468b579cafa57b1692dd1541c87ff3",
+      "editorial": "## 思路\n\n值排序为b，记录原位置pos；输出所有满足pos[b[i−1]]>pos[b[i]]的b[i]，按升序。\n\n## 正确性证明\n\n两个排序相邻值u<v若原位置逆序，只有阈值u<x≤v能改变两者相对位置；x必须存在，所以必须选择v。相邻值之间不需要阈值的连续值块，其原相对次序已正确。把全部必要阈值升序各执行一次，块间排序而块内保持，足以完成。该集合是任何解的子集，因此操作数最少，升序又是其字典序最小排列。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));pos={v:i for i,v in enumerate(a)};b=sorted(a);answer=[b[i] for i in range(1,len(b)) if pos[b[i-1]]>pos[b[i]]]\n    return ' '.join(map(str,answer)) if answer else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-239",
+      "sourceContentHash": "253e8ff3bc1d42a7d7475ced8e9a33b87af12c0477eedfb5072725bd25f633bc",
+      "packageChecksum": "cd07179d41cac8bdb083cc78f8ed3968227a3ac4ce5de0c2e74113cdc3c1fbc0",
+      "editorial": "## 思路\n\n预处理每个前缀是否相邻合法。从右向左枚举首次改动位置，尝试更大的最小合法字符，再用a或b贪心填最小后缀。\n\n## 正确性证明\n\n任何严格更大结果都有唯一首次不同位置，其保留前缀必须合法；该位置越靠右，结果越小。同位置选最小可用增大字符，此后逐位选不同于前一位的最小字母即可完成。遍历顺序精确按可能最优的优先级，首个结果就是答案。\n\n## 复杂度\n\n时间O(26n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];n=len(s);valid=bytearray(n+1);valid[0]=valid[1]=1\n    for i in range(1,n):valid[i+1]=valid[i] and s[i]!=s[i-1]\n    for i in range(n-1,-1,-1):\n        if not valid[i]:continue\n        for value in range(ord(s[i])+1,123):\n            c=chr(value)\n            if i and c==s[i-1]:continue\n            out=list(s[:i])+[c]\n            for _ in range(i+1,n):out.append('a' if out[-1]!='a' else 'b')\n            return ''.join(out)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-240",
+      "sourceContentHash": "b5145f01727a7e1a99acfab7cf89f9e3a2004006d8bc010ea9b595edd71dd097",
+      "packageChecksum": "478cc2f26ab7ca172ebee4bee8fc9d218a908026af1f66b4c3fb8a7253c7e33f",
+      "editorial": "## 思路\n\n滑动窗口维护每种值频率，超过k种则缩左端；每个右端贡献窗口长度。\n\n## 正确性证明\n\n固定右端时，最左合法起点到右端之间的所有起点都合法，更早起点不合法。窗口右移只能令最早合法起点不向左，因此双指针找到该边界，贡献right−left+1恰好按右端不重不漏统计。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));freq={};left=answer=0\n    for right,v in enumerate(a):\n        freq[v]=freq.get(v,0)+1\n        while len(freq)>k:\n            old=a[left];freq[old]-=1;left+=1\n            if not freq[old]:del freq[old]\n        answer+=right-left+1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-241",
+      "sourceContentHash": "0add0706518b12545ffb7cfd2735eb6333512962aa62e8fa13a5d95fa6fc7fb9",
+      "packageChecksum": "11593e972eb574c5768c556c3b1e225880de181902713e9a683aa687e9238ef2",
+      "editorial": "## 思路\n\n保存ID频次和总和，r改v时将c=count[r]迁移，total+=(v−r)*c，输出更新后总和。\n\n## 正确性证明\n\n频次精确描述全部服务器，操作只影响原ID为r的c台，每台贡献改变v−r。把这c个身份迁移到v，其他频次不变，归纳得到每天状态及总和。r=v时直接保持状态。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from collections import Counter\n    n=int(d[0]);a=list(map(int,d[1:1+n]));old=list(map(int,d[1+n:1+2*n]));new=list(map(int,d[1+2*n:]));freq=Counter(a);total=sum(a);out=[]\n    for r,v in zip(old,new):\n        if r!=v:\n            count=freq.pop(r,0);total+=(v-r)*count;freq[v]+=count\n        out.append(str(total))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-242",
+      "sourceContentHash": "9cb445e777d82ffb9d13f4f492252890db1bbb0387ea312c29ac1fad76e5c96a",
+      "packageChecksum": "0f943fa067202c76c870e5134c2048df5db88319bb3b915dc4123b642c60fcb4",
+      "editorial": "## 思路\n\n技能排序，每班从最小未分配者开始，吸收所有不超过其技能加maxSpread者。\n\n## 正确性证明\n\n最小未分配技能v所在班不能含超过v+maxSpread的人。把此区间内其他学生全部移到该班不会破坏班内约束，也不会增加其他班数，所以存在最优方案使用贪心第一班。递归处理剩余学生得到最少班数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));answer=0;start=None\n    for v in a:\n        if start is None or v-start>k:answer+=1;start=v\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-243",
+      "sourceContentHash": "7ec3a9a0a737f12c7d8a17608497baa07dabfb17c143662847d5b955e89f1c88",
+      "packageChecksum": "cee558b799150e5097fa1bd95b94bfced50d47dbc8c79b6e001401268aeae16a",
+      "editorial": "## 思路\n\n先按原下标求两组技能差，再排序差值，双指针统计两数和严格大于0的无序下标对。\n\n## 正确性证明\n\n原不等式等价于d[i]+d[j]>0。排序仅重排这些完整差值，不改变下标对计数。若最小与最大之和>0，最大与中间所有数也都成功，贡献right−left后移走最大；否则最小不能配当前及更小最大值，可移走最小。两分支不重不漏。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=sorted(x-y for x,y in zip(a,b));left=0;right=n-1;answer=0\n    while left<right:\n        if delta[left]+delta[right]>0:answer+=right-left;right-=1\n        else:left+=1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-244",
+      "sourceContentHash": "f7caeda1f0d901fa54ffd17283843b22a52da5d9871fafb3a75ab4d57de455ea",
+      "packageChecksum": "40067dcbb9c4233d90a58d03794834f0b552f9eac66561c9cc94c772106b5881",
+      "editorial": "## 思路\n\n逆序撤销攻击，将所有位置从坏变好。维护每个良好连续段两端的长度；激活位置时读取左右长度L、R，新增加的全好子串恰为(L+1)(R+1)。当坏子串数从≥m变为<m，撤销前的时间就是答案。\n\n## 正确性证明\n\n每个全好子串只属于一个全好段，坏子串数等于总子串数减全好子串数。激活位置新产生的子串必须经过该位置，左右各有L+1和R+1种延伸选择，所以增量公式精确。左右邻居若良好必为段边界，边界长度可直接合并更新。正向坏子串数单调增加，逆向首次跌破阈值的前一状态正是最早满足时刻。\n\n## 复杂度\n\n时间O(n)，空间O(n)，子串计数用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    from array import array\n    n,m=map(int,d[:2]);order=list(map(int,d[3:]))\n    if m==0:return '1'\n    spans=array('i',[0])*(n+2);bad=n*(n+1)//2\n    for t in range(n,0,-1):\n        p=order[t-1];left=spans[p-1];right=spans[p+1];length=left+right+1\n        spans[p]=1;spans[p-left]=spans[p+right]=length;bad-=(left+1)*(right+1)\n        if bad<m:return str(t)\n    return '1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-245",
+      "sourceContentHash": "008104bbf2a2323f5341879c51be176511cf72ab044b1f9540d9c500d4eca541",
+      "packageChecksum": "3d47f6b61eb860ccc3a05390491586c242da7dd5d9f18f8691c77cfec3aef35d",
+      "editorial": "## 思路\n\n先按原下标求两组技能差，再排序差值，双指针统计两数和严格大于0的无序下标对。\n\n## 正确性证明\n\n原不等式等价于d[i]+d[j]>0。排序仅重排这些完整差值，不改变下标对计数。若最小与最大之和>0，最大与中间所有数也都成功，贡献right−left后移走最大；否则最小不能配当前及更小最大值，可移走最小。两分支不重不漏。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=sorted(x-y for x,y in zip(a,b));left=0;right=n-1;answer=0\n    while left<right:\n        if delta[left]+delta[right]>0:answer+=right-left;right-=1\n        else:left+=1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-246",
+      "sourceContentHash": "c8ab1eb05f0b42ba0e2631de020c89bf34b87560e853fffebe82e34cee9a4dba",
+      "packageChecksum": "a1eeee991624a958315620b3fc335955a24eedba1cfb9fd9aeed64c442088e48",
+      "editorial": "## 思路\n\n数量升序，从左向右累加。每遇当前值大于此前全部值之和，就将候选幸存后缀起点设为当前；最后输出数量不小于该起点值的原下标。\n\n## 正确性证明\n\n若某处前缀总量小于下一数，则前缀任何身份无论先如何合并，都无法击败右边任何任务，因此均不能幸存。最后这样的断点之后，一个候选先吞并比自己小的全部任务，然后按升序吞并更大任务；后续没有断点，当前累计量总足够，等号可选择自己获胜。于是排除的全部不可能、保留的全部可构造。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，累计量用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));b=sorted(a);total=0;threshold=b[0]\n    for v in b:\n        if total<v:threshold=v\n        total+=v\n    return ' '.join(str(i+1) for i,v in enumerate(a) if v>=threshold)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-247",
+      "sourceContentHash": "ec30d99f712a9ec07521a55d9251dc61103bd19e0b2e7acb42a2294e5363fd75",
+      "packageChecksum": "744af1babad828b92f28b968746463e0951cef2635f73e185471297bbe80ca22",
+      "editorial": "## 思路\n\n把字母或点、括号内容解析成原子及是否带*。逐原子DP保存可匹配的查询前缀；无*消耗一次，带*可消耗零次或从同层更短前缀再消耗一次。空()*直接跳过。\n\n## 正确性证明\n\nDP起点仅空前缀可达。无*时每种新前缀唯一来自此前层并匹配一次原子；带*时要么零次继承旧层，要么从同层短一个原子长度的位置继续匹配。按前缀长度递增计算涵盖任意重复次数且没有循环。空原子重复不会改变串，跳过保持语义。最后整个长度可达当且仅当完整匹配。\n\n## 复杂度\n\n时间O(正则长度×总查询长度+q×正则长度)，空间O(最大查询长度+正则长度)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    regex=d[0];words=['' if s=='-' else s for s in d[2:]];atoms=[];i=0\n    while i<len(regex):\n        if regex[i]=='(':\n            end=regex.index(')',i);pat=regex[i+1:end];i=end+1\n        else:pat=regex[i];i+=1\n        star=i<len(regex) and regex[i]=='*'\n        if star:i+=1\n        atoms.append((pat,star))\n    results=[]\n    for word in words:\n        m=len(word);dp=bytearray(m+1);dp[0]=1\n        for pat,star in atoms:\n            if not pat:continue\n            length=len(pat);nxt=bytearray(dp) if star else bytearray(m+1)\n            for end in range(length,m+1):\n                if not (nxt[end-length] if star else dp[end-length]):continue\n                good=True\n                for offset,p in enumerate(pat):\n                    c=word[end-length+offset]\n                    if not(p=='.' or p==c):good=False;break\n                if good:nxt[end]=1\n            dp=nxt\n        results.append('YES' if dp[m] else 'NO')\n    return '\\n'.join(results)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-248",
+      "sourceContentHash": "112cd72c4ac53d00590cad1100e04b6fdbc53f76d262578da65e7edae5d1a659",
+      "packageChecksum": "7eedf929fa2cf95c77af459b9ca26282324959c52296e0c6bc163a035629494f",
+      "editorial": "## 思路\n\n维护全串及切点前缀的26位字符频率奇偶掩码。存在切点使左右奇频字符数都≤2则YES，否则NO。\n\n## 正确性证明\n\n一个多重集能重排回文恰好至多一个奇频字符。删一个奇频字符最多减少一个奇频，因此删至多一次可行恰好原奇频数≤2。两个段独立选择删除与排列，枚举全部非空切点并检查左右条件就穷尽所有方案。\n\n## 复杂度\n\n时间O(n)，辅助空间O(26)不含输入。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];total=0\n    for c in s:total^=1<<(ord(c)-97)\n    left=0\n    for c in s[:-1]:\n        left^=1<<(ord(c)-97)\n        if left.bit_count()<=2 and (total^left).bit_count()<=2:return 'YES'\n    return 'NO'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-249",
+      "sourceContentHash": "6f8c2ce55caeee58bae07c97cd5d94032f72fd8b8eb53f133fb8215488f5bf62",
+      "packageChecksum": "2cdca643560294c86df5879a1491c291796f8bd4806d9df6c1476e25582f2ddb",
+      "editorial": "## 思路\n\n离散化数值，树状数组维护当前窗口每个值的频次。二进制提升找到前缀频次首次达到k的位置；滑动时删除旧元素、加入新元素。\n\n## 正确性证明\n\n树状数组初始恰为第一个窗口频次，每步一次删除加入保持不变式。第k小值的离散坐标就是累计频次首次达到k的坐标，二进制提升找到其前一个累计不足k的最大前缀，因此下一坐标准确。重复元素的频次计入全部身份。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,m,k=map(int,d[:3]);a=list(map(int,d[3:]));values=sorted(set(a));index={v:i+1 for i,v in enumerate(values)};size=len(values);tree=[0]*(size+1)\n    def add(value,delta):\n        i=index[value]\n        while i<=size:tree[i]+=delta;i+=i&-i\n    for v in a[:m]:add(v,1)\n    out=[]\n    for start in range(n-m+1):\n        if start:add(a[start-1],-1);add(a[start+m-1],1)\n        target=k;at=0;step=1<<(size.bit_length()-1)\n        while step:\n            nxt=at+step\n            if nxt<=size and tree[nxt]<target:target-=tree[nxt];at=nxt\n            step//=2\n        out.append(str(values[at]))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-250",
+      "sourceContentHash": "9ab365e99761961eedf30412be1f7c8bb2bd3ae7d4a99636aa70fab09e9d2345",
+      "packageChecksum": "5126811f12038d06ab9e7531a32989fc2fa9755bf52ff743441db51d1bd309fd",
+      "editorial": "## 思路\n\n预处理每个后缀中最大值的最早下标。每轮取该最大值，跳到其下标+k+1继续。\n\n## 正确性证明\n\n可任意丢弃，因此任意后缀位置都能成为下一项，字典序最优必须选最大值。多个相同最大值中最早者选后留下的后缀包含较晚者选后留下的后缀，可通过继续丢弃模拟后者，故最早不劣。下一个后缀最大值不会超过当前最大值，自动满足非增。逐项归纳最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));best=[0]*n;at=n-1\n    for i in range(n-1,-1,-1):\n        if a[i]>=a[at]:at=i\n        best[i]=at\n    out=[];i=0\n    while i<n:\n        j=best[i];out.append(str(a[j]));i=j+k+1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-252",
+      "sourceContentHash": "cd48450ecffbf8a5517091613e59c802b808f0a376fced008fdeca2ed6023cce",
+      "packageChecksum": "4936b10863dc7fe583577adb1b6ffb6022b338e03dd7fa093a8d5b49ef3f6572",
+      "editorial": "## 思路\n\n记录每字符首次及最后位置，以及是否出现在两个不同的连续同字符段。对出现于多个段的字符c，候选为last[c]−first[c]，取最大，无候选返回−1。\n\n## 正确性证明\n\n若首末c之间不是全c，两窗口s[f:l]与s[f+1:l+1]仅移走和加入一个c，故等频；若内容相同则f..l全部为c，矛盾，得到候选下界。反之任一合法A=s[i:i+L],B=s[j:j+L]且i<j，等频相减得s[i:j]与s[i+L:j+L]等频。令c=s[i]，右块必有c在q≥i+L，因此其全局首末距离≥L。A不可能单色，否则B等频就与A相同；c的首末区间包含A，故该c跨不同段，属于候选。所有合法长度都不超过最大候选，下界达到即最优。\n\n## 复杂度\n\n时间O(n)，辅助空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0];first={};last={};first_run={};last_run={};run=0;previous=None\n    for i,c in enumerate(s):\n        if c!=previous:run+=1;previous=c\n        if c not in first:first[c]=i;first_run[c]=run\n        last[c]=i;last_run[c]=run\n    answer=max([-1]+[last[c]-first[c] for c in first if first_run[c]!=last_run[c]])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-253",
+      "sourceContentHash": "0d11ac3296838eeffdf6d4a28ab0c6837f3a9c8bd60156b143550cd27437eaf2",
+      "packageChecksum": "43dda09f0aece1b121dd0188c8be712da93c1f1eb8b3efaea0cf41a8d379335b",
+      "editorial": "## 思路\n\n从右向左将值加入集合；首次遇到已见值的位置i，必须删除到它为止，答案i+1；一直无重复则0。\n\n## 正确性证明\n\n第一次从右遇重复时，i+1..末尾已互异，可以保留。任何起点≤i的后缀都包含a[i]和它后面同值位置，必不合法，所以必须至少删除i+1项。这达到最少次数。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));seen=set()\n    for i in range(len(a)-1,-1,-1):\n        if a[i] in seen:return str(i+1)\n        seen.add(a[i])\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-254",
+      "sourceContentHash": "08f5b40be351432ec2c275cc0fa2dee350c10e9aed7e0a2d3d8377e0544bc0b3",
+      "packageChecksum": "40da33ddbbf32d3dd3f4c1fae136a88c7fa67ef8e216fcd448f193d74ea78b94",
+      "editorial": "## 思路\n\n按原尺寸排序扫描可用坐标，堆里放已到达原尺寸的商品，每次优先固定单位成本最高者；堆空时跳到下个原尺寸。\n\n## 正确性证明\n\n若某坐标可放商品而不放，提前一个未来可放商品只会省费。若当前放低成本而高成本可放者稍后才放，交换两者仍不小于其原尺寸，费用变化为间隔乘低成本减高成本，不增。因此存在每步都与贪心一致的最优分配。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，最终费用用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    import heapq\n    n=int(d[0]);a=list(map(int,d[1:1+n]));costs=list(map(int,d[1+n:]));items=sorted(zip(a,costs));heap=[];i=0;pos=0;answer=0\n    while i<n or heap:\n        if not heap:pos=max(pos,items[i][0])\n        while i<n and items[i][0]<=pos:\n            start,cost=items[i];heapq.heappush(heap,(-cost,start,cost));i+=1\n        _,start,cost=heapq.heappop(heap);answer+=(pos-start)*cost;pos+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-255",
+      "sourceContentHash": "af2c1a71953f27f1b1f4a83b28ad4ae80a5019471c246583c97dcfe82c29e523",
+      "packageChecksum": "fd03d2e1eb567ce839d343bdc84d2516502ca6253cd35d25021e964bc55a559f",
+      "editorial": "## 思路\n\n统计不同正值的数量，0不计。\n\n## 正确性证明\n\n一次操作对全部正值同时减同一个量，原来不同的正值之间差不变，最多只能把当前最小的一种正值消成0。因此需要至少不同正值种数次。每次取当前最小正值恰消去一种，达到下界。\n\n## 复杂度\n\n时间O(n)，空间O(101)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    a=list(map(int,d[1:]));return str(len({v for v in a if v>0}))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

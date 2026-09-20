@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误放宽为三种奇频",
+    "code": "def solve(d):\n    s=d[0];total=0\n    for c in s:total^=1<<(ord(c)-97)\n    left=0\n    for c in s[:-1]:\n        left^=1<<(ord(c)-97)\n        if left.bit_count()<=3 and (total^left).bit_count()<=3:return 'YES'\n    return 'NO'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误禁止删除字符",
+    "code": "def solve(d):\n    s=d[0];total=0\n    for c in s:total^=1<<(ord(c)-97)\n    left=0\n    for c in s[:-1]:\n        left^=1<<(ord(c)-97)\n        if left.bit_count()<=1 and (total^left).bit_count()<=1:return 'YES'\n    return 'NO'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

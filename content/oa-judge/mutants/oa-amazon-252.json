@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误接受相同内容",
+    "code": "def solve(d):\n    s=d[0];first={};last={};first_run={};last_run={};run=0;previous=None\n    for i,c in enumerate(s):\n        if c!=previous:run+=1;previous=c\n        if c not in first:first[c]=i;first_run[c]=run\n        last[c]=i;last_run[c]=run\n    answer=max([-1]+[last[c]-first[c] for c in first if True])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误禁止子串重叠",
+    "code": "def solve(d):\n    s=d[0];first={};last={};first_run={};last_run={};run=0;previous=None\n    for i,c in enumerate(s):\n        if c!=previous:run+=1;previous=c\n        if c not in first:first[c]=i;first_run[c]=run\n        last[c]=i;last_run[c]=run\n    answer=max([-1]+[last[c]-first[c] for c in first if first_run[c]!=last_run[c]])\n    return str(min(answer,len(s)//2))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

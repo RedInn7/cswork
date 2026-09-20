@@ -1,0 +1,10 @@
+[
+  {
+    "name": "起始已满足返回0",
+    "code": "def solve(d):\n    from array import array\n    n,m=map(int,d[:2]);order=list(map(int,d[3:]))\n    if m==0:return '0'\n    spans=array('i',[0])*(n+2);bad=n*(n+1)//2\n    for t in range(n,0,-1):\n        p=order[t-1];left=spans[p-1];right=spans[p+1];length=left+right+1\n        spans[p]=1;spans[p-left]=spans[p+right]=length;bad-=(left+1)*(right+1)\n        if bad<m:return str(t)\n    return '1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "阈值误用严格超过",
+    "code": "def solve(d):\n    from array import array\n    n,m=map(int,d[:2]);order=list(map(int,d[3:]))\n    if m==0:return '1'\n    spans=array('i',[0])*(n+2);bad=n*(n+1)//2\n    for t in range(n,0,-1):\n        p=order[t-1];left=spans[p-1];right=spans[p+1];length=left+right+1\n        spans[p]=1;spans[p-left]=spans[p+right]=length;bad-=(left+1)*(right+1)\n        if bad<=m:return str(t)\n    return '1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

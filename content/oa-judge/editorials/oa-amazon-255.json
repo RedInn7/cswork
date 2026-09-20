@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-255",
+  "title": "统一减去合法正数的最少归零次数",
+  "explanation": "## 思路\n\n统计不同正值的数量，0不计。\n\n## 正确性证明\n\n一次操作对全部正值同时减同一个量，原来不同的正值之间差不变，最多只能把当前最小的一种正值消成0。因此需要至少不同正值种数次。每次取当前最小正值恰消去一种，达到下界。\n\n## 复杂度\n\n时间O(n)，空间O(101)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));return str(len({v for v in a if v>0}))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#255-make-array-zero-by-subtracting-equal-amounts-lc-2375-",
+  "sourceContentHash": "af2c1a71953f27f1b1f4a83b28ad4ae80a5019471c246583c97dcfe82c29e523",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-250",
+  "title": "取一件跳k件后的字典序最大非增数组",
+  "explanation": "## 思路\n\n预处理每个后缀中最大值的最早下标。每轮取该最大值，跳到其下标+k+1继续。\n\n## 正确性证明\n\n可任意丢弃，因此任意后缀位置都能成为下一项，字典序最优必须选最大值。多个相同最大值中最早者选后留下的后缀包含较晚者选后留下的后缀，可通过继续丢弃模拟后者，故最早不劣。下一个后缀最大值不会超过当前最大值，自动满足非增。逐项归纳最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));best=[0]*n;at=n-1\n    for i in range(n-1,-1,-1):\n        if a[i]>=a[at]:at=i\n        best[i]=at\n    out=[];i=0\n    while i<n:\n        j=best[i];out.append(str(a[j]));i=j+k+1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#250-lexicographically-maximal-resulting-array",
+  "sourceContentHash": "9ab365e99761961eedf30412be1f7c8bb2bd3ae7d4a99636aa70fab09e9d2345",
+  "author": "CSWork"
+}

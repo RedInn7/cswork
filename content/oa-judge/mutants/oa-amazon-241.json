@@ -1,0 +1,10 @@
+[
+  {
+    "name": "一次只替换一台",
+    "code": "def solve(d):\n    from collections import Counter\n    n=int(d[0]);a=list(map(int,d[1:1+n]));old=list(map(int,d[1+n:1+2*n]));new=list(map(int,d[1+2*n:]));freq=Counter(a);total=sum(a);out=[]\n    for r,v in zip(old,new):\n        if r!=v:\n            count=min(1,freq.pop(r,0));total+=(v-r)*count;freq[v]+=count\n        out.append(str(total))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "把原新ID服务器重复加算",
+    "code": "def solve(d):\n    from collections import Counter\n    n=int(d[0]);a=list(map(int,d[1:1+n]));old=list(map(int,d[1+n:1+2*n]));new=list(map(int,d[1+2*n:]));freq=Counter(a);total=sum(a);out=[]\n    for r,v in zip(old,new):\n        if r!=v:\n            count=freq.pop(r,0);total+=(v-r)*count+v*freq[v];freq[v]+=count\n        out.append(str(total))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

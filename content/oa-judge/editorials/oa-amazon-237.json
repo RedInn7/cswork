@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-237",
+  "title": "最少稳定阈值划分的字典序最小操作序列",
+  "explanation": "## 思路\n\n值排序为b，记录原位置pos；输出所有满足pos[b[i−1]]>pos[b[i]]的b[i]，按升序。\n\n## 正确性证明\n\n两个排序相邻值u<v若原位置逆序，只有阈值u<x≤v能改变两者相对位置；x必须存在，所以必须选择v。相邻值之间不需要阈值的连续值块，其原相对次序已正确。把全部必要阈值升序各执行一次，块间排序而块内保持，足以完成。该集合是任何解的子集，因此操作数最少，升序又是其字典序最小排列。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));pos={v:i for i,v in enumerate(a)};b=sorted(a);answer=[b[i] for i in range(1,len(b)) if pos[b[i-1]]>pos[b[i]]]\n    return ' '.join(map(str,answer)) if answer else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#237-get-operations",
+  "sourceContentHash": "16b153be93705531219a1d6908c87f0920bd1831ab81e858ee595679b08e8ff4",
+  "author": "CSWork"
+}

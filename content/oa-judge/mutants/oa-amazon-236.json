@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误取最大字符频率",
+    "code": "def solve(d):\n    s=d[0];seen=set();answer=1\n    for c in s:\n        if c in seen:answer+=1;seen.clear()\n        seen.add(c)\n    return str(max(s.count(c) for c in set(s)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "不开新段的空集合",
+    "code": "def solve(d):\n    s=d[0];seen=set();answer=1\n    for c in s:\n        if c in seen:answer+=1;None\n        seen.add(c)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

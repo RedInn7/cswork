@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许刚好等于技能差",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));answer=0;start=None\n    for v in a:\n        if start is None or v-start>=k:answer+=1;start=v\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只检查相邻技能差",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));answer=0;start=None\n    for v in a:\n        if start is None or v-start>k:answer+=1;start=v\n    return str(1+sum(y-x>k for x,y in zip(a,a[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

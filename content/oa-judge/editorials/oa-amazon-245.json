@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-245",
+  "title": "同下标双人对的第一组获胜场数（另一来源）",
+  "explanation": "## 思路\n\n先按原下标求两组技能差，再排序差值，双指针统计两数和严格大于0的无序下标对。\n\n## 正确性证明\n\n原不等式等价于d[i]+d[j]>0。排序仅重排这些完整差值，不改变下标对计数。若最小与最大之和>0，最大与中间所有数也都成功，贡献right−left后移走最大；否则最小不能配当前及更小最大值，可移走最小。两分支不重不漏。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:]));delta=sorted(x-y for x,y in zip(a,b));left=0;right=n-1;answer=0\n    while left<right:\n        if delta[left]+delta[right]>0:answer+=right-left;right-=1\n        else:left+=1\n    return str(answer%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#245-how-many-games-did-the-first-team-win",
+  "sourceContentHash": "008104bbf2a2323f5341879c51be176511cf72ab044b1f9540d9c500d4eca541",
+  "author": "CSWork"
+}
