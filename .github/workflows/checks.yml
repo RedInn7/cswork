@@ -74,6 +74,7 @@ jobs:
       - run: python3 tests/import-ling-library.test.py
       - run: npm run test:editor
       - run: npm run test:request-lifecycle
+      - run: node --test tests/tailwind-source-boundary.test.mjs
       - run: python3 tests/deploy-nginx.test.py
       - run: bash -n deploy/install.sh deploy/app-only-release.sh
       - run: npm run build
