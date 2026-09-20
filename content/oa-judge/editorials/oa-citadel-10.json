@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-10",
+  "title": "所有有序包对的校验和",
+  "explanation": "## 思路\n\n利用对称性算2倍Σ(i mod j)。固定j，n=qj+r时完整余数周期贡献q·j(j−1)/2，剩余贡献r(r+1)/2。\n\n## 正确性证明\n\n1..n的余数序列恰有q个完整0..j−1周期及0..r尾段，两项等差和精确；将除数j全枚举得到第一项总和，交换i/j使第二项总和相同，因此乘2并取模。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    n=int(raw);total=0;mod=1000000007\n    for j in range(1,n+1):\n        q,r=divmod(n,j);total=(total+q*j*(j-1)//2+r*(r+1)//2)%mod\n    return str(2*total%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#10-checksum-aggregation",
+  "sourceContentHash": "882649ee817d9090146f463a7f8ce201cb2a13a25d4236dbe48ecb2b6a58aa35",
+  "author": "CSWork"
+}

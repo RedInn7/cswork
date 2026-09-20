@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把原有连续段数当答案",
+    "code": "def solve(d):\n    import json\n    s=json.loads(''.join(d));n=len(s)\n    if not n:return '0'\n    dp=[[0]*n for _ in range(n)]\n    for l in range(n-1,-1,-1):\n        dp[l][l]=1\n        for r in range(l+1,n):\n            best=1+dp[l+1][r]\n            for k in range(l+1,r+1):\n                if s[l]==s[k]:best=min(best,(dp[l+1][k-1] if k>l+1 else 0)+dp[k][r])\n            dp[l][r]=best\n    return str(1+sum(a!=b for a,b in zip(s,s[1:])))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误同次合并仍额外收费",
+    "code": "def solve(d):\n    import json\n    s=json.loads(''.join(d));n=len(s)\n    if not n:return '0'\n    dp=[[0]*n for _ in range(n)]\n    for l in range(n-1,-1,-1):\n        dp[l][l]=1\n        for r in range(l+1,n):\n            best=1+dp[l+1][r]\n            for k in range(l+1,r+1):\n                if s[l]==s[k]:best=min(best,1+(dp[l+1][k-1] if k>l+1 else 0)+dp[k][r])\n            dp[l][r]=best\n    return str(dp[0][n-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

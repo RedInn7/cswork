@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-328",
+  "title": "处理队首并清除所有到期项后的队列长度",
+  "explanation": "## 思路\n\n将索引按期限排序，alive数组标记尚在队列，head只向前寻找未删队首。每秒先删head，再从期限排序指针批量删wait≤t的尚存项。\n\n## 正确性证明\n\nalive精确表示前面所有处理/过期动作后尚在队列的项；原相对顺序不变，故最小存活索引就是队首。期限排序指针恰找出本秒所有新到期项，已被处理者用alive排除避免重复减数。两指针从不后退，每项最多处理删除一次、到期检查一次，输出数量即规定时刻的真实队长。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，输出长度≤n。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    wait=list(map(int,d[1:]));n=len(wait);order=sorted(range(n),key=wait.__getitem__);alive=bytearray([1])*n;head=at=time=0;remaining=n;out=[]\n    while remaining:\n        while not alive[head]:head+=1\n        alive[head]=0;remaining-=1\n        while at<n and wait[order[at]]<=time:\n            i=order[at];at+=1\n            if alive[i]:alive[i]=0;remaining-=1\n        out.append(str(remaining));time+=1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#328-process-queue",
+  "sourceContentHash": "ce3c007c330cd8db3d0421f9e316339a520befa318c529fd213c7dd5f61f70ef",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-3",
+  "title": "长度5的二进制回文子序列数",
+  "explanation": "## 思路\n\n回文形如abcba，一共8种。分别用倒序更新的子序列DP统计每个固定模式，再求和。\n\n## 正确性证明\n\n固定模式的dp[j]表示已扫描前缀中匹配模式前j位的下标方案数。遇字符相同时增加dp[j−1]，倒序更新避免同一位用两次。每个长度5回文恰属于唯一abcba模式，8种计数相加无重无漏。\n\n## 复杂度\n\n时间O(40n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from itertools import product\ndef solve(raw):\n    s=raw.strip();mod=1000000007;answer=0\n    for a,b,c in product('01',repeat=3):\n        pattern=a+b+c+b+a;dp=[1,0,0,0,0,0]\n        for ch in s:\n            for j in range(5,0,-1):\n                if ch==pattern[j-1]:dp[j]=(dp[j]+dp[j-1])%mod\n        answer=(answer+dp[5])%mod\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#3-palindromic-binary-subsequences-length-5",
+  "sourceContentHash": "988f67f2448c75c9c95468553c7bc7684c5e32188705f86ca8855ee71527d3a2",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-323",
+  "title": "最多划分多少个兼有元音辅音的密码片段",
+  "explanation": "## 思路\n\n从左扫描，当前段集齐元音和辅音就结束该段并重新计数。最后不够组成合法段的尾部并入最后一个合法段，不增加段数。\n\n## 正确性证明\n\n任意合法第一段必须至少延伸到首次集齐两类字符的位置。把最优切分的第一段缩到这个最早位置，只会把额外字符移给下一段，不破坏下一段合法性，所以总段数不减少；反复交换得贪心切点。最终尾段可并到前段且保持两类齐全；若从未形成合法段，则整体也不合法，答案0。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    vowel=consonant=False;answer=0\n    for c in d[0]:\n        if c in 'aeiou':vowel=True\n        else:consonant=True\n        if vowel and consonant:answer+=1;vowel=consonant=False\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#323-find-password-strength",
+  "sourceContentHash": "a3cb831d63d3dd2ef94a12150d86aad9b0077d528b360cc8f4a9acc87172a372",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-324",
+  "title": "按入队顺序每次发送三件包裹",
+  "explanation": "## 思路\n\n双端队列存所有未发货ID；INSERT追加，SHIP检查长度后取前三个或返回N/A。\n\n## 正确性证明\n\n循环不变量为队列恰按初次进入顺序存放所有尚未成功发送的包裹。追加保持次序；成功发送取前三个精确实现最早一组；不足时不改变队列，故未来仍能使用这些包裹。每次SHIP恰输出一项，不多不少。\n\n## 复杂度\n\n时间O(q+输入输出字符数)，空间O(q+输出字符数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    from collections import deque\n    queries=json.loads(''.join(d));queue=deque();out=[]\n    for op,value in queries:\n        if op=='INSERT':queue.append(value)\n        elif len(queue)<3:out.append(['N/A'])\n        else:out.append([queue.popleft(),queue.popleft(),queue.popleft()])\n    return json.dumps(out,ensure_ascii=True,separators=(',',':')).replace(' ','\\\\u0020')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#324-perform-queries",
+  "sourceContentHash": "d85fd2feec8a8977b3b68ba314afce42a47a37b9decc7fe74474b3cad6ab0df5",
+  "author": "CSWork"
+}

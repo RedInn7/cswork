@@ -1,0 +1,10 @@
+[
+  {
+    "name": "正序更新复用同一字符",
+    "code": "from itertools import product\ndef solve(raw):\n    s=raw.strip();mod=1000000007;answer=0\n    for a,b,c in product('01',repeat=3):\n        pattern=a+b+c+b+a;dp=[1,0,0,0,0,0]\n        for ch in s:\n            for j in range(1,6):\n                if ch==pattern[j-1]:dp[j]=(dp[j]+dp[j-1])%mod\n        answer=(answer+dp[5])%mod\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉首位为1的模式",
+    "code": "from itertools import product\ndef solve(raw):\n    s=raw.strip();mod=1000000007;answer=0\n    for a,b,c in product('0','01','01'):\n        pattern=a+b+c+b+a;dp=[1,0,0,0,0,0]\n        for ch in s:\n            for j in range(5,0,-1):\n                if ch==pattern[j-1]:dp[j]=(dp[j]+dp[j-1])%mod\n        answer=(answer+dp[5])%mod\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

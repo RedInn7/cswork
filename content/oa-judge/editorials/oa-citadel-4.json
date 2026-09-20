@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-4",
+  "title": "不同回文子串的数量",
+  "explanation": "## 思路\n\n建立回文树，两特殊根长度−1和0；每加入字符，沿最长回文后缀的失败链接找可扩展节点，建立新回文及失败链接。\n\n## 正确性证明\n\n每个回文由删除首尾字符后的较短回文与外侧字符唯一确定，边代表这种扩展。追加字符产生的新回文若存在，必是新的最长回文后缀；其余回文后缀此前出现过，因此每次至多新建一个节点。失败链找出所有候选后缀，节点与不同非空回文一一对应，减去两根就是答案。\n\n## 复杂度\n\n时间O(n·字典转移成本)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();length=[-1,0];link=[0,0];edge=[{},{}];last=1\n    for i,c in enumerate(s):\n        p=last\n        while i-1-length[p]<0 or s[i-1-length[p]]!=c:p=link[p]\n        if c not in edge[p]:\n            node=len(length);length.append(length[p]+2);link.append(1);edge.append({});edge[p][c]=node\n            if length[node]>1:\n                q=link[p]\n                while i-1-length[q]<0 or s[i-1-length[q]]!=c:q=link[q]\n                link[node]=edge[q][c]\n        last=edge[p][c]\n    return str(len(length)-2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#4-count-distinct-palindromic-substrings",
+  "sourceContentHash": "fe28edcb4dacc69ae3a6f60e5b48a5b37e7a6ca8abe45953de71c50ddf361037",
+  "author": "CSWork"
+}

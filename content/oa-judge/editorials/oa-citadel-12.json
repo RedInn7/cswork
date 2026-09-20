@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-12",
+  "title": "端点等于内部总和的稳定子段",
+  "explanation": "## 思路\n\n前缀P[i]为前i项和。扫右端r，将l≤r−2按(a[l],P[l+1]+a[l])计数，查询(a[r],P[r])。\n\n## 正确性证明\n\n稳定条件等价于a[l]=a[r]且P[r]−P[l+1]=a[l]，移项正是相同二元组键。仅插入l≤r−2确保长度至少3，哈希次数保留所有不同左端，每段在自身右端恰计一次。\n\n## 复杂度\n\n时间O(n)，空间O(n)，前缀和使用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    counts={};answer=0\n    for r in range(len(a)):\n        l=r-2\n        if l>=0:\n            key=(a[l],prefix[l+1]+a[l]);counts[key]=counts.get(key,0)+1\n        answer+=counts.get((a[r],prefix[r]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#12-count-stable-segments",
+  "sourceContentHash": "4c81a0a25c163a00aa51f199b326304b91a5cd29c3baf64beab1d41180360b33",
+  "author": "CSWork"
+}

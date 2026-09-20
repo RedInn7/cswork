@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-317",
+  "title": "设备容量内的全部最优前后台应用对",
+  "explanation": "## 思路\n\n后台按内存分组并排序。第一遍对每个前台二分能配的最大后台内存，求最优和；第二遍取恰好达到该和的所有后台ID，枚举全部pair并按两ID字典序排序。\n\n## 正确性证明\n\n固定前台时最优后台必是容量允许的最大内存，否则可换成更大而改善总和；枚举前台得到全局最优。达到该总和时后台内存被唯一确定，但该内存下每个ID都对应不同合法答案，全部枚举恰好覆盖最优对。排序只规范输出，不丢失任何结果。\n\n## 复杂度\n\n时间O((n+m)log m+K log K)，空间O(n+m+K)，K最多nm=250000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    from bisect import bisect_right\n    cap,n,m=map(int,d[:3]);fg=[(int(d[3+2*i]),int(d[4+2*i])) for i in range(n)];groups={};at=3+2*n\n    for j in range(m):\n        identifier,memory=map(int,d[at+2*j:at+2*j+2]);groups.setdefault(memory,[]).append(identifier)\n    memories=sorted(groups);best=-1\n    for identifier,memory in fg:\n        p=bisect_right(memories,cap-memory)-1\n        if p>=0:best=max(best,memory+memories[p])\n    answer=[]\n    for identifier,memory in fg:\n        for other in groups.get(best-memory,[]):answer.append([identifier,other])\n    answer.sort();return json.dumps(answer if answer else [[]],separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#317-optimal-utilization",
+  "sourceContentHash": "64cf0dd7a82e5f7e77b1d4ec2f43989da9c420a11e6e1eaeaa5fe7eb89b2b564",
+  "author": "CSWork"
+}

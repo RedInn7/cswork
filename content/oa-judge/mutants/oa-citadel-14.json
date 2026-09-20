@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许0填0",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];za=a.count(0);zb=b.count(0);sa=sum(a);sb=sum(b);target=max(sa,sb)\n    if (not za and sa!=target) or (not zb and sb!=target):return '-1'\n    return str(target)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略固定行限制",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];za=a.count(0);zb=b.count(0);sa=sum(a)+za;sb=sum(b)+zb;target=max(sa,sb)\n    if False:return '-1'\n    return str(target)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误不查重复配置值",
+    "code": "def solve(d):\n    import json\n    s=d[0] if d else '';parts=s.split('|');n=len(parts);out=[None]*n;values=set();digits=set('0123456789');letters=set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')\n    for part in parts:\n        if len(part)<5 or not set(part[:4])<=digits or not set(part[4:])<=letters:return '[\"Invalid configuration\"]'\n        index=int(part[:4]);value=part[4:]\n        if not 1<=index<=n or out[index-1] is not None or False:return '[\"Invalid configuration\"]'\n        out[index-1]=value;values.add(value)\n    return json.dumps(out,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误不按序号返回",
+    "code": "def solve(d):\n    import json\n    s=d[0] if d else '';parts=s.split('|');n=len(parts);out=[None]*n;values=set();digits=set('0123456789');letters=set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')\n    for part in parts:\n        if len(part)<5 or not set(part[:4])<=digits or not set(part[4:])<=letters:return '[\"Invalid configuration\"]'\n        index=int(part[:4]);value=part[4:]\n        if not 1<=index<=n or out[index-1] is not None or value in values:return '[\"Invalid configuration\"]'\n        out[index-1]=value;values.add(value)\n    return json.dumps([p[4:] for p in parts],separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

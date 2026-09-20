@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-331",
+  "title": "子序列升序操作能否实现通配二进制目标",
+  "explanation": "## 思路\n\n目标总0数必须等于原串。先扣掉固定0，把所需的0尽量放在最早的?，其余?填1；若数量不足/超额则NO。再检查目标每个前缀的1数均不超过原前缀，全部成立才YES。\n\n## 正确性证明\n\n对子序列升序只能将1右移、0左移，故保持总数并不增加任何前缀1数。反过来，前缀条件等价于目标的每个0位置不晚于相应原0，可通过相邻10→01逐个向左移0实现。固定总数时最早?填0使所有前缀1数同时最小，若仍超界则其他替换也不可能，若满足就构成可达见证。\n\n## 复杂度\n\n时间O(L+Lq)，空间O(L+q)不计输入字符。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    length,count=map(int,d[:2]);source=d[2];zeros=source.count('0');prefix=[];ones=0\n    for c in source:ones+=c=='1';prefix.append(ones)\n    answers=[]\n    for query in d[3:]:\n        need=zeros-query.count('0');available=query.count('?')\n        if not 0<=need<=available:answers.append('NO');continue\n        total=0;valid=True\n        for i,c in enumerate(query):\n            if c=='?':\n                c='0' if need else '1'\n                if c=='0':need-=1\n            total+=c=='1'\n            if total>prefix[i]:valid=False;break\n        answers.append('YES' if valid else 'NO')\n    return ' '.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#331-can-rearrange-binary-string",
+  "sourceContentHash": "6627d1e0ad52e89f950534f1338574e424956bfe9c985cb952ab3d462041c918",
+  "author": "CSWork"
+}

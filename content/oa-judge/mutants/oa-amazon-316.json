@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误共用端点仍产生间隙",
+    "code": "def solve(d):\n    values=list(map(int,d[1:]));a=sorted(zip(values[::2],values[1::2]));end=a[0][1];answer=None\n    for l,r in a[1:]:\n        if l<end:end=max(end,r)\n        else:\n            gap=l-end;answer=gap if answer is None else min(answer,gap);end=r\n    return '-1' if answer is None else str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误取最大间隙",
+    "code": "def solve(d):\n    values=list(map(int,d[1:]));a=sorted(zip(values[::2],values[1::2]));end=a[0][1];answer=None\n    for l,r in a[1:]:\n        if l<=end:end=max(end,r)\n        else:\n            gap=l-end;answer=gap if answer is None else max(answer,gap);end=r\n    return '-1' if answer is None else str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

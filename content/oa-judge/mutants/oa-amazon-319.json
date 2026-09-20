@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误禁止只保留一个字符",
+    "code": "def solve(d):\n    s=d[0];last=-1;keep=len(s)\n    for j,c in enumerate(s):\n        if c==s[0]:last=j\n        if c==s[-1] and last>=0:keep=min(keep,max(2,j-last+1))\n    return str(len(s)-keep)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误只允许删后缀而不删前缀",
+    "code": "def solve(d):\n    s=d[0];last=-1;keep=len(s)\n    for j,c in enumerate(s):\n        if j==0:last=j\n        if c==s[-1] and last>=0:keep=min(keep,j-last+1)\n    return str(len(s)-keep)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

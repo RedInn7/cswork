@@ -1,0 +1,10 @@
+[
+  {
+    "name": "并列取字典序大者",
+    "code": "def solve(raw):\n    text,prefix,suffix=raw.split();best=(-1,'')\n    for l in range(len(text)):\n        for r in range(l+1,len(text)+1):\n            part=text[l:r];a=b=0\n            for k in range(1,min(len(part),len(prefix))+1):\n                if part.startswith(prefix[-k:]):a=k\n            for k in range(1,min(len(part),len(suffix))+1):\n                if part.endswith(suffix[:k]):b=k\n            score=a+b\n            if score>best[0] or (score==best[0] and part>best[1]):best=(score,part)\n    return best[1]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略后缀分",
+    "code": "def solve(raw):\n    text,prefix,suffix=raw.split();best=(-1,'')\n    for l in range(len(text)):\n        for r in range(l+1,len(text)+1):\n            part=text[l:r];a=b=0\n            for k in range(1,min(len(part),len(prefix))+1):\n                if part.startswith(prefix[-k:]):a=k\n            for k in range(1,min(len(part),len(suffix))+1):\n                if part.endswith(suffix[:k]):b=k\n            score=a\n            if score>best[0] or (score==best[0] and part<best[1]):best=(score,part)\n    return best[1]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

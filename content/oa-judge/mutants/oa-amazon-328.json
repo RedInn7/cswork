@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误超时条件用严格小于",
+    "code": "def solve(d):\n    wait=list(map(int,d[1:]));n=len(wait);order=sorted(range(n),key=wait.__getitem__);alive=bytearray([1])*n;head=at=time=0;remaining=n;out=[]\n    while remaining:\n        while not alive[head]:head+=1\n        alive[head]=0;remaining-=1\n        while at<n and wait[order[at]]<time:\n            i=order[at];at+=1\n            if alive[i]:alive[i]=0;remaining-=1\n        out.append(str(remaining));time+=1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误从时间1而非0开始",
+    "code": "def solve(d):\n    wait=list(map(int,d[1:]));n=len(wait);order=sorted(range(n),key=wait.__getitem__);alive=bytearray([1])*n;head=at=0;time=1;remaining=n;out=[]\n    while remaining:\n        while not alive[head]:head+=1\n        alive[head]=0;remaining-=1\n        while at<n and wait[order[at]]<=time:\n            i=order[at];at+=1\n            if alive[i]:alive[i]=0;remaining-=1\n        out.append(str(remaining));time+=1\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

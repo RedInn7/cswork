@@ -1,0 +1,10 @@
+[
+  {
+    "name": "扩容次数漏减初始一份",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,budget=d[:2];a=d[2:2+n];cost=d[2+n:];low=min(a);high=min(v*(budget//c+1) for v,c in zip(a,cost))\n    while low<high:\n        target=(low+high+1)//2;spent=0\n        for v,c in zip(a,cost):\n            spent+=max(0,(target+v-1)//v)*c\n            if spent>budget:break\n        if spent<=budget:low=target\n        else:high=target-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "边界预算误拒绝",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,budget=d[:2];a=d[2:2+n];cost=d[2+n:];low=min(a);high=min(v*(budget//c+1) for v,c in zip(a,cost))\n    while low<high:\n        target=(low+high+1)//2;spent=0\n        for v,c in zip(a,cost):\n            spent+=max(0,(target+v-1)//v-1)*c\n            if spent>budget:break\n        if spent<budget:low=target\n        else:high=target-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

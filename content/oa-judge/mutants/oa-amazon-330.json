@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把2价机器也按1收费",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    n,target=map(int,d[:2]);power=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));groups=[[],[],[]]\n    if target<=0:return '0'\n    for p,c in zip(power,cost):\n        if p>0:groups[c].append(p)\n    one=sorted(groups[1],reverse=True);two=sorted(groups[2],reverse=True);prefix=[0]\n    for p in two:prefix.append(prefix[-1]+p)\n    supplied=0;best=10**30\n    for i in range(len(one)+1):\n        j=bisect_left(prefix,max(0,target-supplied))\n        if j<len(prefix):best=min(best,i+j)\n        if i<len(one):supplied+=one[i]\n    return str(best) if best<10**30 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误用功率最小机器作前缀",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    n,target=map(int,d[:2]);power=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));groups=[[],[],[]]\n    if target<=0:return '0'\n    for p,c in zip(power,cost):\n        if p>0:groups[c].append(p)\n    one=sorted(groups[1],reverse=False);two=sorted(groups[2],reverse=False);prefix=[0]\n    for p in two:prefix.append(prefix[-1]+p)\n    supplied=0;best=10**30\n    for i in range(len(one)+1):\n        j=bisect_left(prefix,max(0,target-supplied))\n        if j<len(prefix):best=min(best,i+2*j)\n        if i<len(one):supplied+=one[i]\n    return str(best) if best<10**30 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

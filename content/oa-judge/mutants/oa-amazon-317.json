@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误同内存只保留一个后台",
+    "code": "def solve(d):\n    import json\n    from bisect import bisect_right\n    cap,n,m=map(int,d[:3]);fg=[(int(d[3+2*i]),int(d[4+2*i])) for i in range(n)];groups={};at=3+2*n\n    for j in range(m):\n        identifier,memory=map(int,d[at+2*j:at+2*j+2]);groups.setdefault(memory,[]).append(identifier)\n    memories=sorted(groups);best=-1\n    for identifier,memory in fg:\n        p=bisect_right(memories,cap-memory)-1\n        if p>=0:best=max(best,memory+memories[p])\n    answer=[]\n    for identifier,memory in fg:\n        for other in groups.get(best-memory,[])[:1]:answer.append([identifier,other])\n    answer.sort();return json.dumps(answer if answer else [[]],separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误拒绝刚好满容量的对",
+    "code": "def solve(d):\n    import json\n    from bisect import bisect_right\n    cap,n,m=map(int,d[:3]);fg=[(int(d[3+2*i]),int(d[4+2*i])) for i in range(n)];groups={};at=3+2*n\n    for j in range(m):\n        identifier,memory=map(int,d[at+2*j:at+2*j+2]);groups.setdefault(memory,[]).append(identifier)\n    memories=sorted(groups);best=-1\n    for identifier,memory in fg:\n        p=bisect_right(memories,cap-memory-1)-1\n        if p>=0:best=max(best,memory+memories[p])\n    answer=[]\n    for identifier,memory in fg:\n        for other in groups.get(best-memory,[]):answer.append([identifier,other])\n    answer.sort();return json.dumps(answer if answer else [[]],separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

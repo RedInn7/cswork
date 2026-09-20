@@ -1,0 +1,654 @@
+[
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"B\"],[\"SHIP\",\"-\"],[\"INSERT\",\"C\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"A\",\"B\",\"C\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"a\\u0020\\u0020b\",\"\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"X\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"\",\"\\ud83d\\ude00\",\"N/A\"],[\"\",\"\\ud83d\\ude00\",\"N/A\"],[\"\",\"a\\u0020\\u0020b\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"a\"],[\"A\",\"N/A\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"\\ud83d\\ude00\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"x\\ty\",\"A\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"N/A\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"\",\"N/A\"],[\"N/A\"],[\"\",\"a\\u0020\\u0020b\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\\ud83d\\ude00\",\"N/A\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\",\"A\"],[\"\\ud83d\\ude00\",\"A\",\"a\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"a\\u0020\\u0020b\",\"\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"N/A\"],[\"a\",\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"x\\ty\",\"\\ud83d\\ude00\",\"x\\ty\"],[\"x\\ty\",\"a\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\\u0020\\u0020b\",\"a\",\"\\ud83d\\ude00\"],[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"A\",\"a\\u0020\\u0020b\",\"x\\ty\"],[\"N/A\",\"x\\ty\",\"\\ud83d\\ude00\"],[\"A\",\"x\\ty\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\",\"a\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"x\\ty\",\"x\\ty\",\"\"],[\"a\\u0020\\u0020b\",\"a\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"x\\ty\",\"A\",\"a\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"x\\ty\",\"\",\"A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"A\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"N/A\"],[\"A\",\"x\\ty\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"x\\ty\",\"a\\u0020\\u0020b\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\",\"a\",\"\"],[\"N/A\"],[\"x\\ty\",\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\",\"x\\ty\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\",\"a\\u0020\\u0020b\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\",\"A\",\"\"],[\"N/A\"],[\"N/A\"],[\"a\",\"a\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\",\"\\ud83d\\ude00\",\"N/A\"],[\"\",\"\\ud83d\\ude00\",\"x\\ty\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"A\",\"N/A\",\"a\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"A\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\\u0020\\u0020b\",\"\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"N/A\",\"\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"N/A\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\",\"a\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\",\"x\\ty\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\",\"a\",\"A\"],[\"N/A\"],[\"N/A\",\"N/A\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"A\",\"\",\"N/A\"],[\"a\",\"A\",\"N/A\"],[\"\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"\",\"a\",\"a\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"\",\"a\",\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"N/A\",\"a\\u0020\\u0020b\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"A\",\"N/A\"],[\"a\\u0020\\u0020b\",\"\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"x\\ty\",\"N/A\",\"\"],[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"\",\"\"],[\"N/A\"],[\"N/A\"],[\"a\",\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\",\"N/A\",\"\\ud83d\\ude00\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"a\",\"\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\",\"N/A\",\"\\ud83d\\ude00\"],[\"\\ud83d\\ude00\",\"\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"\",\"N/A\"],[\"x\\ty\",\"\\ud83d\\ude00\",\"N/A\"],[\"N/A\",\"\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"],[\"\",\"a\\u0020\\u0020b\",\"A\"],[\"\",\"A\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"A\",\"N/A\",\"\\ud83d\\ude00\"],[\"x\\ty\",\"a\\u0020\\u0020b\",\"\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"x\\ty\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"A\",\"a\\u0020\\u0020b\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"\",\"A\",\"\\ud83d\\ude00\"],[\"\",\"\",\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"A\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"],[\"A\",\"N/A\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"\",\"x\\ty\"],[\"N/A\"],[\"N/A\"],[\"A\",\"N/A\",\"\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"a\",\"\\ud83d\\ude00\"],[\"N/A\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\",\"\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"\",\"N/A\",\"x\\ty\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"N/A\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"N/A\"],[\"\",\"x\\ty\",\"\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"\",\"\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"\",\"a\\u0020\\u0020b\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"A\",\"N/A\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\\u0020\\u0020b\",\"A\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"a\",\"a\\u0020\\u0020b\",\"A\"],[\"\",\"A\",\"x\\ty\"],[\"N/A\",\"A\",\"x\\ty\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"x\\ty\",\"\",\"\"],[\"N/A\"],[\"A\",\"A\",\"\\ud83d\\ude00\"],[\"a\",\"x\\ty\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"a\\u0020\\u0020b\",\"\\ud83d\\ude00\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\",\"a\",\"a\"],[\"N/A\"],[\"\",\"\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\",\"\\ud83d\\ude00\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"A\",\"N/A\",\"a\\u0020\\u0020b\"],[\"x\\ty\",\"x\\ty\",\"a\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\",\"N/A\",\"a\\u0020\\u0020b\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\",\"N/A\",\"a\"],[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"\\ud83d\\ude00\",\"N/A\",\"\"],[\"\\ud83d\\ude00\",\"\\ud83d\\ude00\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"a\\u0020\\u0020b\",\"a\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"N/A\"],[\"a\",\"N/A\",\"N/A\"],[\"A\",\"\\ud83d\\ude00\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\",\"a\",\"\\ud83d\\ude00\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\",\"a\",\"\\ud83d\\ude00\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"a\",\"x\\ty\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"\\ud83d\\ude00\",\"N/A\",\"\"],[\"a\",\"N/A\",\"a\\u0020\\u0020b\"],[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"x\\ty\",\"N/A\"],[\"N/A\"],[\"A\",\"A\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"x\\ty\",\"\\ud83d\\ude00\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"A\",\"a\\u0020\\u0020b\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\",\"\\ud83d\\ude00\",\"a\"],[\"a\",\"N/A\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\\u0020\\u0020b\",\"A\",\"\\ud83d\\ude00\"],[\"a\",\"a\\u0020\\u0020b\",\"\\ud83d\\ude00\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\",\"x\\ty\",\"A\"],[\"a\\u0020\\u0020b\",\"a\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"A\",\"A\",\"A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"A\",\"\\ud83d\\ude00\",\"a\"],[\"N/A\"],[\"a\",\"a\",\"a\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"A\",\"N/A\",\"x\\ty\"],[\"x\\ty\",\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"\\ud83d\\ude00\",\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"\\ud83d\\ude00\",\"N/A\",\"\\ud83d\\ude00\"],[\"\",\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\"],[\"a\",\"a\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"a\",\"a\\u0020\\u0020b\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\",\"a\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"a\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"\\ud83d\\ude00\",\"x\\ty\",\"a\"],[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"a\\u0020\\u0020b\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"a\",\"\\ud83d\\ude00\"],[\"N/A\",\"A\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"],[\"INSERT\",\"x\\ty\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"A\",\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"\",\"a\\u0020\\u0020b\",\"a\\u0020\\u0020b\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"x\\ty\",\"a\",\"a\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\",\"a\\u0020\\u0020b\",\"A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\\u0020\\u0020b\",\"x\\ty\",\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"x\\ty\",\"\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"a\",\"\\ud83d\\ude00\",\"a\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"A\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"],[\"INSERT\",\"N/A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"A\"],[\"INSERT\",\"A\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"]]\n",
+    "expectedOutput": "[[\"A\",\"x\\ty\",\"\\ud83d\\ude00\"],[\"A\",\"N/A\",\"a\"],[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"x\\ty\",\"A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"a\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"a\\u0020\\u0020b\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"],[\"INSERT\",\"N/A\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"a\\u0020\\u0020b\",\"x\\ty\",\"\\ud83d\\ude00\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"A\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\\u0020\\u0020b\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"a\",\"\",\"a\"],[\"N/A\"],[\"\\ud83d\\ude00\",\"x\\ty\",\"x\\ty\"],[\"A\",\"a\\u0020\\u0020b\",\"\\ud83d\\ude00\"]]\n"
+  },
+  {
+    "input": "[[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"SHIP\",\"-\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"SHIP\",\"-\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"a\"]]\n",
+    "expectedOutput": "[[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"],[\"N/A\"]]\n"
+  },
+  {
+    "input": "[[\"INSERT\",\"\"],[\"SHIP\",\"-\"],[\"INSERT\",\"a\"],[\"INSERT\",\"x\\ty\"],[\"INSERT\",\"\\ud83d\\ude00\"],[\"INSERT\",\"A\"]]\n",
+    "expectedOutput": "[[\"N/A\"]]\n"
+  }
+]

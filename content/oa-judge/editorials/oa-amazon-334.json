@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-334",
+  "title": "前缀降温后缀降温与整体升温的最少操作",
+  "explanation": "## 思路\n\nP为相邻下降量总和，Q为相邻上升量总和。先消除各内部差至少需P个对应前缀降温及Q个对应后缀降温，之后全部温度为a[0]−P；答案P+Q+abs(a[0]−P)。\n\n## 正确性证明\n\n内部差d[i]=a[i]−a[i−1]只能被在i−1结束的前缀减1增加，或从i开始的后缀减1减少。负差必须至少用−d[i]个前缀操作、正差至少d[i]个后缀操作，共P+Q。执行后数组常数为c=a[0]−P，再用|c|个整体升/降操作即可。额外内部操作必须在某边界成对，增加2z次且把常数再减z，总代价≥P+Q+2z+|c−z|≥P+Q+|c|，故构造达到全局下界。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)不含读取，结果64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));fall=rise=0\n    for x,y in zip(a,a[1:]):\n        if y<x:fall+=x-y\n        else:rise+=y-x\n    return str(fall+rise+abs(a[0]-fall))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#334-regulate-temperatures",
+  "sourceContentHash": "9f29a8a1111672d16ebd6dd1f9b813ff62369df1ebbbbda7dfaec6cb3c7b6d17",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误合并全部正子链",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];parent=d[1:n+1];values=d[n+1:];children=[[] for _ in range(n)]\n    for i in range(1,n):children[parent[i]].append(i)\n    order=[0]\n    for u in order:order.extend(children[u])\n    best=values[:]\n    for u in reversed(order):best[u]=values[u]+sum(max(0,best[v]) for v in children[u])\n    return str(max(best))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "允许空路径",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];parent=d[1:n+1];values=d[n+1:];children=[[] for _ in range(n)]\n    for i in range(1,n):children[parent[i]].append(i)\n    order=[0]\n    for u in order:order.extend(children[u])\n    best=values[:]\n    for u in reversed(order):best[u]=values[u]+max([0]+[best[v] for v in children[u]])\n    return str(max(0,max(best)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

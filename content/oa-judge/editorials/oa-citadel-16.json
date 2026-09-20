@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-16",
+  "title": "预算内扩容串联服务的最大吞吐",
+  "explanation": "## 思路\n\n二分目标T，每服务最少扩容max(0,ceil(T/a)−1)次，按成本求和判断是否超预算。上界是所有单服务独占预算时吞吐的最小值。\n\n## 正确性证明\n\n要使瓶颈不低于T，每项都须达到T，所需最少扩容次数由不等式a(1+x)≥T直接得到。服务独立，所以最小成本是各项之和；在预算内当且仅当目标可行。成本随T单调，上界不低于任一可行目标，二分取得最大可行值。\n\n## 复杂度\n\n时间O(n log上界)，空间O(n)；超过预算时提前停止。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,budget=d[:2];a=d[2:2+n];cost=d[2+n:];low=min(a);high=min(v*(budget//c+1) for v,c in zip(a,cost))\n    while low<high:\n        target=(low+high+1)//2;spent=0\n        for v,c in zip(a,cost):\n            spent+=max(0,(target+v-1)//v-1)*c\n            if spent>budget:break\n        if spent<=budget:low=target\n        else:high=target-1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#16-get-max-throughput",
+  "sourceContentHash": "2697fa519ada2312bb308101124524cd56d6ce41ce9fa213bf33b3ddcd9ca931",
+  "author": "CSWork"
+}

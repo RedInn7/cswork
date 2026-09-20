@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-326",
+  "title": "每个处理器范围内进程数量及总功耗",
+  "explanation": "## 思路\n\npower排序，建立packed无符号64位前缀和。每个闭范围用lower_bound(min)、upper_bound(max)获得下标[l,r)，数量r−l，总和prefix[r]−prefix[l]。读取后释放功耗字符串引用，不保存多份嵌套结果。\n\n## 正确性证明\n\n排序后的范围内元素恰在第一个≥min与第一个>max之间，包含所有重复值且两端闭合。位置数给出进程数，前缀差精确累加这些元素。处理器查询不修改任何进程，独立计算正确；64位容纳最大总和120000000000000。\n\n## 复杂度\n\n时间O(n log n+m log n)，空间O(n+m)，前缀仅8(n+1)字节；输出最多约4.8MB，配置8MiB。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from array import array\n    from bisect import bisect_left,bisect_right\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));d[2:2+n]=[None]*n;a.sort();prefix=array('Q',[0]);total=0\n    for v in a:total+=v;prefix.append(total)\n    out=[];at=2+n\n    for _ in range(m):\n        low=int(d[at]);high=int(d[at+1]);at+=2;l=bisect_left(a,low);r=bisect_right(a,high)\n        out.append(str(r-l)+' '+str(prefix[r]-prefix[l]))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#326-process-execution",
+  "sourceContentHash": "ea1b0938209b4687b5ab1a180660ef6d35cdc509da2407588b374099e9cd84c4",
+  "author": "CSWork"
+}

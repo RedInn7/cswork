@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只核对总数不核对前缀",
+    "code": "def solve(d):\n    length,count=map(int,d[:2]);source=d[2];zeros=source.count('0');prefix=[];ones=0\n    for c in source:ones+=c=='1';prefix.append(ones)\n    answers=[]\n    for query in d[3:]:\n        need=zeros-query.count('0');available=query.count('?')\n        if not 0<=need<=available:answers.append('NO');continue\n        total=0;valid=True\n        for i,c in enumerate(query):\n            if c=='?':\n                c='0' if need else '1'\n                if c=='0':need-=1\n            total+=c=='1'\n            if False:valid=False;break\n        answers.append('YES' if valid else 'NO')\n    return ' '.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误前缀条件方向写反",
+    "code": "def solve(d):\n    length,count=map(int,d[:2]);source=d[2];zeros=source.count('0');prefix=[];ones=0\n    for c in source:ones+=c=='1';prefix.append(ones)\n    answers=[]\n    for query in d[3:]:\n        need=zeros-query.count('0');available=query.count('?')\n        if not 0<=need<=available:answers.append('NO');continue\n        total=0;valid=True\n        for i,c in enumerate(query):\n            if c=='?':\n                c='0' if need else '1'\n                if c=='0':need-=1\n            total+=c=='1'\n            if total<prefix[i]:valid=False;break\n        answers.append('YES' if valid else 'NO')\n    return ' '.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

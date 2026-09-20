@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-330",
+  "title": "价格仅为一或二时购足服务器能力的最低成本",
+  "explanation": "## 思路\n\ntarget≤0直接0。否则丢弃非正功率，按价格分组，各组功率降序并作前缀和。枚举1价组选取个数，用二分找2价组满足剩余需求的最少个数，取总价最小。\n\n## 正确性证明\n\n价格均正，移除非正功率机器只减成本且不降低可达目标，所以最优不选它们。固定每组选择数量时，选择该组功率最大的若干台是支配其他选择的最优方式。枚举第一组数量后，第二组正前缀和严格增加，二分获得最少台数就是该第一组数量下最低价；再取全局最小穷尽全部可行组合。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，功率和64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left\n    n,target=map(int,d[:2]);power=list(map(int,d[2:2+n]));cost=list(map(int,d[2+n:]));groups=[[],[],[]]\n    if target<=0:return '0'\n    for p,c in zip(power,cost):\n        if p>0:groups[c].append(p)\n    one=sorted(groups[1],reverse=True);two=sorted(groups[2],reverse=True);prefix=[0]\n    for p in two:prefix.append(prefix[-1]+p)\n    supplied=0;best=10**30\n    for i in range(len(one)+1):\n        j=bisect_left(prefix,max(0,target-supplied))\n        if j<len(prefix):best=min(best,i+2*j)\n        if i<len(one):supplied+=one[i]\n    return str(best) if best<10**30 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#330-minimum-cost-to-purchase-servers",
+  "sourceContentHash": "47dbf2b3dce0d9075105adbe0dede04da3ff8e1254583d9469f821ce13d89b3a",
+  "author": "CSWork"
+}

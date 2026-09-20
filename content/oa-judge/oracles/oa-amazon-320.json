@@ -1,0 +1,654 @@
+[
+  {
+    "input": "0002BB|0001AA\n",
+    "expectedOutput": "[\"AA\",\"BB\"]\n"
+  },
+  {
+    "input": "0001A|0002A\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002B|0002C\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0006V6|0001V1|0003V3|0002V2|0004V4|0005V5|0007V7\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V3|0003V3|0002V2|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006V3|0003V3|0005V5|0002V2|0004V4|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V3|0002V2|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1|0003V3|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\"]\n"
+  },
+  {
+    "input": "0000V6|0004V4|0005V5|0002V2|0001V1|0007V7|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003!|0002V2|0001V1|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V3|0001V1|0005V5|0004V4|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V2|0001V1|0003V3\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\"]\n"
+  },
+  {
+    "input": "0001|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002|0007V7|0006V6|0004V4|0003V3|0005V5|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V3|0005V5|0001V1|0002V2|0004V4|0006V6\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\",\"V6\"]\n"
+  },
+  {
+    "input": "0005V1|0001V1|0006V6|0004V4|0002V2|0008V8|0007V7|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V7|0007V7|0001V1|0005V5|0002V2|0006V6|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0001V1|0004V4|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V4|0003V3|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V6|0006V6|0005V5|0004V4|0007V7|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V2|0001V1|0004V4|0003V3|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\"]\n"
+  },
+  {
+    "input": "0004|0002V2|0001V1|0005V5|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V3|0004V4|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V3|0002V2|0007V7|0004V4|0006V6|0008V8|0001V1|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V1|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006!|0002V2|0005V5|0004V4|0003V3|0001V1|0007V7\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0002V2|0003V3|0006V6|0001V1|0004V4|0007V7\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1\n",
+    "expectedOutput": "[\"V1\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0001V1|0004V4|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V2|0002V2|0004V4|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V1|0003V3|0002V2|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0003V3|0002V2|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1\n",
+    "expectedOutput": "[\"V1\"]\n"
+  },
+  {
+    "input": "0004V1|0004V4|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0004V4|0005V5|0006V6|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V3|0004V4|0006V6|0002V2|0005V5|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005V5|0003V3|0002V2|0004V4|0001V1\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\"]\n"
+  },
+  {
+    "input": "0001\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1\n",
+    "expectedOutput": "[\"V1\"]\n"
+  },
+  {
+    "input": "A001x|0002V2|0001V1|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V5|0003V3|0002V2|0006V6|0007V7|0001V1|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002|0007V7|0001V1|0004V4|0005V5|0003V3|0006V6\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0002V2|0008V8|0005V5|0007V7|0004V4|0003V3|0006V6\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006|0001V1|0005V5|0003V3|0004V4|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001|0004V4|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V4|0003V3|0001V1|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\"]\n"
+  },
+  {
+    "input": "0001V1\n",
+    "expectedOutput": "[\"V1\"]\n"
+  },
+  {
+    "input": "A001x|0006V6|0001V1|0003V3|0004V4|0007V7|0005V5|0008V8\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004!|0001V1|0002V2|0005V5|0006V6|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0001V1|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V3|0003V3|0002V2|0001V1|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004|0001V1|0008V8|0002V2|0003V3|0006V6|0007V7|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0007V5|0005V5|0001V1|0006V6|0008V8|0002V2|0004V4|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0004V4|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1|0004V4|0002V2|0005V5|0003V3\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\"]\n"
+  },
+  {
+    "input": "0000V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V3|0003V3|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0005V5|0003V3|0006V6|0007V7|0002V2|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0002V2|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V5|0005V5|0007V7|0001V1|0003V3|0006V6|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V2|0003V3|0001V1|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005V5|0003V3|0007V7|0004V4|0001V1|0002V2|0006V6\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\",\"V6\",\"V7\"]\n"
+  },
+  {
+    "input": "0004|0003V3|0001V1|0005V5|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1|0003V3|0002V2|0004V4\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\"]\n"
+  },
+  {
+    "input": "0002V6|0006V6|0003V3|0001V1|0005V5|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V3|0005V5|0004V4|0006V6|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0001V1|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V4|0002V2|0006V6|0005V5|0007V7|0001V1|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0008V4|0004V4|0003V3|0007V7|0006V6|0001V1|0005V5|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003|0002V2|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V3|0004V4|0002V2|0005V5|0001V1\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\"]\n"
+  },
+  {
+    "input": "0006|0005V5|0004V4|0002V2|0003V3|0001V1|0007V7\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003V2|0003V3|0005V5|0004V4|0007V7|0006V6|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003!|0001V1|0002V2|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\"]\n"
+  },
+  {
+    "input": "0001!|0006V6|0002V2|0007V7|0003V3|0004V4|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0001V1|0004V4|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0007V7|0002V2|0006V6|0004V4|0001V1|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0007!|0005V5|0003V3|0001V1|0004V4|0002V2|0006V6|0008V8\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002!|0004V4|0003V3|0001V1|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0007V8|0007V7|0003V3|0006V6|0001V1|0004V4|0002V2|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0002V2|0001V1|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V3|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0004V4|0001V1|0003V3|0005V5|0007V7|0006V6\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0005V5|0007V7|0002V2|0004V4|0003V3|0006V6\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V1|0004V4|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0007V6|0007V7|0005V5|0001V1|0002V2|0003V3|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V3|0003V3|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0001V1|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V1|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005V5|0001V1|0004V4|0002V2|0003V3\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\"]\n"
+  },
+  {
+    "input": "0005V7|0005V5|0003V3|0006V6|0002V2|0004V4|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V1|0002V2|0004V4|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0008V7|0007V7|0006V6|0004V4|0003V3|0001V1|0002V2|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V2|0003V3|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1\n",
+    "expectedOutput": "[\"V1\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0006V6|0008V8|0007V7|0002V2|0004V4|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V2|0005V5|0006V6|0003V3|0001V1|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005V2|0002V2|0003V3|0004V4|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002|0003V3|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006|0003V3|0007V7|0001V1|0002V2|0004V4|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V1|0002V2|0004V4|0006V6|0007V7|0003V3|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0004V4|0002V2|0001V1|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V2|0004V4|0001V1|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005V2|0005V5|0006V6|0008V8|0003V3|0007V7|0004V4|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V3|0003V3|0004V4|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V2|0001V1|0004V4|0003V3|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0001V1|0003V3|0002V2|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V1|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005!|0004V4|0006V6|0002V2|0003V3|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V6|0001V1|0005V5|0007V7|0002V2|0003V3|0008V8|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002!|0004V4|0003V3|0006V6|0001V1|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005V1|0001V1|0002V2|0007V7|0003V3|0006V6|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "A001x|0003V3|0004V4|0006V6|0005V5|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002!|0001V1|0005V5|0003V3|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006V2|0006V6|0005V5|0003V3|0004V4|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0003!|0002V2|0001V1|0005V5|0006V6|0007V7|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V5|0005V5|0007V7|0004V4|0006V6|0008V8|0001V1|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V2|0001V1|0003V3|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V3|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V4|0005V5|0003V3|0001V1|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\"]\n"
+  },
+  {
+    "input": "0002!|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006V6|0004V4|0001V1|0007V7|0003V3|0005V5|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\",\"V6\",\"V7\"]\n"
+  },
+  {
+    "input": "A001x\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V5|0005V5|0001V1|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V2|0002V2|0003V3|0005V5|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006V2|0002V2|0003V3|0001V1|0005V5|0004V4\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V1|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\"]\n"
+  },
+  {
+    "input": "0008V7|0007V7|0006V6|0004V4|0005V5|0002V2|0003V3|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V2|0001V1\n",
+    "expectedOutput": "[\"V1\",\"V2\"]\n"
+  },
+  {
+    "input": "0003V3|0004V4|0001V1|0005V5|0002V2\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\"]\n"
+  },
+  {
+    "input": "0001!\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0000V4|0002V2|0003V3|0001V1\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V3|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0006V6|0002V2|0004V4|0007V7|0001V1|0005V5|0008V8|0003V3\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\",\"V6\",\"V7\",\"V8\"]\n"
+  },
+  {
+    "input": "A001x\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0004V3|0004V4|0001V1|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002V2|0001V1|0006V6|0004V4|0003V3|0005V5\n",
+    "expectedOutput": "[\"V1\",\"V2\",\"V3\",\"V4\",\"V5\",\"V6\"]\n"
+  },
+  {
+    "input": "0001!|0003V3|0007V7|0004V4|0006V6|0002V2|0005V5\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005!|0004V4|0001V1|0002V2|0003V3\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0005|0003V3|0002V2|0006V6|0001V1|0004V4|0007V7\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0002!|0005V5|0003V3|0006V6|0004V4|0001V1|0007V7\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001V3|0003V3|0002V2\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  },
+  {
+    "input": "0001!\n",
+    "expectedOutput": "[\"Invalid configuration\"]\n"
+  }
+]

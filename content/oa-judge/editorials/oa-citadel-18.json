@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-18",
+  "title": "最多共同朋友的非好友推荐",
+  "explanation": "## 思路\n\n枚举每人的朋友的朋友统计二跳次数，去掉自己和直接朋友；若没有正分候选，扫描最小不在自己及朋友集合中的ID。\n\n## 正确性证明\n\n每条u−v−w路径唯一对应一个共同朋友v，无重边保证计数等于共同朋友数。所有正分候选都会出现，按分数和ID选择准确；未出现的非朋友共同数是0，仅无正分时才可能最优，直接选择其中最小ID。\n\n## 复杂度\n\n时间O(n·15²)，空间O(n+m)；零分回退至多检查17个ID。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];adj=[set() for _ in range(n)]\n    for a,b in zip(d[2::2],d[3::2]):adj[a].add(b);adj[b].add(a)\n    out=[]\n    for u in range(n):\n        counts={}\n        for v in adj[u]:\n            for w in adj[v]:\n                if w!=u and w not in adj[u]:counts[w]=counts.get(w,0)+1\n        if counts:best=min(counts,key=lambda v:(-counts[v],v))\n        else:\n            best=0\n            while best<n and (best==u or best in adj[u]):best+=1\n            if best==n:best=-1\n        out.append(best)\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#18-social-media-suggestions",
+  "sourceContentHash": "8f8e0c0ee638ecc3d940c6559f24e32d21d5dc14efcb60032b00632b02d215f5",
+  "author": "CSWork"
+}
