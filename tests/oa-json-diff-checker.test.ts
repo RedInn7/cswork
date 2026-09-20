@@ -67,7 +67,7 @@ function check(
   );
   assert.equal(matchesOutput(actual, expected, 'oa-json-diff', input), result);
 }
-test('independent canonical comparison of random JSON trees and shared runtime', () => {
+void test('independent canonical comparison of random JSON trees and shared runtime', () => {
   for (let i = 0; i < 500; i++) {
     const left = Object.fromEntries(
       ['a', 'b', 'c', 'd'].slice(0, random(5)).map((k) => [k, value(4)]),
@@ -103,7 +103,7 @@ test('independent canonical comparison of random JSON trees and shared runtime',
     );
   }
 });
-test('exact decimals, missing/null, boolean/numeric types and Unicode scalar sorting', () => {
+void test('exact decimals, missing/null, boolean/numeric types and Unicode scalar sorting', () => {
   check(
     '[]',
     '[]',
@@ -146,7 +146,7 @@ test('exact decimals, missing/null, boolean/numeric types and Unicode scalar sor
   check('[]', '[]', '{"a":[1,2]}\n{"a":[2,1]}', false);
   check('["a"]', '[]', '{"a":1}\n{"a":2}', false);
 });
-test('reject invalid grammar, duplicate escaped keys, invalid numbers and extra lines', () => {
+void test('reject invalid grammar, duplicate escaped keys, invalid numbers and extra lines', () => {
   for (const source of [
     '{"a":1,"\\u0061":2}',
     '{"a":{"b":1,"b":2}}',
@@ -182,16 +182,16 @@ test('reject invalid grammar, duplicate escaped keys, invalid numbers and extra 
   ])
     check(output, '["a"]', '{"a":0}\n{}', false);
 });
-test('exact input/output budgets and structural boundaries', () => {
+void test('exact input/output budgets and structural boundaries', () => {
   const same = (input: string, accepted: boolean) =>
     assert.equal(jsonDiff('[]', '[]', input), accepted);
   const tree = (depth: number) =>
     '{"a":' + '['.repeat(depth - 1) + '0' + ']'.repeat(depth - 1) + '}';
   same(tree(20) + '\n' + tree(20), true);
   same(tree(21) + '\n' + tree(21), false);
-  const nodes = '{"a":[' + new Array(9998).fill('0').join(',') + ']}';
+  const nodes = '{"a":[' + Array.from({ length: 9998 }, () => '0').join(',') + ']}';
   same(nodes + '\n' + nodes, true);
-  const tooMany = '{"a":[' + new Array(9999).fill('0').join(',') + ']}';
+  const tooMany = '{"a":[' + Array.from({ length: 9999 }, () => '0').join(',') + ']}';
   same(tooMany + '\n' + tooMany, false);
   for (const count of [1000, 1001]) {
     const object = JSON.stringify(
