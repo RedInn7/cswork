@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-airbnb-4",
+  "title": "吃完糖果的最小速度",
+  "explanation": "## 思路\n\n二分速度，用各堆所需时间ceil(a/d)的和判断。\n\n## 正确性证明\n\n固定速度时每堆需要且足够ceil(a/d)个独占时间单位。总耗时随速度单调不增，故二分首次可行速度正确。正数量使最低耗时为n，h<n时无解。\n\n## 复杂度\n\nO(n log max(a))时间、O(n)输入空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];hours=d[-1]\n    if hours<n:return '-1'\n    lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum((v+mid-1)//mid for v in a)<=hours:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/airbnb#4-minimum-eating-speed",
+  "sourceContentHash": "52a3465eea204a47ad34f0d50a4e9d1e73191fa5851042cd5f85134b20d72067",
+  "author": "CSWork"
+}

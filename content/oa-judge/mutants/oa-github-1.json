@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误冲突留下重车",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,u=d[:2];last=None;answer=0\n    for v in d[2:]:\n        if v>u:answer+=1\n        elif last is None or last+v<=u:last=v\n        else:answer+=1;last=max(last,v)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把等于承重也判超载",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,u=d[:2];last=None;answer=0\n    for v in d[2:]:\n        if v>u:answer+=1\n        elif last is None or last+v<u:last=v\n        else:answer+=1;last=min(last,v)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

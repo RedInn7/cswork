@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-samsung-2",
+  "title": "增加步长到达指定坐标",
+  "explanation": "## 思路\n\n固定最终强度k的最少操作为k−1+ceil(a/k)+ceil(b/k)。先在sqrt(a+b)附近找上界，再用二次不等式缩小可能更优的整数k范围。\n\n## 正确性证明\n\n最终强度k需k−1次升级，每坐标至少ceil(坐标/k)步。升级途经各坐标除k的余数时走一次，再于k走商次，就达到下界。令S=a+b、B为已找到可达值，任何不差于B的k满足k−1+S/k≤B，即k²−(B+1)k+S≤0。整数平方根配合外扩端点包含全部可行候选，逐一取最小不会遗漏。\n\n## 复杂度\n\n每组O((a+b)^(1/4))次整数计算、O(1)额外空间；输入输出O(t)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from math import isqrt\n    d=list(map(int,raw.split()));out=[]\n    for i in range(d[0]):\n        a,b=d[1+2*i:3+2*i];s=a+b;r=isqrt(s)\n        def f(k):return k-1+(a+k-1)//k+(b+k-1)//k\n        best=min(f(r),f(r+1));q=isqrt((best+1)**2-4*s)\n        for k in range(max(1,(best+1-q)//2-1),(best+1+q)//2+2):best=min(best,f(k))\n        out.append(str(best))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/samsung#2-reach-the-point",
+  "sourceContentHash": "d386d1cc2124075a3cc5d17ca657d045c1261668c0cee3caaef250e27c89362a",
+  "author": "CSWork"
+}

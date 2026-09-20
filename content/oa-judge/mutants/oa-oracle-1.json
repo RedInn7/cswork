@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误先分别下取整",
+    "code": "def solve(raw):\n    def scaled(s):\n        a,_,b=s.partition('.');return int(a)*100000000+int((b+'00000000')[:8])\n    a,b=map(scaled,raw.split());return str(a//100000000+b//100000000)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误向上取整",
+    "code": "def solve(raw):\n    def scaled(s):\n        a,_,b=s.partition('.');return int(a)*100000000+int((b+'00000000')[:8])\n    a,b=map(scaled,raw.split());return str((a+b+99999999)//100000000)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\n1 49 23\n",
+    "expectedOutput": "I\nXLIX\nXXIII\n"
+  },
+  {
+    "input": "6\n4 9 40 90 400 900\n",
+    "expectedOutput": "IV\nIX\nXL\nXC\nCD\nCM\n"
+  },
+  {
+    "input": "2\n3888 3999\n",
+    "expectedOutput": "MMMDCCCLXXXVIII\nMMMCMXCIX\n"
+  },
+  {
+    "input": "11\n2753 420 2875 2286 2327 1134 2830 3044 2550 3142 954\n",
+    "expectedOutput": "MMDCCLIII\nCDXX\nMMDCCCLXXV\nMMCCLXXXVI\nMMCCCXXVII\nMCXXXIV\nMMDCCCXXX\nMMMXLIV\nMMDL\nMMMCXLII\nCMLIV\n"
+  },
+  {
+    "input": "7\n3223 1223 3094 2669 178 2138 941\n",
+    "expectedOutput": "MMMCCXXIII\nMCCXXIII\nMMMXCIV\nMMDCLXIX\nCLXXVIII\nMMCXXXVIII\nCMXLI\n"
+  },
+  {
+    "input": "9\n3231 1000 508 2974 3417 2935 3652 183 3977\n",
+    "expectedOutput": "MMMCCXXXI\nM\nDVIII\nMMCMLXXIV\nMMMCDXVII\nMMCMXXXV\nMMMDCLII\nCLXXXIII\nMMMCMLXXVII\n"
+  },
+  {
+    "input": "9\n1637 1879 10 170 156 2767 671 1743 3061\n",
+    "expectedOutput": "MDCXXXVII\nMDCCCLXXIX\nX\nCLXX\nCLVI\nMMDCCLXVII\nDCLXXI\nMDCCXLIII\nMMMLXI\n"
+  },
+  {
+    "input": "8\n1166 315 3349 3727 2617 3364 265 767\n",
+    "expectedOutput": "MCLXVI\nCCCXV\nMMMCCCXLIX\nMMMDCCXXVII\nMMDCXVII\nMMMCCCLXIV\nCCLXV\nDCCLXVII\n"
+  },
+  {
+    "input": "6\n921 3843 1229 723 1855 3607\n",
+    "expectedOutput": "CMXXI\nMMMDCCCXLIII\nMCCXXIX\nDCCXXIII\nMDCCCLV\nMMMDCVII\n"
+  },
+  {
+    "input": "3\n476 1723 1780\n",
+    "expectedOutput": "CDLXXVI\nMDCCXXIII\nMDCCLXXX\n"
+  },
+  {
+    "input": "8\n2729 3756 3016 162 3944 537 3097 2897\n",
+    "expectedOutput": "MMDCCXXIX\nMMMDCCLVI\nMMMXVI\nCLXII\nMMMCMXLIV\nDXXXVII\nMMMXCVII\nMMDCCCXCVII\n"
+  },
+  {
+    "input": "3\n2531 3134 3231\n",
+    "expectedOutput": "MMDXXXI\nMMMCXXXIV\nMMMCCXXXI\n"
+  },
+  {
+    "input": "1\n3883\n",
+    "expectedOutput": "MMMDCCCLXXXIII\n"
+  },
+  {
+    "input": "4\n1340 2102 3971 2719\n",
+    "expectedOutput": "MCCCXL\nMMCII\nMMMCMLXXI\nMMDCCXIX\n"
+  },
+  {
+    "input": "3\n3343 3418 1802\n",
+    "expectedOutput": "MMMCCCXLIII\nMMMCDXVIII\nMDCCCII\n"
+  },
+  {
+    "input": "6\n3578 3376 2846 501 694 945\n",
+    "expectedOutput": "MMMDLXXVIII\nMMMCCCLXXVI\nMMDCCCXLVI\nDI\nDCXCIV\nCMXLV\n"
+  },
+  {
+    "input": "9\n803 2939 3385 3254 3261 3142 2199 627 3082\n",
+    "expectedOutput": "DCCCIII\nMMCMXXXIX\nMMMCCCLXXXV\nMMMCCLIV\nMMMCCLXI\nMMMCXLII\nMMCXCIX\nDCXXVII\nMMMLXXXII\n"
+  },
+  {
+    "input": "2\n2040 1677\n",
+    "expectedOutput": "MMXL\nMDCLXXVII\n"
+  },
+  {
+    "input": "1\n1153\n",
+    "expectedOutput": "MCLIII\n"
+  },
+  {
+    "input": "7\n2767 3735 2549 3757 3850 3215 156\n",
+    "expectedOutput": "MMDCCLXVII\nMMMDCCXXXV\nMMDXLIX\nMMMDCCLVII\nMMMDCCCL\nMMMCCXV\nCLVI\n"
+  },
+  {
+    "input": "6\n3077 173 897 2492 2555 3965\n",
+    "expectedOutput": "MMMLXXVII\nCLXXIII\nDCCCXCVII\nMMCDXCII\nMMDLV\nMMMCMLXV\n"
+  },
+  {
+    "input": "9\n2154 3861 2964 870 3290 2260 3300 3266 2866\n",
+    "expectedOutput": "MMCLIV\nMMMDCCCLXI\nMMCMLXIV\nDCCCLXX\nMMMCCXC\nMMCCLX\nMMMCCC\nMMMCCLXVI\nMMDCCCLXVI\n"
+  },
+  {
+    "input": "1\n1702\n",
+    "expectedOutput": "MDCCII\n"
+  },
+  {
+    "input": "11\n3688 2626 99 1155 3486 1866 1671 1265 3218 1550 1546\n",
+    "expectedOutput": "MMMDCLXXXVIII\nMMDCXXVI\nXCIX\nMCLV\nMMMCDLXXXVI\nMDCCCLXVI\nMDCLXXI\nMCCLXV\nMMMCCXVIII\nMDL\nMDXLVI\n"
+  },
+  {
+    "input": "6\n1147 2001 1985 1425 2491 2549\n",
+    "expectedOutput": "MCXLVII\nMMI\nMCMLXXXV\nMCDXXV\nMMCDXCI\nMMDXLIX\n"
+  },
+  {
+    "input": "10\n2172 1203 3992 2827 1748 202 954 2064 3326 2395\n",
+    "expectedOutput": "MMCLXXII\nMCCIII\nMMMCMXCII\nMMDCCCXXVII\nMDCCXLVIII\nCCII\nCMLIV\nMMLXIV\nMMMCCCXXVI\nMMCCCXCV\n"
+  },
+  {
+    "input": "10\n2916 2965 425 2743 3758 3586 552 2594 3842 1630\n",
+    "expectedOutput": "MMCMXVI\nMMCMLXV\nCDXXV\nMMDCCXLIII\nMMMDCCLVIII\nMMMDLXXXVI\nDLII\nMMDXCIV\nMMMDCCCXLII\nMDCXXX\n"
+  },
+  {
+    "input": "4\n152 2978 804 3013\n",
+    "expectedOutput": "CLII\nMMCMLXXVIII\nDCCCIV\nMMMXIII\n"
+  },
+  {
+    "input": "2\n1570 331\n",
+    "expectedOutput": "MDLXX\nCCCXXXI\n"
+  },
+  {
+    "input": "4\n664 1114 2339 239\n",
+    "expectedOutput": "DCLXIV\nMCXIV\nMMCCCXXXIX\nCCXXXIX\n"
+  },
+  {
+    "input": "1\n2170\n",
+    "expectedOutput": "MMCLXX\n"
+  },
+  {
+    "input": "12\n2738 1649 1356 2552 1399 706 2534 2578 1702 329 901 1139\n",
+    "expectedOutput": "MMDCCXXXVIII\nMDCXLIX\nMCCCLVI\nMMDLII\nMCCCXCIX\nDCCVI\nMMDXXXIV\nMMDLXXVIII\nMDCCII\nCCCXXIX\nCMI\nMCXXXIX\n"
+  },
+  {
+    "input": "5\n1765 1474 120 3644 544\n",
+    "expectedOutput": "MDCCLXV\nMCDLXXIV\nCXX\nMMMDCXLIV\nDXLIV\n"
+  },
+  {
+    "input": "2\n3433 1732\n",
+    "expectedOutput": "MMMCDXXXIII\nMDCCXXXII\n"
+  },
+  {
+    "input": "6\n3918 1319 673 2678 2648 67\n",
+    "expectedOutput": "MMMCMXVIII\nMCCCXIX\nDCLXXIII\nMMDCLXXVIII\nMMDCXLVIII\nLXVII\n"
+  },
+  {
+    "input": "5\n2020 854 3455 3564 1027\n",
+    "expectedOutput": "MMXX\nDCCCLIV\nMMMCDLV\nMMMDLXIV\nMXXVII\n"
+  },
+  {
+    "input": "2\n261 3983\n",
+    "expectedOutput": "CCLXI\nMMMCMLXXXIII\n"
+  },
+  {
+    "input": "9\n217 3236 2751 1347 2559 2642 2087 1113 1268\n",
+    "expectedOutput": "CCXVII\nMMMCCXXXVI\nMMDCCLI\nMCCCXLVII\nMMDLIX\nMMDCXLII\nMMLXXXVII\nMCXIII\nMCCLXVIII\n"
+  },
+  {
+    "input": "12\n3981 3795 2238 227 178 3646 3069 770 3421 2607 3011 2030\n",
+    "expectedOutput": "MMMCMLXXXI\nMMMDCCXCV\nMMCCXXXVIII\nCCXXVII\nCLXXVIII\nMMMDCXLVI\nMMMLXIX\nDCCLXX\nMMMCDXXI\nMMDCVII\nMMMXI\nMMXXX\n"
+  },
+  {
+    "input": "3\n2403 1900 3854\n",
+    "expectedOutput": "MMCDIII\nMCM\nMMMDCCCLIV\n"
+  },
+  {
+    "input": "12\n3405 2316 2816 2512 25 3182 744 2572 3068 1887 1652 895\n",
+    "expectedOutput": "MMMCDV\nMMCCCXVI\nMMDCCCXVI\nMMDXII\nXXV\nMMMCLXXXII\nDCCXLIV\nMMDLXXII\nMMMLXVIII\nMDCCCLXXXVII\nMDCLII\nDCCCXCV\n"
+  },
+  {
+    "input": "9\n1539 230 362 1945 992 3945 1011 1366 1764\n",
+    "expectedOutput": "MDXXXIX\nCCXXX\nCCCLXII\nMCMXLV\nCMXCII\nMMMCMXLV\nMXI\nMCCCLXVI\nMDCCLXIV\n"
+  },
+  {
+    "input": "5\n2937 2537 700 3341 2827\n",
+    "expectedOutput": "MMCMXXXVII\nMMDXXXVII\nDCC\nMMMCCCXLI\nMMDCCCXXVII\n"
+  },
+  {
+    "input": "8\n866 475 2875 709 2284 799 3924 1776\n",
+    "expectedOutput": "DCCCLXVI\nCDLXXV\nMMDCCCLXXV\nDCCIX\nMMCCLXXXIV\nDCCXCIX\nMMMCMXXIV\nMDCCLXXVI\n"
+  },
+  {
+    "input": "11\n3824 1382 3331 3710 3218 858 1083 2714 412 548 2892\n",
+    "expectedOutput": "MMMDCCCXXIV\nMCCCLXXXII\nMMMCCCXXXI\nMMMDCCX\nMMMCCXVIII\nDCCCLVIII\nMLXXXIII\nMMDCCXIV\nCDXII\nDXLVIII\nMMDCCCXCII\n"
+  },
+  {
+    "input": "9\n1169 2513 529 3379 2386 3408 2052 2880 368\n",
+    "expectedOutput": "MCLXIX\nMMDXIII\nDXXIX\nMMMCCCLXXIX\nMMCCCLXXXVI\nMMMCDVIII\nMMLII\nMMDCCCLXXX\nCCCLXVIII\n"
+  },
+  {
+    "input": "7\n3717 3535 3332 347 3895 2026 2100\n",
+    "expectedOutput": "MMMDCCXVII\nMMMDXXXV\nMMMCCCXXXII\nCCCXLVII\nMMMDCCCXCV\nMMXXVI\nMMC\n"
+  },
+  {
+    "input": "11\n2470 3761 1393 3203 149 819 650 181 1232 792 3769\n",
+    "expectedOutput": "MMCDLXX\nMMMDCCLXI\nMCCCXCIII\nMMMCCIII\nCXLIX\nDCCCXIX\nDCL\nCLXXXI\nMCCXXXII\nDCCXCII\nMMMDCCLXIX\n"
+  },
+  {
+    "input": "11\n1243 2223 3230 2011 3317 2950 480 1224 3049 1654 3884\n",
+    "expectedOutput": "MCCXLIII\nMMCCXXIII\nMMMCCXXX\nMMXI\nMMMCCCXVII\nMMCML\nCDLXXX\nMCCXXIV\nMMMXLIX\nMDCLIV\nMMMDCCCLXXXIV\n"
+  },
+  {
+    "input": "3\n3797 1374 158\n",
+    "expectedOutput": "MMMDCCXCVII\nMCCCLXXIV\nCLVIII\n"
+  },
+  {
+    "input": "12\n1737 1896 3893 980 2988 3341 3179 391 2165 190 2913 644\n",
+    "expectedOutput": "MDCCXXXVII\nMDCCCXCVI\nMMMDCCCXCIII\nCMLXXX\nMMCMLXXXVIII\nMMMCCCXLI\nMMMCLXXIX\nCCCXCI\nMMCLXV\nCXC\nMMCMXIII\nDCXLIV\n"
+  },
+  {
+    "input": "6\n972 2033 3703 190 2443 1523\n",
+    "expectedOutput": "CMLXXII\nMMXXXIII\nMMMDCCIII\nCXC\nMMCDXLIII\nMDXXIII\n"
+  },
+  {
+    "input": "11\n3275 2596 1969 1250 2130 3503 1050 213 1773 676 1908\n",
+    "expectedOutput": "MMMCCLXXV\nMMDXCVI\nMCMLXIX\nMCCL\nMMCXXX\nMMMDIII\nML\nCCXIII\nMDCCLXXIII\nDCLXXVI\nMCMVIII\n"
+  },
+  {
+    "input": "10\n2189 2757 153 3416 2005 1972 1585 3493 3806 847\n",
+    "expectedOutput": "MMCLXXXIX\nMMDCCLVII\nCLIII\nMMMCDXVI\nMMV\nMCMLXXII\nMDLXXXV\nMMMCDXCIII\nMMMDCCCVI\nDCCCXLVII\n"
+  },
+  {
+    "input": "3\n2009 2765 3860\n",
+    "expectedOutput": "MMIX\nMMDCCLXV\nMMMDCCCLX\n"
+  },
+  {
+    "input": "4\n3500 375 151 2039\n",
+    "expectedOutput": "MMMD\nCCCLXXV\nCLI\nMMXXXIX\n"
+  },
+  {
+    "input": "6\n510 1195 3950 3445 900 1827\n",
+    "expectedOutput": "DX\nMCXCV\nMMMCML\nMMMCDXLV\nCM\nMDCCCXXVII\n"
+  },
+  {
+    "input": "1\n1020\n",
+    "expectedOutput": "MXX\n"
+  },
+  {
+    "input": "4\n69 2503 922 3646\n",
+    "expectedOutput": "LXIX\nMMDIII\nCMXXII\nMMMDCXLVI\n"
+  },
+  {
+    "input": "1\n1012\n",
+    "expectedOutput": "MXII\n"
+  },
+  {
+    "input": "12\n418 1810 3758 437 1121 684 428 929 769 729 3944 352\n",
+    "expectedOutput": "CDXVIII\nMDCCCX\nMMMDCCLVIII\nCDXXXVII\nMCXXI\nDCLXXXIV\nCDXXVIII\nCMXXIX\nDCCLXIX\nDCCXXIX\nMMMCMXLIV\nCCCLII\n"
+  },
+  {
+    "input": "11\n1430 224 857 3045 1519 1178 2374 2393 1759 1647 3530\n",
+    "expectedOutput": "MCDXXX\nCCXXIV\nDCCCLVII\nMMMXLV\nMDXIX\nMCLXXVIII\nMMCCCLXXIV\nMMCCCXCIII\nMDCCLIX\nMDCXLVII\nMMMDXXX\n"
+  },
+  {
+    "input": "2\n3009 3915\n",
+    "expectedOutput": "MMMIX\nMMMCMXV\n"
+  },
+  {
+    "input": "10\n354 2951 3338 1798 3655 1363 1296 3618 1444 3821\n",
+    "expectedOutput": "CCCLIV\nMMCMLI\nMMMCCCXXXVIII\nMDCCXCVIII\nMMMDCLV\nMCCCLXIII\nMCCXCVI\nMMMDCXVIII\nMCDXLIV\nMMMDCCCXXI\n"
+  },
+  {
+    "input": "5\n83 1981 2616 893 2108\n",
+    "expectedOutput": "LXXXIII\nMCMLXXXI\nMMDCXVI\nDCCCXCIII\nMMCVIII\n"
+  },
+  {
+    "input": "8\n2516 759 3265 1234 3728 1073 272 3082\n",
+    "expectedOutput": "MMDXVI\nDCCLIX\nMMMCCLXV\nMCCXXXIV\nMMMDCCXXVIII\nMLXXIII\nCCLXXII\nMMMLXXXII\n"
+  },
+  {
+    "input": "4\n2900 1448 2432 2762\n",
+    "expectedOutput": "MMCM\nMCDXLVIII\nMMCDXXXII\nMMDCCLXII\n"
+  },
+  {
+    "input": "9\n679 2577 1532 1495 742 3936 2039 2191 2017\n",
+    "expectedOutput": "DCLXXIX\nMMDLXXVII\nMDXXXII\nMCDXCV\nDCCXLII\nMMMCMXXXVI\nMMXXXIX\nMMCXCI\nMMXVII\n"
+  },
+  {
+    "input": "1\n3614\n",
+    "expectedOutput": "MMMDCXIV\n"
+  },
+  {
+    "input": "11\n3701 1674 483 1910 3640 3350 1424 3405 1158 1421 1543\n",
+    "expectedOutput": "MMMDCCI\nMDCLXXIV\nCDLXXXIII\nMCMX\nMMMDCXL\nMMMCCCL\nMCDXXIV\nMMMCDV\nMCLVIII\nMCDXXI\nMDXLIII\n"
+  },
+  {
+    "input": "11\n3141 47 369 2488 507 3512 1273 3199 2911 2970 1431\n",
+    "expectedOutput": "MMMCXLI\nXLVII\nCCCLXIX\nMMCDLXXXVIII\nDVII\nMMMDXII\nMCCLXXIII\nMMMCXCIX\nMMCMXI\nMMCMLXX\nMCDXXXI\n"
+  },
+  {
+    "input": "8\n3780 3792 1303 183 1869 808 382 851\n",
+    "expectedOutput": "MMMDCCLXXX\nMMMDCCXCII\nMCCCIII\nCLXXXIII\nMDCCCLXIX\nDCCCVIII\nCCCLXXXII\nDCCCLI\n"
+  },
+  {
+    "input": "12\n1545 2586 3306 322 2656 425 1810 2617 644 3198 1392 3409\n",
+    "expectedOutput": "MDXLV\nMMDLXXXVI\nMMMCCCVI\nCCCXXII\nMMDCLVI\nCDXXV\nMDCCCX\nMMDCXVII\nDCXLIV\nMMMCXCVIII\nMCCCXCII\nMMMCDIX\n"
+  },
+  {
+    "input": "11\n3013 1156 1403 3890 1460 3862 2403 3180 743 172 2881\n",
+    "expectedOutput": "MMMXIII\nMCLVI\nMCDIII\nMMMDCCCXC\nMCDLX\nMMMDCCCLXII\nMMCDIII\nMMMCLXXX\nDCCXLIII\nCLXXII\nMMDCCCLXXXI\n"
+  },
+  {
+    "input": "2\n2214 2688\n",
+    "expectedOutput": "MMCCXIV\nMMDCLXXXVIII\n"
+  },
+  {
+    "input": "3\n2740 2103 3532\n",
+    "expectedOutput": "MMDCCXL\nMMCIII\nMMMDXXXII\n"
+  },
+  {
+    "input": "7\n3143 2879 3237 3552 2459 293 3579\n",
+    "expectedOutput": "MMMCXLIII\nMMDCCCLXXIX\nMMMCCXXXVII\nMMMDLII\nMMCDLIX\nCCXCIII\nMMMDLXXIX\n"
+  },
+  {
+    "input": "8\n1068 742 2788 3102 14 3080 2486 1857\n",
+    "expectedOutput": "MLXVIII\nDCCXLII\nMMDCCLXXXVIII\nMMMCII\nXIV\nMMMLXXX\nMMCDLXXXVI\nMDCCCLVII\n"
+  },
+  {
+    "input": "8\n631 1815 990 2338 876 1394 1338 1311\n",
+    "expectedOutput": "DCXXXI\nMDCCCXV\nCMXC\nMMCCCXXXVIII\nDCCCLXXVI\nMCCCXCIV\nMCCCXXXVIII\nMCCCXI\n"
+  },
+  {
+    "input": "9\n195 2413 2493 2216 2015 314 3674 796 758\n",
+    "expectedOutput": "CXCV\nMMCDXIII\nMMCDXCIII\nMMCCXVI\nMMXV\nCCCXIV\nMMMDCLXXIV\nDCCXCVI\nDCCLVIII\n"
+  },
+  {
+    "input": "11\n89 3444 3786 3195 3142 3452 3855 3311 2434 2872 2262\n",
+    "expectedOutput": "LXXXIX\nMMMCDXLIV\nMMMDCCLXXXVI\nMMMCXCV\nMMMCXLII\nMMMCDLII\nMMMDCCCLV\nMMMCCCXI\nMMCDXXXIV\nMMDCCCLXXII\nMMCCLXII\n"
+  },
+  {
+    "input": "8\n1216 1427 2990 1339 252 2930 820 3013\n",
+    "expectedOutput": "MCCXVI\nMCDXXVII\nMMCMXC\nMCCCXXXIX\nCCLII\nMMCMXXX\nDCCCXX\nMMMXIII\n"
+  },
+  {
+    "input": "2\n3686 2770\n",
+    "expectedOutput": "MMMDCLXXXVI\nMMDCCLXX\n"
+  },
+  {
+    "input": "5\n961 2580 2062 1048 2448\n",
+    "expectedOutput": "CMLXI\nMMDLXXX\nMMLXII\nMXLVIII\nMMCDXLVIII\n"
+  },
+  {
+    "input": "5\n681 357 6 2075 1553\n",
+    "expectedOutput": "DCLXXXI\nCCCLVII\nVI\nMMLXXV\nMDLIII\n"
+  },
+  {
+    "input": "12\n663 2603 3447 2196 3412 2832 1307 3667 1428 3913 1408 214\n",
+    "expectedOutput": "DCLXIII\nMMDCIII\nMMMCDXLVII\nMMCXCVI\nMMMCDXII\nMMDCCCXXXII\nMCCCVII\nMMMDCLXVII\nMCDXXVIII\nMMMCMXIII\nMCDVIII\nCCXIV\n"
+  },
+  {
+    "input": "7\n1430 3390 3633 3044 3706 1999 1049\n",
+    "expectedOutput": "MCDXXX\nMMMCCCXC\nMMMDCXXXIII\nMMMXLIV\nMMMDCCVI\nMCMXCIX\nMXLIX\n"
+  },
+  {
+    "input": "10\n1066 2925 2553 2920 1043 1519 957 3918 2175 1405\n",
+    "expectedOutput": "MLXVI\nMMCMXXV\nMMDLIII\nMMCMXX\nMXLIII\nMDXIX\nCMLVII\nMMMCMXVIII\nMMCLXXV\nMCDV\n"
+  },
+  {
+    "input": "8\n1814 74 2922 2703 3300 3673 1699 3459\n",
+    "expectedOutput": "MDCCCXIV\nLXXIV\nMMCMXXII\nMMDCCIII\nMMMCCC\nMMMDCLXXIII\nMDCXCIX\nMMMCDLIX\n"
+  },
+  {
+    "input": "3\n30 2893 603\n",
+    "expectedOutput": "XXX\nMMDCCCXCIII\nDCIII\n"
+  },
+  {
+    "input": "9\n3745 1743 297 1420 371 936 3554 1272 2470\n",
+    "expectedOutput": "MMMDCCXLV\nMDCCXLIII\nCCXCVII\nMCDXX\nCCCLXXI\nCMXXXVI\nMMMDLIV\nMCCLXXII\nMMCDLXX\n"
+  },
+  {
+    "input": "10\n2277 1007 597 2253 3470 1525 1965 3806 1045 1550\n",
+    "expectedOutput": "MMCCLXXVII\nMVII\nDXCVII\nMMCCLIII\nMMMCDLXX\nMDXXV\nMCMLXV\nMMMDCCCVI\nMXLV\nMDL\n"
+  },
+  {
+    "input": "7\n2724 3359 1389 1513 3559 1778 1911\n",
+    "expectedOutput": "MMDCCXXIV\nMMMCCCLIX\nMCCCLXXXIX\nMDXIII\nMMMDLIX\nMDCCLXXVIII\nMCMXI\n"
+  },
+  {
+    "input": "1\n2867\n",
+    "expectedOutput": "MMDCCCLXVII\n"
+  },
+  {
+    "input": "7\n1075 808 2331 1962 3631 2444 2966\n",
+    "expectedOutput": "MLXXV\nDCCCVIII\nMMCCCXXXI\nMCMLXII\nMMMDCXXXI\nMMCDXLIV\nMMCMLXVI\n"
+  },
+  {
+    "input": "5\n1655 1319 1040 3496 2899\n",
+    "expectedOutput": "MDCLV\nMCCCXIX\nMXL\nMMMCDXCVI\nMMDCCCXCIX\n"
+  },
+  {
+    "input": "9\n2113 1431 1514 1193 1739 3216 618 509 263\n",
+    "expectedOutput": "MMCXIII\nMCDXXXI\nMDXIV\nMCXCIII\nMDCCXXXIX\nMMMCCXVI\nDCXVIII\nDIX\nCCLXIII\n"
+  },
+  {
+    "input": "5\n1744 3220 2199 3361 2184\n",
+    "expectedOutput": "MDCCXLIV\nMMMCCXX\nMMCXCIX\nMMMCCCLXI\nMMCLXXXIV\n"
+  },
+  {
+    "input": "9\n1402 2754 443 3464 3537 786 3702 3752 2401\n",
+    "expectedOutput": "MCDII\nMMDCCLIV\nCDXLIII\nMMMCDLXIV\nMMMDXXXVII\nDCCLXXXVI\nMMMDCCII\nMMMDCCLII\nMMCDI\n"
+  },
+  {
+    "input": "1\n1647\n",
+    "expectedOutput": "MDCXLVII\n"
+  },
+  {
+    "input": "2\n1342 2599\n",
+    "expectedOutput": "MCCCXLII\nMMDXCIX\n"
+  },
+  {
+    "input": "12\n1270 1454 2328 3699 3925 1788 332 153 1996 3908 3377 1328\n",
+    "expectedOutput": "MCCLXX\nMCDLIV\nMMCCCXXVIII\nMMMDCXCIX\nMMMCMXXV\nMDCCLXXXVIII\nCCCXXXII\nCLIII\nMCMXCVI\nMMMCMVIII\nMMMCCCLXXVII\nMCCCXXVIII\n"
+  },
+  {
+    "input": "5\n2550 3966 3610 7 746\n",
+    "expectedOutput": "MMDL\nMMMCMLXVI\nMMMDCX\nVII\nDCCXLVI\n"
+  },
+  {
+    "input": "6\n2669 2421 3958 1488 3982 3329\n",
+    "expectedOutput": "MMDCLXIX\nMMCDXXI\nMMMCMLVIII\nMCDLXXXVIII\nMMMCMLXXXII\nMMMCCCXXIX\n"
+  },
+  {
+    "input": "9\n409 1270 3922 3389 777 2225 3001 3890 2617\n",
+    "expectedOutput": "CDIX\nMCCLXX\nMMMCMXXII\nMMMCCCLXXXIX\nDCCLXXVII\nMMCCXXV\nMMMI\nMMMDCCCXC\nMMDCXVII\n"
+  },
+  {
+    "input": "12\n3329 3211 2652 3255 3474 3119 2507 2118 3959 2353 1447 515\n",
+    "expectedOutput": "MMMCCCXXIX\nMMMCCXI\nMMDCLII\nMMMCCLV\nMMMCDLXXIV\nMMMCXIX\nMMDVII\nMMCXVIII\nMMMCMLIX\nMMCCCLIII\nMCDXLVII\nDXV\n"
+  },
+  {
+    "input": "4\n1961 1073 1868 1930\n",
+    "expectedOutput": "MCMLXI\nMLXXIII\nMDCCCLXVIII\nMCMXXX\n"
+  },
+  {
+    "input": "12\n1805 133 772 3386 2962 1306 3297 2301 2432 3485 406 410\n",
+    "expectedOutput": "MDCCCV\nCXXXIII\nDCCLXXII\nMMMCCCLXXXVI\nMMCMLXII\nMCCCVI\nMMMCCXCVII\nMMCCCI\nMMCDXXXII\nMMMCDLXXXV\nCDVI\nCDX\n"
+  },
+  {
+    "input": "12\n2758 1548 1538 3229 3858 2403 51 3597 1584 1779 2150 649\n",
+    "expectedOutput": "MMDCCLVIII\nMDXLVIII\nMDXXXVIII\nMMMCCXXIX\nMMMDCCCLVIII\nMMCDIII\nLI\nMMMDXCVII\nMDLXXXIV\nMDCCLXXIX\nMMCL\nDCXLIX\n"
+  },
+  {
+    "input": "7\n2405 1998 2262 1662 166 1748 89\n",
+    "expectedOutput": "MMCDV\nMCMXCVIII\nMMCCLXII\nMDCLXII\nCLXVI\nMDCCXLVIII\nLXXXIX\n"
+  },
+  {
+    "input": "12\n550 412 817 3693 1755 3659 2956 1196 90 2600 2610 2987\n",
+    "expectedOutput": "DL\nCDXII\nDCCCXVII\nMMMDCXCIII\nMDCCLV\nMMMDCLIX\nMMCMLVI\nMCXCVI\nXC\nMMDC\nMMDCX\nMMCMLXXXVII\n"
+  },
+  {
+    "input": "5\n530 2807 2681 1775 3725\n",
+    "expectedOutput": "DXXX\nMMDCCCVII\nMMDCLXXXI\nMDCCLXXV\nMMMDCCXXV\n"
+  },
+  {
+    "input": "8\n3509 3639 3449 1461 3067 1625 1893 1833\n",
+    "expectedOutput": "MMMDIX\nMMMDCXXXIX\nMMMCDXLIX\nMCDLXI\nMMMLXVII\nMDCXXV\nMDCCCXCIII\nMDCCCXXXIII\n"
+  },
+  {
+    "input": "4\n2153 2025 2355 2048\n",
+    "expectedOutput": "MMCLIII\nMMXXV\nMMCCCLV\nMMXLVIII\n"
+  },
+  {
+    "input": "3\n1880 109 1493\n",
+    "expectedOutput": "MDCCCLXXX\nCIX\nMCDXCIII\n"
+  },
+  {
+    "input": "4\n253 2989 1199 1959\n",
+    "expectedOutput": "CCLIII\nMMCMLXXXIX\nMCXCIX\nMCMLIX\n"
+  },
+  {
+    "input": "6\n2258 2582 231 194 2346 1816\n",
+    "expectedOutput": "MMCCLVIII\nMMDLXXXII\nCCXXXI\nCXCIV\nMMCCCXLVI\nMDCCCXVI\n"
+  },
+  {
+    "input": "11\n1463 2207 1071 1354 2354 2996 2268 2544 2169 1648 1480\n",
+    "expectedOutput": "MCDLXIII\nMMCCVII\nMLXXI\nMCCCLIV\nMMCCCLIV\nMMCMXCVI\nMMCCLXVIII\nMMDXLIV\nMMCLXIX\nMDCXLVIII\nMCDLXXX\n"
+  },
+  {
+    "input": "3\n2963 1488 456\n",
+    "expectedOutput": "MMCMLXIII\nMCDLXXXVIII\nCDLVI\n"
+  },
+  {
+    "input": "7\n3486 3505 2919 3944 639 1051 2275\n",
+    "expectedOutput": "MMMCDLXXXVI\nMMMDV\nMMCMXIX\nMMMCMXLIV\nDCXXXIX\nMLI\nMMCCLXXV\n"
+  },
+  {
+    "input": "3\n1612 1593 365\n",
+    "expectedOutput": "MDCXII\nMDXCIII\nCCCLXV\n"
+  },
+  {
+    "input": "7\n1888 317 1554 2486 970 482 2950\n",
+    "expectedOutput": "MDCCCLXXXVIII\nCCCXVII\nMDLIV\nMMCDLXXXVI\nCMLXX\nCDLXXXII\nMMCML\n"
+  },
+  {
+    "input": "9\n260 2734 795 3866 3480 2838 2584 381 1065\n",
+    "expectedOutput": "CCLX\nMMDCCXXXIV\nDCCXCV\nMMMDCCCLXVI\nMMMCDLXXX\nMMDCCCXXXVIII\nMMDLXXXIV\nCCCLXXXI\nMLXV\n"
+  },
+  {
+    "input": "5\n3433 1131 3921 3071 1071\n",
+    "expectedOutput": "MMMCDXXXIII\nMCXXXI\nMMMCMXXI\nMMMLXXI\nMLXXI\n"
+  },
+  {
+    "input": "7\n654 1552 669 3412 2572 1200 1585\n",
+    "expectedOutput": "DCLIV\nMDLII\nDCLXIX\nMMMCDXII\nMMDLXXII\nMCC\nMDLXXXV\n"
+  },
+  {
+    "input": "3\n91 3993 1625\n",
+    "expectedOutput": "XCI\nMMMCMXCIII\nMDCXXV\n"
+  },
+  {
+    "input": "10\n2317 3084 3185 3289 2452 2869 1080 13 1281 3643\n",
+    "expectedOutput": "MMCCCXVII\nMMMLXXXIV\nMMMCLXXXV\nMMMCCLXXXIX\nMMCDLII\nMMDCCCLXIX\nMLXXX\nXIII\nMCCLXXXI\nMMMDCXLIII\n"
+  },
+  {
+    "input": "2\n1635 2225\n",
+    "expectedOutput": "MDCXXXV\nMMCCXXV\n"
+  },
+  {
+    "input": "1\n468\n",
+    "expectedOutput": "CDLXVIII\n"
+  },
+  {
+    "input": "5\n3020 3907 3321 2828 1834\n",
+    "expectedOutput": "MMMXX\nMMMCMVII\nMMMCCCXXI\nMMDCCCXXVIII\nMDCCCXXXIV\n"
+  },
+  {
+    "input": "7\n1607 2064 3947 2396 1036 234 3762\n",
+    "expectedOutput": "MDCVII\nMMLXIV\nMMMCMXLVII\nMMCCCXCVI\nMXXXVI\nCCXXXIV\nMMMDCCLXII\n"
+  },
+  {
+    "input": "12\n1831 915 1795 1814 2574 2136 10 1263 3784 1556 2498 1366\n",
+    "expectedOutput": "MDCCCXXXI\nCMXV\nMDCCXCV\nMDCCCXIV\nMMDLXXIV\nMMCXXXVI\nX\nMCCLXIII\nMMMDCCLXXXIV\nMDLVI\nMMCDXCVIII\nMCCCLXVI\n"
+  },
+  {
+    "input": "5\n3866 2202 3004 2299 1058\n",
+    "expectedOutput": "MMMDCCCLXVI\nMMCCII\nMMMIV\nMMCCXCIX\nMLVIII\n"
+  },
+  {
+    "input": "10\n2056 2789 3039 3027 2888 2308 659 1905 165 2598\n",
+    "expectedOutput": "MMLVI\nMMDCCLXXXIX\nMMMXXXIX\nMMMXXVII\nMMDCCCLXXXVIII\nMMCCCVIII\nDCLIX\nMCMV\nCLXV\nMMDXCVIII\n"
+  },
+  {
+    "input": "10\n910 2153 1479 3638 2924 2212 1952 550 2246 154\n",
+    "expectedOutput": "CMX\nMMCLIII\nMCDLXXIX\nMMMDCXXXVIII\nMMCMXXIV\nMMCCXII\nMCMLII\nDL\nMMCCXLVI\nCLIV\n"
+  },
+  {
+    "input": "2\n2395 2548\n",
+    "expectedOutput": "MMCCCXCV\nMMDXLVIII\n"
+  },
+  {
+    "input": "4\n28 351 2435 311\n",
+    "expectedOutput": "XXVIII\nCCCLI\nMMCDXXXV\nCCCXI\n"
+  },
+  {
+    "input": "3\n2170 3450 2006\n",
+    "expectedOutput": "MMCLXX\nMMMCDL\nMMVI\n"
+  },
+  {
+    "input": "7\n2037 778 315 1970 3895 3781 2858\n",
+    "expectedOutput": "MMXXXVII\nDCCLXXVIII\nCCCXV\nMCMLXX\nMMMDCCCXCV\nMMMDCCLXXXI\nMMDCCCLVIII\n"
+  },
+  {
+    "input": "9\n1082 1394 957 2458 3798 3358 2617 3416 1750\n",
+    "expectedOutput": "MLXXXII\nMCCCXCIV\nCMLVII\nMMCDLVIII\nMMMDCCXCVIII\nMMMCCCLVIII\nMMDCXVII\nMMMCDXVI\nMDCCL\n"
+  },
+  {
+    "input": "12\n2862 2591 3534 738 10 2160 3807 1273 3969 2346 3554 1039\n",
+    "expectedOutput": "MMDCCCLXII\nMMDXCI\nMMMDXXXIV\nDCCXXXVIII\nX\nMMCLX\nMMMDCCCVII\nMCCLXXIII\nMMMCMLXIX\nMMCCCXLVI\nMMMDLIV\nMXXXIX\n"
+  },
+  {
+    "input": "1\n2797\n",
+    "expectedOutput": "MMDCCXCVII\n"
+  },
+  {
+    "input": "1\n601\n",
+    "expectedOutput": "DCI\n"
+  },
+  {
+    "input": "1\n999\n",
+    "expectedOutput": "CMXCIX\n"
+  },
+  {
+    "input": "8\n1576 1780 3743 1400 520 3133 1279 1214\n",
+    "expectedOutput": "MDLXXVI\nMDCCLXXX\nMMMDCCXLIII\nMCD\nDXX\nMMMCXXXIII\nMCCLXXIX\nMCCXIV\n"
+  },
+  {
+    "input": "6\n3370 3097 2335 521 387 2830\n",
+    "expectedOutput": "MMMCCCLXX\nMMMXCVII\nMMCCCXXXV\nDXXI\nCCCLXXXVII\nMMDCCCXXX\n"
+  },
+  {
+    "input": "11\n1458 3663 3687 3798 2505 1270 653 1229 3908 1176 449\n",
+    "expectedOutput": "MCDLVIII\nMMMDCLXIII\nMMMDCLXXXVII\nMMMDCCXCVIII\nMMDV\nMCCLXX\nDCLIII\nMCCXXIX\nMMMCMVIII\nMCLXXVI\nCDXLIX\n"
+  },
+  {
+    "input": "10\n616 1505 1263 3363 1540 632 1712 3778 2356 1921\n",
+    "expectedOutput": "DCXVI\nMDV\nMCCLXIII\nMMMCCCLXIII\nMDXL\nDCXXXII\nMDCCXII\nMMMDCCLXXVIII\nMMCCCLVI\nMCMXXI\n"
+  },
+  {
+    "input": "2\n2122 3429\n",
+    "expectedOutput": "MMCXXII\nMMMCDXXIX\n"
+  },
+  {
+    "input": "1\n1780\n",
+    "expectedOutput": "MDCCLXXX\n"
+  },
+  {
+    "input": "11\n2303 3449 3297 746 2463 2364 2721 1085 2760 2826 3923\n",
+    "expectedOutput": "MMCCCIII\nMMMCDXLIX\nMMMCCXCVII\nDCCXLVI\nMMCDLXIII\nMMCCCLXIV\nMMDCCXXI\nMLXXXV\nMMDCCLX\nMMDCCCXXVI\nMMMCMXXIII\n"
+  },
+  {
+    "input": "1\n1433\n",
+    "expectedOutput": "MCDXXXIII\n"
+  },
+  {
+    "input": "7\n3804 2069 3591 3017 1670 2663 2257\n",
+    "expectedOutput": "MMMDCCCIV\nMMLXIX\nMMMDXCI\nMMMXVII\nMDCLXX\nMMDCLXIII\nMMCCLVII\n"
+  },
+  {
+    "input": "5\n750 2791 1261 3401 2013\n",
+    "expectedOutput": "DCCL\nMMDCCXCI\nMCCLXI\nMMMCDI\nMMXIII\n"
+  },
+  {
+    "input": "1\n2885\n",
+    "expectedOutput": "MMDCCCLXXXV\n"
+  },
+  {
+    "input": "10\n3851 1435 3998 76 3462 1954 2673 2702 2512 3647\n",
+    "expectedOutput": "MMMDCCCLI\nMCDXXXV\nMMMCMXCVIII\nLXXVI\nMMMCDLXII\nMCMLIV\nMMDCLXXIII\nMMDCCII\nMMDXII\nMMMDCXLVII\n"
+  },
+  {
+    "input": "3\n1030 3682 1778\n",
+    "expectedOutput": "MXXX\nMMMDCLXXXII\nMDCCLXXVIII\n"
+  },
+  {
+    "input": "6\n757 262 795 2510 1931 1210\n",
+    "expectedOutput": "DCCLVII\nCCLXII\nDCCXCV\nMMDX\nMCMXXXI\nMCCX\n"
+  },
+  {
+    "input": "9\n3375 3737 857 1701 1441 2263 1536 1452 1912\n",
+    "expectedOutput": "MMMCCCLXXV\nMMMDCCXXXVII\nDCCCLVII\nMDCCI\nMCDXLI\nMMCCLXIII\nMDXXXVI\nMCDLII\nMCMXII\n"
+  },
+  {
+    "input": "1\n3978\n",
+    "expectedOutput": "MMMCMLXXVIII\n"
+  },
+  {
+    "input": "7\n252 657 1062 3858 3958 1449 3119\n",
+    "expectedOutput": "CCLII\nDCLVII\nMLXII\nMMMDCCCLVIII\nMMMCMLVIII\nMCDXLIX\nMMMCXIX\n"
+  },
+  {
+    "input": "2\n1545 2499\n",
+    "expectedOutput": "MDXLV\nMMCDXCIX\n"
+  },
+  {
+    "input": "5\n3020 2928 2143 2213 2425\n",
+    "expectedOutput": "MMMXX\nMMCMXXVIII\nMMCXLIII\nMMCCXIII\nMMCDXXV\n"
+  }
+]

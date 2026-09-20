@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只报告最终元素和",
+    "code": "def solve(raw):\n    import heapq\n    a=list(map(int,raw.split()[1:]));heapq.heapify(a);answer=0\n    while len(a)>1:\n        total=heapq.heappop(a)+heapq.heappop(a);answer+=total;heapq.heappush(a,total)\n    return str(a[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误每次合并最大两项",
+    "code": "def solve(raw):\n    import heapq\n    a=[-int(v) for v in raw.split()[1:]];heapq.heapify(a);answer=0\n    while len(a)>1:\n        total=heapq.heappop(a)+heapq.heappop(a);answer+=total;heapq.heappush(a,total)\n    return str(-answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

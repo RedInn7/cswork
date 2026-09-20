@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-github-1",
+  "title": "双车桥的最少掉头车辆",
+  "explanation": "## 思路\n\n维护已保留序列的末车，若新车与它超载，删除两车中较重者；单车超重直接删除。\n\n## 正确性证明\n\n合法保留序列恰要求每辆不超载、每对相邻保留车重量和≤U。冲突二者必须至少删一个，留下较轻尾车对所有未来车辆都不更差，同时不破坏之前的相邻约束。交换论证逐步保持最优数量及最有利末车。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,u=d[:2];last=None;answer=0\n    for v in d[2:]:\n        if v>u:answer+=1\n        elif last is None or last+v<=u:last=v\n        else:answer+=1;last=min(last,v)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/github#1-bridge-car-weight-problem",
+  "sourceContentHash": "d1adf0e695393bbd76ef77f071a9f37c771ffa24944262c8aec811013df97033",
+  "author": "CSWork"
+}

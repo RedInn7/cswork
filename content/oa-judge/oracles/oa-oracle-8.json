@@ -1,0 +1,654 @@
+[
+  {
+    "input": "\"APPLE\"\n",
+    "expectedOutput": "\"E L\"\n"
+  },
+  {
+    "input": "\"bat\"\n",
+    "expectedOutput": "\"t a\"\n"
+  },
+  {
+    "input": "\"\\u0000\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\u0000\"\n"
+  },
+  {
+    "input": "\"\\tZZZa\\t\\t\\\\a \"\n",
+    "expectedOutput": "\"  a\"\n"
+  },
+  {
+    "input": "\"Z Z\\ud83d\\ude00\\u007f\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u007f\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00\\\"\\\"\\u007fZa\"\n",
+    "expectedOutput": "\"a Z\"\n"
+  },
+  {
+    "input": "\"\\u007f\\\"\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\\"\"\n"
+  },
+  {
+    "input": "\"Z\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 Z\"\n"
+  },
+  {
+    "input": "\"\\u007fZ\\u4e2d\\\"\\t\"\n",
+    "expectedOutput": "\"\\t \\\"\"\n"
+  },
+  {
+    "input": "\"\\u007f\\u4e2d\\nZ\\nZ\"\n",
+    "expectedOutput": "\"Z \\n\"\n"
+  },
+  {
+    "input": "\" \\u0000\\ud83d\\ude00\\u007fZ\\u007f\\u4e2dZ\\t\"\n",
+    "expectedOutput": "\"\\t Z\"\n"
+  },
+  {
+    "input": "\"\\\\\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\\\\"\n"
+  },
+  {
+    "input": "\"\\\\a\\t\\u4e2d \\\"\\\"\\u007f\\t\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\t\"\n"
+  },
+  {
+    "input": "\"\\\"a\\\\\\\\ \\u007fa\\\"\"\n",
+    "expectedOutput": "\"\\\" a\"\n"
+  },
+  {
+    "input": "\"\\\"   ZZ\\\\\\u0000\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\u0000\"\n"
+  },
+  {
+    "input": "\"\\t\\ud83d\\ude00\\n\\u007f\\\\\\na\\n\\n\"\n",
+    "expectedOutput": "\"\\n \\n\"\n"
+  },
+  {
+    "input": "\"\\u0000 \"\n",
+    "expectedOutput": "\"  \\u0000\"\n"
+  },
+  {
+    "input": "\"\\n\\u0000\\t\"\n",
+    "expectedOutput": "\"\\t \\u0000\"\n"
+  },
+  {
+    "input": "\"\\\"\\u4e2d\\\\\\\"\\u007f\\t\\t\\n\\u4e2d \"\n",
+    "expectedOutput": "\"  \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\\\\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\\\\"\n"
+  },
+  {
+    "input": "\"\\n\\\" \\\\\\u007fa\\u007f\"\n",
+    "expectedOutput": "\"\\u007f a\"\n"
+  },
+  {
+    "input": "\"\\\"\\u0000  Z\\\"  \"\n",
+    "expectedOutput": "\"   \"\n"
+  },
+  {
+    "input": "\"\\u4e2dZ\\ud83d\\ude00\\ud83d\\ude00a\\\"\\n\\\\\\n\"\n",
+    "expectedOutput": "\"\\n \\\\\"\n"
+  },
+  {
+    "input": "\"aa \"\n",
+    "expectedOutput": "\"  a\"\n"
+  },
+  {
+    "input": "\" Z\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 Z\"\n"
+  },
+  {
+    "input": "\"\\\\\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\\\\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\ud83d\\ude00\\ud83d\\ude00  \\tZ\\\"\\n\"\n",
+    "expectedOutput": "\"\\n \\\"\"\n"
+  },
+  {
+    "input": "\"\\u4e2d \\\\ \\u007f\\u0000\\na\\u0000a\\\"\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\\"\"\n"
+  },
+  {
+    "input": "\"\\u007fZ\\\\\\u4e2d\\u4e2d\\n\\u0000\\u4e2da\\ud83d\\ude00\\n\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\n\"\n"
+  },
+  {
+    "input": "\"\\n\\u0000\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\u0000\"\n"
+  },
+  {
+    "input": "\" \\u007f\\n\\n\\u4e2d\\u007f\\n\"\n",
+    "expectedOutput": "\"\\n \\u007f\"\n"
+  },
+  {
+    "input": "\"a\\u4e2d\\t\\n\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\n\"\n"
+  },
+  {
+    "input": "\"\\tZ\\ud83d\\ude00\\u0000\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u0000\"\n"
+  },
+  {
+    "input": "\"Z\\u4e2d \\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00  \"\n"
+  },
+  {
+    "input": "\"a\\\"Z\\u007fa\\ud83d\\ude00\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u0000a \\u007f\\u0000 \"\n",
+    "expectedOutput": "\"  \\u0000\"\n"
+  },
+  {
+    "input": "\"Z\\\\\\n\\u0000\\ud83d\\ude00\\u0000Z\\\\\\u007f \"\n",
+    "expectedOutput": "\"  \\u007f\"\n"
+  },
+  {
+    "input": "\"\\t \\t\\t\\ud83d\\ude00\\u4e2d\\t\\u0000\\u007f\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\u007f\"\n"
+  },
+  {
+    "input": "\"\\\" Z \\ud83d\\ude00\\t\"\n",
+    "expectedOutput": "\"\\t \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\\\ a  a\\\\ \\u0000\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\u0000\"\n"
+  },
+  {
+    "input": "\"\\u007f\\\"\\t \\u4e2d\\\\\\\\\\u007f\\n\\\\\\\"\"\n",
+    "expectedOutput": "\"\\\" \\\\\"\n"
+  },
+  {
+    "input": "\"a\\\\Z\\u007fZ\"\n",
+    "expectedOutput": "\"Z \\u007f\"\n"
+  },
+  {
+    "input": "\"\\n\\n\\u007fa\\u007f\\u4e2d\\n\"\n",
+    "expectedOutput": "\"\\n \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\t\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\t\"\n"
+  },
+  {
+    "input": "\"Z\\n\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\n\"\n"
+  },
+  {
+    "input": "\"\\\"a\"\n",
+    "expectedOutput": "\"a \\\"\"\n"
+  },
+  {
+    "input": "\" \\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00  \"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\na\\t \"\n",
+    "expectedOutput": "\"  \\t\"\n"
+  },
+  {
+    "input": "\"\\t\\\"\\\\\\n\\\"\\t\"\n",
+    "expectedOutput": "\"\\t \\\"\"\n"
+  },
+  {
+    "input": "\"\\\"\\u007f\\u007fa \\ta\\u0000\\u4e2d\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\t\\ta\\t\\n\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\n\"\n"
+  },
+  {
+    "input": "\"\\n\\\\\\\\aaZ\\u007fZ\\n\\\"\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\\"\"\n"
+  },
+  {
+    "input": "\"\\\\ aa\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 a\"\n"
+  },
+  {
+    "input": "\"\\n \\t\\\"\\ud83d\\ude00\\\"\\t\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\t\"\n"
+  },
+  {
+    "input": "\"Z\\u0000\\u007f\\n\\\"\\ud83d\\ude00\\u0000  \\u0000\\n\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\n\"\n"
+  },
+  {
+    "input": "\"ZZ\\n\\n\\t\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\t\"\n"
+  },
+  {
+    "input": "\"\\n\\u007f\\nZ\\u0000\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u0000\"\n"
+  },
+  {
+    "input": "\" \\u007f  \\\\\\u4e2d\\\\\\t\\n\"\n",
+    "expectedOutput": "\"\\n \\t\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00ZZ\"\n",
+    "expectedOutput": "\"Z Z\"\n"
+  },
+  {
+    "input": "\"\\u0000a\\t\\u4e2d\\u007f \\u007f\\u4e2d \"\n",
+    "expectedOutput": "\"  \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\tZ\\na\\u007f\\nZ\"\n",
+    "expectedOutput": "\"Z \\n\"\n"
+  },
+  {
+    "input": "\"\\n\\\\a\\u0000a\"\n",
+    "expectedOutput": "\"a \\u0000\"\n"
+  },
+  {
+    "input": "\"\\\" \\u007f\\\\Z\\\"Z\\t\"\n",
+    "expectedOutput": "\"\\t Z\"\n"
+  },
+  {
+    "input": "\"aa\"\n",
+    "expectedOutput": "\"a a\"\n"
+  },
+  {
+    "input": "\"Z\\u007f\"\n",
+    "expectedOutput": "\"\\u007f Z\"\n"
+  },
+  {
+    "input": "\"a\\u4e2d\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\\"\\t\\u4e2d\\t \\u007f\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\u007f\"\n"
+  },
+  {
+    "input": "\"\\u007f\\\"\\t\\u007f\\u0000\\ud83d\\ude00a\"\n",
+    "expectedOutput": "\"a \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\" \\\"Z\\t\\\"\\n\\\\a\\\"\"\n",
+    "expectedOutput": "\"\\\" a\"\n"
+  },
+  {
+    "input": "\"\\n\\\"Z\\ud83d\\ude00\\t \\u4e2d\\\"\"\n",
+    "expectedOutput": "\"\\\" \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\t\\u007faZa\\u007fZ\\u0000Z\\u0000\\\\Z\"\n",
+    "expectedOutput": "\"Z \\\\\"\n"
+  },
+  {
+    "input": "\" \\ud83d\\ude00aZ\\u4e2d\\u0000Z\"\n",
+    "expectedOutput": "\"Z \\u0000\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\u0000\\ud83d\\ude00Z\\n\\n\\t\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\t\"\n"
+  },
+  {
+    "input": "\"a\\u4e2d \"\n",
+    "expectedOutput": "\"  \\u4e2d\"\n"
+  },
+  {
+    "input": "\"a  \\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d  \"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00Z\\u0000a\\n\\taZZ\"\n",
+    "expectedOutput": "\"Z Z\"\n"
+  },
+  {
+    "input": "\"\\\\ a\"\n",
+    "expectedOutput": "\"a  \"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00 \\u4e2d\\\"\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\\"\"\n"
+  },
+  {
+    "input": "\"a\\u007f\\ud83d\\ude00\\u4e2d \\u007f\\n\\t\\n\"\n",
+    "expectedOutput": "\"\\n \\t\"\n"
+  },
+  {
+    "input": "\"\\u007f\\t\\ud83d\\ude00a\\\\\\u0000\\t\\u4e2d\\ud83d\\ude00\\t\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\t\"\n"
+  },
+  {
+    "input": "\"\\\\\\u007f\\u0000ZZ\\ud83d\\ude00\\ud83d\\ude00\\u0000\\\\\\u0000a\"\n",
+    "expectedOutput": "\"a \\u0000\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00Z\\u007fa\"\n",
+    "expectedOutput": "\"a \\u007f\"\n"
+  },
+  {
+    "input": "\"\\n\\u0000\\t\\\"a\\n\\n\\u007f\\\\\\\"Z\\\"\"\n",
+    "expectedOutput": "\"\\\" Z\"\n"
+  },
+  {
+    "input": "\"\\u0000\\t \"\n",
+    "expectedOutput": "\"  \\t\"\n"
+  },
+  {
+    "input": "\"\\\\Z\\\"\\\"\\ud83d\\ude00\\u0000\\ud83d\\ude00\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"Z\\u007fa\\u4e2d\\n\\ud83d\\ude00\\u0000\\ta\\n\"\n",
+    "expectedOutput": "\"\\n a\"\n"
+  },
+  {
+    "input": "\"\\\\\\u4e2d\\\"\\\"\\u4e2d\\n\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\n\"\n"
+  },
+  {
+    "input": "\"Z a\\ud83d\\ude00\\\"a\\ud83d\\ude00\\\"Z\\n\\t\\n\"\n",
+    "expectedOutput": "\"\\n \\t\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\t\\\" \\u4e2d\\u007f\\\\\\ud83d\\ude00\\\"\\u0000\\na\"\n",
+    "expectedOutput": "\"a \\n\"\n"
+  },
+  {
+    "input": "\"a\\u0000\\u007f a\\u0000\\u4e2d\\t\"\n",
+    "expectedOutput": "\"\\t \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00\\n\\\"\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\\"\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\\\\\\"\\t\\u007f\\\\\\\"Z \"\n",
+    "expectedOutput": "\"  Z\"\n"
+  },
+  {
+    "input": "\"\\\\\\u0000\\\"\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\\"\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00\\\"Z\\u0000 \\u007f\\u007f\\ud83d\\ude00Z \\u4e2dZ\"\n",
+    "expectedOutput": "\"Z \\u4e2d\"\n"
+  },
+  {
+    "input": "\"Z\\ud83d\\ude00\\\\\\\\\\tZ\\n \\u0000\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\u0000\"\n"
+  },
+  {
+    "input": "\"\\\"\\t\\\\\\t\\ud83d\\ude00\\u4e2d\\u4e2d\\t \"\n",
+    "expectedOutput": "\"  \\t\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00 a\\ud83d\\ude00Z\\u007f\\\" \\t\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\t\"\n"
+  },
+  {
+    "input": "\"\\nZ\"\n",
+    "expectedOutput": "\"Z \\n\"\n"
+  },
+  {
+    "input": "\"\\\\ \\u007f\\t \\u007f\\\"\\ta\\t\"\n",
+    "expectedOutput": "\"\\t a\"\n"
+  },
+  {
+    "input": "\"\\\"\\\"\\t\\u007f\\\\\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\\\\"\n"
+  },
+  {
+    "input": "\"Za\\t\\u007f\\ud83d\\ude00\\nZ \\u4e2d\\u0000\\u4e2d\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\n\\\"\\ud83d\\ude00Z \\u007f \"\n",
+    "expectedOutput": "\"  \\u007f\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00Z\"\n",
+    "expectedOutput": "\"Z \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"a\\\\ZZ\"\n",
+    "expectedOutput": "\"Z Z\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00Z\"\n",
+    "expectedOutput": "\"Z \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\u007f\\u4e2d\\\\ Z\\ud83d\\ude00\\\"\\ud83d\\ude00Z\"\n",
+    "expectedOutput": "\"Z \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\ud83d\\ude00\\t\\\\\\u4e2d\\\\\\t\"\n",
+    "expectedOutput": "\"\\t \\\\\"\n"
+  },
+  {
+    "input": "\"\\t\\u4e2d\\\\\\u007f\\u0000a\\u007f\"\n",
+    "expectedOutput": "\"\\u007f a\"\n"
+  },
+  {
+    "input": "\" \\ud83d\\ude00\\ud83d\\ude00a\\t\\u0000\\\\\\u0000\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\u0000\"\n"
+  },
+  {
+    "input": "\"\\u4e2dZ\\\\\\\\\\t\\\\\\n\\t\"\n",
+    "expectedOutput": "\"\\t \\n\"\n"
+  },
+  {
+    "input": "\" Z\\t\\n\"\n",
+    "expectedOutput": "\"\\n \\t\"\n"
+  },
+  {
+    "input": "\"\\\"\\u007f\\u0000ZZ\\u4e2d\\\" \"\n",
+    "expectedOutput": "\"  \\\"\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\\\a\"\n",
+    "expectedOutput": "\"a \\\\\"\n"
+  },
+  {
+    "input": "\"Za\\\"\"\n",
+    "expectedOutput": "\"\\\" a\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00\\u007f\\u0000\\ta\\\\\\u4e2d\\n\\\"\"\n",
+    "expectedOutput": "\"\\\" \\n\"\n"
+  },
+  {
+    "input": "\"\\n\\u007f\\u4e2d \\\"a\\u4e2da \\u007f\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\u007f\"\n"
+  },
+  {
+    "input": "\"\\u0000\\\\\\u0000Z\\u4e2d\\ud83d\\ude00\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\" Z\\u007f\\t\\u4e2d\\u0000Za\\u4e2d\\n\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\n\"\n"
+  },
+  {
+    "input": "\"\\\"\\n\\u007fZ\\u4e2d\\\"\\u007fa\\\\\\ud83d\\ude00 \\u0000\"\n",
+    "expectedOutput": "\"\\u0000  \"\n"
+  },
+  {
+    "input": "\"\\\"\\ta\\u0000\\u0000\\u4e2d\\t\"\n",
+    "expectedOutput": "\"\\t \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\n\\ud83d\\ude00\\ta\\ud83d\\ude00 \\ud83d\\ude00\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\u007f \\ud83d\\ude00 \\u007fa\"\n",
+    "expectedOutput": "\"a \\u007f\"\n"
+  },
+  {
+    "input": "\"\\\\\\u4e2d \\u4e2d\\u0000\\u0000\\u0000\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u0000\"\n"
+  },
+  {
+    "input": "\" \\u0000\"\n",
+    "expectedOutput": "\"\\u0000  \"\n"
+  },
+  {
+    "input": "\"\\u0000\\n\\n\\u0000\\\\\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\\\\"\n"
+  },
+  {
+    "input": "\"\\t\\u4e2d\\t\\u4e2d\\u007f \\ud83d\\ude00\\u007f  \\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00  \"\n"
+  },
+  {
+    "input": "\"  \"\n",
+    "expectedOutput": "\"   \"\n"
+  },
+  {
+    "input": "\"\\u4e2da\\u007f\\\"\"\n",
+    "expectedOutput": "\"\\\" \\u007f\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00Z\\t\\ud83d\\ude00\\ta\\\\  \\u007f\"\n",
+    "expectedOutput": "\"\\u007f  \"\n"
+  },
+  {
+    "input": "\"\\u0000\\u007f\\u007f\\t\\u4e2d\\u007f\\u007f\\t\"\n",
+    "expectedOutput": "\"\\t \\u007f\"\n"
+  },
+  {
+    "input": "\"Z\\\"\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\\"\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\ud83d\\ude00a\\u007f\\u0000\\u0000\\t\\\\a\\\"\"\n",
+    "expectedOutput": "\"\\\" a\"\n"
+  },
+  {
+    "input": "\"\\t \\t\\\\Za\\t\"\n",
+    "expectedOutput": "\"\\t a\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\\\\\u007f\\t\\ud83d\\ude00 \"\n",
+    "expectedOutput": "\"  \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\ud83d\\ude00a\\nZ aa Z\"\n",
+    "expectedOutput": "\"Z  \"\n"
+  },
+  {
+    "input": "\"\\\\ \\u0000\\\"Z\\\\\\\\\\u007f\\\"\\u007f \"\n",
+    "expectedOutput": "\"  \\u007f\"\n"
+  },
+  {
+    "input": "\"Z\\\\\\u4e2d\\u0000\\u4e2d\"\n",
+    "expectedOutput": "\"\\u4e2d \\u0000\"\n"
+  },
+  {
+    "input": "\"\\naZ\\ud83d\\ude00\\u4e2d\\n\"\n",
+    "expectedOutput": "\"\\n \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\nZa\"\n",
+    "expectedOutput": "\"a Z\"\n"
+  },
+  {
+    "input": "\"Za\\\"\\u4e2d\\u0000\\u007f\\ud83d\\ude00\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\u007f\\t\\n\"\n",
+    "expectedOutput": "\"\\n \\t\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u4e2d\"\n"
+  },
+  {
+    "input": "\"\\n\\u4e2dZ \\\\ \\n\\u007fZ\"\n",
+    "expectedOutput": "\"Z \\u007f\"\n"
+  },
+  {
+    "input": "\"\\u007f\\u0000\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\u0000\"\n"
+  },
+  {
+    "input": "\" \\u007faZZ\\u007f\\\"\"\n",
+    "expectedOutput": "\"\\\" \\u007f\"\n"
+  },
+  {
+    "input": "\"\\nZ\"\n",
+    "expectedOutput": "\"Z \\n\"\n"
+  },
+  {
+    "input": "\"a\\\\\\ud83d\\ude00 \\u4e2d\\ud83d\\ude00\\\"\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\\"\"\n"
+  },
+  {
+    "input": "\" aa\"\n",
+    "expectedOutput": "\"a a\"\n"
+  },
+  {
+    "input": "\" \\n\\n\\u007f \"\n",
+    "expectedOutput": "\"  \\u007f\"\n"
+  },
+  {
+    "input": "\"\\t\\taZ \\u4e2d\\nZZ\\n\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\n\"\n"
+  },
+  {
+    "input": "\"\\t\\ud83d\\ude00\\t\\t\\\\\\\\\"\n",
+    "expectedOutput": "\"\\\\ \\\\\"\n"
+  },
+  {
+    "input": "\"aa\\u4e2d\\ud83d\\ude00\\\\\\ud83d\\ude00\\n\\\"\"\n",
+    "expectedOutput": "\"\\\" \\n\"\n"
+  },
+  {
+    "input": "\"\\u007faZ \\u4e2d\\t\\\"\\u007f\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\u007f\"\n"
+  },
+  {
+    "input": "\"\\\\ \\tZ\\t\"\n",
+    "expectedOutput": "\"\\t Z\"\n"
+  },
+  {
+    "input": "\"\\\"\\\\a\\t\\\"\"\n",
+    "expectedOutput": "\"\\\" \\t\"\n"
+  },
+  {
+    "input": "\"\\u0000\\t\\u007f\\t Za \\\"\\u0000\"\n",
+    "expectedOutput": "\"\\u0000 \\\"\"\n"
+  },
+  {
+    "input": "\"\\u007f\\u007f\\u0000\\\\a\\u007fZa \\u007f\"\n",
+    "expectedOutput": "\"\\u007f  \"\n"
+  },
+  {
+    "input": "\"Zaa\\n  \\u4e2d\\u007f\\ud83d\\ude00\"\n",
+    "expectedOutput": "\"\\ud83d\\ude00 \\u007f\"\n"
+  },
+  {
+    "input": "\"\\u4e2d\\nZ\"\n",
+    "expectedOutput": "\"Z \\n\"\n"
+  },
+  {
+    "input": "\" \\u0000\\u4e2d\\n\\ud83d\\ude00\\\"\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\\"\"\n"
+  },
+  {
+    "input": "\"Z\\u4e2d\\\\\\n\\ud83d\\ude00\\t\\u4e2d\\ta \"\n",
+    "expectedOutput": "\"  a\"\n"
+  },
+  {
+    "input": "\"\\n\\u007f\\u007f\\\"\\ud83d\\ude00\\u007f\\u007f\"\n",
+    "expectedOutput": "\"\\u007f \\u007f\"\n"
+  },
+  {
+    "input": "\"\\nZ\\ud83d\\ude00\\t Z\"\n",
+    "expectedOutput": "\"Z  \"\n"
+  }
+]

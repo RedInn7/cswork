@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-10",
+  "title": "重排后相邻绝对差之和最小值",
+  "explanation": "## 思路\n\n答案是最大值减最小值，只需一遍扫描。\n\n## 正确性证明\n\n任何排列中，最小值到最大值之间的路径绝对差之和至少是二者差，因此总和不小于max−min。按非递减顺序排列，各差望远镜相消恰为max−min，达到下界。\n\n## 复杂度\n\nO(n)时间；参考读取输入O(n)空间，可流式降至O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));return str(max(a)-min(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#10-minimum-difference-sum",
+  "sourceContentHash": "e6ffc6f8887e8f04d1cf47125b9d610619f3c0a0166606f6effde09bc88b7e94",
+  "author": "CSWork"
+}

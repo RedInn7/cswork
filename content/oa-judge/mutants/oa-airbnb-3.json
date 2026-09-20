@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误跨过障碍",
+    "code": "def solve(raw):\n    from collections import deque\n    d=list(map(int,raw.split()));n,m,k=d[:3];a=d[3:]\n    if a[0] or a[-1]:return '-1'\n    dist=[-1]*(n*m);dist[0]=0;q=deque([0])\n    while q:\n        p=q.popleft();i,j=divmod(p,m)\n        for di,dj in ((1,0),(-1,0),(0,1),(0,-1)):\n            for step in range(1,k+1):\n                u=i+di*step;v=j+dj*step\n                if not (0<=u<n and 0<=v<m):break\n                z=u*m+v\n                if a[z]:continue\n                if dist[z]<0:dist[z]=dist[p]+1;q.append(z)\n    return str(dist[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略跳跃只走一步",
+    "code": "def solve(raw):\n    from collections import deque\n    d=list(map(int,raw.split()));n,m,k=d[:3];a=d[3:]\n    if a[0] or a[-1]:return '-1'\n    dist=[-1]*(n*m);dist[0]=0;q=deque([0])\n    while q:\n        p=q.popleft();i,j=divmod(p,m)\n        for di,dj in ((1,0),(-1,0),(0,1),(0,-1)):\n            for step in range(1,2):\n                u=i+di*step;v=j+dj*step\n                if not (0<=u<n and 0<=v<m):break\n                z=u*m+v\n                if a[z]:break\n                if dist[z]<0:dist[z]=dist[p]+1;q.append(z)\n    return str(dist[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

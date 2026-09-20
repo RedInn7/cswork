@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误不检查完整整数前缀",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];prefixes=set()\n    for v in a:\n        while v:prefixes.add(v);v//=10\n    answer=0\n    for v in b:\n        v//=10\n        while v:\n            if v in prefixes:answer=max(answer,len(str(v)))\n            v//=10\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把前缀长度少算一",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];prefixes=set()\n    for v in a:\n        while v:prefixes.add(v);v//=10\n    answer=0\n    for v in b:\n        while v:\n            if v in prefixes:answer=max(answer,len(str(v))-1)\n            v//=10\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

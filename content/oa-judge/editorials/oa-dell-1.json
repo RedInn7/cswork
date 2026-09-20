@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-dell-1",
+  "title": "互异固定长度窗口的最大和",
+  "explanation": "## 思路\n\n维护长k滑窗的和及值频次；频次表大小为k时元素互异，用独立的未找到标记更新最大值。\n\n## 正确性证明\n\n加入新元素、移出超过k的最旧元素后，频次表和总和精确对应当前窗口。窗口内元素互异当且仅当不同值数量为k。逐一检查所有长k窗口，取其最大和；不能把负数合法答案误判无解。\n\n## 复杂度\n\nO(n)期望时间、O(min(n,k))辅助空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];counts={};total=0;best=None\n    for i,v in enumerate(a):\n        total+=v;counts[v]=counts.get(v,0)+1\n        if i>=k:\n            old=a[i-k];total-=old;counts[old]-=1\n            if counts[old]==0:del counts[old]\n        if i+1>=k and len(counts)==k:best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/dell#1-optimizing-resource-allocation",
+  "sourceContentHash": "7953953ac301daa6b6eaf8c94eb88ae7eab162a98b0d164e517343ac61b2047b",
+  "author": "CSWork"
+}

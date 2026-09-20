@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-dell-2",
+  "title": "计数两个连续块组成的平衡二进制子串",
+  "explanation": "## 思路\n\n把字符串分成同字符连续段，相邻两段贡献其长度的较小值；累加全部相邻段。\n\n## 正确性证明\n\n合法子串只有一次字符转换，因此唯一跨越一对相邻段的边界。若取两侧各j个字符，可行j恰为1..min(两段长度)，且不同边界不会计数同一子串。累加即完整且无重计。\n\n## 复杂度\n\nO(n)时间、O(1)辅助空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.rstrip('\\r\\n');previous=0;current=0;last='';answer=0\n    for c in s:\n        if c==last:current+=1\n        else:answer+=min(previous,current);previous=current;current=1;last=c\n    return str(answer+min(previous,current))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/dell#2-count-binary-substrings",
+  "sourceContentHash": "d67b4a8868dc4446881a83426c2a8760c67115af272610786237d7ac827d1962",
+  "author": "CSWork"
+}

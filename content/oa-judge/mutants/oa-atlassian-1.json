@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误同字母覆盖前段",
+    "code": "def solve(raw):\n    s=raw.strip();counts=[0]*26;i=0\n    while i<len(s):\n        c=ord(s[i])-97;i+=1;j=i\n        while i<len(s) and s[i].isdigit():i+=1\n        counts[c]=int(s[j:i])\n    return ''.join(chr(97+i)+str(v) for i,v in enumerate(counts) if v)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误逆字母排序",
+    "code": "def solve(raw):\n    s=raw.strip();counts=[0]*26;i=0\n    while i<len(s):\n        c=ord(s[i])-97;i+=1;j=i\n        while i<len(s) and s[i].isdigit():i+=1\n        counts[c]+=int(s[j:i])\n    return ''.join(chr(97+i)+str(v) for i,v in reversed(list(enumerate(counts))) if v)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

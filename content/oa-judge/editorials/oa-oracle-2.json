@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-2",
+  "title": "使括号串合法的最少插入",
+  "explanation": "## 思路\n\n扫描时用余额记录尚未匹配的左括号。遇到右括号而余额为0，就必须补一个左括号；结束后给剩余左括号补右括号。\n\n## 正确性证明\n\n右括号前没有可用左括号时，任何合法结果都必须新增一个左括号。其余右括号可直接匹配已有左括号而无需增加操作。结束时每个未匹配左括号至少需要一个右括号，构造恰使用这些必需插入，因此最优。\n\n## 复杂度\n\nO(n)时间、O(1)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();balance=missing=0\n    for c in s:\n        if c=='(':balance+=1\n        elif balance:balance-=1\n        else:missing+=1\n    return str(missing+balance)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#2-balancing-parentheses",
+  "sourceContentHash": "83c2674fb7cf6e62702084989fc4ecb7610e25cba136fb75df183c5a9582fd04",
+  "author": "CSWork"
+}

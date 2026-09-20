@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误完全不升级强度",
+    "code": "def solve(raw):\n    from math import isqrt\n    d=list(map(int,raw.split()));out=[]\n    for i in range(d[0]):\n        a,b=d[1+2*i:3+2*i];s=a+b;r=isqrt(s)\n        def f(k):return k-1+(a+k-1)//k+(b+k-1)//k\n        best=min(f(r),f(r+1));q=isqrt((best+1)**2-4*s)\n        for k in range(max(1,(best+1-q)//2-1),(best+1+q)//2+2):best=min(best,f(k))\n        out.append(str(a+b))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误多计一次初始强度升级",
+    "code": "def solve(raw):\n    from math import isqrt\n    d=list(map(int,raw.split()));out=[]\n    for i in range(d[0]):\n        a,b=d[1+2*i:3+2*i];s=a+b;r=isqrt(s)\n        def f(k):return k-1+(a+k-1)//k+(b+k-1)//k\n        best=min(f(r),f(r+1));q=isqrt((best+1)**2-4*s)\n        for k in range(max(1,(best+1-q)//2-1),(best+1+q)//2+2):best=min(best,f(k))\n        out.append(str(best+1))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

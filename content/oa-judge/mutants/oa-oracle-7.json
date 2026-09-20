@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把0判为幂",
+    "code": "def solve(raw):\n    a=map(int,raw.split()[1:]);return ' '.join(str(int((v&(v-1))==0)) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误遗漏2的0次幂",
+    "code": "def solve(raw):\n    a=map(int,raw.split()[1:]);return ' '.join(str(int(v>1 and (v&(v-1))==0)) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-9",
+  "title": "合并两个等长有序数组",
+  "explanation": "## 思路\n\n两个指针比较尚未输出的最小值，取较小者；一边耗尽后输出另一边余项。\n\n## 正确性证明\n\n每个数组未输出部分的首项是该部分最小值，两首项较小者即全体未输出值的最小值。依次输出维持有序且每项恰输出一次。\n\n## 复杂度\n\nO(n)时间、O(n)输入输出空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];b=d[n+1:];i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]<=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    out.extend(a[i:]);out.extend(b[j:]);return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#9-merge-2-arrays",
+  "sourceContentHash": "0ac6504999ef0620f80c7d57feb3f21d158afb9c4e155fd81774e13727588f8e",
+  "author": "CSWork"
+}

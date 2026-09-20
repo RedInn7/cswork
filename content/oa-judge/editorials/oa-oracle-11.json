@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-11",
+  "title": "反复合并两数的最小总代价",
+  "explanation": "## 思路\n\n最小堆每次取出最小的两个数合并，累加合并值并放回堆。\n\n## 正确性证明\n\n把归并过程看成二叉树，每个初值的总代价是其值乘叶深。最深的兄弟叶可交换为最小两个权重而不增加总代价；收缩它们得到规模减一的同型问题。因此存在最优解先合并最小两项，归纳得贪心最优；零权重也满足交换不等式。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import heapq\n    a=list(map(int,raw.split()[1:]));heapq.heapify(a);answer=0\n    while len(a)>1:\n        total=heapq.heappop(a)+heapq.heappop(a);answer+=total;heapq.heappush(a,total)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#11-array-reduction-1",
+  "sourceContentHash": "2f8e6f37c172f6f895a71685f64c35a010432b93d6a1dfc46d0818f25fb37c4f",
+  "author": "CSWork"
+}

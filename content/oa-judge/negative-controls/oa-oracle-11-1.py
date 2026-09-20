@@ -1,0 +1,10 @@
+def solve(raw):
+    import heapq
+    a=list(map(int,raw.split()[1:]));heapq.heapify(a);answer=0
+    while len(a)>1:
+        total=heapq.heappop(a)+heapq.heappop(a);answer+=total;heapq.heappush(a,total)
+    return str(a[0])
+
+if __name__ == "__main__":
+    import sys
+    print(solve(sys.stdin.read()))

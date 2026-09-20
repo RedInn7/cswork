@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cloudflare-1",
+  "title": "数据重新分配后最少保留分区数",
+  "explanation": "## 思路\n\n总已用量不变，按容量降序取最短前缀使总容量达到总使用量。\n\n## 正确性证明\n\n数据可拆分，因此一个保留子集可行当且仅当容量和足够。固定分区数量时最大容量和由最大的那些容量获得，所以第一次足够的前缀长度就是最小可行数量。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间；总量用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];need=sum(d[n+1:]);total=0;answer=0\n    if need==0:return '0'\n    for v in sorted(a,reverse=True):\n        total+=v;answer+=1\n        if total>=need:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cloudflare#1-determine-minimum-partitions-required",
+  "sourceContentHash": "f6894394ce4ee3d896554dbc9e597c938c89a5bd2a25a7a53cf15350182a89a5",
+  "author": "CSWork"
+}
