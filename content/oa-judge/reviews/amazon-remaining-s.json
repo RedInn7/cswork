@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-376",
+      "status": "blocked",
+      "reason": "first r servers不包含r且r=0合法但候选为空；样例与最终负载冲突，不能捏造0特例。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/get-server-id.md",
+      "rawGitBlob": "4a6d6640b864e1a5a4bf87d428eb0c816c2b9185",
+      "rawSha256": "508c031e61e3bc71fd6396ee2fc9905e9e02ebcaf92cdeafd34f2e5b5f22a745",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "55a96e75144c5f310bd55cd80baa9db3c10c84d24e453797b7b8a47f1070f5be"
+    },
+    {
+      "id": "oa-amazon-377",
+      "status": "blocked",
+      "reason": "与376同义文本有相同0请求及候选端点歧义，缺少独立补证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/get-server-ids.md",
+      "rawGitBlob": "7ca23962930a529ca0e64c55e011d0fecfc824ba",
+      "rawSha256": "d3cbb7a321b12a3895962fe47177af67bc958fffc41cf3fdf826b7cf2e987106",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "1164042d95383519b63e32858494faee81821baf7c14520c26a565f8fec1eddb"
+    },
+    {
+      "id": "oa-amazon-378",
+      "status": "authored",
+      "reason": "每个查询k求观众数最大的k个地区的观众总数。相同观众数的地区分别计数；查询互不影响并按输入顺序回答。 第一行n q，第二行n个观众数，第三行q个查询。原界1≤n,q≤100000，1≤人数≤10^9，1≤k≤n。本站输出精确整数，不受原int返回签名限制。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/get-success-value.md",
+      "rawGitBlob": "19f963f66033fc3a233272c1cd5461ac6ee2f690",
+      "rawSha256": "5c111c6c5d2847599cb5583d788c1393aa6f3f4f5c2ace09e19a4cb825b2650f",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "f7300fdfccc7500a66bdc598ab9f924c38b049e6d6e3b8b49c7d0bad601f2be1"
+    },
+    {
+      "id": "oa-amazon-379",
+      "status": "authored",
+      "reason": "每件货物独立选择容量严格大于重量的卡车：先最小化容量，再选择该容量中最小原下标。下标从0开始，没有可用车输出−1；装载不消耗卡车容量。 第一行n m，第二行n个容量，第三行m个重量。原界1≤n,m≤100000，容量和重量均1..10^9。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/get-trucks-for-items.md",
+      "rawGitBlob": "9943d42d994f47c693b92fdcb52715cb2a370af2",
+      "rawSha256": "1d16f228d1c17117887d1934bdfe9b06c90e54f5eded5f405e32e99133701c73",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "51dc8279564eadc4650d46f3ae159075b85d480d9ef47daa89e8c80ab5b3a20b"
+    },
+    {
+      "id": "oa-amazon-380",
+      "status": "authored",
+      "reason": "初始位置两两不同。依次把from位置的数据移到to；原文保证每步from有数据、to没有数据。最后按升序输出全部有数据的位置。 第一行n m，第二行n个初始位置，随后m行from to。原文无数值界；本站补充0≤n,m≤200000，位置ID为−10^9..10^9。输入满足上述原有效迁移保证，故n=0时m只能为0。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/location-of-data-after-transfers.md",
+      "rawGitBlob": "d3b7597e8479673eaee6f2b6d0452ba1fc7211f1",
+      "rawSha256": "d310451b039101c0efb4e9d2156aa27bd0f342f2949bbba56a29d94f380b7718",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "2806e33c9a68de8a913be199ff0129ad5184df32e968177b2a78f18297c43090"
+    },
+    {
+      "id": "oa-amazon-381",
+      "status": "blocked",
+      "reason": "原域未限制正数；全零是否允许作为空山峰未定义，不能强加a[i]≥1绕过。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/make-array-bitonic-deshaw.md",
+      "rawGitBlob": "90f8c58f5d8081fe47a021310da85163479a7e30",
+      "rawSha256": "c902bff5ef0ac84c3ac3db0be0234d12af27afbe096b7d884e461680537cc768",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "76c956189b2ab505c0dd0a88c5db230d2250861d3577c2eb2e37485918f44551"
+    },
+    {
+      "id": "oa-amazon-382",
+      "status": "blocked",
+      "reason": "原digits允许0，例如0/1与数字和1可构造1、10、100…无最大值，缺少无界规则。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/max-lucky-numbers.md",
+      "rawGitBlob": "55bd60a66ee78f3885869a64ad428dcd6572881e",
+      "rawSha256": "971790bf791a5940c420071377c5e98ab009dae233d828185017b3e5057c06c8",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "e0795d3405bd9037745ffb1ce82f41e627c958999eb5d07caec5ce7c1b8b3f16"
+    },
+    {
+      "id": "oa-amazon-383",
+      "status": "authored",
+      "reason": "所有袋子的米粒数两两不同。选择至少两个袋子，使升序排列后每项的平方恰等于后一项，返回可选最多袋数，无解返回−1。 第一行n，第二行n个互异整数。恢复原界1≤n≤200000、2≤riceBags[i]≤10^6，不能采用被HTML清理拼接的错误约束。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/max-set-size.md",
+      "rawGitBlob": "da3ad05e71427b2e5ecfb448841362caed796222",
+      "rawSha256": "fd8c15fd11966a2b8f8395f74ed9bd65502bfb0222c3e7ae9fd296398efd069f",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "dad00ca45162b2247c33e8055caa0a2b98be15683da30c4c241a30189051cf42"
+    },
+    {
+      "id": "oa-amazon-384",
+      "status": "authored",
+      "reason": "给正整数数组的每一项选择正号或负号，要求每个非空前缀的带符号和严格大于0，最大化负号数量。 第一行n，第二行n个整数。原界1≤n≤100000，1≤a[i]≤10^9；前缀为0不合法。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/maximize-negative-signs.md",
+      "rawGitBlob": "3d1d32a7cb825a0bb829de9570bb0df28c76cee5",
+      "rawSha256": "80f7f8e2f25c1cad14af3fcc23f2f664697378e00d83a1a867f852bad2c39372",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "2b1e96fbca85eef012bf4b484cb6ec75b729f9cee3f8a25fcb5bcf2fa3278c75"
+    },
+    {
+      "id": "oa-amazon-385",
+      "status": "authored",
+      "reason": "给定小写字母和问号组成的字符串，每个问号可独立替换成任意小写字母。求一个连续子串的最大偶数长度，使其前后两半完全相同；两半必须紧邻。 输入一行字符串。原文没有长度界；本站补充0≤长度≤5000，字符为a..z或?。空串和不存在非空合法子串时输出0。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/maximize-repeated-substring-length.md",
+      "rawGitBlob": "a205718c28a16229e546d0afcc94bac744dc9825",
+      "rawSha256": "c0158a66d1079732762e4bae5a6089f0b028f75c38400c0446a33e6e84956e3b",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "723a796fa95ddd92dfdeb50c6ba17671ce4df759a25e50970a51d4edf4f63035"
+    },
+    {
+      "id": "oa-amazon-386",
+      "status": "authored",
+      "reason": "每次删除一项：若它在端点，仅删除；若它在中间，删除该项并把其左右两项合并为两者之和。必须最终剩一项，最大化最终值。 第一行n，第二行n个整数。保留原n≤100000及−10^9≤a[i]≤10^9；本站明确n≥1，最终不能选择空数组。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/maximize-the-array-value-amazon.md",
+      "rawGitBlob": "b00939363737de2c2777c972dccbce43ae817bb9",
+      "rawSha256": "62bd594aa3eb4e516982a5592c213ae94fcc6e424c8aba98caf36a4ddf7eaef9",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "61d3d7fecf56a9158a0e2b7694ef7303b649ab1de04c5952aec5ef1e41961a72"
+    },
+    {
+      "id": "oa-amazon-387",
+      "status": "blocked",
+      "reason": "定义单对距离却例(())输出多对和4，()()例3又不要求全匹配；配对数量、复用与合法性不明。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/maximum-score-in-balanced-string.md",
+      "rawGitBlob": "bd426868cd2a25d27c4beeaa7ba7ccaec47536f3",
+      "rawSha256": "784dcc7b1b702b854133d952e3eb342355e215354f9045466b0904677774b2e2",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "0facba091e4389273abcd3b7d9f68cec9520c3db1f42653600e21f333315b372"
+    },
+    {
+      "id": "oa-amazon-388",
+      "status": "authored",
+      "reason": "商品i初始尺寸size[i]，每增加1支付cost[i]，不能减小。使所有最终尺寸互不相同，求最少总费用。 第一行n，第二行n个尺寸，第三行n个单位费用。OCR141/142/143及同题补文恢复完整原界：1≤n≤200000，1≤size[i]≤10^9，1≤cost[i]≤10000。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/minimal-cost-to-increase-package-size.md",
+      "rawGitBlob": "e1682db29ca2c130f5a38fba4986996ee775717d",
+      "rawSha256": "26a24637731e3f9c81e35f60a4afe2b5e788c312f2b764ef4dcc2f48c8d4c764",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "fastprep/Amazon/amazon-get-minimal-cost.md",
+          "rawGitBlob": "aa8d52fd2362eee1dc5cbc6b165a7a2cb6c3472a",
+          "rawSha256": "4e97a7959d548ac72619ecf50330c5b437f823ff1a717b34af0d6249ee111db9"
+        },
+        {
+          "rawPath": "OA LIST/Amazon_OA(包括新版AI_Codinig题）/141_image.txt",
+          "rawGitBlob": "08db820d711aa9a14a18550e8cb151025db7ef1a",
+          "rawSha256": "30d4622c10368afdaa87fc39e1ab76830c071276825dfa810f3abcb44e010da6"
+        },
+        {
+          "rawPath": "OA LIST/Amazon_OA(包括新版AI_Codinig题）/142_image.txt",
+          "rawGitBlob": "c08844d18402449b9e2307273afdef790b342f4c",
+          "rawSha256": "1918e317b0798f04d3e9b011829d098ab624badb54e10a8ffcf3974dcced3643"
+        },
+        {
+          "rawPath": "OA LIST/Amazon_OA(包括新版AI_Codinig题）/143_image.txt",
+          "rawGitBlob": "fbe6eb8c17648c2f9a046f072f8069cc17a5904a",
+          "rawSha256": "39f3b3f95f8be1efc3390a2ca675422450a9a26e39f41c6cadb0e3f8f8a036c8"
+        }
+      ],
+      "catalogContentHash": "68ce390b7e83b530941b31556f15349a1850863eaa9ad2d779abcb369cd89a24"
+    },
+    {
+      "id": "oa-amazon-389",
+      "status": "authored",
+      "reason": "每部电影有上映时刻与时长，可在上映后任意时刻开始。两类各至少看一部，不能同时观看，允许连续无缝切换，求最早完成时刻，两类的先后顺序均可。 第一行n m；接着四行依次为n个喜剧上映时刻、n个喜剧时长、m个剧情上映时刻、m个剧情时长。原界1≤n,m≤100000，四数组值均1..10^6。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/minimum-time-spent.md",
+      "rawGitBlob": "af677ea4dfe9e1b811abf8ab9f60cd60e51aa6f9",
+      "rawSha256": "c3ddfa1cbba866666c767ab61eac33745530ab7e40436c2456bb31a3a9d44137",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "6b092631a93dc5c1393693b75e32240d626aa8b4263ca6a7f654fadc94e6e6a8"
+    },
+    {
+      "id": "oa-amazon-390",
+      "status": "authored",
+      "reason": "输入两个同变量的有限多项式之积，允许负整数指数（Laurent多项式）。合并同幂项，按指数严格降序输出展开式，无括号无空格，不能丢弃负幂或使用浮点系数。 输入一行(P)(Q)，恰四个括号，变量为同一个ASCII字母a..z或A..Z。原文没有数值界，本站补充每因子1..200项、每个原始项系数绝对值≤10^9、指数−10^9..10^9；重复幂、零系数与常数因子允许。具体语法：项之间以+或-连接，首项可带符号；项可为非负十进制常数，或可省略绝对值系数1的变量，后跟可省略的^有符号十进制整数指数。省略指数为1，变量省略为常数项；例如(-x^-2+3)(2x+1)，也接受x^+2。除行结束符外没有空白，不使用Unicode上标；整数数字采用通常十进制写法。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/unknown-math-challenge.md",
+      "rawGitBlob": "a1bc3a2dd775e7c548328ca4618bae79c7ad6550",
+      "rawSha256": "4c9d57a304a023afec1c7afae0935c9f220d82f6befa7bfc6aeb1b93bf592fc2",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "5fe700e18d195e893bf8e5b948a18fef6cbe6817f64bd935c189d1cefb7d0c15"
+    },
+    {
+      "id": "oa-amazon-391",
+      "status": "authored",
+      "reason": "一次从有箱子的堆移一个箱子至另一堆。首先让最终最大堆与最小堆的差尽可能小，在达到该最小差的方案中求最少操作数。初始数量允许重复。 第一行n，第二行n个箱子数量。原界1≤n≤100000，1≤boxes[i]≤10^9；总箱数保持不变，不给定外部差值参数。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Amazon/warehouse-allocation.md",
+      "rawGitBlob": "06c8bb3436854c5a9a191ffd2fffb94c49b35ba2",
+      "rawSha256": "c7e55a0f78cfe3f43c51c696b4403a8cfddbc6c3a5e1169316d73d02c51fbe78",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "7f3a8cdd54e2c328bb050963413ca46bf084b1304e76ff9dd1f396fa65dcaf64"
+    }
+  ]
+}

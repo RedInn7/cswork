@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误固定喜剧先看",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:2+2*n];c=d[2+2*n:2+2*n+m];e=d[2+2*n+m:]\n    first=min(x+y for x,y in zip(a,b));second=min(x+y for x,y in zip(c,e))\n    return str(min(max(first,x)+y for x,y in zip(c,e)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略第二部上映时刻",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:2+2*n];c=d[2+2*n:2+2*n+m];e=d[2+2*n+m:]\n    first=min(x+y for x,y in zip(a,b));second=min(x+y for x,y in zip(c,e))\n    return str(min(min(first+y for x,y in zip(c,e)),min(max(second,x)+y for x,y in zip(a,b))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

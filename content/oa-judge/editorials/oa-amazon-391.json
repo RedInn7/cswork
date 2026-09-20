@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-391",
+  "title": "仓库差距最小之后的最少箱子搬运",
+  "explanation": "## 思路\n\n设base=floor(sum/n)，计算低于base的总缺口D及高于base+1的总超额E，答案为max(D,E)。\n\n## 正确性证明\n\n总和固定时最小差为0或1，最终各堆必为base或base+1。令r=sum mod n、H为原本大于base的堆数。把尽可能多的r个高位目标交给这H堆，可最小化从超量堆取出的数量。若r≤H，恰需补低端D；若r>H，额外r−H个高位目标也需补1。又由总和得到E=D+r−H，因此最优搬运数为D+max(0,r−H)=max(D,E)。每步从超额堆向缺额堆移动一箱，恰能实现该下界。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间，使用64位或任意精度整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));base=sum(a)//len(a)\n    deficit=sum(max(0,base-v) for v in a);excess=sum(max(0,v-base-1) for v in a)\n    return str(max(deficit,excess))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#391-warehouse-allocation-distribute",
+  "sourceContentHash": "7f3a8cdd54e2c328bb050963413ca46bf084b1304e76ff9dd1f396fa65dcaf64",
+  "author": "CSWork"
+}

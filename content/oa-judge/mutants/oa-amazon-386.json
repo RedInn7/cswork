@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误全负可选空集",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));totals=[0,0]\n    for i,v in enumerate(a):totals[i%2]+=max(v,0)\n    return str(max(totals) if max(totals)>0 else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误混合两种奇偶",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));totals=[0,0]\n    for i,v in enumerate(a):totals[i%2]+=max(v,0)\n    return str(sum(totals) if max(totals)>0 else max(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-390",
+  "title": "含负整数幂的两个多项式展开",
+  "explanation": "## 思路\n\n逐项扫描时将指数内符号与项符号分开，分别按指数合并两因子；逐对相乘，系数相乘、指数相加，累加至对应指数。最后降序格式化并去掉零项。\n\n## 正确性证明\n\n每个原始单项式可唯一解析为系数和指数，负指数符号在^后被消费，不会成为下一项符号。分配律说明积中指数e的系数恰是所有指数和为e的系数乘积之和；逐对累加覆盖且只覆盖这些项。去掉零系数与指定降序、符号省略仅改变表示，不改变多项式，因此输出唯一规范展开式。\n\n## 复杂度\n\n设原项数为T、U，输出不同幂数K≤TU≤40000，时间O(TU+K log K)，空间O(T+U+K)。系数使用任意精度整数，绝对值最多4×10^22，指数可达±2×10^9。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import re\n    text=raw.strip();letter=next((c for c in text if c.isalpha()),'x')\n    pattern=re.compile(r'([+-]?)(?:(\\d+)([a-zA-Z])?|([a-zA-Z]))(?:\\^([+-]?\\d+))?')\n    def parse(s):\n        out={};pos=0\n        while pos<len(s):\n            m=pattern.match(s,pos);sign,digits,v1,v2,exponent=m.groups();c=int(digits) if digits is not None else 1\n            if sign=='-':c=-c\n            e=int(exponent) if exponent is not None else (1 if v1 or v2 else 0)\n            out[e]=out.get(e,0)+c;pos=m.end()\n        return out\n    p,q=text[1:-1].split(')(');a=parse(p);b=parse(q);out={}\n    for e,c in a.items():\n        for f,d in b.items():out[e+f]=out.get(e+f,0)+c*d\n    answer=[]\n    for e in sorted(out,reverse=True):\n        c=out[e]\n        if c==0:continue\n        v=abs(c);body=str(v) if e==0 else ('' if v==1 else str(v))+letter+('' if e==1 else '^'+str(e))\n        answer.append(('-' if c<0 else ('+' if answer else ''))+body)\n    return ''.join(answer) or '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#390-math-challenge",
+  "sourceContentHash": "5fe700e18d195e893bf8e5b948a18fef6cbe6817f64bd935c189d1cefb7d0c15",
+  "author": "CSWork"
+}

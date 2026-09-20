@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略最后一次迁移",
+    "code": "def solve(raw):\n    d=iter(map(int,raw.split()));n=next(d);m=next(d);positions={next(d) for _ in range(n)}\n    for _ in range(max(0,m-1)):\n        u=next(d);v=next(d);positions.remove(u);positions.add(v)\n    return str(len(positions))+'\\n'+' '.join(map(str,sorted(positions)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误降序输出",
+    "code": "def solve(raw):\n    d=iter(map(int,raw.split()));n=next(d);m=next(d);positions={next(d) for _ in range(n)}\n    for _ in range(m):\n        u=next(d);v=next(d);positions.remove(u);positions.add(v)\n    return str(len(positions))+'\\n'+' '.join(map(str,sorted(positions,reverse=True)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

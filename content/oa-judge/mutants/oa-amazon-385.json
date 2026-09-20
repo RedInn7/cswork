@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误问号不能替换",
+    "code": "def solve(raw):\n    s=raw.removesuffix('\\n').removesuffix('\\r');n=len(s)\n    for h in range(n//2,0,-1):\n        run=0\n        for i in range(n-h):\n            run=run+1 if s[i]==s[i+h] else 0\n            if run>=h:return str(2*h)\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误输出半长",
+    "code": "def solve(raw):\n    s=raw.removesuffix('\\n').removesuffix('\\r');n=len(s)\n    for h in range(n//2,0,-1):\n        run=0\n        for i in range(n-h):\n            run=run+1 if s[i]==s[i+h] or s[i]=='?' or s[i+h]=='?' else 0\n            if run>=h:return str(h)\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

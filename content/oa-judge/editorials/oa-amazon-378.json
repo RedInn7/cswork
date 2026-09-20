@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-378",
+  "title": "前若干名地区的观众总数",
+  "explanation": "## 思路\n\n降序排序观众数并构建前缀和，第k个前缀即查询答案。\n\n## 正确性证明\n\n任意选中集合若漏掉一个更大的值，交换进来不会降低和，反复交换得到降序前k项。因此它们的和最大；前缀累加准确保存该和。\n\n## 复杂度\n\nO(n log n+q)时间，O(n+q)空间，最大答案10^14。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n],reverse=True);prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    return ' '.join(str(prefix[k]) for k in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#378-get-success-value-fungible-",
+  "sourceContentHash": "f7300fdfccc7500a66bdc598ab9f924c38b049e6d6e3b8b49c7d0bad601f2be1",
+  "author": "CSWork"
+}
