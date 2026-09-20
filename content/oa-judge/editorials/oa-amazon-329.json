@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-329",
+  "title": "产品等类关系传递后的各组大小",
+  "explanation": "## 思路\n\n将标识映射为整数，用按大小合并及路径压缩的并查集合并每对；最后收集根的大小并排序。\n\n## 正确性证明\n\n初始每个产品为独立连通分量，加入一条等类边只会把两端所在分量合并。同一根不重复合并，避免自环或重复关系增加人数。所有边处理完恰为图的连通分量，即关系的最小传递闭包。每个根记录成员数，排序后为要求的类别大小列表。\n\n## 复杂度\n\n时间O((n+m)α(n)+n log n)，空间O(n+m+标识字符数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    names,pairs=json.loads(''.join(d));position={v:i for i,v in enumerate(names)};parent=list(range(len(names)));size=[1]*len(names)\n    def find(i):\n        while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]\n        return i\n    for a,b in pairs:\n        x=find(position[a]);y=find(position[b])\n        if x==y:continue\n        if size[x]<size[y]:x,y=y,x\n        parent[y]=x;size[x]+=size[y]\n    answer=sorted(size[i] for i in range(len(names)) if parent[i]==i)\n    return ' '.join(map(str,answer)) if answer else '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#329-product-category-group-sizes",
+  "sourceContentHash": "972ee032f07076a325c4e14672b4297520308cc0f12743fcfcef184389114b6a",
+  "author": "CSWork"
+}

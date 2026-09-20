@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不足三件错误清空队列",
+    "code": "def solve(d):\n    import json\n    from collections import deque\n    queries=json.loads(''.join(d));queue=deque();out=[]\n    for op,value in queries:\n        if op=='INSERT':queue.append(value)\n        elif len(queue)<3:out.append(['N/A']);queue.clear()\n        else:out.append([queue.popleft(),queue.popleft(),queue.popleft()])\n    return json.dumps(out,ensure_ascii=True,separators=(',',':')).replace(' ','\\\\u0020')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误倒序发货",
+    "code": "def solve(d):\n    import json\n    from collections import deque\n    queries=json.loads(''.join(d));queue=deque();out=[]\n    for op,value in queries:\n        if op=='INSERT':queue.append(value)\n        elif len(queue)<3:out.append(['N/A'])\n        else:out.append([queue.popleft(),queue.popleft(),queue.popleft()][::-1])\n    return json.dumps(out,ensure_ascii=True,separators=(',',':')).replace(' ','\\\\u0020')\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

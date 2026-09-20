@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略传递合并只查原根",
+    "code": "def solve(d):\n    import json\n    names,pairs=json.loads(''.join(d));position={v:i for i,v in enumerate(names)};parent=list(range(len(names)));size=[1]*len(names)\n    def find(i):\n        while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]\n        return i\n    for a,b in pairs:\n        x=position[a];y=position[b]\n        if x==y:continue\n        if size[x]<size[y]:x,y=y,x\n        parent[y]=x;size[x]+=size[y]\n    answer=sorted(size[i] for i in range(len(names)) if parent[i]==i)\n    return ' '.join(map(str,answer)) if answer else '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误孤立点不算类别",
+    "code": "def solve(d):\n    import json\n    names,pairs=json.loads(''.join(d));position={v:i for i,v in enumerate(names)};parent=list(range(len(names)));size=[1]*len(names)\n    def find(i):\n        while parent[i]!=i:parent[i]=parent[parent[i]];i=parent[i]\n        return i\n    for a,b in pairs:\n        x=find(position[a]);y=find(position[b])\n        if x==y:continue\n        if size[x]<size[y]:x,y=y,x\n        parent[y]=x;size[x]+=size[y]\n    answer=sorted(size[i] for i in range(len(names)) if parent[i]==i and size[i]>1)\n    return ' '.join(map(str,answer)) if answer else '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

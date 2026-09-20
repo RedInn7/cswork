@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-amazon-335",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "删除当前连续同字符段直到清空的最少次数",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Amazon"
+    ],
+    "description": "每次选择当前字符串一段非空连续子串，只有其中全部字符相同才能删除；删除后左右部分拼接，可能形成新的同字符连续段。求清空的最少删除次数。标题中的频率顺序没有额外操作要求，不按字符频率排序删除。\n\n标准I/O、样例和题解由本站独立编写，明确标注本站的范围不是来源原约束。",
+    "input": "输入一个JSON字符串。原文无长度和字符域界；本站0≤长度≤200，字符按Unicode字符计，空字符串合法。JSON字符串中的空白和非ASCII须转义，空格写\\u0020。",
+    "output": "输出一个整数答案。",
+    "explanation": "答案3、2、0。abaca先删b、c再一次删aaa；来源统计原始同字符段会错给5，不能忽略删除后拼接。",
+    "hints": [
+      "区间DP。独立删除左字符给出1+dp[l+1][r]；若s[k]=s[l]，先清掉中间，再把左字符与k在同次删除中处理，候选dp[l+1][k−1]+dp[k][r]。空区间0，枚举所有同字符k取最小。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "\"abaca\"\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "\"aba\"\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "\"\"\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "\"abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab\"\n",
+      "expectedOutput": "101\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "\"\\ud800\\udc00\\ud800\\udc01\\ud800\\udc02\\ud800\\udc03\\ud800\\udc04\\ud800\\udc05\\ud800\\udc06\\ud800\\udc07\\ud800\\udc08\\ud800\\udc09\\ud800\\udc0a\\ud800\\udc0b\\ud800\\udc0c\\ud800\\udc0d\\ud800\\udc0e\\ud800\\udc0f\\ud800\\udc10\\ud800\\udc11\\ud800\\udc12\\ud800\\udc13\\ud800\\udc14\\ud800\\udc15\\ud800\\udc16\\ud800\\udc17\\ud800\\udc18\\ud800\\udc19\\ud800\\udc1a\\ud800\\udc1b\\ud800\\udc1c\\ud800\\udc1d\\ud800\\udc1e\\ud800\\udc1f\\ud800\\udc20\\ud800\\udc21\\ud800\\udc22\\ud800\\udc23\\ud800\\udc24\\ud800\\udc25\\ud800\\udc26\\ud800\\udc27\\ud800\\udc28\\ud800\\udc29\\ud800\\udc2a\\ud800\\udc2b\\ud800\\udc2c\\ud800\\udc2d\\ud800\\udc2e\\ud800\\udc2f\\ud800\\udc30\\ud800\\udc31\\ud800\\udc32\\ud800\\udc33\\ud800\\udc34\\ud800\\udc35\\ud800\\udc36\\ud800\\udc37\\ud800\\udc38\\ud800\\udc39\\ud800\\udc3a\\ud800\\udc3b\\ud800\\udc3c\\ud800\\udc3d\\ud800\\udc3e\\ud800\\udc3f\\ud800\\udc40\\ud800\\udc41\\ud800\\udc42\\ud800\\udc43\\ud800\\udc44\\ud800\\udc45\\ud800\\udc46\\ud800\\udc47\\ud800\\udc48\\ud800\\udc49\\ud800\\udc4a\\ud800\\udc4b\\ud800\\udc4c\\ud800\\udc4d\\ud800\\udc4e\\ud800\\udc4f\\ud800\\udc50\\ud800\\udc51\\ud800\\udc52\\ud800\\udc53\\ud800\\udc54\\ud800\\udc55\\ud800\\udc56\\ud800\\udc57\\ud800\\udc58\\ud800\\udc59\\ud800\\udc5a\\ud800\\udc5b\\ud800\\udc5c\\ud800\\udc5d\\ud800\\udc5e\\ud800\\udc5f\\ud800\\udc60\\ud800\\udc61\\ud800\\udc62\\ud800\\udc63\\ud800\\udc64\\ud800\\udc65\\ud800\\udc66\\ud800\\udc67\\ud800\\udc68\\ud800\\udc69\\ud800\\udc6a\\ud800\\udc6b\\ud800\\udc6c\\ud800\\udc6d\\ud800\\udc6e\\ud800\\udc6f\\ud800\\udc70\\ud800\\udc71\\ud800\\udc72\\ud800\\udc73\\ud800\\udc74\\ud800\\udc75\\ud800\\udc76\\ud800\\udc77\\ud800\\udc78\\ud800\\udc79\\ud800\\udc7a\\ud800\\udc7b\\ud800\\udc7c\\ud800\\udc7d\\ud800\\udc7e\\ud800\\udc7f\\ud800\\udc80\\ud800\\udc81\\ud800\\udc82\\ud800\\udc83\\ud800\\udc84\\ud800\\udc85\\ud800\\udc86\\ud800\\udc87\\ud800\\udc88\\ud800\\udc89\\ud800\\udc8a\\ud800\\udc8b\\ud800\\udc8c\\ud800\\udc8d\\ud800\\udc8e\\ud800\\udc8f\\ud800\\udc90\\ud800\\udc91\\ud800\\udc92\\ud800\\udc93\\ud800\\udc94\\ud800\\udc95\\ud800\\udc96\\ud800\\udc97\\ud800\\udc98\\ud800\\udc99\\ud800\\udc9a\\ud800\\udc9b\\ud800\\udc9c\\ud800\\udc9d\\ud800\\udc9e\\ud800\\udc9f\\ud800\\udca0\\ud800\\udca1\\ud800\\udca2\\ud800\\udca3\\ud800\\udca4\\ud800\\udca5\\ud800\\udca6\\ud800\\udca7\\ud800\\udca8\\ud800\\udca9\\ud800\\udcaa\\ud800\\udcab\\ud800\\udcac\\ud800\\udcad\\ud800\\udcae\\ud800\\udcaf\\ud800\\udcb0\\ud800\\udcb1\\ud800\\udcb2\\ud800\\udcb3\\ud800\\udcb4\\ud800\\udcb5\\ud800\\udcb6\\ud800\\udcb7\\ud800\\udcb8\\ud800\\udcb9\\ud800\\udcba\\ud800\\udcbb\\ud800\\udcbc\\ud800\\udcbd\\ud800\\udcbe\\ud800\\udcbf\\ud800\\udcc0\\ud800\\udcc1\\ud800\\udcc2\\ud800\\udcc3\\ud800\\udcc4\\ud800\\udcc5\\ud800\\udcc6\\ud800\\udcc7\"\n",
+      "expectedOutput": "200\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "\"\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\"\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "\"cc\"\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "\"bccaab\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "\"bbabcaac\"\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "\"babcccca\"\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "\"bcacaac\"\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "\"cab\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "\"\"\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "\"ccc\"\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "\"baaba\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "\"b\"\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "\"bc\"\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "\"cac\"\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "\"\"\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "\"babc\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "\"b\"\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "\"bbab\"\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "\"bbacbbc\"\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "\"bcac\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "\"bbbacb\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "\"cbc\"\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "\"caab\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "\"aacca\"\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "\"aaa\"\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "\"cbbbbaba\"\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "\"bbcab\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "\"aaabcb\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "\"\"\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 31",
+      "input": "\"bcaa\"\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

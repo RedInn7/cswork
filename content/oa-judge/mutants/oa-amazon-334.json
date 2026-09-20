@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误套用首项绝对值加总变差",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));fall=rise=0\n    for x,y in zip(a,a[1:]):\n        if y<x:fall+=x-y\n        else:rise+=y-x\n    return str(fall+rise+abs(a[0]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误省掉整体剩余温度",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));fall=rise=0\n    for x,y in zip(a,a[1:]):\n        if y<x:fall+=x-y\n        else:rise+=y-x\n    return str(fall+rise)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

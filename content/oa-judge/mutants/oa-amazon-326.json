@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误不包含右端点",
+    "code": "def solve(d):\n    from array import array\n    from bisect import bisect_left,bisect_right\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));d[2:2+n]=[None]*n;a.sort();prefix=array('Q',[0]);total=0\n    for v in a:total+=v;prefix.append(total)\n    out=[];at=2+n\n    for _ in range(m):\n        low=int(d[at]);high=int(d[at+1]);at+=2;l=bisect_left(a,low);r=bisect_left(a,high)\n        out.append(str(r-l)+' '+str(prefix[r]-prefix[l]))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误返回所有进程功耗和",
+    "code": "def solve(d):\n    from array import array\n    from bisect import bisect_left,bisect_right\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));d[2:2+n]=[None]*n;a.sort();prefix=array('Q',[0]);total=0\n    for v in a:total+=v;prefix.append(total)\n    out=[];at=2+n\n    for _ in range(m):\n        low=int(d[at]);high=int(d[at+1]);at+=2;l=bisect_left(a,low);r=bisect_right(a,high)\n        out.append(str(r-l)+' '+str(prefix[-1]))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

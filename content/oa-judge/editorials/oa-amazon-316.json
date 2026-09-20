@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-316",
+  "title": "合并闭区间后的最小间隙",
+  "explanation": "## 思路\n\n按起点排序并扫描，维护当前合并段终点；遇起点大于它，记录间隙并新开一段。\n\n## 正确性证明\n\n排序后下一区间若起点≤当前终点，与当前段相交，合并不会产生间隙；否则后续起点更大不可能回接当前段，所得间隙正是最终相邻两段之间的距离。任意不相邻段的距离不会更小，因此扫描相邻段取最小即为全部段的最小间隙。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    values=list(map(int,d[1:]));a=sorted(zip(values[::2],values[1::2]));end=a[0][1];answer=None\n    for l,r in a[1:]:\n        if l<=end:end=max(end,r)\n        else:\n            gap=l-end;answer=gap if answer is None else min(answer,gap);end=r\n    return '-1' if answer is None else str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#316-optimal-interval-difference",
+  "sourceContentHash": "518e6b42b12eb1ada6c1da7b176eae7f1bb1e41798cff2b59812d198bfb3f6cf",
+  "author": "CSWork"
+}

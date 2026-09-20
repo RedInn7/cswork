@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-325",
+  "title": "查询最近且价格严格更低的日期",
+  "explanation": "## 思路\n\n分别从左右扫描单调递增栈，弹出价格≥当前者，得到两侧最近严格较低位置；查询比较二者距离，同距取左。\n\n## 正确性证明\n\n某个被弹出的更高或等价位置对以后查询不会优于当前更近且不更高的位置，所以安全舍弃；剩栈顶恰为该侧最近严格低价。全局最近必在左右两个最近候选之一，按距离和日期比较实现题意。\n\n## 复杂度\n\n时间O(n+q)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,q=map(int,d[:2]);a=list(map(int,d[2:2+n]));left=[-1]*n;right=[-1]*n;stack=[]\n    for i in range(n):\n        while stack and a[stack[-1]]>=a[i]:stack.pop()\n        if stack:left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]>=a[i]:stack.pop()\n        if stack:right[i]=stack[-1]\n        stack.append(i)\n    out=[]\n    for token in d[2+n:]:\n        i=int(token)-1;l=left[i];r=right[i]\n        if l<0:answer=r\n        elif r<0 or i-l<=r-i:answer=l\n        else:answer=r\n        out.append(str(answer+1 if answer>=0 else -1))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#325-predict-answer",
+  "sourceContentHash": "4eb2f52b4fdc1ea7e70eba77efd36c6178afccb999d0ebf5655318e23ca216fd",
+  "author": "CSWork"
+}

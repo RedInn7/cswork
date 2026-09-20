@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-320",
+  "title": "校验并重排条码扫描器配置",
+  "explanation": "## 思路\n\n拆分后逐项校验四位序号、ASCII配置值、序号范围1..n，以及序号和值两类唯一性；数组按序号存值后输出。\n\n## 正确性证明\n\n全部n个不同序号均位于1..n，当且仅当无缺失且连续。每项格式及字符集独立检查，集合排除两个种类的重复，因而接受当且仅当满足全部正式有效性要求。按序号放入数组保证返回顺序。原constraints允许输入重复只是说明输入可能无效，不取消正文unique校验。\n\n## 复杂度\n\n时间O(layout长度+n)，空间O(layout长度+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    s=d[0] if d else '';parts=s.split('|');n=len(parts);out=[None]*n;values=set();digits=set('0123456789');letters=set('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')\n    for part in parts:\n        if len(part)<5 or not set(part[:4])<=digits or not set(part[4:])<=letters:return '[\"Invalid configuration\"]'\n        index=int(part[:4]);value=part[4:]\n        if not 1<=index<=n or out[index-1] is not None or value in values:return '[\"Invalid configuration\"]'\n        out[index-1]=value;values.add(value)\n    return json.dumps(out,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#320-order-layout",
+  "sourceContentHash": "1301369739489c1f9e9ce428300d8b9565c3fa87445f55a354b3d2981d070a37",
+  "author": "CSWork"
+}

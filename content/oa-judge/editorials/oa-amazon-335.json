@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-335",
+  "title": "删除当前连续同字符段直到清空的最少次数",
+  "explanation": "## 思路\n\n区间DP。独立删除左字符给出1+dp[l+1][r]；若s[k]=s[l]，先清掉中间，再把左字符与k在同次删除中处理，候选dp[l+1][k−1]+dp[k][r]。空区间0，枚举所有同字符k取最小。\n\n## 正确性证明\n\n考虑删除左端字符的那次操作。若不与其他原位置同删，代价至少1加剩余最优；否则令k为同次删除的下一个原位置，中间全部必须先清除，之后左字符可附在k的删除操作里而不额外收费。两区间独立最优给出下界，反过来先清中间、执行右段方案并把左字符附在k被删的那次即可达到。因此转移覆盖全部最优方案，长度递增计算正确。\n\n## 复杂度\n\n时间O(n³)，空间O(n²)，本站n≤200约800万三重循环量级。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    s=json.loads(''.join(d));n=len(s)\n    if not n:return '0'\n    dp=[[0]*n for _ in range(n)]\n    for l in range(n-1,-1,-1):\n        dp[l][l]=1\n        for r in range(l+1,n):\n            best=1+dp[l+1][r]\n            for k in range(l+1,r+1):\n                if s[l]==s[k]:best=min(best,(dp[l+1][k-1] if k>l+1 else 0)+dp[k][r])\n            dp[l][r]=best\n    return str(dp[0][n-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#335-minimum-operations-to-remove-characters-in-frequency-order-find-min-deletions-",
+  "sourceContentHash": "3f4fdcc306c014c45384163dbffea59f0b9639d110bf7336506585d34a91e782",
+  "author": "CSWork"
+}
