@@ -1,0 +1,10 @@
+[
+  {
+    "name": "跨章未清零节号",
+    "code": "def solve(raw):\n    import json\n    lines=json.loads(raw);chapter=section=0;out=[]\n    for line in lines:\n        if line.startswith('# '):\n            chapter+=1;out.append(f'{chapter}. '+line[2:])\n        elif line.startswith('## '):\n            section+=1;out.append(f'{chapter}.{section}. '+line[3:])\n    return json.dumps(out,ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误去掉标题空白",
+    "code": "def solve(raw):\n    import json\n    lines=json.loads(raw);chapter=section=0;out=[]\n    for line in lines:\n        if line.startswith('# '):\n            chapter+=1;section=0;out.append(f'{chapter}. '+line[2:].strip())\n        elif line.startswith('## '):\n            section+=1;out.append(f'{chapter}.{section}. '+line[3:])\n    return json.dumps(out,ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-63",
+  "title": "进程运行闭区间的并集时长",
+  "explanation": "## 思路\n\n将区间按左端点排序，维护当前合并区间；新段不相交时结算旧段长度，否则延伸右端点。\n\n## 正确性证明\n\n按起点排序后，若新区间起点在当前右端点之后，所有后续区间也不会补回旧段内部，因此可永久结算。相交时替换为两区间并集。归纳保证已结算段互不相交且加上当前段恰覆盖已处理区间，最终总和就是并集大小。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));rows=sorted(zip(d[1::2],d[2::2]));left,right=rows[0];total=0\n    for start,end in rows[1:]:\n        if start>right:total+=right-left+1;left,right=start,end\n        else:right=max(right,end)\n    return str(total+right-left+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#63-process-execution-time",
+  "sourceContentHash": "8ae1a89034f78302cec4b92cf06202d4e3f92ce69bfef449915fe991133563e2",
+  "author": "CSWork"
+}

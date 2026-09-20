@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许两边和相等",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=sorted(d[1:],reverse=True);total=sum(a);taken=0\n    for count,v in enumerate(a,1):\n        taken+=v\n        if taken>=total-taken:break\n    result=a[:count][::-1]\n    return str(len(result))+'\\n'+'\\n'.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "未按升序输出",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=sorted(d[1:],reverse=True);total=sum(a);taken=0\n    for count,v in enumerate(a,1):\n        taken+=v\n        if taken>total-taken:break\n    result=a[:count]\n    return str(len(result))+'\\n'+'\\n'.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

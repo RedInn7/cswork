@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏计闭区间末端",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));rows=sorted(zip(d[1::2],d[2::2]));left,right=rows[0];total=0\n    for start,end in rows[1:]:\n        if start>right:total+=right-left;left,right=start,end\n        else:right=max(right,end)\n    return str(total+right-left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "嵌套时错误缩短右端",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));rows=sorted(zip(d[1::2],d[2::2]));left,right=rows[0];total=0\n    for start,end in rows[1:]:\n        if start>right:total+=right-left+1;left,right=start,end\n        else:right=end\n    return str(total+right-left+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

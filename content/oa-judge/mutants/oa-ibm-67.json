@@ -1,0 +1,10 @@
+[
+  {
+    "name": "越界时终止所有命令",
+    "code": "def solve(raw):\n    d=raw.split();n=int(d[0]);row=column=0\n    for command in d[2:]:\n        dr,dc={'UP':(-1,0),'DOWN':(1,0),'LEFT':(0,-1),'RIGHT':(0,1)}[command]\n        nr,nc=row+dr,column+dc\n        if 0<=nr<n and 0<=nc<n:row,column=nr,nc\n        else:break\n    return str(row*n+column)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按列主序编号",
+    "code": "def solve(raw):\n    d=raw.split();n=int(d[0]);row=column=0\n    for command in d[2:]:\n        dr,dc={'UP':(-1,0),'DOWN':(1,0),'LEFT':(0,-1),'RIGHT':(0,1)}[command]\n        nr,nc=row+dr,column+dc\n        if 0<=nr<n and 0<=nc<n:row,column=nr,nc\n    return str(column*n+row)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

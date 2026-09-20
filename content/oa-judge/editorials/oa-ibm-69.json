@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-69",
+  "title": "最少个数且总和更大的数组子集",
+  "explanation": "## 思路\n\n将元素降序排列，逐个取最大剩余元素，第一次使所取和严格大于剩余和时停止，反转所取前缀输出。\n\n## 正确性证明\n\n固定取k个时，最大的k个元素具有最大可能和。若此前缀仍不达标，任何k元素方案都不达标；首次达标的k因此最小。该前缀又使此k下总和最大，所以同时满足两级优化。降序前缀反转得到升序输出。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)；求和最大10^10，须用64位或任意精度整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=sorted(d[1:],reverse=True);total=sum(a);taken=0\n    for count,v in enumerate(a,1):\n        taken+=v\n        if taken>total-taken:break\n    result=a[:count][::-1]\n    return str(len(result))+'\\n'+'\\n'.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#69-array-subsets-frontend",
+  "sourceContentHash": "08c4f4129c0c8b14e155018483fa0b2f5313fc92109a02cd156e3e1afbe36399",
+  "author": "CSWork"
+}
