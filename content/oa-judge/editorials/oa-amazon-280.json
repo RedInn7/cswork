@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-280",
+  "title": "可重排取走目标单词的最多次数",
+  "explanation": "## 思路\n\n分别计数s和t的字符，答案为t中出现的每种字符可供应次数countS//countT的最小值。\n\n## 正确性证明\n\n取q次必须对每种目标字母提供q倍需求，故各频数比都是上界。若q不超过所有上界，则每种字母都有足够身份可分给q个副本，任意重排允许独立组成目标，因此最小上界恰可达到。\n\n## 复杂度\n\n时间O(|s|+|t|)，辅助空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    have=Counter(d[0]);need=Counter(d[1]);return str(min(have[c]//amount for c,amount in need.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#280-maximum-times-word-removed",
+  "sourceContentHash": "56f04a24704a19f7932463630b6e17656ab7bc726addcb80cdfaabb1a5de5adf",
+  "author": "CSWork"
+}

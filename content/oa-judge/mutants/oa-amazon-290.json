@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许两组重量相等",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);total=sum(a);picked=[];weight=0\n    for v in a:\n        picked.append(v);weight+=v\n        if weight>=total-weight:break\n    return ' '.join(map(str,picked[::-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误从最轻物品开始选",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=False);total=sum(a);picked=[];weight=0\n    for v in a:\n        picked.append(v);weight+=v\n        if weight>total-weight:break\n    return ' '.join(map(str,picked[::-1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

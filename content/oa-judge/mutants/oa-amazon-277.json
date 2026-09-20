@@ -1,0 +1,10 @@
+[
+  {
+    "name": "严格递增错误按不减",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));stack=[];dp=[]\n    for i,v in enumerate(a):\n        while stack and a[stack[-1]]>=v:stack.pop()\n        if stack:j=stack[-1];length=i-j;previous=dp[j]\n        else:length=min(i+1,v);previous=0\n        dp.append(previous+length*(2*v-length+1)//2);stack.append(i)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误全数组库存求和",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));stack=[];dp=[]\n    for i,v in enumerate(a):\n        while stack and a[stack[-1]]-stack[-1]>=v-i:stack.pop()\n        if stack:j=stack[-1];length=i-j;previous=dp[j]\n        else:length=min(i+1,v);previous=0\n        dp.append(previous+length*(2*v-length+1)//2);stack.append(i)\n    return str(sum(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-285",
+  "title": "加一条限长配送区后的最少连通块",
+  "explanation": "## 思路\n\n先合并已有相交区间，得到m个分离块。双指针找最多连续块l..r满足L[r]−R[l]≤k，答案m−(r−l)。\n\n## 正确性证明\n\n连接块l至r至少需要跨过R[l]到L[r]这段距离，且直接加该段就连接全部中间块，所以条件充分必要。可连接块必在排序中连续，故双指针枚举全部最佳跨度。连接q块后它们变一块，数量减少q−1；如果只能覆盖原一块，仍可添加其内零长段而不增加块数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);values=list(map(int,d[2:]));merged=[]\n    for a,b in sorted(zip(values[::2],values[1::2])):\n        if merged and a<=merged[-1][1]:merged[-1][1]=max(merged[-1][1],b)\n        else:merged.append([a,b])\n    left=0;answer=len(merged)\n    for right in range(len(merged)):\n        while merged[right][0]-merged[left][1]>k:left+=1\n        answer=min(answer,len(merged)-(right-left))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#285-minimum-connected-delivery-zones-after-adding-one-interval",
+  "sourceContentHash": "54a86e49b2636cf98948d0da028ceaa2949efc1e88e6fb3c412e659bf7d123f2",
+  "author": "CSWork"
+}

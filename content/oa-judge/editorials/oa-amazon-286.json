@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-286",
+  "title": "替换感叹号后的最少有序二元错误",
+  "explanation": "## 思路\n\n反转串并交换x/y可使x≤y。此时存在最优解使通配符先0后1。初始!全1，扫描依次改0，以左右0/1数量计算每次完整代价增量，取全部分界最小，最后取模。\n\n## 正确性证明\n\nx≤y时，把两个通配符的逆序1、0交换为0、1，区间外成对贡献总量不变；这两位及其间每位的变化都是x−y的非负倍数，所以总代价不增。反复交换得到单分界形式。某位1改0的变化为左1*y−左0*x+右1*x−右0*y，计入且仅计入涉及它的所有对。扫描涵盖全部单分界，因此得到全局最优而非局部最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)，先以64位完整比较代价再取模。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];x,y=map(int,d[1:])\n    if x>y:s=s[::-1];x,y=y,x\n    filled=s.replace('!','1');zero=one=cost=0\n    for c in filled:\n        if c=='0':cost+=one*y;zero+=1\n        else:cost+=zero*x;one+=1\n    right0=zero;right1=one;left0=left1=0;best=cost\n    for original,c in zip(s,filled):\n        if c=='0':right0-=1\n        else:right1-=1\n        if original=='!':cost+=left1*y-left0*x+right1*x-right0*y;c='0';best=min(best,cost)\n        if c=='0':left0+=1\n        else:left1+=1\n    return str(best%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#286-min-total-errors",
+  "sourceContentHash": "55384361f60adf5158fd2301f40ad5347fb4d12fb2e1480246bc4853fcf463e5",
+  "author": "CSWork"
+}
