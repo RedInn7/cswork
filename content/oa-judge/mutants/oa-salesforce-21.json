@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误将负数截断到0",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));a=sorted(max(0,x) for x in values[1:]);left=0;answer=0\n    for right,value in enumerate(a):\n        while value>2*a[left]:left+=1\n        answer+=right-left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误漏计相同值对",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));a=sorted(abs(x) for x in values[1:]);left=0;answer=0\n    for right,value in enumerate(a):\n        while value>2*a[left]:left+=1\n        answer+=max(0,right-left-1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

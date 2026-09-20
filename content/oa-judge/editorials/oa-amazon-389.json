@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-389",
+  "title": "两类电影各看一部的最早结束时间",
+  "explanation": "## 思路\n\n求每类单独最早完成时刻。假设该类先看，用其最早完成时刻遍历另一类，计算max(前类结束,本片上映)+时长；两种顺序取最小。\n\n## 正确性证明\n\n多看影片不能让结束更早，所以只需各一部。固定第二部时，结束时刻关于第一部完成时刻单调不减，故第一类只保留最早完成者即可。枚举第二部和两种顺序覆盖全部最优可能。\n\n## 复杂度\n\nO(n+m)时间，O(n+m)含输入空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:2+2*n];c=d[2+2*n:2+2*n+m];e=d[2+2*n+m:]\n    first=min(x+y for x,y in zip(a,b));second=min(x+y for x,y in zip(c,e))\n    return str(min(min(max(first,x)+y for x,y in zip(c,e)),min(max(second,x)+y for x,y in zip(a,b))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#389-minimum-time-spent",
+  "sourceContentHash": "6b092631a93dc5c1393693b75e32240d626aa8b4263ca6a7f654fadc94e6e6a8",
+  "author": "CSWork"
+}

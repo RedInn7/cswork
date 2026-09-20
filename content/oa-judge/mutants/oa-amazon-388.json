@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误低费用者优先",
+    "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n=d[0];items=sorted(zip(d[1:n+1],d[n+1:]));heap=[];i=0;slot=0;answer=0\n    while i<n or heap:\n        if not heap:slot=max(slot,items[i][0])\n        while i<n and items[i][0]<=slot:\n            size,cost=items[i];heapq.heappush(heap,(cost,size));i+=1\n        negcost,size=heapq.heappop(heap);answer+=(slot-size)*(-negcost);slot+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只计算增加次数",
+    "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n=d[0];items=sorted(zip(d[1:n+1],d[n+1:]));heap=[];i=0;slot=0;answer=0\n    while i<n or heap:\n        if not heap:slot=max(slot,items[i][0])\n        while i<n and items[i][0]<=slot:\n            size,cost=items[i];heapq.heappush(heap,(-cost,size));i+=1\n        negcost,size=heapq.heappop(heap);answer+=(slot-size);slot+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

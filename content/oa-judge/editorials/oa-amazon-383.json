@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-383",
+  "title": "相邻袋数平方关系的最大集合",
+  "explanation": "## 思路\n\n把全部数存集合，从每个数开始反复平方，统计仍在集合中的链长。\n\n## 正确性证明\n\n合法序列选定首项后，后续每一项都唯一等于前项平方。逐起点延伸至第一个缺失值，因此找全该起点最长合法序列，所有起点取最大即全局最优。\n\n## 复杂度\n\nO(n log log 10^6)期望时间、O(n)空间；最长链为2,4,16,256,65536，共5项。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=set(map(int,raw.split()[1:]));best=1\n    for start in a:\n        v=start;length=1\n        while v<=1000 and v*v in a:v*=v;length+=1\n        best=max(best,length)\n    return str(best if best>=2 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#383-rice-bags",
+  "sourceContentHash": "dad00ca45162b2247c33e8055caa0a2b98be15683da30c4c241a30189051cf42",
+  "author": "CSWork"
+}

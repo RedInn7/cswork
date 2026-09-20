@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错把并行两类相加",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];development=v[1:n+1];integration=v[n+1:];lo=0;hi=max(development)\n    while lo<hi:\n        mid=(lo+hi)//2;required=sum(b for a,b in zip(development,integration) if a>mid)\n        if required<=mid:hi=mid\n        else:lo=mid+1\n    return str(min(sum(integration),max(development)+min(integration)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错把多个集成同时完成",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];development=v[1:n+1];integration=v[n+1:];lo=0;hi=max(development)\n    while lo<hi:\n        mid=(lo+hi)//2;required=max([0]+[b for a,b in zip(development,integration) if a>mid])\n        if required<=mid:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-380",
+  "title": "按顺序迁移后数据所在位置",
+  "explanation": "## 思路\n\n集合保存有数据的位置，每次删除from并加入to，最后排序。\n\n## 正确性证明\n\n集合初始与占用位置一致。有效迁移恰删除一个旧位置并增加一个空位置，其余位置不变，因此每步保持一致；最终排序仅改变输出顺序。\n\n## 复杂度\n\nO(m+n log n)期望时间、O(n+m)含输入空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=iter(map(int,raw.split()));n=next(d);m=next(d);positions={next(d) for _ in range(n)}\n    for _ in range(m):\n        u=next(d);v=next(d);positions.remove(u);positions.add(v)\n    return str(len(positions))+'\\n'+' '.join(map(str,sorted(positions)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#380-location-of-data-after-transfers",
+  "sourceContentHash": "2806e33c9a68de8a913be199ff0129ad5184df32e968177b2a78f18297c43090",
+  "author": "CSWork"
+}

@@ -4,10 +4,10 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 732,
+    "sandbox_verified": 762,
     "awaiting_sandbox": 0,
-    "blocked": 151,
-    "unreviewed": 751
+    "blocked": 160,
+    "unreviewed": 712
   },
   "items": [
     {
@@ -3316,82 +3316,109 @@
     {
       "id": "oa-amazon-376",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "first r servers不包含r且r=0合法但候选为空；样例与最终负载冲突，不能捏造0特例。"
     },
     {
       "id": "oa-amazon-377",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "与376同义文本有相同0请求及候选端点歧义，缺少独立补证。"
     },
     {
       "id": "oa-amazon-378",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "每个查询k求观众数最大的k个地区的观众总数。相同观众数的地区分别计数；查询互不影响并按输入顺序回答。 第一行n q，第二行n个观众数，第三行q个查询。原界1≤n,q≤100000，1≤人数≤10^9，1≤k≤n。本站输出精确整数，不受原int返回签名限制。"
     },
     {
       "id": "oa-amazon-379",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "每件货物独立选择容量严格大于重量的卡车：先最小化容量，再选择该容量中最小原下标。下标从0开始，没有可用车输出−1；装载不消耗卡车容量。 第一行n m，第二行n个容量，第三行m个重量。原界1≤n,m≤100000，容量和重量均1..10^9。"
     },
     {
       "id": "oa-amazon-380",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "初始位置两两不同。依次把from位置的数据移到to；原文保证每步from有数据、to没有数据。最后按升序输出全部有数据的位置。 第一行n m，第二行n个初始位置，随后m行from to。原文无数值界；本站补充0≤n,m≤200000，位置ID为−10^9..10^9。输入满足上述原有效迁移保证，故n=0时m只能为0。"
     },
     {
       "id": "oa-amazon-381",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原域未限制正数；全零是否允许作为空山峰未定义，不能强加a[i]≥1绕过。"
     },
     {
       "id": "oa-amazon-382",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原digits允许0，例如0/1与数字和1可构造1、10、100…无最大值，缺少无界规则。"
     },
     {
       "id": "oa-amazon-383",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "所有袋子的米粒数两两不同。选择至少两个袋子，使升序排列后每项的平方恰等于后一项，返回可选最多袋数，无解返回−1。 第一行n，第二行n个互异整数。恢复原界1≤n≤200000、2≤riceBags[i]≤10^6，不能采用被HTML清理拼接的错误约束。"
     },
     {
       "id": "oa-amazon-384",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "给正整数数组的每一项选择正号或负号，要求每个非空前缀的带符号和严格大于0，最大化负号数量。 第一行n，第二行n个整数。原界1≤n≤100000，1≤a[i]≤10^9；前缀为0不合法。"
     },
     {
       "id": "oa-amazon-385",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "给定小写字母和问号组成的字符串，每个问号可独立替换成任意小写字母。求一个连续子串的最大偶数长度，使其前后两半完全相同；两半必须紧邻。 输入一行字符串。原文没有长度界；本站补充0≤长度≤5000，字符为a..z或?。空串和不存在非空合法子串时输出0。"
     },
     {
       "id": "oa-amazon-386",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "每次删除一项：若它在端点，仅删除；若它在中间，删除该项并把其左右两项合并为两者之和。必须最终剩一项，最大化最终值。 第一行n，第二行n个整数。保留原n≤100000及−10^9≤a[i]≤10^9；本站明确n≥1，最终不能选择空数组。"
     },
     {
       "id": "oa-amazon-387",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "定义单对距离却例(())输出多对和4，()()例3又不要求全匹配；配对数量、复用与合法性不明。"
     },
     {
       "id": "oa-amazon-388",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "商品i初始尺寸size[i]，每增加1支付cost[i]，不能减小。使所有最终尺寸互不相同，求最少总费用。 第一行n，第二行n个尺寸，第三行n个单位费用。OCR141/142/143及同题补文恢复完整原界：1≤n≤200000，1≤size[i]≤10^9，1≤cost[i]≤10000。"
     },
     {
       "id": "oa-amazon-389",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "每部电影有上映时刻与时长，可在上映后任意时刻开始。两类各至少看一部，不能同时观看，允许连续无缝切换，求最早完成时刻，两类的先后顺序均可。 第一行n m；接着四行依次为n个喜剧上映时刻、n个喜剧时长、m个剧情上映时刻、m个剧情时长。原界1≤n,m≤100000，四数组值均1..10^6。"
     },
     {
       "id": "oa-amazon-390",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "输入两个同变量的有限多项式之积，允许负整数指数（Laurent多项式）。合并同幂项，按指数严格降序输出展开式，无括号无空格，不能丢弃负幂或使用浮点系数。 输入一行(P)(Q)，恰四个括号，变量为同一个ASCII字母a..z或A..Z。原文没有数值界，本站补充每因子1..200项、每个原始项系数绝对值≤10^9、指数−10^9..10^9；重复幂、零系数与常数因子允许。具体语法：项之间以+或-连接，首项可带符号；项可为非负十进制常数，或可省略绝对值系数1的变量，后跟可省略的^有符号十进制整数指数。省略指数为1，变量省略为常数项；例如(-x^-2+3)(2x+1)，也接受x^+2。除行结束符外没有空白，不使用Unicode上标；整数数字采用通常十进制写法。"
     },
     {
       "id": "oa-amazon-391",
       "company": "amazon",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "amazon-remaining-s",
+      "reason": "一次从有箱子的堆移一个箱子至另一堆。首先让最终最大堆与最小堆的差尽可能小，在达到该最小差的方案中求最少操作数。初始数量允许重复。 第一行n，第二行n个箱子数量。原界1≤n≤100000，1≤boxes[i]≤10^9；总箱数保持不变，不给定外部差值参数。"
     },
     {
       "id": "oa-apple-1",
@@ -5355,117 +5382,159 @@
     {
       "id": "oa-salesforce-21",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "统计0≤i<j<n中同时满足min(|x−y|,|x+y|)≤min(|x|,|y|)及max(|x−y|,|x+y|)≥max(|x|,|y|)的索引对，其中x=a[i]、y=a[j]。重复值按索引分别计数。 输入n和n个整数。完整原界2≤n≤200000，−10^9≤a[i]≤10^9；raw恢复catalog被HTML过滤吞掉的i<j条件。"
     },
     {
       "id": "oa-salesforce-22",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "26位charValue依次对应a..z，0为普通字符，1为特殊字符。求s中普通字符出现次数不超过k的最长连续子串长度，重复普通字符按出现次数计数。 输入三行s、k、charValue。原界1≤|s|≤100000，s为a..z，charValue长26且仅0/1；原length of k是整数参数的笔误，明确1≤k≤|s|。"
     },
     {
       "id": "oa-salesforce-23",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "每个功能必须选择开发或集成。开发者足够，所有开发同时开始；集成仅由组长依次完成，且与开发并行进行。求全部功能完成的最短时间。 输入n，随后n个developmentTime和n个integrationTime。原无数值界，本站补充1≤n≤200000，所有时间为0..10^9整数。"
     },
     {
       "id": "oa-salesforce-24",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "无向图路径的代价是路径中最大的边权，求source到destination的最小代价；不连通输出−1。本站补充source=destination的空路径代价为0。自环及平行边均可出现。 输入N M、M行u v weight，再输入source及destination。原M为1..100000，边权0..10^9，标签1..N。原N上界写成10<sup>5</sup>5，存在多余5，本站公开采用宽容上界1≤N≤10^55覆盖该损坏写法的常见解释，不声称这是来源确定原界。大标签按十进制整数读取，只存出现的节点。"
     },
     {
       "id": "oa-salesforce-25",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "找一个字符串，要求它是X的子序列，同时是Y的连续子串，求最长长度。X可以跳过字符，Y不能跳过字符；无共同字符时输出0。 输入JSON数组[X,Y]。原未给数值或字符域，本站补充每串0..1000个Unicode标量值，允许空串、空白、控制字符和非BMP；不含孤立代理项。JSON编码UTF-8总输入≤25000字节。"
     },
     {
       "id": "oa-salesforce-26",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文在choose3consecut截断，操作条件及行为缺失。"
     },
     {
       "id": "oa-salesforce-27",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "按顺序分配任务，初始第一核持锁。持锁核可把当前任务分给自己并交锁，或分给另一核并留锁。双方都最大化自己最终得到的处理时间总和，输出第一核、第二核最终收益。 输入n和n个任务时间。原无数值界，本站补充1≤n≤200000，0≤time[i]≤10^9。"
     },
     {
       "id": "oa-salesforce-28",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "报价数组长度n与项目总数numProjects混淆，原ID<n允许不存在项目；未授权改界或忽略这些报价。"
     },
     {
       "id": "oa-salesforce-29",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "数组元素互异。称一个数组几乎升序，当且仅当至多再删一个元素就严格升序。求从给定数组至少删除多少元素，使剩余数组几乎升序。原例解释中的删7应为删1。 输入n和n个互异整数。完整原界1≤n≤100000，1≤a[i]≤10^9。"
     },
     {
       "id": "oa-salesforce-30",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "数组元素互异。称一个数组几乎升序，当且仅当至多再删一个元素就严格升序。求从给定数组至少删除多少元素，使剩余数组几乎升序。原文误将[13]与[9,2]拼为[13,9,2]并称合法，依完整定义与同题29纠正：三项下降不是几乎升序。 输入n和n个互异整数。原未给数值界，本站补充1≤n≤100000，−10^9≤a[i]≤10^9。"
     },
     {
       "id": "oa-salesforce-31",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "对每个小写英文单词，允许将任意字符替换为任意小写字母，求使相邻字符全部不同时最少替换数。每词独立输出。 输入词数n及n行单词。保留完整原界1≤n≤100，每个单词长度2..100000，字符a..z；不加总长缩水约束，总字符数可以达到10000000。"
     },
     {
       "id": "oa-salesforce-32",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "给定二进制字符串，至多翻转k个位置，使最长连续相同字符片段尽可能短，输出该最小长度。 输入二进制字符串s和k。完整原界位于正文：1≤|s|≤100000、0≤k≤|s|，不能因Constraints栏为空而丢失。"
     },
     {
       "id": "oa-salesforce-33",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "保持输入顺序，将数组分为恰好k个非空连续段，每段成本为该段最大元素，求所有段成本之和的最小值。每段对应一个星期的活动。本站补充无解时输出−1，空数组分0段输出0。 输入n k和n个非负整数。原没有数值界，本站补充0≤n,k≤300、0≤a[i]≤10^9。不排除k>n、n=0或k=0，按上述协议处理。"
     },
     {
       "id": "oa-salesforce-34",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "数组元素互异，输出所有绝对差最小的数值对。每对较小值在前，各对按第一项再第二项升序。原例[-1,3,6,-5,0]输出错误：最小差为1，正确唯一数值对是−1与0，不是差3的两对。 输入n和n个互异整数。原没有数值界，本站补充2≤n≤100000，−10^9≤a[i]≤10^9。"
     },
     {
       "id": "oa-salesforce-35",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "一根杆已经依次标出所有最终段的长度。机器只能切长度至少minLength的现有杆，每次在一个尚未切开的标记处分成两根。判断是否存在完成全部标记切割的顺序。 输入n、n个段长度和minLength。原没有数值界，catalog中的附加范围无原文依据；本站补充2≤n≤200000、每段1..10^9、1≤minLength≤10^18。n≥2保证确有最后一刀。"
     },
     {
       "id": "oa-salesforce-36",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "字符串由小写字母和问号组成，每个问号可替换为任意小写字母；固定字母不可改。求替换后无相邻相同字符的方案数，对1000000007取模。 一行s，完整原界1≤|s|≤100000，字符仅a..z或?。"
     },
     {
       "id": "oa-salesforce-37",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "s与t等长且仅含小写字母。把s[i]改为t[i]的成本为ASCII差的绝对值。求一个连续区间，使该区间逐位置转换的总成本≤K，返回最大区间长度；找不到非空区间则0。 输入JSON数组[s,t,K]。原无数字界，本站补充0≤|s|=|t|≤200000、0≤K≤10^9；输入编码总字节≤401000。"
     },
     {
       "id": "oa-salesforce-38",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文缺最大化/最小化/固定分组目标，非官方样例解释不能恢复核心目标。"
     },
     {
       "id": "oa-salesforce-39",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "保持输入顺序，将数组分为恰好k个非空连续段，每段成本为该段最大元素，求所有段成本之和的最小值。注意本题并非同名的最小化最大段和问题。本站补充无解时输出−1，空数组分0段输出0。 输入n k和n个非负整数。保留完整原界0≤n,k≤300、0≤a[i]≤100000。不排除k>n、n=0或k=0，按上述协议处理。"
     },
     {
       "id": "oa-salesforce-40",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "压缩规则正文截断，单个RLE样例不足以恢复完整编码规则。"
     },
     {
       "id": "oa-salesforce-41",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "统计长度n的小写英文字符串中不含k个或更多连续相同字母的数量，模1000000007。连续最多只能k−1个，不能误读为允许k个。 输入n k。完整原界1≤n≤100000、1≤k<n，故实际合法n≥2；不能把k≤n或禁止长度改成k+1。"
     },
     {
       "id": "oa-salesforce-42",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "工具名称按环形顺序排列，允许重复。当前位于startIndex，每次向左或右移动一个位置，求到任意一个目标名称位置的最少步数；本站补充找不到目标时输出−1。名称完全相等才匹配，不能忽略大小写或空白。 输入JSON数组[tools,startIndex,target]，下标零基。原无数值或字符界，本站补充1≤n≤100000、每个名称及target长0..16 Unicode标量值，允许空名、空白、NUL与非BMP，不含孤立代理项；0≤startIndex<n。整个JSON编码输入≤20000000字节，ASCII转义编码可覆盖完整最坏名字域。"
     },
     {
       "id": "oa-salesforce-43",
       "company": "salesforce",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "salesforce-tail",
+      "reason": "塔按顺序排列。从塔y看塔x可见，当且仅当二者之间所有塔的高度严格小于目标塔x。观察者y自身高度不构成限制。对每座塔输出左右两边一共能看见的塔数，不计自身。 输入n和n个高度。原无数值界，本站补充1≤n≤200000、0≤height[i]≤10^9。允许重复高度。"
     },
     {
       "id": "oa-cisco-1",

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-35",
+  "title": "规划杆的切割顺序",
+  "explanation": "## 思路\n\n检查是否存在相邻两段的长度和至少minLength。\n\n## 正确性证明\n\n最后一刀所切的杆一定由相邻两个最终段组成，因此条件必要。若有满足的相邻对，则从原杆两端依次切掉其它最终段，余杆始终包含此对、长度不小于阈值；最后切开此对，构造出合法顺序，条件充分。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)，长度和及阈值使用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];minimum=values[-1]\n    return 'Possible' if any(x+y>=minimum for x,y in zip(a,a[1:])) else 'Impossible'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#35-plan-cuts",
+  "sourceContentHash": "6efce3ecf019afc26a82d375153d43bbd0e51a11f70d4056630c103fb86f08bc",
+  "author": "CSWork"
+}

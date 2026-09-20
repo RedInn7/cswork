@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-384",
+  "title": "保持每个前缀严格为正的最多负号",
+  "explanation": "## 思路\n\n新项先取负并加入最大堆；若前缀不正，撤销当前所有负项中绝对值最大的一项。\n\n## 正确性证明\n\n维持已选负项的数量最大，且在该数量下负项总和最小（即余额最大）。加入新负项后若超出本前缀允许预算，任何同数量方案也不可行，必须去掉一项；去掉最大值使留下的和最小。以前缀递增的原正数总和为预算，交换最大项只减少所有受影响前缀的负负担，不破坏过去约束。此前余额正，最大值至少为新值，故一次撤销即可恢复正余额。归纳得到最大数量。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间；余额可达10^14。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import heapq\n    a=map(int,raw.split()[1:]);heap=[];balance=0\n    for v in a:\n        balance-=v;heapq.heappush(heap,-v)\n        if balance<=0:balance-=2*heapq.heappop(heap)\n    return str(len(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#384-maximize-negative-signs",
+  "sourceContentHash": "2b1e96fbca85eef012bf4b484cb6ec75b729f9cee3f8a25fcb5bcf2fa3278c75",
+  "author": "CSWork"
+}

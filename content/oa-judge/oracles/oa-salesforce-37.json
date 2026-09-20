@@ -1,0 +1,654 @@
+[
+  {
+    "input": "[\"abcd\",\"bcdf\",3]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"az\",\"za\",0]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\",\"\",0]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"abbbz\",\"czzza\",2]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zcz\",\"bcc\",46]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"zzabcc\",\"cababz\",35]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"zacbbz\",\"bzcacc\",21]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"a\",\"z\",59]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bcczzaz\",\"bcbacac\",13]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"b\",\"a\",32]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"ccczzzacca\",\"acaczbzacb\",47]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"cc\",\"ac\",28]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"cczbzcc\",\"bbbzbcz\",14]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"abzzcbacc\",\"bbzczzzac\",5]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\",\"\",6]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"ccbaccabzc\",\"zzaaccacbb\",33]\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "[\"bzzbczazca\",\"bcazzabcza\",24]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"z\",\"a\",30]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zza\",\"zca\",45]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"azzzbcbc\",\"bcczzbbb\",45]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"bzazczaac\",\"abbaczbab\",42]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"bbzczcc\",\"acbzczb\",44]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbcacczc\",\"czczcbba\",44]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"aaczb\",\"zbcaz\",49]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"z\",\"b\",55]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bbbz\",\"cbzb\",38]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"czcazccbc\",\"zccbbbbac\",21]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"zzzcb\",\"czzzb\",45]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"azaazbccc\",\"zazcazzab\",6]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aczbccbbca\",\"zbzbacbbzc\",48]\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "[\"bcczzca\",\"czbbaca\",59]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"aabbcaaaac\",\"baccbaccza\",4]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"zaab\",\"czzc\",51]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"abccacczabc\",\"czacaccaccc\",55]\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "[\"ca\",\"az\",42]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"abbzcbzzzaz\",\"czcazaazbaz\",32]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"zzzz\",\"bbbb\",15]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"c\",\"c\",24]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bca\",\"czc\",56]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbzacz\",\"zacbcb\",37]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"ccccabccba\",\"aaazccczza\",54]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"zbbzabaac\",\"cbzcbbzca\",55]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"zzb\",\"cza\",53]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bzbc\",\"cbcb\",38]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"bb\",\"bz\",47]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"cbzbc\",\"bzzba\",31]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"zbzcaczzz\",\"ababzcacb\",19]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zbcbca\",\"acazza\",5]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"zb\",\"bb\",7]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bccbcazz\",\"zzaababz\",35]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"ba\",\"zz\",51]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"zz\",\"cb\",7]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bcz\",\"aaa\",28]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbbbz\",\"czczz\",56]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"acba\",\"baca\",0]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"cbzz\",\"aazc\",60]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"zazczzc\",\"bazazab\",51]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"bcaabaazc\",\"bzbccccac\",34]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"a\",\"a\",36]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"ccccbbbc\",\"zcbczazz\",44]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"cbzcccazcb\",\"acccaacbzc\",45]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"zzzca\",\"abcba\",57]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"ccbab\",\"ccbbz\",21]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"\",\"\",7]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bzaccbaazbb\",\"acbabbzbbba\",40]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"c\",\"b\",29]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"cbbbcz\",\"zabbbc\",54]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"bbcabzabaaaa\",\"bacbccacbbza\",1]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\",\"\",32]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"abab\",\"zbca\",24]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"aczacbczac\",\"acaabcaabc\",23]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"zaa\",\"zbz\",5]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"azba\",\"abba\",24]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"cccabazbbzc\",\"zzaacabczzc\",59]\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "[\"czzaacba\",\"zczbacbc\",31]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"zza\",\"bac\",21]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"\",1]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"cabccbzbcaz\",\"aababzazcza\",38]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"\",\"\",1]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaaz\",\"zbbz\",42]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"cbaz\",\"bbac\",11]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"zcabzbzzz\",\"azazzacac\",18]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bccacaaa\",\"azzaabzc\",42]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"cbbccb\",\"zcazbb\",29]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"acca\",\"zccz\",2]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"acabaaa\",\"bbccaza\",6]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"bbabbbcc\",\"aazzzbzz\",7]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bzcccbccbzbc\",\"cccabzcbczbb\",24]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"bcbaa\",\"bacac\",8]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"zaca\",\"cbca\",32]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"bccbcaczzcz\",\"abzbazaaazb\",29]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"aacac\",\"azabb\",17]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"abz\",\"cca\",58]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bc\",\"ba\",38]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"zca\",\"abc\",29]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"azbc\",\"bczz\",4]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"babccaazbbcz\",\"zbzaczzacazb\",53]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"cczzbbazzc\",\"bbzbczzzaz\",7]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"cazz\",\"aabb\",31]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"czbbaa\",\"abbzbz\",58]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"azbbzbb\",\"zzbzczc\",52]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"czcczba\",\"aabzaba\",32]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"abcbbbczczcc\",\"azczczbaazzb\",39]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"bzzacacbb\",\"cbzzaazcb\",56]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"zzzbbzc\",\"aazczbc\",0]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"cczbaaa\",\"zcaaabb\",48]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"bbazbazz\",\"bczaccaa\",47]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbbbzbzzzzz\",\"bczazbbacac\",53]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"zza\",\"bbb\",49]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"czbbazc\",\"zazbzaz\",55]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"cbzacbzzbca\",\"zczzaaazzba\",35]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"baazczbzccaa\",\"cbccaczbbabc\",23]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"z\",\"z\",60]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"babbbb\",\"czcczz\",18]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bcaccabcb\",\"zzzczzaza\",12]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"a\",\"a\",9]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"babcabbbczc\",\"baaaaczzabb\",60]\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "[\"abbzabbzaa\",\"abcaazacac\",31]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"acabccbc\",\"cbazzbac\",43]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"ab\",\"aa\",2]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"abb\",\"bcc\",39]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbbaabza\",\"zazbbcba\",33]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"azaaccbza\",\"cbzcaacza\",36]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"a\",\"c\",56]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"acczc\",\"bcacc\",17]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"acczc\",\"bzcba\",33]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"aazbccbzczc\",\"caaccbazzbz\",34]\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "[\"cbbcabz\",\"zzcbcab\",40]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"\",\"\",15]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"abaczazccba\",\"bbcabazcaaa\",60]\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "[\"az\",\"za\",37]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"b\",\"c\",17]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zzaza\",\"bcaab\",20]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bzaacc\",\"czbzaa\",58]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"azzb\",\"bbbz\",14]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"\",35]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\",\"\",34]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"ccccbzb\",\"bcbczab\",60]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"azacca\",\"azaazb\",57]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"c\",\"b\",43]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aa\",\"bz\",27]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"cacbzzczbbzz\",\"azabaabacbza\",56]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"a\",\"a\",1]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zaaaczz\",\"cazbzac\",15]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zzczzzbcb\",\"baczzzbbb\",24]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"aacazcc\",\"accbcbz\",17]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"z\",\"b\",30]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bazcaa\",\"czzbaz\",41]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"bazbzzbbc\",\"zbcbccbbz\",3]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bcabzczcaa\",\"azccbbabzz\",32]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"zacaba\",\"cczacc\",0]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"zzcaaabzz\",\"baabzcaaa\",39]\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "[\"\",\"\",57]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bacaacaz\",\"aazzcabb\",3]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"caccaacac\",\"abazacbaa\",52]\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "[\"cc\",\"bz\",52]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bzzbaca\",\"bcbcbbz\",52]\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "[\"bb\",\"bz\",14]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aab\",\"zzb\",28]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"czc\",\"azc\",57]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\",\"\",46]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"zczbccacczzb\",\"zaaaazazbcbb\",18]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bcbcazbbc\",\"zbcacazbc\",6]\n",
+    "expectedOutput": "4\n"
+  }
+]

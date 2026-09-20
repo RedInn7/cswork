@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-385",
+  "title": "可替换问号的相邻相同两半最长长度",
+  "explanation": "## 思路\n\n从大到小枚举半长h，扫描相距h的字符对是否相等或含问号，连续兼容h对就找到答案2h。\n\n## 正确性证明\n\n长度2h的两半对应h对互不共享位置的字符。每对兼容当且仅当可以独立替换为同一字母，所以h对全部兼容与该子串存在合法替换等价。扫描连续兼容对检查全部起点，按h降序找到的第一个解最长。\n\n## 复杂度\n\nO(n²)时间、O(1)额外空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.removesuffix('\\n').removesuffix('\\r');n=len(s)\n    for h in range(n//2,0,-1):\n        run=0\n        for i in range(n-h):\n            run=run+1 if s[i]==s[i+h] or s[i]=='?' or s[i+h]=='?' else 0\n            if run>=h:return str(2*h)\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#385-maximize-repeated-substring-length",
+  "sourceContentHash": "723a796fa95ddd92dfdeb50c6ba17671ce4df759a25e50970a51d4edf4f63035",
+  "author": "CSWork"
+}

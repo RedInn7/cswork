@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略相邻限制改用整杆长度",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];minimum=values[-1]\n    return 'Possible' if sum(a)>=minimum else 'Impossible'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误使用严格大于阈值",
+    "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];minimum=values[-1]\n    return 'Possible' if any(x+y>minimum for x,y in zip(a,a[1:])) else 'Impossible'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

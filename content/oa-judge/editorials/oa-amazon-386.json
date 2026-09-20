@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-386",
+  "title": "删除并合并相邻项后的最大最终值",
+  "explanation": "## 思路\n\n分别累加原奇、偶下标上的正数，取较大者；若没有正数，则取原数组最大值。\n\n## 正确性证明\n\n一次合并跨过一个元素，因此每个存活合并值只能由原同一奇偶下标的元素组成，给出两种奇偶位置正数和的上界。任意该奇偶的非空选定子集都能实现：先截去选中范围外的端点，两个相邻选中项之间若还有不选的同奇偶项，先删除这些项，将其异奇偶邻居合并；最终只隔一个异奇偶项，删除它即可合并两选中值，归纳实现全子集。因此有正数时选所有正数达到上界；无正数时任何非空和不超过最大单项，截端点保留它即可。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间，答案最多5×10^13。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));totals=[0,0]\n    for i,v in enumerate(a):totals[i%2]+=max(v,0)\n    return str(max(totals) if max(totals)>0 else max(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#386-maximize-the-array-value",
+  "sourceContentHash": "61d3d7fecf56a9158a0e2b7694ef7303b649ab1de04c5952aec5ef1e41961a72",
+  "author": "CSWork"
+}

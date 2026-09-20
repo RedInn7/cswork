@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-388",
+  "title": "按商品各自费用增加尺寸至互不相同",
+  "explanation": "## 思路\n\n按原尺寸排序，依次安排整数尺寸槽位。所有已可放入槽位的商品加入按单位费用降序的堆，安排最贵者；堆为空时跳至下一原尺寸。\n\n## 正确性证明\n\n任意有等待商品的空槽都可让一个后放商品提前，费用不会增加。对于当前槽已可用的两商品，若贵者在便宜者之后，交换使费用减少或不变，且两者均已释放，仍合法。因此当前放最贵者总能延伸成最优解；逐槽归纳得全局最优。空堆跳过不能安排任何商品的位置不漏解。\n\n## 复杂度\n\nO(n log n)时间，O(n)空间，答案可达199999000000000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n=d[0];items=sorted(zip(d[1:n+1],d[n+1:]));heap=[];i=0;slot=0;answer=0\n    while i<n or heap:\n        if not heap:slot=max(slot,items[i][0])\n        while i<n and items[i][0]<=slot:\n            size,cost=items[i];heapq.heappush(heap,(-cost,size));i+=1\n        negcost,size=heapq.heappop(heap);answer+=(slot-size)*(-negcost);slot+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#388-minimal-cost-to-increase-package-size",
+  "sourceContentHash": "68ce390b7e83b530941b31556f15349a1850863eaa9ad2d779abcb369cd89a24",
+  "author": "CSWork"
+}

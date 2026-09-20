@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许容量相等",
+    "code": "def solve(raw):\n    from bisect import bisect_right\n    d=list(map(int,raw.split()));n,m=d[:2];first={}\n    for i,v in enumerate(d[2:2+n]):first.setdefault(v,i)\n    capacities=sorted(first);answer=[]\n    for weight in d[2+n:]:\n        j=__import__(\"bisect\").bisect_left(capacities,weight);answer.append(first[capacities[j]] if j<len(capacities) else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误同容量取最后下标",
+    "code": "def solve(raw):\n    from bisect import bisect_right\n    d=list(map(int,raw.split()));n,m=d[:2];first={}\n    for i,v in enumerate(d[2:2+n]):first[v]=i\n    capacities=sorted(first);answer=[]\n    for weight in d[2+n:]:\n        j=bisect_right(capacities,weight);answer.append(first[capacities[j]] if j<len(capacities) else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

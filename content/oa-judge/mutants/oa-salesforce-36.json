@@ -1,0 +1,10 @@
+[
+  {
+    "name": "未排除相同末字母",
+    "code": "def solve(raw):\n    s=raw.strip();mod=1000000007;dp=[int(s[0]=='?' or ord(s[0])-97==c) for c in range(26)]\n    for ch in s[1:]:\n        total=sum(dp)%mod\n        dp=[total%mod if ch=='?' or ord(ch)-97==c else 0 for c in range(26)]\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误问号只允许25种字母",
+    "code": "def solve(raw):\n    s=raw.strip();mod=1000000007;dp=[int(s[0]=='?' or ord(s[0])-97==c) for c in range(25)]\n    for ch in s[1:]:\n        total=sum(dp)%mod\n        dp=[(total-dp[c])%mod if ch=='?' or ord(ch)-97==c else 0 for c in range(25)]\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

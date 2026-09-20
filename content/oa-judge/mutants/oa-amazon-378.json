@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误取最小的k项",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n],reverse=False);prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    return ' '.join(str(prefix[k]) for k in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误漏掉第k项",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n],reverse=True);prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    return ' '.join(str(prefix[k-1]) for k in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

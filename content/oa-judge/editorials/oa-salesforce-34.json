@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-34",
+  "title": "输出全部最小绝对差的数值对",
+  "explanation": "## 思路\n\n排序后求相邻元素差的最小值，再按序输出所有达到该差的相邻对。\n\n## 正确性证明\n\n若一对之间还有其他数，则它们的差被两个正差分开，必严格大于至少一个相邻差，所以最小差只能来自相邻元素。按排序顺序扫描自然满足全部结果的排序要求。\n\n## 复杂度\n\n时间O(n log n)，空间O(n+输出)，最坏输出小于2400000字节。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]));best=min(y-x for x,y in zip(a,a[1:]))\n    pairs=[f'{x} {y}' for x,y in zip(a,a[1:]) if y-x==best]\n    return '\\n'.join(pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#34-minimum-difference",
+  "sourceContentHash": "7e44a0900dee810c42bd976c5d2bb107d2e882c42311f698262c5230d9f9e8ae",
+  "author": "CSWork"
+}

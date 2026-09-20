@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许负修改成本",
+    "code": "def solve(raw):\n    import json\n    s,t,k=json.loads(raw);left=cost=answer=0\n    for right in range(len(s)):\n        cost+=ord(s[right])-ord(t[right])\n        while cost>k:\n            cost-=abs(ord(s[left])-ord(t[left]));left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把ASCII差当不同字符数",
+    "code": "def solve(raw):\n    import json\n    s,t,k=json.loads(raw);left=cost=answer=0\n    for right in range(len(s)):\n        cost+=int(s[right]!=t[right])\n        while cost>k:\n            cost-=abs(ord(s[left])-ord(t[left]));left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

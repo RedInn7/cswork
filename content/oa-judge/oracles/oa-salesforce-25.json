@@ -1,0 +1,654 @@
+[
+  {
+    "input": "[\"abcd\",\"abdc\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"hackerranks\",\"hackers\"]\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "[\"\",\"abc\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"A\\u0000Ab\\u0000 b\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"   ba\",\"a\\u0000\\ud83d\\ude00Ab\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" a\",\"\\ud83d\\ude00\\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" \\ud83d\\ude00\",\" A\\u0000\\u0000Abb b\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" \\ud83d\\ude00\",\"A\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"a\",\" b\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"b\\u0000\\u0000\\u0000bab\\u0000A\",\"\\u0000a\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00a\\ud83d\\ude00\\u0000\",\"A\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000bbb\",\"a\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"a\\u0000\\u0000Ab\\ud83d\\ude00 a\",\"bAa\\u0000\\u0000AAaA\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"\\u0000\\u0000 \\u0000\\u0000\",\"\\u0000AA \\u0000Aa b\\u0000\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"a \\ud83d\\ude00AAa\\ud83d\\ude00b \",\"bab Aa\\u0000\\u0000a\\u0000\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00 \",\"a\\ud83d\\ude00\\ud83d\\ude00a\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"A\\ud83d\\ude00 \\u0000aaA a\",\"b\\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"Aab A \",\"\\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" A\",\"ab  ab\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000ba\\u0000\\u0000 A\\u0000\",\"A \\u0000\\u0000\\u0000\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"  \\ud83d\\ude00aA\",\"  b\\ud83d\\ude00\\ud83d\\ude00a\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"ba\\ud83d\\ude00 \",\" bA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000bA\\u0000 aA\\u0000\",\"\\u0000b AA\\u0000bbAb\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\" a\\ud83d\\ude00a\\u0000Ab \",\"\\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00 a\\ud83d\\ude00A\\ud83d\\ude00\\u0000bA\\ud83d\\ude00\",\"AAA\\u0000A\\u0000b\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\\ud83d\\ude00\\u0000b  \\u0000\\ud83d\\ude00A\",\" A\\ud83d\\ude00\\ud83d\\ude00Ab \\ud83d\\ude00\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"a\\u0000\\u0000a\\ud83d\\ude00AA\\u0000b \",\"abAAAbba \"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"AbaAAA\",\"ba\\ud83d\\ude00a\\u0000bbaa\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"a\",\"\\ud83d\\ude00 \\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00a\\ud83d\\ude00 \\u0000b\",\"A aaA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"b  a \\ud83d\\ude00b\\ud83d\\ude00\\u0000\",\"A   \"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bA\\u0000\",\"a\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"a\\u0000A\",\"abb \\ud83d\\ude00 \\u0000a\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"AaA\\ud83d\\ude00\",\"   aa\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000bb\\ud83d\\ude00Aa\",\"\\u0000\\ud83d\\ude00bA A\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00a\\u0000A\\u0000b\",\"\\ud83d\\ude00aAbaA\\u0000\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\" A\\ud83d\\ude00\",\"\\u0000 \\u0000 A\\u0000aaA\\u0000\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\u0000A\",\"aa\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaab\\ud83d\\ude00\\u0000\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"AbA\\ud83d\\ude00  \\ud83d\\ude00 \",\"\\u0000a\\u0000\\ud83d\\ude00Abb \"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\\u0000b\",\"  \\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"b\\u0000\\u0000\",\"  Aba\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000\\ud83d\\ude00\\u0000\\ud83d\\ude00Aa \\u0000\\u0000A\",\"\\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"ab a \\ud83d\\ude00 a\\u0000\",\"\\ud83d\\ude00 b b\\ud83d\\ude00\\u0000AA\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\",\"aAa \\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aa\",\"a\\ud83d\\ude00Aaab\\u0000\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00   \\u0000\\ud83d\\ude00b\",\"ab \\u0000\\ud83d\\ude00 b\\ud83d\\ude00\\ud83d\\ude00A\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\" baba \",\"ab  \\u0000 \"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\",\"aA  \\u0000\\u0000a A\\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"   \",\"Ab\\ud83d\\ude00babA\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000bbb b  \\u0000b\",\"a \\ud83d\\ude00\\ud83d\\ude00aAAa \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\" b\\u0000abA\\u0000\\u0000a\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" \\u0000babA\\u0000\",\"a\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000b\\ud83d\\ude00\\u0000\",\" \\u0000\\ud83d\\ude00b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\\u0000bb aA\",\"\\u0000\\ud83d\\ude00 \\u0000\\ud83d\\ude00b A\\u0000\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\" bAb\\ud83d\\ude00 \",\"A bbA\\u0000 \"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00A\\u0000\\u0000AAA\",\" A AAa\\ud83d\\ude00\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"a\\ud83d\\ude00a\\u0000 A \",\"b \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\\ud83d\\ude00a\\ud83d\\ude00A ba\\ud83d\\ude00\",\"b\\u0000\\ud83d\\ude00\\ud83d\\ude00\\u0000\\u0000\\ud83d\\ude00\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\" A\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"A\\u0000\\u0000  A\",\"bA\\u0000 bAb\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"AA\\ud83d\\ude00\",\"Ab\\u0000 ab\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bb\\u0000ba\",\"\\u0000\\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" \\ud83d\\ude00A\\ud83d\\ude00\\u0000\\ud83d\\ude00\",\" A\\ud83d\\ude00a \\ud83d\\ude00aaa\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\\u0000\",\"aa \\ud83d\\ude00AaA A \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" bAa\\u0000\\ud83d\\ude00bAA\",\"ab aA\\ud83d\\ude00b\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\",\"\\ud83d\\ude00 bb\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" ba \",\"aA \\ud83d\\ude00aAb\\ud83d\\ude00\\ud83d\\ude00A\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"b\\u0000\\ud83d\\ude00\\u0000\\ud83d\\ude00\\ud83d\\ude00 \"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"Abbbbba\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\",\"bAa baA\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\",\"baA\\ud83d\\ude00\\u0000a\\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000aA\\u0000\\ud83d\\ude00 aA\",\"\\ud83d\\ude00a\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\u0000  b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\" \\u0000A   \\ud83d\\ude00\",\" A Ab\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"b\\ud83d\\ude00\\u0000\\u0000bA\",\"\\ud83d\\ude00ab\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" \\u0000\\u0000\\u0000\\ud83d\\ude00\\u0000\\ud83d\\ude00\\u0000\",\" bb\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"a\\ud83d\\ude00\\u0000b\\ud83d\\ude00aa\",\"A \\u0000a\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"A\\u0000\\u0000Aa \",\"a\\ud83d\\ude00a\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"b\\ud83d\\ude00b\\ud83d\\ude00a\\u0000 \",\"\\ud83d\\ude00Ab  aA\\ud83d\\ude00\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"A\\u0000a\",\"b\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000 A\\ud83d\\ude00\",\"A bA\\ud83d\\ude00a \\u0000\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"b\\u0000A\\ud83d\\ude00\\u0000\",\"a \\u0000a\\u0000b \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000bba\\u0000\",\"A\\u0000\\ud83d\\ude00\\u0000  \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"A\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000ba\\ud83d\\ude00AbAAaA\",\"b\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00 b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\u0000\",\"b ba\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bb\\u0000A\\ud83d\\ude00Aa\",\"bA\\ud83d\\ude00 ab\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00b\\u0000\\u0000\",\"\\u0000\\ud83d\\ude00\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"A\\ud83d\\ude00a\\ud83d\\ude00\\u0000 \\u0000\\ud83d\\ude00\",\"bb\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000 \\ud83d\\ude00A\",\"bba  \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"\\u0000a\\u0000a\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00a\\u0000\\ud83d\\ude00A\",\"A\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aaA\\ud83d\\ude00\",\"abA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000\\u0000\",\"\\u0000\\u0000b\\ud83d\\ude00 \\ud83d\\ude00\\u0000\\ud83d\\ude00b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\" a\\u0000\\u0000a \\u0000\\u0000a\",\"\\ud83d\\ude00Ab\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" abA\\u0000\",\"\\ud83d\\ude00  A\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00AA  b\\u0000\",\"\\ud83d\\ude00Ab\\u0000b bAaA\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"a \\u0000b\\ud83d\\ude00\\u0000\",\"\\ud83d\\ude00  A\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000b bAa\\u0000\",\" ab \\u0000\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\u0000\\u0000\\u0000Ab\\u0000 \\u0000bA\",\"\\ud83d\\ude00ba\\u0000\\ud83d\\ude00\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000a\\u0000 \\ud83d\\ude00\",\"Aa Ab \\u0000b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\",\"ab\\u0000\\u0000AA \\u0000\\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"A\\u0000\\ud83d\\ude00 \",\"\\ud83d\\ude00\\ud83d\\ude00Aa\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"a\\ud83d\\ude00a \\ud83d\\ude00\",\"\\u0000bA\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" \\u0000\\ud83d\\ude00\",\"\\u0000b\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00A\",\"aA\\ud83d\\ude00aaaabA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"A\",\"Aa\\u0000bb\\ud83d\\ude00a \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"A\\u0000A\\u0000b\\ud83d\\ude00\\ud83d\\ude00 \\u0000\\u0000\",\"\\ud83d\\ude00 AA \"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\\u0000\\ud83d\\ude00\\ud83d\\ude00 \",\"b\\u0000\\ud83d\\ude00\\u0000bbA\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\u0000 b\",\"\\ud83d\\ude00 \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00A\\ud83d\\ude00\",\" abb\\ud83d\\ude00A\\ud83d\\ude00\\u0000\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\" A \\ud83d\\ude00\\u0000\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\u0000b\",\"A b\\u0000ba abb\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\u0000abaa\\ud83d\\ude00\\ud83d\\ude00\\u0000b\\u0000\",\"\\u0000A\\ud83d\\ude00\\ud83d\\ude00A\\ud83d\\ude00ab\\ud83d\\ude00\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00\",\"\\ud83d\\ude00\\u0000bA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"ba\\u0000 AA\\ud83d\\ude00 \\ud83d\\ude00A\",\"A\\ud83d\\ude00A\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"  \\u0000bb\\u0000aAb\",\"a\\u0000 A\\u0000a\\ud83d\\ude00 b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\",\"b  a\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bAbb\",\"bAbbaA\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"b\\ud83d\\ude00 \\u0000 AAb\",\"Aa\\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000\",\"A\\ud83d\\ude00b\\u0000\\u0000AabA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\",\"aA b \\ud83d\\ude00A\\u0000\\ud83d\\ude00\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" A\\u0000 bA\\u0000b\",\"A\\u0000\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\u0000a\\ud83d\\ude00\\ud83d\\ude00b\",\" b\\u0000  \"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"A\",\" b\\u0000ab aA\\u0000\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00a\\ud83d\\ude00a\\ud83d\\ude00A\\u0000\\ud83d\\ude00\",\"b\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" \\ud83d\\ude00\\u0000\\ud83d\\ude00\\ud83d\\ude00\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" \\ud83d\\ude00b\\ud83d\\ude00\\ud83d\\ude00AbaA\",\"\\u0000bA\\u0000a\\u0000\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00AA\",\"a\\u0000Ab \\ud83d\\ude00 \\ud83d\\ude00\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" \",\"\\ud83d\\ude00Ab\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" AabA\\ud83d\\ude00\",\"b\\u0000aa\\ud83d\\ude00\\u0000a\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"  ba \\u0000a a\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"A\\u0000\\ud83d\\ude00A AbaAa\",\"\\u0000AAA\\u0000aAb\\ud83d\\ude00\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"baA\",\"a\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"b\\ud83d\\ude00aa\\ud83d\\ude00\\ud83d\\ude00ab\",\"bbb\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aa A\\u0000AA\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"b\\ud83d\\ude00aa\\u0000\",\"\\ud83d\\ude00 b\\u0000b\\u0000a \\u0000A\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aa  b\",\" a\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"a a\\ud83d\\ude00b\",\"A\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000b\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000aa\\u0000\\ud83d\\ude00a  \",\"baa\\u0000aa\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"\",\" a\\u0000\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aAa\",\"\\u0000a\\u0000\\u0000AAb\\ud83d\\ude00\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\" A AA\",\" \\ud83d\\ude00aAaa\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"\\u0000a\\ud83d\\ude00AA\\ud83d\\ude00\",\"A\\ud83d\\ude00b\\u0000b \\u0000bbb\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bbA\\u0000\\ud83d\\ude00\\ud83d\\ude00 A\\ud83d\\ude00\",\"ba\\ud83d\\ude00\\ud83d\\ude00b\\u0000b \"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"  abbbab\",\"b bab\\ud83d\\ude00\\ud83d\\ude00\"]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"b \\u0000b\",\" Aa\\u0000\\u0000b\\ud83d\\ude00a\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"A\",\"ba \"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"A\",\"\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\" b  aA\\u0000a \\ud83d\\ude00\",\"\\u0000a\\u0000\\u0000A\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"b\",\"aa  a\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\u0000\",\"aAaaA\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"\\ud83d\\ude00b\",\"AA\"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"a\\ud83d\\ude00 bba\\u0000b\\u0000\",\"ba A\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"\",\"  \\u0000bA \\ud83d\\ude00b \"]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"A\\ud83d\\ude00 A\\ud83d\\ude00b \\u0000a\",\"ba\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\u0000A\"]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"ab \\u0000 Aa\",\"a\\u0000\\ud83d\\ude00 A\\ud83d\\ude00A \\u0000b\"]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\" \",\"\\u0000 \\ud83d\\ude00\\ud83d\\ude00Aa\\ud83d\\ude00\\ud83d\\ude00bA\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"a\\u0000A\\ud83d\\ude00Ab\",\"A\"]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"A\\u0000 bbb\",\"a\"]\n",
+    "expectedOutput": "0\n"
+  }
+]

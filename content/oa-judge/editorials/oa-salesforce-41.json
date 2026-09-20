@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-41",
+  "title": "不含k个连续相同字母的字符串计数",
+  "explanation": "## 思路\n\n令F[i]为长度i的方案数。i<k时为26^i；F[k]=26^k−26；i>k时F[i]=26F[i−1]−25F[i−k]。k=1直接输出0。\n\n## 正确性证明\n\n任意合法长度i−1后接任意字母共有26F[i−1]。当i>k时，新产生非法串恰为合法长度i−k前缀、接一个不同于此前末字符的字母并连续重复k次，共25F[i−k]；i=k时非法串是26种全同串。相减得到无重无漏的合法数。\n\n## 复杂度\n\n时间O(n)，空间O(n)保存模数数组，可进一步循环缓冲至O(k)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    n,k=map(int,raw.split());mod=1000000007\n    if k==1:return '0'\n    counts=[1]*(n+1)\n    for i in range(1,n+1):\n        counts[i]=26*counts[i-1]%mod\n        if i==k:counts[i]=(counts[i]-26)%mod\n        elif i>k:counts[i]=(counts[i]-25*counts[i-k])%mod\n    return str(counts[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/salesforce#41-strings-with-no-k-consecutive-identical-characters",
+  "sourceContentHash": "1b41c92ddfd0fb088f90ab1d36b1da21dc62c90b84fc94c4607fcceff2c75472",
+  "author": "CSWork"
+}

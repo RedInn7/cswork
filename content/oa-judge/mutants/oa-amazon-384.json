@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许零前缀",
+    "code": "def solve(raw):\n    import heapq\n    a=map(int,raw.split()[1:]);heap=[];balance=0\n    for v in a:\n        balance-=v;heapq.heappush(heap,-v)\n        if balance<0:balance-=2*heapq.heappop(heap)\n    return str(len(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "撤销最大负项却按当前项返还余额",
+    "code": "def solve(raw):\n    import heapq\n    a=map(int,raw.split()[1:]);heap=[];balance=0\n    for v in a:\n        balance-=v;heapq.heappush(heap,-v)\n        if balance<=0:balance+=2*v;heapq.heappop(heap)\n    return str(len(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

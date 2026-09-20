@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-379",
+  "title": "为货物选择严格更大容量的卡车",
+  "explanation": "## 思路\n\n按容量排序并保留每个容量的最小下标，二分第一个严格大于重量的容量。\n\n## 正确性证明\n\n二分跳过所有不够大的容量，第一个剩余容量恰是可用容量最小值；预存的最小下标解决且仅解决该容量内平局。独立查询不修改结构，符合重复使用规则。\n\n## 复杂度\n\nO(n log n+m log n)时间，O(n+m)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from bisect import bisect_right\n    d=list(map(int,raw.split()));n,m=d[:2];first={}\n    for i,v in enumerate(d[2:2+n]):first.setdefault(v,i)\n    capacities=sorted(first);answer=[]\n    for weight in d[2+n:]:\n        j=bisect_right(capacities,weight);answer.append(first[capacities[j]] if j<len(capacities) else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#379-get-trucks-for-items",
+  "sourceContentHash": "51dc8279564eadc4650d46f3ae159075b85d480d9ef47daa89e8c80ab5b3a20b",
+  "author": "CSWork"
+}

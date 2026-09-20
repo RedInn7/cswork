@@ -1,0 +1,10 @@
+[
+  {
+    "name": "交换普通特殊含义",
+    "code": "def solve(raw):\n    s,amount,bits=raw.split();k=int(amount);left=normal=answer=0\n    for right,ch in enumerate(s):\n        normal+=bits[ord(ch)-97]=='1'\n        while normal>k:\n            normal-=bits[ord(s[left])-97]=='1';left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误使用严格小于k",
+    "code": "def solve(raw):\n    s,amount,bits=raw.split();k=int(amount);left=normal=answer=0\n    for right,ch in enumerate(s):\n        normal+=bits[ord(ch)-97]=='0'\n        while normal>=k:\n            normal-=bits[ord(s[left])-97]=='0';left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

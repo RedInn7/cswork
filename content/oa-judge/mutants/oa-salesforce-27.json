@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误从前往后处理博弈",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];difference=0\n    for value in a:difference=abs(value-difference)\n    total=sum(a);return f'{(total+difference)//2} {(total-difference)//2}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误所有任务都分第一核",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];difference=0\n    for value in reversed(a):difference=abs(value-difference)\n    total=sum(a);return f'{total} 0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

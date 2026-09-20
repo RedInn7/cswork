@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只返回所有字符串数",
+    "code": "def solve(raw):\n    n,k=map(int,raw.split());mod=1000000007\n    if k==1:return '0'\n    counts=[1]*(n+1)\n    for i in range(1,n+1):\n        counts[i]=26*counts[i-1]%mod\n        if i==k:counts[i]=(counts[i]-26)%mod\n        elif i>k:counts[i]=(counts[i]-25*counts[i-k])%mod\n    return str(pow(26,n,mod))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把禁用长度错写为k加1",
+    "code": "def solve(raw):\n    n,k=map(int,raw.split());k+=1;mod=1000000007\n    if k==1:return '0'\n    counts=[1]*(n+1)\n    for i in range(1,n+1):\n        counts[i]=26*counts[i-1]%mod\n        if i==k:counts[i]=(counts[i]-26)%mod\n        elif i>k:counts[i]=(counts[i]-25*counts[i-k])%mod\n    return str(counts[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

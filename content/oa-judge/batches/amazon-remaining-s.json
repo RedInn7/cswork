@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-378",
+      "sourceContentHash": "f7300fdfccc7500a66bdc598ab9f924c38b049e6d6e3b8b49c7d0bad601f2be1",
+      "packageChecksum": "8ceaba81d5b4af3398e6a61de1f5e38b332f317d3c882d2e61c7a6b9aa462b33",
+      "editorial": "## 思路\n\n降序排序观众数并构建前缀和，第k个前缀即查询答案。\n\n## 正确性证明\n\n任意选中集合若漏掉一个更大的值，交换进来不会降低和，反复交换得到降序前k项。因此它们的和最大；前缀累加准确保存该和。\n\n## 复杂度\n\nO(n log n+q)时间，O(n+q)空间，最大答案10^14。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n],reverse=True);prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    return ' '.join(str(prefix[k]) for k in d[2+n:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-379",
+      "sourceContentHash": "51dc8279564eadc4650d46f3ae159075b85d480d9ef47daa89e8c80ab5b3a20b",
+      "packageChecksum": "f67c1122916c1049306b580fd8564b2b62162537e774d0f2bd3d3d385d19eb3c",
+      "editorial": "## 思路\n\n按容量排序并保留每个容量的最小下标，二分第一个严格大于重量的容量。\n\n## 正确性证明\n\n二分跳过所有不够大的容量，第一个剩余容量恰是可用容量最小值；预存的最小下标解决且仅解决该容量内平局。独立查询不修改结构，符合重复使用规则。\n\n## 复杂度\n\nO(n log n+m log n)时间，O(n+m)空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from bisect import bisect_right\n    d=list(map(int,raw.split()));n,m=d[:2];first={}\n    for i,v in enumerate(d[2:2+n]):first.setdefault(v,i)\n    capacities=sorted(first);answer=[]\n    for weight in d[2+n:]:\n        j=bisect_right(capacities,weight);answer.append(first[capacities[j]] if j<len(capacities) else -1)\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-380",
+      "sourceContentHash": "2806e33c9a68de8a913be199ff0129ad5184df32e968177b2a78f18297c43090",
+      "packageChecksum": "f084c8bb1cccb05ea39cc498400184d4583f56947e7f16f8320682049e9301aa",
+      "editorial": "## 思路\n\n集合保存有数据的位置，每次删除from并加入to，最后排序。\n\n## 正确性证明\n\n集合初始与占用位置一致。有效迁移恰删除一个旧位置并增加一个空位置，其余位置不变，因此每步保持一致；最终排序仅改变输出顺序。\n\n## 复杂度\n\nO(m+n log n)期望时间、O(n+m)含输入空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=iter(map(int,raw.split()));n=next(d);m=next(d);positions={next(d) for _ in range(n)}\n    for _ in range(m):\n        u=next(d);v=next(d);positions.remove(u);positions.add(v)\n    return str(len(positions))+'\\n'+' '.join(map(str,sorted(positions)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-383",
+      "sourceContentHash": "dad00ca45162b2247c33e8055caa0a2b98be15683da30c4c241a30189051cf42",
+      "packageChecksum": "dc9bf802e366c019f9f4da383e531f90cc5a829310358fd3df07b49f1fc9e367",
+      "editorial": "## 思路\n\n把全部数存集合，从每个数开始反复平方，统计仍在集合中的链长。\n\n## 正确性证明\n\n合法序列选定首项后，后续每一项都唯一等于前项平方。逐起点延伸至第一个缺失值，因此找全该起点最长合法序列，所有起点取最大即全局最优。\n\n## 复杂度\n\nO(n log log 10^6)期望时间、O(n)空间；最长链为2,4,16,256,65536，共5项。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=set(map(int,raw.split()[1:]));best=1\n    for start in a:\n        v=start;length=1\n        while v<=1000 and v*v in a:v*=v;length+=1\n        best=max(best,length)\n    return str(best if best>=2 else -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-384",
+      "sourceContentHash": "2b1e96fbca85eef012bf4b484cb6ec75b729f9cee3f8a25fcb5bcf2fa3278c75",
+      "packageChecksum": "f3097641e9c58150cc14098fcd63a35e34a1eb05e0b924a59bf0be257d7ff39f",
+      "editorial": "## 思路\n\n新项先取负并加入最大堆；若前缀不正，撤销当前所有负项中绝对值最大的一项。\n\n## 正确性证明\n\n维持已选负项的数量最大，且在该数量下负项总和最小（即余额最大）。加入新负项后若超出本前缀允许预算，任何同数量方案也不可行，必须去掉一项；去掉最大值使留下的和最小。以前缀递增的原正数总和为预算，交换最大项只减少所有受影响前缀的负负担，不破坏过去约束。此前余额正，最大值至少为新值，故一次撤销即可恢复正余额。归纳得到最大数量。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间；余额可达10^14。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import heapq\n    a=map(int,raw.split()[1:]);heap=[];balance=0\n    for v in a:\n        balance-=v;heapq.heappush(heap,-v)\n        if balance<=0:balance-=2*heapq.heappop(heap)\n    return str(len(heap))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-385",
+      "sourceContentHash": "723a796fa95ddd92dfdeb50c6ba17671ce4df759a25e50970a51d4edf4f63035",
+      "packageChecksum": "022df4c1442a0b2532349a9d3ca4c08ef116a158df8ddd55b1232e7c39d53532",
+      "editorial": "## 思路\n\n从大到小枚举半长h，扫描相距h的字符对是否相等或含问号，连续兼容h对就找到答案2h。\n\n## 正确性证明\n\n长度2h的两半对应h对互不共享位置的字符。每对兼容当且仅当可以独立替换为同一字母，所以h对全部兼容与该子串存在合法替换等价。扫描连续兼容对检查全部起点，按h降序找到的第一个解最长。\n\n## 复杂度\n\nO(n²)时间、O(1)额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.removesuffix('\\n').removesuffix('\\r');n=len(s)\n    for h in range(n//2,0,-1):\n        run=0\n        for i in range(n-h):\n            run=run+1 if s[i]==s[i+h] or s[i]=='?' or s[i+h]=='?' else 0\n            if run>=h:return str(2*h)\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-386",
+      "sourceContentHash": "61d3d7fecf56a9158a0e2b7694ef7303b649ab1de04c5952aec5ef1e41961a72",
+      "packageChecksum": "bc4132992f899f70c75c0fe41cbc8000570199c2c921583dfec3557fe03f0386",
+      "editorial": "## 思路\n\n分别累加原奇、偶下标上的正数，取较大者；若没有正数，则取原数组最大值。\n\n## 正确性证明\n\n一次合并跨过一个元素，因此每个存活合并值只能由原同一奇偶下标的元素组成，给出两种奇偶位置正数和的上界。任意该奇偶的非空选定子集都能实现：先截去选中范围外的端点，两个相邻选中项之间若还有不选的同奇偶项，先删除这些项，将其异奇偶邻居合并；最终只隔一个异奇偶项，删除它即可合并两选中值，归纳实现全子集。因此有正数时选所有正数达到上界；无正数时任何非空和不超过最大单项，截端点保留它即可。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间，答案最多5×10^13。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));totals=[0,0]\n    for i,v in enumerate(a):totals[i%2]+=max(v,0)\n    return str(max(totals) if max(totals)>0 else max(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-388",
+      "sourceContentHash": "68ce390b7e83b530941b31556f15349a1850863eaa9ad2d779abcb369cd89a24",
+      "packageChecksum": "59027c8d57a0e4bd4b3fcb60d9e371e4ff83eaf9fe2974fc11b8fbb33c558c50",
+      "editorial": "## 思路\n\n按原尺寸排序，依次安排整数尺寸槽位。所有已可放入槽位的商品加入按单位费用降序的堆，安排最贵者；堆为空时跳至下一原尺寸。\n\n## 正确性证明\n\n任意有等待商品的空槽都可让一个后放商品提前，费用不会增加。对于当前槽已可用的两商品，若贵者在便宜者之后，交换使费用减少或不变，且两者均已释放，仍合法。因此当前放最贵者总能延伸成最优解；逐槽归纳得全局最优。空堆跳过不能安排任何商品的位置不漏解。\n\n## 复杂度\n\nO(n log n)时间，O(n)空间，答案可达199999000000000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import heapq\n    d=list(map(int,raw.split()));n=d[0];items=sorted(zip(d[1:n+1],d[n+1:]));heap=[];i=0;slot=0;answer=0\n    while i<n or heap:\n        if not heap:slot=max(slot,items[i][0])\n        while i<n and items[i][0]<=slot:\n            size,cost=items[i];heapq.heappush(heap,(-cost,size));i+=1\n        negcost,size=heapq.heappop(heap);answer+=(slot-size)*(-negcost);slot+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-389",
+      "sourceContentHash": "6b092631a93dc5c1393693b75e32240d626aa8b4263ca6a7f654fadc94e6e6a8",
+      "packageChecksum": "69417dae4fd28b7b33f6a053f5eaf1512119bd80af5a8ad63bb04e982f237eb9",
+      "editorial": "## 思路\n\n求每类单独最早完成时刻。假设该类先看，用其最早完成时刻遍历另一类，计算max(前类结束,本片上映)+时长；两种顺序取最小。\n\n## 正确性证明\n\n多看影片不能让结束更早，所以只需各一部。固定第二部时，结束时刻关于第一部完成时刻单调不减，故第一类只保留最早完成者即可。枚举第二部和两种顺序覆盖全部最优可能。\n\n## 复杂度\n\nO(n+m)时间，O(n+m)含输入空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:2+2*n];c=d[2+2*n:2+2*n+m];e=d[2+2*n+m:]\n    first=min(x+y for x,y in zip(a,b));second=min(x+y for x,y in zip(c,e))\n    return str(min(min(max(first,x)+y for x,y in zip(c,e)),min(max(second,x)+y for x,y in zip(a,b))))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-390",
+      "sourceContentHash": "5fe700e18d195e893bf8e5b948a18fef6cbe6817f64bd935c189d1cefb7d0c15",
+      "packageChecksum": "8ee742004ebd747ee0c59253b55b3d483e10a565bac63786eec7efd89042f3cc",
+      "editorial": "## 思路\n\n逐项扫描时将指数内符号与项符号分开，分别按指数合并两因子；逐对相乘，系数相乘、指数相加，累加至对应指数。最后降序格式化并去掉零项。\n\n## 正确性证明\n\n每个原始单项式可唯一解析为系数和指数，负指数符号在^后被消费，不会成为下一项符号。分配律说明积中指数e的系数恰是所有指数和为e的系数乘积之和；逐对累加覆盖且只覆盖这些项。去掉零系数与指定降序、符号省略仅改变表示，不改变多项式，因此输出唯一规范展开式。\n\n## 复杂度\n\n设原项数为T、U，输出不同幂数K≤TU≤40000，时间O(TU+K log K)，空间O(T+U+K)。系数使用任意精度整数，绝对值最多4×10^22，指数可达±2×10^9。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import re\n    text=raw.strip();letter=next((c for c in text if c.isalpha()),'x')\n    pattern=re.compile(r'([+-]?)(?:(\\d+)([a-zA-Z])?|([a-zA-Z]))(?:\\^([+-]?\\d+))?')\n    def parse(s):\n        out={};pos=0\n        while pos<len(s):\n            m=pattern.match(s,pos);sign,digits,v1,v2,exponent=m.groups();c=int(digits) if digits is not None else 1\n            if sign=='-':c=-c\n            e=int(exponent) if exponent is not None else (1 if v1 or v2 else 0)\n            out[e]=out.get(e,0)+c;pos=m.end()\n        return out\n    p,q=text[1:-1].split(')(');a=parse(p);b=parse(q);out={}\n    for e,c in a.items():\n        for f,d in b.items():out[e+f]=out.get(e+f,0)+c*d\n    answer=[]\n    for e in sorted(out,reverse=True):\n        c=out[e]\n        if c==0:continue\n        v=abs(c);body=str(v) if e==0 else ('' if v==1 else str(v))+letter+('' if e==1 else '^'+str(e))\n        answer.append(('-' if c<0 else ('+' if answer else ''))+body)\n    return ''.join(answer) or '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-391",
+      "sourceContentHash": "7f3a8cdd54e2c328bb050963413ca46bf084b1304e76ff9dd1f396fa65dcaf64",
+      "packageChecksum": "5620257c3247b464b07227c0b4bd353cb2cc78108969a859cffc3a41b4eefc46",
+      "editorial": "## 思路\n\n设base=floor(sum/n)，计算低于base的总缺口D及高于base+1的总超额E，答案为max(D,E)。\n\n## 正确性证明\n\n总和固定时最小差为0或1，最终各堆必为base或base+1。令r=sum mod n、H为原本大于base的堆数。把尽可能多的r个高位目标交给这H堆，可最小化从超量堆取出的数量。若r≤H，恰需补低端D；若r>H，额外r−H个高位目标也需补1。又由总和得到E=D+r−H，因此最优搬运数为D+max(0,r−H)=max(D,E)。每步从超额堆向缺额堆移动一箱，恰能实现该下界。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间，使用64位或任意精度整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));base=sum(a)//len(a)\n    deficit=sum(max(0,base-v) for v in a);excess=sum(max(0,v-base-1) for v in a)\n    return str(max(deficit,excess))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

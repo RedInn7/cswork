@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-salesforce-21",
+      "sourceContentHash": "b85376f43ada85f0801f13038c12f26687cf1dcac134ec688c23d77f5872ddcb",
+      "packageChecksum": "fa472df6c9d8f31a537bbd1c1dc291b48abcdc521454feaf75edfa845fc7ce48",
+      "editorial": "## 思路\n\n取绝对值排序。设a≤b，则两条式子化为b−a≤a和b+a≥b，所以只需b≤2a；双指针统计窗口中的索引对。\n\n## 正确性证明\n\n绝对值和差的较小者为b−a，较大者为b+a。第二式恒真，第一式等价b≤2a。排序不改变索引对数量，每个右端点的合法左端点是连续后缀，滑动左端后累加窗口长度恰好计数一次。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，答案最大19999900000，须64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values=list(map(int,raw.split()));a=sorted(abs(x) for x in values[1:]);left=0;answer=0\n    for right,value in enumerate(a):\n        while value>2*a[left]:left+=1\n        answer+=right-left\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-22",
+      "sourceContentHash": "1c9ef6cb75933b7e6f195f29b70597d2b65df99853034059a080f5b416b61dd0",
+      "packageChecksum": "2f519dc9f74b7f973495f84416ae5dc343173e37e18fb89dbb614427f96dddf1",
+      "editorial": "## 思路\n\n右端递增并累计普通字符数，超过k时移动左端直到合法。\n\n## 正确性证明\n\n普通字符贡献非负，缩短窗口不会增大总数。每个右端的最小合法左端给出该右端最长合法串；枚举所有右端取最大即全局最优。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s,amount,bits=raw.split();k=int(amount);left=normal=answer=0\n    for right,ch in enumerate(s):\n        normal+=bits[ord(ch)-97]=='0'\n        while normal>k:\n            normal-=bits[ord(s[left])-97]=='0';left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-23",
+      "sourceContentHash": "17e92dbd1b9c6148c541ad8bf46f346ec80952ca7937f8d5c185d0e6b36f0450",
+      "packageChecksum": "51b058904005f60f49c15b9c855c9ab457b6730224dd1119c495edbeee801019",
+      "editorial": "## 思路\n\n二分总时间T：开发耗时大于T的功能必须集成，其集成耗时之和不得超过T；其余都开发即可。\n\n## 正确性证明\n\n若开发时间>T便不能开发，给出必须集成集合。其和>T时任何方案不可能在T完成；反之把该集合交给组长、其余并行开发即可在T完成。判定随T单调，因此二分返回最小可行值。\n\n## 复杂度\n\n时间O(n log(1+最大开发时间))，空间O(n)，累加使用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];development=v[1:n+1];integration=v[n+1:];lo=0;hi=max(development)\n    while lo<hi:\n        mid=(lo+hi)//2;required=sum(b for a,b in zip(development,integration) if a>mid)\n        if required<=mid:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-24",
+      "sourceContentHash": "03d175e9639fb8c67f5c94ac42a60588c1356a5cb90204f89f4b573e63fb86ff",
+      "packageChecksum": "883033b2ac4036f89cc8eac22b65fab766db5bb1c28f7c209af3d550a740b93f",
+      "editorial": "## 思路\n\n按边权递增合并端点，第一次使起终点同属连通块的边权即答案。用字典压缩出现的节点，绝不按N分配数组。\n\n## 正确性证明\n\n权值不超过W的边组成子图：起终点在该子图连通，当且仅当存在最大边权≤W的路径。按权排序累积连通性，首次连通的W最小；全处理后不连通就没有路径。\n\n## 复杂度\n\n时间O(M log M)，空间O(M)，最多200002个实际标签，与N的数值无关。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import re\n    from array import array\n    values=(int(m.group()) for m in re.finditer(r'\\d+',raw));n=next(values);m=next(values);labels={};parent=array('i');size=array('i');edges=[]\n    def index(x):\n        if x not in labels:labels[x]=len(parent);parent.append(len(parent));size.append(1)\n        return labels[x]\n    for _ in range(m):\n        u=index(next(values));v=index(next(values));w=next(values);edges.append((w,u,v))\n    source=index(next(values));destination=index(next(values))\n    if source==destination:return '0'\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    for weight,u,v in sorted(edges):\n        a=find(u);b=find(v)\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            parent[b]=a;size[a]+=size[b]\n        if find(source)==find(destination):return str(weight)\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-25",
+      "sourceContentHash": "20d1b1e85633dc54874e0570b1e2eb2c4511e69803845c08ce0be1271c0cc9d4",
+      "packageChecksum": "c49c16334751cf0277f3806c68b6a4478448b37a02794a50f3625b174ab548ea",
+      "editorial": "## 思路\n\ndp[j]保存已处理X前缀中可作为子序列、且在Y第j个字符结尾的最长连续串。每读X一个字符，按j倒序更新相等位置为max(旧值,dp[j−1]+1)。\n\n## 正确性证明\n\n不使用当前X字符时保留旧状态；使用时必须匹配Y当前位置，之前匹配必须连续结束于Y前一位置。倒序保证读取上一轮状态，不重复使用同一个X字符，两类转移穷尽合法匹配。\n\n## 复杂度\n\n时间O(|X||Y|)，空间O(|Y|)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import json\n    x,y=json.loads(raw);dp=[0]*(len(y)+1)\n    for ch in x:\n        for j in range(len(y),0,-1):\n            if ch==y[j-1]:dp[j]=max(dp[j],dp[j-1]+1)\n    return str(max(dp))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-27",
+      "sourceContentHash": "f262a32a04afed023bcc10ba12b3a7afd96df0c348a195d74c3cf02f68f7cff7",
+      "packageChecksum": "0b7d053da2ab1f179087b05913ae94b401fe1af66e0869736b35610448123514",
+      "editorial": "## 思路\n\n从后往前维护持锁者相对另一核的最优收益差d，初值0，每项更新为|time−d|。最后由总和S还原两核收益(S+d)/2和(S−d)/2。\n\n## 正确性证明\n\n自取并交锁产生分差time−d，给对方并留锁产生分差d−time。固定总和下最大化个人收益等价于最大化分差，两者较大值即绝对值。倒序归纳成立；并列时两核收益仍由同一总和与分差唯一确定。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)，收益使用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];difference=0\n    for value in reversed(a):difference=abs(value-difference)\n    total=sum(a);return f'{(total+difference)//2} {(total-difference)//2}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-29",
+      "sourceContentHash": "d2db4a6aca8da7919fd3789e826fc40fca4dd8e8fac2426359ae29b1c46a02d0",
+      "packageChecksum": "1405c239b9957da3fa5df875c76288f09de27921df248b2cae1bbbb09b8fe079",
+      "editorial": "## 思路\n\n求严格最长递增子序列长L，答案max(0,n−L−1)。\n\n## 正确性证明\n\n若保留m个元素且再删至多一个就递增，则原数组有长度至少m−1的递增子序列，所以m≤L+1。反过来选一个LIS，再加入任意一个未选元素，就得到删除该额外元素后递增的数组，达到min(n,L+1)。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from bisect import bisect_left\n    a=list(map(int,raw.split()))[1:];tails=[]\n    for x in a:\n        i=bisect_left(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(max(0,len(a)-len(tails)-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-30",
+      "sourceContentHash": "e17a55a74bce96501425b1be56300c6ca200111d7b053850985bf610d9515988",
+      "packageChecksum": "0a085dd0b2840617c81e2909acdfa97e42b64f8d483d57a3c20dd8e5a7c4bfcb",
+      "editorial": "## 思路\n\n求严格最长递增子序列长L，答案max(0,n−L−1)。\n\n## 正确性证明\n\n若保留m个元素且再删至多一个就递增，则原数组有长度至少m−1的递增子序列，所以m≤L+1。反过来选一个LIS，再加入任意一个未选元素，就得到删除该额外元素后递增的数组，达到min(n,L+1)。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from bisect import bisect_left\n    a=list(map(int,raw.split()))[1:];tails=[]\n    for x in a:\n        i=bisect_left(tails,x)\n        if i==len(tails):tails.append(x)\n        else:tails[i]=x\n    return str(max(0,len(a)-len(tails)-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-31",
+      "sourceContentHash": "96863d917d432072aac948bfcb768532830967ca974c6116dd11acf038cde3af",
+      "packageChecksum": "2f4f77805feff70e063bd9be817dc59a985b9a7161aa881003d0eac732443c63",
+      "editorial": "## 思路\n\n把每个词按连续相同字符分段，长度L的段贡献floor(L/2)。\n\n## 正确性证明\n\n每段内取不相交的相邻字符对，每对至少改一项，给出floor(L/2)下界。隔一个字符修改一次，并选不同于两侧的字母；26字符足够，恰达到下界且不会破坏段间边界。各段相加。\n\n## 复杂度\n\n时间O(全部字符数)，每词扫描O(1)额外状态；最大输入10000104字节。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import io\n    stream=io.StringIO(raw);n=int(stream.readline());result=[]\n    for _ in range(n):\n        word=stream.readline().rstrip('\\r\\n');last=None;run=answer=0\n        for ch in word:\n            if ch==last:run+=1\n            else:answer+=run//2;run=1;last=ch\n        answer+=run//2;result.append(answer)\n    return ' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-32",
+      "sourceContentHash": "fad909d179ecc900f1593287b996fea561c7358352bbe87be4c9e670c68f3596",
+      "packageChecksum": "a59fafb7cef1ced5226a1db060b6a5abb776244578894380f3b8ab2cc2f2842c",
+      "editorial": "## 思路\n\n二分最大段长L。L=1时计算变为两种交替串的最少翻转数；L≥2时，每个原段长r至少需要floor(r/(L+1))次，求和判断≤k。\n\n## 正确性证明\n\n长r的原段每L+1个连续字符必须翻至少一次，给出所需下界。L≥2时可把翻转隔开，并在端部调整位置避免与邻段合并，实现该数目；各段独立达到界。L=1时所有相邻位置都必须相反，只能是两种交替串，需专门比较Hamming距离。可行性随L单调，二分正确。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)保存原段。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s,amount=raw.split();k=int(amount);mismatch=sum(int(ch)!=(i%2) for i,ch in enumerate(s))\n    if min(mismatch,len(s)-mismatch)<=k:return '1'\n    runs=[];length=0;last=None\n    for ch in s:\n        if ch==last:length+=1\n        else:\n            if length:runs.append(length)\n            length=1;last=ch\n    runs.append(length);lo=2;hi=max(runs)\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum(r//(mid+1) for r in runs)<=k:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-33",
+      "sourceContentHash": "ffd49fd6511e00a34b6797e09dd61e8fe76bc053a9ad66e57bc9329b878ddf25",
+      "packageChecksum": "69d7c84bfcf1802717b67ce538c08452172c7a4a55262c67f79eb60661c0e221",
+      "editorial": "## 思路\n\n按段数动态规划。枚举最后一段的左边界，转移为此前最优成本加最后一段最大值；向左扩展时增量维护最大值。\n\n## 正确性证明\n\n每个合法分段方案具有唯一最后一段起点，去掉最后一段后是前缀恰好少一段的方案。对所有合法起点取最小，并使用归纳已正确的前缀最优值，恰覆盖全部方案。空前缀0段为0，其余不可能状态为无穷。\n\n## 复杂度\n\n时间O(kn²)，滚动空间O(n)，使用64位成本。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,k=values[:2];a=values[2:]\n    if n==0:return '0' if k==0 else '-1'\n    if k<1 or k>n:return '-1'\n    infinity=10**30;previous=[infinity]*(n+1);previous[0]=0\n    for groups in range(1,k+1):\n        current=[infinity]*(n+1)\n        for end in range(groups,n+1):\n            largest=0;best=infinity\n            for start in range(end-1,groups-2,-1):\n                largest=max(largest,a[start]);best=min(best,previous[start]+largest)\n            current[end]=best\n        previous=current\n    return str(previous[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-34",
+      "sourceContentHash": "7e44a0900dee810c42bd976c5d2bb107d2e882c42311f698262c5230d9f9e8ae",
+      "packageChecksum": "397db904edd4febb76ddfd5713ff6550efcaf49d1a755597729f44a25479db53",
+      "editorial": "## 思路\n\n排序后求相邻元素差的最小值，再按序输出所有达到该差的相邻对。\n\n## 正确性证明\n\n若一对之间还有其他数，则它们的差被两个正差分开，必严格大于至少一个相邻差，所以最小差只能来自相邻元素。按排序顺序扫描自然满足全部结果的排序要求。\n\n## 复杂度\n\n时间O(n log n)，空间O(n+输出)，最坏输出小于2400000字节。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=sorted(map(int,raw.split()[1:]));best=min(y-x for x,y in zip(a,a[1:]))\n    pairs=[f'{x} {y}' for x,y in zip(a,a[1:]) if y-x==best]\n    return '\\n'.join(pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-35",
+      "sourceContentHash": "6efce3ecf019afc26a82d375153d43bbd0e51a11f70d4056630c103fb86f08bc",
+      "packageChecksum": "d3b509b4f94729c7b537b79630c708700075b390807dbbdb7804ba13b19e5ce7",
+      "editorial": "## 思路\n\n检查是否存在相邻两段的长度和至少minLength。\n\n## 正确性证明\n\n最后一刀所切的杆一定由相邻两个最终段组成，因此条件必要。若有满足的相邻对，则从原杆两端依次切掉其它最终段，余杆始终包含此对、长度不小于阈值；最后切开此对，构造出合法顺序，条件充分。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)，长度和及阈值使用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values=list(map(int,raw.split()));n=values[0];a=values[1:n+1];minimum=values[-1]\n    return 'Possible' if any(x+y>=minimum for x,y in zip(a,a[1:])) else 'Impossible'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-36",
+      "sourceContentHash": "a94b733afc27778845e83791973f6aeb2516285affeba5b1a2300ca0a7f56361",
+      "packageChecksum": "94e1daf33359a29d65b261d3bff245a9712d8ab424388e8a895372f442ce340d",
+      "editorial": "## 思路\n\n用26状态记录最后字母。当前位置可用字母c的新方案数等于前缀总方案数减去以c结尾的方案数。\n\n## 正确性证明\n\n每个合法新前缀由一个合法旧前缀及不同于其末字母的新字符唯一组成；总数减去同末字母方案恰好排除唯一非法类别。固定字母仅保留对应状态，问号允许全部状态，逐位置归纳。\n\n## 复杂度\n\n时间O(26n)，空间O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip();mod=1000000007;dp=[int(s[0]=='?' or ord(s[0])-97==c) for c in range(26)]\n    for ch in s[1:]:\n        total=sum(dp)%mod\n        dp=[(total-dp[c])%mod if ch=='?' or ord(ch)-97==c else 0 for c in range(26)]\n    return str(sum(dp)%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-37",
+      "sourceContentHash": "5ad81b3d069b80fbad1eb75fea25195c01713b0c87a0da0c95905c86c1f2a949",
+      "packageChecksum": "c3d33a74a1ab3dfa11c69cf3d254a47d9c5731614019fc838cc4d80eb8dcd381",
+      "editorial": "## 思路\n\n将位置成本作为非负数组，用双指针维护总成本不超过K的最长窗口。\n\n## 正确性证明\n\n缩小区间不会增加非负成本，右端增加后仅需移动左端直到重新合法。此时左端最小，得到该右端最长合法区间；逐一比较覆盖全局最优。\n\n## 复杂度\n\n时间O(n)，除输入外空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import json\n    s,t,k=json.loads(raw);left=cost=answer=0\n    for right in range(len(s)):\n        cost+=abs(ord(s[right])-ord(t[right]))\n        while cost>k:\n            cost-=abs(ord(s[left])-ord(t[left]));left+=1\n        answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-39",
+      "sourceContentHash": "1d3d651961b536e90c79b8cb012405a1c50622be0938a1fabcec5321a2c9d2c2",
+      "packageChecksum": "318b67e5ac73fb7235ca3e8a3b43754116c38b69efa73aaa9f6362964f007655",
+      "editorial": "## 思路\n\n按段数动态规划。枚举最后一段的左边界，转移为此前最优成本加最后一段最大值；向左扩展时增量维护最大值。\n\n## 正确性证明\n\n每个合法分段方案具有唯一最后一段起点，去掉最后一段后是前缀恰好少一段的方案。对所有合法起点取最小，并使用归纳已正确的前缀最优值，恰覆盖全部方案。空前缀0段为0，其余不可能状态为无穷。\n\n## 复杂度\n\n时间O(kn²)，滚动空间O(n)，使用64位成本。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values=list(map(int,raw.split()));n,k=values[:2];a=values[2:]\n    if n==0:return '0' if k==0 else '-1'\n    if k<1 or k>n:return '-1'\n    infinity=10**30;previous=[infinity]*(n+1);previous[0]=0\n    for groups in range(1,k+1):\n        current=[infinity]*(n+1)\n        for end in range(groups,n+1):\n            largest=0;best=infinity\n            for start in range(end-1,groups-2,-1):\n                largest=max(largest,a[start]);best=min(best,previous[start]+largest)\n            current[end]=best\n        previous=current\n    return str(previous[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-41",
+      "sourceContentHash": "1b41c92ddfd0fb088f90ab1d36b1da21dc62c90b84fc94c4607fcceff2c75472",
+      "packageChecksum": "1b934b5c3cb13f9c6883a0331a4e8ff40df1e55875b08093a1248d2252e057c5",
+      "editorial": "## 思路\n\n令F[i]为长度i的方案数。i<k时为26^i；F[k]=26^k−26；i>k时F[i]=26F[i−1]−25F[i−k]。k=1直接输出0。\n\n## 正确性证明\n\n任意合法长度i−1后接任意字母共有26F[i−1]。当i>k时，新产生非法串恰为合法长度i−k前缀、接一个不同于此前末字符的字母并连续重复k次，共25F[i−k]；i=k时非法串是26种全同串。相减得到无重无漏的合法数。\n\n## 复杂度\n\n时间O(n)，空间O(n)保存模数数组，可进一步循环缓冲至O(k)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    n,k=map(int,raw.split());mod=1000000007\n    if k==1:return '0'\n    counts=[1]*(n+1)\n    for i in range(1,n+1):\n        counts[i]=26*counts[i-1]%mod\n        if i==k:counts[i]=(counts[i]-26)%mod\n        elif i>k:counts[i]=(counts[i]-25*counts[i-k])%mod\n    return str(counts[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-42",
+      "sourceContentHash": "c6cc929fb1b6051a5d790a1b3f6d582353f2448a229efb5cdf3283584e59e453",
+      "packageChecksum": "aa6f4eba38a02d0868396d78fa1ecb7bb1320e1e32615eb985506bc444bb98a4",
+      "editorial": "## 思路\n\n遍历全部名称匹配位置i，取直线下标距离d与绕环距离n−d中的最小者，再对所有目标位置取最小。\n\n## 正确性证明\n\n固定目标i，最短路径只能沿环的两个方向之一，不重复边；两条长度分别d和n−d。枚举全部目标出现位置便覆盖所有可能终点，因此全局最小值正确。\n\n## 复杂度\n\n时间O(总名称字符数+n)，空间O(输入字节数+n)。最坏ASCII转义名称输入约19.5MB，小于32MiB输入上限。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    import json\n    tools,start,target=json.loads(raw);n=len(tools);answer=n\n    for i,name in enumerate(tools):\n        if name==target:\n            distance=abs(i-start);answer=min(answer,distance,n-distance)\n    return str(-1 if answer==n else answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-43",
+      "sourceContentHash": "aade29eef2c4d67bcb861df556f58081c4b9974e0c20d85288c1187ea0aed38f",
+      "packageChecksum": "d513b3ad80406ae8e36c23d65c11a1f62d5020352a9982020d946c29278ff720",
+      "editorial": "## 思路\n\n从左向右扫描，栈保留已扫描前缀从右往左看的严格纪录高塔；先把栈长加入当前可见数，再弹出高度≤当前塔的旧纪录并入栈。反向再做一次累加。\n\n## 正确性证明\n\n过去的塔可见恰当其高度严格大于它与当前塔之间所有高度，即该方向的严格纪录高塔。加入当前塔后，所有不高于它的旧纪录被挡住，较高者仍是纪录；单调栈维持这一不变式。左右独立且不相交，结果相加。\n\n## 复杂度\n\n时间O(n)，空间O(n)。原例[5,2,10,1]得到[2,2,3,1]；不要套用双端最小高度的另一种可见规则。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];n=len(a);answer=[0]*n\n    for order in (range(n),range(n-1,-1,-1)):\n        stack=[]\n        for i in order:\n            answer[i]+=len(stack)\n            while stack and stack[-1]<=a[i]:stack.pop()\n            stack.append(a[i])\n    return ' '.join(map(str,answer))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
