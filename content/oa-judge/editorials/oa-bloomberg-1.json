@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-bloomberg-1",
+  "title": "连续正整数之和的表示数量",
+  "explanation": "## 思路\n\n去掉num中的所有因子2，分解剩余奇数，其正约数数量减1就是答案。\n\n## 正确性\n\n奇数长度d的表示以num/d为中心，d为num的奇约数。若起点为正即得到一条表示；否则同一奇约数对应长度2num/d的偶数长度表示，其起点为(d+1)/2−num/d，必为正。两个候选起点之和为1，且均为整数，恰有一个为正。反向由任意连续正整数表示的奇数长度，或偶数长度对应的奇因子，唯一恢复d，故形成双射。奇约数1对应单项num，减去它。\n\n## 复杂度\n\n试除时间O(√num)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0])\n    while n%2==0:n//=2\n    count=1;p=3\n    while p*p<=n:\n        exponent=0\n        while n%p==0:n//=p;exponent+=1\n        count*=exponent+1;p+=2\n    if n>1:count*=2\n    return str(count-1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/bloomberg#1-consecutive-sum-financial-engineer-intern",
+  "sourceContentHash": "2590599b144ae9a3701947372119ab2fb98596366123a1ecf840b8042e96fcef",
+  "author": "CSWork"
+}
