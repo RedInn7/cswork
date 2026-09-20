@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略BB消去",
+    "code": "def solve(raw):\n    s=raw.splitlines()[1];left=0\n    for c in s:left=left-1 if c=='B' and left and False else left+1\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "误把A当右端",
+    "code": "def solve(raw):\n    s=raw.splitlines()[1];left=0\n    for c in s:left=left-1 if c=='A' and left else left+1\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

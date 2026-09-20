@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略加一次数",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(v.bit_length() if v else 0) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "零需要一步",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    return '\\n'.join(str(v.bit_length()-1+v.bit_count() if v else 1) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

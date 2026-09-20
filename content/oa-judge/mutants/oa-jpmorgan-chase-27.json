@@ -1,0 +1,10 @@
+[
+  {
+    "name": "使用零基",
+    "code": "from collections import Counter\ndef solve(raw):\n    s=raw.splitlines()[1];counts=Counter(s)\n    return str(next((i for i,c in enumerate(s) if counts[c]==1),-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "最后一个唯一字符",
+    "code": "from collections import Counter\ndef solve(raw):\n    s=raw.splitlines()[1];counts=Counter(s)\n    return str(next((i+1 for i,c in reversed(list(enumerate(s))) if counts[c]==1),-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

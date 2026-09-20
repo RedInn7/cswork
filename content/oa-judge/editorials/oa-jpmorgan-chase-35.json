@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-35",
+  "title": "闭区间内十进制位互异的数",
+  "explanation": "## 思路\n\n数位DP计算不超过上界的合法数，再用F(end)−F(start−1)。状态为位置、已用数字掩码、是否已开始、是否贴上界，前导零不占用数字。\n\n## 正确性证明\n\n每个非负整数对应唯一等长补零表示。开始前的零只是占位，开始后的每个数字必须未在掩码出现，故状态转移恰好生成所有位互异表示且各一次。全未开始路径代表0。贴上界状态保证不超界，终点计数，再用前缀计数相减得到闭区间答案。\n\n## 复杂度\n\n时间O(log U·1024·10)，空间O(log U·1024)，不逐数扫描区间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from functools import lru_cache\ndef count(limit):\n    if limit<0:return 0\n    digits=tuple(map(int,str(limit)))\n    @lru_cache(None)\n    def dp(pos,mask,started,tight):\n        if pos==len(digits):return 1\n        top=digits[pos] if tight else 9;answer=0\n        for d in range(top+1):\n            nt=tight and d==top\n            if not started and d==0:answer+=dp(pos+1,mask,False,nt)\n            elif not mask>>d&1:answer+=dp(pos+1,mask|1<<d,True,nt)\n        return answer\n    return dp(0,0,False,True)\ndef solve(raw):\n    l,h=map(int,raw.split());return str(count(h)-count(l-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#35-count-numbers-without-repeating-digits",
+  "sourceContentHash": "5e6758b521b25a1b1628d4d8ff2458c47139fc9501b4902d7340322414dcc87e",
+  "author": "CSWork"
+}

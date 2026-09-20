@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-298",
+  "title": "仅插入正整数使目标成为子序列",
+  "explanation": "## 思路\n\n把目标值映射为下标。每个非正目标是强制匹配锚点。扫描initial的匹配下标q，设b为q前最后非正目标下标，最佳前驱只可在[b,q)；区间最大树查询并对q执行chmax。b不存在时允许空前驱0。最终取最后锚点及之后状态最大匹配长度，存在则答案n减它，否则−1。\n\n## 正确性证明\n\n任意可行方案的原有匹配元素构成目标子序列，且包含全部不能插入的非正元素；其余正元素恰可插入，费用为目标长度减匹配数。处理位置q时，前驱必须在最后强制锚点b之后或就是b，否则跳过不可插入元素；而任何这样的有效前驱已经包含此前所有锚点，连接q合法。按initial顺序更新保证初始元素不重复使用，区间不含q保证目标严格递增。归纳得到所有合法共同子序列的最优长度，末尾再要求最后锚点已被包含即得最少插入；无有效终态说明不存在含全锚点的匹配，也就无法仅插正数完成。\n\n## 复杂度\n\n时间O((m+n)log n)，空间O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    m,n=map(int,d[:2]);initial=map(int,d[2:2+m]);target=list(map(int,d[2+m:]));position={v:i for i,v in enumerate(target)};before=[];last=-1\n    for i,v in enumerate(target):\n        before.append(last)\n        if v<=0:last=i\n    size=1\n    while size<n:size*=2\n    tree=[-10**9]*(2*size)\n    def query(l,r):\n        l+=size;r+=size;answer=-10**9\n        while l<r:\n            if l&1:answer=max(answer,tree[l]);l+=1\n            if r&1:r-=1;answer=max(answer,tree[r])\n            l//=2;r//=2\n        return answer\n    for v in initial:\n        if v not in position:continue\n        q=position[v];b=before[q];best=query(max(0,b),q)\n        if b<0:best=max(best,0)\n        if best<0:continue\n        at=q+size;value=best+1\n        if tree[at]>=value:continue\n        tree[at]=value;at//=2\n        while at:tree[at]=max(tree[2*at],tree[2*at+1]);at//=2\n    matched=query(max(0,last),n)\n    if last<0:matched=max(matched,0)\n    return str(n-matched) if matched>=0 else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#298-minimum-insertions-to-make-list-a-subsequence-amazon-germany-",
+  "sourceContentHash": "3b1a34c5a549da3ac0e848a366a40a8f2807492f92003fc175a6a1db3f9e3bea",
+  "author": "CSWork"
+}

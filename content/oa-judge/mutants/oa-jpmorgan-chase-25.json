@@ -1,0 +1,10 @@
+[
+  {
+    "name": "换冠军从零算",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=0\n        else:wins+=1\n        if wins>=k:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "总返回最大值",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];champion=a[0];wins=0\n    for v in a[1:]:\n        if v>champion:champion=v;wins=1\n        else:wins+=1\n        if False:return str(champion)\n    return str(champion)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

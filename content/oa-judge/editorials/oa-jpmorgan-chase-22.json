@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-22",
+  "title": "闭区间任务的最少机器数",
+  "explanation": "## 思路\n\n任务起点加一、终点后一时刻减一，按时间排序扫描最大同时运行数量。\n\n## 正确性证明\n\n任何时刻的并发任务必须使用不同机器，最大并发是下界。按起点分配任务，只要已有机器空闲就复用，否则新增；新增时全部旧机器仍忙，恰有对应数量任务并发，故机器数不会超过该下界。扫描线准确计算这个数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()))[1:];events=[]\n    for l,h in zip(d[::2],d[1::2]):events.extend(((l,1),(h+1,-1)))\n    events.sort();active=answer=0\n    for t,delta in events:active+=delta;answer=max(answer,active)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#22-task-scheduling",
+  "sourceContentHash": "b8fd646556eefb36946ef549f674403f01f3677c548373035e87d307ba1c0e35",
+  "author": "CSWork"
+}

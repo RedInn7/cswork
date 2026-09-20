@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-27",
+  "title": "第一个只出现一次字符的下标",
+  "explanation": "## 思路\n\n先统计26个字母频次，再从左至右找第一个频次为1的位置。\n\n## 正确性证明\n\n统计得到每个字符在全串的精确出现次数，频次为1恰等价于唯一。第二遍按位置递增，第一个满足者必是最早唯一字符，遍历完仍没有则无解。\n\n## 复杂度\n\n时间O(n)，额外空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(raw):\n    s=raw.splitlines()[1];counts=Counter(s)\n    return str(next((i+1 for i,c in enumerate(s) if counts[c]==1),-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#27-first-unique-character-data--analytics",
+  "sourceContentHash": "618390ee9bc5482ce8cb032a40ef3397688623441bdee502c0ddfd9e2877489f",
+  "author": "CSWork"
+}

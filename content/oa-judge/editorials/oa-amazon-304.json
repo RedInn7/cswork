@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-304",
+  "title": "每人一至两个游戏的最小容量（分配版）",
+  "explanation": "## 思路\n\n若k>n或n>2k则无解。否则必须有p=n−k个双件组；排序后最小2p个从两端配对，剩余较大者单独成组，取全部组负载最大值。\n\n## 正确性证明\n\n组数与件数决定双件组恰有p个。若某个较大游戏在双件组、较小游戏单独，交换它们不增加任一新组相对于原最大负载的上界，因此最小2p个配对总不劣。对这些数，若最大未与最小配对，交换这两个所在组的搭档，新的两组和均不超过原两组和最大值；归纳得到极端配对最优。计入所有单件负载得到答案。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]))\n    if k>n or n>2*k:return '-1'\n    pairs=n-k;answer=a[-1]\n    for i in range(pairs):answer=max(answer,a[i]+a[2*pairs-1-i])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#304-find-minimum-pen-drive-capacity",
+  "sourceContentHash": "0712ce22e0ad1dbfab72cb0e2a4c85e83424d3f028e722e799f529565cb02e48",
+  "author": "CSWork"
+}

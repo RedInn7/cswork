@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-34",
+  "title": "两段等量零一子串的数量",
+  "explanation": "## 思路\n\n维护相邻游程长度，每个游程边界贡献两侧长度的较小值。\n\n## 正确性证明\n\n合法子串恰好跨一个不同字符游程边界；若两侧长度分别x、y，选择两边各k个字符时1≤k≤min(x,y)，每个k唯一。不同边界对应不同子串，因此贡献之和精确且无重复漏计。\n\n## 复杂度\n\n时间O(n)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';previous=current=answer=0;last=''\n    for c in s:\n        if c==last:current+=1\n        else:answer+=min(previous,current);previous=current;current=1;last=c\n    return str(answer+min(previous,current))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#34-count-equal-binary-substrings",
+  "sourceContentHash": "f1e806d948eed3a3230b7c44ca36fb3125a4e17776f771b648e51c3c4167af04",
+  "author": "CSWork"
+}

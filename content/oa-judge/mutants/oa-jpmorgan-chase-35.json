@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排除左端点",
+    "code": "from functools import lru_cache\ndef count(limit):\n    if limit<0:return 0\n    digits=tuple(map(int,str(limit)))\n    @lru_cache(None)\n    def dp(pos,mask,started,tight):\n        if pos==len(digits):return 1\n        top=digits[pos] if tight else 9;answer=0\n        for d in range(top+1):\n            nt=tight and d==top\n            if not started and d==0:answer+=dp(pos+1,mask,False,nt)\n            elif not mask>>d&1:answer+=dp(pos+1,mask|1<<d,True,nt)\n        return answer\n    return dp(0,0,False,True)\ndef solve(raw):\n    l,h=map(int,raw.split());return str(count(h)-count(l))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "重复数字也使用",
+    "code": "from functools import lru_cache\ndef count(limit):\n    if limit<0:return 0\n    digits=tuple(map(int,str(limit)))\n    @lru_cache(None)\n    def dp(pos,mask,started,tight):\n        if pos==len(digits):return 1\n        top=digits[pos] if tight else 9;answer=0\n        for d in range(top+1):\n            nt=tight and d==top\n            if not started and d==0:answer+=dp(pos+1,mask,False,nt)\n            elif True:answer+=dp(pos+1,mask|1<<d,True,nt)\n        return answer\n    return dp(0,0,False,True)\ndef solve(raw):\n    l,h=map(int,raw.split());return str(count(h)-count(l-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

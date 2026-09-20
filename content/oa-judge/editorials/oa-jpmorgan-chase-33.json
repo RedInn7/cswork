@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-33",
+  "title": "排列降序所需的最少任意交换",
+  "explanation": "## 思路\n\n值v的目标位置为n−v。遍历这一位置映射的所有环，每个长度L的环贡献L−1。\n\n## 正确性证明\n\n一个交换至多将一个置换环分成两个，最终每个位置独立，故长度L的环至少L−1次；固定环内一个位置依次与其他位置交换即可达到，所有环独立，总和最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:];seen=bytearray(n);answer=0\n    for start in range(n):\n        if seen[start]:continue\n        v=start;length=0\n        while not seen[v]:seen[v]=1;length+=1;v=n-a[v]\n        answer+=length-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#33-minimum-swaps",
+  "sourceContentHash": "3b0f7d93f6ad46db4e6f2ec5ca043044707c9922f08cc36c783eb7053dbac15c",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误以为同侧取过一次之后都付额外费",
+    "code": "def solve(d):\n    n,X,Y,El,Er=map(int,d[:5]);a=list(map(int,d[5:]));total=sum(a);prefix=0;answer=None\n    for left in range(n+1):\n        right=n-left;cost=prefix*X+(total-prefix)*Y+max(0,left-1)*El+max(0,right-1)*Er\n        answer=cost if answer is None else min(answer,cost)\n        if left<n:prefix+=a[left]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误忽略连续额外费用",
+    "code": "def solve(d):\n    n,X,Y,El,Er=map(int,d[:5]);a=list(map(int,d[5:]));total=sum(a);prefix=0;answer=None\n    for left in range(n+1):\n        right=n-left;cost=prefix*X+(total-prefix)*Y+0\n        answer=cost if answer is None else min(answer,cost)\n        if left<n:prefix+=a[left]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

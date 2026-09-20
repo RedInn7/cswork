@@ -1,0 +1,10 @@
+[
+  {
+    "name": "目标误为升序",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:];seen=bytearray(n);answer=0\n    for start in range(n):\n        if seen[start]:continue\n        v=start;length=0\n        while not seen[v]:seen[v]=1;length+=1;v=a[v]-1\n        answer+=length-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每个环多算一次",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:];seen=bytearray(n);answer=0\n    for start in range(n):\n        if seen[start]:continue\n        v=start;length=0\n        while not seen[v]:seen[v]=1;length+=1;v=n-a[v]\n        answer+=length\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

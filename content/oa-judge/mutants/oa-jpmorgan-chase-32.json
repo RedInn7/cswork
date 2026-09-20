@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忘记更新翻转状态",
+    "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';current='0';answer=0\n    for c in s:\n        if c!=current:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "初始错误为1",
+    "code": "def solve(raw):\n    lines=raw.splitlines();s=lines[1] if int(lines[0]) else '';current='1';answer=0\n    for c in s:\n        if c!=current:answer+=1;current=c\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
