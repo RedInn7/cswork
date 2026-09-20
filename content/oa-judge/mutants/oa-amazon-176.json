@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把最早涂色当完成",
+    "code": "def solve(d):\n    from collections import deque\n    n,m,k=map(int,d[:3]);g=[[0]*m for _ in range(n)]\n    for t in range(n*m):g[int(d[3+2*t])-1][int(d[4+2*t])-1]=t+1\n    rows=[]\n    for row in g:\n        q=deque();out=[]\n        for j,v in enumerate(row):\n            while q and row[q[-1]]>=v:q.pop()\n            q.append(j)\n            while q[0]<=j-k:q.popleft()\n            if j>=k-1:out.append(row[q[0]])\n        rows.append(out)\n    answer=n*m\n    for j in range(m-k+1):\n        q=deque()\n        for i in range(n):\n            while q and rows[q[-1]][j]<=rows[i][j]:q.pop()\n            q.append(i)\n            while q[0]<=i-k:q.popleft()\n            if i>=k-1:answer=min(answer,rows[q[0]][j])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "遗漏起始分钟",
+    "code": "def solve(d):\n    from collections import deque\n    n,m,k=map(int,d[:3]);g=[[0]*m for _ in range(n)]\n    for t in range(n*m):g[int(d[3+2*t])-1][int(d[4+2*t])-1]=t\n    rows=[]\n    for row in g:\n        q=deque();out=[]\n        for j,v in enumerate(row):\n            while q and row[q[-1]]<=v:q.pop()\n            q.append(j)\n            while q[0]<=j-k:q.popleft()\n            if j>=k-1:out.append(row[q[0]])\n        rows.append(out)\n    answer=n*m\n    for j in range(m-k+1):\n        q=deque()\n        for i in range(n):\n            while q and rows[q[-1]][j]<=rows[i][j]:q.pop()\n            q.append(i)\n            while q[0]<=i-k:q.popleft()\n            if i>=k-1:answer=min(answer,rows[q[0]][j])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

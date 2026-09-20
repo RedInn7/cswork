@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏左端点",
+    "code": "def solve(d):\n    q=int(d[0]);pairs=[(int(d[i]),int(d[i+1])) for i in range(1,2*q+1,2)];maximum=max(b for a,b in pairs);pre=[0]*(maximum+1)\n    for x in range(1,maximum+1):\n        y=x;mask=0;ok=True\n        while y:\n            digit=y%10\n            if mask&(1<<digit):ok=False;break\n            mask|=1<<digit;y//=10\n        pre[x]=pre[x-1]+ok\n    return '\\n'.join(str(pre[b]-pre[a]) for a,b in pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "允许重复零",
+    "code": "def solve(d):\n    q=int(d[0]);pairs=[(int(d[i]),int(d[i+1])) for i in range(1,2*q+1,2)];maximum=max(b for a,b in pairs);pre=[0]*(maximum+1)\n    for x in range(1,maximum+1):\n        y=x;mask=0;ok=True\n        while y:\n            digit=y%10\n            if digit and mask&(1<<digit):ok=False;break\n            mask|=1<<digit;y//=10\n        pre[x]=pre[x-1]+ok\n    return '\\n'.join(str(pre[b]-pre[a-1]) for a,b in pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

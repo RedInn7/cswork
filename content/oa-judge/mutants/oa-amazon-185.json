@@ -1,0 +1,10 @@
+[
+  {
+    "name": "最大最小反转",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));cuts=sorted(a[i]+a[i+1] for i in range(n-1));base=a[0]+a[-1]\n    low=base+sum(cuts[:k-1]);high=base+sum(cuts[len(cuts)-(k-1):])\n    return f'{high} {low}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏计原数组端点",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));cuts=sorted(a[i]+a[i+1] for i in range(n-1));base=0\n    low=base+sum(cuts[:k-1]);high=base+sum(cuts[len(cuts)-(k-1):])\n    return f'{low} {high}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

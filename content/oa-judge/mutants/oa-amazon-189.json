@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不限制长度",
+    "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);keys=[0];value=answer=0;freq=Counter({0:1})\n    for r,v in enumerate(map(int,d[2:]),1):\n        value=(value+v-1)%k;keys.append(value)\n        if False:freq[keys[r-k]]-=1\n        answer+=freq[value];freq[value]+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏减下标",
+    "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);keys=[0];value=answer=0;freq=Counter({0:1})\n    for r,v in enumerate(map(int,d[2:]),1):\n        value=(value+v)%k;keys.append(value)\n        if r>=k:freq[keys[r-k]]-=1\n        answer+=freq[value];freq[value]+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

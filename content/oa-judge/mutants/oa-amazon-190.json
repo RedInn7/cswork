@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只要求任一目标",
+    "code": "def solve(d):\n    n,u,v=map(int,d[:3]);a=list(map(int,d[3:]));freq={};left=0;answer=n+1\n    for value in a:\n        freq[value]=freq.get(value,0)+1\n        while u in freq or v in freq:\n            answer=min(answer,len(freq));old=a[left];left+=1;freq[old]-=1\n            if not freq[old]:del freq[old]\n    return str(answer if answer<=n else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "误算重复频次总数",
+    "code": "def solve(d):\n    n,u,v=map(int,d[:3]);a=list(map(int,d[3:]));freq={};left=0;answer=n+1\n    for value in a:\n        freq[value]=freq.get(value,0)+1\n        while u in freq and v in freq:\n            answer=min(answer,sum(freq.values()));old=a[left];left+=1;freq[old]-=1\n            if not freq[old]:del freq[old]\n    return str(answer if answer<=n else 0)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

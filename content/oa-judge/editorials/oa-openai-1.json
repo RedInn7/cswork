@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-1",
+  "title": "两张网格中完全相同的连通区域",
+  "explanation": "## 思路\n\n用迭代遍历提取各连通块的格子编号集合，以不可变集合为键，统计第二张网格中也出现在第一张网格的键。\n\n## 正确性\n\n遍历仅沿四向1格扩展，且直到不能扩展才结束，因此每次恰好提取一个完整连通块。绝对格子编号集合相等当且仅当全部坐标完全相等；集合查找正好实现题意。\n\n## 复杂度\n\n期望时间O(nm)，空间O(nm)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2])\n    def regions(rows):\n        seen=set();out=set()\n        for start in range(n*m):\n            if start in seen or rows[start//m][start%m]!='1':continue\n            seen.add(start);stack=[start];part=set()\n            while stack:\n                u=stack.pop();part.add(u);r,c=divmod(u,m)\n                for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n                    nr,nc=r+dr,c+dc;v=nr*m+nc\n                    if 0<=nr<n and 0<=nc<m and v not in seen and rows[nr][nc]=='1':\n                        seen.add(v);stack.append(v)\n            out.add(frozenset(part))\n        return out\n    a=regions(d[2:2+n]);b=regions(d[2+n:2+2*n])\n    return str(sum(x in a for x in b))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/openai#1-matching-regions-in-two-grids",
+  "sourceContentHash": "d361c94789b119eb99555b5078c657012cf64cba5c46c0bc60e66511447868ee",
+  "author": "CSWork"
+}

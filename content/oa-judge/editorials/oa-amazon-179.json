@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-179",
+  "title": "全部商品串拼接成的历史子串数量",
+  "explanation": "## 思路\n\n对每种长度余数维护按整词移动的滑窗，遇到无关词重置，某词过多则缩左端，窗口词数为p时计数。\n\n## 正确性证明\n\n按起点对词长取余划分覆盖所有可能位置。窗口始终只含目标词且各词次数不超目标，故词数达到p时必恰好等于目标多重集。缩窗只删除不能成为合法完整窗口的多余前缀；每个合法起点均被计入一次。\n\n## 复杂度\n\n时间O(|history|·词长+商品总长度)，空间O(商品总长度+|history|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    s=d[0];p=int(d[1]);words=d[2:];width=len(words[0]);target=Counter(words);answer=0\n    for offset in range(width):\n        left=offset;count=0;freq=Counter()\n        for right in range(offset,len(s)-width+1,width):\n            word=s[right:right+width]\n            if word not in target:freq.clear();count=0;left=right+width;continue\n            freq[word]+=1;count+=1\n            while freq[word]>target[word]:\n                old=s[left:left+width];freq[old]-=1;count-=1;left+=width\n            if count==p:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#179-find-number-of-compatible-substrings",
+  "sourceContentHash": "de3ad8f27a9406d906883bba13433b0f4e510c22a5b7912b9793847e5242cf27",
+  "author": "CSWork"
+}

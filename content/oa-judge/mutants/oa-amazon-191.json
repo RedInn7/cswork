@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复区间去重",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));diff=[0]*(n+1)\n    for i in range(2+n,len(d),2):l=int(d[i]);r=int(d[i+1]);diff[l]+=1;diff[r+1]-=1\n    weights=[];cur=0\n    for i in range(n):cur+=diff[i];weights.append(cur)\n    order=sorted(range(n),key=lambda i:a[i]);left=0;total=answer=0\n    while left<n:\n        right=left;extra=0\n        while right<n and a[order[right]]==a[order[left]]:\n            weight=weights[order[right]]\n            if weight==0:answer+=total\n            extra+=min(1,weight);right+=1\n        total+=extra;left=right\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "已覆盖下标也计分",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);a=list(map(int,d[2:2+n]));diff=[0]*(n+1)\n    for i in range(2+n,len(d),2):l=int(d[i]);r=int(d[i+1]);diff[l]+=1;diff[r+1]-=1\n    weights=[];cur=0\n    for i in range(n):cur+=diff[i];weights.append(cur)\n    order=sorted(range(n),key=lambda i:a[i]);left=0;total=answer=0\n    while left<n:\n        right=left;extra=0\n        while right<n and a[order[right]]==a[order[left]]:\n            weight=weights[order[right]]\n            if True:answer+=total\n            extra+=weight;right+=1\n        total+=extra;left=right\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

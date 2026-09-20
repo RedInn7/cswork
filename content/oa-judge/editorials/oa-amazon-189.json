@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-189",
+  "title": "余数等于子数组长度的区间数量",
+  "explanation": "## 思路\n\n前缀和S定义键(S[i]−i) mod k。合法区间须两端键相等，并且长度严格小于k；用长度受限的历史前缀频率表计数。\n\n## 正确性证明\n\n区间和模k等于长度，当且仅当长度<k且S[r]−r与S[l]−l模k相等。遍历r时移除r−k及更早前缀，查询同键数量便精确统计所有合法左端点；按右端分组不重不漏。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n,k=map(int,d[:2]);keys=[0];value=answer=0;freq=Counter({0:1})\n    for r,v in enumerate(map(int,d[2:]),1):\n        value=(value+v-1)%k;keys.append(value)\n        if r>=k:freq[keys[r-k]]-=1\n        answer+=freq[value];freq[value]+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#189-find-security-level",
+  "sourceContentHash": "2288507a3270ddc065e18fdb8163af300bf8856d77da129f45d0a970c900ab43",
+  "author": "CSWork"
+}

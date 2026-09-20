@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-187",
+  "title": "识别使用字母重排重复注册的姓名",
+  "explanation": "## 思路\n\n将姓名字符排序作为签名，统计所有注册签名频率，再筛选频率大于1的真实姓名并排序。\n\n## 正确性证明\n\n两个串可重排当且仅当各字符频次相同，排序后签名恰好刻画该等价类；真实姓名签名互异，统计签名得到各人全部账户数，筛选和排序满足输出条件。\n\n## 复杂度\n\n时间O((n+m)L log L+n log n·L)，空间O((n+m)L)，L≤10。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    n,m=map(int,d[:2]);real=d[2:2+n];counts=Counter(''.join(sorted(s)) for s in d[2+n:]);out=sorted(s for s in real if counts[''.join(sorted(s))]>1)\n    return ' '.join(out) if out else 'None'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#187-find-recurring-names",
+  "sourceContentHash": "550c9e433874d6af58d6b816b0ce8e199b7bf7198bef6a5023aeaee4bf7c5009",
+  "author": "CSWork"
+}

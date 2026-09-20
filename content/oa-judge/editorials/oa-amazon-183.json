@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-183",
+  "title": "右旋一个子串后的字典序最小消息",
+  "explanation": "## 思路\n\n从右维护后缀最小字符及其最右位置，找到最早能用后方更小字符改进的位置，把该后缀最小字符最右一次出现移到这里。\n\n## 正确性证明\n\n最优改变必须尽早使字符减小；之前没有更小后缀字符的位置不值得改变。该位置选择最小后缀字符最优。若最小字符出现多次，把更右一次移来，比选较左一次仅在两次出现之间多右移一段；该段字符均不小于最小字符，首次差异使更右选择更小或相同。因此最右最小字符给出最优结果。无可改进处则原串最优。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];best=len(s)-1;left=right=-1\n    for i in range(len(s)-2,-1,-1):\n        if s[i]>s[best]:left=i;right=best\n        elif s[i]<s[best]:best=i\n    if left<0:return s\n    return s[:left]+s[right]+s[left:right]+s[right+1:]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#183-find-obfuscate-message",
+  "sourceContentHash": "221da62e34dd139620f195e250b3665938e26583113a1efc7cecd1243c746b0b",
+  "author": "CSWork"
+}

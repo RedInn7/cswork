@@ -63,6 +63,7 @@ async function run(code, input, spec) {
       'oa-optimal-loads',
       'oa-optimal-distinct',
       'oa-dictionary-path',
+      'oa-ipv4-cidr',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

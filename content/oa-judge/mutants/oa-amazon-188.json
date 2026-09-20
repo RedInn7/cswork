@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏空队列终点",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);buckets=[[] for _ in range(max(a)+1)]\n    for i,v in enumerate(a):buckets[v].append(i)\n    alive=[True]*n;left=0;count=n;t=0;out=[]\n    while count:\n        out.append(count)\n        while not alive[left]:left+=1\n        alive[left]=False;count-=1;t+=1\n        if t<len(buckets):\n            for i in buckets[t]:\n                if alive[i]:alive[i]=False;count-=1\n    out.append(1)\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "当前服务请求过早排除",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);buckets=[[] for _ in range(max(a)+1)]\n    for i,v in enumerate(a):buckets[v].append(i)\n    alive=[True]*n;left=0;count=n;t=0;out=[]\n    while count:\n        out.append(max(0,count-1))\n        while not alive[left]:left+=1\n        alive[left]=False;count-=1;t+=1\n        if t<len(buckets):\n            for i in buckets[t]:\n                if alive[i]:alive[i]=False;count-=1\n    out.append(0)\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

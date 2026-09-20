@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-8",
+  "title": "八邻域同步感染直到稳定（含免疫格）",
+  "explanation": "## 思路\n\n维护每个格子已经感染的邻居数。先找出第1天会感染的格子，之后逐层处理新增感染队列，每格感染时仅通知其至多8个邻居，下一层在次日处理。T=0时所有健康格进入第1层。\n\n## 正确性\n\n初始计数精确表示第0天感染邻居。处理第d层时只把这一天新增感染贡献给邻居，达到阈值的健康格立即标记为待处理，但只能进入第d+1层，因此不会当天继续传播。每格首次达阈值时入队一次，不可能遗漏也不会重复。队列空时不存在还能达阈值的健康格，最后非空层号就是答案。免疫格从不入队也不贡献计数。\n\n## 复杂度\n\n时间O(nm)，空间O(nm)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m,t=map(int,d[:3]);g=[list(row) for row in d[3:]];counts=[[0]*m for _ in range(n)];front=[];days=0\n    def adjacent(r,c):\n        for x in range(max(0,r-1),min(n,r+2)):\n            for y in range(max(0,c-1),min(m,c+2)):\n                if (x,y)!=(r,c):yield x,y\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='X':\n                for x,y in adjacent(r,c):counts[x][y]+=1\n    for r in range(n):\n        for c in range(m):\n            if g[r][c]=='.' and counts[r][c]>=t:front.append((r,c));g[r][c]='Q'\n    while front:\n        days+=1;following=[]\n        for r,c in front:\n            g[r][c]='X'\n            for x,y in adjacent(r,c):\n                counts[x][y]+=1\n                if g[x][y]=='.' and counts[x][y]>=t:g[x][y]='Q';following.append((x,y))\n        front=following\n    return str(days)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/openai#8-grid-infection-with-immune-cells-until-stable",
+  "sourceContentHash": "faf1170fba22ec3200ba1a423919b92bb32944a309f890f10d0403a59c955396",
+  "author": "CSWork"
+}

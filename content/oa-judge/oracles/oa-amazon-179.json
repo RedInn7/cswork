@@ -1,0 +1,654 @@
+[
+  {
+    "input": "abcdefdefabcghidefabcxyz\n3\nabc\ndef\nghi\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "aaaa\n2\na\na\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "abb\n2\nab\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaaabbaaaaaababb\n5\na\nb\na\na\na\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "bbabaaaabaabab\n1\naaa\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "baaaaabbba\n1\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaaa\n5\nbb\nba\nba\naa\nba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbaabaabaaaa\n1\nb\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "a\n5\naa\naa\nbb\nbb\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbb\n1\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabbabaabaabbb\n2\nb\na\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "ab\n4\naaa\nbab\nbbb\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaba\n1\nb\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "aabbbbbbbbbbabba\n1\naab\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "a\n1\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbaabbb\n4\na\na\nb\na\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbabb\n1\nba\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "baabaabaaaaabb\n2\nbba\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbbbaaa\n4\nab\nba\nab\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baba\n1\na\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "bababbaaaababbba\n5\na\na\nb\nb\na\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "bab\n5\nbbb\naab\nbaa\naaa\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aa\n2\nbb\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abaaaab\n3\nba\nba\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaabaaaabbbbb\n2\na\na\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "babbaaaababbbabbb\n1\nb\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "ababaaabababab\n1\naa\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "aabbbaaaaabbaaaaa\n4\naab\nabb\nbab\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ab\n3\nba\naa\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabbaa\n3\nbab\nbab\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbbbbabbaaaa\n5\naa\nab\nba\nab\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbabaaab\n5\nab\nab\naa\nbb\nba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbbabaaba\n1\nab\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "aabbbab\n5\naa\nbb\nab\nbb\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbaaabbb\n3\naab\nbbb\nbaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbbbabbaabaaaa\n3\nb\nb\na\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "aabbbbbbabbab\n2\na\na\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bbbbbabbaba\n1\na\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "aaaa\n2\nbb\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babaabbbab\n2\nabb\nbab\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bbabbabbbb\n2\nab\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aababaaababbaabaaa\n4\nbab\nbaa\naab\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ababbabbba\n2\nb\nb\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "b\n2\nabb\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaabaaabaab\n2\nab\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaaaabaaab\n3\na\na\nb\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "bbabbbaa\n3\nbb\naa\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ab\n1\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbaabb\n5\nbaa\nbaa\naaa\nbaa\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbabbababa\n1\nb\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "ababababbbba\n1\nbaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaaba\n4\nbab\naaa\nabb\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "a\n4\nbb\nbb\nba\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbaaaba\n1\nbaa\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "baa\n3\nbaa\naaa\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abaabbbabb\n1\naaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaaabbabbaabaab\n1\naa\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "babbbbaaa\n5\nbbb\nbab\naba\nbaa\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbaabbaa\n2\nb\na\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "abbaaa\n1\na\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "bababbaba\n4\naa\nbb\naa\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbaaba\n1\na\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "abaabaa\n3\nbaa\nbbb\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbbbbaabaab\n5\nbb\nab\nba\nbb\nba\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bbbbababbb\n3\naa\nab\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaababbbbabbaaaba\n1\na\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "aabbabbbabbabbaa\n4\na\na\nb\na\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ababbba\n3\nab\nba\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabaaaa\n2\nb\na\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "abaaabaabaaaaa\n2\nbab\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babaabab\n3\nbba\naaa\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babababbba\n2\naa\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaaabba\n2\nb\na\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "babaa\n5\nba\nba\nab\nbb\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "a\n5\na\nb\nb\na\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbaaaaabaaabab\n4\nbab\naba\nbab\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ababaaabab\n4\nbab\nbaa\naab\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbb\n3\nab\nbb\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaaaabbbabbb\n1\nb\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "abbbabaa\n4\nabb\nbbb\naab\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aababb\n1\naa\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "abaabbaaaaaabb\n3\na\na\na\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "abababababababa\n3\nbb\naa\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaabaab\n1\nb\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "b\n4\nbaa\naab\nbab\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbba\n4\nbbb\nabb\nabb\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbabbaa\n5\nb\na\nb\na\nb\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "abbba\n3\nba\nba\nba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ababba\n1\nab\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "bbaabbbbaabbaaabb\n1\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n3\nbba\nbaa\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baab\n4\nab\nba\nba\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbbbbaaa\n2\na\nb\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "bababbaabaabb\n4\naaa\naba\nbba\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abaaaaababbb\n2\nbaa\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbabbbaa\n5\nbb\naa\nab\nab\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baaab\n2\nb\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbb\n3\nb\nb\na\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "abbbbabb\n2\naab\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abaab\n5\na\nb\nb\nb\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaabbbbbbbaabbaa\n3\nbba\naaa\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n1\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaab\n4\nb\nb\na\na\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "aaaaaabba\n2\nb\nb\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bbaabbababbab\n3\nb\nb\na\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "bab\n1\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbaaa\n1\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbbbaababbb\n3\nb\na\nb\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "babbbbb\n4\nbab\naab\naab\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbba\n5\nbaa\nbbb\naaa\naaa\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaab\n4\nbaa\nbaa\nbaa\nabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bababbbabba\n3\nb\nb\nb\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "ababbb\n2\nbb\nab\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bbaababbaaabbbbabb\n2\nb\nb\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "bbb\n4\nb\nb\na\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabbaa\n1\na\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "bbbbabbbbaaaabbab\n1\na\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "bbbbbbababbbabaa\n1\nbb\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "aaababba\n4\na\na\nb\nb\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "baababaaabb\n2\nabb\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabbbabababb\n1\naab\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "baabaa\n5\nbaa\naab\nbba\naab\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabbbbbbababbaaa\n2\naab\nbab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbbbabababaaa\n3\nab\nbb\nba\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "babababbbabbaaaab\n3\nbaa\naba\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabaaaabbaa\n5\nbbb\naab\nbbb\naab\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaabaabababaabb\n2\naaa\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babaaab\n5\na\nb\nb\nb\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bb\n1\nb\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "abbababbabaabaab\n4\nbb\nba\nbb\nba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbbabba\n3\na\nb\na\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbbabbbbbabababba\n3\nb\na\nb\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "baabbaa\n1\nb\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "baabaaaaaba\n4\na\nb\nb\na\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "aabaabbbaa\n2\naa\nba\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bababab\n4\nb\nb\na\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ababaaa\n4\nbaa\nbab\nbab\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbaa\n2\naab\naaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbababaab\n4\nb\nb\nb\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbabbbabaabb\n5\nbb\nab\nba\nab\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baaabbbabb\n3\naa\nba\nbb\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "b\n5\naba\nbbb\nbba\naab\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbb\n2\nbb\nab\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bababba\n2\nb\na\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "baaabbbaababaababb\n1\naba\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "ababbbababaabbaaa\n2\na\na\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "baabbbababaaababaa\n2\nb\na\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "abbbabaaaaaaa\n3\nbb\nba\nab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baabbaa\n5\nbaa\naba\nbbb\nbbb\naaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaba\n1\na\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "bab\n4\nbba\naaa\nbbb\naaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n2\nb\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n2\na\na\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baaaaabaaaab\n2\nbab\nbbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aabaabbbbaabaabb\n2\nbb\nab\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "bbbaabababbabaabb\n5\na\nb\na\nb\nb\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "aabbbb\n4\naab\naab\nabb\naab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaa\n4\nbba\nbba\nbaa\naaa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbba\n2\naa\nba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abaababab\n2\naa\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaaa\n5\naa\nab\nbb\naa\naa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaaaa\n3\naab\nbba\nbba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbabbbab\n4\nbbb\naaa\naaa\nbba\n",
+    "expectedOutput": "0\n"
+  }
+]

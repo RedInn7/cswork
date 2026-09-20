@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-tesla-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "右移四位的凯撒加密",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Tesla"
+    ],
+    "description": "将每个大写字母在英文字母表中向右循环移动4位，Z之后回到A，保持原顺序。\n\n输入输出由本站整理。",
+    "input": "一行字符串，长度1至100，仅包含A至Z。",
+    "output": "输出加密后的字符串。",
+    "explanation": "PINEAPPLE变为TMRIETTPI；WXYZ分别变为ABCD；A变为E。",
+    "hints": [
+      "把字母转成0至25，加4后模26再转回字母。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "PINEAPPLE\n",
+      "expectedOutput": "TMRIETTPI\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "WXYZ\n",
+      "expectedOutput": "ABCD\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "A\n",
+      "expectedOutput": "E\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ\n",
+      "expectedOutput": "DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n",
+      "expectedOutput": "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "ABCDEFGHIJKLMNOPQRSTUVWXYZ\n",
+      "expectedOutput": "EFGHIJKLMNOPQRSTUVWXYZABCD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "Y\n",
+      "expectedOutput": "C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "GGAFQKCSIFTNGIDTGWHEWIDLCDVHJBRFISSJVRLKHEIJWHZOXGHEVYDXPEURJBQAWFHR\n",
+      "expectedOutput": "KKEJUOGWMJXRKMHXKALIAMHPGHZLNFVJMWWNZVPOLIMNALDSBKLIZCHBTIYVNFUEAJLV\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "PNADLUBNPLKTTJZLUUGUEVORORDNWDAIMTCXUNQRXJZTKSBCSRYZJVECNXADALDLBLYNBFNBCMODTHKIDCYOZU\n",
+      "expectedOutput": "TREHPYFRTPOXXNDPYYKYIZSVSVHRAHEMQXGBYRUVBNDXOWFGWVCDNZIGRBEHEPHPFPCRFJRFGQSHXLOMHGCSDY\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "EWZXHOJKLZKUFLIERCHMXWGCVRFJPMKGSRESOZVXVUHBTZTB\n",
+      "expectedOutput": "IADBLSNOPDOYJPMIVGLQBAKGZVJNTQOKWVIWSDZBZYLFXDXF\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "ZMKBQVHZLSRPVIHNRVAXEOSHOIKTKCBEIRSEIMUUITDHDXZXTAGQVVQLSEGXXSME\n",
+      "expectedOutput": "DQOFUZLDPWVTZMLRVZEBISWLSMOXOGFIMVWIMQYYMXHLHBDBXEKUZZUPWIKBBWQI\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "SNPHFZXOARTHMOLTIXHREYNLNYJBGQNNMUXTZDHAFTTVC\n",
+      "expectedOutput": "WRTLJDBSEVXLQSPXMBLVICRPRCNFKURRQYBXDHLEJXXZG\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "NCDXATS\n",
+      "expectedOutput": "RGHBEXW\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "AZIUSMIXQDOUEYSXBXHFHIWOHXBLQSTBRPNSVIBJJ\n",
+      "expectedOutput": "EDMYWQMBUHSYICWBFBLJLMASLBFPUWXFVTRWZMFNN\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "KIBCOLJRSMVDRFVPXSUWLKSMGJTOEGRDDSHKHIBZTMRCHMQMRHRLACSNLDTWPNJVVLOJJDEDOLLRXIISJLWEBJJEBPQUN\n",
+      "expectedOutput": "OMFGSPNVWQZHVJZTBWYAPOWQKNXSIKVHHWLOLMFDXQVGLQUQVLVPEGWRPHXATRNZZPSNNHIHSPPVBMMWNPAIFNNIFTUYR\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "OWWTUACMNLECNSAVCFVWJGRURHTOZ\n",
+      "expectedOutput": "SAAXYEGQRPIGRWEZGJZANKVYVLXSD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "BGZCXMASTHCPAUOWRENBJCSYBSJAETBXXINVGCJLWKLKBKJGPEQMFWMUTSCUZIXWNHGSLWXLBZQLFVFCMX\n",
+      "expectedOutput": "FKDGBQEWXLGTEYSAVIRFNGWCFWNEIXFBBMRZKGNPAOPOFONKTIUQJAQYXWGYDMBARLKWPABPFDUPJZJGQB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "QFCOOZKXKAXQFTBTFRHZEGQQVRBBBSFIEWRLYAYCSRJT\n",
+      "expectedOutput": "UJGSSDOBOEBUJXFXJVLDIKUUZVFFFWJMIAVPCECGWVNX\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "WLPIEBMDQUUAS\n",
+      "expectedOutput": "APTMIFQHUYYEW\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "LPILZNMFODSMCULWQCRPRSWRXHZLUBSOBDKTTLRMSJGGFMXZSKBEWYJMFMILEOINSDEIIRLXEHSF\n",
+      "expectedOutput": "PTMPDRQJSHWQGYPAUGVTVWAVBLDPYFWSFHOXXPVQWNKKJQBDWOFIACNQJQMPISMRWHIMMVPBILWJ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "UVAPGVTZZTHRHIERBLNFHKRHMGMZBSFPJAQARJYEJQATJTRTLNAWXRTALMQSXWBP\n",
+      "expectedOutput": "YZETKZXDDXLVLMIVFPRJLOVLQKQDFWJTNEUEVNCINUEXNXVXPREABVXEPQUWBAFT\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "GHAJXWKMJLMDKNLCBTIBFQAKWDDKEMGYQSUJXH\n",
+      "expectedOutput": "KLENBAOQNPQHORPGFXMFJUEOAHHOIQKCUWYNBL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "VTEKPXSSZEJRAEEOYFUEIMBIFMBHUEMYVSAUZQCOYQOIWXKBZWQBSQDSQWSAURJEEOBZIBZHAVLNTKNTLUH\n",
+      "expectedOutput": "ZXIOTBWWDINVEIISCJYIMQFMJQFLYIQCZWEYDUGSCUSMABOFDAUFWUHWUAWEYVNIISFDMFDLEZPRXORXPYL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "SJKPYEDHOIERVYQDOFFGTRDNLGKGVGSBFIKQYVUTXKQSQCXMIIELQJYBPWTRQFUQUQIJHMRRRJBK\n",
+      "expectedOutput": "WNOTCIHLSMIVZCUHSJJKXVHRPKOKZKWFJMOUCZYXBOUWUGBQMMIPUNCFTAXVUJYUYUMNLQVVVNFO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "VXJWNLIWAQUPONGCKAYMDBTSTKYNQ\n",
+      "expectedOutput": "ZBNARPMAEUYTSRKGOECQHFXWXOCRU\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "OMRVJRUMNMUMQFWACJWVUDG\n",
+      "expectedOutput": "SQVZNVYQRQYQUJAEGNAZYHK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "IGBIKZMXWJIIGPVVVCRHPKMYIJXTQSDKSEEXXRVEGSIPTJCPVUMGGIYBVTCPAHJGITXGJZWJFAJABXSMJ\n",
+      "expectedOutput": "MKFMODQBANMMKTZZZGVLTOQCMNBXUWHOWIIBBVZIKWMTXNGTZYQKKMCFZXGTELNKMXBKNDANJENEFBWQN\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "HXKZAMTQOHUXHDPIRNNBRSBETCAPJCJKWKLVLQQFGCMZWVIEKGJIKXYCFLGKWBGVLSAKOSBRWMHGTH\n",
+      "expectedOutput": "LBODEQXUSLYBLHTMVRRFVWFIXGETNGNOAOPZPUUJKGQDAZMIOKNMOBCGJPKOAFKZPWEOSWFVAQLKXL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "MBDZKAHADAEGNBNEZQVLULLCMSC\n",
+      "expectedOutput": "QFHDOELEHEIKRFRIDUZPYPPGQWG\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "HKDVXTWZTZAOYUMTSZHATRZEQVAXOXAJNIBHALOVHYMKSOZHEWTYCIRJRUAYLAROHJVGPWZ\n",
+      "expectedOutput": "LOHZBXADXDESCYQXWDLEXVDIUZEBSBENRMFLEPSZLCQOWSDLIAXCGMVNVYECPEVSLNZKTAD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "YDETBKGHBWVGRSYOZIUPKADKDQWVEDDZHDWAMMYDNGTAVAKOGKHFTZVHMPKCHMEETTYFBSNYCRUKKCDMH\n",
+      "expectedOutput": "CHIXFOKLFAZKVWCSDMYTOEHOHUAZIHHDLHAEQQCHRKXEZEOSKOLJXDZLQTOGLQIIXXCJFWRCGVYOOGHQL\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-188",
+  "title": "每秒FIFO队列的请求数量",
+  "explanation": "## 思路\n\n按期限建立下标桶，以存活标记和前向指针维护队首。每秒移除已服务请求，再移除到期桶中的仍存活请求。\n\n## 正确性证明\n\n标记始终等于当前队列成员。已处理者和恰到期者按规则删除，重复命中通过标记避免二次扣数；前向指针跳过已删除项后即原顺序中第一个存活者，所以FIFO和每时刻数量都正确。每个请求至多删除一次。\n\n## 复杂度\n\n时间O(n+最大期限)，空间O(n+最大期限)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);buckets=[[] for _ in range(max(a)+1)]\n    for i,v in enumerate(a):buckets[v].append(i)\n    alive=[True]*n;left=0;count=n;t=0;out=[]\n    while count:\n        out.append(count)\n        while not alive[left]:left+=1\n        alive[left]=False;count-=1;t+=1\n        if t<len(buckets):\n            for i in buckets[t]:\n                if alive[i]:alive[i]=False;count-=1\n    out.append(0)\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#188-find-requests-in-queue",
+  "sourceContentHash": "7249c7fb9d1f917a8a3a76615708fbde9104f77233f8e181e98de51277d0e007",
+  "author": "CSWork"
+}

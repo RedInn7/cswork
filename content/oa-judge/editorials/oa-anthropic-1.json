@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-anthropic-1",
+  "title": "支持备份恢复的持久化键值数据库",
+  "explanation": "## 思路\n\n离线压缩全部键，用可持久化线段树存储值编号。修改只复制根到叶路径，BACKUP保存根编号，RESTORE切换根；值编号0表示不存在，其余编号即使对应字符串NULL也表示存在。\n\n## 正确性\n\n每个根代表完整键映射。SET和DELETE仅复制目标叶路径并共享不变子树，旧根所有节点保持不变。因而保存根等价于保存完整状态，恢复根得到原状态，且未来修改不会污染任何备份。备份编号数组只追加，因此恢复后既有编号仍有效。按操作归纳，查询和全部返回值均符合定义。\n\n## 复杂度\n\n设U为不同键数，压缩O(U log U)，SET/DELETE/GET为O(log(U+1))，BACKUP/RESTORE为O(1)；总节点O(n log(U+1))，另存输入字符串。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from array import array\n    ops=[];keys=set();pos=1\n    for _ in range(int(d[0])):\n        c=d[pos];pos+=1\n        size=2 if c=='SET' else 0 if c=='BACKUP' else 1\n        args=d[pos:pos+size];pos+=size;ops.append((c,args))\n        if c in ('SET','GET','DELETE'):keys.add(args[0])\n    ids={k:i for i,k in enumerate(sorted(keys))};width=max(1,len(ids))\n    left=array('I',[0]);right=array('I',[0]);value=array('I',[0]);values=['NULL'];saved=[0];root=0;out=[]\n    def update(node,lo,hi,index,v):\n        cur=len(left);left.append(left[node]);right.append(right[node]);value.append(value[node])\n        if hi-lo==1:value[cur]=v\n        else:\n            mid=(lo+hi)//2\n            if index<mid:left[cur]=update(left[node],lo,mid,index,v)\n            else:right[cur]=update(right[node],mid,hi,index,v)\n        return cur\n    def lookup(node,index):\n        lo=0;hi=width\n        while node and hi-lo>1:\n            mid=(lo+hi)//2\n            if index<mid:node=left[node];hi=mid\n            else:node=right[node];lo=mid\n        return value[node]\n    for c,args in ops:\n        if c=='SET':\n            values.append(args[1]);root=update(root,0,width,ids[args[0]],len(values)-1);out.append('OK')\n        elif c=='GET':out.append(values[lookup(root,ids[args[0]])])\n        elif c=='DELETE':\n            old=lookup(root,ids[args[0]]);out.append('OK' if old else 'NULL')\n            if old:root=update(root,0,width,ids[args[0]],0)\n        elif c=='BACKUP':saved.append(root);out.append(str(len(saved)-1))\n        else:\n            v=int(args[0])\n            if 1<=v<len(saved):root=saved[v];out.append('OK')\n            else:out.append('NULL')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/anthropic#1-in-memory-database-with-backup-and-restore",
+  "sourceContentHash": "4f2ecc069aa4c08065e534870e5c5d5c9466219409f8c64e555f3743cbe6c5f2",
+  "author": "CSWork"
+}

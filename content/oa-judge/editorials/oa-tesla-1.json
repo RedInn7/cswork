@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tesla-1",
+  "title": "右移四位的凯撒加密",
+  "explanation": "## 思路\n\n把字母转成0至25，加4后模26再转回字母。\n\n## 正确性\n\n加4得到右移的位置，模26恰好处理末尾绕回，逐字符映射且顺序不变即为答案。\n\n## 复杂度\n\n时间O(n)，输出空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    return ''.join(chr(65+(ord(c)-65+4)%26) for c in d[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/tesla#1-encrypt",
+  "sourceContentHash": "cf1d6b184d87dea36a5de35eacbaa63a64bbc9bd244484020c2eb12d15a8d441",
+  "author": "CSWork"
+}

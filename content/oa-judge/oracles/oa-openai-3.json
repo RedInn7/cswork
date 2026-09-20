@@ -1,0 +1,654 @@
+[
+  {
+    "input": "4\nEVENT u c 0\nEVENT u c 10\nCOUNT u c 15\nCOUNT u c 16\n",
+    "expectedOutput": "2\n2\n1\n"
+  },
+  {
+    "input": "4\nEVENT u c 50\nEVENT u c 0\nCOUNT u c 15\nCOUNT u c 50\n",
+    "expectedOutput": "2\n1\n1\n"
+  },
+  {
+    "input": "5\nCOUNT u c 3\nEVENT u c 3\nEVENT v c 3\nEVENT u d 3\nCOUNT u c 3\n",
+    "expectedOutput": "2\n0\n1\n"
+  },
+  {
+    "input": "30\nEVENT u a 19\nEVENT u a 58\nCOUNT u a 10\nCOUNT u a 5\nEVENT u a 19\nCOUNT v a 19\nCOUNT u b 52\nEVENT u b 17\nEVENT u b 49\nEVENT u a 2\nCOUNT u a 58\nCOUNT u a 59\nEVENT u a 38\nEVENT v b 49\nCOUNT v a 4\nEVENT v b 38\nCOUNT u b 21\nEVENT u a 56\nEVENT v b 25\nEVENT u a 52\nEVENT v b 10\nCOUNT v a 4\nEVENT u a 30\nCOUNT v b 39\nCOUNT u b 2\nEVENT u b 39\nEVENT u a 5\nCOUNT u b 17\nCOUNT u b 9\nCOUNT u a 34\n",
+    "expectedOutput": "14\n0\n0\n0\n0\n1\n1\n0\n1\n0\n2\n0\n1\n0\n3\n"
+  },
+  {
+    "input": "15\nCOUNT v b 47\nCOUNT u b 45\nEVENT v a 32\nEVENT u b 29\nEVENT u b 36\nCOUNT u a 38\nEVENT u b 4\nEVENT u b 12\nEVENT v b 42\nCOUNT v b 30\nEVENT v a 53\nCOUNT v a 12\nEVENT v a 35\nCOUNT u a 30\nCOUNT v b 57\n",
+    "expectedOutput": "7\n0\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "8\nCOUNT v a 45\nEVENT u b 13\nEVENT v b 27\nCOUNT v a 44\nEVENT u b 6\nCOUNT u b 32\nEVENT u b 46\nEVENT u b 56\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "23\nEVENT v a 44\nCOUNT u b 12\nCOUNT u a 49\nCOUNT u a 56\nEVENT v b 14\nEVENT u a 33\nCOUNT v a 56\nEVENT u a 60\nEVENT u a 53\nCOUNT v a 28\nEVENT v a 21\nEVENT u b 41\nCOUNT u a 10\nCOUNT v a 54\nEVENT v a 22\nEVENT u b 18\nEVENT u b 43\nEVENT v a 51\nCOUNT v b 50\nEVENT u a 30\nEVENT v b 55\nEVENT u a 39\nEVENT u b 26\n",
+    "expectedOutput": "8\n0\n0\n0\n1\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "12\nEVENT u a 11\nCOUNT v b 12\nCOUNT v a 60\nCOUNT v b 5\nCOUNT v b 57\nCOUNT v b 16\nEVENT v b 38\nEVENT v a 16\nCOUNT u b 50\nEVENT v a 15\nEVENT u a 10\nEVENT u a 48\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "19\nCOUNT v a 28\nCOUNT v a 14\nEVENT v b 59\nCOUNT v b 8\nCOUNT v b 10\nCOUNT u a 17\nCOUNT v b 54\nEVENT u b 13\nEVENT u a 11\nEVENT u b 53\nEVENT v a 13\nCOUNT u a 38\nCOUNT v b 15\nCOUNT v a 20\nCOUNT u a 35\nEVENT v b 50\nCOUNT v b 57\nCOUNT v b 36\nCOUNT u b 30\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "31\nCOUNT v b 26\nEVENT u b 39\nCOUNT v a 5\nCOUNT u a 17\nCOUNT v a 59\nEVENT v b 23\nEVENT u b 36\nEVENT v a 36\nCOUNT u a 43\nEVENT v b 1\nEVENT u b 12\nEVENT u a 48\nCOUNT v b 9\nCOUNT v a 26\nEVENT u a 52\nCOUNT u a 26\nEVENT v a 36\nCOUNT u a 52\nEVENT u a 37\nCOUNT u b 2\nEVENT v a 9\nCOUNT u b 14\nEVENT v b 52\nEVENT v a 35\nEVENT v b 1\nEVENT u b 0\nEVENT u b 45\nEVENT u b 2\nCOUNT v b 51\nEVENT v b 56\nCOUNT v b 33\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n0\n1\n0\n0\n2\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "30\nCOUNT v b 52\nEVENT u b 14\nCOUNT v b 36\nCOUNT u b 35\nEVENT u b 44\nEVENT v b 42\nEVENT u b 49\nEVENT u a 49\nCOUNT u b 42\nEVENT v a 30\nCOUNT u b 8\nCOUNT u a 32\nEVENT u b 37\nCOUNT u b 45\nCOUNT u b 44\nEVENT v b 35\nEVENT v b 2\nEVENT v a 46\nEVENT v b 29\nEVENT v a 32\nEVENT v b 40\nEVENT v b 31\nCOUNT u a 27\nEVENT u b 57\nEVENT v a 58\nEVENT u b 21\nCOUNT u b 47\nCOUNT v b 40\nEVENT u a 25\nEVENT u a 59\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n0\n2\n2\n0\n2\n4\n"
+  },
+  {
+    "input": "24\nEVENT u a 10\nCOUNT v a 9\nEVENT v b 31\nCOUNT u b 17\nCOUNT v b 24\nEVENT v a 60\nEVENT v a 7\nEVENT u a 44\nEVENT u a 42\nEVENT v b 4\nCOUNT u a 19\nCOUNT u a 50\nCOUNT v b 39\nCOUNT v b 5\nEVENT v a 50\nEVENT v b 27\nCOUNT u a 54\nEVENT v b 4\nCOUNT v a 46\nEVENT v a 9\nCOUNT v a 50\nEVENT u b 2\nEVENT v a 58\nEVENT v a 29\n",
+    "expectedOutput": "10\n0\n0\n0\n1\n2\n1\n1\n2\n0\n1\n"
+  },
+  {
+    "input": "32\nEVENT u b 2\nCOUNT v b 18\nCOUNT u b 58\nEVENT v a 36\nEVENT u a 5\nCOUNT u b 43\nCOUNT v a 2\nEVENT v a 39\nCOUNT u b 35\nEVENT v b 59\nEVENT u a 48\nCOUNT v b 9\nEVENT v b 26\nEVENT v a 14\nCOUNT u b 53\nCOUNT v a 19\nEVENT u b 5\nEVENT v a 15\nEVENT u a 59\nEVENT v a 39\nEVENT u b 58\nCOUNT u a 16\nCOUNT u b 47\nEVENT v b 40\nCOUNT u b 18\nEVENT v b 12\nEVENT v a 41\nEVENT v a 3\nEVENT u a 28\nEVENT v a 47\nEVENT v a 6\nCOUNT u b 51\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n1\n0\n"
+  },
+  {
+    "input": "30\nEVENT u b 24\nCOUNT u a 59\nCOUNT u b 25\nCOUNT v a 27\nCOUNT u a 2\nCOUNT u a 33\nCOUNT v b 44\nCOUNT v a 4\nCOUNT v b 59\nCOUNT u b 48\nCOUNT v b 55\nEVENT u a 2\nCOUNT u b 31\nEVENT u a 35\nCOUNT v a 5\nCOUNT v b 34\nEVENT v a 5\nCOUNT u b 7\nCOUNT v b 47\nCOUNT u b 20\nCOUNT u b 8\nEVENT u b 36\nEVENT u a 48\nCOUNT v b 42\nEVENT v b 59\nEVENT v b 38\nCOUNT u a 43\nCOUNT u b 34\nCOUNT u a 43\nEVENT u a 50\n",
+    "expectedOutput": "21\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "27\nCOUNT u a 41\nEVENT v b 56\nEVENT v a 27\nEVENT u a 22\nCOUNT u a 52\nEVENT u a 38\nEVENT v a 14\nEVENT v b 26\nEVENT v b 8\nEVENT u a 44\nEVENT u a 42\nEVENT v b 34\nEVENT v a 33\nEVENT v b 34\nEVENT u b 13\nEVENT u a 3\nCOUNT u a 47\nEVENT u b 10\nCOUNT u a 58\nCOUNT u a 34\nCOUNT v a 11\nCOUNT v b 44\nEVENT v b 6\nCOUNT u a 15\nCOUNT v b 18\nEVENT v b 23\nCOUNT v a 40\n",
+    "expectedOutput": "10\n0\n0\n3\n1\n1\n0\n2\n1\n2\n2\n"
+  },
+  {
+    "input": "7\nCOUNT u b 20\nCOUNT v a 33\nEVENT v a 12\nEVENT v b 16\nEVENT v b 35\nCOUNT u a 16\nEVENT u b 23\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "24\nEVENT u b 2\nEVENT v b 45\nCOUNT u a 13\nCOUNT u b 48\nCOUNT u b 60\nCOUNT v a 36\nEVENT v a 52\nCOUNT u a 31\nEVENT v a 48\nEVENT v b 52\nEVENT u a 58\nCOUNT u b 19\nCOUNT u b 34\nEVENT u b 55\nCOUNT v a 41\nEVENT v b 57\nCOUNT v a 28\nCOUNT v b 5\nEVENT v b 51\nEVENT v b 40\nEVENT u b 59\nEVENT u a 8\nCOUNT u a 7\nEVENT u a 2\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "21\nEVENT v a 55\nCOUNT u b 37\nEVENT u a 10\nEVENT u a 40\nEVENT v b 59\nEVENT v b 32\nEVENT v a 5\nEVENT v a 54\nEVENT u a 3\nCOUNT u b 13\nEVENT v a 22\nEVENT v a 37\nEVENT u a 16\nEVENT v b 49\nEVENT v b 17\nEVENT v a 11\nEVENT v b 56\nCOUNT u a 56\nCOUNT v a 5\nEVENT u b 59\nCOUNT v b 24\n",
+    "expectedOutput": "5\n0\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "27\nEVENT u a 45\nEVENT v a 39\nEVENT u b 20\nCOUNT u a 23\nEVENT v a 59\nCOUNT v a 4\nCOUNT v a 18\nEVENT v b 9\nEVENT u a 14\nEVENT v b 13\nCOUNT u b 34\nEVENT v b 1\nEVENT u b 3\nEVENT v b 36\nCOUNT u a 36\nEVENT v b 37\nCOUNT v b 4\nCOUNT v a 35\nCOUNT u b 41\nCOUNT u b 45\nCOUNT v a 25\nCOUNT u a 25\nCOUNT v a 19\nCOUNT v a 44\nCOUNT u b 24\nEVENT u b 29\nCOUNT u a 44\n",
+    "expectedOutput": "15\n0\n0\n0\n1\n0\n1\n0\n0\n0\n0\n1\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "20\nCOUNT u a 7\nCOUNT v a 21\nEVENT u a 4\nEVENT v a 60\nCOUNT u a 27\nCOUNT u a 57\nCOUNT v a 36\nEVENT u a 23\nCOUNT u a 9\nCOUNT u a 40\nCOUNT v b 1\nCOUNT v b 16\nEVENT v a 32\nCOUNT u b 50\nEVENT u b 39\nEVENT u b 50\nCOUNT v a 22\nEVENT v b 21\nEVENT u a 29\nEVENT v a 59\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "26\nEVENT u a 29\nCOUNT v b 19\nCOUNT v b 38\nCOUNT u a 11\nCOUNT v a 28\nCOUNT u b 48\nEVENT v b 19\nCOUNT u a 27\nEVENT u a 54\nCOUNT v a 51\nCOUNT u b 51\nCOUNT v b 13\nCOUNT v a 17\nEVENT u a 13\nEVENT u b 25\nCOUNT v a 12\nEVENT u b 59\nCOUNT v b 13\nEVENT v b 20\nEVENT u b 33\nCOUNT v a 26\nCOUNT v b 31\nCOUNT u a 20\nEVENT u a 35\nEVENT v a 13\nEVENT u b 52\n",
+    "expectedOutput": "15\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n2\n1\n"
+  },
+  {
+    "input": "20\nCOUNT v b 58\nCOUNT u b 31\nEVENT u a 11\nCOUNT v b 50\nCOUNT v a 33\nEVENT v b 15\nEVENT u b 18\nEVENT v a 43\nCOUNT u b 18\nEVENT v b 18\nCOUNT v a 17\nCOUNT v a 2\nCOUNT v a 31\nEVENT u a 53\nCOUNT u a 22\nCOUNT u a 30\nCOUNT v b 37\nCOUNT v b 38\nEVENT v a 15\nEVENT v a 42\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n1\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "8\nEVENT v b 53\nEVENT u a 29\nEVENT v b 35\nCOUNT v b 54\nEVENT v b 15\nEVENT u b 19\nCOUNT u b 33\nEVENT v a 45\n",
+    "expectedOutput": "2\n1\n1\n"
+  },
+  {
+    "input": "4\nCOUNT v a 42\nEVENT v a 56\nCOUNT u b 29\nCOUNT v b 12\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "5\nEVENT u a 47\nEVENT v a 53\nEVENT u a 1\nEVENT u b 29\nEVENT v a 39\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "6\nCOUNT v a 23\nCOUNT v b 49\nCOUNT v b 6\nEVENT v b 33\nEVENT u a 43\nCOUNT v a 12\n",
+    "expectedOutput": "4\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "24\nCOUNT v b 21\nEVENT u a 44\nCOUNT v a 53\nEVENT u b 58\nEVENT u a 36\nEVENT u b 59\nCOUNT u a 38\nCOUNT v a 42\nEVENT u b 10\nEVENT v b 40\nEVENT v a 56\nEVENT v a 55\nEVENT u b 11\nEVENT v a 8\nEVENT u b 51\nCOUNT v a 51\nCOUNT v a 28\nCOUNT v b 0\nCOUNT v a 51\nCOUNT v b 52\nEVENT v b 21\nCOUNT v b 19\nEVENT u a 53\nCOUNT v b 54\n",
+    "expectedOutput": "11\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "3\nEVENT v a 55\nEVENT u a 52\nCOUNT u a 4\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "30\nEVENT v b 0\nCOUNT v a 24\nEVENT u b 24\nEVENT v a 57\nCOUNT u a 32\nEVENT v a 21\nCOUNT v b 5\nEVENT u a 34\nCOUNT u a 31\nCOUNT u b 55\nEVENT v a 50\nCOUNT v a 6\nCOUNT u b 9\nCOUNT u a 49\nEVENT v a 0\nEVENT u a 32\nCOUNT v b 52\nCOUNT u b 55\nEVENT u a 13\nEVENT u b 6\nCOUNT u a 32\nEVENT v a 59\nCOUNT v b 33\nCOUNT u a 19\nEVENT u a 59\nEVENT v b 40\nCOUNT u b 47\nCOUNT v a 39\nCOUNT v a 50\nEVENT v a 5\n",
+    "expectedOutput": "16\n0\n0\n1\n0\n0\n0\n0\n1\n0\n0\n1\n0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "7\nCOUNT v b 35\nCOUNT u b 9\nCOUNT v a 48\nCOUNT v a 46\nCOUNT u a 42\nEVENT u b 4\nCOUNT u a 57\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "1\nEVENT u b 17\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "18\nEVENT u b 49\nCOUNT u a 11\nCOUNT u a 53\nCOUNT v a 5\nCOUNT v b 14\nEVENT u b 47\nCOUNT u b 19\nEVENT u a 26\nEVENT u a 17\nCOUNT v b 23\nCOUNT u a 17\nCOUNT v a 18\nCOUNT v b 48\nEVENT u b 47\nEVENT u b 7\nCOUNT v a 31\nEVENT u b 0\nCOUNT v b 33\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "7\nEVENT v b 25\nEVENT u a 19\nEVENT u a 50\nCOUNT v b 9\nCOUNT u b 9\nCOUNT v a 54\nEVENT v a 21\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "17\nEVENT v b 1\nCOUNT v a 51\nCOUNT u a 8\nCOUNT v b 45\nCOUNT u b 28\nCOUNT v a 0\nCOUNT u a 24\nCOUNT v a 26\nEVENT u b 3\nEVENT u b 20\nCOUNT v a 41\nCOUNT v b 37\nEVENT u a 24\nEVENT u a 23\nEVENT u a 2\nEVENT v b 14\nCOUNT u a 11\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "34\nEVENT u b 12\nCOUNT v a 7\nCOUNT u b 20\nCOUNT v b 7\nCOUNT u b 21\nCOUNT u b 40\nEVENT u a 31\nCOUNT u b 19\nCOUNT u a 23\nCOUNT v b 50\nEVENT v b 24\nCOUNT u a 55\nEVENT u b 3\nCOUNT u b 12\nEVENT v a 39\nCOUNT v a 52\nCOUNT u a 45\nEVENT u a 25\nEVENT v a 38\nEVENT v a 8\nCOUNT v a 35\nEVENT v b 32\nEVENT v b 27\nEVENT u a 3\nEVENT v b 25\nCOUNT u a 30\nCOUNT u b 49\nCOUNT v a 59\nEVENT v a 29\nCOUNT u b 16\nCOUNT u a 44\nEVENT v b 10\nCOUNT u b 5\nEVENT v b 13\n",
+    "expectedOutput": "19\n0\n1\n0\n1\n0\n1\n0\n0\n0\n2\n1\n1\n0\n1\n0\n0\n2\n1\n1\n"
+  },
+  {
+    "input": "15\nEVENT v a 43\nEVENT v b 3\nEVENT v a 6\nEVENT v a 2\nEVENT u b 33\nCOUNT v b 47\nEVENT u b 47\nEVENT v b 42\nEVENT u a 51\nCOUNT v a 21\nEVENT v a 43\nCOUNT u a 38\nCOUNT u a 9\nCOUNT v a 21\nEVENT v b 41\n",
+    "expectedOutput": "5\n0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "28\nEVENT u b 25\nCOUNT u b 3\nEVENT v b 22\nCOUNT u a 25\nEVENT v a 41\nCOUNT v a 19\nCOUNT u b 10\nEVENT v a 32\nEVENT u b 55\nCOUNT v b 34\nCOUNT u a 44\nEVENT u a 53\nEVENT v a 29\nEVENT u b 32\nEVENT u a 1\nCOUNT v b 60\nEVENT u b 21\nCOUNT v a 55\nCOUNT v b 15\nCOUNT u b 21\nCOUNT v b 57\nEVENT u b 30\nEVENT v b 26\nCOUNT v b 2\nCOUNT u b 14\nEVENT u a 12\nEVENT v a 0\nCOUNT u a 59\n",
+    "expectedOutput": "14\n0\n0\n0\n0\n1\n0\n0\n1\n0\n1\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "7\nCOUNT v b 58\nEVENT v b 36\nEVENT v b 60\nCOUNT u a 29\nEVENT u b 60\nEVENT u b 43\nCOUNT u a 54\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "22\nEVENT u a 49\nCOUNT v a 38\nCOUNT u b 28\nEVENT u b 53\nEVENT v b 32\nEVENT u a 3\nEVENT v a 8\nCOUNT u a 18\nCOUNT v b 1\nEVENT v a 39\nEVENT v a 50\nEVENT u a 39\nCOUNT v a 56\nCOUNT v b 52\nCOUNT u b 38\nCOUNT u a 28\nCOUNT v a 6\nEVENT v a 41\nCOUNT v a 46\nCOUNT v b 15\nCOUNT v b 42\nCOUNT u b 14\n",
+    "expectedOutput": "13\n0\n0\n1\n0\n1\n0\n0\n0\n0\n2\n0\n1\n0\n"
+  },
+  {
+    "input": "14\nCOUNT v a 4\nEVENT v b 52\nEVENT v a 2\nCOUNT u b 47\nCOUNT u b 38\nCOUNT u a 28\nCOUNT v b 45\nCOUNT u b 35\nEVENT u b 40\nCOUNT v b 21\nEVENT v a 4\nEVENT u a 57\nCOUNT v a 38\nCOUNT v b 22\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "18\nCOUNT u b 27\nCOUNT v b 51\nCOUNT v b 32\nCOUNT v b 8\nEVENT u b 19\nCOUNT u b 8\nCOUNT v a 47\nEVENT v a 51\nEVENT u a 8\nEVENT v a 8\nEVENT u a 8\nCOUNT u b 5\nEVENT u a 57\nCOUNT v b 19\nEVENT v a 41\nCOUNT u b 27\nEVENT v b 15\nCOUNT u b 16\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "29\nEVENT v b 41\nEVENT v a 57\nCOUNT v a 41\nEVENT v a 31\nEVENT u b 55\nEVENT u b 1\nEVENT v a 25\nEVENT v b 29\nCOUNT v b 8\nCOUNT u a 36\nEVENT u b 45\nEVENT v b 9\nEVENT v a 13\nCOUNT u b 40\nEVENT v a 37\nCOUNT u a 11\nCOUNT v b 20\nCOUNT u a 23\nEVENT u a 18\nCOUNT v a 22\nCOUNT v a 49\nCOUNT v a 53\nEVENT u b 43\nEVENT u b 0\nCOUNT v a 19\nCOUNT v b 20\nEVENT v b 32\nCOUNT u b 5\nEVENT v b 51\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n0\n1\n0\n1\n1\n0\n1\n1\n2\n"
+  },
+  {
+    "input": "2\nCOUNT u a 26\nEVENT u a 49\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "26\nCOUNT u a 27\nEVENT u a 9\nCOUNT v a 49\nEVENT v b 59\nCOUNT u a 51\nCOUNT u b 42\nEVENT u a 55\nEVENT v a 51\nCOUNT v b 19\nCOUNT u a 1\nEVENT v a 40\nEVENT u b 33\nCOUNT v b 38\nEVENT u b 34\nEVENT v a 20\nCOUNT u b 33\nCOUNT v b 12\nEVENT u b 21\nEVENT u b 50\nCOUNT u b 36\nCOUNT v a 50\nEVENT u b 51\nEVENT v b 60\nCOUNT u b 24\nCOUNT u b 30\nEVENT v a 29\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n0\n0\n0\n1\n0\n3\n1\n1\n1\n"
+  },
+  {
+    "input": "16\nEVENT v a 38\nCOUNT v b 24\nCOUNT v a 19\nCOUNT u a 14\nEVENT v a 36\nEVENT v b 25\nCOUNT v b 44\nEVENT v a 46\nEVENT u a 40\nEVENT v a 7\nEVENT v b 30\nCOUNT u a 48\nEVENT v a 17\nEVENT u b 27\nEVENT v a 21\nEVENT v a 20\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "11\nEVENT v a 22\nEVENT v a 37\nCOUNT u b 8\nEVENT u a 47\nCOUNT u a 39\nEVENT u b 45\nCOUNT v a 34\nCOUNT u a 41\nEVENT u a 24\nCOUNT v b 40\nCOUNT v a 49\n",
+    "expectedOutput": "6\n0\n0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "4\nEVENT u a 30\nCOUNT v a 47\nEVENT v b 27\nCOUNT u b 24\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "14\nCOUNT u b 22\nCOUNT v a 34\nCOUNT u a 36\nEVENT u a 35\nCOUNT u a 39\nCOUNT u a 60\nCOUNT u b 18\nCOUNT u a 15\nCOUNT u a 16\nCOUNT u b 47\nEVENT u b 13\nCOUNT u a 38\nEVENT v b 19\nEVENT u b 32\n",
+    "expectedOutput": "10\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "26\nCOUNT v b 55\nEVENT v b 46\nEVENT u a 56\nCOUNT u a 30\nEVENT v b 8\nCOUNT v b 31\nEVENT u b 2\nCOUNT u a 26\nEVENT v a 33\nCOUNT v b 53\nCOUNT v a 54\nEVENT u a 58\nEVENT u a 26\nCOUNT u b 39\nEVENT u a 32\nCOUNT u a 14\nEVENT u b 23\nEVENT u a 5\nCOUNT v b 50\nEVENT v b 48\nCOUNT v b 39\nCOUNT u b 51\nEVENT u a 42\nEVENT v b 11\nCOUNT u a 49\nCOUNT v a 51\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n1\n0\n0\n0\n1\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "32\nEVENT v b 15\nCOUNT u a 25\nCOUNT u b 56\nCOUNT u a 23\nCOUNT v a 56\nCOUNT v a 22\nEVENT v a 0\nEVENT v a 8\nCOUNT v a 19\nEVENT v a 8\nEVENT u b 18\nCOUNT u a 27\nEVENT v b 12\nCOUNT u a 42\nEVENT u a 0\nCOUNT v b 20\nCOUNT u a 51\nEVENT u a 47\nEVENT u b 53\nEVENT u a 10\nEVENT u b 3\nCOUNT v b 2\nEVENT v a 37\nCOUNT v b 50\nCOUNT u b 33\nEVENT u a 54\nCOUNT v b 34\nEVENT v a 2\nCOUNT v b 59\nEVENT v b 22\nCOUNT u a 59\nCOUNT v b 19\n",
+    "expectedOutput": "17\n0\n0\n0\n0\n0\n1\n0\n0\n2\n0\n0\n0\n1\n0\n0\n2\n2\n"
+  },
+  {
+    "input": "10\nCOUNT u a 6\nEVENT u a 35\nCOUNT v a 21\nEVENT u b 60\nEVENT u a 58\nEVENT v a 39\nEVENT u a 31\nCOUNT u a 5\nCOUNT v a 58\nCOUNT u a 5\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "10\nCOUNT u b 60\nCOUNT v a 3\nEVENT v a 18\nEVENT u b 27\nEVENT u b 28\nEVENT v b 2\nCOUNT u a 16\nCOUNT v a 13\nEVENT v a 34\nCOUNT v a 30\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "29\nCOUNT v a 14\nEVENT u b 57\nCOUNT u a 34\nCOUNT v a 11\nEVENT v b 45\nCOUNT u a 28\nCOUNT v b 32\nCOUNT v a 19\nCOUNT u b 29\nEVENT u a 39\nEVENT u a 44\nEVENT u a 35\nEVENT u a 16\nEVENT v b 16\nEVENT v b 34\nEVENT v a 51\nCOUNT v a 26\nEVENT u b 53\nCOUNT v a 46\nEVENT u a 60\nCOUNT v b 15\nEVENT v a 14\nCOUNT v a 25\nCOUNT u b 58\nEVENT v b 46\nEVENT v b 42\nCOUNT v b 50\nCOUNT u a 9\nCOUNT v b 39\n",
+    "expectedOutput": "15\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n2\n3\n0\n1\n"
+  },
+  {
+    "input": "7\nEVENT v a 5\nEVENT v a 41\nEVENT v a 16\nCOUNT u a 11\nCOUNT u a 1\nEVENT v a 34\nCOUNT u a 23\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "20\nEVENT u b 47\nEVENT v a 4\nEVENT v a 23\nCOUNT v a 8\nEVENT u b 38\nCOUNT v a 17\nEVENT u b 12\nCOUNT u b 56\nEVENT v b 47\nEVENT u b 46\nEVENT u a 36\nCOUNT v b 39\nCOUNT v b 20\nEVENT u a 30\nEVENT v a 18\nCOUNT u a 24\nEVENT v a 26\nEVENT v b 50\nEVENT u a 25\nEVENT u b 34\n",
+    "expectedOutput": "6\n1\n1\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "26\nCOUNT u b 49\nEVENT u b 27\nEVENT v a 36\nEVENT u a 0\nCOUNT u a 44\nEVENT v b 60\nEVENT v b 59\nEVENT v b 48\nCOUNT u a 17\nCOUNT v a 16\nEVENT u a 8\nCOUNT v b 60\nCOUNT u b 36\nCOUNT u a 38\nCOUNT u a 47\nCOUNT v b 34\nEVENT v a 15\nCOUNT v b 24\nEVENT u a 10\nEVENT v a 17\nEVENT u a 29\nCOUNT u b 28\nEVENT v b 34\nEVENT v a 35\nCOUNT u b 19\nEVENT u a 41\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n3\n1\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "27\nCOUNT v b 59\nCOUNT u a 25\nCOUNT u a 55\nEVENT v a 34\nEVENT v b 27\nCOUNT v b 37\nEVENT u b 13\nCOUNT u a 15\nCOUNT v b 49\nEVENT v b 4\nCOUNT u b 52\nEVENT v b 18\nCOUNT v b 54\nCOUNT u a 29\nCOUNT v b 13\nCOUNT v a 45\nEVENT u a 13\nEVENT u b 59\nEVENT v a 15\nCOUNT v a 12\nEVENT u a 36\nCOUNT u b 50\nCOUNT u b 46\nCOUNT v b 33\nCOUNT u b 9\nEVENT v b 23\nCOUNT v b 10\n",
+    "expectedOutput": "17\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n1\n0\n0\n0\n2\n0\n1\n"
+  },
+  {
+    "input": "16\nEVENT v b 20\nEVENT v b 36\nEVENT u a 46\nEVENT u b 13\nCOUNT u b 30\nEVENT u b 35\nCOUNT v b 6\nCOUNT v a 54\nEVENT u b 24\nEVENT u b 34\nCOUNT v a 10\nCOUNT u a 50\nCOUNT v b 8\nEVENT u a 44\nCOUNT u b 0\nCOUNT u a 5\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "4\nCOUNT u a 35\nEVENT u b 55\nEVENT u a 7\nEVENT v a 26\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "28\nCOUNT v a 29\nCOUNT v a 33\nEVENT v b 46\nCOUNT v b 43\nEVENT u b 41\nCOUNT v a 48\nCOUNT u b 44\nEVENT v a 5\nEVENT u a 27\nCOUNT v b 31\nEVENT v a 16\nEVENT u a 53\nEVENT v b 4\nCOUNT v a 32\nEVENT v a 6\nCOUNT v b 22\nCOUNT u b 9\nEVENT v a 33\nEVENT v b 2\nCOUNT v b 35\nCOUNT v b 43\nCOUNT u a 20\nCOUNT u a 48\nCOUNT v b 17\nEVENT v b 45\nCOUNT v b 29\nCOUNT v a 11\nEVENT u a 50\n",
+    "expectedOutput": "16\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n2\n0\n2\n"
+  },
+  {
+    "input": "35\nEVENT v a 37\nCOUNT u a 3\nEVENT v b 41\nEVENT u a 35\nCOUNT u a 52\nEVENT v a 29\nCOUNT v b 34\nEVENT u b 38\nCOUNT v a 8\nEVENT u b 54\nCOUNT v a 39\nCOUNT v b 34\nCOUNT u b 16\nCOUNT u b 16\nCOUNT v a 36\nCOUNT v a 60\nEVENT u a 12\nCOUNT v a 38\nEVENT v a 41\nCOUNT v b 46\nEVENT v a 39\nEVENT u a 30\nCOUNT u a 23\nCOUNT u a 22\nEVENT u b 12\nCOUNT v b 38\nCOUNT v b 54\nCOUNT v a 2\nEVENT v b 54\nEVENT u a 36\nEVENT u a 9\nCOUNT v a 14\nCOUNT v a 3\nCOUNT v b 29\nEVENT v b 55\n",
+    "expectedOutput": "20\n0\n0\n0\n0\n2\n0\n0\n0\n1\n0\n2\n1\n1\n1\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "4\nEVENT u a 0\nCOUNT v a 36\nEVENT u b 29\nEVENT v b 34\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "23\nEVENT v b 47\nCOUNT u a 29\nEVENT u a 32\nEVENT u b 47\nEVENT u a 23\nEVENT u b 43\nCOUNT u a 32\nCOUNT v b 15\nEVENT u a 39\nEVENT v b 28\nEVENT u a 49\nCOUNT v a 6\nCOUNT v a 8\nEVENT v b 38\nEVENT v a 23\nEVENT v b 52\nEVENT v a 7\nCOUNT v a 27\nCOUNT u a 46\nCOUNT u b 41\nEVENT u b 14\nEVENT v a 35\nCOUNT v a 22\n",
+    "expectedOutput": "9\n0\n2\n0\n0\n0\n1\n2\n0\n1\n"
+  },
+  {
+    "input": "30\nCOUNT u b 2\nCOUNT v b 20\nCOUNT u a 53\nCOUNT v a 22\nCOUNT v a 30\nCOUNT u a 24\nEVENT u b 0\nCOUNT u a 36\nCOUNT u a 50\nEVENT u b 12\nCOUNT v a 34\nEVENT u a 31\nCOUNT u a 35\nCOUNT v b 32\nCOUNT v b 56\nEVENT v b 4\nEVENT u b 53\nEVENT u b 18\nEVENT u a 34\nCOUNT v b 45\nEVENT v a 51\nEVENT u a 32\nCOUNT u b 49\nCOUNT v b 30\nEVENT v a 20\nEVENT u a 3\nEVENT v b 11\nCOUNT u a 33\nEVENT u a 44\nCOUNT u a 43\n",
+    "expectedOutput": "17\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n2\n3\n"
+  },
+  {
+    "input": "32\nCOUNT u a 30\nCOUNT v b 43\nCOUNT u b 60\nCOUNT u b 28\nEVENT u b 40\nEVENT u a 60\nEVENT v a 28\nEVENT u a 27\nEVENT v b 36\nEVENT v a 22\nEVENT u b 12\nCOUNT v a 47\nEVENT v a 47\nEVENT v b 23\nEVENT u b 34\nCOUNT v a 8\nCOUNT u a 0\nEVENT v b 59\nCOUNT u a 45\nEVENT u a 25\nEVENT v b 53\nEVENT v a 56\nCOUNT u b 18\nEVENT u a 13\nCOUNT v b 40\nCOUNT v a 7\nCOUNT u b 9\nEVENT u b 21\nEVENT v a 8\nEVENT v b 10\nEVENT u b 30\nEVENT v a 34\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "27\nEVENT v a 50\nEVENT v b 40\nEVENT u b 25\nEVENT v b 60\nCOUNT u a 0\nEVENT v b 41\nEVENT v b 40\nCOUNT v a 54\nCOUNT u a 48\nEVENT u b 20\nCOUNT v b 46\nEVENT v b 54\nCOUNT v a 19\nCOUNT v b 3\nCOUNT u b 48\nCOUNT v b 25\nCOUNT v b 58\nCOUNT v b 11\nCOUNT v b 30\nCOUNT u b 22\nEVENT v a 26\nEVENT u a 10\nEVENT u a 11\nEVENT u a 25\nCOUNT u b 31\nCOUNT u a 3\nEVENT u a 51\n",
+    "expectedOutput": "14\n0\n1\n0\n3\n0\n0\n0\n0\n1\n0\n0\n1\n2\n0\n"
+  },
+  {
+    "input": "22\nEVENT v b 29\nCOUNT v a 6\nCOUNT v b 20\nEVENT u a 50\nCOUNT v a 32\nEVENT v b 15\nEVENT u a 27\nEVENT u a 30\nCOUNT v a 47\nEVENT u a 35\nCOUNT u b 39\nCOUNT v a 50\nCOUNT u b 53\nCOUNT u b 33\nCOUNT v a 58\nEVENT v b 10\nEVENT v b 3\nEVENT u b 19\nEVENT v b 9\nCOUNT v a 2\nEVENT u a 42\nCOUNT v b 47\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "11\nCOUNT v b 38\nEVENT v b 42\nEVENT u b 53\nEVENT v a 19\nEVENT v a 23\nEVENT v a 0\nCOUNT u a 59\nEVENT v a 48\nCOUNT u a 39\nCOUNT v a 0\nCOUNT v a 28\n",
+    "expectedOutput": "5\n0\n0\n0\n1\n2\n"
+  },
+  {
+    "input": "14\nEVENT u a 43\nEVENT u a 28\nCOUNT u a 26\nCOUNT v a 25\nEVENT v b 33\nEVENT u a 45\nCOUNT u a 21\nEVENT v a 39\nEVENT u b 37\nCOUNT u a 2\nEVENT u a 35\nEVENT v a 4\nCOUNT u b 24\nEVENT u a 53\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "23\nCOUNT u a 15\nEVENT v a 35\nCOUNT v b 55\nCOUNT v b 27\nCOUNT u b 38\nEVENT v b 17\nEVENT v a 22\nEVENT v a 53\nCOUNT v b 10\nCOUNT v b 14\nEVENT u b 60\nCOUNT v b 49\nEVENT u b 40\nCOUNT u a 27\nCOUNT v b 24\nCOUNT v b 19\nCOUNT u b 31\nEVENT v a 31\nEVENT v b 34\nCOUNT v b 35\nEVENT v a 60\nEVENT u a 42\nCOUNT u b 51\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "32\nEVENT v b 9\nCOUNT u b 31\nEVENT u b 41\nEVENT v a 43\nCOUNT v b 14\nCOUNT v a 32\nCOUNT v b 44\nEVENT v a 10\nCOUNT u a 25\nEVENT u a 53\nEVENT u b 2\nCOUNT v b 32\nCOUNT u a 51\nCOUNT u a 18\nCOUNT u a 44\nCOUNT v a 40\nCOUNT u a 17\nCOUNT u b 13\nEVENT u a 12\nCOUNT u a 5\nEVENT u a 26\nCOUNT v b 13\nCOUNT v a 20\nEVENT v b 23\nCOUNT u a 18\nEVENT v b 33\nEVENT v a 24\nEVENT u a 9\nEVENT v a 14\nCOUNT v b 54\nCOUNT v a 4\nEVENT v a 36\n",
+    "expectedOutput": "18\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "22\nCOUNT u a 49\nEVENT u a 46\nEVENT u b 40\nEVENT v b 44\nEVENT v a 4\nCOUNT v b 51\nEVENT u a 33\nEVENT u b 43\nEVENT v b 9\nCOUNT v a 14\nEVENT v b 9\nEVENT u b 38\nCOUNT v b 53\nEVENT u a 17\nEVENT u b 39\nCOUNT u a 20\nEVENT u a 50\nEVENT u a 34\nCOUNT u b 28\nEVENT v a 47\nCOUNT u a 58\nCOUNT v b 38\n",
+    "expectedOutput": "8\n0\n1\n1\n1\n1\n0\n2\n0\n"
+  },
+  {
+    "input": "9\nCOUNT v b 37\nEVENT u a 40\nEVENT v b 50\nCOUNT v a 50\nCOUNT u a 31\nEVENT u b 44\nEVENT u b 6\nCOUNT v a 10\nCOUNT u b 57\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "18\nEVENT u b 18\nCOUNT v b 18\nEVENT u a 16\nEVENT u a 3\nEVENT u a 32\nCOUNT v b 57\nCOUNT u a 58\nEVENT v b 1\nEVENT u b 56\nEVENT v b 5\nEVENT u b 25\nCOUNT v a 8\nEVENT u a 35\nEVENT v b 19\nEVENT v b 8\nCOUNT v b 32\nCOUNT u a 56\nEVENT u a 40\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "6\nCOUNT u b 24\nCOUNT v b 2\nEVENT v a 59\nCOUNT u a 9\nEVENT u b 48\nEVENT u b 52\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "31\nEVENT u a 53\nCOUNT v b 13\nEVENT v b 60\nCOUNT u b 54\nCOUNT v b 29\nEVENT u a 41\nEVENT u b 21\nEVENT v a 50\nCOUNT v a 57\nCOUNT v a 16\nEVENT u a 58\nCOUNT v a 26\nCOUNT u a 32\nCOUNT v a 57\nCOUNT v a 40\nCOUNT v b 51\nCOUNT v a 6\nEVENT u a 3\nEVENT v b 9\nEVENT u b 12\nEVENT v b 50\nCOUNT v a 3\nEVENT u b 47\nEVENT v a 25\nCOUNT v b 31\nEVENT v b 34\nEVENT u b 3\nCOUNT u b 49\nEVENT v b 47\nCOUNT u b 44\nCOUNT v a 29\n",
+    "expectedOutput": "16\n0\n0\n0\n1\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "10\nEVENT v a 12\nCOUNT v b 11\nEVENT v b 14\nEVENT v b 24\nEVENT u b 11\nEVENT v a 2\nCOUNT u a 0\nEVENT v b 2\nCOUNT u a 58\nEVENT v a 59\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "6\nCOUNT u b 45\nEVENT u b 27\nCOUNT v b 23\nCOUNT u b 46\nCOUNT v b 39\nEVENT v b 16\n",
+    "expectedOutput": "4\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "20\nCOUNT v a 3\nEVENT u b 40\nCOUNT u b 43\nEVENT v a 7\nCOUNT v b 28\nCOUNT v b 37\nCOUNT v a 14\nEVENT u a 10\nEVENT v a 12\nEVENT v a 3\nCOUNT u a 30\nCOUNT u a 50\nCOUNT u b 36\nEVENT v b 53\nCOUNT u b 2\nCOUNT u a 9\nCOUNT u b 52\nCOUNT v b 9\nCOUNT u b 53\nCOUNT u a 59\n",
+    "expectedOutput": "14\n0\n1\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n1\n0\n"
+  },
+  {
+    "input": "29\nEVENT u b 52\nCOUNT v b 32\nCOUNT v b 38\nCOUNT v a 49\nCOUNT v b 20\nEVENT u a 12\nCOUNT u a 26\nCOUNT v b 23\nCOUNT v a 33\nEVENT u b 21\nEVENT u a 42\nCOUNT v a 8\nCOUNT v b 11\nCOUNT v a 31\nCOUNT u b 54\nEVENT u a 18\nEVENT v a 6\nEVENT v b 11\nCOUNT u a 3\nCOUNT u a 25\nCOUNT u a 29\nEVENT u a 55\nCOUNT u a 9\nCOUNT u a 11\nEVENT v a 6\nEVENT v b 7\nCOUNT v b 17\nEVENT v a 19\nCOUNT u a 46\n",
+    "expectedOutput": "18\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n0\n2\n1\n0\n0\n2\n1\n"
+  },
+  {
+    "input": "12\nEVENT u b 3\nCOUNT u b 17\nCOUNT u b 9\nEVENT v a 17\nEVENT v b 31\nEVENT u a 25\nEVENT u b 5\nEVENT v a 3\nCOUNT v a 53\nEVENT v b 57\nEVENT u a 56\nCOUNT v a 51\n",
+    "expectedOutput": "4\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "10\nEVENT v a 29\nEVENT u a 3\nCOUNT u a 2\nEVENT v a 41\nCOUNT v b 32\nCOUNT u b 10\nCOUNT u a 59\nCOUNT v b 53\nCOUNT u b 31\nEVENT u b 34\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "11\nCOUNT u a 3\nEVENT u a 34\nCOUNT u a 36\nCOUNT v b 35\nCOUNT u a 56\nCOUNT u a 20\nCOUNT v a 59\nEVENT u b 8\nEVENT v a 37\nCOUNT v b 37\nCOUNT v b 17\n",
+    "expectedOutput": "8\n0\n1\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "35\nCOUNT v b 6\nEVENT v b 14\nEVENT u a 31\nEVENT u b 19\nCOUNT u b 40\nCOUNT v b 21\nCOUNT v b 41\nEVENT u a 33\nEVENT v a 59\nEVENT u b 44\nEVENT u a 3\nEVENT v b 29\nEVENT u b 39\nEVENT u b 6\nEVENT v b 46\nEVENT v a 46\nEVENT u a 60\nCOUNT u a 37\nEVENT v a 11\nEVENT v a 38\nCOUNT v a 12\nCOUNT u a 54\nCOUNT u a 40\nCOUNT u a 15\nEVENT u b 13\nEVENT v b 24\nCOUNT u a 12\nCOUNT u b 32\nEVENT u a 57\nCOUNT v b 20\nEVENT u b 16\nCOUNT v a 16\nCOUNT u b 48\nEVENT v a 31\nCOUNT v b 37\n",
+    "expectedOutput": "15\n0\n0\n1\n0\n2\n1\n0\n2\n1\n1\n1\n1\n1\n2\n2\n"
+  },
+  {
+    "input": "4\nEVENT v a 38\nCOUNT v b 23\nEVENT v b 16\nCOUNT v a 12\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "27\nEVENT u a 20\nEVENT v b 9\nEVENT v a 37\nEVENT v b 1\nCOUNT v a 34\nCOUNT v b 47\nCOUNT u a 55\nCOUNT u b 29\nEVENT v a 33\nCOUNT v a 1\nCOUNT u a 12\nEVENT u a 12\nCOUNT v b 39\nEVENT v a 27\nCOUNT u a 58\nCOUNT u a 7\nCOUNT u b 2\nEVENT u b 45\nEVENT v a 27\nEVENT u a 50\nEVENT v b 40\nCOUNT v b 48\nCOUNT u b 57\nCOUNT u b 2\nEVENT u a 26\nCOUNT u a 30\nEVENT v a 6\n",
+    "expectedOutput": "14\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n2\n"
+  },
+  {
+    "input": "9\nEVENT u b 57\nEVENT u b 58\nCOUNT v a 59\nEVENT v a 9\nCOUNT v a 16\nCOUNT v a 57\nEVENT u b 12\nEVENT v b 47\nEVENT u a 39\n",
+    "expectedOutput": "3\n0\n1\n0\n"
+  },
+  {
+    "input": "19\nCOUNT u a 52\nEVENT v a 54\nCOUNT u a 24\nCOUNT v b 38\nCOUNT v a 38\nCOUNT v b 16\nEVENT u a 10\nCOUNT u a 35\nEVENT v b 16\nCOUNT u b 45\nEVENT u a 0\nEVENT u a 24\nEVENT u a 50\nCOUNT u a 5\nEVENT u b 45\nEVENT v b 31\nCOUNT u b 47\nEVENT v a 9\nEVENT v b 58\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "15\nCOUNT u a 16\nCOUNT v a 6\nEVENT v b 12\nCOUNT v b 26\nCOUNT v a 0\nCOUNT v b 11\nEVENT v a 14\nCOUNT u a 46\nEVENT u b 42\nCOUNT u a 37\nCOUNT v b 9\nEVENT v b 12\nCOUNT v b 58\nCOUNT u b 24\nCOUNT u b 17\n",
+    "expectedOutput": "11\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "9\nEVENT u a 1\nCOUNT v a 45\nCOUNT v a 13\nEVENT u a 31\nEVENT u a 2\nCOUNT v b 43\nCOUNT v b 44\nCOUNT v a 8\nCOUNT v b 4\n",
+    "expectedOutput": "6\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "25\nCOUNT v a 54\nCOUNT u a 10\nCOUNT v a 19\nEVENT u b 14\nCOUNT u a 51\nCOUNT u a 20\nCOUNT v b 32\nCOUNT u b 25\nCOUNT v b 30\nCOUNT u a 6\nEVENT v a 2\nEVENT v b 31\nEVENT v a 29\nEVENT u a 31\nCOUNT u b 1\nCOUNT v b 9\nCOUNT u a 52\nEVENT u b 32\nCOUNT v b 60\nCOUNT v b 24\nEVENT v b 0\nEVENT v b 14\nCOUNT v a 5\nEVENT u a 34\nCOUNT v b 50\n",
+    "expectedOutput": "16\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "27\nEVENT u b 5\nCOUNT u b 52\nEVENT v b 17\nCOUNT v a 20\nCOUNT v a 43\nEVENT v b 7\nCOUNT u b 44\nEVENT v a 21\nCOUNT v b 10\nCOUNT v b 16\nEVENT u b 1\nEVENT v b 6\nEVENT u a 29\nCOUNT u a 16\nCOUNT v b 47\nCOUNT u a 38\nEVENT v b 52\nEVENT v a 9\nEVENT u a 16\nEVENT u a 20\nCOUNT u a 15\nEVENT u b 21\nCOUNT v a 36\nCOUNT u b 58\nCOUNT v b 59\nEVENT u b 6\nEVENT v b 43\n",
+    "expectedOutput": "13\n0\n0\n0\n0\n1\n1\n0\n0\n1\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "11\nEVENT v a 52\nCOUNT v a 13\nEVENT u b 21\nCOUNT v b 1\nCOUNT v a 56\nCOUNT v a 9\nCOUNT v b 22\nCOUNT u b 37\nCOUNT v b 52\nCOUNT v b 42\nCOUNT u b 52\n",
+    "expectedOutput": "9\n0\n0\n1\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "2\nCOUNT v a 19\nEVENT v a 44\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "29\nEVENT v b 49\nCOUNT u a 18\nEVENT u b 6\nEVENT u a 39\nCOUNT u b 40\nCOUNT v b 18\nEVENT u b 34\nEVENT u a 0\nEVENT v b 55\nCOUNT v b 32\nEVENT v a 7\nCOUNT u a 36\nEVENT v b 55\nEVENT u a 28\nEVENT u a 21\nCOUNT v a 40\nCOUNT v b 55\nCOUNT v b 25\nCOUNT u b 6\nEVENT v a 48\nEVENT v b 3\nEVENT v a 56\nEVENT u a 5\nEVENT v a 25\nCOUNT v a 4\nEVENT v a 36\nEVENT u a 47\nCOUNT u b 46\nEVENT v a 15\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n0\n3\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "12\nCOUNT v b 40\nCOUNT v a 55\nCOUNT v b 38\nCOUNT v b 33\nCOUNT v b 32\nEVENT v b 2\nCOUNT v b 4\nCOUNT u a 3\nEVENT u a 51\nCOUNT u a 21\nEVENT v b 35\nEVENT u b 50\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "27\nCOUNT u a 15\nEVENT v b 23\nEVENT v b 56\nEVENT v b 23\nCOUNT v b 59\nCOUNT u b 8\nEVENT v a 33\nCOUNT u b 50\nCOUNT u a 31\nCOUNT v a 38\nCOUNT v a 33\nCOUNT v a 23\nCOUNT v b 0\nCOUNT v a 31\nEVENT v b 57\nCOUNT u a 11\nCOUNT u b 25\nEVENT u a 49\nCOUNT u b 46\nEVENT u b 22\nCOUNT u a 26\nCOUNT v a 42\nEVENT v b 45\nEVENT u b 39\nEVENT v b 57\nEVENT u b 39\nEVENT u b 1\n",
+    "expectedOutput": "15\n0\n1\n0\n0\n0\n1\n1\n0\n0\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "7\nEVENT u a 46\nCOUNT v b 54\nCOUNT v a 22\nEVENT v a 32\nEVENT u b 6\nEVENT u a 21\nEVENT u a 55\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "23\nEVENT v a 9\nCOUNT v a 51\nCOUNT u a 32\nEVENT v a 43\nCOUNT u b 23\nEVENT v a 33\nCOUNT u a 53\nEVENT u a 7\nEVENT u b 9\nCOUNT v a 18\nCOUNT v b 15\nEVENT u a 57\nCOUNT v b 48\nCOUNT v b 49\nCOUNT u b 50\nCOUNT v a 50\nCOUNT u a 60\nCOUNT u b 39\nEVENT v b 43\nCOUNT u b 46\nEVENT v b 20\nCOUNT u b 24\nCOUNT v b 49\n",
+    "expectedOutput": "15\n0\n0\n0\n0\n1\n0\n0\n0\n0\n1\n1\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "21\nCOUNT u a 59\nCOUNT v a 46\nCOUNT u a 29\nEVENT v a 19\nEVENT v a 4\nEVENT v b 1\nEVENT u b 56\nCOUNT v a 1\nEVENT v a 20\nEVENT v a 47\nCOUNT u a 45\nEVENT v b 0\nEVENT u a 17\nCOUNT v a 47\nEVENT v b 4\nEVENT u a 9\nCOUNT u b 40\nCOUNT u b 55\nCOUNT u a 55\nEVENT v b 20\nEVENT v a 9\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "12\nCOUNT v b 20\nCOUNT u b 22\nEVENT v b 38\nEVENT v a 7\nCOUNT u b 2\nEVENT u a 32\nEVENT v b 21\nCOUNT u b 45\nCOUNT v b 37\nEVENT v a 55\nCOUNT v a 31\nCOUNT u b 49\n",
+    "expectedOutput": "7\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "26\nCOUNT v a 34\nCOUNT v b 40\nCOUNT u a 10\nEVENT u b 8\nCOUNT u a 40\nEVENT u b 4\nCOUNT u a 24\nCOUNT v b 3\nEVENT v a 3\nEVENT u b 40\nEVENT v b 5\nEVENT u a 55\nEVENT v a 9\nCOUNT u a 29\nEVENT u b 51\nEVENT u a 57\nEVENT u b 4\nCOUNT u a 43\nCOUNT v b 36\nCOUNT v b 13\nEVENT v b 41\nCOUNT v b 5\nEVENT v b 39\nCOUNT u a 49\nEVENT u a 43\nEVENT u b 54\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n"
+  },
+  {
+    "input": "34\nEVENT v b 22\nCOUNT u b 0\nCOUNT v a 0\nEVENT u b 31\nEVENT v a 40\nEVENT v a 52\nEVENT u b 0\nEVENT v b 40\nCOUNT u a 1\nEVENT v a 46\nEVENT u b 18\nEVENT v a 2\nCOUNT u b 19\nEVENT v a 27\nEVENT v b 9\nCOUNT v a 34\nCOUNT v a 45\nCOUNT v b 54\nEVENT u a 32\nEVENT u b 2\nEVENT v a 12\nEVENT v a 0\nEVENT u a 10\nCOUNT v a 7\nCOUNT v b 9\nCOUNT v a 30\nCOUNT u b 23\nEVENT v a 37\nEVENT u b 36\nCOUNT v a 27\nCOUNT v b 59\nCOUNT v b 5\nCOUNT u b 47\nCOUNT u a 28\n",
+    "expectedOutput": "16\n0\n0\n0\n1\n1\n1\n1\n2\n1\n1\n1\n2\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "33\nEVENT u a 27\nEVENT u a 14\nCOUNT v a 41\nEVENT v a 46\nEVENT v a 29\nEVENT u b 39\nEVENT u b 2\nCOUNT v a 28\nEVENT u b 60\nCOUNT v a 34\nCOUNT u b 27\nCOUNT v b 59\nEVENT u b 18\nEVENT u a 27\nCOUNT v a 0\nCOUNT u b 31\nCOUNT v b 32\nCOUNT u a 1\nEVENT u a 30\nCOUNT v a 2\nCOUNT v b 25\nCOUNT v a 39\nEVENT v a 13\nCOUNT v b 3\nEVENT v a 16\nCOUNT v b 33\nEVENT u a 26\nEVENT u b 59\nCOUNT u a 5\nCOUNT u b 21\nEVENT u a 13\nEVENT u b 28\nCOUNT v b 52\n",
+    "expectedOutput": "17\n0\n0\n1\n0\n0\n0\n1\n0\n0\n0\n0\n1\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "25\nCOUNT u a 40\nEVENT u b 40\nCOUNT u a 22\nEVENT u b 10\nCOUNT u a 54\nEVENT u a 3\nEVENT u b 21\nEVENT v b 24\nEVENT v a 28\nCOUNT u b 16\nCOUNT u a 5\nEVENT u b 59\nCOUNT v a 42\nCOUNT v a 6\nCOUNT v a 35\nCOUNT u b 38\nCOUNT u b 52\nEVENT v b 38\nEVENT u a 8\nEVENT u b 38\nEVENT u b 50\nCOUNT u a 0\nEVENT u a 51\nEVENT v b 38\nCOUNT u a 7\n",
+    "expectedOutput": "12\n0\n0\n0\n1\n1\n1\n0\n1\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "33\nEVENT v b 13\nEVENT v a 43\nCOUNT v a 41\nEVENT v a 41\nEVENT v b 3\nEVENT u b 6\nCOUNT v a 28\nEVENT v a 48\nEVENT v b 22\nEVENT v b 16\nEVENT v b 10\nCOUNT u b 34\nCOUNT v a 29\nCOUNT v a 21\nCOUNT v a 55\nEVENT u b 34\nCOUNT u b 23\nCOUNT u b 29\nEVENT u b 22\nCOUNT v a 2\nEVENT v b 2\nEVENT v b 19\nEVENT u b 59\nCOUNT u a 58\nEVENT u b 42\nCOUNT v a 58\nCOUNT u a 14\nCOUNT v b 25\nCOUNT v b 50\nCOUNT v b 3\nEVENT u b 5\nEVENT v b 8\nCOUNT u b 19\n",
+    "expectedOutput": "16\n0\n0\n0\n0\n0\n3\n0\n0\n0\n0\n2\n0\n5\n0\n2\n2\n"
+  },
+  {
+    "input": "28\nCOUNT u b 13\nEVENT v b 18\nEVENT v b 19\nCOUNT v b 8\nCOUNT u a 7\nEVENT v b 26\nCOUNT u b 35\nEVENT u a 57\nCOUNT u a 41\nEVENT v b 51\nCOUNT u b 33\nEVENT v a 12\nEVENT u a 0\nEVENT v b 58\nEVENT u b 31\nCOUNT v a 22\nCOUNT v a 46\nEVENT v a 8\nEVENT v a 19\nEVENT u a 24\nEVENT u b 23\nEVENT v a 39\nCOUNT v a 32\nEVENT v a 32\nEVENT u a 24\nCOUNT v b 55\nEVENT u b 29\nEVENT v a 40\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "7\nEVENT v a 45\nEVENT v b 54\nCOUNT v a 34\nEVENT v a 38\nEVENT v a 38\nCOUNT u a 13\nCOUNT v a 39\n",
+    "expectedOutput": "3\n0\n0\n2\n"
+  },
+  {
+    "input": "10\nCOUNT v a 60\nEVENT v a 43\nCOUNT v a 52\nCOUNT u a 11\nCOUNT u a 19\nEVENT v a 45\nEVENT u b 35\nEVENT u b 35\nCOUNT u b 19\nCOUNT u a 3\n",
+    "expectedOutput": "6\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "12\nCOUNT u a 34\nCOUNT v b 60\nCOUNT v b 23\nEVENT v a 40\nEVENT u b 32\nEVENT u a 49\nEVENT v a 6\nCOUNT v b 48\nEVENT u a 9\nEVENT u a 14\nEVENT u b 12\nEVENT u b 8\n",
+    "expectedOutput": "4\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "12\nCOUNT v a 38\nCOUNT u b 55\nEVENT u a 27\nCOUNT u b 12\nEVENT u b 38\nCOUNT v b 36\nEVENT u b 24\nCOUNT v b 3\nCOUNT v a 19\nEVENT u b 46\nCOUNT u a 53\nCOUNT u b 12\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "6\nEVENT v a 41\nCOUNT v b 35\nCOUNT v a 2\nCOUNT u b 44\nCOUNT u a 43\nCOUNT u b 56\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "33\nEVENT u a 27\nEVENT u b 53\nEVENT v a 28\nCOUNT v b 56\nEVENT u a 35\nCOUNT v b 59\nEVENT v a 48\nEVENT v a 38\nCOUNT v b 38\nCOUNT u a 43\nEVENT u a 12\nEVENT v a 20\nEVENT u b 10\nEVENT v b 22\nEVENT u b 1\nCOUNT v b 32\nCOUNT u a 32\nCOUNT v b 37\nEVENT v b 19\nEVENT u b 51\nCOUNT v a 46\nEVENT v b 38\nCOUNT v a 24\nCOUNT v b 11\nCOUNT u b 42\nCOUNT u b 43\nCOUNT u a 26\nCOUNT v b 54\nEVENT u b 1\nCOUNT u a 17\nCOUNT v a 33\nCOUNT v a 41\nEVENT v b 18\n",
+    "expectedOutput": "17\n0\n0\n0\n1\n1\n1\n1\n1\n1\n0\n0\n0\n1\n0\n1\n2\n2\n"
+  },
+  {
+    "input": "13\nCOUNT u a 26\nEVENT u a 4\nEVENT u b 0\nCOUNT v b 4\nEVENT v a 15\nEVENT v a 47\nEVENT u b 56\nEVENT u b 38\nCOUNT u a 38\nCOUNT v b 31\nEVENT v a 2\nCOUNT v a 41\nEVENT v b 4\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "7\nEVENT u b 5\nEVENT u b 24\nEVENT v b 5\nCOUNT v b 31\nEVENT u a 24\nEVENT v b 46\nEVENT v a 55\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "10\nEVENT v b 52\nEVENT v b 9\nEVENT u b 9\nCOUNT v a 2\nEVENT u b 45\nCOUNT u b 58\nCOUNT u a 34\nCOUNT u b 31\nEVENT u b 51\nEVENT u a 55\n",
+    "expectedOutput": "4\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "16\nEVENT v b 5\nEVENT u b 58\nCOUNT u b 42\nCOUNT v b 37\nEVENT u a 8\nEVENT v b 57\nEVENT v a 39\nEVENT u a 50\nCOUNT u a 0\nEVENT v b 6\nCOUNT v b 38\nEVENT v b 44\nCOUNT v b 31\nEVENT u b 1\nEVENT v b 59\nEVENT u b 50\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "5\nEVENT u b 36\nCOUNT u a 56\nCOUNT u a 37\nCOUNT u b 40\nEVENT v b 55\n",
+    "expectedOutput": "3\n0\n0\n1\n"
+  },
+  {
+    "input": "26\nCOUNT u a 16\nCOUNT v a 44\nCOUNT v a 56\nEVENT v a 40\nCOUNT u a 26\nCOUNT u a 53\nEVENT u a 20\nCOUNT v a 54\nCOUNT u b 56\nCOUNT v a 35\nEVENT u b 45\nCOUNT v b 46\nCOUNT v b 26\nEVENT u b 47\nCOUNT v b 4\nEVENT u a 24\nCOUNT u b 40\nCOUNT v b 51\nEVENT v b 15\nEVENT u b 35\nCOUNT v a 52\nCOUNT v b 32\nEVENT v a 4\nCOUNT v b 42\nCOUNT u a 1\nCOUNT v b 35\n",
+    "expectedOutput": "18\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "23\nEVENT u b 48\nCOUNT v b 29\nCOUNT u a 28\nEVENT u a 30\nCOUNT v b 48\nEVENT u b 55\nCOUNT u a 52\nCOUNT v a 7\nCOUNT v a 13\nCOUNT v a 51\nCOUNT v b 27\nCOUNT v a 21\nEVENT u a 20\nCOUNT u a 19\nCOUNT v b 35\nCOUNT v b 38\nEVENT v b 52\nEVENT u b 54\nEVENT v a 26\nEVENT u b 19\nCOUNT v b 15\nCOUNT v a 25\nEVENT v b 48\n",
+    "expectedOutput": "14\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "20\nEVENT u a 20\nEVENT v a 0\nCOUNT v b 18\nCOUNT v b 8\nCOUNT v a 57\nEVENT u a 19\nEVENT v a 38\nCOUNT v a 36\nCOUNT u b 4\nEVENT u a 19\nEVENT u a 2\nCOUNT u b 12\nEVENT u b 58\nCOUNT v a 22\nEVENT v b 46\nCOUNT v b 53\nCOUNT v a 23\nEVENT u a 34\nCOUNT v a 12\nEVENT v a 32\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n"
+  },
+  {
+    "input": "29\nEVENT u a 47\nEVENT u a 26\nEVENT u a 12\nCOUNT u a 15\nEVENT u b 29\nCOUNT u a 14\nCOUNT v a 20\nEVENT u a 39\nEVENT u a 45\nEVENT v b 23\nCOUNT v b 10\nEVENT u b 33\nEVENT u b 9\nCOUNT v a 24\nCOUNT v b 11\nEVENT v a 39\nCOUNT v a 60\nCOUNT v a 28\nEVENT u b 56\nEVENT v b 14\nEVENT v b 0\nCOUNT v a 2\nCOUNT v a 48\nCOUNT v b 54\nCOUNT v a 54\nCOUNT v b 30\nEVENT u a 15\nEVENT v b 12\nEVENT u b 4\n",
+    "expectedOutput": "13\n1\n1\n0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n1\n"
+  },
+  {
+    "input": "18\nEVENT v b 44\nCOUNT v a 46\nCOUNT v b 28\nCOUNT v b 3\nEVENT v a 30\nEVENT u b 22\nEVENT u a 10\nCOUNT u b 41\nCOUNT u b 56\nCOUNT u b 35\nCOUNT v b 31\nEVENT v b 31\nEVENT u a 46\nCOUNT u a 45\nCOUNT u b 7\nEVENT u b 57\nCOUNT v a 54\nEVENT u b 45\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n1\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "23\nCOUNT v a 22\nEVENT v b 32\nEVENT u b 58\nEVENT v b 8\nCOUNT u b 42\nEVENT u b 37\nEVENT v b 57\nEVENT v a 15\nCOUNT u a 52\nCOUNT v a 49\nEVENT u a 34\nCOUNT u a 20\nEVENT u b 1\nEVENT u a 32\nCOUNT v b 3\nEVENT v b 34\nEVENT u b 54\nEVENT v b 50\nCOUNT u a 29\nEVENT v b 14\nEVENT v b 11\nCOUNT v a 38\nEVENT v b 36\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "8\nEVENT v a 41\nCOUNT v a 2\nEVENT u b 53\nCOUNT v a 6\nCOUNT v a 54\nCOUNT u b 46\nCOUNT u a 7\nCOUNT v b 52\n",
+    "expectedOutput": "6\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "9\nEVENT u a 34\nEVENT v a 49\nEVENT v a 11\nEVENT u b 15\nCOUNT v b 10\nEVENT v b 0\nEVENT u b 10\nEVENT u b 49\nCOUNT v b 18\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "15\nCOUNT u a 50\nCOUNT v a 35\nCOUNT v a 2\nCOUNT v a 39\nEVENT u a 56\nCOUNT u a 42\nEVENT v a 42\nCOUNT u b 20\nEVENT u b 52\nCOUNT u a 9\nCOUNT u a 20\nEVENT u a 30\nEVENT u b 6\nCOUNT v a 38\nEVENT u b 18\n",
+    "expectedOutput": "9\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "35\nCOUNT u b 19\nEVENT v a 44\nCOUNT v b 53\nEVENT u b 33\nCOUNT u b 42\nEVENT u b 31\nEVENT v b 35\nCOUNT v b 50\nCOUNT u b 17\nCOUNT v b 38\nCOUNT u b 28\nEVENT u b 24\nEVENT v a 18\nCOUNT u b 20\nEVENT u a 25\nEVENT v a 11\nCOUNT v a 16\nCOUNT u a 8\nEVENT v b 59\nCOUNT u a 12\nCOUNT u b 16\nEVENT u a 43\nEVENT u b 4\nEVENT u b 29\nEVENT u a 1\nEVENT v a 2\nCOUNT u a 50\nEVENT v a 2\nCOUNT v b 59\nCOUNT v b 51\nCOUNT u b 18\nCOUNT v b 33\nEVENT v a 37\nEVENT u a 57\nEVENT v a 27\n",
+    "expectedOutput": "17\n0\n0\n1\n1\n0\n1\n0\n0\n1\n0\n0\n0\n1\n1\n0\n1\n0\n"
+  },
+  {
+    "input": "30\nCOUNT u b 6\nEVENT v b 7\nEVENT v a 18\nCOUNT u b 25\nCOUNT v a 53\nCOUNT v b 13\nEVENT u a 53\nEVENT v b 29\nCOUNT v b 46\nEVENT u a 16\nEVENT v b 43\nEVENT u a 6\nEVENT v b 55\nEVENT v b 53\nCOUNT v a 59\nCOUNT u b 3\nCOUNT u b 15\nCOUNT u b 50\nCOUNT v b 20\nCOUNT v b 30\nEVENT v b 60\nEVENT u a 32\nCOUNT v b 54\nCOUNT v a 14\nCOUNT u b 60\nEVENT v b 20\nEVENT v b 24\nEVENT u a 48\nCOUNT v a 54\nCOUNT u b 41\n",
+    "expectedOutput": "16\n0\n0\n0\n1\n0\n0\n0\n0\n0\n1\n1\n2\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "34\nCOUNT v b 2\nCOUNT u b 21\nEVENT u b 31\nEVENT u b 25\nCOUNT u a 0\nEVENT u a 3\nCOUNT v a 48\nCOUNT v b 8\nCOUNT v a 13\nEVENT u a 42\nCOUNT u a 26\nCOUNT v a 22\nCOUNT v a 8\nEVENT v b 44\nEVENT u a 45\nEVENT v a 2\nCOUNT u a 2\nEVENT v a 20\nCOUNT v a 27\nEVENT u b 30\nEVENT u a 26\nEVENT v b 32\nCOUNT u a 1\nEVENT v b 7\nEVENT v b 59\nCOUNT u b 46\nCOUNT v a 15\nCOUNT v b 1\nCOUNT v b 56\nEVENT u a 41\nCOUNT u b 56\nEVENT u a 59\nCOUNT u a 47\nEVENT v b 51\n",
+    "expectedOutput": "18\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n0\n1\n1\n0\n1\n0\n3\n"
+  },
+  {
+    "input": "31\nEVENT v a 57\nEVENT v b 20\nEVENT v b 30\nCOUNT u b 49\nCOUNT v b 47\nEVENT v a 21\nCOUNT v b 1\nEVENT v a 23\nCOUNT v b 11\nCOUNT v a 34\nCOUNT u b 33\nEVENT v b 33\nEVENT u a 53\nEVENT u b 18\nCOUNT v a 24\nCOUNT u a 17\nCOUNT v b 56\nEVENT v a 13\nEVENT v b 42\nCOUNT v a 45\nCOUNT v a 43\nEVENT v b 32\nCOUNT v b 6\nCOUNT u a 20\nCOUNT v b 60\nCOUNT u a 21\nEVENT v a 39\nCOUNT v a 55\nEVENT u b 37\nEVENT u b 38\nEVENT v b 19\n",
+    "expectedOutput": "16\n0\n0\n0\n0\n2\n0\n2\n0\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "24\nEVENT u a 5\nEVENT u a 31\nCOUNT v b 53\nEVENT v a 55\nEVENT u a 8\nCOUNT v b 35\nCOUNT u b 19\nCOUNT v b 17\nEVENT u a 10\nCOUNT u a 24\nCOUNT v b 50\nCOUNT v a 8\nCOUNT u a 17\nCOUNT v b 52\nEVENT v b 38\nCOUNT u a 56\nCOUNT u a 36\nCOUNT v b 60\nEVENT v b 51\nEVENT v b 14\nEVENT u a 23\nEVENT u a 34\nEVENT v a 58\nEVENT v b 15\n",
+    "expectedOutput": "12\n0\n0\n0\n0\n1\n0\n0\n3\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "17\nCOUNT v a 60\nCOUNT u b 21\nEVENT u b 17\nEVENT v a 4\nCOUNT v a 48\nCOUNT u b 60\nEVENT v a 2\nCOUNT v a 8\nCOUNT v a 24\nEVENT v a 10\nCOUNT u b 5\nEVENT u b 52\nCOUNT v b 28\nEVENT v b 59\nEVENT u a 24\nCOUNT u a 45\nCOUNT u a 12\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n2\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "18\nEVENT v a 3\nCOUNT v a 12\nCOUNT u b 0\nCOUNT v b 53\nCOUNT v a 30\nCOUNT v a 44\nCOUNT u b 56\nEVENT v b 6\nEVENT u b 15\nEVENT u b 30\nEVENT u a 2\nEVENT u a 8\nCOUNT v a 14\nCOUNT v a 35\nEVENT u a 56\nCOUNT v b 14\nCOUNT u a 40\nCOUNT v a 35\n",
+    "expectedOutput": "11\n1\n0\n0\n0\n0\n0\n1\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "16\nEVENT u a 50\nCOUNT u b 1\nCOUNT u a 40\nCOUNT u b 27\nEVENT u b 52\nEVENT u a 42\nEVENT u b 7\nEVENT u b 40\nCOUNT v a 53\nCOUNT u b 38\nEVENT u b 34\nCOUNT v a 16\nCOUNT u a 29\nCOUNT u a 37\nEVENT u a 1\nEVENT v b 5\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "30\nEVENT u b 24\nCOUNT v a 56\nEVENT u a 48\nEVENT u a 4\nCOUNT u b 27\nCOUNT v a 36\nEVENT v b 34\nEVENT u b 31\nEVENT v a 7\nCOUNT v b 54\nCOUNT v a 41\nCOUNT v a 2\nEVENT v b 32\nEVENT u a 18\nCOUNT u b 2\nEVENT u b 37\nCOUNT u b 18\nCOUNT u a 58\nEVENT u a 49\nCOUNT u b 46\nEVENT u a 6\nCOUNT u a 9\nEVENT u b 42\nCOUNT u a 53\nCOUNT v a 21\nCOUNT v a 35\nCOUNT u a 51\nCOUNT u b 17\nCOUNT u b 42\nEVENT u b 57\n",
+    "expectedOutput": "17\n0\n1\n0\n0\n0\n0\n0\n0\n1\n2\n2\n2\n1\n0\n2\n0\n3\n"
+  },
+  {
+    "input": "24\nEVENT u b 22\nCOUNT u a 58\nEVENT v b 16\nCOUNT v a 47\nCOUNT u a 59\nCOUNT v a 11\nEVENT v b 25\nCOUNT u b 36\nEVENT v b 48\nEVENT v a 24\nEVENT u b 6\nEVENT u a 16\nCOUNT u b 24\nEVENT u b 13\nCOUNT v b 28\nEVENT u a 51\nCOUNT u a 33\nEVENT v b 22\nEVENT v a 13\nCOUNT u a 7\nEVENT u b 22\nCOUNT v b 5\nEVENT v b 59\nCOUNT v a 43\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n1\n1\n2\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "33\nCOUNT v a 4\nEVENT v a 2\nEVENT v b 9\nCOUNT u b 33\nEVENT v b 27\nCOUNT u a 20\nEVENT u b 26\nEVENT v b 2\nCOUNT u b 23\nEVENT u a 17\nEVENT v a 41\nEVENT u b 46\nCOUNT v a 15\nCOUNT u a 42\nCOUNT v a 6\nCOUNT u b 32\nCOUNT v b 30\nCOUNT u b 32\nCOUNT v b 18\nCOUNT u a 12\nEVENT u b 8\nEVENT u b 34\nEVENT v a 7\nEVENT v b 28\nEVENT u b 39\nCOUNT v a 9\nEVENT v b 7\nCOUNT u b 35\nCOUNT u a 38\nCOUNT u a 32\nEVENT v b 46\nEVENT u b 33\nEVENT u b 9\n",
+    "expectedOutput": "16\n0\n0\n0\n0\n1\n0\n1\n1\n1\n1\n1\n0\n2\n2\n0\n1\n"
+  },
+  {
+    "input": "19\nCOUNT v b 55\nEVENT u a 52\nCOUNT v a 45\nCOUNT v b 37\nEVENT u a 38\nCOUNT u b 60\nEVENT u a 59\nCOUNT v a 13\nEVENT v b 58\nCOUNT v b 17\nEVENT v b 49\nEVENT v a 20\nCOUNT u a 54\nCOUNT u b 57\nEVENT v a 5\nCOUNT v b 20\nCOUNT v b 49\nEVENT v b 20\nEVENT u a 37\n",
+    "expectedOutput": "10\n0\n0\n0\n0\n0\n0\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "4\nEVENT u b 35\nEVENT v b 10\nEVENT u b 2\nCOUNT u a 18\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "15\nCOUNT v a 40\nEVENT v b 21\nCOUNT v b 6\nCOUNT u a 1\nCOUNT u b 54\nEVENT u a 52\nCOUNT u a 60\nEVENT v a 55\nCOUNT u b 12\nEVENT u b 21\nEVENT v b 3\nEVENT u b 31\nEVENT u a 53\nCOUNT v a 45\nCOUNT v a 26\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n1\n0\n0\n0\n"
+  },
+  {
+    "input": "6\nEVENT u b 11\nEVENT u b 27\nEVENT v a 42\nEVENT v b 19\nEVENT u a 51\nCOUNT u b 40\n",
+    "expectedOutput": "1\n1\n"
+  },
+  {
+    "input": "17\nCOUNT v a 26\nEVENT u a 60\nCOUNT u a 16\nCOUNT v a 1\nEVENT u b 29\nEVENT v a 29\nEVENT v a 59\nCOUNT v b 42\nCOUNT v b 21\nEVENT v a 5\nCOUNT u a 32\nEVENT u b 46\nEVENT v b 17\nEVENT v b 3\nCOUNT u a 45\nEVENT u a 40\nCOUNT u a 11\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "15\nCOUNT u b 2\nCOUNT u a 30\nEVENT u b 59\nCOUNT u b 25\nCOUNT v a 55\nEVENT v a 4\nEVENT u a 25\nEVENT u b 28\nEVENT v a 1\nEVENT v a 57\nEVENT v a 22\nEVENT u a 46\nEVENT v b 56\nEVENT v b 38\nCOUNT v b 15\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "12\nEVENT u b 49\nEVENT v a 14\nEVENT v a 44\nEVENT v a 4\nCOUNT u b 26\nCOUNT v a 39\nEVENT v b 43\nCOUNT u b 33\nCOUNT u b 53\nEVENT v b 14\nCOUNT v a 56\nEVENT u b 24\n",
+    "expectedOutput": "5\n0\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "15\nEVENT v a 11\nCOUNT u b 21\nCOUNT u a 25\nEVENT v b 22\nEVENT v b 31\nCOUNT v a 32\nCOUNT v a 19\nEVENT v b 5\nEVENT u b 23\nCOUNT v b 19\nEVENT v b 24\nEVENT v b 31\nEVENT u b 35\nEVENT v b 17\nEVENT v b 58\n",
+    "expectedOutput": "5\n0\n0\n0\n1\n1\n"
+  },
+  {
+    "input": "33\nCOUNT v a 6\nCOUNT v b 49\nEVENT u a 46\nCOUNT u a 14\nEVENT u b 37\nEVENT u b 8\nEVENT v a 33\nEVENT u a 59\nCOUNT v a 47\nEVENT u b 34\nCOUNT u a 3\nCOUNT u a 23\nEVENT u b 4\nEVENT u b 41\nEVENT v b 15\nCOUNT u b 32\nEVENT u b 24\nCOUNT v a 30\nCOUNT v b 32\nCOUNT v a 60\nCOUNT v a 32\nEVENT u a 34\nEVENT v a 23\nEVENT v a 45\nEVENT v b 0\nEVENT v a 54\nEVENT v a 55\nCOUNT v b 56\nEVENT u a 41\nCOUNT v a 5\nEVENT u a 26\nCOUNT u a 31\nCOUNT u a 41\n",
+    "expectedOutput": "15\n0\n0\n0\n1\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n3\n"
+  },
+  {
+    "input": "15\nEVENT u b 29\nEVENT v a 22\nCOUNT u a 39\nEVENT u a 25\nCOUNT u b 21\nEVENT v a 11\nCOUNT v a 11\nCOUNT v a 25\nCOUNT u b 48\nEVENT u b 4\nEVENT u b 48\nEVENT u b 37\nCOUNT v a 32\nEVENT u a 49\nEVENT u b 27\n",
+    "expectedOutput": "6\n0\n0\n1\n2\n0\n1\n"
+  },
+  {
+    "input": "4\nEVENT u a 60\nEVENT v b 23\nEVENT u a 47\nEVENT v a 46\n",
+    "expectedOutput": "0\n\n"
+  },
+  {
+    "input": "28\nEVENT v b 21\nCOUNT v b 29\nEVENT u a 28\nEVENT v b 14\nCOUNT u b 44\nEVENT u b 1\nCOUNT u b 33\nCOUNT u b 28\nEVENT v b 35\nEVENT v b 60\nEVENT v b 19\nCOUNT u a 51\nEVENT v a 32\nEVENT u b 40\nCOUNT v b 49\nEVENT v b 15\nCOUNT u b 41\nCOUNT u a 39\nEVENT u b 12\nEVENT u a 36\nCOUNT v b 47\nEVENT v b 40\nCOUNT v a 28\nCOUNT v a 23\nEVENT v b 26\nEVENT u a 54\nCOUNT u a 54\nEVENT v b 59\n",
+    "expectedOutput": "12\n1\n0\n0\n0\n0\n1\n1\n1\n1\n0\n0\n1\n"
+  },
+  {
+    "input": "17\nEVENT u a 32\nCOUNT v a 56\nEVENT u b 33\nCOUNT u b 52\nCOUNT u a 27\nEVENT v b 31\nCOUNT u b 4\nCOUNT u b 43\nCOUNT v b 35\nEVENT v b 55\nEVENT u a 4\nCOUNT u b 1\nEVENT u b 56\nEVENT u a 41\nEVENT v b 29\nEVENT v b 11\nCOUNT v b 0\n",
+    "expectedOutput": "8\n0\n0\n0\n0\n1\n1\n0\n0\n"
+  },
+  {
+    "input": "31\nEVENT u b 45\nCOUNT v b 50\nCOUNT v a 58\nCOUNT u b 42\nEVENT u b 14\nCOUNT v b 51\nEVENT v b 5\nEVENT u a 56\nCOUNT u b 30\nCOUNT u b 40\nCOUNT v b 50\nEVENT u a 45\nCOUNT v a 43\nCOUNT u b 32\nEVENT u b 20\nEVENT u b 10\nCOUNT u b 8\nEVENT u b 51\nEVENT u b 17\nCOUNT v b 39\nCOUNT u a 23\nCOUNT v b 43\nEVENT v a 1\nCOUNT u a 14\nCOUNT v a 25\nCOUNT u a 3\nCOUNT v a 53\nEVENT u a 14\nCOUNT v b 58\nCOUNT v a 5\nEVENT u a 2\n",
+    "expectedOutput": "19\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n"
+  },
+  {
+    "input": "4\nEVENT u b 36\nCOUNT v a 13\nCOUNT v a 23\nEVENT u b 42\n",
+    "expectedOutput": "2\n0\n0\n"
+  },
+  {
+    "input": "19\nCOUNT u a 57\nCOUNT v b 46\nCOUNT v a 21\nCOUNT v a 5\nCOUNT u a 1\nCOUNT u a 52\nEVENT v a 31\nEVENT v b 5\nEVENT v b 46\nCOUNT u b 16\nCOUNT u b 36\nEVENT u b 60\nEVENT v b 38\nCOUNT v b 51\nEVENT v b 33\nEVENT v b 38\nCOUNT v a 32\nCOUNT u b 5\nEVENT u b 22\n",
+    "expectedOutput": "11\n0\n0\n0\n0\n0\n0\n0\n0\n2\n1\n0\n"
+  },
+  {
+    "input": "21\nCOUNT v b 2\nCOUNT v a 21\nEVENT v b 55\nEVENT v b 1\nCOUNT v b 56\nEVENT v b 60\nCOUNT u a 15\nEVENT v a 4\nEVENT v a 44\nCOUNT v b 30\nCOUNT u b 8\nCOUNT v a 26\nCOUNT u a 32\nEVENT u a 17\nCOUNT v a 50\nEVENT u b 33\nEVENT u a 22\nEVENT v b 58\nEVENT u a 46\nCOUNT u a 18\nCOUNT u b 38\n",
+    "expectedOutput": "11\n0\n0\n1\n0\n0\n0\n0\n0\n1\n1\n1\n"
+  },
+  {
+    "input": "23\nCOUNT v b 36\nCOUNT v b 1\nEVENT v b 45\nEVENT v b 9\nCOUNT u b 43\nCOUNT u b 54\nCOUNT u b 22\nCOUNT v b 43\nCOUNT v b 48\nEVENT v b 44\nCOUNT v a 23\nCOUNT v a 37\nCOUNT u b 10\nEVENT v a 36\nEVENT v a 10\nEVENT v b 22\nEVENT u a 39\nEVENT u b 4\nCOUNT v a 17\nEVENT u b 7\nCOUNT v b 46\nCOUNT v a 5\nCOUNT v b 7\n",
+    "expectedOutput": "14\n0\n0\n0\n0\n0\n0\n1\n0\n0\n0\n1\n2\n0\n0\n"
+  },
+  {
+    "input": "26\nCOUNT u a 39\nCOUNT v a 48\nCOUNT u a 8\nCOUNT u a 30\nCOUNT v a 54\nCOUNT u a 26\nCOUNT v a 50\nCOUNT u a 43\nEVENT u b 45\nEVENT u b 11\nEVENT v a 12\nCOUNT u a 60\nCOUNT u b 51\nCOUNT u b 55\nCOUNT u b 43\nCOUNT u a 21\nEVENT v a 54\nCOUNT u a 12\nEVENT v b 56\nEVENT v b 41\nCOUNT u a 15\nEVENT v a 32\nCOUNT u a 50\nCOUNT v a 43\nEVENT v a 53\nCOUNT u b 35\n",
+    "expectedOutput": "18\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n0\n0\n0\n0\n1\n0\n"
+  },
+  {
+    "input": "5\nEVENT v a 5\nEVENT u b 41\nCOUNT v b 39\nCOUNT u b 19\nCOUNT v b 26\n",
+    "expectedOutput": "3\n0\n0\n0\n"
+  },
+  {
+    "input": "8\nCOUNT v b 52\nCOUNT v a 36\nCOUNT v a 30\nEVENT v b 19\nCOUNT v a 10\nEVENT u b 27\nCOUNT u a 32\nEVENT v b 1\n",
+    "expectedOutput": "5\n0\n0\n0\n0\n0\n"
+  },
+  {
+    "input": "30\nEVENT u a 39\nCOUNT v a 28\nEVENT u b 33\nCOUNT u b 0\nEVENT u b 41\nEVENT v b 51\nEVENT v b 21\nEVENT u b 35\nEVENT u a 56\nEVENT u a 18\nCOUNT u a 6\nEVENT v a 17\nCOUNT u b 40\nEVENT u b 10\nEVENT v b 44\nCOUNT v b 52\nCOUNT u b 18\nEVENT u b 41\nEVENT v b 11\nCOUNT u b 28\nEVENT v b 24\nEVENT u a 4\nCOUNT v b 48\nEVENT v a 57\nEVENT u a 41\nEVENT v b 10\nCOUNT u b 20\nEVENT v b 51\nCOUNT v b 58\nEVENT u a 11\n",
+    "expectedOutput": "10\n0\n0\n0\n2\n2\n1\n0\n1\n1\n3\n"
+  },
+  {
+    "input": "30\nEVENT u a 44\nEVENT u a 3\nCOUNT v b 14\nCOUNT u a 29\nCOUNT u b 43\nEVENT v a 53\nCOUNT u b 12\nCOUNT v a 2\nEVENT v a 59\nEVENT u b 54\nCOUNT v b 50\nEVENT v b 35\nCOUNT v a 38\nEVENT v b 14\nEVENT u a 23\nEVENT v a 12\nCOUNT u b 11\nCOUNT u b 43\nCOUNT v b 28\nEVENT v b 26\nCOUNT u b 58\nEVENT u b 26\nEVENT u a 59\nCOUNT v b 52\nCOUNT v b 26\nCOUNT v b 35\nCOUNT u b 53\nCOUNT v a 37\nCOUNT v a 1\nEVENT v b 43\n",
+    "expectedOutput": "17\n0\n0\n0\n0\n0\n0\n0\n0\n0\n1\n1\n0\n2\n2\n0\n0\n0\n"
+  },
+  {
+    "input": "32\nCOUNT u a 48\nCOUNT u a 51\nCOUNT v a 11\nEVENT v a 21\nEVENT u a 7\nEVENT v a 58\nCOUNT u a 32\nCOUNT u a 23\nCOUNT u a 22\nCOUNT v b 31\nCOUNT u a 7\nEVENT u b 46\nEVENT v a 56\nEVENT v a 7\nEVENT u a 8\nCOUNT v a 20\nEVENT u a 58\nEVENT u b 7\nCOUNT v b 16\nCOUNT v a 57\nEVENT v b 42\nEVENT u b 11\nCOUNT u a 41\nCOUNT u b 52\nCOUNT v b 3\nCOUNT u a 28\nCOUNT u b 43\nCOUNT v a 26\nEVENT u a 7\nCOUNT v b 19\nCOUNT v a 1\nEVENT u a 6\n",
+    "expectedOutput": "19\n0\n0\n0\n0\n0\n1\n0\n1\n1\n0\n1\n0\n1\n0\n0\n0\n1\n0\n0\n"
+  },
+  {
+    "input": "31\nEVENT v b 51\nCOUNT u b 20\nEVENT u b 4\nEVENT u b 35\nEVENT v b 14\nEVENT v a 27\nCOUNT u b 56\nCOUNT u a 11\nEVENT v b 47\nEVENT u a 2\nEVENT v a 45\nCOUNT u b 11\nEVENT u b 57\nEVENT u b 17\nCOUNT v b 27\nEVENT u a 6\nEVENT u a 45\nCOUNT u b 47\nEVENT v b 32\nCOUNT v b 2\nEVENT v a 39\nCOUNT u b 41\nCOUNT v a 27\nCOUNT v b 35\nEVENT u a 34\nEVENT u b 43\nCOUNT v a 30\nEVENT v a 34\nCOUNT u b 34\nEVENT u b 38\nEVENT u b 39\n",
+    "expectedOutput": "12\n0\n0\n0\n1\n1\n1\n0\n1\n1\n1\n1\n0\n"
+  }
+]

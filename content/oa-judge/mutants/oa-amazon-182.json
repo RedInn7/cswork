@@ -1,0 +1,10 @@
+[
+  {
+    "name": "继续缩成一位",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    while n>1:\n        for i in range(n-1):a[i]=(a[i]+a[i+1])%10\n        n-=1\n    return str(a[0])+str(a[1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "未保留前导零",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a)\n    while n>2:\n        for i in range(n-1):a[i]=(a[i]+a[i+1])%10\n        n-=1\n    return str(10*a[0]+a[1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

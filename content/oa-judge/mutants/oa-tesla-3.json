@@ -1,0 +1,10 @@
+[
+  {
+    "name": "任意相邻异色均切段",
+    "code": "def solve(d):\n    balance=0;answer=0\n    for c in d[0]:\n        balance+=1 if c=='L' else -1\n        if c=='R':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "只统计正向首次配对",
+    "code": "def solve(d):\n    balance=0;answer=0\n    for c in d[0]:\n        balance+=1 if c=='L' else -1\n        if balance==0 and c=='R':answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

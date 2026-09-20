@@ -150,6 +150,7 @@ void test('new Uber semantic checker names remain bound to their exact problem I
     ['oa-optimal-loads', 'oa-amazon-136'],
     ['oa-optimal-distinct', 'oa-microsoft-63'],
     ['oa-dictionary-path', 'oa-nvidia-7'],
+    ['oa-ipv4-cidr', 'oa-openai-9'],
   ]) {
     const p = payload('1');
     p.problem.checker = checker;

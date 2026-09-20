@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏原串",
+    "code": "def solve(d):\n    seen={};answer=0\n    for i,c in enumerate(d[0]):answer+=i-seen.get(c,0);seen[c]=seen.get(c,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同端点也算新串",
+    "code": "def solve(d):\n    seen={};answer=1\n    for i,c in enumerate(d[0]):answer+=i;seen[c]=seen.get(c,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-3",
+  "title": "按用户与频道统计最近15分钟事件",
+  "explanation": "## 思路\n\n先对每个用户频道收集EVENT时间并排序去重，用树状数组保存已处理事件频次。再次按输入顺序处理，EVENT加一，COUNT查询≤t与<t−15的前缀频次之差。\n\n## 正确性\n\n预处理只建立坐标，不增加任何频次。扫描任意位置时树状数组恰含该位置之前已处理EVENT的重数。两次二分得到闭区间的边界，前缀和作差排除过早与未来时间戳，因此包含且仅包含所需事件。每个键独立避免串用户或频道。\n\n## 复杂度\n\n时间O(q log q)，空间O(q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_left,bisect_right\ndef solve(d):\n    q=int(d[0]);coords={};ops=[]\n    for i in range(q):\n        o,u,c,t=d[1+4*i:5+4*i];t=int(t);key=(u,c);ops.append((o,key,t))\n        if o=='EVENT':coords.setdefault(key,[]).append(t)\n    coords={k:sorted(set(v)) for k,v in coords.items()};bits={k:[0]*(len(v)+1) for k,v in coords.items()}\n    def prefix(bit,i):\n        total=0\n        while i:total+=bit[i];i-=i&-i\n        return total\n    out=[]\n    for o,key,t in ops:\n        a=coords.get(key,[]);bit=bits.get(key,[0])\n        if o=='EVENT':\n            i=bisect_left(a,t)+1\n            while i<len(bit):bit[i]+=1;i+=i&-i\n        else:out.append(prefix(bit,bisect_right(a,t))-prefix(bit,bisect_left(a,t-15)))\n    return str(len(out))+'\\n'+'\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/openai#3-chat-event-counts-in-recent-window",
+  "sourceContentHash": "59273b8fbdbc7e5eae9a203411ec53b121df0eacfa643b3e491d756e05b6cc95",
+  "author": "CSWork"
+}
