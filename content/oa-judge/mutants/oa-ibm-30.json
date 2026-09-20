@@ -1,0 +1,10 @@
+[
+  {
+    "name": "结束时刻不计在线",
+    "code": "def solve(d):\n    from collections import defaultdict\n    events=defaultdict(int)\n    for i in range(1,len(d),2):\n        l,h=int(d[i]),int(d[i+1]);events[l]+=1;events[h]-=1\n    current=best=0;answer=0\n    for t in sorted(events):\n        current+=events[t]\n        if current>best:best=current;answer=t\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "平手更新到更晚",
+    "code": "def solve(d):\n    from collections import defaultdict\n    events=defaultdict(int)\n    for i in range(1,len(d),2):\n        l,h=int(d[i]),int(d[i+1]);events[l]+=1;events[h+1]-=1\n    current=best=0;answer=0\n    for t in sorted(events):\n        current+=events[t]\n        if current>=best:best=current;answer=t\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

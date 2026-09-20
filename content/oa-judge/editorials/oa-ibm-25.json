@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-25",
+  "title": "第k个缺失的正整数",
+  "explanation": "## 思路\n\n将数组去重排序，从1开始逐段计算相邻出现值间的缺口，定位k所在缺口，或落在最大值之后。\n\n## 正确性证明\n\n相邻不同出现值之间恰好全是缺失数，且这些缺口按数值顺序互不重叠。逐段减去缺口长度保留当前秩，首次容纳该秩的缺口给出唯一答案。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);previous=0\n    for v in sorted(set(map(int,d[2:]))):\n        gap=v-previous-1\n        if k<=gap:return str(previous+k)\n        k-=gap;previous=v\n    return str(previous+k)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#25-find-missing-integer",
+  "sourceContentHash": "71081b6508e9791d56eda96f4eedf3da75566118405316acce57296e0d67f0dd",
+  "author": "CSWork"
+}

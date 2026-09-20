@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-36",
+  "title": "逐对字符串变为异位词的最少替换",
+  "explanation": "## 思路\n\n长度相等时统计第一串相对第二串多出的各字符数量并求和。\n\n## 正确性证明\n\n每次替换至多减少一个多余字符，故多余数量是下界。长度相等意味着多余总量等于缺少总量，把每个多余字符改成一个缺少字符便达到下界。允许修改任意一串也不能低于该下界。\n\n## 复杂度\n\n时间O(全部字符数)，逐对额外空间O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    lines=d.split('\\n');n=int(lines[0]);out=[]\n    for i in range(n):\n        a,b=lines[1+2*i:3+2*i]\n        if len(a)!=len(b):out.append(-1)\n        else:out.append(sum((Counter(a)-Counter(b)).values()))\n    return '\\n'.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#36-get-minimum-difference",
+  "sourceContentHash": "fad1bb4fa4386b2e33eb28de6c15329ad1fa57baa12cdc56153e680a21df113b",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-39",
+  "title": "消除相邻字母冲突的最少修改",
+  "explanation": "## 思路\n\n从左向右遇到冲突边，就修改右端点，并跳过紧邻其后的边；后续从下一个未处理边继续。\n\n## 正确性证明\n\n每个原冲突边至少有一个端点被改，是路径上边覆盖问题。对最左未覆盖边，选右端点不会比选左端点覆盖更少未来边，交换得到贪心最优。贪心选中位置不相邻，每处至多要避开两侧邻居及各自相邻字母共6个字符，26字母保证可填入合法字符，覆盖下界可实现。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    s=d[0];i=1;answer=0\n    while i<len(s):\n        if abs(ord(s[i])-ord(s[i-1]))<=1:answer+=1;i+=2\n        else:i+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#39-get-minimum-operation-count",
+  "sourceContentHash": "2afcdce9e7fe115817aad201e84414f2498d51fd864f73d5c7b1316ec6af4d3f",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-27",
+  "title": "反复删除AWS后的字符串",
+  "explanation": "## 思路\n\n逐字符入栈，每次栈尾恰为AWS就删除这三个字符。\n\n## 正确性证明\n\n入栈前前缀已不可删除，新出现的AWS只能以新字符结尾，删后露出的前缀仍是之前不可删的栈前缀。AWS无非空真前后缀重合，因此同时可删的两个出现不重叠、删除可交换，任意删除顺序得到同一结果。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    stack=[]\n    for c in d[0]:\n        stack.append(c)\n        if len(stack)>=3 and stack[-3:]==['A','W','S']:del stack[-3:]\n    return ''.join(stack) or '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#27-get-final-string",
+  "sourceContentHash": "bc9fa4573c1621942566970836db7c51ffb05e7d8633f9ee453c258d677d42cc",
+  "author": "CSWork"
+}

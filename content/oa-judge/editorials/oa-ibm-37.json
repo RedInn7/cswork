@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-37",
+  "title": "非相邻位置统一加值的最小增量",
+  "explanation": "## 思路\n\n原数组每个下降边强制选择右端点、不选左端点；若强制位置相邻立即无解。取所有下降幅度的最大值为x，只给强制位置加x，然后验证整体。\n\n## 正确性证明\n\n下降边只能通过增加右端而不增加左端修复，故这些选择是必须的且x至少为最大下降幅度。任何额外选择都不改变此下界。用下界x增大强制位置后，若其右边出现新下降，右邻不能再选择（相邻禁选），增大x也无助；因此此时无解。否则已构造达到下界的合法解。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));n=len(a);chosen=[False]*n;x=0\n    for i in range(1,n):\n        if a[i]<a[i-1]:chosen[i]=True;x=max(x,a[i-1]-a[i])\n    if any(chosen[i] and chosen[i-1] for i in range(1,n)):return '-1'\n    b=[v+x if chosen[i] else v for i,v in enumerate(a)]\n    return str(x) if all(b[i]>=b[i-1] for i in range(1,n)) else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#37-get-minimum-increment",
+  "sourceContentHash": "b8291a055d3fb020071936673f270cdb4870998aef5ee0675afe2d9d10651bc8",
+  "author": "CSWork"
+}

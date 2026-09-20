@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略不同字符限制",
+    "code": "def solve(d):\n    from collections import Counter\n    header,s=d.split('\\n')[:2];lo,hi,u=map(int,header.split());counts=Counter()\n    for i in range(len(s)-lo+1):\n        part=s[i:i+lo]\n        if True:counts[part]+=1\n    return str(max(counts.values(),default=0))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只统计不重叠位置",
+    "code": "def solve(d):\n    from collections import Counter\n    header,s=d.split('\\n')[:2];lo,hi,u=map(int,header.split());counts=Counter()\n    for i in range(0,len(s)-lo+1,lo):\n        part=s[i:i+lo]\n        if len(set(part))<=u:counts[part]+=1\n    return str(max(counts.values(),default=0))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

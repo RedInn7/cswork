@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-28",
+  "title": "最近k个不同请求",
+  "explanation": "## 思路\n\n逆序扫描，用集合跳过已见ID，收集到k个后停止；不足则报告不可行。\n\n## 正确性证明\n\n从右到左第一次遇到某ID的位置就是其最后出现位置，逆序首次遇见的顺序恰好是最后出现时间降序。跳过已见ID只移除重复，因此取前k项得到所求；遍历完不足说明不同ID总数确实不够。\n\n## 复杂度\n\n时间O(n·ID长度)，空间O(n·ID长度)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    lines=d.split('\\n');n,k=map(int,lines[0].split());seen=set();out=[]\n    for v in reversed(lines[1:n+1]):\n        if v in seen:continue\n        seen.add(v);out.append(v)\n        if len(out)==k:break\n    if len(out)<k:return '-1'\n    return str(k)+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#28-get-latest-k-requests",
+  "sourceContentHash": "9c18d59754a83524ecd876a08a251e3f7cc884f8304156db9796ed140568be93",
+  "author": "CSWork"
+}

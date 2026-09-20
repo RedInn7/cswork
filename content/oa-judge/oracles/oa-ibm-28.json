@@ -1,0 +1,654 @@
+[
+  {
+    "input": "5 3\nitem1\nitem2\nitem3\nitem1\nitem3\n",
+    "expectedOutput": "3\nitem3\nitem1\nitem2\n"
+  },
+  {
+    "input": "2 2\na\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 2\na b\n a \na b\n",
+    "expectedOutput": "2\na b\n a \n"
+  },
+  {
+    "input": "2 2\n a\nbb\n",
+    "expectedOutput": "2\nbb\n a\n"
+  },
+  {
+    "input": "2 5\n😀\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 5\n a\na\na\n😀\nbb\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 1\na\na\n a\na\na \n a\n😀\n a\n",
+    "expectedOutput": "1\n a\n"
+  },
+  {
+    "input": "12 6\n a\na\n😀\n😀\n a\nbb\na\na \nbb\nbb\n😀\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 6\na \na\n😀\na \nbb\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 2\nbb\na\n😀\n😀\n a\na\n a\na\na\nbb\n a\n a\n",
+    "expectedOutput": "2\n a\nbb\n"
+  },
+  {
+    "input": "11 2\nbb\n a\n😀\nbb\na \n😀\n a\n a\nbb\n a\na\n",
+    "expectedOutput": "2\na\n a\n"
+  },
+  {
+    "input": "9 5\na\na\na\nbb\na\n😀\nbb\n😀\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 6\na\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 1\nbb\nbb\na \na\n😀\na\n a\na \na\n😀\na\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "2 3\n😀\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 7\nbb\na \n😀\n a\na \na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 6\na \na \na \na \na\n a\n a\na\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 8\n a\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 6\na\n a\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 4\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 5\na \n😀\nbb\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 3\na \na \na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 1\na\n😀\n a\na\na \na \n a\n😀\n",
+    "expectedOutput": "1\n😀\n"
+  },
+  {
+    "input": "11 2\n😀\n😀\n a\na \na\n😀\nbb\na \n a\na\n a\n",
+    "expectedOutput": "2\n a\na\n"
+  },
+  {
+    "input": "2 4\nbb\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 5\na\nbb\nbb\nbb\n😀\nbb\n😀\na \n😀\nbb\n a\na \n",
+    "expectedOutput": "5\na \n a\nbb\n😀\na\n"
+  },
+  {
+    "input": "9 5\na \n😀\n a\n😀\nbb\na \nbb\na \nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 8\na \n😀\na\na\na \na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 2\n a\n😀\na\na \n😀\n",
+    "expectedOutput": "2\n😀\na \n"
+  },
+  {
+    "input": "10 3\na \n😀\n a\n😀\nbb\n😀\na\n😀\n😀\n a\n",
+    "expectedOutput": "3\n a\n😀\na\n"
+  },
+  {
+    "input": "7 6\na \nbb\n😀\na \n a\n a\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 6\n😀\nbb\na \nbb\n a\n a\n a\nbb\nbb\na\n a\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 1\na\nbb\n",
+    "expectedOutput": "1\nbb\n"
+  },
+  {
+    "input": "12 6\na\na \na\na \na\na \n a\n a\n😀\na\na\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 2\na\n😀\n",
+    "expectedOutput": "2\n😀\na\n"
+  },
+  {
+    "input": "2 3\nbb\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 1\na\na \na \na\na\na \nbb\na\na \nbb\nbb\n😀\n",
+    "expectedOutput": "1\n😀\n"
+  },
+  {
+    "input": "6 6\nbb\n😀\n a\n a\na \na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 8\n😀\na \na\n😀\na\n a\n a\n a\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 1\nbb\nbb\n😀\n😀\na \n",
+    "expectedOutput": "1\na \n"
+  },
+  {
+    "input": "5 8\n a\na\na \nbb\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 7\nbb\na\nbb\nbb\n😀\na \n a\na\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 7\n a\na\n😀\n a\na\na \n😀\na \na\n😀\n😀\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 5\n😀\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 2\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 4\na \n a\na \n a\n😀\na \nbb\n😀\n",
+    "expectedOutput": "4\n😀\nbb\na \n a\n"
+  },
+  {
+    "input": "6 7\nbb\na\n a\na\na \nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 3\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 5\n😀\na\n a\na\na\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 3\n😀\na \n😀\n a\na\n a\nbb\na \n",
+    "expectedOutput": "3\na \nbb\n a\n"
+  },
+  {
+    "input": "12 2\n a\na\na\na\n a\nbb\na \na\na \na \nbb\nbb\n",
+    "expectedOutput": "2\nbb\na \n"
+  },
+  {
+    "input": "2 4\nbb\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 8\na \na \nbb\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 4\na\n a\nbb\n😀\nbb\n😀\n😀\n",
+    "expectedOutput": "4\n😀\nbb\n a\na\n"
+  },
+  {
+    "input": "3 3\n😀\na \n a\n",
+    "expectedOutput": "3\n a\na \n😀\n"
+  },
+  {
+    "input": "4 6\nbb\n😀\na\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 1\n😀\n a\nbb\na \nbb\nbb\na \n",
+    "expectedOutput": "1\na \n"
+  },
+  {
+    "input": "2 1\n😀\nbb\n",
+    "expectedOutput": "1\nbb\n"
+  },
+  {
+    "input": "5 6\n a\n a\na \n a\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 5\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 1\n a\n😀\n a\nbb\na\n a\n a\n a\n a\nbb\n😀\n",
+    "expectedOutput": "1\n😀\n"
+  },
+  {
+    "input": "3 6\na \nbb\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 7\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 6\n a\nbb\na \na \nbb\nbb\n😀\na \na \na\n😀\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 4\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 3\na\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 1\nbb\na \n😀\na\na\n😀\na\nbb\n😀\nbb\n",
+    "expectedOutput": "1\nbb\n"
+  },
+  {
+    "input": "12 6\nbb\na\nbb\n😀\na\na\n a\n a\na\na \na\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 8\n😀\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 5\n😀\na\n a\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 3\na \na \na \na \na \nbb\na\na\na\n a\n",
+    "expectedOutput": "3\n a\na\nbb\n"
+  },
+  {
+    "input": "11 2\n a\n😀\na\n a\na \na\na \n😀\nbb\na \na\n",
+    "expectedOutput": "2\na\na \n"
+  },
+  {
+    "input": "7 6\nbb\n😀\na \n😀\na\nbb\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 8\na\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 3\na \nbb\nbb\na \n a\na \nbb\n😀\na\na\n",
+    "expectedOutput": "3\na\n😀\nbb\n"
+  },
+  {
+    "input": "6 8\n😀\na\na \nbb\na \nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 2\na\n😀\na\nbb\na\na \na\na\nbb\n",
+    "expectedOutput": "2\nbb\na\n"
+  },
+  {
+    "input": "7 3\n a\n😀\na\n a\na \n a\n a\n",
+    "expectedOutput": "3\n a\na \na\n"
+  },
+  {
+    "input": "3 3\na \n a\nbb\n",
+    "expectedOutput": "3\nbb\n a\na \n"
+  },
+  {
+    "input": "12 7\na \nbb\na \nbb\na\n😀\na\na \n a\nbb\n a\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 1\nbb\nbb\n😀\n😀\na\na \n a\na \n",
+    "expectedOutput": "1\na \n"
+  },
+  {
+    "input": "9 4\n a\nbb\nbb\na \na \na\n😀\n😀\nbb\n",
+    "expectedOutput": "4\nbb\n😀\na\na \n"
+  },
+  {
+    "input": "7 7\na \na\n a\n😀\n😀\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 8\na\na\n😀\n😀\n😀\nbb\n a\n😀\nbb\na\n😀\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 8\n a\na\na\na\nbb\nbb\n😀\nbb\na\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 1\nbb\n😀\n",
+    "expectedOutput": "1\n😀\n"
+  },
+  {
+    "input": "5 7\n a\na \n a\na\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 7\n a\n a\n a\na \na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 8\n a\n a\na \n😀\nbb\n😀\n a\n😀\nbb\nbb\n😀\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 2\n😀\n a\n a\na\na\n",
+    "expectedOutput": "2\na\n a\n"
+  },
+  {
+    "input": "8 1\na\nbb\nbb\na \na\n a\n a\na \n",
+    "expectedOutput": "1\na \n"
+  },
+  {
+    "input": "10 4\nbb\n a\nbb\na \n😀\n😀\n a\nbb\nbb\n😀\n",
+    "expectedOutput": "4\n😀\nbb\n a\na \n"
+  },
+  {
+    "input": "12 2\na \n a\n a\na\na\na\na\na \n😀\na \na\n a\n",
+    "expectedOutput": "2\n a\na\n"
+  },
+  {
+    "input": "5 5\n a\na \na\n😀\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 8\nbb\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 3\n a\na\nbb\n",
+    "expectedOutput": "3\nbb\na\n a\n"
+  },
+  {
+    "input": "10 7\nbb\na \nbb\n a\n a\n😀\n😀\na\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 8\na\n😀\nbb\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 5\na\n😀\n a\na \nbb\n😀\n",
+    "expectedOutput": "5\n😀\nbb\na \n a\na\n"
+  },
+  {
+    "input": "2 8\na \nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 1\n😀\n a\na\n a\n",
+    "expectedOutput": "1\n a\n"
+  },
+  {
+    "input": "9 4\na \na \na\n a\na \na\na\na\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 5\n😀\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "1 3\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 5\na\n😀\n😀\n a\nbb\na\n😀\na \nbb\na\n😀\n",
+    "expectedOutput": "5\n😀\na\nbb\na \n a\n"
+  },
+  {
+    "input": "8 6\na \nbb\na\n😀\n a\n a\na \nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 8\nbb\n a\n😀\na\n😀\nbb\n😀\na \na\na \na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 3\na\n😀\nbb\na \n😀\nbb\nbb\n😀\n a\nbb\n",
+    "expectedOutput": "3\nbb\n a\n😀\n"
+  },
+  {
+    "input": "11 1\na \nbb\n a\na \nbb\na\n a\na\nbb\na\na \n",
+    "expectedOutput": "1\na \n"
+  },
+  {
+    "input": "5 7\n😀\n😀\nbb\n a\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 5\n a\n😀\nbb\n😀\na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 4\n😀\nbb\na\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 6\nbb\na\na\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 2\nbb\n a\n😀\n a\nbb\n😀\nbb\n",
+    "expectedOutput": "2\nbb\n😀\n"
+  },
+  {
+    "input": "3 6\na \na\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 8\na \n a\n a\n a\na\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7 1\nbb\n a\n a\na \n a\n😀\n😀\n",
+    "expectedOutput": "1\n😀\n"
+  },
+  {
+    "input": "12 2\nbb\na \na\nbb\na \na \n a\nbb\n😀\na \na\n a\n",
+    "expectedOutput": "2\n a\na\n"
+  },
+  {
+    "input": "11 1\n a\nbb\nbb\n😀\nbb\n a\na\na\nbb\n😀\na \n",
+    "expectedOutput": "1\na \n"
+  },
+  {
+    "input": "7 2\nbb\n a\nbb\n😀\na \nbb\na \n",
+    "expectedOutput": "2\na \nbb\n"
+  },
+  {
+    "input": "2 3\nbb\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 2\n a\nbb\n a\n",
+    "expectedOutput": "2\n a\nbb\n"
+  },
+  {
+    "input": "6 7\na\na\nbb\n a\n a\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 3\na\na\n😀\na \n a\na\n😀\na\n",
+    "expectedOutput": "3\na\n😀\n a\n"
+  },
+  {
+    "input": "4 7\n😀\n a\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 6\n a\na \nbb\n a\n a\nbb\na \na \n a\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 5\nbb\n a\na \nbb\n😀\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3 4\nbb\n😀\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 6\n a\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 6\na \na\n😀\nbb\n a\n a\n a\na \na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 6\nbb\na\nbb\n😀\nbb\na\na\n a\n a\na \na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 3\nbb\n a\na \na\nbb\n😀\nbb\n😀\nbb\nbb\n",
+    "expectedOutput": "3\nbb\n😀\na\n"
+  },
+  {
+    "input": "5 4\na\na\na\na \na\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 7\n a\na \na \nbb\n a\n😀\na \nbb\n a\na\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 2\na \n a\nbb\na\n a\n😀\na\na \na\nbb\na \n a\n",
+    "expectedOutput": "2\n a\na \n"
+  },
+  {
+    "input": "3 3\n a\nbb\n😀\n",
+    "expectedOutput": "3\n😀\nbb\n a\n"
+  },
+  {
+    "input": "9 8\nbb\na\na\n a\n😀\n😀\n a\n a\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 6\nbb\na\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 6\na\na\n a\na\n a\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 4\na\na\na \n a\nbb\na \na\nbb\nbb\n",
+    "expectedOutput": "4\nbb\na\na \n a\n"
+  },
+  {
+    "input": "11 4\nbb\n a\n😀\na \nbb\nbb\na \na\n a\n😀\na \n",
+    "expectedOutput": "4\na \n😀\n a\na\n"
+  },
+  {
+    "input": "1 8\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2 4\na\n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 7\n😀\nbb\nbb\na\n😀\na \na\na\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "5 3\na\n😀\nbb\nbb\n a\n",
+    "expectedOutput": "3\n a\nbb\n😀\n"
+  },
+  {
+    "input": "12 6\n a\na\na \n a\nbb\n a\n a\n😀\na\na \nbb\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "9 8\na\na\n a\na\n😀\n a\nbb\na\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 4\n😀\na \n a\nbb\na \na\nbb\na\n",
+    "expectedOutput": "4\na\nbb\na \n a\n"
+  },
+  {
+    "input": "6 8\na\n a\nbb\nbb\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "11 6\n a\n😀\na \n a\na\na\n😀\na \nbb\nbb\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 4\nbb\nbb\n😀\na\na \nbb\na\nbb\n",
+    "expectedOutput": "4\nbb\na\na \n😀\n"
+  },
+  {
+    "input": "7 2\nbb\n😀\nbb\na\nbb\na\nbb\n",
+    "expectedOutput": "2\nbb\na\n"
+  },
+  {
+    "input": "7 1\nbb\na \na\nbb\nbb\n😀\nbb\n",
+    "expectedOutput": "1\nbb\n"
+  },
+  {
+    "input": "10 2\na \na\n a\n😀\nbb\n a\n😀\na \nbb\n😀\n",
+    "expectedOutput": "2\n😀\nbb\n"
+  },
+  {
+    "input": "10 6\n a\na \na \n a\n😀\na\na \nbb\n😀\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "6 6\nbb\na \na \n a\na \n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "12 8\nbb\n a\na \na\na\nbb\n😀\n a\na \na\n😀\n a\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 8\na \n😀\na \n😀\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8 2\n😀\na \na\n a\n😀\nbb\na \na \n",
+    "expectedOutput": "2\na \nbb\n"
+  },
+  {
+    "input": "1 1\na\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "2 5\n a\na \n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4 7\n a\na\n a\nbb\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "10 3\nbb\na\n😀\na\na\na \n a\n😀\na\na \n",
+    "expectedOutput": "3\na \na\n😀\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-29",
+  "title": "受长度与字符种类限制的最高子串频次",
+  "explanation": "## 思路\n\n只统计长度minLength的窗口，过滤字符种类超标的窗口，用哈希表累计频次。\n\n## 正确性证明\n\n任意合法更长子串的固定minLength前缀仍合法，且长串每次出现都对应此前缀的一次出现，前缀频次不会更少。因此全局最优一定可由最短长度取得，统计全部该长度窗口不漏最优。\n\n## 复杂度\n\n时间O(n·minLength)，空间O(n·minLength)，其中minLength≤26。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import Counter\n    header,s=d.split('\\n')[:2];lo,hi,u=map(int,header.split());counts=Counter()\n    for i in range(len(s)-lo+1):\n        part=s[i:i+lo]\n        if len(set(part))<=u:counts[part]+=1\n    return str(max(counts.values(),default=0))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ibm#29-get-max-occurrences",
+  "sourceContentHash": "1955daefe1afada9b3caaf7e2609f94ef1ca9b171e3dfa29a9f5d501f926a4c9",
+  "author": "CSWork"
+}
