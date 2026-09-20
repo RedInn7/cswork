@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-343",
+  "title": "一次相邻交换可匹配的连续片段数",
+  "explanation": "## 思路\n\n逐个窗口找不同位置；全相同则合法，否则必须恰有两个相邻不同位置，且其字符交换后交叉匹配。\n\n## 正确性证明\n\n一次相邻交换最多影响两个相邻位置。若窗口原来不等，合法交换必恰好修复那两个不同位置，交叉相等为充分必要条件；零个不同位置由不操作实现。枚举全部起点无遗漏。\n\n## 复杂度\n\n时间O(|content|·|target|)，空间O(|target|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    target,content=raw.split();m=len(target);answer=0\n    for start in range(len(content)-m+1):\n        word=content[start:start+m];bad=[i for i in range(m) if word[i]!=target[i]]\n        if not bad:answer+=1\n        elif len(bad)==2:\n            i,j=bad\n            if j==i+1 and word[i]==target[j] and word[j]==target[i]:answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#343-similar-text-substring-count",
+  "sourceContentHash": "ca80df38a5e8dbfac9be07bb91c06b84bc0bfaa1962edeb7281378d64e4ff910",
+  "author": "CSWork"
+}

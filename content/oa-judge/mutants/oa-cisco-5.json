@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误替换只计一次",
+    "code": "def solve(raw):\n    import json\n    lines=raw.split('\\n');a=json.loads(lines[0]);b=json.loads(lines[1])\n    if len(a)<len(b):a,b=b,a\n    row=[0]*(len(b)+1)\n    for x in a:\n        diagonal=0\n        for j,y in enumerate(b,1):\n            old=row[j]\n            if x==y:row[j]=diagonal+1\n            else:row[j]=max(row[j],row[j-1])\n            diagonal=old\n    return str(max(len(a),len(b))-row[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略大小写",
+    "code": "def solve(raw):\n    import json\n    lines=raw.split('\\n');a=json.loads(lines[0]);b=json.loads(lines[1])\n    if len(a)<len(b):a,b=b,a\n    row=[0]*(len(b)+1)\n    for x in a:\n        diagonal=0\n        for j,y in enumerate(b,1):\n            old=row[j]\n            if x.lower()==y.lower():row[j]=diagonal+1\n            else:row[j]=max(row[j],row[j-1])\n            diagonal=old\n    return str(len(a)+len(b)-2*row[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

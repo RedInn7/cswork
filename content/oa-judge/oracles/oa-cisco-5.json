@@ -1,0 +1,654 @@
+[
+  {
+    "input": "\"password\"\n\"pss$w#rd\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"a\"\n\"A\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"\"\n\"\\u0000 😀\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"\\tb\\t😀aB\"\n\"\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"b\\u0000 \"\n\"b\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"\"\n\"\"\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "\"\\taba\"\n\"aab\\t\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"baa B\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"\\t😀\\u0000A\"\n\"a😀B\\u0000A\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"aBBA\"\n\"b😀\\u0000aa😀😀\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\" A\"\n\"😀b\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\\u0000 \\t\\u0000aA\"\n\"a  😀AA\\t\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\u0000\"\n\"\\nb\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"b\"\n\"aA\\n\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\" B\\n\"\n\"b\\u0000A  Aa\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"😀\\u0000AB \"\n\"B\\t \"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\\taaBa\\t \"\n\"😀\\t B\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\"\n\"\\n\\tB A\\t\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\n😀a \\tBa\"\n\"\\t\\u0000😀 b\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\u0000\\u0000😀\\nA\\n\\t\"\n\"b\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\n A\"\n\"bB😀\\u0000\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"B\"\n\"AB bA\\u0000\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"B\\t😀Aa\"\n\"  \"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"😀\\nB\"\n\"\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"😀😀a\"\n\"AA😀😀\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"\"\n\"\\ta\\t\\tB\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"\\tB bb\"\n\"  aA😀\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\tBa 😀\\ta\"\n\"😀b AbA\"\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "\"bb\"\n\"ba\\t\\n\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"A\"\n\"😀\\u0000\\ta a😀\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\t bb\\nA\"\n\"\\tB \\ta\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\"\n\"\"\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "\"😀ba\\tAB\"\n\"bBBAa\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"A\"\n\"\"\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "\"AaB\\n\\n\"\n\"\\u0000B\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"Ba\\u0000\\t\\t\"\n\" \\na\\n\\n\\t\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\\ta  \"\n\"\\u0000\\u0000\\t\\u0000\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"BB \\t\"\n\"\\n😀😀bB😀\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\"\n\"😀\\n \\n\\n\\t\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\tBB😀\"\n\"\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"b\\nB\\u0000Aa\"\n\"\\n😀\\u0000A\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"B\"\n\"\"\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "\"bA\\u0000bAA\\u0000\"\n\"b\\u0000B😀\\n B\"\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "\"\"\n\"\\nab\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"😀A\"\n\"\\u0000\\u0000A \"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"A\\u0000bb\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\" \\t\"\n\"aa\\t😀 \"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"😀aa\\u0000\\u0000😀\"\n\"\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\" b\"\n\"\\u0000b😀 \"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\\t \\na\\nB\"\n\" ba\\tb\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"a😀\\nbB\"\n\"\\nb\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"\\t😀\\t😀\"\n\"aABbaa\"\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "\"\"\n\" \\u0000\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\" a\\nA\"\n\"\\u0000 \"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"😀b b\\n\"\n\"B😀B\\t\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"a😀a\"\n\"\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\\nba\\u0000\\t\"\n\"AB \\n\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"Bba😀\\u0000\"\n\" 😀\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\" B a\"\n\"A\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"\"\n\"\\u0000\\n aA😀A\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"😀B \\nA\"\n\"\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"A b bB\"\n\"\\u0000\\n\\u0000B\\nbB\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\n\\t ba\\n\\u0000\"\n\" \\t\\n\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\t\\t\\u0000\"\n\"\\t\\n\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"😀BB😀b\"\n\"ba\\u0000\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"Bbb\"\n\"B\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"😀\\nbb\"\n\"\\t\\n \"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"😀A\"\n\"AAa😀\\n😀\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"BB\\u0000BB\"\n\"😀\\t\\t\\u0000\\u0000A\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\u0000BB😀a\\u0000\"\n\"\\tA\\n\\t\\u0000\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\"\n\"😀a😀\\tAa\\t\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"b A\\u0000\\t\\u0000 \"\n\"A😀 😀\\t\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\"\n\"\\t\"\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "\"\"\n\"\"\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "\"\\u0000\"\n\"😀    \"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\n\\u0000\\t\"\n\"\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"Ab\\u0000😀\"\n\"\\t\\t\\tB\\n\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\u0000B\\n \"\n\"A\\u0000😀 \"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"😀 \\u0000\\nA\"\n\"A😀😀\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"B\\n\"\n\"aB\\t\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"a\"\n\"\\t\\nbBbb\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"B\\t \"\n\"\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"aA \\na\\n\\n\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"A\\u0000 \\na\\n\\t\"\n\"\\u0000bAA\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\n\\nbb \\n\"\n\"\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\n\"\n\"\\tBB\\n\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"a\\ta a\"\n\"A\\u0000A\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"b\\naA\\t\"\n\"Ab😀😀😀\\tA\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\n\"\n\" A\\n\\tbbb\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\n\\n\\na😀aB\"\n\" \\nbA\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\u0000\\tb \\n\\t \"\n\"\\t \\tA\\t\\u0000\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\" \\n\\n\\n\"\n\"A\\n😀b\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\u0000\"\n\"a\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"Aba\"\n\"😀😀😀\\tB\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"BA\"\n\"\\u0000\\nb bA\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\n\"\n\" 😀😀a  \"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"b\\n\\u0000\"\n\"\\u0000\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"a\\u0000aB\"\n\"b😀\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"a b\\n\\u0000B\\u0000\"\n\"\\u0000B\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"a\\u0000\"\n\" Bb\\tB\\nA\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"\\u0000 bB\"\n\"aaaA\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\u0000\"\n\"a😀\\n\\na\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\"\n\"A\\t A\\t\\t\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"b\"\n\" A \\t\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"AA\\t\"\n\"\\n 😀bA\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"A\"\n\"\\taA😀 \"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"abBB\\t\\t\"\n\"b\\u0000ba\\t😀\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"😀 \\u0000b\\t😀a\"\n\"A\\tAAA B\"\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "\"\\u0000\\n\\t\\n\\nb \"\n\"😀 B😀\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"A\\u0000abbb😀\"\n\"\\u0000😀a\\nbb\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\" \\n\\u0000AA\\n\"\n\"aA \"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\\u0000BB\\u0000bA\"\n\"a\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\\tB\"\n\"b\\t\\u0000\\nB\\t\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"B\\tb\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"\"\n\"baaAa\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"aAB\\t\"\n\"\\u0000\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"😀BA\"\n\"\\tA\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"\\u0000 \\u0000\\n\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"😀a\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"😀\\nA b \"\n\"\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\" a\"\n\"\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\"\\u0000Ab\\t\"\n\"\\n\\n\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"A😀\"\n\"\\nA\\n\\t😀\\n\\n\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"b A\"\n\"b😀\\u0000\\nAbB\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"aB AbA\"\n\"ab\\u0000\\t\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"b AAbbA\"\n\"\\u0000a\\t😀😀\\t😀\"\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "\"b\\u0000\\n \"\n\"AB😀AbB\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\\n\\nb b\\ta\"\n\"\\t\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"a\"\n\"B\\u0000Abba\\u0000\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\" B😀\"\n\" B\\t\\t\\na \"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\" \"\n\"a \\tA\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\"😀\\u0000\\u0000b\"\n\"b \\n😀\\u0000😀\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\t😀 \\n\\n😀a\"\n\"\\ta\\tBba\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "\"A\\tA😀😀\"\n\"Aa\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"\\u0000\\u0000\\u0000\\t😀😀\"\n\"\\u0000\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"\\n BAb \\u0000\"\n\" aa\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"a\"\n\"\"\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "\"a \\n\"\n\"b😀\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"\\t😀\"\n\"\\nb\\tA\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"\"\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "\"\\u0000\"\n\"A\\u0000\"\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "\"\\t\\t\\n 😀\\u0000\"\n\" \\u0000a\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"aba\\n\\u0000\"\n\"ab\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\" a😀b\\nA\"\n\"ab\\u0000😀b\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"  \"\n\"\\t\\t\\u0000\\u0000 \"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"A\\t\\u0000\\nbA\"\n\" \"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"BB\\n😀Ab😀\"\n\" B\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"B😀ab\\u0000😀 \"\n\"\\t😀A 😀\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"\"\n\"\\taA AA\\t\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"AB😀 \\nAB\"\n\" \"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"a😀😀\\n\"\n\"a\\u0000\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\"\n\"😀 \"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "\" bB\"\n\"A \\t\\t\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "\"A😀\\naBA\\n\"\n\"\"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\\n A a\"\n\"\\n\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"😀\\u0000\"\n\"b b\\n \"\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "\"\\u0000 \"\n\"A 😀BAa\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "\"\\taB\"\n\"\\u0000😀😀A😀\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "\"A\\n\\t😀😀\"\n\"A\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"\\u0000b\"\n\"AbA\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "\" \"\n\"A\\t bB\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "\"A\\t  \"\n\"\\u0000\\u0000😀\\nba\"\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "\"\"\n\"A \\t\\u0000\\n\"\n",
+    "expectedOutput": "5\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-14",
+  "title": "不超过上界的指定数位和计数",
+  "explanation": "## 思路\n\n从最高位向最低位数位DP，状态记录当前数位和及是否贴住X前缀。\n\n## 正确性证明\n\n每个不超过X的整数都有唯一补前导0表示。贴住标记限制当前位不超过上界对应位，选择较小位后后缀任意。每次转移恰枚举一个合法下一位，按前缀长度归纳无重无漏。最终和为Y的状态即所求；Y≥1排除全零表示。\n\n## 复杂度\n\n时间O(位数·Y·10)，空间O(Y)，整数计数无需取模。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    x,target=map(int,raw.split());states={(0,True):1}\n    for char in str(x):\n        bound=int(char);following={}\n        for (total,tight),count in states.items():\n            for digit in range((bound if tight else 9)+1):\n                if total+digit<=target:\n                    key=total+digit,tight and digit==bound;following[key]=following.get(key,0)+count\n        states=following\n    answer=sum(count for (total,tight),count in states.items() if total==target)\n    return str(answer or -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#14-count-numbers-with-digit-sum",
+  "sourceContentHash": "ee567c49d84079907af2a06b4ed659ce5de9dbfa06a12d78d955e35cf7622442",
+  "author": "CSWork"
+}

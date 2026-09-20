@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-7",
+  "title": "按题目标签区分质数与非质数",
+  "explanation": "## 思路\n\n筛出不超过46340的全部素数，对正数用素因子试除直到p²>value；小于2直接非质数，缓存重复值的判断。\n\n## 正确性证明\n\n任意合数都有不超过其平方根的素因子，否则最小两个非平凡因子乘积会超过自身。32位正整数平方根≤46340，筛表包含所有必需因子；有整除者为合数，没有则质数。小于2按质数定义排除。缓存仅复用相同整数的确定结果。\n\n## 复杂度\n\n筛O(V log log V)，每个不同正数至多4792次试除，V=46340；空间O(V+N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from math import isqrt\n    values=list(map(int,raw.split()))[1:];limit=46340;sieve=bytearray(b'\\x01')*(limit+1);sieve[0:2]=b'\\x00\\x00'\n    for p in range(2,isqrt(limit)+1):\n        if sieve[p]:sieve[p*p:limit+1:p]=b'\\x00'*((limit-p*p)//p+1)\n    primes=[p for p in range(2,limit+1) if sieve[p]];cache={};out=[]\n    for value in values:\n        if value not in cache:\n            ok=value>=2\n            if ok:\n                for p in primes:\n                    if p*p>value:break\n                    if value%p==0:ok=False;break\n            cache[value]='Prime' if ok else 'Composite'\n        out.append(cache[value])\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#7-prime-vs-composite",
+  "sourceContentHash": "c4602eb3e38e5bb9da0ba1a6c3e817badd8ac96170e709898350b5e05ec5b714",
+  "author": "CSWork"
+}

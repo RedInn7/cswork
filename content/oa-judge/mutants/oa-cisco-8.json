@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉最终进位",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];m=d[n+1];b=d[n+2:];out=[];carry=0\n    for i in range(max(n,m)):\n        total=carry+(a[i] if i<n else 0)+(b[i] if i<m else 0);out.append(total%10);carry=total//10\n    if False:out.append(carry)\n    while len(out)>1 and out[-1]==0:out.pop()\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "不规范化高位0",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];m=d[n+1];b=d[n+2:];out=[];carry=0\n    for i in range(max(n,m)):\n        total=carry+(a[i] if i<n else 0)+(b[i] if i<m else 0);out.append(total%10);carry=total//10\n    if carry:out.append(carry)\n    while False:out.pop()\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

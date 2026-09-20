@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-348",
+  "title": "逐次累加最大最小值并降低最大值",
+  "explanation": "## 思路\n\n从高到低合并相同高度。当前顶部c项在高度h，下一高度l，至多批量处理c(h−l)次；除全部相等后的阶段外最小值固定。用整轮与余数的等差和累加最大值。全部相等时，单独计入每轮第一步后最小值下降的影响。\n\n## 正确性证明\n\n到下一层前，每c次使全部顶部降低1，其他元素不变，因而q整轮和r次的最大值和为c·q(2h−q+1)/2+r(h−q)。此前最小值恒为初始最小值m，另加m倍操作数。全部n项同为v时，一轮第一步贡献2v，余下n−1步为2v−1；q整轮贡献2n[qv−q(q−1)/2]−q(n−1)。剩r>0步贡献2r(v−q)−(r−1)。逐层与尾部恰分割所有操作，含n=1、负数和跨越原最小值的情形。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，使用任意精度整数或足够宽整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,remaining=d[:2];a=sorted(d[2:],reverse=True);minimum=a[-1];answer=0;h=a[0]\n    for count in range(1,n):\n        lower=a[count];take=min(remaining,count*(h-lower));q,r=divmod(take,count)\n        answer+=count*q*(2*h-q+1)//2+r*(h-q)+minimum*take;remaining-=take\n        if remaining==0:return str(answer)\n        h=lower\n    q,r=divmod(remaining,n)\n    answer+=2*n*(q*h-q*(q-1)//2)-q*(n-1)\n    if r:answer+=2*r*(h-q)-(r-1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#348-sum-max-plus-min-after-decrement-operations",
+  "sourceContentHash": "19bed4287c5bc18313c60257c09134f38d4482d4a3be4b6060e6310ae4987469",
+  "author": "CSWork"
+}

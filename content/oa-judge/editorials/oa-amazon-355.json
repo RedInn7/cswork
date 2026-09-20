@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-355",
+  "title": "每次仓储请求的最少扩容代币",
+  "explanation": "## 思路\n\n排序容量并求总和S。固定选择w时费用max(0,a−w)+max(0,b−(S−w))。二分第一个w≥a，仅比较它和前一个容量。\n\n## 正确性证明\n\n当w<a时第一项斜率−1，第二项斜率0或1，总费用随w不增；当w≥a时第一项0、第二项随w不减。因此a以下只需最大容量，a以上只需最小容量。二分邻居涵盖两个区域最优，取最小得整体最优；查询互不修改S或容量。\n\n## 复杂度\n\n时间O(n log n+q log n)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from bisect import bisect_left\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n]);total=sum(a);out=[]\n    for need,backup in zip(d[2+n::2],d[3+n::2]):\n        p=bisect_left(a,need);answer=10**30\n        for i in (p-1,p):\n            if 0<=i<n:\n                w=a[i];answer=min(answer,max(0,need-w)+max(0,backup-(total-w)))\n        out.append(str(answer))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#355-use-minimum-tokens",
+  "sourceContentHash": "49a88a44c271bb0fea7ba49930e9f2adf8a37ede6a7b7e533ac9f5a2e1181c2f",
+  "author": "CSWork"
+}

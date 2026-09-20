@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-354",
+  "title": "按数值字典序输出所有不同目标和数对",
+  "explanation": "## 思路\n\n排序后双指针，小于目标则左移进，大于目标则右退；相等记录数对并跳过两端全部重复值。\n\n## 正确性证明\n\n固定左值时若当前和小于目标，与更小右值仍不可能达标，故安全舍弃左端；大于目标对称。相等时该值对已全部表示，跳过重复只消除重复输出，保留所有不同值对。左右下标始终不同保证不能重复使用单个元素，左值递增自然给出数值字典序。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,target=d[:2];a=sorted(d[2:]);l=0;r=n-1;out=[]\n    while l<r:\n        value=a[l]+a[r]\n        if value<target:l+=1\n        elif value>target:r-=1\n        else:\n            low,high=a[l],a[r];out.append(f'{low},{high}')\n            while l<r and a[l]==low:l+=1\n            while l<r and a[r]==high:r-=1\n    return '\\n'.join(out) if out else 'None'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#354-unique-pairs-with-target-sum",
+  "sourceContentHash": "bdcfbb0f95e8390ac725a933adf07a202f0c31fe19fa2bf258f752a50ec520a2",
+  "author": "CSWork"
+}

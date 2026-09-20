@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-13",
+  "title": "仅插入删除字符的最少密码更新次数（完整文本版）",
+  "explanation": "## 思路\n\n滚动数组求最长公共子序列长度L，返回len(a)+len(b)−2L。用较短字符串作DP列以节省空间。\n\n## 正确性证明\n\n未被删除的原字符必须按原序出现在目标串，因此它们构成共同子序列，最多保留L个，至少删除len(a)−L并插入len(b)−L。保留某个最长公共子序列、删除其余原字符，再在间隙插入目标其余字符可达到该下界。LCS前缀DP对相同末字符从对角加1，否则在跳过任一末字符中取最大；滚动保存不改变依赖。\n\n## 复杂度\n\n时间O(nm)，辅助空间O(min(n,m))，不按UTF-8字节或UTF-16代理单元计字符。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    lines=raw.split('\\n');a=json.loads(lines[0]);b=json.loads(lines[1])\n    if len(a)<len(b):a,b=b,a\n    row=[0]*(len(b)+1)\n    for x in a:\n        diagonal=0\n        for j,y in enumerate(b,1):\n            old=row[j]\n            if x==y:row[j]=diagonal+1\n            else:row[j]=max(row[j],row[j-1])\n            diagonal=old\n    return str(len(a)+len(b)-2*row[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#13-convert-simple-password-to-complex",
+  "sourceContentHash": "8fdda71738df1ccac0c749d0b9bf7063f0bf49e41bca2a9e69255f508da6a3e7",
+  "author": "CSWork"
+}

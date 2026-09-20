@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-2",
+  "title": "不取相邻罐子的最多巧克力",
+  "explanation": "## 思路\n\n维护前i−2罐和前i−1罐最优值，当前最优为不取当前的前一值与取当前的前二值+a[i]中较大者。\n\n## 正确性证明\n\n最优方案不取当前罐时为前i−1罐最优；取当前罐时必须跳过相邻的前一罐，其余恰为前i−2罐的最优。两个分支穷尽所有方案，空前缀值0建立归纳，因此滚动更新给出全局最优。\n\n## 复杂度\n\n时间O(N)，辅助空间O(1)不计输入，总数64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);older=previous=0\n    for value in values:older,previous=previous,max(previous,older+value)\n    return str(previous)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#2-tallest-chocolate-stack",
+  "sourceContentHash": "979f956a8a6fa8f6fc030aff5313c445aa015ac6f1e13e77ff6d33119d72c962",
+  "author": "CSWork"
+}

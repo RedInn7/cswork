@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-342",
+  "title": "可重排成相邻差不超过1的最大服务器圆环",
+  "explanation": "## 思路\n\n统计频数并按值排序。一个合法值区间必须连续，内部各值至少出现两次，端点至少一次。扫描右端；遇数值间隙重开，前一个值频数为1时令它成为左端，维护窗口频数和最大值。\n\n## 正确性证明\n\n若圆环包含最小值l与最大值r，沿圆环的两条路径都必须逐级经过每个严格中间值，故中间值至少两份且不能缺级。反过来用一份各级从l走到r，再用另一份内部各级走回l，额外同值可相邻插入，所以条件充分；仅一种值也合法。对于固定右端，所有不满足条件的较早左端必须排除，剩余最早左端包含最多元素。扫描枚举所有最优候选。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    counts=Counter(map(int,raw.split()[1:]));values=sorted(counts);prefix=[0];left=answer=0\n    for i,v in enumerate(values):\n        prefix.append(prefix[-1]+counts[v])\n        if i and v!=values[i-1]+1:left=i\n        elif i and counts[values[i-1]]==1:left=max(left,i-1)\n        answer=max(answer,prefix[-1]-prefix[left])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#342-server-selection",
+  "sourceContentHash": "add66de26449020982ad751f1b4473de2f880a64fb421285e3e514e73ba95113",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略多个最高频种类",
+    "code": "def solve(raw):\n    from collections import Counter\n    tasks,cool=raw.split();cool=int(cool);freq=Counter(tasks);f=max(freq.values());c=sum(v==f for v in freq.values())\n    return str(max(len(tasks),(f-1)*(cool+1)+1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把冷却当相同任务间距",
+    "code": "def solve(raw):\n    from collections import Counter\n    tasks,cool=raw.split();cool=int(cool);freq=Counter(tasks);f=max(freq.values());c=sum(v==f for v in freq.values())\n    return str(max(len(tasks),(f-1)*cool+c))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

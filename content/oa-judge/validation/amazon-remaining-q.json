@@ -1,0 +1,861 @@
+{
+  "schemaVersion": 1,
+  "seed": 20263360,
+  "problems": [
+    {
+      "id": "oa-amazon-337",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误仅数对应位置不同",
+          "rejectedByCases": [
+            0,
+            1,
+            4,
+            5,
+            7,
+            12,
+            13,
+            15,
+            16,
+            17,
+            23,
+            24,
+            25,
+            27,
+            28
+          ]
+        },
+        {
+          "name": "错误只能保留公共连续前缀",
+          "rejectedByCases": [
+            0,
+            1,
+            4,
+            5,
+            7,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            21,
+            23,
+            24,
+            25,
+            27,
+            28
+          ]
+        }
+      ],
+      "referenceSha256": "8ef328b9bd66ae68e63470190f3d792527c70f4b355064f7170b2b58a00b8c2a",
+      "localBatchSeconds": 0.121,
+      "maxLegalInputBytesUpperBound": 100001,
+      "maxTestInputBytes": 100001,
+      "maxTestOutputBytes": 6
+    },
+    {
+      "id": "oa-amazon-338",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误大小写敏感",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            6,
+            8,
+            9,
+            11,
+            15,
+            17,
+            18,
+            21,
+            22,
+            23,
+            24,
+            25,
+            28,
+            30
+          ]
+        },
+        {
+          "name": "左端少移一位",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            5,
+            6,
+            8,
+            9,
+            15,
+            17,
+            18,
+            22,
+            23,
+            24,
+            25,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "5637bf9af9b27d72df724c296f57c00b6f50bc8f3b803a2db1036cef72510641",
+      "localBatchSeconds": 0.51,
+      "maxLegalInputBytesUpperBound": 100115,
+      "maxTestInputBytes": 100069,
+      "maxTestOutputBytes": 7
+    },
+    {
+      "id": "oa-amazon-339",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误只数非空行",
+          "rejectedByCases": [
+            0,
+            3,
+            6,
+            7,
+            12,
+            13,
+            14,
+            19,
+            21,
+            25,
+            26,
+            28,
+            30
+          ]
+        },
+        {
+          "name": "错误空盘也算一个",
+          "rejectedByCases": [
+            2,
+            4,
+            15,
+            17
+          ]
+        }
+      ],
+      "referenceSha256": "9ffa03a5ecf156a0de3dcf2512c108d2f3b894c63c8b7db925abdb055c27f771",
+      "localBatchSeconds": 0.731,
+      "maxLegalInputBytesUpperBound": 2000020,
+      "maxTestInputBytes": 2000010,
+      "maxTestOutputBytes": 5
+    },
+    {
+      "id": "oa-amazon-341",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误从最大容量开始消耗最小副任务",
+          "rejectedByCases": [
+            0,
+            18,
+            22,
+            30
+          ]
+        },
+        {
+          "name": "错误排除恰好填满",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            4,
+            9,
+            22
+          ]
+        }
+      ],
+      "referenceSha256": "d937cefc85173f02a1d7b762bcf9738a31f4a821a07024b03fef48e0f65464eb",
+      "localBatchSeconds": 0.308,
+      "maxLegalInputBytesUpperBound": 2200030,
+      "maxTestInputBytes": 1300018,
+      "maxTestOutputBytes": 7
+    },
+    {
+      "id": "oa-amazon-342",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误只允许两个相邻不同值",
+          "rejectedByCases": [
+            1,
+            3,
+            12,
+            18,
+            21,
+            22
+          ]
+        },
+        {
+          "name": "错误忽略内部单份瓶颈",
+          "rejectedByCases": [
+            0,
+            4,
+            9,
+            14,
+            18,
+            20,
+            23,
+            26
+          ]
+        }
+      ],
+      "referenceSha256": "d4521dacdd01794bba996abb337aa43988f139b45c0201c57c886a9b151c28bf",
+      "localBatchSeconds": 0.573,
+      "maxLegalInputBytesUpperBound": 2400030,
+      "maxTestInputBytes": 2300007,
+      "maxTestOutputBytes": 7
+    },
+    {
+      "id": "oa-amazon-343",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误允许非相邻交换",
+          "rejectedByCases": [
+            2,
+            6
+          ]
+        },
+        {
+          "name": "漏掉无需交换的窗口",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            11,
+            12,
+            22,
+            24,
+            26,
+            29
+          ]
+        }
+      ],
+      "referenceSha256": "bcd548baf2fd0dc447ba759dcd5424c99638a4f47882b6f11001d47a1ea3d6a2",
+      "localBatchSeconds": 0.1,
+      "maxLegalInputBytesUpperBound": 102,
+      "maxTestInputBytes": 102,
+      "maxTestOutputBytes": 3
+    },
+    {
+      "id": "oa-amazon-344",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误同频数降序",
+          "rejectedByCases": [
+            0,
+            4,
+            8,
+            9,
+            10,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "name": "错误丢弃重复",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            5,
+            8,
+            9,
+            10,
+            12,
+            13,
+            16,
+            17,
+            18,
+            19,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "793ca25935dec319864722c9a493d633884ca1d99aa9bba141f9e21901b97e3c",
+      "localBatchSeconds": 0.444,
+      "maxLegalInputBytesUpperBound": 2400010,
+      "maxTestInputBytes": 2400007,
+      "maxTestOutputBytes": 2400000
+    },
+    {
+      "id": "oa-amazon-345",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误使用默认Unicode顺序",
+          "rejectedByCases": [
+            1,
+            2,
+            6,
+            7,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            22,
+            24,
+            26,
+            27,
+            28,
+            29
+          ]
+        },
+        {
+          "name": "错误去掉重复编码",
+          "rejectedByCases": [
+            1,
+            3,
+            4,
+            5,
+            6,
+            8,
+            22,
+            23,
+            28,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "fd14a20f6163d48eb86119d61c7b92c84a25e60d695cd57561d90b467b8c1d4d",
+      "localBatchSeconds": 1.029,
+      "maxLegalInputBytesUpperBound": 16777216,
+      "maxTestInputBytes": 12303079,
+      "maxTestOutputBytes": 12300002
+    },
+    {
+      "id": "oa-amazon-346",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误把严格大于改成至少",
+          "rejectedByCases": [
+            0,
+            2,
+            4,
+            5,
+            6,
+            8,
+            10,
+            14,
+            22,
+            25,
+            26,
+            30
+          ]
+        },
+        {
+          "name": "错误只检查有无公共字母",
+          "rejectedByCases": [
+            0,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            25,
+            26,
+            28,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "c27ee7b79ce43cff076f25d59f1b85abf1f08ff50a7931d783f90166e30c70e6",
+      "localBatchSeconds": 0.276,
+      "maxLegalInputBytesUpperBound": 100006,
+      "maxTestInputBytes": 100004,
+      "maxTestOutputBytes": 6
+    },
+    {
+      "id": "oa-amazon-347",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误只替换一项",
+          "rejectedByCases": [
+            0,
+            4,
+            8,
+            9,
+            13,
+            15,
+            16,
+            18,
+            19,
+            21,
+            22,
+            24,
+            25,
+            26,
+            27,
+            29,
+            30
+          ]
+        },
+        {
+          "name": "错误覆盖目标已有频数",
+          "rejectedByCases": [
+            0,
+            9,
+            15,
+            18,
+            19,
+            20,
+            21,
+            25,
+            27,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "ea49851a0d4463ae205f8cc5edbdb6451645dc8b279e82ca22fce18e72e87cf3",
+      "localBatchSeconds": 1.035,
+      "maxLegalInputBytesUpperBound": 7200040,
+      "maxTestInputBytes": 6800014,
+      "maxTestOutputBytes": 3400000
+    },
+    {
+      "id": "oa-amazon-348",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 44,
+      "negativeControls": [
+        {
+          "name": "错误全部相等后最小值不在首步后下降",
+          "rejectedByCases": [
+            1,
+            4,
+            12,
+            13,
+            14,
+            16,
+            17,
+            18,
+            20,
+            21,
+            22,
+            25,
+            28,
+            29,
+            30,
+            33,
+            35,
+            36,
+            39,
+            40,
+            42,
+            44
+          ]
+        },
+        {
+          "name": "错误尾部不足一轮忽略最小值下降",
+          "rejectedByCases": [
+            15,
+            19,
+            25,
+            28,
+            36,
+            39
+          ]
+        }
+      ],
+      "referenceSha256": "d6a2c2cd1f7a576de13a66af464f110f22ad3ee27af126805cc37d95cb2dea22",
+      "localBatchSeconds": 0.475,
+      "maxLegalInputBytesUpperBound": 2400040,
+      "maxTestInputBytes": 2400021,
+      "maxTestOutputBytes": 26
+    },
+    {
+      "id": "oa-amazon-349",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误按商出现次数重复累加",
+          "rejectedByCases": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "name": "错误漏掉n本身",
+          "rejectedByCases": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "6921aae31b27c6050ddff97106139d1967644c1a213d885f13d93be3a16b38b4",
+      "localBatchSeconds": 1.222,
+      "maxLegalInputBytesUpperBound": 14,
+      "maxTestInputBytes": 14,
+      "maxTestOutputBytes": 15
+    },
+    {
+      "id": "oa-amazon-350",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误只加最大值不乘长度",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            7,
+            8,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "name": "错误把负最大值当0",
+          "rejectedByCases": [
+            1,
+            4,
+            8,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "63e2435ab30e27a817246deefc01f1db0bbbac937174a653595ef53c3c3eeeae",
+      "localBatchSeconds": 0.528,
+      "maxLegalInputBytesUpperBound": 2400010,
+      "maxTestInputBytes": 2400007,
+      "maxTestOutputBytes": 27
+    },
+    {
+      "id": "oa-amazon-351",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误忽略多个最高频种类",
+          "rejectedByCases": [
+            0,
+            2,
+            5,
+            6,
+            17,
+            19
+          ]
+        },
+        {
+          "name": "错误把冷却当相同任务间距",
+          "rejectedByCases": [
+            0,
+            2,
+            3,
+            5,
+            6,
+            7,
+            9,
+            11,
+            13,
+            16,
+            17,
+            19,
+            22,
+            24
+          ]
+        }
+      ],
+      "referenceSha256": "7c52a1b5154325f4c806135dd480f5d78dcb1e69fd49883090a347b240cf3dd7",
+      "localBatchSeconds": 0.095,
+      "maxLegalInputBytesUpperBound": 100006,
+      "maxTestInputBytes": 10005,
+      "maxTestOutputBytes": 8
+    },
+    {
+      "id": "oa-amazon-352",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 29,
+      "negativeControls": [
+        {
+          "name": "错误跳过全部非正收益",
+          "rejectedByCases": [
+            1,
+            5
+          ]
+        },
+        {
+          "name": "错误升序更新复用同一交易",
+          "rejectedByCases": [
+            8,
+            9,
+            14,
+            16,
+            17,
+            23,
+            27,
+            28,
+            29,
+            31
+          ]
+        }
+      ],
+      "referenceSha256": "d34ec9fffe983f2eb24ff8cc2f383a7aa547e14286291b9a53204ef2d0d17ee7",
+      "localBatchSeconds": 2.766,
+      "maxLegalInputBytesUpperBound": 30050,
+      "maxTestInputBytes": 26017,
+      "maxTestOutputBytes": 14
+    },
+    {
+      "id": "oa-amazon-354",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误丢弃相同值合法数对",
+          "rejectedByCases": [
+            2,
+            5,
+            11,
+            18
+          ]
+        },
+        {
+          "name": "错误按文本而非数值排序",
+          "rejectedByCases": [
+            3,
+            11,
+            18,
+            22,
+            26
+          ]
+        }
+      ],
+      "referenceSha256": "247239baa0e7fd30e45f1703943b82fce5bcc67297fda6301d77ff3e99e693cd",
+      "localBatchSeconds": 0.39,
+      "maxLegalInputBytesUpperBound": 2400040,
+      "maxTestInputBytes": 2200019,
+      "maxTestOutputBytes": 1277790
+    },
+    {
+      "id": "oa-amazon-355",
+      "oracleCases": 163,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "negativeControls": [
+        {
+          "name": "错误只比较最大两个仓库",
+          "rejectedByCases": [
+            2,
+            11,
+            12,
+            17,
+            18,
+            25,
+            29
+          ]
+        },
+        {
+          "name": "错误选中仓库也能算备份",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            4,
+            6,
+            7,
+            10,
+            11,
+            12,
+            14,
+            17,
+            19,
+            21,
+            22,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "84e400a0861d5051a49e0830441fdf833de43cc42e95b5268e85dfb935fd31c2",
+      "localBatchSeconds": 0.792,
+      "maxLegalInputBytesUpperBound": 3900040,
+      "maxTestInputBytes": 3900014,
+      "maxTestOutputBytes": 1700000
+    }
+  ],
+  "skipped": {
+    "336": "核心API规则表为缺失本机图片；重复注册、未知用户及未登录注销等状态转移和精确文案无法恢复。",
+    "340": "原文真实截断于servers, wh，仅单例且解释声明未知，无法恢复调度规则。",
+    "353": "未保证查询节点不同，未定义节点与自身、尤其根与自身的关系；不擅加不同节点保证或父节点哨兵规则。"
+  },
+  "note": "Authored reference batched subprocess only; production sandbox required."
+}

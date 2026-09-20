@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同时整除错误只输出Fizz",
+    "code": "def solve(raw):\n    n=int(raw);blocks=[];part=[]\n    for i in range(1,n+1):\n        if i%15==0:value='Fizz'\n        elif i%3==0:value='Fizz'\n        elif i%5==0:value='Buzz'\n        else:value=str(i)\n        part.append(value)\n        if len(part)==8192:blocks.append('\\n'.join(part));part=[]\n    if part:blocks.append('\\n'.join(part))\n    return '\\n'.join(blocks)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误漏掉N",
+    "code": "def solve(raw):\n    n=int(raw);blocks=[];part=[]\n    for i in range(1,n):\n        if i%15==0:value='FizzBuzz'\n        elif i%3==0:value='Fizz'\n        elif i%5==0:value='Buzz'\n        else:value=str(i)\n        part.append(value)\n        if len(part)==8192:blocks.append('\\n'.join(part));part=[]\n    if part:blocks.append('\\n'.join(part))\n    return '\\n'.join(blocks)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

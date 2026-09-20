@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误使用默认Unicode顺序",
+    "code": "def solve(raw):\n    import json\n    order,codes=json.loads(raw);rank={c:i for i,c in enumerate(order)}\n    codes.sort()\n    return json.dumps(codes,ensure_ascii=True,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误去掉重复编码",
+    "code": "def solve(raw):\n    import json\n    order,codes=json.loads(raw);rank={c:i for i,c in enumerate(order)}\n    codes.sort(key=lambda word:bytes(rank[c] for c in word))\n    return json.dumps(list(dict.fromkeys(codes)),ensure_ascii=True,separators=(',',':'))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

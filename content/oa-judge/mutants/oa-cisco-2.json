@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许相邻罐都取",
+    "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);older=previous=0\n    for value in values:older,previous=previous,previous+value\n    return str(previous)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只取一个罐",
+    "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);older=previous=0\n    for value in values:older,previous=previous,max(previous,value)\n    return str(previous)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

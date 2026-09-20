@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只加最大值不乘长度",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));stack=[];answer=0;n=len(a)\n    for i in range(n+1):\n        while stack and (i==n or a[stack[-1]]<=a[i]):\n            j=stack.pop();left=j-(stack[-1] if stack else -1);right=i-j\n            answer+=a[j]*left*right\n        stack.append(i)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把负最大值当0",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));stack=[];answer=0;n=len(a)\n    for i in range(n+1):\n        while stack and (i==n or a[stack[-1]]<=a[i]):\n            j=stack.pop();left=j-(stack[-1] if stack else -1);right=i-j\n            answer+=max(0,a[j])*left*right*(left+right)//2\n        stack.append(i)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

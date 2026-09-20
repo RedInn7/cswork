@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只比较最大两个仓库",
+    "code": "def solve(raw):\n    from bisect import bisect_left\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n]);total=sum(a);out=[]\n    for need,backup in zip(d[2+n::2],d[3+n::2]):\n        p=bisect_left(a,need);answer=10**30\n        for i in (n-2,n-1):\n            if 0<=i<n:\n                w=a[i];answer=min(answer,max(0,need-w)+max(0,backup-(total-w)))\n        out.append(str(answer))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误选中仓库也能算备份",
+    "code": "def solve(raw):\n    from bisect import bisect_left\n    d=list(map(int,raw.split()));n,q=d[:2];a=sorted(d[2:2+n]);total=sum(a);out=[]\n    for need,backup in zip(d[2+n::2],d[3+n::2]):\n        p=bisect_left(a,need);answer=10**30\n        for i in (p-1,p):\n            if 0<=i<n:\n                w=a[i];answer=min(answer,max(0,need-w)+max(0,backup-total))\n        out.append(str(answer))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-344",
+  "title": "按频数再按数值升序排列错误码",
+  "explanation": "## 思路\n\n统计频数，以(频数,数值)排序所有不同值，按原频数展开。\n\n## 正确性证明\n\n每个值的全部副本排序键相同，统计不会混淆其次数；排序键严格对应两级优先级，展开又恰保留原多重集，因此得到目标顺序。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    counts=Counter(map(int,raw.split()[1:]));out=[]\n    for v in sorted(counts,key=lambda v:(counts[v],v)):out.extend([str(v)]*counts[v])\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#344-sort-error-codes-by-frequency",
+  "sourceContentHash": "f3abc2608adfa0d8f28c2fc75f8ec822fb0ddeefcf09b9d2ec352b293895f57a",
+  "author": "CSWork"
+}

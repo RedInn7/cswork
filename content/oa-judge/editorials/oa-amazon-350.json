@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-350",
+  "title": "所有子数组的最大值乘长度之和",
+  "explanation": "## 思路\n\n单调栈为每个元素找到左边严格更大、右边大于等于的位置，令到边界距离为L、R。它负责L·R个子数组，长度总和为L·R·(L+R)/2，乘本元素累加。\n\n## 正确性证明\n\n每段由其中最靠右的最大元素负责。左界不能跨越严格更大者，右界不能包含下一个相等或更大者，恰好给出唯一归属，既不漏计也不重计。左延伸选择1..L、右延伸1..R时长度为l+r−1，双重求和等于LR(L+R)/2。单调栈中每个位置只入栈出栈一次。\n\n## 复杂度\n\n时间O(n)，空间O(n)，总和可能超64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));stack=[];answer=0;n=len(a)\n    for i in range(n+1):\n        while stack and (i==n or a[stack[-1]]<=a[i]):\n            j=stack.pop();left=j-(stack[-1] if stack else -1);right=i-j\n            answer+=a[j]*left*right*(left+right)//2\n        stack.append(i)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#350-sum-of-max-of-subarrays",
+  "sourceContentHash": "19b4be4bb957429f376b6b0e12766bdccfbaafdf95bbdfb5d5512d6e21c04bed",
+  "author": "CSWork"
+}

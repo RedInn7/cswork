@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-4",
+  "title": "最高位在链表头的二进制值转十进制",
+  "explanation": "## 思路\n\n从头到尾依次令value=2·value+bit。Python用任意精度整数；其他语言可用无符号64位或大整数。\n\n## 正确性证明\n\n处理前k个节点后，value等于这k位二进制数。追加下一位把原各位权重乘2，再加新最低位，恰为2·value+bit；由0开始归纳得到全部位的准确值。前导0自然不改变结果。\n\n## 复杂度\n\n时间O(N)，固定原界64位下辅助空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);answer=0\n    for bit in values:answer=answer*2+bit\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#4-binary-linked-list-to-decimal",
+  "sourceContentHash": "d6a11516f4a8279fe4fdc7324987300641d9a8cb49fea596c7bca0ea4417636f",
+  "author": "CSWork"
+}

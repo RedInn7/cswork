@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误跳过全部非正收益",
+    "code": "def solve(raw):\n    lines=raw.splitlines();n,k=map(int,lines[0].split());s=lines[1] if n else '';rewards=list(map(int,' '.join(lines[2:]).split()));k=min(k,n)\n    if not k:return '0'\n    negative=-10**30;dp=[[negative]*(k+1) for _ in range(26)];best=[negative]*26\n    for c,value in zip(s,rewards):\n        if value<=0:continue\n        index=ord(c)-65;other=max([0]+[best[j] for j in range(26) if j!=index]);row=dp[index]\n        for run in range(k,1,-1):row[run]=max(row[run],row[run-1]+value)\n        row[1]=max(row[1],other+value);best[index]=max(row)\n    return str(max(0,max(best)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误升序更新复用同一交易",
+    "code": "def solve(raw):\n    lines=raw.splitlines();n,k=map(int,lines[0].split());s=lines[1] if n else '';rewards=list(map(int,' '.join(lines[2:]).split()));k=min(k,n)\n    if not k:return '0'\n    negative=-10**30;dp=[[negative]*(k+1) for _ in range(26)];best=[negative]*26\n    for c,value in zip(s,rewards):\n        index=ord(c)-65;other=max([0]+[best[j] for j in range(26) if j!=index]);row=dp[index]\n        for run in range(2,k+1):row[run]=max(row[run],row[run-1]+value)\n        row[1]=max(row[1],other+value);best[index]=max(row)\n    return str(max(0,max(best)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

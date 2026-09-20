@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-337",
+  "title": "移动字符到末尾得到反转串的最少次数",
+  "explanation": "## 思路\n\n设目标为原串反转，扫描原串，贪心匹配目标从开头起的尽可能长的前缀；答案是未匹配字符数。\n\n## 正确性证明\n\n从未移动的字符始终保持原有相对顺序，并位于最后被移动的字符之前。因此若执行t次，至少n−t个未移动字符构成目标的前缀，长度不超过最长可匹配前缀L，得到t≥n−L。反过来保留该前缀的原位置，按目标剩余后缀的次序把其他字符各移到末尾一次，即用n−L次完成。匹配前缀时总取最早可用字符，为后续留下最多位置，归纳得贪心求出L。\n\n## 复杂度\n\n时间O(n)，空间O(n)存反转串。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();target=s[::-1];matched=0\n    for c in s:\n        if matched<len(s) and c==target[matched]:matched+=1\n    return str(len(s)-matched)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#337-reverse-binary-string-with-minimum-shifts",
+  "sourceContentHash": "e30d0b3662b7bbc9141234c496dc7a83018061484007b17d38c5ba96a9b04f31",
+  "author": "CSWork"
+}

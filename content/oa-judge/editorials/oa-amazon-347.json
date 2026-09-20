@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-347",
+  "title": "全部同值替换后逐次报告总和",
+  "explanation": "## 思路\n\n用频数表与当前总和。old≠new时取出old频数c，将总和增加(new−old)c，再把c合并到new频数；相同值直接保留状态。\n\n## 正确性证明\n\n每次恰有c项改变，每项总和变化new−old，故总和更新精确。频数从old全部移到new，其他值不变，因此频数表仍与当前数组一致。归纳所有查询及不存在旧值的零变化均正确。\n\n## 复杂度\n\n期望时间O(n+q)，空间O(n+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    d=list(map(int,raw.split()));n,q=d[:2];counts=Counter(d[2:2+n]);total=sum(d[2:2+n]);out=[]\n    for old,new in zip(d[2+n::2],d[3+n::2]):\n        if old!=new:\n            c=counts.pop(old,0);total+=(new-old)*c;counts[new]+=c\n        out.append(str(total))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#347-sum-after-query-update",
+  "sourceContentHash": "6f429e66cf8bf184e7cd53a7cdedf2cff4117627ec022e3e8ed4291b98c7cc72",
+  "author": "CSWork"
+}

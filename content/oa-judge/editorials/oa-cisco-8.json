@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-8",
+  "title": "逆序数字链表相加",
+  "explanation": "## 思路\n\n逐位相加并保存进位，最后删除多余高位0。\n\n## 正确性证明\n\n处理第i位之前，低于i位已等于真实和的相应位，carry是未写高位部分的进位。除10取商余分别得到下一进位与本位，保持不变量。遍历完两列表并写最终进位即完整和，删除高位0不改变数值。\n\n## 复杂度\n\n时间O(n+m)，空间O(n+m)，不把长列表转成大整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];m=d[n+1];b=d[n+2:];out=[];carry=0\n    for i in range(max(n,m)):\n        total=carry+(a[i] if i<n else 0)+(b[i] if i<m else 0);out.append(total%10);carry=total//10\n    if carry:out.append(carry)\n    while len(out)>1 and out[-1]==0:out.pop()\n    return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#8-add-numbers",
+  "sourceContentHash": "93fd848abe135dda7f3c0b3b3c4f1db54ef5601b2ba1d0d9d48dd10ea31a2c70",
+  "author": "CSWork"
+}
