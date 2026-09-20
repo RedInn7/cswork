@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误最后中心也只看阈值后下一对",
+    "code": "def solve(d):\n    m,n=map(int,d[:2]);a=sorted(map(int,d[2:2+m]),reverse=True);c=sorted(map(int,d[2+m:]));cursor=saving=best=0\n    for j,threshold in enumerate(c):\n        if cursor+threshold+2>m:break\n        if j==n-1:\n            best=max(best,saving+a[cursor+threshold]+a[cursor+threshold+1]);break\n        cursor+=threshold;saving+=a[cursor]+a[cursor+1];cursor+=2;best=max(best,saving)\n    return str(sum(a)-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误只允许第一个中心优惠",
+    "code": "def solve(d):\n    m,n=map(int,d[:2]);a=sorted(map(int,d[2:2+m]),reverse=True);c=sorted(map(int,d[2+m:]));cursor=saving=best=0\n    for j,threshold in enumerate(c[:1]):\n        if cursor+threshold+2>m:break\n        if j==n-1:\n            best=max(best,saving+a[-2]+a[-1]);break\n        cursor+=threshold;saving+=a[cursor]+a[cursor+1];cursor+=2;best=max(best,saving)\n    return str(sum(a)-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

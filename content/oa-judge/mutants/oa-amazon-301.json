@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误冷启动最小值不排除同类型",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);jobs=map(int,d[2:2+n]);short=[0]+list(map(int,d[2+n:2+n+m]));long=[0]+list(map(int,d[2+n+m:]));inf=10**30;dp=[inf]*(m+1);dp[0]=0;first=(0,0);second=(inf,-1);offset=0;p=0\n    for t in jobs:\n        without=first[0]\n        switch=offset+min(dp[t]+short[t],without+long[t])\n        offset+=short[t] if p==t else long[t]\n        value=switch-offset\n        if value<dp[p]:\n            dp[p]=value;entry=(value,p)\n            if first[1]==p:first=entry\n            elif second[1]==p:\n                second=entry\n                if second<first:first,second=second,first\n            elif entry<first:second=first;first=entry\n            elif entry<second:second=entry\n        p=t\n    return str(first[0]+offset)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误只用一个处理器",
+    "code": "def solve(d):\n    n,m=map(int,d[:2]);jobs=map(int,d[2:2+n]);short=[0]+list(map(int,d[2+n:2+n+m]));long=[0]+list(map(int,d[2+n+m:]));inf=10**30;dp=[inf]*(m+1);dp[0]=0;first=(0,0);second=(inf,-1);offset=0;p=0\n    for t in jobs:\n        without=first[0] if first[1]!=t else second[0]\n        switch=offset+min(dp[t]+short[t],without+long[t])\n        offset+=short[t] if p==t else long[t]\n        value=switch-offset\n        if value<dp[p]:\n            dp[p]=value;entry=(value,p)\n            if first[1]==p:first=entry\n            elif second[1]==p:\n                second=entry\n                if second<first:first,second=second,first\n            elif entry<first:second=first;first=entry\n            elif entry<second:second=entry\n        p=t\n    return str(offset)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-307",
+  "title": "一次性使用各中心的最少包装工作量",
+  "explanation": "## 思路\n\neffort降序、阈值升序，依次用最小阈值中心：先付阈值件，再免接下来两件，记录节省。尚有未用中心时可将所有余项付费放入它；若使用最后一个中心，它必须承担所有余项，故其免费件改为全局最小两件。比较全部前缀使用数量及0优惠。\n\n## 正确性证明\n\n固定一组付费件，免费件必须不大于其中最小值。将各优惠组按价值高低整理时，若后组较大项与前组较小项交叉，可交换直到组连续而不降低免费总值；把较小阈值放前会让前组免费位置更早，后组结束位置不变，因此不减节省。非最后中心只付阈值数量即可，额外付费移交余项组不影响其优惠。若还有未用中心，它可承载全部余项且放弃优惠；若没有，则最后组须含剩余全部物品，只有全局最小两项能不大于全部余下付费项。算法分别枚举每个可能优惠组数，按此交换得到可达最优节省，减去总和即最少费用。\n\n## 复杂度\n\n时间O(m log m+n log n)，空间O(m+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    m,n=map(int,d[:2]);a=sorted(map(int,d[2:2+m]),reverse=True);c=sorted(map(int,d[2+m:]));cursor=saving=best=0\n    for j,threshold in enumerate(c):\n        if cursor+threshold+2>m:break\n        if j==n-1:\n            best=max(best,saving+a[-2]+a[-1]);break\n        cursor+=threshold;saving+=a[cursor]+a[cursor+1];cursor+=2;best=max(best,saving)\n    return str(sum(a)-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#307-minimum-total-packaging-effort",
+  "sourceContentHash": "57896f31168baaf2ed8894e129d950c5bce53714e8bc9d3764325b0487ab3f8f",
+  "author": "CSWork"
+}

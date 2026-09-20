@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把最大若干游戏配对",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]))\n    if k>n or n>2*k:return '-1'\n    pairs=n-k;answer=a[-1]\n    for i in range(pairs):answer=max(answer,a[i]+a[n-1-i])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误忽略必须配成双件的容量",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]))\n    if k>n or n>2*k:return '-1'\n    pairs=n-k;answer=a[-1]\n    for i in range(pairs):answer=max(answer,a[i]+a[2*pairs-1-i])\n    return str(a[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

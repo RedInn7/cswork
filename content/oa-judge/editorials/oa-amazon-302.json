@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-302",
+  "title": "保留中心区间能接触所有商户的最少删除数",
+  "explanation": "## 思路\n\n分别排序全部起点和终点。中心[l,r]可保留数为起点≤r的数量减去终点<l的数量，最大化这个数后从n减去。\n\n## 正确性证明\n\n不相交的区间恰为在左边结束早于l或在右边开始晚于r，两类互斥；公式精确统计相交者。固定中心时全部相交商户都能保留，且任何不相交者必须删除。枚举每个原商户作为中心涵盖所有合法剩余集合，所以最大可保留数给出最少删除。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left,bisect_right\n    values=list(map(int,d[1:]));a=list(zip(values[::2],values[1::2]));starts=sorted(l for l,r in a);ends=sorted(r for l,r in a);best=0\n    for l,r in a:best=max(best,bisect_right(starts,r)-bisect_left(ends,l))\n    return str(len(a)-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#302-minimum-retailers",
+  "sourceContentHash": "767cff1d2f6cd4d641bf130fbe82a6c4847da1d78d42eec4c036bba758ac9d28",
+  "author": "CSWork"
+}

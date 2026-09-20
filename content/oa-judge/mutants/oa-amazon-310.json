@@ -1,0 +1,10 @@
+[
+  {
+    "name": "频率平局错误取字典序最大",
+    "code": "def solve(d):\n    count=int(d[0]);at=1;transactions=[];masks={}\n    for i in range(count):\n        size=int(d[at]);at+=1;names=sorted(set(d[at:at+size]));at+=size;transactions.append(names);bit=1<<i\n        for name in names:masks[name]=masks.get(name,0)|bit\n    best=0;answer=None\n    for names in transactions:\n        for i,a in enumerate(names):\n            left=masks[a]\n            for j in range(i+1,len(names)):\n                b=names[j];frequency=(left&masks[b]).bit_count();pair=(a,b)\n                if frequency>best or frequency==best and (answer is None or pair>answer):best=frequency;answer=pair\n    return '-1' if answer is None else ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误将并集交易数当共同出现",
+    "code": "def solve(d):\n    count=int(d[0]);at=1;transactions=[];masks={}\n    for i in range(count):\n        size=int(d[at]);at+=1;names=sorted(set(d[at:at+size]));at+=size;transactions.append(names);bit=1<<i\n        for name in names:masks[name]=masks.get(name,0)|bit\n    best=0;answer=None\n    for names in transactions:\n        for i,a in enumerate(names):\n            left=masks[a]\n            for j in range(i+1,len(names)):\n                b=names[j];frequency=(left|masks[b]).bit_count();pair=(a,b)\n                if frequency>best or frequency==best and (answer is None or pair<answer):best=frequency;answer=pair\n    return '-1' if answer is None else ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

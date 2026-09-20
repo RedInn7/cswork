@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只数清除次数",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));total=sum(a);window=sum(a[:k]);q=window\n    for i in range(k,n):window+=a[i]-a[i-k];q=min(q,window)\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误三角和多收一次",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]));total=sum(a);window=sum(a[:k]);q=window\n    for i in range(k,n):window+=a[i]-a[i-k];q=min(q,window)\n    return str(total+q*(q+1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

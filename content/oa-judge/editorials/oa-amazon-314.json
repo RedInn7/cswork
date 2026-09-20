@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-314",
+  "title": "原数轴内满足总往返距离预算的整数仓库位置数",
+  "explanation": "## 思路\n\n排序取中位点。若中位点成本超预算则答案0；否则分别在左端至中位点、和中位点至右端二分最左/最右可行整数。成本用排序前缀和及二分分割点计算，得到R−L+1。\n\n## 正确性证明\n\n绝对距离和在中位数处最小，向中位区间两侧移动单调不减。因此中位点不可行时全域无解，可行时左右各自具有一次真假变化，分开二分得到两个精确边界。前缀中≤p者贡献p·个数−和，其余贡献和−p·个数，乘2恰为往返路程。可行位置是闭整数区间，长度为R−L+1，并与原数轴两端严格一致。\n\n## 复杂度\n\n时间O(n log n+log(2·10^9)·log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_right\n    n,budget=map(int,d[:2]);a=sorted(map(int,d[2:]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def cost(p):\n        count=bisect_right(a,p);return 2*(p*count-prefix[count]+prefix[n]-prefix[count]-p*(n-count))\n    middle=a[n//2]\n    if cost(middle)>budget:return '0'\n    l=-10**9;r=middle\n    while l<r:\n        mid=(l+r)//2\n        if cost(mid)<=budget:r=mid\n        else:l=mid+1\n    first=l;l=middle;r=10**9\n    while l<r:\n        mid=(l+r+1)//2\n        if cost(mid)<=budget:l=mid\n        else:r=mid-1\n    return str(l-first+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#314-number-of-suitable-locations",
+  "sourceContentHash": "15ba0d37d8a792cd2390533f0d9c3aca301de730ac7552a140294506b3b2f498",
+  "author": "CSWork"
+}

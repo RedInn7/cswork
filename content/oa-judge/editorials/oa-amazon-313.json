@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-313",
+  "title": "四个轴向都有其他机器人的空闲机器人数量",
+  "explanation": "## 思路\n\n记录每一行x的最小最大值、每一列y的最小最大值；机器人x严格介于该行极值之间，且y严格介于该列极值之间时计入。\n\n## 正确性证明\n\n同行存在更小x与更大x当且仅当x严格介于该行两个极值；同列上下同理。四个条件彼此独立，合取恰为题目空闲定义。只用极值不会要求距离1，也不会把机器人自身当作严格方向上的邻居。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    v=list(map(int,d[1:]));points=list(zip(v[::2],v[1::2]));rows={};cols={}\n    for x,y in points:\n        if y not in rows:rows[y]=[x,x]\n        else:rows[y][0]=min(rows[y][0],x);rows[y][1]=max(rows[y][1],x)\n        if x not in cols:cols[x]=[y,y]\n        else:cols[x][0]=min(cols[x][0],y);cols[x][1]=max(cols[x][1],y)\n    return str(sum(rows[y][0]<x<rows[y][1] and cols[x][0]<y<cols[x][1] for x,y in points))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#313-count-idle-warehouse-robots",
+  "sourceContentHash": "b5daae34a900029917fee93c9221e3c0f8355dcf73983f9f2f7755e67739b8f4",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-312",
+  "title": "具有同名同价同重伙伴的产品总数",
+  "explanation": "## 思路\n\n以(name,price,weight)元组计数，将出现次数≥2的组的全部次数求和。\n\n## 正确性证明\n\n若某组次数为1，其中唯一产品找不到另一个相同产品，贡献0；若次数至少2，组内每一件都能以另一件作见证，因此全部计入。不同组由至少一项差别互斥，逐组求和不重复不遗漏。\n\n## 复杂度\n\n期望时间O(n)，空间O(n)，字符串最多10字符。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    import json\n    from collections import Counter\n    products=json.loads(' '.join(d));count=Counter(tuple(row) for row in products)\n    return str(sum(c for c in count.values() if c>1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#312-number-of-duplicates",
+  "sourceContentHash": "bfa25905b81c6fd1aef3f1ffd8813c68090dd1ee7d669eee5cfc4c63c5598ae6",
+  "author": "CSWork"
+}

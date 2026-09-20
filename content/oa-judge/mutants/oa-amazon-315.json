@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误返回至多k而非恰好k",
+    "code": "def solve(d):\n    from collections import deque\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]))\n    def at_most(limit):\n        if limit<0:return 0\n        low=deque();high=deque();left=total=0\n        for right,v in enumerate(a):\n            while low and a[low[-1]]>=v:low.pop()\n            while high and a[high[-1]]<=v:high.pop()\n            low.append(right);high.append(right)\n            while a[high[0]]-a[low[0]]>limit:\n                if low[0]==left:low.popleft()\n                if high[0]==left:high.popleft()\n                left+=1\n            total+=right-left+1\n        return total\n    return str(at_most(k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误每右端只计一个窗口",
+    "code": "def solve(d):\n    from collections import deque\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]))\n    def at_most(limit):\n        if limit<0:return 0\n        low=deque();high=deque();left=total=0\n        for right,v in enumerate(a):\n            while low and a[low[-1]]>=v:low.pop()\n            while high and a[high[-1]]<=v:high.pop()\n            low.append(right);high.append(right)\n            while a[high[0]]-a[low[0]]>limit:\n                if low[0]==left:low.popleft()\n                if high[0]==left:high.popleft()\n                left+=1\n            total+=1\n        return total\n    return str(at_most(k)-at_most(k-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

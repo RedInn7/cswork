@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-301",
+  "title": "两个处理器依序完成类型任务的最短总准备时间",
+  "explanation": "## 思路\n\n处理上一类型p后，状态j记录另一个处理器的上次类型。dp[j]+offset为实际费用。继续用原处理器使所有状态加相同费用；换处理器的最优为min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+旧offset，只更新状态p。维护两个不同索引的最小值，支持单点降低。\n\n## 正确性证明\n\n每一步只可能继续或切换处理器。继续时上次类型为p，故费用对全部j相同，可由offset表示；切换时旧备用变活跃，旧活跃备用类型为p，因此全部切换汇入同一状态。匹配类型t只能付short，其余才付long，排除t避免short较大时虚构冷启动。状态值只会降低，最小和次小可常数维护；归纳始终保留各状态真实最优。最后全局最小即答案。\n\n## 复杂度\n\n时间O(n+m)，空间O(m+n)包含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,m=map(int,d[:2]);jobs=map(int,d[2:2+n]);short=[0]+list(map(int,d[2+n:2+n+m]));long=[0]+list(map(int,d[2+n+m:]));inf=10**30;dp=[inf]*(m+1);dp[0]=0;first=(0,0);second=(inf,-1);offset=0;p=0\n    for t in jobs:\n        without=first[0] if first[1]!=t else second[0]\n        switch=offset+min(dp[t]+short[t],without+long[t])\n        offset+=short[t] if p==t else long[t]\n        value=switch-offset\n        if value<dp[p]:\n            dp[p]=value;entry=(value,p)\n            if first[1]==p:first=entry\n            elif second[1]==p:\n                second=entry\n                if second<first:first,second=second,first\n            elif entry<first:second=first;first=entry\n            elif entry<second:second=entry\n        p=t\n    return str(first[0]+offset)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#301-minimum-preparation-time-for-two-handlers",
+  "sourceContentHash": "626244f79237da282b589bec87fc0e1735e2ee327984c02967f23e646353be2b",
+  "author": "CSWork"
+}

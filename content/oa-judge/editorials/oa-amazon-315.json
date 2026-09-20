@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-315",
+  "title": "最大最小差恰好k的连续小组数量",
+  "explanation": "## 思路\n\n用两个单调队列维护窗口最大最小，计算范围差≤K的窗口数atMost(K)：每个右端加合法后缀长度。答案atMost(k)−atMost(k−1)，负K返回0。\n\n## 正确性证明\n\n对固定右端，去掉左端元素不会增大范围差，因此合法窗口的左端构成后缀。双指针找到最早合法左端后，全部更晚左端都合法，数量为右−左+1。最大/最小单调队列给出窗口准确极值，每元素至多进出一次。整数差恰为k当且仅当≤k但不≤k−1，两计数相减不重不漏。\n\n## 复杂度\n\n时间O(n)，空间O(n)，结果用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from collections import deque\n    n,k=map(int,d[:2]);a=list(map(int,d[2:]))\n    def at_most(limit):\n        if limit<0:return 0\n        low=deque();high=deque();left=total=0\n        for right,v in enumerate(a):\n            while low and a[low[-1]]>=v:low.pop()\n            while high and a[high[-1]]<=v:high.pop()\n            low.append(right);high.append(right)\n            while a[high[0]]-a[low[0]]>limit:\n                if low[0]==left:low.popleft()\n                if high[0]==left:high.popleft()\n                left+=1\n            total+=right-left+1\n        return total\n    return str(at_most(k)-at_most(k-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#315-number-of-well-performing-groups",
+  "sourceContentHash": "63debdf7b68736185d97c9f3b4969bd9f427a2413b9af31356f2069af448df80",
+  "author": "CSWork"
+}

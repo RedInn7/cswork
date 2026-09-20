@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只算单程",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,budget=map(int,d[:2]);a=sorted(map(int,d[2:]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def cost(p):\n        count=bisect_right(a,p);return 1*(p*count-prefix[count]+prefix[n]-prefix[count]-p*(n-count))\n    middle=a[n//2]\n    if cost(middle)>budget:return '0'\n    l=-10**9;r=middle\n    while l<r:\n        mid=(l+r)//2\n        if cost(mid)<=budget:r=mid\n        else:l=mid+1\n    first=l;l=middle;r=10**9\n    while l<r:\n        mid=(l+r+1)//2\n        if cost(mid)<=budget:l=mid\n        else:r=mid-1\n    return str(l-first+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误遗漏端点个数",
+    "code": "def solve(d):\n    from bisect import bisect_right\n    n,budget=map(int,d[:2]);a=sorted(map(int,d[2:]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def cost(p):\n        count=bisect_right(a,p);return 2*(p*count-prefix[count]+prefix[n]-prefix[count]-p*(n-count))\n    middle=a[n//2]\n    if cost(middle)>budget:return '0'\n    l=-10**9;r=middle\n    while l<r:\n        mid=(l+r)//2\n        if cost(mid)<=budget:r=mid\n        else:l=mid+1\n    first=l;l=middle;r=10**9\n    while l<r:\n        mid=(l+r+1)//2\n        if cost(mid)<=budget:l=mid\n        else:r=mid-1\n    return str(l-first)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误下降也计操作",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));answer=a[0]\n    for previous,current in zip(a,a[1:]):answer+=abs(current-previous)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误逐元素独立加",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));answer=a[0]\n    for previous,current in zip(a,a[1:]):answer+=max(0,current-previous)\n    return str(sum(a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-310",
+  "title": "共同出现交易数最多的产品对",
+  "explanation": "## 思路\n\n每个产品建立至多T位的交易出现bitmask。逐交易去重并枚举其不同产品对，以两个mask按位与后的bit_count得到精确频率；只维护当前最高频及字典序最小对，不保存全部pair表。\n\n## 正确性证明\n\n一对产品共同出现的交易恰为两个出现集合的交集，所以位交集数即题目频率。任何有正频率的产品对至少在一笔交易被枚举，因此候选覆盖全部有效答案。重复枚举同对不会改变最大值和平局结果。交易内先去重，重复名字不产生自配对也不加重一笔交易权重。\n\n## 复杂度\n\n至多T·100·99/2=4950000次候选评估，每次位操作至多1000位；空间O(U·T/字长+输入)，不存最多495万pair对象。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    count=int(d[0]);at=1;transactions=[];masks={}\n    for i in range(count):\n        size=int(d[at]);at+=1;names=sorted(set(d[at:at+size]));at+=size;transactions.append(names);bit=1<<i\n        for name in names:masks[name]=masks.get(name,0)|bit\n    best=0;answer=None\n    for names in transactions:\n        for i,a in enumerate(names):\n            left=masks[a]\n            for j in range(i+1,len(names)):\n                b=names[j];frequency=(left&masks[b]).bit_count();pair=(a,b)\n                if frequency>best or frequency==best and (answer is None or pair<answer):best=frequency;answer=pair\n    return '-1' if answer is None else ' '.join(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#310-most-common-product-pair",
+  "sourceContentHash": "f03a70b9a385faeb96933c7938f5804efbd1698d20bd2e270143b69d11c128c7",
+  "author": "CSWork"
+}
