@@ -314,6 +314,17 @@ try {
   );
   const failures = [];
   const equivalentPrograms = {
+    // Interval DP deliberately picks the lexicographically greatest longest
+    // palindrome; the authored reference picks the smallest. Both are valid.
+    'oa-cisco-29': `import sys
+s=sys.stdin.read().strip();n=len(s);table=[bytearray(n) for _ in range(n)];best=1
+for left in range(n-1,-1,-1):
+    table[left][left]=1
+    for right in range(left+1,n):
+        if s[left]==s[right] and (right-left==1 or table[left+1][right-1]):
+            table[left][right]=1;best=max(best,right-left+1)
+print(max(s[i:i+best] for i in range(n-best+1) if table[i][i+best-1]))
+`,
     'oa-uber-6': `import sys
 d=sys.stdin.read().split();w,p=map(int,d[:2]);i=2
 print('*'*(w+4))
