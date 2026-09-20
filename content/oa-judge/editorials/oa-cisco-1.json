@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-1",
+  "title": "逐行输出完整范围的FizzBuzz",
+  "explanation": "## 思路\n\n每个整数按15、3、5整除优先级分类；每8192行合并成一个字符串块，最终合并块返回，避免持有近200万个独立字符串对象。\n\n## 正确性证明\n\n3和5互素，同时整除等价于15整除。先处理15后，后续3和5分支互斥且符合只整除一方的要求；最后分支恰为两者都不整除。逐整数递增遍历，每个数只输出一次，分块仅改变缓冲方式不改变行顺序。\n\n## 复杂度\n\n时间O(N+输出字节数)，输出缓冲O(输出字节数)，短行对象仅约8192个；最大合法输出含终换行13140738字节，配置16MiB输出上限。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    n=int(raw);blocks=[];part=[]\n    for i in range(1,n+1):\n        if i%15==0:value='FizzBuzz'\n        elif i%3==0:value='Fizz'\n        elif i%5==0:value='Buzz'\n        else:value=str(i)\n        part.append(value)\n        if len(part)==8192:blocks.append('\\n'.join(part));part=[]\n    if part:blocks.append('\\n'.join(part))\n    return '\\n'.join(blocks)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#1-fizzbuzz-variant",
+  "sourceContentHash": "076d72d336a8aa643dcda92163a2e582e7082ffb91cb8a8c97f1faf4f3a415e2",
+  "author": "CSWork"
+}

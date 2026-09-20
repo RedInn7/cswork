@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-6",
+  "title": "生日次数为奇数的不同日期数量",
+  "explanation": "## 思路\n\n用集合保存当前出现奇数次的标识，遇到标识时若在集合就删除，否则加入；最后返回集合大小。\n\n## 正确性证明\n\n每读到一次同标识，其次数奇偶性恰翻转，集合的存在性同步翻转。因此处理任意前缀后集合恰包含该前缀所有奇数频次标识，最终大小就是题目所求。\n\n## 复杂度\n\n期望时间O(N)，空间O(不同标识数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);odd=set()\n    for value in values:\n        if value in odd:odd.remove(value)\n        else:odd.add(value)\n    return str(len(odd))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#6-count-days-with-odd-number-of-birthdays",
+  "sourceContentHash": "94802dc30552cf2a52f678ecc04ecc3b22c7021bace482ffc5665f50e79d81ea",
+  "author": "CSWork"
+}

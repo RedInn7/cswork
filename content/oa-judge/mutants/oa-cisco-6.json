@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误输出所有不同标识数",
+    "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);odd=set()\n    for value in values:\n        if value in odd:pass\n        else:odd.add(value)\n    return str(len(odd))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只关心奇数类数的奇偶",
+    "code": "def solve(raw):\n    values=map(int,raw.split());n=next(values);odd=set()\n    for value in values:\n        if value in odd:odd.remove(value)\n        else:odd.add(value)\n    return str(len(odd)%2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

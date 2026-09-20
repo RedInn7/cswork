@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-12",
+  "title": "有序列表的连续区间压缩",
+  "explanation": "## 思路\n\n保存当前段首尾，下一值等于末尾+1时延伸，否则结束当前段并新建段。\n\n## 正确性证明\n\n严格递增保证相邻差为1恰表示处于同一连续段，差大于1则任何段都不能跨越缺失整数。每次在唯一合法分割处结束，得到全部最大连续段且没有重叠遗漏。\n\n## 复杂度\n\n时间O(n)，空间O(n)计输出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    if not a:return ''\n    start=end=a[0];out=[]\n    for value in a[1:]:\n        if value==end+1:end=value\n        else:\n            out.append(str(start) if start==end else f'{start} to {end}');start=end=value\n    out.append(str(start) if start==end else f'{start} to {end}')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#12-compact-the-list",
+  "sourceContentHash": "f6c750f758bf2b703251e94c7c5290c8d104a28a903ca1fbc0fac29839c969b5",
+  "author": "CSWork"
+}

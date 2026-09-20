@@ -1,0 +1,10 @@
+[
+  {
+    "name": "无解错误返回0",
+    "code": "def solve(raw):\n    x,target=map(int,raw.split());states={(0,True):1}\n    for char in str(x):\n        bound=int(char);following={}\n        for (total,tight),count in states.items():\n            for digit in range((bound if tight else 9)+1):\n                if total+digit<=target:\n                    key=total+digit,tight and digit==bound;following[key]=following.get(key,0)+count\n        states=following\n    answer=sum(count for (total,tight),count in states.items() if total==target)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉上界本身",
+    "code": "def solve(raw):\n    x,target=map(int,raw.split());x-=1;states={(0,True):1}\n    for char in str(x):\n        bound=int(char);following={}\n        for (total,tight),count in states.items():\n            for digit in range((bound if tight else 9)+1):\n                if total+digit<=target:\n                    key=total+digit,tight and digit==bound;following[key]=following.get(key,0)+count\n        states=following\n    answer=sum(count for (total,tight),count in states.items() if total==target)\n    return str(answer or -1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

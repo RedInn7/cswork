@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-11",
+  "title": "树上距离二收集金币的最短闭合路线",
+  "explanation": "## 思路\n\n先反复删除无金币叶子，再同步删除两层叶子，剩余边数乘2。\n\n## 正确性证明\n\n无金币叶子不在连接所有金币的最小子树中，无须进入。该子树的叶子均带金币，距离2收集允许省略外侧两层；第三层及以内每条边两侧都有相距该边至少两层的金币，任何覆盖路线必须跨越该边。剩余连通树每边往返一次能覆盖全部金币，且闭合路线每条必需边至少走两次，所以上下界一致；剩余为空时停在一个合适中心即可。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(raw):\n    d=iter(map(int,raw.split()));n=next(d);coins=[next(d) for _ in range(n)];adj=[[] for _ in range(n)];degree=[0]*n;alive=[True]*n;remaining=n-1\n    for a,b in zip(d,d):adj[a].append(b);adj[b].append(a);degree[a]+=1;degree[b]+=1\n    q=deque(i for i in range(n) if degree[i]<=1 and not coins[i])\n    while q:\n        u=q.popleft()\n        if not alive[u]:continue\n        alive[u]=False\n        for v in adj[u]:\n            if alive[v]:\n                remaining-=1;degree[v]-=1\n                if degree[v]<=1 and not coins[v]:q.append(v)\n    layer=[i for i in range(n) if alive[i] and degree[i]<=1]\n    for _ in range(2):\n        following=[]\n        for u in layer:\n            alive[u]=False\n            for v in adj[u]:\n                if alive[v]:\n                    remaining-=1;degree[v]-=1\n                    if degree[v]==1:following.append(v)\n        layer=following\n    return str(2*max(0,remaining))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#11-collect-coins",
+  "sourceContentHash": "885a3d5de9f2c52fe1192110dd62a794c5ac9a2856b0628f1bf24679b9e65644",
+  "author": "CSWork"
+}

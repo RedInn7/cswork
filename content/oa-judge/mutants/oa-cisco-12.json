@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误跨越缺失整数",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    if not a:return ''\n    start=end=a[0];out=[]\n    for value in a[1:]:\n        if value<=end+2:end=value\n        else:\n            out.append(str(start) if start==end else f'{start} to {end}');start=end=value\n    out.append(str(start) if start==end else f'{start} to {end}')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只输出区间首项",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:]\n    if not a:return ''\n    start=end=a[0];out=[]\n    for value in a[1:]:\n        if value==end+1:end=value\n        else:\n            out.append(str(start));start=end=value\n    out.append(str(start))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

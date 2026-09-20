@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-18",
+  "title": "找所在行最大且所在列最小的矩阵元素（同题版）",
+  "explanation": "## 思路\n\n逐行处理，记录每列最小值及所有行最大值中的最小值R。令C为列最小值中的最大值；若R=C输出该值，否则−1。仅保存M个列值，不建立百万整数矩阵副本。\n\n## 正确性证明\n\n对任意行i和列j，列j最小值≤a[i][j]≤行i最大值，因此C≤R。若R=C，取达到R的行与达到C的列，其交点被两端同值夹住，恰为合法元素。反过来若某交点为行最大列最小，C≥该值且R≤该值，配合C≤R得三者相等；所有合法交点值必相同，无需捏造多解位置规则。\n\n## 复杂度\n\n时间O(NM)，辅助空间O(M)不含输入原文；逐行解析避免保留一百万数字对象。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from io import StringIO\n    stream=StringIO(raw);n,m=map(int,stream.readline().split());columns=[10**30]*m;row_limit=10**30\n    for _ in range(n):\n        largest=0\n        for j,value in enumerate(map(int,stream.readline().split())):largest=max(largest,value);columns[j]=min(columns[j],value)\n        row_limit=min(row_limit,largest)\n    answer=max(columns)\n    return str(answer) if answer==row_limit else '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/cisco#18-find-elements-largest-in-row-smallest-in-column",
+  "sourceContentHash": "24d5f53efc8f1b5a1264746f395da2191293b92bbe5dbd82c362658de5836cb6",
+  "author": "CSWork"
+}
