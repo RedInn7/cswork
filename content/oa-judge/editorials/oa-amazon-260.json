@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-260",
+  "title": "选不同有序服务器对的最大传输总量",
+  "explanation": "## 思路\n\n二分第K大对和T。排序后用双指针和前缀和统计所有对和≥T的个数C与总和S，结果S−(C−K)T。\n\n## 正确性证明\n\n对和阈值越大，达标有序对数单调不增。最大的仍至少K对的整数阈值就是第K大对和。超过它的全部必须选，等于它的只需补足K，因此从所有≥T的和中扣掉多余C−K个T恰得前K大之和。逐个主服务器统计全部合格备服务器，不会去除有序身份或自配。\n\n## 复杂度\n\n时间O(n log n+n log V)，空间O(n)；V为容量数值范围。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def aggregate(t):\n        j=n;count=total=0\n        for v in a:\n            while j and a[j-1]+v>=t:j-=1\n            c=n-j;count+=c;total+=c*v+prefix[n]-prefix[j]\n        return count,total\n    low=2*a[0];high=2*a[-1]+1\n    while low+1<high:\n        middle=(low+high)//2\n        if aggregate(middle)[0]>=k:low=middle\n        else:high=middle\n    count,total=aggregate(low)\n    return str(total-(count-k)*low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#260-max-transfer-rate",
+  "sourceContentHash": "2efee63b87130ce7e88f8bf04f422358aa291200939ed0d433dbb1dd14601b1b",
+  "author": "CSWork"
+}

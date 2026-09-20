@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-268",
+  "title": "每天一个主任务后的最多次任务",
+  "explanation": "## 思路\n\n把每天剩余时间升序排序，次任务升序排序。依次用最小能容纳的剩余时间匹配最短未安排次任务。\n\n## 正确性证明\n\n若最小余量装不下最短任务，它无法装任何任务，跳过无损。若装得下，某个最优匹配可以让两者配对：若各自已与别者配对，交换后较大余量仍容纳较长任务；若只一方已配，也可直接替换。因此可固定这对并递归，得到最大匹配数。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n,limit=map(int,d[:2]);primary=list(map(int,d[2:2+n]));secondary=sorted(map(int,d[2+n:]));remain=sorted(limit-v for v in primary);j=0\n    for capacity in remain:\n        if j<n and secondary[j]<=capacity:j+=1\n    return str(j)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#268-maximize-secondary-tasks-scheduled",
+  "sourceContentHash": "2ec2f25791fe947bc10d7b0f6392b7b5f845a40995397684f0694477369cdc1b",
+  "author": "CSWork"
+}

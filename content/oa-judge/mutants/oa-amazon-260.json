@@ -1,0 +1,10 @@
+[
+  {
+    "name": "多余同阈值对忘记扣除",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def aggregate(t):\n        j=n;count=total=0\n        for v in a:\n            while j and a[j-1]+v>=t:j-=1\n            c=n-j;count+=c;total+=c*v+prefix[n]-prefix[j]\n        return count,total\n    low=2*a[0];high=2*a[-1]+1\n    while low+1<high:\n        middle=(low+high)//2\n        if aggregate(middle)[0]>=k:low=middle\n        else:high=middle\n    count,total=aggregate(low)\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误把有序对合并为无序",
+    "code": "def solve(d):\n    n,k=map(int,d[:2]);a=sorted(map(int,d[2:]));prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    def aggregate(t):\n        j=n;count=total=0\n        for v in a:\n            while j and a[j-1]+v>=t:j-=1\n            c=n-j;count+=c;total+=c*v+prefix[n]-prefix[j]\n        return count,total\n    low=2*a[0];high=2*a[-1]+1\n    while low+1<high:\n        middle=(low+high)//2\n        if aggregate(middle)[0]>=k:low=middle\n        else:high=middle\n    count,total=aggregate(low)\n    return str((total-(count-k)*low)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

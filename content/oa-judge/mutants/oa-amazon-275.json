@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把初始无解误报0",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    n,k=map(int,d[:2]);a=list(map(int,d[2:2+n]));order=list(map(int,d[2+n:]));removed_at=[0]*n\n    for time,index in enumerate(order,1):removed_at[index]=time\n    def feasible(t):\n        tails=[]\n        for i,v in enumerate(a):\n            if removed_at[i]<=t:continue\n            pos=bisect_left(tails,v)\n            if pos==len(tails):tails.append(v)\n            else:tails[pos]=v\n        return len(tails)>=k\n    if not feasible(0):return '0'\n    low=0;high=n+1\n    while low+1<high:\n        middle=(low+high)//2\n        if feasible(middle):low=middle\n        else:high=middle\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错把严格超过门槛才算可行",
+    "code": "def solve(d):\n    from bisect import bisect_left\n    n,k=map(int,d[:2]);a=list(map(int,d[2:2+n]));order=list(map(int,d[2+n:]));removed_at=[0]*n\n    for time,index in enumerate(order,1):removed_at[index]=time\n    def feasible(t):\n        tails=[]\n        for i,v in enumerate(a):\n            if removed_at[i]<=t:continue\n            pos=bisect_left(tails,v)\n            if pos==len(tails):tails.append(v)\n            else:tails[pos]=v\n        return len(tails)>k\n    if not feasible(0):return '-1'\n    low=0;high=n+1\n    while low+1<high:\n        middle=(low+high)//2\n        if feasible(middle):low=middle\n        else:high=middle\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

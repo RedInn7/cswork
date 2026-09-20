@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-266",
+  "title": "至少切一条树边后的最大连通块大小乘积",
+  "explanation": "## 思路\n\n树背包dp[u][k]保留含u的开放连通块大小k，值为其他已封口块的最大乘积。对子边，切则乘子树最佳结算值，保留则卷积两块大小。根结算时排除k=n。\n\n## 正确性证明\n\n子树之间只有通向父亲的一条边。每个合法删边方案在该边上必为切或留：切时子树全部结算，留时只有包含子根的块与父块合并，其余块乘积独立相乘。枚举两种情况和全部块大小，归纳涵盖且只涵盖合法方案。根乘开放块大小完成全部计分；唯一无切边状态大小n被排除，恰满足至少一刀。\n\n## 复杂度\n\nO(n²)次整数运算；整数有O(n)位，位运算复杂度需另计。逐子树释放DP，空间O(n)个大整数及树结构。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);g=[[] for _ in range(n)];edges=list(map(int,d[1:]))\n    for i in range(0,len(edges),2):u,v=edges[i]-1,edges[i+1]-1;g[u].append(v);g[v].append(u)\n    parent=[-1]*n;order=[0]\n    for u in order:\n        for v in g[u]:\n            if v!=parent[u]:parent[v]=u;order.append(v)\n    tables=[None]*n\n    for u in reversed(order):\n        dp=[0,1]\n        for v in g[u]:\n            if parent[v]!=u:continue\n            child=tables[v];best=max(j*child[j] for j in range(1,len(child)));nxt=[0]*(len(dp)+len(child)-1)\n            for k in range(1,len(dp)):\n                value=dp[k];nxt[k]=max(nxt[k],value*best)\n                for j in range(1,len(child)):nxt[k+j]=max(nxt[k+j],value*child[j])\n            dp=nxt;tables[v]=None\n        tables[u]=dp\n    return str(max(k*tables[0][k] for k in range(1,n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#266-maximize-product-of-sizes-of-subtrees",
+  "sourceContentHash": "3ce251d7c61ac06a351fef53fe3a06888106da144f80914238334a6c0d6401d1",
+  "author": "CSWork"
+}

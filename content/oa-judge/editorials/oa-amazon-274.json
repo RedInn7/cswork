@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-274",
+  "title": "主备服务器一一配对的最大主容量",
+  "explanation": "## 思路\n\n容量降序排序，相邻两个一组，较小的作主；取第2、4、…项求和，奇数剩最小项不用。\n\n## 正确性证明\n\n按主容量降序，第j个主及其之前各主都需要一个不小于它的不同备，所以第j个主不超过整体降序第2j项。把最大的偶数台相邻配对恰好同时达到所有这些上界。容量为正，配满⌊n/2⌋组不劣，因此该构造最优。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，答案最多10^14需64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);return str(sum(a[1::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#274-maximum-system-memory-capacity",
+  "sourceContentHash": "35a391776013522998891bd10cc270c5fbc1a1ee62c11a9e351a1643144437ec",
+  "author": "CSWork"
+}

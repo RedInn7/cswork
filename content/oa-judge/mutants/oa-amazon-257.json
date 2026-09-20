@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许两端重叠",
+    "code": "def solve(d):\n    out=[]\n    for i in range(int(d[0])):\n        s,p=d[1+2*i:3+2*i];left,right=p.split('*');ok=True and s.startswith(left) and s.endswith(right)\n        out.append('YES' if ok else 'NO')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "星号错误要求至少一字符",
+    "code": "def solve(d):\n    out=[]\n    for i in range(int(d[0])):\n        s,p=d[1+2*i:3+2*i];left,right=p.split('*');ok=len(s)>len(left)+len(right) and s.startswith(left) and s.endswith(right)\n        out.append('YES' if ok else 'NO')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-258",
+  "title": "不同类别且批量递增的最大出货批数",
+  "explanation": "## 思路\n\n库存升序累加，维护已可构造批数k；每纳入一个新类别，若总量达到(k+1)(k+2)/2就将k加1，每个类别最多增加一批。\n\n## 正确性证明\n\n任意k批可删物品缩为1..k。二部整数流的割条件为：对任意j批，其需求不超过各类别min(库存,j)之和，只需检查需求最大的j批，需求D_k(j)=j(2k−j+1)/2。设旧最优k，新类别容量c最大。新最优至多k+1，因为去掉新类别并删最小批，余下每批仍至少1..k。若总量不足下一三角数，不可增加；否则对j≤c，新增容量贡献j，旧割条件D_k(j)加j恰为D_(k+1)(j)（j=k+1时旧总需求亦成立）。对j>c，全部库存≤c，容量和就是总量，至少下一三角数，故也满足割条件。所有割条件成立，整数流保证新阶梯可构造，归纳证明算法。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=sorted(map(int,d[1:]));total=0;k=0\n    for v in a:\n        total+=v\n        if total>=(k+1)*(k+2)//2:k+=1\n    return str(k)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#258-max-batches-for-shipment",
+  "sourceContentHash": "88e0f706a83265f8e0dd7e58e9e2e62e23a501f614cd51d7487d647a49876546",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-259",
+  "title": "闭区间互不重叠的最大权重和",
+  "explanation": "## 思路\n\n按结束时间排序，dp记录前若干区间最优。对当前区间二分结束时间严格小于其开始时间的前缀，在不选与接上该前缀后选择之间取最大。\n\n## 正确性证明\n\n任何最优方案若不含当前区间，归前一前缀；若含当前区间，其余区间必须结束于当前开始之前，且该前缀最优可与它兼容。两个情况覆盖全部选择，归纳得dp正确。等端点相交所以必须严格小于。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，收益和用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    from bisect import bisect_left\n    n=int(d[0]);a=list(map(int,d[1:1+n]));b=list(map(int,d[1+n:1+2*n]));c=list(map(int,d[1+2*n:]));items=sorted((x+y,x,z) for x,y,z in zip(a,b,c));ends=[e for e,s,w in items];dp=[0]\n    for i,(end,start,value) in enumerate(items):\n        j=bisect_left(ends,start,0,i);dp.append(max(dp[-1],dp[j]+value))\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#259-max-sum-of-non-overlapping-intervals",
+  "sourceContentHash": "27a35905e13bac0434099be4e9a74c2c5adee2ae35dd1def0fc0faab74890959",
+  "author": "CSWork"
+}

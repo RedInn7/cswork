@@ -1,0 +1,654 @@
+[
+  {
+    "input": "2\ncode co*d\ncoder co*er\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "2\nabc ab*bc\nabcbc ab*bc\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "2\na *\nabc abc*\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "3\na abb*b\nbcbabaa a*\naccb cbcab*cb\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "1\ncbacabcb bacaac*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5\nbaab bbaacb*c\ncbcab cacc*\nc bb*aa\naabaaca *c\ncccaa bcba*a\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nbcbc a*\nacacaba ab*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\nba ab*\nbacc bc*a\nbca *c\nccaab cbac*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "3\nbcac cca*\nabba babbbb*c\nbbacbba ccb*bc\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "3\na ba*c\nb ac*aaba\ncb bb*\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "5\nbcc cc*baba\na acbaa*\na acaacb*b\nccaacac bac*\nbabccab *cba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nbccbbaca cbbbca*\nabcbc ab*cbb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "1\na b*ab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5\nacc ca*\nabc *c\nbaaccacc ba*\naaaab b*bacbb\ncbccc *abb\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "5\nbacba *\nbbc ccc*bcb\nbbcbabbb ca*a\nbac *\nbbab *\n",
+    "expectedOutput": "YES\nNO\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "5\naccbcbaa a*\nbbcaa *cacaa\nb aa*\nbcc *b\nc c*\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "5\ncbbac ac*\ncaa cbb*aac\na ac*\nacbccbbb *ccbbcb\nacaaba *b\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\nb *aa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\ncbcbcac cac*cbbc\nccca c*ccc\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\nab cbbb*\ncacb ab*bbba\nbaa aacb*bb\nab aab*\naccacba aabbb*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nccca acabb*\nbabaab c*b\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "2\nccccc *cccaba\naba c*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "2\nb *c\nccbc bcb*b\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\nccbab *bbbabba\nbbbaaabc cab*ccb\nbbaac *bb\nbbbcabb *b\ncaaba bc*ac\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "3\nacbc *\nab *abcc\na a*aacb\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "4\nccab *aa\ncaaccc *bcabccc\ncabccacb abbaacb*\ncacb *c\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\ncacaa *ccaab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5\na *a\nabacaaab aaa*\nc b*b\nbacbcbb c*cab\nbc a*cbbcb\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\ncbb aaa*cc\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3\naabbabc a*\nabcbabaa ccbb*aac\nccac cc*b\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "4\nbcbac ac*\nbaab c*ccba\nbbbbccb *bbca\naaabbac *ab\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "5\ncbcbccc cb*aa\nb aaccac*\naa b*baba\nacac b*\nccaab cab*bacc\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "3\ncbbcaa b*bbbcb\nbb *\naaabccbc *aacca\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "3\naaccbbc *a\ncbcb acbbb*c\nbaaac aa*\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "2\naabacaac c*c\nbbbcc aacc*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "1\ncaccaba *b\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\nb a*a\naabcaaca aaaabbb*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "2\naccabba *cbaaa\ncbabbc *\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "3\ncaba bbaa*bc\nbbaabb baa*\ncbcbaccb caac*cba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "1\naaa cb*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5\nbcc *\nc *c\naac *a\naba a*ca\nccabacab *\n",
+    "expectedOutput": "YES\nYES\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "2\nbaa *c\nbbbcacbc *ccb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "3\nababaa cba*\naa bcaca*b\naabccc *\n",
+    "expectedOutput": "NO\nNO\nYES\n"
+  },
+  {
+    "input": "2\nbaa ca*\ncbb bbb*cac\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\na bbacac*a\naabcb ba*\nbac *bcca\nc *cacac\nabbaacbb accacc*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\nbaccbbb acb*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\ncbbcbbc c*acab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\ncabcbbb a*c\naba *bacbb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "1\ncbb b*bc\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\ncb a*cbccb\ncb b*c\nccaba abc*acac\nbaa a*a\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nabbcbc *\ncaa aba*bcc\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "2\nbcc *\ncaabbaba b*ccbaa\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "3\ncacbabab *cca\nb *\nbbcaaaa aaa*cac\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "4\nbbbbcacc ba*c\ncabbc ccca*bab\ncab *abc\nacbaa cbbab*a\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "5\naa acc*bc\nccca cb*cb\naaca *cc\nccbaabcc bb*a\ncba *\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "5\nacb *a\naab ab*cbacb\nbcccbaab cbaab*\nbbbc b*cab\ncaaab c*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "5\ncabccbc c*aab\nbccbaaab a*\ncca b*b\nbaa *cc\nabc c*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "3\ncc bbc*ab\nccc *b\naaacaccc cb*b\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nabcbcbbc cabb*\nc ccbabba*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\nbcac *\nccbabbb bbb*a\ncacb *\nbc *cccabb\nc c*\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "3\ncaaa bb*\nbabcbbbb a*aaaac\ncbbccbba *a\n",
+    "expectedOutput": "NO\nNO\nYES\n"
+  },
+  {
+    "input": "4\naacbabab bb*\nbbbccbac *\naac ba*b\naabbb bbb*abb\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "4\nbaaaac c*cc\nabaab ab*b\ncc ba*\nba b*cca\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "5\nbbbca bc*\ncb b*ccbab\ncaacaab *a\na ca*\nbcbca ca*caca\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "5\na abaa*b\nbbacabcc ccacb*ca\naba a*a\nbbca ccccca*b\nb cc*c\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "1\ncab *ca\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\ncbabb aaaaabb*\nbbbbcbab cbcabcc*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\ncbab *\naaabac bbbbc*a\nc a*cac\ncc *\n",
+    "expectedOutput": "YES\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "3\nba bb*\nbaaaca bab*ca\nbbbccbbc c*aaca\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "3\nbbbcabab *\nbcb baab*c\naca bac*acac\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "5\nbcaa a*bbbccc\nccaca *\nbacabc *c\nbaaccb bcaa*c\naabcccab bab*b\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "2\nb a*a\nba a*aaa\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\nbcbcb bcc*acaa\ncbaa c*acccca\ncbccacba ca*c\ncac cc*ccaa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nacbbbac aac*ac\naaccbcbb *\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "2\ncaaac c*c\nbc c*\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "4\nac *\nbbcabacb bbbc*aca\ncbbbbac bb*bcba\ncabcca *\n",
+    "expectedOutput": "YES\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "5\ncabcbaa a*aaccca\nbbbbccaa *ccc\ncaba aacbbb*\nbbbaaa abcb*a\nacaa abba*b\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "3\nacb aaccb*a\naaa cc*ccaab\nbcbcaccc bacab*cb\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "4\nacacbaa cbbbb*ab\ncaacb *\nbaacbcac ccbbac*b\nac *ba\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "2\ncccc *cb\nc ab*aaa\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "1\nabcbab c*aaab\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\ncbbaaa cbb*\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nabbb cbc*c\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5\nbbcaac *ca\nbbaabb accb*bac\nacbc *aaccb\nbaab *\na *a\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "4\naabac a*\nacab *\ncb babac*\ncbaacc *\n",
+    "expectedOutput": "YES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "1\naacccab cca*a\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\naaab bcacc*b\nc b*c\ncbaac *c\nbccccaa baa*bca\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "4\nc *c\nbbcaabac *\ncbbacab cb*\ncc ba*b\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "1\nbbca bba*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\nb c*ab\nab bab*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "1\ncbcc c*c\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4\nacb caa*bc\naa *b\nbabacb *bcaacb\nacbccbbc a*\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "1\nbcbb cba*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\ncbcacbc caa*b\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\nacc cbbca*ac\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\ncbbbcaac b*bbba\nc aab*\nacab ca*bcb\nbb *a\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "5\na c*a\nabcbccc c*a\naacab caa*cac\ncabbcccb cc*bbabb\nbbbaa bc*a\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "5\nc *baa\nac *\ncbc c*\naac cb*abba\naca ccbba*\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "2\nac cabb*\nabcb *bacc\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\naacb a*bbcaaa\nba aa*\nba cb*\nca *ccba\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "5\nc *cac\nb baa*\nbab *a\ncbaba *\nabcac bbc*cabb\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "5\nbaabbb c*\nbbbcba cb*\nbcc a*bbacac\nacca *\nabacc a*accb\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "5\ncbcbc a*\nb b*\nccca b*cb\ncacacb c*\nccbaabb *\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "2\nbccbcb b*bbbb\nbbb bcabab*a\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\nb a*cbcac\nbaccca abc*\nbcbc *cc\nccaab acaab*c\nbabacbcb c*aa\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\ncccb a*ba\nbaacabba *\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "1\nbacaca *ac\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3\ncacca bb*b\ncaacb *\nbacba b*ccaa\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "2\ncac *ccb\ncac *\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "3\nbbbaccba ccbb*b\na bba*\nbbcc *\n",
+    "expectedOutput": "NO\nNO\nYES\n"
+  },
+  {
+    "input": "4\nabbcaba a*bcbb\nbbcaabc b*\nbacbcaa cbaaba*\naaaabcaa aa*\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "4\nbc cacb*bab\nbbc *\naaaac cab*bc\nb bcbaaa*\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "1\nacbbb bcabaa*a\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3\nac cccb*aa\nabb ac*\nc acc*accc\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "3\nbacbba *bc\nccacabbc bb*a\ncaaba abb*\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "3\nb aacccbb*\nacccac *b\ncacca c*abbbc\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nbbccab *cb\nc aaa*\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\ncbaccaaa bbaab*a\nbcac c*cb\nbaca *\nbbcccc aaa*\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "3\nabacba abbc*cc\nba b*a\nb *\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "3\nba cbc*c\naccca *b\nbbaaabbc *cba\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "1\nbcbaa *c\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\naabb *abcc\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5\nbccab *b\ncc *b\nbacbbba *b\nbbbc b*cc\nb c*aa\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\ncacaa *\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4\ncaabc ac*cb\ncca *aacacc\nbacb a*bcaabc\nacbac ac*b\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nacccc cbb*bacb\nbbcbacba caaa*cb\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\ncc *\nbbbccaac bca*\nabaabacb *ccab\nc cb*abcbb\naacbc b*c\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\nbca aa*aaca\nca c*aca\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\nc a*\nbccbaaa *abc\nacbccbca acbcaba*\nc aacca*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\naaab *b\ncabca cccc*\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "1\nccbcb ca*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\naaabbbbc ca*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\nc aaabcb*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\nbbcaab *\ncac a*acbcc\nbaabac ccbbbac*\nbaaacaca cacb*bbb\n",
+    "expectedOutput": "YES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "3\na bbaaab*\nbccaca cb*bb\ncbcbabb b*b\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "4\nbbbbbbc cabb*bc\naa baacc*ca\nbacaa ac*acacb\nabbcc abcaa*\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\nc *aabc\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\naaac *c\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nbcccbac bcbc*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3\ncccba *aa\nbaabbccc b*ca\nb cbaaaa*\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "4\naa b*bbcc\nacacbbb *\naac aba*ca\ncacaaac *a\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "3\nccacb c*caabcb\nabbcaaca b*\nbccc bc*cccb\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "1\nccccb bacabac*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\nbabbcbba *\nacbbb cbc*ab\nbac *\ncbaac *\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "4\ncab a*aabac\nabcba *\nbcab b*a\nbbbcacaa *ab\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "5\nabcabb a*abc\ncacabbab *\nc *cbbac\nacacbbac *a\ncabb abbc*aaa\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "2\naabbca ccbcaa*\nbb caa*cc\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "3\ncacaab ab*bbb\ncacbbbca cacba*\naacb ba*b\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "2\naab a*c\nca cbbbb*b\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\nbacbcbcc b*\nbc *\nacab b*aab\na c*bbb\n",
+    "expectedOutput": "YES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "2\na abcc*aa\nbabcac b*b\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "4\nbcb aacaa*\ncbccbcac c*\nbacacaba bacb*c\nc *ba\n",
+    "expectedOutput": "NO\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "1\nbcab c*cbaba\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\nbcccabc c*\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1\ncccb *ababb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\naa cbcbbab*\ncbaaaa *ccc\nacab bacb*\nacaaaab abb*ccc\n",
+    "expectedOutput": "NO\nNO\nNO\nNO\n"
+  },
+  {
+    "input": "1\nccaca a*b\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\nbac *cccacba\nccabbaca b*cc\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "3\nabaaaba *\naaba *\ncbcacb *aba\n",
+    "expectedOutput": "YES\nYES\nNO\n"
+  },
+  {
+    "input": "3\nac bbabbc*a\nacccac cb*b\nc *abca\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  },
+  {
+    "input": "3\nbbaa bbb*ccc\naccbacac aaac*bc\nccacbcb *\n",
+    "expectedOutput": "NO\nNO\nYES\n"
+  },
+  {
+    "input": "1\nbcbabacb *\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "3\ncccaaac cc*aa\nc bac*\naaaba b*\n",
+    "expectedOutput": "NO\nNO\nNO\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忘记每步最多增加1",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]));current=0\n    for v in a:current=v\n    return str(current)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "错误不能重排",
+    "code": "def solve(d):\n    a=list(map(int,d[1:]));current=0\n    for v in a:current=min(v,current+1)\n    return str(current)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

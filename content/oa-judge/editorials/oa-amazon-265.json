@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-265",
+  "title": "最小按位与总成本下的最多连续分区",
+  "explanation": "## 思路\n\n若整段AND非零只能取1段。否则从左至右，每当当前段AND变为0立即切段；最后未归零的尾段并入前一段。\n\n## 正确性证明\n\n整体AND的每个1位在所有段AND中都为1，故若G>0，k段成本至少kG，一整段成本G，最优必须k=1。G=0时最小成本0，要求每段AND均0。第一段取最早归零前缀不会减少剩余可分段数：将任意最优第一段提前切，多出的后缀并入下一段也维持其AND为0。因此贪心归零次数最大，末尾并入上一段不改变0成本。\n\n## 复杂度\n\n时间O(n)，辅助空间O(1)不含输入。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    a=list(map(int,d[1:]));all_bits=a[0]\n    for v in a:all_bits&=v\n    if all_bits:return '1'\n    current=-1;answer=0\n    for v in a:\n        current&=v\n        if current==0:answer+=1;current=-1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#265-maximize-partitions",
+  "sourceContentHash": "c8aaf4460e569fd5684097a3c5c55958eb77c1f2934c407a0a267e8cd6666062",
+  "author": "CSWork"
+}

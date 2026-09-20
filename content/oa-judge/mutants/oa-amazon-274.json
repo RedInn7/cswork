@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误取每对较大值作主",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);return str(sum(a[::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "奇数时错误丢弃最大值",
+    "code": "def solve(d):\n    a=sorted(map(int,d[1:]),reverse=True);return str(sum(a[2::2]) if len(a)%2 else sum(a[1::2]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]
