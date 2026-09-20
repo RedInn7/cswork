@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-15",
+  "title": "严格递增子序列的不同OR值",
+  "explanation": "## 思路\n\n每个OR值只保留可达递增子序列的最小末值；遇v时，从末值<v的状态转移到OR|v。\n\n## 正确性证明\n\n同一个OR下末值越小，未来能接的数字集合越大，保留最小末值不会丢失任何后续可行方案。当前状态末值<v才可接v，转移准确；新状态末值v不会在同一轮再次满足严格小于，避免复用当前位置。初始空序列可接所有正数，归纳覆盖全部子序列。\n\n## 复杂度\n\n时间O(1024n)，空间O(1024)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];last=[1024]*1024;last[0]=0\n    for v in a:\n        for mask in range(1024):\n            if last[mask]<v:last[mask|v]=min(last[mask|v],v)\n    result=[i for i in range(1024) if last[i]<1024]\n    return str(len(result))+'\\n'+' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#15-get-distinct-goodness-values",
+  "sourceContentHash": "066309e6e4aa0e135a53cfbebde66c52c1d16de1ab21789720176d0ca6d2cad3",
+  "author": "CSWork"
+}

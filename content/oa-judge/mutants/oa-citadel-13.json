@@ -1,0 +1,10 @@
+[
+  {
+    "name": "全局基准错取最大",
+    "code": "from collections import Counter\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];target=max(Counter(a).values());counts={};left=answer=at=0\n    for right,v in enumerate(a):\n        old=counts.get(v,0)\n        if old==target:at-=1\n        counts[v]=old+1\n        if counts[v]==target:at+=1\n        while counts[v]>target:\n            u=a[left]\n            if counts[u]==target:at-=1\n            counts[u]-=1\n            if counts[u]==target:at+=1\n            left+=1\n        if at:answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "固定不允许重复",
+    "code": "from collections import Counter\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];target=1;counts={};left=answer=at=0\n    for right,v in enumerate(a):\n        old=counts.get(v,0)\n        if old==target:at-=1\n        counts[v]=old+1\n        if counts[v]==target:at+=1\n        while counts[v]>target:\n            u=a[left]\n            if counts[u]==target:at-=1\n            counts[u]-=1\n            if counts[u]==target:at+=1\n            left+=1\n        if at:answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

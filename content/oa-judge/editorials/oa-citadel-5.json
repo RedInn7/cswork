@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-5",
+  "title": "任意起点向下路径的最大节点和",
+  "explanation": "## 思路\n\n迭代遍历获取父先于子的序列，逆序求每节点向下最优和：自身值加最大正子路径；答案取所有节点最大。\n\n## 正确性证明\n\n从u开始的合法路径要么只含u，要么接恰一个子节点的向下路径，故递推枚举所有可能。后序保证子结果已正确，归纳得到各起点最优，取最大即全局非空最优；全负仍返回最大单节点值。\n\n## 复杂度\n\n时间O(n)，空间O(n)，不用递归避免深链溢出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];parent=d[1:n+1];values=d[n+1:];children=[[] for _ in range(n)]\n    for i in range(1,n):children[parent[i]].append(i)\n    order=[0]\n    for u in order:order.extend(children[u])\n    best=values[:]\n    for u in reversed(order):best[u]=values[u]+max([0]+[best[v] for v in children[u]])\n    return str(max(best))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#5-largest-path-sum-in-rooted-tree-downward-only",
+  "sourceContentHash": "b0b4d15a7542e4ce0974b6713da7ce30500d5175f5d5ca200920af1dbc2b3366",
+  "author": "CSWork"
+}

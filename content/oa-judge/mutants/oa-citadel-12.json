@@ -1,0 +1,10 @@
+[
+  {
+    "name": "内部和错误包括左端",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    counts={};answer=0\n    for r in range(len(a)):\n        l=r-2\n        if l>=0:\n            key=(a[l],prefix[l]+a[l]);counts[key]=counts.get(key,0)+1\n        answer+=counts.get((a[r],prefix[r]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉长度3",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];prefix=[0]\n    for v in a:prefix.append(prefix[-1]+v)\n    counts={};answer=0\n    for r in range(len(a)):\n        l=r-3\n        if l>=0:\n            key=(a[l],prefix[l+1]+a[l]);counts[key]=counts.get(key,0)+1\n        answer+=counts.get((a[r],prefix[r]),0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

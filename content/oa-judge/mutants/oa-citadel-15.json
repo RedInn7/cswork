@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误先排序数组",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];last=[1024]*1024;last[0]=0\n    for v in sorted(a):\n        for mask in range(1024):\n            if last[mask]<v:last[mask|v]=min(last[mask|v],v)\n    result=[i for i in range(1024) if last[i]<1024]\n    return str(len(result))+'\\n'+' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "遗漏空序列0",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()))[1:];last=[1024]*1024;last[0]=0\n    for v in a:\n        for mask in range(1024):\n            if last[mask]<v:last[mask|v]=min(last[mask|v],v)\n    result=[i for i in range(1,1024) if last[i]<1024]\n    return str(len(result))+'\\n'+' '.join(map(str,result))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

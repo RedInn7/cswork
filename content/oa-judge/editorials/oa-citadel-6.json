@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-6",
+  "title": "前后缀匹配得分最高的子串",
+  "explanation": "## 思路\n\n枚举所有非空候选子串，对每侧枚举不超过候选长度的匹配长度，求最大得分并比较字典序。\n\n## 正确性证明\n\n每个可能答案均被枚举。候选前后缀的全部合法长度都被逐一检查，取最大值恰为题意两项得分；再以最高分、最小字典序比较全体候选，给出唯一要求结果。不得把候选外字符算入匹配。\n\n## 复杂度\n\n最长字符串长度L≤50，时间O(L⁴)，额外空间O(L)，足以覆盖原完整域。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    text,prefix,suffix=raw.split();best=(-1,'')\n    for l in range(len(text)):\n        for r in range(l+1,len(text)+1):\n            part=text[l:r];a=b=0\n            for k in range(1,min(len(part),len(prefix))+1):\n                if part.startswith(prefix[-k:]):a=k\n            for k in range(1,min(len(part),len(suffix))+1):\n                if part.endswith(suffix[:k]):b=k\n            score=a+b\n            if score>best[0] or (score==best[0] and part<best[1]):best=(score,part)\n    return best[1]\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#6-calculate-score",
+  "sourceContentHash": "b6bf10572360363d1527cd94f323561837873ac2bdcdf103fd651ae3a0a81523",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-14",
+  "title": "补正整数使两排积木和相等",
+  "explanation": "## 思路\n\n各行用1填0得到最小和；有0的一行可增加到任意更大整数，无0的一行只能固定总和。取两最小和最大值，再检查固定行是否与它相等。\n\n## 正确性证明\n\n每个0至少1，故计算值是该行下界；若有0，只增其中一个即可达到任意不小于下界的和。若无0则和不可变。两可达集合的最小交集正是候选较大下界，固定行不匹配则交集为空。\n\n## 复杂度\n\n时间O(n+m)，除输入外额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];za=a.count(0);zb=b.count(0);sa=sum(a)+za;sb=sum(b)+zb;target=max(sa,sb)\n    if (not za and sa!=target) or (not zb and sb!=target):return '-1'\n    return str(target)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#14-math-with-lego-blocks",
+  "sourceContentHash": "73e676cc56fbedcc7187d65d0043023a6bb2d5d5a0539ce6e3ab5ef7964acfcb",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-7",
+  "title": "并行任务池全部完成的最少轮数",
+  "explanation": "## 思路\n\n二分轮数t，把每任务基础进度视为t·y，不足部分每次主要身份额外贡献x−y，所需主要次数之和≤t即能完成。\n\n## 正确性证明\n\nt轮内每任务最多获得基础t·y加主要次数乘(x−y)，故所有所需次数之和≤t是必要条件。反之可分配这些主要次数到各轮；若某任务提前完成，其剩余预约改给其他未完成任务只会增加有效进度。到t轮仍未完成者始终获得基础y及所需主要次数，矛盾，故充分。可行性随t单调，二分得到最小。\n\n## 复杂度\n\n时间O(n log(max执行量/y+1))，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x,y=d[:3];a=d[3:];extra=x-y;low=0;high=(max(a)+y-1)//y\n    while low<high:\n        mid=(low+high)//2;need=0;base=mid*y\n        for v in a:\n            if v>base:need+=(v-base+extra-1)//extra\n            if need>mid:break\n        if need<=mid:high=mid\n        else:low=mid+1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#7-minimum-operations-to-empty-job-pool",
+  "sourceContentHash": "78e45ac961fd5089f077b378c2b34dad36d8b42c63ee3d5298e206fbcf31580f",
+  "author": "CSWork"
+}

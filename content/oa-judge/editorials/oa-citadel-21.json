@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-21",
+  "title": "按出现位置计数的回文子串",
+  "explanation": "## 思路\n\n枚举每个字符中心和相邻字符间中心，向两边同步扩展，每次匹配贡献一个回文。\n\n## 正确性证明\n\n每个回文都有唯一中心和半径；扩展恰在两边字符相等时得到一个新回文，遇不相等或边界后不能再扩展。枚举全部奇偶中心覆盖所有子串且不重复。\n\n## 复杂度\n\n时间O(n²)，额外空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();answer=0\n    for center in range(2*len(s)-1):\n        left=center//2;right=(center+1)//2\n        while left>=0 and right<len(s) and s[left]==s[right]:answer+=1;left-=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#21-palindromic-substrings",
+  "sourceContentHash": "882cb95fa64b6af79efac7d58d1f5662b494aaff2b2ce31fdfe45243e6099556",
+  "author": "CSWork"
+}

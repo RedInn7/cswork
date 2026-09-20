@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-citadel-6",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "前后缀匹配得分最高的子串",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Citadel"
+    ],
+    "description": "选text的非空子串t。前缀分是t前缀与prefixString后缀最长匹配长度；后缀分是t后缀与suffixString前缀最长匹配长度。总分相加，允许重叠；最高分并列时取字典序最小t。\n\n输入输出协议由本站整理；缺失数值界和来源笔误恢复均已明示。",
+    "input": "三行依次text、prefixString、suffixString；完整OCR界各长1..50、仅小写；保证text至少匹配一侧的一个字符。",
+    "output": "输出最高分且字典序最小的非空子串。",
+    "explanation": "三个公开样例的输出依次为：engin；banana；a。独立枚举或直接模拟已核对这些答案。",
+    "hints": [
+      "枚举所有非空候选子串，对每侧枚举不超过候选长度的匹配长度，求最大得分并比较字典序。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "engine\nraven\nginkgo\n",
+      "expectedOutput": "engin\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "banana\nbana\nnana\n",
+      "expectedOutput": "banana\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "ab\nb\na\n",
+      "expectedOutput": "a\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "expectedOutput": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\naaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaz\nzaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "expectedOutput": "z\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "ababababababababababababababababababababababababab\nababababababababababababababababababababababababab\nababababababababababababababababababababababababab\n",
+      "expectedOutput": "ababababababababababababababababababababababababab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "nothing\nbruno\ningenious\n",
+      "expectedOutput": "nothing\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "baa\nbbaaba\nbaa\n",
+      "expectedOutput": "baa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "baaca\nba\nbcbc\n",
+      "expectedOutput": "ba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "cbcabb\nabaaab\naba\n",
+      "expectedOutput": "ab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "aacccba\nc\naaabc\n",
+      "expectedOutput": "aa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "cccb\nbc\nca\n",
+      "expectedOutput": "c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "aab\na\naacaba\n",
+      "expectedOutput": "aa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "cc\nbcacc\naccab\n",
+      "expectedOutput": "cc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "aa\nbabbaa\naa\n",
+      "expectedOutput": "aa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "bbcba\nbcccb\nb\n",
+      "expectedOutput": "cb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "babcccca\nc\nbaab\n",
+      "expectedOutput": "ba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "ccabba\nab\ncca\n",
+      "expectedOutput": "cca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "cbca\nca\nabac\n",
+      "expectedOutput": "ca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "cacaaaa\ncabc\na\n",
+      "expectedOutput": "ca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "baaaa\ncaa\nc\n",
+      "expectedOutput": "aa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "cabaa\nbcabaa\nca\n",
+      "expectedOutput": "cabaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "abcacbb\nab\nc\n",
+      "expectedOutput": "abc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "cbac\nacbbab\nc\n",
+      "expectedOutput": "bac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "a\na\ncaa\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "aaa\ncaa\naaaaaa\n",
+      "expectedOutput": "aaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "aac\nca\ncca\n",
+      "expectedOutput": "aac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "ccbc\nbbc\nc\n",
+      "expectedOutput": "bc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "abbcac\nbbaa\nbcaa\n",
+      "expectedOutput": "abbca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "bccaab\nbabac\nbca\n",
+      "expectedOutput": "bc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "cb\nb\nacaab\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

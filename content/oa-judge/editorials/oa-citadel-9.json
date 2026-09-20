@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-9",
+  "title": "补工作日后的最高工资",
+  "explanation": "## 思路\n\n所有收益正，新增尽可能多工作日；优先填完最短的内部0段以连接工作块，剩余新增日延长已有工作块。全0时新增日排成连续段。\n\n## 正确性证明\n\n总工资由工作日数及相邻11数量决定。已有工作日时，每新增日至少带来一个相邻11；完整填平一个内部空段可额外增加一个，收益与空段长无关。因此按最短段先填最大化完成段数。未填平的新增日可接在现有块边缘，达到基础收益。全0时k个1的相邻对上界k−1，连续排列可达。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)；收入使用64位。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=raw.split();n,k,f,b=map(int,d[:4]);s=d[4];ones=s.count('1');add=min(k,n-ones)\n    if not ones:return str(add*f+max(0,add-1)*b)\n    pairs=sum(s[i-1:i+1]=='11' for i in range(1,n));gaps=[];i=0\n    while i<n:\n        if s[i]=='1':i+=1;continue\n        j=i\n        while j<n and s[j]=='0':j+=1\n        if i>0 and j<n:gaps.append(j-i)\n        i=j\n    remain=add;extra=0\n    for gap in sorted(gaps):\n        if gap>remain:break\n        remain-=gap;extra+=1\n    return str((ones+add)*f+(pairs+add+extra)*b)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#9-max-earnings-with-schedule-changes",
+  "sourceContentHash": "8c946056d9fb4ab3ba4f6b50776c9f1fb9f46368ecffdbcd8e3aac6fcca51ed1",
+  "author": "CSWork"
+}

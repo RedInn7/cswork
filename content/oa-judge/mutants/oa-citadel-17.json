@@ -1,0 +1,10 @@
+[
+  {
+    "name": "额外进度错用x",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x,y=d[:3];a=d[3:];extra=x;low=0;high=(max(a)+y-1)//y\n    while low<high:\n        mid=(low+high)//2;need=0;base=mid*y\n        for v in a:\n            if v>base:need+=(v-base+extra-1)//extra\n            if need>mid:break\n        if need<=mid:high=mid\n        else:low=mid+1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "向下取整需求",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x,y=d[:3];a=d[3:];extra=x-y;low=0;high=(max(a)+y-1)//y\n    while low<high:\n        mid=(low+high)//2;need=0;base=mid*y\n        for v in a:\n            if v>base:need+=(v-base)//extra\n            if need>mid:break\n        if need<=mid:high=mid\n        else:low=mid+1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

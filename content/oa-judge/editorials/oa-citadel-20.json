@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-20",
+  "title": "和为目标值的最短根到叶路径",
+  "explanation": "## 思路\n\nBFS逐层计算根路径和；同层路径用(parent路径rank,本节点值)排序压缩字典序rank。首次有合格叶的层中选rank最小者，沿父指针还原。\n\n## 正确性证明\n\nBFS层数就是路径长度，首次有合格叶时更深路径必不优。同层等长路径的字典序先比较父路径、相同时比较末值，因此用父rank和值得到的新rank保持准确排序，重复路径同rank。选择最小rank给出二级最优；父指针还原原路径。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)，不复制所有深路径、不递归。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=raw.split();m=int(d[0]);target=int(d[1]);tokens=d[2:]\n    if not m or tokens[0]=='null':return '0\\n'\n    values=[int(tokens[0])];parent=[-1];children=[[]];q=0;i=1\n    while q<len(values) and i<m:\n        for side in range(2):\n            if i==m:break\n            token=tokens[i];i+=1\n            if token!='null':\n                v=len(values);values.append(int(token));parent.append(q);children.append([]);children[q].append(v)\n        q+=1\n    n=len(values);rank=[0]*n;sums=[0]*n;sums[0]=values[0];layer=[0]\n    while layer:\n        valid=[u for u in layer if not children[u] and sums[u]==target]\n        if valid:\n            u=min(valid,key=lambda u:rank[u]);path=[]\n            while u!=-1:path.append(values[u]);u=parent[u]\n            path.reverse();return str(len(path))+'\\n'+' '.join(map(str,path))\n        following=[]\n        for u in layer:\n            for v in children[u]:sums[v]=sums[u]+values[v];following.append(v)\n        following.sort(key=lambda v:(rank[parent[v]],values[v]));last=None;r=-1\n        for v in following:\n            key=(rank[parent[v]],values[v])\n            if key!=last:r+=1;last=key\n            rank[v]=r\n        layer=following\n    return '0\\n'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#20-minimum-path-sum-to-target-in-binary-tree",
+  "sourceContentHash": "cac7e3a5faa2e618ca25bdf186b7b7a50615fd02a7971c5ad6355cd539a524dc",
+  "author": "CSWork"
+}

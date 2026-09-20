@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-13",
+  "title": "最大用户频次符合全局基准的最长日志",
+  "explanation": "## 思路\n\n先算f，滑窗保证所有用户次数≤f，另维护次数恰为f的用户数，只在该数非零时更新最长长度。\n\n## 正确性证明\n\n加入右端只可能让该用户超过f，移动左端直到其≤f后所有计数均≤f。计数达到f的用户数非零恰好保证窗口最大频次等于f。对于每个右端，左指针尽量靠左，任何更短有效窗口不会更优；若最宽窗口无达到f用户，子窗口频次只更小，同样无效。\n\n## 复杂度\n\n时间O(n)，空间O(不同用户数)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(raw):\n    a=list(map(int,raw.split()))[1:];target=min(Counter(a).values());counts={};left=answer=at=0\n    for right,v in enumerate(a):\n        old=counts.get(v,0)\n        if old==target:at-=1\n        counts[v]=old+1\n        if counts[v]==target:at+=1\n        while counts[v]>target:\n            u=a[left]\n            if counts[u]==target:at-=1\n            counts[u]-=1\n            if counts[u]==target:at+=1\n            left+=1\n        if at:answer=max(answer,right-left+1)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/citadel#13-find-consistent-logs",
+  "sourceContentHash": "bce447a40a8795062311716ffa703c0012e6ac0a96802e2e37a06c393474748d",
+  "author": "CSWork"
+}

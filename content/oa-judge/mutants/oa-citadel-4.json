@@ -1,0 +1,10 @@
+[
+  {
+    "name": "特殊根也计入",
+    "code": "def solve(raw):\n    s=raw.strip();length=[-1,0];link=[0,0];edge=[{},{}];last=1\n    for i,c in enumerate(s):\n        p=last\n        while i-1-length[p]<0 or s[i-1-length[p]]!=c:p=link[p]\n        if c not in edge[p]:\n            node=len(length);length.append(length[p]+2);link.append(1);edge.append({});edge[p][c]=node\n            if length[node]>1:\n                q=link[p]\n                while i-1-length[q]<0 or s[i-1-length[q]]!=c:q=link[q]\n                link[node]=edge[q][c]\n        last=edge[p][c]\n    return str(len(length))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只统计奇长度回文",
+    "code": "def solve(raw):\n    s=raw.strip();length=[-1,0];link=[0,0];edge=[{},{}];last=1\n    for i,c in enumerate(s):\n        p=last\n        while i-1-length[p]<0 or s[i-1-length[p]]!=c:p=link[p]\n        if c not in edge[p]:\n            node=len(length);length.append(length[p]+2);link.append(1);edge.append({});edge[p][c]=node\n            if length[node]>1:\n                q=link[p]\n                while i-1-length[q]<0 or s[i-1-length[q]]!=c:q=link[q]\n                link[node]=edge[q][c]\n        last=edge[p][c]\n    return str(sum(v>0 and v%2==1 for v in length))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
