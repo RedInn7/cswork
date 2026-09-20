@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-20",
+  "title": "十万点的精确最近平方距离",
+  "explanation": "## 思路\n\n按x排序分治；两半递归返回最小距离及y有序点列，合并后只扫描距分割线平方小于当前最优值的条带，按y差剪枝。\n\n## 正确性\n\n最近对要么同侧已被递归找到，要么跨分割线。跨线且能改进的点必在条带内；按y排序后y差已不小于当前距离则后续更不可能。条带中每侧点间距离已受子问题最优值约束，装箱论证保证每点仅常数个候选，扫描完备且线性。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    nums=list(map(int,d[1:]));points=sorted(zip(nums[::2],nums[1::2]))\n    if any(points[i]==points[i-1] for i in range(1,len(points))):return '0'\n    def visit(p):\n        if len(p)<=3:\n            best=min(((x-a)**2+(y-b)**2 for i,(x,y) in enumerate(p) for a,b in p[:i]),default=10**30)\n            return best,sorted(p,key=lambda t:t[1])\n        mid=len(p)//2;cut=p[mid][0];dl,left=visit(p[:mid]);dr,right=visit(p[mid:]);best=min(dl,dr);out=[];i=j=0\n        while i<len(left) and j<len(right):\n            if left[i][1]<=right[j][1]:out.append(left[i]);i+=1\n            else:out.append(right[j]);j+=1\n        out.extend(left[i:]);out.extend(right[j:]);strip=[p for p in out if (p[0]-cut)**2<best]\n        for i,(x,y) in enumerate(strip):\n            j=i+1\n            while j<len(strip) and (strip[j][1]-y)**2<best:\n                a,b=strip[j];best=min(best,(x-a)**2+(y-b)**2);j+=1\n        return best,out\n    return str(visit(points)[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#20-closest-random-points-also-for-coredatabase-engineering",
+  "sourceContentHash": "fbf8ed9fab801dacfb9c3c3ef2049f131a06902012b028a81fabb1c04933203b",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只选一人",
+    "code": "import heapq\ndef solve(d):\n    n,t,k=map(int,d[:3]);a=list(map(int,d[3:]));heap=[];left=0;right=n-1\n    for _ in range(k):\n        if left<=right:heapq.heappush(heap,(-a[left],left,0));left+=1\n    for _ in range(k):\n        if left<=right:heapq.heappush(heap,(-a[right],right,1));right-=1\n    answer=0\n    for _ in range(1):\n        value,idx,side=heapq.heappop(heap);answer-=value\n        if left<=right:\n            if side==0:heapq.heappush(heap,(-a[left],left,0));left+=1\n            else:heapq.heappush(heap,(-a[right],right,1));right-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "分数方向错误",
+    "code": "import heapq\ndef solve(d):\n    n,t,k=map(int,d[:3]);a=list(map(int,d[3:]));heap=[];left=0;right=n-1\n    for _ in range(k):\n        if left<=right:heapq.heappush(heap,(a[left],left,0));left+=1\n    for _ in range(k):\n        if left<=right:heapq.heappush(heap,(a[right],right,1));right-=1\n    answer=0\n    for _ in range(t):\n        value,idx,side=heapq.heappop(heap);answer-=value\n        if left<=right:\n            if side==0:heapq.heappush(heap,(a[left],left,0));left+=1\n            else:heapq.heappush(heap,(a[right],right,1));right-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

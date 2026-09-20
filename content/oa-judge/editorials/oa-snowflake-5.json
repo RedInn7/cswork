@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-5",
+  "title": "包含五种元音的纯元音子串",
+  "explanation": "## 思路\n\n记录五种元音最近位置和最近辅音位置；每个右端点的合法起点数为min(最近元音位置)−最近辅音位置，负数取0。\n\n## 正确性\n\n合法起点必须在最近辅音之后且不晚于每种元音最近位置；两条件正好给出闭区间，计数后各子串按右端点唯一归类。\n\n## 复杂度\n\n时间O(n)，空间O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    last={c:-1 for c in 'aeiou'};bad=-1;answer=0\n    for i,c in enumerate(d[0]):\n        if c in last:last[c]=i\n        else:bad=i\n        answer+=max(0,min(last.values())-bad)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#5-vowel-substring--substrings-made-of-vowels-with-all-5-present",
+  "sourceContentHash": "fb6fdc961495d714d3feac5fd7ca9df5c4b6074dd3db77bcbe7c312e18f68463",
+  "author": "CSWork"
+}

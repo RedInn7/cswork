@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-9",
+  "title": "补全一周排班的所有方案",
+  "explanation": "## 思路\n\n从左到右按升序枚举数字，用剩余最小/最大工时剪枝，保留恰好达到总量的叶子。\n\n## 正确性\n\n每种补全对应唯一根到叶路径，固定位置只有一个分支，未知位置枚举全部合法数字。剪枝仅移除不可能达到总量的前缀，故不遗漏；升序深搜自然按字典序输出。\n\n## 复杂度\n\n时间O(9⁷)，输出空间O(7R)，R最大273127，输出限额4MiB。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    work,day=map(int,d[:2]);s=d[2];out=[];low=[0]*8;high=[0]*8\n    for i in range(6,-1,-1):low[i]=low[i+1]+(0 if s[i]=='?' else int(s[i]));high[i]=high[i+1]+(day if s[i]=='?' else int(s[i]))\n    def visit(i,remaining,prefix):\n        if remaining<low[i] or remaining>high[i]:return\n        if i==7:out.append(prefix);return\n        choices=range(day+1) if s[i]=='?' else [int(s[i])]\n        for value in choices:visit(i+1,remaining-value,prefix+str(value))\n    visit(0,work,'');return str(len(out))+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#9-work-schedule--fill-question-marks-to-match-total",
+  "sourceContentHash": "8becb042d9ace190184de35c48031ccb96578748a0c263dd63abf3bededa74e8",
+  "author": "CSWork"
+}

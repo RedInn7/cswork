@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-10",
+  "title": "从两端候选中组建团队",
+  "explanation": "## 思路\n\n一个堆存两侧候选，以负分数和原下标排序，并记录来自哪一侧；弹出后从对应侧补入尚未曝光的元素。\n\n## 正确性\n\n未曝光区间始终连续，堆恰含可选的前后k个元素去重并集；同侧补入保持这个不变量，区间耗尽则堆包含全部剩余人。原下标顺序与删除后的相对顺序相同，堆顶恰是规则选中的人。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\ndef solve(d):\n    n,t,k=map(int,d[:3]);a=list(map(int,d[3:]));heap=[];left=0;right=n-1\n    for _ in range(k):\n        if left<=right:heapq.heappush(heap,(-a[left],left,0));left+=1\n    for _ in range(k):\n        if left<=right:heapq.heappush(heap,(-a[right],right,1));right-=1\n    answer=0\n    for _ in range(t):\n        value,idx,side=heapq.heappop(heap);answer-=value\n        if left<=right:\n            if side==0:heapq.heappush(heap,(-a[left],left,0));left+=1\n            else:heapq.heappush(heap,(-a[right],right,1));right-=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#10-team-formation--alternating-front--back-selection",
+  "sourceContentHash": "c6e9c581253dda232e37b61530a5b58d840bb8db4b844aec2106be2d2e077f80",
+  "author": "CSWork"
+}

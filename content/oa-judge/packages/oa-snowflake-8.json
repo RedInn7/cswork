@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-snowflake-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "连续元音长度受限的字符串",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Snowflake"
+    ],
+    "description": "长度n的小写英文串中连续元音最多k个，元音aeiou共5种，辅音21种。计数模10⁹+7。\n\n输入输出协议由本站独立整理；不执行上游题解。",
+    "input": "一行n k，1≤n≤2500，0≤k≤n。",
+    "output": "输出题意要求的一个整数。",
+    "explanation": "三个公开样例的答案依次为：26；412776；451101。所有样例已用独立小规模枚举或状态搜索验证。",
+    "hints": [
+      "dp[j]表示当前结尾恰好j个连续元音；加辅音归零，加元音把j增加1但不得超过k。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "1 1\n",
+      "expectedOutput": "26\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4 1\n",
+      "expectedOutput": "412776\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4 2\n",
+      "expectedOutput": "451101\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "2500 2500\n",
+      "expectedOutput": "589552734\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "2500 0\n",
+      "expectedOutput": "644832130\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "2500 2499\n",
+      "expectedOutput": "826481227\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "1 0\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "9 7\n",
+      "expectedOutput": "485281598\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "7 0\n",
+      "expectedOutput": "801088534\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "3 3\n",
+      "expectedOutput": "17576\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "5 4\n",
+      "expectedOutput": "11878251\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "7 0\n",
+      "expectedOutput": "801088534\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "5 2\n",
+      "expectedOutput": "11660376\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "2 0\n",
+      "expectedOutput": "441\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "1 0\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "7 2\n",
+      "expectedOutput": "790468252\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "3 0\n",
+      "expectedOutput": "9261\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "1 0\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "4 2\n",
+      "expectedOutput": "451101\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "1 1\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "4 0\n",
+      "expectedOutput": "194481\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "3 3\n",
+      "expectedOutput": "17576\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "5 0\n",
+      "expectedOutput": "4084101\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "4 0\n",
+      "expectedOutput": "194481\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "5 3\n",
+      "expectedOutput": "11852001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "4 3\n",
+      "expectedOutput": "456351\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "5 2\n",
+      "expectedOutput": "11660376\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "7 7\n",
+      "expectedOutput": "31810120\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "2 0\n",
+      "expectedOutput": "441\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "6 1\n",
+      "expectedOutput": "261539901\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "9 4\n",
+      "expectedOutput": "461891015\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

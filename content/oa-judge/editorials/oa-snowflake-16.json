@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-16",
+  "title": "递增列索引构造目标串",
+  "explanation": "## 思路\n\n统计每列各字母频数，按列扫描并逆序更新target前缀方案数。\n\n## 正确性\n\n每个方案对当前列要么不选，要么把它用于目标的下一个字符。后者由旧前缀方案乘当前列目标字母频数产生。倒序避免同列重复选，全部递增列方案恰被生成一次。\n\n## 复杂度\n\n时间O(总词长+列数×目标长)，空间O(26×列数+目标长)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    n=int(d[0]);words=d[1:n+1];t=d[n+1];m=len(words[0]);freq=[[0]*26 for _ in range(m)]\n    for word in words:\n        for i,c in enumerate(word):freq[i][ord(c)-97]+=1\n    dp=[1]+[0]*len(t)\n    for i,row in enumerate(freq):\n        for j in range(min(i+1,len(t)),0,-1):dp[j]=(dp[j]+dp[j-1]*row[ord(t[j-1])-97])%1000000007\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#16-string-formation-also-for-aiml-software-engineer-intern-",
+  "sourceContentHash": "dc95e132c314bb84ac45653e0d9cdf4a708aa1afa4af4a3486d03f6d0370048b",
+  "author": "CSWork"
+}

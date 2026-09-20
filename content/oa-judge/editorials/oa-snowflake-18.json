@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-18",
+  "title": "每个区间至少包含两个整数的最小集合",
+  "explanation": "## 思路\n\n按右端点升序、同右端点左端点降序处理，维护已选集合最大的两个数；覆盖不足时尽量选择当前右端点附近。\n\n## 正确性\n\n按右端点排序后，已有点是否覆盖当前区间只需看最大的两个。必须补点时选最靠右的可用整数，不比任何其他补法更不利于未来更右的区间，可交换最优解中的补点为贪心点而不破坏已处理区间。归纳得到最小集合。单点无法含两个不同整数，返回−1。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(d):\n    values=list(map(int,d[1:]));intervals=list(zip(values[::2],values[1::2]));a=b=-1;answer=0\n    if any(l==r for l,r in intervals):return '-1'\n    for l,r in sorted(intervals,key=lambda x:(x[1],-x[0])):\n        if l>b:a,b=r-1,r;answer+=2\n        elif l>a:a,b=b,r;answer+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/snowflake#18-smallest-set-covering-intervals",
+  "sourceContentHash": "004888feefa75caf9db258dcb2ddb65cb64b5118fc460b5db2b7d9b17d31c2c2",
+  "author": "CSWork"
+}
