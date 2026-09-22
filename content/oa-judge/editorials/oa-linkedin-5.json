@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-5",
+  "title": "双核持锁分配的最优收益",
+  "explanation": "## 思路\n\n从后向前计算当前持锁者相对另一核的最优收益差d，递推d=|time−d|；结合总和还原两核收益。\n\n## 正确性证明\n\n若当前项给自己，换锁后后缀差值取负，得到time−d；给对方保锁得到d−time。持锁者选较大值，恰为绝对值。总收益固定，所以最大个人收益等价于最大差值。后向归纳得到初始核1的差，再由总和与差解出两项。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间；总和≤10^14。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));d=0\n    for v in reversed(a):d=abs(v-d)\n    total=sum(a);return f'{(total+d)//2} {(total-d)//2}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/linkedin#5-get-process-time",
+  "sourceContentHash": "e3385cac569937a555f60d95be2d7a6e99697036f3651ec2f12236648db0fbb5",
+  "author": "CSWork"
+}

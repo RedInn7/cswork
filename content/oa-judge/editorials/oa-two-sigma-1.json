@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-1",
+  "title": "串联流水线预算内的最大吞吐",
+  "explanation": "## 思路\n\n二分目标吞吐T，逐服务计算达到T所需的最少扩容成本并求和；任一tp为0直接输出0。\n\n## 正确性证明\n\n各服务必须都达到T，每项最少次数max(0,ceil(T/tp)−1)，这些次数独立相加即最小总成本，故判定充要。T提高不会降低成本，可二分。任一服务即使独占全部预算能达到的吞吐也给出全局上界，取这些上界最小值。\n\n## 复杂度\n\nO(n log上界)时间、O(n)空间，答案最大约10^18，费用累计超预算即可停止。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,budget=d[:2];a=d[2:2+n];cost=d[2+n:]\n    if 0 in a:return '0'\n    lo=min(a);hi=min(v*(1+budget//c) for v,c in zip(a,cost))\n    while lo<hi:\n        mid=(lo+hi+1)//2;spent=0\n        for v,c in zip(a,cost):\n            spent+=max(0,(mid+v-1)//v-1)*c\n            if spent>budget:break\n        if spent<=budget:lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/two-sigma#1-maximum-throughput",
+  "sourceContentHash": "3b2586b3a0b70a0034ab6bb6df60e1fe65d1c4af2e4f8cb28934767c2afa594c",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把null输出为字符串",
+    "code": "def solve(raw):\n    import json\n    from decimal import Decimal\n    first,second=raw.split('\\n')[:2];cur=json.loads(first,parse_int=Decimal,parse_float=Decimal);path=json.loads(second)\n    for key in path.split('.'):\n        if not isinstance(cur,dict) or key not in cur:cur=None;break\n        cur=cur[key]\n    def encode(v):\n        if v is None:return '\"null\"'\n        if v is True:return 'true'\n        if v is False:return 'false'\n        if isinstance(v,Decimal):\n            if not v:return '0'\n            s=format(v,'f');return s.rstrip('0').rstrip('.') if '.' in s else s\n        if isinstance(v,str):return json.dumps(v,ensure_ascii=True)\n        if isinstance(v,list):return '['+','.join(encode(w) for w in v)+']'\n        return '{'+','.join(json.dumps(k,ensure_ascii=True)+':'+encode(v[k]) for k in sorted(v))+'}'\n    return encode(cur)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误路径只取首键",
+    "code": "def solve(raw):\n    import json\n    from decimal import Decimal\n    first,second=raw.split('\\n')[:2];cur=json.loads(first,parse_int=Decimal,parse_float=Decimal);path=json.loads(second)\n    for key in path.split('.')[:1]:\n        if not isinstance(cur,dict) or key not in cur:cur=None;break\n        cur=cur[key]\n    def encode(v):\n        if v is None:return 'null'\n        if v is True:return 'true'\n        if v is False:return 'false'\n        if isinstance(v,Decimal):\n            if not v:return '0'\n            s=format(v,'f');return s.rstrip('0').rstrip('.') if '.' in s else s\n        if isinstance(v,str):return json.dumps(v,ensure_ascii=True)\n        if isinstance(v,list):return '['+','.join(encode(w) for w in v)+']'\n        return '{'+','.join(json.dumps(k,ensure_ascii=True)+':'+encode(v[k]) for k in sorted(v))+'}'\n    return encode(cur)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

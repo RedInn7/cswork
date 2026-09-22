@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-7",
+  "title": "最多严格峰值所需的最小增加量",
+  "explanation": "## 思路\n\n算出每个内点单独变峰的代价。奇数长度只能选奇下标；偶数长度枚举一段奇下标后接一段偶下标的切换点。\n\n## 正确性证明\n\n峰不能相邻，最多floor((n−1)/2)个。只抬选中峰、其他不变最省，且不相邻峰互不影响约束。奇数长度最大独立集唯一；偶数长度每个最大独立集恰为前若干奇下标接其后的偶下标。枚举所有此结构并求代价最小即最优。每点需增加≤2×10^9+1，原单次上限足够。\n\n## 复杂度\n\nO(n)时间，O(n)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));n=len(a)\n    if n<3:return '0'\n    cost=[max(0,max(a[i-1],a[i+1])+1-a[i]) for i in range(1,n-1)]\n    if n%2:return str(sum(cost[::2]))\n    value=sum(cost[1::2]);answer=value\n    for odd,even in zip(cost[::2],cost[1::2]):value+=odd-even;answer=min(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/linkedin#7-optimize-context-switching",
+  "sourceContentHash": "ff148a0a072b3bcb094c6fa3bde034fcaf791d8b85ad3a8e7a39587627e90c4e",
+  "author": "CSWork"
+}

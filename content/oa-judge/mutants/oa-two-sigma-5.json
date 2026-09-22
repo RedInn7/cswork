@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略斜率",
+    "code": "def solve(raw):\n    from bisect import bisect_right\n    def scaled(s):\n        sign=-1 if s.startswith('-') else 1;s=s.lstrip('+-');a,_,b=s.partition('.')\n        return sign*(int(a)*1000000+int((b+'000000')[:6]))\n    tokens=iter(raw.split());n=int(next(tokens));q=int(next(tokens));points=sorted((scaled(next(tokens)),scaled(next(tokens))) for _ in range(n));xs=[p[0] for p in points];out=[]\n    for _ in range(q):\n        x=scaled(next(tokens));i=max(0,min(n-2,bisect_right(xs,x)-1));a,b=points[i];c,d=points[i+1];den=c-a;num=b*den\n        sign='-' if num<0 else '';units,rem=divmod(abs(num),den)\n        if 2*rem>=den:units+=1\n        if units==0:sign=''\n        whole,part=divmod(units,1000000);out.append(sign+str(whole)+'.'+str(part).zfill(6))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误外推钳制x",
+    "code": "def solve(raw):\n    from bisect import bisect_right\n    def scaled(s):\n        sign=-1 if s.startswith('-') else 1;s=s.lstrip('+-');a,_,b=s.partition('.')\n        return sign*(int(a)*1000000+int((b+'000000')[:6]))\n    tokens=iter(raw.split());n=int(next(tokens));q=int(next(tokens));points=sorted((scaled(next(tokens)),scaled(next(tokens))) for _ in range(n));xs=[p[0] for p in points];out=[]\n    for _ in range(q):\n        x=max(xs[0],min(xs[-1],scaled(next(tokens))));i=max(0,min(n-2,bisect_right(xs,x)-1));a,b=points[i];c,d=points[i+1];den=c-a;num=b*den+(d-b)*(x-a)\n        sign='-' if num<0 else '';units,rem=divmod(abs(num),den)\n        if 2*rem>=den:units+=1\n        if units==0:sign=''\n        whole,part=divmod(units,1000000);out.append(sign+str(whole)+'.'+str(part).zfill(6))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

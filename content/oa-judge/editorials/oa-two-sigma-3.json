@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-3",
+  "title": "替换起点四方向同值连通区域",
+  "explanation": "## 思路\n\n迭代BFS扩展四邻格，入队时立即改色作为已访问标记；新旧值相同则直接返回。\n\n## 正确性证明\n\n初始队列是目标分量中的起点。每个扩展的同旧值四邻格仍在目标分量，且立即标记不会重复入队；任一分量格沿路径可逐步发现，故遍历恰覆盖整块。相同替换值时无需访问即可得到正确原图。\n\n## 复杂度\n\nO(rc)时间、O(rc)空间；packed整数数组和整数格编号队列避免百万对象膨胀。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import re\n    from array import array\n    from collections import deque\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));h=next(values);w=next(values);r=next(values);c=next(values);new=next(values);a=array('q',values);start=r*w+c;old=a[start]\n    if old!=new:\n        q=deque([start]);a[start]=new\n        while q:\n            i=q.popleft();row,col=divmod(i,w)\n            neighbors=[]\n            if row:neighbors.append(i-w)\n            if row+1<h:neighbors.append(i+w)\n            if col:neighbors.append(i-1)\n            if col+1<w:neighbors.append(i+1)\n            for j in neighbors:\n                if a[j]==old:a[j]=new;q.append(j)\n    return '\\n'.join(' '.join(map(str,a[i*w:(i+1)*w])) for i in range(h))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/two-sigma#3-replacing-val",
+  "sourceContentHash": "d0804443154b8a321393377a0e3f35d1505146f32230a855a39b4bf1aa7e3e61",
+  "author": "CSWork"
+}

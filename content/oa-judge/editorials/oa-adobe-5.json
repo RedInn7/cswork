@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-5",
+  "title": "词表内单字符替换的最少操作",
+  "explanation": "## 思路\n\n对同长度词按(删除位置,删除后的文本)分桶，BFS时每个桶只展开一次；桶使用结构键，不把某个普通字符当唯一通配符。\n\n## 正确性证明\n\n两个同长词仅一个位置不同，当且仅当对应删除位置与剩余文本相同。因此桶边准确涵盖一步替换。BFS首次到达是最少边数，每桶在最早距离展开后所有成员已可达，再展开不会更优。\n\n## 复杂度\n\nO(nL²)构造时间、O(nL²)字符串桶空间，L≤20；每桶最多展开一次。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    from collections import defaultdict,deque\n    begin,end,words=json.loads(raw)\n    if begin==end:return '0'\n    if end not in words or len(begin)!=len(end):return '-1'\n    words=set(w for w in words if len(w)==len(begin));words.add(begin);groups=defaultdict(list)\n    for word in words:\n        for i in range(len(word)):groups[(i,word[:i]+word[i+1:])].append(word)\n    q=deque([(begin,0)]);seen={begin}\n    while q:\n        word,d=q.popleft()\n        for i in range(len(word)):\n            for other in groups.pop((i,word[:i]+word[i+1:]),[]):\n                if other==end:return str(d+1)\n                if other not in seen:seen.add(other);q.append((other,d+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/adobe#5-determine-the-edit-distance-in-a-word-ladder",
+  "sourceContentHash": "d7ec44fd6e0d8cef99d50adc8c13f16294b4bede649cbdb0c2fa5bf38d0ccd00",
+  "author": "CSWork"
+}

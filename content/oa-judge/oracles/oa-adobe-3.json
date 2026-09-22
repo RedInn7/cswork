@@ -1,0 +1,654 @@
+[
+  {
+    "input": "{\"car\":{\"wheels\":2,\"gears\":5}}\n\"car.gears\"\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "{\"car\":{\"gears\":5}}\n\"car.color\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\":{\"z\":1.250000,\"b\":true,\"n\":null}}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"n\":null,\"z\":1.25}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -3, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":-3}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 3, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "-0.5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 3, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":-9}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\".z\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\".z\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "1.25\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":-2}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "0.125\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 7, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "-0.5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "0.125\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "-0.5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":4}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-6\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 3, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 3, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 7, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-9\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 1, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 3, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "1.25\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -3, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "1.25\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":5}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":-6}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "0.125\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":false,\"empty\":null,\"x\":2}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -3, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-3\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":9}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":-7}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\".z\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "-0.5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\".z\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -3, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "1.25\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":-1}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-8\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "false\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\".z\"\n",
+    "expectedOutput": "\"\\u0000\\ud83d\\ude00\"\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "-0.5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":2}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "0.125\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.b\"\n",
+    "expectedOutput": "true\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -8, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"arr.0\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "1.25\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.x\"\n",
+    "expectedOutput": "-5\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 8, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"arr\"\n",
+    "expectedOutput": "[1,\"\\u4e2d\",null]\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 1, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -2, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":false,\"empty\":null,\"x\":-2}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 4, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 3, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"decimal\"\n",
+    "expectedOutput": "0.125\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":9}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -5, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 2, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 0, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":0}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -4, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 1.25, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 6, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a\"\n",
+    "expectedOutput": "{\"b\":true,\"empty\":null,\"x\":6}\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 1, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"a.empty\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": -7, \"empty\": null, \"b\": true}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": 0.125, \"z.z\": 3}\n\"z.z\"\n",
+    "expectedOutput": "null\n"
+  },
+  {
+    "input": "{\"a\": {\"x\": 9, \"empty\": null, \"b\": false}, \"arr\": [1, \"中\", null], \"\": {\"z\": \"\\u0000😀\"}, \"decimal\": -0.5, \"z.z\": 3}\n\"missing\"\n",
+    "expectedOutput": "null\n"
+  }
+]

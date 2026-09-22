@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误答案统计词数",
+    "code": "def solve(raw):\n    import json\n    from collections import defaultdict,deque\n    begin,end,words=json.loads(raw)\n    if begin==end:return '0'\n    if end not in words or len(begin)!=len(end):return '-1'\n    words=set(w for w in words if len(w)==len(begin));words.add(begin);groups=defaultdict(list)\n    for word in words:\n        for i in range(len(word)):groups[(i,word[:i]+word[i+1:])].append(word)\n    q=deque([(begin,0)]);seen={begin}\n    while q:\n        word,d=q.popleft()\n        for i in range(len(word)):\n            for other in groups.pop((i,word[:i]+word[i+1:]),[]):\n                if other==end:return str(d+2)\n                if other not in seen:seen.add(other);q.append((other,d+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误无解返回0",
+    "code": "def solve(raw):\n    import json\n    from collections import defaultdict,deque\n    begin,end,words=json.loads(raw)\n    if begin==end:return '0'\n    if end not in words or len(begin)!=len(end):return '0'\n    words=set(w for w in words if len(w)==len(begin));words.add(begin);groups=defaultdict(list)\n    for word in words:\n        for i in range(len(word)):groups[(i,word[:i]+word[i+1:])].append(word)\n    q=deque([(begin,0)]);seen={begin}\n    while q:\n        word,d=q.popleft()\n        for i in range(len(word)):\n            for other in groups.pop((i,word[:i]+word[i+1:]),[]):\n                if other==end:return str(d+1)\n                if other not in seen:seen.add(other);q.append((other,d+1))\n    return '0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

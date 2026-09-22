@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误需求向下取整",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x,y=d[:3];a=d[3:];delta=x-y;lo=0;hi=sum((v+x-1)//x for v in a)\n    while lo<hi:\n        t=(lo+hi)//2;need=0\n        for v in a:\n            need+=max(0,v-t*y)//delta\n            if need>t:break\n        if need<=t:hi=t\n        else:lo=t+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误需求只看最大单项",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x,y=d[:3];a=d[3:];delta=x-y;lo=0;hi=sum((v+x-1)//x for v in a)\n    while lo<hi:\n        t=(lo+hi)//2;need=0\n        for v in a:\n            need=max(need,max(0,v-t*y+delta-1)//delta)\n            if need>t:break\n        if need<=t:hi=t\n        else:lo=t+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

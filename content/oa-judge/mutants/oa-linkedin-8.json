@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误段内取总和",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];dp=[0]+[10**30]*n\n    for groups in range(1,k+1):\n        nxt=[10**30]*(n+1)\n        for end in range(groups,n+1):\n            maximum=0\n            for start in range(end-1,groups-2,-1):maximum+=a[start];nxt[end]=min(nxt[end],dp[start]+maximum)\n        dp=nxt\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误分成K减1段",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];dp=[0]+[10**30]*n\n    for groups in range(1,k):\n        nxt=[10**30]*(n+1)\n        for end in range(groups,n+1):\n            maximum=0\n            for start in range(end-1,groups-2,-1):maximum=max(maximum,a[start]);nxt[end]=min(nxt[end],dp[start]+maximum)\n        dp=nxt\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

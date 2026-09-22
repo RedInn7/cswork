@@ -1,0 +1,654 @@
+[
+  {
+    "input": "[\"hit\",\"cog\",[\"hit\",\"hot\",\"dot\",\"dog\",\"cog\"]]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"word\",\"word\",[\"word\",\"ward\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"hit\",\"cog\",[\"hit\",\"hot\",\"dot\",\"dog\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"bab\",[\"bba\",\"aaa\",\"baa\",\"aba\",\"bab\"]]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"aaa\",\"bbb\",[\"bbb\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"baa\",[\"aab\",\"abb\",\"aaa\",\"bba\",\"bbb\",\"bab\",\"aba\",\"baa\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"abb\",\"aab\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"bab\",[\"aaa\",\"baa\",\"bab\",\"bba\",\"aba\",\"aab\",\"abb\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"abb\",\"aba\",[\"abb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"aaa\",[\"baa\",\"bba\",\"aba\",\"aaa\",\"bab\",\"bbb\",\"abb\",\"aab\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bab\",\"aab\",[\"bbb\",\"abb\",\"bab\",\"aaa\",\"baa\",\"bba\",\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aba\",[\"baa\",\"aba\",\"aaa\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"baa\",\"baa\",[\"abb\",\"aba\",\"aaa\",\"bba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaa\",\"aaa\",[\"aba\",\"bbb\",\"abb\",\"bab\",\"aaa\",\"baa\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aba\",\"bba\",[\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"bbb\",[\"aaa\",\"bab\",\"bbb\",\"aba\",\"aab\",\"baa\",\"bba\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbb\",\"aab\",[\"aaa\",\"bbb\",\"bba\",\"aba\",\"baa\",\"aab\"]]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"bbb\",\"aaa\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"bbb\",[\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"bbb\",[\"bba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aba\",\"bab\",[\"aaa\",\"baa\",\"bba\",\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"aba\",[\"bab\",\"aaa\",\"bbb\",\"bba\",\"abb\",\"aba\",\"aab\",\"baa\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aba\",\"baa\",[\"aaa\",\"bbb\",\"bba\",\"abb\",\"aba\",\"baa\",\"aab\",\"bab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"abb\",\"bab\",[\"bab\",\"bba\",\"baa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aab\",[\"bbb\",\"bba\",\"aba\",\"bab\",\"baa\",\"abb\",\"aaa\",\"aab\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aba\",\"aab\",[\"bbb\",\"abb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"aba\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bba\",\"aab\",[\"baa\",\"abb\",\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"aba\",[\"abb\",\"baa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aba\",[\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"bab\",[\"bab\",\"abb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"abb\",[\"bba\",\"bbb\",\"abb\",\"baa\",\"aab\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"baa\",\"aaa\",[\"aab\",\"bab\",\"baa\",\"abb\",\"bbb\",\"aaa\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bba\",\"bbb\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"baa\",[\"bab\",\"bbb\",\"baa\",\"aba\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"baa\",\"aab\",[\"bba\",\"aba\",\"bbb\",\"abb\",\"aaa\",\"aab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aba\",\"bab\",[\"aaa\",\"bab\",\"abb\",\"aba\",\"baa\",\"bbb\",\"aab\",\"bba\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"aab\",\"aaa\",[\"aba\",\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"bab\",[\"aaa\",\"bba\",\"abb\",\"bab\",\"baa\",\"bbb\",\"aab\",\"aba\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bab\",\"baa\",[\"aba\",\"aab\",\"bab\",\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"bab\",[\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"bab\",[\"bbb\",\"aba\",\"aaa\",\"aab\",\"abb\",\"bab\",\"baa\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"abb\",\"bbb\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"abb\",[\"abb\",\"aab\",\"aba\",\"bab\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bba\",\"abb\",[\"abb\",\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"bba\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aba\",[\"bba\",\"bab\",\"bbb\",\"aaa\",\"abb\",\"aab\",\"aba\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aaa\",\"bab\",[\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bba\",\"bba\",[]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bba\",\"abb\",[\"bbb\",\"abb\",\"aab\",\"bab\",\"baa\",\"aba\",\"aaa\",\"bba\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bba\",\"bbb\",[\"abb\",\"baa\",\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"bab\",[\"abb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aba\",[\"bba\",\"aba\",\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"bbb\",[\"aab\",\"bba\",\"aaa\",\"baa\",\"abb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"aaa\",[\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"bba\",[\"bbb\",\"baa\",\"bab\",\"abb\",\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"aba\",[\"bbb\",\"bab\",\"aaa\",\"bba\",\"aab\",\"baa\",\"aba\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aab\",\"bbb\",[\"bbb\",\"baa\",\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"abb\",[\"aaa\",\"baa\",\"bab\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"bab\",[\"abb\",\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"abb\",[\"aaa\",\"bba\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bba\",\"aba\",[\"bba\",\"aba\",\"aaa\",\"aab\",\"baa\",\"abb\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bbb\",\"bbb\",[\"baa\",\"aba\",\"bab\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaa\",\"aaa\",[\"bba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aba\",\"aba\",[\"aba\",\"bba\",\"bab\",\"baa\",\"aaa\",\"abb\",\"aab\",\"bbb\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaa\",\"bba\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"bba\",[\"aba\",\"baa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"abb\",[\"aba\",\"aaa\",\"bab\",\"baa\",\"abb\",\"bbb\",\"aab\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bba\",\"aab\",[\"aba\",\"bba\",\"bbb\",\"baa\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"bab\",[\"bbb\",\"baa\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"aaa\",[\"aaa\",\"baa\",\"abb\",\"bab\",\"aba\",\"bba\",\"aab\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"aab\",\"aaa\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"baa\",[\"aaa\",\"baa\",\"aba\",\"aab\",\"bab\",\"bba\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aba\",\"abb\",[\"aab\",\"aba\",\"bba\",\"aaa\",\"baa\",\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"baa\",[\"baa\",\"bab\",\"aaa\",\"aba\",\"bba\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbb\",\"aab\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"aba\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"bba\",[\"baa\",\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bba\",\"bbb\",[\"aba\",\"bab\",\"abb\",\"aab\",\"bba\",\"aaa\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aba\",\"aba\",[\"aaa\",\"bba\",\"bab\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aba\",\"aba\",[\"bbb\",\"aba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaa\",\"aab\",[\"aba\",\"aaa\",\"baa\",\"abb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"aba\",[\"aba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"baa\",\"aba\",[\"bbb\",\"aba\",\"abb\",\"aaa\",\"aab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aab\",\"bab\",[\"bba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aba\",[\"aaa\",\"bba\",\"bbb\",\"aba\",\"abb\",\"baa\",\"aab\",\"bab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aab\",\"bbb\",[\"bbb\",\"bba\",\"bab\",\"abb\",\"aab\",\"aba\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aaa\",\"aab\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"baa\",[\"bbb\",\"bba\",\"bab\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"baa\",[\"bba\",\"aaa\",\"bab\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bbb\",\"aab\",[\"aaa\",\"abb\",\"aab\",\"baa\",\"aba\",\"bba\",\"bab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"baa\",\"aba\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"bbb\",[\"baa\",\"aba\",\"aaa\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aab\",\"bbb\",[\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"bba\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"bab\",[\"baa\",\"aaa\",\"bbb\",\"aba\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"aab\",[\"bba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"baa\",[\"aba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"abb\",\"bbb\",[\"baa\",\"bab\",\"bba\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aba\",\"bbb\",[\"abb\",\"bbb\",\"bab\",\"aab\",\"baa\",\"aaa\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bba\",\"abb\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"bbb\",[\"bba\",\"aaa\",\"bab\",\"abb\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"bbb\",[\"aab\",\"aaa\",\"bbb\",\"bba\",\"abb\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bbb\",\"abb\",[\"aba\",\"aaa\",\"bab\",\"baa\",\"abb\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"baa\",\"aab\",[\"bab\",\"bba\",\"abb\",\"aaa\",\"aab\",\"aba\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bbb\",\"baa\",[\"bab\",\"aba\",\"bbb\",\"bba\",\"baa\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"abb\",\"bab\",[\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"bab\",[\"bba\",\"baa\",\"aba\",\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"bbb\",[\"aba\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"aaa\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"aab\",[\"bba\",\"aba\",\"baa\",\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bba\",\"aab\",[\"abb\",\"aab\",\"bbb\",\"aaa\",\"baa\",\"bab\",\"bba\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"baa\",\"bbb\",[\"abb\",\"baa\",\"bba\",\"aba\",\"bab\",\"aab\",\"bbb\",\"aaa\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"bba\",\"bbb\",[\"aaa\",\"baa\",\"aba\",\"abb\",\"bba\",\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"baa\",[]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bab\",\"aba\",[\"bba\",\"aba\",\"aaa\",\"baa\",\"bbb\",\"abb\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bbb\",\"bbb\",[\"bab\",\"aaa\",\"bbb\",\"bba\",\"abb\",\"baa\",\"aba\",\"aab\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"baa\",\"aab\",[\"aaa\",\"aba\",\"bba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"aba\",[\"bbb\",\"aab\",\"aba\",\"bab\",\"bba\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aba\",\"aaa\",[\"bba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bba\",\"aab\",[\"aab\",\"bba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"bba\",[\"baa\",\"abb\",\"bab\",\"aba\",\"aaa\",\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"baa\",[\"bab\",\"aaa\",\"aba\",\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"aab\",[\"bba\",\"aba\",\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"abb\",[\"abb\",\"bba\",\"baa\",\"aaa\",\"bab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"aab\",[\"baa\",\"bba\",\"bab\",\"aab\",\"abb\",\"aaa\",\"aba\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aaa\",\"abb\",[\"aab\",\"aba\",\"baa\",\"bbb\",\"abb\",\"aaa\",\"bab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"baa\",\"bbb\",[\"baa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aba\",\"abb\",[\"aab\",\"aba\",\"bbb\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"abb\",\"bbb\",[\"aaa\",\"aba\",\"aab\",\"bab\",\"baa\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aba\",\"aba\",[\"bbb\",\"bba\",\"bab\",\"aab\",\"aba\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bba\",\"aaa\",[\"bab\",\"bbb\",\"aaa\",\"abb\",\"aab\"]]\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "[\"aaa\",\"bbb\",[\"bba\",\"baa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"baa\",[\"abb\",\"bba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aaa\",\"abb\",[\"bab\",\"bba\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"abb\",[\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"abb\",[\"abb\",\"bab\",\"bba\",\"aba\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"bab\",[\"baa\",\"bba\",\"aab\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aab\",\"bab\",[\"aba\",\"baa\",\"bab\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bba\",\"aaa\",[\"baa\",\"bbb\",\"bab\",\"aab\",\"aaa\",\"aba\",\"bba\",\"abb\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"abb\",\"aaa\",[\"bab\",\"abb\",\"aaa\",\"baa\",\"aab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aaa\",\"bab\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"aab\",[\"abb\",\"bba\",\"bbb\",\"bab\",\"aba\",\"aaa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bbb\",\"bba\",[\"aab\",\"aba\",\"bab\",\"bba\",\"aaa\",\"bbb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bbb\",\"aaa\",[\"bba\",\"abb\",\"aaa\",\"aba\",\"bbb\",\"aab\",\"baa\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"bba\",\"aab\",[\"aaa\",\"bba\",\"aba\",\"abb\",\"baa\",\"bab\",\"aab\",\"bbb\"]]\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "[\"abb\",\"aab\",[\"bbb\",\"aab\",\"aaa\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bab\",\"aab\",[\"bba\",\"aba\",\"bab\",\"bbb\",\"baa\",\"aab\",\"aaa\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"bbb\",\"bab\",[\"baa\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"aab\",[\"bab\",\"abb\",\"bba\",\"aba\",\"aab\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aaa\",\"aaa\",[]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bba\",\"baa\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"aba\",[]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"baa\",\"baa\",[\"baa\",\"aaa\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bba\",\"bba\",[]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aaa\",\"abb\",[\"baa\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"aab\",\"aab\",[\"aaa\",\"abb\",\"baa\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"aba\",\"aaa\",[\"aab\",\"bab\",\"bba\",\"aaa\",\"bbb\",\"aba\",\"baa\",\"abb\"]]\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "[\"aab\",\"bab\",[\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"bab\",\"bab\",[\"aaa\",\"baa\",\"bba\",\"abb\",\"bab\",\"aba\",\"aab\",\"bbb\"]]\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "[\"bbb\",\"aab\",[\"baa\",\"abb\",\"aab\",\"bab\"]]\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "[\"aaa\",\"aba\",[\"baa\",\"aab\",\"bba\",\"bbb\"]]\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "[\"abb\",\"aba\",[\"bab\",\"aab\"]]\n",
+    "expectedOutput": "-1\n"
+  }
+]

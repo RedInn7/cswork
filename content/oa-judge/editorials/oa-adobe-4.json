@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-4",
+  "title": "等长且组内互异的子序列划分",
+  "explanation": "## 思路\n\n检查n能被k整除，并且任一值出现次数不超过组数n/k。\n\n## 正确性证明\n\n必要性来自每组长度k且一个值在每组至多一次。充分性：按值集中处理出现项，循环分配给n/k个组；每值不超过组数，故同组无重复；总数是组数的k倍，循环后每组恰k项。各组按原下标排序得到合法子序列，故条件充分。\n\n## 复杂度\n\nO(n)期望时间、O(不同值数)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import Counter\n    d=list(map(int,raw.split()));n,k=d[:2];frequency=Counter(d[2:])\n    return 'Yes' if n%k==0 and max(frequency.values())<=n//k else 'No'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/adobe#4-partition-array-into-equal-length-distinct-subsequences",
+  "sourceContentHash": "f63a2e9737fc0aff1526fc6f1a29b34f31250f79776f7b4338bc39c8e383a88a",
+  "author": "CSWork"
+}

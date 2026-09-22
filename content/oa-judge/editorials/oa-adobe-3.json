@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-3",
+  "title": "按点分路径读取嵌套字典值",
+  "explanation": "## 思路\n\n精确十进制解析JSON，逐段检查当前值为对象且键存在，最后把结果序列化为唯一规范JSON。\n\n## 正确性证明\n\n初始值是整个对象。每步若键存在，当前位置替换为该键值，恰为已消费路径的含义；若缺失或非对象，剩余路径不可能存在。归纳得到正确值。规范化仅改变表示：对象键按Unicode码点排序，数字用精确十进制去冗余零，字符串按ASCII JSON转义。\n\n## 复杂度\n\nO(JSON输入大小+结果大小+路径长度)，排序对象键另计Σk log k，空间O(JSON树大小)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    from decimal import Decimal\n    first,second=raw.split('\\n')[:2];cur=json.loads(first,parse_int=Decimal,parse_float=Decimal);path=json.loads(second)\n    for key in path.split('.'):\n        if not isinstance(cur,dict) or key not in cur:cur=None;break\n        cur=cur[key]\n    def encode(v):\n        if v is None:return 'null'\n        if v is True:return 'true'\n        if v is False:return 'false'\n        if isinstance(v,Decimal):\n            if not v:return '0'\n            s=format(v,'f');return s.rstrip('0').rstrip('.') if '.' in s else s\n        if isinstance(v,str):return json.dumps(v,ensure_ascii=True)\n        if isinstance(v,list):return '['+','.join(encode(w) for w in v)+']'\n        return '{'+','.join(json.dumps(k,ensure_ascii=True)+':'+encode(v[k]) for k in sorted(v))+'}'\n    return encode(cur)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/adobe#3-get-nested-dictionary-value-by-dotted-path",
+  "sourceContentHash": "e8a19d370c298bfef1cae6105162983df908cf4ac8f6700ffbfe7ea1cff586f9",
+  "author": "CSWork"
+}

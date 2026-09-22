@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只考虑水平方向",
+    "code": "def solve(raw):\n    import re\n    from array import array\n    from collections import deque\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));h=next(values);w=next(values);r=next(values);c=next(values);new=next(values);a=array('q',values);start=r*w+c;old=a[start]\n    if old!=new:\n        q=deque([start]);a[start]=new\n        while q:\n            i=q.popleft();row,col=divmod(i,w)\n            neighbors=[]\n            if False:neighbors.append(i-w)\n            if row+1<h:neighbors.append(i+w)\n            if col:neighbors.append(i-1)\n            if col+1<w:neighbors.append(i+1)\n            for j in neighbors:\n                if a[j]==old:a[j]=new;q.append(j)\n    return '\\n'.join(' '.join(map(str,a[i*w:(i+1)*w])) for i in range(h))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误最后一列不可向左",
+    "code": "def solve(raw):\n    import re\n    from array import array\n    from collections import deque\n    values=(int(m.group()) for m in re.finditer(r'-?\\d+',raw));h=next(values);w=next(values);r=next(values);c=next(values);new=next(values);a=array('q',values);start=r*w+c;old=a[start]\n    if old!=new:\n        q=deque([start]);a[start]=new\n        while q:\n            i=q.popleft();row,col=divmod(i,w)\n            neighbors=[]\n            if row:neighbors.append(i-w)\n            if row+1<h:neighbors.append(i+w)\n            if col and col<w-1:neighbors.append(i-1)\n            if col+1<w:neighbors.append(i+1)\n            for j in neighbors:\n                if a[j]==old:a[j]=new;q.append(j)\n    return '\\n'.join(' '.join(map(str,a[i*w:(i+1)*w])) for i in range(h))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
