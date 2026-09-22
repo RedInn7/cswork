@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误不检查整除",
+    "code": "def solve(raw):\n    from collections import Counter\n    d=list(map(int,raw.split()));n,k=d[:2];frequency=Counter(d[2:])\n    return 'Yes' if max(frequency.values())<=n//k else 'No'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把最大频次与k比较",
+    "code": "def solve(raw):\n    from collections import Counter\n    d=list(map(int,raw.split()));n,k=d[:2];frequency=Counter(d[2:])\n    return 'Yes' if n%k==0 and max(frequency.values())<=k else 'No'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

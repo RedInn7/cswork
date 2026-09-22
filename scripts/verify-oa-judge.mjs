@@ -66,6 +66,7 @@ async function run(code, input, spec) {
       'oa-ipv4-cidr',
       'oa-json-diff',
       'oa-longest-palindrome',
+      'oa-piecewise-linear',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,

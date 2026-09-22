@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-8",
+  "title": "恰分K段的各段最大值之和最小",
+  "explanation": "## 思路\n\nDP逐段推进，枚举最后一段的起点，向左扩展维护该段最大值。\n\n## 正确性证明\n\n任一最优划分有唯一最后段起点；此前各段必须自身最优，否则可替换改进。枚举所有起点取此前最优加当前最大值，涵盖全部且不引入非法空段。归纳求得恰K段最优值。\n\n## 复杂度\n\nO(Kn²)时间，滚动O(n)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];dp=[0]+[10**30]*n\n    for groups in range(1,k+1):\n        nxt=[10**30]*(n+1)\n        for end in range(groups,n+1):\n            maximum=0\n            for start in range(end-1,groups-2,-1):maximum=max(maximum,a[start]);nxt[end]=min(nxt[end],dp[start]+maximum)\n        dp=nxt\n    return str(dp[n])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/linkedin#8-split-array-largest-sum",
+  "sourceContentHash": "d67e787679ab2f0119e37a5bfe2f435a9a00a5b2112e33e98afc5965c329f692",
+  "author": "CSWork"
+}

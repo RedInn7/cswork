@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-7",
+  "title": "逐个判断是否二的幂",
+  "explanation": "## 思路\n\n正整数只有一个二进制1当且仅当v&(v−1)=0；先排除0。\n\n## 正确性证明\n\n2^k的二进制恰好一位1，减1后所有低位为1，按位与为0。若有至少两位1，减1只清最低1，高位1保留，按位与非0。0不是2的幂，需单独排除。\n\n## 复杂度\n\nO(n)时间、O(n)输出空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=map(int,raw.split()[1:]);return ' '.join(str(int(v>0 and (v&(v-1))==0)) for v in a)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#7-powers-of-2",
+  "sourceContentHash": "f398330eab1d1597a55cce4a520012079ed7a06c27edfe4c0c44eb6519eeb92e",
+  "author": "CSWork"
+}

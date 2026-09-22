@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-4",
+  "title": "单字符通配符的最早匹配",
+  "explanation": "## 思路\n\n将模式在星号处分成两段，分别KMP标记出现位置，再按起点检查两段；没有星号只做一次KMP。\n\n## 正确性证明\n\nKMP标记全部且仅实际匹配起点。有星号时前段、一个任意字符、后段所占位置固定且互不重叠，两段都匹配且总长度足够，当且仅当整模式匹配。按起点升序首次成功即最早。\n\n## 复杂度\n\nO(|s|+|p|)时间，O(|s|+|p|)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s,p=raw.split('\\n')[:2];s=s.removesuffix('\\r');p=p.removesuffix('\\r');n=len(s)\n    def matches(pattern):\n        found=bytearray(n+1)\n        if not pattern:return bytearray(b'\\1')*(n+1)\n        pi=[0]*len(pattern);j=0\n        for i in range(1,len(pattern)):\n            while j and pattern[i]!=pattern[j]:j=pi[j-1]\n            if pattern[i]==pattern[j]:j+=1\n            pi[i]=j\n        j=0\n        for i,c in enumerate(s):\n            while j and c!=pattern[j]:j=pi[j-1]\n            if c==pattern[j]:j+=1\n            if j==len(pattern):found[i-j+1]=1;j=pi[j-1]\n        return found\n    if '*' not in p:\n        a=matches(p);return str(next((i for i,v in enumerate(a) if v),-1))\n    k=p.index('*');a=matches(p[:k]);b=matches(p[k+1:])\n    return str(next((i for i in range(n-len(p)+1) if a[i] and b[i+k+1]),-1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/linkedin#4-find-the-substring",
+  "sourceContentHash": "9b456fb737c9c32e5c298c2a8d91307fe5c3514923b8477c355795907bff9bc0",
+  "author": "CSWork"
+}

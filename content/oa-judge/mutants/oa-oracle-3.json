@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误仅按数值排序",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));a.sort(key=lambda v:(v,));return ' '.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误同基数降序",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));a.sort(key=lambda v:(v.bit_count(),-v));return ' '.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

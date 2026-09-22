@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-airbnb-1",
+  "title": "乘积不超过阈值的连续子数组",
+  "explanation": "## 思路\n\n正数滑动窗口，加入右端后收缩左端直到积≤k，加入当前窗口长度。\n\n## 正确性证明\n\n所有元素至少1，固定右端时合法起点组成后缀。收缩停在最早合法起点，因此窗口长度恰是以该右端结尾的合法子数组数，求和不重不漏。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间；答案最大125000250000，使用64位整数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];k=d[-1];p=1;left=0;answer=0\n    for right,v in enumerate(a):\n        p*=v\n        while left<=right and p>k:p//=a[left];left+=1\n        answer+=right-left+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/airbnb#1-subarray-products",
+  "sourceContentHash": "73acbc84232f8d7fbc04533e9582dacdb6784e29700a397f1196b4db28c89bec",
+  "author": "CSWork"
+}

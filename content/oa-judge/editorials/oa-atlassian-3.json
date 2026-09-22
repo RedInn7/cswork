@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-atlassian-3",
+  "title": "生产全部产品所需的最少初始资金",
+  "explanation": "## 思路\n\n按w−e从大到小排序，维护已花费用，答案取已花费用+w的最大值。\n\n## 正确性证明\n\n相邻产品a,b若余量wa−ea≥wb−eb，则先a的需求max(wa,ea+wb)不超过先b的max(wb,eb+wa)：wa≤eb+wa，且ea+wb≤eb+wa。交换逆序对不增需求，排序最优，前缀公式给该顺序最低资金。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间；答案可达10^10。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=list(zip(d[1::2],d[2::2]));spent=answer=0\n    for w,e in sorted(a,key=lambda p:p[0]-p[1],reverse=True):\n        answer=max(answer,spent+w);spent+=e\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/atlassian#3-planning-production",
+  "sourceContentHash": "e65f9965e7179129b9c1755263caf400b7e8b32d82fc173d148fe9867b371f64",
+  "author": "CSWork"
+}

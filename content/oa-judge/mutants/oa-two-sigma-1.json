@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只优化最后服务",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,budget=d[:2];a=d[2:2+n];cost=d[2+n:]\n    if 0 in a:return '0'\n    return str(a[-1]*(1+budget//cost[-1]));lo=min(a);hi=min(v*(1+budget//c) for v,c in zip(a,cost))\n    while lo<hi:\n        mid=(lo+hi+1)//2;spent=0\n        for v,c in zip(a,cost):\n            spent+=max(0,(mid+v-1)//v-1)*c\n            if spent>budget:break\n        if spent<=budget:lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误漏掉初始一份吞吐",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,budget=d[:2];a=d[2:2+n];cost=d[2+n:]\n    if 0 in a:return '0'\n    lo=min(a);hi=min(v*(1+budget//c) for v,c in zip(a,cost))\n    while lo<hi:\n        mid=(lo+hi+1)//2;spent=0\n        for v,c in zip(a,cost):\n            spent+=max(0,(mid+v-1)//v)*c\n            if spent>budget:break\n        if spent<=budget:lo=mid\n        else:hi=mid-1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

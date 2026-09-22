@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-atlassian-2",
+  "title": "连续花束的最大收入",
+  "explanation": "## 思路\n\n前缀DP可跳过末花，或选择合法末二/末三花束，滚动保留前3个状态。\n\n## 正确性证明\n\n最优方案若末花不用则来自前一前缀，否则末花所在花束必为末二或末三的允许图案；移去该束后剩余方案必须最优。递推枚举全部互斥可能，归纳成立。\n\n## 复杂度\n\nO(n)时间、O(1)DP空间，输入字符串O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    p,q,s=raw.split();p=int(p);q=int(q);dp=[0,0,0]\n    for end in range(1,len(s)+1):\n        value=dp[-1]\n        if end>=2 and s[end-2:end] in ('01','10'):value=max(value,dp[-2]+q)\n        if end>=3 and s[end-3:end]=='000':value=max(value,dp[-3]+p)\n        dp=[dp[-2],dp[-1],value]\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/atlassian#2-flower-bouquets",
+  "sourceContentHash": "016603fca1f61efca00c75f12ff4ce63f23c778fc1c9b9ce4d492514af4b3297",
+  "author": "CSWork"
+}

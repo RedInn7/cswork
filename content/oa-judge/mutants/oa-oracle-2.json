@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误忽略前面缺左括号",
+    "code": "def solve(raw):\n    s=raw.strip();balance=missing=0\n    for c in s:\n        if c=='(':balance+=1\n        elif balance:balance-=1\n        else:missing+=1\n    return str(balance)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只看括号数量差",
+    "code": "def solve(raw):\n    s=raw.strip();balance=missing=0\n    for c in s:\n        if c=='(':balance+=1\n        elif balance:balance-=1\n        else:missing+=1\n    return str(abs(s.count('(')-s.count(')')))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

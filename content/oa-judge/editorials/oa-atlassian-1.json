@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-atlassian-1",
+  "title": "合并重复字符频次的规范压缩",
+  "explanation": "## 思路\n\n扫描每段完整数字并累加到26个计数，最后按字母顺序串联。\n\n## 正确性证明\n\n每个原段恰读一次且只给对应字符增加其频次，因此累计值等于解压后出现数；升序输出实现规定的唯一规范表示。\n\n## 复杂度\n\nO(|S|)时间、O(26)计数空间，不展开大频次串。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();counts=[0]*26;i=0\n    while i<len(s):\n        c=ord(s[i])-97;i+=1;j=i\n        while i<len(s) and s[i].isdigit():i+=1\n        counts[c]+=int(s[j:i])\n    return ''.join(chr(97+i)+str(v) for i,v in enumerate(counts) if v)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/atlassian#1-better-compression",
+  "sourceContentHash": "4255e79cc879442c4442d2a44a5bb7d78a82654a639023a95e4c6e86bbd0a34d",
+  "author": "CSWork"
+}

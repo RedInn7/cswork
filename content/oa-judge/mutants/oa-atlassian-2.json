@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只允许01",
+    "code": "def solve(raw):\n    p,q,s=raw.split();p=int(p);q=int(q);dp=[0,0,0]\n    for end in range(1,len(s)+1):\n        value=dp[-1]\n        if end>=2 and s[end-2:end] in ('01',):value=max(value,dp[-2]+q)\n        if end>=3 and s[end-3:end]=='000':value=max(value,dp[-3]+p)\n        dp=[dp[-2],dp[-1],value]\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误三个玫瑰获得混合束价格",
+    "code": "def solve(raw):\n    p,q,s=raw.split();p=int(p);q=int(q);dp=[0,0,0]\n    for end in range(1,len(s)+1):\n        value=dp[-1]\n        if end>=2 and s[end-2:end] in ('01','10'):value=max(value,dp[-2]+q)\n        if end>=3 and s[end-3:end]=='000':value=max(value,dp[-3]+q)\n        dp=[dp[-2],dp[-1],value]\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

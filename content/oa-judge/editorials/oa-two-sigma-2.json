@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-2",
+  "title": "两数之和可整除N的下标对数",
+  "explanation": "## 思路\n\n顺序扫描余数，用字典记录此前余数频次，累加互补余数再加入当前元素。\n\n## 正确性证明\n\n和整除N等价于余数互补。处理j时字典仅含i<j，互补项恰为所有以j为右端的合法对，逐j无重无漏且不配自身。\n\n## 复杂度\n\nO(n)期望时间、O(n)空间，不分配N长度数组。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];seen={};answer=0\n    for v in d[2:]:\n        r=v%k;answer+=seen.get((-r)%k,0);seen[r]=seen.get(r,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/two-sigma#2-nums-that-are-divisible-by-n",
+  "sourceContentHash": "ed553019a2f7cae89c8309ab9970535587de7e41a513eee520bad7502f4ccbaa",
+  "author": "CSWork"
+}

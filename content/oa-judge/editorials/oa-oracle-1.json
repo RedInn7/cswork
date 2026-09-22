@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-1",
+  "title": "精确求两个小数之和的下取整",
+  "explanation": "## 思路\n\n把每个小数补齐8位后转换为整数，整数相加再除以10^8。\n\n## 正确性证明\n\n乘10^8后每个合法输入都是精确整数；整数相加再向下除10^8恰为原和的下取整，不存在浮点靠近整数时的舍入问题。\n\n## 复杂度\n\nO(输入长度)时间、O(1)数值空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    def scaled(s):\n        a,_,b=s.partition('.');return int(a)*100000000+int((b+'00000000')[:8])\n    a,b=map(scaled,raw.split());return str((a+b)//100000000)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#1-adding-two-numbers",
+  "sourceContentHash": "b15d93204d41848b9ae853eb34d318c5c968d63356df305846e0379b1a7310c1",
+  "author": "CSWork"
+}

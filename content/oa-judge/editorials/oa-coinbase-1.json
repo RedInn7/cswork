@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-coinbase-1",
+  "title": "跨两个整数数组的最长公共前缀",
+  "explanation": "## 思路\n\n把第一数组每个数反复除10得到全部非空前缀，放入集合；枚举另一数组前缀找最长匹配。\n\n## 正确性证明\n\n正整数的非空十进制前缀恰是不断去掉末位所得正数。两边前缀相等当且仅当存在对应跨数组对的同长共同前缀，取最大位数即答案。\n\n## 复杂度\n\nO(9(n+m))时间，O(9n)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];prefixes=set()\n    for v in a:\n        while v:prefixes.add(v);v//=10\n    answer=0\n    for v in b:\n        while v:\n            if v in prefixes:answer=max(answer,len(str(v)))\n            v//=10\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/coinbase#1-find-the-length-of-the-longest-common-prefix",
+  "sourceContentHash": "b91bc41667c2977e0dc93e775c3ccfcb2ebc921909bdc80f4dcf0999c66d7804",
+  "author": "CSWork"
+}

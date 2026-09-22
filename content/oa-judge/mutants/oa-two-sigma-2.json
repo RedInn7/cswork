@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误包含自配对",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];seen={};answer=0\n    for v in d[2:]:\n        r=v%k;seen[r]=seen.get(r,0)+1;answer+=seen.get((-r)%k,0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只算两值不同",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];seen={};answer=0\n    for v in d[2:]:\n        r=v%k;answer+=seen.get((-r)%k,0) if r!=(-r)%k else 0;seen[r]=seen.get(r,0)+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -415,6 +415,17 @@ else:
     for row in range(n): print(' '.join(cells[(n-1-column)*n+row] for column in range(n)))
 `;
     }
+    if (item.id === 'oa-two-sigma-5') {
+      // Decimal construction/formatting is exact: never pass fixed-point answers
+      // through binary float, including extrapolation approaching 4e18.
+      equivalentPrograms[item.id] = `import io,contextlib
+from decimal import Decimal
+capture=io.StringIO()
+with contextlib.redirect_stdout(capture):
+    exec(${JSON.stringify(reference)}, {'__name__':'__main__'})
+print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().split()))
+`;
+    }
     const detail = await request(`/api/oj/oa-library/${item.id}`, student);
     assert.equal(detail.judgeStatus, 'ready');
     assert.equal(detail.judgeProblemId, item.id);

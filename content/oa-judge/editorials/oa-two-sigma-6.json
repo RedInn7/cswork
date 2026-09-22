@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-6",
+  "title": "剪断排水树一条边的最小流量差",
+  "explanation": "## 思路\n\n因父编号严格更小，按编号逆序把子树流量加给父，随后遍历非根节点作为剪断子树。\n\n## 正确性证明\n\n逆序处理节点时其所有后代已经累加，因此得到准确子树总流量。剪该节点与父边后两块分别为其子树与其余节点，流量差为|total−2*sub|。每条可剪边与一个非根节点唯一对应，取最小无漏。\n\n## 复杂度\n\nO(n)时间、O(n)空间，无递归深度风险。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];parent=d[1:n+1];sub=d[n+1:]\n    for i in range(n-1,0,-1):sub[parent[i]]+=sub[i]\n    total=sub[0];return str(min(abs(total-2*v) for v in sub[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/two-sigma#6-sewer-drainage-partition",
+  "sourceContentHash": "1099b34a71ea64b055c456f2e095223e2fd1aba4017cba75344b7fd1a20be117",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-8",
+  "title": "倒序返回最后两个字符",
+  "explanation": "## 思路\n\n取末字符与倒数第二字符，以空格连接，并输出唯一ASCII JSON编码。\n\n## 正确性证明\n\nPython字符串下标按Unicode码点，−1和−2恰是要求的两个字符。插入一个空格后，JSON转义只改变表示不改变结果字符串。\n\n## 复杂度\n\nO(n)输入时间及空间，输出长度O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    import json\n    s=json.loads(raw);return json.dumps(s[-1]+' '+s[-2],ensure_ascii=True)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#8-last-and-second-last",
+  "sourceContentHash": "834cac774bccd52d2eeed441ae20208f06704fdc5ab72fa15b9a043e2128e7c4",
+  "author": "CSWork"
+}

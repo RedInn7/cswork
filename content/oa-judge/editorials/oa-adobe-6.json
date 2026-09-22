@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-6",
+  "title": "主任务加速下完成全部工作的最少轮数",
+  "explanation": "## 思路\n\n二分轮数t，每项先获t*y基准服务，剩余需ceil((time−t*y)/(x−y))次主任务，累计是否≤t。\n\n## 正确性证明\n\n任何t轮安排都只有t个主任务名额，故需求总数≤t必要。满足时给各任务所需名额即可；若其提前完成，则将剩余名额交给任意仍未完成任务只会增加服务，不会破坏完成。因此判定充分，且可行性随t单调。仅主任务处理所有任务给出有限上界，y=0也适用。\n\n## 复杂度\n\nO(n log答案)时间、O(n)输入空间，答案可达10^14。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,x,y=d[:3];a=d[3:];delta=x-y;lo=0;hi=sum((v+x-1)//x for v in a)\n    while lo<hi:\n        t=(lo+hi)//2;need=0\n        for v in a:\n            need+=max(0,v-t*y+delta-1)//delta\n            if need>t:break\n        if need<=t:hi=t\n        else:lo=t+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/adobe#6-job-execution",
+  "sourceContentHash": "43f446f1fc2c21fcff0e4735a0422473f7d2801bb7f5623031da01886cbb5de2",
+  "author": "CSWork"
+}

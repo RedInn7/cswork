@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-5",
+  "title": "折线的分段线性插值与两端外推",
+  "explanation": "## 思路\n\n输入乘10^6精确转整数，排序x后对每查询二分定位段，计算精确有理数。用整数除法把结果舍入到6位小数，不经过double。\n\n## 正确性证明\n\n折线每个查询对应唯一相邻段，外侧按首末段处理，二分选择正确。整数缩放与有理式完全等价于ya+(yb−ya)(x−xa)/(xb−xa)，没有舍入误差。最终四舍五入到10^-6网格误差至多0.5×10^-6，满足验收。即便外推接近4×10^18仍保持精度。\n\n## 复杂度\n\nO((n+q)log n)时间、O(n+q)空间；精确整数只涉及固定资源域内有限位数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from bisect import bisect_right\n    def scaled(s):\n        sign=-1 if s.startswith('-') else 1;s=s.lstrip('+-');a,_,b=s.partition('.')\n        return sign*(int(a)*1000000+int((b+'000000')[:6]))\n    tokens=iter(raw.split());n=int(next(tokens));q=int(next(tokens));points=sorted((scaled(next(tokens)),scaled(next(tokens))) for _ in range(n));xs=[p[0] for p in points];out=[]\n    for _ in range(q):\n        x=scaled(next(tokens));i=max(0,min(n-2,bisect_right(xs,x)-1));a,b=points[i];c,d=points[i+1];den=c-a;num=b*den+(d-b)*(x-a)\n        sign='-' if num<0 else '';units,rem=divmod(abs(num),den)\n        if 2*rem>=den:units+=1\n        if units==0:sign=''\n        whole,part=divmod(units,1000000);out.append(sign+str(whole)+'.'+str(part).zfill(6))\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/two-sigma#5-piecewise-linear-interpolation-and-extrapolation",
+  "sourceContentHash": "112b947757a130b81d3b280563a997d7b7d8a1b0ef06cbb0e7c9e17b3f822da8",
+  "author": "CSWork"
+}

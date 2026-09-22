@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误排除负答案",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];counts={};total=0;best=0\n    for i,v in enumerate(a):\n        total+=v;counts[v]=counts.get(v,0)+1\n        if i>=k:\n            old=a[i-k];total-=old;counts[old]-=1\n            if counts[old]==0:del counts[old]\n        if i+1>=k and len(counts)==k:best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误忽略互异限制",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];counts={};total=0;best=None\n    for i,v in enumerate(a):\n        total+=v;counts[v]=counts.get(v,0)+1\n        if i>=k:\n            old=a[i-k];total-=old;counts[old]-=1\n            if counts[old]==0:del counts[old]\n        if i+1>=k :best=total if best is None else max(best,total)\n    return str(-1 if best is None else best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

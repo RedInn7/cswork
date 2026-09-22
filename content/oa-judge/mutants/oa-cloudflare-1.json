@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误选最小容量优先",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];need=sum(d[n+1:]);total=0;answer=0\n    if need==0:return '0'\n    for v in sorted(a,reverse=False):\n        total+=v;answer+=1\n        if total>=need:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误空数据仍保留分区",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];need=sum(d[n+1:]);total=0;answer=0\n    if need==0:return '1'\n    for v in sorted(a,reverse=True):\n        total+=v;answer+=1\n        if total>=need:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

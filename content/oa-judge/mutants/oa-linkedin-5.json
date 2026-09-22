@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误从前向后递推",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));d=0\n    for v in a:d=abs(v-d)\n    total=sum(a);return f'{(total+d)//2} {(total-d)//2}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误先把首过程强给核1",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));d=a[0]\n    for v in reversed(a):d=abs(v-d)\n    total=sum(a);return f'{(total+d)//2} {(total-d)//2}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

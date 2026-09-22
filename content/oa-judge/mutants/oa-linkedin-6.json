@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误只允许尾部插字母",
+    "code": "def solve(raw):\n    a=raw.split()[1:];best={};answer=0\n    for word in sorted(a,key=len):\n        value=1+max(best.get(word[:i]+word[i+1:],0) for i in range(len(word)-1,len(word)));best[word]=value;answer=max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误重复词增长",
+    "code": "def solve(raw):\n    a=raw.split()[1:];best={};answer=0\n    for word in sorted(a,key=len):\n        value=1+best.get(word,0)+max(best.get(word[:i]+word[i+1:],0) for i in range(len(word)));best[word]=value;answer=max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

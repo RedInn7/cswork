@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误4使用加法",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));out=[]\n    values=[(1000,'M'),(900,'CM'),(500,'D'),(400,'CD'),(100,'C'),(90,'XC'),(50,'L'),(40,'XL'),(10,'X'),(9,'IX'),(5,'V'),(4,'IIII'),(1,'I')]\n    for v in a:\n        result=''\n        for value,symbol in values:\n            q,v=divmod(v,value);result+=symbol*q\n        out.append(result)\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误9使用加法",
+    "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));out=[]\n    values=[(1000,'M'),(900,'CM'),(500,'D'),(400,'CD'),(100,'C'),(90,'XC'),(50,'L'),(40,'XL'),(10,'X'),(9,'VIIII'),(5,'V'),(4,'IV'),(1,'I')]\n    for v in a:\n        result=''\n        for value,symbol in values:\n            q,v=divmod(v,value);result+=symbol*q\n        out.append(result)\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

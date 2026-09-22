@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-atlassian-4",
+  "title": "整数数组转标准罗马数字",
+  "explanation": "## 思路\n\n按1000到1的13种标准符号值，从大到小用整除决定重复次数，扣去对应值。\n\n## 正确性证明\n\n千位只能用M，百十个位各由最大可用符号及规定减法组合唯一表示；从大到小取值恰落实各位的标准表示，不影响剩余低位，逐位归纳得到唯一结果。\n\n## 复杂度\n\n每数最多15个字符，O(n)时间，保存结果O(n)空间；stdout≤1600000字节。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));out=[]\n    values=[(1000,'M'),(900,'CM'),(500,'D'),(400,'CD'),(100,'C'),(90,'XC'),(50,'L'),(40,'XL'),(10,'X'),(9,'IX'),(5,'V'),(4,'IV'),(1,'I')]\n    for v in a:\n        result=''\n        for value,symbol in values:\n            q,v=divmod(v,value);result+=symbol*q\n        out.append(result)\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/atlassian#4-romanizer",
+  "sourceContentHash": "dfc90a5dbccb20c791ee2e7e7040098f6af1a62f1a09ea4b084e5b983c2ce7bc",
+  "author": "CSWork"
+}

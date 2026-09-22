@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误去重",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];b=d[n+1:];i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]<=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    out.extend(a[i:]);out.extend(b[j:]);return ' '.join(map(str,dict.fromkeys(out)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误按降序比较首项",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];b=d[n+1:];i=j=0;out=[]\n    while i<n and j<n:\n        if a[i]>=b[j]:out.append(a[i]);i+=1\n        else:out.append(b[j]);j+=1\n    out.extend(a[i:]);out.extend(b[j:]);return ' '.join(map(str,out))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-6",
+  "title": "插入一个字母的最长词链",
+  "explanation": "## 思路\n\n按长度排序，删除当前词每个位置，查询所得前驱的最长链，取最大加1。\n\n## 正确性证明\n\n任一合法前驱都恰好可由当前词删除一个位置得到，因此枚举无遗漏。前驱更短，排序保证其最优值已算出；DAG最长路递推归纳正确。重复相同词不会增加长度。\n\n## 复杂度\n\nO(nL²)时间含字符串构造、O(nL)空间，L≤16。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=raw.split()[1:];best={};answer=0\n    for word in sorted(a,key=len):\n        value=1+max(best.get(word[:i]+word[i+1:],0) for i in range(len(word)));best[word]=value;answer=max(answer,value)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/linkedin#6-longest-string-chain",
+  "sourceContentHash": "08b1c5e8f3067eca9a2f60186bb86763b5748fba4666ec4879d2f3a24a7e94be",
+  "author": "CSWork"
+}

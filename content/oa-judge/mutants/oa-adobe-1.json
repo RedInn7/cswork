@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误每项目选最高报价",
+    "code": "def solve(raw):\n    it=iter(map(int,raw.split()));p=next(it);n=next(it);best=[None]*p\n    for _ in range(n):\n        i=next(it);v=next(it)\n        if best[i] is None or v>best[i]:best[i]=v\n    return str(-1 if any(v is None for v in best) else sum(best))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误遗漏无报价项目",
+    "code": "def solve(raw):\n    it=iter(map(int,raw.split()));p=next(it);n=next(it);best=[None]*p\n    for _ in range(n):\n        i=next(it);v=next(it)\n        if best[i] is None or v<best[i]:best[i]=v\n    return str(sum(v for v in best if v is not None))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

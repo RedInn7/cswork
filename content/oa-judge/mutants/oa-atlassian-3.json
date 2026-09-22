@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误余量升序",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=list(zip(d[1::2],d[2::2]));spent=answer=0\n    for w,e in sorted(a,key=lambda p:p[0]-p[1],reverse=False):\n        answer=max(answer,spent+w);spent+=e\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误初始资金仅为实际总花费",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=list(zip(d[1::2],d[2::2]));spent=answer=0\n    for w,e in sorted(a,key=lambda p:p[0]-p[1],reverse=True):\n        answer=max(answer,spent+w);spent+=e\n    return str(spent)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

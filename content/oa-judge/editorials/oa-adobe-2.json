@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-2",
+  "title": "竞争排名达到门槛的升级人数",
+  "explanation": "## 思路\n\n用101个分数桶，从高到低维护已见人数，当前非零分数排名为已见人数加1。\n\n## 正确性证明\n\n严格高于当前分数者恰是先前已累计桶，因此排名准确。整桶玩家同进同出；0分单独排除，故计数恰符合全部条件。\n\n## 复杂度\n\nO(n+101)时间、O(101)额外空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];buckets=[0]*101\n    for v in d[2:]:buckets[v]+=1\n    higher=0;answer=0\n    for score in range(100,0,-1):\n        if higher+1<=k:answer+=buckets[score]\n        higher+=buckets[score]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/adobe#2-count-players-eligible-to-level-up",
+  "sourceContentHash": "1c5826687c0f21f25953cda7010c534f19884f1757c80354eb56cc0fab8e206b",
+  "author": "CSWork"
+}

@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-airbnb-1",
+      "sourceContentHash": "73acbc84232f8d7fbc04533e9582dacdb6784e29700a397f1196b4db28c89bec",
+      "packageChecksum": "140b1474a73bbbe87e45739177570add13b273b2c7f3f40dd66d000f74c4e660",
+      "editorial": "## 思路\n\n正数滑动窗口，加入右端后收缩左端直到积≤k，加入当前窗口长度。\n\n## 正确性证明\n\n所有元素至少1，固定右端时合法起点组成后缀。收缩停在最早合法起点，因此窗口长度恰是以该右端结尾的合法子数组数，求和不重不漏。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间；答案最大125000250000，使用64位整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];k=d[-1];p=1;left=0;answer=0\n    for right,v in enumerate(a):\n        p*=v\n        while left<=right and p>k:p//=a[left];left+=1\n        answer+=right-left+1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-airbnb-2",
+      "sourceContentHash": "8c73cf266f56f1bf6b94f6fe884bc292e3fde869a1e228280be2d1edc8e6c533",
+      "packageChecksum": "bc44823ef07c386f8cb777c1c4dfc2914794374e6cac3ba9e9fb144c4202514e",
+      "editorial": "## 思路\n\n二分速度，用各堆所需时间ceil(a/d)的和判断。\n\n## 正确性证明\n\n固定速度时每堆需要且足够ceil(a/d)个独占时间单位。总耗时随速度单调不增，故二分首次可行速度正确。正数量使最低耗时为n，h<n时无解。\n\n## 复杂度\n\nO(n log max(a))时间、O(n)输入空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];hours=d[-1]\n    if hours<n:return '-1'\n    lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum((v+mid-1)//mid for v in a)<=hours:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-airbnb-3",
+      "sourceContentHash": "395493a3af345432eb50037ae86de5e79c24d9ce1d6690784b4a61d0460b0c13",
+      "packageChecksum": "7f58cefb8162d43a5a69d0791645ae4837257925122245459f8515fcb06cb1eb",
+      "editorial": "## 思路\n\n对空格BFS，每次向四方向扫描最多k格，遇墙停止；已访问空格不是障碍，仍继续扫描更远位置。\n\n## 正确性证明\n\n所有合法跳跃都是单位权边。射线扫描恰枚举所有且仅合法的边，BFS第一次访问一个格子时路径步数最短，因此终点距离正确。\n\n## 复杂度\n\nO(nmk)时间、O(nm)空间，最多约400万次射线检查。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from collections import deque\n    d=list(map(int,raw.split()));n,m,k=d[:3];a=d[3:]\n    if a[0] or a[-1]:return '-1'\n    dist=[-1]*(n*m);dist[0]=0;q=deque([0])\n    while q:\n        p=q.popleft();i,j=divmod(p,m)\n        for di,dj in ((1,0),(-1,0),(0,1),(0,-1)):\n            for step in range(1,k+1):\n                u=i+di*step;v=j+dj*step\n                if not (0<=u<n and 0<=v<m):break\n                z=u*m+v\n                if a[z]:break\n                if dist[z]<0:dist[z]=dist[p]+1;q.append(z)\n    return str(dist[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-airbnb-4",
+      "sourceContentHash": "52a3465eea204a47ad34f0d50a4e9d1e73191fa5851042cd5f85134b20d72067",
+      "packageChecksum": "0ac623cca6864933ab87f9acd3f6be3c8694f57a8fda3a0acae332ba62a6b15d",
+      "editorial": "## 思路\n\n二分速度，用各堆所需时间ceil(a/d)的和判断。\n\n## 正确性证明\n\n固定速度时每堆需要且足够ceil(a/d)个独占时间单位。总耗时随速度单调不增，故二分首次可行速度正确。正数量使最低耗时为n，h<n时无解。\n\n## 复杂度\n\nO(n log max(a))时间、O(n)输入空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];hours=d[-1]\n    if hours<n:return '-1'\n    lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum((v+mid-1)//mid for v in a)<=hours:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-atlassian-1",
+      "sourceContentHash": "4255e79cc879442c4442d2a44a5bb7d78a82654a639023a95e4c6e86bbd0a34d",
+      "packageChecksum": "40a73b27b08f65415a6fa83d1e275fbdf44587e286f9cb976b21e5d68cf94a16",
+      "editorial": "## 思路\n\n扫描每段完整数字并累加到26个计数，最后按字母顺序串联。\n\n## 正确性证明\n\n每个原段恰读一次且只给对应字符增加其频次，因此累计值等于解压后出现数；升序输出实现规定的唯一规范表示。\n\n## 复杂度\n\nO(|S|)时间、O(26)计数空间，不展开大频次串。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip();counts=[0]*26;i=0\n    while i<len(s):\n        c=ord(s[i])-97;i+=1;j=i\n        while i<len(s) and s[i].isdigit():i+=1\n        counts[c]+=int(s[j:i])\n    return ''.join(chr(97+i)+str(v) for i,v in enumerate(counts) if v)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-atlassian-2",
+      "sourceContentHash": "016603fca1f61efca00c75f12ff4ce63f23c778fc1c9b9ce4d492514af4b3297",
+      "packageChecksum": "fae1f3b8a40455eb63f6172bc1f662ccc84d42b29519a1d25c646f5c4bd0dc75",
+      "editorial": "## 思路\n\n前缀DP可跳过末花，或选择合法末二/末三花束，滚动保留前3个状态。\n\n## 正确性证明\n\n最优方案若末花不用则来自前一前缀，否则末花所在花束必为末二或末三的允许图案；移去该束后剩余方案必须最优。递推枚举全部互斥可能，归纳成立。\n\n## 复杂度\n\nO(n)时间、O(1)DP空间，输入字符串O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    p,q,s=raw.split();p=int(p);q=int(q);dp=[0,0,0]\n    for end in range(1,len(s)+1):\n        value=dp[-1]\n        if end>=2 and s[end-2:end] in ('01','10'):value=max(value,dp[-2]+q)\n        if end>=3 and s[end-3:end]=='000':value=max(value,dp[-3]+p)\n        dp=[dp[-2],dp[-1],value]\n    return str(dp[-1])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-atlassian-3",
+      "sourceContentHash": "e65f9965e7179129b9c1755263caf400b7e8b32d82fc173d148fe9867b371f64",
+      "packageChecksum": "4dc69fcdeec923d9dd015586a1787d0c30377ceddacd8afe413fab12d3ae061b",
+      "editorial": "## 思路\n\n按w−e从大到小排序，维护已花费用，答案取已花费用+w的最大值。\n\n## 正确性证明\n\n相邻产品a,b若余量wa−ea≥wb−eb，则先a的需求max(wa,ea+wb)不超过先b的max(wb,eb+wa)：wa≤eb+wa，且ea+wb≤eb+wa。交换逆序对不增需求，排序最优，前缀公式给该顺序最低资金。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间；答案可达10^10。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));a=list(zip(d[1::2],d[2::2]));spent=answer=0\n    for w,e in sorted(a,key=lambda p:p[0]-p[1],reverse=True):\n        answer=max(answer,spent+w);spent+=e\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-atlassian-4",
+      "sourceContentHash": "dfc90a5dbccb20c791ee2e7e7040098f6af1a62f1a09ea4b084e5b983c2ce7bc",
+      "packageChecksum": "7151f111b0a0e34ac06a41efe9358a3f2c6da4876c8bca59bee9ad69a7962861",
+      "editorial": "## 思路\n\n按1000到1的13种标准符号值，从大到小用整除决定重复次数，扣去对应值。\n\n## 正确性证明\n\n千位只能用M，百十个位各由最大可用符号及规定减法组合唯一表示；从大到小取值恰落实各位的标准表示，不影响剩余低位，逐位归纳得到唯一结果。\n\n## 复杂度\n\n每数最多15个字符，O(n)时间，保存结果O(n)空间；stdout≤1600000字节。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));out=[]\n    values=[(1000,'M'),(900,'CM'),(500,'D'),(400,'CD'),(100,'C'),(90,'XC'),(50,'L'),(40,'XL'),(10,'X'),(9,'IX'),(5,'V'),(4,'IV'),(1,'I')]\n    for v in a:\n        result=''\n        for value,symbol in values:\n            q,v=divmod(v,value);result+=symbol*q\n        out.append(result)\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-cloudflare-1",
+      "sourceContentHash": "f6894394ce4ee3d896554dbc9e597c938c89a5bd2a25a7a53cf15350182a89a5",
+      "packageChecksum": "0fd8dcba94f3995cf41c26f97c2242cc4a818b06bfd22119632c873faf48cab8",
+      "editorial": "## 思路\n\n总已用量不变，按容量降序取最短前缀使总容量达到总使用量。\n\n## 正确性证明\n\n数据可拆分，因此一个保留子集可行当且仅当容量和足够。固定分区数量时最大容量和由最大的那些容量获得，所以第一次足够的前缀长度就是最小可行数量。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间；总量用64位。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];need=sum(d[n+1:]);total=0;answer=0\n    if need==0:return '0'\n    for v in sorted(a,reverse=True):\n        total+=v;answer+=1\n        if total>=need:break\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-coinbase-1",
+      "sourceContentHash": "b91bc41667c2977e0dc93e775c3ccfcb2ebc921909bdc80f4dcf0999c66d7804",
+      "packageChecksum": "1b4e3ca9759e886da83665e5e23d8f2e6fe433edaac5733368e8d444f2ba77dc",
+      "editorial": "## 思路\n\n把第一数组每个数反复除10得到全部非空前缀，放入集合；枚举另一数组前缀找最长匹配。\n\n## 正确性证明\n\n正整数的非空十进制前缀恰是不断去掉末位所得正数。两边前缀相等当且仅当存在对应跨数组对的同长共同前缀，取最大位数即答案。\n\n## 复杂度\n\nO(9(n+m))时间，O(9n)空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m=d[:2];a=d[2:2+n];b=d[2+n:];prefixes=set()\n    for v in a:\n        while v:prefixes.add(v);v//=10\n    answer=0\n    for v in b:\n        while v:\n            if v in prefixes:answer=max(answer,len(str(v)))\n            v//=10\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-github-1",
+      "sourceContentHash": "d1adf0e695393bbd76ef77f071a9f37c771ffa24944262c8aec811013df97033",
+      "packageChecksum": "cd0d2000d54356d07f3133a4f46835aa2e359aa5d383a452e59eaa0b2576fffc",
+      "editorial": "## 思路\n\n维护已保留序列的末车，若新车与它超载，删除两车中较重者；单车超重直接删除。\n\n## 正确性证明\n\n合法保留序列恰要求每辆不超载、每对相邻保留车重量和≤U。冲突二者必须至少删一个，留下较轻尾车对所有未来车辆都不更差，同时不破坏之前的相邻约束。交换论证逐步保持最优数量及最有利末车。\n\n## 复杂度\n\nO(n)时间，除输入外O(1)空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,u=d[:2];last=None;answer=0\n    for v in d[2:]:\n        if v>u:answer+=1\n        elif last is None or last+v<=u:last=v\n        else:answer+=1;last=min(last,v)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

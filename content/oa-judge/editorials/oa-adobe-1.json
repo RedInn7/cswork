@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-1",
+  "title": "完成所有项目的最低报价总额",
+  "explanation": "## 思路\n\n逐项目保存最小报价，最后检查是否齐全并求和。\n\n## 正确性证明\n\n每个报价只完成其对应项目，任一方案费用在每项目都不小于该项目最小报价之和。各最小报价独立可同时选择，故下界可达；没有报价的项目无法完成。\n\n## 复杂度\n\nO(n+p)时间、O(p)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    it=iter(map(int,raw.split()));p=next(it);n=next(it);best=[None]*p\n    for _ in range(n):\n        i=next(it);v=next(it)\n        if best[i] is None or v<best[i]:best[i]=v\n    return str(-1 if any(v is None for v in best) else sum(best))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/adobe#1-freelancer-bidding-minimum-customer-cost",
+  "sourceContentHash": "729d1681d8555dc53d261e9e9afe23d6759d00bb8640424118faffabb536da0c",
+  "author": "CSWork"
+}

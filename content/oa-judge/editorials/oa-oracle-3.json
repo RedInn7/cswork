@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-3",
+  "title": "按二进制一的数量排序",
+  "explanation": "## 思路\n\n以(二进制1数,整数值)为排序键。\n\n## 正确性证明\n\n该二元键正好按题目优先级比较；排序保留所有输入元素，包括重复值，故输出唯一要求顺序。\n\n## 复杂度\n\nO(n log n)时间、O(n)空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a=list(map(int,raw.split()[1:]));a.sort(key=lambda v:(v.bit_count(),v));return ' '.join(map(str,a))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/oracle#3-cardinality-sorting",
+  "sourceContentHash": "aba23c9427416329f9c393d7d933815e05382691be66c0ab72089ce5633cc3e9",
+  "author": "CSWork"
+}

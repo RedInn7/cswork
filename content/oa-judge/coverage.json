@@ -4,10 +4,10 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 762,
+    "sandbox_verified": 800,
     "awaiting_sandbox": 0,
-    "blocked": 160,
-    "unreviewed": 712
+    "blocked": 173,
+    "unreviewed": 661
   },
   "items": [
     {
@@ -4121,72 +4121,97 @@
     {
       "id": "oa-linkedin-1",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "重复entry/road如何重置未定义，合法子序列与严格事件状态机不同。"
     },
     {
       "id": "oa-linkedin-2",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "perfect pair两比较式原文缺失，不能凭他公司同名题猜。"
     },
     {
       "id": "oa-linkedin-3",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文及K含义缺失，原例K3却解释终点4，不能猜图目标。"
     },
     {
       "id": "oa-linkedin-4",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "寻找模式在文本中的第一次出现，*恰代表一个任意字符而非任意长度。不存在返回−1，下标从0开始。 输入两行s和p。原文本s为a..z，模式p为a..z且至多一个*；原无长度界，本站0≤两串长度≤200000。空模式在0处匹配。"
     },
     {
       "id": "oa-linkedin-5",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "按原顺序分配每个过程。持锁核可把当前过程给自己并换锁，或给另一核且保留锁；双方都最大化自己的最终总时间，初始核1持锁。 第一行n，第二行n个time。Millennium同题OCR001..004恢复原界1≤n≤100000、1≤time[i]≤10^9；操作针对当前第i项，原Fastprep的i+1为笔误。输出两个精确整数。"
     },
     {
       "id": "oa-linkedin-6",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "从词表中选择词链，每个后词恰由前词插入一个字母且保留其余字母顺序得到，求最长链的词数。相同长度的词不能互为前驱。 第一行词数n，随后每行一个词。原界1≤n≤1000、每词长1..16，全部小写英文；允许重复词。"
     },
     {
       "id": "oa-linkedin-7",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "仅可增加数组项，每次增量是0..10^18整数。内点严格大于两邻项才算峰，端点不计。先最大化峰的数量，再最小化总增加量。 第一行n，第二行n个初值。原未给n或初值界，本站1≤n≤200000，初值−10^9..10^9；保留原单次增量上限10^18。"
     },
     {
       "id": "oa-linkedin-8",
       "company": "linkedin",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "将数组保序划分为恰好K个非空连续段，最小化各段最大值的总和；不是最小化各段和的最大值。 第一行n K，第二行n个数。原界1<K≤n<300、1<a[i]<10^5，原例又含1；本站兼容该例为2≤K≤n≤299、1≤a[i]≤99999，原严格域全部保留。"
     },
     {
       "id": "oa-adobe-1",
       "company": "adobe",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "每个项目选择一份报价，求完成全部项目的最低总价；任何项目没有报价返回−1。报价之间互不限制。 第一行项目数p和报价数n，随后n行项目ID及报价。原完整界1≤p,n<500000，项目ID按原例为0..p−1。原报价值域缺失，本站补−10^9..10^9；输出精确整数。"
     },
     {
       "id": "oa-adobe-2",
       "company": "adobe",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "同分玩家同排名，排名为1加严格更高分人数。仅排名数≤k且分数非0者升级。 第一行n k，第二行n个分数。原界1≤n≤100000、0≤score≤100、k≤n但无下界；本站补−10^9≤k≤n，k≤0时无人升级。"
     },
     {
       "id": "oa-adobe-3",
       "company": "adobe",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "按路径中点分隔的键逐层访问字典，缺键或中途不是对象返回null；数组不按索引访问。找到的任何JSON值原样返回，null不是字符串\"null\"。 输入两行：JSON对象及JSON字符串路径。路径非空、码点长≤200，空段按空键查找。原OCR末尾n字符串/m路径约束不对应单对象函数，本站明确资源协议：树节点≤5000、深度≤30、单键及字符串≤200码点、全部键/字符串合计≤250000码点；完整JSON标量/数组/对象，键是Unicode标量字符串，duplicate keys非法；数字有限、token≤64字符、指数绝对值≤12、值绝对值≤10^9且恰位于10^-6网格。输入总字节≤4MiB。"
     },
     {
       "id": "oa-adobe-4",
       "company": "adobe",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "将每个数组元素恰放进一个长度k的子序列，各组内部值两两不同；子序列保持原下标顺序但不要求连续。 第一行n k，第二行n个整数。OCR004定义、005补全原界1≤n≤100000、1≤k≤n、1≤a[i]≤100000。"
     },
     {
       "id": "oa-adobe-5",
       "company": "adobe",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "每次替换一个字符，所有经过的词必须在词表中（起点可不在）。终点不在词表则无解，但起终点相同时无需操作。求最少替换次数。 输入JSON数组[begin,end,wordList]。原无长度/字符/数量界，本站每词1..20个Unicode标量、词表0..10000项，起终点可异长；全部码点≤200040，标准JSON保留空白/NUL。不同长度无法通过替换互达，无解输出−1。"
     },
     {
       "id": "oa-adobe-6",
       "company": "adobe",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "每轮选择一个未完成任务执行x秒，其他未完成任务执行y秒，x>y。达到各自所需时间即退出，求最少轮数。 第一行n x y，第二行n个所需时间。原只有x>y、没有数值界；本站1≤n≤100000、0≤time≤10^9、0≤y<x≤10^9。时间0的任务初始已完成。"
     },
     {
       "id": "oa-snowflake-1",
@@ -4664,42 +4689,56 @@
     {
       "id": "oa-two-sigma-1",
       "company": "two-sigma",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "第i个服务扩容一次支付cost[i]，扩容t次后吞吐tp[i]*(1+t)。串联流水线吞吐为所有服务最小值，求总费用不超过预算时的最大吞吐。 第一行n budget，第二行n个tp，第三行n个cost。原OCR001/002未给数值界，本站1≤n≤100000、0≤tp≤10^9、1≤cost≤10^9、0≤budget≤10^9；正成本明确排除无限免费扩容，0吞吐始终不能提高。"
     },
     {
       "id": "oa-two-sigma-2",
       "company": "two-sigma",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "统计i<j且a[i]+a[j]可被N整除的下标对。重复值的元素有不同身份，不能与自身配对。 第一行数组长n及除数N，第二行n个数。完整原界1≤n≤100000、1≤N≤10^9、1≤a[i]≤10^9，输出64位整数。"
     },
     {
       "id": "oa-two-sigma-3",
       "company": "two-sigma",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "将起点及与其通过上下左右同原值格连通的所有位置改为指定值；仅对角接触不连通。 第一行行数r、列数c、起点行列及替换值，随后r行矩阵。原约束Unknown，本站明确1≤r,c≤1000、矩阵及替换值−10^9..10^9、起点合法0基；不是伪称catalog补界为原界。"
     },
     {
       "id": "oa-two-sigma-4",
       "company": "two-sigma",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文截断且两位小数舍入规则缺失，中点样例无法确定。"
     },
     {
       "id": "oa-two-sigma-5",
       "company": "two-sigma",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "把点按x升序连接相邻点。查询位于点之间时线性插值，左外侧延长首段、右外侧延长末段；恰落节点返回其y。答案按绝对误差≤10^-6验收，不是相对误差。 第一行n q，随后n行x y，随后q行查询x。保留原2≤n≤200000、1≤q≤200000，点乱序且x互异。原无坐标数值界，本站补：输入坐标是普通有符号有限十进制、不用指数或冗余前导零、小数至多6位，绝对值≤10^6。每个输出token≤64字节，普通十进制或科学计数均可、指数绝对值≤30，必须有限；恰输出q项，无数量前缀。 输入数字必须有整数部分；如有小数点，其后必须有1..6位数字，不接受.5、1.或指数形式；可带+或−号，允许负零。 输入坐标严格语法[+-]?(0|[1-9][0-9]*)([.][0-9]{1,6})?；允许+号、负零及尾零，不接受.5或1.；n/q为无冗余前导零的正整数。每物理行字段数如上，行内空格/制表分隔；LF或CRLF，末尾换行可选，无额外空行。总输入≤9600040字节，输出ASCII空白分隔且≤16MiB。"
     },
     {
       "id": "oa-two-sigma-6",
       "company": "two-sigma",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "linkedin-adobe-twosigma-first",
+      "reason": "树根为0，每节点有直接入水量。恰剪断一条父子边，把树分成两块，最小化两块直接入水总量的绝对差。 第一行n，第二行n个parent，第三行n个直接入水量。完整原界2≤n≤100000、入水1..10000、parent[0]=−1、0≤parent[i]<i，树深度最多500。"
     },
     {
       "id": "oa-samsung-1",
       "company": "samsung",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "逐元素评分函数与D取值域缺失，不能用样例推定。"
     },
     {
       "id": "oa-samsung-2",
       "company": "samsung",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "从(0,0)出发，初始强度K=1。一次操作可令x增加K、y增加K，或令K增加1。求恰到(a,b)的最少操作数，每组独立。 第一行t，之后t行a b。完整原界1≤t≤1000，1≤a,b≤10^9。"
     },
     {
       "id": "oa-ibm-1",
@@ -5192,57 +5231,76 @@
     {
       "id": "oa-oracle-1",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "给两个有限十进制数，返回它们和的向下取整。 一行两个正十进制数a b。完整原界0.1<a,b<1000000，最多8位小数；本站编码要求有整数部分，不用指数形式。"
     },
     {
       "id": "oa-oracle-2",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "只允许插入括号，求使原串成为合法括号串的最少插入数量。 一行只含(和)的字符串，完整原界1≤长度≤100000。"
     },
     {
       "id": "oa-oracle-3",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "先按二进制表示中的1数量升序，同数量按整数值升序；重复元素全部保留。 第一行n，第二行n个整数。完整原界1≤n≤100000，1≤a[i]≤1000000。"
     },
     {
       "id": "oa-oracle-4",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "A含重复而B删重与排列定义矛盾，重复遍历长度不明。"
     },
     {
       "id": "oa-oracle-5",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "同组Total与多个Total的返回语义未确认，单int接口与查询数组不一致。"
     },
     {
       "id": "oa-oracle-6",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "依赖外部实时REST API，缺离线响应协议及最近整数中点舍入定义。"
     },
     {
       "id": "oa-oracle-7",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "判断数组各数是否等于2的某个非负整数次幂，返回1或0。 第一行n，第二行n个整数。完整原界1≤n≤100，0≤a[i]≤50000000。"
     },
     {
       "id": "oa-oracle-8",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "返回字符串最后一个字符、一个普通空格、倒数第二个字符组成的新字符串。 输入一个JSON字符串，按Unicode码点计数长度2..100（原长度界）。来源未限定字符集，本站允许所有Unicode标量，包括空白、NUL和非BMP字符；不得含孤立代理码点。以JSON编码保留字符，输入≤1230字节。"
     },
     {
       "id": "oa-oracle-9",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "把两个非递减数组合并为一个非递减数组，保留全部重复值。 第一行共同长度n，随后两行各n个整数。完整原界1<n≤100000，0≤元素≤10^9，两个数组分别非递减。"
     },
     {
       "id": "oa-oracle-10",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "可任意重排数组，求相邻元素绝对差之和的最小值；只输出代价，不输出排列。 第一行n，第二行n个整数。完整原界2≤n≤100000，0≤a[i]≤10^9。"
     },
     {
       "id": "oa-oracle-11",
       "company": "oracle",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "每次选择两个不同位置的元素，支付它们的和，并用该和替换这两个元素。直到只剩一个元素，求最小总代价。 第一行n，第二行n个整数。完整原界2≤n≤10000，0≤a[i]≤100000。答案可能超过32位整数。"
     },
     {
       "id": "oa-salesforce-1",
@@ -5763,12 +5821,16 @@
     {
       "id": "oa-dell-1",
       "company": "dell",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "在数组中选择恰长k且内部元素互不相同的连续窗口，使元素和最大。没有合法窗口输出−1。 第一行n k，第二行n个整数；n=0时第二行可为空。来源没有规模和值域，本站补充0≤n≤200000、1≤k≤200000、−10^9≤a[i]≤10^9；k可大于n，负数不排除。"
     },
     {
       "id": "oa-dell-2",
       "company": "dell",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "samsung-oracle-dell-first",
+      "reason": "计数连续子串：0和1数量相等，且每种字符各自连续成一个块。相同文本位于不同位置分别计数。 输入一行二进制字符串，只含0和1。原上界长度100000，未给下界，本站保留空串（空行）合法。"
     },
     {
       "id": "oa-uber-1",
@@ -6215,42 +6277,54 @@
     {
       "id": "oa-airbnb-1",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "统计非空连续子数组中元素乘积不超过k的个数，比较包含等号。 第一行n，第二行n个正整数，第三行k。以原始OCR为准：1≤n≤500000、1≤a[i]≤100、1≤k≤1000000；来源整理章中的较小n与较大k不覆盖OCR。"
     },
     {
       "id": "oa-airbnb-2",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "每单位时间只能吃一箱/堆，最多吃d个；不足d也占用完整单位时间，剩余额度不能转到下一箱/堆。求在期限内全部吃完的最小正整数速度。 第一行n，第二行n个数量，第三行期限h。原数值上界缺失，本站补充1≤n≤200000、数量1..10^9、h≤10^18。原文保证可行，本站n≤h。"
     },
     {
       "id": "oa-airbnb-3",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "从左上角到右下角，一步沿一个轴移动1..k格，经过的全部格子必须为空，包括起点和落点。不可达返回−1。 第一行n m k，随后n行m个0/1。保留原完整域1≤n,m,k≤100。本站明确：任一端点为障碍时返回−1，包括1×1障碍；空1×1为0。"
     },
     {
       "id": "oa-airbnb-4",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "每单位时间只能吃一箱/堆，最多吃d个；不足d也占用完整单位时间，剩余额度不能转到下一箱/堆。求在期限内全部吃完的最小正整数速度。 第一行n，第二行n个数量，第三行期限h。原数值上界缺失，本站补充1≤n≤200000、数量1..10^9、h≤10^18。本站1≤h；原文未保证可行，不可行时补充输出−1。"
     },
     {
       "id": "oa-airbnb-5",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "转义与列表语法缺失，不能擅自排除原允许的转义值。"
     },
     {
       "id": "oa-airbnb-6",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原n10万、width1万完整域约1GB输入/2GB输出，超当前判题容量，不能缩域。"
     },
     {
       "id": "oa-airbnb-7",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "多方最高强度并列时低强军队命运未定义，不能补猜结算规则。"
     },
     {
       "id": "oa-airbnb-8",
       "company": "airbnb",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文截断，舍入范围/目标/不可行输出缺失。"
     },
     {
       "id": "oa-stripe-1",
@@ -6485,42 +6559,57 @@
     {
       "id": "oa-coinbase-1",
       "company": "coinbase",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "从两个数组分别选一个正整数，比较通常十进制表示的共同前缀，返回全部跨数组配对中的最大前缀长度；没有共同首位则0。 第一行n m，第二行n个数，第三行m个数。原界1≤n,m≤50000，1≤数值≤100000000，最大值有9位。"
     },
     {
       "id": "oa-github-1",
       "company": "github",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "车辆保持原队列顺序过桥，最多两车同时在桥上。首车离开时第三车立刻进入，依次类推。可删除任意车辆，求使桥不超载的最少删除数；不能插入等待或重排。 第一行n U，第二行n个车重。原文没有数值界，本站补充1≤n≤200000、1≤U,weight[i]≤10^9。单车超重也必须删除。"
     },
     {
       "id": "oa-atlassian-1",
       "company": "atlassian",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "输入由小写字母及其十进制正频次组成，允许同字母多次出现。累计频次后按字母升序，每个出现过的字母仅输出一次及其总频次。 一行压缩串S。原界1≤|S|≤100000，每段字母a..z、频次1..1000；必须为完整合法字母-频次序列，因此有效串最短2。本站采用无前导零的频次编码。"
     },
     {
       "id": "oa-atlassian-2",
       "company": "atlassian",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "花列0为玫瑰、1为cosmos。三个连续玫瑰000可卖p，一朵玫瑰加一朵cosmos的连续01或10可卖q。每朵最多用一次，可不使用部分花，不允许删除花后拼接成新的相邻关系。 第一行p q，第二行二进制串s。原界1≤p,q≤1000、1≤|s|≤100000。"
     },
     {
       "id": "oa-atlassian-3",
       "company": "atlassian",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "每件产品开始前现金至少为其最坏成本w，实际只扣除预期成本e。可任意安排生产顺序，求完成全部产品所需的最少初始现金。 第一行n，随后n行w e。原完整界1≤n≤100000、1≤e≤w≤100000。输出精确整数，不能受原示例签名int的32位限制。"
     },
     {
       "id": "oa-atlassian-4",
       "company": "atlassian",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "将每个正整数转换为标准大写罗马数字，采用IV、IX、XL、XC、CD、CM六种减法表示，按输入顺序输出。 第一行n，第二行n个整数。原文缺数值界，本站补充1≤n≤100000、每数1..3999；不采用横线或重复M表示更大整数的扩展。这是本站补充域，不宣称来源原界。"
     },
     {
       "id": "oa-atlassian-5",
       "company": "atlassian",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "任意实数中心定义与整数返回及样例矛盾：样例连续最优1.5而输出2。"
     },
     {
       "id": "oa-cloudflare-1",
       "company": "cloudflare",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "airbnb-platform-companies-first",
+      "reason": "每个分区给出容量与已使用量，数据允许拆成块并移动到其他分区。求容纳全部现有数据所需保留的最少分区数，不要求原分区内的数据整体迁移。 第一行n，第二行n个容量，第三行n个已用量。原无数值界，本站补充1≤n≤200000、容量1..10^9、0≤used[i]≤capacity[i]。总使用量为0时本站明确输出0。"
     },
     {
       "id": "oa-doordash-1",

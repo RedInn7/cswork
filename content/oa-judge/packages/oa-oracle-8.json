@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-oracle-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "倒序返回最后两个字符",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Oracle"
+    ],
+    "description": "返回字符串最后一个字符、一个普通空格、倒数第二个字符组成的新字符串。\n\n本站独立整理标准I/O与题解；来源缺失界的补充及样例纠错在协议中明示。",
+    "input": "输入一个JSON字符串，按Unicode码点计数长度2..100（原长度界）。来源未限定字符集，本站允许所有Unicode标量，包括空白、NUL和非BMP字符；不得含孤立代理码点。以JSON编码保留字符，输入≤1230字节。",
+    "output": "输出一个规范ASCII JSON字符串，无额外空白，末尾换行可选。可打印ASCII除双引号与反斜线外原样输出（包括/）；双引号和反斜线分别转义；退格、换页、换行、回车、制表分别用\\b、\\f、\\n、\\r、\\t；其他控制字符、DEL和非ASCII用小写四位\\uXXXX，非BMP用小写UTF-16代理对。两侧双引号必须保留，等价Python json.dumps(value,ensure_ascii=True)。",
+    "explanation": "三个公开样例的输出依次为：\"E L\"；\"t a\"；\"\\ud83d\\ude00 \\u0000\"。独立枚举或直接模拟已核对。",
+    "hints": [
+      "取末字符与倒数第二字符，以空格连接，并输出唯一ASCII JSON编码。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "\"APPLE\"\n",
+      "expectedOutput": "\"E L\"\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "\"bat\"\n",
+      "expectedOutput": "\"t a\"\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "\"\\u0000\\ud83d\\ude00\"\n",
+      "expectedOutput": "\"\\ud83d\\ude00 \\u0000\"\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n",
+      "expectedOutput": "\"a a\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "\"\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\\u0000\"\n",
+      "expectedOutput": "\"\\u0000 \\u0000\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "\"\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\\ud83d\\ude00\"\n",
+      "expectedOutput": "\"\\ud83d\\ude00 \\ud83d\\ude00\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "\"\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\u4e2d\\n\\t\"\n",
+      "expectedOutput": "\"\\t \\n\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "\"                                                                                                    \"\n",
+      "expectedOutput": "\"   \"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\\\"\\\\\"\n",
+      "expectedOutput": "\"\\\\ \\\"\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "\"\\tZZZa\\t\\t\\\\a \"\n",
+      "expectedOutput": "\"  a\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "\"Z Z\\ud83d\\ude00\\u007f\\u007f\"\n",
+      "expectedOutput": "\"\\u007f \\u007f\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "\"\\ud83d\\ude00\\\"\\\"\\u007fZa\"\n",
+      "expectedOutput": "\"a Z\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "\"\\u007f\\\"\\ud83d\\ude00\"\n",
+      "expectedOutput": "\"\\ud83d\\ude00 \\\"\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "\"Z\\ud83d\\ude00\"\n",
+      "expectedOutput": "\"\\ud83d\\ude00 Z\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "\"\\u007fZ\\u4e2d\\\"\\t\"\n",
+      "expectedOutput": "\"\\t \\\"\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "\"\\u007f\\u4e2d\\nZ\\nZ\"\n",
+      "expectedOutput": "\"Z \\n\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "\" \\u0000\\ud83d\\ude00\\u007fZ\\u007f\\u4e2dZ\\t\"\n",
+      "expectedOutput": "\"\\t Z\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "\"\\\\\\\\\"\n",
+      "expectedOutput": "\"\\\\ \\\\\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "\"\\\\a\\t\\u4e2d \\\"\\\"\\u007f\\t\\u4e2d\"\n",
+      "expectedOutput": "\"\\u4e2d \\t\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "\"\\\"a\\\\\\\\ \\u007fa\\\"\"\n",
+      "expectedOutput": "\"\\\" a\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "\"\\\"   ZZ\\\\\\u0000\\\\\"\n",
+      "expectedOutput": "\"\\\\ \\u0000\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "\"\\t\\ud83d\\ude00\\n\\u007f\\\\\\na\\n\\n\"\n",
+      "expectedOutput": "\"\\n \\n\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "\"\\u0000 \"\n",
+      "expectedOutput": "\"  \\u0000\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "\"\\n\\u0000\\t\"\n",
+      "expectedOutput": "\"\\t \\u0000\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "\"\\\"\\u4e2d\\\\\\\"\\u007f\\t\\t\\n\\u4e2d \"\n",
+      "expectedOutput": "\"  \\u4e2d\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "\"\\\\\\u0000\"\n",
+      "expectedOutput": "\"\\u0000 \\\\\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "\"\\n\\\" \\\\\\u007fa\\u007f\"\n",
+      "expectedOutput": "\"\\u007f a\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "\"\\\"\\u0000  Z\\\"  \"\n",
+      "expectedOutput": "\"   \"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "\"\\u4e2dZ\\ud83d\\ude00\\ud83d\\ude00a\\\"\\n\\\\\\n\"\n",
+      "expectedOutput": "\"\\n \\\\\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "\"aa \"\n",
+      "expectedOutput": "\"  a\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "\" Z\\ud83d\\ude00\"\n",
+      "expectedOutput": "\"\\ud83d\\ude00 Z\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "\"\\\\\\u007f\"\n",
+      "expectedOutput": "\"\\u007f \\\\\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "\"\\u4e2d\\ud83d\\ude00\\ud83d\\ude00  \\tZ\\\"\\n\"\n",
+      "expectedOutput": "\"\\n \\\"\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 31",
+      "input": "\"\\u4e2d \\\\ \\u007f\\u0000\\na\\u0000a\\\"\\\\\"\n",
+      "expectedOutput": "\"\\\\ \\\"\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 32",
+      "input": "\"\\u007fZ\\\\\\u4e2d\\u4e2d\\n\\u0000\\u4e2da\\ud83d\\ude00\\n\\u4e2d\"\n",
+      "expectedOutput": "\"\\u4e2d \\n\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 33",
+      "input": "\"\\n\\u0000\\\\\"\n",
+      "expectedOutput": "\"\\\\ \\u0000\"\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 34",
+      "input": "\" \\u007f\\n\\n\\u4e2d\\u007f\\n\"\n",
+      "expectedOutput": "\"\\n \\u007f\"\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

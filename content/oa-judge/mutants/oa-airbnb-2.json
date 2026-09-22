@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误每箱向下取整",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];hours=d[-1]\n    if hours<n:return '-1'\n    lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum(v//mid for v in a)<=hours:hi=mid\n        else:lo=mid+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误二分答案少一",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];a=d[1:n+1];hours=d[-1]\n    if hours<n:return '-1'\n    lo=1;hi=max(a)\n    while lo<hi:\n        mid=(lo+hi)//2\n        if sum((v+mid-1)//mid for v in a)<=hours:hi=mid\n        else:lo=mid+1\n    return str(lo-1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

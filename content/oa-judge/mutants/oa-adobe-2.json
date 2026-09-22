@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许零分升级",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];buckets=[0]*101\n    for v in d[2:]:buckets[v]+=1\n    higher=0;answer=0\n    for score in range(100,-1,-1):\n        if higher+1<=k:answer+=buckets[score]\n        higher+=buckets[score]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误使用密集排名",
+    "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,k=d[:2];buckets=[0]*101\n    for v in d[2:]:buckets[v]+=1\n    higher=0;answer=0\n    for score in range(100,0,-1):\n        if higher+1<=k:answer+=buckets[score]\n        higher+=int(buckets[score]>0)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
