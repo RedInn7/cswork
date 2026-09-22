@@ -203,13 +203,13 @@ test('strict input decimal grammar, physical records, distinct x and count bound
 });
 
 function fixedScaled(value: bigint) {
-  const negative = value < 0n;
+  const negative = value < BigInt(0);
   const magnitude = negative ? -value : value;
   return (
     (negative ? '-' : '') +
-    magnitude / 1000000n +
+    magnitude / BigInt(1000000) +
     '.' +
-    String(magnitude % 1000000n).padStart(6, '0')
+    String(magnitude % BigInt(1000000)).padStart(6, '0')
   );
 }
 // Independent linear segment scan and barycentric weighted-average expression.
@@ -221,10 +221,10 @@ function oracle(points: bigint[][], x: bigint) {
     [c, d] = p[i + 1];
   const numerator = b * (c - x) + d * (x - a),
     denominator = c - a;
-  const abs = numerator < 0n ? -numerator : numerator;
+  const abs = numerator < BigInt(0) ? -numerator : numerator;
   let units = abs / denominator;
-  if (2n * (abs % denominator) >= denominator) units++;
-  return fixedScaled(numerator < 0n ? -units : units);
+  if (BigInt(2) * (abs % denominator) >= denominator) units++;
+  return fixedScaled(numerator < BigInt(0) ? -units : units);
 }
 test('450 independent tiny rational fixtures, unsorted/micro-spaced/negative points', () => {
   let state = 736251;
@@ -251,7 +251,7 @@ test('450 independent tiny rational fixtures, unsorted/micro-spaced/negative poi
     const expected = queries.map((x) => oracle(points, x));
     check(expected.join('\n'), input, true, 'deliberately-wrong');
     const first = expected[0];
-    const units = BigInt(first.replace('.', '')) + 2n;
+    const units = BigInt(first.replace('.', '')) + BigInt(2);
     check(
       [fixedScaled(units), ...expected.slice(1)].join(' '),
       input,
