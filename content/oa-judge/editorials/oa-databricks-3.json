@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-3",
+  "title": "二进制串翻转与前缀零计数",
+  "explanation": "## 思路\n\n先计算初始字符串的 0 前缀和。全串翻转只改变一个布尔状态；查询位置 i 时，未翻转答案是原前缀 0 数，已翻转答案是 (i+1) 减原前缀 0 数。\n\n## 正确性证明\n\n初始前缀和准确记录每个位置之前的 0 个数。一次全串翻转会把该前缀内的每个 0 与 1 互换，因此 0 数变为前缀长度减原 0 数。多次翻转只取决于翻转次数的奇偶；逐个操作按此规则输出，正好等价于实际修改整串后重新计数。\n\n## 复杂度\n\n时间 O(n+q)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    it=iter(map(str,data.split())); n=int(next(it)); q=int(next(it)); bits=next(it)\n    zero=[0]*(n+1)\n    for i,ch in enumerate(bits): zero[i+1]=zero[i]+(ch=='0')\n    flipped=False; answer=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=zero[i+1]\n            answer.append(str(i+1-z if flipped else z))\n    return ' '.join(answer)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#3-binary-string-count--flip-queries",
+  "sourceContentHash": "a1ea08656410bc1089d51640040823110281eb87619ae0470ca649979b5bbc54",
+  "author": "CSWork"
+}

@@ -46,7 +46,9 @@ node scripts/oa-judge/coverage.mjs
 node scripts/oa-judge/coverage.mjs --check
 ```
 
-本轮审阅后仍有 13 题阻塞、1,553 题未审阅，不能称为全量完成。阻塞详情在 `content/oa-judge/reviews/`：包括源题缺失/矛盾、多解检查器未实现，以及 Google29 尚缺验证过的高效算法。它们保持不可提交。
+截至 2026-09-23，全量清单共有 1,634 题：800 题已通过真实沙箱验证并登记在发布清单；本轮另新增 9 道本地独立验证的候选题，仍待真实沙箱验证；200 题因题面、输出规则或可靠算法尚未解决而阻塞，625 题尚未审阅。候选包放在 `content/oa-judge/candidate-batches/`，不会进入运行时 registry；只有真实沙箱报告通过后才可提升到 `batches/`。**已验证/登记也不等于当前生产环境已确认发布**。只有通过真实沙箱并发布的题目显示提交入口，其余题目保持不可提交。
+
+这是滚动清单，数字以 `content/oa-judge/coverage.json` 为准；新增或变更题目后重新生成，避免在文档中沿用旧批次统计。阻塞详情在 `content/oa-judge/reviews/`，题意与判题器尚未厘清前不强行上线。
 
 ## 验证
 

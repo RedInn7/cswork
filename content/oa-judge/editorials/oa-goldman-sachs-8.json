@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-8",
+  "title": "机器人是否被环绕",
+  "explanation": "## 思路\n\n模拟一遍命令，记录位移和最终朝向。如果回到起点，或者最终朝向与初始朝向不同，则重复执行后的位移会周期性抵消，轨迹有界；否则每轮沿同方向累积位移，轨迹无界。\n\n## 正确性证明\n\n每轮结束后的朝向只可能有四种。若朝向改变，至多四轮后朝向复原，且这四轮的位移按旋转对称相加为零；之后状态重复。若朝向未变，非零位移会在每轮同向累积而无界，零位移则位置始终不变。\n\n## 复杂度\n\n每个命令串时间 O(L)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    data=raw.split();n=int(data[0]);commands=data[1:1+n];answers=[]\n    dx=[0,1,0,-1];dy=[1,0,-1,0]\n    for command in commands:\n        x=y=direction=0\n        for step in command:\n            if step=='G':x+=dx[direction];y+=dy[direction]\n            elif step=='L':direction=(direction+3)%4\n            else:direction=(direction+1)%4\n        answers.append('YES' if (x==0 and y==0) or direction!=0 else 'NO')\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#8-encircular",
+  "sourceContentHash": "29dd85a417af622740e86933d83515a9c5a5d42bd9a9a3bcd4dc087bf33304bb",
+  "author": "CSWork"
+}

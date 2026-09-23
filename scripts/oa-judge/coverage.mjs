@@ -117,6 +117,66 @@ export function coverage(
       });
     }
   }
+  // Candidate batches keep author-verified work visible to the coverage
+  // inventory without adding its solutions to the runtime registry. Only a
+  // real go-judge report can promote a candidate into `batches/`.
+  const candidates = resolve(root, 'candidate-batches');
+  if (existsSync(candidates))
+    for (const file of readdirSync(candidates)
+      .filter((name) => name.endsWith('.json'))
+      .sort()) {
+      const batch = file.slice(0, -5);
+      const manifest = JSON.parse(
+        readFileSync(resolve(candidates, file), 'utf8'),
+      );
+      assert.equal(manifest.schemaVersion, 1);
+      assert(Array.isArray(manifest.items) && manifest.items.length > 0);
+      for (const entry of manifest.items) {
+        assert(source.has(entry.id), 'Unknown candidate ID: ' + entry.id);
+        assert.equal(
+          entry.sourceContentHash,
+          source.get(entry.id)?.contentHash,
+        );
+        assert(!prepared.has(entry.id), 'Duplicate prepared ID: ' + entry.id);
+        const packageBytes = readFileSync(
+          resolve(root, 'packages', entry.id + '.json'),
+        );
+        const pkg = JSON.parse(packageBytes);
+        assert.equal(digest(JSON.stringify(pkg)), entry.packageChecksum);
+        assert.equal(pkg.problem.id, entry.id);
+        assert.equal(entry.authoredSolutions.length, 1);
+        assert.equal(entry.authoredSolutions[0].language, 'python');
+        assert.equal(
+          entry.authoredSolutions[0].code,
+          readFileSync(resolve(root, 'references', entry.id + '.py'), 'utf8'),
+        );
+        const oracle = JSON.parse(
+          readFileSync(resolve(root, 'oracles', entry.id + '.json'), 'utf8'),
+        );
+        assert(
+          oracle.length >= 120,
+          'Candidate oracle coverage required: ' + entry.id,
+        );
+        const mutants = JSON.parse(
+          readFileSync(resolve(root, 'mutants', entry.id + '.json'), 'utf8'),
+        );
+        assert(Array.isArray(mutants) && mutants.length >= 2);
+        const validation = JSON.parse(
+          readFileSync(resolve(root, 'validation', batch + '.json'), 'utf8'),
+        );
+        const evidence = validation.problems.find(
+          (item) => item.id === entry.id,
+        );
+        assert(evidence && evidence.oracleCases === oracle.length);
+        assert(evidence.negativeControls.length >= 2);
+        assert(
+          evidence.negativeControls.every(
+            (item) => item.rejectedByCases.length > 0,
+          ),
+        );
+        prepared.set(entry.id, { batch, status: 'awaiting_sandbox' });
+      }
+    }
   // Preserve historical blocked reviews; an explicit source-bound resolution
   // may replace their current decision only after a real package is registered.
   const resolutions = resolve(root, 'resolutions');

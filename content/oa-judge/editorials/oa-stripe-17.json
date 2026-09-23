@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-17",
+  "title": "Payment Intent 状态机与限时退款",
+  "explanation": "## 思路\n\n用哈希表分别保存商户余额/退款时限与 Intent 的商户、金额、状态、退款标记、成功时间。按时间顺序扫描命令，仅在当前状态符合转换条件时更新；最后排序商户并输出。\n\n## 正确性\n\n逐条命令按定义检查唯一的前置状态。INIT/CREATE 的存在性检查保证标识不被覆盖；每个状态转换只在其规定起态执行，且成功只会从 PROCESSING 到 COMPLETED 一次，因此余额只入账一次。退款同时检查完成态、未退款标记和时限，标记成功退款避免重复扣款。归纳命令前缀可知表中状态与按规则执行的系统一致，最终余额正确。\n\n## 复杂度\n\n设命令数为 q、商户数为 m。状态处理平均 O(q)，最后排序 O(m log m)，空间 O(q+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines=raw.splitlines(); q=int(lines[0]); merchants={}; intents={}\n    for line in lines[1:q+1]:\n        p=line.split(); ts=int(p[0]); op=p[1]; a=p[2:]\n        if op==\"INIT\":\n            name=a[0]; balance=int(a[1]); limit=int(a[2]) if len(a)>2 else None\n            if name not in merchants: merchants[name]=[balance,limit]\n        elif op==\"CREATE\":\n            pid,name,amount=a[0],a[1],int(a[2])\n            if pid not in intents and name in merchants and amount>=0: intents[pid]=[name,amount,\"REQUIRES_ACTION\",False,None]\n        elif op in (\"ATTEMPT\",\"SUCCEED\",\"FAIL\",\"UPDATE\",\"REFUND\"):\n            pid=a[0]\n            if pid not in intents: continue\n            item=intents[pid]\n            if op==\"ATTEMPT\" and item[2]==\"REQUIRES_ACTION\": item[2]=\"PROCESSING\"\n            elif op==\"SUCCEED\" and item[2]==\"PROCESSING\":\n                item[2]=\"COMPLETED\"; merchants[item[0]][0]+=item[1]; item[4]=ts\n            elif op==\"FAIL\" and item[2]==\"PROCESSING\": item[2]=\"REQUIRES_ACTION\"\n            elif op==\"UPDATE\" and item[2]==\"REQUIRES_ACTION\" and int(a[1])>=0: item[1]=int(a[1])\n            elif op==\"REFUND\" and item[2]==\"COMPLETED\" and not item[3]:\n                limit=merchants[item[0]][1]\n                if limit is None or limit<0 or (limit>0 and ts-item[4]<=limit):\n                    merchants[item[0]][0]-=item[1]; item[3]=True\n    out=[f\"{name} {merchants[name][0]}\" for name in sorted(merchants)]\n    return str(len(out))+(\"\\n\"+\"\\n\".join(out) if out else \"\")\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/stripe#17-for-all-intents-and-purposes-part-1---initializing-the-system",
+  "sourceContentHash": "8edcfc526cb4ae5bdd1fd560c5f28fd90879d1108530ddb7f2b1e18a08d6f585",
+  "author": "CSWork"
+}

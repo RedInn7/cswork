@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-goldman-sachs-5",
+      "sourceContentHash": "987b8a5d3e66c961ac5e7ee7de8172bb66747ab4bb7b2df5d9057771e7dc49e9",
+      "packageChecksum": "077f67217353b18f862d277b4900cf2774f986cd9963df68e83821f96d35c926",
+      "editorial": "## 思路\n\n把每个字符位置和相邻字符间隙分别作为回文中心，向两侧扩展；每次左右字符相同就找到一个回文子串。\n\n## 正确性证明\n\n任意回文子串的中心要么是某个字符，要么是两个相邻字符之间的间隙。对所有这两类中心扩展会且只会枚举每个回文子串一次。\n\n## 复杂度\n\n时间 O(n²)，额外空间 O(1)（不计输入）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip();n=len(s);answer=0\n    for center in range(n):\n        left=right=center\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n        left=center;right=center+1\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-8",
+      "sourceContentHash": "29dd85a417af622740e86933d83515a9c5a5d42bd9a9a3bcd4dc087bf33304bb",
+      "packageChecksum": "52753548d00cba05f9626c5f9720e1eba7e5bf6d934287a619f2c89841c3071d",
+      "editorial": "## 思路\n\n模拟一遍命令，记录位移和最终朝向。如果回到起点，或者最终朝向与初始朝向不同，则重复执行后的位移会周期性抵消，轨迹有界；否则每轮沿同方向累积位移，轨迹无界。\n\n## 正确性证明\n\n每轮结束后的朝向只可能有四种。若朝向改变，至多四轮后朝向复原，且这四轮的位移按旋转对称相加为零；之后状态重复。若朝向未变，非零位移会在每轮同向累积而无界，零位移则位置始终不变。\n\n## 复杂度\n\n每个命令串时间 O(L)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    data=raw.split();n=int(data[0]);commands=data[1:1+n];answers=[]\n    dx=[0,1,0,-1];dy=[1,0,-1,0]\n    for command in commands:\n        x=y=direction=0\n        for step in command:\n            if step=='G':x+=dx[direction];y+=dy[direction]\n            elif step=='L':direction=(direction+3)%4\n            else:direction=(direction+1)%4\n        answers.append('YES' if (x==0 and y==0) or direction!=0 else 'NO')\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

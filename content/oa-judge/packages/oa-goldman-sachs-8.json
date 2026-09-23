@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "机器人是否被环绕",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "模拟",
+      "数学"
+    ],
+    "description": "机器人从坐标 (0,0) 朝北出发，按命令 G（前进一步）、L（原地左转）、R（原地右转）执行。命令串会无限重复。判断机器人轨迹是否始终有界；有界输出 YES，否则输出 NO。\n\n输入协议、样例与评测数据由 CSWork 按原函数题意整理。",
+    "input": "第一行 n（1..10），接下来 n 行各为一个命令串，长度为 1..2500，只包含 G、L、R。",
+    "output": "对每个命令串按输入顺序输出 YES 或 NO，每行一个结果。",
+    "explanation": "输出按题目规则计算的结果；完整算法说明见题解。",
+    "hints": [
+      "模拟一遍命令，记录位移和最终朝向。如果回到起点，或者最终朝向与初始朝向不同，则重复执行后的位移会周期性抵消，轨迹有界；否则每轮沿同方向累积位移，轨迹无界。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3\nG\nGL\nGRGRGRGR\n",
+      "expectedOutput": "NO\nYES\nYES\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\nR\n",
+      "expectedOutput": "YES\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1\nGLGLGLGL\n",
+      "expectedOutput": "YES\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "1\nG\n",
+      "expectedOutput": "NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "1\nGL\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "1\nGGGGR\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "1\nRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "2\nLGGRGL\nLGRGLLLRLGGGGRRLRGLLR\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "3\nGGRLLGLGGLRRGGLLLRR\nLRRR\nLLRGRGRGGRRRRLGLGLRLGL\n",
+      "expectedOutput": "YES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "1\nRLLGRLRRL\n",
+      "expectedOutput": "NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "2\nRGLRRGRLLRGRGRGLLRL\nGLLGRLGLRG\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "4\nRRR\nRR\nRLRLGRGLGLLRGGGGGRRGRR\nRG\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "2\nRR\nLGLRGGGGL\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "4\nGGGLGGGLR\nLGGGLGLGLRRGGGL\nGLRGR\nRRRGGRGRLGRRGRLG\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "5\nRLLRLGRGL\nGGRRRGLRRLLGRRLL\nRRGRRLLLLGRLLGL\nRGRGRGRLRRGLLGRLGGGG\nL\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "3\nLLRLGRLRRGGGLL\nLLRRRGGGGLLRRLRLG\nGLGLGRGLLLLR\n",
+      "expectedOutput": "YES\nNO\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "2\nGLGGRLGGRGLRGG\nRRRRGGLRGLGR\n",
+      "expectedOutput": "NO\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "5\nRRRRLRLRGGG\nRLLLRGRLLGRGG\nRLRLRGLGGLRLGLRRRLRRRR\nRGGLGRGRRRLRR\nLGLLLRLGG\n",
+      "expectedOutput": "NO\nYES\nNO\nYES\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "1\nRLLLRLR\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "2\nRGLRRLLGLGRGLGRGLG\nRGRRRRGLGGLGGL\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "6\nRGGGRLLRRRGRG\nRL\nLLLRLRGLGLRGLLRRL\nLLGLLRGGGRGRLR\nLLGGGGGGGLG\nL\n",
+      "expectedOutput": "NO\nYES\nNO\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "1\nLG\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "1\nGGLRGLLRLRRRGRGRGLGRRLLL\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "6\nRRLRLGRLRRRLGGRGG\nGLRLR\nLG\nGLL\nRRRRRLGLGLRLGRLRRLLR\nRLLR\n",
+      "expectedOutput": "NO\nNO\nYES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "4\nRLGRR\nLGLGRLLGLLGRLGRLRLGRRL\nL\nRGGRRLLLRGGGRRG\n",
+      "expectedOutput": "YES\nNO\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "4\nG\nLGRGGRGRGRGLRRGLGGRLGRGG\nGRRGGGGRLRRGRRLGGLLGR\nLLRRLRRRGGGR\n",
+      "expectedOutput": "NO\nNO\nNO\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "3\nGGLGLLGLGL\nLGRRLGRL\nRRGGLGLLLLGRLRRLRRGRLRG\n",
+      "expectedOutput": "YES\nNO\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "2\nRRR\nRLRGGRGL\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "5\nR\nGRLRLRGRRRG\nRLRRGLRRRLLRRGLLRLGG\nLGRRGRLRLGLR\nLLGRRGLRGGGGLRLGGLRGGG\n",
+      "expectedOutput": "YES\nNO\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "4\nGR\nLLLLRGLGGGRLGLLRLRGGGRR\nLRGRLLRGGLLRGLLLGRLRRL\nGLGRRRLRLGLRGGGRR\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "3\nGLLR\nGRGGL\nRRRRGLLRGRL\n",
+      "expectedOutput": "YES\nNO\nYES\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

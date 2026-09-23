@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 Y 两条斜线延伸到下半部",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; mid=n//2\n    inside=[0]*3; outside=[0]*3\n    for r in range(n):\n        for c in range(n):\n            is_y=(c in (r,n-1-r)) or (r>mid and c==mid)\n            group=inside if is_y else outside; group[v[1+r*n+c]]+=1\n    return str(min((n*n-inside[y]-outside[b]) for y in range(3) for b in range(3) if y!=b))\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "允许 Y 和背景使用同一数字",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; mid=n//2\n    inside=[0]*3; outside=[0]*3\n    for r in range(n):\n        for c in range(n):\n            is_y=(r<=mid and c in (r,n-1-r)) or (r>mid and c==mid)\n            group=inside if is_y else outside; group[v[1+r*n+c]]+=1\n    return str(min((n*n-inside[y]-outside[b]) for y in range(3) for b in range(3) if True))\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

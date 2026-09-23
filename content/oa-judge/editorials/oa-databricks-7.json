@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-7",
+  "title": "修改最少格子绘制字母 Y",
+  "explanation": "## 思路\n\n逐格判断它是否属于 Y，统计 Y 内和 Y 外各自的 0、1、2 个数。枚举六种不同的 (Y 数字, 背景数字)，计算不匹配格数并取最小。\n\n## 正确性证明\n\n任一合法目标矩阵都由唯一的一对不同数字决定：Y 数字和背景数字。固定这对数字后，每个位置必须变为其所属区域的指定值，修改代价正是当前值与指定值不同的位置数。六种组合覆盖全部合法方案，取最小即为全局最优。\n\n## 复杂度\n\n时间 O(6n²)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; mid=n//2\n    inside=[0]*3; outside=[0]*3\n    for r in range(n):\n        for c in range(n):\n            is_y=(r<=mid and c in (r,n-1-r)) or (r>mid and c==mid)\n            group=inside if is_y else outside; group[v[1+r*n+c]]+=1\n    return str(min((n*n-inside[y]-outside[b]) for y in range(3) for b in range(3) if y!=b))\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#7-letter-y-on-a-square-matrix",
+  "sourceContentHash": "fda7ef9da5511928ad583deb83312919a72396b13e8a61a606ce9aa8518e4633",
+  "author": "CSWork"
+}

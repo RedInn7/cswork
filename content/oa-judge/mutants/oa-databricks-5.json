@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许旋转",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); q=v[0]; p=1; short_max=long_max=0; out=[]\n    for _ in range(q):\n        kind,a,b=v[p:p+3]; p+=3; short,long=a,b\n        if kind==0: short_max=max(short_max,short); long_max=max(long_max,long)\n        else: out.append('1' if short_max<=short and long_max<=long else '0')\n    return '\\n'.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查最新矩形",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); q=v[0]; p=1; short_max=long_max=0; out=[]\n    for _ in range(q):\n        kind,a,b=v[p:p+3]; p+=3; short,long=sorted((a,b))\n        if kind==0: short_max=short; long_max=long\n        else: out.append('1' if short_max<=short and long_max<=long else '0')\n    return '\\n'.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

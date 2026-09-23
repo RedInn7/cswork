@@ -24,6 +24,20 @@ test('authored OA packages and displayed solutions match sandbox-verified immuta
   const root = resolve('content/oa-judge');
   assert.deepEqual(registry, aggregateBatches(root));
   assert(registry.items.length >= 6);
+  const candidateIds = new Set<string>();
+  for (const file of readdirSync(resolve(root, 'candidate-batches')).filter(
+    (name) => name.endsWith('.json'),
+  )) {
+    const candidate = JSON.parse(
+      readFileSync(resolve(root, 'candidate-batches', file), 'utf8'),
+    );
+    for (const item of candidate.items) candidateIds.add(item.id);
+  }
+  assert(candidateIds.size > 0);
+  assert(
+    registry.items.every((item: { id: string }) => !candidateIds.has(item.id)),
+    'Unverified candidates must remain outside the runtime registry',
+  );
   for (const file of readdirSync(resolve(root, 'batches')).filter((file) =>
     file.endsWith('.json'),
   )) {

@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-databricks-3",
+      "sourceContentHash": "a1ea08656410bc1089d51640040823110281eb87619ae0470ca649979b5bbc54",
+      "packageChecksum": "4a64a7ec7d0b8c0c897a8513e9d3bd685a9bac000469b608c9ba2b900a452fa6",
+      "editorial": "## 思路\n\n先计算初始字符串的 0 前缀和。全串翻转只改变一个布尔状态；查询位置 i 时，未翻转答案是原前缀 0 数，已翻转答案是 (i+1) 减原前缀 0 数。\n\n## 正确性证明\n\n初始前缀和准确记录每个位置之前的 0 个数。一次全串翻转会把该前缀内的每个 0 与 1 互换，因此 0 数变为前缀长度减原 0 数。多次翻转只取决于翻转次数的奇偶；逐个操作按此规则输出，正好等价于实际修改整串后重新计数。\n\n## 复杂度\n\n时间 O(n+q)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    it=iter(map(str,data.split())); n=int(next(it)); q=int(next(it)); bits=next(it)\n    zero=[0]*(n+1)\n    for i,ch in enumerate(bits): zero[i+1]=zero[i]+(ch=='0')\n    flipped=False; answer=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=zero[i+1]\n            answer.append(str(i+1-z if flipped else z))\n    return ' '.join(answer)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-5",
+      "sourceContentHash": "04165223f4b81b7e5093f62aff316048b02af86ba78fa1ea97cd1bf436e4b72c",
+      "packageChecksum": "c59789517ea09ef3bf58433576e8013aa7d5f29445d0fc11893ecdccd9ffa9f0",
+      "editorial": "## 思路\n\n把矩形与查询框的边都按短边、长边规范化。维护所有已存矩形短边最大值和长边最大值；查询框能容纳全部矩形，当且仅当这两个最大值分别不超过查询框的对应边。\n\n## 正确性证明\n\n旋转允许任意矩形以短边对短边、长边对长边比较。每个已存矩形可装入查询框，当且仅当其短边≤查询短边且长边≤查询长边。要让所有已存矩形满足这两个条件，分别等价于保存短边最大值和长边最大值均不超过查询边；保存操作持续维护的最大值正好是全体历史矩形的最大值。\n\n## 复杂度\n\n时间 O(q)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    v=list(map(int,data.split())); q=v[0]; p=1; short_max=long_max=0; out=[]\n    for _ in range(q):\n        kind,a,b=v[p:p+3]; p+=3; short,long=sorted((a,b))\n        if kind==0: short_max=max(short_max,short); long_max=max(long_max,long)\n        else: out.append('1' if short_max<=short and long_max<=long else '0')\n    return '\\n'.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-6",
+      "sourceContentHash": "84f37de3d461637c5c2666747b64eee7c7e55739b99b7afb57bfb70599bdf5ce",
+      "packageChecksum": "a0b6442b4e606881e649a68add3025758aa62a6c4d26e7f896edc5fa4663ab09",
+      "editorial": "## 思路\n\n预读全部插入坐标并离散化，用树状数组维护已插入点。对查询区间 [x-size,x)，用二分和前缀和求障碍数量；数量为零时即可放置。\n\n## 正确性证明\n\n离散化保留插入坐标的顺序。对 [x-size,x) 的左右边界分别作 lower_bound，可得其中障碍的树状数组索引区间；前缀和差正好是当前已插入在 [x-size,x-1] 内的障碍数量。只有计数为零时区间可用，查询本身不修改树状数组。\n\n## 复杂度\n\n时间 O(q log q)，空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    from bisect import bisect_left\n    v=list(map(int,data.split())); q=v[0]; p=1; ops=[]; coords=[]\n    for _ in range(q):\n        kind=v[p]; size=2 if kind==1 else 3; op=tuple(v[p:p+size]); p+=size; ops.append(op)\n        if kind==1: coords.append(op[1])\n    coords.sort(); bit=[0]*(len(coords)+1)\n    def prefix(i):\n        total=0\n        while i: total+=bit[i]; i-=i&-i\n        return total\n    out=[]\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit): bit[i]+=1; i+=i&-i\n        else:\n            _,x,size=op; left=bisect_left(coords,x-size); right=bisect_left(coords,x)\n            out.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-7",
+      "sourceContentHash": "fda7ef9da5511928ad583deb83312919a72396b13e8a61a606ce9aa8518e4633",
+      "packageChecksum": "9c637ef838817f59249f9ff240cd33da4c2948fcc17eb8e0e928c6caf305e1f8",
+      "editorial": "## 思路\n\n逐格判断它是否属于 Y，统计 Y 内和 Y 外各自的 0、1、2 个数。枚举六种不同的 (Y 数字, 背景数字)，计算不匹配格数并取最小。\n\n## 正确性证明\n\n任一合法目标矩阵都由唯一的一对不同数字决定：Y 数字和背景数字。固定这对数字后，每个位置必须变为其所属区域的指定值，修改代价正是当前值与指定值不同的位置数。六种组合覆盖全部合法方案，取最小即为全局最优。\n\n## 复杂度\n\n时间 O(6n²)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; mid=n//2\n    inside=[0]*3; outside=[0]*3\n    for r in range(n):\n        for c in range(n):\n            is_y=(r<=mid and c in (r,n-1-r)) or (r>mid and c==mid)\n            group=inside if is_y else outside; group[v[1+r*n+c]]+=1\n    return str(min((n*n-inside[y]-outside[b]) for y in range(3) for b in range(3) if y!=b))\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

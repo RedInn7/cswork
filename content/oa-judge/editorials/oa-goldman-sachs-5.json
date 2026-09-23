@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-5",
+  "title": "回文子串计数",
+  "explanation": "## 思路\n\n把每个字符位置和相邻字符间隙分别作为回文中心，向两侧扩展；每次左右字符相同就找到一个回文子串。\n\n## 正确性证明\n\n任意回文子串的中心要么是某个字符，要么是两个相邻字符之间的间隙。对所有这两类中心扩展会且只会枚举每个回文子串一次。\n\n## 复杂度\n\n时间 O(n²)，额外空间 O(1)（不计输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip();n=len(s);answer=0\n    for center in range(n):\n        left=right=center\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n        left=center;right=center+1\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#5-palindrome-counter",
+  "sourceContentHash": "987b8a5d3e66c961ac5e7ee7de8172bb66747ab4bb7b2df5d9057771e7dc49e9",
+  "author": "CSWork"
+}

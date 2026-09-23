@@ -93,8 +93,10 @@ function fixture(t, { report = true } = {}) {
   const root = resolve(directory, 'judge');
   for (const folder of [
     'batches',
+    'candidate-batches',
     'reviews',
     'reports',
+    'validation',
     'packages',
     'references',
     'oracles',
@@ -240,6 +242,28 @@ test('an authored package without a sandbox report is only awaiting_sandbox', (t
   assert.equal(result.totals.sandbox_verified, 0);
   assert.equal(result.items[1].status, 'unreviewed');
   assert.equal(result.items[2].status, 'blocked');
+});
+
+test('a candidate batch remains awaiting sandbox and outside the runtime batch set', (t) => {
+  const f = fixture(t, { report: false });
+  rmSync(resolve(f.root, 'batches', `${batch}.json`));
+  f.json(resolve(f.root, 'candidate-batches', `${batch}.json`), f.manifest);
+  f.json(resolve(f.root, 'validation', `${batch}.json`), {
+    schemaVersion: 1,
+    problems: [
+      {
+        id,
+        oracleCases: 120,
+        negativeControls: [
+          { name: 'wrong-zero', rejectedByCases: [0] },
+          { name: 'wrong-two', rejectedByCases: [1] },
+        ],
+      },
+    ],
+  });
+  const result = f.run();
+  assert.equal(result.items[0].status, 'awaiting_sandbox');
+  assert.equal(result.totals.awaiting_sandbox, 1);
 });
 
 test('killed program order is irrelevant when every real program is accounted for', (t) => {

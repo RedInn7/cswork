@@ -1,0 +1,654 @@
+[
+  {
+    "input": "5\n100 alice@a.com bob@b.com hello\n90 alice@a.com carl@c.com meeting notes\n90 dan@d.com e@e.com hi\n90 alice@a.com bob@b.com a-subject\n100 dan@d.com a@a.com ping\n",
+    "expectedOutput": "7\nsender: alice@a.com\n90 bob@b.com a-subject\n90 carl@c.com meeting notes\n100 bob@b.com hello\nsender: dan@d.com\n90 e@e.com hi\n100 a@a.com ping\n"
+  },
+  {
+    "input": "1\n0 a@a.com b@b.com hi\n",
+    "expectedOutput": "2\nsender: a@a.com\n0 b@b.com hi\n"
+  },
+  {
+    "input": "3\n7 z@e.com b@e.com same\n7 z@e.com a@e.com same\n7 a@e.com z@e.com\n",
+    "expectedOutput": "5\nsender: a@e.com\n7 z@e.com\nsender: z@e.com\n7 a@e.com same\n7 b@e.com same\n"
+  },
+  {
+    "input": "12\n1 user1@example.com to1@example.net payment received\n4 user0@example.com to2@example.net payment received\n3 user1@example.com to1@example.net payment received\n1 user1@example.com to2@example.net payment received\n4 user1@example.com to1@example.net meeting notes\n2 user0@example.com to1@example.net\n0 user0@example.com to0@example.net meeting notes\n2 user0@example.com to0@example.net status\n1 user1@example.com to0@example.net payment received\n5 user1@example.com to3@example.net payment received\n5 user1@example.com to1@example.net status\n3 user0@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "14\nsender: user0@example.com\n0 to0@example.net meeting notes\n2 to0@example.net status\n2 to1@example.net\n3 to2@example.net meeting notes\n4 to2@example.net payment received\nsender: user1@example.com\n1 to0@example.net payment received\n1 to1@example.net payment received\n1 to2@example.net payment received\n3 to1@example.net payment received\n4 to1@example.net meeting notes\n5 to1@example.net status\n5 to3@example.net payment received\n"
+  },
+  {
+    "input": "9\n3 user3@example.com to2@example.net\n3 user3@example.com to2@example.net A subject\n4 user3@example.com to1@example.net\n4 user3@example.com to1@example.net A subject\n2 user2@example.com to0@example.net\n4 user0@example.com to0@example.net payment received\n5 user3@example.com to1@example.net status\n1 user2@example.com to2@example.net\n0 user3@example.com to3@example.net status\n",
+    "expectedOutput": "12\nsender: user0@example.com\n4 to0@example.net payment received\nsender: user2@example.com\n1 to2@example.net\n2 to0@example.net\nsender: user3@example.com\n0 to3@example.net status\n3 to2@example.net\n3 to2@example.net A subject\n4 to1@example.net\n4 to1@example.net A subject\n5 to1@example.net status\n"
+  },
+  {
+    "input": "4\n5 user1@example.com to0@example.net status\n2 user1@example.com to3@example.net A subject\n4 user2@example.com to1@example.net status\n0 user1@example.com to1@example.net payment received\n",
+    "expectedOutput": "6\nsender: user1@example.com\n0 to1@example.net payment received\n2 to3@example.net A subject\n5 to0@example.net status\nsender: user2@example.com\n4 to1@example.net status\n"
+  },
+  {
+    "input": "8\n1 user0@example.com to2@example.net meeting notes\n2 user0@example.com to1@example.net\n2 user0@example.com to2@example.net\n0 user0@example.com to2@example.net status\n5 user0@example.com to1@example.net meeting notes\n4 user0@example.com to2@example.net\n5 user0@example.com to3@example.net\n3 user0@example.com to3@example.net payment received\n",
+    "expectedOutput": "9\nsender: user0@example.com\n0 to2@example.net status\n1 to2@example.net meeting notes\n2 to1@example.net\n2 to2@example.net\n3 to3@example.net payment received\n4 to2@example.net\n5 to1@example.net meeting notes\n5 to3@example.net\n"
+  },
+  {
+    "input": "4\n4 user2@example.com to1@example.net A subject\n4 user1@example.com to2@example.net payment received\n3 user1@example.com to3@example.net A subject\n0 user1@example.com to3@example.net payment received\n",
+    "expectedOutput": "6\nsender: user1@example.com\n0 to3@example.net payment received\n3 to3@example.net A subject\n4 to2@example.net payment received\nsender: user2@example.com\n4 to1@example.net A subject\n"
+  },
+  {
+    "input": "8\n3 user0@example.com to3@example.net\n1 user0@example.com to2@example.net A subject\n3 user0@example.com to2@example.net A subject\n4 user0@example.com to0@example.net meeting notes\n3 user0@example.com to1@example.net meeting notes\n2 user0@example.com to1@example.net\n3 user0@example.com to3@example.net payment received\n5 user0@example.com to1@example.net meeting notes\n",
+    "expectedOutput": "9\nsender: user0@example.com\n1 to2@example.net A subject\n2 to1@example.net\n3 to1@example.net meeting notes\n3 to2@example.net A subject\n3 to3@example.net\n3 to3@example.net payment received\n4 to0@example.net meeting notes\n5 to1@example.net meeting notes\n"
+  },
+  {
+    "input": "2\n0 user2@example.com to0@example.net A subject\n0 user0@example.com to1@example.net payment received\n",
+    "expectedOutput": "4\nsender: user0@example.com\n0 to1@example.net payment received\nsender: user2@example.com\n0 to0@example.net A subject\n"
+  },
+  {
+    "input": "7\n5 user0@example.com to3@example.net status\n5 user0@example.com to3@example.net meeting notes\n4 user0@example.com to1@example.net\n4 user0@example.com to0@example.net meeting notes\n1 user0@example.com to1@example.net\n0 user0@example.com to1@example.net payment received\n5 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "8\nsender: user0@example.com\n0 to1@example.net payment received\n1 to1@example.net\n4 to0@example.net meeting notes\n4 to1@example.net\n5 to1@example.net A subject\n5 to3@example.net meeting notes\n5 to3@example.net status\n"
+  },
+  {
+    "input": "7\n3 user2@example.com to1@example.net payment received\n4 user3@example.com to2@example.net A subject\n4 user3@example.com to2@example.net meeting notes\n0 user2@example.com to1@example.net status\n1 user3@example.com to2@example.net status\n2 user1@example.com to3@example.net meeting notes\n4 user1@example.com to1@example.net status\n",
+    "expectedOutput": "10\nsender: user1@example.com\n2 to3@example.net meeting notes\n4 to1@example.net status\nsender: user2@example.com\n0 to1@example.net status\n3 to1@example.net payment received\nsender: user3@example.com\n1 to2@example.net status\n4 to2@example.net A subject\n4 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "9\n0 user2@example.com to2@example.net status\n5 user1@example.com to1@example.net A subject\n4 user2@example.com to0@example.net status\n1 user0@example.com to3@example.net\n2 user2@example.com to1@example.net\n2 user0@example.com to3@example.net A subject\n2 user0@example.com to3@example.net payment received\n4 user1@example.com to0@example.net payment received\n5 user0@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "12\nsender: user0@example.com\n1 to3@example.net\n2 to3@example.net A subject\n2 to3@example.net payment received\n5 to2@example.net meeting notes\nsender: user1@example.com\n4 to0@example.net payment received\n5 to1@example.net A subject\nsender: user2@example.com\n0 to2@example.net status\n2 to1@example.net\n4 to0@example.net status\n"
+  },
+  {
+    "input": "2\n2 user1@example.com to1@example.net A subject\n4 user0@example.com to1@example.net status\n",
+    "expectedOutput": "4\nsender: user0@example.com\n4 to1@example.net status\nsender: user1@example.com\n2 to1@example.net A subject\n"
+  },
+  {
+    "input": "12\n4 user0@example.com to0@example.net payment received\n2 user0@example.com to2@example.net meeting notes\n3 user1@example.com to2@example.net status\n1 user0@example.com to0@example.net A subject\n4 user1@example.com to0@example.net meeting notes\n0 user1@example.com to2@example.net payment received\n0 user0@example.com to0@example.net\n2 user1@example.com to2@example.net A subject\n3 user1@example.com to2@example.net A subject\n1 user0@example.com to2@example.net A subject\n4 user1@example.com to1@example.net payment received\n2 user1@example.com to2@example.net payment received\n",
+    "expectedOutput": "14\nsender: user0@example.com\n0 to0@example.net\n1 to0@example.net A subject\n1 to2@example.net A subject\n2 to2@example.net meeting notes\n4 to0@example.net payment received\nsender: user1@example.com\n0 to2@example.net payment received\n2 to2@example.net A subject\n2 to2@example.net payment received\n3 to2@example.net A subject\n3 to2@example.net status\n4 to0@example.net meeting notes\n4 to1@example.net payment received\n"
+  },
+  {
+    "input": "1\n5 user0@example.com to2@example.net payment received\n",
+    "expectedOutput": "2\nsender: user0@example.com\n5 to2@example.net payment received\n"
+  },
+  {
+    "input": "3\n1 user0@example.com to0@example.net\n0 user1@example.com to0@example.net meeting notes\n1 user0@example.com to1@example.net meeting notes\n",
+    "expectedOutput": "5\nsender: user0@example.com\n1 to0@example.net\n1 to1@example.net meeting notes\nsender: user1@example.com\n0 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "10\n3 user2@example.com to1@example.net status\n1 user2@example.com to2@example.net payment received\n0 user2@example.com to1@example.net\n4 user0@example.com to3@example.net payment received\n4 user2@example.com to0@example.net A subject\n5 user2@example.com to1@example.net status\n4 user0@example.com to1@example.net\n1 user0@example.com to1@example.net status\n5 user1@example.com to2@example.net A subject\n1 user2@example.com to1@example.net meeting notes\n",
+    "expectedOutput": "13\nsender: user0@example.com\n1 to1@example.net status\n4 to1@example.net\n4 to3@example.net payment received\nsender: user1@example.com\n5 to2@example.net A subject\nsender: user2@example.com\n0 to1@example.net\n1 to1@example.net meeting notes\n1 to2@example.net payment received\n3 to1@example.net status\n4 to0@example.net A subject\n5 to1@example.net status\n"
+  },
+  {
+    "input": "7\n1 user0@example.com to3@example.net meeting notes\n1 user3@example.com to1@example.net meeting notes\n0 user3@example.com to3@example.net meeting notes\n3 user0@example.com to0@example.net\n4 user1@example.com to3@example.net meeting notes\n3 user0@example.com to2@example.net A subject\n0 user2@example.com to2@example.net status\n",
+    "expectedOutput": "11\nsender: user0@example.com\n1 to3@example.net meeting notes\n3 to0@example.net\n3 to2@example.net A subject\nsender: user1@example.com\n4 to3@example.net meeting notes\nsender: user2@example.com\n0 to2@example.net status\nsender: user3@example.com\n0 to3@example.net meeting notes\n1 to1@example.net meeting notes\n"
+  },
+  {
+    "input": "4\n1 user2@example.com to2@example.net payment received\n0 user2@example.com to1@example.net meeting notes\n5 user1@example.com to3@example.net status\n4 user0@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "7\nsender: user0@example.com\n4 to3@example.net meeting notes\nsender: user1@example.com\n5 to3@example.net status\nsender: user2@example.com\n0 to1@example.net meeting notes\n1 to2@example.net payment received\n"
+  },
+  {
+    "input": "4\n4 user0@example.com to0@example.net status\n0 user1@example.com to0@example.net payment received\n2 user1@example.com to0@example.net payment received\n3 user2@example.com to2@example.net A subject\n",
+    "expectedOutput": "7\nsender: user0@example.com\n4 to0@example.net status\nsender: user1@example.com\n0 to0@example.net payment received\n2 to0@example.net payment received\nsender: user2@example.com\n3 to2@example.net A subject\n"
+  },
+  {
+    "input": "12\n1 user0@example.com to1@example.net meeting notes\n5 user0@example.com to1@example.net payment received\n2 user0@example.com to0@example.net A subject\n1 user0@example.com to1@example.net A subject\n0 user0@example.com to1@example.net\n3 user0@example.com to0@example.net\n4 user0@example.com to2@example.net status\n4 user0@example.com to2@example.net meeting notes\n5 user0@example.com to2@example.net payment received\n5 user0@example.com to0@example.net\n1 user0@example.com to0@example.net payment received\n5 user0@example.com to0@example.net A subject\n",
+    "expectedOutput": "13\nsender: user0@example.com\n0 to1@example.net\n1 to0@example.net payment received\n1 to1@example.net A subject\n1 to1@example.net meeting notes\n2 to0@example.net A subject\n3 to0@example.net\n4 to2@example.net meeting notes\n4 to2@example.net status\n5 to0@example.net\n5 to0@example.net A subject\n5 to1@example.net payment received\n5 to2@example.net payment received\n"
+  },
+  {
+    "input": "6\n3 user1@example.com to1@example.net A subject\n1 user0@example.com to3@example.net meeting notes\n2 user1@example.com to0@example.net meeting notes\n1 user0@example.com to2@example.net\n5 user3@example.com to0@example.net status\n2 user0@example.com to1@example.net meeting notes\n",
+    "expectedOutput": "9\nsender: user0@example.com\n1 to2@example.net\n1 to3@example.net meeting notes\n2 to1@example.net meeting notes\nsender: user1@example.com\n2 to0@example.net meeting notes\n3 to1@example.net A subject\nsender: user3@example.com\n5 to0@example.net status\n"
+  },
+  {
+    "input": "9\n1 user0@example.com to1@example.net\n0 user1@example.com to3@example.net\n1 user0@example.com to0@example.net meeting notes\n3 user1@example.com to0@example.net status\n2 user1@example.com to0@example.net meeting notes\n0 user0@example.com to1@example.net meeting notes\n2 user1@example.com to3@example.net A subject\n0 user0@example.com to2@example.net\n3 user0@example.com to3@example.net A subject\n",
+    "expectedOutput": "11\nsender: user0@example.com\n0 to1@example.net meeting notes\n0 to2@example.net\n1 to0@example.net meeting notes\n1 to1@example.net\n3 to3@example.net A subject\nsender: user1@example.com\n0 to3@example.net\n2 to0@example.net meeting notes\n2 to3@example.net A subject\n3 to0@example.net status\n"
+  },
+  {
+    "input": "7\n1 user3@example.com to3@example.net A subject\n5 user3@example.com to1@example.net\n5 user1@example.com to3@example.net payment received\n2 user1@example.com to0@example.net status\n4 user0@example.com to3@example.net\n0 user2@example.com to0@example.net status\n1 user4@example.com to1@example.net payment received\n",
+    "expectedOutput": "12\nsender: user0@example.com\n4 to3@example.net\nsender: user1@example.com\n2 to0@example.net status\n5 to3@example.net payment received\nsender: user2@example.com\n0 to0@example.net status\nsender: user3@example.com\n1 to3@example.net A subject\n5 to1@example.net\nsender: user4@example.com\n1 to1@example.net payment received\n"
+  },
+  {
+    "input": "9\n5 user0@example.com to0@example.net payment received\n1 user0@example.com to2@example.net meeting notes\n5 user0@example.com to0@example.net\n0 user0@example.com to2@example.net payment received\n0 user0@example.com to1@example.net\n2 user0@example.com to3@example.net A subject\n5 user0@example.com to3@example.net payment received\n3 user0@example.com to0@example.net status\n3 user0@example.com to0@example.net payment received\n",
+    "expectedOutput": "10\nsender: user0@example.com\n0 to1@example.net\n0 to2@example.net payment received\n1 to2@example.net meeting notes\n2 to3@example.net A subject\n3 to0@example.net payment received\n3 to0@example.net status\n5 to0@example.net\n5 to0@example.net payment received\n5 to3@example.net payment received\n"
+  },
+  {
+    "input": "9\n3 user2@example.com to3@example.net payment received\n2 user3@example.com to2@example.net payment received\n5 user2@example.com to0@example.net status\n0 user1@example.com to2@example.net payment received\n0 user0@example.com to0@example.net payment received\n3 user3@example.com to2@example.net meeting notes\n4 user0@example.com to0@example.net status\n0 user3@example.com to2@example.net A subject\n3 user0@example.com to3@example.net\n",
+    "expectedOutput": "13\nsender: user0@example.com\n0 to0@example.net payment received\n3 to3@example.net\n4 to0@example.net status\nsender: user1@example.com\n0 to2@example.net payment received\nsender: user2@example.com\n3 to3@example.net payment received\n5 to0@example.net status\nsender: user3@example.com\n0 to2@example.net A subject\n2 to2@example.net payment received\n3 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "9\n5 user0@example.com to1@example.net status\n2 user1@example.com to3@example.net meeting notes\n3 user4@example.com to3@example.net payment received\n3 user1@example.com to3@example.net meeting notes\n5 user2@example.com to2@example.net status\n0 user4@example.com to3@example.net status\n1 user4@example.com to2@example.net A subject\n1 user0@example.com to0@example.net status\n2 user1@example.com to2@example.net status\n",
+    "expectedOutput": "13\nsender: user0@example.com\n1 to0@example.net status\n5 to1@example.net status\nsender: user1@example.com\n2 to2@example.net status\n2 to3@example.net meeting notes\n3 to3@example.net meeting notes\nsender: user2@example.com\n5 to2@example.net status\nsender: user4@example.com\n0 to3@example.net status\n1 to2@example.net A subject\n3 to3@example.net payment received\n"
+  },
+  {
+    "input": "11\n0 user0@example.com to0@example.net meeting notes\n3 user0@example.com to0@example.net\n3 user2@example.com to2@example.net status\n0 user0@example.com to1@example.net A subject\n2 user2@example.com to3@example.net A subject\n4 user0@example.com to3@example.net A subject\n1 user1@example.com to2@example.net\n2 user2@example.com to1@example.net A subject\n3 user0@example.com to2@example.net\n5 user2@example.com to3@example.net meeting notes\n4 user1@example.com to1@example.net status\n",
+    "expectedOutput": "14\nsender: user0@example.com\n0 to0@example.net meeting notes\n0 to1@example.net A subject\n3 to0@example.net\n3 to2@example.net\n4 to3@example.net A subject\nsender: user1@example.com\n1 to2@example.net\n4 to1@example.net status\nsender: user2@example.com\n2 to1@example.net A subject\n2 to3@example.net A subject\n3 to2@example.net status\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "10\n5 user2@example.com to0@example.net A subject\n1 user2@example.com to2@example.net A subject\n4 user2@example.com to0@example.net status\n5 user2@example.com to2@example.net payment received\n5 user1@example.com to0@example.net status\n5 user1@example.com to3@example.net payment received\n1 user0@example.com to2@example.net status\n3 user2@example.com to0@example.net meeting notes\n4 user2@example.com to3@example.net\n0 user2@example.com to1@example.net payment received\n",
+    "expectedOutput": "13\nsender: user0@example.com\n1 to2@example.net status\nsender: user1@example.com\n5 to0@example.net status\n5 to3@example.net payment received\nsender: user2@example.com\n0 to1@example.net payment received\n1 to2@example.net A subject\n3 to0@example.net meeting notes\n4 to0@example.net status\n4 to3@example.net\n5 to0@example.net A subject\n5 to2@example.net payment received\n"
+  },
+  {
+    "input": "7\n5 user1@example.com to3@example.net\n5 user0@example.com to1@example.net A subject\n1 user0@example.com to1@example.net\n5 user0@example.com to0@example.net payment received\n0 user1@example.com to2@example.net status\n1 user1@example.com to2@example.net status\n0 user1@example.com to3@example.net payment received\n",
+    "expectedOutput": "9\nsender: user0@example.com\n1 to1@example.net\n5 to0@example.net payment received\n5 to1@example.net A subject\nsender: user1@example.com\n0 to2@example.net status\n0 to3@example.net payment received\n1 to2@example.net status\n5 to3@example.net\n"
+  },
+  {
+    "input": "1\n4 user2@example.com to3@example.net A subject\n",
+    "expectedOutput": "2\nsender: user2@example.com\n4 to3@example.net A subject\n"
+  },
+  {
+    "input": "9\n1 user1@example.com to0@example.net meeting notes\n2 user2@example.com to0@example.net status\n1 user2@example.com to0@example.net\n1 user1@example.com to0@example.net payment received\n0 user2@example.com to2@example.net payment received\n1 user1@example.com to0@example.net meeting notes\n5 user1@example.com to3@example.net meeting notes\n0 user1@example.com to1@example.net A subject\n5 user2@example.com to3@example.net A subject\n",
+    "expectedOutput": "11\nsender: user1@example.com\n0 to1@example.net A subject\n1 to0@example.net meeting notes\n1 to0@example.net meeting notes\n1 to0@example.net payment received\n5 to3@example.net meeting notes\nsender: user2@example.com\n0 to2@example.net payment received\n1 to0@example.net\n2 to0@example.net status\n5 to3@example.net A subject\n"
+  },
+  {
+    "input": "3\n5 user1@example.com to3@example.net A subject\n2 user0@example.com to1@example.net status\n4 user0@example.com to2@example.net status\n",
+    "expectedOutput": "5\nsender: user0@example.com\n2 to1@example.net status\n4 to2@example.net status\nsender: user1@example.com\n5 to3@example.net A subject\n"
+  },
+  {
+    "input": "6\n1 user0@example.com to2@example.net\n5 user0@example.com to0@example.net meeting notes\n0 user0@example.com to3@example.net payment received\n5 user0@example.com to3@example.net A subject\n4 user0@example.com to3@example.net payment received\n4 user0@example.com to2@example.net\n",
+    "expectedOutput": "7\nsender: user0@example.com\n0 to3@example.net payment received\n1 to2@example.net\n4 to2@example.net\n4 to3@example.net payment received\n5 to0@example.net meeting notes\n5 to3@example.net A subject\n"
+  },
+  {
+    "input": "5\n4 user0@example.com to0@example.net payment received\n2 user1@example.com to3@example.net payment received\n5 user1@example.com to2@example.net meeting notes\n0 user0@example.com to2@example.net A subject\n1 user0@example.com to2@example.net payment received\n",
+    "expectedOutput": "7\nsender: user0@example.com\n0 to2@example.net A subject\n1 to2@example.net payment received\n4 to0@example.net payment received\nsender: user1@example.com\n2 to3@example.net payment received\n5 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "12\n4 user1@example.com to1@example.net A subject\n3 user0@example.com to0@example.net status\n0 user1@example.com to0@example.net\n1 user0@example.com to3@example.net A subject\n0 user1@example.com to2@example.net\n4 user1@example.com to0@example.net\n5 user0@example.com to1@example.net status\n4 user0@example.com to3@example.net meeting notes\n2 user0@example.com to3@example.net\n2 user1@example.com to2@example.net meeting notes\n5 user1@example.com to1@example.net status\n2 user1@example.com to0@example.net status\n",
+    "expectedOutput": "14\nsender: user0@example.com\n1 to3@example.net A subject\n2 to3@example.net\n3 to0@example.net status\n4 to3@example.net meeting notes\n5 to1@example.net status\nsender: user1@example.com\n0 to0@example.net\n0 to2@example.net\n2 to0@example.net status\n2 to2@example.net meeting notes\n4 to0@example.net\n4 to1@example.net A subject\n5 to1@example.net status\n"
+  },
+  {
+    "input": "9\n4 user0@example.com to2@example.net\n4 user1@example.com to2@example.net status\n5 user0@example.com to2@example.net meeting notes\n0 user0@example.com to0@example.net payment received\n4 user0@example.com to2@example.net status\n2 user1@example.com to3@example.net meeting notes\n4 user2@example.com to3@example.net\n2 user2@example.com to3@example.net A subject\n0 user0@example.com to2@example.net A subject\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to0@example.net payment received\n0 to2@example.net A subject\n4 to2@example.net\n4 to2@example.net status\n5 to2@example.net meeting notes\nsender: user1@example.com\n2 to3@example.net meeting notes\n4 to2@example.net status\nsender: user2@example.com\n2 to3@example.net A subject\n4 to3@example.net\n"
+  },
+  {
+    "input": "6\n3 user4@example.com to0@example.net payment received\n5 user0@example.com to0@example.net A subject\n0 user0@example.com to0@example.net\n5 user3@example.com to1@example.net\n4 user2@example.com to0@example.net A subject\n0 user1@example.com to1@example.net status\n",
+    "expectedOutput": "11\nsender: user0@example.com\n0 to0@example.net\n5 to0@example.net A subject\nsender: user1@example.com\n0 to1@example.net status\nsender: user2@example.com\n4 to0@example.net A subject\nsender: user3@example.com\n5 to1@example.net\nsender: user4@example.com\n3 to0@example.net payment received\n"
+  },
+  {
+    "input": "9\n5 user1@example.com to1@example.net\n3 user3@example.com to0@example.net payment received\n4 user3@example.com to2@example.net\n5 user1@example.com to0@example.net status\n0 user1@example.com to0@example.net A subject\n0 user3@example.com to1@example.net\n1 user3@example.com to3@example.net payment received\n3 user1@example.com to2@example.net\n2 user2@example.com to2@example.net A subject\n",
+    "expectedOutput": "12\nsender: user1@example.com\n0 to0@example.net A subject\n3 to2@example.net\n5 to0@example.net status\n5 to1@example.net\nsender: user2@example.com\n2 to2@example.net A subject\nsender: user3@example.com\n0 to1@example.net\n1 to3@example.net payment received\n3 to0@example.net payment received\n4 to2@example.net\n"
+  },
+  {
+    "input": "2\n5 user0@example.com to0@example.net\n4 user1@example.com to0@example.net status\n",
+    "expectedOutput": "4\nsender: user0@example.com\n5 to0@example.net\nsender: user1@example.com\n4 to0@example.net status\n"
+  },
+  {
+    "input": "1\n1 user0@example.com to2@example.net payment received\n",
+    "expectedOutput": "2\nsender: user0@example.com\n1 to2@example.net payment received\n"
+  },
+  {
+    "input": "11\n1 user2@example.com to0@example.net status\n0 user2@example.com to0@example.net meeting notes\n3 user2@example.com to3@example.net meeting notes\n5 user0@example.com to2@example.net meeting notes\n4 user2@example.com to3@example.net payment received\n3 user1@example.com to3@example.net\n1 user1@example.com to3@example.net\n5 user0@example.com to2@example.net status\n2 user1@example.com to2@example.net payment received\n1 user0@example.com to3@example.net status\n1 user0@example.com to0@example.net payment received\n",
+    "expectedOutput": "14\nsender: user0@example.com\n1 to0@example.net payment received\n1 to3@example.net status\n5 to2@example.net meeting notes\n5 to2@example.net status\nsender: user1@example.com\n1 to3@example.net\n2 to2@example.net payment received\n3 to3@example.net\nsender: user2@example.com\n0 to0@example.net meeting notes\n1 to0@example.net status\n3 to3@example.net meeting notes\n4 to3@example.net payment received\n"
+  },
+  {
+    "input": "1\n3 user2@example.com to3@example.net payment received\n",
+    "expectedOutput": "2\nsender: user2@example.com\n3 to3@example.net payment received\n"
+  },
+  {
+    "input": "10\n5 user0@example.com to2@example.net status\n4 user0@example.com to1@example.net payment received\n1 user1@example.com to3@example.net meeting notes\n0 user3@example.com to3@example.net A subject\n4 user3@example.com to0@example.net meeting notes\n3 user3@example.com to1@example.net payment received\n0 user1@example.com to3@example.net status\n0 user2@example.com to3@example.net A subject\n2 user2@example.com to2@example.net payment received\n5 user2@example.com to2@example.net payment received\n",
+    "expectedOutput": "14\nsender: user0@example.com\n4 to1@example.net payment received\n5 to2@example.net status\nsender: user1@example.com\n0 to3@example.net status\n1 to3@example.net meeting notes\nsender: user2@example.com\n0 to3@example.net A subject\n2 to2@example.net payment received\n5 to2@example.net payment received\nsender: user3@example.com\n0 to3@example.net A subject\n3 to1@example.net payment received\n4 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "4\n4 user2@example.com to0@example.net status\n5 user0@example.com to3@example.net A subject\n0 user1@example.com to0@example.net meeting notes\n3 user0@example.com to0@example.net status\n",
+    "expectedOutput": "7\nsender: user0@example.com\n3 to0@example.net status\n5 to3@example.net A subject\nsender: user1@example.com\n0 to0@example.net meeting notes\nsender: user2@example.com\n4 to0@example.net status\n"
+  },
+  {
+    "input": "7\n1 user1@example.com to3@example.net\n3 user0@example.com to0@example.net meeting notes\n5 user1@example.com to0@example.net\n3 user2@example.com to2@example.net status\n4 user0@example.com to3@example.net payment received\n0 user2@example.com to3@example.net\n3 user1@example.com to0@example.net meeting notes\n",
+    "expectedOutput": "10\nsender: user0@example.com\n3 to0@example.net meeting notes\n4 to3@example.net payment received\nsender: user1@example.com\n1 to3@example.net\n3 to0@example.net meeting notes\n5 to0@example.net\nsender: user2@example.com\n0 to3@example.net\n3 to2@example.net status\n"
+  },
+  {
+    "input": "2\n5 user3@example.com to0@example.net meeting notes\n5 user0@example.com to3@example.net A subject\n",
+    "expectedOutput": "4\nsender: user0@example.com\n5 to3@example.net A subject\nsender: user3@example.com\n5 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "12\n5 user2@example.com to3@example.net\n0 user1@example.com to1@example.net A subject\n2 user1@example.com to3@example.net A subject\n4 user3@example.com to1@example.net\n4 user1@example.com to0@example.net\n2 user1@example.com to1@example.net meeting notes\n3 user3@example.com to0@example.net meeting notes\n4 user3@example.com to1@example.net status\n5 user0@example.com to1@example.net A subject\n0 user3@example.com to3@example.net\n2 user3@example.com to0@example.net A subject\n0 user1@example.com to1@example.net A subject\n",
+    "expectedOutput": "16\nsender: user0@example.com\n5 to1@example.net A subject\nsender: user1@example.com\n0 to1@example.net A subject\n0 to1@example.net A subject\n2 to1@example.net meeting notes\n2 to3@example.net A subject\n4 to0@example.net\nsender: user2@example.com\n5 to3@example.net\nsender: user3@example.com\n0 to3@example.net\n2 to0@example.net A subject\n3 to0@example.net meeting notes\n4 to1@example.net\n4 to1@example.net status\n"
+  },
+  {
+    "input": "3\n3 user1@example.com to1@example.net meeting notes\n1 user0@example.com to2@example.net\n2 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "5\nsender: user0@example.com\n1 to2@example.net\n2 to1@example.net A subject\nsender: user1@example.com\n3 to1@example.net meeting notes\n"
+  },
+  {
+    "input": "11\n1 user0@example.com to2@example.net\n0 user0@example.com to2@example.net A subject\n4 user0@example.com to2@example.net\n0 user0@example.com to2@example.net payment received\n4 user0@example.com to1@example.net A subject\n0 user0@example.com to2@example.net payment received\n4 user0@example.com to1@example.net A subject\n2 user0@example.com to0@example.net meeting notes\n5 user0@example.com to2@example.net payment received\n3 user0@example.com to3@example.net status\n1 user0@example.com to2@example.net status\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to2@example.net A subject\n0 to2@example.net payment received\n0 to2@example.net payment received\n1 to2@example.net\n1 to2@example.net status\n2 to0@example.net meeting notes\n3 to3@example.net status\n4 to1@example.net A subject\n4 to1@example.net A subject\n4 to2@example.net\n5 to2@example.net payment received\n"
+  },
+  {
+    "input": "4\n5 user0@example.com to3@example.net meeting notes\n5 user0@example.com to1@example.net meeting notes\n0 user0@example.com to0@example.net\n1 user0@example.com to0@example.net status\n",
+    "expectedOutput": "5\nsender: user0@example.com\n0 to0@example.net\n1 to0@example.net status\n5 to1@example.net meeting notes\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "8\n3 user0@example.com to2@example.net payment received\n2 user0@example.com to2@example.net status\n3 user0@example.com to1@example.net payment received\n2 user0@example.com to1@example.net status\n4 user0@example.com to1@example.net meeting notes\n0 user0@example.com to3@example.net meeting notes\n3 user0@example.com to2@example.net status\n4 user0@example.com to3@example.net A subject\n",
+    "expectedOutput": "9\nsender: user0@example.com\n0 to3@example.net meeting notes\n2 to1@example.net status\n2 to2@example.net status\n3 to1@example.net payment received\n3 to2@example.net payment received\n3 to2@example.net status\n4 to1@example.net meeting notes\n4 to3@example.net A subject\n"
+  },
+  {
+    "input": "3\n2 user1@example.com to0@example.net status\n4 user2@example.com to2@example.net status\n3 user0@example.com to0@example.net status\n",
+    "expectedOutput": "6\nsender: user0@example.com\n3 to0@example.net status\nsender: user1@example.com\n2 to0@example.net status\nsender: user2@example.com\n4 to2@example.net status\n"
+  },
+  {
+    "input": "3\n4 user4@example.com to0@example.net A subject\n4 user1@example.com to3@example.net\n1 user1@example.com to3@example.net\n",
+    "expectedOutput": "5\nsender: user1@example.com\n1 to3@example.net\n4 to3@example.net\nsender: user4@example.com\n4 to0@example.net A subject\n"
+  },
+  {
+    "input": "11\n5 user0@example.com to0@example.net A subject\n0 user0@example.com to1@example.net A subject\n0 user0@example.com to2@example.net A subject\n1 user0@example.com to3@example.net status\n1 user0@example.com to3@example.net status\n0 user0@example.com to0@example.net status\n2 user0@example.com to2@example.net\n2 user0@example.com to0@example.net A subject\n3 user0@example.com to2@example.net A subject\n1 user0@example.com to3@example.net\n4 user0@example.com to2@example.net A subject\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to0@example.net status\n0 to1@example.net A subject\n0 to2@example.net A subject\n1 to3@example.net\n1 to3@example.net status\n1 to3@example.net status\n2 to0@example.net A subject\n2 to2@example.net\n3 to2@example.net A subject\n4 to2@example.net A subject\n5 to0@example.net A subject\n"
+  },
+  {
+    "input": "9\n5 user2@example.com to1@example.net status\n3 user0@example.com to1@example.net status\n4 user0@example.com to0@example.net\n0 user0@example.com to0@example.net A subject\n4 user0@example.com to3@example.net payment received\n1 user2@example.com to2@example.net meeting notes\n1 user2@example.com to3@example.net A subject\n2 user0@example.com to1@example.net A subject\n2 user1@example.com to1@example.net meeting notes\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to0@example.net A subject\n2 to1@example.net A subject\n3 to1@example.net status\n4 to0@example.net\n4 to3@example.net payment received\nsender: user1@example.com\n2 to1@example.net meeting notes\nsender: user2@example.com\n1 to2@example.net meeting notes\n1 to3@example.net A subject\n5 to1@example.net status\n"
+  },
+  {
+    "input": "11\n0 user0@example.com to0@example.net meeting notes\n2 user1@example.com to3@example.net meeting notes\n1 user2@example.com to2@example.net status\n2 user2@example.com to3@example.net\n0 user3@example.com to1@example.net\n2 user2@example.com to3@example.net status\n5 user2@example.com to2@example.net payment received\n2 user1@example.com to2@example.net status\n4 user0@example.com to0@example.net A subject\n0 user0@example.com to3@example.net status\n2 user3@example.com to1@example.net\n",
+    "expectedOutput": "15\nsender: user0@example.com\n0 to0@example.net meeting notes\n0 to3@example.net status\n4 to0@example.net A subject\nsender: user1@example.com\n2 to2@example.net status\n2 to3@example.net meeting notes\nsender: user2@example.com\n1 to2@example.net status\n2 to3@example.net\n2 to3@example.net status\n5 to2@example.net payment received\nsender: user3@example.com\n0 to1@example.net\n2 to1@example.net\n"
+  },
+  {
+    "input": "7\n4 user1@example.com to3@example.net status\n0 user3@example.com to0@example.net meeting notes\n1 user4@example.com to0@example.net meeting notes\n2 user0@example.com to2@example.net meeting notes\n5 user2@example.com to0@example.net meeting notes\n5 user0@example.com to3@example.net A subject\n3 user0@example.com to2@example.net status\n",
+    "expectedOutput": "12\nsender: user0@example.com\n2 to2@example.net meeting notes\n3 to2@example.net status\n5 to3@example.net A subject\nsender: user1@example.com\n4 to3@example.net status\nsender: user2@example.com\n5 to0@example.net meeting notes\nsender: user3@example.com\n0 to0@example.net meeting notes\nsender: user4@example.com\n1 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "11\n5 user0@example.com to3@example.net meeting notes\n4 user0@example.com to3@example.net\n3 user0@example.com to2@example.net A subject\n0 user0@example.com to1@example.net A subject\n4 user0@example.com to2@example.net status\n2 user0@example.com to2@example.net status\n5 user0@example.com to0@example.net\n2 user0@example.com to1@example.net A subject\n3 user0@example.com to2@example.net A subject\n3 user0@example.com to0@example.net\n5 user0@example.com to2@example.net\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to1@example.net A subject\n2 to1@example.net A subject\n2 to2@example.net status\n3 to0@example.net\n3 to2@example.net A subject\n3 to2@example.net A subject\n4 to2@example.net status\n4 to3@example.net\n5 to0@example.net\n5 to2@example.net\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "6\n1 user0@example.com to2@example.net A subject\n1 user0@example.com to1@example.net\n2 user0@example.com to3@example.net payment received\n4 user0@example.com to0@example.net\n2 user0@example.com to2@example.net payment received\n4 user0@example.com to0@example.net A subject\n",
+    "expectedOutput": "7\nsender: user0@example.com\n1 to1@example.net\n1 to2@example.net A subject\n2 to2@example.net payment received\n2 to3@example.net payment received\n4 to0@example.net\n4 to0@example.net A subject\n"
+  },
+  {
+    "input": "11\n5 user4@example.com to1@example.net status\n4 user4@example.com to3@example.net status\n3 user2@example.com to3@example.net meeting notes\n5 user3@example.com to3@example.net\n5 user2@example.com to1@example.net\n4 user0@example.com to1@example.net\n4 user4@example.com to0@example.net\n3 user1@example.com to2@example.net\n2 user4@example.com to2@example.net A subject\n5 user2@example.com to3@example.net status\n4 user3@example.com to0@example.net\n",
+    "expectedOutput": "16\nsender: user0@example.com\n4 to1@example.net\nsender: user1@example.com\n3 to2@example.net\nsender: user2@example.com\n3 to3@example.net meeting notes\n5 to1@example.net\n5 to3@example.net status\nsender: user3@example.com\n4 to0@example.net\n5 to3@example.net\nsender: user4@example.com\n2 to2@example.net A subject\n4 to0@example.net\n4 to3@example.net status\n5 to1@example.net status\n"
+  },
+  {
+    "input": "3\n3 user0@example.com to0@example.net A subject\n1 user0@example.com to0@example.net status\n4 user0@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "4\nsender: user0@example.com\n1 to0@example.net status\n3 to0@example.net A subject\n4 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "3\n4 user2@example.com to2@example.net\n4 user1@example.com to1@example.net A subject\n0 user3@example.com to2@example.net payment received\n",
+    "expectedOutput": "6\nsender: user1@example.com\n4 to1@example.net A subject\nsender: user2@example.com\n4 to2@example.net\nsender: user3@example.com\n0 to2@example.net payment received\n"
+  },
+  {
+    "input": "4\n0 user0@example.com to3@example.net A subject\n3 user0@example.com to1@example.net payment received\n5 user0@example.com to2@example.net A subject\n0 user0@example.com to1@example.net payment received\n",
+    "expectedOutput": "5\nsender: user0@example.com\n0 to1@example.net payment received\n0 to3@example.net A subject\n3 to1@example.net payment received\n5 to2@example.net A subject\n"
+  },
+  {
+    "input": "1\n0 user0@example.com to0@example.net meeting notes\n",
+    "expectedOutput": "2\nsender: user0@example.com\n0 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "5\n0 user1@example.com to0@example.net payment received\n1 user1@example.com to1@example.net status\n1 user0@example.com to2@example.net A subject\n5 user2@example.com to1@example.net payment received\n4 user0@example.com to0@example.net\n",
+    "expectedOutput": "8\nsender: user0@example.com\n1 to2@example.net A subject\n4 to0@example.net\nsender: user1@example.com\n0 to0@example.net payment received\n1 to1@example.net status\nsender: user2@example.com\n5 to1@example.net payment received\n"
+  },
+  {
+    "input": "2\n4 user1@example.com to3@example.net status\n2 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "4\nsender: user0@example.com\n2 to1@example.net A subject\nsender: user1@example.com\n4 to3@example.net status\n"
+  },
+  {
+    "input": "8\n2 user1@example.com to1@example.net payment received\n0 user1@example.com to0@example.net\n2 user1@example.com to1@example.net payment received\n1 user0@example.com to2@example.net payment received\n4 user1@example.com to3@example.net meeting notes\n3 user0@example.com to1@example.net meeting notes\n2 user4@example.com to3@example.net meeting notes\n3 user1@example.com to1@example.net A subject\n",
+    "expectedOutput": "11\nsender: user0@example.com\n1 to2@example.net payment received\n3 to1@example.net meeting notes\nsender: user1@example.com\n0 to0@example.net\n2 to1@example.net payment received\n2 to1@example.net payment received\n3 to1@example.net A subject\n4 to3@example.net meeting notes\nsender: user4@example.com\n2 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "1\n0 user3@example.com to3@example.net status\n",
+    "expectedOutput": "2\nsender: user3@example.com\n0 to3@example.net status\n"
+  },
+  {
+    "input": "4\n5 user0@example.com to1@example.net\n0 user1@example.com to2@example.net A subject\n3 user1@example.com to0@example.net payment received\n3 user1@example.com to3@example.net status\n",
+    "expectedOutput": "6\nsender: user0@example.com\n5 to1@example.net\nsender: user1@example.com\n0 to2@example.net A subject\n3 to0@example.net payment received\n3 to3@example.net status\n"
+  },
+  {
+    "input": "7\n2 user1@example.com to2@example.net payment received\n1 user2@example.com to0@example.net\n2 user0@example.com to1@example.net status\n1 user2@example.com to2@example.net A subject\n4 user1@example.com to0@example.net status\n2 user2@example.com to3@example.net\n4 user0@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "10\nsender: user0@example.com\n2 to1@example.net status\n4 to3@example.net meeting notes\nsender: user1@example.com\n2 to2@example.net payment received\n4 to0@example.net status\nsender: user2@example.com\n1 to0@example.net\n1 to2@example.net A subject\n2 to3@example.net\n"
+  },
+  {
+    "input": "9\n2 user0@example.com to1@example.net meeting notes\n5 user0@example.com to2@example.net meeting notes\n0 user0@example.com to3@example.net\n3 user0@example.com to2@example.net meeting notes\n3 user0@example.com to3@example.net A subject\n4 user0@example.com to1@example.net\n2 user0@example.com to2@example.net payment received\n4 user0@example.com to2@example.net\n3 user0@example.com to1@example.net payment received\n",
+    "expectedOutput": "10\nsender: user0@example.com\n0 to3@example.net\n2 to1@example.net meeting notes\n2 to2@example.net payment received\n3 to1@example.net payment received\n3 to2@example.net meeting notes\n3 to3@example.net A subject\n4 to1@example.net\n4 to2@example.net\n5 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "8\n0 user2@example.com to3@example.net\n4 user1@example.com to2@example.net payment received\n2 user3@example.com to0@example.net meeting notes\n3 user1@example.com to3@example.net\n4 user3@example.com to1@example.net status\n1 user0@example.com to0@example.net meeting notes\n0 user2@example.com to1@example.net status\n2 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "12\nsender: user0@example.com\n1 to0@example.net meeting notes\n2 to1@example.net A subject\nsender: user1@example.com\n3 to3@example.net\n4 to2@example.net payment received\nsender: user2@example.com\n0 to1@example.net status\n0 to3@example.net\nsender: user3@example.com\n2 to0@example.net meeting notes\n4 to1@example.net status\n"
+  },
+  {
+    "input": "3\n2 user0@example.com to0@example.net payment received\n3 user1@example.com to0@example.net status\n5 user2@example.com to2@example.net A subject\n",
+    "expectedOutput": "6\nsender: user0@example.com\n2 to0@example.net payment received\nsender: user1@example.com\n3 to0@example.net status\nsender: user2@example.com\n5 to2@example.net A subject\n"
+  },
+  {
+    "input": "1\n2 user1@example.com to1@example.net payment received\n",
+    "expectedOutput": "2\nsender: user1@example.com\n2 to1@example.net payment received\n"
+  },
+  {
+    "input": "6\n5 user1@example.com to3@example.net meeting notes\n5 user0@example.com to1@example.net status\n3 user0@example.com to0@example.net\n3 user1@example.com to1@example.net status\n0 user0@example.com to3@example.net A subject\n2 user1@example.com to3@example.net\n",
+    "expectedOutput": "8\nsender: user0@example.com\n0 to3@example.net A subject\n3 to0@example.net\n5 to1@example.net status\nsender: user1@example.com\n2 to3@example.net\n3 to1@example.net status\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "6\n5 user0@example.com to0@example.net\n5 user2@example.com to3@example.net meeting notes\n0 user1@example.com to2@example.net\n3 user1@example.com to0@example.net meeting notes\n4 user2@example.com to0@example.net A subject\n1 user1@example.com to3@example.net payment received\n",
+    "expectedOutput": "9\nsender: user0@example.com\n5 to0@example.net\nsender: user1@example.com\n0 to2@example.net\n1 to3@example.net payment received\n3 to0@example.net meeting notes\nsender: user2@example.com\n4 to0@example.net A subject\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "10\n4 user1@example.com to3@example.net meeting notes\n0 user1@example.com to2@example.net\n3 user1@example.com to3@example.net meeting notes\n5 user0@example.com to3@example.net payment received\n0 user0@example.com to2@example.net status\n0 user1@example.com to2@example.net meeting notes\n0 user0@example.com to1@example.net meeting notes\n4 user0@example.com to3@example.net meeting notes\n2 user0@example.com to0@example.net payment received\n4 user0@example.com to2@example.net payment received\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to1@example.net meeting notes\n0 to2@example.net status\n2 to0@example.net payment received\n4 to2@example.net payment received\n4 to3@example.net meeting notes\n5 to3@example.net payment received\nsender: user1@example.com\n0 to2@example.net\n0 to2@example.net meeting notes\n3 to3@example.net meeting notes\n4 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "4\n2 user0@example.com to3@example.net\n1 user0@example.com to0@example.net payment received\n1 user0@example.com to1@example.net meeting notes\n1 user0@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "5\nsender: user0@example.com\n1 to0@example.net payment received\n1 to1@example.net meeting notes\n1 to3@example.net meeting notes\n2 to3@example.net\n"
+  },
+  {
+    "input": "4\n3 user2@example.com to1@example.net status\n4 user1@example.com to0@example.net payment received\n3 user0@example.com to0@example.net status\n0 user1@example.com to0@example.net\n",
+    "expectedOutput": "7\nsender: user0@example.com\n3 to0@example.net status\nsender: user1@example.com\n0 to0@example.net\n4 to0@example.net payment received\nsender: user2@example.com\n3 to1@example.net status\n"
+  },
+  {
+    "input": "8\n0 user1@example.com to3@example.net\n3 user0@example.com to3@example.net payment received\n1 user0@example.com to0@example.net payment received\n4 user1@example.com to2@example.net status\n2 user0@example.com to2@example.net status\n4 user1@example.com to1@example.net A subject\n2 user0@example.com to1@example.net status\n2 user1@example.com to1@example.net meeting notes\n",
+    "expectedOutput": "10\nsender: user0@example.com\n1 to0@example.net payment received\n2 to1@example.net status\n2 to2@example.net status\n3 to3@example.net payment received\nsender: user1@example.com\n0 to3@example.net\n2 to1@example.net meeting notes\n4 to1@example.net A subject\n4 to2@example.net status\n"
+  },
+  {
+    "input": "6\n1 user0@example.com to1@example.net meeting notes\n4 user0@example.com to0@example.net\n1 user0@example.com to2@example.net meeting notes\n5 user1@example.com to1@example.net A subject\n5 user1@example.com to1@example.net meeting notes\n1 user0@example.com to0@example.net meeting notes\n",
+    "expectedOutput": "8\nsender: user0@example.com\n1 to0@example.net meeting notes\n1 to1@example.net meeting notes\n1 to2@example.net meeting notes\n4 to0@example.net\nsender: user1@example.com\n5 to1@example.net A subject\n5 to1@example.net meeting notes\n"
+  },
+  {
+    "input": "10\n4 user0@example.com to0@example.net meeting notes\n4 user0@example.com to2@example.net status\n2 user1@example.com to3@example.net status\n3 user0@example.com to0@example.net payment received\n0 user1@example.com to1@example.net A subject\n1 user0@example.com to1@example.net payment received\n0 user1@example.com to1@example.net\n1 user1@example.com to0@example.net\n3 user1@example.com to0@example.net status\n5 user0@example.com to2@example.net\n",
+    "expectedOutput": "12\nsender: user0@example.com\n1 to1@example.net payment received\n3 to0@example.net payment received\n4 to0@example.net meeting notes\n4 to2@example.net status\n5 to2@example.net\nsender: user1@example.com\n0 to1@example.net\n0 to1@example.net A subject\n1 to0@example.net\n2 to3@example.net status\n3 to0@example.net status\n"
+  },
+  {
+    "input": "1\n3 user1@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "2\nsender: user1@example.com\n3 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "6\n4 user3@example.com to2@example.net payment received\n1 user0@example.com to1@example.net meeting notes\n0 user1@example.com to2@example.net A subject\n2 user0@example.com to3@example.net\n3 user2@example.com to3@example.net status\n1 user1@example.com to1@example.net\n",
+    "expectedOutput": "10\nsender: user0@example.com\n1 to1@example.net meeting notes\n2 to3@example.net\nsender: user1@example.com\n0 to2@example.net A subject\n1 to1@example.net\nsender: user2@example.com\n3 to3@example.net status\nsender: user3@example.com\n4 to2@example.net payment received\n"
+  },
+  {
+    "input": "4\n4 user0@example.com to3@example.net meeting notes\n4 user2@example.com to1@example.net A subject\n1 user3@example.com to2@example.net\n4 user1@example.com to2@example.net payment received\n",
+    "expectedOutput": "8\nsender: user0@example.com\n4 to3@example.net meeting notes\nsender: user1@example.com\n4 to2@example.net payment received\nsender: user2@example.com\n4 to1@example.net A subject\nsender: user3@example.com\n1 to2@example.net\n"
+  },
+  {
+    "input": "2\n5 user0@example.com to3@example.net meeting notes\n1 user0@example.com to0@example.net A subject\n",
+    "expectedOutput": "3\nsender: user0@example.com\n1 to0@example.net A subject\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "4\n1 user1@example.com to1@example.net\n3 user2@example.com to3@example.net A subject\n1 user1@example.com to0@example.net meeting notes\n4 user2@example.com to0@example.net meeting notes\n",
+    "expectedOutput": "6\nsender: user1@example.com\n1 to0@example.net meeting notes\n1 to1@example.net\nsender: user2@example.com\n3 to3@example.net A subject\n4 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "7\n4 user3@example.com to2@example.net status\n1 user1@example.com to3@example.net\n2 user3@example.com to2@example.net payment received\n3 user0@example.com to0@example.net A subject\n3 user1@example.com to2@example.net A subject\n1 user0@example.com to2@example.net\n5 user1@example.com to2@example.net status\n",
+    "expectedOutput": "10\nsender: user0@example.com\n1 to2@example.net\n3 to0@example.net A subject\nsender: user1@example.com\n1 to3@example.net\n3 to2@example.net A subject\n5 to2@example.net status\nsender: user3@example.com\n2 to2@example.net payment received\n4 to2@example.net status\n"
+  },
+  {
+    "input": "9\n2 user0@example.com to1@example.net A subject\n5 user0@example.com to3@example.net\n5 user0@example.com to0@example.net\n5 user0@example.com to0@example.net A subject\n0 user0@example.com to2@example.net payment received\n1 user0@example.com to2@example.net payment received\n5 user0@example.com to1@example.net A subject\n2 user0@example.com to3@example.net payment received\n4 user0@example.com to2@example.net\n",
+    "expectedOutput": "10\nsender: user0@example.com\n0 to2@example.net payment received\n1 to2@example.net payment received\n2 to1@example.net A subject\n2 to3@example.net payment received\n4 to2@example.net\n5 to0@example.net\n5 to0@example.net A subject\n5 to1@example.net A subject\n5 to3@example.net\n"
+  },
+  {
+    "input": "6\n1 user0@example.com to2@example.net payment received\n4 user0@example.com to2@example.net A subject\n5 user0@example.com to2@example.net\n1 user0@example.com to0@example.net A subject\n1 user0@example.com to0@example.net payment received\n1 user0@example.com to2@example.net status\n",
+    "expectedOutput": "7\nsender: user0@example.com\n1 to0@example.net A subject\n1 to0@example.net payment received\n1 to2@example.net payment received\n1 to2@example.net status\n4 to2@example.net A subject\n5 to2@example.net\n"
+  },
+  {
+    "input": "2\n5 user0@example.com to1@example.net A subject\n1 user0@example.com to0@example.net status\n",
+    "expectedOutput": "3\nsender: user0@example.com\n1 to0@example.net status\n5 to1@example.net A subject\n"
+  },
+  {
+    "input": "7\n0 user3@example.com to2@example.net status\n3 user2@example.com to3@example.net\n3 user2@example.com to0@example.net meeting notes\n0 user1@example.com to1@example.net payment received\n0 user1@example.com to3@example.net meeting notes\n4 user0@example.com to3@example.net\n3 user2@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "11\nsender: user0@example.com\n4 to3@example.net\nsender: user1@example.com\n0 to1@example.net payment received\n0 to3@example.net meeting notes\nsender: user2@example.com\n3 to0@example.net meeting notes\n3 to2@example.net meeting notes\n3 to3@example.net\nsender: user3@example.com\n0 to2@example.net status\n"
+  },
+  {
+    "input": "9\n0 user1@example.com to0@example.net\n4 user1@example.com to3@example.net status\n1 user0@example.com to2@example.net\n1 user1@example.com to1@example.net meeting notes\n5 user2@example.com to2@example.net A subject\n1 user0@example.com to0@example.net payment received\n3 user0@example.com to1@example.net status\n2 user1@example.com to0@example.net\n2 user1@example.com to0@example.net\n",
+    "expectedOutput": "12\nsender: user0@example.com\n1 to0@example.net payment received\n1 to2@example.net\n3 to1@example.net status\nsender: user1@example.com\n0 to0@example.net\n1 to1@example.net meeting notes\n2 to0@example.net\n2 to0@example.net\n4 to3@example.net status\nsender: user2@example.com\n5 to2@example.net A subject\n"
+  },
+  {
+    "input": "2\n0 user1@example.com to0@example.net\n1 user2@example.com to2@example.net\n",
+    "expectedOutput": "4\nsender: user1@example.com\n0 to0@example.net\nsender: user2@example.com\n1 to2@example.net\n"
+  },
+  {
+    "input": "1\n5 user2@example.com to0@example.net payment received\n",
+    "expectedOutput": "2\nsender: user2@example.com\n5 to0@example.net payment received\n"
+  },
+  {
+    "input": "12\n5 user0@example.com to1@example.net A subject\n4 user0@example.com to2@example.net A subject\n4 user4@example.com to0@example.net payment received\n0 user4@example.com to0@example.net\n0 user4@example.com to3@example.net meeting notes\n2 user0@example.com to0@example.net status\n1 user1@example.com to3@example.net meeting notes\n0 user3@example.com to1@example.net A subject\n4 user0@example.com to3@example.net payment received\n3 user2@example.com to0@example.net\n4 user3@example.com to2@example.net meeting notes\n5 user1@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "17\nsender: user0@example.com\n2 to0@example.net status\n4 to2@example.net A subject\n4 to3@example.net payment received\n5 to1@example.net A subject\nsender: user1@example.com\n1 to3@example.net meeting notes\n5 to3@example.net meeting notes\nsender: user2@example.com\n3 to0@example.net\nsender: user3@example.com\n0 to1@example.net A subject\n4 to2@example.net meeting notes\nsender: user4@example.com\n0 to0@example.net\n0 to3@example.net meeting notes\n4 to0@example.net payment received\n"
+  },
+  {
+    "input": "10\n0 user1@example.com to3@example.net payment received\n0 user0@example.com to0@example.net payment received\n4 user0@example.com to3@example.net\n0 user3@example.com to3@example.net payment received\n5 user3@example.com to3@example.net status\n3 user2@example.com to2@example.net\n3 user1@example.com to3@example.net payment received\n1 user1@example.com to1@example.net A subject\n5 user0@example.com to2@example.net status\n4 user3@example.com to2@example.net A subject\n",
+    "expectedOutput": "14\nsender: user0@example.com\n0 to0@example.net payment received\n4 to3@example.net\n5 to2@example.net status\nsender: user1@example.com\n0 to3@example.net payment received\n1 to1@example.net A subject\n3 to3@example.net payment received\nsender: user2@example.com\n3 to2@example.net\nsender: user3@example.com\n0 to3@example.net payment received\n4 to2@example.net A subject\n5 to3@example.net status\n"
+  },
+  {
+    "input": "4\n3 user1@example.com to3@example.net payment received\n5 user4@example.com to1@example.net status\n5 user2@example.com to2@example.net payment received\n1 user4@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "7\nsender: user1@example.com\n3 to3@example.net payment received\nsender: user2@example.com\n5 to2@example.net payment received\nsender: user4@example.com\n1 to3@example.net meeting notes\n5 to1@example.net status\n"
+  },
+  {
+    "input": "12\n2 user2@example.com to0@example.net\n5 user3@example.com to0@example.net A subject\n4 user1@example.com to2@example.net meeting notes\n0 user2@example.com to3@example.net\n4 user3@example.com to1@example.net meeting notes\n3 user1@example.com to2@example.net payment received\n1 user2@example.com to0@example.net status\n0 user3@example.com to3@example.net\n5 user2@example.com to2@example.net\n0 user3@example.com to1@example.net meeting notes\n2 user2@example.com to3@example.net\n5 user3@example.com to0@example.net status\n",
+    "expectedOutput": "15\nsender: user1@example.com\n3 to2@example.net payment received\n4 to2@example.net meeting notes\nsender: user2@example.com\n0 to3@example.net\n1 to0@example.net status\n2 to0@example.net\n2 to3@example.net\n5 to2@example.net\nsender: user3@example.com\n0 to1@example.net meeting notes\n0 to3@example.net\n4 to1@example.net meeting notes\n5 to0@example.net A subject\n5 to0@example.net status\n"
+  },
+  {
+    "input": "12\n5 user0@example.com to3@example.net A subject\n2 user0@example.com to0@example.net status\n1 user1@example.com to1@example.net meeting notes\n1 user0@example.com to3@example.net meeting notes\n3 user1@example.com to1@example.net status\n5 user0@example.com to2@example.net meeting notes\n4 user0@example.com to2@example.net status\n0 user0@example.com to2@example.net\n4 user0@example.com to1@example.net\n1 user1@example.com to1@example.net payment received\n1 user0@example.com to1@example.net meeting notes\n2 user0@example.com to0@example.net A subject\n",
+    "expectedOutput": "14\nsender: user0@example.com\n0 to2@example.net\n1 to1@example.net meeting notes\n1 to3@example.net meeting notes\n2 to0@example.net A subject\n2 to0@example.net status\n4 to1@example.net\n4 to2@example.net status\n5 to2@example.net meeting notes\n5 to3@example.net A subject\nsender: user1@example.com\n1 to1@example.net meeting notes\n1 to1@example.net payment received\n3 to1@example.net status\n"
+  },
+  {
+    "input": "5\n3 user1@example.com to0@example.net A subject\n0 user0@example.com to2@example.net payment received\n1 user2@example.com to1@example.net A subject\n0 user2@example.com to1@example.net\n0 user1@example.com to0@example.net status\n",
+    "expectedOutput": "8\nsender: user0@example.com\n0 to2@example.net payment received\nsender: user1@example.com\n0 to0@example.net status\n3 to0@example.net A subject\nsender: user2@example.com\n0 to1@example.net\n1 to1@example.net A subject\n"
+  },
+  {
+    "input": "1\n5 user1@example.com to1@example.net status\n",
+    "expectedOutput": "2\nsender: user1@example.com\n5 to1@example.net status\n"
+  },
+  {
+    "input": "9\n4 user0@example.com to2@example.net\n4 user0@example.com to1@example.net meeting notes\n2 user0@example.com to2@example.net A subject\n3 user1@example.com to2@example.net\n0 user1@example.com to0@example.net A subject\n0 user1@example.com to3@example.net meeting notes\n4 user0@example.com to1@example.net status\n2 user1@example.com to0@example.net status\n1 user1@example.com to0@example.net payment received\n",
+    "expectedOutput": "11\nsender: user0@example.com\n2 to2@example.net A subject\n4 to1@example.net meeting notes\n4 to1@example.net status\n4 to2@example.net\nsender: user1@example.com\n0 to0@example.net A subject\n0 to3@example.net meeting notes\n1 to0@example.net payment received\n2 to0@example.net status\n3 to2@example.net\n"
+  },
+  {
+    "input": "6\n2 user0@example.com to1@example.net meeting notes\n0 user0@example.com to2@example.net payment received\n3 user2@example.com to0@example.net\n4 user0@example.com to2@example.net\n5 user0@example.com to0@example.net meeting notes\n3 user0@example.com to2@example.net payment received\n",
+    "expectedOutput": "8\nsender: user0@example.com\n0 to2@example.net payment received\n2 to1@example.net meeting notes\n3 to2@example.net payment received\n4 to2@example.net\n5 to0@example.net meeting notes\nsender: user2@example.com\n3 to0@example.net\n"
+  },
+  {
+    "input": "12\n0 user2@example.com to2@example.net\n0 user2@example.com to2@example.net\n0 user1@example.com to1@example.net\n5 user1@example.com to0@example.net payment received\n1 user1@example.com to3@example.net A subject\n1 user1@example.com to0@example.net status\n2 user2@example.com to3@example.net status\n2 user1@example.com to0@example.net meeting notes\n3 user2@example.com to3@example.net\n1 user2@example.com to1@example.net meeting notes\n4 user1@example.com to3@example.net A subject\n3 user1@example.com to1@example.net payment received\n",
+    "expectedOutput": "14\nsender: user1@example.com\n0 to1@example.net\n1 to0@example.net status\n1 to3@example.net A subject\n2 to0@example.net meeting notes\n3 to1@example.net payment received\n4 to3@example.net A subject\n5 to0@example.net payment received\nsender: user2@example.com\n0 to2@example.net\n0 to2@example.net\n1 to1@example.net meeting notes\n2 to3@example.net status\n3 to3@example.net\n"
+  },
+  {
+    "input": "3\n4 user2@example.com to0@example.net A subject\n0 user0@example.com to0@example.net A subject\n4 user1@example.com to3@example.net A subject\n",
+    "expectedOutput": "6\nsender: user0@example.com\n0 to0@example.net A subject\nsender: user1@example.com\n4 to3@example.net A subject\nsender: user2@example.com\n4 to0@example.net A subject\n"
+  },
+  {
+    "input": "2\n1 user0@example.com to0@example.net meeting notes\n3 user0@example.com to0@example.net A subject\n",
+    "expectedOutput": "3\nsender: user0@example.com\n1 to0@example.net meeting notes\n3 to0@example.net A subject\n"
+  },
+  {
+    "input": "9\n3 user1@example.com to0@example.net A subject\n2 user0@example.com to3@example.net meeting notes\n3 user3@example.com to3@example.net\n3 user2@example.com to3@example.net meeting notes\n0 user0@example.com to0@example.net\n2 user0@example.com to1@example.net A subject\n1 user2@example.com to0@example.net\n4 user2@example.com to0@example.net meeting notes\n2 user2@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "13\nsender: user0@example.com\n0 to0@example.net\n2 to1@example.net A subject\n2 to3@example.net meeting notes\nsender: user1@example.com\n3 to0@example.net A subject\nsender: user2@example.com\n1 to0@example.net\n2 to3@example.net meeting notes\n3 to3@example.net meeting notes\n4 to0@example.net meeting notes\nsender: user3@example.com\n3 to3@example.net\n"
+  },
+  {
+    "input": "10\n1 user2@example.com to1@example.net A subject\n0 user2@example.com to0@example.net\n2 user1@example.com to1@example.net meeting notes\n1 user1@example.com to3@example.net A subject\n1 user1@example.com to0@example.net payment received\n3 user0@example.com to1@example.net meeting notes\n5 user1@example.com to0@example.net meeting notes\n0 user0@example.com to3@example.net payment received\n0 user1@example.com to3@example.net\n3 user1@example.com to0@example.net meeting notes\n",
+    "expectedOutput": "13\nsender: user0@example.com\n0 to3@example.net payment received\n3 to1@example.net meeting notes\nsender: user1@example.com\n0 to3@example.net\n1 to0@example.net payment received\n1 to3@example.net A subject\n2 to1@example.net meeting notes\n3 to0@example.net meeting notes\n5 to0@example.net meeting notes\nsender: user2@example.com\n0 to0@example.net\n1 to1@example.net A subject\n"
+  },
+  {
+    "input": "4\n4 user0@example.com to3@example.net\n3 user3@example.com to2@example.net status\n3 user0@example.com to1@example.net status\n2 user1@example.com to1@example.net payment received\n",
+    "expectedOutput": "7\nsender: user0@example.com\n3 to1@example.net status\n4 to3@example.net\nsender: user1@example.com\n2 to1@example.net payment received\nsender: user3@example.com\n3 to2@example.net status\n"
+  },
+  {
+    "input": "4\n4 user0@example.com to0@example.net status\n0 user0@example.com to0@example.net\n2 user0@example.com to0@example.net A subject\n5 user0@example.com to2@example.net A subject\n",
+    "expectedOutput": "5\nsender: user0@example.com\n0 to0@example.net\n2 to0@example.net A subject\n4 to0@example.net status\n5 to2@example.net A subject\n"
+  },
+  {
+    "input": "5\n4 user0@example.com to0@example.net status\n1 user0@example.com to3@example.net payment received\n5 user0@example.com to3@example.net status\n0 user0@example.com to3@example.net payment received\n1 user0@example.com to2@example.net\n",
+    "expectedOutput": "6\nsender: user0@example.com\n0 to3@example.net payment received\n1 to2@example.net\n1 to3@example.net payment received\n4 to0@example.net status\n5 to3@example.net status\n"
+  },
+  {
+    "input": "4\n1 user0@example.com to2@example.net A subject\n1 user0@example.com to2@example.net status\n5 user0@example.com to0@example.net status\n3 user0@example.com to3@example.net A subject\n",
+    "expectedOutput": "5\nsender: user0@example.com\n1 to2@example.net A subject\n1 to2@example.net status\n3 to3@example.net A subject\n5 to0@example.net status\n"
+  },
+  {
+    "input": "8\n2 user3@example.com to3@example.net\n3 user2@example.com to3@example.net status\n2 user0@example.com to3@example.net payment received\n2 user1@example.com to0@example.net A subject\n1 user3@example.com to2@example.net status\n1 user2@example.com to1@example.net payment received\n1 user0@example.com to1@example.net status\n5 user1@example.com to2@example.net payment received\n",
+    "expectedOutput": "12\nsender: user0@example.com\n1 to1@example.net status\n2 to3@example.net payment received\nsender: user1@example.com\n2 to0@example.net A subject\n5 to2@example.net payment received\nsender: user2@example.com\n1 to1@example.net payment received\n3 to3@example.net status\nsender: user3@example.com\n1 to2@example.net status\n2 to3@example.net\n"
+  },
+  {
+    "input": "1\n3 user0@example.com to0@example.net\n",
+    "expectedOutput": "2\nsender: user0@example.com\n3 to0@example.net\n"
+  },
+  {
+    "input": "5\n2 user0@example.com to1@example.net payment received\n3 user0@example.com to1@example.net\n5 user0@example.com to1@example.net\n2 user0@example.com to3@example.net payment received\n3 user0@example.com to0@example.net payment received\n",
+    "expectedOutput": "6\nsender: user0@example.com\n2 to1@example.net payment received\n2 to3@example.net payment received\n3 to0@example.net payment received\n3 to1@example.net\n5 to1@example.net\n"
+  },
+  {
+    "input": "11\n3 user0@example.com to3@example.net\n0 user1@example.com to2@example.net meeting notes\n1 user2@example.com to2@example.net status\n3 user1@example.com to3@example.net meeting notes\n3 user0@example.com to1@example.net meeting notes\n2 user1@example.com to3@example.net payment received\n4 user0@example.com to1@example.net\n4 user1@example.com to3@example.net status\n2 user1@example.com to0@example.net A subject\n5 user0@example.com to2@example.net status\n4 user1@example.com to2@example.net\n",
+    "expectedOutput": "14\nsender: user0@example.com\n3 to1@example.net meeting notes\n3 to3@example.net\n4 to1@example.net\n5 to2@example.net status\nsender: user1@example.com\n0 to2@example.net meeting notes\n2 to0@example.net A subject\n2 to3@example.net payment received\n3 to3@example.net meeting notes\n4 to2@example.net\n4 to3@example.net status\nsender: user2@example.com\n1 to2@example.net status\n"
+  },
+  {
+    "input": "5\n5 user0@example.com to3@example.net payment received\n0 user0@example.com to3@example.net payment received\n1 user0@example.com to0@example.net meeting notes\n3 user0@example.com to0@example.net meeting notes\n4 user0@example.com to2@example.net\n",
+    "expectedOutput": "6\nsender: user0@example.com\n0 to3@example.net payment received\n1 to0@example.net meeting notes\n3 to0@example.net meeting notes\n4 to2@example.net\n5 to3@example.net payment received\n"
+  },
+  {
+    "input": "6\n5 user2@example.com to1@example.net status\n2 user4@example.com to3@example.net A subject\n4 user0@example.com to1@example.net payment received\n4 user3@example.com to3@example.net A subject\n2 user0@example.com to1@example.net A subject\n5 user0@example.com to2@example.net status\n",
+    "expectedOutput": "10\nsender: user0@example.com\n2 to1@example.net A subject\n4 to1@example.net payment received\n5 to2@example.net status\nsender: user2@example.com\n5 to1@example.net status\nsender: user3@example.com\n4 to3@example.net A subject\nsender: user4@example.com\n2 to3@example.net A subject\n"
+  },
+  {
+    "input": "1\n1 user0@example.com to1@example.net status\n",
+    "expectedOutput": "2\nsender: user0@example.com\n1 to1@example.net status\n"
+  },
+  {
+    "input": "6\n5 user0@example.com to2@example.net payment received\n5 user0@example.com to3@example.net meeting notes\n5 user2@example.com to3@example.net status\n5 user3@example.com to3@example.net meeting notes\n3 user0@example.com to3@example.net meeting notes\n3 user2@example.com to1@example.net payment received\n",
+    "expectedOutput": "9\nsender: user0@example.com\n3 to3@example.net meeting notes\n5 to2@example.net payment received\n5 to3@example.net meeting notes\nsender: user2@example.com\n3 to1@example.net payment received\n5 to3@example.net status\nsender: user3@example.com\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "12\n2 user4@example.com to2@example.net A subject\n4 user1@example.com to2@example.net\n4 user1@example.com to0@example.net status\n0 user1@example.com to1@example.net meeting notes\n3 user0@example.com to2@example.net A subject\n4 user0@example.com to3@example.net meeting notes\n1 user0@example.com to1@example.net\n5 user3@example.com to0@example.net\n4 user0@example.com to0@example.net\n1 user0@example.com to3@example.net A subject\n4 user2@example.com to2@example.net payment received\n2 user2@example.com to2@example.net A subject\n",
+    "expectedOutput": "17\nsender: user0@example.com\n1 to1@example.net\n1 to3@example.net A subject\n3 to2@example.net A subject\n4 to0@example.net\n4 to3@example.net meeting notes\nsender: user1@example.com\n0 to1@example.net meeting notes\n4 to0@example.net status\n4 to2@example.net\nsender: user2@example.com\n2 to2@example.net A subject\n4 to2@example.net payment received\nsender: user3@example.com\n5 to0@example.net\nsender: user4@example.com\n2 to2@example.net A subject\n"
+  },
+  {
+    "input": "7\n1 user0@example.com to2@example.net A subject\n2 user1@example.com to0@example.net payment received\n2 user0@example.com to3@example.net payment received\n3 user0@example.com to2@example.net meeting notes\n0 user0@example.com to3@example.net meeting notes\n4 user1@example.com to0@example.net payment received\n5 user0@example.com to3@example.net A subject\n",
+    "expectedOutput": "9\nsender: user0@example.com\n0 to3@example.net meeting notes\n1 to2@example.net A subject\n2 to3@example.net payment received\n3 to2@example.net meeting notes\n5 to3@example.net A subject\nsender: user1@example.com\n2 to0@example.net payment received\n4 to0@example.net payment received\n"
+  },
+  {
+    "input": "10\n4 user2@example.com to0@example.net\n1 user2@example.com to1@example.net status\n3 user1@example.com to2@example.net A subject\n3 user0@example.com to3@example.net payment received\n2 user0@example.com to0@example.net A subject\n4 user1@example.com to1@example.net A subject\n0 user2@example.com to0@example.net meeting notes\n1 user0@example.com to3@example.net status\n2 user0@example.com to3@example.net payment received\n2 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "13\nsender: user0@example.com\n1 to3@example.net status\n2 to0@example.net A subject\n2 to1@example.net A subject\n2 to3@example.net payment received\n3 to3@example.net payment received\nsender: user1@example.com\n3 to2@example.net A subject\n4 to1@example.net A subject\nsender: user2@example.com\n0 to0@example.net meeting notes\n1 to1@example.net status\n4 to0@example.net\n"
+  },
+  {
+    "input": "9\n2 user0@example.com to2@example.net\n0 user0@example.com to0@example.net\n3 user1@example.com to1@example.net meeting notes\n4 user0@example.com to0@example.net meeting notes\n0 user0@example.com to2@example.net A subject\n5 user0@example.com to1@example.net meeting notes\n5 user1@example.com to3@example.net meeting notes\n5 user1@example.com to1@example.net meeting notes\n0 user1@example.com to1@example.net A subject\n",
+    "expectedOutput": "11\nsender: user0@example.com\n0 to0@example.net\n0 to2@example.net A subject\n2 to2@example.net\n4 to0@example.net meeting notes\n5 to1@example.net meeting notes\nsender: user1@example.com\n0 to1@example.net A subject\n3 to1@example.net meeting notes\n5 to1@example.net meeting notes\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "1\n2 user3@example.com to0@example.net status\n",
+    "expectedOutput": "2\nsender: user3@example.com\n2 to0@example.net status\n"
+  },
+  {
+    "input": "6\n0 user0@example.com to0@example.net payment received\n4 user1@example.com to0@example.net status\n1 user1@example.com to2@example.net status\n3 user1@example.com to2@example.net meeting notes\n4 user1@example.com to3@example.net status\n1 user0@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "8\nsender: user0@example.com\n0 to0@example.net payment received\n1 to2@example.net meeting notes\nsender: user1@example.com\n1 to2@example.net status\n3 to2@example.net meeting notes\n4 to0@example.net status\n4 to3@example.net status\n"
+  },
+  {
+    "input": "9\n0 user1@example.com to0@example.net payment received\n5 user0@example.com to3@example.net meeting notes\n3 user1@example.com to1@example.net A subject\n5 user1@example.com to0@example.net payment received\n4 user1@example.com to3@example.net\n2 user0@example.com to3@example.net meeting notes\n2 user0@example.com to2@example.net\n2 user0@example.com to0@example.net payment received\n5 user1@example.com to1@example.net status\n",
+    "expectedOutput": "11\nsender: user0@example.com\n2 to0@example.net payment received\n2 to2@example.net\n2 to3@example.net meeting notes\n5 to3@example.net meeting notes\nsender: user1@example.com\n0 to0@example.net payment received\n3 to1@example.net A subject\n4 to3@example.net\n5 to0@example.net payment received\n5 to1@example.net status\n"
+  },
+  {
+    "input": "10\n2 user0@example.com to0@example.net A subject\n5 user0@example.com to1@example.net A subject\n1 user0@example.com to2@example.net\n5 user0@example.com to3@example.net meeting notes\n5 user0@example.com to3@example.net payment received\n0 user0@example.com to1@example.net payment received\n2 user0@example.com to2@example.net payment received\n5 user0@example.com to2@example.net payment received\n3 user0@example.com to2@example.net payment received\n5 user0@example.com to2@example.net payment received\n",
+    "expectedOutput": "11\nsender: user0@example.com\n0 to1@example.net payment received\n1 to2@example.net\n2 to0@example.net A subject\n2 to2@example.net payment received\n3 to2@example.net payment received\n5 to1@example.net A subject\n5 to2@example.net payment received\n5 to2@example.net payment received\n5 to3@example.net meeting notes\n5 to3@example.net payment received\n"
+  },
+  {
+    "input": "12\n4 user1@example.com to1@example.net payment received\n2 user2@example.com to0@example.net payment received\n4 user1@example.com to1@example.net A subject\n3 user0@example.com to2@example.net payment received\n3 user3@example.com to2@example.net\n5 user0@example.com to3@example.net meeting notes\n1 user3@example.com to1@example.net status\n2 user0@example.com to3@example.net A subject\n1 user1@example.com to1@example.net A subject\n2 user0@example.com to2@example.net meeting notes\n5 user3@example.com to0@example.net status\n4 user3@example.com to3@example.net A subject\n",
+    "expectedOutput": "16\nsender: user0@example.com\n2 to2@example.net meeting notes\n2 to3@example.net A subject\n3 to2@example.net payment received\n5 to3@example.net meeting notes\nsender: user1@example.com\n1 to1@example.net A subject\n4 to1@example.net A subject\n4 to1@example.net payment received\nsender: user2@example.com\n2 to0@example.net payment received\nsender: user3@example.com\n1 to1@example.net status\n3 to2@example.net\n4 to3@example.net A subject\n5 to0@example.net status\n"
+  },
+  {
+    "input": "8\n3 user0@example.com to0@example.net status\n1 user0@example.com to0@example.net meeting notes\n4 user0@example.com to2@example.net meeting notes\n3 user0@example.com to2@example.net payment received\n1 user0@example.com to1@example.net\n5 user0@example.com to3@example.net payment received\n3 user0@example.com to3@example.net meeting notes\n1 user0@example.com to1@example.net payment received\n",
+    "expectedOutput": "9\nsender: user0@example.com\n1 to0@example.net meeting notes\n1 to1@example.net\n1 to1@example.net payment received\n3 to0@example.net status\n3 to2@example.net payment received\n3 to3@example.net meeting notes\n4 to2@example.net meeting notes\n5 to3@example.net payment received\n"
+  },
+  {
+    "input": "3\n2 user0@example.com to3@example.net status\n3 user1@example.com to2@example.net\n0 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "5\nsender: user0@example.com\n0 to1@example.net A subject\n2 to3@example.net status\nsender: user1@example.com\n3 to2@example.net\n"
+  },
+  {
+    "input": "5\n4 user1@example.com to1@example.net status\n0 user0@example.com to2@example.net meeting notes\n4 user1@example.com to1@example.net status\n3 user0@example.com to1@example.net payment received\n4 user1@example.com to1@example.net\n",
+    "expectedOutput": "7\nsender: user0@example.com\n0 to2@example.net meeting notes\n3 to1@example.net payment received\nsender: user1@example.com\n4 to1@example.net\n4 to1@example.net status\n4 to1@example.net status\n"
+  },
+  {
+    "input": "2\n3 user1@example.com to1@example.net status\n1 user2@example.com to0@example.net\n",
+    "expectedOutput": "4\nsender: user1@example.com\n3 to1@example.net status\nsender: user2@example.com\n1 to0@example.net\n"
+  },
+  {
+    "input": "11\n3 user0@example.com to2@example.net\n5 user1@example.com to0@example.net\n4 user1@example.com to2@example.net\n3 user3@example.com to3@example.net meeting notes\n4 user2@example.com to2@example.net meeting notes\n1 user0@example.com to1@example.net meeting notes\n4 user1@example.com to1@example.net status\n1 user2@example.com to1@example.net A subject\n5 user0@example.com to1@example.net A subject\n4 user3@example.com to3@example.net payment received\n0 user1@example.com to2@example.net\n",
+    "expectedOutput": "15\nsender: user0@example.com\n1 to1@example.net meeting notes\n3 to2@example.net\n5 to1@example.net A subject\nsender: user1@example.com\n0 to2@example.net\n4 to1@example.net status\n4 to2@example.net\n5 to0@example.net\nsender: user2@example.com\n1 to1@example.net A subject\n4 to2@example.net meeting notes\nsender: user3@example.com\n3 to3@example.net meeting notes\n4 to3@example.net payment received\n"
+  },
+  {
+    "input": "10\n5 user1@example.com to1@example.net meeting notes\n0 user0@example.com to1@example.net status\n2 user3@example.com to1@example.net\n3 user2@example.com to0@example.net\n2 user2@example.com to0@example.net status\n5 user4@example.com to3@example.net meeting notes\n0 user2@example.com to2@example.net payment received\n2 user4@example.com to2@example.net status\n3 user4@example.com to0@example.net status\n1 user1@example.com to1@example.net\n",
+    "expectedOutput": "15\nsender: user0@example.com\n0 to1@example.net status\nsender: user1@example.com\n1 to1@example.net\n5 to1@example.net meeting notes\nsender: user2@example.com\n0 to2@example.net payment received\n2 to0@example.net status\n3 to0@example.net\nsender: user3@example.com\n2 to1@example.net\nsender: user4@example.com\n2 to2@example.net status\n3 to0@example.net status\n5 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "2\n3 user1@example.com to0@example.net payment received\n4 user0@example.com to2@example.net A subject\n",
+    "expectedOutput": "4\nsender: user0@example.com\n4 to2@example.net A subject\nsender: user1@example.com\n3 to0@example.net payment received\n"
+  },
+  {
+    "input": "12\n0 user2@example.com to2@example.net A subject\n1 user2@example.com to1@example.net\n3 user1@example.com to2@example.net meeting notes\n0 user1@example.com to0@example.net status\n4 user1@example.com to0@example.net payment received\n5 user2@example.com to0@example.net status\n5 user1@example.com to3@example.net A subject\n2 user2@example.com to2@example.net meeting notes\n0 user1@example.com to0@example.net payment received\n5 user1@example.com to1@example.net status\n3 user1@example.com to1@example.net meeting notes\n0 user2@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "14\nsender: user1@example.com\n0 to0@example.net payment received\n0 to0@example.net status\n3 to1@example.net meeting notes\n3 to2@example.net meeting notes\n4 to0@example.net payment received\n5 to1@example.net status\n5 to3@example.net A subject\nsender: user2@example.com\n0 to2@example.net A subject\n0 to2@example.net meeting notes\n1 to1@example.net\n2 to2@example.net meeting notes\n5 to0@example.net status\n"
+  },
+  {
+    "input": "3\n5 user3@example.com to1@example.net A subject\n4 user2@example.com to0@example.net A subject\n5 user2@example.com to1@example.net payment received\n",
+    "expectedOutput": "5\nsender: user2@example.com\n4 to0@example.net A subject\n5 to1@example.net payment received\nsender: user3@example.com\n5 to1@example.net A subject\n"
+  },
+  {
+    "input": "11\n1 user0@example.com to3@example.net payment received\n1 user4@example.com to1@example.net payment received\n5 user2@example.com to1@example.net meeting notes\n0 user0@example.com to3@example.net meeting notes\n0 user0@example.com to2@example.net status\n5 user0@example.com to2@example.net payment received\n2 user2@example.com to2@example.net status\n4 user4@example.com to3@example.net meeting notes\n5 user3@example.com to2@example.net A subject\n5 user1@example.com to0@example.net status\n2 user1@example.com to1@example.net A subject\n",
+    "expectedOutput": "16\nsender: user0@example.com\n0 to2@example.net status\n0 to3@example.net meeting notes\n1 to3@example.net payment received\n5 to2@example.net payment received\nsender: user1@example.com\n2 to1@example.net A subject\n5 to0@example.net status\nsender: user2@example.com\n2 to2@example.net status\n5 to1@example.net meeting notes\nsender: user3@example.com\n5 to2@example.net A subject\nsender: user4@example.com\n1 to1@example.net payment received\n4 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "7\n1 user0@example.com to3@example.net A subject\n1 user0@example.com to2@example.net status\n0 user0@example.com to2@example.net A subject\n3 user1@example.com to1@example.net status\n2 user1@example.com to3@example.net status\n5 user1@example.com to3@example.net\n3 user1@example.com to0@example.net status\n",
+    "expectedOutput": "9\nsender: user0@example.com\n0 to2@example.net A subject\n1 to2@example.net status\n1 to3@example.net A subject\nsender: user1@example.com\n2 to3@example.net status\n3 to0@example.net status\n3 to1@example.net status\n5 to3@example.net\n"
+  },
+  {
+    "input": "2\n2 user1@example.com to0@example.net\n2 user2@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "4\nsender: user1@example.com\n2 to0@example.net\nsender: user2@example.com\n2 to3@example.net meeting notes\n"
+  },
+  {
+    "input": "11\n0 user1@example.com to0@example.net A subject\n2 user1@example.com to0@example.net payment received\n4 user0@example.com to3@example.net\n0 user1@example.com to1@example.net meeting notes\n3 user1@example.com to1@example.net A subject\n1 user0@example.com to1@example.net meeting notes\n5 user0@example.com to3@example.net meeting notes\n0 user0@example.com to1@example.net\n1 user0@example.com to2@example.net payment received\n3 user0@example.com to3@example.net\n3 user0@example.com to2@example.net\n",
+    "expectedOutput": "13\nsender: user0@example.com\n0 to1@example.net\n1 to1@example.net meeting notes\n1 to2@example.net payment received\n3 to2@example.net\n3 to3@example.net\n4 to3@example.net\n5 to3@example.net meeting notes\nsender: user1@example.com\n0 to0@example.net A subject\n0 to1@example.net meeting notes\n2 to0@example.net payment received\n3 to1@example.net A subject\n"
+  },
+  {
+    "input": "7\n0 user3@example.com to2@example.net A subject\n3 user0@example.com to3@example.net\n5 user3@example.com to0@example.net status\n2 user3@example.com to0@example.net A subject\n1 user3@example.com to1@example.net\n3 user1@example.com to3@example.net\n5 user2@example.com to1@example.net\n",
+    "expectedOutput": "11\nsender: user0@example.com\n3 to3@example.net\nsender: user1@example.com\n3 to3@example.net\nsender: user2@example.com\n5 to1@example.net\nsender: user3@example.com\n0 to2@example.net A subject\n1 to1@example.net\n2 to0@example.net A subject\n5 to0@example.net status\n"
+  },
+  {
+    "input": "9\n5 user0@example.com to0@example.net status\n3 user0@example.com to3@example.net A subject\n0 user0@example.com to0@example.net meeting notes\n3 user0@example.com to3@example.net status\n1 user0@example.com to1@example.net meeting notes\n0 user0@example.com to1@example.net A subject\n2 user0@example.com to2@example.net\n1 user0@example.com to1@example.net\n3 user0@example.com to3@example.net payment received\n",
+    "expectedOutput": "10\nsender: user0@example.com\n0 to0@example.net meeting notes\n0 to1@example.net A subject\n1 to1@example.net\n1 to1@example.net meeting notes\n2 to2@example.net\n3 to3@example.net A subject\n3 to3@example.net payment received\n3 to3@example.net status\n5 to0@example.net status\n"
+  },
+  {
+    "input": "3\n3 user0@example.com to1@example.net A subject\n5 user0@example.com to1@example.net payment received\n2 user1@example.com to3@example.net A subject\n",
+    "expectedOutput": "5\nsender: user0@example.com\n3 to1@example.net A subject\n5 to1@example.net payment received\nsender: user1@example.com\n2 to3@example.net A subject\n"
+  },
+  {
+    "input": "2\n5 user0@example.com to1@example.net\n0 user2@example.com to0@example.net payment received\n",
+    "expectedOutput": "4\nsender: user0@example.com\n5 to1@example.net\nsender: user2@example.com\n0 to0@example.net payment received\n"
+  },
+  {
+    "input": "9\n5 user1@example.com to0@example.net meeting notes\n5 user2@example.com to1@example.net meeting notes\n2 user0@example.com to2@example.net A subject\n5 user1@example.com to0@example.net status\n3 user2@example.com to1@example.net A subject\n0 user0@example.com to1@example.net A subject\n3 user1@example.com to0@example.net status\n0 user1@example.com to1@example.net\n0 user2@example.com to0@example.net\n",
+    "expectedOutput": "12\nsender: user0@example.com\n0 to1@example.net A subject\n2 to2@example.net A subject\nsender: user1@example.com\n0 to1@example.net\n3 to0@example.net status\n5 to0@example.net meeting notes\n5 to0@example.net status\nsender: user2@example.com\n0 to0@example.net\n3 to1@example.net A subject\n5 to1@example.net meeting notes\n"
+  },
+  {
+    "input": "10\n1 user0@example.com to1@example.net meeting notes\n0 user0@example.com to2@example.net\n5 user0@example.com to2@example.net payment received\n2 user0@example.com to3@example.net status\n5 user0@example.com to0@example.net\n4 user0@example.com to1@example.net\n5 user0@example.com to3@example.net payment received\n3 user0@example.com to2@example.net meeting notes\n5 user0@example.com to0@example.net A subject\n0 user0@example.com to1@example.net A subject\n",
+    "expectedOutput": "11\nsender: user0@example.com\n0 to1@example.net A subject\n0 to2@example.net\n1 to1@example.net meeting notes\n2 to3@example.net status\n3 to2@example.net meeting notes\n4 to1@example.net\n5 to0@example.net\n5 to0@example.net A subject\n5 to2@example.net payment received\n5 to3@example.net payment received\n"
+  },
+  {
+    "input": "12\n2 user4@example.com to1@example.net A subject\n5 user1@example.com to0@example.net\n5 user4@example.com to0@example.net meeting notes\n1 user2@example.com to2@example.net payment received\n4 user2@example.com to2@example.net meeting notes\n0 user0@example.com to1@example.net meeting notes\n3 user0@example.com to0@example.net meeting notes\n0 user0@example.com to0@example.net A subject\n0 user4@example.com to3@example.net status\n0 user0@example.com to0@example.net A subject\n2 user3@example.com to1@example.net\n0 user1@example.com to1@example.net\n",
+    "expectedOutput": "17\nsender: user0@example.com\n0 to0@example.net A subject\n0 to0@example.net A subject\n0 to1@example.net meeting notes\n3 to0@example.net meeting notes\nsender: user1@example.com\n0 to1@example.net\n5 to0@example.net\nsender: user2@example.com\n1 to2@example.net payment received\n4 to2@example.net meeting notes\nsender: user3@example.com\n2 to1@example.net\nsender: user4@example.com\n0 to3@example.net status\n2 to1@example.net A subject\n5 to0@example.net meeting notes\n"
+  },
+  {
+    "input": "7\n2 user2@example.com to0@example.net status\n2 user2@example.com to1@example.net payment received\n5 user1@example.com to0@example.net meeting notes\n0 user2@example.com to2@example.net status\n0 user2@example.com to2@example.net\n4 user0@example.com to1@example.net meeting notes\n0 user2@example.com to3@example.net meeting notes\n",
+    "expectedOutput": "10\nsender: user0@example.com\n4 to1@example.net meeting notes\nsender: user1@example.com\n5 to0@example.net meeting notes\nsender: user2@example.com\n0 to2@example.net\n0 to2@example.net status\n0 to3@example.net meeting notes\n2 to0@example.net status\n2 to1@example.net payment received\n"
+  },
+  {
+    "input": "11\n3 user1@example.com to3@example.net meeting notes\n0 user2@example.com to2@example.net A subject\n1 user0@example.com to0@example.net meeting notes\n0 user0@example.com to3@example.net payment received\n4 user3@example.com to2@example.net meeting notes\n5 user2@example.com to1@example.net\n5 user2@example.com to0@example.net meeting notes\n3 user3@example.com to3@example.net payment received\n2 user2@example.com to1@example.net\n3 user0@example.com to0@example.net meeting notes\n5 user2@example.com to3@example.net A subject\n",
+    "expectedOutput": "15\nsender: user0@example.com\n0 to3@example.net payment received\n1 to0@example.net meeting notes\n3 to0@example.net meeting notes\nsender: user1@example.com\n3 to3@example.net meeting notes\nsender: user2@example.com\n0 to2@example.net A subject\n2 to1@example.net\n5 to0@example.net meeting notes\n5 to1@example.net\n5 to3@example.net A subject\nsender: user3@example.com\n3 to3@example.net payment received\n4 to2@example.net meeting notes\n"
+  },
+  {
+    "input": "10\n5 user1@example.com to3@example.net A subject\n5 user2@example.com to0@example.net meeting notes\n1 user3@example.com to3@example.net A subject\n5 user1@example.com to1@example.net status\n4 user3@example.com to2@example.net\n4 user1@example.com to3@example.net\n0 user1@example.com to1@example.net A subject\n2 user3@example.com to1@example.net status\n2 user3@example.com to1@example.net\n1 user1@example.com to3@example.net payment received\n",
+    "expectedOutput": "13\nsender: user1@example.com\n0 to1@example.net A subject\n1 to3@example.net payment received\n4 to3@example.net\n5 to1@example.net status\n5 to3@example.net A subject\nsender: user2@example.com\n5 to0@example.net meeting notes\nsender: user3@example.com\n1 to3@example.net A subject\n2 to1@example.net\n2 to1@example.net status\n4 to2@example.net\n"
+  },
+  {
+    "input": "11\n5 user1@example.com to1@example.net payment received\n2 user1@example.com to2@example.net status\n3 user0@example.com to1@example.net\n2 user0@example.com to3@example.net\n4 user0@example.com to0@example.net payment received\n3 user0@example.com to1@example.net payment received\n2 user1@example.com to0@example.net meeting notes\n1 user0@example.com to2@example.net payment received\n4 user0@example.com to0@example.net meeting notes\n3 user1@example.com to1@example.net payment received\n0 user0@example.com to3@example.net payment received\n",
+    "expectedOutput": "13\nsender: user0@example.com\n0 to3@example.net payment received\n1 to2@example.net payment received\n2 to3@example.net\n3 to1@example.net\n3 to1@example.net payment received\n4 to0@example.net meeting notes\n4 to0@example.net payment received\nsender: user1@example.com\n2 to0@example.net meeting notes\n2 to2@example.net status\n3 to1@example.net payment received\n5 to1@example.net payment received\n"
+  },
+  {
+    "input": "2\n0 user1@example.com to0@example.net A subject\n2 user0@example.com to3@example.net A subject\n",
+    "expectedOutput": "4\nsender: user0@example.com\n2 to3@example.net A subject\nsender: user1@example.com\n0 to0@example.net A subject\n"
+  },
+  {
+    "input": "10\n4 user0@example.com to1@example.net payment received\n0 user0@example.com to0@example.net payment received\n0 user0@example.com to1@example.net meeting notes\n3 user0@example.com to1@example.net A subject\n0 user0@example.com to1@example.net payment received\n0 user0@example.com to0@example.net A subject\n0 user0@example.com to0@example.net payment received\n4 user0@example.com to1@example.net A subject\n5 user0@example.com to1@example.net meeting notes\n3 user0@example.com to3@example.net status\n",
+    "expectedOutput": "11\nsender: user0@example.com\n0 to0@example.net A subject\n0 to0@example.net payment received\n0 to0@example.net payment received\n0 to1@example.net meeting notes\n0 to1@example.net payment received\n3 to1@example.net A subject\n3 to3@example.net status\n4 to1@example.net A subject\n4 to1@example.net payment received\n5 to1@example.net meeting notes\n"
+  },
+  {
+    "input": "5\n4 user1@example.com to2@example.net payment received\n5 user3@example.com to0@example.net payment received\n5 user1@example.com to3@example.net status\n5 user0@example.com to1@example.net meeting notes\n2 user0@example.com to3@example.net status\n",
+    "expectedOutput": "8\nsender: user0@example.com\n2 to3@example.net status\n5 to1@example.net meeting notes\nsender: user1@example.com\n4 to2@example.net payment received\n5 to3@example.net status\nsender: user3@example.com\n5 to0@example.net payment received\n"
+  },
+  {
+    "input": "2\n2 user3@example.com to3@example.net A subject\n3 user2@example.com to2@example.net payment received\n",
+    "expectedOutput": "4\nsender: user2@example.com\n3 to2@example.net payment received\nsender: user3@example.com\n2 to3@example.net A subject\n"
+  },
+  {
+    "input": "10\n1 user1@example.com to3@example.net payment received\n1 user0@example.com to3@example.net meeting notes\n1 user1@example.com to0@example.net payment received\n3 user0@example.com to2@example.net status\n1 user0@example.com to0@example.net\n5 user0@example.com to1@example.net A subject\n5 user1@example.com to0@example.net\n2 user1@example.com to2@example.net status\n2 user0@example.com to0@example.net status\n4 user1@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "12\nsender: user0@example.com\n1 to0@example.net\n1 to3@example.net meeting notes\n2 to0@example.net status\n3 to2@example.net status\n5 to1@example.net A subject\nsender: user1@example.com\n1 to0@example.net payment received\n1 to3@example.net payment received\n2 to2@example.net status\n4 to2@example.net meeting notes\n5 to0@example.net\n"
+  },
+  {
+    "input": "7\n1 user0@example.com to3@example.net meeting notes\n5 user2@example.com to1@example.net\n3 user0@example.com to2@example.net meeting notes\n4 user2@example.com to3@example.net payment received\n1 user2@example.com to1@example.net A subject\n5 user0@example.com to3@example.net meeting notes\n3 user3@example.com to1@example.net status\n",
+    "expectedOutput": "10\nsender: user0@example.com\n1 to3@example.net meeting notes\n3 to2@example.net meeting notes\n5 to3@example.net meeting notes\nsender: user2@example.com\n1 to1@example.net A subject\n4 to3@example.net payment received\n5 to1@example.net\nsender: user3@example.com\n3 to1@example.net status\n"
+  },
+  {
+    "input": "12\n4 user4@example.com to3@example.net meeting notes\n0 user3@example.com to2@example.net payment received\n5 user2@example.com to1@example.net payment received\n2 user3@example.com to3@example.net\n3 user4@example.com to2@example.net A subject\n5 user0@example.com to2@example.net A subject\n1 user3@example.com to1@example.net meeting notes\n0 user1@example.com to0@example.net A subject\n0 user4@example.com to3@example.net\n2 user3@example.com to1@example.net\n4 user2@example.com to0@example.net status\n4 user2@example.com to2@example.net meeting notes\n",
+    "expectedOutput": "17\nsender: user0@example.com\n5 to2@example.net A subject\nsender: user1@example.com\n0 to0@example.net A subject\nsender: user2@example.com\n4 to0@example.net status\n4 to2@example.net meeting notes\n5 to1@example.net payment received\nsender: user3@example.com\n0 to2@example.net payment received\n1 to1@example.net meeting notes\n2 to1@example.net\n2 to3@example.net\nsender: user4@example.com\n0 to3@example.net\n3 to2@example.net A subject\n4 to3@example.net meeting notes\n"
+  }
+]

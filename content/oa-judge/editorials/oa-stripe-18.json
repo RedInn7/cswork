@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-18",
+  "title": "生成每周工作时段内的可用时间槽",
+  "explanation": "## 思路\n\n逐日取出对应星期的工作时段，从时段起点按 30 分钟步长枚举候选；仅保留起点不早于给定范围起点且终点不晚于范围终点的完整槽，并去重排序。\n\n## 正确性\n\n任何有效时间槽都属于某个工作时段，且相对该时段起点是 30 分钟的整数倍，因此枚举必会检查它。边界过滤恰好表达槽完整包含于给定范围。反过来，枚举后通过两条边界检查的槽满足全部条件。集合去重处理重叠/重复时段，排序给出要求的时间顺序。\n\n## 复杂度\n\n设日期数为 D、工作时段数为 w、候选槽数为 s。时间 O(48Dw+s log s)，空间 O(s)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from datetime import datetime,timedelta\ndef solve(raw):\n    lines=raw.splitlines(); start=datetime.strptime(lines[0],\"%Y-%m-%d %H:%M\"); end=datetime.strptime(lines[1],\"%Y-%m-%d %H:%M\")\n    count=int(lines[2]); windows={i:[] for i in range(7)}\n    for line in lines[3:3+count]:\n        weekday,a,b=line.split(); windows[int(weekday)].append((a,b))\n    found=set(); day=start.date()\n    while day<=end.date():\n        for a,b in windows[day.weekday()]:\n            base=datetime.combine(day,datetime.strptime(a,\"%H:%M\").time())\n            finish=datetime.combine(day,datetime.strptime(b,\"%H:%M\").time()) if b!=\"24:00\" else datetime.combine(day+timedelta(days=1),datetime.min.time())\n            cur=base\n            while cur+timedelta(minutes=30)<=finish:\n                nxt=cur+timedelta(minutes=30)\n                if cur>=start and nxt<=end: found.add(cur.strftime(\"%Y-%m-%d %H:%M\")+\",\"+nxt.strftime(\"%Y-%m-%d %H:%M\"))\n                cur=nxt\n        day+=timedelta(days=1)\n    ordered=sorted(found)\n    return str(len(ordered))+(\"\\n\"+\"\\n\".join(ordered) if ordered else \"\")\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/stripe#18-generate-available-time-slots",
+  "sourceContentHash": "4294161ba7b0f971a39cf0039be7a4bb123f09ba7faf7683f4a975b1486237ba",
+  "author": "CSWork"
+}
