@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不包含查询下标",
+    "code": "def solve(data):\n    it=iter(map(str,data.split())); n=int(next(it)); q=int(next(it)); bits=next(it)\n    zero=[0]*(n+1)\n    for i,ch in enumerate(bits): zero[i+1]=zero[i]+(ch=='0')\n    flipped=False; answer=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=zero[i]\n            answer.append(str(i+1-z if flipped else z))\n    return ' '.join(answer)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "翻转后仍返回原计数",
+    "code": "def solve(data):\n    it=iter(map(str,data.split())); n=int(next(it)); q=int(next(it)); bits=next(it)\n    zero=[0]*(n+1)\n    for i,ch in enumerate(bits): zero[i+1]=zero[i]+(ch=='0')\n    flipped=False; answer=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=zero[i+1]\n            answer.append(str(z))\n    return ' '.join(answer)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

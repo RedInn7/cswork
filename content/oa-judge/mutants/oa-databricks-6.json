@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误地把右端点 x 算入区间",
+    "code": "def solve(data):\n    from bisect import bisect_left\n    v=list(map(int,data.split())); q=v[0]; p=1; ops=[]; coords=[]\n    for _ in range(q):\n        kind=v[p]; size=2 if kind==1 else 3; op=tuple(v[p:p+size]); p+=size; ops.append(op)\n        if kind==1: coords.append(op[1])\n    coords.sort(); bit=[0]*(len(coords)+1)\n    def prefix(i):\n        total=0\n        while i: total+=bit[i]; i-=i&-i\n        return total\n    out=[]\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit): bit[i]+=1; i+=i&-i\n        else:\n            _,x,size=op; left=bisect_left(coords,x-size); right=bisect_left(coords,x+1)\n            out.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略区间左端障碍",
+    "code": "def solve(data):\n    from bisect import bisect_left\n    v=list(map(int,data.split())); q=v[0]; p=1; ops=[]; coords=[]\n    for _ in range(q):\n        kind=v[p]; size=2 if kind==1 else 3; op=tuple(v[p:p+size]); p+=size; ops.append(op)\n        if kind==1: coords.append(op[1])\n    coords.sort(); bit=[0]*(len(coords)+1)\n    def prefix(i):\n        total=0\n        while i: total+=bit[i]; i-=i&-i\n        return total\n    out=[]\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit): bit[i]+=1; i+=i&-i\n        else:\n            _,x,size=op; left=bisect_left(coords,x-size+1); right=bisect_left(coords,x)\n            out.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

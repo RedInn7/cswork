@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-5",
+  "title": "可旋转矩形逐个装入查询框",
+  "explanation": "## 思路\n\n把矩形与查询框的边都按短边、长边规范化。维护所有已存矩形短边最大值和长边最大值；查询框能容纳全部矩形，当且仅当这两个最大值分别不超过查询框的对应边。\n\n## 正确性证明\n\n旋转允许任意矩形以短边对短边、长边对长边比较。每个已存矩形可装入查询框，当且仅当其短边≤查询短边且长边≤查询长边。要让所有已存矩形满足这两个条件，分别等价于保存短边最大值和长边最大值均不超过查询边；保存操作持续维护的最大值正好是全体历史矩形的最大值。\n\n## 复杂度\n\n时间 O(q)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    v=list(map(int,data.split())); q=v[0]; p=1; short_max=long_max=0; out=[]\n    for _ in range(q):\n        kind,a,b=v[p:p+3]; p+=3; short,long=sorted((a,b))\n        if kind==0: short_max=max(short_max,short); long_max=max(long_max,long)\n        else: out.append('1' if short_max<=short and long_max<=long else '0')\n    return '\\n'.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#5-rectangle-fit-in-box-with-rotation",
+  "sourceContentHash": "04165223f4b81b7e5093f62aff316048b02af86ba78fa1ea97cd1bf436e4b72c",
+  "author": "CSWork"
+}

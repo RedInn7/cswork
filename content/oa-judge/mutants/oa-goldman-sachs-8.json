@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略转向指令",
+    "code": "def solve(raw):\n    data=raw.split();n=int(data[0]);answers=[]\n    for command in data[1:1+n]:answers.append('YES' if command.count('G')==0 else 'NO')\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查是否改变朝向",
+    "code": "def solve(raw):\n    data=raw.split();n=int(data[0]);answers=[]\n    for command in data[1:1+n]:\n        direction=0\n        for step in command:\n            if step=='L':direction=(direction+3)%4\n            elif step=='R':direction=(direction+1)%4\n        answers.append('YES' if direction!=0 else 'NO')\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

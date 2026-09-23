@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 800,
-    "awaiting_sandbox": 0,
-    "blocked": 173,
-    "unreviewed": 661
+    "awaiting_sandbox": 9,
+    "blocked": 200,
+    "unreviewed": 625
   },
   "items": [
     {
@@ -6329,142 +6329,177 @@
     {
       "id": "oa-stripe-1",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "多阶段负载均衡需求细节不足，且不同阶段共享状态的淘汰/重路由规则不完整。"
     },
     {
       "id": "oa-stripe-2",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "依赖交易样本与异常值等统计定义，原题未提供完整可复现数据协议。"
     },
     {
       "id": "oa-stripe-3",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "聚类目标、特征距离与结果要求不充分。"
     },
     {
       "id": "oa-stripe-4",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "多阶段请求路由的状态和健康迁移规则不完整。"
     },
     {
       "id": "oa-stripe-5",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "依赖外部 cuisine 数据/Pandas 表结构，题面未给数据集。"
     },
     {
       "id": "oa-stripe-6",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "需要图像数据与训练/推理环境。"
     },
     {
       "id": "oa-stripe-7",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "选择题不是代码评测题。"
     },
     {
       "id": "oa-stripe-8",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "卡号混淆含多阶段规则但可见题面缺少完整输入约束。"
     },
     {
       "id": "oa-stripe-9",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "卡号混淆依赖前置题，不能独立确认规则。"
     },
     {
       "id": "oa-stripe-10",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "卡号混淆依赖前置题，不能独立确认规则。"
     },
     {
       "id": "oa-stripe-11",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "卡号混淆依赖前置题，不能独立确认规则。"
     },
     {
       "id": "oa-stripe-12",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "用量块计费及计划切换的 allowance 舍入规则不充分，暂不补猜。"
     },
     {
       "id": "oa-stripe-13",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "stripe-next",
+      "reason": "题意可整理为确定的标准输入输出；输入协议与必要边界约定已在本站题面明示。"
     },
     {
       "id": "oa-stripe-14",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "仅作为 oa-stripe-17 合并状态机的组成部分，不重复发布为独立题目。"
     },
     {
       "id": "oa-stripe-15",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "仅作为 oa-stripe-17 合并状态机的组成部分，不重复发布为独立题目。"
     },
     {
       "id": "oa-stripe-16",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "仅作为 oa-stripe-17 合并状态机的组成部分，不重复发布为独立题目。"
     },
     {
       "id": "oa-stripe-17",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "stripe-next",
+      "reason": "题意可整理为确定的标准输入输出；输入协议与必要边界约定已在本站题面明示。"
     },
     {
       "id": "oa-stripe-18",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "stripe-next",
+      "reason": "题意可整理为确定的标准输入输出；输入协议与必要边界约定已在本站题面明示。"
     },
     {
       "id": "oa-stripe-19",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "命令协议对时间戳、状态转换及退款细节与 Payment Intent 四部分内容不一致，先用原站互相关联的第1–4部分作为完整状态机。"
     },
     {
       "id": "oa-stripe-20",
       "company": "stripe",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "Haversine 最近整数及浮点边界在跨语言评测中可能不稳定；优先选择完全离散题目。"
     },
     {
       "id": "oa-databricks-1",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始题面写“不超过两次交换”且含 0，但整理页改成恰好一次、相同位数；交换产生前导零是否去掉未定义，样例也不能判定，暂停。"
     },
     {
       "id": "oa-databricks-2",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始对角线方向文字、题解轨迹和两个公开样例的权重排序结果互相冲突，无法在不擅自改题的情况下确定答案，暂停。"
     },
     {
       "id": "oa-databricks-3",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "databricks-next",
+      "reason": "逐题核对 OA Master 固定提交 e66f809 的 OA LIST/Databricks_OA/007_image.txt（Git blob 30eb891ece4addf21fa87e9adfb4382bad9e05d6）及 catalog 原题哈希 a1ea08656410bc1089d51640040823110281eb87619ae0470ca649979b5bbc54；题面和标准输入输出经本站整理，163 个独立小输入 oracle、边界测试与两个正常退出错误程序已验证；尚未提交真实评测沙箱。"
     },
     {
       "id": "oa-databricks-4",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "动态等差三元组未说明 diff 是否允许为 0，也未定义同值位置三元组的计数方式；现有增量解在 diff=0 时不能直接套用，暂停。"
     },
     {
       "id": "oa-databricks-5",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "databricks-next",
+      "reason": "逐题核对 OA Master 固定提交 e66f809 的 OA LIST/Databricks_OA/011_QQ_1738388130748.txt（Git blob 2f0a399f52a3bf4bcab00cf551f35969e079f01e）及 catalog 原题哈希 04165223f4b81b7e5093f62aff316048b02af86ba78fa1ea97cd1bf436e4b72c；题面和标准输入输出经本站整理，163 个独立小输入 oracle、边界测试与两个正常退出错误程序已验证；尚未提交真实评测沙箱。"
     },
     {
       "id": "oa-databricks-6",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "databricks-next",
+      "reason": "逐题核对 OA Master 固定提交 e66f809 的 OA LIST/Databricks_OA/016_image.txt（Git blob c4718cd32554183b2a89cf93f3d4ba2fff324591）及 catalog 原题哈希 84f37de3d461637c5c2666747b64eee7c7e55739b99b7afb57bfb70599bdf5ce；题面和标准输入输出经本站整理，163 个独立小输入 oracle、边界测试与两个正常退出错误程序已验证；尚未提交真实评测沙箱。"
     },
     {
       "id": "oa-databricks-7",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "databricks-next",
+      "reason": "逐题核对 OA Master 固定提交 e66f809 的 OA LIST/Databricks_OA/019_image.txt（Git blob 1feeed6d4662cbd7ab31ccec76070c01a6c274a2）及 catalog 原题哈希 fda7ef9da5511928ad583deb83312919a72396b13e8a61a606ce9aa8518e4633；题面和标准输入输出经本站整理，163 个独立小输入 oracle、边界测试与两个正常退出错误程序已验证；尚未提交真实评测沙箱。"
     },
     {
       "id": "oa-databricks-8",
       "company": "databricks",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "圈速并列淘汰后若未淘汰人数不足，最终顺序规则缺失；一份原例的圈速与其淘汰解释也不一致，暂停。"
     },
     {
       "id": "oa-databricks-9",
@@ -7984,42 +8019,52 @@
     {
       "id": "oa-goldman-sachs-1",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "源站查询词示例存在笔误；且原 n/q 上界允许输出超过当前判题器 64MB 上限，不能缩窄原约束或宣称全域可判，暂缓。"
     },
     {
       "id": "oa-goldman-sachs-2",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "约束文本损坏（字符/频次约束无法可靠恢复），不擅自补全原始输入范围。"
     },
     {
       "id": "oa-goldman-sachs-3",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "最大长度约束原文损坏为“1 5”，无法据此确认输入上限。"
     },
     {
       "id": "oa-goldman-sachs-4",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "约束中的 n、p 与源函数输入结构关系不清，避免擅自定义原题范围。"
     },
     {
       "id": "oa-goldman-sachs-5",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "goldman-sachs-next",
+      "reason": "题意与 n≤5000、小写字母域明确。原文约束的“5000each”仅排版缺空格，结合变量 s 可无歧义恢复为长度上限与字符域；本站补充为单行字符串输入及整数输出。"
     },
     {
       "id": "oa-goldman-sachs-6",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "本次首批最多四题，按编号优先级暂缓；题面本身未发现阻断性歧义。"
     },
     {
       "id": "oa-goldman-sachs-7",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "输入字符约束损坏，且原文未给可复现的编码样例/输入协议，暂不猜编码规则。"
     },
     {
       "id": "oa-goldman-sachs-8",
       "company": "goldman-sachs",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "goldman-sachs-next",
+      "reason": "命令语义、字符域与数量/长度上限明确。本站补充 n 行命令串输入和按顺序逐行 YES/NO 输出。"
     },
     {
       "id": "oa-goldman-sachs-9",

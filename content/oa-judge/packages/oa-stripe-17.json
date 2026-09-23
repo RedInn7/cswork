@@ -1,0 +1,252 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-stripe-17",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Payment Intent 状态机与限时退款",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Stripe",
+      "模拟",
+      "状态机"
+    ],
+    "description": "执行 Stripe 原站相互关联的 Payment Intent 第 1–4 部分命令。Intent 状态为 REQUIRES_ACTION、PROCESSING、COMPLETED；非法状态转换或无效创建/修改均忽略。每条命令时间戳严格递增。退款仅能对已完成且未退款的 Intent 成功，并按商户退款时限判定。\n\n输入格式、样例与评测数据由 CSWork 整理编写。",
+    "input": "第一行 q（1..200000），随后 q 行命令：`timestamp INIT merchant starting_balance [refund_limit]`、`timestamp CREATE intent merchant amount`、`timestamp ATTEMPT intent`、`timestamp SUCCEED intent`、`timestamp FAIL intent`、`timestamp UPDATE intent new_amount` 或 `timestamp REFUND intent`。ID 为不含空白的字符串。余额、金额、退款时限为有符号 64 位整数。商户首次 INIT 生效；重复商户、重复 Intent ID、未知商户、负创建金额均忽略。退款时限缺省或为负表示不限时，0 表示不允许退款，正数 n 表示退款时间戳须不晚于成功时间戳+n。",
+    "output": "先输出已初始化商户数；之后按商户 ID 字典序逐行输出 `merchant_id balance`。",
+    "explanation": "按上述规则处理输入；思路、正确性证明和复杂度见配套题解。",
+    "hints": [
+      "用哈希表分别保存商户余额/退款时限与 Intent 的商户、金额、状态、退款标记、成功时间。按时间顺序扫描命令，仅在当前状态符合转换条件时更新；最后排序商户并输出。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "5\n1 INIT m1 0\n2 CREATE p1 m1 50\n3 UPDATE p1 100\n4 ATTEMPT p1\n5 SUCCEED p1\n",
+      "expectedOutput": "1\nm1 100\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "9\n1 INIT m1 0 5\n2 CREATE p1 m1 100\n3 CREATE p2 m1 50\n4 ATTEMPT p1\n5 ATTEMPT p2\n8 SUCCEED p1\n10 SUCCEED p2\n11 REFUND p1\n16 REFUND p2\n",
+      "expectedOutput": "1\nm1 50\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "11\n1 INIT m2 10 -1\n2 INIT m1 5 0\n3 CREATE p m2 20\n4 ATTEMPT p\n5 FAIL p\n6 UPDATE p 30\n7 ATTEMPT p\n8 SUCCEED p\n9 SUCCEED p\n10 REFUND p\n11 REFUND p\n",
+      "expectedOutput": "2\nm1 5\nm2 10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "5\n1 INIT m 0 5\n2 CREATE p m 10\n3 ATTEMPT p\n4 SUCCEED p\n9 REFUND p\n",
+      "expectedOutput": "1\nm 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "5\n1 INIT m 0 5\n2 CREATE p m 10\n3 ATTEMPT p\n4 SUCCEED p\n10 REFUND p\n",
+      "expectedOutput": "1\nm 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "5\n1 INIT m 0 0\n2 CREATE p m 0\n3 ATTEMPT p\n4 SUCCEED p\n5 REFUND p\n",
+      "expectedOutput": "1\nm 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "5\n1 INIT m 0 -1\n2 CREATE p m 7\n3 ATTEMPT p\n4 SUCCEED p\n100 REFUND p\n",
+      "expectedOutput": "1\nm 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "15\n1 INIT m0 48 20\n2 INIT m1 42 0\n3 INIT m2 78 20\n4 UPDATE p4 40\n5 REFUND p0\n6 ATTEMPT p4\n7 ATTEMPT p5\n8 UPDATE p5 60\n9 CREATE p1 m2 73\n10 ATTEMPT p5\n11 SUCCEED p0\n12 REFUND p1\n13 CREATE p1 m2 15\n14 SUCCEED p3\n15 SUCCEED p5\n",
+      "expectedOutput": "3\nm0 48\nm1 42\nm2 78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "16\n1 INIT m0 43 -1\n2 INIT m1 39 20\n3 INIT m2 90 0\n4 SUCCEED p0\n5 ATTEMPT p4\n6 UPDATE p2 98\n7 ATTEMPT p4\n8 SUCCEED p1\n9 UPDATE p2 51\n10 ATTEMPT p2\n11 CREATE p4 m2 67\n12 FAIL p3\n13 CREATE p5 m1 1\n14 UPDATE p0 39\n15 SUCCEED p3\n16 SUCCEED p2\n",
+      "expectedOutput": "3\nm0 43\nm1 39\nm2 90\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "23\n1 INIT m0 33 4\n2 INIT m1 49 4\n3 INIT m2 44 20\n4 ATTEMPT p3\n5 CREATE p1 m2 -1\n6 CREATE p0 m2 61\n7 UPDATE p0 58\n8 FAIL p4\n9 CREATE p0 m0 1\n10 SUCCEED p5\n11 ATTEMPT p5\n12 UPDATE p3 51\n13 SUCCEED p0\n14 UPDATE p4 13\n15 SUCCEED p3\n16 SUCCEED p0\n17 SUCCEED p4\n18 ATTEMPT p5\n19 REFUND p1\n20 REFUND p3\n21 SUCCEED p0\n22 ATTEMPT p5\n23 SUCCEED p2\n",
+      "expectedOutput": "3\nm0 33\nm1 49\nm2 44\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "22\n1 INIT m0 5 20\n2 INIT m1 81 -1\n3 INIT m2 38 20\n4 SUCCEED p1\n5 SUCCEED p2\n6 SUCCEED p1\n7 REFUND p2\n8 SUCCEED p3\n9 REFUND p1\n10 ATTEMPT p4\n11 REFUND p2\n12 ATTEMPT p5\n13 FAIL p4\n14 UPDATE p1 76\n15 ATTEMPT p4\n16 SUCCEED p2\n17 SUCCEED p4\n18 CREATE p2 m2 72\n19 FAIL p4\n20 REFUND p0\n21 CREATE p0 m2 93\n22 ATTEMPT p0\n",
+      "expectedOutput": "3\nm0 5\nm1 81\nm2 38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "14\n1 INIT m0 20 20\n2 INIT m1 70 0\n3 INIT m2 67 0\n4 CREATE p5 m2 43\n5 FAIL p0\n6 UPDATE p4 17\n7 ATTEMPT p3\n8 CREATE p4 m0 64\n9 ATTEMPT p5\n10 UPDATE p3 24\n11 SUCCEED p0\n12 UPDATE p4 16\n13 UPDATE p0 22\n14 ATTEMPT p3\n",
+      "expectedOutput": "3\nm0 20\nm1 70\nm2 67\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "19\n1 INIT m0 81 20\n2 INIT m1 71 0\n3 INIT m2 61 4\n4 REFUND p4\n5 FAIL p0\n6 UPDATE p4 50\n7 FAIL p4\n8 FAIL p3\n9 UPDATE p5 85\n10 UPDATE p2 55\n11 CREATE p2 m2 77\n12 UPDATE p4 61\n13 CREATE p1 m1 73\n14 FAIL p5\n15 CREATE p0 m1 45\n16 UPDATE p0 -1\n17 FAIL p3\n18 UPDATE p0 64\n19 REFUND p5\n",
+      "expectedOutput": "3\nm0 81\nm1 71\nm2 61\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "11\n1 INIT m0 -15 20\n2 INIT m1 -14 4\n3 INIT m2 6 4\n4 FAIL p1\n5 FAIL p4\n6 CREATE p1 m1 45\n7 SUCCEED p1\n8 UPDATE p3 21\n9 CREATE p4 m0 42\n10 SUCCEED p1\n11 UPDATE p5 9\n",
+      "expectedOutput": "3\nm0 -15\nm1 -14\nm2 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "19\n1 INIT m0 46 4\n2 INIT m1 95 20\n3 INIT m2 43 -1\n4 REFUND p5\n5 CREATE p3 m2 66\n6 REFUND p0\n7 CREATE p4 m0 4\n8 CREATE p5 m1 62\n9 SUCCEED p3\n10 FAIL p3\n11 REFUND p3\n12 CREATE p0 m0 4\n13 ATTEMPT p4\n14 REFUND p2\n15 ATTEMPT p4\n16 CREATE p4 m1 62\n17 ATTEMPT p2\n18 UPDATE p5 14\n19 REFUND p2\n",
+      "expectedOutput": "3\nm0 46\nm1 95\nm2 43\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "18\n1 INIT m0 82 0\n2 INIT m1 74 4\n3 INIT m2 37 20\n4 FAIL p4\n5 SUCCEED p2\n6 ATTEMPT p0\n7 CREATE p1 m2 68\n8 FAIL p3\n9 CREATE p2 m2 72\n10 REFUND p0\n11 UPDATE p1 1\n12 FAIL p2\n13 REFUND p0\n14 UPDATE p5 39\n15 UPDATE p0 45\n16 SUCCEED p0\n17 ATTEMPT p2\n18 CREATE p0 m1 86\n",
+      "expectedOutput": "3\nm0 82\nm1 74\nm2 37\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "5\n1 INIT m0 9 20\n2 INIT m1 -12 20\n3 INIT m2 84 0\n4 UPDATE p3 47\n5 UPDATE p5 72\n",
+      "expectedOutput": "3\nm0 9\nm1 -12\nm2 84\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "7\n1 INIT m0 9 0\n2 INIT m1 7 -1\n3 INIT m2 33 -1\n4 ATTEMPT p1\n5 REFUND p2\n6 SUCCEED p0\n7 REFUND p1\n",
+      "expectedOutput": "3\nm0 9\nm1 7\nm2 33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "4\n1 INIT m0 53 0\n2 INIT m1 90 20\n3 INIT m2 17 -1\n4 ATTEMPT p3\n",
+      "expectedOutput": "3\nm0 53\nm1 90\nm2 17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "9\n1 INIT m0 73 20\n2 INIT m1 20 -1\n3 INIT m2 20 -1\n4 UPDATE p2 75\n5 REFUND p3\n6 REFUND p0\n7 REFUND p4\n8 UPDATE p3 70\n9 REFUND p0\n",
+      "expectedOutput": "3\nm0 73\nm1 20\nm2 20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "21\n1 INIT m0 28 4\n2 INIT m1 76 0\n3 INIT m2 14 20\n4 REFUND p4\n5 ATTEMPT p2\n6 CREATE p2 m1 87\n7 SUCCEED p4\n8 FAIL p3\n9 CREATE p0 m2 16\n10 FAIL p3\n11 CREATE p2 m0 -3\n12 ATTEMPT p1\n13 CREATE p3 m0 52\n14 FAIL p2\n15 REFUND p1\n16 REFUND p5\n17 REFUND p4\n18 UPDATE p4 20\n19 SUCCEED p4\n20 UPDATE p5 3\n21 ATTEMPT p4\n",
+      "expectedOutput": "3\nm0 28\nm1 76\nm2 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "9\n1 INIT m0 -11 0\n2 INIT m1 5 0\n3 INIT m2 48 20\n4 UPDATE p3 -3\n5 SUCCEED p4\n6 ATTEMPT p0\n7 UPDATE p4 49\n8 ATTEMPT p2\n9 UPDATE p1 55\n",
+      "expectedOutput": "3\nm0 -11\nm1 5\nm2 48\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "23\n1 INIT m0 -13 -1\n2 INIT m1 -19 20\n3 INIT m2 85 -1\n4 ATTEMPT p1\n5 SUCCEED p2\n6 UPDATE p5 28\n7 UPDATE p2 39\n8 ATTEMPT p2\n9 FAIL p0\n10 UPDATE p3 6\n11 FAIL p1\n12 ATTEMPT p4\n13 SUCCEED p5\n14 REFUND p4\n15 UPDATE p2 70\n16 FAIL p5\n17 CREATE p4 m0 83\n18 UPDATE p3 -3\n19 ATTEMPT p4\n20 CREATE p1 m1 80\n21 CREATE p1 m2 35\n22 REFUND p1\n23 ATTEMPT p5\n",
+      "expectedOutput": "3\nm0 -13\nm1 -19\nm2 85\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "9\n1 INIT m0 88 4\n2 INIT m1 54 -1\n3 INIT m2 86 4\n4 ATTEMPT p1\n5 REFUND p5\n6 ATTEMPT p2\n7 REFUND p0\n8 FAIL p2\n9 FAIL p1\n",
+      "expectedOutput": "3\nm0 88\nm1 54\nm2 86\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "7\n1 INIT m0 6 20\n2 INIT m1 18 4\n3 INIT m2 29 20\n4 UPDATE p5 25\n5 REFUND p5\n6 ATTEMPT p3\n7 UPDATE p2 41\n",
+      "expectedOutput": "3\nm0 6\nm1 18\nm2 29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "14\n1 INIT m0 32 -1\n2 INIT m1 -6 4\n3 INIT m2 24 4\n4 FAIL p1\n5 FAIL p2\n6 SUCCEED p2\n7 SUCCEED p2\n8 ATTEMPT p3\n9 ATTEMPT p5\n10 CREATE p0 m2 79\n11 FAIL p2\n12 ATTEMPT p3\n13 ATTEMPT p5\n14 CREATE p5 m0 64\n",
+      "expectedOutput": "3\nm0 32\nm1 -6\nm2 24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "22\n1 INIT m0 -15 4\n2 INIT m1 79 20\n3 INIT m2 79 -1\n4 CREATE p3 m0 59\n5 ATTEMPT p2\n6 REFUND p5\n7 REFUND p5\n8 UPDATE p0 15\n9 ATTEMPT p0\n10 CREATE p2 m0 82\n11 FAIL p4\n12 FAIL p2\n13 ATTEMPT p3\n14 UPDATE p1 67\n15 UPDATE p2 61\n16 CREATE p4 m0 59\n17 SUCCEED p5\n18 ATTEMPT p4\n19 SUCCEED p1\n20 FAIL p5\n21 FAIL p4\n22 UPDATE p4 41\n",
+      "expectedOutput": "3\nm0 -15\nm1 79\nm2 79\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "12\n1 INIT m0 25 4\n2 INIT m1 84 -1\n3 INIT m2 35 4\n4 ATTEMPT p1\n5 SUCCEED p3\n6 UPDATE p3 66\n7 SUCCEED p0\n8 FAIL p3\n9 SUCCEED p5\n10 SUCCEED p4\n11 SUCCEED p4\n12 CREATE p1 m0 61\n",
+      "expectedOutput": "3\nm0 25\nm1 84\nm2 35\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "19\n1 INIT m0 97 0\n2 INIT m1 52 -1\n3 INIT m2 -4 4\n4 CREATE p3 m1 84\n5 UPDATE p4 76\n6 UPDATE p5 69\n7 CREATE p1 m0 96\n8 CREATE p1 m2 76\n9 SUCCEED p4\n10 FAIL p3\n11 ATTEMPT p5\n12 SUCCEED p1\n13 REFUND p2\n14 CREATE p4 m1 10\n15 REFUND p2\n16 REFUND p1\n17 CREATE p0 m2 77\n18 FAIL p3\n19 UPDATE p0 71\n",
+      "expectedOutput": "3\nm0 97\nm1 52\nm2 -4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "23\n1 INIT m0 -10 4\n2 INIT m1 72 20\n3 INIT m2 1 20\n4 REFUND p5\n5 UPDATE p3 10\n6 CREATE p1 m1 59\n7 REFUND p2\n8 REFUND p0\n9 FAIL p4\n10 SUCCEED p0\n11 ATTEMPT p2\n12 ATTEMPT p1\n13 FAIL p5\n14 SUCCEED p0\n15 REFUND p2\n16 SUCCEED p4\n17 REFUND p5\n18 FAIL p5\n19 UPDATE p4 17\n20 CREATE p2 m0 56\n21 REFUND p4\n22 UPDATE p1 82\n23 SUCCEED p4\n",
+      "expectedOutput": "3\nm0 -10\nm1 72\nm2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "13\n1 INIT m0 46 -1\n2 INIT m1 97 4\n3 INIT m2 35 -1\n4 REFUND p4\n5 UPDATE p2 98\n6 REFUND p4\n7 ATTEMPT p4\n8 CREATE p0 m1 28\n9 ATTEMPT p5\n10 ATTEMPT p2\n11 FAIL p4\n12 SUCCEED p3\n13 ATTEMPT p0\n",
+      "expectedOutput": "3\nm0 46\nm1 97\nm2 35\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

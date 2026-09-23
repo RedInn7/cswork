@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-6",
+  "title": "数轴障碍与区间放置查询",
+  "explanation": "## 思路\n\n预读全部插入坐标并离散化，用树状数组维护已插入点。对查询区间 [x-size,x)，用二分和前缀和求障碍数量；数量为零时即可放置。\n\n## 正确性证明\n\n离散化保留插入坐标的顺序。对 [x-size,x) 的左右边界分别作 lower_bound，可得其中障碍的树状数组索引区间；前缀和差正好是当前已插入在 [x-size,x-1] 内的障碍数量。只有计数为零时区间可用，查询本身不修改树状数组。\n\n## 复杂度\n\n时间 O(q log q)，空间 O(q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    from bisect import bisect_left\n    v=list(map(int,data.split())); q=v[0]; p=1; ops=[]; coords=[]\n    for _ in range(q):\n        kind=v[p]; size=2 if kind==1 else 3; op=tuple(v[p:p+size]); p+=size; ops.append(op)\n        if kind==1: coords.append(op[1])\n    coords.sort(); bit=[0]*(len(coords)+1)\n    def prefix(i):\n        total=0\n        while i: total+=bit[i]; i-=i&-i\n        return total\n    out=[]\n    for op in ops:\n        if op[0]==1:\n            i=bisect_left(coords,op[1])+1\n            while i<len(bit): bit[i]+=1; i+=i&-i\n        else:\n            _,x,size=op; left=bisect_left(coords,x-size); right=bisect_left(coords,x)\n            out.append('1' if prefix(right)==prefix(left) else '0')\n    return ''.join(out)\n\nif __name__=='__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#6-number-line--obstacles--block-fit",
+  "sourceContentHash": "84f37de3d461637c5c2666747b64eee7c7e55739b99b7afb57bfb70599bdf5ce",
+  "author": "CSWork"
+}

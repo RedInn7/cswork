@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只统计不同的回文内容",
+    "code": "def solve(raw):\n    s=raw.strip();found=set()\n    for left in range(len(s)):\n        for right in range(left+1,len(s)+1):\n            part=s[left:right]\n            if part==part[::-1]:found.add(part)\n    return str(len(found))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "遗漏偶数长度中心",
+    "code": "def solve(raw):\n    s=raw.strip();n=len(s);answer=0\n    for center in range(n):\n        left=right=center\n        while left>=0 and right<n and s[left]==s[right]:answer+=1;left-=1;right+=1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

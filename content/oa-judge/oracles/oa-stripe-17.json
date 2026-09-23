@@ -1,0 +1,654 @@
+[
+  {
+    "input": "5\n1 INIT m1 0\n2 CREATE p1 m1 50\n3 UPDATE p1 100\n4 ATTEMPT p1\n5 SUCCEED p1\n",
+    "expectedOutput": "1\nm1 100\n"
+  },
+  {
+    "input": "9\n1 INIT m1 0 5\n2 CREATE p1 m1 100\n3 CREATE p2 m1 50\n4 ATTEMPT p1\n5 ATTEMPT p2\n8 SUCCEED p1\n10 SUCCEED p2\n11 REFUND p1\n16 REFUND p2\n",
+    "expectedOutput": "1\nm1 50\n"
+  },
+  {
+    "input": "11\n1 INIT m2 10 -1\n2 INIT m1 5 0\n3 CREATE p m2 20\n4 ATTEMPT p\n5 FAIL p\n6 UPDATE p 30\n7 ATTEMPT p\n8 SUCCEED p\n9 SUCCEED p\n10 REFUND p\n11 REFUND p\n",
+    "expectedOutput": "2\nm1 5\nm2 10\n"
+  },
+  {
+    "input": "15\n1 INIT m0 48 20\n2 INIT m1 42 0\n3 INIT m2 78 20\n4 UPDATE p4 40\n5 REFUND p0\n6 ATTEMPT p4\n7 ATTEMPT p5\n8 UPDATE p5 60\n9 CREATE p1 m2 73\n10 ATTEMPT p5\n11 SUCCEED p0\n12 REFUND p1\n13 CREATE p1 m2 15\n14 SUCCEED p3\n15 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 48\nm1 42\nm2 78\n"
+  },
+  {
+    "input": "16\n1 INIT m0 43 -1\n2 INIT m1 39 20\n3 INIT m2 90 0\n4 SUCCEED p0\n5 ATTEMPT p4\n6 UPDATE p2 98\n7 ATTEMPT p4\n8 SUCCEED p1\n9 UPDATE p2 51\n10 ATTEMPT p2\n11 CREATE p4 m2 67\n12 FAIL p3\n13 CREATE p5 m1 1\n14 UPDATE p0 39\n15 SUCCEED p3\n16 SUCCEED p2\n",
+    "expectedOutput": "3\nm0 43\nm1 39\nm2 90\n"
+  },
+  {
+    "input": "23\n1 INIT m0 33 4\n2 INIT m1 49 4\n3 INIT m2 44 20\n4 ATTEMPT p3\n5 CREATE p1 m2 -1\n6 CREATE p0 m2 61\n7 UPDATE p0 58\n8 FAIL p4\n9 CREATE p0 m0 1\n10 SUCCEED p5\n11 ATTEMPT p5\n12 UPDATE p3 51\n13 SUCCEED p0\n14 UPDATE p4 13\n15 SUCCEED p3\n16 SUCCEED p0\n17 SUCCEED p4\n18 ATTEMPT p5\n19 REFUND p1\n20 REFUND p3\n21 SUCCEED p0\n22 ATTEMPT p5\n23 SUCCEED p2\n",
+    "expectedOutput": "3\nm0 33\nm1 49\nm2 44\n"
+  },
+  {
+    "input": "22\n1 INIT m0 5 20\n2 INIT m1 81 -1\n3 INIT m2 38 20\n4 SUCCEED p1\n5 SUCCEED p2\n6 SUCCEED p1\n7 REFUND p2\n8 SUCCEED p3\n9 REFUND p1\n10 ATTEMPT p4\n11 REFUND p2\n12 ATTEMPT p5\n13 FAIL p4\n14 UPDATE p1 76\n15 ATTEMPT p4\n16 SUCCEED p2\n17 SUCCEED p4\n18 CREATE p2 m2 72\n19 FAIL p4\n20 REFUND p0\n21 CREATE p0 m2 93\n22 ATTEMPT p0\n",
+    "expectedOutput": "3\nm0 5\nm1 81\nm2 38\n"
+  },
+  {
+    "input": "14\n1 INIT m0 20 20\n2 INIT m1 70 0\n3 INIT m2 67 0\n4 CREATE p5 m2 43\n5 FAIL p0\n6 UPDATE p4 17\n7 ATTEMPT p3\n8 CREATE p4 m0 64\n9 ATTEMPT p5\n10 UPDATE p3 24\n11 SUCCEED p0\n12 UPDATE p4 16\n13 UPDATE p0 22\n14 ATTEMPT p3\n",
+    "expectedOutput": "3\nm0 20\nm1 70\nm2 67\n"
+  },
+  {
+    "input": "19\n1 INIT m0 81 20\n2 INIT m1 71 0\n3 INIT m2 61 4\n4 REFUND p4\n5 FAIL p0\n6 UPDATE p4 50\n7 FAIL p4\n8 FAIL p3\n9 UPDATE p5 85\n10 UPDATE p2 55\n11 CREATE p2 m2 77\n12 UPDATE p4 61\n13 CREATE p1 m1 73\n14 FAIL p5\n15 CREATE p0 m1 45\n16 UPDATE p0 -1\n17 FAIL p3\n18 UPDATE p0 64\n19 REFUND p5\n",
+    "expectedOutput": "3\nm0 81\nm1 71\nm2 61\n"
+  },
+  {
+    "input": "11\n1 INIT m0 -15 20\n2 INIT m1 -14 4\n3 INIT m2 6 4\n4 FAIL p1\n5 FAIL p4\n6 CREATE p1 m1 45\n7 SUCCEED p1\n8 UPDATE p3 21\n9 CREATE p4 m0 42\n10 SUCCEED p1\n11 UPDATE p5 9\n",
+    "expectedOutput": "3\nm0 -15\nm1 -14\nm2 6\n"
+  },
+  {
+    "input": "19\n1 INIT m0 46 4\n2 INIT m1 95 20\n3 INIT m2 43 -1\n4 REFUND p5\n5 CREATE p3 m2 66\n6 REFUND p0\n7 CREATE p4 m0 4\n8 CREATE p5 m1 62\n9 SUCCEED p3\n10 FAIL p3\n11 REFUND p3\n12 CREATE p0 m0 4\n13 ATTEMPT p4\n14 REFUND p2\n15 ATTEMPT p4\n16 CREATE p4 m1 62\n17 ATTEMPT p2\n18 UPDATE p5 14\n19 REFUND p2\n",
+    "expectedOutput": "3\nm0 46\nm1 95\nm2 43\n"
+  },
+  {
+    "input": "18\n1 INIT m0 82 0\n2 INIT m1 74 4\n3 INIT m2 37 20\n4 FAIL p4\n5 SUCCEED p2\n6 ATTEMPT p0\n7 CREATE p1 m2 68\n8 FAIL p3\n9 CREATE p2 m2 72\n10 REFUND p0\n11 UPDATE p1 1\n12 FAIL p2\n13 REFUND p0\n14 UPDATE p5 39\n15 UPDATE p0 45\n16 SUCCEED p0\n17 ATTEMPT p2\n18 CREATE p0 m1 86\n",
+    "expectedOutput": "3\nm0 82\nm1 74\nm2 37\n"
+  },
+  {
+    "input": "5\n1 INIT m0 9 20\n2 INIT m1 -12 20\n3 INIT m2 84 0\n4 UPDATE p3 47\n5 UPDATE p5 72\n",
+    "expectedOutput": "3\nm0 9\nm1 -12\nm2 84\n"
+  },
+  {
+    "input": "7\n1 INIT m0 9 0\n2 INIT m1 7 -1\n3 INIT m2 33 -1\n4 ATTEMPT p1\n5 REFUND p2\n6 SUCCEED p0\n7 REFUND p1\n",
+    "expectedOutput": "3\nm0 9\nm1 7\nm2 33\n"
+  },
+  {
+    "input": "4\n1 INIT m0 53 0\n2 INIT m1 90 20\n3 INIT m2 17 -1\n4 ATTEMPT p3\n",
+    "expectedOutput": "3\nm0 53\nm1 90\nm2 17\n"
+  },
+  {
+    "input": "9\n1 INIT m0 73 20\n2 INIT m1 20 -1\n3 INIT m2 20 -1\n4 UPDATE p2 75\n5 REFUND p3\n6 REFUND p0\n7 REFUND p4\n8 UPDATE p3 70\n9 REFUND p0\n",
+    "expectedOutput": "3\nm0 73\nm1 20\nm2 20\n"
+  },
+  {
+    "input": "21\n1 INIT m0 28 4\n2 INIT m1 76 0\n3 INIT m2 14 20\n4 REFUND p4\n5 ATTEMPT p2\n6 CREATE p2 m1 87\n7 SUCCEED p4\n8 FAIL p3\n9 CREATE p0 m2 16\n10 FAIL p3\n11 CREATE p2 m0 -3\n12 ATTEMPT p1\n13 CREATE p3 m0 52\n14 FAIL p2\n15 REFUND p1\n16 REFUND p5\n17 REFUND p4\n18 UPDATE p4 20\n19 SUCCEED p4\n20 UPDATE p5 3\n21 ATTEMPT p4\n",
+    "expectedOutput": "3\nm0 28\nm1 76\nm2 14\n"
+  },
+  {
+    "input": "9\n1 INIT m0 -11 0\n2 INIT m1 5 0\n3 INIT m2 48 20\n4 UPDATE p3 -3\n5 SUCCEED p4\n6 ATTEMPT p0\n7 UPDATE p4 49\n8 ATTEMPT p2\n9 UPDATE p1 55\n",
+    "expectedOutput": "3\nm0 -11\nm1 5\nm2 48\n"
+  },
+  {
+    "input": "23\n1 INIT m0 -13 -1\n2 INIT m1 -19 20\n3 INIT m2 85 -1\n4 ATTEMPT p1\n5 SUCCEED p2\n6 UPDATE p5 28\n7 UPDATE p2 39\n8 ATTEMPT p2\n9 FAIL p0\n10 UPDATE p3 6\n11 FAIL p1\n12 ATTEMPT p4\n13 SUCCEED p5\n14 REFUND p4\n15 UPDATE p2 70\n16 FAIL p5\n17 CREATE p4 m0 83\n18 UPDATE p3 -3\n19 ATTEMPT p4\n20 CREATE p1 m1 80\n21 CREATE p1 m2 35\n22 REFUND p1\n23 ATTEMPT p5\n",
+    "expectedOutput": "3\nm0 -13\nm1 -19\nm2 85\n"
+  },
+  {
+    "input": "9\n1 INIT m0 88 4\n2 INIT m1 54 -1\n3 INIT m2 86 4\n4 ATTEMPT p1\n5 REFUND p5\n6 ATTEMPT p2\n7 REFUND p0\n8 FAIL p2\n9 FAIL p1\n",
+    "expectedOutput": "3\nm0 88\nm1 54\nm2 86\n"
+  },
+  {
+    "input": "7\n1 INIT m0 6 20\n2 INIT m1 18 4\n3 INIT m2 29 20\n4 UPDATE p5 25\n5 REFUND p5\n6 ATTEMPT p3\n7 UPDATE p2 41\n",
+    "expectedOutput": "3\nm0 6\nm1 18\nm2 29\n"
+  },
+  {
+    "input": "14\n1 INIT m0 32 -1\n2 INIT m1 -6 4\n3 INIT m2 24 4\n4 FAIL p1\n5 FAIL p2\n6 SUCCEED p2\n7 SUCCEED p2\n8 ATTEMPT p3\n9 ATTEMPT p5\n10 CREATE p0 m2 79\n11 FAIL p2\n12 ATTEMPT p3\n13 ATTEMPT p5\n14 CREATE p5 m0 64\n",
+    "expectedOutput": "3\nm0 32\nm1 -6\nm2 24\n"
+  },
+  {
+    "input": "22\n1 INIT m0 -15 4\n2 INIT m1 79 20\n3 INIT m2 79 -1\n4 CREATE p3 m0 59\n5 ATTEMPT p2\n6 REFUND p5\n7 REFUND p5\n8 UPDATE p0 15\n9 ATTEMPT p0\n10 CREATE p2 m0 82\n11 FAIL p4\n12 FAIL p2\n13 ATTEMPT p3\n14 UPDATE p1 67\n15 UPDATE p2 61\n16 CREATE p4 m0 59\n17 SUCCEED p5\n18 ATTEMPT p4\n19 SUCCEED p1\n20 FAIL p5\n21 FAIL p4\n22 UPDATE p4 41\n",
+    "expectedOutput": "3\nm0 -15\nm1 79\nm2 79\n"
+  },
+  {
+    "input": "12\n1 INIT m0 25 4\n2 INIT m1 84 -1\n3 INIT m2 35 4\n4 ATTEMPT p1\n5 SUCCEED p3\n6 UPDATE p3 66\n7 SUCCEED p0\n8 FAIL p3\n9 SUCCEED p5\n10 SUCCEED p4\n11 SUCCEED p4\n12 CREATE p1 m0 61\n",
+    "expectedOutput": "3\nm0 25\nm1 84\nm2 35\n"
+  },
+  {
+    "input": "19\n1 INIT m0 97 0\n2 INIT m1 52 -1\n3 INIT m2 -4 4\n4 CREATE p3 m1 84\n5 UPDATE p4 76\n6 UPDATE p5 69\n7 CREATE p1 m0 96\n8 CREATE p1 m2 76\n9 SUCCEED p4\n10 FAIL p3\n11 ATTEMPT p5\n12 SUCCEED p1\n13 REFUND p2\n14 CREATE p4 m1 10\n15 REFUND p2\n16 REFUND p1\n17 CREATE p0 m2 77\n18 FAIL p3\n19 UPDATE p0 71\n",
+    "expectedOutput": "3\nm0 97\nm1 52\nm2 -4\n"
+  },
+  {
+    "input": "23\n1 INIT m0 -10 4\n2 INIT m1 72 20\n3 INIT m2 1 20\n4 REFUND p5\n5 UPDATE p3 10\n6 CREATE p1 m1 59\n7 REFUND p2\n8 REFUND p0\n9 FAIL p4\n10 SUCCEED p0\n11 ATTEMPT p2\n12 ATTEMPT p1\n13 FAIL p5\n14 SUCCEED p0\n15 REFUND p2\n16 SUCCEED p4\n17 REFUND p5\n18 FAIL p5\n19 UPDATE p4 17\n20 CREATE p2 m0 56\n21 REFUND p4\n22 UPDATE p1 82\n23 SUCCEED p4\n",
+    "expectedOutput": "3\nm0 -10\nm1 72\nm2 1\n"
+  },
+  {
+    "input": "13\n1 INIT m0 46 -1\n2 INIT m1 97 4\n3 INIT m2 35 -1\n4 REFUND p4\n5 UPDATE p2 98\n6 REFUND p4\n7 ATTEMPT p4\n8 CREATE p0 m1 28\n9 ATTEMPT p5\n10 ATTEMPT p2\n11 FAIL p4\n12 SUCCEED p3\n13 ATTEMPT p0\n",
+    "expectedOutput": "3\nm0 46\nm1 97\nm2 35\n"
+  },
+  {
+    "input": "21\n1 INIT m0 65 -1\n2 INIT m1 -18 20\n3 INIT m2 67 -1\n4 UPDATE p2 65\n5 SUCCEED p5\n6 ATTEMPT p1\n7 SUCCEED p1\n8 ATTEMPT p4\n9 REFUND p2\n10 REFUND p2\n11 SUCCEED p2\n12 UPDATE p4 52\n13 SUCCEED p5\n14 ATTEMPT p1\n15 UPDATE p2 36\n16 CREATE p4 m1 61\n17 UPDATE p4 35\n18 CREATE p1 m0 58\n19 CREATE p2 m0 21\n20 ATTEMPT p5\n21 FAIL p4\n",
+    "expectedOutput": "3\nm0 65\nm1 -18\nm2 67\n"
+  },
+  {
+    "input": "7\n1 INIT m0 66 20\n2 INIT m1 38 -1\n3 INIT m2 73 20\n4 UPDATE p0 56\n5 ATTEMPT p3\n6 REFUND p3\n7 FAIL p0\n",
+    "expectedOutput": "3\nm0 66\nm1 38\nm2 73\n"
+  },
+  {
+    "input": "14\n1 INIT m0 74 -1\n2 INIT m1 93 20\n3 INIT m2 28 0\n4 ATTEMPT p0\n5 ATTEMPT p2\n6 FAIL p1\n7 REFUND p4\n8 REFUND p2\n9 SUCCEED p4\n10 SUCCEED p5\n11 SUCCEED p4\n12 REFUND p4\n13 ATTEMPT p2\n14 SUCCEED p0\n",
+    "expectedOutput": "3\nm0 74\nm1 93\nm2 28\n"
+  },
+  {
+    "input": "15\n1 INIT m0 27 -1\n2 INIT m1 15 4\n3 INIT m2 31 0\n4 ATTEMPT p3\n5 ATTEMPT p0\n6 SUCCEED p2\n7 UPDATE p5 24\n8 UPDATE p0 59\n9 CREATE p2 m2 -3\n10 SUCCEED p2\n11 FAIL p1\n12 REFUND p0\n13 SUCCEED p0\n14 REFUND p2\n15 UPDATE p1 86\n",
+    "expectedOutput": "3\nm0 27\nm1 15\nm2 31\n"
+  },
+  {
+    "input": "9\n1 INIT m0 89 0\n2 INIT m1 35 4\n3 INIT m2 -11 4\n4 REFUND p0\n5 SUCCEED p4\n6 FAIL p1\n7 ATTEMPT p4\n8 UPDATE p3 64\n9 ATTEMPT p0\n",
+    "expectedOutput": "3\nm0 89\nm1 35\nm2 -11\n"
+  },
+  {
+    "input": "4\n1 INIT m0 6 -1\n2 INIT m1 -13 4\n3 INIT m2 61 20\n4 FAIL p3\n",
+    "expectedOutput": "3\nm0 6\nm1 -13\nm2 61\n"
+  },
+  {
+    "input": "8\n1 INIT m0 10 4\n2 INIT m1 94 20\n3 INIT m2 37 -1\n4 SUCCEED p4\n5 ATTEMPT p4\n6 SUCCEED p4\n7 SUCCEED p1\n8 UPDATE p0 38\n",
+    "expectedOutput": "3\nm0 10\nm1 94\nm2 37\n"
+  },
+  {
+    "input": "10\n1 INIT m0 44 20\n2 INIT m1 -5 0\n3 INIT m2 75 20\n4 UPDATE p5 95\n5 SUCCEED p3\n6 FAIL p5\n7 CREATE p1 m0 21\n8 UPDATE p1 61\n9 CREATE p1 m2 54\n10 REFUND p4\n",
+    "expectedOutput": "3\nm0 44\nm1 -5\nm2 75\n"
+  },
+  {
+    "input": "16\n1 INIT m0 88 4\n2 INIT m1 59 -1\n3 INIT m2 2 4\n4 CREATE p5 m0 55\n5 REFUND p3\n6 SUCCEED p4\n7 UPDATE p3 90\n8 SUCCEED p3\n9 UPDATE p0 100\n10 SUCCEED p4\n11 UPDATE p4 50\n12 CREATE p5 m2 72\n13 FAIL p2\n14 UPDATE p4 98\n15 UPDATE p4 41\n16 SUCCEED p3\n",
+    "expectedOutput": "3\nm0 88\nm1 59\nm2 2\n"
+  },
+  {
+    "input": "20\n1 INIT m0 99 -1\n2 INIT m1 14 4\n3 INIT m2 83 4\n4 FAIL p5\n5 FAIL p2\n6 CREATE p4 m2 22\n7 CREATE p4 m0 26\n8 UPDATE p4 94\n9 ATTEMPT p2\n10 CREATE p1 m0 27\n11 SUCCEED p1\n12 REFUND p3\n13 SUCCEED p4\n14 ATTEMPT p3\n15 SUCCEED p0\n16 REFUND p2\n17 FAIL p5\n18 ATTEMPT p3\n19 FAIL p3\n20 ATTEMPT p4\n",
+    "expectedOutput": "3\nm0 99\nm1 14\nm2 83\n"
+  },
+  {
+    "input": "21\n1 INIT m0 28 0\n2 INIT m1 34 20\n3 INIT m2 81 4\n4 CREATE p1 m2 16\n5 CREATE p0 m0 61\n6 CREATE p0 m2 81\n7 ATTEMPT p0\n8 UPDATE p0 90\n9 REFUND p0\n10 UPDATE p1 16\n11 ATTEMPT p2\n12 FAIL p0\n13 CREATE p1 m0 44\n14 SUCCEED p2\n15 SUCCEED p0\n16 REFUND p3\n17 CREATE p1 m2 24\n18 SUCCEED p3\n19 SUCCEED p0\n20 FAIL p5\n21 SUCCEED p1\n",
+    "expectedOutput": "3\nm0 28\nm1 34\nm2 81\n"
+  },
+  {
+    "input": "14\n1 INIT m0 89 0\n2 INIT m1 13 20\n3 INIT m2 -19 4\n4 ATTEMPT p5\n5 ATTEMPT p0\n6 REFUND p3\n7 ATTEMPT p4\n8 FAIL p3\n9 UPDATE p5 43\n10 REFUND p1\n11 UPDATE p1 17\n12 FAIL p4\n13 REFUND p3\n14 CREATE p0 m2 100\n",
+    "expectedOutput": "3\nm0 89\nm1 13\nm2 -19\n"
+  },
+  {
+    "input": "17\n1 INIT m0 26 4\n2 INIT m1 62 0\n3 INIT m2 3 4\n4 REFUND p5\n5 ATTEMPT p3\n6 CREATE p0 m1 47\n7 REFUND p5\n8 UPDATE p5 24\n9 REFUND p3\n10 FAIL p0\n11 FAIL p3\n12 ATTEMPT p5\n13 ATTEMPT p4\n14 UPDATE p1 81\n15 UPDATE p1 70\n16 UPDATE p3 52\n17 REFUND p0\n",
+    "expectedOutput": "3\nm0 26\nm1 62\nm2 3\n"
+  },
+  {
+    "input": "11\n1 INIT m0 11 0\n2 INIT m1 73 4\n3 INIT m2 -5 20\n4 REFUND p5\n5 SUCCEED p5\n6 FAIL p0\n7 SUCCEED p0\n8 UPDATE p3 40\n9 CREATE p0 m0 37\n10 ATTEMPT p4\n11 UPDATE p0 49\n",
+    "expectedOutput": "3\nm0 11\nm1 73\nm2 -5\n"
+  },
+  {
+    "input": "14\n1 INIT m0 95 20\n2 INIT m1 -7 4\n3 INIT m2 18 0\n4 SUCCEED p3\n5 FAIL p1\n6 SUCCEED p4\n7 SUCCEED p2\n8 SUCCEED p0\n9 REFUND p3\n10 REFUND p0\n11 REFUND p1\n12 ATTEMPT p0\n13 UPDATE p5 48\n14 SUCCEED p1\n",
+    "expectedOutput": "3\nm0 95\nm1 -7\nm2 18\n"
+  },
+  {
+    "input": "13\n1 INIT m0 14 0\n2 INIT m1 64 20\n3 INIT m2 92 0\n4 FAIL p2\n5 CREATE p3 m0 58\n6 SUCCEED p4\n7 SUCCEED p3\n8 ATTEMPT p3\n9 SUCCEED p1\n10 ATTEMPT p5\n11 SUCCEED p3\n12 UPDATE p1 87\n13 REFUND p3\n",
+    "expectedOutput": "3\nm0 72\nm1 64\nm2 92\n"
+  },
+  {
+    "input": "19\n1 INIT m0 -15 20\n2 INIT m1 97 -1\n3 INIT m2 96 -1\n4 REFUND p3\n5 SUCCEED p5\n6 CREATE p0 m1 8\n7 SUCCEED p5\n8 FAIL p5\n9 FAIL p3\n10 REFUND p3\n11 REFUND p5\n12 ATTEMPT p3\n13 ATTEMPT p3\n14 UPDATE p2 4\n15 SUCCEED p3\n16 REFUND p3\n17 REFUND p4\n18 UPDATE p0 32\n19 FAIL p1\n",
+    "expectedOutput": "3\nm0 -15\nm1 97\nm2 96\n"
+  },
+  {
+    "input": "11\n1 INIT m0 63 20\n2 INIT m1 39 -1\n3 INIT m2 18 0\n4 CREATE p4 m2 94\n5 CREATE p0 m0 53\n6 FAIL p3\n7 FAIL p1\n8 SUCCEED p5\n9 SUCCEED p4\n10 REFUND p1\n11 ATTEMPT p2\n",
+    "expectedOutput": "3\nm0 63\nm1 39\nm2 18\n"
+  },
+  {
+    "input": "10\n1 INIT m0 56 -1\n2 INIT m1 100 4\n3 INIT m2 1 4\n4 FAIL p0\n5 ATTEMPT p1\n6 ATTEMPT p2\n7 UPDATE p2 50\n8 FAIL p0\n9 CREATE p3 m2 -3\n10 SUCCEED p2\n",
+    "expectedOutput": "3\nm0 56\nm1 100\nm2 1\n"
+  },
+  {
+    "input": "13\n1 INIT m0 84 0\n2 INIT m1 73 0\n3 INIT m2 -14 4\n4 CREATE p4 m1 98\n5 ATTEMPT p5\n6 CREATE p1 m0 66\n7 ATTEMPT p3\n8 SUCCEED p4\n9 CREATE p3 m1 22\n10 SUCCEED p1\n11 UPDATE p4 13\n12 REFUND p2\n13 UPDATE p5 94\n",
+    "expectedOutput": "3\nm0 84\nm1 73\nm2 -14\n"
+  },
+  {
+    "input": "4\n1 INIT m0 10 0\n2 INIT m1 8 20\n3 INIT m2 84 4\n4 REFUND p0\n",
+    "expectedOutput": "3\nm0 10\nm1 8\nm2 84\n"
+  },
+  {
+    "input": "21\n1 INIT m0 -15 20\n2 INIT m1 28 -1\n3 INIT m2 -17 0\n4 SUCCEED p5\n5 CREATE p1 m1 98\n6 FAIL p4\n7 REFUND p2\n8 CREATE p1 m0 12\n9 CREATE p4 m1 45\n10 UPDATE p0 10\n11 CREATE p0 m0 34\n12 SUCCEED p4\n13 SUCCEED p2\n14 REFUND p3\n15 REFUND p5\n16 ATTEMPT p1\n17 UPDATE p5 8\n18 FAIL p0\n19 FAIL p2\n20 REFUND p1\n21 SUCCEED p2\n",
+    "expectedOutput": "3\nm0 -15\nm1 28\nm2 -17\n"
+  },
+  {
+    "input": "18\n1 INIT m0 -15 4\n2 INIT m1 62 0\n3 INIT m2 13 0\n4 ATTEMPT p4\n5 CREATE p0 m2 46\n6 SUCCEED p5\n7 REFUND p3\n8 FAIL p4\n9 REFUND p5\n10 ATTEMPT p3\n11 REFUND p5\n12 ATTEMPT p3\n13 UPDATE p1 42\n14 REFUND p4\n15 FAIL p3\n16 UPDATE p4 60\n17 CREATE p3 m2 28\n18 CREATE p2 m1 63\n",
+    "expectedOutput": "3\nm0 -15\nm1 62\nm2 13\n"
+  },
+  {
+    "input": "20\n1 INIT m0 53 -1\n2 INIT m1 65 0\n3 INIT m2 -2 20\n4 CREATE p2 m2 52\n5 FAIL p4\n6 SUCCEED p5\n7 REFUND p2\n8 ATTEMPT p5\n9 FAIL p2\n10 SUCCEED p3\n11 REFUND p2\n12 FAIL p5\n13 ATTEMPT p3\n14 ATTEMPT p0\n15 CREATE p0 m0 22\n16 CREATE p5 m1 100\n17 ATTEMPT p1\n18 CREATE p4 m2 90\n19 SUCCEED p0\n20 UPDATE p0 100\n",
+    "expectedOutput": "3\nm0 53\nm1 65\nm2 -2\n"
+  },
+  {
+    "input": "15\n1 INIT m0 9 20\n2 INIT m1 -15 -1\n3 INIT m2 16 -1\n4 FAIL p4\n5 SUCCEED p0\n6 ATTEMPT p2\n7 UPDATE p1 35\n8 ATTEMPT p0\n9 ATTEMPT p3\n10 FAIL p4\n11 FAIL p4\n12 CREATE p2 m0 4\n13 UPDATE p3 58\n14 FAIL p3\n15 CREATE p5 m2 34\n",
+    "expectedOutput": "3\nm0 9\nm1 -15\nm2 16\n"
+  },
+  {
+    "input": "21\n1 INIT m0 78 -1\n2 INIT m1 80 -1\n3 INIT m2 -13 0\n4 UPDATE p4 1\n5 UPDATE p3 45\n6 SUCCEED p3\n7 REFUND p0\n8 ATTEMPT p5\n9 SUCCEED p3\n10 UPDATE p0 11\n11 CREATE p3 m2 34\n12 UPDATE p5 8\n13 FAIL p1\n14 FAIL p2\n15 REFUND p5\n16 REFUND p3\n17 FAIL p0\n18 CREATE p4 m1 71\n19 UPDATE p1 80\n20 CREATE p5 m1 -2\n21 SUCCEED p1\n",
+    "expectedOutput": "3\nm0 78\nm1 80\nm2 -13\n"
+  },
+  {
+    "input": "8\n1 INIT m0 2 0\n2 INIT m1 -20 20\n3 INIT m2 4 0\n4 FAIL p4\n5 REFUND p4\n6 SUCCEED p4\n7 CREATE p4 m1 51\n8 UPDATE p0 41\n",
+    "expectedOutput": "3\nm0 2\nm1 -20\nm2 4\n"
+  },
+  {
+    "input": "19\n1 INIT m0 -16 20\n2 INIT m1 -15 0\n3 INIT m2 49 -1\n4 ATTEMPT p1\n5 REFUND p2\n6 UPDATE p4 92\n7 REFUND p5\n8 CREATE p3 m2 82\n9 ATTEMPT p0\n10 SUCCEED p3\n11 UPDATE p5 69\n12 ATTEMPT p2\n13 ATTEMPT p3\n14 UPDATE p4 77\n15 CREATE p2 m2 36\n16 UPDATE p0 61\n17 CREATE p5 m0 14\n18 SUCCEED p2\n19 FAIL p3\n",
+    "expectedOutput": "3\nm0 -16\nm1 -15\nm2 49\n"
+  },
+  {
+    "input": "13\n1 INIT m0 34 20\n2 INIT m1 -8 -1\n3 INIT m2 44 4\n4 REFUND p2\n5 REFUND p5\n6 UPDATE p3 58\n7 REFUND p1\n8 REFUND p3\n9 ATTEMPT p4\n10 FAIL p2\n11 SUCCEED p0\n12 UPDATE p0 50\n13 FAIL p0\n",
+    "expectedOutput": "3\nm0 34\nm1 -8\nm2 44\n"
+  },
+  {
+    "input": "17\n1 INIT m0 45 20\n2 INIT m1 0 4\n3 INIT m2 26 -1\n4 FAIL p3\n5 FAIL p0\n6 CREATE p0 m2 48\n7 FAIL p4\n8 FAIL p3\n9 ATTEMPT p3\n10 REFUND p0\n11 FAIL p0\n12 SUCCEED p2\n13 CREATE p2 m1 95\n14 SUCCEED p0\n15 FAIL p4\n16 ATTEMPT p5\n17 CREATE p3 m0 52\n",
+    "expectedOutput": "3\nm0 45\nm1 0\nm2 26\n"
+  },
+  {
+    "input": "4\n1 INIT m0 20 4\n2 INIT m1 20 4\n3 INIT m2 -10 -1\n4 FAIL p0\n",
+    "expectedOutput": "3\nm0 20\nm1 20\nm2 -10\n"
+  },
+  {
+    "input": "9\n1 INIT m0 4 4\n2 INIT m1 95 4\n3 INIT m2 32 4\n4 CREATE p1 m0 61\n5 CREATE p2 m1 97\n6 ATTEMPT p5\n7 REFUND p2\n8 SUCCEED p5\n9 UPDATE p4 94\n",
+    "expectedOutput": "3\nm0 4\nm1 95\nm2 32\n"
+  },
+  {
+    "input": "23\n1 INIT m0 -6 0\n2 INIT m1 69 -1\n3 INIT m2 -9 20\n4 ATTEMPT p1\n5 SUCCEED p1\n6 CREATE p0 m1 34\n7 ATTEMPT p5\n8 REFUND p0\n9 CREATE p5 m0 34\n10 ATTEMPT p2\n11 UPDATE p2 81\n12 REFUND p2\n13 UPDATE p4 24\n14 REFUND p3\n15 SUCCEED p0\n16 UPDATE p2 14\n17 ATTEMPT p2\n18 FAIL p3\n19 CREATE p3 m2 22\n20 ATTEMPT p1\n21 ATTEMPT p0\n22 UPDATE p1 87\n23 SUCCEED p4\n",
+    "expectedOutput": "3\nm0 -6\nm1 69\nm2 -9\n"
+  },
+  {
+    "input": "7\n1 INIT m0 31 4\n2 INIT m1 93 -1\n3 INIT m2 49 -1\n4 SUCCEED p0\n5 REFUND p0\n6 REFUND p3\n7 CREATE p5 m2 37\n",
+    "expectedOutput": "3\nm0 31\nm1 93\nm2 49\n"
+  },
+  {
+    "input": "5\n1 INIT m0 21 20\n2 INIT m1 93 -1\n3 INIT m2 69 -1\n4 FAIL p5\n5 REFUND p4\n",
+    "expectedOutput": "3\nm0 21\nm1 93\nm2 69\n"
+  },
+  {
+    "input": "20\n1 INIT m0 73 -1\n2 INIT m1 8 0\n3 INIT m2 91 20\n4 UPDATE p2 9\n5 SUCCEED p4\n6 FAIL p5\n7 REFUND p0\n8 REFUND p3\n9 CREATE p1 m2 9\n10 SUCCEED p5\n11 ATTEMPT p5\n12 ATTEMPT p0\n13 SUCCEED p4\n14 FAIL p0\n15 REFUND p5\n16 REFUND p4\n17 CREATE p5 m1 20\n18 ATTEMPT p2\n19 CREATE p2 m1 32\n20 UPDATE p3 44\n",
+    "expectedOutput": "3\nm0 73\nm1 8\nm2 91\n"
+  },
+  {
+    "input": "10\n1 INIT m0 22 -1\n2 INIT m1 9 -1\n3 INIT m2 1 0\n4 FAIL p0\n5 ATTEMPT p1\n6 UPDATE p0 59\n7 CREATE p0 m0 97\n8 FAIL p0\n9 UPDATE p5 98\n10 REFUND p3\n",
+    "expectedOutput": "3\nm0 22\nm1 9\nm2 1\n"
+  },
+  {
+    "input": "11\n1 INIT m0 76 20\n2 INIT m1 57 -1\n3 INIT m2 46 4\n4 CREATE p1 m2 96\n5 ATTEMPT p2\n6 ATTEMPT p3\n7 ATTEMPT p3\n8 SUCCEED p3\n9 SUCCEED p4\n10 REFUND p1\n11 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 76\nm1 57\nm2 46\n"
+  },
+  {
+    "input": "19\n1 INIT m0 -2 4\n2 INIT m1 17 -1\n3 INIT m2 33 -1\n4 SUCCEED p1\n5 FAIL p1\n6 SUCCEED p3\n7 FAIL p2\n8 ATTEMPT p3\n9 UPDATE p1 20\n10 CREATE p2 m1 32\n11 UPDATE p4 87\n12 REFUND p1\n13 ATTEMPT p5\n14 FAIL p2\n15 CREATE p0 m1 -1\n16 FAIL p3\n17 CREATE p0 m0 90\n18 UPDATE p2 23\n19 REFUND p0\n",
+    "expectedOutput": "3\nm0 -2\nm1 17\nm2 33\n"
+  },
+  {
+    "input": "22\n1 INIT m0 28 4\n2 INIT m1 83 20\n3 INIT m2 99 4\n4 ATTEMPT p2\n5 UPDATE p4 84\n6 CREATE p5 m2 54\n7 SUCCEED p5\n8 UPDATE p4 54\n9 SUCCEED p2\n10 FAIL p0\n11 SUCCEED p2\n12 REFUND p4\n13 CREATE p2 m2 57\n14 FAIL p3\n15 SUCCEED p4\n16 UPDATE p1 89\n17 FAIL p4\n18 UPDATE p5 55\n19 REFUND p3\n20 CREATE p5 m2 1\n21 ATTEMPT p3\n22 REFUND p3\n",
+    "expectedOutput": "3\nm0 28\nm1 83\nm2 99\n"
+  },
+  {
+    "input": "4\n1 INIT m0 55 0\n2 INIT m1 91 4\n3 INIT m2 -12 -1\n4 FAIL p2\n",
+    "expectedOutput": "3\nm0 55\nm1 91\nm2 -12\n"
+  },
+  {
+    "input": "22\n1 INIT m0 94 4\n2 INIT m1 -6 4\n3 INIT m2 87 4\n4 UPDATE p5 27\n5 FAIL p1\n6 CREATE p0 m1 14\n7 CREATE p1 m1 20\n8 SUCCEED p0\n9 ATTEMPT p5\n10 ATTEMPT p5\n11 REFUND p4\n12 SUCCEED p2\n13 REFUND p1\n14 SUCCEED p5\n15 ATTEMPT p4\n16 FAIL p4\n17 ATTEMPT p0\n18 CREATE p2 m0 34\n19 FAIL p3\n20 CREATE p5 m2 97\n21 UPDATE p1 50\n22 FAIL p0\n",
+    "expectedOutput": "3\nm0 94\nm1 -6\nm2 87\n"
+  },
+  {
+    "input": "10\n1 INIT m0 -19 4\n2 INIT m1 33 20\n3 INIT m2 -9 -1\n4 REFUND p5\n5 ATTEMPT p1\n6 UPDATE p1 70\n7 FAIL p4\n8 FAIL p5\n9 CREATE p4 m1 65\n10 ATTEMPT p3\n",
+    "expectedOutput": "3\nm0 -19\nm1 33\nm2 -9\n"
+  },
+  {
+    "input": "12\n1 INIT m0 34 4\n2 INIT m1 93 0\n3 INIT m2 83 20\n4 CREATE p1 m1 69\n5 FAIL p0\n6 CREATE p5 m2 56\n7 ATTEMPT p2\n8 CREATE p0 m2 23\n9 FAIL p3\n10 FAIL p0\n11 UPDATE p0 98\n12 ATTEMPT p5\n",
+    "expectedOutput": "3\nm0 34\nm1 93\nm2 83\n"
+  },
+  {
+    "input": "8\n1 INIT m0 -5 20\n2 INIT m1 27 -1\n3 INIT m2 5 4\n4 FAIL p3\n5 SUCCEED p0\n6 REFUND p5\n7 FAIL p5\n8 REFUND p2\n",
+    "expectedOutput": "3\nm0 -5\nm1 27\nm2 5\n"
+  },
+  {
+    "input": "11\n1 INIT m0 77 4\n2 INIT m1 57 4\n3 INIT m2 89 -1\n4 UPDATE p4 45\n5 CREATE p1 m2 60\n6 SUCCEED p3\n7 UPDATE p4 81\n8 SUCCEED p2\n9 CREATE p1 m2 45\n10 CREATE p0 m2 95\n11 UPDATE p2 72\n",
+    "expectedOutput": "3\nm0 77\nm1 57\nm2 89\n"
+  },
+  {
+    "input": "17\n1 INIT m0 28 0\n2 INIT m1 23 20\n3 INIT m2 47 -1\n4 UPDATE p3 90\n5 UPDATE p1 40\n6 SUCCEED p5\n7 ATTEMPT p0\n8 REFUND p0\n9 FAIL p1\n10 SUCCEED p1\n11 UPDATE p0 29\n12 FAIL p0\n13 FAIL p1\n14 FAIL p0\n15 CREATE p2 m2 19\n16 ATTEMPT p1\n17 ATTEMPT p0\n",
+    "expectedOutput": "3\nm0 28\nm1 23\nm2 47\n"
+  },
+  {
+    "input": "8\n1 INIT m0 20 -1\n2 INIT m1 54 20\n3 INIT m2 26 0\n4 ATTEMPT p2\n5 FAIL p2\n6 ATTEMPT p4\n7 ATTEMPT p1\n8 SUCCEED p3\n",
+    "expectedOutput": "3\nm0 20\nm1 54\nm2 26\n"
+  },
+  {
+    "input": "9\n1 INIT m0 92 0\n2 INIT m1 83 20\n3 INIT m2 81 4\n4 FAIL p2\n5 REFUND p2\n6 UPDATE p5 -2\n7 UPDATE p3 60\n8 ATTEMPT p0\n9 SUCCEED p2\n",
+    "expectedOutput": "3\nm0 92\nm1 83\nm2 81\n"
+  },
+  {
+    "input": "10\n1 INIT m0 5 -1\n2 INIT m1 0 -1\n3 INIT m2 38 20\n4 SUCCEED p4\n5 FAIL p5\n6 FAIL p0\n7 SUCCEED p5\n8 UPDATE p4 1\n9 SUCCEED p2\n10 REFUND p3\n",
+    "expectedOutput": "3\nm0 5\nm1 0\nm2 38\n"
+  },
+  {
+    "input": "10\n1 INIT m0 68 4\n2 INIT m1 47 0\n3 INIT m2 21 0\n4 SUCCEED p2\n5 UPDATE p0 6\n6 UPDATE p5 9\n7 FAIL p0\n8 UPDATE p2 48\n9 ATTEMPT p4\n10 CREATE p2 m0 -2\n",
+    "expectedOutput": "3\nm0 68\nm1 47\nm2 21\n"
+  },
+  {
+    "input": "6\n1 INIT m0 25 0\n2 INIT m1 93 -1\n3 INIT m2 90 4\n4 FAIL p1\n5 ATTEMPT p0\n6 FAIL p2\n",
+    "expectedOutput": "3\nm0 25\nm1 93\nm2 90\n"
+  },
+  {
+    "input": "10\n1 INIT m0 43 0\n2 INIT m1 11 -1\n3 INIT m2 79 20\n4 REFUND p5\n5 UPDATE p5 99\n6 UPDATE p5 55\n7 CREATE p4 m2 81\n8 ATTEMPT p3\n9 ATTEMPT p0\n10 ATTEMPT p4\n",
+    "expectedOutput": "3\nm0 43\nm1 11\nm2 79\n"
+  },
+  {
+    "input": "21\n1 INIT m0 -1 20\n2 INIT m1 -7 -1\n3 INIT m2 1 20\n4 FAIL p4\n5 ATTEMPT p4\n6 UPDATE p5 13\n7 UPDATE p2 34\n8 REFUND p5\n9 CREATE p4 m0 36\n10 REFUND p2\n11 SUCCEED p1\n12 ATTEMPT p2\n13 ATTEMPT p3\n14 UPDATE p2 89\n15 UPDATE p0 51\n16 ATTEMPT p3\n17 REFUND p2\n18 REFUND p2\n19 ATTEMPT p0\n20 ATTEMPT p5\n21 ATTEMPT p5\n",
+    "expectedOutput": "3\nm0 -1\nm1 -7\nm2 1\n"
+  },
+  {
+    "input": "23\n1 INIT m0 30 0\n2 INIT m1 6 -1\n3 INIT m2 34 0\n4 ATTEMPT p5\n5 FAIL p2\n6 FAIL p1\n7 UPDATE p3 58\n8 SUCCEED p3\n9 FAIL p0\n10 UPDATE p2 51\n11 SUCCEED p4\n12 CREATE p2 m1 55\n13 ATTEMPT p2\n14 REFUND p3\n15 ATTEMPT p3\n16 CREATE p0 m1 25\n17 SUCCEED p0\n18 UPDATE p2 68\n19 FAIL p3\n20 SUCCEED p0\n21 CREATE p4 m1 6\n22 REFUND p3\n23 SUCCEED p2\n",
+    "expectedOutput": "3\nm0 30\nm1 61\nm2 34\n"
+  },
+  {
+    "input": "16\n1 INIT m0 -4 -1\n2 INIT m1 28 20\n3 INIT m2 72 4\n4 FAIL p0\n5 SUCCEED p3\n6 FAIL p2\n7 SUCCEED p3\n8 REFUND p4\n9 CREATE p3 m2 68\n10 SUCCEED p3\n11 FAIL p2\n12 ATTEMPT p5\n13 UPDATE p3 62\n14 SUCCEED p0\n15 ATTEMPT p2\n16 REFUND p0\n",
+    "expectedOutput": "3\nm0 -4\nm1 28\nm2 72\n"
+  },
+  {
+    "input": "12\n1 INIT m0 51 20\n2 INIT m1 69 4\n3 INIT m2 91 0\n4 UPDATE p5 73\n5 REFUND p2\n6 UPDATE p5 87\n7 SUCCEED p0\n8 REFUND p4\n9 UPDATE p1 67\n10 REFUND p3\n11 SUCCEED p2\n12 CREATE p1 m2 79\n",
+    "expectedOutput": "3\nm0 51\nm1 69\nm2 91\n"
+  },
+  {
+    "input": "19\n1 INIT m0 47 4\n2 INIT m1 90 4\n3 INIT m2 -16 -1\n4 CREATE p5 m2 18\n5 ATTEMPT p1\n6 ATTEMPT p0\n7 UPDATE p3 23\n8 SUCCEED p0\n9 SUCCEED p3\n10 FAIL p2\n11 REFUND p1\n12 UPDATE p4 13\n13 CREATE p1 m0 40\n14 REFUND p4\n15 FAIL p1\n16 ATTEMPT p2\n17 SUCCEED p0\n18 REFUND p0\n19 ATTEMPT p4\n",
+    "expectedOutput": "3\nm0 47\nm1 90\nm2 -16\n"
+  },
+  {
+    "input": "18\n1 INIT m0 50 20\n2 INIT m1 -20 0\n3 INIT m2 9 4\n4 ATTEMPT p2\n5 REFUND p2\n6 FAIL p3\n7 CREATE p0 m2 12\n8 ATTEMPT p4\n9 CREATE p2 m1 61\n10 REFUND p2\n11 ATTEMPT p2\n12 CREATE p2 m2 44\n13 ATTEMPT p3\n14 REFUND p3\n15 REFUND p1\n16 UPDATE p4 27\n17 CREATE p0 m2 65\n18 REFUND p1\n",
+    "expectedOutput": "3\nm0 50\nm1 -20\nm2 9\n"
+  },
+  {
+    "input": "23\n1 INIT m0 57 20\n2 INIT m1 -9 -1\n3 INIT m2 70 -1\n4 ATTEMPT p5\n5 ATTEMPT p1\n6 SUCCEED p1\n7 ATTEMPT p0\n8 CREATE p1 m2 74\n9 FAIL p1\n10 SUCCEED p4\n11 SUCCEED p5\n12 SUCCEED p3\n13 REFUND p1\n14 CREATE p5 m0 -1\n15 CREATE p0 m1 8\n16 SUCCEED p5\n17 UPDATE p3 18\n18 CREATE p2 m2 83\n19 CREATE p3 m0 55\n20 FAIL p5\n21 SUCCEED p2\n22 ATTEMPT p5\n23 CREATE p1 m2 92\n",
+    "expectedOutput": "3\nm0 57\nm1 -9\nm2 70\n"
+  },
+  {
+    "input": "8\n1 INIT m0 -5 20\n2 INIT m1 13 4\n3 INIT m2 99 -1\n4 UPDATE p4 95\n5 UPDATE p0 43\n6 REFUND p4\n7 FAIL p3\n8 CREATE p4 m2 82\n",
+    "expectedOutput": "3\nm0 -5\nm1 13\nm2 99\n"
+  },
+  {
+    "input": "11\n1 INIT m0 -20 4\n2 INIT m1 31 0\n3 INIT m2 5 20\n4 FAIL p3\n5 REFUND p5\n6 CREATE p1 m0 89\n7 UPDATE p0 59\n8 ATTEMPT p1\n9 SUCCEED p0\n10 REFUND p3\n11 CREATE p0 m2 6\n",
+    "expectedOutput": "3\nm0 -20\nm1 31\nm2 5\n"
+  },
+  {
+    "input": "18\n1 INIT m0 58 20\n2 INIT m1 -10 20\n3 INIT m2 -7 20\n4 REFUND p5\n5 REFUND p4\n6 ATTEMPT p1\n7 ATTEMPT p4\n8 FAIL p0\n9 REFUND p4\n10 REFUND p5\n11 ATTEMPT p3\n12 ATTEMPT p1\n13 REFUND p4\n14 ATTEMPT p2\n15 CREATE p5 m1 76\n16 UPDATE p4 16\n17 ATTEMPT p3\n18 SUCCEED p3\n",
+    "expectedOutput": "3\nm0 58\nm1 -10\nm2 -7\n"
+  },
+  {
+    "input": "5\n1 INIT m0 -14 -1\n2 INIT m1 11 0\n3 INIT m2 5 0\n4 FAIL p3\n5 ATTEMPT p2\n",
+    "expectedOutput": "3\nm0 -14\nm1 11\nm2 5\n"
+  },
+  {
+    "input": "4\n1 INIT m0 98 20\n2 INIT m1 11 0\n3 INIT m2 56 0\n4 FAIL p2\n",
+    "expectedOutput": "3\nm0 98\nm1 11\nm2 56\n"
+  },
+  {
+    "input": "11\n1 INIT m0 17 4\n2 INIT m1 53 20\n3 INIT m2 -7 -1\n4 ATTEMPT p1\n5 FAIL p5\n6 SUCCEED p1\n7 UPDATE p2 34\n8 SUCCEED p1\n9 CREATE p2 m2 15\n10 REFUND p0\n11 ATTEMPT p0\n",
+    "expectedOutput": "3\nm0 17\nm1 53\nm2 -7\n"
+  },
+  {
+    "input": "14\n1 INIT m0 23 -1\n2 INIT m1 12 0\n3 INIT m2 98 4\n4 UPDATE p1 36\n5 UPDATE p5 2\n6 SUCCEED p0\n7 UPDATE p4 43\n8 ATTEMPT p4\n9 SUCCEED p4\n10 SUCCEED p4\n11 SUCCEED p0\n12 ATTEMPT p5\n13 UPDATE p2 66\n14 ATTEMPT p4\n",
+    "expectedOutput": "3\nm0 23\nm1 12\nm2 98\n"
+  },
+  {
+    "input": "15\n1 INIT m0 47 20\n2 INIT m1 33 20\n3 INIT m2 16 4\n4 UPDATE p5 71\n5 ATTEMPT p1\n6 ATTEMPT p4\n7 UPDATE p0 59\n8 ATTEMPT p3\n9 ATTEMPT p5\n10 UPDATE p2 52\n11 UPDATE p0 81\n12 REFUND p0\n13 FAIL p1\n14 ATTEMPT p0\n15 UPDATE p2 4\n",
+    "expectedOutput": "3\nm0 47\nm1 33\nm2 16\n"
+  },
+  {
+    "input": "6\n1 INIT m0 40 20\n2 INIT m1 40 0\n3 INIT m2 30 4\n4 FAIL p4\n5 SUCCEED p4\n6 UPDATE p2 51\n",
+    "expectedOutput": "3\nm0 40\nm1 40\nm2 30\n"
+  },
+  {
+    "input": "13\n1 INIT m0 88 20\n2 INIT m1 6 -1\n3 INIT m2 31 -1\n4 ATTEMPT p4\n5 ATTEMPT p1\n6 SUCCEED p4\n7 REFUND p3\n8 SUCCEED p5\n9 SUCCEED p5\n10 ATTEMPT p0\n11 REFUND p0\n12 UPDATE p2 28\n13 CREATE p2 m2 12\n",
+    "expectedOutput": "3\nm0 88\nm1 6\nm2 31\n"
+  },
+  {
+    "input": "6\n1 INIT m0 99 20\n2 INIT m1 69 -1\n3 INIT m2 -14 0\n4 ATTEMPT p3\n5 CREATE p0 m0 32\n6 CREATE p4 m0 27\n",
+    "expectedOutput": "3\nm0 99\nm1 69\nm2 -14\n"
+  },
+  {
+    "input": "22\n1 INIT m0 97 0\n2 INIT m1 54 4\n3 INIT m2 93 4\n4 SUCCEED p1\n5 UPDATE p4 78\n6 CREATE p1 m2 37\n7 REFUND p1\n8 FAIL p4\n9 REFUND p1\n10 CREATE p5 m0 76\n11 FAIL p0\n12 FAIL p3\n13 REFUND p0\n14 REFUND p4\n15 UPDATE p0 92\n16 ATTEMPT p2\n17 REFUND p2\n18 UPDATE p3 47\n19 FAIL p0\n20 FAIL p5\n21 FAIL p0\n22 REFUND p4\n",
+    "expectedOutput": "3\nm0 97\nm1 54\nm2 93\n"
+  },
+  {
+    "input": "10\n1 INIT m0 29 -1\n2 INIT m1 80 4\n3 INIT m2 70 0\n4 REFUND p3\n5 SUCCEED p0\n6 REFUND p5\n7 CREATE p3 m1 62\n8 CREATE p3 m0 50\n9 ATTEMPT p0\n10 SUCCEED p4\n",
+    "expectedOutput": "3\nm0 29\nm1 80\nm2 70\n"
+  },
+  {
+    "input": "18\n1 INIT m0 72 4\n2 INIT m1 -9 20\n3 INIT m2 15 20\n4 ATTEMPT p2\n5 FAIL p1\n6 CREATE p5 m1 62\n7 UPDATE p4 79\n8 REFUND p2\n9 FAIL p2\n10 FAIL p2\n11 ATTEMPT p5\n12 FAIL p0\n13 REFUND p3\n14 UPDATE p0 98\n15 ATTEMPT p5\n16 CREATE p1 m1 25\n17 SUCCEED p4\n18 SUCCEED p3\n",
+    "expectedOutput": "3\nm0 72\nm1 -9\nm2 15\n"
+  },
+  {
+    "input": "14\n1 INIT m0 30 4\n2 INIT m1 41 20\n3 INIT m2 20 0\n4 SUCCEED p0\n5 UPDATE p2 37\n6 REFUND p4\n7 CREATE p0 m2 27\n8 SUCCEED p3\n9 ATTEMPT p1\n10 ATTEMPT p5\n11 FAIL p4\n12 SUCCEED p4\n13 CREATE p2 m0 -3\n14 UPDATE p2 92\n",
+    "expectedOutput": "3\nm0 30\nm1 41\nm2 20\n"
+  },
+  {
+    "input": "12\n1 INIT m0 32 -1\n2 INIT m1 2 0\n3 INIT m2 86 -1\n4 UPDATE p2 76\n5 FAIL p1\n6 SUCCEED p4\n7 UPDATE p4 28\n8 UPDATE p3 40\n9 REFUND p2\n10 ATTEMPT p2\n11 REFUND p4\n12 SUCCEED p4\n",
+    "expectedOutput": "3\nm0 32\nm1 2\nm2 86\n"
+  },
+  {
+    "input": "16\n1 INIT m0 10 20\n2 INIT m1 45 -1\n3 INIT m2 76 0\n4 CREATE p4 m1 37\n5 UPDATE p4 77\n6 ATTEMPT p0\n7 CREATE p4 m0 43\n8 SUCCEED p5\n9 CREATE p3 m2 98\n10 CREATE p3 m2 28\n11 CREATE p2 m2 70\n12 SUCCEED p2\n13 SUCCEED p2\n14 REFUND p5\n15 REFUND p3\n16 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 10\nm1 45\nm2 76\n"
+  },
+  {
+    "input": "21\n1 INIT m0 -14 -1\n2 INIT m1 6 0\n3 INIT m2 97 4\n4 FAIL p4\n5 REFUND p5\n6 UPDATE p4 8\n7 REFUND p2\n8 ATTEMPT p2\n9 SUCCEED p2\n10 UPDATE p4 69\n11 CREATE p1 m2 44\n12 SUCCEED p2\n13 FAIL p2\n14 ATTEMPT p3\n15 REFUND p5\n16 SUCCEED p4\n17 UPDATE p0 84\n18 REFUND p0\n19 SUCCEED p0\n20 UPDATE p1 76\n21 UPDATE p3 100\n",
+    "expectedOutput": "3\nm0 -14\nm1 6\nm2 97\n"
+  },
+  {
+    "input": "22\n1 INIT m0 -19 20\n2 INIT m1 6 -1\n3 INIT m2 19 0\n4 FAIL p0\n5 SUCCEED p5\n6 ATTEMPT p4\n7 SUCCEED p5\n8 FAIL p1\n9 ATTEMPT p2\n10 SUCCEED p2\n11 REFUND p5\n12 ATTEMPT p2\n13 ATTEMPT p0\n14 SUCCEED p2\n15 ATTEMPT p3\n16 CREATE p5 m0 63\n17 SUCCEED p0\n18 CREATE p5 m0 7\n19 ATTEMPT p2\n20 FAIL p4\n21 SUCCEED p0\n22 FAIL p5\n",
+    "expectedOutput": "3\nm0 -19\nm1 6\nm2 19\n"
+  },
+  {
+    "input": "23\n1 INIT m0 23 0\n2 INIT m1 78 20\n3 INIT m2 10 4\n4 CREATE p1 m2 59\n5 FAIL p1\n6 CREATE p3 m0 83\n7 ATTEMPT p3\n8 SUCCEED p2\n9 REFUND p4\n10 ATTEMPT p4\n11 REFUND p5\n12 SUCCEED p0\n13 FAIL p4\n14 FAIL p3\n15 ATTEMPT p3\n16 ATTEMPT p2\n17 FAIL p2\n18 REFUND p5\n19 FAIL p0\n20 SUCCEED p1\n21 REFUND p3\n22 REFUND p4\n23 UPDATE p0 14\n",
+    "expectedOutput": "3\nm0 23\nm1 78\nm2 10\n"
+  },
+  {
+    "input": "7\n1 INIT m0 36 -1\n2 INIT m1 52 20\n3 INIT m2 26 0\n4 UPDATE p0 87\n5 CREATE p0 m2 3\n6 REFUND p0\n7 REFUND p0\n",
+    "expectedOutput": "3\nm0 36\nm1 52\nm2 26\n"
+  },
+  {
+    "input": "17\n1 INIT m0 95 4\n2 INIT m1 88 4\n3 INIT m2 51 20\n4 UPDATE p5 48\n5 SUCCEED p3\n6 SUCCEED p1\n7 SUCCEED p5\n8 CREATE p5 m1 74\n9 FAIL p4\n10 ATTEMPT p5\n11 REFUND p3\n12 CREATE p1 m1 78\n13 FAIL p3\n14 UPDATE p1 61\n15 REFUND p3\n16 SUCCEED p1\n17 FAIL p1\n",
+    "expectedOutput": "3\nm0 95\nm1 88\nm2 51\n"
+  },
+  {
+    "input": "16\n1 INIT m0 29 -1\n2 INIT m1 94 20\n3 INIT m2 78 -1\n4 ATTEMPT p2\n5 CREATE p4 m1 29\n6 SUCCEED p5\n7 UPDATE p0 46\n8 ATTEMPT p0\n9 CREATE p2 m2 1\n10 REFUND p2\n11 UPDATE p2 10\n12 CREATE p4 m0 52\n13 FAIL p1\n14 ATTEMPT p1\n15 UPDATE p4 43\n16 FAIL p1\n",
+    "expectedOutput": "3\nm0 29\nm1 94\nm2 78\n"
+  },
+  {
+    "input": "18\n1 INIT m0 38 4\n2 INIT m1 74 0\n3 INIT m2 98 -1\n4 CREATE p5 m0 98\n5 UPDATE p4 92\n6 FAIL p2\n7 FAIL p4\n8 CREATE p5 m0 95\n9 ATTEMPT p0\n10 UPDATE p0 55\n11 UPDATE p5 87\n12 CREATE p3 m1 33\n13 REFUND p3\n14 UPDATE p0 84\n15 REFUND p2\n16 FAIL p0\n17 SUCCEED p5\n18 ATTEMPT p2\n",
+    "expectedOutput": "3\nm0 38\nm1 74\nm2 98\n"
+  },
+  {
+    "input": "6\n1 INIT m0 -7 -1\n2 INIT m1 -14 20\n3 INIT m2 -9 0\n4 REFUND p0\n5 REFUND p0\n6 ATTEMPT p1\n",
+    "expectedOutput": "3\nm0 -7\nm1 -14\nm2 -9\n"
+  },
+  {
+    "input": "4\n1 INIT m0 19 4\n2 INIT m1 28 20\n3 INIT m2 99 -1\n4 REFUND p3\n",
+    "expectedOutput": "3\nm0 19\nm1 28\nm2 99\n"
+  },
+  {
+    "input": "8\n1 INIT m0 5 -1\n2 INIT m1 -11 0\n3 INIT m2 -17 20\n4 CREATE p1 m0 89\n5 CREATE p1 m1 2\n6 SUCCEED p1\n7 SUCCEED p1\n8 REFUND p2\n",
+    "expectedOutput": "3\nm0 5\nm1 -11\nm2 -17\n"
+  },
+  {
+    "input": "14\n1 INIT m0 73 4\n2 INIT m1 23 0\n3 INIT m2 16 4\n4 SUCCEED p2\n5 UPDATE p2 70\n6 CREATE p2 m0 9\n7 CREATE p4 m0 58\n8 SUCCEED p1\n9 ATTEMPT p5\n10 FAIL p4\n11 REFUND p4\n12 ATTEMPT p1\n13 REFUND p5\n14 FAIL p4\n",
+    "expectedOutput": "3\nm0 73\nm1 23\nm2 16\n"
+  },
+  {
+    "input": "18\n1 INIT m0 22 4\n2 INIT m1 72 20\n3 INIT m2 95 0\n4 REFUND p3\n5 CREATE p3 m1 22\n6 REFUND p3\n7 ATTEMPT p3\n8 ATTEMPT p0\n9 REFUND p0\n10 SUCCEED p2\n11 CREATE p1 m0 64\n12 REFUND p3\n13 FAIL p4\n14 UPDATE p5 48\n15 FAIL p1\n16 UPDATE p5 15\n17 UPDATE p2 79\n18 REFUND p1\n",
+    "expectedOutput": "3\nm0 22\nm1 72\nm2 95\n"
+  },
+  {
+    "input": "15\n1 INIT m0 100 0\n2 INIT m1 3 0\n3 INIT m2 49 4\n4 SUCCEED p5\n5 ATTEMPT p4\n6 ATTEMPT p5\n7 FAIL p3\n8 CREATE p2 m1 99\n9 UPDATE p0 60\n10 REFUND p4\n11 UPDATE p4 34\n12 REFUND p4\n13 ATTEMPT p4\n14 CREATE p1 m0 31\n15 CREATE p3 m0 -2\n",
+    "expectedOutput": "3\nm0 100\nm1 3\nm2 49\n"
+  },
+  {
+    "input": "16\n1 INIT m0 -1 4\n2 INIT m1 16 -1\n3 INIT m2 92 4\n4 CREATE p1 m1 73\n5 SUCCEED p2\n6 SUCCEED p2\n7 SUCCEED p5\n8 REFUND p2\n9 ATTEMPT p4\n10 SUCCEED p0\n11 SUCCEED p2\n12 SUCCEED p5\n13 ATTEMPT p4\n14 CREATE p3 m1 19\n15 REFUND p5\n16 ATTEMPT p5\n",
+    "expectedOutput": "3\nm0 -1\nm1 16\nm2 92\n"
+  },
+  {
+    "input": "13\n1 INIT m0 94 -1\n2 INIT m1 81 20\n3 INIT m2 -3 0\n4 UPDATE p1 1\n5 UPDATE p1 20\n6 FAIL p4\n7 SUCCEED p2\n8 SUCCEED p1\n9 CREATE p1 m1 30\n10 UPDATE p2 39\n11 SUCCEED p1\n12 UPDATE p4 -1\n13 FAIL p2\n",
+    "expectedOutput": "3\nm0 94\nm1 81\nm2 -3\n"
+  },
+  {
+    "input": "18\n1 INIT m0 4 4\n2 INIT m1 48 -1\n3 INIT m2 17 0\n4 REFUND p3\n5 FAIL p5\n6 ATTEMPT p3\n7 REFUND p5\n8 REFUND p5\n9 UPDATE p1 14\n10 UPDATE p5 13\n11 ATTEMPT p4\n12 ATTEMPT p1\n13 UPDATE p3 15\n14 UPDATE p5 25\n15 SUCCEED p4\n16 FAIL p5\n17 UPDATE p3 92\n18 ATTEMPT p4\n",
+    "expectedOutput": "3\nm0 4\nm1 48\nm2 17\n"
+  },
+  {
+    "input": "8\n1 INIT m0 83 0\n2 INIT m1 77 0\n3 INIT m2 82 0\n4 SUCCEED p5\n5 UPDATE p5 97\n6 REFUND p0\n7 REFUND p5\n8 UPDATE p0 75\n",
+    "expectedOutput": "3\nm0 83\nm1 77\nm2 82\n"
+  },
+  {
+    "input": "5\n1 INIT m0 28 -1\n2 INIT m1 43 4\n3 INIT m2 79 4\n4 SUCCEED p2\n5 FAIL p5\n",
+    "expectedOutput": "3\nm0 28\nm1 43\nm2 79\n"
+  },
+  {
+    "input": "13\n1 INIT m0 31 20\n2 INIT m1 43 0\n3 INIT m2 4 20\n4 UPDATE p2 99\n5 CREATE p5 m1 33\n6 FAIL p1\n7 REFUND p3\n8 ATTEMPT p4\n9 ATTEMPT p4\n10 ATTEMPT p1\n11 FAIL p2\n12 FAIL p1\n13 SUCCEED p0\n",
+    "expectedOutput": "3\nm0 31\nm1 43\nm2 4\n"
+  },
+  {
+    "input": "14\n1 INIT m0 33 4\n2 INIT m1 47 20\n3 INIT m2 14 20\n4 UPDATE p4 14\n5 REFUND p3\n6 FAIL p5\n7 SUCCEED p2\n8 CREATE p5 m1 80\n9 REFUND p5\n10 FAIL p5\n11 CREATE p3 m0 39\n12 FAIL p3\n13 REFUND p5\n14 ATTEMPT p5\n",
+    "expectedOutput": "3\nm0 33\nm1 47\nm2 14\n"
+  },
+  {
+    "input": "22\n1 INIT m0 65 4\n2 INIT m1 76 20\n3 INIT m2 53 -1\n4 UPDATE p1 64\n5 ATTEMPT p1\n6 SUCCEED p4\n7 FAIL p0\n8 SUCCEED p0\n9 CREATE p0 m2 92\n10 FAIL p3\n11 SUCCEED p1\n12 FAIL p0\n13 FAIL p3\n14 UPDATE p4 47\n15 ATTEMPT p5\n16 REFUND p2\n17 FAIL p0\n18 UPDATE p2 62\n19 CREATE p5 m1 99\n20 ATTEMPT p3\n21 FAIL p1\n22 FAIL p2\n",
+    "expectedOutput": "3\nm0 65\nm1 76\nm2 53\n"
+  },
+  {
+    "input": "9\n1 INIT m0 27 20\n2 INIT m1 84 0\n3 INIT m2 89 4\n4 UPDATE p3 32\n5 SUCCEED p2\n6 REFUND p2\n7 CREATE p4 m2 57\n8 UPDATE p1 2\n9 REFUND p2\n",
+    "expectedOutput": "3\nm0 27\nm1 84\nm2 89\n"
+  },
+  {
+    "input": "8\n1 INIT m0 -18 -1\n2 INIT m1 -4 -1\n3 INIT m2 37 4\n4 FAIL p0\n5 CREATE p5 m2 18\n6 ATTEMPT p5\n7 REFUND p5\n8 UPDATE p3 27\n",
+    "expectedOutput": "3\nm0 -18\nm1 -4\nm2 37\n"
+  },
+  {
+    "input": "8\n1 INIT m0 63 4\n2 INIT m1 -2 20\n3 INIT m2 -19 0\n4 SUCCEED p0\n5 FAIL p5\n6 FAIL p5\n7 SUCCEED p1\n8 UPDATE p4 3\n",
+    "expectedOutput": "3\nm0 63\nm1 -2\nm2 -19\n"
+  },
+  {
+    "input": "17\n1 INIT m0 0 20\n2 INIT m1 86 4\n3 INIT m2 52 0\n4 SUCCEED p1\n5 SUCCEED p0\n6 CREATE p1 m0 1\n7 CREATE p5 m0 81\n8 REFUND p0\n9 UPDATE p2 13\n10 REFUND p1\n11 UPDATE p2 64\n12 CREATE p1 m1 78\n13 REFUND p4\n14 UPDATE p5 35\n15 SUCCEED p4\n16 SUCCEED p2\n17 CREATE p4 m0 28\n",
+    "expectedOutput": "3\nm0 0\nm1 86\nm2 52\n"
+  },
+  {
+    "input": "17\n1 INIT m0 33 20\n2 INIT m1 24 4\n3 INIT m2 -15 20\n4 FAIL p2\n5 REFUND p4\n6 SUCCEED p5\n7 CREATE p4 m1 26\n8 SUCCEED p0\n9 SUCCEED p5\n10 ATTEMPT p0\n11 CREATE p0 m1 -1\n12 REFUND p5\n13 CREATE p0 m1 39\n14 UPDATE p0 95\n15 SUCCEED p2\n16 ATTEMPT p0\n17 CREATE p4 m1 16\n",
+    "expectedOutput": "3\nm0 33\nm1 24\nm2 -15\n"
+  },
+  {
+    "input": "9\n1 INIT m0 -14 0\n2 INIT m1 39 4\n3 INIT m2 17 0\n4 REFUND p5\n5 REFUND p5\n6 REFUND p0\n7 UPDATE p2 46\n8 ATTEMPT p3\n9 UPDATE p4 39\n",
+    "expectedOutput": "3\nm0 -14\nm1 39\nm2 17\n"
+  },
+  {
+    "input": "5\n1 INIT m0 61 -1\n2 INIT m1 35 20\n3 INIT m2 72 0\n4 CREATE p4 m1 84\n5 FAIL p5\n",
+    "expectedOutput": "3\nm0 61\nm1 35\nm2 72\n"
+  },
+  {
+    "input": "20\n1 INIT m0 -8 20\n2 INIT m1 74 -1\n3 INIT m2 52 4\n4 REFUND p5\n5 REFUND p4\n6 CREATE p1 m2 97\n7 UPDATE p5 44\n8 UPDATE p2 17\n9 FAIL p1\n10 FAIL p5\n11 SUCCEED p1\n12 FAIL p5\n13 ATTEMPT p0\n14 SUCCEED p0\n15 ATTEMPT p5\n16 FAIL p1\n17 UPDATE p3 3\n18 SUCCEED p4\n19 SUCCEED p1\n20 FAIL p5\n",
+    "expectedOutput": "3\nm0 -8\nm1 74\nm2 52\n"
+  },
+  {
+    "input": "7\n1 INIT m0 94 4\n2 INIT m1 -12 4\n3 INIT m2 10 20\n4 ATTEMPT p3\n5 SUCCEED p2\n6 CREATE p3 m2 31\n7 UPDATE p5 77\n",
+    "expectedOutput": "3\nm0 94\nm1 -12\nm2 10\n"
+  },
+  {
+    "input": "21\n1 INIT m0 1 4\n2 INIT m1 -17 4\n3 INIT m2 -15 -1\n4 SUCCEED p2\n5 REFUND p3\n6 CREATE p5 m2 72\n7 UPDATE p2 34\n8 ATTEMPT p0\n9 UPDATE p0 38\n10 FAIL p5\n11 SUCCEED p2\n12 ATTEMPT p3\n13 UPDATE p0 72\n14 CREATE p5 m0 21\n15 SUCCEED p4\n16 FAIL p0\n17 SUCCEED p4\n18 FAIL p0\n19 CREATE p2 m2 10\n20 CREATE p4 m0 46\n21 UPDATE p1 79\n",
+    "expectedOutput": "3\nm0 1\nm1 -17\nm2 -15\n"
+  },
+  {
+    "input": "8\n1 INIT m0 43 4\n2 INIT m1 56 4\n3 INIT m2 0 -1\n4 FAIL p3\n5 ATTEMPT p4\n6 ATTEMPT p4\n7 UPDATE p0 -2\n8 ATTEMPT p3\n",
+    "expectedOutput": "3\nm0 43\nm1 56\nm2 0\n"
+  },
+  {
+    "input": "17\n1 INIT m0 86 -1\n2 INIT m1 70 0\n3 INIT m2 58 4\n4 REFUND p2\n5 SUCCEED p1\n6 REFUND p5\n7 REFUND p5\n8 CREATE p4 m1 36\n9 FAIL p4\n10 CREATE p4 m1 15\n11 REFUND p5\n12 REFUND p1\n13 REFUND p3\n14 ATTEMPT p3\n15 CREATE p1 m2 75\n16 SUCCEED p2\n17 UPDATE p0 95\n",
+    "expectedOutput": "3\nm0 86\nm1 70\nm2 58\n"
+  },
+  {
+    "input": "13\n1 INIT m0 14 4\n2 INIT m1 29 4\n3 INIT m2 44 0\n4 FAIL p0\n5 FAIL p3\n6 FAIL p0\n7 REFUND p5\n8 SUCCEED p0\n9 FAIL p1\n10 CREATE p3 m0 45\n11 UPDATE p4 88\n12 FAIL p5\n13 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 14\nm1 29\nm2 44\n"
+  },
+  {
+    "input": "17\n1 INIT m0 11 4\n2 INIT m1 89 -1\n3 INIT m2 94 4\n4 REFUND p3\n5 ATTEMPT p3\n6 REFUND p3\n7 SUCCEED p5\n8 REFUND p1\n9 SUCCEED p4\n10 UPDATE p5 5\n11 CREATE p3 m2 98\n12 UPDATE p2 87\n13 SUCCEED p2\n14 FAIL p0\n15 ATTEMPT p2\n16 CREATE p3 m2 91\n17 SUCCEED p0\n",
+    "expectedOutput": "3\nm0 11\nm1 89\nm2 94\n"
+  },
+  {
+    "input": "5\n1 INIT m0 25 20\n2 INIT m1 -12 -1\n3 INIT m2 -16 -1\n4 CREATE p4 m1 93\n5 UPDATE p3 98\n",
+    "expectedOutput": "3\nm0 25\nm1 -12\nm2 -16\n"
+  },
+  {
+    "input": "10\n1 INIT m0 28 4\n2 INIT m1 45 0\n3 INIT m2 94 0\n4 REFUND p1\n5 FAIL p2\n6 UPDATE p0 70\n7 FAIL p2\n8 UPDATE p0 47\n9 ATTEMPT p4\n10 UPDATE p2 85\n",
+    "expectedOutput": "3\nm0 28\nm1 45\nm2 94\n"
+  },
+  {
+    "input": "22\n1 INIT m0 33 20\n2 INIT m1 -4 -1\n3 INIT m2 15 4\n4 FAIL p4\n5 CREATE p3 m1 36\n6 UPDATE p2 75\n7 FAIL p4\n8 CREATE p3 m0 53\n9 ATTEMPT p3\n10 ATTEMPT p0\n11 SUCCEED p2\n12 FAIL p1\n13 SUCCEED p3\n14 CREATE p4 m0 8\n15 UPDATE p1 32\n16 UPDATE p2 60\n17 CREATE p2 m0 57\n18 FAIL p0\n19 ATTEMPT p3\n20 FAIL p2\n21 FAIL p3\n22 REFUND p0\n",
+    "expectedOutput": "3\nm0 33\nm1 32\nm2 15\n"
+  },
+  {
+    "input": "22\n1 INIT m0 -2 20\n2 INIT m1 49 -1\n3 INIT m2 91 4\n4 ATTEMPT p5\n5 SUCCEED p5\n6 CREATE p1 m0 58\n7 SUCCEED p3\n8 CREATE p2 m0 93\n9 UPDATE p5 5\n10 UPDATE p4 82\n11 ATTEMPT p3\n12 REFUND p0\n13 SUCCEED p0\n14 REFUND p5\n15 FAIL p1\n16 FAIL p5\n17 FAIL p5\n18 ATTEMPT p0\n19 ATTEMPT p1\n20 ATTEMPT p0\n21 SUCCEED p1\n22 REFUND p3\n",
+    "expectedOutput": "3\nm0 56\nm1 49\nm2 91\n"
+  },
+  {
+    "input": "12\n1 INIT m0 66 4\n2 INIT m1 18 20\n3 INIT m2 12 4\n4 REFUND p0\n5 REFUND p5\n6 SUCCEED p5\n7 UPDATE p0 38\n8 ATTEMPT p0\n9 FAIL p5\n10 CREATE p2 m1 36\n11 UPDATE p1 84\n12 CREATE p1 m2 82\n",
+    "expectedOutput": "3\nm0 66\nm1 18\nm2 12\n"
+  },
+  {
+    "input": "13\n1 INIT m0 10 -1\n2 INIT m1 79 -1\n3 INIT m2 23 20\n4 FAIL p5\n5 ATTEMPT p5\n6 UPDATE p5 32\n7 REFUND p3\n8 FAIL p2\n9 SUCCEED p1\n10 REFUND p2\n11 FAIL p3\n12 CREATE p4 m1 81\n13 REFUND p2\n",
+    "expectedOutput": "3\nm0 10\nm1 79\nm2 23\n"
+  },
+  {
+    "input": "4\n1 INIT m0 4 4\n2 INIT m1 43 0\n3 INIT m2 6 0\n4 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 4\nm1 43\nm2 6\n"
+  },
+  {
+    "input": "12\n1 INIT m0 70 0\n2 INIT m1 40 0\n3 INIT m2 60 0\n4 CREATE p5 m2 29\n5 REFUND p1\n6 FAIL p1\n7 CREATE p2 m0 99\n8 CREATE p1 m1 32\n9 CREATE p2 m0 43\n10 UPDATE p4 11\n11 UPDATE p3 86\n12 UPDATE p0 72\n",
+    "expectedOutput": "3\nm0 70\nm1 40\nm2 60\n"
+  },
+  {
+    "input": "16\n1 INIT m0 75 4\n2 INIT m1 44 4\n3 INIT m2 9 20\n4 SUCCEED p1\n5 REFUND p0\n6 CREATE p0 m1 16\n7 UPDATE p5 85\n8 CREATE p2 m1 45\n9 UPDATE p3 76\n10 SUCCEED p5\n11 FAIL p4\n12 FAIL p2\n13 REFUND p3\n14 ATTEMPT p0\n15 SUCCEED p1\n16 CREATE p5 m2 40\n",
+    "expectedOutput": "3\nm0 75\nm1 44\nm2 9\n"
+  },
+  {
+    "input": "9\n1 INIT m0 75 20\n2 INIT m1 -11 -1\n3 INIT m2 -7 -1\n4 FAIL p5\n5 UPDATE p4 21\n6 ATTEMPT p1\n7 SUCCEED p3\n8 UPDATE p5 74\n9 FAIL p0\n",
+    "expectedOutput": "3\nm0 75\nm1 -11\nm2 -7\n"
+  },
+  {
+    "input": "17\n1 INIT m0 10 4\n2 INIT m1 30 0\n3 INIT m2 64 0\n4 UPDATE p4 29\n5 FAIL p0\n6 ATTEMPT p5\n7 SUCCEED p1\n8 CREATE p0 m0 41\n9 SUCCEED p1\n10 SUCCEED p5\n11 REFUND p1\n12 SUCCEED p5\n13 FAIL p1\n14 ATTEMPT p0\n15 SUCCEED p4\n16 SUCCEED p5\n17 FAIL p2\n",
+    "expectedOutput": "3\nm0 10\nm1 30\nm2 64\n"
+  },
+  {
+    "input": "7\n1 INIT m0 39 20\n2 INIT m1 0 4\n3 INIT m2 43 20\n4 CREATE p1 m2 90\n5 REFUND p2\n6 CREATE p0 m1 41\n7 UPDATE p0 72\n",
+    "expectedOutput": "3\nm0 39\nm1 0\nm2 43\n"
+  },
+  {
+    "input": "14\n1 INIT m0 96 20\n2 INIT m1 22 -1\n3 INIT m2 8 0\n4 REFUND p5\n5 FAIL p2\n6 REFUND p5\n7 SUCCEED p2\n8 REFUND p2\n9 CREATE p0 m1 33\n10 CREATE p0 m2 9\n11 FAIL p5\n12 ATTEMPT p1\n13 SUCCEED p4\n14 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 96\nm1 22\nm2 8\n"
+  },
+  {
+    "input": "9\n1 INIT m0 82 4\n2 INIT m1 -1 20\n3 INIT m2 35 20\n4 FAIL p3\n5 SUCCEED p4\n6 ATTEMPT p0\n7 REFUND p2\n8 UPDATE p1 29\n9 ATTEMPT p2\n",
+    "expectedOutput": "3\nm0 82\nm1 -1\nm2 35\n"
+  },
+  {
+    "input": "22\n1 INIT m0 49 20\n2 INIT m1 85 4\n3 INIT m2 89 0\n4 FAIL p5\n5 ATTEMPT p0\n6 SUCCEED p5\n7 UPDATE p5 35\n8 CREATE p1 m1 52\n9 SUCCEED p4\n10 ATTEMPT p5\n11 REFUND p1\n12 SUCCEED p1\n13 CREATE p5 m2 89\n14 SUCCEED p4\n15 ATTEMPT p0\n16 FAIL p3\n17 SUCCEED p4\n18 REFUND p0\n19 CREATE p0 m1 2\n20 UPDATE p2 -1\n21 CREATE p1 m0 25\n22 FAIL p1\n",
+    "expectedOutput": "3\nm0 49\nm1 85\nm2 89\n"
+  },
+  {
+    "input": "19\n1 INIT m0 -19 4\n2 INIT m1 86 4\n3 INIT m2 96 4\n4 CREATE p5 m2 0\n5 ATTEMPT p3\n6 CREATE p5 m2 31\n7 CREATE p5 m0 68\n8 FAIL p4\n9 ATTEMPT p4\n10 UPDATE p3 89\n11 ATTEMPT p4\n12 ATTEMPT p0\n13 REFUND p4\n14 UPDATE p2 54\n15 UPDATE p5 52\n16 REFUND p0\n17 SUCCEED p3\n18 FAIL p2\n19 UPDATE p5 7\n",
+    "expectedOutput": "3\nm0 -19\nm1 86\nm2 96\n"
+  },
+  {
+    "input": "12\n1 INIT m0 8 4\n2 INIT m1 29 20\n3 INIT m2 5 -1\n4 ATTEMPT p0\n5 CREATE p4 m0 28\n6 REFUND p4\n7 FAIL p0\n8 ATTEMPT p2\n9 REFUND p5\n10 ATTEMPT p5\n11 CREATE p1 m2 45\n12 FAIL p2\n",
+    "expectedOutput": "3\nm0 8\nm1 29\nm2 5\n"
+  },
+  {
+    "input": "5\n1 INIT m0 90 20\n2 INIT m1 98 -1\n3 INIT m2 -9 -1\n4 UPDATE p4 32\n5 REFUND p2\n",
+    "expectedOutput": "3\nm0 90\nm1 98\nm2 -9\n"
+  },
+  {
+    "input": "14\n1 INIT m0 82 0\n2 INIT m1 60 20\n3 INIT m2 10 20\n4 ATTEMPT p2\n5 CREATE p5 m2 68\n6 FAIL p4\n7 SUCCEED p3\n8 UPDATE p5 6\n9 UPDATE p1 78\n10 ATTEMPT p2\n11 ATTEMPT p4\n12 UPDATE p0 43\n13 CREATE p5 m1 92\n14 REFUND p4\n",
+    "expectedOutput": "3\nm0 82\nm1 60\nm2 10\n"
+  },
+  {
+    "input": "16\n1 INIT m0 71 0\n2 INIT m1 95 20\n3 INIT m2 47 0\n4 UPDATE p1 85\n5 REFUND p4\n6 REFUND p5\n7 SUCCEED p4\n8 SUCCEED p2\n9 ATTEMPT p4\n10 SUCCEED p4\n11 REFUND p2\n12 CREATE p0 m1 50\n13 CREATE p3 m1 98\n14 FAIL p0\n15 FAIL p3\n16 SUCCEED p3\n",
+    "expectedOutput": "3\nm0 71\nm1 95\nm2 47\n"
+  },
+  {
+    "input": "19\n1 INIT m0 57 20\n2 INIT m1 17 -1\n3 INIT m2 79 -1\n4 ATTEMPT p2\n5 SUCCEED p2\n6 UPDATE p1 29\n7 ATTEMPT p4\n8 FAIL p4\n9 SUCCEED p4\n10 ATTEMPT p0\n11 ATTEMPT p2\n12 ATTEMPT p5\n13 FAIL p0\n14 REFUND p4\n15 ATTEMPT p0\n16 REFUND p0\n17 CREATE p0 m1 65\n18 REFUND p3\n19 SUCCEED p5\n",
+    "expectedOutput": "3\nm0 57\nm1 17\nm2 79\n"
+  },
+  {
+    "input": "17\n1 INIT m0 34 0\n2 INIT m1 50 20\n3 INIT m2 12 4\n4 REFUND p3\n5 UPDATE p1 52\n6 ATTEMPT p5\n7 ATTEMPT p2\n8 ATTEMPT p1\n9 CREATE p2 m1 45\n10 UPDATE p0 84\n11 SUCCEED p2\n12 REFUND p0\n13 REFUND p4\n14 SUCCEED p3\n15 CREATE p2 m0 46\n16 CREATE p0 m1 18\n17 REFUND p2\n",
+    "expectedOutput": "3\nm0 34\nm1 50\nm2 12\n"
+  },
+  {
+    "input": "12\n1 INIT m0 39 -1\n2 INIT m1 92 20\n3 INIT m2 13 -1\n4 REFUND p2\n5 CREATE p5 m1 79\n6 FAIL p0\n7 REFUND p5\n8 SUCCEED p5\n9 ATTEMPT p3\n10 REFUND p5\n11 UPDATE p1 74\n12 FAIL p1\n",
+    "expectedOutput": "3\nm0 39\nm1 92\nm2 13\n"
+  },
+  {
+    "input": "5\n1 INIT m0 60 0\n2 INIT m1 14 4\n3 INIT m2 92 4\n4 ATTEMPT p4\n5 ATTEMPT p3\n",
+    "expectedOutput": "3\nm0 60\nm1 14\nm2 92\n"
+  }
+]

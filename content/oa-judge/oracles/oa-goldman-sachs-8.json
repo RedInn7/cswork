@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\nG\nGL\nGRGRGRGR\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "1\nR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nGLGLGLGL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2\nLGGRGL\nLGRGLLLRLGGGGRRLRGLLR\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "3\nGGRLLGLGGLRRGGLLLRR\nLRRR\nLLRGRGRGGRRRRLGLGLRLGL\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRLLGRLRRL\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2\nRGLRRGRLLRGRGRGLLRL\nGLLGRLGLRG\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "4\nRRR\nRR\nRLRLGRGLGLLRGGGGGRRGRR\nRG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "2\nRR\nLGLRGGGGL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "4\nGGGLGGGLR\nLGGGLGLGLRRGGGL\nGLRGR\nRRRGGRGRLGRRGRLG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nRLLRLGRGL\nGGRRRGLRRLLGRRLL\nRRGRRLLLLGRLLGL\nRGRGRGRLRRGLLGRLGGGG\nL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nLLRLGRLRRGGGLL\nLLRRRGGGGLLRRLRLG\nGLGLGRGLLLLR\n",
+    "expectedOutput": "YES\nNO\nNO\n"
+  },
+  {
+    "input": "2\nGLGGRLGGRGLRGG\nRRRRGGLRGLGR\n",
+    "expectedOutput": "NO\nNO\n"
+  },
+  {
+    "input": "5\nRRRRLRLRGGG\nRLLLRGRLLGRGG\nRLRLRGLGGLRLGLRRRLRRRR\nRGGLGRGRRRLRR\nLGLLLRLGG\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "1\nRLLLRLR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2\nRGLRRLLGLGRGLGRGLG\nRGRRRRGLGGLGGL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "6\nRGGGRLLRRRGRG\nRL\nLLLRLRGLGLRGLLRRL\nLLGLLRGGGRGRLR\nLLGGGGGGGLG\nL\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nLG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nGGLRGLLRLRRRGRGRGLGRRLLL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6\nRRLRLGRLRRRLGGRGG\nGLRLR\nLG\nGLL\nRRRRRLGLGLRLGRLRRLLR\nRLLR\n",
+    "expectedOutput": "NO\nNO\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nRLGRR\nLGLGRLLGLLGRLGRLRLGRRL\nL\nRGGRRLLLRGGGRRG\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "4\nG\nLGRGGRGRGRGLRRGLGGRLGRGG\nGRRGGGGRLRRGRRLGGLLGR\nLLRRLRRRGGGR\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "3\nGGLGLLGLGL\nLGRRLGRL\nRRGGLGLLLLGRLRRLRRGRLRG\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "2\nRRR\nRLRGGRGL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "5\nR\nGRLRLRGRRRG\nRLRRGLRRRLLRRGLLRLGG\nLGRRGRLRLGLR\nLLGRRGLRGGGGLRLGGLRGGG\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nGR\nLLLLRGLGGGRLGLLRLRGGGRR\nLRGRLLRGGLLRGLLLGRLRRL\nGLGRRRLRLGLRGGGRR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nGLLR\nGRGGL\nRRRRGLLRGRL\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "2\nLRRLGLRLRLGLLRGRLRGGL\nRGGRGR\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "6\nRLGGLGL\nRRGGLGRLLRRRGR\nGLRGLLRRGGGGGGRGRRLGLGG\nGGGGRGLRLGLGRRRLG\nGRLRRRRRGLLRGLL\nGG\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "5\nRRRGLLGLRRG\nGGLLRLRRGLLLRLRLLLGRG\nGRLRGGGLRRRGRGGRRGGLGRR\nLGRLRLRRLLRRLRGGGLRRGRRG\nLGRGRGLRRLGLGR\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "2\nLRGLGLRLGLLRGGRRL\nLRRRGGRRGGRGRLRLGRGG\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "2\nGGRLRGRGRRRLGRL\nLLG\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "6\nR\nGGLGGRGLRRRRLGLLL\nRLRGRLGLLGLRRLRRRLRLG\nRGRRLLLRLGLRLLG\nGGRLGRLGLLGL\nRRLGGRLRGRRRGLGRRLLR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nLRGLRGRLGRGLLRLGGRGGRGR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6\nRGGLGLGRLLRLL\nLGRLLGGL\nLLRRRGLGR\nGLLLGGRRLLRGGLGGRGGGGLR\nL\nLLGLLGRRLGRLLGLGL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nRGLRRLLG\nGLLGGLLLLGRRGRR\nLGLGG\nLRG\nLRGLRLLGGRLRGL\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "4\nLRGGGRGLRLLRGGG\nGGRRGRGLLLGRLLLLGRGGRGL\nL\nRLGLLRG\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRGRRLGRLRGGGLGLLRLLGGLLG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nLL\nRGLGLGRGLGGGGLGGRGLRLR\nLRR\nRLRGRLLLRL\nGGRLLGRRRLLGLL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "2\nLRGLRRLLGRLRLLRL\nLRLGGR\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "1\nLGLRRRGGGRGLGLLL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6\nGGGRGRRGGRRRRLRLRLLG\nR\nRLLLGRRGRGRLLRGGRGRRG\nLLLLLGRGLRLRRLLLRLRGG\nGGGGRGGRRL\nGGGGGLLRLGLLLLLLGGGRRL\n",
+    "expectedOutput": "YES\nYES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "2\nLGLRRGRRRGRG\nRRGLGRGRGGL\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "4\nLLGRGGRLLGLGGG\nGLLLGLGLGLGGGLRRL\nGRLRGLL\nRLRLRGLR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "2\nRGLLRLGLRGGGRLLLLRGRGGG\nGRLRRRGLGLLLRRLLGLL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "1\nRLGRGLGGRLLLGGLLLLLG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "3\nLRGLGRRGG\nLGRRRRGGGGGRLLRGRGLLLLG\nRLRLLGGLGRGLGGRLGRRL\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "4\nGLLRGLGLGRGGLGLGR\nGLLGGGRGLG\nRLGLRGRLLLLRL\nLRG\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "3\nRG\nRLLRGLLRLGG\nGRGLGRRGLRLGRR\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nRRLRL\nRRGLLRRRLRRRLGRGLRG\nGRRGGGLGR\nLLGLGGRLRRRGRGGLRLL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nGRLLRGGL\nLRG\nLLLGRLGLGRRLG\nLLLGLLLRRLRLRLGGLGGLGGRL\nLRLRGGLRLRLRRRLRLG\nLR\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nLGRRRR\nRGRGGGLGRLRGGRGG\nLRLRRGGGGLLGL\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nLLGRGRGLRRGLRGLRGGL\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3\nRGGLGRLLGGGGLGLG\nLRGRGGRRLRR\nGGLRLLRGLGGGRGLRRL\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "4\nLGGGRRGRRGGRLLRR\nG\nGRLLLGGRLLGRGLGGLGRLGL\nRLLGGRLRRRLG\n",
+    "expectedOutput": "NO\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "3\nGRLGGLLLGGRGLRGRLGRRGGL\nLLRLRGRGLRRLR\nLGGLRLR\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nRG\nGRGGLLLLGLGRGLRG\nRGRLLRLRLLGLGLLGGLRRR\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nLGRLGRRLRGGLLLL\nRRRLRGLLGL\nRRLLRLLRL\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nLG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6\nLLRLRRGLRRGLGG\nGRRLGGRGLLR\nGLLRRRRRGRR\nGRGLRGLLLRLGGGRGRGGRRLG\nRGRGGRGRGRLRLLGLGRLL\nGG\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "1\nLGRL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2\nRRRRGRGRRLGRRR\nLGRLLRGGRLLRRGL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "2\nRLGLR\nLRGLLG\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "1\nRLGGRRL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nGRLRLLLLRRGLRGLG\nGLLLRRRGGRGR\nGLLRG\nRLGLRLRRLGRLGGLGGLGR\nLRLRRRLRRR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nGRGRGRRGGLLGGLGRL\nRGGLLGRRLL\nRLRRGLRLLLLRGGGGLRL\nLLLLGRL\nGGRRRL\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "2\nGGGRRR\nLRLRRGLGLRLLRRGGGG\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "2\nGLLGGLL\nGRRRGLGRGGLLGRRG\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "3\nRLRL\nRRRG\nLGGLLRLRGL\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nLRGRLLLRLGRRLGLRRRGGGLRL\nLRLLLRLLRRRLLGGGL\nLGRRGRRRRRL\nRLGGLGGRRGRGLLLRGLLLRR\nRLGG\nLGRL\n",
+    "expectedOutput": "NO\nNO\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "6\nLRLGGRG\nGRLR\nGRGLRLGLGRRLGRLLRGLRGGRL\nL\nLGGLLGRLLRLLGGGLGLRRGG\nRRRLRLLRGGRLR\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nLGRLRRLLR\nRGGGGRGRGL\nGLGLLGLLGRRRRGLRG\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "6\nLRLLGLGRGGRRLRGGRL\nLGRLRGGG\nRRGGRR\nGGGGRGRGGL\nLLGLLRLLLGRRR\nGLGGLGGRGLGLG\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nGGRGRRLGRGGGLLGGL\nG\nLRGRGRLL\nGLL\nRGGGLRGRGLL\nRRLLRRRLLRGGRGRRRLRGG\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "1\nGRGLRGLRGGGGRLRG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2\nRGL\nGRLGGGLLR\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "5\nRLLGLLRLLRRLGRGGGRRRR\nLLLGLGRGRLRGLLRLGRLGL\nLLLRGRLGGLGRGRGGRLRRLL\nLGGRLLLLLGLRLLRL\nGLRL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nGRLGLRGRRRLGG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nLGGGGRGGLRLLG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nRGRRGLLLRLGGRLLR\nRGLLLRRLG\nRGRGGGLRGGRLGLLGRLGR\nRLRLLRRRGGGG\nGRGGLLLRGRLRGL\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRLRRRRGGRRLLRLGLLGLR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nGRGGGLLRRR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nRRGRLLGRRGRGRRLRLR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nRRLRLRLGLGLLGRRGRRGRR\nRLLGRG\nLGGRRLGGLGRRRRGRRRL\nLGGRR\nGLLLGLRRLLRLLRRRRRG\n",
+    "expectedOutput": "NO\nNO\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "3\nRLRGLR\nRLRRGGRGLGRGLRLRL\nRLRGRGLLGGRR\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nRGLRRRGLL\nGLR\nGLRL\nLRRGLRLLRGRRRRRRLLGGRLR\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "4\nLGRRRRLRRGRGRLRRGRGGG\nGGRGGRLLRRLGLG\nLGRGGGGGG\nLRGGRGGRGLRRL\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\n"
+  },
+  {
+    "input": "5\nGRGGGRRRLRRRGGLGLLGR\nLGLGGGGLG\nLRGLLGGRRLLRLGLLL\nLLG\nG\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "4\nLRLGGGGGRLRRGRLLG\nGLL\nLGGL\nGRLLRGLLLGRGLLGGG\n",
+    "expectedOutput": "NO\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "3\nGLGGLGGRLGRGRGGGRRL\nLGGRRGG\nRRRR\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nLGLGLR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6\nLGLRLRGLLLG\nLGRLGLGG\nLLLRRGLLL\nGL\nRGRRRRRLRLGGGRL\nL\n",
+    "expectedOutput": "NO\nYES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRGRRRRRLRGRRLG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4\nLRGRLRLLGLLRLRRLRGL\nLRLR\nLLRLGLGLRGLRRLGRRRGGGL\nRG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nGLLRLGGLG\nLGGLGGRGLRGLLLGLLLGLGRRL\nRGRRRGGGR\nGLLGRLGGGLGRLLRGRLGRGRR\nGRRRLGG\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "5\nGGRRRLGGLRLRGLL\nLLLRGRGRLGRGGRLRGRG\nRLGGRRGLRRGGGGLRRRLL\nRRRGRRGRRGGGRRGRRGLLLLL\nRGLLG\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRRRLGLGLGLRGRR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "3\nGGGGGLGGLLLLLLR\nRLLRGRLRGLRRLLGR\nGGLRGLRRGLGGLLRRRLRRLG\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nRLRRLRLRGLRGG\nRRGGRRG\nLRGGGLGRRRGRLRLLLRGRL\nLGRLRGGGRRRRLRLRRL\nLGGRGLL\nGGRLLGGLLLL\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "1\nGRLRGGGLLLRRLRRGGLGRG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "3\nLRGGLRGG\nLLGRRG\nRGGLRRGGGRLLGLRLRR\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "2\nGLLGGLLRLRRR\nGRRLRGGRLRLGLGGRRGRGL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "6\nRRLGGGRLLRL\nGGRGLGLRLGLGRLLLRL\nRLLRGRRLGRLLGRLGLRGLRG\nLLL\nRGG\nLGRGGL\n",
+    "expectedOutput": "NO\nNO\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nRGGLLLLRRGGRLG\nRLLRGLGGGGRRGRGLGRLRL\nLG\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRLLGGGLGRG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nLGRGLLR\nGGRGLLR\nLRRLGRLLRL\nRGRGRRGRGR\nLGGRGLGGLGRRRGGRGRLGG\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nLGGRLLLGGLRRLGGLGLLRR\nLGGRRGGGGRGRLLR\nRRRLRGLGLLLRGGLGRGLLL\nGRRLRGRRRLLRLL\nRGLGGRGLG\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "5\nGLRLLGLGGRGRG\nRLGGRLRLLGRLL\nRLGGLGRLRRLGR\nGGGRLL\nLLLLGLRGRRLLGRLGLRRRG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRLGRGLGGGLRG\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4\nRLGRGLGGGLLRGGRRLG\nLRLRLLG\nRGRGGGLGLRLLRLLRGL\nGLGGGGLRGRGLRRLLGLLRGLR\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nRGRLRGLRRLRLR\nRLR\nLGGGLLLLLRRGRG\nLRLRLRGGGRGLGGRLRGGGRGGR\nLGLGLRLRLGR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "3\nGGLRRLLGLLRLRGL\nRGLRLRRGLRGLRLR\nRLGRRLGGLLRGRGRRRLRGG\n",
+    "expectedOutput": "YES\nYES\nNO\n"
+  },
+  {
+    "input": "3\nR\nGLL\nLRRRRLGLRLGGGGGRLGLGRG\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nLLGRLLGGGGLLLLRRLL\nRGGRGRGRGR\nRLRGGLLL\nLGGRRLGLGLGRRRGGLLGLGL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nRRGLGGRGGLGLG\nLRRLLGRR\nRRGRRLRGGGLGLL\nGRRLGLLLGLGGLRLRLLGGGG\nLGR\nLLLRRRGRLGLRRLRGGR\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "5\nLRRLGLGLLRGLRLLRLGRGRLLL\nLR\nGR\nRGRLRRLLRGRGRL\nRRRGLLGLLGLGLRRLRGLRL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nGRGRRGGRGGLRR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4\nGRLLLRRLRRGGRGLLLLRRGRG\nLRL\nGLRGRLRL\nG\n",
+    "expectedOutput": "YES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "2\nRRRRLLRLLLRRLRRGGLGLLRLR\nGGGLRGRLLRGLRLRLRGRLL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "5\nLRGGRLLLGLGGRGRGRGRLL\nRLLL\nGLL\nLLLL\nLLRGRG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "3\nGGRRRGLLLLGGRGLLRGGGLR\nGGLGGGGGRRGLRRGGLGL\nRGLGLLRLLGGLGLGRGR\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "3\nGRGRRLLLGRLRRLR\nLGRRRRLLLRR\nLGRGRLLLGRRRLLRGLRGGRG\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "2\nGRLLGGLRRGGLGGRLLGG\nLGGRGRLGRGRGLRL\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "1\nGRRG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nGLRGRRRGLGLRLRRRRR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4\nLLGLL\nGG\nGRRGLRLRGRLGR\nLLRLGLL\n",
+    "expectedOutput": "NO\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "4\nGLGGGRRGGGRGRLLR\nGRRLRGGGRRLLRRRLLL\nLRL\nRLGLRLLG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRLGLLLRGRGRLRR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4\nRR\nLGLRLLLRRRG\nGLGGRRLGRRLLL\nLG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nGRR\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nLGGRLLLLRG\nRGLGRRRGGGGLGGR\nGLLGRGGRLRRG\nRLGLLRLGRRRGRRRRGG\nGGRGGGRRLGRLLGGRGRGRRGGG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRGRRRL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nGRLLLG\nGLLLLLRLLRRGLGRRLLGGRL\nGGRR\nGLGLG\nLRGGRLLGLGLR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRRLLLRLLLLRRG\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6\nGRLRRGGGGGLLLG\nRGRGLLLGLRRRRRRGRLL\nGGGGRRGRGRGLRLRGLLGRRL\nRLR\nGLRLGGRGLGRGRLLGRRLLL\nLLRLGRGLLLRLRGLGRG\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nGLG\nLLGRLGLGGLRRLLRGLGLLRR\nLRRGGGLGLLLLL\nL\nRRRGRLLRLGRRGRRG\nG\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nYES\nNO\n"
+  },
+  {
+    "input": "1\nLGRGGGGGLRL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2\nLGLLLLG\nLRRGRRGLRRLGGLRGRRGL\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "4\nRRR\nLGLRGLLRRGRGGLLLLGRL\nLGRGRGRG\nRGGGRGGRRGGRRL\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "4\nLGGRGRGGG\nLGGRLGLRRG\nRGGLGGGLGL\nRRLGGGLL\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\n"
+  },
+  {
+    "input": "3\nLRGGLGRLGRLRGRLLLRGRGLGL\nRGLGRLG\nLLRRGRLRGRRGRRGRGGGLGR\n",
+    "expectedOutput": "YES\nNO\nYES\n"
+  },
+  {
+    "input": "6\nLRGGGRLGGLGGRLLRL\nLRRLRGL\nGRR\nLGL\nRGRGRGRLGLLRLLLLGGLL\nLLLLRLLGLLRRLLGGLGLGRGGL\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "2\nG\nRRGRLRG\n",
+    "expectedOutput": "NO\nYES\n"
+  },
+  {
+    "input": "3\nGGGRGRRLGLLRGLLLLGLR\nLRGRGG\nLRLLLGGL\n",
+    "expectedOutput": "YES\nYES\nNO\n"
+  },
+  {
+    "input": "2\nGRGGRRLGRLGLRR\nLGRLGRG\n",
+    "expectedOutput": "YES\nNO\n"
+  },
+  {
+    "input": "2\nLGLGRGLRLG\nRRGGGGG\n",
+    "expectedOutput": "YES\nYES\n"
+  },
+  {
+    "input": "4\nRLRGRLRRRRRRGRLLR\nRGGG\nRLRGGRLGGLLRRLLGRRG\nGLLRLLRLGLL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nRGGRRLGLLRLRGGLGGRRLRL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1\nRLGLRGLGRGLGGL\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5\nLGRRGGGLRGRRLRLLGRRR\nGGGLLLGR\nGRG\nGLLLGRRRRLGGLRRGLRG\nRGRLGRGGLGGLRG\n",
+    "expectedOutput": "NO\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nGLRGGLRR\nRLRGLGLRLRGRGGLRLGLGR\nRGRRLGRGRGLLRR\nG\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\n"
+  },
+  {
+    "input": "3\nLLLRGGLL\nRLGLRLLGLLLRRL\nLLLRLRLLG\n",
+    "expectedOutput": "NO\nYES\nNO\n"
+  },
+  {
+    "input": "5\nGGR\nLGR\nLRLGLGRLLLL\nLRRR\nRRGRRRLLRL\n",
+    "expectedOutput": "YES\nNO\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "4\nRLGLRRGRRRGGGLGLLRGLGRLG\nGGGR\nLLLLGRRRRGGRGLL\nLLRGRRGRLRRRL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nRGGRGRGLGGGGLGGRRL\nRRGRGRRLLLG\nLRLLRGG\nLGRGRRRG\nGRLL\nL\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nLGGGRGGGLRRGLGR\nGR\nRRLLRGLGGLLGGGLGGGLGRLL\nLGR\nGLGLGLLG\n",
+    "expectedOutput": "YES\nYES\nYES\nNO\nNO\n"
+  },
+  {
+    "input": "3\nLRLLGLLGLLGRGRGRGG\nRRRGLRGGGRGGLLLGLRRL\nLLLLGLGLGR\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "5\nRLRLGRGGGRGRLGLRRRGLLL\nRRGLGGGLGLGGRGGRGL\nRLRLLRLGLLRRLRGG\nRRGLRGGRRRLGLGGRLR\nLRLLRLRGGGRGRGRRG\n",
+    "expectedOutput": "YES\nNO\nYES\nNO\nYES\n"
+  },
+  {
+    "input": "3\nRGRRLRGRRLLRGGG\nLLGGLRGLRGRRLRGGLRLRRG\nGRLGRRRLRRGGRRRLGRRGL\n",
+    "expectedOutput": "NO\nYES\nYES\n"
+  },
+  {
+    "input": "6\nRRGLGGGRRGRLGLRRRLGLG\nRL\nL\nLRRLLRRLLRRGLGRLLGLR\nGGLRRLLL\nLGGLLLGGRR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\n"
+  },
+  {
+    "input": "1\nG\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3\nRL\nRRRLGRRRLRGLL\nGLGRGGGRLRGRG\n",
+    "expectedOutput": "YES\nYES\nYES\n"
+  },
+  {
+    "input": "6\nRRRLRRLR\nLLRLLG\nRR\nRLRRGRLGL\nGRLRRGLLRGLRRLGGG\nRGLGLLGGRGGRRGGRLRGRGRR\n",
+    "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\n"
+  }
+]

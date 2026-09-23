@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-13",
+  "title": "邮件日志分组与排序",
+  "explanation": "## 思路\n\n按发件人收集记录，再用三元键 `(时间戳, 收件人, 主题)` 排序；最后按发件人键排序输出。\n\n## 正确性\n\n每条记录恰好进入其发件人对应的组。组键升序给出题目规定的组顺序，三元组字典序与组内三级排序完全一致，因此输出覆盖且只覆盖所有输入日志，并满足全部排序规则。\n\n## 复杂度\n\n设日志数为 n。排序总耗时 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import defaultdict\ndef solve(raw):\n    lines=raw.splitlines(); n=int(lines[0]); groups=defaultdict(list)\n    for line in lines[1:n+1]:\n        parts=line.split(None,3)\n        ts=int(parts[0]); sender=parts[1]; receiver=parts[2]\n        subject=parts[3] if len(parts)>3 else \"\"\n        groups[sender].append((ts,receiver,subject))\n    out=[]\n    for sender in sorted(groups):\n        out.append(f\"sender: {sender}\")\n        for ts,receiver,subject in sorted(groups[sender]):\n            out.append(f\"{ts} {receiver}\"+(f\" {subject}\" if subject else \"\"))\n    return str(len(out))+\"\\n\"+\"\\n\".join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/stripe#13-email-log-processing-grouping-and-sorting",
+  "sourceContentHash": "64366bb6f9c63f6fa897a9a009b72f694b9da1c0afae239514fc3db3bc47264c",
+  "author": "CSWork"
+}
