@@ -40,7 +40,7 @@
 
 ## 分批验证与发布
 
-`batches/` 只存题目清单，普通本地验证结果放 `validation/`。添加新批次后执行：
+`batches/` 只存已有真实沙箱报告的题目清单。尚待沙箱的候选题清单必须放在 `candidate-batches/`：coverage 会校验其题包、参考程序、独立 oracle、错误程序和本地验证记录并标为 `awaiting_sandbox`，但它们不会进入运行时 registry，也不会向学员开放题解或提交。只有真实沙箱验证通过后，才可将候选清单提升为正式 batch 并生成独立 report。普通本地验证结果放 `validation/`。添加正式批次后执行：
 
 ```sh
 node scripts/oa-judge/aggregate-batches.mjs
