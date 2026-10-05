@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-blackrock-1",
+      "sourceContentHash": "15a860ced70b4c539d1e8ad4e8fe7a287ca7f05ae999fe1c95407416b0f71dcb",
+      "packageChecksum": "d63ee5cf33dbdf88d7d3c0055d680440cc1e989d610fb5fe47e156263679d502",
+      "editorial": "## 思路\n\n将加油站距离升序排序。第一段是最近站点到起点的距离，之后每段等于相邻距离之差。\n\n## 正确性\n\n一维路线沿选定方向延伸，距起点排序即为沿途顺序。把起点视为坐标 0，所有相邻路段恰为排序后相邻坐标差，因此算法输出唯一正确的路段长度；重复距离对应长度 0。\n\n## 复杂度\n\n排序 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n ds=[]\n for x in raw.strip().split(\";\"):\n  if x.strip(): ds.append(int(x.rsplit(\",\",1)[1].strip()))\n ds.sort()\n return \", \".join(str(ds[0] if i==0 else ds[i]-ds[i-1]) for i in range(len(ds)))\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-blackrock-5",
+      "sourceContentHash": "da58c8f7e12fb2eb03f0b342b1561ddaf4f42ec5fbd81cf26c93344bf1d25bd0",
+      "packageChecksum": "bfb7c65d1ddcfeb8e72a097278119166bff64a5885392d4f98b93f0d8b1cda7c",
+      "editorial": "## 思路\n\n模拟数字平方和变换，并用集合保存访问过的数字。到达 1 时答案为 1；若某个非 1 状态重复，则之后必重复同一循环，答案为 0。\n\n## 正确性\n\n变换是确定性的，重复状态意味着未来状态序列完全重复且不包含 1。另一方面，若到达 1 即符合快乐数定义。正整数序列最终到达 1 或重复状态，集合检测恰好区分这两种情形。\n\n## 复杂度\n\n若变换 k 次、数字有 d 位，则时间 O(kd)，空间 O(k)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(n):\n seen=set()\n while n!=1 and n not in seen:\n  seen.add(n); s=0\n  while n: n,d=divmod(n,10); s+=d*d\n  n=s\n return \"1\" if n==1 else \"0\"\nif __name__==\"__main__\": print(solve(int(sys.stdin.read())))\n"
+        }
+      ]
+    }
+  ]
+}
