@@ -1,0 +1,654 @@
+[
+  {
+    "input": "5 1\nquery 0 4\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 3\nbuild 2\nquery 0 4\nquery 3 4\n",
+    "expectedOutput": "1 0\n"
+  },
+  {
+    "input": "3 4\nbuild 0\nbuild 0\nquery 0 0\nquery 1 2\n",
+    "expectedOutput": "1 0\n"
+  },
+  {
+    "input": "30 48\nquery 10 16\nquery 20 27\nbuild 1\nbuild 6\nbuild 13\nbuild 7\nquery 16 19\nbuild 1\nbuild 3\nquery 8 22\nbuild 24\nquery 6 27\nbuild 22\nquery 10 16\nbuild 18\nquery 16 19\nquery 6 20\nquery 5 14\nquery 4 6\nquery 11 14\nquery 21 22\nbuild 27\nbuild 17\nquery 28 29\nquery 21 23\nbuild 6\nquery 5 14\nquery 11 25\nbuild 26\nbuild 6\nbuild 0\nquery 2 25\nquery 21 29\nquery 27 28\nbuild 3\nquery 27 29\nbuild 16\nquery 15 24\nbuild 0\nquery 22 27\nbuild 21\nbuild 14\nquery 7 19\nbuild 7\nbuild 2\nbuild 24\nquery 15 16\nquery 12 29\n",
+    "expectedOutput": "0 0 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "25 38\nbuild 7\nquery 4 23\nbuild 9\nquery 20 23\nbuild 1\nbuild 1\nquery 9 22\nquery 15 24\nbuild 6\nquery 1 7\nbuild 10\nbuild 17\nbuild 16\nquery 20 22\nquery 3 8\nquery 3 7\nbuild 20\nbuild 10\nquery 14 24\nquery 1 7\nquery 15 21\nquery 2 16\nbuild 12\nbuild 14\nbuild 10\nquery 16 18\nbuild 5\nbuild 2\nquery 19 19\nbuild 16\nbuild 4\nquery 9 20\nquery 3 6\nquery 8 8\nbuild 3\nbuild 12\nquery 1 24\nquery 10 20\n",
+    "expectedOutput": "1 0 1 0 1 0 1 1 1 1 1 1 1 0 1 1 0 1 1\n"
+  },
+  {
+    "input": "34 8\nquery 15 21\nbuild 25\nbuild 4\nquery 25 25\nquery 11 11\nbuild 11\nbuild 1\nbuild 19\n",
+    "expectedOutput": "0 1 0\n"
+  },
+  {
+    "input": "26 40\nbuild 25\nquery 3 14\nbuild 23\nquery 2 4\nbuild 20\nbuild 5\nquery 21 21\nbuild 12\nbuild 9\nbuild 9\nquery 11 22\nquery 9 23\nbuild 19\nquery 5 21\nbuild 5\nquery 24 25\nquery 25 25\nbuild 18\nbuild 20\nbuild 24\nquery 5 16\nquery 20 24\nbuild 24\nbuild 19\nbuild 23\nbuild 5\nbuild 24\nbuild 2\nquery 11 25\nbuild 14\nquery 9 21\nquery 19 19\nquery 19 20\nbuild 8\nbuild 14\nquery 16 17\nquery 4 6\nquery 11 12\nquery 10 25\nquery 14 18\n",
+    "expectedOutput": "0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1\n"
+  },
+  {
+    "input": "29 23\nquery 2 21\nquery 20 22\nbuild 16\nquery 13 24\nquery 23 27\nquery 5 23\nquery 8 14\nquery 20 22\nbuild 4\nbuild 0\nbuild 7\nquery 12 22\nbuild 22\nbuild 11\nquery 27 28\nquery 7 20\nquery 18 23\nbuild 17\nbuild 27\nbuild 20\nquery 9 26\nquery 22 24\nquery 23 27\n",
+    "expectedOutput": "0 0 1 0 1 0 0 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "13 45\nbuild 11\nquery 3 4\nbuild 12\nbuild 2\nquery 9 12\nbuild 1\nquery 5 6\nquery 5 9\nquery 9 9\nbuild 8\nquery 6 11\nquery 3 8\nbuild 3\nbuild 6\nbuild 5\nquery 0 0\nquery 12 12\nbuild 1\nquery 0 5\nbuild 3\nbuild 1\nbuild 3\nquery 8 8\nbuild 12\nbuild 7\nquery 7 7\nquery 12 12\nbuild 6\nquery 10 11\nquery 8 9\nquery 3 10\nbuild 4\nquery 7 12\nbuild 3\nbuild 10\nbuild 12\nquery 12 12\nquery 9 12\nbuild 6\nbuild 11\nbuild 9\nbuild 10\nquery 5 6\nbuild 12\nquery 4 9\n",
+    "expectedOutput": "0 1 0 0 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "1 17\nquery 0 0\nquery 0 0\nbuild 0\nquery 0 0\nquery 0 0\nquery 0 0\nquery 0 0\nbuild 0\nquery 0 0\nbuild 0\nbuild 0\nquery 0 0\nquery 0 0\nbuild 0\nbuild 0\nbuild 0\nquery 0 0\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 59\nbuild 1\nquery 2 2\nquery 2 2\nbuild 0\nquery 2 2\nbuild 0\nquery 1 2\nbuild 1\nbuild 1\nbuild 0\nquery 0 0\nquery 1 2\nquery 2 2\nquery 2 2\nbuild 0\nquery 2 2\nbuild 1\nquery 1 2\nquery 0 0\nbuild 1\nquery 0 1\nquery 0 0\nbuild 1\nbuild 2\nquery 2 2\nbuild 0\nquery 2 2\nquery 0 2\nbuild 1\nquery 1 1\nbuild 2\nquery 2 2\nquery 1 2\nbuild 2\nquery 1 2\nquery 2 2\nbuild 0\nquery 2 2\nbuild 0\nbuild 2\nquery 0 0\nbuild 0\nbuild 1\nquery 2 2\nbuild 1\nbuild 1\nbuild 0\nbuild 0\nquery 2 2\nquery 0 2\nbuild 0\nbuild 2\nquery 2 2\nquery 0 0\nquery 0 0\nquery 0 0\nquery 0 0\nbuild 2\nbuild 1\n",
+    "expectedOutput": "0 0 0 1 1 1 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "34 14\nquery 11 21\nbuild 30\nquery 21 30\nquery 22 32\nbuild 1\nquery 7 10\nquery 23 27\nquery 18 25\nquery 8 28\nquery 0 30\nquery 21 28\nquery 16 33\nbuild 15\nbuild 9\n",
+    "expectedOutput": "0 1 1 0 0 0 0 1 0 1\n"
+  },
+  {
+    "input": "32 14\nbuild 19\nquery 2 17\nquery 12 19\nquery 25 30\nquery 1 13\nquery 16 19\nquery 20 20\nbuild 6\nbuild 10\nbuild 6\nbuild 14\nquery 0 11\nbuild 28\nbuild 7\n",
+    "expectedOutput": "0 1 0 0 1 0 1\n"
+  },
+  {
+    "input": "24 29\nbuild 4\nquery 13 13\nquery 4 13\nquery 8 19\nquery 16 17\nbuild 18\nbuild 0\nquery 5 18\nbuild 21\nbuild 7\nquery 12 16\nquery 0 13\nquery 0 23\nbuild 9\nbuild 16\nquery 13 23\nquery 21 22\nquery 1 2\nquery 21 21\nbuild 2\nbuild 18\nbuild 23\nbuild 20\nquery 12 18\nquery 0 14\nbuild 0\nquery 20 20\nbuild 15\nquery 21 22\n",
+    "expectedOutput": "0 1 0 0 1 0 1 1 1 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "13 29\nquery 12 12\nquery 3 4\nbuild 5\nquery 4 9\nbuild 3\nquery 10 11\nbuild 10\nbuild 2\nquery 2 7\nbuild 1\nquery 10 12\nquery 4 8\nbuild 10\nbuild 1\nquery 0 8\nbuild 12\nquery 6 12\nbuild 9\nquery 7 7\nquery 2 2\nquery 8 9\nquery 12 12\nbuild 3\nquery 11 11\nbuild 7\nquery 9 10\nquery 1 7\nbuild 0\nbuild 3\n",
+    "expectedOutput": "0 0 1 0 1 1 1 1 1 0 1 1 1 0 1 1\n"
+  },
+  {
+    "input": "33 46\nbuild 26\nbuild 2\nbuild 25\nbuild 9\nquery 30 32\nquery 11 23\nbuild 32\nquery 3 22\nbuild 12\nbuild 11\nquery 0 32\nbuild 25\nquery 30 30\nbuild 30\nquery 17 30\nbuild 15\nbuild 25\nbuild 12\nbuild 24\nbuild 27\nbuild 16\nquery 22 28\nquery 6 19\nbuild 29\nbuild 19\nbuild 0\nquery 5 19\nquery 20 30\nbuild 24\nquery 26 32\nbuild 32\nquery 14 24\nquery 14 17\nquery 0 2\nquery 31 31\nbuild 1\nbuild 6\nbuild 21\nbuild 12\nbuild 2\nbuild 11\nquery 3 8\nquery 25 30\nquery 24 31\nquery 29 31\nquery 9 15\n",
+    "expectedOutput": "0 0 1 1 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "33 57\nbuild 20\nbuild 6\nquery 9 13\nquery 21 23\nquery 1 16\nbuild 18\nbuild 32\nbuild 10\nbuild 1\nquery 7 12\nquery 3 27\nquery 31 31\nbuild 1\nquery 3 10\nbuild 4\nquery 16 24\nquery 3 8\nquery 15 24\nbuild 19\nbuild 32\nquery 26 31\nquery 20 29\nbuild 15\nquery 17 19\nbuild 31\nquery 13 17\nbuild 6\nbuild 9\nquery 7 13\nbuild 26\nquery 5 8\nbuild 7\nquery 0 8\nbuild 18\nbuild 2\nbuild 23\nquery 17 31\nquery 2 10\nbuild 13\nbuild 24\nquery 29 30\nquery 9 17\nbuild 15\nquery 29 32\nquery 15 24\nquery 19 28\nbuild 31\nbuild 29\nquery 3 3\nquery 15 30\nquery 2 20\nbuild 8\nquery 12 24\nquery 22 24\nquery 4 16\nquery 23 29\nquery 27 29\n",
+    "expectedOutput": "0 0 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "34 5\nquery 11 23\nquery 25 28\nbuild 12\nquery 17 32\nquery 8 27\n",
+    "expectedOutput": "0 0 0 1\n"
+  },
+  {
+    "input": "6 6\nquery 4 5\nbuild 4\nquery 4 5\nquery 2 3\nquery 1 4\nquery 5 5\n",
+    "expectedOutput": "0 1 0 1 0\n"
+  },
+  {
+    "input": "16 49\nbuild 15\nquery 15 15\nquery 9 14\nquery 13 15\nbuild 0\nquery 9 11\nbuild 3\nbuild 12\nquery 11 14\nbuild 4\nbuild 12\nbuild 5\nquery 8 10\nquery 8 12\nbuild 6\nquery 13 14\nquery 5 6\nbuild 7\nquery 3 10\nquery 7 8\nquery 14 15\nbuild 7\nquery 9 9\nbuild 7\nbuild 5\nbuild 1\nquery 11 11\nbuild 4\nbuild 14\nbuild 8\nquery 12 14\nquery 9 15\nbuild 0\nquery 10 14\nbuild 15\nbuild 9\nbuild 11\nquery 3 13\nquery 12 12\nquery 15 15\nbuild 12\nbuild 4\nquery 0 7\nbuild 6\nquery 9 12\nbuild 3\nquery 4 6\nquery 0 8\nquery 9 12\n",
+    "expectedOutput": "1 0 1 0 1 0 1 0 1 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "10 14\nbuild 6\nbuild 0\nbuild 6\nbuild 3\nquery 0 8\nquery 4 5\nbuild 3\nquery 6 6\nquery 4 6\nbuild 1\nbuild 3\nbuild 5\nquery 8 8\nquery 4 5\n",
+    "expectedOutput": "1 0 1 1 0 1\n"
+  },
+  {
+    "input": "35 8\nquery 16 34\nbuild 15\nquery 25 28\nbuild 3\nbuild 30\nbuild 2\nquery 2 20\nquery 20 23\n",
+    "expectedOutput": "0 0 1 0\n"
+  },
+  {
+    "input": "28 8\nquery 19 25\nbuild 20\nquery 6 8\nquery 13 15\nquery 4 15\nbuild 13\nquery 4 14\nquery 23 26\n",
+    "expectedOutput": "0 0 0 0 1 0\n"
+  },
+  {
+    "input": "31 47\nquery 29 30\nquery 29 30\nbuild 18\nquery 30 30\nquery 19 26\nbuild 21\nbuild 7\nquery 20 23\nquery 9 21\nquery 1 2\nquery 21 30\nbuild 18\nbuild 12\nbuild 11\nbuild 23\nbuild 16\nquery 11 29\nbuild 19\nquery 16 26\nquery 28 28\nbuild 20\nquery 20 28\nbuild 19\nquery 10 29\nquery 1 1\nquery 5 25\nbuild 4\nquery 20 22\nquery 21 26\nbuild 30\nbuild 17\nbuild 10\nbuild 17\nquery 3 24\nbuild 28\nquery 25 28\nquery 5 19\nquery 29 30\nquery 4 7\nquery 12 24\nquery 2 20\nquery 28 28\nbuild 14\nbuild 30\nquery 17 30\nbuild 1\nquery 28 30\n",
+    "expectedOutput": "0 0 0 0 1 1 0 1 1 1 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 55\nquery 0 0\nquery 1 3\nbuild 3\nquery 2 2\nquery 0 0\nbuild 2\nquery 2 2\nquery 2 3\nquery 1 2\nquery 1 3\nquery 3 3\nbuild 3\nbuild 3\nquery 2 3\nbuild 3\nbuild 2\nquery 0 3\nquery 0 2\nquery 0 2\nquery 3 3\nbuild 1\nbuild 0\nbuild 3\nbuild 2\nquery 1 2\nquery 2 3\nquery 2 2\nquery 2 2\nquery 1 2\nquery 0 3\nquery 1 1\nbuild 2\nbuild 1\nbuild 1\nquery 2 2\nbuild 1\nbuild 2\nquery 0 2\nquery 0 2\nquery 2 2\nbuild 3\nbuild 3\nbuild 0\nbuild 2\nquery 2 2\nquery 1 3\nbuild 0\nbuild 3\nquery 1 3\nquery 0 1\nbuild 2\nbuild 0\nquery 0 1\nbuild 2\nquery 0 1\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 3\nquery 1 1\nquery 2 2\nquery 2 2\n",
+    "expectedOutput": "0 0 0\n"
+  },
+  {
+    "input": "22 35\nquery 9 17\nbuild 16\nbuild 15\nquery 0 7\nquery 9 12\nbuild 9\nquery 0 7\nbuild 17\nquery 15 20\nbuild 13\nbuild 8\nbuild 8\nquery 0 5\nbuild 10\nquery 21 21\nquery 15 16\nquery 0 11\nbuild 18\nbuild 4\nbuild 5\nquery 12 17\nquery 4 9\nbuild 20\nquery 16 18\nquery 18 19\nquery 15 19\nquery 10 12\nquery 11 18\nbuild 8\nquery 4 21\nquery 12 12\nbuild 6\nquery 15 15\nbuild 9\nbuild 0\n",
+    "expectedOutput": "0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 1 0 1\n"
+  },
+  {
+    "input": "13 12\nquery 4 6\nbuild 1\nbuild 11\nbuild 9\nquery 0 0\nquery 12 12\nbuild 0\nquery 4 10\nbuild 7\nbuild 4\nbuild 5\nbuild 12\n",
+    "expectedOutput": "0 0 0 1\n"
+  },
+  {
+    "input": "8 20\nbuild 0\nbuild 1\nquery 3 4\nbuild 6\nbuild 7\nbuild 2\nquery 5 6\nquery 4 4\nquery 3 7\nquery 3 4\nbuild 7\nquery 1 7\nbuild 1\nbuild 3\nbuild 4\nquery 6 7\nquery 5 7\nbuild 2\nquery 4 6\nquery 5 7\n",
+    "expectedOutput": "0 1 0 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "23 60\nquery 0 5\nquery 2 21\nbuild 8\nquery 5 10\nbuild 3\nbuild 10\nquery 4 14\nbuild 18\nquery 12 12\nbuild 14\nquery 21 22\nbuild 10\nquery 12 22\nquery 2 2\nbuild 21\nquery 3 18\nbuild 21\nbuild 5\nbuild 22\nbuild 20\nbuild 5\nquery 13 16\nquery 12 15\nquery 12 17\nquery 22 22\nbuild 4\nquery 10 16\nquery 4 5\nquery 6 7\nbuild 18\nbuild 8\nbuild 1\nquery 5 18\nquery 6 14\nquery 1 14\nquery 22 22\nbuild 13\nbuild 7\nquery 21 21\nquery 0 11\nquery 6 14\nbuild 0\nquery 11 22\nbuild 13\nbuild 16\nbuild 8\nbuild 0\nbuild 20\nquery 7 10\nbuild 18\nbuild 19\nquery 6 13\nbuild 22\nquery 16 21\nquery 10 15\nquery 13 17\nbuild 0\nquery 21 22\nbuild 12\nbuild 16\n",
+    "expectedOutput": "0 0 1 1 0 0 1 0 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "22 8\nquery 18 19\nbuild 8\nbuild 6\nquery 4 11\nquery 10 20\nquery 5 5\nquery 5 15\nquery 0 1\n",
+    "expectedOutput": "0 1 0 0 1 0\n"
+  },
+  {
+    "input": "30 41\nquery 4 28\nbuild 27\nquery 29 29\nquery 7 11\nbuild 6\nquery 26 27\nquery 28 29\nbuild 8\nbuild 19\nbuild 14\nquery 6 22\nquery 4 18\nquery 23 29\nbuild 0\nquery 16 25\nquery 11 22\nbuild 1\nbuild 8\nbuild 14\nbuild 23\nbuild 11\nquery 5 18\nbuild 27\nbuild 26\nbuild 18\nquery 9 12\nquery 10 16\nbuild 26\nbuild 16\nquery 2 25\nquery 23 27\nbuild 1\nquery 14 24\nbuild 14\nquery 18 29\nquery 28 28\nquery 29 29\nquery 28 29\nbuild 3\nquery 13 20\nquery 27 29\n",
+    "expectedOutput": "0 0 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 0 1 1\n"
+  },
+  {
+    "input": "22 31\nquery 6 21\nquery 6 14\nbuild 6\nbuild 21\nbuild 1\nbuild 11\nquery 20 20\nquery 1 5\nbuild 4\nbuild 5\nbuild 8\nbuild 3\nbuild 5\nquery 15 16\nquery 19 19\nbuild 5\nbuild 6\nquery 6 8\nbuild 4\nquery 5 20\nquery 13 18\nquery 1 4\nbuild 15\nbuild 21\nquery 15 15\nquery 18 21\nbuild 0\nquery 4 9\nquery 17 20\nquery 5 9\nquery 18 20\n",
+    "expectedOutput": "0 0 0 1 0 0 1 1 0 1 1 1 1 0 1 0\n"
+  },
+  {
+    "input": "12 33\nquery 5 11\nbuild 1\nquery 3 7\nquery 4 7\nquery 3 6\nquery 2 2\nbuild 6\nbuild 11\nquery 11 11\nquery 3 11\nbuild 1\nbuild 2\nquery 3 7\nquery 2 7\nquery 10 11\nbuild 9\nbuild 10\nquery 4 8\nbuild 0\nbuild 8\nbuild 0\nquery 6 9\nbuild 10\nbuild 8\nquery 9 9\nbuild 4\nbuild 8\nquery 8 9\nbuild 4\nbuild 11\nbuild 0\nquery 2 11\nquery 6 10\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "3 22\nbuild 1\nquery 2 2\nquery 0 0\nquery 0 1\nbuild 2\nquery 2 2\nbuild 1\nquery 0 2\nquery 0 1\nquery 2 2\nbuild 0\nquery 0 0\nbuild 0\nbuild 2\nbuild 1\nbuild 0\nquery 2 2\nquery 1 1\nbuild 1\nbuild 0\nquery 0 2\nquery 0 0\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "23 18\nquery 14 17\nquery 19 21\nbuild 18\nquery 7 13\nquery 14 16\nbuild 4\nquery 4 13\nquery 17 18\nquery 17 19\nbuild 17\nbuild 14\nbuild 12\nquery 5 14\nquery 19 21\nquery 13 22\nbuild 18\nbuild 4\nbuild 6\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 0 1\n"
+  },
+  {
+    "input": "30 29\nquery 19 27\nbuild 23\nquery 15 23\nbuild 2\nbuild 29\nbuild 23\nquery 17 25\nbuild 8\nbuild 2\nbuild 11\nquery 19 20\nbuild 24\nquery 21 22\nbuild 19\nbuild 4\nbuild 28\nbuild 2\nquery 7 12\nbuild 13\nquery 9 21\nbuild 21\nbuild 20\nquery 2 4\nbuild 9\nquery 0 12\nbuild 13\nquery 14 25\nquery 16 23\nquery 20 28\n",
+    "expectedOutput": "0 1 1 0 0 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "14 4\nquery 5 10\nquery 13 13\nbuild 10\nbuild 2\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "23 59\nbuild 18\nbuild 3\nbuild 11\nquery 12 19\nbuild 1\nbuild 12\nquery 20 22\nquery 3 20\nquery 5 6\nbuild 10\nbuild 8\nquery 0 5\nquery 16 20\nquery 11 12\nquery 20 21\nbuild 11\nquery 18 20\nquery 4 19\nquery 6 10\nquery 12 22\nbuild 16\nquery 22 22\nbuild 15\nquery 11 13\nquery 14 22\nbuild 4\nbuild 18\nbuild 14\nquery 22 22\nbuild 0\nbuild 16\nbuild 20\nquery 19 19\nquery 5 18\nbuild 13\nquery 10 13\nquery 22 22\nbuild 0\nquery 1 1\nquery 7 17\nbuild 8\nbuild 10\nquery 2 19\nquery 5 19\nbuild 8\nquery 16 21\nquery 15 22\nbuild 2\nquery 16 17\nquery 22 22\nbuild 17\nbuild 7\nquery 11 20\nquery 18 22\nquery 5 12\nbuild 5\nquery 6 6\nbuild 15\nquery 5 20\n",
+    "expectedOutput": "1 0 1 0 1 1 1 0 1 1 1 1 0 1 1 0 0 1 1 0 1 1 1 1 1 1 1 0 1 1 1 0 1\n"
+  },
+  {
+    "input": "30 30\nquery 7 24\nbuild 4\nquery 21 21\nbuild 16\nquery 1 10\nquery 19 24\nquery 8 16\nbuild 19\nbuild 26\nquery 25 28\nquery 21 29\nquery 7 25\nbuild 18\nquery 26 26\nbuild 6\nbuild 6\nbuild 1\nquery 14 29\nbuild 0\nquery 1 24\nquery 9 11\nbuild 23\nquery 25 27\nbuild 0\nquery 25 29\nbuild 3\nquery 29 29\nquery 4 7\nbuild 15\nquery 26 29\n",
+    "expectedOutput": "0 0 1 0 1 1 1 1 1 1 1 0 1 1 0 1 1\n"
+  },
+  {
+    "input": "23 23\nbuild 4\nbuild 10\nquery 9 15\nquery 1 5\nquery 18 19\nbuild 10\nbuild 2\nbuild 15\nbuild 7\nquery 7 15\nquery 20 22\nquery 1 21\nquery 14 17\nquery 6 7\nbuild 14\nquery 14 14\nbuild 3\nquery 11 11\nbuild 6\nquery 17 19\nquery 8 21\nbuild 18\nquery 11 17\n",
+    "expectedOutput": "1 1 0 1 0 1 1 1 1 0 0 1 1\n"
+  },
+  {
+    "input": "21 4\nquery 1 15\nbuild 4\nbuild 8\nbuild 20\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 39\nquery 4 5\nquery 0 3\nbuild 5\nquery 4 4\nbuild 3\nbuild 6\nbuild 6\nquery 0 1\nquery 0 5\nquery 5 5\nbuild 4\nbuild 6\nbuild 4\nbuild 4\nquery 0 0\nquery 5 6\nbuild 1\nquery 5 5\nquery 0 4\nbuild 1\nquery 3 5\nbuild 3\nbuild 0\nquery 1 2\nquery 1 2\nquery 6 6\nquery 0 5\nquery 6 6\nbuild 1\nbuild 2\nbuild 2\nquery 1 5\nbuild 0\nquery 3 4\nquery 4 6\nquery 4 5\nquery 4 4\nbuild 6\nquery 3 4\n",
+    "expectedOutput": "0 0 0 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "34 34\nquery 6 9\nquery 1 19\nquery 16 23\nbuild 17\nbuild 16\nbuild 28\nquery 0 22\nquery 27 30\nbuild 12\nbuild 31\nquery 1 20\nbuild 30\nbuild 30\nquery 2 7\nbuild 0\nbuild 19\nquery 9 20\nquery 24 31\nbuild 19\nquery 10 30\nquery 0 6\nbuild 16\nquery 17 18\nquery 15 17\nbuild 19\nquery 4 7\nbuild 1\nquery 4 6\nquery 22 32\nquery 18 32\nquery 1 9\nquery 27 27\nbuild 5\nbuild 28\n",
+    "expectedOutput": "0 0 0 1 1 1 0 1 1 1 1 1 1 0 0 1 1 1 0\n"
+  },
+  {
+    "input": "19 53\nquery 6 9\nbuild 18\nbuild 15\nquery 10 13\nbuild 5\nquery 9 15\nbuild 17\nbuild 13\nquery 14 15\nbuild 11\nquery 1 14\nquery 7 14\nquery 2 14\nquery 16 18\nbuild 0\nquery 5 17\nbuild 12\nbuild 18\nquery 9 11\nquery 3 18\nquery 16 17\nquery 1 14\nquery 17 18\nquery 8 9\nquery 5 18\nquery 17 17\nquery 7 17\nbuild 18\nbuild 0\nbuild 10\nbuild 16\nquery 9 17\nbuild 9\nquery 14 15\nquery 11 13\nbuild 9\nbuild 4\nquery 9 9\nquery 12 13\nquery 8 11\nquery 0 2\nquery 4 9\nbuild 1\nbuild 8\nbuild 8\nquery 3 3\nquery 16 18\nquery 2 12\nquery 0 17\nquery 13 15\nquery 13 18\nbuild 8\nquery 18 18\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "27 1\nquery 16 22\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "16 51\nbuild 2\nquery 7 14\nquery 3 6\nquery 5 15\nquery 7 9\nbuild 10\nquery 10 12\nquery 9 14\nbuild 11\nbuild 12\nquery 11 15\nbuild 1\nbuild 3\nbuild 10\nquery 2 12\nquery 1 7\nquery 8 10\nbuild 7\nquery 4 12\nbuild 6\nquery 7 7\nbuild 15\nquery 2 7\nquery 2 2\nquery 12 14\nquery 13 13\nquery 15 15\nbuild 10\nquery 0 3\nbuild 13\nbuild 0\nbuild 4\nbuild 10\nquery 12 12\nquery 8 13\nbuild 5\nbuild 9\nquery 6 13\nquery 0 15\nquery 5 7\nbuild 10\nquery 15 15\nbuild 10\nbuild 15\nquery 5 6\nbuild 12\nbuild 2\nbuild 6\nquery 9 12\nquery 1 10\nbuild 15\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 36\nbuild 3\nbuild 2\nbuild 3\nbuild 2\nquery 0 1\nbuild 3\nbuild 0\nbuild 1\nquery 3 3\nbuild 3\nbuild 2\nquery 2 3\nbuild 3\nquery 1 2\nquery 3 3\nquery 0 2\nbuild 3\nbuild 3\nquery 3 3\nquery 1 2\nbuild 3\nquery 2 3\nquery 3 3\nbuild 1\nbuild 2\nquery 3 3\nbuild 3\nbuild 3\nbuild 2\nbuild 1\nquery 0 3\nbuild 3\nquery 0 1\nquery 2 3\nquery 0 2\nquery 1 3\n",
+    "expectedOutput": "0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "27 54\nbuild 18\nquery 8 12\nbuild 16\nbuild 20\nbuild 19\nbuild 16\nquery 3 4\nquery 8 15\nquery 5 9\nquery 5 16\nquery 23 24\nquery 12 12\nbuild 24\nbuild 14\nbuild 10\nbuild 20\nbuild 3\nbuild 5\nquery 20 21\nquery 14 18\nbuild 25\nquery 16 25\nquery 20 24\nbuild 2\nbuild 25\nbuild 8\nquery 22 24\nbuild 8\nbuild 4\nbuild 21\nbuild 23\nquery 13 20\nquery 26 26\nquery 5 13\nquery 19 23\nquery 2 16\nbuild 13\nquery 8 19\nquery 25 25\nquery 25 25\nbuild 2\nbuild 24\nquery 24 24\nbuild 3\nquery 10 14\nquery 21 21\nquery 21 24\nquery 22 22\nquery 11 13\nbuild 20\nquery 13 13\nbuild 18\nbuild 23\nbuild 17\n",
+    "expectedOutput": "0 0 0 0 1 0 0 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 1\n"
+  },
+  {
+    "input": "11 43\nbuild 2\nbuild 6\nquery 10 10\nbuild 4\nbuild 6\nquery 3 3\nbuild 6\nbuild 1\nbuild 10\nquery 10 10\nbuild 4\nquery 1 6\nquery 5 9\nquery 10 10\nbuild 3\nbuild 2\nbuild 5\nquery 4 7\nbuild 6\nbuild 6\nquery 8 8\nquery 1 10\nbuild 0\nquery 7 7\nquery 5 7\nbuild 10\nbuild 0\nquery 3 4\nquery 5 10\nbuild 7\nbuild 9\nbuild 4\nbuild 10\nquery 6 7\nbuild 1\nbuild 3\nquery 9 9\nquery 8 9\nbuild 10\nquery 5 9\nbuild 5\nquery 6 9\nbuild 2\n",
+    "expectedOutput": "0 0 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "34 47\nquery 0 8\nquery 17 32\nquery 30 30\nquery 9 20\nbuild 23\nquery 8 25\nquery 26 28\nquery 15 16\nbuild 31\nbuild 16\nbuild 21\nquery 18 31\nbuild 21\nquery 21 25\nbuild 13\nquery 10 22\nbuild 31\nquery 31 32\nquery 23 29\nquery 28 30\nbuild 30\nquery 24 26\nquery 8 18\nquery 21 23\nquery 33 33\nquery 16 24\nbuild 23\nbuild 30\nquery 22 22\nquery 30 30\nbuild 27\nquery 9 25\nquery 22 27\nquery 3 29\nbuild 21\nbuild 9\nbuild 9\nquery 5 24\nquery 9 32\nbuild 9\nbuild 6\nquery 14 31\nquery 32 33\nquery 7 10\nquery 31 33\nbuild 20\nquery 11 16\n",
+    "expectedOutput": "0 0 0 0 1 0 0 1 1 1 1 1 0 0 1 1 0 1 0 1 1 1 1 1 1 1 0 1 1 1\n"
+  },
+  {
+    "input": "32 26\nbuild 23\nquery 25 27\nquery 15 18\nquery 30 31\nbuild 5\nbuild 7\nquery 21 25\nquery 5 14\nquery 4 30\nbuild 3\nquery 22 26\nbuild 20\nbuild 20\nbuild 0\nbuild 6\nbuild 24\nquery 15 20\nquery 19 25\nquery 1 21\nbuild 24\nquery 13 19\nbuild 20\nbuild 14\nquery 12 18\nbuild 30\nquery 20 27\n",
+    "expectedOutput": "0 0 0 1 1 1 1 1 1 1 0 1 1\n"
+  },
+  {
+    "input": "6 44\nquery 0 5\nquery 0 2\nquery 5 5\nbuild 0\nbuild 1\nquery 5 5\nbuild 0\nquery 1 4\nquery 0 3\nbuild 2\nquery 1 1\nquery 2 4\nbuild 1\nbuild 5\nbuild 4\nquery 1 1\nquery 4 5\nquery 3 5\nquery 4 4\nquery 0 2\nquery 2 4\nbuild 4\nbuild 4\nbuild 5\nbuild 0\nquery 5 5\nbuild 5\nquery 5 5\nbuild 4\nbuild 1\nquery 3 5\nbuild 5\nbuild 4\nbuild 5\nquery 4 4\nbuild 5\nquery 4 4\nquery 5 5\nquery 3 5\nquery 5 5\nbuild 4\nquery 2 3\nquery 4 4\nbuild 1\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "20 7\nquery 3 8\nquery 3 5\nbuild 7\nquery 14 16\nquery 7 13\nbuild 14\nbuild 5\n",
+    "expectedOutput": "0 0 0 1\n"
+  },
+  {
+    "input": "15 60\nquery 14 14\nquery 14 14\nbuild 6\nbuild 7\nquery 9 13\nquery 9 14\nquery 2 8\nquery 1 2\nquery 1 12\nbuild 14\nquery 10 11\nbuild 14\nquery 8 10\nquery 1 13\nbuild 0\nbuild 12\nbuild 14\nquery 1 6\nbuild 7\nquery 14 14\nquery 10 13\nquery 12 14\nbuild 10\nbuild 1\nquery 0 13\nbuild 4\nquery 8 14\nquery 4 9\nbuild 10\nquery 12 14\nquery 7 11\nbuild 0\nbuild 5\nquery 4 8\nquery 5 11\nbuild 12\nquery 5 5\nquery 11 14\nquery 11 11\nbuild 3\nbuild 13\nquery 13 14\nbuild 5\nquery 11 14\nquery 9 10\nbuild 13\nquery 4 13\nbuild 11\nquery 2 7\nquery 0 10\nquery 0 12\nquery 14 14\nbuild 7\nbuild 12\nquery 2 14\nbuild 11\nbuild 2\nquery 11 14\nquery 14 14\nbuild 7\n",
+    "expectedOutput": "0 0 0 0 1 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "35 1\nquery 33 33\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "29 22\nbuild 26\nbuild 16\nbuild 10\nquery 22 24\nbuild 26\nbuild 8\nquery 6 9\nquery 7 17\nquery 21 26\nquery 14 22\nquery 9 17\nbuild 26\nquery 8 23\nquery 21 28\nbuild 14\nquery 3 22\nquery 8 17\nbuild 6\nquery 5 22\nbuild 3\nquery 19 21\nquery 28 28\n",
+    "expectedOutput": "0 1 1 1 1 1 1 1 1 1 1 0 0\n"
+  },
+  {
+    "input": "27 31\nquery 9 9\nquery 3 16\nquery 24 24\nquery 7 10\nbuild 24\nbuild 18\nquery 23 24\nbuild 2\nquery 9 21\nquery 15 18\nquery 7 22\nbuild 15\nbuild 20\nbuild 25\nbuild 9\nquery 16 19\nbuild 15\nquery 8 22\nbuild 22\nquery 1 11\nbuild 16\nbuild 7\nquery 25 25\nbuild 10\nbuild 7\nquery 22 24\nquery 5 19\nquery 13 24\nquery 6 24\nquery 18 19\nquery 4 7\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "16 32\nbuild 5\nbuild 5\nquery 9 12\nbuild 8\nquery 7 9\nbuild 10\nquery 11 12\nbuild 11\nbuild 5\nquery 7 9\nquery 11 12\nquery 8 11\nquery 5 12\nbuild 9\nbuild 11\nbuild 6\nquery 15 15\nquery 2 15\nquery 8 11\nquery 14 14\nquery 11 11\nquery 8 12\nquery 9 15\nquery 13 15\nquery 11 13\nbuild 6\nbuild 11\nquery 7 14\nbuild 9\nbuild 12\nquery 13 14\nbuild 15\n",
+    "expectedOutput": "0 1 0 1 1 1 1 0 1 1 0 1 1 1 0 1 1 0\n"
+  },
+  {
+    "input": "17 36\nquery 8 12\nbuild 11\nbuild 1\nbuild 3\nbuild 15\nbuild 15\nbuild 11\nquery 16 16\nbuild 5\nbuild 6\nbuild 3\nquery 8 14\nquery 6 8\nbuild 2\nquery 6 15\nbuild 0\nquery 5 10\nbuild 15\nbuild 9\nquery 12 12\nbuild 3\nbuild 6\nquery 1 7\nquery 9 12\nquery 16 16\nbuild 9\nquery 7 12\nquery 4 14\nbuild 11\nquery 9 15\nbuild 3\nbuild 10\nquery 7 7\nquery 12 12\nquery 2 4\nbuild 5\n",
+    "expectedOutput": "0 0 1 1 1 1 0 1 1 0 1 1 1 0 0 1\n"
+  },
+  {
+    "input": "35 6\nquery 21 33\nquery 5 32\nbuild 24\nquery 18 27\nquery 29 31\nquery 2 21\n",
+    "expectedOutput": "0 0 1 0 0\n"
+  },
+  {
+    "input": "19 34\nbuild 9\nbuild 15\nquery 3 18\nbuild 2\nbuild 3\nquery 4 17\nbuild 3\nbuild 0\nbuild 15\nquery 2 11\nquery 7 10\nbuild 17\nquery 5 15\nquery 14 14\nbuild 16\nquery 13 14\nquery 18 18\nquery 0 16\nbuild 11\nbuild 14\nbuild 5\nbuild 0\nbuild 14\nbuild 3\nquery 16 18\nquery 11 16\nquery 6 8\nquery 11 13\nquery 18 18\nquery 16 18\nquery 6 11\nbuild 4\nbuild 8\nquery 16 18\n",
+    "expectedOutput": "1 1 1 1 1 0 0 0 1 1 1 0 1 0 1 1 1\n"
+  },
+  {
+    "input": "3 37\nbuild 1\nquery 0 1\nquery 1 2\nquery 1 1\nquery 2 2\nbuild 1\nbuild 2\nquery 1 1\nquery 2 2\nbuild 2\nquery 2 2\nquery 1 1\nbuild 2\nbuild 1\nbuild 2\nquery 0 2\nquery 0 0\nquery 1 1\nquery 1 2\nbuild 1\nbuild 2\nquery 1 2\nbuild 1\nbuild 2\nbuild 0\nquery 0 2\nbuild 1\nquery 1 1\nbuild 0\nquery 0 0\nquery 0 2\nquery 1 1\nquery 2 2\nquery 0 2\nquery 1 1\nbuild 0\nquery 1 2\n",
+    "expectedOutput": "1 1 1 0 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 53\nquery 1 2\nquery 1 2\nbuild 3\nbuild 3\nquery 1 1\nquery 3 3\nquery 2 3\nbuild 3\nquery 0 3\nquery 0 0\nbuild 3\nbuild 2\nquery 2 2\nquery 3 3\nquery 2 2\nquery 1 1\nbuild 1\nquery 2 3\nbuild 2\nquery 0 0\nquery 1 1\nbuild 3\nquery 1 1\nquery 3 3\nquery 0 1\nbuild 0\nquery 2 2\nbuild 0\nquery 0 1\nquery 2 2\nquery 3 3\nbuild 1\nbuild 2\nquery 3 3\nquery 2 2\nquery 2 3\nbuild 3\nquery 3 3\nquery 2 2\nbuild 1\nquery 2 2\nbuild 3\nbuild 3\nquery 2 3\nbuild 0\nbuild 0\nquery 2 3\nquery 1 2\nquery 0 2\nbuild 2\nbuild 1\nquery 1 2\nquery 2 2\n",
+    "expectedOutput": "0 0 0 1 1 1 0 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "2 59\nquery 1 1\nbuild 0\nbuild 0\nbuild 1\nbuild 1\nbuild 0\nbuild 0\nbuild 0\nquery 0 0\nquery 1 1\nbuild 1\nquery 1 1\nquery 1 1\nbuild 0\nquery 0 1\nquery 0 1\nbuild 0\nquery 1 1\nbuild 1\nbuild 0\nbuild 1\nbuild 0\nbuild 0\nbuild 1\nquery 1 1\nquery 0 0\nbuild 1\nbuild 0\nbuild 1\nquery 1 1\nbuild 1\nquery 0 1\nbuild 0\nbuild 0\nbuild 0\nquery 1 1\nbuild 1\nquery 0 0\nbuild 0\nquery 1 1\nquery 1 1\nbuild 0\nquery 0 1\nquery 0 1\nquery 1 1\nquery 1 1\nbuild 0\nbuild 0\nquery 1 1\nquery 0 0\nbuild 0\nquery 1 1\nquery 1 1\nbuild 0\nquery 0 0\nquery 0 0\nbuild 0\nbuild 1\nbuild 0\n",
+    "expectedOutput": "0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "35 6\nquery 11 26\nbuild 26\nbuild 11\nbuild 10\nquery 28 32\nbuild 19\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "35 9\nbuild 23\nbuild 1\nquery 24 28\nquery 25 29\nbuild 7\nquery 6 30\nquery 2 24\nbuild 24\nbuild 6\n",
+    "expectedOutput": "0 0 1 1\n"
+  },
+  {
+    "input": "3 36\nquery 2 2\nbuild 0\nbuild 0\nbuild 0\nbuild 2\nquery 1 2\nbuild 0\nbuild 1\nbuild 1\nquery 0 2\nquery 0 0\nquery 1 1\nbuild 0\nquery 0 2\nquery 0 2\nquery 0 0\nbuild 2\nbuild 2\nbuild 2\nquery 1 2\nquery 0 2\nquery 1 1\nquery 2 2\nbuild 1\nquery 1 1\nbuild 2\nbuild 0\nbuild 2\nquery 2 2\nbuild 1\nquery 2 2\nquery 2 2\nquery 1 2\nquery 2 2\nquery 1 1\nbuild 0\n",
+    "expectedOutput": "0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "35 37\nbuild 22\nquery 32 34\nbuild 17\nbuild 28\nbuild 14\nquery 32 32\nbuild 10\nquery 12 15\nbuild 11\nquery 19 31\nbuild 30\nquery 32 34\nbuild 9\nbuild 7\nbuild 31\nbuild 7\nbuild 20\nbuild 1\nbuild 34\nbuild 10\nbuild 20\nbuild 30\nbuild 5\nquery 33 34\nbuild 20\nquery 23 25\nquery 25 28\nbuild 1\nquery 15 27\nbuild 34\nbuild 15\nbuild 26\nbuild 14\nbuild 25\nbuild 27\nquery 34 34\nquery 29 33\n",
+    "expectedOutput": "0 0 1 1 0 1 0 1 1 1 1\n"
+  },
+  {
+    "input": "19 42\nquery 7 7\nbuild 17\nquery 1 3\nquery 1 8\nquery 12 14\nbuild 11\nquery 11 15\nquery 5 18\nbuild 10\nquery 3 9\nquery 4 15\nbuild 6\nquery 9 13\nbuild 3\nbuild 0\nbuild 4\nbuild 17\nquery 13 17\nbuild 13\nquery 14 15\nbuild 11\nquery 0 16\nquery 12 12\nbuild 13\nbuild 5\nquery 3 16\nbuild 8\nquery 4 9\nquery 17 18\nquery 6 13\nquery 12 16\nbuild 9\nbuild 16\nbuild 15\nbuild 5\nbuild 11\nquery 7 11\nbuild 3\nquery 6 15\nquery 8 15\nbuild 10\nquery 17 18\n",
+    "expectedOutput": "0 0 0 0 1 1 0 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 23\nbuild 3\nquery 2 2\nbuild 0\nbuild 1\nquery 3 3\nbuild 0\nbuild 1\nquery 3 3\nquery 2 2\nbuild 0\nquery 3 3\nbuild 0\nbuild 2\nbuild 2\nquery 2 2\nbuild 1\nbuild 3\nquery 1 2\nquery 3 3\nquery 2 2\nquery 1 2\nquery 2 2\nquery 0 2\n",
+    "expectedOutput": "0 1 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "16 58\nquery 4 10\nquery 2 2\nbuild 0\nbuild 3\nbuild 0\nquery 15 15\nquery 9 11\nquery 5 5\nbuild 2\nbuild 8\nquery 0 4\nbuild 13\nbuild 9\nquery 14 15\nquery 9 15\nquery 2 6\nbuild 4\nbuild 15\nbuild 12\nquery 4 13\nquery 2 11\nbuild 10\nbuild 3\nquery 7 7\nquery 13 14\nquery 15 15\nbuild 14\nbuild 15\nbuild 9\nquery 4 11\nbuild 4\nquery 2 3\nbuild 13\nbuild 4\nquery 7 7\nquery 7 14\nquery 10 12\nbuild 3\nquery 8 8\nquery 10 11\nquery 11 11\nbuild 7\nbuild 12\nbuild 6\nquery 0 11\nquery 7 7\nbuild 4\nquery 2 15\nquery 10 15\nbuild 5\nquery 10 12\nquery 11 15\nbuild 5\nbuild 9\nquery 5 9\nbuild 1\nquery 3 3\nquery 11 11\n",
+    "expectedOutput": "0 0 0 0 0 1 0 1 1 1 1 0 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 0\n"
+  },
+  {
+    "input": "11 60\nbuild 6\nbuild 8\nbuild 4\nquery 6 8\nquery 1 1\nbuild 8\nbuild 3\nbuild 6\nquery 4 5\nbuild 1\nquery 2 6\nquery 7 8\nbuild 2\nbuild 10\nquery 7 8\nquery 3 3\nbuild 3\nquery 9 10\nbuild 1\nbuild 5\nquery 7 9\nquery 0 3\nquery 6 9\nquery 4 4\nquery 10 10\nquery 4 7\nbuild 9\nquery 6 8\nbuild 6\nbuild 10\nquery 0 10\nquery 5 10\nquery 8 10\nquery 9 10\nbuild 5\nquery 3 3\nbuild 9\nquery 6 7\nquery 2 10\nbuild 6\nbuild 9\nquery 0 4\nquery 7 8\nquery 2 8\nquery 9 9\nquery 7 10\nquery 1 8\nquery 5 5\nbuild 6\nbuild 10\nquery 9 10\nbuild 1\nquery 5 7\nbuild 4\nquery 1 6\nquery 3 8\nquery 2 4\nquery 3 8\nbuild 4\nquery 8 9\n",
+    "expectedOutput": "1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "32 21\nbuild 5\nbuild 31\nquery 24 25\nbuild 30\nquery 5 29\nquery 14 17\nbuild 11\nquery 22 30\nquery 15 30\nquery 30 31\nbuild 15\nquery 8 25\nquery 13 22\nquery 6 19\nquery 15 22\nquery 1 6\nbuild 17\nbuild 9\nquery 19 20\nbuild 30\nbuild 1\n",
+    "expectedOutput": "0 1 0 1 1 1 1 1 1 1 1 0\n"
+  },
+  {
+    "input": "8 2\nquery 1 4\nquery 7 7\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "23 8\nbuild 10\nbuild 18\nquery 14 17\nquery 13 22\nquery 20 21\nbuild 21\nbuild 7\nquery 20 22\n",
+    "expectedOutput": "0 1 0 1\n"
+  },
+  {
+    "input": "11 9\nquery 8 9\nquery 8 10\nquery 7 8\nbuild 2\nquery 6 10\nbuild 3\nbuild 3\nquery 0 2\nquery 1 6\n",
+    "expectedOutput": "0 0 0 0 1 1\n"
+  },
+  {
+    "input": "20 38\nquery 19 19\nbuild 7\nquery 19 19\nquery 19 19\nbuild 18\nbuild 19\nbuild 6\nbuild 18\nbuild 7\nquery 10 10\nquery 14 14\nquery 15 18\nquery 19 19\nquery 2 8\nquery 19 19\nquery 8 18\nquery 9 11\nbuild 13\nbuild 8\nquery 13 19\nbuild 7\nbuild 12\nbuild 3\nbuild 0\nquery 9 12\nbuild 3\nbuild 8\nbuild 2\nbuild 17\nquery 11 19\nbuild 18\nbuild 5\nbuild 12\nbuild 6\nbuild 13\nquery 6 17\nquery 3 9\nbuild 17\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "22 46\nquery 19 19\nquery 8 15\nbuild 19\nquery 18 20\nbuild 9\nquery 8 11\nbuild 11\nbuild 2\nquery 18 21\nquery 9 17\nbuild 7\nbuild 11\nquery 2 18\nbuild 19\nquery 16 21\nbuild 5\nquery 16 18\nquery 5 17\nbuild 12\nquery 15 19\nquery 13 18\nbuild 14\nbuild 2\nquery 14 19\nquery 9 11\nquery 12 12\nquery 1 17\nquery 11 15\nbuild 15\nbuild 21\nbuild 11\nquery 0 6\nquery 6 21\nquery 13 16\nbuild 9\nbuild 16\nquery 14 21\nquery 14 14\nbuild 4\nquery 9 14\nquery 8 16\nbuild 14\nquery 16 21\nbuild 4\nquery 2 2\nquery 17 20\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "34 32\nbuild 24\nquery 12 16\nquery 4 17\nbuild 10\nbuild 27\nquery 21 31\nquery 30 30\nquery 30 32\nquery 7 28\nquery 16 26\nquery 9 26\nquery 27 28\nbuild 29\nbuild 19\nbuild 7\nquery 5 10\nbuild 15\nquery 22 23\nquery 1 22\nquery 5 6\nquery 27 33\nbuild 2\nbuild 28\nquery 12 23\nquery 22 26\nquery 2 14\nquery 7 14\nquery 11 21\nbuild 3\nbuild 2\nbuild 1\nbuild 32\n",
+    "expectedOutput": "0 0 1 0 0 1 1 1 1 1 0 1 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "13 60\nquery 11 12\nbuild 12\nbuild 4\nbuild 11\nquery 0 2\nquery 4 4\nquery 9 10\nbuild 6\nquery 12 12\nquery 8 11\nquery 12 12\nquery 5 10\nquery 7 11\nbuild 6\nbuild 1\nbuild 3\nquery 5 7\nquery 7 11\nbuild 0\nquery 7 12\nbuild 10\nquery 9 11\nquery 1 9\nbuild 8\nquery 7 7\nquery 7 12\nbuild 12\nquery 5 6\nquery 12 12\nbuild 5\nbuild 5\nquery 10 11\nbuild 5\nbuild 2\nquery 10 10\nbuild 12\nquery 0 3\nbuild 10\nbuild 9\nquery 5 7\nquery 9 12\nbuild 9\nbuild 11\nbuild 10\nquery 8 8\nquery 7 7\nquery 11 12\nbuild 3\nquery 2 12\nbuild 8\nbuild 7\nquery 4 12\nbuild 8\nquery 1 5\nbuild 0\nquery 0 0\nbuild 8\nquery 6 7\nquery 4 6\nquery 10 11\n",
+    "expectedOutput": "0 0 1 0 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "20 41\nquery 8 8\nquery 13 14\nquery 5 8\nquery 7 14\nbuild 8\nquery 5 5\nquery 2 14\nbuild 19\nquery 3 8\nquery 0 18\nbuild 7\nbuild 13\nquery 4 6\nbuild 16\nquery 1 12\nquery 12 17\nbuild 8\nquery 12 17\nbuild 1\nbuild 4\nquery 11 11\nquery 10 11\nquery 7 7\nbuild 0\nbuild 5\nquery 11 17\nquery 11 19\nbuild 19\nbuild 6\nbuild 18\nquery 7 12\nbuild 0\nquery 8 18\nbuild 1\nbuild 9\nquery 18 18\nquery 15 16\nquery 0 5\nquery 2 7\nbuild 0\nquery 13 17\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "15 13\nbuild 7\nbuild 12\nquery 11 11\nbuild 11\nquery 8 10\nbuild 13\nquery 3 9\nbuild 6\nbuild 1\nquery 11 12\nbuild 1\nquery 13 13\nquery 10 11\n",
+    "expectedOutput": "0 0 1 1 1 1\n"
+  },
+  {
+    "input": "18 37\nquery 16 17\nbuild 4\nbuild 3\nbuild 4\nquery 1 9\nbuild 14\nbuild 11\nquery 10 11\nquery 0 14\nquery 9 11\nquery 9 9\nquery 11 13\nbuild 6\nquery 17 17\nbuild 3\nbuild 0\nquery 13 17\nquery 2 2\nbuild 6\nquery 14 15\nquery 5 13\nbuild 8\nquery 7 15\nquery 15 17\nquery 0 13\nquery 12 17\nquery 7 13\nbuild 14\nbuild 2\nquery 9 15\nbuild 16\nbuild 14\nbuild 12\nbuild 11\nquery 5 7\nquery 5 16\nquery 10 13\n",
+    "expectedOutput": "0 1 1 1 1 0 1 0 1 0 1 1 1 0 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "29 41\nbuild 20\nquery 1 18\nbuild 15\nbuild 19\nbuild 5\nbuild 28\nquery 3 6\nbuild 3\nbuild 10\nbuild 16\nquery 17 27\nbuild 25\nbuild 4\nquery 0 12\nquery 14 27\nquery 24 24\nbuild 2\nquery 24 27\nquery 9 20\nquery 12 21\nquery 6 22\nbuild 20\nbuild 16\nbuild 20\nbuild 12\nbuild 2\nbuild 18\nbuild 5\nquery 18 20\nbuild 1\nbuild 16\nquery 9 10\nquery 7 16\nquery 25 25\nbuild 18\nquery 17 28\nquery 18 25\nquery 2 13\nquery 3 5\nquery 20 23\nbuild 12\n",
+    "expectedOutput": "0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "24 45\nbuild 0\nbuild 21\nbuild 11\nbuild 20\nbuild 12\nquery 23 23\nbuild 22\nquery 11 16\nquery 19 22\nbuild 16\nquery 9 9\nbuild 4\nquery 20 21\nbuild 7\nbuild 0\nquery 3 23\nquery 5 18\nquery 17 17\nbuild 21\nbuild 16\nquery 20 23\nquery 23 23\nquery 14 21\nbuild 14\nbuild 10\nbuild 15\nbuild 2\nbuild 2\nbuild 10\nquery 10 10\nquery 4 7\nquery 19 23\nquery 22 23\nquery 11 14\nbuild 9\nbuild 1\nbuild 17\nquery 10 22\nquery 7 8\nbuild 12\nbuild 1\nquery 0 15\nbuild 7\nquery 5 14\nquery 3 7\n",
+    "expectedOutput": "0 1 1 0 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "14 52\nquery 6 10\nquery 6 10\nbuild 0\nquery 1 8\nbuild 0\nbuild 11\nquery 8 8\nbuild 5\nbuild 12\nbuild 4\nquery 7 9\nbuild 13\nquery 1 13\nbuild 1\nquery 9 13\nquery 4 7\nbuild 3\nquery 4 7\nquery 10 13\nquery 0 12\nbuild 5\nbuild 5\nbuild 5\nbuild 8\nbuild 13\nquery 11 13\nbuild 2\nquery 2 7\nquery 0 2\nquery 4 9\nbuild 7\nbuild 6\nbuild 4\nquery 9 12\nbuild 8\nquery 12 13\nquery 7 8\nquery 11 11\nbuild 2\nquery 10 10\nquery 3 13\nbuild 8\nquery 0 8\nbuild 6\nquery 6 8\nbuild 6\nquery 8 13\nquery 11 11\nquery 0 11\nbuild 13\nquery 5 11\nquery 2 8\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "6 6\nquery 0 5\nquery 3 4\nbuild 0\nquery 2 5\nquery 2 3\nbuild 1\n",
+    "expectedOutput": "0 0 0 0\n"
+  },
+  {
+    "input": "24 51\nbuild 10\nquery 0 14\nquery 16 23\nquery 11 23\nquery 18 18\nbuild 11\nbuild 0\nquery 8 22\nbuild 17\nbuild 10\nquery 21 23\nquery 22 22\nquery 9 19\nquery 22 23\nquery 20 20\nbuild 16\nquery 12 14\nbuild 20\nbuild 23\nbuild 0\nquery 11 18\nbuild 2\nquery 9 20\nbuild 22\nbuild 14\nbuild 11\nbuild 17\nquery 3 11\nbuild 2\nquery 23 23\nbuild 15\nquery 16 22\nquery 23 23\nquery 14 20\nbuild 21\nquery 20 23\nquery 10 15\nbuild 12\nbuild 19\nbuild 3\nquery 15 19\nquery 8 17\nbuild 14\nbuild 17\nbuild 6\nquery 4 16\nquery 20 20\nbuild 12\nquery 3 13\nquery 21 21\nquery 12 19\n",
+    "expectedOutput": "1 0 0 0 1 0 0 1 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "4 48\nbuild 1\nbuild 1\nbuild 2\nquery 2 3\nbuild 0\nquery 1 2\nquery 2 2\nquery 1 2\nquery 0 1\nquery 3 3\nbuild 0\nbuild 0\nquery 0 2\nbuild 0\nquery 3 3\nquery 1 2\nbuild 0\nbuild 3\nbuild 0\nbuild 1\nbuild 3\nquery 0 0\nquery 2 3\nbuild 2\nbuild 2\nquery 3 3\nbuild 2\nquery 1 3\nbuild 3\nquery 1 1\nquery 2 2\nquery 3 3\nbuild 0\nbuild 3\nbuild 2\nquery 2 3\nbuild 2\nquery 3 3\nbuild 0\nbuild 0\nquery 3 3\nbuild 0\nquery 3 3\nbuild 0\nbuild 0\nquery 3 3\nquery 1 3\nbuild 1\n",
+    "expectedOutput": "1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "13 59\nquery 6 10\nquery 9 9\nbuild 12\nbuild 1\nbuild 9\nquery 5 5\nquery 12 12\nquery 4 6\nbuild 0\nquery 10 12\nbuild 7\nquery 4 4\nbuild 0\nbuild 8\nbuild 6\nquery 3 9\nbuild 2\nbuild 11\nquery 11 12\nbuild 10\nbuild 11\nquery 9 10\nquery 3 10\nbuild 6\nbuild 1\nquery 0 5\nquery 8 11\nbuild 6\nbuild 9\nquery 10 10\nquery 2 10\nbuild 12\nquery 4 7\nquery 11 11\nbuild 12\nquery 0 3\nbuild 1\nbuild 8\nbuild 2\nbuild 2\nbuild 0\nquery 0 10\nquery 9 10\nbuild 10\nquery 0 4\nquery 5 12\nbuild 8\nquery 12 12\nbuild 1\nquery 2 9\nbuild 1\nbuild 5\nquery 7 9\nquery 4 11\nquery 4 9\nquery 11 12\nquery 11 12\nquery 3 4\nbuild 2\n",
+    "expectedOutput": "0 0 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0\n"
+  },
+  {
+    "input": "11 53\nquery 4 5\nbuild 5\nbuild 10\nquery 2 7\nquery 9 9\nbuild 4\nquery 4 10\nbuild 7\nquery 9 9\nbuild 1\nquery 0 2\nquery 10 10\nquery 0 10\nbuild 2\nbuild 9\nquery 4 10\nquery 10 10\nquery 5 6\nquery 9 9\nbuild 0\nbuild 4\nquery 0 3\nquery 2 9\nquery 5 5\nquery 1 10\nbuild 4\nquery 0 3\nquery 7 10\nquery 6 9\nbuild 10\nbuild 3\nbuild 5\nquery 9 9\nbuild 4\nquery 2 10\nquery 10 10\nbuild 0\nquery 6 8\nquery 5 5\nquery 4 6\nquery 9 10\nbuild 1\nbuild 5\nbuild 6\nbuild 1\nbuild 1\nquery 6 9\nquery 10 10\nbuild 5\nquery 7 7\nbuild 0\nbuild 4\nbuild 8\n",
+    "expectedOutput": "0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "6 46\nbuild 1\nbuild 0\nquery 1 5\nquery 4 4\nquery 4 4\nquery 3 3\nquery 4 5\nquery 4 5\nbuild 5\nbuild 0\nbuild 2\nbuild 3\nquery 3 3\nquery 3 5\nquery 1 4\nbuild 3\nbuild 0\nbuild 2\nbuild 4\nquery 4 4\nquery 2 2\nbuild 3\nbuild 0\nbuild 3\nbuild 3\nquery 2 3\nquery 3 5\nbuild 5\nquery 3 3\nbuild 1\nquery 4 5\nquery 4 5\nbuild 5\nquery 3 5\nbuild 3\nquery 2 5\nbuild 3\nbuild 4\nquery 3 3\nquery 1 1\nquery 3 5\nquery 0 3\nbuild 3\nbuild 5\nquery 5 5\nquery 0 1\n",
+    "expectedOutput": "1 0 0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "26 3\nbuild 19\nbuild 21\nquery 0 25\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "32 5\nbuild 8\nquery 23 28\nquery 27 27\nquery 13 22\nquery 31 31\n",
+    "expectedOutput": "0 0 0 0\n"
+  },
+  {
+    "input": "32 14\nbuild 2\nbuild 27\nquery 16 28\nquery 15 28\nquery 4 26\nquery 26 27\nquery 22 30\nbuild 21\nquery 8 27\nquery 0 5\nbuild 16\nbuild 17\nquery 21 31\nbuild 21\n",
+    "expectedOutput": "1 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "19 16\nbuild 17\nbuild 1\nquery 7 12\nbuild 2\nquery 16 17\nquery 14 17\nquery 8 11\nbuild 15\nbuild 15\nquery 17 17\nbuild 8\nbuild 3\nquery 8 14\nquery 7 16\nbuild 9\nbuild 1\n",
+    "expectedOutput": "0 1 1 0 1 1 1\n"
+  },
+  {
+    "input": "15 46\nquery 4 4\nquery 9 13\nbuild 11\nbuild 12\nquery 12 14\nquery 9 10\nbuild 0\nbuild 0\nquery 4 6\nbuild 6\nquery 13 14\nbuild 6\nquery 1 2\nquery 10 14\nquery 12 12\nquery 12 13\nquery 1 5\nbuild 3\nbuild 0\nbuild 10\nbuild 8\nbuild 11\nbuild 14\nbuild 4\nquery 9 12\nquery 12 14\nbuild 1\nquery 8 13\nbuild 10\nbuild 10\nquery 6 8\nquery 9 12\nbuild 11\nbuild 9\nquery 2 3\nbuild 10\nquery 11 13\nbuild 3\nquery 13 14\nquery 10 11\nbuild 8\nquery 2 8\nquery 2 7\nquery 3 10\nquery 5 12\nbuild 1\n",
+    "expectedOutput": "0 0 1 0 0 0 0 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 41\nbuild 2\nquery 7 7\nquery 2 2\nquery 7 7\nquery 8 8\nquery 7 7\nquery 2 3\nbuild 8\nbuild 8\nquery 5 6\nbuild 4\nquery 3 3\nbuild 5\nbuild 1\nquery 4 4\nbuild 7\nquery 4 5\nquery 1 5\nquery 8 8\nquery 8 8\nbuild 6\nbuild 5\nquery 2 8\nquery 6 8\nquery 0 4\nquery 5 8\nquery 4 6\nquery 8 8\nbuild 1\nbuild 5\nbuild 6\nbuild 5\nquery 6 6\nbuild 4\nbuild 2\nquery 3 6\nquery 7 8\nbuild 4\nquery 5 5\nquery 7 8\nbuild 1\n",
+    "expectedOutput": "0 1 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "2 11\nbuild 1\nquery 0 1\nquery 1 1\nbuild 0\nbuild 1\nquery 1 1\nbuild 0\nbuild 1\nquery 0 0\nquery 0 1\nbuild 0\n",
+    "expectedOutput": "1 1 1 1 1\n"
+  },
+  {
+    "input": "8 32\nbuild 2\nquery 1 3\nquery 5 6\nquery 7 7\nquery 1 4\nquery 3 3\nbuild 1\nquery 0 0\nbuild 5\nbuild 4\nquery 1 2\nbuild 2\nquery 7 7\nbuild 4\nquery 4 7\nbuild 1\nbuild 0\nquery 0 6\nquery 7 7\nquery 7 7\nbuild 0\nbuild 3\nquery 7 7\nquery 4 7\nbuild 3\nquery 4 4\nquery 6 6\nbuild 0\nbuild 6\nquery 5 6\nquery 7 7\nquery 6 6\n",
+    "expectedOutput": "1 0 0 1 0 0 1 0 1 1 0 0 0 1 1 0 1 0 1\n"
+  },
+  {
+    "input": "19 39\nquery 18 18\nquery 0 4\nbuild 1\nbuild 17\nquery 6 6\nquery 9 11\nquery 4 17\nquery 2 14\nquery 5 14\nbuild 18\nquery 18 18\nbuild 3\nbuild 17\nbuild 1\nbuild 9\nquery 6 6\nquery 2 10\nquery 11 15\nquery 7 17\nbuild 1\nbuild 17\nquery 14 14\nbuild 15\nquery 17 18\nbuild 6\nquery 6 18\nquery 11 18\nbuild 5\nbuild 2\nbuild 7\nbuild 8\nbuild 5\nbuild 7\nquery 3 3\nquery 5 13\nquery 2 3\nbuild 5\nbuild 11\nquery 18 18\n",
+    "expectedOutput": "0 0 0 0 1 0 0 1 0 1 0 1 0 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "11 51\nbuild 8\nquery 1 4\nbuild 2\nbuild 9\nbuild 3\nbuild 8\nbuild 10\nquery 5 7\nquery 4 9\nquery 9 10\nbuild 9\nquery 5 5\nquery 9 9\nquery 6 10\nbuild 3\nbuild 6\nquery 8 8\nquery 9 9\nbuild 1\nbuild 0\nbuild 3\nquery 6 7\nquery 1 1\nbuild 2\nquery 4 10\nquery 8 9\nquery 2 6\nbuild 0\nbuild 8\nbuild 8\nquery 7 7\nquery 1 10\nquery 0 10\nquery 1 8\nquery 5 7\nquery 9 10\nbuild 2\nbuild 3\nbuild 0\nbuild 2\nquery 2 9\nquery 9 9\nbuild 4\nquery 2 5\nbuild 9\nbuild 8\nquery 8 9\nquery 5 7\nquery 4 10\nbuild 8\nquery 1 6\n",
+    "expectedOutput": "0 0 1 1 0 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "2 41\nquery 0 1\nbuild 1\nbuild 1\nbuild 0\nbuild 0\nbuild 1\nbuild 1\nquery 0 1\nbuild 1\nquery 1 1\nquery 0 0\nquery 1 1\nquery 1 1\nquery 1 1\nquery 1 1\nbuild 0\nbuild 0\nbuild 0\nquery 0 1\nbuild 0\nquery 0 1\nbuild 0\nbuild 1\nquery 0 0\nquery 0 0\nbuild 1\nquery 1 1\nbuild 1\nquery 0 1\nquery 0 0\nbuild 1\nbuild 0\nquery 1 1\nbuild 1\nquery 0 0\nbuild 1\nquery 0 0\nquery 0 0\nbuild 1\nbuild 0\nbuild 1\n",
+    "expectedOutput": "0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "17 51\nbuild 7\nbuild 7\nbuild 6\nquery 9 12\nquery 14 15\nquery 15 16\nquery 15 16\nquery 1 14\nbuild 16\nbuild 12\nbuild 1\nbuild 14\nquery 12 16\nbuild 11\nquery 4 7\nquery 16 16\nquery 7 7\nbuild 13\nbuild 0\nbuild 16\nquery 13 16\nquery 9 14\nquery 7 13\nquery 1 3\nbuild 9\nquery 2 6\nquery 7 7\nbuild 9\nbuild 9\nquery 8 14\nquery 13 15\nquery 4 6\nbuild 0\nquery 9 12\nbuild 0\nquery 8 15\nquery 14 14\nquery 0 10\nbuild 14\nbuild 4\nquery 6 8\nquery 8 12\nbuild 3\nbuild 13\nquery 16 16\nquery 1 2\nbuild 12\nquery 4 5\nbuild 13\nquery 8 9\nquery 15 15\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0\n"
+  },
+  {
+    "input": "21 32\nbuild 6\nquery 17 20\nquery 0 14\nquery 5 12\nbuild 13\nquery 7 12\nquery 0 19\nquery 2 19\nquery 8 14\nquery 13 14\nquery 5 18\nbuild 10\nbuild 6\nquery 2 10\nquery 13 16\nquery 1 4\nbuild 20\nquery 9 15\nbuild 7\nquery 6 13\nbuild 14\nquery 10 19\nbuild 11\nquery 18 18\nbuild 18\nquery 3 3\nquery 6 6\nquery 10 10\nquery 1 20\nquery 4 13\nbuild 1\nquery 4 7\n",
+    "expectedOutput": "0 1 1 0 1 1 1 1 1 1 1 0 1 1 1 0 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "35 12\nquery 6 33\nquery 1 23\nbuild 27\nquery 17 27\nquery 19 31\nbuild 11\nquery 3 16\nbuild 6\nquery 5 14\nbuild 8\nbuild 7\nquery 9 31\n",
+    "expectedOutput": "0 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "23 24\nbuild 20\nbuild 21\nbuild 17\nquery 6 21\nquery 18 21\nbuild 7\nquery 16 19\nbuild 2\nbuild 19\nbuild 2\nbuild 8\nquery 16 17\nbuild 13\nbuild 19\nbuild 3\nbuild 13\nquery 5 13\nquery 0 12\nquery 15 21\nquery 10 14\nbuild 1\nquery 6 15\nquery 9 14\nbuild 12\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "21 57\nquery 3 10\nbuild 17\nquery 6 7\nquery 0 12\nbuild 3\nbuild 9\nbuild 14\nbuild 18\nquery 4 5\nbuild 7\nbuild 6\nbuild 7\nquery 13 17\nquery 12 17\nquery 9 10\nbuild 5\nquery 2 8\nquery 5 13\nbuild 12\nquery 19 19\nquery 6 20\nquery 8 20\nbuild 8\nquery 19 19\nbuild 9\nquery 11 15\nbuild 7\nbuild 4\nbuild 10\nbuild 16\nbuild 16\nbuild 5\nbuild 7\nquery 16 19\nquery 2 18\nbuild 20\nbuild 6\nquery 18 20\nbuild 13\nquery 0 0\nquery 11 16\nbuild 2\nbuild 1\nbuild 3\nquery 15 16\nquery 3 17\nquery 2 15\nquery 2 19\nquery 4 10\nbuild 4\nbuild 15\nquery 3 4\nbuild 11\nbuild 9\nbuild 19\nquery 0 7\nbuild 8\n",
+    "expectedOutput": "0 0 0 0 1 1 1 1 1 0 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "5 13\nquery 0 3\nquery 0 2\nbuild 3\nbuild 3\nquery 0 2\nquery 0 3\nquery 2 2\nquery 1 1\nbuild 1\nbuild 2\nquery 3 3\nbuild 2\nquery 4 4\n",
+    "expectedOutput": "0 0 0 1 0 0 1 0\n"
+  },
+  {
+    "input": "28 23\nquery 25 26\nquery 18 25\nbuild 27\nquery 14 19\nquery 2 15\nbuild 22\nquery 10 20\nbuild 10\nquery 13 26\nbuild 27\nbuild 25\nquery 20 23\nquery 8 20\nquery 1 17\nbuild 2\nquery 19 19\nquery 21 26\nquery 13 15\nquery 13 22\nquery 15 19\nquery 23 23\nquery 10 25\nbuild 3\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 0 1 0 1 0 0 1\n"
+  },
+  {
+    "input": "6 4\nquery 3 5\nbuild 2\nquery 2 3\nquery 4 5\n",
+    "expectedOutput": "0 1 0\n"
+  },
+  {
+    "input": "9 22\nquery 3 4\nquery 4 5\nquery 7 8\nquery 7 8\nbuild 1\nquery 0 0\nbuild 6\nbuild 1\nquery 2 5\nquery 2 2\nbuild 5\nbuild 1\nquery 2 4\nbuild 3\nbuild 6\nbuild 4\nbuild 6\nquery 1 3\nquery 8 8\nbuild 2\nquery 8 8\nbuild 2\n",
+    "expectedOutput": "0 0 0 0 0 0 0 0 1 0 0\n"
+  },
+  {
+    "input": "27 22\nquery 11 17\nquery 21 26\nbuild 26\nquery 4 19\nbuild 16\nbuild 0\nquery 22 25\nbuild 21\nquery 22 24\nbuild 13\nbuild 24\nbuild 19\nbuild 9\nbuild 23\nquery 10 13\nbuild 2\nquery 13 22\nquery 21 24\nquery 6 21\nquery 8 19\nbuild 1\nquery 22 26\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "2 6\nquery 1 1\nbuild 0\nquery 1 1\nbuild 1\nbuild 1\nbuild 0\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "21 19\nbuild 2\nbuild 8\nquery 14 20\nbuild 1\nbuild 10\nquery 3 3\nquery 4 7\nquery 0 14\nquery 2 17\nquery 10 10\nquery 12 15\nbuild 5\nbuild 1\nquery 14 14\nbuild 14\nquery 17 19\nbuild 10\nbuild 14\nquery 6 10\n",
+    "expectedOutput": "0 0 0 1 1 1 0 0 0 1\n"
+  },
+  {
+    "input": "30 35\nbuild 15\nquery 28 28\nbuild 22\nbuild 25\nquery 17 21\nquery 29 29\nbuild 28\nquery 29 29\nquery 22 23\nquery 3 24\nquery 5 9\nbuild 25\nquery 5 26\nbuild 28\nquery 9 24\nquery 13 27\nbuild 11\nbuild 16\nquery 4 29\nbuild 9\nquery 21 29\nbuild 27\nquery 21 27\nquery 27 29\nquery 25 27\nquery 19 21\nquery 11 13\nbuild 28\nbuild 13\nquery 23 29\nquery 9 25\nquery 28 28\nquery 3 17\nquery 21 23\nbuild 22\n",
+    "expectedOutput": "0 0 0 0 1 1 0 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "18 50\nbuild 0\nquery 12 16\nbuild 8\nquery 0 0\nquery 4 13\nbuild 13\nquery 15 15\nquery 6 11\nquery 3 5\nquery 11 12\nquery 6 11\nquery 5 14\nquery 10 17\nquery 11 14\nbuild 7\nquery 4 11\nquery 5 6\nquery 1 1\nquery 12 17\nquery 5 17\nbuild 8\nbuild 8\nbuild 3\nquery 5 13\nbuild 17\nquery 13 14\nquery 16 16\nbuild 6\nbuild 13\nquery 6 8\nquery 11 14\nquery 15 17\nquery 6 11\nquery 1 12\nquery 16 17\nbuild 10\nbuild 3\nbuild 15\nbuild 17\nquery 9 14\nquery 14 15\nquery 7 16\nquery 12 13\nbuild 15\nbuild 6\nquery 3 6\nquery 5 9\nbuild 3\nquery 9 15\nquery 3 8\n",
+    "expectedOutput": "0 1 1 0 1 0 0 1 1 1 1 1 0 0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "26 24\nbuild 21\nquery 15 19\nquery 24 25\nquery 7 22\nquery 4 12\nbuild 3\nbuild 3\nbuild 16\nbuild 18\nbuild 4\nquery 12 15\nbuild 11\nbuild 24\nbuild 1\nbuild 15\nbuild 25\nbuild 11\nbuild 23\nquery 6 24\nbuild 24\nquery 22 23\nbuild 8\nquery 11 19\nbuild 8\n",
+    "expectedOutput": "0 0 1 0 0 1 1 1\n"
+  },
+  {
+    "input": "24 26\nquery 9 12\nquery 5 13\nquery 13 14\nquery 20 20\nbuild 7\nquery 2 21\nbuild 1\nbuild 0\nquery 6 16\nquery 17 23\nbuild 13\nquery 14 16\nbuild 20\nquery 22 22\nquery 17 20\nbuild 12\nquery 19 20\nquery 4 20\nquery 6 13\nbuild 13\nquery 6 15\nquery 1 22\nbuild 18\nquery 19 23\nquery 23 23\nbuild 11\n",
+    "expectedOutput": "0 0 0 0 1 1 0 0 0 1 1 1 1 1 1 1 0\n"
+  },
+  {
+    "input": "4 39\nquery 2 2\nquery 0 3\nbuild 1\nquery 0 3\nbuild 3\nquery 0 1\nquery 3 3\nquery 0 3\nquery 2 3\nquery 1 3\nbuild 1\nquery 1 2\nbuild 3\nquery 2 3\nbuild 3\nbuild 3\nquery 3 3\nbuild 2\nquery 1 2\nbuild 1\nquery 3 3\nquery 3 3\nbuild 1\nquery 3 3\nquery 2 3\nquery 3 3\nquery 3 3\nquery 2 3\nquery 2 2\nbuild 0\nquery 2 3\nbuild 0\nquery 3 3\nbuild 3\nquery 0 1\nbuild 1\nbuild 2\nquery 0 1\nquery 3 3\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "23 21\nbuild 9\nquery 8 8\nquery 9 21\nquery 3 3\nquery 1 11\nbuild 11\nbuild 12\nbuild 2\nquery 16 18\nbuild 22\nbuild 15\nquery 14 19\nbuild 17\nquery 0 3\nquery 9 21\nquery 19 19\nbuild 13\nbuild 7\nquery 9 11\nbuild 22\nbuild 10\n",
+    "expectedOutput": "0 1 0 1 0 1 1 1 0 1\n"
+  },
+  {
+    "input": "16 27\nbuild 6\nbuild 1\nbuild 13\nquery 11 11\nbuild 4\nbuild 15\nbuild 11\nbuild 8\nbuild 6\nbuild 1\nbuild 3\nbuild 7\nquery 3 11\nquery 13 15\nquery 9 10\nquery 8 13\nquery 10 13\nbuild 5\nbuild 13\nquery 2 11\nquery 1 13\nquery 9 12\nbuild 4\nbuild 9\nquery 8 13\nquery 6 7\nbuild 12\n",
+    "expectedOutput": "0 1 1 0 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "35 36\nbuild 11\nquery 18 33\nbuild 24\nbuild 11\nquery 29 31\nbuild 34\nbuild 30\nquery 15 34\nquery 34 34\nquery 34 34\nbuild 21\nquery 26 34\nquery 34 34\nquery 28 31\nbuild 18\nquery 31 34\nbuild 24\nbuild 32\nquery 34 34\nquery 3 30\nbuild 9\nquery 10 25\nbuild 5\nquery 5 20\nquery 23 29\nbuild 9\nbuild 11\nbuild 3\nbuild 23\nbuild 5\nbuild 1\nquery 29 29\nbuild 20\nquery 8 11\nbuild 4\nbuild 11\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1\n"
+  },
+  {
+    "input": "16 4\nquery 3 14\nquery 14 15\nquery 4 11\nbuild 7\n",
+    "expectedOutput": "0 0 0\n"
+  },
+  {
+    "input": "19 8\nbuild 10\nbuild 13\nquery 2 4\nquery 1 4\nquery 11 13\nbuild 15\nquery 0 8\nbuild 18\n",
+    "expectedOutput": "0 0 1 0\n"
+  },
+  {
+    "input": "31 60\nbuild 5\nbuild 1\nbuild 8\nquery 23 30\nquery 22 25\nbuild 2\nbuild 8\nbuild 17\nbuild 7\nbuild 6\nquery 15 22\nbuild 25\nbuild 14\nbuild 28\nquery 1 8\nquery 0 1\nbuild 2\nbuild 27\nquery 27 27\nbuild 25\nbuild 18\nquery 29 30\nbuild 15\nbuild 18\nquery 27 28\nbuild 20\nquery 27 30\nbuild 0\nbuild 16\nquery 15 16\nbuild 19\nquery 0 5\nbuild 8\nbuild 29\nbuild 30\nquery 9 18\nbuild 28\nbuild 28\nquery 0 21\nbuild 12\nquery 17 22\nquery 14 25\nquery 16 20\nquery 26 27\nquery 16 24\nbuild 16\nbuild 1\nbuild 1\nquery 3 25\nquery 4 11\nbuild 12\nquery 11 16\nquery 17 30\nquery 0 6\nbuild 0\nquery 28 28\nbuild 18\nquery 0 19\nbuild 2\nbuild 25\n",
+    "expectedOutput": "0 0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "5 34\nbuild 4\nquery 0 1\nbuild 4\nquery 2 4\nbuild 0\nbuild 3\nquery 0 1\nbuild 0\nbuild 3\nbuild 0\nquery 1 4\nquery 0 1\nbuild 2\nquery 2 3\nbuild 0\nbuild 4\nbuild 4\nbuild 3\nquery 0 4\nbuild 4\nquery 2 4\nbuild 2\nquery 0 3\nbuild 0\nbuild 4\nquery 2 2\nquery 3 3\nbuild 4\nquery 2 4\nquery 0 1\nbuild 1\nquery 4 4\nbuild 0\nquery 3 3\n",
+    "expectedOutput": "0 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "30 27\nquery 10 11\nquery 21 29\nquery 2 22\nbuild 22\nquery 7 19\nquery 20 20\nquery 27 27\nquery 3 12\nbuild 29\nbuild 14\nbuild 5\nbuild 29\nbuild 19\nquery 17 24\nbuild 12\nbuild 27\nbuild 26\nbuild 5\nquery 1 28\nbuild 16\nquery 23 28\nquery 19 22\nbuild 0\nbuild 6\nbuild 20\nquery 8 26\nquery 26 27\n",
+    "expectedOutput": "0 0 0 0 0 0 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "10 5\nbuild 4\nbuild 3\nbuild 1\nbuild 5\nquery 0 9\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "33 55\nquery 8 17\nbuild 23\nbuild 21\nbuild 10\nbuild 24\nquery 20 21\nbuild 15\nquery 32 32\nbuild 24\nbuild 18\nquery 22 26\nbuild 21\nquery 29 29\nquery 19 29\nbuild 8\nbuild 18\nquery 31 32\nbuild 1\nquery 11 28\nquery 25 31\nquery 21 29\nbuild 0\nbuild 4\nbuild 23\nbuild 19\nquery 24 24\nbuild 13\nquery 10 17\nquery 8 28\nquery 21 27\nbuild 2\nquery 7 27\nbuild 11\nquery 23 26\nquery 15 30\nbuild 4\nbuild 21\nbuild 23\nbuild 0\nbuild 1\nquery 24 32\nbuild 11\nquery 30 31\nquery 11 21\nquery 20 22\nquery 32 32\nbuild 8\nquery 32 32\nquery 10 16\nbuild 20\nquery 21 26\nbuild 32\nquery 1 3\nquery 6 15\nquery 28 29\n",
+    "expectedOutput": "0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 1 1 0 1 1 0 0 1 1 1 1 0\n"
+  },
+  {
+    "input": "16 12\nquery 2 4\nbuild 6\nquery 5 11\nbuild 2\nquery 11 12\nbuild 12\nquery 12 12\nbuild 15\nquery 12 14\nquery 6 11\nbuild 1\nquery 2 7\n",
+    "expectedOutput": "0 1 0 1 1 1 1\n"
+  },
+  {
+    "input": "9 12\nbuild 0\nquery 3 8\nquery 4 4\nbuild 5\nquery 2 2\nbuild 4\nquery 3 6\nbuild 2\nbuild 7\nquery 6 7\nbuild 5\nbuild 8\n",
+    "expectedOutput": "0 0 0 1 1\n"
+  },
+  {
+    "input": "32 18\nbuild 30\nquery 30 31\nquery 11 21\nquery 1 14\nquery 5 24\nquery 6 12\nbuild 12\nbuild 30\nbuild 1\nquery 7 24\nbuild 2\nbuild 6\nquery 8 11\nquery 14 24\nquery 21 26\nbuild 15\nquery 17 26\nquery 10 27\n",
+    "expectedOutput": "1 0 0 0 0 1 0 0 0 0 1\n"
+  },
+  {
+    "input": "27 51\nquery 3 3\nquery 22 24\nbuild 19\nbuild 19\nbuild 21\nquery 22 22\nquery 12 18\nquery 6 24\nbuild 18\nbuild 23\nquery 14 19\nbuild 19\nquery 25 26\nbuild 15\nbuild 14\nquery 16 20\nquery 5 13\nquery 1 20\nbuild 9\nbuild 20\nquery 3 13\nbuild 14\nbuild 18\nquery 1 16\nbuild 23\nbuild 16\nbuild 2\nquery 21 22\nbuild 3\nquery 17 26\nbuild 9\nbuild 1\nbuild 24\nquery 10 23\nquery 2 17\nquery 21 24\nbuild 0\nquery 13 19\nbuild 15\nquery 22 22\nquery 26 26\nquery 18 24\nquery 11 18\nbuild 7\nbuild 21\nbuild 10\nquery 16 16\nbuild 26\nbuild 16\nquery 9 24\nquery 13 15\n",
+    "expectedOutput": "0 0 0 0 1 1 0 1 0 1 1 1 1 1 1 1 1 1 0 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "7 34\nbuild 3\nquery 4 4\nbuild 5\nbuild 3\nquery 0 4\nquery 0 1\nquery 5 6\nquery 4 4\nquery 0 0\nbuild 5\nquery 0 4\nquery 3 6\nbuild 0\nquery 5 5\nquery 5 6\nbuild 2\nquery 1 6\nquery 3 5\nquery 5 5\nquery 6 6\nbuild 0\nbuild 2\nbuild 1\nquery 6 6\nbuild 4\nquery 6 6\nquery 6 6\nquery 3 6\nquery 6 6\nbuild 3\nbuild 2\nquery 1 1\nbuild 2\nquery 0 5\n",
+    "expectedOutput": "0 1 0 1 0 0 1 1 1 1 1 1 1 0 0 0 0 1 0 1 1\n"
+  },
+  {
+    "input": "34 25\nquery 15 31\nquery 24 32\nquery 32 32\nquery 9 22\nquery 13 19\nbuild 3\nbuild 33\nbuild 22\nquery 15 22\nbuild 15\nquery 6 23\nbuild 26\nquery 24 26\nquery 23 33\nquery 12 22\nbuild 23\nquery 12 27\nbuild 10\nquery 26 29\nbuild 14\nbuild 31\nbuild 29\nquery 5 25\nbuild 8\nbuild 23\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "27 12\nquery 15 21\nbuild 5\nbuild 24\nquery 0 24\nquery 22 25\nquery 22 25\nbuild 16\nbuild 15\nbuild 17\nquery 0 13\nquery 9 15\nbuild 9\n",
+    "expectedOutput": "0 1 1 1 1 1\n"
+  },
+  {
+    "input": "12 44\nquery 8 11\nquery 8 8\nquery 8 10\nquery 7 10\nbuild 3\nquery 8 11\nquery 10 11\nbuild 9\nquery 5 7\nquery 8 9\nquery 1 3\nquery 3 11\nquery 5 8\nbuild 4\nbuild 8\nbuild 4\nquery 7 11\nbuild 4\nquery 1 2\nbuild 11\nquery 2 10\nquery 2 3\nquery 1 1\nquery 7 9\nbuild 5\nquery 7 9\nbuild 5\nquery 6 9\nbuild 1\nbuild 1\nbuild 5\nquery 7 11\nquery 11 11\nbuild 7\nbuild 8\nbuild 1\nbuild 8\nbuild 2\nbuild 0\nquery 2 3\nquery 1 10\nbuild 7\nquery 1 7\nbuild 10\n",
+    "expectedOutput": "0 0 0 0 0 0 0 1 1 1 0 1 0 1 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "18 44\nquery 14 14\nbuild 9\nquery 10 10\nquery 12 12\nquery 16 16\nquery 11 13\nbuild 7\nquery 16 16\nbuild 17\nquery 7 8\nquery 13 16\nquery 0 17\nquery 13 13\nquery 1 13\nbuild 16\nbuild 17\nquery 15 15\nquery 14 15\nquery 11 17\nbuild 15\nquery 7 7\nbuild 5\nbuild 4\nbuild 15\nbuild 13\nbuild 0\nquery 13 14\nbuild 15\nbuild 10\nquery 9 9\nquery 1 15\nquery 5 6\nbuild 13\nbuild 8\nquery 2 10\nquery 10 17\nbuild 15\nquery 14 17\nbuild 3\nbuild 13\nquery 12 15\nbuild 6\nquery 2 15\nbuild 14\n",
+    "expectedOutput": "0 0 0 0 0 0 1 0 1 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "12 39\nbuild 2\nquery 1 1\nbuild 10\nquery 6 6\nquery 8 9\nquery 4 10\nbuild 3\nquery 5 11\nquery 2 10\nquery 8 11\nbuild 4\nquery 10 10\nbuild 2\nquery 1 1\nquery 8 10\nbuild 11\nquery 6 11\nquery 0 3\nbuild 8\nbuild 5\nbuild 7\nbuild 4\nbuild 1\nquery 7 7\nbuild 9\nquery 7 11\nquery 4 4\nbuild 1\nbuild 3\nquery 0 1\nbuild 10\nquery 6 11\nbuild 4\nquery 1 8\nquery 9 11\nquery 7 11\nbuild 4\nquery 2 9\nquery 1 7\n",
+    "expectedOutput": "0 0 0 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "11 50\nbuild 7\nbuild 9\nbuild 6\nbuild 7\nbuild 1\nquery 5 10\nbuild 5\nquery 5 9\nquery 4 9\nquery 4 7\nquery 7 8\nbuild 10\nbuild 7\nquery 3 8\nquery 3 8\nquery 5 8\nquery 5 10\nquery 2 6\nquery 7 8\nquery 3 6\nbuild 3\nquery 9 10\nquery 1 2\nbuild 3\nbuild 3\nquery 4 5\nbuild 2\nquery 1 2\nbuild 1\nbuild 7\nquery 3 8\nquery 8 8\nbuild 8\nbuild 9\nquery 1 5\nquery 1 10\nquery 9 10\nquery 10 10\nbuild 7\nquery 1 1\nbuild 0\nquery 2 7\nquery 4 6\nquery 3 6\nbuild 9\nbuild 4\nquery 1 10\nbuild 9\nbuild 5\nquery 4 4\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "14 26\nquery 12 12\nquery 4 4\nbuild 8\nbuild 5\nbuild 1\nbuild 8\nquery 2 8\nbuild 4\nbuild 2\nbuild 4\nbuild 0\nbuild 9\nbuild 7\nbuild 13\nquery 2 12\nquery 9 11\nquery 4 8\nquery 3 5\nbuild 10\nquery 12 13\nbuild 5\nquery 6 7\nbuild 1\nquery 3 7\nquery 2 9\nquery 7 13\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "13 25\nbuild 8\nbuild 6\nbuild 4\nquery 6 11\nquery 12 12\nbuild 7\nquery 6 10\nbuild 6\nbuild 6\nquery 1 3\nbuild 7\nbuild 4\nbuild 8\nquery 3 8\nquery 9 11\nquery 3 7\nquery 8 12\nquery 7 11\nbuild 8\nbuild 2\nbuild 9\nbuild 10\nbuild 6\nquery 2 6\nbuild 9\n",
+    "expectedOutput": "1 0 1 0 1 0 1 1 1 1\n"
+  },
+  {
+    "input": "24 32\nquery 12 15\nquery 7 13\nquery 8 18\nbuild 8\nquery 2 18\nbuild 17\nbuild 11\nbuild 8\nbuild 6\nquery 15 18\nquery 6 8\nquery 4 11\nbuild 3\nquery 11 20\nquery 8 21\nbuild 22\nbuild 15\nbuild 5\nbuild 18\nbuild 11\nquery 14 19\nquery 17 17\nbuild 11\nquery 15 18\nbuild 2\nbuild 3\nbuild 20\nbuild 23\nbuild 10\nquery 11 22\nbuild 13\nquery 16 19\n",
+    "expectedOutput": "0 0 0 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "16 1\nquery 0 12\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 6\nbuild 2\nquery 6 6\nbuild 0\nbuild 4\nquery 6 6\nbuild 2\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "8 10\nbuild 0\nquery 5 5\nbuild 1\nquery 0 5\nquery 7 7\nbuild 0\nbuild 2\nquery 7 7\nquery 0 7\nquery 6 7\n",
+    "expectedOutput": "0 1 0 0 1 0\n"
+  },
+  {
+    "input": "30 25\nbuild 15\nquery 10 17\nquery 18 25\nbuild 23\nquery 19 28\nbuild 10\nquery 29 29\nbuild 1\nquery 19 28\nquery 14 20\nquery 3 6\nbuild 20\nbuild 25\nbuild 13\nbuild 12\nquery 6 16\nquery 3 24\nbuild 29\nbuild 28\nbuild 4\nquery 3 10\nbuild 3\nbuild 17\nquery 29 29\nbuild 3\n",
+    "expectedOutput": "1 0 1 0 1 1 0 1 1 1 1\n"
+  },
+  {
+    "input": "24 32\nbuild 22\nbuild 5\nbuild 10\nbuild 11\nquery 21 21\nquery 8 16\nquery 0 11\nbuild 2\nbuild 19\nbuild 10\nbuild 23\nquery 4 18\nbuild 1\nbuild 13\nquery 9 10\nquery 4 19\nquery 17 19\nbuild 6\nbuild 5\nbuild 21\nquery 16 17\nbuild 14\nbuild 12\nbuild 13\nquery 19 20\nquery 10 21\nquery 13 14\nbuild 7\nquery 17 17\nquery 3 10\nquery 6 6\nquery 1 5\n",
+    "expectedOutput": "0 1 1 1 1 1 1 0 1 1 1 0 1 1 1\n"
+  },
+  {
+    "input": "26 27\nquery 15 17\nbuild 19\nbuild 0\nbuild 9\nbuild 11\nbuild 8\nbuild 12\nquery 17 18\nbuild 25\nbuild 0\nbuild 13\nquery 15 21\nquery 22 25\nquery 23 25\nquery 20 24\nquery 10 15\nbuild 1\nbuild 25\nbuild 12\nquery 15 23\nbuild 9\nbuild 16\nquery 5 9\nquery 15 17\nquery 16 22\nbuild 0\nquery 19 24\n",
+    "expectedOutput": "0 0 1 1 1 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "29 5\nbuild 9\nbuild 28\nquery 22 26\nquery 9 23\nquery 0 6\n",
+    "expectedOutput": "0 1 0\n"
+  },
+  {
+    "input": "3 14\nbuild 2\nquery 2 2\nbuild 0\nquery 2 2\nbuild 0\nquery 0 2\nbuild 0\nquery 1 1\nquery 1 1\nbuild 0\nquery 2 2\nbuild 2\nbuild 2\nbuild 1\n",
+    "expectedOutput": "1 1 1 0 0 1\n"
+  },
+  {
+    "input": "23 5\nquery 22 22\nquery 0 18\nbuild 21\nbuild 5\nbuild 4\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "9 32\nquery 4 8\nbuild 3\nquery 2 7\nquery 5 8\nquery 2 4\nbuild 5\nquery 6 8\nquery 5 8\nbuild 0\nquery 2 2\nbuild 6\nbuild 3\nquery 1 4\nquery 5 6\nbuild 5\nquery 3 5\nbuild 3\nbuild 3\nbuild 7\nquery 6 8\nquery 5 7\nquery 7 8\nbuild 4\nbuild 4\nbuild 8\nbuild 6\nquery 0 3\nquery 1 1\nbuild 3\nbuild 3\nquery 2 8\nquery 2 3\n",
+    "expectedOutput": "0 1 0 1 0 1 0 1 1 1 1 1 1 1 0 1 1\n"
+  },
+  {
+    "input": "2 33\nbuild 1\nbuild 0\nbuild 1\nbuild 1\nquery 1 1\nquery 0 1\nquery 1 1\nquery 0 1\nquery 0 0\nbuild 1\nbuild 0\nbuild 1\nbuild 0\nbuild 1\nbuild 0\nquery 0 1\nbuild 0\nquery 0 0\nquery 0 0\nbuild 0\nquery 1 1\nquery 0 0\nbuild 0\nquery 0 1\nquery 1 1\nquery 0 1\nbuild 0\nquery 0 1\nquery 0 1\nbuild 1\nquery 1 1\nbuild 0\nbuild 0\n",
+    "expectedOutput": "1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "29 21\nbuild 1\nbuild 8\nbuild 24\nbuild 19\nbuild 26\nquery 14 21\nquery 28 28\nquery 26 26\nbuild 14\nbuild 0\nbuild 4\nquery 11 12\nquery 13 25\nquery 18 24\nbuild 11\nquery 3 5\nquery 16 27\nquery 3 20\nbuild 9\nbuild 5\nbuild 28\n",
+    "expectedOutput": "1 0 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "25 1\nquery 6 9\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "28 45\nquery 14 21\nbuild 16\nquery 3 24\nquery 17 21\nquery 12 19\nquery 19 23\nquery 25 26\nquery 7 9\nquery 8 13\nbuild 25\nbuild 9\nquery 19 23\nquery 15 21\nquery 1 4\nquery 3 6\nbuild 20\nquery 12 22\nbuild 22\nquery 6 18\nbuild 5\nquery 21 24\nquery 12 22\nquery 12 20\nbuild 8\nquery 3 24\nquery 6 22\nquery 10 25\nquery 24 26\nquery 1 3\nquery 0 3\nquery 2 17\nbuild 4\nquery 24 24\nquery 20 25\nbuild 22\nbuild 24\nquery 1 18\nquery 19 26\nquery 16 21\nquery 4 24\nbuild 2\nbuild 14\nquery 3 5\nquery 1 23\nquery 9 27\n",
+    "expectedOutput": "0 1 0 1 0 0 0 0 0 1 0 0 1 1 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "9 51\nquery 3 4\nbuild 8\nbuild 2\nbuild 2\nbuild 8\nquery 3 3\nquery 2 5\nbuild 3\nquery 5 6\nquery 6 8\nbuild 0\nquery 4 4\nbuild 2\nbuild 2\nbuild 1\nquery 1 6\nbuild 5\nquery 8 8\nbuild 6\nquery 2 8\nquery 3 6\nquery 7 8\nquery 3 6\nquery 5 5\nquery 1 7\nbuild 8\nquery 5 7\nquery 5 7\nquery 6 7\nquery 2 2\nquery 2 6\nbuild 1\nbuild 6\nbuild 5\nquery 1 5\nbuild 1\nquery 0 1\nquery 1 2\nbuild 1\nbuild 6\nquery 7 7\nbuild 2\nquery 8 8\nbuild 6\nquery 4 8\nquery 4 6\nquery 4 7\nbuild 2\nquery 3 3\nbuild 3\nbuild 2\n",
+    "expectedOutput": "0 0 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "22 25\nquery 9 17\nquery 13 17\nbuild 7\nquery 19 19\nbuild 10\nquery 21 21\nbuild 1\nquery 20 21\nbuild 18\nbuild 4\nquery 4 20\nquery 4 11\nquery 16 20\nbuild 15\nbuild 1\nbuild 18\nquery 5 13\nbuild 11\nquery 9 21\nquery 6 7\nquery 2 13\nbuild 18\nbuild 13\nbuild 10\nquery 5 19\n",
+    "expectedOutput": "0 0 0 0 0 1 1 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "29 53\nquery 12 27\nbuild 0\nbuild 5\nbuild 20\nbuild 15\nbuild 11\nquery 26 27\nquery 5 15\nquery 11 19\nbuild 18\nquery 0 0\nquery 2 26\nquery 8 28\nquery 9 21\nquery 6 28\nbuild 15\nquery 21 22\nbuild 28\nbuild 7\nbuild 26\nquery 22 28\nquery 22 23\nquery 1 8\nquery 8 28\nquery 1 24\nbuild 22\nquery 5 15\nbuild 4\nquery 3 8\nbuild 25\nquery 7 16\nquery 10 17\nbuild 22\nquery 10 26\nbuild 22\nquery 18 21\nquery 1 19\nquery 15 16\nquery 27 28\nquery 25 28\nbuild 7\nquery 0 4\nbuild 8\nquery 27 27\nbuild 8\nbuild 8\nquery 28 28\nbuild 11\nbuild 9\nbuild 26\nbuild 28\nquery 8 25\nbuild 15\n",
+    "expectedOutput": "0 0 1 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1\n"
+  },
+  {
+    "input": "28 11\nquery 5 14\nbuild 19\nquery 7 14\nquery 3 4\nquery 19 20\nquery 3 22\nbuild 7\nbuild 21\nquery 11 12\nbuild 24\nbuild 22\n",
+    "expectedOutput": "0 0 0 1 1 0\n"
+  }
+]

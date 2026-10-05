@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-15",
+  "title": "Dynamic Wall Building and Range Query",
+  "explanation": "## 思路\n\n用 Fenwick 树维护每个位置是否已建墙。首次 build 将该位置加一；重复 build 不更新。查询闭区间 [l,r] 的墙数，用前缀和 prefix(r+1)−prefix(l) 计算。\n\n## 正确性\n\n每个已建位置在树中恰有一个单位贡献，未建位置贡献为零；幂等更新保证重复操作不改变贡献。Fenwick 前缀和返回半开区间 [0,x) 的总贡献，因此两前缀之差恰好是闭区间 [l,r] 的墙数。该数大于零当且仅当区间存在墙。\n\n## 复杂度\n\n每次操作时间 O(log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=raw.split(); it=iter(t); n=int(next(it)); q=int(next(it)); bit=[0]*(n+1); built=bytearray(n); out=[]\n def add(i):\n  i+=1\n  while i<=n: bit[i]+=1; i+=i&-i\n def prefix(i):\n  total=0\n  while i: total+=bit[i]; i-=i&-i\n  return total\n for _ in range(q):\n  op=next(it)\n  if op=='build':\n   i=int(next(it))\n   if not built[i]: built[i]=1; add(i)\n  else:\n   l=int(next(it)); r=int(next(it)); out.append('1' if prefix(r+1)-prefix(l)>0 else '0')\n return ' '.join(out)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#15-dynamic-wall-building-and-range-query",
+  "sourceContentHash": "61a264565c5671f3252bc17794e694d9210e6f577a3f5dfbe9d0c964963d2739",
+  "author": "CSWork"
+}
