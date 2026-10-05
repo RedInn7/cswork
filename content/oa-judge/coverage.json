@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 820,
-    "awaiting_sandbox": 29,
-    "blocked": 206,
-    "unreviewed": 579
+    "awaiting_sandbox": 33,
+    "blocked": 209,
+    "unreviewed": 572
   },
   "items": [
     {
@@ -6705,37 +6705,48 @@
     {
       "id": "oa-pinterest-1",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "pinterest-next",
+      "reason": "来源为原始 OA LIST 文本；#001 给出正式题意，#002 是同题补充约束。#001 的 OCR 样例 `bbacecdbbab → c3` 与字符串内容矛盾，故本站不复用该错误输出，改用题面规则可直接验证的样例；catalog 指纹保持不变。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。"
     },
     {
       "id": "oa-pinterest-2",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始例子 #004 中 x_train 各行特征数有 4 和 5，违反 #007 明确的 x_test[i].length == x_train[j].length；#004 的该例输出最后一项为 1，而 #006 补全同例输出最后一项为 0。题目还依赖 sklearn.tree.DecisionTreeClassifier，本站评测容器未承诺安装 sklearn。样例互相矛盾且可执行依赖不确定，不猜规则。"
     },
     {
       "id": "oa-pinterest-3",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "源代码快照 #014 指定 scipy cosine 距离，catalog 所附实现则使用 Euclidean；规则正文未指定度量。题目还明确允许聚类标签任意置换，本站 tokens checker 无法接受所有等价标签排列。两处均影响判定，未擅自选一种。"
     },
     {
       "id": "oa-pinterest-4",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "pinterest-next",
+      "reason": "来源为 FastPrep 原始 Markdown，包含题意、所有边界和三组样例；大和需 64 位，本站输入输出协议明示。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。"
     },
     {
       "id": "oa-pinterest-5",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "pinterest-next",
+      "reason": "FastPrep 原始规则明确一次性标记并同时爆炸。资格泡泡+同色邻居等价于爆炸所有大小≥3 的同色四邻连通块；该等价由独立邻接扫描 oracle 和 reference 交叉验证。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。"
     },
     {
       "id": "oa-pinterest-6",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "在源快照中题干在 ‘You are given a string expression</’ 处截断；没有可核实的表达式语法、可加括号范围或运算符集合。唯一样例不足以唯一确定答案规则，因此暂不构造输入限制与 oracle。"
     },
     {
       "id": "oa-pinterest-7",
       "company": "pinterest",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "pinterest-next",
+      "reason": "FastPrep 原始 statement 有三组样例及 finish 范围；补充了 street-location 的闭区间解释，lower_bound 用包含当前位置的 x≥p，因为来源样例在到达 14 后再次使用位置 14 的另一辆车。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。"
     },
     {
       "id": "oa-palantir-1",

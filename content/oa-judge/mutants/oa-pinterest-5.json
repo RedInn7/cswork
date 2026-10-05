@@ -1,0 +1,10 @@
+[
+  {
+    "name": "需要三个同色邻居才爆炸",
+    "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); R,C=z[:2]; a=[z[2+r*C:2+(r+1)*C] for r in range(R)]; p=[[False]*C for _ in range(R)]; d=((-1,0),(1,0),(0,-1),(0,1))\n for r in range(R):\n  for c in range(C):\n   if sum(0<=r+dx<R and 0<=c+dy<C and a[r+dx][c+dy]==a[r][c] for dx,dy in d)>=3: p[r][c]=True\n for r in range(R):\n  for c in range(C):\n   if p[r][c]:\n    for dx,dy in d:\n     x,y=r+dx,c+dy\n     if 0<=x<R and 0<=y<C and a[x][y]==a[r][c]: p[x][y]=True\n for r in range(R):\n  for c in range(C):\n   if p[r][c]: a[r][c]=0\n for c in range(C):\n  keep=[a[r][c] for r in range(R) if a[r][c]]\n  for r in range(R): a[r][c]=0\n  for i,v in enumerate(keep): a[R-len(keep)+i][c]=v\n return chr(10).join(' '.join(map(str,row)) for row in a)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "爆炸后不执行下落",
+    "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); R,C=z[:2]; a=[z[2+r*C:2+(r+1)*C] for r in range(R)]; seen=[[False]*C for _ in range(R)]; p=[[False]*C for _ in range(R)]; d=((-1,0),(1,0),(0,-1),(0,1))\n for r in range(R):\n  for c in range(C):\n   if seen[r][c]: continue\n   q=[(r,c)]; seen[r][c]=True; comp=[]\n   for x,y in q:\n    comp.append((x,y))\n    for dx,dy in d:\n     u,v=x+dx,y+dy\n     if 0<=u<R and 0<=v<C and not seen[u][v] and a[u][v]==a[r][c]: seen[u][v]=True; q.append((u,v))\n   if len(comp)>=3:\n    for x,y in comp: p[x][y]=True\n for r in range(R):\n  for c in range(C):\n   if p[r][c]: a[r][c]=0\n return chr(10).join(' '.join(map(str,row)) for row in a)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

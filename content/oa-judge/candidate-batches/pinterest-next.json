@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-pinterest-1",
+      "sourceContentHash": "dd4b4f197bd048a0e2af7095fed4f73ccc2c7ea9e5e9748e67e78ac162073384",
+      "packageChecksum": "5bde2265ce5b721962fcd392e46146be225d05957cc48ab297a0a03ff3c72dce",
+      "editorial": "## 思路\n\n从左向右分段扫描相同字符的连续游程，比较游程长度；相同长度时更新为起点更靠右的一段。\n\n## 正确性\n\n每个合法答案恰为字符串中的一个最大连续同字符游程。扫描覆盖所有游程，按 (长度, 起点) 字典序最大化，正好先最大化长度，再选择最右位置。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n s=raw.strip(); best_char=''; best_len=0; best_start=-1; i=0\n while i<len(s):\n  j=i+1\n  while j<len(s) and s[j]==s[i]: j+=1\n  if j-i>best_len or (j-i==best_len and i>best_start):\n   best_len=j-i; best_char=s[i]; best_start=i\n  i=j\n return f\"{best_char}{best_len}\"\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pinterest-4",
+      "sourceContentHash": "153a0594e3dda9b26fde3db1f14ce3cd68496cd98d9288270a4042e5886af631",
+      "packageChecksum": "efaee6f40ab495751ef5f7ae089387fd9a208ea00b7f06e9ab88a428841f1629",
+      "editorial": "## 思路\n\n用按 (当前高度, 柱子下标) 排序的最小堆。每个 pin 取堆顶、记录下标、增加该柱高度并放回堆。\n\n## 正确性\n\n堆序以高度和下标为完整排序键，堆顶因此总是题目要求的最低且下标最小柱子。取出后只改变这一柱高度并重新入堆，其他柱子状态不变；逐个处理即可与规则完全一致。\n\n## 复杂度\n\nn 为 pin 数、k 为柱数。时间 O(n log k)，空间 O(k+n)（含分配结果）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\ndef solve(raw):\n z=list(map(int,raw.split())); n,k=z[:2]; pins=z[2:2+n]\n heap=[(0,i) for i in range(k)]; heapq.heapify(heap); heights=[0]*k; assigned=[]\n for pin in pins:\n  h,i=heapq.heappop(heap); assigned.append(i); heights[i]=h+pin; heapq.heappush(heap,(heights[i],i))\n return ' '.join(map(str,assigned))+chr(10)+' '.join(map(str,heights))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pinterest-5",
+      "sourceContentHash": "886843ff4caac0be7d078ffee28752fcd3beab87bcbeb3791498a51bb942608b",
+      "packageChecksum": "9f6e3a49d0f4c78a560a85ae27ad8b00d29cd41694288de93ed367d77bf1c145",
+      "editorial": "## 思路\n\n在原棋盘上找同色四邻连通块：大小至少 3 的块整体标记爆炸。所有标记基于原始棋盘同时确定，再逐列稳定压缩剩余泡泡至底部。\n\n## 正确性\n\n同色连通块内，每个非叶节点至少有两个同色邻居，因而合格；每个叶节点与某个非叶节点相邻，因而会作为合格泡泡的同色邻居一并标记。故大小至少 3 的整块且仅整块被标记；大小 1 或 2 没有合格泡泡。题目要求同时爆炸，所以连通块标记阶段不修改棋盘；随后列压缩保持未爆泡泡的相对顺序并使其紧贴底边。\n\n## 复杂度\n\nR=rows、C=cols。时间 O(RC)，空间 O(RC)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import deque\nimport sys\ndef solve(raw):\n z=list(map(int,raw.split())); rows,cols=z[:2]; a=[z[2+r*cols:2+(r+1)*cols] for r in range(rows)]; seen=[[False]*cols for _ in range(rows)]; pop=[[False]*cols for _ in range(rows)]; dirs=((-1,0),(1,0),(0,-1),(0,1))\n for r in range(rows):\n  for c in range(cols):\n   if seen[r][c]: continue\n   color=a[r][c]; q=deque([(r,c)]); seen[r][c]=True; comp=[]\n   while q:\n    x,y=q.popleft(); comp.append((x,y))\n    for dx,dy in dirs:\n     nx,ny=x+dx,y+dy\n     if 0<=nx<rows and 0<=ny<cols and not seen[nx][ny] and a[nx][ny]==color: seen[nx][ny]=True; q.append((nx,ny))\n   if len(comp)>=3:\n    for x,y in comp: pop[x][y]=True\n for r in range(rows):\n  for c in range(cols):\n   if pop[r][c]: a[r][c]=0\n for c in range(cols):\n  keep=[a[r][c] for r in range(rows) if a[r][c]!=0]\n  for r in range(rows): a[r][c]=0\n  for i,v in enumerate(keep): a[rows-len(keep)+i][c]=v\n return chr(10).join(' '.join(map(str,row)) for row in a)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pinterest-7",
+      "sourceContentHash": "e04789871699dedbd8df967eaa97e5a10f3ce6f21dbd4b4719390a579a6ecdb0",
+      "packageChecksum": "e794f9596f413faaa26bf5183955f1474848175c2ce7ae56e88e68e3a479d4e6",
+      "editorial": "## 思路\n\n排序滑板车位置，从当前位置开始找第一个 x≥当前位置的车；累加 min(finish,x+10)−x，并把当前位置更新到该位置。没有可用车辆时结束。\n\n## 正确性\n\n规则每轮唯一指定当前点右侧最近的车辆；升序数组的 lower_bound 正是该车。它可骑行至 x+10 或 finish 中较早者，因此本轮距离为 min(finish,x+10)−x。算法逐轮依规则模拟，未骑行的步行距离未计入，且每轮位置严格增加或到达 finish，必终止。\n\n## 复杂度\n\nn 为滑板车数。排序 O(n log n)，之后每辆车至多处理一次，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); finish,n=z[:2]; scooters=sorted(z[2:2+n]); pos=total=0; i=0\n while pos<finish:\n  while i<n and scooters[i]<pos: i+=1\n  if i==n: break\n  x=scooters[i]; i+=1; reached=min(finish,x+10); total+=reached-x; pos=reached\n return str(total)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

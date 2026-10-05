@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-pinterest-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Longest Contiguous Substring of Single Character",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Pinterest",
+      "字符串",
+      "扫描"
+    ],
+    "description": "给定只含小写英文字母的字符串。找最长的连续相同字符子串；若长度并列，选最靠右的一段。输出该字符与子串长度拼接成的字符串。\n\n输入格式与本题所列的本站补充限制由 CSWork 整理，不表示原题来源另有该协议。",
+    "input": "输入一行字符串 source，1≤|source|≤100，且仅含 a-z（来源约束）。",
+    "output": "输出一个字符后接该最长连续段的长度；并列时取最靠右的段。",
+    "explanation": "按题面规则处理输入；思路、证明和复杂度见配套讲义。",
+    "hints": [
+      "从左向右分段扫描相同字符的连续游程，比较游程长度；相同长度时更新为起点更靠右的一段。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "bbaacaa\n",
+      "expectedOutput": "a2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "bbbeed\n",
+      "expectedOutput": "b3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "ccc\n",
+      "expectedOutput": "c3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "a\n",
+      "expectedOutput": "a1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n",
+      "expectedOutput": "z100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\n",
+      "expectedOutput": "b50\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "accebebeeeaaabaacdedcbaabdbbbbdaaadabcaddbbcbaedabbaaaddbadecaec\n",
+      "expectedOutput": "b4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "accdbedbeabadaeadbdcbeaaadeeadbbecaeeeadbadadacadeadbcdbeaddeeedcacdabdaeee\n",
+      "expectedOutput": "e3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "adceddadbdadadbeddcabcadaedacceedeebeaebdabdcaecdbdaecbdbededbbcdacedcadcdaebceb\n",
+      "expectedOutput": "b2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "bbebdcbdbebddaadadbacdeaabbeabebcdbbdaaebbaadaedbbeadbceedccbdbeb\n",
+      "expectedOutput": "c2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "cdbbaecabeeabbdbcbaabaceadddadadcbecaceabadaadeacebeadeacbdaceabeddcccbaceeaecabaebabdaccabdccb\n",
+      "expectedOutput": "c3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "decbeaeceedbeaadddbedebacdcbdecaabebceacacda\n",
+      "expectedOutput": "d3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "baeaeababeebcaaaebdbbacbacbaddbebebadaaeee\n",
+      "expectedOutput": "e3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "acccccdda\n",
+      "expectedOutput": "c5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "bdbccbaacddeecedacbdacacadeaab\n",
+      "expectedOutput": "a2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "aeeebbeadebdcbddedacdcdbcbedecdeddebbdedbbaaabcbcbdcbddddebbadbceddbeecabaaec\n",
+      "expectedOutput": "d4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "ba\n",
+      "expectedOutput": "a1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "cbbabddeabbbddadbdbddadddbbddeadeeaebbbbbcecdadaecaecaaeedbaacbecabeadeaeeedbceed\n",
+      "expectedOutput": "b5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "aeddaaaabebbecaecaadeeaadedbcebeecaebbaeaaeadbcacccceeadecbedeeedeeebbeaeac\n",
+      "expectedOutput": "c4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "ebeeececebbbbceabeecedecbbbbadaddeebcedcbbdaadbadaaeebabbecccaebbdccdbdddcbcbcdddce\n",
+      "expectedOutput": "b4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "aadecadebdcbcebccbddeadeadbdeacabdcabadd\n",
+      "expectedOutput": "d2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "ceedaeeacdcebdeadeaecddaebbcbeaeeaebebecedeaadaabdbeebbab\n",
+      "expectedOutput": "b2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "dcaaaaeccdbcdeeebdcb\n",
+      "expectedOutput": "a4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "caeddcdaeeebeecbabacbddddeedceacaacbdcebabebecdecdabcabaaeeaebaedbbcdcecaecbcabbbbbbeabeaed\n",
+      "expectedOutput": "b6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "daedacbcadcecdcbadcdedbbbedbdccdddcaedcdaaadaaeddcdccccbace\n",
+      "expectedOutput": "c4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "ddabdebcceadbcadcbabeeadcceacbbabaeabbaccdddeacebecccbbbcedcecbbdebeabaadbaeddabaacdbeeceeebcdde\n",
+      "expectedOutput": "e3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "cecadadabaebebbeaccaadbaccebacabbdcbbeccdedeacbbeebbcbcdcadeddbdaeedcdcebdbdaacabdbaeeccec\n",
+      "expectedOutput": "c2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "cdeddbcddeeaaebcbbbcbcdbcaeedbdedbacbaddaebdaededecaadbdacbadeebdccd\n",
+      "expectedOutput": "b3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "bcebedacddccadeecdbebebccbcdadbddcbaebebebdcadbbbcaedeeecededbbaaeaa\n",
+      "expectedOutput": "e3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "ddbccbadccaecadbddbaacbecbebabcebdabeababaecacddccbbe\n",
+      "expectedOutput": "b2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "aacadcadbdabeaacbeeabaaabbecbcebeededdbaaddcbacade\n",
+      "expectedOutput": "a3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "ceacdecaeacaeca\n",
+      "expectedOutput": "a1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

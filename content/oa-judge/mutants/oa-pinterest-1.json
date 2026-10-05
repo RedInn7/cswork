@@ -1,0 +1,10 @@
+[
+  {
+    "name": "并列时保留最左段",
+    "code": "import sys\ndef solve(raw):\n s=raw.strip(); best=''; n=0; i=0\n while i<len(s):\n  j=i+1\n  while j<len(s) and s[j]==s[i]: j+=1\n  if j-i>n: best=s[i]+str(j-i); n=j-i\n  i=j\n return best\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只统计字符总频次",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n s=raw.strip(); c=Counter(s); x=max(c,key=lambda ch:c[ch]); return x+str(c[x])\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

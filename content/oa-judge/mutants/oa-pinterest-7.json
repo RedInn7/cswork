@@ -1,0 +1,10 @@
+[
+  {
+    "name": "跳过当前位置的滑板车",
+    "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); f,n=z[:2]; a=sorted(z[2:2+n]); p=t=0\n while p<f:\n  q=next((x for x in a if x>p),None)\n  if q is None: break\n  v=min(f,q+10); t+=v-q; p=v\n return str(t)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把步行距离也计入骑行距离",
+    "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); f,n=z[:2]; a=sorted(z[2:2+n]); p=t=0; i=0\n while p<f:\n  while i<n and a[i]<p: i+=1\n  if i==n: break\n  x=a[i]; i+=1; t+=x-p; v=min(f,x+10); t+=v-x; p=v\n return str(t)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
