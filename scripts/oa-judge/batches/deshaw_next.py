@@ -4,8 +4,8 @@ Only code in this file and the generated references is executed; imported OA
 source programs are never run.  All generated work remains candidate-only.
 """
 from array import array
-from collections import Counter
 from itertools import product
+from math import comb
 from pathlib import Path
 import hashlib
 import json
@@ -63,7 +63,7 @@ INC_CODE = '''def solve(raw):
     right=n-1
     while right>0 and a[right-1]<a[right]: right-=1
     ans=0; j=right
-    for i in range(left+1):
+    for i in range(left+2):
         j=max(j,i+1)
         if i:
             while j<n and a[j]<=a[i-1]: j+=1
@@ -193,7 +193,12 @@ def min_ops_oracle(data):
     answer = 0
     for parity in (0, 1):
         group = boundary[parity::2]
-        if sum(group) != 0:
+        prefix = 0
+        for value in group:
+            prefix += value
+            if (parity == 0 and prefix < 0) or (parity == 1 and prefix > 0):
+                return -1
+        if prefix != 0:
             return -1
         answer += sum(max(0, value) for value in group)
     return answer
@@ -203,7 +208,7 @@ def random_difference(rng):
     n = rng.randint(1, 6)
     source = [rng.randint(-3, 3) for _ in range(n)]
     target = source[:]
-    # Usually construct a reachable target by applying a few legal operations.
+    # Usually construct a reachable target by applying the fixed +,- operation.
     if rng.random() < 0.65:
         for _ in range(rng.randint(0, 4)):
             left = rng.randrange(n)
@@ -211,9 +216,8 @@ def random_difference(rng):
             if not ends:
                 continue
             right = rng.choice(ends)
-            sign = rng.choice((-1, 1))
             for i in range(left, right + 1):
-                target[i] += sign if (i - left) % 2 == 0 else -sign
+                target[i] += 1 if (i - left) % 2 == 0 else -1
     else:
         target = [rng.randint(-3, 3) for _ in range(n)]
     return source, target
@@ -225,9 +229,15 @@ DIFF_CODE = '''def solve(raw):
     z=[0]*(n+1); prev=0
     for i,x in enumerate(y): z[i]=x-prev; prev=x
     z[n]=-prev
-    sums=[sum(z[p::2]) for p in (0,1)]
-    if sums[0] or sums[1]: return '-1'
-    return str(sum(abs(x) for x in z)//2)
+    answer=0
+    for parity in (0,1):
+        prefix=0
+        for i in range(parity,n+1,2):
+            prefix+=z[i]
+            if (parity==0 and prefix<0) or (parity==1 and prefix>0): return '-1'
+            answer+=max(0,z[i])
+        if prefix: return '-1'
+    return str(answer)
 '''
 
 
@@ -331,15 +341,11 @@ TREE_CODE = '''def solve(raw):
 '''
 
 
-def random_incremovable(rng):
-    return [rng.randint(1, 12) for _ in range(rng.randint(1, 10))]
-
-
 SPECS = [
     dict(number=3, title='删除一个子数组后的严格递增数组',
          desc='给定正整数数组。删除一个非空连续子数组后，剩余数组（允许为空）若为严格递增，则该删除方案有效。统计所有有效方案数。',
          limits='第一行 n（1≤n≤100000）；第二行 n 个正整数，1≤nums[i]≤10^9。范围取自原题约束。',
-         output='输出有效的连续子数组个数。',
+         output='输出有效的连续子数组个数，以 64 位整数保存。',
          idea='找到最长严格递增前缀和后缀。枚举保留前缀长度 i，双指针找到与它衔接且严格递增的最早后缀起点 j；j 之后的所有后缀起点都可行，累计方案数。',
          proof='删除段 [i,j) 后，剩余部分严格递增当且仅当前缀自身严格递增、后缀自身严格递增，且两者相接时前缀末值小于后缀首值；任一侧为空时无需比较。前缀长度只可能在最长递增前缀范围内，后缀起点只可能位于最长递增后缀之后。随着前缀末值递增，最小可行后缀起点不会左移，因此双指针逐一计入全部且仅有的非空删除区间。',
          complexity='时间 O(n)，额外空间 O(n)（输入）。',
@@ -369,7 +375,7 @@ SPECS = [
     dict(number=8, title='最大值所能覆盖的最长子数组长度之和',
          desc='对数组中每个位置 i，求包含 i 且 a[i] 是该连续子数组最大值的最长子数组长度，得到数组 b。输出 b 所有元素之和。允许子数组包含与 a[i] 相等的其他最大值。',
          limits='第一行 n（本站补充 1≤n≤100000）；第二行 n 个整数（本站补充 −10^9≤a[i]≤10^9）。原快照只给出 n≤10^5，没有给出元素范围；答案按 64 位整数输出。',
-         output='输出所有位置对应的最长子数组长度之和。',
+         output='输出所有位置对应的最长子数组长度之和，以 64 位整数保存。',
          idea='对每个位置寻找左右两侧最近的严格更大元素。它们之间的所有元素都不大于当前值，因此最大合法区间长度是两侧边界之间的宽度。用单调栈在线性时间求边界。',
          proof='最近的严格更大元素不能纳入区间，因为会使 a[i] 不再是最大值；在任一侧再远一步之前的全部元素都不大于 a[i]，可纳入且不破坏最大值条件。故左右最近严格更大的元素唯一确定最大区间，长度为 right-left-1。逐位置相加即为目标和。',
          complexity='时间 O(n)，额外空间 O(n)。',
@@ -380,11 +386,11 @@ SPECS = [
          desc='每次可任选一个非空偶数长度连续子数组，从左至右对其中元素依次执行 +1、−1、+1、−1。可对同一区间重复操作，也可选择不同区间。求把 source 变为 target 的最少操作数；不可实现时输出 −1。',
          limits='第一行 n（原题 1≤n≤10^5）；随后两行分别为 n 个 source 和 n 个 target 值（原题 −10^9≤元素≤10^9）。',
          output='输出最少操作次数；不可达输出 −1。',
-         idea='令 y[i]=(-1)^i·(target[i]−source[i])，则一次合法操作会给 y 的偶数长度区间整体加 1 或减 1。对 y 做相邻差分；每个操作在两个同奇偶边界上产生一单位相反变化。分别检查两种下标奇偶的差分和为零，答案是所有正差分单位数。',
-         proof='区间 [l,r] 长度为偶数，变换后每个位置增加同一符号 s。相邻差分只在 l 处增加 s、在 r+1 处减少 s；因 r+1−l 为偶数，两个边界下标同奇偶。因此每种奇偶边界的差分和都必须为零。反过来，若每组差分和为零，就能将正差分单位与负差分单位两两配对；同奇偶的两个不同边界确定一个偶数长度区间，选择符号即可实现这笔差分。每个操作至多抵消一个正单位与一个负单位，配对数即最少操作数。',
+         idea='令 y[i]=(-1)^i·(target[i]−source[i])，则一次合法操作会给 y 的偶数长度区间整体加一个常量；常量由区间左端下标奇偶决定。对 y 做相邻差分，在两个同奇偶边界产生方向固定的一单位变化。分别检查每种奇偶边界的前缀差分方向与总和；可行时所需操作数等于正差分单位数。',
+         proof='区间 [l,r] 长度为偶数，变换后每个位置增加 s=(-1)^l。相邻差分只在 l 处增加 s、在 r+1 处减少 s；因 r+1−l 为偶数，两个边界下标同奇偶。对偶数边界，每个操作在较早端点 +1、较晚端点 −1，因此任一前缀的差分和必须非负；对奇数边界符号相反，前缀和必须非正。两组总和还都必须为零。反过来，若这些条件成立，从左到右扫描即可把每个较早端点的待处理单位与后续相反端点配对；它们同奇偶且先后有序，唯一确定合法偶数区间。每次操作恰好提供一个单位，因此正差分单位总数就是最小操作数。',
          complexity='时间 O(n)，额外空间 O(n)。',
-         samples=[([0,0],[1,-1]),([0,0,0,0],[1,-1,1,-1]),([3,-2,7],[3,-2,7])], random=random_difference, oracle=min_ops_oracle, encode=encode_difference, code=DIFF_CODE,
-         mutants=[('变换时未按下标交替改符号','else (s[i] - t[i])','else (t[i] - s[i])'),('奇偶差分和不平衡时仍返回次数','if sums[0] or sums[1]: return \'-1\'','if False: return \'-1\'')],
+         samples=[([0,0],[1,-1]),([0,0],[-1,1]),([0,0,0,0],[1,-1,1,-1])], random=random_difference, oracle=min_ops_oracle, encode=encode_difference, code=DIFF_CODE,
+         mutants=[('变换时未按下标交替改符号','else (s[i]-t[i])','else (t[i]-s[i])'),('忽略区间方向导致的前缀约束','if (parity==0 and prefix<0) or (parity==1 and prefix>0): return \'-1\'','if False: return \'-1\'')],
          edges=[(([0]*100000,[1 if i%2==0 else -1 for i in range(100000)]),1),(([7]*100000,[7]*100000),0)], bound=2400030, source_reason='原题定义与 n/value 约束完整；原始快照未附公开示例，题面明确本站补充示例。'),
     dict(number=11, title='数组的非降与非升拆分方案数',
          desc='给定正整数数组 arr。统计有多少对长度均为 n 的非负整数数组 b、c，满足 b 非降、c 非升，且对每个 i 都有 b[i]+c[i]=arr[i]。答案对 1000000007 取模。',
@@ -395,7 +401,7 @@ SPECS = [
          complexity='时间 O(n·M)，空间 O(M)，M=max(arr[i])≤3000。',
          samples=[[2,3,2],[3,2],[1]], random=random_break, oracle=break_oracle, encode=encode_array_break, code=BREAK_CODE,
          mutants=[('忽略 c 非升约束','need=max(0,a[i]-a[i-1])','need=0'),('把非降条件误作严格递增','need=max(0,a[i]-a[i-1])','need=max(1,a[i]-a[i-1])')],
-         edges=[([3000]*3000, __import__('math').comb(6000,3000)%1_000_000_007)], bound=15000, source_reason='原题约束、条件与两个示例完整；按原规则精确翻译 b/c 单调性。'),
+         edges=[([3000]*3000, comb(6000,3000)%1_000_000_007)], bound=16000, source_reason='原题约束、条件与两个示例完整；按原规则精确翻译 b/c 单调性。'),
     dict(number=12, title='树上收集点数最大化',
          desc='给定以节点 0 为根的无向树和每个节点的正整数 A[u]。从根开始，只有在父节点已收集后才可处理该节点。处理节点可选择：收集当前值减 K 的点；或收集当前值整除 2 的点，并把该节点及其整棵子树中尚未处理的节点值都整除 2。可以出现负的单步收益，最大化总点数。',
          limits='第一行 n K（1≤n≤100000，1≤K≤10^9）；第二行 n 个值 A[u]（1≤A[u]≤10^9）；随后 n−1 行为 0-based 无向边 u v。其余树约束取自原题。',
@@ -468,10 +474,6 @@ def main():
         reviews.append(dict(id=ident,status='blocked',reason=reason))
         evidence.append(dict(id=ident,catalogContentHash=source['contentHash'],sourceUrl=source['sourceUrl'],status='blocked',reason=reason,path=path,gitBlobSha=blob))
         skipped[ident]=reason
-    for number in (8,):
-        # #8 is the clean raw-statement instance of the duplicate #2 prompt.
-        pass
-    for item in sorted(batch_items,key=lambda x:int(x['id'].rsplit('-',1)[1])): pass
     for collection in (batch_items,reports,reviews,evidence):collection.sort(key=lambda x:int(x['id'].rsplit('-',1)[1]))
     (OUT/'candidate-batches'/f'{BATCH}.json').write_text(json.dumps(dict(schemaVersion=1,items=batch_items),ensure_ascii=False,indent=2)+'\n')
     note='本地独立 oracle/参考解对照及两个正常退出错误程序验证通过；所有题目仍是候选，未运行 GoJudge，不表示线上可提交。'
