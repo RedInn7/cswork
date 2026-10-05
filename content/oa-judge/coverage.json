@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 891,
-    "awaiting_sandbox": 16,
-    "blocked": 270,
-    "unreviewed": 457
+    "awaiting_sandbox": 21,
+    "blocked": 272,
+    "unreviewed": 450
   },
   "items": [
     {
@@ -8798,37 +8798,49 @@
     {
       "id": "oa-wells-fargo-1",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "wells-fargo-next",
+      "reason": "固定源给出了置换操作定义与 n≤10^5 约束，但没有公开样例；本站提供明确 stdin/stdout 协议和可人工核算样例。 163 oracle 输入、公开/边界/隐藏测试及两个正常退出错误变异程序均已离线验证；未运行真实沙箱。"
     },
     {
       "id": "oa-wells-fargo-2",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "题面只说环形连续分配并最小化各组总容量差；没有数量约束、空井/正容量限制或并列方案规则。样例给出一个差为10的方案但输出为具体容量向量，多个旋转/分割可能同为最优，无法确定唯一 token 输出。若擅自补边界与平局规则会改变原函数契约，暂缓。"
     },
     {
       "id": "oa-wells-fargo-3",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "wells-fargo-next",
+      "reason": "固定题源完整给出目标、距离定义和障碍可经过规则，但无示例；本站补足字符数量与障碍存在约束。 163 oracle 输入、公开/边界/隐藏测试及两个正常退出错误变异程序均已离线验证；未运行真实沙箱。"
     },
     {
       "id": "oa-wells-fargo-4",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "wells-fargo-next",
+      "reason": "FastPrep 规则和示例明确，但约束区损坏为 HTML 片段；本站明确限定正整数和安全范围，避免负数/零使乘积单调性失效。 163 oracle 输入、公开/边界/隐藏测试及两个正常退出错误变异程序均已离线验证；未运行真实沙箱。"
     },
     {
       "id": "oa-wells-fargo-5",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "wells-fargo-next",
+      "reason": "FastPrep 原题包含完整目标、约束和示例；本站明确为一行字符串加一行整数的 stdin/stdout 协议。 163 oracle 输入、公开/边界/隐藏测试及两个正常退出错误变异程序均已离线验证；未运行真实沙箱。"
     },
     {
       "id": "oa-wells-fargo-6",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "没有样例，且“starts affecting from the Kth system”与“skip K-1 then affect Kth”没有明确第一个受害者/计数起点；还未说明过程停止于剩余一个系统（Josephus survivor）还是继续到所有系统都被影响后取最后一个。两种含义输出不同，不能据 MDX 中未经样例校验的说明猜测。"
     },
     {
       "id": "oa-wells-fargo-7",
       "company": "wells-fargo",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "wells-fargo-next",
+      "reason": "固定 FastPrep 题面给出三组样例与解释，明确已压缩子数组贡献为 0，重复段示例对应每段选一个保留下标。原文算法讲解声称 O(n²)，与 n≤10^5 不相容且递推并未正确实现模除；本站从示例定义独立推导线性计数。 163 oracle 输入、公开/边界/隐藏测试及两个正常退出错误变异程序均已离线验证；未运行真实沙箱。"
     },
     {
       "id": "oa-deutsche-bank-1",
