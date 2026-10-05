@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-13",
+  "title": "Maximum Sum by Sign-Flip Pairs",
+  "explanation": "## 思路\n\n符号翻转每次改变两个位置，负数数量奇偶性不变。负数为偶数可全翻正；为奇数时留下绝对值最小者为负。\n\n## 正确性\n\n负号奇偶性是操作不变量。偶数负号可两两消除；奇数负号至少留一个。最小绝对值项造成最小损失，答案因此为绝对值和，或减去两倍最小绝对值。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n a=list(map(int,s.split()))[1:]; z=sum(map(abs,a))\n return str(z if sum(x<0 for x in a)%2==0 else z-2*min(map(abs,a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#13-maximum-sum-by-sign-flip-pairs",
+  "sourceContentHash": "9444e70a2d0272df098f4ec31841de57524de6ecf5f9a65ab3add75dd6b8a952",
+  "author": "CSWork"
+}

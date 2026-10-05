@@ -1,0 +1,10 @@
+[
+  {
+    "name": "strict-sum",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,t=z[:2]; a=sorted(z[2:]); ans=0\n for i in range(n-2):\n  l,r=i+1,n-1\n  while l<r:\n   if a[i]+a[l]+a[r]<t: ans+=r-l; l+=1\n   else: r-=1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "count-one",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,t=z[:2]; a=sorted(z[2:]); ans=0\n for i in range(n-2):\n  l,r=i+1,n-1\n  while l<r:\n   if a[i]+a[l]+a[r]<=t: ans+=1; l+=1\n   else: r-=1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\n5 1 1\n4 1 0\n4 0 1\n",
+    "expectedOutput": "5 13 -1\n"
+  },
+  {
+    "input": "2\n3 1 0\n2 0 1\n",
+    "expectedOutput": "5 -1\n"
+  },
+  {
+    "input": "2\n0 1 1\n7 1 1\n",
+    "expectedOutput": "0 7\n"
+  },
+  {
+    "input": "5\n8 0 1\n7 1 0\n13 0 1\n25 0 1\n11 1 1\n",
+    "expectedOutput": "11 26 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n30 1 0\n18 1 0\n4 1 1\n4 1 0\n9 0 1\n8 1 1\n1 0 1\n8 0 0\n10 1 1\n24 1 0\n",
+    "expectedOutput": "4 9 17 27 54 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n24 0 1\n30 0 0\n3 0 1\n25 0 0\n23 0 0\n",
+    "expectedOutput": "-1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n20 0 0\n10 1 1\n1 1 1\n15 1 1\n",
+    "expectedOutput": "1 11 26 -1\n"
+  },
+  {
+    "input": "2\n18 0 1\n4 0 1\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "5\n13 1 0\n26 0 0\n17 1 0\n9 0 0\n25 0 1\n",
+    "expectedOutput": "38 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n29 0 1\n14 0 0\n11 0 1\n14 0 0\n13 1 0\n3 0 1\n28 1 1\n24 0 1\n",
+    "expectedOutput": "16 44 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n7 0 1\n8 0 1\n11 0 0\n28 1 0\n5 1 1\n7 0 0\n26 0 0\n23 1 0\n5 0 1\n26 1 0\n",
+    "expectedOutput": "5 33 66 102 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n30 0 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "4\n16 0 1\n17 0 0\n8 1 1\n27 1 0\n",
+    "expectedOutput": "8 51 -1 -1\n"
+  },
+  {
+    "input": "1\n9 1 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "2\n28 1 1\n15 1 1\n",
+    "expectedOutput": "15 43\n"
+  },
+  {
+    "input": "10\n29 0 0\n19 1 0\n9 1 1\n24 0 1\n16 1 0\n14 0 0\n11 1 1\n14 1 1\n1 0 0\n15 1 0\n",
+    "expectedOutput": "9 20 34 73 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n13 1 1\n24 1 1\n15 0 1\n13 1 0\n29 1 0\n0 0 1\n19 1 1\n6 0 1\n7 1 0\n",
+    "expectedOutput": "7 20 39 58 82 126 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n0 0 0\n13 1 1\n25 1 0\n30 0 1\n10 0 0\n",
+    "expectedOutput": "13 68 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n17 1 1\n5 0 0\n30 0 1\n15 1 1\n3 1 0\n8 1 0\n12 1 0\n",
+    "expectedOutput": "15 32 65 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n25 0 0\n7 1 0\n5 0 1\n28 1 0\n6 0 1\n29 1 1\n23 1 1\n24 0 1\n",
+    "expectedOutput": "12 35 64 98 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n6 1 1\n6 1 0\n0 0 1\n21 1 0\n11 1 0\n25 0 0\n12 1 1\n",
+    "expectedOutput": "6 12 24 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n0 1 1\n16 0 0\n16 0 1\n2 0 0\n7 1 0\n7 0 0\n10 1 1\n18 0 0\n9 0 0\n29 0 0\n",
+    "expectedOutput": "0 10 33 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n9 1 0\n22 0 1\n29 1 0\n28 0 0\n18 0 0\n7 1 1\n7 0 1\n3 0 0\n",
+    "expectedOutput": "7 23 74 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n24 1 1\n",
+    "expectedOutput": "24\n"
+  },
+  {
+    "input": "8\n16 1 0\n6 0 0\n7 0 0\n15 0 0\n10 0 1\n20 1 1\n20 0 1\n4 1 0\n",
+    "expectedOutput": "14 34 70 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n5 1 1\n21 1 1\n2 0 0\n8 1 1\n10 1 0\n",
+    "expectedOutput": "5 13 34 -1 -1\n"
+  },
+  {
+    "input": "3\n15 1 0\n15 0 1\n3 0 1\n",
+    "expectedOutput": "18 -1 -1\n"
+  },
+  {
+    "input": "8\n29 0 0\n2 1 0\n16 0 1\n5 0 0\n1 1 1\n2 1 1\n24 0 1\n27 1 0\n",
+    "expectedOutput": "1 3 21 72 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n9 1 0\n1 1 1\n",
+    "expectedOutput": "1 -1\n"
+  },
+  {
+    "input": "9\n0 1 0\n21 1 1\n8 0 0\n30 1 0\n10 1 0\n25 0 1\n11 0 1\n8 1 1\n10 1 0\n",
+    "expectedOutput": "8 19 40 75 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n21 1 1\n11 0 1\n8 1 0\n14 0 0\n0 1 1\n19 1 0\n12 1 1\n22 0 1\n29 1 0\n23 0 1\n",
+    "expectedOutput": "0 12 31 52 93 145 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n17 0 1\n29 0 1\n12 0 0\n7 0 0\n",
+    "expectedOutput": "-1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n9 1 1\n7 0 1\n6 0 1\n13 0 0\n29 0 1\n",
+    "expectedOutput": "9 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n16 0 1\n10 0 0\n7 0 0\n24 0 0\n26 1 0\n23 0 0\n29 0 0\n30 0 1\n",
+    "expectedOutput": "42 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n27 0 1\n23 1 1\n11 0 1\n19 1 0\n7 0 0\n3 0 0\n20 1 1\n24 0 1\n3 0 1\n",
+    "expectedOutput": "20 42 65 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n10 0 1\n16 1 0\n16 0 1\n26 0 0\n20 0 1\n1 1 1\n4 0 1\n10 1 0\n",
+    "expectedOutput": "1 15 41 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n0 0 1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "3\n9 0 0\n26 1 1\n13 1 1\n",
+    "expectedOutput": "13 39 -1\n"
+  },
+  {
+    "input": "3\n15 0 0\n20 1 0\n4 1 0\n",
+    "expectedOutput": "-1 -1 -1\n"
+  },
+  {
+    "input": "10\n9 0 0\n16 0 1\n3 1 1\n8 1 0\n28 1 0\n3 0 1\n13 0 0\n4 1 1\n20 1 1\n8 0 0\n",
+    "expectedOutput": "3 7 18 38 82 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n13 1 0\n5 1 0\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "9\n18 0 0\n10 1 1\n14 1 0\n8 0 0\n8 0 0\n23 0 1\n14 0 0\n12 0 0\n14 1 1\n",
+    "expectedOutput": "10 24 61 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n16 1 0\n21 0 1\n24 0 0\n18 1 0\n13 0 1\n30 1 1\n",
+    "expectedOutput": "29 59 98 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n11 0 0\n5 1 1\n5 1 0\n14 1 1\n4 1 1\n4 0 0\n30 1 1\n",
+    "expectedOutput": "4 9 23 53 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n2 1 1\n2 0 1\n2 1 0\n",
+    "expectedOutput": "2 6 -1\n"
+  },
+  {
+    "input": "8\n4 1 1\n10 0 0\n16 0 0\n26 0 1\n22 1 1\n7 1 1\n13 1 0\n7 1 0\n",
+    "expectedOutput": "4 11 33 66 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n3 1 1\n5 0 1\n27 0 1\n1 0 0\n22 0 1\n18 1 0\n1 1 1\n",
+    "expectedOutput": "1 4 27 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n7 1 1\n21 1 1\n26 1 1\n0 1 0\n24 1 0\n11 0 0\n5 0 0\n22 1 0\n",
+    "expectedOutput": "7 28 54 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n16 0 0\n27 0 0\n9 1 1\n0 0 1\n3 0 0\n",
+    "expectedOutput": "9 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n7 1 0\n27 1 1\n12 1 0\n24 0 0\n22 0 0\n21 1 1\n18 1 1\n4 0 1\n23 0 1\n9 1 0\n",
+    "expectedOutput": "11 29 50 77 109 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n3 0 0\n12 1 0\n5 1 1\n12 0 1\n26 0 1\n24 1 1\n",
+    "expectedOutput": "5 29 53 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n26 0 1\n23 0 1\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "1\n27 0 1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n26 0 0\n2 1 0\n14 0 1\n30 0 0\n11 1 0\n9 1 0\n18 1 0\n13 1 0\n",
+    "expectedOutput": "16 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n8 0 1\n8 1 0\n17 0 0\n21 1 1\n0 0 1\n26 1 0\n17 1 1\n25 0 0\n3 1 1\n9 1 1\n",
+    "expectedOutput": "3 11 20 37 58 92 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n20 1 0\n23 1 0\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "4\n18 1 1\n25 0 0\n15 0 1\n19 0 0\n",
+    "expectedOutput": "18 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n23 0 0\n15 1 0\n2 0 0\n16 0 0\n7 1 0\n10 1 1\n2 0 0\n",
+    "expectedOutput": "10 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n6 1 1\n9 0 1\n15 0 1\n0 0 0\n1 1 1\n15 1 0\n30 0 1\n21 0 1\n",
+    "expectedOutput": "1 7 31 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n12 1 1\n26 1 0\n22 1 1\n26 0 1\n3 1 1\n25 1 1\n14 1 0\n3 0 0\n29 0 1\n24 0 0\n",
+    "expectedOutput": "3 15 37 62 102 157 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n15 1 1\n19 1 0\n4 1 0\n6 0 0\n17 1 1\n",
+    "expectedOutput": "15 32 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n4 1 0\n18 0 0\n19 1 1\n13 0 0\n2 1 1\n26 0 0\n3 0 1\n5 1 0\n",
+    "expectedOutput": "2 9 28 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n29 1 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n11 1 0\n21 0 0\n14 0 1\n18 0 1\n8 1 0\n1 1 0\n1 0 0\n10 0 1\n",
+    "expectedOutput": "11 33 62 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n26 0 1\n29 0 0\n7 1 0\n",
+    "expectedOutput": "33 -1 -1\n"
+  },
+  {
+    "input": "5\n2 0 1\n16 0 0\n26 1 0\n28 1 0\n26 0 1\n",
+    "expectedOutput": "28 82 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n20 0 1\n29 1 0\n22 0 1\n9 0 0\n8 1 0\n14 0 0\n14 0 0\n27 0 0\n5 0 0\n11 0 0\n",
+    "expectedOutput": "28 79 -1 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n15 0 0\n9 0 0\n1 0 0\n3 0 1\n4 0 1\n20 1 1\n9 1 1\n19 1 0\n8 1 1\n23 1 0\n",
+    "expectedOutput": "8 17 37 59 86 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n25 0 0\n12 0 0\n11 0 0\n14 1 1\n2 0 0\n",
+    "expectedOutput": "14 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n30 1 1\n16 0 0\n",
+    "expectedOutput": "30 -1\n"
+  },
+  {
+    "input": "2\n24 1 0\n18 1 0\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "8\n13 1 1\n4 1 0\n20 0 1\n2 0 0\n20 1 1\n2 1 0\n8 1 0\n2 0 1\n",
+    "expectedOutput": "4 17 37 61 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n25 0 0\n30 1 0\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "2\n1 1 1\n22 1 0\n",
+    "expectedOutput": "1 -1\n"
+  },
+  {
+    "input": "8\n9 0 1\n9 0 0\n11 0 0\n24 0 1\n16 1 1\n4 0 0\n19 1 0\n30 1 1\n",
+    "expectedOutput": "16 44 74 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n11 1 1\n24 0 0\n7 1 0\n30 0 1\n0 1 1\n5 0 1\n22 0 1\n",
+    "expectedOutput": "0 11 23 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n3 0 1\n1 1 1\n29 1 0\n1 1 1\n",
+    "expectedOutput": "1 2 34 -1\n"
+  },
+  {
+    "input": "9\n15 0 0\n19 0 0\n9 0 1\n6 1 1\n5 0 0\n9 0 0\n6 0 0\n5 1 0\n10 1 1\n",
+    "expectedOutput": "6 16 30 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n12 0 0\n0 0 0\n25 0 0\n30 1 0\n6 0 0\n26 0 1\n",
+    "expectedOutput": "56 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n4 0 0\n11 0 0\n7 1 0\n13 1 0\n",
+    "expectedOutput": "-1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n9 0 0\n21 0 1\n2 0 1\n6 1 1\n10 0 1\n8 0 0\n",
+    "expectedOutput": "6 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n3 0 1\n3 1 1\n22 1 1\n29 1 1\n30 1 1\n11 1 1\n",
+    "expectedOutput": "3 14 36 65 95 -1\n"
+  },
+  {
+    "input": "8\n25 1 0\n30 0 1\n6 0 1\n4 0 0\n22 0 1\n6 1 0\n23 1 1\n13 0 0\n",
+    "expectedOutput": "12 35 82 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n20 1 0\n11 0 0\n18 0 0\n26 0 0\n",
+    "expectedOutput": "-1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n30 0 1\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7\n28 1 1\n21 0 1\n0 0 0\n26 0 1\n23 0 1\n14 1 0\n6 1 0\n",
+    "expectedOutput": "27 55 92 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n20 0 1\n27 0 0\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "5\n7 0 1\n6 0 0\n25 1 0\n21 0 1\n13 0 1\n",
+    "expectedOutput": "32 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n9 1 0\n17 1 0\n30 1 0\n2 0 1\n25 1 0\n16 1 0\n15 1 1\n21 1 1\n7 1 1\n",
+    "expectedOutput": "7 18 33 54 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n5 1 1\n11 0 0\n16 0 1\n21 0 0\n22 1 0\n9 1 0\n14 0 1\n",
+    "expectedOutput": "5 28 66 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n19 1 0\n11 0 0\n30 0 1\n10 0 1\n12 1 0\n17 0 0\n28 0 1\n",
+    "expectedOutput": "22 69 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n23 0 1\n9 1 0\n12 0 0\n29 0 1\n24 0 1\n9 0 1\n11 1 1\n5 1 0\n29 0 0\n",
+    "expectedOutput": "11 25 57 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n6 0 1\n12 1 1\n",
+    "expectedOutput": "12 -1\n"
+  },
+  {
+    "input": "6\n14 1 1\n24 0 1\n8 0 0\n0 0 1\n7 0 0\n27 0 0\n",
+    "expectedOutput": "14 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n27 1 0\n3 1 1\n28 1 0\n24 0 1\n8 0 1\n17 0 0\n16 1 1\n18 1 1\n17 1 0\n14 0 1\n",
+    "expectedOutput": "3 19 37 62 103 155 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n28 0 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "7\n0 1 1\n5 0 1\n24 0 0\n3 1 1\n11 1 1\n26 1 1\n10 1 1\n",
+    "expectedOutput": "0 3 13 24 50 -1 -1\n"
+  },
+  {
+    "input": "8\n21 0 0\n21 1 1\n8 0 1\n7 1 1\n12 1 0\n14 0 0\n21 0 0\n7 0 0\n",
+    "expectedOutput": "7 27 48 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n1 0 1\n18 1 1\n23 1 0\n16 0 1\n23 0 0\n9 0 1\n6 0 1\n29 0 0\n12 1 1\n18 0 1\n",
+    "expectedOutput": "12 30 54 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n3 0 1\n15 1 1\n4 1 0\n4 1 0\n5 1 0\n22 0 0\n2 0 0\n23 1 1\n",
+    "expectedOutput": "7 22 45 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n25 1 1\n1 0 0\n0 0 1\n",
+    "expectedOutput": "25 -1 -1\n"
+  },
+  {
+    "input": "5\n29 0 1\n30 1 0\n10 0 1\n7 1 1\n29 0 1\n",
+    "expectedOutput": "7 47 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n4 0 1\n19 0 0\n18 0 0\n24 1 1\n21 0 1\n14 1 0\n14 1 0\n24 0 0\n13 0 0\n15 1 1\n",
+    "expectedOutput": "15 33 57 92 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n11 1 0\n0 1 1\n23 0 0\n7 1 0\n8 0 0\n19 1 0\n21 0 1\n",
+    "expectedOutput": "0 28 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n30 1 0\n4 0 0\n11 1 0\n17 0 0\n5 1 1\n14 1 1\n17 0 0\n8 1 1\n0 0 0\n10 1 1\n",
+    "expectedOutput": "5 13 23 37 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n23 1 0\n24 1 1\n22 1 0\n17 1 1\n5 1 1\n13 1 0\n19 1 0\n17 0 1\n24 1 1\n5 1 0\n",
+    "expectedOutput": "5 22 44 68 92 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n27 1 1\n27 1 1\n2 1 0\n13 1 0\n11 0 0\n",
+    "expectedOutput": "27 54 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n3 0 0\n3 0 0\n25 0 0\n25 1 1\n24 1 1\n22 1 1\n5 0 1\n6 0 1\n7 0 1\n26 1 0\n",
+    "expectedOutput": "22 46 71 102 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n1 0 0\n9 0 1\n20 1 1\n",
+    "expectedOutput": "20 -1 -1\n"
+  },
+  {
+    "input": "10\n21 1 1\n25 1 1\n15 1 1\n27 0 1\n3 0 0\n23 1 1\n16 0 0\n23 1 1\n29 1 0\n1 1 0\n",
+    "expectedOutput": "15 36 59 82 107 135 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n4 1 1\n5 1 1\n0 1 1\n14 0 1\n7 1 0\n11 1 0\n13 1 0\n5 0 0\n30 0 1\n",
+    "expectedOutput": "0 4 9 30 71 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n2 1 0\n30 0 1\n22 0 0\n4 0 0\n13 1 1\n23 0 0\n21 1 0\n",
+    "expectedOutput": "13 45 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n26 1 1\n13 0 1\n4 0 0\n23 0 0\n11 1 1\n24 1 1\n11 0 1\n",
+    "expectedOutput": "11 35 61 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n22 0 0\n15 1 0\n25 1 0\n24 1 1\n10 1 0\n16 1 1\n24 1 0\n1 0 0\n",
+    "expectedOutput": "16 40 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n2 1 0\n28 1 0\n13 1 1\n",
+    "expectedOutput": "13 -1 -1\n"
+  },
+  {
+    "input": "8\n30 1 0\n9 1 1\n29 0 0\n30 0 0\n1 1 1\n6 0 1\n6 0 0\n30 1 1\n",
+    "expectedOutput": "1 10 40 76 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n25 1 1\n0 1 1\n14 1 1\n7 0 0\n3 0 1\n9 0 1\n22 0 1\n11 0 0\n",
+    "expectedOutput": "0 14 39 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n10 1 1\n0 0 1\n14 1 0\n12 1 0\n18 1 0\n17 1 0\n23 1 0\n",
+    "expectedOutput": "10 22 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n25 1 0\n13 0 1\n11 1 1\n17 0 1\n6 0 1\n13 1 0\n0 1 1\n14 0 1\n",
+    "expectedOutput": "0 11 30 68 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n5 0 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n26 1 1\n17 1 0\n24 0 1\n18 0 0\n2 0 0\n4 1 1\n11 0 0\n2 1 0\n",
+    "expectedOutput": "4 30 56 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n6 1 1\n25 0 1\n6 0 0\n9 1 0\n9 1 0\n12 0 1\n22 1 1\n10 1 1\n7 0 1\n",
+    "expectedOutput": "6 16 32 53 75 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n13 0 0\n21 1 0\n22 1 1\n1 0 0\n28 1 0\n",
+    "expectedOutput": "22 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n19 0 1\n28 1 0\n18 1 1\n12 0 0\n10 0 0\n6 0 0\n19 0 1\n0 1 0\n27 0 1\n",
+    "expectedOutput": "18 37 84 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n13 0 0\n21 1 1\n21 1 1\n",
+    "expectedOutput": "21 42 -1\n"
+  },
+  {
+    "input": "3\n22 1 1\n23 0 1\n18 0 0\n",
+    "expectedOutput": "22 -1 -1\n"
+  },
+  {
+    "input": "8\n21 0 1\n30 1 1\n4 1 0\n23 0 1\n26 0 0\n4 0 1\n2 1 0\n16 1 0\n",
+    "expectedOutput": "6 31 61 100 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n9 1 0\n22 1 0\n5 1 1\n18 0 1\n28 1 1\n10 0 1\n2 1 0\n6 1 0\n2 0 0\n0 1 0\n",
+    "expectedOutput": "5 15 35 63 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n6 0 1\n18 0 1\n6 0 0\n2 0 0\n22 0 1\n6 1 0\n",
+    "expectedOutput": "12 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n29 1 0\n4 1 1\n21 1 1\n27 1 0\n8 1 0\n4 0 0\n23 0 0\n",
+    "expectedOutput": "4 25 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n16 1 1\n29 1 1\n0 1 0\n",
+    "expectedOutput": "16 45 -1\n"
+  },
+  {
+    "input": "7\n4 0 1\n10 0 1\n8 0 0\n3 0 1\n13 0 1\n18 0 0\n11 0 0\n",
+    "expectedOutput": "-1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n0 1 1\n19 0 1\n13 0 0\n6 0 1\n12 1 1\n23 0 1\n8 0 0\n10 0 0\n29 1 0\n",
+    "expectedOutput": "0 12 47 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "7\n13 0 1\n1 1 0\n8 1 0\n9 1 1\n26 0 0\n20 0 1\n6 0 1\n",
+    "expectedOutput": "7 16 37 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n13 0 0\n6 1 1\n14 1 1\n26 1 1\n9 1 1\n",
+    "expectedOutput": "6 15 29 55 -1\n"
+  },
+  {
+    "input": "9\n6 0 0\n18 1 0\n20 1 0\n10 0 1\n19 0 1\n2 1 0\n5 1 0\n8 0 1\n29 1 0\n",
+    "expectedOutput": "10 25 62 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n17 0 1\n10 0 1\n7 1 0\n",
+    "expectedOutput": "17 -1 -1\n"
+  },
+  {
+    "input": "6\n21 0 1\n20 1 1\n3 0 1\n9 0 1\n2 0 0\n24 0 0\n",
+    "expectedOutput": "20 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n23 1 1\n10 1 1\n19 0 0\n21 1 0\n28 0 0\n7 1 0\n",
+    "expectedOutput": "10 33 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n27 1 1\n20 1 1\n26 0 1\n18 1 0\n",
+    "expectedOutput": "20 47 91 -1\n"
+  },
+  {
+    "input": "7\n29 1 0\n7 0 0\n10 1 0\n26 1 1\n8 1 1\n15 1 1\n4 1 0\n",
+    "expectedOutput": "8 23 49 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n11 0 0\n17 1 0\n1 0 1\n24 0 1\n13 0 1\n27 1 0\n29 0 0\n5 0 0\n2 0 0\n21 0 0\n",
+    "expectedOutput": "18 58 -1 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n5 1 1\n8 1 0\n6 0 0\n3 0 1\n23 0 1\n30 1 1\n7 1 1\n11 1 0\n12 1 1\n",
+    "expectedOutput": "5 12 23 35 65 99 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n11 1 1\n6 1 0\n2 1 1\n2 0 1\n3 0 0\n7 0 1\n",
+    "expectedOutput": "2 10 21 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n29 0 1\n20 1 0\n11 1 1\n8 1 1\n",
+    "expectedOutput": "8 19 68 -1\n"
+  },
+  {
+    "input": "10\n18 0 0\n30 0 0\n25 0 1\n26 0 0\n7 0 1\n18 1 1\n21 1 0\n24 0 1\n14 0 1\n25 0 1\n",
+    "expectedOutput": "18 46 -1 -1 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "3\n18 0 0\n14 0 0\n30 1 0\n",
+    "expectedOutput": "-1 -1 -1\n"
+  },
+  {
+    "input": "9\n15 1 1\n18 0 1\n8 0 1\n18 0 1\n12 0 0\n10 1 1\n30 1 1\n23 0 1\n26 0 1\n",
+    "expectedOutput": "10 25 55 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n3 1 1\n3 1 0\n12 0 0\n29 0 1\n15 0 0\n24 1 1\n12 0 1\n13 0 0\n28 0 0\n",
+    "expectedOutput": "3 18 42 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n12 0 1\n21 1 1\n13 1 1\n11 1 1\n",
+    "expectedOutput": "11 24 45 -1\n"
+  },
+  {
+    "input": "3\n27 1 0\n19 1 0\n25 1 0\n",
+    "expectedOutput": "-1 -1 -1\n"
+  },
+  {
+    "input": "5\n24 0 0\n11 0 1\n25 1 1\n12 0 0\n10 0 1\n",
+    "expectedOutput": "25 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "5\n9 0 0\n22 1 1\n16 0 0\n21 1 0\n10 1 0\n",
+    "expectedOutput": "22 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "8\n8 0 0\n15 0 1\n26 1 1\n13 1 0\n20 0 1\n2 1 1\n5 1 1\n4 0 1\n",
+    "expectedOutput": "2 7 24 50 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n1 0 0\n0 0 0\n6 1 0\n17 0 1\n",
+    "expectedOutput": "23 -1 -1 -1\n"
+  },
+  {
+    "input": "1\n6 1 0\n",
+    "expectedOutput": "-1\n"
+  },
+  {
+    "input": "8\n19 1 1\n14 1 0\n28 0 0\n27 1 1\n17 1 1\n5 1 1\n19 1 0\n15 1 1\n",
+    "expectedOutput": "5 20 37 56 83 -1 -1 -1\n"
+  },
+  {
+    "input": "9\n4 0 0\n5 1 0\n10 1 1\n30 1 1\n28 0 1\n6 1 1\n11 0 0\n24 1 1\n4 1 1\n",
+    "expectedOutput": "4 10 20 44 74 107 -1 -1 -1\n"
+  },
+  {
+    "input": "10\n18 1 1\n7 1 0\n22 0 0\n30 0 0\n24 1 1\n21 0 0\n11 0 0\n3 0 1\n3 1 0\n13 0 1\n",
+    "expectedOutput": "6 24 44 68 -1 -1 -1 -1 -1 -1\n"
+  },
+  {
+    "input": "4\n14 1 0\n23 1 0\n13 0 0\n1 1 1\n",
+    "expectedOutput": "1 -1 -1 -1\n"
+  },
+  {
+    "input": "6\n2 1 1\n15 0 0\n19 0 0\n27 1 1\n24 1 1\n13 0 0\n",
+    "expectedOutput": "2 26 53 -1 -1 -1\n"
+  },
+  {
+    "input": "2\n18 1 0\n26 1 0\n",
+    "expectedOutput": "-1 -1\n"
+  },
+  {
+    "input": "3\n19 0 1\n27 0 0\n2 1 0\n",
+    "expectedOutput": "21 -1 -1\n"
+  }
+]

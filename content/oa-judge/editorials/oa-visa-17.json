@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-17",
+  "title": "Maximize Capped Contribution Sum",
+  "explanation": "## 思路\n\n每个位置的操作增益为 min(aᵢ,2bᵢ)−min(aᵢ,bᵢ)。基准分加上最大的至多 k 个正增益。\n\n## 正确性\n\n方案分数等于基准分与所选增益之和。位置间无相互作用，因此在至多 k 项中取最大正增益和即为全局最优。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,k=z[:2]; a=z[2:2+n]; b=z[2+n:2+2*n]\n g=sorted((min(x,2*y)-min(x,y) for x,y in zip(a,b)),reverse=True)\n return str(sum(min(x,y) for x,y in zip(a,b))+sum(max(0,v) for v in g[:k]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#17-maximize-capped-contribution-sum",
+  "sourceContentHash": "7b7ae084f1c173df2de36ba9cf8301149f5bf65d0c1d3125c94a367345ef3a5f",
+  "author": "CSWork"
+}

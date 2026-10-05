@@ -1,0 +1,10 @@
+[
+  {
+    "name": "ignore-parity",
+    "code": "import sys\ndef solve(s):\n a=list(map(int,s.split()))[1:]; z=sum(map(abs,a))\n return str(z if sum(x<0 for x in a)%2==0 else z)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "always-subtract",
+    "code": "import sys\ndef solve(s):\n a=list(map(int,s.split()))[1:]; z=sum(map(abs,a))\n return str(z-2*min(map(abs,a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

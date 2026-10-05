@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-16",
+  "title": "Longest Selectable Non-Decreasing Subarray",
+  "explanation": "## 思路\n\n维护两个状态：当前位置选 A[i] 或 B[i] 时，以此结尾的最长合法连续段。检查前一位置两种选择是否≤当前值；无可转移状态时从当前位置重开。\n\n## 正确性\n\n任一合法段接到当前位置前，只可能来自前一项 A[i−1] 或 B[i−1]，且必须不大于当前值。两个状态穷尽可能性；取可延伸的最长段最优，否则长度为 1。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; a=z[1:1+n]; b=z[1+n:1+2*n]; x=y=best=1\n for i in range(1,n):\n  nx=ny=1\n  if a[i-1]<=a[i]: nx=max(nx,x+1)\n  if b[i-1]<=a[i]: nx=max(nx,y+1)\n  if a[i-1]<=b[i]: ny=max(ny,x+1)\n  if b[i-1]<=b[i]: ny=max(ny,y+1)\n  x,y=nx,ny; best=max(best,x,y)\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#16-longest-selectable-non-decreasing-subarray",
+  "sourceContentHash": "ae2879fdef356bbaced42f138d2c50521508499e369a1be6516458a742edab28",
+  "author": "CSWork"
+}

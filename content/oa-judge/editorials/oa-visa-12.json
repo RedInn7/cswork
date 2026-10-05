@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-12",
+  "title": "Cache Query Handler",
+  "explanation": "## 思路\n\n用 (key,timestamp) 组成字典键；逐个查询精确查找并输出 value。\n\n## 正确性\n\n本站保证查询存在且键唯一。完整二元键查找当且仅当两个字段都匹配，因而得到唯一对应记录。\n\n## 复杂度\n\n期望时间 O(n+q)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=s.split(); n,q=map(int,z[:2]); d={}; p=2\n for _ in range(n): k,t,v=z[p:p+3]; p+=3; d[k,t]=v\n out=[]\n for _ in range(q): k,t=z[p:p+2]; p+=2; out.append(d[k,t])\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#12-cache-query-handler",
+  "sourceContentHash": "ef5aa4f979ba4fd7e6b6cb2891de78c17c49a9679f83e7f3035f052b9b584283",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-4",
+  "title": "Lamp Illumination Count",
+  "explanation": "## 思路\n\n分别排序区间左右端点，覆盖 p 的区间数为左端点不大于 p 的数量减去右端点小于 p 的数量。\n\n## 正确性\n\n区间包含 p 当且仅当 l≤p 且 r≥p。upper_bound(l,p) 计入左端点等于 p 的区间，lower_bound(r,p) 仅排除 r<p 的区间，因此端点条件正确。\n\n## 复杂度\n\n预处理 O(n log n)，每次查询 O(log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom bisect import bisect_left,bisect_right\ndef solve(s):\n t=list(map(int,s.split())); n,q=t[:2]; z=t[2:2+2*n]; l=sorted(z[::2]); r=sorted(z[1::2])\n return ' '.join(str(bisect_right(l,p)-bisect_left(r,p)) for p in t[2+2*n:])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#4-lamp-illumination-count",
+  "sourceContentHash": "5dfc2f641c210121cf8a9fe5229a3fc7cdd4a70d1f87b99497263281fc6c6ab5",
+  "author": "CSWork"
+}
