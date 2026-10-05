@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-1",
+  "title": "Letter Case Difference",
+  "explanation": "## 思路\n\n单次扫描字符串，遇大写字母加一，遇小写字母减一。\n\n## 正确性\n\n每个字符对答案的贡献恰为大写 +1、小写 −1；逐字符相加即为目标差值。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n t=s.strip(); return str(sum(1 if 'A'<=c<='Z' else -1 if 'a'<=c<='z' else 0 for c in t))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#1-letter-case-difference",
+  "sourceContentHash": "7bcd9788b11f8e39c32c9f43305dadca4cafa2d851e1e5ce10e82f4599ecd4ab",
+  "author": "CSWork"
+}

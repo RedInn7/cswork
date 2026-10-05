@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-14",
+  "title": "Arrange Squares by Missing Values",
+  "explanation": "## 思路\n\n逐块求缺失值并构造填好的 4×4 方块；按 (缺失值, 原列序号) 排序，将完整块写入输出列组。\n\n## 正确性\n\n每个输出块仍是原输入中的一个完整方块。排序键确保缺失值非递减，第二关键字仅在相同缺失值时保留原顺序；这满足题意并确定唯一输出。\n\n## 复杂度\n\n缺失值计算 O(n)，排序 O(n log n)，复制网格 O(n)，总时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n t=list(map(int,s.split())); n=t[0]; cols=4*n; raw=t[1:]; mat=[raw[r*cols:(r+1)*cols] for r in range(4)]; blocks=[]\n for b in range(n):\n  flat=[mat[r][4*b+c] for r in range(4) for c in range(4)]; miss=136-sum(x for x in flat if x!=-1)\n  full=[miss if x==-1 else x for x in flat]; blocks.append((miss,b,full))\n blocks.sort(key=lambda x:(x[0],x[1])); out=[[0]*cols for _ in range(4)]\n for b,(_,_,flat) in enumerate(blocks):\n  for z,x in enumerate(flat): r,c=divmod(z,4); out[r][4*b+c]=x\n return '\\n'.join(' '.join(map(str,row)) for row in out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#14-arrange-squares-by-missing-values",
+  "sourceContentHash": "64afc8417f3c754863993be2b640cee4ba6b282d9cff0d20193eaf138a088304",
+  "author": "CSWork"
+}

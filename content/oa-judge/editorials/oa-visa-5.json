@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-5",
+  "title": "Greater-Than-Neighbors Stabilization",
+  "explanation": "## 思路\n\n每轮根据旧数组标记首尾及严格局部峰并同时保留；若结果未变即稳定，否则对新数组重复。\n\n## 正确性\n\n某轮中每个元素是否保留只由该轮原数组的邻居决定，故扫描得到的列表正是下一轮数组。循环直到不变，满足定义的固定点，且每个变化轮至少删去一个元素，必终止。\n\n## 复杂度\n\n每轮 O(n)，内部严格局部峰不能相邻，因此非平凡一轮后数组长度至多约减半，轮数 O(log n)；总时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); a=z[1:]\n while True:\n  b=[]\n  for i,x in enumerate(a):\n   if i==0 or i==len(a)-1 or (x>a[i-1] and x>a[i+1]): b.append(x)\n  if b==a: return str(len(a))+' '+' '.join(map(str,a))\n  a=b\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#5-greater-than-neighbors-stabilization",
+  "sourceContentHash": "fcff1e5f6c03d3dc5481b0669a0ffd24ad75613e91020c590ba09daa175a48f0",
+  "author": "CSWork"
+}

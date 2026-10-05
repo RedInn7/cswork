@@ -1,0 +1,10 @@
+[
+  {
+    "name": "double-count-direct",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); q=int(lines[0]); users=set(); active=set(); cnt={}\n for line in lines[1:1+q]:\n  p=line.split()\n  if p[0]=='OFFLINE': active.discard(p[1]); continue\n  sender=p[1]; users.add(sender); active.add(sender); m=int(p[3]); toks=p[4:4+m]\n  mentioned=set(); direct=[]\n  for tok in toks:\n   if tok=='ALL': mentioned.update(users)\n   elif tok=='HERE': mentioned.update(active)\n   else: direct.append(tok)\n  mentioned.update(direct)\n  for u in mentioned: cnt[u]=cnt.get(u,0)+1\n  for u in direct: cnt[u]=cnt.get(u,0)+1\n return ' '.join(f'{u}={cnt[u]}' for u in sorted(cnt))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "offline-deletes-existing",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); q=int(lines[0]); users=set(); active=set(); cnt={}\n for line in lines[1:1+q]:\n  p=line.split()\n  if p[0]=='OFFLINE': active.discard(p[1]); users.discard(p[1]); continue\n  sender=p[1]; users.add(sender); active.add(sender); m=int(p[3]); toks=p[4:4+m]\n  mentioned=set(); direct=[]\n  for tok in toks:\n   if tok=='ALL': mentioned.update(users)\n   elif tok=='HERE': mentioned.update(active)\n   else: direct.append(tok)\n  mentioned.update(direct)\n  for u in mentioned: cnt[u]=cnt.get(u,0)+1\n return ' '.join(f'{u}={cnt[u]}' for u in sorted(cnt))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

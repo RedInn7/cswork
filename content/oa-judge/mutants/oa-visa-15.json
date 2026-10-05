@@ -1,0 +1,10 @@
+[
+  {
+    "name": "strict-height",
+    "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; h=z[1:]\n def ok(k):\n  d=deque()\n  for i,x in enumerate(h):\n   while d and d[0]<=i-k: d.popleft()\n   while d and h[d[-1]]>=x: d.pop()\n   d.append(i)\n   if i>=k-1 and h[d[0]]>k: return True\n  return False\n lo,hi=0,min(n,max(h,default=0))\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo*lo)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "return-side-not-area",
+    "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; h=z[1:]\n def ok(k):\n  d=deque()\n  for i,x in enumerate(h):\n   while d and d[0]<=i-k: d.popleft()\n   while d and h[d[-1]]>=x: d.pop()\n   d.append(i)\n   if i>=k-1 and h[d[0]]>=k: return True\n  return False\n lo,hi=0,min(n,max(h,default=0))\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

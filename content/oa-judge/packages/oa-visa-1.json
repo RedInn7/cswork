@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-visa-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Letter Case Difference",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Visa",
+      "字符串",
+      "计数"
+    ],
+    "description": "统计 typedText 中大写英文字母数减去小写英文字母数。\n\n规则依据 OAMaster 原题；输入输出协议与标为‘本站补充’的边界由本站整理。",
+    "input": "输入仅含英文字母 A-Z、a-z 的非空字符串；长度 1..200000（本站补充）。",
+    "output": "输出大写数减小写数。",
+    "explanation": "详见配套题解。",
+    "hints": [
+      "逐条对照题目定义，注意同步更新和边界语义。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "AbCd\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "Aaa\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "xyzXYZ\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "caCxxzxzaCBZZaa\n",
+      "expectedOutput": "-5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "AybzaZBBaczbcxYbAxcCzZyAbZAAzaA\n",
+      "expectedOutput": "-5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "AZ\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "Ya\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "CAcyAAzYbZXZzXBbZZXyBaZZycAYCcYxAXcczbYYb\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "XXaZXAAyBcZaYAxabCc\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "Z\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "CABaAzByByZcXXcZZ\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "ACBXxAAzBZCbaaXBCYXxxBybxAAcaCxXYByyZzZByzCzXbzzx\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "AYazzAbbzCyXXCcyYXc\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "CxyZzYaBz\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "yybBZxYAYaZBAYCCBZbYBAC\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "yAyCbAXCyzbcByYXCYZbaBAbYBxcyZbCzzZaabCzXCbAYyyzXb\n",
+      "expectedOutput": "-2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "AaAYbCyACZzXbXYzBZ\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "ZXaxXZYyXbCYZyxYZBYzZYzxYYCyYZybzAzBXXyZZXBA\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "XCXaaZXzBCybxaxZCzaacXCAYzxZBZx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "XXyyAXaXXbb\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "axxCCazXcAXACCycaabcXbZc\n",
+      "expectedOutput": "-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "xyBxAxAYAcZYCBzXAXAAXAzZBXXxBaxcXyzBCxzzzyyxa\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "Yc\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "yXAZAxbAXXYcZaXzzBZBXAbCBabczaczzYbxzbaAXxYczBay\n",
+      "expectedOutput": "-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "CAaXZZCCZcCAy\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "AxYYbbxAAcbBxXaXaXcZXaBbaZcxAyXyXXAzCy\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "xCbxbz\n",
+      "expectedOutput": "-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "AybCZcxAayAAAZAxbCbbZABbCayybxYXaZZAXyXbbBZYA\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "ZcbAcYbyyaCZyyYXyBccXYCb\n",
+      "expectedOutput": "-2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "xCcbZCZbZcZaYaXacxAZyZa\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 28",
+      "input": "bzxBabYYbAxbxAXZYycYycbzBZcc\n",
+      "expectedOutput": "-6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 29",
+      "input": "CzccCYzAXBACXB\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 30",
+      "input": "xaXXYaxXbBzCZaXzczByAxBAYyaXazaCbbx\n",
+      "expectedOutput": "-5\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
