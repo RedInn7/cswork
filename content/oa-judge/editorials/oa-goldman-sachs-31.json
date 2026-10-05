@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-31",
+  "title": "Project Estimates",
+  "explanation": "## 思路\n\n把成本放入哈希集合；对每个 x 检查 x+target 是否存在。因为 target>0，每个无序对只从较小值计数一次。\n\n## 正确性证明\n\n若无序对 {x,y} 的绝对差为正 target，则恰有较小值 x 和较大值 y=x+target。遍历每个成本并检查其加 target 是否在集合中，与每个合法数值对一一对应。\n\n## 复杂度\n\n平均时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,target=t[:2];s=set(t[2:2+n]);return str(sum(x+target in s for x in s))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#31-project-estimates",
+  "sourceContentHash": "13837999587bf33cb6aff906648abd8295a39413f1f270a0df2a1c202cf4e1b7",
+  "author": "CSWork"
+}

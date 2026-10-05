@@ -1,0 +1,8 @@
+import sys
+def solve(raw):
+ s=raw.strip(); n=len(s); dp=[0]*(n+1); dp[0]=1
+ for i in range(1,n+1):
+  dp[i]+=dp[i-1]
+  if i>1 and 10<=int(s[i-2:i])<=26:dp[i]+=dp[i-2]
+ return str(dp[n])
+if __name__=='__main__':print(solve(sys.stdin.read()))

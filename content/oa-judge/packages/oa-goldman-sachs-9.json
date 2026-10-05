@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-9",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Encryption Validity",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "数组",
+      "数论"
+    ],
+    "description": "给定测试速率、有效秒数和一组正整数密钥。某个密钥的可整除度是列表中大于 1 且能整除它的元素个数（重复元素按出现次数计）。加密强度为最大可整除度乘 100000。\n\n本站输入协议及明确写出的补充范围由 CSWork 整理，不冒充原 OA 规则。",
+    "input": "第一行 instructionCount validityPeriod n；第二行 n 个 keys[i]。本站按原约束补充 n≥1；其余范围沿用原题：速率、有效秒数 1..10^8，密钥 1..10^5。",
+    "output": "输出两个整数：能否在有效期内破解（instructionCount×validityPeriod≥强度时为 1，否则 0），以及加密强度。",
+    "explanation": "解题思路、正确性证明及复杂度见配套题解。",
+    "hints": [
+      "用频次数组保存每个密钥出现次数。对每个 key 枚举其大于 1 的因数并累加频次，得到最大可整除度，再按定义计算强度与可破解状态。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "1000 10000 4\n2 4 8 2\n",
+      "expectedOutput": "1 400000\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "1 1 1\n1\n",
+      "expectedOutput": "1 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "100 1000 3\n2 3 6\n",
+      "expectedOutput": "0 300000\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 1",
+      "input": "745 1118 6\n20 62 76 66 43 46\n",
+      "expectedOutput": "1 100000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 2",
+      "input": "328 1078 12\n20 70 56 40 57 56 35 31 8 58 41 65\n",
+      "expectedOutput": "1 300000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 3",
+      "input": "809 1281 19\n52 41 34 55 73 26 10 43 28 15 49 13 2 7 48 36 51 16 56\n",
+      "expectedOutput": "1 400000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 4",
+      "input": "994 781 3\n17 19 35\n",
+      "expectedOutput": "1 100000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 5",
+      "input": "372 117 12\n18 8 27 2 38 67 72 1 1 35 12 48\n",
+      "expectedOutput": "0 500000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 6",
+      "input": "553 1470 25\n63 13 46 1 34 1 15 74 62 3 28 2 22 28 71 41 30 48 37 1 28 19 13 75 76\n",
+      "expectedOutput": "1 400000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 7",
+      "input": "219 493 4\n28 47 69 34\n",
+      "expectedOutput": "1 100000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 8",
+      "input": "527 308 26\n78 28 19 3 3 59 76 67 61 61 79 60 2 61 59 39 34 29 37 10 51 63 48 48 76 20\n",
+      "expectedOutput": "0 600000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 9",
+      "input": "436 854 16\n37 63 63 51 79 30 49 56 40 45 51 14 29 59 75 23\n",
+      "expectedOutput": "1 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 10",
+      "input": "957 1579 7\n50 7 20 46 42 36 63\n",
+      "expectedOutput": "1 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 11",
+      "input": "242 1528 14\n49 10 43 71 16 50 66 7 1 19 22 54 40 39\n",
+      "expectedOutput": "1 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 12",
+      "input": "737 455 22\n42 58 13 38 32 60 48 24 10 75 72 26 48 15 68 75 79 4 26 60 31 77\n",
+      "expectedOutput": "0 500000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 13",
+      "input": "670 1520 26\n13 45 67 73 60 23 42 21 53 26 80 33 15 6 21 56 41 70 13 55 39 7 13 22 72 52\n",
+      "expectedOutput": "1 500000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 14",
+      "input": "43 251 15\n66 53 47 24 11 65 77 52 13 79 33 58 30 40 35\n",
+      "expectedOutput": "0 300000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 15",
+      "input": "177 352 8\n67 7 65 75 14 9 76 30\n",
+      "expectedOutput": "0 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 16",
+      "input": "635 1394 12\n45 61 52 43 64 8 7 60 76 1 80 27\n",
+      "expectedOutput": "1 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 17",
+      "input": "187 1698 27\n43 44 56 54 68 11 22 32 6 4 49 59 58 38 19 32 67 48 22 26 17 75 49 16 76 24 15\n",
+      "expectedOutput": "0 500000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 18",
+      "input": "837 1106 8\n24 23 23 36 59 9 8 49\n",
+      "expectedOutput": "1 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 19",
+      "input": "759 383 24\n50 21 75 64 12 72 8 74 48 57 36 33 43 22 73 63 59 46 5 40 35 7 50 79\n",
+      "expectedOutput": "0 400000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 20",
+      "input": "47 686 9\n37 14 1 64 17 41 36 11 3\n",
+      "expectedOutput": "0 200000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 21",
+      "input": "744 1284 13\n53 72 17 40 24 75 19 59 24 5 75 3 42\n",
+      "expectedOutput": "1 400000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 22",
+      "input": "443 593 13\n9 3 56 73 49 66 48 12 58 42 10 15 44\n",
+      "expectedOutput": "0 300000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 23",
+      "input": "900 259 27\n26 51 46 29 8 10 26 47 58 32 54 51 57 41 12 71 67 34 41 1 7 40 19 25 57 27 15\n",
+      "expectedOutput": "0 300000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 24",
+      "input": "394 1700 22\n47 23 27 28 26 54 72 13 51 55 16 18 61 68 80 75 25 22 62 17 34 1\n",
+      "expectedOutput": "1 300000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 1",
+      "input": "1 1 25\n1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 2",
+      "input": "100000000 100000000 2\n1 100000\n",
+      "expectedOutput": "1 100000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 3",
+      "input": "1 1200000 12\n2 2 2 2 2 2 2 2 2 2 2 2\n",
+      "expectedOutput": "1 1200000\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

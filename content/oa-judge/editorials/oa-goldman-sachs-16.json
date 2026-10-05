@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-16",
+  "title": "Find the Damaged Toy",
+  "explanation": "## 思路\n\n把孩子编号改为从 0 开始。首个玩具位于 d−1；再前进 T−1 格并对 N 取模。\n\n## 正确性证明\n\n从 D 开始的第一个玩具无需移动；后续每个玩具向前移动一位。总移动 T−1 次，循环编号对应模 N，最后转回 1-based 编号。\n\n## 复杂度\n\n时间 O(1)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n n,t,d=map(int,raw.split()); return str((d-1+t-1)%n+1)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#16-find-the-damaged-toy",
+  "sourceContentHash": "3e55f109780ba3f09c3ec7c8dfceb33b45e0c0cdc338ce209c117d240906fe5e",
+  "author": "CSWork"
+}

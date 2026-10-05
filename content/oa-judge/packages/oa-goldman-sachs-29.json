@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-29",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Do They Belong?",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "几何",
+      "叉积"
+    ],
+    "description": "给定三个顶点构成的三角形和点 p、q。退化三角形返回 0；否则按 p、q 是否位于三角形内部或边界，分别返回 1、2、3、4。\n\n本站输入协议及明确写出的补充范围由 CSWork 整理，不冒充原 OA 规则。",
+    "input": "一行依次输入 x1 y1 x2 y2 x3 y3 xp yp xq yq；所有坐标为 0..2000 的整数。",
+    "output": "按题面情形返回 0..4：1=p 仅在内/边界，2=q 仅在内/边界，3=两点都在，4=两点都不在。",
+    "explanation": "解题思路、正确性证明及复杂度见配套题解。",
+    "hints": [
+      "用有向面积叉积判断三角形非退化，再检查点与三条边的叉积符号是否一致。零叉积允许点落在边界。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "0 0 4 0 0 4 1 1 4 4\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "0 0 3 0 0 3 1 1 4 4\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "0 0 2 2 4 4 1 1 0 0\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 1",
+      "input": "0 0 2 0 0 10 4 5 3 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 2",
+      "input": "0 0 4 0 0 6 8 8 0 6\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 3",
+      "input": "0 0 4 0 0 6 9 9 3 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 4",
+      "input": "0 0 10 0 0 7 4 5 4 8\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 5",
+      "input": "0 0 3 0 0 1 10 9 2 8\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 6",
+      "input": "0 0 3 0 0 5 7 7 6 4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 7",
+      "input": "0 0 7 0 0 1 8 2 7 7\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 8",
+      "input": "0 0 10 0 0 3 3 5 6 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 9",
+      "input": "0 0 7 0 0 6 9 10 6 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 10",
+      "input": "0 0 5 0 0 4 1 9 7 9\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 11",
+      "input": "0 0 4 0 0 8 7 10 6 9\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 12",
+      "input": "0 0 7 0 0 5 0 0 6 10\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 13",
+      "input": "0 0 1 0 0 6 2 7 5 0\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 14",
+      "input": "0 0 4 0 0 9 9 6 4 4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 15",
+      "input": "0 0 9 0 0 8 2 6 4 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 16",
+      "input": "0 0 3 0 0 10 7 2 0 8\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 17",
+      "input": "0 0 9 0 0 5 3 3 5 5\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 18",
+      "input": "0 0 2 0 0 2 0 4 3 2\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 19",
+      "input": "0 0 2 0 0 3 8 3 5 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 20",
+      "input": "0 0 4 0 0 10 7 4 4 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 21",
+      "input": "0 0 9 0 0 8 9 7 8 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 22",
+      "input": "0 0 7 0 0 7 8 7 3 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 23",
+      "input": "0 0 1 0 0 9 9 8 4 10\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 24",
+      "input": "0 0 5 0 0 2 4 6 10 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 1",
+      "input": "0 0 5 0 0 5 0 2 2 0\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 2",
+      "input": "0 0 1 1 2 2 0 0 1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 3",
+      "input": "0 0 10 0 0 10 10 10 5 5\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

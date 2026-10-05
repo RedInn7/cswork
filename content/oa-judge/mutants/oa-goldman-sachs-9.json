@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误实现 1",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rate,duration,n=t[:3]; keys=t[3:3+n]; degree=max(sum(value%d==0 for d in keys) for value in keys); strength=degree*100000; return f'{int(rate*duration>=strength)} {strength}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误实现 2",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rate,duration,n=t[:3]; keys=t[3:3+n]; f=[0]*(max(keys)+1)\n for x in keys:f[x]+=1\n best=max(sum(f[d] for d in range(2,v+1) if v%d==0) for v in keys); strength=best*100000; return f'{int(rate*duration>strength)} {strength}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-29",
+  "title": "Do They Belong?",
+  "explanation": "## 思路\n\n用有向面积叉积判断三角形非退化，再检查点与三条边的叉积符号是否一致。零叉积允许点落在边界。\n\n## 正确性证明\n\n三角形面积非零当且仅当三顶点不共线。对非退化三角形，点在内部或边界当且仅当相对三条有向边的叉积全非负或全非正；这包含边界。分别判定 p 和 q 后依题面映射情形编号。\n\n## 复杂度\n\n时间 O(1)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n x1,y1,x2,y2,x3,y3,xp,yp,xq,yq=map(int,raw.split()); a=(x1,y1);b=(x2,y2);c=(x3,y3)\n cross=lambda u,v,w:(v[0]-u[0])*(w[1]-u[1])-(v[1]-u[1])*(w[0]-u[0])\n area=cross(a,b,c)\n if area==0:return '0'\n def inside(p):\n  z=[cross(a,b,p),cross(b,c,p),cross(c,a,p)];return not(any(q<0 for q in z) and any(q>0 for q in z))\n p=inside((xp,yp));q=inside((xq,yq));return str(3 if p and q else 1 if p else 2 if q else 4)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#29-do-they-belong",
+  "sourceContentHash": "922f13844de3f24311656cb270f5e46d0c08768241f272a8f459ef60b0717f8e",
+  "author": "CSWork"
+}

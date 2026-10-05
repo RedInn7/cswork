@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-10",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Alphanumeric Combinations",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "字符串",
+      "动态规划"
+    ],
+    "description": "数字串可按顺序切分为 1..26 的整数，并映射到 a..z。每种有效切分对应一种单词；前导零不能单独或作为 01..09 解码。\n\n本站输入协议及明确写出的补充范围由 CSWork 整理，不冒充原 OA 规则。",
+    "input": "输入一行数字串 S。原题没有给出长度范围；本站补充 1≤|S|≤1000，字符仅为 0..9，以保证输出适配本题判题输出上限。",
+    "output": "输出有效解码方案数的十进制整数；无有效方案输出 0。",
+    "explanation": "解题思路、正确性证明及复杂度见配套题解。",
+    "hints": [
+      "动态规划 dp[i] 表示前 i 位的解码数。末尾一位非 0 时可单独解码；末尾两位在 10..26 时可合并解码。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "2112\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "2101\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "100\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 1",
+      "input": "3770009\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 2",
+      "input": "8669637\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 3",
+      "input": "38\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 4",
+      "input": "041534\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 5",
+      "input": "2000876209770\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 6",
+      "input": "1380\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 7",
+      "input": "837078294362214\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 8",
+      "input": "06\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 9",
+      "input": "369770430942\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 10",
+      "input": "77864392\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 11",
+      "input": "06916781316550\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 12",
+      "input": "19\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 13",
+      "input": "029\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 14",
+      "input": "455112\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 15",
+      "input": "9194469597\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 16",
+      "input": "35\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 17",
+      "input": "43122926022\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 18",
+      "input": "28\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 19",
+      "input": "45109229752660\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 20",
+      "input": "5108099160438\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 21",
+      "input": "6031\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 22",
+      "input": "14\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 23",
+      "input": "3198144202879329\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 24",
+      "input": "083\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 1",
+      "input": "0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 2",
+      "input": "10\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 3",
+      "input": "26\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 4",
+      "input": "27\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 5",
+      "input": "1111111111111111\n",
+      "expectedOutput": "1597\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
