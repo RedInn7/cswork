@@ -1,0 +1,10 @@
+[
+  {
+    "name": "选择最小用量设备而非最大用量",
+    "code": "import sys\ndef solve(raw):\n t=raw.split(); n=int(t[0]); best_id=''; best=-1\n for i in range(n):\n  key=t[1+2*i]; value=int(t[2+2*i])\n  if value<best: best=value; best_id=key\n return best_id\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误地忽略四位数字的后三位",
+    "code": "import sys\ndef solve(raw):\n t=raw.split(); n=int(t[0]); best_id=''; best=-1\n for i in range(n):\n  key=t[1+2*i]; value=int(t[2+2*i][:1])\n  if value>best: best=value; best_id=key\n return best_id\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

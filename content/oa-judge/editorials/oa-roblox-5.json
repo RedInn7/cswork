@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-5",
+  "title": "House Destruction — Count Segments After Each Removal",
+  "explanation": "## 思路\n\n维护尚未拆除的坐标集合以及当前连续段数量。删除 x 前检查 x−1 与 x+1 是否仍存在：两侧都有时，原来一个段被拆成两个，段数加一；两侧都没有时，孤立段消失，减一；仅一侧存在时段数不变。\n\n## 正确性\n\n整数线上连续段恰由没有左邻居的存活房屋作为起点计数。删除一个点只会影响其所在段：若点是段内部则分裂为两段；若该段长度为一则整段消失；若在端点则剩余房屋仍构成一个段。上述邻居分类正好对应这三种情况。\n\n## 复杂度\n\n每次查询平均 O(1)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,q=t[:2]; live=set(t[2:2+n]); out=[]\n segments=sum(1 for x in live if x-1 not in live)\n for x in t[2+n:2+n+q]:\n  left=x-1 in live; right=x+1 in live\n  if left and right: segments+=1\n  elif not left and not right: segments-=1\n  live.remove(x); out.append(str(segments))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/roblox#5-house-destruction--count-segments-after-each-removal",
+  "sourceContentHash": "111f976d39ba5e12cc3faf7acf2d30ef7867f60bfe8228546145db1644704c83",
+  "author": "CSWork"
+}

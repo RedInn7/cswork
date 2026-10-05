@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-9",
+  "title": "Implement a Rate Limiter",
+  "explanation": "## 思路\n\n本站按原题允许的策略选择固定窗口。将每个请求映射为 (key, floor(timestamp/window))，维护该组合已允许次数；未达 limit 时放行并递增，否则拒绝。\n\n## 正确性\n\n固定窗口策略下，每条请求只受自身 key 和窗口编号影响，且额度仅由该组先前已放行请求占用。哈希表精确保存每组计数，因此判定与定义一致。\n\n## 复杂度\n\n每个请求期望 O(1)，总时间 O(q)，空间 O(q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=raw.split(); window,limit,q=map(int,t[:3]); counts={}; out=[]; p=3\n for _ in range(q):\n  timestamp=int(t[p]); key=t[p+1]; p+=2; bucket=timestamp//window; k=(key,bucket)\n  if counts.get(k,0)<limit: counts[k]=counts.get(k,0)+1; out.append('ALLOW')\n  else: out.append('REJECT')\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/roblox#9-implement-a-rate-limiter",
+  "sourceContentHash": "a4b70bbf1c53c341c24c387c3376ec45b2205d2860e62890a3484037c3d7a48f",
+  "author": "CSWork"
+}

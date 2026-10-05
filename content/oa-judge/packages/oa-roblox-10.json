@@ -1,0 +1,273 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-roblox-10",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Largest Value of Usage in Minutes",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Roblox",
+      "数组",
+      "字符串"
+    ],
+    "description": "每条记录包含一个五位小写字母 device_id 和四位数字 usage（允许前导零），返回 usage 最大的设备 ID。设备 ID 和 usage 值各自两两不同。\n\n题面中标注的‘本站补充’和标准输入输出协议由本站明确整理，不代表原题另有未说明的规则。",
+    "input": "第一行 n；随后 n 行 device_id usage。本站输入协议省略原格式中的逗号与空格以消除其 length=10 与示例字符串长度矛盾。1≤n≤1400，ID 恰为 5 个小写英文字母；usage 按整数解释且 1≤usage≤1400（采用原题 prose 与约束交集）。",
+    "output": "输出 usage 最大的 device_id。",
+    "explanation": "思路、正确性证明和复杂度见配套题解。",
+    "hints": [
+      "先把原题中的每一种规则和本站补充的输入约定分开，再选择适合的数据结构。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "3\niqttt 0077\nobvhd 0093\nflohd 0075\n",
+      "expectedOutput": "obvhd\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "1\nabcde 0001\n",
+      "expectedOutput": "abcde\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "2\nzzzzz 1400\naaaaa 1399\n",
+      "expectedOutput": "zzzzz\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 1",
+      "input": "7\nhdhfa 0407\nthhxd 0902\npnikt 0986\nontsz 0022\nvalhj 0083\nxyyqi 0062\nzhwfm 1250\n",
+      "expectedOutput": "zhwfm\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 2",
+      "input": "13\njxtwi 0477\nwsodg 1020\nojcdz 0119\ngmdwm 0480\nawkgd 1131\nbrkhs 0369\nzgjen 0126\nabmrc 1349\nttfne 0556\nqdpzl 0137\nppwxj 0720\ngdcez 1388\namfba 0488\n",
+      "expectedOutput": "gdcez\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 3",
+      "input": "20\nnynct 1353\nexoaa 0913\nexeul 1017\ndphvj 0118\nlfhsw 0235\nbeupu 0142\nbfkcj 0391\nodybr 1093\nswtxm 0077\nmyjih 0904\niuwrm 1144\npejgr 0418\nwmqec 0970\nzsiip 0038\nqryrw 0960\nrcsso 1150\nakqxx 0379\nkvvav 1193\nhovor 0558\nblkqe 0508\n",
+      "expectedOutput": "nynct\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 4",
+      "input": "19\nrlnpq 0618\nuldzk 0276\necfbw 0501\nhatel 0971\nedqqc 1285\notfaq 0907\nmzhoi 1043\nmrdwx 0808\nxylvp 0547\nbtkyb 0502\nbgsfr 1180\ndeglu 0382\nvegnt 0858\ndliei 1357\naujin 0027\ngrquf 0865\nusgwj 1236\nsjjwk 0255\ngmwea 0809\n",
+      "expectedOutput": "dliei\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 5",
+      "input": "10\nurgia 0764\njivtl 0669\nllxmu 0239\nolqrn 0168\nwfqqh 0304\nlwjis 1292\nuvhpp 0603\nrgfxi 1375\nbwdsw 1209\niysjz 0242\n",
+      "expectedOutput": "rgfxi\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 6",
+      "input": "12\ngexxk 0687\nfidmu 1372\ntmuos 0608\nbiftj 0506\nfjahu 1332\ntjtlz 0157\npykev 0294\nzxybi 0291\nlfaxh 1255\nncpbg 0326\ndylce 0778\nccsnp 0111\n",
+      "expectedOutput": "fidmu\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 7",
+      "input": "19\nwwrzu 0365\nclseh 0359\noteip 1247\ncbzkb 1372\njldgq 0945\nhxxyg 0751\nswzzr 0314\nduiba 0783\nnwqlc 0858\ncfjmp 0036\nhkqgn 1381\nenroc 0807\nbkckj 0666\nchuoi 0245\nlfwnk 0111\nxyatx 1085\nriozz 0069\nhfydm 1229\ndwtqq 1394\n",
+      "expectedOutput": "dwtqq\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 8",
+      "input": "19\nrhrkv 1378\nlezue 1115\naivtk 0251\ncguhb 0526\npelvc 0608\nbhbjj 0268\nliyse 0110\nttxrg 0293\nfscen 1098\njnucm 1010\nckkum 1159\nrxtvb 0455\nhsanf 0348\nheake 1184\nvcjgm 1362\nrhmzp 0165\nrnkof 0020\nnswtp 1088\nclwca 0512\n",
+      "expectedOutput": "rhrkv\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 9",
+      "input": "19\ngugjj 0536\nptunq 0722\nisnfn 0603\nermwv 0790\ndbzlo 0190\nmuhkz 0589\nikfrb 1170\nsyouz 0874\ndoucj 1243\nmazvc 1351\nisxae 1179\nyvscd 1154\ngutki 0656\nrrbgy 0909\ngpplr 1180\nlffyq 0331\nfcbjm 0711\nmzchq 1198\nlmvte 0222\n",
+      "expectedOutput": "mazvc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 10",
+      "input": "2\ngqgjx 1192\nbqqfe 1355\n",
+      "expectedOutput": "bqqfe\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 11",
+      "input": "6\nvdnkw 0828\nnzhpp 0190\nokfzb 0017\nhmfaa 1313\nnzsin 0736\ngafln 1246\n",
+      "expectedOutput": "hmfaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 12",
+      "input": "19\nchcwi 0168\nhexum 1397\noyrdj 0899\nyurgm 0945\nofjqb 0951\nwsckx 0225\nhbpge 0495\nrixbq 0823\nufuee 1132\niygnl 1185\nsxows 0431\nvtxpe 0617\nhpoyt 0231\ntgnft 0430\ncqqnr 0550\nbnpzp 1267\naoykg 0916\nxpybf 0171\ngjwxq 1126\n",
+      "expectedOutput": "hexum\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 13",
+      "input": "6\ntjniq 0199\naqjiq 1015\nzuatx 0083\nfchuo 0034\ntzuaq 1212\nsjxok 0471\n",
+      "expectedOutput": "tzuaq\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 14",
+      "input": "20\nkxdty 0972\nqiiqk 0498\nfyafq 0907\ntteau 1054\nyhjqq 0359\nlphfc 0756\nenqkq 0320\nwbrnm 0965\npvsuk 1007\nwwpim 0585\nnwdit 0834\nqolrk 0397\namaiy 0415\nqzarh 0594\nfqoqs 0745\nuflah 0872\nlrcwr 0312\nvyiks 0895\ngejbn 1105\navzzl 0075\n",
+      "expectedOutput": "gejbn\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 15",
+      "input": "14\nwubvx 0521\nzjawk 0314\nekhmi 1323\nhjavl 1352\nuablu 1193\npnsea 0921\nasuni 0787\nnltai 0515\noyzcv 1093\ndwrnu 0179\notyoc 0237\nsnkbb 0255\nytlmd 0792\ntzpdo 0003\n",
+      "expectedOutput": "hjavl\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 16",
+      "input": "20\nbuxkt 1076\nhslsq 0126\nddjcm 0345\nvoaut 0850\nfltmc 0649\neqamx 0984\nftbwx 0103\nzoigk 1120\nfrwfw 1232\nfvryt 1228\nsvpuf 1132\nxgzcy 1353\nhhugy 0860\nsgwjq 0194\naqtfn 1073\negsla 0436\nrsiea 1098\nnjvvs 0628\nxardk 0755\ntzvrz 0913\n",
+      "expectedOutput": "xgzcy\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 17",
+      "input": "9\nhqijv 0051\ndfgqe 0395\niafuo 0919\nvhmbw 0662\nfncje 1036\nnokie 0508\ncjdbr 1328\nfoctx 1066\nkoail 0307\n",
+      "expectedOutput": "cjdbr\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 18",
+      "input": "3\nfulvk 1275\ntrkpq 0143\nlgffa 0881\n",
+      "expectedOutput": "fulvk\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 19",
+      "input": "1\nyqfcv 0553\n",
+      "expectedOutput": "yqfcv\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 20",
+      "input": "20\nmfyyn 0911\noveif 0534\nbeynh 0639\neanwe 0654\nktpwo 0112\neqeku 0056\ncdcof 0866\njyzyh 0543\nzjxer 0766\ntvbcm 0057\noeerf 1079\nijqvm 0871\nbhvnj 0211\nlfxmf 0898\nzscia 0657\nkzlbl 1192\nhvymh 0957\nntztj 0645\nzszjn 1099\nhqckz 0129\n",
+      "expectedOutput": "kzlbl\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 21",
+      "input": "18\nldijo 0370\nvumdj 1183\nmcssk 0818\nvjjix 0460\npprpd 0063\ngefcz 0980\nogcsf 0634\nurayx 0091\nftbue 1229\nugknb 1014\nlkzlj 0010\nvjjif 0892\ndcogj 0635\nmpqet 1073\nknoon 1080\nuuyhs 0135\nhohod 0473\nmnypg 0812\n",
+      "expectedOutput": "ftbue\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 22",
+      "input": "16\nwzojw 0028\niiuap 1058\napsdy 1255\nwzdrd 0253\ngtybf 0883\nqyits 1088\nizgjf 1398\nzkkju 0232\nruqrn 0105\nsqqvm 0273\njzphj 0356\nyszpg 0938\nzeznf 1116\nssksi 0649\nxiujv 0218\nouypd 1080\n",
+      "expectedOutput": "izgjf\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 23",
+      "input": "6\nbcmex 0159\nijnef 0087\nmxflo 0661\ndaltg 1292\nzoquu 0938\nmvinw 0947\n",
+      "expectedOutput": "daltg\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 24",
+      "input": "8\nphfeh 0916\nrxpcb 0362\ntkhut 0291\ncppgt 0935\nadnuh 0549\nfxyzr 0552\nxvuwk 0194\nnvvaz 1259\n",
+      "expectedOutput": "nvvaz\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 25",
+      "input": "3\ntulwb 0126\nllmoy 0285\npvbpy 0824\n",
+      "expectedOutput": "pvbpy\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 26",
+      "input": "5\nogyku 0374\nlnijf 0053\nizznz 0858\ncmagf 0015\nbwhtp 0006\n",
+      "expectedOutput": "izznz\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 27",
+      "input": "19\nxodwo 1007\ntkaul 0893\nzeani 0246\nkiycx 1212\nppeaa 0690\nvcvbx 0397\nvxnil 0521\npwwgs 1178\nxpdjz 1208\nbaman 0751\nqwqzt 0903\nrfjnu 0477\nylpeb 0526\njweux 0262\norqyi 0802\nsyzoj 0965\nmowmk 0325\nqdxmf 0134\nsnivw 0764\n",
+      "expectedOutput": "kiycx\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 28",
+      "input": "4\ngzwra 0736\nmuily 1156\nsrebw 0375\nkkgfr 0737\n",
+      "expectedOutput": "muily\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 29",
+      "input": "20\nnfmqj 1367\nwpwpf 0697\ndghac 0493\nxpxko 0284\nivweq 0203\nsdsvq 0564\nbcgia 0164\nbiajb 0921\nkhnpj 1195\nzqlfx 1055\neeoki 0155\nzbnog 0335\nmppvg 1136\nirmjs 1301\nzdheq 0375\nmzlwc 0977\netspj 0208\nnbyze 0873\nubghc 1337\nbldjg 0738\n",
+      "expectedOutput": "nfmqj\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 30",
+      "input": "2\ndicnx 1155\nxznvp 1367\n",
+      "expectedOutput": "xznvp\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "1400条记录边界",
+      "input": "1400\naaaaa 0001\naaaab 0002\naaaac 0003\naaaad 0004\naaaae 0005\naaaaf 0006\naaaag 0007\naaaah 0008\naaaai 0009\naaaaj 0010\naaaak 0011\naaaal 0012\naaaam 0013\naaaan 0014\naaaao 0015\naaaap 0016\naaaaq 0017\naaaar 0018\naaaas 0019\naaaat 0020\naaaau 0021\naaaav 0022\naaaaw 0023\naaaax 0024\naaaay 0025\naaaaz 0026\naaaba 0027\naaabb 0028\naaabc 0029\naaabd 0030\naaabe 0031\naaabf 0032\naaabg 0033\naaabh 0034\naaabi 0035\naaabj 0036\naaabk 0037\naaabl 0038\naaabm 0039\naaabn 0040\naaabo 0041\naaabp 0042\naaabq 0043\naaabr 0044\naaabs 0045\naaabt 0046\naaabu 0047\naaabv 0048\naaabw 0049\naaabx 0050\naaaby 0051\naaabz 0052\naaaca 0053\naaacb 0054\naaacc 0055\naaacd 0056\naaace 0057\naaacf 0058\naaacg 0059\naaach 0060\naaaci 0061\naaacj 0062\naaack 0063\naaacl 0064\naaacm 0065\naaacn 0066\naaaco 0067\naaacp 0068\naaacq 0069\naaacr 0070\naaacs 0071\naaact 0072\naaacu 0073\naaacv 0074\naaacw 0075\naaacx 0076\naaacy 0077\naaacz 0078\naaada 0079\naaadb 0080\naaadc 0081\naaadd 0082\naaade 0083\naaadf 0084\naaadg 0085\naaadh 0086\naaadi 0087\naaadj 0088\naaadk 0089\naaadl 0090\naaadm 0091\naaadn 0092\naaado 0093\naaadp 0094\naaadq 0095\naaadr 0096\naaads 0097\naaadt 0098\naaadu 0099\naaadv 0100\naaadw 0101\naaadx 0102\naaady 0103\naaadz 0104\naaaea 0105\naaaeb 0106\naaaec 0107\naaaed 0108\naaaee 0109\naaaef 0110\naaaeg 0111\naaaeh 0112\naaaei 0113\naaaej 0114\naaaek 0115\naaael 0116\naaaem 0117\naaaen 0118\naaaeo 0119\naaaep 0120\naaaeq 0121\naaaer 0122\naaaes 0123\naaaet 0124\naaaeu 0125\naaaev 0126\naaaew 0127\naaaex 0128\naaaey 0129\naaaez 0130\naaafa 0131\naaafb 0132\naaafc 0133\naaafd 0134\naaafe 0135\naaaff 0136\naaafg 0137\naaafh 0138\naaafi 0139\naaafj 0140\naaafk 0141\naaafl 0142\naaafm 0143\naaafn 0144\naaafo 0145\naaafp 0146\naaafq 0147\naaafr 0148\naaafs 0149\naaaft 0150\naaafu 0151\naaafv 0152\naaafw 0153\naaafx 0154\naaafy 0155\naaafz 0156\naaaga 0157\naaagb 0158\naaagc 0159\naaagd 0160\naaage 0161\naaagf 0162\naaagg 0163\naaagh 0164\naaagi 0165\naaagj 0166\naaagk 0167\naaagl 0168\naaagm 0169\naaagn 0170\naaago 0171\naaagp 0172\naaagq 0173\naaagr 0174\naaags 0175\naaagt 0176\naaagu 0177\naaagv 0178\naaagw 0179\naaagx 0180\naaagy 0181\naaagz 0182\naaaha 0183\naaahb 0184\naaahc 0185\naaahd 0186\naaahe 0187\naaahf 0188\naaahg 0189\naaahh 0190\naaahi 0191\naaahj 0192\naaahk 0193\naaahl 0194\naaahm 0195\naaahn 0196\naaaho 0197\naaahp 0198\naaahq 0199\naaahr 0200\naaahs 0201\naaaht 0202\naaahu 0203\naaahv 0204\naaahw 0205\naaahx 0206\naaahy 0207\naaahz 0208\naaaia 0209\naaaib 0210\naaaic 0211\naaaid 0212\naaaie 0213\naaaif 0214\naaaig 0215\naaaih 0216\naaaii 0217\naaaij 0218\naaaik 0219\naaail 0220\naaaim 0221\naaain 0222\naaaio 0223\naaaip 0224\naaaiq 0225\naaair 0226\naaais 0227\naaait 0228\naaaiu 0229\naaaiv 0230\naaaiw 0231\naaaix 0232\naaaiy 0233\naaaiz 0234\naaaja 0235\naaajb 0236\naaajc 0237\naaajd 0238\naaaje 0239\naaajf 0240\naaajg 0241\naaajh 0242\naaaji 0243\naaajj 0244\naaajk 0245\naaajl 0246\naaajm 0247\naaajn 0248\naaajo 0249\naaajp 0250\naaajq 0251\naaajr 0252\naaajs 0253\naaajt 0254\naaaju 0255\naaajv 0256\naaajw 0257\naaajx 0258\naaajy 0259\naaajz 0260\naaaka 0261\naaakb 0262\naaakc 0263\naaakd 0264\naaake 0265\naaakf 0266\naaakg 0267\naaakh 0268\naaaki 0269\naaakj 0270\naaakk 0271\naaakl 0272\naaakm 0273\naaakn 0274\naaako 0275\naaakp 0276\naaakq 0277\naaakr 0278\naaaks 0279\naaakt 0280\naaaku 0281\naaakv 0282\naaakw 0283\naaakx 0284\naaaky 0285\naaakz 0286\naaala 0287\naaalb 0288\naaalc 0289\naaald 0290\naaale 0291\naaalf 0292\naaalg 0293\naaalh 0294\naaali 0295\naaalj 0296\naaalk 0297\naaall 0298\naaalm 0299\naaaln 0300\naaalo 0301\naaalp 0302\naaalq 0303\naaalr 0304\naaals 0305\naaalt 0306\naaalu 0307\naaalv 0308\naaalw 0309\naaalx 0310\naaaly 0311\naaalz 0312\naaama 0313\naaamb 0314\naaamc 0315\naaamd 0316\naaame 0317\naaamf 0318\naaamg 0319\naaamh 0320\naaami 0321\naaamj 0322\naaamk 0323\naaaml 0324\naaamm 0325\naaamn 0326\naaamo 0327\naaamp 0328\naaamq 0329\naaamr 0330\naaams 0331\naaamt 0332\naaamu 0333\naaamv 0334\naaamw 0335\naaamx 0336\naaamy 0337\naaamz 0338\naaana 0339\naaanb 0340\naaanc 0341\naaand 0342\naaane 0343\naaanf 0344\naaang 0345\naaanh 0346\naaani 0347\naaanj 0348\naaank 0349\naaanl 0350\naaanm 0351\naaann 0352\naaano 0353\naaanp 0354\naaanq 0355\naaanr 0356\naaans 0357\naaant 0358\naaanu 0359\naaanv 0360\naaanw 0361\naaanx 0362\naaany 0363\naaanz 0364\naaaoa 0365\naaaob 0366\naaaoc 0367\naaaod 0368\naaaoe 0369\naaaof 0370\naaaog 0371\naaaoh 0372\naaaoi 0373\naaaoj 0374\naaaok 0375\naaaol 0376\naaaom 0377\naaaon 0378\naaaoo 0379\naaaop 0380\naaaoq 0381\naaaor 0382\naaaos 0383\naaaot 0384\naaaou 0385\naaaov 0386\naaaow 0387\naaaox 0388\naaaoy 0389\naaaoz 0390\naaapa 0391\naaapb 0392\naaapc 0393\naaapd 0394\naaape 0395\naaapf 0396\naaapg 0397\naaaph 0398\naaapi 0399\naaapj 0400\naaapk 0401\naaapl 0402\naaapm 0403\naaapn 0404\naaapo 0405\naaapp 0406\naaapq 0407\naaapr 0408\naaaps 0409\naaapt 0410\naaapu 0411\naaapv 0412\naaapw 0413\naaapx 0414\naaapy 0415\naaapz 0416\naaaqa 0417\naaaqb 0418\naaaqc 0419\naaaqd 0420\naaaqe 0421\naaaqf 0422\naaaqg 0423\naaaqh 0424\naaaqi 0425\naaaqj 0426\naaaqk 0427\naaaql 0428\naaaqm 0429\naaaqn 0430\naaaqo 0431\naaaqp 0432\naaaqq 0433\naaaqr 0434\naaaqs 0435\naaaqt 0436\naaaqu 0437\naaaqv 0438\naaaqw 0439\naaaqx 0440\naaaqy 0441\naaaqz 0442\naaara 0443\naaarb 0444\naaarc 0445\naaard 0446\naaare 0447\naaarf 0448\naaarg 0449\naaarh 0450\naaari 0451\naaarj 0452\naaark 0453\naaarl 0454\naaarm 0455\naaarn 0456\naaaro 0457\naaarp 0458\naaarq 0459\naaarr 0460\naaars 0461\naaart 0462\naaaru 0463\naaarv 0464\naaarw 0465\naaarx 0466\naaary 0467\naaarz 0468\naaasa 0469\naaasb 0470\naaasc 0471\naaasd 0472\naaase 0473\naaasf 0474\naaasg 0475\naaash 0476\naaasi 0477\naaasj 0478\naaask 0479\naaasl 0480\naaasm 0481\naaasn 0482\naaaso 0483\naaasp 0484\naaasq 0485\naaasr 0486\naaass 0487\naaast 0488\naaasu 0489\naaasv 0490\naaasw 0491\naaasx 0492\naaasy 0493\naaasz 0494\naaata 0495\naaatb 0496\naaatc 0497\naaatd 0498\naaate 0499\naaatf 0500\naaatg 0501\naaath 0502\naaati 0503\naaatj 0504\naaatk 0505\naaatl 0506\naaatm 0507\naaatn 0508\naaato 0509\naaatp 0510\naaatq 0511\naaatr 0512\naaats 0513\naaatt 0514\naaatu 0515\naaatv 0516\naaatw 0517\naaatx 0518\naaaty 0519\naaatz 0520\naaaua 0521\naaaub 0522\naaauc 0523\naaaud 0524\naaaue 0525\naaauf 0526\naaaug 0527\naaauh 0528\naaaui 0529\naaauj 0530\naaauk 0531\naaaul 0532\naaaum 0533\naaaun 0534\naaauo 0535\naaaup 0536\naaauq 0537\naaaur 0538\naaaus 0539\naaaut 0540\naaauu 0541\naaauv 0542\naaauw 0543\naaaux 0544\naaauy 0545\naaauz 0546\naaava 0547\naaavb 0548\naaavc 0549\naaavd 0550\naaave 0551\naaavf 0552\naaavg 0553\naaavh 0554\naaavi 0555\naaavj 0556\naaavk 0557\naaavl 0558\naaavm 0559\naaavn 0560\naaavo 0561\naaavp 0562\naaavq 0563\naaavr 0564\naaavs 0565\naaavt 0566\naaavu 0567\naaavv 0568\naaavw 0569\naaavx 0570\naaavy 0571\naaavz 0572\naaawa 0573\naaawb 0574\naaawc 0575\naaawd 0576\naaawe 0577\naaawf 0578\naaawg 0579\naaawh 0580\naaawi 0581\naaawj 0582\naaawk 0583\naaawl 0584\naaawm 0585\naaawn 0586\naaawo 0587\naaawp 0588\naaawq 0589\naaawr 0590\naaaws 0591\naaawt 0592\naaawu 0593\naaawv 0594\naaaww 0595\naaawx 0596\naaawy 0597\naaawz 0598\naaaxa 0599\naaaxb 0600\naaaxc 0601\naaaxd 0602\naaaxe 0603\naaaxf 0604\naaaxg 0605\naaaxh 0606\naaaxi 0607\naaaxj 0608\naaaxk 0609\naaaxl 0610\naaaxm 0611\naaaxn 0612\naaaxo 0613\naaaxp 0614\naaaxq 0615\naaaxr 0616\naaaxs 0617\naaaxt 0618\naaaxu 0619\naaaxv 0620\naaaxw 0621\naaaxx 0622\naaaxy 0623\naaaxz 0624\naaaya 0625\naaayb 0626\naaayc 0627\naaayd 0628\naaaye 0629\naaayf 0630\naaayg 0631\naaayh 0632\naaayi 0633\naaayj 0634\naaayk 0635\naaayl 0636\naaaym 0637\naaayn 0638\naaayo 0639\naaayp 0640\naaayq 0641\naaayr 0642\naaays 0643\naaayt 0644\naaayu 0645\naaayv 0646\naaayw 0647\naaayx 0648\naaayy 0649\naaayz 0650\naaaza 0651\naaazb 0652\naaazc 0653\naaazd 0654\naaaze 0655\naaazf 0656\naaazg 0657\naaazh 0658\naaazi 0659\naaazj 0660\naaazk 0661\naaazl 0662\naaazm 0663\naaazn 0664\naaazo 0665\naaazp 0666\naaazq 0667\naaazr 0668\naaazs 0669\naaazt 0670\naaazu 0671\naaazv 0672\naaazw 0673\naaazx 0674\naaazy 0675\naaazz 0676\naabaa 0677\naabab 0678\naabac 0679\naabad 0680\naabae 0681\naabaf 0682\naabag 0683\naabah 0684\naabai 0685\naabaj 0686\naabak 0687\naabal 0688\naabam 0689\naaban 0690\naabao 0691\naabap 0692\naabaq 0693\naabar 0694\naabas 0695\naabat 0696\naabau 0697\naabav 0698\naabaw 0699\naabax 0700\naabay 0701\naabaz 0702\naabba 0703\naabbb 0704\naabbc 0705\naabbd 0706\naabbe 0707\naabbf 0708\naabbg 0709\naabbh 0710\naabbi 0711\naabbj 0712\naabbk 0713\naabbl 0714\naabbm 0715\naabbn 0716\naabbo 0717\naabbp 0718\naabbq 0719\naabbr 0720\naabbs 0721\naabbt 0722\naabbu 0723\naabbv 0724\naabbw 0725\naabbx 0726\naabby 0727\naabbz 0728\naabca 0729\naabcb 0730\naabcc 0731\naabcd 0732\naabce 0733\naabcf 0734\naabcg 0735\naabch 0736\naabci 0737\naabcj 0738\naabck 0739\naabcl 0740\naabcm 0741\naabcn 0742\naabco 0743\naabcp 0744\naabcq 0745\naabcr 0746\naabcs 0747\naabct 0748\naabcu 0749\naabcv 0750\naabcw 0751\naabcx 0752\naabcy 0753\naabcz 0754\naabda 0755\naabdb 0756\naabdc 0757\naabdd 0758\naabde 0759\naabdf 0760\naabdg 0761\naabdh 0762\naabdi 0763\naabdj 0764\naabdk 0765\naabdl 0766\naabdm 0767\naabdn 0768\naabdo 0769\naabdp 0770\naabdq 0771\naabdr 0772\naabds 0773\naabdt 0774\naabdu 0775\naabdv 0776\naabdw 0777\naabdx 0778\naabdy 0779\naabdz 0780\naabea 0781\naabeb 0782\naabec 0783\naabed 0784\naabee 0785\naabef 0786\naabeg 0787\naabeh 0788\naabei 0789\naabej 0790\naabek 0791\naabel 0792\naabem 0793\naaben 0794\naabeo 0795\naabep 0796\naabeq 0797\naaber 0798\naabes 0799\naabet 0800\naabeu 0801\naabev 0802\naabew 0803\naabex 0804\naabey 0805\naabez 0806\naabfa 0807\naabfb 0808\naabfc 0809\naabfd 0810\naabfe 0811\naabff 0812\naabfg 0813\naabfh 0814\naabfi 0815\naabfj 0816\naabfk 0817\naabfl 0818\naabfm 0819\naabfn 0820\naabfo 0821\naabfp 0822\naabfq 0823\naabfr 0824\naabfs 0825\naabft 0826\naabfu 0827\naabfv 0828\naabfw 0829\naabfx 0830\naabfy 0831\naabfz 0832\naabga 0833\naabgb 0834\naabgc 0835\naabgd 0836\naabge 0837\naabgf 0838\naabgg 0839\naabgh 0840\naabgi 0841\naabgj 0842\naabgk 0843\naabgl 0844\naabgm 0845\naabgn 0846\naabgo 0847\naabgp 0848\naabgq 0849\naabgr 0850\naabgs 0851\naabgt 0852\naabgu 0853\naabgv 0854\naabgw 0855\naabgx 0856\naabgy 0857\naabgz 0858\naabha 0859\naabhb 0860\naabhc 0861\naabhd 0862\naabhe 0863\naabhf 0864\naabhg 0865\naabhh 0866\naabhi 0867\naabhj 0868\naabhk 0869\naabhl 0870\naabhm 0871\naabhn 0872\naabho 0873\naabhp 0874\naabhq 0875\naabhr 0876\naabhs 0877\naabht 0878\naabhu 0879\naabhv 0880\naabhw 0881\naabhx 0882\naabhy 0883\naabhz 0884\naabia 0885\naabib 0886\naabic 0887\naabid 0888\naabie 0889\naabif 0890\naabig 0891\naabih 0892\naabii 0893\naabij 0894\naabik 0895\naabil 0896\naabim 0897\naabin 0898\naabio 0899\naabip 0900\naabiq 0901\naabir 0902\naabis 0903\naabit 0904\naabiu 0905\naabiv 0906\naabiw 0907\naabix 0908\naabiy 0909\naabiz 0910\naabja 0911\naabjb 0912\naabjc 0913\naabjd 0914\naabje 0915\naabjf 0916\naabjg 0917\naabjh 0918\naabji 0919\naabjj 0920\naabjk 0921\naabjl 0922\naabjm 0923\naabjn 0924\naabjo 0925\naabjp 0926\naabjq 0927\naabjr 0928\naabjs 0929\naabjt 0930\naabju 0931\naabjv 0932\naabjw 0933\naabjx 0934\naabjy 0935\naabjz 0936\naabka 0937\naabkb 0938\naabkc 0939\naabkd 0940\naabke 0941\naabkf 0942\naabkg 0943\naabkh 0944\naabki 0945\naabkj 0946\naabkk 0947\naabkl 0948\naabkm 0949\naabkn 0950\naabko 0951\naabkp 0952\naabkq 0953\naabkr 0954\naabks 0955\naabkt 0956\naabku 0957\naabkv 0958\naabkw 0959\naabkx 0960\naabky 0961\naabkz 0962\naabla 0963\naablb 0964\naablc 0965\naabld 0966\naable 0967\naablf 0968\naablg 0969\naablh 0970\naabli 0971\naablj 0972\naablk 0973\naabll 0974\naablm 0975\naabln 0976\naablo 0977\naablp 0978\naablq 0979\naablr 0980\naabls 0981\naablt 0982\naablu 0983\naablv 0984\naablw 0985\naablx 0986\naably 0987\naablz 0988\naabma 0989\naabmb 0990\naabmc 0991\naabmd 0992\naabme 0993\naabmf 0994\naabmg 0995\naabmh 0996\naabmi 0997\naabmj 0998\naabmk 0999\naabml 1000\naabmm 1001\naabmn 1002\naabmo 1003\naabmp 1004\naabmq 1005\naabmr 1006\naabms 1007\naabmt 1008\naabmu 1009\naabmv 1010\naabmw 1011\naabmx 1012\naabmy 1013\naabmz 1014\naabna 1015\naabnb 1016\naabnc 1017\naabnd 1018\naabne 1019\naabnf 1020\naabng 1021\naabnh 1022\naabni 1023\naabnj 1024\naabnk 1025\naabnl 1026\naabnm 1027\naabnn 1028\naabno 1029\naabnp 1030\naabnq 1031\naabnr 1032\naabns 1033\naabnt 1034\naabnu 1035\naabnv 1036\naabnw 1037\naabnx 1038\naabny 1039\naabnz 1040\naaboa 1041\naabob 1042\naaboc 1043\naabod 1044\naaboe 1045\naabof 1046\naabog 1047\naaboh 1048\naaboi 1049\naaboj 1050\naabok 1051\naabol 1052\naabom 1053\naabon 1054\naaboo 1055\naabop 1056\naaboq 1057\naabor 1058\naabos 1059\naabot 1060\naabou 1061\naabov 1062\naabow 1063\naabox 1064\naaboy 1065\naaboz 1066\naabpa 1067\naabpb 1068\naabpc 1069\naabpd 1070\naabpe 1071\naabpf 1072\naabpg 1073\naabph 1074\naabpi 1075\naabpj 1076\naabpk 1077\naabpl 1078\naabpm 1079\naabpn 1080\naabpo 1081\naabpp 1082\naabpq 1083\naabpr 1084\naabps 1085\naabpt 1086\naabpu 1087\naabpv 1088\naabpw 1089\naabpx 1090\naabpy 1091\naabpz 1092\naabqa 1093\naabqb 1094\naabqc 1095\naabqd 1096\naabqe 1097\naabqf 1098\naabqg 1099\naabqh 1100\naabqi 1101\naabqj 1102\naabqk 1103\naabql 1104\naabqm 1105\naabqn 1106\naabqo 1107\naabqp 1108\naabqq 1109\naabqr 1110\naabqs 1111\naabqt 1112\naabqu 1113\naabqv 1114\naabqw 1115\naabqx 1116\naabqy 1117\naabqz 1118\naabra 1119\naabrb 1120\naabrc 1121\naabrd 1122\naabre 1123\naabrf 1124\naabrg 1125\naabrh 1126\naabri 1127\naabrj 1128\naabrk 1129\naabrl 1130\naabrm 1131\naabrn 1132\naabro 1133\naabrp 1134\naabrq 1135\naabrr 1136\naabrs 1137\naabrt 1138\naabru 1139\naabrv 1140\naabrw 1141\naabrx 1142\naabry 1143\naabrz 1144\naabsa 1145\naabsb 1146\naabsc 1147\naabsd 1148\naabse 1149\naabsf 1150\naabsg 1151\naabsh 1152\naabsi 1153\naabsj 1154\naabsk 1155\naabsl 1156\naabsm 1157\naabsn 1158\naabso 1159\naabsp 1160\naabsq 1161\naabsr 1162\naabss 1163\naabst 1164\naabsu 1165\naabsv 1166\naabsw 1167\naabsx 1168\naabsy 1169\naabsz 1170\naabta 1171\naabtb 1172\naabtc 1173\naabtd 1174\naabte 1175\naabtf 1176\naabtg 1177\naabth 1178\naabti 1179\naabtj 1180\naabtk 1181\naabtl 1182\naabtm 1183\naabtn 1184\naabto 1185\naabtp 1186\naabtq 1187\naabtr 1188\naabts 1189\naabtt 1190\naabtu 1191\naabtv 1192\naabtw 1193\naabtx 1194\naabty 1195\naabtz 1196\naabua 1197\naabub 1198\naabuc 1199\naabud 1200\naabue 1201\naabuf 1202\naabug 1203\naabuh 1204\naabui 1205\naabuj 1206\naabuk 1207\naabul 1208\naabum 1209\naabun 1210\naabuo 1211\naabup 1212\naabuq 1213\naabur 1214\naabus 1215\naabut 1216\naabuu 1217\naabuv 1218\naabuw 1219\naabux 1220\naabuy 1221\naabuz 1222\naabva 1223\naabvb 1224\naabvc 1225\naabvd 1226\naabve 1227\naabvf 1228\naabvg 1229\naabvh 1230\naabvi 1231\naabvj 1232\naabvk 1233\naabvl 1234\naabvm 1235\naabvn 1236\naabvo 1237\naabvp 1238\naabvq 1239\naabvr 1240\naabvs 1241\naabvt 1242\naabvu 1243\naabvv 1244\naabvw 1245\naabvx 1246\naabvy 1247\naabvz 1248\naabwa 1249\naabwb 1250\naabwc 1251\naabwd 1252\naabwe 1253\naabwf 1254\naabwg 1255\naabwh 1256\naabwi 1257\naabwj 1258\naabwk 1259\naabwl 1260\naabwm 1261\naabwn 1262\naabwo 1263\naabwp 1264\naabwq 1265\naabwr 1266\naabws 1267\naabwt 1268\naabwu 1269\naabwv 1270\naabww 1271\naabwx 1272\naabwy 1273\naabwz 1274\naabxa 1275\naabxb 1276\naabxc 1277\naabxd 1278\naabxe 1279\naabxf 1280\naabxg 1281\naabxh 1282\naabxi 1283\naabxj 1284\naabxk 1285\naabxl 1286\naabxm 1287\naabxn 1288\naabxo 1289\naabxp 1290\naabxq 1291\naabxr 1292\naabxs 1293\naabxt 1294\naabxu 1295\naabxv 1296\naabxw 1297\naabxx 1298\naabxy 1299\naabxz 1300\naabya 1301\naabyb 1302\naabyc 1303\naabyd 1304\naabye 1305\naabyf 1306\naabyg 1307\naabyh 1308\naabyi 1309\naabyj 1310\naabyk 1311\naabyl 1312\naabym 1313\naabyn 1314\naabyo 1315\naabyp 1316\naabyq 1317\naabyr 1318\naabys 1319\naabyt 1320\naabyu 1321\naabyv 1322\naabyw 1323\naabyx 1324\naabyy 1325\naabyz 1326\naabza 1327\naabzb 1328\naabzc 1329\naabzd 1330\naabze 1331\naabzf 1332\naabzg 1333\naabzh 1334\naabzi 1335\naabzj 1336\naabzk 1337\naabzl 1338\naabzm 1339\naabzn 1340\naabzo 1341\naabzp 1342\naabzq 1343\naabzr 1344\naabzs 1345\naabzt 1346\naabzu 1347\naabzv 1348\naabzw 1349\naabzx 1350\naabzy 1351\naabzz 1352\naacaa 1353\naacab 1354\naacac 1355\naacad 1356\naacae 1357\naacaf 1358\naacag 1359\naacah 1360\naacai 1361\naacaj 1362\naacak 1363\naacal 1364\naacam 1365\naacan 1366\naacao 1367\naacap 1368\naacaq 1369\naacar 1370\naacas 1371\naacat 1372\naacau 1373\naacav 1374\naacaw 1375\naacax 1376\naacay 1377\naacaz 1378\naacba 1379\naacbb 1380\naacbc 1381\naacbd 1382\naacbe 1383\naacbf 1384\naacbg 1385\naacbh 1386\naacbi 1387\naacbj 1388\naacbk 1389\naacbl 1390\naacbm 1391\naacbn 1392\naacbo 1393\naacbp 1394\naacbq 1395\naacbr 1396\naacbs 1397\naacbt 1398\naacbu 1399\naacbv 1400\n",
+      "expectedOutput": "aacbv\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

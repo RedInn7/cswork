@@ -1,0 +1,10 @@
+[
+  {
+    "name": "会议长度刚好放入空档时仍判失败",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,length=t[:2]; p=2; busy=[]\n for _ in range(n):\n  m=t[p]; p+=1\n  for _ in range(m): busy.append((t[p],t[p+1])); p+=2\n busy.sort(); merged=[]\n for a,b in busy:\n  if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(merged[-1][1],b))\n  else: merged.append((a,b))\n current=0\n for a,b in merged:\n  if a-current>length: return str(current)\n  current=max(current,b)\n return str(current) if current+length<=1440 else '-1'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "不排序忙碌区间就合并",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,length=t[:2]; p=2; busy=[]\n for _ in range(n):\n  m=t[p]; p+=1\n  for _ in range(m): busy.append((t[p],t[p+1])); p+=2\n merged=[]\n for a,b in busy:\n  if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(merged[-1][1],b))\n  else: merged.append((a,b))\n current=0\n for a,b in merged:\n  if a-current>=length: return str(current)\n  current=max(current,b)\n return str(current) if current+length<=1440 else '-1'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

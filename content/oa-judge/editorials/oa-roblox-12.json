@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-12",
+  "title": "Rate Limit by Multiple Request Fields",
+  "explanation": "## 思路\n\n每个维度分别以字段值为键维护已放行请求时间的双端队列。处理请求时先移除时间小于等于 now−window 的过期时间，再检查所有维度当前计数是否小于各自限额。只有全部通过才在所有维度记入时间。\n\n## 正确性\n\n滑动窗口定义为 [now−window, now)，因此边界等于 now−window 的旧请求必须过期。逐维检查保证任何一维超限都会拒绝；仅对整体获准请求追加记录，正好实现本站明确规定的额度语义。\n\n## 复杂度\n\n每条请求检查至多 d 个维度；每个时间戳在队列中至多入队出队一次。总时间 O(qd)，空间 O(qd)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import defaultdict,deque\ndef solve(raw):\n t=raw.split(); d,q=map(int,t[:2]); p=2; rules=[]; hist=[]\n for _ in range(d):\n  name=t[p]; w=int(t[p+1]); lim=int(t[p+2]); p+=3; rules.append((w,lim)); hist.append(defaultdict(deque))\n out=[]\n for _ in range(q):\n  now=int(t[p]); fields=t[p+1:p+1+d]; p+=1+d\n  for i,key in enumerate(fields):\n   dq=hist[i][key]\n   while dq and dq[0]<=now-rules[i][0]: dq.popleft()\n  ok=all(len(hist[i][key])<rules[i][1] for i,key in enumerate(fields))\n  out.append('ALLOW' if ok else 'REJECT')\n  if ok:\n   for i,key in enumerate(fields): hist[i][key].append(now)\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/roblox#12-rate-limit-by-multiple-request-fields",
+  "sourceContentHash": "da49d0edf35172bafd020e59939e1088c49817d92fb6d6bd107b1c05571b4f32",
+  "author": "CSWork"
+}

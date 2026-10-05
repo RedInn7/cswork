@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-roblox-13",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Schedule Meeting",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Roblox",
+      "区间",
+      "排序"
+    ],
+    "description": "给定员工在一天内的忙碌区间和会议时长，求所有员工都空闲且会议可在当天结束的最早开始分钟；若无解输出 -1。本站补充：时间使用半开区间 [start,finish)，因此端点相接不冲突；输入区间可重叠或乱序。\n\n题面中标注的‘本站补充’和标准输入输出协议由本站明确整理，不代表原题另有未说明的规则。",
+    "input": "第一行 n length；对每位员工依次输入区间数 m，再输入 m 对 start finish。1≤n≤100，0≤m≤100，0≤start<finish≤1400，1≤length≤1440。",
+    "output": "输出最早开始时间；无可行时间输出 -1。",
+    "explanation": "思路、正确性证明和复杂度见配套题解。",
+    "hints": [
+      "先把原题中的每一种规则和本站补充的输入约定分开，再选择适合的数据结构。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "2 120\n2\n60 150\n180 240\n2\n0 210\n360 420\n",
+      "expectedOutput": "240\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3 180\n1\n480 510\n1\n240 330\n1\n375 400\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "1 1440\n1\n0 1400\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 1",
+      "input": "2 9\n5\n130 138\n1028 1037\n236 240\n114 124\n558 563\n2\n1105 1114\n100 104\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 2",
+      "input": "1 39\n1\n1205 1209\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 3",
+      "input": "2 5\n1\n197 205\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 4",
+      "input": "5 8\n1\n350 352\n0\n0\n5\n1121 1123\n602 604\n1156 1157\n162 170\n1060 1064\n7\n1005 1014\n882 891\n404 405\n1017 1027\n1387 1391\n404 405\n273 282\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 5",
+      "input": "3 36\n6\n411 412\n16 22\n765 773\n417 419\n1206 1208\n1273 1277\n2\n386 395\n1252 1254\n5\n1165 1169\n839 848\n818 821\n1222 1230\n912 916\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 6",
+      "input": "3 9\n6\n961 967\n159 160\n472 476\n86 95\n1175 1184\n656 659\n4\n784 785\n1023 1032\n811 820\n834 841\n3\n712 714\n1121 1129\n458 461\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 7",
+      "input": "1 40\n6\n414 417\n343 353\n64 74\n99 109\n812 815\n566 576\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 8",
+      "input": "3 17\n6\n572 579\n699 708\n1182 1189\n412 413\n1178 1181\n1155 1165\n5\n1276 1281\n80 89\n657 658\n933 937\n429 432\n3\n1333 1343\n730 737\n110 113\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 9",
+      "input": "3 37\n5\n624 632\n126 131\n1129 1138\n59 63\n299 308\n0\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 10",
+      "input": "1 43\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 11",
+      "input": "5 12\n4\n523 526\n197 204\n1226 1233\n820 830\n2\n1386 1389\n440 449\n6\n379 388\n1282 1285\n1245 1248\n1179 1180\n912 914\n1286 1294\n0\n1\n742 751\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 12",
+      "input": "1 32\n5\n1206 1211\n474 476\n1040 1046\n203 211\n884 885\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 13",
+      "input": "5 43\n3\n338 343\n203 213\n291 296\n5\n1349 1359\n118 121\n378 379\n196 203\n1261 1262\n2\n549 552\n1089 1097\n1\n380 384\n6\n223 224\n1067 1073\n439 440\n61 66\n897 898\n1187 1195\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 14",
+      "input": "1 26\n2\n1102 1110\n707 710\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 15",
+      "input": "1 25\n2\n588 589\n924 929\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 16",
+      "input": "1 22\n6\n625 627\n839 844\n550 558\n1262 1263\n605 608\n1115 1120\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 17",
+      "input": "2 12\n3\n837 846\n456 463\n1169 1172\n7\n428 430\n1020 1030\n1148 1155\n1250 1254\n970 977\n584 587\n895 904\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 18",
+      "input": "2 32\n7\n669 675\n608 612\n83 84\n845 852\n264 271\n957 960\n551 557\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 19",
+      "input": "2 41\n3\n297 301\n520 521\n1320 1322\n1\n765 774\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 20",
+      "input": "1 15\n2\n646 652\n1095 1101\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 21",
+      "input": "4 5\n0\n0\n0\n1\n492 493\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 22",
+      "input": "2 36\n4\n827 833\n1373 1379\n497 507\n898 903\n2\n1071 1075\n19 23\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 23",
+      "input": "5 1\n7\n1184 1192\n768 774\n1037 1042\n404 413\n1330 1333\n1183 1187\n1004 1014\n2\n74 77\n9 10\n1\n499 501\n6\n688 689\n744 745\n1070 1072\n1292 1302\n720 723\n670 678\n2\n908 910\n185 186\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 24",
+      "input": "2 43\n3\n63 67\n948 953\n949 955\n5\n81 87\n194 196\n506 516\n822 831\n967 972\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 25",
+      "input": "5 36\n7\n786 789\n982 992\n766 767\n223 233\n618 628\n1215 1217\n38 41\n3\n243 246\n406 414\n750 755\n7\n1382 1387\n1236 1240\n994 1002\n156 165\n822 826\n25 27\n247 255\n5\n1041 1049\n1387 1388\n162 163\n168 178\n1374 1377\n4\n1072 1076\n864 865\n947 954\n966 970\n",
+      "expectedOutput": "41\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 26",
+      "input": "5 1\n7\n1216 1225\n1204 1206\n383 388\n783 790\n735 738\n743 746\n655 659\n0\n0\n1\n446 447\n2\n563 564\n737 743\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 27",
+      "input": "4 18\n5\n933 940\n5 7\n1390 1399\n355 364\n448 450\n4\n970 971\n915 925\n902 910\n671 677\n4\n1243 1246\n128 134\n234 235\n621 622\n3\n867 876\n1237 1247\n855 862\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 28",
+      "input": "4 26\n2\n315 318\n252 259\n6\n1153 1157\n160 166\n621 623\n363 369\n1270 1271\n598 608\n4\n1126 1127\n983 991\n135 136\n1216 1221\n7\n1203 1204\n134 144\n482 489\n342 349\n1165 1168\n694 703\n1232 1233\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 29",
+      "input": "1 5\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 30",
+      "input": "4 23\n7\n943 949\n981 989\n1266 1276\n1021 1025\n561 566\n195 205\n710 712\n2\n207 210\n196 204\n6\n958 960\n1367 1376\n654 658\n922 926\n1366 1367\n406 411\n1\n674 681\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "长度刚好等于空档",
+      "input": "1 5\n1\n5 10\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "员工数与一天最长会议边界",
+      "input": "100 1440\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n1\n0 1400\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

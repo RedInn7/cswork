@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-10",
+  "title": "Largest Value of Usage in Minutes",
+  "explanation": "## 思路\n\n逐条解析 ID 与四位数字对应的整数，记录用量最大的一项。题面保证用量值互异，因此最大值对应唯一设备。\n\n## 正确性\n\n扫描前 i 条记录后，best 始终是其中用量最大设备的 ID。新记录用量更大时更新，否则保持。扫描结束后 best 因而对应全体最大用量。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=raw.split(); n=int(t[0]); best_id=''; best=-1\n for i in range(n):\n  key=t[1+2*i]; value=int(t[2+2*i])\n  if value>best: best=value; best_id=key\n return best_id\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/roblox#10-largest-value-of-usage-in-minutes",
+  "sourceContentHash": "0c5e4f5fb329c25c22ad63de3a6011f10e7c05ad37afea4e2523424c3a1734ce",
+  "author": "CSWork"
+}

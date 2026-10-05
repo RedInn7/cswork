@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-2",
+  "title": "Subarrays with at Least K Disjoint Duplicate Pairs",
+  "explanation": "## 思路\n\n对每个值维护当前窗口出现次数。新增一个元素时，只有旧次数为奇数才会让该值的可配对数增加一；移除时，只有旧次数为偶数才会减少一。双指针维护窗口内最大不相交重复对数小于 k 的最短后缀。每个右端点对应的合法左端点恰为 0 到 left−1，共 left 个。\n\n## 正确性\n\n对某值出现 c 次，最多可组成 floor(c/2) 对且所有下标互异；不同值的下标集合天然互斥，因此窗口最大不相交配对数为各值 floor(c/2) 之和。该量随右端点单调不减、随左端点右移单调不增，双指针恰好越过所有合法左端点，累计 left 不重不漏。\n\n## 复杂度\n\n每个下标最多进出窗口一次，时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k=t[0],t[1]; a=t[2:2+n]\n freq={}; left=pairs=answer=0\n for right,x in enumerate(a):\n  old=freq.get(x,0); freq[x]=old+1\n  if old%2: pairs+=1\n  while pairs>=k:\n   y=a[left]; old=freq[y]\n   if old%2==0: pairs-=1\n   freq[y]=old-1; left+=1\n  answer+=left\n return str(answer)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/roblox#2-subarrays-with-at-least-k-duplicate-pairs",
+  "sourceContentHash": "3ae6424e08381bb9f2786ec68e8564f68037ebc9b63231f7ad82539552ed9820",
+  "author": "CSWork"
+}

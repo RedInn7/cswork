@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把半径误当成包含距离 r 的格子",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rows,cols,r=t[:3]; a=[t[3+i*cols:3+(i+1)*cols] for i in range(rows)]\n pref=[[0]*(cols+1) for _ in range(rows)]\n for i in range(rows):\n  for j in range(cols): pref[i][j+1]=pref[i][j]+a[i][j]\n best=None\n for cr in range(r-1,rows-r+1):\n  for cc in range(r-1,cols-r+1):\n   total=0\n   for dr in range(-(r-1),r):\n    rr=cr+dr\n    if 0<=rr<rows:\n     span=r-abs(dr); lo=max(0,cc-span); hi=min(cols-1,cc+span)\n     total+=pref[rr][hi+1]-pref[rr][lo]\n   if best is None or total>best: best=total\n return str(best if best is not None else 0)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把每行菱形宽度少算一格",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rows,cols,r=t[:3]; a=[t[3+i*cols:3+(i+1)*cols] for i in range(rows)]\n pref=[[0]*(cols+1) for _ in range(rows)]\n for i in range(rows):\n  for j in range(cols): pref[i][j+1]=pref[i][j]+a[i][j]\n best=None\n for cr in range(r-1,rows-r+1):\n  for cc in range(r-1,cols-r+1):\n   total=0\n   for dr in range(-(r-1),r):\n    rr=cr+dr\n    if 0<=rr<rows:\n     span=r-2-abs(dr); lo=max(0,cc-span); hi=min(cols-1,cc+span)\n     total+=pref[rr][hi+1]-pref[rr][lo]\n   if best is None or total>best: best=total\n return str(best if best is not None else 0)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
