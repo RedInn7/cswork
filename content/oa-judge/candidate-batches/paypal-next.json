@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-paypal-1",
+      "sourceContentHash": "c41b0a3cc36628f948ecb00c9a1bd1c58b773c9aec208c0756f0f92cf25f4616",
+      "packageChecksum": "54173847da8c82c7b4ca50d7e2358570bc2cdd7983ec5ad42349c95613e9843b",
+      "editorial": "## 思路\n\n设元音数为 v、长度为 n，目标元音数为 n/2，因此需把 |v−n/2| 个字符从数量较多的一类改成另一类。每个候选字符的代价是沿字母表加减操作到相反类别的最近距离。对这些代价排序，取最小的所需数量。本站把长度限为偶数，避免原题未定义奇数长度无解时的返回值。\n\n## 正确性\n\n每次操作只改变一个字符，只有字符跨过元音/辅音类别边界才会改变总数，且一次跨界恰使元音数变化 1。故必须至少转换 |v−n/2| 个字符。任意被选字符跨界的代价下界是到相反类别字母的最短距离，这个距离可单独实现；字符之间互不影响。选择所需数量中代价最小者同时达到下界。\n\n## 复杂度\n\n令 L 为密码长度，最多对每个字符检查 26 个字母并排序，时间 O(26L+L log L)，空间 O(L)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nV=set('aeiou')\ndef solve(raw):\n s=raw.strip(); n=len(s); v=sum(ch in V for ch in s); target=n//2\n if n%2: return '-1'\n need=abs(v-target)\n source=[ch for ch in s if (ch in V)==(v>target)]\n other=V if v<target else set('bcdfghjklmnpqrstvwxyz')\n costs=[min(abs(ord(ch)-ord(to)) for to in other) for ch in source]\n return str(sum(sorted(costs)[:need]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paypal-2",
+      "sourceContentHash": "d422c1e1d992e18aa46afb20f7543de8d7dbd629b2a318f52b523d9e274146a3",
+      "packageChecksum": "14584bf7f16738e1c5ebc90009ca2550fbadbe88b3edde18aa1cb7d619863009",
+      "editorial": "## 思路\n\n逐行校验用户名、固定格式时间和公历日期。无效时间/日期的记录跳过。用 (用户名,日期) 作为键累计次数，最后按两个字符串字典序排序。本站 I/O 先输出分组数，再逐行输出用户名、日期和次数。\n\n## 正确性\n\n每条有效日志恰好给唯一的 (用户,日期) 键增加一次；无效日期或时间不参与统计，符合过滤规则。字典计数因此等于该组的登录记录数。对所有键按用户名、日期排序，恰好满足规定顺序；组数和每组字段一一对应。\n\n来源样例 1 的解释把 user1 当天的 2 次写成 3 次，又把 user2 的 2 次写成 1 次；样例 2 的解释把 user2 的 2 次写成 3 次。两组样例的实际输出与原始日志一致，本站沿用输出并记录解释笔误。\n\n## 复杂度\n\nn 条日志，哈希聚合 O(n)，排序 g 个分组 O(g log g)，空间 O(g)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys,re\nfrom datetime import date\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); counts={}\n for line in lines[1:1+n]:\n  user,tm,day=line.split()\n  if not re.fullmatch(r'user(?:0|[1-9][0-9]{0,9})',user): continue\n  if not re.fullmatch(r'[0-9]{2}:[0-9]{2}:[0-9]{2}',tm): continue\n  if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',day): continue\n  h,m,s=map(int,tm.split(':'))\n  if h>=24 or m>=60 or s>=60: continue\n  try: date.fromisoformat(day)\n  except ValueError: continue\n  if not 2000<=int(day[:4])<=3000: continue\n  counts[(user,day)]=counts.get((user,day),0)+1\n rows=sorted((u,d,c) for (u,d),c in counts.items())\n return str(len(rows))+('\\n'+'\\n'.join(f'{u} {d} {c}' for u,d,c in rows) if rows else '')\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paypal-3",
+      "sourceContentHash": "19e8241f1108d6fe67329131891ab63dc485a22f75fdebba0d60d3bb4c71a703",
+      "packageChecksum": "c968862aa5fcefd8335d07cf097e08f0f204cf84f1ae695df94dd00cd232f292",
+      "editorial": "## 思路\n\n对一个上限 H，计算把每个价格反复向下折半到不超过 H 所需的优惠券数。若 p>H，最少折半次数为 bit_length(floor(p/(H+1)))。该总次数随 H 增大而不增，因此二分最小的可行 H。达到上限后，剩余优惠券只需从仍等于 H 的商品中各用一次；最小可行 H 的定义保证这些商品足够。\n\n## 正确性\n\n每张优惠券都把一个当前价格 p 改为 floor(p/2)，节省 p−floor(p/2)，该节省随 p 单调不减。因此逐次把券用在当前最高价商品上是最优的。阈值 H 所需次数恰是每个商品首次降到 H 以下或等于 H 的折半步数；二分找到的最小可行 H 表示再把任一剩余 H 继续折半所需的优惠券总数会超过预算，所以预算内的额外优惠券只能用于现有价格为 H 的商品。它们每次节省相同，得到与最大边际节省贪心相同的最小总价。\n\n来源整理站的函数实现明确采用整数向下折半；同目录另一个“Items Purchase”版本也明确写 floor 与相同贪心规则。本站统一为整数 floor，且把 int 返回扩展为可容纳约 10^14 的 64 位十进制结果。\n\n## 复杂度\n\n每次阈值计数为 O(n)，二分价格范围需要 O(log max(price)) 轮，总时间 O(n log max(price))，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef coupons_to_cap(a,cap):\n total=0\n for x in a:\n  if x>cap: total+=(x//(cap+1)).bit_length()\n return total\ndef solve(raw):\n t=list(map(int,raw.split())); n,m=t[0],t[1]; a=t[2:2+n]\n if coupons_to_cap(a,0)<=m: return '0'\n lo,hi=0,max(a)\n while hi-lo>1:\n  mid=(lo+hi)//2\n  if coupons_to_cap(a,mid)<=m: hi=mid\n  else: lo=mid\n used=0; total=0\n for x in a:\n  steps=(x//(hi+1)).bit_length() if x>hi else 0\n  used+=steps; total+=x>>steps\n return str(total-(m-used)*(hi-hi//2))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paypal-4",
+      "sourceContentHash": "85e4f45af1a42e058fd1587eef88d982c3c492ceb868099f7185143ec89c5bab",
+      "packageChecksum": "37baa29e5e7fcfad6606421d6fa93c4b07a83c014159642e526ce488da796a7c",
+      "editorial": "## 思路\n\n先求非递减代价。最优的新值可取原数组出现过的值之一；把这些值离散化为 v[j]。令 dp[j] 为处理到当前位置且当前值取 v[j] 的最小代价，则新状态为 |arr[i]−v[j]| 加上上一行所有下标 ≤j 的 dp 最小值。扫描时维护前缀最小值即可。非递增代价等于反转数组后求非递减代价，答案取两者较小。\n\n## 正确性\n\n若当前位置取 v[j]，非递减限制恰要求前一位置取值不超过 v[j]；所有满足此条件的前缀状态中选择最低代价并加上当前位置绝对差，得到该状态的最优解。归纳覆盖全部前缀与末值。任一整数单调回归最优解都可把平台值移至该平台原始值中位数而不增代价，所以坐标压缩不遗漏最优值。反转把非递增序列与非递减序列一一对应且保持总代价。\n\n## 复杂度\n\n令 k 为不同元素数，时间 O(nk)，额外空间 O(k)；本站 n≤1000。\n\n来源样例 3 含 0，但同一原文列出的下界为 1。题意和该样例均自然支持非负整数；本站明确把值域扩至 0..10^9，不改变目标函数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef nondecreasing_cost(a):\n vals=sorted(set(a)); dp=[abs(a[0]-v) for v in vals]\n for x in a[1:]:\n  nd=[]; best=10**30\n  for j,v in enumerate(vals):\n   best=min(best,dp[j]); nd.append(best+abs(x-v))\n  dp=nd\n return min(dp)\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n return str(min(nondecreasing_cost(a),nondecreasing_cost(a[::-1])))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

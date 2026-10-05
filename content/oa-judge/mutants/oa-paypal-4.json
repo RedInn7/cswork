@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只考虑升序，不考虑降序",
+    "code": "import sys\ndef nondecreasing_cost(a):\n vals=sorted(set(a)); dp=[abs(a[0]-v) for v in vals]\n for x in a[1:]:\n  nd=[]; best=10**30\n  for j,v in enumerate(vals):\n   best=min(best,dp[j]); nd.append(best+abs(x-v))\n  dp=nd\n return min(dp)\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n return str(nondecreasing_cost(a))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "误要求严格递增，重复值也必须修改",
+    "code": "import sys\ndef nondecreasing_cost(a):\n vals=sorted(set(a)); dp=[abs(a[0]-v) for v in vals]\n for x in a[1:]:\n  nd=[]; best=10**30\n  for j,v in enumerate(vals):\n   best=min(dp[:j],default=10**30); nd.append(best+abs(x-v))\n  dp=nd\n return min(dp)\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n return str(min(nondecreasing_cost(a),nondecreasing_cost(a[::-1])))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

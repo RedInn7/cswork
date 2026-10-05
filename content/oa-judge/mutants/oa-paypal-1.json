@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 y 当作元音",
+    "code": "import sys\nV=set('aeiouy')\ndef solve(raw):\n s=raw.strip(); n=len(s); v=sum(ch in V for ch in s); target=n//2\n if n%2: return '-1'\n need=abs(v-target)\n source=[ch for ch in s if (ch in V)==(v>target)]\n other=V if v<target else set('bcdfghjklmnpqrstvwxyz')\n costs=[min(abs(ord(ch)-ord(to)) for to in other) for ch in source]\n return str(sum(sorted(costs)[:need]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把每次字符类型转换都误算为 1 步",
+    "code": "import sys\nV=set('aeiou')\ndef solve(raw):\n s=raw.strip(); n=len(s); v=sum(ch in V for ch in s); target=n//2\n if n%2: return '-1'\n need=abs(v-target)\n source=[ch for ch in s if (ch in V)==(v>target)]\n other=V if v<target else set('bcdfghjklmnpqrstvwxyz')\n return str(need)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

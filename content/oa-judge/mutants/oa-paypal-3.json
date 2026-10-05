@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每张优惠券错误地打在当前最低价商品上",
+    "code": "import sys,heapq\ndef solve(raw):\n t=list(map(int,raw.split())); n,m=t[:2]; h=t[2:2+n]; heapq.heapify(h)\n while m and h and h[0]>0:\n  x=heapq.heappop(h); heapq.heappush(h,x//2); m-=1\n return str(sum(h))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "折半时向上取整而非向下取整",
+    "code": "import sys,heapq\ndef solve(raw):\n t=list(map(int,raw.split())); n,m=t[:2]; h=[-x for x in t[2:2+n]]; heapq.heapify(h)\n while m and h and h[0]<0:\n  x=-heapq.heappop(h); heapq.heappush(h,-((x+1)//2)); m-=1\n return str(-sum(h))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
