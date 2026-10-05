@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按输入顺序直接分配前k项",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n,k=d[:2];a=d[2:2+n];b=d[2+n:];print(sum(a[:k])+sum(b[k:]))"
+  },
+  {
+    "name": "选择最小的k个奖励差",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n,k=d[:2];a=d[2:2+n];b=d[2+n:];print(sum(b)+sum(sorted(x-y for x,y in zip(a,b))[:k]))"
+  }
+]

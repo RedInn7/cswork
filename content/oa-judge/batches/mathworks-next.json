@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-mathworks-6",
+      "sourceContentHash": "9ef141ca09739216f16bf053c2804e9895076574e6f32c5f4bd9505aa616228c",
+      "packageChecksum": "467eb26883947a5140a0f2cc7ff9b73c66e372644a6739ee5a51d32e9485c0c9",
+      "editorial": "## 思路\n\n题源三个样例可直接核对；本地题目统计闭区间子数组，最大值和最小值必须分别恰等于目标。\n\n## 正确性证明\n\n固定右端时，合法左端必须在未越界连续段中，且不晚于最近一次出现两种端点值的位置中较早者。这样的左端全包含两个端点值，之后的起点缺少至少一个；累加贡献不重不漏。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n it=iter(s.split());n=int(next(it));lo=int(next(it));hi=int(next(it));a=[int(next(it)) for _ in range(n)];ans=0;start=0;lm=lh=-1\n for i,x in enumerate(a):\n  if x<lo or x>hi:start=i+1;lm=lh=-1;continue\n  if x==lo:lm=i\n  if x==hi:lh=i\n  if lm>=start and lh>=start:ans+=min(lm,lh)-start+1\n return str(ans)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-7",
+      "sourceContentHash": "330931520e5cf9a1d56ee29f6f3b031be4fb67338d7e1dcc6d75e329a9e4cee5",
+      "packageChecksum": "279d652059a1b08c7aa90a1f6eeaf6c7d0389587043b04f3b0bbfff4270183d5",
+      "editorial": "## 思路\n\n保留题源 k≤n 约束，边界测试 k=2 和 k=n。\n\n## 正确性证明\n\n按末尾连续相同字符长度分类。追加不同字符有25种选择；追加相同字符会把原末段延长1。分类求和等于25乘以最近至多k−1个长度状态之和，滚动窗口仅优化该求和，等价于独立的末段长度DP。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "MOD=1000000007\ndef solve(s):\n n,k=map(int,s.split());d=[0]*(n+1);d[1]=26;w=0\n for i in range(2,n+1):\n  w=(w+d[i-1])%MOD\n  if i-k>=1:w=(w-d[i-k])%MOD\n  d[i]=(25*w+(26 if i<k else 0))%MOD\n return str(d[n])\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-11",
+      "sourceContentHash": "0165d81b7ea22388e86342ab7b4a41c4f367f02521ac51cbfc2b5fe6a9fa3075",
+      "packageChecksum": "7b21e352d25227c07248e9ede1cc901c019b8c10ff2264c882ba95397ab05924",
+      "editorial": "## 思路\n\n示例1：第二人全做得15分，换给第一人差值最大的三项增加6，总计21；题源解释的加数与其输出矛盾，按题意和输出为准。\n\n## 正确性证明\n\n以全部任务交给第二人为基准。任务i改给第一人的增益为reward_1[i]−reward_2[i]。恰选k项时，若遗漏更大增益而选了较小增益，交换会改善或保持总分，因此应选最大的k个差值。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n it=iter(map(int,s.split()));n=next(it);k=next(it);a=[next(it) for _ in range(n)];b=[next(it) for _ in range(n)]\n return str(sum(b)+sum(sorted((x-y for x,y in zip(a,b)),reverse=True)[:k]))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-13",
+      "sourceContentHash": "5ba20323837b2f6938cb66c2b72906a464289690de0a7617dc1fb8f7136bfa7a",
+      "packageChecksum": "1fb13c0ae686b98f0550ac590a6494d87e375da9c15bb0ea4b5185689e068d67",
+      "editorial": "## 思路\n\n按题源解释使用 1-based 闭区间。\n\n## 正确性证明\n\nprefix[t]记录前t个字符串中首尾皆为元音的数量。闭区间[i,r]的答案恰为prefix[r]−prefix[i−1]。\n\n## 复杂度\n\n时间O(n+q)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n it=iter(s.split());n=int(next(it));q=int(next(it));a=[next(it) for _ in range(n)];p=[0]\n for x in a:p.append(p[-1]+(x[0] in 'aeiou' and x[-1] in 'aeiou'))\n z=[]\n for _ in range(q):l,r=map(int,next(it).split('-'));z.append(str(p[r]-p[l-1]))\n return '\\n'.join(z)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-14",
+      "sourceContentHash": "c9faa6a042f6a3c3e595536c2ca408bffd568ff03d0d2db0fa489cae917cf680",
+      "packageChecksum": "bd31a1179048bc3efe289168f38abc4d7bc0fd8d8f52853bbea5f2d7d2665f50",
+      "editorial": "## 思路\n\n正任务且 m≥n 时，不超过 n 段的可行分配可以细分成恰好 n 段且不会提高最大负载。\n\n## 正确性证明\n\n给定负载上限，按序尽量填满当前连续段得到所需最少段数。段数超过n则无解；不超过n时，因m≥n且任务正数，可细分为恰好n段而不增加最大负载。可行性随上限单调，所以二分得最小值。\n\n## 复杂度\n\n时间O(m log(sum(burstTime)))，空间O(m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n it=iter(map(int,s.split()));n=next(it);m=next(it);a=[next(it) for _ in range(m)];lo=max(a);hi=sum(a)\n while lo<hi:\n  mid=(lo+hi)//2;parts=1;load=0\n  for x in a:\n   if load+x>mid:parts+=1;load=x\n   else:load+=x\n  if parts<=n:hi=mid\n  else:lo=mid+1\n return str(lo)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
