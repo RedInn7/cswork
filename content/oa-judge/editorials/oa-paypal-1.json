@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paypal-1",
+  "title": "Similar Password",
+  "explanation": "## 思路\n\n设元音数为 v、长度为 n，目标元音数为 n/2，因此需把 |v−n/2| 个字符从数量较多的一类改成另一类。每个候选字符的代价是沿字母表加减操作到相反类别的最近距离。对这些代价排序，取最小的所需数量。本站把长度限为偶数，避免原题未定义奇数长度无解时的返回值。\n\n## 正确性\n\n每次操作只改变一个字符，只有字符跨过元音/辅音类别边界才会改变总数，且一次跨界恰使元音数变化 1。故必须至少转换 |v−n/2| 个字符。任意被选字符跨界的代价下界是到相反类别字母的最短距离，这个距离可单独实现；字符之间互不影响。选择所需数量中代价最小者同时达到下界。\n\n## 复杂度\n\n令 L 为密码长度，最多对每个字符检查 26 个字母并排序，时间 O(26L+L log L)，空间 O(L)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nV=set('aeiou')\ndef solve(raw):\n s=raw.strip(); n=len(s); v=sum(ch in V for ch in s); target=n//2\n if n%2: return '-1'\n need=abs(v-target)\n source=[ch for ch in s if (ch in V)==(v>target)]\n other=V if v<target else set('bcdfghjklmnpqrstvwxyz')\n costs=[min(abs(ord(ch)-ord(to)) for to in other) for ch in source]\n return str(sum(sorted(costs)[:need]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/paypal#1-similar-password-singapore",
+  "sourceContentHash": "c41b0a3cc36628f948ecb00c9a1bd1c58b773c9aec208c0756f0f92cf25f4616",
+  "author": "CSWork"
+}
