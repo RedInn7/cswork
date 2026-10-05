@@ -46,7 +46,7 @@ node scripts/oa-judge/coverage.mjs
 node scripts/oa-judge/coverage.mjs --check
 ```
 
-截至 2026-10-05，全量清单共有 1,634 题：815 题已通过真实 go-judge 沙箱验证并登记在发布清单；200 题因题面、输出规则或可靠算法尚未解决而阻塞，619 题尚未审阅。剩余候选工作先放在 `content/oa-judge/candidate-batches/`，不会进入运行时 registry；通过真实沙箱并生成报告后才可提升到 `batches/`。**已验证/登记不等于当前生产环境已确认发布**。只有部署版本和数据库中的已发布记录均匹配，题目才可提交评测。
+截至 2026-10-05，全量清单共有 1,634 题：820 题已通过真实 go-judge 沙箱验证并登记在发布清单；200 题因题面、输出规则或可靠算法尚未解决而阻塞，614 题尚未审阅。剩余候选工作先放在 `content/oa-judge/candidate-batches/`，不会进入运行时 registry；通过真实沙箱并生成报告后才可提升到 `batches/`。**已验证/登记不等于当前生产环境已确认发布**。只有部署版本和数据库中的已发布记录均匹配，题目才可提交评测。
 
 这是滚动清单，数字以 `content/oa-judge/coverage.json` 为准；新增或变更题目后重新生成，避免在文档中沿用旧批次统计。阻塞详情在 `content/oa-judge/reviews/`，题意与判题器尚未厘清前不强行上线。
 
