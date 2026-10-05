@@ -12,7 +12,10 @@ def solve(raw):
    if ca[old]==0: del ca[old]
    a[i]+=x; ca[a[i]]=ca.get(a[i],0)+1
   else:
-   x=next(it); out.append(str(sum(1 if cb.get(x-v,0) else 0 for v,c in ca.items())))
+   x=next(it)
+   if len(ca)<=len(cb): total=sum(c*cb.get(x+v,0) for v,c in ca.items())
+   else: total=sum(c*ca.get(x-v,0) for v,c in cb.items())
+   out.append(str(total))
  return ' '.join(out)
 if __name__ == '__main__':
     import sys

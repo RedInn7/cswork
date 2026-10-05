@@ -2,11 +2,11 @@
   "schemaVersion": 1,
   "id": "oa-capital-one-12",
   "title": "Recipes — Is Each Recipe a Prep-list Combination?",
-  "explanation": "## 思路\n\n对每个 recipe 做单词拆分动态规划。dp[i] 表示前 i 个字符可否由原料组成；从所有可达位置尝试匹配每一种原料。\n\n## 正确性\n\ndp[0] 为真对应空前缀。若 dp[i] 为真且原料匹配 recipe[i:j]，则可将该原料追加到一个有效拆分后令 dp[j] 为真。任意非空有效拆分的最后一段必是某种原料，故转移必要且充分。\n\n## 复杂度\n\n令 recipe 长度为 L、最大原料长度为 M，直接枚举末段的时间 O(LM)，空间 O(L)；对所有 recipe 分别计算。",
+  "explanation": "## 思路\n\n把所有原料放入 Trie。dp[i] 表示 recipe 的前 i 个字符可被拆分。仅从 dp[i] 为真的位置开始沿 Trie 向后扫描；每遇到原料终止节点就令对应 dp[j] 为真。\n\n## 正确性\n\ndp[0] 为真对应空前缀。从可达位置 i 沿 Trie 到终点 j，恰表示 recipe[i:j] 是一个原料，因此可扩展有效拆分。任何有效拆分最后一段必是原料，Trie 扫描必能找到该终点，故转移必要且充分。\n\n## 复杂度\n\n设原料总长度为 S、最大原料长度为 M、所有 recipe 总长为 L。建 Trie 为 O(S)，DP 扫描最多 O(LM) 次边；本站补充保证 LM≤10^7。空间 O(S+Lmax)。",
   "solutions": [
     {
       "language": "python",
-      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n,r=map(int,lines[0].split()); words=lines[1:1+n]; recipes=lines[1+n:1+n+r]; ss=set(words); mx=max(map(len,words)); ans=[]\n for w in recipes:\n  dp=[False]*(len(w)+1); dp[0]=True\n  for i in range(1,len(w)+1):\n   for j in range(max(0,i-mx),i):\n    if dp[j] and w[j:i] in ss: dp[i]=True; break\n  ans.append('YES' if dp[-1] else 'NO')\n return ' '.join(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n,r=map(int,lines[0].split()); words=lines[1:1+n]; recipes=lines[1+n:1+n+r]; end='#'; trie={}\n for word in words:\n  node=trie\n  for ch in word: node=node.setdefault(ch,{})\n  node[end]=True\n ans=[]\n for w in recipes:\n  dp=[False]*(len(w)+1); dp[0]=True\n  for i in range(len(w)):\n   if not dp[i]: continue\n   node=trie; j=i\n   while j<len(w):\n    node=node.get(w[j])\n    if node is None: break\n    j+=1\n    if end in node: dp[j]=True\n  ans.append('YES' if dp[-1] else 'NO')\n return ' '.join(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/capital-one#12-recipes--is-each-recipe-a-prep-list-combination",

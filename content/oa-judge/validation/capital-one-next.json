@@ -87,22 +87,22 @@
           ]
         },
         {
-          "name": "只统计每个值的一次配对",
+          "name": "求和时使用错误补数",
           "rejectedByCases": [
             0,
-            3,
-            5,
+            2,
+            6,
+            8,
             12,
-            17,
-            18,
+            13,
+            14,
             21,
             22,
-            24,
-            26
+            24
           ]
         }
       ],
-      "referenceSha256": "66933bee1a7b8315ea309ef8f381982016e3ea380f87e10cd1cef61daf70db10"
+      "referenceSha256": "9fdaae7cd17139eeee890c586bdcc91be29ab63107788d8b2bfe55cf5c59f0da"
     },
     {
       "id": "oa-capital-one-7",
@@ -229,7 +229,7 @@
       "hiddenCases": 24,
       "negativeControls": [
         {
-          "name": "只检查能否由一个原料完全匹配",
+          "name": "只允许单个原料完成拆分",
           "rejectedByCases": [
             0,
             1,
@@ -246,23 +246,25 @@
           ]
         },
         {
-          "name": "忘记要求片段连续而使用字符集合",
+          "name": "只接受长度为一的原料",
           "rejectedByCases": [
+            0,
             1,
             2,
-            6,
+            4,
+            5,
             7,
-            9,
+            8,
+            11,
+            13,
+            14,
+            16,
             17,
-            21,
-            23,
-            24,
-            25,
-            26
+            20
           ]
         }
       ],
-      "referenceSha256": "d0fd99883750bf1447a742186b9bd47542fab6f22d61c0dfaa2d596ca188643a"
+      "referenceSha256": "c81b29e6dde1f67c2248b0e2f6b4913f0a315508159d29762058ce76a8adec64"
     },
     {
       "id": "oa-capital-one-13",
@@ -308,6 +310,22 @@
         }
       ],
       "referenceSha256": "e0b0d081fe1848906fdf5bb25595cf8fa0c7723d2c9123ab579f6532dd5a3788"
+    }
+  ],
+  "stressChecks": [
+    {
+      "id": "oa-capital-one-6",
+      "inputShape": "a,b 各 200000 个不同值；50 次查询，每次遍历较小频次表",
+      "frequencyIterations": 10000000,
+      "expectedOutput": "50 个 200000",
+      "elapsedSeconds": 0.682
+    },
+    {
+      "id": "oa-capital-one-12",
+      "inputShape": "原料为 a 至 a×100；recipe 为 100000 个 a（所有起点均可达）",
+      "trieEdgeChecksUpperBound": 9995050,
+      "expectedOutput": "YES",
+      "elapsedSeconds": 0.648
     }
   ],
   "note": "Local authored-code/oracle/mutant validation only. Not production GoJudge acceptance or publication."
