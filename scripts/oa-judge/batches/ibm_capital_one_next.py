@@ -317,7 +317,8 @@ def main():
               f"{len(negative_controls)} mutants rejected", flush=True)
 
     batch = "ibm-capital-one-next"
-    (OUT / "candidate-batches" / f"{batch}.json").write_text(
+    batch_folder = "batches" if (OUT / "reports" / f"{batch}.json").exists() else "candidate-batches"
+    (OUT / batch_folder / f"{batch}.json").write_text(
         json.dumps({"schemaVersion": 1, "items": manifest}, ensure_ascii=False, indent=2) + "\n")
     (OUT / "validation" / f"{batch}.json").write_text(json.dumps(
         {"schemaVersion": 1, "seed": SEED, "problems": reports,

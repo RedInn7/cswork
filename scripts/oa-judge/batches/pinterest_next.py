@@ -363,7 +363,8 @@ def main():
                                                    for path, blob in evidence[1:]],
                         "catalogContentHash": SOURCES[ident]["contentHash"]})
     batch_name = "pinterest-next"
-    (OUT / "candidate-batches" / f"{batch_name}.json").write_text(
+    batch_folder = "batches" if (OUT / "reports" / f"{batch_name}.json").exists() else "candidate-batches"
+    (OUT / batch_folder / f"{batch_name}.json").write_text(
         json.dumps({"schemaVersion": 1, "items": batch_items}, ensure_ascii=False, indent=2) + "\n")
     (OUT / "validation" / f"{batch_name}.json").write_text(
         json.dumps({"schemaVersion": 1, "seed": 20261005, "sourceCommit": COMMIT,

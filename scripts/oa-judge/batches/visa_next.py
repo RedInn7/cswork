@@ -233,7 +233,8 @@ def main():
         reports.append({"id":pid,"oracleCases":len(oracle),"uniqueOracleInputs":len({x["input"] for x in oracle}),"publicCases":3,"hiddenCases":len(cases)-3,"negativeControls":killed,"referenceSha256":hashlib.sha256(code.encode()).hexdigest()})
         reviews.append({"id":pid,"status":"authored","reason":"已核对 OAMaster 原题；本站补充的输入协议和边界约束均在题面标明。独立 oracle、参考程序和正常退出错误变异程序通过本地验证。","sourceUrls":[src["sourceUrl"]],"sourceContentHashes":[src["contentHash"]],"catalogContentHash":src["contentHash"]})
         print(f"{pid}: {len(oracle)} unique oracle inputs; {len(cases)} judge cases; {len(killed)} mutants rejected",flush=True)
-    (OUT/"candidate-batches/visa-next.json").write_text(json.dumps({"schemaVersion":1,"items":items},ensure_ascii=False,indent=2)+"\n")
+    batch_folder = "batches" if (OUT/"reports/visa-next.json").exists() else "candidate-batches"
+    (OUT/batch_folder/"visa-next.json").write_text(json.dumps({"schemaVersion":1,"items":items},ensure_ascii=False,indent=2)+"\n")
     (OUT/"validation/visa-next.json").write_text(json.dumps({"schemaVersion":1,"seed":seed,"problems":reports,"note":"Local authored-code/oracle/mutant validation only; not real GoJudge sandbox acceptance or publication."},ensure_ascii=False,indent=2)+"\n")
     (OUT/"reviews/visa-next.json").write_text(json.dumps({"schemaVersion":1,"items":reviews},ensure_ascii=False,indent=2)+"\n")
 

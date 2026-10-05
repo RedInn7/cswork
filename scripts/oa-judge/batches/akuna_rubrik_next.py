@@ -612,7 +612,8 @@ def main():
         {"id":"oa-akuna-capital-21","status":"blocked","reason":"样例 2 选择 [9,4,5]，连续跳过 −1 与 −3 两部电影，与题干‘不能连续跳过两部’直接冲突；最大化目标无法唯一确定，不臆造修正。","sourceCommit":"e66f809f4c953bce129f68491726176615db6afc","rawPath":"web/content/docs/companies/akuna-capital.mdx","rawGitBlob":"f55d4a120afd4d53753815e8a7c810c6c12626b4","catalogContentHash":SOURCES["oa-akuna-capital-21"]["contentHash"]},
     ])
     candidate={"schemaVersion":1,"items":batch_items}
-    (OUT/"candidate-batches"/"akuna-rubrik-next.json").write_text(json.dumps(candidate,ensure_ascii=False,indent=2)+"\n")
+    batch_folder = "batches" if (OUT/"reports"/"akuna-rubrik-next.json").exists() else "candidate-batches"
+    (OUT/batch_folder/"akuna-rubrik-next.json").write_text(json.dumps(candidate,ensure_ascii=False,indent=2)+"\n")
     (OUT/"validation"/"akuna-rubrik-next.json").write_text(json.dumps({"schemaVersion":1,"seed":20261005,"problems":reports,"note":"Offline authored reference/oracle/mutant validation only. Not verified in production GoJudge and not published."},ensure_ascii=False,indent=2)+"\n")
     (OUT/"reviews"/"akuna-rubrik-next.json").write_text(json.dumps({"schemaVersion":1,"items":reviews},ensure_ascii=False,indent=2)+"\n")
 

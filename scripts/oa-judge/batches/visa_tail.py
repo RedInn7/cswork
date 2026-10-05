@@ -236,7 +236,8 @@ def main():
     for pid,reason in BLOCKED:
         # The original MDX is complete for all these entries; the problem-specific ambiguity is recorded rather than guessed.
         src=CAT[pid]; reviews.append({"id":pid,"status":"blocked","reason":reason,"sourceCommit":SOURCE_COMMIT,"rawPath":"web/content/docs/companies/visa.mdx","rawGitBlob":MDX_BLOB,"rawSha256":MDX_SHA,"catalogContentHash":src["contentHash"]})
-    (OUT/"candidate-batches/visa-tail.json").write_text(json.dumps({"schemaVersion":1,"items":batch},ensure_ascii=False,indent=2)+"\n")
+    batch_folder = "batches" if (OUT/"reports/visa-tail.json").exists() else "candidate-batches"
+    (OUT/batch_folder/"visa-tail.json").write_text(json.dumps({"schemaVersion":1,"items":batch},ensure_ascii=False,indent=2)+"\n")
     (OUT/"validation/visa-tail.json").write_text(json.dumps({"schemaVersion":1,"seed":seed,"problems":reports,"note":"Local authored-code/oracle/mutant checks only. No real GoJudge sandbox report or production publication."},ensure_ascii=False,indent=2)+"\n")
     (OUT/"reviews/visa-tail.json").write_text(json.dumps({"schemaVersion":1,"items":reviews},ensure_ascii=False,indent=2)+"\n")
 
