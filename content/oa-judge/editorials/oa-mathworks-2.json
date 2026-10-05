@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-2",
+  "title": "Co-prime Count (Euler's Totient)",
+  "explanation": "## 思路\n\n线性筛式更新：初始 φ[x]=x；对每个质数 p，把其倍数的 φ[x] 减去 φ[x]/p，最后按输入顺序读取 φ[A[i]]。\n\n## 正确性证明\n\nφ 的初值为 x。每个质数 p 的倍数恰好含因子 p 的可被排除比例 1/p，所以依次对所有质数倍数减去当前值的 1/p；按 Euler 函数乘法性质可得到各 φ(x)，即定义所需互质数数量。\n\n## 复杂度\n\nO(M log log M+n)，M=max(A)，空间 O(M)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import math\ndef solve(s):\n d=list(map(int,s.split()));a=d[1:];limit=max(a,default=1);phi=list(range(limit+1))\n if limit>=1:phi[1]=1\n for p in range(2,limit+1):\n  if phi[p]==p:\n   for x in range(p,limit+1,p):phi[x]-=phi[x]//p\n return \" \".join(str(phi[x]) for x in a)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#2-co-prime-count-eulers-totient",
+  "sourceContentHash": "22ba65cd4d4485ba11b2451ad0f82492bf82b705bc758b28c2e1848502935f61",
+  "author": "CSWork"
+}

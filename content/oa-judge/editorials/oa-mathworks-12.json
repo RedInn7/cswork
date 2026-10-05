@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-12",
+  "title": "Good Strings",
+  "explanation": "## 思路\n\n按末尾字母做动态规划；新字符只从相差不超过 d 的末尾状态转移。\n\n## 正确性证明\n\n按字符串末尾字母分类。追加字符 c 合法当且仅当旧末尾与 c 的距离≤d；因此该转移既不遗漏也不重复计数全部合法字符串。\n\n## 复杂度\n\nO(26n)，空间 O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "MOD=1000000007\ndef solve(s):\n n,d=map(int,s.split());v=[1]*26\n for _ in range(n-1):\n  p=[0]\n  for z in v:p.append((p[-1]+z)%MOD)\n  v=[(p[min(26,i+d+1)]-p[max(0,i-d)])%MOD for i in range(26)]\n return str(sum(v)%MOD)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#12-good-strings",
+  "sourceContentHash": "236903cd17dda775f66173bab3a67e3c3fe43ab61d3645ee29f77f06b0834a9b",
+  "author": "CSWork"
+}

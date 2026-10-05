@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-10",
+  "title": "Odd One Out",
+  "explanation": "## 思路\n\n比较有方向的相邻字母差值序列。例如 ACB 与 BDC 都是 (+2,−1)。\n\n## 正确性证明\n\n题目保证只有一个单词的差值签名与其他单词不同。计数签名后唯一只出现一次的单词就是答案。\n\n## 复杂度\n\nO(nL)，空间 O(nL)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(s):\n d=s.split();words=d[1:];pat=[tuple(ord(w[i+1])-ord(w[i]) for i in range(len(w)-1)) for w in words];cnt=Counter(pat)\n return next(w for w,p in zip(words,pat) if cnt[p]==1)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#10-odd-one-out",
+  "sourceContentHash": "39116201ef9cf030aab98b8c4011c0ee5dc99b3c47327233ebb53bf4d39cbb7c",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不修正奇数总和",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));print(sum(x for x in d[1:] if x>0))"
+  },
+  {
+    "name": "负奇数一律不参与选择",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));a=d[1:];z=sum(x for x in a if x>0);print(z if z%2==0 else z-min((x for x in a if x>0 and x%2),default=0))"
+  }
+]

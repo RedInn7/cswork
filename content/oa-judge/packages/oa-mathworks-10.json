@@ -1,0 +1,222 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-mathworks-10",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Odd One Out",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "MathWorks"
+    ],
+    "description": "给定等长大写单词序列。对每个单词计算相邻字母的有符号差值序列；返回与其余单词的差值序列不同的单词。保证恰有 n−1 个单词共享同一差值序列，另一个不同。\n\n本站采用标准输入输出协议。",
+    "input": "首行 n，随后 n 行单词。3≤n≤26，2≤单词长度≤26；同组单词等长且仅含大写英文字母。",
+    "output": "输出唯一不同的单词。",
+    "explanation": "比较有方向的相邻字母差值序列。例如 ACB 与 BDC 都是 (+2,−1)。",
+    "hints": [
+      "比较有方向的相邻字母差值序列。例如 ACB 与 BDC 都是 (+2,−1)。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4\nACB\nBDC\nCED\nDEF\n",
+      "expectedOutput": "DEF\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4\nABC\nBCD\nCDE\nCBA\n",
+      "expectedOutput": "CBA\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3\nAA\nBC\nDE\n",
+      "expectedOutput": "AA\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 1",
+      "input": "8\nKI\nKI\nKI\nKI\nKI\nKH\nKI\nKI\n",
+      "expectedOutput": "KH\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 2",
+      "input": "6\nKLN\nKLN\nKLN\nKLI\nKLN\nKLN\n",
+      "expectedOutput": "KLI\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 3",
+      "input": "5\nKMK\nKMK\nKJK\nKMK\nKMK\n",
+      "expectedOutput": "KJK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 4",
+      "input": "3\nKIKM\nKHIL\nKIKM\n",
+      "expectedOutput": "KHIL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 5",
+      "input": "4\nKMO\nKIL\nKMO\nKMO\n",
+      "expectedOutput": "KIL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 6",
+      "input": "7\nKMKM\nKLJG\nKMKM\nKMKM\nKMKM\nKMKM\nKMKM\n",
+      "expectedOutput": "KLJG\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 7",
+      "input": "4\nKMKJ\nKMKJ\nKHEF\nKMKJ\n",
+      "expectedOutput": "KHEF\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 8",
+      "input": "6\nKKI\nKKI\nKKI\nKLO\nKKI\nKKI\n",
+      "expectedOutput": "KLO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 9",
+      "input": "8\nKIGI\nKIGI\nKKHJ\nKIGI\nKIGI\nKIGI\nKIGI\nKIGI\n",
+      "expectedOutput": "KKHJ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 10",
+      "input": "5\nKL\nKL\nKL\nKL\nKH\n",
+      "expectedOutput": "KH\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 11",
+      "input": "4\nKLKL\nKLKL\nKNLK\nKLKL\n",
+      "expectedOutput": "KNLK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 12",
+      "input": "7\nKKJ\nKKJ\nKKJ\nKKJ\nKKJ\nKHE\nKKJ\n",
+      "expectedOutput": "KHE\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 13",
+      "input": "6\nKK\nKK\nKK\nKK\nKK\nKM\n",
+      "expectedOutput": "KM\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 14",
+      "input": "6\nKMOM\nKMOM\nKNLJ\nKMOM\nKMOM\nKMOM\n",
+      "expectedOutput": "KNLJ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 15",
+      "input": "4\nKIJJ\nKIJJ\nKIJJ\nKHKJ\n",
+      "expectedOutput": "KHKJ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 16",
+      "input": "7\nKKMN\nKKMN\nKKMN\nKKMN\nKKMN\nKHKM\nKKMN\n",
+      "expectedOutput": "KHKM\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 17",
+      "input": "3\nKKM\nKHG\nKKM\n",
+      "expectedOutput": "KHG\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 18",
+      "input": "6\nKIGH\nKLON\nKIGH\nKIGH\nKIGH\nKIGH\n",
+      "expectedOutput": "KLON\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 19",
+      "input": "6\nKJJM\nKJJK\nKJJK\nKJJK\nKJJK\nKJJK\n",
+      "expectedOutput": "KJJM\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 20",
+      "input": "6\nKJK\nKJK\nKHI\nKJK\nKJK\nKJK\n",
+      "expectedOutput": "KHI\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 21",
+      "input": "6\nKJKL\nKJKL\nKJKL\nKJKL\nKJKL\nKMML\n",
+      "expectedOutput": "KMML\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 22",
+      "input": "4\nKMM\nKMM\nKMM\nKMO\n",
+      "expectedOutput": "KMO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 23",
+      "input": "3\nKJHF\nKJHF\nKJMP\n",
+      "expectedOutput": "KJMP\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 24",
+      "input": "7\nKK\nKK\nKI\nKK\nKK\nKK\nKK\n",
+      "expectedOutput": "KI\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

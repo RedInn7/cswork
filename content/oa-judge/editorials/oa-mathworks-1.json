@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-1",
+  "title": "Counting Triplets (Sum Divisible by d)",
+  "explanation": "## 思路\n\n按余数统计前两个位置，由模 d 唯一确定第三个余数；使用组合计数排除重复下标。\n\n## 正确性证明\n\n固定中间下标 j 时，频次数组只记录 j 左侧元素余数。对每个右侧 k，唯一需要的左侧余数为 −arr[j]−arr[k] (mod d)，查表即可计入所有合法 i。每对 j,k 的贡献都对应唯一递增三元组，因此总和恰为答案。\n\n## 复杂度\n\nO(n²+d)，空间 O(d)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n d=list(map(int,s.split()));n,m=d[:2];a=d[2:];freq=[0]*m;ans=0\n if n:freq[a[0]%m]=1\n for mid in range(1,n-1):\n  r=a[mid]%m\n  for k in range(mid+1,n):ans+=freq[-(r+a[k])%m]\n  freq[r]+=1\n return str(ans)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#1-counting-triplets-sum-divisible-by-d",
+  "sourceContentHash": "ff5fa5cc5d92ee3b5def08ad1f064b929b04bcc6d241c0a932fc989d32016fd3",
+  "author": "CSWork"
+}

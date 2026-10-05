@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只比较绝对差值，忽略方向",
+    "code": "import sys\nfrom collections import Counter\nd=sys.stdin.read().split();w=d[1:];p=[tuple(abs(ord(x[i+1])-ord(x[i])) for i in range(len(x)-1)) for x in w];c=Counter(p);print(next((x for x,y in zip(w,p) if c[y]==1),''))"
+  },
+  {
+    "name": "固定返回最后一个单词",
+    "code": "import sys\nd=sys.stdin.read().split();print(d[-1])"
+  }
+]

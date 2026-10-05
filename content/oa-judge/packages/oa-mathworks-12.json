@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-mathworks-12",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Good Strings",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "MathWorks"
+    ],
+    "description": "统计长度为 n 的小写字母串中，所有相邻字母的字母表序号差的绝对值都不超过 d 的字符串数，答案对 1,000,000,007 取模。\n\n本站采用标准输入输出协议。",
+    "input": "一行 n d。本站补充约束：1≤n≤100000，0≤d≤25。",
+    "output": "输出合法字符串数模 1,000,000,007。",
+    "explanation": "按末尾字母做动态规划；新字符只从相差不超过 d 的末尾状态转移。",
+    "hints": [
+      "按末尾字母做动态规划；新字符只从相差不超过 d 的末尾状态转移。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2 2\n",
+      "expectedOutput": "124\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3 5\n",
+      "expectedOutput": "2596\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1 0\n",
+      "expectedOutput": "26\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "2 0\n",
+      "expectedOutput": "26\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界 n=100000, d=25",
+      "input": "100000 25\n",
+      "expectedOutput": "834294302\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界 n=100000, d=0",
+      "input": "100000 0\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 1",
+      "input": "10 1\n",
+      "expectedOutput": "451874\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 2",
+      "input": "9 5\n",
+      "expectedOutput": "144995139\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 3",
+      "input": "1 16\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 4",
+      "input": "5 20\n",
+      "expectedOutput": "10040518\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 5",
+      "input": "9 8\n",
+      "expectedOutput": "61866896\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 6",
+      "input": "4 10\n",
+      "expectedOutput": "133716\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 7",
+      "input": "1 18\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 8",
+      "input": "10 14\n",
+      "expectedOutput": "571844299\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 9",
+      "input": "1 23\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 10",
+      "input": "6 16\n",
+      "expectedOutput": "162480106\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 11",
+      "input": "10 22\n",
+      "expectedOutput": "911840852\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 12",
+      "input": "5 4\n",
+      "expectedOutput": "131538\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 13",
+      "input": "3 4\n",
+      "expectedOutput": "1806\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 14",
+      "input": "7 3\n",
+      "expectedOutput": "2356702\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 15",
+      "input": "6 11\n",
+      "expectedOutput": "56850210\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 16",
+      "input": "9 6\n",
+      "expectedOutput": "301136074\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 17",
+      "input": "8 15\n",
+      "expectedOutput": "993072352\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 18",
+      "input": "3 4\n",
+      "expectedOutput": "1806\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 19",
+      "input": "8 5\n",
+      "expectedOutput": "303304140\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 20",
+      "input": "3 21\n",
+      "expectedOutput": "16596\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 21",
+      "input": "3 9\n",
+      "expectedOutput": "6536\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 22",
+      "input": "6 24\n",
+      "expectedOutput": "304498274\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 23",
+      "input": "10 14\n",
+      "expectedOutput": "571844299\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 24",
+      "input": "4 4\n",
+      "expectedOutput": "15374\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
