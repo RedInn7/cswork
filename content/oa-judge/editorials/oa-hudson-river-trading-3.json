@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-3",
+  "title": "统计四进制只含 0 和 1 的正整数",
+  "explanation": "## 思路\n\n将 n 转成四进制。先计入位数更短的所有合法正数，再从高位到低位统计当前位可选的更小合法数字组合；首位只能为 1。\n\n## 正确性证明\n\n位数更短的正 fancy 数有 2^(k-1) 个。固定相同长度后，首位只能是 1；遇到每位时先累计小于 n 当前数字的合法选择及其后缀组合数，若当前数字不是 0/1，后续前缀已不可能相等，可结束。故每个小于 n 的合法数恰计一次。\n\n## 复杂度\n\n时间 O(log n)，空间 O(log n)。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n n=int(raw.strip()); ds=[]\n while n: ds.append(n%4); n//=4\n ds=ds[::-1]; length=len(ds); ans=sum(2**(k-1) for k in range(1,length))\n if not ds: return \"0\"\n if ds[0]>1: return str(ans+2**(length-1))\n if ds[0]<1: return str(ans)\n for i in range(1,length):\n  smaller=sum(x<ds[i] for x in (0,1))\n  ans+=smaller*2**(length-i-1)\n  if ds[i] not in (0,1): return str(ans)\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#3-count-fancy-numbers",
+  "sourceContentHash": "6f39a6d3f353ad28359e05867f5cde622533f18cc82ab900005a082145649eed",
+  "author": "Chunyu Sui"
+}

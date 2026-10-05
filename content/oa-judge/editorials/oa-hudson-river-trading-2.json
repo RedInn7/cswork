@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-2",
+  "title": "价格信号与持仓变化",
+  "explanation": "## 思路\n\n对相邻价格变化生成非零方向流，并记录每个方向对应的原价格下标。分别用 KMP 匹配买入和卖出模式，将信号加到对应的价格下标，再前缀累加。\n\n## 正确性证明\n\n每个模式的 KMP 在非零方向流中恰在且仅在完整匹配结束时触发一次；记录的下标正是当前信号所对应的价格。将买卖增量相加并做前缀和，得到每个时刻所有已触发信号的净持仓。\n\n## 复杂度\n\n时间 O(n+b+s)，空间 O(n+b+s)。\n\n## 来源说明\n\n原文示例 51,56,56,58 明确把两次上涨看作连续信号；平价既不触发信号，也不能重置非零变化序列。上游整理版 MDX 的 0 方向实现会与这个原始示例冲突，本站遵循原始规则和示例并记录该差异。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def kmp_events(signs, pattern, delta, amount):\n m=len(pattern); pi=[0]*m\n for i in range(1,m):\n  j=pi[i-1]\n  while j and pattern[i]!=pattern[j]: j=pi[j-1]\n  if pattern[i]==pattern[j]: j+=1\n  pi[i]=j\n j=0\n for sign,price_index in signs:\n  while j and sign!=pattern[j]: j=pi[j-1]\n  if sign==pattern[j]: j+=1\n  if j==m: delta[price_index]+=amount; j=pi[j-1]\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); b=next(it); s=next(it)\n p=[next(it) for _ in range(n)]; buy=[next(it) for _ in range(b)]; sell=[next(it) for _ in range(s)]\n signs=[(1 if p[i]>p[i-1] else -1,i) for i in range(1,n) if p[i]!=p[i-1]]\n delta=[0]*n; kmp_events(signs,buy,delta,1)\n kmp_events(signs,sell,delta,-1)\n pos=0; out=[]\n for x in delta: pos+=x; out.append(str(pos))\n return \" \".join(out)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#2-stock-buy-sell-position-indicator",
+  "sourceContentHash": "db1ef202fccfa81737135b10ccfe15fd65b6607e59e9e336d8a025357c77c022",
+  "author": "Chunyu Sui"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把严格小于改成小于等于",
+    "code": "def solve(raw):\n n=int(raw.strip()); stack=[1]; ans=0\n while stack:\n  x=stack.pop()\n  if x<=n: ans+=1; stack.extend((x*4,x*4+1))\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "误把所有小于 n 的整数都计入",
+    "code": "def solve(raw): return str(int(raw.strip())-1)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

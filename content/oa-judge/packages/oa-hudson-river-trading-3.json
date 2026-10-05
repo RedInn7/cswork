@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-hudson-river-trading-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "统计四进制只含 0 和 1 的正整数",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Hudson River Trading",
+      "数位动态规划",
+      "进制"
+    ],
+    "description": "正整数若其四进制表示只包含数字 0 和 1，则称为 fancy。给定 n，统计严格小于 n 的正 fancy 整数个数；0 不计入。\n\n\n\n本站的标准输入输出协议由 CSWork 明确补充，不代表上游函数题原有该协议。",
+    "input": "输入一个整数 n（1≤n≤10^9）。",
+    "output": "输出满足条件的正整数个数。",
+    "explanation": "按规则处理；思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "将 n 转成四进制。先计入位数更短的所有合法正数，再从高位到低位统计当前位可选的更小合法数字组合；首位只能为 1。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "1\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "10\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "17\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "1000000000\n",
+      "expectedOutput": "32767\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "2394\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "372\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "3593\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "1967\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "1256\n",
+      "expectedOutput": "47\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "2293\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "711\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "1760\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "2543\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "1791\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "3356\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "998\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "4643\n",
+      "expectedOutput": "95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "3828\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "228\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "3268\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "2987\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "1840\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "1944\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "2349\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "3691\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "491\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "1579\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "768\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
