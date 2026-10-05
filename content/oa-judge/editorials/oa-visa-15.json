@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-15",
+  "title": "Largest Square Area in Cityscape",
+  "explanation": "## 思路\n\n边长为 k 的正方形可行性可用滑动窗口最小值判断：是否存在宽 k 的窗口，其最低楼高≥k。可行性对 k 单调，二分最大边长并平方。\n\n## 正确性\n\n任一边长 k 的正方形必须由至少 k 栋连续楼承托，且每栋高度≥k；满足该条件的窗口也确实容得下 k×k 正方形。因此窗口判定充要。增大 k 后条件只会更难，故可二分最大 k。\n\n## 复杂度\n\n每次判定 O(n)，二分 O(log min(n,max(h)))，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; h=z[1:]\n def ok(k):\n  d=deque()\n  for i,x in enumerate(h):\n   while d and d[0]<=i-k: d.popleft()\n   while d and h[d[-1]]>=x: d.pop()\n   d.append(i)\n   if i>=k-1 and h[d[0]]>=k: return True\n  return False\n lo,hi=0,min(n,max(h,default=0))\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo*lo)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#15-largest-square-area-in-cityscape",
+  "sourceContentHash": "113352f040a4a01829c95ed34757d2a62c282b90363d44307f8899eaa7a4982e",
+  "author": "CSWork"
+}

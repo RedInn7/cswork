@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-3",
+  "title": "Chat Mention Counter",
+  "explanation": "## 思路\n\n维护已存在用户集合、活跃用户集合和计数表。消息先激活发送者，再把本条的显式提及及 ALL/HERE 展开后合并为集合，集合中每个用户只增加一次。OFFLINE 仅移出活跃集合。\n\n## 正确性\n\n逐条处理事件可保持状态与事件序一致。对任意一条消息，提及集合恰由直接 ID、已存在用户或活跃用户按 token 并集而成；集合去重确保一人本条最多计一次。只从 active 删除用户不会抹去其存在性。\n\n## 复杂度\n\n设 U 为已出现 ID 数，q≤1000，直接 token 总数 M。最坏显式展开 O(qU+M)，空间 O(U+M)；本站限制保证展开规模可控。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); q=int(lines[0]); users=set(); active=set(); cnt={}\n for line in lines[1:1+q]:\n  p=line.split()\n  if p[0]=='OFFLINE': active.discard(p[1]); continue\n  sender=p[1]; users.add(sender); active.add(sender); m=int(p[3]); toks=p[4:4+m]\n  mentioned=set(); direct=[]\n  for tok in toks:\n   if tok=='ALL': mentioned.update(users)\n   elif tok=='HERE': mentioned.update(active)\n   else: direct.append(tok)\n  mentioned.update(direct)\n  for u in mentioned: cnt[u]=cnt.get(u,0)+1\n return ' '.join(f'{u}={cnt[u]}' for u in sorted(cnt))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#3-chat-mention-counter",
+  "sourceContentHash": "1af8be130f1e8add6f8845ec0cd0e07d6a90265551caf792042ba02a28c1f42e",
+  "author": "CSWork"
+}

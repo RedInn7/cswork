@@ -1,0 +1,10 @@
+[
+  {
+    "name": "allow-equal-peak",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); a=z[1:]\n while True:\n  b=[]\n  for i,x in enumerate(a):\n   if i==0 or i==len(a)-1 or (x>=a[i-1] and x>=a[i+1]): b.append(x)\n  if b==a: return str(len(a))+' '+' '.join(map(str,a))\n  a=b\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "one-round-only",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); a=z[1:]\n if True:\n  b=[]\n  for i,x in enumerate(a):\n   if i==0 or i==len(a)-1 or (x>a[i-1] and x>a[i+1]): b.append(x)\n  if b==a: return str(len(a))+' '+' '.join(map(str,a))\n  a=b\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

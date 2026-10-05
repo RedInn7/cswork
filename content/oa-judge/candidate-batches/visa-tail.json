@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-visa-1",
+      "sourceContentHash": "7bcd9788b11f8e39c32c9f43305dadca4cafa2d851e1e5ce10e82f4599ecd4ab",
+      "packageChecksum": "31a232c1406dcbd64c25b0fea58bcb55233988c4294e825dd2ac121ac0d6ebb2",
+      "editorial": "## 思路\n\n单次扫描字符串，遇大写字母加一，遇小写字母减一。\n\n## 正确性\n\n每个字符对答案的贡献恰为大写 +1、小写 −1；逐字符相加即为目标差值。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n t=s.strip(); return str(sum(1 if 'A'<=c<='Z' else -1 if 'a'<=c<='z' else 0 for c in t))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-3",
+      "sourceContentHash": "1af8be130f1e8add6f8845ec0cd0e07d6a90265551caf792042ba02a28c1f42e",
+      "packageChecksum": "06b11be6ba4c2785a9834614da980a5a06bce1943c56a953461d899ddd1463e7",
+      "editorial": "## 思路\n\n维护已存在用户集合、活跃用户集合和计数表。消息先激活发送者，再把本条的显式提及及 ALL/HERE 展开后合并为集合，集合中每个用户只增加一次。OFFLINE 仅移出活跃集合。\n\n## 正确性\n\n逐条处理事件可保持状态与事件序一致。对任意一条消息，提及集合恰由直接 ID、已存在用户或活跃用户按 token 并集而成；集合去重确保一人本条最多计一次。只从 active 删除用户不会抹去其存在性。\n\n## 复杂度\n\n设 U 为已出现 ID 数，q≤1000，直接 token 总数 M。最坏显式展开 O(qU+M)，空间 O(U+M)；本站限制保证展开规模可控。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); q=int(lines[0]); users=set(); active=set(); cnt={}\n for line in lines[1:1+q]:\n  p=line.split()\n  if p[0]=='OFFLINE': active.discard(p[1]); continue\n  sender=p[1]; users.add(sender); active.add(sender); m=int(p[3]); toks=p[4:4+m]\n  mentioned=set(); direct=[]\n  for tok in toks:\n   if tok=='ALL': mentioned.update(users)\n   elif tok=='HERE': mentioned.update(active)\n   else: direct.append(tok)\n  mentioned.update(direct)\n  for u in mentioned: cnt[u]=cnt.get(u,0)+1\n return ' '.join(f'{u}={cnt[u]}' for u in sorted(cnt))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-5",
+      "sourceContentHash": "fcff1e5f6c03d3dc5481b0669a0ffd24ad75613e91020c590ba09daa175a48f0",
+      "packageChecksum": "3b4c10830567615c685532c035236cd56547e628034130b3f056d1b70b0b3446",
+      "editorial": "## 思路\n\n每轮根据旧数组标记首尾及严格局部峰并同时保留；若结果未变即稳定，否则对新数组重复。\n\n## 正确性\n\n某轮中每个元素是否保留只由该轮原数组的邻居决定，故扫描得到的列表正是下一轮数组。循环直到不变，满足定义的固定点，且每个变化轮至少删去一个元素，必终止。\n\n## 复杂度\n\n每轮 O(n)，内部严格局部峰不能相邻，因此非平凡一轮后数组长度至多约减半，轮数 O(log n)；总时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); a=z[1:]\n while True:\n  b=[]\n  for i,x in enumerate(a):\n   if i==0 or i==len(a)-1 or (x>a[i-1] and x>a[i+1]): b.append(x)\n  if b==a: return str(len(a))+' '+' '.join(map(str,a))\n  a=b\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-14",
+      "sourceContentHash": "64afc8417f3c754863993be2b640cee4ba6b282d9cff0d20193eaf138a088304",
+      "packageChecksum": "aaf105848a641aa872da87867a59760bce159ede71edf2d92c67bad52018af4e",
+      "editorial": "## 思路\n\n逐块求缺失值并构造填好的 4×4 方块；按 (缺失值, 原列序号) 排序，将完整块写入输出列组。\n\n## 正确性\n\n每个输出块仍是原输入中的一个完整方块。排序键确保缺失值非递减，第二关键字仅在相同缺失值时保留原顺序；这满足题意并确定唯一输出。\n\n## 复杂度\n\n缺失值计算 O(n)，排序 O(n log n)，复制网格 O(n)，总时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n t=list(map(int,s.split())); rows,cols=t[:2]; raw=t[2:]; mat=[raw[r*cols:(r+1)*cols] for r in range(4)]; n=cols//4; blocks=[]\n for b in range(n):\n  flat=[mat[r][4*b+c] for r in range(4) for c in range(4)]; miss=136-sum(x for x in flat if x!=-1)\n  full=[miss if x==-1 else x for x in flat]; blocks.append((miss,b,full))\n blocks.sort(key=lambda x:(x[0],x[1])); out=[[0]*cols for _ in range(4)]\n for b,(_,_,flat) in enumerate(blocks):\n  for z,x in enumerate(flat): r,c=divmod(z,4); out[r][4*b+c]=x\n return '\\n'.join(' '.join(map(str,row)) for row in out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-15",
+      "sourceContentHash": "113352f040a4a01829c95ed34757d2a62c282b90363d44307f8899eaa7a4982e",
+      "packageChecksum": "b8a9fe5f3ae8a273ff417b2902dbb9bf8f176ca146ec63d2fbbab8a358654225",
+      "editorial": "## 思路\n\n边长为 k 的正方形可行性可用滑动窗口最小值判断：是否存在宽 k 的窗口，其最低楼高≥k。可行性对 k 单调，二分最大边长并平方。\n\n## 正确性\n\n任一边长 k 的正方形必须由至少 k 栋连续楼承托，且每栋高度≥k；满足该条件的窗口也确实容得下 k×k 正方形。因此窗口判定充要。增大 k 后条件只会更难，故可二分最大 k。\n\n## 复杂度\n\n每次判定 O(n)，二分 O(log min(n,max(h)))，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; h=z[1:]\n def ok(k):\n  d=deque()\n  for i,x in enumerate(h):\n   while d and d[0]<=i-k: d.popleft()\n   while d and h[d[-1]]>=x: d.pop()\n   d.append(i)\n   if i>=k-1 and h[d[0]]>=k: return True\n  return False\n lo,hi=0,min(n,max(h,default=0))\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo*lo)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
