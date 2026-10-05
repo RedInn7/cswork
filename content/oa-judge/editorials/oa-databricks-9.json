@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-9",
+  "title": "最左非零值的后缀减法总和",
+  "explanation": "## 思路\n\n按题意直接模拟每一轮：定位最左非零值 x，将 x 累加，并只对后缀中当前值不小于 x 的元素减 x。\n\n## 正确性证明\n\n模拟始终选择与题目相同的最左非零元素，并对同一后缀逐个应用题目规定的条件减法，因此每轮结束后数组状态和累计值均与过程定义一致。题目保证该过程结束，模拟终止时累计值就是所求。\n\n## 复杂度\n\n最多处理 n 轮（每轮至少把当前最左非零元素归零），每轮扫描至多 n 项；时间 O(n²)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; a=v[1:1+n]; total=0; i=0\n    while i<n:\n        if a[i]==0: i+=1; continue\n        x=a[i]; total+=x\n        for j in range(i,n):\n            if a[j]>=x: a[j]-=x\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#9-leftmost-non-zero-subtract",
+  "sourceContentHash": "7cc4fa65d7338729188379cd05b484ae7e9453fb647ec611aed756bed80dbabe",
+  "author": "CSWork"
+}

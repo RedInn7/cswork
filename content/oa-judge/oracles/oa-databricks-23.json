@@ -1,0 +1,654 @@
+[
+  {
+    "input": "7 6\n1111010\ncount 4\ncount 6\nflip\ncount 4\nflip\ncount 2\n",
+    "expectedOutput": "1 2 4 0\n"
+  },
+  {
+    "input": "4 5\n0000\ncount 0\nflip\ncount 3\nflip\ncount 1\n",
+    "expectedOutput": "1 0 2\n"
+  },
+  {
+    "input": "1 2\n1\nflip\ncount 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "20 20\n00010101000001110010\ncount 6\ncount 2\nflip\nflip\ncount 11\nflip\ncount 12\ncount 7\ncount 7\nflip\ncount 9\ncount 5\nflip\nflip\ncount 13\ncount 2\ncount 16\ncount 9\ncount 1\ncount 0\n",
+    "expectedOutput": "5 3 9 3 3 3 7 4 10 3 11 7 2 1\n"
+  },
+  {
+    "input": "10 28\n0101001111\ncount 6\ncount 9\ncount 3\ncount 2\nflip\ncount 6\ncount 7\nflip\ncount 0\ncount 8\nflip\ncount 6\nflip\ncount 4\ncount 6\nflip\ncount 4\nflip\ncount 3\nflip\nflip\nflip\nflip\ncount 8\nflip\ncount 1\nflip\nflip\n",
+    "expectedOutput": "4 4 2 2 3 4 1 4 3 3 4 2 2 4 1\n"
+  },
+  {
+    "input": "3 29\n110\nflip\ncount 2\ncount 0\nflip\ncount 2\ncount 0\ncount 1\ncount 1\ncount 0\ncount 0\nflip\ncount 1\ncount 2\ncount 1\ncount 0\ncount 0\ncount 2\ncount 0\ncount 0\ncount 2\ncount 0\ncount 2\nflip\nflip\nflip\ncount 1\ncount 1\nflip\ncount 2\n",
+    "expectedOutput": "2 1 1 0 0 0 0 0 2 2 2 1 1 2 1 1 2 1 2 0 0 2\n"
+  },
+  {
+    "input": "11 28\n11010100000\ncount 6\nflip\ncount 1\nflip\ncount 2\nflip\nflip\nflip\ncount 1\ncount 6\ncount 4\ncount 9\ncount 10\nflip\ncount 2\ncount 5\ncount 9\ncount 5\nflip\ncount 2\ncount 2\ncount 5\nflip\nflip\nflip\ncount 2\ncount 10\ncount 0\n",
+    "expectedOutput": "3 2 1 2 4 3 4 4 1 2 6 2 2 2 4 1 7 0\n"
+  },
+  {
+    "input": "12 23\n001110110010\ncount 6\ncount 0\ncount 3\nflip\ncount 4\nflip\ncount 7\nflip\ncount 7\ncount 11\nflip\nflip\nflip\ncount 9\ncount 4\ncount 4\ncount 9\nflip\ncount 5\nflip\ncount 7\ncount 1\ncount 9\n",
+    "expectedOutput": "3 1 2 3 3 5 6 5 2 2 5 3 3 2 5\n"
+  },
+  {
+    "input": "16 21\n0001110100011101\ncount 5\ncount 4\ncount 0\ncount 4\ncount 9\ncount 15\ncount 10\ncount 13\nflip\ncount 5\nflip\nflip\ncount 4\ncount 6\ncount 10\nflip\nflip\ncount 5\ncount 7\nflip\ncount 3\n",
+    "expectedOutput": "3 3 1 3 6 8 7 7 3 2 3 4 3 4 3\n"
+  },
+  {
+    "input": "3 27\n111\ncount 1\ncount 2\ncount 1\nflip\ncount 1\nflip\ncount 0\nflip\ncount 0\ncount 1\ncount 2\ncount 2\ncount 0\ncount 2\ncount 1\ncount 0\nflip\ncount 1\ncount 0\ncount 2\ncount 1\ncount 0\ncount 2\ncount 0\ncount 1\ncount 0\ncount 2\n",
+    "expectedOutput": "0 0 0 2 0 1 2 3 3 1 3 2 1 0 0 0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "16 21\n1010101001101001\nflip\ncount 10\ncount 11\nflip\ncount 12\ncount 4\ncount 2\ncount 15\ncount 5\ncount 9\ncount 14\nflip\ncount 1\ncount 14\nflip\ncount 10\nflip\ncount 4\ncount 14\ncount 9\nflip\n",
+    "expectedOutput": "6 6 6 2 1 8 3 5 8 1 7 5 3 7 5\n"
+  },
+  {
+    "input": "8 3\n00100100\ncount 4\ncount 2\ncount 7\n",
+    "expectedOutput": "4 2 6\n"
+  },
+  {
+    "input": "6 4\n001101\ncount 1\ncount 4\ncount 2\ncount 4\n",
+    "expectedOutput": "2 3 2 3\n"
+  },
+  {
+    "input": "24 13\n001101010100011100101100\ncount 10\ncount 18\ncount 4\ncount 3\nflip\nflip\nflip\ncount 5\nflip\ncount 7\ncount 21\nflip\ncount 3\n",
+    "expectedOutput": "6 10 3 2 3 4 11 2\n"
+  },
+  {
+    "input": "13 27\n1110100110010\nflip\ncount 11\nflip\ncount 10\ncount 1\ncount 8\nflip\ncount 11\nflip\ncount 4\ncount 1\ncount 2\nflip\nflip\ncount 10\ncount 9\nflip\ncount 10\ncount 7\ncount 6\ncount 11\ncount 1\nflip\ncount 5\nflip\nflip\ncount 6\n",
+    "expectedOutput": "7 5 0 3 7 1 0 0 5 4 6 5 4 7 2 2 3\n"
+  },
+  {
+    "input": "4 1\n1011\nflip\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "21 29\n001100011111101000010\ncount 5\nflip\nflip\nflip\ncount 8\nflip\nflip\nflip\ncount 16\nflip\ncount 6\ncount 20\ncount 8\ncount 13\ncount 7\nflip\ncount 19\ncount 5\ncount 3\nflip\ncount 13\ncount 6\nflip\nflip\ncount 6\nflip\nflip\ncount 17\ncount 8\n",
+    "expectedOutput": "4 4 8 2 10 4 8 3 10 4 2 8 2 2 9 4\n"
+  },
+  {
+    "input": "4 13\n0110\ncount 1\nflip\ncount 3\nflip\ncount 1\ncount 3\nflip\ncount 1\ncount 2\ncount 1\nflip\nflip\ncount 0\n",
+    "expectedOutput": "1 2 1 2 1 2 1 0\n"
+  },
+  {
+    "input": "1 10\n1\ncount 0\ncount 0\nflip\ncount 0\ncount 0\ncount 0\ncount 0\nflip\nflip\ncount 0\n",
+    "expectedOutput": "0 0 1 1 1 1 1\n"
+  },
+  {
+    "input": "13 25\n1000000100111\nflip\ncount 3\ncount 0\nflip\ncount 10\ncount 12\nflip\ncount 9\nflip\nflip\nflip\ncount 9\ncount 12\ncount 1\ncount 8\ncount 3\ncount 4\nflip\ncount 3\ncount 6\ncount 12\nflip\ncount 3\ncount 4\ncount 0\n",
+    "expectedOutput": "1 1 8 8 2 8 8 1 7 3 4 1 1 5 3 4 0\n"
+  },
+  {
+    "input": "13 10\n1110011111000\ncount 6\nflip\nflip\ncount 6\nflip\nflip\ncount 0\nflip\ncount 0\ncount 4\n",
+    "expectedOutput": "2 2 0 1 3\n"
+  },
+  {
+    "input": "20 15\n01100010011011010110\ncount 9\ncount 2\ncount 4\ncount 7\ncount 4\nflip\ncount 0\nflip\ncount 13\ncount 6\nflip\ncount 8\ncount 11\ncount 12\ncount 11\n",
+    "expectedOutput": "6 1 3 5 3 0 7 4 3 5 6 5\n"
+  },
+  {
+    "input": "2 4\n11\nflip\nflip\nflip\ncount 0\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "11 24\n11100000000\nflip\ncount 3\nflip\ncount 1\ncount 3\nflip\ncount 8\ncount 8\ncount 5\ncount 2\ncount 4\nflip\ncount 10\ncount 6\nflip\ncount 8\ncount 7\ncount 3\ncount 10\ncount 9\nflip\ncount 3\nflip\nflip\n",
+    "expectedOutput": "3 0 1 3 3 3 3 3 8 4 3 3 3 3 3 1\n"
+  },
+  {
+    "input": "22 29\n1110101110100111000110\ncount 3\ncount 10\ncount 10\ncount 15\ncount 16\ncount 16\nflip\nflip\ncount 6\nflip\ncount 0\ncount 7\ncount 12\nflip\ncount 20\ncount 10\nflip\ncount 9\ncount 19\nflip\ncount 6\ncount 9\ncount 10\ncount 3\ncount 5\nflip\ncount 20\ncount 8\ncount 21\n",
+    "expectedOutput": "1 3 3 5 6 6 2 1 6 8 8 3 7 12 2 3 3 1 2 13 7 13\n"
+  },
+  {
+    "input": "19 21\n0101011010000010101\ncount 10\ncount 6\ncount 7\nflip\ncount 3\ncount 1\nflip\nflip\ncount 15\nflip\ncount 14\nflip\ncount 12\ncount 14\ncount 11\nflip\ncount 10\ncount 16\ncount 4\nflip\ncount 14\n",
+    "expectedOutput": "6 3 4 2 1 6 9 5 6 5 6 10 3 6\n"
+  },
+  {
+    "input": "12 4\n101001100000\ncount 11\ncount 6\ncount 6\nflip\n",
+    "expectedOutput": "8 3 3\n"
+  },
+  {
+    "input": "10 12\n1111100110\nflip\ncount 1\ncount 6\nflip\nflip\nflip\nflip\nflip\nflip\nflip\ncount 0\ncount 2\n",
+    "expectedOutput": "2 5 0 0\n"
+  },
+  {
+    "input": "17 14\n10011000011010110\ncount 11\ncount 6\ncount 0\ncount 11\ncount 5\ncount 4\nflip\nflip\ncount 14\nflip\ncount 12\ncount 12\nflip\ncount 7\n",
+    "expectedOutput": "7 4 0 7 3 2 8 6 6 5\n"
+  },
+  {
+    "input": "7 18\n1010110\ncount 5\ncount 1\ncount 2\nflip\ncount 6\nflip\ncount 5\ncount 2\nflip\nflip\ncount 6\ncount 5\ncount 0\ncount 2\ncount 5\ncount 4\nflip\ncount 2\n",
+    "expectedOutput": "2 1 1 4 2 1 3 2 0 1 2 2 2\n"
+  },
+  {
+    "input": "2 3\n11\nflip\ncount 1\ncount 0\n",
+    "expectedOutput": "2 1\n"
+  },
+  {
+    "input": "2 7\n00\ncount 1\ncount 1\nflip\ncount 1\nflip\ncount 0\ncount 1\n",
+    "expectedOutput": "2 2 0 1 2\n"
+  },
+  {
+    "input": "12 2\n011100101100\ncount 7\ncount 5\n",
+    "expectedOutput": "4 3\n"
+  },
+  {
+    "input": "17 24\n01101011010010010\nflip\nflip\nflip\nflip\nflip\nflip\ncount 10\ncount 5\ncount 12\nflip\nflip\ncount 11\nflip\ncount 4\ncount 10\ncount 0\ncount 1\nflip\ncount 9\nflip\ncount 3\ncount 12\nflip\ncount 9\n",
+    "expectedOutput": "5 3 6 6 3 6 0 1 4 2 7 4\n"
+  },
+  {
+    "input": "17 24\n00000001100111111\nflip\nflip\ncount 9\ncount 9\ncount 15\ncount 1\nflip\nflip\ncount 9\ncount 15\ncount 7\nflip\nflip\ncount 9\ncount 5\ncount 11\ncount 10\nflip\ncount 7\nflip\ncount 8\nflip\ncount 13\ncount 5\n",
+    "expectedOutput": "8 8 9 2 8 9 7 8 6 9 9 1 7 5 0\n"
+  },
+  {
+    "input": "24 13\n000111000000011010000011\nflip\ncount 19\ncount 11\ncount 15\ncount 8\ncount 3\ncount 14\nflip\ncount 15\ncount 10\ncount 19\nflip\ncount 11\n",
+    "expectedOutput": "6 3 5 3 1 5 11 8 14 3\n"
+  },
+  {
+    "input": "14 15\n11111011011000\ncount 3\ncount 11\ncount 12\ncount 9\ncount 5\ncount 0\ncount 11\nflip\ncount 11\ncount 1\ncount 5\ncount 3\ncount 11\ncount 3\ncount 3\n",
+    "expectedOutput": "0 3 4 2 1 0 3 9 2 5 4 9 4 4\n"
+  },
+  {
+    "input": "14 22\n00110111011010\ncount 9\ncount 12\ncount 13\nflip\ncount 12\ncount 0\ncount 7\ncount 13\ncount 12\nflip\nflip\ncount 5\ncount 0\ncount 12\ncount 4\ncount 11\ncount 7\nflip\ncount 4\nflip\nflip\ncount 9\n",
+    "expectedOutput": "4 5 6 8 0 5 8 8 3 0 8 2 7 5 3 4\n"
+  },
+  {
+    "input": "15 15\n110000100001000\ncount 1\ncount 4\ncount 0\ncount 10\ncount 9\ncount 13\nflip\ncount 6\ncount 11\ncount 3\nflip\nflip\ncount 12\ncount 13\ncount 7\n",
+    "expectedOutput": "0 3 0 8 7 10 3 4 2 4 4 3\n"
+  },
+  {
+    "input": "17 17\n10011110010011001\ncount 5\nflip\ncount 16\ncount 13\nflip\nflip\ncount 8\ncount 7\ncount 12\ncount 10\nflip\nflip\ncount 7\nflip\ncount 4\ncount 11\nflip\n",
+    "expectedOutput": "2 9 8 5 5 7 6 5 2 6\n"
+  },
+  {
+    "input": "11 14\n11001010100\nflip\ncount 6\ncount 9\ncount 1\nflip\nflip\ncount 8\ncount 1\nflip\ncount 5\nflip\nflip\ncount 9\ncount 5\n",
+    "expectedOutput": "4 5 2 5 2 3 5 3\n"
+  },
+  {
+    "input": "1 18\n0\ncount 0\ncount 0\nflip\ncount 0\ncount 0\ncount 0\ncount 0\ncount 0\nflip\nflip\ncount 0\nflip\ncount 0\nflip\ncount 0\ncount 0\ncount 0\nflip\n",
+    "expectedOutput": "1 1 0 0 0 0 0 0 1 0 0 0\n"
+  },
+  {
+    "input": "8 18\n00010001\ncount 2\ncount 1\nflip\nflip\ncount 3\ncount 1\ncount 1\nflip\ncount 3\ncount 2\ncount 4\nflip\ncount 0\nflip\ncount 4\ncount 5\ncount 4\ncount 6\n",
+    "expectedOutput": "3 2 3 2 2 1 0 1 1 1 1 1 1\n"
+  },
+  {
+    "input": "10 23\n0001100010\ncount 1\ncount 8\nflip\ncount 4\ncount 2\nflip\nflip\ncount 2\nflip\nflip\ncount 2\ncount 9\ncount 7\nflip\nflip\ncount 9\ncount 7\ncount 4\ncount 3\nflip\ncount 2\ncount 4\ncount 9\n",
+    "expectedOutput": "2 6 2 0 0 0 3 2 3 2 2 1 3 3 7\n"
+  },
+  {
+    "input": "24 11\n101010001101111001001001\ncount 15\ncount 18\ncount 15\ncount 10\nflip\nflip\ncount 8\nflip\ncount 9\nflip\ncount 13\n",
+    "expectedOutput": "7 9 7 6 5 5 6\n"
+  },
+  {
+    "input": "21 6\n000001000101100101010\ncount 13\nflip\ncount 2\ncount 17\nflip\nflip\n",
+    "expectedOutput": "10 0 6\n"
+  },
+  {
+    "input": "7 29\n0010101\ncount 1\nflip\ncount 2\ncount 4\ncount 4\ncount 5\ncount 2\nflip\nflip\nflip\nflip\ncount 2\ncount 4\ncount 1\ncount 4\nflip\nflip\ncount 0\ncount 4\nflip\nflip\ncount 0\ncount 1\ncount 4\nflip\ncount 3\ncount 0\ncount 2\nflip\n",
+    "expectedOutput": "2 1 2 2 2 1 1 2 0 2 0 2 0 0 2 3 1 2\n"
+  },
+  {
+    "input": "24 9\n011110110100001000111010\ncount 14\ncount 7\nflip\ncount 16\ncount 17\ncount 7\nflip\ncount 19\nflip\n",
+    "expectedOutput": "7 2 8 8 6 10\n"
+  },
+  {
+    "input": "24 20\n111011010000001110111001\ncount 2\nflip\ncount 20\nflip\ncount 5\ncount 22\ncount 8\ncount 20\ncount 7\ncount 11\ncount 21\ncount 20\ncount 17\ncount 5\ncount 12\nflip\nflip\ncount 4\nflip\ncount 8\n",
+    "expectedOutput": "0 12 1 11 3 9 2 6 10 9 9 1 7 1 6\n"
+  },
+  {
+    "input": "16 16\n0011000101000100\nflip\ncount 2\ncount 11\ncount 14\ncount 14\ncount 1\ncount 8\ncount 3\ncount 3\nflip\ncount 7\nflip\ncount 12\ncount 15\ncount 5\nflip\n",
+    "expectedOutput": "1 4 5 5 0 3 2 2 5 4 5 2\n"
+  },
+  {
+    "input": "15 3\n110111001100001\ncount 1\ncount 6\nflip\n",
+    "expectedOutput": "0 2\n"
+  },
+  {
+    "input": "4 14\n0100\ncount 2\ncount 1\ncount 0\nflip\ncount 2\nflip\nflip\ncount 3\ncount 1\ncount 1\ncount 3\nflip\ncount 1\ncount 3\n",
+    "expectedOutput": "2 1 1 1 1 1 1 1 1 3\n"
+  },
+  {
+    "input": "20 24\n10110100100011011110\nflip\nflip\ncount 6\ncount 18\ncount 15\ncount 5\ncount 1\nflip\nflip\ncount 16\ncount 10\ncount 2\ncount 5\nflip\ncount 4\ncount 7\ncount 8\ncount 7\nflip\ncount 0\ncount 10\ncount 15\ncount 9\ncount 2\n",
+    "expectedOutput": "3 8 8 2 1 8 6 1 2 3 4 5 4 0 6 8 5 1\n"
+  },
+  {
+    "input": "17 9\n00001101001100111\ncount 1\ncount 13\nflip\nflip\nflip\ncount 11\nflip\ncount 0\ncount 14\n",
+    "expectedOutput": "2 9 5 1 9\n"
+  },
+  {
+    "input": "23 27\n10000000100100111110001\nflip\ncount 14\nflip\ncount 16\nflip\ncount 10\ncount 3\ncount 6\ncount 10\ncount 9\nflip\ncount 17\nflip\ncount 15\ncount 15\ncount 6\nflip\nflip\ncount 13\ncount 14\nflip\nflip\nflip\ncount 16\ncount 21\ncount 8\nflip\n",
+    "expectedOutput": "4 11 2 1 1 2 2 11 5 5 1 3 4 11 14 7\n"
+  },
+  {
+    "input": "17 29\n00110110001000100\ncount 14\ncount 8\ncount 8\ncount 14\nflip\nflip\ncount 13\ncount 2\nflip\ncount 7\nflip\ncount 13\ncount 2\ncount 9\ncount 7\ncount 15\ncount 14\nflip\nflip\nflip\nflip\nflip\ncount 10\ncount 16\nflip\ncount 13\ncount 4\ncount 13\nflip\n",
+    "expectedOutput": "9 5 5 9 9 2 4 9 2 6 4 10 9 5 6 9 3 9\n"
+  },
+  {
+    "input": "16 30\n0010001101100111\ncount 6\nflip\ncount 2\nflip\ncount 0\nflip\ncount 7\ncount 12\ncount 14\nflip\ncount 3\ncount 15\nflip\ncount 13\nflip\ncount 4\nflip\ncount 11\ncount 14\ncount 11\nflip\nflip\ncount 7\nflip\ncount 2\ncount 4\ncount 14\ncount 4\ncount 1\ncount 1\n",
+    "expectedOutput": "5 1 1 3 5 7 3 8 6 4 5 7 5 3 2 4 8 4 2 2\n"
+  },
+  {
+    "input": "23 30\n00110011011111100000101\nflip\ncount 21\ncount 6\ncount 1\ncount 12\ncount 4\ncount 20\ncount 1\nflip\ncount 12\ncount 16\nflip\ncount 16\nflip\nflip\nflip\ncount 4\nflip\nflip\ncount 15\ncount 11\nflip\ncount 14\ncount 1\ncount 7\nflip\nflip\ncount 11\nflip\nflip\n",
+    "expectedOutput": "11 3 0 8 2 11 0 5 7 10 3 6 5 10 0 4 7\n"
+  },
+  {
+    "input": "16 7\n1110101101111011\ncount 15\nflip\ncount 2\nflip\ncount 1\ncount 10\ncount 15\n",
+    "expectedOutput": "4 3 0 3 4\n"
+  },
+  {
+    "input": "6 29\n001000\ncount 2\ncount 5\ncount 1\ncount 2\ncount 3\nflip\ncount 3\nflip\ncount 5\ncount 5\ncount 5\nflip\ncount 4\nflip\ncount 4\ncount 0\nflip\ncount 4\ncount 5\ncount 5\nflip\ncount 2\ncount 4\nflip\nflip\nflip\nflip\ncount 0\ncount 5\n",
+    "expectedOutput": "2 5 2 2 3 1 5 5 5 1 4 1 1 1 1 2 4 1 5\n"
+  },
+  {
+    "input": "19 7\n0000001001101000011\nflip\ncount 1\ncount 8\ncount 12\ncount 1\ncount 15\ncount 16\n",
+    "expectedOutput": "0 1 4 0 4 4\n"
+  },
+  {
+    "input": "18 10\n010101010101011001\nflip\ncount 16\ncount 14\nflip\ncount 1\nflip\ncount 8\nflip\nflip\ncount 14\n",
+    "expectedOutput": "8 8 1 4 8\n"
+  },
+  {
+    "input": "10 7\n1000110010\nflip\ncount 7\ncount 1\ncount 6\nflip\ncount 3\ncount 3\n",
+    "expectedOutput": "3 1 3 3 3\n"
+  },
+  {
+    "input": "10 18\n1001100011\ncount 1\ncount 7\ncount 7\ncount 2\nflip\ncount 0\nflip\ncount 9\nflip\nflip\ncount 0\nflip\ncount 5\nflip\ncount 4\nflip\ncount 2\ncount 6\n",
+    "expectedOutput": "1 5 5 2 1 5 0 3 2 1 3\n"
+  },
+  {
+    "input": "9 24\n110100000\nflip\ncount 4\nflip\ncount 0\nflip\ncount 1\ncount 2\ncount 6\nflip\nflip\nflip\nflip\ncount 1\nflip\ncount 6\ncount 0\ncount 2\ncount 0\ncount 4\ncount 8\ncount 2\ncount 1\nflip\ncount 7\n",
+    "expectedOutput": "3 0 2 2 3 2 4 0 1 0 2 6 1 0 3\n"
+  },
+  {
+    "input": "2 11\n00\nflip\ncount 1\ncount 0\nflip\ncount 1\ncount 0\ncount 1\nflip\ncount 1\nflip\ncount 1\n",
+    "expectedOutput": "0 0 2 1 2 0 2\n"
+  },
+  {
+    "input": "19 12\n1100100111000010110\nflip\ncount 6\nflip\ncount 18\nflip\ncount 18\nflip\nflip\ncount 17\ncount 5\ncount 4\ncount 6\n",
+    "expectedOutput": "3 10 9 9 3 3 3\n"
+  },
+  {
+    "input": "11 19\n01110011101\ncount 5\ncount 9\nflip\ncount 8\ncount 0\ncount 1\ncount 1\ncount 0\ncount 10\ncount 7\ncount 2\ncount 7\ncount 3\nflip\ncount 7\nflip\nflip\nflip\ncount 10\n",
+    "expectedOutput": "3 4 6 0 1 1 0 7 5 2 5 3 3 7\n"
+  },
+  {
+    "input": "17 18\n11001010010101001\ncount 11\nflip\ncount 13\nflip\ncount 0\ncount 15\ncount 15\ncount 3\nflip\nflip\ncount 4\nflip\ncount 12\nflip\nflip\nflip\nflip\ncount 4\n",
+    "expectedOutput": "6 7 0 9 9 2 2 6 3\n"
+  },
+  {
+    "input": "7 20\n0111000\ncount 3\nflip\nflip\ncount 3\ncount 0\nflip\ncount 6\nflip\ncount 2\ncount 4\ncount 1\ncount 1\ncount 1\ncount 3\nflip\ncount 4\ncount 3\ncount 1\ncount 4\ncount 1\n",
+    "expectedOutput": "1 1 1 3 1 2 1 1 1 1 3 3 1 3 1\n"
+  },
+  {
+    "input": "10 16\n0010111101\ncount 6\ncount 9\ncount 3\ncount 0\ncount 4\nflip\ncount 5\ncount 4\nflip\ncount 1\ncount 9\ncount 3\ncount 8\ncount 8\ncount 0\ncount 8\n",
+    "expectedOutput": "3 4 3 1 3 3 2 2 4 3 4 4 1 4\n"
+  },
+  {
+    "input": "13 20\n1010000111011\ncount 8\nflip\ncount 11\nflip\nflip\nflip\nflip\nflip\ncount 5\ncount 11\ncount 12\nflip\ncount 9\ncount 8\ncount 12\ncount 3\ncount 9\ncount 7\nflip\ncount 10\n",
+    "expectedOutput": "5 6 4 6 6 5 4 7 2 5 3 6\n"
+  },
+  {
+    "input": "9 9\n010011100\ncount 2\ncount 4\ncount 2\ncount 6\nflip\ncount 8\ncount 8\nflip\nflip\n",
+    "expectedOutput": "2 3 2 3 4 4\n"
+  },
+  {
+    "input": "12 12\n011010110000\ncount 5\ncount 7\ncount 9\ncount 10\ncount 4\ncount 1\nflip\ncount 3\nflip\ncount 1\ncount 1\ncount 0\n",
+    "expectedOutput": "3 3 5 6 2 1 2 1 1 1\n"
+  },
+  {
+    "input": "16 2\n1010100010101111\ncount 11\ncount 7\n",
+    "expectedOutput": "7 5\n"
+  },
+  {
+    "input": "17 9\n01001010011110000\ncount 1\ncount 11\nflip\ncount 14\ncount 6\nflip\nflip\nflip\ncount 1\n",
+    "expectedOutput": "1 6 7 3 1\n"
+  },
+  {
+    "input": "3 30\n000\ncount 2\nflip\nflip\ncount 2\nflip\ncount 1\ncount 1\ncount 0\ncount 1\ncount 1\ncount 2\ncount 2\ncount 1\ncount 0\nflip\ncount 1\ncount 1\ncount 1\ncount 1\ncount 2\ncount 2\ncount 1\ncount 1\nflip\nflip\ncount 2\nflip\ncount 0\ncount 1\nflip\n",
+    "expectedOutput": "3 3 0 0 0 0 0 0 0 0 0 2 2 2 2 3 3 2 2 3 0 0\n"
+  },
+  {
+    "input": "8 24\n00001111\ncount 5\ncount 2\ncount 4\ncount 5\nflip\ncount 2\ncount 6\ncount 4\nflip\ncount 2\ncount 4\ncount 7\ncount 5\nflip\nflip\nflip\ncount 4\nflip\ncount 3\nflip\nflip\ncount 3\ncount 5\nflip\n",
+    "expectedOutput": "4 3 4 4 0 3 1 3 4 4 4 1 4 4 4\n"
+  },
+  {
+    "input": "16 12\n1001001000100001\ncount 7\ncount 13\nflip\ncount 0\ncount 10\ncount 0\ncount 5\ncount 7\ncount 0\ncount 14\nflip\ncount 3\n",
+    "expectedOutput": "5 10 1 4 1 2 3 1 4 2\n"
+  },
+  {
+    "input": "12 27\n011000010001\ncount 1\ncount 0\ncount 1\ncount 7\nflip\ncount 1\ncount 2\ncount 5\ncount 4\ncount 1\ncount 10\nflip\ncount 10\nflip\ncount 0\nflip\ncount 5\nflip\nflip\ncount 8\ncount 2\ncount 2\nflip\ncount 5\ncount 10\ncount 6\nflip\n",
+    "expectedOutput": "1 1 1 5 1 2 2 2 1 3 8 0 4 6 1 1 2 3 2\n"
+  },
+  {
+    "input": "4 9\n0111\nflip\ncount 3\ncount 1\ncount 1\ncount 1\nflip\nflip\ncount 0\ncount 3\n",
+    "expectedOutput": "3 1 1 1 0 3\n"
+  },
+  {
+    "input": "24 15\n111110011001100110101110\ncount 10\ncount 17\ncount 6\nflip\ncount 5\ncount 12\ncount 7\ncount 18\nflip\ncount 13\ncount 14\ncount 13\ncount 20\ncount 7\ncount 22\n",
+    "expectedOutput": "4 7 2 5 9 6 12 5 6 5 8 2 8\n"
+  },
+  {
+    "input": "10 30\n0010111001\ncount 8\nflip\ncount 7\ncount 8\ncount 2\ncount 6\nflip\nflip\nflip\nflip\ncount 1\nflip\ncount 1\ncount 1\ncount 1\nflip\ncount 2\ncount 1\nflip\ncount 6\ncount 7\ncount 8\nflip\nflip\ncount 4\ncount 5\ncount 8\nflip\nflip\ncount 8\n",
+    "expectedOutput": "5 4 4 1 4 0 2 2 2 1 0 3 4 5 3 3 5 5\n"
+  },
+  {
+    "input": "8 22\n01111101\ncount 7\ncount 0\ncount 3\nflip\nflip\nflip\ncount 0\nflip\ncount 2\nflip\ncount 0\ncount 5\ncount 7\nflip\nflip\ncount 3\nflip\ncount 7\ncount 6\nflip\ncount 7\nflip\n",
+    "expectedOutput": "2 1 1 0 1 0 5 6 3 2 2 6\n"
+  },
+  {
+    "input": "19 9\n0110001000101101110\ncount 2\nflip\nflip\ncount 6\ncount 12\ncount 5\ncount 10\nflip\ncount 3\n",
+    "expectedOutput": "1 4 8 4 7 2\n"
+  },
+  {
+    "input": "20 6\n01011101100100101010\ncount 15\ncount 17\ncount 15\nflip\ncount 12\nflip\n",
+    "expectedOutput": "8 9 8 7\n"
+  },
+  {
+    "input": "13 19\n0001011001011\ncount 11\ncount 12\ncount 0\ncount 1\nflip\ncount 2\ncount 12\ncount 5\ncount 4\ncount 6\nflip\nflip\ncount 11\ncount 6\nflip\ncount 10\nflip\ncount 7\ncount 5\n",
+    "expectedOutput": "7 7 1 2 0 6 2 1 3 5 3 7 3 2\n"
+  },
+  {
+    "input": "11 19\n01100011000\ncount 3\ncount 7\nflip\ncount 8\nflip\nflip\ncount 6\ncount 9\ncount 8\ncount 5\ncount 10\ncount 4\nflip\nflip\ncount 0\nflip\ncount 4\ncount 3\ncount 2\n",
+    "expectedOutput": "2 4 4 3 4 4 2 4 2 0 3 2 1\n"
+  },
+  {
+    "input": "14 28\n10001111100111\ncount 7\ncount 6\ncount 7\nflip\ncount 7\ncount 1\nflip\nflip\ncount 9\nflip\nflip\ncount 12\ncount 12\nflip\ncount 6\nflip\nflip\nflip\ncount 6\nflip\ncount 13\ncount 2\nflip\ncount 4\nflip\nflip\ncount 9\ncount 9\n",
+    "expectedOutput": "3 3 3 5 1 6 8 8 3 4 5 2 2 6 6\n"
+  },
+  {
+    "input": "10 20\n1101011001\ncount 4\ncount 6\ncount 5\ncount 3\ncount 3\ncount 4\nflip\ncount 9\nflip\ncount 0\ncount 9\nflip\nflip\ncount 9\ncount 1\ncount 9\nflip\ncount 6\ncount 8\ncount 2\n",
+    "expectedOutput": "2 2 2 1 1 2 6 0 4 4 0 4 5 5 2\n"
+  },
+  {
+    "input": "1 11\n1\ncount 0\ncount 0\ncount 0\ncount 0\nflip\ncount 0\nflip\ncount 0\ncount 0\ncount 0\nflip\n",
+    "expectedOutput": "0 0 0 0 1 0 0 0\n"
+  },
+  {
+    "input": "14 30\n10110110001101\nflip\nflip\ncount 8\nflip\ncount 1\ncount 5\nflip\ncount 10\nflip\nflip\ncount 2\ncount 0\ncount 12\nflip\nflip\ncount 10\ncount 5\ncount 4\nflip\ncount 13\ncount 1\ncount 12\ncount 11\nflip\nflip\nflip\ncount 5\ncount 5\ncount 0\nflip\n",
+    "expectedOutput": "4 1 4 5 1 0 6 5 2 2 8 1 7 7 2 2 0\n"
+  },
+  {
+    "input": "10 28\n1110001000\nflip\nflip\nflip\ncount 9\ncount 5\nflip\nflip\ncount 0\ncount 2\ncount 3\nflip\ncount 4\nflip\nflip\nflip\nflip\nflip\ncount 0\ncount 2\ncount 5\ncount 3\ncount 3\nflip\ncount 0\ncount 7\ncount 9\ncount 2\ncount 1\n",
+    "expectedOutput": "4 3 1 3 3 2 1 3 3 3 3 0 4 6 0 0\n"
+  },
+  {
+    "input": "8 25\n01100010\ncount 6\ncount 6\ncount 1\nflip\ncount 2\ncount 1\ncount 3\ncount 2\ncount 3\nflip\ncount 1\nflip\ncount 1\ncount 2\nflip\nflip\ncount 4\ncount 4\nflip\nflip\nflip\ncount 4\nflip\ncount 4\nflip\n",
+    "expectedOutput": "4 4 1 2 1 2 2 2 1 1 2 2 2 3 2\n"
+  },
+  {
+    "input": "2 13\n10\ncount 1\ncount 0\ncount 1\nflip\nflip\ncount 0\ncount 0\nflip\nflip\ncount 0\ncount 1\nflip\nflip\n",
+    "expectedOutput": "1 0 1 0 0 0 1\n"
+  },
+  {
+    "input": "9 13\n100110100\nflip\nflip\ncount 1\ncount 5\ncount 4\ncount 1\nflip\ncount 3\nflip\ncount 4\ncount 3\ncount 1\nflip\n",
+    "expectedOutput": "1 3 2 1 2 2 2 1\n"
+  },
+  {
+    "input": "7 26\n1001111\nflip\ncount 3\nflip\ncount 6\ncount 6\nflip\ncount 5\ncount 1\ncount 4\ncount 0\ncount 6\ncount 2\nflip\ncount 3\ncount 5\nflip\nflip\ncount 5\ncount 5\ncount 5\nflip\nflip\nflip\nflip\ncount 1\ncount 0\n",
+    "expectedOutput": "2 2 2 4 1 3 1 5 1 2 2 2 2 2 1 0\n"
+  },
+  {
+    "input": "8 18\n01110110\nflip\ncount 6\ncount 7\ncount 5\nflip\ncount 5\ncount 2\nflip\nflip\nflip\nflip\ncount 7\nflip\ncount 2\ncount 1\ncount 1\nflip\ncount 3\n",
+    "expectedOutput": "5 5 4 2 1 3 2 1 1 1\n"
+  },
+  {
+    "input": "2 17\n11\nflip\nflip\ncount 0\nflip\nflip\nflip\ncount 1\nflip\ncount 0\ncount 1\ncount 1\ncount 0\nflip\ncount 1\nflip\nflip\ncount 0\n",
+    "expectedOutput": "0 2 0 0 0 0 2 1\n"
+  },
+  {
+    "input": "18 24\n000011011011011111\nflip\ncount 16\ncount 13\ncount 4\ncount 14\nflip\ncount 12\ncount 10\ncount 10\ncount 5\ncount 11\ncount 5\ncount 17\ncount 6\nflip\ncount 17\ncount 3\ncount 6\ncount 15\nflip\nflip\nflip\ncount 8\ncount 14\n",
+    "expectedOutput": "10 7 1 8 7 6 6 4 6 4 7 5 11 0 2 9 5 7\n"
+  },
+  {
+    "input": "12 1\n101000111001\nflip\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "1 2\n1\ncount 0\ncount 0\n",
+    "expectedOutput": "0 0\n"
+  },
+  {
+    "input": "10 17\n0001101111\ncount 6\ncount 4\ncount 5\ncount 7\nflip\nflip\nflip\nflip\ncount 5\ncount 6\nflip\nflip\ncount 8\ncount 5\ncount 8\ncount 2\ncount 4\n",
+    "expectedOutput": "4 3 4 4 4 4 4 4 4 3 3\n"
+  },
+  {
+    "input": "9 23\n100001100\ncount 7\ncount 8\ncount 0\ncount 1\ncount 8\ncount 3\nflip\ncount 2\nflip\nflip\nflip\ncount 5\nflip\nflip\nflip\nflip\ncount 3\ncount 4\nflip\ncount 3\nflip\ncount 1\ncount 0\n",
+    "expectedOutput": "5 6 0 1 6 3 1 4 3 4 1 1 0\n"
+  },
+  {
+    "input": "15 16\n111000000010100\ncount 4\ncount 11\nflip\ncount 9\ncount 8\ncount 11\ncount 10\ncount 7\ncount 14\ncount 3\nflip\ncount 1\ncount 9\nflip\ncount 9\nflip\n",
+    "expectedOutput": "2 8 3 3 4 4 3 5 3 0 7 3\n"
+  },
+  {
+    "input": "24 5\n000000100111011100010000\ncount 7\ncount 19\ncount 21\nflip\ncount 22\n",
+    "expectedOutput": "7 12 14 8\n"
+  },
+  {
+    "input": "9 24\n110111100\ncount 6\ncount 1\ncount 3\nflip\ncount 4\nflip\ncount 1\nflip\ncount 0\nflip\ncount 4\ncount 4\ncount 3\ncount 3\nflip\ncount 1\nflip\ncount 3\nflip\nflip\ncount 2\ncount 2\ncount 0\ncount 2\n",
+    "expectedOutput": "1 0 1 4 0 1 1 1 1 1 2 1 1 1 0 1\n"
+  },
+  {
+    "input": "1 16\n0\ncount 0\ncount 0\ncount 0\ncount 0\nflip\ncount 0\ncount 0\ncount 0\nflip\ncount 0\ncount 0\ncount 0\nflip\nflip\ncount 0\nflip\n",
+    "expectedOutput": "1 1 1 1 0 0 0 1 1 1 1\n"
+  },
+  {
+    "input": "14 28\n10100110110011\ncount 7\ncount 11\ncount 3\ncount 0\nflip\ncount 9\nflip\ncount 4\ncount 8\ncount 0\ncount 7\nflip\ncount 7\nflip\ncount 6\ncount 0\nflip\ncount 2\ncount 6\ncount 13\ncount 8\nflip\ncount 10\ncount 12\ncount 9\nflip\ncount 5\nflip\n",
+    "expectedOutput": "4 6 2 0 6 3 4 0 4 4 3 0 2 4 8 5 5 6 4 3\n"
+  },
+  {
+    "input": "24 22\n111111011000101011110100\ncount 19\ncount 15\ncount 21\nflip\ncount 5\nflip\nflip\nflip\nflip\ncount 4\ncount 22\nflip\ncount 12\ncount 17\nflip\ncount 2\ncount 5\nflip\nflip\ncount 17\ncount 10\ncount 3\n",
+    "expectedOutput": "6 6 7 6 5 15 4 6 3 6 12 8 4\n"
+  },
+  {
+    "input": "17 27\n01000111111100111\nflip\ncount 1\ncount 13\ncount 15\ncount 10\nflip\ncount 5\ncount 4\ncount 10\ncount 11\ncount 12\ncount 7\ncount 2\ncount 6\ncount 2\nflip\nflip\nflip\nflip\ncount 8\ncount 13\ncount 14\ncount 1\nflip\nflip\ncount 0\nflip\n",
+    "expectedOutput": "1 8 10 7 4 4 4 4 5 4 2 4 2 4 6 6 1 1\n"
+  },
+  {
+    "input": "10 28\n1101010101\ncount 9\ncount 8\ncount 1\nflip\ncount 6\ncount 9\ncount 3\ncount 5\ncount 4\ncount 9\nflip\nflip\ncount 3\nflip\ncount 4\ncount 3\nflip\ncount 1\ncount 4\ncount 9\ncount 3\ncount 4\ncount 3\nflip\nflip\nflip\nflip\ncount 0\n",
+    "expectedOutput": "4 4 0 4 6 3 4 3 6 3 2 1 2 3 6 3 3 3 1\n"
+  },
+  {
+    "input": "15 25\n010011110100101\ncount 9\nflip\ncount 6\ncount 13\nflip\ncount 4\ncount 0\ncount 0\nflip\ncount 1\ncount 1\nflip\nflip\nflip\nflip\nflip\nflip\ncount 3\ncount 2\ncount 14\nflip\nflip\ncount 6\nflip\ncount 8\n",
+    "expectedOutput": "4 4 7 3 1 1 1 1 1 1 8 4 4\n"
+  },
+  {
+    "input": "22 18\n1100111000010010000000\ncount 14\nflip\ncount 0\ncount 5\nflip\ncount 7\ncount 1\nflip\ncount 18\ncount 6\ncount 16\ncount 14\ncount 2\ncount 3\nflip\nflip\ncount 9\ncount 1\n",
+    "expectedOutput": "8 1 4 3 0 7 5 7 7 2 2 5 2\n"
+  },
+  {
+    "input": "10 18\n1001110110\nflip\ncount 4\nflip\nflip\ncount 5\ncount 2\ncount 4\ncount 6\ncount 8\ncount 3\ncount 3\nflip\ncount 2\ncount 7\nflip\ncount 3\nflip\nflip\n",
+    "expectedOutput": "3 4 1 3 4 6 2 2 2 3 2\n"
+  },
+  {
+    "input": "6 23\n001110\nflip\ncount 0\nflip\ncount 0\ncount 0\ncount 0\nflip\nflip\nflip\nflip\nflip\ncount 4\ncount 5\nflip\ncount 2\nflip\ncount 3\ncount 5\nflip\ncount 5\ncount 1\ncount 3\nflip\n",
+    "expectedOutput": "0 1 1 1 3 3 2 2 3 3 2 2\n"
+  },
+  {
+    "input": "13 11\n0111011101000\ncount 0\ncount 2\ncount 2\ncount 4\ncount 3\ncount 9\ncount 3\ncount 0\nflip\ncount 3\ncount 9\n",
+    "expectedOutput": "1 1 1 2 1 3 1 1 3 7\n"
+  },
+  {
+    "input": "7 4\n0111001\nflip\ncount 5\ncount 4\nflip\n",
+    "expectedOutput": "3 3\n"
+  },
+  {
+    "input": "22 21\n1010011010110110110101\ncount 11\ncount 3\ncount 9\ncount 18\nflip\nflip\ncount 7\nflip\ncount 1\ncount 1\nflip\ncount 8\nflip\ncount 6\ncount 14\ncount 9\ncount 2\ncount 6\nflip\ncount 16\ncount 0\n",
+    "expectedOutput": "5 2 5 8 4 1 1 4 4 9 5 2 4 7 0\n"
+  },
+  {
+    "input": "11 8\n00011111001\nflip\ncount 7\ncount 6\ncount 0\ncount 3\ncount 10\ncount 7\ncount 3\n",
+    "expectedOutput": "5 4 0 1 6 5 1\n"
+  },
+  {
+    "input": "16 28\n1101011111101000\nflip\ncount 6\ncount 1\ncount 2\ncount 2\nflip\ncount 11\ncount 13\ncount 7\ncount 14\ncount 9\ncount 14\ncount 6\ncount 4\ncount 12\nflip\ncount 13\nflip\ncount 8\ncount 13\ncount 2\nflip\nflip\ncount 0\ncount 7\nflip\nflip\ncount 0\n",
+    "expectedOutput": "5 2 2 2 3 4 2 5 2 5 2 2 3 10 2 4 1 0 2 0\n"
+  },
+  {
+    "input": "12 12\n111001101001\ncount 1\ncount 7\ncount 2\nflip\ncount 1\ncount 6\nflip\ncount 7\nflip\ncount 5\nflip\ncount 0\n",
+    "expectedOutput": "0 3 0 2 5 3 4 0\n"
+  },
+  {
+    "input": "24 7\n010001010111100000110010\ncount 18\nflip\ncount 12\ncount 20\nflip\ncount 6\ncount 8\n",
+    "expectedOutput": "11 7 9 5 6\n"
+  },
+  {
+    "input": "6 17\n000000\ncount 4\ncount 3\ncount 2\ncount 0\nflip\ncount 1\ncount 5\ncount 5\ncount 3\nflip\nflip\ncount 5\ncount 4\ncount 1\ncount 0\ncount 2\nflip\n",
+    "expectedOutput": "5 4 3 1 0 0 0 0 0 0 0 0 0\n"
+  },
+  {
+    "input": "19 2\n0101001101011101000\nflip\nflip\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "9 9\n101000101\ncount 5\ncount 0\nflip\ncount 6\nflip\ncount 8\ncount 1\nflip\nflip\n",
+    "expectedOutput": "4 0 3 5 1\n"
+  },
+  {
+    "input": "6 8\n011100\nflip\ncount 3\ncount 2\nflip\nflip\ncount 1\ncount 0\ncount 0\n",
+    "expectedOutput": "3 2 1 0 0\n"
+  },
+  {
+    "input": "16 18\n1010100011110000\ncount 1\nflip\ncount 1\ncount 13\nflip\ncount 7\nflip\ncount 0\nflip\ncount 8\ncount 11\ncount 1\ncount 2\nflip\ncount 7\ncount 2\nflip\ncount 1\n",
+    "expectedOutput": "1 1 7 5 1 5 5 1 1 3 2 1\n"
+  },
+  {
+    "input": "23 23\n00101000110100011101000\ncount 4\nflip\ncount 20\ncount 20\ncount 1\ncount 1\ncount 2\nflip\nflip\ncount 3\ncount 9\nflip\ncount 22\ncount 18\nflip\nflip\ncount 15\ncount 21\ncount 18\ncount 20\nflip\nflip\ncount 17\n",
+    "expectedOutput": "3 9 9 0 0 1 1 4 14 11 10 13 11 12 10\n"
+  },
+  {
+    "input": "15 10\n011100100001101\nflip\ncount 11\ncount 0\ncount 5\ncount 0\ncount 3\ncount 8\ncount 11\ncount 2\nflip\n",
+    "expectedOutput": "5 0 3 0 3 4 5 2\n"
+  },
+  {
+    "input": "19 22\n1100111000010100100\ncount 12\ncount 18\ncount 16\nflip\ncount 5\ncount 12\ncount 5\ncount 0\nflip\ncount 12\ncount 11\ncount 15\ncount 3\ncount 12\nflip\nflip\nflip\ncount 0\ncount 15\nflip\ncount 8\ncount 18\n",
+    "expectedOutput": "7 11 9 4 6 4 1 7 6 9 2 7 1 7 4 11\n"
+  },
+  {
+    "input": "1 11\n1\ncount 0\nflip\ncount 0\ncount 0\nflip\nflip\nflip\nflip\ncount 0\nflip\ncount 0\n",
+    "expectedOutput": "0 1 1 1 0\n"
+  },
+  {
+    "input": "3 8\n011\ncount 2\ncount 1\nflip\ncount 2\ncount 2\ncount 0\ncount 0\nflip\n",
+    "expectedOutput": "1 1 2 2 0 0\n"
+  },
+  {
+    "input": "21 3\n101010100100111011111\nflip\ncount 2\ncount 10\n",
+    "expectedOutput": "2 5\n"
+  },
+  {
+    "input": "11 28\n01111011101\ncount 8\ncount 2\nflip\nflip\ncount 6\ncount 3\ncount 2\nflip\nflip\ncount 5\ncount 9\nflip\ncount 9\nflip\nflip\ncount 0\nflip\ncount 1\ncount 9\ncount 2\ncount 3\ncount 7\ncount 2\nflip\ncount 7\ncount 6\ncount 10\ncount 7\n",
+    "expectedOutput": "2 1 2 1 1 2 3 7 0 1 3 1 1 2 1 6 5 8 6\n"
+  },
+  {
+    "input": "20 26\n00101011000101111101\nflip\ncount 13\nflip\nflip\ncount 1\ncount 13\ncount 8\ncount 12\ncount 2\ncount 1\ncount 9\ncount 7\ncount 5\nflip\ncount 5\ncount 5\ncount 7\ncount 11\ncount 18\ncount 10\ncount 19\nflip\ncount 1\ncount 13\ncount 12\nflip\n",
+    "expectedOutput": "6 0 6 4 5 1 0 4 4 2 4 4 4 7 9 7 9 0 6 5\n"
+  },
+  {
+    "input": "2 13\n11\ncount 0\ncount 0\ncount 1\nflip\ncount 0\ncount 0\nflip\ncount 0\nflip\ncount 0\ncount 0\nflip\ncount 0\n",
+    "expectedOutput": "0 0 0 1 1 0 1 1 0\n"
+  },
+  {
+    "input": "7 30\n0111110\ncount 3\ncount 6\ncount 2\nflip\ncount 4\ncount 6\nflip\ncount 3\ncount 5\nflip\nflip\ncount 2\nflip\nflip\ncount 2\ncount 6\nflip\ncount 3\ncount 0\ncount 3\nflip\ncount 0\nflip\ncount 1\ncount 5\ncount 0\nflip\nflip\ncount 4\nflip\n",
+    "expectedOutput": "1 2 1 4 5 1 1 1 1 2 3 0 3 1 1 5 0 4\n"
+  },
+  {
+    "input": "16 3\n0110101000101000\nflip\ncount 10\ncount 10\n",
+    "expectedOutput": "5 5\n"
+  },
+  {
+    "input": "3 17\n110\nflip\ncount 0\ncount 2\ncount 2\ncount 0\nflip\ncount 2\ncount 0\ncount 1\nflip\ncount 1\ncount 0\ncount 0\ncount 2\ncount 0\ncount 1\ncount 2\n",
+    "expectedOutput": "1 2 2 1 1 0 0 2 1 1 2 1 2 2\n"
+  },
+  {
+    "input": "22 5\n1111001100110111001010\ncount 10\nflip\ncount 18\ncount 10\ncount 15\n",
+    "expectedOutput": "4 12 7 11\n"
+  },
+  {
+    "input": "22 17\n1011110001111001001111\nflip\ncount 17\ncount 14\ncount 7\ncount 14\nflip\nflip\ncount 20\nflip\ncount 13\ncount 16\ncount 16\ncount 10\ncount 21\nflip\ncount 9\ncount 0\n",
+    "expectedOutput": "10 9 5 9 13 5 7 7 4 8 6 1\n"
+  },
+  {
+    "input": "4 6\n1010\ncount 2\ncount 0\nflip\nflip\nflip\nflip\n",
+    "expectedOutput": "1 0\n"
+  },
+  {
+    "input": "11 1\n01110100110\ncount 2\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "14 15\n01101010100000\nflip\nflip\nflip\nflip\nflip\ncount 11\ncount 13\ncount 8\ncount 7\nflip\ncount 8\ncount 13\ncount 12\ncount 5\nflip\n",
+    "expectedOutput": "5 5 5 4 4 9 8 3\n"
+  },
+  {
+    "input": "13 24\n1000011111100\ncount 10\ncount 2\nflip\nflip\ncount 6\ncount 0\nflip\nflip\ncount 12\nflip\ncount 9\ncount 0\nflip\ncount 7\nflip\ncount 10\nflip\nflip\nflip\nflip\nflip\ncount 11\nflip\ncount 11\n",
+    "expectedOutput": "4 2 4 0 6 6 1 4 7 5 7\n"
+  },
+  {
+    "input": "13 18\n0001111100011\nflip\nflip\ncount 4\ncount 3\ncount 5\ncount 3\ncount 1\ncount 11\ncount 7\nflip\ncount 4\ncount 3\ncount 11\ncount 11\ncount 4\nflip\ncount 4\nflip\n",
+    "expectedOutput": "3 3 3 3 2 6 3 2 1 6 6 2 3\n"
+  },
+  {
+    "input": "8 26\n00000000\ncount 4\nflip\nflip\ncount 7\ncount 4\ncount 7\nflip\ncount 2\ncount 7\nflip\ncount 2\nflip\ncount 4\ncount 5\ncount 4\ncount 4\ncount 1\ncount 4\ncount 5\ncount 7\nflip\ncount 3\ncount 4\nflip\ncount 3\ncount 3\n",
+    "expectedOutput": "5 8 5 8 0 0 3 0 0 0 0 0 0 0 0 4 5 0 0\n"
+  },
+  {
+    "input": "9 29\n111000011\ncount 5\ncount 8\ncount 2\ncount 6\ncount 0\nflip\nflip\ncount 2\ncount 0\ncount 2\ncount 0\ncount 8\ncount 1\ncount 4\nflip\ncount 6\ncount 4\nflip\nflip\nflip\ncount 2\ncount 2\nflip\ncount 0\ncount 8\ncount 3\ncount 1\ncount 0\nflip\n",
+    "expectedOutput": "3 4 0 4 0 0 0 0 0 4 0 2 3 3 0 0 1 5 3 2 1\n"
+  },
+  {
+    "input": "7 5\n0101001\ncount 3\ncount 5\ncount 1\nflip\ncount 4\n",
+    "expectedOutput": "2 4 1 2\n"
+  },
+  {
+    "input": "9 16\n100111111\ncount 0\ncount 4\ncount 1\ncount 1\ncount 4\nflip\ncount 3\ncount 7\nflip\ncount 1\ncount 7\ncount 3\ncount 7\ncount 5\nflip\ncount 7\n",
+    "expectedOutput": "0 2 1 1 2 2 6 1 2 2 2 2 6\n"
+  },
+  {
+    "input": "15 17\n001101010100110\ncount 13\ncount 7\ncount 8\nflip\ncount 10\ncount 0\nflip\nflip\ncount 5\ncount 14\nflip\nflip\ncount 2\ncount 1\ncount 3\ncount 1\ncount 13\n",
+    "expectedOutput": "7 4 5 5 0 3 7 1 0 2 0 7\n"
+  },
+  {
+    "input": "20 7\n10001100001001111100\ncount 18\nflip\ncount 0\ncount 8\ncount 7\ncount 2\ncount 13\n",
+    "expectedOutput": "10 1 3 3 1 5\n"
+  },
+  {
+    "input": "13 9\n1111110111001\ncount 11\ncount 11\ncount 11\ncount 2\nflip\nflip\ncount 0\ncount 0\ncount 7\n",
+    "expectedOutput": "3 3 3 0 0 0 1\n"
+  },
+  {
+    "input": "11 2\n11001000000\ncount 1\ncount 9\n",
+    "expectedOutput": "0 7\n"
+  },
+  {
+    "input": "19 3\n1100000010101010000\nflip\nflip\nflip\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "13 20\n0110111000101\ncount 11\nflip\ncount 8\ncount 5\nflip\ncount 8\ncount 1\ncount 9\ncount 6\nflip\nflip\ncount 11\ncount 7\nflip\ncount 5\nflip\nflip\nflip\ncount 12\ncount 5\n",
+    "expectedOutput": "6 5 4 4 1 5 2 6 3 4 6 2\n"
+  },
+  {
+    "input": "24 27\n101001110011000110000010\ncount 13\ncount 4\ncount 19\nflip\nflip\ncount 11\ncount 8\nflip\nflip\nflip\ncount 7\ncount 11\nflip\ncount 12\ncount 9\ncount 19\ncount 17\nflip\nflip\ncount 5\ncount 9\nflip\ncount 13\ncount 2\ncount 12\ncount 15\ncount 13\n",
+    "expectedOutput": "7 3 11 5 4 5 7 6 5 11 9 3 5 7 2 7 8 7\n"
+  },
+  {
+    "input": "19 3\n0010000001101111100\ncount 10\nflip\ncount 6\n",
+    "expectedOutput": "8 1\n"
+  },
+  {
+    "input": "21 28\n110010101101001101000\ncount 14\nflip\ncount 10\nflip\ncount 7\nflip\nflip\nflip\ncount 16\ncount 14\ncount 14\ncount 0\ncount 0\ncount 14\nflip\ncount 6\nflip\nflip\nflip\ncount 19\ncount 5\ncount 1\ncount 11\ncount 18\ncount 7\ncount 14\nflip\ncount 19\n",
+    "expectedOutput": "7 6 4 9 8 8 1 1 8 3 10 3 2 7 10 4 8 10\n"
+  },
+  {
+    "input": "5 18\n11010\nflip\ncount 4\ncount 0\ncount 2\ncount 2\ncount 0\ncount 0\nflip\nflip\ncount 3\nflip\nflip\ncount 2\nflip\ncount 4\nflip\nflip\ncount 2\n",
+    "expectedOutput": "3 1 2 2 1 1 3 2 2 1\n"
+  },
+  {
+    "input": "23 20\n00101010011110001000000\ncount 19\nflip\ncount 14\nflip\nflip\nflip\nflip\ncount 0\nflip\ncount 2\nflip\nflip\ncount 0\ncount 21\ncount 15\ncount 10\ncount 14\nflip\nflip\nflip\n",
+    "expectedOutput": "12 7 0 2 1 14 9 6 8\n"
+  },
+  {
+    "input": "2 3\n01\ncount 0\ncount 1\ncount 1\n",
+    "expectedOutput": "1 1 1\n"
+  }
+]

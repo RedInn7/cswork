@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-20",
+  "title": "闭区间灯光覆盖点计数",
+  "explanation": "## 思路\n\n分别排序所有左端点和右端点。点 p 的覆盖数等于 left≤p 的区间数减去 right<p 的区间数。\n\n## 正确性证明\n\n每个闭区间在左端点不大于 p 时计入；其中右端点严格小于 p 的区间不覆盖 p，应扣除。其余区间满足 left≤p≤right，故两项之差恰为覆盖 p 的灯数。\n\n## 复杂度\n\n时间 O((m+q)log(m+q))，空间 O(m+q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    from bisect import bisect_left,bisect_right\n    v=list(map(int,data.split())); m,q=v[:2]; p=2; left=[]; right=[]\n    for _ in range(m): left.append(v[p]); right.append(v[p+1]); p+=2\n    points=v[p:p+q]; left.sort(); right.sort()\n    return ' '.join(str(bisect_right(left,x)-bisect_left(right,x)) for x in points)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#20-lamps-illumination",
+  "sourceContentHash": "8ece6c1e769dc0073d14bc02e335aa9bedae7e15304ed294d30d071223a9c872",
+  "author": "CSWork"
+}

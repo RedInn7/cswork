@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-21",
+  "title": "两数组数字最长公共前缀长度",
+  "explanation": "## 思路\n\n把第二数组的所有十进制前缀插入 Trie。逐个查询第一数组，沿 Trie 尽可能向下走，最大深度就是答案。\n\n## 正确性证明\n\nTrie 中深度 k 的路径存在，当且仅当第二数组中至少一个数以查询数的前 k 位开头。因此对每个第一数组元素，成功走到的最深深度等于它与第二数组某数的最长公共前缀最大值；再对第一数组取最大即所求。\n\n## 复杂度\n\n时间 O((n+m)·D)，空间 O(m·D)，D≤10。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    v=list(map(int,data.split())); n,m=v[:2]; a=v[2:2+n]; b=v[2+n:2+n+m]; root={}\n    for x in b:\n        node=root\n        for c in str(x): node=node.setdefault(c,{})\n    best=0\n    for x in a:\n        node=root; depth=0\n        for c in str(x):\n            if c not in node: break\n            node=node[c]; depth+=1\n        best=max(best,depth)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#21-longest-common-prefix-of-number-pairs",
+  "sourceContentHash": "78c652d84bfcd5d9fc6fbdaf694287077b06afd2164060920e1efe09da711b6d",
+  "author": "CSWork"
+}
