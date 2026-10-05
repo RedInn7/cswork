@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-8",
+  "title": "Library Prefix Pairs",
+  "explanation": "## 思路\n\n将书名插入 Trie 并记录终止次数。查询每个书名时，累加路径上所有终止节点次数，再减去当前下标自身一次。\n\n## 正确性\n\n固定被匹配书名 j，其所有前缀正好是根到其终点路径上的终止书名。节点计数按下标计算，覆盖重复书名；减去自身后恰为 i≠j。\n\n## 复杂度\n\n时间和空间均 O(L)，L 为总字符数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=s.splitlines(); n=int(z[0]); a=z[1:1+n]; t={}; end='!'\n for w in a:\n  x=t\n  for c in w: x=x.setdefault(c,{})\n  x[end]=x.get(end,0)+1\n ans=0\n for w in a:\n  x=t\n  for c in w: x=x[c]; ans+=x.get(end,0)\n  ans-=1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#8-library-prefix-pairs",
+  "sourceContentHash": "2daccf03f5768ec130660709a12300f9ff2946cf43b3379f63b86c8b974f2c2d",
+  "author": "CSWork"
+}

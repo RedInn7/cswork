@@ -1,0 +1,10 @@
+[
+  {
+    "name": "drop-dual-skill",
+    "code": "import sys\nfrom itertools import accumulate\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; groups=[[],[],[],[]]\n for i in range(n):\n  c,x,y=z[1+3*i:4+3*i]; groups[1 if x else 2 if y else 3].append(c)\n both,one,two,_=groups\n for a in (both,one,two): a.sort()\n pref=[list(accumulate([0]+a)) for a in (both,one,two)]; B,X,Y=pref\n nb,nx,ny=map(len,(both,one,two)); ans=[]\n for k in range(1,n+1):\n  lo=max(0,k-nx,k-ny); hi=min(k,nb)\n  if lo>hi: ans.append('-1'); continue\n  def cost(j): return B[j]+X[k-j]+Y[k-j]\n  l,r=lo,hi\n  while l<r:\n   m=(l+r)//2\n   if cost(m+1)-cost(m)>=0: r=m\n   else: l=m+1\n  ans.append(str(cost(l)))\n return ' '.join(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "too-small-upper-bound",
+    "code": "import sys\nfrom itertools import accumulate\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; groups=[[],[],[],[]]\n for i in range(n):\n  c,x,y=z[1+3*i:4+3*i]; groups[0 if x and y else 1 if x else 2 if y else 3].append(c)\n both,one,two,_=groups\n for a in (both,one,two): a.sort()\n pref=[list(accumulate([0]+a)) for a in (both,one,two)]; B,X,Y=pref\n nb,nx,ny=map(len,(both,one,two)); ans=[]\n for k in range(1,n+1):\n  lo=max(0,k-nx,k-ny); hi=min(k,nb,max(0,k-1))\n  if lo>hi: ans.append('-1'); continue\n  def cost(j): return B[j]+X[k-j]+Y[k-j]\n  l,r=lo,hi\n  while l<r:\n   m=(l+r)//2\n   if cost(m+1)-cost(m)>=0: r=m\n   else: l=m+1\n  ans.append(str(cost(l)))\n return ' '.join(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

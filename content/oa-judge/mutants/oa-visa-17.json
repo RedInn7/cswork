@@ -1,0 +1,10 @@
+[
+  {
+    "name": "must-use-k",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,k=z[:2]; a=z[2:2+n]; b=z[2+n:2+2*n]\n g=sorted((min(x,2*y)-min(x,y) for x,y in zip(a,b)),reverse=True)\n return str(sum(min(x,y) for x,y in zip(a,b))+sum(g[:k]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "wrong-delta",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,k=z[:2]; a=z[2:2+n]; b=z[2+n:2+2*n]\n g=sorted((min(x,y) for x,y in zip(a,b)),reverse=True)\n return str(sum(min(x,y) for x,y in zip(a,b))+sum(max(0,v) for v in g[:k]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

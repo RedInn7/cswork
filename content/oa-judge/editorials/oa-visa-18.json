@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-18",
+  "title": "Minimum Cost to Select People for Skill Quotas",
+  "explanation": "## 思路\n\n将人分成双技能 B、仅技能1的 X、仅技能2的 Y、无技能四组；非负成本下无技能者无需选。固定选 j 个 B 后，另外两类各补 K−j 人，代价 f(j)=PB[j]+PX[K−j]+PY[K−j]。可行 j 区间为 [max(0,K−|X|,K−|Y|),min(K,|B|)]。\n\n## 正确性\n\n给定双技能人数 j，最便宜的可行方案必取各组最便宜的所需人数，得到 f(j)。排序成本的前缀和具有非递减边际成本；f 的差分为 B[j] 的边际成本减去 X、Y 被移除的末位边际成本，随 j 非递减，故 f 离散凸。二分首个非负差分找到区间最小值。非负成本允许删掉不必要的人；非负限制为本站补充。\n\n## 复杂度\n\n排序 O(n log n)，对每个 K 二分 O(log n)，总时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom itertools import accumulate\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; groups=[[],[],[],[]]\n for i in range(n):\n  c,x,y=z[1+3*i:4+3*i]; groups[0 if x and y else 1 if x else 2 if y else 3].append(c)\n both,one,two,_=groups\n for a in (both,one,two): a.sort()\n pref=[list(accumulate([0]+a)) for a in (both,one,two)]; B,X,Y=pref\n nb,nx,ny=map(len,(both,one,two)); ans=[]\n for k in range(1,n+1):\n  lo=max(0,k-nx,k-ny); hi=min(k,nb)\n  if lo>hi: ans.append('-1'); continue\n  def cost(j): return B[j]+X[k-j]+Y[k-j]\n  l,r=lo,hi\n  while l<r:\n   m=(l+r)//2\n   if cost(m+1)-cost(m)>=0: r=m\n   else: l=m+1\n  ans.append(str(cost(l)))\n return ' '.join(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#18-minimum-cost-to-select-people-for-skill-quotas",
+  "sourceContentHash": "b75a1eb78e7e26a4f46d75072ecf28adc72401ed206c389a06368adf2c10acff",
+  "author": "CSWork"
+}

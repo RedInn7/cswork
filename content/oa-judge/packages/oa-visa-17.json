@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-visa-17",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Maximize Capped Contribution Sum",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Visa",
+      "贪心",
+      "排序"
+    ],
+    "description": "初值为 Σmin(a[i],b[i])；可选至多 k 个不同位置，将该处 b[i] 改为 2b[i]，求最大总和。\n\n语义依照 OAMaster 原题。输入协议或标有‘本站补充’的范围、保证由本站补充整理，不表示原题提供了这些限制。",
+    "input": "n,k（1≤n≤200000，0≤k≤n），随后两行各 n 个整数，范围 −10⁹..10⁹（本站补充，允许负数）。",
+    "output": "输出最大总和，使用 64 位整数。",
+    "explanation": "思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "先厘清边界、操作和计数规则，再选择适合的数据结构或状态转移。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3 2\n10 8 6\n3 6 10\n",
+      "expectedOutput": "20\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2 2\n5 5\n10 10\n",
+      "expectedOutput": "10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2 1\n-5 4\n3 -3\n",
+      "expectedOutput": "-8\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "11 10\n-3 12 -7 29 -14 -22 27 -10 -11 -10 -25\n20 27 9 -17 -22 -13 -13 -6 15 19 28\n",
+      "expectedOutput": "-128\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "10 2\n-19 22 -13 23 -16 7 -18 -12 12 3\n-25 12 -18 -2 -16 12 -3 5 -22 -22\n",
+      "expectedOutput": "-106\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "3 2\n4 -21 -19\n11 -11 7\n",
+      "expectedOutput": "-36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "2 1\n28 -14\n2 14\n",
+      "expectedOutput": "-10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "2 0\n2 4\n20 23\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "3 0\n29 -1 8\n-12 23 -22\n",
+      "expectedOutput": "-35\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "6 5\n-19 -6 7 -13 -25 -19\n-21 -1 -11 11 6 5\n",
+      "expectedOutput": "-95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "2 0\n22 9\n29 23\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "6 1\n-23 24 12 -1 -25 21\n5 -23 -10 -24 23 20\n",
+      "expectedOutput": "-84\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "5 2\n29 8 7 22 8\n17 -2 21 -23 29\n",
+      "expectedOutput": "19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "8 6\n-25 29 -18 -24 -7 12 12 -22\n-23 21 7 24 -25 -1 7 -8\n",
+      "expectedOutput": "-74\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "1 1\n4\n21\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "11 8\n-13 19 -5 16 13 10 19 17 7 21 8\n6 -8 22 17 29 -9 -5 7 0 28 25\n",
+      "expectedOutput": "32\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "14 8\n11 -3 20 22 26 28 -3 -14 -16 7 -16 4 7 -7\n3 -16 16 -25 -23 25 15 27 30 4 19 12 -8 18\n",
+      "expectedOutput": "-63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "13 1\n29 7 -11 28 20 -18 25 22 29 6 2 18 29\n10 -16 -16 5 -10 11 21 -24 13 2 7 11 -2\n",
+      "expectedOutput": "-9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "3 0\n0 -4 26\n-22 -5 30\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "10 6\n18 -13 -25 21 -8 21 -3 -1 13 9\n4 -21 14 13 -24 -16 -11 6 23 -13\n",
+      "expectedOutput": "-69\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "2 0\n-19 -12\n5 -10\n",
+      "expectedOutput": "-31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "7 7\n2 -2 -14 22 -1 -4 13\n-6 26 -22 -22 -19 16 15\n",
+      "expectedOutput": "-62\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "9 2\n-11 5 -17 -22 -7 25 -14 22 5\n5 2 -2 0 -5 -22 13 -11 9\n",
+      "expectedOutput": "-95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "9 9\n21 -11 -1 7 10 4 24 -21 0\n7 22 11 8 -20 -14 28 -20 -21\n",
+      "expectedOutput": "-43\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "8 4\n-23 21 24 -11 10 17 10 18\n-6 -15 11 -4 -9 27 -14 8\n",
+      "expectedOutput": "-17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "11 2\n12 -3 23 -23 -22 10 9 -8 -10 -6 -17\n-7 -3 -3 17 -21 -17 19 14 -16 2 11\n",
+      "expectedOutput": "-113\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "5 1\n3 26 30 19 -5\n-1 -13 26 8 30\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "1 0\n-13\n18\n",
+      "expectedOutput": "-13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "10 9\n-3 -1 -3 5 -3 19 27 -17 -4 14\n-13 -9 5 -20 11 13 24 -2 -18 18\n",
+      "expectedOutput": "-23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "13 2\n15 6 23 6 -24 -7 25 -7 -18 -4 10 -8 -25\n2 17 20 -1 -8 -23 -6 -18 -16 8 9 17 13\n",
+      "expectedOutput": "-85\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 28",
+      "input": "3 0\n-19 23 -22\n-3 26 -8\n",
+      "expectedOutput": "-18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 29",
+      "input": "5 5\n-7 22 11 10 12\n-14 10 -12 -1 25\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 30",
+      "input": "1 1\n-2\n-19\n",
+      "expectedOutput": "-19\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "prefix-only",
+    "code": "import sys\ndef solve(s):\n w=s.strip(); c=[]\n for k in range(1,len(w)+1): c.append(w[:k][::-1]+w[k:])\n return min(c)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "omit-last-char",
+    "code": "import sys\ndef solve(s):\n w=s.strip(); c=[]\n for k in range(1,len(w)+1): c.extend((w[:max(0,k-1)][::-1]+w[k:],w[:-k]+w[-k:][::-1]))\n return min(c)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-6",
+  "title": "Lexicographically Smallest by Reversing Prefix or Suffix",
+  "explanation": "## 思路\n\n枚举 k=1..n，构造前缀反转和后缀反转两种结果，取最小。\n\n## 正确性\n\n恰有 2n 种定义内操作；循环逐一构造且比较，最小者即所求。未把原串额外加入候选，符合恰好操作一次。\n\n## 复杂度\n\n时间 O(n²)，候选空间 O(n²)；本站补充 n≤2000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n w=s.strip(); c=[]\n for k in range(1,len(w)+1): c.extend((w[:k][::-1]+w[k:],w[:-k]+w[-k:][::-1]))\n return min(c)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#6-lexicographically-smallest-by-reversing-prefixsuffix",
+  "sourceContentHash": "a1c6cd73e176c57950904dcea2e944c417c5343ed6a58ed22671ca05ce62100a",
+  "author": "CSWork"
+}

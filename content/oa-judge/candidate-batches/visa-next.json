@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-visa-4",
+      "sourceContentHash": "5dfc2f641c210121cf8a9fe5229a3fc7cdd4a70d1f87b99497263281fc6c6ab5",
+      "packageChecksum": "3c055369ef495e5dfa581d735dbab7bb734c02c9f8d962fbb7516c0aecd0a438",
+      "editorial": "## 思路\n\n分别排序区间左右端点，覆盖 p 的区间数为左端点不大于 p 的数量减去右端点小于 p 的数量。\n\n## 正确性\n\n区间包含 p 当且仅当 l≤p 且 r≥p。upper_bound(l,p) 计入左端点等于 p 的区间，lower_bound(r,p) 仅排除 r<p 的区间，因此端点条件正确。\n\n## 复杂度\n\n预处理 O(n log n)，每次查询 O(log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom bisect import bisect_left,bisect_right\ndef solve(s):\n t=list(map(int,s.split())); n,q=t[:2]; z=t[2:2+2*n]; l=sorted(z[::2]); r=sorted(z[1::2])\n return ' '.join(str(bisect_right(l,p)-bisect_left(r,p)) for p in t[2+2*n:])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-6",
+      "sourceContentHash": "a1c6cd73e176c57950904dcea2e944c417c5343ed6a58ed22671ca05ce62100a",
+      "packageChecksum": "b53b1640400822e155e770b02cdcb99f59258061fabb1e73b495e85d8eed4b56",
+      "editorial": "## 思路\n\n枚举 k=1..n，构造前缀反转和后缀反转两种结果，取最小。\n\n## 正确性\n\n恰有 2n 种定义内操作；循环逐一构造且比较，最小者即所求。未把原串额外加入候选，符合恰好操作一次。\n\n## 复杂度\n\n时间 O(n²)，候选空间 O(n²)；本站补充 n≤2000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n w=s.strip(); c=[]\n for k in range(1,len(w)+1): c.extend((w[:k][::-1]+w[k:],w[:-k]+w[-k:][::-1]))\n return min(c)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-8",
+      "sourceContentHash": "2daccf03f5768ec130660709a12300f9ff2946cf43b3379f63b86c8b974f2c2d",
+      "packageChecksum": "b0ea92f021fc26cbcaed3549d8722eebe249e275755c0ffbad76920a6cde2fc5",
+      "editorial": "## 思路\n\n将书名插入 Trie 并记录终止次数。查询每个书名时，累加路径上所有终止节点次数，再减去当前下标自身一次。\n\n## 正确性\n\n固定被匹配书名 j，其所有前缀正好是根到其终点路径上的终止书名。节点计数按下标计算，覆盖重复书名；减去自身后恰为 i≠j。\n\n## 复杂度\n\n时间和空间均 O(L)，L 为总字符数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=s.splitlines(); n=int(z[0]); a=z[1:1+n]; t={}; end='!'\n for w in a:\n  x=t\n  for c in w: x=x.setdefault(c,{})\n  x[end]=x.get(end,0)+1\n ans=0\n for w in a:\n  x=t\n  for c in w: x=x[c]; ans+=x.get(end,0)\n  ans-=1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-11",
+      "sourceContentHash": "6d76498891fe3f5807dd4e6716da5481492d9fa32361fedc1d8a0b3664bab41c",
+      "packageChecksum": "57642fb0afe7ea7dcccf43ed6161d7838c4597f3a39a6dea911cb66bdd328ea4",
+      "editorial": "## 思路\n\n排序后固定 i，以双指针 l、r 扫描剩余元素。若和≤t，则 l 与 r 间所有位置均可作第三项，累计 r−l；否则减小 r。\n\n## 正确性\n\n排序后满足 a[i]+a[l]+a[r]≤t 时，对每个 k∈(l,r] 都成立并形成不同三元组。若超限，减小最大项才可能恢复可行。每个 i<j<k 唯一计数。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)；本站补充 n≤2500。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,t=z[:2]; a=sorted(z[2:]); ans=0\n for i in range(n-2):\n  l,r=i+1,n-1\n  while l<r:\n   if a[i]+a[l]+a[r]<=t: ans+=r-l; l+=1\n   else: r-=1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-12",
+      "sourceContentHash": "ef5aa4f979ba4fd7e6b6cb2891de78c17c49a9679f83e7f3035f052b9b584283",
+      "packageChecksum": "c4b1553c8f54ec4a2cb695e1ca93946ab9fce38bc81604d725e77ddcdbd3cf54",
+      "editorial": "## 思路\n\n用 (key,timestamp) 组成字典键；逐个查询精确查找并输出 value。\n\n## 正确性\n\n本站保证查询存在且键唯一。完整二元键查找当且仅当两个字段都匹配，因而得到唯一对应记录。\n\n## 复杂度\n\n期望时间 O(n+q)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=s.split(); n,q=map(int,z[:2]); d={}; p=2\n for _ in range(n): k,t,v=z[p:p+3]; p+=3; d[k,t]=v\n out=[]\n for _ in range(q): k,t=z[p:p+2]; p+=2; out.append(d[k,t])\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-13",
+      "sourceContentHash": "9444e70a2d0272df098f4ec31841de57524de6ecf5f9a65ab3add75dd6b8a952",
+      "packageChecksum": "aec9101fbfb83fe0f4c3d4819a92d9b170b0e11215bca0de094e60a4c42c278e",
+      "editorial": "## 思路\n\n符号翻转每次改变两个位置，负数数量奇偶性不变。负数为偶数可全翻正；为奇数时留下绝对值最小者为负。\n\n## 正确性\n\n负号奇偶性是操作不变量。偶数负号可两两消除；奇数负号至少留一个。最小绝对值项造成最小损失，答案因此为绝对值和，或减去两倍最小绝对值。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n a=list(map(int,s.split()))[1:]; z=sum(map(abs,a))\n return str(z if sum(x<0 for x in a)%2==0 else z-2*min(map(abs,a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-16",
+      "sourceContentHash": "ae2879fdef356bbaced42f138d2c50521508499e369a1be6516458a742edab28",
+      "packageChecksum": "c17b9cab32cb97dd5c1681c3fc6525a1322686d62bcacd6cd2423b899e83c5db",
+      "editorial": "## 思路\n\n维护两个状态：当前位置选 A[i] 或 B[i] 时，以此结尾的最长合法连续段。检查前一位置两种选择是否≤当前值；无可转移状态时从当前位置重开。\n\n## 正确性\n\n任一合法段接到当前位置前，只可能来自前一项 A[i−1] 或 B[i−1]，且必须不大于当前值。两个状态穷尽可能性；取可延伸的最长段最优，否则长度为 1。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; a=z[1:1+n]; b=z[1+n:1+2*n]; x=y=best=1\n for i in range(1,n):\n  nx=ny=1\n  if a[i-1]<=a[i]: nx=max(nx,x+1)\n  if b[i-1]<=a[i]: nx=max(nx,y+1)\n  if a[i-1]<=b[i]: ny=max(ny,x+1)\n  if b[i-1]<=b[i]: ny=max(ny,y+1)\n  x,y=nx,ny; best=max(best,x,y)\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-17",
+      "sourceContentHash": "7b7ae084f1c173df2de36ba9cf8301149f5bf65d0c1d3125c94a367345ef3a5f",
+      "packageChecksum": "acdc66f91639a5c3757f688dac347ac7f8c532fd838428fee9928cfa445648e4",
+      "editorial": "## 思路\n\n每个位置的操作增益为 min(aᵢ,2bᵢ)−min(aᵢ,bᵢ)。基准分加上最大的至多 k 个正增益。\n\n## 正确性\n\n方案分数等于基准分与所选增益之和。位置间无相互作用，因此在至多 k 项中取最大正增益和即为全局最优。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,k=z[:2]; a=z[2:2+n]; b=z[2+n:2+2*n]\n g=sorted((min(x,2*y)-min(x,y) for x,y in zip(a,b)),reverse=True)\n return str(sum(min(x,y) for x,y in zip(a,b))+sum(max(0,v) for v in g[:k]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-18",
+      "sourceContentHash": "b75a1eb78e7e26a4f46d75072ecf28adc72401ed206c389a06368adf2c10acff",
+      "packageChecksum": "da1b675fd1212f3b3cfd20a9666995e84274c23823d50892697799cebaf235a0",
+      "editorial": "## 思路\n\n将人分成双技能 B、仅技能1的 X、仅技能2的 Y、无技能四组；非负成本下无技能者无需选。固定选 j 个 B 后，另外两类各补 K−j 人，代价 f(j)=PB[j]+PX[K−j]+PY[K−j]。可行 j 区间为 [max(0,K−|X|,K−|Y|),min(K,|B|)]。\n\n## 正确性\n\n给定双技能人数 j，最便宜的可行方案必取各组最便宜的所需人数，得到 f(j)。排序成本的前缀和具有非递减边际成本；f 的差分为 B[j] 的边际成本减去 X、Y 被移除的末位边际成本，随 j 非递减，故 f 离散凸。二分首个非负差分找到区间最小值。非负成本允许删掉不必要的人；非负限制为本站补充。\n\n## 复杂度\n\n排序 O(n log n)，对每个 K 二分 O(log n)，总时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom itertools import accumulate\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; groups=[[],[],[],[]]\n for i in range(n):\n  c,x,y=z[1+3*i:4+3*i]; groups[0 if x and y else 1 if x else 2 if y else 3].append(c)\n both,one,two,_=groups\n for a in (both,one,two): a.sort()\n pref=[list(accumulate([0]+a)) for a in (both,one,two)]; B,X,Y=pref\n nb,nx,ny=map(len,(both,one,two)); ans=[]\n for k in range(1,n+1):\n  lo=max(0,k-nx,k-ny); hi=min(k,nb)\n  if lo>hi: ans.append('-1'); continue\n  def cost(j): return B[j]+X[k-j]+Y[k-j]\n  l,r=lo,hi\n  while l<r:\n   m=(l+r)//2\n   if cost(m+1)-cost(m)>=0: r=m\n   else: l=m+1\n  ans.append(str(cost(l)))\n return ' '.join(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

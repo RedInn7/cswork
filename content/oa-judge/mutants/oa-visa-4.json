@@ -1,0 +1,10 @@
+[
+  {
+    "name": "strict-left",
+    "code": "import sys\nfrom bisect import bisect_left,bisect_right\ndef solve(s):\n t=list(map(int,s.split())); n,q=t[:2]; z=t[2:2+2*n]; l=sorted(z[::2]); r=sorted(z[1::2])\n return ' '.join(str(bisect_left(l,p)-bisect_left(r,p)) for p in t[2+2*n:])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "strict-right",
+    "code": "import sys\nfrom bisect import bisect_left,bisect_right\ndef solve(s):\n t=list(map(int,s.split())); n,q=t[:2]; z=t[2:2+2*n]; l=sorted(z[::2]); r=sorted(z[1::2])\n return ' '.join(str(bisect_right(l,p)-bisect_right(r,p)) for p in t[2+2*n:])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "omit-B-to-A",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; a=z[1:1+n]; b=z[1+n:1+2*n]; x=y=best=1\n for i in range(1,n):\n  nx=ny=1\n  if a[i-1]<=a[i]: nx=max(nx,x+1)\n  pass\n  if a[i-1]<=b[i]: ny=max(ny,x+1)\n  if b[i-1]<=b[i]: ny=max(ny,y+1)\n  x,y=nx,ny; best=max(best,x,y)\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "strict-increase",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n=z[0]; a=z[1:1+n]; b=z[1+n:1+2*n]; x=y=best=1\n for i in range(1,n):\n  nx=ny=1\n  if a[i-1]<a[i]: nx=max(nx,x+1)\n  if b[i-1]<a[i]: nx=max(nx,y+1)\n  if a[i-1]<b[i]: ny=max(ny,x+1)\n  if b[i-1]<b[i]: ny=max(ny,y+1)\n  x,y=nx,ny; best=max(best,x,y)\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

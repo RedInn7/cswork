@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-11",
+  "title": "Count Triplets with Sum at Most t",
+  "explanation": "## 思路\n\n排序后固定 i，以双指针 l、r 扫描剩余元素。若和≤t，则 l 与 r 间所有位置均可作第三项，累计 r−l；否则减小 r。\n\n## 正确性\n\n排序后满足 a[i]+a[l]+a[r]≤t 时，对每个 k∈(l,r] 都成立并形成不同三元组。若超限，减小最大项才可能恢复可行。每个 i<j<k 唯一计数。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)；本站补充 n≤2500。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split())); n,t=z[:2]; a=sorted(z[2:]); ans=0\n for i in range(n-2):\n  l,r=i+1,n-1\n  while l<r:\n   if a[i]+a[l]+a[r]<=t: ans+=r-l; l+=1\n   else: r-=1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#11-count-triplets-with-sum--t",
+  "sourceContentHash": "6d76498891fe3f5807dd4e6716da5481492d9fa32361fedc1d8a0b3664bab41c",
+  "author": "CSWork"
+}
