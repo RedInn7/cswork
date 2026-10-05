@@ -1,0 +1,10 @@
+[
+  {
+    "name": "仅检查第一个字段维度",
+    "code": "import sys\nfrom collections import defaultdict,deque\ndef solve(raw):\n t=raw.split(); d,q=map(int,t[:2]); p=2; rules=[]; hist=[]\n for _ in range(d):\n  name=t[p]; w=int(t[p+1]); lim=int(t[p+2]); p+=3; rules.append((w,lim)); hist.append(defaultdict(deque))\n out=[]\n for _ in range(q):\n  now=int(t[p]); fields=t[p+1:p+1+d]; p+=1+d\n  for i,key in enumerate(fields):\n   dq=hist[i][key]\n   while dq and dq[0]<=now-rules[i][0]: dq.popleft()\n  ok=len(hist[0][fields[0]])<rules[0][1]\n  out.append('ALLOW' if ok else 'REJECT')\n  if ok:\n   for i,key in enumerate(fields): hist[i][key].append(now)\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把被拒请求也加入限流历史",
+    "code": "import sys\nfrom collections import defaultdict,deque\ndef solve(raw):\n t=raw.split(); d,q=map(int,t[:2]); p=2; rules=[]; hist=[]\n for _ in range(d):\n  name=t[p]; w=int(t[p+1]); lim=int(t[p+2]); p+=3; rules.append((w,lim)); hist.append(defaultdict(deque))\n out=[]\n for _ in range(q):\n  now=int(t[p]); fields=t[p+1:p+1+d]; p+=1+d\n  for i,key in enumerate(fields):\n   dq=hist[i][key]\n   while dq and dq[0]<=now-rules[i][0]: dq.popleft()\n  ok=all(len(hist[i][key])<rules[i][1] for i,key in enumerate(fields))\n  out.append('ALLOW' if ok else 'REJECT')\n  for i,key in enumerate(fields): hist[i][key].append(now)\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

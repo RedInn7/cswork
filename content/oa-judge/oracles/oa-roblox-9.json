@@ -1,0 +1,654 @@
+[
+  {
+    "input": "10 2 6\n1 alice\n2 alice\n3 alice\n11 alice\n12 alice\n12 bob\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 1 5\n1 u\n1 u\n2 u\n6 u\n6 u\n",
+    "expectedOutput": "ALLOW REJECT REJECT ALLOW REJECT\n"
+  },
+  {
+    "input": "3 2 4\n0 x\n1 x\n2 x\n3 x\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "3 2 26\n3 ipA\n7 u2\n9 u2\n13 u2\n14 ipA\n17 u2\n20 u2\n22 u1\n22 ipA\n25 ipA\n27 ipA\n31 ipA\n35 ipA\n38 u2\n40 u2\n44 u1\n44 ipA\n46 u1\n46 u2\n46 u1\n46 u2\n48 u2\n48 u2\n51 u1\n52 u1\n54 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 28\n1 u1\n2 u1\n4 ipA\n8 u1\n8 u2\n8 u2\n12 ipA\n15 ipA\n15 u2\n15 u2\n15 u1\n19 u2\n19 u1\n19 ipA\n20 u1\n24 u2\n25 u2\n27 u1\n28 u1\n28 ipA\n32 ipA\n33 u1\n33 ipA\n34 u2\n38 u2\n42 u1\n46 u1\n47 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 4 26\n4 ipA\n7 u2\n11 u2\n11 u2\n14 u2\n16 u1\n18 u1\n21 u2\n23 u2\n27 u1\n30 u2\n33 u2\n36 u2\n39 ipA\n40 u2\n43 u2\n45 u2\n45 u1\n48 ipA\n49 u1\n52 u1\n53 u2\n55 u2\n58 u1\n61 u2\n61 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 4 17\n0 u1\n1 u1\n4 u2\n6 ipA\n7 ipA\n9 u2\n9 u2\n10 u2\n12 u1\n12 ipA\n16 ipA\n17 u2\n17 ipA\n21 ipA\n21 ipA\n22 u2\n23 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 3 17\n4 u2\n5 u2\n6 ipA\n9 u1\n13 u2\n13 u1\n14 u2\n16 ipA\n16 u2\n18 u1\n18 ipA\n19 ipA\n22 u1\n22 u2\n26 u2\n28 ipA\n29 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 20\n2 u2\n3 u2\n5 u1\n6 u1\n10 u1\n14 ipA\n14 u1\n18 u1\n22 ipA\n24 u2\n27 u2\n29 u2\n29 ipA\n29 u2\n33 u1\n37 u1\n38 ipA\n40 ipA\n42 ipA\n45 ipA\n",
+    "expectedOutput": "ALLOW REJECT ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW REJECT\n"
+  },
+  {
+    "input": "7 1 6\n1 u1\n1 u2\n4 u2\n6 u1\n7 ipA\n9 u1\n",
+    "expectedOutput": "ALLOW ALLOW REJECT REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 2 22\n4 u2\n4 ipA\n5 u1\n9 u1\n10 u1\n11 u2\n14 u1\n14 u2\n15 ipA\n18 u1\n22 u2\n22 ipA\n22 ipA\n24 u2\n26 u2\n28 u1\n32 u2\n35 u2\n35 ipA\n37 u2\n37 u2\n41 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 3 10\n0 u1\n3 u1\n5 u2\n5 u1\n8 u2\n12 u1\n14 ipA\n15 ipA\n16 u2\n17 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 14\n2 u2\n2 u1\n5 ipA\n8 ipA\n10 u1\n13 u2\n13 u1\n15 u1\n16 u2\n18 ipA\n19 u1\n19 u1\n21 u2\n22 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 4 15\n2 u1\n6 ipA\n8 u2\n8 u1\n10 u1\n11 u2\n12 u1\n15 ipA\n17 ipA\n18 u1\n19 ipA\n20 u2\n24 u1\n27 u2\n27 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 2 6\n3 u1\n5 u1\n9 u2\n9 u2\n13 ipA\n15 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 1 2\n1 u2\n5 u1\n",
+    "expectedOutput": "ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 3 9\n0 u1\n4 u1\n7 u2\n7 ipA\n11 ipA\n12 ipA\n15 u1\n16 u1\n19 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 3 13\n4 u2\n4 ipA\n8 ipA\n12 u1\n15 u2\n16 ipA\n17 u1\n19 u2\n19 u1\n22 ipA\n24 u1\n27 ipA\n30 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 2 15\n4 u2\n6 ipA\n10 u1\n12 u1\n12 u1\n12 u2\n12 u1\n15 u1\n18 ipA\n21 u1\n22 u2\n24 ipA\n28 u2\n29 u1\n31 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 3 6\n0 u1\n4 u2\n5 u1\n7 u2\n9 u2\n9 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 4 3\n2 u2\n5 u2\n6 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 3 17\n0 ipA\n0 ipA\n1 ipA\n4 u1\n8 ipA\n8 ipA\n11 u2\n11 u1\n15 u1\n17 u2\n17 u1\n19 u2\n21 u2\n23 ipA\n23 u2\n25 u2\n27 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 5\n1 u2\n2 u2\n4 u2\n8 ipA\n8 u2\n",
+    "expectedOutput": "ALLOW REJECT REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 1 4\n4 u2\n7 u1\n8 u2\n11 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 2 16\n0 ipA\n4 u2\n5 u1\n5 ipA\n9 ipA\n11 u2\n14 u1\n18 ipA\n21 u1\n21 u1\n23 u2\n26 u2\n30 u2\n31 u1\n31 u1\n33 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 2 10\n1 u2\n1 u2\n4 u2\n4 u1\n8 u1\n12 u2\n14 u1\n15 u1\n17 u2\n20 u2\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 16\n2 ipA\n5 u2\n5 u2\n5 u1\n9 u1\n9 u2\n13 u1\n13 u1\n16 ipA\n18 u2\n18 ipA\n18 u1\n18 u2\n22 u1\n25 u2\n28 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 3 29\n4 u1\n8 u1\n10 u1\n11 u1\n11 ipA\n13 ipA\n13 ipA\n13 u2\n14 ipA\n15 ipA\n15 u1\n19 u1\n21 u1\n22 ipA\n24 u1\n26 u2\n30 ipA\n30 ipA\n30 u2\n32 u1\n34 u2\n34 ipA\n36 ipA\n40 ipA\n43 ipA\n45 u1\n48 u2\n49 u2\n53 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 2 5\n4 u2\n6 u1\n9 u2\n12 u2\n12 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 27\n4 ipA\n4 u2\n4 u2\n5 ipA\n6 u2\n6 u1\n8 ipA\n11 u2\n12 u2\n12 u1\n14 u1\n18 u2\n18 u2\n18 u2\n20 u1\n24 u2\n25 u1\n25 ipA\n29 ipA\n32 ipA\n36 u2\n37 u1\n40 ipA\n40 u1\n43 ipA\n45 u2\n49 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 1 3\n1 u2\n2 u2\n4 u1\n",
+    "expectedOutput": "ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "7 2 3\n1 u2\n5 u2\n9 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 3 6\n0 ipA\n3 u1\n5 ipA\n7 ipA\n9 u2\n13 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 1\n1 u2\n",
+    "expectedOutput": "ALLOW\n"
+  },
+  {
+    "input": "7 2 16\n3 ipA\n7 ipA\n7 u2\n8 u2\n11 u1\n13 u2\n15 u2\n17 ipA\n20 u2\n24 ipA\n27 ipA\n28 u1\n30 u2\n31 ipA\n31 ipA\n31 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 4 28\n4 ipA\n7 u2\n9 u1\n13 u2\n15 u1\n18 u1\n18 ipA\n19 u2\n19 ipA\n22 u1\n22 u1\n24 u1\n28 u2\n30 u1\n34 ipA\n37 u2\n40 ipA\n41 u2\n41 ipA\n45 u2\n49 u2\n50 u1\n53 u2\n53 ipA\n53 u1\n55 u2\n57 u1\n61 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 2 15\n2 ipA\n2 u1\n2 u2\n6 u1\n9 ipA\n11 u2\n15 u2\n19 ipA\n23 u2\n26 u1\n26 u2\n28 u2\n31 ipA\n31 u1\n33 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 4 13\n1 ipA\n3 ipA\n7 ipA\n11 u1\n15 u1\n19 u1\n22 ipA\n23 u1\n27 ipA\n27 ipA\n27 u2\n28 u2\n31 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 4 16\n0 u1\n1 u1\n1 ipA\n3 ipA\n6 u1\n8 u1\n8 ipA\n12 ipA\n16 ipA\n19 u1\n20 ipA\n20 u1\n20 u1\n23 u2\n26 u1\n30 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 14\n3 u2\n6 u1\n8 u2\n8 u1\n11 u1\n14 u1\n14 u1\n15 u2\n18 u1\n21 ipA\n22 u2\n24 u2\n28 u1\n28 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 4 5\n0 u2\n4 u1\n6 u1\n8 u2\n10 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 19\n1 u2\n5 u2\n5 u2\n5 ipA\n6 u2\n8 ipA\n8 u1\n9 u1\n11 u2\n13 ipA\n15 u1\n16 u2\n18 u1\n20 u2\n22 ipA\n23 u1\n25 u2\n25 ipA\n28 u1\n",
+    "expectedOutput": "ALLOW REJECT REJECT ALLOW REJECT ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "7 2 11\n1 ipA\n3 u1\n7 u1\n9 u2\n12 ipA\n13 ipA\n13 u1\n16 u2\n16 u1\n20 u1\n22 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 3 15\n2 ipA\n2 u2\n3 u1\n5 ipA\n7 ipA\n11 u1\n15 u1\n17 ipA\n17 u2\n20 u1\n21 ipA\n25 ipA\n29 ipA\n32 u2\n33 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 3 2\n3 u1\n5 ipA\n",
+    "expectedOutput": "ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 2 12\n0 u1\n3 u2\n5 ipA\n5 u2\n8 u2\n9 u1\n13 u2\n13 u2\n16 u2\n17 ipA\n21 ipA\n21 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 4 16\n0 ipA\n4 ipA\n8 u2\n12 ipA\n12 u1\n14 u2\n18 u2\n18 u2\n20 ipA\n22 u1\n24 u2\n28 ipA\n31 ipA\n31 u2\n31 ipA\n35 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 2 26\n4 ipA\n5 ipA\n6 u2\n9 ipA\n12 u2\n13 u1\n15 ipA\n19 u1\n22 u2\n26 u2\n29 u1\n29 u2\n33 u2\n35 u1\n35 u1\n37 ipA\n40 ipA\n43 u1\n46 ipA\n47 u2\n51 u2\n53 u1\n53 u1\n55 u2\n59 ipA\n63 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 2 9\n0 u1\n1 u1\n3 u1\n3 u2\n3 u2\n7 u1\n7 u1\n8 ipA\n10 u2\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 4 4\n3 u1\n5 u1\n6 u2\n9 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 11\n1 u1\n1 ipA\n1 u1\n5 u2\n8 u1\n11 ipA\n15 u1\n18 u1\n20 u1\n23 u2\n25 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 14\n0 ipA\n3 u2\n4 ipA\n4 u1\n8 u2\n12 ipA\n15 ipA\n16 ipA\n19 u2\n21 u1\n22 ipA\n25 u2\n25 u2\n28 u2\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "1 1 16\n0 ipA\n0 u2\n4 u1\n6 ipA\n7 u1\n7 ipA\n7 ipA\n8 ipA\n12 u2\n13 u2\n15 ipA\n15 ipA\n17 u1\n18 ipA\n19 ipA\n21 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 4 30\n4 ipA\n7 u2\n10 ipA\n10 u2\n13 u2\n13 u2\n15 u2\n15 u1\n19 u1\n20 ipA\n21 u2\n21 ipA\n23 u1\n25 u1\n27 u2\n27 u2\n27 ipA\n30 u1\n34 ipA\n36 u2\n36 ipA\n36 u1\n39 u1\n43 ipA\n43 u1\n45 ipA\n46 ipA\n48 u1\n52 u2\n54 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 8\n2 ipA\n4 u2\n8 u1\n8 u1\n8 ipA\n8 ipA\n11 u1\n13 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 22\n1 ipA\n4 u2\n6 u2\n7 ipA\n11 u1\n15 ipA\n18 ipA\n21 u1\n25 u1\n29 u2\n30 ipA\n33 u2\n35 ipA\n37 ipA\n39 u2\n43 u1\n44 u1\n46 ipA\n49 u1\n50 u1\n52 u1\n56 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 1 13\n1 u1\n4 u1\n7 u2\n7 u1\n7 u2\n10 u2\n12 ipA\n14 u2\n18 u1\n22 u1\n23 ipA\n25 ipA\n25 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 4 23\n0 u1\n1 ipA\n3 u2\n6 ipA\n9 u1\n13 u1\n16 u2\n19 u2\n23 u1\n25 ipA\n27 ipA\n30 ipA\n33 u1\n35 ipA\n38 ipA\n40 ipA\n41 u1\n41 u2\n41 u2\n43 u1\n44 u1\n48 ipA\n49 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 4 28\n1 ipA\n2 u1\n5 ipA\n6 u1\n10 ipA\n14 u1\n17 ipA\n17 u1\n19 u1\n21 ipA\n25 u2\n28 u1\n31 u1\n35 u2\n35 ipA\n38 u2\n38 ipA\n38 u2\n39 u2\n41 u1\n42 u2\n44 u2\n48 ipA\n51 u2\n53 ipA\n54 u1\n54 ipA\n55 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 5\n0 ipA\n2 u1\n2 ipA\n6 u2\n9 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 2 2\n1 u1\n4 u2\n",
+    "expectedOutput": "ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 3 25\n1 ipA\n5 u2\n6 u1\n6 u2\n7 ipA\n9 u2\n12 ipA\n14 u2\n17 u1\n17 u2\n21 u1\n23 ipA\n25 u1\n28 u1\n31 u1\n35 ipA\n36 u2\n40 u1\n43 u2\n43 ipA\n47 u2\n47 u2\n49 ipA\n52 u1\n55 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 1 13\n3 ipA\n5 u1\n7 ipA\n9 ipA\n13 u2\n14 u1\n14 u1\n16 ipA\n16 u1\n17 ipA\n20 ipA\n24 u1\n26 u2\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW ALLOW REJECT REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 4 7\n2 u2\n2 u2\n4 u1\n4 u2\n7 ipA\n8 u2\n10 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 4 3\n3 ipA\n3 u1\n5 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 3 6\n3 ipA\n5 u1\n8 u1\n9 u2\n9 u1\n11 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 3\n1 u2\n4 u2\n6 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 17\n3 u1\n3 u2\n6 ipA\n7 u2\n7 ipA\n7 ipA\n7 ipA\n11 ipA\n15 ipA\n16 u1\n20 u1\n21 u2\n25 u1\n28 u1\n32 u1\n36 u2\n38 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 3 5\n2 u2\n3 u2\n3 u2\n6 u1\n10 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 1 24\n2 u1\n4 ipA\n6 u2\n8 ipA\n12 u2\n12 u2\n14 ipA\n15 u1\n15 u2\n19 u1\n21 ipA\n24 u2\n27 u1\n29 u2\n32 u2\n36 ipA\n38 ipA\n40 ipA\n43 u1\n44 u1\n45 ipA\n48 ipA\n49 ipA\n50 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW REJECT REJECT ALLOW REJECT ALLOW ALLOW REJECT REJECT\n"
+  },
+  {
+    "input": "1 2 29\n3 u1\n3 u1\n3 u2\n6 u1\n7 u1\n8 ipA\n11 ipA\n12 u1\n12 ipA\n14 u1\n18 ipA\n22 u2\n23 u1\n27 u1\n30 u1\n33 u1\n34 ipA\n37 u1\n41 u1\n41 ipA\n43 u2\n44 u1\n44 u1\n44 u1\n48 u1\n52 u1\n54 ipA\n57 u2\n59 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 1 18\n0 u1\n4 ipA\n4 u1\n7 ipA\n8 u1\n10 u1\n13 u2\n15 ipA\n16 u1\n16 u2\n16 ipA\n19 u1\n22 u1\n25 u2\n26 ipA\n30 ipA\n34 ipA\n34 u1\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT REJECT ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "3 1 15\n3 ipA\n3 ipA\n6 ipA\n9 ipA\n13 u2\n16 u1\n19 u1\n21 u2\n23 u1\n23 u1\n26 ipA\n30 u2\n31 u2\n34 ipA\n35 u1\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 2 25\n3 u2\n5 u1\n6 u2\n8 ipA\n10 u2\n14 ipA\n17 ipA\n19 u2\n23 ipA\n25 u1\n27 u1\n30 u1\n32 u1\n34 ipA\n37 u1\n41 ipA\n42 u1\n44 ipA\n47 u2\n51 ipA\n55 ipA\n59 u1\n60 ipA\n63 u1\n65 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 1 8\n3 u1\n5 u1\n8 u2\n11 u1\n14 ipA\n18 ipA\n18 u1\n18 u2\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 1 26\n1 u1\n5 u1\n7 u1\n10 ipA\n12 ipA\n12 u2\n12 ipA\n16 u1\n16 u1\n18 u2\n22 u2\n24 u1\n26 u1\n30 u1\n34 u2\n37 ipA\n39 ipA\n41 u2\n45 u2\n49 ipA\n52 u2\n54 ipA\n57 u2\n61 u2\n64 ipA\n64 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 4 26\n1 u1\n4 u1\n6 ipA\n10 ipA\n14 ipA\n18 u1\n20 ipA\n23 u2\n24 u1\n25 u2\n28 u2\n31 u2\n34 ipA\n37 u2\n38 u1\n41 u2\n42 u1\n43 u1\n43 u2\n46 u1\n50 ipA\n50 u2\n53 ipA\n54 u1\n55 u2\n59 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 3 14\n4 ipA\n6 u1\n7 u2\n8 u1\n10 u2\n13 u2\n16 u1\n17 u2\n19 u2\n22 ipA\n22 u2\n26 ipA\n28 ipA\n29 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 14\n0 u1\n2 u2\n5 ipA\n6 ipA\n9 ipA\n13 u2\n14 u2\n17 u2\n21 u2\n25 u2\n29 u1\n33 ipA\n36 ipA\n37 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 2 22\n1 u1\n5 ipA\n6 u1\n8 ipA\n11 ipA\n12 u2\n14 ipA\n18 ipA\n19 u2\n20 u2\n23 u1\n26 ipA\n30 ipA\n30 u2\n31 u2\n34 ipA\n35 ipA\n36 u2\n39 u1\n42 u1\n46 u1\n46 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 3 12\n3 u1\n7 u2\n11 ipA\n13 u1\n13 u2\n15 ipA\n17 u2\n20 ipA\n20 u1\n23 u2\n25 u2\n25 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 15\n4 u1\n5 ipA\n6 u2\n9 ipA\n11 ipA\n12 u1\n16 ipA\n19 u2\n19 u1\n19 u1\n21 ipA\n25 ipA\n25 u2\n25 ipA\n28 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 2 26\n1 u2\n5 u1\n7 u1\n11 u2\n11 u1\n14 u2\n14 u2\n14 ipA\n16 u2\n18 u2\n21 u1\n25 u2\n29 u1\n30 u2\n30 u2\n30 ipA\n33 u1\n34 u1\n35 ipA\n39 u2\n41 u1\n44 u1\n46 u2\n48 ipA\n49 ipA\n50 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 1 21\n3 ipA\n4 u1\n8 u2\n12 u1\n16 ipA\n19 ipA\n19 u1\n22 u2\n24 u1\n27 u1\n31 ipA\n31 u1\n33 u1\n33 ipA\n37 u1\n38 u2\n40 u2\n44 u2\n47 u1\n50 ipA\n51 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 19\n0 u1\n4 ipA\n5 ipA\n5 u2\n7 u2\n9 u2\n12 ipA\n13 u2\n15 ipA\n18 u2\n18 ipA\n21 u2\n21 u1\n25 u1\n27 u2\n27 u2\n30 ipA\n30 ipA\n32 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 4 29\n4 u1\n6 u2\n6 u2\n10 u1\n14 ipA\n16 u1\n17 u1\n20 u1\n24 ipA\n26 u2\n26 u2\n30 u1\n33 u1\n34 ipA\n38 u2\n39 ipA\n43 u1\n46 u2\n47 u2\n51 u2\n51 u2\n55 u1\n57 u2\n57 u1\n61 u2\n62 u1\n63 u1\n65 u1\n67 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 2 7\n3 u2\n7 ipA\n11 u1\n15 u2\n15 u1\n18 u2\n21 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 3 28\n2 u1\n5 u1\n5 ipA\n5 u2\n5 u1\n5 u2\n5 ipA\n9 u1\n10 u2\n10 u1\n12 u2\n14 ipA\n14 u1\n15 u2\n17 u2\n21 u2\n24 ipA\n24 u2\n26 u2\n29 ipA\n32 ipA\n35 ipA\n37 u2\n41 u1\n41 ipA\n44 ipA\n44 u1\n44 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 13\n2 u2\n2 u1\n6 u1\n6 ipA\n10 ipA\n13 u2\n17 u1\n21 ipA\n25 ipA\n27 u1\n29 u2\n31 u1\n33 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 2 19\n0 u1\n2 u1\n6 u1\n7 ipA\n11 ipA\n11 ipA\n12 u2\n15 u2\n18 u2\n18 ipA\n21 u2\n25 u2\n27 u2\n30 ipA\n30 u2\n30 u2\n31 u2\n34 u2\n35 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT REJECT ALLOW\n"
+  },
+  {
+    "input": "3 4 28\n4 u2\n4 u2\n6 u2\n6 u1\n9 u1\n9 u1\n12 u2\n14 ipA\n18 u2\n20 ipA\n24 u2\n26 u2\n28 ipA\n29 u1\n33 u2\n37 u2\n38 u2\n40 u2\n44 u1\n45 u1\n47 ipA\n50 u2\n54 u2\n57 u1\n60 u1\n63 ipA\n66 ipA\n66 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 4 21\n1 ipA\n1 u1\n2 u1\n6 u1\n10 ipA\n13 u2\n13 u2\n17 u2\n21 u2\n23 u2\n27 u1\n29 ipA\n32 u2\n32 ipA\n33 u2\n35 u2\n35 u2\n39 u2\n43 ipA\n45 u1\n47 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 3 7\n2 u1\n5 u1\n5 u1\n9 ipA\n13 u2\n16 ipA\n18 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 1 18\n4 ipA\n7 u1\n7 ipA\n9 ipA\n9 ipA\n9 ipA\n9 ipA\n13 ipA\n13 ipA\n13 u1\n17 u2\n19 ipA\n20 ipA\n22 u1\n25 ipA\n25 ipA\n28 ipA\n29 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW REJECT REJECT REJECT REJECT ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT REJECT ALLOW\n"
+  },
+  {
+    "input": "8 1 14\n2 u1\n4 ipA\n7 u1\n7 ipA\n8 u1\n12 u2\n16 ipA\n19 ipA\n19 u2\n20 u1\n24 u2\n27 ipA\n30 u1\n32 u2\n",
+    "expectedOutput": "ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 1\n2 ipA\n",
+    "expectedOutput": "ALLOW\n"
+  },
+  {
+    "input": "2 3 25\n0 u2\n1 u1\n1 ipA\n2 u1\n2 u2\n2 u2\n4 u2\n6 ipA\n6 u2\n10 u2\n10 u1\n13 u1\n15 ipA\n18 ipA\n19 u2\n22 ipA\n24 u1\n26 ipA\n28 u1\n30 ipA\n32 ipA\n34 ipA\n37 ipA\n41 u1\n42 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 4 12\n2 u1\n3 ipA\n4 u1\n7 u2\n10 u2\n10 u1\n12 u2\n13 u1\n15 u1\n18 u2\n20 u2\n23 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 2 29\n3 u1\n7 u1\n9 ipA\n10 u1\n14 ipA\n14 ipA\n18 ipA\n19 u2\n19 u2\n23 u2\n25 u1\n26 u2\n28 ipA\n30 u2\n33 u2\n37 u2\n40 u2\n40 u1\n41 u1\n41 ipA\n42 u2\n45 ipA\n45 u2\n45 u2\n49 ipA\n50 ipA\n53 u1\n55 u1\n59 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 1 8\n4 u2\n8 u1\n12 ipA\n12 ipA\n13 u2\n13 u2\n16 u2\n16 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 29\n0 u2\n4 u1\n8 ipA\n11 u1\n14 u2\n14 ipA\n18 u2\n21 u1\n25 u1\n26 u1\n26 ipA\n27 u1\n30 u1\n34 u2\n38 ipA\n42 u1\n46 ipA\n47 u2\n48 u2\n51 ipA\n51 ipA\n52 ipA\n54 ipA\n58 u2\n60 u2\n62 ipA\n64 ipA\n68 u1\n71 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 1 4\n4 ipA\n6 ipA\n10 u1\n14 ipA\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 3 2\n1 u1\n3 u2\n",
+    "expectedOutput": "ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 20\n1 u1\n5 u1\n5 ipA\n9 ipA\n13 u1\n15 u1\n18 u1\n22 u1\n22 u1\n24 u2\n27 u1\n30 ipA\n31 ipA\n33 ipA\n36 u1\n38 ipA\n42 u2\n44 u1\n44 ipA\n48 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 1 25\n0 u1\n0 u1\n2 ipA\n5 u1\n9 u1\n13 u2\n15 ipA\n16 u1\n18 u1\n18 u1\n19 u1\n19 u1\n23 u1\n26 u1\n27 u2\n29 ipA\n30 ipA\n31 u2\n32 ipA\n35 u1\n38 u2\n40 u1\n41 u2\n44 ipA\n45 ipA\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 4 13\n0 ipA\n2 u1\n4 ipA\n4 u1\n7 u1\n9 ipA\n9 u1\n12 ipA\n15 ipA\n17 ipA\n19 u1\n20 u2\n23 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 1 4\n4 ipA\n4 u1\n4 ipA\n8 ipA\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "4 2 29\n2 u1\n5 ipA\n8 u1\n11 ipA\n13 ipA\n13 u1\n15 u2\n19 u2\n20 u2\n22 u2\n22 u2\n25 u2\n26 ipA\n26 u2\n28 u1\n28 u1\n29 u2\n33 u1\n35 ipA\n36 u1\n36 u2\n36 u2\n40 u1\n42 u2\n45 u2\n47 u2\n48 u1\n51 u2\n55 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 15\n2 u1\n4 u1\n5 ipA\n6 ipA\n10 u1\n13 u1\n16 ipA\n19 ipA\n21 u2\n22 u2\n23 u1\n27 u2\n31 ipA\n33 u1\n33 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 2 9\n3 u1\n7 ipA\n9 ipA\n9 u1\n12 u2\n15 ipA\n19 u2\n19 u2\n22 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 2 12\n4 u2\n5 ipA\n9 ipA\n9 u2\n10 u2\n10 u1\n12 u2\n12 u2\n14 u2\n15 u2\n16 ipA\n18 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 4 9\n2 ipA\n2 u2\n3 ipA\n7 u1\n7 u1\n10 ipA\n12 u1\n14 u2\n18 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 3 1\n4 u1\n",
+    "expectedOutput": "ALLOW\n"
+  },
+  {
+    "input": "1 2 17\n3 u2\n3 u2\n6 u2\n8 u2\n11 u2\n12 u2\n14 u1\n17 ipA\n20 u2\n22 u2\n25 u1\n29 ipA\n32 u2\n36 u2\n37 u1\n41 u2\n42 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 2 15\n0 ipA\n4 u1\n6 ipA\n6 ipA\n8 u2\n9 u1\n11 u2\n14 u2\n18 ipA\n21 ipA\n23 ipA\n25 ipA\n29 u1\n33 ipA\n37 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 4 11\n4 u2\n5 u1\n9 ipA\n12 u2\n14 u2\n17 u2\n20 ipA\n23 u1\n25 ipA\n26 u1\n29 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 3 11\n0 ipA\n1 ipA\n2 ipA\n5 u1\n9 u1\n9 ipA\n10 u2\n14 u1\n15 u2\n15 u2\n19 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 2 25\n4 u2\n6 ipA\n8 u1\n10 u2\n11 u1\n14 u1\n14 ipA\n14 u2\n14 u1\n15 ipA\n16 u2\n17 ipA\n18 u2\n18 u2\n21 u2\n25 u1\n28 ipA\n30 u2\n30 u2\n31 ipA\n32 u2\n35 u1\n36 ipA\n39 u1\n41 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 3 22\n4 u1\n8 ipA\n12 u1\n16 ipA\n19 u2\n22 u2\n22 ipA\n25 ipA\n28 u1\n32 u1\n32 u1\n33 u1\n36 u2\n37 ipA\n37 u1\n41 u1\n41 u2\n45 ipA\n45 u2\n48 u1\n51 u1\n53 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 1 27\n0 u1\n4 u1\n4 u2\n5 u2\n5 ipA\n6 u2\n6 u2\n9 ipA\n12 u2\n15 u1\n17 u1\n21 u1\n22 ipA\n26 ipA\n28 ipA\n31 ipA\n35 ipA\n37 ipA\n39 u2\n40 u2\n41 u1\n42 ipA\n42 ipA\n42 u1\n46 ipA\n50 u1\n54 ipA\n",
+    "expectedOutput": "ALLOW REJECT ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 3 1\n3 u1\n",
+    "expectedOutput": "ALLOW\n"
+  },
+  {
+    "input": "7 2 27\n3 ipA\n6 ipA\n6 u1\n8 u1\n8 u2\n11 u2\n15 ipA\n18 ipA\n19 u1\n19 u1\n21 u2\n25 u2\n29 ipA\n30 ipA\n31 ipA\n33 ipA\n37 u1\n37 u2\n37 ipA\n38 u2\n42 u1\n43 ipA\n43 ipA\n44 u2\n47 u2\n48 u1\n50 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 2 9\n0 ipA\n3 ipA\n5 u2\n8 u2\n12 u2\n16 ipA\n20 ipA\n23 u1\n26 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 30\n0 u2\n3 u2\n6 u1\n7 u2\n8 u2\n10 u2\n12 u2\n16 ipA\n16 u2\n18 u2\n18 u1\n22 ipA\n26 u2\n29 ipA\n29 u1\n31 u1\n35 ipA\n38 ipA\n42 u1\n43 u1\n46 u2\n50 u2\n50 u1\n51 u1\n52 ipA\n54 u2\n58 ipA\n59 u1\n62 u1\n66 ipA\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW REJECT REJECT REJECT ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW REJECT ALLOW\n"
+  },
+  {
+    "input": "8 1 26\n2 u1\n6 u2\n6 u2\n8 ipA\n9 u2\n12 u1\n14 ipA\n17 ipA\n17 ipA\n19 u2\n19 u2\n23 ipA\n26 ipA\n26 ipA\n28 u1\n30 u1\n33 ipA\n34 u2\n34 u1\n37 u1\n41 ipA\n43 ipA\n45 u1\n45 ipA\n49 u1\n52 u1\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW REJECT REJECT ALLOW REJECT ALLOW REJECT ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW REJECT ALLOW REJECT\n"
+  },
+  {
+    "input": "3 1 24\n1 u2\n1 ipA\n3 u1\n7 u2\n10 u2\n10 ipA\n14 u2\n17 u2\n21 u1\n22 u2\n25 u1\n29 u1\n32 u2\n35 u1\n36 u2\n38 ipA\n42 u1\n42 ipA\n42 u2\n42 ipA\n44 ipA\n47 u2\n51 u2\n55 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 4 18\n1 u2\n3 ipA\n7 ipA\n9 ipA\n12 u2\n14 u1\n16 u2\n19 u2\n19 u1\n20 u2\n24 ipA\n25 ipA\n29 u1\n32 u2\n33 ipA\n33 ipA\n35 ipA\n35 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 10\n3 u1\n7 ipA\n9 u1\n12 u2\n14 u2\n18 ipA\n22 ipA\n23 u2\n24 u1\n26 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 1 5\n2 u2\n3 u2\n4 u1\n7 ipA\n11 u1\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "5 4 27\n1 u1\n5 u2\n7 ipA\n9 ipA\n9 u1\n11 u2\n13 u1\n15 ipA\n19 u1\n19 ipA\n21 u1\n22 u1\n22 ipA\n25 u2\n28 u2\n29 u1\n33 ipA\n35 u1\n38 ipA\n41 u1\n44 u1\n46 u2\n48 u2\n52 ipA\n55 u1\n57 u2\n61 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 28\n1 ipA\n4 u1\n5 u2\n5 u1\n5 u2\n8 ipA\n12 u1\n15 u2\n18 u2\n18 u1\n21 ipA\n24 u1\n27 u2\n29 ipA\n33 ipA\n34 u1\n34 ipA\n34 u1\n34 u2\n36 ipA\n39 u1\n41 u2\n41 u1\n41 u2\n43 ipA\n47 u2\n50 u2\n51 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 3 19\n1 u2\n4 u2\n4 u1\n7 ipA\n8 u1\n8 u1\n12 ipA\n12 ipA\n16 u1\n19 ipA\n22 u2\n25 u1\n26 ipA\n29 ipA\n33 u1\n34 u1\n35 u2\n35 u1\n38 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 3 1\n0 u1\n",
+    "expectedOutput": "ALLOW\n"
+  },
+  {
+    "input": "4 3 12\n0 u2\n2 ipA\n6 ipA\n6 u2\n8 u1\n9 u1\n10 ipA\n14 u1\n15 u1\n17 u1\n20 ipA\n23 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 1 8\n1 u2\n4 ipA\n6 ipA\n7 u1\n10 u1\n10 u1\n10 u2\n10 u1\n",
+    "expectedOutput": "ALLOW ALLOW REJECT ALLOW ALLOW REJECT ALLOW REJECT\n"
+  },
+  {
+    "input": "7 4 10\n2 u1\n2 ipA\n4 u1\n6 ipA\n8 u2\n9 ipA\n13 ipA\n13 u1\n16 u1\n17 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 3 11\n2 u1\n4 ipA\n5 u1\n9 ipA\n9 u2\n13 u2\n17 ipA\n17 u2\n21 ipA\n24 ipA\n24 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 26\n3 u1\n7 ipA\n11 u1\n13 ipA\n16 ipA\n18 u1\n20 u2\n23 u1\n25 ipA\n29 ipA\n32 ipA\n35 u1\n35 u2\n37 ipA\n38 u2\n39 ipA\n40 u2\n44 u2\n44 ipA\n45 ipA\n48 u1\n50 u2\n51 ipA\n52 u2\n53 u2\n57 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT REJECT REJECT ALLOW ALLOW REJECT ALLOW ALLOW ALLOW REJECT REJECT ALLOW\n"
+  },
+  {
+    "input": "1 4 29\n1 u2\n4 ipA\n8 u2\n8 u1\n12 u2\n13 u1\n17 u2\n21 u1\n22 u2\n22 u1\n24 ipA\n28 ipA\n32 u1\n35 u2\n39 u1\n41 u2\n43 u1\n43 u1\n46 u2\n49 ipA\n50 ipA\n51 ipA\n52 u1\n55 ipA\n55 ipA\n58 u2\n62 u2\n65 u2\n65 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 1 1\n4 u1\n",
+    "expectedOutput": "ALLOW\n"
+  },
+  {
+    "input": "8 3 27\n2 u1\n5 ipA\n8 u1\n8 ipA\n11 ipA\n14 u1\n18 u1\n19 u2\n23 u2\n27 ipA\n31 u2\n31 ipA\n35 u2\n39 u1\n42 ipA\n44 ipA\n45 ipA\n46 u2\n48 ipA\n50 u1\n54 u1\n55 ipA\n57 ipA\n58 u1\n62 u1\n62 ipA\n62 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 1 6\n3 u2\n5 u2\n7 u1\n7 ipA\n7 u1\n7 u1\n",
+    "expectedOutput": "ALLOW REJECT ALLOW ALLOW REJECT REJECT\n"
+  },
+  {
+    "input": "5 4 10\n2 u2\n6 ipA\n9 ipA\n12 u2\n13 u1\n16 u2\n16 u2\n20 ipA\n22 ipA\n24 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 3 7\n1 u2\n2 u1\n4 u1\n6 u2\n6 u2\n9 u2\n11 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 4 26\n2 ipA\n6 u1\n6 ipA\n10 u2\n11 u2\n15 u2\n16 ipA\n19 u2\n19 u2\n22 ipA\n23 ipA\n23 ipA\n27 u2\n28 ipA\n29 u2\n29 u2\n32 u1\n35 u2\n36 ipA\n40 u2\n43 u1\n46 u1\n46 ipA\n48 ipA\n52 u2\n55 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 1 26\n1 u1\n2 u2\n6 ipA\n6 u1\n8 ipA\n12 u2\n15 u1\n17 u1\n17 u2\n19 u1\n20 u2\n23 ipA\n25 u2\n27 ipA\n28 u2\n29 u2\n30 u1\n33 u2\n35 u1\n37 u2\n37 ipA\n41 ipA\n43 ipA\n45 ipA\n49 u2\n50 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW REJECT ALLOW ALLOW REJECT REJECT ALLOW REJECT\n"
+  },
+  {
+    "input": "3 2 28\n3 ipA\n7 u1\n11 u2\n12 u1\n12 u1\n15 ipA\n15 u1\n16 u2\n16 u1\n19 ipA\n21 u1\n23 u2\n26 u2\n26 u2\n27 u2\n29 u2\n33 u1\n35 u1\n39 u1\n40 u1\n44 u2\n47 ipA\n48 ipA\n49 u2\n53 ipA\n55 u1\n59 ipA\n61 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 2 11\n2 u1\n3 ipA\n4 u2\n5 u2\n7 u2\n10 u2\n10 u2\n10 u1\n13 ipA\n14 u2\n15 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 1 23\n4 ipA\n8 u2\n8 ipA\n11 u2\n13 u1\n15 ipA\n17 u2\n18 u2\n22 u2\n25 u2\n25 ipA\n28 u1\n30 u1\n32 ipA\n33 u2\n36 u1\n38 ipA\n40 u2\n42 u1\n46 ipA\n47 ipA\n50 ipA\n54 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 2 25\n2 ipA\n5 u1\n7 u2\n11 ipA\n14 u1\n15 u2\n17 u2\n19 ipA\n20 ipA\n24 u1\n27 u2\n30 u2\n33 ipA\n37 u1\n38 ipA\n40 u1\n40 u2\n42 ipA\n43 u2\n43 u1\n44 u1\n47 ipA\n47 u2\n47 ipA\n48 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW REJECT REJECT ALLOW\n"
+  },
+  {
+    "input": "7 4 24\n1 ipA\n4 ipA\n5 u1\n5 ipA\n8 u2\n12 ipA\n12 u1\n14 u2\n15 ipA\n18 ipA\n19 u1\n20 u2\n23 ipA\n23 u2\n23 ipA\n24 u2\n24 u1\n26 u2\n28 ipA\n29 ipA\n33 ipA\n35 ipA\n36 ipA\n38 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 4 19\n0 ipA\n3 ipA\n3 u2\n6 u2\n10 u2\n10 ipA\n12 u2\n14 ipA\n17 ipA\n20 ipA\n20 u1\n21 ipA\n22 ipA\n24 u1\n25 ipA\n25 u2\n28 u1\n32 u1\n34 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "4 3 28\n4 u2\n7 u2\n7 u2\n9 u1\n13 u2\n17 u2\n18 u2\n19 u2\n21 u2\n25 u1\n25 ipA\n29 u2\n33 u1\n36 u1\n39 ipA\n41 u1\n44 u1\n46 ipA\n48 ipA\n52 ipA\n54 u2\n57 u1\n59 u2\n61 ipA\n62 ipA\n64 u1\n67 u1\n68 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 2 29\n2 u2\n4 u2\n5 ipA\n7 u2\n9 u1\n12 u2\n16 u2\n18 u1\n21 u2\n21 u1\n23 u1\n27 u2\n30 u2\n31 ipA\n33 u1\n34 u2\n37 u1\n38 u2\n41 u1\n41 u1\n41 u2\n44 ipA\n48 u1\n50 u2\n52 u2\n54 u2\n57 u2\n61 ipA\n63 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "1 2 24\n0 ipA\n3 ipA\n4 ipA\n4 u1\n5 ipA\n9 ipA\n10 ipA\n12 ipA\n15 ipA\n18 u2\n21 u1\n22 ipA\n22 u1\n25 u1\n26 u2\n27 u1\n30 u2\n31 u1\n34 u1\n37 u2\n39 ipA\n40 u1\n44 u1\n44 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 1 8\n3 ipA\n4 ipA\n5 u2\n7 u2\n7 u2\n10 ipA\n11 u2\n14 u1\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "8 4 11\n3 u1\n4 u2\n8 ipA\n11 u2\n15 u2\n16 u2\n20 u2\n20 ipA\n24 u2\n28 u2\n32 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "7 4 18\n2 ipA\n5 u2\n9 ipA\n9 u2\n10 ipA\n14 u2\n18 ipA\n19 u1\n20 u2\n20 u2\n23 u1\n24 u2\n25 ipA\n27 u2\n29 u2\n29 ipA\n33 u2\n34 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 4 29\n0 u2\n3 u1\n4 u2\n6 u1\n8 u2\n10 ipA\n14 u1\n14 ipA\n17 u1\n18 ipA\n18 u1\n20 u2\n21 u1\n23 u1\n25 u1\n29 u2\n33 u1\n36 u2\n37 u2\n41 ipA\n44 u2\n46 u2\n50 ipA\n50 u2\n54 u1\n54 ipA\n58 ipA\n59 u2\n62 u2\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "2 1 18\n1 ipA\n2 u2\n3 u1\n5 u2\n5 ipA\n5 ipA\n9 ipA\n12 u2\n15 u2\n16 u2\n17 ipA\n17 u2\n19 u2\n19 u2\n23 ipA\n24 u2\n26 u2\n30 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW REJECT ALLOW REJECT ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "6 1 10\n4 u2\n4 ipA\n5 ipA\n5 u2\n8 ipA\n11 u1\n15 u1\n19 ipA\n20 u1\n23 u1\n",
+    "expectedOutput": "ALLOW ALLOW REJECT REJECT ALLOW ALLOW ALLOW ALLOW ALLOW REJECT\n"
+  },
+  {
+    "input": "6 2 12\n4 u2\n5 u1\n6 u1\n7 ipA\n7 u1\n8 u2\n12 u2\n14 u2\n16 u1\n19 ipA\n20 u2\n23 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  },
+  {
+    "input": "3 3 29\n0 u1\n0 u1\n2 u2\n2 u1\n2 u1\n5 u1\n6 ipA\n7 u1\n10 u2\n11 ipA\n11 u1\n14 u1\n15 u1\n19 u2\n22 u2\n24 ipA\n26 u1\n28 u1\n32 u2\n35 u1\n37 u1\n39 u2\n39 u1\n39 u2\n39 ipA\n40 u1\n40 u2\n41 ipA\n43 ipA\n",
+    "expectedOutput": "ALLOW ALLOW ALLOW ALLOW REJECT ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW ALLOW\n"
+  }
+]

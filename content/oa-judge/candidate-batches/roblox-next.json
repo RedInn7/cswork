@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-roblox-2",
+      "sourceContentHash": "3ae6424e08381bb9f2786ec68e8564f68037ebc9b63231f7ad82539552ed9820",
+      "packageChecksum": "b6bea3fde27721d0d9269ebb091ec61bdb85f662529c902911b38fb3941c3a29",
+      "editorial": "## 思路\n\n对每个值维护当前窗口出现次数。新增一个元素时，只有旧次数为奇数才会让该值的可配对数增加一；移除时，只有旧次数为偶数才会减少一。双指针维护窗口内最大不相交重复对数小于 k 的最短后缀。每个右端点对应的合法左端点恰为 0 到 left−1，共 left 个。\n\n## 正确性\n\n对某值出现 c 次，最多可组成 floor(c/2) 对且所有下标互异；不同值的下标集合天然互斥，因此窗口最大不相交配对数为各值 floor(c/2) 之和。该量随右端点单调不减、随左端点右移单调不增，双指针恰好越过所有合法左端点，累计 left 不重不漏。\n\n## 复杂度\n\n每个下标最多进出窗口一次，时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k=t[0],t[1]; a=t[2:2+n]\n freq={}; left=pairs=answer=0\n for right,x in enumerate(a):\n  old=freq.get(x,0); freq[x]=old+1\n  if old%2: pairs+=1\n  while pairs>=k:\n   y=a[left]; old=freq[y]\n   if old%2==0: pairs-=1\n   freq[y]=old-1; left+=1\n  answer+=left\n return str(answer)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-3",
+      "sourceContentHash": "a30c37de2da847ec96a2232b679f22919247c701127362aed45cabc39471f3c2",
+      "packageChecksum": "8ccb7edef66d125e4c99e050bd5e32305343919ba06f0aea48de647fa0feba95",
+      "editorial": "## 思路\n\n固定每个中心，按行差 dr 枚举菱形覆盖的行；该行可包含的列差不超过 radius−1−|dr|。将范围裁切到矩阵边界后累加。扫描所有中心并取最大值。若半径 footprint 不能容纳在任何中心周围，按本站明确补充返回 0。\n\n## 正确性\n\n原题定义的距离是曼哈顿距离加一，因此包含条件等价于 |dr|+|dc|<radius。对固定 dr，所有满足条件的列恰是连续区间 |dc|≤radius−1−|dr|；逐行求和覆盖且仅覆盖菱形单元。遍历全部中心就得到所有允许区域的和并取最大。\n\n## 复杂度\n\n设矩阵为 R×C、半径为 K，时间 O(RCK)，空间 O(RC)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rows,cols,r=t[:3]; a=[t[3+i*cols:3+(i+1)*cols] for i in range(rows)]\n pref=[[0]*(cols+1) for _ in range(rows)]\n for i in range(rows):\n  for j in range(cols): pref[i][j+1]=pref[i][j]+a[i][j]\n best=None\n for cr in range(r-1,rows-r+1):\n  for cc in range(r-1,cols-r+1):\n   total=0\n   for dr in range(-(r-1),r):\n    rr=cr+dr\n    if 0<=rr<rows:\n     span=r-1-abs(dr); lo=max(0,cc-span); hi=min(cols-1,cc+span)\n     total+=pref[rr][hi+1]-pref[rr][lo]\n   if best is None or total>best: best=total\n return str(best if best is not None else 0)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-5",
+      "sourceContentHash": "111f976d39ba5e12cc3faf7acf2d30ef7867f60bfe8228546145db1644704c83",
+      "packageChecksum": "94f22367a0d27b03ab42b543810f4026f6d24e98bd03ab721149f1200a39daa9",
+      "editorial": "## 思路\n\n维护尚未拆除的坐标集合以及当前连续段数量。删除 x 前检查 x−1 与 x+1 是否仍存在：两侧都有时，原来一个段被拆成两个，段数加一；两侧都没有时，孤立段消失，减一；仅一侧存在时段数不变。\n\n## 正确性\n\n整数线上连续段恰由没有左邻居的存活房屋作为起点计数。删除一个点只会影响其所在段：若点是段内部则分裂为两段；若该段长度为一则整段消失；若在端点则剩余房屋仍构成一个段。上述邻居分类正好对应这三种情况。\n\n## 复杂度\n\n每次查询平均 O(1)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,q=t[:2]; live=set(t[2:2+n]); out=[]\n segments=sum(1 for x in live if x-1 not in live)\n for x in t[2+n:2+n+q]:\n  left=x-1 in live; right=x+1 in live\n  if left and right: segments+=1\n  elif not left and not right: segments-=1\n  live.remove(x); out.append(str(segments))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-9",
+      "sourceContentHash": "a4b70bbf1c53c341c24c387c3376ec45b2205d2860e62890a3484037c3d7a48f",
+      "packageChecksum": "7a399c8ec57e3afbb25d80f0239c0918c5241d875c03788656431a2c701143da",
+      "editorial": "## 思路\n\n本站按原题允许的策略选择固定窗口。将每个请求映射为 (key, floor(timestamp/window))，维护该组合已允许次数；未达 limit 时放行并递增，否则拒绝。\n\n## 正确性\n\n固定窗口策略下，每条请求只受自身 key 和窗口编号影响，且额度仅由该组先前已放行请求占用。哈希表精确保存每组计数，因此判定与定义一致。\n\n## 复杂度\n\n每个请求期望 O(1)，总时间 O(q)，空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=raw.split(); window,limit,q=map(int,t[:3]); counts={}; out=[]; p=3\n for _ in range(q):\n  timestamp=int(t[p]); key=t[p+1]; p+=2; bucket=timestamp//window; k=(key,bucket)\n  if counts.get(k,0)<limit: counts[k]=counts.get(k,0)+1; out.append('ALLOW')\n  else: out.append('REJECT')\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-10",
+      "sourceContentHash": "0c5e4f5fb329c25c22ad63de3a6011f10e7c05ad37afea4e2523424c3a1734ce",
+      "packageChecksum": "7724a65853297256c41a40463349e13b6a0312bceba078505a274a6ee6fe9335",
+      "editorial": "## 思路\n\n逐条解析 ID 与四位数字对应的整数，记录用量最大的一项。题面保证用量值互异，因此最大值对应唯一设备。\n\n## 正确性\n\n扫描前 i 条记录后，best 始终是其中用量最大设备的 ID。新记录用量更大时更新，否则保持。扫描结束后 best 因而对应全体最大用量。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=raw.split(); n=int(t[0]); best_id=''; best=-1\n for i in range(n):\n  key=t[1+2*i]; value=int(t[2+2*i])\n  if value>best: best=value; best_id=key\n return best_id\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-12",
+      "sourceContentHash": "da49d0edf35172bafd020e59939e1088c49817d92fb6d6bd107b1c05571b4f32",
+      "packageChecksum": "90f055bc77d52302b2f766ff00d53b60b5ea65cd7d53060270c83da3dea9cf09",
+      "editorial": "## 思路\n\n每个维度分别以字段值为键维护已放行请求时间的双端队列。处理请求时先移除时间小于等于 now−window 的过期时间，再检查所有维度当前计数是否小于各自限额。只有全部通过才在所有维度记入时间。\n\n## 正确性\n\n滑动窗口定义为 [now−window, now)，因此边界等于 now−window 的旧请求必须过期。逐维检查保证任何一维超限都会拒绝；仅对整体获准请求追加记录，正好实现本站明确规定的额度语义。\n\n## 复杂度\n\n每条请求检查至多 d 个维度；每个时间戳在队列中至多入队出队一次。总时间 O(qd)，空间 O(qd)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import defaultdict,deque\ndef solve(raw):\n t=raw.split(); d,q=map(int,t[:2]); p=2; rules=[]; hist=[]\n for _ in range(d):\n  name=t[p]; w=int(t[p+1]); lim=int(t[p+2]); p+=3; rules.append((w,lim)); hist.append(defaultdict(deque))\n out=[]\n for _ in range(q):\n  now=int(t[p]); fields=t[p+1:p+1+d]; p+=1+d\n  for i,key in enumerate(fields):\n   dq=hist[i][key]\n   while dq and dq[0]<=now-rules[i][0]: dq.popleft()\n  ok=all(len(hist[i][key])<rules[i][1] for i,key in enumerate(fields))\n  out.append('ALLOW' if ok else 'REJECT')\n  if ok:\n   for i,key in enumerate(fields): hist[i][key].append(now)\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-13",
+      "sourceContentHash": "8d8083b14d6b948c4bc04846d279883fc0ea2cbe27125b16e0bdd1e4c9827f0e",
+      "packageChecksum": "8dafa4ea56e1f770b003ab341a454c9024261c201decddeccc03696ee936b8e9",
+      "editorial": "## 思路\n\n将所有员工的忙碌区间合并成全局并集，按开始时间排序后从 0 分钟扫描空档。第一个长度至少为 length 的空档，其起点就是最早答案。半开区间允许在忙碌区间结束的同一分钟开始会议。\n\n## 正确性\n\n只要任一员工忙碌，新增会议就不可安排，因此全体忙碌时段的并集恰好是不可用时段。合并后按时间递增检查相邻不可用段之间的空档；第一个足长空档开始时间不晚于任何后续可行区间，并且其自身满足可行条件。最后还需检查一天结束边界。\n\n## 复杂度\n\n最多 10000 个区间，排序时间 O(M log M)，空间 O(M)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,length=t[:2]; p=2; busy=[]\n for _ in range(n):\n  m=t[p]; p+=1\n  for _ in range(m): busy.append((t[p],t[p+1])); p+=2\n busy.sort(); merged=[]\n for a,b in busy:\n  if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(merged[-1][1],b))\n  else: merged.append((a,b))\n current=0\n for a,b in merged:\n  if a-current>=length: return str(current)\n  current=max(current,b)\n return str(current) if current+length<=1440 else '-1'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

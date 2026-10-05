@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-13",
+  "title": "Schedule Meeting",
+  "explanation": "## 思路\n\n将所有员工的忙碌区间合并成全局并集，按开始时间排序后从 0 分钟扫描空档。第一个长度至少为 length 的空档，其起点就是最早答案。半开区间允许在忙碌区间结束的同一分钟开始会议。\n\n## 正确性\n\n只要任一员工忙碌，新增会议就不可安排，因此全体忙碌时段的并集恰好是不可用时段。合并后按时间递增检查相邻不可用段之间的空档；第一个足长空档开始时间不晚于任何后续可行区间，并且其自身满足可行条件。最后还需检查一天结束边界。\n\n## 复杂度\n\n最多 10000 个区间，排序时间 O(M log M)，空间 O(M)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,length=t[:2]; p=2; busy=[]\n for _ in range(n):\n  m=t[p]; p+=1\n  for _ in range(m): busy.append((t[p],t[p+1])); p+=2\n busy.sort(); merged=[]\n for a,b in busy:\n  if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(merged[-1][1],b))\n  else: merged.append((a,b))\n current=0\n for a,b in merged:\n  if a-current>=length: return str(current)\n  current=max(current,b)\n return str(current) if current+length<=1440 else '-1'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/roblox#13-schedule-meeting",
+  "sourceContentHash": "8d8083b14d6b948c4bc04846d279883fc0ea2cbe27125b16e0bdd1e4c9827f0e",
+  "author": "CSWork"
+}

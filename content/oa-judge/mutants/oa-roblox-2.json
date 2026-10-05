@@ -1,0 +1,10 @@
+[
+  {
+    "name": "达到 k 对时没有收缩窗口",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k=t[0],t[1]; a=t[2:2+n]\n freq={}; left=pairs=answer=0\n for right,x in enumerate(a):\n  old=freq.get(x,0); freq[x]=old+1\n  if old%2: pairs+=1\n  while pairs>k:\n   y=a[left]; old=freq[y]\n   if old%2==0: pairs-=1\n   freq[y]=old-1; left+=1\n  answer+=left\n return str(answer)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "合法左端点数量误用右端点位置",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k=t[0],t[1]; a=t[2:2+n]\n freq={}; left=pairs=answer=0\n for right,x in enumerate(a):\n  old=freq.get(x,0); freq[x]=old+1\n  if old%2: pairs+=1\n  while pairs>=k:\n   y=a[left]; old=freq[y]\n   if old%2==0: pairs-=1\n   freq[y]=old-1; left+=1\n  answer+=right\n return str(answer)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

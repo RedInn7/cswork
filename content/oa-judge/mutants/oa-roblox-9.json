@@ -1,0 +1,10 @@
+[
+  {
+    "name": "用全局总请求数而非 key 独立计数",
+    "code": "import sys\ndef solve(raw):\n t=raw.split(); window,limit,q=map(int,t[:3]); counts={}; out=[]; p=3\n for _ in range(q):\n  timestamp=int(t[p]); key=t[p+1]; p+=2; bucket=timestamp//window; k=('all',bucket)\n  if counts.get(k,0)<limit: counts[k]=counts.get(k,0)+1; out.append('ALLOW')\n  else: out.append('REJECT')\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把固定窗口边界错移一秒",
+    "code": "import sys\ndef solve(raw):\n t=raw.split(); window,limit,q=map(int,t[:3]); counts={}; out=[]; p=3\n for _ in range(q):\n  timestamp=int(t[p]); key=t[p+1]; p+=2; bucket=(timestamp-1)//window; k=(key,bucket)\n  if counts.get(k,0)<limit: counts[k]=counts.get(k,0)+1; out.append('ALLOW')\n  else: out.append('REJECT')\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

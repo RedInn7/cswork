@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略删除后左右两段合并",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,q=t[:2]; live=set(t[2:2+n]); out=[]\n segments=sum(1 for x in live if x-1 not in live)\n for x in t[2+n:2+n+q]:\n  left=x-1 in live; right=x+1 in live\n  if left and right: segments-=1\n  elif not left and not right: segments-=1\n  live.remove(x); out.append(str(segments))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "相邻房屋差一时误判为不连续",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,q=t[:2]; live=set(t[2:2+n]); out=[]\n segments=sum(1 for x in live if x-1 not in live)\n for x in t[2+n:2+n+q]:\n  left=x-2 in live; right=x+2 in live\n  if left and right: segments+=1\n  elif not left and not right: segments-=1\n  live.remove(x); out.append(str(segments))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
