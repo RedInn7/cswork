@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-doordash-6",
+  "title": "Maximize Total Profit by Assigning Chefs to Dishes",
+  "explanation": "## 思路\n\n按难度排序并预计算前缀最大利润；对每个厨师二分出可胜任菜品前缀并累加其最大利润。\n\n## 正确性\n\n每位厨师可独立选择，菜品不互斥；其可行集合恰为按难度排序的前缀，最优即前缀最大利润。\n\n## 复杂度\n\nO((n+m)log m) 时间，O(m) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom bisect import bisect_right\ndef solve(s):\n z=list(map(int,s.split()));p=0;n=z[p];p+=1;a=z[p:p+n];p+=n;m=z[p];p+=1;d=z[p:p+m];p+=m;v=z[p:p+m];pairs=sorted(zip(d,v));ds=[];best=[];mx=0\n for x,y in pairs:mx=max(mx,y);ds.append(x);best.append(mx)\n return str(sum(best[i-1] if (i:=bisect_right(ds,x)) else 0 for x in a))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/doordash#6-maximize-total-profit-by-assigning-chefs-to-dishes",
+  "sourceContentHash": "ed1329825c362bc1aa6892aad68c6b845897a004e9281a40339cf069795a1d0a",
+  "author": "CSWork"
+}

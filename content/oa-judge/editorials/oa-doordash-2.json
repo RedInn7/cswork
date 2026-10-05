@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-doordash-2",
+  "title": "Closest DashMart",
+  "explanation": "## 思路\n\n从全部仓库同时执行多源 BFS，得到每个可通行位置到最近仓库的距离，逐个回答查询。\n\n## 正确性\n\nBFS 按距离递增扩展；首次访问某格即是其从任一仓库出发的最短四邻接距离。墙不入队，未访问及非法坐标均返回 -1。\n\n## 复杂度\n\nO(RC+Q) 时间，O(RC) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=s.splitlines();R,C,Q=map(int,z[0].split());g=[list(x) for x in z[1:1+R]];d=[[-1]*C for _ in range(R)];q=deque()\n for i in range(R):\n  for j in range(C):\n   if g[i][j]==\"D\":d[i][j]=0;q.append((i,j))\n while q:\n  i,j=q.popleft()\n  for di,dj in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=i+di,j+dj\n   if 0<=x<R and 0<=y<C and g[x][y]!=\"X\" and d[x][y]<0:d[x][y]=d[i][j]+1;q.append((x,y))\n return \" \".join(str(d[i][j] if 0<=i<R and 0<=j<C else -1) for i,j in (map(int,x.split()) for x in z[1+R:1+R+Q]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/doordash#2-closest-dashmart",
+  "sourceContentHash": "4fb9a60b6a5739e7b14c0d2433c57c5e331966e4cdfb3dca2c92f595200f5514",
+  "author": "CSWork"
+}

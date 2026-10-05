@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-instacart-2",
+  "title": "Collect Sticks",
+  "explanation": "## 思路\n\n从起点按当前方向线性扫描到最近剩余木棍，取走、累计长度并反转方向；总长达到 100 即停止。\n\n## 正确性\n\n线性扫描找到该方向最近非空位置；清零保证不重复取。交替方向与题意一致，循环条件使停止时恰在首次达到阈值后。\n\n## 复杂度\n\nO(n²) 最坏；本站 n≤2000，O(1) 额外空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,b=z[:2];a=z[2:];total=0;d=1;out=[]\n while total<100:\n  i=b+d\n  while a[i]==0:i+=d\n  out.append(i);total+=a[i];a[i]=0;d=-d\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/instacart#2-collect-sticks",
+  "sourceContentHash": "97aedd8b8ff9919cb77c95c677ae8438dcb68445c85f6ac87dd81b2f4e07c68a",
+  "author": "CSWork"
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-doordash-1",
+      "sourceContentHash": "69dfbaed19228d3ad6cd926555aaf964bddd47f2d0289ed38edd9527bce4a4c2",
+      "packageChecksum": "c16db07dd8fdf0b10580d400399c06ea9b503e9c45c631c7dbf319de67554aa6",
+      "editorial": "## 思路\n\n倒序扫描操作，维护后续全局抬价的最大下限；每件商品只需记录最后一次正向单点赋值及其后的抬价。\n\n## 正确性\n\n反向遇到的首个单点赋值就是该位置最后一次正向赋值，其后全局操作影响其最终值；若从未被赋值，则初始价经历所有全局下限。两种情形由数组记录与初值分别精确计算。\n\n## 复杂度\n\nO(n+q) 时间与空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=z[2:2+n];ops=[z[2+n+3*i:5+n+3*i] for i in range(q)];floor=0;last=[None]*n\n for t,x,v in reversed(ops):\n  if t==2:floor=max(floor,x)\n  elif last[x-1] is None:last[x-1]=max(v,floor)\n return \" \".join(str(max(a[i],floor) if last[i] is None else last[i]) for i in range(n))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-2",
+      "sourceContentHash": "4fb9a60b6a5739e7b14c0d2433c57c5e331966e4cdfb3dca2c92f595200f5514",
+      "packageChecksum": "1f11f9af495b4b50799960e6fe7e598058ca280038a555787334020ac2b3a5fb",
+      "editorial": "## 思路\n\n从全部仓库同时执行多源 BFS，得到每个可通行位置到最近仓库的距离，逐个回答查询。\n\n## 正确性\n\nBFS 按距离递增扩展；首次访问某格即是其从任一仓库出发的最短四邻接距离。墙不入队，未访问及非法坐标均返回 -1。\n\n## 复杂度\n\nO(RC+Q) 时间，O(RC) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=s.splitlines();R,C,Q=map(int,z[0].split());g=[list(x) for x in z[1:1+R]];d=[[-1]*C for _ in range(R)];q=deque()\n for i in range(R):\n  for j in range(C):\n   if g[i][j]==\"D\":d[i][j]=0;q.append((i,j))\n while q:\n  i,j=q.popleft()\n  for di,dj in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=i+di,j+dj\n   if 0<=x<R and 0<=y<C and g[x][y]!=\"X\" and d[x][y]<0:d[x][y]=d[i][j]+1;q.append((x,y))\n return \" \".join(str(d[i][j] if 0<=i<R and 0<=j<C else -1) for i,j in (map(int,x.split()) for x in z[1+R:1+R+Q]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-5",
+      "sourceContentHash": "1f034affb0098803d69e771112ab065d96b7d12ca0cc25a7072d2c3d816198eb",
+      "packageChecksum": "aa4bca25ac0822023c4e4cece70b51f8891ac0289f6617b1eb66177f96cf9556",
+      "editorial": "## 思路\n\n并查集维护代表元和组大小。F 按大小合并，T 将两组规模相加并累计。\n\n## 正确性\n\n代表元标识连通分量，合并维护正确组大小。每个 Total 查询按两个学生分别取各自所在组规模，因此同组时也按题面计两次。\n\n## 复杂度\n\nO((n+q)α(n)) 时间，O(n) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=s.split();n,q=map(int,z[:2]);p=list(range(n+1));sz=[1]*(n+1)\n def f(x):\n  while x!=p[x]:p[x]=p[p[x]];x=p[x]\n  return x\n ans=0;i=2\n for _ in range(q):\n  t=z[i];a,b=map(int,z[i+1:i+3]);i+=3;x,y=f(a),f(b)\n  if t==\"F\" and x!=y:\n   if sz[x]<sz[y]:x,y=y,x\n   p[y]=x;sz[x]+=sz[y]\n  elif t==\"T\":ans+=sz[x]+sz[y]\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-6",
+      "sourceContentHash": "ed1329825c362bc1aa6892aad68c6b845897a004e9281a40339cf069795a1d0a",
+      "packageChecksum": "bec838e9819724cb4b91f82ccbfb6df05b598c216375551be584279791a32bfd",
+      "editorial": "## 思路\n\n按难度排序并预计算前缀最大利润；对每个厨师二分出可胜任菜品前缀并累加其最大利润。\n\n## 正确性\n\n每位厨师可独立选择，菜品不互斥；其可行集合恰为按难度排序的前缀，最优即前缀最大利润。\n\n## 复杂度\n\nO((n+m)log m) 时间，O(m) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom bisect import bisect_right\ndef solve(s):\n z=list(map(int,s.split()));p=0;n=z[p];p+=1;a=z[p:p+n];p+=n;m=z[p];p+=1;d=z[p:p+m];p+=m;v=z[p:p+m];pairs=sorted(zip(d,v));ds=[];best=[];mx=0\n for x,y in pairs:mx=max(mx,y);ds.append(x);best.append(mx)\n return str(sum(best[i-1] if (i:=bisect_right(ds,x)) else 0 for x in a))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-8",
+      "sourceContentHash": "ba51f67c14901321dc116dc7d73e962d4f3b318a4fc8f60b013258e93e97a47c",
+      "packageChecksum": "8feca7693b98974d41dd893a4fa6bb59d0eb95e4a04d293a0d694af887d5ff25",
+      "editorial": "## 思路\n\n每轮构造两个候选窗口的并集，按分数降序、原下标升序选择，再将该员工从序列删除。\n\n## 正确性\n\n候选集合与题面两个窗口的并集一致；排序键实现最高分优先且同分取最早下标。逐轮删除保持剩余序列顺序，符合定义。\n\n## 复杂度\n\nO(n·team_size) 时间；本站 n≤2000，O(n) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,m,k=z[:3];a=list(enumerate(z[3:3+n]));ans=0\n for _ in range(m):\n  cand=a[:k]+a[max(0,len(a)-k):];idx,val=min(cand,key=lambda x:(-x[1],x[0]));ans+=val;a.remove((idx,val))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-instacart-1",
+      "sourceContentHash": "1e64ed14c085a6dbd0ec8311825d8ffec7fabbe419accbddccffa15f2505222a",
+      "packageChecksum": "a7e0b4a912ed1527f8997e72c3a6c871babca3f9c8ba5b0e94f23047012facea",
+      "editorial": "## 思路\n\n维护数组和相邻同色对数。更新前撤销该位置与左右邻居的旧贡献，换色后再添加新贡献。\n\n## 正确性\n\n更新只可能改变与该位置相邻的两条边；移除旧贡献、加入新贡献后，其余边不变，因此计数保持正确。\n\n## 复杂度\n\nO(q) 时间，O(length) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=[0]*n;p=0;out=[]\n for j in range(q):\n  i,c=z[2+2*j:4+2*j]\n  if a[i]:\n   if i and a[i-1]==a[i]:p-=1\n   if i+1<n and a[i+1]==a[i]:p-=1\n  a[i]=c\n  if i and a[i-1]==c:p+=1\n  if i+1<n and a[i+1]==c:p+=1\n  out.append(p)\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-instacart-2",
+      "sourceContentHash": "97aedd8b8ff9919cb77c95c677ae8438dcb68445c85f6ac87dd81b2f4e07c68a",
+      "packageChecksum": "37d45a0257abe369968af87095dd630b57eb64c5fd42810366ed3815500d5ead",
+      "editorial": "## 思路\n\n从起点按当前方向线性扫描到最近剩余木棍，取走、累计长度并反转方向；总长达到 100 即停止。\n\n## 正确性\n\n线性扫描找到该方向最近非空位置；清零保证不重复取。交替方向与题意一致，循环条件使停止时恰在首次达到阈值后。\n\n## 复杂度\n\nO(n²) 最坏；本站 n≤2000，O(1) 额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,b=z[:2];a=z[2:];total=0;d=1;out=[]\n while total<100:\n  i=b+d\n  while a[i]==0:i+=d\n  out.append(i);total+=a[i];a[i]=0;d=-d\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

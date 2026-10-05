@@ -1,0 +1,10 @@
+[
+  {
+    "name": "too-hard-allowed",
+    "code": "import sys\nfrom bisect import bisect_right\ndef solve(s):\n z=list(map(int,s.split()));p=0;n=z[p];p+=1;a=z[p:p+n];p+=n;m=z[p];p+=1;d=z[p:p+m];p+=m;v=z[p:p+m];pairs=sorted(zip(d,v));ds=[];best=[];mx=0\n for x,y in pairs:mx=max(mx,y);ds.append(x);best.append(mx)\n return str(sum(best[i-1] if (i:=bisect_right(ds,x-1)) else 0 for x in a))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "last-profit-only",
+    "code": "import sys\nfrom bisect import bisect_right\ndef solve(s):\n z=list(map(int,s.split()));p=0;n=z[p];p+=1;a=z[p:p+n];p+=n;m=z[p];p+=1;d=z[p:p+m];p+=m;v=z[p:p+m];pairs=sorted(zip(d,v));ds=[];best=[];mx=0\n for x,y in pairs:mx=y;ds.append(x);best.append(mx)\n return str(sum(best[i-1] if (i:=bisect_right(ds,x)) else 0 for x in a))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

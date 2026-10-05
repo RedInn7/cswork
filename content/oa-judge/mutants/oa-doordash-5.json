@@ -1,0 +1,10 @@
+[
+  {
+    "name": "same-group-once",
+    "code": "import sys\ndef solve(s):\n z=s.split();n,q=map(int,z[:2]);p=list(range(n+1));sz=[1]*(n+1)\n def f(x):\n  while x!=p[x]:p[x]=p[p[x]];x=p[x]\n  return x\n ans=0;i=2\n for _ in range(q):\n  t=z[i];a,b=map(int,z[i+1:i+3]);i+=3;x,y=f(a),f(b)\n  if t==\"F\" and x!=y:\n   if sz[x]<sz[y]:x,y=y,x\n   p[y]=x;sz[x]+=sz[y]\n  elif t==\"T\":ans+=sz[x] if x==y else sz[x]+sz[y]\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "skip-size-update",
+    "code": "import sys\ndef solve(s):\n z=s.split();n,q=map(int,z[:2]);p=list(range(n+1));sz=[1]*(n+1)\n def f(x):\n  while x!=p[x]:p[x]=p[p[x]];x=p[x]\n  return x\n ans=0;i=2\n for _ in range(q):\n  t=z[i];a,b=map(int,z[i+1:i+3]);i+=3;x,y=f(a),f(b)\n  if t==\"F\" and x!=y:\n   if sz[x]<sz[y]:x,y=y,x\n   p[y]=x;pass\n  elif t==\"T\":ans+=sz[x]+sz[y]\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

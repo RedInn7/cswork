@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-doordash-5",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Get Sizes of Friends Groups",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "DoorDash",
+      "并查集"
+    ],
+    "description": "初始每人属于一个单人组。F a b 合并两人所在组；T a b 将两人所在组的人数之和累计。若两人已在同组，按题面两个对象分别取组大小，即计两次。输出所有 T 的总和。\n\n语义依照 OAMaster 原题。输入协议及‘本站补充’的限制由本站整理，不表示原题提供这些限制。",
+    "input": "n q≤100000，接着 q 行 F/T 和两个 1..n 的 ID。",
+    "output": "输出累计值，使用 64 位整数。",
+    "explanation": "思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "先厘清边界、操作和计数规则，再选适合的数据结构或状态转移。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4 3\nF 1 2\nF 2 3\nT 1 4\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2 1\nT 1 1\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3 4\nF 1 2\nT 1 2\nF 1 2\nT 1 3\n",
+      "expectedOutput": "7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "6 8\nF 6 3\nF 4 3\nF 3 6\nF 2 4\nT 1 5\nF 3 4\nF 2 3\nF 3 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "2 2\nF 2 2\nT 2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "8 13\nF 7 1\nT 3 4\nF 6 5\nT 4 7\nT 2 6\nF 8 8\nF 3 1\nF 7 3\nT 8 5\nF 3 7\nF 6 4\nF 5 5\nF 1 1\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "9 5\nF 5 1\nF 4 3\nF 9 1\nF 4 7\nF 9 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "10 8\nF 1 1\nT 9 7\nF 1 3\nF 6 1\nF 10 7\nF 10 10\nT 10 4\nT 7 8\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "9 12\nF 3 9\nF 8 7\nF 1 5\nF 7 8\nF 4 4\nT 9 9\nF 7 6\nF 3 8\nF 1 4\nT 1 2\nF 6 9\nF 6 5\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "8 18\nF 6 4\nT 2 7\nF 5 3\nF 6 8\nF 1 4\nT 1 5\nT 2 2\nT 2 1\nF 1 1\nT 7 6\nT 2 2\nT 2 3\nT 6 8\nF 3 4\nF 1 4\nF 2 4\nF 4 5\nF 3 8\n",
+      "expectedOutput": "33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "7 7\nF 5 6\nF 3 2\nF 7 3\nF 2 2\nF 6 7\nF 5 4\nF 7 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "10 14\nF 9 5\nT 7 1\nF 3 8\nF 8 5\nF 8 3\nF 7 8\nT 7 8\nF 3 6\nF 8 4\nT 3 6\nF 8 7\nF 1 10\nF 4 8\nT 5 9\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "8 11\nF 4 5\nF 6 7\nT 1 7\nF 1 3\nF 8 1\nF 1 3\nF 3 8\nF 7 8\nT 7 3\nF 2 3\nF 5 6\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "4 14\nF 3 1\nF 4 2\nF 1 3\nF 1 2\nF 1 3\nT 4 1\nT 1 4\nF 4 3\nT 3 2\nF 1 4\nF 4 2\nF 1 2\nF 1 1\nF 1 2\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "9 1\nT 5 6\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "10 1\nF 5 6\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "4 9\nF 3 1\nF 2 1\nT 1 3\nT 4 3\nT 4 2\nT 4 1\nF 1 4\nF 3 2\nF 1 1\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "5 14\nF 5 1\nT 3 3\nF 1 3\nF 1 2\nT 2 2\nF 2 5\nF 4 3\nF 3 1\nF 4 4\nF 1 5\nF 3 5\nT 3 1\nF 4 4\nF 1 3\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "6 7\nF 2 1\nF 1 5\nF 2 6\nF 4 3\nF 6 3\nF 6 3\nF 1 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "9 12\nF 8 3\nF 9 4\nF 2 7\nF 9 5\nF 3 8\nF 8 5\nT 5 7\nT 9 8\nT 5 3\nF 6 9\nF 4 7\nF 8 6\n",
+      "expectedOutput": "27\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "6 12\nF 4 4\nF 6 6\nF 3 5\nF 6 3\nF 3 6\nF 5 2\nF 5 5\nT 4 2\nF 3 2\nF 5 3\nT 2 4\nF 1 1\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "5 18\nT 4 3\nF 5 2\nF 3 1\nF 1 5\nT 1 4\nT 1 2\nF 4 3\nF 5 2\nF 4 4\nF 3 4\nF 5 4\nF 5 3\nF 2 4\nT 1 2\nF 5 2\nF 4 1\nF 1 3\nF 1 5\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "7 3\nF 3 5\nF 3 3\nF 5 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "8 5\nT 7 1\nT 3 2\nF 4 6\nF 6 8\nT 7 8\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "2 1\nT 2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "1 7\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "5 5\nT 1 1\nF 1 5\nT 3 5\nF 5 2\nT 2 4\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "4 9\nF 3 1\nF 3 2\nF 3 4\nF 2 3\nF 1 4\nT 4 1\nF 4 3\nF 3 1\nT 1 1\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "4 14\nT 2 3\nT 1 2\nF 3 2\nF 4 4\nF 1 1\nF 2 3\nF 4 3\nF 3 2\nF 2 1\nT 3 2\nF 3 2\nF 1 2\nF 3 2\nF 1 2\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "3 6\nF 1 2\nF 2 3\nF 3 2\nF 3 3\nF 1 1\nF 3 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 28",
+      "input": "2 13\nF 2 1\nF 2 2\nF 1 1\nF 2 1\nF 2 2\nF 1 1\nF 1 2\nF 1 1\nT 1 1\nF 1 1\nT 1 2\nF 1 1\nF 1 1\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 29",
+      "input": "2 8\nF 1 1\nF 1 1\nF 1 2\nT 2 1\nF 2 1\nT 2 2\nF 2 1\nT 1 1\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 30",
+      "input": "1 14\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nT 1 1\nT 1 1\nF 1 1\nF 1 1\nT 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

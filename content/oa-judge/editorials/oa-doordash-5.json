@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-doordash-5",
+  "title": "Get Sizes of Friends Groups",
+  "explanation": "## 思路\n\n并查集维护代表元和组大小。F 按大小合并，T 将两组规模相加并累计。\n\n## 正确性\n\n代表元标识连通分量，合并维护正确组大小。每个 Total 查询按两个学生分别取各自所在组规模，因此同组时也按题面计两次。\n\n## 复杂度\n\nO((n+q)α(n)) 时间，O(n) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=s.split();n,q=map(int,z[:2]);p=list(range(n+1));sz=[1]*(n+1)\n def f(x):\n  while x!=p[x]:p[x]=p[p[x]];x=p[x]\n  return x\n ans=0;i=2\n for _ in range(q):\n  t=z[i];a,b=map(int,z[i+1:i+3]);i+=3;x,y=f(a),f(b)\n  if t==\"F\" and x!=y:\n   if sz[x]<sz[y]:x,y=y,x\n   p[y]=x;sz[x]+=sz[y]\n  elif t==\"T\":ans+=sz[x]+sz[y]\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/doordash#5-get-sizes-of-friends-groups",
+  "sourceContentHash": "1f034affb0098803d69e771112ab065d96b7d12ca0cc25a7072d2c3d816198eb",
+  "author": "CSWork"
+}

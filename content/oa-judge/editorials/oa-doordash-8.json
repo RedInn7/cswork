@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-doordash-8",
+  "title": "Team Formation",
+  "explanation": "## 思路\n\n每轮构造两个候选窗口的并集，按分数降序、原下标升序选择，再将该员工从序列删除。\n\n## 正确性\n\n候选集合与题面两个窗口的并集一致；排序键实现最高分优先且同分取最早下标。逐轮删除保持剩余序列顺序，符合定义。\n\n## 复杂度\n\nO(n·team_size) 时间；本站 n≤2000，O(n) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,m,k=z[:3];a=list(enumerate(z[3:3+n]));ans=0\n for _ in range(m):\n  cand=a[:k]+a[max(0,len(a)-k):];idx,val=min(cand,key=lambda x:(-x[1],x[0]));ans+=val;a.remove((idx,val))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/doordash#8-team-formation",
+  "sourceContentHash": "ba51f67c14901321dc116dc7d73e962d4f3b318a4fc8f60b013258e93e97a47c",
+  "author": "CSWork"
+}
