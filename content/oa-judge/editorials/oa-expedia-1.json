@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-expedia-1",
+  "title": "Minimum Steps to Reorder Neural Network Layers",
+  "explanation": "## 思路\n\n从 current 的末尾搬动若干层，未搬动的部分必为 current 的一个前缀。要最少操作，就找 current 的最长前缀，使其仍按原序出现在 desired 中；其余层从尾部依次取出并插入目标位置即可。双指针扫描 desired 匹配 current 前缀，答案为 n−保留长度。\n\n## 正确性\n\n任何不被移动的元素只能来自 current 前缀，否则必须先移走它之后的所有元素，该元素本身也会被移动。未移动前缀的相对顺序不变，所以它必须是 desired 的子序列。反过来，若前缀是 desired 的子序列，可以从 current 尾部逐个取出其余元素并插入到 desired 对应空位，恰好用 n−前缀长度次操作。因此最大可保留前缀给出最少操作数。\n\n## 复杂度\n\nO(n) 时间，O(1) 额外空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(a,b):\n i=j=0\n while i<len(a) and j<len(b):\n  if a[i]==b[j]: i+=1\n  j+=1\n return str(len(a)-i)\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); n=z[0]; print(solve(z[1:1+n],z[1+n:1+2*n]))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/expedia#1-minimum-steps-to-reorder-neural-network-layers",
+  "sourceContentHash": "9a4a960e85a70ff0683b74623e4539c30d387993f2ed33f270be89e51e1960d2"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "仅比较起点终点 gcd",
+    "code": "import sys,math\nsx,sy,tx,ty=map(int,sys.stdin.buffer.read().split()); print(\"Yes\" if tx>=sx and ty>=sy and math.gcd(sx,sy)==math.gcd(tx,ty) else \"No\")\n"
+  },
+  {
+    "name": "坐标不小于起点就判可达",
+    "code": "import sys\ndef solve(sx,sy,tx,ty):\n if tx>=sx and ty>=sy:return \"Yes\"\n while False:\n  if tx==sx and ty==sy:return \"Yes\"\n  if tx>ty:\n   if ty==sy:return \"Yes\" if (tx-sx)%ty==0 else \"No\"\n   tx%=ty\n  else:\n   if tx==sx:return \"Yes\" if (ty-sy)%tx==0 else \"No\"\n   ty%=tx\n return \"No\"\nif __name__==\"__main__\": print(solve(*map(int,sys.stdin.buffer.read().split())))\n"
+  }
+]
