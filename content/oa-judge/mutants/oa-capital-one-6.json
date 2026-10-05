@@ -1,0 +1,10 @@
+[
+  {
+    "name": "更新后未从旧频次移除",
+    "code": "import sys\ndef solve(raw):\n it=iter(map(int,raw.split())); n,m,q=next(it),next(it),next(it); a=[next(it) for _ in range(n)]; b=[next(it) for _ in range(m)]\n ca={}; cb={}\n for x in a: ca[x]=ca.get(x,0)+1\n for x in b: cb[x]=cb.get(x,0)+1\n out=[]\n for _ in range(q):\n  typ=next(it)\n  if typ==0:\n   i,x=next(it),next(it); old=a[i]; ca[old]-=0\n   if ca[old]==0: del ca[old]\n   a[i]+=x; ca[a[i]]=ca.get(a[i],0)+1\n  else:\n   x=next(it); out.append(str(sum(c*cb.get(x-v,0) for v,c in ca.items())))\n return ' '.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只统计每个值的一次配对",
+    "code": "import sys\ndef solve(raw):\n it=iter(map(int,raw.split())); n,m,q=next(it),next(it),next(it); a=[next(it) for _ in range(n)]; b=[next(it) for _ in range(m)]\n ca={}; cb={}\n for x in a: ca[x]=ca.get(x,0)+1\n for x in b: cb[x]=cb.get(x,0)+1\n out=[]\n for _ in range(q):\n  typ=next(it)\n  if typ==0:\n   i,x=next(it),next(it); old=a[i]; ca[old]-=1\n   if ca[old]==0: del ca[old]\n   a[i]+=x; ca[a[i]]=ca.get(a[i],0)+1\n  else:\n   x=next(it); out.append(str(sum(1 if cb.get(x-v,0) else 0 for v,c in ca.items())))\n return ' '.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

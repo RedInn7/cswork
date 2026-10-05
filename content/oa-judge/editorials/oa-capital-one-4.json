@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-4",
+  "title": "Reconstruct Journey from Photo Pairs",
+  "explanation": "## 思路\n\n先由照片对建立无向邻接表。简单路径恰有两个度为 1 的端点；从编号较小的端点出发，每次走向不是上一个节点的邻居即可恢复顺序。\n\n## 正确性\n\n路径端点只有一个尚未访问的相邻节点（起点除外）。沿边前进且不回头，因此每个地标恰访问一次；走到另一端后没有新邻居，得到完整路径。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; g={}\n for i in range(1,len(t),2):\n  a,b=t[i],t[i+1]; g.setdefault(a,[]).append(b); g.setdefault(b,[]).append(a)\n cur=min(v for v,ns in g.items() if len(ns)==1); prev=None; out=[]\n while True:\n  out.append(cur); nxt=next((x for x in g[cur] if x!=prev),None)\n  if nxt is None: break\n  prev,cur=cur,nxt\n return ' '.join(map(str,out))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#4-reconstruct-journey-from-photo-pairs",
+  "sourceContentHash": "4a1b5fa0bbff58d39f2f132825fb9fa2ccd8f10ef0914a968b978b1fa3a31092",
+  "author": "CSWork"
+}

@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-capital-one-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Reconstruct Journey from Photo Pairs",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Capital One",
+      "图",
+      "路径"
+    ],
+    "description": "旅途中每个地标恰好访问一次。每张照片记录一对连续访问的不同地标，照片对的先后顺序不确定。根据全部照片还原完整旅程；正向或反向均有效。本站为输出确定性，要求从两个端点中编号较小者开始输出。\n\n输入协议和约束范围中标明‘本站补充’的部分由本站整理，不是原题额外条件。",
+    "input": "第一行 n（2≤n≤200000），随后 n−1 行各含两个不同整数 u、v，表示一张照片。地标编号互不重复出现为节点标签，绝对值不超过 10^9。本站补充保证这些边构成一条简单路径。",
+    "output": "输出从较小编号端点出发的 n 个地标编号，以空格分隔。较大端点起始的反向路径与其等价，但本站统一要求较小端点开头以便精确比较。",
+    "explanation": "按上述规则处理输入；思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "先明确题目中的计数/路径/拆分定义，再选择适合的图遍历、频次统计或动态规划。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5\n3 5\n1 4\n2 4\n1 5\n",
+      "expectedOutput": "2 4 1 5 3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2\n9 -2\n",
+      "expectedOutput": "-2 9\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\n20 3\n3 10\n10 -7\n",
+      "expectedOutput": "-7 10 3 20\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "12\n954 801\n681 665\n198 681\n473 143\n205 858\n343 86\n143 343\n665 549\n801 205\n858 473\n86 198\n",
+      "expectedOutput": "549 665 681 198 86 343 143 473 858 205 801 954\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "10\n397 400\n658 914\n914 35\n484 858\n400 484\n542 478\n895 542\n858 658\n35 895\n",
+      "expectedOutput": "397 400 484 858 658 914 35 895 542 478\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "10\n351 194\n763 219\n371 351\n474 371\n843 94\n500 422\n194 500\n422 843\n94 763\n",
+      "expectedOutput": "219 763 94 843 422 500 194 351 371 474\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "3\n420 631\n631 16\n",
+      "expectedOutput": "16 631 420\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "8\n875 895\n691 515\n522 691\n836 205\n205 31\n515 875\n895 836\n",
+      "expectedOutput": "31 205 836 895 875 515 691 522\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "13\n180 327\n831 342\n19 6\n342 543\n6 387\n793 19\n699 882\n543 695\n387 831\n555 793\n327 555\n882 180\n",
+      "expectedOutput": "695 543 342 831 387 6 19 793 555 327 180 882 699\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "2\n78 799\n",
+      "expectedOutput": "78 799\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "8\n239 894\n929 992\n308 239\n309 308\n750 309\n894 365\n992 750\n",
+      "expectedOutput": "365 894 239 308 309 750 992 929\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "9\n716 127\n48 752\n138 48\n415 716\n589 498\n752 369\n369 589\n127 138\n",
+      "expectedOutput": "415 716 127 138 48 752 369 589 498\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "7\n454 593\n627 454\n828 935\n593 828\n455 193\n935 455\n",
+      "expectedOutput": "193 455 935 828 593 454 627\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "2\n876 525\n",
+      "expectedOutput": "525 876\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "11\n918 311\n311 685\n710 248\n131 710\n248 489\n391 993\n685 131\n113 918\n489 391\n993 456\n",
+      "expectedOutput": "113 918 311 685 131 710 248 489 391 993 456\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "3\n491 685\n685 823\n",
+      "expectedOutput": "491 685 823\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "11\n794 574\n199 348\n296 199\n660 296\n449 872\n872 660\n574 80\n348 528\n80 449\n528 852\n",
+      "expectedOutput": "794 574 80 449 872 660 296 199 348 528 852\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "12\n617 807\n7 132\n374 617\n179 610\n91 7\n644 703\n520 179\n610 91\n383 374\n132 383\n807 644\n",
+      "expectedOutput": "520 179 610 91 7 132 383 374 617 807 644 703\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "10\n232 28\n984 3\n267 232\n231 6\n407 305\n28 256\n256 984\n3 231\n305 267\n",
+      "expectedOutput": "6 231 3 984 256 28 232 267 305 407\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "3\n358 159\n159 288\n",
+      "expectedOutput": "288 159 358\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "6\n108 346\n835 570\n398 108\n570 398\n346 127\n",
+      "expectedOutput": "127 346 108 398 570 835\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "5\n583 422\n422 250\n317 583\n250 132\n",
+      "expectedOutput": "132 250 422 583 317\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "5\n779 97\n614 779\n97 523\n217 614\n",
+      "expectedOutput": "217 614 779 97 523\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "12\n289 293\n62 414\n567 170\n497 765\n765 62\n106 497\n293 480\n170 473\n632 106\n473 632\n480 567\n",
+      "expectedOutput": "289 293 480 567 170 473 632 106 497 765 62 414\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "2\n808 592\n",
+      "expectedOutput": "592 808\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "9\n613 676\n310 623\n218 639\n950 11\n639 950\n676 218\n11 310\n614 613\n",
+      "expectedOutput": "614 613 676 218 639 950 11 310 623\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "13\n250 415\n67 250\n874 895\n679 288\n940 67\n524 342\n895 524\n45 798\n415 874\n288 506\n506 940\n798 679\n",
+      "expectedOutput": "45 798 679 288 506 940 67 250 415 874 895 524 342\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

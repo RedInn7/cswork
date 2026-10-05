@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-capital-one-12",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Recipes — Is Each Recipe a Prep-list Combination?",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Capital One",
+      "动态规划",
+      "字符串"
+    ],
+    "description": "给定原料字符串 ingredients 和多个 recipe。若 recipe 能拆成一个或多个连续、非空的片段，且每段都恰好等于 ingredients 中的某个字符串，则它是 prep-list combination。逐个判断。\n\n输入协议和约束范围中标明‘本站补充’的部分由本站整理，不是原题额外条件。",
+    "input": "第一行 n r（1≤n,r≤200000），接下来 n 行为非空小写原料名，再接 r 行为非空小写 recipe。所有字符串长度≤1000，总字符数≤2×10^6。输入格式和范围是本站补充。",
+    "output": "按 recipe 输入顺序输出 YES 或 NO，以空格分隔。",
+    "explanation": "按上述规则处理输入；思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "先明确题目中的计数/路径/拆分定义，再选择适合的图遍历、频次统计或动态规划。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3 5\nflour\nsugar\neggs\nfloursugar\nrandom\nflour\nsugarflour\nsugareggs\n",
+      "expectedOutput": "YES NO YES YES YES\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2 3\na\nab\nab\naba\nb\n",
+      "expectedOutput": "YES YES NO\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1 3\nxy\nxy\nxyxy\nx\n",
+      "expectedOutput": "YES YES NO\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "2 6\nb\nc\nc\nbacbaaccxc\nxbbcccxc\nccabbcx\nacccbcx\nabxacxxc\n",
+      "expectedOutput": "YES NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "2 4\nac\naa\naaaaaa\nbc\naaabaaaxx\nbcxcx\n",
+      "expectedOutput": "YES NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "4 5\nca\nc\na\ncab\ncabc\nx\nc\nxabaxcxb\nbxaccxxxcx\n",
+      "expectedOutput": "YES NO YES NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "5 6\ncc\nca\ncb\naac\nbbb\nxxxxca\nbca\nxx\nbxcaxx\nxxxcxbx\nacbx\n",
+      "expectedOutput": "NO NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "5 6\na\ncc\ncba\nbb\ncab\ncbabbcab\nbx\naxaxaxxcb\nb\nxxaxabbxc\nabxcxacx\n",
+      "expectedOutput": "YES NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "6 3\naca\nbbb\nc\ncca\naac\nbba\naca\ncaaaxabbbx\nxcbxaab\n",
+      "expectedOutput": "YES NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "4 3\nbb\nba\ncbc\nb\nxxa\nccabaaa\nxabbcbc\n",
+      "expectedOutput": "NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "3 5\nc\na\ncc\nacccbbcxxx\nbaab\ncacaaabba\nbcaa\nbcxbxcxxxb\n",
+      "expectedOutput": "NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "4 3\nccc\ncb\nbbb\nb\ncb\nxxbxbabab\nccxc\n",
+      "expectedOutput": "YES NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "4 1\nbb\nc\nb\ncc\ncc\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "4 6\nca\nbbb\nb\nc\nbca\nccxxxb\nbxccbaacx\ncxcbaa\nxa\nacxcxa\n",
+      "expectedOutput": "YES NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "4 3\nabb\nacc\nca\nc\nabbc\ncbxabca\nxxx\n",
+      "expectedOutput": "YES NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "1 2\na\na\nxcbxxccc\n",
+      "expectedOutput": "YES NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "2 1\nbab\naab\naabaabbab\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "4 6\na\ncba\naab\naa\naaaaba\nacxaxaabcb\naaca\ncbxcb\naaxbaaba\ncxa\n",
+      "expectedOutput": "YES NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "3 3\ncb\nc\nccc\nxc\nbbxxbbx\naxbbbaaxaa\n",
+      "expectedOutput": "NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "3 4\nc\nba\na\ncbxa\ncaxbbaxxbb\nbacxxxaaca\nbcxcaxcbbc\n",
+      "expectedOutput": "NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "2 5\nc\nbb\nbbbb\nc\ncccbccac\nxxacc\ncxccacaac\n",
+      "expectedOutput": "YES YES NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "4 7\nc\nbcc\nb\naab\nba\nbacaa\naxxxccaa\nbxca\nxxacaaxxx\ncbxax\nabaaacx\n",
+      "expectedOutput": "NO NO NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "2 3\nb\nba\nbxa\ncaaxbc\nxbx\n",
+      "expectedOutput": "NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "5 3\nbc\nacb\nc\nbac\na\nac\nab\nxxa\n",
+      "expectedOutput": "YES NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "2 3\ncbc\nac\nxaxcxcbcxb\naacbbccb\nbcccbxbxb\n",
+      "expectedOutput": "NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "4 8\na\naa\nc\ncbb\nba\nxacbca\ncbbb\nacxxcab\nax\nbxaaxbbxa\nxbcxc\nbxbccbx\n",
+      "expectedOutput": "NO NO NO NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "5 6\nabb\nbc\nb\na\nbcc\nacaabx\ncbb\naaccaac\nacxxxabb\nxcb\nx\n",
+      "expectedOutput": "NO NO NO NO NO NO\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

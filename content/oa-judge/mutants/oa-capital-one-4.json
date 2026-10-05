@@ -1,0 +1,10 @@
+[
+  {
+    "name": "选编号最小节点而非路径端点",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; g={}\n for i in range(1,len(t),2):\n  a,b=t[i],t[i+1]; g.setdefault(a,[]).append(b); g.setdefault(b,[]).append(a)\n cur=min(g); prev=None; out=[]\n while True:\n  out.append(cur); nxt=next((x for x in g[cur] if x!=prev),None)\n  if nxt is None: break\n  prev,cur=cur,nxt\n return ' '.join(map(str,out))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只从起点走到相邻节点后停止",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; g={}\n for i in range(1,len(t),2):\n  a,b=t[i],t[i+1]; g.setdefault(a,[]).append(b); g.setdefault(b,[]).append(a)\n cur=min(v for v,ns in g.items() if len(ns)==1); prev=None; out=[]\n out.append(cur); nxt=None\n while False:\n  if nxt is None: break\n  prev,cur=cur,nxt\n return ' '.join(map(str,out))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

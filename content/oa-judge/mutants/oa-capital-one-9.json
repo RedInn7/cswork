@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不排除同一书名自身",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); words=lines[1:1+n]; trie={}; END='#'\n for w in words:\n  node=trie\n  for c in w: node=node.setdefault(c,{})\n  node[END]=node.get(END,0)+1\n total=0\n for w in words:\n  node=trie\n  for c in w:\n   node=node[c]; total+=node.get(END,0)\n  total+=0\n return str(total)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只统计完整相同书名",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); words=lines[1:1+n]; trie={}; END='#'\n for w in words:\n  node=trie\n  for c in w: node=node.setdefault(c,{})\n  node[END]=node.get(END,0)+1\n total=0\n for w in words:\n  node=trie\n  for c in w:\n   node=node[c]\n  total+=node.get(END,0)\n  total-=1\n return str(total)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

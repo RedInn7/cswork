@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-7",
+  "title": "Largest Square in Skyscraper Outline",
+  "explanation": "## 思路\n\n枚举正方形边长 s 的可行性：扫描高度数组，检查是否存在至少 s 个连续楼高均不低于 s。可行性随 s 增大单调不增，故二分最大 s，答案为 s²。\n\n## 正确性\n\n高度连续达 s 的楼群可容纳宽 s、高 s 的正方形，反之任何边长 s 的正方形都必须覆盖至少 s 个连续楼且这些楼高均至少为 s。因此检查条件与可行性等价；单调二分找到最大边长。\n\n## 复杂度\n\n二分 O(n log(min(n,max(h))))，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; h=t[1:]; lo,hi=0,min(n,max(h,default=0))\n def ok(s):\n  run=0\n  for x in h:\n   run=run+1 if x>=s else 0\n   if run>=s: return True\n  return s==0\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo*lo)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#7-largest-square-in-skyscraper-outline",
+  "sourceContentHash": "787a49ae90ec0b99daa48551383ec82146d076ed7176c43212dcb5138fbd1561",
+  "author": "CSWork"
+}
