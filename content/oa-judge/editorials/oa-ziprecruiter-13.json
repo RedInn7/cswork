@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-13",
+  "title": "计算时间旅行总耗时",
+  "explanation": "## 思路\n\n逐对比较相邻年份：递增记 1、递减记 2、相同记 0，然后求和。\n\n## 正确性证明\n\n旅程恰由 n−1 段相邻转换组成；每段独立贡献题目定义的 0、1 或 2，逐段求和即为总耗时。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)（存储输入）。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); a=[next(it) for _ in range(n)]\n return str(sum(1 if b>a else 2 if b<a else 0 for a,b in zip(a,a[1:])))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#13-time-travel",
+  "sourceContentHash": "b90967f56a9e952bb905eebcc2352b2f3b67629215a9a94052760b93628c556b",
+  "author": "Chunyu Sui"
+}

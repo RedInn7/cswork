@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-5",
+  "title": "统计含重复三次字母的单词",
+  "explanation": "## 思路\n\n逐词忽略大小写统计字母频次。若存在频次至少为 3 的字母，该词计一。\n\n## 正确性证明\n\n频次条件与题意相同，逐词只作一次布尔计数，因而每词最多贡献 1；对所有词求和即为答案。\n\n## 复杂度\n\n时间 O(L)，空间 O(1) 字母表。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\ndef solve(raw):\n return str(sum(any(n>=3 for n in Counter(w.lower()).values()) for w in raw.split()))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#5-count-triple",
+  "sourceContentHash": "c9a1b053c7551d4945991330c4f59a10cd1a639f100a77cfc8522d12f1ce6a25",
+  "author": "Chunyu Sui"
+}

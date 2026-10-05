@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-3",
+  "title": "找出平均成绩最高的学生",
+  "explanation": "## 思路\n\n按姓名累加总分和人数。以交叉相乘比较平均数，避免浮点误差。\n\n## 正确性证明\n\n累加值给出每人的平均分分子和分母；正分母下交叉相乘等价于比较平均数。遍历所有学生保留最大者，唯一性保证结果唯一。\n\n## 复杂度\n\n时间 O(n+k)，空间 O(k)，k 为不同学生数。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n p=raw.split(); n=int(p[0]); d={}\n for i in range(n):\n  name=p[1+2*i]; grade=int(p[2+2*i]); s,c=d.get(name,(0,0)); d[name]=(s+grade,c+1)\n best=None\n for name,(s,c) in d.items():\n  if best is None or s*best[2]>best[1]*c: best=(name,s,c)\n return best[0]\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#3-coderwriting",
+  "sourceContentHash": "1bb86181e4722c90f5aa445c51a0e37fceedc585c77d0c8159a6a0d1a8bef1d1",
+  "author": "Chunyu Sui"
+}
