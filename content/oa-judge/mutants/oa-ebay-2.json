@@ -1,0 +1,10 @@
+[
+  {
+    "name": "shift-every-consonant",
+    "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if True:\n    x=CS[(CS.index(c.lower())+1)%len(CS)];o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+  },
+  {
+    "name": "do-not-shift-target",
+    "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if cnt%n==0:\n    x=c.lower();o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+  }
+]

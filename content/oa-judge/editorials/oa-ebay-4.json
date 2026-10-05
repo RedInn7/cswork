@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-4",
+  "title": "Currency Trading Strategy",
+  "explanation": "## 思路\n\n基准利润为 −Σstrategy×rate。重设某日策略后的最佳利润是 |rate|，所以窗口内单日增益为 |rate|+strategy×rate；滑窗取最大增益。\n\n## 正确性\n\n窗口外策略固定。窗口内每一天可独立取 −1、0、+1，最佳利润为费率绝对值；故对所有长度 k 窗口逐一比较增益即可得最优。\n\n## 复杂度\n\nO(n) 时间、O(n) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,k=z[:2];a=z[2:2+n];b=z[2+n:2+2*n];base=sum(-x*y for x,y in zip(a,b));g=[abs(x)+x*y for x,y in zip(a,b)];w=sum(g[:k]);best=w\n for i in range(k,n):w+=g[i]-g[i-k];best=max(best,w)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ebay#4-currency-trading-strategy",
+  "sourceContentHash": "e05c99c756d04cafe3a5e89feaeaf3487334206d17f9f143fffd41300d17e007",
+  "author": "CSWork"
+}

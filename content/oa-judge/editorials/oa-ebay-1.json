@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-1",
+  "title": "Zigzag Reorder",
+  "explanation": "## 思路\n\n双指针逐轮取左端，再取右端（若仍有元素）。\n\n## 正确性\n\n每轮移除尚未输出的最左元素和最右元素，不重不漏；区间缩至空时输出次序正是左右交替规则。\n\n## 复杂度\n\nO(n) 时间、O(n) 输出空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];a=z[1:1+n];l=0;r=n-1;o=[]\n while l<=r:\n  o.append(a[l]);l+=1\n  if l<=r:o.append(a[r]);r-=1\n return \" \".join(map(str,o))\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ebay#1-zigzag-reorder",
+  "sourceContentHash": "337fc43fc422e46310974f89bb8a9a369529d1216c4fe200b221d6075f30aeed",
+  "author": "CSWork"
+}

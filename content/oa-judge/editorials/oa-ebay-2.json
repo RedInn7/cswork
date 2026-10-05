@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-2",
+  "title": "Shift n-th Consonant",
+  "explanation": "## 思路\n\n维护辅音序号，仅在其为 n 的倍数时，在固定辅音字母表内前进一位。\n\n## 正确性\n\n辅音字母表按英文字母顺序去除元音，模表长实现循环。扫描只计 ASCII 字母辅音，因此空格、数字、标点与非 ASCII 字符原样输出。\n\n## 复杂度\n\nO(|message|) 时间与输出空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if cnt%n==0:\n    x=CS[(CS.index(c.lower())+1)%len(CS)];o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ebay#2-shift-n-th-consonant",
+  "sourceContentHash": "4f38455ef99f72af888ec134e2650ae6cbab16cb59550c18d506820f85feb064",
+  "author": "CSWork"
+}
