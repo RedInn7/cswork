@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只调用一次函数",
+    "code": "import sys\ndef f(x):\n return 0 if x%2 else 1\ndef solve(raw):\n i=int(raw); i=f(i)\n return str(i)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "函数始终返回 0",
+    "code": "import sys\ndef f(x):\n return 0\ndef solve(raw):\n i=int(raw); i=f(i); i=f(i)\n return str(i)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

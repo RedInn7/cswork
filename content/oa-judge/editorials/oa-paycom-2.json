@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paycom-2",
+  "title": "Mystery Algorithm — Generalized Euclidean Subtraction",
+  "explanation": "## 思路\n\n每次将较大数减去较小数不会改变两数的最大公约数；过程结束时两数相等，该值正是最大公约数。实现不必逐次相减，可用欧几里得取余迭代得到同一结果。\n\n## 正确性\n\n对 a≥b>0，有 gcd(a,b)=gcd(a−b,b)=gcd(a mod b,b)。因此将减法步骤批量化为取余不会改变最终公约数。余数迭代在每步严格缩小第二个数，最终到达 0，此时另一个数即原伪代码终止时的相等值。\n\n## 复杂度\n\n时间 O(log(min(a,b)))，额外空间 O(1)。本站把固定样例泛化为正整数输入，避免只有一个固定答案的常量输出题。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split())\n while b:\n  a,b=b,a%b\n return str(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/paycom#2-q2-pseudo-code--mystery-algorithm",
+  "sourceContentHash": "9ad732f093c19bb947fea59cc500b76fe531f5daae99200899be9e49b295438d",
+  "author": "CSWork"
+}

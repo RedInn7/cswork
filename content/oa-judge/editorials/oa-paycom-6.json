@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paycom-6",
+  "title": "Java try / catch / finally — Console Trace",
+  "explanation": "## 思路\n\n若除数为 0，整数除法抛出异常，catch 先打印 Exception；随后无论是否异常都会执行 finally 并打印 Finally。若除数非 0，只打印 Finally。返回的 c 从未传给打印语句，因此不出现在输出中。\n\n## 正确性\n\ntry 中只有除法可能抛出 ArithmeticException。除数为零时控制流进入 catch，再离开 try/catch 执行 finally；除数非零时跳过 catch，也执行 finally。两条路径产生的输出顺序分别唯一对应题面定义。本站明确把同一 System.err 流上的文本作为标准输出轨迹比较。\n\n## 复杂度\n\n时间与额外空间均为 O(1)。本站把原题固定调用 divide(4,0) 泛化为任意整数输入，便于测试正常与异常两条分支。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split()); trace=[]\n try:\n  _=a//b\n except ZeroDivisionError:\n  trace.append('Exception')\n finally:\n  trace.append('Finally')\n return ' '.join(trace)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/paycom#6-q6-java-try--catch--finally",
+  "sourceContentHash": "c50b2fac17e2a7efcfed49bf2c68be3e251faf0ccc276d5aaaf12bbaf9765713",
+  "author": "CSWork"
+}

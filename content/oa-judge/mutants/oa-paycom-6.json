@@ -1,0 +1,10 @@
+[
+  {
+    "name": "异常时漏掉 catch 输出",
+    "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split()); trace=[]\n try:\n  _=a//b\n except ZeroDivisionError:\n  pass\n finally:\n  trace.append('Finally')\n return ' '.join(trace)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把 finally 输出放到异常提示之前",
+    "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split()); trace=[]\n try:\n  _=a//b\n except ZeroDivisionError:\n  trace.append('Exception')\n finally:\n  trace.insert(0,'Finally')\n return ' '.join(trace)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
