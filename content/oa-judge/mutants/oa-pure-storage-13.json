@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遇到不匹配后没有重置连续计数",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); p=lines[0] if lines else ''; s=lines[1] if len(lines)>1 else ''\n if not p or not s: return '0'\n m=len(p); dp=[0]*(len(s)+1); best=0\n for end in range(m,len(s)+1):\n  if s[end-m:end]==p: dp[end]=dp[end-m]+1; best=max(best,dp[end])\n  else: dp[end]=dp[end-1]\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查从文本开头开始的对齐位置",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); p=lines[0] if lines else ''; s=lines[1] if len(lines)>1 else ''\n if not p or not s: return '0'\n m=len(p); dp=[0]*(len(s)+1); best=0\n for end in range(m,len(s)+1,m):\n  if s[end-m:end]==p: dp[end]=dp[end-m]+1; best=max(best,dp[end])\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\npcm mcp\nddp dpd\ncc c\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "2\nabc cab\naab abb\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "1\nz z\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6\nddaa bdddbdabba\nacbcd a\nd d\nd d\nab bdadbcbd\nbac d\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "16\nbdddac c\nbdd cbb\nadaddab ccaaaaa\nbcc aab\naccdc abccc\nabbb abba\ndcc b\ndcb cdb\naaaada badaba\na a\naacc b\ndbbaabdca acbcadb\nddca ccda\ndcdbc dbb\ncb bbdbcb\ncababd c\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "19\nddbdbaddda bcabcda\nabddbdbba b\nada babdbdbcbd\ncdbbccdb acdbcadd\nadbcbadc ddcaaadaab\ndacdadabd dadabccda\nabbb bda\ndc dc\ncbbbabbc caa\nbcacdcc aadccad\ndc cd\ndaacba dbaccb\nbbdbadc dadcabdccd\ndbc cbcdaa\naabbdca b\nbdcdbaac dabcacbd\nbdc bdc\naabdaabdc bbadaadcb\nad ad\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "6\ncdbcb dbacc\ndaddcdc acbcbcc\ncbbacadabb adccabdaac\ncb cb\naaaadcaba b\ndc dbcdcd\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "7\nbacd ddaabd\ncccca acbca\ncaaaa abddc\ncdcdcca b\nbdbcd badda\nbca abc\ndccbc cbcabaabd\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "9\nbdbccb caabad\ncccda dacdbd\naba ddd\ncabc babd\nacaacdaaad dcbbdadbd\ndbdcdabbd bcdaacadd\nbbaaacbab acbaa\ndadbbbbbcd aababdccac\nadbccdbb cdcaccca\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "10\nacdcbadcd cdaddaccd\ncdad dada\ndb ccb\ncdcb aacdabcddb\naaaadbcaac cabdacacab\nccbddbbdc bcdca\nbddbacbb dabbbadd\ndb ba\nbcda dacb\ncdd acd\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "12\nabc aba\ndcd cbb\ndcdccadc aadc\nbb aacaadbadc\nbaccbababb cbddccaaba\ncbcddaba baab\nbdadbaac abbcaabac\ndaaa abda\naacbcd dcdbcc\nda bcddacdbb\ncacdbdbcca adddaccdbc\nb dc\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "2\ncbcbd c\nba a\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "19\nb b\ncbaad bbcbb\nbcbcad ccbbccbc\ndccc dba\nbdaab badab\nc bbabbd\nbbddbaaa cbdcbcad\na a\nc c\nccaada dbcdcd\nabdbd bcadccbadb\naa dbcbc\na aabbaa\nc aaaddddbd\naa bb\nccbbb aaa\nabdbcbd cac\nbbdcdb dbbabd\ncbbabbcbca dbddcbdbbb\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "12\nbcdbdadc bd\nc cacdca\ncbaba bddadcacdb\nabbadcb dabbad\nadda bada\nbbcbdbdacd dcadbaa\nccbacb ccadcd\nbccdcbab aaacc\naa dd\ncbadcda dacc\nadc dac\nba ba\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "2\nabdcbaa cdccdaac\nadddaaabaa dca\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "13\nd abadccbda\ncad dbbdbac\ndaabbc abdcaa\ndbbabdba dbccdbdd\na cddcac\nbbccdababc dcbcddacbc\ncc dc\ndadbadda cabb\ndabbab c\na acbdb\nbbaab adccd\ncdabccc dbdb\ncbbdccaa acaabdcd\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "8\na a\nbbaaabab dcbbbdaa\naaaab dcacd\nbdabcada ccdcdabd\nbbdcbb dadcab\ndacda ddbbd\nbd db\ndcbdddcc bccdadbb\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "8\nabbbbbba dadbbc\naddabd caa\ncca daa\nbddc dacb\ndcad dabc\naccacad bacacdaaca\ndacccada dabc\nbcaaadd dbcbbcccd\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "5\ndc dc\nbdbdccdbac ddbcbcbd\nb b\nbaddda abbaaa\ncdd bba\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "11\naabaa dabcc\nabcd bdac\ndccdddbacd ababcaabcc\ndcdcbb ddaa\nb acbadbcb\nd dccaaabcbd\nbaba dbac\nadbadc cccbdb\nddbaad a\nb baad\ndcccacadad cc\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "7\ncaaa cddc\ndbbaaaa dacacdd\nd babab\nccaaaba babbdca\nbcbcbbcda a\ncd acddbbcbb\nb b\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "16\nbcdacab ccddacb\nbb ba\nb dadd\naccbddd bbddaaaa\nb b\nacccdccd dcdcbc\ncbdbbbd bcbcab\ndbdddacbca dddcbadd\nbccadca cdaaacb\nabaababbb bdbdccaddb\nbacabbaaac dbdccdacbb\nbbcbc cdddd\ncdaaaaaba dcd\ndbda aaac\ncbcbb adacbcb\nddbbdbbb cbcadcdb\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "20\naabacbda bacccdab\ncbbb dbcbb\nacacabcbca baabbccaad\nbcbba bbbcbdddad\ndaccababad ccacbadbdc\nabbbd dccdd\ndcadcddc dabbdcab\nc aad\nbdabdbdcad daaadacaaa\ndccbdb aadcdaca\ncd dc\ndcb acc\nadbdc ddad\nbaaab ddccc\nbbacbddd bbaaaacd\ncbcbcaabd addbbdaaa\nadb adb\naadddadb addcccbc\ncc ca\nabadcda cbcccdc\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "16\nb b\ncba cabdbdaab\nd bca\nbddaaa cbdcda\ndddd ddaa\nc bccadab\naccd cbbaaabc\ncda cddcaa\ncbadcdccc daac\ndddccdcbb accaccadd\naabbdcbc abadaaad\nbdadcb baddac\nabb ccc\ndcd bcd\nbb db\nbd db\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "12\nbdbd aabcacb\nccc c\nadbcdca abbbadd\ndcabaacc ccaccbbb\nd dcbdac\ndbdadca dada\nadccdbdbaa badccccaba\nd d\nb b\ndcddcccca b\nada addaacdd\nacbac bbcab\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "12\ncabbcbb bcadbcc\ncddcadb cbcbcbd\nbbabb acddb\nbcccd cadbb\nbbcabcaabc ddbaaadada\ndb bcccaa\nd d\ncccddcdb aacaba\nadcbc cdadb\nbc cb\ndcdbdab dbbaddd\nabaa cdb\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "13\ndbcd da\naddaabdbaa aaadacacac\nabb bab\ndacbba ddbca\nddabcddac cbabacddb\ndacdbddac bccddaca\ndbabaadbb cdccabcdc\nbabaaaaac cbc\ndad d\naabbcddaaa ddbdcccaa\nbccdabdc ddcdabca\ndcadcdcadd bdbd\naac b\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "19\nababcdbbc aaddbcabac\ndbcbdbdbd dabcaaada\ncdb dbad\ndacbdb bcbd\nddac bcba\nacaccc daaabb\nddcabaadd daddddcdd\nbdbcd ddacad\naaaaddcada cdddabdbaa\ncdcbdcbabb adcbdbdaba\nddcbddcc addabaaa\na adadccac\nbc bc\ncaabadbcc aabaccc\ndbacdb cbbccb\nbaadddadcb badadaaaad\ndcaa b\nbbbad adbca\ncdc acadddd\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "2\nb aaacab\ndbc bcd\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "20\nadcdbc bdbddc\ndbbaadcdb b\naadbadbbd aacadabbc\nabd d\nddaacdca acdccdbb\nbcdaa cdaca\nabbabd adcdd\nadcbaabaac cbcacadada\nc d\nccccb bbbdb\ndcda b\nddddd abbbb\nccdaacad adcaada\ncbbdaacab bdabcdcca\nabd bda\na a\nbcaabdc dbcbdac\nabdbaddad bdcabcbc\nbccadd adcbbb\naaabcddcda aabbccd\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "7\naccdbc dccacdbd\nbaabadacd cdbcabdbc\nbdccdbd ddbcccb\nddbbaaaaa cddbaaccd\nbacdd cabab\nd d\nadadaddcbc cacbbaaaac\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "4\nbbdd ccca\nbaaa ba\nc cbabbad\ncbbdcdabcd aacadaadca\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6\naacba accad\nabbb dcda\ncd dada\nccbddab cbcbcab\nbbaa bbbb\ncb cb\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "7\nbccbbccdbb abddcccdc\ncb bc\nd aadaaaacdb\ncbaaa dacdcbbaa\ndc bbaddb\ncaabbac bdcbcac\nbbc cdd\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "18\nddabcdccc bdadcbacc\nbdddabbb cdbbaacd\naabdbdad cddccd\nbcaab ddbbb\nb b\ncddcab abddbc\nbddcaacdc bcdabccaa\nd d\ncbac cacacddac\ncabaa ddcbaaaa\nbcbca bc\ndaddac dcaacc\ndddca aaccabadc\nbaaacdabb a\nad da\nbdacaaab dbdaabaca\naababcdcad bbcaabdcac\naada b\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "19\nbadbcbcba babcdbbac\nba bcdaaabdca\ncababd acbadcaa\nd d\nbb bbadddadbb\nddacdcbbaa acdccdbcbb\nabddaa dbdcdb\nd d\ncddacaad bb\ncbbda badbccddbb\na a\nab bdb\nccc cabb\na babc\nacaba bccac\nbcacbbd bdcadcccbb\nccabc daccc\nacaadccbad a\ncddaa caaabdacc\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "10\ndccbac b\nbbdabb cabbacba\ncb aacdca\nbbabdaa c\nccbdbd caabad\nbad bbcdbdad\na adaabbbb\ndaccdddb baabdcad\naadacad cdaabcc\ncdcddba bcbaccb\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "16\ndacdaab ccdc\nbbdada dbddaccbc\nbabcd bacbc\nd d\naddbcb d\nbdcdcbc bddbada\ndddda bbabbbd\nbdbba bbada\nc baaabd\nc bdcabbca\ncabacbd acdb\ndc cd\ncabcadb dcdbccc\ndaadcadccc acacabccaa\ndc dc\nbacc bdbcdbdad\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "18\ndddd dadb\nadcda dcbcca\ncaacd db\ncbbb bbbb\ndabcbcbb cdcbaddd\ncbdcbdcbb b\ndcbcbbca addacbdb\nbacd bdca\ndaabb dbadccc\ncdaccdacd bbbbcddba\nccdbabbabd aad\nbcabc dbcccac\nacbabc addddda\nccbbdb cbdcdb\na c\nbcbacdddd aacadadda\nbccadca ddcacdbac\nd d\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "15\nacdcacad ccdccadbbd\ndabcdd dcbbdbbada\ndb adbdcbcdb\nb bdb\naccbd dbcabb\ndacaa bdadbbdada\na a\ncbc bbcabba\nd b\nb b\ncddbdba aaddbcd\nadbaabaaa dddadacda\nbbbbdacabb b\nc c\nbbbbb bbaca\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "13\nbcac bcbbcdabbb\nbdbc cbddc\ncdb cdb\nbdcdcb c\nccadd bdbc\nbccabd cac\nbbccb cadab\nbaaacadadc baadabba\nbcd cca\nacdb dcab\ndccacc abcdcc\nacddba aadcbb\na a\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "1\nddadcacaa dacbccadb\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "5\nddb aabca\ndcdbdbbcca bcabaccdba\nd d\ndccbadcc daddaaba\nbcda d\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "15\nbadd bdcb\nbdddb aaacb\naacbdcd aa\ncd cd\ncdbcadcad adcbcccbc\na a\ndbc dbc\nbcbcb cb\nacc bac\nbaabac dccdcc\ndbba aacd\nddcadd baabdccb\nbdcba dccad\ndadcacca cddbabac\nb b\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "1\nbca bdabbcc\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "14\naccdcdaddd aaacbbdcbc\ndbaccc adacca\nd d\nd d\ndaaac cddab\ndaabb cbcdc\nada bbc\ncacdcddda ccbddbbaa\naccbdc cdaabd\nadabbc aaaaa\nabd abd\ncadaaad bacbcdd\ncacacbac cbbdbc\nbbddbadcab db\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "8\naa ba\nadbd caab\nacb dcbba\nd d\ncd dc\ndbbb adadd\na a\ndccbcbb cbbdadc\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "10\ndcadabcdcb a\ncdc cdbbbaca\nbbabc cada\ndcbcacbcca dbaba\nbdbbadb dcccdac\nb b\nbb ad\ncadabcaadc bddabcdbd\na a\nbccbdc acdcba\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "12\ndac acd\na dcddcd\nc cabadcdc\nba bccbaa\nac dbb\na a\nbdabdddcc dcccaacba\nbadbbbdbd abbdcddaa\nddda dada\nadbbabcc aaacdb\nbbdcabdb c\nddbabbbcac cbcbadadba\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "20\ncaacccb cdcaaba\nbaa caa\ndcbaacd abcdaaa\nbcccbacccc dcbadbcbac\nbbdad aadda\nabdcdbdca cdbdddbbd\nabdcacbb abadaddc\nbadadcb dacbdca\ndcc abdbbca\ndaba dbdc\nc bddddb\ndc cd\nadacbdaab cbcdb\ndd dc\ndbabcaab cabbccab\ndbadb c\nbcdc dbda\nacacabaa acacdbc\nbbcaa dbcca\ndbabdba cbbddb\n",
+    "expectedOutput": "19\n"
+  },
+  {
+    "input": "20\nbbdcacca cdcadabb\naaaa bbbaac\nddcadcdac ddbabcdcc\ncabba ada\nda da\ndabddccd acddddba\nacacccbbac daacbdacb\nc c\nbcb dcadbbdb\nb cc\ncdbcb ddccb\nabacd cdbbd\ndaccd acbac\nabddcbd dcaa\ndbdaa cbada\ndbacdb cacdac\nbbdd bdba\nccbaba bcabac\naacabcbba cdd\ndbccdd addabb\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "14\ncbbcdb bbbbbb\ncb abdccbbc\ndbaadbacd cdbaddcbb\nabbcccdda bcbdcaccc\nccccb ddb\nada dda\nbddbdcab ddcbbbba\nbdcbacadb dddbc\naba aad\nadbb dcbb\nbcdccddd cdabadddbb\nac ac\nddca aadd\nbddd bccbdacdb\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "7\nbdaac dad\nccccddcb adcdcbac\naabab d\ndbbccb cbcccd\nbacad a\nbaaddbd cbabacada\naaabcc abbdbb\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "3\nacc bccacdaaa\ndb caca\nbdaba cccdd\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "7\nabcaadaca bcbdaccbc\ncacac acbccbbdda\ndda dbd\nbbcddadbcb aacdc\nbccbbaab aa\nbbdcaca bd\nbdcaadc bdaabbb\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "19\nadacbacabd dcacdbccd\nbbc cdccb\ncbcdcca abdcadb\nacbaa abacc\naccadbdb bbcbddab\naaccb dbdcd\ndac acdbacaadb\ndbcd bbda\ndcdcc ddadd\ncd badaa\ncdb bb\ndcbcdbcca accdc\nacdcdb d\ncbcaac addb\nccaab cbada\ncba bca\nbd bddddd\ncdabcd dbbbbc\nacdbdbccd babddacdc\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "1\nacbcacab acbabbbc\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "15\ncdda bcbabacb\ncaadb cbcd\nbcadd cbcadacda\nbdbbbcba bbcbadcdcc\na cadaacbb\nadcaccb daccbbacc\nacbc dacba\ndaaddcdbca dadb\nbc bc\nccbdd daaad\ndabdacdcb acd\nabaadbd cbdbaaa\ndba dab\nc bc\nabccaaab ddb\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "6\naac b\naddac bbabcb\nadccbcbc baabd\nbabbbacddb ad\ncbcbc cddda\ndaadabcbd dbbacabbd\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "1\ndabddaccc ddbdbadac\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "4\nabcd cdba\nacd cbdccddccd\nbdcbddddac cabdcacbac\ndda dda\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "11\nbcdadd acd\naab ccc\ncccadbaaba cdbccabba\ncbccdbadbc ddccdb\nbad aadddaa\ncdcabdbbc cbcabdbdc\nb bdbdaaa\nbcca adda\ncccd b\nd cbddabbdbd\ndacc ddccca\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "9\nbadacb ccdada\nc c\naaddddc bbadbbcd\nddbaa bbdbc\nd bbbcaa\na a\nbdbdb cbdadca\nbcaaaada dddaaadcc\nbbdcdc bdadab\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "1\nbbccaca bbaccad\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "5\na cbad\nddcbb abcad\ndad bbc\nbcadb cbddb\nbdac adbc\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "9\nbdddadc dcbdaad\ndcdadbccab cbdaabcbca\na bbdcacca\ncdddda a\ndccbdcbdac a\ndddbdd abbaaa\nbbbca dcd\ncbbdaccbdc abbaabddbb\ncdcbd cbccbbca\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "19\ndab aaabada\ncadc adab\nbaacbbcb accabdba\nbbabd b\nd abbaabaaad\nccbcb aacbd\ndcda dbaaab\ncabbcdbaa d\nabddcc cdcbccaccb\nbcbad ddcda\ncabdd bcbda\naa cd\ndcbcc d\ncdabccccc cababaaac\ncbac d\ndb db\ndcdb daac\ncabbccb ccbabcb\ncdbbadbd d\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "13\nacadb dbdad\ndccbcab add\naaadd ddbdabdcdc\ndd ab\ndbacbad addbaadd\ndaaaad cdabcd\nacc cbd\ncc bb\ncbdacacac abddcdcaa\naacaa bbadc\naadadcada babaaabdc\nccbbbdd dcb\naccaaaa adcbbdd\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "6\nbdca bccad\nccd b\ncbaadd cabcac\nc c\ndcd adcbcadaab\ncc acba\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "13\nccbcaddd acdabcadc\nd d\nbbadbaaa baddbdbd\naccbaabcad da\na cbb\nb b\nbaacdaac ccaadddb\nbbccadc dbabbd\nbdba dadd\nccdbdbba bdddabccc\nadabdaacd dbcaaddd\ncaddc cadcb\nadbb aaad\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "13\ncccd dacd\ncaabcdda b\ndd bb\ncdddba ab\nbbbdaadc abddcaa\naacacaadbb cbcc\naca aca\nbccccacbc dbabdad\na a\ndaad bbbadcab\naddda aaadb\nbc c\nb bbbcdc\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "8\ndcbcac cbdd\nd bbda\nd cbbadddbd\nb b\nddcacbb ba\ndddabdcb bbdaaaba\ncabbdabcad ddcbbaadaa\nccdb adbdaa\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "5\ncdbcaacc bdadddad\naacc acbaad\nabcbdddcc dabcaaad\ncacaa dccdd\nbdbdadbacd bdacaaaada\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "10\nabd bda\na a\nacab bbcd\nbcaccccdd dabdcbaab\ndadb dcaa\ndbbdccdd dcbddcacda\nbdbdc aacad\nacdcddbcb bbadbc\nbc b\ncaad dacb\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "7\ndacdd bddbbac\nd d\nac ca\nabdacbcb adad\ncdaccadac dcbcdaa\nc c\ndbdbd bbdaa\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "10\nbbad cdaa\ncbaa ccbc\nada dadaddbcd\nccda bda\nadabcad adcaadb\nabcdada bcad\nddd cdc\ncabcbb bbabc\nbab bab\naccbabdcd bbcb\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "19\nca bbddb\nbccbdd dcbdbc\nccba d\naa aa\naaa cab\ndccdac bacbbbac\nacdb dabaaddbb\nbadadcbbb c\ncbbaada bcbabbd\naacbdd cbcddb\nbd cbac\ncbbabdbda acadbcbbb\ndbcbdcdac cbad\ncdcab d\nd ababacacc\nbd db\nbdaddcc aaddabd\ncdadadba bbacdcdc\ncbdbbdba ddbabcdb\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "10\nbaacdabcdd dadcbadbdb\nbcacacac aadbadbc\nc d\nd cddcbcadc\nbabbacb cadcdda\nbc bc\nbbddd abcddcaabd\naab aabddc\nbdcada babdba\nadcdb acccc\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "10\nbaabbcbbbc bbdbbda\nbcaa a\ndbd abbab\nccbacbabdd bbabacaadc\ndcbbab cdcdbcba\nccbbabc aacbdadbac\nabdacdbdb abbcbdcba\nbaabdbdddd bdddddadcd\naddcdd aaadad\nbdbbdaa aaacbbabc\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "10\nda da\ncbacb bbbcaaa\nbddaa adddb\nbacaacdd dccabcca\ndcc aacc\nacdcada aacccbd\nb b\nbbbd dcbdcccbbc\nccccdab baaacda\nad badadbcdc\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "16\ndabcbcbdb bcaabcaca\na a\naddda dabbd\nbdbbdd ccbacad\nbcabcddbda acdcaadbcc\nbddcddacab dacbbc\nbccdccb daabacabd\nba adcb\nacadccbc aa\nbcabccca ddaadcab\nadabcdb cbdbaab\nbb cdccca\naccbabb bbdd\nbdbdbdd bdda\nbb da\nab ba\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "11\nacccbbcdac cdbcdd\ncabaccab cdddbadadb\nbab aacaa\ndaabdacab accacacbb\ncacdac abaaadb\nddbbbbdaca bbaccc\nb b\nacdcbbd cddcdbb\nd d\nbbbdd bbcda\naacbaa badcdbaddc\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "16\nacbbd bacdc\nbdacbdacca aa\nbbdcadc baccbbbc\nbdbbdcdca abaaccdca\nada ad\nda da\ndd bd\nbbd dcbacca\nbdcacb cddda\nabdbacab adbccdda\nbbcdd dcbca\nbbbad bbaac\ndccdaab cabc\nd d\nbaddbcca cbcaabb\naabcabbbc bcddaddbd\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "11\ncb bc\nd d\na cacababb\ncbda cdab\ndc dc\nbdb bcd\ndcddb dbdca\nbdcacdaabb bdcdbabcaa\nddc acdbcaaa\ndbdddda bbcbbbbdb\na a\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "8\nbddb acdbb\ncaadbcadcc ddcbbabcab\ndabdbdadac dddcbdc\nbdbaaaacc ccdccabd\ncdcaa ddbda\ndcbdcbdd acbddcdc\nccccbdaaa dbcadaad\nca cb\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "11\nadbbccbc acdcdbdd\ncacbd cdacb\ndcccca dcddab\ncbccabdbcb dcdddaabcc\nabcb babb\nbcd cbaddb\ncbaacadca dc\nbdacadacc bcdbabbcd\naabcbbda ddaccbcd\nacbdddb cdadadb\nabdcbbcd cabbcb\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "19\ndaabad bcc\nbbcda baaaa\ncbdd babd\ncb dcddda\nbdddddcbd bccddaada\ncdaaacb bddbacb\naaddbddcd bcbdbadac\nadacddcad bbddcab\ncbccacacab dcdaacda\ncaaabcdcc c\ncadc dbdb\nb b\nadc cad\nbd bd\nacbdacbcb bccbabbdb\nbbbbbddba dbba\nbadbdcd dddaadb\ncaaaacabda dddcacddc\nbacdab bcdacc\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "16\nbdbcc cabccbd\nccabdabac cbcdcb\ncaaadcdbdc a\ncac aba\ndcccddc aabcccb\nbca abc\na a\nddbbacccc bbccaccbb\nca ac\nccdbdc daa\nadaab acdddcdd\nabbdabbaab adadabbbbb\ndbbcbd cdbbda\nbaaacbcddb dbdaccddab\nacadad bda\nbdbaabcaa ddcbdcbaa\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "8\nadddbcc c\nabc acb\nbcdaccaad adb\ncbcaabadc bcadadabc\naad acb\nbdbccad bcadadd\nbaacdbbbac b\nabbaaadddc cbbdbabbaa\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "16\ncccdaba ccbbadb\nccbcbcabac cddbbdadac\na a\nb cbbbc\nbadacabcab baacdbd\nbaabdbca cdbcdab\ndbbddbcddc aacabdcadd\nbb dd\nbbbaadcabb bdcbcaacdc\nbc bc\naabdd daccb\nad adcb\nacddccddad dbbccdbcbd\ndcabacd abbacdc\nbcc bcb\ndac adc\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "3\nca ca\naadbaabbcb daaddabbab\ncccdc ddbdc\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2\nabdaabc bbdbaac\naacc adcb\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "14\nddddaca bab\ndccb cc\ndcda bada\ncaba caaaabba\nccca bacb\nbccaa ccacb\nbbdbc db\ncc bb\nbbbac ddbba\ncdaa cdcb\nadcdcadc ababbcc\nbccdbccb ac\na cc\nd d\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "7\naddba bcbdb\nd d\nbbccaddb cbacbbdc\ndbcaca cbbdca\nddcdd cccbabadd\ndcbdb bcad\ncbaa bdaabbd\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "11\nbbddb ccddddccaa\ncd ac\ndc dc\nacca acdcadac\nabcdadbd cdacccbb\naaadc aabda\nccadcdcbad aca\nbcd aaaabad\nbda ddcc\nadbdbadca cbdcb\ndbbabd d\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "20\ncc dd\nbabcca adbdca\ndbcdcdadbd da\naa badcd\ndbbcadbbd daaaaabbb\naada cbccda\nbbccddcacd c\ndaad dabb\na a\ndacadcabca ac\ndccab ccbbcd\ndbdb ddac\nccdb abbdcaca\nbccdacca aaccadbadd\nbdaaac ccabda\nbbbba bdbab\nacacc bd\nddcd dadbd\nbbbddcbaca c\ndacccbd aaacaab\n",
+    "expectedOutput": "19\n"
+  },
+  {
+    "input": "19\ndb bd\nbdb abdcbd\naab db\ndb db\ncaccca bcbbacdcad\nabdddcbdd dcdacdbaa\ndacac bcbdc\ndaadbda abbbbaa\nccdbddddb cbadacbcc\nbd bd\ncd b\nacba aacbbcd\na a\ncaddcadddc cacbbccccd\nac ca\nadccccddca dbaadcbacd\ndcb bcac\ncccdaacd bacdaaabc\nb b\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "14\ndaadbabca bbbbbadbc\nccad ad\ndcc dbb\nbbccabcdc cccccbcccb\ndbacbadb dbddac\nbdb bca\naadbabdc ccbcbdcd\nbbdccc dbadd\ncaccaddabb cadcbd\naaac dd\nadbbbd cccc\nbababcb bdabdab\na a\naaccdb cbcbddaccb\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "11\nabaccc cbcbaa\ndaa bbc\ncbbac dcbcacbabd\nccbcadbdd cabdaddcc\nccdbcadd cdbabaaa\ncdbddbb cadadab\ndbbddba bbabccc\nbab adbbcd\ndabbdbcaa bbbbbcbca\nadcbcdbcbb aabdabdaac\ncaa bdc\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "9\ndaccaccb cdacbadb\ncadcadabab bbbcadddab\ncacbadada badabdbbd\nacaac cdddc\naabdbacbc abaabaacd\ncaccadba cbccdaab\na bbcddcd\ndbaaccac cc\ndabbcc bcbada\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "9\nadcbadcc cbabaada\ndbaaad ddacda\nbaa bcc\nbdca cbbdccca\nbbb cdbdcd\nccdcdbd dbab\naadcbad accbcc\ncacbabacab bcbcccdaca\nbccaa cbbab\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "11\ncbaccbcbd ccdbaaabb\naadd cadd\ndccbddb cc\ndcdcdcb acabdda\ncadbc cdcba\ncabadbabab d\naaddbca aadaacd\nacdcd bd\ndbac dbbd\ndcdcdbac ccd\ncdbbdcaad ccdadd\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "3\nd d\ncadaddd bdcaa\nabccdccacd dccddbaaac\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "18\ncacbd ccdcaccbb\nbcabb bcbcacbca\ndbbbcddca dcabdc\nddbbdd daaddbbaac\nbcccaadcb acc\nccb bab\nacaca aabdb\nabaadaa adbdadc\nc c\na b\naa bd\nbdddacbcad ad\na cb\nddca bdad\naadcca cdddbb\nacdbdbd bbdbcddbc\nccaccc cabca\nadbcca cbbcdb\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "3\nabadb ccaaa\nabdad dcddd\ncbdbdadbc aad\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "1\ncacbbcd cbcaad\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "12\nbb bb\nbda bda\ndacc dcca\ndc ccacc\nacabda caadaaa\ndcddddbdb badcaadbd\ncdbcdc bccbc\ndddbbdb acd\nbbadaab badabdb\nadabddaa dddbabbd\ndd cd\ncba bcddcdbd\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "12\ncbcbacaddd dbddbabdac\nabaddabaa cbcbddaac\ncd cd\nccabcb dcdbd\nbb ca\nbcdda cbcdbdd\ncac cdccdbbb\nabd bda\nccb bab\naccab baad\nccc abcbd\nddcddca ddcdccd\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "6\nbaa dda\naddbcbd aadadcc\nadabdcdaac cadcbabdda\ncac bcdcabdbb\ncabc bcbddd\ncc cdddccccb\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "8\ncbd cbd\nabcdacdd cdbcabbda\ncb cb\nadacbcdda acdbacdda\naaab dbc\ndbcc addccbcaad\nbcbcccddc abbbbdb\nb ccabcaccac\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "20\nbbdabbabb bbbcacbdc\nabdbad dccdccca\ncca dac\nbdccdabcbb aacdbdcacd\na accdbbdbda\nb aadc\nbd cbabcb\nbd db\ncc cb\nabcaddaca cdbbdbdad\ndacd cddc\nadbdd dcccc\nbdcbcbc bbdcbca\ndbba aba\na a\ncb cb\ncdcbab abdbd\ndaccba dcacba\naa bacacba\na a\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "5\nccabddcbd abd\naacd accaaabdbc\ndbcab ddbdb\nbddccccb adddcabd\ndbbbdb abd\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "10\naababb bd\ncd cd\nac ac\naabcb b\ncb cb\ncabadbbbcd ddbdccdcba\ncb bc\nbbabdcdbab bbbcdbd\nacaadb caacba\ncbdbbccacb baccadaba\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "6\nbd db\ndddab acaba\naba b\nbdcccaaa cdbbaaba\nad cd\na adbda\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "15\ncaadcc cbbdaa\ncacabbac ccbbbacd\nb a\nbdcaddaad cbadbbd\nbcccaac dbabcbdbd\ndcaaa cbbaa\ncad acaa\ncabacad dccddad\ndcbccdddcc aaa\nabbbbd abcdaa\ncdaacaad dcc\naaacdc dabdad\ndaabaca aadaaca\naacdabaa b\nabddacdbdd bcbcbbdbcc\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "5\ncadabdcc cabdabbd\nbbaaddc acacada\ncdaddabbcd a\nbadabcaa bddaacac\ndcabc bcaaa\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "1\nbdabd aaaad\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "3\nb dbbdad\nbbbdcdcadd adaccbabdd\nacddbb caabda\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "5\na dacccbdb\nccabaddd bbdddcaa\naaddaa ddabdbdd\na a\nadda dbdbbb\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "11\nad d\ndbccabbbc ddaad\naa db\ncababbab accbccab\na cab\nddc cbc\naddbbbcbb dabaccd\ndbcbdabddd cbbdbdddbd\ncbadbc dbccda\ndca adc\nbd db\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "8\ncbcd bbcd\ndbabccbcca cb\ndaa bccbacbd\naacb dbbcdbb\ndbcdccdca dcaadcbcb\ncbd bcdbabdad\ncc dc\nbcdcc acacd\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "6\nc c\nbabccdba abbb\nabbcabbdaa bcabbbbbcb\nca cdba\nc dbdb\nd d\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "2\nddabbcdcca acbbdaabbc\ndacadab acaba\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "6\nddbabaad caadadba\ndaddaabbc acddcbcbb\ncaacdab abbdcdc\ncadcccdad adcdcada\ncccbabbc dbdcbadc\nda ad\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "17\nccb ddb\ndcdbb bcbbb\nab abaacaaca\naa dc\ndcacdcba abcaccbd\nbdaaabb cdccaab\ndb db\ncabac dbbbbdb\nbbdcbaa dabdadc\nbbbcdcd bcdbbda\nbdccdba abbcaca\ndccaa cc\nba ddabda\ndacd aaad\naa dd\nbbdacaaca ccaa\ndba ba\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "3\nccc cdb\nadb abd\ncadbadbbba acccddbac\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1\ndbddbda acdcada\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "18\nbc ad\nadaadc adcdbd\nbcacbdb aaad\nacc dda\ncddcdbaab babadcadb\ncddbbbcca cdddbddda\ndaaabc ddcadc\ndcacb dcd\nc daac\nd d\nbdbacbdbc bccaccbcd\ncabdabca cddddbbc\nd d\ncbadad adacac\ndbadbbc cadadaa\na a\nbbc ccd\ncdabdaddbd dbcadbcacd\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "17\nbcdca adbdccab\ndcaadab cccadca\nbba dba\ndbcd acba\nbdcbaaacc acbabcdbd\ncbc dab\nacbbdbd cdcaabb\nbc bc\ncdb bdc\ncbcdca d\ndaacd addba\naca abbd\nc ababdddcc\nbcbabc ccbbdb\nadddb dcdbc\nbcbdabbccd bbbdbcc\nbdda abcc\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "17\ndbbbcd bcccdd\nbddb dccb\nbaddc accbd\nb b\nac ccaddcaba\nbcba abcacccccc\naabcbb bad\na a\nadaac ccabc\nccdaccbc d\ndacadd dbbacd\ndadaabbc dbddbabc\ndbcaad ca\ndcab cddadcc\ndbbaaa dcdcaa\nbbbcba ccdbdd\naac cadddabba\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "11\nbcadbdc acbadbcda\nbabcbdddac bddcbcaa\ndb aadccbaaac\nbdbaccd cbbcacdb\naadad a\ndbddb adcba\ncaaaccd dcadbab\ncdba adcb\ncb a\ncdaacbd cadccdaa\ndcdddbca adcddcca\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "7\nab ba\naab dad\ncbad dbac\ncaadbdbac bdccbbcac\nabbccddca dbcccacaa\nc c\nacbbd bdabb\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "8\nbcdabbb bbdbdcc\nbddd dcbd\nabba cb\ncccb dddd\nbaa d\ncaaccc ad\ncd dc\ndaacaabbcd bd\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "6\nddadcdbbbd ddccb\ndbaabb ddbc\nabaaca b\na a\nbbddcadbdb bccbddaadc\nadccd dbaaa\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "9\ncaaaaab accdbdd\nbbcadccacd acbdbdbcaa\nddaccbcaaa cd\ndacdac cbddaa\ndcd cbb\nca ac\ncdba abcdbbcbbb\nbcad bacd\nc c\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "13\nccdadbdbbc dccacd\ndbaadcdb bddababa\nddbabdb dcacacb\nccbbbad aaacbcd\naaad bccd\nddaddbdca bccdcbccd\nbabdab cdcabc\ndaadba ddcabb\ndabccbadbd abb\nbabdacc aacccad\nbbcbdccdd aaabcabad\nddbaddaba bcbaaadbb\nbacdcadcc aadaccccc\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "11\ncdb dc\nbdcca bdddadadcd\nddadcdcacc cdbbcabdca\nbdcdd ddcdb\nbd badb\ncbd cbd\nddbcddadb dcbccddab\nadcccdb abdbcd\nab adcbad\nd dbbccaccc\naddcccca abbcbbac\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "8\ncdcccadbd aadbbcadc\nccd bacaba\nbbac aabc\ndcdca bbdcd\nca dda\nd caadcaca\naadbabddda adbdbdac\naccbc bdddb\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "5\ndbccdb babcda\nc c\ndaccb cacbadccb\nba dbddc\nbadd daad\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "15\nbdbbbc cdbcc\nabcdbbc cbdcacd\nc acccbd\ndcdbbbacac abdbcbdbdd\na a\ndabacdb aaaacdc\nbbbcdbbab adcacbaca\nadaddcbb addabcdd\nbbaacccdc bdaacbddd\nb b\na bcacabbd\nbccb badddbdcd\na a\nb bacac\nab cbadacaca\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "2\ncbcbbdabbd b\nabdccd dd\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "6\nb dbbbc\ncdacabd b\ndcbadcc caaabddbca\nd d\nc dcccbd\nabdd accc\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "12\nbabdcddcc cbdcdbddc\ndcdcdabd dbbadaba\nbbb bda\nccbadcadd cdabdcaaa\nddcac dacca\ncc accadd\nd ccdcac\nabc cba\nbababccbab dddbadaddb\nacdddcbb ddbbcdbd\naaab db\nc c\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "8\ndaa dad\nbbac bbdb\nbdbbaaa a\ndccdba cdaccd\nc c\nabcc bccdd\nab ba\ncdd cdd\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "2\ndbdaccd dddaadb\nbb abdcccdcac\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "19\nac ac\ndcab dbbdca\ncdbcbc a\nacdca dbdba\nccddbbadb cdbaccddd\nbcdbabcb cc\ndbadb ca\ndbc bcc\ncbc ccc\naddcccbbc ddcdcbacc\ndcd baaadac\nbdadaccbac c\nccdbcababc d\nc ddd\ndcb dbc\nbbad dbbbadc\nddc daccbd\nccddabaac cdabcdddd\ncacbdba bc\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "10\ndcad bcbd\ncddc daab\nb bddcad\ncdadabcdc bbbdd\nbca bca\nbb ab\nbcdacbdbad cccdaab\ncadcbb bbbbbd\nbc bc\ndccd bbcabc\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "10\ndcbbca bccdba\ndccc bbaadbaa\ndcdbccabba dbddbbdadc\naadccaba dbab\nbadbccaba ccccbabdd\nabbbacbab aaababdd\nabccba caadcb\nddbadcb bdbdbbd\ndaadbdadc bbcadcbbba\ndab acdccd\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "6\nddbc cdaaaabd\naab cbc\ncabbbb aabadc\nbbbbbcbdd ccbbbbdba\ncadbcdbd acadbbcc\nabdcbd cdacac\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "19\naacd ccdb\ndcbcb ddbabcb\ndbabbdcba cabbbbddb\ncbbddcac abdddb\nbdcdcad aabcdad\ncccb abda\nbadbdc caabbdaba\nadccdccbb abdaaacddc\ndababd aaddbb\nbacacddb cadcbaca\ncacdb dadad\nbcbaabcaad dbbdbcd\naacabdbcdb aadcabacb\nddbcc cbdcbbccb\nda ad\nbadbbccab ddcdabbdad\nccdd aaaa\nc cdbbda\na dada\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "19\nbcaabc acdbcc\naaabaaddcc cccaddbdaa\nabc cba\nbaaadcdc aacdbcdc\ncbcbabdb acc\ncbd dbc\ncb cdccdcba\nabdbdbdb bdaacca\nbcccdaacdc dacbcd\nabcacdb c\ncdcdab adddacadda\ncbcdcdadab cccbaab\nbab dccdcd\nbdbcd bddaa\nca accdd\naadda baccb\ncabcad ddaacaddb\nadadbddd cbdccada\na a\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "5\nacadbabbb bdaadbddc\ndcacb dbdbc\nccccabbd cbccb\ndbadacda dbbccadb\ndabb caadcdbab\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "4\ncdaabaa accadad\ncabbddaaa dcdccad\nccdcd ccbab\ncb d\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6\ncabcdddda bac\ncbacab bdbbdd\ndd bcac\ncaacbcad aadc\nd d\nbbadbbbcbd ca\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "7\ndddcbbabb bdaddccad\nbcbcccdcca cba\nbb db\nda d\ndbcbacac cbccdbca\ndcddbbdaad cababbaaac\nb dcd\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "17\ncacccadcb aaab\nccbabcbcd cada\naba abdc\nadacaadcb adadddbcd\nacdbddbd caaaccbc\nca dacac\nd d\nbcb aca\nbadaca b\ndbaacadbcc dadcdacbdc\nddbbdbbaa bbbcdbaad\ncdbd bdaa\nadcbaabb bcddccda\ncabcc caa\ncdddda aadddc\nbbbacdddc dabbcc\ndd da\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "15\nbacbbcdbd bdbdcdbba\nacbabdacbd aaccb\na dac\naabadcdbc dbdbbcdab\ndcbbdc cd\nabdaa baddc\nacbcd dddda\ncbb dba\nbc bbcbdd\nad baabba\nbdbcaa a\nbaccdd aacdac\ncdaacbc bcbbbba\ndaddda caacccd\ndcb aa\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "17\nddababca baabaddb\naabbcb abdcac\nacbb ccddac\ncdbddbabbc aabddaddca\ndbbca cbbbac\ncacbd ccbbdccdd\nc bddccbac\ndbdcd cdcbb\nbc accbcdb\nddaadadbcc dddbdaaabc\ndbdcccda ccda\nbbcddbdc dcdbdacc\ndcdbcc d\ncada dbcb\nbddacdccdb cccdaabdbb\nadcda dddba\nadcbad cdcccc\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "15\ndbdcad ddba\nbabcabdbbd daacbcc\ncdbcdaa ddddbcd\ndd bb\nda daddbacc\naddbcca bdbdbdcda\naabdabdd ddbadabb\ncccccab cdbabd\ndcddccc c\nc ab\nbabbcd bcadba\nda ad\naab bad\nddcbacabd bbdcaabcc\nb bc\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "18\ncd dc\nacccbac aaabcaa\nda da\nbacda ddaac\nabdbcdbcb bacdbbaab\nbaacdc ab\nbdbbda cddbcddda\nbbcdc bcaaa\ndd cc\nacc dbaaa\nacddcb bdacaa\nbdb ba\nbdbd bbcc\ncbcdddbcd daaacccba\ndbdcdaccd cbdcabacc\nadbabbcbdc babdadab\ndcad bdbd\nddcdda adacbcbd\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "15\ncbcbbac dbadddc\nadab ccbc\nd dcbb\ncbdccacdbb bdbcbcdab\nbd cbadadadaa\ncccacdbcc abddccbca\nbd bd\ndccdaab cdaaddd\nadbadc adbbddc\ndcccb dcbcc\nacc cad\ncacabacbaa dcddbdddcc\nccabd badca\nddadcadbda addcdbccaa\ncbdcdbd cadbcdd\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "2\nabdbcdbbda dc\nbc cbdaaa\n",
+    "expectedOutput": "2\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许任意顺序释放仍持有的锁",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); stack=[]; held=set()\n for i,line in enumerate(lines[1:1+n],1):\n  op,name=line.split()\n  if op=='ACQUIRE':\n   if name in held: return str(i)\n   held.add(name); stack.append(name)\n  else:\n   if name not in held: return str(i)\n   stack.pop(); held.remove(name)\n return str(0 if not stack else n+1)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "dangling 返回 n 而非 n+1",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); stack=[]; held=set()\n for i,line in enumerate(lines[1:1+n],1):\n  op,name=line.split()\n  if op=='ACQUIRE':\n   if name in held: return str(i)\n   held.add(name); stack.append(name)\n  else:\n   if not stack or stack[-1]!=name: return str(i)\n   stack.pop(); held.remove(name)\n return str(0 if not stack else n)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
