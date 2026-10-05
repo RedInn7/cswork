@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-intuit-12",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "坦克阵列",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Intuit"
+    ],
+    "description": "用 1..m 号坦克排成长度 n 的序列，使所有只含不同类型的连续子数组数量最大；若有多种序列，输出字典序最小者。",
+    "input": "输入 n m，1≤n≤100000，1≤m≤10000000。输出 n 个整数，空格分隔。",
+    "output": "按题意输出答案；数组题按空格分隔输出。",
+    "explanation": "按 1,2,…,m 循环构造。\n\n正确性：长度不超过 m 的每个区间最多贡献一个符合条件的子数组，长度大于 m 的区间不可能全异；上界为 Σ(n−ℓ+1)，ℓ=1..min(n,m)。循环序列令每个长度≤m的窗口都互异，达到该上界。字典序最小的构造必须每次选前 m−1 个位置中未出现过的最小类型，因此就是 1,2,…,m 循环。\n\n复杂度：时间 O(n)，辅助空间 O(1)（不计输出）。",
+    "hints": [
+      "按 1,2,…,m 循环构造。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "1 2\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2 1\n",
+      "expectedOutput": "1 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2 2\n",
+      "expectedOutput": "1 2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "3 1\n",
+      "expectedOutput": "1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "4 2\n",
+      "expectedOutput": "1 2 1 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "6 1\n",
+      "expectedOutput": "1 1 1 1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "4 3\n",
+      "expectedOutput": "1 2 3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "5 2\n",
+      "expectedOutput": "1 2 1 2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "4 4\n",
+      "expectedOutput": "1 2 3 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "5 1\n",
+      "expectedOutput": "1 1 1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "2 2\n",
+      "expectedOutput": "1 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "2 3\n",
+      "expectedOutput": "1 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "3 4\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "5 2\n",
+      "expectedOutput": "1 2 1 2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "6 1\n",
+      "expectedOutput": "1 1 1 1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "3 2\n",
+      "expectedOutput": "1 2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "3 3\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "4 3\n",
+      "expectedOutput": "1 2 3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "4 4\n",
+      "expectedOutput": "1 2 3 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "2 2\n",
+      "expectedOutput": "1 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "3 3\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "3 4\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "3 4\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "3 3\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "1 2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "5 2\n",
+      "expectedOutput": "1 2 1 2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "5 3\n",
+      "expectedOutput": "1 2 3 1 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "4 4\n",
+      "expectedOutput": "1 2 3 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "1 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "6 3\n",
+      "expectedOutput": "1 2 3 1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "3 2\n",
+      "expectedOutput": "1 2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "3 4\n",
+      "expectedOutput": "1 2 3\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-12",
+      "sourceContentHash": "6afc06e2797bbd3dbb2a8f07dca4fa8488cd46f1ec29007b2f57af1d3d5f0ede",
+      "packageChecksum": "6f55464ea7bedceb14a32b6dd0a6d3e96d1dd9afb3892f4e501f5c3c90608758",
+      "editorial": "## 思路\n\n按 1,2,…,m 循环构造。\n\n## 正确性证明\n\n长度不超过 m 的每个区间最多贡献一个符合条件的子数组，长度大于 m 的区间不可能全异；上界为 Σ(n−ℓ+1)，ℓ=1..min(n,m)。循环序列令每个长度≤m的窗口都互异，达到该上界。字典序最小的构造必须每次选前 m−1 个位置中未出现过的最小类型，因此就是 1,2,…,m 循环。\n\n## 复杂度\n\n时间 O(n)，辅助空间 O(1)（不计输出）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nn,m=map(int,sys.stdin.buffer.read().split())\nprint(\" \".join(str(i%m+1) for i in range(n)))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-16",
+      "sourceContentHash": "c93d1865b64f97541f57755801e5e12588380cbaf210607110337e8f43d212a1",
+      "packageChecksum": "6faecd35425dbea5234640b87c92d5e17340fffa4e9e70c2aedb194b1964fe4e",
+      "editorial": "## 思路\n\n数字把字符串分成纯字母段；含大写字母的段才有效。\n\n## 正确性证明\n\n任一合法子串都不能跨过数字，因此完全位于一个数字分隔出的字母段中；对每段检查是否含大写即可。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ns=sys.stdin.buffer.readline().decode().strip();best=-1;start=0\nfor i,ch in enumerate(s+\"0\"):\n    if ch.isdigit():\n        if any(c.isupper() for c in s[start:i]):best=max(best,i-start)\n        start=i+1\nprint(best)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-17",
+      "sourceContentHash": "705e4f65e2354cdec1b4dbbe2fbfab1a9a1510f8b1f94050ad1f7104481e5a01",
+      "packageChecksum": "0545a1c149b7b063c304da3b66824eb03aa3b846b28014271a099f8ad466dc16",
+      "editorial": "## 思路\n\n扫描矩阵，维护到当前位置可达的先前格子的最小值，再用当前值减去它。\n\n## 正确性证明\n\n路径上每次奖励为后格减前格，累计和望远镜化为终点减起点。能单调向右/下到达的起终点恰满足行列都不下降且不同；每个终点只需减去可达先前格中的最小值。用上方和左方前缀最小值并入当前值，即可 O(NM) 扫描。\n\n## 复杂度\n\n时间 O(NM)，空间 O(NM)；最大绝对累计奖励不超过10000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n,m=v[:2];a=[v[2+r*m:2+(r+1)*m] for r in range(n)];p=[[0]*m for _ in range(n)];ans=None\nfor r in range(n):\n    for c in range(m):\n        prev=[]\n        if r:prev.append(p[r-1][c])\n        if c:prev.append(p[r][c-1])\n        if prev:\n            low=min(prev);z=a[r][c]-low;ans=z if ans is None else max(ans,z);p[r][c]=min(a[r][c],low)\n        else:p[r][c]=a[r][c]\nprint(ans)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-18",
+      "sourceContentHash": "fff10d191de51e25785b23215df87c24ca48dd187ab355d5d1f09c14df8dbd3c",
+      "packageChecksum": "b9924f78c2702e87482363e0c9e78cc9424db2fa12bf8b00e9410fbaec323354",
+      "editorial": "## 思路\n\n区间覆盖动态规划：dp[x] 是覆盖 [0,x] 的最低费用。以一个喷头扩展已覆盖前缀时，前缀终点必须落在喷头的覆盖区间内；利用半径上界直接扫描前驱。\n\n## 正确性证明\n\n任意最优方案按开启次序可视为一串相互重叠且向右扩展的区间。最后一个喷头可从任一已覆盖终点 L≤x<R 继续覆盖到 R；反过来每次这样的扩展都保持前缀无缺口。因此按右端点递增取所有有效前驱的最低 dp 值，枚举所有可能的最后喷头即可得到最优值。\n\n## 复杂度\n\n时间 O(N·201)，空间 O(N)。费用非负，答案最大不超过100010000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n=v[0];rs=v[1:n+2];cs=v[n+2:2*n+3];dp=[None]*(n+1);dp[0]=0\nfor right in range(1,n+1):\n    best=None\n    low=max(0,right-200);base_by_left={};prefix_best=None\n    for x in range(right-1,low-1,-1):\n        if dp[x] is not None:prefix_best=dp[x] if prefix_best is None else min(prefix_best,dp[x])\n        base_by_left[x]=prefix_best\n    for i in range(max(0,right-100),min(n,right+100)+1):\n        r,cost=rs[i],cs[i];left=max(0,i-r);far=min(n,i+r)\n        if far<right or left>=right:continue\n        base=base_by_left[left]\n        if base is not None:best=base+cost if best is None else min(best,base+cost)\n    dp[right]=best\nprint(-1 if dp[n] is None else dp[n])\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-20",
+      "sourceContentHash": "0da9533c085510b4d66f84cf8bef148a008754ad4d7a3039184195e3a864b3c4",
+      "packageChecksum": "22372100626a6f8d6ef9fc4ed9409d40a107bddc8ab74e30c467b338eb50c876",
+      "editorial": "## 思路\n\n统计每个尺寸的出现次数，答案为最大频次。\n\n## 正确性证明\n\n每个嵌套链中每个尺寸至多出现一次，所以出现次数最多的尺寸至少需要同样多条链。反过来把尺寸排序，并按序号轮流分配到该数量的链；同一链尺寸严格增加，所有娃娃均可放入链中。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import Counter\nv=list(map(int,sys.stdin.buffer.read().split()));n=v[0];print(max(Counter(v[1:n+1]).values()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-23",
+      "sourceContentHash": "073bf0202d0abd536633c3af51e4511f57404ddf031c6285b2ba26c6ffa89e7e",
+      "packageChecksum": "af3662bb1f5c52489c35ad21e5e4e1048c614c7e8932bc45033195b158a3d4bf",
+      "editorial": "## 思路\n\n把所有初始病毒格同时作为 BFS 起点，按层感染健康格。\n\n## 正确性证明\n\n多源 BFS 的第 t 层正是最少 t 秒可达的格子。最晚被感染健康格的层数为完成时间；若结束后仍有健康格，它与所有病毒格不连通，应返回 -1。无健康格时答案是0。\n\n## 复杂度\n\n时间 O(NM)，空间 O(NM)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n,m=v[:2];g=[v[2+r*m:2+(r+1)*m] for r in range(n)];q=[(r,c) for r in range(n) for c in range(m) if g[r][c]==2];left=sum(x==1 for row in g for x in row);t=0\nwhile q and left:\n    nxt=[]\n    for r,c in q:\n        for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n            x,y=r+dr,c+dc\n            if 0<=x<n and 0<=y<m and g[x][y]==1:g[x][y]=2;left-=1;nxt.append((x,y))\n    q=nxt;t+=1\nprint(t if left==0 else -1)\n"
+        }
+      ]
+    }
+  ]
+}

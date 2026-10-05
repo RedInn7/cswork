@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏必须包含大写字母",
+    "code": "import sys\ns=sys.stdin.readline().strip();best=0;run=0\nfor c in s+\"0\":\n    if c.isdigit():best=max(best,run);run=0\n    else:run+=1\nprint(best if best else -1)\n"
+  },
+  {
+    "name": "错误地允许数字出现在密码段中",
+    "code": "import sys\ns=sys.stdin.readline().strip();best=0\nfor i in range(len(s)):\n for j in range(i+1,len(s)+1):\n  if any(c.isupper() for c in s[i:j]):best=max(best,j-i)\nprint(best if best else -1)\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略右/下可达约束，任意格子配对",
+    "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n,m=v[:2];a=v[2:];print(max(a)-min(a))\n"
+  },
+  {
+    "name": "只比较相邻单步奖励",
+    "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n,m=v[:2];a=[v[2+r*m:2+(r+1)*m] for r in range(n)];ans=None\nfor r in range(n):\n for c in range(m):\n  for x,y in ((r+1,c),(r,c+1)):\n   if x<n and y<m:\n    z=a[x][y]-a[r][c];ans=z if ans is None else max(ans,z)\nprint(ans)\n"
+  }
+]

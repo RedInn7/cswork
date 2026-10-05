@@ -1,0 +1,10 @@
+[
+  {
+    "name": "贪心选择当前位置可达最远的喷头",
+    "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n=v[0];rs=v[1:n+2];cs=v[n+2:2*n+3];x=0;total=0;used=set()\nwhile x<n:\n opts=[(min(n,i+r),-cs[i],i) for i,r in enumerate(rs) if max(0,i-r)<=x<min(n,i+r) and i not in used]\n if not opts:print(-1);break\n far,neg,i=max(opts);used.add(i);total-=neg;x=far\nelse:print(total)\n"
+  },
+  {
+    "name": "把所有可用喷头的费用都计入",
+    "code": "import sys\nv=list(map(int,sys.stdin.buffer.read().split()));n=v[0];rs=v[1:n+2];cs=v[n+2:2*n+3];print(sum(c for i,(r,c) in enumerate(zip(rs,cs)) if max(0,i-r)<=0 and min(n,i+r)>0))\n"
+  }
+]

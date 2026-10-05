@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-intuit-18",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "花园喷头最低费用",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Intuit"
+    ],
+    "description": "花园为连续区间 [0,N]，位置0至N各有一个喷头。位置 i、范围 r 的喷头浇灌闭区间 [i-r,i+r]；开启一个喷头付一次费用。求完整覆盖花园的最低总费用，不可覆盖时输出 -1。",
+    "input": "输入 N（1≤N≤10000），下一行 N+1 个范围（0..100），再下一行 N+1 个费用（0..10000）。",
+    "output": "按题意输出答案；数组题按空格分隔输出。",
+    "explanation": "区间覆盖动态规划：dp[x] 是覆盖 [0,x] 的最低费用。以一个喷头扩展已覆盖前缀时，前缀终点必须落在喷头的覆盖区间内；利用半径上界直接扫描前驱。\n\n正确性：任意最优方案按开启次序可视为一串相互重叠且向右扩展的区间。最后一个喷头可从任一已覆盖终点 L≤x<R 继续覆盖到 R；反过来每次这样的扩展都保持前缀无缺口。因此按右端点递增取所有有效前驱的最低 dp 值，枚举所有可能的最后喷头即可得到最优值。\n\n复杂度：时间 O(N·201)，空间 O(N)。费用非负，答案最大不超过100010000。",
+    "hints": [
+      "区间覆盖动态规划：dp[x] 是覆盖 [0,x] 的最低费用。以一个喷头扩展已覆盖前缀时，前缀终点必须落在喷头的覆盖区间内；利用半径上界直接扫描前驱。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3\n1 0 0 1\n3 5 5 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4\n0 0 0 0 0\n1 1 1 1 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2\n2 0 0\n7 0 0\n",
+      "expectedOutput": "7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "5\n2 1 4 2 1 4\n5 0 6 1 6 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "5\n2 2 4 2 4 2\n0 9 6 0 2 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "7\n1 2 0 2 1 4 3 2\n5 5 0 9 0 4 4 10\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "3\n4 4 4 4\n10 3 5 8\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "5\n2 2 0 2 1 2\n3 3 1 0 5 9\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "3\n4 0 4 1\n0 3 10 10\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "2\n1 2 2\n4 0 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "7\n3 3 4 3 0 4 1 2\n2 3 7 4 6 8 8 7\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "1\n1 0\n8 7\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "4\n2 0 1 4 1\n10 5 7 2 5\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "8\n0 4 1 2 1 2 3 0 4\n10 0 6 7 0 1 10 8 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "5\n3 2 4 0 2 4\n3 9 1 7 4 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "5\n2 0 0 2 1 1\n4 9 5 3 9 1\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "3\n0 1 2 0\n2 1 6 5\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "1\n0 4\n10 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "4\n1 4 4 0 2\n8 3 0 4 6\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "5\n4 4 2 0 0 2\n10 6 3 1 7 6\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "8\n3 2 4 0 1 4 2 1 2\n7 5 2 5 8 5 9 8 10\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "2\n3 1 4\n1 5 9\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "5\n2 3 3 2 0 0\n2 7 8 6 10 2\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "7\n2 2 3 2 3 0 3 3\n6 1 9 10 8 5 1 0\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "1\n3 4\n5 7\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "4\n4 0 2 1 2\n1 4 0 9 9\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "2\n1 3 3\n4 8 6\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "2\n0 4 2\n5 10 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "2\n3 4 3\n7 2 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "1\n1 3\n7 7\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "7\n0 3 4 4 1 2 2 1\n6 4 9 10 1 7 3 3\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "4\n2 0 1 0 4\n4 4 2 3 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "8\n4 3 2 2 2 1 3 3 1\n4 4 3 4 0 0 1 8 6\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
