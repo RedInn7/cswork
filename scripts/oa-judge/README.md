@@ -53,7 +53,7 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 
 端到端验收使用 `node tests/oa-judge-integration.mjs google-next`，只写全新临时数据库和独立队列，不接触真实学员数据。
 
-后续批次生成器位于 `batches/google_remaining_a.py`、`amazon_remaining_a.py`、`meta_first.py`，分别对应 `google-remaining-a`、`amazon-remaining-a`、`meta-first`。每批保留逐题审阅结论；无法明确判定正确输出的条目不进入 registry。
+后续批次生成器位于 `batches/google_remaining_a.py`、`amazon_remaining_a.py`、`meta_first.py`、`akuna_rubrik_next.py`，分别对应 `google-remaining-a`、`amazon-remaining-a`、`meta-first`、`akuna-rubrik-next`。每批保留逐题审阅结论；无法明确判定正确输出的条目不进入 registry。Akuna/Rubrik 候选先做离线 oracle 与错误程序验证，必须等真实 GoJudge 报告后才可晋级；Akuna #14 和 #21 因原题例子与规则冲突而明确阻塞。
 
 沙箱验证支持 `tokens` 和 `exact`，语义必须与生产一致；不允许把异常退出的错误程序算作有效反例。元数据、代码、输入输出或对照文件变更后，必须重新生成并验证相应批次报告，不能手工改报告指纹。
 
