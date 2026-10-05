@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ebay-1",
+      "sourceContentHash": "337fc43fc422e46310974f89bb8a9a369529d1216c4fe200b221d6075f30aeed",
+      "packageChecksum": "7d7e902bb10c5d35dc503c1db2c4fef0bfa0918a5feb73c2c23b735818bc24d2",
+      "editorial": "## 思路\n\n双指针逐轮取左端，再取右端（若仍有元素）。\n\n## 正确性\n\n每轮移除尚未输出的最左元素和最右元素，不重不漏；区间缩至空时输出次序正是左右交替规则。\n\n## 复杂度\n\nO(n) 时间、O(n) 输出空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];a=z[1:1+n];l=0;r=n-1;o=[]\n while l<=r:\n  o.append(a[l]);l+=1\n  if l<=r:o.append(a[r]);r-=1\n return \" \".join(map(str,o))\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-2",
+      "sourceContentHash": "4f38455ef99f72af888ec134e2650ae6cbab16cb59550c18d506820f85feb064",
+      "packageChecksum": "d1e0abf7bfd8bd3b34bcc91ffba3a7420a986ae943c22de924e3db417e1e3fbf",
+      "editorial": "## 思路\n\n维护辅音序号，仅在其为 n 的倍数时，在固定辅音字母表内前进一位。\n\n## 正确性\n\n辅音字母表按英文字母顺序去除元音，模表长实现循环。扫描只计 ASCII 字母辅音，因此空格、数字、标点与非 ASCII 字符原样输出。\n\n## 复杂度\n\nO(|message|) 时间与输出空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if cnt%n==0:\n    x=CS[(CS.index(c.lower())+1)%len(CS)];o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-3",
+      "sourceContentHash": "cc78dca0097c1926c400a3288e2550d1a6b64751b1491c093a8b679204020ed1",
+      "packageChecksum": "d3757492efd001b79530076236b9ae6c839c46bbd83f7d1e643ea5a67c18e327",
+      "editorial": "## 思路\n\n二维前缀和支持常数时间求任意正方形窗口和，合法中心替换为整除窗口面积的商。\n\n## 正确性\n\n前缀和容斥得到原图窗口和，向下整除即题目 floor 均值；仅写入完整窗口中心，其他格子保持原值。\n\n## 复杂度\n\nO(hw) 时间与空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-4",
+      "sourceContentHash": "e05c99c756d04cafe3a5e89feaeaf3487334206d17f9f143fffd41300d17e007",
+      "packageChecksum": "e01c9af00118ea5ee727dc3bb0f524defdb726d762f4dbafa4304787650e32a6",
+      "editorial": "## 思路\n\n基准利润为 −Σstrategy×rate。重设某日策略后的最佳利润是 |rate|，所以窗口内单日增益为 |rate|+strategy×rate；滑窗取最大增益。\n\n## 正确性\n\n窗口外策略固定。窗口内每一天可独立取 −1、0、+1，最佳利润为费率绝对值；故对所有长度 k 窗口逐一比较增益即可得最优。\n\n## 复杂度\n\nO(n) 时间、O(n) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,k=z[:2];a=z[2:2+n];b=z[2+n:2+2*n];base=sum(-x*y for x,y in zip(a,b));g=[abs(x)+x*y for x,y in zip(a,b)];w=sum(g[:k]);best=w\n for i in range(k,n):w+=g[i]-g[i-k];best=max(best,w)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-5",
+      "sourceContentHash": "514080148eb8c592f69ef7dc61c394be71d876888d84c0100b501be8658fd401",
+      "packageChecksum": "b302b3e7e02a557192893446fd37390021efaaa934998caa58ac0945556342ca",
+      "editorial": "## 思路\n\n逐位剥离每个十进制数并数零，数字 0 单独算作含一个零。\n\n## 正确性\n\n整数的每一个十进制位恰好被个位取模访问一次；特判 0 与其标准表示一致，奇偶判定直接等价于题意。\n\n## 复杂度\n\nO(N log V) 时间、O(1) 额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];ans=0\n for x in z[1:1+n]:\n  if x==0:c=1\n  else:\n   c=0\n   while x:\n    c+=x%10==0;x//=10\n  ans+=c%2\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-7",
+      "sourceContentHash": "d4e68c17a384346b69345065cb7534527fb3226ffefe7cb776c33d98dd7d5e03",
+      "packageChecksum": "ac82b4b51351ce3bfe1332e6d41b99561d2197bbbdacc4cff635de991c1fcbdc",
+      "editorial": "## 思路\n\n逐行及逐列线性扫描，记录以当前数字结束的最大表达式；合法的前一项可按中间符号延伸，也可在当前数字重新开始。\n\n## 正确性\n\n任何合法表达式都对应一行或一列上的连续片段。状态覆盖以当前数字结尾的所有片段：要么从当前数字新起，要么接在上一数字片段之后；遇到不合法字符即断开。枚举行列取最大得到全局最优。\n\n## 复杂度\n\nO(hw) 时间，O(max(h,w)) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef scan(a):\n ans=0;prev=None;sg=None;digit=False\n for c in a:\n  if c.isdigit():\n   x=int(c);v=x if sg is None or prev is None else max(x,prev+sg*x);ans=max(ans,v);prev=v;sg=None;digit=True\n  elif c in \"+-\" and digit:sg=1 if c==\"+\" else -1;digit=False\n  else:prev=None;sg=None;digit=False\n return ans\ndef solve(s):\n z=s.splitlines();h,w=map(int,z[0].split());g=[list(x) for x in z[1:1+h]];ans=max(scan(x) for x in g)\n for j in range(w):ans=max(ans,scan([g[i][j] for i in range(h)]))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+        }
+      ]
+    }
+  ]
+}

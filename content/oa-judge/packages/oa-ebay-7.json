@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ebay-7",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Max Valid Expression in Puzzle Matrix",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "eBay",
+      "动态规划",
+      "字符串"
+    ],
+    "description": "表达式从任意数字格开始，只能一直向右或一直向下，不能转弯。字符必须按数字、+/-、数字交替；单个数字也是合法表达式。求合法路径表达式最大值。\n\n题意依据 OAMaster 固定快照；本站补充的输入协议和限制由本站定义。",
+    "input": "h,w（1..100，hw≤10000），字符矩阵仅含数字、+、−，且至少一个数字。本站补充规模。",
+    "output": "输出最大值。",
+    "explanation": "完整思路、证明和复杂度见配套题解。",
+    "hints": [
+      "先将题意转成明确的状态或局部操作。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "1 5\n9-1+8\n",
+      "expectedOutput": "16\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "5 1\n8\n+\n9\n+\n9\n",
+      "expectedOutput": "26\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2 3\n1+2\n3-4\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "7 1\n0\n0\n0\n8\n8\n+\n1\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "4 7\n0238831\n98+561-\n8215499\n-+7914-\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "2 2\n67\n85\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "2 5\n9004-\n26598\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "3 7\n7-14806\n84-1353\n015680-\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "8 3\n562\n-77\n391\n619\n810\n523\n247\n740\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "3 4\n6079\n03-1\n0202\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "4 7\n2703989\n42-+39-\n8645728\n5013093\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "7 8\n259-677+\n956052+1\n62370-18\n61631139\n02192975\n970895+3\n9-056804\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "8 1\n5\n8\n2\n5\n9\n2\n-\n8\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "2 4\n+0+5\n2463\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "4 2\n89\n94\n+5\n51\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "5 5\n1-211\n17+-8\n258+6\n98-84\n-8419\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "8 6\n767924\n9+6577\n22-798\n764952\n882731\n15+36-\n1+09-5\n5251+8\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "3 1\n+\n4\n9\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "8 4\n-914\n8997\n-988\n1252\n1997\n++61\n++9-\n80-3\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "6 3\n308\n890\n268\n+27\n880\n423\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "2 1\n3\n9\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "1 1\n4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "3 2\n0-\n82\n--\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "6 4\n9301\n-374\n+3-1\n13-+\n+687\n160-\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "5 1\n4\n9\n5\n0\n2\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "2 6\n115+15\n160510\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "8 1\n-\n0\n3\n2\n2\n7\n9\n4\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "6 6\n-84+92\n0-7833\n943891\n37409-\n204484\n848236\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "5 6\n378263\n0-8316\n537900\n+55756\n082-+1\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "7 5\n-6665\n-58-2\n7-409\n22021\n+2488\n2-426\n006-+\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 28",
+      "input": "5 2\n43\n98\n-9\n17\n5-\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 29",
+      "input": "7 8\n8--13699\n7340+67-\n-5567024\n36882676\n+2930844\n118256+6\n+2440074\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 30",
+      "input": "2 2\n6-\n84\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

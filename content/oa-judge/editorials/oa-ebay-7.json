@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-7",
+  "title": "Max Valid Expression in Puzzle Matrix",
+  "explanation": "## 思路\n\n逐行及逐列线性扫描，记录以当前数字结束的最大表达式；合法的前一项可按中间符号延伸，也可在当前数字重新开始。\n\n## 正确性\n\n任何合法表达式都对应一行或一列上的连续片段。状态覆盖以当前数字结尾的所有片段：要么从当前数字新起，要么接在上一数字片段之后；遇到不合法字符即断开。枚举行列取最大得到全局最优。\n\n## 复杂度\n\nO(hw) 时间，O(max(h,w)) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef scan(a):\n ans=0;prev=None;sg=None;digit=False\n for c in a:\n  if c.isdigit():\n   x=int(c);v=x if sg is None or prev is None else max(x,prev+sg*x);ans=max(ans,v);prev=v;sg=None;digit=True\n  elif c in \"+-\" and digit:sg=1 if c==\"+\" else -1;digit=False\n  else:prev=None;sg=None;digit=False\n return ans\ndef solve(s):\n z=s.splitlines();h,w=map(int,z[0].split());g=[list(x) for x in z[1:1+h]];ans=max(scan(x) for x in g)\n for j in range(w):ans=max(ans,scan([g[i][j] for i in range(h)]))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ebay#7-max-valid-expression-in-puzzle-matrix",
+  "sourceContentHash": "d4e68c17a384346b69345065cb7534527fb3226ffefe7cb776c33d98dd7d5e03",
+  "author": "CSWork"
+}

@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ebay-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Shift n-th Consonant",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "eBay",
+      "字符串"
+    ],
+    "description": "从左统计辅音；第 n、2n、3n…个辅音替换为下一个辅音，保持大小写，z 回绕 b。元音及非 ASCII 字母原样保留且不计数。\n\n题意依据 OAMaster 固定快照；本站补充的输入协议和限制由本站定义。",
+    "input": "第一行 n（1..10⁹），第二行 message（≤200000 ASCII 可打印字符，可含空格）。只将 A-Z/a-z 作为英文字母，规则为本站明确补充。",
+    "output": "原样输出变换后的整行字符串，空格必须保留。",
+    "explanation": "完整思路、证明和复杂度见配套题解。",
+    "hints": [
+      "先将题意转成明确的状态或局部操作。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "1\nz Z abc!\n",
+      "expectedOutput": "b B acd!\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3\nAbc xyz! 09\n",
+      "expectedOutput": "Abc yyz! 09\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "100\nHello, World!\n",
+      "expectedOutput": "Hello, World!\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "4\net12-hsj!.hhYa3ni,lmivn\n",
+      "expectedOutput": "et12-hsk!.hhYa3pi,lmivp\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "6\nYqa-wr,do,ddgcbc!bXi3tdv3ddXn!z! jp,.z3\n",
+      "expectedOutput": "Yqa-wr,do,fdgcbc!cXi3tdv3dfXn!z! jp,.b3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "3\n!.3ycX\n",
+      "expectedOutput": "!.3ycY\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "5\nC1dAxxpXYnt Ae.Bdajw,gZ\n",
+      "expectedOutput": "C1dAxxqXYnt Ae.Cdajw,gB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "1\nhnsya!rtdkidjm3!vA y?!btlA1acl.sqei ktC \n",
+      "expectedOutput": "jptza!svflifkn3!wA z?!cvmA1adm.trei lvD \n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "10\nm3o2ddxhr0 Xm3!!ktAq1tcXeaoos BrxYzyj\n",
+      "expectedOutput": "m3o2ddxhr0 Xm3!!kvAq1tcXeaoos BrxYbyj\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "5\n!Cekxol,0XdYg.jbZutm!qYlbtaunbzsovlXB\n",
+      "expectedOutput": "!Cekxol,0YdYg.jcZutm!qZlbtaunczsovlYB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "5\n.ohmdqZm-w.pu.ihou snbC3AqsbidXn\n",
+      "expectedOutput": ".ohmdqBm-w.pu.ihou tnbC3AqtbidXn\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "5\nr.Bn\n",
+      "expectedOutput": "r.Bn\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "7\nm.!ze0A,YBorY!1X?mY!C0ZYtX!qdk B\n",
+      "expectedOutput": "m.!ze0A,YBorY!1Y?mY!C0ZYtY!qdk B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "9\nAkcYAt ei!zmrp0h1?seiw tbY1,l!0l  \n",
+      "expectedOutput": "AkcYAt ei!zmrp0j1?seiw tbY1,l!0l  \n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "1\niAAooyi-0suizvdAats3yieqvz\n",
+      "expectedOutput": "iAAoozi-0tuibwfAavt3zierwb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "4\nv2m2b0bCay?Zsmzb ca d!jB 2mh1xz3lu-\n",
+      "expectedOutput": "v2m2b0cCay?Ztmzb da d!jB 2nh1xz3mu-\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "10\nbXx3z\n",
+      "expectedOutput": "bXx3z\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "1\na2pb ACy?g m!m dpskeqvgxZq1ogaB-Cxj\n",
+      "expectedOutput": "a2qc ADz?h n!n fqtlerwhyBr1ohaC-Dyk\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "2\nraeB?!rs.xrc0\n",
+      "expectedOutput": "raeC?!rt.xsc0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "1\nXZpp1bcwom1AeBi x?Bgjog,v0d z dt3g1tq2p\n",
+      "expectedOutput": "YBqq1cdxon1AeCi y?Chkoh,w0f b fv3h1vr2q\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "1\nt!x-cibac?a1os\n",
+      "expectedOutput": "v!y-dicad?a1ot\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "4\n.bmquiq-Zzi?.b\n",
+      "expectedOutput": ".bmquir-Zzi?.b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "7\nqpj?Zcy?wocvCpet!3X kyyzXt\n",
+      "expectedOutput": "qpj?Zcy?xocvCpet!3X lyyzXt\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "4\n0ryo?t!o.v,gYizey0d!.iB\n",
+      "expectedOutput": "0ryo?t!o.w,gYizez0d!.iB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "4\nminZXoc1p0bA,XvXyok!wworvyuZbBmcrAm,-\n",
+      "expectedOutput": "minZYoc1p0bA,YvXyol!wworwyuZbCmcrAn,-\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "2\nzZi0Bnjt?i vm3d0mcX3g gerpn\n",
+      "expectedOutput": "zBi0Bpjv?i vn3d0ncY3g herqn\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "10\nxoXnZAh\n",
+      "expectedOutput": "xoXnZAh\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "7\n1B-xwukBBX..iki0Cx!YBdAdy0x1.CekCqcBCml\n",
+      "expectedOutput": "1B-xwukBBY..iki0Cx!YBdAfy0x1.CekCqdBCml\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "8\n1XY21yoq!m-c?\n",
+      "expectedOutput": "1XY21yoq!m-c?\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "3\n,?md,xvXv3?,hAsCogp 2tXem-Byh.,ghACwbqXl\n",
+      "expectedOutput": ",?md,yvXw3?,hAsDogp 2vXem-Cyh.,hhACxbqYl\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 28",
+      "input": "1\nAABza 0nxZ0aqc\n",
+      "expectedOutput": "AACba 0pyB0ard\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 29",
+      "input": "9\nhzm,-rnsjeh\n",
+      "expectedOutput": "hzm,-rnsjeh\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 30",
+      "input": "6\n!e0ABl3mZ!3-Xi.XnqYdh.Cp-vjmhB?xu0 mmh,\n",
+      "expectedOutput": "!e0ABl3mZ!3-Xi.YnqYdh.Dp-vjmhC?xu0 mmh,\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

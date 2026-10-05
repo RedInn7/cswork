@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-3",
+  "title": "Image Blur",
+  "explanation": "## 思路\n\n二维前缀和支持常数时间求任意正方形窗口和，合法中心替换为整除窗口面积的商。\n\n## 正确性\n\n前缀和容斥得到原图窗口和，向下整除即题目 floor 均值；仅写入完整窗口中心，其他格子保持原值。\n\n## 复杂度\n\nO(hw) 时间与空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ebay#3-image-blur",
+  "sourceContentHash": "cc78dca0097c1926c400a3288e2550d1a6b64751b1491c093a8b679204020ed1",
+  "author": "CSWork"
+}
