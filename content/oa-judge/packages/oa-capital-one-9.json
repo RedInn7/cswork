@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-capital-one-9",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Book Title Catalog — Count Titles That Are Prefix of Another",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Capital One",
+      "字符串",
+      "Trie"
+    ],
+    "description": "给定书名列表 titles，统计有序下标对 (i,j) 的数量，其中 i≠j 且 titles[i] 是 titles[j] 的前缀。相同书名位于不同下标时也算作前缀关系。\n\n输入协议和约束范围中标明‘本站补充’的部分由本站整理，不是原题额外条件。",
+    "input": "第一行 n（1≤n≤200000），随后 n 行各为一个只含小写英文字母的非空书名，长度为 1..1000；所有书名总长度≤2×10^6。字符集和约束是本站补充。",
+    "output": "输出满足条件的有序下标对数量。",
+    "explanation": "按上述规则处理输入；思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "先明确题目中的计数/路径/拆分定义，再选择适合的图遍历、频次统计或动态规划。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "6\nwall\nwallpaper\nscience\nwallet\nphilosophy\nphil\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\na\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\nab\nab\nabc\nb\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "12\nacabc\nbcbbc\nacb\nbbbbaac\nbcbcccc\nbbbbca\nc\naab\na\ncabbbab\naaac\nbbabcaa\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "4\nb\ncaaba\nccc\ncaba\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "5\na\ncbcaaac\nac\ncab\naaa\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "2\nccaaac\nbc\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "5\nacaaa\nb\nccbbcbc\ncabcbbb\nba\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "7\nbbca\nbbbb\nbcab\nbbba\nabcccaa\naabb\nbac\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "7\nabca\ncaaa\nbb\nbcacbbc\nb\nbb\nac\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "10\nabacc\ncacabac\ncacbcc\nabac\nacba\na\nbcca\nbaca\nacbaab\ncbbccaa\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "11\nccbacb\nabba\nac\nc\naacac\nbbbbbb\nc\nb\nacaac\ncbc\ncbca\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "3\naa\ncbbb\nac\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "6\naa\nccbaca\nc\naa\nbb\na\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "7\naccbac\nacac\ncbbbbb\ncb\nbacb\ncab\nabbba\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "1\nabba\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "1\ncbbcab\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "12\nca\naaca\nbbbbaab\nbcbab\naab\nab\nbcaaaab\nacbc\nbbac\nbbaac\naab\nab\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "11\nbcaaaca\ncabb\na\nbcccaa\nabac\nabc\ncbcaa\nc\nbc\nb\nbaa\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "9\nb\naccc\nacbaaab\nbbccccc\ncbbcbc\naccccac\nbbacaab\nbccaabc\nabc\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "7\naabcbb\ncabaa\naabaaba\ncbaa\nbccb\naabcab\naa\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "10\naabb\nbca\ncababbb\ncac\ncaccbc\ncacacac\naccc\nc\nbbaacab\naab\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "6\nbbc\nccabbbb\nbcaaab\nbb\nccab\naa\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "10\nbaa\nbac\nabac\nbaaac\nccbbba\nccbaa\nb\nbbcb\naaaabab\nba\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "5\nabbbaa\nacbba\nab\nbbaa\nbcbb\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "2\naaca\nb\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "10\naa\ncbbc\nacaaabc\nb\nbaab\nacaba\naa\ncbcacab\ncc\ncc\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

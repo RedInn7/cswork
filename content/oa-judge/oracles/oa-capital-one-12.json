@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3 5\nflour\nsugar\neggs\nfloursugar\nrandom\nflour\nsugarflour\nsugareggs\n",
+    "expectedOutput": "YES NO YES YES YES\n"
+  },
+  {
+    "input": "2 3\na\nab\nab\naba\nb\n",
+    "expectedOutput": "YES YES NO\n"
+  },
+  {
+    "input": "1 3\nxy\nxy\nxyxy\nx\n",
+    "expectedOutput": "YES YES NO\n"
+  },
+  {
+    "input": "2 6\nb\nc\nc\nbacbaaccxc\nxbbcccxc\nccabbcx\nacccbcx\nabxacxxc\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 4\nac\naa\naaaaaa\nbc\naaabaaaxx\nbcxcx\n",
+    "expectedOutput": "YES NO NO NO\n"
+  },
+  {
+    "input": "4 5\nca\nc\na\ncab\ncabc\nx\nc\nxabaxcxb\nbxaccxxxcx\n",
+    "expectedOutput": "YES NO YES NO NO\n"
+  },
+  {
+    "input": "5 6\ncc\nca\ncb\naac\nbbb\nxxxxca\nbca\nxx\nbxcaxx\nxxxcxbx\nacbx\n",
+    "expectedOutput": "NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 6\na\ncc\ncba\nbb\ncab\ncbabbcab\nbx\naxaxaxxcb\nb\nxxaxabbxc\nabxcxacx\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "6 3\naca\nbbb\nc\ncca\naac\nbba\naca\ncaaaxabbbx\nxcbxaab\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "4 3\nbb\nba\ncbc\nb\nxxa\nccabaaa\nxabbcbc\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "3 5\nc\na\ncc\nacccbbcxxx\nbaab\ncacaaabba\nbcaa\nbcxbxcxxxb\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 3\nccc\ncb\nbbb\nb\ncb\nxxbxbabab\nccxc\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "4 1\nbb\nc\nb\ncc\ncc\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4 6\nca\nbbb\nb\nc\nbca\nccxxxb\nbxccbaacx\ncxcbaa\nxa\nacxcxa\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 3\nabb\nacc\nca\nc\nabbc\ncbxabca\nxxx\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "1 2\na\na\nxcbxxccc\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "2 1\nbab\naab\naabaabbab\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4 6\na\ncba\naab\naa\naaaaba\nacxaxaabcb\naaca\ncbxcb\naaxbaaba\ncxa\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 3\ncb\nc\nccc\nxc\nbbxxbbx\naxbbbaaxaa\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "3 4\nc\nba\na\ncbxa\ncaxbbaxxbb\nbacxxxaaca\nbcxcaxcbbc\n",
+    "expectedOutput": "NO NO NO NO\n"
+  },
+  {
+    "input": "2 5\nc\nbb\nbbbb\nc\ncccbccac\nxxacc\ncxccacaac\n",
+    "expectedOutput": "YES YES NO NO NO\n"
+  },
+  {
+    "input": "4 7\nc\nbcc\nb\naab\nba\nbacaa\naxxxccaa\nbxca\nxxacaaxxx\ncbxax\nabaaacx\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 3\nb\nba\nbxa\ncaaxbc\nxbx\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "5 3\nbc\nacb\nc\nbac\na\nac\nab\nxxa\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "2 3\ncbc\nac\nxaxcxcbcxb\naacbbccb\nbcccbxbxb\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "4 8\na\naa\nc\ncbb\nba\nxacbca\ncbbb\nacxxcab\nax\nbxaaxbbxa\nxbcxc\nbxbccbx\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 6\nabb\nbc\nb\na\nbcc\nacaabx\ncbb\naaccaac\nacxxxabb\nxcb\nx\n",
+    "expectedOutput": "NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "6 3\nab\nbb\nbc\nb\nabc\ncbb\nbbcbxxbbx\ncbbxabacc\nca\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "3 5\nbbb\nc\nbb\nacb\nbxabbbcbb\ncbbxcxxcb\ncxaac\nxbxccaxacc\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 2\nb\naa\nac\nba\na\nbaac\na\n",
+    "expectedOutput": "YES YES\n"
+  },
+  {
+    "input": "4 1\nb\nca\nacc\nc\ncbccaxcac\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4 5\nb\nbb\nccc\ncba\ncc\naaa\nccacxbcxc\nxbxcbxxb\nxbcaa\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 8\nb\nbaa\naxccxb\nc\ncxaac\nx\nxabxacaxaa\nx\nbacaaaxbbx\nc\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 7\naa\nc\naba\ncba\nax\nxaxaa\nb\nbcaabc\nccaccbb\nacccbxba\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 5\na\nacc\naacc\nxcaacxxb\nccbxcbbb\ncac\naxxcbba\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "2 8\na\nabb\naaa\nccc\nb\ncb\nabcxca\nbxacxa\ncxxxa\nxcbcaxxbc\n",
+    "expectedOutput": "YES NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 7\ncb\nca\nb\nab\nabb\nabbabb\nbbb\nxaacabxaab\na\nx\naxbc\nxxx\n",
+    "expectedOutput": "YES YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 2\na\nxbxc\nbxccabbcxb\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "1 1\nacc\ncbbaaacabb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "1 2\na\naccaa\nxaxbbcb\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "4 4\nccc\naba\nbc\nc\nbabbbcx\nc\ncccb\naaxxcax\n",
+    "expectedOutput": "NO YES NO NO\n"
+  },
+  {
+    "input": "4 4\na\ncaa\nbb\nc\nabbbb\nxcxbxcx\naccc\ncaaaxc\n",
+    "expectedOutput": "YES NO YES NO\n"
+  },
+  {
+    "input": "1 7\naa\nxbbaaxx\nbaaa\ncb\nabxxxxbbx\nbaab\nxbcx\nabc\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 1\nccb\nacc\nccb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4 7\nbb\nabb\nc\ncbb\nbbc\nxcaaaa\naabbxbaxc\nabbx\nbxba\nxcbax\nxxcaxca\n",
+    "expectedOutput": "YES NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 6\na\nccc\nc\nb\ncc\nxbcbxxabc\nabb\naaaxx\nbccbcbcxb\ncbcaxabcbc\na\n",
+    "expectedOutput": "NO YES NO NO NO YES\n"
+  },
+  {
+    "input": "4 1\nacb\nc\naac\nbb\nacb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1 1\ncbc\ncbccbc\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5 2\na\ncc\naba\nca\nbbb\nca\naacaa\n",
+    "expectedOutput": "YES YES\n"
+  },
+  {
+    "input": "4 1\naab\nbc\nc\ncba\nccbac\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1 1\nbcb\nbcbbcbbcb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2 2\nbb\nbcc\nbccbb\nbx\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "2 3\nb\na\nbabxcxbbxx\nx\nxbaxbxc\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "5 7\nbca\na\nbc\ncbc\nc\ncbxaac\nxbabacbaa\nccbx\naaabxc\nxbaaxccabx\ncb\nxaxcxbcax\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 6\na\nbbc\nac\nxbcbxc\ncaccxa\na\nabbc\nbxxaba\nbcxcaxcxxc\n",
+    "expectedOutput": "NO NO YES YES NO NO\n"
+  },
+  {
+    "input": "1 8\ncab\ncab\nxcbaac\nbxbcxxx\ncxxbb\na\naaacbxx\naacbcxa\naxcbcxxabb\n",
+    "expectedOutput": "YES NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 3\nb\nabb\ncba\nbab\nacabxb\ncb\nxcxacabac\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "4 8\nabb\nb\nbb\nbab\naccxx\nacaaxaabb\nxxbaaaxbb\na\ncxcabbca\nxxacaxx\nabaa\nbxxcbx\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 4\nbb\ncba\naa\nbcb\nccc\naabbbb\nx\naaacxb\nbx\n",
+    "expectedOutput": "YES NO NO NO\n"
+  },
+  {
+    "input": "2 3\nc\naab\naabaabc\nxb\naxbaabcxxb\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "4 8\nbba\ncc\ncac\nc\nbba\nbbbccc\nbxxbxaa\nacaxx\nacc\ncxxaxxccb\nbacc\nba\n",
+    "expectedOutput": "YES NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 6\nc\ncc\nxxbx\ncbaaccxcba\nacabxx\nxaccxbxx\nacabacaxcb\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 2\nabb\nb\nacbbbxca\ncxbxc\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "3 5\nca\naab\nb\naabaab\nxac\nbbcc\ncbxcxacxb\nb\n",
+    "expectedOutput": "YES NO NO NO YES\n"
+  },
+  {
+    "input": "1 3\naac\nxbxxccbxca\nbcb\nbxaxabxax\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "4 1\nacb\nbab\ncba\nabb\nacccabbbax\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5 5\nccb\naa\na\naba\nb\nbbbxcbaxx\ncbxxxaaxa\nbca\nbbbac\ncxxc\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 1\ncab\nc\nb\na\nca\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5 2\nbc\na\nbba\nccb\nc\naxa\nccaaaxbxa\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "5 3\nac\nbb\ncca\nab\na\nac\nxcx\nxxbxc\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "3 1\naaa\ncab\nbb\naaaaaabb\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "3 1\nab\na\ncc\ncca\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "2 6\naca\nbba\nxxxabax\ncccc\naxacbbabaa\nccaaxbacbb\nb\nba\n",
+    "expectedOutput": "NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 6\naab\nb\nac\naabbb\nxcbccbx\naacb\nx\nxacaxxaxbc\nbaxcbxaaab\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 8\nbb\nc\nbc\nc\nbaxx\nc\nx\ncbacx\nbbbbxabb\na\nccx\n",
+    "expectedOutput": "YES NO YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 3\naaa\ncc\nbc\ncac\nbac\nxc\nxc\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "1 7\nca\ncacaca\nxbbc\naacabx\ncccb\nxcabbababx\naacacaxaaa\nccxxbab\n",
+    "expectedOutput": "YES NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 5\nc\nb\nab\nxababbb\ncbaacacbx\nbaccabxa\ncacc\naaabbcacx\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 1\nabc\ncbc\nab\na\naa\nacbc\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "3 7\nab\nc\nbbc\nbc\naa\nca\naxcaaccaac\nxaab\nxacacxxacc\ncabcax\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 5\nacb\nba\naa\ncc\nacb\nacxxxa\nxaabbaax\nxxbbacaa\naxxcacxca\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "5 5\nac\na\naac\ncaa\nabc\nbbcb\nxcbaab\nxaa\ncbb\nb\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 3\ncc\ncccccc\nbb\na\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "1 8\nb\nx\nacxbxbax\naa\nxbxb\nbccb\nxxabaax\nxccacabca\ncabxcxxaxb\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 7\nbab\naaaac\ncxaxcacbb\nabbbc\naaacxx\ncaax\nxxcacc\nacxbccabx\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 6\nca\ncc\nbac\nbb\nca\ncbx\naccxa\nbcxacaxb\nxa\nacxab\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 2\nca\ncca\nbac\nbaxxa\nx\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "2 8\nbc\nccc\nxbb\nbxbbccaaac\nbxa\nxcba\nbcaa\nxx\nxbba\nxacbbc\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 3\ncc\ncc\naccxbbca\nacccbabcbx\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "4 5\nbbb\nca\nbbc\nacc\nbbccabbb\naxaxbxxc\nxccba\nxaxcbca\naxcbxcbbc\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "1 6\ncbb\ncbbcbbcbb\nacaba\nbbccaaxbcb\nbxcaxabb\ncbxab\nxc\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 8\nbc\naba\nbb\nxbbccaabcc\nbcbbcc\nbaa\nbbccbbxbx\nbacb\nxabacxa\ncb\nabc\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 3\nac\ncbc\nb\ncxc\nbbabxbbxa\nc\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "2 3\na\nb\nab\naxc\nbcbcxa\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "4 2\nca\na\nccc\nba\na\ncx\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "4 1\nb\nabc\nab\ncc\nbbac\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5 6\nbb\naaa\nc\nab\naa\ncccaacbac\naaacbc\ncccxcbxcb\nabbbbc\nxcxba\nbaabcccb\n",
+    "expectedOutput": "NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 2\na\nab\nbxcabbxabc\naxaxaaaxxc\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "4 2\nbcc\nbaa\nb\nc\ncbaabcc\nbaxabbaabb\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "4 8\nab\nc\nca\nba\nbaabc\nccc\nx\nxx\naxabcc\nc\naabcx\nbbbabc\n",
+    "expectedOutput": "YES YES NO NO NO YES NO NO\n"
+  },
+  {
+    "input": "5 7\na\nbca\nbcb\nc\nbc\nbca\nccxbccacx\na\naccac\na\nc\nxbcacbc\n",
+    "expectedOutput": "YES NO YES YES YES YES NO\n"
+  },
+  {
+    "input": "5 1\nc\naa\nbcc\na\ncac\naabccbcc\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "1 8\na\naa\ncbaaabxxaa\nxac\nax\nbcab\nacxa\nabcxccb\nacabbcbc\n",
+    "expectedOutput": "YES NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 4\naa\nba\nb\nxbxc\nbxa\ncb\nbxcac\n",
+    "expectedOutput": "NO NO NO NO\n"
+  },
+  {
+    "input": "5 7\nc\na\nb\nba\naa\nbabaaa\nccaxb\nbaxcbbcxc\nabcx\nax\nbbxc\nccxaaxccc\n",
+    "expectedOutput": "YES NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 7\nacb\naa\ncba\naabaxxx\ncxac\nbbccacaxca\nxabcxxcb\nxcx\nxaccbaac\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 5\nbbc\naa\nc\nbcccabxab\nxabccabx\nx\nxba\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 7\nbb\nccc\nb\nccccccbb\nxxaa\nbbxbxbacca\ncacx\ncb\nbcacacxca\ncxa\n",
+    "expectedOutput": "YES NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 5\ncba\naca\ncbc\nba\nb\ncacaxbca\nxbx\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 8\nacc\nca\nccb\nccc\naa\ncabaca\nbbbax\na\nbcacxaxx\nbcaxcxac\nbbaxaacxbx\nccc\nbaabxaaxa\n",
+    "expectedOutput": "NO NO NO NO NO NO YES NO\n"
+  },
+  {
+    "input": "4 1\nacb\nc\nab\nb\na\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3 1\nb\nbb\na\nc\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "5 5\nbbc\ncc\nc\naa\na\naac\ncxcbbbx\nxcbc\nbbccc\nxcbba\n",
+    "expectedOutput": "YES NO NO YES NO\n"
+  },
+  {
+    "input": "5 1\ncab\nbab\nb\nc\ncac\naacc\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "2 5\nab\nba\nabbaba\nabcxxaabxb\ncaaxccaa\ncc\ncac\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "3 8\nc\nac\na\ncxcbcbacx\naabb\nb\nacxa\ncxaxacaxcb\ncxaaabcb\nxcx\naacxaxb\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 7\nc\nabxxc\ncxbcbxxba\ncxxacccaab\nbbbaa\nxbcxaabac\nbxbacaccc\nxbccb\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 1\na\nxxaaxxaa\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "4 6\naa\ncaa\nc\na\ncaaca\nccxxccc\nxabxxbcc\nxcccacxa\nccccxaxcax\nbxxbbcx\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 5\ncba\naba\ncba\ncabaccxc\nbxcc\nbaa\nccb\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "1 1\naa\naa\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "6 1\ncc\nbb\nca\nc\nacc\ncca\nbbcc\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5 1\nac\nbba\naca\nabb\nccb\ncxxb\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "6 6\ncb\na\nac\nbbc\nba\nab\nxcxcxb\nbcb\nbcbbx\nabcbcc\nxx\nbxabaaca\n",
+    "expectedOutput": "NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 2\nb\ncc\nccb\nxa\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "4 4\nac\nc\nb\nbb\ncxacxabaa\naxbab\naabxaxaxxx\nxcbbc\n",
+    "expectedOutput": "NO NO NO NO\n"
+  },
+  {
+    "input": "3 2\nac\na\nc\nac\nb\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "3 7\nabb\nbb\ncc\nbcbccbba\nxaxbbcxc\nccaaxa\nbxaabacx\ncca\nbxxa\nac\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 8\nc\ncac\ncca\ncb\ncbcbcb\nbcbbx\na\naaxcaaaa\nabcabcbxa\ncaccc\nxacccxbxc\ncxbbxxa\n",
+    "expectedOutput": "YES NO NO NO NO YES NO NO\n"
+  },
+  {
+    "input": "3 8\nab\nacb\na\nacb\nb\nxc\ncaxbx\nxabxb\nbca\nacxbaabxac\nccbbabbx\n",
+    "expectedOutput": "YES NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 6\nac\na\naacaab\nabbaxaxa\nxccxbc\nbbbxxcabbb\nxccxcaxxa\n",
+    "expectedOutput": "NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "1 5\ncc\ncccccc\naaaxxax\nbbxcbccxc\nxxbabcaxb\nbx\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "3 8\ncc\nb\naa\nccaca\nxa\na\nbax\nbaxa\nxcxbcxa\nxccxaxxb\nbbax\n",
+    "expectedOutput": "NO NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "3 3\nbb\na\nbc\nabbcaxaacx\ncab\nxa\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "4 4\nac\nabc\nc\na\nccc\ncxbxxa\ncxcaaaabx\nxxabxbc\n",
+    "expectedOutput": "YES NO NO NO\n"
+  },
+  {
+    "input": "1 2\ncbb\ncbbcbbcbb\nbcxaxax\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "2 5\nccc\nbb\nxbcc\ncxxx\ncccc\nb\ncbbcaccxbx\n",
+    "expectedOutput": "NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 3\nbc\nbcc\nxabaac\nb\nxa\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "3 7\naab\nb\nc\nb\nbac\nx\ncxbbbbx\nccab\nccxa\nxxacaxb\n",
+    "expectedOutput": "YES NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 4\na\nca\nba\ncbb\nb\na\nxbxcc\nbbaax\nacbaaxcb\n",
+    "expectedOutput": "YES NO NO NO\n"
+  },
+  {
+    "input": "4 2\nbb\ncb\nc\nbba\nbxaa\nbccxaaa\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "5 2\nbba\nca\ncc\ncca\nc\ncccc\nbbaxax\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "2 2\nbaa\nac\nac\nxxccaxbab\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "4 7\nbac\nab\na\ncc\nabac\nxaaxccabca\naab\nxcxxxba\ncabxx\nxbbacc\nabbc\n",
+    "expectedOutput": "YES NO YES NO NO NO NO\n"
+  },
+  {
+    "input": "4 2\ncc\nba\nbab\na\ncb\naxc\n",
+    "expectedOutput": "NO NO\n"
+  },
+  {
+    "input": "4 3\nbcb\nca\nc\nabb\ncaca\nba\nxcccxbcb\n",
+    "expectedOutput": "YES NO NO\n"
+  },
+  {
+    "input": "3 7\nbb\nc\nca\naccxcaa\naba\nbxxxcc\naaxxc\nbxcc\nxaccxcbb\nb\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 2\naac\nc\nac\nb\ncc\naac\ncxbaabbacb\n",
+    "expectedOutput": "YES NO\n"
+  },
+  {
+    "input": "2 7\nb\ncca\nabccb\naa\naaxb\nc\nxaa\nab\nbacxxxbb\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "5 4\naab\naba\nc\nccb\naa\nccbc\nc\nccaacxb\nbccc\n",
+    "expectedOutput": "YES YES NO NO\n"
+  },
+  {
+    "input": "2 6\naaa\nabc\naaaaaaaaa\nbxx\naabxaxbxcx\nabbbxc\nacbbba\ncbb\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "6 7\nc\ncc\ncbb\nbc\nbbc\nacb\nxbcxaabcxb\ncbabxca\nx\ncbxaxc\nxab\nxaxx\nbb\n",
+    "expectedOutput": "NO NO NO NO NO NO NO\n"
+  },
+  {
+    "input": "2 3\nb\nc\naaxaxacc\ncbxxaxa\ncabaca\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "5 1\naa\nbc\nccb\ncb\nabc\naaaabc\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "4 4\nbac\nb\nabb\nab\nababb\nbbb\ncba\nabbcaba\n",
+    "expectedOutput": "YES YES NO NO\n"
+  },
+  {
+    "input": "5 3\nb\na\nccc\ncca\nc\nabxab\ncbcaxaba\nx\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "5 6\naca\nb\nab\naba\ncba\nab\nabcbx\nxcxacccc\nabcxxaac\nbxa\naxxxx\n",
+    "expectedOutput": "YES NO NO NO NO NO\n"
+  },
+  {
+    "input": "4 6\nc\nbc\nabc\nb\nax\nccx\ncbacbaabcc\ncbcaa\nc\nxcbcaab\n",
+    "expectedOutput": "NO NO NO NO YES NO\n"
+  },
+  {
+    "input": "5 1\nc\ncab\nacc\naa\na\naa\n",
+    "expectedOutput": "YES\n"
+  },
+  {
+    "input": "5 5\naba\ncbc\nb\nbac\naa\naacbc\nbxxaxxx\nabaacbb\nbxbcaxbaac\nbcxbxc\n",
+    "expectedOutput": "YES NO NO NO NO\n"
+  },
+  {
+    "input": "2 1\naca\nabb\nxxaxx\n",
+    "expectedOutput": "NO\n"
+  },
+  {
+    "input": "3 3\nba\nacb\nca\nbaaccc\naxxcbxbbx\nb\n",
+    "expectedOutput": "NO NO NO\n"
+  },
+  {
+    "input": "2 4\na\nba\nbaa\nb\nxacbxax\nxcbbac\n",
+    "expectedOutput": "YES NO NO NO\n"
+  }
+]

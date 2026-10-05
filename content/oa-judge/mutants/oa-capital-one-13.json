@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把奇数位数计入答案",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); return str(sum(len(str(abs(x)))%2==1 for x in t[1:]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "0 错误算作两位数",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); return str(sum((x==0 or len(str(abs(x)))%2==0) for x in t[1:]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

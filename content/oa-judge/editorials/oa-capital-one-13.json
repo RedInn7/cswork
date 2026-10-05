@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-13",
+  "title": "Count Numbers with Even Number of Digits",
+  "explanation": "## 思路\n\n逐个计算非负整数的十进制位数，若位数为偶数则计数。位数可通过十进制字符串长度得到；0 表示为一位。\n\n## 正确性\n\n每个数组元素仅在其十进制表示长度为偶数时贡献 1，否则贡献 0。逐项相加即为题目所求，且每项恰好处理一次。\n\n## 复杂度\n\n时间 O(n·d)，其中 d≤10；空间 O(1)（不计解析输入所需空间）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); return str(sum(len(str(abs(x)))%2==0 for x in t[1:]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#13-count-numbers-with-even-number-of-digits",
+  "sourceContentHash": "b6c7932c13ac71829b960a8d04029ac6f0463240d28d956de7b746adce52ad1e",
+  "author": "CSWork"
+}

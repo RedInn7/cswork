@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-9",
+  "title": "Book Title Catalog — Count Titles That Are Prefix of Another",
+  "explanation": "## 思路\n\n将每个标题插入 Trie，并在终止节点记录该完整标题出现次数。对每个标题沿 Trie 前进，累加路径上各终止节点的次数；最后减去当前标题自身一次。\n\n## 正确性\n\n对固定标题 j，所有作为其前缀的标题恰好对应 Trie 根到其终点路径上的终止节点。终止次数包含重复标题的不同下标，而减去 1 仅移除 j 与自身配对，正好满足 i≠j。\n\n## 复杂度\n\n设所有标题字符总数为 L。构建和查询均为 O(L)，空间 O(L)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); words=lines[1:1+n]; trie={}; END='#'\n for w in words:\n  node=trie\n  for c in w: node=node.setdefault(c,{})\n  node[END]=node.get(END,0)+1\n total=0\n for w in words:\n  node=trie\n  for c in w:\n   node=node[c]; total+=node.get(END,0)\n  total-=1\n return str(total)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#9-book-title-catalog--count-titles-that-are-prefix-of-another",
+  "sourceContentHash": "14fc47ff3e0157cb710677863023d6ad9981d72e77bd55155a852b664becfa6d",
+  "author": "CSWork"
+}

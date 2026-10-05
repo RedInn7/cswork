@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只允许单个原料完成拆分",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n,r=map(int,lines[0].split()); words=lines[1:1+n]; recipes=lines[1+n:1+n+r]; end='#'; trie={}\n for word in words:\n  node=trie\n  for ch in word: node=node.setdefault(ch,{})\n  node[end]=True\n ans=[]\n for w in recipes:\n  dp=[False]*(len(w)+1); dp[0]=True\n  for i in range(len(w)):\n   if not dp[i]: continue\n   node=trie; j=i\n   while j<len(w):\n    node=node.get(w[j])\n    if node is None: break\n    j+=1\n    if end in node and i==0: dp[j]=True\n  ans.append('YES' if dp[-1] else 'NO')\n return ' '.join(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只接受长度为一的原料",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n,r=map(int,lines[0].split()); words=lines[1:1+n]; recipes=lines[1+n:1+n+r]; end='#'; trie={}\n for word in words:\n  node=trie\n  for ch in word: node=node.setdefault(ch,{})\n  node[end]=True\n ans=[]\n for w in recipes:\n  dp=[False]*(len(w)+1); dp[0]=True\n  for i in range(len(w)):\n   if not dp[i]: continue\n   node=trie; j=i\n   while j<len(w):\n    node=node.get(w[j])\n    if node is None: break\n    j+=1\n    if end in node and j==i+1: dp[j]=True\n  ans.append('YES' if dp[-1] else 'NO')\n return ' '.join(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "求最大矩形面积而非正方形面积",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; h=t[1:]; lo,hi=0,min(n,max(h,default=0))\n def ok(s):\n  run=0\n  for x in h:\n   run=run+1 if x>=s else 0\n   if run>=s: return True\n  return s==0\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(max((min(h[i:j+1])*(j-i+1) for i in range(n) for j in range(i,n)),default=0))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "正方形高度允许差一",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; h=t[1:]; lo,hi=0,min(n,max(h,default=0))\n def ok(s):\n  run=0\n  for x in h:\n   run=run+1 if x>=s-1 else 0\n   if run>=s: return True\n  return s==0\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo*lo)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
