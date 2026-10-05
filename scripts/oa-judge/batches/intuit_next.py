@@ -487,7 +487,8 @@ def main():
         print(f"{ident}: {len(oracles)} oracle cases + {len(formal)} formal + {len(edges)} limits; {len(killed)} mutants killed", flush=True)
         review_items.append(dict(id=ident, status="authored", reason="已核对 e66f809 原始快照题面；独立暴力 oracle、边界与正常退出错误程序验证完成。"))
     candidate = dict(schemaVersion=1, items=items)
-    write_json(OA / "candidate-batches" / f"{BATCH}.json", candidate)
+    batch_folder = "batches" if (OA / "reports" / f"{BATCH}.json").exists() else "candidate-batches"
+    write_json(OA / batch_folder / f"{BATCH}.json", candidate)
     write_json(OA / "validation" / f"{BATCH}.json", dict(schemaVersion=1, seed=SEED, problems=reports,
                skipped=BLOCKED, note="独立 authored reference 与暴力 oracle 本地校验；尚未进行真实 GoJudge 沙箱验证。"))
     write_json(OA / "reviews" / f"{BATCH}.json", dict(schemaVersion=1, items=review_items +
