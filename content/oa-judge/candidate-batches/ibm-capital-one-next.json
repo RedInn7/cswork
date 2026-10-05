@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ibm-55",
+      "sourceContentHash": "a19ad065b00c7f50af1241ed7b8ccd17ad7c2edb2c8266a5297d1934f1681895",
+      "packageChecksum": "65e51fcc68b0e98e7fb6d1a46f40167a78e88acc58abd8f15f475268823ed14b",
+      "editorial": "## 思路\n\n模拟室内员工数，C 和 U 使人数加一，R 和 L 使人数减一。答案是整个过程中室内人数的最大值；每次进入时若没有空椅，恰好需要再买一把。\n\n## 正确性\n\n任一时刻室内员工都必须各有一把椅子，因此椅子数至少为室内人数最大值。按规则复用空椅，并在进入时人数达到已购椅子数才购买，购买后椅子数始终等于截至当前的室内人数最大值。结束时购买数正好达到该下界。合法事件序列保证每次离开或返回都对应已有员工，状态唯一。\n\n## 复杂度\n\n设所有模拟字符总数为 L，时间 O(L)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); answers=[]\n for simulation in lines[1:1+n]:\n  inside=best=0\n  for event in simulation:\n   if event in 'CU': inside+=1\n   else: inside-=1\n   best=max(best,inside)\n  answers.append(str(best))\n return ' '.join(answers)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-15",
+      "sourceContentHash": "61a264565c5671f3252bc17794e694d9210e6f577a3f5dfbe9d0c964963d2739",
+      "packageChecksum": "92242ac438669e1f582ea61bfafd4a802f268c9c0c9ec1cb6e946e7d383ebe34",
+      "editorial": "## 思路\n\n用 Fenwick 树维护每个位置是否已建墙。首次 build 将该位置加一；重复 build 不更新。查询闭区间 [l,r] 的墙数，用前缀和 prefix(r+1)−prefix(l) 计算。\n\n## 正确性\n\n每个已建位置在树中恰有一个单位贡献，未建位置贡献为零；幂等更新保证重复操作不改变贡献。Fenwick 前缀和返回半开区间 [0,x) 的总贡献，因此两前缀之差恰好是闭区间 [l,r] 的墙数。该数大于零当且仅当区间存在墙。\n\n## 复杂度\n\n每次操作时间 O(log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=raw.split(); it=iter(t); n=int(next(it)); q=int(next(it)); bit=[0]*(n+1); built=bytearray(n); out=[]\n def add(i):\n  i+=1\n  while i<=n: bit[i]+=1; i+=i&-i\n def prefix(i):\n  total=0\n  while i: total+=bit[i]; i-=i&-i\n  return total\n for _ in range(q):\n  op=next(it)\n  if op=='build':\n   i=int(next(it))\n   if not built[i]: built[i]=1; add(i)\n  else:\n   l=int(next(it)); r=int(next(it)); out.append('1' if prefix(r+1)-prefix(l)>0 else '0')\n return ' '.join(out)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

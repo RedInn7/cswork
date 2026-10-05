@@ -1,0 +1,10 @@
+[
+  {
+    "name": "建墙位置右移一格",
+    "code": "import sys\ndef solve(raw):\n t=raw.split(); it=iter(t); n=int(next(it)); q=int(next(it)); bit=[0]*(n+1); built=bytearray(n); out=[]\n def add(i):\n  i+=1\n  while i<=n: bit[i]+=1; i+=i&-i\n def prefix(i):\n  total=0\n  while i: total+=bit[i]; i-=i&-i\n  return total\n for _ in range(q):\n  op=next(it)\n  if op=='build':\n   i=int(next(it))\n   if not built[i]: built[i]=1; add((i+1)%n)\n  else:\n   l=int(next(it)); r=int(next(it)); out.append('1' if prefix(r+1)-prefix(l)>0 else '0')\n return ' '.join(out)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "闭区间右端点被排除",
+    "code": "import sys\ndef solve(raw):\n t=raw.split(); it=iter(t); n=int(next(it)); q=int(next(it)); bit=[0]*(n+1); built=bytearray(n); out=[]\n def add(i):\n  i+=1\n  while i<=n: bit[i]+=1; i+=i&-i\n def prefix(i):\n  total=0\n  while i: total+=bit[i]; i-=i&-i\n  return total\n for _ in range(q):\n  op=next(it)\n  if op=='build':\n   i=int(next(it))\n   if not built[i]: built[i]=1; add(i)\n  else:\n   l=int(next(it)); r=int(next(it)); out.append('1' if prefix(r)-prefix(l)>0 else '0')\n return ' '.join(out)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+  }
+]
