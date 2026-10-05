@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略已有库存",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n,b=d[:2];c=d[2:2+n];s=d[2+n:2+2*n];k=d[2+2*n:];print(max(0,min((b//z)//x for x,z in zip(c,k))))"
+  },
+  {
+    "name": "把总预算重复用于每种金属",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n,b=d[:2];c=d[2:2+n];s=d[2+n:2+2*n];k=d[2+2*n:];lo=0\nfor x,y,z in zip(c,s,k):\n while max(0,(lo+1)*x-y)*z<=b:lo+=1\nprint(lo)"
+  }
+]

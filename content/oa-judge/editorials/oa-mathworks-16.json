@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-16",
+  "title": "Maximize Beauty",
+  "explanation": "## 思路\n\nDP 状态 dp[k] 表示当前前缀中选出长度 k 的子序列时 beauty 的最大值。保留当前元素时，其新位置为 k+1，据此判断是否得分；倒序更新避免重复选取。\n\n## 正确性证明\n\ndp[k] 表示处理到当前原数组前缀、选出长度 k 的子序列时可达到的最大 beauty。跳过当前元素保留旧状态；选择它时新位置为 k+1，值恰等于 k+1 才加分。倒序转移保证每个原元素最多使用一次。处理完后在所有非空长度中取最大值。\n\n## 复杂度\n\nO(n²)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n d=list(map(int,s.split()));n=d[0];a=d[1:];neg=-10**9;dp=[neg]*(n+1);dp[0]=0\n for x in a:\n  for length in range(n-1,-1,-1):\n   if dp[length]>=0:dp[length+1]=max(dp[length+1],dp[length]+(x==length+1))\n return str(max(dp[1:]))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#16-maximize-beauty",
+  "sourceContentHash": "904bcbf9864a7a9810d3060d85b5d99098671e8cd2310395c700fcb0f875b34b",
+  "author": "CSWork"
+}

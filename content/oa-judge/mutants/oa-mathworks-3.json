@@ -1,0 +1,10 @@
+[
+  {
+    "name": "仅计算节点 1 为根",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n=d[0];a=d[1:n+1];g=[[] for _ in a];p=n+1\nfor _ in range(n-1):u,v=d[p]-1,d[p+1]-1;p+=2;g[u].append(v);g[v].append(u)\nz=0;st=[(0,-1,0)]\nwhile st:\n u,b,k=st.pop();z+=k*a[u];st += [(v,u,k+1) for v in g[u] if v!=b]\nprint(z)"
+  },
+  {
+    "name": "把权值全部当作 1",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n=d[0];print(n*(n-1)//2)"
+  }
+]

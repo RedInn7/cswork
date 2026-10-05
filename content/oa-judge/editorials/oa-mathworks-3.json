@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-3",
+  "title": "Rooted Distances (Re-rooting DP)",
+  "explanation": "## 思路\n\n以节点 1 为根先算加权距离和及子树权值；根从 u 移到子节点 v 时，子树贡献减少、其余贡献增加，可在线性时间完成换根。\n\n## 正确性证明\n\n初始根的加权距离和直接按深度求和。换根跨过一条边时，子树中每个权值的距离减一，子树外的距离加一，故转移量为总权值减去子树权值的两倍。遍历所有节点取最大值。\n\n## 复杂度\n\nO(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n d=list(map(int,s.split()));n=d[0];a=d[1:n+1];g=[[] for _ in range(n)];p=n+1\n for _ in range(n-1):\n  u,v=d[p]-1,d[p+1]-1;p+=2;g[u].append(v);g[v].append(u)\n parent=[-1]*n;depth=[0]*n;order=[0];parent[0]=0\n for u in order:\n  for v in g[u]:\n   if parent[v]<0:parent[v]=u;depth[v]=depth[u]+1;order.append(v)\n sub=a[:]\n for v in order[:0:-1]:sub[parent[v]]+=sub[v]\n beauty=[0]*n;beauty[0]=sum(depth[i]*a[i] for i in range(n));total=sum(a)\n for v in order[1:]:beauty[v]=beauty[parent[v]]+total-2*sub[v]\n return str(max(beauty))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#3-rooted-distances-re-rooting-dp",
+  "sourceContentHash": "e1ee016801e95428b148f27445d81679b03257d0da7efffab62292c89abce18f",
+  "author": "CSWork"
+}

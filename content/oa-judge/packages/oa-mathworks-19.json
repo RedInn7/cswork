@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-mathworks-19",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Discount Tags",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "MathWorks"
+    ],
+    "description": "从可正可负的标签值中任选若干项（可一项不选），使总和为偶数；求最大可能偶数和。题源保证至少有一个偶数。\n\n本站采用标准输入输出协议。",
+    "input": "首行 n；第二行 n 个整数。本站补充约束：1≤n≤100000，|val[i]|≤10^9。",
+    "output": "输出最大偶数和。",
+    "explanation": "先取所有正数得到最大和；若它为奇数，比较去掉最小正奇数或加入最接近 0 的负奇数两种修正。",
+    "hints": [
+      "先取所有正数得到最大和；若它为奇数，比较去掉最小正奇数或加入最接近 0 的负奇数两种修正。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4\n3 2 5 -1\n",
+      "expectedOutput": "10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3\n4 -2 3\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "2\n2 -5\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 1",
+      "input": "10\n-13 19 -7 9 12 -15 5 -5 16 16\n",
+      "expectedOutput": "72\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 2",
+      "input": "10\n14 -15 6 17 8 -13 -15 -1 -14 -4\n",
+      "expectedOutput": "44\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 3",
+      "input": "7\n8 11 20 9 -9 17 11\n",
+      "expectedOutput": "76\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 4",
+      "input": "2\n18 16\n",
+      "expectedOutput": "34\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 5",
+      "input": "11\n10 8 15 0 15 -3 0 15 13 10 20\n",
+      "expectedOutput": "106\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 6",
+      "input": "6\n16 4 5 -14 -5 1\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 7",
+      "input": "4\n3 14 20 -11\n",
+      "expectedOutput": "34\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 8",
+      "input": "12\n4 -6 13 -14 -6 2 12 -2 18 -12 -4 -6\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 9",
+      "input": "5\n-11 -14 3 12 1\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 10",
+      "input": "11\n-11 18 20 -13 10 19 17 -10 -13 19 5\n",
+      "expectedOutput": "108\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 11",
+      "input": "10\n7 18 11 -4 -15 5 18 14 18 5\n",
+      "expectedOutput": "96\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 12",
+      "input": "4\n16 16 -10 3\n",
+      "expectedOutput": "32\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 13",
+      "input": "5\n3 17 17 12 17\n",
+      "expectedOutput": "66\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 14",
+      "input": "3\n10 11 -13\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 15",
+      "input": "3\n-14 13 -10\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 16",
+      "input": "11\n9 6 4 -10 2 15 -4 9 14 -15 19\n",
+      "expectedOutput": "78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 17",
+      "input": "8\n20 15 11 -14 17 -10 -5 -11\n",
+      "expectedOutput": "58\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 18",
+      "input": "5\n2 13 -2 -6 1\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 19",
+      "input": "9\n16 -10 17 20 6 12 4 -5 2\n",
+      "expectedOutput": "72\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 20",
+      "input": "2\n0 -11\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 21",
+      "input": "2\n13 8\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 22",
+      "input": "7\n11 20 5 14 -8 -8 -1\n",
+      "expectedOutput": "50\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 23",
+      "input": "6\n-1 16 -14 16 6 -6\n",
+      "expectedOutput": "38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 24",
+      "input": "9\n19 19 13 1 6 14 -1 19 3\n",
+      "expectedOutput": "94\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

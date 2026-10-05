@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-15",
+  "title": "Minimum Operations to Make Arrays Equal",
+  "explanation": "## 思路\n\n令 d[i]=target[i]−source[i]，必须逐项非负。每个 d[i−1] 到 d[i] 的下降至少需要一个在该边界结束的前缀操作。下降总量 N 若超过 d[0] 则不可能；否则用 N 个前缀和若干后缀/全数组操作补齐，最少操作数为 d[n−1]+N。\n\n## 正确性证明\n\n记 N 为相邻增量中所有下降幅度之和。每次前缀操作最多贡献一次单位下降，所以至少要 N 次前缀；首项增量只有 d[0] 单位前缀/整段操作可用，故 N>d[0] 时无解。若 N≤d[0]，按每个下降位置放置前缀，剩余用整段和后缀补齐即可构造目标；化简后的总操作数为 d[last]+N，达到下界。\n\n## 复杂度\n\nO(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n d=list(map(int,s.split()));n=d[0];a=d[1:1+n];b=d[1+n:];x=[y-z for y,z in zip(b,a)]\n if min(x)<0:return \"-1\"\n if n==1:return str(x[0])\n need=sum(max(0,x[i-1]-x[i]) for i in range(1,n))\n if need>x[0]:return \"-1\"\n return str(x[-1]+need)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#15-minimum-operations-to-make-arrays-equal",
+  "sourceContentHash": "d6babafe7d60990b2313d5edb3b6c2a9c6ec57ff49394a5fc0cd690f330616a8",
+  "author": "CSWork"
+}

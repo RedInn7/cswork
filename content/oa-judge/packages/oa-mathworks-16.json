@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-mathworks-16",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Maximize Beauty",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "MathWorks"
+    ],
+    "description": "数组 beauty 是满足 1-based 位置 i 上 arr[i]=i 的位置数。可反复删除任意元素但数组长度保持至少 1，且不改变顺序。求最大可能 beauty。\n\n本站采用标准输入输出协议。",
+    "input": "首行 n；第二行 n 个正整数。1≤n≤2000，1≤arr[i]≤10^5。",
+    "output": "输出最大 beauty。",
+    "explanation": "DP 状态 dp[k] 表示当前前缀中选出长度 k 的子序列时 beauty 的最大值。保留当前元素时，其新位置为 k+1，据此判断是否得分；倒序更新避免重复选取。",
+    "hints": [
+      "DP 状态 dp[k] 表示当前前缀中选出长度 k 的子序列时 beauty 的最大值。保留当前元素时，其新位置为 k+1，据此判断是否得分；倒序更新避免重复选取。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "7\n1 3 2 5 4 5 3\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "6\n6 3 2 4 3 4\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1\n7\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "3\n2 2 2\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 1",
+      "input": "7\n9 2 8 3 2 10 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 2",
+      "input": "5\n7 9 5 1 4\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 3",
+      "input": "5\n8 7 7 5 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 4",
+      "input": "7\n5 4 2 7 7 9 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 5",
+      "input": "12\n10 7 6 5 3 2 7 4 10 9 2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 6",
+      "input": "7\n1 9 10 10 6 6 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 7",
+      "input": "4\n5 10 9 2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 8",
+      "input": "7\n8 4 8 1 3 10 8\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 9",
+      "input": "5\n3 6 4 4 6\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 10",
+      "input": "11\n8 9 5 7 7 7 1 2 2 7 5\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 11",
+      "input": "11\n4 5 9 3 7 4 9 6 9 8 10\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 12",
+      "input": "6\n7 8 7 5 7 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 13",
+      "input": "3\n9 8 10\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 14",
+      "input": "9\n2 6 8 4 3 9 6 2 10\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 15",
+      "input": "11\n1 8 6 5 8 10 2 1 7 1 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 16",
+      "input": "2\n7 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 17",
+      "input": "12\n9 1 6 3 8 7 10 2 7 7 4 6\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 18",
+      "input": "9\n3 6 2 8 5 1 5 2 10\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 19",
+      "input": "7\n2 3 10 3 8 6 5\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 20",
+      "input": "4\n2 10 7 8\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 21",
+      "input": "6\n8 3 4 7 7 6\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 22",
+      "input": "5\n7 1 2 3 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 23",
+      "input": "12\n10 10 2 3 5 5 10 6 5 4 8 7\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏组合 24",
+      "input": "9\n5 9 7 7 5 9 3 10 5\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

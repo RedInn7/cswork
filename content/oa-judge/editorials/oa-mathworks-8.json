@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-8",
+  "title": "Alloy Production",
+  "explanation": "## 思路\n\n产量 x 的购买成本是 Σmax(0,x·composition[i]−stock[i])·cost[i]，随 x 单调不减，可二分最大可行产量。题源样例输出 1 正确，原解释成本算式有误，本站按规则修正。\n\n## 正确性证明\n\n给定产量时，各金属只需补足配方短缺，公式恰是实现该产量的最小购买成本。成本随产量单调不减，二分得到预算内的最大产量。\n\n## 复杂度\n\nO(n log U)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n d=list(map(int,s.split()));n,b=d[:2];c=d[2:2+n];stock=d[2+n:2+2*n];cost=d[2+2*n:]\n def ok(x):return sum(max(0,x*a-v)*w for a,v,w in zip(c,stock,cost))<=b\n lo,hi=0,1\n while ok(hi):hi*=2\n while lo+1<hi:\n  mid=(lo+hi)//2\n  if ok(mid):lo=mid\n  else:hi=mid\n return str(lo)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#8-alloy-production",
+  "sourceContentHash": "23bf8efa3b3114ef340be0fd12d0104a77966dcf9c83766e7141e1c2b70a1e79",
+  "author": "CSWork"
+}

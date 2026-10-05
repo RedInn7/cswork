@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-19",
+  "title": "Discount Tags",
+  "explanation": "## 思路\n\n先取所有正数得到最大和；若它为奇数，比较去掉最小正奇数或加入最接近 0 的负奇数两种修正。\n\n## 正确性证明\n\n所有正数之和是未施加奇偶条件时的最大值。若为奇数，任一可行解至少需要去掉一个正奇数或加入一个负奇数；选损失最小的这两种调整之一即为最大偶数和。\n\n## 复杂度\n\nO(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n d=list(map(int,s.split()));a=d[1:];z=sum(x for x in a if x>0)\n if z%2==0:return str(z)\n pos=[x for x in a if x>0 and x%2];neg=[x for x in a if x<0 and x%2]\n return str(max(z-min(pos) if pos else -10**100,z+max(neg) if neg else -10**100,0))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#19-discount-tags",
+  "sourceContentHash": "7352d6171018ebc0e53fa8dc44d983a770d023fa054e84407f7289952c2edda8",
+  "author": "CSWork"
+}
