@@ -22,3 +22,5 @@
 跳过了 11（覆盖区间规则与样例冲突）、12（字符格式与样例冲突）、15（连锁引爆解释中的距离判断错误）；具体原因随批次验证报告记录。输入格式由本站明确整理，额外的字符串/编号格式约束不冒充原 OA 约束。
 
 只有主发布流程完成真实沙箱验收并核验内容指纹后，才能把本批次聚合到正式 registry。
+
+`python3 scripts/oa-judge/batches/goldman_sachs_remaining.py` 生成 Goldman Sachs 候选批次 `goldman-sachs-remaining`，仅写入 `candidate-batches/`，不进入正式 registry，也未连接 GoJudge。选入 #9、#10、#16、#17、#21、#22、#23、#25、#29、#31；每题有 163 组参考解/独立 oracle 比对、至少 27 个隐藏用例及两个正常退出 mutant。固定原始快照路径与 Git blob、catalog 内容指纹及 blocked 决策见 `source-evidence/goldman-sachs-remaining.json`；#18 因原样例迷宫输入、输出和解释互相矛盾而 blocked，其余未选题理由见 reviews 文件。
