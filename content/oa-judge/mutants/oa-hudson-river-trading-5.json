@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把单格路径也计入",
+    "code": "def grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef solve(raw):\n rows=grid_decode(raw); cells={(r,c):v for r,row in enumerate(rows) for c,v in enumerate(row)}\n dp={}; total=0\n for (r,c),v in sorted(cells.items(),key=lambda x:x[1]):\n  ways=1\n  for nr,nc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):\n   if (nr,nc) in cells and cells[(nr,nc)]<v: ways+=dp[(nr,nc)]\n  dp[(r,c)]=ways; total+=ways\n return str(total)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略水平方向相邻格子",
+    "code": "def grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef solve(raw):\n rows=grid_decode(raw); cells={(r,c):v for r,row in enumerate(rows) for c,v in enumerate(row)}\n dp={}; total=0\n for (r,c),v in sorted(cells.items(),key=lambda x:x[1]):\n  ways=1\n  for nr,nc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):\n   if (nr,nc) in cells and cells[(nr,nc)]<v and nc==c: ways+=dp[(nr,nc)]\n  dp[(r,c)]=ways; total+=ways-1\n return str(total)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

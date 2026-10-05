@@ -1,0 +1,10 @@
+[
+  {
+    "name": "负数漏掉负号",
+    "code": "def digits(n):\n if n==0: return \"0\"\n x=abs(n); out=[]\n while x: out.append(chr(48+x%10)); x//=10\n return ''.join(reversed(out))\ndef solve(raw): return \"\\n\".join(digits(int(x)) for x in raw.splitlines() if x.strip())\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "零转换为空串",
+    "code": "def digits(n):\n if n==0: return \"\"\n neg=n<0; x=-n if neg else n; out=[]\n while x: out.append(chr(48+x%10)); x//=10\n if neg: out.append('-')\n return ''.join(reversed(out))\ndef solve(raw): return \"\\n\".join(digits(int(x)) for x in raw.splitlines() if x.strip())\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-1",
+  "title": "整数转十进制字符串",
+  "explanation": "## 思路\n\n反复取绝对值的个位并除以 10，倒序拼接，最后按需补负号。0 单独处理。为覆盖 INT_MIN，使用不溢出的整数表示。\n\n## 正确性证明\n\n每步取模恰得当前十进制最低位，整除 10 删除该位；全部位倒序后恢复原顺序和符号，因此所得字符与十进制表示逐位相同。\n\n## 复杂度\n\n设总十进制位数为 D，时间 O(D)，除输出外空间 O(D)。\n\n## 来源说明\n\n上游原题限制 built-in conversion helper；本站判题只能验证输出，不能静态证明选手未调用内置转换函数。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def digits(n):\n if n==0: return \"0\"\n neg=n<0; x=-n if neg else n; out=[]\n while x:\n  out.append(chr(ord('0')+x%10)); x//=10\n if neg: out.append('-')\n return ''.join(reversed(out))\ndef solve(raw):\n return \"\\n\".join(digits(int(line)) for line in raw.splitlines() if line.strip())\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#1-integer-to-string-without-built-ins",
+  "sourceContentHash": "af5242de4166cc797083f7d96b343f61ddb9aff5a33e284413dbdc7f345893e7",
+  "author": "Chunyu Sui"
+}

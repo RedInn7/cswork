@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-5",
+  "title": "统计递增路径（路径数不超过 2000）",
+  "explanation": "## 思路\n\n将格子视为有向无环图，较小值指向相邻较大值。按值从小到大动态规划：以格子结束的路径数等于 1（单格）加所有较小邻居的路径数；最终减去所有单格路径。\n\n## 正确性证明\n\n严格递增使路径图无环，值升序保证每个格子处理前其所有较小邻居已完成。每条以当前格子结尾且长度至少 2 的路径，唯一来自一个较小邻居路径追加当前格子；因此递推完整且不重不漏。减去的每个单格正好对应一个不符合长度要求的路径。\n\n## 复杂度\n\n设 V 为格子数、E≤4V。时间 O(V log V+E)，空间 O(V)。\n\n## 来源说明\n\n原始示例输出 4 符合邻接路径定义，但所列路径端点说明不准确：实际四条为 1→5、1→2、2→7、1→2→7。本站保留规则及答案，纠正说明并记录原解释错误。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef solve(raw):\n rows=grid_decode(raw); cells={(r,c):v for r,row in enumerate(rows) for c,v in enumerate(row)}\n dp={}; total=0\n for (r,c),v in sorted(cells.items(),key=lambda x:x[1]):\n  ways=1\n  for nr,nc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):\n   if (nr,nc) in cells and cells[(nr,nc)]<v: ways+=dp[(nr,nc)]\n  dp[(r,c)]=ways; total+=ways-1\n return str(total)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#5-increasing-paths-part-1",
+  "sourceContentHash": "bd6b46581b9f89560a382cf3f10c9707483dd3a782ecb9f97575f7c12f50185e",
+  "author": "Chunyu Sui"
+}
