@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把重复相邻字符对逐对计数",
+    "code": "import sys\ndef solve(raw):\n z=raw.split(); n=int(z[0]); out=[]\n for w in z[1:1+n]:\n  changes=0; last=None\n  for c in w:\n   if c==last: changes+=1\n   last=c\n  out.append(str(changes))\n return \" \".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每个重复字符都单独替换",
+    "code": "import sys\ndef solve(raw):\n z=raw.split(); n=int(z[0]); out=[]\n for w in z[1:1+n]:\n  changes=0; last=None\n  for c in w:\n   if c==last and c==\"a\": changes+=1; last=None\n   else: last=c\n  out.append(str(changes))\n return \" \".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]
