@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-akuna-capital-13",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Delivery Management System (QR Intern)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Akuna Capital"
+    ],
+    "description": "城市和双向道路构成无权图。以工厂所在城市为起点，按最短路距离升序配送；距离相同时按城市编号升序。不可达城市不输出，起点本身不输出。\n\n题目来源与规则依据见题面/审阅记录；本站输入范围中标明的限制属于本站补充。",
+    "input": "第一行 n、m、company（城市编号 1..n）；随后 m 行双向道路 u v。本站补充范围：1≤n≤100000，0≤m≤200000，图无自环、无重复边。",
+    "output": "一行输出被访问的城市编号，以空格分隔。没有其他可达城市时输出空行。",
+    "explanation": "请按题目规则处理输入；完整思路、正确性说明和复杂度见配套讲义。",
+    "hints": [
+      "从工厂城市运行 BFS，得到所有可达城市的最短边数距离，再按 (距离, 编号) 排序输出。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "4 3 1\n1 2\n2 3\n2 4\n",
+      "expectedOutput": "2 3 4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "5 4 1\n1 4\n4 5\n1 2\n2 3\n",
+      "expectedOutput": "2 4 3 5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "3 0 1\n",
+      "expectedOutput": "\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "5 5 1\n1 2\n1 3\n2 4\n4 5\n3 5\n",
+      "expectedOutput": "2 3 4 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "8 8 1\n1 4\n2 5\n3 5\n3 7\n4 5\n4 7\n5 6\n5 8\n",
+      "expectedOutput": "4 5 7 2 3 6 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "8 11 2\n1 2\n1 3\n1 4\n1 5\n1 7\n2 5\n2 6\n2 8\n4 8\n6 7\n7 8\n",
+      "expectedOutput": "1 5 6 8 3 4 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "4 2 1\n1 3\n3 4\n",
+      "expectedOutput": "3 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "8 7 7\n1 4\n1 5\n1 7\n3 6\n4 6\n4 8\n7 8\n",
+      "expectedOutput": "1 8 4 5 6 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "6 6 6\n1 6\n2 4\n2 5\n2 6\n3 4\n5 6\n",
+      "expectedOutput": "1 2 5 4 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "5 3 2\n1 2\n2 3\n4 5\n",
+      "expectedOutput": "1 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "6 3 3\n1 5\n3 5\n3 6\n",
+      "expectedOutput": "5 6 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "7 8 2\n1 3\n1 4\n1 7\n2 5\n3 5\n3 6\n4 5\n5 7\n",
+      "expectedOutput": "5 3 4 7 1 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "2 0 2\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "5 1 2\n1 5\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "6 3 1\n1 2\n2 3\n3 4\n",
+      "expectedOutput": "2 3 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "7 7 3\n2 4\n2 5\n2 7\n3 6\n3 7\n4 5\n6 7\n",
+      "expectedOutput": "6 7 2 4 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "3 0 3\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "3 2 2\n1 2\n2 3\n",
+      "expectedOutput": "1 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "8 9 5\n1 3\n1 4\n2 3\n3 4\n3 5\n3 7\n3 8\n6 8\n7 8\n",
+      "expectedOutput": "3 1 2 4 7 8 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "8 7 8\n1 4\n2 6\n3 6\n3 8\n5 7\n5 8\n7 8\n",
+      "expectedOutput": "3 5 7 6 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "3 1 2\n1 2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "8 10 5\n1 2\n1 3\n1 4\n1 8\n2 3\n2 5\n3 5\n3 7\n3 8\n4 5\n",
+      "expectedOutput": "2 3 4 1 7 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "8 10 6\n1 3\n1 5\n1 6\n3 8\n4 5\n4 6\n4 7\n4 8\n5 8\n7 8\n",
+      "expectedOutput": "1 4 3 5 7 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "3 1 1\n1 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "2 0 1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "8 11 2\n1 4\n1 5\n1 6\n1 7\n2 3\n2 4\n2 5\n3 4\n4 6\n5 6\n5 7\n",
+      "expectedOutput": "3 4 5 1 6 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "2 1 1\n1 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "3 2 3\n1 2\n2 3\n",
+      "expectedOutput": "2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "4 0 4\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "8 11 3\n1 3\n1 4\n1 8\n2 3\n2 6\n3 4\n3 5\n4 6\n5 7\n5 8\n6 7\n",
+      "expectedOutput": "1 2 4 5 6 7 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "4 2 2\n1 3\n1 4\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "8 8 6\n1 2\n1 3\n1 4\n1 7\n2 5\n2 6\n3 4\n6 8\n",
+      "expectedOutput": "2 8 1 5 3 4 7\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

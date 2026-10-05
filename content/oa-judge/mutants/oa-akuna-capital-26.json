@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把每个空档当成一个块",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));N,m=t[:2];a=sorted((t[i],t[i+1]) for i in range(2,len(t),2));p=1;ans=0\n for l,r in a+[(N+1,N+1)]:\n  if l>p:ans+=1\n  p=r+1\n return str(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只对总未上传包数做 popcount",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));N,m=t[:2];return str((N-sum(t[i+1]-t[i]+1 for i in range(2,len(t),2))).bit_count())\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-24",
+  "title": "Minimum Cost to Move Within a Grid",
+  "explanation": "## 思路\n\n行坐标变化必须跨过 initR 与 finalR 之间的全部行边，列坐标亦然；分别求这两段代价之和再相加。\n\n## 正确性\n\n每次垂直移动只改变行坐标一格，任意合法路径从 initR 到 finalR 必须至少一次跨过每一条中间行边；跨越次数为奇数，额外往返代价非负。按相邻坐标直接移动恰好各跨一次，达到行边代价下界。列方向同理，且可先后独立执行，故两段成本和是全局最小。\n\n## 复杂度\n\n时间 O(|finalR−initR|+|finalC−initC|)，额外空间 O(1)（不计输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));rows,cols,ir,ic,fr,fc=t[:6];p=6;cr=t[p:p+rows-1];p+=rows-1;cc=t[p:p+cols-1]\n return str(sum(cr[min(ir,fr):max(ir,fr)])+sum(cc[min(ic,fc):max(ic,fc)]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#24-minimum-cost-to-move-within-a-grid-akuna-shang-hai-",
+  "sourceContentHash": "dc47e4e8f09862a89334b96052e38777304b325febc083f198db783cd4606020",
+  "author": "CSWork"
+}

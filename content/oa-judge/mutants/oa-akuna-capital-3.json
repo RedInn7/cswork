@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不按计划日排序",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; p=t[1:1+n]; a=t[1+n:1+2*n]; day=0\n for planned,alt in zip(p,a): day=alt if alt>=day else planned\n return str(day)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "总选计划日",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; p=sorted(t[1:1+n]); return str(p[-1])\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

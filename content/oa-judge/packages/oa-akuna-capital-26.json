@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-akuna-capital-26",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Minimum Chunks Required",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Akuna Capital"
+    ],
+    "description": "文件包含 totalPackets 个按 1-based 编号的数据包。已上传区间互不重叠；尚未上传的每个连续区间可以拆成任意个连续块，每块长度必须是 2 的非负整数次幂，块起点不要求按长度对齐。求还需上传的最少块数。\n\n题目来源与规则依据见题面/审阅记录；本站输入范围中标明的限制属于本站补充。",
+    "input": "第一行 totalPackets、m；随后 m 行已上传闭区间 l r。原题限制：1≤totalPackets<10^18，0≤m<10^5，1≤l≤r≤totalPackets，区间不重叠。",
+    "output": "输出最少需上传的数据块数。",
+    "explanation": "请按题目规则处理输入；完整思路、正确性说明和复杂度见配套讲义。",
+    "hints": [
+      "将已上传区间排序，逐个求出其间未上传空档。长度 L 的空档最少可分为 popcount(L) 个二次幂长度块，答案为所有空档 popcount 之和。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "10 2\n1 2\n9 10\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "18 1\n9 17\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "1 0\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "1000000000000000000 0\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "1000000000000000000 1\n1 1000000000000000000\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "20 4\n1 6\n7 11\n12 13\n16 20\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "38 9\n1 2\n3 7\n10 15\n16 20\n21 21\n22 27\n28 32\n33 35\n36 38\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "26 6\n1 5\n7 10\n11 14\n19 19\n21 21\n22 26\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "16 3\n3 8\n9 13\n15 15\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "30 6\n1 6\n10 13\n15 15\n19 24\n25 26\n27 29\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "45 8\n1 3\n4 8\n9 11\n15 15\n16 20\n24 30\n34 40\n42 45\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "14 2\n1 5\n9 10\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "21 5\n2 8\n11 13\n15 18\n19 19\n20 20\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "22 5\n1 3\n6 11\n13 17\n18 18\n21 21\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "13 3\n3 6\n9 10\n12 13\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "23 4\n5 8\n9 12\n13 17\n21 22\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "13 2\n1 6\n12 13\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "16 5\n1 1\n3 4\n5 9\n10 13\n14 16\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "19 3\n2 7\n8 10\n16 18\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "28 6\n1 5\n6 11\n13 13\n16 17\n22 26\n28 28\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "4 3\n2 2\n3 3\n4 4\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "37 6\n2 7\n11 15\n19 23\n26 31\n32 33\n36 36\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "4 1\n2 4\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "41 7\n2 8\n12 17\n22 27\n29 29\n30 30\n31 36\n38 40\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "23 6\n1 7\n8 14\n16 17\n19 20\n21 21\n23 23\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "38 8\n1 1\n2 6\n8 9\n10 14\n17 22\n23 28\n29 32\n33 38\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "1 0\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "14 3\n1 3\n9 10\n11 14\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "20 6\n2 2\n3 3\n4 5\n10 13\n17 18\n20 20\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "16 3\n3 9\n12 15\n16 16\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "37 7\n5 7\n8 11\n16 21\n23 24\n26 30\n32 36\n37 37\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 30",
+      "input": "39 7\n2 2\n4 10\n12 18\n19 24\n32 36\n38 38\n39 39\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

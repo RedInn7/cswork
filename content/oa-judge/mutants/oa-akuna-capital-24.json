@@ -1,0 +1,10 @@
+[
+  {
+    "name": "行列方向代价索引错一格",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));R,C,a,b,x,y=t[:6];p=6;cr=t[p:p+R-1];p+=R-1;cc=t[p:p+C-1];return str(sum(cr[min(a,x):max(a,x)])+sum(cc[min(b,y):max(b,y)])+1)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只计算行方向费用",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));R,C,a,b,x,y=t[:6];p=6;cr=t[p:p+R-1];return str(sum(cr[min(a,x):max(a,x)]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

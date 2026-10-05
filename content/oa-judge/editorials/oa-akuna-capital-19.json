@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-19",
+  "title": "An Evening of Movies",
+  "explanation": "## 思路\n\n统计每种时长出现次数。若某时长 t+1 存在影片，则从 t 开始可以先看完所有时长 t 的影片，再接到 t+1；反之只能使用时长 t 的影片。\n\n## 正确性\n\n从时长 t 开始，所有时长 t 的影片均可连续观看；只有存在至少一部 t+1 影片时，才能从 t 转移到下一时长。每部电影只用一次，因此转移值为 count[t]+best[t+1]（当 count[t+1]>0），否则为 count[t]。对出现的每个起始时长取最大，覆盖所有合法序列。\n\n## 复杂度\n\n若 u 为不同运行时长个数，时间 O(u log u)，空间 O(u)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];c=Counter(t[1:1+n]);dp={}\n for x in sorted(c,reverse=True):dp[x]=c[x]+(dp.get(x+1,0) if c[x+1] else 0)\n return str(max(dp.values()))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#19-an-evening-of-movies",
+  "sourceContentHash": "6b05ce426c537add55f72dba3f0a9d36f00e015e99752982ed8eba3e10f2e06d",
+  "author": "CSWork"
+}
