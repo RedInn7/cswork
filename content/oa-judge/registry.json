@@ -4178,6 +4178,78 @@
       ]
     },
     {
+      "id": "oa-capital-one-4",
+      "sourceContentHash": "4a1b5fa0bbff58d39f2f132825fb9fa2ccd8f10ef0914a968b978b1fa3a31092",
+      "packageChecksum": "fad690ee8a04fe4ed387dc74f8d34a9766e3c5f85a6c41629095439d456cc61c",
+      "editorial": "## 思路\n\n先由照片对建立无向邻接表。简单路径恰有两个度为 1 的端点；从编号较小的端点出发，每次走向不是上一个节点的邻居即可恢复顺序。\n\n## 正确性\n\n路径端点只有一个尚未访问的相邻节点（起点除外）。沿边前进且不回头，因此每个地标恰访问一次；走到另一端后没有新邻居，得到完整路径。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; g={}\n for i in range(1,len(t),2):\n  a,b=t[i],t[i+1]; g.setdefault(a,[]).append(b); g.setdefault(b,[]).append(a)\n cur=min(v for v,ns in g.items() if len(ns)==1); prev=None; out=[]\n while True:\n  out.append(cur); nxt=next((x for x in g[cur] if x!=prev),None)\n  if nxt is None: break\n  prev,cur=cur,nxt\n return ' '.join(map(str,out))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-6",
+      "sourceContentHash": "2c31241b71eb6153bff5ae9875b806029ec323432c94172f260e4d263c0d5b51",
+      "packageChecksum": "b677b7025420ac5bef2a0c362b5b0b18ce97f4fee25e9606a3c3f198851b2f63",
+      "editorial": "## 思路\n\n维护 a、b 两边的值频次。更新时从 a 的旧值计数中减一，再将新值计数加一。查询目标 x 时遍历不同值数较少的一侧，累加 `freqA[v] × freqB[x-v]`。\n\n## 正确性\n\n每个下标对 (i,j) 唯一对应两数组中的一对互补值。遍历较小频次表中的每个不同值 v，并乘以另一侧中目标值减 v 的频次，恰好计出所有满足条件的下标对，因此既不漏计也不重复计数。\n\n## 复杂度\n\n令 Da、Db 为一次查询时两侧不同值数。更新期望 O(1)，查询 O(min(Da,Db))；本站保证所有查询的该项之和不超过 10^7。空间 O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n it=iter(map(int,raw.split())); n,m,q=next(it),next(it),next(it); a=[next(it) for _ in range(n)]; b=[next(it) for _ in range(m)]\n ca={}; cb={}\n for x in a: ca[x]=ca.get(x,0)+1\n for x in b: cb[x]=cb.get(x,0)+1\n out=[]\n for _ in range(q):\n  typ=next(it)\n  if typ==0:\n   i,x=next(it),next(it); old=a[i]; ca[old]-=1\n   if ca[old]==0: del ca[old]\n   a[i]+=x; ca[a[i]]=ca.get(a[i],0)+1\n  else:\n   x=next(it)\n   if len(ca)<=len(cb): total=sum(c*cb.get(x-v,0) for v,c in ca.items())\n   else: total=sum(c*ca.get(x-v,0) for v,c in cb.items())\n   out.append(str(total))\n return ' '.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-7",
+      "sourceContentHash": "787a49ae90ec0b99daa48551383ec82146d076ed7176c43212dcb5138fbd1561",
+      "packageChecksum": "c4b7010391bb03e3c538025015d17d48f83e617794c5fe64481858c51205826c",
+      "editorial": "## 思路\n\n枚举正方形边长 s 的可行性：扫描高度数组，检查是否存在至少 s 个连续楼高均不低于 s。可行性随 s 增大单调不增，故二分最大 s，答案为 s²。\n\n## 正确性\n\n高度连续达 s 的楼群可容纳宽 s、高 s 的正方形，反之任何边长 s 的正方形都必须覆盖至少 s 个连续楼且这些楼高均至少为 s。因此检查条件与可行性等价；单调二分找到最大边长。\n\n## 复杂度\n\n二分 O(n log(min(n,max(h))))，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; h=t[1:]; lo,hi=0,min(n,max(h,default=0))\n def ok(s):\n  run=0\n  for x in h:\n   run=run+1 if x>=s else 0\n   if run>=s: return True\n  return s==0\n while lo<hi:\n  mid=(lo+hi+1)//2\n  if ok(mid): lo=mid\n  else: hi=mid-1\n return str(lo*lo)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-9",
+      "sourceContentHash": "14fc47ff3e0157cb710677863023d6ad9981d72e77bd55155a852b664becfa6d",
+      "packageChecksum": "8258614eac1dc7d7dc062bcd344139499e707a8c5c94f3d43d83b07bfddc159e",
+      "editorial": "## 思路\n\n将每个标题插入 Trie，并在终止节点记录该完整标题出现次数。对每个标题沿 Trie 前进，累加路径上各终止节点的次数；最后减去当前标题自身一次。\n\n## 正确性\n\n对固定标题 j，所有作为其前缀的标题恰好对应 Trie 根到其终点路径上的终止节点。终止次数包含重复标题的不同下标，而减去 1 仅移除 j 与自身配对，正好满足 i≠j。\n\n## 复杂度\n\n设所有标题字符总数为 L。构建和查询均为 O(L)，空间 O(L)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); words=lines[1:1+n]; trie={}; END='#'\n for w in words:\n  node=trie\n  for c in w: node=node.setdefault(c,{})\n  node[END]=node.get(END,0)+1\n total=0\n for w in words:\n  node=trie\n  for c in w:\n   node=node[c]; total+=node.get(END,0)\n  total-=1\n return str(total)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-12",
+      "sourceContentHash": "a5cf05dbc8684aeb3c6265460667f4cd0d175e88c6af98982a0e193235d356eb",
+      "packageChecksum": "732ad38aaf8113d6b5edd6e9ec0c44edc0eb07d71b612ff195e6c710f4077d14",
+      "editorial": "## 思路\n\n把所有原料放入 Trie。dp[i] 表示 recipe 的前 i 个字符可被拆分。仅从 dp[i] 为真的位置开始沿 Trie 向后扫描；每遇到原料终止节点就令对应 dp[j] 为真。\n\n## 正确性\n\ndp[0] 为真对应空前缀。从可达位置 i 沿 Trie 到终点 j，恰表示 recipe[i:j] 是一个原料，因此可扩展有效拆分。任何有效拆分最后一段必是原料，Trie 扫描必能找到该终点，故转移必要且充分。\n\n## 复杂度\n\n设原料总长度为 S、最大原料长度为 M、所有 recipe 总长为 L。建 Trie 为 O(S)，DP 扫描最多 O(LM) 次边；本站补充保证 LM≤10^7。空间 O(S+Lmax)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n,r=map(int,lines[0].split()); words=lines[1:1+n]; recipes=lines[1+n:1+n+r]; end='#'; trie={}\n for word in words:\n  node=trie\n  for ch in word: node=node.setdefault(ch,{})\n  node[end]=True\n ans=[]\n for w in recipes:\n  dp=[False]*(len(w)+1); dp[0]=True\n  for i in range(len(w)):\n   if not dp[i]: continue\n   node=trie; j=i\n   while j<len(w):\n    node=node.get(w[j])\n    if node is None: break\n    j+=1\n    if end in node: dp[j]=True\n  ans.append('YES' if dp[-1] else 'NO')\n return ' '.join(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-13",
+      "sourceContentHash": "b6c7932c13ac71829b960a8d04029ac6f0463240d28d956de7b746adce52ad1e",
+      "packageChecksum": "2c6df030e0a30d0b19d529512cb44362649dc03d718efc91a2fa4974b20e027c",
+      "editorial": "## 思路\n\n逐个计算非负整数的十进制位数，若位数为偶数则计数。位数可通过十进制字符串长度得到；0 表示为一位。\n\n## 正确性\n\n每个数组元素仅在其十进制表示长度为偶数时贡献 1，否则贡献 0。逐项相加即为题目所求，且每项恰好处理一次。\n\n## 复杂度\n\n时间 O(n·d)，其中 d≤10；空间 O(1)（不计解析输入所需空间）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); return str(sum(len(str(abs(x)))%2==0 for x in t[1:]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-cisco-1",
       "sourceContentHash": "076d72d336a8aa643dcda92163a2e582e7082ffb91cb8a8c97f1faf4f3a415e2",
       "packageChecksum": "59073c6d08f358ceb16fbfc49a7039e47af597ebcb77c7f6229770c3e060bf9c",

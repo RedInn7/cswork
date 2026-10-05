@@ -315,7 +315,10 @@ def main():
                           "trieEdgeChecksUpperBound": trie_steps, "expectedOutput": "YES",
                           "elapsedSeconds": round(recipe_elapsed, 3)})
 
-    (OUT / "candidate-batches" / f"{batch}.json").write_text(
+    # Once real sandbox evidence exists, reproducibility must target the
+    # promoted manifest rather than recreating a duplicate candidate.
+    batch_folder = "batches" if (OUT / "reports" / f"{batch}.json").exists() else "candidate-batches"
+    (OUT / batch_folder / f"{batch}.json").write_text(
         json.dumps({"schemaVersion": 1, "items": batch_items}, ensure_ascii=False, indent=2) + "\n")
     (OUT / "validation" / f"{batch}.json").write_text(json.dumps(
         {"schemaVersion": 1, "seed": 20261005, "problems": reports, "stressChecks": stress_checks,
