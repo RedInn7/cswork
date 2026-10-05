@@ -145,7 +145,7 @@ def main():
    assert rejected,(pid,name,"not killed")
    f=OA/"negative-controls"/("%s-%d.py"%(pid,j));f.write_text(code);controls.append(dict(file=str(f.relative_to(ROOT)),description=name,rejectedByCases=rejected[:30]))
   write(OA/"oracles"/(pid+".json"),oracle_cases);write(OA/"mutants"/(pid+".json"),[dict(name=a,code=b) for a,b in M[n]])
-  problem=dict(id=pid,courseId="gomall",lessonId="00-overview",title=title,difficulty=difficulty,tags=["OA","MathWorks"],description=desc+"\n\n本站输入输出协议见下方；不执行来源仓库题解。",input=inptext,output=outtext,explanation=explain,hints=[explain],timeLimit=4,memoryLimit=262144,outputLimit=1000000 if n==13 else 65536,checker="tokens",languages=["python","go","java","cpp"])
+  problem=dict(id=pid,courseId="gomall",lessonId="00-overview",title=title,difficulty=difficulty,tags=["OA","MathWorks"],description=desc+"\n\n本站输入输出协议见下方；不执行来源仓库题解。",input=inptext,output=outtext,explanation=explain,hints=[explain],timeLimit=4,memoryLimit=262144,outputLimit=4096,checker="tokens",languages=["python","go","java","cpp"])
   package=dict(schemaVersion=1,problem=problem,cases=cases);write(OA/"packages"/(pid+".json"),package)
   editorial="## 思路\n\n"+explain+"\n\n## 正确性证明\n\n"+PROOFS[n]+"\n\n## 复杂度\n\n"+{6:"时间O(n)，空间O(n)。",7:"时间O(n)，空间O(n)。",11:"时间O(n log n)，空间O(n)。",13:"时间O(n+q)，空间O(n)。",14:"时间O(m log(sum(burstTime)))，空间O(m)。"}[n]
   sols=[dict(language="python",code=ref)];write(OA/"editorials"/(pid+".json"),dict(schemaVersion=1,id=pid,title=title,explanation=editorial,solutions=sols,sourceUrl=source["sourceUrl"],sourceContentHash=source["contentHash"],author="CSWork"))
