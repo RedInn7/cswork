@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-20",
+  "title": "Mike and Gems",
+  "explanation": "## 思路\n\n从左到右先暂时拾取每颗宝石并维护体力和与已选数值最小堆；若和变负，就摧毁当前已选中负值最小的宝石（弹出堆顶），直到体力非负。\n\n## 正确性\n\n扫描任意前缀时，算法维护一个可行的最大基数选择集。加入新宝石后若体力仍非负，基数增加一。若变负，任何包含该前缀所有已选宝石的集合都不可行；要恢复可行且尽量保留数量，删除所选中数值最小的宝石能最大程度增加体力、且只损失一个计数。重复直到可行。归纳每个前缀得到最大可行基数；终点即全程最大拾取数。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\nimport sys\ndef solve(raw):\n    t=list(map(int,raw.split())); n=t[0]; values=t[1:1+n]\n    heap=[]; stamina=0\n    for value in values:\n        heapq.heappush(heap,value); stamina+=value\n        if stamina<0: stamina-=heapq.heappop(heap)\n    return str(len(heap))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#20-mike-and-gems",
+  "sourceContentHash": "4493eb16d95e9aa9cf9dba91a1649335ab89c90ad81bc81036968bbfe9afbb64",
+  "author": "CSWork"
+}

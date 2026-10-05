@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-akuna-capital-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Disjoint Subarrays Max Sum",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Akuna Capital",
+      "数组",
+      "最大子数组",
+      "动态规划"
+    ],
+    "description": "必须在数组某个相邻位置切成左右两个非空连续部分。分别求左段和右段各自的最大非空连续子数组和，再将两者相加；返回所有切分中的最大值。切分点与两段内的最大子数组可以不同。\n\n输入格式、样例与评测数据由 CSWork 整理编写；原题来源与本站补充限制见题面。",
+    "input": "第一行 n；第二行 n 个整数 a[i]。原始题面未给 n 或数值界；本站补充 2≤n≤200000、−1000000000≤a[i]≤1000000000，以确保两段均非空且 64 位和安全。",
+    "output": "输出一个整数，为所有合法切分的最佳和。",
+    "explanation": "按以上规则处理输入；思路、正确性证明和复杂度见配套讲义。",
+    "hints": [
+      "对每个前缀预计算其中最大子数组和，对每个后缀也预计算最大子数组和。枚举切分点 i，最大化 prefixBest[i]+suffixBest[i+1]。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "6\n-1 4 -2 5 -3 6\n",
+      "expectedOutput": "13\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "2\n-5 -2\n",
+      "expectedOutput": "-7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "3\n2 -10 3\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "4\n-7 -8 -3 -9\n",
+      "expectedOutput": "-10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "3\n1000000000 -1000000000 1000000000\n",
+      "expectedOutput": "2000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "2\n0 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "5\n-1 -10 -3 7 7\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "3\n-4 -8 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "10\n12 -9 -9 3 -12 8 -6 11 -9 5\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "4\n-7 -9 -2 10\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "5\n-1 7 3 -5 -12\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "7\n-4 11 5 9 -11 -6 5\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "2\n-11 11\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "3\n-11 -12 -11\n",
+      "expectedOutput": "-22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "10\n-12 2 -9 8 -3 -11 -2 8 -11 -11\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "9\n-6 4 0 4 11 0 -8 -5 5\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "10\n0 8 -8 -10 4 5 8 -1 -11 2\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "6\n-1 2 7 -11 1 -1\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "7\n11 -5 2 3 -6 -3 0\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "8\n-10 5 1 -11 -12 8 -8 -2\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "10\n-10 3 -11 7 -9 -6 -4 -1 -12 4\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "6\n-3 -11 -8 -9 -11 11\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "4\n12 8 -7 8\n",
+      "expectedOutput": "28\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "10\n-2 1 0 -1 4 4 12 -12 -3 -7\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "8\n7 -12 -11 11 -7 5 -4 -5\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "3\n-9 0 -8\n",
+      "expectedOutput": "-8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "6\n2 0 7 6 -7 8\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "5\n7 -11 -11 -1 -9\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "6\n6 0 2 -7 8 9\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "10\n10 4 12 -8 9 10 -3 10 1 -5\n",
+      "expectedOutput": "53\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

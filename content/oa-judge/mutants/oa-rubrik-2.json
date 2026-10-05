@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只返回直接邻居数量加自身",
+    "code": "import sys\ndef solve(raw):\n    t=list(map(int,raw.split())); n,e,q=t[:3]; p=3; degree=[0]*(n+1)\n    for _ in range(e):\n        u,v=t[p:p+2]; p+=2; degree[u]+=1; degree[v]+=1\n    return \" \".join(str(degree[x]+1) for x in t[p:p+q])\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "重复查询用户只输出一次",
+    "code": "import sys\ndef solve(raw):\n    t=list(map(int,raw.split())); n,e,q=t[:3]; p=3; graph=[[] for _ in range(n+1)]\n    for _ in range(e):\n        u,v=t[p:p+2]; p+=2; graph[u].append(v); graph[v].append(u)\n    answers=[]\n    for x in dict.fromkeys(t[p:p+q]):\n        seen={x}; stack=[x]\n        while stack:\n            u=stack.pop()\n            for v in graph[u]:\n                if v not in seen: seen.add(v); stack.append(v)\n        answers.append(str(len(seen)))\n    return \" \".join(answers)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

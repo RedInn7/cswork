@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-2",
+  "title": "Social Connections (Visible Profiles per Query)",
+  "explanation": "## 思路\n\n用并查集处理全部边，采用路径压缩和按大小合并；查询时读取根节点记录的集合大小。\n\n## 正确性\n\n并查集在处理完每条无向边后，恰好把边可达的顶点合并在一起：逐边归纳可知每个集合包含且仅包含其连通分量。按大小合并维护根节点集合大小，因此每个查询输出的就是用户所在分量人数。\n\n## 复杂度\n\n时间 O((N+E+Q) α(N))，空间 O(N+E)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    t=list(map(int,raw.split())); n,e,q=t[:3]; edges=t[3:3+2*e]; queries=t[3+2*e:3+2*e+q]\n    parent=list(range(n+1)); size=[1]*(n+1)\n    def find(x):\n        while parent[x]!=x:\n            parent[x]=parent[parent[x]]; x=parent[x]\n        return x\n    for i in range(0,len(edges),2):\n        a=find(edges[i]); b=find(edges[i+1])\n        if a!=b:\n            if size[a]<size[b]: a,b=b,a\n            parent[b]=a; size[a]+=size[b]\n    return \" \".join(str(size[find(x)]) for x in queries)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#2-social-connections-visible-profiles-per-query",
+  "sourceContentHash": "e29a9f663155975bde25d849be0e436cbf49decb81c5a98242c4aedaec4622ac",
+  "author": "CSWork"
+}

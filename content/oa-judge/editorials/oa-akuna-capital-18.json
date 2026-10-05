@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-18",
+  "title": "Items Sort",
+  "explanation": "## 思路\n\n先统计每个值的频次，再按 (频次, 数值) 排序所有原数组元素。\n\n## 正确性\n\n比较键对每个元素唯一确定其全序。按该键排序后，所有元素仍各出现一次，频次较小的值整体在前，同频值按数值升序，因此恰好满足题目排序规则。\n\n## 复杂度\n\nn 为数组长度、u 为不同值数量。时间 O(n log n)，空间 O(u)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\nimport sys\ndef solve(raw):\n    t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n    count=Counter(a)\n    a.sort(key=lambda x:(count[x],x))\n    return \" \".join(map(str,a))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#18-items-sort",
+  "sourceContentHash": "6a908560aff16e2ab2db858f041057a4fec4468549fec60492933e230c301a55",
+  "author": "CSWork"
+}

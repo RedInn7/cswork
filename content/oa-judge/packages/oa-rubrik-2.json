@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-rubrik-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Social Connections (Visible Profiles per Query)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Rubrik",
+      "图论",
+      "并查集"
+    ],
+    "description": "给定无向社交图。每个查询用户可见其所在连通分量内的所有用户（含自己），对每个查询按原顺序输出该连通分量大小。\n\n输入格式、样例与评测数据由 CSWork 整理编写；原题来源与本站补充限制见题面。",
+    "input": "第一行 `N E Q`；随后 E 行为一条无向边 `u v`；最后一行 Q 个查询用户编号。OAMaster 示例使用 1-based 用户编号；本站明确 1≤N≤200000、0≤E,Q≤200000 且 E+Q≤200000、所有编号在 1..N。允许重复边与自环（均不改变连通分量）。",
+    "output": "输出一行 Q 个整数，依查询顺序给出各用户所在连通分量的顶点数。",
+    "explanation": "按以上规则处理输入；思路、正确性证明和复杂度见配套讲义。",
+    "hints": [
+      "用并查集处理全部边，采用路径压缩和按大小合并；查询时读取根节点记录的集合大小。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "7 4 4\n1 2\n2 3\n3 4\n5 6\n1 3 5 7\n",
+      "expectedOutput": "4 4 2 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "1 0 1\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "4 3 3\n1 2\n2 3\n3 4\n1 2 4\n",
+      "expectedOutput": "4 4 4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "6 0 2\n1 6\n",
+      "expectedOutput": "1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "5 3 5\n1 2\n1 2\n3 3\n1 2 3 4 5\n",
+      "expectedOutput": "2 2 1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "3 1 3\n1 2\n1 1 3\n",
+      "expectedOutput": "2 2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "4 0 3\n2 1 1\n",
+      "expectedOutput": "1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "8 14 4\n1 3\n1 4\n1 8\n2 4\n2 7\n3 6\n3 8\n4 5\n4 6\n4 7\n5 6\n5 7\n6 7\n7 8\n7 7 3 4\n",
+      "expectedOutput": "8 8 8 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "9 10 11\n1 8\n2 5\n2 9\n3 7\n3 9\n4 7\n4 8\n4 9\n7 8\n8 9\n9 6 7 7 6 9 9 1 5 3 7\n",
+      "expectedOutput": "8 1 8 8 1 8 8 8 8 8 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "10 14 11\n1 3\n1 4\n1 7\n1 9\n2 5\n2 6\n2 8\n2 9\n3 8\n4 9\n4 10\n5 7\n6 10\n8 10\n4 3 9 10 8 1 8 2 9 3 1\n",
+      "expectedOutput": "10 10 10 10 10 10 10 10 10 10 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "8 7 2\n1 6\n2 3\n2 5\n4 5\n4 6\n5 6\n6 8\n2 4\n",
+      "expectedOutput": "7 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "5 1 1\n1 5\n1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "1 0 2\n1 1\n",
+      "expectedOutput": "1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "1 0 2\n1 1\n",
+      "expectedOutput": "1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "7 3 9\n1 7\n2 7\n4 5\n6 2 7 6 1 7 6 2 4\n",
+      "expectedOutput": "1 3 3 1 3 3 1 3 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "7 4 9\n1 6\n2 4\n3 7\n4 7\n2 7 5 5 2 4 4 6 6\n",
+      "expectedOutput": "4 4 1 1 4 4 4 2 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "1 0 2\n1 1\n",
+      "expectedOutput": "1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "7 8 8\n1 2\n1 4\n1 7\n3 4\n5 6\n5 7\n6 7\n5 6\n3 2 6 4 1 7 4 1\n",
+      "expectedOutput": "7 7 7 7 7 7 7 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "1 0 2\n1 1\n",
+      "expectedOutput": "1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "7 4 3\n1 4\n1 7\n2 7\n4 7\n5 2 4\n",
+      "expectedOutput": "1 4 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "1 0 1\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "3 1 1\n1 3\n2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "8 5 4\n1 6\n2 3\n2 6\n3 4\n4 6\n3 7 2 7\n",
+      "expectedOutput": "5 1 5 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "2 0 3\n2 1 1\n",
+      "expectedOutput": "1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "4 1 1\n1 2\n3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "2 0 3\n1 1 1\n",
+      "expectedOutput": "1 1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "4 4 5\n2 3\n2 4\n3 4\n2 3\n2 3 2 2 1\n",
+      "expectedOutput": "3 3 3 3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "3 1 5\n2 3\n2 2 1 3 3\n",
+      "expectedOutput": "2 2 1 2 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "1 0 2\n1 1\n",
+      "expectedOutput": "1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "4 3 2\n1 2\n3 4\n3 4\n1 3\n",
+      "expectedOutput": "2 2\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
