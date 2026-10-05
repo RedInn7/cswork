@@ -1,0 +1,654 @@
+[
+  {
+    "input": "4 3\nF 1 2\nF 2 3\nT 1 4\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "2 1\nT 1 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "3 4\nF 1 2\nT 1 2\nF 1 2\nT 1 3\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "6 8\nF 6 3\nF 4 3\nF 3 6\nF 2 4\nT 1 5\nF 3 4\nF 2 3\nF 3 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2 2\nF 2 2\nT 2 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8 13\nF 7 1\nT 3 4\nF 6 5\nT 4 7\nT 2 6\nF 8 8\nF 3 1\nF 7 3\nT 8 5\nF 3 7\nF 6 4\nF 5 5\nF 1 1\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "9 5\nF 5 1\nF 4 3\nF 9 1\nF 4 7\nF 9 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 8\nF 1 1\nT 9 7\nF 1 3\nF 6 1\nF 10 7\nF 10 10\nT 10 4\nT 7 8\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "9 12\nF 3 9\nF 8 7\nF 1 5\nF 7 8\nF 4 4\nT 9 9\nF 7 6\nF 3 8\nF 1 4\nT 1 2\nF 6 9\nF 6 5\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "8 18\nF 6 4\nT 2 7\nF 5 3\nF 6 8\nF 1 4\nT 1 5\nT 2 2\nT 2 1\nF 1 1\nT 7 6\nT 2 2\nT 2 3\nT 6 8\nF 3 4\nF 1 4\nF 2 4\nF 4 5\nF 3 8\n",
+    "expectedOutput": "33\n"
+  },
+  {
+    "input": "7 7\nF 5 6\nF 3 2\nF 7 3\nF 2 2\nF 6 7\nF 5 4\nF 7 5\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 14\nF 9 5\nT 7 1\nF 3 8\nF 8 5\nF 8 3\nF 7 8\nT 7 8\nF 3 6\nF 8 4\nT 3 6\nF 8 7\nF 1 10\nF 4 8\nT 5 9\n",
+    "expectedOutput": "40\n"
+  },
+  {
+    "input": "8 11\nF 4 5\nF 6 7\nT 1 7\nF 1 3\nF 8 1\nF 1 3\nF 3 8\nF 7 8\nT 7 3\nF 2 3\nF 5 6\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "4 14\nF 3 1\nF 4 2\nF 1 3\nF 1 2\nF 1 3\nT 4 1\nT 1 4\nF 4 3\nT 3 2\nF 1 4\nF 4 2\nF 1 2\nF 1 1\nF 1 2\n",
+    "expectedOutput": "24\n"
+  },
+  {
+    "input": "9 1\nT 5 6\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "10 1\nF 5 6\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 9\nF 3 1\nF 2 1\nT 1 3\nT 4 3\nT 4 2\nT 4 1\nF 1 4\nF 3 2\nF 1 1\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "5 14\nF 5 1\nT 3 3\nF 1 3\nF 1 2\nT 2 2\nF 2 5\nF 4 3\nF 3 1\nF 4 4\nF 1 5\nF 3 5\nT 3 1\nF 4 4\nF 1 3\n",
+    "expectedOutput": "20\n"
+  },
+  {
+    "input": "6 7\nF 2 1\nF 1 5\nF 2 6\nF 4 3\nF 6 3\nF 6 3\nF 1 5\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 12\nF 8 3\nF 9 4\nF 2 7\nF 9 5\nF 3 8\nF 8 5\nT 5 7\nT 9 8\nT 5 3\nF 6 9\nF 4 7\nF 8 6\n",
+    "expectedOutput": "27\n"
+  },
+  {
+    "input": "6 12\nF 4 4\nF 6 6\nF 3 5\nF 6 3\nF 3 6\nF 5 2\nF 5 5\nT 4 2\nF 3 2\nF 5 3\nT 2 4\nF 1 1\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "5 18\nT 4 3\nF 5 2\nF 3 1\nF 1 5\nT 1 4\nT 1 2\nF 4 3\nF 5 2\nF 4 4\nF 3 4\nF 5 4\nF 5 3\nF 2 4\nT 1 2\nF 5 2\nF 4 1\nF 1 3\nF 1 5\n",
+    "expectedOutput": "25\n"
+  },
+  {
+    "input": "7 3\nF 3 5\nF 3 3\nF 5 4\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 5\nT 7 1\nT 3 2\nF 4 6\nF 6 8\nT 7 8\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "2 1\nT 2 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1 7\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "5 5\nT 1 1\nF 1 5\nT 3 5\nF 5 2\nT 2 4\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "4 9\nF 3 1\nF 3 2\nF 3 4\nF 2 3\nF 1 4\nT 4 1\nF 4 3\nF 3 1\nT 1 1\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "4 14\nT 2 3\nT 1 2\nF 3 2\nF 4 4\nF 1 1\nF 2 3\nF 4 3\nF 3 2\nF 2 1\nT 3 2\nF 3 2\nF 1 2\nF 3 2\nF 1 2\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "3 6\nF 1 2\nF 2 3\nF 3 2\nF 3 3\nF 1 1\nF 3 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 13\nF 2 1\nF 2 2\nF 1 1\nF 2 1\nF 2 2\nF 1 1\nF 1 2\nF 1 1\nT 1 1\nF 1 1\nT 1 2\nF 1 1\nF 1 1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "2 8\nF 1 1\nF 1 1\nF 1 2\nT 2 1\nF 2 1\nT 2 2\nF 2 1\nT 1 1\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "1 14\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nT 1 1\nT 1 1\nF 1 1\nF 1 1\nT 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "3 4\nF 3 3\nF 2 3\nF 3 3\nT 3 2\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6 9\nF 3 6\nF 4 4\nF 4 1\nF 1 4\nF 5 2\nF 2 6\nT 3 6\nF 4 5\nT 1 4\n",
+    "expectedOutput": "20\n"
+  },
+  {
+    "input": "10 16\nT 6 2\nF 6 7\nF 4 9\nF 4 5\nF 9 4\nT 5 7\nF 7 5\nF 2 4\nF 8 8\nF 6 8\nF 9 3\nF 1 5\nF 6 2\nF 4 6\nF 7 6\nF 5 9\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "5 5\nF 4 4\nT 3 4\nF 4 3\nF 4 3\nF 5 4\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "7 2\nF 5 2\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 12\nT 4 4\nF 4 2\nT 3 3\nT 2 3\nF 2 1\nF 1 2\nF 2 2\nF 3 3\nF 3 3\nF 3 3\nF 4 2\nT 3 4\n",
+    "expectedOutput": "11\n"
+  },
+  {
+    "input": "6 15\nF 5 2\nF 5 1\nF 1 3\nF 2 3\nT 4 3\nF 2 1\nF 6 6\nF 2 4\nF 1 4\nF 6 2\nF 2 6\nF 2 1\nT 6 5\nT 3 4\nF 4 1\n",
+    "expectedOutput": "29\n"
+  },
+  {
+    "input": "6 18\nF 6 1\nT 5 5\nF 1 3\nF 4 4\nT 1 1\nF 3 1\nF 6 6\nF 4 3\nT 1 5\nF 5 2\nT 6 4\nF 5 1\nF 6 3\nF 4 6\nF 5 5\nF 1 4\nT 2 5\nF 6 5\n",
+    "expectedOutput": "33\n"
+  },
+  {
+    "input": "4 4\nF 4 2\nT 4 3\nF 1 4\nF 3 2\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "3 6\nF 3 1\nF 1 3\nF 3 1\nF 3 1\nT 1 1\nF 1 3\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6 6\nF 5 3\nF 4 4\nT 3 4\nT 5 2\nF 5 1\nT 6 1\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "8 15\nF 3 3\nF 2 8\nF 7 3\nT 6 7\nF 6 7\nT 1 7\nF 6 7\nT 4 1\nF 1 8\nF 8 1\nT 6 3\nF 2 7\nT 2 8\nF 7 2\nF 8 7\n",
+    "expectedOutput": "27\n"
+  },
+  {
+    "input": "3 12\nF 1 3\nT 2 1\nF 3 3\nF 3 3\nT 3 2\nF 1 3\nF 1 2\nF 3 3\nF 2 2\nT 3 2\nF 1 1\nF 2 1\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "2 14\nT 2 1\nF 2 1\nF 2 2\nT 1 1\nF 1 1\nF 2 2\nF 1 2\nT 2 2\nF 2 1\nF 1 1\nF 2 1\nF 2 2\nF 2 1\nT 2 1\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "6 8\nF 1 5\nF 1 4\nF 4 2\nF 3 2\nT 1 5\nF 1 3\nT 3 1\nT 1 4\n",
+    "expectedOutput": "30\n"
+  },
+  {
+    "input": "3 15\nF 3 1\nF 2 2\nF 2 3\nF 3 2\nF 2 2\nF 3 1\nF 2 2\nF 2 2\nF 2 1\nF 3 2\nF 3 1\nF 2 3\nF 1 1\nT 2 3\nT 1 3\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "1 5\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 9\nF 1 3\nF 4 6\nT 4 4\nF 5 6\nF 5 6\nF 1 2\nF 4 5\nF 4 2\nF 2 4\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "7 6\nF 7 6\nT 4 5\nF 7 3\nF 7 5\nF 3 5\nF 1 5\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "10 13\nT 5 7\nF 9 5\nF 3 1\nF 5 7\nT 2 8\nT 5 10\nF 4 8\nF 1 7\nF 4 5\nF 4 5\nF 6 5\nT 10 3\nF 9 4\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "5 16\nF 3 2\nT 2 4\nF 5 5\nF 5 1\nT 4 4\nF 1 3\nT 3 2\nF 3 4\nT 5 4\nT 3 3\nF 5 4\nT 1 5\nF 2 3\nF 2 1\nT 3 1\nF 3 5\n",
+    "expectedOutput": "53\n"
+  },
+  {
+    "input": "1 14\nT 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "4 4\nF 1 2\nF 3 4\nF 4 1\nT 3 1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "2 11\nF 1 2\nF 1 2\nF 1 2\nF 2 2\nF 2 1\nT 1 2\nF 2 2\nF 1 1\nF 2 2\nF 2 2\nF 2 2\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "1 14\nF 1 1\nT 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nT 1 1\nT 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "10 13\nF 8 9\nF 9 3\nF 4 8\nT 9 7\nT 7 9\nT 5 4\nT 6 2\nT 1 8\nT 4 4\nF 3 10\nT 10 9\nF 4 9\nF 9 6\n",
+    "expectedOutput": "40\n"
+  },
+  {
+    "input": "6 11\nT 2 6\nF 3 3\nT 1 3\nF 6 1\nF 2 4\nF 3 5\nT 2 3\nF 4 4\nF 1 2\nT 6 1\nF 3 2\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "7 15\nT 3 1\nF 2 2\nT 4 7\nF 4 7\nF 7 1\nF 4 4\nF 4 7\nT 3 5\nF 6 1\nF 5 5\nT 6 4\nT 1 5\nF 4 2\nT 1 1\nF 1 4\n",
+    "expectedOutput": "29\n"
+  },
+  {
+    "input": "6 4\nF 2 1\nT 5 5\nF 4 5\nT 2 5\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "1 7\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2 15\nT 1 2\nF 2 1\nF 1 2\nT 2 1\nF 2 2\nT 1 2\nF 2 2\nF 2 1\nT 1 2\nF 1 2\nF 1 2\nF 1 1\nF 1 2\nF 2 2\nF 2 1\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "5 7\nF 4 3\nF 5 2\nF 5 3\nF 3 5\nF 1 5\nF 1 5\nF 5 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 4\nF 2 2\nF 3 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 10\nT 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nT 1 1\nF 1 1\nT 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "10 2\nT 7 2\nF 3 8\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1 2\nF 1 1\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 17\nT 2 3\nF 4 3\nT 2 2\nF 4 4\nF 3 1\nF 4 3\nF 4 1\nF 3 3\nT 4 4\nF 4 3\nT 3 4\nT 1 4\nF 1 3\nF 2 4\nF 3 1\nF 3 2\nT 3 2\n",
+    "expectedOutput": "30\n"
+  },
+  {
+    "input": "7 3\nF 1 6\nF 1 7\nT 4 3\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1 7\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 14\nT 10 6\nT 5 2\nT 2 6\nF 10 1\nF 4 4\nT 3 9\nF 8 6\nF 8 2\nF 2 4\nF 8 7\nF 1 1\nF 8 9\nT 5 8\nF 3 8\n",
+    "expectedOutput": "15\n"
+  },
+  {
+    "input": "9 7\nF 6 6\nT 9 4\nF 5 4\nF 6 8\nT 6 4\nF 8 2\nF 7 5\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "8 5\nF 2 5\nF 7 2\nF 7 5\nF 7 8\nF 2 5\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 2\nF 5 1\nF 2 6\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 10\nT 4 6\nF 3 3\nF 7 4\nF 2 7\nT 6 4\nT 6 6\nF 2 4\nT 4 2\nF 2 3\nF 5 3\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "2 15\nF 1 1\nT 2 1\nF 1 2\nF 1 1\nT 2 2\nF 2 1\nF 1 2\nT 2 1\nT 2 2\nF 2 2\nF 2 1\nF 2 2\nF 1 1\nF 2 2\nF 2 2\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "10 10\nF 7 3\nF 9 6\nF 3 3\nF 10 4\nF 4 4\nF 9 3\nF 2 5\nT 4 6\nT 5 4\nF 5 3\n",
+    "expectedOutput": "10\n"
+  },
+  {
+    "input": "2 10\nF 1 1\nF 2 2\nF 2 2\nF 2 1\nF 1 2\nT 1 1\nF 2 2\nF 1 2\nF 2 1\nT 2 1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "4 17\nT 3 3\nF 4 1\nF 2 2\nF 3 3\nF 1 2\nF 2 1\nT 2 3\nT 2 1\nF 2 3\nF 3 2\nT 1 3\nT 1 3\nF 3 2\nF 3 4\nF 4 2\nF 4 2\nF 3 4\n",
+    "expectedOutput": "28\n"
+  },
+  {
+    "input": "2 9\nF 2 1\nF 1 2\nF 1 1\nF 2 1\nF 2 1\nF 2 2\nF 2 1\nF 1 1\nF 1 2\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 13\nF 5 4\nF 1 3\nF 4 4\nF 5 1\nT 3 1\nT 2 3\nF 3 5\nT 2 1\nT 5 3\nF 4 5\nF 1 2\nF 1 3\nF 4 5\n",
+    "expectedOutput": "26\n"
+  },
+  {
+    "input": "9 14\nF 1 5\nT 1 8\nF 7 5\nT 1 9\nF 6 1\nF 5 2\nF 3 2\nT 8 7\nF 3 7\nF 9 3\nF 9 2\nF 1 5\nT 5 4\nT 5 6\n",
+    "expectedOutput": "36\n"
+  },
+  {
+    "input": "9 12\nF 7 1\nT 9 6\nF 9 5\nF 2 3\nF 3 7\nF 8 5\nT 4 6\nF 1 1\nF 8 2\nT 7 8\nF 3 3\nF 8 2\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "8 1\nT 8 3\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1 1\nT 1 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8 4\nF 5 7\nT 1 8\nT 3 6\nF 6 1\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "1 14\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "9 9\nF 1 5\nF 9 8\nT 2 3\nF 2 4\nF 7 6\nF 5 6\nF 4 1\nT 3 3\nF 7 9\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6 8\nT 3 5\nF 5 6\nF 2 3\nF 2 2\nF 4 4\nF 4 3\nF 2 5\nF 6 5\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "7 12\nF 7 5\nT 5 2\nF 4 7\nT 1 4\nF 5 4\nF 4 3\nF 5 1\nT 6 1\nT 4 2\nT 1 3\nT 4 1\nT 5 7\n",
+    "expectedOutput": "49\n"
+  },
+  {
+    "input": "8 1\nF 2 7\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 18\nT 3 5\nF 7 8\nF 4 4\nF 8 2\nF 1 1\nF 9 1\nF 9 6\nF 7 8\nF 1 3\nT 3 6\nF 1 6\nF 5 4\nF 3 2\nF 9 6\nF 4 3\nT 1 3\nF 2 4\nF 7 2\n",
+    "expectedOutput": "28\n"
+  },
+  {
+    "input": "6 18\nF 4 5\nF 6 6\nF 3 6\nT 1 4\nF 2 5\nT 3 3\nF 2 5\nT 6 3\nT 2 4\nT 5 3\nF 5 5\nF 6 4\nT 3 5\nT 1 1\nF 5 6\nF 3 5\nF 6 3\nF 2 1\n",
+    "expectedOutput": "34\n"
+  },
+  {
+    "input": "8 5\nF 4 4\nF 4 2\nF 8 1\nT 5 7\nF 8 7\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "8 16\nT 8 1\nF 3 5\nT 5 6\nF 2 2\nF 1 1\nF 5 4\nT 1 4\nF 8 4\nF 6 7\nT 1 1\nF 2 1\nF 4 1\nF 4 7\nF 4 2\nF 1 3\nT 4 2\n",
+    "expectedOutput": "27\n"
+  },
+  {
+    "input": "4 7\nF 1 4\nT 3 2\nF 1 4\nT 3 4\nF 2 4\nT 3 3\nF 1 2\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "3 3\nF 2 1\nF 2 2\nF 3 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 11\nT 4 1\nF 4 5\nT 1 1\nF 3 3\nF 4 3\nF 4 1\nF 2 4\nF 2 1\nF 3 2\nF 1 5\nT 2 5\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "3 1\nF 1 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 17\nF 8 6\nF 6 8\nF 8 8\nF 4 3\nF 8 2\nF 7 1\nF 6 4\nT 7 5\nF 1 5\nF 7 1\nF 4 2\nF 8 6\nF 7 1\nT 2 6\nF 8 1\nF 4 4\nF 4 1\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "5 10\nF 3 1\nF 3 3\nF 3 5\nF 1 3\nF 3 1\nT 1 1\nF 3 2\nT 3 5\nF 5 5\nF 5 5\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "2 14\nT 1 1\nF 1 1\nF 2 1\nF 1 2\nF 1 1\nT 2 2\nT 1 1\nF 1 2\nT 2 1\nF 1 1\nF 1 2\nT 2 1\nF 1 1\nF 2 1\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "5 10\nT 3 3\nT 3 3\nT 2 3\nF 3 1\nT 5 2\nF 1 4\nF 4 2\nT 5 4\nF 4 1\nF 5 5\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "2 7\nT 1 1\nT 1 1\nF 2 2\nT 1 1\nF 2 2\nF 1 2\nF 2 1\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "5 10\nF 4 1\nF 5 1\nF 5 2\nF 5 4\nF 4 2\nF 4 5\nF 3 1\nT 3 5\nT 3 1\nF 4 2\n",
+    "expectedOutput": "20\n"
+  },
+  {
+    "input": "2 9\nF 2 2\nF 2 2\nT 1 1\nF 2 2\nF 2 2\nF 2 1\nF 1 2\nT 2 2\nF 2 2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "5 13\nT 4 5\nF 4 5\nF 5 5\nF 4 1\nF 2 1\nT 5 1\nF 3 2\nT 2 3\nF 4 5\nF 5 5\nF 3 2\nF 5 1\nT 5 5\n",
+    "expectedOutput": "30\n"
+  },
+  {
+    "input": "3 8\nF 1 1\nF 2 1\nF 3 1\nF 1 2\nF 3 2\nF 2 3\nF 1 2\nF 2 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 16\nT 3 6\nF 5 6\nF 5 5\nF 3 3\nT 1 5\nF 6 2\nF 4 4\nF 6 2\nF 1 4\nF 5 1\nF 1 1\nF 3 6\nF 6 1\nF 6 6\nF 3 5\nT 6 5\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "9 13\nT 4 9\nT 5 2\nT 8 1\nF 7 4\nF 8 5\nT 5 8\nF 8 3\nF 1 5\nF 6 3\nF 7 1\nF 1 3\nT 3 1\nF 2 6\n",
+    "expectedOutput": "24\n"
+  },
+  {
+    "input": "10 16\nF 5 7\nF 3 9\nF 6 2\nF 2 10\nF 1 1\nF 5 9\nF 10 9\nT 5 6\nF 9 7\nF 7 3\nF 2 7\nF 2 3\nT 9 6\nF 10 3\nF 2 5\nF 1 8\n",
+    "expectedOutput": "28\n"
+  },
+  {
+    "input": "2 13\nF 1 1\nF 2 1\nT 2 1\nF 1 2\nF 2 2\nT 1 2\nF 1 1\nF 1 2\nF 2 2\nT 1 2\nF 1 1\nF 1 2\nF 1 1\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "3 7\nT 1 2\nT 1 1\nF 1 2\nT 2 1\nF 1 3\nF 1 1\nF 3 2\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "7 3\nF 1 1\nF 7 7\nF 2 6\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 6\nF 2 8\nT 2 7\nT 3 2\nF 8 2\nT 1 4\nF 4 7\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "5 2\nF 2 1\nT 4 4\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2 13\nT 2 1\nF 2 1\nF 1 1\nF 1 1\nT 1 2\nT 1 1\nF 2 2\nT 1 1\nF 1 2\nF 1 2\nT 1 2\nF 1 1\nF 2 2\n",
+    "expectedOutput": "18\n"
+  },
+  {
+    "input": "10 8\nT 4 6\nF 3 9\nT 2 2\nF 4 4\nT 1 3\nF 10 7\nF 4 9\nT 7 9\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "2 7\nT 2 2\nF 2 2\nF 2 2\nF 2 2\nF 2 1\nF 2 2\nF 1 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "2 3\nF 2 2\nF 2 2\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 9\nT 2 2\nF 2 2\nF 3 4\nF 3 3\nT 1 3\nF 2 3\nT 1 4\nT 4 1\nT 3 1\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "1 3\nT 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "5 15\nF 2 5\nT 5 3\nF 4 5\nF 1 4\nF 3 5\nF 5 3\nF 1 1\nF 3 1\nF 3 4\nF 3 4\nF 5 1\nF 2 5\nT 1 1\nF 3 5\nF 1 3\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "3 5\nF 3 3\nF 2 3\nF 1 2\nF 1 3\nT 1 2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "7 13\nF 4 4\nF 7 4\nF 7 1\nF 7 3\nT 1 3\nF 3 4\nF 7 1\nT 6 1\nF 4 5\nF 7 7\nF 3 2\nF 7 4\nF 1 1\n",
+    "expectedOutput": "13\n"
+  },
+  {
+    "input": "6 5\nT 5 4\nF 3 5\nT 1 1\nT 6 4\nF 6 2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "7 5\nT 6 1\nF 1 5\nF 6 1\nT 7 6\nF 7 2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "4 2\nF 1 2\nT 3 4\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "7 13\nT 1 1\nF 7 5\nF 4 5\nF 6 4\nT 2 7\nF 4 6\nF 2 2\nF 5 1\nF 3 7\nT 3 7\nT 5 3\nF 5 7\nT 3 5\n",
+    "expectedOutput": "43\n"
+  },
+  {
+    "input": "4 9\nT 1 1\nF 2 2\nF 1 3\nT 1 4\nF 2 4\nF 3 2\nF 2 3\nF 3 3\nF 1 1\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "2 6\nF 1 2\nT 2 1\nF 2 2\nF 2 2\nF 1 2\nT 1 1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "2 17\nF 2 2\nF 2 1\nT 1 1\nF 1 2\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nF 2 1\nF 2 2\nT 1 2\nF 2 1\nF 2 1\nF 1 1\nF 2 1\nF 2 2\nF 1 2\n",
+    "expectedOutput": "16\n"
+  },
+  {
+    "input": "1 3\nF 1 1\nF 1 1\nF 1 1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 17\nF 7 2\nF 8 1\nF 8 7\nF 7 8\nF 6 8\nT 5 1\nT 7 8\nF 6 8\nF 8 1\nF 3 3\nF 8 7\nF 7 7\nF 4 6\nF 3 2\nT 4 6\nF 4 7\nF 8 6\n",
+    "expectedOutput": "30\n"
+  },
+  {
+    "input": "1 6\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\nT 1 1\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "5 16\nT 5 4\nT 3 3\nT 5 3\nT 4 4\nT 2 5\nF 2 5\nF 2 3\nF 2 3\nF 5 3\nF 3 1\nT 2 4\nF 2 5\nT 1 4\nF 3 4\nF 1 1\nF 2 4\n",
+    "expectedOutput": "20\n"
+  },
+  {
+    "input": "10 17\nF 8 5\nF 3 8\nF 9 7\nF 8 1\nF 8 10\nF 4 7\nF 5 10\nF 6 7\nF 5 10\nF 3 5\nF 2 10\nT 4 4\nF 5 4\nT 1 3\nT 10 8\nF 8 9\nT 9 6\n",
+    "expectedOutput": "68\n"
+  },
+  {
+    "input": "7 10\nF 1 1\nF 7 6\nT 6 7\nF 1 3\nT 7 1\nT 4 4\nF 6 7\nF 3 7\nT 4 2\nF 4 4\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "1 9\nT 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "8 9\nT 5 2\nF 4 4\nF 7 4\nF 1 5\nF 5 5\nF 5 2\nF 4 3\nF 2 4\nF 4 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "10 1\nF 1 10\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 18\nF 1 1\nT 3 4\nT 5 4\nF 3 2\nF 3 5\nT 2 4\nF 6 6\nF 4 1\nF 5 6\nF 1 4\nF 1 6\nF 5 5\nF 1 3\nF 6 5\nT 5 6\nF 5 1\nT 1 3\nF 3 1\n",
+    "expectedOutput": "32\n"
+  },
+  {
+    "input": "3 17\nF 2 3\nF 2 1\nF 1 3\nF 3 1\nF 1 2\nT 2 3\nF 1 1\nF 3 2\nF 1 1\nF 1 3\nF 2 3\nT 3 1\nF 3 1\nF 1 1\nF 1 2\nF 3 3\nF 1 3\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "3 6\nF 1 3\nF 2 1\nF 3 3\nT 1 1\nF 1 1\nF 3 2\n",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "4 17\nF 1 2\nF 2 1\nT 2 3\nF 2 4\nF 2 4\nF 4 2\nF 4 2\nF 2 2\nT 3 2\nT 1 2\nT 1 3\nF 3 4\nT 4 2\nF 4 3\nT 4 3\nF 1 1\nT 1 3\n",
+    "expectedOutput": "41\n"
+  },
+  {
+    "input": "8 10\nF 5 1\nF 3 6\nF 2 1\nF 6 1\nT 8 4\nF 6 7\nT 6 5\nT 3 3\nF 6 2\nF 7 5\n",
+    "expectedOutput": "26\n"
+  },
+  {
+    "input": "4 6\nF 4 2\nF 2 2\nF 2 4\nF 1 3\nF 3 4\nT 2 3\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "5 4\nF 1 5\nF 4 3\nF 3 2\nF 5 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 1\nF 6 3\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 11\nT 4 6\nF 3 7\nF 3 7\nF 2 1\nT 7 1\nF 7 6\nF 3 3\nT 5 1\nF 1 7\nF 7 6\nF 2 4\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "5 14\nF 5 3\nF 2 1\nT 4 4\nF 3 4\nF 3 3\nF 4 3\nF 5 4\nF 5 2\nT 4 1\nF 4 3\nT 2 1\nF 4 1\nF 1 3\nF 3 4\n",
+    "expectedOutput": "22\n"
+  },
+  {
+    "input": "3 15\nF 3 1\nF 3 3\nF 2 2\nF 1 3\nF 1 1\nT 2 3\nT 2 3\nF 2 1\nF 1 3\nT 1 2\nF 1 3\nT 3 2\nT 3 3\nF 1 3\nF 1 3\n",
+    "expectedOutput": "24\n"
+  },
+  {
+    "input": "2 4\nF 1 2\nF 2 2\nF 2 1\nT 1 1\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "7 7\nF 4 7\nT 1 2\nT 1 4\nF 3 7\nF 1 6\nF 2 1\nF 3 4\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "1 4\nF 1 1\nF 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "5 7\nT 2 1\nF 2 3\nF 2 2\nF 3 4\nT 3 4\nT 1 3\nF 1 4\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "5 16\nF 5 3\nT 3 3\nF 5 3\nF 4 2\nF 5 2\nF 2 3\nT 1 4\nF 2 4\nF 1 1\nF 5 4\nF 4 2\nF 4 1\nF 1 1\nF 5 5\nF 2 5\nF 3 5\n",
+    "expectedOutput": "9\n"
+  },
+  {
+    "input": "5 14\nF 5 4\nF 1 5\nF 3 5\nF 3 1\nT 4 2\nF 2 2\nF 3 5\nF 3 3\nF 4 3\nF 2 2\nF 5 4\nF 2 2\nF 1 2\nF 2 2\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "1 16\nT 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\nT 1 1\nF 1 1\nF 1 1\nF 1 1\nF 1 1\nT 1 1\nT 1 1\nF 1 1\nT 1 1\nF 1 1\n",
+    "expectedOutput": "12\n"
+  },
+  {
+    "input": "10 13\nF 9 4\nF 5 6\nT 10 4\nF 4 10\nF 9 3\nT 8 8\nT 2 9\nF 3 4\nT 8 1\nF 4 7\nT 8 2\nF 3 4\nF 4 7\n",
+    "expectedOutput": "14\n"
+  },
+  {
+    "input": "10 13\nF 9 5\nT 8 8\nF 8 7\nT 6 5\nF 2 6\nF 5 4\nF 1 2\nF 3 3\nF 7 8\nF 8 1\nT 5 5\nF 3 5\nF 7 5\n",
+    "expectedOutput": "11\n"
+  }
+]

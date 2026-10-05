@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-doordash-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Closest DashMart",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "DoorDash",
+      "图",
+      "BFS"
+    ],
+    "description": "网格字符：空格为道路、X 为墙、D 为仓库。只能上下左右移动，查询到最近仓库的最短距离；墙格、越界或不可达查询返回 -1。\n\n语义依照 OAMaster 原题。输入协议及‘本站补充’的限制由本站整理，不表示原题提供这些限制。",
+    "input": "R C Q，R 行字符网格，Q 个 0-based 坐标。本站补充 R,C≤1000、RC≤200000、Q≤200000。",
+    "output": "输出 Q 个距离。",
+    "explanation": "思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "先厘清边界、操作和计数规则，再选适合的数据结构或状态转移。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3 3 5\nD  \n XX\n   \n0 0\n0 2\n2 0\n1 1\n9 0\n",
+      "expectedOutput": "0 2 2 -1 -1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1 3 3\nXDX\n0 0\n0 1\n0 2\n",
+      "expectedOutput": "-1 0 -1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2 1 2\nD\nX\n0 0\n1 0\n",
+      "expectedOutput": "0 -1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "2 3 9\nX D\n X \n-1 -1\n2 -1\n0 -1\n0 0\n-1 1\n0 1\n2 0\n-1 3\n1 1\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "6 5 6\n XXDX\n     \n   X \n    X\n   XX\n     \n4 4\n2 2\n6 0\n3 2\n5 -1\n5 5\n",
+      "expectedOutput": "-1 3 -1 4 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "1 1 8\nD\n-1 1\n-1 -1\n0 0\n-1 1\n0 0\n-1 -1\n-1 -1\n1 -1\n",
+      "expectedOutput": "-1 -1 0 -1 0 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "6 2 4\n  \n  \n  \n X\nXD\nX \n0 -1\n5 0\n3 2\n5 0\n",
+      "expectedOutput": "-1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "6 2 10\n X\n  \n X\nD \n  \n  \n3 -1\n6 -1\n-1 0\n2 1\n5 2\n3 1\n6 2\n4 0\n3 2\n0 0\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 1 -1 1 -1 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "6 3 4\n  X\n  X\nXX \n DX\nX  \n  X\n4 0\n6 2\n3 2\n2 -1\n",
+      "expectedOutput": "-1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "2 1 9\nD\n \n0 0\n-1 -1\n0 0\n2 0\n0 -1\n2 1\n2 -1\n1 -1\n-1 -1\n",
+      "expectedOutput": "0 -1 0 -1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "4 2 10\n X\n  \nX \nD \n2 2\n4 2\n0 1\n2 2\n3 0\n2 2\n4 2\n2 1\n4 2\n3 0\n",
+      "expectedOutput": "-1 -1 -1 -1 0 -1 -1 2 -1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "6 1 8\n \nD\n \n \n \n \n5 0\n5 -1\n0 1\n5 1\n1 0\n2 1\n0 1\n3 1\n",
+      "expectedOutput": "4 -1 -1 -1 0 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "1 1 8\nD\n1 1\n1 -1\n1 1\n-1 0\n0 1\n1 -1\n0 -1\n0 0\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 -1 -1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "2 2 6\n D\n  \n-1 2\n-1 1\n1 1\n-1 -1\n0 1\n2 0\n",
+      "expectedOutput": "-1 -1 1 -1 0 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "5 3 10\n   \n   \n X \n DX\n X \n0 -1\n3 1\n2 0\n1 3\n4 3\n-1 -1\n2 1\n5 2\n-1 3\n-1 3\n",
+      "expectedOutput": "-1 0 2 -1 -1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "2 1 3\nD\n \n0 0\n-1 -1\n1 -1\n",
+      "expectedOutput": "0 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "1 2 8\n D\n-1 0\n-1 -1\n0 2\n0 0\n-1 0\n0 -1\n-1 2\n1 1\n",
+      "expectedOutput": "-1 -1 -1 1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "3 5 6\n  XD \n     \n  X X\n3 2\n-1 0\n0 -1\n3 1\n3 -1\n2 4\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "4 4 1\nD   \n    \n    \nX  X\n3 -1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "5 2 7\n  \n X\n  \nX \nD \n5 2\n0 0\n0 2\n-1 1\n3 1\n0 -1\n1 2\n",
+      "expectedOutput": "-1 6 -1 -1 2 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "2 6 4\n      \n  DX  \n1 2\n1 0\n2 0\n2 0\n",
+      "expectedOutput": "0 2 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "3 5 8\nX X X\n XX D\n X   \n1 2\n1 0\n0 3\n1 1\n0 1\n1 5\n1 1\n2 4\n",
+      "expectedOutput": "-1 -1 2 -1 -1 -1 -1 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "1 4 7\nX  D\n0 -1\n1 2\n-1 0\n1 1\n1 -1\n0 4\n0 4\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "2 6 8\nX   XX\n DX XX\n2 0\n2 5\n1 4\n1 1\n2 5\n2 0\n0 0\n2 4\n",
+      "expectedOutput": "-1 -1 -1 0 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "5 4 9\n   X\n D  \nXXX \nX   \n    \n0 3\n5 -1\n4 3\n5 0\n3 3\n4 3\n4 0\n-1 4\n4 4\n",
+      "expectedOutput": "-1 -1 5 -1 4 5 8 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "5 3 9\n   \n  X\nDXX\n   \nX  \n3 -1\n-1 2\n2 1\n4 -1\n0 2\n0 -1\n0 2\n2 2\n2 -1\n",
+      "expectedOutput": "-1 -1 -1 -1 4 -1 4 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "4 5 3\n    X\n  X X\n   XX\nXDX  \n2 3\n4 3\n2 -1\n",
+      "expectedOutput": "-1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "5 6 8\n X  X \n   XX \n   XX \n     X\n X  XD\n5 5\n4 -1\n-1 2\n2 2\n4 -1\n1 4\n1 4\n3 5\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "5 4 2\nXX  \nX   \n XD \n    \nX X \n4 0\n4 0\n",
+      "expectedOutput": "-1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "5 5 1\n   X \nXD  X\n     \nX  X \n  X  \n3 -1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 28",
+      "input": "2 4 6\nDXX \n    \n0 4\n1 3\n-1 -1\n2 0\n-1 0\n1 2\n",
+      "expectedOutput": "-1 4 -1 -1 -1 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 29",
+      "input": "3 2 6\nX \n D\n  \n-1 2\n1 -1\n2 0\n0 0\n-1 1\n0 2\n",
+      "expectedOutput": "-1 -1 2 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 30",
+      "input": "1 5 5\nD X  \n-1 -1\n0 4\n1 3\n1 0\n-1 4\n",
+      "expectedOutput": "-1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-instacart-1",
+  "title": "Balloon Color Pairs",
+  "explanation": "## 思路\n\n维护数组和相邻同色对数。更新前撤销该位置与左右邻居的旧贡献，换色后再添加新贡献。\n\n## 正确性\n\n更新只可能改变与该位置相邻的两条边；移除旧贡献、加入新贡献后，其余边不变，因此计数保持正确。\n\n## 复杂度\n\nO(q) 时间，O(length) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=[0]*n;p=0;out=[]\n for j in range(q):\n  i,c=z[2+2*j:4+2*j]\n  if a[i]:\n   if i and a[i-1]==a[i]:p-=1\n   if i+1<n and a[i+1]==a[i]:p-=1\n  a[i]=c\n  if i and a[i-1]==c:p+=1\n  if i+1<n and a[i+1]==c:p+=1\n  out.append(p)\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/instacart#1-balloon-color-pairs",
+  "sourceContentHash": "1e64ed14c085a6dbd0ec8311825d8ffec7fabbe419accbddccffa15f2505222a",
+  "author": "CSWork"
+}

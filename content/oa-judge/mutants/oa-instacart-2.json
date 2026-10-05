@@ -1,0 +1,10 @@
+[
+  {
+    "name": "start-left",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,b=z[:2];a=z[2:];total=0;d=-1;out=[]\n while total<100:\n  i=b+d\n  while a[i]==0:i+=d\n  out.append(i);total+=a[i];a[i]=0;d=-d\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "stop-too-early",
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,b=z[:2];a=z[2:];total=0;d=1;out=[]\n while total<50:\n  i=b+d\n  while a[i]==0:i+=d\n  out.append(i);total+=a[i];a[i]=0;d=-d\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

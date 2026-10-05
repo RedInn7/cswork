@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-doordash-1",
+  "title": "Adjust Prices",
+  "explanation": "## 思路\n\n倒序扫描操作，维护后续全局抬价的最大下限；每件商品只需记录最后一次正向单点赋值及其后的抬价。\n\n## 正确性\n\n反向遇到的首个单点赋值就是该位置最后一次正向赋值，其后全局操作影响其最终值；若从未被赋值，则初始价经历所有全局下限。两种情形由数组记录与初值分别精确计算。\n\n## 复杂度\n\nO(n+q) 时间与空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=z[2:2+n];ops=[z[2+n+3*i:5+n+3*i] for i in range(q)];floor=0;last=[None]*n\n for t,x,v in reversed(ops):\n  if t==2:floor=max(floor,x)\n  elif last[x-1] is None:last[x-1]=max(v,floor)\n return \" \".join(str(max(a[i],floor) if last[i] is None else last[i]) for i in range(n))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/doordash#1-adjust-prices",
+  "sourceContentHash": "69dfbaed19228d3ad6cd926555aaf964bddd47f2d0289ed38edd9527bce4a4c2",
+  "author": "CSWork"
+}
