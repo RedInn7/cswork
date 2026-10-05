@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-paycom-6",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Java try / catch / finally — Console Trace",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Paycom",
+      "模拟",
+      "异常处理"
+    ],
+    "description": "给定原题 divide(a,b) 代码的整数输入。除法异常时 catch 打印 `Exception `；finally 始终打印 `Finally `。返回值不会被打印。本站补充：为了标准输出可判，将 System.err 上按时间顺序产生的文本合并为一条控制台轨迹。\n\n输入协议和泛化范围是本站补充；不代表原题以 stdin/stdout 呈现。",
+    "input": "一行两个有符号 32 位整数 a、b。",
+    "output": "按原代码执行顺序输出控制台文本；b=0 时为 `Exception Finally`，否则为 `Finally`。",
+    "explanation": "思路、正确性和复杂度见配套题解。",
+    "hints": [
+      "逐步追踪状态变化；特别注意循环条件的自增时机及 finally 的执行顺序。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "4 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "4 2\n",
+      "expectedOutput": "Finally\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "-2147483648 -1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 1",
+      "input": "28935 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 2",
+      "input": "29958 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 3",
+      "input": "-26880 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 4",
+      "input": "-89513 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 5",
+      "input": "25812 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 6",
+      "input": "80728 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 7",
+      "input": "84915 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 8",
+      "input": "-43070 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 9",
+      "input": "23751 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 10",
+      "input": "-99048 -10\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 11",
+      "input": "-36545 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 12",
+      "input": "-48891 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 13",
+      "input": "86691 7\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 14",
+      "input": "59903 -1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 15",
+      "input": "-95761 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 16",
+      "input": "-32505 2\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 17",
+      "input": "81594 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 18",
+      "input": "92238 -10\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 19",
+      "input": "-20196 -10\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 20",
+      "input": "-6602 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 21",
+      "input": "80394 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 22",
+      "input": "80676 7\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 23",
+      "input": "-82018 7\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 24",
+      "input": "-10345 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "32位整数与异常分支边界 1",
+      "input": "-2147483648 0\n",
+      "expectedOutput": "Exception Finally\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "32位整数与异常分支边界 2",
+      "input": "2147483647 1\n",
+      "expectedOutput": "Finally\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

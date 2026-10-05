@@ -1,0 +1,10 @@
+[
+  {
+    "name": "continue 条件多跳过了阈值本身",
+    "code": "import sys\ndef solve(raw):\n n,a,b=map(int,raw.split()); s=0; out=[]\n cut=min(a,b)\n while s<n:\n  s+=1\n  if s<=cut: continue\n  out.append(str(s))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只按较大的阈值判断",
+    "code": "import sys\ndef solve(raw):\n n,a,b=map(int,raw.split()); s=0; out=[]\n cut=max(a,b)\n while s<n:\n  s+=1\n  if s<cut: continue\n  out.append(str(s))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
