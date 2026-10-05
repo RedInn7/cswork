@@ -59,6 +59,8 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 
 `python3 scripts/oa-judge/batches/roblox_next.py` 生成 Roblox #2、#3、#5、#9、#10、#12、#13 的离线候选 `roblox-next`，每题附独立 oracle、两个正常退出 mutant 和明确的本站输入/边界约定。原始题源路径与 Git blob 记录在 `source-evidence/roblox-next.json`；#1、#4、#6、#7、#8、#11、#14、#15、#16 因源题矛盾或信息缺失保持 blocked。候选不得加入正式 registry，也未做 GoJudge 验证。
 
+`python3 scripts/oa-judge/batches/paycom_next.py` 只将 Paycom #2、#4、#6、#15 的原始代码追踪题参数化为可编程 I/O 候选 `paycom-next`，并记录全部 20 个原始题源 blob。其余固定概念选择题未伪装成代码题；#7 的 DELETE 成功码依赖服务端语义，#20 未指明声明/定义所属语言，均明确 blocked。候选未进入正式 registry，也未做 GoJudge 验证。
+
 沙箱验证支持 `tokens` 和 `exact`，语义必须与生产一致；不允许把异常退出的错误程序算作有效反例。元数据、代码、输入输出或对照文件变更后，必须重新生成并验证相应批次报告，不能手工改报告指纹。
 
 发布前执行 `node scripts/oa-judge/coverage.mjs`，统计表同时校验真实文件哈希、通过数量、独立输入数量与全部错误程序名称。`sandbox_verified` 只表示报告有效，是否线上可提交仍由已发布数据库版本与 registry 校验值共同决定。
