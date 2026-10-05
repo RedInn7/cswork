@@ -57,7 +57,7 @@ def opeak(a):
 def rarr(r): return [r.randint(-20,30) for _ in range(r.randint(1,30))]
 
 def emat(rows):
-    return f"{len(rows)} {len(rows[0])}\n"+"\n".join(" ".join(map(str,row)) for row in rows)+"\n"
+    return f"{len(rows[0])//4}\n"+"\n".join(" ".join(map(str,row)) for row in rows)+"\n"
 def make_blocks(miss,holes):
     n=len(miss); rows=[[0]*(4*n) for _ in range(4)]
     for b,(v,hole) in enumerate(zip(miss,holes)):
@@ -145,7 +145,7 @@ def solve(s):
 """,[("allow-equal-peak","x>a[i-1] and x>a[i+1]","x>=a[i-1] and x>=a[i+1]"),("one-round-only","while True:","if True:")],"每轮根据旧数组标记首尾及严格局部峰并同时保留；若结果未变即稳定，否则对新数组重复。","某轮中每个元素是否保留只由该轮原数组的邻居决定，故扫描得到的列表正是下一轮数组。循环直到不变，满足定义的固定点，且每个变化轮至少删去一个元素，必终止。","每轮 O(n)，内部严格局部峰不能相邻，因此非平凡一轮后数组长度至多约减半，轮数 O(log n)；总时间 O(n log n)，空间 O(n)。",["数组","模拟"]),
 spec("oa-visa-14","Arrange Squares by Missing Values","给定 4×4n 网格，划分为 n 个并排 4×4 方块。每块包含 1..16 中除一个值外的其余值，缺失格标 -1。用 136 减去其余 15 格之和求缺失值，再把完整方块按缺失值升序从左到右排列。若缺失值相同，本站补充按原先从左到右顺序稳定排列。","第一行 n（1≤n≤10000，本站补充），随后 4 行各 4n 个数。每个 4×4 块必须恰含 -1 和 1..16 中其余 15 个不同值。","输出重排后的 4 行网格。",eblocks,oblocks,rblocks,[make_blocks([12,7],[0,15]),make_blocks([4],[5]),make_blocks([7,7,3],[2,8,14])],"""import sys
 def solve(s):
- t=list(map(int,s.split())); rows,cols=t[:2]; raw=t[2:]; mat=[raw[r*cols:(r+1)*cols] for r in range(4)]; n=cols//4; blocks=[]
+ t=list(map(int,s.split())); n=t[0]; cols=4*n; raw=t[1:]; mat=[raw[r*cols:(r+1)*cols] for r in range(4)]; blocks=[]
  for b in range(n):
   flat=[mat[r][4*b+c] for r in range(4) for c in range(4)]; miss=136-sum(x for x in flat if x!=-1)
   full=[miss if x==-1 else x for x in flat]; blocks.append((miss,b,full))
@@ -216,7 +216,7 @@ def main():
             mutant_docs.append({"name":name,"code":mutant}); kill.append({"name":name,"rejectedByCases":rejects})
         problem={"id":pid,"courseId":"gomall","lessonId":"00-overview","title":s["title"],"difficulty":"简单" if pid=="oa-visa-1" else "中等",
           "tags":["OA","Visa"]+s["tags"],"description":s["desc"]+"\n\n规则依据 OAMaster 原题；输入输出协议与标为‘本站补充’的边界由本站整理。",
-          "input":s["inp"],"output":s["out"],"explanation":"详见配套题解。","hints":["逐条对照题目定义，注意同步更新和边界语义。"],
+          "input":s["inp"]+("\n\n本站补充范围：用户 ID 为 id 加 1..10^9 的十进制整数，timestamp 为 0..10^9；" if pid=="oa-visa-3" else ""),"output":s["out"],"explanation":"详见配套题解。","hints":["逐条对照题目定义，注意同步更新和边界语义。"],
           "timeLimit":3,"memoryLimit":262144,"outputLimit":4096,"checker":"exact","languages":["python","go","java","cpp"]}
         raw={"schemaVersion":1,"problem":problem,"cases":cases}
         cmd="const {ojImportSchema}=require('./lib/oj-types.ts');let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',c=>s+=c);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(ojImportSchema.parse(JSON.parse(s)))));"

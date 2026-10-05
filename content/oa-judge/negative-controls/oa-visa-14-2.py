@@ -1,6 +1,6 @@
 import sys
 def solve(s):
- t=list(map(int,s.split())); rows,cols=t[:2]; raw=t[2:]; mat=[raw[r*cols:(r+1)*cols] for r in range(4)]; n=cols//4; blocks=[]
+ t=list(map(int,s.split())); n=t[0]; cols=4*n; raw=t[1:]; mat=[raw[r*cols:(r+1)*cols] for r in range(4)]; blocks=[]
  for b in range(n):
   flat=[mat[r][4*b+c] for r in range(4) for c in range(4)]; miss=136-sum(x for x in flat if x!=-1)
   full=[miss if x==-1 else x for x in flat]; blocks.append((miss,b,full))
