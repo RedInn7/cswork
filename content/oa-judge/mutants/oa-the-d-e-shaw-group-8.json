@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把相等值误当成阻挡边界",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=[-1]*n; st=[]\n    for i,x in enumerate(a):\n        while st and a[st[-1]]<x: st.pop()\n        left[i]=st[-1] if st else -1; st.append(i)\n    right=[n]*n; st=[]\n    for i in range(n-1,-1,-1):\n        while st and a[st[-1]]<=a[i]: st.pop()\n        right[i]=st[-1] if st else n; st.append(i)\n    return str(sum(right[i]-left[i]-1 for i in range(n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只统计每个区间的单个位置",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=[-1]*n; st=[]\n    for i,x in enumerate(a):\n        while st and a[st[-1]]<=x: st.pop()\n        left[i]=st[-1] if st else -1; st.append(i)\n    right=[n]*n; st=[]\n    for i in range(n-1,-1,-1):\n        while st and a[st[-1]]<=a[i]: st.pop()\n        right[i]=st[-1] if st else n; st.append(i)\n    return str(sum(1 for i in range(n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

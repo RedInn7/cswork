@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略负数的绝对值",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,target=v[:2]; a=v[2:2+n]\n    if target<0 or target%2: return '0'\n    radius=target//2\n    le=sum(x<=radius for x in a)\n    lt=sum(abs(x)<radius for x in a)\n    return str(le*(le-1)//2-lt*(lt-1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把小于半径的数对也算入答案",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,target=v[:2]; a=v[2:2+n]\n    if target<0 or target%2: return '0'\n    radius=target//2\n    le=sum(abs(x)<=radius for x in a)\n    lt=sum(abs(x)<radius for x in a)\n    return str(le*(le-1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

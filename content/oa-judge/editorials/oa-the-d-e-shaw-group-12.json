@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-12",
+  "title": "树上收集点数最大化",
+  "explanation": "## 思路\n\n树形动态规划。设 dp[u][s] 为节点 u 及其子树在进入时所有值已被整除 2 共 s 次时的最大得分。选择扣 K 时子节点沿用 s；选择减半时节点得 floor(A[u]/2^(s+1))，子节点状态变为 s+1。超过 30 次减半后所有值归零。\n\n## 正确性证明\n\n任一合法方案在节点 u 处恰有两种选择。扣 K 不改变未处理子树值，因此所有子节点状态仍为 s；减半会将 u 的每个后代值都变为原值再右移一位，故所有子节点状态统一变为 s+1。子树之间没有边连接，固定 u 的选择后各子树可以独立取最优值，因此两种候选收益之最大值就是 dp[u][s]。自底向上计算覆盖所有方案。\n\n## 复杂度\n\n时间 O(31n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from array import array\n    v=list(map(int,raw.split())); n=v[0]; k=v[1]; a=v[2:2+n]; adj=[[] for _ in range(n)]; p=2+n\n    for _ in range(n-1):\n        u,w=v[p:p+2]; p+=2; adj[u].append(w); adj[w].append(u)\n    # Each DFS frame accumulates the children's values for every inherited halving count.\n    stack=[[0,-1,0,array('q',[0])*31]]\n    while stack:\n        frame=stack[-1]; u,parent,index,child_sum=frame\n        if index<len(adj[u]):\n            w=adj[u][index]; frame[2]+=1\n            if w!=parent: stack.append([w,u,0,array('q',[0])*31])\n            continue\n        dp=array('q',[0])*31\n        for shift in range(30,-1,-1):\n            dp[shift]=max((a[u]>>shift)-k+child_sum[shift], (a[u]>>(shift+1))+child_sum[min(shift+1,30)])\n        stack.pop()\n        if stack:\n            parent_sum=stack[-1][3]\n            for shift in range(31): parent_sum[shift]+=dp[shift]\n        else:\n            return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#12-tree-points",
+  "sourceContentHash": "a13d6aedf7d9eb3451fce96cb5aa89bab016c65a91716bfab06ba7f2a23b3200",
+  "author": "CSWork"
+}

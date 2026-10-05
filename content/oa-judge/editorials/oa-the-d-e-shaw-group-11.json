@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-11",
+  "title": "数组的非降与非升拆分方案数",
+  "explanation": "## 思路\n\n给定前一项 b[i−1] 后，下一项 x=b[i] 必须至少为 b[i−1]+max(0,arr[i]−arr[i−1])，同时 x≤arr[i]。维护每个末值的方案数及其前缀和即可 O(n·max(arr)) 转移。\n\n## 正确性证明\n\n由 c[i]=arr[i]−b[i]，条件 b[i]≥b[i−1] 且 c[i]≤c[i−1] 合并为 b[i]−b[i−1]≥max(0,arr[i]−arr[i−1])。因此对于当前末值 x，所有合法前态恰为不超过 x−need 的末值。前缀和准确汇总这些互斥前态，转移得到以 x 结尾的所有方案；求和即覆盖所有可能的 b，而 c 被 b 唯一确定。\n\n## 复杂度\n\n时间 O(n·M)，空间 O(M)，M=max(arr[i])≤3000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    MOD=1000000007\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    dp=[1]*(a[0]+1)\n    for i in range(1,n):\n        need=max(0,a[i]-a[i-1]); pref=[0]*len(dp); running=0\n        for j,x in enumerate(dp): running=(running+x)%MOD; pref[j]=running\n        nxt=[0]*(a[i]+1)\n        for b in range(a[i]+1):\n            prev=b-need\n            if prev>=0: nxt[b]=pref[min(prev,len(dp)-1)]\n        dp=nxt\n    return str(sum(dp)%MOD)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#11-array-break",
+  "sourceContentHash": "44b579d957776ec864bed2ef71f441ee3d1052c4246d6488a771c1a595857699",
+  "author": "CSWork"
+}

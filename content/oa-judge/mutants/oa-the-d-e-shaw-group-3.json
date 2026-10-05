@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把严格递增误作非递减",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=0\n    while left+1<n and a[left]<=a[left+1]: left+=1\n    if left==n-1: return str(n*(n+1)//2)\n    right=n-1\n    while right>0 and a[right-1]<a[right]: right-=1\n    ans=0; j=right\n    for i in range(left+2):\n        j=max(j,i+1)\n        if i:\n            while j<n and a[j]<=a[i-1]: j+=1\n        ans+=n-j+1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误排除删除整个数组",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=0\n    while left+1<n and a[left]<a[left+1]: left+=1\n    if left==n-1: return str(n*(n+1)//2)\n    right=n-1\n    while right>0 and a[right-1]<a[right]: right-=1\n    ans=0; j=right\n    for i in range(left+2):\n        j=max(j,i+1)\n        if i:\n            while j<n and a[j]<=a[i-1]: j+=1\n        ans+=n-j\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -61,6 +61,8 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 
 `python3 scripts/oa-judge/batches/paycom_next.py` 只将 Paycom #2、#4、#6、#15 的原始代码追踪题参数化为可编程 I/O 候选 `paycom-next`，并记录全部 20 个原始题源 blob。其余固定概念选择题未伪装成代码题；#7 的 DELETE 成功码依赖服务端语义，#20 未指明声明/定义所属语言，均明确 blocked。候选未进入正式 registry，也未做 GoJudge 验证。
 
+`python3 scripts/oa-judge/batches/deshaw_next.py` 生成 The D. E. Shaw Group 候选批次 `deshaw-next`：收录 #3、#5、#6、#8、#10、#11、#12。每题有 163 组独立 oracle、边界样例和两个正常退出错误程序；固定原始快照路径、Git blob、catalog 指纹及逐题审查见 `source-evidence/deshaw-next.json`。#1/#4/#7 因原始规则或约束缺失而 blocked，#2 因文字结果与原图答案冲突而 blocked，#9 在固定 raw 快照中找不到原始题面。#8 是与 #2 同义但有独立可复算样例的唯一收录版本。所有题仅为离线候选，未进入正式 registry，也未做 GoJudge 验证。
+
 沙箱验证支持 `tokens` 和 `exact`，语义必须与生产一致；不允许把异常退出的错误程序算作有效反例。元数据、代码、输入输出或对照文件变更后，必须重新生成并验证相应批次报告，不能手工改报告指纹。
 
 发布前执行 `node scripts/oa-judge/coverage.mjs`，统计表同时校验真实文件哈希、通过数量、独立输入数量与全部错误程序名称。`sandbox_verified` 只表示报告有效，是否线上可提交仍由已发布数据库版本与 registry 校验值共同决定。

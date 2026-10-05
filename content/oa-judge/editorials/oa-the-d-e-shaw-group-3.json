@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-3",
+  "title": "删除一个子数组后的严格递增数组",
+  "explanation": "## 思路\n\n找到最长严格递增前缀和后缀。枚举保留前缀长度 i，双指针找到与它衔接且严格递增的最早后缀起点 j；j 之后的所有后缀起点都可行，累计方案数。\n\n## 正确性证明\n\n删除段 [i,j) 后，剩余部分严格递增当且仅当前缀自身严格递增、后缀自身严格递增，且两者相接时前缀末值小于后缀首值；任一侧为空时无需比较。前缀长度只可能在最长递增前缀范围内，后缀起点只可能位于最长递增后缀之后。随着前缀末值递增，最小可行后缀起点不会左移，因此双指针逐一计入全部且仅有的非空删除区间。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=0\n    while left+1<n and a[left]<a[left+1]: left+=1\n    if left==n-1: return str(n*(n+1)//2)\n    right=n-1\n    while right>0 and a[right-1]<a[right]: right-=1\n    ans=0; j=right\n    for i in range(left+2):\n        j=max(j,i+1)\n        if i:\n            while j<n and a[j]<=a[i-1]: j+=1\n        ans+=n-j+1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#3-count-the-number-of-incremovable-subarrays-ii",
+  "sourceContentHash": "784a23f47a193889bf4316046cc770f196df430b436a59fddf1bedf25a4c226b",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "变换时未按下标交替改符号",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; s=v[1:1+n]; t=v[1+n:1+2*n]\n    y=[(t[i]-s[i]) if i%2==0 else (t[i]-s[i]) for i in range(n)]\n    z=[0]*(n+1); prev=0\n    for i,x in enumerate(y): z[i]=x-prev; prev=x\n    z[n]=-prev\n    answer=0\n    for parity in (0,1):\n        prefix=0\n        for i in range(parity,n+1,2):\n            prefix+=z[i]\n            if (parity==0 and prefix<0) or (parity==1 and prefix>0): return '-1'\n            answer+=max(0,z[i])\n        if prefix: return '-1'\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略区间方向导致的前缀约束",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; s=v[1:1+n]; t=v[1+n:1+2*n]\n    y=[(t[i]-s[i]) if i%2==0 else (s[i]-t[i]) for i in range(n)]\n    z=[0]*(n+1); prev=0\n    for i,x in enumerate(y): z[i]=x-prev; prev=x\n    z[n]=-prev\n    answer=0\n    for parity in (0,1):\n        prefix=0\n        for i in range(parity,n+1,2):\n            prefix+=z[i]\n            if False: return '-1'\n            answer+=max(0,z[i])\n        if prefix: return '-1'\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
