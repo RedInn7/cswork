@@ -326,7 +326,10 @@ def main():
     reviews.extend({"id":pid,"status":"blocked","reason":reason} for pid,reason in BLOCKED.items())
     reviews.sort(key=lambda item:int(item["id"].rsplit("-",1)[1]))
     batch="paycom-next"
-    (OUT/"candidate-batches"/f"{batch}.json").write_text(
+    # Once production GoJudge evidence exists, emit the formal runtime batch;
+    # otherwise keep the authored work out of the runtime registry.
+    target_dir = "batches" if (OUT/"reports"/f"{batch}.json").exists() else "candidate-batches"
+    (OUT/target_dir/f"{batch}.json").write_text(
         json.dumps({"schemaVersion":1,"items":manifest},ensure_ascii=False,indent=2)+"\n")
     (OUT/"validation"/f"{batch}.json").write_text(json.dumps(
         {"schemaVersion":1,"seed":SEED,"problems":reports,

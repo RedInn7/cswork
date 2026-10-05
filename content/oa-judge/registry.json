@@ -4922,6 +4922,90 @@
       ]
     },
     {
+      "id": "oa-doordash-1",
+      "sourceContentHash": "69dfbaed19228d3ad6cd926555aaf964bddd47f2d0289ed38edd9527bce4a4c2",
+      "packageChecksum": "c16db07dd8fdf0b10580d400399c06ea9b503e9c45c631c7dbf319de67554aa6",
+      "editorial": "## 思路\n\n倒序扫描操作，维护后续全局抬价的最大下限；每件商品只需记录最后一次正向单点赋值及其后的抬价。\n\n## 正确性\n\n反向遇到的首个单点赋值就是该位置最后一次正向赋值，其后全局操作影响其最终值；若从未被赋值，则初始价经历所有全局下限。两种情形由数组记录与初值分别精确计算。\n\n## 复杂度\n\nO(n+q) 时间与空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=z[2:2+n];ops=[z[2+n+3*i:5+n+3*i] for i in range(q)];floor=0;last=[None]*n\n for t,x,v in reversed(ops):\n  if t==2:floor=max(floor,x)\n  elif last[x-1] is None:last[x-1]=max(v,floor)\n return \" \".join(str(max(a[i],floor) if last[i] is None else last[i]) for i in range(n))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-2",
+      "sourceContentHash": "4fb9a60b6a5739e7b14c0d2433c57c5e331966e4cdfb3dca2c92f595200f5514",
+      "packageChecksum": "1f11f9af495b4b50799960e6fe7e598058ca280038a555787334020ac2b3a5fb",
+      "editorial": "## 思路\n\n从全部仓库同时执行多源 BFS，得到每个可通行位置到最近仓库的距离，逐个回答查询。\n\n## 正确性\n\nBFS 按距离递增扩展；首次访问某格即是其从任一仓库出发的最短四邻接距离。墙不入队，未访问及非法坐标均返回 -1。\n\n## 复杂度\n\nO(RC+Q) 时间，O(RC) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import deque\ndef solve(s):\n z=s.splitlines();R,C,Q=map(int,z[0].split());g=[list(x) for x in z[1:1+R]];d=[[-1]*C for _ in range(R)];q=deque()\n for i in range(R):\n  for j in range(C):\n   if g[i][j]==\"D\":d[i][j]=0;q.append((i,j))\n while q:\n  i,j=q.popleft()\n  for di,dj in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=i+di,j+dj\n   if 0<=x<R and 0<=y<C and g[x][y]!=\"X\" and d[x][y]<0:d[x][y]=d[i][j]+1;q.append((x,y))\n return \" \".join(str(d[i][j] if 0<=i<R and 0<=j<C else -1) for i,j in (map(int,x.split()) for x in z[1+R:1+R+Q]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-5",
+      "sourceContentHash": "1f034affb0098803d69e771112ab065d96b7d12ca0cc25a7072d2c3d816198eb",
+      "packageChecksum": "aa4bca25ac0822023c4e4cece70b51f8891ac0289f6617b1eb66177f96cf9556",
+      "editorial": "## 思路\n\n并查集维护代表元和组大小。F 按大小合并，T 将两组规模相加并累计。\n\n## 正确性\n\n代表元标识连通分量，合并维护正确组大小。每个 Total 查询按两个学生分别取各自所在组规模，因此同组时也按题面计两次。\n\n## 复杂度\n\nO((n+q)α(n)) 时间，O(n) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=s.split();n,q=map(int,z[:2]);p=list(range(n+1));sz=[1]*(n+1)\n def f(x):\n  while x!=p[x]:p[x]=p[p[x]];x=p[x]\n  return x\n ans=0;i=2\n for _ in range(q):\n  t=z[i];a,b=map(int,z[i+1:i+3]);i+=3;x,y=f(a),f(b)\n  if t==\"F\" and x!=y:\n   if sz[x]<sz[y]:x,y=y,x\n   p[y]=x;sz[x]+=sz[y]\n  elif t==\"T\":ans+=sz[x]+sz[y]\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-6",
+      "sourceContentHash": "ed1329825c362bc1aa6892aad68c6b845897a004e9281a40339cf069795a1d0a",
+      "packageChecksum": "bec838e9819724cb4b91f82ccbfb6df05b598c216375551be584279791a32bfd",
+      "editorial": "## 思路\n\n按难度排序并预计算前缀最大利润；对每个厨师二分出可胜任菜品前缀并累加其最大利润。\n\n## 正确性\n\n每位厨师可独立选择，菜品不互斥；其可行集合恰为按难度排序的前缀，最优即前缀最大利润。\n\n## 复杂度\n\nO((n+m)log m) 时间，O(m) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom bisect import bisect_right\ndef solve(s):\n z=list(map(int,s.split()));p=0;n=z[p];p+=1;a=z[p:p+n];p+=n;m=z[p];p+=1;d=z[p:p+m];p+=m;v=z[p:p+m];pairs=sorted(zip(d,v));ds=[];best=[];mx=0\n for x,y in pairs:mx=max(mx,y);ds.append(x);best.append(mx)\n return str(sum(best[i-1] if (i:=bisect_right(ds,x)) else 0 for x in a))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-doordash-8",
+      "sourceContentHash": "ba51f67c14901321dc116dc7d73e962d4f3b318a4fc8f60b013258e93e97a47c",
+      "packageChecksum": "8feca7693b98974d41dd893a4fa6bb59d0eb95e4a04d293a0d694af887d5ff25",
+      "editorial": "## 思路\n\n每轮构造两个候选窗口的并集，按分数降序、原下标升序选择，再将该员工从序列删除。\n\n## 正确性\n\n候选集合与题面两个窗口的并集一致；排序键实现最高分优先且同分取最早下标。逐轮删除保持剩余序列顺序，符合定义。\n\n## 复杂度\n\nO(n·team_size) 时间；本站 n≤2000，O(n) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,m,k=z[:3];a=list(enumerate(z[3:3+n]));ans=0\n for _ in range(m):\n  cand=a[:k]+a[max(0,len(a)-k):];idx,val=min(cand,key=lambda x:(-x[1],x[0]));ans+=val;a.remove((idx,val))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-instacart-1",
+      "sourceContentHash": "1e64ed14c085a6dbd0ec8311825d8ffec7fabbe419accbddccffa15f2505222a",
+      "packageChecksum": "a7e0b4a912ed1527f8997e72c3a6c871babca3f9c8ba5b0e94f23047012facea",
+      "editorial": "## 思路\n\n维护数组和相邻同色对数。更新前撤销该位置与左右邻居的旧贡献，换色后再添加新贡献。\n\n## 正确性\n\n更新只可能改变与该位置相邻的两条边；移除旧贡献、加入新贡献后，其余边不变，因此计数保持正确。\n\n## 复杂度\n\nO(q) 时间，O(length) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=[0]*n;p=0;out=[]\n for j in range(q):\n  i,c=z[2+2*j:4+2*j]\n  if a[i]:\n   if i and a[i-1]==a[i]:p-=1\n   if i+1<n and a[i+1]==a[i]:p-=1\n  a[i]=c\n  if i and a[i-1]==c:p+=1\n  if i+1<n and a[i+1]==c:p+=1\n  out.append(p)\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-instacart-2",
+      "sourceContentHash": "97aedd8b8ff9919cb77c95c677ae8438dcb68445c85f6ac87dd81b2f4e07c68a",
+      "packageChecksum": "37d45a0257abe369968af87095dd630b57eb64c5fd42810366ed3815500d5ead",
+      "editorial": "## 思路\n\n从起点按当前方向线性扫描到最近剩余木棍，取走、累计长度并反转方向；总长达到 100 即停止。\n\n## 正确性\n\n线性扫描找到该方向最近非空位置；清零保证不重复取。交替方向与题意一致，循环条件使停止时恰在首次达到阈值后。\n\n## 复杂度\n\nO(n²) 最坏；本站 n≤2000，O(1) 额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,b=z[:2];a=z[2:];total=0;d=1;out=[]\n while total<100:\n  i=b+d\n  while a[i]==0:i+=d\n  out.append(i);total+=a[i];a[i]=0;d=-d\n return \" \".join(map(str,out))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-anthropic-1",
       "sourceContentHash": "4f2ecc069aa4c08065e534870e5c5d5c9466219409f8c64e555f3743cbe6c5f2",
       "packageChecksum": "85b52c0c0b080651ccec04377c99131c2963beda8adb4fed81b3363b401ee830",
@@ -8338,6 +8422,54 @@
         {
           "language": "python",
           "code": "def solve(d):\n    start=0\n    for part in d[0].split('.'):start=start*256+int(part)\n    count=int(d[1]);out=[]\n    while count:\n        align=(start&-start) if start else 1<<32\n        size=min(align,1<<(count.bit_length()-1))\n        address='.'.join(str((start>>s)&255) for s in (24,16,8,0))\n        out.append(address+'/'+str(32-(size.bit_length()-1)))\n        start+=size;count-=size\n    return str(len(out))+'\\n'+'\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-2",
+      "sourceContentHash": "9ad732f093c19bb947fea59cc500b76fe531f5daae99200899be9e49b295438d",
+      "packageChecksum": "0f2d7aa41703581d23c904820419503e842d8ca751b0ea74636e0410e869ea7c",
+      "editorial": "## 思路\n\n每次将较大数减去较小数不会改变两数的最大公约数；过程结束时两数相等，该值正是最大公约数。实现不必逐次相减，可用欧几里得取余迭代得到同一结果。\n\n## 正确性\n\n对 a≥b>0，有 gcd(a,b)=gcd(a−b,b)=gcd(a mod b,b)。因此将减法步骤批量化为取余不会改变最终公约数。余数迭代在每步严格缩小第二个数，最终到达 0，此时另一个数即原伪代码终止时的相等值。\n\n## 复杂度\n\n时间 O(log(min(a,b)))，额外空间 O(1)。本站把固定样例泛化为正整数输入，避免只有一个固定答案的常量输出题。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split())\n while b:\n  a,b=b,a%b\n return str(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-4",
+      "sourceContentHash": "0914f3ff727b5a1d7c59ec0a7c7d4c48bd6eb6f4e30d4a1718894cd06f5f832d",
+      "packageChecksum": "1de4e427b8c9e9fc8aa5d39de994caa7f229d79ccf0b1c8f2c800f25f7fa9435",
+      "editorial": "## 思路\n\n严格按原题顺序调用 f 两次。f 对奇数返回 0、对偶数返回 1。连续两次调用后，初始奇数得到 1，初始偶数得到 0。\n\n## 正确性\n\n若初值为奇数，第一次返回 0，第二次把偶数 0 映射为 1；若初值为偶数，第一次返回 1，第二次把奇数 1 映射为 0。故结果等于初始值的奇偶指示量。\n\n## 复杂度\n\n时间与额外空间均为 O(1)。本站只把原题固定的 i=3 改成输入参数，函数体和调用次数保持不变。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef f(x):\n return 0 if x%2 else 1\ndef solve(raw):\n i=int(raw); i=f(i); i=f(i)\n return str(i)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-6",
+      "sourceContentHash": "c50b2fac17e2a7efcfed49bf2c68be3e251faf0ccc276d5aaaf12bbaf9765713",
+      "packageChecksum": "433e507168c8fffd594dfa1d91c815cd7760d231c485b389f0d07a23bd7d2ab2",
+      "editorial": "## 思路\n\n若除数为 0，整数除法抛出异常，catch 先打印 Exception；随后无论是否异常都会执行 finally 并打印 Finally。若除数非 0，只打印 Finally。返回的 c 从未传给打印语句，因此不出现在输出中。\n\n## 正确性\n\ntry 中只有除法可能抛出 ArithmeticException。除数为零时控制流进入 catch，再离开 try/catch 执行 finally；除数非零时跳过 catch，也执行 finally。两条路径产生的输出顺序分别唯一对应题面定义。本站明确把同一 System.err 流上的文本作为标准输出轨迹比较。\n\n## 复杂度\n\n时间与额外空间均为 O(1)。本站把原题固定调用 divide(4,0) 泛化为任意整数输入，便于测试正常与异常两条分支。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split()); trace=[]\n try:\n  _=a//b\n except ZeroDivisionError:\n  trace.append('Exception')\n finally:\n  trace.append('Finally')\n return ' '.join(trace)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-15",
+      "sourceContentHash": "08ca83efb0dcbe9d4be7b37f0ad301124da91a63b67e5465a09aa58b41e19d34",
+      "packageChecksum": "024de95c17910c1805fca6eaf17129acaf5b377afa97c2278d948ad20e7bdf0a",
+      "editorial": "## 思路\n\n`while (s++ < n)` 每轮先判断旧值再递增，因此循环体内 s 依次为 1 到 n。continue 条件 `s<a && s<b` 等价于 `s<min(a,b)`；其余值依次输出。\n\n## 正确性\n\n循环体对每个整数 s∈[1,n] 恰执行一次。若 s 小于两个阈值，continue 跳过打印；否则条件为假并打印。由合取条件等价于 s<min(a,b)，输出集合恰为 min(a,b) 到 n，且顺序递增。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（用于缓冲输出）。本站参数化了原题常量，但完整保留自增、循环边界和 continue 判断。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n n,a,b=map(int,raw.split()); s=0; out=[]\n cut=min(a,b)\n while s<n:\n  s+=1\n  if s<cut: continue\n  out.append(str(s))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     },
