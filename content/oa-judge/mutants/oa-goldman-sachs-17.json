@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误实现 1",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; ev=[]\n for i in range(n): ev.extend(((t[1+2*i],1),(t[2+2*i],-1)))\n ev.sort(); c=b=0\n for _,d in ev:c+=d;b=max(b,c)\n return str(b)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误实现 2",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; ev=[]\n for i in range(n): ev.extend(((t[1+2*i],1),(t[2+2*i]+1,-1)))\n ev.sort(); c=b=0\n for _,d in ev:c+=d;b=max(b,c)\n return str(max(1,b-1))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-9",
+  "title": "Encryption Validity",
+  "explanation": "## 思路\n\n用频次数组保存每个密钥出现次数。对每个 key 枚举其大于 1 的因数并累加频次，得到最大可整除度，再按定义计算强度与可破解状态。\n\n## 正确性证明\n\n频次数组保留了列表重复项的贡献；对 key 的所有因数逐一累加，恰好统计所有大于 1 且整除它的列表元素。取最大值即题面定义的强度基础，最后按乘积比较破解能力。\n\n## 复杂度\n\n设 M=max(keys)，时间 O(M log M + n)，空间 O(M)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rate,duration,n=t[:3]; keys=t[3:3+n]; limit=max(keys); freq=[0]*(limit+1)\n for x in keys: freq[x]+=1\n best=0\n for value in keys:\n  degree=0\n  for d in range(2,value+1):\n   if value%d==0: degree+=freq[d]\n  best=max(best,degree)\n strength=best*100000\n return f'{int(rate*duration>=strength)} {strength}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#9-encryption-validity",
+  "sourceContentHash": "4cfa5dad347bb0a1ce0746e56386d045288b1b3dac188a23ce610b4e911074f8",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误实现 1",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,target=t[:2];s=set(t[2:2+n]);return str(sum((x-target in s)+(x+target in s) for x in s))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误实现 2",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,target=t[:2];s=set(t[2:2+n]);return str(sum(x+target in s for x in s)//2)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

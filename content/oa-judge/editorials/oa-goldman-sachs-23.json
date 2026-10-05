@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-23",
+  "title": "Bitwise XOR Subsequences",
+  "explanation": "## 思路\n\n维护 dp[v]：当前前缀中以值 v 结尾的最长合法子序列。新值 v 可接在值 v XOR k 后面。\n\n## 正确性证明\n\n若新元素 v 接在前一元素 u 后，合法条件要求 u XOR v=k，唯一得到 u=v XOR k。转移取该状态加一，并保留已有以 v 结尾的最优状态。逐个扫描保证只使用此前元素，符合子序列顺序。\n\n## 复杂度\n\n时间 O(n)，空间 O(distinct(arr))。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];a=t[1:n+1];k=t[n+1];dp={};best=1\n for v in a:\n  dp[v]=max(dp.get(v,0),dp.get(v^k,0)+1);best=max(best,dp[v])\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#23-bitwise-xor-subsequences",
+  "sourceContentHash": "4553e4cdf1fc6ad43c9eba713ac3a6b0086a828249af60ab55e5afb8850fbdc9",
+  "author": "CSWork"
+}

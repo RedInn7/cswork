@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-17",
+  "title": "Process Scheduler",
+  "explanation": "## 思路\n\n建立开始事件 +1 和结束后一个时刻的事件 −1，按时间排序扫描当前并发数，取最大值。\n\n## 正确性证明\n\n因区间端点包含，进程在 end 时刻仍运行，因此只在 end+1 释放核心。扫描到任一事件后，当前计数恰为该时刻运行的进程数；其最大值就是所有时刻所需核心数的下界且可由该数量核心安排。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; ev=[]\n for i in range(n): ev.extend(((t[1+2*i],1),(t[2+2*i]+1,-1)))\n ev.sort(); cur=best=0\n for _,d in ev: cur+=d; best=max(best,cur)\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#17-process-scheduler",
+  "sourceContentHash": "33ba76fa89371f1b938eeccaf92e909d51bef9d17b98c89189953885d748de8c",
+  "author": "CSWork"
+}

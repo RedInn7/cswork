@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误实现 1",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];l=0;s=best=0\n for r,x in enumerate(a):\n  s+=x\n  while s>=k:s-=a[l];l+=1\n  best=max(best,r-l+1)\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误实现 2",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];s=length=0\n for x in a:\n  if s+x>k:break\n  s+=x;length+=1\n return str(length)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

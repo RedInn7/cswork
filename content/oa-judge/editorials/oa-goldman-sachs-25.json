@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-25",
+  "title": "Minimum Start Value",
+  "explanation": "## 思路\n\n计算所有前缀和的最小值 minPrefix。初值 x 必须满足 x+minPrefix≥1，因此答案为 1−minPrefix。\n\n## 正确性证明\n\n每个迭代后的运行和等于 x 加对应前缀和。所有运行和至少为 1 当且仅当 x≥1−minPrefix；该值本身满足约束，且再小一会在最小前缀处失败。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];s=mn=0\n for x in t[1:1+n]:s+=x;mn=min(mn,s)\n return str(1-mn)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#25-minimum-start-value",
+  "sourceContentHash": "31ced7e174690302c8f4006bf22de2a663e70899c9801806997b83990b277adf",
+  "author": "CSWork"
+}

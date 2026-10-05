@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-21",
+  "title": "Longest Subarray",
+  "explanation": "## 思路\n\n正数条件允许滑动窗口：右端加入元素，若和超过 k 就不断移除左端，维护当前合法窗口最大长度。\n\n## 正确性证明\n\n对每个右端点，移除最少的左侧元素后得到以该点结尾的最长合法窗口：元素全为正，任何更靠左的起点只会增大和。扫描全部右端点取最大值即为全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];l=0;s=best=0\n for r,x in enumerate(a):\n  s+=x\n  while s>k:s-=a[l];l+=1\n  best=max(best,r-l+1)\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#21-longest-subarray",
+  "sourceContentHash": "9058018f04e1b900493c04caa1b5ea4db0a3024b19bca3c6b9c9f63bd429a4b9",
+  "author": "CSWork"
+}
