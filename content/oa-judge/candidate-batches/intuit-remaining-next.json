@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-1",
+      "sourceContentHash": "93630d84ed9389d85a9befcac4303ce5ed13bfbee87e5a102e046d1b4a103660",
+      "packageChecksum": "43a4261778841be8d04a47421ea3adfcc429325b26669a0719755c3a2a9a5f2c",
+      "editorial": "## 思路\n\n若有解，存在不重复格子的简单路径；BFS 在 (row,column,direction,turns) 状态图上至多访问 12bp 个状态。\n\n## 正确性证明\n\nBFS 对状态图按路径长度穷举。状态保留当前位置、最后方向和已转向次数，因而两个具有不同可行后续的路径不会被错误合并。只有不超过两次转向的状态入队；抵达 W 即存在合法路径，遍历结束仍未抵达则不存在。\n\n## 复杂度\n\n时间 O(bp)，空间 O(bp)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import deque\nimport sys\n\ndef solve(text):\n    lines = text.splitlines()\n    b, p = map(int, lines[0].split())\n    grid = [line.split() for line in lines[1:1 + b]]\n    start = end = None\n    for r in range(b):\n        for c in range(p):\n            if grid[r][c] == \"Q\": start = (r, c)\n            if grid[r][c] == \"W\": end = (r, c)\n    q = deque([(start[0], start[1], -1, 0)])\n    seen = {(start[0], start[1], -1, 0)}\n    dirs = ((-1, 0), (1, 0), (0, -1), (0, 1))\n    while q:\n        r, c, old, turns = q.popleft()\n        for d, (dr, dc) in enumerate(dirs):\n            nt = turns + (old != -1 and old != d)\n            nr, nc = r + dr, c + dc\n            state = (nr, nc, d, nt)\n            if nt <= 2 and 0 <= nr < b and 0 <= nc < p and grid[nr][nc] != \"x\" and state not in seen:\n                if (nr, nc) == end: return \"DRIVE!\"\n                seen.add(state); q.append(state)\n    return \"DON'T DRIVE!\"\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-9",
+      "sourceContentHash": "7332d21f2764b58d70b644615a4f740ed4d8284201db89fb7e262782b14a8038",
+      "packageChecksum": "df018efed8ed9b3932d24d8759c0214f6d665b07e6bd853a1e2545cac2d326da",
+      "editorial": "## 思路\n\n对每个位置对 (i,j)，若字符不同，它会作为对称字符出现在 min(i+1,n-j) 个子串中。总权重可线性计算；相等字符对按字符分组并用前缀和二分扣除。\n\n## 正确性证明\n\n一个子串要成为回文，左右对称且不相等的字符对至少需要一次修改，修改其中任一字符即可满足该对；各镜像位置对互不重叠，所以代价正好是镜像不等对数。固定下标 i<j 的字符对在某个子串中对称，当且仅当子串左右端点向外扩展相同距离；合法扩展数为 min(i+1,n-j)。因此答案是全部位置对的权重和减去相等字符位置对的权重和。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from bisect import bisect_left\nfrom collections import defaultdict\nimport sys\n\ndef solve(text):\n    s = text.strip()\n    n = len(s)\n    all_pairs = 0\n    for j in range(n):\n        threshold = n - j\n        small = min(j, threshold)\n        all_pairs += small * (small + 1) // 2 + (j - small) * threshold\n    positions = defaultdict(list)\n    for i, ch in enumerate(s): positions[ch].append(i)\n    equal_pairs = 0\n    for places in positions.values():\n        prefix = [0]\n        for i in places: prefix.append(prefix[-1] + i + 1)\n        for k, j in enumerate(places):\n            split = bisect_left(places, n - j, 0, k)\n            equal_pairs += prefix[split] + (k - split) * (n - j)\n    return str(all_pairs - equal_pairs)\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-15",
+      "sourceContentHash": "8f68722d5cc334dd56677df70651073c6491bab1cae8c9acf39696c527937a3f",
+      "packageChecksum": "6dae7fae11de3ae017909cfd2e2a4ec069d135fb3908636721d960c77a629331",
+      "editorial": "## 思路\n\n每次从当前频次最高的字符移除一根可获得最大边际收益；字母种类固定为 26，堆模拟最多 min(M,N) 次。\n\n## 正确性证明\n\n频次为 f 的字符再移除一根后成本下降 f²−(f−1)²=2f−1。该边际收益随 f 增大而增大，因此若某一步未从当前最高频字符移除、却移除了较低频字符，交换这一步的选择不会增加成本。重复此贪心恰好模拟最优的最多 M 次删除。\n\n## 复杂度\n\n时间 O(M log 26)，空间 O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef solve(text):\n    data = text.split()\n    n, removals = map(int, data[:2])\n    counts = [0] * 26\n    for ch in data[2].strip(): counts[ord(ch) - 97] += 1\n    heap = [-x for x in counts if x]\n    heapq.heapify(heap)\n    for _ in range(min(removals, n)):\n        largest = -heapq.heappop(heap)\n        if largest > 1: heapq.heappush(heap, -(largest - 1))\n    return str(sum(x * x for x in heap))\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-21",
+      "sourceContentHash": "a0185464e5796f8f7bed2f427627091ea987feb698a571875592c888da2b29a1",
+      "packageChecksum": "d69728830e26dc38440fbd775f132544d31c4b445aac094a5346ce7627ba916c",
+      "editorial": "## 思路\n\n维护各前缀的 26 位奇偶掩码。子串奇数频字符数为两个前缀掩码 XOR 的 popcount；按字符位累加异或贡献，再扣除奇数长度项并除二。\n\n## 正确性证明\n\n一个子串可重排成回文，当且仅当至多一个字符出现奇数次。每次修改一个字符最多同时改变两个奇偶位，因此代价为 floor(odd/2)。对所有前缀奇偶掩码对，odd 数量等于 XOR 的置位数。逐字符位累计当前掩码与此前掩码不同的次数即可得到所有 odd 总和；odd 的奇偶性与子串长度奇偶相同，因此减去奇数长度子串数后除以二，恰为总代价。\n\n## 复杂度\n\n时间 O(26n)，空间 O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(text):\n    s = text.strip()\n    ones = [0] * 26\n    parity_count = [1, 0]\n    prefix_count = [0] * 26\n    mask = 0\n    total_odd_letters = 0\n    odd_length_substrings = 0\n    prefix_index = 0\n    for ch in s:\n        mask ^= 1 << (ord(ch) - 97)\n        prefix_index += 1\n        for bit in range(26):\n            total_odd_letters += prefix_count[bit] if not (mask >> bit) & 1 else prefix_index - prefix_count[bit]\n        prefix_count = [prefix_count[bit] + (((mask >> bit) & 1) == 1) for bit in range(26)]\n        parity = prefix_index & 1\n        odd_length_substrings += parity_count[1 - parity]\n        parity_count[parity] += 1\n    return str((total_odd_letters - odd_length_substrings) // 2)\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

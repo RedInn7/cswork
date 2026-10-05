@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-15",
+  "title": "Letter Candles",
+  "explanation": "## 思路\n\n每次从当前频次最高的字符移除一根可获得最大边际收益；字母种类固定为 26，堆模拟最多 min(M,N) 次。\n\n## 正确性证明\n\n频次为 f 的字符再移除一根后成本下降 f²−(f−1)²=2f−1。该边际收益随 f 增大而增大，因此若某一步未从当前最高频字符移除、却移除了较低频字符，交换这一步的选择不会增加成本。重复此贪心恰好模拟最优的最多 M 次删除。\n\n## 复杂度\n\n时间 O(M log 26)，空间 O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\nimport sys\n\ndef solve(text):\n    data = text.split()\n    n, removals = map(int, data[:2])\n    counts = [0] * 26\n    for ch in data[2].strip(): counts[ord(ch) - 97] += 1\n    heap = [-x for x in counts if x]\n    heapq.heapify(heap)\n    for _ in range(min(removals, n)):\n        largest = -heapq.heappop(heap)\n        if largest > 1: heapq.heappush(heap, -(largest - 1))\n    return str(sum(x * x for x in heap))\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/intuit#15-letter-candles",
+  "sourceContentHash": "8f68722d5cc334dd56677df70651073c6491bab1cae8c9acf39696c527937a3f",
+  "author": "CSWork"
+}
