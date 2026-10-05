@@ -5006,6 +5006,78 @@
       ]
     },
     {
+      "id": "oa-ebay-1",
+      "sourceContentHash": "337fc43fc422e46310974f89bb8a9a369529d1216c4fe200b221d6075f30aeed",
+      "packageChecksum": "7d7e902bb10c5d35dc503c1db2c4fef0bfa0918a5feb73c2c23b735818bc24d2",
+      "editorial": "## 思路\n\n双指针逐轮取左端，再取右端（若仍有元素）。\n\n## 正确性\n\n每轮移除尚未输出的最左元素和最右元素，不重不漏；区间缩至空时输出次序正是左右交替规则。\n\n## 复杂度\n\nO(n) 时间、O(n) 输出空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];a=z[1:1+n];l=0;r=n-1;o=[]\n while l<=r:\n  o.append(a[l]);l+=1\n  if l<=r:o.append(a[r]);r-=1\n return \" \".join(map(str,o))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-2",
+      "sourceContentHash": "4f38455ef99f72af888ec134e2650ae6cbab16cb59550c18d506820f85feb064",
+      "packageChecksum": "d1e0abf7bfd8bd3b34bcc91ffba3a7420a986ae943c22de924e3db417e1e3fbf",
+      "editorial": "## 思路\n\n维护辅音序号，仅在其为 n 的倍数时，在固定辅音字母表内前进一位。\n\n## 正确性\n\n辅音字母表按英文字母顺序去除元音，模表长实现循环。扫描只计 ASCII 字母辅音，因此空格、数字、标点与非 ASCII 字符原样输出。\n\n## 复杂度\n\nO(|message|) 时间与输出空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if cnt%n==0:\n    x=CS[(CS.index(c.lower())+1)%len(CS)];o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-3",
+      "sourceContentHash": "cc78dca0097c1926c400a3288e2550d1a6b64751b1491c093a8b679204020ed1",
+      "packageChecksum": "d3757492efd001b79530076236b9ae6c839c46bbd83f7d1e643ea5a67c18e327",
+      "editorial": "## 思路\n\n二维前缀和支持常数时间求任意正方形窗口和，合法中心替换为整除窗口面积的商。\n\n## 正确性\n\n前缀和容斥得到原图窗口和，向下整除即题目 floor 均值；仅写入完整窗口中心，其他格子保持原值。\n\n## 复杂度\n\nO(hw) 时间与空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-4",
+      "sourceContentHash": "e05c99c756d04cafe3a5e89feaeaf3487334206d17f9f143fffd41300d17e007",
+      "packageChecksum": "e01c9af00118ea5ee727dc3bb0f524defdb726d762f4dbafa4304787650e32a6",
+      "editorial": "## 思路\n\n基准利润为 −Σstrategy×rate。重设某日策略后的最佳利润是 |rate|，所以窗口内单日增益为 |rate|+strategy×rate；滑窗取最大增益。\n\n## 正确性\n\n窗口外策略固定。窗口内每一天可独立取 −1、0、+1，最佳利润为费率绝对值；故对所有长度 k 窗口逐一比较增益即可得最优。\n\n## 复杂度\n\nO(n) 时间、O(n) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,k=z[:2];a=z[2:2+n];b=z[2+n:2+2*n];base=sum(-x*y for x,y in zip(a,b));g=[abs(x)+x*y for x,y in zip(a,b)];w=sum(g[:k]);best=w\n for i in range(k,n):w+=g[i]-g[i-k];best=max(best,w)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-5",
+      "sourceContentHash": "514080148eb8c592f69ef7dc61c394be71d876888d84c0100b501be8658fd401",
+      "packageChecksum": "b302b3e7e02a557192893446fd37390021efaaa934998caa58ac0945556342ca",
+      "editorial": "## 思路\n\n逐位剥离每个十进制数并数零，数字 0 单独算作含一个零。\n\n## 正确性\n\n整数的每一个十进制位恰好被个位取模访问一次；特判 0 与其标准表示一致，奇偶判定直接等价于题意。\n\n## 复杂度\n\nO(N log V) 时间、O(1) 额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];ans=0\n for x in z[1:1+n]:\n  if x==0:c=1\n  else:\n   c=0\n   while x:\n    c+=x%10==0;x//=10\n  ans+=c%2\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-7",
+      "sourceContentHash": "d4e68c17a384346b69345065cb7534527fb3226ffefe7cb776c33d98dd7d5e03",
+      "packageChecksum": "ac82b4b51351ce3bfe1332e6d41b99561d2197bbbdacc4cff635de991c1fcbdc",
+      "editorial": "## 思路\n\n逐行及逐列线性扫描，记录以当前数字结束的最大表达式；合法的前一项可按中间符号延伸，也可在当前数字重新开始。\n\n## 正确性\n\n任何合法表达式都对应一行或一列上的连续片段。状态覆盖以当前数字结尾的所有片段：要么从当前数字新起，要么接在上一数字片段之后；遇到不合法字符即断开。枚举行列取最大得到全局最优。\n\n## 复杂度\n\nO(hw) 时间，O(max(h,w)) 空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef scan(a):\n ans=0;prev=None;sg=None;digit=False\n for c in a:\n  if c.isdigit():\n   x=int(c);v=x if sg is None or prev is None else max(x,prev+sg*x);ans=max(ans,v);prev=v;sg=None;digit=True\n  elif c in \"+-\" and digit:sg=1 if c==\"+\" else -1;digit=False\n  else:prev=None;sg=None;digit=False\n return ans\ndef solve(s):\n z=s.splitlines();h,w=map(int,z[0].split());g=[list(x) for x in z[1:1+h]];ans=max(scan(x) for x in g)\n for j in range(w):ans=max(ans,scan([g[i][j] for i in range(h)]))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-anthropic-1",
       "sourceContentHash": "4f2ecc069aa4c08065e534870e5c5d5c9466219409f8c64e555f3743cbe6c5f2",
       "packageChecksum": "85b52c0c0b080651ccec04377c99131c2963beda8adb4fed81b3363b401ee830",
@@ -5158,6 +5230,126 @@
         {
           "language": "python",
           "code": "def solve(raw):\n    data=raw.split();n=int(data[0]);commands=data[1:1+n];answers=[]\n    dx=[0,1,0,-1];dy=[1,0,-1,0]\n    for command in commands:\n        x=y=direction=0\n        for step in command:\n            if step=='G':x+=dx[direction];y+=dy[direction]\n            elif step=='L':direction=(direction+3)%4\n            else:direction=(direction+1)%4\n        answers.append('YES' if (x==0 and y==0) or direction!=0 else 'NO')\n    return '\\n'.join(answers)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-9",
+      "sourceContentHash": "4cfa5dad347bb0a1ce0746e56386d045288b1b3dac188a23ce610b4e911074f8",
+      "packageChecksum": "e1a909b8c87120d8aee999414dab76d541abd22bda5bc21eeb58d668f89881d9",
+      "editorial": "## 思路\n\n用频次数组保存每个密钥出现次数。对每个 key 枚举其大于 1 的因数并累加频次，得到最大可整除度，再按定义计算强度与可破解状态。\n\n## 正确性证明\n\n频次数组保留了列表重复项的贡献；对 key 的所有因数逐一累加，恰好统计所有大于 1 且整除它的列表元素。取最大值即题面定义的强度基础，最后按乘积比较破解能力。\n\n## 复杂度\n\n设 M=max(keys)，时间 O(M log M + n)，空间 O(M)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); rate,duration,n=t[:3]; keys=t[3:3+n]; limit=max(keys); freq=[0]*(limit+1)\n for x in keys: freq[x]+=1\n best=0\n for value in keys:\n  degree=0\n  for d in range(2,value+1):\n   if value%d==0: degree+=freq[d]\n  best=max(best,degree)\n strength=best*100000\n return f'{int(rate*duration>=strength)} {strength}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-10",
+      "sourceContentHash": "dcc14ade2f998ad084c2849a2894e4d452db864a4f460feecb7c0f7c438e2e01",
+      "packageChecksum": "5c5e8d942dd48ce0cba34e4fa6669cadcd114e944afb932712a43412fa6ab4b2",
+      "editorial": "## 思路\n\n动态规划 dp[i] 表示前 i 位的解码数。末尾一位非 0 时可单独解码；末尾两位在 10..26 时可合并解码。\n\n## 正确性证明\n\n任一有效切分的最后一块只能长 1 或 2。单字符块贡献 dp[i−1] 且不得为 0；双字符块贡献 dp[i−2] 且数值须在 10..26。两类互斥并覆盖所有合法切分。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n s=raw.strip(); n=len(s); dp=[0]*(n+1); dp[0]=1\n for i in range(1,n+1):\n  if s[i-1]!='0': dp[i]+=dp[i-1]\n  if i>1 and 10<=int(s[i-2:i])<=26: dp[i]+=dp[i-2]\n return str(dp[n])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-16",
+      "sourceContentHash": "3e55f109780ba3f09c3ec7c8dfceb33b45e0c0cdc338ce209c117d240906fe5e",
+      "packageChecksum": "f9a663360c9f8e68a30250fb676914916e6c0aa32fc088503a7f8e7fbdcb99b8",
+      "editorial": "## 思路\n\n把孩子编号改为从 0 开始。首个玩具位于 d−1；再前进 T−1 格并对 N 取模。\n\n## 正确性证明\n\n从 D 开始的第一个玩具无需移动；后续每个玩具向前移动一位。总移动 T−1 次，循环编号对应模 N，最后转回 1-based 编号。\n\n## 复杂度\n\n时间 O(1)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n n,t,d=map(int,raw.split()); return str((d-1+t-1)%n+1)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-17",
+      "sourceContentHash": "33ba76fa89371f1b938eeccaf92e909d51bef9d17b98c89189953885d748de8c",
+      "packageChecksum": "2ca2435f3695905865e740142b0de691e91d646bb18f5f16f953350040ffcc34",
+      "editorial": "## 思路\n\n建立开始事件 +1 和结束后一个时刻的事件 −1，按时间排序扫描当前并发数，取最大值。\n\n## 正确性证明\n\n因区间端点包含，进程在 end 时刻仍运行，因此只在 end+1 释放核心。扫描到任一事件后，当前计数恰为该时刻运行的进程数；其最大值就是所有时刻所需核心数的下界且可由该数量核心安排。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; ev=[]\n for i in range(n): ev.extend(((t[1+2*i],1),(t[2+2*i]+1,-1)))\n ev.sort(); cur=best=0\n for _,d in ev: cur+=d; best=max(best,cur)\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-21",
+      "sourceContentHash": "9058018f04e1b900493c04caa1b5ea4db0a3024b19bca3c6b9c9f63bd429a4b9",
+      "packageChecksum": "d3177316d69c6f705de2cebb1918a6e159700c543c8ae0dd51c3d9c41b296f2b",
+      "editorial": "## 思路\n\n正数条件允许滑动窗口：右端加入元素，若和超过 k 就不断移除左端，维护当前合法窗口最大长度。\n\n## 正确性证明\n\n对每个右端点，移除最少的左侧元素后得到以该点结尾的最长合法窗口：元素全为正，任何更靠左的起点只会增大和。扫描全部右端点取最大值即为全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];l=0;s=best=0\n for r,x in enumerate(a):\n  s+=x\n  while s>k:s-=a[l];l+=1\n  best=max(best,r-l+1)\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-23",
+      "sourceContentHash": "4553e4cdf1fc6ad43c9eba713ac3a6b0086a828249af60ab55e5afb8850fbdc9",
+      "packageChecksum": "544edced5b2055eab8253267741b28df422dd6f3ff98a93813561dfb983a4695",
+      "editorial": "## 思路\n\n维护 dp[v]：当前前缀中以值 v 结尾的最长合法子序列。新值 v 可接在值 v XOR k 后面。\n\n## 正确性证明\n\n若新元素 v 接在前一元素 u 后，合法条件要求 u XOR v=k，唯一得到 u=v XOR k。转移取该状态加一，并保留已有以 v 结尾的最优状态。逐个扫描保证只使用此前元素，符合子序列顺序。\n\n## 复杂度\n\n时间 O(n)，空间 O(distinct(arr))。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];a=t[1:n+1];k=t[n+1];dp={};best=1\n for v in a:\n  dp[v]=max(dp.get(v,0),dp.get(v^k,0)+1);best=max(best,dp[v])\n return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-25",
+      "sourceContentHash": "31ced7e174690302c8f4006bf22de2a663e70899c9801806997b83990b277adf",
+      "packageChecksum": "95e16e4dc1d12154ebb039df98723892154a243e215a8fb4daefebb92f65f29b",
+      "editorial": "## 思路\n\n计算所有前缀和的最小值 minPrefix。初值 x 必须满足 x+minPrefix≥1，因此答案为 1−minPrefix。\n\n## 正确性证明\n\n每个迭代后的运行和等于 x 加对应前缀和。所有运行和至少为 1 当且仅当 x≥1−minPrefix；该值本身满足约束，且再小一会在最小前缀处失败。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];s=mn=0\n for x in t[1:1+n]:s+=x;mn=min(mn,s)\n return str(1-mn)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-29",
+      "sourceContentHash": "922f13844de3f24311656cb270f5e46d0c08768241f272a8f459ef60b0717f8e",
+      "packageChecksum": "d4312b52084d6cdacb1ba111106cd374f118f334c4b9ed702d694abef5f29b2d",
+      "editorial": "## 思路\n\n用有向面积叉积判断三角形非退化，再检查点与三条边的叉积符号是否一致。零叉积允许点落在边界。\n\n## 正确性证明\n\n三角形面积非零当且仅当三顶点不共线。对非退化三角形，点在内部或边界当且仅当相对三条有向边的叉积全非负或全非正；这包含边界。分别判定 p 和 q 后依题面映射情形编号。\n\n## 复杂度\n\n时间 O(1)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n x1,y1,x2,y2,x3,y3,xp,yp,xq,yq=map(int,raw.split()); a=(x1,y1);b=(x2,y2);c=(x3,y3)\n cross=lambda u,v,w:(v[0]-u[0])*(w[1]-u[1])-(v[1]-u[1])*(w[0]-u[0])\n area=cross(a,b,c)\n if area==0:return '0'\n def inside(p):\n  z=[cross(a,b,p),cross(b,c,p),cross(c,a,p)];return not(any(q<0 for q in z) and any(q>0 for q in z))\n p=inside((xp,yp));q=inside((xq,yq));return str(3 if p and q else 1 if p else 2 if q else 4)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-31",
+      "sourceContentHash": "13837999587bf33cb6aff906648abd8295a39413f1f270a0df2a1c202cf4e1b7",
+      "packageChecksum": "27da768570b806df807e183a5ac9c8643ce9bce1e1451fc6868a03da514437cc",
+      "editorial": "## 思路\n\n把成本放入哈希集合；对每个 x 检查 x+target 是否存在。因为 target>0，每个无序对只从较小值计数一次。\n\n## 正确性证明\n\n若无序对 {x,y} 的绝对差为正 target，则恰有较小值 x 和较大值 y=x+target。遍历每个成本并检查其加 target 是否在集合中，与每个合法数值对一一对应。\n\n## 复杂度\n\n平均时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,target=t[:2];s=set(t[2:2+n]);return str(sum(x+target in s for x in s))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-22",
+      "sourceContentHash": "b67fe4158cccb441cf4f4a8069cb937c6cde9b0488ca9cb5c934aa50b23cd6dc",
+      "packageChecksum": "9368820ae3629458b1ebf7d8043dcef2ad23104d3745e36df380c9804ea7f038",
+      "editorial": "## 思路\n\n按 effectiveness 从大到小排序，依次加入会议；只要新的累计指数仍严格大于 0 就保留，否则后续值不可能挽回该前缀。\n\n## 正确性证明\n\n对任意长度为 k 的可行安排，交换相邻的较小值 x 与较大值 y：原顺序 x,y 的第一个前缀较低，交换成 y,x 不会降低这两个位置的任一累计和。因此存在按非增序排列的最优可行前缀。按降序扫描时，若加入当前值后指数不大于 0，所有剩余值不大于它；任何包含它们的完整前缀和也无法保持正数，故停止。扫描所得前缀可行且不能再延长。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=sorted(t[1:1+n],reverse=True); total=count=0\n for value in a:\n  if total+value<=0: break\n  total+=value; count+=1\n return str(count)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
         }
       ]
     },
