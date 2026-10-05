@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-7",
+  "title": "Sum of Compressed Number for All Subarrays",
+  "explanation": "## 思路\n\n以最大相同值段长度 L 表示。单段内所有子数组贡献长度和 L(L+1)(L+2)/6。跨段子数组的贡献是首段后缀长度、末段前缀长度与中间完整段长度的乘积；维护此前端点权重即可 O(1) 更新。最后减去所有无相等相邻项的子数组，因为它们已经压缩、贡献为 0。\n\n## 正确性\n\n若子数组分成长度 L_i 的最大连续相同值段，标准压缩结果需从每段保留一个原下标，彼此独立，故选择数为 ∏L_i；若所有 L_i=1，题面样例规定已压缩时记 0。对单段区间，按其长度累加得 L(L+1)(L+2)/6。对首段 i、末段 j（i<j）的区间，首段可选后缀长度 x=1..L_i、末段前缀长度 y=1..L_j，中间段完整，求和分解为 T(L_i)T(L_j)∏中间 L_k，其中 T(L)=L(L+1)/2；维护前缀加权和可在线计算所有 j。所有已压缩子数组恰是原序列中没有相等相邻边的区间，在每个此类最大连续块长度 G 中共有 G(G+1)/2 个，逐块扣除各贡献 1。计算过程对模数取模，得到所求和。\n\n## 复杂度\n\n每个测试用例时间 O(n)，额外空间 O(n)（读入并分段）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nMOD=1000000007\ndef solve(raw):\n z=list(map(int,raw.split()));t=z[0];p=1;out=[]\n for _ in range(t):\n  n=z[p];p+=1;a=z[p:p+n];p+=n;runs=[]\n  for x in a:\n   if not runs or runs[-1][0]!=x:runs.append([x,1])\n   else:runs[-1][1]+=1\n  total=acc=0\n  for _,L in runs:\n   T=L*(L+1)//2;total=(total+L*(L+1)*(L+2)//6+T*acc)%MOD;acc=(acc*L+T)%MOD\n  streak=1;empty=0\n  for i in range(1,n+1):\n   if i<n and a[i]!=a[i-1]:streak+=1\n   else:empty=(empty+streak*(streak+1)//2)%MOD;streak=1\n  out.append(str((total-empty)%MOD))\n return '\\n'.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wells-fargo#7-sum-of-compressed-number-for-all-subarrays",
+  "sourceContentHash": "debb6fba5cfa56889ff3413b33afa0ee3dd99b03981b811fe1577f106adab045",
+  "author": "CSWork"
+}

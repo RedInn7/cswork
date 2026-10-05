@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-3",
+  "title": "Find Maximum Distance",
+  "explanation": "## 思路\n\n多源 BFS 求每格到最近 * 的曼哈顿距离，再用最大瓶颈路径搜索：扩展邻格时安全值取当前值与邻格距离的较小者，维护每格已知最大安全值。\n\n## 正确性\n\n多源 BFS 在无权四邻网格中给出到最近障碍的最短路，等于曼哈顿距离（网格完整可行走）。对于路径前缀，最佳安全值转移为前缀瓶颈与新格子距离的最小值。最大堆每次取当前值最大的状态；任何尚未处理状态都不可能通过后续扩展产生超过堆顶候选的瓶颈值，因此首次弹出 E 时即是全局最优。\n\n## 复杂度\n\nV=rows×cols。时间 O(V log V)，空间 O(V)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq,sys\nfrom collections import deque\ndef solve(raw):\n t=raw.split();R,C=map(int,t[:2]);g=t[2:2+R];d=[[-1]*C for _ in range(R)];q=deque();s=e=None\n for r in range(R):\n  for c,ch in enumerate(g[r]):\n   if ch=='*':d[r][c]=0;q.append((r,c))\n   elif ch=='S':s=(r,c)\n   elif ch=='E':e=(r,c)\n for r,c in q:\n  pass\n while q:\n  r,c=q.popleft()\n  for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=r+dr,c+dc\n   if 0<=x<R and 0<=y<C and d[x][y]<0:d[x][y]=d[r][c]+1;q.append((x,y))\n best=[[-1]*C for _ in range(R)];best[s[0]][s[1]]=d[s[0]][s[1]];h=[(-best[s[0]][s[1]],*s)]\n while h:\n  neg,r,c=heapq.heappop(h);v=-neg\n  if v<best[r][c]:continue\n  if (r,c)==e:return str(v)\n  for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=r+dr,c+dc\n   if 0<=x<R and 0<=y<C:\n    nv=min(v,d[x][y])\n    if nv>best[x][y]:best[x][y]=nv;heapq.heappush(h,(-nv,x,y))\n return '-1'\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wells-fargo#3-find-maximum-distance",
+  "sourceContentHash": "c2b2cbec4af4a597fe813bdccddab369ebd00ee219edf2cf86d86b46bf296f31",
+  "author": "CSWork"
+}

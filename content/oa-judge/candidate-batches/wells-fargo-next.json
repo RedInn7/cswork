@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-wells-fargo-1",
+      "sourceContentHash": "e74a36ca7db4ec42fb4180ceb08781b23faa5a62ae8d372ff15399307509d7a8",
+      "packageChecksum": "3fa622e011fac229e53f66529e5ec2ef6c55b07857b7d1fe13f692508cab623d",
+      "editorial": "## 思路\n\n将排列分解为不相交循环。每个长度为 L 的循环需恰好 L 的倍数次操作才能复位，整体周期是各循环长度的最小公倍数。\n\n## 正确性\n\n互异数组元素保证操作后恢复原数组当且仅当位置置换回到恒等映射。一个排列循环长度 L 在恰好 L 次操作后首次复位，因此总复位时刻必须且只需是所有循环长度的公倍数；最小正时刻即其最小公倍数。\n\n## 复杂度\n\n时间 O(n log n + 位运算成本)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom math import gcd\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];p=t[1:1+n];seen=[False]*n;ans=1\n for i in range(n):\n  if not seen[i]:\n   j=i;length=0\n   while not seen[j]:seen[j]=True;j=p[j]-1;length+=1\n   ans=ans//gcd(ans,length)*length\n return str(ans%1000000007)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-wells-fargo-3",
+      "sourceContentHash": "c2b2cbec4af4a597fe813bdccddab369ebd00ee219edf2cf86d86b46bf296f31",
+      "packageChecksum": "db6317c645254cf9b3966173ea5f69dbf593d2c9367b39ff3e2e1b5c30fd45da",
+      "editorial": "## 思路\n\n多源 BFS 求每格到最近 * 的曼哈顿距离，再用最大瓶颈路径搜索：扩展邻格时安全值取当前值与邻格距离的较小者，维护每格已知最大安全值。\n\n## 正确性\n\n多源 BFS 在无权四邻网格中给出到最近障碍的最短路，等于曼哈顿距离（网格完整可行走）。对于路径前缀，最佳安全值转移为前缀瓶颈与新格子距离的最小值。最大堆每次取当前值最大的状态；任何尚未处理状态都不可能通过后续扩展产生超过堆顶候选的瓶颈值，因此首次弹出 E 时即是全局最优。\n\n## 复杂度\n\nV=rows×cols。时间 O(V log V)，空间 O(V)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq,sys\nfrom collections import deque\ndef solve(raw):\n t=raw.split();R,C=map(int,t[:2]);g=t[2:2+R];d=[[-1]*C for _ in range(R)];q=deque();s=e=None\n for r in range(R):\n  for c,ch in enumerate(g[r]):\n   if ch=='*':d[r][c]=0;q.append((r,c))\n   elif ch=='S':s=(r,c)\n   elif ch=='E':e=(r,c)\n for r,c in q:\n  pass\n while q:\n  r,c=q.popleft()\n  for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=r+dr,c+dc\n   if 0<=x<R and 0<=y<C and d[x][y]<0:d[x][y]=d[r][c]+1;q.append((x,y))\n best=[[-1]*C for _ in range(R)];best[s[0]][s[1]]=d[s[0]][s[1]];h=[(-best[s[0]][s[1]],*s)]\n while h:\n  neg,r,c=heapq.heappop(h);v=-neg\n  if v<best[r][c]:continue\n  if (r,c)==e:return str(v)\n  for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n   x,y=r+dr,c+dc\n   if 0<=x<R and 0<=y<C:\n    nv=min(v,d[x][y])\n    if nv>best[x][y]:best[x][y]=nv;heapq.heappush(h,(-nv,x,y))\n return '-1'\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-wells-fargo-4",
+      "sourceContentHash": "93a60eafa91223238eeb0ec871c180eb018ef6841c50fe085f18bf26ed11419b",
+      "packageChecksum": "bbe0dbdb1f42ea85688ce04da86019a9c07ebd575195d6ee7981180f8183a352",
+      "editorial": "## 思路\n\n从左到右贪心延长当前段，只要段乘积乘下一个数仍≤k 就并入；否则结束当前段并从下个数开始新段。正整数保证乘积随延长单调不减。\n\n## 正确性\n\n每个最终元素对应原数组的一个连续段。单元素段无需操作，始终允许保留；长度至少为 2 的段只有在总乘积≤k 时可行，且正整数乘积单调不减，故其内部相邻合并也都满足限制。从当前位置开始，贪心取最长可行段；任何可行方案的第一段结束位置不可能超过贪心边界。用更长的贪心段替换最优方案第一段不会增加剩余后缀的最少段数；对后缀归纳，贪心段数最少。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)（不计输入）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];groups=1;product=a[0]\n for x in a[1:]:\n  if product*x<=k:product*=x\n  else:groups+=1;product=x\n return str(groups)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-wells-fargo-5",
+      "sourceContentHash": "0b265afa4ce58762e7a307e5777c33a1a0762e9d46cdac781e9ef30f067a140a",
+      "packageChecksum": "84a5f12923914f492157ab9f5eb767c199b59444b0bdc6632ba8a8c7f9280769",
+      "editorial": "## 思路\n\n枚举每个连续 k 个 1 的窗口，只保留从窗口第一个 1 到第 k 个 1 的最短候选，再按长度和字典序取最小。\n\n## 正确性\n\n任何含恰好 k 个 1 的子串所含 1 必构成字符串中某个连续的 k 个 1 的窗口。去掉其首个 1 前与末个 1 后的字符不改变 1 的数量且只会更短，因此最短候选必由首末 1 定界。枚举所有窗口覆盖全部最短候选，按 (长度, 字典序) 取最小即正确。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n s,k=raw.split();k=int(k);p=[i for i,ch in enumerate(s) if ch=='1'];best=None\n for i in range(len(p)-k+1):\n  z=s[p[i]:p[i+k-1]+1]\n  if best is None or (len(z),z)<(len(best),best):best=z\n return best\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-wells-fargo-7",
+      "sourceContentHash": "debb6fba5cfa56889ff3413b33afa0ee3dd99b03981b811fe1577f106adab045",
+      "packageChecksum": "11e3e9e12d4f47f0793f01977b7d14bcf6cd641c0faefdc29377f85004951856",
+      "editorial": "## 思路\n\n以最大相同值段长度 L 表示。单段内所有子数组贡献长度和 L(L+1)(L+2)/6。跨段子数组的贡献是首段后缀长度、末段前缀长度与中间完整段长度的乘积；维护此前端点权重即可 O(1) 更新。最后减去所有无相等相邻项的子数组，因为它们已经压缩、贡献为 0。\n\n## 正确性\n\n若子数组分成长度 L_i 的最大连续相同值段，标准压缩结果需从每段保留一个原下标，彼此独立，故选择数为 ∏L_i；若所有 L_i=1，题面样例规定已压缩时记 0。对单段区间，按其长度累加得 L(L+1)(L+2)/6。对首段 i、末段 j（i<j）的区间，首段可选后缀长度 x=1..L_i、末段前缀长度 y=1..L_j，中间段完整，求和分解为 T(L_i)T(L_j)∏中间 L_k，其中 T(L)=L(L+1)/2；维护前缀加权和可在线计算所有 j。所有已压缩子数组恰是原序列中没有相等相邻边的区间，在每个此类最大连续块长度 G 中共有 G(G+1)/2 个，逐块扣除各贡献 1。计算过程对模数取模，得到所求和。\n\n## 复杂度\n\n每个测试用例时间 O(n)，额外空间 O(n)（读入并分段）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nMOD=1000000007\ndef solve(raw):\n z=list(map(int,raw.split()));t=z[0];p=1;out=[]\n for _ in range(t):\n  n=z[p];p+=1;a=z[p:p+n];p+=n;runs=[]\n  for x in a:\n   if not runs or runs[-1][0]!=x:runs.append([x,1])\n   else:runs[-1][1]+=1\n  total=acc=0\n  for _,L in runs:\n   T=L*(L+1)//2;total=(total+L*(L+1)*(L+2)//6+T*acc)%MOD;acc=(acc*L+T)%MOD\n  streak=1;empty=0\n  for i in range(1,n+1):\n   if i<n and a[i]!=a[i-1]:streak+=1\n   else:empty=(empty+streak*(streak+1)//2)%MOD;streak=1\n  out.append(str((total-empty)%MOD))\n return '\\n'.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
