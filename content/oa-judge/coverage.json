@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 820,
-    "awaiting_sandbox": 22,
-    "blocked": 203,
-    "unreviewed": 589
+    "awaiting_sandbox": 24,
+    "blocked": 202,
+    "unreviewed": 588
   },
   "items": [
     {
@@ -4953,7 +4953,7 @@
       "id": "oa-ibm-31",
       "company": "ibm",
       "status": "blocked",
-      "reason": "原文要求恰好卖m件，但数值界允许m大于总库存且无不足库存的规则；不能擅自添加库存足够保证或少卖。"
+      "reason": "原文要求恰好卖m件，但数值界允许m大于总库存且无不足库存的规则；此外样例1按动态剩余库存价格取最优6件为54，与源输出55冲突。不能擅自补库存保证或改写输出。"
     },
     {
       "id": "oa-ibm-32",
@@ -5115,8 +5115,9 @@
     {
       "id": "oa-ibm-55",
       "company": "ibm",
-      "status": "blocked",
-      "reason": "没有保证事件合法；初始无椅，RCC中的R释放不存在的椅子，忽略/判错/机械增加空椅会产生不同结果；U是否需要先有R也未明示，不能缩去这些输入。"
+      "status": "awaiting_sandbox",
+      "batch": "ibm-capital-one-next",
+      "reason": "本站明确限定事件序列合法；在该范围内 R/L 释放室内占用，U 恢复会议室员工，模拟输出唯一。"
     },
     {
       "id": "oa-ibm-56",
@@ -8600,7 +8601,9 @@
     {
       "id": "oa-capital-one-15",
       "company": "capital-one",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "ibm-capital-one-next",
+      "reason": "题意按 OAMaster 快照核对；本站补充的输入协议与范围均在题面显式注明。"
     },
     {
       "id": "oa-capital-one-16",

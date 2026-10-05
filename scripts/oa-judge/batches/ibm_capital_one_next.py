@@ -204,7 +204,7 @@ def main():
         (OUT / folder).mkdir(parents=True, exist_ok=True)
     manifest, reports, reviews, resolutions = [], [], [], []
     resolution_previous = next(
-        item["reason"] for item in json.loads((OUT / "coverage.json").read_text())["items"]
+        item["reason"] for item in json.loads((OUT / "reviews/ibm-remaining-a.json").read_text())["items"]
         if item["id"] == "oa-ibm-55"
     )
     source = SOURCES["oa-ibm-55"]
