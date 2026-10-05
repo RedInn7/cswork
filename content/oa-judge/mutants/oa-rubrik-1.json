@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每对游程只计一个子串",
+    "code": "import sys\ndef solve(raw):\n    s=raw.strip(); runs=[]\n    for c in s:\n        if not runs or runs[-1][0]!=c: runs.append([c,1])\n        else: runs[-1][1]+=1\n    return str(sum(1 for a,b in zip(runs,runs[1:]) if a[1] and b[1]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把多段交替子串也计入",
+    "code": "import sys\ndef solve(raw):\n    from collections import Counter\n    s=raw.strip(); ans=0; balance=0; seen=Counter({0:1})\n    for c in s:\n        balance += 1 if c=='1' else -1\n        ans += seen[balance]; seen[balance]+=1\n    return str(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

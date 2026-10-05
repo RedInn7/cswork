@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-2",
+  "title": "Disjoint Subarrays Max Sum",
+  "explanation": "## 思路\n\n对每个前缀预计算其中最大子数组和，对每个后缀也预计算最大子数组和。枚举切分点 i，最大化 prefixBest[i]+suffixBest[i+1]。\n\n## 正确性\n\n固定切分点时，左段任何合法选择都不可能超过该前缀最大子数组和，右段同理；两侧最大子数组能独立选取，所以二者之和就是该切分点的最优值。枚举所有 1..n−1 的切分点即得到全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n    left=[0]*n; right=[0]*n\n    cur=best=a[0]; left[0]=best\n    for i in range(1,n):\n        cur=max(a[i],cur+a[i]); best=max(best,cur); left[i]=best\n    cur=best=a[-1]; right[-1]=best\n    for i in range(n-2,-1,-1):\n        cur=max(a[i],cur+a[i]); best=max(best,cur); right[i]=best\n    return str(max(left[i]+right[i+1] for i in range(n-1)))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#2-disjoint-subarrays-max-sum",
+  "sourceContentHash": "96bba42195ebb4cb3d1e8757d24830af8f40265a68447f13eff881fa113d5bb0",
+  "author": "CSWork"
+}

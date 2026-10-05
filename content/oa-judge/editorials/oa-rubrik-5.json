@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-5",
+  "title": "Word Compression (Remove k Consecutive Equal Characters)",
+  "explanation": "## 思路\n\n从左到右扫描字符，维护 `(字符, 连续计数)` 栈。计数达到 K 时弹出该组；弹出后后续字符自然与新的栈顶合并，处理连锁删除。\n\n## 正确性\n\n扫描到任意前缀时，栈表示该前缀依题意反复删除后的唯一稳定结果，并且栈内相邻字符组不同。读入新字符时，若与栈顶相同则只可能延长该组；长度达到 K 后立即删除一组，得到该前缀的稳定结果。若字符不同则新建一组。对前缀长度归纳，终止时栈展开即为全串稳定结果；题面保证结果唯一，因此与操作顺序无关。\n\n## 复杂度\n\nn 为 word 长度。时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    word,k=raw.split(); k=int(k); stack=[]\n    for c in word:\n        if stack and stack[-1][0]==c:\n            stack[-1][1]+=1\n            if stack[-1][1]==k: stack.pop()\n        else:\n            stack.append([c,1])\n    return \"\".join(c*count for c,count in stack)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#5-word-compression-remove-k-consecutive-equal-characters",
+  "sourceContentHash": "97c2195e093b9fe5f3198bc2ca14247b91a06920eca53449d32cca1f222ead2c",
+  "author": "CSWork"
+}

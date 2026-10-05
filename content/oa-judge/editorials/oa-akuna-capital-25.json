@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-25",
+  "title": "No Pairs Allowed",
+  "explanation": "## 思路\n\n将单词分解为最大连续相同字符段。长度为 L 的一段至少每两字符替换一次，最少为 floor(L/2)；各段彼此独立，将结果相加。\n\n## 正确性\n\n长度 L 的同字符段每次替换最多能消除一对相邻冲突，因此至少需要 floor(L/2) 次。把该段每隔一个位置替换成其他小写字母即可恰好用 floor(L/2) 次并消除所有相邻相等。不同最大段之间原字符本已不同，分别最优处理后无需额外替换，故总和最优。\n\n## 复杂度\n\n设总字符数为 S。时间 O(S)，空间 O(1)（不计输出）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    lines=raw.splitlines(); n=int(lines[0]); out=[]\n    for word in lines[1:1+n]:\n        edits=0; i=0\n        while i<len(word):\n            j=i+1\n            while j<len(word) and word[j]==word[i]: j+=1\n            edits+=(j-i)//2; i=j\n        out.append(str(edits))\n    return \" \".join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#25-no-pairs-allowed",
+  "sourceContentHash": "8994c9f25a2b4931090877c3abfc69169fb3e15941c84538d5fed61d2bb09c92",
+  "author": "CSWork"
+}

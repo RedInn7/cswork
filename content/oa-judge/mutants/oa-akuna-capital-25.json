@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每次冲突只替换一个字符",
+    "code": "import sys\ndef solve(raw):\n    lines=raw.splitlines(); n=int(lines[0]); out=[]\n    for w in lines[1:1+n]:\n        out.append(str(sum(1 for i in range(1,len(w)) if w[i]==w[i-1])))\n    return \" \".join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每个重复段只替换一次",
+    "code": "import sys\ndef solve(raw):\n    lines=raw.splitlines(); n=int(lines[0]); out=[]\n    for w in lines[1:1+n]:\n        ans=0; i=0\n        while i<len(w):\n            j=i+1\n            while j<len(w) and w[j]==w[i]: j+=1\n            if j-i>1: ans+=1\n            i=j\n        out.append(str(ans))\n    return \" \".join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

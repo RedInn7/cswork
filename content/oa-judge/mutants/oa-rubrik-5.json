@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只移除原始输入中已有的长游程",
+    "code": "import sys\ndef solve(raw):\n    word,k=raw.split(); k=int(k); out=[]; i=0\n    while i<len(word):\n        j=i+1\n        while j<len(word) and word[j]==word[i]: j+=1\n        if j-i<k: out.append(word[i:j])\n        i=j\n    return \"\".join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "达到 K 后只减计数而不删除整组",
+    "code": "import sys\ndef solve(raw):\n    word,k=raw.split(); k=int(k); stack=[]\n    for c in word:\n        if stack and stack[-1][0]==c:\n            stack[-1][1]+=1\n            if stack[-1][1]==k: stack[-1][1]=0\n        else: stack.append([c,1])\n    return \"\".join(c*count for c,count in stack)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
