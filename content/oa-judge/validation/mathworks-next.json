@@ -2,132 +2,214 @@
   "schemaVersion": 1,
   "seed": 20261005,
   "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
-  "note": "本地标准输入输出验证：独立枚举/DP oracle，每题120个唯一小输入，另测公开样例、结构化边界与正常退出错误程序；不代表 GoJudge 沙箱报告。",
+  "note": "每题 163 个独立随机 oracle 输入、样例和正式用例、两个正常退出 mutant；只表示离线验证，不代表 GoJudge。",
   "problems": [
     {
-      "id": "oa-mathworks-6",
-      "oracleCases": 120,
+      "id": "oa-mathworks-1",
+      "oracleCases": 163,
       "formal": 27,
-      "passed": 147,
+      "passed": 190,
       "negativeControls": [
         {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-6-1.py",
-          "description": "不要求两个端点值都出现",
+          "file": "content/oa-judge/negative-controls/oa-mathworks-1-1.py",
+          "description": "重复下标仍计入组合",
           "rejectedByCases": [
             0
           ]
         },
         {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-6-2.py",
-          "description": "把端点同时出现错当作出现任一端点",
+          "file": "content/oa-judge/negative-controls/oa-mathworks-1-2.py",
+          "description": "只返回全部三元组数",
           "rejectedByCases": [
             0
           ]
         }
       ],
-      "referenceSha256": "1b68f025449a8eb22f1ee88ecfbd7a1f755dedfa47c0fc5e7613c9fa2bfcb81a",
-      "maxLegalInputBytesUpperBound": 1100000,
-      "maxTestInputBytes": 200011
+      "referenceSha256": "3fe8aa0c95bbbb7ae7d63e6fd2f8290be84ed9acd2a2bbcbc9b905b9ac9824f6"
     },
     {
-      "id": "oa-mathworks-7",
-      "oracleCases": 120,
-      "formal": 27,
-      "passed": 147,
+      "id": "oa-mathworks-2",
+      "oracleCases": 163,
+      "formal": 29,
+      "passed": 192,
       "negativeControls": [
         {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-7-1.py",
-          "description": "忽略连续字符限制",
+          "file": "content/oa-judge/negative-controls/oa-mathworks-2-1.py",
+          "description": "把 phi(x) 错写为 x-1",
           "rejectedByCases": [
             0
           ]
         },
         {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-7-2.py",
-          "description": "误把所有后续字符都限制为不同于前一字符",
+          "file": "content/oa-judge/negative-controls/oa-mathworks-2-2.py",
+          "description": "漏掉 x 本身的互质计数",
           "rejectedByCases": [
             1
           ]
         }
       ],
-      "referenceSha256": "a7f7f08a8aee87c623747767833cec155c6c33cacf6c1e62ba29e1063e5a2536",
-      "maxLegalInputBytesUpperBound": 200,
-      "maxTestInputBytes": 14
+      "referenceSha256": "5e2393221f825269aee27b95b543589a68f0117b4e5116036c3f9f19bbdbe39d"
     },
     {
-      "id": "oa-mathworks-11",
-      "oracleCases": 120,
+      "id": "oa-mathworks-3",
+      "oracleCases": 163,
       "formal": 27,
-      "passed": 147,
+      "passed": 190,
       "negativeControls": [
         {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-11-1.py",
-          "description": "按输入顺序直接分配前k项",
-          "rejectedByCases": [
-            1
-          ]
-        },
-        {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-11-2.py",
-          "description": "选择最小的k个奖励差",
-          "rejectedByCases": [
-            0
-          ]
-        }
-      ],
-      "referenceSha256": "ad8d25d257d43e03c29e9c930f579709cd2f3daedf3a9243a4a3c7997cc90dc8",
-      "maxLegalInputBytesUpperBound": 2200000,
-      "maxTestInputBytes": 800013
-    },
-    {
-      "id": "oa-mathworks-13",
-      "oracleCases": 120,
-      "formal": 27,
-      "passed": 147,
-      "negativeControls": [
-        {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-13-1.py",
-          "description": "只看首字符是否元音",
-          "rejectedByCases": [
-            2
-          ]
-        },
-        {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-13-2.py",
-          "description": "把查询左端点多减一",
-          "rejectedByCases": [
-            0
-          ]
-        }
-      ],
-      "referenceSha256": "81f40ff49c8d6dcc005789e007b3133962f89d2847ed26d657910bd15de29f3d",
-      "maxLegalInputBytesUpperBound": 2600000,
-      "maxTestInputBytes": 100012
-    },
-    {
-      "id": "oa-mathworks-14",
-      "oracleCases": 120,
-      "formal": 27,
-      "passed": 147,
-      "negativeControls": [
-        {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-14-1.py",
-          "description": "不顾连续限制理想均分",
-          "rejectedByCases": [
-            0
-          ]
-        },
-        {
-          "file": "content/oa-judge/negative-controls/oa-mathworks-14-2.py",
-          "description": "按任务数平均切块",
+          "file": "content/oa-judge/negative-controls/oa-mathworks-3-1.py",
+          "description": "仅计算节点 1 为根",
           "rejectedByCases": [
             3
           ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-3-2.py",
+          "description": "把权值全部当作 1",
+          "rejectedByCases": [
+            0
+          ]
         }
       ],
-      "referenceSha256": "20e41a9b235bc6df9b36027b5e5669df6306cab1d94670b19ff375456230e42c",
-      "maxLegalInputBytesUpperBound": 2200000,
-      "maxTestInputBytes": 600014
+      "referenceSha256": "0cee5c8bc477c05a55d3a1e1ecd8f78bf56f620f78592a98260956bb1fb4d2c7"
+    },
+    {
+      "id": "oa-mathworks-8",
+      "oracleCases": 163,
+      "formal": 27,
+      "passed": 190,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-8-1.py",
+          "description": "忽略已有库存",
+          "rejectedByCases": [
+            1
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-8-2.py",
+          "description": "把总预算重复用于每种金属",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ],
+      "referenceSha256": "4e45d947b2d85eca876c029441b19332c4e41cf66716c0b890c66480445390a5"
+    },
+    {
+      "id": "oa-mathworks-10",
+      "oracleCases": 163,
+      "formal": 27,
+      "passed": 190,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-10-1.py",
+          "description": "只比较绝对差值，忽略方向",
+          "rejectedByCases": [
+            1
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-10-2.py",
+          "description": "固定返回最后一个单词",
+          "rejectedByCases": [
+            2
+          ]
+        }
+      ],
+      "referenceSha256": "0fb85aaeec7a373419837199c0699869d6cc4fe737e09a478f269e0bbabeece8"
+    },
+    {
+      "id": "oa-mathworks-12",
+      "oracleCases": 163,
+      "formal": 30,
+      "passed": 193,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-12-1.py",
+          "description": "把不超过 d 错写成严格小于 d",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-12-2.py",
+          "description": "只统计长度 1 的字符串",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ],
+      "referenceSha256": "03b15fedc291e79a78c4fafb5f644964fce38b0fa1aa7239bfd6e95de68bc676"
+    },
+    {
+      "id": "oa-mathworks-15",
+      "oracleCases": 163,
+      "formal": 28,
+      "passed": 191,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-15-1.py",
+          "description": "错误地要求所有位置增量相同",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-15-2.py",
+          "description": "把允许的 +1 操作错作绝对差",
+          "rejectedByCases": [
+            1
+          ]
+        }
+      ],
+      "referenceSha256": "41fc1ac9349155f7b1715e86c3f7ef4ed39fe5fed20cfc04f0eaf5c226d8e9dd"
+    },
+    {
+      "id": "oa-mathworks-16",
+      "oracleCases": 163,
+      "formal": 28,
+      "passed": 191,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-16-1.py",
+          "description": "只看原数组位置，不模拟删除后的下标",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-16-2.py",
+          "description": "按不同数值个数估计 beauty",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ],
+      "referenceSha256": "cb185c3c976b5377bab0eae6a23c88cd2f7e5b9384f0ce089e08870f97fcf31c"
+    },
+    {
+      "id": "oa-mathworks-19",
+      "oracleCases": 163,
+      "formal": 28,
+      "passed": 191,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-19-1.py",
+          "description": "不修正奇数总和",
+          "rejectedByCases": [
+            1
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-mathworks-19-2.py",
+          "description": "负奇数一律不参与选择",
+          "rejectedByCases": [
+            5
+          ]
+        }
+      ],
+      "referenceSha256": "a933dd5d232dc30216dff92355abf7ce1953a7b69b95b2e0871eb16e05a99fd7"
     }
   ]
 }

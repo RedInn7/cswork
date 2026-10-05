@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-mathworks-1",
+      "sourceContentHash": "ff5fa5cc5d92ee3b5def08ad1f064b929b04bcc6d241c0a932fc989d32016fd3",
+      "packageChecksum": "1eb19c60e16bbbc3b920e44fdaf9a3c6ee38623762b91f4e5f49c476f9e8bc61",
+      "editorial": "## 思路\n\n按余数统计前两个位置，由模 d 唯一确定第三个余数；使用组合计数排除重复下标。\n\n## 正确性证明\n\n固定中间下标 j 时，频次数组只记录 j 左侧元素余数。对每个右侧 k，唯一需要的左侧余数为 −arr[j]−arr[k] (mod d)，查表即可计入所有合法 i。每对 j,k 的贡献都对应唯一递增三元组，因此总和恰为答案。\n\n## 复杂度\n\nO(n²+d)，空间 O(d)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n d=list(map(int,s.split()));n,m=d[:2];a=d[2:];freq=[0]*m;ans=0\n if n:freq[a[0]%m]=1\n for mid in range(1,n-1):\n  r=a[mid]%m\n  for k in range(mid+1,n):ans+=freq[-(r+a[k])%m]\n  freq[r]+=1\n return str(ans)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-2",
+      "sourceContentHash": "22ba65cd4d4485ba11b2451ad0f82492bf82b705bc758b28c2e1848502935f61",
+      "packageChecksum": "9c88ee1667e37189b05bad5075ede0c492c1d9f1ce0b280c6572ad4ae4381812",
+      "editorial": "## 思路\n\n线性筛式更新：初始 φ[x]=x；对每个质数 p，把其倍数的 φ[x] 减去 φ[x]/p，最后按输入顺序读取 φ[A[i]]。\n\n## 正确性证明\n\nφ 的初值为 x。每个质数 p 的倍数恰好含因子 p 的可被排除比例 1/p，所以依次对所有质数倍数减去当前值的 1/p；按 Euler 函数乘法性质可得到各 φ(x)，即定义所需互质数数量。\n\n## 复杂度\n\nO(M log log M+n)，M=max(A)，空间 O(M)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import math\ndef solve(s):\n d=list(map(int,s.split()));a=d[1:];limit=max(a,default=1);phi=list(range(limit+1))\n if limit>=1:phi[1]=1\n for p in range(2,limit+1):\n  if phi[p]==p:\n   for x in range(p,limit+1,p):phi[x]-=phi[x]//p\n return \" \".join(str(phi[x]) for x in a)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-3",
+      "sourceContentHash": "e1ee016801e95428b148f27445d81679b03257d0da7efffab62292c89abce18f",
+      "packageChecksum": "0db0397ad97a0eac373c2912281e410ead41bfceee2093466574068904136fa0",
+      "editorial": "## 思路\n\n以节点 1 为根先算加权距离和及子树权值；根从 u 移到子节点 v 时，子树贡献减少、其余贡献增加，可在线性时间完成换根。\n\n## 正确性证明\n\n初始根的加权距离和直接按深度求和。换根跨过一条边时，子树中每个权值的距离减一，子树外的距离加一，故转移量为总权值减去子树权值的两倍。遍历所有节点取最大值。\n\n## 复杂度\n\nO(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n d=list(map(int,s.split()));n=d[0];a=d[1:n+1];g=[[] for _ in range(n)];p=n+1\n for _ in range(n-1):\n  u,v=d[p]-1,d[p+1]-1;p+=2;g[u].append(v);g[v].append(u)\n parent=[-1]*n;depth=[0]*n;order=[0];parent[0]=0\n for u in order:\n  for v in g[u]:\n   if parent[v]<0:parent[v]=u;depth[v]=depth[u]+1;order.append(v)\n sub=a[:]\n for v in order[:0:-1]:sub[parent[v]]+=sub[v]\n beauty=[0]*n;beauty[0]=sum(depth[i]*a[i] for i in range(n));total=sum(a)\n for v in order[1:]:beauty[v]=beauty[parent[v]]+total-2*sub[v]\n return str(max(beauty))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-8",
+      "sourceContentHash": "23bf8efa3b3114ef340be0fd12d0104a77966dcf9c83766e7141e1c2b70a1e79",
+      "packageChecksum": "115cacc789c666743749ff0b35e3f61672465ebb3439d329c25032d0d84b4f4d",
+      "editorial": "## 思路\n\n产量 x 的购买成本是 Σmax(0,x·composition[i]−stock[i])·cost[i]，随 x 单调不减，可二分最大可行产量。题源样例输出 1 正确，原解释成本算式有误，本站按规则修正。\n\n## 正确性证明\n\n给定产量时，各金属只需补足配方短缺，公式恰是实现该产量的最小购买成本。成本随产量单调不减，二分得到预算内的最大产量。\n\n## 复杂度\n\nO(n log U)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n d=list(map(int,s.split()));n,b=d[:2];c=d[2:2+n];stock=d[2+n:2+2*n];cost=d[2+2*n:]\n def ok(x):return sum(max(0,x*a-v)*w for a,v,w in zip(c,stock,cost))<=b\n lo,hi=0,1\n while ok(hi):hi*=2\n while lo+1<hi:\n  mid=(lo+hi)//2\n  if ok(mid):lo=mid\n  else:hi=mid\n return str(lo)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-10",
+      "sourceContentHash": "39116201ef9cf030aab98b8c4011c0ee5dc99b3c47327233ebb53bf4d39cbb7c",
+      "packageChecksum": "d7b808028f80249b2d581f4fcf55114bd0b1cce1e3e6ae136fb14b8bcc6565d2",
+      "editorial": "## 思路\n\n比较有方向的相邻字母差值序列。例如 ACB 与 BDC 都是 (+2,−1)。\n\n## 正确性证明\n\n题目保证只有一个单词的差值签名与其他单词不同。计数签名后唯一只出现一次的单词就是答案。\n\n## 复杂度\n\nO(nL)，空间 O(nL)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\ndef solve(s):\n d=s.split();words=d[1:];pat=[tuple(ord(w[i+1])-ord(w[i]) for i in range(len(w)-1)) for w in words];cnt=Counter(pat)\n return next(w for w,p in zip(words,pat) if cnt[p]==1)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-12",
+      "sourceContentHash": "236903cd17dda775f66173bab3a67e3c3fe43ab61d3645ee29f77f06b0834a9b",
+      "packageChecksum": "892ce36ba9dcc63a1d1b2693b5a2f88baaa394d2a25336b8810901b367bf70b9",
+      "editorial": "## 思路\n\n按末尾字母做动态规划；新字符只从相差不超过 d 的末尾状态转移。\n\n## 正确性证明\n\n按字符串末尾字母分类。追加字符 c 合法当且仅当旧末尾与 c 的距离≤d；因此该转移既不遗漏也不重复计数全部合法字符串。\n\n## 复杂度\n\nO(26n)，空间 O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "MOD=1000000007\ndef solve(s):\n n,d=map(int,s.split());v=[1]*26\n for _ in range(n-1):\n  p=[0]\n  for z in v:p.append((p[-1]+z)%MOD)\n  v=[(p[min(26,i+d+1)]-p[max(0,i-d)])%MOD for i in range(26)]\n return str(sum(v)%MOD)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-15",
+      "sourceContentHash": "d6babafe7d60990b2313d5edb3b6c2a9c6ec57ff49394a5fc0cd690f330616a8",
+      "packageChecksum": "f51d5afcbdd8198f101693ee26335b3e3b9d5e122327ab2ec8c521ba5dcce202",
+      "editorial": "## 思路\n\n令 d[i]=target[i]−source[i]，必须逐项非负。每个 d[i−1] 到 d[i] 的下降至少需要一个在该边界结束的前缀操作。下降总量 N 若超过 d[0] 则不可能；否则用 N 个前缀和若干后缀/全数组操作补齐，最少操作数为 d[n−1]+N。\n\n## 正确性证明\n\n记 N 为相邻增量中所有下降幅度之和。每次前缀操作最多贡献一次单位下降，所以至少要 N 次前缀；首项增量只有 d[0] 单位前缀/整段操作可用，故 N>d[0] 时无解。若 N≤d[0]，按每个下降位置放置前缀，剩余用整段和后缀补齐即可构造目标；化简后的总操作数为 d[last]+N，达到下界。\n\n## 复杂度\n\nO(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n d=list(map(int,s.split()));n=d[0];a=d[1:1+n];b=d[1+n:];x=[y-z for y,z in zip(b,a)]\n if min(x)<0:return \"-1\"\n if n==1:return str(x[0])\n need=sum(max(0,x[i-1]-x[i]) for i in range(1,n))\n if need>x[0]:return \"-1\"\n return str(x[-1]+need)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-16",
+      "sourceContentHash": "904bcbf9864a7a9810d3060d85b5d99098671e8cd2310395c700fcb0f875b34b",
+      "packageChecksum": "d25c9001dc5b83216323dfa647e50967bb68470043cef43231940336c2818c73",
+      "editorial": "## 思路\n\nDP 状态 dp[k] 表示当前前缀中选出长度 k 的子序列时 beauty 的最大值。保留当前元素时，其新位置为 k+1，据此判断是否得分；倒序更新避免重复选取。\n\n## 正确性证明\n\ndp[k] 表示处理到当前原数组前缀、选出长度 k 的子序列时可达到的最大 beauty。跳过当前元素保留旧状态；选择它时新位置为 k+1，值恰等于 k+1 才加分。倒序转移保证每个原元素最多使用一次。处理完后在所有非空长度中取最大值。\n\n## 复杂度\n\nO(n²)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n d=list(map(int,s.split()));n=d[0];a=d[1:];neg=-10**9;dp=[neg]*(n+1);dp[0]=0\n for x in a:\n  for length in range(n-1,-1,-1):\n   if dp[length]>=0:dp[length+1]=max(dp[length+1],dp[length]+(x==length+1))\n return str(max(dp[1:]))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-19",
+      "sourceContentHash": "7352d6171018ebc0e53fa8dc44d983a770d023fa054e84407f7289952c2edda8",
+      "packageChecksum": "86d61863e66fbd1e91da25e1323ade6d23b278118d0babf01d2cae4f6cf2e51d",
+      "editorial": "## 思路\n\n先取所有正数得到最大和；若它为奇数，比较去掉最小正奇数或加入最接近 0 的负奇数两种修正。\n\n## 正确性证明\n\n所有正数之和是未施加奇偶条件时的最大值。若为奇数，任一可行解至少需要去掉一个正奇数或加入一个负奇数；选损失最小的这两种调整之一即为最大偶数和。\n\n## 复杂度\n\nO(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(s):\n d=list(map(int,s.split()));a=d[1:];z=sum(x for x in a if x>0)\n if z%2==0:return str(z)\n pos=[x for x in a if x>0 and x%2];neg=[x for x in a if x<0 and x%2]\n return str(max(z-min(pos) if pos else -10**100,z+max(neg) if neg else -10**100,0))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
