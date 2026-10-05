@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-intuit-16",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "最长密码片段",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Intuit"
+    ],
+    "description": "找最长连续子串：不能包含数字，且至少含一个大写英文字母；没有符合条件的子串输出 -1。",
+    "input": "输入一行仅含 a-z、A-Z、0-9 的字符串，1≤长度≤200。",
+    "output": "按题意输出答案；数组题按空格分隔输出。",
+    "explanation": "数字把字符串分成纯字母段；含大写字母的段才有效。\n\n正确性：任一合法子串都不能跨过数字，因此完全位于一个数字分隔出的字母段中；对每段检查是否含大写即可。\n\n复杂度：时间 O(n)，空间 O(1)。",
+    "hints": [
+      "数字把字符串分成纯字母段；含大写字母的段才有效。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "k3Cb\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "k3uu\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "aB2CD\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "X1aXXB22zZXXazaa21\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "2abZXbbA2Acccb2ab9a\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "AcB99a10BA0bcbAZbb1z1X2b\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "Xz2acB022A291\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "ab9A0z91BAB9ca0AAb0B\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "b190zA2zzaa0Zzccc90Z0Bc0\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "XzZ10B9Zac\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "zAAcBZ29bAZ2B\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "9zBazB\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "92A0a02c2929zbAa0b9z1b\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "9X11\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "B1XB0ABBbaAa0XzZ9A\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "zaB12Xbbbcbac0cb1AXZ\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "9a9AXz\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "c\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "ZXzcZZz11Bb2c0XBb2Zz2\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "BX1bc99AXB0z2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "1bAbc2aX0AA01bz00z2001\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "ab2XcAaXBb1Z9A1B02\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "bzXz9AAb0ZzBZ212292\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "0XcA1XbbA\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "c2B1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "0B\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "BXZaXB\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "Z91cAa2zc\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "1a02cb0baB1Z02AXBZbb\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "BB9cX\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "Z2ZczBAXc2911XA09Z1\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "zc0Bb2Zbb2b9Xca2XcXbZbcb\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "bAAa2Xza2aZcZAAaa1zc0\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
