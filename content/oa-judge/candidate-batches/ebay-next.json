@@ -9,7 +9,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];a=z[1:1+n];l=0;r=n-1;o=[]\n while l<=r:\n  o.append(a[l]);l+=1\n  if l<=r:o.append(a[r]);r-=1\n return \" \".join(map(str,o))\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];a=z[1:1+n];l=0;r=n-1;o=[]\n while l<=r:\n  o.append(a[l]);l+=1\n  if l<=r:o.append(a[r]);r-=1\n return \" \".join(map(str,o))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -21,7 +21,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if cnt%n==0:\n    x=CS[(CS.index(c.lower())+1)%len(CS)];o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+          "code": "import sys\nCS=\"bcdfghjklmnpqrstvwxyz\"\ndef solve(s):\n n,word=s.split(\"\\n\",1);n=int(n);word=word.removesuffix(\"\\n\");cnt=0;o=[]\n for c in word:\n  if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n   cnt+=1\n   if cnt%n==0:\n    x=CS[(CS.index(c.lower())+1)%len(CS)];o.append(x.upper() if c.isupper() else x);continue\n  o.append(c)\n return \"\".join(o)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -33,7 +33,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -45,7 +45,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,k=z[:2];a=z[2:2+n];b=z[2+n:2+2*n];base=sum(-x*y for x,y in zip(a,b));g=[abs(x)+x*y for x,y in zip(a,b)];w=sum(g[:k]);best=w\n for i in range(k,n):w+=g[i]-g[i-k];best=max(best,w)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,k=z[:2];a=z[2:2+n];b=z[2+n:2+2*n];base=sum(-x*y for x,y in zip(a,b));g=[abs(x)+x*y for x,y in zip(a,b)];w=sum(g[:k]);best=w\n for i in range(k,n):w+=g[i]-g[i-k];best=max(best,w)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -57,7 +57,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];ans=0\n for x in z[1:1+n]:\n  if x==0:c=1\n  else:\n   c=0\n   while x:\n    c+=x%10==0;x//=10\n  ans+=c%2\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n=z[0];ans=0\n for x in z[1:1+n]:\n  if x==0:c=1\n  else:\n   c=0\n   while x:\n    c+=x%10==0;x//=10\n  ans+=c%2\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -69,7 +69,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "import sys\ndef scan(a):\n ans=0;prev=None;sg=None;digit=False\n for c in a:\n  if c.isdigit():\n   x=int(c);v=x if sg is None or prev is None else max(x,prev+sg*x);ans=max(ans,v);prev=v;sg=None;digit=True\n  elif c in \"+-\" and digit:sg=1 if c==\"+\" else -1;digit=False\n  else:prev=None;sg=None;digit=False\n return ans\ndef solve(s):\n z=s.splitlines();h,w=map(int,z[0].split());g=[list(x) for x in z[1:1+h]];ans=max(scan(x) for x in g)\n for j in range(w):ans=max(ans,scan([g[i][j] for i in range(h)]))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+          "code": "import sys\ndef scan(a):\n ans=0;prev=None;sg=None;digit=False\n for c in a:\n  if c.isdigit():\n   x=int(c);v=x if sg is None or prev is None else max(x,prev+sg*x);ans=max(ans,v);prev=v;sg=None;digit=True\n  elif c in \"+-\" and digit:sg=1 if c==\"+\" else -1;digit=False\n  else:prev=None;sg=None;digit=False\n return ans\ndef solve(s):\n z=s.splitlines();h,w=map(int,z[0].split());g=[list(x) for x in z[1:1+h]];ans=max(scan(x) for x in g)\n for j in range(w):ans=max(ans,scan([g[i][j] for i in range(h)]))\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
         }
       ]
     }
