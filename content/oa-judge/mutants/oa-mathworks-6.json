@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不要求两个端点值都出现",
+    "code": "def solve(s):\n it=iter(map(int,s.split()));n=next(it);l=next(it);h=next(it);a=[next(it) for _ in range(n)];z=0\n for i in range(n):\n  mn=10**9;mx=0\n  for j in range(i,n):mn=min(mn,a[j]);mx=max(mx,a[j]);z+=mn>=l and mx<=h\n print(z)\nimport sys;solve(sys.stdin.read())"
+  },
+  {
+    "name": "把端点同时出现错当作出现任一端点",
+    "code": "def solve(s):\n it=iter(map(int,s.split()));n=next(it);l=next(it);h=next(it);a=[next(it) for _ in range(n)];z=0\n for i in range(n):\n  mn=10**9;mx=0\n  for j in range(i,n):mn=min(mn,a[j]);mx=max(mx,a[j]);z+=mn==l or mx==h\n print(z)\nimport sys;solve(sys.stdin.read())"
+  }
+]

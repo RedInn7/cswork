@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不顾连续限制理想均分",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n,m=d[:2];a=d[2:];print((sum(a)+n-1)//n)"
+  },
+  {
+    "name": "按任务数平均切块",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()));n,m=d[:2];a=d[2:];q,r=divmod(m,n);p=0;z=[]\nfor i in range(n):j=p+q+(i<r);z.append(sum(a[p:j]));p=j\nprint(max(z))"
+  }
+]

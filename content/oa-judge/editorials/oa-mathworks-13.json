@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-13",
+  "title": "Has Vowels",
+  "explanation": "## 思路\n\n按题源解释使用 1-based 闭区间。\n\n## 正确性证明\n\nprefix[t]记录前t个字符串中首尾皆为元音的数量。闭区间[i,r]的答案恰为prefix[r]−prefix[i−1]。\n\n## 复杂度\n\n时间O(n+q)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n it=iter(s.split());n=int(next(it));q=int(next(it));a=[next(it) for _ in range(n)];p=[0]\n for x in a:p.append(p[-1]+(x[0] in 'aeiou' and x[-1] in 'aeiou'))\n z=[]\n for _ in range(q):l,r=map(int,next(it).split('-'));z.append(str(p[r]-p[l-1]))\n return '\\n'.join(z)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#13-has-vowels",
+  "sourceContentHash": "5ba20323837b2f6938cb66c2b72906a464289690de0a7617dc1fb8f7136bfa7a",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-11",
+  "title": "Task Completion",
+  "explanation": "## 思路\n\n示例1：第二人全做得15分，换给第一人差值最大的三项增加6，总计21；题源解释的加数与其输出矛盾，按题意和输出为准。\n\n## 正确性证明\n\n以全部任务交给第二人为基准。任务i改给第一人的增益为reward_1[i]−reward_2[i]。恰选k项时，若遗漏更大增益而选了较小增益，交换会改善或保持总分，因此应选最大的k个差值。\n\n## 复杂度\n\n时间O(n log n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n it=iter(map(int,s.split()));n=next(it);k=next(it);a=[next(it) for _ in range(n)];b=[next(it) for _ in range(n)]\n return str(sum(b)+sum(sorted((x-y for x,y in zip(a,b)),reverse=True)[:k]))\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#11-task-completion",
+  "sourceContentHash": "0165d81b7ea22388e86342ab7b4a41c4f367f02521ac51cbfc2b5fe6a9fa3075",
+  "author": "CSWork"
+}

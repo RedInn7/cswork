@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-7",
+  "title": "Valid Passwords",
+  "explanation": "## 思路\n\n保留题源 k≤n 约束，边界测试 k=2 和 k=n。\n\n## 正确性证明\n\n按末尾连续相同字符长度分类。追加不同字符有25种选择；追加相同字符会把原末段延长1。分类求和等于25乘以最近至多k−1个长度状态之和，滚动窗口仅优化该求和，等价于独立的末段长度DP。\n\n## 复杂度\n\n时间O(n)，空间O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "MOD=1000000007\ndef solve(s):\n n,k=map(int,s.split());d=[0]*(n+1);d[1]=26;w=0\n for i in range(2,n+1):\n  w=(w+d[i-1])%MOD\n  if i-k>=1:w=(w-d[i-k])%MOD\n  d[i]=(25*w+(26 if i<k else 0))%MOD\n return str(d[n])\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#7-valid-passwords",
+  "sourceContentHash": "330931520e5cf9a1d56ee29f6f3b031be4fb67338d7e1dcc6d75e329a9e4cee5",
+  "author": "CSWork"
+}

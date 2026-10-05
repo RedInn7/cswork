@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只看首字符是否元音",
+    "code": "import sys\nd=sys.stdin.read().split();n,q=map(int,d[:2]);a=d[2:2+n];p=[0]\nfor x in a:p.append(p[-1]+(x[0] in 'aeiou'))\nprint('\\n'.join(str(p[int(r)]-p[int(l)-1]) for l,r in (x.split('-') for x in d[2+n:])))"
+  },
+  {
+    "name": "把查询左端点多减一",
+    "code": "import sys\nd=sys.stdin.read().split();n,q=map(int,d[:2]);a=d[2:2+n];p=[0]\nfor x in a:p.append(p[-1]+(x[0] in 'aeiou' and x[-1] in 'aeiou'))\nprint('\\n'.join(str(p[int(r)]-p[max(0,int(l)-2)]) for l,r in (x.split('-') for x in d[2+n:])))"
+  }
+]

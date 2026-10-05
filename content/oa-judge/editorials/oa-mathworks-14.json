@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-14",
+  "title": "Load Balancing",
+  "explanation": "## 思路\n\n正任务且 m≥n 时，不超过 n 段的可行分配可以细分成恰好 n 段且不会提高最大负载。\n\n## 正确性证明\n\n给定负载上限，按序尽量填满当前连续段得到所需最少段数。段数超过n则无解；不超过n时，因m≥n且任务正数，可细分为恰好n段而不增加最大负载。可行性随上限单调，所以二分得最小值。\n\n## 复杂度\n\n时间O(m log(sum(burstTime)))，空间O(m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(s):\n it=iter(map(int,s.split()));n=next(it);m=next(it);a=[next(it) for _ in range(m)];lo=max(a);hi=sum(a)\n while lo<hi:\n  mid=(lo+hi)//2;parts=1;load=0\n  for x in a:\n   if load+x>mid:parts+=1;load=x\n   else:load+=x\n  if parts<=n:hi=mid\n  else:lo=mid+1\n return str(lo)\nif __name__==\"__main__\":\n import sys;print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/mathworks#14-load-balancing",
+  "sourceContentHash": "c9faa6a042f6a3c3e595536c2ca408bffd568ff03d0d2db0fa489cae917cf680",
+  "author": "CSWork"
+}
