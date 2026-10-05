@@ -8,4 +8,4 @@ def solve(s):
   for j in range(r,w-r):
    q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)
  return "\n".join(" ".join(map(str,x)) for x in o)
-if __name__=='__main__': print(solve(sys.stdin.read()),end='')
+if __name__=='__main__': print(solve(sys.stdin.read()))

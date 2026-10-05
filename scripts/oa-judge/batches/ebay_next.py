@@ -135,7 +135,7 @@ def main():
  for d in ("packages","editorials","references","oracles","mutants","negative-controls","candidate-batches","validation","reviews","source-evidence"):(OUT/d).mkdir(parents=True,exist_ok=True)
  items=[];reports=[];reviews=[];seed=20261005
  for s in S:
-  pid=f"oa-ebay-{s['num']}";src=CAT[pid];code=textwrap.dedent(s["code"]).strip()+"\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n";ref=OUT/"references"/f"{pid}.py";ref.write_text(code)
+  pid=f"oa-ebay-{s['num']}";src=CAT[pid];code=textwrap.dedent(s["code"]).strip()+"\nif __name__=='__main__': print(solve(sys.stdin.read()))\n";ref=OUT/"references"/f"{pid}.py";ref.write_text(code)
   rng=random.Random(seed+s["num"]);vals=list(s["samples"]);seen={json.dumps(v,sort_keys=True,ensure_ascii=False) for v in vals}
   while len(vals)<163:
    v=s["gen"](rng);key=json.dumps(v,sort_keys=True,ensure_ascii=False)

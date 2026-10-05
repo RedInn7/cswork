@@ -9,4 +9,4 @@ def solve(s):
     x=c.lower();o.append(x.upper() if c.isupper() else x);continue
   o.append(c)
  return "".join(o)
-if __name__=='__main__': print(solve(sys.stdin.read()),end='')
+if __name__=='__main__': print(solve(sys.stdin.read()))

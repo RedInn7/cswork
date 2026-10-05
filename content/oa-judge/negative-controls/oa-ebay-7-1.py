@@ -11,4 +11,4 @@ def solve(s):
  z=s.splitlines();h,w=map(int,z[0].split());g=[list(x) for x in z[1:1+h]];ans=max(scan(x) for x in g)
  for j in range(w):ans=max(ans,scan([g[i][j] for i in range(h)]))
  return str(ans)
-if __name__=='__main__': print(solve(sys.stdin.read()),end='')
+if __name__=='__main__': print(solve(sys.stdin.read()))

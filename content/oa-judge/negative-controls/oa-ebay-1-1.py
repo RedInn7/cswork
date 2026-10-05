@@ -5,4 +5,4 @@ def solve(s):
   o.append(a[r]);r-=1
   if l<=r:o.append(a[r]);r-=1
  return " ".join(map(str,o))
-if __name__=='__main__': print(solve(sys.stdin.read()),end='')
+if __name__=='__main__': print(solve(sys.stdin.read()))

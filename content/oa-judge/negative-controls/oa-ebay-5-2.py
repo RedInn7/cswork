@@ -9,4 +9,4 @@ def solve(s):
     c+=x%10==0;x//=100
   ans+=c%2
  return str(ans)
-if __name__=='__main__': print(solve(sys.stdin.read()),end='')
+if __name__=='__main__': print(solve(sys.stdin.read()))

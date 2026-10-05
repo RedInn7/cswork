@@ -1,10 +1,10 @@
 [
   {
     "name": "round-up-average",
-    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=(q+d*d-1)//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=(q+d*d-1)//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
   },
   {
     "name": "skip-first-center-row",
-    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r+1,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()),end='')\n"
+    "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));h,w,r=z[:3];a=[z[3+i*w:3+(i+1)*w] for i in range(h)];p=[[0]*(w+1) for _ in range(h+1)]\n for i in range(h):\n  for j in range(w):p[i+1][j+1]=a[i][j]+p[i][j+1]+p[i+1][j]-p[i][j]\n o=[x[:] for x in a];d=2*r+1\n for i in range(r+1,h-r):\n  for j in range(r,w-r):\n   q=p[i+r+1][j+r+1]-p[i-r][j+r+1]-p[i+r+1][j-r]+p[i-r][j-r];o[i][j]=q//(d*d)\n return \"\\n\".join(\" \".join(map(str,x)) for x in o)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
   }
 ]
