@@ -5978,6 +5978,54 @@
       ]
     },
     {
+      "id": "oa-hudson-river-trading-1",
+      "sourceContentHash": "af5242de4166cc797083f7d96b343f61ddb9aff5a33e284413dbdc7f345893e7",
+      "packageChecksum": "16a9e58bfadc0b77503a45d2ca4f43d840cb08222d4abe797ca6d304a0de5bf8",
+      "editorial": "## 思路\n\n反复取绝对值的个位并除以 10，倒序拼接，最后按需补负号。0 单独处理。为覆盖 INT_MIN，使用不溢出的整数表示。\n\n## 正确性证明\n\n每步取模恰得当前十进制最低位，整除 10 删除该位；全部位倒序后恢复原顺序和符号，因此所得字符与十进制表示逐位相同。\n\n## 复杂度\n\n设总十进制位数为 D，时间 O(D)，除输出外空间 O(D)。\n\n## 来源说明\n\n上游原题限制 built-in conversion helper；本站判题只能验证输出，不能静态证明选手未调用内置转换函数。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def digits(n):\n if n==0: return \"0\"\n neg=n<0; x=-n if neg else n; out=[]\n while x:\n  out.append(chr(ord('0')+x%10)); x//=10\n if neg: out.append('-')\n return ''.join(reversed(out))\ndef solve(raw):\n return \"\\n\".join(digits(int(line)) for line in raw.splitlines() if line.strip())\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hudson-river-trading-2",
+      "sourceContentHash": "db1ef202fccfa81737135b10ccfe15fd65b6607e59e9e336d8a025357c77c022",
+      "packageChecksum": "66368ef626f6ef8a77a430685e9e3bb329b10cdcedd62ec8e8489bfcd1460807",
+      "editorial": "## 思路\n\n对相邻价格变化生成非零方向流，并记录每个方向对应的原价格下标。分别用 KMP 匹配买入和卖出模式，将信号加到对应的价格下标，再前缀累加。\n\n## 正确性证明\n\n每个模式的 KMP 在非零方向流中恰在且仅在完整匹配结束时触发一次；记录的下标正是当前信号所对应的价格。将买卖增量相加并做前缀和，得到每个时刻所有已触发信号的净持仓。\n\n## 复杂度\n\n时间 O(n+b+s)，空间 O(n+b+s)。\n\n## 来源说明\n\n原文示例 51,56,56,58 明确把两次上涨看作连续信号；平价既不触发信号，也不能重置非零变化序列。上游整理版 MDX 的 0 方向实现会与这个原始示例冲突，本站遵循原始规则和示例并记录该差异。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def kmp_events(signs, pattern, delta, amount):\n m=len(pattern); pi=[0]*m\n for i in range(1,m):\n  j=pi[i-1]\n  while j and pattern[i]!=pattern[j]: j=pi[j-1]\n  if pattern[i]==pattern[j]: j+=1\n  pi[i]=j\n j=0\n for sign,price_index in signs:\n  while j and sign!=pattern[j]: j=pi[j-1]\n  if sign==pattern[j]: j+=1\n  if j==m: delta[price_index]+=amount; j=pi[j-1]\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); b=next(it); s=next(it)\n p=[next(it) for _ in range(n)]; buy=[next(it) for _ in range(b)]; sell=[next(it) for _ in range(s)]\n signs=[(1 if p[i]>p[i-1] else -1,i) for i in range(1,n) if p[i]!=p[i-1]]\n delta=[0]*n; kmp_events(signs,buy,delta,1)\n kmp_events(signs,sell,delta,-1)\n pos=0; out=[]\n for x in delta: pos+=x; out.append(str(pos))\n return \" \".join(out)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hudson-river-trading-3",
+      "sourceContentHash": "6f39a6d3f353ad28359e05867f5cde622533f18cc82ab900005a082145649eed",
+      "packageChecksum": "36ca205eda9f090382b7fba5a2913d3baa2e2689a340f508a819195e5269c66c",
+      "editorial": "## 思路\n\n将 n 转成四进制。先计入位数更短的所有合法正数，再从高位到低位统计当前位可选的更小合法数字组合；首位只能为 1。\n\n## 正确性证明\n\n位数更短的正 fancy 数有 2^(k-1) 个。固定相同长度后，首位只能是 1；遇到每位时先累计小于 n 当前数字的合法选择及其后缀组合数，若当前数字不是 0/1，后续前缀已不可能相等，可结束。故每个小于 n 的合法数恰计一次。\n\n## 复杂度\n\n时间 O(log n)，空间 O(log n)。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n n=int(raw.strip()); ds=[]\n while n: ds.append(n%4); n//=4\n ds=ds[::-1]; length=len(ds); ans=sum(2**(k-1) for k in range(1,length))\n if not ds: return \"0\"\n if ds[0]>1: return str(ans+2**(length-1))\n if ds[0]<1: return str(ans)\n for i in range(1,length):\n  smaller=sum(x<ds[i] for x in (0,1))\n  ans+=smaller*2**(length-i-1)\n  if ds[i] not in (0,1): return str(ans)\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hudson-river-trading-5",
+      "sourceContentHash": "bd6b46581b9f89560a382cf3f10c9707483dd3a782ecb9f97575f7c12f50185e",
+      "packageChecksum": "c1efa42a17ef72e92a84a8029982f351122254b21292abd7e19fe10bab09cfef",
+      "editorial": "## 思路\n\n将格子视为有向无环图，较小值指向相邻较大值。按值从小到大动态规划：以格子结束的路径数等于 1（单格）加所有较小邻居的路径数；最终减去所有单格路径。\n\n## 正确性证明\n\n严格递增使路径图无环，值升序保证每个格子处理前其所有较小邻居已完成。每条以当前格子结尾且长度至少 2 的路径，唯一来自一个较小邻居路径追加当前格子；因此递推完整且不重不漏。减去的每个单格正好对应一个不符合长度要求的路径。\n\n## 复杂度\n\n设 V 为格子数、E≤4V。时间 O(V log V+E)，空间 O(V)。\n\n## 来源说明\n\n原始示例输出 4 符合邻接路径定义，但所列路径端点说明不准确：实际四条为 1→5、1→2、2→7、1→2→7。本站保留规则及答案，纠正说明并记录原解释错误。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef solve(raw):\n rows=grid_decode(raw); cells={(r,c):v for r,row in enumerate(rows) for c,v in enumerate(row)}\n dp={}; total=0\n for (r,c),v in sorted(cells.items(),key=lambda x:x[1]):\n  ways=1\n  for nr,nc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):\n   if (nr,nc) in cells and cells[(nr,nc)]<v: ways+=dp[(nr,nc)]\n  dp[(r,c)]=ways; total+=ways-1\n return str(total)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-ibm-55",
       "sourceContentHash": "a19ad065b00c7f50af1241ed7b8ccd17ad7c2edb2c8266a5297d1934f1681895",
       "packageChecksum": "65e51fcc68b0e98e7fb6d1a46f40167a78e88acc58abd8f15f475268823ed14b",
