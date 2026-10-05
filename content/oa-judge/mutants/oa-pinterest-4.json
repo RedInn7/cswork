@@ -1,0 +1,10 @@
+[
+  {
+    "name": "高度并列时选下标较大者",
+    "code": "import heapq\nimport sys\ndef solve(raw):\n z=list(map(int,raw.split())); n,k=z[:2]; h=[0]*k; q=[(0,-i) for i in range(k)]; heapq.heapify(q); a=[]\n for x in z[2:2+n]:\n  v,ni=heapq.heappop(q); i=-ni; a.append(i); h[i]=v+x; heapq.heappush(q,(h[i],ni))\n return ' '.join(map(str,a))+chr(10)+' '.join(map(str,h))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "始终轮流放置而不比较高度",
+    "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); n,k=z[:2]; h=[0]*k; a=[]\n for j,x in enumerate(z[2:2+n]): i=j%k; a.append(i); h[i]+=x\n return ' '.join(map(str,a))+chr(10)+' '.join(map(str,h))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

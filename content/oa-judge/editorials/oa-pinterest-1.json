@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pinterest-1",
+  "title": "Longest Contiguous Substring of Single Character",
+  "explanation": "## 思路\n\n从左向右分段扫描相同字符的连续游程，比较游程长度；相同长度时更新为起点更靠右的一段。\n\n## 正确性\n\n每个合法答案恰为字符串中的一个最大连续同字符游程。扫描覆盖所有游程，按 (长度, 起点) 字典序最大化，正好先最大化长度，再选择最右位置。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s=raw.strip(); best_char=''; best_len=0; best_start=-1; i=0\n while i<len(s):\n  j=i+1\n  while j<len(s) and s[j]==s[i]: j+=1\n  if j-i>best_len or (j-i==best_len and i>best_start):\n   best_len=j-i; best_char=s[i]; best_start=i\n  i=j\n return f\"{best_char}{best_len}\"\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pinterest#1-longest-contiguous-substring-of-single-character-rightmost",
+  "sourceContentHash": "dd4b4f197bd048a0e2af7095fed4f73ccc2c7ea9e5e9748e67e78ac162073384",
+  "author": "CSWork"
+}

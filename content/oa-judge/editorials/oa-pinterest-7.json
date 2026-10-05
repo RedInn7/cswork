@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pinterest-7",
+  "title": "Travel Distance on Scooters",
+  "explanation": "## 思路\n\n排序滑板车位置，从当前位置开始找第一个 x≥当前位置的车；累加 min(finish,x+10)−x，并把当前位置更新到该位置。没有可用车辆时结束。\n\n## 正确性\n\n规则每轮唯一指定当前点右侧最近的车辆；升序数组的 lower_bound 正是该车。它可骑行至 x+10 或 finish 中较早者，因此本轮距离为 min(finish,x+10)−x。算法逐轮依规则模拟，未骑行的步行距离未计入，且每轮位置严格增加或到达 finish，必终止。\n\n## 复杂度\n\nn 为滑板车数。排序 O(n log n)，之后每辆车至多处理一次，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n z=list(map(int,raw.split())); finish,n=z[:2]; scooters=sorted(z[2:2+n]); pos=total=0; i=0\n while pos<finish:\n  while i<n and scooters[i]<pos: i+=1\n  if i==n: break\n  x=scooters[i]; i+=1; reached=min(finish,x+10); total+=reached-x; pos=reached\n return str(total)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pinterest#7-travel-distance-on-scooters",
+  "sourceContentHash": "e04789871699dedbd8df967eaa97e5a10f3ce6f21dbd4b4719390a579a6ecdb0",
+  "author": "CSWork"
+}

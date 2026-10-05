@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-pinterest-1",
+      "status": "authored",
+      "reason": "来源为原始 OA LIST 文本；#001 给出正式题意，#002 是同题补充约束。#001 的 OCR 样例 `bbacecdbbab → c3` 与字符串内容矛盾，故本站不复用该错误输出，改用题面规则可直接验证的样例；catalog 指纹保持不变。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "OA LIST/Pinterest_OA/001_image.txt",
+      "rawGitBlob": "ae727aa618191eecf2522d7ed30da2b1a7c9b9e7",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "OA LIST/Pinterest_OA/002_image.txt",
+          "rawGitBlob": "143675d685f2c371fb40523ca9d23243231c4139"
+        }
+      ],
+      "catalogContentHash": "dd4b4f197bd048a0e2af7095fed4f73ccc2c7ea9e5e9748e67e78ac162073384"
+    },
+    {
+      "id": "oa-pinterest-4",
+      "status": "authored",
+      "reason": "来源为 FastPrep 原始 Markdown，包含题意、所有边界和三组样例；大和需 64 位，本站输入输出协议明示。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Pinterest/pinterest-assign-pins-to-shortest-column.md",
+      "rawGitBlob": "c7c0eb4ac975fb85a3d74e3b6304730943a0cfcb",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "153a0594e3dda9b26fde3db1f14ce3cd68496cd98d9288270a4042e5886af631"
+    },
+    {
+      "id": "oa-pinterest-5",
+      "status": "authored",
+      "reason": "FastPrep 原始规则明确一次性标记并同时爆炸。资格泡泡+同色邻居等价于爆炸所有大小≥3 的同色四邻连通块；该等价由独立邻接扫描 oracle 和 reference 交叉验证。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Pinterest/pinterest-bubble-explosion.md",
+      "rawGitBlob": "5d71338f56836bc47acc5c296c7a7dda5ed00968",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "886843ff4caac0be7d078ffee28752fcd3beab87bcbeb3791498a51bb942608b"
+    },
+    {
+      "id": "oa-pinterest-7",
+      "status": "authored",
+      "reason": "FastPrep 原始 statement 有三组样例及 finish 范围；补充了 street-location 的闭区间解释，lower_bound 用包含当前位置的 x≥p，因为来源样例在到达 14 后再次使用位置 14 的另一辆车。 输入输出协议明确；163 个独立 oracle 输入、参考程序、边界样例及两个正常退出错误程序均通过本地验证。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Pinterest/pinterest-travel-distance-on-scooters.md",
+      "rawGitBlob": "8bd218d1c152ab2226b2feba23043ab4ceded70f",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "e04789871699dedbd8df967eaa97e5a10f3ce6f21dbd4b4719390a579a6ecdb0"
+    },
+    {
+      "id": "oa-pinterest-2",
+      "status": "blocked",
+      "reason": "原始例子 #004 中 x_train 各行特征数有 4 和 5，违反 #007 明确的 x_test[i].length == x_train[j].length；#004 的该例输出最后一项为 1，而 #006 补全同例输出最后一项为 0。题目还依赖 sklearn.tree.DecisionTreeClassifier，本站评测容器未承诺安装 sklearn。样例互相矛盾且可执行依赖不确定，不猜规则。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "OA LIST/Pinterest_OA/003_image.txt",
+      "rawGitBlob": "2c4e9f4f527a81ad33ac4b84b93497720c4a348b",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "OA LIST/Pinterest_OA/004_image.txt",
+          "rawGitBlob": "b2dda40208288002d3e66ad2adf36749ede7c2dd"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/005_image.txt",
+          "rawGitBlob": "4ae5a0fd182cb9b690cd3a0840d825f26d2366f5"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/006_image.txt",
+          "rawGitBlob": "d44a297002d324738fc74b7cd7bc23b1959f4033"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/007_image.txt",
+          "rawGitBlob": "fe4bcd30ffe2e99de61bf55c11cace5664fd9f90"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/008_image.txt",
+          "rawGitBlob": "231631af5e87337f27436a0e94b298a940062cd4"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/009_image.txt",
+          "rawGitBlob": "41c7a45dcff0c628fa9e216a8339cdb4be10b8ca"
+        }
+      ],
+      "catalogContentHash": "80f50ee4e07e6c90ab18af232b7e6992ceb4a26caeb2f242954e1c3eee5d3dba"
+    },
+    {
+      "id": "oa-pinterest-3",
+      "status": "blocked",
+      "reason": "源代码快照 #014 指定 scipy cosine 距离，catalog 所附实现则使用 Euclidean；规则正文未指定度量。题目还明确允许聚类标签任意置换，本站 tokens checker 无法接受所有等价标签排列。两处均影响判定，未擅自选一种。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "OA LIST/Pinterest_OA/010_image.txt",
+      "rawGitBlob": "788f0c123aa8f2881a7d90281b52e9ee67b7df94",
+      "additionalRawEvidence": [
+        {
+          "rawPath": "OA LIST/Pinterest_OA/011_image.txt",
+          "rawGitBlob": "c41465fdc245d3dd44f2a0d811775922a93b478a"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/012_image.txt",
+          "rawGitBlob": "3e6f94ecdc6bdeac724864275943aae7fcd3385a"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/013_image.txt",
+          "rawGitBlob": "aece09dedec8c0c5801b36ed66f6723faf741917"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/014_image.txt",
+          "rawGitBlob": "e8f8e58a5be49c046212cd2b5b06747a75d72801"
+        },
+        {
+          "rawPath": "OA LIST/Pinterest_OA/015_image.txt",
+          "rawGitBlob": "78f114dc9880085b5b744b3abdbd29112f2a8337"
+        }
+      ],
+      "catalogContentHash": "42e0bdf190ee584f2e46732c174d92b591140040386075295c790da517317e41"
+    },
+    {
+      "id": "oa-pinterest-6",
+      "status": "blocked",
+      "reason": "在源快照中题干在 ‘You are given a string expression</’ 处截断；没有可核实的表达式语法、可加括号范围或运算符集合。唯一样例不足以唯一确定答案规则，因此暂不构造输入限制与 oracle。",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "fastprep/Pinterest/pinterest-minimize-expression-with-parentheses.md",
+      "rawGitBlob": "622268066c89293eb905c1922fa1bc6fdd8d10d0",
+      "additionalRawEvidence": [],
+      "catalogContentHash": "6dabfffda6222840a3b8a06f2a8bb9582014357da5b8e02a0c90a0a60273f837"
+    }
+  ]
+}

@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-pinterest-7",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Travel Distance on Scooters",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Pinterest",
+      "数组",
+      "贪心",
+      "模拟"
+    ],
+    "description": "街道从 0 延伸到 finish。当前在位置 p 时，步行到位置不小于 p 的最近滑板车；若没有，就步行到终点。骑到该车电量所能到达的最远位置（最多向右 10 个单位），还未到终点则重复。返回骑行距离总和。\n\n输入格式与本题所列的本站补充限制由 CSWork 整理，不表示原题来源另有该协议。",
+    "input": "第一行 finish 与 n；第二行 n 个互不相同的整数位置。来源约束 finish≤1000、位置为街道上的不同整数；本站将街道范围明确定义为 [0,finish]，故 n≤finish+1。",
+    "output": "输出一个整数，为所有滑板车行驶距离之和；步行距离不计入。",
+    "explanation": "按题面规则处理输入；思路、证明和复杂度见配套讲义。",
+    "hints": [
+      "排序滑板车位置，从当前位置开始找第一个 x≥当前位置的车；累加 min(finish,x+10)−x，并把当前位置更新到该位置。没有可用车辆时结束。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "23 3\n7 4 14\n",
+      "expectedOutput": "19\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "27 4\n15 7 3 10\n",
+      "expectedOutput": "20\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "10 0\n\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "10 1\n0\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "25 3\n5 15 24\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "1 1\n1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "417 1\n136\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "366 12\n266 83 127 225 259 364 311 299 174 78 334 149\n",
+      "expectedOutput": "92\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "152 7\n46 14 128 63 28 137 96\n",
+      "expectedOutput": "60\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "649 2\n44 359\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "153 18\n14 31 46 102 16 151 149 27 12 6 77 150 65 104 2 36 5 120\n",
+      "expectedOutput": "84\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "835 5\n348 14 55 402 318\n",
+      "expectedOutput": "50\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "910 16\n496 537 804 217 426 10 690 490 613 648 522 225 5 440 265 844\n",
+      "expectedOutput": "130\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "220 19\n199 99 47 142 25 52 111 215 93 85 55 24 200 182 64 48 137 168 17\n",
+      "expectedOutput": "105\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "620 24\n233 293 120 112 512 135 284 257 556 310 136 5 62 138 274 266 156 301 616 147 369 526 604 214\n",
+      "expectedOutput": "164\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "493 13\n302 172 227 58 404 320 361 62 453 367 63 492 77\n",
+      "expectedOutput": "91\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "483 11\n311 5 41 125 236 296 106 239 241 151 200\n",
+      "expectedOutput": "90\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "590 24\n265 433 187 312 567 12 59 361 76 574 110 587 396 507 230 225 151 17 14 93 177 120 233 71\n",
+      "expectedOutput": "173\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "918 4\n402 485 136 520\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "93 22\n93 19 39 66 90 68 56 92 54 29 62 15 77 53 13 21 71 42 20 63 61 49\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "952 13\n674 586 639 634 226 758 902 221 464 151 688 271 874\n",
+      "expectedOutput": "110\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "219 23\n156 22 53 144 84 170 11 75 162 212 43 167 24 17 79 191 72 204 49 64 142 121 136\n",
+      "expectedOutput": "120\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "351 22\n336 338 147 327 209 276 10 118 87 163 84 221 337 218 284 346 61 170 339 280 59 264\n",
+      "expectedOutput": "120\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "421 12\n76 132 9 399 61 408 85 379 231 51 237 148\n",
+      "expectedOutput": "90\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "944 1\n282\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "169 1\n138\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "876 18\n746 604 42 326 131 321 11 772 645 89 784 65 848 93 741 298 368 734\n",
+      "expectedOutput": "150\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "744 14\n337 605 288 173 488 268 196 245 56 546 495 327 108 120\n",
+      "expectedOutput": "130\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "269 17\n6 118 104 186 160 230 74 158 129 218 235 82 180 204 72 87 75\n",
+      "expectedOutput": "110\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "102 13\n47 98 26 8 28 16 84 85 72 0 11 96 41\n",
+      "expectedOutput": "66\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "620 18\n154 123 619 587 177 395 476 531 124 104 87 287 346 401 402 582 8 472\n",
+      "expectedOutput": "121\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "437 19\n15 321 425 411 339 10 248 433 29 164 158 27 317 286 127 285 217 30 167\n",
+      "expectedOutput": "110\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

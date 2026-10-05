@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pinterest-5",
+  "title": "Bubble Explosion",
+  "explanation": "## 思路\n\n在原棋盘上找同色四邻连通块：大小至少 3 的块整体标记爆炸。所有标记基于原始棋盘同时确定，再逐列稳定压缩剩余泡泡至底部。\n\n## 正确性\n\n同色连通块内，每个非叶节点至少有两个同色邻居，因而合格；每个叶节点与某个非叶节点相邻，因而会作为合格泡泡的同色邻居一并标记。故大小至少 3 的整块且仅整块被标记；大小 1 或 2 没有合格泡泡。题目要求同时爆炸，所以连通块标记阶段不修改棋盘；随后列压缩保持未爆泡泡的相对顺序并使其紧贴底边。\n\n## 复杂度\n\nR=rows、C=cols。时间 O(RC)，空间 O(RC)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\nimport sys\ndef solve(raw):\n z=list(map(int,raw.split())); rows,cols=z[:2]; a=[z[2+r*cols:2+(r+1)*cols] for r in range(rows)]; seen=[[False]*cols for _ in range(rows)]; pop=[[False]*cols for _ in range(rows)]; dirs=((-1,0),(1,0),(0,-1),(0,1))\n for r in range(rows):\n  for c in range(cols):\n   if seen[r][c]: continue\n   color=a[r][c]; q=deque([(r,c)]); seen[r][c]=True; comp=[]\n   while q:\n    x,y=q.popleft(); comp.append((x,y))\n    for dx,dy in dirs:\n     nx,ny=x+dx,y+dy\n     if 0<=nx<rows and 0<=ny<cols and not seen[nx][ny] and a[nx][ny]==color: seen[nx][ny]=True; q.append((nx,ny))\n   if len(comp)>=3:\n    for x,y in comp: pop[x][y]=True\n for r in range(rows):\n  for c in range(cols):\n   if pop[r][c]: a[r][c]=0\n for c in range(cols):\n  keep=[a[r][c] for r in range(rows) if a[r][c]!=0]\n  for r in range(rows): a[r][c]=0\n  for i,v in enumerate(keep): a[rows-len(keep)+i][c]=v\n return chr(10).join(' '.join(map(str,row)) for row in a)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pinterest#5-bubble-explosion",
+  "sourceContentHash": "886843ff4caac0be7d078ffee28752fcd3beab87bcbeb3791498a51bb942608b",
+  "author": "CSWork"
+}
