@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-3",
+  "title": "Two-Player Optimal Pick Difference",
+  "explanation": "## 思路\n\n把分数按降序排列。两人每次都会拿当前最大的剩余分数，因此先手获得排序后偶数下标元素，后手获得奇数下标元素，交替累加差值。\n\n## 正确性\n\n轮到任一玩家时，取走当前最大值不会减少该玩家最终可得分：若他不取，下一位对手可取走它；交换策略中该玩家取最大值只会把对手原本可取的另一个元素留给后续。归纳可知双方最优选择等价于按降序依次拿取，轮次决定归属。\n\n## 复杂度\n\n排序 O(n log n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=sorted(t[1:1+n],reverse=True)\n return str(sum(v if i%2==0 else -v for i,v in enumerate(a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#3-two-player-optimal-pick-difference",
+  "sourceContentHash": "9c7c80644630937216b22ee43e85732c0a4e444dc767c62f927458097e9b7c03",
+  "author": "CSWork"
+}

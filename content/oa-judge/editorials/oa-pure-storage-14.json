@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-14",
+  "title": "Racing Results",
+  "explanation": "## 思路\n\n用长度 R 的数组累计每位选手得分。只对名次 1..6 加对应分数；其余名次不加分。最后按 (总分降序, 选手序号升序) 选择最小键者。\n\n## 正确性\n\n每条结果记录恰对应一位选手在一场比赛中的名次，按给定映射累加即可得到其总分。排序键首先最大化总分，再最小化连续选手 ID；包含所有 R 位选手也确保未出现的选手以零分参与平局。\n\n## 复杂度\n\n时间 O(R+M)，空间 O(R)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); r,m=t[:2]; score=[0]*r; pts=(0,10,6,4,3,2,1); p=2\n for _ in range(m):\n  race,who,pos=t[p:p+3]; p+=3\n  if pos<=6: score[who-1001]+=pts[pos]\n i=min(range(r),key=lambda j:(-score[j],j))\n return f'{1001+i} {score[i]}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#14-racing-results",
+  "sourceContentHash": "90e9b556a1b84f29d488526da03d73d30a151099165a94c029c786d2a8644d84",
+  "author": "CSWork"
+}

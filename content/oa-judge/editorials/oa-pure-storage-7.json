@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-7",
+  "title": "Count Palindromic Substrings",
+  "explanation": "## 思路\n\n使用 Manacher 算法分别计算每个中心的最长奇数、偶数回文半径。每个中心的半径值就是以该中心结束的回文子串数量，将其累加。\n\n## 正确性\n\n对每个奇数中心，半径 k 表示从长度 1 到 2k−1 的 k 个回文；偶数中心同理对应长度 2 到 2k 的 k 个回文。Manacher 扩展和镜像复用只改变求半径的效率，不遗漏或重复中心，因此所有位置对均恰好计一次。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s=raw.strip(); n=len(s); ans=0; d1=[0]*n; l=0; r=-1\n for i in range(n):\n  k=1 if i>r else min(d1[l+r-i],r-i+1)\n  while i-k>=0 and i+k<n and s[i-k]==s[i+k]: k+=1\n  d1[i]=k; ans+=k\n  if i+k-1>r: l=i-k+1; r=i+k-1\n d2=[0]*n; l=0; r=-1\n for i in range(n):\n  k=0 if i>r else min(d2[l+r-i+1],r-i+1)\n  while i-k-1>=0 and i+k<n and s[i-k-1]==s[i+k]: k+=1\n  d2[i]=k; ans+=k\n  if i+k-1>r: l=i-k; r=i+k-1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#7-count-palindromic-substrings",
+  "sourceContentHash": "f1b020d57df61e1e8a359f6e8a5813455b0d50a84403d45872d79f2cce506d95",
+  "author": "CSWork"
+}

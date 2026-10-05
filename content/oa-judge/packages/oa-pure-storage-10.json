@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-pure-storage-10",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Bakery Quality Control",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Pure Storage",
+      "字符串",
+      "频次统计"
+    ],
+    "description": "逐对比较盒内物品字符串 box 与模板 template。字符顺序不重要，但每种物品的数量必须一致；返回不匹配的盒子数。\n\n输入输出协议及标注为‘本站补充’的限制由本站整理；原题未给出的限制不视为原始来源内容。",
+    "input": "第一行 n，随后 n 行各含 box 和 template 两个只含小写 a-z、且不含空格的字符串。0≤n≤1000，每个字符串长度为 1..10。",
+    "output": "输出不匹配的配对数量。",
+    "explanation": "算法思路、正确性证明和复杂度见配套题解。",
+    "hints": [
+      "先区分原题明确规则与本站补充的 stdin/stdout 约定。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "3\npcm mcp\nddp dpd\ncc c\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "2\nabc cab\naab abb\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "1\nz z\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 1",
+      "input": "6\nddaa bdddbdabba\nacbcd a\nd d\nd d\nab bdadbcbd\nbac d\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 2",
+      "input": "16\nbdddac c\nbdd cbb\nadaddab ccaaaaa\nbcc aab\naccdc abccc\nabbb abba\ndcc b\ndcb cdb\naaaada badaba\na a\naacc b\ndbbaabdca acbcadb\nddca ccda\ndcdbc dbb\ncb bbdbcb\ncababd c\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 3",
+      "input": "19\nddbdbaddda bcabcda\nabddbdbba b\nada babdbdbcbd\ncdbbccdb acdbcadd\nadbcbadc ddcaaadaab\ndacdadabd dadabccda\nabbb bda\ndc dc\ncbbbabbc caa\nbcacdcc aadccad\ndc cd\ndaacba dbaccb\nbbdbadc dadcabdccd\ndbc cbcdaa\naabbdca b\nbdcdbaac dabcacbd\nbdc bdc\naabdaabdc bbadaadcb\nad ad\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 4",
+      "input": "6\ncdbcb dbacc\ndaddcdc acbcbcc\ncbbacadabb adccabdaac\ncb cb\naaaadcaba b\ndc dbcdcd\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 5",
+      "input": "7\nbacd ddaabd\ncccca acbca\ncaaaa abddc\ncdcdcca b\nbdbcd badda\nbca abc\ndccbc cbcabaabd\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 6",
+      "input": "9\nbdbccb caabad\ncccda dacdbd\naba ddd\ncabc babd\nacaacdaaad dcbbdadbd\ndbdcdabbd bcdaacadd\nbbaaacbab acbaa\ndadbbbbbcd aababdccac\nadbccdbb cdcaccca\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 7",
+      "input": "10\nacdcbadcd cdaddaccd\ncdad dada\ndb ccb\ncdcb aacdabcddb\naaaadbcaac cabdacacab\nccbddbbdc bcdca\nbddbacbb dabbbadd\ndb ba\nbcda dacb\ncdd acd\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 8",
+      "input": "12\nabc aba\ndcd cbb\ndcdccadc aadc\nbb aacaadbadc\nbaccbababb cbddccaaba\ncbcddaba baab\nbdadbaac abbcaabac\ndaaa abda\naacbcd dcdbcc\nda bcddacdbb\ncacdbdbcca adddaccdbc\nb dc\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 9",
+      "input": "2\ncbcbd c\nba a\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 10",
+      "input": "19\nb b\ncbaad bbcbb\nbcbcad ccbbccbc\ndccc dba\nbdaab badab\nc bbabbd\nbbddbaaa cbdcbcad\na a\nc c\nccaada dbcdcd\nabdbd bcadccbadb\naa dbcbc\na aabbaa\nc aaaddddbd\naa bb\nccbbb aaa\nabdbcbd cac\nbbdcdb dbbabd\ncbbabbcbca dbddcbdbbb\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 11",
+      "input": "12\nbcdbdadc bd\nc cacdca\ncbaba bddadcacdb\nabbadcb dabbad\nadda bada\nbbcbdbdacd dcadbaa\nccbacb ccadcd\nbccdcbab aaacc\naa dd\ncbadcda dacc\nadc dac\nba ba\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 12",
+      "input": "2\nabdcbaa cdccdaac\nadddaaabaa dca\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 13",
+      "input": "0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 14",
+      "input": "13\nd abadccbda\ncad dbbdbac\ndaabbc abdcaa\ndbbabdba dbccdbdd\na cddcac\nbbccdababc dcbcddacbc\ncc dc\ndadbadda cabb\ndabbab c\na acbdb\nbbaab adccd\ncdabccc dbdb\ncbbdccaa acaabdcd\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 15",
+      "input": "8\na a\nbbaaabab dcbbbdaa\naaaab dcacd\nbdabcada ccdcdabd\nbbdcbb dadcab\ndacda ddbbd\nbd db\ndcbdddcc bccdadbb\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 16",
+      "input": "8\nabbbbbba dadbbc\naddabd caa\ncca daa\nbddc dacb\ndcad dabc\naccacad bacacdaaca\ndacccada dabc\nbcaaadd dbcbbcccd\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 17",
+      "input": "5\ndc dc\nbdbdccdbac ddbcbcbd\nb b\nbaddda abbaaa\ncdd bba\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 18",
+      "input": "11\naabaa dabcc\nabcd bdac\ndccdddbacd ababcaabcc\ndcdcbb ddaa\nb acbadbcb\nd dccaaabcbd\nbaba dbac\nadbadc cccbdb\nddbaad a\nb baad\ndcccacadad cc\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 19",
+      "input": "7\ncaaa cddc\ndbbaaaa dacacdd\nd babab\nccaaaba babbdca\nbcbcbbcda a\ncd acddbbcbb\nb b\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 20",
+      "input": "16\nbcdacab ccddacb\nbb ba\nb dadd\naccbddd bbddaaaa\nb b\nacccdccd dcdcbc\ncbdbbbd bcbcab\ndbdddacbca dddcbadd\nbccadca cdaaacb\nabaababbb bdbdccaddb\nbacabbaaac dbdccdacbb\nbbcbc cdddd\ncdaaaaaba dcd\ndbda aaac\ncbcbb adacbcb\nddbbdbbb cbcadcdb\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 21",
+      "input": "20\naabacbda bacccdab\ncbbb dbcbb\nacacabcbca baabbccaad\nbcbba bbbcbdddad\ndaccababad ccacbadbdc\nabbbd dccdd\ndcadcddc dabbdcab\nc aad\nbdabdbdcad daaadacaaa\ndccbdb aadcdaca\ncd dc\ndcb acc\nadbdc ddad\nbaaab ddccc\nbbacbddd bbaaaacd\ncbcbcaabd addbbdaaa\nadb adb\naadddadb addcccbc\ncc ca\nabadcda cbcccdc\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 22",
+      "input": "16\nb b\ncba cabdbdaab\nd bca\nbddaaa cbdcda\ndddd ddaa\nc bccadab\naccd cbbaaabc\ncda cddcaa\ncbadcdccc daac\ndddccdcbb accaccadd\naabbdcbc abadaaad\nbdadcb baddac\nabb ccc\ndcd bcd\nbb db\nbd db\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 23",
+      "input": "12\nbdbd aabcacb\nccc c\nadbcdca abbbadd\ndcabaacc ccaccbbb\nd dcbdac\ndbdadca dada\nadccdbdbaa badccccaba\nd d\nb b\ndcddcccca b\nada addaacdd\nacbac bbcab\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 24",
+      "input": "12\ncabbcbb bcadbcc\ncddcadb cbcbcbd\nbbabb acddb\nbcccd cadbb\nbbcabcaabc ddbaaadada\ndb bcccaa\nd d\ncccddcdb aacaba\nadcbc cdadb\nbc cb\ndcdbdab dbbaddd\nabaa cdb\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 25",
+      "input": "13\ndbcd da\naddaabdbaa aaadacacac\nabb bab\ndacbba ddbca\nddabcddac cbabacddb\ndacdbddac bccddaca\ndbabaadbb cdccabcdc\nbabaaaaac cbc\ndad d\naabbcddaaa ddbdcccaa\nbccdabdc ddcdabca\ndcadcdcadd bdbd\naac b\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 26",
+      "input": "19\nababcdbbc aaddbcabac\ndbcbdbdbd dabcaaada\ncdb dbad\ndacbdb bcbd\nddac bcba\nacaccc daaabb\nddcabaadd daddddcdd\nbdbcd ddacad\naaaaddcada cdddabdbaa\ncdcbdcbabb adcbdbdaba\nddcbddcc addabaaa\na adadccac\nbc bc\ncaabadbcc aabaccc\ndbacdb cbbccb\nbaadddadcb badadaaaad\ndcaa b\nbbbad adbca\ncdc acadddd\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 27",
+      "input": "2\nb aaacab\ndbc bcd\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 28",
+      "input": "20\nadcdbc bdbddc\ndbbaadcdb b\naadbadbbd aacadabbc\nabd d\nddaacdca acdccdbb\nbcdaa cdaca\nabbabd adcdd\nadcbaabaac cbcacadada\nc d\nccccb bbbdb\ndcda b\nddddd abbbb\nccdaacad adcaada\ncbbdaacab bdabcdcca\nabd bda\na a\nbcaabdc dbcbdac\nabdbaddad bdcabcbc\nbccadd adcbbb\naaabcddcda aabbccd\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 29",
+      "input": "7\naccdbc dccacdbd\nbaabadacd cdbcabdbc\nbdccdbd ddbcccb\nddbbaaaaa cddbaaccd\nbacdd cabab\nd d\nadadaddcbc cacbbaaaac\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充最大边界",
+      "input": "1000\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\nabcdefghij jihgfedcba\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

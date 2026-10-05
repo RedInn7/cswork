@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-10",
+  "title": "Bakery Quality Control",
+  "explanation": "## 思路\n\n对每一对字符串分别统计字符频次，若频次映射不相等则该盒子不匹配。\n\n## 正确性\n\n题意要求物品顺序无关但重复数量必须保留。字符频次表对排列不敏感，且只有每个字符数量均相等时两表才相同，恰好等价于盒内物品多重集合一致。逐对统计并累加即可。\n\n## 复杂度\n\n每对长度至多 10，时间 O(n·10)，空间 O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=raw.split(); n=int(t[0]); ans=0\n for i in range(n):\n  a,b=t[1+2*i:3+2*i]\n  ans+=Counter(a)!=Counter(b)\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#10-bakery-quality-control",
+  "sourceContentHash": "9c362302f5a580b7420d7e0a3314f32a4bacd1afea972a31608a7a05c3d92432",
+  "author": "CSWork"
+}
