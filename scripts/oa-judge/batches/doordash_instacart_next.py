@@ -201,7 +201,11 @@ def main():
   reports.append({"id":pid,"oracleCases":163,"uniqueOracleInputs":len({x["input"] for x in oracle}),"publicCases":3,"hiddenCases":30,"negativeControls":killed,"referenceSha256":hashlib.sha256(code.encode()).hexdigest()})
   reviews.append({"id":pid,"status":"authored","reason":"已核对 OAMaster 固定快照原题；本站协议与补充限制已写入题面。163 个独立 oracle 输入、参考程序及两个正常退出错误变异程序通过本地验证；未做真实 GoJudge 验证。","sourceUrls":[src["sourceUrl"]],"sourceContentHashes":[src["contentHash"]],"sourceCommit":COMMIT,"rawPath":s["raw"],"rawGitBlob":s["blob"],"catalogContentHash":src["contentHash"]})
   print(f"{pid}: 163 unique oracle inputs, 33 cases, two mutants rejected",flush=True)
- batch="doordash-instacart-next";(OUT/f"candidate-batches/{batch}.json").write_text(json.dumps({"schemaVersion":1,"items":items},ensure_ascii=False,indent=2)+"\n")
+ batch="doordash-instacart-next"
+ # A real GoJudge report is the only condition that promotes this manifest
+ # into the runtime batch directory; offline authoring stays candidate-only.
+ target="batches" if (OUT/f"reports/{batch}.json").exists() else "candidate-batches"
+ (OUT/f"{target}/{batch}.json").write_text(json.dumps({"schemaVersion":1,"items":items},ensure_ascii=False,indent=2)+"\n")
  (OUT/f"validation/{batch}.json").write_text(json.dumps({"schemaVersion":1,"seed":seed,"problems":reports,"note":"Local-only validation; no real GoJudge sandbox acceptance or publication."},ensure_ascii=False,indent=2)+"\n")
  for x in BLOCK:
   c=CAT[x["id"]];x.update({"sourceUrls":[c["sourceUrl"]],"sourceContentHashes":[c["contentHash"]],"sourceCommit":COMMIT,"catalogContentHash":c["contentHash"]})
