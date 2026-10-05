@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-8",
+  "title": "最大值所能覆盖的最长子数组长度之和",
+  "explanation": "## 思路\n\n对每个位置寻找左右两侧最近的严格更大元素。它们之间的所有元素都不大于当前值，因此最大合法区间长度是两侧边界之间的宽度。用单调栈在线性时间求边界。\n\n## 正确性证明\n\n最近的严格更大元素不能纳入区间，因为会使 a[i] 不再是最大值；在任一侧再远一步之前的全部元素都不大于 a[i]，可纳入且不破坏最大值条件。故左右最近严格更大的元素唯一确定最大区间，长度为 right-left-1。逐位置相加即为目标和。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=[-1]*n; st=[]\n    for i,x in enumerate(a):\n        while st and a[st[-1]]<=x: st.pop()\n        left[i]=st[-1] if st else -1; st.append(i)\n    right=[n]*n; st=[]\n    for i in range(n-1,-1,-1):\n        while st and a[st[-1]]<=a[i]: st.pop()\n        right[i]=st[-1] if st else n; st.append(i)\n    return str(sum(right[i]-left[i]-1 for i in range(n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#8-maximum-size-subarray-sum",
+  "sourceContentHash": "a01d3c74a72ac45b00ba7322477cf4575e63286b726cf4dd0ccb5ff9c7c8b1f0",
+  "author": "CSWork"
+}

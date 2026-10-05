@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-10",
+  "title": "交替增减偶数长度区间的最少操作数",
+  "explanation": "## 思路\n\n令 y[i]=(-1)^i·(target[i]−source[i])，则一次合法操作会给 y 的偶数长度区间整体加一个常量；常量由区间左端下标奇偶决定。对 y 做相邻差分，在两个同奇偶边界产生方向固定的一单位变化。分别检查每种奇偶边界的前缀差分方向与总和；可行时所需操作数等于正差分单位数。\n\n## 正确性证明\n\n区间 [l,r] 长度为偶数，变换后每个位置增加 s=(-1)^l。相邻差分只在 l 处增加 s、在 r+1 处减少 s；因 r+1−l 为偶数，两个边界下标同奇偶。对偶数边界，每个操作在较早端点 +1、较晚端点 −1，因此任一前缀的差分和必须非负；对奇数边界符号相反，前缀和必须非正。两组总和还都必须为零。反过来，若这些条件成立，从左到右扫描即可把每个较早端点的待处理单位与后续相反端点配对；它们同奇偶且先后有序，唯一确定合法偶数区间。每次操作恰好提供一个单位，因此正差分单位总数就是最小操作数。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; s=v[1:1+n]; t=v[1+n:1+2*n]\n    y=[(t[i]-s[i]) if i%2==0 else (s[i]-t[i]) for i in range(n)]\n    z=[0]*(n+1); prev=0\n    for i,x in enumerate(y): z[i]=x-prev; prev=x\n    z[n]=-prev\n    answer=0\n    for parity in (0,1):\n        prefix=0\n        for i in range(parity,n+1,2):\n            prefix+=z[i]\n            if (parity==0 and prefix<0) or (parity==1 and prefix>0): return '-1'\n            answer+=max(0,z[i])\n        if prefix: return '-1'\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#10-minimum-operations-to-make-array-equal",
+  "sourceContentHash": "9bf45029d79fafaa248a36979686fa17c23781144dc72fdbef95612a3218ad7b",
+  "author": "CSWork"
+}

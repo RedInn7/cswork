@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-6",
+  "title": "从队首三项中移除两项的最小代价",
+  "explanation": "## 思路\n\n第一次处理前三项后恰剩一项。用动态规划记录“当前队首保留值→到达该状态的最小已付成本”。每轮把该值与接下来两项一起考虑，枚举留下哪一项；末尾不足三项时按题面一次性结算。\n\n## 正确性证明\n\n任一操作都从队首前三项删除两项，因此操作后队列可唯一表示为一个保留值和未处理后缀。转移枚举前三项中唯一留下的元素，并对另外两项支付题面规定的最大值，故覆盖全部可能操作且无遗漏。对同一保留值只保留较低成本不会影响未来选择，因此状态压缩保持最优性。最后依照少于三项的规则结算，取最小即全局最优。\n\n## 复杂度\n\n设 n 为数组长度，状态至多 n 个、处理至多 n/2 轮；时间 O(n²)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    if n<3: return str(max(a))\n    # dp maps the remaining first value to the least cost so far.\n    x,y,z=a[:3]; dp={}\n    for keep, paid in ((x,max(y,z)),(y,max(x,z)),(z,max(x,y))):\n        dp[keep]=min(dp.get(keep,10**30),paid)\n    i=3\n    while i+1<n:\n        p,q=a[i],a[i+1]; nxt={}\n        for carry,cost in dp.items():\n            for keep,paid in ((carry,max(p,q)),(p,max(carry,q)),(q,max(carry,p))):\n                nxt[keep]=min(nxt.get(keep,10**30),cost+paid)\n        dp=nxt; i+=2\n    if i<n:\n        return str(min(cost+max(carry,a[i]) for carry,cost in dp.items()))\n    return str(min(cost+carry for carry,cost in dp.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#6-get-minimum-cost",
+  "sourceContentHash": "8da27bc43fd6813d91fceb32a2dd9cf98681ff692850c8382ed11a1049befe64",
+  "author": "CSWork"
+}

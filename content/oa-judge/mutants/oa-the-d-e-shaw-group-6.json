@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误地留下前三项中的最大值",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    if n<3: return str(max(a))\n    # dp maps the remaining first value to the least cost so far.\n    x,y,z=a[:3]; dp={}\n    for keep, paid in ((x,max(y,z)),(y,max(x,z)),(z,max(x,y))):\n        dp[keep]=min(dp.get(keep,10**30),paid)\n    i=3\n    while i+1<n:\n        p,q=a[i],a[i+1]; nxt={}\n        for carry,cost in dp.items():\n            for keep,paid in ((max(carry,p,q),min(carry,p,q)),):\n                nxt[keep]=min(nxt.get(keep,10**30),cost+paid)\n        dp=nxt; i+=2\n    if i<n:\n        return str(min(cost+max(carry,a[i]) for carry,cost in dp.items()))\n    return str(min(cost+carry for carry,cost in dp.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "末尾不足三项时漏算最终删除费用",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    if n<3: return str(max(a))\n    # dp maps the remaining first value to the least cost so far.\n    x,y,z=a[:3]; dp={}\n    for keep, paid in ((x,max(y,z)),(y,max(x,z)),(z,max(x,y))):\n        dp[keep]=min(dp.get(keep,10**30),paid)\n    i=3\n    while i+1<n:\n        p,q=a[i],a[i+1]; nxt={}\n        for carry,cost in dp.items():\n            for keep,paid in ((carry,max(p,q)),(p,max(carry,q)),(q,max(carry,p))):\n                nxt[keep]=min(nxt.get(keep,10**30),cost+paid)\n        dp=nxt; i+=2\n    if i<n:\n        return str(min(cost+max(carry,a[i]) for carry,cost in dp.items()))\n    return str(min(cost for carry,cost in dp.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

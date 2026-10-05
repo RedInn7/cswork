@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-the-d-e-shaw-group-3",
+      "sourceContentHash": "784a23f47a193889bf4316046cc770f196df430b436a59fddf1bedf25a4c226b",
+      "packageChecksum": "65fff9be6adf62722f6f4872f516b578747c68176ce6ed9fadc1f94bf5e90975",
+      "editorial": "## 思路\n\n找到最长严格递增前缀和后缀。枚举保留前缀长度 i，双指针找到与它衔接且严格递增的最早后缀起点 j；j 之后的所有后缀起点都可行，累计方案数。\n\n## 正确性证明\n\n删除段 [i,j) 后，剩余部分严格递增当且仅当前缀自身严格递增、后缀自身严格递增，且两者相接时前缀末值小于后缀首值；任一侧为空时无需比较。前缀长度只可能在最长递增前缀范围内，后缀起点只可能位于最长递增后缀之后。随着前缀末值递增，最小可行后缀起点不会左移，因此双指针逐一计入全部且仅有的非空删除区间。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（输入）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=0\n    while left+1<n and a[left]<a[left+1]: left+=1\n    if left==n-1: return str(n*(n+1)//2)\n    right=n-1\n    while right>0 and a[right-1]<a[right]: right-=1\n    ans=0; j=right\n    for i in range(left+2):\n        j=max(j,i+1)\n        if i:\n            while j<n and a[j]<=a[i-1]: j+=1\n        ans+=n-j+1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-5",
+      "sourceContentHash": "1dde34a04253efe488adb2da54c42a74c52dc531cca78f163b0c187cfbb4c595",
+      "packageChecksum": "9d839f476057886c267f336a25284c8c63aa2fd083b7df6afe6c820ce8e1e604",
+      "editorial": "## 思路\n\n恒等式 |x−y|+|x+y|=2·max(|x|,|y|)。若 sumVal 为非负偶数，令 r=sumVal/2；答案是绝对值不超过 r 的元素对数，减去两者绝对值都小于 r 的元素对数。\n\n## 正确性证明\n\n把实数 x,y 分别按符号同异分两种情形，表达式均等于 2 倍较大绝对值。因此合法对的最大绝对值恰为 r。所有绝对值≤r 的数对中，排除最大值<r 的数对，剩下的每一对至少有一个值绝对值等于 r，且恰好对应题目条件。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,target=v[:2]; a=v[2:2+n]\n    if target<0 or target%2: return '0'\n    radius=target//2\n    le=sum(abs(x)<=radius for x in a)\n    lt=sum(abs(x)<radius for x in a)\n    return str(le*(le-1)//2-lt*(lt-1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-6",
+      "sourceContentHash": "8da27bc43fd6813d91fceb32a2dd9cf98681ff692850c8382ed11a1049befe64",
+      "packageChecksum": "4e162b4b788f105c8ec031c0aec53883f82ff86b6e476f54f9f610c3450ebea5",
+      "editorial": "## 思路\n\n第一次处理前三项后恰剩一项。用动态规划记录“当前队首保留值→到达该状态的最小已付成本”。每轮把该值与接下来两项一起考虑，枚举留下哪一项；末尾不足三项时按题面一次性结算。\n\n## 正确性证明\n\n任一操作都从队首前三项删除两项，因此操作后队列可唯一表示为一个保留值和未处理后缀。转移枚举前三项中唯一留下的元素，并对另外两项支付题面规定的最大值，故覆盖全部可能操作且无遗漏。对同一保留值只保留较低成本不会影响未来选择，因此状态压缩保持最优性。最后依照少于三项的规则结算，取最小即全局最优。\n\n## 复杂度\n\n设 n 为数组长度，状态至多 n 个、处理至多 n/2 轮；时间 O(n²)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    if n<3: return str(max(a))\n    # dp maps the remaining first value to the least cost so far.\n    x,y,z=a[:3]; dp={}\n    for keep, paid in ((x,max(y,z)),(y,max(x,z)),(z,max(x,y))):\n        dp[keep]=min(dp.get(keep,10**30),paid)\n    i=3\n    while i+1<n:\n        p,q=a[i],a[i+1]; nxt={}\n        for carry,cost in dp.items():\n            for keep,paid in ((carry,max(p,q)),(p,max(carry,q)),(q,max(carry,p))):\n                nxt[keep]=min(nxt.get(keep,10**30),cost+paid)\n        dp=nxt; i+=2\n    if i<n:\n        return str(min(cost+max(carry,a[i]) for carry,cost in dp.items()))\n    return str(min(cost+carry for carry,cost in dp.items()))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-8",
+      "sourceContentHash": "a01d3c74a72ac45b00ba7322477cf4575e63286b726cf4dd0ccb5ff9c7c8b1f0",
+      "packageChecksum": "2e7782aedfb581d57a39d8e636da6001bd26478a9a95ade6ae1ee44715d852e5",
+      "editorial": "## 思路\n\n对每个位置寻找左右两侧最近的严格更大元素。它们之间的所有元素都不大于当前值，因此最大合法区间长度是两侧边界之间的宽度。用单调栈在线性时间求边界。\n\n## 正确性证明\n\n最近的严格更大元素不能纳入区间，因为会使 a[i] 不再是最大值；在任一侧再远一步之前的全部元素都不大于 a[i]，可纳入且不破坏最大值条件。故左右最近严格更大的元素唯一确定最大区间，长度为 right-left-1。逐位置相加即为目标和。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    left=[-1]*n; st=[]\n    for i,x in enumerate(a):\n        while st and a[st[-1]]<=x: st.pop()\n        left[i]=st[-1] if st else -1; st.append(i)\n    right=[n]*n; st=[]\n    for i in range(n-1,-1,-1):\n        while st and a[st[-1]]<=a[i]: st.pop()\n        right[i]=st[-1] if st else n; st.append(i)\n    return str(sum(right[i]-left[i]-1 for i in range(n)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-10",
+      "sourceContentHash": "9bf45029d79fafaa248a36979686fa17c23781144dc72fdbef95612a3218ad7b",
+      "packageChecksum": "1f86ec40dbc5a7e8863d25192e3cf70de40d3f643b6937d8b2b3195144830ed4",
+      "editorial": "## 思路\n\n令 y[i]=(-1)^i·(target[i]−source[i])，则一次合法操作会给 y 的偶数长度区间整体加一个常量；常量由区间左端下标奇偶决定。对 y 做相邻差分，在两个同奇偶边界产生方向固定的一单位变化。分别检查每种奇偶边界的前缀差分方向与总和；可行时所需操作数等于正差分单位数。\n\n## 正确性证明\n\n区间 [l,r] 长度为偶数，变换后每个位置增加 s=(-1)^l。相邻差分只在 l 处增加 s、在 r+1 处减少 s；因 r+1−l 为偶数，两个边界下标同奇偶。对偶数边界，每个操作在较早端点 +1、较晚端点 −1，因此任一前缀的差分和必须非负；对奇数边界符号相反，前缀和必须非正。两组总和还都必须为零。反过来，若这些条件成立，从左到右扫描即可把每个较早端点的待处理单位与后续相反端点配对；它们同奇偶且先后有序，唯一确定合法偶数区间。每次操作恰好提供一个单位，因此正差分单位总数就是最小操作数。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; s=v[1:1+n]; t=v[1+n:1+2*n]\n    y=[(t[i]-s[i]) if i%2==0 else (s[i]-t[i]) for i in range(n)]\n    z=[0]*(n+1); prev=0\n    for i,x in enumerate(y): z[i]=x-prev; prev=x\n    z[n]=-prev\n    answer=0\n    for parity in (0,1):\n        prefix=0\n        for i in range(parity,n+1,2):\n            prefix+=z[i]\n            if (parity==0 and prefix<0) or (parity==1 and prefix>0): return '-1'\n            answer+=max(0,z[i])\n        if prefix: return '-1'\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-11",
+      "sourceContentHash": "44b579d957776ec864bed2ef71f441ee3d1052c4246d6488a771c1a595857699",
+      "packageChecksum": "124687b1aeac2bba48f6dfc80348dc1f42e12bace0ea236f62eebfadd91cc5c5",
+      "editorial": "## 思路\n\n给定前一项 b[i−1] 后，下一项 x=b[i] 必须至少为 b[i−1]+max(0,arr[i]−arr[i−1])，同时 x≤arr[i]。维护每个末值的方案数及其前缀和即可 O(n·max(arr)) 转移。\n\n## 正确性证明\n\n由 c[i]=arr[i]−b[i]，条件 b[i]≥b[i−1] 且 c[i]≤c[i−1] 合并为 b[i]−b[i−1]≥max(0,arr[i]−arr[i−1])。因此对于当前末值 x，所有合法前态恰为不超过 x−need 的末值。前缀和准确汇总这些互斥前态，转移得到以 x 结尾的所有方案；求和即覆盖所有可能的 b，而 c 被 b 唯一确定。\n\n## 复杂度\n\n时间 O(n·M)，空间 O(M)，M=max(arr[i])≤3000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    MOD=1000000007\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]\n    dp=[1]*(a[0]+1)\n    for i in range(1,n):\n        need=max(0,a[i]-a[i-1]); pref=[0]*len(dp); running=0\n        for j,x in enumerate(dp): running=(running+x)%MOD; pref[j]=running\n        nxt=[0]*(a[i]+1)\n        for b in range(a[i]+1):\n            prev=b-need\n            if prev>=0: nxt[b]=pref[min(prev,len(dp)-1)]\n        dp=nxt\n    return str(sum(dp)%MOD)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-12",
+      "sourceContentHash": "a13d6aedf7d9eb3451fce96cb5aa89bab016c65a91716bfab06ba7f2a23b3200",
+      "packageChecksum": "d17c7c982534864c38281633f71447617cfb9969be99b95a7d08d2dfc1963a9d",
+      "editorial": "## 思路\n\n树形动态规划。设 dp[u][s] 为节点 u 及其子树在进入时所有值已被整除 2 共 s 次时的最大得分。选择扣 K 时子节点沿用 s；选择减半时节点得 floor(A[u]/2^(s+1))，子节点状态变为 s+1。超过 30 次减半后所有值归零。\n\n## 正确性证明\n\n任一合法方案在节点 u 处恰有两种选择。扣 K 不改变未处理子树值，因此所有子节点状态仍为 s；减半会将 u 的每个后代值都变为原值再右移一位，故所有子节点状态统一变为 s+1。子树之间没有边连接，固定 u 的选择后各子树可以独立取最优值，因此两种候选收益之最大值就是 dp[u][s]。自底向上计算覆盖所有方案。\n\n## 复杂度\n\n时间 O(31n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from array import array\n    v=list(map(int,raw.split())); n=v[0]; k=v[1]; a=v[2:2+n]; adj=[[] for _ in range(n)]; p=2+n\n    for _ in range(n-1):\n        u,w=v[p:p+2]; p+=2; adj[u].append(w); adj[w].append(u)\n    # Each DFS frame accumulates the children's values for every inherited halving count.\n    stack=[[0,-1,0,array('q',[0])*31]]\n    while stack:\n        frame=stack[-1]; u,parent,index,child_sum=frame\n        if index<len(adj[u]):\n            w=adj[u][index]; frame[2]+=1\n            if w!=parent: stack.append([w,u,0,array('q',[0])*31])\n            continue\n        dp=array('q',[0])*31\n        for shift in range(30,-1,-1):\n            dp[shift]=max((a[u]>>shift)-k+child_sum[shift], (a[u]>>(shift+1))+child_sum[min(shift+1,30)])\n        stack.pop()\n        if stack:\n            parent_sum=stack[-1][3]\n            for shift in range(31): parent_sum[shift]+=dp[shift]\n        else:\n            return str(dp[0])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

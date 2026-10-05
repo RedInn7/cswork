@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-5",
+  "title": "满足绝对值条件的无序数对",
+  "explanation": "## 思路\n\n恒等式 |x−y|+|x+y|=2·max(|x|,|y|)。若 sumVal 为非负偶数，令 r=sumVal/2；答案是绝对值不超过 r 的元素对数，减去两者绝对值都小于 r 的元素对数。\n\n## 正确性证明\n\n把实数 x,y 分别按符号同异分两种情形，表达式均等于 2 倍较大绝对值。因此合法对的最大绝对值恰为 r。所有绝对值≤r 的数对中，排除最大值<r 的数对，剩下的每一对至少有一个值绝对值等于 r，且恰好对应题目条件。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,target=v[:2]; a=v[2:2+n]\n    if target<0 or target%2: return '0'\n    radius=target//2\n    le=sum(abs(x)<=radius for x in a)\n    lt=sum(abs(x)<radius for x in a)\n    return str(le*(le-1)//2-lt*(lt-1)//2)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/the-d-e-shaw-group#5-find-number-of-interesting-pairs",
+  "sourceContentHash": "1dde34a04253efe488adb2da54c42a74c52dc531cca78f163b0c187cfbb4c595",
+  "author": "CSWork"
+}
