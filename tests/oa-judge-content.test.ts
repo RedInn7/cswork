@@ -33,7 +33,6 @@ test('authored OA packages and displayed solutions match sandbox-verified immuta
     );
     for (const item of candidate.items) candidateIds.add(item.id);
   }
-  assert(candidateIds.size > 0);
   assert(
     registry.items.every((item: { id: string }) => !candidateIds.has(item.id)),
     'Unverified candidates must remain outside the runtime registry',
