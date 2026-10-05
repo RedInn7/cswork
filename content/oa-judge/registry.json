@@ -8342,6 +8342,54 @@
       ]
     },
     {
+      "id": "oa-paycom-2",
+      "sourceContentHash": "9ad732f093c19bb947fea59cc500b76fe531f5daae99200899be9e49b295438d",
+      "packageChecksum": "0f2d7aa41703581d23c904820419503e842d8ca751b0ea74636e0410e869ea7c",
+      "editorial": "## 思路\n\n每次将较大数减去较小数不会改变两数的最大公约数；过程结束时两数相等，该值正是最大公约数。实现不必逐次相减，可用欧几里得取余迭代得到同一结果。\n\n## 正确性\n\n对 a≥b>0，有 gcd(a,b)=gcd(a−b,b)=gcd(a mod b,b)。因此将减法步骤批量化为取余不会改变最终公约数。余数迭代在每步严格缩小第二个数，最终到达 0，此时另一个数即原伪代码终止时的相等值。\n\n## 复杂度\n\n时间 O(log(min(a,b)))，额外空间 O(1)。本站把固定样例泛化为正整数输入，避免只有一个固定答案的常量输出题。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split())\n while b:\n  a,b=b,a%b\n return str(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-4",
+      "sourceContentHash": "0914f3ff727b5a1d7c59ec0a7c7d4c48bd6eb6f4e30d4a1718894cd06f5f832d",
+      "packageChecksum": "1de4e427b8c9e9fc8aa5d39de994caa7f229d79ccf0b1c8f2c800f25f7fa9435",
+      "editorial": "## 思路\n\n严格按原题顺序调用 f 两次。f 对奇数返回 0、对偶数返回 1。连续两次调用后，初始奇数得到 1，初始偶数得到 0。\n\n## 正确性\n\n若初值为奇数，第一次返回 0，第二次把偶数 0 映射为 1；若初值为偶数，第一次返回 1，第二次把奇数 1 映射为 0。故结果等于初始值的奇偶指示量。\n\n## 复杂度\n\n时间与额外空间均为 O(1)。本站只把原题固定的 i=3 改成输入参数，函数体和调用次数保持不变。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef f(x):\n return 0 if x%2 else 1\ndef solve(raw):\n i=int(raw); i=f(i); i=f(i)\n return str(i)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-6",
+      "sourceContentHash": "c50b2fac17e2a7efcfed49bf2c68be3e251faf0ccc276d5aaaf12bbaf9765713",
+      "packageChecksum": "433e507168c8fffd594dfa1d91c815cd7760d231c485b389f0d07a23bd7d2ab2",
+      "editorial": "## 思路\n\n若除数为 0，整数除法抛出异常，catch 先打印 Exception；随后无论是否异常都会执行 finally 并打印 Finally。若除数非 0，只打印 Finally。返回的 c 从未传给打印语句，因此不出现在输出中。\n\n## 正确性\n\ntry 中只有除法可能抛出 ArithmeticException。除数为零时控制流进入 catch，再离开 try/catch 执行 finally；除数非零时跳过 catch，也执行 finally。两条路径产生的输出顺序分别唯一对应题面定义。本站明确把同一 System.err 流上的文本作为标准输出轨迹比较。\n\n## 复杂度\n\n时间与额外空间均为 O(1)。本站把原题固定调用 divide(4,0) 泛化为任意整数输入，便于测试正常与异常两条分支。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n a,b=map(int,raw.split()); trace=[]\n try:\n  _=a//b\n except ZeroDivisionError:\n  trace.append('Exception')\n finally:\n  trace.append('Finally')\n return ' '.join(trace)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-paycom-15",
+      "sourceContentHash": "08ca83efb0dcbe9d4be7b37f0ad301124da91a63b67e5465a09aa58b41e19d34",
+      "packageChecksum": "024de95c17910c1805fca6eaf17129acaf5b377afa97c2278d948ad20e7bdf0a",
+      "editorial": "## 思路\n\n`while (s++ < n)` 每轮先判断旧值再递增，因此循环体内 s 依次为 1 到 n。continue 条件 `s<a && s<b` 等价于 `s<min(a,b)`；其余值依次输出。\n\n## 正确性\n\n循环体对每个整数 s∈[1,n] 恰执行一次。若 s 小于两个阈值，continue 跳过打印；否则条件为假并打印。由合取条件等价于 s<min(a,b)，输出集合恰为 min(a,b) 到 n，且顺序递增。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（用于缓冲输出）。本站参数化了原题常量，但完整保留自增、循环边界和 continue 判断。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n n,a,b=map(int,raw.split()); s=0; out=[]\n cut=min(a,b)\n while s<n:\n  s+=1\n  if s<cut: continue\n  out.append(str(s))\n return ' '.join(out)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-pinterest-1",
       "sourceContentHash": "dd4b4f197bd048a0e2af7095fed4f73ccc2c7ea9e5e9748e67e78ac162073384",
       "packageChecksum": "5bde2265ce5b721962fcd392e46146be225d05957cc48ab297a0a03ff3c72dce",
