@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-rubrik-3",
+      "sourceContentHash": "839b05acaa2e6b375550d158bef20d65063ea5e7e86efffb10e12f4fb3041f7e",
+      "packageChecksum": "697d693ead90102cbc6141dc7485a195225d4fe4a143ea701d17ab6c904e0371",
+      "editorial": "## 思路\n\n扫描空白切出的 token，分别记录是否合法、是否含元音、是否含辅音。\n\n## 正确性\n\n每个 token 只在同时满足字符域、长度和两类字母条件时计数；这与原题定义逐项等价，且每个 token 恰处理一次。\n\n## 复杂度\n\n时间 O(|s|)，空间 O(1)（不计分词结果）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    s=raw.strip('\\n')\n    vowels=set('aeiouAEIOU')\n    return str(sum(1 for w in s.split() if len(w)>=3 and w.isascii() and w.isalnum() and any(c in vowels for c in w) and any(c.isalpha() and c not in vowels for c in w)))\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rubrik-4",
+      "sourceContentHash": "6c31ac1e8aec13784b6deae7e37abb01e483978cd6c92337278c75949f45c3b2",
+      "packageChecksum": "5bb35d83150ec20efc4bf9fb3492997026815ea72c947a0de0dc7709cec89212",
+      "editorial": "## 思路\n\n去掉前导零后，二进制表示是 1 后面跟若干个 0，当且仅当它是 2 的幂。\n\n## 正确性\n\n2^k 的二进制表示恰为 1 后接 k 个零；前导零不改变数值，全零串表示 0，故应返回 False。\n\n## 复杂度\n\n时间 O(|s|)，空间 O(|s|)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n s=raw.strip()\n t=s.lstrip('0')\n return 'True' if t=='1'+'0'*(len(t)-1) and bool(t) else 'False'\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rubrik-6",
+      "sourceContentHash": "385f169d21a8b96207bf9ad2b1f9c12e2793f5c1273efeba76fa297544f89076",
+      "packageChecksum": "91c5f38e044960c7424495b38de126d38ff7b00fb1c979eea50a3131dc68f032",
+      "editorial": "## 思路\n\n枚举 y 中的子串起点，将该后缀与 x 贪心匹配；每个起点的最长可匹配前缀即为从该起点出发的最优子串长度。\n\n## 正确性\n\n对固定子串起点，逐字符从左到右在 x 中取最早可匹配位置，不会减少后续可匹配字符，因此贪心能得到该起点的最长子串。枚举全部起点覆盖所有候选子串。\n\n## 复杂度\n\n设 n=|x|、m=|y|，时间 O(nm)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n x,y=raw.split()\n best=0\n for start in range(len(y)):\n  i=matched=0\n  while i<len(x) and start+matched<len(y):\n   if x[i]==y[start+matched]: matched+=1\n   i+=1\n  best=max(best,matched)\n return str(best)\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-2",
+      "sourceContentHash": "7e3e9fbd6723b55cba29edef27c4558a57c4864a486b9450cb87749c9601a219",
+      "packageChecksum": "e45d52a0bf83ebffe906e46546ebe73091d4fca892fc53a08d76964fb7b82666",
+      "editorial": "## 思路\n\n把日期转换成年内从 0 开始的天数偏移，再对 8 取模加到起始月相序号。\n\n## 正确性\n\n每经过一天，月相在 8 个状态中前进一位。年内经过的天数正是此前完整月份天数加当月日号减一，所以按该偏移循环移动得到唯一答案。\n\n## 复杂度\n\n时间 O(12)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n phase,month,day=raw.split();month=int(month);day=int(day)\n names=['NewMoon','Crescent','Quarter','Gibbous','Full','Waning','Eclipse','Twilight']\n days=[31,28,31,30,31,30,31,31,30,31,30,31]\n offset=sum(days[:month-1])+day-1\n return names[(names.index(phase)+offset)%8]\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-10",
+      "sourceContentHash": "c4cfdc26d6f6f3d9b39c3a9ca16c03ea5cd996ef1435e31e6d3ed8828977f6e6",
+      "packageChecksum": "0a858142b65413bf2aa57f4f60e7b68733554f5edf10532a93b3962f13f7912c",
+      "editorial": "## 思路\n\n基础收益对所有方案相同。把某一天从买入改成卖出的收益增量是 2×price；已卖出的天增量为 0。用长度 k 的滑动窗口最大化增量。\n\n## 正确性\n\n每个长度 k 区间修改后收益等于原收益加区间内所有 0 位对应的 2×price。滑动窗口枚举所有合法区间并维护该增量之和，因此取最大值后加基础收益即为全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[0],t[1];p=t[2:2+n];a=t[2+n:2+2*n]\n base=sum(v if b else -v for v,b in zip(p,a))\n gains=[2*v if b==0 else 0 for v,b in zip(p,a)]\n window=sum(gains[:k]);best=window\n for i in range(k,n):\n  window+=gains[i]-gains[i-k];best=max(best,window)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

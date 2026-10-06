@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-10",
+  "title": "Stock Trading with Algo Override",
+  "explanation": "## 思路\n\n基础收益对所有方案相同。把某一天从买入改成卖出的收益增量是 2×price；已卖出的天增量为 0。用长度 k 的滑动窗口最大化增量。\n\n## 正确性\n\n每个长度 k 区间修改后收益等于原收益加区间内所有 0 位对应的 2×price。滑动窗口枚举所有合法区间并维护该增量之和，因此取最大值后加基础收益即为全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[0],t[1];p=t[2:2+n];a=t[2+n:2+2*n]\n base=sum(v if b else -v for v,b in zip(p,a))\n gains=[2*v if b==0 else 0 for v,b in zip(p,a)]\n window=sum(gains[:k]);best=window\n for i in range(k,n):\n  window+=gains[i]-gains[i-k];best=max(best,window)\n return str(base+best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#10-stock-trading-with-algo-override",
+  "sourceContentHash": "c4cfdc26d6f6f3d9b39c3a9ca16c03ea5cd996ef1435e31e6d3ed8828977f6e6",
+  "author": "CSWork"
+}

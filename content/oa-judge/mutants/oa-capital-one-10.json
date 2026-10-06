@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只考虑最左侧的 k 天",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];p=t[2:2+n];a=t[2+n:2+2*n];b=sum(v if z else -v for v,z in zip(p,a));return str(b+sum(2*v for v,z in zip(p[:k],a[:k]) if not z))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "买转卖增量少算一倍",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];p=t[2:2+n];a=t[2+n:2+2*n];b=sum(v if z else -v for v,z in zip(p,a));g=[v if not z else 0 for v,z in zip(p,a)];w=sum(g[:k]);best=w\n for i in range(k,n): w+=g[i]-g[i-k];best=max(best,w)\n return str(b+best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

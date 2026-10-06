@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每个月错误地按 30 天计算",
+    "code": "import sys\ndef solve(raw):\n p,m,d=raw.split();m=int(m);d=int(d);names=['NewMoon','Crescent','Quarter','Gibbous','Full','Waning','Eclipse','Twilight']\n return names[(names.index(p)+30*(m-1)+d-1)%8]\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把年初月相误作第一天之前的月相",
+    "code": "import sys\ndef solve(raw):\n p,m,d=raw.split();m=int(m);d=int(d);names=['NewMoon','Crescent','Quarter','Gibbous','Full','Waning','Eclipse','Twilight'];days=[31,28,31,30,31,30,31,31,30,31,30,31]\n return names[(names.index(p)+sum(days[:int(m)-1])+int(d))%8]\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

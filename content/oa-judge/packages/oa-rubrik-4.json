@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-rubrik-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Two's Power (Regex Match)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Rubrik",
+      "字符串",
+      "正则表达式"
+    ],
+    "description": "判断二进制字符串所表示的正整数是否为 2 的幂。允许前导零；零本身不是 2 的幂。原题要求正则匹配，本题把锁定的匹配结果作为标准输出 True/False。\n\n输入输出协议与明确标注的本站补充约束由 CSWork 整理。",
+    "input": "输入一行非空二进制字符串 s（长度 1..200000；本站补充边界）。",
+    "output": "输出 True 或 False。",
+    "explanation": "完整思路与证明见配套题解。",
+    "hints": [
+      "先把原题规则转成精确的输入输出，再按规则逐步计算。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "1\n",
+      "expectedOutput": "True\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "0001000\n",
+      "expectedOutput": "True\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "101\n",
+      "expectedOutput": "False\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "1000111101110000110\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "01100000001110110001\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "0111111100110011110\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "000111101000011\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "01011010\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "0111\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "0010011100101\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "00001101001\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "000001\n",
+      "expectedOutput": "True\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "000000\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "00110\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "00011101011111100000001\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "001011000010110101111010101010\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "000000000011\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "001100001011001101000100\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "000010101010100001101011\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "00011111100101\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "011011000000\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "0011010111010110110101110110\n",
+      "expectedOutput": "False\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "10\n",
+      "expectedOutput": "True\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

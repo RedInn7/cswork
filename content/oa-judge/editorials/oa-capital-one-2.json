@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-2",
+  "title": "Octavian Lunar Calendar — Phase of Date",
+  "explanation": "## 思路\n\n把日期转换成年内从 0 开始的天数偏移，再对 8 取模加到起始月相序号。\n\n## 正确性\n\n每经过一天，月相在 8 个状态中前进一位。年内经过的天数正是此前完整月份天数加当月日号减一，所以按该偏移循环移动得到唯一答案。\n\n## 复杂度\n\n时间 O(12)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n phase,month,day=raw.split();month=int(month);day=int(day)\n names=['NewMoon','Crescent','Quarter','Gibbous','Full','Waning','Eclipse','Twilight']\n days=[31,28,31,30,31,30,31,31,30,31,30,31]\n offset=sum(days[:month-1])+day-1\n return names[(names.index(phase)+offset)%8]\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#2-octavian-lunar-calendar--phase-of-date",
+  "sourceContentHash": "7e3e9fbd6723b55cba29edef27c4558a57c4864a486b9450cb87749c9601a219",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不接受合法前导零",
+    "code": "import sys\ndef solve(raw):\n s=raw.strip()\n return 'True' if s and s[0]=='1' and s.count('1')==1 else 'False'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把单个 1 判为非幂",
+    "code": "import sys\ndef solve(raw):\n s=raw.strip().lstrip('0')\n return 'True' if len(s)>1 and s[0]=='1' and set(s[1:])=={'0'} else 'False'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
