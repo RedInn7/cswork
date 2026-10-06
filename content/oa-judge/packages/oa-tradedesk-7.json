@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-tradedesk-7",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Last to Be Checked",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "TradeDesk",
+      "队列",
+      "模拟"
+    ],
+    "description": "参加者按时刻 moments 到达。单柜台一次只检查一人，每人固定检查 300 秒；柜台空闲时立即开始，否则等待。返回最后一位参加者完成检查的时刻。\n\n题意与 300 秒时长来自固定 catalog 题面；本站补充逐行输入输出协议。原题解释字段误写“300 分钟”，与题面 300 秒及样例输出 1201 冲突，本站依正文和样例采用 300 秒。",
+    "input": "第一行是人数 n，第二行是 n 个以空格分隔的整数到达时刻，按非降序排列。本站边界：1≤n≤100000，0≤moments[i]≤10^9。",
+    "output": "输出最后一位参加者完成检查的整数时刻（秒）。",
+    "explanation": "完整思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "维护上一位参加者完成的时刻，逐人更新。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "4\n1 6 9 502\n",
+      "expectedOutput": "1201\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "2\n0 1\n",
+      "expectedOutput": "600\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "1\n0\n",
+      "expectedOutput": "300\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 1",
+      "input": "8\n333 807 955 1173 1182 2088 2289 2760\n",
+      "expectedOutput": "3060\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 2",
+      "input": "9\n47 131 441 477 963 2149 2231 2561 2903\n",
+      "expectedOutput": "3349\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 3",
+      "input": "2\n1054 1891\n",
+      "expectedOutput": "2191\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 4",
+      "input": "10\n22 351 524 549 669 868 891 1509 1748 2042\n",
+      "expectedOutput": "3051\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 5",
+      "input": "3\n1875 2655 2994\n",
+      "expectedOutput": "3294\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 6",
+      "input": "1\n119\n",
+      "expectedOutput": "419\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 7",
+      "input": "11\n257 399 504 651 748 933 1118 1585 1786 1984 2912\n",
+      "expectedOutput": "3557\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 8",
+      "input": "6\n0 157 929 2031 2089 2580\n",
+      "expectedOutput": "2931\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 9",
+      "input": "11\n165 165 400 504 694 857 1001 1682 1748 2032 2682\n",
+      "expectedOutput": "3465\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 10",
+      "input": "12\n155 479 1201 1263 1355 1438 1977 2173 2375 2480 2779 2862\n",
+      "expectedOutput": "4201\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 11",
+      "input": "3\n631 2036 2323\n",
+      "expectedOutput": "2636\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 12",
+      "input": "9\n137 187 435 457 530 1899 2023 2161 2637\n",
+      "expectedOutput": "3099\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 13",
+      "input": "4\n578 1233 1979 2209\n",
+      "expectedOutput": "2579\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 14",
+      "input": "2\n268 297\n",
+      "expectedOutput": "868\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 15",
+      "input": "12\n431 464 725 891 1042 1820 1910 2085 2407 2431 2496 2544\n",
+      "expectedOutput": "4031\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 16",
+      "input": "10\n32 93 305 441 745 1522 1649 1698 1877 2909\n",
+      "expectedOutput": "3209\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 17",
+      "input": "2\n1933 2537\n",
+      "expectedOutput": "2837\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 18",
+      "input": "2\n1770 2824\n",
+      "expectedOutput": "3124\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 19",
+      "input": "3\n934 1325 2012\n",
+      "expectedOutput": "2312\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 20",
+      "input": "9\n306 1692 1860 1994 2056 2201 2427 2582 2633\n",
+      "expectedOutput": "4092\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 21",
+      "input": "6\n222 262 862 1188 1702 1822\n",
+      "expectedOutput": "2302\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 22",
+      "input": "2\n2263 2406\n",
+      "expectedOutput": "2863\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 23",
+      "input": "9\n343 466 1166 1657 1768 1950 2466 2555 2708\n",
+      "expectedOutput": "3457\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 24",
+      "input": "8\n26 56 552 630 1864 1978 2025 2296\n",
+      "expectedOutput": "3064\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 25",
+      "input": "8\n401 646 1458 1750 2575 2845 2932 2989\n",
+      "expectedOutput": "3775\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 26",
+      "input": "5\n48 157 1706 1765 2264\n",
+      "expectedOutput": "2606\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 27",
+      "input": "1\n1094\n",
+      "expectedOutput": "1394\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 28",
+      "input": "5\n1879 2068 2155 2192 2292\n",
+      "expectedOutput": "3379\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 29",
+      "input": "4\n458 2305 2597 2869\n",
+      "expectedOutput": "3205\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 30",
+      "input": "9\n103 277 581 735 1497 1638 1766 2812 2962\n",
+      "expectedOutput": "3412\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 31",
+      "input": "10\n260 870 1105 1410 1683 1984 2284 2586 2656 2664\n",
+      "expectedOutput": "3570\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 32",
+      "input": "3\n881 1740 2567\n",
+      "expectedOutput": "2867\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 33",
+      "input": "9\n393 544 934 1066 1155 1748 1935 1997 2348\n",
+      "expectedOutput": "3093\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 34",
+      "input": "12\n127 313 660 1073 1105 1272 1600 1710 1730 2118 2196 2849\n",
+      "expectedOutput": "3773\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 35",
+      "input": "9\n580 594 690 950 979 1082 1912 2071 2360\n",
+      "expectedOutput": "3280\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 36",
+      "input": "8\n4 500 914 1006 1554 1753 1897 2374\n",
+      "expectedOutput": "2754\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 37",
+      "input": "2\n1847 2661\n",
+      "expectedOutput": "2961\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 38",
+      "input": "3\n340 1289 2906\n",
+      "expectedOutput": "3206\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 39",
+      "input": "12\n1 178 311 612 813 844 957 1624 2161 2179 2379 2823\n",
+      "expectedOutput": "3601\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 40",
+      "input": "11\n0 32 151 566 743 829 993 1494 1635 1795 2354\n",
+      "expectedOutput": "3300\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

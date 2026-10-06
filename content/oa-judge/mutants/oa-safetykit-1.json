@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把旋转方向错写为逆时针",
+    "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n,rotation,vf,hf=v[:4]; a=[v[4+i*n:4+(i+1)*n] for i in range(n)]\n for _ in range(rotation//90): a=[list(row) for row in zip(*a)][::-1]\n if vf: a.reverse()\n if hf: a=[row[::-1] for row in a]\n return \"\\n\".join(\" \".join(map(str,row)) for row in a)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "遗漏垂直翻转",
+    "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n,rotation,vf,hf=v[:4]; a=[v[4+i*n:4+(i+1)*n] for i in range(n)]\n for _ in range(rotation//90): a=[list(row) for row in zip(*a[::-1])]\n if hf: a=[row[::-1] for row in a]\n return \"\\n\".join(\" \".join(map(str,row)) for row in a)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]

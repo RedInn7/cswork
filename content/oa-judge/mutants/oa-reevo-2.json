@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查窗口最大值或最小值之一",
+    "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; p=v[1:1+n]; out=[]\n for k in range(1,n+1):\n  out.append('1' if any(max(p[i:i+k])==k for i in range(n-k+1)) or any(min(p[i:i+k])==1 for i in range(n-k+1)) else '0')\n return ''.join(out)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查从数组开头开始的前缀",
+    "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; p=v[1:1+n]; out=[]\n for k in range(1,n+1): out.append('1' if max(p[:k])==k and min(p[:k])==1 else '0')\n return ''.join(out)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]
