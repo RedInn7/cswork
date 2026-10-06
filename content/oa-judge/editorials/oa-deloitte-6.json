@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-deloitte-6",
+  "title": "Longest Substring with Even Occurrences",
+  "explanation": "## 思路\n\n将 26 个字母的出现奇偶状态编码成位掩码，记录每种状态最早出现位置。\n\n## 正确性证明\n\n两个前缀奇偶掩码相同，其间每个字母出现偶数次；固定右端点时选择最早位置能得到最长子串。遍历所有前缀取最大长度即全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(min(n,2^26))。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip(); first={0:-1}; mask=0; best=0\n    for i,c in enumerate(s):\n        mask ^= 1 << (ord(c)-97)\n        if mask in first: best=max(best,i-first[mask])\n        else: first[mask]=i\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/deloitte#6-longest-substring-with-even-occurrences",
+  "sourceContentHash": "5f5a688464e57463acef0063269c7e07cadec3b8b3aa2a52cba869d38daae678",
+  "author": "CSWork"
+}

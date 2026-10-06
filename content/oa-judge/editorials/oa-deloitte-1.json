@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-deloitte-1",
+  "title": "Make Grid Symmetric",
+  "explanation": "## 思路\n\n按上下、左右镜像将相互约束的格子分组成至多四格的轨道；每组统一成多数颜色。\n\n## 正确性证明\n\n行与列对称要求同一轨道内所有格子相等，且不同轨道互不约束。每个轨道选择多数颜色所需翻转最少，逐轨道最优解相加即全局最优。\n\n## 复杂度\n\n时间 O(nm)，额外空间 O(nm)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); m=int(v[1]); g=v[2:2+n]; seen=set(); ans=0\n    for i in range(n):\n        for j in range(m):\n            if (i,j) in seen: continue\n            cells={(i,j),(i,m-1-j),(n-1-i,j),(n-1-i,m-1-j)}; seen |= cells\n            blacks=sum(g[r][c]=='B' for r,c in cells); ans+=min(blacks,len(cells)-blacks)\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/deloitte#1-make-grid-symmetric",
+  "sourceContentHash": "b3955caf1fe7b1dcb569fde382b65713131bb674cd31c196b67cdbb9388ed7e9",
+  "author": "CSWork"
+}

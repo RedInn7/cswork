@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-3",
+  "title": "Min Cost to Connect All Points",
+  "explanation": "## 思路\n\n在完全图上运行稠密 Prim；每次加入离当前树最近的未访问点，并更新其他点的最小曼哈顿距离。\n\n## 正确性证明\n\nPrim 每轮选择跨越当前生成树与未访问点集合的最小边。加入该边不会形成环；更新后保持每个未访问点到树的最小边权。n 轮后得到最小生成树。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; p=[tuple(v[1+2*i:3+2*i]) for i in range(n)]\n    best=[10**30]*n; best[0]=0; used=[False]*n; total=0\n    for _ in range(n):\n        u=min((i for i in range(n) if not used[i]),key=lambda i:best[i]); used[u]=True; total+=best[u]\n        for j in range(n):\n            if not used[j]: best[j]=min(best[j],abs(p[u][0]-p[j][0])+abs(p[u][1]-p[j][1]))\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nutanix#3-min-cost-to-connect-all-points",
+  "sourceContentHash": "6d69c5cc21d71e434d4091c13a4317bd6d03587c295d2ef526ebd64a19dee193",
+  "author": "CSWork"
+}

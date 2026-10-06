@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉空集合校正",
+    "code": "def solve(raw):\n    MOD=1000000007; s=raw.strip(); n=len(s); cnt=[0]*26\n    for c in s: cnt[ord(c)-97]+=1\n    fact=[1]*(n+1)\n    for i in range(1,n+1): fact[i]=fact[i-1]*i%MOD\n    inv=[1]*(n+1); inv[n]=pow(fact[n],MOD-2,MOD)\n    for i in range(n-1,-1,-1): inv[i]=inv[i+1]*(i+1)%MOD\n    ans=0\n    for k in range(1,max(cnt)+1):\n        prod=1\n        for c in cnt:\n            if c>=k: prod=prod*(fact[c]*inv[k]%MOD*inv[c-k]+1)%MOD\n        ans=(ans+prod)%MOD\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "组合数使用频次而非选取数",
+    "code": "def solve(raw):\n    MOD=1000000007; s=raw.strip(); n=len(s); cnt=[0]*26\n    for c in s: cnt[ord(c)-97]+=1\n    fact=[1]*(n+1)\n    for i in range(1,n+1): fact[i]=fact[i-1]*i%MOD\n    inv=[1]*(n+1); inv[n]=pow(fact[n],MOD-2,MOD)\n    for i in range(n-1,-1,-1): inv[i]=inv[i+1]*(i+1)%MOD\n    ans=0\n    for k in range(1,max(cnt)+1):\n        prod=1\n        for c in cnt:\n            if c>=k: prod=prod*(fact[c]*inv[c]%MOD*inv[k-c]+1)%MOD\n        ans=(ans+prod-1)%MOD\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

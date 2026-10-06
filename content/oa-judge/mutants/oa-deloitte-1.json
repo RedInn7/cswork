@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只约束行镜像",
+    "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); m=int(v[1]); g=v[2:2+n]; seen=set(); ans=0\n    for i in range(n):\n        for j in range(m):\n            if (i,j) in seen: continue\n            cells={(i,j),(i,m-1-j)}; seen |= cells\n            blacks=sum(g[r][c]=='B' for r,c in cells); ans+=min(blacks,len(cells)-blacks)\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "总是翻转到白色",
+    "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); m=int(v[1]); g=v[2:2+n]; seen=set(); ans=0\n    for i in range(n):\n        for j in range(m):\n            if (i,j) in seen: continue\n            cells={(i,j),(i,m-1-j),(n-1-i,j),(n-1-i,m-1-j)}; seen |= cells\n            blacks=sum(g[r][c]=='B' for r,c in cells); ans+=blacks\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

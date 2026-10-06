@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把至多 K 错写成至少 K",
+    "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); k=int(v[1]); ss=v[2:2+n]; masks=[]\n    for s in ss:\n        m=0\n        for c in s: m|=1<<(ord(c)-97)\n        masks.append(m)\n    return str(max(sum((m & ~mask)==0 for m in masks) for mask in range(1<<10) if mask.bit_count()>=k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只计算字符串与选择集合交集为空",
+    "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); k=int(v[1]); ss=v[2:2+n]; masks=[]\n    for s in ss:\n        m=0\n        for c in s: m|=1<<(ord(c)-97)\n        masks.append(m)\n    return str(max(sum((m & mask)==0 for m in masks) for mask in range(1<<10) if mask.bit_count()<=k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

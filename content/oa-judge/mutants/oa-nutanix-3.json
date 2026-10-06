@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉横坐标差",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; p=[tuple(v[1+2*i:3+2*i]) for i in range(n)]\n    best=[10**30]*n; best[0]=0; used=[False]*n; total=0\n    for _ in range(n):\n        u=min((i for i in range(n) if not used[i]),key=lambda i:best[i]); used[u]=True; total+=best[u]\n        for j in range(n):\n            if not used[j]: best[j]=min(best[j],abs(p[u][0]-p[j][0]))\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "最大生成树式更新",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; p=[tuple(v[1+2*i:3+2*i]) for i in range(n)]\n    best=[10**30]*n; best[0]=0; used=[False]*n; total=0\n    for _ in range(n):\n        u=min((i for i in range(n) if not used[i]),key=lambda i:best[i]); used[u]=True; total+=best[u]\n        for j in range(n):\n            if not used[j]: best[j]=max(best[j],abs(p[u][0]-p[j][0])+abs(p[u][1]-p[j][1]))\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

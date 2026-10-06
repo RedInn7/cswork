@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-nutanix-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Good Subsequences",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Nutanix"
+    ],
+    "description": "统计非空子序列中，所有出现字符的频次都相同的子序列数量；按 1,000,000,007 取模。相同字符来自不同下标的选择视为不同子序列。\n\n本站标准输入输出格式及任何补充范围以本题说明为准。",
+    "input": "一行仅含小写英文字母的 word；本站补充 1≤|word|≤200000，以适配原题未给出的长度上界。",
+    "output": "输出符合条件的非空子序列数量模 1,000,000,007。",
+    "explanation": "枚举统一频次 k。对于至少出现 k 次的每个字符，选择 C(count,k) 个下标，或不选择该字符；全不选的方案需去掉。",
+    "hints": [
+      "枚举统一频次 k。对于至少出现 k 次的每个字符，选择 C(count,k) 个下标，或不选择该字符；全不选的方案需去掉。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "abca\n",
+      "expectedOutput": "12\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "abcd\n",
+      "expectedOutput": "15\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "aaa\n",
+      "expectedOutput": "7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "cdc\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "abbabad\n",
+      "expectedOutput": "49\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "addadbbc\n",
+      "expectedOutput": "87\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "dacdacb\n",
+      "expectedOutput": "60\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "cbad\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "cbdcaa\n",
+      "expectedOutput": "38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "ccc\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "cbadcdc\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "a\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "bbacddbdc\n",
+      "expectedOutput": "129\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "cbbcbc\n",
+      "expectedOutput": "33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "adabccc\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "cbc\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "cb\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "dcadacadc\n",
+      "expectedOutput": "133\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "adadbaabcb\n",
+      "expectedOutput": "184\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "babb\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "ccbaaab\n",
+      "expectedOutput": "51\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "bdbcccd\n",
+      "expectedOutput": "51\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "caacaabbdc\n",
+      "expectedOutput": "184\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "cbbd\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "cacadb\n",
+      "expectedOutput": "38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "a\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "d\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 25",
+      "input": "aacddccb\n",
+      "expectedOutput": "87\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 26",
+      "input": "cbcadabada\n",
+      "expectedOutput": "194\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 27",
+      "input": "bbac\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 28",
+      "input": "cdccdbbd\n",
+      "expectedOutput": "81\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

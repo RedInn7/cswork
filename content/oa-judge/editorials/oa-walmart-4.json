@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-walmart-4",
+  "title": "Minimum Possible Value of Function",
+  "explanation": "## 思路\n\n令 y[i]=X[i]−(i+1)，则目标是 Σ|y[i]−k|；取 y 的中位数作为最优 k。\n\n## 正确性证明\n\n绝对偏差和在中位数处最小。变换后原式逐项等于 |y[i]−k|，所以将中位数代入并求和就是全局最小值。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; y=sorted(v[i+1]-i for i in range(n)); med=y[n//2]\n    return str(sum(abs(x-med) for x in y))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/walmart#4-minimum-possible-value-of-function",
+  "sourceContentHash": "5befc74773025fa5042cb2917d2be7fc10e1d64db7504ece60607541f339a222",
+  "author": "CSWork"
+}

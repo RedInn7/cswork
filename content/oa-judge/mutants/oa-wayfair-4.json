@@ -1,0 +1,10 @@
+[
+  {
+    "name": "未要求偶数个零",
+    "code": "def solve(raw):\n    v=raw.split(); q=int(v[0]); return \"\\n\".join(\"True\" if s[0]=='1' and s.count('0')>=2 and True else \"False\" for s in v[1:1+q])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "允许以零开头",
+    "code": "def solve(raw):\n    v=raw.split(); q=int(v[0]); return \"\\n\".join(\"True\" if s.count('0')>=2 and s.count('0')%2==0 else \"False\" for s in v[1:1+q])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

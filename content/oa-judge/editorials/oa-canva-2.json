@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-canva-2",
+  "title": "Order Check (Backend)",
+  "explanation": "## 思路\n\n排序得到目标序列，逐位置比较。\n\n## 正确性证明\n\n每个位置正确当且仅当其值等于排序后同一位置的值；计数不相等位置即为题目要求。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]; b=sorted(a)\n    return str(sum(x!=y for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/canva#2-order-check-backend",
+  "sourceContentHash": "4b25267c6270ef82af286f6ae63f97fd3227b799fa297e1bafdc0433552bdfb6",
+  "author": "CSWork"
+}

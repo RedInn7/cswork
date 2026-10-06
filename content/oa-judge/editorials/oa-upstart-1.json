@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-upstart-1",
+  "title": "Bounding Box from Coordinates",
+  "explanation": "## 思路\n\n一次遍历维护 x、y 的最小值与最大值。\n\n## 正确性证明\n\n轴对齐包围盒的左右边界分别是所有 x 的极值，上下边界是所有 y 的极值；跨度之差即宽和高。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（读取输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; xs=v[1::2][:n]; ys=v[2::2][:n]\n    return f\"{min(xs)} {min(ys)} {max(xs)-min(xs)} {max(ys)-min(ys)}\"\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/upstart#1-bounding-box-from-coordinates",
+  "sourceContentHash": "1e715bc92e73e852220c559808bd322926fe3b7d836a0b85970e7b6126cf3cec",
+  "author": "CSWork"
+}
