@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sig-2",
+  "title": "机器人竖直移动终点方向",
+  "explanation": "## 思路\n\n统计 U 与 D 的净位移。\n\n## 正确性证明\n\n每个 U 贡献 +1、每个 D 贡献 −1；净和符号唯一决定最终相对位置。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。\n\n## 来源说明\n\n依据 OAMaster 固定题面；本站另行定义标准输入输出协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n s=raw.strip();v=s.count(\"U\")-s.count(\"D\")\n return \"U\" if v>0 else \"D\" if v<0 else \"\"\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/sig#2-robot-vertical-move--final-position",
+  "sourceContentHash": "6f904f6058d7b38445c28fcc89a7f21b5ba7672e49fa7e3e8f82fa223ef04daf",
+  "author": "CSWork"
+}
