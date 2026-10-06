@@ -5870,6 +5870,18 @@
       ]
     },
     {
+      "id": "oa-goldman-sachs-24",
+      "sourceContentHash": "7eaffb814ced0ac93607501947d09c0cb5527c168a2e3e9ee9717964ce9ccd13",
+      "packageChecksum": "ddfa0b2d827d93b88d984ae9d6af126873bce62c8cdaae8500fb6d5f974a83ac",
+      "editorial": "## 思路\n\n模拟室内员工数，C 和 U 使人数加一，R 和 L 使人数减一。答案是整个过程中室内人数的最大值；每次进入时若没有空椅，恰好需要再买一把。\n\n## 正确性\n\n任一时刻室内员工都必须各有一把椅子，因此椅子数至少为室内人数最大值。按规则复用空椅，并在进入时人数达到已购椅子数才购买，购买后椅子数始终等于截至当前的室内人数最大值。结束时购买数正好达到该下界。合法事件序列保证每次离开或返回都对应已有员工，状态唯一。\n\n## 复杂度\n\n设所有模拟字符总数为 L，时间 O(L)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); answers=[]\n for simulation in lines[1:1+n]:\n  inside=best=0\n  for event in simulation:\n   if event in 'CU': inside+=1\n   else: inside-=1\n   best=max(best,inside)\n  answers.append(str(best))\n return ' '.join(answers)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-goldman-sachs-5",
       "sourceContentHash": "987b8a5d3e66c961ac5e7ee7de8172bb66747ab4bb7b2df5d9057771e7dc49e9",
       "packageChecksum": "077f67217353b18f862d277b4900cf2774f986cd9963df68e83821f96d35c926",

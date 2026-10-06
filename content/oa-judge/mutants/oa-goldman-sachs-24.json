@@ -1,0 +1,10 @@
+[
+  {
+    "name": "员工永久离开时没有释放椅子",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); answers=[]\n for simulation in lines[1:1+n]:\n  inside=best=0\n  for event in simulation:\n   if event in 'CU': inside+=1\n   elif event=='R': inside-=1\n   best=max(best,inside)\n  answers.append(str(best))\n return ' '.join(answers)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "会议室员工返回时没有占用椅子",
+    "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); answers=[]\n for simulation in lines[1:1+n]:\n  inside=best=0\n  for event in simulation:\n   if event=='C': inside+=1\n   else: inside-=1\n   best=max(best,inside)\n  answers.append(str(best))\n return ' '.join(answers)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+  }
+]
