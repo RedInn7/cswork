@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-14",
+      "batch": "intuit-14-sample-correction",
+      "sourceContentHash": "e48395a9c525367eaabe0e60fa410d0293ad569a6a38fbfbe110ea58902b2f3d",
+      "previousReason": "样例冲突：起点 (1,2) 到目标 (6,2) 的欧氏距离正好为 X=5，按规则一步可达，但给出的答案为 2。",
+      "reason": "固定源明确规定每步欧氏距离恰为 X；样例说明的两步路线终点为 (2,5)，但输入将中间点 (6,2) 误填为目标。更正坐标后，独立坐标扫描 BFS 确认最短距离为2；保留原题规则和输出。"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-14",
+      "sourceContentHash": "e48395a9c525367eaabe0e60fa410d0293ad569a6a38fbfbe110ea58902b2f3d",
+      "packageChecksum": "7aacf994ee11dc60a8c6aa770606240adfd9bee943b3d978ff44d50bf896d99c",
+      "editorial": "## 思路与样例勘误\n\n合法跳跃对应整数位移 `(dr,dc)`，满足 `dr²+dc²=X²`。把棋盘格视为节点、这些位移视为无权边，从起点 BFS；首次到达终点即为最少步数，遍历完仍未到达则返回 -1。\n\n固定来源的跳跃规则明确要求距离恰好为 X。原样例把目标填为 `(6,2)`，它与 `(1,2)` 的距离是 5，按规则一步即达；但来源解释明确写出路线 `(1,2)→(6,2)→(2,5)` 并称需要 2 步，所以说明中的最终目标是 `(2,5)`，样例输入误把中间点填成了终点。将 `u,v` 从 `6,2` 改为 `2,5` 后，解释中的两步均长为 5，且起终点距离为 √10，不可能一步到达。只修正样例坐标，不改题意与答案。\n\n## 正确性\n\n算法只添加满足平方和等式且不越界的边，因而每条图路径都是合法跳跃路径。反过来，所有合法跳跃都对应枚举出的整数位移，所以原问题的每条路线都在图中。无权图 BFS 首次访问目标的距离是最少边数；未访问表示不可达。\n\n## 复杂度\n\n设 V=mn，D 为整数位移数。扫描平方差预计算耗时 O(X)，BFS 时间 O(VD)，空间 O(V+D)。采用来源约束 m,n,X≤1000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\nfrom collections import deque\nimport math\nimport sys\n\ndef solve(raw):\n    m,n,x,p,q,u,v=map(int,raw.split())\n    if not (1<=m<=1000 and 1<=n<=1000 and 1<=x<=1000 and 1<=p<=m and 1<=u<=m and 1<=q<=n and 1<=v<=n):\n        raise ValueError(\"outside source constraints\")\n    sr,sc,tr,tc=p-1,q-1,u-1,v-1\n    if (sr,sc)==(tr,tc): return \"0\"\n    moves=set()\n    for dr in range(x+1):\n        rem=x*x-dr*dr; dc=math.isqrt(rem)\n        if dc*dc==rem:\n            for a in {dr,-dr}:\n                for b in {dc,-dc}: moves.add((a,b))\n    moves.discard((0,0))\n    if not moves: return \"-1\"\n    dist=array('i',[-1])*(m*n); start=sr*n+sc; target=tr*n+tc\n    dist[start]=0; queue=array('i',[start]); head=0\n    while head<len(queue):\n        cur=queue[head]; head+=1; r,c=divmod(cur,n); nd=dist[cur]+1\n        for dr,dc in moves:\n            nr,nc=r+dr,c+dc\n            if 0<=nr<m and 0<=nc<n:\n                nxt=nr*n+nc\n                if dist[nxt]<0:\n                    if nxt==target: return str(nd)\n                    dist[nxt]=nd; queue.append(nxt)\n    return \"-1\"\n\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
