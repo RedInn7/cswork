@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每段只要重复就只替换一次",
+    "code": "def solve(raw):\n z=raw.splitlines(); n=int(z[0]); out=[]\n for s in z[1:1+n]:\n  out.append(str(sum(s[i]==s[i-1] for i in range(1,len(s)))))\n return '\\n'.join(out)\n"
+  },
+  {
+    "name": "只计长度恰为二的重复段",
+    "code": "def solve(raw):\n z=raw.splitlines(); n=int(z[0]); out=[]\n for s in z[1:1+n]:\n  ans=0;i=0\n  while i<len(s):\n   j=i+1\n   while j<len(s) and s[j]==s[i]:j+=1\n   ans+=int(j-i==2);i=j\n  out.append(str(ans))\n return '\\n'.join(out)\n"
+  }
+]

@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ixl-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Prison Break",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Ixl"
+    ],
+    "description": "分别找出最长连续移除的横栏、竖栏段；最大孔的边长是连续移除长度加 1。",
+    "input": "第一行 n、m、|h|、|v|；第二行给移除的横栏编号，第三行给竖栏编号。1≤n,m≤100000，数组非空且编号在对应 1..n/m 内；每根栏最多出现一次。",
+    "output": "输出最大孔面积（64 位整数）。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "6 6 3 2\n1 2 4\n2 3\n",
+      "expectedOutput": "9\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "21 10 20 5\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 20 21\n1 2 4 5 6\n",
+      "expectedOutput": "76\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "22 7 16 1\n3 4 5 6 7 9 10 11 12 13 14 15 17 18 20 22\n2\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "8 24 7 13\n1 2 3 4 5 7 8\n1 4 5 8 9 10 11 12 16 17 18 22 23\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "20 23 17 18\n1 2 3 4 5 8 9 10 11 12 14 15 16 17 18 19 20\n1 3 4 6 7 8 9 10 11 12 15 17 18 19 20 21 22 23\n",
+      "expectedOutput": "64\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "7 40 7 35\n1 2 3 4 5 6 7\n1 2 4 5 6 7 8 9 10 11 12 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 30 31 32 33 34 36 37 38 40\n",
+      "expectedOutput": "128\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "24 35 6 28\n5 8 10 13 16 17\n1 2 3 4 5 8 9 10 11 12 13 14 15 18 19 20 21 23 24 25 26 27 28 29 30 32 33 34\n",
+      "expectedOutput": "27\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "39 14 17 9\n1 3 4 5 6 7 9 10 12 13 14 17 21 26 32 35 38\n1 2 5 6 7 8 11 12 14\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "28 20 20 15\n1 2 3 4 5 6 8 9 10 12 14 16 17 20 22 23 24 25 26 28\n2 3 4 5 6 7 8 11 13 15 16 17 18 19 20\n",
+      "expectedOutput": "56\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "11 32 3 30\n1 4 10\n1 2 3 4 5 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 28 29 30 31 32\n",
+      "expectedOutput": "42\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "22 16 22 2\n1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22\n4 8\n",
+      "expectedOutput": "46\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "32 19 15 16\n1 2 4 5 6 10 15 20 21 25 26 27 29 30 32\n1 2 3 4 5 6 7 8 10 11 14 15 16 17 18 19\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "38 17 1 2\n38\n11 17\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "31 26 28 21\n1 2 3 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 26 28 29 30 31\n2 3 4 6 8 9 10 11 12 13 15 16 17 18 19 20 22 23 24 25 26\n",
+      "expectedOutput": "147\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "12 1 2 1\n5 8\n1\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "10 40 10 3\n1 2 3 4 5 6 7 8 9 10\n11 16 22\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "34 21 4 13\n3 11 19 21\n1 2 3 5 7 8 11 12 14 15 17 20 21\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "1 17 1 3\n1\n2 10 15\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "35 12 28 4\n1 2 3 5 6 7 8 9 12 15 16 17 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 35\n2 3 4 5\n",
+      "expectedOutput": "80\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "18 10 6 7\n8 9 10 11 15 18\n1 3 4 5 7 8 9\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "11 25 6 2\n1 2 4 6 7 11\n11 25\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "5 3 1 1\n1\n3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "19 26 9 4\n1 2 4 7 12 13 14 18 19\n7 17 22 23\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "1 19 1 15\n1\n1 3 4 5 6 8 10 11 12 13 15 16 17 18 19\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "11 15 2 11\n3 5\n1 2 4 5 6 8 9 11 12 14 15\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

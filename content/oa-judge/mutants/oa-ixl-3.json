@@ -1,0 +1,10 @@
+[
+  {
+    "name": "长度不同时仍计算字符差",
+    "code": "def solve(raw):\n z=raw.splitlines(); q=int(z[0]); p=1; out=[]\n for _ in range(q):\n  la,lb=map(int,z[p].split()); a=z[p+1]; b=z[p+2]; p+=3; a='' if a=='-' else a; b='' if b=='-' else b; ca=[a.count(chr(97+i)) for i in range(26)]; cb=[b.count(chr(97+i)) for i in range(26)]; out.append(str(sum(abs(x-y) for x,y in zip(ca,cb))//2) if la==lb else '0')\n return '\\n'.join(out)\n"
+  },
+  {
+    "name": "字符频次差未除以二",
+    "code": "def solve(raw):\n z=raw.splitlines(); q=int(z[0]); p=1; out=[]\n for _ in range(q):\n  la,lb=map(int,z[p].split()); a=z[p+1]; b=z[p+2]; p+=3; a='' if a=='-' else a; b='' if b=='-' else b\n  out.append('-1' if la!=lb else str(sum(abs(a.count(chr(97+i))-b.count(chr(97+i))) for i in range(26))))\n return '\\n'.join(out)\n"
+  }
+]

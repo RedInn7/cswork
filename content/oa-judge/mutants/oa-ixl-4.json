@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略连续性，直接数已拆栏杆",
+    "code": "def solve(raw):\n v=list(map(int,raw.split())); n,m,hn,vn=v[:4]; return str((hn+1)*(vn+1))\n"
+  },
+  {
+    "name": "连续段长度未加一",
+    "code": "def solve(raw):\n v=list(map(int,raw.split())); n,m,hn,vn=v[:4]; h=sorted(v[4:4+hn]); w=sorted(v[4+hn:4+hn+vn])\n def run(a):\n  b=c=0; p=None\n  for x in a:\n   c=c+1 if p is not None and x==p+1 else 1; b=max(b,c); p=x\n  return b\n return str(run(h)*run(w))\n"
+  }
+]

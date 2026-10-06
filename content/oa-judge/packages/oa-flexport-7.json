@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-flexport-7",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Matrix Traversal",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Flexport"
+    ],
+    "description": "从 4×4 矩阵第一行任意格出发，每步向下一行相邻列移动，最大化初始 100 能量减去经过格子的数值总和。",
+    "input": "输入 4 行，每行 4 个整数（0≤mat[i][j]<100）。",
+    "output": "输出到达末行后可剩余的最大能量，可为负数。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "10 20 30 40\n60 50 20 80\n10 10 10 10\n60 50 60 50\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "56 91 84 22\n46 5 98 9\n42 39 59 73\n0 60 98 1\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "22 80 18 51\n17 58 47 84\n75 20 12 73\n12 52 44 79\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "15 97 13 40\n90 96 47 43\n74 0 96 37\n54 36 25 97\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "91 40 51 30\n0 31 77 69\n31 32 22 25\n14 28 66 87\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "40 45 14 24\n79 52 78 29\n79 53 98 86\n83 30 88 70\n",
+      "expectedOutput": "-49\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "43 68 49 64\n10 99 54 81\n10 43 88 24\n37 74 64 92\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "38 44 76 22\n25 92 67 9\n58 98 92 40\n98 48 28 51\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "68 82 36 92\n60 52 2 20\n3 24 57 5\n13 66 33 62\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "88 37 77 72\n82 98 3 68\n0 60 93 68\n28 53 14 95\n",
+      "expectedOutput": "-14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "28 5 68 8\n91 97 67 46\n10 97 84 10\n26 51 76 87\n",
+      "expectedOutput": "-32\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "11 14 95 90\n98 20 69 0\n94 49 15 61\n33 70 17 81\n",
+      "expectedOutput": "37\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "33 82 2 99\n81 95 24 39\n80 53 52 98\n63 67 99 60\n",
+      "expectedOutput": "-38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "36 40 1 34\n50 51 16 66\n4 6 45 94\n20 51 77 47\n",
+      "expectedOutput": "57\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "51 8 90 11\n57 60 86 70\n49 81 62 11\n23 66 28 58\n",
+      "expectedOutput": "-20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "72 26 83 59\n87 89 75 37\n3 75 91 89\n62 70 12 2\n",
+      "expectedOutput": "-78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "71 68 34 52\n91 70 20 20\n71 5 51 44\n37 59 37 52\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "7 14 44 37\n56 83 6 65\n93 84 94 31\n70 52 39 36\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "71 38 34 63\n76 16 80 94\n21 99 2 97\n31 41 27 70\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "10 93 29 41\n42 3 10 43\n73 40 64 62\n66 91 91 10\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "7 13 89 45\n21 48 40 26\n28 32 32 84\n1 98 33 33\n",
+      "expectedOutput": "43\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "1 54 16 34\n20 69 1 42\n62 56 97 27\n0 6 13 0\n",
+      "expectedOutput": "56\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "59 63 72 96\n50 35 84 58\n80 98 94 49\n63 25 77 87\n",
+      "expectedOutput": "-99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "37 55 43 88\n3 81 37 64\n53 17 53 8\n33 12 73 68\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "20 23 84 65\n7 84 53 95\n83 26 44 67\n75 0 1 90\n",
+      "expectedOutput": "47\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

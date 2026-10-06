@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-safetykit-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Robot Circle Existence (Infinite Loop Boundedness)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "SafetyKit"
+    ],
+    "description": "重复执行由 G（前进）、L、R（原地转向）构成的命令串，判断机器人轨迹是否有界。",
+    "input": "第一行 q（1≤q≤1000），随后 q 行命令串，长度 1..10000，字符仅 G/L/R。",
+    "output": "逐串输出 YES（有界）或 NO（无界）。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3\nG\nGL\nRGRG\n",
+      "expectedOutput": "NO\nYES\nYES\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "4\nRGLGLRLGLLGGLLRLGLRR\nRRLGG\nGGGRGG\nRGGLLRGRRLLLLLRRLGLGGLGLLR\n",
+      "expectedOutput": "NO\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "8\nRRGGRGRRLLRGGRGLGGRRRLGGGGGGGRRLL\nLLRLLRLGRLLGGLRGLGRRRGGLL\nGGRGGGLRLGG\nLRRGRGLLL\nRRRGRGLRGGGRRRLLGLLGGRLGLGGGLGGG\nRGGRGLGLGGRR\nGLGGGLLLRGLGRGRRLGLRGGRLGRRLGRLLLLL\nGLGGGGGRGGRRGRRGGGLLRLGLRRLLR\n",
+      "expectedOutput": "YES\nNO\nNO\nYES\nYES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "2\nGRGRL\nGGLRRLRLLLLGRRLLRGGR\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "1\nLRRLGLLGGRLLLGGRGG\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "3\nRGLRRGR\nGR\nGRLRRRGGLRGRLGLRLLRLLGRRGRLLLRLRGR\n",
+      "expectedOutput": "YES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "1\nRRRRGGLGLGGRL\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "4\nLRLGGLLGGRGGLGRLRRLLGRRLLLRLLLGLRL\nGGGLLLGRLRLGGLG\nLRRLGGGLLLLR\nLRGLRLL\n",
+      "expectedOutput": "YES\nNO\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "8\nGGGGGGLRRRRGGLLGGRLLLGLGGLR\nLLLRGRRRRLGLGGGRLRGRRRR\nGRGGGGRRLGLLRRLRRRLLLLRLRLGLLGRGL\nLRGRRGLLRGLRR\nRRLGRLRRRGLLRRRGGLRGRGRGGRRLLRRL\nGRRGGGGGRRLRGLLRGLLLRGLGGGLLRGGLLL\nGGLLLLLGLLRGLLRLLLRLGRLRGGLRLLG\nLRLLGLLLRGRGGRRGR\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\nNO\nNO\nYES\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "2\nRGGLRRGGLLGRG\nRRLGRGGGRGGGRLGGGLRRLGRRRGRRGRGRRGR\n",
+      "expectedOutput": "YES\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "3\nRRGRGLLLRRLLRLRGLLGGR\nLGRGRRLRLGL\nLRRGLLLLRLGLRGLLGLGLGLLRGGRLLRRRRL\n",
+      "expectedOutput": "NO\nNO\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "8\nLLLGRGRRLGRRRGLGLRLGGL\nGLRLRRRLRLRLRRLGG\nGGLLLGGGL\nLRRRLGLLGRLGRGGLLGLLLRRLLRLLRLLG\nRGGRLGLL\nRLLG\nRLRLGGLRGRRGRR\nLGRGLLRLG\n",
+      "expectedOutput": "YES\nYES\nNO\nYES\nYES\nYES\nNO\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "7\nRLLRGGLLGRRGGRGLGRRGLRGGRGRRGGGRG\nRRG\nRRGGLRGRRLRGLLRL\nLLGRLRRLGLLGLGGLLGGLGRRLG\nRGLRLGGRLLRRLLLLG\nRLRGRGRRGGRLGGGLRRRLRG\nRLRGLLLGLRRLGLGRLLGLLLRGRR\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\nYES\nYES\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "3\nRGRLGRGGGLRGGRRRRGGRRRRRGGLRRLGGGG\nGRGLRLG\nRGRGRRRRRGL\n",
+      "expectedOutput": "YES\nNO\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "8\nLGGLLLRRRLR\nLLRLRLGGGR\nGGLRGRGLRLLRLRGLRRRLLRRGG\nRLLRRLLLRLRRLLGGLRLLRRLL\nLLLGGLRLL\nGGRGGLRRLRLRLLLRLLRLRLGLGGGRGG\nGLRLRGLRLGLGLRRGGLLGGGLRGRLRGG\nLLLGLGGGRLGLLGRLRRRGGLGRGGGGGRGRRGL\n",
+      "expectedOutput": "YES\nYES\nYES\nNO\nYES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "2\nLGLRGRLGRRLLGLLRRLLGRRLRG\nRGRGLGRRRRRLLLRGLGGGLL\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "8\nLRLGLGGRLGLLLRRLLLLGRLLRLLRLL\nLRLRLRGRGRLRRRLLGRRGLGRGLRLLLRLGR\nLG\nRRLRGLGRLLRRGRRRLLLGLGGLGRGGLG\nGGGRRLGRGLGRLRRGLRGRLLGRGGGGGRRG\nRRRRLGRGRRRGLLLRR\nGGRGR\nLLLGRLLLGRGLRLRLR\n",
+      "expectedOutput": "YES\nYES\nYES\nNO\nYES\nYES\nYES\nNO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "3\nGGGRLRLRGR\nGRGGGGRRLLLRRLLRRLRGGLGGR\nGGGLG\n",
+      "expectedOutput": "YES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "5\nLRLRRL\nGGLRRLRGLRLRGRRGGLLRRLRLRLRLRLL\nLRLLGRLLRLLLGRRGGRGGLGRGRRGGGGLL\nGRGGLLGRRRRLRL\nRLGLGLRRRRLRGGGGGLGLGRLR\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "7\nRRLRRRGGLGLRGRLL\nGLGLLGRLRRRGLLGRLRLG\nLRRRLLRLRGLGRLGLRLLL\nGLRGGGLLRGGLRRGLRRL\nLLRGL\nLGRRRGRGGGLRLRGGL\nGLLGLLGRRRRLGGGRGLGGLL\n",
+      "expectedOutput": "YES\nYES\nYES\nNO\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "5\nGR\nGGLLGRRRRLRLRGLGLLGGLLLGGRLRLRGG\nGLGRRRG\nRGLLRRLLGLRGGGRRLLRLRGLLGGGRRGGL\nLLGLLGRGRRRLGGGLLGLLRRRRLGRRRGGLL\n",
+      "expectedOutput": "YES\nYES\nYES\nYES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "1\nGLRRLGGLLGRLGLLLLRLRLR\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "2\nRGLRGGGRGLRRLLRGGG\nGGRLGLLRLLRGLLLRLLGLLLLLGG\n",
+      "expectedOutput": "YES\nYES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "1\nRLLLRGL\n",
+      "expectedOutput": "YES\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "2\nLLLGRLGRRGRLGRLRGRLRRLRRLLLRGGLRGG\nGRRGLRLRGLGLLRLRGRGLGRLRL\n",
+      "expectedOutput": "YES\nNO\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

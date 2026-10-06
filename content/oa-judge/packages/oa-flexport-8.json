@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-flexport-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Throw The Ball",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Flexport"
+    ],
+    "description": "从 1 号朋友开始，每秒把球交给 receiver 指定的朋友，求经过给定秒数后的持球者。",
+    "input": "第一行 n 和 k（2≤n≤100000，1≤k≤10^12）；第二行 n 个接收者编号（1..n 且不等于对应发送者）。",
+    "output": "输出 k 秒后持球朋友的 1-based 编号。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5 6\n2 4 1 5 3\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "5 2001\n2 4 1 5 3\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "25 474\n21 13 9 17 16 19 8 18 8 24 16 4 15 20 1 4 2 20 22 22 15 10 12 10 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "13 680\n2 10 11 6 2 11 11 11 10 5 6 11 7\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "25 876\n3 11 23 2 23 5 2 16 15 4 18 13 7 2 7 22 4 16 6 3 1 23 21 21 17\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "7 618\n3 7 4 7 7 5 6\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "24 122\n22 1 2 15 19 18 1 24 23 2 4 20 3 11 14 15 16 8 23 24 2 20 5 12\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "2 407\n2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "25 570\n24 23 16 14 20 15 10 7 25 16 16 23 12 20 3 8 23 15 20 12 16 1 18 12 15\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "24 177\n24 8 21 14 9 22 6 6 22 7 18 24 4 20 3 13 19 8 8 4 7 3 7 21\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "14 370\n8 4 5 7 12 9 13 4 12 11 2 13 4 6\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "6 559\n2 5 4 3 6 1\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "13 507\n7 13 2 9 8 8 4 11 10 12 2 9 9\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "9 971\n3 7 1 9 2 9 3 3 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "4 755\n2 4 1 1\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "13 23\n4 13 1 1 6 5 11 2 10 12 12 2 6\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "12 696\n6 9 2 8 8 4 1 9 8 12 4 10\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "8 32\n6 5 6 2 8 1 2 6\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "15 684\n4 15 12 7 3 10 6 14 1 6 10 8 7 6 6\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "10 826\n3 5 1 6 10 2 5 6 1 9\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "9 849\n9 4 1 9 3 3 2 2 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "16 389\n5 1 1 6 12 1 6 4 13 4 1 13 14 13 1 4\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "20 717\n10 8 2 15 18 11 19 6 17 5 9 1 2 17 14 11 15 3 18 3\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "14 59\n10 1 8 11 14 7 8 10 11 6 6 11 14 8\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "2 855\n2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "21 913\n21 17 2 7 10 14 4 7 18 15 7 5 18 18 14 2 3 17 1 4 3\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
