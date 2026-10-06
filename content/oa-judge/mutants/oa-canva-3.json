@@ -1,0 +1,10 @@
+[
+  {
+    "name": "用较大段长度计数",
+    "code": "def solve(raw):\n    s=raw.strip(); prev=0; run=0; last=None; ans=0\n    for ch in s:\n        if ch==last: run+=1\n        else: ans+=max(prev,run); prev,run=run,1; last=ch\n    return str(ans+min(prev,run))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉最后相邻段",
+    "code": "def solve(raw):\n    s=raw.strip(); prev=0; run=0; last=None; ans=0\n    for ch in s:\n        if ch==last: run+=1\n        else: ans+=min(prev,run); prev,run=run,1; last=ch\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

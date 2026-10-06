@@ -1,0 +1,10 @@
+[
+  {
+    "name": "将并列分数拆成不同名次",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,k=v[:2]; scores=sorted(v[2:2+n],reverse=True); ans=0; rank=1\n    for i,s in enumerate(scores):\n        rank=i+1\n        if rank<=k and s>0: ans+=1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把 0 分玩家计入",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,k=v[:2]; scores=sorted(v[2:2+n],reverse=True); ans=0; rank=1\n    for i,s in enumerate(scores):\n        if i and s!=scores[i-1]: rank=i+1\n        if rank<=k: ans+=1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

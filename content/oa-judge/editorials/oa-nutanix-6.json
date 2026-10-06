@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-6",
+  "title": "Number of Players",
+  "explanation": "## 思路\n\n按分数降序排序；相同分数保持前一名次，不同分数的名次为下标加一。\n\n## 正确性证明\n\n降序位置即竞技排名定义。仅累加名次不超过 k 且得分非零的玩家，逐个对应题目资格条件。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,k=v[:2]; scores=sorted(v[2:2+n],reverse=True); ans=0; rank=1\n    for i,s in enumerate(scores):\n        if i and s!=scores[i-1]: rank=i+1\n        if rank<=k and s>0: ans+=1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nutanix#6-number-of-players-for-mts2",
+  "sourceContentHash": "47448d02a181ef186161d8570261da22cdce7523f19abfc2eb9dfe2fbb771668",
+  "author": "CSWork"
+}

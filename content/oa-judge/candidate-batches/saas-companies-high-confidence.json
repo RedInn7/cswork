@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-canva-2",
+      "sourceContentHash": "4b25267c6270ef82af286f6ae63f97fd3227b799fa297e1bafdc0433552bdfb6",
+      "packageChecksum": "97ee20a5e519bf3feecf13aaf7706814f54bc8ebcd42c0ef85116d71a45d243a",
+      "editorial": "## 思路\n\n排序得到目标序列，逐位置比较。\n\n## 正确性证明\n\n每个位置正确当且仅当其值等于排序后同一位置的值；计数不相等位置即为题目要求。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]; b=sorted(a)\n    return str(sum(x!=y for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-canva-3",
+      "sourceContentHash": "58547702007282d5ecbf89d298884157ce92626b9e8d448be7e9720b6b2f35dd",
+      "packageChecksum": "2277260b50c42e262ab8581ea4e8e88f1bcf05d4e426f40f13b740ca3b596989",
+      "editorial": "## 思路\n\n把字符串分成连续相同字符段；每对相邻段贡献两段长度的较小值。\n\n## 正确性证明\n\n任何合法子串必须恰好跨过一对相邻的不同字符段；跨界起点可选数量为两段长度的较小值。相邻段对不可能重复表示同一子串，求和即答案。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip(); prev=0; run=0; last=None; ans=0\n    for ch in s:\n        if ch==last: run+=1\n        else: ans+=min(prev,run); prev,run=run,1; last=ch\n    return str(ans+min(prev,run))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-deloitte-1",
+      "sourceContentHash": "b3955caf1fe7b1dcb569fde382b65713131bb674cd31c196b67cdbb9388ed7e9",
+      "packageChecksum": "18318df0eaa4c661754ff2ba1e0fa7a3ca002d955b462ce4be2577a1bedb7a7e",
+      "editorial": "## 思路\n\n按上下、左右镜像将相互约束的格子分组成至多四格的轨道；每组统一成多数颜色。\n\n## 正确性证明\n\n行与列对称要求同一轨道内所有格子相等，且不同轨道互不约束。每个轨道选择多数颜色所需翻转最少，逐轨道最优解相加即全局最优。\n\n## 复杂度\n\n时间 O(nm)，额外空间 O(nm)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); m=int(v[1]); g=v[2:2+n]; seen=set(); ans=0\n    for i in range(n):\n        for j in range(m):\n            if (i,j) in seen: continue\n            cells={(i,j),(i,m-1-j),(n-1-i,j),(n-1-i,m-1-j)}; seen |= cells\n            blacks=sum(g[r][c]=='B' for r,c in cells); ans+=min(blacks,len(cells)-blacks)\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-deloitte-3",
+      "sourceContentHash": "23993c65472748047fc2c8be237d9b9adca850b67e047328f44e76b4e658344f",
+      "packageChecksum": "b2ca18277ff1ad22d0f5c6145df0e1a1c833b7daf7bc1f3b81fdd2186c492cff",
+      "editorial": "## 思路\n\n将每个字符串压缩为字母集合位掩码，枚举不超过 K 个字母的集合并计数。\n\n## 正确性证明\n\n字符串可拼出当且仅当它使用的每种字母都在选择集合内。枚举所有合法集合覆盖了任意选择方案，取最大计数即最优值。选择更多字母不会降低可拼数量，因此恰选 K 在 K≤10 时也可，但实现直接按“至多”枚举。\n\n## 复杂度\n\n时间 O(2^10·n+总字符数)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); k=int(v[1]); ss=v[2:2+n]; masks=[]\n    for s in ss:\n        m=0\n        for c in s: m|=1<<(ord(c)-97)\n        masks.append(m)\n    return str(max(sum((m & ~mask)==0 for m in masks) for mask in range(1<<10) if mask.bit_count()<=k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-deloitte-6",
+      "sourceContentHash": "5f5a688464e57463acef0063269c7e07cadec3b8b3aa2a52cba869d38daae678",
+      "packageChecksum": "ae30f668417da0591ef4112da1437b943f90a5ee5af8412eddf3d7470c4fb39c",
+      "editorial": "## 思路\n\n将 26 个字母的出现奇偶状态编码成位掩码，记录每种状态最早出现位置。\n\n## 正确性证明\n\n两个前缀奇偶掩码相同，其间每个字母出现偶数次；固定右端点时选择最早位置能得到最长子串。遍历所有前缀取最大长度即全局最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(min(n,2^26))。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    s=raw.strip(); first={0:-1}; mask=0; best=0\n    for i,c in enumerate(s):\n        mask ^= 1 << (ord(c)-97)\n        if mask in first: best=max(best,i-first[mask])\n        else: first[mask]=i\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nutanix-1",
+      "sourceContentHash": "2880ceb366e345a49604a768218a46244094c08dec12e9675223c67d69e339df",
+      "packageChecksum": "5022cab08e8509b1245f06a623ca43d1ae67105dba0bb056f37c0d5fd873ef18",
+      "editorial": "## 思路\n\n枚举统一频次 k。对于至少出现 k 次的每个字符，选择 C(count,k) 个下标，或不选择该字符；全不选的方案需去掉。\n\n## 正确性证明\n\n任一非空好子序列都有唯一的正频次 k。固定 k 时，不同字符的下标选择彼此独立，乘积枚举所有频次恰为 k 的子序列；减去空选择后非空。对所有 k 求和不会重复。\n\n## 复杂度\n\n时间 O(n+26·maxCount)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    MOD=1000000007; s=raw.strip(); n=len(s); cnt=[0]*26\n    for c in s: cnt[ord(c)-97]+=1\n    fact=[1]*(n+1)\n    for i in range(1,n+1): fact[i]=fact[i-1]*i%MOD\n    inv=[1]*(n+1); inv[n]=pow(fact[n],MOD-2,MOD)\n    for i in range(n-1,-1,-1): inv[i]=inv[i+1]*(i+1)%MOD\n    ans=0\n    for k in range(1,max(cnt)+1):\n        prod=1\n        for c in cnt:\n            if c>=k: prod=prod*(fact[c]*inv[k]%MOD*inv[c-k]+1)%MOD\n        ans=(ans+prod-1)%MOD\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nutanix-3",
+      "sourceContentHash": "6d69c5cc21d71e434d4091c13a4317bd6d03587c295d2ef526ebd64a19dee193",
+      "packageChecksum": "d7486038320d7945a205b70c56d05e3315932e34f6854b3141eb6121be1d132a",
+      "editorial": "## 思路\n\n在完全图上运行稠密 Prim；每次加入离当前树最近的未访问点，并更新其他点的最小曼哈顿距离。\n\n## 正确性证明\n\nPrim 每轮选择跨越当前生成树与未访问点集合的最小边。加入该边不会形成环；更新后保持每个未访问点到树的最小边权。n 轮后得到最小生成树。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; p=[tuple(v[1+2*i:3+2*i]) for i in range(n)]\n    best=[10**30]*n; best[0]=0; used=[False]*n; total=0\n    for _ in range(n):\n        u=min((i for i in range(n) if not used[i]),key=lambda i:best[i]); used[u]=True; total+=best[u]\n        for j in range(n):\n            if not used[j]: best[j]=min(best[j],abs(p[u][0]-p[j][0])+abs(p[u][1]-p[j][1]))\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-nutanix-6",
+      "sourceContentHash": "47448d02a181ef186161d8570261da22cdce7523f19abfc2eb9dfe2fbb771668",
+      "packageChecksum": "065053704e7b1f396ff9cf460c56f466ab7f6fa51b124b0aab4ce3a825823507",
+      "editorial": "## 思路\n\n按分数降序排序；相同分数保持前一名次，不同分数的名次为下标加一。\n\n## 正确性证明\n\n降序位置即竞技排名定义。仅累加名次不超过 k 且得分非零的玩家，逐个对应题目资格条件。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n,k=v[:2]; scores=sorted(v[2:2+n],reverse=True); ans=0; rank=1\n    for i,s in enumerate(scores):\n        if i and s!=scores[i-1]: rank=i+1\n        if rank<=k and s>0: ans+=1\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-upstart-1",
+      "sourceContentHash": "1e715bc92e73e852220c559808bd322926fe3b7d836a0b85970e7b6126cf3cec",
+      "packageChecksum": "43f983d2d0f30ba40108c78ad2f71fda54608ac6be83758181155d662139152a",
+      "editorial": "## 思路\n\n一次遍历维护 x、y 的最小值与最大值。\n\n## 正确性证明\n\n轴对齐包围盒的左右边界分别是所有 x 的极值，上下边界是所有 y 的极值；跨度之差即宽和高。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(n)（读取输入）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; xs=v[1::2][:n]; ys=v[2::2][:n]\n    return f\"{min(xs)} {min(ys)} {max(xs)-min(xs)} {max(ys)-min(ys)}\"\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-upstart-4",
+      "sourceContentHash": "c8ae9e86719993843832ca0cc7076a364d8040757d4437de10576d5dddc4315b",
+      "packageChecksum": "2e2a18b6474337d84e45af9c2ada03263dfb9f272ab11ec17d4c5fdbe8e085c9",
+      "editorial": "## 思路\n\n直接逐位取两个数的个位数字比较，之后各自整除 10；首次不同即返回当前下标。\n\n## 正确性证明\n\n每轮处理的正是当前最低位，比较顺序严格从个位向高位推进。若循环结束则两数均无剩余位，缺失位按 0 补齐后仍完全相同。\n\n## 复杂度\n\n时间 O(log(max(num1+num2,givenSum)))，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    a,b,g=map(int,raw.split()); c=a+b; i=0\n    while c or g:\n        if c%10!=g%10: return str(i)\n        c//=10; g//=10; i+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-walmart-4",
+      "sourceContentHash": "5befc74773025fa5042cb2917d2be7fc10e1d64db7504ece60607541f339a222",
+      "packageChecksum": "6383bdaac69cd1c3058b5f45a8ad824c6e4ab4cbbf4ca500fed2de95bb079d4e",
+      "editorial": "## 思路\n\n令 y[i]=X[i]−(i+1)，则目标是 Σ|y[i]−k|；取 y 的中位数作为最优 k。\n\n## 正确性证明\n\n绝对偏差和在中位数处最小。变换后原式逐项等于 |y[i]−k|，所以将中位数代入并求和就是全局最小值。\n\n## 复杂度\n\n时间 O(n log n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; y=sorted(v[i+1]-i for i in range(n)); med=y[n//2]\n    return str(sum(abs(x-med) for x in y))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-wayfair-4",
+      "sourceContentHash": "f16fea7a633e124c4b7d7f294286e074b845348f459fe21ba4acc83c4a875185",
+      "packageChecksum": "0402c49d4ce997fa555711a39f44da1f7aebe2dcb2a2c6ed2731745155e36f25",
+      "editorial": "## 思路\n\n检查首字符和 0 的数量；至少两个且为偶数时符合条件。\n\n## 正确性证明\n\n题目定义恰为三个条件的合取。由于输入字符限定为二进制，首字符校验与 0 数量校验足以覆盖所有条件。\n\n## 复杂度\n\n时间 O(total length)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=raw.split(); q=int(v[0]); return \"\\n\".join(\"True\" if s[0]=='1' and s.count('0')>=2 and s.count('0')%2==0 else \"False\" for s in v[1:1+q])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

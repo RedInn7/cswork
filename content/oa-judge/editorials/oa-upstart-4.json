@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-upstart-4",
+  "title": "Find the Wrong Digit Index in a Sum",
+  "explanation": "## 思路\n\n直接逐位取两个数的个位数字比较，之后各自整除 10；首次不同即返回当前下标。\n\n## 正确性证明\n\n每轮处理的正是当前最低位，比较顺序严格从个位向高位推进。若循环结束则两数均无剩余位，缺失位按 0 补齐后仍完全相同。\n\n## 复杂度\n\n时间 O(log(max(num1+num2,givenSum)))，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    a,b,g=map(int,raw.split()); c=a+b; i=0\n    while c or g:\n        if c%10!=g%10: return str(i)\n        c//=10; g//=10; i+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/upstart#4-find-the-wrong-digit-index-in-a-sum",
+  "sourceContentHash": "c8ae9e86719993843832ca0cc7076a364d8040757d4437de10576d5dddc4315b",
+  "author": "CSWork"
+}

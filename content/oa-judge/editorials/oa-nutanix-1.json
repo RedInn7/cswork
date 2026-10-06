@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-1",
+  "title": "Good Subsequences",
+  "explanation": "## 思路\n\n枚举统一频次 k。对于至少出现 k 次的每个字符，选择 C(count,k) 个下标，或不选择该字符；全不选的方案需去掉。\n\n## 正确性证明\n\n任一非空好子序列都有唯一的正频次 k。固定 k 时，不同字符的下标选择彼此独立，乘积枚举所有频次恰为 k 的子序列；减去空选择后非空。对所有 k 求和不会重复。\n\n## 复杂度\n\n时间 O(n+26·maxCount)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    MOD=1000000007; s=raw.strip(); n=len(s); cnt=[0]*26\n    for c in s: cnt[ord(c)-97]+=1\n    fact=[1]*(n+1)\n    for i in range(1,n+1): fact[i]=fact[i-1]*i%MOD\n    inv=[1]*(n+1); inv[n]=pow(fact[n],MOD-2,MOD)\n    for i in range(n-1,-1,-1): inv[i]=inv[i+1]*(i+1)%MOD\n    ans=0\n    for k in range(1,max(cnt)+1):\n        prod=1\n        for c in cnt:\n            if c>=k: prod=prod*(fact[c]*inv[k]%MOD*inv[c-k]+1)%MOD\n        ans=(ans+prod-1)%MOD\n    return str(ans)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nutanix#1-good-subsequences",
+  "sourceContentHash": "2880ceb366e345a49604a768218a46244094c08dec12e9675223c67d69e339df",
+  "author": "CSWork"
+}

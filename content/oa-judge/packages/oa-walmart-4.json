@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-walmart-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Minimum Possible Value of Function",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Walmart"
+    ],
+    "description": "给定序列 X，求整数 k 使 Σ|X[i]−(k+i+1)| 最小，并输出最小值。\n\n本站标准输入输出格式及任何补充范围以本题说明为准。",
+    "input": "n（1≤n≤200000），下一行 n 个整数 X[i]（1≤X[i]≤10^9）。",
+    "output": "输出函数的最小值，使用整数。",
+    "explanation": "令 y[i]=X[i]−(i+1)，则目标是 Σ|y[i]−k|；取 y 的中位数作为最优 k。",
+    "hints": [
+      "令 y[i]=X[i]−(i+1)，则目标是 Σ|y[i]−k|；取 y 的中位数作为最优 k。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5\n2 2 3 5 5\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\n1\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3\n10 1 10\n",
+      "expectedOutput": "10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "1\n26\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "2\n15 34\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "4\n27 8 13 39\n",
+      "expectedOutput": "45\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "7\n16 35 19 17 32 4 7\n",
+      "expectedOutput": "65\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "5\n37 39 12 1 33\n",
+      "expectedOutput": "67\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "8\n39 25 32 9 15 22 25 16\n",
+      "expectedOutput": "69\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "4\n39 1 35 29\n",
+      "expectedOutput": "46\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "4\n37 27 18 31\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "6\n6 5 35 17 32 8\n",
+      "expectedOutput": "62\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "8\n33 17 13 12 29 29 18 35\n",
+      "expectedOutput": "62\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "3\n26 30 40\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "7\n38 15 8 40 24 5 12\n",
+      "expectedOutput": "83\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "2\n30 31\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "6\n2 31 38 10 34 25\n",
+      "expectedOutput": "67\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "8\n40 31 25 31 37 39 20 40\n",
+      "expectedOutput": "45\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "6\n20 32 9 37 38 9\n",
+      "expectedOutput": "68\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "4\n38 22 29 3\n",
+      "expectedOutput": "44\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "7\n20 22 38 23 28 18 17\n",
+      "expectedOutput": "37\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "1\n27\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "8\n40 39 8 7 32 13 18 8\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "2\n24 26\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "3\n39 30 23\n",
+      "expectedOutput": "18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "7\n31 27 20 23 5 5 4\n",
+      "expectedOutput": "78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "9\n23 7 14 13 18 28 28 15 38\n",
+      "expectedOutput": "62\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 25",
+      "input": "2\n39 29\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 26",
+      "input": "5\n16 37 40 10 8\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 27",
+      "input": "3\n34 22 8\n",
+      "expectedOutput": "28\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 28",
+      "input": "9\n32 9 31 35 6 12 6 32 3\n",
+      "expectedOutput": "114\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

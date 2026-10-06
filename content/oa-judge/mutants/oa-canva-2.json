@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按是否逆序而非错位计数",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]; b=sorted(a)\n    return str(sum(a[i]>a[i+1] for i in range(n-1)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误地忽略重复值位置",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split())); n=v[0]; a=v[1:1+n]; b=sorted(set(a))\n    return str(sum(x!=y for x,y in zip(a,b)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

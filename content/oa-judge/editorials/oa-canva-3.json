@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-canva-3",
+  "title": "Counting Binary Substrings (Backend)",
+  "explanation": "## 思路\n\n把字符串分成连续相同字符段；每对相邻段贡献两段长度的较小值。\n\n## 正确性证明\n\n任何合法子串必须恰好跨过一对相邻的不同字符段；跨界起点可选数量为两段长度的较小值。相邻段对不可能重复表示同一子串，求和即答案。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    s=raw.strip(); prev=0; run=0; last=None; ans=0\n    for ch in s:\n        if ch==last: run+=1\n        else: ans+=min(prev,run); prev,run=run,1; last=ch\n    return str(ans+min(prev,run))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/canva#3-counting-binary-substrings-backend",
+  "sourceContentHash": "58547702007282d5ecbf89d298884157ce92626b9e8d448be7e9720b6b2f35dd",
+  "author": "CSWork"
+}

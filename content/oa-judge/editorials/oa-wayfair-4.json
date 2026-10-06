@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wayfair-4",
+  "title": "Validating Magical Binary Strings with RegEx",
+  "explanation": "## 思路\n\n检查首字符和 0 的数量；至少两个且为偶数时符合条件。\n\n## 正确性证明\n\n题目定义恰为三个条件的合取。由于输入字符限定为二进制，首字符校验与 0 数量校验足以覆盖所有条件。\n\n## 复杂度\n\n时间 O(total length)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=raw.split(); q=int(v[0]); return \"\\n\".join(\"True\" if s[0]=='1' and s.count('0')>=2 and s.count('0')%2==0 else \"False\" for s in v[1:1+q])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wayfair#4-validating-magical-binary-strings-with-regex-ng",
+  "sourceContentHash": "f16fea7a633e124c4b7d7f294286e074b845348f459fe21ba4acc83c4a875185",
+  "author": "CSWork"
+}

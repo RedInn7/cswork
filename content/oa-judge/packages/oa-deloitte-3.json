@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-deloitte-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Maximum Strings Buildable from at Most K Letters",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Deloitte"
+    ],
+    "description": "从 a–j 中选至多 K 种字母（选中的字母可重复使用），最多能完整拼出多少个给定字符串。\n\n本站标准输入输出格式及任何补充范围以本题说明为准。",
+    "input": "第一行 n K（1≤n≤100000，0≤K≤10）；之后 n 行为非空小写字符串，仅含 a–j。长度总和≤200000（本站补充）。",
+    "output": "输出可拼出的最大字符串数。",
+    "explanation": "将每个字符串压缩为字母集合位掩码，枚举不超过 K 个字母的集合并计数。",
+    "hints": [
+      "将每个字符串压缩为字母集合位掩码，枚举不超过 K 个字母的集合并计数。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5 3\nadf\njjbh\njcg\neijj\nadf\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "2 3\nabcd\nefgh\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "5 4\nbc\nedf\nfde\ndge\nabcd\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "3 2\ncfaa\naf\nadbac\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "2 3\nfabdba\nd\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "2 0\necefd\nbbccd\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "1 5\nfbc\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "6 3\ncffdcc\nd\nbeaa\nea\nacacb\nec\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "10 0\nadad\nbaef\na\na\nb\ndba\nefdfd\ncccaaf\nedcd\nfaffd\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "10 4\nbfeaee\na\nfbbbf\ndea\ndcefd\nebec\nfebc\nbcc\nefffe\naad\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "10 0\nde\ndedd\ncddbb\ne\neeac\ncbe\nfc\ndff\nacbe\ncfcc\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "1 2\ncf\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "2 4\nebbbae\nadd\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "3 4\nda\nb\naf\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "5 5\nadfbee\nc\ndbdfaf\nfee\ncd\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "6 0\ndebb\nca\nac\nbb\nceeae\nb\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "5 2\nfdc\naeedb\nbdcebf\nfaeffb\ncdedfc\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "9 1\nccd\nd\ndcf\nfabb\na\nefe\naec\nfe\nffcecf\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "7 2\ncaeaef\nfce\ncea\ne\nabdd\na\ncff\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "7 1\nbcebab\ncaea\nc\ncaeed\nacbab\ndaefd\ncdbea\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "5 4\nfbd\nf\nbbafca\ne\nccad\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "6 4\nccfae\ned\ncfaffa\nfec\naabb\nbbceb\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "3 0\nade\nefef\nebfbcc\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "8 0\nebdee\nfedce\nddde\ncac\nceb\nfdddc\nec\nebfdfa\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "3 0\naffdd\nc\nfebf\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "1 0\nbe\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "10 1\nadbbbb\nb\nebe\nbeaafb\nd\nbbfdb\ncee\ncfcedd\nfcb\nba\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 25",
+      "input": "8 1\ne\neecd\ndfde\neff\nb\neacaea\na\nad\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 26",
+      "input": "7 5\nffcbe\ne\ncbf\nfafe\necafec\nf\nebbfc\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 27",
+      "input": "1 5\nfeabbe\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 28",
+      "input": "9 2\nd\ne\nccedaf\nfcfbd\na\nbadf\nccbde\nec\nfa\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "从最高位开始比较",
+    "code": "def solve(raw):\n    a,b,g=map(int,raw.split()); c=a+b; i=0\n    while c or g:\n        if c//10!=g//10: return str(i)\n        c//=10; g//=10; i+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "丢弃进位后高位",
+    "code": "def solve(raw):\n    a,b,g=map(int,raw.split()); c=a+b; i=0\n    while c or g:\n        if c%10!=g%10: return str(i)\n        c//=10; g//=10; i+=2\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

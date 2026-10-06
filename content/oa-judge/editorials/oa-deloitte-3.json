@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-deloitte-3",
+  "title": "Maximum Strings Buildable from at Most K Letters",
+  "explanation": "## 思路\n\n将每个字符串压缩为字母集合位掩码，枚举不超过 K 个字母的集合并计数。\n\n## 正确性证明\n\n字符串可拼出当且仅当它使用的每种字母都在选择集合内。枚举所有合法集合覆盖了任意选择方案，取最大计数即最优值。选择更多字母不会降低可拼数量，因此恰选 K 在 K≤10 时也可，但实现直接按“至多”枚举。\n\n## 复杂度\n\n时间 O(2^10·n+总字符数)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=raw.split(); n=int(v[0]); k=int(v[1]); ss=v[2:2+n]; masks=[]\n    for s in ss:\n        m=0\n        for c in s: m|=1<<(ord(c)-97)\n        masks.append(m)\n    return str(max(sum((m & ~mask)==0 for m in masks) for mask in range(1<<10) if mask.bit_count()<=k))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/deloitte#3-maximum-strings-buildable-from-at-most-k-letters",
+  "sourceContentHash": "23993c65472748047fc2c8be237d9b9adca850b67e047328f44e76b4e658344f",
+  "author": "CSWork"
+}
