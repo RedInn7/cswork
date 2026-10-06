@@ -3,7 +3,11 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
-import { batchName, loadScope } from './oa-judge/aggregate-batches.mjs';
+import {
+  batchName,
+  loadCandidateScope,
+  loadScope,
+} from './oa-judge/aggregate-batches.mjs';
 import { matchesOaOutput } from './oa-judge/output-checker.mjs';
 import { OA_SEMANTIC_IDS } from '../lib/oa-semantic-checkers.mjs';
 import {
@@ -19,12 +23,19 @@ const read = (path, maximumBytes = OA_MAX_METADATA_FILE_BYTES) => {
   return { bytes, data: JSON.parse(bytes), sha256: hash(bytes) };
 };
 const args = process.argv.slice(2);
-const batch = args[0] === '--batch' ? batchName(args.splice(0, 2)[1]) : null;
+const scopeFlag = args[0];
+const batch =
+  scopeFlag === '--batch' || scopeFlag === '--candidate-batch'
+    ? batchName(args.splice(0, 2)[1])
+    : null;
+const candidateBatch = scopeFlag === '--candidate-batch';
 assert(
   args.length <= 1 && !args.some((arg) => arg.startsWith('--')),
-  'Usage: verify-oa-judge.mjs [--batch NAME] [REPORT]',
+  'Usage: verify-oa-judge.mjs [--batch NAME | --candidate-batch NAME] [REPORT]',
 );
-const registry = loadScope(root, batch);
+const registry = candidateBatch
+  ? loadCandidateScope(root, batch)
+  : loadScope(root, batch);
 const url = new URL(process.env.GO_JUDGE_URL || 'http://127.0.0.1:5050');
 assert(
   url.protocol === 'https:' ||

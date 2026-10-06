@@ -74,6 +74,18 @@ export function loadScope(root, batch = null) {
     );
   return { ...selected, batch };
 }
+/** Candidate-only scope for real sandbox verification before runtime promotion. */
+export function loadCandidateScope(root, batch) {
+  const name = batchName(batch);
+  const selected = readRegistry(
+    resolve(root, 'candidate-batches', name + '.json'),
+  );
+  const runtime = readRegistry(resolve(root, 'registry.json'));
+  const runtimeIds = new Set(runtime.data.items.map((item) => item.id));
+  for (const item of selected.data.items)
+    assert(!runtimeIds.has(item.id), 'Candidate already in runtime registry: ' + item.id);
+  return { ...selected, batch: name };
+}
 /** @param {string} root @param {string | null} [batch] */
 export function defaultReportPath(root, batch = null) {
   if (!batch) return resolve(root, 'sandbox-report.json');

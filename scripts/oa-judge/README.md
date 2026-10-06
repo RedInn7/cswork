@@ -45,11 +45,14 @@
 ```sh
 node scripts/oa-judge/aggregate-batches.mjs
 node scripts/verify-oa-judge.mjs --batch google-next
+node scripts/verify-oa-judge.mjs --candidate-batch ramp-2-recovered
 node --import tsx --test tests/oa-judge-content.test.ts
 node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 ```
 
 真实沙箱地址和鉴权凭证通过环境变量配置，不写入报告或代码。批次报告保存在 `reports/<batch>.json`，绑定本批次及每条题目，新增其它批次不会使既有证据失效。首批兼容原始 `sandbox-report.json`，其文件指纹仍必须匹配。发布者必须是已验证的配置教师；缺失证据、重复 ID、题包或题解变化都拒绝发布。
+
+`--candidate-batch` 可直接从 `candidate-batches/<batch>.json` 对尚未进入 runtime registry 的候选运行真实 GoJudge，不发布题目或写入生产数据库；通过后再提升到正式 `batches/`。
 
 端到端验收使用 `node tests/oa-judge-integration.mjs google-next`，只写全新临时数据库和独立队列，不接触真实学员数据。
 
