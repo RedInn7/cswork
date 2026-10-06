@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-stripe-20",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "数据中心地理距离路由系统",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Stripe",
+      "模拟",
+      "Haversine"
+    ],
+    "description": "按命令依次维护数据中心注册、健康状态和当前负载；支持大圆距离查询，并将请求路由到距离最近且仍有容量的健康数据中心。距离采用 Haversine 公式，地球半径为 6371 km，输出和路由排序使用四舍五入后的整数公里数，距离相同时按名称升序。",
+    "input": "第一行 q（0..5000），接着 q 行命令；注册的数据中心总数不超过 200。坐标用有限十进制表示，纬度范围 [-90,90]、经度范围 [-180,180]，最多 18 位小数。命令为 `REGISTER name latitude longitude capacity`、`SET_HEALTHY name true|false`、`DISTANCE lat1 lon1 lat2 lon2` 或 `ROUTE latitude longitude`。capacity 为正整数；name 为 1..32 个 ASCII 字母、数字、下划线或连字符。命令名及参数数量有效；非法值按题面规则返回 ERROR。",
+    "output": "每条命令输出一行。REGISTER/SET_HEALTHY 输出 OK 或 ERROR；DISTANCE 输出整数公里或 ERROR；ROUTE 输出 `name distance candidates`，若健康数据中心均已满则输出 `None candidates`。candidates 为所有健康数据中心按 (四舍五入整数公里数, 名称) 排序后的逗号分隔名称；没有健康数据中心时输出 `None`。",
+    "explanation": "本站将输入数值限定为最多 18 位小数的有限十进制。对该输入域，精确球面距离不会恰为半整数公里，因此 nearest-integer 的结果唯一；参考实现采用半入规则避免语言库对精确 ties 的差异。",
+    "hints": [
+      "将每个数据中心保存为坐标、容量、负载、健康状态；路由时筛出健康节点，计算并取整距离后按距离和名称排序，再选择首个未满节点。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "正式样例/边界 1",
+      "input": "7\nREGISTER us-west 38 -122 100\nREGISTER us-east 41 -74 150\nREGISTER us-west 50 -100 50\nREGISTER invalid-node 91 0 100\nREGISTER invalid-cap 0 0 0\nSET_HEALTHY us-east false\nSET_HEALTHY fake-node true\n",
+      "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\nOK\nERROR\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 2",
+      "input": "3\nDISTANCE 38 -122 41 -74\nDISTANCE 0 0 0 0\nDISTANCE 91 0 0 0\n",
+      "expectedOutput": "4080\n0\nERROR\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 3",
+      "input": "7\nREGISTER node-A 0 0 1\nREGISTER node-B 0 0 1\nREGISTER node-C 10 10 100\nSET_HEALTHY node-C false\nROUTE 0 0\nROUTE 0 0\nROUTE 0 0\n",
+      "expectedOutput": "OK\nOK\nOK\nOK\nnode-A 0 node-A,node-B\nnode-B 0 node-A,node-B\nNone node-A,node-B\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 4",
+      "input": "4\nDISTANCE 0 0 0 0.004496608029593653\nDISTANCE 0 0 0 0.004496608029593652\nDISTANCE 0 179.9 0 -179.9\nDISTANCE 90 0 -90 0\n",
+      "expectedOutput": "1\n0\n22\n20015\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 5",
+      "input": "4\nREGISTER z-near 0 0.0009 1\nREGISTER a-far 0 0.003 1\nROUTE 0 0\nROUTE 0 0\n",
+      "expectedOutput": "OK\nOK\na-far 0 a-far,z-near\nz-near 0 a-far,z-near\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 6",
+      "input": "4\nREGISTER only 0 0 1\nROUTE 0 0\nSET_HEALTHY only false\nROUTE 0 0\n",
+      "expectedOutput": "OK\nonly 0 only\nOK\nNone\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 7",
+      "input": "4\nREGISTER north 90 0 4\nREGISTER south -90 180 4\nDISTANCE 90 0 -90 180\nROUTE 0 0\n",
+      "expectedOutput": "OK\nOK\n20015\nnorth 10008 north,south\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

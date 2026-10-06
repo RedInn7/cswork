@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-26",
+  "title": "一次数字交换可达的下标对数",
+  "explanation": "## 思路\n\n从左到右枚举较大下标对应的数 `y`。把 `y` 的十进制数字零次或交换任意一对位置，得到所有可达整数。查询此前每个可达整数出现的次数，并累加；再把 `y` 加入频次表。可达集合需要去重，避免重复数字产生同一个目标值时重复计数。\n\n交换后按整数比较；若数字串以零开头，按普通十进制整数读法忽略前导零。例如 `1000` 首尾交换后为 `0001`，对应整数 `1`。\n\n## 正确性\n\n固定右端下标 `j`。源题只允许对 `fruits[j]` 零次或一次交换，因此枚举的位置对恰好生成所有合法目标整数。频次表只含 `i<j` 的元素，所以累加候选频次正好统计所有有效左端下标；集合去重确保每个下标对只计一次。遍历每个 `j` 即得到全部答案。\n\n## 复杂度\n\n最多 10 位，每个数检查至多 45 个位置对。时间 `O(N·D²)`，空间 `O(N+D²)`，其中 `D≤10`。\n\n## 来源与本站约定\n\n固定 FastPrep 原文明确要求 `i<j`、至多交换两个数字，并明确不交换也算。原始实现按排序后的数字分组，会把需要多次交换的排列误计；本题按题面独立实现。来源只给函数签名，本站补标准输入输出；结果按整数比较，因此前导零不保留。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def count_pairs(values):\n    seen = {}\n    answer = 0\n    for value in values:\n        digits = list(str(value))\n        reachable = {value}\n        for i in range(len(digits)):\n            for j in range(i + 1, len(digits)):\n                digits[i], digits[j] = digits[j], digits[i]\n                reachable.add(int(\"\".join(digits)))\n                digits[i], digits[j] = digits[j], digits[i]\n        answer += sum(seen.get(candidate, 0) for candidate in reachable)\n        seen[value] = seen.get(value, 0) + 1\n    return answer\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data or len(data) != data[0] + 1:\n        raise ValueError(\"expected n followed by n integers\")\n    return str(count_pairs(data[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#26-count-distinct-pairs",
+  "sourceContentHash": "faad6b1d946901e5ace3a65139c20104c60784283d8321104eed47c2b0680d3a",
+  "author": "CSWork"
+}

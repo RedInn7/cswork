@@ -1,0 +1,14 @@
+[
+  {
+    "name": "把排序数字相同误当成一次交换可达",
+    "code": "import sys\nfrom collections import Counter\nn,*a=map(int,sys.stdin.read().split())\nc=Counter(''.join(sorted(str(x))) for x in a)\nprint(sum(v*(v-1)//2 for v in c.values()))\n"
+  },
+  {
+    "name": "忽略交换后前导零按整数解释的情况",
+    "code": "import sys\nfrom collections import Counter\nn,*a=map(int,sys.stdin.read().split());seen=Counter();ans=0\nfor x in a:\n s=list(str(x));r={x}\n for i in range(len(s)):\n  for j in range(i+1,len(s)):\n   s[i],s[j]=s[j],s[i];t=''.join(s)\n   if t[0]!='0':r.add(int(t))\n   s[i],s[j]=s[j],s[i]\n ans+=sum(seen[y] for y in r);seen[x]+=1\nprint(ans)\n"
+  },
+  {
+    "name": "遗漏无需交换的相等整数对",
+    "code": "import sys\nfrom collections import Counter\nn,*a=map(int,sys.stdin.read().split());seen=Counter();ans=0\nfor x in a:\n s=list(str(x));r=set()\n for i in range(len(s)):\n  for j in range(i+1,len(s)):\n   s[i],s[j]=s[j],s[i];r.add(int(''.join(s)));s[i],s[j]=s[j],s[i]\n ans+=sum(seen[y] for y in r);seen[x]+=1\nprint(ans)\n"
+  }
+]

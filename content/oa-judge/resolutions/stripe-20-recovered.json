@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-stripe-20",
+      "batch": "stripe-20-recovered",
+      "sourceContentHash": "5b7ba75466726cd40ff78b880f150612e72fc8f0cab3869a804cdc1218d21bb2",
+      "previousReason": "Haversine 最近整数及浮点边界在跨语言评测中可能不稳定；优先选择完全离散题目。",
+      "reason": "固定源完整定义命令、坐标边界、Haversine 半径、最近整数距离、路由候选排序及容量行为。有限十进制输入下精确球面距离不能恰为半整数公里，因此最近整数唯一；独立 80 位 Decimal oracle 对 300 组坐标与 120 组命令输入验证通过，两个正常退出错误解均被反例杀死。候选仍待正式 sandbox 验证；最大命令数、名称语法和精度上限是明确披露的本站输入约束。"
+    }
+  ]
+}
