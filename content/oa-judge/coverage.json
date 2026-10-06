@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 964,
-    "awaiting_sandbox": 5,
-    "blocked": 367,
-    "unreviewed": 298
+    "awaiting_sandbox": 17,
+    "blocked": 402,
+    "unreviewed": 251
   },
   "items": [
     {
@@ -7318,22 +7318,27 @@
     {
       "id": "oa-walmart-1",
       "company": "walmart",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "题面只有占位描述与 humorous 输出，无法定义计算规则。"
     },
     {
       "id": "oa-walmart-2",
       "company": "walmart",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "定义要求前半字符全相等、后半字符全相等，但示例解释把“3443”判为 good，与定义直接矛盾；约束也为未知占位符。"
     },
     {
       "id": "oa-walmart-3",
       "company": "walmart",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "操作文字可读，但没有说明最小步数的输出类型/完整示例；本批优先选有完整约束和例子的题。"
     },
     {
       "id": "oa-walmart-4",
       "company": "walmart",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-expedia-1",
@@ -7382,27 +7387,34 @@
     {
       "id": "oa-canva-1",
       "company": "canva",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始页面示例只有“RRR→0”，没有明示目标坐标/起点与允许指令字母以外字符的处理；本批不额外补输入契约。"
     },
     {
       "id": "oa-canva-2",
       "company": "canva",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-canva-3",
       "company": "canva",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-canva-4",
       "company": "canva",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "“删除最轻罐头及其相邻罐头”未说明删除后剩余原位置邻居还是当前剩余序列邻居，规则可能影响后续选择。"
     },
     {
       "id": "oa-canva-5",
       "company": "canva",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始完整 MDX 在 arr[i] 约束处截断为 `arr[i]</cod`，缺少数值范围；“每个元素最多交换一次”还需明确元素身份和相邻交换组合规则。"
     },
     {
       "id": "oa-quora-1",
@@ -7442,52 +7454,62 @@
     {
       "id": "oa-confluent-1",
       "company": "confluent",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "菜单套餐的覆盖/多份购买规则不完整，来源还注明题目可能不完全正确；最低价无法唯一确定。"
     },
     {
       "id": "oa-confluent-2",
       "company": "confluent",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "字符串换行与末尾换行如何映射为返回行未定义；原题示例把末尾空行忽略，但未覆盖空行。"
     },
     {
       "id": "oa-confluent-3",
       "company": "confluent",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "缺少 n 和交易额范围，题面将指数枚举与 DP 作为讨论题；无法设定可信的在线评测界限。"
     },
     {
       "id": "oa-confluent-4",
       "company": "confluent",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "输入是任意字符串行，标准 token 判题会丢失空行与行内空格；本批未定义可保真序列化协议。"
     },
     {
       "id": "oa-rippling-1",
       "company": "rippling",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "四道选择题中第一题“max-heapify刚完成”未指出堆的起始状态或当前被替换节点，选项可能依赖实现。"
     },
     {
       "id": "oa-rippling-2",
       "company": "rippling",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "题面示例 IP 含 420、312 等非法八位段，解释中又换成另一 IP；对具体样例结果存在源数据冲突。"
     },
     {
       "id": "oa-rippling-3",
       "company": "rippling",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "依赖外部 REST API 返回数据集且未固定快照、字段模式与错误处理，结果不能确定性复现。"
     },
     {
       "id": "oa-rippling-4",
       "company": "rippling",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "矩形网格节点是整数格点还是连续坐标未明示，且缺少全部坐标范围。"
     },
     {
       "id": "oa-rippling-5",
       "company": "rippling",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "processor 在暂停 1 秒后可否立即继续、总时间是否包含最后暂停没有被样例覆盖，至少会影响单处理器多任务答案。"
     },
     {
       "id": "oa-rippling-6",
       "company": "rippling",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始页面后续示例/约束未完全审计；“transfer time between connected servers”与最大任意点对距离可算树直径，但需先确认完整题面输入范围。"
     },
     {
       "id": "oa-mathworks-1",
@@ -7643,22 +7665,27 @@
     {
       "id": "oa-wayfair-1",
       "company": "wayfair",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "输出所有子序列，原始题称 MLE 且没有输入长度界；输出规模呈指数增长，不适合作为当前在线判题题包。"
     },
     {
       "id": "oa-wayfair-2",
       "company": "wayfair",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "依赖一张字符映射表；完整表在原页面未被可靠恢复，本批不推测映射。"
     },
     {
       "id": "oa-wayfair-3",
       "company": "wayfair",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "大锤/小锤操作的顺序、每次挥击与锤子耐久更新在题面快照中不足以唯一确定。"
     },
     {
       "id": "oa-wayfair-4",
       "company": "wayfair",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-waymo-1",
@@ -9096,22 +9123,26 @@
     {
       "id": "oa-plaid-1",
       "company": "plaid",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原题只称 integer n，没有明确是否允许负数；负号计不计入“第一位/交替符号”会影响结果。"
     },
     {
       "id": "oa-plaid-2",
       "company": "plaid",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "移动 k 张牌后 deck 的方向/剩余牌是否保持原顺序可推断，但题面未说明 n=0 操作是否计为一步；已在现批排除。"
     },
     {
       "id": "oa-plaid-3",
       "company": "plaid",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "传送落点能否重复访问、起终点为障碍时的处理、是否允许经过已访问格缺少规则；“最多访问格子”无法唯一判定。"
     },
     {
       "id": "oa-plaid-4",
       "company": "plaid",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原始长度上界 10^8 超出本地评测输入可承载范围；本批不擅自缩小来源约束并发布。"
     },
     {
       "id": "oa-gemini-1",
@@ -9136,22 +9167,26 @@
     {
       "id": "oa-ramp-1",
       "company": "ramp",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "多阶段 banking system 涉及 scheduled payment、退款、合并及 timestamp 顺序；超出本批能够逐条重建状态机并证明的范围。"
     },
     {
       "id": "oa-ramp-2",
       "company": "ramp",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "cashback 到期时余额不足、同一时刻事件排序及非法请求状态变更规则需对照完整阶段题面；本批暂缓。"
     },
     {
       "id": "oa-ramp-3",
       "company": "ramp",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "与 Banking System I 为同一多阶段状态题但 API 返回语义不同，合并账户后的 scheduled payment 所属关系需严格核对全部阶段。"
     },
     {
       "id": "oa-ramp-4",
       "company": "ramp",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "文字明确 inclusive window，但例一在时间差恰为 timeWindow 时又接受请求；窗口边界相矛盾，且示例 IP 非法。"
     },
     {
       "id": "oa-sofi-1",
@@ -9161,52 +9196,67 @@
     {
       "id": "oa-upstart-1",
       "company": "upstart",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-upstart-2",
       "company": "upstart",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "固定源页面保留为 HTML 转义片段 `&lt;p cl`，核心操作与完整题意未能恢复。"
     },
     {
       "id": "oa-upstart-3",
       "company": "upstart",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "没有给同分最高记录的选择规则，返回姓名在多个答案间不唯一。"
     },
     {
       "id": "oa-upstart-4",
       "company": "upstart",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-nutanix-1",
       "company": "nutanix",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-nutanix-2",
       "company": "nutanix",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "示例三参数写 day_hours=8，解释却改写为 2；虽该样例输出碰巧相同，未确认源题正确参数含义前暂缓。"
     },
     {
       "id": "oa-nutanix-3",
       "company": "nutanix",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-nutanix-4",
       "company": "nutanix",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "算法规则可解释，但 N/数值约束均为 N/A；穷举旋转后最少交换为 O(n²)，本批不猜测安全输入上限。"
     },
     {
       "id": "oa-nutanix-5",
       "company": "nutanix",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "“only one repetitive alphabet”与重排/插入的措辞及唯一示例含义不清，无法确定是只能重排现有字符还是可添加字符。"
     },
     {
       "id": "oa-nutanix-6",
       "company": "nutanix",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-rubrik-1",
@@ -9992,32 +10042,41 @@
     {
       "id": "oa-deloitte-1",
       "company": "deloitte",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-deloitte-2",
       "company": "deloitte",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "没有输入格式和节点编号/根节点约定；本批不猜树的序列化协议。"
     },
     {
       "id": "oa-deloitte-3",
       "company": "deloitte",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-deloitte-4",
       "company": "deloitte",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "“permutation[i] divisible by i”与第二例对 i=2 写的“i divisible by permutation[i]”方向不一致，缺少可消歧样例。"
     },
     {
       "id": "oa-deloitte-5",
       "company": "deloitte",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "说明输入用 '?' 表示未安装房屋，但假设又写字符仅有 a、b、'-'；允许字符冲突且无样例。"
     },
     {
       "id": "oa-deloitte-6",
       "company": "deloitte",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "saas-companies-high-confidence",
+      "reason": "核验固定源提交中的完整公司 MDX 页面、此题前后标题及题面/约束/例子；离线参考解与独立 oracle 对照 163 组，并由两个正常退出错误程序验证反例；未运行 GoJudge。"
     },
     {
       "id": "oa-epam-1",
