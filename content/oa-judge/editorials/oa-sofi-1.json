@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sofi-1",
+  "title": "Job Scheduling",
+  "explanation": "## 思路\n\n二分指定处理器的工作数 x。固定 x 时，为尽量少用工作，向左右相邻处理器依次放 x−1、x−2……，降到 1 后其余位置放 1。分别用等差数列求左右两边的最小和。若最小总和不超过 m，则 x 可行；该条件随 x 单调，因此二分最大可行值。\n\n## 正确性证明\n\n相邻差不超过 1 且指定值为 x 时，每向外走一步，处理器工作数至少是前一个值减 1，并且至少为 1。上述构造逐点取该下界，得到所有可行配置中的最小总和。于是 x 可行当且仅当该最小和≤m；可行性对 x 单调，二分得到最大值。\n\n## 复杂度\n\n时间 O(log m)，空间 O(1)。\n\n## 来源说明\n\n题意按固定 OAMaster 快照整理；标准输入输出协议为本站补充，不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    n,m,k=map(int,raw.split());mod=10**9+7\n    def side(cnt,x):\n        full=min(cnt,x-1);return ((x-1+x-full)*full)//2+max(0,cnt-full)\n    def need(x):return x+side(k-1,x)+side(n-k,x)\n    lo,hi,ans=1,m,1\n    while lo<=hi:\n        mid=(lo+hi)//2\n        if need(mid)<=m:ans=mid;lo=mid+1\n        else:hi=mid-1\n    return str(ans)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/sofi#1-job-scheduling",
+  "sourceContentHash": "e09ff15d9275308f9598de66f8fc3e191b60e181cb89850e7dc35cd91d60efb7",
+  "author": "Chunyu Sui"
+}

@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 981,
-    "awaiting_sandbox": 56,
-    "blocked": 517,
-    "unreviewed": 80
+    "awaiting_sandbox": 61,
+    "blocked": 524,
+    "unreviewed": 68
   },
   "items": [
     {
@@ -7876,7 +7876,9 @@
     {
       "id": "oa-jane-street-1",
       "company": "jane-street",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "trading-firms-special",
+      "reason": "按不可变 OAMaster 原始题源快照核对；补充了透明的 stdin/stdout 协议。120 个唯一小规模 oracle 输入均由独立慢速模型核对，30 个正式用例上的两个正常退出变异解均被击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-hudson-river-trading-1",
@@ -7958,7 +7960,8 @@
     {
       "id": "oa-optiver-3",
       "company": "optiver",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原题只有月份范围和有效日期保证，没有年份上界；返回类型为 int，无法保证跨任意合法年份的天数差可由 int 表示，不能自行添加年份限制。"
     },
     {
       "id": "oa-optiver-4",
@@ -7969,7 +7972,8 @@
     {
       "id": "oa-drw-1",
       "company": "drw",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "正文称各方块采用 source prompt 中展示的固定朝向，但固定形状定义依赖示意图；现存文本快照未保留图形，不能仅凭解答代码推断所有朝向后当作原题语义。"
     },
     {
       "id": "oa-imc-1",
@@ -7980,7 +7984,9 @@
     {
       "id": "oa-imc-2",
       "company": "imc",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "trading-firms-special",
+      "reason": "按不可变 OAMaster 原始题源快照核对；补充了透明的 stdin/stdout 协议。120 个唯一小规模 oracle 输入均由独立慢速模型核对，30 个正式用例上的两个正常退出变异解均被击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-imc-3",
@@ -8364,7 +8370,8 @@
     {
       "id": "oa-walleye-capital-1",
       "company": "walleye-capital",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "样例输出与所给 cache_time=3、server_time=5 及命中解释冲突（首次未命中仍输出 3，命中却出现 2/5），无法确定期望判题结果。"
     },
     {
       "id": "oa-wolverine-trading-1",
@@ -8388,12 +8395,15 @@
     {
       "id": "oa-geneva-trading-1",
       "company": "geneva-trading",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "trading-firms-special",
+      "reason": "按不可变 OAMaster 原始题源快照核对；补充了透明的 stdin/stdout 协议。120 个唯一小规模 oracle 输入均由独立慢速模型核对，30 个正式用例上的两个正常退出变异解均被击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-headlands-1",
       "company": "headlands",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "题目规模允许 10^7 条日志，原文没有明确总 token/字符上限；给出的 DSU 小并查集方案还要为每个连通分量维护路径映射，无法据现有界限给出可执行且可验证的资源协议。"
     },
     {
       "id": "oa-valkyrie-trading-1",
@@ -8416,7 +8426,9 @@
     {
       "id": "oa-valkyrie-trading-4",
       "company": "valkyrie-trading",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "trading-firms-special",
+      "reason": "按不可变 OAMaster 原始题源快照核对；补充了透明的 stdin/stdout 协议。120 个唯一小规模 oracle 输入均由独立慢速模型核对，30 个正式用例上的两个正常退出变异解均被击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-goldman-sachs-1",
@@ -9193,7 +9205,8 @@
     {
       "id": "oa-dtcc-1",
       "company": "dtcc",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "有限小数例子 1/8 要求输出 `0.1250 0`，但文字未定义终止小数末尾零的数量/周期表示；`0.125 0` 与样例数值相同却字符串不同。"
     },
     {
       "id": "oa-factset-1",
@@ -9241,7 +9254,8 @@
     {
       "id": "oa-gemini-1",
       "company": "gemini",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "原题明确没有数值上界，而答案类型是 int；既无法保证结果不溢出，也不能据此选择可执行的输入规模和算法限制。"
     },
     {
       "id": "oa-circle-1",
@@ -9258,7 +9272,8 @@
     {
       "id": "oa-affirm-1",
       "company": "affirm",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "事件含日期但资格只写 net redeemed count，未说明统计截止到 cutoffDate 的历史事件，亦未定义负净次数或超过上限的坏数据；按全部事件求净值和按截止日前事件求净值会产生不同答案。"
     },
     {
       "id": "oa-ramp-1",
@@ -9287,7 +9302,9 @@
     {
       "id": "oa-sofi-1",
       "company": "sofi",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "trading-firms-special",
+      "reason": "按不可变 OAMaster 原始题源快照核对；补充了透明的 stdin/stdout 协议。120 个唯一小规模 oracle 输入均由独立慢速模型核对，30 个正式用例上的两个正常退出变异解均被击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-upstart-1",

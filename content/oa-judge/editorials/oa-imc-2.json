@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-imc-2",
+  "title": "Chain of Command (Tree DFS Order, k-th Receiver)",
+  "explanation": "## 思路\n\n先按编号升序建立孩子列表，再做迭代先序 DFS。记录节点进入序列时的位置 tin；离开时可由当前序列长度得到子树大小。查询 (p,k) 对应序列下标 tin[p]+k−1，若 k 不超过子树大小便返回该点。\n\n## 正确性证明\n\n按序压栈保证孩子以升序先序访问。DFS 的先序遍历中任一节点的子树构成连续区间，因此该区间第 k 个元素就是查询要求的第 k 个接收者。边界判断恰好排除越过该子树的 k。\n\n## 复杂度\n\n构树和遍历 O(n)，回答 q 个查询 O(q)，空间 O(n+q)。\n\n## 来源说明\n\n题意按固定 OAMaster 快照整理；标准输入输出协议为本站补充，不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    t = list(map(int, raw.split())); n = t[0]; parent = t[1:n+1]; q = t[n+1]; at = n+2\n    children = [[] for _ in range(n)]\n    for v in range(1, n): children[parent[v]].append(v)\n    tour, tin, size = [], [0]*n, [0]*n\n    stack = [(0, 0)]\n    while stack:\n        u, phase = stack.pop()\n        if phase == 0:\n            tin[u] = len(tour); tour.append(u); stack.append((u, 1))\n            for v in reversed(children[u]): stack.append((v, 0))\n        else:\n            size[u] = len(tour) - tin[u]\n    ans=[]\n    for _ in range(q):\n        p,k=t[at:at+2];at+=2;ans.append(str(tour[tin[p]+k-1] if 1 <= k <= size[p] else -1))\n    return \" \".join(ans)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/imc#2-chain-of-command-tree-dfs-order-k-th-receiver",
+  "sourceContentHash": "22ff8a90dc110d8e4378ce76071aed57a609ff50a1621401f324e3ff2ac32ca4",
+  "author": "Chunyu Sui"
+}
