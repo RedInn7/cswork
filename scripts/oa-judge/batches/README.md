@@ -30,3 +30,5 @@
 `python3 scripts/oa-judge/batches/extra_30_review.py` 审核 15 家公司的 30 条题目，只写 `candidate-batches/extra-30-review.json` 和对应候选包、讲义、oracle、mutants、source evidence 与 reviews；不改 coverage、主 registry 或沙箱验收报告。固定 OA-Master 快照为 `e66f809f4c953bce129f68491726176615db6afc`。13 道明确题目各有 120 个唯一 oracle 输入、32 个正式用例及两个正常退出且被击杀的 mutant；另外 17 道逐题给出 blocked 原因。离线验证不代表 GoJudge 已验收。
 
 `python3 scripts/oa-judge/batches/duolingo_flexport5_review.py` 为 Duolingo #3 与 Flexport #5 生成候选题包，并为 Flexport #6 单独记录 blocked 原因。每个候选有 120 个唯一输入、32 个正式用例、独立 oracle 与两个正常退出 mutant；固定上游 MDX blob 和 catalog 指纹记录在 source evidence。Duolingo 来源样例的大小写笔误按规则更正；Flexport #6 需澄清可删除节点的范围。只做离线验证，未调用 GoJudge，不进入 runtime batches 或 coverage。
+
+`python3 scripts/oa-judge/batches/twilio_1_recovered.py` 重写 Twilio #1 的超限参考算法为 Mo 区间查询，只生成 `twilio-1-recovered` 离线候选。203 个独立 brute-oracle 输入、33 个正式用例（含 n=q=100000 压力）和两个正常退出 mutant 本地验证；未连接 GoJudge，也未进入正式批次或 runtime registry。

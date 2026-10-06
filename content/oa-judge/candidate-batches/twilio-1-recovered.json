@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-twilio-1",
+      "sourceContentHash": "bb856490739e9b0be808a23d74f7030503b561a98814756002719c83b0dee6a0",
+      "packageChecksum": "97fe75d5fbacbcec9fdc57d4c7794aa949c5710368c79b307563a5faeb17dece",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom math import isqrt\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, q = data[0], data[1]\n    tags = data[2:2+n]\n    offset = 2+n\n    queries = [(data[offset+2*i]-1, data[offset+2*i+1]-1, i) for i in range(q)]\n    block = max(1, n // max(1, isqrt(q)))\n    queries.sort(key=lambda x: (x[0]//block, x[1] if (x[0]//block)%2 == 0 else -x[1]))\n    freq = {}\n    answers = [0]*q\n    groups = 0\n    left, right = 0, -1\n    for ql, qr, qi in queries:\n        while left > ql:\n            left -= 1\n            v = tags[left]\n            old = freq.get(v, 0)\n            groups += old & 1\n            freq[v] = old + 1\n        while right < qr:\n            right += 1\n            v = tags[right]\n            old = freq.get(v, 0)\n            groups += old & 1\n            freq[v] = old + 1\n        while left < ql:\n            v = tags[left]\n            old = freq[v]\n            groups -= (old - 1) & 1\n            if old == 1:\n                del freq[v]\n            else:\n                freq[v] = old - 1\n            left += 1\n        while right > qr:\n            v = tags[right]\n            old = freq[v]\n            groups -= (old - 1) & 1\n            if old == 1:\n                del freq[v]\n            else:\n                freq[v] = old - 1\n            right -= 1\n        answers[qi] = groups\n    return \" \".join(map(str, answers))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode()))\n"
+        }
+      ],
+      "editorial": "## 思路\n\n区间中某个标签出现 c 次，可组成 floor(c/2) 组；总答案是各标签贡献之和。逐查询扫区间或逐题遍历所有标签都可能达到 O(nq)。使用 Mo 算法按区间排序，只在相邻查询之间移动端点。\n\n维护 freq[v] 与 groups=Σfloor(freq[v]/2)。加入 v 时，旧频次为奇数才新增一组；删除 v 时，旧频次为偶数才减少一组。使用左右分块交错右端点顺序，降低来回移动。\n\n## 正确性\n\n不同标签互不影响；对标签 v，最多能取 floor(c/2) 个互不重叠的二元组。加入一个 v 的变化量 floor((c+1)/2)-floor(c/2)，仅在 c 为奇数时为 1。删除一个 v 的变化量 floor((c-1)/2)-floor(c/2)，仅在旧 c 为偶数时为 -1。因此每次端点移动后 groups 都等于当前区间答案。Mo 算法对每个查询将窗口移动至该查询区间，故所得结果正确。\n\n## 复杂度\n\n块长约 n/sqrt(q)。排序 O(q log q)；端点移动 O(n sqrt(q)+qn/B)，每次移动期望 O(1)，空间 O(n+q)。\n\n## 来源与本站协议\n\nOAMaster 固定题面给出同标签、每组两根、每根至多一组、独立区间查询及 n,q≤100000、tag≤10^9。本站用 1-based 闭区间，输入 n、q、标签数组和 q 组端点，输出 q 个答案。"
+    }
+  ]
+}

@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 0,
-    "blocked": 544,
+    "awaiting_sandbox": 1,
+    "blocked": 543,
     "unreviewed": 0
   },
   "items": [
@@ -6950,8 +6950,9 @@
     {
       "id": "oa-twilio-1",
       "company": "twilio",
-      "status": "blocked",
-      "reason": "核心目标可定义，但固定源解法对每个查询遍历全部标签，无法满足题面 n,q≤10^5；本批不发布明显超限解。"
+      "status": "awaiting_sandbox",
+      "batch": "twilio-1-recovered",
+      "reason": "固定题面和规模完整，原阻塞仅因参考算法效率不足。重写 Mo 解法，以逐区间直接频次数组扫描作为独立 oracle；203 个互异 oracle 输入、33 个正式用例（含 n=q=100000 压力）及两个正常退出错误程序均通过本地验证。仍待真实 GoJudge 沙箱验证。"
     },
     {
       "id": "oa-twilio-2",
