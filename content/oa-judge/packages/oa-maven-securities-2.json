@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-maven-securities-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "恰有三个正因数的数",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Maven Securities Tech",
+      "数学",
+      "筛法"
+    ],
+    "description": "若一个正整数恰有 3 个正因数，它必为某个素数的平方。对每个给定上界 x，输出不大于 x 的此类数的个数。\n\n\n\n本站补充标准输入输出协议；不代表原站函数题原有该协议。",
+    "input": "第一行 q（1 ≤ q ≤ 100000），随后 q 行各一个整数 x（1 ≤ x ≤ 25000000000000）。",
+    "output": "逐行输出 1 到 x（含端点）中恰有 3 个正因数的正整数个数。",
+    "explanation": "题目规则、思路与证明见配套讲义。",
+    "hints": [
+      "恰有 3 个因数的数等价于素数平方。对最大平方根范围筛出素数；每个查询用整数平方根与二分查找统计素数个数。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "2\n10\n15\n",
+      "expectedOutput": "2\n2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "1\n100\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "3\n4\n9\n49\n",
+      "expectedOutput": "1\n2\n4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "2\n1712\n2170\n",
+      "expectedOutput": "13\n14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "7\n1804\n3403\n299\n2647\n2849\n3885\n4051\n",
+      "expectedOutput": "13\n16\n7\n15\n16\n18\n18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "5\n3119\n2709\n880\n3716\n2516\n",
+      "expectedOutput": "16\n15\n10\n17\n15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "4\n1210\n2109\n1795\n1755\n",
+      "expectedOutput": "11\n14\n13\n13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "3\n555\n4457\n4198\n",
+      "expectedOutput": "9\n18\n18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "1\n4747\n",
+      "expectedOutput": "19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "2\n2937\n1951\n",
+      "expectedOutput": "16\n14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "7\n2388\n2446\n3381\n4139\n3621\n104\n3939\n",
+      "expectedOutput": "15\n15\n16\n18\n17\n4\n18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "7\n308\n4082\n3179\n1112\n4402\n4181\n653\n",
+      "expectedOutput": "7\n18\n16\n11\n18\n18\n9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "8\n1189\n1259\n2818\n1016\n4227\n114\n2016\n2188\n",
+      "expectedOutput": "11\n11\n16\n11\n18\n4\n14\n14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "4\n3780\n2963\n1098\n4097\n",
+      "expectedOutput": "18\n16\n11\n18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "2\n168\n142\n",
+      "expectedOutput": "5\n5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "7\n2198\n1533\n47\n690\n842\n1821\n4801\n",
+      "expectedOutput": "14\n12\n3\n9\n10\n13\n19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "6\n4767\n2788\n4391\n4656\n197\n1823\n",
+      "expectedOutput": "19\n15\n18\n19\n6\n13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "4\n4168\n2858\n4438\n2634\n",
+      "expectedOutput": "18\n16\n18\n15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "8\n4244\n3506\n1184\n3246\n2050\n1507\n1452\n1846\n",
+      "expectedOutput": "18\n17\n11\n16\n14\n12\n12\n13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "1\n1777\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "1\n2147\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "8\n1962\n1175\n3178\n4296\n2649\n2555\n4864\n1125\n",
+      "expectedOutput": "14\n11\n16\n18\n15\n15\n19\n11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "4\n461\n951\n4472\n1056\n",
+      "expectedOutput": "8\n10\n18\n11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "1\n1279\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "2\n4085\n2767\n",
+      "expectedOutput": "18\n15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "3\n2708\n1138\n4274\n",
+      "expectedOutput": "15\n11\n18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "2\n4733\n4898\n",
+      "expectedOutput": "19\n19\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

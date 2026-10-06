@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 a 循环减为 z 后继续",
+    "code": "def solve(raw):\n s=raw.strip(); return ''.join('z' if c=='a' else chr(ord(c)-1) for c in s)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "仅修改首个字符",
+    "code": "def solve(raw):\n s=raw.strip(); return ('z'+s[1:]) if s[0]=='a' else chr(ord(s[0])-1)+s[1:]\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

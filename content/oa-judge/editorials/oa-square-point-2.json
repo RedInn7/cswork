@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-square-point-2",
+  "title": "搜索建议",
+  "explanation": "## 思路\n\n先将商品排序，再逐个搜索前缀并收集前 3 项。\n\n## 正确性证明\n\n排序后，按序扫描所有商品时首次找到的匹配项即为字典序最小项；继续扫描至多取三项，因此每个前缀输出恰是题目要求的结果。\n\n## 复杂度\n\n设商品数为 n、搜索长度为 m；排序 O(n log n)，每个前缀二分定位并检查至多 3 个结果，时间 O(n log n + m log n)，不含字符比较开销。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n from bisect import bisect_left\n rows=raw.splitlines(); n,m=map(int,rows[0].split()); p=sorted(rows[1].split()); s=rows[2].strip(); out=[]\n for i in range(1,len(s)+1):\n  prefix=s[:i]; j=bisect_left(p,prefix); ans=[]\n  while j<len(p) and p[j].startswith(prefix) and len(ans)<3:\n   ans.append(p[j]); j+=1\n  out.append(' '.join(ans) if ans else '-')\n return '\\n'.join(out)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/square-point#2-suggested-products",
+  "sourceContentHash": "343e1b28b94f2120daffc93691706188f42026151950ae5f02182f768a887e40",
+  "author": "Chunyu Sui"
+}

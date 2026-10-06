@@ -1,0 +1,10 @@
+[
+  {
+    "name": "返回最短循环而非最小公倍数",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; p=[x-1 for x in a[1:1+n]]; seen=[0]*n; ans=0\n for i in range(n):\n  if not seen[i]:\n   j=i; z=0\n   while not seen[j]: seen[j]=1; z+=1; j=p[j]\n   ans=max(ans,z)\n return str(ans)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只计算首个置换环长度",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; p=[x-1 for x in a[1:1+n]]; seen=[0]*n; i=0; j=i; z=0\n while not seen[j]: seen[j]=1; z+=1; j=p[j]\n return str(z)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

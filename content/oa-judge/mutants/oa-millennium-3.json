@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许相邻交换对重叠",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; x=a[1:1+n]; ans=sum((i+1)*v for i,v in enumerate(x))\n return str(ans+sum(max(0,x[i]-x[i+1]) for i in range(n-1)))\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "交换收益方向写反",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; x=a[1:1+n]; dp=[0]*(n+1)\n for i in range(n-1,-1,-1):\n  dp[i]=dp[i+1]\n  if i+1<n: dp[i]=max(dp[i],dp[i+2]+max(0,x[i+1]-x[i]))\n return str(sum((i+1)*v for i,v in enumerate(x))+dp[0])\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

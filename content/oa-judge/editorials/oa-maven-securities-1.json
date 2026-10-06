@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-maven-securities-1",
+  "title": "左右区间和比较",
+  "explanation": "## 思路\n\n累计前缀和，并与总和减去前缀和比较。\n\n## 正确性证明\n\n每个合法切分点 i 的左和恰为前 i 项前缀和，右和恰为 total-left；逐一检查所有 n−1 个切点，计数即为答案。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。\n\n## 来源说明\n\n整数和使用任意精度；标准输入输出协议及 n 上界由本站明确补齐。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; arr=a[1:1+n]; total=sum(arr); pref=0; ans=0\n for x in arr[:-1]:\n  pref+=x\n  if pref>total-pref: ans+=1\n return str(ans)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/maven-securities#1-count-array-splits-where-left-sum-greater-than-right-sum",
+  "sourceContentHash": "154adef6dee404bfb1f4c081e24f22d7bdb9cc5eb716c9b2c89aa9001f370262",
+  "author": "Chunyu Sui"
+}

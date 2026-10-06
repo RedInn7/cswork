@@ -1,0 +1,10 @@
+[
+  {
+    "name": "取最小的两块石头",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); h=a[1:1+a[0]]\n while len(h)>1:\n  h.sort(); x,y=h[:2]; h=h[2:]\n  if x!=y: h.append(y-x)\n return str(h[0] if h else 0)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "相等时错误地保留同重量石头",
+    "code": "def solve(raw):\n import heapq\n a=list(map(int,raw.split())); h=[-x for x in a[1:1+a[0]]]; heapq.heapify(h)\n while len(h)>1:\n  x=-heapq.heappop(h); y=-heapq.heappop(h)\n  heapq.heappush(h,-(x-y if x!=y else x))\n return str(-h[0] if h else 0)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

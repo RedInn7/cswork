@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-factset-2",
+  "title": "最后一块石头的重量",
+  "explanation": "## 思路\n\n用最大堆反复取出两块最重的石头；不相等时把差值放回堆中。\n\n## 正确性证明\n\n堆顶始终是当前重量最大的石头，因此每轮恰好按题意选取。等重时不放回任何石头；不等重时只放回重量差。循环结束时堆中唯一元素（或空堆）就是要求的结果。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。\n\n## 来源说明\n\n题目规则、样例和 n/重量约束完整。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n import heapq\n a=list(map(int,raw.split())); n=a[0]; h=[-x for x in a[1:1+n]]; heapq.heapify(h)\n while len(h)>1:\n  x=-heapq.heappop(h); y=-heapq.heappop(h)\n  if x!=y: heapq.heappush(h,-(x-y))\n return str(-h[0] if h else 0)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/factset#2-last-stone-weight",
+  "sourceContentHash": "5e97686c0e5a9026640c6f395d43dd49e3655fbc6de1ce8fa1082c057700524a",
+  "author": "Chunyu Sui"
+}

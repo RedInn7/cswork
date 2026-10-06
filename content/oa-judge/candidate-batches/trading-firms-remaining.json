@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-point72-3",
+      "sourceContentHash": "16526a6d14700d2e480ed72d599f9459f2793a9236b7393b779f64bc50102803",
+      "packageChecksum": "4f0164009a7e3ffa75b67a636aa502bf999961c8442b0824022797ceb865b360",
+      "editorial": "## 思路\n\n跳过前导 a，随后把遇到的连续非 a 字符都减一；若全串都是 a，只把最后一个 a 变成 z。\n\n## 正确性证明\n\n字典序首先由最早变化位置决定。把前导 a 改成 z 只会变大，因此最优操作从第一个非 a 开始；连续减小字符均严格改善结果，遇到 a 后继续操作会把该位置变成 z 而变差。若不存在非 a，任意操作都会产生 z，放在最右端可使前缀尽可能小。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n题面与约束完整；标准输入输出协议由本站补充。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n s=raw.strip(); out=list(s); i=0\n while i<len(s) and s[i]=='a': i+=1\n if i==len(s): out[-1]='z'\n else:\n  while i<len(s) and s[i]!='a': out[i]=chr(ord(s[i])-1); i+=1\n return ''.join(out)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-square-point-2",
+      "sourceContentHash": "343e1b28b94f2120daffc93691706188f42026151950ae5f02182f768a887e40",
+      "packageChecksum": "87c9851f8db4ff317b3e59b738e8e62f133944d4cfa6ff0b94fe03842adb6ca0",
+      "editorial": "## 思路\n\n先将商品排序，再逐个搜索前缀并收集前 3 项。\n\n## 正确性证明\n\n排序后，按序扫描所有商品时首次找到的匹配项即为字典序最小项；继续扫描至多取三项，因此每个前缀输出恰是题目要求的结果。\n\n## 复杂度\n\n设商品数为 n、搜索长度为 m；排序 O(n log n)，每个前缀二分定位并检查至多 3 个结果，时间 O(n log n + m log n)，不含字符比较开销。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n from bisect import bisect_left\n rows=raw.splitlines(); n,m=map(int,rows[0].split()); p=sorted(rows[1].split()); s=rows[2].strip(); out=[]\n for i in range(1,len(s)+1):\n  prefix=s[:i]; j=bisect_left(p,prefix); ans=[]\n  while j<len(p) and p[j].startswith(prefix) and len(ans)<3:\n   ans.append(p[j]); j+=1\n  out.append(' '.join(ans) if ans else '-')\n return '\\n'.join(out)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-maven-securities-1",
+      "sourceContentHash": "154adef6dee404bfb1f4c081e24f22d7bdb9cc5eb716c9b2c89aa9001f370262",
+      "packageChecksum": "725366508c8ffbbd7613b6361e1e440373191d68e863ca0ab693342255c3eb73",
+      "editorial": "## 思路\n\n累计前缀和，并与总和减去前缀和比较。\n\n## 正确性证明\n\n每个合法切分点 i 的左和恰为前 i 项前缀和，右和恰为 total-left；逐一检查所有 n−1 个切点，计数即为答案。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。\n\n## 来源说明\n\n整数和使用任意精度；标准输入输出协议及 n 上界由本站明确补齐。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; arr=a[1:1+n]; total=sum(arr); pref=0; ans=0\n for x in arr[:-1]:\n  pref+=x\n  if pref>total-pref: ans+=1\n return str(ans)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-maven-securities-2",
+      "sourceContentHash": "7968878945c493e4c12e9297b08cb4415cb96fc39311ae3ac54a724327cda873",
+      "packageChecksum": "159a8de015d9865392c635b8dc8337c8b3b370c5804d16f5b0470e671496ac27",
+      "editorial": "## 思路\n\n恰有 3 个因数的数等价于素数平方。对最大平方根范围筛出素数；每个查询用整数平方根与二分查找统计素数个数。\n\n## 正确性证明\n\n若 n 的素因数分解指数形式只有一个质因子且指数为 2，则其因数个数为 3；因此且仅因此它是素数平方。筛出所有不超过 sqrt(max x) 的素数，前缀和给出每个 x 的答案。\n\n## 复杂度\n\n设 M=max(x)，时间 O(sqrt(M) log log M + q)，空间 O(sqrt(M))。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n import math,bisect\n vals=list(map(int,raw.split())); q=vals[0]; xs=vals[1:1+q]; lim=math.isqrt(max(xs)); mark=bytearray(b'\\x01')*(lim+1)\n if lim>=0: mark[0]=0\n if lim>=1: mark[1]=0\n for p in range(2,int(lim**0.5)+1):\n  if mark[p]: mark[p*p:lim+1:p]=b'\\x00'*(((lim-p*p)//p)+1)\n primes=[i for i in range(2,lim+1) if mark[i]]\n return '\\n'.join(str(bisect.bisect_right(primes,math.isqrt(x))) for x in xs)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-wolverine-trading-1",
+      "sourceContentHash": "321c8b63275863d66808aad94dc420caeedecd89ffc0e795f38ac5df9f5b68f4",
+      "packageChecksum": "9eabf0131123b478043102aaa945a33374dc99f8acb2759f29a30ef8bb95d48e",
+      "editorial": "## 思路\n\n将置换分解成不相交循环，答案是所有循环长度的最小公倍数。\n\n## 正确性证明\n\n一个循环长度为 k 的元素经过 t 次操作回到原位当且仅当 k 整除 t。全数组同时恢复当且仅当每个循环长度都整除 t，因此最小正 t 是所有长度的最小公倍数。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n约束完整；置换的排列方向虽不影响循环长度与答案。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n import math\n a=list(map(int,raw.split())); n=a[0]; p=[x-1 for x in a[1:1+n]]; seen=[0]*n; ans=1; mod=10**9+7\n for i in range(n):\n  if not seen[i]:\n   j=i; z=0\n   while not seen[j]: seen[j]=1; z+=1; j=p[j]\n   ans=ans//math.gcd(ans,z)*z\n return str(ans%mod)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-millennium-3",
+      "sourceContentHash": "a38d258726f01d5fa0a6661ac87a8f0005f4e25935deb57c3222abbf39a2bb9f",
+      "packageChecksum": "77b45b830973c96b0a92b5107246c77f4e4ded1c9ca791a753dc74c4f5e36fd4",
+      "editorial": "## 思路\n\n不交换贡献作为基线。交换 i 与 i+1 的增益为 arr[i]−arr[i+1]，用线性 DP 在相邻交换与跳过之间取最大。\n\n## 正确性证明\n\n所有操作是互不相交的相邻边匹配。若交换 i,i+1，其对加权和的差为 (i+1)arr[i+1]+(i+2)arr[i]−(i+1)arr[i]−(i+2)arr[i+1]=arr[i]−arr[i+1]。对每个 i，最优选择要么跳过 i，要么选边 (i,i+1) 并跳过下一个边，递推覆盖所有合法方案。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; x=a[1:1+n]; dp=[0]*(n+1)\n for i in range(n-1,-1,-1):\n  dp[i]=dp[i+1]\n  if i+1<n: dp[i]=max(dp[i],dp[i+2]+max(0,x[i]-x[i+1]))\n return str(sum((i+1)*v for i,v in enumerate(x))+dp[0])\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-factset-2",
+      "sourceContentHash": "5e97686c0e5a9026640c6f395d43dd49e3655fbc6de1ce8fa1082c057700524a",
+      "packageChecksum": "bae1d82be51616b29e75b5db1037f775c3393bcb6ebd5af69b6f81c6d3f288be",
+      "editorial": "## 思路\n\n用最大堆反复取出两块最重的石头；不相等时把差值放回堆中。\n\n## 正确性证明\n\n堆顶始终是当前重量最大的石头，因此每轮恰好按题意选取。等重时不放回任何石头；不等重时只放回重量差。循环结束时堆中唯一元素（或空堆）就是要求的结果。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。\n\n## 来源说明\n\n题目规则、样例和 n/重量约束完整。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n import heapq\n a=list(map(int,raw.split())); n=a[0]; h=[-x for x in a[1:1+n]]; heapq.heapify(h)\n while len(h)>1:\n  x=-heapq.heappop(h); y=-heapq.heappop(h)\n  if x!=y: heapq.heappush(h,-(x-y))\n return str(-h[0] if h else 0)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

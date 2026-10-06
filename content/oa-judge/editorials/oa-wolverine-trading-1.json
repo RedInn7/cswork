@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wolverine-trading-1",
+  "title": "置换操作次数",
+  "explanation": "## 思路\n\n将置换分解成不相交循环，答案是所有循环长度的最小公倍数。\n\n## 正确性证明\n\n一个循环长度为 k 的元素经过 t 次操作回到原位当且仅当 k 整除 t。全数组同时恢复当且仅当每个循环长度都整除 t，因此最小正 t 是所有长度的最小公倍数。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n约束完整；置换的排列方向虽不影响循环长度与答案。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n import math\n a=list(map(int,raw.split())); n=a[0]; p=[x-1 for x in a[1:1+n]]; seen=[0]*n; ans=1; mod=10**9+7\n for i in range(n):\n  if not seen[i]:\n   j=i; z=0\n   while not seen[j]: seen[j]=1; z+=1; j=p[j]\n   ans=ans//math.gcd(ans,z)*z\n return str(ans%mod)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wolverine-trading#1-permutation-operations",
+  "sourceContentHash": "321c8b63275863d66808aad94dc420caeedecd89ffc0e795f38ac5df9f5b68f4",
+  "author": "Chunyu Sui"
+}

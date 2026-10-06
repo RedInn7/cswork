@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误地用大于等于",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; arr=a[1:1+n]; total=sum(arr); p=0; z=0\n for x in arr[:-1]:\n  p+=x; z+=p>=total-p\n return str(z)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只累计正数前缀",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; arr=a[1:1+n]; total=sum(arr); p=0; z=0\n for x in arr[:-1]:\n  p+=abs(x); z+=p>total-p\n return str(z)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]
