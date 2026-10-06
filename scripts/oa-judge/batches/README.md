@@ -38,3 +38,17 @@
 `python3 scripts/oa-judge/batches/amazon_32_recovered.py` 为 Amazon #32 按二分 + LIS 重写参考解，只生成 `amazon-32-recovered` 离线候选。123 个子序列穷举 oracle、33 个正式用例（含重复值、初始无解和 n=100000 压力）及两个错误控制均通过。原题未定义初始 LIS 不达标时的输出；本站明确补充为 `-1`，不称作原题规则。尚未连接目标 GoJudge。
 
 `python3 scripts/oa-judge/batches/visa_7_recovered.py` 按 Visa #7 题面要求的全局 row-major 次序修复上游参考实现的 4×4 子块顺序错误。163 条 oracle、256 个单块穷举、8 个正式用例（含 n=100）及两个错误控制通过。原题没给 n 上限，本站补充 `n≤100` 与 stdin/stdout 协议；尚未连接目标 GoJudge。
+
+以下为新增离线候选，均尚未通过目标 GoJudge，不能视作线上已支持：
+
+| 题目 | 本地验证 | 额外说明 |
+| --- | --- | --- |
+| Stripe #20 | 120 个独立命令 oracle、300 组高精度坐标对照、7 个正式用例、2 个 mutant | 距离取整边界附近用 Decimal 复算；本站补充命令数、名称与坐标精度限制。 |
+| Databricks #26 | 163 个 oracle、14,280 组穷举差分、32 个正式用例、3 个 mutant | 按原题单次交换语义重写；本站补标准 I/O 并明确前导零按整数处理。 |
+| Rippling #6 | 1,610 个 oracle、29 个正式用例、2 个 mutant；n=200,000 链/星边界 | 源站第 3 个样例节点数与边数不符，排除且未补造缺失边；本站另设 n 上限。 |
+| Confluent #3 | 120 个随机小输入 oracle、11 个正式用例、2 个 mutant；n=40 边界 | meet-in-the-middle；本站明确 n、数值与目标范围。 |
+| Confluent #4 | 120 个字符串数组 oracle、7 个正式用例、2 个 mutant | 长度前缀协议保留空行、空格、tab 与 UTF-8 文本；LF 不在单行元素范围内。 |
+| SIG #4 | 163 个 oracle、2,055,872 组穷举位置对、33 个正式用例、2 个 mutant；n=100,000 边界 | 按拼接字符串及下标位置对计数，不按数值加法或去重计数；本站明确输入上限。 |
+| Goldman Sachs #3 | 120 个唯一随机输入 oracle、10 个正式用例、2 个 mutant；长度 100,000 边界 | Backspace 字符串比较；原长度约束损坏，本站明确补充 `1≤length≤100000`。 |
+| Goldman Sachs #14 | 123 个独立排列 oracle、n≤7 的 127 种方向模式、2 个 mutant；n=14 边界 | 按源题严格升降模式最大化绝对差和；源题缺少 N 上限，本站补充 `N≤14`，不额外限制数值范围。 |
+| TradeDesk #5 | 120 个独立 oracle、9 个正式用例、2 个 mutant；10 万条航班规模 | 按固定题面与解法的升序时刻和“到达时刻可登机”规则计算旅程；补充标准 I/O 协议。 |

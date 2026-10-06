@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 4,
-    "blocked": 540,
+    "awaiting_sandbox": 13,
+    "blocked": 531,
     "unreviewed": 0
   },
   "items": [
@@ -6452,8 +6452,9 @@
     {
       "id": "oa-stripe-20",
       "company": "stripe",
-      "status": "blocked",
-      "reason": "Haversine 最近整数及浮点边界在跨语言评测中可能不稳定；优先选择完全离散题目。"
+      "status": "awaiting_sandbox",
+      "batch": "stripe-20-recovered",
+      "reason": "固定源完整定义命令、坐标边界、Haversine 半径、最近整数距离、路由候选排序及容量行为。有限十进制输入下精确球面距离不能恰为半整数公里，因此最近整数唯一；独立 80 位 Decimal oracle 对 300 组坐标与 120 组命令输入验证通过，两个正常退出错误解均被反例杀死。候选仍待正式 sandbox 验证；最大命令数、名称语法和精度上限是明确披露的本站输入约束。"
     },
     {
       "id": "oa-databricks-1",
@@ -6622,8 +6623,9 @@
     {
       "id": "oa-databricks-26",
       "company": "databricks",
-      "status": "blocked",
-      "reason": "规则说最多交换两位数字，但整理页解法按数字重排后分组；对四位以上数字该解法不等价，且前导零处理没有定义，暂缓。"
+      "status": "awaiting_sandbox",
+      "batch": "databricks-26-recovered",
+      "reason": "固定 FastPrep 原文明确要求 i<j、至多交换两个数字位置且允许不交换；原解按数字排序分组不符合规则。本站补标准 I/O 协议，按整数语义比较交换结果；独立 oracle、差分、边界和错误程序均通过，仍待真实沙箱。"
     },
     {
       "id": "oa-coinbase-1",
@@ -7499,14 +7501,16 @@
     {
       "id": "oa-confluent-3",
       "company": "confluent",
-      "status": "blocked",
-      "reason": "缺少 n 和交易额范围，题面将指数枚举与 DP 作为讨论题；无法设定可信的在线评测界限。"
+      "status": "awaiting_sandbox",
+      "batch": "confluent-3-recovered",
+      "reason": "原文的判定语义与输出 1/0 明确；仅缺平台输入协议和约束。明确补充 n≤40、交易/target范围后用 meet-in-the-middle 得到可靠复杂度；120 个小规模独立穷举 oracle、11 个正式边界用例及两个错误实现验证通过。本站增加的输入约束已披露。"
     },
     {
       "id": "oa-confluent-4",
       "company": "confluent",
-      "status": "blocked",
-      "reason": "输入是任意字符串行，标准 token 判题会丢失空行与行内空格；本批未定义可保真序列化协议。"
+      "status": "awaiting_sandbox",
+      "batch": "confluent-4-recovered",
+      "reason": "原题给定的是字符串数组而非原始文件文本，suffix 语义明确；新增长度前缀 UTF-8 协议可无损保留空行、行内空白与非 ASCII 字符。120 个随机数组与独立字节级 slice oracle、两个正常退出的空白处理错误实现均验证通过。"
     },
     {
       "id": "oa-rippling-1",
@@ -7541,8 +7545,9 @@
     {
       "id": "oa-rippling-6",
       "company": "rippling",
-      "status": "blocked",
-      "reason": "原始页面后续示例/约束未完全审计；“transfer time between connected servers”与最大任意点对距离可算树直径，但需先确认完整题面输入范围。"
+      "status": "awaiting_sandbox",
+      "batch": "rippling-6-recovered",
+      "reason": "已核对固定 e66f809 MDX：树结构、g_nodes−1 条无向单位边、任意点对最大传输时间、函数签名明确；前两个样例合法。固定源第3个样例声明7节点但只给5边，不构成题面要求的树；没有猜缺失边并将其排除。源题未给 g_nodes 上限，题面显式增加本站资源限制 1≤g_nodes≤200000。用独立逐源 BFS oracle 穷举1442棵小树、对160棵固定种子随机树差分；两个正常退出错误程序被正式用例识别；最大规模链和星形树均本地验证。候选仍需正式沙箱验证。"
     },
     {
       "id": "oa-mathworks-1",
@@ -7818,8 +7823,9 @@
     {
       "id": "oa-tradedesk-5",
       "company": "tradedesk",
-      "status": "blocked",
-      "reason": "正文要求参照缺失的 source image，航班时间相同/排序和数组是否有序的细节不能核实。"
+      "status": "awaiting_sandbox",
+      "batch": "tradedesk-5-recovered",
+      "reason": "固定 MDX 已明确每段 100 分钟、数组按升序排列、journeys 范围及最大规模；同一抵达时刻可登机由来源 Python bisect_left 和 Java/C++ lower_bound 实现明确。候选仅补充标准输入输出协议，没有依赖缺失图片的未定义内容。120 个随机输入与独立逐段最早班次枚举 oracle、正式边界和两个正常退出错误实现均验证通过。"
     },
     {
       "id": "oa-tradedesk-6",
@@ -8061,8 +8067,9 @@
     {
       "id": "oa-sig-4",
       "company": "sig",
-      "status": "blocked",
-      "reason": "串接对的“different ways”虽说明按位置计数，但正整数是否允许前导零、accessCode 的表示形式及输入范围未规定；不能自行规定数值/字符串比较语义。"
+      "status": "awaiting_sandbox",
+      "batch": "sig-4-recovered",
+      "reason": "固定题面定义正整数片段直接拼接、按具体位置对计数，原样例输出 3 明确验证重复 12 位置的两个有序组合；正整数采用规范十进制表示。本站仅补标准 I/O 和规模上限；暴力 oracle、穷举和边界验证通过，仍待真实沙箱。"
     },
     {
       "id": "oa-sig-5",
@@ -8467,8 +8474,9 @@
     {
       "id": "oa-goldman-sachs-3",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "最大长度约束原文损坏为“1 5”，无法据此确认输入上限。"
+      "status": "awaiting_sandbox",
+      "batch": "goldman-sachs-3-recovered",
+      "reason": "原题的字符域、退格行为、空串退格行为、比较目标及 0/1 输出均明确，歧义仅在长度上限。候选没有猜测原上限，而是显式增加本站 1≤长度≤100000 的评测边界；在该边界内算法线性且资源可控。固定源 MDX、catalog hash 与 review 已核对。"
     },
     {
       "id": "oa-goldman-sachs-4",
@@ -8538,8 +8546,9 @@
     {
       "id": "oa-goldman-sachs-14",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "原文约束未知，且要求在任意升降比较模式下重排另一组数并最大化相邻绝对差；现有整理解法的局部峰谷分配没有证明全局最优，不能可靠判定。"
+      "status": "awaiting_sandbox",
+      "batch": "goldman-sachs-14-recovered",
+      "reason": "固定源题意完整且可验证：两组粉笔各自长度互异，Sonu 必须复制 Ramu 每个相邻位置的严格升降方向，并最大化绝对差总和。原源未给约束，因此本站明确标注 N≤14 为资源边界，使用精确子集 DP；独立排列 oracle、方向模式穷举、边界和两个错误实现验证通过，仍待真实评测沙箱。"
     },
     {
       "id": "oa-goldman-sachs-15",
