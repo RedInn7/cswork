@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-unknown-1",
+      "sourceContentHash": "5091b84a0315c76718623c9225aef5922019b67d1fd48ff2e2fea44b2b3e67d4",
+      "packageChecksum": "d3d357ba4288cafb70f925e1f88661f37b9c40a40d7b5eeaa3f46e3f19368c16",
+      "editorial": "树的平方图可按根到叶顺序计数。根有 k 种选择，其子节点必须互不相同且避开根；其他节点的孩子还需避开父节点。每层的可选数形成下降阶乘，乘法取模。独立 oracle 在小树上穷举所有着色并逐条检查距离 1/2 冲突。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nMOD=1000000007\ndef solve(raw):\n d=list(map(int,raw.split()));k,n=d[:2];edges=list(zip(d[2::2],d[3::2]));g=[[] for _ in range(n)]\n for a,b in edges:a-=1;b-=1;g[a].append(b);g[b].append(a)\n ans=k%MOD\n for v in range(n):\n  available=k-(1 if v==0 else 2);children=len(g[v]) if v==0 else len(g[v])-1;children=max(0,children)\n  if available<children:return '0'\n  for j in range(children):ans=ans*(available-j)%MOD\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-5",
+      "sourceContentHash": "45d321c839cd230c329fe73c55ac15e390398b1491f9298a7fec0c0019d8384a",
+      "packageChecksum": "1832363fa9f57bcbd1f6cd89fb86b00aef3d419661a7295913fcbecc807eacd6",
+      "editorial": "维护调用栈和上一个尚未计入的时间点。新日志到来时，先把两时间点间隔加给栈顶；start 将函数压栈，end 事件还要计入该时间戳本身，再弹栈。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines();n,m=map(int,lines[0].split());ans=[0]*n;stack=[];prev=0\n for line in lines[1:1+m]:\n  fid,kind,t=line.split(':');fid=int(fid);t=int(t)\n  if stack:ans[stack[-1]]+=t-prev\n  if kind=='start':stack.append(fid);prev=t\n  else:ans[fid]+=1;stack.pop();prev=t+1\n return ' '.join(map(str,ans))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-8",
+      "sourceContentHash": "8537513459118ef5e427da6317d39987441dc94242e85bafab70232298328823",
+      "packageChecksum": "cab131c09b98368035b026175b42c1708577483543f21a2dc29572f3dfb19120",
+      "editorial": "按照 `(priority, timestamp, originalIndex)` 升序排序。时间戳先转整数比较，因此前导零只影响回显，不影响先后；完全相同键保持输入顺序。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines();n=int(lines[0]);a=lines[1:1+n]\n a.sort(key=lambda s:(int(s.split(':')[1]),int(s.split(':')[0])))\n return '\\n'.join(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-9",
+      "sourceContentHash": "538b6e56b6685555822c8dce7b886a99d38ac2953b7afcc84fa48265ed563ca2",
+      "packageChecksum": "60a9f3c0c7b8657b7fde20d7398ea1b38093da0d1f0cb8479c4bf7d11b950a3a",
+      "editorial": "遍历数组，对每个元素判断 `x % 2 == 0` 并累加。Python 对负偶数同样满足该判断，0 也计为偶数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];return str(sum(x%2==0 for x in d[1:1+n]))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-10",
+      "sourceContentHash": "1bf2da2a4fd6a01cb7e49c614a1bf2b9577beb779646c767363682ec2fcf5fef",
+      "packageChecksum": "9659b20a1096c0bb1206b69dbb6617b65a82a7e7f8bb8195fe6a434b302a6ae0",
+      "editorial": "只需扫描相邻位置，维护 `abs(nums[i]-nums[i-1])` 的最大值。不能先排序，因为那会改变题面给定的相邻关系。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];a=d[1:1+n];return str(max((abs(a[i]-a[i-1]) for i in range(1,n)),default=0))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-14",
+      "sourceContentHash": "e249354acbab8f93038c9f1629980bfaa882ec6fddcafffded4d6538d0366879",
+      "packageChecksum": "c3a7f5fc930715efdc374c5f2ab805105598be45d0d54b1e5180743c33f2defc",
+      "editorial": "固定 k 时，令 x=max(0, ceil(B/k)-A)，这是使 k(A+x) 不小于 B 的最小非负 x；随后 y=k(A+x)-B，代价为 x+y。对 k≤√B 逐个检查；对更大的 k，ceil(B/k)≤√B，可按该商枚举区间的首个 k；另检查 ceil(B/A) 的零 x 分支。总体 O(√B)。随机小值使用枚举全部 k 的独立 oracle。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys,math\ndef solve(raw):\n a,b=map(int,raw.split());r=math.isqrt(b)+2;best=10**30\n def test(k):\n  nonlocal best\n  x=max(0,(b+k-1)//k-a);best=min(best,x+k*(a+x)-b)\n for k in range(1,min(b,r)+1):test(k)\n for q in range(1,r+1):test((b+q-1)//q)\n test(max(1,(b+a-1)//a))\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-16",
+      "sourceContentHash": "d22ead1480c069baa0b8935e5047b1b6711244f374f22e3314fcd1405fb0c9e4",
+      "packageChecksum": "64165d63daa7f91d94a7d952932b481326efac15ce50d5aee803ba2cfa1fdb0e",
+      "editorial": "统计两串各字符频次。交集大小为频次逐字符取 min 后求和，并集大小为取 max 后求和，答案为两者之比。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n a,b=raw.splitlines()[:2];ca={};cb={}\n for c in a:ca[c]=ca.get(c,0)+1\n for c in b:cb[c]=cb.get(c,0)+1\n keys=ca.keys()|cb.keys();u=sum(max(ca.get(c,0),cb.get(c,0)) for c in keys)\n i=sum(min(ca.get(c,0),cb.get(c,0)) for c in keys)\n return f'{i/u:.12f}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-unknown-17",
+      "sourceContentHash": "9ad04e604a4744fce6fd114fdc4b446e5cd51d6fc91740ec88857bb7d3f52eec",
+      "packageChecksum": "64535b614a443d423047df977afeff4a1cb32737db8c55c6a7f548ce4db26bed",
+      "editorial": "对每个字符串计算 max(freq)/length，找最小比例并保留所有并列项。把未选字符串的字符合并成集合，再按选中字符串原顺序输出不在该集合中的字符，重复出现仍保留。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n lines=raw.splitlines();n=int(lines[0]);a=lines[1:1+n]\n p=[max(Counter(s).values())/len(s) for s in a];best=min(p);chosen=[i for i,x in enumerate(p) if x==best]\n other=set(c for i,s in enumerate(a) if i not in chosen for c in s)\n return ''.join(c for i in chosen for c in a[i] if c not in other)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

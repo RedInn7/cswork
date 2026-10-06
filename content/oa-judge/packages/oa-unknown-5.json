@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-unknown-5",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Exclusive Time of Functions",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "公司未知",
+      "栈",
+      "模拟"
+    ],
+    "description": "计算单线程调用栈中各函数的独占运行时间。该题源明确指向 LC636，本站补充标准日志输入协议与约束。\n\n公司来源仍为 Unknown；本站补充的输入协议不代表 OAMaster 原题的 I/O。",
+    "input": "第一行函数数 n 与日志数 m；随后 m 行为 `id:start:timestamp` 或 `id:end:timestamp`。本站限制 1≤n≤100、0≤timestamp≤10^9；日志合法且按时间顺序给出。",
+    "output": "输出 n 个整数，第 i 项为函数 i 的独占执行时间，空格分隔。",
+    "explanation": "详见配套讲义。",
+    "hints": [
+      "end 时间戳是闭区间；start 时间戳从该刻开始执行。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "2 4\n0:start:0\n1:start:2\n1:end:5\n0:end:6\n",
+      "expectedOutput": "3 4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "1 6\n0:start:0\n0:start:2\n0:end:5\n0:start:6\n0:end:6\n0:end:7\n",
+      "expectedOutput": "8\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "2 6\n0:start:0\n0:start:2\n0:end:5\n1:start:6\n1:end:6\n0:end:7\n",
+      "expectedOutput": "7 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "4 16\n2:start:1\n2:end:5\n0:start:6\n0:end:10\n1:start:11\n0:start:12\n1:start:13\n1:end:18\n0:end:21\n2:start:22\n2:start:23\n0:start:24\n0:end:27\n2:end:32\n2:end:37\n1:end:41\n",
+      "expectedOutput": "13 11 17 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "3 16\n0:start:1\n0:start:2\n0:start:3\n1:start:4\n1:start:5\n1:start:6\n0:start:7\n0:end:11\n1:start:12\n1:end:14\n1:end:18\n1:end:20\n1:end:24\n0:end:28\n0:end:31\n0:end:36\n",
+      "expectedOutput": "20 16 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "5 16\n2:start:1\n4:start:2\n0:start:3\n0:start:4\n2:start:5\n0:start:6\n3:start:7\n3:end:9\n0:start:10\n0:end:15\n0:end:20\n2:end:25\n0:end:29\n0:end:32\n4:end:37\n2:end:41\n",
+      "expectedOutput": "21 0 11 3 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "3 16\n2:start:0\n0:start:1\n1:start:2\n1:end:5\n0:end:9\n1:start:10\n0:start:11\n0:end:16\n2:start:17\n1:start:18\n2:start:19\n2:end:23\n1:end:28\n2:end:31\n1:end:35\n2:end:37\n",
+      "expectedOutput": "11 15 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "5 16\n3:start:2\n3:start:3\n3:end:6\n1:start:7\n4:start:8\n1:start:9\n4:start:10\n0:start:11\n0:end:14\n4:end:16\n1:start:17\n1:end:20\n1:end:22\n4:end:24\n1:end:28\n3:end:30\n",
+      "expectedOutput": "4 12 0 7 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "3 16\n1:start:0\n0:start:1\n2:start:2\n2:end:7\n2:start:8\n1:start:9\n1:end:13\n2:end:18\n2:start:19\n1:start:20\n1:start:21\n1:end:26\n1:end:29\n2:end:34\n0:end:37\n1:end:42\n",
+      "expectedOutput": "4 21 18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "4 16\n0:start:0\n3:start:1\n2:start:2\n3:start:3\n3:start:4\n1:start:5\n3:start:6\n3:end:9\n0:start:10\n0:end:13\n1:end:15\n3:end:18\n3:end:23\n2:end:27\n3:end:30\n0:end:32\n",
+      "expectedOutput": "7 3 5 18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "5 16\n0:start:0\n0:end:3\n0:start:4\n1:start:5\n2:start:6\n2:end:9\n3:start:10\n4:start:11\n4:end:15\n4:start:16\n4:end:20\n3:end:22\n1:end:25\n1:start:26\n1:end:29\n0:end:32\n",
+      "expectedOutput": "8 8 4 3 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "5 16\n1:start:0\n4:start:1\n4:end:6\n1:start:7\n1:end:12\n1:end:14\n4:start:15\n2:start:16\n2:end:21\n0:start:22\n0:end:25\n2:start:26\n2:end:28\n1:start:29\n1:end:32\n4:end:37\n",
+      "expectedOutput": "4 13 9 0 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "4 16\n3:start:2\n3:start:3\n3:start:4\n0:start:5\n1:start:6\n0:start:7\n0:end:12\n1:end:15\n3:start:16\n2:start:17\n2:end:20\n3:end:22\n0:end:26\n3:end:30\n3:end:32\n3:end:37\n",
+      "expectedOutput": "11 4 4 17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "1 16\n0:start:0\n0:start:1\n0:end:5\n0:start:6\n0:start:7\n0:end:9\n0:end:12\n0:end:16\n0:start:17\n0:start:18\n0:end:22\n0:start:23\n0:end:25\n0:end:30\n0:start:31\n0:end:33\n",
+      "expectedOutput": "34\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "3 16\n1:start:2\n0:start:3\n2:start:4\n2:end:8\n2:start:9\n2:start:10\n2:end:12\n2:end:16\n0:end:18\n2:start:19\n2:end:22\n0:start:23\n0:end:26\n2:start:27\n2:end:32\n1:end:35\n",
+      "expectedOutput": "7 4 23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "2 10\n1:start:1\n1:start:2\n0:start:3\n0:start:4\n0:end:7\n0:end:11\n1:start:12\n1:end:17\n1:end:22\n1:end:27\n",
+      "expectedOutput": "9 18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "2 16\n1:start:0\n1:start:1\n1:start:2\n1:start:3\n1:start:4\n1:start:5\n1:end:9\n1:start:10\n1:start:11\n1:end:14\n1:end:19\n1:end:23\n1:end:25\n1:end:28\n1:end:32\n1:end:34\n",
+      "expectedOutput": "0 35\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "2 16\n0:start:2\n0:end:6\n0:start:7\n0:start:8\n0:end:10\n1:start:11\n0:start:12\n0:start:13\n1:start:14\n0:start:15\n0:end:17\n1:end:22\n0:end:25\n0:end:28\n1:end:30\n0:end:34\n",
+      "expectedOutput": "24 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "5 16\n0:start:1\n1:start:2\n1:end:6\n1:start:7\n1:end:10\n0:start:11\n1:start:12\n2:start:13\n4:start:14\n3:start:15\n3:end:19\n4:end:22\n2:end:26\n1:end:31\n0:end:33\n0:end:35\n",
+      "expectedOutput": "6 15 5 5 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "4 16\n0:start:1\n1:start:2\n1:end:6\n2:start:7\n3:start:8\n3:start:9\n1:start:10\n1:end:13\n0:start:14\n2:start:15\n2:end:19\n0:end:23\n3:end:25\n3:end:27\n2:end:30\n0:end:34\n",
+      "expectedOutput": "10 9 9 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "3 16\n1:start:1\n0:start:2\n0:end:7\n2:start:8\n2:start:9\n1:start:10\n0:start:11\n1:start:12\n0:start:13\n0:end:15\n1:end:17\n0:end:19\n1:end:24\n2:end:26\n2:end:31\n1:end:34\n",
+      "expectedOutput": "12 13 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "5 14\n2:start:2\n0:start:3\n0:start:4\n0:end:7\n1:start:8\n1:end:10\n1:start:11\n1:start:12\n1:start:13\n1:end:15\n1:end:17\n1:end:20\n0:end:24\n2:end:26\n",
+      "expectedOutput": "9 13 3 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "5 16\n1:start:1\n4:start:2\n4:end:4\n0:start:5\n0:end:8\n1:end:12\n3:start:13\n4:start:14\n3:start:15\n0:start:16\n0:start:17\n0:end:19\n0:end:21\n3:end:26\n4:end:28\n3:end:30\n",
+      "expectedOutput": "10 5 0 9 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "3 16\n2:start:2\n2:end:4\n1:start:5\n0:start:6\n0:end:11\n1:start:12\n1:start:13\n1:end:16\n0:start:17\n0:start:18\n2:start:19\n2:end:21\n0:end:24\n0:end:27\n1:end:30\n1:end:35\n",
+      "expectedOutput": "14 14 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "4 16\n0:start:1\n1:start:2\n0:start:3\n2:start:4\n2:start:5\n0:start:6\n0:end:8\n2:end:10\n2:start:11\n2:end:13\n0:start:14\n0:end:18\n2:end:23\n0:end:25\n1:end:29\n0:end:32\n",
+      "expectedOutput": "15 5 12 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "3 16\n2:start:0\n2:end:4\n2:start:5\n2:end:10\n0:start:11\n2:start:12\n1:start:13\n0:start:14\n0:end:19\n0:start:20\n0:end:22\n1:end:26\n2:end:30\n0:start:31\n0:end:36\n0:end:39\n",
+      "expectedOutput": "19 5 16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "1 16\n0:start:2\n0:end:4\n0:start:5\n0:start:6\n0:end:10\n0:end:15\n0:start:16\n0:start:17\n0:start:18\n0:start:19\n0:start:20\n0:end:23\n0:end:25\n0:end:29\n0:end:31\n0:end:33\n",
+      "expectedOutput": "32\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "3 16\n0:start:1\n0:end:6\n0:start:7\n0:start:8\n0:end:10\n1:start:11\n2:start:12\n0:start:13\n1:start:14\n1:end:17\n1:start:18\n1:end:22\n0:end:24\n2:end:26\n1:end:30\n0:end:34\n",
+      "expectedOutput": "17 14 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "3 16\n0:start:2\n2:start:3\n1:start:4\n0:start:5\n0:start:6\n1:start:7\n0:start:8\n1:start:9\n1:end:11\n0:end:15\n1:end:18\n0:end:20\n0:end:23\n1:end:25\n2:end:30\n0:end:34\n",
+      "expectedOutput": "17 10 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "3 16\n0:start:2\n0:end:7\n1:start:8\n1:end:13\n1:start:14\n2:start:15\n0:start:16\n1:start:17\n1:end:20\n0:end:22\n0:start:23\n0:start:24\n0:end:26\n0:end:30\n2:end:35\n1:end:37\n",
+      "expectedOutput": "17 13 6\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

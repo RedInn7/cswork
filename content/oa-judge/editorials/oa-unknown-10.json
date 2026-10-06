@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-10",
+  "title": "Maximum Adjacent Gap",
+  "explanation": "只需扫描相邻位置，维护 `abs(nums[i]-nums[i-1])` 的最大值。不能先排序，因为那会改变题面给定的相邻关系。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];a=d[1:1+n];return str(max((abs(a[i]-a[i-1]) for i in range(1,n)),default=0))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#10-maximum-adjacent-gap",
+  "sourceContentHash": "1bf2da2a4fd6a01cb7e49c614a1bf2b9577beb779646c767363682ec2fcf5fef",
+  "author": "CSWork"
+}

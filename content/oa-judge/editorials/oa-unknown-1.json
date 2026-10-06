@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-1",
+  "title": "Build Monuments",
+  "explanation": "树的平方图可按根到叶顺序计数。根有 k 种选择，其子节点必须互不相同且避开根；其他节点的孩子还需避开父节点。每层的可选数形成下降阶乘，乘法取模。独立 oracle 在小树上穷举所有着色并逐条检查距离 1/2 冲突。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nMOD=1000000007\ndef solve(raw):\n d=list(map(int,raw.split()));k,n=d[:2];edges=list(zip(d[2::2],d[3::2]));g=[[] for _ in range(n)]\n for a,b in edges:a-=1;b-=1;g[a].append(b);g[b].append(a)\n ans=k%MOD\n for v in range(n):\n  available=k-(1 if v==0 else 2);children=len(g[v]) if v==0 else len(g[v])-1;children=max(0,children)\n  if available<children:return '0'\n  for j in range(children):ans=ans*(available-j)%MOD\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#1-build-monuments",
+  "sourceContentHash": "5091b84a0315c76718623c9225aef5922019b67d1fd48ff2e2fea44b2b3e67d4",
+  "author": "CSWork"
+}

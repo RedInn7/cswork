@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-unknown-16",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Multiset Jaccard Similarity",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "公司未知",
+      "字符串",
+      "计数",
+      "数学"
+    ],
+    "description": "计算字符多重集的 Jaccard 相似度。题源例子说明重复字符计入并给出 0.4；本站补充非空字符串和标准输入协议。\n\n公司来源仍为 Unknown；本站补充的输入协议不代表 OAMaster 原题的 I/O。",
+    "input": "两行非空字符串，仅含小写英文字母，每串长度 1..10^5。",
+    "output": "输出多重集 Jaccard 相似度：Σmin(countA[c],countB[c]) / Σmax(countA[c],countB[c])，误差不超过 1e−6。",
+    "explanation": "详见配套讲义。",
+    "hints": [
+      "这是多重集，不是去重后的字符集合。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "float",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "baa\nabbc\n",
+      "expectedOutput": "0.400000000000\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "abc\nxyz\n",
+      "expectedOutput": "0.000000000000\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "aaaa\naa\n",
+      "expectedOutput": "0.500000000000\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "ccbabbbabab\ncabb\n",
+      "expectedOutput": "0.363636363636\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "abdaacbcd\na\n",
+      "expectedOutput": "0.111111111111\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "bda\nbc\n",
+      "expectedOutput": "0.250000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "bd\ndaddabdbaa\n",
+      "expectedOutput": "0.200000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "acbaaa\nbddaaca\n",
+      "expectedOutput": "0.625000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "dadababcca\ndaaac\n",
+      "expectedOutput": "0.500000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "aaadcdadcb\ncdcccdccbbbd\n",
+      "expectedOutput": "0.375000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "cdbaadcba\nddbbdbadcabd\n",
+      "expectedOutput": "0.500000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "acabac\ncddaabbdbdaa\n",
+      "expectedOutput": "0.384615384615\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "dbbd\ncbdccaa\n",
+      "expectedOutput": "0.222222222222\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "db\nbacbdddc\n",
+      "expectedOutput": "0.250000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "cabbbdd\nda\n",
+      "expectedOutput": "0.285714285714\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "aad\nb\n",
+      "expectedOutput": "0.000000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "cbccbccaa\ncbcbcccab\n",
+      "expectedOutput": "0.800000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "bdbcdcdbbaba\ncdcdcbcbcd\n",
+      "expectedOutput": "0.466666666667\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "ca\nddaccaccadd\n",
+      "expectedOutput": "0.181818181818\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "acabb\naac\n",
+      "expectedOutput": "0.600000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "accbb\nacacadc\n",
+      "expectedOutput": "0.333333333333\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "ccc\naccdaacbc\n",
+      "expectedOutput": "0.333333333333\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "ccbcaabcbac\nabdaacbaa\n",
+      "expectedOutput": "0.428571428571\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "ddaa\naccdcbcbcdd\n",
+      "expectedOutput": "0.250000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "cbdcdaaab\ncb\n",
+      "expectedOutput": "0.222222222222\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "aa\naccabcca\n",
+      "expectedOutput": "0.250000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "bdbdbdcbaba\nbad\n",
+      "expectedOutput": "0.272727272727\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "c\nbba\n",
+      "expectedOutput": "0.000000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "bc\naabbdcdb\n",
+      "expectedOutput": "0.250000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "bbbc\naadcbdbcccb\n",
+      "expectedOutput": "0.363636363636\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

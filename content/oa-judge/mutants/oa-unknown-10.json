@@ -1,0 +1,10 @@
+[
+  {
+    "name": "先排序再求相邻差",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));a=sorted(d[1:1+d[0]]);return str(max((a[i]-a[i-1] for i in range(1,len(a))),default=0))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只计算有符号差的最大值",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));a=d[1:1+d[0]];return str(max((a[i]-a[i-1] for i in range(1,len(a))),default=0))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]
