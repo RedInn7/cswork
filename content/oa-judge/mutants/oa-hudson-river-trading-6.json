@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误地把单格路径也计入答案",
+    "code": "def decode(raw):\n    data = list(map(int, raw.split()))\n    rows = data[0]\n    grid = []\n    pos = 1\n    for _ in range(rows):\n        cols = data[pos]\n        pos += 1\n        grid.append(data[pos:pos + cols])\n        pos += cols\n    if pos != len(data):\n        raise ValueError(\"unexpected trailing input\")\n    return grid\n\ndef solve(raw):\n    grid = decode(raw)\n    cells = {(r, c): value for r, row in enumerate(grid) for c, value in enumerate(row)}\n    ways = {}\n    answer = 0\n    for (r, c), value in sorted(cells.items(), key=lambda item: item[1], reverse=True):\n        count = 0\n        for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):\n            if (nr, nc) in cells and cells[(nr, nc)] > value:\n                count += 1 + ways[(nr, nc)]\n        ways[(r, c)] = count\n        answer += count + 1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查向下和向右的邻居",
+    "code": "def decode(raw):\n    data = list(map(int, raw.split()))\n    rows = data[0]\n    grid = []\n    pos = 1\n    for _ in range(rows):\n        cols = data[pos]\n        pos += 1\n        grid.append(data[pos:pos + cols])\n        pos += cols\n    if pos != len(data):\n        raise ValueError(\"unexpected trailing input\")\n    return grid\n\ndef solve(raw):\n    grid = decode(raw)\n    cells = {(r, c): value for r, row in enumerate(grid) for c, value in enumerate(row)}\n    ways = {}\n    answer = 0\n    for (r, c), value in sorted(cells.items(), key=lambda item: item[1], reverse=True):\n        count = 0\n        for nr, nc in ((r + 1, c), (r, c + 1)):\n            if (nr, nc) in cells and cells[(nr, nc)] > value:\n                count += 1 + ways[(nr, nc)]\n        ways[(r, c)] = count\n        answer += count\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

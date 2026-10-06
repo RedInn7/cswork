@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1115,
+    "sandbox_verified": 1118,
     "awaiting_sandbox": 0,
-    "blocked": 519,
+    "blocked": 516,
     "unreviewed": 0
   },
   "items": [
@@ -429,8 +429,9 @@
     {
       "id": "oa-google-65",
       "company": "google",
-      "status": "blocked",
-      "reason": "正文没有计分规则，前两例长度、代币下标、数值与答案互相矛盾，不能仅凭第三例或另一题推定规则。"
+      "status": "sandbox_verified",
+      "batch": "google-65-recovered",
+      "reason": "固定源题同一页面内 Python/Java/C++ 三份独立实现给出完全一致、可执行的完整计分定义；按其明确逻辑订正损坏样例，不从别题类推。"
     },
     {
       "id": "oa-google-66",
@@ -7946,8 +7947,9 @@
     {
       "id": "oa-hudson-river-trading-6",
       "company": "hudson-river-trading",
-      "status": "blocked",
-      "reason": "Increasing Paths part 2 的固定 15×15 样例按题目规定的上下左右相邻、严格递增和路径至少两格规则，由独立反向 DFS 与独立升序 DP 均计算为 600537344，与上游所列 601079908 冲突；不能伪造通过样例。"
+      "status": "sandbox_verified",
+      "batch": "hudson-river-trading-6-recovered",
+      "reason": "固定 Part 1 明确网格至多 15×15、值域 0..65535、上下左右相邻、路径长度至少 2、严格递增及位置序列区分；Part 2 唯一变化是路径计数上限扩大至 20 billion。固定 15×15 网格由 memoized reverse DFS 与独立升序 DP 都计算为 600537344，证实来源输出 601079908 有误。本站保留原输入并公开更正答案，明确标记为源样例修正，不声称源答案正确；补充标准 I/O 协议。160 个独立 oracle 输入、20 个互异隐藏正式用例、两种独立样例复算及两个正常运行 mutant 检查均通过，候选仍待沙箱验证。"
     },
     {
       "id": "oa-hudson-river-trading-7",
@@ -10223,8 +10225,9 @@
     {
       "id": "oa-ziprecruiter-6",
       "company": "ziprecruiter",
-      "status": "blocked",
-      "reason": "Cycle Shift 题面规则与样例冲突：按轮转等价及解释列出的匹配对计数为 5，原输出为 3。"
+      "status": "sandbox_verified",
+      "batch": "ziprecruiter-6-recovered",
+      "reason": "The fixed statement defines pair semantics, the source explanation explicitly says five pairs, and pairwise enumeration confirms the only error is the printed sample value 3. The candidate preserves the rule and corrects only that answer to 5; constraints are mapped from the obvious variable typo years to the body variable a and disclosed."
     },
     {
       "id": "oa-ziprecruiter-7",

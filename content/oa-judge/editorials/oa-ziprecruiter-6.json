@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-6",
+  "title": "循环移位等价数对计数（ZipRecruiter OA）",
+  "explanation": "## 为什么正确\n\n两个正整数只有位数相同时才可能组成题目所说的 cyclic pair。固定一个数，把它的十进制串从每个下标切开并交换前后两段，就得到它全部循环移位；取其中字典序最小的串作为等价类标识。两个数能互相循环移位，当且仅当标识相同。因此每个等价类里有 c 个输入位置时，贡献恰好是 C(c,2)，重复输入也按不同下标计数。\n\n## 样例勘误\n\n固定来源的规则、约束和解释把样例中的五个匹配对都明确列出，但样例输出误写为 3。直接逐对枚举得到：`13/31/13` 贡献 3 对，`5604/4560` 贡献 1 对，`546/654` 贡献 1 对，总计 5。题意与输入保持原样，只将公开样例答案更正为 5。\n\n## 复杂度与本站输入格式\n\n设 n 为数组长度、L 为最大位数。参考解用循环移位构造等价类，时间 O(nL²)，空间 O(nL)。本站标准输入为 n 和 n 个正整数；采用源约束 `1≤n≤100`、`1≤a[i]≤10000`，仅把原文误写的 `years.length/years[i]` 绑定到正文中的数组 `a`。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\nimport sys\n\ndef canonical(value):\n    text = str(value)\n    return min(text[i:] + text[:i] for i in range(len(text)))\n\ndef count_pairs(values):\n    counts = Counter(canonical(value) for value in values)\n    return sum(count * (count - 1) // 2 for count in counts.values())\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if not tokens:\n        raise ValueError(\"missing n\")\n    n, values = tokens[0], tokens[1:]\n    if not 1 <= n <= 100 or len(values) != n:\n        raise ValueError(\"site protocol: 1 <= n <= 100 and n values\")\n    if any(not 1 <= value <= 10000 for value in values):\n        raise ValueError(\"source constraint: 1 <= a[i] <= 10000\")\n    return str(count_pairs(values))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#6-cycle-shift",
+  "sourceContentHash": "e3aaaa7b35f2dd54da5dd226eb0ec49a484eded066a5257d6b108783bd6a32b4",
+  "author": "CSWork"
+}

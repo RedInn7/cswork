@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏算连续棋子奖励",
+    "code": "import sys\ndef solve(raw):\n    data=raw.split(); n=int(data[0]); points=list(map(int,data[1:1+n])); tokens=data[1+n]\n    score=0\n    for i,token in enumerate(tokens):\n        if token=='T':\n            score+=points[i]\n            if False: score+=1\n    return str(score)\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把连续棋子对重复计分",
+    "code": "import sys\ndef solve(raw):\n    data=raw.split(); n=int(data[0]); points=list(map(int,data[1:1+n])); tokens=data[1+n]\n    score=0\n    for i,token in enumerate(tokens):\n        if token=='T':\n            score+=points[i]\n            if i>0 and token=='T': score+=1\n    return str(score)\nprint(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "item": {
+    "id": "oa-hudson-river-trading-6",
+    "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#6-increasing-paths-part-2",
+    "catalogContentHash": "eb19423d30e0c5f771d21ba70f4906320cd6897fc185fc7dd1985781fadc465b",
+    "inheritedRulesFrom": {
+      "id": "oa-hudson-river-trading-5",
+      "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#5-increasing-paths-part-1",
+      "catalogContentHash": "bd6b46581b9f89560a382cf3f10c9707483dd3a782ecb9f97575f7c12f50185e"
+    },
+    "rawFiles": [
+      {
+        "path": "fastprep/Hudson River Trading/hudsonriver-increasing-paths-1.md",
+        "blob": "1b8ef3d822aa032666513172efa73cf860f3194c",
+        "sha256": "d0c41b869c934aefe28e7bbe55224f0eb2c8f5fa7ba4dd41f54c33db5fdbe8de"
+      },
+      {
+        "path": "fastprep/Hudson River Trading/hudsonriver-increasing-paths-2.md",
+        "blob": "e3b83e671124856713fe80fd4245479b8ff6e101",
+        "sha256": "e4048e464cd9153de9672367056838f054f3f2c3e290779d7b25978ac38701ed"
+      }
+    ],
+    "resolvedSemantics": {
+      "grid": "At most 15 rows and 15 columns; each existing value is 0..65535 inclusive. Ragged rows are allowed by the inherited source example.",
+      "path": "A sequence of at least two cells; consecutive cells are orthogonally adjacent and values strictly increase.",
+      "identity": "Paths with different cell-location sequences are distinct, even when values match.",
+      "countBound": "Part 2 raises the maximum count to 20 billion; use 64-bit output.",
+      "sampleCorrection": "The exact source 15x15 grid yields 600537344 under memoized reverse DFS and ascending-value DP. The source's 601079908 is incorrect; candidate retains the grid and corrects only the answer.",
+      "siteInputSupplement": "Rows, per-row column counts, and values are serialized as whitespace-separated integers; the source is a function problem and did not define stdin/stdout."
+    },
+    "sampleAudit": {
+      "sourceOutput": 601079908,
+      "reverseDfs": 600537344,
+      "ascendingDynamicProgramming": 600537344
+    }
+  }
+}

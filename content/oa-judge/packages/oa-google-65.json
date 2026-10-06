@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-65",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "游戏计分",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Google",
+      "数组"
+    ],
+    "description": "给定等长数组 points 和字符串 tokens。若 tokens[i] 为 T，则获得 points[i] 分；每一对相邻且都为 T 的位置额外获得 1 分。返回总分。原题前两个示例的 points/tokens/解释/答案互相矛盾；此处按源题 Python、Java、C++ 三份实现统一计分规则并重写样例。\n\n本站输入：1≤N≤100，1≤points[i]≤1000，tokens 仅含 E/T；points 与 tokens 等长。\n\n来源：https://oamaster.com/docs/companies/google#65-game-points-calculation（固定题面指纹 2a761527eddb0ae5f7231cac89a2fea7cefa48fd9fb6f693938e01734a619b0c）。",
+    "input": "第一行 N；第二行 N 个正整数 points[i]；第三行长度为 N 的字符串 tokens。",
+    "output": "输出总分。",
+    "explanation": "总分为所有 T 位置对应的 points 之和，加上相邻 TT 对的数量。",
+    "hints": [
+      "一次扫描；遇到 T 时累加该位置分数，并检查前一个字符是否也是 T。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "4\n4 1 2 2\nTEET\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "5\n3 2 1 2 2\nTTTE\n",
+      "expectedOutput": "8\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\n2 2 2 2\nTTTT\n",
+      "expectedOutput": "11\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "38\n47 450 246 994 157 287 89 989 733 220 318 802 692 727 224 420 125 581 766 479 29 409 374 230 243 294 462 62 198 96 567 841 884 298 994 674 416 506\nTTEETETETETETEEETETEETEEEETEEETEETEETT\n",
+      "expectedOutput": "6037\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "86\n784 76 307 298 900 368 119 588 787 902 372 42 247 762 794 798 655 194 477 305 275 751 139 954 977 17 252 696 570 102 273 5 479 269 753 525 239 617 865 342 931 124 545 295 314 613 42 742 290 64 528 66 40 360 103 13 456 66 428 491 223 779 379 717 150 259 844 216 151 966 818 823 424 868 421 160 995 215 315 699 757 521 759 54 914 718\nEEETTETEETTEEETEEETTTEEEEETTTTETTETTETTETTEEEETTTEETTEETEEETTTTETETTEEETTTTTETTTTTTTTT\n",
+      "expectedOutput": "22314\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "51\n128 321 433 434 330 445 527 46 561 971 48 213 744 278 356 308 285 654 219 743 533 634 13 198 163 807 784 415 167 20 505 909 155 211 190 117 386 611 474 743 334 111 813 46 100 628 620 399 424 493 11\nETEEEETTTETEETTETTETEEETTETTEETETETEEEEETTEETTTTEEE\n",
+      "expectedOutput": "8431\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "85\n758 160 484 862 886 197 174 101 160 920 377 277 311 108 315 970 652 550 698 14 466 387 762 426 121 461 111 129 915 197 348 484 323 35 103 88 734 330 351 221 728 658 132 422 50 926 292 572 376 101 239 25 874 943 228 690 110 784 850 580 546 386 160 700 654 978 984 394 640 733 559 853 831 8 5 212 572 921 344 632 654 476 137 829 257\nETTEEETTTTTTTEEEETEEEETEEEETEEEETEEETTTEETTETEETTTTTEEETTTEEEETETETETEEEETEEETEEEEETE\n",
+      "expectedOutput": "14092\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "7\n734 982 990 257 552 469 25\nEETEETT\n",
+      "expectedOutput": "1485\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "8\n112 551 6 530 62 388 820 963\nEETTEETE\n",
+      "expectedOutput": "1357\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "55\n667 546 344 465 949 901 621 318 96 957 295 865 661 33 806 914 625 587 456 600 771 304 914 269 86 246 164 609 702 86 104 449 777 994 87 876 998 488 492 314 934 846 803 431 92 207 994 704 560 509 349 316 779 980 948\nEETTTEETETTTTEEETETEEETEEETTTETETEEETETEETETETETTTEETTT\n",
+      "expectedOutput": "16670\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "88\n788 231 763 860 358 76 99 620 801 337 911 44 266 852 168 244 314 560 489 221 930 213 611 449 402 427 360 594 171 330 376 293 842 286 699 164 41 810 355 661 923 553 217 936 545 343 68 68 99 436 803 25 44 706 900 174 876 86 198 420 759 107 817 467 46 157 415 126 874 382 672 670 208 183 135 622 230 442 162 499 743 947 791 582 800 652 220 253\nETETETTTTTETEEETTTTTEEETTETTEEEETTTTETETTTTETEETETETETTTTTTETETTEEEETTETTTTEETETETTTTEEE\n",
+      "expectedOutput": "24455\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "96\n609 420 757 282 999 232 958 481 265 421 493 109 116 296 764 875 930 622 50 806 631 66 449 22 393 479 427 388 296 804 216 902 671 847 22 909 745 240 190 975 418 552 450 867 215 298 145 270 626 782 329 704 868 932 868 675 430 383 160 756 437 420 332 554 21 573 677 393 886 86 432 280 328 425 928 511 62 768 82 746 391 428 494 321 425 619 129 217 636 413 778 367 114 922 851 245\nTETETTETEETTTETTEEETTTEETTTETTTETTTTEEEEETEETTEETTEETEEEEETTETETETETTTTEEETETETEEEETETEEEETEETET\n",
+      "expectedOutput": "23579\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "31\n177 343 44 195 383 630 393 195 458 43 336 539 537 63 171 420 180 16 12 514 435 27 299 206 914 877 306 503 348 233 108\nTETEEEEETTEEEEETTEETTTTEEEEETEE\n",
+      "expectedOutput": "2950\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "31\n927 469 739 771 959 484 766 954 405 828 826 207 126 509 536 515 572 919 812 864 425 819 246 786 824 469 651 944 838 130 979\nETTETETETTTTETTTEETEETTEEETETTE\n",
+      "expectedOutput": "10263\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "91\n866 377 604 154 993 213 969 895 132 884 610 494 344 772 737 907 758 20 390 681 875 638 66 571 591 527 281 744 336 926 312 659 732 402 606 211 714 427 692 562 345 92 573 780 643 492 862 211 158 83 55 790 714 683 441 320 863 55 373 854 662 948 848 358 618 310 734 330 445 925 32 189 967 870 127 946 62 935 610 536 903 918 179 176 519 118 365 777 814 216 94\nTTETETETTETTTTEEETETEETEEETTTEETETTETTETTTTEEEEEETTTTEETETETETTTEEETETEEETETETTETEEEEEETETT\n",
+      "expectedOutput": "23015\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "12\n412 682 663 477 696 903 319 871 204 67 977 523\nETTTEEETETTT\n",
+      "expectedOutput": "4264\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "33\n61 330 405 336 943 960 350 20 148 43 562 299 424 226 82 613 326 194 326 461 692 439 243 613 594 447 432 567 894 320 746 881 419\nTETEEETTETTETEETEEETTETTEETTEEETT\n",
+      "expectedOutput": "6792\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "78\n716 914 43 541 15 520 832 874 740 825 998 8 14 239 578 738 484 192 917 201 807 937 297 124 374 152 304 215 99 406 241 212 145 778 985 889 181 445 781 791 641 977 265 975 198 261 289 273 219 999 818 926 707 604 72 60 420 864 677 156 100 702 674 880 385 838 768 183 77 281 948 49 534 921 550 116 857 390\nTTTTTTEETTTEEETEETTETETEEETEEETTTTEETTEETETETTTEETETEEEETTTETTTTEEETETEEEEETET\n",
+      "expectedOutput": "19294\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "45\n143 63 347 355 617 385 718 968 837 573 720 379 748 760 456 264 584 800 721 747 711 683 681 214 292 858 274 355 233 475 742 454 87 692 32 999 199 923 392 484 27 733 783 349 921\nETEETTETEEEETTTEETEETTTETTTTEETTEETTEETETEEEE\n",
+      "expectedOutput": "11307\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "47\n483 709 386 689 408 809 143 53 126 369 286 500 702 970 708 993 101 17 240 905 838 172 977 782 723 633 243 605 944 12 991 302 61 1000 743 57 609 824 654 456 697 202 163 858 372 739 544\nETETTTETTTTTTETTEEEEETEEEEETTETTETTTTEEEEETTETE\n",
+      "expectedOutput": "13549\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "6\n613 578 34 683 746 12\nEEEEEE\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "88\n798 905 367 45 110 976 592 939 424 415 811 391 960 555 723 865 683 672 272 979 310 618 902 883 692 291 319 39 539 141 980 805 95 661 828 549 865 803 612 983 301 386 848 283 160 317 990 468 713 281 305 260 173 586 460 30 899 131 69 107 978 679 981 542 134 795 474 209 219 244 305 598 32 155 963 959 76 813 913 375 141 917 111 436 598 559 675 702\nETETTETETEETEEEETEEEETTETETTETTEETEETETTTETEEETEETEETTTTETETETTTETEETETEETEETTETTTEETTTE\n",
+      "expectedOutput": "21715\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "98\n448 653 631 870 340 673 439 781 852 418 406 836 410 228 184 1000 895 190 115 2 122 809 43 133 468 518 731 413 216 221 713 699 673 392 317 66 444 710 177 439 209 488 53 72 758 520 8 856 98 679 135 817 18 835 790 212 753 671 49 458 56 757 585 581 393 893 101 901 885 255 688 103 317 747 589 52 790 506 652 773 885 795 968 99 426 862 512 142 950 764 393 208 630 217 651 820 754 673\nTEETETEEEETTTTTTEETEEEETEETETETETTTEETTETEEETTTETTTEETETEETTTTEEETEEETTTTTTEEETTTEETTETETEETTETETT\n",
+      "expectedOutput": "24836\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "29\n530 693 544 11 555 68 311 672 127 875 154 781 848 738 55 896 742 455 400 596 25 663 339 751 247 892 760 149 871\nEETEETTTEEEEEEEETTETTTTTEEEEE\n",
+      "expectedOutput": "5173\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "37\n479 468 1000 890 243 726 960 978 483 890 624 888 6 834 227 773 420 782 77 8 323 26 411 859 18 418 216 815 433 159 891 247 956 616 291 760 199\nTETETTEETTTETETTTEEEEETTETETTEETETETE\n",
+      "expectedOutput": "10437\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "59\n460 788 113 705 45 392 998 3 480 880 689 241 290 277 622 173 599 695 542 146 859 78 196 744 135 701 754 787 976 653 626 184 127 633 847 347 797 373 69 237 427 467 376 768 428 731 381 435 23 157 676 340 614 62 918 268 330 17 709\nTETEETEETTTTTTTEEEEETTEETTETEEEETTTETEEEETTEETEETETETETETEE\n",
+      "expectedOutput": "13554\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "99\n598 22 934 913 803 575 779 827 825 598 459 695 346 441 943 879 310 871 900 675 707 981 388 303 175 23 459 503 676 556 724 4 724 700 622 997 966 460 42 111 326 519 286 473 951 174 100 630 282 596 19 335 390 792 917 715 612 822 206 459 616 723 437 53 883 767 860 604 887 677 415 859 527 762 252 261 354 216 420 843 133 514 14 726 546 642 38 337 846 386 704 886 871 372 801 20 339 873 150\nETTEETETTEEETTTTETTTTEETTTTTEETETTEEETTTTTTEETETETETEETTTEEEETTTTTETEETTETETEEEEEETEETTTTETTTEETTTE\n",
+      "expectedOutput": "29645\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "97\n931 872 360 172 232 508 432 378 582 573 836 232 954 428 504 164 203 324 707 754 752 60 678 373 318 971 732 216 909 714 793 53 305 504 738 538 569 527 225 635 443 560 632 848 140 749 662 444 754 916 765 829 157 368 328 558 557 705 513 842 357 393 505 242 717 119 241 687 52 739 582 456 381 832 808 350 491 416 801 682 783 643 334 206 395 654 809 998 311 248 768 4 223 608 941 591 706\nEEETTEETTTEEEEETEEEEEETTTETTETETTTEETTTEEETETEEEETTTTTTETEEEEEEEETETETEETTEETTETTETEETEEETETETTET\n",
+      "expectedOutput": "20651\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "67\n143 887 737 293 202 593 29 752 729 93 877 36 710 374 663 866 180 220 856 938 556 334 363 648 680 92 351 944 980 70 99 667 752 289 279 951 272 980 89 47 190 330 794 969 232 153 464 385 884 380 559 973 826 537 974 66 103 818 666 476 729 292 570 27 965 99 886\nTETTTEETTTTTEETEEEETETEETETTEEEEETETTTTTEETTETTETETETEEETEEETETETTE\n",
+      "expectedOutput": "17529\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "1\n128\nE\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

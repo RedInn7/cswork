@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ziprecruiter-6",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "循环移位等价数对计数（ZipRecruiter OA）",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "ZipRecruiter",
+      "字符串",
+      "哈希表"
+    ],
+    "description": "给定正整数数组，统计下标 i<j 的数对：两数十进制位数相同，且其中一个可通过任意次循环移位（可移 0 位）变成另一个。重复值按不同下标分别计数。固定来源样例答案从 3 更正为 5；勘误依据见讲义。",
+    "input": "第一行 n（本站范围 1≤n≤100），第二行 n 个正整数 a[i]（来源范围 1≤a[i]≤10000）。",
+    "output": "输出满足条件的下标对数量。",
+    "explanation": "按十进制字符串全部循环移位的最小值分组，每组贡献 C(频次,2)。公开样例输出依源解释中列出的五个匹配对更正为 5。",
+    "hints": [
+      "循环移位只保留字符顺序，不是任意排列。",
+      "相同数值出现在两个下标时仍是一个合法数对。",
+      "先按位数分层或在等价类中保留位数。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 65536,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "9\n13 5604 31 2 13 4560 546 654 456\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4\n11 11 11 11\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\n123 231 312 132\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 1",
+      "input": "2\n12 21\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 2",
+      "input": "2\n123 132\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 3",
+      "input": "3\n100 10 1000\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 4",
+      "input": "3\n100 1 10000\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 5",
+      "input": "5\n1234 2341 3412 4123 1234\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 6",
+      "input": "1\n7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 7",
+      "input": "2\n9999 9999\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 8",
+      "input": "4\n120 201 12 1200\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 9",
+      "input": "4\n1001 1100 110 1010\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 10",
+      "input": "5\n1234 2341 3412 4123 1234\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 11",
+      "input": "16\n3412 8353 2341 1234 2341 3412 4123 2341 2341 2341 4123 1234 1032 3412 4123 3412\n",
+      "expectedOutput": "91\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 12",
+      "input": "8\n4123 2341 1601 1234 8129 2779 3412 8694\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 13",
+      "input": "23\n9503 3412 4123 9069 2124 7599 1234 2341 2341 1157 1234 9631 1234 2341 1725 8341 1234 2341 4123 1234 4123 7084 4123\n",
+      "expectedOutput": "91\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 14",
+      "input": "8\n1234 4123 5881 3412 1052 1234 1234 6632\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 15",
+      "input": "10\n7801 4123 7913 4123 2341 4123 1234 2588 4123 9057\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 16",
+      "input": "14\n3412 4123 2341 9223 2341 1234 2944 7066 3412 4123 1043 3412 2341 6995\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 17",
+      "input": "19\n2180 4123 4123 1234 4123 2341 2341 2341 9443 7649 2341 2341 4123 1234 4123 1363 4123 1234 2341\n",
+      "expectedOutput": "105\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 18",
+      "input": "19\n2341 7182 2265 1234 2341 1234 1234 4046 1234 2143 4123 3412 4123 8682 4066 5594 2341 3412 1234\n",
+      "expectedOutput": "66\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 19",
+      "input": "23\n4123 4789 1234 2341 5445 4123 7664 4123 1479 4653 8336 3412 2341 1234 6416 1786 2341 4123 9546 4269 4048 1234 1234\n",
+      "expectedOutput": "66\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 20",
+      "input": "6\n4123 4816 3412 3412 8850 5288\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

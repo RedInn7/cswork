@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-65",
+  "title": "游戏计分",
+  "explanation": "## 思路\n\n遍历 tokens；遇到 T 时加入对应 points[i]，如果前一位也是 T，再额外加 1。\n\n## 正确性\n\n题目规则将总分拆成两部分：每个 T 位置各计一次 points[i]，每一对相邻 TT 各计 1。遍历时每个 T 恰好计入第一部分；除首位外，若当前与前一位都为 T，恰好计入以当前位置结尾的那一对。每一对相邻位置只在右端被检查一次，因此不重不漏。\n\n## 复杂度\n\n时间 O(N)，额外空间 O(1)。\n\n## 来源与样例处理\n\nhttps://oamaster.com/docs/companies/google#65-game-points-calculation。固定快照中的 Python、Java、C++ 实现均明确采用上述规则。原样例1违反 points 下界，且索引/计分解释不符；样例2输出也与其所述规则和三份实现不符。展示样例改为可由规则唯一计算的输入。本站补充 stdin/stdout 协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    data=raw.split(); n=int(data[0]); points=list(map(int,data[1:1+n])); tokens=data[1+n]\n    score=0\n    for i,token in enumerate(tokens):\n        if token=='T':\n            score+=points[i]\n            if i>0 and tokens[i-1]=='T': score+=1\n    return str(score)\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#65-game-points-calculation",
+  "sourceContentHash": "2a761527eddb0ae5f7231cac89a2fea7cefa48fd9fb6f693938e01734a619b0c",
+  "author": "Chunyu Sui"
+}
