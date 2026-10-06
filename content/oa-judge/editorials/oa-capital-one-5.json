@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-5",
+  "title": "Memory Allocator — Aligned Alloc + Erase",
+  "explanation": "## 思路\n\n按 8 的倍数递增检查候选起点，找到首个容量足够且全部空闲的区间即分配，并将新 ID 记入区间每个单元。释放时按 ID 扫描并清空所有对应单元。\n\n## 正确性证明\n\n递增枚举完整覆盖所有合法对齐起点，首个符合连续空闲条件者就是最左可分配块。每个成功分配使用唯一 ID，完整扫描精确释放其全部单元。\n\n## 复杂度\n\n每次操作 O(n)，空间 O(n)。\n\n## 来源说明\n\n本站补充输入协议及初始占用单元不可释放的约定。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n\n for _ in range(q):\n  typ,x=t[i:i+2];i+=2\n  if typ==0:\n   s=next((s for s in range(0,n,8) if s+x<=n and all(v==0 for v in mem[s:s+x])),-1)\n   if s<0:out.append(-1)\n   else:\n    for j in range(s,s+x):mem[j]=1;ids[j]=nextid\n    out.append(s);nextid+=1\n  else:\n   freed=0\n   for j in range(n):\n    if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1\n   out.append(freed if freed else -1)\n return ' '.join(map(str,out))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#5-memory-allocator--aligned-alloc--erase",
+  "sourceContentHash": "dd471b84bc30df49eedf43086c625a6fc740502bf8b4c31670998070da3c377c",
+  "author": "CSWork"
+}

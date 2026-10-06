@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-capital-one-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Robot Matrix Commands",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Capital One",
+      "矩阵",
+      "模拟"
+    ],
+    "description": "按顺序执行行/列交换、反转及顺时针旋转。坐标使用 0-based 下标。",
+    "input": "r c；接着 r 行矩阵；然后 q；接着 q 行命令。命令为 `swapRows r1 r2`、`swapColumns c1 c2`、`reverseRow r`、`reverseColumn c` 或 `rotate90Clockwise`。旋转时矩阵必须为正方形。本站补充：r,c≤50，q≤500。",
+    "output": "输出最终矩阵，每行一行，数值以空格分隔。",
+    "explanation": "完整思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "按定义逐条处理操作，并注意边界。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 8192,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "2 3\n1 2 3\n4 5 6\n3\nswapRows 0 1\nreverseColumn 1\nswapColumns 0 2\n",
+      "expectedOutput": "6 2 4\n3 5 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "2 2\n1 2\n3 4\n1\nrotate90Clockwise\n",
+      "expectedOutput": "3 1\n4 2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "3 2\n1 2\n3 4\n5 6\n2\nreverseRow 1\nreverseColumn 0\n",
+      "expectedOutput": "5 2\n4 3\n1 6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "3 5\n1 4 -4 -5 9\n8 -8 -6 -5 14\n1 9 1 15 20\n8\nreverseColumn 4\nreverseColumn 1\nswapRows 0 1\nreverseColumn 2\nreverseRow 1\nreverseRow 1\nswapColumns 0 1\nswapColumns 2 2\n",
+      "expectedOutput": "-8 8 1 -5 14\n9 1 -4 -5 20\n4 1 -6 15 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "5 5\n14 16 7 -1 -8\n16 15 -3 8 7\n11 -4 5 17 10\n2 3 -1 0 -6\n11 -8 12 -7 5\n2\nswapRows 3 0\nswapColumns 4 3\n",
+      "expectedOutput": "2 3 -1 -6 0\n16 15 -3 7 8\n11 -4 5 10 17\n14 16 7 -8 -1\n11 -8 12 5 -7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "5 1\n-3\n15\n-8\n17\n17\n10\nreverseRow 2\nreverseRow 2\nreverseRow 1\nswapRows 0 2\nreverseRow 0\nreverseRow 1\nreverseRow 0\nswapColumns 0 0\nswapColumns 0 0\nreverseRow 4\n",
+      "expectedOutput": "-8\n15\n-3\n17\n17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "3 5\n10 13 11 -7 11\n-5 20 13 18 5\n-4 19 1 1 2\n10\nswapColumns 1 4\nreverseColumn 3\nswapRows 2 1\nreverseRow 0\nswapRows 2 1\nswapColumns 3 3\nreverseRow 1\nreverseRow 1\nswapRows 0 2\nreverseRow 2\n",
+      "expectedOutput": "-4 2 1 -7 19\n-5 5 13 18 20\n10 11 11 1 13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "2 1\n1\n16\n4\nreverseRow 1\nreverseRow 0\nreverseColumn 0\nreverseRow 1\n",
+      "expectedOutput": "16\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "1 5\n-8 -7 8 5 20\n2\nreverseRow 0\nswapRows 0 0\n",
+      "expectedOutput": "20 5 8 -7 -8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "1 3\n7 4 0\n6\nswapRows 0 0\nreverseColumn 1\nreverseColumn 2\nreverseColumn 2\nswapColumns 2 2\nreverseColumn 1\n",
+      "expectedOutput": "7 4 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "5 3\n18 -8 -6\n-2 -8 10\n18 1 15\n-6 -1 11\n7 0 4\n8\nswapRows 2 2\nreverseRow 4\nswapColumns 0 1\nswapColumns 0 2\nreverseColumn 1\nswapRows 4 3\nswapColumns 2 1\nswapColumns 0 1\n",
+      "expectedOutput": "-8 -6 4\n-8 10 -6\n1 15 18\n0 7 18\n-1 11 -2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "5 4\n-8 8 13 1\n-8 -2 14 9\n4 -7 17 13\n-1 -8 -8 19\n7 -6 6 -7\n4\nreverseRow 4\nreverseColumn 3\nswapColumns 3 1\nswapRows 4 4\n",
+      "expectedOutput": "-8 7 13 8\n-8 19 14 -2\n4 13 17 -7\n-1 9 -8 -8\n-7 1 -6 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "1 2\n18 20\n6\nswapColumns 0 1\nreverseRow 0\nreverseColumn 0\nswapRows 0 0\nswapRows 0 0\nreverseRow 0\n",
+      "expectedOutput": "20 18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "4 1\n18\n1\n20\n2\n5\nreverseColumn 0\nreverseRow 2\nreverseRow 0\nswapColumns 0 0\nswapRows 1 2\n",
+      "expectedOutput": "2\n1\n20\n18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "4 4\n9 20 2 6\n7 5 12 7\n20 19 19 18\n18 10 20 4\n3\nreverseColumn 1\nreverseColumn 0\nreverseRow 3\n",
+      "expectedOutput": "18 10 2 6\n20 19 12 7\n7 5 19 18\n4 20 20 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "4 1\n-7\n6\n-3\n17\n7\nreverseColumn 0\nswapColumns 0 0\nswapColumns 0 0\nswapColumns 0 0\nreverseRow 2\nswapRows 0 0\nreverseColumn 0\n",
+      "expectedOutput": "-7\n6\n-3\n17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "1 2\n-5 -5\n4\nreverseRow 0\nswapRows 0 0\nreverseRow 0\nswapColumns 0 0\n",
+      "expectedOutput": "-5 -5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "4 1\n-4\n5\n-7\n3\n3\nreverseColumn 0\nswapRows 3 3\nswapColumns 0 0\n",
+      "expectedOutput": "3\n-7\n5\n-4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "3 4\n17 13 2 -3\n1 20 3 6\n-3 4 18 -7\n4\nswapColumns 0 3\nreverseRow 0\nswapColumns 0 1\nswapRows 2 2\n",
+      "expectedOutput": "2 17 13 -3\n20 6 3 1\n4 -7 18 -3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "3 2\n16 5\n5 0\n11 17\n6\nswapColumns 0 1\nswapColumns 0 0\nreverseColumn 0\nswapRows 0 0\nswapRows 2 1\nswapColumns 0 1\n",
+      "expectedOutput": "16 17\n11 5\n5 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "1 3\n9 2 15\n3\nswapColumns 2 1\nreverseRow 0\nswapColumns 2 0\n",
+      "expectedOutput": "9 15 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "3 3\n1 20 -8\n5 -2 16\n17 8 7\n9\nswapColumns 2 2\nrotate90Clockwise\nrotate90Clockwise\nreverseColumn 0\nreverseRow 2\nswapRows 1 2\nreverseColumn 1\nreverseColumn 2\nreverseColumn 0\n",
+      "expectedOutput": "16 -2 5\n1 20 7\n-8 8 17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "3 1\n2\n19\n19\n7\nswapColumns 0 0\nswapRows 1 1\nswapColumns 0 0\nreverseRow 1\nswapRows 2 0\nreverseColumn 0\nreverseRow 2\n",
+      "expectedOutput": "2\n19\n19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "2 2\n19 17\n1 20\n4\nreverseRow 1\nrotate90Clockwise\nreverseColumn 1\nrotate90Clockwise\n",
+      "expectedOutput": "1 20\n19 17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "2 5\n15 18 -7 13 17\n14 18 12 20 -3\n4\nreverseColumn 3\nswapRows 0 0\nreverseColumn 3\nswapRows 0 0\n",
+      "expectedOutput": "15 18 -7 13 17\n14 18 12 20 -3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "1 4\n17 8 -3 -3\n7\nswapColumns 2 3\nreverseRow 0\nreverseRow 0\nreverseRow 0\nswapColumns 0 0\nswapColumns 3 1\nswapColumns 1 1\n",
+      "expectedOutput": "-3 17 8 -3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "3 5\n18 14 15 -7 5\n11 9 4 -4 1\n0 -2 0 -2 6\n4\nswapColumns 3 3\nswapRows 2 1\nreverseColumn 0\nreverseColumn 0\n",
+      "expectedOutput": "18 14 15 -7 5\n0 -2 0 -2 6\n11 9 4 -4 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "4 1\n18\n1\n-5\n20\n7\nreverseColumn 0\nswapColumns 0 0\nswapColumns 0 0\nreverseRow 2\nswapColumns 0 0\nreverseRow 0\nreverseColumn 0\n",
+      "expectedOutput": "18\n1\n-5\n20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "2 1\n4\n-2\n3\nreverseRow 1\nswapColumns 0 0\nswapRows 0 0\n",
+      "expectedOutput": "4\n-2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "1 2\n7 4\n7\nreverseColumn 0\nreverseRow 0\nswapRows 0 0\nswapColumns 0 0\nswapRows 0 0\nswapColumns 1 0\nreverseRow 0\n",
+      "expectedOutput": "4 7\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

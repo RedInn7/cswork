@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-8",
+  "title": "File Transfer Segments — Count Unique After Each Byte",
+  "explanation": "## 思路\n\n维护已收到的偏移集合。每到一个偏移，检查还未完成的段是否其半开区间中的每个位置都出现；完成后只计数一次。\n\n## 正确性证明\n\n区间集合包含恰好段要求的字节位置；子集检查等价于段完全收到。每一时刻更新所有未完成段，因此累计完成数准确。\n\n## 复杂度\n\n时间 O(mL)，L 为所有段总长度；空间 O(L+m)。\n\n## 来源说明\n\n原文明确采用 `[start,start+length)`；本站补充 stdin/stdout 协议与规模界。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]\n for _ in range(n):segments.append((t[i],t[i+1]));i+=2\n data=t[i:i+m];seen=set();done=[False]*n;count=0;out=[]\n for byte in data:\n  seen.add(byte)\n  for j,(start,length) in enumerate(segments):\n   if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1\n  out.append(str(count))\n return ' '.join(out)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#8-file-transfer-segments--count-unique-after-each-byte",
+  "sourceContentHash": "65ce1f8008f5adcbd4918d72a24e0351252abb4170b3dbcd0fb376c1e103fe47",
+  "author": "CSWork"
+}
