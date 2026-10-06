@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 13,
-    "blocked": 531,
+    "awaiting_sandbox": 15,
+    "blocked": 529,
     "unreviewed": 0
   },
   "items": [
@@ -7993,8 +7993,9 @@
     {
       "id": "oa-optiver-4",
       "company": "optiver",
-      "status": "blocked",
-      "reason": "out-of-order 后最近一小时的时间基准有歧义。"
+      "status": "awaiting_sandbox",
+      "batch": "optiver-4-recovered",
+      "reason": "固定源参考实现明确将最大 timestamp 作为乱序日志窗口锚点，严格过滤早于/等于 anchor−3600 的记录，并按 (timestamp, 接收序号) 排序后取最后 m 条；候选按该可执行定义恢复，不猜测。120 个小规模独立列表排序 oracle、正式边界及两个正常退出错误实现均通过，另在 10 万条记录混合查询上做了本地压力验证。"
     },
     {
       "id": "oa-drw-1",
@@ -10873,8 +10874,9 @@
     {
       "id": "oa-unknown-15",
       "company": "unknown",
-      "status": "blocked",
-      "reason": "Part 2 依赖未随题面提供的 Part 1 完整规则，且 `jaccard` 的多重集含义要到 Part 3 才补充；本题自身样例为占位说明。"
+      "status": "awaiting_sandbox",
+      "batch": "unknown-15-recovered",
+      "reason": "固定快照 Part 2 明确继承 Part 1/3；Part 1 定义最低最高字符比例、并列全选与唯一字符输出，Part 3 明确重复字符参与 Jaccard 交并并以 baa/abbc=0.4 验证。三个源条目 Company 均为 Unknown，本站不推断公司。仅补 I/O、稳定输出顺序和资源边界；独立 oracle、穷举与两个 mutant 验证通过，仍待沙箱。"
     },
     {
       "id": "oa-unknown-16",
