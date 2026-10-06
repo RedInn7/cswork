@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-stripe-2",
+      "formalCases": 30,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "sourceSampleExpected": "2\nmerchant1,50\nmerchant2,60",
+      "largeCase": {
+        "transactions": 1000,
+        "merchants": 10,
+        "included": true
+      },
+      "negativeControls": [
+        {
+          "name": "金额阈值误用大于等于",
+          "rejectedByCases": [
+            0,
+            1,
+            16,
+            22,
+            28,
+            29
+          ]
+        },
+        {
+          "name": "第三笔触发时漏补前两笔 additive",
+          "rejectedByCases": [
+            0,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            28,
+            29
+          ]
+        }
+      ],
+      "referenceSha256": "6561f6272035f597cfd479cf8ca7afca4e2f156a76c074a96330f9089077f0ef"
+    }
+  ],
+  "note": "本地逐交易模拟与错误解验证通过；Dot GoJudge 报告见对应 reports 文件。"
+}

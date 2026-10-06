@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1087,
+    "sandbox_verified": 1090,
     "awaiting_sandbox": 0,
-    "blocked": 547,
+    "blocked": 544,
     "unreviewed": 0
   },
   "items": [
@@ -6338,8 +6338,9 @@
     {
       "id": "oa-stripe-2",
       "company": "stripe",
-      "status": "blocked",
-      "reason": "依赖交易样本与异常值等统计定义，原题未提供完整可复现数据协议。"
+      "status": "sandbox_verified",
+      "batch": "stripe-2-recovered",
+      "reason": "固定截图完整给出交易、规则、商户字段、范围和三步运算语义；截图样例唯一排版损坏为两交易间漏逗号，依 n=6 和六行规则可确定修复。来源样例输出明确验证第三笔追溯加分/罚分；30 组正式测试、120 组逐交易模拟与 2 个错误解均通过 Dot GoJudge。"
     },
     {
       "id": "oa-stripe-3",
@@ -9474,8 +9475,9 @@
     {
       "id": "oa-rubrik-13",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "事件日志的 type 1/type 2 文字定义被截断，且服务下标起点未说明，无法构造唯一输入/输出协议。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-13-recovered",
+      "reason": "按固定题源中给出的两类操作补全本站 stdin/stdout 协议，并明确服务下标为 1-based。点赋值是直接覆盖，允许降低值；其后全局操作等价于取后缀最大 x。125 组独立模拟、31 组正式测试与 2 个错误解均通过 Dot GoJudge。"
     },
     {
       "id": "oa-rubrik-14",
@@ -9530,8 +9532,9 @@
     {
       "id": "oa-rubrik-22",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "固定提交中的原始题面在更新操作描述处被截断（仅剩 `such that m_i (x`），更新规则不完整，不能唯一确定操作。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-22-recovered",
+      "reason": "固定版本 OAMaster Rubrik #22 正文完整给出区间和、区间逐项 XOR、持久更新及全部约束；两个官方样例逐项复算一致。采用 20 位线段树，37 组正式测试、120 组独立模拟及 2 个错误解均通过 Dot GoJudge；最大规模更新拆分为 5 组压力测试。"
     },
     {
       "id": "oa-rubrik-23",

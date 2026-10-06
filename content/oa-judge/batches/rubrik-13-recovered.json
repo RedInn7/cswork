@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-rubrik-13",
+      "sourceContentHash": "816aa8fcc9938841d943a80e3c5e7d457066b9c7bc501db18e14f4c37c5a2c46",
+      "packageChecksum": "f24d7a3a67d877224c7179b5424727be5f3a208f434779e98005233987401bfa",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, m = data[0], data[1]\n    pods = data[2:2 + n]\n    logs = [data[i:i + 3] for i in range(2 + n, 2 + n + 3 * m, 3)]\n\n    # suffix[i] = largest type-2 target at operation i or later.\n    suffix = [0] * (m + 1)\n    for i in range(m - 1, -1, -1):\n        typ, _, x = logs[i]\n        suffix[i] = max(suffix[i + 1], x if typ == 2 else 0)\n\n    last_value = pods[:]\n    last_assignment = [0] * n  # initial values are assigned at time 0\n    for time, (typ, p, x) in enumerate(logs, start=1):\n        if typ == 1:\n            last_value[p - 1] = x\n            last_assignment[p - 1] = time\n\n    answer = [max(last_value[i], suffix[last_assignment[i]]) for i in range(n)]\n    return \" \".join(map(str, answer))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ],
+      "editorial": "## 思路\n\n操作 2 对每个当前值执行 chmax(x)，而操作 1 会覆盖单个位置、允许把它降低。因此不能把所有历史 HPA 的最大值作为永久 floor。对每个位置记录最后一次初始/点赋值的值与时间；再从右向左计算每个时间点之后（含该时刻位置）的 type-2 最大 x。最终每项为 `max(最后点赋值值, 最后赋值之后的 HPA 最大 x)`。\n\n## 正确性证明\n\n固定一个服务 i。它的初值或最后一次 type-1 操作把当前值精确设为 `last_value[i]`。之后，type-1 不再影响它；每条 type-2 操作把它与 x 取最大值。连续应用这些操作的结果等于与这些 x 的最大值取最大值。因此答案是 `max(last_value[i], suffix_max[last_assignment[i]])`。赋值之前的 HPA 已被该 type-1 覆盖，不会被错误计入。\n\n## 复杂度\n\n时间 O(n+m)，空间 O(n+m)。\n\n## 来源说明\n\n固定 OAMaster 源码说明了两类操作，但该 MDX 未提供完整输入协议与范围；本站明确补充 1-based 点下标及规模边界。上游附带的单调历史 floor 解法在点赋值可降低数值时不正确，本题使用后缀最大值修正。"
+    }
+  ]
+}
