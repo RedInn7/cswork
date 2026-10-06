@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-5",
+  "title": "Exclusive Time of Functions",
+  "explanation": "维护调用栈和上一个尚未计入的时间点。新日志到来时，先把两时间点间隔加给栈顶；start 将函数压栈，end 事件还要计入该时间戳本身，再弹栈。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines();n,m=map(int,lines[0].split());ans=[0]*n;stack=[];prev=0\n for line in lines[1:1+m]:\n  fid,kind,t=line.split(':');fid=int(fid);t=int(t)\n  if stack:ans[stack[-1]]+=t-prev\n  if kind=='start':stack.append(fid);prev=t\n  else:ans[fid]+=1;stack.pop();prev=t+1\n return ' '.join(map(str,ans))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#5-exclusive-time-of-functions-for-e4-",
+  "sourceContentHash": "45d321c839cd230c329fe73c55ac15e390398b1491f9298a7fec0c0019d8384a",
+  "author": "CSWork"
+}

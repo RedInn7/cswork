@@ -1,0 +1,482 @@
+[
+  {
+    "input": "2 4\n0:start:0\n1:start:2\n1:end:5\n0:end:6\n",
+    "expectedOutput": "3 4\n"
+  },
+  {
+    "input": "1 6\n0:start:0\n0:start:2\n0:end:5\n0:start:6\n0:end:6\n0:end:7\n",
+    "expectedOutput": "8\n"
+  },
+  {
+    "input": "2 6\n0:start:0\n0:start:2\n0:end:5\n1:start:6\n1:end:6\n0:end:7\n",
+    "expectedOutput": "7 1\n"
+  },
+  {
+    "input": "4 16\n2:start:1\n2:end:5\n0:start:6\n0:end:10\n1:start:11\n0:start:12\n1:start:13\n1:end:18\n0:end:21\n2:start:22\n2:start:23\n0:start:24\n0:end:27\n2:end:32\n2:end:37\n1:end:41\n",
+    "expectedOutput": "13 11 17 0\n"
+  },
+  {
+    "input": "3 16\n0:start:1\n0:start:2\n0:start:3\n1:start:4\n1:start:5\n1:start:6\n0:start:7\n0:end:11\n1:start:12\n1:end:14\n1:end:18\n1:end:20\n1:end:24\n0:end:28\n0:end:31\n0:end:36\n",
+    "expectedOutput": "20 16 0\n"
+  },
+  {
+    "input": "5 16\n2:start:1\n4:start:2\n0:start:3\n0:start:4\n2:start:5\n0:start:6\n3:start:7\n3:end:9\n0:start:10\n0:end:15\n0:end:20\n2:end:25\n0:end:29\n0:end:32\n4:end:37\n2:end:41\n",
+    "expectedOutput": "21 0 11 3 6\n"
+  },
+  {
+    "input": "3 16\n2:start:0\n0:start:1\n1:start:2\n1:end:5\n0:end:9\n1:start:10\n0:start:11\n0:end:16\n2:start:17\n1:start:18\n2:start:19\n2:end:23\n1:end:28\n2:end:31\n1:end:35\n2:end:37\n",
+    "expectedOutput": "11 15 12\n"
+  },
+  {
+    "input": "5 16\n3:start:2\n3:start:3\n3:end:6\n1:start:7\n4:start:8\n1:start:9\n4:start:10\n0:start:11\n0:end:14\n4:end:16\n1:start:17\n1:end:20\n1:end:22\n4:end:24\n1:end:28\n3:end:30\n",
+    "expectedOutput": "4 12 0 7 6\n"
+  },
+  {
+    "input": "3 16\n1:start:0\n0:start:1\n2:start:2\n2:end:7\n2:start:8\n1:start:9\n1:end:13\n2:end:18\n2:start:19\n1:start:20\n1:start:21\n1:end:26\n1:end:29\n2:end:34\n0:end:37\n1:end:42\n",
+    "expectedOutput": "4 21 18\n"
+  },
+  {
+    "input": "4 16\n0:start:0\n3:start:1\n2:start:2\n3:start:3\n3:start:4\n1:start:5\n3:start:6\n3:end:9\n0:start:10\n0:end:13\n1:end:15\n3:end:18\n3:end:23\n2:end:27\n3:end:30\n0:end:32\n",
+    "expectedOutput": "7 3 5 18\n"
+  },
+  {
+    "input": "5 16\n0:start:0\n0:end:3\n0:start:4\n1:start:5\n2:start:6\n2:end:9\n3:start:10\n4:start:11\n4:end:15\n4:start:16\n4:end:20\n3:end:22\n1:end:25\n1:start:26\n1:end:29\n0:end:32\n",
+    "expectedOutput": "8 8 4 3 10\n"
+  },
+  {
+    "input": "5 16\n1:start:0\n4:start:1\n4:end:6\n1:start:7\n1:end:12\n1:end:14\n4:start:15\n2:start:16\n2:end:21\n0:start:22\n0:end:25\n2:start:26\n2:end:28\n1:start:29\n1:end:32\n4:end:37\n",
+    "expectedOutput": "4 13 9 0 12\n"
+  },
+  {
+    "input": "4 16\n3:start:2\n3:start:3\n3:start:4\n0:start:5\n1:start:6\n0:start:7\n0:end:12\n1:end:15\n3:start:16\n2:start:17\n2:end:20\n3:end:22\n0:end:26\n3:end:30\n3:end:32\n3:end:37\n",
+    "expectedOutput": "11 4 4 17\n"
+  },
+  {
+    "input": "1 16\n0:start:0\n0:start:1\n0:end:5\n0:start:6\n0:start:7\n0:end:9\n0:end:12\n0:end:16\n0:start:17\n0:start:18\n0:end:22\n0:start:23\n0:end:25\n0:end:30\n0:start:31\n0:end:33\n",
+    "expectedOutput": "34\n"
+  },
+  {
+    "input": "3 16\n1:start:2\n0:start:3\n2:start:4\n2:end:8\n2:start:9\n2:start:10\n2:end:12\n2:end:16\n0:end:18\n2:start:19\n2:end:22\n0:start:23\n0:end:26\n2:start:27\n2:end:32\n1:end:35\n",
+    "expectedOutput": "7 4 23\n"
+  },
+  {
+    "input": "2 10\n1:start:1\n1:start:2\n0:start:3\n0:start:4\n0:end:7\n0:end:11\n1:start:12\n1:end:17\n1:end:22\n1:end:27\n",
+    "expectedOutput": "9 18\n"
+  },
+  {
+    "input": "2 16\n1:start:0\n1:start:1\n1:start:2\n1:start:3\n1:start:4\n1:start:5\n1:end:9\n1:start:10\n1:start:11\n1:end:14\n1:end:19\n1:end:23\n1:end:25\n1:end:28\n1:end:32\n1:end:34\n",
+    "expectedOutput": "0 35\n"
+  },
+  {
+    "input": "2 16\n0:start:2\n0:end:6\n0:start:7\n0:start:8\n0:end:10\n1:start:11\n0:start:12\n0:start:13\n1:start:14\n0:start:15\n0:end:17\n1:end:22\n0:end:25\n0:end:28\n1:end:30\n0:end:34\n",
+    "expectedOutput": "24 9\n"
+  },
+  {
+    "input": "5 16\n0:start:1\n1:start:2\n1:end:6\n1:start:7\n1:end:10\n0:start:11\n1:start:12\n2:start:13\n4:start:14\n3:start:15\n3:end:19\n4:end:22\n2:end:26\n1:end:31\n0:end:33\n0:end:35\n",
+    "expectedOutput": "6 15 5 5 4\n"
+  },
+  {
+    "input": "4 16\n0:start:1\n1:start:2\n1:end:6\n2:start:7\n3:start:8\n3:start:9\n1:start:10\n1:end:13\n0:start:14\n2:start:15\n2:end:19\n0:end:23\n3:end:25\n3:end:27\n2:end:30\n0:end:34\n",
+    "expectedOutput": "10 9 9 6\n"
+  },
+  {
+    "input": "3 16\n1:start:1\n0:start:2\n0:end:7\n2:start:8\n2:start:9\n1:start:10\n0:start:11\n1:start:12\n0:start:13\n0:end:15\n1:end:17\n0:end:19\n1:end:24\n2:end:26\n2:end:31\n1:end:34\n",
+    "expectedOutput": "12 13 9\n"
+  },
+  {
+    "input": "5 14\n2:start:2\n0:start:3\n0:start:4\n0:end:7\n1:start:8\n1:end:10\n1:start:11\n1:start:12\n1:start:13\n1:end:15\n1:end:17\n1:end:20\n0:end:24\n2:end:26\n",
+    "expectedOutput": "9 13 3 0 0\n"
+  },
+  {
+    "input": "5 16\n1:start:1\n4:start:2\n4:end:4\n0:start:5\n0:end:8\n1:end:12\n3:start:13\n4:start:14\n3:start:15\n0:start:16\n0:start:17\n0:end:19\n0:end:21\n3:end:26\n4:end:28\n3:end:30\n",
+    "expectedOutput": "10 5 0 9 6\n"
+  },
+  {
+    "input": "3 16\n2:start:2\n2:end:4\n1:start:5\n0:start:6\n0:end:11\n1:start:12\n1:start:13\n1:end:16\n0:start:17\n0:start:18\n2:start:19\n2:end:21\n0:end:24\n0:end:27\n1:end:30\n1:end:35\n",
+    "expectedOutput": "14 14 6\n"
+  },
+  {
+    "input": "4 16\n0:start:1\n1:start:2\n0:start:3\n2:start:4\n2:start:5\n0:start:6\n0:end:8\n2:end:10\n2:start:11\n2:end:13\n0:start:14\n0:end:18\n2:end:23\n0:end:25\n1:end:29\n0:end:32\n",
+    "expectedOutput": "15 5 12 0\n"
+  },
+  {
+    "input": "3 16\n2:start:0\n2:end:4\n2:start:5\n2:end:10\n0:start:11\n2:start:12\n1:start:13\n0:start:14\n0:end:19\n0:start:20\n0:end:22\n1:end:26\n2:end:30\n0:start:31\n0:end:36\n0:end:39\n",
+    "expectedOutput": "19 5 16\n"
+  },
+  {
+    "input": "1 16\n0:start:2\n0:end:4\n0:start:5\n0:start:6\n0:end:10\n0:end:15\n0:start:16\n0:start:17\n0:start:18\n0:start:19\n0:start:20\n0:end:23\n0:end:25\n0:end:29\n0:end:31\n0:end:33\n",
+    "expectedOutput": "32\n"
+  },
+  {
+    "input": "3 16\n0:start:1\n0:end:6\n0:start:7\n0:start:8\n0:end:10\n1:start:11\n2:start:12\n0:start:13\n1:start:14\n1:end:17\n1:start:18\n1:end:22\n0:end:24\n2:end:26\n1:end:30\n0:end:34\n",
+    "expectedOutput": "17 14 3\n"
+  },
+  {
+    "input": "3 16\n0:start:2\n2:start:3\n1:start:4\n0:start:5\n0:start:6\n1:start:7\n0:start:8\n1:start:9\n1:end:11\n0:end:15\n1:end:18\n0:end:20\n0:end:23\n1:end:25\n2:end:30\n0:end:34\n",
+    "expectedOutput": "17 10 6\n"
+  },
+  {
+    "input": "3 16\n0:start:2\n0:end:7\n1:start:8\n1:end:13\n1:start:14\n2:start:15\n0:start:16\n1:start:17\n1:end:20\n0:end:22\n0:start:23\n0:start:24\n0:end:26\n0:end:30\n2:end:35\n1:end:37\n",
+    "expectedOutput": "17 13 6\n"
+  },
+  {
+    "input": "3 16\n0:start:1\n1:start:2\n1:end:4\n0:start:5\n0:end:9\n0:end:13\n0:start:14\n2:start:15\n2:start:16\n2:end:19\n2:start:20\n2:start:21\n2:end:24\n2:end:28\n2:end:33\n0:end:36\n",
+    "expectedOutput": "14 3 19\n"
+  },
+  {
+    "input": "2 16\n1:start:1\n1:start:2\n1:end:7\n0:start:8\n0:end:13\n0:start:14\n0:start:15\n0:start:16\n0:start:17\n0:end:19\n0:end:24\n0:start:25\n0:end:29\n0:end:34\n0:end:36\n1:end:38\n",
+    "expectedOutput": "29 9\n"
+  },
+  {
+    "input": "3 16\n1:start:1\n1:start:2\n1:end:5\n2:start:6\n0:start:7\n0:end:11\n2:end:13\n0:start:14\n1:start:15\n0:start:16\n0:end:20\n1:end:22\n1:start:23\n1:end:27\n0:end:30\n1:end:34\n",
+    "expectedOutput": "14 17 3\n"
+  },
+  {
+    "input": "5 16\n0:start:0\n1:start:1\n4:start:2\n3:start:3\n3:start:4\n3:end:6\n3:end:8\n2:start:9\n4:start:10\n2:start:11\n2:end:14\n4:end:17\n2:end:20\n4:end:25\n1:end:28\n0:end:32\n",
+    "expectedOutput": "5 4 8 6 10\n"
+  },
+  {
+    "input": "1 8\n0:start:1\n0:start:2\n0:start:3\n0:start:4\n0:end:9\n0:end:14\n0:end:18\n0:end:23\n",
+    "expectedOutput": "23\n"
+  },
+  {
+    "input": "1 14\n0:start:0\n0:start:1\n0:end:5\n0:start:6\n0:end:10\n0:end:13\n0:start:14\n0:end:19\n0:start:20\n0:start:21\n0:start:22\n0:end:25\n0:end:27\n0:end:31\n",
+    "expectedOutput": "32\n"
+  },
+  {
+    "input": "2 16\n1:start:1\n1:end:3\n0:start:4\n1:start:5\n1:end:8\n0:start:9\n0:end:14\n1:start:15\n1:start:16\n1:end:18\n1:start:19\n1:start:20\n1:end:24\n1:end:27\n1:end:29\n0:end:32\n",
+    "expectedOutput": "10 22\n"
+  },
+  {
+    "input": "1 16\n0:start:2\n0:start:3\n0:start:4\n0:start:5\n0:end:7\n0:start:8\n0:end:13\n0:start:14\n0:end:19\n0:start:20\n0:start:21\n0:end:24\n0:end:28\n0:end:32\n0:end:34\n0:end:39\n",
+    "expectedOutput": "38\n"
+  },
+  {
+    "input": "4 16\n2:start:1\n2:end:4\n3:start:5\n3:start:6\n0:start:7\n0:start:8\n2:start:9\n1:start:10\n3:start:11\n3:end:15\n1:end:19\n2:end:22\n0:end:26\n0:end:30\n3:end:33\n3:end:36\n",
+    "expectedOutput": "10 5 8 13\n"
+  },
+  {
+    "input": "2 16\n1:start:2\n0:start:3\n0:start:4\n0:start:5\n1:start:6\n1:end:11\n0:end:14\n1:start:15\n1:end:18\n0:start:19\n0:start:20\n0:end:22\n0:end:26\n0:end:30\n0:end:35\n1:end:37\n",
+    "expectedOutput": "23 13\n"
+  },
+  {
+    "input": "2 16\n0:start:2\n0:end:7\n1:start:8\n1:start:9\n0:start:10\n1:start:11\n0:start:12\n0:end:15\n1:end:18\n0:start:19\n0:start:20\n0:end:23\n0:end:26\n0:end:30\n1:end:34\n1:end:36\n",
+    "expectedOutput": "23 12\n"
+  },
+  {
+    "input": "3 16\n1:start:1\n0:start:2\n1:start:3\n1:end:5\n1:start:6\n2:start:7\n2:end:10\n2:start:11\n1:start:12\n0:start:13\n0:end:17\n1:end:22\n2:end:26\n1:end:29\n0:end:31\n1:end:34\n",
+    "expectedOutput": "8 17 9\n"
+  },
+  {
+    "input": "2 8\n1:start:2\n0:start:3\n0:end:5\n1:end:8\n0:start:9\n0:start:10\n0:end:13\n0:end:17\n",
+    "expectedOutput": "12 4\n"
+  },
+  {
+    "input": "5 8\n3:start:2\n3:end:6\n0:start:7\n0:start:8\n0:start:9\n0:end:13\n0:end:15\n0:end:17\n",
+    "expectedOutput": "11 0 0 5 0\n"
+  },
+  {
+    "input": "2 6\n0:start:0\n0:end:5\n1:start:6\n1:start:7\n1:end:11\n1:end:15\n",
+    "expectedOutput": "6 10\n"
+  },
+  {
+    "input": "5 16\n3:start:1\n4:start:2\n3:start:3\n3:end:8\n4:end:13\n3:end:18\n4:start:19\n1:start:20\n1:end:24\n4:end:26\n1:start:27\n2:start:28\n2:end:32\n0:start:33\n0:end:38\n1:end:40\n",
+    "expectedOutput": "6 8 5 12 9\n"
+  },
+  {
+    "input": "5 4\n1:start:1\n1:end:6\n3:start:7\n3:end:10\n",
+    "expectedOutput": "0 6 0 4 0\n"
+  },
+  {
+    "input": "3 16\n2:start:2\n0:start:3\n0:start:4\n0:end:7\n0:end:12\n2:start:13\n2:end:15\n2:start:16\n0:start:17\n0:end:19\n1:start:20\n0:start:21\n0:end:23\n1:end:25\n2:end:27\n2:end:31\n",
+    "expectedOutput": "16 3 11\n"
+  },
+  {
+    "input": "2 6\n1:start:1\n1:end:6\n0:start:7\n0:end:12\n0:start:13\n0:end:18\n",
+    "expectedOutput": "12 6\n"
+  },
+  {
+    "input": "2 16\n1:start:0\n1:end:4\n1:start:5\n1:end:8\n0:start:9\n1:start:10\n0:start:11\n0:start:12\n0:end:16\n1:start:17\n1:end:20\n0:end:24\n1:end:27\n1:start:28\n1:end:32\n0:end:36\n",
+    "expectedOutput": "15 22\n"
+  },
+  {
+    "input": "3 10\n1:start:2\n1:end:6\n2:start:7\n2:start:8\n2:end:11\n2:end:13\n0:start:14\n0:end:17\n2:start:18\n2:end:20\n",
+    "expectedOutput": "4 5 10\n"
+  },
+  {
+    "input": "5 16\n1:start:2\n3:start:3\n3:start:4\n3:start:5\n2:start:6\n2:end:10\n0:start:11\n0:end:13\n3:end:16\n3:end:21\n4:start:22\n4:start:23\n4:end:27\n4:end:32\n3:end:37\n1:end:41\n",
+    "expectedOutput": "3 5 5 16 11\n"
+  },
+  {
+    "input": "1 16\n0:start:0\n0:start:1\n0:start:2\n0:end:6\n0:start:7\n0:start:8\n0:end:10\n0:end:15\n0:start:16\n0:end:19\n0:end:24\n0:end:29\n0:start:30\n0:start:31\n0:end:36\n0:end:38\n",
+    "expectedOutput": "39\n"
+  },
+  {
+    "input": "5 6\n2:start:0\n2:end:3\n3:start:4\n3:end:8\n3:start:9\n3:end:11\n",
+    "expectedOutput": "0 0 4 8 0\n"
+  },
+  {
+    "input": "3 16\n2:start:2\n2:end:7\n1:start:8\n2:start:9\n2:start:10\n2:end:15\n1:start:16\n2:start:17\n2:start:18\n0:start:19\n0:end:24\n2:end:26\n2:end:30\n1:end:35\n2:end:40\n1:end:42\n",
+    "expectedOutput": "6 9 26\n"
+  },
+  {
+    "input": "4 16\n3:start:1\n3:start:2\n1:start:3\n3:start:4\n2:start:5\n2:start:6\n1:start:7\n3:start:8\n3:end:13\n1:end:15\n2:end:19\n2:end:23\n3:end:28\n1:end:30\n3:end:33\n3:end:38\n",
+    "expectedOutput": "0 6 10 22\n"
+  },
+  {
+    "input": "1 16\n0:start:2\n0:start:3\n0:start:4\n0:end:6\n0:end:10\n0:start:11\n0:start:12\n0:end:14\n0:end:17\n0:start:18\n0:start:19\n0:start:20\n0:end:25\n0:end:30\n0:end:35\n0:end:37\n",
+    "expectedOutput": "36\n"
+  },
+  {
+    "input": "1 16\n0:start:0\n0:end:2\n0:start:3\n0:start:4\n0:start:5\n0:start:6\n0:start:7\n0:end:9\n0:start:10\n0:start:11\n0:end:13\n0:end:15\n0:end:20\n0:end:24\n0:end:28\n0:end:30\n",
+    "expectedOutput": "31\n"
+  },
+  {
+    "input": "4 10\n3:start:0\n3:end:5\n1:start:6\n0:start:7\n1:start:8\n1:end:11\n0:start:12\n0:end:16\n0:end:19\n1:end:21\n",
+    "expectedOutput": "9 7 0 6\n"
+  },
+  {
+    "input": "4 16\n0:start:0\n0:end:2\n0:start:3\n1:start:4\n1:end:7\n1:start:8\n1:start:9\n1:end:13\n0:start:14\n1:start:15\n1:end:19\n0:start:20\n0:end:22\n0:end:25\n1:end:29\n0:end:34\n",
+    "expectedOutput": "16 19 0 0\n"
+  },
+  {
+    "input": "4 16\n3:start:1\n3:start:2\n1:start:3\n0:start:4\n3:start:5\n2:start:6\n1:start:7\n2:start:8\n2:end:11\n1:end:14\n2:end:19\n3:end:21\n0:end:26\n1:end:31\n3:end:34\n3:end:38\n",
+    "expectedOutput": "6 10 10 12\n"
+  },
+  {
+    "input": "3 16\n0:start:1\n0:start:2\n1:start:3\n0:start:4\n0:end:7\n1:end:9\n2:start:10\n2:start:11\n1:start:12\n1:end:15\n2:end:20\n2:end:25\n0:end:27\n0:end:30\n0:start:31\n0:end:35\n",
+    "expectedOutput": "16 7 12\n"
+  },
+  {
+    "input": "3 16\n0:start:0\n0:end:2\n2:start:3\n2:start:4\n2:end:7\n2:end:11\n0:start:12\n2:start:13\n0:start:14\n0:start:15\n0:start:16\n0:end:20\n0:end:23\n0:end:28\n2:end:32\n0:end:36\n",
+    "expectedOutput": "23 0 14\n"
+  },
+  {
+    "input": "2 16\n0:start:1\n0:end:3\n1:start:4\n0:start:5\n1:start:6\n1:end:11\n0:start:12\n0:start:13\n1:start:14\n1:end:18\n0:start:19\n0:end:22\n0:end:25\n0:end:27\n0:end:30\n1:end:35\n",
+    "expectedOutput": "18 17\n"
+  },
+  {
+    "input": "1 16\n0:start:0\n0:start:1\n0:end:5\n0:start:6\n0:start:7\n0:start:8\n0:end:12\n0:start:13\n0:end:16\n0:start:17\n0:start:18\n0:end:22\n0:end:25\n0:end:29\n0:end:32\n0:end:37\n",
+    "expectedOutput": "38\n"
+  },
+  {
+    "input": "3 16\n1:start:1\n1:end:3\n1:start:4\n1:start:5\n0:start:6\n0:end:10\n1:end:14\n1:start:15\n0:start:16\n0:end:20\n1:end:22\n0:start:23\n0:end:26\n1:end:28\n0:start:29\n0:end:31\n",
+    "expectedOutput": "17 14 0\n"
+  },
+  {
+    "input": "5 16\n0:start:2\n3:start:3\n3:end:5\n0:end:10\n0:start:11\n4:start:12\n4:start:13\n1:start:14\n0:start:15\n3:start:16\n3:end:18\n0:end:23\n1:end:26\n4:end:28\n4:end:31\n0:end:35\n",
+    "expectedOutput": "17 4 0 6 7\n"
+  },
+  {
+    "input": "4 16\n1:start:0\n1:end:3\n1:start:4\n1:start:5\n1:end:9\n2:start:10\n2:end:13\n2:start:14\n1:start:15\n1:start:16\n0:start:17\n0:end:22\n1:end:27\n1:end:30\n2:end:32\n1:end:37\n",
+    "expectedOutput": "6 25 7 0\n"
+  },
+  {
+    "input": "3 16\n2:start:0\n2:end:5\n1:start:6\n1:end:9\n1:start:10\n1:end:15\n2:start:16\n2:start:17\n0:start:18\n2:start:19\n0:start:20\n0:end:23\n2:end:28\n0:end:33\n2:end:35\n2:end:40\n",
+    "expectedOutput": "10 10 21\n"
+  },
+  {
+    "input": "5 8\n3:start:2\n2:start:3\n2:end:6\n3:end:9\n1:start:10\n1:end:13\n1:start:14\n1:end:19\n",
+    "expectedOutput": "0 10 4 4 0\n"
+  },
+  {
+    "input": "5 14\n3:start:0\n3:end:3\n0:start:4\n0:start:5\n1:start:6\n1:end:11\n4:start:12\n4:end:15\n4:start:16\n4:end:18\n0:end:23\n0:end:26\n3:start:27\n3:end:30\n",
+    "expectedOutput": "10 6 0 8 7\n"
+  },
+  {
+    "input": "1 12\n0:start:1\n0:end:3\n0:start:4\n0:start:5\n0:start:6\n0:end:9\n0:end:12\n0:start:13\n0:start:14\n0:end:18\n0:end:22\n0:end:26\n",
+    "expectedOutput": "26\n"
+  },
+  {
+    "input": "3 16\n2:start:0\n0:start:1\n0:end:3\n2:end:5\n2:start:6\n0:start:7\n0:end:9\n1:start:10\n0:start:11\n0:start:12\n2:start:13\n2:end:16\n0:end:19\n0:end:23\n1:end:28\n2:end:30\n",
+    "expectedOutput": "15 6 10\n"
+  },
+  {
+    "input": "2 8\n1:start:1\n1:end:6\n0:start:7\n0:end:9\n0:start:10\n0:end:14\n0:start:15\n0:end:20\n",
+    "expectedOutput": "14 6\n"
+  },
+  {
+    "input": "2 16\n1:start:0\n0:start:1\n0:start:2\n1:start:3\n1:start:4\n1:start:5\n0:start:6\n1:start:7\n1:end:9\n0:end:12\n1:end:16\n1:end:20\n1:end:23\n0:end:28\n0:end:30\n1:end:34\n",
+    "expectedOutput": "13 22\n"
+  },
+  {
+    "input": "3 6\n1:start:0\n1:end:3\n1:start:4\n1:end:7\n1:start:8\n1:end:11\n",
+    "expectedOutput": "0 12 0\n"
+  },
+  {
+    "input": "2 16\n0:start:2\n0:end:4\n1:start:5\n0:start:6\n1:start:7\n1:end:9\n1:start:10\n1:start:11\n1:start:12\n0:start:13\n0:end:16\n1:end:19\n1:end:21\n1:end:24\n0:end:28\n1:end:32\n",
+    "expectedOutput": "12 19\n"
+  },
+  {
+    "input": "2 16\n1:start:1\n0:start:2\n0:start:3\n1:start:4\n1:end:7\n0:start:8\n0:end:12\n1:start:13\n0:start:14\n0:start:15\n0:end:18\n0:end:20\n1:end:22\n0:end:26\n0:end:28\n1:end:30\n",
+    "expectedOutput": "20 10\n"
+  },
+  {
+    "input": "4 4\n1:start:1\n1:end:3\n0:start:4\n0:end:8\n",
+    "expectedOutput": "5 3 0 0\n"
+  },
+  {
+    "input": "5 10\n0:start:1\n4:start:2\n4:start:3\n4:start:4\n4:end:7\n4:end:9\n3:start:10\n3:end:14\n4:end:18\n0:end:21\n",
+    "expectedOutput": "4 0 0 5 12\n"
+  },
+  {
+    "input": "3 6\n0:start:1\n2:start:2\n2:end:4\n0:start:5\n0:end:10\n0:end:13\n",
+    "expectedOutput": "10 0 3\n"
+  },
+  {
+    "input": "5 16\n1:start:2\n2:start:3\n2:end:6\n1:start:7\n2:start:8\n2:start:9\n3:start:10\n3:end:14\n2:end:17\n2:end:22\n2:start:23\n2:end:27\n1:start:28\n1:end:33\n1:end:38\n1:end:40\n",
+    "expectedOutput": "0 15 19 5 0\n"
+  },
+  {
+    "input": "1 16\n0:start:2\n0:start:3\n0:start:4\n0:end:6\n0:start:7\n0:start:8\n0:start:9\n0:end:14\n0:end:18\n0:start:19\n0:start:20\n0:end:23\n0:end:26\n0:end:31\n0:end:36\n0:end:40\n",
+    "expectedOutput": "39\n"
+  },
+  {
+    "input": "4 14\n3:start:1\n0:start:2\n0:end:6\n3:end:9\n2:start:10\n2:end:13\n2:start:14\n1:start:15\n1:end:18\n2:start:19\n2:end:21\n1:start:22\n1:end:26\n2:end:29\n",
+    "expectedOutput": "5 9 11 4\n"
+  },
+  {
+    "input": "5 16\n0:start:1\n4:start:2\n0:start:3\n1:start:4\n1:end:6\n0:end:10\n0:start:11\n0:start:12\n3:start:13\n3:end:15\n3:start:16\n3:end:18\n0:end:21\n0:end:26\n4:end:30\n0:end:33\n",
+    "expectedOutput": "19 3 0 6 5\n"
+  },
+  {
+    "input": "2 10\n1:start:1\n0:start:2\n0:end:6\n1:end:8\n1:start:9\n1:end:12\n0:start:13\n0:end:16\n0:start:17\n0:end:19\n",
+    "expectedOutput": "12 7\n"
+  },
+  {
+    "input": "5 10\n0:start:0\n0:end:4\n3:start:5\n3:end:10\n4:start:11\n3:start:12\n3:end:17\n0:start:18\n0:end:21\n4:end:24\n",
+    "expectedOutput": "9 0 0 12 4\n"
+  },
+  {
+    "input": "2 16\n0:start:0\n0:start:1\n0:end:6\n0:end:8\n0:start:9\n0:start:10\n0:start:11\n0:start:12\n1:start:13\n1:end:18\n0:end:23\n1:start:24\n1:end:26\n0:end:30\n0:end:33\n0:end:36\n",
+    "expectedOutput": "28 9\n"
+  },
+  {
+    "input": "5 16\n1:start:0\n1:end:5\n3:start:6\n3:end:11\n0:start:12\n3:start:13\n2:start:14\n3:start:15\n1:start:16\n1:end:21\n0:start:22\n0:end:27\n3:end:31\n2:end:36\n3:end:41\n0:end:45\n",
+    "expectedOutput": "11 12 6 17 0\n"
+  },
+  {
+    "input": "2 16\n0:start:1\n0:end:4\n1:start:5\n1:start:6\n0:start:7\n1:start:8\n0:start:9\n1:start:10\n1:start:11\n1:end:15\n1:end:19\n0:end:21\n1:end:23\n0:end:25\n1:end:27\n1:end:29\n",
+    "expectedOutput": "10 19\n"
+  },
+  {
+    "input": "4 16\n2:start:2\n2:end:4\n0:start:5\n1:start:6\n1:end:8\n0:start:9\n1:start:10\n1:start:11\n1:end:15\n0:start:16\n0:end:20\n0:start:21\n0:end:26\n1:end:31\n0:end:35\n0:end:40\n",
+    "expectedOutput": "22 14 3 0\n"
+  },
+  {
+    "input": "3 16\n1:start:1\n0:start:2\n0:end:5\n0:start:6\n0:end:11\n2:start:12\n2:end:17\n1:start:18\n0:start:19\n1:start:20\n1:end:25\n2:start:26\n2:end:30\n0:end:32\n1:end:36\n1:end:41\n",
+    "expectedOutput": "13 17 11\n"
+  },
+  {
+    "input": "2 16\n0:start:2\n0:end:6\n0:start:7\n0:end:10\n1:start:11\n1:start:12\n1:end:14\n0:start:15\n0:start:16\n0:end:18\n0:start:19\n0:start:20\n0:end:25\n0:end:29\n0:end:31\n1:end:35\n",
+    "expectedOutput": "26 8\n"
+  },
+  {
+    "input": "3 4\n2:start:2\n1:start:3\n1:end:5\n2:end:9\n",
+    "expectedOutput": "0 3 5\n"
+  },
+  {
+    "input": "3 8\n2:start:0\n0:start:1\n0:end:6\n2:start:7\n2:end:11\n0:start:12\n0:end:14\n2:end:18\n",
+    "expectedOutput": "9 0 10\n"
+  },
+  {
+    "input": "2 4\n1:start:1\n1:end:6\n1:start:7\n1:end:10\n",
+    "expectedOutput": "0 10\n"
+  },
+  {
+    "input": "4 16\n3:start:0\n3:end:4\n2:start:5\n2:end:10\n3:start:11\n3:start:12\n0:start:13\n3:start:14\n3:end:17\n0:end:22\n1:start:23\n0:start:24\n0:end:27\n1:end:31\n3:end:36\n3:end:38\n",
+    "expectedOutput": "10 5 6 18\n"
+  },
+  {
+    "input": "3 16\n2:start:0\n2:end:5\n2:start:6\n2:end:11\n1:start:12\n1:end:15\n0:start:16\n0:start:17\n1:start:18\n0:start:19\n0:end:21\n1:start:22\n1:end:26\n1:end:31\n0:end:34\n0:end:37\n",
+    "expectedOutput": "11 15 12\n"
+  },
+  {
+    "input": "2 16\n1:start:0\n1:start:1\n1:start:2\n1:start:3\n1:start:4\n1:end:7\n1:end:9\n1:start:10\n1:end:15\n0:start:16\n1:start:17\n1:end:19\n0:end:23\n1:end:26\n1:end:29\n1:end:34\n",
+    "expectedOutput": "5 30\n"
+  },
+  {
+    "input": "2 16\n1:start:1\n1:end:4\n1:start:5\n1:end:9\n0:start:10\n0:end:14\n1:start:15\n1:start:16\n1:start:17\n1:start:18\n1:start:19\n1:end:23\n1:end:25\n1:end:27\n1:end:31\n1:end:34\n",
+    "expectedOutput": "5 29\n"
+  },
+  {
+    "input": "2 16\n0:start:1\n0:end:5\n1:start:6\n0:start:7\n0:start:8\n1:start:9\n0:start:10\n0:start:11\n1:start:12\n1:end:17\n0:end:19\n0:end:24\n1:end:26\n0:end:30\n0:end:35\n1:end:39\n",
+    "expectedOutput": "25 14\n"
+  },
+  {
+    "input": "2 16\n1:start:0\n1:end:2\n1:start:3\n0:start:4\n1:start:5\n1:end:10\n0:start:11\n0:start:12\n0:end:15\n0:start:16\n1:start:17\n1:end:21\n0:end:26\n0:end:31\n0:end:35\n1:end:38\n",
+    "expectedOutput": "21 18\n"
+  },
+  {
+    "input": "2 16\n0:start:1\n1:start:2\n1:start:3\n1:start:4\n1:start:5\n1:start:6\n1:start:7\n0:start:8\n0:end:11\n1:end:13\n1:end:17\n1:end:19\n1:end:22\n1:end:27\n1:end:32\n0:end:36\n",
+    "expectedOutput": "9 27\n"
+  },
+  {
+    "input": "5 4\n3:start:0\n4:start:1\n4:end:6\n3:end:9\n",
+    "expectedOutput": "0 0 0 4 6\n"
+  },
+  {
+    "input": "1 16\n0:start:1\n0:start:2\n0:start:3\n0:end:5\n0:end:8\n0:end:12\n0:start:13\n0:start:14\n0:start:15\n0:start:16\n0:start:17\n0:end:22\n0:end:24\n0:end:27\n0:end:29\n0:end:32\n",
+    "expectedOutput": "32\n"
+  },
+  {
+    "input": "5 16\n2:start:1\n4:start:2\n2:start:3\n3:start:4\n0:start:5\n1:start:6\n4:start:7\n3:start:8\n3:end:11\n4:end:15\n1:end:19\n0:end:24\n3:end:27\n2:end:32\n4:end:34\n2:end:38\n",
+    "expectedOutput": "6 5 11 8 8\n"
+  },
+  {
+    "input": "5 16\n3:start:1\n1:start:2\n1:end:4\n3:end:7\n0:start:8\n0:start:9\n0:end:14\n4:start:15\n2:start:16\n2:end:19\n0:start:20\n0:start:21\n0:end:24\n0:end:28\n4:end:31\n0:end:33\n",
+    "expectedOutput": "18 3 4 4 4\n"
+  },
+  {
+    "input": "4 16\n3:start:2\n3:end:6\n1:start:7\n1:end:10\n1:start:11\n2:start:12\n1:start:13\n1:end:18\n1:start:19\n1:start:20\n0:start:21\n0:end:26\n1:end:31\n1:end:35\n2:end:37\n1:end:40\n",
+    "expectedOutput": "6 25 3 5\n"
+  },
+  {
+    "input": "2 16\n1:start:1\n1:start:2\n0:start:3\n0:end:8\n0:start:9\n1:start:10\n1:end:14\n0:start:15\n0:end:19\n1:start:20\n0:start:21\n0:end:23\n1:end:25\n0:end:29\n1:end:33\n1:end:37\n",
+    "expectedOutput": "19 18\n"
+  },
+  {
+    "input": "1 16\n0:start:0\n0:start:1\n0:end:3\n0:start:4\n0:start:5\n0:end:8\n0:start:9\n0:start:10\n0:start:11\n0:end:15\n0:start:16\n0:end:21\n0:end:25\n0:end:29\n0:end:31\n0:end:34\n",
+    "expectedOutput": "35\n"
+  },
+  {
+    "input": "3 16\n2:start:2\n2:end:6\n1:start:7\n1:end:12\n2:start:13\n2:end:17\n2:start:18\n0:start:19\n1:start:20\n1:start:21\n0:start:22\n0:end:24\n1:end:26\n1:end:28\n0:end:31\n2:end:34\n",
+    "expectedOutput": "7 12 14\n"
+  },
+  {
+    "input": "4 6\n1:start:1\n3:start:2\n3:start:3\n3:end:5\n3:end:9\n1:end:14\n",
+    "expectedOutput": "0 6 0 8\n"
+  },
+  {
+    "input": "1 16\n0:start:0\n0:end:3\n0:start:4\n0:start:5\n0:start:6\n0:end:9\n0:start:10\n0:end:13\n0:start:14\n0:start:15\n0:start:16\n0:end:20\n0:end:24\n0:end:26\n0:end:28\n0:end:31\n",
+    "expectedOutput": "32\n"
+  },
+  {
+    "input": "5 4\n3:start:2\n3:end:5\n2:start:6\n2:end:10\n",
+    "expectedOutput": "0 0 5 4 0\n"
+  },
+  {
+    "input": "5 16\n0:start:0\n4:start:1\n4:end:3\n0:end:7\n3:start:8\n3:start:9\n4:start:10\n2:start:11\n2:end:16\n0:start:17\n0:end:22\n4:end:26\n2:start:27\n2:end:29\n3:end:33\n3:end:37\n",
+    "expectedOutput": "11 0 9 10 8\n"
+  },
+  {
+    "input": "1 10\n0:start:0\n0:start:1\n0:end:6\n0:start:7\n0:end:10\n0:start:11\n0:end:13\n0:start:14\n0:end:18\n0:end:23\n",
+    "expectedOutput": "24\n"
+  },
+  {
+    "input": "5 16\n2:start:1\n2:end:4\n4:start:5\n1:start:6\n1:end:8\n4:end:10\n1:start:11\n0:start:12\n4:start:13\n4:end:18\n1:start:19\n1:start:20\n1:end:23\n1:end:26\n0:end:31\n1:end:36\n",
+    "expectedOutput": "6 17 4 0 9\n"
+  },
+  {
+    "input": "1 8\n0:start:0\n0:start:1\n0:end:3\n0:end:6\n0:start:7\n0:end:12\n0:start:13\n0:end:16\n",
+    "expectedOutput": "17\n"
+  },
+  {
+    "input": "5 16\n4:start:1\n1:start:2\n3:start:3\n0:start:4\n3:start:5\n3:start:6\n0:start:7\n0:start:8\n0:end:12\n0:end:15\n3:end:17\n3:end:21\n0:end:26\n3:end:30\n1:end:35\n4:end:39\n",
+    "expectedOutput": "15 6 0 13 5\n"
+  },
+  {
+    "input": "3 16\n2:start:1\n2:end:4\n1:start:5\n1:end:9\n0:start:10\n0:end:14\n1:start:15\n1:end:19\n2:start:20\n1:start:21\n0:start:22\n1:start:23\n1:end:28\n0:end:31\n1:end:36\n2:end:39\n",
+    "expectedOutput": "9 22 8\n"
+  }
+]

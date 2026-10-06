@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略距离为2的冲突",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));k,n=d[:2];g=[[] for _ in range(n)]\n for a,b in zip(d[2::2],d[3::2]):g[a-1].append(b-1);g[b-1].append(a-1)\n ans=k\n for v in g:ans=ans*max(0,k-1)%1000000007\n return str(ans)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "所有城市都使用相同类型",
+    "code": "import sys\ndef solve(raw): return str(int(raw.split()[0])%1000000007)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

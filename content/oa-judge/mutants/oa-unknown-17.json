@@ -1,0 +1,10 @@
+[
+  {
+    "name": "改为选最高比例字符串",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];p=[max(Counter(s).values())/len(s) for s in a];b=max(p);idx=[i for i,x in enumerate(p) if x==b];o=set(c for i,s in enumerate(a) if i not in idx for c in s);return ''.join(c for i in idx for c in a[i] if c not in o)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "保留未选字符串也含有的字符",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];p=[max(Counter(s).values())/len(s) for s in a];b=min(p);idx=[i for i,x in enumerate(p) if x==b];return ''.join(c for i in idx for c in a[i])\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

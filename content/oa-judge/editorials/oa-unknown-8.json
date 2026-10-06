@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-8",
+  "title": "Process Messages",
+  "explanation": "按照 `(priority, timestamp, originalIndex)` 升序排序。时间戳先转整数比较，因此前导零只影响回显，不影响先后；完全相同键保持输入顺序。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines();n=int(lines[0]);a=lines[1:1+n]\n a.sort(key=lambda s:(int(s.split(':')[1]),int(s.split(':')[0])))\n return '\\n'.join(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#8-process-messages-frontend-focused-full-stack-eng-",
+  "sourceContentHash": "8537513459118ef5e427da6317d39987441dc94242e85bafab70232298328823",
+  "author": "CSWork"
+}

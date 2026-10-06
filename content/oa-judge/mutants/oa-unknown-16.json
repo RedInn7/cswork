@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略重复字符",
+    "code": "import sys\ndef solve(raw):\n a,b=raw.splitlines()[:2];u=set(a)|set(b);return str(len(set(a)&set(b))/len(u))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "误用较短长度比",
+    "code": "import sys\ndef solve(raw):\n a,b=raw.splitlines()[:2];return str(min(len(a),len(b))/max(len(a),len(b)))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-17",
+  "title": "Most Unique Elements",
+  "explanation": "对每个字符串计算 max(freq)/length，找最小比例并保留所有并列项。把未选字符串的字符合并成集合，再按选中字符串原顺序输出不在该集合中的字符，重复出现仍保留。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n lines=raw.splitlines();n=int(lines[0]);a=lines[1:1+n]\n p=[max(Counter(s).values())/len(s) for s in a];best=min(p);chosen=[i for i,x in enumerate(p) if x==best]\n other=set(c for i,s in enumerate(a) if i not in chosen for c in s)\n return ''.join(c for i in chosen for c in a[i] if c not in other)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#17-most-unique-elements-part-1-",
+  "sourceContentHash": "9ad04e604a4744fce6fd114fdc4b446e5cd51d6fc91740ec88857bb7d3f52eec",
+  "author": "CSWork"
+}

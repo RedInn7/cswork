@@ -1,0 +1,10 @@
+[
+  {
+    "name": "父函数错误计入子函数时长",
+    "code": "import sys\ndef solve(raw):\n l=raw.splitlines();n,m=map(int,l[0].split());ans=[0]*n;st=[];p=0\n for x in l[1:]:\n  i,k,t=x.split(':');i=int(i);t=int(t)\n  if k=='start':st.append((i,t))\n  else:\n   j,s=st.pop();ans[j]+=t-s+1\n   if st:st[-1]=(st[-1][0],t+1)\n return ' '.join(map(str,ans))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "结束事件未按闭区间计时",
+    "code": "import sys\ndef solve(raw):\n l=raw.splitlines();n,m=map(int,l[0].split());ans=[0]*n;st=[];p=0\n for x in l[1:]:\n  i,k,t=x.split(':');i=int(i);t=int(t)\n  if st:ans[st[-1]]+=t-p\n  if k=='start':st.append(i);p=t\n  else:st.pop();p=t\n return ' '.join(map(str,ans))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

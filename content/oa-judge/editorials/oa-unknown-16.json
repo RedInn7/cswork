@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-16",
+  "title": "Multiset Jaccard Similarity",
+  "explanation": "统计两串各字符频次。交集大小为频次逐字符取 min 后求和，并集大小为取 max 后求和，答案为两者之比。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n a,b=raw.splitlines()[:2];ca={};cb={}\n for c in a:ca[c]=ca.get(c,0)+1\n for c in b:cb[c]=cb.get(c,0)+1\n keys=ca.keys()|cb.keys();u=sum(max(ca.get(c,0),cb.get(c,0)) for c in keys)\n i=sum(min(ca.get(c,0),cb.get(c,0)) for c in keys)\n return f'{i/u:.12f}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#16-most-unknown-elements-part-3-",
+  "sourceContentHash": "d22ead1480c069baa0b8935e5047b1b6711244f374f22e3314fcd1405fb0c9e4",
+  "author": "CSWork"
+}

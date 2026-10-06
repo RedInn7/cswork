@@ -1,0 +1,10 @@
+[
+  {
+    "name": "优先级顺序颠倒",
+    "code": "import sys\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];a.sort(key=lambda s:(-int(s.split(':')[1]),int(s.split(':')[0])));return '\\n'.join(a)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按时间而非优先级排序",
+    "code": "import sys\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];a.sort(key=lambda s:(int(s.split(':')[0]),int(s.split(':')[1])));return '\\n'.join(a)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]
