@@ -9,7 +9,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=raw.split();it=iter(t);r,c=int(next(it)),int(next(it));a=[[int(next(it)) for _ in range(c)] for _ in range(r)];q=int(next(it))\n for _ in range(q):\n  op=next(it)\n  if op=='swapRows':\n   x,y=int(next(it)),int(next(it));a[x],a[y]=a[y],a[x]\n  elif op=='swapColumns':\n   x,y=int(next(it)),int(next(it))\n   for row in a:row[x],row[y]=row[y],row[x]\n  elif op=='reverseRow':a[int(next(it))].reverse()\n  elif op=='reverseColumn':\n   x=int(next(it))\n   for i in range(len(a)//2):a[i][x],a[-i-1][x]=a[-i-1][x],a[i][x]\n  else:a=[list(row) for row in zip(*a[::-1])]\n return '\\n'.join(' '.join(map(str,row)) for row in a)\n"
+          "code": "import sys\ndef solve(raw):\n t=raw.split();it=iter(t);r,c=int(next(it)),int(next(it));a=[[int(next(it)) for _ in range(c)] for _ in range(r)];q=int(next(it))\n for _ in range(q):\n  op=next(it)\n  if op=='swapRows':\n   x,y=int(next(it)),int(next(it));a[x],a[y]=a[y],a[x]\n  elif op=='swapColumns':\n   x,y=int(next(it)),int(next(it))\n   for row in a:row[x],row[y]=row[y],row[x]\n  elif op=='reverseRow':a[int(next(it))].reverse()\n  elif op=='reverseColumn':\n   x=int(next(it))\n   for i in range(len(a)//2):a[i][x],a[-i-1][x]=a[-i-1][x],a[i][x]\n  else:a=[list(row) for row in zip(*a[::-1])]\n return '\\n'.join(' '.join(map(str,row)) for row in a)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -21,7 +21,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n\n for _ in range(q):\n  typ,x=t[i:i+2];i+=2\n  if typ==0:\n   s=next((s for s in range(0,n,8) if s+x<=n and all(v==0 for v in mem[s:s+x])),-1)\n   if s<0:out.append(-1)\n   else:\n    for j in range(s,s+x):mem[j]=1;ids[j]=nextid\n    out.append(s);nextid+=1\n  else:\n   freed=0\n   for j in range(n):\n    if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1\n   out.append(freed if freed else -1)\n return ' '.join(map(str,out))\n"
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n\n for _ in range(q):\n  typ,x=t[i:i+2];i+=2\n  if typ==0:\n   s=next((s for s in range(0,n,8) if s+x<=n and all(v==0 for v in mem[s:s+x])),-1)\n   if s<0:out.append(-1)\n   else:\n    for j in range(s,s+x):mem[j]=1;ids[j]=nextid\n    out.append(s);nextid+=1\n  else:\n   freed=0\n   for j in range(n):\n    if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1\n   out.append(freed if freed else -1)\n return ' '.join(map(str,out))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -33,7 +33,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]\n for _ in range(n):segments.append((t[i],t[i+1]));i+=2\n data=t[i:i+m];seen=set();done=[False]*n;count=0;out=[]\n for byte in data:\n  seen.add(byte)\n  for j,(start,length) in enumerate(segments):\n   if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1\n  out.append(str(count))\n return ' '.join(out)\n"
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]\n for _ in range(n):segments.append((t[i],t[i+1]));i+=2\n data=t[i:i+m];seen=set();done=[False]*n;count=0;out=[]\n for byte in data:\n  seen.add(byte)\n  for j,(start,length) in enumerate(segments):\n   if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1\n  out.append(str(count))\n return ' '.join(out)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -45,7 +45,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()\n for _ in range(b):obs.add((t[i],t[i+1]));i+=2\n k=t[i];i+=1;tele={}\n for _ in range(k):tele[(t[i],t[i+1])]=(t[i+2],t[i+3]);i+=4\n p=(0,0);steps=1;seen=set()\n while True:\n  if p in seen:return '-2'\n  seen.add(p)\n  if p in tele:p=tele[p];steps+=1;continue\n  if p==(n-1,m-1):return str(steps)\n  r,c=p;right=(r,c+1);down=(r+1,c)\n  if c+1<m and right not in obs:p=right\n  elif r+1<n and down not in obs:p=down\n  else:return '-1'\n  steps+=1\n"
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()\n for _ in range(b):obs.add((t[i],t[i+1]));i+=2\n k=t[i];i+=1;tele={}\n for _ in range(k):tele[(t[i],t[i+1])]=(t[i+2],t[i+3]);i+=4\n p=(0,0);steps=1;seen=set()\n while True:\n  if p in seen:return '-2'\n  seen.add(p)\n  if p in tele:p=tele[p];steps+=1;continue\n  if p==(n-1,m-1):return str(steps)\n  r,c=p;right=(r,c+1);down=(r+1,c)\n  if c+1<m and right not in obs:p=right\n  elif r+1<n and down not in obs:p=down\n  else:return '-1'\n  steps+=1\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -57,7 +57,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=raw.split();n,m=int(t[0]),int(t[1]);ans=[0]*n;st=[];prev=0\n for log in t[2:2+m]:\n  fid,kind,ts=log.split(':');fid=int(fid);ts=int(ts)\n  if kind=='start':\n   if st:ans[st[-1]]+=ts-prev\n   st.append(fid);prev=ts\n  else:ans[st.pop()]+=ts-prev+1;prev=ts+1\n return ' '.join(map(str,ans))\n"
+          "code": "import sys\ndef solve(raw):\n t=raw.split();n,m=int(t[0]),int(t[1]);ans=[0]*n;st=[];prev=0\n for log in t[2:2+m]:\n  fid,kind,ts=log.split(':');fid=int(fid);ts=int(ts)\n  if kind=='start':\n   if st:ans[st[-1]]+=ts-prev\n   st.append(fid);prev=ts\n  else:ans[st.pop()]+=ts-prev+1;prev=ts+1\n return ' '.join(map(str,ans))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -69,7 +69,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=raw.split();q=int(t[0]);out=[]\n for s in t[1:1+q]:\n  e=[c for c in s if int(c)%2==0];o=[c for c in s if int(c)%2==1];i=j=0;ans=[]\n  while i<len(e) and j<len(o):\n   if e[i]<o[j]:ans.append(e[i]);i+=1\n   else:ans.append(o[j]);j+=1\n  ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))\n return '\\n'.join(out)\n"
+          "code": "import sys\ndef solve(raw):\n t=raw.split();q=int(t[0]);out=[]\n for s in t[1:1+q]:\n  e=[c for c in s if int(c)%2==0];o=[c for c in s if int(c)%2==1];i=j=0;ans=[]\n  while i<len(e) and j<len(o):\n   if e[i]<o[j]:ans.append(e[i]);i+=1\n   else:ans.append(o[j]);j+=1\n  ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))\n return '\\n'.join(out)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -81,7 +81,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,d=t[:2];a=t[2:2+n];ans=0\n for i in range(n-2):\n  freq={}\n  for k in range(i+1,n):\n   r=a[k]%d;freq[r]=freq.get(r,0)+1\n  for j in range(i+1,n-1):\n   r=a[j]%d;freq[r]-=1;ans+=freq.get((-a[i]-a[j])%d,0)\n return str(ans)\n"
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,d=t[:2];a=t[2:2+n];ans=0\n for i in range(n-2):\n  freq={}\n  for k in range(i+1,n):\n   r=a[k]%d;freq[r]=freq.get(r,0)+1\n  for j in range(i+1,n-1):\n   r=a[j]%d;freq[r]-=1;ans+=freq.get((-a[i]-a[j])%d,0)\n return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     }
