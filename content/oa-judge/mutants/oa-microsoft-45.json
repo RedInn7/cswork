@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误用严格递增子序列，重复字母不能同时保留",
+    "code": "import sys\n\ndef minimum_deletions_to_sorted(s):\n    tails = []\n    for char in s:\n        lo, hi = 0, len(tails)\n        # upper_bound: equal letters may remain together in a nondecreasing subsequence.\n        while lo < hi:\n            mid = (lo + hi) // 2\n            if tails[mid] < char:\n                lo = mid + 1\n            else:\n                hi = mid\n        if lo == len(tails):\n            tails.append(char)\n        else:\n            tails[lo] = char\n    return len(s) - len(tails)\n\ndef solve(raw):\n    s = raw.strip()\n    if not s or any(not ('a' <= char <= 'z') for char in s):\n        raise ValueError(\"expected one nonempty lowercase English word\")\n    return str(minimum_deletions_to_sorted(s))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode(\"ascii\")))\n"
+  },
+  {
+    "name": "只保留最长非降前缀，而非任意子序列",
+    "code": "import sys\n\ndef minimum_deletions_to_sorted(s):\n    tails = []\n    for char in s:\n        lo, hi = 0, len(tails)\n        # upper_bound: equal letters may remain together in a nondecreasing subsequence.\n        while lo < hi:\n            mid = (lo + hi) // 2\n            if tails[mid] <= char:\n                lo = mid + 1\n            else:\n                hi = mid\n        if lo == len(tails):\n            tails.append(char)\n        else:\n            tails[lo] = char\n    prefix = 1\n    while prefix < len(s) and s[prefix - 1] <= s[prefix]:\n        prefix += 1\n    return len(s) - prefix\n\ndef solve(raw):\n    s = raw.strip()\n    if not s or any(not ('a' <= char <= 'z') for char in s):\n        raise ValueError(\"expected one nonempty lowercase English word\")\n    return str(minimum_deletions_to_sorted(s))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode(\"ascii\")))\n"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-microsoft-45",
+      "sourceContentHash": "b77cd909f252ed72fa26fff8c31d8cc2c84a1f608537d02d08321f8b68698e20",
+      "packageChecksum": "a4be223ead1fb01d429c4a91168ff1b0ac73d82d23c913c3990cd44224613b38",
+      "editorial": "## 思路\n\n保留的字母必须构成原字符串的一个子序列，并且字典序非降。设最长非降子序列长度为 L，则最多保留 L 个字母，答案为 `n-L`。用 tails 维护各长度非降子序列的最小结尾字符；每个字符用 upper_bound 找第一个大于它的位置替换，否则扩展序列。\n\n## 正确性\n\n任意保留方案都是原字符串的非降子序列，因此其长度不超过 L，至少删除 n−L 个字符。反之，最长非降子序列本身可通过删除其余字符得到，所以删除 n−L 个字符足够。tails 的 upper_bound 更新是经典最长非降子序列算法，重复字母可延长序列，最终长度恰为 L。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef minimum_deletions_to_sorted(s):\n    tails = []\n    for char in s:\n        lo, hi = 0, len(tails)\n        # upper_bound: equal letters may remain together in a nondecreasing subsequence.\n        while lo < hi:\n            mid = (lo + hi) // 2\n            if tails[mid] <= char:\n                lo = mid + 1\n            else:\n                hi = mid\n        if lo == len(tails):\n            tails.append(char)\n        else:\n            tails[lo] = char\n    return len(s) - len(tails)\n\ndef solve(raw):\n    s = raw.strip()\n    if not s or any(not ('a' <= char <= 'z') for char in s):\n        raise ValueError(\"expected one nonempty lowercase English word\")\n    return str(minimum_deletions_to_sorted(s))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode(\"ascii\")))\n"
+        }
+      ]
+    }
+  ]
+}

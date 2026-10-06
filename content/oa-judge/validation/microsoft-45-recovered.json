@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-microsoft-45",
+      "formalCases": 23,
+      "hiddenFormalCases": 22,
+      "oracleCases": 160,
+      "oracleInputsUnique": 160,
+      "negativeControls": [
+        {
+          "name": "误用严格递增子序列，重复字母不能同时保留",
+          "rejectedByCases": [
+            0,
+            5,
+            6,
+            10,
+            13,
+            14,
+            15,
+            16,
+            17,
+            19,
+            20,
+            21,
+            22
+          ]
+        },
+        {
+          "name": "只保留最长非降前缀，而非任意子序列",
+          "rejectedByCases": [
+            0,
+            6,
+            7,
+            8,
+            9,
+            10,
+            15,
+            16,
+            17,
+            18,
+            19
+          ]
+        }
+      ],
+      "maxLengthStress": 100000
+    }
+  ],
+  "note": "正式小例用 O(n^2) 独立 DP 对照，160 个唯一随机串同样逐项对照；最大长度结构化压力样例由闭式期望值校验，两个正常退出错误实现均被正式用例击杀。本地验证，未连接 GoJudge。"
+}
