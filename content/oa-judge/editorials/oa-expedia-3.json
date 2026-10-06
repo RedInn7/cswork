@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-expedia-3",
+  "title": "Bot Reach Coordinates",
+  "explanation": "## 思路\n\n从目标反向还原。若 tx>ty，最后一步只能是第一坐标增加了 ty，因此前驱的第一坐标为 tx−ty；连续反推可用取模一次跳过多步。对称地处理 ty>tx。若一坐标已经等于起点对应值，另一坐标必须能通过固定步长整除回起点。\n\n## 正确性\n\n每次正向操作只增加一个坐标，且增加量恰为另一个正坐标。因此目标坐标较大的那一维决定最后一步及唯一前驱；连续相同方向的减法可由模运算合并。到达起点时成功；越过起点或固定另一坐标时余数不匹配则不可能存在合法前驱链。\n\n## 复杂度\n\n每次模运算至少将一坐标显著缩小，时间 O(log(max(tx,ty)))，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(sx,sy,tx,ty):\n while tx>=sx and ty>=sy:\n  if tx==sx and ty==sy:return \"Yes\"\n  if tx>ty:\n   if ty==sy:return \"Yes\" if (tx-sx)%ty==0 else \"No\"\n   tx%=ty\n  else:\n   if tx==sx:return \"Yes\" if (ty-sy)%tx==0 else \"No\"\n   ty%=tx\n return \"No\"\nif __name__==\"__main__\": print(solve(*map(int,sys.stdin.buffer.read().split())))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/expedia#3-bot-reach-coordinates",
+  "sourceContentHash": "e2be5562ebaeedbe9008bf9def0c40a720f9660a7043d203a533585d6aaf287f"
+}

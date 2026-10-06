@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-palantir-1",
+  "title": "Swap Parity",
+  "explanation": "## 思路\n\n一次相邻交换只会交换同奇偶的数字，因此每个位置的奇偶性固定；同一奇偶子序列内部则能通过相邻交换任意重排。分别将奇数和偶数降序排列，再按原字符串的奇偶位置填回即可。\n\n## 正确性\n\n奇偶不同的数字永远不能交换，所以每个位置最终只能接收与该位置同奇偶的数字。相同奇偶的数字能在其子序列内任意交换。为了使结果字典序最大，各奇偶子序列都应按降序放入对应位置，算法因此产生所有合法结果中的最大者。\n\n## 复杂度\n\n排序时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(s):\n s=s.strip(); odd=sorted((c for c in s if int(c)%2),reverse=True); even=sorted((c for c in s if not int(c)%2),reverse=True); i=j=0; out=[]\n for c in s:\n  if int(c)%2: out.append(odd[i]); i+=1\n  else: out.append(even[j]); j+=1\n return \"\".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/palantir#1-swap-parity",
+  "sourceContentHash": "13961744dc09a9297b155c683170449c85310d0d9e7404d7fed035c37db26b7d"
+}

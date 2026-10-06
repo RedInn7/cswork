@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只比较总分不除人数",
+    "code": "def solve(raw):\n p=raw.split(); n=int(p[0]); d={}\n for i in range(n):\n  name=p[1+2*i]; grade=int(p[2+2*i]); s,c=d.get(name,(0,0)); d[name]=(s+grade,c+1)\n best=None\n for name,(s,c) in d.items():\n  if best is None or s>best[1]: best=(name,s,c)\n return best[0]\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只比较单次最高成绩",
+    "code": "def solve(raw):\n p=raw.split(); n=int(p[0]); best=''; score=-1\n for i in range(n):\n  name=p[1+2*i]; grade=int(p[2+2*i])\n  if grade>=score: best=name; score=grade\n return best\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

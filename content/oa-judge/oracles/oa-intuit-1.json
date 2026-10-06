@@ -1,0 +1,654 @@
+[
+  {
+    "input": "2 3\no o W\no o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\no o o x o\no o x o o\no o o x o\nx x x x x\no o Q o o\no o W x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\no o Q\no x W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 3\no o o\nx o o\nW x Q\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "3 4\nQ o o o\no o x o\nW o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 4\no o x x\no o o W\nQ x o x\no o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 6\no o o o o o\no o x o Q o\no W o o o o\nx o x o o x\nx o x x x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\no o x x x o\nW o o o o o\nx Q x x o o\nx o o x o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 5\nx W x o o\no x Q o o\no o x o o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "3 2\no Q\no W\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\no x x\nx o o\nx x o\nQ o o\nx o W\nx o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 6\nx o o o x x\nW Q o o x x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 4\nx o o o\no o o o\no o o x\nQ o o W\nx x x o\no x x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\no x W\no Q x\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "3 5\nx W x o x\nQ o o o o\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 5\no o x o x\no o W x Q\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 2\no W\nx o\no o\no o\no x\nQ o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 6\nW o o o x o\no o o o x Q\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 4\no o o W\no x Q x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 4\no o o o\no o o x\nW o o o\no o Q x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 3\no Q o\nx W x\no o o\no o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o o o o\no o o o o o\nx o o W o x\no o o o x x\no Q x x o x\nx o o o x x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 4\no o o o\no o o o\nx x o o\no W o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 3\nQ W o\no o o\nx o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 2\nx o\no o\nx o\nQ o\nx W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\no W o\no o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\nW x x\nx Q o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 5\nx Q o o x\nW x o x o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "4 4\no o o o\nx x o W\nQ o x o\no o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 6\no o o o o o\no o o W Q x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o o o o\no o o x o o\no x o x o x\nx o o x o o\no o Q o o o\nx W o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\nx o o o x W\no Q o o x x\no x o o o o\no o o o o o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "4 2\no o\nW o\no Q\no x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no o x o o o\nW Q o o x o\nx o x x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 6\nW o o o x o\no Q o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 2\no Q\nW x\no x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\nx o x x W\no o o o o\no x o x o\no Q o x o\no x o o x\no o x o o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 6\no o o o o x\nx Q x W x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 4\no o x x\no x o o\nx o W Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 5\no o W x o\nQ o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\nQ o\no o\no o\nx W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 2\nx o\no o\no o\no Q\no x\nW o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o o Q o\no o o o o o\no o o o o o\no x o o o x\no o o o o o\no x x W o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\no x o\no o o\nQ o o\no x W\nx o x\no o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 5\no x o o o\no Q W o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\nW o x o\nx o o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 5\nx x Q o o\no o x o x\no W o o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 5\no o o o o\no o x Q W\no o o o o\no x o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\nx x\nQ o\no o\no W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\nQ o o o o o\nx o o x o o\no o o o o x\no W o o o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 4\no o o o\no x o o\no o x o\no o o W\no Q o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\no W\no Q\no x\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 5\nx x W Q x\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o o o o\no o o o o x\nW Q o o o x\nx x o o o o\no x x o o o\no o x x o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\nx o o\nx o o\nW x o\no Q o\no o o\no o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\nQ o o\no o W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 4\no o o o\no o o W\no x o o\no o o o\no o Q o\nx x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 4\nx o o o\no o o x\nQ o o o\no W x o\no x o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no x x o o o\no Q o x o x\nx o o o o o\nx o o x o o\nx x o o o W\no o o o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 2\no W\nx o\no Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 3\no x o\nQ W o\nx o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\nx o o\no o x\nx o o\no o Q\nW o x\nx o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 6\no o x o o x\no o x o o x\nW x o o x o\no o o x x o\no x o o o Q\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 6\no W o Q o o\no x o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 2\no o\nQ x\no o\nW o\no x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 3\no W o\no o o\nQ x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\nx o o o\nW o Q o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 4\no o x o\nQ W x x\nx x o x\no o o x\no x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 3\no x W\nQ x o\no o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 2\no o\nQ x\no o\nW x\no x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\no o x o x\nQ o x o o\no o x o o\no o o o o\no o x W o\no o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 2\no W\no Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 4\nW o o o\no o Q o\no x o o\nx o o o\no x x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 5\no o o x o\nx o o o o\nx Q o x o\no W o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\nx x Q x o o\no o o o o o\no o o o o W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no o o o o x\nW o o x x o\no o o x o Q\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "6 2\no W\no o\no o\no o\no o\nQ o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 5\no o x W o\no x Q x o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 3\no W x\no Q x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 2\no o\no Q\no x\no o\no W\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\no o o\nx Q o\no W o\no x o\no x o\no o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\no o o\nW Q o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no o o o\nW Q o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 2\no W\no x\no x\nQ o\nx x\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\no o o o o o\no o o o o x\no o Q x W o\no o o o x x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\no x\nW o\nQ x\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\nx x o o o x\nQ o o o o o\nx x o W o o\no x o o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o x o o\nx o o o o o\no o x o o o\no o o x o W\no Q o o x o\no x o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 4\nQ o o o\nW o x o\nx o o o\no o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\no x o o o\no W o x o\no o o x o\nx o o o x\no x x x x\no Q x o o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o o o W\no x o o Q x\no o x o o o\no o o o x o\no o x o o x\no o o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 6\nx o o o o o\no Q o o o W\no o o o o o\nx o o o x o\no x o o x x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\no o Q\nW o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 3\no o o\nW o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\nx W\no Q\no o\nx x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no o Q o\no x W o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 5\nx x o o o\nx o o o Q\no o W o x\no o o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\no Q\no o\no o\no W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 6\nx o o o o o\nQ x x o o x\no x W o o x\nx o o o x o\no o x x o o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "6 5\nx x x o o\no o o x o\no o W x o\no Q o o o\no x o o o\no x o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 6\no o o o o W\no o o Q o o\nx o o o x o\no o o o x o\no o o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\nW x\nx x\nQ o\no x\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 4\no o W o\nx x Q x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\no o x o x o\nx x o x o o\no o o o Q o\no o o W o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 5\no Q o o o\no o x o o\no W o o o\no o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 4\no o o o\no x o o\no o Q o\no x o o\no o o o\nW o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 3\nW o o\nx o o\nQ o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no x Q W\nx o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 6\no o o o o o\no o x o o o\no o o o o o\no o o o W o\no o x Q o o\nx o x o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no o o o\nQ o o W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 3\no o x\nx o o\no o Q\nx o o\nW x o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "3 5\no o o Q o\no o o o o\nx W x o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 4\no x x o\no Q o o\no o x x\no o o o\no o o o\nx x o W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 2\no x\no o\no o\no o\nQ o\nW x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 2\nW o\nQ o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 5\no o o o o\no o o W o\no o o x o\no Q o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 6\no o o o Q W\no o o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\nx o o Q o o\no o o o o o\nx x W o x o\nx o o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no W o o\nQ o o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 6\no o Q o o o\no x o x o W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\no x x o x o\no o o o x o\no o o W o o\no o Q x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 4\no o o o\no o Q o\no x o o\nW o o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 4\nx o W x\nx o o o\no o o x\nx o o o\nQ x x o\nx o o x\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "5 4\no x o o\nx o o o\nx x W o\no o Q x\no x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 5\no x x x o\no o o o o\no o W o o\no o o x o\no o Q o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no o o o o x\no o o Q o x\no o o x W o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 3\nQ o o\no W o\no o o\no x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no x Q o o o\no o o o o o\no x o W o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 4\no o o o\no W o o\no x o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 2\no o\nQ o\nW x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 3\no o Q\nW x o\no x o\nx x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\nx o o\nW o o\no o o\no o x\no o Q\no o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 6\no o o o o o\nx x o o o o\no o o W o o\nx o o o x Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no x o o o x\nx o x x x Q\nW x o o o x\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "3 5\no x Q x x\nx x o W o\no o x x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\nx o x o Q\no o o o o\no o o o x\nW o o o o\no o o o o\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\no x o o x\nx x o o x\no Q o o o\no o x x o\nW o o o o\no o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 5\nx o W o x\no o x x o\no o Q o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 2\nx x\nQ W\no o\nx x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\no o x o o\no o o o o\no o o o x\no x o x o\no o o Q W\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 2\no o\nW o\nQ x\nx x\no x\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 5\no W Q o o\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no o o o o x\no x x o o o\no x o x Q W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\no o o\no W o\no x o\no o o\no Q o\no x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\no x x\no W o\no Q o\no o o\no o x\no x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 5\nx W o o Q\no o o o o\no o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no o o Q\nW o o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 3\nx o o\nx W o\no o o\nQ x x\no o o\no o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "4 4\no Q x o\nW o o o\no o o o\no o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no x x o o o\nx Q o x o o\no o x o W o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 6\no W o o o x\no o x o o Q\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no x x o o x\nx x o x x o\nW o Q x x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 4\nx o o o\nQ o W o\no x o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "3 6\no x o W o o\nQ o o x o x\no o o o x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 5\no o o o o\no x o o o\no x x o o\nQ o x W o\no x o o o\no o x o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 5\nQ o x o W\no o x o o\n",
+    "expectedOutput": "DON'T DRIVE!\n"
+  },
+  {
+    "input": "2 6\nW o o o o x\nQ x o o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 5\no o o o Q\nx o o o x\no o o x o\no x o W o\nx o o o x\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 4\no o o x\nx x W o\no x Q o\no o o o\nx o o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 4\no x x o\no x Q o\no o o W\no o x o\no x x o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "2 4\no x x o\no o Q W\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "6 4\no o o o\no o o o\nx o o Q\no o o o\nx o o x\no W o o\n",
+    "expectedOutput": "DRIVE!\n"
+  },
+  {
+    "input": "5 2\no x\no o\nW o\nQ o\no o\n",
+    "expectedOutput": "DRIVE!\n"
+  }
+]

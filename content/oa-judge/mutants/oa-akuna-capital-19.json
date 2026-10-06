@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略连续运行时长增加的路径",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];return str(max(Counter(t[1:1+n]).values()))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只在长度为 1 的影片段间转移",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];c=Counter(t[1:1+n]);best=0\n for x in sorted(c,reverse=True):best=max(best,1+(best if c[x+1] else 0))\n return str(best)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

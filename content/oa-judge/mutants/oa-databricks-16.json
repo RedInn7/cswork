@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把区间端点排除",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; even=odd=0\n    for i,x in enumerate(v[1:1+n]):\n        if -100<x<100:\n            if i%2==0: even+=x\n            else: odd+=x\n    return str(even-odd)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "奇偶位置方向颠倒",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; even=odd=0\n    for i,x in enumerate(v[1:1+n]):\n        if -100<=x<=100:\n            if i%2==1: even+=x\n            else: odd+=x\n    return str(even-odd)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

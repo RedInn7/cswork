@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-palantir-3",
+  "title": "No Pairs Allowed",
+  "explanation": "## 思路\n\n从左到右扫描每个单词。若当前字符与上一个保留字符相同，就必须替换其中一个；替换当前字符即可，并让它不再与下一个原字符形成重复。否则保留当前字符。\n\n## 正确性\n\n每段长度为 L 的连续相同字符至少要替换 floor(L/2) 个字符，因为一次替换最多打断一对相邻重复，而保留每隔一个字符、替换其余字符恰好达到该下界。贪心在每次相邻冲突时替换当前字符，正好对每段每两个字符计一次，不会影响之后不同字符段，因此达到全局最小值。\n\n## 复杂度\n\n设字符总数为 L，时间 O(L)，额外空间 O(1)（不计输出）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n z=raw.split(); n=int(z[0]); out=[]\n for w in z[1:1+n]:\n  changes=0; last=None\n  for c in w:\n   if c==last: changes+=1; last=None\n   else: last=c\n  out.append(str(changes))\n return \" \".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/palantir#3-no-pairs-allowed",
+  "sourceContentHash": "4f0bc648c3f799727188e082782de2e7d167d573b6c468218be28749eff0fb1a"
+}

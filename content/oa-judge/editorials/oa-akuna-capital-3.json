@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-3",
+  "title": "Update Release Scheduler",
+  "explanation": "## 思路\n\n按计划日期排序，维护当前最早可用日。若备用日不早于当前日就选备用日，否则只能等到计划日。\n\n## 正确性\n\n固定计划顺序后，当前更新的最早合法发布日只可能是两个可选日期中不早于上一日的最早者。由于 alternateDate≤plannedDate，备用日若已过去，计划日仍不早于当前日：此前选择的日期不超过此前计划日期，而计划日期已排序。逐项选择最早合法日期不可能推迟任何后续可行日期，因此最终完成日最小。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; p=t[1:1+n]; a=t[1+n:1+2*n]; day=0\n for planned,alt in sorted(zip(p,a)):\n  day=alt if alt>=day else planned\n return str(day)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#3-update-release-scheduler",
+  "sourceContentHash": "88ca2421d8659dabab35d3c32142875eefafec3e090b7cc339c39113c8093d4f",
+  "author": "CSWork"
+}

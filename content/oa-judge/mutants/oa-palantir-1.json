@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只在连续同奇偶段内排序",
+    "code": "import sys\ndef solve(s):\n s=s.strip(); out=list(s); i=0\n while i<len(out):\n  j=i+1\n  while j<len(out) and int(out[j])%2==int(out[i])%2: j+=1\n  out[i:j]=sorted(out[i:j],reverse=True); i=j\n return \"\".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "将偶数按升序排列",
+    "code": "import sys\ndef solve(s):\n s=s.strip(); odd=sorted((c for c in s if int(c)%2),reverse=True); even=sorted(c for c in s if not int(c)%2); i=j=0; out=[]\n for c in s:\n  if int(c)%2: out.append(odd[i]); i+=1\n  else: out.append(even[j]); j+=1\n return \"\".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]

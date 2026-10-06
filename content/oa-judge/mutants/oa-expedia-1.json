@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只保留相同元素位置前缀",
+    "code": "import sys\nz=list(map(int,sys.stdin.buffer.read().split())); n=z[0]; a=z[1:1+n]; b=z[1+n:1+2*n]; k=0\nwhile k<n and a[k]==b[k]: k+=1\nprint(n-k)\n"
+  },
+  {
+    "name": "只保留当前位置相同的最长前缀",
+    "code": "import sys\nz=list(map(int,sys.stdin.buffer.read().split())); n=z[0]; a=z[1:1+n]; b=z[1+n:1+2*n]; k=0\nwhile k<n and a[n-1-k]==b[n-1-k]: k+=1\nprint(n-k)\n"
+  }
+]

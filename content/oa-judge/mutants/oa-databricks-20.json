@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把右端点等于 p 的灯排除",
+    "code": "def solve(data):\n    from bisect import bisect_left,bisect_right\n    v=list(map(int,data.split())); m,q=v[:2]; p=2; left=[]; right=[]\n    for _ in range(m): left.append(v[p]); right.append(v[p+1]); p+=2\n    points=v[p:p+q]; left.sort(); right.sort()\n    return ' '.join(str(bisect_right(left,x)-bisect_right(right,x)) for x in points)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把左端点等于 p 的灯排除",
+    "code": "def solve(data):\n    from bisect import bisect_left,bisect_right\n    v=list(map(int,data.split())); m,q=v[:2]; p=2; left=[]; right=[]\n    for _ in range(m): left.append(v[p]); right.append(v[p+1]); p+=2\n    points=v[p:p+q]; left.sort(); right.sort()\n    return ' '.join(str(bisect_left(left,x)-bisect_left(right,x)) for x in points)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-5",
+  "title": "Get Substring",
+  "explanation": "## 思路\n\n枚举每个连续 k 个 1 的窗口，只保留从窗口第一个 1 到第 k 个 1 的最短候选，再按长度和字典序取最小。\n\n## 正确性\n\n任何含恰好 k 个 1 的子串所含 1 必构成字符串中某个连续的 k 个 1 的窗口。去掉其首个 1 前与末个 1 后的字符不改变 1 的数量且只会更短，因此最短候选必由首末 1 定界。枚举所有窗口覆盖全部最短候选，按 (长度, 字典序) 取最小即正确。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s,k=raw.split();k=int(k);p=[i for i,ch in enumerate(s) if ch=='1'];best=None\n for i in range(len(p)-k+1):\n  z=s[p[i]:p[i+k-1]+1]\n  if best is None or (len(z),z)<(len(best),best):best=z\n return best\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wells-fargo#5-get-substring",
+  "sourceContentHash": "0b265afa4ce58762e7a307e5777c33a1a0762e9d46cdac781e9ef30f067a140a",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-5",
+  "title": "Compute Number Score",
+  "explanation": "## 思路\n\n扫描数字串累计 5、奇数位和相邻 33 对的分数；再按相邻位差为 1 切分最大递增游程，累加游程长度平方；最后根据末位是否为 0 或 5 加上整除奖励。\n\n## 正确性\n\n逐位规则在每一位检查一次，故 5 和奇数项不漏不重；遍历相邻位置恰好统计全部 33 相邻对；切分条件恰好在非递增相邻处结束，得到所有最大 +1 游程；末位判定等价于十进制数被 5 整除。各分项独立相加符合题意。\n\n## 复杂度\n\nd 为数字位数，时间 O(d)，额外空间 O(d)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s=raw.strip(); score=0\n for i,c in enumerate(s):\n  if c=='5': score+=2\n  if int(c)%2: score+=1\n  if i and s[i-1:i+1]=='33': score+=4\n if int(s[-1])==0 or int(s[-1])==5: score+=6\n i=0\n while i<len(s):\n  j=i+1\n  while j<len(s) and ord(s[j])==ord(s[j-1])+1: j+=1\n  score+=(j-i)*(j-i); i=j\n return str(score)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#5-compute-number-score",
+  "sourceContentHash": "0f51e13a9e3070e92bb145c72540ed84bb34ac00c687a8b87b5912d0c8bbae40",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-6",
+  "title": "Lock Acquire/Release Log Checker",
+  "explanation": "## 思路\n\n用栈记录获取顺序、集合记录当前持有的锁。ACQUIRE 若已在集合中即违规，否则压栈并加入集合；RELEASE 必须匹配栈顶，否则违规；匹配后弹栈并移除集合成员。遍历后栈非空表示 dangling。\n\n## 正确性\n\n集合恰好刻画所有已获取未释放锁，因此可在常数时间识别重复获取。栈顶是尚未释放的最近一次获取，题目要求逆序释放，故只允许释放栈顶。第一个违反任一条件的事件就是首个违规下标；无违规时，栈空与全部释放等价，否则按规则返回 n+1。\n\n## 复杂度\n\n每个事件至多入栈、出栈一次，时间 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); stack=[]; held=set()\n for i,line in enumerate(lines[1:1+n],1):\n  op,name=line.split()\n  if op=='ACQUIRE':\n   if name in held: return str(i)\n   held.add(name); stack.append(name)\n  else:\n   if not stack or stack[-1]!=name: return str(i)\n   stack.pop(); held.remove(name)\n return str(0 if not stack else n+1)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#6-lock-acquirerelease-log-checker",
+  "sourceContentHash": "58a8e3fa91513d331ee76e1b785c6a448e481e623a83553d85a9db6acf6a9348",
+  "author": "CSWork"
+}

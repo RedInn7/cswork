@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-4",
+  "title": "Compressing Array",
+  "explanation": "## 思路\n\n从左到右贪心延长当前段，只要段乘积乘下一个数仍≤k 就并入；否则结束当前段并从下个数开始新段。正整数保证乘积随延长单调不减。\n\n## 正确性\n\n每个最终元素对应原数组的一个连续段。单元素段无需操作，始终允许保留；长度至少为 2 的段只有在总乘积≤k 时可行，且正整数乘积单调不减，故其内部相邻合并也都满足限制。从当前位置开始，贪心取最长可行段；任何可行方案的第一段结束位置不可能超过贪心边界。用更长的贪心段替换最优方案第一段不会增加剩余后缀的最少段数；对后缀归纳，贪心段数最少。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)（不计输入）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];groups=1;product=a[0]\n for x in a[1:]:\n  if product*x<=k:product*=x\n  else:groups+=1;product=x\n return str(groups)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wells-fargo#4-compressing-array",
+  "sourceContentHash": "93a60eafa91223238eeb0ec871c180eb018ef6841c50fe085f18bf26ed11419b",
+  "author": "CSWork"
+}

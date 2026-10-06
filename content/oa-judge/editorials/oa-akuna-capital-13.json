@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-13",
+  "title": "Delivery Management System (QR Intern)",
+  "explanation": "## 思路\n\n从工厂城市运行 BFS，得到所有可达城市的最短边数距离，再按 (距离, 编号) 排序输出。\n\n## 正确性\n\n无权图 BFS 按层扩展，首次到达节点时的层数即最短距离。按距离再按编号排序，正好满足题目两级排序要求；过滤起点和未访问节点分别满足不重复配送及忽略不可达城市。\n\n## 复杂度\n\n时间 O(n+m)，空间 O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,m,root=t[:3];p=3;g=[[] for _ in range(n)]\n for _ in range(m):u,v=t[p:p+2];p+=2;u-=1;v-=1;g[u].append(v);g[v].append(u)\n d=[-1]*n;d[root-1]=0;q=deque([root-1])\n while q:\n  u=q.popleft()\n  for v in g[u]:\n   if d[v]<0:d[v]=d[u]+1;q.append(v)\n return ' '.join(str(i+1) for i in sorted((i for i in range(n) if i!=root-1 and d[i]>=0),key=lambda i:(d[i],i)))\nfrom collections import deque\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#13-delivery-management-system-qr-intern",
+  "sourceContentHash": "28f2aa9462c6dfd12ed6b921318bd7800e4ad4a6f52699e6dfb8f89a0e3875a8",
+  "author": "CSWork"
+}

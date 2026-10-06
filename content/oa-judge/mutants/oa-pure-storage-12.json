@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把同一候选值去重",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]; c=Counter(a)\n return ' '.join(map(str,sorted({x for x in a if c.get(2*x,0)==1})))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "要求双倍值至少出现一次而非恰好一次",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]; c=Counter(a)\n return ' '.join(map(str,sorted(x for x in a if c.get(2*x,0)>=1)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

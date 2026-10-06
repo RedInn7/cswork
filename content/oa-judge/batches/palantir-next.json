@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-palantir-1",
+      "sourceContentHash": "13961744dc09a9297b155c683170449c85310d0d9e7404d7fed035c37db26b7d",
+      "packageChecksum": "8e80678cf0c6f688ddf78bc3adac0536ec9f078fcfea28b4cf4ab8d220befdb2",
+      "editorial": "## 思路\n\n一次相邻交换只会交换同奇偶的数字，因此每个位置的奇偶性固定；同一奇偶子序列内部则能通过相邻交换任意重排。分别将奇数和偶数降序排列，再按原字符串的奇偶位置填回即可。\n\n## 正确性\n\n奇偶不同的数字永远不能交换，所以每个位置最终只能接收与该位置同奇偶的数字。相同奇偶的数字能在其子序列内任意交换。为了使结果字典序最大，各奇偶子序列都应按降序放入对应位置，算法因此产生所有合法结果中的最大者。\n\n## 复杂度\n\n排序时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n s=s.strip(); odd=sorted((c for c in s if int(c)%2),reverse=True); even=sorted((c for c in s if not int(c)%2),reverse=True); i=j=0; out=[]\n for c in s:\n  if int(c)%2: out.append(odd[i]); i+=1\n  else: out.append(even[j]); j+=1\n return \"\".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-palantir-3",
+      "sourceContentHash": "4f0bc648c3f799727188e082782de2e7d167d573b6c468218be28749eff0fb1a",
+      "packageChecksum": "6b2db7b031874c5f3077ca2513ea5a91a757de4e64c7ef7d0b779cfe2bdde9a4",
+      "editorial": "## 思路\n\n从左到右扫描每个单词。若当前字符与上一个保留字符相同，就必须替换其中一个；替换当前字符即可，并让它不再与下一个原字符形成重复。否则保留当前字符。\n\n## 正确性\n\n每段长度为 L 的连续相同字符至少要替换 floor(L/2) 个字符，因为一次替换最多打断一对相邻重复，而保留每隔一个字符、替换其余字符恰好达到该下界。贪心在每次相邻冲突时替换当前字符，正好对每段每两个字符计一次，不会影响之后不同字符段，因此达到全局最小值。\n\n## 复杂度\n\n设字符总数为 L，时间 O(L)，额外空间 O(1)（不计输出）。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n z=raw.split(); n=int(z[0]); out=[]\n for w in z[1:1+n]:\n  changes=0; last=None\n  for c in w:\n   if c==last: changes+=1; last=None\n   else: last=c\n  out.append(str(changes))\n return \" \".join(out)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

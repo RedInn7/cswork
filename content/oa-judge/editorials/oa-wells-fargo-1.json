@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-1",
+  "title": "Count Operations",
+  "explanation": "## 思路\n\n将排列分解为不相交循环。每个长度为 L 的循环需恰好 L 的倍数次操作才能复位，整体周期是各循环长度的最小公倍数。\n\n## 正确性\n\n互异数组元素保证操作后恢复原数组当且仅当位置置换回到恒等映射。一个排列循环长度 L 在恰好 L 次操作后首次复位，因此总复位时刻必须且只需是所有循环长度的公倍数；最小正时刻即其最小公倍数。\n\n## 复杂度\n\n时间 O(n log n + 位运算成本)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom math import gcd\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];p=t[1:1+n];seen=[False]*n;ans=1\n for i in range(n):\n  if not seen[i]:\n   j=i;length=0\n   while not seen[j]:seen[j]=True;j=p[j]-1;length+=1\n   ans=ans//gcd(ans,length)*length\n return str(ans%1000000007)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/wells-fargo#1-count-operations",
+  "sourceContentHash": "e74a36ca7db4ec42fb4180ceb08781b23faa5a62ae8d372ff15399307509d7a8",
+  "author": "CSWork"
+}

@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-databricks-13",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "数字串代码的所有拆分匹配",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Databricks"
+    ],
+    "description": "给定数字串 panel 和若干 code。对每个 code 按 index 部分长度从 1 到 len(code)-1 依次拆成 index 与 pattern；把 index 按十进制整数解析（前导零不影响值）。若 panel 从该 0-based 下标开始的连续片段恰好等于 pattern，则该拆分结果为 pattern，否则为 not found。结果按 code 顺序、再按拆分长度顺序输出。\n\n标准输入输出及本站补充范围按本题说明执行。",
+    "input": "第一行 panel（1..1000 个 ASCII 数字）；第二行 c（1≤c≤100），随后 c 行各一个 ASCII 数字串 code，2≤len(code)≤100，总 code 字符数≤5000。以上 c 与 code 上限为本站补充，避免结果过大。每个 index 和 pattern 均至少一位。",
+    "output": "对每个拆分单独输出一行：匹配时输出 pattern，否则输出 not found。顺序为 code 输入顺序、每个 code 的拆分长度递增顺序。",
+    "explanation": "逐个 code 枚举所有非空且 pattern 非空的切分位置，把左段转成整数，比较 panel 中相同长度的切片。",
+    "hints": [
+      "逐个 code 枚举所有非空且 pattern 非空的切分位置，把左段转成整数，比较 panel 中相同长度的切片。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2311453915\n2\n0211\n639\n",
+      "expectedOutput": "not found\n11\nnot found\n39\nnot found\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "00000\n2\n000\n101\n",
+      "expectedOutput": "00\n0\nnot found\nnot found\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "7\n1\n07\n",
+      "expectedOutput": "7\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "0\n1\n000\n",
+      "expectedOutput": "not found\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "12345\n1\n12345\n",
+      "expectedOutput": "2345\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "5178813\n1\n449288\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "32\n2\n93\n388117\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "1\n2\n2190905\n141901\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "837786830793302\n2\n6300\n5731\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "1932389185936862977\n4\n84675103\n089\n524607\n86866835\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "8732\n3\n63\n290\n90962499\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "964658963\n1\n299594\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "85\n1\n33239\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "602445470488\n1\n32890091\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "9\n5\n4216966\n223862\n82929071\n7015821\n9431\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "51760793241924590\n3\n016\n024287\n23\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "1085300470970\n3\n8752602\n40746064\n64\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "790428452\n4\n83692\n731798\n93764\n682\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "75543006\n7\n26724588\n73\n234\n11\n8025\n58536000\n30\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "294\n7\n5539742\n83038979\n65843\n293799\n020\n13\n16505081\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "52572711003303747550\n6\n13\n687487\n27950\n19499102\n123\n7547493\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "7186301175870101\n3\n48360767\n897\n891246\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "5252530013024\n1\n5069\n",
+      "expectedOutput": "not found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "5760182831470797755\n5\n215104\n36\n996646\n22216693\n54\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "259\n1\n9480\n",
+      "expectedOutput": "not found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "7109489790193626\n3\n8906\n0017775\n77997344\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "9512\n2\n21767185\n730\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "4156522\n5\n2527167\n82\n710251\n1427099\n122\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "32\n4\n90313\n830\n8562975\n82845\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "77\n4\n264\n4862878\n864\n866\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "36007\n6\n662\n7393109\n01\n19966871\n688\n46\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "68\n8\n2487969\n7444576\n43\n40621524\n001284\n72862036\n6069\n5864\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "50\n3\n966205\n155840\n20564\n",
+      "expectedOutput": "not found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\nnot found\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

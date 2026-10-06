@@ -1,0 +1,10 @@
+[
+  {
+    "name": "优先从最低频字符删除",
+    "code": "import sys\nd=sys.stdin.read().split();n,m=map(int,d[:2]);s=d[2];c=[s.count(chr(i+97)) for i in range(26)]\nfor _ in range(min(m,n)):\n i=min((i for i in range(26) if c[i]),key=lambda i:c[i],default=-1)\n if i>=0:c[i]-=1\nprint(sum(x*x for x in c))\n"
+  },
+  {
+    "name": "忽略最多删除数量，只计算原始成本",
+    "code": "import sys\nn,m,s=sys.stdin.read().split();from collections import Counter\nprint(sum(v*v for v in Counter(s).values()))\n"
+  }
+]

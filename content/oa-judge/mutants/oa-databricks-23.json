@@ -1,0 +1,10 @@
+[
+  {
+    "name": "查询漏算下标 i",
+    "code": "def solve(data):\n    it=iter(data.split()); n=int(next(it)); q=int(next(it)); bits=next(it); pref=[0]*(n+1)\n    for i,c in enumerate(bits): pref[i+1]=pref[i]+(c=='0')\n    flipped=False; out=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=pref[i]; out.append(str(i+1-z if flipped else z))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "翻转后仍返回原零数",
+    "code": "def solve(data):\n    it=iter(data.split()); n=int(next(it)); q=int(next(it)); bits=next(it); pref=[0]*(n+1)\n    for i,c in enumerate(bits): pref[i+1]=pref[i]+(c=='0')\n    flipped=False; out=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=pref[i+1]; out.append(str(z))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把乘积限制误当成和限制",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];g=1;s=0\n for x in a:\n  if s+x<=k:s+=x\n  else:g+=1;s=x\n return str(g)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查原数组相邻二元组，不检查整段乘积",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,k=t[:2];a=t[2:2+n];g=0;i=0\n while i<n:\n  g+=1\n  if i+1<n and a[i]*a[i+1]<=k:i+=2\n  else:i+=1\n return str(g)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

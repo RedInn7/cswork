@@ -1,0 +1,10 @@
+[
+  {
+    "name": "重复创建文件仍增加计数",
+    "code": "def solve(data):\n    lines=data.splitlines(); q=int(lines[0]); buckets={}; current=None\n    for line in lines[1:1+q]:\n        op,name=line.split()\n        if op=='goto': current=name; buckets.setdefault(name,set())\n        else: buckets[current].add(name+str(len(buckets[current])))\n    return max(buckets,key=lambda name:len(buckets[name]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "返回文件数最少的 bucket",
+    "code": "def solve(data):\n    lines=data.splitlines(); q=int(lines[0]); buckets={}; current=None\n    for line in lines[1:1+q]:\n        op,name=line.split()\n        if op=='goto': current=name; buckets.setdefault(name,set())\n        else: buckets[current].add(name)\n    return min(buckets,key=lambda name:len(buckets[name]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

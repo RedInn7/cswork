@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-databricks-9",
+      "sourceContentHash": "7cc4fa65d7338729188379cd05b484ae7e9453fb647ec611aed756bed80dbabe",
+      "packageChecksum": "83097c0fd8cb42504bba1b05f6736b80bb6a4f190427c1975a3a54f37c16b1ac",
+      "editorial": "## 思路\n\n按题意直接模拟每一轮：定位最左非零值 x，将 x 累加，并只对后缀中当前值不小于 x 的元素减 x。\n\n## 正确性证明\n\n模拟始终选择与题目相同的最左非零元素，并对同一后缀逐个应用题目规定的条件减法，因此每轮结束后数组状态和累计值均与过程定义一致。题目保证该过程结束，模拟终止时累计值就是所求。\n\n## 复杂度\n\n最多处理 n 轮（每轮至少把当前最左非零元素归零），每轮扫描至多 n 项；时间 O(n²)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; a=v[1:1+n]; total=0; i=0\n    while i<n:\n        if a[i]==0: i+=1; continue\n        x=a[i]; total+=x\n        for j in range(i,n):\n            if a[j]>=x: a[j]-=x\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-10",
+      "sourceContentHash": "6a8a7a0efea8c4a8dbd1641e669b45c6c7201c542d48d6c5a9d0e06854efbaf1",
+      "packageChecksum": "028f13fd404846fbde194303e3178e7778e8ba9075c4863eb8d291a0300276be",
+      "editorial": "## 思路\n\n构造一行 n 个星号并以单个空格连接，再输出该行 n 次。\n\n## 正确性证明\n\n每行包含 n 个星号且相邻之间只有一个空格，共重复 n 次，逐字符合输出定义。\n\n## 复杂度\n\n时间和输出空间均为 O(n²)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n=int(data); row=' '.join(['*']*n); return '\\n'.join([row]*n)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-13",
+      "sourceContentHash": "2ed0f94b17749215e11c382722ce34a587dd58b69e200600d754afee446d507e",
+      "packageChecksum": "da94f19e7dce690633a639e11a8a6e228595d0958875cc5c153230b20b425185",
+      "editorial": "## 思路\n\n逐个 code 枚举所有非空且 pattern 非空的切分位置，把左段转成整数，比较 panel 中相同长度的切片。\n\n## 正确性证明\n\n每个合法拆分的 index 位数必为 1 到 len(code)-1，循环恰好覆盖这些切分且顺序递增。对每种切分只在下标合法且片段完全相等时输出 pattern，因此逐项结果与定义一致。\n\n## 复杂度\n\n时间 O(ΣL²)，空间 O(ΣL)，其中 L 为 code 长度。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    lines=data.split(); panel=lines[0]; q=int(lines[1]); out=[]\n    for code in lines[2:2+q]:\n        for cut in range(1,len(code)):\n            start=int(code[:cut]); pat=code[cut:]\n            out.append(pat if start+len(pat)<=len(panel) and panel[start:start+len(pat)]==pat else 'not found')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-16",
+      "sourceContentHash": "d9fc82ebf7f2de170c31ebb05ed7afff7a33edf47e8baec780f5c37ab7d316d8",
+      "packageChecksum": "b42a1c49bcdcd5b1c6271e07872d9de379b05378cda54eb2f6edfe733db37c82",
+      "editorial": "## 思路\n\n一次扫描数组；仅将落在 [-100,100] 的值加到其下标奇偶对应的总和，最后作差。\n\n## 正确性证明\n\n每个元素只在且仅在其值落入闭区间时计入，并按其真实下标奇偶放入对应总和；扫描结束所得两和恰为题目定义，输出其差即正确。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; even=odd=0\n    for i,x in enumerate(v[1:1+n]):\n        if -100<=x<=100:\n            if i%2==0: even+=x\n            else: odd+=x\n    return str(even-odd)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-18",
+      "sourceContentHash": "8688a0e2334798744d80d60461f1d9e959722c7d8187d2cb91f40175ad8b7366",
+      "packageChecksum": "251f8edd969ecfbcf9ede53023a9b27e538aa9c0bd8543baa7d9d69e61d9d43e",
+      "editorial": "## 思路\n\n使用长度为 |pattern| 的滑动窗口维护 26 个字母频数。逐个检查窗口，首次与 pattern 的频数相同的位置即答案。\n\n## 正确性证明\n\n每个长度固定为 |pattern| 的连续子串恰对应一个滑动窗口；频次向量相同当且仅当两串互为字母异位词。窗口按起点递增检查，故首次命中为最小下标；若均未命中则无解。\n\n## 复杂度\n\n时间 O(|s|+|pattern|)，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    s,p=data.split(); m=len(p); n=len(s)\n    if m>n: return '-1'\n    want=[0]*26; have=[0]*26\n    for c in p: want[ord(c)-97]+=1\n    for c in s[:m]: have[ord(c)-97]+=1\n    for i in range(n-m+1):\n        if have==want: return str(i)\n        if i+m<n:\n            have[ord(s[i])-97]-=1; have[ord(s[i+m])-97]+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-19",
+      "sourceContentHash": "052689a20353b2b3757ea3bc4811440e0bb2027298f60d3c541e03570ffe245e",
+      "packageChecksum": "a34a0169831d7e88c2110c8e5ce38c56c0bdc9f3099c217d800add9a7ac167fd",
+      "editorial": "## 思路\n\n为每个 bucket 维护文件名集合，并维护当前 bucket。处理完所有命令后取集合大小唯一最大的 bucket。\n\n## 正确性证明\n\n集合大小与题意中的不同文件数完全一致：重复文件名在集合中只保留一次，且 goto 会确保 bucket 存在。遍历最终各集合的大小，因题目保证唯一最大者，所得 bucket 正是所求。\n\n## 复杂度\n\n时间 O(q) 期望，空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    lines=data.splitlines(); q=int(lines[0]); buckets={}; current=None\n    for line in lines[1:1+q]:\n        op,name=line.split()\n        if op=='goto': current=name; buckets.setdefault(name,set())\n        else: buckets[current].add(name)\n    return max(buckets,key=lambda name:len(buckets[name]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-20",
+      "sourceContentHash": "8ece6c1e769dc0073d14bc02e335aa9bedae7e15304ed294d30d071223a9c872",
+      "packageChecksum": "f513c22b4fa45de9efea9e415c4940308b2483bc777031b2771420548bbb15a3",
+      "editorial": "## 思路\n\n分别排序所有左端点和右端点。点 p 的覆盖数等于 left≤p 的区间数减去 right<p 的区间数。\n\n## 正确性证明\n\n每个闭区间在左端点不大于 p 时计入；其中右端点严格小于 p 的区间不覆盖 p，应扣除。其余区间满足 left≤p≤right，故两项之差恰为覆盖 p 的灯数。\n\n## 复杂度\n\n时间 O((m+q)log(m+q))，空间 O(m+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    from bisect import bisect_left,bisect_right\n    v=list(map(int,data.split())); m,q=v[:2]; p=2; left=[]; right=[]\n    for _ in range(m): left.append(v[p]); right.append(v[p+1]); p+=2\n    points=v[p:p+q]; left.sort(); right.sort()\n    return ' '.join(str(bisect_right(left,x)-bisect_left(right,x)) for x in points)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-21",
+      "sourceContentHash": "78c652d84bfcd5d9fc6fbdaf694287077b06afd2164060920e1efe09da711b6d",
+      "packageChecksum": "e1b1b6d41e8e2304227c0854c4c1f86d7098fae72aec0a320b57a7af5a804661",
+      "editorial": "## 思路\n\n把第二数组的所有十进制前缀插入 Trie。逐个查询第一数组，沿 Trie 尽可能向下走，最大深度就是答案。\n\n## 正确性证明\n\nTrie 中深度 k 的路径存在，当且仅当第二数组中至少一个数以查询数的前 k 位开头。因此对每个第一数组元素，成功走到的最深深度等于它与第二数组某数的最长公共前缀最大值；再对第一数组取最大即所求。\n\n## 复杂度\n\n时间 O((n+m)·D)，空间 O(m·D)，D≤10。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    v=list(map(int,data.split())); n,m=v[:2]; a=v[2:2+n]; b=v[2+n:2+n+m]; root={}\n    for x in b:\n        node=root\n        for c in str(x): node=node.setdefault(c,{})\n    best=0\n    for x in a:\n        node=root; depth=0\n        for c in str(x):\n            if c not in node: break\n            node=node[c]; depth+=1\n        best=max(best,depth)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-23",
+      "sourceContentHash": "2249de054670f276a542b9f98ad48c7ac4e47499450f03169cc65bc5af2e0f74",
+      "packageChecksum": "bb71e3b1dd70ca28072897c412fed1a76b009a4cc28b3d2719f348cb7daad14d",
+      "editorial": "## 思路\n\n预计算初始 0 前缀和，以布尔标记维护翻转次数奇偶；查询时根据状态返回原前缀零数或前缀长度减原零数。\n\n## 正确性证明\n\n每次全串翻转后，一个前缀中的 0 数变成该前缀长度减原本的 0 数；连续翻转仅由奇偶性决定。按顺序逐操作应用这一等式，因此每次查询答案与当前实际字符串一致。\n\n## 复杂度\n\n时间 O(n+q)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    it=iter(data.split()); n=int(next(it)); q=int(next(it)); bits=next(it); pref=[0]*(n+1)\n    for i,c in enumerate(bits): pref[i+1]=pref[i]+(c=='0')\n    flipped=False; out=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=pref[i+1]; out.append(str(i+1-z if flipped else z))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-24",
+      "sourceContentHash": "4b9d769c1ffe250317b78bf348aea7f3eac424137da880c1309b0f57bce0c63f",
+      "packageChecksum": "2c6eb4e913cd81f885c93523897acfc3559357bffdc48b618bff0186b742232a",
+      "editorial": "## 思路\n\n先把 numbers 转成相邻比较符号序列，再用 KMP 统计 pattern 在该符号序列中的出现次数，包含重叠匹配。\n\n## 正确性证明\n\nnumbers 的每个长度 m+1 连续段唯一对应符号序列中的一个长度 m 子段，且定义要求逐位相等。KMP 恰好计数符号序列中 pattern 的所有起点，包括重叠起点，因此计数与题意一致。\n\n## 复杂度\n\n时间 O(n+m)，额外空间 O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    v=list(map(int,data.split())); n,m=v[:2]; a=v[2:2+n]; pat=v[2+n:2+n+m]\n    text=[(b>x)-(b<x) for x,b in zip(a,a[1:])]; pi=[0]*m\n    for i in range(1,m):\n        j=pi[i-1]\n        while j and pat[i]!=pat[j]: j=pi[j-1]\n        if pat[i]==pat[j]: j+=1\n        pi[i]=j\n    count=j=0\n    for value in text:\n        while j and value!=pat[j]: j=pi[j-1]\n        if value==pat[j]: j+=1\n        if j==m: count+=1; j=pi[j-1]\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

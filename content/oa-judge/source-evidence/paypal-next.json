@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "reason": "完整核对不可变 FastPrep Markdown 与站内公司题页；上游方案代码仅阅读、未执行；所有本站 reference、oracle 与错误程序为单独编写。",
+  "companyPage": {
+    "path": "web/content/docs/companies/paypal.mdx",
+    "gitBlobSha": "11b405bbb73205e6bdd7dec1f166a541ac7ec9d1",
+    "rawSha256": "9a8774c28bafc52288b7e5337a50ebd3f31a48e7fdc06b867c73de225cd924b2"
+  },
+  "relatedPriceVariant": {
+    "path": "fastprep/Paypal/paypal-find-minimum-price.md",
+    "gitBlobSha": "0f6df35f6310aeff21f376df2bed4049537bb436",
+    "rawSha256": "1efe5ee934c5a4fd144bd5bb653a8fe77c2023c602aee6336a9c7e63c72eaaab",
+    "note": "非 catalog 题目；其独立题面显式写出 floor 舍入，用作相邻重复题型的语义佐证，不计入本批题目。"
+  },
+  "items": [
+    {
+      "id": "oa-paypal-1",
+      "path": "fastprep/Paypal/paypal-count-minimum-operations.md",
+      "gitBlobSha": "12a1fe8e49d87d4ec6f3738578e0da773e5aca56",
+      "rawSha256": "1b8ce3c3ac74d7ec443b34d1d3daeec24e7130ee2435f1a4c06eb5a1058a0712",
+      "catalogContentHash": "c41b0a3cc36628f948ecb00c9a1bd1c58b773c9aec208c0756f0f92cf25f4616",
+      "sourceUrl": "https://oamaster.com/docs/companies/paypal#1-similar-password-singapore",
+      "status": "authored",
+      "reason": "对小写密码逐字符加一或减一，使元音数与辅音数相等；元音为 a、e、i、o、u。",
+      "clarification": "本站限制偶数密码长度，避免原题未定义的奇数长度无解返回值。"
+    },
+    {
+      "id": "oa-paypal-2",
+      "path": "fastprep/Paypal/paypal-count-user-logins.md",
+      "gitBlobSha": "95fe5c806495788cbc92fada65af7025e7958143",
+      "rawSha256": "6ab78fe896253acc1557b1bad70373adbda170906f46deaa939714d876043940",
+      "catalogContentHash": "d422c1e1d992e18aa46afb20f7543de8d7dbd629b2a318f52b523d9e274146a3",
+      "sourceUrl": "https://oamaster.com/docs/companies/paypal#2-count-user-logins-singapore",
+      "status": "authored",
+      "reason": "统计每个用户名在每个合法日期的登录次数；丢弃无效时间或日期的记录，并按用户名和日期的字典序输出。来源样例的两段解释与样例输入/输出计数不一致，本站以输入数据和明确规则重算；输出字段沿用样例与来源参考实现中的 userX 形式。",
+      "clarification": "两个说明段的部分计数笔误按原日志及样例 Output 修正；用户名顺序明定为字典序。"
+    },
+    {
+      "id": "oa-paypal-3",
+      "path": "fastprep/Paypal/paypal-find-minimum-price-to-spend.md",
+      "gitBlobSha": "b3e203344789d21b63a4b7f3c74a2f50106802cd",
+      "rawSha256": "641de0eeb7d779de10fcec92f2dc691e9aba6c15d43205a51868e450ae2245a2",
+      "catalogContentHash": "19e8241f1108d6fe67329131891ab63dc485a22f75fdebba0d60d3bb4c71a703",
+      "sourceUrl": "https://oamaster.com/docs/companies/paypal#3-find-minimum-price-to-spend",
+      "status": "authored",
+      "reason": "使用至多 m 张优惠券购买全部商品。对一个价格连续使用 x 张券后，价格变为 floor(price/2^x)。每张券至多用于一件商品的一次折半。",
+      "clarification": "使用整数向下折半；值域与 64 位结果范围由本站明示。"
+    },
+    {
+      "id": "oa-paypal-4",
+      "path": "fastprep/Paypal/paypal-modify-array.md",
+      "gitBlobSha": "7dc9d2554342926135ae737b37c4083a697eeb8a",
+      "rawSha256": "0ab95b96074f1498dcf84d339718c0b01b4cc54f60dd014b11b3e0fbb6aa3b09",
+      "catalogContentHash": "85e4f45af1a42e058fd1587eef88d982c3c492ceb868099f7185143ec89c5bab",
+      "sourceUrl": "https://oamaster.com/docs/companies/paypal#4-modify-array",
+      "status": "authored",
+      "reason": "求把数组修改为非递减或非递增序列的最小总绝对修改代价；每个位置可改为整数值，代价为新旧值差的绝对值。",
+      "clarification": "为兼容原第三样例把非负整数 0 纳入本站范围。"
+    }
+  ]
+}

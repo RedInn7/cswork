@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把长度和速度条件误写成满足任一项即可",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k,need=t[:3]; a=t[3:3+n]; count=length=total=0\n for v in a:\n  length+=1; total+=v\n  if length>=k or total>=need: count+=1; length=total=0\n return str(count)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略最小电脑数",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k,need=t[:3]; a=t[3:3+n]; count=length=total=0\n for v in a:\n  length+=1; total+=v\n  if total>=need: count+=1; length=total=0\n return str(count)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

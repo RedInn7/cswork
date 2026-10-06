@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不检查最后一个窗口",
+    "code": "def solve(data):\n    s,p=data.split(); m=len(p); n=len(s)\n    if m>n: return '-1'\n    want=[0]*26; have=[0]*26\n    for c in p: want[ord(c)-97]+=1\n    for c in s[:m]: have[ord(c)-97]+=1\n    for i in range(n-m):\n        if have==want: return str(i)\n        if i+m<n:\n            have[ord(s[i])-97]-=1; have[ord(s[i+m])-97]+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "完全相等长度时提前判无解",
+    "code": "def solve(data):\n    s,p=data.split(); m=len(p); n=len(s)\n    if m>=n: return '-1'\n    want=[0]*26; have=[0]*26\n    for c in p: want[ord(c)-97]+=1\n    for c in s[:m]: have[ord(c)-97]+=1\n    for i in range(n-m+1):\n        if have==want: return str(i)\n        if i+m<n:\n            have[ord(s[i])-97]-=1; have[ord(s[i+m])-97]+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

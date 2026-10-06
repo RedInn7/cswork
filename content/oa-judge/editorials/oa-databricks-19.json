@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-19",
+  "title": "文件数最多的 bucket",
+  "explanation": "## 思路\n\n为每个 bucket 维护文件名集合，并维护当前 bucket。处理完所有命令后取集合大小唯一最大的 bucket。\n\n## 正确性证明\n\n集合大小与题意中的不同文件数完全一致：重复文件名在集合中只保留一次，且 goto 会确保 bucket 存在。遍历最终各集合的大小，因题目保证唯一最大者，所得 bucket 正是所求。\n\n## 复杂度\n\n时间 O(q) 期望，空间 O(q)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    lines=data.splitlines(); q=int(lines[0]); buckets={}; current=None\n    for line in lines[1:1+q]:\n        op,name=line.split()\n        if op=='goto': current=name; buckets.setdefault(name,set())\n        else: buckets[current].add(name)\n    return max(buckets,key=lambda name:len(buckets[name]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#19-goto-largest-bucket",
+  "sourceContentHash": "052689a20353b2b3757ea3bc4811440e0bb2027298f60d3c541e03570ffe245e",
+  "author": "CSWork"
+}

@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-akuna-capital-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Update Release Scheduler",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Akuna Capital"
+    ],
+    "description": "按 plannedDate 非递减顺序发布更新。每个更新可选 alternateDate 或 plannedDate；允许多项同日发布。最小化完成全部更新时的日历日。若 plannedDate 相同，任意固定顺序均可；本站按原数组下标打破平局。\n\n题目来源与规则依据见题面/审阅记录；本站输入范围中标明的限制属于本站补充。",
+    "input": "第一行 n；第二行 n 个 plannedDate；第三行 n 个 alternateDate。原题约束：1≤n≤200000，1≤两数组元素≤10^9，alternateDate[i]≤plannedDate[i]。",
+    "output": "输出所有更新均发布后的最早完成日。",
+    "explanation": "请按题目规则处理输入；完整思路、正确性说明和复杂度见配套讲义。",
+    "hints": [
+      "按计划日期排序，维护当前最早可用日。若备用日不早于当前日就选备用日，否则只能等到计划日。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "4\n3 7 4 9\n1 5 2 3\n",
+      "expectedOutput": "9\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3\n9 2 7\n1 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "4\n3 2 7 8\n1 1 5 6\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "2\n1 1\n1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "5\n2 15 8 5 9\n1 12 4 3 4\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "7\n4 19 24 15 1 13 12\n2 8 10 8 1 4 2\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "5\n22 13 16 15 15\n2 1 12 2 13\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "8\n3 11 26 19 17 20 3 11\n1 6 2 3 4 10 1 5\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "3\n3 9 26\n1 4 25\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "2\n1 17\n1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "2\n17 28\n3 14\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "2\n2 29\n2 5\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "3\n23 11 14\n22 2 5\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "5\n29 12 4 19 25\n29 6 1 8 24\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "4\n15 10 9 24\n3 1 4 22\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "2\n9 1\n8 1\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "4\n20 28 11 30\n4 18 5 10\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "1\n24\n10\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "1\n17\n3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "1\n12\n2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "1\n15\n2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "7\n16 7 25 12 23 5 9\n7 2 14 7 5 2 5\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "1\n29\n23\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "3\n22 7 27\n21 6 5\n",
+      "expectedOutput": "27\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "8\n12 8 10 22 22 5 2 30\n5 5 3 2 3 5 2 1\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "4\n20 26 19 24\n6 23 9 15\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "8\n3 7 8 6 8 15 20 11\n3 4 5 1 8 12 15 1\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "7\n23 24 19 24 22 24 23\n16 20 7 16 15 21 7\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "6\n26 9 22 23 28 5\n21 4 5 6 13 3\n",
+      "expectedOutput": "28\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "5\n5 29 26 3 27\n3 15 3 1 9\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "4\n18 29 30 4\n6 22 15 4\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "5\n9 7 14 6 9\n7 1 2 2 7\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

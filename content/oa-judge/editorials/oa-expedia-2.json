@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-expedia-2",
+  "title": "Song Preference Ranking",
+  "explanation": "## 思路\n\n先把每位用户的偏好排列转换成每首歌的名次。对每对不同歌曲 (x,y) 统计偏好 x 的用户数，根据多数规则及 id 平票规则决定 x 是否击败 y。统计每首歌击败的歌曲数后，按击败数降序、id 升序排序。\n\n## 正确性\n\n名次表能精确判断每个用户是否偏好 x 胜过 y。逐一考察所有其他歌曲并应用题目给定的多数/平票规则，累计值恰好是定义中的击败数。最后的排序键与题目规定完全相同，因此得到唯一排名。\n\n## 复杂度\n\nO(nm² + m log m) 时间，O(nm) 空间；本站将 n,m 限制为 200。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(n,m,p):\n pos=[[0]*m for _ in range(n)]\n for u,row in enumerate(p):\n  for k,s in enumerate(row): pos[u][s]=k\n wins=[0]*m\n for x in range(m):\n  for y in range(m):\n   if x==y: continue\n   v=sum(pos[u][x]<pos[u][y] for u in range(n))\n   if 2*v>n or (2*v==n and x<y): wins[x]+=1\n return \" \".join(map(str,sorted(range(m),key=lambda s:(-wins[s],s))))\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); n,m=z[:2]; p=[z[2+i*m:2+(i+1)*m] for i in range(n)]; print(solve(n,m,p))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/expedia#2-song-preference-ranking",
+  "sourceContentHash": "d2fef227db0b2347dbfd54328b19f61583d6ee9579171d4fc6f672e32f18d7c2"
+}

@@ -1,0 +1,264 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-databricks-19",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "文件数最多的 bucket",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Databricks"
+    ],
+    "description": "按顺序处理命令：`goto name` 切换到该 bucket（bucket 不存在时创建空 bucket）；`create name` 在当前 bucket 中创建该名字的文件。相同 bucket 内文件名不重复，重复创建不增加文件数。返回文件数最多的 bucket 名，题目保证不会并列。\n\n标准输入输出及本站补充范围按本题说明执行。",
+    "input": "第一行命令数 q（2≤q≤50000），随后 q 行命令。name 为 1..40 个 ASCII 字母、数字、下划线或连字符组成的单个 token。第一条为 goto；至少一条 create。",
+    "output": "输出文件数唯一最多的 bucket 名称。",
+    "explanation": "为每个 bucket 维护文件名集合，并维护当前 bucket。处理完所有命令后取集合大小唯一最大的 bucket。",
+    "hints": [
+      "为每个 bucket 维护文件名集合，并维护当前 bucket。处理完所有命令后取集合大小唯一最大的 bucket。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "9\ngoto bucketA\ncreate fileA\ncreate fileB\ncreate fileA\ngoto bucketB\ngoto bucketC\ncreate fileA\ncreate fileB\ncreate fileC\n",
+      "expectedOutput": "bucketC\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "7\ngoto a\ncreate x\ngoto b\ncreate x\ncreate y\ngoto c\ncreate z\n",
+      "expectedOutput": "b\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2\ngoto solo\ncreate a\n",
+      "expectedOutput": "solo\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 1",
+      "input": "6\ngoto a\ncreate x\ncreate x\ngoto b\ncreate y\ncreate z\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 2",
+      "input": "1001\ngoto first\ncreate f0\ncreate f1\ncreate f2\ncreate f3\ncreate f4\ncreate f5\ncreate f6\ncreate f7\ncreate f8\ncreate f9\ncreate f10\ncreate f11\ncreate f12\ncreate f13\ncreate f14\ncreate f15\ncreate f16\ncreate f17\ncreate f18\ncreate f19\ncreate f20\ncreate f21\ncreate f22\ncreate f23\ncreate f24\ncreate f25\ncreate f26\ncreate f27\ncreate f28\ncreate f29\ncreate f30\ncreate f31\ncreate f32\ncreate f33\ncreate f34\ncreate f35\ncreate f36\ncreate f37\ncreate f38\ncreate f39\ncreate f40\ncreate f41\ncreate f42\ncreate f43\ncreate f44\ncreate f45\ncreate f46\ncreate f47\ncreate f48\ncreate f49\ncreate f50\ncreate f51\ncreate f52\ncreate f53\ncreate f54\ncreate f55\ncreate f56\ncreate f57\ncreate f58\ncreate f59\ncreate f60\ncreate f61\ncreate f62\ncreate f63\ncreate f64\ncreate f65\ncreate f66\ncreate f67\ncreate f68\ncreate f69\ncreate f70\ncreate f71\ncreate f72\ncreate f73\ncreate f74\ncreate f75\ncreate f76\ncreate f77\ncreate f78\ncreate f79\ncreate f80\ncreate f81\ncreate f82\ncreate f83\ncreate f84\ncreate f85\ncreate f86\ncreate f87\ncreate f88\ncreate f89\ncreate f90\ncreate f91\ncreate f92\ncreate f93\ncreate f94\ncreate f95\ncreate f96\ncreate f97\ncreate f98\ncreate f99\ncreate f100\ncreate f101\ncreate f102\ncreate f103\ncreate f104\ncreate f105\ncreate f106\ncreate f107\ncreate f108\ncreate f109\ncreate f110\ncreate f111\ncreate f112\ncreate f113\ncreate f114\ncreate f115\ncreate f116\ncreate f117\ncreate f118\ncreate f119\ncreate f120\ncreate f121\ncreate f122\ncreate f123\ncreate f124\ncreate f125\ncreate f126\ncreate f127\ncreate f128\ncreate f129\ncreate f130\ncreate f131\ncreate f132\ncreate f133\ncreate f134\ncreate f135\ncreate f136\ncreate f137\ncreate f138\ncreate f139\ncreate f140\ncreate f141\ncreate f142\ncreate f143\ncreate f144\ncreate f145\ncreate f146\ncreate f147\ncreate f148\ncreate f149\ncreate f150\ncreate f151\ncreate f152\ncreate f153\ncreate f154\ncreate f155\ncreate f156\ncreate f157\ncreate f158\ncreate f159\ncreate f160\ncreate f161\ncreate f162\ncreate f163\ncreate f164\ncreate f165\ncreate f166\ncreate f167\ncreate f168\ncreate f169\ncreate f170\ncreate f171\ncreate f172\ncreate f173\ncreate f174\ncreate f175\ncreate f176\ncreate f177\ncreate f178\ncreate f179\ncreate f180\ncreate f181\ncreate f182\ncreate f183\ncreate f184\ncreate f185\ncreate f186\ncreate f187\ncreate f188\ncreate f189\ncreate f190\ncreate f191\ncreate f192\ncreate f193\ncreate f194\ncreate f195\ncreate f196\ncreate f197\ncreate f198\ncreate f199\ncreate f200\ncreate f201\ncreate f202\ncreate f203\ncreate f204\ncreate f205\ncreate f206\ncreate f207\ncreate f208\ncreate f209\ncreate f210\ncreate f211\ncreate f212\ncreate f213\ncreate f214\ncreate f215\ncreate f216\ncreate f217\ncreate f218\ncreate f219\ncreate f220\ncreate f221\ncreate f222\ncreate f223\ncreate f224\ncreate f225\ncreate f226\ncreate f227\ncreate f228\ncreate f229\ncreate f230\ncreate f231\ncreate f232\ncreate f233\ncreate f234\ncreate f235\ncreate f236\ncreate f237\ncreate f238\ncreate f239\ncreate f240\ncreate f241\ncreate f242\ncreate f243\ncreate f244\ncreate f245\ncreate f246\ncreate f247\ncreate f248\ncreate f249\ncreate f250\ncreate f251\ncreate f252\ncreate f253\ncreate f254\ncreate f255\ncreate f256\ncreate f257\ncreate f258\ncreate f259\ncreate f260\ncreate f261\ncreate f262\ncreate f263\ncreate f264\ncreate f265\ncreate f266\ncreate f267\ncreate f268\ncreate f269\ncreate f270\ncreate f271\ncreate f272\ncreate f273\ncreate f274\ncreate f275\ncreate f276\ncreate f277\ncreate f278\ncreate f279\ncreate f280\ncreate f281\ncreate f282\ncreate f283\ncreate f284\ncreate f285\ncreate f286\ncreate f287\ncreate f288\ncreate f289\ncreate f290\ncreate f291\ncreate f292\ncreate f293\ncreate f294\ncreate f295\ncreate f296\ncreate f297\ncreate f298\ncreate f299\ncreate f300\ncreate f301\ncreate f302\ncreate f303\ncreate f304\ncreate f305\ncreate f306\ncreate f307\ncreate f308\ncreate f309\ncreate f310\ncreate f311\ncreate f312\ncreate f313\ncreate f314\ncreate f315\ncreate f316\ncreate f317\ncreate f318\ncreate f319\ncreate f320\ncreate f321\ncreate f322\ncreate f323\ncreate f324\ncreate f325\ncreate f326\ncreate f327\ncreate f328\ncreate f329\ncreate f330\ncreate f331\ncreate f332\ncreate f333\ncreate f334\ncreate f335\ncreate f336\ncreate f337\ncreate f338\ncreate f339\ncreate f340\ncreate f341\ncreate f342\ncreate f343\ncreate f344\ncreate f345\ncreate f346\ncreate f347\ncreate f348\ncreate f349\ncreate f350\ncreate f351\ncreate f352\ncreate f353\ncreate f354\ncreate f355\ncreate f356\ncreate f357\ncreate f358\ncreate f359\ncreate f360\ncreate f361\ncreate f362\ncreate f363\ncreate f364\ncreate f365\ncreate f366\ncreate f367\ncreate f368\ncreate f369\ncreate f370\ncreate f371\ncreate f372\ncreate f373\ncreate f374\ncreate f375\ncreate f376\ncreate f377\ncreate f378\ncreate f379\ncreate f380\ncreate f381\ncreate f382\ncreate f383\ncreate f384\ncreate f385\ncreate f386\ncreate f387\ncreate f388\ncreate f389\ncreate f390\ncreate f391\ncreate f392\ncreate f393\ncreate f394\ncreate f395\ncreate f396\ncreate f397\ncreate f398\ncreate f399\ncreate f400\ncreate f401\ncreate f402\ncreate f403\ncreate f404\ncreate f405\ncreate f406\ncreate f407\ncreate f408\ncreate f409\ncreate f410\ncreate f411\ncreate f412\ncreate f413\ncreate f414\ncreate f415\ncreate f416\ncreate f417\ncreate f418\ncreate f419\ncreate f420\ncreate f421\ncreate f422\ncreate f423\ncreate f424\ncreate f425\ncreate f426\ncreate f427\ncreate f428\ncreate f429\ncreate f430\ncreate f431\ncreate f432\ncreate f433\ncreate f434\ncreate f435\ncreate f436\ncreate f437\ncreate f438\ncreate f439\ncreate f440\ncreate f441\ncreate f442\ncreate f443\ncreate f444\ncreate f445\ncreate f446\ncreate f447\ncreate f448\ncreate f449\ncreate f450\ncreate f451\ncreate f452\ncreate f453\ncreate f454\ncreate f455\ncreate f456\ncreate f457\ncreate f458\ncreate f459\ncreate f460\ncreate f461\ncreate f462\ncreate f463\ncreate f464\ncreate f465\ncreate f466\ncreate f467\ncreate f468\ncreate f469\ncreate f470\ncreate f471\ncreate f472\ncreate f473\ncreate f474\ncreate f475\ncreate f476\ncreate f477\ncreate f478\ncreate f479\ncreate f480\ncreate f481\ncreate f482\ncreate f483\ncreate f484\ncreate f485\ncreate f486\ncreate f487\ncreate f488\ncreate f489\ncreate f490\ncreate f491\ncreate f492\ncreate f493\ncreate f494\ncreate f495\ncreate f496\ncreate f497\ncreate f498\ncreate f499\ncreate f500\ncreate f501\ncreate f502\ncreate f503\ncreate f504\ncreate f505\ncreate f506\ncreate f507\ncreate f508\ncreate f509\ncreate f510\ncreate f511\ncreate f512\ncreate f513\ncreate f514\ncreate f515\ncreate f516\ncreate f517\ncreate f518\ncreate f519\ncreate f520\ncreate f521\ncreate f522\ncreate f523\ncreate f524\ncreate f525\ncreate f526\ncreate f527\ncreate f528\ncreate f529\ncreate f530\ncreate f531\ncreate f532\ncreate f533\ncreate f534\ncreate f535\ncreate f536\ncreate f537\ncreate f538\ncreate f539\ncreate f540\ncreate f541\ncreate f542\ncreate f543\ncreate f544\ncreate f545\ncreate f546\ncreate f547\ncreate f548\ncreate f549\ncreate f550\ncreate f551\ncreate f552\ncreate f553\ncreate f554\ncreate f555\ncreate f556\ncreate f557\ncreate f558\ncreate f559\ncreate f560\ncreate f561\ncreate f562\ncreate f563\ncreate f564\ncreate f565\ncreate f566\ncreate f567\ncreate f568\ncreate f569\ncreate f570\ncreate f571\ncreate f572\ncreate f573\ncreate f574\ncreate f575\ncreate f576\ncreate f577\ncreate f578\ncreate f579\ncreate f580\ncreate f581\ncreate f582\ncreate f583\ncreate f584\ncreate f585\ncreate f586\ncreate f587\ncreate f588\ncreate f589\ncreate f590\ncreate f591\ncreate f592\ncreate f593\ncreate f594\ncreate f595\ncreate f596\ncreate f597\ncreate f598\ncreate f599\ncreate f600\ncreate f601\ncreate f602\ncreate f603\ncreate f604\ncreate f605\ncreate f606\ncreate f607\ncreate f608\ncreate f609\ncreate f610\ncreate f611\ncreate f612\ncreate f613\ncreate f614\ncreate f615\ncreate f616\ncreate f617\ncreate f618\ncreate f619\ncreate f620\ncreate f621\ncreate f622\ncreate f623\ncreate f624\ncreate f625\ncreate f626\ncreate f627\ncreate f628\ncreate f629\ncreate f630\ncreate f631\ncreate f632\ncreate f633\ncreate f634\ncreate f635\ncreate f636\ncreate f637\ncreate f638\ncreate f639\ncreate f640\ncreate f641\ncreate f642\ncreate f643\ncreate f644\ncreate f645\ncreate f646\ncreate f647\ncreate f648\ncreate f649\ncreate f650\ncreate f651\ncreate f652\ncreate f653\ncreate f654\ncreate f655\ncreate f656\ncreate f657\ncreate f658\ncreate f659\ncreate f660\ncreate f661\ncreate f662\ncreate f663\ncreate f664\ncreate f665\ncreate f666\ncreate f667\ncreate f668\ncreate f669\ncreate f670\ncreate f671\ncreate f672\ncreate f673\ncreate f674\ncreate f675\ncreate f676\ncreate f677\ncreate f678\ncreate f679\ncreate f680\ncreate f681\ncreate f682\ncreate f683\ncreate f684\ncreate f685\ncreate f686\ncreate f687\ncreate f688\ncreate f689\ncreate f690\ncreate f691\ncreate f692\ncreate f693\ncreate f694\ncreate f695\ncreate f696\ncreate f697\ncreate f698\ncreate f699\ncreate f700\ncreate f701\ncreate f702\ncreate f703\ncreate f704\ncreate f705\ncreate f706\ncreate f707\ncreate f708\ncreate f709\ncreate f710\ncreate f711\ncreate f712\ncreate f713\ncreate f714\ncreate f715\ncreate f716\ncreate f717\ncreate f718\ncreate f719\ncreate f720\ncreate f721\ncreate f722\ncreate f723\ncreate f724\ncreate f725\ncreate f726\ncreate f727\ncreate f728\ncreate f729\ncreate f730\ncreate f731\ncreate f732\ncreate f733\ncreate f734\ncreate f735\ncreate f736\ncreate f737\ncreate f738\ncreate f739\ncreate f740\ncreate f741\ncreate f742\ncreate f743\ncreate f744\ncreate f745\ncreate f746\ncreate f747\ncreate f748\ncreate f749\ncreate f750\ncreate f751\ncreate f752\ncreate f753\ncreate f754\ncreate f755\ncreate f756\ncreate f757\ncreate f758\ncreate f759\ncreate f760\ncreate f761\ncreate f762\ncreate f763\ncreate f764\ncreate f765\ncreate f766\ncreate f767\ncreate f768\ncreate f769\ncreate f770\ncreate f771\ncreate f772\ncreate f773\ncreate f774\ncreate f775\ncreate f776\ncreate f777\ncreate f778\ncreate f779\ncreate f780\ncreate f781\ncreate f782\ncreate f783\ncreate f784\ncreate f785\ncreate f786\ncreate f787\ncreate f788\ncreate f789\ncreate f790\ncreate f791\ncreate f792\ncreate f793\ncreate f794\ncreate f795\ncreate f796\ncreate f797\ncreate f798\ncreate f799\ncreate f800\ncreate f801\ncreate f802\ncreate f803\ncreate f804\ncreate f805\ncreate f806\ncreate f807\ncreate f808\ncreate f809\ncreate f810\ncreate f811\ncreate f812\ncreate f813\ncreate f814\ncreate f815\ncreate f816\ncreate f817\ncreate f818\ncreate f819\ncreate f820\ncreate f821\ncreate f822\ncreate f823\ncreate f824\ncreate f825\ncreate f826\ncreate f827\ncreate f828\ncreate f829\ncreate f830\ncreate f831\ncreate f832\ncreate f833\ncreate f834\ncreate f835\ncreate f836\ncreate f837\ncreate f838\ncreate f839\ncreate f840\ncreate f841\ncreate f842\ncreate f843\ncreate f844\ncreate f845\ncreate f846\ncreate f847\ncreate f848\ncreate f849\ncreate f850\ncreate f851\ncreate f852\ncreate f853\ncreate f854\ncreate f855\ncreate f856\ncreate f857\ncreate f858\ncreate f859\ncreate f860\ncreate f861\ncreate f862\ncreate f863\ncreate f864\ncreate f865\ncreate f866\ncreate f867\ncreate f868\ncreate f869\ncreate f870\ncreate f871\ncreate f872\ncreate f873\ncreate f874\ncreate f875\ncreate f876\ncreate f877\ncreate f878\ncreate f879\ncreate f880\ncreate f881\ncreate f882\ncreate f883\ncreate f884\ncreate f885\ncreate f886\ncreate f887\ncreate f888\ncreate f889\ncreate f890\ncreate f891\ncreate f892\ncreate f893\ncreate f894\ncreate f895\ncreate f896\ncreate f897\ncreate f898\ncreate f899\ncreate f900\ncreate f901\ncreate f902\ncreate f903\ncreate f904\ncreate f905\ncreate f906\ncreate f907\ncreate f908\ncreate f909\ncreate f910\ncreate f911\ncreate f912\ncreate f913\ncreate f914\ncreate f915\ncreate f916\ncreate f917\ncreate f918\ncreate f919\ncreate f920\ncreate f921\ncreate f922\ncreate f923\ncreate f924\ncreate f925\ncreate f926\ncreate f927\ncreate f928\ncreate f929\ncreate f930\ncreate f931\ncreate f932\ncreate f933\ncreate f934\ncreate f935\ncreate f936\ncreate f937\ncreate f938\ncreate f939\ncreate f940\ncreate f941\ncreate f942\ncreate f943\ncreate f944\ncreate f945\ncreate f946\ncreate f947\ncreate f948\ncreate f949\ncreate f950\ncreate f951\ncreate f952\ncreate f953\ncreate f954\ncreate f955\ncreate f956\ncreate f957\ncreate f958\ncreate f959\ncreate f960\ncreate f961\ncreate f962\ncreate f963\ncreate f964\ncreate f965\ncreate f966\ncreate f967\ncreate f968\ncreate f969\ncreate f970\ncreate f971\ncreate f972\ncreate f973\ncreate f974\ncreate f975\ncreate f976\ncreate f977\ncreate f978\ncreate f979\ncreate f980\ncreate f981\ncreate f982\ncreate f983\ncreate f984\ncreate f985\ncreate f986\ncreate f987\ncreate f988\ncreate f989\ncreate f990\ncreate f991\ncreate f992\ncreate f993\ncreate f994\ncreate f995\ncreate f996\ncreate f997\ncreate f998\ncreate f999\n",
+      "expectedOutput": "first\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 3",
+      "input": "71\ngoto a\ngoto b\ngoto c\ngoto a\ngoto b\ngoto a\ngoto c\ngoto b\ncreate f6\ncreate f2\ngoto a\ncreate f6\ncreate f7\ncreate f4\ngoto b\ncreate f5\ncreate f4\ngoto a\ngoto b\ngoto a\ncreate f2\ncreate f2\ngoto b\ngoto b\ncreate f0\ngoto c\ncreate f5\ncreate f7\ngoto a\ngoto b\ncreate f1\ngoto b\ncreate f1\ncreate f0\ncreate f7\ngoto a\ncreate f3\ncreate f0\ngoto a\ngoto b\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 4",
+      "input": "58\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f2\ngoto a\ncreate f2\ncreate f4\ncreate f6\ngoto c\ngoto c\ncreate f4\ngoto a\ncreate f0\ngoto c\ncreate f7\ngoto c\ncreate f4\ncreate f4\ncreate f2\ngoto a\ncreate f6\ngoto c\ngoto a\ncreate f3\ncreate f6\ncreate f5\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 5",
+      "input": "85\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f6\ncreate f2\ncreate f5\ngoto b\ncreate f5\ncreate f5\ncreate f4\ngoto c\ncreate f4\ncreate f1\ngoto a\ncreate f0\ngoto c\ngoto a\ncreate f6\ncreate f0\ncreate f0\ngoto c\ncreate f1\ncreate f3\ncreate f7\ngoto a\ncreate f6\ncreate f1\ngoto b\ncreate f0\ncreate f1\ngoto c\ncreate f7\ngoto a\ncreate f0\ngoto c\ngoto a\ncreate f7\ncreate f6\ncreate f7\ngoto c\ncreate f6\ncreate f5\ngoto c\ncreate f3\ncreate f5\ncreate f5\ngoto a\ncreate f1\ncreate f6\ngoto b\ncreate f2\ncreate f4\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 6",
+      "input": "38\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f4\ncreate f2\ncreate f6\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 7",
+      "input": "52\ngoto a\ngoto b\ngoto c\ngoto a\ngoto a\ngoto c\ngoto a\ncreate f3\ncreate f4\ngoto a\ncreate f0\ncreate f3\ngoto c\ncreate f4\ncreate f4\ncreate f3\ngoto b\ncreate f0\ngoto c\ncreate f5\ncreate f0\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 8",
+      "input": "78\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f7\ncreate f0\ngoto c\ngoto c\ngoto a\ngoto c\ncreate f1\ngoto a\ncreate f3\ncreate f2\ngoto b\ncreate f5\ncreate f1\ngoto a\ngoto a\ncreate f5\ncreate f4\ngoto c\ncreate f2\ngoto b\ncreate f7\ngoto b\ncreate f1\ncreate f0\ncreate f2\ngoto a\ncreate f4\ngoto b\ncreate f5\ncreate f3\ngoto a\ncreate f5\ngoto b\ncreate f4\ncreate f0\ncreate f3\ngoto a\ncreate f1\ncreate f4\ngoto c\ncreate f4\ngoto c\ncreate f2\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 9",
+      "input": "63\ngoto a\ngoto b\ngoto c\ngoto b\ncreate f1\ncreate f4\ngoto b\ncreate f7\ncreate f7\ngoto c\ngoto c\ngoto b\ncreate f3\ncreate f2\ncreate f3\ngoto c\ncreate f7\ngoto b\ncreate f6\ncreate f6\ncreate f2\ngoto b\ncreate f7\ncreate f3\ncreate f4\ngoto c\ncreate f1\ncreate f3\ncreate f3\ngoto c\ncreate f0\ncreate f3\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 10",
+      "input": "37\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f5\ncreate f5\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 11",
+      "input": "75\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f5\ncreate f0\ncreate f6\ngoto c\ncreate f3\ngoto a\ncreate f5\ncreate f6\ngoto a\ncreate f2\ncreate f5\ngoto c\ncreate f1\ncreate f7\ngoto b\ngoto a\ncreate f5\ngoto b\ncreate f7\ngoto c\ngoto c\ncreate f3\ncreate f7\ncreate f0\ngoto a\ncreate f1\ncreate f2\ngoto a\ncreate f2\ncreate f4\ngoto b\ncreate f1\ncreate f4\ngoto a\ncreate f3\ncreate f4\ncreate f0\ngoto a\ngoto a\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 12",
+      "input": "47\ngoto a\ngoto b\ngoto c\ngoto b\ngoto b\ncreate f3\ncreate f3\ncreate f0\ngoto b\ncreate f0\ncreate f7\ngoto c\ngoto a\ncreate f4\ncreate f7\ngoto b\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 13",
+      "input": "38\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f1\ncreate f6\ncreate f6\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 14",
+      "input": "43\ngoto a\ngoto b\ngoto c\ngoto a\ngoto c\ncreate f6\ngoto a\ncreate f2\ncreate f0\ngoto c\ncreate f3\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 15",
+      "input": "61\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f5\ncreate f0\ngoto b\ncreate f7\ngoto b\ncreate f4\ngoto c\ncreate f7\ncreate f3\ncreate f0\ngoto c\ncreate f3\ncreate f4\ngoto b\ngoto b\ncreate f7\ngoto c\ncreate f4\ncreate f2\ngoto c\ncreate f7\ngoto a\ncreate f5\ncreate f6\ncreate f4\ngoto a\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 16",
+      "input": "52\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f4\ncreate f2\ncreate f5\ngoto c\ncreate f5\ncreate f5\ncreate f2\ngoto c\ncreate f2\ncreate f6\ncreate f5\ngoto a\ncreate f1\ngoto b\ncreate f6\ncreate f0\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 17",
+      "input": "69\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f1\ncreate f4\ngoto a\ncreate f1\ngoto c\ncreate f5\ngoto b\ncreate f2\ncreate f4\ngoto a\ncreate f7\ncreate f7\ncreate f3\ngoto b\ncreate f6\ngoto b\ngoto c\ncreate f5\ncreate f1\ngoto c\ncreate f2\ngoto b\ngoto a\ncreate f6\ngoto b\ncreate f7\ngoto b\ncreate f3\ncreate f5\ncreate f6\ngoto c\ncreate f6\ncreate f1\ngoto b\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 18",
+      "input": "40\ngoto a\ngoto b\ngoto c\ngoto a\ngoto b\ncreate f5\ngoto c\ncreate f7\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 19",
+      "input": "84\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f7\ngoto a\ncreate f6\ncreate f3\ngoto b\ncreate f2\ncreate f7\ngoto b\ncreate f6\ncreate f5\ncreate f5\ngoto c\ncreate f6\ncreate f1\ngoto c\ncreate f4\ncreate f5\ncreate f1\ngoto b\ncreate f1\ncreate f7\ncreate f5\ngoto c\ngoto a\ncreate f2\ncreate f1\ngoto c\ncreate f7\ncreate f4\ncreate f0\ngoto a\ngoto a\ncreate f3\ngoto c\ncreate f0\ncreate f6\ncreate f3\ngoto b\ncreate f0\ngoto a\ncreate f4\ncreate f7\ncreate f3\ngoto b\ncreate f6\ngoto a\ncreate f7\ncreate f2\ncreate f4\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 20",
+      "input": "69\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f4\ncreate f5\ngoto c\ngoto c\ngoto a\ngoto c\ncreate f2\ncreate f5\ncreate f4\ngoto c\ngoto b\ncreate f2\ncreate f2\ncreate f6\ngoto c\ngoto a\ncreate f1\ncreate f2\ncreate f4\ngoto b\ncreate f6\ngoto c\ncreate f0\ncreate f5\ngoto b\ngoto b\ncreate f5\ncreate f3\ngoto c\ncreate f6\ncreate f2\ngoto c\ncreate f3\ncreate f3\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 21",
+      "input": "41\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f0\ngoto a\ngoto a\ncreate f6\ncreate f2\ncreate f2\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 22",
+      "input": "63\ngoto a\ngoto b\ngoto c\ngoto b\ngoto b\ncreate f7\ncreate f5\ncreate f6\ngoto a\ncreate f5\ncreate f7\ncreate f6\ngoto a\ncreate f5\ncreate f7\ncreate f7\ngoto b\ngoto a\ncreate f1\ncreate f4\ncreate f7\ngoto b\ncreate f3\ngoto b\ncreate f3\ngoto c\ncreate f2\ngoto b\ncreate f4\ncreate f1\ngoto a\ncreate f0\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 23",
+      "input": "68\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f6\ncreate f3\ngoto b\ncreate f7\ncreate f6\ncreate f4\ngoto c\ncreate f3\ngoto c\ncreate f7\ncreate f7\ncreate f3\ngoto a\ncreate f2\ngoto b\ncreate f0\ngoto a\ncreate f1\ncreate f3\ncreate f6\ngoto c\ncreate f6\ncreate f0\ncreate f5\ngoto a\ncreate f7\ngoto b\ncreate f4\ncreate f7\ncreate f3\ngoto c\ngoto b\ngoto b\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 24",
+      "input": "57\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f2\ncreate f2\ncreate f6\ngoto c\ncreate f6\ncreate f2\ncreate f6\ngoto b\ngoto a\ncreate f1\ncreate f2\ngoto c\ngoto b\ncreate f0\ncreate f2\ngoto c\ngoto a\ncreate f1\ncreate f3\ngoto c\ncreate f1\ncreate f0\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 25",
+      "input": "49\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f2\ncreate f5\ngoto a\ncreate f2\ncreate f6\ncreate f3\ngoto c\ncreate f5\ngoto c\ncreate f3\ncreate f4\ncreate f2\ngoto b\ncreate f5\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 26",
+      "input": "81\ngoto a\ngoto b\ngoto c\ngoto c\ncreate f2\ncreate f6\ngoto c\ncreate f0\ncreate f6\ncreate f7\ngoto a\ncreate f0\ncreate f6\ncreate f6\ngoto c\ncreate f3\ngoto a\ncreate f1\ngoto a\ncreate f2\ngoto c\ncreate f7\ncreate f4\ngoto c\ncreate f6\ngoto a\ncreate f0\ncreate f5\ngoto b\ncreate f5\ncreate f3\ncreate f4\ngoto a\ngoto b\ncreate f5\ncreate f6\ngoto b\ngoto b\ncreate f0\ncreate f2\ncreate f5\ngoto b\ncreate f2\ncreate f0\ncreate f3\ngoto b\ncreate f2\ngoto b\ncreate f3\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 27",
+      "input": "64\ngoto a\ngoto b\ngoto c\ngoto b\ngoto a\ncreate f1\ncreate f2\ncreate f4\ngoto c\ngoto a\ncreate f1\ncreate f2\ngoto c\ncreate f7\ngoto b\ngoto b\ngoto b\ncreate f3\ncreate f4\ngoto a\ngoto b\ngoto c\ncreate f1\ngoto b\ncreate f0\ncreate f5\ncreate f1\ngoto a\ncreate f2\ngoto c\ncreate f3\ncreate f6\ncreate f7\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 28",
+      "input": "65\ngoto a\ngoto b\ngoto c\ngoto a\ncreate f0\ncreate f1\ngoto a\ncreate f1\ngoto c\ncreate f7\ncreate f0\ncreate f4\ngoto a\ncreate f3\ngoto c\ncreate f0\ngoto b\ngoto b\ncreate f3\ncreate f4\ngoto a\ncreate f1\ncreate f1\ncreate f4\ngoto a\ngoto a\ncreate f6\ncreate f5\ngoto b\ncreate f4\ncreate f5\ngoto b\ncreate f4\ngoto a\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 29",
+      "input": "41\ngoto a\ngoto b\ngoto c\ngoto c\ngoto c\ngoto c\ngoto c\ncreate f7\ngoto c\ncreate f4\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界与组合 30",
+      "input": "71\ngoto a\ngoto b\ngoto c\ngoto b\ncreate f1\ngoto a\ngoto c\ncreate f0\ngoto c\ncreate f0\ngoto a\ncreate f5\ncreate f0\ngoto a\ncreate f0\ncreate f7\ngoto c\ngoto a\ncreate f4\ncreate f7\ngoto c\ncreate f3\ncreate f1\ncreate f6\ngoto c\ncreate f2\ncreate f4\ngoto a\ngoto a\ncreate f2\ncreate f4\ncreate f2\ngoto b\ncreate f1\ncreate f2\ncreate f6\ngoto a\ncreate f4\ncreate f2\ngoto b\ngoto winner\ncreate x0\ncreate x1\ncreate x2\ncreate x3\ncreate x4\ncreate x5\ncreate x6\ncreate x7\ncreate x8\ncreate x9\ncreate x10\ncreate x11\ncreate x12\ncreate x13\ncreate x14\ncreate x15\ncreate x16\ncreate x17\ncreate x18\ncreate x19\ncreate x20\ncreate x21\ncreate x22\ncreate x23\ncreate x24\ncreate x25\ncreate x26\ncreate x27\ncreate x28\ncreate x29\n",
+      "expectedOutput": "winner\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

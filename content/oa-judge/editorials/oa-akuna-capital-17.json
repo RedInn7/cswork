@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-17",
+  "title": "K Smallest Substring",
+  "explanation": "## 思路\n\n按字符串中 1 的下标枚举每个连续 k 个 1 的组，取覆盖这些 1 的最短子串，再比较长度和字典序。\n\n## 正确性\n\n任何合法子串包含一个连续的 k 个 1；去掉首个 1 之前和末个 1 之后的字符仍合法且更短，因此最短候选必恰从某个第一个 1 开始并止于第 k 个 1。遍历所有连续 k 个 1 的窗口穷尽所有最短候选，按长度、字典序取最小即正确。\n\n## 复杂度\n\n设字符串长度为 n、1 的个数为 q。时间 O(q)，空间 O(n)（存储 1 的位置及答案）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s,k=raw.split();k=int(k);ones=[i for i,c in enumerate(s) if c=='1'];best=None\n for i in range(len(ones)-k+1):\n  z=s[ones[i]:ones[i+k-1]+1]\n  if best is None or (len(z),z)<(len(best),best):best=z\n return best\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#17-k-smallest-substring",
+  "sourceContentHash": "0e27fc5d248b1be55f826b591a4f448572a52555c60b0e5fd7b758a4fe180a67",
+  "author": "CSWork"
+}

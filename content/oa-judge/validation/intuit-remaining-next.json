@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261005,
+  "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "note": "本候选批次每题 163 个唯一独立 oracle 输入、31 个正式用例（含大输入边界）和两个正常退出 mutant；不代表 GoJudge 沙箱报告。",
+  "problems": [
+    {
+      "id": "oa-intuit-1",
+      "oracleCases": 163,
+      "formal": 31,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-1-1.py",
+          "description": "允许任意次数转向",
+          "rejectedByCases": [
+            29
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-1-2.py",
+          "description": "只允许一次转向",
+          "rejectedByCases": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-9",
+      "oracleCases": 163,
+      "formal": 31,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-9-1.py",
+          "description": "只统计每个子串内相邻字符不同",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-9-2.py",
+          "description": "只检查每个子串首尾字符是否不同",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-15",
+      "oracleCases": 163,
+      "formal": 31,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-15-1.py",
+          "description": "优先从最低频字符删除",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-15-2.py",
+          "description": "忽略最多删除数量，只计算原始成本",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-21",
+      "oracleCases": 163,
+      "formal": 31,
+      "negativeControls": [
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-21-1.py",
+          "description": "把代价错误地向上取整",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "file": "content/oa-judge/negative-controls/oa-intuit-21-2.py",
+          "description": "把字符串按原顺序做回文而非先可重排",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ]
+    }
+  ]
+}

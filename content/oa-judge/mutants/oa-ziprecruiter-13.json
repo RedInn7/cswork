@@ -1,0 +1,10 @@
+[
+  {
+    "name": "颠倒向前与向后耗时",
+    "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); a=[next(it) for _ in range(n)]\n return str(sum(2 if b>a else 1 if b<a else 0 for a,b in zip(a,a[1:])))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把耗时当成年份差",
+    "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); a=[next(it) for _ in range(n)]\n return str(sum(abs(b-a) for a,b in zip(a,a[1:])))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

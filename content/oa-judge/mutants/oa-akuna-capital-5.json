@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只计移动距离，不计每次操作的固定 1",
+    "code": "import sys\ndef solve(raw):\n s=raw.strip();ones=0;ans=0\n for c in s:\n  if c=='1':ones+=1\n  else:ans+=ones\n return str(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误地按每个 1 只移动一次计费",
+    "code": "import sys\ndef solve(raw):\n s=raw.strip();ones=s.count('1');zeros=s.count('0');return str(ones+zeros)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

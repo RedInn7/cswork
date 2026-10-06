@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-23",
+  "title": "二进制串翻转与前缀计数",
+  "explanation": "## 思路\n\n预计算初始 0 前缀和，以布尔标记维护翻转次数奇偶；查询时根据状态返回原前缀零数或前缀长度减原零数。\n\n## 正确性证明\n\n每次全串翻转后，一个前缀中的 0 数变成该前缀长度减原本的 0 数；连续翻转仅由奇偶性决定。按顺序逐操作应用这一等式，因此每次查询答案与当前实际字符串一致。\n\n## 复杂度\n\n时间 O(n+q)，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    it=iter(data.split()); n=int(next(it)); q=int(next(it)); bits=next(it); pref=[0]*(n+1)\n    for i,c in enumerate(bits): pref[i+1]=pref[i]+(c=='0')\n    flipped=False; out=[]\n    for _ in range(q):\n        op=next(it)\n        if op=='flip': flipped=not flipped\n        else:\n            i=int(next(it)); z=pref[i+1]; out.append(str(i+1-z if flipped else z))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#23-binary-string-requests",
+  "sourceContentHash": "2249de054670f276a542b9f98ad48c7ac4e47499450f03169cc65bc5af2e0f74",
+  "author": "CSWork"
+}

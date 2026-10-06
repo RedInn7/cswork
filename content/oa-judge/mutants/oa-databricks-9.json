@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把小于 x 的值也减 x",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; a=v[1:1+n]; total=0; i=0\n    while i<n:\n        if a[i]==0: i+=1; continue\n        x=a[i]; total+=x\n        for j in range(i,n):\n            a[j]-=x\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只处理当前元素",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; a=v[1:1+n]; total=0; i=0\n    while i<n:\n        if a[i]==0: i+=1; continue\n        x=a[i]; total+=x\n        for j in range(i,i+1):\n            if a[j]>=x: a[j]-=x\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按输入顺序而不是距离排序",
+    "code": "import sys\ndef solve(raw):\n ds=[]\n for x in raw.strip().split(\";\"):\n  if x.strip(): ds.append(int(x.rsplit(\",\",1)[1].strip()))\n pass\n return \", \".join(str(ds[0] if i==0 else ds[i]-ds[i-1]) for i in range(len(ds)))\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "遗漏起点到首站的路段",
+    "code": "import sys\ndef solve(raw):\n ds=[]\n for x in raw.strip().split(\";\"):\n  if x.strip(): ds.append(int(x.rsplit(\",\",1)[1].strip()))\n ds.sort()\n return \", \".join(str(ds[i]-ds[i-1]) for i in range(1,len(ds)))\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]
