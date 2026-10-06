@@ -80,6 +80,104 @@
       "expectedOutput": "1\n1\n",
       "hidden": true,
       "weight": 1
+    },
+    {
+      "name": "递增时间戳全部处于窗口",
+      "input": "10 6\nRECORD 1 100\nRECORD 2 200\nGET_LOGS\nCOUNT\nRECORD 3 300\nGET_LOGS\n",
+      "expectedOutput": "1,2\n2\n1,2,3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "恰好一小时边界之前的记录被排除",
+      "input": "10 4\nRECORD 1 100\nRECORD 2 3700\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "1\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "一小时边界内一秒的记录保留",
+      "input": "10 4\nRECORD 1 100\nRECORD 2 3701\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "1\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "重复 logId 保留为两条日志",
+      "input": "10 4\nRECORD 5 1000\nRECORD 5 1100\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "2\n5,5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "只限制返回条数不限制窗口计数",
+      "input": "2 6\nRECORD 1 1\nRECORD 2 2\nRECORD 3 3\nRECORD 4 4\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "4\n3,4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "同一时间戳按接收顺序稳定排序",
+      "input": "3 4\nRECORD 1 100\nRECORD 2 100\nRECORD 3 100\nGET_LOGS\n",
+      "expectedOutput": "1,2,3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "乱序写入不改变最大时间锚点",
+      "input": "1 5\nRECORD 1 100\nRECORD 2 200\nRECORD 3 150\nGET_LOGS\nCOUNT\n",
+      "expectedOutput": "2\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "旧记录整体过期但中间时间仍有效",
+      "input": "5 5\nRECORD 1 0\nRECORD 2 7201\nRECORD 3 3601\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "1\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "多次空查询后首次写入",
+      "input": "4 5\nCOUNT\nGET_LOGS\nRECORD 8 99\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "0\n\n1\n8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负时间戳上的窗口查询",
+      "input": "2 5\nRECORD -1 -10\nRECORD 0 -9\nRECORD 1 -8\nGET_LOGS\nCOUNT\n",
+      "expectedOutput": "0,1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "窗口端点相邻秒验证",
+      "input": "3 5\nRECORD 1 0\nRECORD 2 3599\nRECORD 3 3600\nCOUNT\nGET_LOGS\n",
+      "expectedOutput": "2\n2,3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "全乱序输入仍按时间戳输出",
+      "input": "10 5\nRECORD 1 5000\nRECORD 2 4000\nRECORD 3 3000\nGET_LOGS\nCOUNT\n",
+      "expectedOutput": "3,2,1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "两个时间戳各自稳定排序",
+      "input": "3 5\nRECORD 1 20\nRECORD 2 10\nRECORD 3 20\nRECORD 4 10\nGET_LOGS\n",
+      "expectedOutput": "4,1,3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "返回最新一条但完整计数",
+      "input": "1 6\nRECORD 1 100\nRECORD 2 200\nRECORD 3 300\nRECORD 4 400\nGET_LOGS\nCOUNT\n",
+      "expectedOutput": "4\n4\n",
+      "hidden": true,
+      "weight": 1
     }
   ]
 }

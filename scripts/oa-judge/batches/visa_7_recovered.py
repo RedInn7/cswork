@@ -181,6 +181,14 @@ def main() -> None:
         make_matrix(4, rng=rng),
         make_matrix(100, rng=rng),
     ]
+    formal_seen = {serialize_input(matrix) for matrix in formal_matrices}
+    while len(formal_matrices) < 23:
+        matrix = make_matrix(rng.randint(1, 5), rng=rng)
+        raw = serialize_input(matrix)
+        if raw in formal_seen:
+            continue
+        formal_seen.add(raw)
+        formal_matrices.append(matrix)
     cases = []
     expected_formal = []
     for i, matrix in enumerate(formal_matrices):
@@ -188,7 +196,8 @@ def main() -> None:
         expected = independent_oracle(raw)
         expected_formal.append(expected)
         cases.append({
-            "name": f"样例 {i + 1}" if i < 3 else f"边界 {i - 2}",
+            "name": (f"样例 {i + 1}" if i < 3 else
+                     f"边界 {i - 2}" if i < 8 else f"隐藏矩阵场景 {i - 7}"),
             "input": raw,
             "expectedOutput": expected + "\n",
             "hidden": i >= 3,
@@ -247,7 +256,7 @@ def main() -> None:
 
 ## 验证
 
-163 组 oracle 输入由独立的集合补集算法恢复每块缺失值；额外穷举单块全部 16 种缺失值 ×16 个缺失位置，共256组。正式用例包含一个能区分全局 row-major 和子块遍历顺序的 8×8 矩阵，以及 n=100 的最大边界矩阵。两个正常退出错误程序均被用例拒绝。
+163 组 oracle 输入由独立的集合补集算法恢复每块缺失值；额外穷举单块全部 16 种缺失值 ×16 个缺失位置，共256组。正式用例包含一个能区分全局 row-major 和子块遍历顺序的 8×8 矩阵、n=100 最大边界矩阵，以及 15 个输入互异的隐藏矩阵场景。两个正常退出错误程序均被用例拒绝。
 
 ## 来源说明
 

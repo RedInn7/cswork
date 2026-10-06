@@ -243,6 +243,20 @@ def build(catalog: dict, rng: random.Random) -> None:
         (2, ["RECORD 1 5", "RECORD 2 5", "RECORD 3 5", "GET_LOGS", "COUNT"], "同时间戳按接收先后排序并截取最近 m 条"),
         (2, ["RECORD 1 0", "RECORD 2 100", "RECORD 3 200", "COUNT", "GET_LOGS"], "返回数受 m 限制而计数不受限"),
         (3, ["RECORD -1 -4000", "RECORD 0 -3999", "RECORD 1 -100", "GET_LOGS", "COUNT"], "负时间戳与窗口边界"),
+        (10, ["RECORD 1 100", "RECORD 2 200", "GET_LOGS", "COUNT", "RECORD 3 300", "GET_LOGS"], "递增时间戳全部处于窗口"),
+        (10, ["RECORD 1 100", "RECORD 2 3700", "COUNT", "GET_LOGS"], "恰好一小时边界之前的记录被排除"),
+        (10, ["RECORD 1 100", "RECORD 2 3701", "COUNT", "GET_LOGS"], "一小时边界内一秒的记录保留"),
+        (10, ["RECORD 5 1000", "RECORD 5 1100", "COUNT", "GET_LOGS"], "重复 logId 保留为两条日志"),
+        (2, ["RECORD 1 1", "RECORD 2 2", "RECORD 3 3", "RECORD 4 4", "COUNT", "GET_LOGS"], "只限制返回条数不限制窗口计数"),
+        (3, ["RECORD 1 100", "RECORD 2 100", "RECORD 3 100", "GET_LOGS"], "同一时间戳按接收顺序稳定排序"),
+        (1, ["RECORD 1 100", "RECORD 2 200", "RECORD 3 150", "GET_LOGS", "COUNT"], "乱序写入不改变最大时间锚点"),
+        (5, ["RECORD 1 0", "RECORD 2 7201", "RECORD 3 3601", "COUNT", "GET_LOGS"], "旧记录整体过期但中间时间仍有效"),
+        (4, ["COUNT", "GET_LOGS", "RECORD 8 99", "COUNT", "GET_LOGS"], "多次空查询后首次写入"),
+        (2, ["RECORD -1 -10", "RECORD 0 -9", "RECORD 1 -8", "GET_LOGS", "COUNT"], "负时间戳上的窗口查询"),
+        (3, ["RECORD 1 0", "RECORD 2 3599", "RECORD 3 3600", "COUNT", "GET_LOGS"], "窗口端点相邻秒验证"),
+        (10, ["RECORD 1 5000", "RECORD 2 4000", "RECORD 3 3000", "GET_LOGS", "COUNT"], "全乱序输入仍按时间戳输出"),
+        (3, ["RECORD 1 20", "RECORD 2 10", "RECORD 3 20", "RECORD 4 10", "GET_LOGS"], "两个时间戳各自稳定排序"),
+        (1, ["RECORD 1 100", "RECORD 2 200", "RECORD 3 300", "RECORD 4 400", "GET_LOGS", "COUNT"], "返回最新一条但完整计数"),
     ]
     cases = []
     for i, (limit, operations, name) in enumerate(formal):

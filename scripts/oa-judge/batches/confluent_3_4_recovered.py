@@ -166,11 +166,23 @@ def build_subset(catalog, rng):
         ([10**9, -10**9, 4, -4], 0), ([1, 2, 4, 8, 16], 31),
         ([3] * 40, 61),
         ([10**9 if i % 2 == 0 else -(10**9) for i in range(40)], 10**9),
+        ([5, -5], 0),
+        ([4, 7, -3, -8], 0),
+        ([2, 4, 8, 16, 32], 62),
+        ([-1, -2, -4, -8, -16], -31),
+        ([9, -9, 9, -9, 3], 3),
+        ([6, 10, 14, 18], 24),
+        ([1, 2, 4, 8, 16, 32], 63),
+        ([7, 11, 13, 17, 19], 1),
+        ([-10, 3, 7, 20], 30),
+        ([0, 0, 0, 0, 0], 0),
+        ([10**9, -10**9, 10**9, -10**9, 5], 5),
     ]
     cases = []
     for i, (values, target) in enumerate(formal_values):
         cases.append({"name": f"样例与边界 {i+1}", "input": subset_input(values, target),
                       "expectedOutput": brute_subset(values, target) + "\n", "hidden": i >= 2, "weight": 1})
+    assert sum(case["hidden"] for case in cases) >= 20
     oracle = []
     seen = set()
     while len(oracle) < 120:
@@ -243,7 +255,8 @@ def build_subset(catalog, rng):
         "previousReason": "缺少 n 和交易额范围，题面将指数枚举与 DP 作为讨论题；无法设定可信的在线评测界限。",
         "reason": "原文的判定语义与输出 1/0 明确；仅缺平台输入协议和约束。明确补充 n≤40、交易/target范围后用 meet-in-the-middle 得到可靠复杂度；120 个小规模独立穷举 oracle、11 个正式边界用例及两个错误实现验证通过。本站增加的输入约束已披露。"}]})
     write_json(OA / "validation" / f"{batch}.json", {"schemaVersion": 1, "seed": 20261006,
-        "problems": [{"id": identifier, "formalCases": len(cases), "oracleCases": len(oracle),
+        "problems": [{"id": identifier, "formalCases": len(cases),
+            "hiddenFormalCases": sum(case["hidden"] for case in cases), "oracleCases": len(oracle),
             "oracleInputsUnique": len(seen), "negativeControls": mutant_results}],
         "note": "本地差分与边界验证；未连接 GoJudge。"})
     print(f"{identifier}: formal={len(cases)}, oracle={len(oracle)}, mutants={len(mutant_results)} killed")
@@ -286,6 +299,23 @@ def build_tail(catalog, rng):
                 (["", "  lead", "mid  ", "two words", "\t", "终"], 3),
                 (["one", "", "three"], 0), (["same", "same", "same"], 1),
                 (["keep trailing  ", "tail"], 2)]
+    examples.extend([
+        (["first", "second", "third", "fourth"], 1),
+        (["α", "β", "γ", "δ"], 3),
+        (["", "", "", ""], 2),
+        ([" left", "right ", "  both  "], 1),
+        (["a\tb", "c\td", "e\tf"], 2),
+        (["猫", "dog", "🙂", "終"], 0),
+        (["x", "y", "z"], 4),
+        (["same", "same", "different", "same"], 3),
+        (["\u00e9", "e\u0301", "漢字", "かな", "한글"], 4),
+        ([" leading", "middle", "trailing ", "  both  "], 2),
+        (["", "nonempty", "", "last"], 3),
+        (["one", "two", "three", "four", "five", "six"], 5),
+        (["a\tb\tc", "plain", "\t", "end"], 2),
+        (["line-1", "line-2", "line-3", "line-4", "line-5"], 3),
+        (["零", "一", "二", "三"], 2),
+    ])
     cases = []
     for i, (lines, keep) in enumerate(examples):
         raw = vector_input(lines, keep)
@@ -293,6 +323,7 @@ def build_tail(catalog, rng):
         assert tail_reference_output(raw) == expected == tail_oracle(raw)
         cases.append({"name": f"样例与边界 {i+1}", "input": raw.decode("utf-8"),
                       "expectedOutput": expected.decode("utf-8"), "hidden": i >= 2, "weight": 1})
+    assert sum(case["hidden"] for case in cases) >= 20
     oracle = []
     seen = {case["input"].encode("utf-8") for case in cases}
     alphabet = ["", " ", " x", "y ", "a b", "\t", "é", "猫"]
@@ -365,7 +396,8 @@ def build_tail(catalog, rng):
         "previousReason": "输入是任意字符串行，标准 token 判题会丢失空行与行内空格；本批未定义可保真序列化协议。",
         "reason": "原题给定的是字符串数组而非原始文件文本，suffix 语义明确；新增长度前缀 UTF-8 协议可无损保留空行、行内空白与非 ASCII 字符。120 个随机数组与独立字节级 slice oracle、两个正常退出的空白处理错误实现均验证通过。"}]})
     write_json(OA / "validation" / f"{batch}.json", {"schemaVersion": 1, "seed": 20261006,
-        "problems": [{"id": identifier, "formalCases": len(cases), "oracleCases": len(oracle),
+        "problems": [{"id": identifier, "formalCases": len(cases),
+            "hiddenFormalCases": sum(case["hidden"] for case in cases), "oracleCases": len(oracle),
             "oracleInputsUnique": len(seen), "negativeControls": mutant_result}],
         "note": "本地长度前缀往返和独立切片 oracle 验证；未连接 GoJudge。"})
     print(f"{identifier}: formal={len(cases)}, oracle={len(oracle)}, mutants={len(mutant_result)} killed")

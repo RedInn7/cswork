@@ -232,12 +232,20 @@ def solve(raw):
                 answer -= hist[remaining] if remaining < len(hist) else hist[-1]
         return answer
 
-    lower, upper = 0, n - 1
+    # Any retained connected subtree has at least `required` vertices, so its
+    # diameter is at most required-1. This is a known-feasible binary-search
+    # bound and avoids testing diameters that cannot improve the answer.
+    lower, upper = 0, required - 1
     while lower < upper:
         limit = (lower + upper) // 2
         radius = limit // 2
-        balls = [ball_size(v, radius) for v in range(n)]
-        enough = max(balls) >= required
+        balls = [0] * n
+        enough = False
+        for vertex in range(n):
+            balls[vertex] = ball_size(vertex, radius)
+            if balls[vertex] >= required:
+                enough = True
+                break
         if not enough and limit % 2:
             # Edge-centred radius-r balls: parent side plus child side.
             for child in range(1, n):
@@ -545,7 +553,7 @@ def write_candidate():
                 "二分最大允许直径 D，检查是否能保留至少 n−k 个点。",
                 "偶数 D 看顶点半径球；奇数 D 还要检查以边为中心、两侧各深 r 的节点集合。",
             ],
-            "timeLimit": 20,
+            "timeLimit": 10,
             "memoryLimit": 524288,
             "outputLimit": 65536,
             "checker": "tokens",
@@ -568,7 +576,7 @@ def write_candidate():
             "sourceContentHash": source["contentHash"],
             "packageChecksum": checksum,
             "editorial": (
-                "## 思路\n\n"
+                "## 为什么正确\n\n"
                 "删叶子后剩余的点集始终连通；反过来，对任意连通子树，按补集分支由外向内删叶子即可得到它。"
                 "所以问题是：保留至少 q=n−k 个点的连通子树，最小化直径。\n\n"
                 "二分直径上限 D。D=2r 时，任何直径≤D的树都有顶点中心，所有节点距中心至多 r；"
@@ -687,6 +695,7 @@ def full_size_pressure():
     n = 100000
     cases = [
         ("chain", n, n // 2, [(i, i + 1) for i in range(n - 1)]),
+        ("chain-no-deletions", n, 0, [(i, i + 1) for i in range(n - 1)]),
         ("star", n, n // 3, [(0, i) for i in range(1, n)]),
     ]
     with tempfile.TemporaryDirectory(prefix="oa-google29-pressure-") as tmp:
@@ -695,11 +704,12 @@ def full_size_pressure():
             started = time.perf_counter()
             proc = subprocess.run(
                 [sys.executable, "-c", SOLUTION], input=raw, text=True,
-                capture_output=True, check=True, cwd=tmp, timeout=180,
+                capture_output=True, check=True, cwd=tmp, timeout=10,
             )
             elapsed = time.perf_counter() - started
+            assert elapsed < 10, (label, elapsed)
             answer = int(proc.stdout.strip())
-            expected = size - k - 1 if label == "chain" else (0 if k == size - 1 else 2)
+            expected = size - k - 1 if label.startswith("chain") else (0 if k == size - 1 else 2)
             assert answer == expected, (label, answer, expected)
             print(f"pressure {label}: n={size}, k={k}, answer={answer}, seconds={elapsed:.3f}")
 

@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1090,
-    "awaiting_sandbox": 22,
-    "blocked": 522,
+    "sandbox_verified": 1115,
+    "awaiting_sandbox": 0,
+    "blocked": 519,
     "unreviewed": 0
   },
   "items": [
@@ -192,7 +192,7 @@
     {
       "id": "oa-google-29",
       "company": "google",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "google-29-recovered",
       "reason": "已按题意重写精确解：将最小剩余直径转成单调阈值判定，以树中心定理枚举顶点球/边双球，重心分解加 Euler 深度前缀结构支持 n≤100000；用独立连通子集穷举生成120条唯一oracle并随机差分，完成长链/星形满规模本地压力测试。公开修正原 0<k<n 与 k=0 样例冲突为 0≤k<n；目前只是候选，尚未经过正式在线评测。"
     },
@@ -957,7 +957,7 @@
     {
       "id": "oa-amazon-32",
       "company": "amazon",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "amazon-32-recovered",
       "reason": "固定题面完整，本站仅补充原题未定义的无解输出：若初始 LIS < min_order 则输出 -1，并在题面标明这不是原题约定。123 个互异的子序列穷举 oracle 输入、33 个正式用例（包括重复值、初始无解、随机及 n=100000 压力）和两个正常退出错误程序均通过本地验证；仍待真实 GoJudge 沙箱验证。"
     },
@@ -6452,7 +6452,7 @@
     {
       "id": "oa-stripe-20",
       "company": "stripe",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "stripe-20-recovered",
       "reason": "固定源完整定义命令、坐标边界、Haversine 半径、最近整数距离、路由候选排序及容量行为。有限十进制输入下精确球面距离不能恰为半整数公里，因此最近整数唯一；独立 80 位 Decimal oracle 对 300 组坐标与 120 组命令输入验证通过，两个正常退出错误解均被反例杀死。候选仍待正式 sandbox 验证；最大命令数、名称语法和精度上限是明确披露的本站输入约束。"
     },
@@ -6623,7 +6623,7 @@
     {
       "id": "oa-databricks-26",
       "company": "databricks",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "databricks-26-recovered",
       "reason": "固定 FastPrep 原文明确要求 i<j、至多交换两个数字位置且允许不交换；原解按数字排序分组不符合规则。本站补标准 I/O 协议，按整数语义比较交换结果；独立 oracle、差分、边界和错误程序均通过，仍待真实沙箱。"
     },
@@ -6825,7 +6825,7 @@
     {
       "id": "oa-palantir-4",
       "company": "palantir",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "palantir-4-recovered",
       "reason": "源题对目标函数、无向图与不可达返回值的定义完整；固定快照中的 Python/Java/C++ 三份实现和样例相互一致。题源约束损坏为占位符，因此本站明确增加 1-based 节点编号、N/M 上限和非负边权范围；不增加连通性假设。有限非负权域与源代码使用的整数 Dijkstra 保持一致。独立小图简单路径枚举 oracle、边界和两个正常退出 mutant 验证通过。"
     },
@@ -6955,7 +6955,7 @@
     {
       "id": "oa-twilio-1",
       "company": "twilio",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "twilio-1-recovered",
       "reason": "固定题面和规模完整，原阻塞仅因参考算法效率不足。重写 Mo 解法，以逐区间直接频次数组扫描作为独立 oracle；203 个互异 oracle 输入、33 个正式用例（含 n=q=100000 压力）及两个正常退出错误程序均通过本地验证。仍待真实 GoJudge 沙箱验证。"
     },
@@ -7193,7 +7193,7 @@
     {
       "id": "oa-visa-7",
       "company": "visa",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "visa-7-recovered",
       "reason": "以固定上游题面步骤2的全矩阵 row-major 文字规则为准；上游参考实现按子块顺序的差异已明确披露。原题没有 n 上限，本站补充 n≤100 以满足现有 OJ 输入/输出资源限制；候选已通过独立集合oracle和位置顺序反例验证，仍待真实 GoJudge 沙箱。"
     },
@@ -7323,7 +7323,7 @@
     {
       "id": "oa-ebay-8",
       "company": "ebay",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "ebay-8-recovered",
       "reason": "固定快照中的两个样例及 Python、Java、C++ 三份实现都允许新房屋与已有房屋相邻并合并；这与正文中的“建造时不相邻”一句直接冲突。候选保留位置唯一规则，明确按三个实现和样例移除矛盾限制。原源未给规模，本站补 q≤10000、坐标绝对值≤10^9，并将 q 限制在单题 65536 字节输出上限内。独立排序集合 oracle、边界样例和两个正常退出错误实现均验证通过。"
     },
@@ -7503,14 +7503,14 @@
     {
       "id": "oa-confluent-3",
       "company": "confluent",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "confluent-3-recovered",
       "reason": "原文的判定语义与输出 1/0 明确；仅缺平台输入协议和约束。明确补充 n≤40、交易/target范围后用 meet-in-the-middle 得到可靠复杂度；120 个小规模独立穷举 oracle、11 个正式边界用例及两个错误实现验证通过。本站增加的输入约束已披露。"
     },
     {
       "id": "oa-confluent-4",
       "company": "confluent",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "confluent-4-recovered",
       "reason": "原题给定的是字符串数组而非原始文件文本，suffix 语义明确；新增长度前缀 UTF-8 协议可无损保留空行、行内空白与非 ASCII 字符。120 个随机数组与独立字节级 slice oracle、两个正常退出的空白处理错误实现均验证通过。"
     },
@@ -7547,7 +7547,7 @@
     {
       "id": "oa-rippling-6",
       "company": "rippling",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "rippling-6-recovered",
       "reason": "已核对固定 e66f809 MDX：树结构、g_nodes−1 条无向单位边、任意点对最大传输时间、函数签名明确；前两个样例合法。固定源第3个样例声明7节点但只给5边，不构成题面要求的树；没有猜缺失边并将其排除。源题未给 g_nodes 上限，题面显式增加本站资源限制 1≤g_nodes≤200000。用独立逐源 BFS oracle 穷举1442棵小树、对160棵固定种子随机树差分；两个正常退出错误程序被正式用例识别；最大规模链和星形树均本地验证。候选仍需正式沙箱验证。"
     },
@@ -7825,7 +7825,7 @@
     {
       "id": "oa-tradedesk-5",
       "company": "tradedesk",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "tradedesk-5-recovered",
       "reason": "固定 MDX 已明确每段 100 分钟、数组按升序排列、journeys 范围及最大规模；同一抵达时刻可登机由来源 Python bisect_left 和 Java/C++ lower_bound 实现明确。候选仅补充标准输入输出协议，没有依赖缺失图片的未定义内容。120 个随机输入与独立逐段最早班次枚举 oracle、正式边界和两个正常退出错误实现均验证通过。"
     },
@@ -7995,7 +7995,7 @@
     {
       "id": "oa-optiver-4",
       "company": "optiver",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "optiver-4-recovered",
       "reason": "固定源参考实现明确将最大 timestamp 作为乱序日志窗口锚点，严格过滤早于/等于 anchor−3600 的记录，并按 (timestamp, 接收序号) 排序后取最后 m 条；候选按该可执行定义恢复，不猜测。120 个小规模独立列表排序 oracle、正式边界及两个正常退出错误实现均通过，另在 10 万条记录混合查询上做了本地压力验证。"
     },
@@ -8008,8 +8008,9 @@
     {
       "id": "oa-imc-1",
       "company": "imc",
-      "status": "blocked",
-      "reason": "未定义无容器能满足订单时的返回行为。"
+      "status": "sandbox_verified",
+      "batch": "imc-1-recovered",
+      "reason": "题面明确了订单装箱、剩余量、最小化总浪费和并列规则。唯一未定义行为是所有容器组均无法覆盖全部订单；固定快照的 Python、Java、C++ 三份实现都返回 -1，候选将其标明为本站约定。另只增加订单数、容器组数、容量总数及正整数值域上限以控制资源，不改核心目标。独立直接枚举 oracle、不可行组/并列/精确匹配边界和两个正常退出 mutant 验证通过。"
     },
     {
       "id": "oa-imc-2",
@@ -8070,7 +8071,7 @@
     {
       "id": "oa-sig-4",
       "company": "sig",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "sig-4-recovered",
       "reason": "固定题面定义正整数片段直接拼接、按具体位置对计数，原样例输出 3 明确验证重复 12 位置的两个有序组合；正整数采用规范十进制表示。本站仅补标准 I/O 和规模上限；暴力 oracle、穷举和边界验证通过，仍待真实沙箱。"
     },
@@ -8147,7 +8148,7 @@
     {
       "id": "oa-the-d-e-shaw-group-9",
       "company": "the-d-e-shaw-group",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "deshaw-9-recovered",
       "reason": "已在固定 e66f809 快照中核实原始 Fastprep 文件 `deshaw-min-acquire-cost.md`，因此旧 review 所称对应源文件缺失不成立。原文对选址目标、互异/避开警局、最近距离成本和恰好购买 capacity 个定义完整；唯一缺口是约束文本为 unknown。候选没有猜原约束，而是显式增加本站边界，并证明最大答案 625025000 符合 int。120 个穷举有限坐标域的独立 oracle、边界和两个正常退出 mutants 通过。"
     },
@@ -8478,7 +8479,7 @@
     {
       "id": "oa-goldman-sachs-3",
       "company": "goldman-sachs",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "goldman-sachs-3-recovered",
       "reason": "原题的字符域、退格行为、空串退格行为、比较目标及 0/1 输出均明确，歧义仅在长度上限。候选没有猜测原上限，而是显式增加本站 1≤长度≤100000 的评测边界；在该边界内算法线性且资源可控。固定源 MDX、catalog hash 与 review 已核对。"
     },
@@ -8550,7 +8551,7 @@
     {
       "id": "oa-goldman-sachs-14",
       "company": "goldman-sachs",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "goldman-sachs-14-recovered",
       "reason": "固定源题意完整且可验证：两组粉笔各自长度互异，Sonu 必须复制 Ramu 每个相邻位置的严格升降方向，并最大化绝对差总和。原源未给约束，因此本站明确标注 N≤14 为资源边界，使用精确子集 DP；独立排列 oracle、方向模式穷举、边界和两个错误实现验证通过，仍待真实评测沙箱。"
     },
@@ -8637,7 +8638,7 @@
     {
       "id": "oa-goldman-sachs-27",
       "company": "goldman-sachs",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "goldman-sachs-27-recovered",
       "reason": "固定快照中的 Python、Java、C++ 参考实现均明确规定操作后空集合的结果为 0；三者也均使用保留重复次数的数据结构，并在 pop 时只删除一个副本。题意其余部分和 64 位乘积约束明确。由于题库导入输出上限 65536 字节，本站明示把 n 从原 10^5 限制为 2500，确保最多 19 位结果的完整数组输出不超限。120 个独立 list/multiset oracle、边界及两个正常退出错误实现验证通过。"
     },
@@ -9093,7 +9094,7 @@
     {
       "id": "oa-capital-one-19",
       "company": "capital-one",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "capital-one-19-recovered",
       "reason": "固定题干清楚定义对数字字符串逐位求和直至一位数后取 mode；随题附带的解释/实现选择并列众数中的最大值，本站将其明示为并列规则。本站补充非负数字串（允许前导零）、标准 I/O 和资源边界。独立反复求和 oracle、小域枚举、零/前导零/超长边界及两个 mutant 均通过，仍待沙箱。"
     },
@@ -9325,8 +9326,9 @@
     {
       "id": "oa-ramp-2",
       "company": "ramp",
-      "status": "blocked",
-      "reason": "cashback 到期时余额不足、同一时刻事件排序及非法请求状态变更规则需对照完整阶段题面；本批暂缓。"
+      "status": "sandbox_verified",
+      "batch": "ramp-2-recovered",
+      "reason": "固定题面明确了提现返现延迟、同秒到期顺序和首个非法请求返回约定；原解说明返现事件按请求时间逐次入账，不足余额只影响提现校验，不会阻止已产生的返现。独立逐事件 oracle 与堆实现差分通过。本站 I/O 及有限数值/规模上限已明确标注为本站规则。候选待真实沙箱验证。"
     },
     {
       "id": "oa-ramp-3",
@@ -9583,7 +9585,7 @@
     {
       "id": "oa-pure-storage-2",
       "company": "pure-storage",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "pure-storage-2-recovered",
       "reason": "固定题面语义完整；独立推导证实原解最早可行位置并非字典序最小，候选改为最右可行位置。与另一份本地编号表的 #2 标题冲突已披露且不混用。标准 I/O 由本站补充。仅为离线候选，尚未运行真实 GoJudge。"
     },
@@ -9696,8 +9698,9 @@
     {
       "id": "oa-fortinet-2",
       "company": "fortinet",
-      "status": "blocked",
-      "reason": "题面在要枚举的 pair 区间 `(1 ...` 处截断，无法确定完整求和范围。"
+      "status": "sandbox_verified",
+      "batch": "fortinet-2-recovered",
+      "reason": "固定提交 FastPrep 原始文件含完整双重求和范围和约束，补足转换后的 MDX/catalog 截断。本站按 i、j 独立范围解释为有序对，排除题干说的对角 pair；补 stdin/stdout。独立暴力 oracle、80 个 n 穷举、n=10^6 独立恒等式边界和两个错误控制均通过；仍待真实沙箱。"
     },
     {
       "id": "oa-fortinet-3",
@@ -10341,7 +10344,7 @@
     {
       "id": "oa-deloitte-2",
       "company": "deloitte",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "deloitte-2-recovered",
       "reason": "题意语义完整；root=1/parent-list 仅作为本站标准输入表示根树，不改变定义。规模上限 n≤200000 为本站资源限制，非原题约束。通过独立后代遍历 oracle、全域小树穷举、边界用例和两个错误控制；仍待真实 GoJudge 沙箱。"
     },
@@ -10881,7 +10884,7 @@
     {
       "id": "oa-unknown-15",
       "company": "unknown",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unknown-15-recovered",
       "reason": "固定快照 Part 2 明确继承 Part 1/3；Part 1 定义最低最高字符比例、并列全选与唯一字符输出，Part 3 明确重复字符参与 Jaccard 交并并以 baa/abbc=0.4 验证。三个源条目 Company 均为 Unknown，本站不推断公司。仅补 I/O、稳定输出顺序和资源边界；独立 oracle、穷举与两个 mutant 验证通过，仍待沙箱。"
     },

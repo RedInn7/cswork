@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-imc-1",
+      "formalCases": 30,
+      "oracleCases": 160,
+      "oracleInputsUnique": 160,
+      "negativeControls": [
+        {
+          "name": "选择满足订单的最大容器而不是最小容器",
+          "rejectedByCases": [
+            0,
+            9,
+            10,
+            27,
+            28
+          ]
+        },
+        {
+          "name": "忽略没有可用容器的订单，错误地接受不完整容器组",
+          "rejectedByCases": [
+            2,
+            4,
+            8,
+            10,
+            11,
+            12,
+            17,
+            23,
+            25,
+            26,
+            27,
+            29
+          ]
+        }
+      ],
+      "stressRequirements": 2000,
+      "stressSets": 100,
+      "stressTotalContainers": 50000,
+      "stressOutput": "78"
+    }
+  ],
+  "note": "本地独立暴力选容器 oracle、无可行组/并列/容量边界及两个正常退出 mutant 验证；未连接 GoJudge。"
+}

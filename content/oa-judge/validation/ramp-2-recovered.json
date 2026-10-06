@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-ramp-2",
+      "oracleCases": 188,
+      "uniqueOracleInputs": 188,
+      "formalCases": 37,
+      "referenceStdioCases": 225,
+      "publicCases": 8,
+      "hiddenCases": 29,
+      "randomOracleCases": 180,
+      "exhaustiveDifferentialComparisons": 5550,
+      "stress": {
+        "requests": 100000,
+        "finalBalance": 999990027200,
+        "runtimeSeconds": 0.0738,
+        "verifiedAgainstIndependentClosedForm": true
+      },
+      "stdioReplaySeconds": 4.601,
+      "negativeControls": [
+        {
+          "name": "同秒到期退款延迟到下一条请求",
+          "rejectedByCases": [
+            0,
+            10
+          ]
+        },
+        {
+          "name": "提现成功后立即发放返现",
+          "rejectedByCases": [
+            0,
+            5,
+            11
+          ]
+        }
+      ],
+      "referenceSha256": "ad128fdc9821cd0bbadfb0b2a1a3b7b8b4bef0a1850115b5dfa8418d61dbd1f3",
+      "localValidationOnly": true,
+      "allLocalChecksPassed": true
+    }
+  ]
+}

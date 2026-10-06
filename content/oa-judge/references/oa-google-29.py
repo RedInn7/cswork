@@ -205,12 +205,20 @@ def solve(raw):
                 answer -= hist[remaining] if remaining < len(hist) else hist[-1]
         return answer
 
-    lower, upper = 0, n - 1
+    # Any retained connected subtree has at least `required` vertices, so its
+    # diameter is at most required-1. This is a known-feasible binary-search
+    # bound and avoids testing diameters that cannot improve the answer.
+    lower, upper = 0, required - 1
     while lower < upper:
         limit = (lower + upper) // 2
         radius = limit // 2
-        balls = [ball_size(v, radius) for v in range(n)]
-        enough = max(balls) >= required
+        balls = [0] * n
+        enough = False
+        for vertex in range(n):
+            balls[vertex] = ball_size(vertex, radius)
+            if balls[vertex] >= required:
+                enough = True
+                break
         if not enough and limit % 2:
             # Edge-centred radius-r balls: parent side plus child side.
             for child in range(1, n):

@@ -124,6 +124,20 @@ def build(catalog: dict, rng: random.Random) -> None:
         ([-2, -1, 0, 1, 2], 4, "连续站点外侧扩展"),
         ([1_000_000_000], 4, "坐标上界平移不变"),
         ([-1_000_000_000, 1_000_000_000], 6, "坐标极值和跨大间距"),
+        ([0, 100], 1, "首尾站点间隙只买一个"),
+        ([0, 100], 8, "远距离站点两侧扩展"),
+        ([0, 2], 5, "相邻站点内部已占用"),
+        ([-10, -5, 0, 5, 10], 9, "对称多站点"),
+        ([-20, 0, 20], 12, "双向扩展交错"),
+        ([3, 1000], 7, "坐标平移且稀疏"),
+        ([-1000, -999], 10, "负坐标相邻站"),
+        ([0, 50, 100], 20, "三站覆盖与远端"),
+        ([-50, 50], 15, "跨零稀疏站点"),
+        ([10, 11, 12, 13], 11, "连续密集站点外侧"),
+        ([-100, -10, 10, 100], 18, "四站非对称间隔"),
+        ([0, 6, 12, 18], 21, "等距站点多层扩展"),
+        ([-1_000_000_000, -999_999_999, 1_000_000_000], 13, "负边界相邻与正边界"),
+        ([123456789], 17, "单站非零平移的奇数容量"),
     ]
     cases = []
     for index, (stations, capacity, name) in enumerate(formal):
@@ -131,6 +145,7 @@ def build(catalog: dict, rng: random.Random) -> None:
         assert run(REFERENCE, encode(stations, capacity)) == expected
         cases.append({"name": name, "input": encode(stations, capacity), "expectedOutput": expected + "\n",
                       "hidden": index != 0, "weight": 1})
+    assert sum(case["hidden"] for case in cases) >= 20
 
     random_cases = []
     seen = {case["input"] for case in cases}
@@ -215,7 +230,8 @@ def build(catalog: dict, rng: random.Random) -> None:
         "previousReason": review_reason,
         "reason": "已在固定 e66f809 快照中核实原始 Fastprep 文件 `deshaw-min-acquire-cost.md`，因此旧 review 所称对应源文件缺失不成立。原文对选址目标、互异/避开警局、最近距离成本和恰好购买 capacity 个定义完整；唯一缺口是约束文本为 unknown。候选没有猜原约束，而是显式增加本站边界，并证明最大答案 625025000 符合 int。120 个穷举有限坐标域的独立 oracle、边界和两个正常退出 mutants 通过。"}]})
     write_json(OA / "validation" / f"{batch}.json", {"schemaVersion": 1, "seed": 20261006,
-        "problems": [{"id": identifier, "formalCases": len(cases), "oracleCases": len(random_cases),
+        "problems": [{"id": identifier, "formalCases": len(cases),
+            "hiddenFormalCases": sum(case["hidden"] for case in cases), "oracleCases": len(random_cases),
             "oracleInputsUnique": len(seen) - len(cases), "negativeControls": controls,
             "maxCapacity": max_capacity, "maxIntSafeCost": max_int_safe_cost}],
         "note": "本地独立穷举 oracle、重复/相邻警局与坐标平移边界、int 上界压力和两个正常退出 mutant 验证；未连接 GoJudge。"})

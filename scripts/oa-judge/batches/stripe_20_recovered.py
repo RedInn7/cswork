@@ -377,8 +377,20 @@ def main():
     raw_bytes = subprocess.check_output(["git", "show", f"{SOURCE_COMMIT}:{RAW_PATH}"], cwd=ROOT)
     assert hashlib.sha256(raw_bytes).hexdigest() == RAW_SHA256
 
+    # Keep at least twenty independently generated hidden formal cases in the
+    # judge package (the oracle set below is not counted as formal coverage).
+    formal_inputs = list(FORMAL_INPUTS)
+    formal_rng = random.Random(20261008)
+    formal_seen = set(formal_inputs)
+    while len(formal_inputs) < 23:
+        raw = random_case(formal_rng)
+        if raw in formal_seen:
+            continue
+        formal_seen.add(raw)
+        formal_inputs.append(raw)
+
     cases = []
-    for i, raw in enumerate(FORMAL_INPUTS):
+    for i, raw in enumerate(formal_inputs):
         expected = independent_oracle(raw)
         actual = py_run(REFERENCE, raw)
         assert actual == expected, (i, actual, expected)
@@ -417,7 +429,7 @@ def main():
         ) + 0.5)
         assert low == high, (values, low, high)
 
-    mutants = mutation_results(REFERENCE, FORMAL_INPUTS)
+    mutants = mutation_results(REFERENCE, formal_inputs)
     problem = {
         "id": IDENTIFIER, "courseId": "gomall", "lessonId": "00-overview",
         "title": "数据中心地理距离路由系统", "difficulty": "中等",
@@ -435,7 +447,7 @@ def main():
     package_checksum = hashlib.sha256(normalized.encode()).hexdigest()
     ref = textwrap.dedent(REFERENCE).strip() + "\n"
     editorial_text = (
-        "## 思路\n\n按命令顺序维护名称到数据中心状态的映射。注册时验证唯一名称、坐标范围与正容量；健康切换只更新已有节点。距离使用 Haversine 公式，令 `a = sin²(Δφ/2) + cos(φ1)cos(φ2)sin²(Δλ/2)`，距离为 `6371 × 2 atan2(√a, √(1−a))`，再取最近整数公里。路由只枚举健康节点，按 `(整数距离, 名称)` 排序后取第一个未达容量的节点并增加负载。\n\n"
+        "## 为什么正确\n\n按命令顺序维护名称到数据中心状态的映射。注册时验证唯一名称、坐标范围与正容量；健康切换只更新已有节点。距离使用 Haversine 公式，令 `a = sin²(Δφ/2) + cos(φ1)cos(φ2)sin²(Δλ/2)`，距离为 `6371 × 2 atan2(√a, √(1−a))`，再取最近整数公里。路由只枚举健康节点，按 `(整数距离, 名称)` 排序后取第一个未达容量的节点并增加负载。\n\n"
         "## 取整稳定性\n\n输入坐标为有限十进制，即有理数度数。转弧度后 sin/cos 的值为代数数，故 `cos(中心角)=1−2a` 为代数数。若距离恰为半整数公里，中心角会是非零代数数 `(m+1/2)/6371`；由 Lindemann–Weierstrass 定理，该角的余弦为超越数，与前述代数性矛盾。因此精确距离不会落在半整数边界，最近整数唯一。固定精度浮点在极端近边界输入上仍可能有误；竞赛实现可用高精度/自适应区间比较，本站输入小数位上限为 18。\n\n"
         "## 正确性与复杂度\n\n逐条处理命令保证后续命令读取到的注册、健康和负载状态正是此前命令产生的状态。候选集合恰为健康数据中心，排序键正是题面规定的整数距离及名称，因此首个未满节点就是规则要求的路由目标；若没有则输出 None。设命令数为 q、数据中心数为 d，距离/状态更新为 O(1)，每条 ROUTE 排序耗时 O(d log d)，总时间 O(qd log d)，空间 O(d+q)。"
     )
@@ -498,6 +510,7 @@ def main():
         "schemaVersion": 1, "seed": 20261006,
         "problems": [{
             "id": IDENTIFIER, "formalCases": len(cases), "oracleCases": len(oracle_cases),
+            "hiddenCases": sum(1 for case in cases if case["hidden"]),
             "oracleInputsUnique": len(seen), "numericHighPrecisionComparisons": numeric_checks,
             "negativeControls": mutants,
             "referenceSha256": hashlib.sha256(ref.encode()).hexdigest(),

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-imc-1",
+  "title": "Pharmaceutical Waste Reduction",
+  "explanation": "## 思路\n\n对每个容器组单独排序。对每笔需求 r 使用 lower_bound 找到第一个容量 `c≥r` 的容器，贡献 `c-r`。若任何订单找不到这样的容器，该组不可行；否则累加总浪费。扫描容器组，保留总浪费严格更小者，因此并列时自然保留更早下标。若所有组都不可行，按本站约定返回 -1。\n\n## 正确性\n\n固定订单 r 后，所有能装满它的容器容量都满足 `c≥r`，浪费随 c 增大而增大，所以 lower_bound 找到的最小可行容器产生最小浪费。各订单独立使用一个容器，故逐单最小化后求和得到该容器组的最小总浪费。遍历所有可行容器组并按严格小于更新即可得到全局最优及最早下标；无可行组时输出 -1。\n\n## 复杂度\n\n令 S 为容器组数，R 为订单数，C_i 为第 i 组容量数。时间 `O(Σ C_i log C_i + RΣ log C_i)`，空间 `O(max C_i)`。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import bisect\nimport sys\n\ndef min_waste_set(requirements, container_sets):\n    best_index = -1\n    best_waste = None\n    for index, containers in enumerate(container_sets, 1):\n        ordered = sorted(containers)\n        total = 0\n        feasible = True\n        for required in requirements:\n            pos = bisect.bisect_left(ordered, required)\n            if pos == len(ordered):\n                feasible = False\n                break\n            total += ordered[pos] - required\n        if feasible and (best_waste is None or total < best_waste):\n            best_index = index\n            best_waste = total\n    return best_index\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 2:\n        raise ValueError(\"missing requirement/set counts\")\n    r, s = values[0], values[1]\n    if len(values) < 2 + r:\n        raise ValueError(\"missing requirements\")\n    requirements = values[2:2 + r]\n    pos = 2 + r\n    container_sets = []\n    for _ in range(s):\n        if pos >= len(values):\n            raise ValueError(\"missing container count\")\n        count = values[pos]\n        pos += 1\n        if pos + count > len(values):\n            raise ValueError(\"missing container sizes\")\n        container_sets.append(values[pos:pos + count])\n        pos += count\n    if pos != len(values):\n        raise ValueError(\"unexpected trailing input\")\n    return str(min_waste_set(requirements, container_sets))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/imc#1-pharmaceutical-waste-reduction",
+  "sourceContentHash": "6b291f9fe330f3a64def816434d4d277d3055442c6cf79b57ecd89eaee7e88c2",
+  "author": "CSWork"
+}

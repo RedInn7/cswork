@@ -362,6 +362,18 @@
       ]
     },
     {
+      "id": "oa-amazon-32",
+      "sourceContentHash": "d57f3152741908c6689196515009b51d5b71a6e52f3add83f0af0573c1328a9e",
+      "packageChecksum": "f269775848bf44095ae2d720069cac147258e5de294bf9776fe7d2ef0041391d",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom bisect import bisect_left\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, min_order = data[0], data[1]\n    domino = data[2:2+n]\n    remove = data[2+n:2+2*n]\n\n    def lis_after(k):\n        alive = bytearray([1]) * n\n        for i in range(k):\n            alive[remove[i]] = 0\n        tails = []\n        for i, value in enumerate(domino):\n            if alive[i]:\n                pos = bisect_left(tails, value)\n                if pos == len(tails):\n                    tails.append(value)\n                else:\n                    tails[pos] = value\n        return len(tails)\n\n    low, high, answer = 0, n, -1\n    while low <= high:\n        mid = (low + high) // 2\n        if lis_after(mid) >= min_order:\n            answer = mid\n            low = mid + 1\n        else:\n            high = mid - 1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode()))\n"
+        }
+      ],
+      "editorial": "## 思路\n\n设 f(k) 为按 remove 顺序删除前 k 张后，剩余 dominos 的严格 LIS 长度。删去元素不会增加 LIS，所以条件 f(k)≥min_order 关于 k 单调，可以二分最大可行 k。对每个 k 以 bytearray 标记存活位置，再扫描原数组，用 patience sorting 维护严格 LIS 的 tails。\n\n## 正确性\n\n固定 k 时，剩余位置恰是 remove[k:] 指向的位置，扫描时维持原数组顺序；bisect_left 将相等值替换在同一 tails 长度，不会把重复值拼成严格递增子序列，因此判定值就是该剩余序列的 LIS 长度。若 k 可行，则任意更小删除数的存活集合包含当前集合，LIS 不小于当前值；若 k 不可行，则任何更大的删除数也不可能可行。因此可行 k 构成从 0 开始的前缀，二分返回其最大端点。\n\n若 k=0 已不可行，源题所求可行集合为空，没有定义返回值。本站明确补充输出 -1；不把这一补充说成原题规则。\n\n## 复杂度\n\n单次检查 O(n log n)，二分 O(log n) 次，整体 O(n log²n) 时间，O(n) 空间。\n\n## 来源与本站协议\n\n固定 OAMaster 题面规定 remove 是 0-based 的 [0..n-1] 排列，domino 按原顺序保留，门槛针对严格 LIS。本站补充输入布局；对原题未定义的“初始 LIS 已低于门槛”情形规定输出 -1。"
+    },
+    {
       "id": "oa-amazon-363",
       "sourceContentHash": "2c3df236860f5dcddb75f93bf3da179965831424daa0379a18647c68caa87c51",
       "packageChecksum": "39daecf13f261bdf71540c33c6af0cb0bdf53faf99be8d5f0818d7270ee28a6e",
@@ -4454,6 +4466,18 @@
       ]
     },
     {
+      "id": "oa-capital-one-19",
+      "sourceContentHash": "d28e8340de136dc74da717ff7c4c7f21c5037daa642fd59803aa27e66ba621ca",
+      "packageChecksum": "1cd9f753e3ddeb83424b9ae1c4d4d5894baf0239543d961cfed46e9f274007ca",
+      "editorial": "## 思路\n\n对每个数字字符串反复求各位数字和，直到得到一位数。非负整数的数根可以在线性扫描中计算：所有数字和为 0 时结果为 0；否则结果为 1 + (数字和−1) mod 9。统计所有结果的频次，取出现次数最多的数根。\n\n## 并列与输入约定\n\n题干没有定义多个数根并列为 mode 时返回哪一个。随题固定源附带的解释/实现选择较大数根；本站将此作为明示规则。参数是数字字符串，固定解释把输入称为正整数；本站支持非负十进制数字串，允许前导零，并禁止负号或其他符号。输入输出和规模限制也均为本站补充。\n\n## 为什么正确\n\n对非零十进制数，数根只由其数字和模 9 决定，公式与反复求和等价；全零字符串的数根为 0。频次表统计每个输入数的最终单数字结果，取最大频次并列中的最大值，符合本站 mode 约定。时间为总位数 O(D)，额外空间 O(10)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\n\ndef digital_root(text):\n    digit_sum = sum(ord(ch) - ord(\"0\") for ch in text)\n    if digit_sum == 0:\n        return 0\n    return 1 + (digit_sum - 1) % 9\n\ndef sum_digits_until_one(numbers):\n    roots = [digital_root(text) for text in numbers]\n    counts = Counter(roots)\n    maximum_frequency = max(counts.values())\n    # Site contract: if several roots are modes, return the largest one.\n    return max(root for root, frequency in counts.items()\n               if frequency == maximum_frequency)\n\ndef solve(raw):\n    data = raw.split()\n    if not data:\n        raise ValueError(\"expected list length and numeric strings\")\n    n = int(data[0])\n    if not 1 <= n <= 200000 or len(data) != n + 1:\n        raise ValueError(\"site limit: 1 <= n <= 200000\")\n    values = data[1:]\n    if any(not value or any(ch < \"0\" or ch > \"9\" for ch in value)\n           or len(value) > 100000 for value in values):\n        raise ValueError(\"site contract: non-negative decimal strings\")\n    if sum(map(len, values)) > 2000000:\n        raise ValueError(\"site limit: total digit count <= 2000000\")\n    return str(sum_digits_until_one(values))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-capital-one-4",
       "sourceContentHash": "4a1b5fa0bbff58d39f2f132825fb9fa2ccd8f10ef0914a968b978b1fa3a31092",
       "packageChecksum": "fad690ee8a04fe4ed387dc74f8d34a9766e3c5f85a6c41629095439d456cc61c",
@@ -5066,6 +5090,42 @@
       ]
     },
     {
+      "id": "oa-confluent-3",
+      "sourceContentHash": "490ade68cb8e572c0625b26403cda94e00a3dd20918722fecbef26a8bf6513d3",
+      "packageChecksum": "e183d1bb92157a87800d15016a29961c4207058d64a62eb85442fa97ccadb642",
+      "editorial": "## 思路\n\n将数组从中间分成两半，枚举左半所有子集和并放入集合。右半用 Gray code 顺序枚举；每次只翻转一个元素，因此可 O(1) 更新当前和。对每个右半和 `s`，检查 `target-s` 是否存在于左半集合。空子集自然对应和 0。\n\n## 正确性\n\n任意子集唯一拆成左半子集与右半子集。若其总和为 target，则右半和为 s 时左半和必为 target−s，查找会命中；反之若集合中存在该差值，将对应的两半子集合并即得和为 target 的原数组子集。\n\n## 复杂度\n\n时间 O(2^(n/2))，空间 O(2^(n/2))；本站 n≤40。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    tokens = list(map(int, raw.split()))\n    if not tokens:\n        return \"0\"\n    n, target = tokens[0], tokens[1]\n    values = tokens[2:2+n]\n    mid = n // 2\n    left_values, right_values = values[:mid], values[mid:]\n    left_sums = [0]\n    for x in left_values:\n        size = len(left_sums)\n        left_sums.extend(left_sums[i] + x for i in range(size))\n    reachable = set(left_sums)\n    total = 0\n    previous_gray = 0\n    for mask in range(1 << len(right_values)):\n        gray = mask ^ (mask >> 1)\n        if mask:\n            changed = gray ^ previous_gray\n            bit = changed.bit_length() - 1\n            total += right_values[bit] if gray & changed else -right_values[bit]\n        if target - total in reachable:\n            return \"1\"\n        previous_gray = gray\n    return \"0\"\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-confluent-4",
+      "sourceContentHash": "156bdf3f839e54cd920a5ca4c9297ca81554b9c3ba28df872a0e9e00d483cbdf",
+      "packageChecksum": "f2fb96f7b4b07132c5241165637d596a92d266a2c71052936cb5e9d8fe365ca1",
+      "editorial": "## 思路\n\n顺序读入长度前缀字符串，用双端队列保留至多 n 项。每读取一项就加入队尾，若数量超过 n 则删除队首。读完时队列即为末尾 n 行；n=0 时队列始终为空。序列化时同样按 UTF-8 字节长度写出，可完整保留空字符串和行内空格。\n\n## 正确性\n\n遍历处理前 i 行后，队列保存这 i 行中最后 min(i,n) 行且顺序不变：新行追加到队尾，超过 n 时删掉最早项，归纳成立。处理完所有行后正是题目要求；n=0 情况为空。\n\n## 复杂度\n\n设输入内容总字节数为 L，返回行数为 r，时间 O(L)，辅助空间 O(min(n,lineCount)) 个字符串引用，序列化输出另需 O(L_out)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def decode(data):\n    pos = 0\n    def line():\n        nonlocal pos\n        end = data.find(b\"\\n\", pos)\n        if end < 0:\n            raise ValueError(\"missing header newline\")\n        value = data[pos:end]\n        pos = end + 1\n        return value\n    count, keep = map(int, line().split())\n    values = []\n    for _ in range(count):\n        length = int(line())\n        if length < 0 or pos + length >= len(data) or data[pos + length:pos + length + 1] != b\"\\n\":\n            raise ValueError(\"invalid length-prefixed string\")\n        values.append(data[pos:pos + length])\n        pos += length + 1\n    if pos != len(data):\n        raise ValueError(\"trailing bytes\")\n    return keep, values\n\ndef encode(values):\n    out = [str(len(values)).encode() + b\"\\n\"]\n    for value in values:\n        out.extend((str(len(value)).encode() + b\"\\n\", value, b\"\\n\"))\n    return b\"\".join(out)\n\ndef solve(data):\n    keep, values = decode(data)\n    if keep < 0:\n        raise ValueError(\"n must be nonnegative\")\n    return encode(values[-keep:] if keep else [])\n\nif __name__ == \"__main__\":\n    import sys\n    sys.stdout.buffer.write(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-databricks-26",
+      "sourceContentHash": "faad6b1d946901e5ace3a65139c20104c60784283d8321104eed47c2b0680d3a",
+      "packageChecksum": "afe6a7d46959f9b4e7f121413ef09530d0345e5db8deeabd1941166d8c08ef1a",
+      "editorial": "## 思路\n\n从左到右枚举较大下标对应的数 `y`。把 `y` 的十进制数字零次或交换任意一对位置，得到所有可达整数。查询此前每个可达整数出现的次数，并累加；再把 `y` 加入频次表。可达集合需要去重，避免重复数字产生同一个目标值时重复计数。\n\n交换后按整数比较；若数字串以零开头，按普通十进制整数读法忽略前导零。例如 `1000` 首尾交换后为 `0001`，对应整数 `1`。\n\n## 正确性\n\n固定右端下标 `j`。源题只允许对 `fruits[j]` 零次或一次交换，因此枚举的位置对恰好生成所有合法目标整数。频次表只含 `i<j` 的元素，所以累加候选频次正好统计所有有效左端下标；集合去重确保每个下标对只计一次。遍历每个 `j` 即得到全部答案。\n\n## 复杂度\n\n最多 10 位，每个数检查至多 45 个位置对。时间 `O(N·D²)`，空间 `O(N+D²)`，其中 `D≤10`。\n\n## 来源与本站约定\n\n固定 FastPrep 原文明确要求 `i<j`、至多交换两个数字，并明确不交换也算。原始实现按排序后的数字分组，会把需要多次交换的排列误计；本题按题面独立实现。来源只给函数签名，本站补标准输入输出；结果按整数比较，因此前导零不保留。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def count_pairs(values):\n    seen = {}\n    answer = 0\n    for value in values:\n        digits = list(str(value))\n        reachable = {value}\n        for i in range(len(digits)):\n            for j in range(i + 1, len(digits)):\n                digits[i], digits[j] = digits[j], digits[i]\n                reachable.add(int(\"\".join(digits)))\n                digits[i], digits[j] = digits[j], digits[i]\n        answer += sum(seen.get(candidate, 0) for candidate in reachable)\n        seen[value] = seen.get(value, 0) + 1\n    return answer\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data or len(data) != data[0] + 1:\n        raise ValueError(\"expected n followed by n integers\")\n    return str(count_pairs(data[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-databricks-3",
       "sourceContentHash": "a1ea08656410bc1089d51640040823110281eb87619ae0470ca649979b5bbc54",
       "packageChecksum": "4a64a7ec7d0b8c0c897a8513e9d3bd685a9bac000469b608c9ba2b900a452fa6",
@@ -5230,6 +5290,30 @@
         {
           "language": "python",
           "code": "def solve(data):\n    v=list(map(int,data.split())); n,m=v[:2]; a=v[2:2+n]; pat=v[2+n:2+n+m]\n    text=[(b>x)-(b<x) for x,b in zip(a,a[1:])]; pi=[0]*m\n    for i in range(1,m):\n        j=pi[i-1]\n        while j and pat[i]!=pat[j]: j=pi[j-1]\n        if pat[i]==pat[j]: j+=1\n        pi[i]=j\n    count=j=0\n    for value in text:\n        while j and value!=pat[j]: j=pi[j-1]\n        if value==pat[j]: j+=1\n        if j==m: count+=1; j=pi[j-1]\n    return str(count)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-deloitte-2",
+      "sourceContentHash": "bf5f0197c427de3cf538858d1c9b1d465e4b23dd89d0d191a6eac2f1e6bf87c3",
+      "packageChecksum": "02b6cce3dcb758e191e460dab029609045a541d4b4e9900e8aa5047042f5f4ff",
+      "editorial": "## 思路\n\n对每个节点统计以它为根的子树节点总数。按后序顺序处理节点时，子树大小等于 1 加上所有直接孩子的子树大小之和；该节点平衡当且仅当这些孩子的子树大小全部相同。没有孩子时条件真空成立，因此叶子也计入答案。\n\n为适配深度可达 200,000 的树，使用显式栈生成遍历顺序，再反向计算，不使用递归。\n\n## 正确性证明\n\n反向遍历保证节点的所有孩子先于节点完成处理，因此每个孩子的 `subtree_size` 已等于定义中的节点数。算法将这些直接孩子的值逐一比较，正好实现题目对平衡节点的定义；没有孩子时无不同值，按题面叶子规则计入。每个节点恰处理一次，故计数即所有平衡节点总数。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 验证\n\n163 个输入与独立 oracle 对照；oracle 对每个节点/孩子显式遍历后代计数，不复用后序子树大小算法。额外穷举 n≤5 的所有 parent 赋值并仅保留以 1 为根的合法树。正式测试有单点、链、星、子树大小不等、直接孩子数相同但子树大小不同、孩子高度相同但子树大小不同，以及 n=200000 链/星压力用例。两个正常返回的错误程序分别被正式用例拒绝。\n\n## 来源和本站输入协议\n\n固定 OAMaster Deloitte #2 明确给出 rooted tree、平衡定义（比较每个直接孩子对应子树的节点数）及叶子算平衡，但没有标准输入格式、节点编号/根标号约定或规模上限。本站补充：第一项为 n，后续 n−1 个整数依次表示节点 2..n 的父节点，根固定为节点 1；输入保证构成以 1 为根的树。本站资源上限为 1≤n≤200000。这些是本站序列化/资源约定，不声称是原题约束。\n\n候选只按题面语义实现，仍待真实 GoJudge 沙箱验证。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if not 1 <= n <= 200_000 or len(data) != n:\n        raise ValueError(\"expected n and n-1 parent IDs\")\n    children = [[] for _ in range(n)]\n    for node in range(1, n):\n        parent = data[node] - 1\n        if not 0 <= parent < n or parent == node:\n            raise ValueError(\"invalid parent ID\")\n        children[parent].append(node)\n\n    # Iterative traversal supports a 200,000-node chain without recursion.\n    order = []\n    stack = [0]\n    seen = bytearray(n)\n    seen[0] = 1\n    while stack:\n        node = stack.pop()\n        order.append(node)\n        for child in children[node]:\n            if seen[child]:\n                raise ValueError(\"parent relation is not a rooted tree\")\n            seen[child] = 1\n            stack.append(child)\n    if len(order) != n:\n        raise ValueError(\"all nodes must be reachable from root 1\")\n\n    subtree_size = [1] * n\n    balanced_count = 0\n    for node in reversed(order):\n        expected = None\n        balanced = True\n        for child in children[node]:\n            size = subtree_size[child]\n            subtree_size[node] += size\n            if expected is None:\n                expected = size\n            elif size != expected:\n                balanced = False\n        if balanced:\n            balanced_count += 1\n    return str(balanced_count)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-9",
+      "sourceContentHash": "bd03c821dee1b45225d7a37409225acbe0e25bf3572c8ec1126572dc8502d2b9",
+      "packageChecksum": "15ce7e7ab82af73a372a158db33c216fc27e3ffa8ffe19fceede9735d5813a1e",
+      "editorial": "## 思路\n\n从每个警局左右相邻的整数坐标开始，以距离 1 入最小堆。每次取出距离最近且不是警局、也未购买过的坐标，将其费用加入答案，再把左右相邻坐标以距离 `d+1` 入堆。已购买坐标用集合去重。最小堆保证按最近距离递增选地块，直到选满 capacity 个。\n\n## 正确性\n\n每个警局的两个相邻坐标距离为 1，作为搜索源。对任一非警局整数坐标，沿数轴从最近警局向该坐标逐格移动；若中间遇到另一个警局，该警局也已作为源扩展其相邻坐标。因此该坐标会由一个不被阻断的更近坐标继续生成，且首次按距离弹出时距离就是它到最近警局的距离。最小堆每次选择当前所有未购买可达地块中的最小费用；故重复 capacity 次恰好选出费用最小的 capacity 个互异合法坐标。\n\n## 复杂度\n\n设警局数为 n、购买数为 k。初始加入 2n 个位置，每购买一块最多加入两个邻点；每个有效坐标只购买一次，堆操作总数 O(n+k)，时间 O((n+k)log(n+k))，空间 O(n+k)。本站 k≤50000，最坏答案为 625025000，可由 int 表示。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef min_acquire_cost(stations, capacity):\n    occupied = set(stations)\n    frontier = []\n    for station in stations:\n        heapq.heappush(frontier, (1, station - 1))\n        heapq.heappush(frontier, (1, station + 1))\n    total = 0\n    bought = 0\n    while bought < capacity:\n        distance, position = heapq.heappop(frontier)\n        if position in occupied:\n            continue\n        occupied.add(position)\n        total += distance\n        bought += 1\n        heapq.heappush(frontier, (distance + 1, position - 1))\n        heapq.heappush(frontier, (distance + 1, position + 1))\n    return total\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 2:\n        raise ValueError(\"expected n and capacity\")\n    n, capacity = values[:2]\n    if len(values) != n + 2:\n        raise ValueError(\"station count does not match header\")\n    return str(min_acquire_cost(values[2:], capacity))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
         }
       ]
     },
@@ -5434,6 +5518,18 @@
         {
           "language": "python",
           "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    n, m = values[:2]\n    players = sorted(values[2:2+n])\n    points = sorted(values[2+n:2+n+m])\n\n    def feasible(time):\n        first = 0\n        for player in players:\n            if first == m:\n                return True\n            point = points[first]\n            if point < player - time:\n                return False\n            if point > player + time:\n                continue\n            if point <= player:\n                leftmost = point\n                while first < m and points[first] <= player:\n                    first += 1\n                left_distance = player - leftmost\n                reach = max(\n                    player + time - 2 * left_distance,\n                    player + (time - left_distance) // 2,\n                )\n            else:\n                reach = player + time\n            while first < m and points[first] <= reach:\n                first += 1\n        return first == m\n\n    low, high = 0, 2_000_000_001\n    while low < high:\n        middle = (low + high) // 2\n        if feasible(middle):\n            high = middle\n        else:\n            low = middle + 1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ebay-8",
+      "sourceContentHash": "3e33c5dede37f8aa928bc09e06e55c9f4a3577ee15940079b59eaa78eb2fbd83",
+      "packageChecksum": "cb4fdb3838eac1976bec766c3e38044104f5177bdd61acb0cad151d076d6bab4",
+      "editorial": "## 思路\n\n用两个哈希表记录连续区间的左右端点：`starts[l]=r`，`ends[r]=l`。插入 x 时，若 `ends` 中有 x−1，则吸收左区间；若 `starts` 中有 x+1，则吸收右区间。登记合并后的新区间，并更新历史最大长度。\n\n## 正确性\n\n插入前每个已建房屋恰好属于一个连续区间。新位置 x 只可能连接以 x−1 结尾的左区间和以 x+1 开始的右区间；检查并移除这两个端点后登记合并区间，其他区间不变。因此区间表始终准确表示全部房屋的最大连续段。由于只新增房屋，历史最大值不会下降。\n\n## 复杂度\n\n每次插入进行常数次哈希表操作，期望时间 O(q)，空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = raw.split()\n    if not tokens:\n        raise ValueError(\"missing query count\")\n    n = int(tokens[0])\n    if len(tokens) != n + 1:\n        raise ValueError(\"query count does not match input\")\n    starts = {}\n    ends = {}\n    best = 0\n    answers = []\n    for token in tokens[1:]:\n        q = int(token)\n        left = q\n        right = q\n        if q - 1 in ends:\n            left = ends.pop(q - 1)\n            starts.pop(left)\n        if q + 1 in starts:\n            right = starts.pop(q + 1)\n            ends.pop(right)\n        starts[left] = right\n        ends[right] = left\n        best = max(best, right - left + 1)\n        answers.append(str(best))\n    return \"\\n\".join(answers)\n\nif __name__ == \"__main__\":\n    result = solve(sys.stdin.buffer.read())\n    if result:\n        print(result)\n"
         }
       ]
     },
@@ -5858,6 +5954,18 @@
       ]
     },
     {
+      "id": "oa-fortinet-2",
+      "sourceContentHash": "97fc7982fbd48e129125077eb4cccfec15fa258d3b5d104f92775c44e5693129",
+      "packageChecksum": "b85518907b9829cb1e64b038623c969172ebb5517a2177c1f043cba28051dc88",
+      "editorial": "## 思路\n\n题目给出 `C(i,j)=i mod j+j mod i`。题面所列 i、j 是两个独立的 1..n 范围，因此按所有有序 `(i,j)` 组合求和；同一编号对角项为 0，不影响结果。全体 `i mod j` 与全体 `j mod i` 的总和相同，所以答案是 `2T`，其中 `T=Σ[j=1..n] Σ[i=1..n] (i mod j)`。\n\n固定 j，令 `n=qj+r`。序列 `1 mod j, 2 mod j, ...` 每 j 项完整重复一次，其一轮和为 `j(j−1)/2`；剩余 r 项的余数为 `1..r`，和为 `r(r+1)/2`。于是该 j 的贡献为 `q·j(j−1)/2+r(r+1)/2`。累加后乘 2 并对 1,000,000,007 取模。\n\n## 正确性证明\n\n对固定 j，前 qj 个 i 可拆为 q 个完整周期，每周期余数恰为 0 到 j−1，最后 r 个余数为 1 到 r，因此公式准确计算 `Σ_i i mod j`。交换求和变量可知 `Σ_{i,j} j mod i` 与 `Σ_{i,j} i mod j` 相同；每个对角项为零，故总 checksum 正好是 2T。算法逐一遍历每个 j 计算其精确贡献，最后模化不改变模意义上的结果。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。\n\n## 验证\n\n163 个 oracle 输入直接枚举所有有序 distinct pair；另对 n=1..80 全部对拍。正式测试包含 n=1、2、3、多个小值、模边界规模以及 n=10⁶。最大规模期望由独立恒等式 `Σ_i i mod j = n(n+1)/2 − j·Σ_i floor(i/j)` 计算。两个正常退出错误程序分别漏掉对称项、错误跳过整除相关 pair，均被用例拒绝。\n\n## 来源与本站协议\n\n固定提交中的原始 FastPrep 文档明确公式、参数 n、模数 10⁹+7、n≤10⁶，以及 i 和 j 各自独立遍历 1..n；OAMaster MDX/catalog 的转换文本在范围中的 `<` 处截断。按两个独立范围解读为有序对；题目同时说 distinct，因此不需要对角项（即使代入公式也为 0）。本站补充 stdin/stdout：输入一个 n，输出模后的整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nMOD = 1_000_000_007\n\ndef solve(raw):\n    tokens = raw.split()\n    if len(tokens) != 1:\n        raise ValueError(\"expected one integer n\")\n    n = int(tokens[0])\n    if not 1 <= n <= 1_000_000:\n        raise ValueError(\"n must be in [1, 1000000]\")\n\n    # For fixed j, residues i % j over i=1..n form q full cycles\n    # (sum j*(j-1)/2 each), then residues 1..r.\n    one_mod_sum = 0\n    for j in range(1, n + 1):\n        q, r = divmod(n, j)\n        residue_sum = q * j * (j - 1) // 2 + r * (r + 1) // 2\n        one_mod_sum = (one_mod_sum + residue_sum) % MOD\n\n    # The two terms in C(i,j) have identical totals over the independent\n    # i,j ranges. Diagonal terms are zero and may be omitted.\n    return str((2 * one_mod_sum) % MOD)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-goldman-sachs-6",
       "sourceContentHash": "539d4cbdb4a187083dfa42ca5c01c071a99435aa1a9277797950fdfb796ae4e7",
       "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
@@ -5890,6 +5998,42 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); answers=[]\n for simulation in lines[1:1+n]:\n  inside=best=0\n  for event in simulation:\n   if event in 'CU': inside+=1\n   else: inside-=1\n   best=max(best,inside)\n  answers.append(str(best))\n return ' '.join(answers)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-14",
+      "sourceContentHash": "f0e323de37b0f99a5803006e9bc1d7140f10d0edb565c1363d1e05c2b3ca754d",
+      "packageChecksum": "99593ff2eeccd9457d99cafdf6f4041b1245c8206c97f99bddd44beac3ca97dd",
+      "editorial": "## 思路\n\n先把 Ramu 每一对相邻粉笔的关系转成固定方向：上升或下降。Sonu 的数组只允许重排，因此用位掩码表示已经放入的粉笔，用最后一个粉笔作为状态。`dp[mask][last]` 保存满足前缀方向条件、并以 `last` 结束时可取得的最大相邻差和。下一步只在符合对应方向时转移，代价增加两根粉笔长度差的绝对值。\n\n## 正确性\n\n任一合法排列的前缀都使用某个集合 `mask` 并以唯一的最后一个值结束。该排列的前缀得分不超过 `dp[mask][last]`；把它的下一项加到状态时，转移恰按 Ramu 对应位置的升降关系筛选，并加上唯一新增的相邻差。反过来，每条 DP 转移都满足相同方向限制，故生成的每个状态代表合法排列。归纳可知终态枚举了全部且仅有合法排列，取最大值得全局最优。\n\n## 复杂度\n\n本站限制 `1≤N≤14`，精确子集 DP 时间 `O(N²·2^N)`、空间 `O(N·2^N)`。长度值按任意精度整数计算。\n\n## 来源与本站约定\n\n固定原文明确两组各有 N 根不同长度的粉笔，Sonu 必须逐位置复制 Ramu 相邻长度的严格升降关系，并最大化相邻绝对差之和。原文没有公布 N、数值约束或 I/O 样例；本题不声称恢复原站隐藏限制。本站仅补充标准输入：N、Ramu 的 N 个正整数、Sonu 的 N 个正整数，并将 N 限为 14，以保证精确算法资源可控。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def maximize_niceness(ramu, sonu):\n    n = len(ramu)\n    if len(sonu) != n or n == 0 or n > 14:\n        raise ValueError(\"site limit: 1 <= n <= 14\")\n    full = (1 << n) - 1\n    # dp[mask][last] is the best sum for a valid prefix using mask and ending\n    # with sonu[last]. A position's direction is fixed by adjacent Ramu values.\n    dp = [[None] * n for _ in range(1 << n)]\n    for j in range(n):\n        dp[1 << j][j] = 0\n    for mask in range(1 << n):\n        position = mask.bit_count() - 1\n        if position < 0 or position == n - 1:\n            continue\n        for last in range(n):\n            score = dp[mask][last]\n            if score is None:\n                continue\n            for nxt in range(n):\n                bit = 1 << nxt\n                if mask & bit:\n                    continue\n                should_rise = ramu[position] < ramu[position + 1]\n                if (sonu[last] < sonu[nxt]) != should_rise:\n                    continue\n                new_mask = mask | bit\n                value = score + abs(sonu[last] - sonu[nxt])\n                old = dp[new_mask][nxt]\n                if old is None or value > old:\n                    dp[new_mask][nxt] = value\n    result = [x for x in dp[full] if x is not None]\n    if not result:\n        raise ValueError(\"no valid arrangement\")\n    return max(result)\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        raise ValueError(\"expected n and two arrays\")\n    n = data[0]\n    if n < 1 or n > 14 or len(data) != 1 + 2 * n:\n        raise ValueError(\"expected n, then n Ramu lengths and n Sonu lengths\")\n    ramu, sonu = data[1:1+n], data[1+n:]\n    if len(set(ramu)) != n or len(set(sonu)) != n:\n        raise ValueError(\"each student's chalk lengths are distinct\")\n    return str(maximize_niceness(ramu, sonu))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-27",
+      "sourceContentHash": "3083bfb4749cf0427402d9df7458552226dac21ce447d68b6548c9a43a21b4ae",
+      "packageChecksum": "1f581723c92ececbbba1f84e9c5bf1002fb51b6e997606e9431ba3b20cfb333f",
+      "editorial": "## 思路\n\n维护元素频次、最小堆和最大堆。push 时频次加一，并分别将 x、−x 入堆；pop 时只将频次减一。读取答案前，反复移除频次已为 0 的堆顶。两个堆顶分别给出当前最小值和最大值，乘积即答案；集合为空时按源代码约定输出 0。\n\n## 正确性\n\n频次表精确记录 multiset 中每个值的副本数。延迟删除时，堆中频次为 0 的元素不属于当前集合，清理后最小堆/最大堆的有效堆顶分别是当前最小值/最大值；乘积正确。若频次表为空，三份源实现均返回 0，候选沿用该规则。\n\n## 复杂度\n\n每次操作至多向两堆各插入一次，并且每个堆元素最多弹出一次，时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = raw.split()\n    if not tokens:\n        raise ValueError(\"missing operation count\")\n    n = int(tokens[0])\n    if len(tokens) != 1 + 2 * n:\n        raise ValueError(\"operation count does not match input\")\n    minimum_heap = []\n    maximum_heap = []\n    frequency = {}\n    products = []\n    pos = 1\n    for _ in range(n):\n        operation = tokens[pos].decode(\"ascii\")\n        value = int(tokens[pos + 1])\n        pos += 2\n        if operation == \"push\":\n            frequency[value] = frequency.get(value, 0) + 1\n            heapq.heappush(minimum_heap, value)\n            heapq.heappush(maximum_heap, -value)\n        else:\n            count = frequency[value]\n            if count == 1:\n                del frequency[value]\n            else:\n                frequency[value] = count - 1\n        while minimum_heap and frequency.get(minimum_heap[0], 0) == 0:\n            heapq.heappop(minimum_heap)\n        while maximum_heap and frequency.get(-maximum_heap[0], 0) == 0:\n            heapq.heappop(maximum_heap)\n        if frequency:\n            products.append(minimum_heap[0] * -maximum_heap[0])\n        else:\n            products.append(0)\n    return \"\\n\".join(map(str, products))\n\nif __name__ == \"__main__\":\n    import sys\n    result = solve(sys.stdin.buffer.read())\n    if result:\n        print(result)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-3",
+      "sourceContentHash": "8ce7272efa6e3367c2ece67eaa635cf6745139b680a946454cee69d7f753e058",
+      "packageChecksum": "22cc78be5681976409148e964f90aba242c0c0d26d94db024577e7b346948fdb",
+      "editorial": "## 思路\n\n用栈分别处理两个字符串。遇到小写字母就压栈；遇到 `#`，若栈非空则弹出一个字符，栈为空时忽略。最后比较两个栈是否相等。\n\n## 正确性\n\n扫描每个字符串的任意前缀后，栈中恰好保存该前缀按题意执行所有退格后留下的字符，且顺序不变：普通字符追加到末尾，退格在栈非空时删除末尾字符、为空时保持不变。对完整字符串应用该结论，比较两个结果即得到正确答案。\n\n## 复杂度\n\n设两个字符串长度分别为 n、m，时间 O(n+m)，辅助空间 O(n+m)。本站长度上限为 100000；这是本站补充，不是从损坏的源约束恢复出的数值。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def compare(s1, s2):\n    def process(value):\n        stack = []\n        for char in value:\n            if char == \"#\":\n                if stack:\n                    stack.pop()\n            else:\n                stack.append(char)\n        return stack\n    return 1 if process(s1) == process(s2) else 0\n\ndef solve(raw):\n    lines = raw.decode(\"ascii\").splitlines()\n    if len(lines) != 2:\n        raise ValueError(\"expected exactly two input lines\")\n    return str(compare(lines[0], lines[1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
         }
       ]
     },
@@ -6034,6 +6178,18 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=sorted(t[1:1+n],reverse=True); total=count=0\n for value in a:\n  if total+value<=0: break\n  total+=value; count+=1\n return str(count)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-29",
+      "sourceContentHash": "bfd2ff2e195eaed4046c99008a47ed20ee2d50e1bdaae34ce749c112de7d8014",
+      "packageChecksum": "3ef04651fdcc509a535a6b2423f96f2e491e4337660b61223d6e83ce7f616d71",
+      "editorial": "## 为什么正确\n\n删叶子后剩余的点集始终连通；反过来，对任意连通子树，按补集分支由外向内删叶子即可得到它。所以问题是：保留至少 q=n−k 个点的连通子树，最小化直径。\n\n二分直径上限 D。D=2r 时，任何直径≤D的树都有顶点中心，所有节点距中心至多 r；候选集合是原树每个顶点的半径 r 球。D=2r+1 时，还要考虑中心落在边上的情况：边两侧分别保留距端点至多 r 的点。每个候选集合连通且直径≤D；树中心定理也保证任何可行子树都包含在对应候选中，故最大候选规模≥q 当且仅当 D 可行。\n\n重心分解的距离频数前缀回答顶点球大小。将原树根化后，用 Euler 子树区间和深度持久化前缀统计边一侧的范围人数。总预处理 O(n log n)，一次判定 O(n log n)，二分后的总时间 O(n log² n)，空间 O(n log n)。\n\n## 源约束更正\n\n原源写 0<k<n，但样例 1 使用 k=0；本候选明确改为 0≤k<n，让样例和‘最多 k 次’定义一致，且 n=1,k=0 输出0。标准输入输出协议是本站补充。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\nimport sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if not values:\n        return \"\"\n    n, k = values[0], values[1]\n    if n < 1 or not 0 <= k < n:\n        raise ValueError(\"require n >= 1 and 0 <= k < n\")\n    if len(values) != 2 + 2 * (n - 1):\n        raise ValueError(\"expected n-1 edges\")\n    required = n - k\n    graph = [[] for _ in range(n)]\n    cursor = 2\n    for _ in range(n - 1):\n        a, b = values[cursor] - 1, values[cursor + 1] - 1\n        cursor += 2\n        if not (0 <= a < n and 0 <= b < n) or a == b:\n            raise ValueError(\"invalid tree edge\")\n        graph[a].append(b)\n        graph[b].append(a)\n\n    # Rooting and Euler intervals support subtree-by-depth counting.\n    parent = [-2] * n\n    depth = [0] * n\n    entry = [0] * n\n    exit_ = [0] * n\n    preorder = []\n    parent[0] = -1\n    todo = [(0, False)]\n    while todo:\n        node, leaving = todo.pop()\n        if leaving:\n            exit_[node] = len(preorder)\n            continue\n        entry[node] = len(preorder)\n        preorder.append(node)\n        todo.append((node, True))\n        for child in reversed(graph[node]):\n            if child == parent[node]:\n                continue\n            if parent[child] != -2:\n                raise ValueError(\"input graph is not a tree\")\n            parent[child] = node\n            depth[child] = depth[node] + 1\n            todo.append((child, False))\n    if len(preorder) != n:\n        raise ValueError(\"input tree is disconnected\")\n\n    # Persistent prefix histograms over Euler positions, keyed by depth.\n    roots = array(\"i\", [0])\n    left = array(\"i\", [0])\n    right = array(\"i\", [0])\n    count = array(\"i\", [0])\n    for vertex in preorder:\n        previous = roots[-1]\n        root = len(count)\n        left.append(left[previous])\n        right.append(right[previous])\n        count.append(count[previous] + 1)\n        old_node, new_node = previous, root\n        low, high, value = 0, n - 1, depth[vertex]\n        while low < high:\n            middle = (low + high) >> 1\n            if value <= middle:\n                old_child = left[old_node]\n                new_child = len(count)\n                left.append(left[old_child])\n                right.append(right[old_child])\n                count.append(count[old_child] + 1)\n                left[new_node] = new_child\n                old_node, new_node, high = old_child, new_child, middle\n            else:\n                old_child = right[old_node]\n                new_child = len(count)\n                left.append(left[old_child])\n                right.append(right[old_child])\n                count.append(count[old_child] + 1)\n                right[new_node] = new_child\n                old_node, new_node, low = old_child, new_child, middle + 1\n        roots.append(root)\n\n    def subtree_count_by_depth(vertex, radius):\n        if radius < 0:\n            return 0\n        limit = depth[vertex] + radius\n        if limit >= n - 1:\n            return exit_[vertex] - entry[vertex]\n        right_root = roots[exit_[vertex]]\n        left_root = roots[entry[vertex]]\n        low, high, result = 0, n - 1, 0\n        while low < high:\n            middle = (low + high) >> 1\n            if limit <= middle:\n                right_root = left[right_root]\n                left_root = left[left_root]\n                high = middle\n            else:\n                result += count[left[right_root]] - count[left[left_root]]\n                right_root = right[right_root]\n                left_root = right[left_root]\n                low = middle + 1\n        if low <= limit:\n            result += count[right_root] - count[left_root]\n        return result\n\n    # Centroid ancestor paths; three compact arrays per vertex avoid storing\n    # millions of Python tuple objects at n=100000.\n    centroids = [array(\"i\") for _ in range(n)]\n    distances = [array(\"i\") for _ in range(n)]\n    branches = [array(\"i\") for _ in range(n)]\n    removed = bytearray(n)\n    scratch_parent = [-2] * n\n    subtree_size = [0] * n\n    whole_histogram = [None] * n\n    branch_histograms = [None] * n\n    pending = [0]\n\n    while pending:\n        seed = pending.pop()\n        if removed[seed]:\n            continue\n        component = []\n        walk = [(seed, -1)]\n        while walk:\n            u, p = walk.pop()\n            scratch_parent[u] = p\n            component.append(u)\n            for v in graph[u]:\n                if not removed[v] and v != p:\n                    walk.append((v, u))\n        component_size = len(component)\n        for u in reversed(component):\n            size = 1\n            for v in graph[u]:\n                if not removed[v] and scratch_parent[v] == u:\n                    size += subtree_size[v]\n            subtree_size[u] = size\n        center = seed\n        for u in component:\n            largest_part = component_size - subtree_size[u]\n            for v in graph[u]:\n                if (not removed[v] and scratch_parent[v] == u\n                        and subtree_size[v] > largest_part):\n                    largest_part = subtree_size[v]\n            if largest_part <= component_size // 2:\n                center = u\n                break\n\n        removed[center] = 1\n        centroids[center].append(center)\n        distances[center].append(0)\n        branches[center].append(-1)\n        all_frequency = [1]\n        child_histograms = {}\n        for neighbor in graph[center]:\n            if removed[neighbor]:\n                continue\n            pending.append(neighbor)\n            branch_distances = []\n            walk = [(neighbor, center, 1)]\n            while walk:\n                u, p, d = walk.pop()\n                centroids[u].append(center)\n                distances[u].append(d)\n                branches[u].append(neighbor)\n                branch_distances.append(d)\n                if len(all_frequency) <= d:\n                    all_frequency.extend([0] * (d + 1 - len(all_frequency)))\n                all_frequency[d] += 1\n                for v in graph[u]:\n                    if v != p and not removed[v]:\n                        walk.append((v, u, d + 1))\n            local_frequency = [0] * (max(branch_distances) + 1)\n            for d in branch_distances:\n                local_frequency[d] += 1\n            subtotal = 0\n            for i, amount in enumerate(local_frequency):\n                subtotal += amount\n                local_frequency[i] = subtotal\n            child_histograms[neighbor] = array(\"i\", local_frequency)\n        subtotal = 0\n        for i, amount in enumerate(all_frequency):\n            subtotal += amount\n            all_frequency[i] = subtotal\n        whole_histogram[center] = array(\"i\", all_frequency)\n        branch_histograms[center] = child_histograms\n\n    def ball_size(vertex, radius):\n        answer = 0\n        chain_c = centroids[vertex]\n        chain_d = distances[vertex]\n        chain_b = branches[vertex]\n        for i in range(len(chain_c)):\n            remaining = radius - chain_d[i]\n            if remaining < 0:\n                continue\n            center = chain_c[i]\n            hist = whole_histogram[center]\n            answer += hist[remaining] if remaining < len(hist) else hist[-1]\n            branch = chain_b[i]\n            if branch >= 0:\n                hist = branch_histograms[center][branch]\n                answer -= hist[remaining] if remaining < len(hist) else hist[-1]\n        return answer\n\n    # Any retained connected subtree has at least `required` vertices, so its\n    # diameter is at most required-1. This is a known-feasible binary-search\n    # bound and avoids testing diameters that cannot improve the answer.\n    lower, upper = 0, required - 1\n    while lower < upper:\n        limit = (lower + upper) // 2\n        radius = limit // 2\n        balls = [0] * n\n        enough = False\n        for vertex in range(n):\n            balls[vertex] = ball_size(vertex, radius)\n            if balls[vertex] >= required:\n                enough = True\n                break\n        if not enough and limit % 2:\n            # Edge-centred radius-r balls: parent side plus child side.\n            for child in range(1, n):\n                p = parent[child]\n                size = balls[p] - subtree_count_by_depth(child, radius - 1)\n                size += subtree_count_by_depth(child, radius)\n                if size >= required:\n                    enough = True\n                    break\n        if enough:\n            upper = limit\n        else:\n            lower = limit + 1\n    return str(lower)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -7474,6 +7630,18 @@
         {
           "language": "python",
           "code": "def solve(raw):\n    d=list(map(int,raw.split()));n,m,q=d[:3];parent=list(range(n+1));size=[1]*(n+1)\n    def find(x):\n        while parent[x]!=x:parent[x]=parent[parent[x]];x=parent[x]\n        return x\n    p=3\n    for _ in range(m):\n        a,b=find(d[p]),find(d[p+1]);p+=2\n        if a!=b:\n            if size[a]<size[b]:a,b=b,a\n            parent[b]=a;size[a]+=size[b]\n    return ' '.join(str(size[find(v)]) for v in d[p:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-imc-1",
+      "sourceContentHash": "6b291f9fe330f3a64def816434d4d277d3055442c6cf79b57ecd89eaee7e88c2",
+      "packageChecksum": "d4e789d3e1a352d1cc6490ba157e71133531356890808442a1fec1cf10e7e940",
+      "editorial": "## 思路\n\n对每个容器组单独排序。对每笔需求 r 使用 lower_bound 找到第一个容量 `c≥r` 的容器，贡献 `c-r`。若任何订单找不到这样的容器，该组不可行；否则累加总浪费。扫描容器组，保留总浪费严格更小者，因此并列时自然保留更早下标。若所有组都不可行，按本站约定返回 -1。\n\n## 正确性\n\n固定订单 r 后，所有能装满它的容器容量都满足 `c≥r`，浪费随 c 增大而增大，所以 lower_bound 找到的最小可行容器产生最小浪费。各订单独立使用一个容器，故逐单最小化后求和得到该容器组的最小总浪费。遍历所有可行容器组并按严格小于更新即可得到全局最优及最早下标；无可行组时输出 -1。\n\n## 复杂度\n\n令 S 为容器组数，R 为订单数，C_i 为第 i 组容量数。时间 `O(Σ C_i log C_i + RΣ log C_i)`，空间 `O(max C_i)`。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import bisect\nimport sys\n\ndef min_waste_set(requirements, container_sets):\n    best_index = -1\n    best_waste = None\n    for index, containers in enumerate(container_sets, 1):\n        ordered = sorted(containers)\n        total = 0\n        feasible = True\n        for required in requirements:\n            pos = bisect.bisect_left(ordered, required)\n            if pos == len(ordered):\n                feasible = False\n                break\n            total += ordered[pos] - required\n        if feasible and (best_waste is None or total < best_waste):\n            best_index = index\n            best_waste = total\n    return best_index\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 2:\n        raise ValueError(\"missing requirement/set counts\")\n    r, s = values[0], values[1]\n    if len(values) < 2 + r:\n        raise ValueError(\"missing requirements\")\n    requirements = values[2:2 + r]\n    pos = 2 + r\n    container_sets = []\n    for _ in range(s):\n        if pos >= len(values):\n            raise ValueError(\"missing container count\")\n        count = values[pos]\n        pos += 1\n        if pos + count > len(values):\n            raise ValueError(\"missing container sizes\")\n        container_sets.append(values[pos:pos + count])\n        pos += count\n    if pos != len(values):\n        raise ValueError(\"unexpected trailing input\")\n    return str(min_waste_set(requirements, container_sets))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read()))\n"
         }
       ]
     },
@@ -9806,6 +9974,30 @@
       ]
     },
     {
+      "id": "oa-optiver-4",
+      "sourceContentHash": "fd993dfcbdc2c2e675db0da837ce0284e7f6effce7e725cf11a92d6527eac98d",
+      "packageChecksum": "d7ffff62f89572e792eb25d70b95154456ed986da482dc4f9c036bc0f38bdae2",
+      "editorial": "## 思路\n\n维护一棵按 `(timestamp, 接收序号)` 排序的 order-statistic treap，并保存当前最大时间戳。每条日志以唯一接收序号插入，因此相同时间戳仍按接收先后排序。令 `cutoff=maxTimestamp-3600`：通过排名查询得到 `timestamp≤cutoff` 的日志数和 `timestamp≤maxTimestamp` 的日志数，两者相减即窗口计数。GET_LOGS 从窗口对应排名区间中取最后 m 项并中序输出。\n\n## 正确性\n\ntreap 的键按时间戳、接收序号字典序排列，故中序遍历与题目排序一致。`rank_less(cutoff+1,0)` 计算时间戳不大于 cutoff 的前缀长度，恰好排除差值不少于 3600 秒的日志；`rank_less(maxTimestamp+1,0)` 截至最新时间戳。两者的排名区间正是严格一小时窗口。COUNT 返回区间长度；GET_LOGS 取该区间最后至多 m 个，因此是窗口内最新 m 条且输出升序。\n\n## 复杂度\n\n每次插入、排名查询期望 O(log q)；输出 GET_LOGS 另需 O(min(m,窗口日志数))。空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\nimport sys\n\nMASK = (1 << 64) - 1\n\nclass LogIndex:\n    def __init__(self):\n        self.timestamps = array(\"q\", [0])\n        self.log_ids = array(\"q\", [0])\n        self.sequences = array(\"q\", [0])\n        self.priorities = array(\"Q\", [MASK])\n        self.left = array(\"i\", [0])\n        self.right = array(\"i\", [0])\n        self.sizes = array(\"i\", [0])\n        self.root = 0\n        self.maximum_timestamp = None\n        self.sequence = 0\n\n    def _size(self, node):\n        return self.sizes[node] if node else 0\n\n    def _pull(self, node):\n        self.sizes[node] = 1 + self._size(self.left[node]) + self._size(self.right[node])\n\n    def _priority(self, value):\n        # SplitMix64 gives deterministic, well-distributed treap priorities.\n        z = (value + 0x9E3779B97F4A7C15) & MASK\n        z = ((z ^ (z >> 30)) * 0xBF58476D1CE4E5B9) & MASK\n        z = ((z ^ (z >> 27)) * 0x94D049BB133111EB) & MASK\n        return z ^ (z >> 31)\n\n    def _rotate_right(self, node):\n        child = self.left[node]\n        self.left[node] = self.right[child]\n        self.right[child] = node\n        self._pull(node)\n        self._pull(child)\n        return child\n\n    def _rotate_left(self, node):\n        child = self.right[node]\n        self.right[node] = self.left[child]\n        self.left[child] = node\n        self._pull(node)\n        self._pull(child)\n        return child\n\n    def _key_less(self, a, b):\n        return (self.timestamps[a], self.sequences[a]) < (self.timestamps[b], self.sequences[b])\n\n    def _insert(self, root, node):\n        if not root:\n            return node\n        if self._key_less(node, root):\n            self.left[root] = self._insert(self.left[root], node)\n            if self.priorities[self.left[root]] < self.priorities[root]:\n                root = self._rotate_right(root)\n        else:\n            self.right[root] = self._insert(self.right[root], node)\n            if self.priorities[self.right[root]] < self.priorities[root]:\n                root = self._rotate_left(root)\n        self._pull(root)\n        return root\n\n    def add(self, log_id, timestamp):\n        self.sequence += 1\n        seq = self.sequence\n        self.timestamps.append(timestamp)\n        self.log_ids.append(log_id)\n        self.sequences.append(seq)\n        self.priorities.append(self._priority(seq))\n        self.left.append(0)\n        self.right.append(0)\n        self.sizes.append(1)\n        self.root = self._insert(self.root, seq)\n        if self.maximum_timestamp is None or timestamp > self.maximum_timestamp:\n            self.maximum_timestamp = timestamp\n\n    def _rank_less(self, timestamp, sequence):\n        \"\"\"Number of keys strictly less than (timestamp, sequence).\"\"\"\n        node = self.root\n        count = 0\n        while node:\n            if (self.timestamps[node], self.sequences[node]) < (timestamp, sequence):\n                count += self._size(self.left[node]) + 1\n                node = self.right[node]\n            else:\n                node = self.left[node]\n        return count\n\n    def _collect(self, node, first, last, base, result):\n        if not node or first >= last:\n            return\n        left_size = self._size(self.left[node])\n        position = base + left_size\n        if first < position:\n            self._collect(self.left[node], first, min(last, position), base, result)\n        if first <= position < last:\n            result.append(node)\n        if last > position + 1:\n            self._collect(self.right[node], max(first, position + 1), last, position + 1, result)\n\n    def window_bounds(self):\n        if self.maximum_timestamp is None:\n            return 0, 0\n        cutoff = self.maximum_timestamp - 3600\n        left = self._rank_less(cutoff + 1, 0)  # exclude timestamps <= cutoff\n        right = self._rank_less(self.maximum_timestamp + 1, 0)\n        return left, right\n\n    def get_logs(self, limit):\n        left, right = self.window_bounds()\n        first = max(left, right - limit)\n        selected = []\n        self._collect(self.root, first, right, 0, selected)\n        return \",\".join(str(self.log_ids[node]) for node in selected)\n\n    def get_count(self):\n        left, right = self.window_bounds()\n        return right - left\n\ndef solve_stream(stream, output):\n    first = stream.readline().split()\n    if len(first) != 2:\n        raise ValueError(\"expected m q header\")\n    limit, operation_count = map(int, first)\n    if not 1 <= limit <= 1000 or not 1 <= operation_count <= 1000000:\n        raise ValueError(\"header outside stated constraints\")\n    index = LogIndex()\n    for _ in range(operation_count):\n        parts = stream.readline().split()\n        if not parts:\n            raise ValueError(\"missing operation\")\n        if parts[0] == b\"RECORD\" and len(parts) == 3:\n            log_id, timestamp = map(int, parts[1:])\n            if not -1000000000 <= log_id <= 1000000000 or not -1000000000000 <= timestamp <= 1000000000000:\n                raise ValueError(\"value outside site input supplement\")\n            index.add(log_id, timestamp)\n        elif parts[0] == b\"GET_LOGS\" and len(parts) == 1:\n            output.write(index.get_logs(limit) + \"\\n\")\n        elif parts[0] == b\"COUNT\" and len(parts) == 1:\n            output.write(str(index.get_count()) + \"\\n\")\n        else:\n            raise ValueError(\"invalid operation\")\n\nif __name__ == \"__main__\":\n    solve_stream(sys.stdin.buffer, sys.stdout)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-palantir-4",
+      "sourceContentHash": "5e6534b95f7ca1b58f39205a4ef20d831132be99f1fc71410bc00081497151ed",
+      "packageChecksum": "092ecc0e719ec8439b31af19eaa6f282451a332a2fbe0d581f3402b62a9d70ee",
+      "editorial": "## 思路\n\n使用 Dijkstra 风格的优先队列，但路径代价不是边权和。令 `best[v]` 为从 source 到 v 的最小瓶颈值。沿权重 w 的边扩展时，候选值是 `max(best[u], w)`；若更小就更新。\n\n## 正确性\n\n任意到 v 的路径扩展一条边 w 后，其瓶颈恰为 `max(原路径瓶颈,w)`。优先队列每次取出当前瓶颈最小的未定状态；由于扩展函数对路径瓶颈单调不减，之后经过其它节点不可能找到更小状态，因此更新规则得到每个可达点的最优瓶颈。无向邻接表保证两方向可通行；未到达 destination 则不可达。\n\n## 复杂度\n\n时间 O((N+M) log N)，空间 O(N+M)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef minimize_path_value(n, edges, source, destination):\n    if source == destination:\n        return 0\n    graph = [[] for _ in range(n + 1)]\n    for u, v, weight in edges:\n        graph[u].append((v, weight))\n        graph[v].append((u, weight))\n    infinity = 10**30\n    best = [infinity] * (n + 1)\n    best[source] = 0\n    heap = [(0, source)]\n    while heap:\n        stress, u = heapq.heappop(heap)\n        if stress != best[u]:\n            continue\n        if u == destination:\n            return stress\n        for v, weight in graph[u]:\n            candidate = max(stress, weight)\n            if candidate < best[v]:\n                best[v] = candidate\n                heapq.heappush(heap, (candidate, v))\n    return -1\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 4:\n        raise ValueError(\"incomplete graph input\")\n    n, m = tokens[0], tokens[1]\n    if len(tokens) != 2 + 3 * m + 2:\n        raise ValueError(\"edge count does not match input\")\n    edges = []\n    pos = 2\n    for _ in range(m):\n        edges.append((tokens[pos], tokens[pos + 1], tokens[pos + 2]))\n        pos += 3\n    return str(minimize_path_value(n, edges, tokens[pos], tokens[pos + 1]))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-palantir-1",
       "sourceContentHash": "13961744dc09a9297b155c683170449c85310d0d9e7404d7fed035c37db26b7d",
       "packageChecksum": "8e80678cf0c6f688ddf78bc3adac0536ec9f078fcfea28b4cf4ab8d220befdb2",
@@ -9974,6 +10166,18 @@
       ]
     },
     {
+      "id": "oa-pure-storage-2",
+      "sourceContentHash": "17d3cc16979da7c96fbe7de05bcd10c888e5533155d855bd15dd0ebfc4ab7661",
+      "packageChecksum": "9287ea69ceb5fef8831b9777bfa0bb37589e6f3e87e9b3d15cf78ff8421ac46f",
+      "editorial": "## 思路\n\n每个位置是一个独立字符组。为同时匹配 x[i]、y[i]，字符组必须包含这两个字符；要让整个串不匹配 z，至少有一个位置不能包含 z[i]。因此可行位置必须满足 z[i] 与 x[i]、y[i] 都不同。\n\n最长答案在每个位置都使用 A-Z 全集，只在一个可行位置删掉 z[i]，长度为 28n−1。若删多个字符会更短；若删在不满足条件的位置会无法匹配 x/y。\n\n在任一可行位置删一个字母时，其他位置都相同。被删字符之后，缩短的组会遇到更大的下一个字符（若删 Z，则遇到 `]`；`Z` 仍小于 `]`），所以较早出现缩短组的字符串字典序更大。故应选最右侧可行位置。没有可行位置时输出 `-1`。\n\n## 正确性证明\n\n任何合法 regex 的第 i 个字符组都必须包含 x[i] 和 y[i]。若要拒绝 z，至少有一组不包含 z[i]；该位置必满足 z[i]≠x[i] 且 z[i]≠y[i]。完整组长 28，缩短一个字符的组长 27，因此任意可行答案长度至多 28n−1；只选一个可行位置删去 z[i]，其余全用完整组，达到上界。候选间比较时，第一处不同组之前都相同，完整组在被删字符处小于缩短组的下一个字符（包括删 Z 时的右方括号），所以把唯一缩短组尽量后移可得到字典序最小值。算法从右向左找到首个可行位置并构造该上界答案，符合要求。若不存在该位置，每组都必须包含对应 z[i]，任何同时匹配 x/y 的 regex 也会匹配 z，故无解。\n\n## 复杂度\n\n扫描输入 O(n)，构造输出 O(n)；额外工作空间 O(1)，输出空间 O(n)。\n\n## 验证\n\n163 个输入由独立 oracle 枚举每个可行排除位置、生成完整候选后直接比较字符串；额外对长度 2 的 A/B/C 输入穷举全部 3⁶=729 种 x/y/z，并枚举每个位置所有可能的字符组子集。正式测试覆盖无解、唯一/多个可行位置、排除 A/Z 和 n=1000。另在本地直接构造 n=10⁶ 输出校验长度及匹配/失配性质。两个正常返回的错误程序分别被正式用例击杀。\n\n## 来源与本站协议\n\n固定上游 OAMaster 的 Pure Storage 页面/catalog 将 #2 标为 Amazon Regex Generator，明确大写字母/方括号组、同时匹配 x/y、拒绝 z、最长及同长取字典序最小，并给出 n≤10⁶。固定提交的配套 Python/Java/C++ 参考代码都选了最早可行位置；此候选按题面规则重写，修正为最右可行位置。上游没有 stdin/stdout 样例；本站补充第一行 n、随后三行 x/y/z 的协议及 A-Z 字符集校验。\n\n另有一份本地 `OA LIST/Pure_Storage_OA/002_image.txt` 将其自身的 #2 标为 Find Repetitions，与固定站点/catalog 编号内容不同。本候选只对应固定 OAMaster Pure Storage 页面/catalog 的 #2，不混用该本地列表。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nALPHABET = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\nFULL = \"[\" + ALPHABET + \"]\"\n\ndef solve(raw):\n    lines = raw.split()\n    if len(lines) != 4:\n        raise ValueError(\"expected n followed by x, y, and z\")\n    n = int(lines[0])\n    x, y, z = lines[1:]\n    if not (1 <= n <= 1_000_000) or len(x) != n or len(y) != n or len(z) != n:\n        raise ValueError(\"invalid lengths\")\n    if any(any(ch < \"A\" or ch > \"Z\" for ch in s) for s in (x, y, z)):\n        raise ValueError(\"strings must contain uppercase English letters\")\n\n    # A position can reject z only when z[i] is absent from both required\n    # strings. Omitting exactly one such character preserves maximum length.\n    star = -1\n    for i in range(n - 1, -1, -1):\n        if z[i] != x[i] and z[i] != y[i]:\n            star = i\n            break\n    if star < 0:\n        return \"-1\"\n    reduced = \"[\" + ALPHABET.replace(z[star], \"\") + \"]\"\n    return FULL * star + reduced + FULL * (n - star - 1)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-pure-storage-1",
       "sourceContentHash": "9cac9708b628e54a59554d2e44ce1187984a33b949753c332ee0c90a0659e0e6",
       "packageChecksum": "0ff51fd98b48f8d1e9ecb1ee2cbba83a8395aacf5055f95aeac2212f67110410",
@@ -10078,6 +10282,30 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); r,m=t[:2]; score=[0]*r; pts=(0,10,6,4,3,2,1); p=2\n for _ in range(m):\n  race,who,pos=t[p:p+3]; p+=3\n  if pos<=6: score[who-1001]+=pts[pos]\n i=min(range(r),key=lambda j:(-score[j],j))\n return f'{1001+i} {score[i]}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ramp-2",
+      "sourceContentHash": "e18fd8d39a909b4fdb9fc031237a025e18a334c94b4bef6990cf10defaa18fef",
+      "packageChecksum": "8e9635a40df7dabf06f226ddc25fcb4c4ccd03e72b606571cd2966358dfa91d4",
+      "editorial": "## 为什么正确\n\n按请求时间顺序模拟账户余额。维护一个按返现到期秒数排序的最小堆；处理每条请求前，先发放所有到期时间不晚于当前请求的返现。这也保证同秒到期返现先于该请求处理。\n\n账户号按固定源附带的 Python 实现采用 1 起算。若账号超出 `1..N`，或提现额高于当前余额，立即输出该请求的负序号。存款直接加余额；提现成功时扣款，并把 `floor(amount×2/100)` 与 `timestamp+86400` 放入堆。全部请求处理完后，直接返回此时余额；请求结束时间之后才到期的返现不提前支付。\n\n## 正确性要点\n\n处理时间为 t 的请求之前，堆中所有 `refundTime≤t` 的返现都已入账，其余事件尚未到期，因此账户余额恰为题意规定的 t 时刻可用余额。对请求执行账号与余额校验后，存款/提现的状态变更与规则一致；每笔成功提现只创建一笔固定到期、按整数向下取整的返现。首次非法请求立即返回其 1-based 序号的相反数，之后无需继续模拟。由请求时间严格递增，按序处理即可得到最后一条请求时刻的余额。\n\n## 复杂度\n\n设 Q 条请求，最多 Q 笔返现事件。每笔事件恰好入堆、出堆一次，时间 O(Q log Q)，额外空间 O(Q)。\n\n## 来源与本站输入约定\n\n固定 OAMaster Ramp #2 说明秒级时间戳严格递增，提现返还 2%（向下取整）且延迟 86400 秒；若请求与返现同秒，返现先处理；非法账号或余额不足时返回首次非法请求的负序号；随附 Python 实现将账号按 1 起算。\n\n原题没有规定 stdin/stdout、数组最大长度、余额/金额/时间数值上限。本站补充：首行 `N Q`，次行为 N 个初始余额，之后 Q 行为 `operation timestamp holder_id amount`；输出 JSON 数组。本站限制 `1≤N≤100000`、`0≤Q≤200000`、初始余额 `0..10^12`、非负整数金额 `0..10^9`、正整数秒级时间戳严格递增且不超过 `10^12`。账号使用整数，1..N 为有效，其余值按源题非法账号规则处理。以上资源和序列化限制是本站约定，不冒充原题约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport json\nimport sys\n\nDAY_SECONDS = 86_400\n\ndef solve(raw):\n    tokens = raw.split()\n    if len(tokens) < 2:\n        raise ValueError(\"expected account and request counts\")\n    n, q = int(tokens[0]), int(tokens[1])\n    if not (1 <= n <= 100_000 and 0 <= q <= 200_000):\n        raise ValueError(\"input exceeds station limits\")\n    if len(tokens) != 2 + n + 4 * q:\n        raise ValueError(\"wrong number of input fields\")\n    balance = list(map(int, tokens[2:2+n]))\n    if any(x < 0 or x > 1_000_000_000_000 for x in balance):\n        raise ValueError(\"invalid initial balance\")\n\n    requests = []\n    at = 2 + n\n    previous_ts = 0\n    for _ in range(q):\n        op = tokens[at]\n        ts, account, amount = map(int, tokens[at+1:at+4])\n        at += 4\n        if op not in (\"deposit\", \"withdraw\"):\n            raise ValueError(\"unknown operation\")\n        if not (1 <= ts <= 1_000_000_000_000 and ts > previous_ts):\n            raise ValueError(\"timestamps must be strictly increasing\")\n        if not (0 <= amount <= 1_000_000_000):\n            raise ValueError(\"invalid amount\")\n        previous_ts = ts\n        requests.append((op, ts, account, amount))\n\n    pending = []\n    for request_id, (op, ts, account, amount) in enumerate(requests, 1):\n        # The statement explicitly orders due cashback before same-second work.\n        while pending and pending[0][0] <= ts:\n            _, index, refund = heapq.heappop(pending)\n            balance[index] += refund\n\n        if account < 1 or account > n:\n            return json.dumps([-request_id], separators=(\",\", \":\"))\n        index = account - 1\n        if op == \"deposit\":\n            balance[index] += amount\n        else:\n            if balance[index] < amount:\n                return json.dumps([-request_id], separators=(\",\", \":\"))\n            balance[index] -= amount\n            refund = (amount * 2) // 100\n            heapq.heappush(pending, (ts + DAY_SECONDS, index, refund))\n\n    # Do not process refunds after the timestamp of the final request.\n    return json.dumps(balance, separators=(\",\", \":\"))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rippling-6",
+      "sourceContentHash": "f148de21bfbd492ca9dba31e2f08f2928f7ead694fcb3b67f9981421e8dce147",
+      "packageChecksum": "2af6ebe82dfdec40e330c14e790f43670c93107d8b925dd06246d56900ecdc04",
+      "editorial": "## 思路\n\n答案是树的直径。任选一个服务器进行遍历，找出离它最远的服务器 u；再从 u 遍历，所得的最远距离就是树的直径。这里每条边权都是 1，所以用 BFS 即可。采用迭代队列，避免长链导致递归栈溢出。本站的最大节点数 200000 是资源限制，原题未给此上限。\n\n## 正确性\n\n树上任意两点间路径唯一。从任意点出发，最远点必为树某条直径的端点；因此以该端点 u 为起点遍历时，能达到的最大距离恰为全树最大点对距离。两次 BFS 分别计算该距离，故返回值就是任意两台服务器间的最大传输时间。\n\n## 复杂度\n\n每次遍历访问每个节点和边至多一次。两次 BFS 总时间 O(n)，邻接表、队列和距离数组空间 O(n)。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    it = iter(map(int, raw.split()))\n    n = next(it)\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        u, v = next(it), next(it)\n        graph[u].append(v)\n        graph[v].append(u)\n\n    def farthest(start):\n        distance = [-1] * (n + 1)\n        distance[start] = 0\n        queue = deque([start])\n        best_node = start\n        while queue:\n            u = queue.popleft()\n            for v in graph[u]:\n                if distance[v] == -1:\n                    distance[v] = distance[u] + 1\n                    if distance[v] > distance[best_node]:\n                        best_node = v\n                    queue.append(v)\n        return best_node, distance[best_node]\n\n    endpoint, _ = farthest(1)\n    _, diameter = farthest(endpoint)\n    return f\"{diameter}\\n\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()), end=\"\")\n"
         }
       ]
     },
@@ -11186,6 +11414,18 @@
       ]
     },
     {
+      "id": "oa-sig-4",
+      "sourceContentHash": "d4d72e31741ca5be7bea26b3bc070b9d17b56f0a31a39edcd972757b88f3c554",
+      "packageChecksum": "cb8bb18a4a06c001141ae76a34546e18a73da16b726a39fa7dc754f83dcfe64b",
+      "editorial": "## 思路\n\n把目标 accessCode 写成规范十进制字符串。每种拼接方式都对应一个非空切分 `target = left + right`。统计数组中各整数的出现次数，累加 `count(left) × count(right)`。当左右片段相等时，同一位置不能同时使用两次，因此从乘积中减去 `count(left)`。\n\n该计数是按有序角色分配位置：例如两个数值相同的 `12` 片段能拼成 `1212`，互换这两个位置仍是另一种使用方式。若两个不同片段都能以相反顺序组成目标，各自的切分会分别计入。\n\n## 正确性证明\n\n任意有效方式由一个第一片段和一个不同位置的第二片段组成，二者的十进制串连接后恰好等于目标，因此对应目标串唯一的一个非空切分。该切分在数组中有 `count(left)×count(right)` 个有序位置选择；若左右文本相同，其中每个位置都不能与自身配对，需减去 `count(left)` 个非法选择。反过来，任一计入的有序位置对，其两片段文本恰好拼出目标且位置不同，所以都是合法方式。因此算法恰好统计全部合法拼接对。\n\n## 复杂度\n\n目标最多 18 位，最多检查 17 个切分。时间 `O(N + D)`，空间 `O(U + D)`，其中 `U` 是不同片段数，`D` 是目标位数。\n\n## 来源及本站约定\n\n固定题面称 fragments/accessCode 为正整数、明确是相邻拼接而非数值相加，并按具体位置的片段对计不同方式。原样例 `[1,212,12,12]`、目标 `1212` 的输出 3 可由 `1+212` 的一个有序方式与两个不同位置的 `12+12` 方式复算。输入仅为函数签名，本站补充标准 I/O 与限制：`1≤N≤100000`，`1≤fragment≤10^9`，`1≤accessCode≤10^18`。整数用规范十进制表示，不含前导零。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def count_ways(fragments, access_code):\n    target = str(access_code)\n    answer = 0\n    counts = {}\n    for fragment in fragments:\n        text = str(fragment)\n        counts[text] = counts.get(text, 0) + 1\n    for cut in range(1, len(target)):\n        left, right = target[:cut], target[cut:]\n        left_count = counts.get(left, 0)\n        right_count = counts.get(right, 0)\n        answer += left_count * right_count\n        if left == right:\n            answer -= left_count\n    return answer\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if len(data) < 2 or len(data) != data[0] + 2:\n        raise ValueError(\"expected n, accessCode, then n fragments\")\n    n, access_code = data[:2]\n    return str(count_ways(data[2:], access_code))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-snowflake-1",
       "sourceContentHash": "6df4d16e351b4716ebebf9c6cddfa335c77b9b347baae6f83cbbd6764f483ea7",
       "packageChecksum": "1a5b744a2eeaf61c1764a844431043da0004d5ee26cace1bd85fb6529a3f189d",
@@ -11678,6 +11918,18 @@
       ]
     },
     {
+      "id": "oa-stripe-20",
+      "sourceContentHash": "5b7ba75466726cd40ff78b880f150612e72fc8f0cab3869a804cdc1218d21bb2",
+      "packageChecksum": "770948513190e4524e7f66a185443401aa44cde45b04d3b4ba1b18cf26e17117",
+      "editorial": "## 为什么正确\n\n按命令顺序维护名称到数据中心状态的映射。注册时验证唯一名称、坐标范围与正容量；健康切换只更新已有节点。距离使用 Haversine 公式，令 `a = sin²(Δφ/2) + cos(φ1)cos(φ2)sin²(Δλ/2)`，距离为 `6371 × 2 atan2(√a, √(1−a))`，再取最近整数公里。路由只枚举健康节点，按 `(整数距离, 名称)` 排序后取第一个未达容量的节点并增加负载。\n\n## 取整稳定性\n\n输入坐标为有限十进制，即有理数度数。转弧度后 sin/cos 的值为代数数，故 `cos(中心角)=1−2a` 为代数数。若距离恰为半整数公里，中心角会是非零代数数 `(m+1/2)/6371`；由 Lindemann–Weierstrass 定理，该角的余弦为超越数，与前述代数性矛盾。因此精确距离不会落在半整数边界，最近整数唯一。固定精度浮点在极端近边界输入上仍可能有误；竞赛实现可用高精度/自适应区间比较，本站输入小数位上限为 18。\n\n## 正确性与复杂度\n\n逐条处理命令保证后续命令读取到的注册、健康和负载状态正是此前命令产生的状态。候选集合恰为健康数据中心，排序键正是题面规定的整数距离及名称，因此首个未满节点就是规则要求的路由目标；若没有则输出 None。设命令数为 q、数据中心数为 d，距离/状态更新为 O(1)，每条 ROUTE 排序耗时 O(d log d)，总时间 O(qd log d)，空间 O(d+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import math\nfrom decimal import Decimal, localcontext, ROUND_HALF_UP\n\nEARTH = 6371.0\nPI_D = Decimal(\"3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679\")\n\ndef decimal_round_km(lat1, lon1, lat2, lon2):\n    # Slow path for values close to a rounding boundary or near the antipode.\n    def sin(x):\n        term = total = x\n        i = 1\n        while True:\n            term *= -(x * x) / Decimal((2 * i) * (2 * i + 1))\n            nxt = total + term\n            if nxt == total: return total\n            total = nxt; i += 1\n    def cos(x):\n        term = total = Decimal(1)\n        i = 1\n        while True:\n            term *= -(x * x) / Decimal((2 * i - 1) * (2 * i))\n            nxt = total + term\n            if nxt == total: return total\n            total = nxt; i += 1\n    def atan(x):\n        if x < 0: return -atan(-x)\n        scale = 0\n        while x > Decimal(\"0.05\"):\n            x = x / (Decimal(1) + (Decimal(1) + x*x).sqrt())\n            scale += 1\n        term = total = x\n        i = 1\n        while True:\n            term *= -(x*x)\n            nxt = total + term / Decimal(2*i + 1)\n            if nxt == total: return total * (2 ** scale)\n            total = nxt; i += 1\n    def atan2(y, x):\n        if x == 0: return PI_D / 2\n        if y == 0: return Decimal(0)\n        return atan(y/x) if x > 0 else PI_D - atan(y/(-x))\n    with localcontext() as ctx:\n        ctx.prec = 80\n        p1, p2 = Decimal(str(lat1))*PI_D/180, Decimal(str(lat2))*PI_D/180\n        dp = (Decimal(str(lat2))-Decimal(str(lat1)))*PI_D/180\n        dl = (Decimal(str(lon2))-Decimal(str(lon1)))*PI_D/180\n        a = sin(dp/2)**2 + cos(p1)*cos(p2)*sin(dl/2)**2\n        a = min(Decimal(1), max(Decimal(0), a))\n        km = Decimal(6371)*2*atan2(a.sqrt(), (1-a).sqrt())\n        return int(km.to_integral_value(rounding=ROUND_HALF_UP))\n\ndef raw_haversine_km(lat1, lon1, lat2, lon2):\n    lat1, lon1, lat2, lon2 = map(float, (lat1, lon1, lat2, lon2))\n    p1, p2 = math.radians(lat1), math.radians(lat2)\n    dp = math.radians(lat2 - lat1)\n    dl = math.radians(lon2 - lon1)\n    a = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2\n    a = min(1.0, max(0.0, a))\n    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))\n    km = EARTH * c\n    return km\n\ndef half_up_km(lat1, lon1, lat2, lon2):\n    km = raw_haversine_km(lat1, lon1, lat2, lon2)\n    # Double precision can move a result across a half-kilometer boundary.\n    # The 18-decimal input limit lets this conservative band trigger a\n    # high-precision Decimal recomputation only for numerically sensitive cases.\n    if abs(km - (math.floor(km) + 0.5)) < 1e-5 or km > 20015.0:\n        return decimal_round_km(lat1, lon1, lat2, lon2)\n    # The mathematical distance cannot be an exact half-integer for finite-\n    # decimal coordinates; this is the unique nearest integer.\n    return math.floor(km + 0.5)\n\ndef solve(raw):\n    lines = [line.strip() for line in raw.splitlines() if line.strip()]\n    if not lines:\n        return \"\"\n    q = int(lines[0])\n    datacenters = {}\n    out = []\n    for line in lines[1:q + 1]:\n        p = line.split()\n        op = p[0]\n        if op == \"REGISTER\":\n            name, lat_s, lon_s, cap_s = p[1:]\n            lat, lon, cap = float(lat_s), float(lon_s), int(cap_s)\n            if name in datacenters or not (-90 <= lat <= 90 and -180 <= lon <= 180) or cap <= 0:\n                out.append(\"ERROR\")\n            else:\n                # Preserve original decimals for the high-precision fallback.\n                datacenters[name] = [lat_s, lon_s, cap, 0, True]\n                out.append(\"OK\")\n        elif op == \"SET_HEALTHY\":\n            name, value = p[1:]\n            if name not in datacenters or value not in (\"true\", \"false\"):\n                out.append(\"ERROR\")\n            else:\n                datacenters[name][4] = value == \"true\"\n                out.append(\"OK\")\n        elif op == \"DISTANCE\":\n            lat1, lon1, lat2, lon2 = p[1:]\n            f_lat1, f_lon1, f_lat2, f_lon2 = map(float, (lat1, lon1, lat2, lon2))\n            if not (-90 <= f_lat1 <= 90 and -180 <= f_lon1 <= 180 and\n                    -90 <= f_lat2 <= 90 and -180 <= f_lon2 <= 180):\n                out.append(\"ERROR\")\n            else:\n                out.append(str(half_up_km(lat1, lon1, lat2, lon2)))\n        elif op == \"ROUTE\":\n            lat, lon = p[1:]\n            candidates = []\n            for name, (dlat, dlon, cap, load, healthy) in datacenters.items():\n                if healthy:\n                    candidates.append((half_up_km(lat, lon, dlat, dlon), name))\n            candidates.sort()\n            names = \",\".join(name for _, name in candidates)\n            selected = None\n            for distance, name in candidates:\n                if datacenters[name][3] < datacenters[name][2]:\n                    datacenters[name][3] += 1\n                    selected = (distance, name)\n                    break\n            if selected is None:\n                out.append(f\"None {names}\" if names else \"None\")\n            else:\n                distance, name = selected\n                out.append(f\"{name} {distance} {names}\")\n    return \"\\n\".join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-stripe-13",
       "sourceContentHash": "64366bb6f9c63f6fa897a9a009b72f694b9da1c0afae239514fc3db3bc47264c",
       "packageChecksum": "d904ba1963e74ee647d5c981acae7db237c687abcec93decc591b722bbc17ce7",
@@ -11710,6 +11962,18 @@
         {
           "language": "python",
           "code": "def solve(raw):\n    lines=raw.splitlines(); q=int(lines[0]); merchants={}; intents={}\n    for line in lines[1:q+1]:\n        p=line.split(); ts=int(p[0]); op=p[1]; a=p[2:]\n        if op==\"INIT\":\n            name=a[0]; balance=int(a[1]); limit=int(a[2]) if len(a)>2 else None\n            if name not in merchants: merchants[name]=[balance,limit]\n        elif op==\"CREATE\":\n            pid,name,amount=a[0],a[1],int(a[2])\n            if pid not in intents and name in merchants and amount>=0: intents[pid]=[name,amount,\"REQUIRES_ACTION\",False,None]\n        elif op in (\"ATTEMPT\",\"SUCCEED\",\"FAIL\",\"UPDATE\",\"REFUND\"):\n            pid=a[0]\n            if pid not in intents: continue\n            item=intents[pid]\n            if op==\"ATTEMPT\" and item[2]==\"REQUIRES_ACTION\": item[2]=\"PROCESSING\"\n            elif op==\"SUCCEED\" and item[2]==\"PROCESSING\":\n                item[2]=\"COMPLETED\"; merchants[item[0]][0]+=item[1]; item[4]=ts\n            elif op==\"FAIL\" and item[2]==\"PROCESSING\": item[2]=\"REQUIRES_ACTION\"\n            elif op==\"UPDATE\" and item[2]==\"REQUIRES_ACTION\" and int(a[1])>=0: item[1]=int(a[1])\n            elif op==\"REFUND\" and item[2]==\"COMPLETED\" and not item[3]:\n                limit=merchants[item[0]][1]\n                if limit is None or limit<0 or (limit>0 and ts-item[4]<=limit):\n                    merchants[item[0]][0]-=item[1]; item[3]=True\n    out=[f\"{name} {merchants[name][0]}\" for name in sorted(merchants)]\n    return str(len(out))+(\"\\n\"+\"\\n\".join(out) if out else \"\")\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-tradedesk-5",
+      "sourceContentHash": "9dc700907325e644f5ac3c0c96e0343b3bd07b3dddaeb3a34820406ec71142b1",
+      "packageChecksum": "630b29964d44b183c41eee97a7c19faf8ba3ee980e856da610da87aebe01d563",
+      "editorial": "## 思路\n\n从时刻 0 开始，按计划逐次往返。C→D 方向从指针开始跳过所有早于当前时刻的航班，乘坐第一个不早于当前时刻的班次，抵达时间加 100；再以同样方法选择 D→C 航班。两个方向的时刻单调递增，各用一个指针即可。任一方向的航班耗尽则输出 -1。\n\n## 正确性\n\n每一段出发时刻表已升序。指针跳过的航班都早于到达时刻，不能乘坐；指针停下的第一班正是所有可乘航班中最早的一班。按定义乘坐后当前时间增加 100，继续处理下一段，因此逐段模拟始终选择题目要求的航班。若没有候选班次就无法继续计划行程，返回 -1；全部完成时当前时间即最后抵达时刻。\n\n## 复杂度\n\n设两个方向航班数为 n、m，往返次数为 k。每个指针只前进不后退，总时间 O(n+m+k)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 3:\n        raise ValueError(\"expected n m journeys and two schedules\")\n    n, m, journeys = values[:3]\n    if len(values) != 3 + n + m:\n        raise ValueError(\"schedule length does not match header\")\n    c2d = values[3:3+n]\n    d2c = values[3+n:]\n    time = 0\n    outbound = return_flight = 0\n    for _ in range(journeys):\n        while outbound < n and c2d[outbound] < time:\n            outbound += 1\n        if outbound == n:\n            return \"-1\"\n        time = c2d[outbound] + 100\n        outbound += 1\n\n        while return_flight < m and d2c[return_flight] < time:\n            return_flight += 1\n        if return_flight == m:\n            return \"-1\"\n        time = d2c[return_flight] + 100\n        return_flight += 1\n    return str(time)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
         }
       ]
     },
@@ -11868,6 +12132,18 @@
           "code": "def solve(raw):\n s=raw.strip();v=s.count(\"U\")-s.count(\"D\")\n return \"U\" if v>0 else \"D\" if v<0 else \"\"\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
         }
       ]
+    },
+    {
+      "id": "oa-twilio-1",
+      "sourceContentHash": "bb856490739e9b0be808a23d74f7030503b561a98814756002719c83b0dee6a0",
+      "packageChecksum": "97fe75d5fbacbcec9fdc57d4c7794aa949c5710368c79b307563a5faeb17dece",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom math import isqrt\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, q = data[0], data[1]\n    tags = data[2:2+n]\n    offset = 2+n\n    queries = [(data[offset+2*i]-1, data[offset+2*i+1]-1, i) for i in range(q)]\n    block = max(1, n // max(1, isqrt(q)))\n    queries.sort(key=lambda x: (x[0]//block, x[1] if (x[0]//block)%2 == 0 else -x[1]))\n    freq = {}\n    answers = [0]*q\n    groups = 0\n    left, right = 0, -1\n    for ql, qr, qi in queries:\n        while left > ql:\n            left -= 1\n            v = tags[left]\n            old = freq.get(v, 0)\n            groups += old & 1\n            freq[v] = old + 1\n        while right < qr:\n            right += 1\n            v = tags[right]\n            old = freq.get(v, 0)\n            groups += old & 1\n            freq[v] = old + 1\n        while left < ql:\n            v = tags[left]\n            old = freq[v]\n            groups -= (old - 1) & 1\n            if old == 1:\n                del freq[v]\n            else:\n                freq[v] = old - 1\n            left += 1\n        while right > qr:\n            v = tags[right]\n            old = freq[v]\n            groups -= (old - 1) & 1\n            if old == 1:\n                del freq[v]\n            else:\n                freq[v] = old - 1\n            right -= 1\n        answers[qi] = groups\n    return \" \".join(map(str, answers))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode()))\n"
+        }
+      ],
+      "editorial": "## 思路\n\n区间中某个标签出现 c 次，可组成 floor(c/2) 组；总答案是各标签贡献之和。逐查询扫区间或逐题遍历所有标签都可能达到 O(nq)。使用 Mo 算法按区间排序，只在相邻查询之间移动端点。\n\n维护 freq[v] 与 groups=Σfloor(freq[v]/2)。加入 v 时，旧频次为奇数才新增一组；删除 v 时，旧频次为偶数才减少一组。使用左右分块交错右端点顺序，降低来回移动。\n\n## 正确性\n\n不同标签互不影响；对标签 v，最多能取 floor(c/2) 个互不重叠的二元组。加入一个 v 的变化量 floor((c+1)/2)-floor(c/2)，仅在 c 为奇数时为 1。删除一个 v 的变化量 floor((c-1)/2)-floor(c/2)，仅在旧 c 为偶数时为 -1。因此每次端点移动后 groups 都等于当前区间答案。Mo 算法对每个查询将窗口移动至该查询区间，故所得结果正确。\n\n## 复杂度\n\n块长约 n/sqrt(q)。排序 O(q log q)；端点移动 O(n sqrt(q)+qn/B)，每次移动期望 O(1)，空间 O(n+q)。\n\n## 来源与本站协议\n\nOAMaster 固定题面给出同标签、每组两根、每根至多一组、独立区间查询及 n,q≤100000、tag≤10^9。本站用 1-based 闭区间，输入 n、q、标签数组和 q 组端点，输出 q 个答案。"
     },
     {
       "id": "oa-uber-1",
@@ -12494,6 +12770,18 @@
       ]
     },
     {
+      "id": "oa-unknown-15",
+      "sourceContentHash": "5653896c6164886f171a228aabb5a93e69ff7b05ecc52ab48222f538426aede5",
+      "packageChecksum": "9ca6fe47b1006caf72fb9c951b9db2a34120b38e3df16b16a68809d12e78f4cb",
+      "editorial": "## 为什么正确\n\nPart 2 明确继承 Part 1：useJaccard=false 时，对每个字符串计算最高字符频次占比，选最低占比的所有字符串。useJaccard=true 时，对每个字符串计算它与其余每个字符串的 Jaccard 相似度平均值，再选最低平均值的所有字符串。列表中的重复字符串按不同位置分别计算。分数使用精确分数比较，避免浮点误差。\n\nPart 3 定义 Jaccard 的字符交集、并集都包括重复次数：每个字符的交集计数取两边频次较小值，并集计数取较大值，交集大小除以并集大小。例如 baa 与 abbc 的交集大小为 2、并集大小为 5，因此相似度为 0.4。\n\n## 输出\n\n对所有选中的字符串，保留那些未出现在任何未选字符串中的字符。按选中字符串的输入顺序拼接；每个字符串内部保持原字符顺序并保留重复次数。Part 1 样例选中 abbcdd，其他字符串含 a、b 而不含 c、d，因此输出 cdd。这个稳定顺序是本站的输出格式约定。\n\n## 正确性与复杂度\n\n每个字符串位置根据对应模式得到唯一分数。精确比较后保留且仅保留全局最小分数位置，包含全部并列项。输出过滤只排除未选字符串中出现的字符，因此恰好保留只存在于所选字符串组的字符。设 n 为字符串数、u 为单串不同字符数、L 为总字符数，时间 O(L+n²u)，空间 O(L+n²)。\n\n## 固定来源与本站补充\n\n固定 Part 2 源明确引用 Part 1 与 Part 3。不可变快照 Part 1 定义最高字符频次占比、并列全选和唯一字符输出；Part 3 定义重复字符参与的 Jaccard 交并，并以 baa/abbc=0.4 为例。三题 Company 字段都为 Unknown，因此本站仍标记 Unknown，不从 URL 名称猜测雇主。本站只补 JSON 输入输出包装、稳定拼接顺序、非空字符串和资源上限。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\nfrom collections import Counter\nfrom fractions import Fraction\n\ndef solve_object(data):\n    strings, use_jaccard = data[\"strings\"], data[\"useJaccard\"]\n    counts = [Counter(s) for s in strings]\n    n = len(strings)\n    if use_jaccard:\n        scores = []\n        for i in range(n):\n            total = Fraction(0, 1)\n            for j in range(n):\n                if i == j:\n                    continue\n                chars = counts[i].keys() | counts[j].keys()\n                intersection = sum(min(counts[i][c], counts[j][c]) for c in chars)\n                union = sum(max(counts[i][c], counts[j][c]) for c in chars)\n                total += Fraction(intersection, union)\n            scores.append(total / (n - 1))\n    else:\n        scores = [Fraction(max(c.values()), len(s)) for c, s in zip(counts, strings)]\n    best = min(scores)\n    selected = [i for i, score in enumerate(scores) if score == best]\n    selected_set = set(selected)\n    other_chars = set().union(*(set(strings[i]) for i in range(n) if i not in selected_set)) if len(selected) < n else set()\n    answer = \"\".join(ch for i in selected for ch in strings[i] if ch not in other_chars)\n    return answer\n\ndef solve(raw):\n    data = json.loads(raw)\n    if not isinstance(data, dict) or set(data) != {\"strings\", \"useJaccard\"}:\n        raise ValueError(\"expected strings and useJaccard\")\n    strings, flag = data[\"strings\"], data[\"useJaccard\"]\n    if not isinstance(strings, list) or not 2 <= len(strings) <= 80:\n        raise ValueError(\"site limit: 2 <= number of strings <= 80\")\n    if type(flag) is not bool or any(not isinstance(s, str) or not 1 <= len(s) <= 1000 for s in strings):\n        raise ValueError(\"site limit: boolean and non-empty strings of length <= 1000\")\n    if sum(map(len, strings)) > 10000:\n        raise ValueError(\"site limit: total length <= 10000\")\n    return json.dumps(solve_object(data), ensure_ascii=False)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-unknown-1",
       "sourceContentHash": "5091b84a0315c76718623c9225aef5922019b67d1fd48ff2e2fea44b2b3e67d4",
       "packageChecksum": "d3d357ba4288cafb70f925e1f88661f37b9c40a40d7b5eeaa3f46e3f19368c16",
@@ -12778,6 +13066,18 @@
         {
           "language": "python",
           "code": "def solve(raw):\n z=list(map(int,raw.split()));n,m=z[:2];p=list(range(n));sz=[1]*n\n def find(x):\n  while p[x]!=x:p[x]=p[p[x]];x=p[x]\n  return x\n for i in range(m):\n  a,b=z[2+2*i]-1,z[3+2*i]-1;a=find(a);b=find(b)\n  if a!=b:\n   if sz[a]<sz[b]:a,b=b,a\n   p[b]=a;sz[a]+=sz[b]\n ans=n*(n-1)//2\n for i in range(n):\n  if p[i]==i:ans-=sz[i]*(sz[i]-1)//2\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-visa-7",
+      "sourceContentHash": "c52180b84e34597acb1b892647e2eeed843d36e5131140ae78a799ff36e4cd3c",
+      "packageChecksum": "783958d524b052dbe2d3c2f0f6dd784dd4ba34c7a61ccc24fea027a45a8249ce",
+      "editorial": "## 思路\n\n逐个 4×4 子块计算缺失值 `136−当前和`。同时注意，题面规定的回填位置是整个 `(4n)×(4n)` 矩阵中按行、再按列排列的所有 `-1`，不是按子块遍历的顺序。将所有缺失值排序后，逐一写入全局行优先位置。\n\n## 正确性证明\n\n每块恰含 1..16 中除一个数外的所有数，故块内和为 `136−missing`，计算值唯一。题目要求收集这些值并升序排列，再映射到按全矩阵 row-major 排列的缺失位置；算法分别按这两条明文规则构造序列并一一赋值，所以输出矩阵与题意完全一致。\n\n## 复杂度\n\n设矩阵边长 `N=4n`。扫描所有单元格和排序 `n²` 个缺失值，时间 `O(N²+n² log n)`，空间 `O(N²)`（用于矩阵及输入输出）。\n\n## 验证\n\n163 组 oracle 输入由独立的集合补集算法恢复每块缺失值；额外穷举单块全部 16 种缺失值 ×16 个缺失位置，共256组。正式用例包含一个能区分全局 row-major 和子块遍历顺序的 8×8 矩阵、n=100 最大边界矩阵，以及 15 个输入互异的隐藏矩阵场景。两个正常退出错误程序均被用例拒绝。\n\n## 来源说明\n\n原题和固定上游提交明确要求按缺失位置的全矩阵 row-major 顺序回填。上游参考代码实际按子块顺序记录位置，与文字不一致；本题严格按题面步骤实现，并重写了本站样例。原题未给 n 上限，本站补充 `1≤n≤100`，使输入输出保持在 OJ 容量限制内；标准输入输出协议也由本站补充。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    data = list(map(int, raw.split()))\n    n = data[0]\n    size = 4 * n\n    values = data[1:]\n    if len(values) != size * size:\n        raise ValueError(\"expected an (4n) x (4n) matrix\")\n    matrix = [values[r * size:(r + 1) * size] for r in range(size)]\n\n    missing_values = []\n    for br in range(n):\n        for bc in range(n):\n            total = 0\n            for dr in range(4):\n                for dc in range(4):\n                    value = matrix[4 * br + dr][4 * bc + dc]\n                    if value != -1:\n                        total += value\n            missing_values.append(136 - total)\n\n    # The destination positions are ordered by the entire matrix, not by blocks.\n    positions = [(r, c) for r in range(size) for c in range(size)\n                 if matrix[r][c] == -1]\n    for (r, c), value in zip(positions, sorted(missing_values)):\n        matrix[r][c] = value\n    return \"\\n\".join(\" \".join(map(str, row)) for row in matrix)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },

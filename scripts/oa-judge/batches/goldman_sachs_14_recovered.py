@@ -100,7 +100,9 @@ def brute_force(ramu: list[int], sonu: list[int]) -> int:
 def run_code(code: str, raw: str) -> str:
     proc = subprocess.run(["python3", "-I", "-c", code], cwd=ROOT,
                           input=raw, text=True, capture_output=True,
-                          timeout=10, check=True)
+                          timeout=10, check=False)
+    if proc.returncode:
+        raise RuntimeError(f"reference failed for input {raw!r}: {proc.stderr}")
     return proc.stdout.rstrip("\n")
 
 
@@ -127,7 +129,8 @@ def main() -> None:
 
     coverage = json.loads((OA / "coverage.json").read_text())
     state = next(x for x in coverage["items"] if x["id"] == PID)
-    assert state["status"] == "blocked", state
+    assert state["status"] in ("blocked", "awaiting_sandbox"), state
+    assert state.get("batch") in (None, "goldman-sachs-14-recovered"), state
     for folder in ("candidate-batches", "batches"):
         for path in (OA / folder).glob("*.json"):
             if folder == "candidate-batches" and path.name == "goldman-sachs-14-recovered.json":
@@ -179,6 +182,20 @@ def main() -> None:
         ([1, 3, 2, 4, 6, 5], [100, 2, 90, 10, 80, 20]),
         ([1, 4, 2, 5, 3, 6, 7], [999999999999, 8, 888888888888, 7, 777777777777, 6, 555555555555]),
         ([i + 1 for i in range(14)], [10**35 - i * 10**20 for i in range(14)]),
+        ([1, 3, 2, 4], [40, 10, 30, 20]),
+        ([4, 2, 3, 1], [10, 40, 20, 30]),
+        ([1, 3, 5, 4, 2], [90, 10, 70, 30, 50]),
+        ([5, 3, 1, 2, 4], [50, 20, 80, 10, 60]),
+        ([1, 4, 2, 6, 3, 5], [12, 100, 13, 90, 14, 80]),
+        ([6, 5, 4, 3, 2, 1], [1, 100, 2, 99, 3, 98]),
+        ([1, 2, 3, 4, 5, 6], [100, 90, 80, 70, 60, 50]),
+        ([4, 1, 5, 2, 6, 3, 7], [70, 10, 60, 20, 50, 30, 40]),
+        ([7, 6, 5, 4, 3, 2, 1], [15, 35, 25, 45, 5, 55, 65]),
+        ([1, 3, 5, 4, 2, 6, 8, 7], [1000, 5, 900, 10, 800, 15, 700, 20]),
+        ([8, 1, 7, 2, 6, 3, 5, 4], [3, 100, 4, 90, 5, 80, 6, 70]),
+        ([1, 4, 2, 6, 3, 8, 5, 7], [18, 2, 16, 4, 14, 6, 12, 8]),
+        ([2, 4, 6, 8, 7, 5, 3, 1], [101, 1, 99, 3, 97, 5, 95, 7]),
+        ([5, 1, 4, 2, 3, 6, 8, 7], [17, 93, 21, 89, 25, 85, 29, 81]),
     ]
     cases = []
     expected_formal = []
@@ -237,7 +254,8 @@ def main() -> None:
 
     for ramu, sonu in public + random_inputs + [(a, b) for a, b in formal if len(a) <= 8]:
         expected = brute_force(ramu, sonu)
-        assert int(run_code(REFERENCE, input_for(ramu, sonu))) == expected
+        actual = int(run_code(REFERENCE, input_for(ramu, sonu)))
+        assert actual == expected, (ramu, sonu, actual, expected)
     # Maximum supported state count, using large arbitrary-precision values.
     max_n = list(range(1, 15))
     max_sonu = [10**35 - i * 10**20 for i in range(14)]

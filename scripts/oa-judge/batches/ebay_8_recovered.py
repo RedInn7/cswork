@@ -116,6 +116,22 @@ def build(catalog: dict, rng: random.Random) -> None:
         ([0, 2, 1], "插入后同时连接左右区间"),
         ([-1_000_000_000, 1_000_000_000], "坐标边界与分离区间"),
         ([5, 4, 3, 2, 1], "反向逐步扩展长区间"),
+        ([10, 12, 14, 16, 18], "先建立多个间隔位置"),
+        ([0, 2, 4, 6, 8, 1], "逐步连接并扩展左端"),
+        ([100, 98, 96, 94, 92, 95], "反向插入填补双侧间隙"),
+        ([-5, -3, -1, 1, 3, -4], "负数区间向中间合并"),
+        ([20, 10, 30, 19, 21], "新点连接长短区间"),
+        ([0, 4, 8, 12, 3, 7, 11], "交错填充多个缺口"),
+        ([50, 49, 48, 47, 46, 45, 44], "连续左扩展七步"),
+        ([-20, -10, 0, 10, 20, 1, -1], "跨零两侧连接"),
+        ([1_000_000_000, 999_999_998, 999_999_999], "坐标上界附近合并"),
+        ([-1_000_000_000, -999_999_998, -999_999_999], "坐标下界附近合并"),
+        ([0, 100, 200, 99, 101], "连接一个已有长区间"),
+        ([3, 1, 5, 2, 4], "两侧多次合并成连续段"),
+        ([0, 3, 6, 9, 12, 2, 5, 8, 11], "分批填充等距区间"),
+        ([-9, -7, -5, -3, -1, -8, -6, -4, -2], "负坐标相邻桥接"),
+        ([40, 42, 44, 46, 48, 41, 43, 45, 47], "相邻插入逐步并成长段"),
+        ([1000, 0, 500, 1, 2, 3, 4, 5], "远距房屋不影响局部最大段"),
     ]
     cases = []
     for i, (queries, name) in enumerate(formal):
@@ -124,6 +140,7 @@ def build(catalog: dict, rng: random.Random) -> None:
         assert run(REFERENCE, raw) == expected
         cases.append({"name": name, "input": raw, "expectedOutput": expected + "\n",
                       "hidden": i not in (0, 1), "weight": 1})
+    assert sum(case["hidden"] for case in cases) >= 20
 
     random_cases = []
     seen = {case["input"] for case in cases}
@@ -211,7 +228,8 @@ def build(catalog: dict, rng: random.Random) -> None:
         "reason": "固定快照中的两个样例及 Python、Java、C++ 三份实现都允许新房屋与已有房屋相邻并合并；这与正文中的“建造时不相邻”一句直接冲突。候选保留位置唯一规则，明确按三个实现和样例移除矛盾限制。原源未给规模，本站补 q≤10000、坐标绝对值≤10^9，并将 q 限制在单题 65536 字节输出上限内。独立排序集合 oracle、边界样例和两个正常退出错误实现均验证通过。"
     }]})
     write_json(OA / "validation" / f"{batch}.json", {"schemaVersion": 1, "seed": 20261006,
-        "problems": [{"id": identifier, "formalCases": len(cases), "oracleCases": len(random_cases),
+        "problems": [{"id": identifier, "formalCases": len(cases),
+            "hiddenFormalCases": sum(case["hidden"] for case in cases), "oracleCases": len(random_cases),
             "oracleInputsUnique": len(seen) - len(cases), "negativeControls": controls,
             "maxQ": max_n, "stressOutputBytes": len((stress_output + "\n").encode())}],
         "note": "本地独立排序集合 oracle、两侧区间合并/坐标边界和两个正常退出 mutant 验证；未连接 GoJudge。"})

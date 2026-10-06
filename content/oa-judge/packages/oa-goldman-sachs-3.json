@@ -101,6 +101,83 @@
       "expectedOutput": "0\n",
       "hidden": true,
       "weight": 1
+    },
+    {
+      "name": "退格处理后两侧均为空串",
+      "input": "#a##\nz#\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "字符后多余退格后均为空串",
+      "input": "a##\nx#\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "开头多余退格不影响后续字符",
+      "input": "##abc\nabc\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "清空后追加字符",
+      "input": "ab###c\nc\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "逐个删除至空串",
+      "input": "a#b#c#\n\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完全清空后保留末尾字符",
+      "input": "abc###x\nx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "交替输入和退格",
+      "input": "x#y#z\nz\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "两个结果长度相同但内容不同",
+      "input": "ab##c\nac#\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "前缀清空后单字符相等",
+      "input": "a##b\nb\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "多次退格的处理次序",
+      "input": "abc##\na#c\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "删除中间字符",
+      "input": "xy#z\nxz\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
     }
   ]
 }

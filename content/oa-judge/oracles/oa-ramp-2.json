@@ -1,0 +1,754 @@
+[
+  {
+    "input": "1 2\n200\nwithdraw 1 1 100\nwithdraw 86401 1 100\n",
+    "expectedOutput": "[2]\n"
+  },
+  {
+    "input": "1 1\n49\nwithdraw 1 1 49\n",
+    "expectedOutput": "[0]\n"
+  },
+  {
+    "input": "1 1\n100\ndeposit 1 0 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 1\n49\nwithdraw 1 1 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 2\n100\ndeposit 1 1 5\nwithdraw 2 2 1\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 1\n100\nwithdraw 1 1 100\n",
+    "expectedOutput": "[0]\n"
+  },
+  {
+    "input": "1 2\n100\nwithdraw 1 1 100\ndeposit 86402 1 5\n",
+    "expectedOutput": "[7]\n"
+  },
+  {
+    "input": "2 2\n10 10\ndeposit 1 1 3\nwithdraw 2 2 10\n",
+    "expectedOutput": "[13,0]\n"
+  },
+  {
+    "input": "4 6\n1 50 50 1000000\ndeposit 74 0 1\ndeposit 76 0 99\nwithdraw 86475 4 50\ndeposit 86476 1 251\ndeposit 86478 1 49\nwithdraw 172879 0 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 2\n100\ndeposit 34 2 251\ndeposit 36 1 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 15\n1000000\ndeposit 86402 1 2\ndeposit 86403 2 251\ndeposit 186403 0 101\nwithdraw 272804 0 1000000\nwithdraw 359205 0 99\nwithdraw 359215 1 251\ndeposit 359217 1 2\ndeposit 445616 0 251\ndeposit 532017 2 99\ndeposit 532019 0 2\nwithdraw 618420 0 251\ndeposit 618422 1 2\ndeposit 704822 2 49\nwithdraw 704823 0 251\nwithdraw 704824 0 251\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 5\n100\nwithdraw 100042 1 1000000\ndeposit 200042 2 251\nwithdraw 286442 1 1\nwithdraw 386442 2 2\nwithdraw 386444 0 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 9\n100\nwithdraw 100078 2 2\ndeposit 186477 2 1\ndeposit 272876 2 49\nwithdraw 359276 2 100\ndeposit 445677 1 99\nwithdraw 445678 0 1000000\ndeposit 532077 1 99\nwithdraw 618477 1 2\ndeposit 704877 2 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 0\n100 99\n",
+    "expectedOutput": "[100,99]\n"
+  },
+  {
+    "input": "3 2\n250 49 100\ndeposit 82 4 50\nwithdraw 86483 4 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 3\n50 250\nwithdraw 86435 2 2\nwithdraw 172834 3 1\ndeposit 259234 2 1000000\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 7\n1000000 2\ndeposit 100074 3 99\nwithdraw 100076 1 50\nwithdraw 186475 0 1\ndeposit 272874 3 49\ndeposit 359275 2 101\ndeposit 445675 0 50\ndeposit 532076 0 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 4\n99 250\ndeposit 86423 0 50\ndeposit 86425 0 101\nwithdraw 86426 1 50\ndeposit 172826 3 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 11\n1000000 1000000 100\ndeposit 91 4 49\ndeposit 86491 3 101\ndeposit 86493 0 1000000\ndeposit 86503 1 1\ndeposit 172904 1 101\ndeposit 259305 3 50\ndeposit 345706 0 49\ndeposit 445706 3 1000000\nwithdraw 445707 4 251\nwithdraw 445708 0 251\nwithdraw 545708 1 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 4\n1 99 1\ndeposit 86400 0 101\ndeposit 186400 3 49\ndeposit 272800 4 2\nwithdraw 372800 1 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 17\n99\ndeposit 82 2 251\nwithdraw 86483 1 99\ndeposit 86485 1 1000000\ndeposit 172885 1 1\ndeposit 172887 1 2\ndeposit 259288 2 1\nwithdraw 259298 0 50\nwithdraw 345697 1 50\nwithdraw 345707 1 49\ndeposit 432108 1 1000000\nwithdraw 518509 1 2\nwithdraw 518510 2 251\nwithdraw 518512 1 2\nwithdraw 518522 1 49\nwithdraw 604921 0 2\ndeposit 604923 1 1000000\nwithdraw 604924 0 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 0\n0 99 2 0\n",
+    "expectedOutput": "[0,99,2,0]\n"
+  },
+  {
+    "input": "1 0\n49\n",
+    "expectedOutput": "[49]\n"
+  },
+  {
+    "input": "2 2\n50 1\ndeposit 86408 3 49\ndeposit 86410 2 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 6\n99\nwithdraw 88 2 50\ndeposit 86488 1 1\nwithdraw 186488 0 2\ndeposit 272888 0 99\nwithdraw 272898 1 99\nwithdraw 372898 2 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 5\n2 250\ndeposit 43 0 2\nwithdraw 53 3 1000000\nwithdraw 86453 3 1\ndeposit 86463 3 2\nwithdraw 172864 0 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 16\n250\ndeposit 4 0 1000000\ndeposit 86404 1 1000000\nwithdraw 86405 1 101\nwithdraw 186405 1 101\nwithdraw 272804 0 100\nwithdraw 359203 2 50\ndeposit 359213 2 99\nwithdraw 445612 2 1000000\ndeposit 445614 2 101\ndeposit 445616 0 2\ndeposit 445617 1 49\ndeposit 445627 2 100\nwithdraw 445629 2 101\nwithdraw 532030 1 49\nwithdraw 532031 1 100\nwithdraw 618431 2 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 0\n1 2 1\n",
+    "expectedOutput": "[1,2,1]\n"
+  },
+  {
+    "input": "3 11\n0 2 0\ndeposit 86501 1 2\nwithdraw 86503 4 1000000\ndeposit 86504 1 49\nwithdraw 172903 0 101\nwithdraw 172905 1 251\ndeposit 259304 4 251\ndeposit 345703 1 101\nwithdraw 445703 0 251\ndeposit 545703 1 50\ndeposit 645703 1 49\nwithdraw 645713 4 1\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 16\n1 1000000 50 1\ndeposit 93 0 1000000\nwithdraw 86493 1 1\ndeposit 172894 4 50\nwithdraw 259294 0 49\ndeposit 345694 5 1000000\nwithdraw 345695 1 100\nwithdraw 445695 0 1000000\nwithdraw 532094 0 1\ndeposit 532095 1 1000000\ndeposit 632095 1 100\nwithdraw 632096 0 1\nwithdraw 718497 0 1\nwithdraw 804896 1 100\ndeposit 891297 4 2\ndeposit 977697 1 2\ndeposit 1064097 0 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 8\n2 99 0 99\ndeposit 49 5 1000000\ndeposit 59 5 1000000\nwithdraw 86459 1 49\ndeposit 172859 0 100\ndeposit 272859 4 100\ndeposit 359259 1 50\nwithdraw 359261 0 50\nwithdraw 445661 5 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 5\n49 49\nwithdraw 100009 0 251\ndeposit 186408 2 101\nwithdraw 272809 1 49\ndeposit 359208 0 101\ndeposit 359210 3 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 1\n49\nwithdraw 19 1 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 6\n1000000\nwithdraw 100032 1 99\ndeposit 186431 2 101\nwithdraw 272830 1 100\ndeposit 372830 1 251\nwithdraw 459231 2 99\nwithdraw 545632 0 2\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 5\n99 0 100 1000000\ndeposit 62 4 1000000\nwithdraw 64 4 49\nwithdraw 86465 5 1\nwithdraw 186465 0 251\nwithdraw 186467 0 100\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "1 14\n2\ndeposit 106 1 1\nwithdraw 86505 2 99\nwithdraw 172905 0 1\nwithdraw 259306 2 100\ndeposit 345706 2 2\nwithdraw 432107 0 1000000\nwithdraw 432117 2 1\ndeposit 518517 1 99\ndeposit 518519 0 50\ndeposit 604919 1 101\ndeposit 691319 0 251\ndeposit 791319 0 50\ndeposit 877718 1 50\ndeposit 964119 1 49\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 3\n99 1 0 1\nwithdraw 86468 4 101\nwithdraw 86470 5 1000000\ndeposit 172870 5 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 17\n50 0\nwithdraw 86484 2 101\ndeposit 186484 1 99\ndeposit 186486 1 2\ndeposit 186496 3 251\nwithdraw 272895 3 100\ndeposit 359295 2 2\nwithdraw 359296 1 251\ndeposit 359306 0 50\ndeposit 459306 2 101\nwithdraw 545706 3 1\nwithdraw 545708 0 50\ndeposit 645708 0 2\ndeposit 732108 0 101\ndeposit 732110 2 251\nwithdraw 818511 2 1\nwithdraw 904912 1 99\ndeposit 904913 1 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 18\n49 2\ndeposit 15 3 251\ndeposit 86414 3 1\ndeposit 86424 2 1\nwithdraw 172823 2 251\ndeposit 172833 0 251\nwithdraw 172843 3 50\ndeposit 172845 3 50\nwithdraw 259244 2 101\nwithdraw 345643 2 2\nwithdraw 432043 2 101\ndeposit 432044 0 251\ndeposit 432045 3 101\nwithdraw 432055 2 100\nwithdraw 432065 1 1\nwithdraw 532065 3 251\ndeposit 532066 3 1000000\nwithdraw 532068 2 2\ndeposit 618467 2 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 18\n50 2 0 49\ndeposit 100088 5 99\nwithdraw 200088 0 100\ndeposit 286489 1 1\ndeposit 372890 0 1000000\ndeposit 472890 1 49\nwithdraw 472891 4 101\nwithdraw 559290 0 100\ndeposit 645690 4 100\ndeposit 645700 1 49\nwithdraw 645710 4 99\ndeposit 645712 5 49\ndeposit 732112 1 2\nwithdraw 732113 1 1\nwithdraw 818514 5 1\ndeposit 918514 0 2\nwithdraw 918524 1 1000000\nwithdraw 1004924 1 100\nwithdraw 1091323 4 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 12\n1 250 1\ndeposit 9 1 49\ndeposit 11 3 100\ndeposit 12 4 49\ndeposit 86413 3 99\ndeposit 172813 0 99\ndeposit 172814 1 251\nwithdraw 259215 1 50\nwithdraw 345615 3 251\nwithdraw 432015 0 99\ndeposit 532015 1 1000000\ndeposit 632015 1 99\nwithdraw 632017 4 100\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "1 14\n250\nwithdraw 61 0 1000000\nwithdraw 86461 1 251\nwithdraw 186461 1 101\ndeposit 286461 2 1\nwithdraw 286462 0 50\ndeposit 372861 0 100\nwithdraw 372871 1 251\nwithdraw 459271 2 49\nwithdraw 459281 2 1000000\ndeposit 545681 0 50\nwithdraw 632082 1 49\nwithdraw 632084 1 99\ndeposit 718483 1 1\nwithdraw 804883 1 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 3\n2 1 99 49\ndeposit 86459 1 101\nwithdraw 86460 5 1000000\ndeposit 86470 0 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 8\n100 1\nwithdraw 19 1 101\nwithdraw 100019 2 251\ndeposit 186419 2 50\nwithdraw 272819 0 99\nwithdraw 359218 2 100\nwithdraw 359219 2 251\ndeposit 445620 1 1000000\nwithdraw 445622 2 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 5\n100 1 250\nwithdraw 86457 1 1\ndeposit 186457 1 1000000\ndeposit 286457 4 99\nwithdraw 286458 1 49\nwithdraw 286460 0 101\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "3 6\n250 100 2\ndeposit 15 0 101\nwithdraw 100015 4 49\nwithdraw 200015 3 49\nwithdraw 200016 3 100\nwithdraw 200017 0 251\nwithdraw 200019 4 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 9\n0\nwithdraw 87 1 50\ndeposit 100087 1 99\ndeposit 186487 2 1\ndeposit 186489 1 2\ndeposit 186491 1 1\nwithdraw 186501 2 99\nwithdraw 272902 1 49\nwithdraw 359302 0 2\nwithdraw 445703 0 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 12\n0 100 49\ndeposit 100009 0 1\ndeposit 100019 0 50\ndeposit 186420 0 2\ndeposit 286420 1 99\nwithdraw 286422 1 1000000\nwithdraw 372823 4 101\ndeposit 472823 0 1\nwithdraw 559222 3 50\ndeposit 645623 3 1\nwithdraw 732024 0 99\ndeposit 818424 3 101\nwithdraw 904824 0 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 0\n50\n",
+    "expectedOutput": "[50]\n"
+  },
+  {
+    "input": "3 6\n0 1000000 2\nwithdraw 86443 1 100\ndeposit 172842 4 1\ndeposit 259243 4 251\nwithdraw 259245 3 1000000\ndeposit 259255 0 101\nwithdraw 345654 3 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 6\n0 49 99\ndeposit 18 1 49\nwithdraw 100018 4 99\ndeposit 200018 1 101\ndeposit 300018 4 100\nwithdraw 300028 4 49\nwithdraw 300038 1 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 11\n50 50\ndeposit 32 2 2\ndeposit 34 0 99\nwithdraw 100034 0 100\ndeposit 186435 3 100\nwithdraw 286435 1 50\ndeposit 386435 0 49\ndeposit 472834 1 100\nwithdraw 572834 0 1000000\nwithdraw 659234 3 49\ndeposit 659235 1 49\nwithdraw 745636 3 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 8\n1000000 250 0 99\nwithdraw 100050 1 99\ndeposit 100051 0 251\nwithdraw 100061 0 1\ndeposit 100063 0 251\nwithdraw 186463 4 49\ndeposit 186464 0 49\nwithdraw 186466 4 101\ndeposit 272867 5 100\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 9\n1000000 250 100\nwithdraw 68 1 49\nwithdraw 100068 0 1\nwithdraw 100078 0 50\ndeposit 200078 1 1000000\nwithdraw 200088 0 2\ndeposit 200089 3 101\nwithdraw 200090 3 1\ndeposit 286491 4 101\ndeposit 286493 0 1\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 18\n1\nwithdraw 86 1 99\nwithdraw 96 0 1000000\ndeposit 106 1 100\ndeposit 86506 0 1000000\nwithdraw 172907 1 101\nwithdraw 272907 1 1\ndeposit 272908 1 251\nwithdraw 359308 1 49\nwithdraw 445707 2 99\nwithdraw 532107 1 99\nwithdraw 532109 2 251\nwithdraw 532110 1 49\nwithdraw 618509 1 99\nwithdraw 618519 1 100\ndeposit 618529 0 101\nwithdraw 618530 2 1\nwithdraw 618531 1 1000000\ndeposit 704932 1 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 12\n99\nwithdraw 86483 1 49\nwithdraw 86493 2 49\ndeposit 86503 0 100\nwithdraw 86513 0 251\ndeposit 186513 1 49\ndeposit 272912 2 100\ndeposit 359313 0 2\nwithdraw 445712 0 2\nwithdraw 445722 1 1\nwithdraw 545722 2 99\nwithdraw 545724 2 50\ndeposit 545725 1 99\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 7\n49 1\nwithdraw 86468 2 2\ndeposit 186468 3 50\nwithdraw 286468 1 1000000\nwithdraw 286478 0 101\ndeposit 372879 2 50\nwithdraw 372889 2 49\ndeposit 372891 3 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 15\n49 100 1000000 50\ndeposit 54 0 50\nwithdraw 100054 0 2\nwithdraw 186454 5 99\ndeposit 286454 0 251\ndeposit 372855 5 2\ndeposit 459256 0 1000000\nwithdraw 459257 0 2\nwithdraw 459259 0 2\ndeposit 559259 0 101\nwithdraw 559260 4 1000000\nwithdraw 559262 0 50\nwithdraw 559272 5 251\nwithdraw 645672 4 100\nwithdraw 645673 5 101\ndeposit 645675 0 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 12\n100 99\ndeposit 86410 3 251\nwithdraw 172811 3 2\ndeposit 172813 3 50\nwithdraw 259214 2 1\nwithdraw 345614 0 1\nwithdraw 445614 3 1000000\ndeposit 545614 1 1000000\nwithdraw 545615 2 99\nwithdraw 632014 3 1\nwithdraw 632015 2 251\ndeposit 718416 1 1000000\nwithdraw 804815 2 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 5\n50 250 2\ndeposit 101 3 50\ndeposit 86501 1 100\ndeposit 86511 0 100\nwithdraw 172911 4 1000000\ndeposit 259312 0 2\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "3 6\n2 100 99\nwithdraw 100029 3 1\nwithdraw 200029 3 1\ndeposit 286428 3 49\ndeposit 372828 3 251\ndeposit 459227 0 1\ndeposit 459228 4 251\n",
+    "expectedOutput": "[-5]\n"
+  },
+  {
+    "input": "4 6\n50 250 100 250\nwithdraw 86479 5 100\ndeposit 172880 4 1000000\ndeposit 259279 5 2\ndeposit 259289 1 49\ndeposit 359289 5 50\ndeposit 359299 0 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 2\n250 50\nwithdraw 49 0 99\ndeposit 100049 0 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 8\n49 50 1000000\nwithdraw 16 1 99\ndeposit 26 0 2\nwithdraw 28 4 2\nwithdraw 29 1 49\ndeposit 86429 3 49\nwithdraw 172829 3 99\ndeposit 259228 4 99\ndeposit 345629 3 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 5\n100 99 99\nwithdraw 100027 1 2\nwithdraw 200027 3 251\ndeposit 200037 0 50\ndeposit 286436 3 1\nwithdraw 372835 4 251\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 4\n99 1000000 49\nwithdraw 86501 3 50\ndeposit 186501 0 99\nwithdraw 186503 0 100\ndeposit 272904 1 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 11\n99 2 50\nwithdraw 92 3 50\ndeposit 86491 4 49\ndeposit 86501 4 99\ndeposit 172900 0 1000000\nwithdraw 259301 0 99\ndeposit 259303 3 2\nwithdraw 259305 1 99\nwithdraw 345706 1 2\nwithdraw 432107 4 2\ndeposit 518506 0 1\ndeposit 604906 1 99\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 15\n1000000 250 49 99\nwithdraw 93 4 251\ndeposit 86494 4 50\nwithdraw 172895 1 49\nwithdraw 259294 0 101\nwithdraw 259295 0 251\nwithdraw 259296 0 1000000\nwithdraw 259298 4 1000000\nwithdraw 345699 5 251\ndeposit 432098 0 2\nwithdraw 518497 0 99\nwithdraw 604897 4 99\ndeposit 704897 1 251\nwithdraw 804897 5 2\ndeposit 891297 5 50\nwithdraw 977698 4 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 17\n0 100 100\ndeposit 86424 4 101\nwithdraw 172824 3 49\nwithdraw 172834 0 101\nwithdraw 259233 0 49\nwithdraw 345633 3 50\nwithdraw 445633 4 101\nwithdraw 532033 3 100\ndeposit 618432 0 1000000\nwithdraw 718432 1 251\ndeposit 804831 3 1\nwithdraw 804832 3 1\nwithdraw 904832 4 1\ndeposit 1004832 4 1\nwithdraw 1091231 4 49\ndeposit 1091232 1 99\nwithdraw 1177633 1 49\ndeposit 1277633 3 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 3\n50\nwithdraw 86435 0 2\ndeposit 86445 1 251\ndeposit 172844 2 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 9\n2\ndeposit 24 2 2\ndeposit 86423 1 50\nwithdraw 186423 2 49\nwithdraw 186425 0 99\ndeposit 272825 1 50\ndeposit 359226 1 101\nwithdraw 445625 0 1000000\ndeposit 545625 1 1000000\nwithdraw 632024 0 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 7\n50 100 0 250\nwithdraw 86456 4 50\ndeposit 172855 1 251\nwithdraw 172856 4 99\nwithdraw 172858 1 1000000\nwithdraw 272858 5 1\ndeposit 359258 1 1000000\ndeposit 359268 5 1\n",
+    "expectedOutput": "[-4]\n"
+  },
+  {
+    "input": "4 9\n49 100 2 100\ndeposit 86481 0 50\nwithdraw 186481 0 2\nwithdraw 272880 0 99\ndeposit 359279 1 1\ndeposit 445680 4 2\ndeposit 545680 5 1\ndeposit 645680 5 49\nwithdraw 645690 1 50\nwithdraw 732091 4 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 6\n100 1000000 250 0\nwithdraw 86475 1 99\nwithdraw 86477 4 101\nwithdraw 186477 4 100\ndeposit 272876 4 99\ndeposit 359275 0 50\nwithdraw 359285 5 50\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 10\n1000000 49 250\nwithdraw 86436 3 2\ndeposit 172835 0 50\ndeposit 272835 3 99\nwithdraw 272836 1 100\ndeposit 359237 0 1000000\ndeposit 445638 1 49\ndeposit 532039 1 251\ndeposit 618439 3 99\ndeposit 704840 3 49\ndeposit 704841 1 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 8\n49 49\ndeposit 15 0 251\nwithdraw 17 3 2\nwithdraw 86417 0 2\nwithdraw 172817 1 100\ndeposit 259217 1 2\nwithdraw 345617 2 1000000\nwithdraw 345619 1 49\ndeposit 445619 2 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 11\n50 100 1000000\nwithdraw 86444 0 101\nwithdraw 86446 4 99\nwithdraw 86456 1 101\nwithdraw 172857 3 50\nwithdraw 259257 4 50\ndeposit 259267 1 49\ndeposit 259277 4 2\nwithdraw 259278 1 100\nwithdraw 345679 3 49\nwithdraw 432078 1 1000000\nwithdraw 432079 3 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 17\n49 1000000 250\nwithdraw 21 0 99\nwithdraw 22 4 2\nwithdraw 86421 0 1\ndeposit 86422 4 50\ndeposit 172822 1 2\ndeposit 259221 1 101\nwithdraw 345620 4 49\ndeposit 445620 1 251\ndeposit 532019 3 100\nwithdraw 532020 0 251\nwithdraw 618419 4 1000000\nwithdraw 718419 0 2\ndeposit 804819 1 1000000\nwithdraw 891218 3 251\ndeposit 977618 4 49\nwithdraw 977628 4 50\nwithdraw 1077628 3 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 1\n1\ndeposit 86409 2 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 12\n50\ndeposit 86402 2 100\ndeposit 86412 1 50\nwithdraw 86413 1 251\nwithdraw 86414 2 50\ndeposit 86416 2 101\ndeposit 172817 0 50\ndeposit 259216 1 1\nwithdraw 345617 1 99\nwithdraw 345618 0 100\ndeposit 345628 2 2\ndeposit 345629 0 50\nwithdraw 345631 2 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 2\n99 100 1\ndeposit 86413 1 101\ndeposit 86423 3 49\n",
+    "expectedOutput": "[200,100,50]\n"
+  },
+  {
+    "input": "2 12\n50 1000000\nwithdraw 86426 3 2\nwithdraw 86428 3 49\ndeposit 186428 2 100\nwithdraw 272827 1 1000000\nwithdraw 372827 2 1000000\nwithdraw 459227 1 101\ndeposit 545628 2 251\nwithdraw 545630 0 101\ndeposit 645630 1 99\nwithdraw 645640 2 101\nwithdraw 732039 1 49\nwithdraw 732041 3 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 8\n250 250 100\nwithdraw 60 0 100\ndeposit 100060 1 99\nwithdraw 100062 3 50\ndeposit 100064 1 50\ndeposit 186463 4 2\nwithdraw 186465 3 101\ndeposit 186466 0 99\ndeposit 272865 4 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 12\n0 2 1 100\nwithdraw 86407 5 251\ndeposit 172808 1 50\nwithdraw 259209 5 101\ndeposit 345608 1 49\nwithdraw 432007 5 49\ndeposit 532007 0 100\nwithdraw 618406 0 99\nwithdraw 704805 4 99\nwithdraw 804805 5 50\nwithdraw 891205 5 99\ndeposit 977604 5 99\nwithdraw 1077604 5 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 7\n49 1 100\nwithdraw 100015 3 101\ndeposit 100017 0 50\ndeposit 186418 3 100\ndeposit 272817 0 49\ndeposit 372817 4 1000000\ndeposit 372827 3 101\ndeposit 459227 4 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 2\n0\nwithdraw 86495 1 101\nwithdraw 186495 0 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 9\n100 49 250\ndeposit 23 0 50\ndeposit 86423 0 1\ndeposit 172822 1 1000000\ndeposit 259223 1 1000000\nwithdraw 345624 1 251\ndeposit 345626 0 100\ndeposit 445626 3 50\nwithdraw 532026 1 101\ndeposit 532028 3 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 5\n49 99 1 99\nwithdraw 86411 1 99\nwithdraw 172810 5 50\nwithdraw 172812 4 49\nwithdraw 272812 5 1000000\ndeposit 272814 5 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 11\n2\ndeposit 86448 0 2\ndeposit 172847 2 50\nwithdraw 259246 0 251\ndeposit 259256 2 49\ndeposit 359256 2 49\ndeposit 459256 1 100\ndeposit 459266 1 2\nwithdraw 545666 0 1\ndeposit 545667 1 1000000\nwithdraw 645667 2 50\ndeposit 732068 1 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 6\n100 1 2\nwithdraw 100005 3 1000000\nwithdraw 100015 4 99\ndeposit 100017 4 99\nwithdraw 100018 3 99\nwithdraw 100020 3 50\ndeposit 100022 4 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 17\n50 2 99\ndeposit 54 4 49\nwithdraw 100054 4 49\nwithdraw 200054 1 251\nwithdraw 286455 0 101\ndeposit 372856 4 251\nwithdraw 459257 3 1000000\nwithdraw 459258 4 251\nwithdraw 559258 1 1000000\nwithdraw 559259 4 99\nwithdraw 559260 0 251\nwithdraw 645659 1 1\ndeposit 645660 1 100\nwithdraw 645662 0 251\ndeposit 645663 4 101\ndeposit 645665 3 251\ndeposit 645675 3 2\ndeposit 745675 4 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 4\n49 250 1 1000000\ndeposit 86478 5 99\ndeposit 86480 0 1000000\ndeposit 186480 0 251\ndeposit 272881 1 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 17\n100 100 50 100\nwithdraw 86450 0 99\ndeposit 86452 4 1000000\nwithdraw 86453 4 99\nwithdraw 172852 1 99\nwithdraw 272852 4 99\nwithdraw 272853 4 251\ndeposit 359252 0 99\ndeposit 445653 0 99\ndeposit 445654 1 101\ndeposit 532054 5 100\ndeposit 532055 5 99\nwithdraw 532065 0 99\ndeposit 532066 4 50\nwithdraw 532076 4 101\nwithdraw 618477 4 1000000\ndeposit 704878 0 49\ndeposit 791277 4 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 0\n49 1000000 0 0\n",
+    "expectedOutput": "[49,1000000,0,0]\n"
+  },
+  {
+    "input": "4 12\n99 0 49 100\ndeposit 28 4 49\ndeposit 86427 4 50\nwithdraw 172827 4 251\nwithdraw 172828 1 1000000\ndeposit 259229 5 1\nwithdraw 345629 0 100\ndeposit 432030 0 100\ndeposit 432032 0 1000000\nwithdraw 518431 5 100\ndeposit 618431 1 251\ndeposit 704830 4 2\ndeposit 804830 1 1\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "4 14\n50 0 49 50\ndeposit 86457 0 1000000\ndeposit 172857 1 2\ndeposit 172867 5 1000000\nwithdraw 172868 4 1\ndeposit 259268 0 100\ndeposit 345668 4 1000000\nwithdraw 345669 1 251\ndeposit 432068 0 1000000\ndeposit 432069 1 2\nwithdraw 518468 0 1\nwithdraw 518478 5 2\nwithdraw 518480 0 251\ndeposit 604880 5 251\nwithdraw 604890 4 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 13\n2 1000000\nwithdraw 86450 1 99\ndeposit 86460 0 1000000\nwithdraw 186460 2 101\ndeposit 186470 2 50\nwithdraw 286470 3 1000000\ndeposit 286472 3 2\ndeposit 372871 0 1\nwithdraw 459271 2 100\ndeposit 459281 3 100\nwithdraw 459282 0 1000000\nwithdraw 459292 3 1\ndeposit 459302 1 1\nwithdraw 545701 0 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 3\n49 0 49\ndeposit 66 0 1000000\ndeposit 100066 1 99\ndeposit 186467 0 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 3\n0\nwithdraw 75 2 251\ndeposit 86474 0 49\ndeposit 86484 0 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 8\n100 250 100 100\nwithdraw 86426 5 100\ndeposit 172826 1 251\nwithdraw 259226 5 1\nwithdraw 359226 5 1000000\ndeposit 445627 5 50\ndeposit 532028 1 50\ndeposit 618428 0 101\ndeposit 704828 1 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 5\n1 49\ndeposit 86449 1 100\nwithdraw 172850 1 2\ndeposit 259251 2 100\ndeposit 259253 3 100\ndeposit 259263 2 100\n",
+    "expectedOutput": "[-4]\n"
+  },
+  {
+    "input": "1 13\n250\ndeposit 51 2 50\nwithdraw 52 0 251\nwithdraw 53 1 49\ndeposit 54 0 50\nwithdraw 55 1 1\nwithdraw 56 1 2\ndeposit 86456 1 1\nwithdraw 86466 2 2\nwithdraw 186466 2 50\ndeposit 286466 2 251\ndeposit 372867 1 251\ndeposit 459267 0 50\ndeposit 545668 2 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 0\n2 1000000 99\n",
+    "expectedOutput": "[2,1000000,99]\n"
+  },
+  {
+    "input": "4 18\n100 99 99 50\ndeposit 12 4 1000000\nwithdraw 13 4 1\ndeposit 86414 5 49\nwithdraw 86415 1 49\ndeposit 172816 0 49\nwithdraw 272816 1 1\nwithdraw 272817 0 100\ndeposit 272819 0 1\nwithdraw 272821 4 50\ndeposit 372821 5 1000000\ndeposit 372831 5 49\ndeposit 372841 0 251\nwithdraw 459240 5 2\ndeposit 559240 5 1000000\nwithdraw 559241 4 101\nwithdraw 645641 4 251\ndeposit 645642 4 251\nwithdraw 745642 0 49\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "3 16\n100 1 49\ndeposit 56 4 1\ndeposit 57 0 2\ndeposit 86456 4 100\nwithdraw 186456 0 251\ndeposit 186466 1 1000000\nwithdraw 186467 3 1\nwithdraw 272868 3 2\nwithdraw 372868 0 1\nwithdraw 372869 1 1\nwithdraw 372870 4 49\ndeposit 372880 3 2\nwithdraw 372890 3 1\ndeposit 459290 4 2\ndeposit 545689 4 49\ndeposit 632089 3 99\ndeposit 632099 1 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 14\n0 2 99\ndeposit 71 3 251\nwithdraw 81 0 50\ndeposit 86482 3 49\ndeposit 86484 4 99\nwithdraw 172883 4 1\ndeposit 259284 1 100\nwithdraw 259294 3 251\ndeposit 345695 3 49\ndeposit 345697 1 1000000\ndeposit 345699 3 1\ndeposit 432099 0 2\ndeposit 518500 3 99\ndeposit 518502 1 1000000\ndeposit 518503 1 1000000\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 3\n250 250 50\ndeposit 86411 1 101\nwithdraw 172811 1 100\nwithdraw 259212 4 1\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "4 16\n50 1000000 50 99\nwithdraw 86419 1 251\nwithdraw 86420 0 99\ndeposit 86422 4 251\ndeposit 172821 0 50\nwithdraw 259222 4 251\nwithdraw 345621 4 99\nwithdraw 345631 1 1\ndeposit 432031 4 50\nwithdraw 432032 5 100\nwithdraw 518433 5 1000000\nwithdraw 618433 4 2\nwithdraw 704833 1 1\ndeposit 704835 5 99\ndeposit 804835 0 1000000\ndeposit 804837 0 1\ndeposit 891236 4 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 18\n1 1000000 1\nwithdraw 86418 4 49\nwithdraw 186418 4 1\ndeposit 272817 3 1000000\ndeposit 359217 3 100\ndeposit 359227 0 50\nwithdraw 445628 3 99\nwithdraw 445629 0 99\nwithdraw 445631 1 100\ndeposit 532032 0 50\ndeposit 532033 3 50\ndeposit 618434 3 50\nwithdraw 718434 1 49\ndeposit 804834 3 1000000\nwithdraw 804835 4 50\nwithdraw 891234 4 100\ndeposit 891244 3 251\ndeposit 991244 0 49\ndeposit 1077645 3 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 18\n50 250 2 100\ndeposit 109 4 1\ndeposit 100109 4 101\nwithdraw 186510 1 50\nwithdraw 186511 0 49\ndeposit 186521 4 49\nwithdraw 186523 0 100\ndeposit 272922 4 101\ndeposit 372922 1 1\nwithdraw 372924 4 2\nwithdraw 372934 0 50\ndeposit 372936 0 2\ndeposit 459336 0 101\ndeposit 545737 5 1000000\ndeposit 632137 0 1\ndeposit 632138 0 251\ndeposit 718539 5 100\ndeposit 718549 1 100\ndeposit 804949 1 99\n",
+    "expectedOutput": "[-4]\n"
+  },
+  {
+    "input": "3 3\n99 0 250\nwithdraw 100021 1 100\nwithdraw 200021 4 99\nwithdraw 300021 1 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 7\n1000000\ndeposit 86434 2 1000000\ndeposit 86435 1 2\ndeposit 86437 0 251\nwithdraw 86438 1 251\ndeposit 172837 1 1\ndeposit 172847 1 1\ndeposit 172849 1 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 2\n250 250\ndeposit 79 0 49\nwithdraw 86480 3 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 11\n0\ndeposit 100047 1 251\nwithdraw 186447 2 251\ndeposit 272846 1 101\ndeposit 359245 2 1\ndeposit 359247 2 251\ndeposit 445648 0 100\nwithdraw 532049 1 100\ndeposit 618449 1 101\nwithdraw 718449 1 251\nwithdraw 718459 1 1000000\nwithdraw 804860 2 1\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 12\n49 0 50\nwithdraw 86488 1 2\nwithdraw 172889 0 100\ndeposit 272889 0 49\ndeposit 359289 1 49\nwithdraw 359290 4 1000000\nwithdraw 359300 3 100\ndeposit 459300 0 100\ndeposit 545699 4 251\nwithdraw 632100 0 251\ndeposit 718501 4 99\nwithdraw 804901 3 1000000\ndeposit 891302 3 2\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 4\n1000000\nwithdraw 100060 0 49\ndeposit 100061 2 99\ndeposit 200061 1 1\ndeposit 286461 2 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 13\n1000000 100 1\ndeposit 60 1 99\ndeposit 61 0 2\nwithdraw 71 4 50\nwithdraw 86472 3 2\nwithdraw 172873 0 1\ndeposit 259272 4 100\ndeposit 345672 4 1\nwithdraw 432073 4 49\nwithdraw 432083 3 1\ndeposit 432084 3 1\nwithdraw 432085 0 1000000\nwithdraw 532085 0 1\nwithdraw 532095 3 100\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 13\n50 250 1 0\nwithdraw 14 5 1000000\ndeposit 100014 1 1\nwithdraw 100015 1 251\nwithdraw 200015 4 2\ndeposit 286415 1 1\ndeposit 372814 1 100\ndeposit 372816 0 99\nwithdraw 472816 5 49\nwithdraw 559217 1 1000000\nwithdraw 559218 1 251\ndeposit 559220 5 101\ndeposit 645621 4 101\nwithdraw 732020 1 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 5\n100 99 1000000\ndeposit 52 4 2\nwithdraw 86453 0 101\nwithdraw 86454 3 100\nwithdraw 86455 4 2\ndeposit 172855 3 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 14\n1000000 100 49\nwithdraw 49 3 101\ndeposit 59 0 49\nwithdraw 69 4 50\ndeposit 71 4 100\nwithdraw 86472 4 1000000\ndeposit 172871 0 49\nwithdraw 272871 0 1000000\ndeposit 372871 0 49\nwithdraw 459270 3 101\nwithdraw 459272 1 1000000\nwithdraw 545671 1 2\nwithdraw 632071 4 50\ndeposit 632073 1 2\nwithdraw 632074 1 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 11\n99 49 250\nwithdraw 86498 3 1000000\nwithdraw 186498 1 49\nwithdraw 186508 3 99\nwithdraw 186518 0 101\nwithdraw 186520 4 101\nwithdraw 272920 0 49\ndeposit 359321 4 101\nwithdraw 445720 3 99\ndeposit 532119 3 99\ndeposit 618518 4 251\nwithdraw 704917 3 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 13\n1 2\nwithdraw 80 0 100\ndeposit 100080 0 251\ndeposit 186481 0 50\ndeposit 186482 3 99\nwithdraw 186484 2 251\nwithdraw 186485 3 50\nwithdraw 186486 0 251\nwithdraw 272886 1 1000000\nwithdraw 359285 1 1\nwithdraw 359295 3 99\nwithdraw 459295 3 101\ndeposit 545694 2 1000000\ndeposit 545695 1 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 11\n2 2\ndeposit 103 3 1000000\ndeposit 86504 1 1000000\ndeposit 172904 3 1\ndeposit 259303 2 49\nwithdraw 345702 3 1\ndeposit 432101 0 2\nwithdraw 518500 1 2\nwithdraw 518502 0 99\nwithdraw 618502 2 100\nwithdraw 618503 1 2\ndeposit 704903 2 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 18\n2 1 0 1\ndeposit 100046 0 50\nwithdraw 186445 5 49\nwithdraw 272845 5 1\nwithdraw 272847 5 251\nwithdraw 372847 1 2\ndeposit 459246 0 99\nwithdraw 459248 1 1\ndeposit 459249 4 1\ndeposit 545649 4 251\ndeposit 545651 0 251\nwithdraw 545652 5 251\nwithdraw 632051 5 49\ndeposit 718451 5 1\ndeposit 804852 5 49\nwithdraw 891251 1 251\ndeposit 977650 0 101\nwithdraw 1064050 1 101\nwithdraw 1150450 5 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 12\n1 1000000\ndeposit 70 1 49\ndeposit 80 2 100\nwithdraw 81 0 1\nwithdraw 86480 3 2\nwithdraw 172881 1 1\nwithdraw 272881 1 101\nwithdraw 372881 3 251\nwithdraw 372891 2 99\ndeposit 459290 2 251\ndeposit 545689 3 251\nwithdraw 545690 2 251\nwithdraw 645690 3 1\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "1 11\n250\ndeposit 86484 0 1\nwithdraw 172884 0 1000000\ndeposit 172894 1 99\ndeposit 259295 0 50\nwithdraw 259305 1 99\ndeposit 345706 0 2\ndeposit 432107 2 2\nwithdraw 432117 0 251\ndeposit 432119 0 49\nwithdraw 432129 2 1000000\ndeposit 518528 1 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 18\n1\nwithdraw 70 1 2\ndeposit 86470 2 251\ndeposit 172869 0 50\ndeposit 259268 1 99\ndeposit 345668 1 49\ndeposit 345670 2 99\nwithdraw 432069 0 2\ndeposit 518469 1 100\ndeposit 604870 2 251\ndeposit 691271 1 251\ndeposit 777671 1 101\nwithdraw 777673 2 1\ndeposit 864074 0 100\ndeposit 950474 1 99\nwithdraw 1050474 2 251\ndeposit 1136875 1 50\ndeposit 1136876 1 2\nwithdraw 1223275 1 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 17\n50 0\ndeposit 86403 0 50\nwithdraw 86413 1 49\nwithdraw 186413 2 101\nwithdraw 186414 2 1\ndeposit 272815 2 50\nwithdraw 359214 0 49\nwithdraw 359224 1 2\ndeposit 359225 2 251\nwithdraw 359226 1 1\nwithdraw 359227 2 99\nwithdraw 445628 1 1000000\nwithdraw 545628 2 100\ndeposit 632027 1 50\nwithdraw 632029 1 1\nwithdraw 718430 3 2\nwithdraw 718432 0 100\ndeposit 718434 1 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 15\n0 1\ndeposit 76 1 99\nwithdraw 86476 0 251\ndeposit 172875 1 100\ndeposit 272875 3 101\ndeposit 372875 2 101\ndeposit 459276 1 100\ndeposit 459286 1 49\nwithdraw 545686 1 1\nwithdraw 545687 0 99\ndeposit 545689 3 1\nwithdraw 632088 2 49\ndeposit 718488 2 2\ndeposit 718490 1 251\nwithdraw 718491 3 99\ndeposit 718501 2 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 3\n100\nwithdraw 61 0 101\nwithdraw 86460 0 100\nwithdraw 86470 2 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 1\n49 1000000 2 100\ndeposit 85 0 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 12\n100\nwithdraw 72 2 49\nwithdraw 100072 1 101\ndeposit 186471 0 50\nwithdraw 186481 1 1\nwithdraw 186482 1 2\ndeposit 272881 1 251\nwithdraw 272883 1 50\nwithdraw 359284 1 1000000\nwithdraw 445685 1 1000000\nwithdraw 532086 0 1000000\nwithdraw 618486 2 2\nwithdraw 618488 2 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 16\n1000000 50\ndeposit 100074 0 251\ndeposit 100076 3 101\ndeposit 186476 1 100\nwithdraw 272877 1 1\nwithdraw 372877 2 99\nwithdraw 459278 3 2\nwithdraw 459279 0 101\ndeposit 545678 0 251\nwithdraw 645678 0 49\nwithdraw 732079 1 251\nwithdraw 818479 2 49\nwithdraw 818489 3 50\nwithdraw 818499 1 1000000\ndeposit 818500 1 1000000\ndeposit 904899 2 1000000\ndeposit 991300 0 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 9\n250 250\nwithdraw 14 1 1000000\ndeposit 86414 0 251\nwithdraw 172814 2 49\ndeposit 172824 3 1000000\ndeposit 259225 1 1\ndeposit 259227 0 101\ndeposit 345627 0 100\ndeposit 432026 1 100\nwithdraw 432027 0 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 14\n250 100 1000000\ndeposit 86435 0 50\ndeposit 86445 4 49\ndeposit 172845 0 50\ndeposit 172847 4 50\ndeposit 272847 0 50\ndeposit 272849 0 101\ndeposit 272851 4 50\nwithdraw 359251 1 2\nwithdraw 445652 4 49\nwithdraw 532053 4 49\nwithdraw 532055 0 1000000\nwithdraw 632055 0 2\nwithdraw 718455 4 99\nwithdraw 718456 3 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 10\n100\nwithdraw 100034 0 49\nwithdraw 100044 2 1\nwithdraw 200044 1 100\ndeposit 200045 0 49\ndeposit 286446 0 101\ndeposit 372845 0 1\nwithdraw 459245 0 100\ndeposit 459255 2 49\nwithdraw 459257 1 101\nwithdraw 545656 2 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 14\n49 50 99\ndeposit 86441 1 251\nwithdraw 172842 0 99\ndeposit 172843 1 1000000\ndeposit 172844 3 2\nwithdraw 259244 4 2\ndeposit 359244 4 50\ndeposit 445644 1 251\ndeposit 532044 0 2\nwithdraw 618445 3 100\ndeposit 704845 1 50\nwithdraw 704855 4 1\ndeposit 804855 4 1\nwithdraw 804856 0 2\ndeposit 804858 3 1000000\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 6\n50 1 1\ndeposit 86451 0 1000000\nwithdraw 86453 0 50\nwithdraw 172853 3 251\ndeposit 259253 4 2\ndeposit 345654 4 50\nwithdraw 345664 3 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 1\n100\nwithdraw 19 1 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 9\n99 250 99\ndeposit 86487 1 49\ndeposit 86489 0 50\nwithdraw 86490 1 1000000\nwithdraw 172890 0 100\nwithdraw 172891 3 49\nwithdraw 272891 3 1\ndeposit 359292 1 100\ndeposit 445693 0 99\nwithdraw 532092 0 99\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 3\n49\nwithdraw 86456 2 99\ndeposit 172856 0 50\ndeposit 172866 0 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 18\n250\nwithdraw 109 1 50\ndeposit 86510 0 99\ndeposit 172911 0 50\nwithdraw 172912 1 49\ndeposit 172913 1 99\ndeposit 272913 2 101\nwithdraw 372913 1 101\nwithdraw 459312 0 251\nwithdraw 545713 1 50\nwithdraw 632114 0 49\nwithdraw 718513 1 1000000\ndeposit 818513 1 100\nwithdraw 818514 0 100\ndeposit 918514 0 49\nwithdraw 1018514 0 1\nwithdraw 1118514 2 2\ndeposit 1118515 0 1\nwithdraw 1204916 0 100\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 4\n1000000 1\nwithdraw 89 2 1\nwithdraw 86489 3 100\ndeposit 172890 3 1000000\nwithdraw 259291 3 1\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 11\n1000000 1 49 0\nwithdraw 82 5 99\ndeposit 100082 0 251\ndeposit 100083 0 1\nwithdraw 186482 1 99\nwithdraw 272883 0 50\nwithdraw 359284 1 1\ndeposit 445683 0 2\ndeposit 532084 1 49\nwithdraw 618484 4 100\ndeposit 618494 0 1000000\ndeposit 618495 4 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 4\n100\ndeposit 22 1 49\nwithdraw 23 2 1\nwithdraw 100023 1 49\nwithdraw 186423 0 1000000\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "1 17\n49\ndeposit 87 1 49\nwithdraw 86488 1 50\nwithdraw 172889 0 101\ndeposit 259289 2 1000000\ndeposit 259290 0 49\ndeposit 259300 1 50\ndeposit 359300 1 2\nwithdraw 359301 1 99\ndeposit 359311 0 50\nwithdraw 359313 1 99\nwithdraw 359323 1 100\nwithdraw 359325 2 251\nwithdraw 459325 2 49\ndeposit 545724 1 1000000\ndeposit 632123 1 50\ndeposit 632125 1 1\ndeposit 718525 2 251\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "1 2\n0\ndeposit 86453 1 99\nwithdraw 172854 0 1\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 4\n100 50\nwithdraw 86451 1 251\nwithdraw 86461 1 99\ndeposit 186461 3 251\nwithdraw 272862 0 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 9\n99 100 49\nwithdraw 96 0 251\ndeposit 86496 3 99\nwithdraw 172897 3 99\ndeposit 172899 1 2\ndeposit 259299 4 100\ndeposit 359299 1 251\ndeposit 359301 1 99\nwithdraw 359302 3 49\nwithdraw 359312 1 1\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 2\n250 1000000\ndeposit 100099 0 49\ndeposit 186499 2 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 11\n2\nwithdraw 86456 1 50\nwithdraw 172855 0 1\ndeposit 259254 1 2\nwithdraw 359254 0 1000000\nwithdraw 459254 0 1\nwithdraw 459256 0 1\ndeposit 459258 1 49\ndeposit 459260 1 101\ndeposit 559260 1 50\ndeposit 659260 1 2\ndeposit 659261 0 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 16\n99\ndeposit 100015 1 49\nwithdraw 200015 2 49\ndeposit 200017 2 99\ndeposit 286418 2 2\nwithdraw 372818 1 251\nwithdraw 372819 1 50\nwithdraw 372829 0 50\ndeposit 472829 2 251\ndeposit 572829 1 49\nwithdraw 572830 1 251\nwithdraw 572831 1 2\ndeposit 659231 2 50\nwithdraw 745630 0 1000000\ndeposit 832030 1 251\nwithdraw 832040 1 101\ndeposit 832041 1 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 6\n250 250\nwithdraw 86468 0 101\ndeposit 172869 2 2\ndeposit 259268 3 1000000\nwithdraw 359268 0 251\ndeposit 359269 1 49\nwithdraw 445669 0 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 15\n1 0 1\ndeposit 42 1 251\nwithdraw 86442 3 49\nwithdraw 172843 4 50\nwithdraw 172844 3 1\nwithdraw 272844 1 49\nwithdraw 359245 4 251\ndeposit 459245 0 100\ndeposit 559245 4 1000000\ndeposit 559247 1 1000000\nwithdraw 659247 0 100\ndeposit 745648 1 49\nwithdraw 845648 0 100\ndeposit 845649 1 99\nwithdraw 845650 4 1000000\nwithdraw 845651 0 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "4 9\n2 99 1 2\ndeposit 86455 1 1\ndeposit 172854 1 99\nwithdraw 172855 4 49\nwithdraw 172856 0 251\nwithdraw 259257 0 251\nwithdraw 259258 1 50\nwithdraw 359258 4 101\ndeposit 459258 4 101\ndeposit 459260 5 49\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "1 3\n2\ndeposit 86402 2 50\nwithdraw 172803 1 251\nwithdraw 172805 1 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 12\n250 2 1\ndeposit 86482 3 50\nwithdraw 86483 3 49\nwithdraw 86484 3 49\ndeposit 86494 3 2\nwithdraw 186494 1 99\ndeposit 186496 4 1000000\ndeposit 186506 1 100\ndeposit 272905 4 50\nwithdraw 359305 3 100\ndeposit 445705 1 50\nwithdraw 445706 0 1000000\nwithdraw 445707 3 101\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "1 3\n0\nwithdraw 65 2 50\nwithdraw 86466 2 50\ndeposit 172867 1 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 13\n49 49 0\nwithdraw 86443 4 50\nwithdraw 86453 0 101\nwithdraw 86463 0 49\nwithdraw 86464 4 100\ndeposit 172864 1 100\nwithdraw 172874 1 101\nwithdraw 172875 0 1000000\nwithdraw 259274 1 49\nwithdraw 259275 0 100\nwithdraw 345674 0 1\nwithdraw 345684 0 101\nwithdraw 345686 3 101\ndeposit 432086 4 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 1\n99 0\nwithdraw 78 2 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 16\n1000000 2\nwithdraw 29 0 49\ndeposit 30 2 251\ndeposit 86429 1 49\nwithdraw 186429 1 49\ndeposit 272829 2 50\ndeposit 359229 3 49\ndeposit 359239 1 1000000\ndeposit 445640 1 2\ndeposit 532040 2 101\ndeposit 632040 2 49\ndeposit 718440 0 251\ndeposit 804840 3 49\nwithdraw 804842 1 50\ndeposit 904842 3 1000000\ndeposit 904843 1 50\nwithdraw 904845 3 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 12\n250 2 1000000\nwithdraw 86454 1 251\ndeposit 86464 1 1000000\nwithdraw 86466 1 1000000\ndeposit 86476 4 1\ndeposit 172877 0 1\ndeposit 172878 4 1000000\ndeposit 259277 3 101\ndeposit 259287 0 49\ndeposit 345688 4 99\ndeposit 445688 1 101\nwithdraw 445690 3 1\ndeposit 532089 1 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 11\n49 100 0 99\nwithdraw 86460 5 100\ndeposit 172860 5 99\ndeposit 172862 4 50\ndeposit 172864 0 1000000\ndeposit 259264 0 100\ndeposit 345665 5 99\nwithdraw 445665 5 1000000\ndeposit 532064 5 101\ndeposit 632064 5 101\ndeposit 632066 5 49\ndeposit 732066 4 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 8\n49\nwithdraw 86426 1 49\ndeposit 172826 0 1\nwithdraw 272826 1 49\ndeposit 272827 0 50\nwithdraw 359227 1 1000000\ndeposit 445627 1 1000000\nwithdraw 445629 1 251\nwithdraw 532029 1 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 0\n2 2 49\n",
+    "expectedOutput": "[2,2,49]\n"
+  },
+  {
+    "input": "1 14\n50\nwithdraw 33 1 99\ndeposit 100033 1 1\ndeposit 100034 0 49\ndeposit 186434 2 100\nwithdraw 186436 1 1000000\nwithdraw 186437 1 1\nwithdraw 186447 2 101\ndeposit 272847 2 1\ndeposit 272857 0 101\nwithdraw 372857 0 50\nwithdraw 372867 1 50\nwithdraw 372869 0 251\ndeposit 372871 0 50\nwithdraw 372881 1 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 0\n49 2 49\n",
+    "expectedOutput": "[49,2,49]\n"
+  },
+  {
+    "input": "3 17\n50 250 1\nwithdraw 86495 4 100\nwithdraw 86497 3 251\ndeposit 186497 0 251\nwithdraw 272898 3 50\ndeposit 272900 3 101\ndeposit 372900 0 2\ndeposit 459300 3 100\ndeposit 459302 1 49\nwithdraw 459304 4 101\nwithdraw 545703 1 1000000\ndeposit 632104 0 101\ndeposit 732104 0 251\ndeposit 732105 0 251\nwithdraw 832105 1 49\ndeposit 918505 0 100\ndeposit 1004906 0 99\ndeposit 1104906 1 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 3\n50 100 100 1\nwithdraw 9 4 50\nwithdraw 11 5 251\ndeposit 21 5 101\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 1\n1000000 1000000\nwithdraw 86415 2 1\n",
+    "expectedOutput": "[1000000,999999]\n"
+  },
+  {
+    "input": "1 9\n1000000\ndeposit 100014 0 2\nwithdraw 100015 1 2\ndeposit 200015 2 251\nwithdraw 200017 0 50\nwithdraw 286417 2 2\nwithdraw 286418 1 99\ndeposit 286419 2 1000000\ndeposit 286429 1 99\nwithdraw 386429 2 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 2\n2 1000000\nwithdraw 100040 0 1\ndeposit 100042 0 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 0\n99\n",
+    "expectedOutput": "[99]\n"
+  },
+  {
+    "input": "4 15\n1 1 1 1000000\ndeposit 86410 4 49\nwithdraw 86411 0 2\nwithdraw 172810 5 1000000\nwithdraw 259210 1 101\nwithdraw 259211 0 100\ndeposit 345611 4 50\nwithdraw 445611 4 1\ndeposit 445612 1 49\nwithdraw 532013 4 50\ndeposit 532014 1 1000000\nwithdraw 632014 1 99\nwithdraw 718415 5 100\ndeposit 718417 1 50\ndeposit 804816 4 251\ndeposit 891217 0 251\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "3 16\n49 1000000 49\ndeposit 86446 0 49\ndeposit 86456 3 101\ndeposit 172857 1 1000000\ndeposit 172859 4 50\nwithdraw 172869 0 1000000\ndeposit 272869 3 50\ndeposit 359268 3 251\ndeposit 359278 4 1000000\nwithdraw 445679 4 1000000\nwithdraw 445680 4 2\nwithdraw 445681 0 101\nwithdraw 532082 4 101\nwithdraw 532084 1 1000000\ndeposit 618485 0 1\nwithdraw 618495 3 251\ndeposit 618496 1 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "1 18\n50\nwithdraw 99 1 49\ndeposit 101 1 101\ndeposit 102 0 49\ndeposit 86501 2 2\nwithdraw 172902 1 50\ndeposit 172903 1 49\ndeposit 259304 1 1000000\ndeposit 345704 1 101\nwithdraw 445704 2 100\ndeposit 532104 1 1000000\nwithdraw 532105 1 251\ndeposit 618505 2 1000000\ndeposit 704906 0 50\ndeposit 804906 0 2\ndeposit 891305 1 99\nwithdraw 977706 0 1\nwithdraw 1064105 1 49\ndeposit 1164105 0 49\n",
+    "expectedOutput": "[-3]\n"
+  },
+  {
+    "input": "3 13\n50 99 1\nwithdraw 94 0 2\nwithdraw 96 1 99\nwithdraw 98 0 101\ndeposit 86498 1 251\ndeposit 86499 1 1\ndeposit 172898 0 49\ndeposit 172900 0 100\ndeposit 172901 1 1\ndeposit 259300 0 50\ndeposit 259302 0 1000000\nwithdraw 345703 1 49\ndeposit 432103 3 100\ndeposit 432113 0 251\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 6\n250 1000000 2\nwithdraw 78 0 99\ndeposit 100078 4 100\ndeposit 186477 3 49\nwithdraw 186479 3 100\nwithdraw 272879 3 251\ndeposit 272881 4 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 17\n100 1\nwithdraw 86492 0 49\ndeposit 172893 0 50\ndeposit 172903 0 251\nwithdraw 259303 1 101\nwithdraw 359303 1 49\ndeposit 445702 1 1\ndeposit 532101 2 49\ndeposit 532103 1 50\nwithdraw 532104 2 101\ndeposit 532106 2 2\ndeposit 618505 3 251\ndeposit 618515 0 101\ndeposit 618517 0 99\nwithdraw 704918 0 1\nwithdraw 704928 1 251\ndeposit 791328 2 99\nwithdraw 791329 0 100\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 9\n99 2 1 50\ndeposit 86476 0 100\ndeposit 86478 4 49\nwithdraw 186478 4 1000000\nwithdraw 186480 4 100\nwithdraw 272879 5 2\ndeposit 272881 1 2\ndeposit 359282 5 251\nwithdraw 359283 1 2\ndeposit 359284 5 1000000\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 12\n49 0\nwithdraw 86497 1 251\nwithdraw 172897 1 251\nwithdraw 259298 1 251\nwithdraw 259299 2 50\nwithdraw 345698 3 251\nwithdraw 345700 1 1\nwithdraw 432099 3 1\ndeposit 432100 2 50\nwithdraw 432101 2 251\ndeposit 532101 2 2\ndeposit 618501 2 99\ndeposit 618511 1 2\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 1\n1000000 250\nwithdraw 94 0 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "3 6\n250 0 2\nwithdraw 93 3 1000000\nwithdraw 86493 3 99\nwithdraw 86494 4 49\nwithdraw 86504 1 49\ndeposit 172905 3 49\ndeposit 259304 0 50\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 1\n250 2 2 2\nwithdraw 92 4 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 10\n50 49 100 2\nwithdraw 100025 0 50\ndeposit 186425 1 251\nwithdraw 186426 1 50\ndeposit 272826 1 50\nwithdraw 272827 5 251\ndeposit 272829 0 50\nwithdraw 272830 1 101\ndeposit 272832 1 49\ndeposit 359231 4 2\ndeposit 459231 1 49\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "2 8\n100 50\ndeposit 100073 3 1000000\nwithdraw 100074 0 1000000\ndeposit 186474 1 99\ndeposit 272873 1 101\ndeposit 359274 3 1\nwithdraw 445674 2 251\nwithdraw 445676 1 251\ndeposit 445678 0 99\n",
+    "expectedOutput": "[-1]\n"
+  },
+  {
+    "input": "4 10\n0 2 0 100\nwithdraw 86432 4 100\nwithdraw 172832 5 50\nwithdraw 259231 5 100\ndeposit 259233 4 50\ndeposit 259234 4 99\ndeposit 259235 4 49\ndeposit 345636 0 101\nwithdraw 345637 1 251\ndeposit 432037 5 99\nwithdraw 518438 5 101\n",
+    "expectedOutput": "[-2]\n"
+  },
+  {
+    "input": "2 8\n49 50\nwithdraw 102 1 50\nwithdraw 100102 2 49\nwithdraw 186502 2 50\ndeposit 272901 0 1000000\ndeposit 272902 2 1000000\ndeposit 372902 2 100\ndeposit 459303 3 50\nwithdraw 545704 0 99\n",
+    "expectedOutput": "[-1]\n"
+  }
+]

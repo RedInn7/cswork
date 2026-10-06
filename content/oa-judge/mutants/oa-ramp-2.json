@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同秒到期退款延迟到下一条请求",
+    "code": "import heapq, json\ndef solve(raw):\n    t = raw.split(); n, q = map(int, t[:2]); b = list(map(int, t[2:2+n])); p=[]; at=2+n\n    for i in range(1, q+1):\n        op, ts, account, amount = t[at], *map(int, t[at+1:at+4]); at += 4\n        while p and p[0][0] < ts:  # Bug: due refund at this exact second is postponed.\n            _, idx, value = heapq.heappop(p); b[idx] += value\n        if account < 1 or account > n: return json.dumps([-i], separators=(\",\", \":\"))\n        idx=account-1\n        if op == \"deposit\": b[idx] += amount\n        else:\n            if b[idx] < amount: return json.dumps([-i], separators=(\",\", \":\"))\n            b[idx] -= amount; heapq.heappush(p, (ts+86400, idx, amount*2//100))\n    return json.dumps(b, separators=(\",\", \":\"))\n"
+  },
+  {
+    "name": "提现成功后立即发放返现",
+    "code": "import heapq, json\ndef solve(raw):\n    t = raw.split(); n, q = map(int, t[:2]); b = list(map(int, t[2:2+n])); p=[]; at=2+n\n    for i in range(1, q+1):\n        op, ts, account, amount = t[at], *map(int, t[at+1:at+4]); at += 4\n        while p and p[0][0] <= ts:\n            _, idx, value = heapq.heappop(p); b[idx] += value\n        if account < 1 or account > n: return json.dumps([-i], separators=(\",\", \":\"))\n        idx=account-1\n        if op == \"deposit\": b[idx] += amount\n        else:\n            if b[idx] < amount: return json.dumps([-i], separators=(\",\", \":\"))\n            b[idx] -= amount; b[idx] += amount*2//100  # Bug: cashback is not immediate.\n    return json.dumps(b, separators=(\",\", \":\"))\n"
+  }
+]

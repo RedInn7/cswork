@@ -105,14 +105,18 @@ def main() -> None:
 
     coverage = json.loads((OA / "coverage.json").read_text())
     state = next(x for x in coverage["items"] if x["id"] == PID)
-    assert state["status"] == "blocked" and state["reason"] == PREVIOUS_REASON, state
+    assert (
+        (state["status"] == "blocked" and state["reason"] == PREVIOUS_REASON)
+        or (state["status"] in ("awaiting_sandbox", "sandbox_verified") and state.get("batch") == "capital-one-19-recovered")
+    ), state
     for folder in ("candidate-batches", "batches"):
         for path in (OA / folder).glob("*.json"):
-            if folder == "candidate-batches" and path.name == "capital-one-19-recovered.json":
+            if path.name == "capital-one-19-recovered.json":
                 continue
             manifest = json.loads(path.read_text())
             assert all(x["id"] != PID for x in manifest.get("items", [])), (folder, path)
-    assert PID not in json.dumps(json.loads((OA / "registry.json").read_text()))
+    if state["status"] != "sandbox_verified":
+        assert PID not in json.dumps(json.loads((OA / "registry.json").read_text()))
 
     public = [["1234", "24", "33"]]
     rng = random.Random(SEED)
@@ -154,6 +158,22 @@ def main() -> None:
         ["9" * 100000],
         ["0" * 100000, "0000", "9"],
         ["1", "2", "3", "4"],
+        # Additional hidden cases: every digital root, leading-zero equivalence,
+        # and ties that distinguish the site's explicitly documented max-mode rule.
+        ["0", "9", "18", "27", "36"],
+        ["1", "10", "19", "28", "37"],
+        ["2", "11", "20", "29", "38"],
+        ["3", "12", "21", "30", "39"],
+        ["4", "13", "22", "31", "40"],
+        ["5", "14", "23", "32", "41"],
+        ["6", "15", "24", "33", "42"],
+        ["7", "16", "25", "34", "43"],
+        ["8", "17", "26", "35", "44"],
+        ["0001", "01", "00010", "0019"],
+        ["000", "00", "0000", "0009"],
+        ["9", "18", "1", "10"],
+        ["8", "17", "7", "16"],
+        ["12345678901234567890", "99999999999999999999", "00000000000000000000"],
     ]
     cases, formal_expected = [], []
     for i, values in enumerate(formal):
@@ -162,6 +182,7 @@ def main() -> None:
         cases.append({"name": "样例 1" if i == 0 else f"边界 {i}",
                       "input": input_for(values), "expectedOutput": f"{expected}\n",
                       "hidden": i > 0, "weight": 1})
+    assert sum(case["hidden"] for case in cases) >= 20
 
     mutants = [
         {"name": "零值错误地映射到数根 9",
@@ -189,7 +210,7 @@ def main() -> None:
 
 题干没有定义多个数根并列为 mode 时返回哪一个。随题固定源附带的解释/实现选择较大数根；本站将此作为明示规则。参数是数字字符串，固定解释把输入称为正整数；本站支持非负十进制数字串，允许前导零，并禁止负号或其他符号。输入输出和规模限制也均为本站补充。
 
-## 正确性与复杂度
+## 为什么正确
 
 对非零十进制数，数根只由其数字和模 9 决定，公式与反复求和等价；全零字符串的数根为 0。频次表统计每个输入数的最终单数字结果，取最大频次并列中的最大值，符合本站 mode 约定。时间为总位数 O(D)，额外空间 O(10)。"""
 
@@ -245,7 +266,7 @@ def main() -> None:
     })
     put(OA / "resolutions/capital-one-19-recovered.json", {
         "schemaVersion": 1, "items": [{"id": PID, "batch": "capital-one-19-recovered",
-        "sourceContentHash": ITEM["contentHash"], "previousReason": state["reason"], "reason": reason}],
+        "sourceContentHash": ITEM["contentHash"], "previousReason": PREVIOUS_REASON, "reason": reason}],
     })
     put(OA / "validation/capital-one-19-recovered.json", {
         "schemaVersion": 1, "seed": SEED, "problems": [{

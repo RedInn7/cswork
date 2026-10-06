@@ -33,13 +33,15 @@
 
 `python3 scripts/oa-judge/batches/twilio_1_recovered.py` 重写 Twilio #1 的超限参考算法为 Mo 区间查询，只生成 `twilio-1-recovered` 离线候选。203 个独立 brute-oracle 输入、33 个正式用例（含 n=q=100000 压力）和两个正常退出 mutant 本地验证；未连接 GoJudge，也未进入正式批次或 runtime registry。
 
-`python3 scripts/oa-judge/batches/google_29_recovered.py` 为 Google #29 重写最小树直径解法，只生成 `google-29-recovered` 离线候选。2,500 棵小树随机差分、120 个独立穷举 oracle、26 个正式用例和两个被拒绝的错误控制通过；长链/星形各 n=100000 压力测试约 9.3s/1.6s。源约束与 k=0 样例冲突，候选明确修正为 `0≤k<n`。尚未连接目标 GoJudge。
+截至 2026-10-06，以下新增批次已在自有服务器的专用 go-judge 5054 沙箱逐题通过：Google #29、Amazon #32、Visa #7、Twilio #1、Stripe #20、Databricks #26、Rippling #6、Confluent #3/#4、SIG #4、Goldman Sachs #3/#14/#27、TradeDesk #5、Optiver #4、Unknown #15、D. E. Shaw #9、Capital One #19、Pure Storage #2、eBay #8、Palantir #4、Deloitte #2、Fortinet #2、IMC #1、Ramp #2。真实输出、formal/oracle 样例和错误程序报告保存在 `content/oa-judge/reports/`；总计 25 题，已聚合至 registry，但仍须部署并发布至生产数据库才对用户开放。
 
-`python3 scripts/oa-judge/batches/amazon_32_recovered.py` 为 Amazon #32 按二分 + LIS 重写参考解，只生成 `amazon-32-recovered` 离线候选。123 个子序列穷举 oracle、33 个正式用例（含重复值、初始无解和 n=100000 压力）及两个错误控制均通过。原题未定义初始 LIS 不达标时的输出；本站明确补充为 `-1`，不称作原题规则。尚未连接目标 GoJudge。
+`python3 scripts/oa-judge/batches/google_29_recovered.py` 为 Google #29 重写最小树直径解法。2,500 棵小树随机差分、120 个独立穷举 oracle、30 个正式用例（29 hidden）及两个错误控制通过；n=100000 长链最慢约 8.9s，正式时限为 10s。源约束与 k=0 样例冲突，题包明确修正为 `0≤k<n`。
 
-`python3 scripts/oa-judge/batches/visa_7_recovered.py` 按 Visa #7 题面要求的全局 row-major 次序修复上游参考实现的 4×4 子块顺序错误。163 条 oracle、256 个单块穷举、8 个正式用例（含 n=100）及两个错误控制通过。原题没给 n 上限，本站补充 `n≤100` 与 stdin/stdout 协议；尚未连接目标 GoJudge。
+`python3 scripts/oa-judge/batches/amazon_32_recovered.py` 为 Amazon #32 按二分 + LIS 重写参考解。123 个子序列穷举 oracle、33 个正式用例（含重复值、初始无解和 n=100000 压力）及两个错误控制均通过。原题未定义初始 LIS 不达标时的输出；本站明确补充为 `-1`，不称作原题规则。
 
-以下为新增离线候选，均尚未通过目标 GoJudge，不能视作线上已支持：
+`python3 scripts/oa-judge/batches/visa_7_recovered.py` 按 Visa #7 题面要求的全局 row-major 次序修复上游参考实现的 4×4 子块顺序错误。163 条 oracle、256 个单块穷举、23 个正式用例（20 hidden）及两个错误控制通过。原题没给 n 上限，本站补充 `n≤100` 与 stdin/stdout 协议。
+
+以下题包的本地 oracle 数为作者独立验证输入数；正式 hidden 用例已补至至少 20，并逐题通过专用 GoJudge 验证：
 
 | 题目 | 本地验证 | 额外说明 |
 | --- | --- | --- |
@@ -61,3 +63,6 @@
 | eBay #8 | 160 个独立排序集合 oracle、6 个正式用例、2 个 mutant；q=10,000 输出边界 | 两例与三种源语言实现都支持邻接插入后合并；题面冲突句明确排除，并补充站点规模/数值边界。 |
 | Palantir #4 | 160 个简单路径穷举 oracle、7 个正式用例、2 个 mutant；n=5,000 边界 | 无向图瓶颈路径最小化；只补充站点规模、非负权和编号约定，不假定图连通。 |
 | Deloitte #2 | 163 个 oracle、146 棵≤5节点树穷举、31 个正式用例、2 个 mutant；n=200,000 链/星边界 | 检查每个节点的直接子树大小是否相同；仅补本站 root=1/parent-list 协议与资源上限。 |
+| Fortinet #2 | 163 个 oracle、35 个正式用例、2 个 mutant；n=1,000,000 边界 | 按两个独立范围求有序对双重和；固定原文补全了截断 catalog 的求和范围与模数。 |
+| IMC #1 | 160 个 oracle、30 个正式用例、2 个 mutant；50,000 个容器边界 | 无可行容器组返回 -1 是本站约定，与固定源三语言实现一致。 |
+| Ramp #2 | 188 个 oracle、5,550 组穷举、37 个正式用例、2 个 mutant；100,000 条提现边界 | 秒级事件按题面次序处理；本站 I/O、非负金额与资源上限已明示。 |

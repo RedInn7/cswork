@@ -127,6 +127,19 @@ def build(catalog: dict, rng: random.Random) -> None:
         ([0, 250, 500], [100, 350, 600], 3, "每次都等待恰好抵达时刻"),
         ([10**9], [10**9], 1, "最大出发时刻"),
     ]
+    # Add deterministic, distinct schedule shapes as hidden formal cases; the
+    # random oracle corpus alone is not part of the judge's formal test count.
+    existing_inputs = {encode(c2d, d2c, journeys) for c2d, d2c, journeys, _ in formal}
+    for index in range(12):
+        n = 2 + index % 5
+        m = 2 + (index * 3) % 5
+        c2d = sorted(index * 37 + j * (41 + index) for j in range(n))
+        d2c = sorted(index * 53 + j * (67 + 2 * index) for j in range(m))
+        journeys = 1 + index % min(n, m)
+        raw = encode(c2d, d2c, journeys)
+        assert raw not in existing_inputs
+        existing_inputs.add(raw)
+        formal.append((c2d, d2c, journeys, f"隐藏时刻表场景 {index + 1}"))
     cases = []
     for index, (c2d, d2c, journeys, name) in enumerate(formal):
         expected = oracle(c2d, d2c, journeys)
@@ -221,7 +234,7 @@ def build(catalog: dict, rng: random.Random) -> None:
         "previousReason": review_reason,
         "reason": "固定 MDX 已明确每段 100 分钟、数组按升序排列、journeys 范围及最大规模；同一抵达时刻可登机由来源 Python bisect_left 和 Java/C++ lower_bound 实现明确。候选仅补充标准输入输出协议，没有依赖缺失图片的未定义内容。120 个随机输入与独立逐段最早班次枚举 oracle、正式边界和两个正常退出错误实现均验证通过。"}]})
     write_json(OA / "validation" / f"{batch}.json", {"schemaVersion": 1, "seed": 20261006,
-        "problems": [{"id": identifier, "formalCases": len(cases), "oracleCases": len(random_cases),
+        "problems": [{"id": identifier, "formalCases": len(cases), "hiddenCases": sum(1 for case in cases if case["hidden"]), "oracleCases": len(random_cases),
             "oracleInputsUnique": len(seen) - len(cases), "negativeControls": controls,
             "maxScheduleSizeStress": size, "stressJourneys": size}],
         "note": "本地独立逐段枚举 oracle、正式边界、最大数组规模指针压力与两个正常退出 mutant 验证；未连接 GoJudge。"})

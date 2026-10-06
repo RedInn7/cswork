@@ -147,14 +147,17 @@ def main() -> None:
 
     coverage = json.loads((OA / "coverage.json").read_text())
     state = next(x for x in coverage["items"] if x["id"] == PID)
-    assert state["status"] == "blocked", state
+    # The aggregate may already have promoted this local candidate to
+    # awaiting_sandbox while its validation artifacts are being refreshed.
+    assert state["status"] in {"blocked", "awaiting_sandbox", "sandbox_verified"}, state
     for folder in ("candidate-batches", "batches"):
         for path in (OA / folder).glob("*.json"):
-            if folder == "candidate-batches" and path.name == "unknown-15-recovered.json":
+            if path.name == "unknown-15-recovered.json":
                 continue
             manifest = json.loads(path.read_text())
             assert all(x["id"] != PID for x in manifest.get("items", [])), (folder, path)
-    assert PID not in json.dumps(json.loads((OA / "registry.json").read_text()))
+    if state["status"] != "sandbox_verified":
+        assert PID not in json.dumps(json.loads((OA / "registry.json").read_text()))
 
     public = [(["aba", "ab", "abbcdd"], False),
               (["baa", "abbc", "ab"], True),
@@ -198,11 +201,26 @@ def main() -> None:
         (["x" * 1000, "x" * 999 + "y"], True),
         (["u" * 1000, "v" * 1000], False),
     ]
+    formal_inputs = {input_for(strings, flag) for strings, flag in formal}
+    added_hidden = 0
+    for strings, flag in random_cases:
+        raw = input_for(strings, flag)
+        if raw in formal_inputs:
+            continue
+        formal_inputs.add(raw)
+        formal.append((strings, flag))
+        added_hidden += 1
+        if added_hidden == 13:
+            break
+    assert added_hidden == 13
     cases, expected_formal = [], []
     for i, (strings, flag) in enumerate(formal):
         expected = oracle(strings, flag)
         expected_formal.append(expected)
-        cases.append({"name": f"样例 {i+1}" if i < len(public) else f"边界 {i-len(public)+1}",
+        name = (f"样例 {i+1}" if i < len(public) else
+                f"边界 {i-len(public)+1}" if i < len(public) + 7 else
+                f"隐藏差分 {i-len(public)-6}")
+        cases.append({"name": name,
                       "input": input_for(strings, flag),
                       "expectedOutput": json.dumps(expected, ensure_ascii=False) + "\n",
                       "hidden": i >= len(public), "weight": 1})
@@ -238,7 +256,7 @@ print(json.dumps("".join(ch for i in sel for ch in ss[i] if ch not in other),ens
         assert rejected, mutant["name"]
         killed.append({"name": mutant["name"], "rejectedByCases": rejected})
 
-    editorial = """## 评分规则
+    editorial = """## 为什么正确
 
 Part 2 明确继承 Part 1：useJaccard=false 时，对每个字符串计算最高字符频次占比，选最低占比的所有字符串。useJaccard=true 时，对每个字符串计算它与其余每个字符串的 Jaccard 相似度平均值，再选最低平均值的所有字符串。列表中的重复字符串按不同位置分别计算。分数使用精确分数比较，避免浮点误差。
 

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-fortinet-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "referenceStdioCases": 198,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "randomOracleCases": 160,
+      "exhaustiveNChecks": 80,
+      "stress": {
+        "n": 1000000,
+        "result": "291540618",
+        "independentIdentityPassed": true
+      },
+      "negativeControls": [
+        {
+          "name": "只累加 i mod j，遗漏 j mod i",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            18,
+            19,
+            21,
+            24,
+            27
+          ]
+        },
+        {
+          "name": "错误地跳过至少一项模运算为零的 distinct pair",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            18,
+            19,
+            21,
+            24,
+            27
+          ]
+        }
+      ],
+      "referenceSha256": "298b3cca904d7c93f0f62eed2f152a35658244d918c447137fce01cdee9930c8",
+      "localValidationOnly": true,
+      "allLocalChecksPassed": true
+    }
+  ]
+}
