@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "sourceAlias": "oa-persona-3",
+  "note": "Reused the verified Persona #3 reference/oracle/mutants after confirming the identical algorithmic contract and Sentry public example. CSWork-only input semantics and limits are stated in the package and source evidence. Offline checks only; real GoJudge validation is still required.",
+  "problems": [
+    {
+      "id": "oa-sentry-2",
+      "oracleCases": 120,
+      "uniqueOracleInputs": 120,
+      "publicCases": 3,
+      "hiddenCases": 29,
+      "negativeControls": [
+        {
+          "name": "选取较晚到达出口的路径",
+          "rejectedByCases": [
+            6,
+            13,
+            18,
+            19,
+            38,
+            45,
+            50,
+            51,
+            68,
+            82,
+            88,
+            127,
+            136
+          ]
+        },
+        {
+          "name": "不计起点宝藏",
+          "rejectedByCases": [
+            3,
+            35
+          ]
+        }
+      ],
+      "referenceSha256": "2a2924d2b1c6889c8e4735a4389ada1fde91008c772ad6c221eabdd28e292b4a",
+      "method": "independent existing oracle outputs checked against adapted package reference; formal cases and both normal-exit mutants executed locally"
+    }
+  ]
+}
