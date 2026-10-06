@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-6",
+  "title": "统计递增路径（64 位计数）",
+  "explanation": "## 思路\n\n把格子视为有向无环图，每个格子连向上下左右数值更大的邻格。按值从大到小处理，令 `ways[u]` 为从 u 出发、至少再走一步的递增路径数，则 `ways[u] = Σ(1 + ways[v])`，其中 v 遍历更大的相邻格子。将所有 `ways[u]` 相加即为答案。\n\n## 正确性证明\n\n任意递增路径有唯一首格 u 和唯一第二格 v。v 必是 u 的更大相邻格；以 v 为首的后缀要么在 v 结束（对应 1），要么继续到更大邻格（对应 `ways[v]`）。因此对所有合法 v 求和恰好枚举每条从 u 开始的路径一次。严格递增保证处理 u 时所有更大邻格已完成，求和覆盖所有首格后便得到全部且不重不漏的路径。\n\n## 复杂度\n\n设格子数 V≤225，邻接边数 E≤4V。排序耗时 O(V log V)，动态规划 O(E)，空间 O(V)。\n\n## 来源与样例校正\n\nPart 2 明确沿用 Part 1，仅将路径数量上限扩大到 20 billion。固定的 15×15 网格按两种独立算法计算均为 `600537344`，而原页面标注 `601079908`。本站保留原网格，修正公开答案并明确注明源样例错误；标准输入输出格式是本站补充。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def decode(raw):\n    data = list(map(int, raw.split()))\n    rows = data[0]\n    grid = []\n    pos = 1\n    for _ in range(rows):\n        cols = data[pos]\n        pos += 1\n        grid.append(data[pos:pos + cols])\n        pos += cols\n    if pos != len(data):\n        raise ValueError(\"unexpected trailing input\")\n    return grid\n\ndef solve(raw):\n    grid = decode(raw)\n    cells = {(r, c): value for r, row in enumerate(grid) for c, value in enumerate(row)}\n    ways = {}\n    answer = 0\n    for (r, c), value in sorted(cells.items(), key=lambda item: item[1], reverse=True):\n        count = 0\n        for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):\n            if (nr, nc) in cells and cells[(nr, nc)] > value:\n                count += 1 + ways[(nr, nc)]\n        ways[(r, c)] = count\n        answer += count\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hudson-river-trading#6-increasing-paths-part-2",
+  "sourceContentHash": "eb19423d30e0c5f771d21ba70f4906320cd6897fc185fc7dd1985781fadc465b",
+  "author": "CSWork"
+}
