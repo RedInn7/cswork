@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rippling-6",
+  "title": "Maximum Time Required to Transfer Data",
+  "explanation": "## 思路\n\n答案是树的直径。任选一个服务器进行遍历，找出离它最远的服务器 u；再从 u 遍历，所得的最远距离就是树的直径。这里每条边权都是 1，所以用 BFS 即可。采用迭代队列，避免长链导致递归栈溢出。本站的最大节点数 200000 是资源限制，原题未给此上限。\n\n## 正确性\n\n树上任意两点间路径唯一。从任意点出发，最远点必为树某条直径的端点；因此以该端点 u 为起点遍历时，能达到的最大距离恰为全树最大点对距离。两次 BFS 分别计算该距离，故返回值就是任意两台服务器间的最大传输时间。\n\n## 复杂度\n\n每次遍历访问每个节点和边至多一次。两次 BFS 总时间 O(n)，邻接表、队列和距离数组空间 O(n)。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    it = iter(map(int, raw.split()))\n    n = next(it)\n    graph = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        u, v = next(it), next(it)\n        graph[u].append(v)\n        graph[v].append(u)\n\n    def farthest(start):\n        distance = [-1] * (n + 1)\n        distance[start] = 0\n        queue = deque([start])\n        best_node = start\n        while queue:\n            u = queue.popleft()\n            for v in graph[u]:\n                if distance[v] == -1:\n                    distance[v] = distance[u] + 1\n                    if distance[v] > distance[best_node]:\n                        best_node = v\n                    queue.append(v)\n        return best_node, distance[best_node]\n\n    endpoint, _ = farthest(1)\n    _, diameter = farthest(endpoint)\n    return f\"{diameter}\\n\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()), end=\"\")\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rippling#6-maximum-time-required-to-transfer-data",
+  "sourceContentHash": "f148de21bfbd492ca9dba31e2f08f2928f7ead694fcb3b67f9981421e8dce147",
+  "author": "CSWork"
+}

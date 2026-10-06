@@ -1,0 +1,10 @@
+[
+  {
+    "name": "相同片段只按无序位置对计一次",
+    "code": "import sys\nn,t,*a=map(int,sys.stdin.read().split());s=list(map(str,a));z=str(t);ans=0\nfor i,x in enumerate(s):\n for j,y in enumerate(s):\n  if i<j and x+y==z:ans+=1\nprint(ans)\n"
+  },
+  {
+    "name": "只按输入顺序拼接，忽略片段可以任意排序",
+    "code": "import sys\nn,t,*a=map(int,sys.stdin.read().split());s=list(map(str,a));z=str(t);print(sum(s[i]+s[j]==z for i in range(n) for j in range(i+1,n)))\n"
+  }
+]

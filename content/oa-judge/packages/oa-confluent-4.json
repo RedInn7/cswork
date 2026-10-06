@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-confluent-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "保留原文的 Tail N Lines",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Confluent",
+      "字符串",
+      "队列"
+    ],
+    "description": "给定一个字符串数组 lines（每个元素代表一行，不含换行符）和非负整数 n，返回最后 n 行并保持原顺序。n=0 返回空数组；n 大于数组长度时返回全部行。",
+    "input": "首行输入 `lineCount n`。随后对每一行字符串，先输入其 UTF-8 字节长度 L，再下一行给出恰好 L 个原始字节作为内容，之后紧跟一个 LF 分隔符。字符串可以为空并可包含空格、制表符及非 ASCII UTF-8 字符，但不能含 LF。0≤lineCount≤5000、0≤n≤5000、所有 payload 总长≤30000 字节。此长度前缀协议用于无损保留空行和行内空白。",
+    "output": "使用相同的长度前缀协议输出结果：先输出返回行数，随后每行输出 UTF-8 字节长度和原始内容；空数组只输出 `0`。",
+    "explanation": "来源语义明确；本站用 UTF-8 字节长度前缀补充 I/O 编码，避免空字符串、空格和制表符在 token 输入中丢失。",
+    "hints": [
+      "只需保留大小至多 n 的队列；遍历到新行时入队，超出容量便移除最早的一行。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例与边界 1",
+      "input": "5 2\n1\na\n1\nb\n1\nc\n1\nd\n1\ne\n",
+      "expectedOutput": "2\n1\nd\n1\ne\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 2",
+      "input": "3 5\n1\na\n1\nb\n1\nc\n",
+      "expectedOutput": "3\n1\na\n1\nb\n1\nc\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 3",
+      "input": "0 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 4",
+      "input": "6 3\n0\n\n6\n  lead\n5\nmid  \n9\ntwo words\n1\n\t\n3\n终\n",
+      "expectedOutput": "3\n9\ntwo words\n1\n\t\n3\n终\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 5",
+      "input": "3 0\n3\none\n0\n\n5\nthree\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 6",
+      "input": "3 1\n4\nsame\n4\nsame\n4\nsame\n",
+      "expectedOutput": "1\n4\nsame\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 7",
+      "input": "2 2\n15\nkeep trailing  \n4\ntail\n",
+      "expectedOutput": "2\n15\nkeep trailing  \n4\ntail\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
