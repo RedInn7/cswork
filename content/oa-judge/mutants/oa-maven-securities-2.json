@@ -1,0 +1,10 @@
+[
+  {
+    "name": "计数平方根以下的所有整数",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); return '\\n'.join(str(int(int(x)**0.5)-1) for x in a[1:])\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉恰为素数平方的上界",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); q=a[0]; xs=a[1:1+q]; lim=int(max(xs)**0.5); mark=[True]*(lim+1); mark[0]=False\n for p in range(2,int(lim**0.5)+1):\n  if mark[p]:\n   for j in range(p*p,lim+1,p): mark[j]=False\n pref=[]; c=0\n for i,v in enumerate(mark):\n  if v and i*i<max(xs): c+=1\n  pref.append(c)\n return '\\n'.join(str(pref[int(x**0.5)]) for x in xs)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

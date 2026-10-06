@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-millennium-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "相邻交换后的最大强度和",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Millennium",
+      "动态规划",
+      "数组"
+    ],
+    "description": "给定正整数数组。可以选择若干互不相邻的下标对 (i,i+1) 并交换其中元素，也可以不交换。每个元素最多参与一次交换。下标从 0 开始，交换后数组强度为 Σ arr[i]×(i+1)。求最大强度。\n\n\n\n本站补充标准输入输出协议；不代表原站函数题原有该协议。",
+    "input": "第一行 n（1 ≤ n ≤ 100000），第二行 n 个整数 arr[i]（1 ≤ arr[i] ≤ 100000）。",
+    "output": "输出可达到的最大强度和。",
+    "explanation": "题目规则、思路与证明见配套讲义。",
+    "hints": [
+      "不交换贡献作为基线。交换 i 与 i+1 的增益为 arr[i]−arr[i+1]，用线性 DP 在相邻交换与跳过之间取最大。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "5\n1 9 7 3 2\n",
+      "expectedOutput": "66\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3\n3 2 1\n",
+      "expectedOutput": "11\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "1\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "2\n9 9\n",
+      "expectedOutput": "27\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "3\n7 3 1\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "3\n20 5 13\n",
+      "expectedOutput": "84\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "5\n24 6 8 29 20\n",
+      "expectedOutput": "303\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "5\n26 25 9 9 14\n",
+      "expectedOutput": "225\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "10\n16 21 4 3 14 10 27 24 30 18\n",
+      "expectedOutput": "1079\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "12\n12 27 28 27 22 10 10 19 21 10 26 17\n",
+      "expectedOutput": "1462\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "1\n29\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "4\n19 17 26 20\n",
+      "expectedOutput": "219\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "6\n4 1 26 23 29 30\n",
+      "expectedOutput": "507\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "10\n8 4 17 10 4 16 18 17 30 26\n",
+      "expectedOutput": "1031\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "10\n29 14 24 5 17 18 27 2 14 11\n",
+      "expectedOutput": "845\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "4\n6 22 2 21\n",
+      "expectedOutput": "160\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "3\n14 1 22\n",
+      "expectedOutput": "95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "10\n9 5 26 15 17 18 14 22 9 30\n",
+      "expectedOutput": "1037\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "9\n27 19 13 30 28 18 3 15 20\n",
+      "expectedOutput": "818\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "7\n19 15 20 26 5 5 22\n",
+      "expectedOutput": "447\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "7\n4 1 19 13 7 28 21\n",
+      "expectedOutput": "481\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "12\n30 13 7 25 26 21 13 12 8 13 9 14\n",
+      "expectedOutput": "1122\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "5\n23 29 18 29 20\n",
+      "expectedOutput": "371\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "12\n6 18 10 8 11 28 14 28 28 13 20 1\n",
+      "expectedOutput": "1319\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "10\n25 1 25 18 9 23 28 26 27 6\n",
+      "expectedOutput": "1120\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "10\n5 3 13 26 19 29 6 4 8 25\n",
+      "expectedOutput": "851\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "2\n18 11\n",
+      "expectedOutput": "47\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

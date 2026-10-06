@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-maven-securities-2",
+  "title": "恰有三个正因数的数",
+  "explanation": "## 思路\n\n恰有 3 个因数的数等价于素数平方。对最大平方根范围筛出素数；每个查询用整数平方根与二分查找统计素数个数。\n\n## 正确性证明\n\n若 n 的素因数分解指数形式只有一个质因子且指数为 2，则其因数个数为 3；因此且仅因此它是素数平方。筛出所有不超过 sqrt(max x) 的素数，前缀和给出每个 x 的答案。\n\n## 复杂度\n\n设 M=max(x)，时间 O(sqrt(M) log log M + q)，空间 O(sqrt(M))。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n import math,bisect\n vals=list(map(int,raw.split())); q=vals[0]; xs=vals[1:1+q]; lim=math.isqrt(max(xs)); mark=bytearray(b'\\x01')*(lim+1)\n if lim>=0: mark[0]=0\n if lim>=1: mark[1]=0\n for p in range(2,int(lim**0.5)+1):\n  if mark[p]: mark[p*p:lim+1:p]=b'\\x00'*(((lim-p*p)//p)+1)\n primes=[i for i in range(2,lim+1) if mark[i]]\n return '\\n'.join(str(bisect.bisect_right(primes,math.isqrt(x))) for x in xs)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/maven-securities#2-count-numbers-with-exactly-3-divisors",
+  "sourceContentHash": "7968878945c493e4c12e9297b08cb4415cb96fc39311ae3ac54a724327cda873",
+  "author": "Chunyu Sui"
+}

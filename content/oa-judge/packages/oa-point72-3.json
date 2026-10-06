@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-point72-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "子串操作后的字典序最小字符串",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Point72",
+      "字符串",
+      "贪心"
+    ],
+    "description": "给定仅含小写英文字母的字符串。必须选择一个非空连续子串，将其中每个字符恰好替换为字母表前一个字符；a 的前一个字符是 z。输出能得到的字典序最小字符串。\n\n题面与约束完整；标准输入输出协议由本站补充。\n\n本站补充标准输入输出协议；不代表原站函数题原有该协议。",
+    "input": "输入一行字符串 s（1 ≤ |s| ≤ 100000）。",
+    "output": "输出操作后的字符串。",
+    "explanation": "题目规则、思路与证明见配套讲义。",
+    "hints": [
+      "跳过前导 a，随后把遇到的连续非 a 字符都减一；若全串都是 a，只把最后一个 a 变成 z。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "cbabc\n",
+      "expectedOutput": "baabc\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "aaaa\n",
+      "expectedOutput": "aaaz\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "leetcode\n",
+      "expectedOutput": "kddsbncd\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "cvjjqgzrhquqwryy\n",
+      "expectedOutput": "buiipfyqgptpvqxx\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "da\n",
+      "expectedOutput": "ca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "dcxiosnl\n",
+      "expectedOutput": "cbwhnrmk\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "acfpege\n",
+      "expectedOutput": "abeodfd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "xuobav\n",
+      "expectedOutput": "wtnaav\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "wncf\n",
+      "expectedOutput": "vmbe\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "dmphflhbq\n",
+      "expectedOutput": "clogekgap\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "auvhugddbnpyfbnw\n",
+      "expectedOutput": "atugtfccamoxeamv\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "vdqwksbjjpfs\n",
+      "expectedOutput": "ucpvjraiioer\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "erbedobqdpuhpjer\n",
+      "expectedOutput": "dqadcnapcotgoidq\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "ccx\n",
+      "expectedOutput": "bbw\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "sszdofzgtidtqsc\n",
+      "expectedOutput": "rrycneyfshcsprb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "wfazmaodldptcw\n",
+      "expectedOutput": "veazmaodldptcw\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "fkphrzcnpsqrou\n",
+      "expectedOutput": "ejogqybmorpqnt\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "byjyncgocsrq\n",
+      "expectedOutput": "axixmbfnbrqp\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "vmz\n",
+      "expectedOutput": "uly\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "tpndoepapa\n",
+      "expectedOutput": "somcndoapa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "eronlwudwxfjanb\n",
+      "expectedOutput": "dqnmkvtcvweianb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "naijrxroqqhuwsdqem\n",
+      "expectedOutput": "maijrxroqqhuwsdqem\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "fxn\n",
+      "expectedOutput": "ewm\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "atipgnzuuucr\n",
+      "expectedOutput": "ashofmytttbq\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "fngurnsxpehj\n",
+      "expectedOutput": "emftqmrwodgi\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "diwrnjcnimaqwfiq\n",
+      "expectedOutput": "chvqmibmhlaqwfiq\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "qehsf\n",
+      "expectedOutput": "pdgre\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

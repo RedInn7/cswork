@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-millennium-3",
+  "title": "相邻交换后的最大强度和",
+  "explanation": "## 思路\n\n不交换贡献作为基线。交换 i 与 i+1 的增益为 arr[i]−arr[i+1]，用线性 DP 在相邻交换与跳过之间取最大。\n\n## 正确性证明\n\n所有操作是互不相交的相邻边匹配。若交换 i,i+1，其对加权和的差为 (i+1)arr[i+1]+(i+2)arr[i]−(i+1)arr[i]−(i+2)arr[i+1]=arr[i]−arr[i+1]。对每个 i，最优选择要么跳过 i，要么选边 (i,i+1) 并跳过下一个边，递推覆盖所有合法方案。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n a=list(map(int,raw.split())); n=a[0]; x=a[1:1+n]; dp=[0]*(n+1)\n for i in range(n-1,-1,-1):\n  dp[i]=dp[i+1]\n  if i+1<n: dp[i]=max(dp[i],dp[i+2]+max(0,x[i]-x[i+1]))\n return str(sum((i+1)*v for i,v in enumerate(x))+dp[0])\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/millennium#3-max-sum-of-strengths-after-at-most-one-adjacent-swap-per-index",
+  "sourceContentHash": "a38d258726f01d5fa0a6661ac87a8f0005f4e25935deb57c3222abbf39a2bb9f",
+  "author": "Chunyu Sui"
+}
