@@ -8,6 +8,9 @@ src=ITEMS[PID]
 code='''def solve(raw):
  s=raw.strip();v=s.count("U")-s.count("D")
  return "U" if v>0 else "D" if v<0 else ""
+if __name__ == "__main__":
+ import sys
+ print(solve(sys.stdin.read()))
 '''
 def oracle(s):
  p=0
@@ -24,7 +27,7 @@ while len(values)<120:
  s="".join(r.choice("UD") for _ in range(r.randint(1,80)))
  if s not in values:values.append(s)
 inputs=[s+"\n" for s in values]
-runner="import json,sys\nd=json.load(sys.stdin);g={};exec(d['code'],g);print(json.dumps([g['solve'](x) for x in d['inputs']]))\n"
+runner="import json,sys\nd=json.load(sys.stdin);g={'__name__':'candidate'};exec(d['code'],g);print(json.dumps([g['solve'](x) for x in d['inputs']]))\n"
 def run(c,ins):
  p=subprocess.run(["python3","-I","-c",runner],input=json.dumps({"code":c,"inputs":ins}),text=True,capture_output=True,check=True,timeout=20)
  return json.loads(p.stdout)
@@ -49,13 +52,17 @@ ed={"schemaVersion":1,"id":PID,"title":problem["title"],"explanation":editorial,
 for d in ["packages","references","oracles","mutants","editorials","candidate-batches","validation","reviews","source-evidence"]:(OA/d).mkdir(parents=True,exist_ok=True)
 (OA/"packages"/(PID+".json")).write_text(json.dumps(pkg,ensure_ascii=False,indent=2)+"\n")
 (OA/"references"/(PID+".py")).write_text(code)
+ref_path=OA/"references"/(PID+".py")
+for case in cases:
+ cli=subprocess.run(["python3","-I",str(ref_path)],input=case["input"],text=True,capture_output=True,timeout=5)
+ assert cli.returncode==0 and cli.stdout==case["expectedOutput"],(case["name"],cli.returncode,cli.stdout,cli.stderr)
 oracle_rows=[{"input":x,"expectedOutput":y+"\n"} for x,y in zip(inputs,wants)]
 (OA/"oracles"/(PID+".json")).write_text(json.dumps(oracle_rows,ensure_ascii=False,indent=2)+"\n")
 (OA/"mutants"/(PID+".json")).write_text(json.dumps(mutants,ensure_ascii=False,indent=2)+"\n")
 (OA/"editorials"/(PID+".json")).write_text(json.dumps(ed,ensure_ascii=False,indent=2)+"\n")
 entry={"id":PID,"sourceContentHash":src["contentHash"],"packageChecksum":hashlib.sha256(canonical.encode()).hexdigest(),"editorial":editorial,"authoredSolutions":[{"language":"python","code":code}]}
 (OA/"candidate-batches"/(batch+".json")).write_text(json.dumps({"schemaVersion":1,"items":[entry]},ensure_ascii=False,indent=2)+"\n")
-(OA/"validation"/(batch+".json")).write_text(json.dumps({"schemaVersion":1,"seed":seed,"problems":[{"id":PID,"oracleCases":120,"uniqueOracleInputs":len(set(inputs)),"publicCases":3,"hiddenCases":27,"negativeControls":killed}],"note":"Local-only validation; no GoJudge sandbox report."},ensure_ascii=False,indent=2)+"\n")
+(OA/"validation"/(batch+".json")).write_text(json.dumps({"schemaVersion":1,"seed":seed,"problems":[{"id":PID,"oracleCases":120,"uniqueOracleInputs":len(set(inputs)),"referenceCliCases":len(cases),"referenceSha256":hashlib.sha256(code.encode()).hexdigest(),"publicCases":3,"hiddenCases":27,"negativeControls":killed}],"note":"Local-only validation, including execution of the saved reference through stdin/stdout; no GoJudge sandbox report."},ensure_ascii=False,indent=2)+"\n")
 authored={"id":PID,"status":"authored","reason":"已核对固定 OAMaster 题面；120 个独立 oracle 输入与两个正常退出 mutant 通过本地比对。尚未运行 GoJudge。","sourceUrls":[src["sourceUrl"]],"sourceContentHashes":[src["contentHash"]],"catalogContentHash":src["contentHash"]}
 blocked=[]
 reasons={
