@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Backspace String Compare",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "字符串",
+      "双指针",
+      "栈"
+    ],
+    "description": "给定两个仅由小写英文字母和 `#` 组成的字符串。`#` 表示退格，会删除当前字符串中紧邻它之前的一个字符；若此时字符串为空，则不产生影响。判断分别处理后两个字符串是否相同，相同输出 1，否则输出 0。",
+    "input": "输入两行非空字符串 s1、s2。本站补充约束：1≤|s1|,|s2|≤100000；字符仅为小写英文字母或 `#`。源题的长度约束损坏为 `1 5`，无法还原原始上限；本题明确使用本站长度上限，不将其表述为原题约束。",
+    "output": "相同输出 1，否则输出 0。",
+    "explanation": "退格为空串时无操作；其余规则按原题定义。可从右向左扫描并统计待跳过字符，也可使用栈。",
+    "hints": [
+      "从右向左扫描时，遇到 # 就增加待跳过字符数；普通字符若有待跳过计数则跳过，否则参与比较。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "来源样例",
+      "input": "axx#b#b#c\naxbdf#c#c\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "开头退格为空操作",
+      "input": "#a\na\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "连续退格后均为空",
+      "input": "ab##\nx#\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "退格删除前一个字符",
+      "input": "ab#c\nac\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "尾部退格",
+      "input": "abc#\nab\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "单字符相等",
+      "input": "a\na\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "单字符不等",
+      "input": "a\nb\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "多次退格并保留后续字符",
+      "input": "a#b##c\nc\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "连续清空后追加",
+      "input": "zz##x\nx\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "删除后长度不同",
+      "input": "abc#\nac\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

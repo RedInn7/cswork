@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-goldman-sachs-3",
+      "formalCases": 10,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "negativeControls": [
+        {
+          "name": "把 # 当作普通字符",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            4,
+            7,
+            8
+          ]
+        },
+        {
+          "name": "每次退格错误删除两个字符",
+          "rejectedByCases": [
+            3,
+            4
+          ]
+        }
+      ],
+      "maxFormalStringLength": 9,
+      "maxBoundaryStressStringLength": 100000
+    }
+  ],
+  "note": "本地参考程序与独立栈 oracle 差分、正式边界和两个正常退出 mutant 验证；未连接 GoJudge。"
+}

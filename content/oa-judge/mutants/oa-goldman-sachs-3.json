@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 # 当作普通字符",
+    "code": "def compare(s1, s2):\n    def process(value):\n        stack = []\n        for char in value:\n            stack.append(char)\n        return stack\n    return 1 if process(s1) == process(s2) else 0\n\ndef solve(raw):\n    lines = raw.decode(\"ascii\").splitlines()\n    if len(lines) != 2:\n        raise ValueError(\"expected exactly two input lines\")\n    return str(compare(lines[0], lines[1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "每次退格错误删除两个字符",
+    "code": "def compare(s1, s2):\n    def process(value):\n        stack = []\n        for char in value:\n            if char == \"#\":\n                if stack:\n                    stack.pop()\n                    if stack:\n                        stack.pop()\n            else:\n                stack.append(char)\n        return stack\n    return 1 if process(s1) == process(s2) else 0\n\ndef solve(raw):\n    lines = raw.decode(\"ascii\").splitlines()\n    if len(lines) != 2:\n        raise ValueError(\"expected exactly two input lines\")\n    return str(compare(lines[0], lines[1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+  }
+]

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-tradedesk-5",
+      "formalCases": 9,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "negativeControls": [
+        {
+          "name": "拒绝恰好抵达时刻的航班",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            6,
+            7
+          ]
+        },
+        {
+          "name": "把单程耗时误写为 90 分钟",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            3,
+            6,
+            7
+          ]
+        }
+      ],
+      "maxScheduleSizeStress": 100000,
+      "stressJourneys": 100000
+    }
+  ],
+  "note": "本地独立逐段枚举 oracle、正式边界、最大数组规模指针压力与两个正常退出 mutant 验证；未连接 GoJudge。"
+}

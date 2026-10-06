@@ -1,0 +1,10 @@
+[
+  {
+    "name": "拒绝恰好抵达时刻的航班",
+    "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 3:\n        raise ValueError(\"expected n m journeys and two schedules\")\n    n, m, journeys = values[:3]\n    if len(values) != 3 + n + m:\n        raise ValueError(\"schedule length does not match header\")\n    c2d = values[3:3+n]\n    d2c = values[3+n:]\n    time = 0\n    outbound = return_flight = 0\n    for _ in range(journeys):\n        while outbound < n and c2d[outbound] <= time:\n            outbound += 1\n        if outbound == n:\n            return \"-1\"\n        time = c2d[outbound] + 100\n        outbound += 1\n\n        while return_flight < m and d2c[return_flight] <= time:\n            return_flight += 1\n        if return_flight == m:\n            return \"-1\"\n        time = d2c[return_flight] + 100\n        return_flight += 1\n    return str(time)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "把单程耗时误写为 90 分钟",
+    "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 3:\n        raise ValueError(\"expected n m journeys and two schedules\")\n    n, m, journeys = values[:3]\n    if len(values) != 3 + n + m:\n        raise ValueError(\"schedule length does not match header\")\n    c2d = values[3:3+n]\n    d2c = values[3+n:]\n    time = 0\n    outbound = return_flight = 0\n    for _ in range(journeys):\n        while outbound < n and c2d[outbound] < time:\n            outbound += 1\n        if outbound == n:\n            return \"-1\"\n        time = c2d[outbound] + 90\n        outbound += 1\n\n        while return_flight < m and d2c[return_flight] < time:\n            return_flight += 1\n        if return_flight == m:\n            return \"-1\"\n        time = d2c[return_flight] + 90\n        return_flight += 1\n    return str(time)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+  }
+]
