@@ -73,32 +73,49 @@ async function run(code, input, spec) {
   );
   assert(spec.memoryLimit >= 16384 && spec.memoryLimit <= 524288);
   assert(spec.outputLimit > 0 && spec.outputLimit <= 65536);
-  const response = await fetch(new URL('/run', url), {
-    method: 'POST',
-    signal: AbortSignal.timeout(45000),
-    headers: {
-      'content-type': 'application/json',
-      authorization: 'Bearer ' + process.env.GO_JUDGE_TOKEN,
-    },
-    body: JSON.stringify({
-      cmd: [
-        {
-          args: ['/usr/bin/python3', 'main.py'],
-          env: ['PATH=/usr/bin:/bin', 'LANG=C.UTF-8', 'HOME=/w'],
-          files: [
-            { content: input },
-            { name: 'stdout', max: spec.outputLimit * 1024, pipe: true },
-            { name: 'stderr', max: 65536, pipe: true },
-          ],
-          cpuLimit: Math.ceil(spec.timeLimit * 1e9),
-          clockLimit: Math.ceil(Math.max(3, spec.timeLimit * 3) * 1e9),
-          memoryLimit: spec.memoryLimit * 1024,
-          procLimit: 16,
-          copyIn: { 'main.py': { content: code } },
+  let response;
+  for (let attempt = 1; attempt <= 5; attempt++) {
+    try {
+      response = await fetch(new URL('/run', url), {
+        method: 'POST',
+        signal: AbortSignal.timeout(45000),
+        headers: {
+          'content-type': 'application/json',
+          authorization: 'Bearer ' + process.env.GO_JUDGE_TOKEN,
         },
-      ],
-    }),
-  });
+        body: JSON.stringify({
+          cmd: [
+            {
+              args: ['/usr/bin/python3', 'main.py'],
+              env: ['PATH=/usr/bin:/bin', 'LANG=C.UTF-8', 'HOME=/w'],
+              files: [
+                { content: input },
+                { name: 'stdout', max: spec.outputLimit * 1024, pipe: true },
+                { name: 'stderr', max: 65536, pipe: true },
+              ],
+              cpuLimit: Math.ceil(spec.timeLimit * 1e9),
+              clockLimit: Math.ceil(Math.max(3, spec.timeLimit * 3) * 1e9),
+              memoryLimit: spec.memoryLimit * 1024,
+              procLimit: 16,
+              copyIn: { 'main.py': { content: code } },
+            },
+          ],
+        }),
+      });
+      break;
+    } catch (error) {
+      const transient =
+        error?.name === 'TimeoutError' ||
+        ['ECONNRESET', 'ECONNREFUSED', 'ETIMEDOUT'].includes(
+          error?.cause?.code,
+        );
+      if (!transient || attempt === 5) throw error;
+      console.warn(JSON.stringify({ event: 'oa_sandbox_retry', attempt }));
+      await new Promise((resolve) =>
+        setTimeout(resolve, Math.min(2 ** attempt, 8) * 1000),
+      );
+    }
+  }
   assert(response.ok, 'Sandbox HTTP ' + response.status);
   const results = await response.json();
   assert(results.length === 1);
