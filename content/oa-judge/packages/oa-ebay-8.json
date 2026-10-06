@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ebay-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "House Density (Longest Contiguous Segment)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "eBay",
+      "并查集",
+      "区间合并"
+    ],
+    "description": "数轴上按 queries 顺序逐个建房，房屋位置互不重复。每次建房后，返回所有房屋位置中最长连续整数区间的长度。固定源中的示例与三种语言实现都包含插入时与已有房屋相邻的情形，因此本站按这些可执行定义判题：插入可以与左侧、右侧或两侧区间相邻，并立即合并。",
+    "input": "第一行输入 q（1≤q≤10000），随后 q 行各输入一个位置 x（−10^9≤x≤10^9）；所有位置互不相同。原题没有给出数值边界，q 和 x 的范围为本站补充；q≤10000 确保逐次输出不超过题库 65536 字节上限。",
+    "output": "输出 q 行；第 i 行为前 i 次建房后最长连续房屋区间的长度。",
+    "explanation": "连续区间按整数位置定义；新房屋只会合并相邻的左区间、右区间或二者。答案是每一步所有区间长度的最大值。",
+    "hints": [
+      "维护每个连续区间的左右端点；插入 x 时检查 x−1 和 x+1 是否为现有区间端点。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题示例：逐步合并左右相邻房屋",
+      "input": "3\n2\n1\n3\n",
+      "expectedOutput": "1\n2\n3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原题示例：保留多个连续段中的最大值",
+      "input": "4\n1\n3\n0\n4\n",
+      "expectedOutput": "1\n1\n2\n2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "单次建房",
+      "input": "1\n7\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "插入后同时连接左右区间",
+      "input": "3\n0\n2\n1\n",
+      "expectedOutput": "1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "坐标边界与分离区间",
+      "input": "2\n-1000000000\n1000000000\n",
+      "expectedOutput": "1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "反向逐步扩展长区间",
+      "input": "5\n5\n4\n3\n2\n1\n",
+      "expectedOutput": "1\n2\n3\n4\n5\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

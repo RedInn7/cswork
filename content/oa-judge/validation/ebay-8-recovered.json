@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-ebay-8",
+      "formalCases": 6,
+      "oracleCases": 160,
+      "oracleInputsUnique": 160,
+      "negativeControls": [
+        {
+          "name": "只与左侧区间合并，忽略右侧相邻区间",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "name": "插入时最多只扩展一格，不合并完整左右区间",
+          "rejectedByCases": [
+            3
+          ]
+        }
+      ],
+      "maxQ": 10000,
+      "stressOutputBytes": 48894
+    }
+  ],
+  "note": "本地独立排序集合 oracle、两侧区间合并/坐标边界和两个正常退出 mutant 验证；未连接 GoJudge。"
+}

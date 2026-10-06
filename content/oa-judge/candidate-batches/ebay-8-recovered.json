@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ebay-8",
+      "sourceContentHash": "3e33c5dede37f8aa928bc09e06e55c9f4a3577ee15940079b59eaa78eb2fbd83",
+      "packageChecksum": "cc3bc80f5b81d6004d9d66fbacdb8b06a158280c9e03e21cfe2bd486b1045fd2",
+      "editorial": "## 思路\n\n用两个哈希表记录连续区间的左右端点：`starts[l]=r`，`ends[r]=l`。插入 x 时，若 `ends` 中有 x−1，则吸收左区间；若 `starts` 中有 x+1，则吸收右区间。登记合并后的新区间，并更新历史最大长度。\n\n## 正确性\n\n插入前每个已建房屋恰好属于一个连续区间。新位置 x 只可能连接以 x−1 结尾的左区间和以 x+1 开始的右区间；检查并移除这两个端点后登记合并区间，其他区间不变。因此区间表始终准确表示全部房屋的最大连续段。由于只新增房屋，历史最大值不会下降。\n\n## 复杂度\n\n每次插入进行常数次哈希表操作，期望时间 O(q)，空间 O(q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = raw.split()\n    if not tokens:\n        raise ValueError(\"missing query count\")\n    n = int(tokens[0])\n    if len(tokens) != n + 1:\n        raise ValueError(\"query count does not match input\")\n    starts = {}\n    ends = {}\n    best = 0\n    answers = []\n    for token in tokens[1:]:\n        q = int(token)\n        left = q\n        right = q\n        if q - 1 in ends:\n            left = ends.pop(q - 1)\n            starts.pop(left)\n        if q + 1 in starts:\n            right = starts.pop(q + 1)\n            ends.pop(right)\n        starts[left] = right\n        ends[right] = left\n        best = max(best, right - left + 1)\n        answers.append(str(best))\n    return \"\\n\".join(answers)\n\nif __name__ == \"__main__\":\n    result = solve(sys.stdin.buffer.read())\n    if result:\n        print(result)\n"
+        }
+      ]
+    }
+  ]
+}
