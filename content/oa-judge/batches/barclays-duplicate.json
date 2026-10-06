@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-barclays-2",
+      "sourceContentHash": "78ba31d7ed2aeb75a9ef6c7c8afdb1721abb73070cf0f6a311a9468cfc7c10f6",
+      "packageChecksum": "4d101778d679066d2d42f83acbdca0bbad112283f7faabc4e5e2a58f8e60fdc9",
+      "editorial": "## 思路\n\n先累加所有 T 格子的分值，再对每一对相邻格子检查是否都是 T。连续 k 个 T 贡献 k−1 个相邻对，不是只加一次。\n\n## 为什么正确\n\n每一项基础分唯一对应一个 T 格子，每一项奖励分唯一对应一条 T-T 相邻边。循环对每个格子和每条相邻边恰好检查一次，因此没有重复或遗漏。\n\n## 复杂度\n\n时间 O(n)，除输入外额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(data):\n    n = int(data[0]); points = list(map(int, data[1:n+1])); tokens = data[n+1]\n    score = 0\n    for i in range(n):\n        if tokens[i] == 'T':\n            score += points[i]\n            if i > 0 and tokens[i-1] == 'T':\n                score += 1\n    return score\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}
