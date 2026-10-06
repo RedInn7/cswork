@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "origin": "https://oamaster.com",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-google-29": {
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "web/content/docs/companies/google.mdx",
+      "rawGitBlob": "300032c24800642c2ecedab9d930e86db3cdb54a",
+      "sourceFileSha256": "22bfaeeadfa0e3dc25aa2a9c46fd9d81981e26f12cd27527fa772ed2237b90a9",
+      "catalogContentHash": "bfd2ff2e195eaed4046c99008a47ed20ee2d50e1bdaae34ce749c112de7d8014",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#29-find-minimum-possible-diameter",
+      "decision": "candidate-authored",
+      "sourceFacts": {
+        "constraint": {
+          "line": 2990,
+          "text": "`0 < k < n`"
+        },
+        "firstSample": {
+          "line": 2996,
+          "text": "k = 0"
+        },
+        "conflict": "原约束排除 k=0，但同一题面公开样例 1 明确使用 k=0，约束与样例冲突。",
+        "resolution": "候选明确将合法范围写为 0 ≤ k < n，保留样例 1，并将 n=1,k=0 定义为保留单点、直径为 0。",
+        "snapshotExcerpt": "**Constraints**\n`0 < n ≤ 1e5`\n`0 < k < n`\n### Example 1\nn = 4\nk = 0"
+      },
+      "reason": "本候选只修正源约束与自带样例的矛盾；题意和测试构造均绑定上述固定 OAMaster 快照。"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每次删除编号最小的叶子",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split())); n,k=d[:2]; g=[set() for _ in range(n)]\n for i in range(2,len(d),2):\n  u,v=d[i]-1,d[i+1]-1; g[u].add(v); g[v].add(u)\n alive=[1]*n; degree=list(map(len,g))\n for _ in range(k):\n  if sum(alive)==1: break\n  u=next(i for i in range(n) if alive[i] and degree[i]<=1); alive[u]=0\n  for v in g[u]:\n   if alive[v]: degree[v]-=1\n def far(s):\n  dist={s:0}; q=[s]\n  for u in q:\n   for v in g[u]:\n    if alive[v] and v not in dist: dist[v]=dist[u]+1; q.append(v)\n  z=max(dist,key=dist.get); return z,dist[z]\n if sum(alive)==1: return '0'\n s=next(i for i in range(n) if alive[i]); return str(far(far(s)[0])[1])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "不进行任何叶子删除",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split())); n=d[0]; g=[[] for _ in range(n)]\n for i in range(2,len(d),2):\n  u,v=d[i]-1,d[i+1]-1; g[u].append(v); g[v].append(u)\n def far(s):\n  dist={s:0}; q=[s]\n  for u in q:\n   for v in g[u]:\n    if v not in dist: dist[v]=dist[u]+1; q.append(v)\n  z=max(dist,key=dist.get); return z,dist[z]\n return str(far(far(0)[0])[1])\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

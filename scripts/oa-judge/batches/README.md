@@ -32,3 +32,5 @@
 `python3 scripts/oa-judge/batches/duolingo_flexport5_review.py` 为 Duolingo #3 与 Flexport #5 生成候选题包，并为 Flexport #6 单独记录 blocked 原因。每个候选有 120 个唯一输入、32 个正式用例、独立 oracle 与两个正常退出 mutant；固定上游 MDX blob 和 catalog 指纹记录在 source evidence。Duolingo 来源样例的大小写笔误按规则更正；Flexport #6 需澄清可删除节点的范围。只做离线验证，未调用 GoJudge，不进入 runtime batches 或 coverage。
 
 `python3 scripts/oa-judge/batches/twilio_1_recovered.py` 重写 Twilio #1 的超限参考算法为 Mo 区间查询，只生成 `twilio-1-recovered` 离线候选。203 个独立 brute-oracle 输入、33 个正式用例（含 n=q=100000 压力）和两个正常退出 mutant 本地验证；未连接 GoJudge，也未进入正式批次或 runtime registry。
+
+`python3 scripts/oa-judge/batches/google_29_recovered.py` 为 Google #29 重写最小树直径解法，只生成 `google-29-recovered` 离线候选。2,500 棵小树随机差分、120 个独立穷举 oracle、26 个正式用例和两个被拒绝的错误控制通过；长链/星形各 n=100000 压力测试约 9.3s/1.6s。源约束与 k=0 样例冲突，候选明确修正为 `0≤k<n`。尚未连接目标 GoJudge。

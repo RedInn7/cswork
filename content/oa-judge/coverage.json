@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 1,
-    "blocked": 543,
+    "awaiting_sandbox": 2,
+    "blocked": 542,
     "unreviewed": 0
   },
   "items": [
@@ -192,8 +192,9 @@
     {
       "id": "oa-google-29",
       "company": "google",
-      "status": "blocked",
-      "reason": "规则可读，但来源任取叶子的实现错误：边2—3、3—4、4—5、1—3，k=1时删除叶子1仍直径3，删除叶子5则直径2。还缺能支持10⁵节点并经独立验证的正确高效参考解；不能据来源代码发布。"
+      "status": "awaiting_sandbox",
+      "batch": "google-29-recovered",
+      "reason": "已按题意重写精确解：将最小剩余直径转成单调阈值判定，以树中心定理枚举顶点球/边双球，重心分解加 Euler 深度前缀结构支持 n≤100000；用独立连通子集穷举生成120条唯一oracle并随机差分，完成长链/星形满规模本地压力测试。公开修正原 0<k<n 与 k=0 样例冲突为 0≤k<n；目前只是候选，尚未经过正式在线评测。"
     },
     {
       "id": "oa-google-30",
