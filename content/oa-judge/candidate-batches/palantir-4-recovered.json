@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-palantir-4",
+      "sourceContentHash": "5e6534b95f7ca1b58f39205a4ef20d831132be99f1fc71410bc00081497151ed",
+      "packageChecksum": "85f89fd1d829cb3511d58b1b1b09dc6900c43fe809162d5a3f7bf47a324248c8",
+      "editorial": "## 思路\n\n使用 Dijkstra 风格的优先队列，但路径代价不是边权和。令 `best[v]` 为从 source 到 v 的最小瓶颈值。沿权重 w 的边扩展时，候选值是 `max(best[u], w)`；若更小就更新。\n\n## 正确性\n\n任意到 v 的路径扩展一条边 w 后，其瓶颈恰为 `max(原路径瓶颈,w)`。优先队列每次取出当前瓶颈最小的未定状态；由于扩展函数对路径瓶颈单调不减，之后经过其它节点不可能找到更小状态，因此更新规则得到每个可达点的最优瓶颈。无向邻接表保证两方向可通行；未到达 destination 则不可达。\n\n## 复杂度\n\n时间 O((N+M) log N)，空间 O(N+M)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef minimize_path_value(n, edges, source, destination):\n    if source == destination:\n        return 0\n    graph = [[] for _ in range(n + 1)]\n    for u, v, weight in edges:\n        graph[u].append((v, weight))\n        graph[v].append((u, weight))\n    infinity = 10**30\n    best = [infinity] * (n + 1)\n    best[source] = 0\n    heap = [(0, source)]\n    while heap:\n        stress, u = heapq.heappop(heap)\n        if stress != best[u]:\n            continue\n        if u == destination:\n            return stress\n        for v, weight in graph[u]:\n            candidate = max(stress, weight)\n            if candidate < best[v]:\n                best[v] = candidate\n                heapq.heappush(heap, (candidate, v))\n    return -1\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 4:\n        raise ValueError(\"incomplete graph input\")\n    n, m = tokens[0], tokens[1]\n    if len(tokens) != 2 + 3 * m + 2:\n        raise ValueError(\"edge count does not match input\")\n    edges = []\n    pos = 2\n    for _ in range(m):\n        edges.append((tokens[pos], tokens[pos + 1], tokens[pos + 2]))\n        pos += 3\n    return str(minimize_path_value(n, edges, tokens[pos], tokens[pos + 1]))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    }
+  ]
+}
