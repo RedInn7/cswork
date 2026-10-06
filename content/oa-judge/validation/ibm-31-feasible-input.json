@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-ibm-31",
+      "oracleCases": 160,
+      "publicCases": 3,
+      "hiddenCases": 20,
+      "negativeControls": [
+        {
+          "name": "每次都选当前最小库存而非最大库存",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            9,
+            10,
+            11,
+            13,
+            14,
+            15,
+            16,
+            20
+          ]
+        },
+        {
+          "name": "售出后把原库存数量原样放回，未递减价格",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ]
+        }
+      ],
+      "referenceSha256": "9cff669575def3a2b738c7ee949f2ca97f123e3bb1d6a4359d44648bdd318cd0"
+    }
+  ],
+  "note": "Exhaustive recursive state oracle explores each available item type at each sale; not tested against GoJudge."
+}

@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-rubrik-12",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "星光放大（Rubrik OA）",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Rubrik",
+      "动态规划",
+      "最大子数组"
+    ],
+    "description": "给定整数数组和乘数 z，至多一次选择连续片段将其中每个数乘以 z，再求变换后数组的最大连续子数组和。允许不放大及空子数组，答案至少为 0。固定来源样例 2 的输出由 30 更正为 63。",
+    "input": "第一行 n z（1≤n≤200000，-100≤z≤100）；第二行 n 个整数（-10^9≤a[i]≤10^9）。",
+    "output": "输出最大可能的连续子数组和。",
+    "explanation": "用三个状态记录计分连续段在放大段前、段内、段后的最大和。来源样例 2 整个数组乘以 -3 可得 63，原答案 30 有误。",
+    "hints": [
+      "按计分连续段与放大段的相对位置划分状态。",
+      "放大段必须非空；不使用放大器时保留普通最大子数组和。",
+      "空连续段的得分为 0。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 65536,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "2 2\n3 2\n",
+      "expectedOutput": "10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "5 -3\n-5 -9 -2 1 -6\n",
+      "expectedOutput": "63\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4 -2\n1 2 4 5\n",
+      "expectedOutput": "12\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 1",
+      "input": "1 -2\n-4\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 2",
+      "input": "1 0\n0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 3",
+      "input": "1 -1\n7\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 4",
+      "input": "4 2\n-3 -5 -1 -4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 5",
+      "input": "2 -2\n1 -1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 6",
+      "input": "5 -3\n-5 -9 -2 1 -6\n",
+      "expectedOutput": "63\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 7",
+      "input": "4 3\n4 -8 5 -2\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 8",
+      "input": "4 -1\n3 2 -7 4\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 9",
+      "input": "3 -100\n-1 -1 -1\n",
+      "expectedOutput": "300\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 10",
+      "input": "3 0\n2 -5 7\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 11",
+      "input": "5 -2\n5 -10 5 -10 5\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 12",
+      "input": "5 4\n-6 4 -3 8 -9\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 13",
+      "input": "4 -1\n1 1 1 1\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 14",
+      "input": "5 5\n-2 0 2 0 -2\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 15",
+      "input": "3 -3\n9 -20 9\n",
+      "expectedOutput": "78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 16",
+      "input": "5 2\n2 -1 2 -1 2\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 17",
+      "input": "5 -2\n-1 3 -1 3 -1\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 18",
+      "input": "3 100\n0 -5 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 19",
+      "input": "4 -3\n10 -1 -1 10\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 20",
+      "input": "4 1\n-7 2 2 -7\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

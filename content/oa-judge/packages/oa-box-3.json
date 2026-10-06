@@ -1,0 +1,485 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-box-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "冰淇淋口味转盘最少移动次数（Box OA）",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Box",
+      "数组",
+      "字符串",
+      "模拟"
+    ],
+    "description": "给定循环排列的口味数组、当前位置 startIndex 和目标口味 target，求沿左右方向移动到目标口味所需的最少步数。若目标口味出现多次，选择最近的一处。",
+    "input": "输入一行 JSON 对象，包含 flavors（非空字符串数组）、startIndex（从 0 开始）和 target（数组中出现的口味名）。",
+    "output": "输出到达任一 target 口味位置的最少左右移动次数。",
+    "explanation": "见配套题解。注意：源样例的解释明确指定目标是 originalart，故候选仅把样例中的 target=banana 更正为 originalart；原输入若保留 banana，正确答案应为 0。",
+    "hints": [
+      "环上两条方向的距离相加为 n。",
+      "目标名称重复时取最近位置。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "修正源样例：解释指定 originalart",
+      "input": "{\"flavors\": [\"originalart\", \"banana\", \"custard\", \"mango\"], \"startIndex\": 1, \"target\": \"originalart\"}",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "当前位置即目标",
+      "input": "{\"flavors\": [\"originalart\", \"banana\", \"custard\", \"mango\"], \"startIndex\": 1, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "向右跨越圆环边界",
+      "input": "{\"flavors\": [\"a\", \"b\", \"c\", \"d\", \"e\"], \"startIndex\": 4, \"target\": \"b\"}",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "向左跨越圆环边界",
+      "input": "{\"flavors\": [\"a\", \"b\", \"c\", \"d\", \"e\"], \"startIndex\": 0, \"target\": \"d\"}",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "长度为一",
+      "input": "{\"flavors\": [\"only\"], \"startIndex\": 0, \"target\": \"only\"}",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "重复名称取最短到达距离",
+      "input": "{\"flavors\": [\"x\", \"target\", \"a\", \"target\", \"y\"], \"startIndex\": 0, \"target\": \"target\"}",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 1",
+      "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"strawberry\", \"banana\", \"chocolate\", \"banana\", \"chocolate\", \"banana\", \"banana\", \"banana\", \"vanilla\", \"vanilla\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\"], \"startIndex\": 8, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 2",
+      "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"vanilla\", \"vanilla\", \"chocolate\", \"mango\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\", \"vanilla\", \"chocolate\", \"strawberry\"], \"startIndex\": 3, \"target\": \"vanilla\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 3",
+      "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"strawberry\", \"chocolate\", \"vanilla\", \"banana\", \"mango\", \"vanilla\", \"chocolate\", \"chocolate\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\", \"mango\", \"chocolate\"], \"startIndex\": 1, \"target\": \"mango\"}",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 4",
+      "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"strawberry\", \"mango\", \"chocolate\", \"banana\", \"mango\", \"chocolate\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"mango\", \"vanilla\", \"banana\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 5",
+      "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"banana\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\"], \"startIndex\": 1, \"target\": \"mango\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 6",
+      "input": "{\"flavors\": [\"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"banana\", \"banana\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 7",
+      "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"mango\", \"vanilla\", \"mango\", \"vanilla\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 8",
+      "input": "{\"flavors\": [\"banana\", \"vanilla\", \"mango\", \"mango\", \"banana\", \"banana\", \"banana\", \"mango\"], \"startIndex\": 5, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 9",
+      "input": "{\"flavors\": [\"mango\", \"vanilla\", \"chocolate\", \"mango\", \"vanilla\", \"banana\", \"banana\", \"banana\", \"banana\", \"vanilla\"], \"startIndex\": 6, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 10",
+      "input": "{\"flavors\": [\"mango\", \"mango\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"vanilla\", \"mango\", \"vanilla\", \"mango\", \"chocolate\", \"banana\", \"mango\", \"mango\", \"strawberry\", \"vanilla\", \"chocolate\", \"strawberry\", \"vanilla\", \"mango\"], \"startIndex\": 1, \"target\": \"strawberry\"}",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 11",
+      "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"strawberry\", \"banana\", \"banana\", \"mango\", \"banana\", \"banana\", \"chocolate\", \"banana\", \"vanilla\", \"banana\", \"chocolate\", \"mango\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 12",
+      "input": "{\"flavors\": [\"chocolate\", \"mango\", \"strawberry\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 13",
+      "input": "{\"flavors\": [\"mango\", \"chocolate\", \"mango\", \"vanilla\", \"banana\", \"strawberry\", \"chocolate\", \"mango\", \"chocolate\"], \"startIndex\": 8, \"target\": \"chocolate\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 14",
+      "input": "{\"flavors\": [\"mango\", \"chocolate\", \"chocolate\", \"strawberry\", \"mango\", \"vanilla\", \"strawberry\", \"banana\", \"mango\", \"strawberry\", \"vanilla\", \"mango\", \"strawberry\", \"mango\", \"vanilla\", \"banana\", \"chocolate\", \"strawberry\", \"banana\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 15",
+      "input": "{\"flavors\": [\"chocolate\", \"banana\", \"chocolate\", \"mango\", \"strawberry\"], \"startIndex\": 1, \"target\": \"mango\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 16",
+      "input": "{\"flavors\": [\"banana\", \"chocolate\", \"mango\", \"mango\", \"vanilla\", \"vanilla\", \"mango\", \"vanilla\"], \"startIndex\": 7, \"target\": \"mango\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 17",
+      "input": "{\"flavors\": [\"strawberry\", \"mango\", \"banana\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 18",
+      "input": "{\"flavors\": [\"chocolate\", \"banana\", \"vanilla\", \"chocolate\", \"banana\", \"chocolate\", \"strawberry\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 19",
+      "input": "{\"flavors\": [\"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"banana\"], \"startIndex\": 1, \"target\": \"mango\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 20",
+      "input": "{\"flavors\": [\"vanilla\", \"mango\"], \"startIndex\": 0, \"target\": \"mango\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 21",
+      "input": "{\"flavors\": [\"chocolate\", \"banana\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"banana\"], \"startIndex\": 6, \"target\": \"strawberry\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 22",
+      "input": "{\"flavors\": [\"chocolate\", \"mango\", \"chocolate\", \"banana\", \"chocolate\", \"strawberry\", \"mango\", \"chocolate\", \"chocolate\", \"vanilla\", \"banana\", \"strawberry\"], \"startIndex\": 0, \"target\": \"banana\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 23",
+      "input": "{\"flavors\": [\"banana\", \"vanilla\", \"chocolate\", \"chocolate\", \"mango\", \"chocolate\", \"strawberry\", \"chocolate\", \"vanilla\", \"vanilla\", \"chocolate\", \"vanilla\", \"strawberry\", \"banana\", \"vanilla\", \"mango\", \"mango\", \"mango\", \"vanilla\", \"mango\"], \"startIndex\": 2, \"target\": \"mango\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 24",
+      "input": "{\"flavors\": [\"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"strawberry\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"mango\"], \"startIndex\": 0, \"target\": \"banana\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 25",
+      "input": "{\"flavors\": [\"banana\", \"vanilla\", \"strawberry\", \"banana\", \"chocolate\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"strawberry\", \"chocolate\", \"mango\"], \"startIndex\": 11, \"target\": \"chocolate\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 26",
+      "input": "{\"flavors\": [\"strawberry\", \"banana\", \"vanilla\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 27",
+      "input": "{\"flavors\": [\"mango\", \"strawberry\", \"strawberry\", \"strawberry\", \"chocolate\", \"vanilla\", \"strawberry\", \"banana\", \"banana\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 28",
+      "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"chocolate\", \"mango\", \"vanilla\", \"strawberry\", \"strawberry\", \"vanilla\", \"chocolate\", \"mango\", \"strawberry\", \"strawberry\", \"chocolate\", \"strawberry\", \"mango\", \"banana\", \"strawberry\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 29",
+      "input": "{\"flavors\": [\"strawberry\", \"banana\", \"banana\", \"mango\", \"chocolate\", \"banana\", \"vanilla\", \"vanilla\", \"mango\", \"mango\", \"mango\", \"chocolate\", \"banana\", \"mango\", \"banana\", \"chocolate\", \"vanilla\", \"strawberry\"], \"startIndex\": 14, \"target\": \"mango\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 30",
+      "input": "{\"flavors\": [\"mango\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 31",
+      "input": "{\"flavors\": [\"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"vanilla\", \"strawberry\", \"mango\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 32",
+      "input": "{\"flavors\": [\"vanilla\", \"banana\", \"vanilla\", \"banana\", \"vanilla\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 33",
+      "input": "{\"flavors\": [\"banana\", \"banana\", \"chocolate\", \"strawberry\", \"vanilla\", \"vanilla\", \"vanilla\"], \"startIndex\": 4, \"target\": \"banana\"}",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 34",
+      "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"vanilla\", \"strawberry\", \"chocolate\", \"vanilla\", \"strawberry\", \"chocolate\", \"vanilla\", \"mango\", \"mango\", \"chocolate\", \"banana\"], \"startIndex\": 3, \"target\": \"mango\"}",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 35",
+      "input": "{\"flavors\": [\"vanilla\", \"mango\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"banana\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 36",
+      "input": "{\"flavors\": [\"strawberry\", \"strawberry\", \"strawberry\", \"strawberry\", \"mango\", \"mango\", \"vanilla\", \"chocolate\", \"chocolate\"], \"startIndex\": 7, \"target\": \"strawberry\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 37",
+      "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"vanilla\", \"vanilla\", \"strawberry\", \"mango\", \"mango\", \"banana\", \"banana\"], \"startIndex\": 4, \"target\": \"banana\"}",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 38",
+      "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"chocolate\", \"mango\", \"vanilla\", \"strawberry\", \"vanilla\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"vanilla\"], \"startIndex\": 2, \"target\": \"mango\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 39",
+      "input": "{\"flavors\": [\"banana\", \"banana\"], \"startIndex\": 0, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 40",
+      "input": "{\"flavors\": [\"vanilla\", \"mango\", \"banana\", \"chocolate\", \"mango\", \"strawberry\", \"chocolate\", \"mango\", \"mango\", \"banana\", \"mango\", \"vanilla\", \"strawberry\", \"mango\", \"strawberry\", \"mango\", \"chocolate\"], \"startIndex\": 11, \"target\": \"strawberry\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 41",
+      "input": "{\"flavors\": [\"mango\", \"banana\", \"strawberry\", \"mango\", \"banana\", \"mango\", \"mango\", \"banana\", \"chocolate\", \"chocolate\", \"mango\", \"banana\", \"mango\", \"chocolate\", \"chocolate\", \"vanilla\", \"vanilla\", \"vanilla\", \"chocolate\", \"strawberry\"], \"startIndex\": 4, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 42",
+      "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"mango\", \"mango\"], \"startIndex\": 3, \"target\": \"mango\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 43",
+      "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"mango\", \"mango\", \"chocolate\", \"banana\", \"banana\", \"strawberry\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\"], \"startIndex\": 9, \"target\": \"chocolate\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 44",
+      "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"chocolate\", \"chocolate\", \"vanilla\", \"chocolate\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 45",
+      "input": "{\"flavors\": [\"banana\", \"vanilla\", \"chocolate\", \"chocolate\", \"chocolate\", \"mango\", \"mango\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"chocolate\", \"mango\", \"mango\", \"vanilla\", \"mango\"], \"startIndex\": 14, \"target\": \"mango\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 46",
+      "input": "{\"flavors\": [\"chocolate\", \"mango\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"banana\"], \"startIndex\": 1, \"target\": \"banana\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 47",
+      "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"chocolate\", \"strawberry\", \"banana\", \"strawberry\", \"mango\", \"vanilla\"], \"startIndex\": 6, \"target\": \"chocolate\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 48",
+      "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"mango\", \"chocolate\", \"vanilla\", \"vanilla\", \"strawberry\", \"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"chocolate\"], \"startIndex\": 2, \"target\": \"chocolate\"}",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 49",
+      "input": "{\"flavors\": [\"vanilla\", \"banana\", \"banana\", \"banana\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"banana\", \"mango\", \"banana\", \"vanilla\", \"banana\", \"mango\", \"mango\", \"vanilla\", \"vanilla\", \"vanilla\"], \"startIndex\": 1, \"target\": \"mango\"}",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 50",
+      "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"mango\", \"banana\", \"banana\", \"vanilla\", \"vanilla\", \"mango\", \"banana\", \"mango\", \"chocolate\"], \"startIndex\": 10, \"target\": \"chocolate\"}",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 51",
+      "input": "{\"flavors\": [\"banana\", \"banana\", \"strawberry\", \"vanilla\", \"banana\"], \"startIndex\": 1, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 52",
+      "input": "{\"flavors\": [\"banana\", \"vanilla\", \"vanilla\"], \"startIndex\": 2, \"target\": \"banana\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 53",
+      "input": "{\"flavors\": [\"chocolate\", \"strawberry\", \"vanilla\", \"strawberry\", \"strawberry\", \"strawberry\", \"strawberry\", \"banana\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"strawberry\", \"chocolate\", \"banana\", \"mango\"], \"startIndex\": 14, \"target\": \"strawberry\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 54",
+      "input": "{\"flavors\": [\"banana\", \"vanilla\", \"banana\", \"vanilla\", \"strawberry\", \"banana\"], \"startIndex\": 5, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 55",
+      "input": "{\"flavors\": [\"banana\", \"banana\", \"banana\", \"strawberry\", \"banana\", \"strawberry\", \"banana\"], \"startIndex\": 6, \"target\": \"banana\"}",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 56",
+      "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"strawberry\", \"banana\", \"vanilla\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 57",
+      "input": "{\"flavors\": [\"strawberry\", \"banana\", \"mango\", \"banana\", \"strawberry\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"vanilla\", \"mango\", \"vanilla\", \"mango\", \"mango\", \"banana\", \"banana\", \"chocolate\", \"strawberry\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机用例 58",
+      "input": "{\"flavors\": [\"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"mango\"], \"startIndex\": 1, \"target\": \"chocolate\"}",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

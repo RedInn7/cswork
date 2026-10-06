@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-box-3",
+      "sourceContentHash": "e2e2246f16fccaddedc7966dd2bb7c0a8a2da047429444c2dadbfbc9f9a64480",
+      "packageChecksum": "8c1f48ec015ee5ea3d45fafd31024f051ffd42b2346d34f86952b036e82b4c9e",
+      "editorial": "## 思路\n\n把 flavors 看作长度 n 的环。目标口味位于下标 t、当前位置为 startIndex 时，顺时针与逆时针步数分别为 (t-startIndex) mod n 和 (startIndex-t) mod n，取较小值。若同一口味出现多次，取所有目标位置中的最短距离。\n\n源样例输入把 target 写为 banana，但解释明确说目标是下标 0 的 originalart，并据此算出 1 步。因此只将样例 target 更正为 originalart，保留源输出 1；若按原输入 banana，按题意正确输出应为 0。\n\n## 正确性\n\n圆环上的两条简单方向路径长度分别是两个模 n 的距离；任意最短移动必走其中较短方向，故距离为二者最小值。若目标名重复，任何一个对应槽位都可满足需求，最少步数是各槽位距离最小值。\n\n## 复杂度\n\n扫描口味数组一次，时间 O(n)，额外空间 O(1)。\n\n## 验证与来源\n\n固定 OAMaster 快照的 #3 明确给出循环转盘、startIndex/target 参数和 min(|t-startIndex|, n-|t-startIndex|) 解法。原样例解释又明确指定 originalart 在下标 0，并说明左移 1 或右移 3，直接支持 target 字段应为 originalart、答案仍为 1。本站用 JSON 单行作为标准输入封装这三个函数参数；输入格式与函数题相同语义。\n\n本地独立公式验证 54 个样例/随机输入，并用两个正常运行的错误程序验证：不绕环、当前位置计作一步。候选尚未经过正式服务器沙箱验证。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\nimport sys\n\ndef solve(raw):\n    data = json.loads(raw)\n    flavors = data[\"flavors\"]\n    start = data[\"startIndex\"]\n    target = data[\"target\"]\n    if not isinstance(flavors, list) or not flavors:\n        raise ValueError(\"flavors must be a nonempty array\")\n    if not isinstance(start, int) or not 0 <= start < len(flavors):\n        raise ValueError(\"startIndex out of range\")\n    if target not in flavors:\n        raise ValueError(\"target must occur in flavors\")\n    n = len(flavors)\n    return str(min(min((i - start) % n, (start - i) % n)\n                   for i, flavor in enumerate(flavors) if flavor == target))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

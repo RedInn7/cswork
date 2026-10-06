@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-geico-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Implement an LRU Cache",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Geico",
+      "LRU",
+      "缓存"
+    ],
+    "description": "Complete the function below. The function receives the full standard input as a single string and must return the exact standard output lines for the described problem.\nImplement an LRU (Least Recently Used) cache that supports:\nLRUCache(capacity): initialize the cache with the given positive capacity.\nget(key): return the value if the key exists and mark it as most recently used; otherwise return -1.\nput(key, value): insert or update the key with the value and mark it as most recently used; if the cache exceeds capacity, evict the least recently used entry.\nRequirements:\nTarget time complexity: O(1) per get/put.\n**Constraints**\nNumber of operations: 1 ≤ N ≤ 2 * 10⁵\nkey, value are 32-bit integers\n**Input:**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**Output:**\n1\n-1\n-1\n3\n4\n**Input:**\ncapacity=1\nput(1,1)\nput(2,2)\nget(1)\nget(2)\n**Output:**\n-1\n2\n**Input:**\ncapacity=2\nput(1,1)\nput(1,10)\nget(1)\n**Output:**\n10\n**Input:**\ncapacity=3\nget(42)\n**Output:**\n-1\n**Input:**\ncapacity=2\nput(1,1)\nput(2,2)\nput(3,3)\nget(1)\nget(2)\nget(3)\n**Output:**\n-1\n2\n3\n**Example**\n**Input**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**Output**\n1\n-1\n3\n4\n**Function Description**\nComplete `solveLRUCacheOperations`. It has one parameter, `String input`, containing the full stdin payload. Return the stdout payload as an array of lines, without trailing newline characters.\n\n**Constraints**\n\nUse the limits and requirements stated in the prompt.\n\n### Example 1\n**Input:**\n```\ninput = \"capacity=2\\nput(1,1)\\nput(2,2)\\nget(1)\\nput(3,3)\\nget(2)\\nput(4,4)\\nget(1)\\nget(3)\\nget(4)\"\n```\n**Output:**\n```\n[\"1\", \"-1\", \"-1\", \"3\", \"4\"]\n```\n**Explanation:**\nThe returned string array must match the expected standard output lines for the sample input.\n\n**来源勘误：** 首个多步样例漏列了 `get(1)` 在 `put(4,4)` 后返回的 `-1`。后附的重复 Example 1 已列出五个结果；按同一 LRU 规则重放也得到 `1, -1, -1, 3, 4`。",
+    "input": "第一行 capacity=N（正整数），后续每行一个 `put(key,value)` 或 `get(key)` 操作。",
+    "output": "每次 get 输出一行；put 不输出。",
+    "explanation": "维护从最久未使用到最近使用的顺序。命中 get 和任何 put（包括更新已有键）都会将该键移至最近端；超容量时删除最久未使用键。题面首个样例漏写一个 -1，题面重复的 Example 1 输出及逐步状态均确认更正值。",
+    "hints": [
+      "查询命中也会改变后续淘汰对象。",
+      "更新已存在键也算一次最近使用。",
+      "哈希表配合有序双向链表可实现每次操作 O(1)。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 65536,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "capacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n",
+      "expectedOutput": "1\n-1\n-1\n3\n4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "capacity=1\nput(1,1)\nput(2,2)\nget(1)\nget(2)\n",
+      "expectedOutput": "-1\n2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "capacity=2\nput(1,1)\nput(1,10)\nget(1)\n",
+      "expectedOutput": "10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "capacity=3\nget(42)\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 5",
+      "input": "capacity=2\nput(1,1)\nput(2,2)\nput(3,3)\nget(1)\nget(2)\nget(3)\n",
+      "expectedOutput": "-1\n2\n3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 1",
+      "input": "capacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(1)\nget(2)\n",
+      "expectedOutput": "1\n1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 2",
+      "input": "capacity=2\nput(1,1)\nput(2,2)\nput(1,10)\nput(3,3)\nget(1)\nget(2)\n",
+      "expectedOutput": "10\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 3",
+      "input": "capacity=3\nput(1,5)\nput(2,5)\nput(3,5)\nget(2)\nput(4,5)\nget(1)\n",
+      "expectedOutput": "5\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 4",
+      "input": "capacity=5\nput(-11,923231882)\nput(-7,-388032862)\nput(9,-2028148708)\nput(-5,-212853921)\nput(15,678532940)\nput(9,-1897684578)\nget(-16)\nget(-16)\nput(17,-1858633751)\nput(-17,1283470650)\nput(-4,-1417076698)\nput(-20,-1687961892)\nput(-19,871134689)\nput(-14,-292416118)\nget(0)\nput(-16,-863776886)\nget(-13)\nget(3)\nput(20,-1334637088)\nput(-12,-2077726758)\nget(-14)\nput(9,51881462)\nget(1)\nget(14)\nput(18,-931966257)\nput(-18,-637879187)\nput(-16,-356445153)\nput(3,858457122)\nput(-7,1302483293)\nget(-11)\nget(-1)\nget(12)\nget(-12)\nget(20)\nget(20)\nput(-5,702633677)\nput(-3,-901871461)\nput(14,1485236786)\nget(16)\nget(-9)\nget(-3)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-292416118\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-901871461\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 5",
+      "input": "capacity=8\nput(-5,-1433386069)\nput(0,-2047516265)\nget(9)\nput(6,854968099)\nget(11)\nget(20)\nput(-4,1493597238)\nget(-5)\nget(-10)\nput(-1,1333005234)\nget(9)\nget(-7)\nput(15,353792134)\nget(8)\nput(-7,-379236694)\nput(4,-2098873285)\nput(6,802582541)\nput(-4,-872155779)\nget(0)\nget(14)\nput(15,999756458)\nput(19,-458039825)\nput(7,-766275492)\nput(15,1923138315)\nput(-3,-654995261)\nput(-7,511251822)\nput(5,-1450949865)\nput(-11,-1266291057)\nput(18,-747426193)\nget(-14)\nget(4)\nput(-20,-1859094367)\nput(-11,-1873515568)\nput(8,-1954344184)\nget(-17)\nget(4)\nget(-9)\nput(2,-1835315974)\nput(12,-328050485)\nget(16)\nget(16)\nget(-14)\nput(5,-1763051239)\nget(-4)\nget(-7)\nput(-19,1739537755)\nget(9)\nget(-15)\nput(2,649417471)\nget(10)\nput(15,329706711)\nget(-11)\nput(-8,-1421392339)\nput(3,-986244419)\nput(20,-2092772052)\nput(6,-1644110884)\nput(-8,-688945902)\nput(-14,-767316655)\nput(-12,-380473299)\nget(15)\nput(-6,1803972011)\nget(16)\nput(-11,-2117780777)\nput(1,-154949296)\nget(17)\nget(7)\nget(12)\nget(-14)\nput(-15,1118764508)\nput(16,-1012348125)\nget(-20)\nput(-7,-568495108)\nget(-11)\nput(-9,-1492200875)\nput(7,1904482555)\nput(-12,-1226876119)\nget(-17)\nput(-5,1923714315)\nput(20,-1501518301)\nput(17,-1101300112)\nput(3,271180405)\nget(-4)\nput(-14,685334108)\nput(6,307969422)\nput(-12,683209216)\nput(3,-566254177)\nput(-16,-682148535)\nput(-11,-584573496)\nget(-16)\nget(-13)\nput(-12,1537375998)\nget(-15)\nput(3,1646681576)\nput(-4,164848850)\nput(19,-2114667591)\nget(-15)\nget(-6)\nput(13,-1016758098)\nput(-20,74623534)\nput(20,-1448297532)\nget(-4)\nput(-12,1393090910)\nput(14,-708807519)\nget(18)\nput(-2,311702672)\nget(-2)\nget(-15)\nput(18,792724388)\nput(-15,-103176287)\nput(6,-1763044895)\nget(14)\nput(-1,1826095823)\nget(10)\nput(16,-1296462274)\nget(19)\nget(3)\nput(4,1183887754)\nput(13,1093738383)\nput(0,-1803184147)\nput(14,195999354)\nput(-16,-356052499)\nget(-14)\nget(-18)\nget(-6)\nget(-11)\nput(-11,-693337406)\nput(-12,-1679127777)\nget(17)\nput(19,-1167862657)\nput(-6,-647528059)\nput(1,1672677851)\nput(-10,-1127390820)\nput(-7,1751699252)\nget(5)\nput(17,-1432503736)\nput(-3,781014502)\nput(2,171839504)\nget(1)\nput(-14,-2044403071)\nget(-10)\nget(-8)\nput(-14,1277807020)\nput(5,661707729)\nput(18,-1186074838)\nput(16,-1228474327)\nput(8,-1152413290)\nput(-13,-126889462)\nput(18,-767847245)\nput(16,-1083684388)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1433386069\n-1\n-1\n-1\n-1\n-2047516265\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n511251822\n-1\n-1\n-1\n-1873515568\n329706711\n-1\n-1\n-1\n-1\n-767316655\n-1\n-2117780777\n-1\n-1\n-682148535\n-1\n-1\n-1\n-1\n164848850\n-1\n311702672\n-1\n-708807519\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n1672677851\n-1127390820\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 6",
+      "input": "capacity=1\nput(6,661816704)\nget(-19)\nget(4)\nget(10)\nput(20,507662402)\nput(-10,107240249)\nput(3,-465976231)\nput(15,-2107784030)\nput(-3,-1434041674)\nput(0,2047575120)\nput(17,1646751696)\nput(-17,1891071773)\nput(4,1422014056)\nput(-16,-139207082)\nput(1,-1681307165)\nput(-11,-1115935946)\nget(4)\nput(-13,-968584330)\nput(-7,1509305907)\nput(17,1432254632)\nput(-3,-1101814221)\nget(-10)\nget(18)\nput(-3,2041043410)\nget(-4)\nput(-14,-1663862487)\nget(18)\nput(19,-1872693128)\nput(9,-356804935)\nput(-7,1400994770)\nget(-6)\nput(6,-1246513407)\nput(19,1130341664)\nget(6)\nput(7,-389345008)\nput(15,688310897)\nget(6)\nput(6,1743486027)\nput(-15,977477227)\nput(0,-1609797442)\nget(2)\nput(-5,1942222966)\nput(1,1691193654)\nput(-12,-1234586755)\nput(18,1953224217)\nput(11,1654611422)\nget(-9)\nput(17,-665332153)\nput(4,-751611624)\nput(4,837474359)\nget(-4)\nput(4,-585020041)\nput(-18,-1267687220)\nput(-17,-172500417)\nput(15,-948669185)\nput(-16,203088412)\nput(-8,1806130362)\nput(-16,263689649)\nput(-10,-723153249)\nput(4,-534504535)\nput(-5,-1135953449)\nget(-11)\nput(3,-2008384692)\nget(-9)\nput(-15,1478378164)\nget(-10)\nput(3,-1825958376)\nget(-14)\nput(-9,-712369280)\nput(19,-499304106)\nput(0,-1886583477)\nput(-20,-324239938)\nput(-1,-40476242)\nput(0,90996562)\nput(-10,1351255725)\nput(11,-1873641202)\nput(4,-1458732260)\nput(6,-1059994134)\nget(-6)\nput(-8,-1071585010)\nput(9,1872880020)\nget(5)\nget(-8)\nput(13,1476044115)\nget(9)\nget(-12)\nget(-17)\nput(-2,2143078030)\nput(17,977574799)\nget(20)\nget(11)\nget(-3)\nget(0)\nput(9,-730311477)\nput(-1,-1271989426)\nput(-12,908306508)\nget(12)\nget(1)\nput(9,1482551803)\nget(-11)\nget(-12)\nget(10)\nput(-19,208330921)\nput(20,-1263310054)\nput(7,2102816406)\nput(2,443011461)\nget(7)\nget(-9)\nget(-13)\nget(18)\nput(-9,-1653193067)\nget(-7)\nput(2,1120760796)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 7",
+      "input": "capacity=7\nput(-15,230537670)\nput(8,287003029)\nget(-2)\nput(-7,715382649)\nput(10,-1416254532)\nget(-6)\nget(-16)\nget(10)\nget(16)\nput(-7,836141745)\nget(12)\nput(17,-716069374)\nget(-2)\nget(8)\nput(2,-586365365)\nput(-10,-1369292921)\nput(13,-1544900636)\nput(-4,494521890)\nput(-20,717946629)\nget(10)\nget(-19)\nget(-15)\nput(-2,1431852749)\nput(19,-1342981971)\nput(-19,373275527)\nput(-13,1314204342)\nput(15,2094759787)\nput(0,-1243566189)\nget(-5)\nget(-10)\nget(-3)\nget(-15)\nget(4)\nget(3)\nput(9,-1292765661)\nget(20)\nput(-6,-2361996)\nget(9)\nget(-13)\nget(18)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1416254532\n-1\n-1\n-1\n287003029\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1292765661\n1314204342\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 8",
+      "input": "capacity=10\nput(-12,-435319900)\nget(9)\nput(0,-452563523)\nget(1)\nput(-18,206313911)\nput(-15,420069840)\nput(8,753152704)\nput(17,-273617451)\nput(-1,-391752342)\nput(-14,1660065670)\nput(7,-1370950063)\nput(-1,1019105672)\nput(-6,-1938632831)\nput(-16,1212996548)\nput(-2,-440903170)\nget(15)\nput(17,-85021162)\nget(-7)\nput(1,1684597101)\nget(-20)\nput(-20,-2088853842)\nput(10,1778726137)\nput(-11,-873548646)\nput(-5,-1259864709)\nget(-9)\nput(20,1946452878)\nget(-4)\nput(-7,-1847776567)\nput(-11,1070671776)\nput(-17,155343600)\nget(10)\nput(14,1750711244)\nget(12)\nput(-9,-902730678)\nput(-5,-1792185162)\nget(16)\nget(1)\nput(2,-1565122302)\nput(-19,1755988952)\nput(-14,-1974121563)\nget(7)\nput(17,-1320972653)\nget(5)\nput(-8,1544814964)\nget(4)\nput(11,1746924548)\nget(17)\nget(-12)\nget(12)\nput(-15,-790490268)\nput(-20,-1574457546)\nget(-3)\nput(10,1774323044)\nget(14)\nput(19,-1944219480)\nget(-15)\nput(-17,1871028292)\nget(-9)\nget(-4)\nput(7,-649162456)\nput(2,439180420)\nget(15)\nget(8)\nput(-7,-1001770591)\nput(8,2085889407)\nput(1,477925888)\nget(9)\nget(-18)\nput(-5,-2013209484)\nput(-13,-87392879)\nget(-20)\nput(4,846066830)\nget(8)\nget(-17)\nget(8)\nput(-19,-2140691434)\nput(-7,2137245820)\nput(-1,-1209834063)\nput(-11,-1776210497)\nput(3,2070887648)\nget(-12)\nput(3,-951341213)\nget(-14)\nput(-10,1810551256)\nget(-17)\nget(-17)\nget(20)\nput(-8,-2020026884)\nput(7,-917395180)\nput(8,-321086597)\nput(8,774702215)\nget(12)\nput(-8,1162683379)\nput(-8,1930830158)\nput(-7,937553478)\nput(10,964784902)\nput(18,-994398571)\nget(9)\nget(-6)\nget(-19)\nget(-5)\nput(11,1710193859)\nput(-6,274212187)\nget(-20)\nput(-5,756115966)\nget(2)\nput(16,1788973998)\nput(4,751809639)\nput(13,1225079633)\nget(14)\nget(18)\nget(4)\nget(-11)\nput(9,839669724)\nput(-10,309114829)\nput(-12,-1858454177)\nget(13)\nput(9,-1272547971)\nput(17,2085338269)\nput(-16,-574931037)\nget(7)\nget(-18)\nget(9)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n1778726137\n-1\n-1\n1684597101\n-1\n-1\n-1\n-1320972653\n-1\n-1\n-1\n-1\n-790490268\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n2085889407\n1871028292\n2085889407\n-1\n-1\n1871028292\n1871028292\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-994398571\n751809639\n-1\n1225079633\n-1\n-1\n-1272547971\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 9",
+      "input": "capacity=2\nput(-1,-645296964)\nget(-2)\nget(-16)\nget(-18)\nput(-14,212360838)\nput(9,-611032616)\nput(-20,270052231)\nput(-9,-268020489)\nput(0,-2015486873)\nget(16)\nput(14,-58531992)\nput(-6,1092536246)\nget(20)\nget(15)\nget(18)\nget(-17)\nput(1,-1962627571)\nget(-3)\nput(-13,1075854817)\nput(-17,888058965)\nget(-8)\nget(11)\nput(18,1137843358)\nput(-10,-515898022)\nput(0,-2415761)\nget(-4)\nget(13)\nput(-18,-428804630)\nput(7,1500514289)\nget(6)\nput(5,-1192449739)\nget(-9)\nput(-13,1243039705)\nput(12,918160292)\nput(4,-821826540)\nput(-9,-309500862)\nput(-16,1165528401)\nget(-17)\nput(16,286829013)\nget(-5)\nget(-1)\nget(-17)\nget(20)\nget(-14)\nput(11,1054366751)\nput(-7,-675547297)\nget(-20)\nput(-15,1034763060)\nget(-14)\nget(13)\nput(-3,740627119)\nput(-3,1960803315)\nget(-8)\nput(17,832872305)\nget(-9)\nput(2,-1932584433)\nput(2,-314505874)\nget(16)\nput(16,1303833460)\nget(-12)\nget(3)\nget(11)\nput(13,311192429)\nget(13)\nput(-4,632360915)\nput(0,-1847510111)\nput(6,-1729346622)\nput(-3,438443202)\nget(-18)\nget(11)\nget(19)\nget(-14)\nget(-6)\nget(-5)\nget(-6)\nput(-4,-457451253)\nget(16)\nput(6,274817807)\nget(3)\nput(-5,789192012)\nget(8)\nput(-1,-1110877111)\nput(-1,173135272)\nget(-8)\nget(17)\nget(1)\nput(13,-1863152391)\nget(-11)\nget(-17)\nget(8)\nput(-19,632190158)\nget(-11)\nget(-19)\nget(11)\nput(17,1707460665)\nput(-7,-1148122076)\nget(18)\nget(-13)\nget(-5)\nget(-11)\nput(15,2035498331)\nget(8)\nput(7,-833059138)\nget(-7)\nget(-6)\nput(-2,-142181341)\nget(-5)\nget(10)\nget(18)\nget(-6)\nget(-16)\nput(-19,2092181090)\nget(6)\nput(7,433852843)\nget(13)\nput(12,26410542)\nget(-9)\nget(8)\nput(-4,-1471726516)\nput(6,-934133129)\nput(10,-1785342100)\nput(13,-1976479777)\nget(2)\nget(-18)\nget(2)\nget(9)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n311192429\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n632190158\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 10",
+      "input": "capacity=9\nput(11,1394462965)\nget(-5)\nget(20)\nget(9)\nput(-13,806083931)\nput(-20,741797092)\nput(18,-1820958429)\nget(20)\nget(-13)\nget(1)\nget(-16)\nput(9,-549540477)\nput(1,424840075)\nget(-4)\nput(-3,-1464234430)\nget(-16)\nput(8,1180022341)\nget(18)\nput(1,-545656399)\nput(0,-1676789514)\nget(-14)\nput(8,1954379108)\nget(13)\nget(-18)\nget(5)\nget(16)\nget(-5)\nget(2)\nput(-13,-966823655)\nput(-12,1201910662)\nget(-19)\nput(7,-1986261917)\nget(5)\nput(-18,-538268642)\nput(18,1631197988)\nput(-3,-1147811906)\nput(17,359778338)\nget(7)\nget(-1)\nget(4)\nput(-19,-224306596)\nget(-20)\nget(18)\nget(8)\nput(0,29157106)\nput(-10,-2069310127)\nput(18,1298210922)\nput(7,689670967)\nget(-5)\nput(-7,541449314)\nput(4,1501919887)\nget(1)\nget(-11)\nget(0)\nget(-6)\nput(20,-150129926)\nget(-14)\nput(11,-2119727947)\nput(14,454171221)\nput(-8,893971307)\nput(15,886436996)\nput(-18,-1543070149)\nput(-1,-1068966426)\nput(-9,948424002)\nput(1,-497983741)\nget(-6)\nget(14)\nget(-19)\nput(-1,-756891560)\nput(-7,587122877)\nget(-2)\nget(-7)\nput(-9,-1597978349)\nput(14,1081120998)\nput(3,-1161035312)\nget(13)\nput(-3,-210232525)\nget(19)\nget(-11)\nput(-20,-2081043798)\nget(-12)\nget(-16)\nget(-2)\nput(0,-174416734)\nput(16,-1756774469)\nput(4,-55615062)\nget(2)\nput(11,-338724164)\nput(-6,1850204533)\nput(-8,2096450175)\nget(3)\nput(-7,1175513493)\nput(13,627599973)\nget(-11)\nput(14,-652121342)\nput(-13,290922000)\nput(1,-91941186)\nget(20)\nput(4,2034642323)\nput(-20,1841844026)\nget(-18)\nput(-17,-418539409)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n806083931\n-1\n-1\n-1\n-1\n-1820958429\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1986261917\n-1\n-1\n-1\n1631197988\n1954379108\n-1\n-1\n-1\n29157106\n-1\n-1\n-1\n454171221\n-1\n-1\n587122877\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1161035312\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 11",
+      "input": "capacity=2\nget(-7)\nget(20)\nput(-7,-1744895639)\nput(-19,-361348829)\nget(2)\nput(8,-2131439694)\nget(-17)\nput(16,-1033096333)\nget(17)\nput(10,-1574359118)\nput(-5,-620993667)\nget(-10)\nget(9)\nput(18,-911854203)\nget(6)\nput(17,4867123)\nget(-13)\nput(-16,1386442522)\nget(-5)\nget(7)\nget(-10)\nget(-11)\nput(14,68285383)\nput(20,-1800532726)\nput(-8,-468108007)\nput(7,2008761756)\nput(-9,1852676326)\nget(-20)\nget(11)\nput(9,117423006)\nput(-15,-919708791)\nget(-15)\nget(3)\nget(-9)\nput(14,-750283073)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-919708791\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 12",
+      "input": "capacity=11\nput(-16,1006041279)\nput(-4,1960504859)\nput(0,-1174567974)\nput(3,1933670865)\nput(9,304596360)\nget(11)\nput(11,-116718994)\nput(13,1608779628)\nput(14,706519719)\nput(-14,1467782380)\nput(10,776158789)\nput(14,96971514)\nput(2,-1362352515)\nput(19,-1879465670)\nput(-18,626759448)\nput(10,428634905)\nget(-8)\nget(4)\nput(13,525567786)\nget(19)\nput(20,1508241720)\nget(12)\nget(11)\nput(-1,988177310)\nput(-16,176706591)\nget(-14)\nget(-10)\nput(11,56906022)\nget(0)\nput(6,973178370)\nput(-12,-497722259)\nput(10,240608656)\nget(4)\nget(17)\nput(-19,718989175)\nput(12,474402103)\nget(-16)\nput(13,1954503959)\nput(-8,1141851241)\nput(-9,1865034663)\nput(19,-1587800875)\nput(2,1868149412)\nget(19)\nget(13)\nget(-2)\nput(-3,-1563549412)\nget(-13)\nput(10,803024637)\nput(1,1898435568)\nput(-19,-1933059454)\nput(18,797631887)\nput(-18,471791266)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1879465670\n-1\n-116718994\n1467782380\n-1\n-1\n-1\n-1\n176706591\n-1587800875\n1954503959\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 13",
+      "input": "capacity=1\nput(3,-1812506117)\nput(-10,-1706782915)\nget(-3)\nget(14)\nget(19)\nput(-4,1403063852)\nput(3,-903087687)\nget(20)\nget(19)\nput(2,-152968993)\nput(0,-1523069737)\nput(6,-1356828027)\nput(3,1373797522)\nget(11)\nput(7,-1813223475)\nget(13)\nget(18)\nget(-12)\nget(15)\nget(-3)\nput(-13,-1602839426)\nput(12,-897721214)\nput(6,-159234583)\nput(-17,-870952504)\nput(20,-871364191)\nput(-14,1327518899)\nput(20,-1850020515)\nget(-14)\nget(-2)\nput(-7,72164690)\nget(-6)\nput(-11,481893712)\nput(-15,289532229)\nput(-7,1260702355)\nput(19,-1612727241)\nput(12,950388368)\nput(7,-1811712398)\nput(7,-1553200568)\nget(20)\nput(-19,1000889004)\nput(15,1175769799)\nput(0,-693591591)\nput(-14,-1730620447)\nput(-6,-1614142954)\nput(14,1984949533)\nget(-1)\nput(18,-728476521)\nget(-1)\nput(-4,-1416642843)\nput(-18,-1410669829)\nput(-10,906057788)\nget(-14)\nput(-8,460850965)\nput(16,-2091928618)\nput(-1,1691216308)\nput(17,1916903578)\nget(-6)\nput(-18,1536544707)\nget(-19)\nget(-2)\nput(3,-717493307)\nput(15,-1508776111)\nput(15,664202301)\nput(9,1038977789)\nget(-8)\nget(13)\nput(-19,1231682537)\nput(-9,1376053630)\nget(-13)\nget(-3)\nget(9)\nput(20,2139142298)\nput(0,-430352119)\nput(-2,575822263)\nput(-1,425329557)\nput(9,1252697500)\nput(14,-47240690)\nput(-16,-1056421648)\nput(-1,2145511054)\nput(19,762356235)\nput(12,2000318008)\nput(12,-1497616692)\nput(15,-610628397)\nput(-12,485685767)\nput(-4,1064676013)\nget(-13)\nput(17,-1662792039)\nput(14,-137693172)\nput(-16,698379444)\nget(4)\nget(15)\nput(7,1297082442)\nput(-20,-1947050168)\nget(17)\nget(-18)\nput(0,-1326235500)\nget(18)\nget(5)\nput(10,-1880592925)\nput(-2,1089603108)\nput(5,846103091)\nput(-13,733947527)\nput(-14,-1712645766)\nput(18,655610675)\nget(-9)\nget(19)\nput(-8,1872196318)\nput(14,1262112502)\nget(8)\nput(13,1625889458)\nput(14,2072764528)\nget(20)\nget(-3)\nput(-6,-1646531856)\nget(15)\nget(-9)\nget(-10)\nput(2,700836442)\nput(19,-1032056312)\nget(8)\nget(6)\nput(6,-2136184006)\nget(-6)\nput(18,-209818206)\nget(7)\nget(3)\nget(16)\nput(-3,757932409)\nput(-4,2090122531)\nget(14)\nput(2,765941271)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 14",
+      "input": "capacity=2\nget(11)\nput(13,226154695)\nget(4)\nget(-4)\nput(-18,147808421)\nput(19,402376697)\nget(-18)\nput(18,933466227)\nget(-6)\nput(7,-1370555541)\nput(20,871647147)\nget(-1)\nput(-5,-1352124481)\nput(-17,2115058404)\nput(5,686804816)\nput(-16,1335191819)\nput(-16,-2124221321)\nget(13)\nput(3,-1621724439)\nget(7)\nget(-18)\nget(-12)\nput(17,-2047002758)\nput(12,-574334038)\nput(-10,-1416872226)\nput(-15,-642103823)\nget(2)\nput(9,-2145067681)\nput(-11,-1668521780)\nput(-4,-1389359649)\nget(19)\nget(5)\nget(5)\nget(-20)\nput(1,-1213202511)\nget(-2)\nput(-7,855931426)\nput(-11,1993272382)\nput(16,809523450)\nput(-10,-560467694)\nget(-8)\nget(-14)\nget(9)\nget(1)\nput(4,-728148884)\nput(4,842956926)\nput(4,762794691)\nput(19,-1120537707)\nget(-12)\nput(-8,1400331062)\nput(-18,-1284632743)\nput(-19,-940612056)\nget(-13)\nput(15,1063120488)\nput(14,-1460964944)\nput(6,-2105857970)\nput(-8,-1110534214)\nput(-1,1345916162)\nget(5)\nput(-19,-1676593448)\nget(9)\n",
+      "expectedOutput": "-1\n-1\n-1\n147808421\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 15",
+      "input": "capacity=2\nget(-17)\nput(-5,40020880)\nput(-15,-1062718819)\nget(-2)\nget(-11)\nget(4)\nget(18)\nput(-16,-158673862)\nput(2,2051349037)\nget(9)\nput(-19,-1804640268)\nput(-7,1980919610)\nput(-10,2070154034)\nput(16,1129108340)\nput(7,576208522)\nget(13)\nget(2)\nget(-17)\nput(9,813196933)\nput(-15,1699471831)\nget(0)\nget(-19)\nget(2)\nput(-5,1906472908)\nget(16)\nget(-5)\nget(-18)\nget(-19)\nget(-10)\nget(17)\nput(-19,-1034196264)\nput(-12,-1376640504)\nput(5,1714066890)\nget(16)\nget(1)\nget(15)\nput(1,-136159253)\nput(-20,1266711167)\nput(-6,-759491041)\nput(-11,36065112)\nput(12,1838726242)\nget(16)\nput(14,-1334818894)\nget(-19)\nget(3)\nget(-7)\nget(-9)\nput(-16,-661877543)\nput(17,-1759229624)\nput(-3,276188839)\nget(7)\nput(17,476634556)\nput(-8,-59109589)\nput(-20,1458110129)\nput(20,2111821197)\nput(-4,-659758489)\nget(-4)\nput(1,1387568138)\nget(16)\nput(-16,-270389952)\nput(-7,-305561993)\nget(-3)\nput(-8,1137525951)\nput(8,1111677196)\nget(-12)\nget(-7)\nget(13)\nput(12,-1117547835)\nget(13)\nget(-5)\nget(-11)\nget(4)\nput(2,271052656)\nput(2,-1127999675)\nput(-16,1543726377)\nput(8,770004344)\nget(-2)\nget(13)\nput(9,-1100117088)\nget(-5)\nput(-17,470300568)\nput(8,-34882756)\nput(-2,-134776621)\nput(7,1027089347)\nput(-1,-885180771)\nput(9,-359675739)\nput(18,-364044840)\nput(-12,-986345572)\nget(-19)\nget(-18)\nput(20,-1155026863)\nget(-13)\nput(4,1187995327)\nget(-4)\nput(-20,-1086603634)\nput(-12,-893078042)\nget(-11)\nput(19,101658726)\nget(-6)\nput(-9,1371399098)\nput(7,1302357302)\nget(-18)\nput(5,-1946912780)\nget(9)\nput(2,273334381)\nget(1)\nput(15,-882608730)\nput(10,376438374)\nput(11,1821076910)\nget(16)\nget(1)\nput(-2,242496181)\nget(-17)\nget(-7)\nput(-6,82097063)\nput(-11,194928324)\nput(12,856538622)\nput(-9,884973592)\nput(7,-1096140554)\nget(-19)\nput(-17,-1901536521)\nput(-8,-28419319)\nget(-18)\nget(15)\nput(-10,1611148402)\nget(17)\nget(2)\nput(-18,218595432)\nput(-19,38576825)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n1906472908\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-659758489\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 16",
+      "input": "capacity=12\nget(19)\nput(19,2127658663)\nget(10)\nget(12)\nput(-7,-472097412)\nget(-20)\nput(-15,1708421273)\nput(-11,1231948822)\nput(9,1727869309)\nput(-12,1571858186)\nget(-2)\nput(-12,-331900718)\nget(9)\nput(13,582897889)\nget(-15)\nput(-8,-1943309507)\nput(3,596731553)\nget(-19)\nput(13,851755835)\nput(-7,1947057582)\nget(4)\nput(-19,1385994008)\nput(-20,-1672228751)\nput(-20,-1303593936)\nput(-2,-546325592)\nput(-10,191684819)\nget(-18)\nget(17)\nput(-9,1873999432)\nget(10)\nget(18)\nput(-8,-627642307)\nput(12,-758920036)\nput(-3,-985740291)\nget(13)\nget(16)\nget(1)\nput(-4,1215726834)\nget(2)\nput(0,-472280245)\nget(10)\nget(-2)\nget(17)\nput(-19,-2005528132)\nput(8,-570614800)\nput(-12,-809515634)\nput(-3,232234002)\nget(4)\nput(1,604112816)\nget(-6)\nput(13,101754035)\nget(16)\nput(-19,1988401438)\nput(-2,-1909362507)\nput(-18,796059899)\nput(-1,708445239)\nget(-14)\nput(13,1962367079)\nput(1,-1175678815)\nget(5)\nput(11,-1061974875)\nget(-3)\nput(-16,406752084)\nget(0)\nput(12,963690386)\nget(20)\nput(6,-1471315574)\nput(-11,626362812)\nget(-20)\nput(-9,-1759748565)\nget(-14)\nput(9,1879474842)\nput(-7,-717009291)\nput(-11,-741822543)\nget(8)\nput(2,307651333)\nget(19)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n1727869309\n1708421273\n-1\n-1\n-1\n-1\n-1\n-1\n851755835\n-1\n-1\n-1\n-1\n-546325592\n-1\n-1\n-1\n-1\n-1\n-1\n232234002\n-472280245\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 17",
+      "input": "capacity=8\nget(2)\nput(-8,1344980911)\nget(-8)\nget(-12)\nget(7)\nget(-10)\nget(-4)\nget(-17)\nput(20,-1461199697)\nget(-14)\nput(-3,-1121969833)\nput(20,1671382032)\nget(-13)\nget(-14)\nget(17)\nget(15)\nget(-16)\nput(-10,849136078)\nput(1,1553718511)\nget(-4)\nput(6,854633713)\nget(-19)\nput(-4,1186292367)\nput(-10,-602826686)\nget(-18)\nput(-2,-1017584766)\nget(-1)\nget(14)\nput(17,386621327)\nput(-16,62500137)\nget(-15)\nget(-6)\nput(11,2061254570)\nget(14)\nget(-6)\n",
+      "expectedOutput": "-1\n1344980911\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 18",
+      "input": "capacity=2\nput(19,748005033)\nget(-16)\nput(13,-1591468458)\nput(15,-1783026231)\nget(14)\nget(-14)\nput(0,-1636200867)\nput(-16,-100828023)\nget(-19)\nput(-15,1728309371)\nput(-6,1124927145)\nput(-13,-2026183559)\nget(13)\nput(8,1877898879)\nput(-15,-257500288)\nget(-20)\nput(13,1006309640)\nput(1,-1325949966)\nget(2)\nget(5)\nget(-7)\nget(-3)\nget(-3)\nput(-10,93847758)\nget(-17)\nget(-5)\nget(-5)\nget(14)\nget(-17)\nput(12,-1471481525)\nput(-15,-1198001744)\nget(-16)\nget(-6)\nget(-15)\nput(-17,-1511657659)\nget(8)\nput(5,-1411522027)\nget(13)\nget(-13)\nput(-3,1520087179)\nput(11,-874692578)\nput(5,2008224063)\nput(2,1235051417)\nget(8)\nget(8)\nput(2,1739492017)\nput(-16,-200215302)\nget(8)\nget(9)\nput(15,1303116223)\nput(-5,-1031366679)\nput(-3,301857437)\nput(-12,878386567)\nput(-18,-2071727955)\nget(-17)\nput(11,-575922247)\nput(-8,448646765)\nput(-13,1413030974)\nput(-5,1221619999)\nput(11,1941217756)\nput(2,-203533879)\nget(15)\nget(9)\nput(6,-199471924)\nput(11,481169746)\nget(-5)\nget(-12)\nput(-3,394476551)\nput(8,-1553607607)\nput(-7,1111962720)\nput(-18,1627193259)\nput(11,-768134252)\nput(-16,-1413898528)\nput(20,-1708842659)\nput(11,2139301054)\nget(-16)\nget(11)\nput(-20,-1858713910)\nget(-2)\nput(-15,1578817115)\nput(1,1438846867)\nput(-15,-483876380)\nget(-15)\nput(1,-66846624)\nput(13,-871892319)\nput(17,1184142238)\nput(-11,410239371)\nget(14)\nput(1,-1064756656)\nput(17,-948133134)\nput(-17,484896304)\nget(18)\nput(10,-1278908031)\nput(1,-765237505)\nput(18,1174388175)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1198001744\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n2139301054\n-1\n-483876380\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 19",
+      "input": "capacity=3\nput(5,378303282)\nput(14,776433107)\nget(-12)\nput(-8,1603240575)\nput(-12,1265822535)\nget(12)\nget(-17)\nget(9)\nget(20)\nget(14)\nput(-7,152513663)\nput(-20,-1732397662)\nget(10)\nget(5)\nput(-19,1095141334)\nput(-5,1223899979)\nget(0)\nput(-18,267107503)\nget(7)\nget(-6)\nget(-5)\nput(18,144270956)\nput(-19,692069612)\nput(-19,264737405)\nput(-13,1124918640)\nget(-4)\nget(16)\nget(-14)\nput(2,-947664927)\nput(-1,2053385708)\nget(3)\nget(-20)\nget(-4)\nget(13)\nput(17,-1228067434)\nput(6,-1261069106)\nput(-9,-855619753)\nput(20,1236806406)\nput(1,-484319861)\nput(1,1357391068)\nget(-15)\nput(-14,-356669393)\nget(-9)\nput(10,1311198913)\nget(6)\nget(-10)\nput(-3,782227621)\nput(14,725782473)\nget(-2)\nput(-18,-1384133403)\nput(3,-630901584)\nput(8,1648370076)\nget(19)\nget(8)\nput(19,573977838)\nput(17,-43437521)\nput(4,-1392797969)\nput(-13,-754058574)\nget(5)\nget(15)\nput(4,2038356937)\nput(17,861573389)\nput(-12,1657276707)\nput(-11,-865086058)\nput(7,1888746354)\nput(10,-825679699)\nget(-19)\nput(17,961522152)\nget(-10)\nget(-13)\nput(19,2054446708)\nput(7,1563368798)\nput(-4,-55733769)\nget(9)\nput(12,824785244)\nput(-13,588453199)\nput(7,1626423727)\nput(16,-1157361306)\nput(3,-1886994800)\nput(11,-487464449)\nput(15,780689813)\nput(9,1107792908)\nput(5,377372202)\nget(18)\nput(5,562844900)\nput(18,1316110275)\nput(11,1485447313)\nput(-10,-332093547)\nput(-11,-294586089)\nput(8,1420369334)\nput(-15,2128825810)\nget(17)\nget(-14)\nget(11)\nput(18,-845494658)\nput(19,-248110189)\nput(-9,-1265150502)\nput(-6,292620023)\nput(-20,1576732464)\nput(-14,-1193054445)\nget(0)\nput(-9,126945318)\nput(-16,-1226683094)\nput(14,-1565817370)\nget(2)\nput(2,-1488522785)\nput(2,1205792581)\nput(-20,-766679356)\nget(-4)\nput(10,534285862)\nput(1,-1027365529)\nget(-4)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n776433107\n-1\n-1\n-1\n-1\n-1\n1223899979\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n1648370076\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏 LRU 场景 20",
+      "input": "capacity=1\nget(-20)\nput(-20,-1997648600)\nget(16)\nget(-4)\nget(18)\nget(4)\nput(-2,18502965)\nput(17,-409952197)\nput(-20,-1933962800)\nput(-7,899675046)\nget(2)\nget(4)\nput(1,-1958946733)\nput(0,-1712576212)\nput(11,-671766171)\nput(-17,117807521)\nget(-20)\nget(-10)\nput(20,-97903735)\nget(5)\nput(-1,-1587295359)\nget(-4)\nput(-14,319209272)\nput(0,-1970579426)\nput(-6,-1305666688)\nget(-12)\nget(14)\nput(14,756352003)\nget(4)\nget(6)\nget(15)\nput(18,2079644508)\nput(-3,1529445542)\nget(-2)\nput(12,-851308669)\nput(10,1766803272)\nget(12)\nget(-2)\nput(-19,-902160356)\nget(-15)\nput(-14,1862250178)\nget(-4)\nput(2,1541298714)\nput(-19,-1882396148)\nget(3)\nput(16,-1644104520)\nput(-14,-2029626103)\nput(15,-1209666469)\nput(-15,-1879802034)\nput(14,-811043625)\nput(-15,1823107639)\nput(-10,-196882520)\nput(-20,-2042056514)\nget(-7)\nput(-19,1190727145)\nget(-12)\nget(15)\nput(10,636807021)\nput(8,1200338027)\nget(15)\nget(-18)\nput(-3,-226197654)\nput(9,605145193)\nget(10)\nput(14,-44672685)\nget(17)\nget(18)\nput(-2,997511941)\nget(11)\nget(13)\nput(13,-2131603628)\nput(4,-1468785497)\nput(20,-1275999968)\nget(4)\nget(-15)\nget(5)\nget(4)\nput(18,2131445367)\nput(-18,-2106495688)\nget(11)\nput(12,1667596598)\nput(18,-2055296934)\nput(15,62532302)\nput(-16,-1896315814)\nput(-1,1655134823)\nget(-13)\nput(20,-2146555070)\nget(10)\nput(-11,-1724609699)\nget(6)\nput(4,1072201445)\nput(0,-227007747)\nput(12,321264733)\nput(-12,723290635)\nput(-3,737264187)\nget(7)\nget(6)\nget(-14)\nput(-18,1309796616)\nput(-7,778274635)\nput(-17,1494680289)\nput(-11,-855089658)\nput(-6,21093488)\nput(-15,-1409269392)\nget(-3)\nput(-18,-1331477481)\nput(-19,524585771)\nput(14,240700083)\nget(-15)\nget(-11)\nget(0)\nget(-9)\nget(3)\nput(-18,-236147043)\nput(18,-1245259899)\nput(16,-651201361)\nput(-10,1811628976)\nget(2)\nget(-1)\nget(-16)\nget(0)\nget(-1)\nput(11,2064728091)\nget(7)\nput(-6,-159923611)\nget(15)\nget(7)\nget(8)\nput(-16,-1140844480)\nget(-20)\nput(-6,-259090040)\nput(-20,978671258)\nget(15)\nget(-5)\nput(10,-1517729631)\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

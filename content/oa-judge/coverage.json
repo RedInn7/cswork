@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1118,
+    "sandbox_verified": 1126,
     "awaiting_sandbox": 0,
-    "blocked": 516,
+    "blocked": 508,
     "unreviewed": 0
   },
   "items": [
@@ -3743,8 +3743,9 @@
     {
       "id": "oa-microsoft-45",
       "company": "microsoft",
-      "status": "blocked",
-      "reason": "正文截断于smallest number of lette，仅banana一例暗示删除成有序，缺完整目标与操作定义。"
+      "status": "sandbox_verified",
+      "batch": "microsoft-45-recovered",
+      "reason": "固定快照的题解明确写明最少删除后使剩余字符串字典序非降；banana 示例给出保留子序列 aan。Python、Java、C++ 三份源实现均为长度减最长非降子序列，且都使用 upper_bound 语义保留重复字母。输入字符和长度范围明确，因此可按该唯一语义补齐截断句。"
     },
     {
       "id": "oa-microsoft-46",
@@ -4957,8 +4958,9 @@
     {
       "id": "oa-ibm-31",
       "company": "ibm",
-      "status": "blocked",
-      "reason": "原文要求恰好卖m件，但数值界允许m大于总库存且无不足库存的规则；此外样例1按动态剩余库存价格取最优6件为54，与源输出55冲突。不能擅自补库存保证或改写输出。"
+      "status": "sandbox_verified",
+      "batch": "ibm-31-feasible-input",
+      "reason": "固定题意要求恰好售出 m 件，因此有效输入必然满足 m≤sum(quantity)；来源没有定义库存不足时的行为，本站仅将这个逻辑必要的可行性条件明示为有效输入域。重新独立穷举后，样例1前六个最优售价为 10、10、9、9、9、8、总额 55；样例2为 4、3、2、2、总额 11。两个来源输出都正确，不作样例修改。"
     },
     {
       "id": "oa-ibm-32",
@@ -6996,8 +6998,9 @@
     {
       "id": "oa-intuit-4",
       "company": "intuit",
-      "status": "blocked",
-      "reason": "题面样例 n=3 输出 9758 与题意‘每行、每列不可全同色’冲突；按题意穷举为 9750，暂不猜测哪个有误。"
+      "status": "sandbox_verified",
+      "batch": "intuit-4-sample-correction",
+      "reason": "固定源规则唯一要求每一行和每一列都非单色；按该精确定义，n=3、n=4 的样例输出分别错为 9758、290490。直接穷举小网格及独立容斥一致得到 9750、296490，仅修正错误样例答案。来源未给 n 上限，本站范围单独披露。"
     },
     {
       "id": "oa-intuit-5",
@@ -7058,8 +7061,9 @@
     {
       "id": "oa-intuit-14",
       "company": "intuit",
-      "status": "blocked",
-      "reason": "样例冲突：起点 (1,2) 到目标 (6,2) 的欧氏距离正好为 X=5，按规则一步可达，但给出的答案为 2。"
+      "status": "sandbox_verified",
+      "batch": "intuit-14-sample-correction",
+      "reason": "固定源明确规定每步欧氏距离恰为 X；样例说明的两步路线终点为 (2,5)，但输入将中间点 (6,2) 误填为目标。更正坐标后，独立坐标扫描 BFS 确认最短距离为2；保留原题规则和输出。"
     },
     {
       "id": "oa-intuit-15",
@@ -9492,8 +9496,9 @@
     {
       "id": "oa-rubrik-12",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "公开样例 2 的输出值与所给变换结果的最大连续子数组和不一致，无法判断目标究竟是整体和还是连续子数组和。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-12-starlight-sample-correction",
+      "reason": "The source explicitly says the beauty is the maximum sum of a consecutive segment, the multiplier may be applied to any chosen segment, and amplification is at most once. Multiplying the whole displayed array is therefore allowed and gives [15,27,6,-3,18], whose maximum consecutive sum is 63. Output 30 and the explanation's purported subarray are inconsistent with the fixed source semantics. Candidate changes only that example and discloses site-added bounds because the source's lower-bound typography conflicts with the integer/negative examples."
     },
     {
       "id": "oa-rubrik-13",
@@ -9776,8 +9781,9 @@
     {
       "id": "oa-box-3",
       "company": "box",
-      "status": "blocked",
-      "reason": "示例的 startIndex=1 与 target=banana 指向当前位置，规则应返回 0，但样例输出 1，解释又改称目标为 index 0 的 originalart；源题相互矛盾。"
+      "status": "sandbox_verified",
+      "batch": "box-3-recovered",
+      "reason": "固定源题解释明确把目标写为 originalart（下标 0），并给出左移 1 步/右移 3 步；仅将源样例输入 target 从 banana 修正为 originalart，保留输出 1。"
     },
     {
       "id": "oa-applied-intuition-1",
@@ -10314,8 +10320,9 @@
     {
       "id": "oa-geico-2",
       "company": "geico",
-      "status": "blocked",
-      "reason": "LRU 操作本身清楚，但快照中首个多步样例漏掉一个 get(1) 的 -1 输出，内嵌样例与后面的修订示例输出长度不一致；需要修正来源题面后再纳入。"
+      "status": "sandbox_verified",
+      "batch": "geico-2-recovered",
+      "reason": "The fixed source repeats the same operation sequence in Example 1 and gives five outputs there; direct LRU replay also gives 1,-1,-1,3,4. Only the earlier duplicate sample output omitted the third get result. Correct that sample line without changing semantics."
     },
     {
       "id": "oa-oura-1",
@@ -10461,8 +10468,9 @@
     {
       "id": "oa-zolostays-1",
       "company": "zolostays",
-      "status": "blocked",
-      "reason": "Range Sum 样例2与定义冲突：直接枚举连续子数组得到13个和落在[-2,6]，源样例却输出8；其余样例不能消歧该错误，需修正源样例再做唯一判题。"
+      "status": "sandbox_verified",
+      "batch": "zolostays-1-recovered",
+      "reason": "The fixed source uniquely defines counting non-empty contiguous subarrays whose sum lies in the inclusive interval. Its example 2 output is arithmetically wrong: independent exhaustive enumeration yields 13; examples 1 and 3 verify the same semantics. The candidate preserves the definition and corrects only example 2's answer. Since the source gives no constraints, site-added limits are disclosed rather than represented as upstream facts."
     },
     {
       "id": "oa-zolostays-2",

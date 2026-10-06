@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误地只允许放大一个元素",
+    "code": "import sys\nt=list(map(int,sys.stdin.read().split()));n,z=t[:2];a=t[2:];b=0\nfor i in range(n):\n c=a[:];c[i]*=z;s=m=0\n for x in c:s=max(0,s+x);m=max(m,s)\n b=max(b,m)\nprint(b)\n"
+  },
+  {
+    "name": "错误地只能放大整个数组",
+    "code": "import sys\nt=list(map(int,sys.stdin.read().split()));n,z=t[:2];a=t[2:]\ndef k(b):\n s=m=0\n for x in b:s=max(0,s+x);m=max(m,s)\n return m\nprint(max(k(a),k([x*z for x in a])))\n"
+  }
+]

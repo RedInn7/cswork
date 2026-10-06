@@ -1,0 +1,666 @@
+[
+  {
+    "input": "{\"flavors\": [\"originalart\", \"banana\", \"custard\", \"mango\"], \"startIndex\": 1, \"target\": \"originalart\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"originalart\", \"banana\", \"custard\", \"mango\"], \"startIndex\": 1, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"a\", \"b\", \"c\", \"d\", \"e\"], \"startIndex\": 4, \"target\": \"b\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"a\", \"b\", \"c\", \"d\", \"e\"], \"startIndex\": 0, \"target\": \"d\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"only\"], \"startIndex\": 0, \"target\": \"only\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"x\", \"target\", \"a\", \"target\", \"y\"], \"startIndex\": 0, \"target\": \"target\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"strawberry\", \"banana\", \"chocolate\", \"banana\", \"chocolate\", \"banana\", \"banana\", \"banana\", \"vanilla\", \"vanilla\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\"], \"startIndex\": 8, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"vanilla\", \"vanilla\", \"chocolate\", \"mango\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\", \"vanilla\", \"chocolate\", \"strawberry\"], \"startIndex\": 3, \"target\": \"vanilla\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"strawberry\", \"chocolate\", \"vanilla\", \"banana\", \"mango\", \"vanilla\", \"chocolate\", \"chocolate\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\", \"mango\", \"chocolate\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"strawberry\", \"mango\", \"chocolate\", \"banana\", \"mango\", \"chocolate\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"mango\", \"vanilla\", \"banana\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"banana\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"banana\", \"banana\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"mango\", \"vanilla\", \"mango\", \"vanilla\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"mango\", \"mango\", \"banana\", \"banana\", \"banana\", \"mango\"], \"startIndex\": 5, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"vanilla\", \"chocolate\", \"mango\", \"vanilla\", \"banana\", \"banana\", \"banana\", \"banana\", \"vanilla\"], \"startIndex\": 6, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"mango\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"vanilla\", \"mango\", \"vanilla\", \"mango\", \"chocolate\", \"banana\", \"mango\", \"mango\", \"strawberry\", \"vanilla\", \"chocolate\", \"strawberry\", \"vanilla\", \"mango\"], \"startIndex\": 1, \"target\": \"strawberry\"}",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"strawberry\", \"banana\", \"banana\", \"mango\", \"banana\", \"banana\", \"chocolate\", \"banana\", \"vanilla\", \"banana\", \"chocolate\", \"mango\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"strawberry\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"chocolate\", \"mango\", \"vanilla\", \"banana\", \"strawberry\", \"chocolate\", \"mango\", \"chocolate\"], \"startIndex\": 8, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"chocolate\", \"chocolate\", \"strawberry\", \"mango\", \"vanilla\", \"strawberry\", \"banana\", \"mango\", \"strawberry\", \"vanilla\", \"mango\", \"strawberry\", \"mango\", \"vanilla\", \"banana\", \"chocolate\", \"strawberry\", \"banana\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"chocolate\", \"mango\", \"strawberry\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"chocolate\", \"mango\", \"mango\", \"vanilla\", \"vanilla\", \"mango\", \"vanilla\"], \"startIndex\": 7, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"mango\", \"banana\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"vanilla\", \"chocolate\", \"banana\", \"chocolate\", \"strawberry\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"banana\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\"], \"startIndex\": 0, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"banana\"], \"startIndex\": 6, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"chocolate\", \"banana\", \"chocolate\", \"strawberry\", \"mango\", \"chocolate\", \"chocolate\", \"vanilla\", \"banana\", \"strawberry\"], \"startIndex\": 0, \"target\": \"banana\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"chocolate\", \"chocolate\", \"mango\", \"chocolate\", \"strawberry\", \"chocolate\", \"vanilla\", \"vanilla\", \"chocolate\", \"vanilla\", \"strawberry\", \"banana\", \"vanilla\", \"mango\", \"mango\", \"mango\", \"vanilla\", \"mango\"], \"startIndex\": 2, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"strawberry\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"mango\"], \"startIndex\": 0, \"target\": \"banana\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"strawberry\", \"banana\", \"chocolate\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"strawberry\", \"chocolate\", \"mango\"], \"startIndex\": 11, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"vanilla\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"strawberry\", \"strawberry\", \"chocolate\", \"vanilla\", \"strawberry\", \"banana\", \"banana\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"chocolate\", \"mango\", \"vanilla\", \"strawberry\", \"strawberry\", \"vanilla\", \"chocolate\", \"mango\", \"strawberry\", \"strawberry\", \"chocolate\", \"strawberry\", \"mango\", \"banana\", \"strawberry\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"banana\", \"mango\", \"chocolate\", \"banana\", \"vanilla\", \"vanilla\", \"mango\", \"mango\", \"mango\", \"chocolate\", \"banana\", \"mango\", \"banana\", \"chocolate\", \"vanilla\", \"strawberry\"], \"startIndex\": 14, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"vanilla\", \"strawberry\", \"mango\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"banana\", \"vanilla\", \"banana\", \"vanilla\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"chocolate\", \"strawberry\", \"vanilla\", \"vanilla\", \"vanilla\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"vanilla\", \"strawberry\", \"chocolate\", \"vanilla\", \"strawberry\", \"chocolate\", \"vanilla\", \"mango\", \"mango\", \"chocolate\", \"banana\"], \"startIndex\": 3, \"target\": \"mango\"}",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"banana\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"strawberry\", \"strawberry\", \"strawberry\", \"mango\", \"mango\", \"vanilla\", \"chocolate\", \"chocolate\"], \"startIndex\": 7, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"vanilla\", \"vanilla\", \"strawberry\", \"mango\", \"mango\", \"banana\", \"banana\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"chocolate\", \"mango\", \"vanilla\", \"strawberry\", \"vanilla\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"vanilla\"], \"startIndex\": 2, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\"], \"startIndex\": 0, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"banana\", \"chocolate\", \"mango\", \"strawberry\", \"chocolate\", \"mango\", \"mango\", \"banana\", \"mango\", \"vanilla\", \"strawberry\", \"mango\", \"strawberry\", \"mango\", \"chocolate\"], \"startIndex\": 11, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"banana\", \"strawberry\", \"mango\", \"banana\", \"mango\", \"mango\", \"banana\", \"chocolate\", \"chocolate\", \"mango\", \"banana\", \"mango\", \"chocolate\", \"chocolate\", \"vanilla\", \"vanilla\", \"vanilla\", \"chocolate\", \"strawberry\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"mango\", \"mango\"], \"startIndex\": 3, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"mango\", \"mango\", \"chocolate\", \"banana\", \"banana\", \"strawberry\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\"], \"startIndex\": 9, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"chocolate\", \"chocolate\", \"vanilla\", \"chocolate\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"chocolate\", \"chocolate\", \"chocolate\", \"mango\", \"mango\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"chocolate\", \"mango\", \"mango\", \"vanilla\", \"mango\"], \"startIndex\": 14, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"banana\"], \"startIndex\": 1, \"target\": \"banana\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"chocolate\", \"strawberry\", \"banana\", \"strawberry\", \"mango\", \"vanilla\"], \"startIndex\": 6, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"mango\", \"chocolate\", \"vanilla\", \"vanilla\", \"strawberry\", \"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"chocolate\"], \"startIndex\": 2, \"target\": \"chocolate\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"banana\", \"banana\", \"banana\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"banana\", \"mango\", \"banana\", \"vanilla\", \"banana\", \"mango\", \"mango\", \"vanilla\", \"vanilla\", \"vanilla\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"banana\", \"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"mango\", \"banana\", \"banana\", \"vanilla\", \"vanilla\", \"mango\", \"banana\", \"mango\", \"chocolate\"], \"startIndex\": 10, \"target\": \"chocolate\"}",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"strawberry\", \"vanilla\", \"banana\"], \"startIndex\": 1, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"vanilla\"], \"startIndex\": 2, \"target\": \"banana\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"strawberry\", \"vanilla\", \"strawberry\", \"strawberry\", \"strawberry\", \"strawberry\", \"banana\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"strawberry\", \"chocolate\", \"banana\", \"mango\"], \"startIndex\": 14, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"banana\", \"vanilla\", \"strawberry\", \"banana\"], \"startIndex\": 5, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"banana\", \"strawberry\", \"banana\", \"strawberry\", \"banana\"], \"startIndex\": 6, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"strawberry\", \"banana\", \"vanilla\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"mango\", \"banana\", \"strawberry\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"vanilla\", \"mango\", \"vanilla\", \"mango\", \"mango\", \"banana\", \"banana\", \"chocolate\", \"strawberry\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"mango\"], \"startIndex\": 1, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"vanilla\", \"banana\", \"banana\", \"chocolate\", \"vanilla\", \"chocolate\", \"chocolate\", \"banana\", \"strawberry\", \"strawberry\", \"strawberry\", \"vanilla\", \"banana\"], \"startIndex\": 3, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"strawberry\", \"mango\", \"chocolate\", \"mango\", \"mango\", \"mango\", \"strawberry\", \"chocolate\", \"strawberry\", \"chocolate\", \"strawberry\", \"mango\"], \"startIndex\": 10, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"mango\", \"banana\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"chocolate\", \"mango\", \"strawberry\"], \"startIndex\": 3, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"strawberry\", \"strawberry\", \"chocolate\", \"mango\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"banana\", \"vanilla\", \"strawberry\"], \"startIndex\": 3, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"chocolate\", \"vanilla\", \"mango\", \"mango\", \"mango\", \"strawberry\", \"banana\", \"banana\", \"mango\", \"vanilla\", \"banana\", \"banana\", \"vanilla\"], \"startIndex\": 11, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"chocolate\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"banana\", \"strawberry\", \"mango\", \"mango\", \"vanilla\"], \"startIndex\": 8, \"target\": \"chocolate\"}",
+    "expectedOutput": "6\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"banana\", \"vanilla\", \"banana\", \"banana\"], \"startIndex\": 5, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"chocolate\", \"banana\", \"strawberry\", \"banana\", \"mango\", \"banana\", \"vanilla\", \"vanilla\", \"mango\", \"vanilla\", \"vanilla\", \"chocolate\", \"mango\", \"chocolate\", \"banana\", \"banana\", \"chocolate\", \"chocolate\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"vanilla\", \"vanilla\", \"vanilla\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"mango\", \"chocolate\", \"strawberry\", \"mango\", \"banana\", \"banana\", \"banana\", \"chocolate\", \"mango\"], \"startIndex\": 5, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"banana\", \"mango\", \"mango\", \"strawberry\", \"mango\", \"vanilla\", \"banana\", \"banana\"], \"startIndex\": 2, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"chocolate\", \"vanilla\", \"strawberry\", \"chocolate\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"banana\", \"banana\", \"mango\", \"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"vanilla\", \"vanilla\", \"strawberry\", \"chocolate\", \"mango\"], \"startIndex\": 4, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"chocolate\", \"banana\", \"chocolate\", \"banana\", \"strawberry\", \"mango\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"chocolate\", \"strawberry\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"vanilla\", \"banana\", \"chocolate\", \"vanilla\", \"banana\", \"mango\", \"chocolate\"], \"startIndex\": 7, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"chocolate\", \"strawberry\", \"vanilla\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"chocolate\", \"banana\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"banana\", \"mango\", \"mango\", \"mango\", \"vanilla\", \"banana\", \"mango\", \"vanilla\", \"strawberry\", \"chocolate\", \"strawberry\", \"vanilla\", \"mango\", \"strawberry\", \"banana\", \"strawberry\", \"mango\", \"strawberry\", \"chocolate\"], \"startIndex\": 3, \"target\": \"banana\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"banana\", \"mango\", \"chocolate\", \"chocolate\", \"chocolate\", \"banana\", \"mango\", \"chocolate\", \"mango\", \"strawberry\", \"strawberry\"], \"startIndex\": 6, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"banana\", \"mango\", \"strawberry\", \"mango\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\", \"vanilla\", \"vanilla\", \"banana\", \"mango\", \"mango\", \"strawberry\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"strawberry\", \"chocolate\", \"vanilla\", \"strawberry\", \"banana\", \"mango\", \"mango\", \"vanilla\", \"chocolate\", \"mango\"], \"startIndex\": 8, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"vanilla\", \"mango\", \"chocolate\", \"strawberry\", \"vanilla\", \"mango\", \"strawberry\"], \"startIndex\": 2, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"vanilla\", \"mango\", \"strawberry\", \"strawberry\", \"banana\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"chocolate\", \"vanilla\", \"banana\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"strawberry\", \"mango\", \"mango\", \"mango\"], \"startIndex\": 4, \"target\": \"vanilla\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"chocolate\", \"banana\", \"strawberry\", \"strawberry\", \"strawberry\", \"chocolate\", \"chocolate\", \"chocolate\", \"strawberry\", \"banana\"], \"startIndex\": 7, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"chocolate\", \"mango\", \"banana\", \"chocolate\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\", \"mango\", \"chocolate\", \"vanilla\", \"banana\", \"mango\", \"mango\", \"vanilla\", \"chocolate\", \"vanilla\"], \"startIndex\": 3, \"target\": \"vanilla\"}",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"banana\", \"strawberry\", \"banana\", \"banana\", \"banana\", \"chocolate\", \"strawberry\", \"mango\", \"mango\", \"banana\", \"strawberry\", \"banana\"], \"startIndex\": 5, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"vanilla\", \"chocolate\", \"vanilla\", \"banana\", \"chocolate\", \"banana\", \"chocolate\", \"chocolate\", \"banana\", \"vanilla\", \"strawberry\", \"strawberry\", \"vanilla\"], \"startIndex\": 14, \"target\": \"vanilla\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"chocolate\", \"vanilla\", \"strawberry\"], \"startIndex\": 2, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"vanilla\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"chocolate\", \"banana\", \"strawberry\", \"strawberry\", \"mango\", \"banana\", \"mango\", \"banana\", \"vanilla\", \"strawberry\", \"chocolate\", \"chocolate\", \"banana\", \"banana\"], \"startIndex\": 6, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"strawberry\", \"mango\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"mango\", \"mango\"], \"startIndex\": 3, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\"], \"startIndex\": 1, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"chocolate\", \"mango\", \"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"strawberry\", \"vanilla\", \"chocolate\", \"mango\", \"chocolate\", \"vanilla\", \"banana\", \"banana\"], \"startIndex\": 10, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"banana\", \"strawberry\", \"mango\", \"banana\", \"mango\", \"mango\", \"chocolate\", \"strawberry\", \"mango\", \"mango\", \"banana\", \"banana\", \"vanilla\", \"vanilla\", \"banana\", \"chocolate\", \"strawberry\"], \"startIndex\": 5, \"target\": \"banana\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"strawberry\", \"mango\", \"chocolate\", \"strawberry\", \"vanilla\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"banana\", \"mango\", \"chocolate\", \"vanilla\", \"strawberry\", \"chocolate\", \"vanilla\", \"mango\", \"mango\", \"vanilla\", \"banana\", \"chocolate\", \"mango\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"mango\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"vanilla\", \"strawberry\", \"chocolate\", \"vanilla\"], \"startIndex\": 6, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"strawberry\", \"strawberry\", \"mango\", \"banana\", \"chocolate\", \"strawberry\", \"banana\", \"chocolate\", \"banana\", \"mango\", \"vanilla\", \"strawberry\", \"mango\", \"mango\", \"strawberry\"], \"startIndex\": 11, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"strawberry\", \"mango\", \"chocolate\", \"banana\", \"chocolate\", \"banana\", \"chocolate\", \"strawberry\", \"strawberry\", \"chocolate\", \"strawberry\"], \"startIndex\": 6, \"target\": \"banana\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"mango\", \"strawberry\", \"chocolate\", \"vanilla\", \"banana\", \"chocolate\", \"banana\", \"chocolate\", \"banana\", \"chocolate\", \"mango\", \"strawberry\", \"vanilla\", \"mango\"], \"startIndex\": 5, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"vanilla\", \"banana\", \"mango\", \"banana\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"mango\", \"banana\", \"mango\", \"chocolate\", \"chocolate\", \"vanilla\", \"vanilla\", \"banana\", \"vanilla\", \"vanilla\"], \"startIndex\": 6, \"target\": \"vanilla\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"strawberry\", \"strawberry\", \"chocolate\", \"vanilla\", \"mango\", \"strawberry\", \"strawberry\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"mango\", \"chocolate\", \"mango\", \"mango\"], \"startIndex\": 7, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\"], \"startIndex\": 1, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"chocolate\", \"strawberry\", \"banana\", \"chocolate\", \"mango\", \"vanilla\", \"chocolate\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"chocolate\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"strawberry\"], \"startIndex\": 13, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"chocolate\", \"banana\", \"mango\", \"vanilla\", \"vanilla\", \"strawberry\", \"vanilla\", \"mango\"], \"startIndex\": 5, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"vanilla\", \"chocolate\", \"banana\", \"vanilla\", \"vanilla\", \"strawberry\", \"chocolate\", \"banana\", \"banana\", \"vanilla\", \"chocolate\"], \"startIndex\": 11, \"target\": \"mango\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"chocolate\", \"chocolate\", \"banana\"], \"startIndex\": 2, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"chocolate\", \"banana\", \"banana\", \"mango\", \"banana\", \"mango\", \"mango\", \"chocolate\", \"vanilla\"], \"startIndex\": 0, \"target\": \"mango\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"vanilla\", \"strawberry\", \"vanilla\", \"mango\", \"banana\", \"vanilla\", \"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"mango\", \"banana\", \"strawberry\", \"vanilla\"], \"startIndex\": 3, \"target\": \"banana\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\"], \"startIndex\": 0, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"chocolate\", \"strawberry\", \"strawberry\", \"chocolate\", \"strawberry\", \"mango\", \"vanilla\", \"banana\", \"mango\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"mango\", \"mango\", \"chocolate\", \"strawberry\"], \"startIndex\": 8, \"target\": \"strawberry\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"vanilla\", \"mango\", \"mango\", \"strawberry\", \"strawberry\", \"vanilla\", \"strawberry\", \"vanilla\", \"chocolate\", \"strawberry\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"chocolate\", \"chocolate\", \"strawberry\", \"mango\", \"strawberry\", \"vanilla\", \"chocolate\", \"mango\", \"vanilla\"], \"startIndex\": 6, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"strawberry\", \"banana\", \"chocolate\", \"mango\", \"chocolate\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"vanilla\", \"chocolate\", \"strawberry\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\"], \"startIndex\": 4, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"chocolate\", \"mango\", \"strawberry\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"chocolate\", \"mango\", \"chocolate\", \"chocolate\", \"strawberry\"], \"startIndex\": 6, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"banana\", \"banana\"], \"startIndex\": 2, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"vanilla\", \"chocolate\", \"chocolate\", \"banana\", \"strawberry\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"banana\", \"mango\", \"vanilla\", \"banana\", \"strawberry\", \"strawberry\", \"mango\", \"mango\", \"chocolate\", \"strawberry\", \"vanilla\", \"vanilla\"], \"startIndex\": 0, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"strawberry\", \"vanilla\", \"banana\", \"vanilla\", \"chocolate\", \"vanilla\", \"vanilla\", \"mango\", \"banana\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"chocolate\", \"banana\", \"vanilla\", \"chocolate\"], \"startIndex\": 1, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"vanilla\", \"mango\", \"strawberry\", \"banana\", \"strawberry\", \"banana\", \"banana\", \"mango\", \"mango\"], \"startIndex\": 4, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"chocolate\", \"banana\", \"chocolate\", \"mango\", \"banana\", \"vanilla\", \"vanilla\", \"strawberry\", \"mango\", \"vanilla\", \"chocolate\"], \"startIndex\": 2, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"strawberry\", \"strawberry\", \"vanilla\", \"vanilla\", \"vanilla\", \"banana\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"strawberry\", \"vanilla\", \"chocolate\", \"mango\", \"banana\", \"mango\", \"chocolate\", \"vanilla\", \"vanilla\", \"vanilla\", \"vanilla\", \"vanilla\"], \"startIndex\": 9, \"target\": \"vanilla\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"strawberry\", \"strawberry\", \"strawberry\", \"strawberry\", \"mango\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"strawberry\", \"banana\", \"vanilla\", \"banana\", \"vanilla\", \"banana\", \"mango\", \"strawberry\", \"banana\", \"banana\"], \"startIndex\": 6, \"target\": \"banana\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"banana\", \"vanilla\", \"strawberry\", \"mango\", \"banana\", \"mango\", \"strawberry\", \"chocolate\", \"mango\", \"mango\"], \"startIndex\": 6, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"banana\", \"mango\", \"chocolate\", \"strawberry\", \"chocolate\", \"mango\", \"mango\", \"mango\", \"vanilla\"], \"startIndex\": 7, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"strawberry\", \"strawberry\"], \"startIndex\": 4, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"strawberry\", \"chocolate\", \"vanilla\", \"banana\"], \"startIndex\": 3, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"vanilla\", \"vanilla\", \"mango\", \"strawberry\", \"banana\", \"vanilla\", \"strawberry\", \"banana\", \"mango\", \"vanilla\", \"strawberry\"], \"startIndex\": 11, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"chocolate\", \"strawberry\", \"strawberry\", \"mango\", \"chocolate\", \"strawberry\", \"vanilla\", \"vanilla\", \"strawberry\", \"strawberry\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"vanilla\", \"chocolate\", \"chocolate\", \"mango\"], \"startIndex\": 4, \"target\": \"vanilla\"}",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"chocolate\", \"vanilla\", \"banana\", \"vanilla\", \"mango\", \"strawberry\", \"banana\", \"vanilla\", \"vanilla\", \"strawberry\", \"strawberry\"], \"startIndex\": 5, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\"], \"startIndex\": 0, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"mango\", \"chocolate\", \"vanilla\", \"chocolate\", \"banana\", \"banana\"], \"startIndex\": 1, \"target\": \"chocolate\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"vanilla\", \"chocolate\", \"banana\", \"strawberry\", \"strawberry\"], \"startIndex\": 0, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"banana\", \"chocolate\", \"banana\", \"mango\", \"chocolate\", \"banana\", \"strawberry\", \"banana\", \"mango\", \"banana\", \"vanilla\", \"mango\", \"vanilla\", \"strawberry\", \"chocolate\", \"strawberry\", \"banana\", \"banana\", \"strawberry\"], \"startIndex\": 11, \"target\": \"strawberry\"}",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"banana\", \"vanilla\", \"mango\", \"strawberry\", \"mango\"], \"startIndex\": 1, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"mango\", \"mango\", \"vanilla\", \"chocolate\", \"vanilla\", \"chocolate\", \"mango\", \"vanilla\", \"vanilla\", \"banana\", \"strawberry\", \"mango\", \"strawberry\", \"banana\", \"banana\", \"vanilla\", \"banana\"], \"startIndex\": 0, \"target\": \"banana\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"mango\", \"vanilla\", \"chocolate\", \"vanilla\", \"banana\", \"vanilla\", \"banana\", \"strawberry\", \"vanilla\", \"vanilla\", \"chocolate\", \"mango\", \"banana\", \"vanilla\", \"vanilla\", \"chocolate\", \"banana\"], \"startIndex\": 0, \"target\": \"mango\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"strawberry\", \"banana\", \"chocolate\"], \"startIndex\": 2, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"mango\", \"mango\", \"mango\", \"banana\", \"mango\", \"strawberry\"], \"startIndex\": 2, \"target\": \"strawberry\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"mango\", \"chocolate\", \"banana\", \"vanilla\", \"vanilla\", \"strawberry\", \"chocolate\", \"mango\"], \"startIndex\": 5, \"target\": \"strawberry\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"mango\"], \"startIndex\": 2, \"target\": \"mango\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"vanilla\", \"chocolate\", \"banana\", \"chocolate\", \"mango\", \"banana\", \"chocolate\", \"mango\", \"banana\", \"strawberry\", \"vanilla\", \"banana\"], \"startIndex\": 11, \"target\": \"vanilla\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"strawberry\", \"mango\", \"banana\", \"chocolate\", \"chocolate\", \"banana\", \"vanilla\", \"mango\", \"strawberry\", \"strawberry\", \"mango\"], \"startIndex\": 9, \"target\": \"strawberry\"}",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\"], \"startIndex\": 1, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"chocolate\"], \"startIndex\": 1, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"strawberry\", \"strawberry\", \"mango\", \"banana\", \"chocolate\", \"chocolate\", \"vanilla\", \"chocolate\", \"strawberry\"], \"startIndex\": 3, \"target\": \"chocolate\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"chocolate\", \"strawberry\", \"strawberry\"], \"startIndex\": 0, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"banana\", \"strawberry\", \"banana\", \"mango\", \"banana\", \"vanilla\", \"vanilla\", \"vanilla\", \"strawberry\", \"chocolate\", \"mango\"], \"startIndex\": 5, \"target\": \"mango\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"strawberry\", \"strawberry\", \"vanilla\", \"strawberry\", \"strawberry\", \"vanilla\", \"mango\", \"chocolate\"], \"startIndex\": 4, \"target\": \"vanilla\"}",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"mango\", \"mango\", \"chocolate\", \"vanilla\", \"vanilla\", \"vanilla\", \"vanilla\", \"mango\", \"mango\", \"banana\", \"mango\", \"strawberry\", \"mango\", \"mango\", \"mango\", \"chocolate\"], \"startIndex\": 9, \"target\": \"strawberry\"}",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"banana\", \"mango\", \"chocolate\", \"mango\", \"vanilla\", \"strawberry\", \"vanilla\", \"banana\", \"banana\"], \"startIndex\": 2, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"chocolate\", \"strawberry\", \"banana\", \"banana\", \"vanilla\", \"vanilla\", \"vanilla\", \"chocolate\", \"banana\", \"mango\", \"strawberry\", \"vanilla\", \"strawberry\", \"chocolate\", \"strawberry\"], \"startIndex\": 2, \"target\": \"chocolate\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"mango\", \"strawberry\", \"chocolate\", \"banana\", \"banana\"], \"startIndex\": 2, \"target\": \"banana\"}",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "{\"flavors\": [\"vanilla\", \"strawberry\", \"banana\", \"strawberry\", \"chocolate\", \"strawberry\", \"strawberry\", \"chocolate\", \"vanilla\"], \"startIndex\": 1, \"target\": \"strawberry\"}",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "{\"flavors\": [\"mango\", \"vanilla\", \"vanilla\", \"banana\", \"banana\", \"strawberry\", \"chocolate\", \"chocolate\", \"banana\"], \"startIndex\": 8, \"target\": \"banana\"}",
+    "expectedOutput": "0\n"
+  }
+]

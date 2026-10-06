@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-4",
+      "sourceContentHash": "690ff47920b14cea9d8e35b8069afda43e3eee2e6ef132a4117de40dd547f78f",
+      "packageChecksum": "8c0e406b3218a3e93b62f672e253175d3d3a248a45aa46801cbb1400b6346d61",
+      "editorial": "## 计数与样例勘误\n\n每行必须非单色，所以单行有 24 种颜色排列。先统计所有行均合法的网格，再对三个“某列从上到下全同色”的事件做容斥。\n\n固定一组 k 列要求全同色并指定这些列的颜色：当被选列颜色不全相同时，每行有 3^(3-k) 种选择；当它们同色时，还要排除剩余列也都取该颜色的一种选择。将各组代入容斥并合并，得到：\n\n`24^n - 9·8^n + 9·2^n + 18·3^n - 24`。\n\n对 n=2、3、4，结果依次为 174、9750、296490。原始规则明确要求每行和每列都不能全同色；直接枚举 3^(3n) 个网格（n≤4）及独立的六事件容斥均得到相同结果。因此来源的 n=3 输出 9758、n=4 输出 290490 是样例数值错误，题意不变，仅更正这两个答案。\n\n## 正确性\n\n先按行限制只保留 24 种非单色行，故每个行序列恰好对应一个满足行条件的网格。容斥准确剔除至少含一个全同色列的网格：每个网格按其全同色列集合在容斥和中的总系数为 1（若集合为空）或 0（若非空）。化简后的式子因此恰好计数同时满足行、列条件的染色。\n\n## 复杂度\n\n使用快速模幂计算常数项的幂，时间 O(log n)，额外空间 O(1)。本站输入范围为 1≤n≤10^18；来源未给 n 上限。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nMOD = 1_000_000_007\n\ndef solve(raw):\n    n = int(raw.strip())\n    if not 1 <= n <= 10**18:\n        raise ValueError(\"site protocol: 1 <= n <= 10^18\")\n    # Inclusion-exclusion over the three monochromatic-column events.\n    return str((pow(24, n, MOD) - 9 * pow(8, n, MOD)\n                + 9 * pow(2, n, MOD) + 18 * pow(3, n, MOD) - 24) % MOD)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-microsoft-45",
+      "sourceUrl": "https://oamaster.com/docs/companies/microsoft#45-min-num-letters",
+      "catalogContentHash": "b77cd909f252ed72fa26fff8c31d8cc2c84a1f608537d02d08321f8b68698e20",
+      "manifestFile": "microsoft.mdx",
+      "manifestSourceHash": "961455ad3353d5a0c9af3360a2bbd074cff3172926fc1061104c0352eb3b6e58",
+      "resolvedSemantics": {
+        "objective": "Delete the fewest characters so the remaining characters, in their original order, are lexicographically nondecreasing.",
+        "evidence": "The fixed source truncates its prose after 'smallest number of lette', but its Chinese explanation explicitly states minimum deletions to make the remaining string nondecreasing. The original banana example confirms the target subsequence 'aan'. Python, Java, and C++ implementations all independently compute n minus the length of a longest nondecreasing subsequence, using upper_bound semantics so duplicates may remain.",
+        "inputDomain": "The fixed source explicitly bounds |S| to 1..100000 and restricts S to lowercase a-z.",
+        "siteProtocol": "One nonempty lowercase word on stdin; output one integer. No extra behavior is inferred."
+      }
+    }
+  ]
+}

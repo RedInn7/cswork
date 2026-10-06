@@ -1,0 +1,211 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-intuit-14",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "固定距离跳跃最少步数（Intuit OA）",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Intuit",
+      "BFS",
+      "图论"
+    ],
+    "description": "在 m×n 方格中，每次必须跳恰好 X 个单位（欧氏距离），求从起点到终点的最少跳数，不可跳出棋盘；无法到达返回 -1。固定来源样例解释描述终点为 (2,5)，而输入误填为中间点 (6,2)，故将样例 u,v 更正为 2,5。",
+    "input": "一行七个整数 m n X p q u v，分别为棋盘行数、列数、跳跃距离、起点与目标坐标。范围遵循来源约束。",
+    "output": "输出最少跳数；不可达输出 -1。",
+    "explanation": "预计算满足 dr²+dc²=X² 的整数位移，在棋盘格上运行 BFS。",
+    "hints": [
+      "欧氏距离必须恰好为 X。",
+      "将格子视为节点，合法跳跃视为无权边。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "6 5 5 1 2 2 5\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "2 2 1 1 1 2 2\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "6 5 5 1 2 1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "8 2 11 5 2 4 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "9 11 9 9 1 2 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "4 2 2 3 2 4 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "4 1 2 2 1 2 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "3 3 12 3 2 1 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "11 2 12 7 1 3 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "2 7 8 1 2 2 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "1 9 8 1 4 1 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "2 1 7 2 1 1 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "12 13 10 6 11 2 9\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "12 14 6 10 1 5 5\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "8 3 10 8 1 1 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "2 8 1 1 8 1 8\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "5 3 9 1 1 1 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "8 10 10 2 8 3 4\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "10 5 2 10 5 10 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "7 12 3 1 7 1 8\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "2 6 2 2 5 1 6\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "7 3 6 7 2 2 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "13 2 7 8 2 11 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "1 1 1000 1 1 1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "1000 1000 1000 1 1 1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

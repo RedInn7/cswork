@@ -4466,6 +4466,18 @@
       ]
     },
     {
+      "id": "oa-box-3",
+      "sourceContentHash": "e2e2246f16fccaddedc7966dd2bb7c0a8a2da047429444c2dadbfbc9f9a64480",
+      "packageChecksum": "8c1f48ec015ee5ea3d45fafd31024f051ffd42b2346d34f86952b036e82b4c9e",
+      "editorial": "## 思路\n\n把 flavors 看作长度 n 的环。目标口味位于下标 t、当前位置为 startIndex 时，顺时针与逆时针步数分别为 (t-startIndex) mod n 和 (startIndex-t) mod n，取较小值。若同一口味出现多次，取所有目标位置中的最短距离。\n\n源样例输入把 target 写为 banana，但解释明确说目标是下标 0 的 originalart，并据此算出 1 步。因此只将样例 target 更正为 originalart，保留源输出 1；若按原输入 banana，按题意正确输出应为 0。\n\n## 正确性\n\n圆环上的两条简单方向路径长度分别是两个模 n 的距离；任意最短移动必走其中较短方向，故距离为二者最小值。若目标名重复，任何一个对应槽位都可满足需求，最少步数是各槽位距离最小值。\n\n## 复杂度\n\n扫描口味数组一次，时间 O(n)，额外空间 O(1)。\n\n## 验证与来源\n\n固定 OAMaster 快照的 #3 明确给出循环转盘、startIndex/target 参数和 min(|t-startIndex|, n-|t-startIndex|) 解法。原样例解释又明确指定 originalart 在下标 0，并说明左移 1 或右移 3，直接支持 target 字段应为 originalart、答案仍为 1。本站用 JSON 单行作为标准输入封装这三个函数参数；输入格式与函数题相同语义。\n\n本地独立公式验证 54 个样例/随机输入，并用两个正常运行的错误程序验证：不绕环、当前位置计作一步。候选尚未经过正式服务器沙箱验证。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\nimport sys\n\ndef solve(raw):\n    data = json.loads(raw)\n    flavors = data[\"flavors\"]\n    start = data[\"startIndex\"]\n    target = data[\"target\"]\n    if not isinstance(flavors, list) or not flavors:\n        raise ValueError(\"flavors must be a nonempty array\")\n    if not isinstance(start, int) or not 0 <= start < len(flavors):\n        raise ValueError(\"startIndex out of range\")\n    if target not in flavors:\n        raise ValueError(\"target must occur in flavors\")\n    n = len(flavors)\n    return str(min(min((i - start) % n, (start - i) % n)\n                   for i, flavor in enumerate(flavors) if flavor == target))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-capital-one-19",
       "sourceContentHash": "d28e8340de136dc74da717ff7c4c7f21c5037daa642fd59803aa27e66ba621ca",
       "packageChecksum": "1cd9f753e3ddeb83424b9ae1c4d4d5894baf0239543d961cfed46e9f274007ca",
@@ -5966,6 +5978,18 @@
       ]
     },
     {
+      "id": "oa-geico-2",
+      "sourceContentHash": "7d4f89ad7f86046a3ef9e64bd953b6b88bfc2b50c76e6e6ce880aa420cee9369",
+      "packageChecksum": "459a0c1df4031a1837d9a82bb5596020c4779515635a4ec591e755b599ab7864",
+      "editorial": "## 为什么正确\n\n`get` 命中会把键标为最近使用，`put` 插入或更新也会刷新最近使用顺序；超容量时删除最久未使用的键。来源首个多步样例的输出漏了一个 `get(1)` 结果：在 `put(4,4)` 后键 1 已被淘汰，故该查询输出 `-1`。来源后面重复的 Example 1 明确给出五项输出，逐步模拟也得到 `1, -1, -1, 3, 4`。只修正该输出，不更改操作语义。\n\n## 算法\n\n哈希表保存键到值，`OrderedDict` 保存从最久未使用到最近使用的顺序。命中或 put 后移动到末尾；超容量时弹出首项。每次操作期望 O(1)，空间 O(capacity)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import OrderedDict\nimport sys\n\ndef solve(raw):\n    lines = raw.strip().splitlines()\n    if not lines or not lines[0].startswith(\"capacity=\"):\n        raise ValueError(\"expected capacity=N\")\n    capacity = int(lines[0].split(\"=\", 1)[1])\n    if capacity <= 0:\n        raise ValueError(\"capacity must be positive\")\n    cache = OrderedDict()\n    output = []\n    for line in lines[1:]:\n        line = line.strip()\n        if line.startswith(\"put(\") and line.endswith(\")\"):\n            key, value = map(int, line[4:-1].split(\",\"))\n            cache[key] = value\n            cache.move_to_end(key)\n            if len(cache) > capacity:\n                cache.popitem(last=False)\n        elif line.startswith(\"get(\") and line.endswith(\")\"):\n            key = int(line[4:-1])\n            if key not in cache:\n                output.append(\"-1\")\n            else:\n                cache.move_to_end(key)\n                output.append(str(cache[key]))\n        else:\n            raise ValueError(\"invalid operation: \" + line)\n    return \"\\n\".join(output)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-goldman-sachs-6",
       "sourceContentHash": "539d4cbdb4a187083dfa42ca5c01c071a99435aa1a9277797950fdfb796ae4e7",
       "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
@@ -6890,6 +6914,18 @@
       ]
     },
     {
+      "id": "oa-ibm-31",
+      "sourceContentHash": "1941a7434b4a11faf8d409615f26d656ab14ab31a52e1585414cc4fa6daf3cfc",
+      "packageChecksum": "6e70f74e6366eed9b3d2a69237bed72ca05813b733a09a1ea3859c4ebbcd9937",
+      "editorial": "## 思路\n\n用最大堆维护每类商品当前剩余数量。每次取出最大值 q，收入增加 q；售出后若 q>1，将 q−1 放回堆。恰好重复 m 次。\n\n来源样例一按最优规则的前六个售价为 10、10、9、9、9、8，总计 55；样例二的售价为 4、3、2、2，总计 11。两例均与来源输出一致。\n\n原约束没有明写总库存下界，但“恰好售出 m 件”要求输入可行，故本站将必要条件 `m ≤ sum(quantity)` 明示为有效输入域。该条件不规定任何库存不足时的行为，也不改变可行输入上的题意。\n\n## 正确性\n\n当前库存为 q 的商品若现在出售，可立刻获得 q；此后同一类别可获得的价格只会下降。若一次最优方案未先选当前最大库存类别，而选择库存更小的类别，将两类的首次选择次序交换：较大库存先卖的即时收益不低，且它后续逐次下降的序列逐项不低于较小库存序列，交换不会降低总收益。等价地，每一步选取最大当前价格均满足贪心选择性质。售出并将 q−1 放回堆精确呈现下一时刻的库存，归纳得到总收益最大。\n\n## 复杂度\n\n堆初始化 O(n)，每次销售至多一次弹出和插入，时间 O(n + m log n)，空间 O(n)。最大收入不超过 10^10，使用 64 位整数足够。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 3:\n        raise ValueError(\"expected n, m, and quantities\")\n    n, m = tokens[:2]\n    quantity = tokens[2:]\n    if not (1 <= n <= 100000 and 1 <= m <= 100000 and len(quantity) == n):\n        raise ValueError(\"outside stated source bounds\")\n    if any(not 1 <= q <= 100000 for q in quantity):\n        raise ValueError(\"outside stated source bounds\")\n    if m > sum(quantity):\n        raise ValueError(\"valid input must contain at least m items\")\n    heap = [-q for q in quantity]\n    heapq.heapify(heap)\n    revenue = 0\n    for _ in range(m):\n        q = -heapq.heappop(heap)\n        revenue += q\n        if q > 1:\n            heapq.heappush(heap, -(q - 1))\n    return str(revenue)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-ibm-55",
       "sourceContentHash": "a19ad065b00c7f50af1241ed7b8ccd17ad7c2edb2c8266a5297d1934f1681895",
       "packageChecksum": "65e51fcc68b0e98e7fb6d1a46f40167a78e88acc58abd8f15f475268823ed14b",
@@ -7666,6 +7702,30 @@
         {
           "language": "python",
           "code": "import bisect\nimport sys\n\ndef min_waste_set(requirements, container_sets):\n    best_index = -1\n    best_waste = None\n    for index, containers in enumerate(container_sets, 1):\n        ordered = sorted(containers)\n        total = 0\n        feasible = True\n        for required in requirements:\n            pos = bisect.bisect_left(ordered, required)\n            if pos == len(ordered):\n                feasible = False\n                break\n            total += ordered[pos] - required\n        if feasible and (best_waste is None or total < best_waste):\n            best_index = index\n            best_waste = total\n    return best_index\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 2:\n        raise ValueError(\"missing requirement/set counts\")\n    r, s = values[0], values[1]\n    if len(values) < 2 + r:\n        raise ValueError(\"missing requirements\")\n    requirements = values[2:2 + r]\n    pos = 2 + r\n    container_sets = []\n    for _ in range(s):\n        if pos >= len(values):\n            raise ValueError(\"missing container count\")\n        count = values[pos]\n        pos += 1\n        if pos + count > len(values):\n            raise ValueError(\"missing container sizes\")\n        container_sets.append(values[pos:pos + count])\n        pos += count\n    if pos != len(values):\n        raise ValueError(\"unexpected trailing input\")\n    return str(min_waste_set(requirements, container_sets))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-14",
+      "sourceContentHash": "e48395a9c525367eaabe0e60fa410d0293ad569a6a38fbfbe110ea58902b2f3d",
+      "packageChecksum": "7aacf994ee11dc60a8c6aa770606240adfd9bee943b3d978ff44d50bf896d99c",
+      "editorial": "## 思路与样例勘误\n\n合法跳跃对应整数位移 `(dr,dc)`，满足 `dr²+dc²=X²`。把棋盘格视为节点、这些位移视为无权边，从起点 BFS；首次到达终点即为最少步数，遍历完仍未到达则返回 -1。\n\n固定来源的跳跃规则明确要求距离恰好为 X。原样例把目标填为 `(6,2)`，它与 `(1,2)` 的距离是 5，按规则一步即达；但来源解释明确写出路线 `(1,2)→(6,2)→(2,5)` 并称需要 2 步，所以说明中的最终目标是 `(2,5)`，样例输入误把中间点填成了终点。将 `u,v` 从 `6,2` 改为 `2,5` 后，解释中的两步均长为 5，且起终点距离为 √10，不可能一步到达。只修正样例坐标，不改题意与答案。\n\n## 正确性\n\n算法只添加满足平方和等式且不越界的边，因而每条图路径都是合法跳跃路径。反过来，所有合法跳跃都对应枚举出的整数位移，所以原问题的每条路线都在图中。无权图 BFS 首次访问目标的距离是最少边数；未访问表示不可达。\n\n## 复杂度\n\n设 V=mn，D 为整数位移数。扫描平方差预计算耗时 O(X)，BFS 时间 O(VD)，空间 O(V+D)。采用来源约束 m,n,X≤1000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\nfrom collections import deque\nimport math\nimport sys\n\ndef solve(raw):\n    m,n,x,p,q,u,v=map(int,raw.split())\n    if not (1<=m<=1000 and 1<=n<=1000 and 1<=x<=1000 and 1<=p<=m and 1<=u<=m and 1<=q<=n and 1<=v<=n):\n        raise ValueError(\"outside source constraints\")\n    sr,sc,tr,tc=p-1,q-1,u-1,v-1\n    if (sr,sc)==(tr,tc): return \"0\"\n    moves=set()\n    for dr in range(x+1):\n        rem=x*x-dr*dr; dc=math.isqrt(rem)\n        if dc*dc==rem:\n            for a in {dr,-dr}:\n                for b in {dc,-dc}: moves.add((a,b))\n    moves.discard((0,0))\n    if not moves: return \"-1\"\n    dist=array('i',[-1])*(m*n); start=sr*n+sc; target=tr*n+tc\n    dist[start]=0; queue=array('i',[start]); head=0\n    while head<len(queue):\n        cur=queue[head]; head+=1; r,c=divmod(cur,n); nd=dist[cur]+1\n        for dr,dc in moves:\n            nr,nc=r+dr,c+dc\n            if 0<=nr<m and 0<=nc<n:\n                nxt=nr*n+nc\n                if dist[nxt]<0:\n                    if nxt==target: return str(nd)\n                    dist[nxt]=nd; queue.append(nxt)\n    return \"-1\"\n\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-4",
+      "sourceContentHash": "690ff47920b14cea9d8e35b8069afda43e3eee2e6ef132a4117de40dd547f78f",
+      "packageChecksum": "8c0e406b3218a3e93b62f672e253175d3d3a248a45aa46801cbb1400b6346d61",
+      "editorial": "## 计数与样例勘误\n\n每行必须非单色，所以单行有 24 种颜色排列。先统计所有行均合法的网格，再对三个“某列从上到下全同色”的事件做容斥。\n\n固定一组 k 列要求全同色并指定这些列的颜色：当被选列颜色不全相同时，每行有 3^(3-k) 种选择；当它们同色时，还要排除剩余列也都取该颜色的一种选择。将各组代入容斥并合并，得到：\n\n`24^n - 9·8^n + 9·2^n + 18·3^n - 24`。\n\n对 n=2、3、4，结果依次为 174、9750、296490。原始规则明确要求每行和每列都不能全同色；直接枚举 3^(3n) 个网格（n≤4）及独立的六事件容斥均得到相同结果。因此来源的 n=3 输出 9758、n=4 输出 290490 是样例数值错误，题意不变，仅更正这两个答案。\n\n## 正确性\n\n先按行限制只保留 24 种非单色行，故每个行序列恰好对应一个满足行条件的网格。容斥准确剔除至少含一个全同色列的网格：每个网格按其全同色列集合在容斥和中的总系数为 1（若集合为空）或 0（若非空）。化简后的式子因此恰好计数同时满足行、列条件的染色。\n\n## 复杂度\n\n使用快速模幂计算常数项的幂，时间 O(log n)，额外空间 O(1)。本站输入范围为 1≤n≤10^18；来源未给 n 上限。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nMOD = 1_000_000_007\n\ndef solve(raw):\n    n = int(raw.strip())\n    if not 1 <= n <= 10**18:\n        raise ValueError(\"site protocol: 1 <= n <= 10^18\")\n    # Inclusion-exclusion over the three monochromatic-column events.\n    return str((pow(24, n, MOD) - 9 * pow(8, n, MOD)\n                + 9 * pow(2, n, MOD) + 18 * pow(3, n, MOD) - 24) % MOD)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -8842,6 +8902,18 @@
         {
           "language": "python",
           "code": "def solve(data):\n    n=int(data[0]); a=list(map(int,data[1:])); left=0; right=n-1\n    while left<right:\n        middle=(left+right)//2\n        if a[middle]<a[middle+1]:left=middle+1\n        else:right=middle\n    return str(left)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-microsoft-45",
+      "sourceContentHash": "b77cd909f252ed72fa26fff8c31d8cc2c84a1f608537d02d08321f8b68698e20",
+      "packageChecksum": "a4be223ead1fb01d429c4a91168ff1b0ac73d82d23c913c3990cd44224613b38",
+      "editorial": "## 思路\n\n保留的字母必须构成原字符串的一个子序列，并且字典序非降。设最长非降子序列长度为 L，则最多保留 L 个字母，答案为 `n-L`。用 tails 维护各长度非降子序列的最小结尾字符；每个字符用 upper_bound 找第一个大于它的位置替换，否则扩展序列。\n\n## 正确性\n\n任意保留方案都是原字符串的非降子序列，因此其长度不超过 L，至少删除 n−L 个字符。反之，最长非降子序列本身可通过删除其余字符得到，所以删除 n−L 个字符足够。tails 的 upper_bound 更新是经典最长非降子序列算法，重复字母可延长序列，最终长度恰为 L。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef minimum_deletions_to_sorted(s):\n    tails = []\n    for char in s:\n        lo, hi = 0, len(tails)\n        # upper_bound: equal letters may remain together in a nondecreasing subsequence.\n        while lo < hi:\n            mid = (lo + hi) // 2\n            if tails[mid] <= char:\n                lo = mid + 1\n            else:\n                hi = mid\n        if lo == len(tails):\n            tails.append(char)\n        else:\n            tails[lo] = char\n    return len(s) - len(tails)\n\ndef solve(raw):\n    s = raw.strip()\n    if not s or any(not ('a' <= char <= 'z') for char in s):\n        raise ValueError(\"expected one nonempty lowercase English word\")\n    return str(minimum_deletions_to_sorted(s))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode(\"ascii\")))\n"
         }
       ]
     },
@@ -10414,6 +10486,18 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,length=t[:2]; p=2; busy=[]\n for _ in range(n):\n  m=t[p]; p+=1\n  for _ in range(m): busy.append((t[p],t[p+1])); p+=2\n busy.sort(); merged=[]\n for a,b in busy:\n  if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(merged[-1][1],b))\n  else: merged.append((a,b))\n current=0\n for a,b in merged:\n  if a-current>=length: return str(current)\n  current=max(current,b)\n return str(current) if current+length<=1440 else '-1'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rubrik-12",
+      "sourceContentHash": "d6ff718ac94280f3fb10f4f0e1a6443215dffe018ac9a3ba127bfe098b428552",
+      "packageChecksum": "dc00c6f8df7737bd1c02ed76bdefc995a8eef0d7615db85911b232082833a379",
+      "editorial": "## 思路\n\n使用三个状态描述计分连续段处于放大段之前、放大段之内、放大段之后。状态记录以当前位置结尾的最大连续和；普通位置加 `x`，放大位置加 `z*x`。答案包含空区间 0，因为原题明确全负数组 beauty 为 0，也允许不使用放大器。时间 O(n)，空间 O(1)。\n\n## 为什么正确\n\n任意最优计分连续段中的位置只有三种阶段：放大区间之前、之内、之后，且顺序不能逆转。三个状态逐位置保留各阶段下以当前位置结尾的最大和；转移分别只允许普通延续、开始或延续放大区间、结束放大区间后的普通延续，因此覆盖所有合法选择且不生成非法顺序。取所有阶段与空区间的最大值即为全局最优。\n\n## 样例勘误\n\n固定题源定义为放大一个连续片段后，求任意连续片段的最大和；被放大的片段可以是整个数组。样例 2 整个数组乘以 -3 后为 `[15,27,6,-3,18]`，其总和及最大连续和都是 63。原输出 30 以及解释所列的 `[9,6,-3,18]` 都与原数组不符。只修正该样例输出及解释，不改规则。题源下界 `10^-9` 与整数类型及负数示例冲突；本站采用明确披露的可执行边界 `n<=200000`、`-10^9<=a[i]<=10^9`、`-100<=z<=100`，不声称这是已知上游约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 2:\n        raise ValueError(\"expected n z and n array values\")\n    n, z = tokens[:2]\n    arr = tokens[2:]\n    if not 1 <= n <= 200000 or len(arr) != n:\n        raise ValueError(\"site protocol: 1<=n<=200000, followed by exactly n values\")\n    if not -100 <= z <= 100 or any(not -10**9 <= x <= 10**9 for x in arr):\n        raise ValueError(\"site protocol: -100<=z<=100 and -1e9<=arr[i]<=1e9\")\n    neg = -(10**30)\n    before, inside, after = 0, neg, neg\n    best = 0\n    for x in arr:\n        before_next = max(0, before + x)\n        inside_next = max(before + z * x, inside + z * x)\n        after_next = max(inside + x, after + x)\n        before, inside, after = before_next, inside_next, after_next\n        best = max(best, before, inside, after)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -13414,6 +13498,18 @@
         {
           "language": "python",
           "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); a=[next(it) for _ in range(n)]\n return str(sum(1 if b>a else 2 if b<a else 0 for a,b in zip(a,a[1:])))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-zolostays-1",
+      "sourceContentHash": "50c0c06011e600c36c746e789637bbb5b416b982d5b76868f6d0b13b132ccbc1",
+      "packageChecksum": "b6f666a167496d9518718306454fe6ba4ae713fa289c510ba2558d46ee97406f",
+      "editorial": "## 为什么正确\n\n令 `prefix[0]=0`，`prefix[j]` 表示前 j 个数之和。以 j 结尾的连续子数组和为 `prefix[j]-prefix[i]`，其中 `i<j`。要让和落在闭区间 `[lower, upper]`，需满足 `prefix[i]+lower <= prefix[j] <= prefix[i]+upper`。\n\n对前缀和做归并排序。在左右两段各自有序时，固定左段的 `prefix[i]`，用两个单调指针统计右段中差值落入闭区间的元素个数；再合并两段。每个递归层处理 O(n) 个元素，总时间 O(n log n)，空间 O(n)。\n\n## 样例勘误\n\n固定来源对样例 2 只写了“有 8 个”，没有列出区间；按题目明确定义直接枚举全部连续子数组，和处于 `[-2, 6]` 的共有 13 个。输入和题意不改，只将该样例输出由 8 更正为 13。样例 1 与样例 3 的答案分别仍为 3 和 12。\n\n## 本站输入格式\n\n第一行 n，第二行 n 个整数，第三行 lower 和 upper。本站将 n 限定为 `1..50000`，数组元素和边界取 32 位有符号整数，且 `lower<=upper`；该大小限制保证结果最大值 `n(n+1)/2` 可由 32 位有符号输出容纳。原固定来源没有给出约束，因此这些是本站为了定义可执行接口与数值范围所加的边界，不冒充来源约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef count_range_sum(arr, lower, upper):\n    prefix = [0]\n    for value in arr:\n        prefix.append(prefix[-1] + value)\n    scratch = [0] * len(prefix)\n\n    def sort_count(lo, hi):\n        if hi - lo <= 1:\n            return 0\n        mid = (lo + hi) // 2\n        count = sort_count(lo, mid) + sort_count(mid, hi)\n        left_bound = right_bound = mid\n        for i in range(lo, mid):\n            while left_bound < hi and prefix[left_bound] - prefix[i] < lower:\n                left_bound += 1\n            while right_bound < hi and prefix[right_bound] - prefix[i] <= upper:\n                right_bound += 1\n            count += right_bound - left_bound\n        i, j, k = lo, mid, lo\n        while i < mid and j < hi:\n            if prefix[i] <= prefix[j]:\n                scratch[k] = prefix[i]\n                i += 1\n            else:\n                scratch[k] = prefix[j]\n                j += 1\n            k += 1\n        while i < mid:\n            scratch[k] = prefix[i]\n            i += 1\n            k += 1\n        while j < hi:\n            scratch[k] = prefix[j]\n            j += 1\n            k += 1\n        prefix[lo:hi] = scratch[lo:hi]\n        return count\n\n    return sort_count(0, len(prefix))\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if not tokens:\n        raise ValueError(\"missing n\")\n    n = tokens[0]\n    if not 1 <= n <= 50000 or len(tokens) != n + 3:\n        raise ValueError(\"site protocol: 1 <= n <= 50000, n values, lower, upper\")\n    arr = tokens[1:n + 1]\n    lower, upper = tokens[n + 1:]\n    if any(not -(2**31) <= value < 2**31 for value in arr + [lower, upper]):\n        raise ValueError(\"array values and bounds must be signed 32-bit integers\")\n    if lower > upper:\n        raise ValueError(\"lower must not exceed upper\")\n    return str(count_range_sum(arr, lower, upper))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     }
