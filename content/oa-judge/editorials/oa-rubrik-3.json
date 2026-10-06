@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-3",
+  "title": "Word Count Tool (Validate Words)",
+  "explanation": "## 思路\n\n扫描空白切出的 token，分别记录是否合法、是否含元音、是否含辅音。\n\n## 正确性\n\n每个 token 只在同时满足字符域、长度和两类字母条件时计数；这与原题定义逐项等价，且每个 token 恰处理一次。\n\n## 复杂度\n\n时间 O(|s|)，空间 O(1)（不计分词结果）。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    s=raw.strip('\\n')\n    vowels=set('aeiouAEIOU')\n    return str(sum(1 for w in s.split() if len(w)>=3 and w.isascii() and w.isalnum() and any(c in vowels for c in w) and any(c.isalpha() and c not in vowels for c in w)))\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#3-word-count-tool-validate-words",
+  "sourceContentHash": "839b05acaa2e6b375550d158bef20d65063ea5e7e86efffb10e12f4fb3041f7e",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-6",
+  "title": "Longest Subsequence Matching a Substring",
+  "explanation": "## 思路\n\n枚举 y 中的子串起点，将该后缀与 x 贪心匹配；每个起点的最长可匹配前缀即为从该起点出发的最优子串长度。\n\n## 正确性\n\n对固定子串起点，逐字符从左到右在 x 中取最早可匹配位置，不会减少后续可匹配字符，因此贪心能得到该起点的最长子串。枚举全部起点覆盖所有候选子串。\n\n## 复杂度\n\n设 n=|x|、m=|y|，时间 O(nm)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n x,y=raw.split()\n best=0\n for start in range(len(y)):\n  i=matched=0\n  while i<len(x) and start+matched<len(y):\n   if x[i]==y[start+matched]: matched+=1\n   i+=1\n  best=max(best,matched)\n return str(best)\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#6-longest-subsequence-matching-a-substring",
+  "sourceContentHash": "385f169d21a8b96207bf9ad2b1f9c12e2793f5c1273efeba76fa297544f89076",
+  "author": "CSWork"
+}

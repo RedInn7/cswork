@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-4",
+  "title": "Two's Power (Regex Match)",
+  "explanation": "## 思路\n\n去掉前导零后，二进制表示是 1 后面跟若干个 0，当且仅当它是 2 的幂。\n\n## 正确性\n\n2^k 的二进制表示恰为 1 后接 k 个零；前导零不改变数值，全零串表示 0，故应返回 False。\n\n## 复杂度\n\n时间 O(|s|)，空间 O(|s|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s=raw.strip()\n t=s.lstrip('0')\n return 'True' if t=='1'+'0'*(len(t)-1) and bool(t) else 'False'\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#4-twos-power-regex",
+  "sourceContentHash": "6c31ac1e8aec13784b6deae7e37abb01e483978cd6c92337278c75949f45c3b2",
+  "author": "CSWork"
+}
