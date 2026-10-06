@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 0 黑格窗口数设为零",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split()));r,c,k=a[:3]; blacks={tuple(a[3+2*i:5+2*i]) for i in range(k)}; freq={}\n    for x,y in blacks:\n      for i in (x-1,x):\n        for j in (y-1,y):\n          if 0<=i<r-1 and 0<=j<c-1: freq[(i,j)]=freq.get((i,j),0)+1\n    ans=[0]*5\n    for z in freq.values():ans[z]+=1\n    ans[0]=0\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉左上窗口",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split()));r,c,k=a[:3]; blacks={tuple(a[3+2*i:5+2*i]) for i in range(k)}; freq={}\n    for x,y in blacks:\n      for i in (x,):\n        for j in (y-1,y):\n          if 0<=i<r-1 and 0<=j<c-1: freq[(i,j)]=freq.get((i,j),0)+1\n    ans=[0]*5\n    for z in freq.values():ans[z]+=1\n    ans[0]=(r-1)*(c-1)-len(freq)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]

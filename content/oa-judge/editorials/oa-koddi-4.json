@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-koddi-4",
+  "title": "按黑格数量统计 2×2 子矩阵",
+  "explanation": "## 思路\n\n每个黑格最多属于四个 2×2 窗口，只累计被黑格触及的窗口；其余窗口黑格数为零。\n\n## 正确性证明\n\n任意含至少一个黑格的 2×2 窗口会被其内某个黑格枚举到，字典频次恰等于其中黑格数。未出现的窗口没有黑格，故零类数量为全部窗口数减字典大小。\n\n## 复杂度\n\nO(k) 时间，O(k) 空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count；题意明确；本站补充坐标范围、黑格互异和输入协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split()));r,c,k=a[:3]; blacks={tuple(a[3+2*i:5+2*i]) for i in range(k)}; freq={}\n    for x,y in blacks:\n      for i in (x-1,x):\n        for j in (y-1,y):\n          if 0<=i<r-1 and 0<=j<c-1: freq[(i,j)]=freq.get((i,j),0)+1\n    ans=[0]*5\n    for z in freq.values():ans[z]+=1\n    ans[0]=(r-1)*(c-1)-len(freq)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count",
+  "sourceContentHash": "48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8",
+  "author": "Chunyu Sui"
+}

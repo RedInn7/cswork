@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hsbc-1",
+  "title": "花枝分段排序",
+  "explanation": "## 思路\n\n按 K 切分数组，分别排序并按指定方向连接。\n\n## 正确性证明\n\n题目规定前 K 项和其余项分别排序，且两部分的原始边界由输入位置确定；局部排序后连接直接满足全部要求。\n\n## 复杂度\n\nO(n log n) 时间，O(n) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/hsbc#1-arrange-flower-sticks；原题主体明确但约束 OCR 损坏；本站补充 n 和数值范围，并修正样例明显笔误。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n=a[0]; v=a[1:1+n]; k=a[1+n]\n    return ' '.join(map(str,sorted(v[:k])+sorted(v[k:],reverse=True)))\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hsbc#1-arrange-flower-sticks",
+  "sourceContentHash": "202828234228ff5cb0a8c031b73eb1b597d94aa826375ba5e422f5233f41012e",
+  "author": "Chunyu Sui"
+}

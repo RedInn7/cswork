@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-hsbc-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "花枝分段排序",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "HSBC",
+      "排序",
+      "数组"
+    ],
+    "description": "将输入顺序的前 K 根花枝按长度升序排列，其余花枝按长度降序排列，再连接两个部分。题面示例输出中的 11 与输入值不符；按明确规则应为 5。\n\n原题主体明确但约束 OCR 损坏；本站补充 n 和数值范围，并修正样例明显笔误。\n\n来源：https://oamaster.com/docs/companies/hsbc#1-arrange-flower-sticks（固定题面指纹 202828234228ff5cb0a8c031b73eb1b597d94aa826375ba5e422f5233f41012e）。本站新增的输入输出协议/边界按题面说明，不声称为原站规则。",
+    "input": "第一行 n（0≤n≤200000）；第二行 n 个整数；第三行 K（0≤K≤n）。长度值取 32 位有符号整数。",
+    "output": "输出按规则连接后的 n 个长度。",
+    "explanation": "完整思路、证明及复杂度见配套讲义。",
+    "hints": [
+      "按 K 切分数组，分别排序并按指定方向连接。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "8\n17 7 5 10 46 23 16 8\n3\n",
+      "expectedOutput": "5 7 17 46 23 16 10 8\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3\n4 4 1\n1\n",
+      "expectedOutput": "4 4 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "11\n14 1 1 20 26 5 18 30 4 3 29\n8\n",
+      "expectedOutput": "1 1 5 14 18 20 26 30 29 4 3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "4\n5 30 14 15\n4\n",
+      "expectedOutput": "5 14 15 30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "0\n\n0\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "6\n11 25 4 3 21 4\n1\n",
+      "expectedOutput": "11 25 21 4 4 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "9\n23 24 11 10 24 13 27 16 8\n2\n",
+      "expectedOutput": "23 24 27 24 16 13 11 10 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "11\n17 26 1 17 22 21 22 18 6 9 15\n1\n",
+      "expectedOutput": "17 26 22 22 21 18 17 15 9 6 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "3\n24 22 30\n0\n",
+      "expectedOutput": "30 24 22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "8\n7 23 16 21 30 3 12 15\n6\n",
+      "expectedOutput": "3 7 16 21 23 30 15 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "1\n19\n0\n",
+      "expectedOutput": "19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "9\n8 7 24 8 26 27 12 29 14\n4\n",
+      "expectedOutput": "7 8 8 24 29 27 26 14 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "11\n20 14 20 13 16 21 14 2 8 26 2\n6\n",
+      "expectedOutput": "13 14 16 20 20 21 26 14 8 2 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "8\n27 14 7 16 10 25 19 20\n0\n",
+      "expectedOutput": "27 25 20 19 16 14 10 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "1\n30\n1\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "2\n7 14\n1\n",
+      "expectedOutput": "7 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "1\n1\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "4\n4 13 19 9\n4\n",
+      "expectedOutput": "4 9 13 19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "3\n3 1 11\n0\n",
+      "expectedOutput": "11 3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "4\n30 2 24 17\n3\n",
+      "expectedOutput": "2 24 30 17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "8\n3 30 16 7 25 11 17 10\n6\n",
+      "expectedOutput": "3 7 11 16 25 30 17 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "10\n1 8 14 8 3 28 25 4 21 24\n1\n",
+      "expectedOutput": "1 28 25 24 21 14 8 8 4 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "4\n4 16 25 16\n2\n",
+      "expectedOutput": "4 16 25 16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "3\n13 26 26\n0\n",
+      "expectedOutput": "26 26 13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "4\n12 11 20 28\n0\n",
+      "expectedOutput": "28 20 12 11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "11\n24 5 24 3 19 23 14 26 16 29 21\n5\n",
+      "expectedOutput": "3 5 19 24 24 29 26 23 21 16 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "8\n18 7 30 14 20 30 4 30\n0\n",
+      "expectedOutput": "30 30 30 20 18 14 7 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "3\n17 9 9\n2\n",
+      "expectedOutput": "9 17 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "11\n3 16 6 3 20 12 2 29 10 23 12\n9\n",
+      "expectedOutput": "2 3 3 6 10 12 16 20 29 23 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "6\n11 19 7 4 12 17\n4\n",
+      "expectedOutput": "4 7 11 19 17 12\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

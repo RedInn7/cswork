@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-fortinet-5",
+  "title": "最美子串最大值",
+  "explanation": "## 思路\n\n固定字符段各自计数；点号段内部填同一种字符。若两侧固定段字符相同就合并，否则把整个点号段并入收益较大的一侧。\n\n## 正确性证明\n\n长度为 L 的同字符段恰有 L(L+1)/2 个美丽子串。一个点号段的分配收益关于分给两侧的长度是凸函数，最大值出现在全部分给左侧或右侧；两端字符相同时，全部填成该字符可将两侧三段合并，优于分割。不同点号段之间由固定字符隔开，决策互不影响。\n\n## 复杂度\n\nO(n) 时间，O(1) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/fortinet#5-maximize-beautiful-substrings；源题规则和示例清楚；本站补充输入字符集、长度上限及 stdin/stdout。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    s=raw.rstrip('\\n'); n=len(s); blocks=[]; i=0\n    while i<n:\n        if s[i]=='.': i+=1; continue\n        start=i; ch=s[i]\n        while i<n and s[i]==ch: i+=1\n        blocks.append([ch,start,i])\n    if not blocks: return str(n*(n+1)//2)\n    runs=[]\n    for block in blocks:\n        if runs and runs[-1][0]==block[0]: runs[-1][2]=block[2]\n        else: runs.append(block[:])\n    lengths=[end-start for _,start,end in runs]\n    lengths[0]+=runs[0][1]\n    lengths[-1]+=n-runs[-1][2]\n    gaps=[runs[i+1][1]-runs[i][2] for i in range(len(runs)-1)]\n    tri=lambda z:z*(z+1)//2\n    if len(runs)==1: return str(tri(lengths[0]))\n    # State says whether the preceding gap was assigned to this run (1) or its left neighbor (0).\n    dp=[0,-10**30]\n    for i,d in enumerate(gaps):\n        nxt=[-10**30,-10**30]\n        for prev_state in (0,1):\n            base=lengths[i]+(gaps[i-1] if i>0 and prev_state==1 else 0)\n            nxt[0]=max(nxt[0],dp[prev_state]+tri(base+d))\n            nxt[1]=max(nxt[1],dp[prev_state]+tri(base))\n        dp=nxt\n    answer=max(dp[state]+tri(lengths[-1]+(gaps[-1] if state==1 else 0)) for state in (0,1))\n    return str(answer)\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/fortinet#5-maximize-beautiful-substrings",
+  "sourceContentHash": "2366a16fa69aa08412d60bb37be054bfb4cf09f2cbc7ca7767d9c8edc5757273",
+  "author": "Chunyu Sui"
+}

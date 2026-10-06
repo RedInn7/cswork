@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-fortinet-5",
+      "sourceContentHash": "2366a16fa69aa08412d60bb37be054bfb4cf09f2cbc7ca7767d9c8edc5757273",
+      "packageChecksum": "9c3189440617532edfcd41d03ec6d46bf601dd02cb10b4c57cbceff2c98b0988",
+      "editorial": "## 思路\n\n固定字符段各自计数；点号段内部填同一种字符。若两侧固定段字符相同就合并，否则把整个点号段并入收益较大的一侧。\n\n## 正确性证明\n\n长度为 L 的同字符段恰有 L(L+1)/2 个美丽子串。一个点号段的分配收益关于分给两侧的长度是凸函数，最大值出现在全部分给左侧或右侧；两端字符相同时，全部填成该字符可将两侧三段合并，优于分割。不同点号段之间由固定字符隔开，决策互不影响。\n\n## 复杂度\n\nO(n) 时间，O(1) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/fortinet#5-maximize-beautiful-substrings；源题规则和示例清楚；本站补充输入字符集、长度上限及 stdin/stdout。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    s=raw.rstrip('\\n'); n=len(s); blocks=[]; i=0\n    while i<n:\n        if s[i]=='.': i+=1; continue\n        start=i; ch=s[i]\n        while i<n and s[i]==ch: i+=1\n        blocks.append([ch,start,i])\n    if not blocks: return str(n*(n+1)//2)\n    runs=[]\n    for block in blocks:\n        if runs and runs[-1][0]==block[0]: runs[-1][2]=block[2]\n        else: runs.append(block[:])\n    lengths=[end-start for _,start,end in runs]\n    lengths[0]+=runs[0][1]\n    lengths[-1]+=n-runs[-1][2]\n    gaps=[runs[i+1][1]-runs[i][2] for i in range(len(runs)-1)]\n    tri=lambda z:z*(z+1)//2\n    if len(runs)==1: return str(tri(lengths[0]))\n    # State says whether the preceding gap was assigned to this run (1) or its left neighbor (0).\n    dp=[0,-10**30]\n    for i,d in enumerate(gaps):\n        nxt=[-10**30,-10**30]\n        for prev_state in (0,1):\n            base=lengths[i]+(gaps[i-1] if i>0 and prev_state==1 else 0)\n            nxt[0]=max(nxt[0],dp[prev_state]+tri(base+d))\n            nxt[1]=max(nxt[1],dp[prev_state]+tri(base))\n        dp=nxt\n    answer=max(dp[state]+tri(lengths[-1]+(gaps[-1] if state==1 else 0)) for state in (0,1))\n    return str(answer)\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hsbc-1",
+      "sourceContentHash": "202828234228ff5cb0a8c031b73eb1b597d94aa826375ba5e422f5233f41012e",
+      "packageChecksum": "bc49e2db9dac0f803bb8a35f7fb3d5f12160a1ece39f99bf2263dcb3269ff57f",
+      "editorial": "## 思路\n\n按 K 切分数组，分别排序并按指定方向连接。\n\n## 正确性证明\n\n题目规定前 K 项和其余项分别排序，且两部分的原始边界由输入位置确定；局部排序后连接直接满足全部要求。\n\n## 复杂度\n\nO(n log n) 时间，O(n) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/hsbc#1-arrange-flower-sticks；原题主体明确但约束 OCR 损坏；本站补充 n 和数值范围，并修正样例明显笔误。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n=a[0]; v=a[1:1+n]; k=a[1+n]\n    return ' '.join(map(str,sorted(v[:k])+sorted(v[k:],reverse=True)))\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hsbc-3",
+      "sourceContentHash": "bc491c62512372ce7be7577a7bddababee74bfcb3e6c5f6a6e16ba8ae3e85292",
+      "packageChecksum": "861372e3ea71836d831590c327b7094e72f442d7c19ae29bb1f68a5b4b119e91",
+      "editorial": "## 思路\n\n对每个尚未访问的 1 做四方向 BFS/DFS，统计该连通块大小并更新最大值。\n\n## 正确性证明\n\n每个 1 恰好属于一个四连通分量，BFS 恰好访问该分量；取所有分量大小的最大值即题目所求。\n\n## 复杂度\n\nO(nm) 时间，O(nm) 空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/hsbc#3-find-largest-house-area；原题连通规则明确；本站补充网格规模和空网格结果。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n,m=a[:2]; g=[a[2+i*m:2+(i+1)*m] for i in range(n)]; seen=set(); best=0\n    for i in range(n):\n      for j in range(m):\n        if g[i][j] and (i,j) not in seen:\n          q=[(i,j)]; seen.add((i,j)); z=0\n          for x,y in q:\n            z+=1\n            for u,v in ((x+1,y),(x-1,y),(x,y+1),(x,y-1)):\n              if 0<=u<n and 0<=v<m and g[u][v] and (u,v) not in seen: seen.add((u,v)); q.append((u,v))\n          best=max(best,z)\n    return str(best)\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-weride-4",
+      "sourceContentHash": "714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3",
+      "packageChecksum": "d58b94b04c17051f962d82235a29442c22f9f831498e72c4d27ca8ce4c2ea008",
+      "editorial": "## 思路\n\n只需累计二跳邻居的出现次数。若不存在二跳候选，则所有非好友候选的共同好友数均为 0，取最小可用编号。\n\n## 正确性证明\n\n任意共同好友 z 对应路径 y-z-x，因此 x 的累计次数就是共同好友数；遍历所有二跳邻居即可覆盖每个正分候选。无计数候选时最大值为 0，所有合格用户并列，题目要求选最小编号。\n\n## 复杂度\n\n每个用户最多检查 15×15 个二跳路径，时间 O(n·15²+m)，空间 O(n+m)。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends；原题排序规则和每人最多 15 个好友明确；本站补充无重复边和输入输出协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    z=list(map(int,raw.split())); n,m=z[:2]; g=[set() for _ in range(n)]\n    for i in range(m):\n      a,b=z[2+2*i:4+2*i]; g[a].add(b);g[b].add(a)\n    ans=[]\n    for y in range(n):\n      counts={}\n      for f in g[y]:\n        for x in g[f]:\n          if x!=y and x not in g[y]: counts[x]=counts.get(x,0)+1\n      if counts:\n        mx=max(counts.values()); ans.append(min(x for x,v in counts.items() if v==mx))\n      else:\n        x=0\n        while x==y or x in g[y]: x+=1\n        ans.append(x if x<n else -1)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-weride-5",
+      "sourceContentHash": "b1639717ffbe4708cefb3029bfffbbb3d069343624539d09b7792a5e067eb34c",
+      "packageChecksum": "c06eec4bd00937d2117adbc4635777b3704b38899ebf0de681b5e90ec7c0d006",
+      "editorial": "## 思路\n\n从目标反向走：若 x>y，最后一步只能来自 (x−y,y)；否则来自 (x,y−x)。坐标低于起点即不可能。\n\n## 正确性证明\n\n两种正向操作分别只会增加一个坐标且增量等于另一个坐标，因此逆操作唯一。反复应用逆操作必然减小坐标和，最终到达起点则且唯有此时可达。\n\n## 复杂度\n\n最多 O(x2+y2) 次，O(1) 额外空间；在题目给定 1000 上限内足够。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/weride#5-bot-movement-reachability-two-move-types；起终点范围和两种移动精确定义；本站规定 stdin/stdout。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    x,y,a,b=map(int,raw.split())\n    while a>=x and b>=y and (a,b)!=(x,y):\n      if a>b: a-=b\n      else: b-=a\n    return 'Yes' if (a,b)==(x,y) else 'No'\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-weride-9",
+      "sourceContentHash": "d0ca0bff74708ee0e5b708b2ef4c1f63edc77848111b539ce7e4cdb61d8e2988",
+      "packageChecksum": "4b9eff709162a06d763d0d281eafd6d2b701f76ad2bcc5540ef5107c73d02fbc",
+      "editorial": "## 思路\n\n按可用起始日加入候选，每天从候选中选择最早结束的投资人；若当前没有候选则跳至下一个起始日。\n\n## 正确性证明\n\n若某天安排了结束更晚的区间而保留更早结束的区间，交换二者不会减少已安排场次且为后续留下不少选择。因此每天取最早截止者是安全的贪心；过期区间不可能再被安排。\n\n## 复杂度\n\nO(n log n) 时间，O(n) 空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/weride#9-meetup-schedule；题意的闭区间及每日限制明确；原文缺约束，本站补充日期和数量上限。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    z=list(map(int,raw.split())); n=z[0]; s=z[1:1+n]; e=z[1+n:1+2*n]\n    q=sorted((s[i],e[i]) for i in range(n)); day=0; ans=0; i=0; h=[]\n    import heapq\n    while i<n or h:\n      if not h: day=max(day,q[i][0])\n      while i<n and q[i][0]<=day: heapq.heappush(h,q[i][1]); i+=1\n      while h and h[0]<day: heapq.heappop(h)\n      if h: heapq.heappop(h); ans+=1; day+=1\n    return str(ans)\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-agoda-4",
+      "sourceContentHash": "ad4afecb26c3a62396e8e4b999faf5b687be79b6f45cc5a926065788b53659ce",
+      "packageChecksum": "8a60e75d86f0b8809beacd7578a6f06da23df3129411145c3232d832cf13547c",
+      "editorial": "## 思路\n\n先统计位数更短的正整数，再逐位枚举小于当前上界数字的合法选择；剩余位数按未使用数字的排列数计数。最后用前缀函数作区间差。\n\n## 正确性证明\n\n每个有效数有唯一十进制位串。逐位分支恰好枚举所有在首个不同位上小于上界的数，排列数计入其余未用数字；若上界自身无重复再计入。F(b)−F(a−1) 因而准确对应闭区间。\n\n## 复杂度\n\nO(log b × 10) 时间，O(10) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/agoda#4-unique-digits-in-range；原题规则清楚；本站补充零的处理、上界和标准输入输出。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    a,b=map(int,raw.split())\n    def upto(x):\n      if x<0:return 0\n      ds=list(map(int,str(x))); L=len(ds); ans=1\n      def perm(n,k):\n        if k>n:return 0\n        v=1\n        for t in range(k):v*=n-t\n        return v\n      for length in range(1,min(L,10)): ans+=9*perm(9,length-1)\n      used=set()\n      for i,d in enumerate(ds):\n        low=1 if i==0 else 0\n        remaining=L-i-1\n        for c in range(low,d):\n          if c not in used: ans+=perm(9-len(used),remaining)\n        if d in used or (i==0 and d==0): break\n        used.add(d)\n      else: ans+=1\n      return ans\n    return str(upto(b)-upto(a-1))\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-koddi-1",
+      "sourceContentHash": "aabdd05da914ce83b29ae5f4754110f3f23b0ccb4c1d9097bb5ff5c7438e9310",
+      "packageChecksum": "eabcbd44c1e27189468a8a8e30ba65c9df9a6fc8d50d88c9907c0e0b1dbef1a9",
+      "editorial": "## 思路\n\n按空白切分单词，逐个比较小写化后的首尾字母。\n\n## 正确性证明\n\n每个分词结果恰好对应一个单词；对其首尾字符做不区分大小写比较与题意等价，累加真值即所求。\n\n## 复杂度\n\nO(L) 时间，O(L) 空间（分词存储）。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/koddi#1-count-words-starting-and-ending-with-same-letter；题意、大小写规则及空字符串样例明确；本站补充行输入协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw): return str(sum(w[0].lower()==w[-1].lower() for w in raw.split() if w))\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-koddi-4",
+      "sourceContentHash": "48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8",
+      "packageChecksum": "fb0789c124608ca131ec2a4e8eacee8f9cd50fda4d9b42d61b78f309fc429932",
+      "editorial": "## 思路\n\n每个黑格最多属于四个 2×2 窗口，只累计被黑格触及的窗口；其余窗口黑格数为零。\n\n## 正确性证明\n\n任意含至少一个黑格的 2×2 窗口会被其内某个黑格枚举到，字典频次恰等于其中黑格数。未出现的窗口没有黑格，故零类数量为全部窗口数减字典大小。\n\n## 复杂度\n\nO(k) 时间，O(k) 空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count；题意明确；本站补充坐标范围、黑格互异和输入协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split()));r,c,k=a[:3]; blacks={tuple(a[3+2*i:5+2*i]) for i in range(k)}; freq={}\n    for x,y in blacks:\n      for i in (x-1,x):\n        for j in (y-1,y):\n          if 0<=i<r-1 and 0<=j<c-1: freq[(i,j)]=freq.get((i,j),0)+1\n    ans=[0]*5\n    for z in freq.values():ans[z]+=1\n    ans[0]=(r-1)*(c-1)-len(freq)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

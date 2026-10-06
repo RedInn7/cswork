@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-koddi-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "按黑格数量统计 2×2 子矩阵",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Koddi",
+      "网格",
+      "哈希表"
+    ],
+    "description": "给定 rows×cols 网格中所有黑格坐标。对每个 2×2 子矩阵，按其中黑格数 0..4 分类并计数，返回五个计数。坐标从 0 开始且无重复。\n\n题意明确；本站补充坐标范围、黑格互异和输入协议。\n\n来源：https://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count（固定题面指纹 48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8）。本站新增的输入输出协议/边界按题面说明，不声称为原站规则。",
+    "input": "第一行 rows cols k（1≤rows,cols≤10^9，0≤k≤min(rows×cols,200000)）；接下来 k 行为黑格的 0-based row col。",
+    "output": "输出 5 个整数，依次为含 0、1、2、3、4 个黑格的窗口数。",
+    "explanation": "完整思路、证明及复杂度见配套讲义。",
+    "hints": [
+      "每个黑格最多属于四个 2×2 窗口，只累计被黑格触及的窗口；其余窗口黑格数为零。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "3 3 2\n0 0\n1 1\n",
+      "expectedOutput": "0 3 1 0 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "1 5 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "2 2 4\n0 0\n0 1\n1 0\n1 1\n",
+      "expectedOutput": "0 0 0 0 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "8 4 4\n2 0\n2 1\n2 2\n7 0\n",
+      "expectedOutput": "14 3 4 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "8 3 3\n4 1\n6 1\n7 2\n",
+      "expectedOutput": "6 7 1 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "6 1 3\n0 0\n1 0\n4 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "7 3 6\n3 1\n3 2\n4 1\n5 1\n5 2\n6 2\n",
+      "expectedOutput": "4 2 3 3 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "8 3 5\n0 2\n1 2\n2 1\n5 2\n7 0\n",
+      "expectedOutput": "6 6 2 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "5 3 2\n0 0\n1 1\n",
+      "expectedOutput": "4 3 1 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "5 5 4\n1 1\n1 4\n4 0\n4 1\n",
+      "expectedOutput": "8 7 1 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "8 7 10\n0 2\n1 2\n1 6\n2 3\n2 4\n4 2\n4 3\n5 5\n6 3\n6 5\n",
+      "expectedOutput": "15 18 9 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "3 2 0\n",
+      "expectedOutput": "2 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "1 2 1\n0 1\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "2 1 1\n0 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "8 6 8\n1 0\n1 1\n1 2\n1 3\n2 0\n4 2\n5 2\n6 3\n",
+      "expectedOutput": "17 9 8 1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "1 2 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "5 8 8\n0 0\n1 0\n2 0\n2 2\n2 4\n2 7\n3 0\n4 6\n",
+      "expectedOutput": "12 13 3 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "6 6 5\n2 4\n3 1\n4 2\n4 5\n5 2\n",
+      "expectedOutput": "12 10 3 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "4 1 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "7 3 7\n0 2\n1 1\n2 1\n3 0\n3 1\n4 2\n5 1\n",
+      "expectedOutput": "0 4 7 1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "1 8 1\n0 2\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "2 2 0\n",
+      "expectedOutput": "1 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "2 6 3\n1 3\n1 4\n1 5\n",
+      "expectedOutput": "2 1 2 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "6 1 1\n4 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "1 4 2\n0 2\n0 3\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "3 6 8\n0 0\n0 1\n0 2\n0 3\n0 4\n1 5\n2 1\n2 4\n",
+      "expectedOutput": "1 3 6 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "1 6 1\n0 1\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "7 3 5\n1 2\n2 0\n4 1\n5 1\n6 2\n",
+      "expectedOutput": "2 7 3 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "7 3 6\n0 2\n1 1\n2 0\n3 1\n4 1\n4 2\n",
+      "expectedOutput": "2 4 5 1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "8 1 0\n",
+      "expectedOutput": "0 0 0 0 0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

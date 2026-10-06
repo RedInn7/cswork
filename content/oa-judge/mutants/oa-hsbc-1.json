@@ -1,0 +1,10 @@
+[
+  {
+    "name": "后半段也升序",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n=a[0]; v=a[1:1+n]; k=a[1+n]\n    return ' '.join(map(str,sorted(v[:k])+sorted(v[k:])))\n\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按值从大到小排前半段",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n=a[0]; v=a[1:1+n]; k=a[1+n]\n    return ' '.join(map(str,sorted(v[:k],reverse=True)+sorted(v[k:],reverse=True)))\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]
