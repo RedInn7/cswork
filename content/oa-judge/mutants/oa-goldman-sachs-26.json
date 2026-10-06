@@ -1,0 +1,14 @@
+[
+  {
+    "name": "只比较最大公因数",
+    "description": "把 gcd 相等误当成可达的充分条件。",
+    "code": "import sys,math\ndef solve(raw):\n    a,b,c,d=map(int,raw.split());return 'Yes' if math.gcd(a,b)==math.gcd(c,d) else 'No'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n",
+    "sha256": "e9455381b137ed55d5fafda59ea666329ba754a93f2a5fceb590d82fe6b7e23a"
+  },
+  {
+    "name": "把非起点相等目标判为可达",
+    "description": "在反向过程中遇到 c==d 就错误接受，而非拒绝不可达相等状态。",
+    "code": "import sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    while c>=a and d>=b:\n        if (c,d)==(a,b):return 'Yes'\n        if c==d:return 'Yes'\n        if c>d:c-=d\n        else:d-=c\n    return 'No'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n",
+    "sha256": "1eff7ae7c46faac711237df739b80f50b78669516816d56c7ce434d57e310f6b"
+  }
+]

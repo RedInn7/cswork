@@ -1,0 +1,259 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-6",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Cutting Metal Surplus",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "贪心",
+      "枚举"
+    ],
+    "description": "给定若干根金属棒、每次切割成本和每单位长度售价。可选一个正整数 saleLength；棒材可切成若干段 saleLength，其他余料丢弃且无收益。可不处理某根棒，目标是最大化总销售额减切割成本。\n\n本站输入格式与明确标注的范围由 CSWork 整理，不冒充原 OA 平台 I/O。",
+    "input": "第一行输入 n、costPerCut、salePrice；第二行输入 n 个 rod length。原题范围：1≤n≤50，1≤length[i]≤10000，1≤costPerCut,salePrice≤100。本站明确按棒材分别选择保留 saleLength 成品段数；完整利用整除棒时最后一段不需切离，有余料或只保留部分段时，每段成品均需一次切割，余料不计收益。",
+    "output": "输出可达到的最大总利润。",
+    "explanation": "解题思路、正确性证明及复杂度见配套题解。",
+    "hints": [
+      "枚举 saleLength=1..max(length)。对每根棒计算可得的成品段数 k。若有余料，每保留一段需要一次切割，选择正利润时保留全部 k 段。若恰好整除，比较：全部 k 段只需 k−1 刀；或至多保留 k−1 段、逐段从余料切离；也可整根不切。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "本站样例 1",
+      "input": "3 1 10\n30 59 110\n",
+      "expectedOutput": "1913\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站样例 2",
+      "input": "3 100 10\n26 103 59\n",
+      "expectedOutput": "1230\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站样例 3",
+      "input": "1 100 1\n1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界验证 1",
+      "input": "2 2 1\n5 6\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界验证 2",
+      "input": "11 1100 10\n50 50 50 50 50 50 50 50 50 50 100\n",
+      "expectedOutput": "5000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界验证 3",
+      "input": "50 100 100\n10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000 10000\n",
+      "expectedOutput": "50000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 2",
+      "input": "4 33 7\n6 44 19 19\n",
+      "expectedOutput": "466\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 3",
+      "input": "7 7 1\n36 15 34 41 34 35 3\n",
+      "expectedOutput": "149\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 4",
+      "input": "2 17 15\n8 6\n",
+      "expectedOutput": "163\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 5",
+      "input": "5 11 16\n28 24 14 1 6\n",
+      "expectedOutput": "957\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 6",
+      "input": "2 11 15\n14 9\n",
+      "expectedOutput": "293\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 7",
+      "input": "1 7 14\n2\n",
+      "expectedOutput": "28\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 8",
+      "input": "1 18 4\n12\n",
+      "expectedOutput": "48\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 9",
+      "input": "4 15 2\n32 15 11 23\n",
+      "expectedOutput": "77\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 10",
+      "input": "5 14 4\n32 1 41 44 16\n",
+      "expectedOutput": "378\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 11",
+      "input": "1 27 16\n3\n",
+      "expectedOutput": "48\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 12",
+      "input": "7 34 11\n11 3 28 39 23 44 8\n",
+      "expectedOutput": "1112\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 13",
+      "input": "5 32 5\n3 20 19 31 12\n",
+      "expectedOutput": "221\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 14",
+      "input": "5 34 4\n3 9 8 30 3\n",
+      "expectedOutput": "120\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 15",
+      "input": "4 10 18\n42 15 31 20\n",
+      "expectedOutput": "1710\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 16",
+      "input": "1 5 15\n5\n",
+      "expectedOutput": "75\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 17",
+      "input": "5 17 4\n38 8 30 12 14\n",
+      "expectedOutput": "234\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 18",
+      "input": "5 2 13\n33 38 5 27 12\n",
+      "expectedOutput": "1375\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 19",
+      "input": "1 7 12\n30\n",
+      "expectedOutput": "360\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 20",
+      "input": "1 5 14\n31\n",
+      "expectedOutput": "434\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 21",
+      "input": "2 15 18\n21 32\n",
+      "expectedOutput": "834\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 22",
+      "input": "7 23 2\n5 27 32 38 33 35 30\n",
+      "expectedOutput": "209\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 23",
+      "input": "7 33 20\n19 27 5 14 29 6 38\n",
+      "expectedOutput": "1944\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 24",
+      "input": "1 26 10\n43\n",
+      "expectedOutput": "430\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 25",
+      "input": "5 31 1\n31 28 8 29 9\n",
+      "expectedOutput": "31\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 26",
+      "input": "4 29 14\n1 30 10 36\n",
+      "expectedOutput": "835\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏验证 27",
+      "input": "3 11 10\n41 7 45\n",
+      "expectedOutput": "809\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

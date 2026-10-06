@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-amazon-363",
+      "oracleCases": 165,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "negativeControls": [
+        {
+          "name": "把严格小于误写成小于等于",
+          "rejectedByCases": [
+            2,
+            3,
+            4,
+            5,
+            15,
+            21,
+            34
+          ]
+        },
+        {
+          "name": "把至少 k 个误写成多于 k 个",
+          "rejectedByCases": [
+            0,
+            1,
+            4,
+            5,
+            6,
+            15,
+            31
+          ]
+        }
+      ],
+      "referenceSha256": "cf82d1c0e366f680d486c33641a3597893aefee2b458a18fb66f53ad7391eede",
+      "maxInputN": 100000
+    }
+  ],
+  "note": "独立 O(n^2) oracle 与 Fenwick 参考解本地差分通过；3 个 n=100000 边界输入通过；两个 mutant 均被拒。尚未运行 GoJudge，也未发布。"
+}
