@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-19",
+  "title": "反复求和后的数根众数",
+  "explanation": "## 思路\n\n对每个数字字符串反复求各位数字和，直到得到一位数。非负整数的数根可以在线性扫描中计算：所有数字和为 0 时结果为 0；否则结果为 1 + (数字和−1) mod 9。统计所有结果的频次，取出现次数最多的数根。\n\n## 并列与输入约定\n\n题干没有定义多个数根并列为 mode 时返回哪一个。随题固定源附带的解释/实现选择较大数根；本站将此作为明示规则。参数是数字字符串，固定解释把输入称为正整数；本站支持非负十进制数字串，允许前导零，并禁止负号或其他符号。输入输出和规模限制也均为本站补充。\n\n## 正确性与复杂度\n\n对非零十进制数，数根只由其数字和模 9 决定，公式与反复求和等价；全零字符串的数根为 0。频次表统计每个输入数的最终单数字结果，取最大频次并列中的最大值，符合本站 mode 约定。时间为总位数 O(D)，额外空间 O(10)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import Counter\n\ndef digital_root(text):\n    digit_sum = sum(ord(ch) - ord(\"0\") for ch in text)\n    if digit_sum == 0:\n        return 0\n    return 1 + (digit_sum - 1) % 9\n\ndef sum_digits_until_one(numbers):\n    roots = [digital_root(text) for text in numbers]\n    counts = Counter(roots)\n    maximum_frequency = max(counts.values())\n    # Site contract: if several roots are modes, return the largest one.\n    return max(root for root, frequency in counts.items()\n               if frequency == maximum_frequency)\n\ndef solve(raw):\n    data = raw.split()\n    if not data:\n        raise ValueError(\"expected list length and numeric strings\")\n    n = int(data[0])\n    if not 1 <= n <= 200000 or len(data) != n + 1:\n        raise ValueError(\"site limit: 1 <= n <= 200000\")\n    values = data[1:]\n    if any(not value or any(ch < \"0\" or ch > \"9\" for ch in value)\n           or len(value) > 100000 for value in values):\n        raise ValueError(\"site contract: non-negative decimal strings\")\n    if sum(map(len, values)) > 2000000:\n        raise ValueError(\"site limit: total digit count <= 2000000\")\n    return str(sum_digits_until_one(values))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#19-sum-digits-until-one",
+  "sourceContentHash": "d28e8340de136dc74da717ff7c4c7f21c5037daa642fd59803aa27e66ba621ca",
+  "author": "CSWork"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "零值错误地映射到数根 9",
+    "code": "import sys\nd=sys.stdin.read().split();n=int(d[0]);v=d[1:];r=[1+(sum(map(int,s))-1)%9 for s in v];from collections import Counter\nc=Counter(r);m=max(c.values());print(max(x for x,k in c.items() if k==m))\n"
+  },
+  {
+    "name": "多个众数并列时返回较小数根",
+    "code": "import sys\nd=sys.stdin.read().split();n=int(d[0]);v=d[1:];r=[(0 if sum(map(int,s))==0 else 1+(sum(map(int,s))-1)%9) for s in v];from collections import Counter\nc=Counter(r);m=max(c.values());print(min(x for x,k in c.items() if k==m))\n"
+  }
+]
