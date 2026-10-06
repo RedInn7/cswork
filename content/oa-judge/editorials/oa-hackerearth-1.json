@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hackerearth-1",
+  "title": "Happy Neighbourhood",
+  "explanation": "## 思路\n\n记录每个房子的入住日。对每个连续长度 M 的窗口取入住日最大值，再对所有窗口取最小值。\n\n## 正确性证明\n\n某窗口全部入住的最早一天等于其中最后入住的房子的入住日，即窗口入住日最大值。枚举所有窗口并取最小值恰好得到首次满足条件的日期。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import deque\n    v=list(map(int,raw.split()));n,m=v[:2];p=v[2:2+n];day=[0]*(n+1)\n    for i,x in enumerate(p,1):day[x]=i\n    q=deque();answer=n\n    for i in range(1,n+1):\n        while q and day[q[-1]]<=day[i]:q.pop()\n        q.append(i)\n        while q and q[0]<=i-m:q.popleft()\n        if i>=m:answer=min(answer,day[q[0]])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hackerearth#1-happy-neighbourhood",
+  "sourceContentHash": "1633934e74babfd2810869e76ba676cb70c1be4d445da618d87ea22a68da506c",
+  "author": "CSWork"
+}

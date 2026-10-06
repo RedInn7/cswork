@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-juspay-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Converging Maze: Largest Sum Cycle",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Juspay"
+    ],
+    "description": "每个编号0..N−1的格子至多有一个单向出口 edge[i]；edge[i]=−1 表示没有出口。输出所有有向环中节点编号和的最大值；无环时输出−1。\n\n本站明确的标准输入输出格式与补充约束属于在线版本定义，不冒充来源原始约束。",
+    "input": "第一行 N（1..200000），第二行 N 个整数，取值为 −1 或 [0,N−1]。",
+    "output": "输出最大环节点编号和，或 −1。",
+    "explanation": "逐个起点沿唯一后继前进，记录当前路径中每个节点的下标；再次遇到当前路径节点时，计算新环节点和。整轮完成后标记路径已处理。",
+    "hints": [
+      "逐个起点沿唯一后继前进，记录当前路径中每个节点的下标；再次遇到当前路径节点时，计算新环节点和。整轮完成后标记路径已处理。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "23\n4 4 1 4 13 8 8 8 0 8 14 9 15 11 -1 10 15 22 22 22 22 22 21\n",
+      "expectedOutput": "45\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\n-1\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\n1 0 3 2\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "4\n0 -1 0 -1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "6\n-1 1 -1 5 0 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "6\n1 3 3 -1 5 5\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "2\n0 -1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "8\n5 -1 0 7 2 4 0 7\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "5\n0 3 2 3 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "10\n9 -1 -1 2 1 6 5 7 9 -1\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "3\n2 1 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "7\n2 3 0 4 4 1 1\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "2\n-1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "5\n1 0 0 3 4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "7\n0 4 6 1 0 -1 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "6\n2 -1 5 1 3 -1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "2\n1 0\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "4\n-1 -1 -1 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "8\n3 2 1 7 6 7 5 4\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "5\n1 4 3 2 -1\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "3\n2 2 -1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "9\n3 6 8 2 4 8 8 2 0\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "10\n0 5 4 0 8 0 7 5 7 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "9\n1 5 5 0 0 0 -1 7 3\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "3\n2 2 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "5\n4 1 3 -1 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "6\n1 0 4 -1 1 5\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "8\n3 6 0 -1 0 -1 4 6\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "8\n1 4 6 -1 7 7 0 -1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "9\n6 3 0 8 2 7 4 7 6\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "6\n3 1 3 1 5 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "7\n5 4 3 -1 6 6 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

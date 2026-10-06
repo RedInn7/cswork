@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-money-forward-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Count Tiles in 1D Othello",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Money Forward"
+    ],
+    "description": "初始棋盘从左到右为黑、白棋。转录每个字符为一次落子：第1、3、5…步落黑棋，第2、4、6…步落白棋；L/R 表示落在当前棋串左/右端。落子后若沿该方向存在最近的同色棋子，就翻转新棋子与它之间的全部棋子；否则不翻转。输出终局黑白棋数量。\n\n本站明确的标准输入输出格式与补充约束属于在线版本定义，不冒充来源原始约束。",
+    "input": "输入仅含 L、R 的转录字符串，长度1..3000。每步必落子。",
+    "output": "输出黑棋数和白棋数，以一个空格分隔。",
+    "explanation": "按转录逐步模拟一维棋盘。在落子方向上寻找最近的同色棋子，翻转其与新棋子之间的棋子。",
+    "hints": [
+      "按转录逐步模拟一维棋盘。在落子方向上寻找最近的同色棋子，翻转其与新棋子之间的棋子。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "L\n",
+      "expectedOutput": "2 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "R\n",
+      "expectedOutput": "3 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "LRRL\n",
+      "expectedOutput": "5 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "RLLLRRLRL\n",
+      "expectedOutput": "2 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "LLLRRLL\n",
+      "expectedOutput": "9 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "RRRRLRLLLRRLLR\n",
+      "expectedOutput": "15 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "LRLLRLRRLRLRL\n",
+      "expectedOutput": "3 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "LRRLRLRRLLL\n",
+      "expectedOutput": "1 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "RLLLRL\n",
+      "expectedOutput": "6 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "LRLLLLLLRRRLL\n",
+      "expectedOutput": "15 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "RRRL\n",
+      "expectedOutput": "5 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "LRLLRRLL\n",
+      "expectedOutput": "0 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "LRRLLL\n",
+      "expectedOutput": "7 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "RLLRLRRRRLL\n",
+      "expectedOutput": "13 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "RRLLRLRLRLLL\n",
+      "expectedOutput": "13 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "RLRRRLLRLLLL\n",
+      "expectedOutput": "0 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "LRLRLRRL\n",
+      "expectedOutput": "9 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "LLRLRR\n",
+      "expectedOutput": "0 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "RLRRRL\n",
+      "expectedOutput": "1 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "RLLRRL\n",
+      "expectedOutput": "7 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "LLLRRRLRLLRRRL\n",
+      "expectedOutput": "1 15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "LRRR\n",
+      "expectedOutput": "5 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "RLRLLRLRRRRRR\n",
+      "expectedOutput": "15 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "LLLLRRRRRLLLR\n",
+      "expectedOutput": "14 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "RRRRRRRRLLLR\n",
+      "expectedOutput": "1 13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "RRRLRRLRLLL\n",
+      "expectedOutput": "1 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "RRRRLRLLRRLRRR\n",
+      "expectedOutput": "15 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "RRR\n",
+      "expectedOutput": "5 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "RLLLRLL\n",
+      "expectedOutput": "9 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "RLLRLLRLRLL\n",
+      "expectedOutput": "13 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "RRRR\n",
+      "expectedOutput": "5 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "RLLRLRRRL\n",
+      "expectedOutput": "10 1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

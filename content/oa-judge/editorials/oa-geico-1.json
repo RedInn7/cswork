@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-geico-1",
+  "title": "Bridge Weight Limit — Minimum Drivers Turn Back",
+  "explanation": "## 思路\n\n对每辆车 i，计算以 i 结尾的最长安全子序列：dp[i]=1+max(dp[j])，其中 j<i 且 weight[j]≤U−weight[i]。对重量坐标压缩后用 Fenwick 树维护前缀最大值。若 weight[i]>U，则不能保留。\n\n## 正确性证明\n\n任意安全保留子序列按原顺序排列；其最后一辆车的前驱必为更早且重量满足阈值的保留车。递推枚举所有可能前驱并取最大值，Fenwick 树只加速该前缀最大查询，因此得到最大可保留数，补集大小即最少离开数。\n\n## 复杂度\n\n时间 O(N log N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from bisect import bisect_right\n    values=list(map(int,raw.split()));limit,n=values[:2];weights=values[2:2+n]\n    coords=sorted(set(weights));tree=[0]*(len(coords)+1);best=0\n    def query(i):\n        value=0\n        while i:\n            value=max(value,tree[i]);i-=i&-i\n        return value\n    def update(i,value):\n        while i<len(tree):\n            tree[i]=max(tree[i],value);i+=i&-i\n    for weight in weights:\n        if weight<=limit:\n            prior=query(bisect_right(coords,limit-weight))\n            length=prior+1;update(bisect_right(coords,weight),length);best=max(best,length)\n    return str(n-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/geico#1-bridge-weight-limit--minimum-drivers-turn-back",
+  "sourceContentHash": "165351e9882f97ad0e0799d9d325ca52da204d348d49d165c22dcd8756399177",
+  "author": "CSWork"
+}

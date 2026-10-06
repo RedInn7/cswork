@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-harvey-2",
+  "title": "Spreadsheet Formula Evaluator",
+  "explanation": "## 思路\n\n暂存 SET 后沿依赖图 DFS 检测是否能回到被赋值单元格；若有环恢复旧值，否则提交。GET 按当前定义递归求和，并缓存仅在本次读取中的中间结果。\n\n## 正确性证明\n\n加法式的依赖图中出现环，当且仅当某次递归访问到当前路径上的节点。SET 暂存后从该标签开始 DFS 足以检查新建环；恢复旧定义可保证拒绝操作不改变状态。GET 递归使用同一环检测，因此未定义引用也能返回 ERROR。\n\n## 复杂度\n\n设单元格数为 V、引用总数为 E；每条命令 O(V+E)，空间 O(V+E)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    commands=raw.splitlines();cells={};out=[]\n    def cyclic(start):\n        active=set();done=set()\n        def visit(label):\n            if label in active:return True\n            if label not in cells or label in done:return False\n            active.add(label);found=any(visit(t.strip()) for t in cells[label].split('+') if not t.strip().isdigit());active.remove(label);done.add(label);return found\n        return visit(start)\n    def evaluate(label,active,memo):\n        if label not in cells or label in active:raise ValueError\n        if label in memo:return memo[label]\n        active.add(label);value=sum(int(t.strip()) if t.strip().isdigit() else evaluate(t.strip(),active,memo) for t in cells[label].split('+'));active.remove(label);memo[label]=value;return value\n    for command in commands:\n        if not command:continue\n        op,rest=command.split(' ',1)\n        if op=='GET':\n            try:out.append(str(evaluate(rest.strip(),set(),{})))\n            except (ValueError,RecursionError):out.append('ERROR')\n        else:\n            label,expr=rest.split(' ',1);old=cells.get(label);cells[label]=expr\n            try:\n                if cyclic(label):raise ValueError\n                out.append('OK')\n            except (ValueError,RecursionError):\n                if old is None:cells.pop(label,None)\n                else:cells[label]=old\n                out.append('ERROR')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/harvey#2-spreadsheet-formula-evaluator",
+  "sourceContentHash": "3f0ba847e3ba8db5fd328a319c96b9162629f2247e6ff375106a002d5a8ddfa2",
+  "author": "CSWork"
+}

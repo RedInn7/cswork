@@ -1,0 +1,10 @@
+[
+  {
+    "name": "完全不翻转棋子",
+    "code": "def solve(raw):\n    transcript=raw.strip();board=['B','W']\n    for turn,side in enumerate(transcript):\n        color='B' if turn%2==0 else 'W'\n        if side=='L':\n            board.insert(0,color)\n            try:target=board.index(color,1)\n            except ValueError:continue\n            for i in range(1,target):pass\n        else:\n            board.append(color)\n            try:target=len(board)-2-board[-2::-1].index(color)\n            except ValueError:continue\n            for i in range(target+1,len(board)-1):board[i]=color\n    return f'{board.count(\"B\")} {board.count(\"W\")}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "所有回合都落黑棋",
+    "code": "def solve(raw):\n    transcript=raw.strip();board=['B','W']\n    for turn,side in enumerate(transcript):\n        color='B'\n        if side=='L':\n            board.insert(0,color)\n            try:target=board.index(color,1)\n            except ValueError:continue\n            for i in range(1,target):board[i]=color\n        else:\n            board.append(color)\n            try:target=len(board)-2-board[-2::-1].index(color)\n            except ValueError:continue\n            for i in range(target+1,len(board)-1):board[i]=color\n    return f'{board.count(\"B\")} {board.count(\"W\")}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

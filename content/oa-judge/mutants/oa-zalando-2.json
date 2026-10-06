@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉 C/D 配对消除",
+    "code": "def solve(raw):\n    stack=[]\n    for ch in raw.strip():\n        if stack and ((stack[-1] in 'AB' and ch in 'AB' and stack[-1]!=ch) or (False and stack[-1]!=ch)):\n            stack.pop()\n        else:stack.append(ch)\n    return ''.join(stack)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只接受 A 后接 B",
+    "code": "def solve(raw):\n    stack=[]\n    for ch in raw.strip():\n        if stack and ((stack[-1] in 'AB' and ch in 'AB' and stack[-1]=='A' and ch=='B') or (stack[-1] in 'CD' and ch in 'CD' and stack[-1]!=ch)):\n            stack.pop()\n        else:stack.append(ch)\n    return ''.join(stack)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

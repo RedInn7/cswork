@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉长度为1子数组贡献",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];a=v[1:1+n];total=0;mod=1000000007\n    for left in range(n):\n        mask=0;gaps=0\n        for right in range(left,n):\n            value=a[right];bit=1<<(value-1)\n            if not mask&bit:\n                below=mask&(bit-1);pred=below.bit_length();above=mask>>(value)\n                succ=value+1+((above&-above).bit_length()-1) if above else None\n                if pred and succ is not None and succ-pred>1:gaps-=1\n                if pred and value-pred>1:gaps+=1\n                if succ is not None and succ-value>1:gaps+=1\n                mask|=bit\n            length=right-left+1;total+=gaps\n    return str(total%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把差大于1误写成差大于2",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];a=v[1:1+n];total=0;mod=1000000007\n    for left in range(n):\n        mask=0;gaps=0\n        for right in range(left,n):\n            value=a[right];bit=1<<(value-1)\n            if not mask&bit:\n                below=mask&(bit-1);pred=below.bit_length();above=mask>>(value)\n                succ=value+1+((above&-above).bit_length()-1) if above else None\n                if pred and succ is not None and succ-pred>2:gaps-=1\n                if pred and value-pred>1:gaps+=1\n                if succ is not None and succ-value>1:gaps+=1\n                mask|=bit\n            length=right-left+1;total+=(1 if length==1 else gaps)\n    return str(total%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

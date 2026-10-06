@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-zalando-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Zalando Manipulation",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Zalando"
+    ],
+    "description": "字符串只包含 A、B、C、D。可反复删除相邻且分别为 A/B 或 C/D 的两个字符，顺序不限。输出任意无法继续删除的结果。\n\n本站明确的标准输入输出格式与补充约束属于在线版本定义，不冒充来源原始约束。",
+    "input": "输入一行字符串，长度0..250000，只含 A、B、C、D。",
+    "output": "输出任一 irreducible 字符串；空结果输出空行。",
+    "explanation": "从左到右维护栈。若新字符与栈顶构成 A/B 或 C/D 的异类配对则弹栈，否则压栈。",
+    "hints": [
+      "从左到右维护栈。若新字符与栈顶构成 A/B 或 C/D 的异类配对则弹栈，否则压栈。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "CBACD\n",
+      "expectedOutput": "C\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "CABABD\n",
+      "expectedOutput": "\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "ACBDACBD\n",
+      "expectedOutput": "ACBDACBD\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "CD\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "BAC\n",
+      "expectedOutput": "C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "BDBACDCDA\n",
+      "expectedOutput": "BDA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "BDC\n",
+      "expectedOutput": "B\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "DAD\n",
+      "expectedOutput": "DAD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "DBADCCBAADBD\n",
+      "expectedOutput": "ADBD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "DADACDBDDC\n",
+      "expectedOutput": "DADD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "ACB\n",
+      "expectedOutput": "ACB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "ACCDD\n",
+      "expectedOutput": "A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "BC\n",
+      "expectedOutput": "BC\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "CBA\n",
+      "expectedOutput": "C\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "BAACCADCBDCA\n",
+      "expectedOutput": "ACCA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "CADAA\n",
+      "expectedOutput": "CADAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "AADDCA\n",
+      "expectedOutput": "AADA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "DDBDABAADCD\n",
+      "expectedOutput": "DDBDAAD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "D\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "ABCACBA\n",
+      "expectedOutput": "CAC\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "BDABA\n",
+      "expectedOutput": "BDA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "AADDDA\n",
+      "expectedOutput": "AADDDA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "ACADDCB\n",
+      "expectedOutput": "ACADB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "CBCBCBCDCDDA\n",
+      "expectedOutput": "CBCBCBDA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "ADBDBDBAD\n",
+      "expectedOutput": "ADBDBDD\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "BAAA\n",
+      "expectedOutput": "AA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "BCBACCBABAAA\n",
+      "expectedOutput": "BCCCAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "CBCBACDAA\n",
+      "expectedOutput": "CBCAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "CBDA\n",
+      "expectedOutput": "CBDA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "DDBCDBBAADB\n",
+      "expectedOutput": "DDBDB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "BAD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

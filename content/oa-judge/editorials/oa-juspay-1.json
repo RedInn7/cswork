@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-juspay-1",
+  "title": "Converging Maze: Largest Sum Cycle",
+  "explanation": "## 思路\n\n逐个起点沿唯一后继前进，记录当前路径中每个节点的下标；再次遇到当前路径节点时，计算新环节点和。整轮完成后标记路径已处理。\n\n## 正确性证明\n\n函数图中的每个节点出度至多为1。当前路径重复节点恰好切出一个有向环；不同已完成路径不会再发现新环。每个节点只进入一次工作路径，因此所有环均被检查一次并取最大值。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];edges=v[1:1+n];done=[False]*n;best=-1\n    for start in range(n):\n        if done[start]:continue\n        path=[];index={};node=start\n        while node!=-1 and not done[node] and node not in index:\n            index[node]=len(path);path.append(node);node=edges[node]\n        if node!=-1 and node in index:best=max(best,sum(path[index[node]:]))\n        for u in path:done[u]=True\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/juspay#1-converging-maze-largest-sum-cycle",
+  "sourceContentHash": "acf7d0f9a3830f8d772574bc18cd53eab0d01835e7e76435122e0762af50e4d0",
+  "author": "CSWork"
+}

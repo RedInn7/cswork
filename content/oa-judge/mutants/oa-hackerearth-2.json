@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误地选择最早等待的女生",
+    "code": "def solve(raw):\n    v=raw.split();n=int(v[0]);s=v[1];girls=[];out=[]\n    for i,ch in enumerate(s[:n],1):\n        if ch=='0':girls.append(i)\n        else:out.append(str(girls.pop(0) if girls else -1))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "没有女生时错误输出0",
+    "code": "def solve(raw):\n    v=raw.split();n=int(v[0]);s=v[1];girls=[];out=[]\n    for i,ch in enumerate(s[:n],1):\n        if ch=='0':girls.append(i)\n        else:out.append(str(girls.pop() if girls else 0))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]
