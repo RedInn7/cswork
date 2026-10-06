@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jane-street-1",
+  "title": "Transform String",
+  "explanation": "## 思路\n\n从左到右扫描并用栈保存未消除字符。新字符与栈顶构成 AB、BA、CD 或 DC 时弹出栈顶，否则压入新字符。\n\n## 正确性证明\n\n扫描前缀的栈是该前缀按规则消除后的一个不可继续消除结果。加入一个新字符后，任何新产生的相邻可删对只能跨越新字符与旧前缀末尾；若匹配就消去这两者，否则新字符保留。归纳得到最终串不可继续变换且可由原串变换得到。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n题意按固定 OAMaster 快照整理；标准输入输出协议为本站补充，不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A'),('C','D'),('D','C')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/jane-street#1-transform-string",
+  "sourceContentHash": "1690b0b662ef88bb13d22a4967d957cc0b92ad07e9874cd58eb2fc87c43815a6",
+  "author": "Chunyu Sui"
+}

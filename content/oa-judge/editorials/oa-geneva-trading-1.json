@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-geneva-trading-1",
+  "title": "Minimum Number of Permutation Operations",
+  "explanation": "## 思路\n\n排列由互不相交的循环组成。一次操作沿置换把每个位置的元素移动一格；长度为 L 的循环经过 L 次才逐项回到原位。因此总步数必须且只需是所有循环长度的公倍数，最小正步数为其最小公倍数。由于 LCM 可能很大，统计各循环长度中每个质因子的最大指数，再模乘恢复 LCM。\n\n## 正确性证明\n\n若执行 t 次后数组恢复，因为数组元素互异，每个位置都必须回到原位置；在每个循环上这等价于 L|t。所有循环同时恢复当且仅当 t 是所有循环长度的公倍数。一个数能被所有循环长度整除，当且仅当其每个质因子指数不小于各循环长度中的最大指数，因此质因子最高幂的乘积正是最小正整数解。\n\n## 复杂度\n\n分解循环长度和建最小质因子表，时间 O(n log n)，空间 O(n)。\n\n## 来源说明\n\n题意按固定 OAMaster 快照整理；标准输入输出协议为本站补充，不声称原站提供该协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;mod=10**9+7\n    spf=list(range(n+1))\n    for i in range(2,int(n**0.5)+1):\n        if spf[i]==i:\n            for j in range(i*i,n+1,i):\n                if spf[j]==j:spf[j]=i\n    max_power={}\n    for i in range(n):\n        if not seen[i]:\n            u=i;length=0\n            while not seen[u]:seen[u]=True;length+=1;u=p[u]\n            x=length\n            while x>1:\n                prime=spf[x];power=0\n                while x%prime==0:x//=prime;power+=1\n                max_power[prime]=max(max_power.get(prime,0),power)\n    ans=1\n    for prime,power in max_power.items():ans=ans*pow(prime,power,mod)%mod\n    return str(ans)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/geneva-trading#1-minimum-number-of-permutation-operations",
+  "sourceContentHash": "a86fe9cc0e918b4cf8fc159e98309ca7b7ef2265cd03ec895f7aa4293648ae95",
+  "author": "Chunyu Sui"
+}
