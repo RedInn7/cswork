@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-verisk-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "minimalOperations (Adjacent Duplicate Replacements)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Verisk"
+    ],
+    "description": "对每个单词求最少字符替换次数，使任意相邻字符不同。",
+    "input": "第一行 n（1≤n≤100）；随后 n 行小写单词，每词长度 2..100000。",
+    "output": "每个单词对应一行最小替换数。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题样例 1",
+      "input": "3\nadd\nboook\nbreak\n",
+      "expectedOutput": "1\n1\n0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "8\nzyaxzbyxzybz\nbxacaybxzcacz\nxcbay\nbababczcb\nccbzbyzacaca\nyayxcbccybabc\nxzaxaxczxbay\nbabbzazbabcab\n",
+      "expectedOutput": "0\n0\n0\n0\n1\n1\n0\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "12\nabay\nyz\nzccacyab\nxb\nbacbxzxcbxabc\nccybbcxbcaac\nacbx\nbc\nzb\naazcabaac\nbayaxacbcacbx\nzayzcbaba\n",
+      "expectedOutput": "0\n0\n1\n0\n0\n3\n0\n0\n0\n2\n0\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "6\nxzcbbbxxxxa\nzxazbaazaaxza\nabzccax\nzaxczx\nby\ncabcxca\n",
+      "expectedOutput": "3\n2\n1\n0\n0\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "11\naayazzacxc\ncbyxaaxbaca\nabbcbb\nbbabazz\ncbxzaaxc\nacccxcyz\naccbabc\ncbyz\nbbbcacabc\nycaabcxbcyyca\nybaayaaab\n",
+      "expectedOutput": "2\n1\n2\n2\n1\n1\n1\n0\n1\n2\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "11\nyab\nazbycyba\nazayaxcya\nyyacyzca\nacab\nxaabbcc\nbczzccyaca\ncczbbcczya\nybzcbac\nxyaccxaa\nababzzaaay\n",
+      "expectedOutput": "0\n0\n0\n1\n0\n3\n2\n3\n0\n2\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "6\ncaccccaccybxb\nzzxaa\nabbczab\nbcxzaycz\nybxac\nabyyzbycy\n",
+      "expectedOutput": "3\n2\n1\n0\n0\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "11\nycaccccyy\nazcx\nzayaxzbzz\nccbb\nbyzbcbcxaa\nacyxb\nayx\ncbzbbybbbzab\nabbzabzzbxaxa\nbacbbabz\nabxzyabxbcac\n",
+      "expectedOutput": "3\n0\n1\n2\n1\n0\n0\n2\n2\n1\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "8\ncycbccyacc\nzybbxccza\nacaxcccxxx\nbbcxaxzabccz\nzba\nabzcbzb\nzcbzbcc\nbxbbbca\n",
+      "expectedOutput": "2\n2\n2\n2\n0\n0\n1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "11\ncczzcccyaya\ncbxbc\nac\nbxaxbazcy\nzxcybcccxyaba\nxaccbac\ncababaa\nybzcacazcc\nzyazazbbyxaay\ncxazccabacb\nxcczaxa\n",
+      "expectedOutput": "3\n0\n0\n0\n1\n1\n1\n1\n2\n1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "10\ncxacbcbaz\nxxcax\nabya\nbxzcxxycb\nxzccyzy\nzcbbcazycb\naaacbybacx\ncb\nccb\nbzacaababbccb\n",
+      "expectedOutput": "0\n1\n0\n1\n1\n1\n1\n0\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "9\nbzb\nzbcb\naczacbxczc\naabx\nbcxbzaccc\ncacaaxxaybccc\nbxbyxzabczxc\nbyzbybcc\nbxxaabxza\n",
+      "expectedOutput": "0\n0\n0\n1\n1\n3\n0\n1\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "10\nccbybacza\ncbyzzbbxz\ncy\ncxazyaacbxxya\nxcaabcbcaaca\nbaccxbyyy\nyxaxac\nzzaaa\nccxzcc\nxxaxa\n",
+      "expectedOutput": "1\n2\n0\n2\n2\n2\n0\n2\n2\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "8\nyazcb\nxxaaz\nbzcyyyzbzx\nabcccccacxzca\ncbyacyzyyaabx\nzcaxbbayyyb\nybbyaybcb\nacx\n",
+      "expectedOutput": "0\n2\n1\n2\n2\n2\n1\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "8\ncab\nbcccczyaaycb\nbbacabccb\nxczcc\nbb\ncbaaazacazxc\nbacbbab\nacxxzbaya\n",
+      "expectedOutput": "0\n3\n2\n1\n1\n1\n1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "3\nbbc\ncax\ncbacaccbxcx\n",
+      "expectedOutput": "1\n0\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "8\nabbcbxyba\nbzzxayaca\nacac\nczxxabcaybxac\nbybbbcxaxb\nccxba\ncxbcbz\nbcabyczx\n",
+      "expectedOutput": "1\n1\n0\n1\n1\n1\n0\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "7\nbccxbccyyzb\nbzacxcaa\nby\nabazzcccyz\nacazabcbbzyyx\nxbcxzbxbaabx\nabya\n",
+      "expectedOutput": "3\n1\n0\n2\n2\n1\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "6\nzcacxc\nbcaabcbx\nacxcab\nzbabzybbayb\nxcycx\naaabcaba\n",
+      "expectedOutput": "0\n1\n0\n1\n0\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "4\nzczcyaab\nxbzayzxazaa\nczbbzbcayb\nbxzabzbzbyyc\n",
+      "expectedOutput": "1\n1\n1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "11\nbba\nbyabbbabaz\nycxbaczbbxxbz\nccbabxx\nzab\nacyycx\nba\nbbcxxazacz\naacaazccya\nzacbxabcb\nccbxybccbbxcy\n",
+      "expectedOutput": "1\n1\n2\n2\n0\n1\n0\n2\n3\n0\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "11\naxcbybazxcz\nyybcabacxzyay\nybccxac\naba\nacccbayabzcb\naazazc\ncbcabycyzx\nzbyza\nccxxbxzazbyaa\nabbbabxb\nbzabcxcczb\n",
+      "expectedOutput": "0\n1\n1\n0\n1\n1\n0\n0\n3\n1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "2\nzaccacbbyaa\nxybb\n",
+      "expectedOutput": "3\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "6\nzybacbcabbacb\nccbaaxaaaba\nczxbabbxxxxb\nacaaxccxbabb\nzcay\nccxabcc\n",
+      "expectedOutput": "1\n3\n3\n3\n0\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "2\ncazbcbxz\nyzc\n",
+      "expectedOutput": "0\n0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

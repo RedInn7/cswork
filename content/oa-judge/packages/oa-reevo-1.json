@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-reevo-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Compression (Run-Length Encoding)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Reevo"
+    ],
+    "description": "从左到右合并相邻同字母段：长度为 1 的只输出字母，长度大于 1 的输出字母及段长。",
+    "input": "一行非空小写字母串，长度≤100000。",
+    "output": "输出压缩结果。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题样例 1",
+      "input": "aabbccca\n",
+      "expectedOutput": "a2b2c3a\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "bb\n",
+      "expectedOutput": "b2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "ycabbaaccabbybzyzbzaxcbxaybzcacbbcaczaabaza\n",
+      "expectedOutput": "ycab2a2c2ab2ybzyzbzaxcbxaybzcacb2cacza2baza\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "bcccbacycbbaxbxzcxcbxzbbxzyaaaxcbazazxcyyaczbabzbyzbaazaa\n",
+      "expectedOutput": "bc3bacycb2axbxzcxcbxzb2xzya3xcbazazxcy2aczbabzbyzba2za2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "cxaczbxababyzxyayzbcyzxzazxbaxyzybabaaccyzyaxxcyaya\n",
+      "expectedOutput": "cxaczbxababyzxyayzbcyzxzazxbaxyzybaba2c2yzyax2cyaya\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "abyazczyxccz\n",
+      "expectedOutput": "abyazczyxc2z\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "zyzxabbcczycbczxaxzaybcazcyyby\n",
+      "expectedOutput": "zyzxab2c2zycbczxaxzaybcazcy2by\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "bbbycbycyczbaycybzybxzycxbbxxb\n",
+      "expectedOutput": "b3ycbycyczbaycybzybxzycxb2x2b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "bazaxaxyaccyacycxcyczacxbcczbccaxazxczcc\n",
+      "expectedOutput": "bazaxaxyac2yacycxcyczacxbc2zbc2axazxczc2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "yzcxzyczxzybxyczbzaxxbabacxayybbxzczbcbcyyxxyyyycyb\n",
+      "expectedOutput": "yzcxzyczxzybxyczbzax2babacxay2b2xzczbcbcy2x2y4cyb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "cbcabaxyxaxzzbyzaybyabxzaxzzczyccaxczycybcycyzyacx\n",
+      "expectedOutput": "cbcabaxyxaxz2byzaybyabxzaxz2czyc2axczycybcycyzyacx\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "xbcxzcabbab\n",
+      "expectedOutput": "xbcxzcab2ab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "ycaxyzyzcybzcybyzyzbbyzcyxbcyyx\n",
+      "expectedOutput": "ycaxyzyzcybzcybyzyzb2yzcyxbcy2x\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "ycczxxzczcaxbzcxbzbbxyybzx\n",
+      "expectedOutput": "yc2zx2zczcaxbzcxbzb2xy2bzx\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "bbcayaccazbxazyzzcabczxbzcbzzyxzycycczxyyyccaaxxccxbbbca\n",
+      "expectedOutput": "b2cayac2azbxazyz2cabczxbzcbz2yxzycyc2zxy3c2a2x2c2xb3ca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "zxyzcyaxbaacybcxbybbbabcyacbcabaabybacyzayyb\n",
+      "expectedOutput": "zxyzcyaxba2cybcxbyb3abcyacbcaba2bybacyzay2b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "zxzz\n",
+      "expectedOutput": "zxz2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "acyxzyzaxbayxzzybcxbxxyabzzzxaaaxbbcaxxcbaayzxbabcaacza\n",
+      "expectedOutput": "acyxzyzaxbayxz2ybcxbx2yabz3xa3xb2cax2cba2yzxbabca2cza\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "xaxybxbcaaxyaaxbcxycbxaxzcbxayycbcabbazabxbzyzxbczcxzzxxzz\n",
+      "expectedOutput": "xaxybxbca2xya2xbcxycbxaxzcbxay2cbcab2azabxbzyzxbczcxz2x2z2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "zyyyyzayzaxzaaccacbyaccyxcazy\n",
+      "expectedOutput": "zy4zayzaxza2c2acbyac2yxcazy\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "aazazczyaxyxzx\n",
+      "expectedOutput": "a2zazczyaxyxzx\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "azbc\n",
+      "expectedOutput": "azbc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "xycbzyczbyxyybzzzyzxxbbcczcxyxyazzxcyxaxbyacxzcyzycyxbba\n",
+      "expectedOutput": "xycbzyczbyxy2bz3yzx2b2c2zcxyxyaz2xcyxaxbyacxzcyzycyxb2a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "bzzaaaaxbba\n",
+      "expectedOutput": "bz2a4xb2a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "cbxzaxczcczaabyayxybxaczzczzabbabzcycazacabc\n",
+      "expectedOutput": "cbxzaxczc2za2byayxybxacz2cz2ab2abzcycazacabc\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

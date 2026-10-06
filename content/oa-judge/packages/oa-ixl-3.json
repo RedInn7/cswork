@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ixl-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Anagram Difference",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Ixl"
+    ],
+    "description": "对每一对小写字符串，求替换任一侧最少字符数使其成为异位词；长度不同返回 −1。",
+    "input": "第一行 q（1≤q≤100）；每组输入两行：先给 |a|、|b|，再分别给字符串。空串用单独一行 - 表示；非空字符仅 a-z，长度≤10000。",
+    "output": "每组输出一行最小替换数；长度不同输出 −1。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题样例 1",
+      "input": "3\n3 3\ntea\nate\n3 3\ntea\ntoe\n3 4\nact\nacts\n",
+      "expectedOutput": "0\n1\n-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "3\n0 1\n-\nx\n9 2\nxyzybbybx\ncb\n13 8\ncxbczzbbxccyc\nxbaxayyb\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "4\n3 11\nyzz\nabzaabcbaxy\n9 5\nzzbxxbbxb\naxbcb\n6 12\nzyabba\ncyxbbyczaxbx\n15 9\ncaaxbaaczyzcaac\nbxyaccayx\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "1\n10 9\nxcyyyzbacz\nyxzaacbbc\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "5\n4 7\ncczy\nzxccxxx\n3 6\nbya\nazbxxa\n13 12\nyybaabzxybzba\nxcbzxyczbxzz\n14 12\nybxaxcbxzxyxxb\nbaxcxaazyzac\n7 9\nazccxyb\nayybccczy\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "1\n4 1\nabyx\nz\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "3\n12 9\nazccxabbzbzc\nyyyczccax\n14 15\nbcycyzzbbzzacb\naabyxxbbbazbzcc\n4 13\nxczb\nbzzcbzxabyazy\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "6\n5 2\nxacbb\nbb\n0 9\n-\nxxbbabacz\n5 6\nxbbyz\nzbxyac\n2 6\nbz\nbzbxcc\n6 2\nxzzyax\nyy\n1 8\nb\nxzayzbxz\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "5\n5 14\nyzyxa\ncxbycbxbbaczxz\n0 4\n-\naxcb\n15 1\nccycxzzbxcxzzcb\nz\n8 4\nbabccabc\nzbza\n13 5\naxbxybxczczxx\nbccbc\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "2\n6 7\nccbycc\nxzbyazy\n1 8\nb\nyzzbcycz\n",
+      "expectedOutput": "-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "2\n14 13\nbzcazcyzyzazby\nbaxbabbxyxxzx\n4 6\nzxbz\naxaxya\n",
+      "expectedOutput": "-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "3\n4 11\ncbzz\nzyczabycbxa\n10 2\nabxzxbzcyx\nxc\n9 11\ncxccbyazc\nxaacybxaycc\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "1\n0 11\n-\nxybccazycax\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "5\n4 7\nczcc\naxyyaay\n15 11\nzccbzzcabcayccy\nzbzbxabcbcy\n8 4\nazzacxza\nybzz\n13 4\ncabbbczbcacbb\ncyzz\n8 1\nyacycbcb\nc\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "3\n7 4\naaxycay\nzccb\n1 8\nz\nbzxacbya\n0 2\n-\ncx\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "6\n8 5\nbccxbzxy\nybcxc\n6 15\nbcbxyc\nybzxbbbzxzzxzyz\n3 15\nxyx\nzzbaazzyxbyxbzx\n11 9\ncbycbxxbxcy\nbxzyyzbxx\n0 11\n-\nyzcccyxxbzx\n10 9\nyaabybzaay\ncbyyzbczx\n",
+      "expectedOutput": "-1\n-1\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "3\n11 0\nyzcybcxxyxc\n-\n13 1\nazbazyxayzzyz\ny\n4 6\nbybz\naayyaa\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "3\n0 11\n-\nbxzcaxyzzaz\n2 11\nzx\naaxabxczzby\n8 14\nxcxacbyz\nzcxbcxzyzxyczx\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "3\n13 10\nybcczcybacbyy\nzzayaycbay\n6 2\ncyzcxz\nbx\n13 2\nzzyazbbzxyyzc\nbx\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "3\n0 11\n-\nyxcabxzbaac\n13 11\nacbcbcyzbbxyb\nccbaxzxbxac\n0 12\n-\nyzyazaxxczyz\n",
+      "expectedOutput": "-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "2\n10 1\nxyxayzyacx\na\n11 15\ncyyxazyazza\nzayxzcyayxzycaz\n",
+      "expectedOutput": "-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "1\n6 0\naxxzbc\n-\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "4\n7 7\nzzyabza\ncxcxaay\n6 8\nzbzxcc\nayyxzyxy\n4 2\naaya\nbx\n12 2\nzbabcaxcxyyz\nyc\n",
+      "expectedOutput": "4\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "2\n5 9\nxxxcx\nbcyxzcccy\n14 6\nccbbzxxxzayxaz\naxxxzx\n",
+      "expectedOutput": "-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "6\n6 14\nzcxayc\nbxacbxycxazaac\n3 3\nzxc\nyyz\n14 5\nzzyxxbayzbaaxy\nccbzb\n2 0\nxb\n-\n10 13\ncyybbzayxz\nyzxcbxbxyczxz\n6 15\nyyzzxy\nzbczbyyyyzyzccz\n",
+      "expectedOutput": "-1\n2\n-1\n-1\n-1\n-1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

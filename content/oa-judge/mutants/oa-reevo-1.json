@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每个字符都带上计数 1",
+    "code": "def solve(raw):\n s=raw.strip(); out=[]; i=0\n while i<len(s):\n  j=i+1\n  while j<len(s) and s[j]==s[i]:j+=1\n  out.append(s[i]+str(j-i)); i=j\n return ''.join(out)\n"
+  },
+  {
+    "name": "统计全局频次而非连续段",
+    "code": "def solve(raw):\n from collections import Counter\n s=raw.strip(); c=Counter(s); return ''.join(x+(str(c[x]) if c[x]>1 else '') for x in dict.fromkeys(s))\n"
+  }
+]

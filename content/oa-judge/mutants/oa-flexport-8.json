@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略重复状态，沿路径直接走到输入秒数",
+    "code": "def solve(raw):\n v=list(map(int,raw.split())); n,k=v[:2]; a=v[2:2+n]; x=1\n for _ in range(min(k,2000)): x=a[x-1]\n return str(x)\n"
+  },
+  {
+    "name": "把朋友编号当成零起始编号",
+    "code": "def solve(raw):\n v=list(map(int,raw.split())); n,k=v[:2]; a=v[2:2+n]; x=0\n for _ in range(k%100): x=a[x]-1\n return str(x)\n"
+  }
+]

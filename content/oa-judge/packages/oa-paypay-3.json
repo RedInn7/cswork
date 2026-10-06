@@ -1,0 +1,215 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-paypay-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Find Maximum Two-Digit Fragment",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "PayPay"
+    ],
+    "description": "在数字串所有长度为 2 的连续片段中，求按十进制数值解释后的最大值。",
+    "input": "一行数字串 S，长度 2..100000，字符仅 0..9。",
+    "output": "输出最大的两位片段数值，前导零按整数解析。",
+    "explanation": "从题目规则直接推导线性扫描/动态规划解法；样例与独立构造的 oracle 已逐例核对。",
+    "hints": [
+      "先把题面中的操作或约束转成确定的数组/状态转移，再分析边界。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题样例 1",
+      "input": "50552\n",
+      "expectedOutput": "55\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "定向边界 1",
+      "input": "199\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 1",
+      "input": "526\n",
+      "expectedOutput": "52\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 2",
+      "input": "6942800\n",
+      "expectedOutput": "94\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 3",
+      "input": "07216004076408732117\n",
+      "expectedOutput": "87\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 4",
+      "input": "25204020750685000290757264115842\n",
+      "expectedOutput": "90\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 5",
+      "input": "4067645699060651785\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 6",
+      "input": "8407025635605808442712310977\n",
+      "expectedOutput": "97\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 7",
+      "input": "644805078994122502013576700444864804140\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 8",
+      "input": "503407030092108038100640104349104\n",
+      "expectedOutput": "92\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 9",
+      "input": "43412743253700441181382507283330033252406589505248440059\n",
+      "expectedOutput": "95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 10",
+      "input": "09957732730938898558030308020\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 11",
+      "input": "095\n",
+      "expectedOutput": "95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 12",
+      "input": "8464\n",
+      "expectedOutput": "84\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 13",
+      "input": "60574125647971248040599386906587606171370505426254\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 14",
+      "input": "57094\n",
+      "expectedOutput": "94\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 15",
+      "input": "471627963795504536605\n",
+      "expectedOutput": "96\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 16",
+      "input": "236404801494\n",
+      "expectedOutput": "94\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 17",
+      "input": "2979400\n",
+      "expectedOutput": "97\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 18",
+      "input": "427325467\n",
+      "expectedOutput": "73\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 19",
+      "input": "22345964461817416025046701531894408900841180757752359594\n",
+      "expectedOutput": "96\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 20",
+      "input": "1738058892005107289843807674357832865002054350\n",
+      "expectedOutput": "98\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 21",
+      "input": "0144096036364329486980090693054704212164206389397683722\n",
+      "expectedOutput": "98\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 22",
+      "input": "0592705202702531317000\n",
+      "expectedOutput": "92\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 23",
+      "input": "19107357404305524723853008000079321776690575\n",
+      "expectedOutput": "93\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "组合 24",
+      "input": "9708900\n",
+      "expectedOutput": "97\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
