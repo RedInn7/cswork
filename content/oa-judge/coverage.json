@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 17,
-    "blocked": 527,
+    "awaiting_sandbox": 19,
+    "blocked": 525,
     "unreviewed": 0
   },
   "items": [
@@ -8635,8 +8635,9 @@
     {
       "id": "oa-goldman-sachs-27",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "返回值要求每次操作后取集合最大值×最小值，但允许操作后集合为空时结果未定义；原约束没有保证不清空。"
+      "status": "awaiting_sandbox",
+      "batch": "goldman-sachs-27-recovered",
+      "reason": "固定快照中的 Python、Java、C++ 参考实现均明确规定操作后空集合的结果为 0；三者也均使用保留重复次数的数据结构，并在 pop 时只删除一个副本。题意其余部分和 64 位乘积约束明确。由于题库导入输出上限 65536 字节，本站明示把 n 从原 10^5 限制为 2500，确保最多 19 位结果的完整数组输出不超限。120 个独立 list/multiset oracle、边界及两个正常退出错误实现验证通过。"
     },
     {
       "id": "oa-goldman-sachs-28",
@@ -9580,8 +9581,9 @@
     {
       "id": "oa-pure-storage-2",
       "company": "pure-storage",
-      "status": "blocked",
-      "reason": "原题解将排除 z[i] 的位置选为最早可行位置，却未证明字典序最小；字典序比较表明较早位置维持全字母组可能更小，需重做 reference 与 oracle 后另行复审，故本批不注册。"
+      "status": "awaiting_sandbox",
+      "batch": "pure-storage-2-recovered",
+      "reason": "固定题面语义完整；独立推导证实原解最早可行位置并非字典序最小，候选改为最右可行位置。与另一份本地编号表的 #2 标题冲突已披露且不混用。标准 I/O 由本站补充。仅为离线候选，尚未运行真实 GoJudge。"
     },
     {
       "id": "oa-pure-storage-3",
