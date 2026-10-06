@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-duolingo-3",
+  "title": "Replace Nth Consonant",
+  "explanation": "## 思路\n\n扫描字符串并维护已见辅音数；每当计数是 n 的倍数时，在 21 个英文字母辅音组成的循环中前进一位。\n\n## 正确性证明\n\n逐字符扫描保证非目标字符不变；计数只在英文字母且非元音时递增，因此第 k 个辅音恰在计数达到 k 时被判定。循环辅音表的后继运算直接实现题面规定的下一个辅音及 z→b 回绕，大小写分别映射后再恢复。\n\n## 复杂度\n\n时间 O(|message|)，额外空间 O(|message|)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines = raw.splitlines()\n    message, n = lines[0], int(lines[1])\n    vowels = set(\"aeiouAEIOU\")\n    consonants = \"bcdfghjklmnpqrstvwxyz\"\n    count = 0\n    out = []\n    for char in message:\n        lower = char.lower()\n        if \"a\" <= lower <= \"z\" and char not in vowels:\n            count += 1\n            if count % n == 0:\n                shifted = consonants[(consonants.index(lower) + 1) % len(consonants)]\n                out.append(shifted.upper() if char.isupper() else shifted)\n                continue\n        out.append(char)\n    return \"\".join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/duolingo#3-replace-nth-consonant",
+  "sourceContentHash": "741b09b83f84bf5c16574e05cb1fb6d00902b4ba2ff5af009f1cf4cadac19efb",
+  "author": "CSWork"
+}

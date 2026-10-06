@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008,
+  "problems": [
+    {
+      "id": "oa-duolingo-3",
+      "oracleCases": 120,
+      "uniqueOracleInputs": 120,
+      "publicCases": 3,
+      "hiddenCases": 29,
+      "maximumCanonicalInputBytesBound": 200010,
+      "negativeControls": [
+        {
+          "name": "按字符串字符位置而非辅音序号计数",
+          "rejectedByCases": [
+            0,
+            3,
+            5,
+            6,
+            7,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            22,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        },
+        {
+          "name": "替换时只将字符码加一，未跳过元音且未按辅音表回绕",
+          "rejectedByCases": [
+            1,
+            2,
+            4,
+            6,
+            15,
+            16,
+            22,
+            23,
+            26,
+            27,
+            28
+          ]
+        }
+      ],
+      "packageSha256": "4b8f1ef3a5de4a778b5a23eae4ca039d74729ec94a0f7b1f37bef886fcfc65ea",
+      "referenceSha256": "8c354bdb9e0ab95572945d52fc0e5d4cf41d7b1aa9e5832c8155a3b24a307a65",
+      "oracleSha256": "ac44a6ff896d728d24ab5f76478f78c3f4cea31dbf2d4b8cf22b8317bf3c7886",
+      "mutantsSha256": "5a3dad024d499e8338172ab7315d0b13a4d67d5783d60eec5c689a40f192495a"
+    },
+    {
+      "id": "oa-flexport-5",
+      "oracleCases": 120,
+      "uniqueOracleInputs": 120,
+      "publicCases": 3,
+      "hiddenCases": 29,
+      "maximumCanonicalInputBytesBound": 3000000,
+      "negativeControls": [
+        {
+          "name": "逐点只取最近玩家距离，忽略同一玩家收集多个点的行程",
+          "rejectedByCases": [
+            0,
+            5,
+            8,
+            11,
+            16,
+            20,
+            21,
+            25,
+            27,
+            28,
+            30,
+            31
+          ]
+        },
+        {
+          "name": "先去左侧点时少扣一次回程代价",
+          "rejectedByCases": [
+            0,
+            5,
+            8,
+            11,
+            16,
+            20,
+            21,
+            25,
+            27,
+            28,
+            30,
+            31
+          ]
+        }
+      ],
+      "packageSha256": "6853534c7b96db482ddc11632329dbdc31213c936091a24b3da8c61e904b06ba",
+      "referenceSha256": "8c96ecf5dfcac198dc1a3706dd7e743e3c9c6301d4dec8951497c8459411cbdf",
+      "oracleSha256": "948c7b5781989bcd8351011124e098eb0e6aeae9bcb4d664ffda97abac369b87",
+      "mutantsSha256": "d83fbd08667485fb49bff7890cfdf79d4c4069f4704dc89992059cdc76281186"
+    }
+  ],
+  "skipped": {
+    "oa-flexport-6": "固定题面只说可删除恰好一个节点，没有说明候选是否限于初始感染节点；现有解释与解法擅自将候选限制为 malware=1。任意节点删除与感染节点删除可产生不同答案；题面也未保证至少一个感染节点，且示例无法消歧。可按题面字面补充‘传播前可删除任一节点’，或明确‘只可删除初始感染节点’并保证感染集合非空；两种口径都可用节点删除后重新 BFS 求解。"
+  },
+  "note": "离线独立 oracle 与正常退出 mutant 验证；未调用 GoJudge，不是线上验收结果。"
+}
