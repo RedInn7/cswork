@@ -5,9 +5,9 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 981,
-    "awaiting_sandbox": 47,
-    "blocked": 513,
-    "unreviewed": 93
+    "awaiting_sandbox": 56,
+    "blocked": 517,
+    "unreviewed": 80
   },
   "items": [
     {
@@ -9131,8 +9131,9 @@
     {
       "id": "oa-hsbc-1",
       "company": "hsbc",
-      "status": "blocked",
-      "reason": "源示例输出含未出现在输入中的 11，约束文本也在 `0 6` 处截断，样例与题意冲突。"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "固定源题的操作规则明确，异常仅在 OCR 样例把输入中的 5 错印为 11；按原数组与规则重算后的输出唯一为 5。本站修正展示样例并用独立 oracle 验证，不改变排序语义。"
     },
     {
       "id": "oa-hsbc-2",
@@ -9143,7 +9144,9 @@
     {
       "id": "oa-hsbc-3",
       "company": "hsbc",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 原题连通规则明确；本站补充网格规模和空网格结果。"
     },
     {
       "id": "oa-hsbc-4",
@@ -9636,17 +9639,21 @@
     {
       "id": "oa-fortinet-3",
       "company": "fortinet",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "样例输出与“中心可放在任意实数位置、距离为绝对值”的规则不一致：给定点集可用半整数中心得到小于 2 的最大距离，不能确定中心是否限于整数/输入点。"
     },
     {
       "id": "oa-fortinet-4",
       "company": "fortinet",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "“number of sweeps”及每轮是原地左到右还是并行交换、是否计入最后无交换轮均不明确；样例不足以确定结果。"
     },
     {
       "id": "oa-fortinet-5",
       "company": "fortinet",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 源题规则和示例清楚；本站补充输入字符集、长度上限及 stdin/stdout。"
     },
     {
       "id": "oa-f5-1",
@@ -9712,7 +9719,8 @@
     {
       "id": "oa-weride-1",
       "company": "weride",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "更新类型的查询编码和各字段的完整 I/O 结构未给出；点赋值与全局 floor 规则虽有描述，但无法确认数组/查询序列序列化约定及值范围。"
     },
     {
       "id": "oa-weride-2",
@@ -9729,12 +9737,16 @@
     {
       "id": "oa-weride-4",
       "company": "weride",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 原题排序规则和每人最多 15 个好友明确；本站补充无重复边和输入输出协议。"
     },
     {
       "id": "oa-weride-5",
       "company": "weride",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 起终点范围和两种移动精确定义；本站规定 stdin/stdout。"
     },
     {
       "id": "oa-weride-6",
@@ -9757,7 +9769,9 @@
     {
       "id": "oa-weride-9",
       "company": "weride",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 题意的闭区间及每日限制明确；原文缺约束，本站补充日期和数量上限。"
     },
     {
       "id": "oa-general-motors-1",
@@ -9993,7 +10007,9 @@
     {
       "id": "oa-agoda-4",
       "company": "agoda",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 原题规则清楚；本站补充零的处理、上界和标准输入输出。"
     },
     {
       "id": "oa-paypay-1",
@@ -10246,7 +10262,8 @@
     {
       "id": "oa-infosys-1",
       "company": "infosys",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "虽然循环操作已描述，但没有给出如何保证可行解/最优代价的进一步约束，且模数与样例的计分结果无法独立验证原题的排列操作边界；暂不凭题解猜算法。"
     },
     {
       "id": "oa-infosys-2",
@@ -10257,7 +10274,8 @@
     {
       "id": "oa-infosys-3",
       "company": "infosys",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "数组修改与前缀最小值的规则清楚，但题目缺少更新量 x 是否必须非负、更新结果是否允许负数等关键边界；样例只覆盖下降且非负，无法据此确认全部合法输入域及原题返回类型。"
     },
     {
       "id": "oa-infosys-4",
@@ -10345,7 +10363,9 @@
     {
       "id": "oa-koddi-1",
       "company": "koddi",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 题意、大小写规则及空字符串样例明确；本站补充行输入协议。"
     },
     {
       "id": "oa-koddi-2",
@@ -10362,7 +10382,9 @@
     {
       "id": "oa-koddi-4",
       "company": "koddi",
-      "status": "unreviewed"
+      "status": "awaiting_sandbox",
+      "batch": "misc-companies-remaining",
+      "reason": "已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 题意明确；本站补充坐标范围、黑格互异和输入协议。"
     },
     {
       "id": "oa-hackerearth-1",

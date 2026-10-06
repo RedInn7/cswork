@@ -361,11 +361,19 @@ def main():
     source_ids={x['id'] for x in CAT['items'] if x['companySlug'] in RAW}
     already={'oa-weride-2','oa-weride-3','oa-weride-6','oa-weride-7','oa-weride-8'}
     scope=source_ids-already
+    existing={}
+    review_dir=OUT/'reviews'
+    for path in review_dir.glob('*.json'):
+      if path.name==BATCH+'.json': continue
+      existing.update((x['id'],x) for x in json.loads(path.read_text()).get('items',[]))
+    pending=scope-set(existing)
     assert len(source_ids)==38 and len(scope)==33,(len(source_ids),len(scope))
     chosen={s['id'] for s in SPECS}
-    assert chosen<=scope and len(chosen)==9
-    reviewed=chosen|set(BLOCKED)
-    assert reviewed==scope,(scope-reviewed,reviewed-scope)
+    resolutions={pid for pid in chosen if pid in existing and existing[pid]['status']=='blocked'}
+    assert chosen<=pending|resolutions and len(chosen)==9
+    assert resolutions=={'oa-hsbc-1'}
+    reviewed=(chosen-resolutions)|(set(BLOCKED)&pending)
+    assert reviewed==pending,(pending-reviewed,reviewed-pending)
     rng=random.Random(SEED); entries=[]; reports=[]; reviews=[]; evidence=[]
     for company,meta in RAW.items():
       evidence.append({'company':company,'path':meta['path'],'gitBlobSha':meta['gitBlobSha'],'sha256':meta['sha256']})
@@ -408,22 +416,29 @@ def main():
         (OUT/folder/f'{s["id"]}.json').write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n')
       entries.append({'id':s['id'],'sourceContentHash':src['contentHash'],'packageChecksum':hashlib.sha256(norm.encode()).hexdigest(),'editorial':explanation,'authoredSolutions':editorial['solutions']})
       reports.append({'id':s['id'],'oracleCases':len(oracle),'uniqueOracleInputs':len({x['input'] for x in oracle}),'publicCases':3,'hiddenCases':len(cases)-3,'negativeControls':killed,'referenceSha256':hashlib.sha256(code.encode()).hexdigest()})
-      reviews.append({'id':s['id'],'status':'authored','reason':'已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 '+s['limits'],'sourceUrls':[src['sourceUrl']],'sourceContentHashes':[src['contentHash']],'sourceCommit':COMMIT,'rawPath':RAW[src['companySlug']]['path'],'rawGitBlob':RAW[src['companySlug']]['gitBlobSha'],'catalogContentHash':src['contentHash']})
+      if s['id'] not in resolutions:
+        reviews.append({'id':s['id'],'status':'authored','reason':'已对照 OAMaster 固定 MDX 快照逐题确认；本站新增 I/O 与边界已写入题面；120 个唯一输入由独立 oracle 对拍，两个正常退出 mutant 均被正式测试击杀。尚未运行 GoJudge。 '+s['limits'],'sourceUrls':[src['sourceUrl']],'sourceContentHashes':[src['contentHash']],'sourceCommit':COMMIT,'rawPath':RAW[src['companySlug']]['path'],'rawGitBlob':RAW[src['companySlug']]['gitBlobSha'],'catalogContentHash':src['contentHash']})
       print(f"{s['id']}: 120 unique oracle inputs; 30 formal cases; 2 mutants killed",flush=True)
     blocked=[]
     for pid,reason in BLOCKED.items():
+      if pid not in pending: continue
       src=next(x for x in CAT['items'] if x['id']==pid)
       blocked.append({'id':pid,'status':'blocked','reason':reason,'sourceUrls':[src['sourceUrl']],'sourceContentHashes':[src['contentHash']],'sourceCommit':COMMIT,'rawPath':RAW[src['companySlug']]['path'],'rawGitBlob':RAW[src['companySlug']]['gitBlobSha'],'catalogContentHash':src['contentHash']})
     for s in SPECS:
       src=next(x for x in CAT['items'] if x['id']==s['id']); evidence.append({'id':s['id'],'company':src['companyName'],'title':src['title'],'sourceUrl':src['sourceUrl'],'catalogContentHash':src['contentHash'],'status':'authored','rawPath':RAW[src['companySlug']]['path'],'rawGitBlob':RAW[src['companySlug']]['gitBlobSha']})
     for x in blocked:
       item=next(y for y in CAT['items'] if y['id']==x['id']); evidence.append({'id':x['id'],'company':item['companyName'],'title':item['title'],'sourceUrl':item['sourceUrl'],'catalogContentHash':item['contentHash'],'status':'blocked','reason':x['reason'],'rawPath':x['rawPath'],'rawGitBlob':x['rawGitBlob']})
+    resolution_items=[]
+    for pid in sorted(resolutions):
+      previous=existing[pid]; src=next(x for x in CAT['items'] if x['id']==pid)
+      resolution_items.append({'id':pid,'previousReason':previous['reason'],'sourceContentHash':src['contentHash'],'batch':BATCH,'reason':'固定源题的操作规则明确，异常仅在 OCR 样例把输入中的 5 错印为 11；按原数组与规则重算后的输出唯一为 5。本站修正展示样例并用独立 oracle 验证，不改变排序语义。'})
     docs={
       f'candidate-batches/{BATCH}.json':{'schemaVersion':1,'items':entries},
       f'validation/{BATCH}.json':{'schemaVersion':1,'seed':SEED,'problems':reports,'note':'仅本地独立 oracle/reference/mutant 验证；没有 GoJudge 报告，不代表已发布。'},
       f'reviews/{BATCH}.json':{'schemaVersion':1,'items':sorted(reviews+blocked,key=lambda x:x['id'])},
+      f'resolutions/{BATCH}.json':{'schemaVersion':1,'items':resolution_items},
       f'source-evidence/{BATCH}.json':{'schemaVersion':1,'repository':'https://github.com/RedInn7/OA-Master','commit':COMMIT,'reason':'固定上游 MDX 原始页 Git blob 与 SHA-256；未执行源仓库代码。','pages':evidence[:7],'items':evidence[7:]}}
     for rel,doc in docs.items():(OUT/rel).write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n')
-    print(f'Reviewed {len(reviewed)} pending items: {len(entries)} candidates, {len(blocked)} blocked.')
+    print(f'Reviewed {len(reviewed)} newly pending items: {len(entries)} candidates, {len(blocked)} blocked; preserved {len(scope)-len(pending)} existing reviews.')
 
 if __name__=='__main__': main()
