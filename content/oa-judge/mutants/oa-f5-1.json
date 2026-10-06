@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把时间窗右端改成开区间",
+    "code": "import re\ndef solve(raw):\n z=raw.splitlines();n,now,w=map(int,z[0].split());c={}\n for line in z[1:1+n]:\n  t,tw=line.split(\"\\t\",1);t=int(t)\n  if now-w<=t<now:\n   for h in re.findall(r\"#[A-Za-z0-9_]+\",tw):c[h]=c.get(h,0)+1\n return \"\\n\".join(sorted(c,key=lambda x:(-c[x],x))[:3])\n"
+  },
+  {
+    "name": "平票时按出现频次之外的逆字典序排序",
+    "code": "import re\ndef solve(raw):\n z=raw.splitlines();n,now,w=map(int,z[0].split());c={}\n for line in z[1:1+n]:\n  t,tw=line.split(\"\\t\",1);t=int(t)\n  if now-w<=t<=now:\n   for h in re.findall(r\"#[A-Za-z0-9_]+\",tw):c[h]=c.get(h,0)+1\n return \"\\n\".join(sorted(c,key=lambda x:(-c[x],x),reverse=True)[:3])\n"
+  }
+]

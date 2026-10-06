@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略距离条件并只检查 specialty 是否存在",
+    "code": "def solve(raw):\n z=raw.splitlines();P,M,d=map(int,z[0].split());s={l.split()[1] for l in z[1:1+P]};o=[]\n for l in z[1+P:]:\n  m,x,y,q=l.split()\n  if any(t not in s for t in q.split(\"|\")):o.append(int(m))\n return \"\\n\".join(map(str,sorted(o)))\n"
+  },
+  {
+    "name": "把距离上限误作严格小于",
+    "code": "def solve(raw):\n z=raw.splitlines();P,M,d=map(int,z[0].split());g={}\n for l in z[1:1+P]:\n  _,s,x,y=l.split();g.setdefault(s,[]).append((int(x),int(y)))\n o=[]\n for l in z[1+P:]:\n  m,x,y,q=l.split();x=int(x);y=int(y)\n  if any(not any(s==t and (a-x)**2+(b-y)**2<d*d for s,a,b in [(s,a,b) for s,vs in g.items() for a,b in vs]) for t in q.split(\"|\")):o.append(int(m))\n return \"\\n\".join(map(str,sorted(o)))\n"
+  }
+]

@@ -1,0 +1,1195 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-verkada-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Find Valid IP Addresses",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Verkada"
+    ],
+    "description": "递归扫描 root 下文件里的空白分隔 token，收集合法 IPv4 地址并按字典序排序，重复项保留。\n\n本站标准输入输出格式与补充边界以本题说明为准。",
+    "input": "第一行 root 路径；第二行文件数 f（≤2×10^5）；后续每行 `path<TAB>content`，路径为绝对 POSIX 路径，文件内容不含制表符，总字符数≤10^6。",
+    "output": "每个地址一行；无结果输出空内容。",
+    "explanation": "路径用 `commonpath` 判断严格后代；逐 token 检查 4 个十进制 octet；保留重复 token 后排序。时间 O(输入长度+结果排序)。",
+    "hints": [
+      "路径用 `commonpath` 判断严格后代；逐 token 检查 4 个十进制 octet；保留重复 token 后排序。时间 O(输入长度+结果排序)。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 32768,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "/var/log\n3\n/var/log/a\tclient 10.1.1.1 backup 256.1.1.1\n/var/log/sub/b\t192.168.0.1 01.2.3.4\n/tmp/x\t8.8.8.8\n",
+      "expectedOutput": "10.1.1.1\n192.168.0.1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "/data\n1\n/database/a\t1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "/data\n7\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "/var/log\n3\n/var/log/a\tclient 10.1.1.1 backup 256.1.1.1\n/var/log/sub/b\t192.168.0.1 01.2.3.4\n/tmp/x\t8.8.8.8\n",
+      "expectedOutput": "10.1.1.1\n192.168.0.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "/data\n1\n/database/a\t1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "/data\n8\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "/data\n4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "/data\n1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "/data\n2\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "/data\n7\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "/data\n1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "/data\n3\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "/data\n1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "/data\n5\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "/data\n6\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "/data\n4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "/data\n8\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 30",
+      "input": "/data\n5\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 31",
+      "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 32",
+      "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 33",
+      "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 34",
+      "input": "/data\n6\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 35",
+      "input": "/data\n7\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 36",
+      "input": "/data\n4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 37",
+      "input": "/data\n6\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 38",
+      "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 39",
+      "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 40",
+      "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 41",
+      "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 42",
+      "input": "/data\n3\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 43",
+      "input": "/data\n8\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 44",
+      "input": "/data\n7\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 45",
+      "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 46",
+      "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 47",
+      "input": "/data\n2\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 48",
+      "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 49",
+      "input": "/data\n2\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 50",
+      "input": "/data\n7\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 51",
+      "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 52",
+      "input": "/data\n5\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 53",
+      "input": "/data\n8\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 54",
+      "input": "/data\n3\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 55",
+      "input": "/data\n2\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 56",
+      "input": "/data\n8\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 57",
+      "input": "/data\n4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 58",
+      "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 59",
+      "input": "/data\n3\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 60",
+      "input": "/data\n8\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 61",
+      "input": "/data\n7\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 62",
+      "input": "/data\n5\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 63",
+      "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 64",
+      "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 65",
+      "input": "/data\n6\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 66",
+      "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 67",
+      "input": "/data\n6\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 68",
+      "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 69",
+      "input": "/data\n3\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 70",
+      "input": "/data\n5\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 71",
+      "input": "/data\n3\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 72",
+      "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 73",
+      "input": "/data\n2\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 74",
+      "input": "/data\n2\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 75",
+      "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 76",
+      "input": "/data\n6\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 77",
+      "input": "/data\n8\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 78",
+      "input": "/data\n5\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 79",
+      "input": "/data\n7\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 80",
+      "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 81",
+      "input": "/data\n6\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 82",
+      "input": "/data\n3\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 83",
+      "input": "/data\n7\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 84",
+      "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 85",
+      "input": "/data\n2\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 86",
+      "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 87",
+      "input": "/data\n6\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 88",
+      "input": "/data\n8\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 89",
+      "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 90",
+      "input": "/data\n8\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 91",
+      "input": "/data\n2\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 92",
+      "input": "/data\n4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 93",
+      "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 94",
+      "input": "/data\n7\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 95",
+      "input": "/data\n7\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 96",
+      "input": "/data\n6\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 97",
+      "input": "/data\n3\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 98",
+      "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 99",
+      "input": "/data\n1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 100",
+      "input": "/data\n2\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 101",
+      "input": "/data\n6\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 102",
+      "input": "/data\n4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 103",
+      "input": "/data\n7\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 104",
+      "input": "/data\n1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 105",
+      "input": "/data\n5\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 106",
+      "input": "/data\n1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 107",
+      "input": "/data\n1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 108",
+      "input": "/data\n2\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 109",
+      "input": "/data\n6\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 110",
+      "input": "/data\n4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 111",
+      "input": "/data\n6\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 112",
+      "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 113",
+      "input": "/data\n3\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 114",
+      "input": "/data\n4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 115",
+      "input": "/data\n6\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 116",
+      "input": "/data\n7\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 117",
+      "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 118",
+      "input": "/data\n5\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 119",
+      "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 120",
+      "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 121",
+      "input": "/data\n2\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 122",
+      "input": "/data\n1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 123",
+      "input": "/data\n6\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 124",
+      "input": "/data\n3\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 125",
+      "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 126",
+      "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 127",
+      "input": "/data\n7\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 128",
+      "input": "/data\n7\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 129",
+      "input": "/data\n7\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 130",
+      "input": "/data\n4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 131",
+      "input": "/data\n5\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 132",
+      "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 133",
+      "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 134",
+      "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 135",
+      "input": "/data\n8\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 136",
+      "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 137",
+      "input": "/data\n5\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 138",
+      "input": "/data\n1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 139",
+      "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 140",
+      "input": "/data\n7\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 141",
+      "input": "/data\n4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 142",
+      "input": "/data\n5\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 143",
+      "input": "/data\n5\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 144",
+      "input": "/data\n5\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 145",
+      "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 146",
+      "input": "/data\n6\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 147",
+      "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 148",
+      "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 149",
+      "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 150",
+      "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 151",
+      "input": "/data\n8\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 152",
+      "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 153",
+      "input": "/data\n6\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 154",
+      "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 155",
+      "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 156",
+      "input": "/data\n6\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+      "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 157",
+      "input": "/data\n7\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 158",
+      "input": "/data\n7\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 159",
+      "input": "/data\n5\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 160",
+      "input": "/data\n4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 161",
+      "input": "/data\n7\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 162",
+      "input": "/data\n2\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 163",
+      "input": "/data\n7\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+      "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

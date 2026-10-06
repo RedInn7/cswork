@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只计算当前值减前驱值，不取绝对值",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));n,k=z[:2];a=z[2:2+n];d=[0]*n\n for _ in range(2,k+1):d=[min((d[j]+a[i]-a[j] for j in range(i)),default=10**30) for i in range(n)]\n return str(min(d))\n"
+  },
+  {
+    "name": "只允许相邻原数组元素接续",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));n,k=z[:2];a=z[2:2+n];d=[[10**30]*n for _ in range(k+1)]\n for i in range(n):d[1][i]=0\n for q in range(2,k+1):\n  for i in range(n):\n   if i:d[q][i]=d[q-1][i-1]+abs(a[i]-a[i-1])\n return str(min(d[k]))\n"
+  }
+]

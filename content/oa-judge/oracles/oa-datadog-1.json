@@ -1,0 +1,654 @@
+[
+  {
+    "input": "6\nADD 1 api INFO hello world\nADD 2 api ERROR failed\nQUERY 1 2 * * *\nQUERY 1 2 api INFO hello\nQUERY 2 2 api ERROR fail\nQUERY 3 4 * * *\n",
+    "expectedOutput": "2\n1\n1\n0"
+  },
+  {
+    "input": "3\nADD 0 web INFO x\nQUERY 0 0 * * *\nQUERY 1 2 * * *\n",
+    "expectedOutput": "1\n0"
+  },
+  {
+    "input": "9\nADD 1 web ERR login failed\nADD 3 api INFO login ok\nADD 0 api INFO login ok\nADD 11 web ERR login failed\nADD 6 web INFO login ok\nADD 1 api ERR login ok\nADD 3 api INFO login failed\nADD 10 web INFO login ok\nQUERY 11 6 * * login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 6 web INFO login ok\nADD 5 api INFO login failed\nQUERY 0 10 web * bad\nQUERY 3 1 * * login\nQUERY 7 2 * INFO bad\nQUERY 9 5 web * bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "10\nADD 9 api ERR bad request\nADD 7 api ERR login ok\nADD 8 api INFO login ok\nADD 7 api INFO bad request\nADD 10 api ERR bad request\nADD 2 api INFO login ok\nQUERY 9 9 * INFO *\nQUERY 3 9 api * bad\nQUERY 8 9 * INFO bad\nQUERY 2 0 api * login\n",
+    "expectedOutput": "0\n2\n0\n0"
+  },
+  {
+    "input": "6\nADD 5 api ERR login failed\nADD 1 web INFO bad request\nQUERY 3 8 * INFO login\nQUERY 9 8 web INFO bad\nQUERY 10 5 * INFO login\nQUERY 1 3 api * bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "10\nADD 8 api ERR bad request\nADD 9 web ERR login ok\nADD 7 api ERR login ok\nADD 7 api ERR login ok\nADD 8 web ERR bad request\nADD 11 api INFO bad request\nADD 0 web INFO login failed\nADD 6 api ERR bad request\nADD 8 web INFO login failed\nQUERY 8 2 api ERR bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 2 web ERR login ok\nADD 9 web ERR login ok\nQUERY 10 10 web * bad\nQUERY 5 2 api * bad\nQUERY 8 6 web ERR login\nQUERY 2 3 api INFO *\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 11 web ERR login ok\nADD 6 web ERR login ok\nADD 8 api ERR login failed\nADD 2 api INFO login failed\nADD 2 web ERR login ok\nQUERY 3 9 * INFO login\nQUERY 1 0 api * bad\nQUERY 7 2 web * login\nQUERY 11 6 web * *\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "5\nADD 11 api INFO login ok\nADD 8 api ERR bad request\nADD 11 api INFO bad request\nADD 0 api INFO login ok\nQUERY 1 6 * ERR login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 3 api ERR login ok\nADD 4 web ERR login failed\nADD 5 api ERR login ok\nADD 8 api ERR bad request\nQUERY 3 0 web INFO *\nQUERY 3 9 web * bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "8\nADD 3 web INFO bad request\nADD 3 api INFO login ok\nADD 0 web INFO login failed\nADD 7 web ERR login ok\nQUERY 11 10 * INFO login\nQUERY 10 2 web INFO *\nQUERY 5 9 * * *\nQUERY 7 0 * INFO bad\n",
+    "expectedOutput": "0\n0\n1\n0"
+  },
+  {
+    "input": "4\nADD 4 api INFO bad request\nADD 11 api ERR login failed\nQUERY 6 11 web * login\nQUERY 8 10 * * bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "9\nADD 7 web ERR bad request\nADD 2 api ERR login failed\nADD 11 api ERR login ok\nADD 3 api INFO login ok\nADD 10 api ERR login ok\nADD 5 web INFO login ok\nADD 6 web ERR login failed\nQUERY 5 10 api ERR bad\nQUERY 4 2 web ERR bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "2\nADD 8 web ERR login ok\nQUERY 0 7 api INFO *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "13\nADD 9 web INFO login ok\nADD 4 web ERR login ok\nADD 7 web INFO login ok\nADD 2 api ERR login failed\nADD 8 api ERR login ok\nADD 4 web INFO bad request\nADD 2 api INFO login failed\nADD 0 api INFO login ok\nADD 9 api ERR login ok\nADD 1 api INFO bad request\nADD 2 api INFO bad request\nQUERY 1 5 * ERR *\nQUERY 6 11 api * bad\n",
+    "expectedOutput": "2\n0"
+  },
+  {
+    "input": "6\nADD 9 api INFO bad request\nADD 0 api INFO login ok\nADD 4 web ERR bad request\nADD 4 web ERR login ok\nQUERY 2 7 web * login\nQUERY 4 3 * * login\n",
+    "expectedOutput": "1\n0"
+  },
+  {
+    "input": "11\nADD 7 web ERR login ok\nADD 5 api ERR login ok\nADD 11 web INFO bad request\nADD 0 web INFO login ok\nADD 2 api INFO login failed\nADD 3 api ERR login failed\nADD 2 web ERR login ok\nQUERY 6 9 api * login\nQUERY 6 11 api INFO *\nQUERY 5 2 web INFO bad\nQUERY 9 4 api ERR login\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "12\nADD 8 api INFO bad request\nADD 9 web INFO login ok\nADD 1 api INFO login ok\nADD 5 api ERR login failed\nADD 2 web ERR login ok\nADD 7 web ERR login failed\nADD 7 api INFO login ok\nADD 6 api ERR login failed\nQUERY 6 10 * ERR bad\nQUERY 9 4 * * *\nQUERY 0 9 api * *\nQUERY 0 10 api ERR *\n",
+    "expectedOutput": "0\n0\n5\n2"
+  },
+  {
+    "input": "4\nADD 1 api ERR login failed\nADD 7 api INFO login ok\nADD 11 api ERR bad request\nQUERY 6 2 api * login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "11\nADD 0 web ERR bad request\nADD 3 api ERR bad request\nADD 9 api ERR login failed\nADD 10 api INFO login ok\nADD 3 api INFO bad request\nADD 9 web ERR login ok\nADD 11 web INFO login failed\nADD 10 web INFO login failed\nQUERY 1 0 web ERR bad\nQUERY 8 9 api * *\nQUERY 11 1 api ERR *\n",
+    "expectedOutput": "0\n1\n0"
+  },
+  {
+    "input": "14\nADD 5 api INFO login failed\nADD 1 web INFO login failed\nADD 8 web INFO bad request\nADD 10 web INFO login failed\nADD 6 web INFO login ok\nADD 1 api INFO login failed\nADD 2 api ERR login ok\nADD 8 web INFO login ok\nADD 11 web INFO login failed\nADD 11 api ERR login failed\nQUERY 3 5 web ERR bad\nQUERY 2 9 web INFO *\nQUERY 8 11 * * bad\nQUERY 1 8 * * bad\n",
+    "expectedOutput": "0\n3\n1\n1"
+  },
+  {
+    "input": "2\nADD 10 web INFO bad request\nQUERY 5 4 api INFO bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "14\nADD 8 api ERR login failed\nADD 5 api ERR login failed\nADD 9 web INFO login ok\nADD 9 api INFO bad request\nADD 10 api ERR login failed\nADD 5 api INFO login ok\nADD 2 web INFO login ok\nADD 8 web ERR login failed\nADD 5 api INFO login ok\nADD 2 api ERR login ok\nQUERY 7 8 web * login\nQUERY 11 9 api ERR login\nQUERY 2 2 api * *\nQUERY 6 3 * INFO *\n",
+    "expectedOutput": "1\n0\n1\n0"
+  },
+  {
+    "input": "3\nADD 9 api INFO login ok\nQUERY 8 10 web INFO login\nQUERY 5 0 web * *\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "9\nADD 4 web ERR login ok\nADD 6 web ERR bad request\nADD 2 web INFO bad request\nADD 7 web ERR bad request\nADD 10 web INFO login ok\nADD 7 web INFO login failed\nADD 6 api ERR bad request\nQUERY 5 8 * INFO login\nQUERY 2 10 web INFO login\n",
+    "expectedOutput": "1\n2"
+  },
+  {
+    "input": "14\nADD 0 web INFO bad request\nADD 2 web INFO bad request\nADD 1 api ERR login failed\nADD 5 api INFO login ok\nADD 6 web ERR bad request\nADD 9 web INFO login failed\nADD 9 api ERR login failed\nADD 6 web INFO bad request\nADD 9 api ERR login failed\nADD 8 api ERR bad request\nQUERY 0 8 * * login\nQUERY 2 9 web * bad\nQUERY 8 10 * ERR *\nQUERY 8 11 * ERR login\n",
+    "expectedOutput": "2\n3\n3\n2"
+  },
+  {
+    "input": "14\nADD 6 api INFO bad request\nADD 0 api INFO bad request\nADD 3 api INFO login failed\nADD 1 api INFO login failed\nADD 6 web INFO login ok\nADD 1 api ERR bad request\nADD 6 api ERR bad request\nADD 9 api ERR bad request\nADD 3 web INFO login failed\nADD 10 web ERR bad request\nQUERY 0 9 web ERR bad\nQUERY 2 11 web ERR login\nQUERY 2 0 * * login\nQUERY 2 6 api INFO bad\n",
+    "expectedOutput": "0\n0\n0\n1"
+  },
+  {
+    "input": "8\nADD 9 web ERR login failed\nADD 1 web INFO login ok\nADD 5 api ERR bad request\nADD 8 api INFO login ok\nADD 10 api ERR bad request\nADD 8 web ERR login ok\nADD 2 web INFO login ok\nQUERY 1 9 web * bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 1 web INFO login ok\nADD 5 web ERR login failed\nADD 5 api ERR login ok\nQUERY 0 2 * * *\nQUERY 3 2 web * *\nQUERY 9 1 web INFO login\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "12\nADD 0 web INFO bad request\nADD 2 web INFO bad request\nADD 5 web ERR bad request\nADD 3 api ERR bad request\nADD 7 web INFO login ok\nADD 3 web INFO bad request\nADD 5 web ERR bad request\nADD 7 web INFO login failed\nQUERY 4 6 * * *\nQUERY 7 0 * ERR bad\nQUERY 7 6 api INFO login\nQUERY 5 4 api * bad\n",
+    "expectedOutput": "2\n0\n0\n0"
+  },
+  {
+    "input": "3\nADD 4 web ERR login ok\nQUERY 6 8 * INFO bad\nQUERY 4 10 web ERR *\n",
+    "expectedOutput": "0\n1"
+  },
+  {
+    "input": "9\nADD 3 web INFO bad request\nADD 4 api INFO login ok\nADD 9 api ERR bad request\nADD 4 api ERR login failed\nADD 2 api INFO login failed\nADD 2 api INFO login ok\nADD 2 api ERR bad request\nADD 6 web ERR login failed\nQUERY 5 8 * ERR login\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "8\nADD 5 api INFO login ok\nADD 5 web ERR login failed\nADD 4 api INFO bad request\nADD 9 api INFO login ok\nADD 1 api ERR login ok\nADD 0 web ERR login ok\nQUERY 1 1 api ERR login\nQUERY 3 8 web INFO bad\n",
+    "expectedOutput": "1\n0"
+  },
+  {
+    "input": "13\nADD 8 api ERR bad request\nADD 7 web ERR login ok\nADD 7 api ERR login ok\nADD 3 api INFO login failed\nADD 2 api INFO bad request\nADD 5 api INFO bad request\nADD 2 api ERR bad request\nADD 9 api INFO bad request\nADD 0 api INFO bad request\nADD 11 web INFO login ok\nQUERY 5 7 web INFO bad\nQUERY 8 1 api ERR bad\nQUERY 3 3 web ERR bad\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "8\nADD 3 web INFO bad request\nADD 6 web INFO login failed\nADD 10 web ERR bad request\nADD 3 web INFO login failed\nQUERY 4 7 api ERR bad\nQUERY 8 3 web INFO *\nQUERY 10 7 * * login\nQUERY 0 3 api * *\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "11\nADD 11 web ERR login failed\nADD 5 web ERR login failed\nADD 7 web INFO bad request\nADD 10 web ERR login failed\nADD 8 api INFO login failed\nADD 3 web INFO login ok\nADD 3 web INFO bad request\nADD 6 api ERR login ok\nADD 9 web INFO bad request\nADD 8 web INFO login failed\nQUERY 5 3 * INFO login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "5\nADD 8 api ERR login ok\nQUERY 8 6 web ERR login\nQUERY 0 0 api * login\nQUERY 10 1 api * *\nQUERY 6 8 web * bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "10\nADD 4 web ERR login failed\nADD 3 web INFO login failed\nADD 6 api ERR bad request\nADD 10 web ERR bad request\nADD 0 web ERR bad request\nADD 11 api INFO login failed\nADD 2 web ERR login ok\nQUERY 6 1 web ERR login\nQUERY 2 7 api INFO *\nQUERY 0 9 * ERR bad\n",
+    "expectedOutput": "0\n0\n2"
+  },
+  {
+    "input": "12\nADD 3 api ERR bad request\nADD 1 web INFO login failed\nADD 2 api ERR login failed\nADD 1 web ERR login failed\nADD 9 web ERR login ok\nADD 3 api INFO login failed\nADD 1 api ERR bad request\nADD 7 api ERR bad request\nADD 2 api ERR bad request\nQUERY 1 11 web INFO *\nQUERY 7 2 api INFO *\nQUERY 1 0 api ERR *\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "12\nADD 5 api INFO login failed\nADD 1 api ERR login failed\nADD 10 api ERR login ok\nADD 3 api INFO login ok\nADD 3 api ERR login failed\nADD 0 web ERR bad request\nADD 4 web INFO login ok\nADD 9 web INFO login ok\nADD 11 web INFO bad request\nQUERY 0 6 web * login\nQUERY 1 2 web * *\nQUERY 5 10 * ERR bad\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "2\nADD 3 api INFO login failed\nQUERY 2 2 web INFO *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 4 api ERR login failed\nADD 7 web INFO login failed\nADD 1 api ERR bad request\nADD 4 api INFO bad request\nADD 10 api ERR login failed\nADD 1 web INFO bad request\nADD 6 web INFO login failed\nADD 1 web INFO login failed\nADD 4 api INFO login ok\nADD 5 web INFO bad request\nADD 6 api ERR login failed\nQUERY 11 1 web ERR bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 7 api ERR bad request\nADD 8 web INFO login failed\nADD 1 web ERR bad request\nADD 5 api ERR login failed\nADD 0 api ERR login ok\nADD 0 web INFO login failed\nADD 11 api INFO bad request\nADD 7 web INFO login ok\nQUERY 1 6 api INFO login\nQUERY 7 10 * INFO bad\nQUERY 4 9 web * login\nQUERY 2 4 web INFO login\n",
+    "expectedOutput": "0\n0\n2\n0"
+  },
+  {
+    "input": "8\nADD 1 api ERR login ok\nADD 2 api INFO login failed\nADD 4 web INFO login failed\nADD 5 api ERR bad request\nQUERY 8 2 * ERR *\nQUERY 1 2 api * *\nQUERY 5 5 web * bad\nQUERY 9 8 web ERR bad\n",
+    "expectedOutput": "0\n2\n0\n0"
+  },
+  {
+    "input": "9\nADD 9 web INFO login ok\nADD 11 api INFO login ok\nADD 10 web ERR login failed\nADD 11 web ERR login failed\nADD 7 api ERR bad request\nQUERY 7 11 * INFO *\nQUERY 0 0 api INFO bad\nQUERY 9 5 * ERR bad\nQUERY 0 2 web * *\n",
+    "expectedOutput": "2\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 9 web ERR login ok\nADD 0 api INFO login ok\nADD 3 web ERR bad request\nADD 11 api ERR login failed\nADD 5 web ERR bad request\nADD 4 web ERR bad request\nADD 2 api ERR login failed\nADD 0 api ERR bad request\nQUERY 3 2 web * bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "7\nADD 4 api INFO login ok\nADD 9 api ERR login failed\nADD 6 api ERR login failed\nADD 5 api INFO bad request\nADD 9 web INFO login failed\nADD 0 api INFO login ok\nQUERY 9 10 * ERR bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "7\nADD 4 web ERR bad request\nADD 1 web INFO bad request\nADD 5 api INFO login failed\nADD 8 web ERR login failed\nADD 9 web ERR login failed\nADD 8 web INFO login ok\nQUERY 4 7 web INFO login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "4\nADD 6 web ERR bad request\nADD 9 web INFO bad request\nADD 3 web ERR bad request\nQUERY 7 3 web * login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 3 web ERR login failed\nADD 4 api ERR bad request\nADD 11 api INFO login failed\nADD 6 api ERR bad request\nADD 0 api ERR bad request\nQUERY 11 5 web INFO *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "10\nADD 11 web ERR bad request\nADD 2 web ERR bad request\nADD 11 api ERR login ok\nADD 1 web ERR bad request\nADD 9 api ERR login ok\nADD 2 api ERR login ok\nQUERY 5 10 web * *\nQUERY 9 1 api INFO bad\nQUERY 1 1 api ERR login\nQUERY 5 9 * INFO login\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 3 web ERR login ok\nADD 0 api INFO bad request\nADD 2 api INFO login ok\nADD 8 web ERR login ok\nADD 3 web INFO login failed\nQUERY 10 10 * ERR bad\nQUERY 5 8 api ERR *\nQUERY 6 10 * INFO bad\nQUERY 3 4 web ERR bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 5 api INFO login failed\nADD 8 api ERR login failed\nADD 5 web INFO bad request\nADD 8 web ERR bad request\nADD 0 api INFO login ok\nQUERY 0 1 web INFO login\nQUERY 11 4 web ERR bad\nQUERY 0 8 * INFO bad\nQUERY 8 3 api * bad\n",
+    "expectedOutput": "0\n0\n1\n0"
+  },
+  {
+    "input": "8\nADD 0 api ERR login ok\nADD 10 api INFO bad request\nADD 9 api INFO login failed\nADD 11 api INFO login failed\nQUERY 1 7 api ERR *\nQUERY 10 4 web * bad\nQUERY 11 3 api ERR login\nQUERY 6 7 web INFO login\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "8\nADD 0 web ERR bad request\nADD 2 api INFO bad request\nADD 11 api ERR login failed\nADD 5 web INFO login failed\nADD 1 web ERR login failed\nADD 8 web ERR login ok\nQUERY 8 3 api ERR *\nQUERY 10 7 web ERR bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "6\nADD 0 web INFO login ok\nADD 8 web ERR login failed\nADD 8 api INFO login failed\nADD 0 web ERR bad request\nADD 7 web ERR login ok\nQUERY 5 4 api ERR *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 11 api ERR bad request\nADD 4 web ERR bad request\nADD 9 api INFO login ok\nADD 3 web INFO login failed\nADD 1 api ERR bad request\nADD 0 api ERR login failed\nADD 5 web INFO login ok\nADD 1 web INFO bad request\nADD 5 api INFO bad request\nQUERY 10 0 api INFO *\nQUERY 6 2 api * bad\nQUERY 0 5 api INFO *\n",
+    "expectedOutput": "0\n0\n1"
+  },
+  {
+    "input": "5\nADD 0 api INFO bad request\nQUERY 9 6 api ERR login\nQUERY 10 11 api INFO *\nQUERY 9 10 api INFO login\nQUERY 11 0 web INFO bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 2 web INFO bad request\nADD 1 api INFO login failed\nADD 8 api ERR login failed\nADD 10 api ERR login failed\nADD 9 api INFO login failed\nADD 10 api INFO login failed\nADD 7 web INFO bad request\nQUERY 5 1 api * *\nQUERY 7 5 * ERR bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "7\nADD 8 web INFO bad request\nADD 8 web INFO bad request\nADD 5 api INFO login ok\nADD 3 web ERR login ok\nADD 1 web INFO login ok\nQUERY 11 10 web INFO *\nQUERY 9 5 api ERR login\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "12\nADD 9 api ERR bad request\nADD 11 api ERR login ok\nADD 4 web ERR bad request\nADD 2 api ERR login ok\nADD 1 web ERR login failed\nADD 11 web ERR login ok\nADD 8 api INFO bad request\nADD 3 web INFO bad request\nQUERY 6 7 web ERR bad\nQUERY 4 5 web * *\nQUERY 11 11 web ERR login\nQUERY 11 4 * * *\n",
+    "expectedOutput": "0\n1\n1\n0"
+  },
+  {
+    "input": "14\nADD 9 web INFO bad request\nADD 0 web INFO login ok\nADD 3 web ERR login failed\nADD 2 web ERR login failed\nADD 5 web ERR login ok\nADD 6 api ERR login failed\nADD 2 web INFO bad request\nADD 4 web INFO login ok\nADD 8 web INFO bad request\nADD 3 api ERR login failed\nADD 1 api ERR login ok\nQUERY 10 7 web * *\nQUERY 11 10 api INFO *\nQUERY 7 3 web ERR *\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "5\nADD 9 api INFO bad request\nQUERY 8 10 api * login\nQUERY 7 11 * ERR login\nQUERY 4 7 web * login\nQUERY 9 3 web INFO *\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "5\nADD 7 web INFO bad request\nADD 0 web INFO bad request\nADD 1 web INFO login failed\nQUERY 5 5 web ERR bad\nQUERY 8 5 api INFO login\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "2\nADD 1 api ERR bad request\nQUERY 4 8 web INFO login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "7\nADD 9 api INFO bad request\nADD 9 web ERR login ok\nADD 8 api ERR login ok\nADD 11 web ERR bad request\nADD 5 api ERR bad request\nQUERY 9 2 api INFO bad\nQUERY 11 5 api * login\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "10\nADD 0 web ERR bad request\nADD 1 api ERR login failed\nADD 5 api ERR bad request\nADD 6 web ERR bad request\nADD 6 api INFO login failed\nADD 8 web INFO login failed\nQUERY 7 1 web INFO *\nQUERY 0 4 api * login\nQUERY 7 10 web * *\nQUERY 7 0 api INFO login\n",
+    "expectedOutput": "0\n1\n1\n0"
+  },
+  {
+    "input": "4\nADD 1 api INFO bad request\nADD 11 web INFO login ok\nADD 8 api ERR bad request\nQUERY 4 11 * INFO bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "10\nADD 5 api INFO bad request\nADD 10 api ERR bad request\nADD 7 api ERR bad request\nADD 1 api ERR login ok\nADD 5 api ERR login ok\nADD 7 api ERR login failed\nADD 3 web ERR login ok\nADD 2 web INFO bad request\nADD 8 api ERR login ok\nQUERY 3 6 api INFO *\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "11\nADD 2 web ERR bad request\nADD 10 api ERR bad request\nADD 4 web INFO bad request\nADD 3 web ERR bad request\nADD 5 api ERR login failed\nADD 1 api ERR login ok\nADD 5 web ERR login ok\nADD 9 web INFO login failed\nADD 7 web INFO login failed\nQUERY 10 2 web INFO bad\nQUERY 0 7 web * login\n",
+    "expectedOutput": "0\n2"
+  },
+  {
+    "input": "14\nADD 3 web INFO bad request\nADD 11 web INFO login ok\nADD 3 web INFO login ok\nADD 6 web INFO bad request\nADD 7 api INFO login ok\nADD 10 api ERR login ok\nADD 3 web INFO login ok\nADD 7 api ERR bad request\nADD 8 api INFO login failed\nADD 5 web ERR bad request\nQUERY 0 3 web INFO bad\nQUERY 11 7 * INFO *\nQUERY 4 4 web INFO login\nQUERY 5 5 api ERR *\n",
+    "expectedOutput": "1\n0\n0\n0"
+  },
+  {
+    "input": "12\nADD 5 web ERR login ok\nADD 1 api ERR login failed\nADD 6 web INFO bad request\nADD 11 api ERR bad request\nADD 4 web ERR bad request\nADD 11 api ERR login failed\nADD 0 api INFO login ok\nADD 4 web INFO bad request\nADD 2 web INFO login failed\nADD 1 api INFO login failed\nQUERY 11 1 * INFO bad\nQUERY 0 4 api ERR *\n",
+    "expectedOutput": "0\n1"
+  },
+  {
+    "input": "9\nADD 2 api INFO login ok\nADD 6 api INFO login failed\nADD 3 web INFO login ok\nADD 8 api INFO bad request\nADD 3 web ERR login failed\nADD 1 web INFO login ok\nQUERY 2 5 web ERR *\nQUERY 2 1 web INFO login\nQUERY 8 3 api * bad\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "6\nADD 0 web INFO login failed\nADD 5 web ERR login failed\nADD 11 web ERR bad request\nQUERY 10 1 api * login\nQUERY 7 4 api INFO bad\nQUERY 3 6 web INFO login\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "7\nADD 8 web ERR login ok\nADD 5 api INFO login ok\nADD 5 api ERR login ok\nADD 1 web INFO bad request\nQUERY 9 5 * INFO login\nQUERY 3 8 * ERR login\nQUERY 5 11 api INFO bad\n",
+    "expectedOutput": "0\n2\n0"
+  },
+  {
+    "input": "6\nADD 8 web INFO login ok\nADD 4 api ERR login ok\nADD 6 web INFO bad request\nADD 7 api INFO login ok\nQUERY 6 10 * ERR *\nQUERY 2 10 * INFO bad\n",
+    "expectedOutput": "0\n1"
+  },
+  {
+    "input": "6\nADD 2 web ERR bad request\nADD 6 api INFO login ok\nQUERY 7 9 * INFO login\nQUERY 0 5 * INFO login\nQUERY 7 7 web INFO *\nQUERY 1 9 web * *\n",
+    "expectedOutput": "0\n0\n0\n1"
+  },
+  {
+    "input": "12\nADD 6 web ERR bad request\nADD 8 api ERR login failed\nADD 10 api ERR login failed\nADD 4 web INFO bad request\nADD 9 web INFO login failed\nADD 1 api INFO bad request\nADD 0 web ERR login failed\nADD 1 web ERR login ok\nADD 7 api ERR bad request\nQUERY 10 3 web INFO *\nQUERY 1 4 * ERR login\nQUERY 0 5 api * *\n",
+    "expectedOutput": "0\n1\n1"
+  },
+  {
+    "input": "4\nADD 10 web ERR login failed\nADD 11 api INFO login failed\nADD 3 web INFO login ok\nQUERY 11 5 web * login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "2\nADD 7 api ERR bad request\nQUERY 7 9 * * *\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "4\nADD 10 api INFO login failed\nQUERY 8 10 api * login\nQUERY 5 6 web * bad\nQUERY 1 1 web * *\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "10\nADD 4 api ERR login failed\nADD 2 api ERR login failed\nADD 6 api ERR bad request\nADD 9 api INFO bad request\nADD 9 web INFO login ok\nADD 4 web ERR bad request\nADD 2 web ERR login failed\nQUERY 3 11 api ERR *\nQUERY 5 7 * ERR login\nQUERY 0 6 * ERR bad\n",
+    "expectedOutput": "2\n0\n2"
+  },
+  {
+    "input": "8\nADD 4 web ERR bad request\nADD 11 web ERR bad request\nADD 2 api INFO bad request\nADD 8 web ERR bad request\nQUERY 10 7 api INFO login\nQUERY 4 6 * ERR bad\nQUERY 5 10 * ERR *\nQUERY 4 2 api ERR login\n",
+    "expectedOutput": "0\n1\n1\n0"
+  },
+  {
+    "input": "15\nADD 3 api INFO login ok\nADD 11 api ERR login ok\nADD 8 web INFO login ok\nADD 11 web ERR login failed\nADD 6 api INFO login failed\nADD 1 web ERR login ok\nADD 6 api ERR login ok\nADD 2 api ERR bad request\nADD 0 web ERR bad request\nADD 7 api INFO login ok\nADD 11 web ERR bad request\nQUERY 3 2 * INFO login\nQUERY 6 2 * ERR *\nQUERY 11 10 api INFO bad\nQUERY 11 8 web INFO *\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "8\nADD 7 web ERR bad request\nADD 7 web INFO login failed\nADD 7 web ERR bad request\nADD 3 web ERR bad request\nADD 8 web INFO login failed\nQUERY 10 3 * ERR login\nQUERY 10 3 * ERR login\nQUERY 4 6 * * *\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "7\nADD 11 api ERR login failed\nADD 5 web INFO login ok\nADD 9 api INFO login failed\nADD 6 web INFO login failed\nQUERY 6 9 web * login\nQUERY 4 0 * * bad\nQUERY 11 5 * INFO login\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "3\nADD 6 web ERR login failed\nADD 10 api ERR bad request\nQUERY 5 1 * ERR *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 11 api INFO login failed\nADD 0 web INFO login ok\nADD 8 api INFO login failed\nADD 11 web INFO bad request\nADD 3 api INFO bad request\nADD 0 web INFO login failed\nADD 4 api ERR login ok\nADD 9 api ERR bad request\nADD 7 api ERR login ok\nQUERY 2 1 web INFO *\nQUERY 10 4 api INFO login\nQUERY 3 2 api INFO *\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "9\nADD 7 api INFO login failed\nADD 10 web INFO login ok\nADD 2 web ERR login failed\nADD 8 api INFO login ok\nADD 7 api ERR login ok\nADD 7 web INFO bad request\nADD 4 api ERR login failed\nQUERY 2 7 * ERR *\nQUERY 4 5 api ERR bad\n",
+    "expectedOutput": "3\n0"
+  },
+  {
+    "input": "5\nADD 11 api INFO login failed\nQUERY 0 0 * * login\nQUERY 8 7 web INFO bad\nQUERY 3 10 * ERR *\nQUERY 0 5 api * bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "7\nADD 3 api ERR bad request\nADD 8 web ERR bad request\nADD 4 api INFO login failed\nQUERY 4 1 web INFO login\nQUERY 4 3 api INFO *\nQUERY 2 9 * ERR bad\nQUERY 7 3 web INFO login\n",
+    "expectedOutput": "0\n0\n2\n0"
+  },
+  {
+    "input": "7\nADD 9 web ERR bad request\nADD 1 web INFO login failed\nADD 8 web ERR login ok\nQUERY 2 7 web INFO *\nQUERY 6 10 * INFO login\nQUERY 11 6 web ERR login\nQUERY 9 8 * ERR bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "13\nADD 4 web ERR login failed\nADD 6 api INFO bad request\nADD 7 web INFO login failed\nADD 5 api ERR bad request\nADD 6 api INFO login ok\nADD 8 api INFO bad request\nADD 2 web INFO bad request\nADD 0 api ERR bad request\nADD 3 api ERR login failed\nQUERY 5 3 api * *\nQUERY 6 11 api INFO *\nQUERY 7 10 * ERR bad\nQUERY 2 9 api * bad\n",
+    "expectedOutput": "0\n3\n0\n3"
+  },
+  {
+    "input": "13\nADD 6 web INFO login failed\nADD 0 api INFO login failed\nADD 0 web INFO login ok\nADD 5 web ERR bad request\nADD 4 web ERR bad request\nADD 6 api ERR login ok\nADD 3 web INFO bad request\nADD 5 web ERR login failed\nADD 7 api ERR bad request\nADD 4 web INFO bad request\nADD 4 web ERR login failed\nQUERY 10 9 * INFO bad\nQUERY 0 0 api * *\n",
+    "expectedOutput": "0\n1"
+  },
+  {
+    "input": "13\nADD 3 web INFO login failed\nADD 6 web INFO login ok\nADD 6 web ERR login failed\nADD 5 api ERR login ok\nADD 8 api ERR login ok\nADD 5 web ERR login failed\nADD 9 web ERR login failed\nADD 5 api INFO login ok\nADD 6 api ERR bad request\nQUERY 3 8 * * *\nQUERY 3 6 api * *\nQUERY 6 6 * INFO *\nQUERY 5 10 * INFO *\n",
+    "expectedOutput": "8\n3\n1\n2"
+  },
+  {
+    "input": "10\nADD 3 web ERR bad request\nADD 0 web INFO login failed\nADD 10 api ERR login ok\nADD 9 web INFO login failed\nADD 11 web INFO login ok\nADD 5 api INFO login ok\nQUERY 9 4 api INFO *\nQUERY 3 11 web INFO login\nQUERY 10 3 web INFO bad\nQUERY 11 1 * ERR *\n",
+    "expectedOutput": "0\n2\n0\n0"
+  },
+  {
+    "input": "3\nADD 7 web INFO login failed\nQUERY 4 9 api INFO login\nQUERY 1 1 web ERR bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "12\nADD 0 api INFO bad request\nADD 11 api ERR login failed\nADD 1 web ERR login ok\nADD 8 api INFO bad request\nADD 8 api ERR login failed\nADD 1 web INFO bad request\nADD 6 api INFO login failed\nADD 1 api INFO login ok\nADD 7 web INFO login ok\nQUERY 4 7 * * login\nQUERY 0 7 web * login\nQUERY 7 5 api INFO *\n",
+    "expectedOutput": "2\n2\n0"
+  },
+  {
+    "input": "5\nADD 2 web ERR login failed\nADD 11 web INFO bad request\nADD 5 api INFO login failed\nADD 4 web ERR bad request\nQUERY 8 11 web INFO *\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "9\nADD 7 api INFO login failed\nADD 7 api ERR login failed\nADD 0 api INFO login failed\nADD 10 web ERR bad request\nADD 4 api ERR bad request\nADD 0 web INFO login failed\nADD 9 web ERR login failed\nADD 6 api ERR login failed\nQUERY 10 2 * INFO login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "3\nADD 8 web INFO login ok\nADD 3 api ERR login ok\nQUERY 0 10 web ERR bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "7\nADD 3 web INFO login ok\nADD 6 api INFO login ok\nADD 9 api ERR bad request\nQUERY 7 3 web ERR *\nQUERY 9 2 api * *\nQUERY 2 7 api ERR bad\nQUERY 10 7 api ERR login\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "7\nADD 3 web ERR login failed\nADD 5 api INFO login failed\nADD 7 web ERR login ok\nADD 8 web ERR login failed\nADD 11 api ERR login ok\nQUERY 2 10 * ERR bad\nQUERY 1 9 * INFO bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "6\nADD 3 api INFO login ok\nADD 3 api ERR bad request\nADD 2 api ERR login failed\nADD 7 api INFO login failed\nQUERY 5 5 * * login\nQUERY 5 5 web ERR *\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "10\nADD 5 web INFO bad request\nADD 6 web INFO login failed\nADD 8 api ERR login ok\nADD 1 web INFO bad request\nADD 1 web INFO login ok\nADD 0 api INFO login failed\nADD 3 api ERR login ok\nADD 11 api INFO bad request\nADD 4 api INFO bad request\nQUERY 5 11 api INFO *\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "10\nADD 6 api INFO bad request\nADD 7 api INFO login failed\nADD 7 api INFO login ok\nADD 10 api ERR login ok\nADD 10 web INFO login failed\nADD 5 api ERR login failed\nADD 7 web ERR bad request\nQUERY 9 11 web * *\nQUERY 0 4 web * login\nQUERY 5 0 web ERR *\n",
+    "expectedOutput": "1\n0\n0"
+  },
+  {
+    "input": "10\nADD 2 api ERR login ok\nADD 2 api INFO login ok\nADD 7 api INFO login ok\nADD 4 api ERR login ok\nADD 11 api INFO login failed\nADD 0 api ERR login failed\nADD 11 web INFO login ok\nADD 6 web INFO bad request\nQUERY 4 0 * INFO login\nQUERY 5 7 * ERR *\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "11\nADD 8 api ERR login failed\nADD 5 web ERR bad request\nADD 10 web INFO login ok\nADD 8 web ERR login failed\nADD 9 web INFO login ok\nADD 11 web ERR login ok\nADD 3 web INFO login ok\nQUERY 0 1 web * *\nQUERY 1 6 * INFO login\nQUERY 5 0 api INFO *\nQUERY 3 8 * INFO login\n",
+    "expectedOutput": "0\n1\n0\n1"
+  },
+  {
+    "input": "4\nADD 10 web ERR login ok\nQUERY 8 8 web * *\nQUERY 0 4 web ERR *\nQUERY 9 0 * INFO login\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "7\nADD 4 api ERR login ok\nADD 4 web ERR login ok\nADD 9 api ERR login ok\nQUERY 3 10 api ERR *\nQUERY 9 3 api INFO login\nQUERY 10 1 * * login\nQUERY 11 0 * ERR bad\n",
+    "expectedOutput": "2\n0\n0\n0"
+  },
+  {
+    "input": "13\nADD 5 web INFO login failed\nADD 0 web ERR bad request\nADD 7 api INFO login failed\nADD 11 api ERR login ok\nADD 2 api ERR bad request\nADD 6 web ERR login ok\nADD 10 api INFO bad request\nADD 5 web ERR bad request\nADD 11 api ERR login ok\nADD 2 api INFO login failed\nADD 3 api ERR login ok\nQUERY 1 10 * ERR *\nQUERY 5 4 * * *\n",
+    "expectedOutput": "4\n0"
+  },
+  {
+    "input": "10\nADD 0 api INFO login failed\nADD 8 web ERR bad request\nADD 4 api INFO login failed\nADD 0 api ERR login failed\nADD 11 web INFO bad request\nADD 11 web ERR login ok\nADD 7 web ERR bad request\nADD 11 api ERR login ok\nADD 7 api ERR login failed\nQUERY 4 3 * INFO login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 9 api INFO login ok\nADD 10 web ERR bad request\nADD 7 web ERR bad request\nADD 5 web INFO login ok\nADD 8 api ERR login ok\nADD 1 web ERR bad request\nADD 11 web ERR login failed\nADD 8 web ERR login ok\nQUERY 9 11 * ERR *\nQUERY 3 10 * INFO login\nQUERY 0 9 * ERR bad\nQUERY 3 1 * * login\n",
+    "expectedOutput": "2\n2\n2\n0"
+  },
+  {
+    "input": "6\nADD 4 api ERR login ok\nADD 8 api INFO login failed\nADD 7 web INFO bad request\nADD 10 web INFO bad request\nQUERY 10 4 web ERR *\nQUERY 5 11 api INFO *\n",
+    "expectedOutput": "0\n1"
+  },
+  {
+    "input": "14\nADD 9 api INFO login failed\nADD 10 web ERR bad request\nADD 0 web INFO bad request\nADD 2 web INFO bad request\nADD 11 api INFO login ok\nADD 0 api ERR login ok\nADD 10 api ERR login ok\nADD 6 api INFO login failed\nADD 3 web INFO login failed\nADD 9 web ERR login ok\nQUERY 4 6 web INFO login\nQUERY 10 2 api ERR login\nQUERY 3 1 web * bad\nQUERY 3 10 api * bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "11\nADD 4 web INFO bad request\nADD 9 web INFO bad request\nADD 0 api ERR bad request\nADD 10 web INFO login ok\nADD 0 web INFO login failed\nADD 2 web INFO login failed\nADD 4 api INFO bad request\nADD 1 web ERR login ok\nQUERY 6 10 web * *\nQUERY 0 3 web ERR login\nQUERY 8 5 web * login\n",
+    "expectedOutput": "2\n1\n0"
+  },
+  {
+    "input": "11\nADD 6 api INFO login ok\nADD 8 api INFO login ok\nADD 9 api INFO bad request\nADD 11 api ERR login failed\nADD 9 api INFO login ok\nADD 1 api INFO bad request\nADD 11 api ERR bad request\nADD 5 api INFO login failed\nADD 5 api INFO bad request\nADD 9 web ERR login failed\nQUERY 7 1 * INFO *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "10\nADD 6 web ERR login failed\nADD 4 api INFO login ok\nADD 8 api ERR bad request\nADD 2 web INFO login ok\nADD 4 api INFO login ok\nADD 10 api ERR login ok\nQUERY 5 7 api * bad\nQUERY 5 0 api * bad\nQUERY 5 0 * * bad\nQUERY 3 8 * INFO bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 1 api INFO login failed\nADD 1 api ERR login failed\nADD 6 web INFO login failed\nADD 9 api ERR bad request\nADD 0 web ERR login failed\nADD 8 web ERR bad request\nADD 7 api INFO bad request\nADD 7 api ERR login failed\nQUERY 3 9 web ERR *\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "12\nADD 7 web INFO login ok\nADD 10 web ERR bad request\nADD 10 web INFO login ok\nADD 6 web INFO bad request\nADD 5 web INFO login failed\nADD 11 web ERR login failed\nADD 0 web INFO login failed\nADD 0 web ERR login failed\nADD 7 web INFO login ok\nQUERY 11 10 * INFO *\nQUERY 11 0 web * bad\nQUERY 1 3 * * login\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "9\nADD 8 web ERR bad request\nADD 11 web INFO login ok\nADD 5 web INFO login failed\nADD 6 web ERR login ok\nADD 7 api ERR bad request\nADD 9 web ERR login failed\nADD 10 api ERR login ok\nADD 1 api ERR bad request\nQUERY 2 0 web ERR *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "9\nADD 4 api INFO login ok\nADD 9 api ERR bad request\nADD 4 web INFO login failed\nADD 10 web ERR login ok\nADD 2 api ERR login ok\nADD 3 api INFO bad request\nADD 8 web ERR login failed\nQUERY 10 5 api * bad\nQUERY 11 4 * * login\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "13\nADD 1 web ERR login failed\nADD 11 api ERR login failed\nADD 0 web ERR login failed\nADD 2 web ERR login failed\nADD 5 api INFO login failed\nADD 1 web INFO login ok\nADD 10 web INFO login failed\nADD 6 api INFO bad request\nADD 5 web ERR login failed\nQUERY 10 4 web INFO *\nQUERY 0 6 * * login\nQUERY 6 8 * ERR *\nQUERY 9 0 * INFO *\n",
+    "expectedOutput": "0\n6\n0\n0"
+  },
+  {
+    "input": "13\nADD 7 web ERR login failed\nADD 1 api INFO login ok\nADD 7 api INFO bad request\nADD 3 api INFO bad request\nADD 8 web ERR login ok\nADD 10 web INFO login failed\nADD 8 api ERR login ok\nADD 7 api INFO bad request\nADD 6 api ERR bad request\nADD 6 web INFO bad request\nQUERY 6 5 web * login\nQUERY 1 8 web * login\nQUERY 1 10 api ERR *\n",
+    "expectedOutput": "0\n2\n2"
+  },
+  {
+    "input": "11\nADD 0 web ERR bad request\nADD 0 web ERR login failed\nADD 1 api ERR login ok\nADD 4 web INFO bad request\nADD 5 api ERR bad request\nADD 6 web INFO login ok\nADD 2 web ERR login failed\nQUERY 3 2 * ERR bad\nQUERY 9 6 api ERR login\nQUERY 7 8 api * *\nQUERY 2 8 api * bad\n",
+    "expectedOutput": "0\n0\n0\n1"
+  },
+  {
+    "input": "7\nADD 1 api ERR login failed\nADD 9 web ERR bad request\nADD 2 web INFO login failed\nQUERY 5 3 * ERR login\nQUERY 7 3 * ERR *\nQUERY 2 1 * INFO bad\nQUERY 2 8 api INFO bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "7\nADD 9 web ERR login failed\nADD 5 web ERR login ok\nADD 11 api ERR login failed\nADD 10 web ERR bad request\nQUERY 7 0 api * login\nQUERY 9 7 api ERR login\nQUERY 11 1 * ERR bad\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "12\nADD 0 web ERR bad request\nADD 7 web ERR bad request\nADD 2 web ERR bad request\nADD 10 api ERR bad request\nADD 7 web ERR bad request\nADD 2 api INFO bad request\nADD 9 api ERR login ok\nADD 10 web INFO login ok\nADD 7 api INFO login ok\nADD 1 api ERR bad request\nQUERY 5 8 api INFO *\nQUERY 11 4 api * *\n",
+    "expectedOutput": "1\n0"
+  },
+  {
+    "input": "10\nADD 1 web ERR login failed\nADD 3 web ERR login ok\nADD 0 web ERR bad request\nADD 4 web ERR bad request\nADD 7 api ERR login failed\nADD 8 api INFO login ok\nADD 5 api INFO login ok\nADD 5 web INFO bad request\nQUERY 3 8 web ERR *\nQUERY 10 10 web ERR login\n",
+    "expectedOutput": "2\n0"
+  },
+  {
+    "input": "5\nADD 7 api ERR login ok\nQUERY 7 7 * INFO *\nQUERY 0 11 web * login\nQUERY 7 3 * * login\nQUERY 0 4 api ERR bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "12\nADD 10 web ERR login ok\nADD 11 web INFO login failed\nADD 1 api ERR bad request\nADD 7 api INFO login failed\nADD 0 api ERR login ok\nADD 0 api ERR bad request\nADD 7 api ERR bad request\nADD 0 api ERR bad request\nADD 7 web INFO login ok\nADD 7 api INFO bad request\nADD 2 web INFO login ok\nQUERY 3 4 web * bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 9 web ERR login ok\nADD 1 api ERR login ok\nQUERY 6 7 api ERR login\nQUERY 6 2 web * bad\nQUERY 7 0 web * login\nQUERY 2 7 api * bad\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "9\nADD 7 api INFO bad request\nADD 9 web INFO login failed\nADD 6 web ERR bad request\nADD 2 api ERR login failed\nADD 1 api INFO login ok\nADD 4 api ERR bad request\nADD 0 web INFO login ok\nADD 6 web ERR login failed\nQUERY 11 6 web * bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 10 api ERR login ok\nADD 6 web ERR bad request\nADD 5 web ERR bad request\nADD 7 api ERR bad request\nADD 7 api ERR login failed\nADD 9 web INFO login failed\nADD 9 web ERR bad request\nADD 10 web ERR login failed\nADD 0 api ERR bad request\nADD 10 web INFO login ok\nADD 9 api ERR login failed\nQUERY 8 5 * INFO bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "9\nADD 11 api INFO login ok\nADD 5 web INFO login failed\nADD 4 api INFO login ok\nADD 11 api ERR login failed\nADD 1 web ERR login ok\nQUERY 3 10 * ERR *\nQUERY 2 4 api INFO bad\nQUERY 7 3 web * login\nQUERY 0 1 web ERR *\n",
+    "expectedOutput": "0\n0\n0\n1"
+  },
+  {
+    "input": "11\nADD 7 api INFO login failed\nADD 2 web ERR bad request\nADD 3 api INFO bad request\nADD 2 web ERR login failed\nADD 2 api INFO login ok\nADD 3 web ERR bad request\nADD 8 web INFO login ok\nADD 8 api INFO bad request\nADD 11 api ERR bad request\nADD 11 api ERR bad request\nQUERY 9 10 * INFO *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "10\nADD 5 web INFO login failed\nADD 10 api INFO bad request\nADD 9 api ERR bad request\nADD 5 web ERR login failed\nADD 3 web INFO login ok\nADD 8 api ERR login failed\nADD 1 web ERR bad request\nADD 8 api ERR login ok\nADD 8 api ERR login failed\nQUERY 1 3 api INFO bad\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "7\nADD 2 web ERR bad request\nADD 1 web ERR login ok\nADD 10 api ERR login ok\nQUERY 5 0 * INFO login\nQUERY 3 1 * * login\nQUERY 7 0 api * bad\nQUERY 9 0 * ERR login\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "8\nADD 4 web INFO login failed\nADD 5 web ERR bad request\nADD 3 api INFO login ok\nADD 6 api INFO login failed\nADD 9 web ERR login ok\nADD 2 web INFO bad request\nQUERY 10 8 * * *\nQUERY 3 0 * INFO bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "6\nADD 8 api INFO bad request\nADD 8 web INFO bad request\nADD 7 api INFO bad request\nADD 0 web ERR login failed\nQUERY 5 6 web * *\nQUERY 5 4 web * bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "15\nADD 2 api ERR login failed\nADD 3 api INFO bad request\nADD 8 api ERR login ok\nADD 2 web INFO bad request\nADD 4 web INFO login failed\nADD 10 api ERR login failed\nADD 10 api INFO login ok\nADD 8 api ERR login ok\nADD 9 web ERR bad request\nADD 4 api ERR bad request\nADD 11 api ERR login ok\nQUERY 3 6 web ERR bad\nQUERY 0 6 api INFO *\nQUERY 5 4 api ERR login\nQUERY 3 7 * ERR bad\n",
+    "expectedOutput": "0\n1\n0\n1"
+  },
+  {
+    "input": "5\nADD 6 api INFO login ok\nADD 1 api INFO bad request\nADD 6 api ERR bad request\nQUERY 9 10 web ERR login\nQUERY 2 6 api ERR *\n",
+    "expectedOutput": "0\n1"
+  },
+  {
+    "input": "3\nADD 11 api ERR login failed\nADD 11 web INFO login failed\nQUERY 0 11 api INFO *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "10\nADD 2 api ERR login ok\nADD 6 web INFO login failed\nADD 6 web ERR login failed\nADD 11 api ERR login ok\nADD 9 web ERR login ok\nADD 3 web ERR bad request\nADD 3 web INFO login failed\nADD 11 api ERR login ok\nQUERY 6 6 web * *\nQUERY 10 5 web INFO *\n",
+    "expectedOutput": "2\n0"
+  },
+  {
+    "input": "5\nADD 7 web ERR login failed\nQUERY 10 7 * * bad\nQUERY 5 0 web INFO login\nQUERY 11 3 * INFO bad\nQUERY 7 1 * ERR login\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "5\nADD 7 web ERR login ok\nADD 5 web ERR login failed\nADD 3 web ERR login failed\nQUERY 8 0 * * bad\nQUERY 8 7 * INFO bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "12\nADD 11 api INFO login failed\nADD 6 api ERR bad request\nADD 4 api INFO bad request\nADD 2 api INFO login failed\nADD 7 web ERR login failed\nADD 2 web INFO bad request\nADD 8 api INFO login ok\nADD 2 api INFO bad request\nADD 8 api INFO login failed\nQUERY 7 0 * INFO *\nQUERY 7 1 * INFO login\nQUERY 6 8 api INFO login\n",
+    "expectedOutput": "0\n0\n2"
+  },
+  {
+    "input": "4\nADD 10 api INFO bad request\nADD 2 web INFO login failed\nADD 0 api INFO login ok\nQUERY 7 3 web * *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "13\nADD 3 api INFO login ok\nADD 11 web INFO login failed\nADD 8 api ERR login failed\nADD 3 web INFO login failed\nADD 1 web ERR login ok\nADD 11 web ERR login ok\nADD 3 web INFO login failed\nADD 8 web INFO login ok\nADD 8 web ERR login failed\nADD 4 api ERR bad request\nQUERY 0 6 web INFO login\nQUERY 7 10 * * login\nQUERY 6 7 web * bad\n",
+    "expectedOutput": "2\n3\n0"
+  },
+  {
+    "input": "14\nADD 4 api ERR login ok\nADD 8 api INFO login ok\nADD 10 api INFO bad request\nADD 7 api INFO login ok\nADD 9 web INFO bad request\nADD 5 api ERR login ok\nADD 2 web ERR bad request\nADD 7 web ERR bad request\nADD 8 web INFO bad request\nADD 9 web ERR bad request\nADD 10 api INFO bad request\nQUERY 11 10 * INFO *\nQUERY 11 3 * ERR *\nQUERY 0 8 web INFO bad\n",
+    "expectedOutput": "0\n0\n1"
+  },
+  {
+    "input": "3\nADD 9 web ERR login ok\nADD 2 web INFO login failed\nQUERY 3 7 web ERR *\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "12\nADD 0 api ERR login failed\nADD 4 web INFO login failed\nADD 2 api ERR bad request\nADD 10 web INFO login ok\nADD 8 web INFO login ok\nADD 10 web INFO login failed\nADD 9 api INFO login ok\nADD 5 web ERR login ok\nADD 11 api INFO bad request\nADD 10 api INFO login failed\nQUERY 6 1 web ERR *\nQUERY 8 4 api INFO bad\n",
+    "expectedOutput": "0\n0"
+  },
+  {
+    "input": "5\nADD 11 web INFO login failed\nADD 11 api ERR login ok\nADD 4 web ERR login failed\nADD 6 api ERR login ok\nQUERY 4 9 api * login\n",
+    "expectedOutput": "1"
+  },
+  {
+    "input": "6\nADD 5 web ERR bad request\nADD 10 web INFO login failed\nADD 3 api INFO login ok\nADD 1 api INFO login failed\nADD 5 api ERR login failed\nQUERY 9 5 * INFO login\n",
+    "expectedOutput": "0"
+  },
+  {
+    "input": "6\nADD 5 web INFO login failed\nADD 1 api ERR login failed\nADD 8 api INFO login failed\nQUERY 6 8 api ERR *\nQUERY 4 0 * * login\nQUERY 10 8 api INFO bad\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "6\nADD 8 api INFO login ok\nADD 4 api INFO login ok\nADD 11 api ERR login failed\nADD 5 web ERR login ok\nADD 11 api INFO bad request\nQUERY 1 10 * * login\n",
+    "expectedOutput": "3"
+  },
+  {
+    "input": "6\nADD 2 api INFO login ok\nADD 4 api ERR bad request\nADD 4 api ERR bad request\nQUERY 9 1 api ERR login\nQUERY 8 10 * * bad\nQUERY 4 0 * INFO login\n",
+    "expectedOutput": "0\n0\n0"
+  },
+  {
+    "input": "10\nADD 10 api INFO bad request\nADD 0 web INFO login failed\nADD 10 web INFO login failed\nADD 0 api ERR login ok\nADD 0 web ERR login ok\nADD 0 api INFO login ok\nQUERY 0 5 web * bad\nQUERY 1 2 web * login\nQUERY 5 10 * ERR bad\nQUERY 4 6 api ERR *\n",
+    "expectedOutput": "0\n0\n0\n0"
+  },
+  {
+    "input": "12\nADD 8 web ERR login ok\nADD 8 web INFO login ok\nADD 11 api ERR login failed\nADD 1 web ERR bad request\nADD 3 api ERR login ok\nADD 0 api INFO bad request\nADD 6 api ERR login failed\nADD 7 api INFO login failed\nQUERY 3 10 web * login\nQUERY 10 0 * * bad\nQUERY 9 8 * * bad\nQUERY 2 8 api ERR login\n",
+    "expectedOutput": "2\n0\n0\n2"
+  },
+  {
+    "input": "8\nADD 4 api INFO login failed\nADD 1 api ERR login failed\nADD 5 api ERR login ok\nADD 2 api INFO login failed\nADD 5 api INFO bad request\nADD 6 api ERR login failed\nQUERY 2 8 api * bad\nQUERY 1 3 web ERR *\n",
+    "expectedOutput": "1\n0"
+  },
+  {
+    "input": "11\nADD 9 api ERR login ok\nADD 10 web INFO login ok\nADD 10 web INFO login failed\nADD 6 api ERR login failed\nADD 8 api INFO login ok\nADD 2 web INFO login ok\nADD 3 api ERR login ok\nADD 0 web INFO bad request\nADD 4 api INFO login ok\nQUERY 6 10 api INFO login\nQUERY 7 3 web INFO *\n",
+    "expectedOutput": "1\n0"
+  },
+  {
+    "input": "11\nADD 6 web ERR login failed\nADD 7 api ERR login failed\nADD 1 api ERR login failed\nADD 2 api INFO login ok\nADD 10 api INFO login ok\nADD 9 api ERR bad request\nADD 1 api INFO bad request\nADD 6 api INFO bad request\nQUERY 9 0 * * login\nQUERY 4 2 api ERR bad\nQUERY 5 9 * INFO login\n",
+    "expectedOutput": "0\n0\n0"
+  }
+]

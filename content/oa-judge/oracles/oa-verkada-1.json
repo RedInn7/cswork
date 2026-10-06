@@ -1,0 +1,654 @@
+[
+  {
+    "input": "/var/log\n3\n/var/log/a\tclient 10.1.1.1 backup 256.1.1.1\n/var/log/sub/b\t192.168.0.1 01.2.3.4\n/tmp/x\t8.8.8.8\n",
+    "expectedOutput": "10.1.1.1\n192.168.0.1"
+  },
+  {
+    "input": "/data\n1\n/database/a\t1.1.1.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n8\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n2\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n7\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n5\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n5\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n7\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n8\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n2\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n7\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n7\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n8\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n8\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n5\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n2\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n6\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n3\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n7\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n5\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n2\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n6\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n6\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n7\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n5\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4"
+  },
+  {
+    "input": "/data\n5\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n8\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.2.3.4"
+  },
+  {
+    "input": "/data\n1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4"
+  },
+  {
+    "input": "/data\n8\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n5\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n2\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1"
+  },
+  {
+    "input": "/data\n8\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n255.255.255.255"
+  },
+  {
+    "input": "/data\n6\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n3\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4"
+  },
+  {
+    "input": "/data\n6\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\t255.255.255.255 256.0.0.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n",
+    "expectedOutput": "1.2.3.4\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n1.2.3.4\n1.2.3.4\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\tip 1.2.3.4 bad 01.2.3.4\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  },
+  {
+    "input": "/data\n5\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\t255.255.255.255 256.0.0.1\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.2.3.4\n255.255.255.255\n255.255.255.255\n255.255.255.255"
+  },
+  {
+    "input": "/data\n7\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/a\t255.255.255.255 256.0.0.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.2.3.4\n255.255.255.255"
+  },
+  {
+    "input": "/data\n2\n/database/no\tip 1.2.3.4 bad 01.2.3.4\n/database/no\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "/data\n7\n/database/no\trepeat 1.1.1.1 1.1.1.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/database/no\t255.255.255.255 256.0.0.1\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n/data/a\trepeat 1.1.1.1 1.1.1.1\n/data/a\tip 1.2.3.4 bad 01.2.3.4\n/data/sub/b\trepeat 1.1.1.1 1.1.1.1\n",
+    "expectedOutput": "1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.1.1.1\n1.2.3.4"
+  }
+]

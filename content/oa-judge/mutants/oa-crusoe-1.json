@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 override 当作 OR 合并而不是覆盖",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));p=0;D=z[p];p+=1;u=z[p];p+=1;d=[0]*(D+2)\n for _ in range(u):\n  l,r,v=z[p:p+3];p+=3\n  if v:d[l]+=1;d[r+1]-=1\n o=z[p];p+=1;ov=[None]*(D+1)\n for _ in range(o):\n  l,r,v=z[p:p+3];p+=3\n  for i in range(l,r+1):ov[i]=v\n cur=0;s=[]\n for i in range(1,D+1):cur+=d[i];s.append(str(int(cur>0 or ov[i]==1)))\n return ''.join(s)\n"
+  },
+  {
+    "name": "忽略 usage 区间只读 override",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));p=0;D=z[p];p+=1;u=z[p];p+=1;p+=3*u;o=z[p];p+=1;v=[0]*(D+1)\n for _ in range(o):\n  l,r,b=z[p:p+3];p+=3\n  for i in range(l,r+1):v[i]=b\n return ''.join(str(v[i]) for i in range(1,D+1))\n"
+  }
+]

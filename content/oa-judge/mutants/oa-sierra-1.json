@@ -1,0 +1,10 @@
+[
+  {
+    "name": "分块时不重放有效标题",
+    "code": "def solve(raw):\n z=raw.splitlines();lim=int(z[0]);out=[];cur=[]\n for x in z[1:]:\n  if cur and len(\" | \".join(cur+[x]))>lim:out.append(\" | \".join(cur));cur=[]\n  cur.append(x)\n if cur:out.append(\" | \".join(cur))\n return \"\\n\".join(out)\n"
+  },
+  {
+    "name": "把标题层级全部累加而不截断同级标题",
+    "code": "def solve(raw):\n z=raw.splitlines();lim=int(z[0]);h=[];o=[];c=[]\n for x in z[1:]:\n  q=x.lstrip();a=q.startswith(\"#\")\n  if a:h.append(x)\n  if c and len(\" | \".join(c+[x]))>lim:o.append(\" | \".join(c));c=h[:] if a else h+[x]\n  else:c.append(x)\n if c:o.append(\" | \".join(c))\n return \"\\n\".join(o)\n"
+  }
+]

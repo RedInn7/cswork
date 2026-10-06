@@ -1,0 +1,10 @@
+[
+  {
+    "name": "用字符串前缀判断目录归属",
+    "code": "def solve(raw):\n z=raw.splitlines();root=z[0].rstrip(\"/\");out=[]\n for l in z[2:]:\n  p,c=l.split(\"\\t\",1)\n  if p.startswith(root):\n   for t in c.split():\n    a=t.split(\".\")\n    if len(a)==4 and all(x.isdigit() and int(x)<=255 and (x==\"0\" or not x.startswith(\"0\")) for x in a):out.append(t)\n return \"\\n\".join(sorted(out))\n"
+  },
+  {
+    "name": "允许带前导零的八位组",
+    "code": "def solve(raw):\n z=raw.splitlines();root=z[0].rstrip(\"/\");o=[]\n for l in z[2:]:\n  p,c=l.split(\"\\t\",1)\n  if p.startswith(root+\"/\"):\n   for t in c.split():\n    a=t.split(\".\")\n    if len(a)==4 and all(x.isdigit() and int(x)<=255 for x in a):o.append(t)\n return \"\\n\".join(sorted(o))\n"
+  }
+]

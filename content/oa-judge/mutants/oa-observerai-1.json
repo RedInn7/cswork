@@ -1,0 +1,10 @@
+[
+  {
+    "name": "用最大可容纳值替代每笔最小足够标记",
+    "code": "def solve(raw):\n z=raw.splitlines();p=0;n=int(z[p]);p+=1;a=list(map(int,z[p].split()));p+=1;f=int(z[p]);p+=1;b=[]\n for i in range(f):\n  m=int(z[p]);p+=1;g=list(map(int,z[p].split()))[:m];p+=1\n  if all(max(g)>=x for x in a):b.append((sum(max(g)-x for x in a),i))\n return str(min(b)[1] if b else -1)\n"
+  },
+  {
+    "name": "平局时选择编号较大的烧杯",
+    "code": "def solve(raw):\n z=raw.splitlines();p=0;n=int(z[p]);p+=1;a=list(map(int,z[p].split()));p+=1;f=int(z[p]);p+=1;b=[]\n for i in range(f):\n  m=int(z[p]);p+=1;g=list(map(int,z[p].split()))[:m];p+=1\n  c=[]\n  for x in a:\n   q=[v for v in g if v>=x]\n   if not q:break\n   c.append(min(q)-x)\n  if len(c)==len(a):b.append((sum(c),-i))\n return str(-min(b)[1] if b else -1)\n"
+  }
+]

@@ -1,0 +1,1195 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-commvault-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Number of Good Pairs",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Commvault"
+    ],
+    "description": "在无向图中统计端点属于不同连通分量的无序节点对数。\n\n本站标准输入输出格式与补充边界以本题说明为准。",
+    "input": "输入 N M（1≤N≤65,535，0≤M≤2×10^5），随后 M 行边 u v（1-based，1≤u,v≤N）。允许重复边与自环，结果可安全放入有符号 32 位整数。",
+    "output": "输出 good pair 数量（64 位整数）。",
+    "explanation": "并查集构造连通分量大小；从全部无序点对中减去每个连通分量内部组合数。独立 oracle 建图并做 DFS 后直接枚举点对。",
+    "hints": [
+      "并查集构造连通分量大小；从全部无序点对中减去每个连通分量内部组合数。独立 oracle 建图并做 DFS 后直接枚举点对。"
+    ],
+    "timeLimit": 6,
+    "memoryLimit": 262144,
+    "outputLimit": 32768,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5 3\n1 2\n2 3\n4 5\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4 0\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1 2\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "5 3\n1 2\n2 3\n4 5\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "4 0\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "1 2\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "1 19\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "1 9\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "6 11\n6 2\n2 1\n4 2\n4 2\n4 5\n6 5\n3 2\n1 4\n4 4\n1 6\n5 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "11 11\n4 1\n7 7\n8 4\n10 6\n11 6\n7 8\n9 6\n9 6\n2 3\n7 9\n7 8\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "12 8\n1 9\n10 9\n12 5\n8 5\n3 9\n10 9\n6 10\n1 1\n",
+      "expectedOutput": "53\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "1 13\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "8 4\n5 8\n4 1\n3 3\n2 5\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "2 18\n1 1\n1 2\n1 1\n2 1\n2 1\n2 2\n2 1\n2 2\n1 2\n2 1\n1 1\n1 2\n2 2\n1 1\n2 1\n1 2\n2 2\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "6 0\n\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "10 5\n3 7\n8 7\n8 3\n6 6\n3 7\n",
+      "expectedOutput": "42\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "7 11\n7 1\n2 1\n6 7\n3 2\n7 7\n4 1\n1 3\n6 2\n5 6\n3 1\n6 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "10 3\n4 10\n6 4\n10 8\n",
+      "expectedOutput": "39\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "10 15\n9 7\n7 7\n7 6\n1 5\n9 8\n2 7\n8 2\n7 6\n4 4\n4 6\n4 9\n4 9\n3 9\n2 8\n8 6\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "12 12\n9 8\n1 3\n9 9\n3 2\n7 6\n7 6\n6 2\n9 11\n7 4\n10 1\n5 9\n11 4\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "12 10\n3 4\n3 7\n3 6\n6 7\n8 4\n3 4\n8 4\n8 1\n7 10\n9 10\n",
+      "expectedOutput": "38\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "6 7\n1 2\n1 6\n3 6\n3 6\n5 6\n1 3\n5 2\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "7 10\n5 1\n1 5\n7 3\n3 1\n3 6\n5 7\n4 3\n3 7\n4 4\n5 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "11 2\n10 11\n10 10\n",
+      "expectedOutput": "54\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "6 19\n4 2\n5 4\n3 2\n5 3\n3 3\n1 3\n1 1\n5 2\n4 2\n6 1\n5 4\n1 3\n4 4\n2 1\n2 2\n2 6\n3 5\n1 3\n3 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "9 15\n6 4\n2 7\n8 4\n1 8\n7 8\n2 9\n8 2\n1 8\n9 5\n2 4\n7 5\n3 4\n4 8\n8 4\n5 6\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "6 10\n5 1\n4 1\n4 2\n1 2\n6 6\n1 6\n6 1\n4 5\n1 4\n3 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "2 6\n2 1\n1 1\n2 2\n1 1\n1 2\n2 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "6 6\n5 2\n6 4\n2 3\n3 6\n5 3\n6 5\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "6 12\n2 2\n4 1\n6 3\n3 5\n1 3\n5 3\n1 3\n4 2\n5 5\n2 5\n1 4\n6 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 28",
+      "input": "6 12\n5 3\n6 3\n6 4\n2 6\n1 3\n3 5\n5 2\n2 6\n1 4\n5 3\n1 4\n3 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 29",
+      "input": "12 7\n5 5\n7 4\n1 1\n9 4\n6 9\n11 7\n12 2\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 30",
+      "input": "6 11\n1 2\n4 2\n6 6\n2 3\n3 2\n6 2\n4 5\n4 5\n3 2\n1 5\n3 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 31",
+      "input": "12 5\n10 10\n11 5\n7 11\n8 5\n7 7\n",
+      "expectedOutput": "60\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 32",
+      "input": "9 12\n2 4\n6 5\n6 5\n5 2\n6 6\n6 6\n9 3\n2 2\n4 7\n8 1\n8 3\n1 9\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 33",
+      "input": "4 9\n4 4\n2 3\n2 2\n2 3\n3 2\n2 4\n3 4\n4 4\n1 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 34",
+      "input": "5 14\n4 5\n1 3\n4 4\n3 5\n2 2\n3 5\n1 3\n3 3\n4 2\n4 3\n3 5\n1 5\n5 2\n3 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 35",
+      "input": "7 18\n7 3\n3 4\n5 5\n2 7\n6 7\n7 7\n6 2\n6 6\n3 6\n2 1\n2 3\n1 1\n5 7\n4 1\n5 2\n6 6\n3 6\n7 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 36",
+      "input": "4 3\n2 4\n3 1\n3 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 37",
+      "input": "11 20\n8 10\n8 8\n5 3\n7 1\n10 7\n8 9\n9 2\n7 4\n4 11\n10 10\n6 7\n5 3\n3 2\n10 10\n4 8\n4 2\n7 5\n8 10\n10 3\n4 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 38",
+      "input": "2 16\n1 1\n2 1\n1 2\n1 2\n1 1\n2 2\n2 1\n2 2\n1 1\n1 2\n1 1\n2 2\n2 1\n1 2\n1 2\n2 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 39",
+      "input": "4 7\n4 4\n2 2\n2 2\n2 3\n2 1\n2 1\n4 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 40",
+      "input": "4 10\n2 4\n1 4\n4 2\n3 3\n1 4\n1 2\n4 1\n4 2\n4 1\n2 4\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 41",
+      "input": "11 18\n10 3\n7 9\n10 9\n8 10\n4 8\n3 4\n10 6\n3 3\n9 10\n5 8\n2 4\n2 2\n9 11\n9 6\n1 3\n1 10\n6 7\n1 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 42",
+      "input": "10 5\n8 7\n5 9\n6 2\n1 2\n5 9\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 43",
+      "input": "1 20\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 44",
+      "input": "1 16\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 45",
+      "input": "4 15\n1 4\n1 3\n1 3\n1 3\n1 1\n4 3\n1 1\n3 1\n2 4\n2 1\n4 3\n3 1\n1 2\n3 1\n2 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 46",
+      "input": "8 19\n1 2\n2 8\n4 1\n2 1\n8 4\n4 7\n5 5\n7 2\n1 6\n5 5\n4 5\n1 4\n7 6\n1 4\n3 5\n3 5\n2 4\n6 8\n8 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 47",
+      "input": "4 6\n4 3\n4 1\n4 1\n3 4\n4 4\n4 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 48",
+      "input": "11 2\n1 11\n9 1\n",
+      "expectedOutput": "52\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 49",
+      "input": "1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 50",
+      "input": "3 7\n2 1\n2 1\n1 1\n3 3\n3 2\n3 1\n3 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 51",
+      "input": "12 17\n12 4\n12 12\n9 1\n3 1\n7 4\n4 5\n5 11\n7 5\n11 10\n4 9\n11 4\n2 9\n9 8\n8 2\n9 4\n2 5\n1 8\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 52",
+      "input": "7 1\n4 2\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 53",
+      "input": "8 7\n7 5\n7 8\n8 7\n7 1\n4 8\n8 8\n2 1\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 54",
+      "input": "10 17\n6 4\n3 6\n10 7\n3 6\n6 6\n1 4\n8 7\n4 7\n10 7\n6 4\n5 9\n2 3\n9 5\n7 5\n3 5\n10 3\n1 8\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 55",
+      "input": "5 11\n3 3\n5 3\n3 5\n4 5\n4 1\n1 3\n1 2\n5 5\n3 1\n1 4\n1 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 56",
+      "input": "2 6\n1 1\n2 1\n1 2\n2 2\n2 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 57",
+      "input": "9 8\n9 4\n8 1\n9 9\n8 2\n1 3\n9 3\n3 6\n7 9\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 58",
+      "input": "4 3\n4 1\n4 1\n4 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 59",
+      "input": "9 2\n9 9\n3 4\n",
+      "expectedOutput": "35\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 60",
+      "input": "8 3\n2 4\n5 3\n8 5\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 61",
+      "input": "6 19\n5 6\n2 6\n6 2\n2 4\n5 5\n6 2\n4 2\n3 4\n2 2\n4 4\n5 3\n6 2\n2 6\n5 4\n4 1\n6 5\n6 1\n2 5\n3 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 62",
+      "input": "4 9\n2 3\n1 1\n2 1\n1 2\n1 3\n1 1\n3 1\n4 3\n4 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 63",
+      "input": "4 8\n4 3\n1 3\n2 4\n3 1\n2 1\n1 4\n2 2\n4 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 64",
+      "input": "12 19\n11 9\n11 7\n5 6\n2 11\n3 9\n8 12\n6 2\n8 2\n10 9\n9 11\n8 11\n11 4\n1 7\n11 6\n12 6\n11 1\n11 9\n2 1\n10 10\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 65",
+      "input": "6 18\n4 2\n3 3\n4 6\n4 2\n4 1\n4 6\n2 6\n4 1\n4 6\n6 3\n2 5\n1 1\n3 1\n5 2\n6 2\n4 1\n1 3\n1 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 66",
+      "input": "8 11\n1 5\n4 3\n3 8\n4 7\n4 2\n6 2\n4 2\n7 1\n8 7\n1 2\n2 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 67",
+      "input": "11 0\n\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 68",
+      "input": "9 12\n9 4\n8 6\n3 3\n7 6\n4 5\n6 2\n8 9\n8 6\n7 8\n2 8\n2 8\n7 3\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 69",
+      "input": "9 19\n7 7\n6 1\n9 1\n4 7\n8 5\n7 8\n2 7\n1 6\n6 4\n9 3\n4 5\n3 1\n9 9\n8 6\n6 2\n7 1\n9 6\n3 4\n4 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 70",
+      "input": "1 6\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 71",
+      "input": "10 3\n6 3\n6 1\n8 7\n",
+      "expectedOutput": "41\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 72",
+      "input": "1 8\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 73",
+      "input": "2 4\n1 2\n2 2\n1 1\n2 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 74",
+      "input": "5 10\n2 2\n5 3\n3 2\n4 3\n5 1\n1 3\n3 2\n2 5\n2 3\n5 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 75",
+      "input": "7 1\n7 5\n",
+      "expectedOutput": "20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 76",
+      "input": "4 18\n3 3\n3 1\n1 3\n3 2\n4 2\n3 1\n4 4\n4 1\n4 2\n3 3\n3 1\n1 4\n4 1\n4 3\n2 3\n1 3\n4 4\n1 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 77",
+      "input": "2 9\n1 1\n1 1\n1 1\n2 1\n2 2\n2 2\n1 2\n2 1\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 78",
+      "input": "8 10\n3 4\n6 1\n6 1\n7 5\n8 2\n8 7\n8 1\n8 3\n3 5\n2 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 79",
+      "input": "1 12\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 80",
+      "input": "8 1\n7 3\n",
+      "expectedOutput": "27\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 81",
+      "input": "4 9\n4 3\n1 3\n1 2\n3 3\n1 2\n3 1\n1 1\n3 2\n3 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 82",
+      "input": "7 11\n4 7\n6 5\n7 2\n7 2\n3 3\n4 6\n4 3\n7 3\n4 2\n7 5\n2 5\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 83",
+      "input": "6 5\n4 6\n1 2\n4 1\n3 4\n6 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 84",
+      "input": "2 5\n2 2\n1 2\n2 1\n1 1\n2 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 85",
+      "input": "3 19\n1 3\n2 3\n3 2\n1 2\n2 3\n2 3\n2 3\n3 1\n3 2\n3 1\n3 2\n3 3\n3 3\n1 3\n1 1\n2 1\n1 3\n3 1\n3 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 86",
+      "input": "10 10\n5 10\n1 9\n8 9\n6 5\n7 9\n10 5\n4 10\n8 7\n1 2\n4 1\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 87",
+      "input": "12 13\n12 6\n5 7\n2 1\n3 6\n6 1\n11 8\n2 5\n8 5\n8 6\n5 4\n11 6\n10 8\n11 10\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 88",
+      "input": "2 1\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 89",
+      "input": "11 8\n2 7\n6 9\n1 6\n4 3\n4 3\n8 6\n4 1\n8 5\n",
+      "expectedOutput": "33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 90",
+      "input": "10 20\n5 9\n8 10\n5 9\n4 4\n6 2\n7 4\n9 2\n7 4\n2 4\n9 1\n4 7\n5 3\n5 3\n9 2\n2 2\n3 3\n2 9\n5 7\n9 6\n2 6\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 91",
+      "input": "5 0\n\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 92",
+      "input": "7 12\n2 3\n5 2\n3 7\n5 4\n3 1\n7 1\n7 7\n5 6\n1 1\n1 1\n5 6\n3 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 93",
+      "input": "3 17\n3 2\n2 3\n1 2\n3 2\n1 3\n3 1\n3 3\n3 1\n1 2\n1 2\n3 1\n1 1\n2 1\n1 3\n1 3\n3 1\n1 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 94",
+      "input": "7 14\n3 1\n5 7\n5 3\n7 2\n2 3\n7 2\n5 1\n1 1\n4 7\n5 7\n6 1\n6 6\n3 4\n4 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 95",
+      "input": "12 9\n12 12\n4 2\n9 4\n7 7\n1 8\n12 5\n6 3\n6 12\n1 3\n",
+      "expectedOutput": "48\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 96",
+      "input": "5 13\n4 4\n4 4\n3 3\n2 3\n1 4\n1 1\n5 1\n5 1\n5 3\n4 1\n5 3\n5 2\n3 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 97",
+      "input": "5 13\n1 2\n3 5\n3 4\n4 5\n3 4\n5 5\n1 5\n1 4\n3 2\n3 4\n5 5\n5 2\n3 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 98",
+      "input": "10 12\n5 7\n4 2\n1 9\n4 6\n1 5\n4 6\n10 9\n3 7\n2 3\n6 2\n6 8\n1 9\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 99",
+      "input": "9 1\n7 7\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 100",
+      "input": "12 19\n10 1\n6 11\n8 3\n8 11\n6 9\n11 1\n10 10\n6 1\n3 10\n8 4\n11 9\n10 6\n7 11\n2 9\n6 10\n5 10\n5 4\n4 6\n4 8\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 101",
+      "input": "5 4\n2 3\n3 2\n3 3\n4 2\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 102",
+      "input": "4 2\n3 4\n1 1\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 103",
+      "input": "2 3\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 104",
+      "input": "10 4\n3 3\n3 6\n10 5\n6 10\n",
+      "expectedOutput": "39\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 105",
+      "input": "4 13\n2 4\n4 4\n1 1\n4 4\n3 2\n4 2\n4 2\n2 1\n4 3\n1 4\n2 2\n1 2\n3 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 106",
+      "input": "4 16\n4 3\n4 1\n2 3\n3 3\n1 4\n2 2\n2 2\n3 2\n2 4\n1 1\n1 1\n1 3\n4 2\n1 2\n4 2\n4 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 107",
+      "input": "12 17\n5 6\n8 10\n1 10\n2 5\n7 10\n9 8\n8 8\n9 9\n8 3\n4 12\n1 7\n8 3\n2 11\n11 6\n11 1\n12 12\n7 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 108",
+      "input": "10 11\n2 10\n9 9\n8 5\n8 6\n5 5\n6 4\n5 6\n2 9\n4 8\n8 8\n10 2\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 109",
+      "input": "10 1\n6 7\n",
+      "expectedOutput": "44\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 110",
+      "input": "9 3\n4 2\n7 3\n8 9\n",
+      "expectedOutput": "33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 111",
+      "input": "9 8\n6 6\n7 5\n6 3\n4 4\n4 6\n7 7\n2 8\n3 7\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 112",
+      "input": "5 12\n2 5\n1 1\n4 4\n5 3\n3 2\n2 4\n2 1\n1 1\n3 1\n2 3\n5 4\n3 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 113",
+      "input": "4 20\n1 4\n3 4\n4 2\n3 2\n4 4\n2 1\n1 4\n1 2\n1 1\n3 2\n3 2\n1 3\n2 2\n3 4\n4 4\n2 4\n4 1\n4 2\n3 2\n2 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 114",
+      "input": "8 19\n6 6\n2 5\n6 3\n6 3\n5 1\n8 5\n1 8\n4 1\n1 5\n6 3\n8 3\n5 6\n6 6\n6 2\n2 2\n7 4\n5 8\n1 4\n5 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 115",
+      "input": "4 10\n3 1\n2 2\n1 3\n3 1\n1 1\n4 2\n1 2\n2 4\n3 2\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 116",
+      "input": "4 19\n3 4\n1 1\n4 1\n1 1\n4 2\n1 4\n3 4\n1 4\n1 4\n4 1\n1 2\n4 1\n3 2\n3 4\n4 1\n4 4\n2 3\n1 4\n1 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 117",
+      "input": "7 12\n3 3\n6 2\n3 1\n2 7\n7 7\n1 5\n1 1\n2 1\n7 2\n6 6\n5 1\n2 6\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 118",
+      "input": "11 7\n11 3\n9 3\n8 5\n9 5\n3 9\n8 4\n5 4\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 119",
+      "input": "6 4\n2 1\n1 3\n4 3\n5 2\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 120",
+      "input": "7 11\n4 1\n5 5\n6 5\n4 4\n2 2\n4 3\n4 5\n6 6\n6 4\n1 5\n3 5\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 121",
+      "input": "5 4\n3 1\n4 5\n3 4\n4 1\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 122",
+      "input": "12 5\n3 12\n3 4\n7 7\n7 11\n9 9\n",
+      "expectedOutput": "62\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 123",
+      "input": "10 14\n4 6\n3 2\n7 10\n8 6\n9 7\n4 1\n3 4\n1 6\n1 4\n6 7\n8 4\n9 2\n2 10\n3 4\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 124",
+      "input": "2 16\n2 1\n2 1\n2 1\n2 2\n2 2\n1 1\n2 1\n1 2\n2 2\n2 2\n2 2\n1 1\n2 2\n1 2\n1 2\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 125",
+      "input": "1 18\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 126",
+      "input": "8 11\n7 6\n3 5\n6 1\n4 8\n2 2\n1 2\n6 2\n8 5\n7 8\n8 6\n4 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 127",
+      "input": "7 0\n\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 128",
+      "input": "9 7\n5 2\n6 8\n6 2\n5 4\n6 5\n6 2\n8 6\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 129",
+      "input": "12 10\n4 2\n7 3\n12 4\n6 8\n2 6\n1 4\n4 9\n10 12\n9 5\n4 1\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 130",
+      "input": "4 2\n1 4\n3 3\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 131",
+      "input": "8 6\n7 1\n1 3\n5 8\n7 6\n5 7\n7 4\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 132",
+      "input": "6 2\n6 3\n6 6\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 133",
+      "input": "2 9\n1 1\n1 1\n1 1\n1 2\n1 1\n2 2\n1 2\n1 1\n1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 134",
+      "input": "4 9\n3 1\n2 3\n3 2\n1 4\n1 3\n2 2\n1 4\n4 1\n3 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 135",
+      "input": "9 12\n6 3\n2 8\n9 7\n3 3\n1 4\n3 3\n5 2\n6 3\n2 6\n5 9\n8 7\n4 8\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 136",
+      "input": "12 12\n1 10\n11 12\n4 2\n4 2\n11 8\n9 1\n8 12\n4 3\n1 7\n5 5\n2 10\n8 10\n",
+      "expectedOutput": "21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 137",
+      "input": "4 2\n3 4\n1 2\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 138",
+      "input": "3 10\n1 2\n2 1\n3 3\n1 1\n3 3\n1 1\n1 3\n3 3\n1 1\n2 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 139",
+      "input": "10 3\n7 2\n7 9\n10 10\n",
+      "expectedOutput": "42\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 140",
+      "input": "12 2\n8 7\n1 3\n",
+      "expectedOutput": "64\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 141",
+      "input": "4 4\n1 3\n2 4\n3 1\n2 4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 142",
+      "input": "7 18\n4 3\n7 2\n2 5\n5 2\n3 2\n1 3\n2 1\n5 3\n1 2\n6 6\n2 2\n3 6\n2 7\n3 5\n4 2\n3 1\n2 2\n4 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 143",
+      "input": "3 1\n1 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 144",
+      "input": "3 10\n3 3\n2 3\n2 2\n1 2\n1 3\n3 2\n2 2\n1 3\n3 2\n2 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 145",
+      "input": "6 9\n2 6\n6 4\n3 1\n6 5\n6 2\n4 5\n2 4\n4 5\n6 5\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 146",
+      "input": "4 18\n3 1\n1 4\n2 2\n3 1\n3 2\n4 2\n4 2\n2 4\n2 2\n1 1\n4 4\n1 3\n2 2\n3 3\n3 2\n2 1\n2 2\n1 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 147",
+      "input": "7 13\n3 7\n1 1\n6 6\n6 6\n5 5\n5 5\n4 3\n1 4\n1 7\n3 7\n3 7\n1 6\n5 1\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 148",
+      "input": "8 6\n8 6\n3 7\n3 7\n1 1\n7 2\n8 1\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 149",
+      "input": "8 3\n2 2\n5 7\n7 6\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 150",
+      "input": "5 6\n3 5\n5 4\n5 3\n2 3\n3 3\n5 5\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 151",
+      "input": "8 14\n6 7\n1 7\n6 5\n2 7\n5 1\n6 6\n5 1\n3 2\n1 8\n8 4\n8 4\n7 2\n7 7\n7 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 152",
+      "input": "10 8\n10 6\n9 3\n6 9\n10 6\n1 3\n9 6\n2 6\n10 1\n",
+      "expectedOutput": "30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 153",
+      "input": "5 4\n5 5\n3 1\n1 4\n4 4\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 154",
+      "input": "11 9\n10 4\n1 5\n10 11\n5 9\n3 11\n4 9\n9 1\n8 7\n10 10\n",
+      "expectedOutput": "33\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 155",
+      "input": "12 10\n4 5\n9 11\n5 3\n11 7\n1 3\n10 7\n4 4\n5 3\n4 6\n6 1\n",
+      "expectedOutput": "50\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 156",
+      "input": "4 9\n3 3\n4 4\n1 1\n3 1\n1 1\n2 3\n1 2\n2 2\n1 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 157",
+      "input": "6 16\n1 4\n6 3\n5 5\n4 4\n3 5\n4 3\n2 6\n2 1\n5 3\n4 2\n2 3\n3 6\n6 3\n5 4\n3 1\n4 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 158",
+      "input": "10 16\n2 6\n5 2\n1 10\n4 9\n1 4\n6 3\n6 7\n3 5\n10 6\n7 4\n2 1\n9 9\n5 4\n5 6\n8 3\n6 6\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 159",
+      "input": "7 20\n6 3\n5 7\n3 4\n2 4\n7 2\n3 4\n5 4\n1 7\n7 1\n4 6\n6 7\n5 5\n5 6\n2 6\n6 3\n4 5\n7 1\n7 6\n6 1\n5 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 160",
+      "input": "4 12\n3 3\n2 4\n3 2\n2 2\n1 1\n2 1\n2 2\n4 3\n4 1\n1 1\n2 3\n4 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 161",
+      "input": "5 14\n5 4\n2 3\n1 5\n4 3\n5 4\n1 2\n2 5\n2 4\n1 2\n2 3\n5 2\n2 3\n1 1\n4 4\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 162",
+      "input": "10 5\n10 7\n2 4\n5 8\n1 1\n2 1\n",
+      "expectedOutput": "40\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 163",
+      "input": "8 10\n4 1\n2 5\n4 6\n5 3\n6 3\n2 6\n8 2\n1 2\n4 4\n4 7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

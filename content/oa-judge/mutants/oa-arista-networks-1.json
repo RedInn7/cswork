@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Reset prefix at each row",
+    "code": "def solve(raw):\n z=raw.splitlines();m,n=map(int,z[0].split());o=[]\n for line in z[1:1+m]:\n  s=0;a=list(map(int,line.split()));q=[]\n  for x in a[:n]:s+=x;q.append(str(s))\n  o.append(\" \".join(q))\n return \"\\n\".join(o)\n"
+  },
+  {
+    "name": "Use only left prefix and omit previous-row values",
+    "code": "def solve(raw):\n z=raw.splitlines();m,n=map(int,z[0].split());o=[]\n for line in z[1:1+m]:\n  s=0;q=[]\n  for x in list(map(int,line.split()))[:n]:s+=x;q.append(str(s))\n  o.append(\" \".join(q))\n return \"\\n\".join(o)\n"
+  }
+]
