@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-doordash-4",
+      "sourceContentHash": "129cf5e454586707eb0e470ed707c84a84c2dcbd373bd8f6ff3ef00389741977",
+      "packageChecksum": "94664784a1b2321fee91a0241042c4a44faec7e35e367a54710ab72233fa93ff",
+      "editorial": "## 思路\n\n倒序处理操作，维护尚未覆盖到的全局下限 `floor`。每个位置只需记录反向遇到的第一个单点赋值；若没有单点赋值，则取初始价格与最终下限的较大值。\n\n## 正确性证明\n\n全局下限操作在正向时间上只会提高价格。反向扫描时，累计的 `floor` 恰好是某次单点赋值之后可能作用到该位置的所有下限中的最大值。该位置最后一次单点赋值之后的下限已被纳入 `floor`，故其最终值为 `max(赋值, floor)`；若不存在赋值，所有下限都作用于初始值，结果为`max(初始值, floor)`。逐位置独立计算即得到唯一最终数组。\n\n## 复杂度\n\n时间 O(n+q)，空间 O(n+q)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(s):\n z=list(map(int,s.split()));n,q=z[:2];a=z[2:2+n];ops=[z[2+n+3*i:5+n+3*i] for i in range(q)];floor=0;last=[None]*n\n for t,x,v in reversed(ops):\n  if t==2:floor=max(floor,x)\n  elif last[x-1] is None:last[x-1]=max(v,floor)\n return \" \".join(str(max(a[i],floor) if last[i] is None else last[i]) for i in range(n))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

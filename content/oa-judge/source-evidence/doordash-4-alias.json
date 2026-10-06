@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-doordash-4",
+  "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "sourceUrl": "https://oamaster.com/docs/companies/doordash#4-discount-events",
+  "sourceContentHash": "129cf5e454586707eb0e470ed707c84a84c2dcbd373bd8f6ff3ef00389741977",
+  "rawSourcePath": "fastprep/DoorDash/doordash-get-final-price.md",
+  "rawSourceBlob": "ed828ab7f308c1c34388b6ea45b06b94d97d4a43",
+  "duplicateOf": "oa-doordash-1",
+  "duplicateSourceUrl": "https://oamaster.com/docs/companies/doordash#1-adjust-prices",
+  "duplicateSourceContentHash": "69dfbaed19228d3ad6cd926555aaf964bddd47f2d0289ed38edd9527bce4a4c2",
+  "duplicateRawSourcePath": "fastprep/DoorDash/doordash-adjust-prices.md",
+  "duplicateRawSourceBlob": "8f6dfd7f2cb5830221d04ad22ff09876873c0fb7",
+  "equivalence": {
+    "rule": "两题均为两类查询：1 x v 将第 x 项设为 v；2 v v 将所有小于 v 的值改为 v。",
+    "function": "DoorDash #4 为 getFinalPrice，#1 为 adjustPrices；仅函数名不同，输入数据结构与返回最终价格数组的语义相同。",
+    "constraints": "固定来源提交中的 #1 与 #4 都未给出可执行约束；本题的 1≤n,q≤100000、1≤price[i],v≤10^9 是 CSWork 标注的范围，不冒称来源约束。",
+    "sourceSample": "#4 原样例 price=[7,5,4]、queries=[[2,6,6],[1,2,9],[2,8,8]]，逐步计算为 [8,9,8]；题包保留该样例并使用来源的重复参数形式 2 v v。",
+    "inputSupplement": "n q、价格数组和 q 行查询的 stdin/stdout 顺序是 CSWork 补充；对类型 2 保留原题格式 2 v v，不把第三字段解释为另一参数。",
+    "verification": "已检视提交 e66f809 两个 raw Markdown 的全部题意、函数签名、约束标注和示例；核心操作逐项相同。原始约束均未知，因此范围只由本站补充。"
+  }
+}
