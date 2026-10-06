@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-general-motors-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Prepare Notification",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "General Motors"
+    ],
+    "description": "消息超长时保留最长完整单词前缀并加空格和省略号；否则原样返回；首词放不下时输出省略号。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "3≤K≤500，消息 1..500 字符，字母和单空格。第一行 K，第二行消息。",
+    "output": "输出长度≤K的通知。",
+    "explanation": "依次试加完整单词，仅保留加省略号后不超 K 的最长前缀。",
+    "hints": [
+      "依次试加完整单词，仅保留加省略号后不超 K 的最长前缀。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "15\nAnd now here is my secret\n",
+      "expectedOutput": "And now ...\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "15\nThere is an animal with four legs\n",
+      "expectedOutput": "There is an ...\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "4\nsuper dog\n",
+      "expectedOutput": "...\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "20\nhow are you\n",
+      "expectedOutput": "how are you\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "10\ncaa acbbcdd cbbaa\n",
+      "expectedOutput": "caa ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "39\ncbab da a cc bc ada dbdaab dacaccd a\n",
+      "expectedOutput": "cbab da a cc bc ada dbdaab dacaccd a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "21\nacaaccd bdcbab aacba aa abccd abadba bc\n",
+      "expectedOutput": "acaaccd bdcbab ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "14\nbcb b cabcd addd da bbdbaca c bacb\n",
+      "expectedOutput": "bcb b ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "20\nd a accaddd badcdc adbba dcb baccadc cdabbc cbcdc\n",
+      "expectedOutput": "d a accaddd ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "6\naacbc db cdb db\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "23\nbb cd\n",
+      "expectedOutput": "bb cd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "23\nbaddbb bbcbbac bdabcac d ddbccd b bdaca dc bcbdc bc\n",
+      "expectedOutput": "baddbb bbcbbac ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "11\nbbaab\n",
+      "expectedOutput": "bbaab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "39\nba\n",
+      "expectedOutput": "ba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "35\ndcbacc bdab\n",
+      "expectedOutput": "dcbacc bdab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "15\nbbdc c bbd dadbd cbbddda ddbca bd ddad\n",
+      "expectedOutput": "bbdc c bbd ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "11\ncacac dabb dadb acab adcda bd ac dd dddbbbc ac\n",
+      "expectedOutput": "cacac ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "29\nd daccaa ba caddd ccc ccbdcc dcba\n",
+      "expectedOutput": "d daccaa ba caddd ccc ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "32\nbdbca bccbab a badcc ac addbb bdca dcdda cbacbc\n",
+      "expectedOutput": "bdbca bccbab a badcc ac ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "27\nd c dabadca dbcbd cd a dbba bcbacac\n",
+      "expectedOutput": "d c dabadca dbcbd cd a ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "11\nbcdadd b\n",
+      "expectedOutput": "bcdadd b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "31\nbbcca b bbc cbbbd bada cad\n",
+      "expectedOutput": "bbcca b bbc cbbbd bada cad\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "15\nda a adadcab\n",
+      "expectedOutput": "da a adadcab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "7\naccbb\n",
+      "expectedOutput": "accbb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "6\nccbc bd dad dababd bccdd\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "14\nb bc aaa a abaccd dddadc c c\n",
+      "expectedOutput": "b bc aaa a ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "22\ndd d acddd b d\n",
+      "expectedOutput": "dd d acddd b d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "23\ncdbabdb bdccac ddb dccda cbaad dac\n",
+      "expectedOutput": "cdbabdb bdccac ddb ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "10\naac cd ddddbda\n",
+      "expectedOutput": "aac cd ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "26\nbb\n",
+      "expectedOutput": "bb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "37\ncdcd d bdcaca daacd cdddab\n",
+      "expectedOutput": "cdcd d bdcaca daacd cdddab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "25\nbbadd dabc da adada dacd bb ddc bbbaadc dc\n",
+      "expectedOutput": "bbadd dabc da adada ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "28\nc b cddaada cba bcc\n",
+      "expectedOutput": "c b cddaada cba bcc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "33\ndbdd da ccdcbc ccbb\n",
+      "expectedOutput": "dbdd da ccdcbc ccbb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "13\nbc c ba d aca bcbd\n",
+      "expectedOutput": "bc c ba d ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "7\nbacbaca bacd\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "4\nbbddbdc dddd cbabdd cb dcc dbbcad\n",
+      "expectedOutput": "...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "36\nb bcaca bb bd bbbcbbd acbd\n",
+      "expectedOutput": "b bcaca bb bd bbbcbbd acbd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "37\nc ddbbd bd daad ddababb bccad adbabcd cada dadda bd\n",
+      "expectedOutput": "c ddbbd bd daad ddababb bccad ...\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 36",
+      "input": "24\ncdcb dbdac acbd ddaabda ddcaad bbddd db ddacdd\n",
+      "expectedOutput": "cdcb dbdac acbd ...\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

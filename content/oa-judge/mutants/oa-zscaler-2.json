@@ -1,0 +1,10 @@
+[
+  {
+    "name": "exclusive upper bound",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));n,m=v[:2];a=v[2:2+n];lo=max(v[2+n+2*i] for i in range(m));hi=min(v[3+n+2*i] for i in range(m))\n return str(sum(lo<=x<hi for x in a))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "union bounds",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));n,m=v[:2];a=v[2:2+n];lo=min(v[2+n+2*i] for i in range(m));hi=max(v[3+n+2*i] for i in range(m))\n return str(sum(lo<=x<=hi for x in a))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

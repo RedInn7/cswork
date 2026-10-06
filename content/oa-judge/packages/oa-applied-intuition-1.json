@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-applied-intuition-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Compilation Order with Topological Sort",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Applied Intuition"
+    ],
+    "description": "依赖 [module, prerequisite] 表示 prerequisite 先编译；每次从可编译模块选字典序最小者。存在环返回 IMPOSSIBLE。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "互异无空格模块名；n,m≤200000，依赖成对输入。",
+    "output": "输出编译顺序或 IMPOSSIBLE。",
+    "explanation": "Kahn 拓扑排序，用最小堆决定同一时刻可选模块。",
+    "hints": [
+      "Kahn 拓扑排序，用最小堆决定同一时刻可选模块。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3\napp core util\n2\napp core\ncore util\n",
+      "expectedOutput": "util core app\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3\nb a c\n0\n",
+      "expectedOutput": "a b c\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "2\na b\n2\na b\nb a\n",
+      "expectedOutput": "IMPOSSIBLE\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "1\na\n0\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "3\na b c\n1\nc b\n",
+      "expectedOutput": "a b c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "2\na b\n0\n",
+      "expectedOutput": "a b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "7\na b c d e f g\n3\nd a\nd b\nf e\n",
+      "expectedOutput": "a b c d e f g\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "7\na b c d e f g\n4\nc a\ne a\nf a\ng e\n",
+      "expectedOutput": "a b c d e f g\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "3\na b c\n1\nc a\n",
+      "expectedOutput": "a b c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "5\na b c d e\n3\nd b\ne a\ne b\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "5\na b c d e\n0\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "6\na b c d e f\n2\ne a\nf a\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "7\na b c d e f g\n1\ng e\n",
+      "expectedOutput": "a b c d e f g\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "5\na b c d e\n1\ne a\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "6\na b c d e f\n4\nd a\nf a\nf c\nf e\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "4\na b c d\n2\nb a\nc b\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "4\na b c d\n1\nb a\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "5\na b c d e\n4\nd b\nd c\ne a\ne d\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "6\na b c d e f\n6\nb a\nc b\ne a\ne b\nf c\nf d\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "6\na b c d e f\n4\nd c\ne d\nf a\nf c\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "3\na b c\n0\n",
+      "expectedOutput": "a b c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "6\na b c d e f\n5\nc a\nd c\ne a\ne d\nf d\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "4\na b c d\n2\nc b\nd c\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "3\na b c\n2\nb a\nc a\n",
+      "expectedOutput": "a b c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "6\na b c d e f\n2\nd a\ne b\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "6\na b c d e f\n3\ne b\nf d\nf e\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "5\na b c d e\n2\nd a\nd b\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "6\na b c d e f\n1\nf c\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "5\na b c d e\n2\nb a\ne b\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "4\na b c d\n0\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "4\na b c d\n2\nc b\nd a\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "7\na b c d e f g\n6\nc b\ne a\ne b\nf c\nf e\ng f\n",
+      "expectedOutput": "a b c d e f g\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "5\na b c d e\n5\nb a\nd b\nd c\ne b\ne d\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "7\na b c d e f g\n5\nd c\ne d\nf d\nf e\ng a\n",
+      "expectedOutput": "a b c d e f g\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "5\na b c d e\n2\nc a\ne b\n",
+      "expectedOutput": "a b c d e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "4\na b c d\n1\nd b\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "4\na b c d\n2\nd a\nd c\n",
+      "expectedOutput": "a b c d\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "7\na b c d e f g\n4\ne c\nf a\ng c\ng f\n",
+      "expectedOutput": "a b c d e f g\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 36",
+      "input": "3\na b c\n1\nb a\n",
+      "expectedOutput": "a b c\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 37",
+      "input": "6\na b c d e f\n4\nb a\nc b\ne a\ne c\n",
+      "expectedOutput": "a b c d e f\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

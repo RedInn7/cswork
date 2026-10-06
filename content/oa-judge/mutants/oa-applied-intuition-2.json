@@ -1,0 +1,10 @@
+[
+  {
+    "name": "drop committed data",
+    "code": "def solve(raw):\n v=raw.splitlines();q=int(v[0]);base={};layers=[];out=[]\n def get(k):\n  for d in reversed(layers):\n   if k in d:return d[k]\n  return base.get(k)\n for c in v[1:q+1]:\n  p=c.split();op=p[0]\n  if op=='SET':(layers[-1] if layers else base)[p[1]]=p[2]\n  elif op=='DELETE':(layers[-1] if layers else base)[p[1]]=None\n  elif op=='GET':\n   x=get(p[1]);out.append('NULL' if x is None else x)\n  elif op=='BEGIN':layers.append({})\n  elif op=='ROLLBACK':\n   if layers:layers.pop()\n   else:out.append('NO TRANSACTION')\n  elif op=='COMMIT':\n   if not layers:out.append('NO TRANSACTION')\n   else:layers.pop()\n return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "rollback applies data",
+    "code": "def solve(raw):\n v=raw.splitlines();q=int(v[0]);base={};layers=[];out=[]\n def get(k):\n  for d in reversed(layers):\n   if k in d:return d[k]\n  return base.get(k)\n for c in v[1:q+1]:\n  p=c.split();op=p[0]\n  if op=='SET':(layers[-1] if layers else base)[p[1]]=p[2]\n  elif op=='DELETE':(layers[-1] if layers else base)[p[1]]=None\n  elif op=='GET':\n   x=get(p[1]);out.append('NULL' if x is None else x)\n  elif op=='BEGIN':layers.append({})\n  elif op=='ROLLBACK':\n   if layers:(layers[-2] if len(layers)>1 else base).update(layers.pop())\n   else:out.append('NO TRANSACTION')\n  elif op=='COMMIT':\n   if not layers:out.append('NO TRANSACTION')\n   else:(layers[-2] if len(layers)>1 else base).update(layers.pop())\n return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

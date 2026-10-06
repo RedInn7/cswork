@@ -1,0 +1,10 @@
+[
+  {
+    "name": "reversed comparison",
+    "code": "def solve(raw):\n s=raw.strip();left={c:s.count(c) for c in set(s)};st=[];inside=set()\n for c in s:\n  left[c]-=1\n  if c in inside:continue\n  while st and st[-1]>c and left[st[-1]]>0:inside.remove(st.pop())\n  st.append(c);inside.add(c)\n return ''.join(st)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "require too many future copies",
+    "code": "def solve(raw):\n s=raw.strip();left={c:s.count(c) for c in set(s)};st=[];inside=set()\n for c in s:\n  left[c]-=1\n  if c in inside:continue\n  while st and st[-1]<c and left[st[-1]]>1:inside.remove(st.pop())\n  st.append(c);inside.add(c)\n return ''.join(st)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

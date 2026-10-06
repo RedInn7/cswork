@@ -1,0 +1,10 @@
+[
+  {
+    "name": "strict inequality",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));n=v[0];a=sorted(v[1:n+1]);i=0\n for z in a:\n  if i<n and z>=a[i]:i+=1\n return str(i)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "descending sort",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));n=v[0];a=sorted(v[1:n+1],reverse=True);i=0\n for z in a:\n  if i<n and z>a[i]:i+=1\n return str(i)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

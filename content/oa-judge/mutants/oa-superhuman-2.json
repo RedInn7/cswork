@@ -1,0 +1,10 @@
+[
+  {
+    "name": "advance one",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));n,t=v[:2];a=v[2:n+2];i=0;c=1\n while a[i]-a[0]<t:\n  if i+2<n:i+=1\n  elif i+1<n:i+=1\n  else:return str(n)\n  c+=1\n return str(c)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "wrong threshold direction",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));n,t=v[:2];a=v[2:n+2];i=0;c=1\n while a[i]-a[0]>t:\n  if i+2<n:i+=2\n  elif i+1<n:i+=1\n  else:return str(n)\n  c+=1\n return str(c)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

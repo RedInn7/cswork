@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-patreon-1",
+  "title": "Minimize Computation Time",
+  "explanation": "## 思路\n\n对每种当前偶数值只操作一次，因为同值层会同时变换。\n\n## 正确性证明\n\n每个出现过的偶数状态必须被处理一次；每次处理令该值所有层一起减半，故状态集合迭代恰好计数必要操作。\n\n## 复杂度\n\nO(n log A) time, O(n) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=list(map(int,raw.split()));cur=set(v[1:v[0]+1]);ans=0\n while True:\n  e=[x for x in cur if x%2==0]\n  if not e:return str(ans)\n  x=max(e);cur.remove(x);cur.add(x//2);ans+=1\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/patreon#1-minimize-computation-time",
+  "sourceContentHash": "c58a8672e3e3bdf0824f28e8f8396d8c92da04ec2e0a247dc4bd25e2b8cf6fdd",
+  "author": "CSWork"
+}

@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-yahoo-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Modify the String",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Yahoo"
+    ],
+    "description": "删除重复字符直到字符互异，返回字典序最大的保序结果。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "小写字母字符串，长度 1..100000。",
+    "output": "输出最大去重子序列。",
+    "explanation": "单调栈遇到较大字符时弹出仍会出现的较小字符。",
+    "hints": [
+      "单调栈遇到较大字符时弹出仍会出现的较小字符。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "aabcb\n",
+      "expectedOutput": "acb\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "bcabc\n",
+      "expectedOutput": "cab\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "aaaa\n",
+      "expectedOutput": "a\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "cbacdcbc\n",
+      "expectedOutput": "cbad\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "deaec\n",
+      "expectedOutput": "deac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "cbaeebeeece\n",
+      "expectedOutput": "cbae\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "dbd\n",
+      "expectedOutput": "db\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "dc\n",
+      "expectedOutput": "dc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "aebabdbddaa\n",
+      "expectedOutput": "edba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "deeedadadcec\n",
+      "expectedOutput": "edac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "eeedea\n",
+      "expectedOutput": "eda\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "bdeac\n",
+      "expectedOutput": "bdeac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "bdcaaddd\n",
+      "expectedOutput": "bdca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "deeaddeddcaa\n",
+      "expectedOutput": "edca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "bbbedcdbabe\n",
+      "expectedOutput": "edcba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "ba\n",
+      "expectedOutput": "ba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "beecdddaadb\n",
+      "expectedOutput": "ecdab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "bdbda\n",
+      "expectedOutput": "dba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "bcceabaaeb\n",
+      "expectedOutput": "ceba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "cb\n",
+      "expectedOutput": "cb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "ebbeecc\n",
+      "expectedOutput": "ebc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "a\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "daaed\n",
+      "expectedOutput": "dae\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "dbdebadcbeee\n",
+      "expectedOutput": "ebadc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "eeddae\n",
+      "expectedOutput": "eda\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "ebbddddc\n",
+      "expectedOutput": "ebdc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "aeabbaa\n",
+      "expectedOutput": "eba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "aadaece\n",
+      "expectedOutput": "daec\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "ececdacc\n",
+      "expectedOutput": "edac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "abbddbecdabe\n",
+      "expectedOutput": "ecdab\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "e\n",
+      "expectedOutput": "e\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "badcd\n",
+      "expectedOutput": "badc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "ecdccc\n",
+      "expectedOutput": "edc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "dace\n",
+      "expectedOutput": "dace\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "ce\n",
+      "expectedOutput": "ce\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "abbbaabdce\n",
+      "expectedOutput": "badce\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "aac\n",
+      "expectedOutput": "ac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "b\n",
+      "expectedOutput": "b\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "bdbaceedbc\n",
+      "expectedOutput": "dbaec\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 36",
+      "input": "eeaaeadb\n",
+      "expectedOutput": "eadb\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

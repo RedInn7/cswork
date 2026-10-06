@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-superhuman-2",
+  "title": "Math Homework",
+  "explanation": "## 思路\n\n因分值非降，跨度随最后下标单调增长；每次 +2 用最少步到达最远位置。\n\n## 正确性证明\n\n任意路径每步最多跨两格，达到任一下标 j 至少需要 ceil(j/2) 步；连续跳两格达到该下界。\n\n## 复杂度\n\nO(n) time, O(1) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=list(map(int,raw.split()));n,t=v[:2];a=v[2:n+2];i=0;c=1\n while a[i]-a[0]<t:\n  if i+2<n:i+=2\n  elif i+1<n:i+=1\n  else:return str(n)\n  c+=1\n return str(c)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/superhuman#2-math-homework",
+  "sourceContentHash": "2a71880c07705e989b70b6bbf3908701882993f14186c129978967bd1a6ca9b4",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-yahoo-1",
+  "title": "Modify the String",
+  "explanation": "## 思路\n\n单调栈遇到较大字符时弹出仍会出现的较小字符。\n\n## 正确性证明\n\n被弹出的字符有后续副本可补回；当前较大字符前移提升字典序；不能补回的字符保留。\n\n## 复杂度\n\nO(n) time, O(σ) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n s=raw.strip();left={c:s.count(c) for c in set(s)};st=[];inside=set()\n for c in s:\n  left[c]-=1\n  if c in inside:continue\n  while st and st[-1]<c and left[st[-1]]>0:inside.remove(st.pop())\n  st.append(c);inside.add(c)\n return ''.join(st)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/yahoo#1-modify-the-string",
+  "sourceContentHash": "c0841dc7d9d3b891043512e319a6f966bd2a9362e56ec4336687761e02bfb64c",
+  "author": "CSWork"
+}

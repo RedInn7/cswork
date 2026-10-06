@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-zscaler-2",
+  "title": "Signal Filter",
+  "explanation": "## 思路\n\n交集为最大左界至最小右界，遍历统计落入闭区间的频率。\n\n## 正确性证明\n\n一个数满足所有区间，当且仅当不小于每个下界且不大于每个上界。\n\n## 复杂度\n\nO(n+m) time, O(1) extra space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=list(map(int,raw.split()));n,m=v[:2];a=v[2:2+n];lo=max(v[2+n+2*i] for i in range(m));hi=min(v[3+n+2*i] for i in range(m))\n return str(sum(lo<=x<=hi for x in a))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/zscaler#2-signal-filter",
+  "sourceContentHash": "c356dca35734bb8f025c639109ab349005177f184da1979563652ccecad8ce31",
+  "author": "CSWork"
+}

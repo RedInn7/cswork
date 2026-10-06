@@ -1,0 +1,10 @@
+[
+  {
+    "name": "ignore multiplier",
+    "code": "def dec(s):\n st=[''];i=0\n while i<len(s):\n  if s[i]=='(':st.append('');i+=1\n  elif s[i]==')':\n   t=st.pop();i+=2;j=i\n   while s[j].isdigit():j+=1\n   k=int(s[i:j]);i=j+1;st[-1]+=t\n   if len(st[-1])>200000:raise ValueError('output too long')\n  else:st[-1]+=s[i];i+=1\n return st[0]\ndef solve(raw):\n v=raw.splitlines();return '\\n'.join(dec(x) for x in v[1:1+int(v[0])])\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "discard nested result",
+    "code": "def dec(s):\n st=[''];i=0\n while i<len(s):\n  if s[i]=='(':st.append('');i+=1\n  elif s[i]==')':\n   t=st.pop();i+=2;j=i\n   while s[j].isdigit():j+=1\n   k=int(s[i:j]);i=j+1;st[-1]+=\"\"\n   if len(st[-1])>200000:raise ValueError('output too long')\n  else:st[-1]+=s[i];i+=1\n return st[0]\ndef solve(raw):\n v=raw.splitlines();return '\\n'.join(dec(x) for x in v[1:1+int(v[0])])\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

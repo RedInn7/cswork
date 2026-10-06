@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-waymo-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Decode Repeated Groups",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Waymo"
+    ],
+    "description": "解码小写字母及 (substring){k} 重复组，允许嵌套和 k=0。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "q 行编码串；本站补充每串及解码长度≤200000、深度≤1000。",
+    "output": "逐行输出解码串。",
+    "explanation": "用显式栈累积每层内容；关闭括号时将子串按次数追加到父层。",
+    "hints": [
+      "用显式栈累积每层内容；关闭括号时将子串按次数追加到父层。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3\nabs(cs){3}g\na(b(c){2}){2}\nx(yz){0}q\n",
+      "expectedOutput": "abscscscsg\nabccbcc\nxq\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "1\na(b){0}c\n",
+      "expectedOutput": "ac\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "1\n(ab){2}\n",
+      "expectedOutput": "abab\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "4\na(ebc){1}\na(dac){4}\na(bcb){0}\na(ceb){4}\n",
+      "expectedOutput": "aebc\nadacdacdacdac\na\nacebcebcebceb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "5\na(bea){1}\na(dce){4}\na(dbb){3}\na(ade){1}\na(aa){2}\n",
+      "expectedOutput": "abea\nadcedcedcedce\nadbbdbbdbb\naade\naaaaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "4\na(aee){3}\na(dea){1}\na(ebb){3}\na(c){0}\n",
+      "expectedOutput": "aaeeaeeaee\nadea\naebbebbebb\na\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "2\na(ddd){0}\na(cda){2}\n",
+      "expectedOutput": "a\nacdacda\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "1\na(aae){3}\n",
+      "expectedOutput": "aaaeaaeaae\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "1\na(ecb){1}\n",
+      "expectedOutput": "aecb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "2\na(cdb){2}\na(dd){1}\n",
+      "expectedOutput": "acdbcdb\nadd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "1\na(aae){1}\n",
+      "expectedOutput": "aaae\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "2\na(aed){4}\na(cae){2}\n",
+      "expectedOutput": "aaedaedaedaed\nacaecae\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "3\na(e){3}\na(ac){0}\na(eea){1}\n",
+      "expectedOutput": "aeee\na\naeea\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "2\na(ae){3}\na(dca){4}\n",
+      "expectedOutput": "aaeaeae\nadcadcadcadca\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "4\na(abc){0}\na(cad){1}\na(daa){2}\na(ebc){4}\n",
+      "expectedOutput": "a\nacad\nadaadaa\naebcebcebcebc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "5\na(bce){3}\na(aac){2}\na(dbb){1}\na(cca){1}\na(bc){4}\n",
+      "expectedOutput": "abcebcebce\naaacaac\nadbb\nacca\nabcbcbcbc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "5\na(de){2}\na(ccd){0}\na(cbe){1}\na(dee){3}\na(eed){3}\n",
+      "expectedOutput": "adede\na\nacbe\nadeedeedee\naeedeedeed\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "4\na(aba){0}\na(bdd){3}\na(b){0}\na(dbc){3}\n",
+      "expectedOutput": "a\nabddbddbdd\na\nadbcdbcdbc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "5\na(dce){0}\na(ede){3}\na(aca){3}\na(beb){2}\na(aad){1}\n",
+      "expectedOutput": "a\naedeedeede\naacaacaaca\nabebbeb\naaad\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "1\na(cde){2}\n",
+      "expectedOutput": "acdecde\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "2\na(e){1}\na(dbd){1}\n",
+      "expectedOutput": "ae\nadbd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "3\na(cdd){2}\na(bce){2}\na(cee){3}\n",
+      "expectedOutput": "acddcdd\nabcebce\naceeceecee\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "3\na(eab){0}\na(ace){0}\na(ccd){1}\n",
+      "expectedOutput": "a\na\naccd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "2\na(ada){0}\na(bce){0}\n",
+      "expectedOutput": "a\na\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "5\na(ead){3}\na(dec){4}\na(abd){0}\na(dad){4}\na(bed){2}\n",
+      "expectedOutput": "aeadeadead\nadecdecdecdec\na\nadaddaddaddad\nabedbed\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "1\na(baa){3}\n",
+      "expectedOutput": "abaabaabaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "3\na(bcd){3}\na(edb){4}\na(edd){2}\n",
+      "expectedOutput": "abcdbcdbcd\naedbedbedbedb\naeddedd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "1\na(ced){0}\n",
+      "expectedOutput": "a\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "4\na(bce){3}\na(dad){1}\na(ae){4}\na(baa){1}\n",
+      "expectedOutput": "abcebcebce\nadad\naaeaeaeae\nabaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "5\na(cce){3}\na(cd){1}\na(acc){2}\na(dcd){3}\na(cba){3}\n",
+      "expectedOutput": "acceccecce\nacd\naaccacc\nadcddcddcd\nacbacbacba\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "3\na(cee){3}\na(ed){0}\na(bbb){1}\n",
+      "expectedOutput": "aceeceecee\na\nabbb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "4\na(bce){4}\na(aec){0}\na(eba){3}\na(aee){1}\n",
+      "expectedOutput": "abcebcebcebce\na\naebaebaeba\naaee\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "5\na(cba){2}\na(bec){3}\na(eba){0}\na(bab){1}\na(bae){0}\n",
+      "expectedOutput": "acbacba\nabecbecbec\na\nabab\na\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "5\na(dd){1}\na(baa){0}\na(ecb){3}\na(dbd){1}\na(caa){2}\n",
+      "expectedOutput": "add\na\naecbecbecb\nadbd\nacaacaa\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "3\na(bb){2}\na(dda){0}\na(e){2}\n",
+      "expectedOutput": "abbbb\na\naee\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "2\na(ab){3}\na(c){1}\n",
+      "expectedOutput": "aababab\nac\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "2\na(bae){2}\na(adb){1}\n",
+      "expectedOutput": "abaebae\naadb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "5\na(ada){1}\na(bcd){3}\na(cbc){4}\na(ceb){3}\na(dbc){2}\n",
+      "expectedOutput": "aada\nabcdbcdbcd\nacbccbccbccbc\nacebcebceb\nadbcdbc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 36",
+      "input": "1\na(dcb){4}\n",
+      "expectedOutput": "adcbdcbdcbdcb\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 37",
+      "input": "4\na(bcb){1}\na(eed){1}\na(dbd){3}\na(aae){3}\n",
+      "expectedOutput": "abcb\naeed\nadbddbddbd\naaaeaaeaae\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

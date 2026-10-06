@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-applied-intuition-1",
+      "sourceContentHash": "a1ed813c3b037cae07e9dc25f0b421a7bc2c3b2b41394af2197cf3fa89bdc8fa",
+      "packageChecksum": "f62164d8c894875a55bf2967135bd5d1d318635d6ae342cf309a8daf94e8cf6a",
+      "editorial": "## 思路\n\nKahn 拓扑排序，用最小堆决定同一时刻可选模块。\n\n## 正确性证明\n\n入度归零表示所有前置依赖均完成；每步取最小可选项实现字典序规则，结果少于 n 则存在环。\n\n## 复杂度\n\nO((n+m) log n) time, O(n+m) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\ndef solve(raw):\n v=raw.split();p=0;n=int(v[p]);p+=1;ms=v[p:p+n];p+=n;m=int(v[p]);p+=1;g={x:[] for x in ms};d={x:0 for x in ms}\n for _ in range(m):\n  a,b=v[p:p+2];p+=2;g[b].append(a);d[a]+=1\n h=[x for x in ms if d[x]==0];heapq.heapify(h);out=[]\n while h:\n  x=heapq.heappop(h);out.append(x)\n  for y in g[x]:\n   d[y]-=1\n   if d[y]==0:heapq.heappush(h,y)\n return ' '.join(out) if len(out)==n else 'IMPOSSIBLE'\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-applied-intuition-2",
+      "sourceContentHash": "4ee06698ff0bfe8986226d6a29d8ee5c2c1501ec65ab7cc74d3c850e094046e2",
+      "packageChecksum": "13c19c12bc020699448988a5d7500dfd5ee8a6f00431d877643e83e81577023b",
+      "editorial": "## 思路\n\n事务层记录键变更，GET 从内向外查找；提交将本层覆盖合并到父层，回滚丢弃本层。\n\n## 正确性证明\n\n最新事务层的值优先；提交保留其变更，回滚恢复进入事务前状态。\n\n## 复杂度\n\nread O(depth), writes amortized O(1), space O(q).",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=raw.splitlines();q=int(v[0]);base={};layers=[];out=[]\n def get(k):\n  for d in reversed(layers):\n   if k in d:return d[k]\n  return base.get(k)\n for c in v[1:q+1]:\n  p=c.split();op=p[0]\n  if op=='SET':(layers[-1] if layers else base)[p[1]]=p[2]\n  elif op=='DELETE':(layers[-1] if layers else base)[p[1]]=None\n  elif op=='GET':\n   x=get(p[1]);out.append('NULL' if x is None else x)\n  elif op=='BEGIN':layers.append({})\n  elif op=='ROLLBACK':\n   if layers:layers.pop()\n   else:out.append('NO TRANSACTION')\n  elif op=='COMMIT':\n   if not layers:out.append('NO TRANSACTION')\n   else:(layers[-2] if len(layers)>1 else base).update(layers.pop())\n return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ericsson-2",
+      "sourceContentHash": "8d40b9021b75b5ffce2439fd7819bce15c82dc50765f9a0a03b980fd42a2d1b0",
+      "packageChecksum": "56efdd9ae21c534ee5f5a4ab880aaf903150523d72603490ccf9de7836c8bb41",
+      "editorial": "## 思路\n\n统计频次后按 (-频次, 数值) 排序。\n\n## 正确性证明\n\n该排序键逐项满足频次优先与平手数值较小优先。\n\n## 复杂度\n\nO(n+d log d) time, O(d) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));n,k=v[:2];c={}\n for x in v[2:n+2]:c[x]=c.get(x,0)+1\n return ' '.join(map(str,sorted(c,key=lambda x:(-c[x],x))[:k]))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-general-motors-1",
+      "sourceContentHash": "37462d6086c5e5a3d5918f8eb3c7c1bf0390dc72b5a0c7a24449ecc04d4454ec",
+      "packageChecksum": "8f4ee1ff5fee05c71b7c939338c7e9b985ebfdb3f11d7f100c26836df3d6e39c",
+      "editorial": "## 思路\n\n依次试加完整单词，仅保留加省略号后不超 K 的最长前缀。\n\n## 正确性证明\n\n前缀长度单调递增，首个超限后更长前缀均不可行；整词规则要求不可截断字符。\n\n## 复杂度\n\nO(|message|) time, O(|message|) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=raw.splitlines();k=int(v[0]);msg=v[1]\n if len(msg)<=k:return msg\n out=[]\n for w in msg.split():\n  t=' '.join(out+[w])+' ...'\n  if len(t)>k:break\n  out.append(w)\n return ' '.join(out)+' ...' if out else '...'\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-general-motors-2",
+      "sourceContentHash": "9fd9642f4f0e56b51a11447aa7ec3dba8c62a764bb6eac1d8bca2ef9043a1719",
+      "packageChecksum": "9ff8ff937e812f31e0f3e67c99770deb59de67a56bdd2e563927165ddf9ec2c1",
+      "editorial": "## 思路\n\n从 Z+1 递增枚举检查数字和。\n\n## 正确性证明\n\n枚举顺序严格递增，所以首次符合条件的数最小；全域穷举确认范围内总有解。\n\n## 复杂度\n\nO((X−Z)·digits) time, O(1) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def ds(x):\n s=0\n while x:s+=x%10;x//=10\n return s\ndef solve(raw):\n z=int(raw);target=2*ds(z);x=z+1\n while ds(x)!=target:x+=1\n return str(x)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-patreon-1",
+      "sourceContentHash": "c58a8672e3e3bdf0824f28e8f8396d8c92da04ec2e0a247dc4bd25e2b8cf6fdd",
+      "packageChecksum": "d9ba9491e154acc0f7c25a60288ba7cb2a2227ea697c322e2c1d8d10d8fd5418",
+      "editorial": "## 思路\n\n对每种当前偶数值只操作一次，因为同值层会同时变换。\n\n## 正确性证明\n\n每个出现过的偶数状态必须被处理一次；每次处理令该值所有层一起减半，故状态集合迭代恰好计数必要操作。\n\n## 复杂度\n\nO(n log A) time, O(n) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));cur=set(v[1:v[0]+1]);ans=0\n while True:\n  e=[x for x in cur if x%2==0]\n  if not e:return str(ans)\n  x=max(e);cur.remove(x);cur.add(x//2);ans+=1\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-patreon-2",
+      "sourceContentHash": "93cb86783e877aeca6ccff1bba98eedd6860ded3349e73e0e248bb1ddc4d9f64",
+      "packageChecksum": "be797720c31e15ddf3296ed74bf3322d2f207ca59f90d4e30816a3f3dafec3af",
+      "editorial": "## 思路\n\n单调栈找到左右最近的严格更高高度。\n\n## 正确性证明\n\n合法区间不能越过更高位置；两边界内部均以当前值为最大，整个区间即最长。\n\n## 复杂度\n\nO(n) time, O(n) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));a=v[1:v[0]+1];n=len(a);L=[-1]*n;R=[n]*n;st=[]\n for i,x in enumerate(a):\n  while st and a[st[-1]]<=x:st.pop()\n  if st:L[i]=st[-1]\n  st.append(i)\n st=[]\n for i in range(n-1,-1,-1):\n  while st and a[st[-1]]<=a[i]:st.pop()\n  if st:R[i]=st[-1]\n  st.append(i)\n return str(sum(R[i]-L[i]-1 for i in range(n)))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-superhuman-2",
+      "sourceContentHash": "2a71880c07705e989b70b6bbf3908701882993f14186c129978967bd1a6ca9b4",
+      "packageChecksum": "2a72cbc67f46b4dccee8b1da2c9134efc3b0b52004e38d52c32b3f5f6decceeb",
+      "editorial": "## 思路\n\n因分值非降，跨度随最后下标单调增长；每次 +2 用最少步到达最远位置。\n\n## 正确性证明\n\n任意路径每步最多跨两格，达到任一下标 j 至少需要 ceil(j/2) 步；连续跳两格达到该下界。\n\n## 复杂度\n\nO(n) time, O(1) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));n,t=v[:2];a=v[2:n+2];i=0;c=1\n while a[i]-a[0]<t:\n  if i+2<n:i+=2\n  elif i+1<n:i+=1\n  else:return str(n)\n  c+=1\n return str(c)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-superhuman-3",
+      "sourceContentHash": "851e9ec99d5480fdd86019b1e342d8597dda62d0fc974de7e85ea9aad3b6be13",
+      "packageChecksum": "63fa46f17c8dab687c5f2113d549691470e08edfc72bfb634cf797f49d504bad",
+      "editorial": "## 思路\n\n为每个相邻方向边取最近捷径价 1 或直接容量差，方向前缀和答询。\n\n## 正确性证明\n\n直连跨越多段的费用是间隙和；沿链将最近邻间隙替换为 1 不会更贵，且路径穿越每段至少一次，故前缀边价总和最优。\n\n## 复杂度\n\nO(n+q) time, O(n) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));n,q=v[:2];a=v[2:2+n];s=v[2+n:2+n+q];t=v[2+n+q:2+n+2*q];R=[0]*n;L=[0]*n\n for i in range(n):\n  if i+1<n:R[i]=1 if i==0 or a[i+1]-a[i]<a[i]-a[i-1] else a[i+1]-a[i]\n  if i:L[i]=1 if i==n-1 or a[i]-a[i-1]<a[i+1]-a[i] else a[i]-a[i-1]\n pr=[0]*(n+1);pl=[0]*(n+1)\n for i in range(n):pr[i+1]=pr[i]+R[i];pl[i+1]=pl[i]+L[i]\n return ' '.join(str(pr[b]-pr[a] if a<b else pl[a+1]-pl[b+1] if a>b else 0) for a,b in zip(s,t))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-twilio-2",
+      "sourceContentHash": "c67592ace101f8ff89a9ecba6ad42753e88cd5aeb25862d7f92406496270bcce",
+      "packageChecksum": "1252fdf544fa1071810c97f0c0e57ad329868ce0c6e9549f2735307733fa21e8",
+      "editorial": "## 思路\n\n排序并贪心匹配最小可行的严格较大元素。\n\n## 正确性证明\n\n最小可行匹配不浪费更大的元素，贪心最大化可匹配对数。\n\n## 复杂度\n\nO(n log n) time, O(n) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));n=v[0];a=sorted(v[1:n+1]);i=0\n for z in a:\n  if i<n and z>a[i]:i+=1\n return str(i)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-waymo-1",
+      "sourceContentHash": "68aeff686aa01dff96510f204c903d440e5ee10be0e37841a32a4f1c51695813",
+      "packageChecksum": "0426ba431a0e4c1931997742537e3fb0c9b51a99602da81fdb5b260773a302a5",
+      "editorial": "## 思路\n\n用显式栈累积每层内容；关闭括号时将子串按次数追加到父层。\n\n## 正确性证明\n\n每一组按定义从内到外重复子串并拼接，栈归约与嵌套语法的递归求值一致。\n\n## 复杂度\n\nO(output length) time and space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def dec(s):\n st=[''];i=0\n while i<len(s):\n  if s[i]=='(':st.append('');i+=1\n  elif s[i]==')':\n   t=st.pop();i+=2;j=i\n   while s[j].isdigit():j+=1\n   k=int(s[i:j]);i=j+1;st[-1]+=t*k\n   if len(st[-1])>200000:raise ValueError('output too long')\n  else:st[-1]+=s[i];i+=1\n return st[0]\ndef solve(raw):\n v=raw.splitlines();return '\\n'.join(dec(x) for x in v[1:1+int(v[0])])\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-waymo-2",
+      "sourceContentHash": "ab6c2b9b232d4b2260a3ee8472fbe255b0d345e9f46533e815499a24c78d5462",
+      "packageChecksum": "231128439c45c46474e317508787206691678a387a297b2d720e0dec0cc5f10e",
+      "editorial": "## 思路\n\n从 source 运行 Dijkstra 并按询问返回距离。\n\n## 正确性证明\n\n非负权保证 Dijkstra 的出队最短路不再改进；松弛枚举所有可达路，仍为无穷即不可达。\n\n## 复杂度\n\nO((n+m) log n) time, O(n+m) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\ndef solve(raw):\n v=list(map(int,raw.split()));n,m,s,q=v[:4];p=4;g=[[] for _ in range(n)]\n for _ in range(m):\n  a,b,w=v[p]-1,v[p+1]-1,v[p+2];p+=3;g[a].append((b,w))\n ts=[x-1 for x in v[p:p+q]];d=[10**30]*n;d[s-1]=0;h=[(0,s-1)]\n while h:\n  x,u=heapq.heappop(h)\n  if x!=d[u]:continue\n  for z,w in g[u]:\n   if x+w<d[z]:d[z]=x+w;heapq.heappush(h,(x+w,z))\n return ' '.join(str(d[z] if d[z]<10**30 else -1) for z in ts)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-yahoo-1",
+      "sourceContentHash": "c0841dc7d9d3b891043512e319a6f966bd2a9362e56ec4336687761e02bfb64c",
+      "packageChecksum": "ea552d9e84a33cf3f6d9faf834eb45559aa6a07aaf65f514582146ac0c96e56b",
+      "editorial": "## 思路\n\n单调栈遇到较大字符时弹出仍会出现的较小字符。\n\n## 正确性证明\n\n被弹出的字符有后续副本可补回；当前较大字符前移提升字典序；不能补回的字符保留。\n\n## 复杂度\n\nO(n) time, O(σ) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n s=raw.strip();left={c:s.count(c) for c in set(s)};st=[];inside=set()\n for c in s:\n  left[c]-=1\n  if c in inside:continue\n  while st and st[-1]<c and left[st[-1]]>0:inside.remove(st.pop())\n  st.append(c);inside.add(c)\n return ''.join(st)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-yahoo-2",
+      "sourceContentHash": "e571e77c55dc2624962feb8278c2247509d76b3e3b6f4ee32d4b1a2494ae5ef8",
+      "packageChecksum": "b0509a600b1a952ae03108a55507d1fc8297f30274c60bedd417b2855dee8885",
+      "editorial": "## 思路\n\n压缩连续字符段，相邻段贡献长度较小值。\n\n## 正确性证明\n\n合法子串恰跨相邻两段且长度相等，可选起点数为较小段长度。\n\n## 复杂度\n\nO(n) time, O(1) space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n s=raw.strip();prev=run=0;last=None;ans=0\n for c in s:\n  if c==last:run+=1\n  else:ans+=min(prev,run);prev,run=run,1;last=c\n return str(ans+min(prev,run))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-zscaler-2",
+      "sourceContentHash": "c356dca35734bb8f025c639109ab349005177f184da1979563652ccecad8ce31",
+      "packageChecksum": "450370c3554fe7dd5529dd3ca1489f65d8fe8e62c694b8b0340d4a8b1d46fa56",
+      "editorial": "## 思路\n\n交集为最大左界至最小右界，遍历统计落入闭区间的频率。\n\n## 正确性证明\n\n一个数满足所有区间，当且仅当不小于每个下界且不大于每个上界。\n\n## 复杂度\n\nO(n+m) time, O(1) extra space.",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n v=list(map(int,raw.split()));n,m=v[:2];a=v[2:2+n];lo=max(v[2+n+2*i] for i in range(m));hi=min(v[3+n+2*i] for i in range(m))\n return str(sum(lo<=x<=hi for x in a))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

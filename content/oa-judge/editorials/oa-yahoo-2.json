@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-yahoo-2",
+  "title": "Count Binary Substrings",
+  "explanation": "## 思路\n\n压缩连续字符段，相邻段贡献长度较小值。\n\n## 正确性证明\n\n合法子串恰跨相邻两段且长度相等，可选起点数为较小段长度。\n\n## 复杂度\n\nO(n) time, O(1) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n s=raw.strip();prev=run=0;last=None;ans=0\n for c in s:\n  if c==last:run+=1\n  else:ans+=min(prev,run);prev,run=run,1;last=c\n return str(ans+min(prev,run))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/yahoo#2-count-binary-substrings",
+  "sourceContentHash": "e571e77c55dc2624962feb8278c2247509d76b3e3b6f4ee32d4b1a2494ae5ef8",
+  "author": "CSWork"
+}

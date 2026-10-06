@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-general-motors-2",
+  "title": "Smallest Greater Number with Double Digit Sum",
+  "explanation": "## 思路\n\n从 Z+1 递增枚举检查数字和。\n\n## 正确性证明\n\n枚举顺序严格递增，所以首次符合条件的数最小；全域穷举确认范围内总有解。\n\n## 复杂度\n\nO((X−Z)·digits) time, O(1) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def ds(x):\n s=0\n while x:s+=x%10;x//=10\n return s\ndef solve(raw):\n z=int(raw);target=2*ds(z);x=z+1\n while ds(x)!=target:x+=1\n return str(x)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/general-motors#2-come-looking-for-the-smallest-num-which-must-be--than-a-specific-num",
+  "sourceContentHash": "9fd9642f4f0e56b51a11447aa7ec3dba8c62a764bb6eac1d8bca2ef9043a1719",
+  "author": "CSWork"
+}
