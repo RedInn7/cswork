@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-goldman-sachs-27",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Product of the Maximum and Minimum in a Dataset",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Goldman Sachs",
+      "数据结构",
+      "堆",
+      "multiset"
+    ],
+    "description": "从空 multiset 开始依次处理操作：`push x` 插入一个 x；`pop x` 删除一个当前存在的 x 的单个副本。每次操作后输出当前集合最小值与最大值的乘积；若集合为空，按固定源中 Python、Java、C++ 三份实现一致输出 0。",
+    "input": "第一行输入操作数 n，随后 n 行每行输入 `push x` 或 `pop x`。约束：1≤n≤2500，1≤x≤10^9；每个 pop 执行时当前 multiset 中至少有一个 x。本站将 n 限制为 2500，使每次操作输出一个最多 19 位的乘积时，总输出不超过 65536 字节；原题允许 n≤10^5，但题库导入器的单题输出上限为 64 KiB。",
+    "output": "每行输出对应操作后的乘积；multiset 为空时输出 0。乘积按 64 位整数计算。",
+    "explanation": "重复值按 multiset 处理，pop 只移除一个副本；这些行为与固定源中的三种语言参考实现一致。",
+    "hints": [
+      "使用最小堆、最大堆和频次表；删除元素时用频次表延迟清理堆顶。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "来源样例",
+      "input": "4\npush 1\npush 2\npush 3\npop 1\n",
+      "expectedOutput": "1\n2\n3\n6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "删除至空集",
+      "input": "2\npush 5\npop 5\n",
+      "expectedOutput": "25\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "重复元素删除一个副本",
+      "input": "3\npush 4\npush 4\npop 4\n",
+      "expectedOutput": "16\n16\n16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "重复元素最终清空",
+      "input": "4\npush 4\npush 4\npop 4\npop 4\n",
+      "expectedOutput": "16\n16\n16\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大元素乘积使用 64 位结果",
+      "input": "2\npush 1000000000\npush 1000000000\n",
+      "expectedOutput": "1000000000000000000\n1000000000000000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最值变化",
+      "input": "5\npush 9\npush 2\npush 5\npop 2\npush 1\n",
+      "expectedOutput": "81\n18\n18\n45\n9\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
