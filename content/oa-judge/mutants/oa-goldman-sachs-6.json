@@ -1,0 +1,14 @@
+[
+  {
+    "name": "余料成品少算一次切割",
+    "description": "非整除时误按 k−1 刀计算，漏掉切下最后一段余料所需的刀数。",
+    "code": "import sys\ndef solve(raw):\n    v=list(map(int,raw.split()));n,cost,price=v[:3];a=v[3:3+n];best=0\n    for sale in range(1,max(a)+1):\n        gain=0\n        for rod in a:\n            k=rod//sale\n            if k:gain+=max(0,k*sale*price-(k-1)*cost)\n        best=max(best,gain)\n    return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n",
+    "sha256": "9e73e9315635b40d82000ad8092a5805ffde10e57192cf4a5e0fc4e397a429a1"
+  },
+  {
+    "name": "强制亏损棒材全部切完",
+    "description": "即使某根棒的全切收益为负也计入总利润，没有选择丢弃未处理棒材。",
+    "code": "import sys\ndef solve(raw):\n    v=list(map(int,raw.split()));n,cost,price=v[:3];a=v[3:3+n];best=0\n    for sale in range(1,max(a)+1):\n        gain=0\n        for rod in a:\n            k=rod//sale\n            if k:\n                cuts=k-1 if rod%sale==0 else k\n                gain+=k*sale*price-cuts*cost\n        best=max(best,gain)\n    return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n",
+    "sha256": "7708a8401e7fe29aa3b065ed1154d8afeccd3b33b3345701fc42aede77fb69e3"
+  }
+]

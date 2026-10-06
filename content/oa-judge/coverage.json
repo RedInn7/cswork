@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1076,
+    "sandbox_verified": 1079,
     "awaiting_sandbox": 0,
-    "blocked": 558,
+    "blocked": 555,
     "unreviewed": 0
   },
   "items": [
@@ -3227,8 +3227,9 @@
     {
       "id": "oa-amazon-363",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "原两条k-spike定义真实截断，单例不能证明完整条件、重复值及k边界；OCR未找到补充，不能照抄catalog猜测。"
+      "status": "sandbox_verified",
+      "batch": "amazon-363-recovered",
+      "reason": "重新核对 OAMaster 官方题页恢复完整定义、约束及样例；独立 Fenwick 解覆盖严格比较、重复值与 10^9 边界，165 个 oracle、35 个正式用例及两个 mutant 均通过线上 GoJudge。"
     },
     {
       "id": "oa-amazon-364",
@@ -8474,8 +8475,9 @@
     {
       "id": "oa-goldman-sachs-6",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "本次首批最多四题，按编号优先级暂缓；题面本身未发现阻断性歧义。"
+      "status": "sandbox_verified",
+      "batch": "goldman-high-confidence",
+      "reason": "原题规格清楚，独立验证 120 个 oracle 输入、32 个正式用例和两个错误程序；线上 GoJudge 全部通过。"
     },
     {
       "id": "oa-goldman-sachs-7",
@@ -8603,8 +8605,9 @@
     {
       "id": "oa-goldman-sachs-26",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "规则本身清楚但现有整理的逆向取模实现存在边界状态风险，当前批次未能对其在全约束域给出可靠的独立证明与验证，因此保留待审，不沿用来源代码。"
+      "status": "sandbox_verified",
+      "batch": "goldman-high-confidence",
+      "reason": "改为唯一逆运算并给出单调性证明，以有界 BFS 独立 oracle 验证 120 个输入、32 个正式用例和两个错误程序；线上 GoJudge 全部通过。"
     },
     {
       "id": "oa-goldman-sachs-27",

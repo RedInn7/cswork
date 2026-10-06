@@ -338,6 +338,18 @@
       ]
     },
     {
+      "id": "oa-amazon-363",
+      "sourceContentHash": "2c3df236860f5dcddb75f93bf3da179965831424daa0379a18647c68caa87c51",
+      "packageChecksum": "39daecf13f261bdf71540c33c6af0cb0bdf53faf99be8d5f0818d7270ee28a6e",
+      "editorial": "## 思路\n\n坐标压缩后从左向右扫描，树状数组查询当前值之前的频次，得到左侧严格更小的数量；再从右向左做同样的查询得到右侧数量。两者都不少于 k 时计数。相同值的 rank 不包含在查询前缀中。\n\n## 正确性证明\n\n坐标压缩保持数值大小关系。处理位置 i 时，树状数组恰好包含其一侧所有位置的值；查询 rank[i]-1 只累计严格小于 prices[i] 的值，等值不会被计入。正向扫描因此精确得到每个位置左侧较小元素数，反向扫描精确得到右侧较小元素数。按定义同时满足两侧计数至少为 k，当且仅当该位置是 k-Spike，逐项累加即为答案。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from bisect import bisect_left\n\n\nclass Fenwick:\n    def __init__(self, size):\n        self.tree = [0] * (size + 1)\n\n    def add(self, index, delta):\n        while index < len(self.tree):\n            self.tree[index] += delta\n            index += index & -index\n\n    def prefix_sum(self, index):\n        total = 0\n        while index > 0:\n            total += self.tree[index]\n            index -= index & -index\n        return total\n\n\ndef count_spikes(prices, k):\n    n = len(prices)\n    ordered = sorted(set(prices))\n    ranks = [bisect_left(ordered, value) + 1 for value in prices]\n    left_less = [0] * n\n    right_less = [0] * n\n\n    bit = Fenwick(len(ordered))\n    for i, rank in enumerate(ranks):\n        left_less[i] = bit.prefix_sum(rank - 1)\n        bit.add(rank, 1)\n\n    bit = Fenwick(len(ordered))\n    for i in range(n - 1, -1, -1):\n        rank = ranks[i]\n        right_less[i] = bit.prefix_sum(rank - 1)\n        bit.add(rank, 1)\n\n    return sum(left_less[i] >= k and right_less[i] >= k for i in range(n))\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[0], data[1]\n    prices = data[2:2 + n]\n    return str(count_spikes(prices, k))\n\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-2",
       "sourceContentHash": "97b8ab65dfbf7549d73626fd3e10d2208c4242c5638f3edc4c5b917010984c18",
       "packageChecksum": "3220fc0aef1e7be8fc40a6556575b8455933c2f64f4aafaee32a3aa008af1aa6",
@@ -5782,6 +5794,30 @@
         {
           "language": "python",
           "code": "def solve(data):\n    best = [0,-1,-1,-1]\n    for digit in map(int, data[1:]):\n        for count in range(3,0,-1):\n            if best[count-1] >= 0:\n                best[count] = max(best[count], best[count-1]*10+digit)\n    return max(best[1:])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-6",
+      "sourceContentHash": "539d4cbdb4a187083dfa42ca5c01c071a99435aa1a9277797950fdfb796ae4e7",
+      "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
+      "editorial": "# Cutting Metal Surplus\n\n## 思路\n\n枚举 saleLength=1..max(length)。对每根棒计算可得的成品段数 k。若有余料，每保留一段需要一次切割，选择正利润时保留全部 k 段。若恰好整除，比较：全部 k 段只需 k−1 刀；或至多保留 k−1 段、逐段从余料切离；也可整根不切。\n\n## 正确性证明\n\n固定 saleLength 后，各棒的收益互不影响。非整除时保留 t 段的利润为t·(saleLength·salePrice−costPerCut)，故最优在 t=0 或 t=k。整除时，t=k 的利润为 k·saleLength·salePrice−(k−1)·costPerCut；对 0≤t<k，利润为 t·(saleLength·salePrice−costPerCut)，线性函数的最大值在 t=0 或 t=k−1。逐棒取这些选项的最大收益，再对所有 saleLength 取最大，即枚举了所有合法切割方案。\n\n## 复杂度\n\n设 L=max(length)，时间 O(nL)，空间 O(1)。\n\n## 参考实现\n\n```python\nimport sys\ndef solve(raw):\n    values=list(map(int,raw.split()));n,cost,price=values[:3];lengths=values[3:3+n]\n    best=0\n    for sale in range(1,max(lengths)+1):\n        revenue_per_piece=sale*price\n        profit=0\n        for rod in lengths:\n            pieces,remainder=divmod(rod,sale)\n            if pieces==0:continue\n            if remainder:\n                # Every saleable segment must be cut away from the scrap.\n                gain=pieces*(revenue_per_piece-cost)\n            else:\n                # Either make all pieces (one fewer cut) or keep at most\n                # pieces-1 and discard the rest after cutting each kept piece.\n                all_gain=pieces*revenue_per_piece-(pieces-1)*cost\n                partial_gain=max(0,(pieces-1)*(revenue_per_piece-cost))\n                gain=max(0,all_gain,partial_gain)\n            profit+=max(0,gain)\n        best=max(best,profit)\n    return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n```\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    values=list(map(int,raw.split()));n,cost,price=values[:3];lengths=values[3:3+n]\n    best=0\n    for sale in range(1,max(lengths)+1):\n        revenue_per_piece=sale*price\n        profit=0\n        for rod in lengths:\n            pieces,remainder=divmod(rod,sale)\n            if pieces==0:continue\n            if remainder:\n                # Every saleable segment must be cut away from the scrap.\n                gain=pieces*(revenue_per_piece-cost)\n            else:\n                # Either make all pieces (one fewer cut) or keep at most\n                # pieces-1 and discard the rest after cutting each kept piece.\n                all_gain=pieces*revenue_per_piece-(pieces-1)*cost\n                partial_gain=max(0,(pieces-1)*(revenue_per_piece-cost))\n                gain=max(0,all_gain,partial_gain)\n            profit+=max(0,gain)\n        best=max(best,profit)\n    return str(best)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-26",
+      "sourceContentHash": "f209172c895d18a9794fc0097540560ac78f2d7b809556d2544da26e792f1644",
+      "packageChecksum": "4655d01d620441f99a2458255542d4427a59fe10123e77ee224485e12c954e06",
+      "editorial": "# Is Possible\n\n## 思路\n\n从 (c,d) 反向还原。若 c>d，唯一可能前驱是 (c−d,d)；若 d>c，唯一可能前驱是 (c,d−c)。每次减去较小坐标，若坐标低于起点或进入非起点的相等状态则不可达。\n\n## 正确性证明\n\n正向操作每次只增加一个坐标。对于任意正目标对，若 c>d，则它不可能由第二种操作产生（第二种会使第二坐标更大）；因此唯一前驱为 (c−d,d)。d>c 时对称。不断应用唯一前驱不会漏掉任何路径；一旦到达 (a,b) 即存在对应正向路径。若任何坐标低于起点，由于正向操作只增不减就不可能从起点到达；若 c=d，除非已等于起点，否则该状态不可能由正向操作到达。\n\n## 复杂度\n\n每步至少减少一个坐标，坐标不超过1000；时间 O(c+d)，空间 O(1)。\n\n## 参考实现\n\n```python\nimport sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    if c<a or d<b:return 'No'\n    # Each reverse step is forced: if c>d, only (c-d,d) can precede\n    # (c,d); if d>c, only (c,d-c) can precede it. Coordinates stay positive.\n    while (c,d)!=(a,b):\n        if c<a or d<b:return 'No'\n        if c==d:return 'No'\n        if c>d:c-=d\n        else:d-=c\n    return 'Yes'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n```\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    if c<a or d<b:return 'No'\n    # Each reverse step is forced: if c>d, only (c-d,d) can precede\n    # (c,d); if d>c, only (c,d-c) can precede it. Coordinates stay positive.\n    while (c,d)!=(a,b):\n        if c<a or d<b:return 'No'\n        if c==d:return 'No'\n        if c>d:c-=d\n        else:d-=c\n    return 'Yes'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
         }
       ]
     },

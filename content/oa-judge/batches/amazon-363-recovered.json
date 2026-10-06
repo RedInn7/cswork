@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-363",
+      "sourceContentHash": "2c3df236860f5dcddb75f93bf3da179965831424daa0379a18647c68caa87c51",
+      "packageChecksum": "39daecf13f261bdf71540c33c6af0cb0bdf53faf99be8d5f0818d7270ee28a6e",
+      "editorial": "## 思路\n\n坐标压缩后从左向右扫描，树状数组查询当前值之前的频次，得到左侧严格更小的数量；再从右向左做同样的查询得到右侧数量。两者都不少于 k 时计数。相同值的 rank 不包含在查询前缀中。\n\n## 正确性证明\n\n坐标压缩保持数值大小关系。处理位置 i 时，树状数组恰好包含其一侧所有位置的值；查询 rank[i]-1 只累计严格小于 prices[i] 的值，等值不会被计入。正向扫描因此精确得到每个位置左侧较小元素数，反向扫描精确得到右侧较小元素数。按定义同时满足两侧计数至少为 k，当且仅当该位置是 k-Spike，逐项累加即为答案。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from bisect import bisect_left\n\n\nclass Fenwick:\n    def __init__(self, size):\n        self.tree = [0] * (size + 1)\n\n    def add(self, index, delta):\n        while index < len(self.tree):\n            self.tree[index] += delta\n            index += index & -index\n\n    def prefix_sum(self, index):\n        total = 0\n        while index > 0:\n            total += self.tree[index]\n            index -= index & -index\n        return total\n\n\ndef count_spikes(prices, k):\n    n = len(prices)\n    ordered = sorted(set(prices))\n    ranks = [bisect_left(ordered, value) + 1 for value in prices]\n    left_less = [0] * n\n    right_less = [0] * n\n\n    bit = Fenwick(len(ordered))\n    for i, rank in enumerate(ranks):\n        left_less[i] = bit.prefix_sum(rank - 1)\n        bit.add(rank, 1)\n\n    bit = Fenwick(len(ordered))\n    for i in range(n - 1, -1, -1):\n        rank = ranks[i]\n        right_less[i] = bit.prefix_sum(rank - 1)\n        bit.add(rank, 1)\n\n    return sum(left_less[i] >= k and right_less[i] >= k for i in range(n))\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[0], data[1]\n    prices = data[2:2 + n]\n    return str(count_spikes(prices, k))\n\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

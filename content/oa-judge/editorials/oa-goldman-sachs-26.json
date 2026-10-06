@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-26",
+  "title": "Is Possible",
+  "explanation": "# Is Possible\n\n## 思路\n\n从 (c,d) 反向还原。若 c>d，唯一可能前驱是 (c−d,d)；若 d>c，唯一可能前驱是 (c,d−c)。每次减去较小坐标，若坐标低于起点或进入非起点的相等状态则不可达。\n\n## 正确性证明\n\n正向操作每次只增加一个坐标。对于任意正目标对，若 c>d，则它不可能由第二种操作产生（第二种会使第二坐标更大）；因此唯一前驱为 (c−d,d)。d>c 时对称。不断应用唯一前驱不会漏掉任何路径；一旦到达 (a,b) 即存在对应正向路径。若任何坐标低于起点，由于正向操作只增不减就不可能从起点到达；若 c=d，除非已等于起点，否则该状态不可能由正向操作到达。\n\n## 复杂度\n\n每步至少减少一个坐标，坐标不超过1000；时间 O(c+d)，空间 O(1)。\n\n## 参考实现\n\n```python\nimport sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    if c<a or d<b:return 'No'\n    # Each reverse step is forced: if c>d, only (c-d,d) can precede\n    # (c,d); if d>c, only (c,d-c) can precede it. Coordinates stay positive.\n    while (c,d)!=(a,b):\n        if c<a or d<b:return 'No'\n        if c==d:return 'No'\n        if c>d:c-=d\n        else:d-=c\n    return 'Yes'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n```\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    a,b,c,d=map(int,raw.split())\n    if c<a or d<b:return 'No'\n    # Each reverse step is forced: if c>d, only (c-d,d) can precede\n    # (c,d); if d>c, only (c,d-c) can precede it. Coordinates stay positive.\n    while (c,d)!=(a,b):\n        if c<a or d<b:return 'No'\n        if c==d:return 'No'\n        if c>d:c-=d\n        else:d-=c\n    return 'Yes'\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#26-is-possible",
+  "sourceContentHash": "f209172c895d18a9794fc0097540560ac78f2d7b809556d2544da26e792f1644",
+  "author": "CSWork"
+}
