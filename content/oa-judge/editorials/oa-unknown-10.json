@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "oa-unknown-10",
   "title": "Maximum Adjacent Gap",
-  "explanation": "只需扫描相邻位置，维护 `abs(nums[i]-nums[i-1])` 的最大值。不能先排序，因为那会改变题面给定的相邻关系。",
+  "explanation": "## 思路\n\n只扫描一次数组，逐对计算相邻元素差的绝对值，并维护最大值。不能排序，因为排序会改变题面给定的相邻关系。\n\n## 正确性证明\n\n遍历到位置 i 时，当前差值就是原数组第 i−1 与第 i 项之间的差。维护的最大值因此恰为所有相邻位置差的最大值，等于题目所求。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
   "solutions": [
     {
       "language": "python",

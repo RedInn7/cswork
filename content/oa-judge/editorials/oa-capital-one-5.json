@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n\n for _ in range(q):\n  typ,x=t[i:i+2];i+=2\n  if typ==0:\n   s=next((s for s in range(0,n,8) if s+x<=n and all(v==0 for v in mem[s:s+x])),-1)\n   if s<0:out.append(-1)\n   else:\n    for j in range(s,s+x):mem[j]=1;ids[j]=nextid\n    out.append(s);nextid+=1\n  else:\n   freed=0\n   for j in range(n):\n    if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1\n   out.append(freed if freed else -1)\n return ' '.join(map(str,out))\n"
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n\n for _ in range(q):\n  typ,x=t[i:i+2];i+=2\n  if typ==0:\n   s=next((s for s in range(0,n,8) if s+x<=n and all(v==0 for v in mem[s:s+x])),-1)\n   if s<0:out.append(-1)\n   else:\n    for j in range(s,s+x):mem[j]=1;ids[j]=nextid\n    out.append(s);nextid+=1\n  else:\n   freed=0\n   for j in range(n):\n    if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1\n   out.append(freed if freed else -1)\n return ' '.join(map(str,out))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/capital-one#5-memory-allocator--aligned-alloc--erase",

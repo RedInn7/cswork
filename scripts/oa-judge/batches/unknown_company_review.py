@@ -306,7 +306,7 @@ if __name__=='__main__': print(solve(sys.stdin.read()))
 
 
 SPECS = [
-    {"id":"oa-unknown-1","title":"Build Monuments","checker":"tokens","encode":tree_encode,"oracle":tree_oracle,"random":tree_random,"reference":tree_reference(),"samples":[(3,3,[(0,1),(1,2)]),(2,1,[]),(4,4,[(0,1),(0,2),(0,3)])],"mutants":[("忽略距离为2的冲突",'''import sys\ndef solve(raw):\n d=list(map(int,raw.split()));k,n=d[:2];g=[[] for _ in range(n)]\n for a,b in zip(d[2::2],d[3::2]):g[a-1].append(b-1);g[b-1].append(a-1)\n ans=k\n for v in g:ans=ans*max(0,k-1)%1000000007\n return str(ans)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("所有城市都使用相同类型",'''import sys\ndef solve(raw): return str(int(raw.split()[0])%1000000007)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"第一行 k n（1≤k≤10^9，1≤n≤10^5）；接下来 n−1 行为一条无向边 u v，城市编号 1..n。输入保证构成树。","output":"输出满足任意距离不超过 2 的城市类型均不同的方案数，模 1,000,000,007。本站补充该标准输入协议和约束。","description":"给树的每个节点分配 k 种类型之一，直接相连或共享邻居的城市不能同型。公司来源在 OAMaster 中标为 Unknown；本站补充输入协议与约束。","tags":["图论","树","组合计数"],"difficulty":"困难","editorial":"树的平方图可按根到叶顺序计数。根有 k 种选择，其子节点必须互不相同且避开根；其他节点的孩子还需避开父节点。每层的可选数形成下降阶乘，乘法取模。独立 oracle 在小树上穷举所有着色并逐条检查距离 1/2 冲突。","hints":["以 1 号城市为根；同一节点的孩子之间也相距 2。"]},
+    {"id":"oa-unknown-1","title":"Build Monuments","checker":"tokens","encode":tree_encode,"oracle":tree_oracle,"random":tree_random,"reference":tree_reference(),"samples":[(3,3,[(0,1),(1,2)]),(2,1,[]),(4,4,[(0,1),(0,2),(0,3)])],"mutants":[("忽略距离为2的冲突",'''import sys\ndef solve(raw):\n d=list(map(int,raw.split()));k,n=d[:2];g=[[] for _ in range(n)]\n for a,b in zip(d[2::2],d[3::2]):g[a-1].append(b-1);g[b-1].append(a-1)\n ans=k\n for v in g:ans=ans*max(0,k-1)%1000000007\n return str(ans)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("所有城市都使用相同类型",'''import sys\ndef solve(raw): return str(int(raw.split()[0])%1000000007)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"第一行 k n（1≤k≤10^9，1≤n≤10^5）；接下来 n−1 行为一条无向边 u v，城市编号 1..n。输入保证构成树。","output":"输出满足任意距离不超过 2 的城市类型均不同的方案数，模 1,000,000,007。本站补充该标准输入协议和约束。","description":"给树的每个节点分配 k 种类型之一，直接相连或共享邻居的城市不能同型。公司来源在 OAMaster 中标为 Unknown；本站补充输入协议与约束。","tags":["图论","树","组合计数"],"difficulty":"困难","editorial":"## 思路\n\n把树任选根后按父子关系计数：根有 k 种选择；根的孩子依次避开根和已着色的兄弟；其余节点的孩子还要避开父节点与已着色的兄弟。每个节点对应一个下降阶乘，所有因子相乘并取模。\n\n## 正确性证明\n\n树中距离不超过 2 的节点对，恰好是父子和同一父节点下的兄弟。按根到叶着色时，给当前节点的可选颜色正是排除父节点及已处理兄弟后的剩余颜色，因此每个有效着色被计数一次且无冲突。若可选颜色不足，答案为 0。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。独立 oracle 在小树上穷举着色并逐对检查距离 1/2 冲突。","hints":["以 1 号城市为根；同一节点的孩子之间也相距 2。"]},
     {"id":"oa-unknown-5","title":"Exclusive Time of Functions","checker":"tokens","encode":logs_encode,"oracle":logs_oracle,"random":logs_random,"reference":logs_reference(),"samples":[(2,["0:start:0","1:start:2","1:end:5","0:end:6"]),(1,["0:start:0","0:start:2","0:end:5","0:start:6","0:end:6","0:end:7"]),(2,["0:start:0","0:start:2","0:end:5","1:start:6","1:end:6","0:end:7"])],"mutants":[("父函数错误计入子函数时长",'''import sys\ndef solve(raw):\n l=raw.splitlines();n,m=map(int,l[0].split());ans=[0]*n;st=[];p=0\n for x in l[1:]:\n  i,k,t=x.split(':');i=int(i);t=int(t)\n  if k=='start':st.append((i,t))\n  else:\n   j,s=st.pop();ans[j]+=t-s+1\n   if st:st[-1]=(st[-1][0],t+1)\n return ' '.join(map(str,ans))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("结束事件未按闭区间计时",'''import sys\ndef solve(raw):\n l=raw.splitlines();n,m=map(int,l[0].split());ans=[0]*n;st=[];p=0\n for x in l[1:]:\n  i,k,t=x.split(':');i=int(i);t=int(t)\n  if st:ans[st[-1]]+=t-p\n  if k=='start':st.append(i);p=t\n  else:st.pop();p=t\n return ' '.join(map(str,ans))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"第一行函数数 n 与日志数 m；随后 m 行为 `id:start:timestamp` 或 `id:end:timestamp`。本站限制 1≤n≤100、0≤timestamp≤10^9；日志合法且按时间顺序给出。","output":"输出 n 个整数，第 i 项为函数 i 的独占执行时间，空格分隔。","description":"计算单线程调用栈中各函数的独占运行时间。该题源明确指向 LC636，本站补充标准日志输入协议与约束。","tags":["栈","模拟"],"difficulty":"中等","editorial":"维护调用栈和上一个尚未计入的时间点。新日志到来时，先把两时间点间隔加给栈顶；start 将函数压栈，end 事件还要计入该时间戳本身，再弹栈。","hints":["end 时间戳是闭区间；start 时间戳从该刻开始执行。"]},
     {"id":"oa-unknown-8","title":"Process Messages","checker":"exact","encode":messages_encode,"oracle":messages_oracle,"random":messages_random,"reference":messages_reference(),"samples":[["1045:2","0100:1","0100:2"],["0000:5","9999:1","0001:1"],["1200:3","1200:3","0000:3"]],"mutants":[("优先级顺序颠倒",'''import sys\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];a.sort(key=lambda s:(-int(s.split(':')[1]),int(s.split(':')[0])));return '\\n'.join(a)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("按时间而非优先级排序",'''import sys\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];a.sort(key=lambda s:(int(s.split(':')[0]),int(s.split(':')[1])));return '\\n'.join(a)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"第一行 n（1≤n≤10^5），随后 n 行 `timestamp:priority`。timestamp 为 0000..9999，priority 为 1..5。","output":"按优先级数字升序（1 最高），再按 timestamp 数值升序排列，每行原样输出一条消息。完全相同键按输入顺序稳定排列。","description":"按优先级和时间先后处理消息。题源未给示例；本站明确同键使用稳定排序，并补充标准输入协议。","tags":["排序","字符串"],"difficulty":"简单","editorial":"按照 `(priority, timestamp, originalIndex)` 升序排序。时间戳先转整数比较，因此前导零只影响回显，不影响先后；完全相同键保持输入顺序。","hints":["priority 越小越先处理；保存原始字符串用于输出。"]},
     {"id":"oa-unknown-9","title":"Count Even Numbers","checker":"tokens","encode":numbers_encode,"oracle":even_oracle,"random":even_random,"reference":even_reference(),"samples":[[1,2,4,7,10],[],[-3,-2,0,5,8]],"mutants":[("统计奇数个数",'''import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];return str(sum(x%2!=0 for x in d[1:1+n]))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("忽略负偶数",'''import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];return str(sum(x>=0 and x%2==0 for x in d[1:1+n]))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"第一行 n（0≤n≤1000），第二行 n 个整数，范围 −100000..100000。","output":"输出数组中偶数的个数。","description":"统计整数数组里的偶数。虽然源句被截断，约束和三个示例完整确定了负数、0 和空数组的处理。","tags":["数组","计数"],"difficulty":"简单","editorial":"遍历数组，对每个元素判断 `x % 2 == 0` 并累加。Python 对负偶数同样满足该判断，0 也计为偶数。","hints":["注意空数组和负数。"]},
@@ -315,6 +315,87 @@ SPECS = [
     {"id":"oa-unknown-16","title":"Multiset Jaccard Similarity","checker":"float","encode":string_pair_encode,"oracle":jaccard_oracle,"random":jaccard_random,"reference":jaccard_reference(),"samples":[("baa","abbc"),("abc","xyz"),("aaaa","aa")],"mutants":[("忽略重复字符",'''import sys\ndef solve(raw):\n a,b=raw.splitlines()[:2];u=set(a)|set(b);return str(len(set(a)&set(b))/len(u))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("误用较短长度比",'''import sys\ndef solve(raw):\n a,b=raw.splitlines()[:2];return str(min(len(a),len(b))/max(len(a),len(b)))\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"两行非空字符串，仅含小写英文字母，每串长度 1..10^5。","output":"输出多重集 Jaccard 相似度：Σmin(countA[c],countB[c]) / Σmax(countA[c],countB[c])，误差不超过 1e−6。","description":"计算字符多重集的 Jaccard 相似度。题源例子说明重复字符计入并给出 0.4；本站补充非空字符串和标准输入协议。","tags":["字符串","计数","数学"],"difficulty":"简单","editorial":"统计两串各字符频次。交集大小为频次逐字符取 min 后求和，并集大小为取 max 后求和，答案为两者之比。","hints":["这是多重集，不是去重后的字符集合。"]},
     {"id":"oa-unknown-17","title":"Most Unique Elements","checker":"exact","encode":unique_encode,"oracle":unique_oracle,"random":unique_random,"reference":unique_reference(),"samples":[["aba","ab","abbcdd"],["aab","cc","bbd"],["abca","de"]],"mutants":[("改为选最高比例字符串",'''import sys\nfrom collections import Counter\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];p=[max(Counter(s).values())/len(s) for s in a];b=max(p);idx=[i for i,x in enumerate(p) if x==b];o=set(c for i,s in enumerate(a) if i not in idx for c in s);return ''.join(c for i in idx for c in a[i] if c not in o)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n'''),("保留未选字符串也含有的字符",'''import sys\nfrom collections import Counter\ndef solve(raw):\n l=raw.splitlines();a=l[1:1+int(l[0])];p=[max(Counter(s).values())/len(s) for s in a];b=min(p);idx=[i for i,x in enumerate(p) if x==b];return ''.join(c for i in idx for c in a[i])\nif __name__=='__main__':print(solve(sys.stdin.read()))\n''')],"input":"第一行 n（1≤n≤1000），随后 n 行非空字符串，仅含小写英文字母，每串长度 1..1000。","output":"先选择最常见字符占比最小的所有字符串；输出这些字符串中、未出现在任何未选字符串里的字符，按选中字符串的原输入顺序及字符串内顺序保留重复字符。","description":"按字符串内最高字符频次占比选出最不集中的字符串，再保留只出现在选中集合中的字符。题源唯一示例可确定返回规则；本站补充输入协议。","tags":["字符串","计数"],"difficulty":"中等","editorial":"对每个字符串计算 max(freq)/length，找最小比例并保留所有并列项。把未选字符串的字符合并成集合，再按选中字符串原顺序输出不在该集合中的字符，重复出现仍保留。","hints":["比例比较可用整数交叉相乘；并列项都要保留。"]},
 ]
+
+
+EDITORIAL_OVERRIDES = {
+    "oa-unknown-5": """## 思路
+
+用栈保存当前调用链，并用 `previous` 记录尚未分配的时间点。每条日志到来时，先把 `[previous, timestamp)` 计入栈顶；`start` 压入新函数，`end` 再把结束时间点计入当前函数后弹栈。
+
+## 正确性证明
+
+任意两个相邻日志之间只有栈顶函数在独占执行，因此该区间长度应且只应加给栈顶。start 事件不属于新函数的已执行区间；end 事件按题意是闭区间，单独补上时间戳本身。由此每个执行时间单位恰好计入对应函数一次。
+
+## 复杂度
+
+时间 O(m)，空间 O(n)，其中 m 为日志数、n 为函数数。""",
+    "oa-unknown-8": """## 思路
+
+按 `(priority, timestamp, originalIndex)` 升序排序。时间戳转为整数后比较，原始行单独保存以便按题意回显；原始下标用于稳定处理完全相同的键。
+
+## 正确性证明
+
+排序键先比较优先级，再比较数值时间戳，正好实现题目规定的主次顺序。前两项都相同时按原始下标排序，故输出保持输入先后。逐行按该键排序得到唯一合法结果。
+
+## 复杂度
+
+时间 O(n log n)，空间 O(n)。""",
+    "oa-unknown-9": """## 思路
+
+遍历输入数组，遇到 `x % 2 == 0` 就将计数加一。该判断对负偶数和 0 同样成立。
+
+## 正确性证明
+
+每个数组元素恰好被检查一次；偶数当且仅当除以 2 余数为 0。因此计数器最终恰好等于数组中的偶数个数。
+
+## 复杂度
+
+时间 O(n)，空间 O(1)。""",
+    "oa-unknown-10": """## 思路
+
+只扫描一次数组，逐对计算相邻元素差的绝对值，并维护最大值。不能排序，因为排序会改变题面给定的相邻关系。
+
+## 正确性证明
+
+遍历到位置 i 时，当前差值就是原数组第 i−1 与第 i 项之间的差。维护的最大值因此恰为所有相邻位置差的最大值，等于题目所求。
+
+## 复杂度
+
+时间 O(n)，额外空间 O(1)。""",
+    "oa-unknown-14": """## 思路
+
+固定整数 k 后，最小的非负 x 是 `max(0, ceil(B/k)−A)`，再令 `y=k(A+x)−B`，代价为 x+y。小 k 直接枚举；大 k 时 `ceil(B/k)` 的商只取 O(√B) 种，可按商区间枚举，并单独检查 x=0 的边界。
+
+## 正确性证明
+
+固定 k 时，任何更小的 x 都会使 `k(A+x)<B`，不满足条件；取该最小 x 后 y 被等式唯一确定，所以该 k 下的代价最优。小 k 被逐个枚举，大 k 按相同 `ceil(B/k)` 值合并枚举，因此每一种可能的最优商都被覆盖；取其中最小代价即为全局最优。
+
+## 复杂度
+
+时间 O(√B)，空间 O(1)。随机小值另用枚举所有 k 的 oracle 校验。""",
+    "oa-unknown-16": """## 思路
+
+分别统计两串中每个字符的出现次数。多重集交集大小为各字符计数取 min 后求和；并集大小为取 max 后求和；答案为两者之比。
+
+## 正确性证明
+
+对每个字符，交集最多保留它在两串中较少的一侧的次数，并集必须保留较多的一侧的次数。对字符类别求和就分别得到多重集交、并大小，二者之比正是多重集 Jaccard 相似度。
+
+## 复杂度
+
+设字符集大小为 σ，时间 O(n+m+σ)，空间 O(σ)。""",
+    "oa-unknown-17": """## 思路
+
+对每个字符串计算 `max(freq)/length`，选出比例最小的所有字符串。将未选字符串中的字符汇总成集合，再按选中字符串的原输入顺序和字符串内顺序，输出不在该集合中的字符，重复字符保留。
+
+## 正确性证明
+
+比例最小的字符串集合由定义唯一确定，并列者全部保留。对其中每个字符，检查它是否出现在任一未选字符串中，正好实现题目的排除条件；按原顺序逐字符输出，保证结果顺序与重复次数均符合要求。
+
+## 复杂度
+
+总字符数为 L、字符集大小为 σ 时，时间 O(L+σ)，空间 O(L+σ)。""",
+}
 
 
 BLOCKED = {
@@ -378,10 +459,11 @@ def main():
         p=subprocess.run(["node","--import","tsx","-e",js],cwd=ROOT,input=json.dumps(raw,ensure_ascii=False),text=True,capture_output=True)
         if p.returncode: raise RuntimeError(p.stderr)
         normalized=p.stdout; package=json.loads(normalized)
-        editorial={"schemaVersion":1,"id":pid,"title":spec["title"],"explanation":spec["editorial"],"solutions":[{"language":"python","code":code}],"sourceUrl":source["sourceUrl"],"sourceContentHash":source["contentHash"],"author":"CSWork"}
+        explanation=EDITORIAL_OVERRIDES.get(pid,spec["editorial"])
+        editorial={"schemaVersion":1,"id":pid,"title":spec["title"],"explanation":explanation,"solutions":[{"language":"python","code":code}],"sourceUrl":source["sourceUrl"],"sourceContentHash":source["contentHash"],"author":"CSWork"}
         for folder,doc in (("packages",package),("oracles",oracle_cases),("mutants",mutants),("editorials",editorial)):
             (OUT/folder/f"{pid}.json").write_text(json.dumps(doc,ensure_ascii=False,indent=2)+"\n")
-        manifest.append({"id":pid,"sourceContentHash":source["contentHash"],"packageChecksum":hashlib.sha256(normalized.encode()).hexdigest(),"editorial":spec["editorial"],"authoredSolutions":[{"language":"python","code":code}]})
+        manifest.append({"id":pid,"sourceContentHash":source["contentHash"],"packageChecksum":hashlib.sha256(normalized.encode()).hexdigest(),"editorial":explanation,"authoredSolutions":[{"language":"python","code":code}]})
         validations.append({"id":pid,"oracleCases":len(oracle_cases),"uniqueOracleInputs":len(seen),"referenceCliCases":len(formal),"referenceSha256":hashlib.sha256(code.encode()).hexdigest(),"publicCases":3,"hiddenCases":27,"negativeControls":negative})
         reviews.append({"id":pid,"status":"authored","reason":"已核对固定源快照；把本站补充的输入格式/约束写入题面，120 个独立输入与两个正常退出 mutant 均通过离线验证。公司未标注，页面如实保留 Unknown。","sourceUrls":[source["sourceUrl"]],"sourceContentHashes":[source["contentHash"]],"sourceCommit":CATALOG["source"]["commit"],"catalogContentHash":source["contentHash"]})
         print(f"{pid}: 120 oracle inputs; 30 formal cases; 2 mutants rejected",flush=True)

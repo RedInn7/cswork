@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "oa-unknown-8",
   "title": "Process Messages",
-  "explanation": "按照 `(priority, timestamp, originalIndex)` 升序排序。时间戳先转整数比较，因此前导零只影响回显，不影响先后；完全相同键保持输入顺序。",
+  "explanation": "## 思路\n\n按 `(priority, timestamp, originalIndex)` 升序排序。时间戳转为整数后比较，原始行单独保存以便按题意回显；原始下标用于稳定处理完全相同的键。\n\n## 正确性证明\n\n排序键先比较优先级，再比较数值时间戳，正好实现题目规定的主次顺序。前两项都相同时按原始下标排序，故输出保持输入先后。逐行按该键排序得到唯一合法结果。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
   "solutions": [
     {
       "language": "python",

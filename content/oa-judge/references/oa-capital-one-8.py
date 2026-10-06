@@ -1,3 +1,4 @@
+import sys
 def solve(raw):
  t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]
  for _ in range(n):segments.append((t[i],t[i+1]));i+=2
@@ -8,3 +9,6 @@ def solve(raw):
    if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1
   out.append(str(count))
  return ' '.join(out)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

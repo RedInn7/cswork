@@ -1,3 +1,4 @@
+import sys
 def solve(raw):
     n,m,k=map(int,raw.split());mod=10**9+7
     def side(cnt,x):
@@ -9,3 +10,6 @@ def solve(raw):
         if need(mid)<=m:ans=mid;lo=mid+1
         else:hi=mid-1
     return str(ans)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

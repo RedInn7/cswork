@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "oa-unknown-14",
   "title": "Minimum Extra Chocolates",
-  "explanation": "固定 k 时，令 x=max(0, ceil(B/k)-A)，这是使 k(A+x) 不小于 B 的最小非负 x；随后 y=k(A+x)-B，代价为 x+y。对 k≤√B 逐个检查；对更大的 k，ceil(B/k)≤√B，可按该商枚举区间的首个 k；另检查 ceil(B/A) 的零 x 分支。总体 O(√B)。随机小值使用枚举全部 k 的独立 oracle。",
+  "explanation": "## 思路\n\n固定整数 k 后，最小的非负 x 是 `max(0, ceil(B/k)−A)`，再令 `y=k(A+x)−B`，代价为 x+y。小 k 直接枚举；大 k 时 `ceil(B/k)` 的商只取 O(√B) 种，可按商区间枚举，并单独检查 x=0 的边界。\n\n## 正确性证明\n\n固定 k 时，任何更小的 x 都会使 `k(A+x)<B`，不满足条件；取该最小 x 后 y 被等式唯一确定，所以该 k 下的代价最优。小 k 被逐个枚举，大 k 按相同 `ceil(B/k)` 值合并枚举，因此每一种可能的最优商都被覆盖；取其中最小代价即为全局最优。\n\n## 复杂度\n\n时间 O(√B)，空间 O(1)。随机小值另用枚举所有 k 的 oracle 校验。",
   "solutions": [
     {
       "language": "python",

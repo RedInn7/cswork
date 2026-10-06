@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n    n,m,k=map(int,raw.split());mod=10**9+7\n    def side(cnt,x):\n        full=min(cnt,x-1);return ((x-1+x-full)*full)//2+max(0,cnt-full)\n    def need(x):return x+side(k-1,x)+side(n-k,x)\n    lo,hi,ans=1,m,1\n    while lo<=hi:\n        mid=(lo+hi)//2\n        if need(mid)<=m:ans=mid;lo=mid+1\n        else:hi=mid-1\n    return str(ans)\n"
+      "code": "import sys\ndef solve(raw):\n    n,m,k=map(int,raw.split());mod=10**9+7\n    def side(cnt,x):\n        full=min(cnt,x-1);return ((x-1+x-full)*full)//2+max(0,cnt-full)\n    def need(x):return x+side(k-1,x)+side(n-k,x)\n    lo,hi,ans=1,m,1\n    while lo<=hi:\n        mid=(lo+hi)//2\n        if need(mid)<=m:ans=mid;lo=mid+1\n        else:hi=mid-1\n    return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/sofi#1-job-scheduling",

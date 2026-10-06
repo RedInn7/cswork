@@ -1,3 +1,4 @@
+import sys
 def solve(raw):
  t=raw.split();it=iter(t);r,c=int(next(it)),int(next(it));a=[[int(next(it)) for _ in range(c)] for _ in range(r)];q=int(next(it))
  for _ in range(q):
@@ -13,3 +14,6 @@ def solve(raw):
    for i in range(len(a)//2):a[i][x],a[-i-1][x]=a[-i-1][x],a[i][x]
   else:a=[list(row) for row in zip(*a[::-1])]
  return '\n'.join(' '.join(map(str,row)) for row in a)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

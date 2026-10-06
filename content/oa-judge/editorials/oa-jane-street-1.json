@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A'),('C','D'),('D','C')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n"
+      "code": "import sys\ndef solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A'),('C','D'),('D','C')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/jane-street#1-transform-string",

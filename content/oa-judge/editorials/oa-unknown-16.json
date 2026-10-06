@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "oa-unknown-16",
   "title": "Multiset Jaccard Similarity",
-  "explanation": "统计两串各字符频次。交集大小为频次逐字符取 min 后求和，并集大小为取 max 后求和，答案为两者之比。",
+  "explanation": "## 思路\n\n分别统计两串中每个字符的出现次数。多重集交集大小为各字符计数取 min 后求和；并集大小为取 max 后求和；答案为两者之比。\n\n## 正确性证明\n\n对每个字符，交集最多保留它在两串中较少的一侧的次数，并集必须保留较多的一侧的次数。对字符类别求和就分别得到多重集交、并大小，二者之比正是多重集 Jaccard 相似度。\n\n## 复杂度\n\n设字符集大小为 σ，时间 O(n+m+σ)，空间 O(σ)。",
   "solutions": [
     {
       "language": "python",

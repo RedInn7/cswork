@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n t=raw.split();n,m=int(t[0]),int(t[1]);ans=[0]*n;st=[];prev=0\n for log in t[2:2+m]:\n  fid,kind,ts=log.split(':');fid=int(fid);ts=int(ts)\n  if kind=='start':\n   if st:ans[st[-1]]+=ts-prev\n   st.append(fid);prev=ts\n  else:ans[st.pop()]+=ts-prev+1;prev=ts+1\n return ' '.join(map(str,ans))\n"
+      "code": "import sys\ndef solve(raw):\n t=raw.split();n,m=int(t[0]),int(t[1]);ans=[0]*n;st=[];prev=0\n for log in t[2:2+m]:\n  fid,kind,ts=log.split(':');fid=int(fid);ts=int(ts)\n  if kind=='start':\n   if st:ans[st[-1]]+=ts-prev\n   st.append(fid);prev=ts\n  else:ans[st.pop()]+=ts-prev+1;prev=ts+1\n return ' '.join(map(str,ans))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/capital-one#17-get-function-execution-time",

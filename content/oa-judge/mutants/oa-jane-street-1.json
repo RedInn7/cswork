@@ -1,10 +1,10 @@
 [
   {
     "name": "漏掉 CD 对",
-    "code": "def solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n"
+    "code": "import sys\ndef solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
   },
   {
     "name": "只按一个方向识别 AB",
-    "code": "def solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('C','D')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n"
+    "code": "import sys\ndef solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('C','D')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
   }
 ]
