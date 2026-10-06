@@ -84,6 +84,20 @@ test('authored OA packages and displayed solutions match sandbox-verified immuta
   }
 });
 
+test('DoorDash #4 Discount Events is available as an independently verified OA item', () => {
+  const registry = JSON.parse(
+    readFileSync('content/oa-judge/registry.json', 'utf8'),
+  );
+  const entry = registry.items.find(
+    (item: { id: string }) => item.id === 'oa-doordash-4',
+  );
+  assert(entry, 'DoorDash #4 must have its own published item ID');
+  assert.equal(
+    entry.sourceContentHash,
+    '129cf5e454586707eb0e470ed707c84a84c2dcbd373bd8f6ff3ef00389741977',
+  );
+});
+
 test('batch evidence is isolated, complete and cannot authorize new or drifted entries', () => {
   const entry = {
     id: 'oa-fixture-1',
