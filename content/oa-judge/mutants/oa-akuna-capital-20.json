@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误实现 1",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0];a=t[1:1+n];total=count=0\n for value in a:\n  if total+value<=0:break\n  total+=value;count+=1\n return str(count)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误实现 2",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];a=sorted(t[1:1+n],reverse=True);total=count=0\n for value in a:\n  if total+value<0:break\n  total+=value;count+=1\n return str(count)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+  }
+]

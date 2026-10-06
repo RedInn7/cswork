@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-20",
+  "title": "保持正向指数的最多会议数",
+  "explanation": "## 思路\n\n按 effectiveness 从大到小排序，依次加入会议；只要新的累计指数仍严格大于 0 就保留，否则后续值不可能挽回该前缀。\n\n## 正确性证明\n\n对任意长度为 k 的可行安排，交换相邻的较小值 x 与较大值 y：原顺序 x,y 的第一个前缀较低，交换成 y,x 不会降低这两个位置的任一累计和。因此存在按非增序排列的最优可行前缀。按降序扫描时，若加入当前值后指数不大于 0，所有剩余值不大于它；任何包含它们的完整前缀和也无法保持正数，故停止。扫描所得前缀可行且不能再延长。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=sorted(t[1:1+n],reverse=True); total=count=0\n for value in a:\n  if total+value<=0: break\n  total+=value; count+=1\n return str(count)\nif __name__=='__main__':print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#20-effective-manager",
+  "sourceContentHash": "729f5cfe3c44aa8a825ecb9b9d4a23893a8c8350798b4f0775caf74925b6c8d9",
+  "author": "CSWork",
+  "sourceNote": "题面语义同 Goldman Sachs #22；唯一官方样例来自该同文题并明确可重排。"
+}
