@@ -6194,6 +6194,18 @@
       ]
     },
     {
+      "id": "oa-google-65",
+      "sourceContentHash": "2a761527eddb0ae5f7231cac89a2fea7cefa48fd9fb6f693938e01734a619b0c",
+      "packageChecksum": "b0896c680d51a68f06b0e69d35b557b324d05bcd1604e083eca49cca1c187a3d",
+      "editorial": "## 思路\n\n遍历 tokens；遇到 T 时加入对应 points[i]，如果前一位也是 T，再额外加 1。\n\n## 正确性\n\n题目规则将总分拆成两部分：每个 T 位置各计一次 points[i]，每一对相邻 TT 各计 1。遍历时每个 T 恰好计入第一部分；除首位外，若当前与前一位都为 T，恰好计入以当前位置结尾的那一对。每一对相邻位置只在右端被检查一次，因此不重不漏。\n\n## 复杂度\n\n时间 O(N)，额外空间 O(1)。\n\n## 来源与样例处理\n\nhttps://oamaster.com/docs/companies/google#65-game-points-calculation。固定快照中的 Python、Java、C++ 实现均明确采用上述规则。原样例1违反 points 下界，且索引/计分解释不符；样例2输出也与其所述规则和三份实现不符。展示样例改为可由规则唯一计算的输入。本站补充 stdin/stdout 协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n    data=raw.split(); n=int(data[0]); points=list(map(int,data[1:1+n])); tokens=data[1+n]\n    score=0\n    for i,token in enumerate(tokens):\n        if token=='T':\n            score+=points[i]\n            if i>0 and tokens[i-1]=='T': score+=1\n    return str(score)\nprint(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-google-4",
       "sourceContentHash": "c4a25089fe4cdae3c8299c2f30ef4cfbe185d29b890d44f5247a716943893dec",
       "packageChecksum": "649937f74161f1f658faaee8c016ec3bef77a63dbe0349562ba1bf3c7169e724",
@@ -6814,6 +6826,18 @@
         {
           "language": "python",
           "code": "from collections import deque\ndef solve(data):\n    n=int(data[0]);start,target=data[1:];q=deque([(start,0)]);seen={start}\n    while q:\n        s,d=q.popleft()\n        if s==target:return str(d)\n        for i in range(n):\n            for c in 'xyz':\n                if c==s[i] or (i and s[i-1]==c) or (i+1<n and s[i+1]==c):continue\n                t=s[:i]+c+s[i+1:]\n                if t not in seen:seen.add(t);q.append((t,d+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hudson-river-trading-6",
+      "sourceContentHash": "eb19423d30e0c5f771d21ba70f4906320cd6897fc185fc7dd1985781fadc465b",
+      "packageChecksum": "98ab0b0ff642d26132d17917259a4a8b7468a9b0bfb32764968013064f5e70bf",
+      "editorial": "## 思路\n\n把格子视为有向无环图，每个格子连向上下左右数值更大的邻格。按值从大到小处理，令 `ways[u]` 为从 u 出发、至少再走一步的递增路径数，则 `ways[u] = Σ(1 + ways[v])`，其中 v 遍历更大的相邻格子。将所有 `ways[u]` 相加即为答案。\n\n## 正确性证明\n\n任意递增路径有唯一首格 u 和唯一第二格 v。v 必是 u 的更大相邻格；以 v 为首的后缀要么在 v 结束（对应 1），要么继续到更大邻格（对应 `ways[v]`）。因此对所有合法 v 求和恰好枚举每条从 u 开始的路径一次。严格递增保证处理 u 时所有更大邻格已完成，求和覆盖所有首格后便得到全部且不重不漏的路径。\n\n## 复杂度\n\n设格子数 V≤225，邻接边数 E≤4V。排序耗时 O(V log V)，动态规划 O(E)，空间 O(V)。\n\n## 来源与样例校正\n\nPart 2 明确沿用 Part 1，仅将路径数量上限扩大到 20 billion。固定的 15×15 网格按两种独立算法计算均为 `600537344`，而原页面标注 `601079908`。本站保留原网格，修正公开答案并明确注明源样例错误；标准输入输出格式是本站补充。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def decode(raw):\n    data = list(map(int, raw.split()))\n    rows = data[0]\n    grid = []\n    pos = 1\n    for _ in range(rows):\n        cols = data[pos]\n        pos += 1\n        grid.append(data[pos:pos + cols])\n        pos += cols\n    if pos != len(data):\n        raise ValueError(\"unexpected trailing input\")\n    return grid\n\ndef solve(raw):\n    grid = decode(raw)\n    cells = {(r, c): value for r, row in enumerate(grid) for c, value in enumerate(row)}\n    ways = {}\n    answer = 0\n    for (r, c), value in sorted(cells.items(), key=lambda item: item[1], reverse=True):\n        count = 0\n        for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):\n            if (nr, nc) in cells and cells[(nr, nc)] > value:\n                count += 1 + ways[(nr, nc)]\n        ways[(r, c)] = count\n        answer += count\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -13306,6 +13330,18 @@
         {
           "language": "python",
           "code": "import sys\nMOD=1000000007\ndef solve(raw):\n z=list(map(int,raw.split()));t=z[0];p=1;out=[]\n for _ in range(t):\n  n=z[p];p+=1;a=z[p:p+n];p+=n;runs=[]\n  for x in a:\n   if not runs or runs[-1][0]!=x:runs.append([x,1])\n   else:runs[-1][1]+=1\n  total=acc=0\n  for _,L in runs:\n   T=L*(L+1)//2;total=(total+L*(L+1)*(L+2)//6+T*acc)%MOD;acc=(acc*L+T)%MOD\n  streak=1;empty=0\n  for i in range(1,n+1):\n   if i<n and a[i]!=a[i-1]:streak+=1\n   else:empty=(empty+streak*(streak+1)//2)%MOD;streak=1\n  out.append(str((total-empty)%MOD))\n return '\\n'.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-6",
+      "sourceContentHash": "e3aaaa7b35f2dd54da5dd226eb0ec49a484eded066a5257d6b108783bd6a32b4",
+      "packageChecksum": "64aba46693fffee5ec48841afa4b979994c251bc2ab7afc25a9ad60b7dd6dcea",
+      "editorial": "## 为什么正确\n\n两个正整数只有位数相同时才可能组成题目所说的 cyclic pair。固定一个数，把它的十进制串从每个下标切开并交换前后两段，就得到它全部循环移位；取其中字典序最小的串作为等价类标识。两个数能互相循环移位，当且仅当标识相同。因此每个等价类里有 c 个输入位置时，贡献恰好是 C(c,2)，重复输入也按不同下标计数。\n\n## 样例勘误\n\n固定来源的规则、约束和解释把样例中的五个匹配对都明确列出，但样例输出误写为 3。直接逐对枚举得到：`13/31/13` 贡献 3 对，`5604/4560` 贡献 1 对，`546/654` 贡献 1 对，总计 5。题意与输入保持原样，只将公开样例答案更正为 5。\n\n## 复杂度与本站输入格式\n\n设 n 为数组长度、L 为最大位数。参考解用循环移位构造等价类，时间 O(nL²)，空间 O(nL)。本站标准输入为 n 和 n 个正整数；采用源约束 `1≤n≤100`、`1≤a[i]≤10000`，仅把原文误写的 `years.length/years[i]` 绑定到正文中的数组 `a`。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\nimport sys\n\ndef canonical(value):\n    text = str(value)\n    return min(text[i:] + text[:i] for i in range(len(text)))\n\ndef count_pairs(values):\n    counts = Counter(canonical(value) for value in values)\n    return sum(count * (count - 1) // 2 for count in counts.values())\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if not tokens:\n        raise ValueError(\"missing n\")\n    n, values = tokens[0], tokens[1:]\n    if not 1 <= n <= 100 or len(values) != n:\n        raise ValueError(\"site protocol: 1 <= n <= 100 and n values\")\n    if any(not 1 <= value <= 10000 for value in values):\n        raise ValueError(\"source constraint: 1 <= a[i] <= 10000\")\n    return str(count_pairs(values))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
