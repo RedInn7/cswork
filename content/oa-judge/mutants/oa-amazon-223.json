@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误把间隔当起点差",
+    "code": "def solve(d):\n    from collections import Counter\n    n=int(d[0]);s=d[1];gap=int(d[2]);assert len(s)==n;counts=Counter(s);f=max(counts.values());c=sum(v==f for v in counts.values())\n    return str(max(len(s),(f-1)*gap+c))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "漏计并列最高频",
+    "code": "def solve(d):\n    from collections import Counter\n    n=int(d[0]);s=d[1];gap=int(d[2]);assert len(s)==n;counts=Counter(s);f=max(counts.values());c=sum(v==f for v in counts.values())\n    return str(max(len(s),(f-1)*(gap+1)+1))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

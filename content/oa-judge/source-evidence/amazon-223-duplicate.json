@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-223",
+  "sourceContentHash": "7e260f4de7d7074855010b1ee1f9f8c433909bf542a01ed61cf14a9b1bc8fade",
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#223-rate-limiting-algorithm",
+  "duplicateOf": "oa-amazon-175",
+  "duplicateSourceUrl": "https://oamaster.com/docs/companies/amazon#175-find-minimum-time-required-amazon-bangalore-",
+  "rawSourceEvidence": [
+    {
+      "commit": "e66f809f4c953bce129f68491726176615db6afc",
+      "path": "fastprep/Amazon/amazon-get-min-time-two.md",
+      "gitBlobSha1": "9dd685b048b488fc2877e0ce195495bb84d6bd1b",
+      "rawSha256": "73acb3f8458c837c76abd654ecb5891d060cb4b98cac3f8b2283189428225812",
+      "catalogContentHash": "7e260f4de7d7074855010b1ee1f9f8c433909bf542a01ed61cf14a9b1bc8fade"
+    }
+  ],
+  "adaptation": {
+    "rule": "同地区请求之间至少空闲 minGap 个完整时间单位，语义由相同题意 #175 的官方排程样例澄清。",
+    "input": "本站第一行增加 n，第二行 requests，第三行 minGap，并校验 n == len(requests)。",
+    "constraints": "requests 长度 1..100000、字符为小写英文字母、minGap 0..100；测试未超出该范围。",
+    "samples": "三个说明样例从题意相同的 Amazon #175 取得，并在适配的 stdin 协议下运行。"
+  }
+}

@@ -2266,8 +2266,9 @@
     {
       "id": "oa-amazon-223",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "原始e66f809的amazon-get-min-time-two.md未定义minGap为开始时间差还是中间空闲冷却长度，且无样例。aa,gap=1分别可得2或3；来源解法不足以确定核心规则，保留阻塞。"
+      "status": "sandbox_verified",
+      "batch": "amazon-223-duplicate",
+      "reason": "Amazon #223 与 #175 的限流规则同义；#175 的官方样例明确 minGap 是同类请求之间的空闲时间单位。#175 已验证题包覆盖请求长度上限，候选按 #223 增加 n 字段并将间隔测试限制在 0..100。线上 GoJudge 196 次参考程序运行全部通过，两个错误程序均被正式测试识别。"
     },
     {
       "id": "oa-amazon-224",
