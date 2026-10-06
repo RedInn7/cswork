@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许购买警局所在坐标",
+    "code": "import heapq\nimport sys\n\ndef min_acquire_cost(stations, capacity):\n    occupied = set()\n    frontier = []\n    for station in stations:\n        heapq.heappush(frontier, (1, station - 1))\n        heapq.heappush(frontier, (1, station + 1))\n    total = 0\n    bought = 0\n    while bought < capacity:\n        distance, position = heapq.heappop(frontier)\n        if position in occupied:\n            continue\n        occupied.add(position)\n        total += distance\n        bought += 1\n        heapq.heappush(frontier, (distance + 1, position - 1))\n        heapq.heappush(frontier, (distance + 1, position + 1))\n    return total\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 2:\n        raise ValueError(\"expected n and capacity\")\n    n, capacity = values[:2]\n    if len(values) != n + 2:\n        raise ValueError(\"station count does not match header\")\n    return str(min_acquire_cost(values[2:], capacity))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "扩展时只加入右侧位置",
+    "code": "import heapq\nimport sys\n\ndef min_acquire_cost(stations, capacity):\n    occupied = set(stations)\n    frontier = []\n    for station in stations:\n        heapq.heappush(frontier, (1, station - 1))\n        heapq.heappush(frontier, (1, station + 1))\n    total = 0\n    bought = 0\n    while bought < capacity:\n        distance, position = heapq.heappop(frontier)\n        if position in occupied:\n            continue\n        occupied.add(position)\n        total += distance\n        bought += 1\n        heapq.heappush(frontier, (distance + 1, position + 1))\n    return total\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 2:\n        raise ValueError(\"expected n and capacity\")\n    n, capacity = values[:2]\n    if len(values) != n + 2:\n        raise ValueError(\"station count does not match header\")\n    return str(min_acquire_cost(values[2:], capacity))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+  }
+]

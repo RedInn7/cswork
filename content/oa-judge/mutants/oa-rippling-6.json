@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只计算从服务器1出发的最远距离",
+    "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    it = iter(map(int, raw.split()))\n    n = next(it)\n    g = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        a, b = next(it), next(it)\n        g[a].append(b); g[b].append(a)\n    d = [-1] * (n + 1); d[1] = 0; q = deque([1])\n    while q:\n        u = q.popleft()\n        for v in g[u]:\n            if d[v] < 0:\n                d[v] = d[u] + 1; q.append(v)\n    return f\"{max(d)}\\n\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()), end=\"\")\n"
+  },
+  {
+    "name": "把无向边误作输入方向的有向边",
+    "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    it = iter(map(int, raw.split()))\n    n = next(it)\n    g = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        a, b = next(it), next(it)\n        g[a].append(b)\n    best = 0; q = deque([(1, 0)]); seen = {1}\n    while q:\n        u, d = q.popleft(); best = max(best, d)\n        for v in g[u]:\n            if v not in seen:\n                seen.add(v); q.append((v, d + 1))\n    return f\"{best}\\n\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()), end=\"\")\n"
+  }
+]

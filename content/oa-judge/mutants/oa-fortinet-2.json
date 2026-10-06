@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只累加 i mod j，遗漏 j mod i",
+    "code": "def solve(raw):\n n=int(raw.split()[0]);m=1000000007;s=0\n for j in range(1,n+1):\n  q,r=divmod(n,j);s=(s+q*j*(j-1)//2+r*(r+1)//2)%m\n return str(s)\n"
+  },
+  {
+    "name": "错误地跳过至少一项模运算为零的 distinct pair",
+    "code": "def solve(raw):\n n=int(raw.split()[0]);s=0\n for i in range(1,n+1):\n  for j in range(1,n+1):\n   if i!=j and i%j and j%i:s+=i%j+j%i\n return str(s%1000000007)\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只与左侧区间合并，忽略右侧相邻区间",
+    "code": "import sys\n\ndef solve(raw):\n    tokens = raw.split()\n    if not tokens:\n        raise ValueError(\"missing query count\")\n    n = int(tokens[0])\n    if len(tokens) != n + 1:\n        raise ValueError(\"query count does not match input\")\n    starts = {}\n    ends = {}\n    best = 0\n    answers = []\n    for token in tokens[1:]:\n        q = int(token)\n        left = q\n        right = q\n        if q - 1 in ends:\n            left = ends.pop(q - 1)\n            starts.pop(left)\n        starts[left] = right\n        ends[right] = left\n        best = max(best, right - left + 1)\n        answers.append(str(best))\n    return \"\\n\".join(answers)\n\nif __name__ == \"__main__\":\n    result = solve(sys.stdin.buffer.read())\n    if result:\n        print(result)\n"
+  },
+  {
+    "name": "插入时最多只扩展一格，不合并完整左右区间",
+    "code": "import sys\n\ndef solve(raw):\n    tokens = raw.split()\n    if not tokens:\n        raise ValueError(\"missing query count\")\n    n = int(tokens[0])\n    if len(tokens) != n + 1:\n        raise ValueError(\"query count does not match input\")\n    starts = {}\n    ends = {}\n    best = 0\n    answers = []\n    for token in tokens[1:]:\n        q = int(token)\n        left = q\n        right = q\n        if q - 1 in ends:\n            left = ends.pop(q - 1)\n            starts.pop(left)\n            right = q\n        elif q + 1 in starts:\n            right = starts.pop(q + 1)\n            ends.pop(right)\n        starts[left] = right\n        ends[right] = left\n        best = max(best, right - left + 1)\n        answers.append(str(best))\n    return \"\\n\".join(answers)\n\nif __name__ == \"__main__\":\n    result = solve(sys.stdin.buffer.read())\n    if result:\n        print(result)\n"
+  }
+]

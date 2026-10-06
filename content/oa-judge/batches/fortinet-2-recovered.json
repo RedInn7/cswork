@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-fortinet-2",
+      "sourceContentHash": "97fc7982fbd48e129125077eb4cccfec15fa258d3b5d104f92775c44e5693129",
+      "packageChecksum": "b85518907b9829cb1e64b038623c969172ebb5517a2177c1f043cba28051dc88",
+      "editorial": "## 思路\n\n题目给出 `C(i,j)=i mod j+j mod i`。题面所列 i、j 是两个独立的 1..n 范围，因此按所有有序 `(i,j)` 组合求和；同一编号对角项为 0，不影响结果。全体 `i mod j` 与全体 `j mod i` 的总和相同，所以答案是 `2T`，其中 `T=Σ[j=1..n] Σ[i=1..n] (i mod j)`。\n\n固定 j，令 `n=qj+r`。序列 `1 mod j, 2 mod j, ...` 每 j 项完整重复一次，其一轮和为 `j(j−1)/2`；剩余 r 项的余数为 `1..r`，和为 `r(r+1)/2`。于是该 j 的贡献为 `q·j(j−1)/2+r(r+1)/2`。累加后乘 2 并对 1,000,000,007 取模。\n\n## 正确性证明\n\n对固定 j，前 qj 个 i 可拆为 q 个完整周期，每周期余数恰为 0 到 j−1，最后 r 个余数为 1 到 r，因此公式准确计算 `Σ_i i mod j`。交换求和变量可知 `Σ_{i,j} j mod i` 与 `Σ_{i,j} i mod j` 相同；每个对角项为零，故总 checksum 正好是 2T。算法逐一遍历每个 j 计算其精确贡献，最后模化不改变模意义上的结果。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。\n\n## 验证\n\n163 个 oracle 输入直接枚举所有有序 distinct pair；另对 n=1..80 全部对拍。正式测试包含 n=1、2、3、多个小值、模边界规模以及 n=10⁶。最大规模期望由独立恒等式 `Σ_i i mod j = n(n+1)/2 − j·Σ_i floor(i/j)` 计算。两个正常退出错误程序分别漏掉对称项、错误跳过整除相关 pair，均被用例拒绝。\n\n## 来源与本站协议\n\n固定提交中的原始 FastPrep 文档明确公式、参数 n、模数 10⁹+7、n≤10⁶，以及 i 和 j 各自独立遍历 1..n；OAMaster MDX/catalog 的转换文本在范围中的 `<` 处截断。按两个独立范围解读为有序对；题目同时说 distinct，因此不需要对角项（即使代入公式也为 0）。本站补充 stdin/stdout：输入一个 n，输出模后的整数。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nMOD = 1_000_000_007\n\ndef solve(raw):\n    tokens = raw.split()\n    if len(tokens) != 1:\n        raise ValueError(\"expected one integer n\")\n    n = int(tokens[0])\n    if not 1 <= n <= 1_000_000:\n        raise ValueError(\"n must be in [1, 1000000]\")\n\n    # For fixed j, residues i % j over i=1..n form q full cycles\n    # (sum j*(j-1)/2 each), then residues 1..r.\n    one_mod_sum = 0\n    for j in range(1, n + 1):\n        q, r = divmod(n, j)\n        residue_sum = q * j * (j - 1) // 2 + r * (r + 1) // 2\n        one_mod_sum = (one_mod_sum + residue_sum) % MOD\n\n    # The two terms in C(i,j) have identical totals over the independent\n    # i,j ranges. Diagonal terms are zero and may be omitted.\n    return str((2 * one_mod_sum) % MOD)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

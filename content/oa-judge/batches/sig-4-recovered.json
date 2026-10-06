@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-sig-4",
+      "sourceContentHash": "d4d72e31741ca5be7bea26b3bc070b9d17b56f0a31a39edcd972757b88f3c554",
+      "packageChecksum": "cb8bb18a4a06c001141ae76a34546e18a73da16b726a39fa7dc754f83dcfe64b",
+      "editorial": "## 思路\n\n把目标 accessCode 写成规范十进制字符串。每种拼接方式都对应一个非空切分 `target = left + right`。统计数组中各整数的出现次数，累加 `count(left) × count(right)`。当左右片段相等时，同一位置不能同时使用两次，因此从乘积中减去 `count(left)`。\n\n该计数是按有序角色分配位置：例如两个数值相同的 `12` 片段能拼成 `1212`，互换这两个位置仍是另一种使用方式。若两个不同片段都能以相反顺序组成目标，各自的切分会分别计入。\n\n## 正确性证明\n\n任意有效方式由一个第一片段和一个不同位置的第二片段组成，二者的十进制串连接后恰好等于目标，因此对应目标串唯一的一个非空切分。该切分在数组中有 `count(left)×count(right)` 个有序位置选择；若左右文本相同，其中每个位置都不能与自身配对，需减去 `count(left)` 个非法选择。反过来，任一计入的有序位置对，其两片段文本恰好拼出目标且位置不同，所以都是合法方式。因此算法恰好统计全部合法拼接对。\n\n## 复杂度\n\n目标最多 18 位，最多检查 17 个切分。时间 `O(N + D)`，空间 `O(U + D)`，其中 `U` 是不同片段数，`D` 是目标位数。\n\n## 来源及本站约定\n\n固定题面称 fragments/accessCode 为正整数、明确是相邻拼接而非数值相加，并按具体位置的片段对计不同方式。原样例 `[1,212,12,12]`、目标 `1212` 的输出 3 可由 `1+212` 的一个有序方式与两个不同位置的 `12+12` 方式复算。输入仅为函数签名，本站补充标准 I/O 与限制：`1≤N≤100000`，`1≤fragment≤10^9`，`1≤accessCode≤10^18`。整数用规范十进制表示，不含前导零。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def count_ways(fragments, access_code):\n    target = str(access_code)\n    answer = 0\n    counts = {}\n    for fragment in fragments:\n        text = str(fragment)\n        counts[text] = counts.get(text, 0) + 1\n    for cut in range(1, len(target)):\n        left, right = target[:cut], target[cut:]\n        left_count = counts.get(left, 0)\n        right_count = counts.get(right, 0)\n        answer += left_count * right_count\n        if left == right:\n            answer -= left_count\n    return answer\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if len(data) < 2 or len(data) != data[0] + 2:\n        raise ValueError(\"expected n, accessCode, then n fragments\")\n    n, access_code = data[:2]\n    return str(count_ways(data[2:], access_code))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

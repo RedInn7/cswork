@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-pure-storage-2",
+      "sourceContentHash": "17d3cc16979da7c96fbe7de05bcd10c888e5533155d855bd15dd0ebfc4ab7661",
+      "packageChecksum": "9287ea69ceb5fef8831b9777bfa0bb37589e6f3e87e9b3d15cf78ff8421ac46f",
+      "editorial": "## 思路\n\n每个位置是一个独立字符组。为同时匹配 x[i]、y[i]，字符组必须包含这两个字符；要让整个串不匹配 z，至少有一个位置不能包含 z[i]。因此可行位置必须满足 z[i] 与 x[i]、y[i] 都不同。\n\n最长答案在每个位置都使用 A-Z 全集，只在一个可行位置删掉 z[i]，长度为 28n−1。若删多个字符会更短；若删在不满足条件的位置会无法匹配 x/y。\n\n在任一可行位置删一个字母时，其他位置都相同。被删字符之后，缩短的组会遇到更大的下一个字符（若删 Z，则遇到 `]`；`Z` 仍小于 `]`），所以较早出现缩短组的字符串字典序更大。故应选最右侧可行位置。没有可行位置时输出 `-1`。\n\n## 正确性证明\n\n任何合法 regex 的第 i 个字符组都必须包含 x[i] 和 y[i]。若要拒绝 z，至少有一组不包含 z[i]；该位置必满足 z[i]≠x[i] 且 z[i]≠y[i]。完整组长 28，缩短一个字符的组长 27，因此任意可行答案长度至多 28n−1；只选一个可行位置删去 z[i]，其余全用完整组，达到上界。候选间比较时，第一处不同组之前都相同，完整组在被删字符处小于缩短组的下一个字符（包括删 Z 时的右方括号），所以把唯一缩短组尽量后移可得到字典序最小值。算法从右向左找到首个可行位置并构造该上界答案，符合要求。若不存在该位置，每组都必须包含对应 z[i]，任何同时匹配 x/y 的 regex 也会匹配 z，故无解。\n\n## 复杂度\n\n扫描输入 O(n)，构造输出 O(n)；额外工作空间 O(1)，输出空间 O(n)。\n\n## 验证\n\n163 个输入由独立 oracle 枚举每个可行排除位置、生成完整候选后直接比较字符串；额外对长度 2 的 A/B/C 输入穷举全部 3⁶=729 种 x/y/z，并枚举每个位置所有可能的字符组子集。正式测试覆盖无解、唯一/多个可行位置、排除 A/Z 和 n=1000。另在本地直接构造 n=10⁶ 输出校验长度及匹配/失配性质。两个正常返回的错误程序分别被正式用例击杀。\n\n## 来源与本站协议\n\n固定上游 OAMaster 的 Pure Storage 页面/catalog 将 #2 标为 Amazon Regex Generator，明确大写字母/方括号组、同时匹配 x/y、拒绝 z、最长及同长取字典序最小，并给出 n≤10⁶。固定提交的配套 Python/Java/C++ 参考代码都选了最早可行位置；此候选按题面规则重写，修正为最右可行位置。上游没有 stdin/stdout 样例；本站补充第一行 n、随后三行 x/y/z 的协议及 A-Z 字符集校验。\n\n另有一份本地 `OA LIST/Pure_Storage_OA/002_image.txt` 将其自身的 #2 标为 Find Repetitions，与固定站点/catalog 编号内容不同。本候选只对应固定 OAMaster Pure Storage 页面/catalog 的 #2，不混用该本地列表。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nALPHABET = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\nFULL = \"[\" + ALPHABET + \"]\"\n\ndef solve(raw):\n    lines = raw.split()\n    if len(lines) != 4:\n        raise ValueError(\"expected n followed by x, y, and z\")\n    n = int(lines[0])\n    x, y, z = lines[1:]\n    if not (1 <= n <= 1_000_000) or len(x) != n or len(y) != n or len(z) != n:\n        raise ValueError(\"invalid lengths\")\n    if any(any(ch < \"A\" or ch > \"Z\" for ch in s) for s in (x, y, z)):\n        raise ValueError(\"strings must contain uppercase English letters\")\n\n    # A position can reject z only when z[i] is absent from both required\n    # strings. Omitting exactly one such character preserves maximum length.\n    star = -1\n    for i in range(n - 1, -1, -1):\n        if z[i] != x[i] and z[i] != y[i]:\n            star = i\n            break\n    if star < 0:\n        return \"-1\"\n    reduced = \"[\" + ALPHABET.replace(z[star], \"\") + \"]\"\n    return FULL * star + reduced + FULL * (n - star - 1)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "note": "仅本机执行二分+patience-sorting 作者参考解、子序列枚举独立 oracle、样例/边界/随机/最大约束压力及 mutants；没有连接 GoJudge。",
+  "problems": [
+    {
+      "id": "oa-amazon-32",
+      "oracleCases": 123,
+      "uniqueOracleInputs": 123,
+      "formalCases": 33,
+      "publicCases": 3,
+      "hiddenCases": 30,
+      "randomOracleCases": 120,
+      "stress": {
+        "n": 100000,
+        "elapsedSeconds": 0.181,
+        "referenceSeconds": 0.181,
+        "expected": "n-min_order，因原数组严格递增"
+      },
+      "negativeControls": [
+        {
+          "name": "把严格递增误作非递减 LIS",
+          "rejectedByCases": [
+            3,
+            13,
+            16,
+            27
+          ]
+        },
+        {
+          "name": "把0-based remove 下标误作1-based",
+          "rejectedByCases": [
+            0,
+            4,
+            7,
+            27,
+            28
+          ]
+        }
+      ],
+      "allLocalChecksPassed": true
+    }
+  ]
+}

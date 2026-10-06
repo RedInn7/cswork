@@ -30,3 +30,39 @@
 `python3 scripts/oa-judge/batches/extra_30_review.py` 审核 15 家公司的 30 条题目，只写 `candidate-batches/extra-30-review.json` 和对应候选包、讲义、oracle、mutants、source evidence 与 reviews；不改 coverage、主 registry 或沙箱验收报告。固定 OA-Master 快照为 `e66f809f4c953bce129f68491726176615db6afc`。13 道明确题目各有 120 个唯一 oracle 输入、32 个正式用例及两个正常退出且被击杀的 mutant；另外 17 道逐题给出 blocked 原因。离线验证不代表 GoJudge 已验收。
 
 `python3 scripts/oa-judge/batches/duolingo_flexport5_review.py` 为 Duolingo #3 与 Flexport #5 生成候选题包，并为 Flexport #6 单独记录 blocked 原因。每个候选有 120 个唯一输入、32 个正式用例、独立 oracle 与两个正常退出 mutant；固定上游 MDX blob 和 catalog 指纹记录在 source evidence。Duolingo 来源样例的大小写笔误按规则更正；Flexport #6 需澄清可删除节点的范围。只做离线验证，未调用 GoJudge，不进入 runtime batches 或 coverage。
+
+`python3 scripts/oa-judge/batches/twilio_1_recovered.py` 重写 Twilio #1 的超限参考算法为 Mo 区间查询，只生成 `twilio-1-recovered` 离线候选。203 个独立 brute-oracle 输入、33 个正式用例（含 n=q=100000 压力）和两个正常退出 mutant 本地验证；未连接 GoJudge，也未进入正式批次或 runtime registry。
+
+截至 2026-10-06，以下新增批次已在自有服务器的专用 go-judge 5054 沙箱逐题通过：Google #29、Amazon #32、Visa #7、Twilio #1、Stripe #20、Databricks #26、Rippling #6、Confluent #3/#4、SIG #4、Goldman Sachs #3/#14/#27、TradeDesk #5、Optiver #4、Unknown #15、D. E. Shaw #9、Capital One #19、Pure Storage #2、eBay #8、Palantir #4、Deloitte #2、Fortinet #2、IMC #1、Ramp #2。真实输出、formal/oracle 样例和错误程序报告保存在 `content/oa-judge/reports/`；总计 25 题，已聚合至 registry，但仍须部署并发布至生产数据库才对用户开放。
+
+`python3 scripts/oa-judge/batches/google_29_recovered.py` 为 Google #29 重写最小树直径解法。2,500 棵小树随机差分、120 个独立穷举 oracle、30 个正式用例（29 hidden）及两个错误控制通过；n=100000 长链最慢约 8.9s，正式时限为 10s。源约束与 k=0 样例冲突，题包明确修正为 `0≤k<n`。
+
+`python3 scripts/oa-judge/batches/amazon_32_recovered.py` 为 Amazon #32 按二分 + LIS 重写参考解。123 个子序列穷举 oracle、33 个正式用例（含重复值、初始无解和 n=100000 压力）及两个错误控制均通过。原题未定义初始 LIS 不达标时的输出；本站明确补充为 `-1`，不称作原题规则。
+
+`python3 scripts/oa-judge/batches/visa_7_recovered.py` 按 Visa #7 题面要求的全局 row-major 次序修复上游参考实现的 4×4 子块顺序错误。163 条 oracle、256 个单块穷举、23 个正式用例（20 hidden）及两个错误控制通过。原题没给 n 上限，本站补充 `n≤100` 与 stdin/stdout 协议。
+
+以下题包的本地 oracle 数为作者独立验证输入数；正式 hidden 用例已补至至少 20，并逐题通过专用 GoJudge 验证：
+
+| 题目 | 本地验证 | 额外说明 |
+| --- | --- | --- |
+| Stripe #20 | 120 个独立命令 oracle、300 组高精度坐标对照、7 个正式用例、2 个 mutant | 距离取整边界附近用 Decimal 复算；本站补充命令数、名称与坐标精度限制。 |
+| Databricks #26 | 163 个 oracle、14,280 组穷举差分、32 个正式用例、3 个 mutant | 按原题单次交换语义重写；本站补标准 I/O 并明确前导零按整数处理。 |
+| Rippling #6 | 1,610 个 oracle、29 个正式用例、2 个 mutant；n=200,000 链/星边界 | 源站第 3 个样例节点数与边数不符，排除且未补造缺失边；本站另设 n 上限。 |
+| Confluent #3 | 120 个随机小输入 oracle、11 个正式用例、2 个 mutant；n=40 边界 | meet-in-the-middle；本站明确 n、数值与目标范围。 |
+| Confluent #4 | 120 个字符串数组 oracle、7 个正式用例、2 个 mutant | 长度前缀协议保留空行、空格、tab 与 UTF-8 文本；LF 不在单行元素范围内。 |
+| SIG #4 | 163 个 oracle、2,055,872 组穷举位置对、33 个正式用例、2 个 mutant；n=100,000 边界 | 按拼接字符串及下标位置对计数，不按数值加法或去重计数；本站明确输入上限。 |
+| Goldman Sachs #3 | 120 个唯一随机输入 oracle、10 个正式用例、2 个 mutant；长度 100,000 边界 | Backspace 字符串比较；原长度约束损坏，本站明确补充 `1≤length≤100000`。 |
+| Goldman Sachs #14 | 123 个独立排列 oracle、n≤7 的 127 种方向模式、2 个 mutant；n=14 边界 | 按源题严格升降模式最大化绝对差和；源题缺少 N 上限，本站补充 `N≤14`，不额外限制数值范围。 |
+| TradeDesk #5 | 120 个独立 oracle、9 个正式用例、2 个 mutant；10 万条航班规模 | 按固定题面与解法的升序时刻和“到达时刻可登机”规则计算旅程；补充标准 I/O 协议。 |
+| Optiver #4 | 120 个独立列表排序 oracle、7 个正式用例、2 个 mutant；10 万条记录/2,000 次查询 | 以源实现明确的最大 timestamp 为窗口锚点，采用严格的一小时边界及接收序号稳定排序。 |
+| Unknown #15 | 164 个独立 oracle、5,586 个小域穷举、11 个正式用例、2 个 mutant | 按固定源交叉引用的 Part 1/3 定义；公司归属继续标为 Unknown，不由目录路径推断。 |
+| D. E. Shaw #9 | 120 个有限坐标穷举 oracle、7 个正式用例、2 个 mutant；capacity=50,000 边界 | 源规则明确但约束缺失；本站明确补充坐标、容量和 n 上限，并验证答案不超过源函数返回类型 `int`。 |
+| Capital One #19 | 151 个独立 oracle、30,940 个小域列表穷举、8 个正式用例、2 个 mutant | 按每位数字求和的数根取 mode；并列取大值依据源实现，题包明确标成本站并列约定。 |
+| Goldman Sachs #27 | 120 个唯一 oracle、6 个正式用例、2 个 mutant；n=2,500 输出边界 | 保留多重集合语义和空集乘积为 0；本站限定每次 pop 必须命中当前集合。 |
+| Pure Storage #2 | 163 个 oracle、729 个小域穷举、32 个正式用例、2 个 mutant；n=1,000,000 输出边界 | 以固定 OAMaster 页面/catalog 为准，取最右可行排除位得到字典序最小串；另一个源清单编号冲突已记录。 |
+| eBay #8 | 160 个独立排序集合 oracle、6 个正式用例、2 个 mutant；q=10,000 输出边界 | 两例与三种源语言实现都支持邻接插入后合并；题面冲突句明确排除，并补充站点规模/数值边界。 |
+| Palantir #4 | 160 个简单路径穷举 oracle、7 个正式用例、2 个 mutant；n=5,000 边界 | 无向图瓶颈路径最小化；只补充站点规模、非负权和编号约定，不假定图连通。 |
+| Deloitte #2 | 163 个 oracle、146 棵≤5节点树穷举、31 个正式用例、2 个 mutant；n=200,000 链/星边界 | 检查每个节点的直接子树大小是否相同；仅补本站 root=1/parent-list 协议与资源上限。 |
+| Fortinet #2 | 163 个 oracle、35 个正式用例、2 个 mutant；n=1,000,000 边界 | 按两个独立范围求有序对双重和；固定原文补全了截断 catalog 的求和范围与模数。 |
+| IMC #1 | 160 个 oracle、30 个正式用例、2 个 mutant；50,000 个容器边界 | 无可行容器组返回 -1 是本站约定，与固定源三语言实现一致。 |
+| Ramp #2 | 188 个 oracle、5,550 组穷举、37 个正式用例、2 个 mutant；100,000 条提现边界 | 秒级事件按题面次序处理；本站 I/O、非负金额与资源上限已明示。 |

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-confluent-4",
+      "formalCases": 22,
+      "hiddenFormalCases": 20,
+      "oracleCases": 120,
+      "oracleInputsUnique": 142,
+      "negativeControls": [
+        {
+          "name": "读取时去除首尾空白",
+          "rejectedByCases": [
+            3,
+            6,
+            10,
+            16,
+            19
+          ]
+        },
+        {
+          "name": "读取时错误删除字符串末尾空格",
+          "rejectedByCases": [
+            6,
+            10,
+            16
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "本地长度前缀往返和独立切片 oracle 验证；未连接 GoJudge。"
+}

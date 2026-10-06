@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-palantir-4",
+      "formalCases": 21,
+      "oracleCases": 160,
+      "oracleInputsUnique": 160,
+      "negativeControls": [
+        {
+          "name": "按路径边权总和而不是最大边权优化",
+          "rejectedByCases": [
+            0,
+            1,
+            5,
+            6,
+            7,
+            8,
+            11,
+            12,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ]
+        },
+        {
+          "name": "错误地把无向图当成有向图",
+          "rejectedByCases": [
+            2
+          ]
+        }
+      ],
+      "stressN": 5000,
+      "stressM": 7498,
+      "stressOutput": "997"
+    }
+  ],
+  "note": "本地独立简单路径枚举 oracle、source=destination/不可达/重复权边界和两个正常退出 mutant 验证；未连接 GoJudge。"
+}

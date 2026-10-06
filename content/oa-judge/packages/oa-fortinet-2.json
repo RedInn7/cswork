@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-fortinet-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Checksum Aggregator（Fortinet OA）",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Fortinet",
+      "数学",
+      "模运算"
+    ],
+    "description": "对所有 1≤i,j≤n 的有序编号对，按 C(i,j)=i mod j+j mod i 求和并对 1,000,000,007 取模。题面限定两个编号不同，对角项为零。输入输出协议由本站补充。",
+    "input": "输入一个整数 n（1≤n≤1000000）。",
+    "output": "输出所有 distinct ordered pairs 的 checksum 总和，对 1000000007 取模。",
+    "explanation": "按固定 j 将 1..n 的余数分为完整周期和尾段。",
+    "hints": [
+      "固定 j，余数每 j 项循环一次。",
+      "i mod j 与 j mod i 在全体有序对上的和相同。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "自建样例 1",
+      "input": "1\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "自建样例 2",
+      "input": "2\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "自建样例 3",
+      "input": "3\n",
+      "expectedOutput": "10\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 1",
+      "input": "4\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 2",
+      "input": "5\n",
+      "expectedOutput": "52\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 3",
+      "input": "6\n",
+      "expectedOutput": "88\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 4",
+      "input": "7\n",
+      "expectedOutput": "146\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 5",
+      "input": "8\n",
+      "expectedOutput": "218\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 6",
+      "input": "9\n",
+      "expectedOutput": "314\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 7",
+      "input": "10\n",
+      "expectedOutput": "430\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 8",
+      "input": "11\n",
+      "expectedOutput": "584\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 9",
+      "input": "12\n",
+      "expectedOutput": "750\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 10",
+      "input": "16\n",
+      "expectedOutput": "1800\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 11",
+      "input": "31\n",
+      "expectedOutput": "13306\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 12",
+      "input": "64\n",
+      "expectedOutput": "117782\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 13",
+      "input": "127\n",
+      "expectedOutput": "922856\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 14",
+      "input": "1000\n",
+      "expectedOutput": "451542898\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 15",
+      "input": "1000000\n",
+      "expectedOutput": "291540618\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 16",
+      "input": "127\n",
+      "expectedOutput": "922856\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 17",
+      "input": "21\n",
+      "expectedOutput": "4106\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 18",
+      "input": "173\n",
+      "expectedOutput": "2334292\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 19",
+      "input": "74\n",
+      "expectedOutput": "182196\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 20",
+      "input": "235\n",
+      "expectedOutput": "5853796\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 21",
+      "input": "131\n",
+      "expectedOutput": "1012988\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 22",
+      "input": "51\n",
+      "expectedOutput": "59512\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 23",
+      "input": "201\n",
+      "expectedOutput": "3661908\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 24",
+      "input": "144\n",
+      "expectedOutput": "1345672\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 25",
+      "input": "60\n",
+      "expectedOutput": "96996\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 26",
+      "input": "135\n",
+      "expectedOutput": "1108632\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 27",
+      "input": "161\n",
+      "expectedOutput": "1881242\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 28",
+      "input": "182\n",
+      "expectedOutput": "2718114\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 29",
+      "input": "140\n",
+      "expectedOutput": "1236518\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 30",
+      "input": "221\n",
+      "expectedOutput": "4868352\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 31",
+      "input": "194\n",
+      "expectedOutput": "3292438\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界/随机 32",
+      "input": "195\n",
+      "expectedOutput": "3343690\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

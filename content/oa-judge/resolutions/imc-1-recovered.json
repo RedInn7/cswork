@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-imc-1",
+      "batch": "imc-1-recovered",
+      "sourceContentHash": "6b291f9fe330f3a64def816434d4d277d3055442c6cf79b57ecd89eaee7e88c2",
+      "previousReason": "未定义无容器能满足订单时的返回行为。",
+      "reason": "题面明确了订单装箱、剩余量、最小化总浪费和并列规则。唯一未定义行为是所有容器组均无法覆盖全部订单；固定快照的 Python、Java、C++ 三份实现都返回 -1，候选将其标明为本站约定。另只增加订单数、容器组数、容量总数及正整数值域上限以控制资源，不改核心目标。独立直接枚举 oracle、不可行组/并列/精确匹配边界和两个正常退出 mutant 验证通过。"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-tradedesk-5",
+      "sourceContentHash": "9dc700907325e644f5ac3c0c96e0343b3bd07b3dddaeb3a34820406ec71142b1",
+      "packageChecksum": "630b29964d44b183c41eee97a7c19faf8ba3ee980e856da610da87aebe01d563",
+      "editorial": "## 思路\n\n从时刻 0 开始，按计划逐次往返。C→D 方向从指针开始跳过所有早于当前时刻的航班，乘坐第一个不早于当前时刻的班次，抵达时间加 100；再以同样方法选择 D→C 航班。两个方向的时刻单调递增，各用一个指针即可。任一方向的航班耗尽则输出 -1。\n\n## 正确性\n\n每一段出发时刻表已升序。指针跳过的航班都早于到达时刻，不能乘坐；指针停下的第一班正是所有可乘航班中最早的一班。按定义乘坐后当前时间增加 100，继续处理下一段，因此逐段模拟始终选择题目要求的航班。若没有候选班次就无法继续计划行程，返回 -1；全部完成时当前时间即最后抵达时刻。\n\n## 复杂度\n\n设两个方向航班数为 n、m，往返次数为 k。每个指针只前进不后退，总时间 O(n+m+k)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    if len(values) < 3:\n        raise ValueError(\"expected n m journeys and two schedules\")\n    n, m, journeys = values[:3]\n    if len(values) != 3 + n + m:\n        raise ValueError(\"schedule length does not match header\")\n    c2d = values[3:3+n]\n    d2c = values[3+n:]\n    time = 0\n    outbound = return_flight = 0\n    for _ in range(journeys):\n        while outbound < n and c2d[outbound] < time:\n            outbound += 1\n        if outbound == n:\n            return \"-1\"\n        time = c2d[outbound] + 100\n        outbound += 1\n\n        while return_flight < m and d2c[return_flight] < time:\n            return_flight += 1\n        if return_flight == m:\n            return \"-1\"\n        time = d2c[return_flight] + 100\n        return_flight += 1\n    return str(time)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    }
+  ]
+}

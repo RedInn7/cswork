@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-confluent-4",
+      "batch": "confluent-4-recovered",
+      "sourceContentHash": "156bdf3f839e54cd920a5ca4c9297ca81554b9c3ba28df872a0e9e00d483cbdf",
+      "previousReason": "输入是任意字符串行，标准 token 判题会丢失空行与行内空格；本批未定义可保真序列化协议。",
+      "reason": "原题给定的是字符串数组而非原始文件文本，suffix 语义明确；新增长度前缀 UTF-8 协议可无损保留空行、行内空白与非 ASCII 字符。120 个随机数组与独立字节级 slice oracle、两个正常退出的空白处理错误实现均验证通过。"
+    }
+  ]
+}

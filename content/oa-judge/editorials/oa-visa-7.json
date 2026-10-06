@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-7",
+  "title": "按全局行序恢复矩阵缺失值",
+  "explanation": "## 思路\n\n逐个 4×4 子块计算缺失值 `136−当前和`。同时注意，题面规定的回填位置是整个 `(4n)×(4n)` 矩阵中按行、再按列排列的所有 `-1`，不是按子块遍历的顺序。将所有缺失值排序后，逐一写入全局行优先位置。\n\n## 正确性证明\n\n每块恰含 1..16 中除一个数外的所有数，故块内和为 `136−missing`，计算值唯一。题目要求收集这些值并升序排列，再映射到按全矩阵 row-major 排列的缺失位置；算法分别按这两条明文规则构造序列并一一赋值，所以输出矩阵与题意完全一致。\n\n## 复杂度\n\n设矩阵边长 `N=4n`。扫描所有单元格和排序 `n²` 个缺失值，时间 `O(N²+n² log n)`，空间 `O(N²)`（用于矩阵及输入输出）。\n\n## 验证\n\n163 组 oracle 输入由独立的集合补集算法恢复每块缺失值；额外穷举单块全部 16 种缺失值 ×16 个缺失位置，共256组。正式用例包含一个能区分全局 row-major 和子块遍历顺序的 8×8 矩阵、n=100 最大边界矩阵，以及 15 个输入互异的隐藏矩阵场景。两个正常退出错误程序均被用例拒绝。\n\n## 来源说明\n\n原题和固定上游提交明确要求按缺失位置的全矩阵 row-major 顺序回填。上游参考代码实际按子块顺序记录位置，与文字不一致；本题严格按题面步骤实现，并重写了本站样例。原题未给 n 上限，本站补充 `1≤n≤100`，使输入输出保持在 OJ 容量限制内；标准输入输出协议也由本站补充。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    data = list(map(int, raw.split()))\n    n = data[0]\n    size = 4 * n\n    values = data[1:]\n    if len(values) != size * size:\n        raise ValueError(\"expected an (4n) x (4n) matrix\")\n    matrix = [values[r * size:(r + 1) * size] for r in range(size)]\n\n    missing_values = []\n    for br in range(n):\n        for bc in range(n):\n            total = 0\n            for dr in range(4):\n                for dc in range(4):\n                    value = matrix[4 * br + dr][4 * bc + dc]\n                    if value != -1:\n                        total += value\n            missing_values.append(136 - total)\n\n    # The destination positions are ordered by the entire matrix, not by blocks.\n    positions = [(r, c) for r in range(size) for c in range(size)\n                 if matrix[r][c] == -1]\n    for (r, c), value in zip(positions, sorted(missing_values)):\n        matrix[r][c] = value\n    return \"\\n\".join(\" \".join(map(str, row)) for row in matrix)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/visa#7-restore-missing-squares-in-matrix",
+  "sourceContentHash": "c52180b84e34597acb1b892647e2eeed843d36e5131140ae78a799ff36e4cd3c",
+  "author": "CSWork"
+}

@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-stripe-20",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "数据中心地理距离路由系统",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Stripe",
+      "模拟",
+      "Haversine"
+    ],
+    "description": "按命令依次维护数据中心注册、健康状态和当前负载；支持大圆距离查询，并将请求路由到距离最近且仍有容量的健康数据中心。距离采用 Haversine 公式，地球半径为 6371 km，输出和路由排序使用四舍五入后的整数公里数，距离相同时按名称升序。",
+    "input": "第一行 q（0..5000），接着 q 行命令；注册的数据中心总数不超过 200。坐标用有限十进制表示，纬度范围 [-90,90]、经度范围 [-180,180]，最多 18 位小数。命令为 `REGISTER name latitude longitude capacity`、`SET_HEALTHY name true|false`、`DISTANCE lat1 lon1 lat2 lon2` 或 `ROUTE latitude longitude`。capacity 为正整数；name 为 1..32 个 ASCII 字母、数字、下划线或连字符。命令名及参数数量有效；非法值按题面规则返回 ERROR。",
+    "output": "每条命令输出一行。REGISTER/SET_HEALTHY 输出 OK 或 ERROR；DISTANCE 输出整数公里或 ERROR；ROUTE 输出 `name distance candidates`，若健康数据中心均已满则输出 `None candidates`。candidates 为所有健康数据中心按 (四舍五入整数公里数, 名称) 排序后的逗号分隔名称；没有健康数据中心时输出 `None`。",
+    "explanation": "本站将输入数值限定为最多 18 位小数的有限十进制。对该输入域，精确球面距离不会恰为半整数公里，因此 nearest-integer 的结果唯一；参考实现采用半入规则避免语言库对精确 ties 的差异。",
+    "hints": [
+      "将每个数据中心保存为坐标、容量、负载、健康状态；路由时筛出健康节点，计算并取整距离后按距离和名称排序，再选择首个未满节点。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "正式样例/边界 1",
+      "input": "7\nREGISTER us-west 38 -122 100\nREGISTER us-east 41 -74 150\nREGISTER us-west 50 -100 50\nREGISTER invalid-node 91 0 100\nREGISTER invalid-cap 0 0 0\nSET_HEALTHY us-east false\nSET_HEALTHY fake-node true\n",
+      "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\nOK\nERROR\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 2",
+      "input": "3\nDISTANCE 38 -122 41 -74\nDISTANCE 0 0 0 0\nDISTANCE 91 0 0 0\n",
+      "expectedOutput": "4080\n0\nERROR\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 3",
+      "input": "7\nREGISTER node-A 0 0 1\nREGISTER node-B 0 0 1\nREGISTER node-C 10 10 100\nSET_HEALTHY node-C false\nROUTE 0 0\nROUTE 0 0\nROUTE 0 0\n",
+      "expectedOutput": "OK\nOK\nOK\nOK\nnode-A 0 node-A,node-B\nnode-B 0 node-A,node-B\nNone node-A,node-B\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 4",
+      "input": "4\nDISTANCE 0 0 0 0.004496608029593653\nDISTANCE 0 0 0 0.004496608029593652\nDISTANCE 0 179.9 0 -179.9\nDISTANCE 90 0 -90 0\n",
+      "expectedOutput": "1\n0\n22\n20015\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 5",
+      "input": "4\nREGISTER z-near 0 0.0009 1\nREGISTER a-far 0 0.003 1\nROUTE 0 0\nROUTE 0 0\n",
+      "expectedOutput": "OK\nOK\na-far 0 a-far,z-near\nz-near 0 a-far,z-near\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 6",
+      "input": "4\nREGISTER only 0 0 1\nROUTE 0 0\nSET_HEALTHY only false\nROUTE 0 0\n",
+      "expectedOutput": "OK\nonly 0 only\nOK\nNone\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 7",
+      "input": "4\nREGISTER north 90 0 4\nREGISTER south -90 180 4\nDISTANCE 90 0 -90 180\nROUTE 0 0\n",
+      "expectedOutput": "OK\nOK\n20015\nnorth 10008 north,south\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 8",
+      "input": "12\nREGISTER dc57486 -27.059 -99.633 5\nREGISTER dc93710 -33.689 -17.286 4\nROUTE -58.078 117.137\nROUTE -82.717 29.125\nDISTANCE -31.134 -55.590 -14.861 56.160\nREGISTER dc25252 -65.454 109.894 5\nROUTE 39.462 63.150\nROUTE -74.754 -175.656\nDISTANCE -69.563 77.086 -73.335 -7.474\nREGISTER dc41614 -56.168 3.420 1\nREGISTER dc96482 -58.629 168.684 5\nSET_HEALTHY dc25252 true\n",
+      "expectedOutput": "OK\nOK\ndc93710 8965 dc93710,dc57486\ndc93710 5723 dc93710,dc57486\n11122\nOK\ndc93710 11590 dc93710,dc25252,dc57486\ndc25252 2771 dc25252,dc57486,dc93710\n2767\nOK\nOK\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 9",
+      "input": "5\nDISTANCE -88.577 -78.936 -61.954 -170.868\nDISTANCE -82.859 -143.027 46.586 -136.479\nDISTANCE -64.018 -157.750 23.224 -105.641\nREGISTER dc91189 -5.815 48.954 2\nDISTANCE -13.764 8.248 -59.656 120.923\n",
+      "expectedOutput": "3128\n14398\n10692\nOK\n9905\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 10",
+      "input": "14\nREGISTER dc31542 77.461 -80.776 8\nDISTANCE -19.831 -109.117 -85.743 -51.340\nREGISTER dc34878 -88.906 64.785 5\nSET_HEALTHY dc34878 true\nDISTANCE -9.685 133.574 -79.377 -31.622\nREGISTER dc67582 -73.322 -159.631 6\nREGISTER dc1655 26.714 -146.360 7\nROUTE -33.095 14.026\nSET_HEALTHY dc67582 true\nSET_HEALTHY dc1655 false\nSET_HEALTHY dc34878 false\nREGISTER dc91825 -53.455 175.040 4\nSET_HEALTHY dc1655 false\nSET_HEALTHY dc67582 true\n",
+      "expectedOutput": "OK\n7555\nOK\nOK\n10073\nOK\nOK\ndc34878 6251 dc34878,dc67582,dc31542,dc1655\nOK\nOK\nOK\nOK\nOK\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 11",
+      "input": "4\nDISTANCE 77.966 -27.948 -43.585 -151.211\nREGISTER dc70501 28.385 -177.795 4\nSET_HEALTHY dc70501 false\nROUTE -72.489 -80.594\n",
+      "expectedOutput": "15479\nOK\nOK\nNone\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 12",
+      "input": "10\nREGISTER dc31869 31.341 138.945 6\nROUTE -19.580 -167.797\nROUTE 31.709 -157.602\nROUTE 64.080 172.962\nROUTE 69.420 -80.296\nROUTE 31.286 147.749\nSET_HEALTHY dc31869 false\nSET_HEALTHY dc31869 true\nSET_HEALTHY dc31869 false\nDISTANCE -54.305 -135.945 -15.512 59.972\n",
+      "expectedOutput": "OK\ndc31869 8019 dc31869\ndc31869 5923 dc31869\ndc31869 4336 dc31869\ndc31869 8369 dc31869\ndc31869 836 dc31869\nOK\nOK\nOK\n12106\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 13",
+      "input": "5\nREGISTER dc34702 -40.605 109.303 2\nSET_HEALTHY dc34702 false\nDISTANCE -16.727 -67.337 17.925 -88.483\nDISTANCE 10.162 -174.067 -59.941 -93.999\nROUTE 19.328 55.617\n",
+      "expectedOutput": "OK\nOK\n4495\n10439\nNone\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 14",
+      "input": "21\nDISTANCE 2.888 -140.288 -20.992 -24.321\nDISTANCE 77.712 -12.514 67.228 179.372\nDISTANCE 56.181 156.328 -3.920 -12.194\nDISTANCE 72.000 148.010 58.871 39.975\nDISTANCE -57.383 -15.998 20.836 41.869\nDISTANCE 23.831 89.481 -78.392 106.789\nREGISTER dc27222 -18.964 2.188 5\nDISTANCE 77.358 -68.333 46.250 144.552\nREGISTER dc25255 -48.450 32.082 3\nREGISTER dc64595 -50.446 -72.433 3\nREGISTER dc49295 66.176 62.482 6\nREGISTER dc5763 -64.564 141.349 7\nROUTE 36.195 -174.547\nREGISTER dc42285 -88.419 -87.727 3\nREGISTER dc33460 23.787 53.144 1\nROUTE 70.841 -99.194\nREGISTER dc95226 8.486 50.406 3\nDISTANCE 3.772 -141.894 -12.829 -152.483\nREGISTER dc25644 43.855 84.758 7\nROUTE -77.609 120.895\nROUTE 60.690 159.776\n",
+      "expectedOutput": "12813\n3879\n14115\n4462\n10209\n11421\nOK\n6083\nOK\nOK\nOK\nOK\ndc49295 7642 dc49295,dc5763,dc64595,dc25255,dc27222\nOK\nOK\ndc49295 4716 dc49295,dc33460,dc27222,dc64595,dc25255,dc5763,dc42285\nOK\n2185\nOK\ndc42285 1534 dc42285,dc5763,dc25255,dc64595,dc27222,dc95226,dc33460,dc25644,dc49295\ndc49295 4383 dc49295,dc25644,dc33460,dc95226,dc5763,dc27222,dc25255,dc64595,dc42285\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 15",
+      "input": "11\nREGISTER dc30105 75.876 24.989 2\nROUTE 84.572 -148.296\nDISTANCE 61.538 -63.508 -33.129 -159.373\nREGISTER dc97895 -43.511 -5.569 8\nREGISTER dc21320 -4.951 3.642 6\nROUTE 54.528 -59.167\nREGISTER dc68531 84.857 122.391 3\nSET_HEALTHY dc68531 true\nSET_HEALTHY dc30105 true\nDISTANCE -19.124 -21.254 -62.388 -18.979\nREGISTER dc59638 8.817 37.794 2\n",
+      "expectedOutput": "OK\ndc30105 2171 dc30105\n13501\nOK\nOK\ndc30105 4055 dc30105,dc21320,dc97895\nOK\nOK\nOK\n4814\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 16",
+      "input": "17\nREGISTER dc16498 -39.648 -1.956 8\nDISTANCE -81.246 -127.373 -67.520 -11.523\nDISTANCE -33.495 156.554 -56.245 35.699\nREGISTER dc37290 56.413 12.249 2\nSET_HEALTHY dc16498 true\nREGISTER dc74193 49.540 17.560 3\nROUTE 73.820 105.910\nREGISTER dc532 -35.941 112.514 6\nROUTE -55.066 -48.654\nREGISTER dc57037 -3.973 86.622 2\nREGISTER dc92905 -86.006 70.347 6\nDISTANCE 28.812 17.762 69.648 97.983\nDISTANCE -21.296 -141.735 -89.364 -103.919\nSET_HEALTHY dc74193 true\nSET_HEALTHY dc37290 true\nROUTE -50.005 -66.691\nSET_HEALTHY dc37290 false\n",
+      "expectedOutput": "OK\n3046\n8587\nOK\nOK\nOK\ndc37290 4203 dc37290,dc74193,dc16498\nOK\ndc16498 3821 dc16498,dc532,dc74193,dc37290\nOK\nOK\n6645\n7584\nOK\nOK\ndc92905 4780 dc92905,dc16498,dc532,dc57037,dc74193,dc37290\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 17",
+      "input": "5\nREGISTER dc99455 -26.879 -67.622 8\nREGISTER dc32448 59.142 -54.674 8\nDISTANCE 28.731 154.854 -50.574 -107.977\nROUTE 35.284 128.385\nSET_HEALTHY dc32448 true\n",
+      "expectedOutput": "OK\nOK\n12916\ndc32448 9512 dc32448,dc99455\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 18",
+      "input": "5\nDISTANCE 57.623 -38.103 69.107 43.032\nDISTANCE 11.833 -143.677 -63.983 165.802\nREGISTER dc72353 75.171 35.847 6\nROUTE -56.964 -51.389\nSET_HEALTHY dc72353 false\n",
+      "expectedOutput": "3900\n9442\nOK\ndc72353 15955 dc72353\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 19",
+      "input": "8\nDISTANCE -34.676 -7.954 -70.192 -1.127\nREGISTER dc743 80.902 -101.950 4\nDISTANCE -42.646 173.616 -73.088 126.763\nREGISTER dc43405 -54.168 -57.316 4\nREGISTER dc18253 8.080 -57.132 1\nDISTANCE 51.133 59.829 -83.722 -114.144\nREGISTER dc36010 78.283 118.675 2\nSET_HEALTHY dc36010 false\n",
+      "expectedOutput": "3971\nOK\n4158\nOK\nOK\n16387\nOK\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 20",
+      "input": "4\nREGISTER dc70521 -88.488 91.253 1\nROUTE 74.323 -94.651\nREGISTER dc34139 20.464 -130.545 3\nROUTE 69.719 -124.407\n",
+      "expectedOutput": "OK\ndc70521 18439 dc70521\nOK\ndc34139 5493 dc34139,dc70521\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 21",
+      "input": "16\nDISTANCE 28.889 137.857 -8.657 -131.085\nDISTANCE 79.044 -163.567 69.917 120.193\nDISTANCE 63.487 -24.778 -21.182 -136.018\nREGISTER dc20987 65.760 178.912 2\nREGISTER dc57365 -67.925 69.549 8\nDISTANCE 20.114 -133.072 -37.254 106.316\nROUTE -0.851 -18.262\nSET_HEALTHY dc20987 false\nROUTE 65.831 121.705\nDISTANCE 58.869 -140.459 -38.058 0.235\nSET_HEALTHY dc57365 false\nROUTE 38.409 -154.564\nSET_HEALTHY dc20987 false\nREGISTER dc42611 -26.338 174.267 2\nREGISTER dc33392 66.128 101.402 1\nREGISTER dc75277 -72.774 81.701 8\n",
+      "expectedOutput": "10573\n2263\n13155\nOK\nOK\n14018\ndc57365 9828 dc57365,dc20987\nOK\ndc57365 15421 dc57365\n16393\nOK\nNone\nOK\nOK\nOK\nOK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 22",
+      "input": "16\nREGISTER dc57094 -62.315 9.997 1\nSET_HEALTHY dc57094 false\nSET_HEALTHY dc57094 true\nSET_HEALTHY dc57094 true\nROUTE -55.863 144.783\nDISTANCE -61.414 -44.683 41.235 125.161\nROUTE 56.124 144.392\nDISTANCE -33.691 -60.418 30.258 -0.886\nDISTANCE 88.741 -61.920 1.550 -141.220\nREGISTER dc79271 -3.863 -157.607 5\nSET_HEALTHY dc57094 false\nROUTE -33.544 -71.356\nROUTE 12.826 38.530\nDISTANCE 62.024 -92.723 -5.546 12.492\nDISTANCE -17.040 177.482 -48.245 -159.148\nDISTANCE 79.087 103.120 -34.491 98.781\n",
+      "expectedOutput": "OK\nOK\nOK\nOK\ndc57094 6303 dc57094\n17669\nNone dc57094\n9466\n9809\nOK\nOK\ndc79271 9423 dc79271\ndc79271 17981 dc79271\n11342\n4067\n12632\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正式样例/边界 23",
+      "input": "13\nREGISTER dc8631 -64.761 43.043 1\nREGISTER dc90365 -45.577 -136.293 4\nROUTE -62.667 58.981\nREGISTER dc20037 16.195 -115.788 6\nSET_HEALTHY dc8631 true\nSET_HEALTHY dc90365 true\nROUTE 58.814 153.414\nSET_HEALTHY dc8631 true\nROUTE 63.286 163.035\nSET_HEALTHY dc90365 true\nROUTE 26.577 -37.344\nROUTE -5.794 -99.707\nROUTE 58.491 -50.142\n",
+      "expectedOutput": "OK\nOK\ndc8631 816 dc8631,dc90365\nOK\nOK\nOK\ndc20037 8518 dc20037,dc90365,dc8631\nOK\ndc20037 7964 dc20037,dc90365,dc8631\nOK\ndc20037 8087 dc20037,dc8631,dc90365\ndc20037 3018 dc20037,dc90365,dc8631\ndc20037 7071 dc20037,dc90365,dc8631\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

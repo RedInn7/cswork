@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-2",
+  "title": "商户欺诈风险评分",
+  "explanation": "## 思路\n\n先按输入顺序逐笔处理严格条件 `amount > min_transaction_amount` 的乘法。随后分别按 (merchant, customer) 和 (merchant, customer, hour) 分组。对达到三笔的组，第 3 笔触发时计入前三笔各自的 additive factor 或 penalty；第 4 笔及以后逐笔计入当笔值。金额乘法、频次加分、小时罚分是三个分离步骤，依次执行。最后按商户 ID 字典序输出所有商户（包括没有交易的商户）。\n\n## 正确性\n\n金额步骤对每笔交易独立检查与其下标对应的规则，因此恰好应用所有满足严格大于条件的乘数。按 (merchant, customer) 分组保持原交易顺序；达到第 3 笔时计入首三笔规则，后续只计新交易规则，恰好对应来源样例的追溯与累积语义。小时分组同理，但分组键额外包含 hour；只有题目列出的小时段才按符号应用 penalty。三个步骤分离执行，所以结果与题意规定的运算顺序一致。\n\n## 复杂度\n\n设交易数为 n、商户数为 m。分组和三次扫描为 O(n)，商户排序为 O(m log m)，额外空间 O(n+m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    lines = [line.strip() for line in raw.splitlines() if line.strip()]\n    cursor = 0\n    n = int(lines[cursor]); cursor += 1\n    transactions = [tuple([parts[0], int(parts[1]), parts[2], int(parts[3])])\n                    for parts in (lines[cursor + i].split(\",\") for i in range(n))]\n    cursor += n\n    rules = [tuple(map(int, lines[cursor + i].split(\",\"))) for i in range(n)]\n    cursor += n\n    m = int(lines[cursor]); cursor += 1\n    merchants = {}\n    for line in lines[cursor:cursor + m]:\n        merchant, base = line.split(\",\")\n        merchants[merchant] = int(base)\n    scores = dict(merchants)\n\n    # Pass 1: amount multipliers.\n    for (merchant, amount, _customer, _hour), (threshold, multiplier, _additive, _penalty) in zip(transactions, rules):\n        if amount > threshold:\n            scores[merchant] *= multiplier\n\n    # Pass 2: lifetime customer/merchant frequency. At the third occurrence,\n    # the source example applies the first three additive factors retroactively.\n    lifetime = {}\n    for index, (merchant, _amount, customer, _hour) in enumerate(transactions):\n        lifetime.setdefault((merchant, customer), []).append(index)\n    for (merchant, _customer), indexes in lifetime.items():\n        if len(indexes) >= 3:\n            scores[merchant] += sum(rules[index][2] for index in indexes[:3])\n            scores[merchant] += sum(rules[index][2] for index in indexes[3:])\n\n    # Pass 3: same-hour frequency and applicable penalties.\n    per_hour = {}\n    for index, (merchant, _amount, customer, hour) in enumerate(transactions):\n        per_hour.setdefault((merchant, customer, hour), []).append(index)\n    for (merchant, _customer, hour), indexes in per_hour.items():\n        if len(indexes) < 3:\n            continue\n        total_penalty = sum(rules[index][3] for index in indexes)\n        if 12 <= hour <= 17:\n            scores[merchant] += total_penalty\n        elif 9 <= hour <= 11 or 18 <= hour <= 21:\n            scores[merchant] -= total_penalty\n\n    return \"\\n\".join([str(len(scores))] + [f\"{merchant},{scores[merchant]}\" for merchant in sorted(scores)])\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/stripe#2-merchant-fraud-score",
+  "sourceContentHash": "366364ba7b6248f2f2347370c7bade510653e707c85a7c2d4bf8934633275838",
+  "author": "CSWork"
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "pages": [
+    {
+      "company": "rippling",
+      "path": "web/content/docs/companies/rippling.mdx",
+      "gitBlobSha1": "d1a341bf2798e4dc901bcbf151b3e8e1e9e6310d",
+      "rawSha256": "09adeb721c0756e87209f7449d61785e481ab98c2606f41f0e1c8f7c97b19395"
+    }
+  ],
+  "items": [
+    {
+      "id": "oa-rippling-6",
+      "title": "Maximum Time Required to Transfer Data",
+      "sourceUrl": "https://oamaster.com/docs/companies/rippling#6-maximum-time-required-to-transfer-data",
+      "catalogContentHash": "f148de21bfbd492ca9dba31e2f08f2928f7ead694fcb3b67f9981421e8dce147",
+      "confirmedRules": [
+        "图是 g_nodes 个服务器组成的树",
+        "边数为 g_nodes−1",
+        "g_from[i] 与 g_to[i] 之间为无向边",
+        "每条边传输耗时1",
+        "目标为任意两台服务器之间的最大传输时间",
+        "函数返回整数"
+      ],
+      "sourceExamplesUsed": [
+        "n=3, edges (1,2),(2,3) → 2",
+        "n=5, edges (1,5),(1,3),(1,2),(5,4) → 3"
+      ],
+      "malformedSourceExampleExcluded": {
+        "input": "n=7, edges (4,2),(4,7),(2,5),(1,6),(2,3)",
+        "statedOutput": 4,
+        "evidence": "只有5条边，少于题面要求的 g_nodes−1=6；该图不连通。未推测缺失边。"
+      },
+      "siteConstructedCase": "另有合法7节点树，边(1,2),(2,3),(3,4),(4,5),(4,6),(4,7)，直径4；标记为本站自建用例，不冒称源题样例。",
+      "siteInputLimit": {
+        "range": "1≤g_nodes≤200000",
+        "reason": "固定源没有节点数上限；本站明确新增此资源上限，未声称是原题约束。"
+      },
+      "formatAdaptation": "固定源为函数签名；本站以 n 后跟 n−1 对 1-based 端点的标准输入输出包装。"
+    }
+  ]
+}

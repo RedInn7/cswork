@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-imc-1",
+      "sourceUrl": "https://oamaster.com/docs/companies/imc#1-pharmaceutical-waste-reduction",
+      "catalogContentHash": "6b291f9fe330f3a64def816434d4d277d3055442c6cf79b57ecd89eaee7e88c2",
+      "rawFiles": [
+        {
+          "path": "web/content/docs/companies/imc.mdx",
+          "blob": "528cd8cffa74943bf5e0f26741ecd4d13ab26a27",
+          "sha256": "e44923f8e0aad18c9104e219998b38b300eb43038803d008512657ebd311989e",
+          "lineRange": [
+            12,
+            113
+          ]
+        }
+      ],
+      "resolvedSemantics": {
+        "selection": "For each requirement independently, use the smallest available container size >= the requirement; sum waste across all requirements and minimize over feasible sets.",
+        "ties": "The statement specifies the lowest 1-based set index; all three implementations update only on strictly lower waste.",
+        "no_feasible_set": "The source statement does not specify this result. Python, Java, and C++ fixed-snapshot implementations all initialize the result index to -1 and return it when no set is feasible; candidate adopts -1 as an explicit site convention.",
+        "siteConstraints": "Source has no numeric scale limits. Candidate adds R<=2000, S<=100, each C_i<=2000, sum(C_i)<=100000, and positive integer values <=1e9 solely as resource bounds."
+      }
+    }
+  ]
+}

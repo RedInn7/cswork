@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不重排 Sonu 的数组，直接按输入次序计分",
+    "code": "import sys\nx=list(map(int,sys.stdin.read().split()));n=x[0];a=x[1:1+n];b=x[1+n:];\nprint(sum(abs(b[i]-b[i+1]) for i in range(n-1)) if all((a[i]<a[i+1])==(b[i]<b[i+1]) for i in range(n-1)) else -1)\n"
+  },
+  {
+    "name": "忽略 Ramu 的升降模式，只按升序排列后计分",
+    "code": "import sys\nx=list(map(int,sys.stdin.read().split()));n=x[0];b=sorted(x[1+n:]);print(sum(abs(b[i]-b[i+1]) for i in range(n-1)))\n"
+  }
+]

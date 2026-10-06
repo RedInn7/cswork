@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ramp-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "银行存取款与延迟返现（Ramp OA）",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Ramp",
+      "模拟",
+      "优先队列",
+      "状态管理"
+    ],
+    "description": "按时间处理银行存款和提现。成功提现会在24小时后返还提现额的2%（向下取整）；有到期返现时，先返现再处理同秒请求。遇到第一笔无效账号或余额不足的请求，返回其负的1起始请求序号。",
+    "input": "首行 N Q（本站：1≤N≤100000，0≤Q≤200000）；第二行 N 个初始非负余额（每个≤10^12）。随后 Q 行：operation timestamp holder_id amount。operation 为 deposit 或 withdraw；timestamp 为严格递增的正整数秒（≤10^12）；amount 为非负整数（≤10^9）；holder_id 为整数，1..N 为有效账号，其他值按题意视为非法账号。",
+    "output": "输出 JSON 整数数组。若所有请求合法，返回最后一条请求时间戳处理完后的账户余额；若第 i 条请求首次非法，输出 [-i]。最后请求之后才到期的返现不计入最终余额。",
+    "explanation": "使用最小堆管理返现到期时间；完整说明见配套题解。",
+    "hints": [
+      "每条请求前先处理所有已到期返现。",
+      "返现到期时间与请求时间相等时也要先入账。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 32768,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "到期退款先于同秒操作",
+      "input": "1 2\n200\nwithdraw 1 1 100\nwithdraw 86401 1 100\n",
+      "expectedOutput": "[2]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "不足 50 的提现返现为零",
+      "input": "1 1\n49\nwithdraw 1 1 49\n",
+      "expectedOutput": "[0]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "首个请求的非法账号",
+      "input": "1 1\n100\ndeposit 1 0 1\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "首个请求余额不足",
+      "input": "1 1\n49\nwithdraw 1 1 50\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "第二个请求非法则返回负二",
+      "input": "1 2\n100\ndeposit 1 1 5\nwithdraw 2 2 1\n",
+      "expectedOutput": "[-2]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "末条请求后未到期退款不计入余额",
+      "input": "1 1\n100\nwithdraw 1 1 100\n",
+      "expectedOutput": "[0]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "返现落在两条请求之间",
+      "input": "1 2\n100\nwithdraw 1 1 100\ndeposit 86402 1 5\n",
+      "expectedOutput": "[7]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "多个账号分别处理",
+      "input": "2 2\n10 10\ndeposit 1 1 3\nwithdraw 2 2 10\n",
+      "expectedOutput": "[13,0]\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 1",
+      "input": "2 0\n0 25\n",
+      "expectedOutput": "[0,25]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 2",
+      "input": "1 1\n0\nwithdraw 1 1 0\n",
+      "expectedOutput": "[0]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 3",
+      "input": "1 2\n100\nwithdraw 1 1 100\ndeposit 86401 1 1\n",
+      "expectedOutput": "[3]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 4",
+      "input": "1 2\n100\nwithdraw 1 1 99\nwithdraw 86400 1 1\n",
+      "expectedOutput": "[0]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏边界 5",
+      "input": "1 2\n100\nwithdraw 1 1 100\nwithdraw 86400 1 100\n",
+      "expectedOutput": "[-2]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 1",
+      "input": "4 6\n1 50 50 1000000\ndeposit 74 0 1\ndeposit 76 0 99\nwithdraw 86475 4 50\ndeposit 86476 1 251\ndeposit 86478 1 49\nwithdraw 172879 0 1\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 2",
+      "input": "1 2\n100\ndeposit 34 2 251\ndeposit 36 1 50\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 3",
+      "input": "1 15\n1000000\ndeposit 86402 1 2\ndeposit 86403 2 251\ndeposit 186403 0 101\nwithdraw 272804 0 1000000\nwithdraw 359205 0 99\nwithdraw 359215 1 251\ndeposit 359217 1 2\ndeposit 445616 0 251\ndeposit 532017 2 99\ndeposit 532019 0 2\nwithdraw 618420 0 251\ndeposit 618422 1 2\ndeposit 704822 2 49\nwithdraw 704823 0 251\nwithdraw 704824 0 251\n",
+      "expectedOutput": "[-2]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 4",
+      "input": "1 5\n100\nwithdraw 100042 1 1000000\ndeposit 200042 2 251\nwithdraw 286442 1 1\nwithdraw 386442 2 2\nwithdraw 386444 0 1000000\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 5",
+      "input": "1 9\n100\nwithdraw 100078 2 2\ndeposit 186477 2 1\ndeposit 272876 2 49\nwithdraw 359276 2 100\ndeposit 445677 1 99\nwithdraw 445678 0 1000000\ndeposit 532077 1 99\nwithdraw 618477 1 2\ndeposit 704877 2 2\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 6",
+      "input": "2 0\n100 99\n",
+      "expectedOutput": "[100,99]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 7",
+      "input": "3 2\n250 49 100\ndeposit 82 4 50\nwithdraw 86483 4 49\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 8",
+      "input": "2 3\n50 250\nwithdraw 86435 2 2\nwithdraw 172834 3 1\ndeposit 259234 2 1000000\n",
+      "expectedOutput": "[-2]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 9",
+      "input": "2 7\n1000000 2\ndeposit 100074 3 99\nwithdraw 100076 1 50\nwithdraw 186475 0 1\ndeposit 272874 3 49\ndeposit 359275 2 101\ndeposit 445675 0 50\ndeposit 532076 0 50\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 10",
+      "input": "2 4\n99 250\ndeposit 86423 0 50\ndeposit 86425 0 101\nwithdraw 86426 1 50\ndeposit 172826 3 49\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 11",
+      "input": "3 11\n1000000 1000000 100\ndeposit 91 4 49\ndeposit 86491 3 101\ndeposit 86493 0 1000000\ndeposit 86503 1 1\ndeposit 172904 1 101\ndeposit 259305 3 50\ndeposit 345706 0 49\ndeposit 445706 3 1000000\nwithdraw 445707 4 251\nwithdraw 445708 0 251\nwithdraw 545708 1 1000000\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 12",
+      "input": "3 4\n1 99 1\ndeposit 86400 0 101\ndeposit 186400 3 49\ndeposit 272800 4 2\nwithdraw 372800 1 101\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 13",
+      "input": "1 17\n99\ndeposit 82 2 251\nwithdraw 86483 1 99\ndeposit 86485 1 1000000\ndeposit 172885 1 1\ndeposit 172887 1 2\ndeposit 259288 2 1\nwithdraw 259298 0 50\nwithdraw 345697 1 50\nwithdraw 345707 1 49\ndeposit 432108 1 1000000\nwithdraw 518509 1 2\nwithdraw 518510 2 251\nwithdraw 518512 1 2\nwithdraw 518522 1 49\nwithdraw 604921 0 2\ndeposit 604923 1 1000000\nwithdraw 604924 0 99\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 14",
+      "input": "4 0\n0 99 2 0\n",
+      "expectedOutput": "[0,99,2,0]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 15",
+      "input": "1 0\n49\n",
+      "expectedOutput": "[49]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 16",
+      "input": "2 2\n50 1\ndeposit 86408 3 49\ndeposit 86410 2 49\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 17",
+      "input": "1 6\n99\nwithdraw 88 2 50\ndeposit 86488 1 1\nwithdraw 186488 0 2\ndeposit 272888 0 99\nwithdraw 272898 1 99\nwithdraw 372898 2 1\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 18",
+      "input": "2 5\n2 250\ndeposit 43 0 2\nwithdraw 53 3 1000000\nwithdraw 86453 3 1\ndeposit 86463 3 2\nwithdraw 172864 0 100\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 19",
+      "input": "1 16\n250\ndeposit 4 0 1000000\ndeposit 86404 1 1000000\nwithdraw 86405 1 101\nwithdraw 186405 1 101\nwithdraw 272804 0 100\nwithdraw 359203 2 50\ndeposit 359213 2 99\nwithdraw 445612 2 1000000\ndeposit 445614 2 101\ndeposit 445616 0 2\ndeposit 445617 1 49\ndeposit 445627 2 100\nwithdraw 445629 2 101\nwithdraw 532030 1 49\nwithdraw 532031 1 100\nwithdraw 618431 2 49\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 20",
+      "input": "3 0\n1 2 1\n",
+      "expectedOutput": "[1,2,1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 21",
+      "input": "3 11\n0 2 0\ndeposit 86501 1 2\nwithdraw 86503 4 1000000\ndeposit 86504 1 49\nwithdraw 172903 0 101\nwithdraw 172905 1 251\ndeposit 259304 4 251\ndeposit 345703 1 101\nwithdraw 445703 0 251\ndeposit 545703 1 50\ndeposit 645703 1 49\nwithdraw 645713 4 1\n",
+      "expectedOutput": "[-2]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 22",
+      "input": "4 16\n1 1000000 50 1\ndeposit 93 0 1000000\nwithdraw 86493 1 1\ndeposit 172894 4 50\nwithdraw 259294 0 49\ndeposit 345694 5 1000000\nwithdraw 345695 1 100\nwithdraw 445695 0 1000000\nwithdraw 532094 0 1\ndeposit 532095 1 1000000\ndeposit 632095 1 100\nwithdraw 632096 0 1\nwithdraw 718497 0 1\nwithdraw 804896 1 100\ndeposit 891297 4 2\ndeposit 977697 1 2\ndeposit 1064097 0 1\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 23",
+      "input": "4 8\n2 99 0 99\ndeposit 49 5 1000000\ndeposit 59 5 1000000\nwithdraw 86459 1 49\ndeposit 172859 0 100\ndeposit 272859 4 100\ndeposit 359259 1 50\nwithdraw 359261 0 50\nwithdraw 445661 5 100\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机区分 24",
+      "input": "2 5\n49 49\nwithdraw 100009 0 251\ndeposit 186408 2 101\nwithdraw 272809 1 49\ndeposit 359208 0 101\ndeposit 359210 3 2\n",
+      "expectedOutput": "[-1]\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

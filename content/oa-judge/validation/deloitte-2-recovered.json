@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-deloitte-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "referenceStdioCases": 194,
+      "publicCases": 3,
+      "hiddenCases": 28,
+      "randomOracleCases": 160,
+      "exhaustiveTreeComparisons": 146,
+      "stress": [
+        {
+          "shape": "chain",
+          "n": 200000,
+          "expected": "200000",
+          "passed": true
+        },
+        {
+          "shape": "star",
+          "n": 200000,
+          "expected": "200000",
+          "passed": true
+        }
+      ],
+      "negativeControls": [
+        {
+          "name": "比较每个孩子的直接孩子数，而不是子树节点数",
+          "rejectedByCases": [
+            3,
+            11,
+            25,
+            26,
+            28
+          ]
+        },
+        {
+          "name": "不把叶子节点计为平衡",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30
+          ]
+        }
+      ],
+      "referenceSha256": "9fe3e6d4bddcc99b57deea17b9d73175fb1546829de7820739c369beebff1c2a",
+      "localValidationOnly": true,
+      "allLocalChecksPassed": true
+    }
+  ]
+}

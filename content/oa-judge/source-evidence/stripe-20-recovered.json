@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-stripe-20",
+      "sourceUrl": "https://oamaster.com/docs/companies/stripe#20-request-routing-system",
+      "catalogContentHash": "5b7ba75466726cd40ff78b880f150612e72fc8f0cab3869a804cdc1218d21bb2",
+      "rawFiles": [
+        {
+          "path": "web/content/docs/companies/stripe.mdx",
+          "blob": "a96a0563731861954d02ac5b50b0f0e3f40bf873",
+          "sha256": "b0cecf071f81fd71908e279c4c77f70e56b70411a42d5f082359b697164b69aa",
+          "lineRange": [
+            2236,
+            2366
+          ]
+        }
+      ],
+      "resolvedSemantics": {
+        "commands": [
+          "REGISTER",
+          "SET_HEALTHY",
+          "DISTANCE",
+          "ROUTE"
+        ],
+        "distance": "Haversine with Earth radius 6371 km; output uses nearest integer. As finite-decimal coordinates cannot yield an exact half-integer distance, the mathematical nearest integer is unique. Reference implementation uses half-up as a deterministic convention.",
+        "routeOrder": "The fixed source implementation computes the rounded integer distance first, then sorts tuples (distance, datacenter name); selection and candidates therefore use this exact lexicographic order.",
+        "capacity": "REGISTER rejects capacity <= 0; ROUTE increments load only for the selected healthy datacenter when load < capacity.",
+        "sourceSample": "The three source examples are retained exactly as command sequences and outputs; validation includes nearest-integer, antimeridian, antipodal, duplicate, invalid coordinate, health, name tie and exhausted-capacity cases.",
+        "siteInputSupplement": "The source omits maximum command count, datacenter count, name grammar and coordinate decimal precision. This candidate explicitly supplies q<=5000, at most 200 datacenters, ASCII identifiers and at most 18 decimal places; commands must have recognized names and correct arity. No production or sandbox verification has been performed.",
+        "emptyHealthyCandidates": "The Python source formats the no-selection line as `None {names}`; for an empty list this yields `None ` with a trailing space. Candidate statement normalizes the empty candidate list to `None`, recorded as a site-level whitespace normalization."
+      }
+    }
+  ]
+}

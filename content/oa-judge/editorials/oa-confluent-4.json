@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-confluent-4",
+  "title": "保留原文的 Tail N Lines",
+  "explanation": "## 思路\n\n顺序读入长度前缀字符串，用双端队列保留至多 n 项。每读取一项就加入队尾，若数量超过 n 则删除队首。读完时队列即为末尾 n 行；n=0 时队列始终为空。序列化时同样按 UTF-8 字节长度写出，可完整保留空字符串和行内空格。\n\n## 正确性\n\n遍历处理前 i 行后，队列保存这 i 行中最后 min(i,n) 行且顺序不变：新行追加到队尾，超过 n 时删掉最早项，归纳成立。处理完所有行后正是题目要求；n=0 情况为空。\n\n## 复杂度\n\n设输入内容总字节数为 L，返回行数为 r，时间 O(L)，辅助空间 O(min(n,lineCount)) 个字符串引用，序列化输出另需 O(L_out)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def decode(data):\n    pos = 0\n    def line():\n        nonlocal pos\n        end = data.find(b\"\\n\", pos)\n        if end < 0:\n            raise ValueError(\"missing header newline\")\n        value = data[pos:end]\n        pos = end + 1\n        return value\n    count, keep = map(int, line().split())\n    values = []\n    for _ in range(count):\n        length = int(line())\n        if length < 0 or pos + length >= len(data) or data[pos + length:pos + length + 1] != b\"\\n\":\n            raise ValueError(\"invalid length-prefixed string\")\n        values.append(data[pos:pos + length])\n        pos += length + 1\n    if pos != len(data):\n        raise ValueError(\"trailing bytes\")\n    return keep, values\n\ndef encode(values):\n    out = [str(len(values)).encode() + b\"\\n\"]\n    for value in values:\n        out.extend((str(len(value)).encode() + b\"\\n\", value, b\"\\n\"))\n    return b\"\".join(out)\n\ndef solve(data):\n    keep, values = decode(data)\n    if keep < 0:\n        raise ValueError(\"n must be nonnegative\")\n    return encode(values[-keep:] if keep else [])\n\nif __name__ == \"__main__\":\n    import sys\n    sys.stdout.buffer.write(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/confluent#4-tail-n-lines",
+  "sourceContentHash": "156bdf3f839e54cd920a5ca4c9297ca81554b9c3ba28df872a0e9e00d483cbdf",
+  "author": "CSWork"
+}

@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-confluent-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "交易子集能否达到目标余额",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Confluent",
+      "子集和",
+      "Meet in the Middle"
+    ],
+    "description": "给定一组有正有负的整数交易额，判断是否存在任意子集（可为空）的和恰好等于目标值；存在输出 1，否则输出 0。",
+    "input": "第一行输入整数 n 和 target，随后一行输入 n 个整数（n=0 时该行可为空）。本站约束：0≤n≤40，|target|≤10^12，|transaction[i]|≤10^9。每笔交易最多选择一次。",
+    "output": "输出单个整数：存在符合条件的子集输出 1，否则输出 0。空子集的和为 0。",
+    "explanation": "按子集和定义判断；为支持大绝对值交易额，本站将缺失的规模补为 n≤40，可采用 meet-in-the-middle。",
+    "hints": [
+      "把交易拆成两半，枚举一半的子集和；另一半逐个枚举并查找 target−sum。用 Gray code 可在常数时间更新相邻枚举的和。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例与边界 1",
+      "input": "3 5\n1 2 3\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 2",
+      "input": "2 4\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 3",
+      "input": "0 0\n\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 4",
+      "input": "0 1\n\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 5",
+      "input": "3 -1\n-5 4 9\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 6",
+      "input": "3 0\n8 -3 -5\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 7",
+      "input": "3 14\n7 7 7\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 8",
+      "input": "4 0\n1000000000 -1000000000 4 -4\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 9",
+      "input": "5 31\n1 2 4 8 16\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 10",
+      "input": "40 61\n3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3 3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 11",
+      "input": "40 1000000000\n1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 12",
+      "input": "2 0\n5 -5\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 13",
+      "input": "4 0\n4 7 -3 -8\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 14",
+      "input": "5 62\n2 4 8 16 32\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 15",
+      "input": "5 -31\n-1 -2 -4 -8 -16\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 16",
+      "input": "5 3\n9 -9 9 -9 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 17",
+      "input": "4 24\n6 10 14 18\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 18",
+      "input": "6 63\n1 2 4 8 16 32\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 19",
+      "input": "5 1\n7 11 13 17 19\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 20",
+      "input": "4 30\n-10 3 7 20\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 21",
+      "input": "5 0\n0 0 0 0 0\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 22",
+      "input": "5 5\n1000000000 -1000000000 1000000000 -1000000000 5\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

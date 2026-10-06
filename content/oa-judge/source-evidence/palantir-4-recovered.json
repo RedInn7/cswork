@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-palantir-4",
+      "sourceUrl": "https://oamaster.com/docs/companies/palantir#4-minimize-path-value",
+      "catalogContentHash": "5e6534b95f7ca1b58f39205a4ef20d831132be99f1fc71410bc00081497151ed",
+      "rawFiles": [
+        {
+          "path": "fastprep/Palantir/palantir-minimize-path-value.md",
+          "blob": "fb4121843016a86977144abbde2c01547111d412",
+          "sha256": "45589460c8313a29068894ef7c4e816d657c1430bc0c3290543c280f77a22351",
+          "lineRange": [
+            10,
+            48
+          ]
+        }
+      ],
+      "resolvedSemantics": {
+        "objective": "Minimize the maximum edge weight along a path in an undirected weighted graph, exactly as stated in the source.",
+        "nodeIndexing": "The sample uses nodes 1..N and each of the three source implementations allocates arrays of size N+1; candidate uses 1-based IDs.",
+        "sourceDestinationEqual": "All three source implementations initialize dist[source]=0 and return that value immediately when source is destination; candidate makes this explicit.",
+        "siteConstraints": "The original Constraints contains only a damaged placeholder. Candidate adds N<=5000, M<=20000, 1<=node IDs<=N, and 0<=w<=1e9. Nonnegative weights define the site-supported domain; graph connectivity is not assumed."
+      }
+    }
+  ]
+}

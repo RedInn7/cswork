@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ebay-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "House Density (Longest Contiguous Segment)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "eBay",
+      "并查集",
+      "区间合并"
+    ],
+    "description": "数轴上按 queries 顺序逐个建房，房屋位置互不重复。每次建房后，返回所有房屋位置中最长连续整数区间的长度。固定源中的示例与三种语言实现都包含插入时与已有房屋相邻的情形，因此本站按这些可执行定义判题：插入可以与左侧、右侧或两侧区间相邻，并立即合并。",
+    "input": "第一行输入 q（1≤q≤10000），随后 q 行各输入一个位置 x（−10^9≤x≤10^9）；所有位置互不相同。原题没有给出数值边界，q 和 x 的范围为本站补充；q≤10000 确保逐次输出不超过题库 65536 字节上限。",
+    "output": "输出 q 行；第 i 行为前 i 次建房后最长连续房屋区间的长度。",
+    "explanation": "连续区间按整数位置定义；新房屋只会合并相邻的左区间、右区间或二者。答案是每一步所有区间长度的最大值。",
+    "hints": [
+      "维护每个连续区间的左右端点；插入 x 时检查 x−1 和 x+1 是否为现有区间端点。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题示例：逐步合并左右相邻房屋",
+      "input": "3\n2\n1\n3\n",
+      "expectedOutput": "1\n2\n3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原题示例：保留多个连续段中的最大值",
+      "input": "4\n1\n3\n0\n4\n",
+      "expectedOutput": "1\n1\n2\n2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "单次建房",
+      "input": "1\n7\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "插入后同时连接左右区间",
+      "input": "3\n0\n2\n1\n",
+      "expectedOutput": "1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "坐标边界与分离区间",
+      "input": "2\n-1000000000\n1000000000\n",
+      "expectedOutput": "1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "反向逐步扩展长区间",
+      "input": "5\n5\n4\n3\n2\n1\n",
+      "expectedOutput": "1\n2\n3\n4\n5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "先建立多个间隔位置",
+      "input": "5\n10\n12\n14\n16\n18\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "逐步连接并扩展左端",
+      "input": "6\n0\n2\n4\n6\n8\n1\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "反向插入填补双侧间隙",
+      "input": "6\n100\n98\n96\n94\n92\n95\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负数区间向中间合并",
+      "input": "6\n-5\n-3\n-1\n1\n3\n-4\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "新点连接长短区间",
+      "input": "5\n20\n10\n30\n19\n21\n",
+      "expectedOutput": "1\n1\n1\n2\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "交错填充多个缺口",
+      "input": "7\n0\n4\n8\n12\n3\n7\n11\n",
+      "expectedOutput": "1\n1\n1\n1\n2\n2\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "连续左扩展七步",
+      "input": "7\n50\n49\n48\n47\n46\n45\n44\n",
+      "expectedOutput": "1\n2\n3\n4\n5\n6\n7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "跨零两侧连接",
+      "input": "7\n-20\n-10\n0\n10\n20\n1\n-1\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n2\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "坐标上界附近合并",
+      "input": "3\n1000000000\n999999998\n999999999\n",
+      "expectedOutput": "1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "坐标下界附近合并",
+      "input": "3\n-1000000000\n-999999998\n-999999999\n",
+      "expectedOutput": "1\n1\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "连接一个已有长区间",
+      "input": "5\n0\n100\n200\n99\n101\n",
+      "expectedOutput": "1\n1\n1\n2\n3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "两侧多次合并成连续段",
+      "input": "5\n3\n1\n5\n2\n4\n",
+      "expectedOutput": "1\n1\n1\n3\n5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "分批填充等距区间",
+      "input": "9\n0\n3\n6\n9\n12\n2\n5\n8\n11\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n2\n2\n2\n2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负坐标相邻桥接",
+      "input": "9\n-9\n-7\n-5\n-3\n-1\n-8\n-6\n-4\n-2\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n3\n5\n7\n9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "相邻插入逐步并成长段",
+      "input": "9\n40\n42\n44\n46\n48\n41\n43\n45\n47\n",
+      "expectedOutput": "1\n1\n1\n1\n1\n3\n5\n7\n9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "远距房屋不影响局部最大段",
+      "input": "8\n1000\n0\n500\n1\n2\n3\n4\n5\n",
+      "expectedOutput": "1\n1\n1\n2\n3\n4\n5\n6\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

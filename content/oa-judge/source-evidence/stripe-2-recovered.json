@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-stripe-2",
+      "sourceUrl": "https://oamaster.com/docs/companies/stripe#2-merchant-fraud-score",
+      "catalogContentHash": "366364ba7b6248f2f2347370c7bade510653e707c85a7c2d4bf8934633275838",
+      "rawFiles": [
+        {
+          "path": "OA LIST/Stripe_OA/008_image.txt",
+          "blob": "6d1ba7ab0eb8f42e516157afb2d49ba6ba56097c"
+        },
+        {
+          "path": "OA LIST/Stripe_OA/009_image.txt",
+          "blob": "141b787559f04541a065e4f1cfb3ec6563eefcf0"
+        },
+        {
+          "path": "OA LIST/Stripe_OA/010_image.txt",
+          "blob": "5923b4bdd515fd97c93e78121f8a7025443422e9"
+        },
+        {
+          "path": "OA LIST/Stripe_OA/011_image.txt",
+          "blob": "8f1dedc2e22ba4ece08ac43e68e13cf3a61734c1"
+        }
+      ],
+      "resolvedSemantics": {
+        "transactionFields": [
+          "merchant_id",
+          "amount",
+          "customer_id",
+          "hour"
+        ],
+        "ruleFields": [
+          "min_transaction_amount",
+          "multiplicative_factor",
+          "additive_factor",
+          "penalty"
+        ],
+        "merchantFields": [
+          "merchant_id",
+          "base_score"
+        ],
+        "amountThreshold": "仅当 amount > min_transaction_amount 时乘 multiplicative_factor；等于阈值不乘。",
+        "additive": "按 (merchant_id, customer_id) 计数；第 3 笔追溯累加该组前三笔各自 additive_factor；后续每笔累加当笔 factor。",
+        "penalty": "按 (merchant_id, customer_id, hour) 计数；第 3 笔追溯应用前三笔各自 penalty；后续每笔应用当笔 penalty。12..17 加，9..11 或 18..21 减，其他小时不应用。",
+        "passes": "全体交易分三次独立处理：乘数、additive、penalty。",
+        "output": "商户按字典序返回 merchant_id 与 score。",
+        "sourceSampleRepair": "raw 010/011 示例中交易 4 与交易 5 间缺逗号；结合 n=6、六条交易与六条规则，仅修复该分隔符。按独立核算：merchant1 为 10*2*3 + 8+3+9+11 -15-19-7 = 50；merchant2 为 20*3 = 60。",
+        "siteInputSupplement": "交易/rule/商户数组的标准输入逐行编码和商户数前缀由 CSWork 补充；为了适配跨语言整数与输出上限，CSWork 也明确 ID 长度/字符集及有符号 64 位无溢出输入域。这些附加限制不是上游原始约束。"
+      }
+    }
+  ]
+}

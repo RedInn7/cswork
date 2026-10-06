@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": {
+    "oa-ramp-2": {
+      "url": "https://oamaster.com/docs/companies/ramp#2-bot-bank--depositwithdraw-with-cashback-stateless-solution",
+      "contentHash": "e18fd8d39a909b4fdb9fc031237a025e18a334c94b4bef6990cf10defaa18fef",
+      "catalogContentHash": "e18fd8d39a909b4fdb9fc031237a025e18a334c94b4bef6990cf10defaa18fef",
+      "company": "Ramp",
+      "title": "Bot Bank — Deposit/Withdraw with Cashback (Stateless solution)",
+      "path": "web/content/docs/companies/ramp.mdx",
+      "gitBlobSha": "b889171abc2e693b513b5d43a65bd4b26fbeb7b2",
+      "sourceFileSha256": "dec7dcf6529263eaba62084edad633bff9349f23d7b665d00e38e97dcf2668ad",
+      "sourceRules": [
+        "timestamps are in seconds and strictly increasing",
+        "withdrawal cashback is floor(2% of amount), refunded after 86400 seconds",
+        "cashback due at a request's timestamp is processed first",
+        "invalid account number or insufficient funds returns the negative 1-based request id on first invalid request",
+        "the accompanying Python solution indexes holder_id as 1-based"
+      ],
+      "siteOnlyRules": [
+        "stdin/stdout serialization",
+        "N≤100000 and Q≤200000 resource caps",
+        "balance, timestamp and amount numeric caps",
+        "strictly positive amount and nonnegative initial balances"
+      ]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-the-d-e-shaw-group-9",
+      "formalCases": 21,
+      "hiddenFormalCases": 20,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "negativeControls": [
+        {
+          "name": "允许购买警局所在坐标",
+          "rejectedByCases": [
+            0,
+            4,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ]
+        },
+        {
+          "name": "扩展时只加入右侧位置",
+          "rejectedByCases": [
+            0,
+            2,
+            4,
+            5,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ]
+        }
+      ],
+      "maxCapacity": 50000,
+      "maxIntSafeCost": 625025000
+    }
+  ],
+  "note": "本地独立穷举 oracle、重复/相邻警局与坐标平移边界、int 上界压力和两个正常退出 mutant 验证；未连接 GoJudge。"
+}
