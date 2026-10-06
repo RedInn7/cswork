@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-optiver-4",
+      "batch": "optiver-4-recovered",
+      "sourceContentHash": "fd993dfcbdc2c2e675db0da837ce0284e7f6effce7e725cf11a92d6527eac98d",
+      "previousReason": "out-of-order 后最近一小时的时间基准有歧义。",
+      "reason": "固定源参考实现明确将最大 timestamp 作为乱序日志窗口锚点，严格过滤早于/等于 anchor−3600 的记录，并按 (timestamp, 接收序号) 排序后取最后 m 条；候选按该可执行定义恢复，不猜测。120 个小规模独立列表排序 oracle、正式边界及两个正常退出错误实现均通过，另在 10 万条记录混合查询上做了本地压力验证。"
+    }
+  ]
+}

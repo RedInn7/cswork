@@ -1,0 +1,658 @@
+[
+  {
+    "input": "{\"strings\": [\"aba\", \"ab\", \"abbcdd\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"cdd\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baa\", \"abbc\", \"ab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"c\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"a\", \"a\", \"aa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaab\", \"aabb\", \"abbb\", \"cccc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cccc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cb\", \"cacac\", \"a\", \"a\", \"ac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"b\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baaaaba\", \"aacc\", \"aacacbaa\", \"abbaa\", \"aacbac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaab\", \"aabccbca\", \"cabbba\", \"acaaabac\", \"bc\", \"bbac\", \"aa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ba\", \"cbac\", \"bc\", \"aba\", \"ababcacb\", \"bba\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cccbccba\", \"baaba\", \"cb\", \"cbbab\", \"bab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cbb\", \"ccacca\", \"abacb\", \"b\", \"cccbc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ca\", \"ccaacbb\", \"c\", \"babcc\", \"cb\", \"bac\", \"ccbaabb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"babbbac\", \"bca\", \"aca\", \"babacabb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbacabc\", \"caaacac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"bb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cbb\", \"aba\", \"c\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"bbaba\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"a\", \"acbaaca\", \"abcccbbc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"accaccb\", \"aaacbaa\", \"c\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cabacca\", \"aa\", \"cacbcb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccabbcac\", \"abcaa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"a\", \"cabcaca\", \"ccabcabc\", \"bc\", \"a\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbaab\", \"cc\", \"aaacaa\", \"bab\", \"aabbbc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccbaccc\", \"c\", \"cccbac\", \"ab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccb\", \"abb\", \"abccb\", \"aa\", \"bcca\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"babaa\", \"c\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"babaa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aacc\", \"baaa\", \"baa\", \"ba\", \"ba\", \"bc\", \"acacaaba\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ab\", \"bbbccb\", \"aaabcabb\", \"aabb\", \"ccbcbabc\", \"bac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abcaaa\", \"c\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"abaaa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cabc\", \"bba\", \"bcbabbc\", \"babacb\", \"bcbbc\", \"abcb\", \"aaa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abcacb\", \"abbbcb\", \"aab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcacccba\", \"aac\", \"aaacb\", \"aaa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cacaacab\", \"abababb\", \"b\", \"baabbcab\", \"ca\", \"aaab\", \"bacbac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aacccc\", \"aacabca\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"aaccccaacabca\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cab\", \"cc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cabcc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cccbca\", \"baaaaac\", \"acc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aacbcc\", \"cc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"aab\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abcccacc\", \"accaa\", \"ca\", \"ca\", \"ababbbbc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbccc\", \"ccccccaa\", \"c\", \"b\", \"cccb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaa\", \"ccaac\", \"cbcbaa\", \"aaba\", \"bccabccb\", \"aabaab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaccaaa\", \"ccc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"aaccaaaccc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acaabb\", \"babcb\", \"bababbcb\", \"bcccbca\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbcab\", \"abcabb\", \"ccb\", \"cacbccab\", \"cbc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ab\", \"aaabcb\", \"bccbacca\", \"cbbcab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"abaaabcbbccbaccacbbcab\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccacbbba\", \"aba\", \"c\", \"ca\", \"cbcb\", \"ab\", \"a\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccaa\", \"aa\", \"bcaaaac\", \"bbabb\", \"bbac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbbaccc\", \"ccc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"bbbacccccc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"a\", \"ba\", \"bbcbccc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cccc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ba\", \"b\", \"cbb\", \"aacc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"aaa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcbcb\", \"a\", \"aacaac\", \"ca\", \"cb\", \"abb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acccba\", \"aaaaa\", \"acaa\", \"cb\", \"bacbabab\", \"b\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbaab\", \"bcbaaa\", \"cabbbbbb\", \"acbbba\", \"ab\", \"a\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbbbba\", \"b\", \"cbaabcab\", \"cccab\", \"cbab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"a\", \"c\", \"bbccabc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"bbb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"c\", \"aca\", \"aabb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cabcacbb\", \"aaabcb\", \"cbaabc\", \"caa\", \"ab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baaaabc\", \"accbccc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bccbcba\", \"abaaacac\", \"aca\", \"bacab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bb\", \"cab\", \"c\", \"abc\", \"aacbb\", \"cbccabcc\", \"accc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abbba\", \"ccbbabac\", \"bbbcccac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aabaabaa\", \"bcbcbc\", \"cbbcabcb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ac\", \"ccba\", \"abc\", \"bbab\", \"c\", \"abccbaca\", \"aabbac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cb\", \"ccbaaba\", \"cabaabc\", \"ccc\", \"bbbcacb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abbcbbb\", \"c\", \"ccbbcca\", \"cacb\", \"abbacc\", \"abbbaaca\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbab\", \"caa\", \"caccc\", \"ccccbcc\", \"cbaaaaca\", \"b\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bba\", \"b\", \"baccb\", \"b\", \"bba\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"cc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cacba\", \"caac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cacbacaac\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baac\", \"ca\", \"aa\", \"cabcb\", \"bcbaacb\", \"ac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"babcaba\", \"caa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"babcabacaa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccaa\", \"ac\", \"aa\", \"acbcc\", \"ccc\", \"cbbacac\", \"b\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccab\", \"c\", \"cabccab\", \"cbacabc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"accaa\", \"cbccab\", \"acbcaca\", \"babbcbac\", \"cb\", \"bbabcac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abcc\", \"c\", \"ccca\", \"bbaab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbbcab\", \"ccaba\", \"cbbaa\", \"baac\", \"ca\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbca\", \"bcbcaaca\", \"ab\", \"abbc\", \"cc\", \"cbaac\", \"aa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cbcbacb\", \"bbcab\", \"aa\", \"bccbacca\", \"caa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baaac\", \"aa\", \"bbcccabc\", \"cbcccc\", \"bbbbbaca\", \"caabbaaa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bccaaa\", \"bc\", \"abcbaca\", \"cbacaac\", \"a\", \"cc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbbbac\", \"abbcca\", \"c\", \"bcccbccc\", \"ccbaaca\", \"bcbba\", \"bbbccba\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbabaca\", \"bacbbcba\", \"bccaac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baabbc\", \"c\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"baabbcc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abcbccb\", \"abbbcc\", \"baa\", \"bbcaba\", \"cab\", \"bbc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bb\", \"ab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"bbab\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"b\", \"bacbbaa\", \"ccab\", \"aaa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ac\", \"cacbcca\", \"cbcabc\", \"bc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcaac\", \"bc\", \"babccb\", \"baaaabaa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cccac\", \"b\", \"baca\", \"c\", \"cc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ab\", \"ac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"abac\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"c\", \"abbcacb\", \"c\", \"bcbb\", \"cbbbabbb\", \"caa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcb\", \"acabbcc\", \"cbaacab\", \"cbcc\", \"acccb\", \"ac\", \"bccaa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbbbaa\", \"bbcacc\", \"cbbb\", \"bbcac\", \"aab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ca\", \"baabcb\", \"cccaaacb\", \"bba\", \"bbca\", \"babab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"ccccccc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"b\", \"baaaaabb\", \"bcbccbb\", \"ccbb\", \"cacbcb\", \"bab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acc\", \"c\", \"ccabcca\", \"c\", \"a\", \"babababa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"accbcb\", \"b\", \"abbaa\", \"ab\", \"aaccccb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cccb\", \"cbb\", \"bcacc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"babb\", \"baabaa\", \"ccccb\", \"bacaabab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbcccbb\", \"accc\", \"cbaaa\", \"ababc\", \"aacc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbc\", \"bbabab\", \"bab\", \"baacc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aabca\", \"bacb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"aabcabacb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acc\", \"babacca\", \"c\", \"c\", \"bbc\", \"abbcacbb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bc\", \"cbaa\", \"ccbababa\", \"acbcacca\", \"bccccb\", \"bbaaabbc\", \"bc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccaab\", \"cccbac\", \"b\", \"cbcc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbbca\", \"bbc\", \"babbac\", \"bbacacc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abbbcb\", \"bbcaa\", \"acccbbac\", \"aabbab\", \"ccaababb\", \"caaaabc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cca\", \"babcab\", \"caabcc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"bbbb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bacbbaca\", \"abcac\", \"abccabca\", \"cccbaac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bc\", \"ba\", \"a\", \"bbacacc\", \"ccbbc\", \"b\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cababbb\", \"abcaab\", \"b\", \"cbacba\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"c\", \"cac\", \"cabca\", \"cababcbc\", \"a\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ab\", \"abbacaa\", \"baa\", \"aababbc\", \"acbc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcbaacbc\", \"ababbcbb\", \"bbcacb\", \"baaab\", \"bccabcc\", \"bbbb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bc\", \"a\", \"abba\", \"abccaca\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"caa\", \"cabbcaba\", \"aa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"bbb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aca\", \"aacaa\", \"abbcacbc\", \"a\", \"abcca\", \"acb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"baca\", \"b\", \"c\", \"bcbccb\", \"bcbcab\", \"bbbb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcbb\", \"ccbc\", \"abacaaba\", \"aabccab\", \"cbabba\", \"cb\", \"cbbcac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aba\", \"abccb\", \"bb\", \"a\", \"c\", \"bcac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bc\", \"ab\", \"bbaaabb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"c\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ababbb\", \"cbaaccaa\", \"bcbbcac\", \"ccabcbb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cacaca\", \"ba\", \"bcabbab\", \"b\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cbaa\", \"acbab\", \"aaacbbcc\", \"a\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aacb\", \"baba\", \"babcaa\", \"acaa\", \"ccbab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ca\", \"ca\", \"bbc\", \"bca\", \"ccbc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcaabccb\", \"abb\", \"baccccbc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbcab\", \"acbabacc\", \"bbbb\", \"bbaaabc\", \"bbbcbbbb\", \"baccb\", \"c\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcb\", \"aaac\", \"bacc\", \"ccaacccb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aacabba\", \"cabaaca\", \"babccbb\", \"cacaacbc\", \"bbaaabb\", \"aacaccb\", \"ccccbac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbbbacb\", \"bbacbbb\", \"cacbcaac\", \"caacbbb\", \"aaac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcaaca\", \"cbcc\", \"accbbc\", \"bba\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abbabb\", \"ccabbab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"cc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccaa\", \"b\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"ccaa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"c\", \"ccb\", \"baca\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"aa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"b\", \"cbca\", \"acacbbb\", \"cbab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbbbbaa\", \"babbca\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"acbbbbaababbca\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaabbcca\", \"ab\", \"b\", \"bcbc\", \"b\", \"ccacc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aba\", \"b\", \"bccaca\", \"cc\", \"aaaabcb\", \"cacacaab\", \"acaaabb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbaac\", \"bacbbba\", \"baacaccb\", \"cbba\", \"cbbacb\", \"ccb\", \"accbabcb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bb\", \"ccbccac\", \"cbbcb\", \"cca\", \"bbacbabb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"a\", \"aba\", \"abacab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcbb\", \"baab\", \"babcac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"accbbac\", \"a\", \"cab\", \"a\", \"cbccbb\", \"bcbbb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acc\", \"cabbcc\", \"bcbca\", \"bbbab\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"caccabca\", \"b\", \"a\", \"bcac\", \"baabbbc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acacb\", \"bccc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"acacbbccc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccbcbc\", \"cccaaa\", \"abbbaca\", \"a\", \"bbaa\", \"bababca\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acbccc\", \"babac\", \"bac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"caabac\", \"acb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"caabacacb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaccbb\", \"cbcc\", \"ac\", \"abbc\", \"c\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bbaacccc\", \"c\", \"abc\", \"b\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acaabc\", \"bca\", \"ccabbaa\", \"aa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aabbba\", \"bab\", \"b\", \"bbbaaacc\", \"bccccbc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"acacbc\", \"ccbbc\", \"c\", \"abbcac\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"abcaaacc\", \"bbbabbac\", \"acccc\", \"bcbcc\", \"b\", \"c\", \"abb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aaacab\", \"aac\", \"acb\", \"a\", \"ccaccaa\", \"bb\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccac\", \"baa\", \"bbc\", \"bcbbacbb\", \"caacbc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"c\", \"bcccac\", \"accaaca\", \"ca\", \"caaaaaa\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aabcbca\", \"ca\", \"baabbb\", \"c\", \"bcabbb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cc\", \"aabababa\", \"aaa\", \"acba\", \"a\", \"bcacc\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"b\", \"babba\", \"b\", \"ccaccacb\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"caba\", \"acbabc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cabaacbabc\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bcbccc\", \"aa\", \"cabba\", \"baac\", \"aacaaaba\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cabac\", \"acaa\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cabacacaa\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"aabcb\", \"bca\", \"aabbb\", \"acacbcab\", \"bccbbc\", \"aacbcbcc\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"cbb\", \"ac\"], \"useJaccard\": true}\n",
+    "expectedOutput": "\"cbbac\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"ccb\", \"a\", \"a\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"ccb\"\n"
+  },
+  {
+    "input": "{\"strings\": [\"bb\", \"abbaac\", \"bb\", \"c\", \"cccbab\"], \"useJaccard\": false}\n",
+    "expectedOutput": "\"aaaa\"\n"
+  }
+]

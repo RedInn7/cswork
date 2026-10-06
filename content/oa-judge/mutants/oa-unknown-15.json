@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Jaccard 忽略重复次数，按普通字符集合交并比计算",
+    "code": "import json,sys\nd=json.load(sys.stdin);ss=d[\"strings\"];n=len(ss);flag=d[\"useJaccard\"];scores=[]\nfor i,s in enumerate(ss):\n if flag:scores.append(sum(len(set(s)&set(t))/len(set(s)|set(t)) for j,t in enumerate(ss) if i!=j)/(n-1))\n else:\n  from collections import Counter\n  c=Counter(s);scores.append(max(c.values())/len(s))\nb=min(scores);sel=[i for i,x in enumerate(scores) if x==b];other=set().union(*(set(ss[i]) for i in range(n) if i not in sel)) if len(sel)<n else set()\nprint(json.dumps(\"\".join(ch for i in sel for ch in ss[i] if ch not in other),ensure_ascii=False))\n"
+  },
+  {
+    "name": "忽略开关，始终采用 Part 1 最高字符占比",
+    "code": "import json,sys\nfrom collections import Counter\nd=json.load(sys.stdin);ss=d[\"strings\"];scores=[max(Counter(s).values())/len(s) for s in ss];b=min(scores);sel=[i for i,x in enumerate(scores) if x==b];other=set().union(*(set(ss[i]) for i in range(len(ss)) if i not in sel)) if len(sel)<len(ss) else set()\nprint(json.dumps(\"\".join(ch for i in sel for ch in ss[i] if ch not in other),ensure_ascii=False))\n"
+  }
+]

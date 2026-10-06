@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-optiver-4",
+      "formalCases": 7,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "negativeControls": [
+        {
+          "name": "把最后写入的时间戳当作窗口锚点",
+          "rejectedByCases": [
+            3
+          ]
+        },
+        {
+          "name": "错误纳入恰好 3600 秒前的日志",
+          "rejectedByCases": [
+            0,
+            2
+          ]
+        }
+      ],
+      "stressRecords": 100000,
+      "stressQueries": 2000
+    }
+  ],
+  "note": "本地独立排序 oracle、窗口边界、乱序/平局、多查询和两个正常退出 mutant 验证；未连接 GoJudge。"
+}
