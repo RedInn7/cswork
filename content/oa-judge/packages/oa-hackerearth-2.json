@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-hackerearth-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "The Prom",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Hackerearth"
+    ],
+    "description": "按从左到右的顺序处理队伍。0 表示女生，1 表示男生。每个男生和此时排在他前面且尚未配对的最近一位女生跳舞；双方离队。没有可配对女生时记录 -1。按男生出现顺序输出配对女生的编号。\n\n本站明确的标准输入输出格式与补充约束属于在线版本定义，不冒充来源原始约束。",
+    "input": "输入 N 和长度 N 的 01 字符串，1≤N≤100000。",
+    "output": "输出每个男生对应的女生编号；无可配对女生时输出 -1，空结果输出空行。",
+    "explanation": "用栈保存尚未配对的女生编号。遇到男生弹出栈顶，没有女生时输出 -1。",
+    "hints": [
+      "用栈保存尚未配对的女生编号。遇到男生弹出栈顶，没有女生时输出 -1。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "3\n011\n",
+      "expectedOutput": "1 -1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "11\n10001111110\n",
+      "expectedOutput": "-1 4 3 2 -1 -1 -1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "7\n0000100\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "24\n110110010111100111010001\n",
+      "expectedOutput": "-1 -1 3 -1 7 9 6 -1 -1 15 14 -1 19 23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "19\n1101010010110111001\n",
+      "expectedOutput": "-1 -1 3 5 8 10 7 13 -1 -1 18\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "14\n11000001001011\n",
+      "expectedOutput": "-1 -1 7 10 12 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "12\n010111001011\n",
+      "expectedOutput": "1 3 -1 -1 8 10 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "4\n0011\n",
+      "expectedOutput": "2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "8\n00111001\n",
+      "expectedOutput": "2 1 -1 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "12\n000100110110\n",
+      "expectedOutput": "3 6 5 9 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "20\n00110011011001001101\n",
+      "expectedOutput": "2 1 6 5 9 -1 13 16 15 19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "12\n101100100101\n",
+      "expectedOutput": "-1 2 -1 6 9 11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "16\n1100110000011000\n",
+      "expectedOutput": "-1 -1 4 3 11 10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "1\n1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "15\n111001101001101\n",
+      "expectedOutput": "-1 -1 -1 5 4 8 11 10 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "2\n11\n",
+      "expectedOutput": "-1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "18\n111000100001100010\n",
+      "expectedOutput": "-1 -1 -1 6 11 10 16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "15\n101110010110001\n",
+      "expectedOutput": "-1 2 -1 -1 7 9 6 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "16\n1100000101111011\n",
+      "expectedOutput": "-1 -1 7 9 6 5 4 14 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "16\n0110100100111000\n",
+      "expectedOutput": "1 -1 4 7 10 9 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "22\n0101010101110001001101\n",
+      "expectedOutput": "1 3 5 7 9 -1 -1 15 18 17 21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "23\n11000111111101011010111\n",
+      "expectedOutput": "-1 -1 5 4 3 -1 -1 -1 -1 13 15 -1 18 20 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "22\n0101011001101001010001\n",
+      "expectedOutput": "1 3 5 -1 9 8 12 15 17 21\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "21\n111000000111001011110\n",
+      "expectedOutput": "-1 -1 -1 9 8 7 14 16 13 6 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "19\n0001111100011110110\n",
+      "expectedOutput": "3 2 1 -1 -1 11 10 9 -1 16 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "25\n0110101011110000111000111\n",
+      "expectedOutput": "1 -1 4 6 8 -1 -1 -1 16 15 14 22 21 20\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "6\n110010\n",
+      "expectedOutput": "-1 -1 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "15\n001010010100111\n",
+      "expectedOutput": "2 4 7 9 12 11 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "14\n00111000001110\n",
+      "expectedOutput": "2 1 -1 10 9 8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "24\n001110101100101001100101\n",
+      "expectedOutput": "2 1 -1 6 8 -1 12 14 17 16 21 23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "15\n001110000011001\n",
+      "expectedOutput": "2 1 -1 10 9 14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "22\n0110001010100111110101\n",
+      "expectedOutput": "1 -1 6 8 10 13 12 5 4 -1 19 21\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

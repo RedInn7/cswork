@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把操作应用到固定奇偶组",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];edges=[(v[1+2*i],v[2+2*i]) for i in range(n-1)];p=1+2*(n-1);initial=v[p:p+n];expected=v[p+n:p+2*n];adj=[[] for _ in range(n)]\n    for a,b in edges:adj[a].append(b);adj[b].append(a)\n    stack=[(0,-1,0,0)];answer=0\n    while stack:\n        u,parent,even_flip,odd_flip=stack.pop();parity=0;current=even_flip if parity==0 else odd_flip\n        if initial[u]^current!=expected[u]:\n            if parity==0:even_flip^=1\n            else:odd_flip^=1\n            answer+=1\n        for child in adj[u]:\n            if child!=parent:stack.append((child,u,even_flip,odd_flip))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "不在节点值不匹配时执行操作",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];edges=[(v[1+2*i],v[2+2*i]) for i in range(n-1)];p=1+2*(n-1);initial=v[p:p+n];expected=v[p+n:p+2*n];adj=[[] for _ in range(n)]\n    for a,b in edges:adj[a].append(b);adj[b].append(a)\n    stack=[(0,-1,0,0)];answer=0\n    while stack:\n        u,parent,even_flip,odd_flip=stack.pop();parity=u%2;current=even_flip if parity==0 else odd_flip\n        if False:\n            if parity==0:even_flip^=1\n            else:odd_flip^=1\n            answer+=1\n        for child in adj[u]:\n            if child!=parent:stack.append((child,u,even_flip,odd_flip))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

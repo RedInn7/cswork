@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-xperi-1",
+  "title": "Count Integer Sequences",
+  "explanation": "## 思路\n\n维护 0..63 的异或状态 DP。每增加一个元素，就把每个旧状态分别转移到 old XOR value，其中 value∈[0,M]。\n\n## 正确性证明\n\nDP[i][x] 表示前 i 个位置异或为 x 的序列数。末尾元素取值唯一确定前一状态 x XOR value；逐值求和枚举所有合法末尾数，因此转移不重不漏。答案为 DP[N][X]。\n\n## 复杂度\n\n时间 O(N·64·(M+1))，空间 O(64)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    n,m,target=map(int,raw.split());mod=998244353;dp=[0]*64;dp[0]=1\n    for _ in range(n):\n        nxt=[0]*64\n        for old,ways in enumerate(dp):\n            for value in range(m+1):nxt[old^value]=(nxt[old^value]+ways)%mod\n        dp=nxt\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/xperi#1-count-integer-sequences",
+  "sourceContentHash": "3b6024104fab3bce3178b7bafbee959216afdfc2dc25859de2fed028305d415f",
+  "author": "CSWork"
+}

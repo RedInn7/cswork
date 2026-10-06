@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ukg-1",
+  "title": "Minimum Flips to Match Expected Binary Values in a Tree",
+  "explanation": "## 思路\n\n从根开始遍历。记录祖先操作分别对偶数编号、奇数编号节点造成的翻转奇偶数；当前节点仍不匹配时必须在此执行一次操作。\n\n## 正确性证明\n\n节点 u 的值只会被其祖先中与 u 编号同奇偶的操作影响。遍历到 u 时这些影响已确定；若仍与目标不同，不在 u 操作便无法由任何后代影响 u，因此此操作是必要的。执行后递归更新同奇偶后代状态，得到唯一贪心方案。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];edges=[(v[1+2*i],v[2+2*i]) for i in range(n-1)];p=1+2*(n-1);initial=v[p:p+n];expected=v[p+n:p+2*n];adj=[[] for _ in range(n)]\n    for a,b in edges:adj[a].append(b);adj[b].append(a)\n    stack=[(0,-1,0,0)];answer=0\n    while stack:\n        u,parent,even_flip,odd_flip=stack.pop();parity=u%2;current=even_flip if parity==0 else odd_flip\n        if initial[u]^current!=expected[u]:\n            if parity==0:even_flip^=1\n            else:odd_flip^=1\n            answer+=1\n        for child in adj[u]:\n            if child!=parent:stack.append((child,u,even_flip,odd_flip))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ukg#1-minimum-flips-to-match-expected-binary-values-in-a-tree",
+  "sourceContentHash": "64da5fd334269ab5f9f08eaa8889395a1cb332b36947b303d23a0971799b03db",
+  "author": "CSWork"
+}

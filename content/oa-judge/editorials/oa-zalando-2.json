@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-zalando-2",
+  "title": "Zalando Manipulation",
+  "explanation": "## 思路\n\n从左到右维护栈。若新字符与栈顶构成 A/B 或 C/D 的异类配对则弹栈，否则压栈。\n\n## 正确性证明\n\n规则等价于两组互逆符号 A↔B、C↔D 的相邻约简。栈算法只保留已处理前缀的约简形式；新字符至多与栈顶消去，递归消去已由栈处理。该逆元字母表的约简形式唯一，因此输出是合法且不可再约简的结果。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    stack=[]\n    for ch in raw.strip():\n        if stack and ((stack[-1] in 'AB' and ch in 'AB' and stack[-1]!=ch) or (stack[-1] in 'CD' and ch in 'CD' and stack[-1]!=ch)):\n            stack.pop()\n        else:stack.append(ch)\n    return ''.join(stack)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/zalando#2-zalando-manipulation",
+  "sourceContentHash": "b6e0942423718d045aa9eec5eb3a3866961a05e4cc50a8cbda8e904382382d1d",
+  "author": "CSWork"
+}

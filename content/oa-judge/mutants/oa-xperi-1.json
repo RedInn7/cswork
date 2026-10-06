@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不允许元素取0",
+    "code": "def solve(raw):\n    n,m,target=map(int,raw.split());mod=998244353;dp=[0]*64;dp[0]=1\n    for _ in range(n):\n        nxt=[0]*64\n        for old,ways in enumerate(dp):\n            for value in range(1,m+1):nxt[old^value]=(nxt[old^value]+ways)%mod\n        dp=nxt\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "转移误用 OR 替代 XOR",
+    "code": "def solve(raw):\n    n,m,target=map(int,raw.split());mod=998244353;dp=[0]*64;dp[0]=1\n    for _ in range(n):\n        nxt=[0]*64\n        for old,ways in enumerate(dp):\n            for value in range(m+1):nxt[old|value]=(nxt[old^value]+ways)%mod\n        dp=nxt\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

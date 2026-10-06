@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-abaka-ai-2",
+  "title": "Maximize the Power",
+  "explanation": "## 思路\n\n排序 power 位置，用前缀和计算区间贡献；从两端向内配对。\n\n## 正确性证明\n\n将位置分成任意配对。对任意数组切分点，外侧配对使跨过该切分点的区间数达到每侧较小元素数的上界；由 arr 非负，所有切分点同时采用外侧配对可最大化加权区间和。故排序后首尾配对最优。\n\n## 复杂度\n\n时间 O(N+K log K)，空间 O(N+K)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split()));n,k=v[:2];a=v[2:2+n];p=sorted(v[2+n:2+n+k]);prefix=[0]\n    for x in a:prefix.append(prefix[-1]+x)\n    total=0\n    for i in range(k//2):total+=prefix[p[k-1-i]+1]-prefix[p[i]]\n    return str(total%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/abaka-ai#2-maximize-the-power",
+  "sourceContentHash": "f316159a4fdeff446f6170908f833df25261bd6bfe8bfcd76ede778866a52ba7",
+  "author": "CSWork"
+}

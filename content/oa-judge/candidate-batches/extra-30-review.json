@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-abaka-ai-1",
+      "sourceContentHash": "d4357c2677d6be65612c58bfa9f2f9ef30847fef8e5d26b2db448de464cf4e4f",
+      "packageChecksum": "5a338a30da0c63f11938942350a646aa3a5475da611ef1a4a591bced2e9075c4",
+      "editorial": "## 思路\n\n按 taskType 分组。每组内存排序后从最小和最大开始配对；和不超过上限时成对并行，否则最大任务只能单独运行。\n\n## 正确性证明\n\n若当前最大任务无法与该组最小任务配对，则它也无法与任一更大的任务配对，必须单独处理。若二者可配，最优方案可交换为这对而不减少配对数；反复执行即达到该组最大配对数，各组互不影响。\n\n## 复杂度\n\n时间 O(N log N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from collections import defaultdict\n    v=list(map(int,raw.split()));n,limit=v[:2];memory=v[2:2+n];kind=v[2+n:2+2*n];groups=defaultdict(list)\n    for m,t in zip(memory,kind):groups[t].append(m)\n    pairs=0\n    for values in groups.values():\n        values.sort();left=0;right=len(values)-1\n        while left<right:\n            if values[left]+values[right]<=limit:pairs+=1;left+=1\n            right-=1\n    return str(n-pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-abaka-ai-2",
+      "sourceContentHash": "f316159a4fdeff446f6170908f833df25261bd6bfe8bfcd76ede778866a52ba7",
+      "packageChecksum": "b3f2fe8dbaeb87c6cb6f183887a56195571f016cfc2948108471009a1db73362",
+      "editorial": "## 思路\n\n排序 power 位置，用前缀和计算区间贡献；从两端向内配对。\n\n## 正确性证明\n\n将位置分成任意配对。对任意数组切分点，外侧配对使跨过该切分点的区间数达到每侧较小元素数的上界；由 arr 非负，所有切分点同时采用外侧配对可最大化加权区间和。故排序后首尾配对最优。\n\n## 复杂度\n\n时间 O(N+K log K)，空间 O(N+K)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split()));n,k=v[:2];a=v[2:2+n];p=sorted(v[2+n:2+n+k]);prefix=[0]\n    for x in a:prefix.append(prefix[-1]+x)\n    total=0\n    for i in range(k//2):total+=prefix[p[k-1-i]+1]-prefix[p[i]]\n    return str(total%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-eat-club-1",
+      "sourceContentHash": "32b52a05756fa3a1346ddcb0f5c9119131a3bc5b31cc5099e3e7aec01c09d9fa",
+      "packageChecksum": "ca08f7b9b822be593c6e8438c20825b55c48bef503060c47f4c45417b78e26e5",
+      "editorial": "## 思路\n\n固定左端点逐步扩展右端，维护已出现值的位集合。插入新值时找到其前驱和后继，更新缺口大于1的相邻值对数；单元素子数组额外计1。\n\n## 正确性证明\n\n排序后相邻不同值恰是值域有序集合中的相邻出现值。插入一个新值只可能拆开其前驱与后继之间的一个相邻关系，并加入与两侧的关系；位集合确定的前驱后继因此能增量准确维护每个子数组的 gap 贡献。枚举所有连续区间即得到总和。\n\n## 复杂度\n\n时间 O(N²) 次值域位运算，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];a=v[1:1+n];total=0;mod=1000000007\n    for left in range(n):\n        mask=0;gaps=0\n        for right in range(left,n):\n            value=a[right];bit=1<<(value-1)\n            if not mask&bit:\n                below=mask&(bit-1);pred=below.bit_length();above=mask>>(value)\n                succ=value+1+((above&-above).bit_length()-1) if above else None\n                if pred and succ is not None and succ-pred>1:gaps-=1\n                if pred and value-pred>1:gaps+=1\n                if succ is not None and succ-value>1:gaps+=1\n                mask|=bit\n            length=right-left+1;total+=(1 if length==1 else gaps)\n    return str(total%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-geico-1",
+      "sourceContentHash": "165351e9882f97ad0e0799d9d325ca52da204d348d49d165c22dcd8756399177",
+      "packageChecksum": "589754dec35281061cf10fa3a06b028b7f5786d22e7ca5f29d4571a8b9892df9",
+      "editorial": "## 思路\n\n对每辆车 i，计算以 i 结尾的最长安全子序列：dp[i]=1+max(dp[j])，其中 j<i 且 weight[j]≤U−weight[i]。对重量坐标压缩后用 Fenwick 树维护前缀最大值。若 weight[i]>U，则不能保留。\n\n## 正确性证明\n\n任意安全保留子序列按原顺序排列；其最后一辆车的前驱必为更早且重量满足阈值的保留车。递推枚举所有可能前驱并取最大值，Fenwick 树只加速该前缀最大查询，因此得到最大可保留数，补集大小即最少离开数。\n\n## 复杂度\n\n时间 O(N log N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from bisect import bisect_right\n    values=list(map(int,raw.split()));limit,n=values[:2];weights=values[2:2+n]\n    coords=sorted(set(weights));tree=[0]*(len(coords)+1);best=0\n    def query(i):\n        value=0\n        while i:\n            value=max(value,tree[i]);i-=i&-i\n        return value\n    def update(i,value):\n        while i<len(tree):\n            tree[i]=max(tree[i],value);i+=i&-i\n    for weight in weights:\n        if weight<=limit:\n            prior=query(bisect_right(coords,limit-weight))\n            length=prior+1;update(bisect_right(coords,weight),length);best=max(best,length)\n    return str(n-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hackerearth-1",
+      "sourceContentHash": "1633934e74babfd2810869e76ba676cb70c1be4d445da618d87ea22a68da506c",
+      "packageChecksum": "3b26754375c3d8b3ccd927f32045d9faa667740f1181c5ffe875ec833b2e7fe8",
+      "editorial": "## 思路\n\n记录每个房子的入住日。对每个连续长度 M 的窗口取入住日最大值，再对所有窗口取最小值。\n\n## 正确性证明\n\n某窗口全部入住的最早一天等于其中最后入住的房子的入住日，即窗口入住日最大值。枚举所有窗口并取最小值恰好得到首次满足条件的日期。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from collections import deque\n    v=list(map(int,raw.split()));n,m=v[:2];p=v[2:2+n];day=[0]*(n+1)\n    for i,x in enumerate(p,1):day[x]=i\n    q=deque();answer=n\n    for i in range(1,n+1):\n        while q and day[q[-1]]<=day[i]:q.pop()\n        q.append(i)\n        while q and q[0]<=i-m:q.popleft()\n        if i>=m:answer=min(answer,day[q[0]])\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-hackerearth-2",
+      "sourceContentHash": "f47911d3d21fb61f08f7679b190300323381aa7a6bd7282abbf2d18855837de2",
+      "packageChecksum": "ae342a1ad951c428cb7e4d7b1eb5f891201ca9d44f46de5212dd0af2e3c037f5",
+      "editorial": "## 思路\n\n用栈保存尚未配对的女生编号。遇到男生弹出栈顶，没有女生时输出 -1。\n\n## 正确性证明\n\n离队后仍在队伍中的女生保持原先次序，因此最近的未配对前置女生恰为栈顶。每位女生只入栈、出栈一次，逐男生处理即得到所有配对。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=raw.split();n=int(v[0]);s=v[1];girls=[];out=[]\n    for i,ch in enumerate(s[:n],1):\n        if ch=='0':girls.append(i)\n        else:out.append(str(girls.pop() if girls else -1))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-harvey-2",
+      "sourceContentHash": "3f0ba847e3ba8db5fd328a319c96b9162629f2247e6ff375106a002d5a8ddfa2",
+      "packageChecksum": "6e3f80ce19cf4b6a106f292b1a0b7ce01c12d5ac5a268f92d7f759857fbf0a84",
+      "editorial": "## 思路\n\n暂存 SET 后沿依赖图 DFS 检测是否能回到被赋值单元格；若有环恢复旧值，否则提交。GET 按当前定义递归求和，并缓存仅在本次读取中的中间结果。\n\n## 正确性证明\n\n加法式的依赖图中出现环，当且仅当某次递归访问到当前路径上的节点。SET 暂存后从该标签开始 DFS 足以检查新建环；恢复旧定义可保证拒绝操作不改变状态。GET 递归使用同一环检测，因此未定义引用也能返回 ERROR。\n\n## 复杂度\n\n设单元格数为 V、引用总数为 E；每条命令 O(V+E)，空间 O(V+E)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    commands=raw.splitlines();cells={};out=[]\n    def cyclic(start):\n        active=set();done=set()\n        def visit(label):\n            if label in active:return True\n            if label not in cells or label in done:return False\n            active.add(label);found=any(visit(t.strip()) for t in cells[label].split('+') if not t.strip().isdigit());active.remove(label);done.add(label);return found\n        return visit(start)\n    def evaluate(label,active,memo):\n        if label not in cells or label in active:raise ValueError\n        if label in memo:return memo[label]\n        active.add(label);value=sum(int(t.strip()) if t.strip().isdigit() else evaluate(t.strip(),active,memo) for t in cells[label].split('+'));active.remove(label);memo[label]=value;return value\n    for command in commands:\n        if not command:continue\n        op,rest=command.split(' ',1)\n        if op=='GET':\n            try:out.append(str(evaluate(rest.strip(),set(),{})))\n            except (ValueError,RecursionError):out.append('ERROR')\n        else:\n            label,expr=rest.split(' ',1);old=cells.get(label);cells[label]=expr\n            try:\n                if cyclic(label):raise ValueError\n                out.append('OK')\n            except (ValueError,RecursionError):\n                if old is None:cells.pop(label,None)\n                else:cells[label]=old\n                out.append('ERROR')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-juspay-1",
+      "sourceContentHash": "acf7d0f9a3830f8d772574bc18cd53eab0d01835e7e76435122e0762af50e4d0",
+      "packageChecksum": "d4901015fd6e553078fb4606883bf206bdc10ebe64c427d6a98ba072c952dc66",
+      "editorial": "## 思路\n\n逐个起点沿唯一后继前进，记录当前路径中每个节点的下标；再次遇到当前路径节点时，计算新环节点和。整轮完成后标记路径已处理。\n\n## 正确性证明\n\n函数图中的每个节点出度至多为1。当前路径重复节点恰好切出一个有向环；不同已完成路径不会再发现新环。每个节点只进入一次工作路径，因此所有环均被检查一次并取最大值。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];edges=v[1:1+n];done=[False]*n;best=-1\n    for start in range(n):\n        if done[start]:continue\n        path=[];index={};node=start\n        while node!=-1 and not done[node] and node not in index:\n            index[node]=len(path);path.append(node);node=edges[node]\n        if node!=-1 and node in index:best=max(best,sum(path[index[node]:]))\n        for u in path:done[u]=True\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-money-forward-2",
+      "sourceContentHash": "7d3c8483d9329524ba1a12261daf4cb49e22391ad85c68cb6cc27f056ab90c82",
+      "packageChecksum": "3b79cf33b49499fe9f361cf42372bb214a297ee2d043ed8c384c6bbfc8d9d7f6",
+      "editorial": "## 思路\n\n按转录逐步模拟一维棋盘。在落子方向上寻找最近的同色棋子，翻转其与新棋子之间的棋子。\n\n## 正确性证明\n\n每个转录字符唯一确定落子颜色和棋盘端点。题目规定只有最近同色棋子存在时才翻转中间区间；逐步维护整个棋串因而与规则完全一致。\n\n## 复杂度\n\n时间 O(|S|²)，空间 O(|S|)；本站将长度限制在3000以适配直接模拟。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    transcript=raw.strip();board=['B','W']\n    for turn,side in enumerate(transcript):\n        color='B' if turn%2==0 else 'W'\n        if side=='L':\n            board.insert(0,color)\n            try:target=board.index(color,1)\n            except ValueError:continue\n            for i in range(1,target):board[i]=color\n        else:\n            board.append(color)\n            try:target=len(board)-2-board[-2::-1].index(color)\n            except ValueError:continue\n            for i in range(target+1,len(board)-1):board[i]=color\n    return f'{board.count(\"B\")} {board.count(\"W\")}'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-persona-3",
+      "sourceContentHash": "648a6110ae538e621002ad6c1bb1fa72dd7542f5702c8fbc9a20ab06948dc63f",
+      "packageChecksum": "8e28de194efd53eb56290dbd145ae72c7138fbcd2705d152a6919ddbf177b8a9",
+      "editorial": "## 思路\n\n先从 start BFS 得各格最短距离；按距离递增做 DP，只从距离小1的邻格转移，记录到达该格的最短路径中最大宝藏数。\n\n## 正确性证明\n\nBFS 得到的距离使所有最短路径边从 d 到 d+1，构成有向无环图。按距离递增时，DP 已考虑所有最短前驱，取最大值即是到该格的最短路最大宝藏数。出口的距离和 DP 值正是所求。\n\n## 复杂度\n\n时间 O(rows·cols)，空间 O(rows·cols)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    from collections import deque\n    v=list(map(int,raw.split()));it=iter(v);rows=next(it);cols=next(it);w=set((next(it),next(it)) for _ in range(next(it)));t=set((next(it),next(it)) for _ in range(next(it)));start=(next(it),next(it));end=(next(it),next(it))\n    if start in w or end in w:return '-1 0'\n    dist={start:0};best={start:int(start in t)};q=deque([start]);dirs=((1,0),(-1,0),(0,1),(0,-1))\n    while q:\n        r,c=q.popleft()\n        for dr,dc in dirs:\n            z=(r+dr,c+dc)\n            if not(0<=z[0]<rows and 0<=z[1]<cols) or z in w:continue\n            if z not in dist:dist[z]=dist[(r,c)]+1;best[z]=best[(r,c)]+int(z in t);q.append(z)\n            elif dist[z]==dist[(r,c)]+1:best[z]=max(best[z],best[(r,c)]+int(z in t))\n    return f'{dist[end]} {best[end]}' if end in dist else '-1 0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ukg-1",
+      "sourceContentHash": "64da5fd334269ab5f9f08eaa8889395a1cb332b36947b303d23a0971799b03db",
+      "packageChecksum": "81a5a9e0a43cb6e2d1a4b469d0c3b474752693e39dcfd3f07c964e92201e8d95",
+      "editorial": "## 思路\n\n从根开始遍历。记录祖先操作分别对偶数编号、奇数编号节点造成的翻转奇偶数；当前节点仍不匹配时必须在此执行一次操作。\n\n## 正确性证明\n\n节点 u 的值只会被其祖先中与 u 编号同奇偶的操作影响。遍历到 u 时这些影响已确定；若仍与目标不同，不在 u 操作便无法由任何后代影响 u，因此此操作是必要的。执行后递归更新同奇偶后代状态，得到唯一贪心方案。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];edges=[(v[1+2*i],v[2+2*i]) for i in range(n-1)];p=1+2*(n-1);initial=v[p:p+n];expected=v[p+n:p+2*n];adj=[[] for _ in range(n)]\n    for a,b in edges:adj[a].append(b);adj[b].append(a)\n    stack=[(0,-1,0,0)];answer=0\n    while stack:\n        u,parent,even_flip,odd_flip=stack.pop();parity=u%2;current=even_flip if parity==0 else odd_flip\n        if initial[u]^current!=expected[u]:\n            if parity==0:even_flip^=1\n            else:odd_flip^=1\n            answer+=1\n        for child in adj[u]:\n            if child!=parent:stack.append((child,u,even_flip,odd_flip))\n    return str(answer)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-xperi-1",
+      "sourceContentHash": "3b6024104fab3bce3178b7bafbee959216afdfc2dc25859de2fed028305d415f",
+      "packageChecksum": "20809533de9404ef405b7fe337d57c0d17e653a55bb32b4384c517813220eeee",
+      "editorial": "## 思路\n\n维护 0..63 的异或状态 DP。每增加一个元素，就把每个旧状态分别转移到 old XOR value，其中 value∈[0,M]。\n\n## 正确性证明\n\nDP[i][x] 表示前 i 个位置异或为 x 的序列数。末尾元素取值唯一确定前一状态 x XOR value；逐值求和枚举所有合法末尾数，因此转移不重不漏。答案为 DP[N][X]。\n\n## 复杂度\n\n时间 O(N·64·(M+1))，空间 O(64)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    n,m,target=map(int,raw.split());mod=998244353;dp=[0]*64;dp[0]=1\n    for _ in range(n):\n        nxt=[0]*64\n        for old,ways in enumerate(dp):\n            for value in range(m+1):nxt[old^value]=(nxt[old^value]+ways)%mod\n        dp=nxt\n    return str(dp[target])\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-zalando-2",
+      "sourceContentHash": "b6e0942423718d045aa9eec5eb3a3866961a05e4cc50a8cbda8e904382382d1d",
+      "packageChecksum": "3361403376dcfe7d50129670795631e3b40fe4cd4c9b8e30b577ef1812813989",
+      "editorial": "## 思路\n\n从左到右维护栈。若新字符与栈顶构成 A/B 或 C/D 的异类配对则弹栈，否则压栈。\n\n## 正确性证明\n\n规则等价于两组互逆符号 A↔B、C↔D 的相邻约简。栈算法只保留已处理前缀的约简形式；新字符至多与栈顶消去，递归消去已由栈处理。该逆元字母表的约简形式唯一，因此输出是合法且不可再约简的结果。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    stack=[]\n    for ch in raw.strip():\n        if stack and ((stack[-1] in 'AB' and ch in 'AB' and stack[-1]!=ch) or (stack[-1] in 'CD' and ch in 'CD' and stack[-1]!=ch)):\n            stack.pop()\n        else:stack.append(ch)\n    return ''.join(stack)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

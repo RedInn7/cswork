@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-abaka-ai-1",
+  "title": "Task Scheduling (Parallel Same-Type with Memory Limit)",
+  "explanation": "## 思路\n\n按 taskType 分组。每组内存排序后从最小和最大开始配对；和不超过上限时成对并行，否则最大任务只能单独运行。\n\n## 正确性证明\n\n若当前最大任务无法与该组最小任务配对，则它也无法与任一更大的任务配对，必须单独处理。若二者可配，最优方案可交换为这对而不减少配对数；反复执行即达到该组最大配对数，各组互不影响。\n\n## 复杂度\n\n时间 O(N log N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import defaultdict\n    v=list(map(int,raw.split()));n,limit=v[:2];memory=v[2:2+n];kind=v[2+n:2+2*n];groups=defaultdict(list)\n    for m,t in zip(memory,kind):groups[t].append(m)\n    pairs=0\n    for values in groups.values():\n        values.sort();left=0;right=len(values)-1\n        while left<right:\n            if values[left]+values[right]<=limit:pairs+=1;left+=1\n            right-=1\n    return str(n-pairs)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/abaka-ai#1-task-scheduling-parallel-same-type-with-memory-limit",
+  "sourceContentHash": "d4357c2677d6be65612c58bfa9f2f9ef30847fef8e5d26b2db448de464cf4e4f",
+  "author": "CSWork"
+}

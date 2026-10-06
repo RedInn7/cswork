@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排序后相邻配对",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n,k=v[:2];a=v[2:2+n];p=sorted(v[2+n:2+n+k]);prefix=[0]\n    for x in a:prefix.append(prefix[-1]+x)\n    total=0\n    for i in range(k//2):total+=prefix[p[2*i+1]+1]-prefix[p[2*i]]\n    return str(total%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "区间右端误用半开",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n,k=v[:2];a=v[2:2+n];p=sorted(v[2+n:2+n+k]);prefix=[0]\n    for x in a:prefix.append(prefix[-1]+x)\n    total=0\n    for i in range(k//2):total+=prefix[p[k-1-i]]-prefix[p[i]]\n    return str(total%1000000007)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

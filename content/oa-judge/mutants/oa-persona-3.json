@@ -1,0 +1,10 @@
+[
+  {
+    "name": "选取较晚到达出口的路径",
+    "code": "def solve(raw):\n    from collections import deque\n    v=list(map(int,raw.split()));it=iter(v);rows=next(it);cols=next(it);w=set((next(it),next(it)) for _ in range(next(it)));t=set((next(it),next(it)) for _ in range(next(it)));start=(next(it),next(it));end=(next(it),next(it))\n    if start in w or end in w:return '-1 0'\n    dist={start:0};best={start:int(start in t)};q=deque([start]);dirs=((1,0),(-1,0),(0,1),(0,-1))\n    while q:\n        r,c=q.popleft()\n        for dr,dc in dirs:\n            z=(r+dr,c+dc)\n            if not(0<=z[0]<rows and 0<=z[1]<cols) or z in w:continue\n            if z not in dist:dist[z]=dist[(r,c)]+1;best[z]=best[(r,c)]+int(z in t);q.append(z)\n            elif dist[z]==dist[(r,c)]+1:best[z]=best[(r,c)]+int(z in t)\n    return f'{dist[end]} {best[end]}' if end in dist else '-1 0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "不计起点宝藏",
+    "code": "def solve(raw):\n    from collections import deque\n    v=list(map(int,raw.split()));it=iter(v);rows=next(it);cols=next(it);w=set((next(it),next(it)) for _ in range(next(it)));t=set((next(it),next(it)) for _ in range(next(it)));start=(next(it),next(it));end=(next(it),next(it))\n    if start in w or end in w:return '-1 0'\n    dist={start:0};best={start:0};q=deque([start]);dirs=((1,0),(-1,0),(0,1),(0,-1))\n    while q:\n        r,c=q.popleft()\n        for dr,dc in dirs:\n            z=(r+dr,c+dc)\n            if not(0<=z[0]<rows and 0<=z[1]<cols) or z in w:continue\n            if z not in dist:dist[z]=dist[(r,c)]+1;best[z]=best[(r,c)]+int(z in t);q.append(z)\n            elif dist[z]==dist[(r,c)]+1:best[z]=max(best[z],best[(r,c)]+int(z in t))\n    return f'{dist[end]} {best[end]}' if end in dist else '-1 0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

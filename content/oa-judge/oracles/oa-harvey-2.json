@@ -1,0 +1,482 @@
+[
+  {
+    "input": "SET A1 7\nGET A1\n",
+    "expectedOutput": "OK\n7\n"
+  },
+  {
+    "input": "SET A1 B1\nGET A1\nSET B1 4\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nOK\n4\n"
+  },
+  {
+    "input": "SET A1 B1\nSET B1 A1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 18\nGET B1\nSET A1 B1+2\nSET A1 B1+2\nGET B1\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nOK\nOK\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 2\nGET B1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\n2\n2\n"
+  },
+  {
+    "input": "SET A1 6\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 4\nGET B1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 16\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 3\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 11\nSET A1 B1+2\nSET B1 A1+1\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 19\nGET A1\nGET B1\nSET B1 A1+1\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\n19\nERROR\nOK\nERROR\n20\n"
+  },
+  {
+    "input": "SET A1 20\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nGET B1\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\n21\n21\n21\n21\n"
+  },
+  {
+    "input": "SET A1 15\nSET B1 A1+1\nSET B1 A1+1\nGET B1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nOK\n16\n15\n"
+  },
+  {
+    "input": "SET A1 19\nGET A1\nGET A1\nSET B1 A1+1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n19\n19\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 0\nGET B1\nSET B1 A1+1\nGET B1\nGET B1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nOK\n1\n1\n0\n"
+  },
+  {
+    "input": "SET A1 15\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\n"
+  },
+  {
+    "input": "SET A1 20\nSET B1 A1+1\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nOK\n21\n"
+  },
+  {
+    "input": "SET A1 16\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nGET A1\nSET B1 A1+1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nERROR\n17\n16\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 10\nSET A1 B1+2\nSET B1 A1+1\nGET A1\nSET B1 A1+1\nGET A1\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 12\nGET B1\nSET B1 A1+1\nSET B1 A1+1\nGET B1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nOK\nOK\n13\n12\n"
+  },
+  {
+    "input": "SET A1 8\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 20\nSET A1 B1+2\nGET B1\nSET A1 B1+2\nGET A1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 2\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 5\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\n"
+  },
+  {
+    "input": "SET A1 8\nSET B1 A1+1\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\n9\n"
+  },
+  {
+    "input": "SET A1 20\nSET A1 B1+2\nSET B1 A1+1\nGET B1\nSET A1 B1+2\nGET B1\nSET B1 A1+1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nOK\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 0\nGET A1\nGET B1\nGET B1\nSET A1 B1+2\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\n0\nERROR\nERROR\nOK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 0\nSET A1 B1+2\nGET B1\nGET A1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 10\nGET A1\nSET A1 B1+2\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\n10\nOK\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 19\nSET A1 B1+2\nSET A1 B1+2\nGET A1\nGET A1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\nERROR\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 14\nSET B1 A1+1\nGET A1\nGET B1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\n14\n15\n14\nOK\n"
+  },
+  {
+    "input": "SET A1 4\nSET B1 A1+1\nSET A1 B1+2\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\n4\n"
+  },
+  {
+    "input": "SET A1 13\nSET B1 A1+1\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 3\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\n"
+  },
+  {
+    "input": "SET A1 13\nGET A1\n",
+    "expectedOutput": "OK\n13\n"
+  },
+  {
+    "input": "SET A1 19\nSET B1 A1+1\nGET B1\nSET A1 B1+2\nGET A1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\nOK\n20\nERROR\n19\n19\n19\n"
+  },
+  {
+    "input": "SET A1 3\nSET B1 A1+1\nSET B1 A1+1\nGET A1\nSET A1 B1+2\nGET B1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nOK\n3\nERROR\n4\n3\n"
+  },
+  {
+    "input": "SET A1 6\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 13\nSET A1 B1+2\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 12\nGET B1\nGET B1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nERROR\n12\n"
+  },
+  {
+    "input": "SET A1 20\nSET A1 B1+2\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 7\nSET B1 A1+1\nGET A1\nGET B1\n",
+    "expectedOutput": "OK\nOK\n7\n8\n"
+  },
+  {
+    "input": "SET A1 14\nGET A1\nSET A1 B1+2\nGET A1\nGET B1\nGET A1\nGET A1\nGET B1\n",
+    "expectedOutput": "OK\n14\nOK\nERROR\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 12\nGET A1\nSET B1 A1+1\nSET B1 A1+1\nSET A1 B1+2\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\n12\nOK\nOK\nERROR\nERROR\n13\n"
+  },
+  {
+    "input": "SET A1 10\nSET A1 B1+2\nGET A1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 9\nGET B1\nGET B1\nSET B1 A1+1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nERROR\nERROR\nOK\n9\nOK\n"
+  },
+  {
+    "input": "SET A1 6\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\nOK\n7\n"
+  },
+  {
+    "input": "SET A1 9\nGET B1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 2\nSET B1 A1+1\nSET A1 B1+2\nGET A1\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\n2\n3\n3\n"
+  },
+  {
+    "input": "SET A1 5\nSET B1 A1+1\nSET B1 A1+1\nSET A1 B1+2\nGET A1\nGET A1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\nERROR\n5\n5\nERROR\n"
+  },
+  {
+    "input": "SET A1 7\nSET A1 B1+2\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 8\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\n"
+  },
+  {
+    "input": "SET A1 2\nGET A1\nGET A1\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\n2\n2\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 14\nGET A1\nSET B1 A1+1\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n14\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 0\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n0\nOK\n"
+  },
+  {
+    "input": "SET A1 15\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\n"
+  },
+  {
+    "input": "SET A1 14\nGET B1\nGET B1\nSET A1 B1+2\nSET B1 A1+1\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\nERROR\nERROR\nOK\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 2\nGET B1\nGET A1\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\nERROR\n2\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 6\nGET A1\nGET B1\nGET B1\nGET A1\nSET A1 B1+2\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n6\nERROR\nERROR\n6\nOK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 0\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nOK\n0\n"
+  },
+  {
+    "input": "SET A1 8\nSET B1 A1+1\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 11\nGET B1\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nERROR\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 19\nGET B1\nGET B1\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nERROR\nERROR\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 0\nGET A1\nSET B1 A1+1\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n0\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 9\nSET B1 A1+1\nSET A1 B1+2\nSET B1 A1+1\nSET B1 A1+1\nSET B1 A1+1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\nOK\nOK\n9\n9\n"
+  },
+  {
+    "input": "SET A1 15\nGET A1\nGET A1\nSET B1 A1+1\nSET A1 B1+2\nSET B1 A1+1\nGET A1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\n15\n15\nOK\nERROR\nOK\n15\nERROR\n"
+  },
+  {
+    "input": "SET A1 14\nSET B1 A1+1\nGET B1\nGET B1\nGET B1\nGET B1\nGET A1\n",
+    "expectedOutput": "OK\nOK\n15\n15\n15\n15\n14\n"
+  },
+  {
+    "input": "SET A1 16\nGET A1\nGET A1\nSET B1 A1+1\nGET A1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n16\n16\nOK\n16\n16\nOK\n"
+  },
+  {
+    "input": "SET A1 2\nSET B1 A1+1\nGET B1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\n3\nERROR\n"
+  },
+  {
+    "input": "SET A1 20\nSET A1 B1+2\nGET A1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 13\nSET B1 A1+1\nGET B1\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\nOK\n14\nERROR\n14\n"
+  },
+  {
+    "input": "SET A1 12\nGET B1\n",
+    "expectedOutput": "OK\nERROR\n"
+  },
+  {
+    "input": "SET A1 1\nGET B1\nSET B1 A1+1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nERROR\nOK\n1\nOK\n"
+  },
+  {
+    "input": "SET A1 4\nSET A1 B1+2\nSET B1 A1+1\nSET B1 A1+1\nGET B1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 14\nSET B1 A1+1\nGET A1\nSET B1 A1+1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\n14\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 4\nGET B1\n",
+    "expectedOutput": "OK\nERROR\n"
+  },
+  {
+    "input": "SET A1 14\nGET A1\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nGET A1\nSET B1 A1+1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n14\nOK\nERROR\n15\n14\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 15\nGET A1\nSET A1 B1+2\nGET A1\nSET B1 A1+1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\n15\nOK\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 10\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 18\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 15\nGET A1\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n15\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 20\nSET A1 B1+2\nSET B1 A1+1\nGET B1\nSET A1 B1+2\nGET B1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 6\nGET B1\nGET B1\nSET A1 B1+2\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nERROR\nERROR\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 15\nGET A1\nGET B1\nGET B1\nGET A1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\n15\nERROR\nERROR\n15\n15\n15\n"
+  },
+  {
+    "input": "SET A1 14\nGET B1\nSET B1 A1+1\nGET A1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nOK\n14\n14\n14\n"
+  },
+  {
+    "input": "SET A1 20\nSET B1 A1+1\nSET B1 A1+1\nGET A1\nGET B1\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\n20\n21\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 18\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nOK\n18\n"
+  },
+  {
+    "input": "SET A1 17\nSET B1 A1+1\nGET B1\nSET B1 A1+1\nSET B1 A1+1\nGET A1\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\nOK\n18\nOK\nOK\n17\nOK\n18\n"
+  },
+  {
+    "input": "SET A1 16\nGET B1\nGET A1\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nERROR\n16\nOK\nERROR\n17\nOK\n"
+  },
+  {
+    "input": "SET A1 0\nSET B1 A1+1\nGET B1\nSET B1 A1+1\nGET B1\nGET B1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\n1\nOK\n1\n1\nOK\n"
+  },
+  {
+    "input": "SET A1 1\nGET B1\nGET A1\nSET A1 B1+2\nGET A1\nGET A1\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nERROR\n1\nOK\nERROR\nERROR\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 0\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\n"
+  },
+  {
+    "input": "SET A1 9\nSET B1 A1+1\nGET A1\nGET B1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\n9\n10\n9\nOK\n"
+  },
+  {
+    "input": "SET A1 8\nGET A1\nSET B1 A1+1\nGET B1\nSET A1 B1+2\nSET B1 A1+1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n8\nOK\n9\nERROR\nOK\n8\nOK\n"
+  },
+  {
+    "input": "SET A1 3\nGET B1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 18\nGET A1\nSET B1 A1+1\nGET B1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\n18\nOK\n19\nOK\n"
+  },
+  {
+    "input": "SET A1 2\nSET A1 B1+2\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 7\nSET A1 B1+2\nSET B1 A1+1\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 12\nSET A1 B1+2\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 7\nGET A1\nSET A1 B1+2\nSET A1 B1+2\nGET A1\nGET A1\nSET B1 A1+1\nGET B1\n",
+    "expectedOutput": "OK\n7\nOK\nOK\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 16\nSET B1 A1+1\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nOK\nERROR\n17\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 7\nSET A1 B1+2\nSET A1 B1+2\nGET A1\nGET B1\nGET A1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nOK\nOK\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 19\nGET B1\nGET A1\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\nERROR\n19\n19\n19\n"
+  },
+  {
+    "input": "SET A1 9\nGET A1\n",
+    "expectedOutput": "OK\n9\n"
+  },
+  {
+    "input": "SET A1 13\nSET A1 B1+2\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 7\nSET A1 B1+2\nSET B1 A1+1\nSET A1 B1+2\nSET B1 A1+1\nGET A1\nGET A1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 14\nGET A1\nGET A1\n",
+    "expectedOutput": "OK\n14\n14\n"
+  },
+  {
+    "input": "SET A1 8\nGET B1\nSET B1 A1+1\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nERROR\nOK\n9\n9\n"
+  },
+  {
+    "input": "SET A1 2\nGET B1\nSET A1 B1+2\nSET A1 B1+2\nGET A1\n",
+    "expectedOutput": "OK\nERROR\nOK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 7\nSET B1 A1+1\nGET A1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\nOK\n7\nERROR\n"
+  },
+  {
+    "input": "SET A1 7\nGET A1\nGET B1\nGET B1\nSET A1 B1+2\nSET B1 A1+1\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\n7\nERROR\nERROR\nOK\nERROR\nOK\nOK\n"
+  },
+  {
+    "input": "SET A1 0\nSET B1 A1+1\nSET A1 B1+2\nGET B1\nSET B1 A1+1\nGET A1\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nOK\nERROR\n1\nOK\n0\nOK\n0\n"
+  },
+  {
+    "input": "SET A1 19\nGET A1\n",
+    "expectedOutput": "OK\n19\n"
+  },
+  {
+    "input": "SET A1 2\nSET A1 B1+2\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 3\nGET A1\nGET B1\nSET B1 A1+1\nSET A1 B1+2\n",
+    "expectedOutput": "OK\n3\nERROR\nOK\nERROR\n"
+  },
+  {
+    "input": "SET A1 10\nSET A1 B1+2\nGET B1\nGET B1\nGET B1\nGET B1\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nERROR\nERROR\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 11\nGET A1\nSET B1 A1+1\nGET A1\nGET A1\nSET A1 B1+2\nSET A1 B1+2\nSET A1 B1+2\n",
+    "expectedOutput": "OK\n11\nOK\n11\n11\nERROR\nERROR\nERROR\n"
+  },
+  {
+    "input": "SET A1 20\nGET B1\nGET B1\nSET B1 A1+1\n",
+    "expectedOutput": "OK\nERROR\nERROR\nOK\n"
+  },
+  {
+    "input": "SET A1 1\nSET B1 A1+1\nGET A1\n",
+    "expectedOutput": "OK\nOK\n1\n"
+  },
+  {
+    "input": "SET A1 2\nSET A1 B1+2\nGET A1\nSET A1 B1+2\nGET B1\nGET B1\nGET B1\n",
+    "expectedOutput": "OK\nOK\nERROR\nOK\nERROR\nERROR\nERROR\n"
+  }
+]

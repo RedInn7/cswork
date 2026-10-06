@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略相邻车辆重量之和",
+    "code": "def solve(raw):\n    from bisect import bisect_right\n    values=list(map(int,raw.split()));limit,n=values[:2];weights=values[2:2+n]\n    coords=sorted(set(weights));tree=[0]*(len(coords)+1);best=0\n    def query(i):\n        value=0\n        while i:\n            value=max(value,tree[i]);i-=i&-i\n        return value\n    def update(i,value):\n        while i<len(tree):\n            tree[i]=max(tree[i],value);i+=i&-i\n    for weight in weights:\n        if weight<=limit:\n            prior=query(len(coords))\n            length=prior+1;update(bisect_right(coords,weight),length);best=max(best,length)\n    return str(n-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误地允许超重单车上桥",
+    "code": "def solve(raw):\n    from bisect import bisect_right\n    values=list(map(int,raw.split()));limit,n=values[:2];weights=values[2:2+n]\n    coords=sorted(set(weights));tree=[0]*(len(coords)+1);best=0\n    def query(i):\n        value=0\n        while i:\n            value=max(value,tree[i]);i-=i&-i\n        return value\n    def update(i,value):\n        while i<len(tree):\n            tree[i]=max(tree[i],value);i+=i&-i\n    for weight in weights:\n        if True:\n            prior=query(bisect_right(coords,limit-weight))\n            length=prior+1;update(bisect_right(coords,weight),length);best=max(best,length)\n    return str(n-best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

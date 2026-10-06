@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hackerearth-2",
+  "title": "The Prom",
+  "explanation": "## 思路\n\n用栈保存尚未配对的女生编号。遇到男生弹出栈顶，没有女生时输出 -1。\n\n## 正确性证明\n\n离队后仍在队伍中的女生保持原先次序，因此最近的未配对前置女生恰为栈顶。每位女生只入栈、出栈一次，逐男生处理即得到所有配对。\n\n## 复杂度\n\n时间 O(N)，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=raw.split();n=int(v[0]);s=v[1];girls=[];out=[]\n    for i,ch in enumerate(s[:n],1):\n        if ch=='0':girls.append(i)\n        else:out.append(str(girls.pop() if girls else -1))\n    return ' '.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hackerearth#2-the-prom",
+  "sourceContentHash": "f47911d3d21fb61f08f7679b190300323381aa7a6bd7282abbf2d18855837de2",
+  "author": "CSWork"
+}

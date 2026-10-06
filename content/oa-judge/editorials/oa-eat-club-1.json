@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-eat-club-1",
+  "title": "Newton's Beautiful Sequence",
+  "explanation": "## 思路\n\n固定左端点逐步扩展右端，维护已出现值的位集合。插入新值时找到其前驱和后继，更新缺口大于1的相邻值对数；单元素子数组额外计1。\n\n## 正确性证明\n\n排序后相邻不同值恰是值域有序集合中的相邻出现值。插入一个新值只可能拆开其前驱与后继之间的一个相邻关系，并加入与两侧的关系；位集合确定的前驱后继因此能增量准确维护每个子数组的 gap 贡献。枚举所有连续区间即得到总和。\n\n## 复杂度\n\n时间 O(N²) 次值域位运算，空间 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    v=list(map(int,raw.split()));n=v[0];a=v[1:1+n];total=0;mod=1000000007\n    for left in range(n):\n        mask=0;gaps=0\n        for right in range(left,n):\n            value=a[right];bit=1<<(value-1)\n            if not mask&bit:\n                below=mask&(bit-1);pred=below.bit_length();above=mask>>(value)\n                succ=value+1+((above&-above).bit_length()-1) if above else None\n                if pred and succ is not None and succ-pred>1:gaps-=1\n                if pred and value-pred>1:gaps+=1\n                if succ is not None and succ-value>1:gaps+=1\n                mask|=bit\n            length=right-left+1;total+=(1 if length==1 else gaps)\n    return str(total%mod)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/eat-club#1-newtons-beautiful-sequence",
+  "sourceContentHash": "32b52a05756fa3a1346ddcb0f5c9119131a3bc5b31cc5099e3e7aec01c09d9fa",
+  "author": "CSWork"
+}
