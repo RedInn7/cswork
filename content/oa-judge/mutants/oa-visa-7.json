@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按 4×4 子块遍历顺序回填",
+    "code": "def solve(raw):\n d=list(map(int,raw.split())); n=d[0];N=4*n;m=[d[1+r*N:1+(r+1)*N] for r in range(N)];pos=[];vals=[]\n for bi in range(n):\n  for bj in range(n):\n   s=0;where=None\n   for i in range(4):\n    for j in range(4):\n     r=4*bi+i;c=4*bj+j\n     if m[r][c]==-1:where=(r,c)\n     else:s+=m[r][c]\n   pos.append(where);vals.append(136-s)\n for (r,c),v in zip(pos,sorted(vals)):m[r][c]=v\n return \"\\n\".join(\" \".join(map(str,row)) for row in m)\n"
+  },
+  {
+    "name": "不排序，按块顺序直接写入全局行优先位置",
+    "code": "def solve(raw):\n d=list(map(int,raw.split())); n=d[0];N=4*n;m=[d[1+r*N:1+(r+1)*N] for r in range(N)];vals=[]\n for bi in range(n):\n  for bj in range(n):\n   s=sum(m[4*bi+i][4*bj+j] for i in range(4) for j in range(4) if m[4*bi+i][4*bj+j]!=-1);vals.append(136-s)\n pos=[(r,c) for r in range(N) for c in range(N) if m[r][c]==-1]\n for (r,c),v in zip(pos,vals):m[r][c]=v\n return \"\\n\".join(\" \".join(map(str,row)) for row in m)\n"
+  }
+]

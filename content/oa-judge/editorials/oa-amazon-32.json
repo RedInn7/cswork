@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-32",
+  "title": "Domino Removal Problem",
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#32-domino-removal-problem",
+  "sourceContentHash": "d57f3152741908c6689196515009b51d5b71a6e52f3add83f0af0573c1328a9e",
+  "author": "CSWork",
+  "explanation": "## 思路\n\n设 f(k) 为按 remove 顺序删除前 k 张后，剩余 dominos 的严格 LIS 长度。删去元素不会增加 LIS，所以条件 f(k)≥min_order 关于 k 单调，可以二分最大可行 k。对每个 k 以 bytearray 标记存活位置，再扫描原数组，用 patience sorting 维护严格 LIS 的 tails。\n\n## 正确性\n\n固定 k 时，剩余位置恰是 remove[k:] 指向的位置，扫描时维持原数组顺序；bisect_left 将相等值替换在同一 tails 长度，不会把重复值拼成严格递增子序列，因此判定值就是该剩余序列的 LIS 长度。若 k 可行，则任意更小删除数的存活集合包含当前集合，LIS 不小于当前值；若 k 不可行，则任何更大的删除数也不可能可行。因此可行 k 构成从 0 开始的前缀，二分返回其最大端点。\n\n若 k=0 已不可行，源题所求可行集合为空，没有定义返回值。本站明确补充输出 -1；不把这一补充说成原题规则。\n\n## 复杂度\n\n单次检查 O(n log n)，二分 O(log n) 次，整体 O(n log²n) 时间，O(n) 空间。\n\n## 来源与本站协议\n\n固定 OAMaster 题面规定 remove 是 0-based 的 [0..n-1] 排列，domino 按原顺序保留，门槛针对严格 LIS。本站补充输入布局；对原题未定义的“初始 LIS 已低于门槛”情形规定输出 -1。"
+}

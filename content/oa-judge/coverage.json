@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 2,
-    "blocked": 542,
+    "awaiting_sandbox": 4,
+    "blocked": 540,
     "unreviewed": 0
   },
   "items": [
@@ -957,8 +957,9 @@
     {
       "id": "oa-amazon-32",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "没有约定初始最长严格递增子序列不足min_order时的返回值；约束允许此情况，例如[2,1],min_order=2，无合法k。"
+      "status": "awaiting_sandbox",
+      "batch": "amazon-32-recovered",
+      "reason": "固定题面完整，本站仅补充原题未定义的无解输出：若初始 LIS < min_order 则输出 -1，并在题面标明这不是原题约定。123 个互异的子序列穷举 oracle 输入、33 个正式用例（包括重复值、初始无解、随机及 n=100000 压力）和两个正常退出错误程序均通过本地验证；仍待真实 GoJudge 沙箱验证。"
     },
     {
       "id": "oa-amazon-33",
@@ -7189,8 +7190,9 @@
     {
       "id": "oa-visa-7",
       "company": "visa",
-      "status": "blocked",
-      "reason": "题面要求按缺失单元格的全矩阵 row-major 次序回填；来源实现按 4×4 子块顺序记录位置，两者不等价，样例不能消除差异。"
+      "status": "awaiting_sandbox",
+      "batch": "visa-7-recovered",
+      "reason": "以固定上游题面步骤2的全矩阵 row-major 文字规则为准；上游参考实现按子块顺序的差异已明确披露。原题没有 n 上限，本站补充 n≤100 以满足现有 OJ 输入/输出资源限制；候选已通过独立集合oracle和位置顺序反例验证，仍待真实 GoJudge 沙箱。"
     },
     {
       "id": "oa-visa-8",

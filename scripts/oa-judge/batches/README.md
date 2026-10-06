@@ -34,3 +34,7 @@
 `python3 scripts/oa-judge/batches/twilio_1_recovered.py` 重写 Twilio #1 的超限参考算法为 Mo 区间查询，只生成 `twilio-1-recovered` 离线候选。203 个独立 brute-oracle 输入、33 个正式用例（含 n=q=100000 压力）和两个正常退出 mutant 本地验证；未连接 GoJudge，也未进入正式批次或 runtime registry。
 
 `python3 scripts/oa-judge/batches/google_29_recovered.py` 为 Google #29 重写最小树直径解法，只生成 `google-29-recovered` 离线候选。2,500 棵小树随机差分、120 个独立穷举 oracle、26 个正式用例和两个被拒绝的错误控制通过；长链/星形各 n=100000 压力测试约 9.3s/1.6s。源约束与 k=0 样例冲突，候选明确修正为 `0≤k<n`。尚未连接目标 GoJudge。
+
+`python3 scripts/oa-judge/batches/amazon_32_recovered.py` 为 Amazon #32 按二分 + LIS 重写参考解，只生成 `amazon-32-recovered` 离线候选。123 个子序列穷举 oracle、33 个正式用例（含重复值、初始无解和 n=100000 压力）及两个错误控制均通过。原题未定义初始 LIS 不达标时的输出；本站明确补充为 `-1`，不称作原题规则。尚未连接目标 GoJudge。
+
+`python3 scripts/oa-judge/batches/visa_7_recovered.py` 按 Visa #7 题面要求的全局 row-major 次序修复上游参考实现的 4×4 子块顺序错误。163 条 oracle、256 个单块穷举、8 个正式用例（含 n=100）及两个错误控制通过。原题没给 n 上限，本站补充 `n≤100` 与 stdin/stdout 协议；尚未连接目标 GoJudge。
