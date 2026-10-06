@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-zolostays-1",
+  "title": "区间和计数（Zolostays OA）",
+  "explanation": "## 为什么正确\n\n令 `prefix[0]=0`，`prefix[j]` 表示前 j 个数之和。以 j 结尾的连续子数组和为 `prefix[j]-prefix[i]`，其中 `i<j`。要让和落在闭区间 `[lower, upper]`，需满足 `prefix[i]+lower <= prefix[j] <= prefix[i]+upper`。\n\n对前缀和做归并排序。在左右两段各自有序时，固定左段的 `prefix[i]`，用两个单调指针统计右段中差值落入闭区间的元素个数；再合并两段。每个递归层处理 O(n) 个元素，总时间 O(n log n)，空间 O(n)。\n\n## 样例勘误\n\n固定来源对样例 2 只写了“有 8 个”，没有列出区间；按题目明确定义直接枚举全部连续子数组，和处于 `[-2, 6]` 的共有 13 个。输入和题意不改，只将该样例输出由 8 更正为 13。样例 1 与样例 3 的答案分别仍为 3 和 12。\n\n## 本站输入格式\n\n第一行 n，第二行 n 个整数，第三行 lower 和 upper。本站将 n 限定为 `1..50000`，数组元素和边界取 32 位有符号整数，且 `lower<=upper`；该大小限制保证结果最大值 `n(n+1)/2` 可由 32 位有符号输出容纳。原固定来源没有给出约束，因此这些是本站为了定义可执行接口与数值范围所加的边界，不冒充来源约束。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef count_range_sum(arr, lower, upper):\n    prefix = [0]\n    for value in arr:\n        prefix.append(prefix[-1] + value)\n    scratch = [0] * len(prefix)\n\n    def sort_count(lo, hi):\n        if hi - lo <= 1:\n            return 0\n        mid = (lo + hi) // 2\n        count = sort_count(lo, mid) + sort_count(mid, hi)\n        left_bound = right_bound = mid\n        for i in range(lo, mid):\n            while left_bound < hi and prefix[left_bound] - prefix[i] < lower:\n                left_bound += 1\n            while right_bound < hi and prefix[right_bound] - prefix[i] <= upper:\n                right_bound += 1\n            count += right_bound - left_bound\n        i, j, k = lo, mid, lo\n        while i < mid and j < hi:\n            if prefix[i] <= prefix[j]:\n                scratch[k] = prefix[i]\n                i += 1\n            else:\n                scratch[k] = prefix[j]\n                j += 1\n            k += 1\n        while i < mid:\n            scratch[k] = prefix[i]\n            i += 1\n            k += 1\n        while j < hi:\n            scratch[k] = prefix[j]\n            j += 1\n            k += 1\n        prefix[lo:hi] = scratch[lo:hi]\n        return count\n\n    return sort_count(0, len(prefix))\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if not tokens:\n        raise ValueError(\"missing n\")\n    n = tokens[0]\n    if not 1 <= n <= 50000 or len(tokens) != n + 3:\n        raise ValueError(\"site protocol: 1 <= n <= 50000, n values, lower, upper\")\n    arr = tokens[1:n + 1]\n    lower, upper = tokens[n + 1:]\n    if any(not -(2**31) <= value < 2**31 for value in arr + [lower, upper]):\n        raise ValueError(\"array values and bounds must be signed 32-bit integers\")\n    if lower > upper:\n        raise ValueError(\"lower must not exceed upper\")\n    return str(count_range_sum(arr, lower, upper))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/zolostays#1-range-sum",
+  "sourceContentHash": "50c0c06011e600c36c746e789637bbb5b416b982d5b76868f6d0b13b132ccbc1",
+  "author": "CSWork"
+}
