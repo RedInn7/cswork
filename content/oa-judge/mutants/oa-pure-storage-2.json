@@ -1,0 +1,10 @@
+[
+  {
+    "name": "选最左可行的排除位置",
+    "code": "def solve(raw):\n    n, x, y, z = raw.split()\n    n = int(n)\n    alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n    full = \"[\" + alphabet + \"]\"\n    star = next((i for i in range(n) if z[i] != x[i] and z[i] != y[i]), -1)\n    if star < 0:\n        return \"-1\"\n    reduced = \"[\" + alphabet.replace(z[star], \"\") + \"]\"\n    return full * star + reduced + full * (n - star - 1)\n"
+  },
+  {
+    "name": "在所有可行位置都排除对应字符",
+    "code": "def solve(raw):\n    n, x, y, z = raw.split()\n    n = int(n)\n    alphabet = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\n    groups = []\n    for i in range(n):\n        omit = z[i] if z[i] != x[i] and z[i] != y[i] else \"\"\n        groups.append(\"[\" + alphabet.replace(omit, \"\") + \"]\")\n    return \"\".join(groups) if any(z[i] != x[i] and z[i] != y[i] for i in range(n)) else \"-1\"\n"
+  }
+]
