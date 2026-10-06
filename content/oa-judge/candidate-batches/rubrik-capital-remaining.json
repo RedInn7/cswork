@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-capital-one-3",
+      "sourceContentHash": "231f0144a6361b327def0680e0cd4d529c4f1ae981cb576c2ab9109edf52e71e",
+      "packageChecksum": "1f19ba90c461059be446b01e5678373106c757092d372f3df13048069dd30bcd",
+      "editorial": "## 思路\n\n按输入顺序直接执行矩阵操作。\n\n## 正确性证明\n\n每条操作都按定义应用于当时的矩阵，顺序执行后的状态即为全部命令的结果。\n\n## 复杂度\n\n每条操作 O(rc)，空间 O(rc)。\n\n## 来源说明\n\n原题未给 stdin/stdout 格式或坐标基准；本题补充 0-based 序列化协议，并约定仅正方矩阵可旋转。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=raw.split();it=iter(t);r,c=int(next(it)),int(next(it));a=[[int(next(it)) for _ in range(c)] for _ in range(r)];q=int(next(it))\n for _ in range(q):\n  op=next(it)\n  if op=='swapRows':\n   x,y=int(next(it)),int(next(it));a[x],a[y]=a[y],a[x]\n  elif op=='swapColumns':\n   x,y=int(next(it)),int(next(it))\n   for row in a:row[x],row[y]=row[y],row[x]\n  elif op=='reverseRow':a[int(next(it))].reverse()\n  elif op=='reverseColumn':\n   x=int(next(it))\n   for i in range(len(a)//2):a[i][x],a[-i-1][x]=a[-i-1][x],a[i][x]\n  else:a=[list(row) for row in zip(*a[::-1])]\n return '\\n'.join(' '.join(map(str,row)) for row in a)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-5",
+      "sourceContentHash": "dd471b84bc30df49eedf43086c625a6fc740502bf8b4c31670998070da3c377c",
+      "packageChecksum": "36b0efa947deaf34544f42c2d40b8e44bf7c31534196ec4f6959f68b7e0a10b6",
+      "editorial": "## 思路\n\n按 8 的倍数递增检查候选起点，找到首个容量足够且全部空闲的区间即分配，并将新 ID 记入区间每个单元。释放时按 ID 扫描并清空所有对应单元。\n\n## 正确性证明\n\n递增枚举完整覆盖所有合法对齐起点，首个符合连续空闲条件者就是最左可分配块。每个成功分配使用唯一 ID，完整扫描精确释放其全部单元。\n\n## 复杂度\n\n每次操作 O(n)，空间 O(n)。\n\n## 来源说明\n\n本站补充输入协议及初始占用单元不可释放的约定。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n\n for _ in range(q):\n  typ,x=t[i:i+2];i+=2\n  if typ==0:\n   s=next((s for s in range(0,n,8) if s+x<=n and all(v==0 for v in mem[s:s+x])),-1)\n   if s<0:out.append(-1)\n   else:\n    for j in range(s,s+x):mem[j]=1;ids[j]=nextid\n    out.append(s);nextid+=1\n  else:\n   freed=0\n   for j in range(n):\n    if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1\n   out.append(freed if freed else -1)\n return ' '.join(map(str,out))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-8",
+      "sourceContentHash": "65ce1f8008f5adcbd4918d72a24e0351252abb4170b3dbcd0fb376c1e103fe47",
+      "packageChecksum": "a7fef7baf1f4340cbb6b38e06c4a3547585ecc3573e996256574e817f757d076",
+      "editorial": "## 思路\n\n维护已收到的偏移集合。每到一个偏移，检查还未完成的段是否其半开区间中的每个位置都出现；完成后只计数一次。\n\n## 正确性证明\n\n区间集合包含恰好段要求的字节位置；子集检查等价于段完全收到。每一时刻更新所有未完成段，因此累计完成数准确。\n\n## 复杂度\n\n时间 O(mL)，L 为所有段总长度；空间 O(L+m)。\n\n## 来源说明\n\n原文明确采用 `[start,start+length)`；本站补充 stdin/stdout 协议与规模界。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]\n for _ in range(n):segments.append((t[i],t[i+1]));i+=2\n data=t[i:i+m];seen=set();done=[False]*n;count=0;out=[]\n for byte in data:\n  seen.add(byte)\n  for j,(start,length) in enumerate(segments):\n   if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1\n  out.append(str(count))\n return ' '.join(out)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-11",
+      "sourceContentHash": "c7d44fb1b8b5ad220158eb46010c83e861242d41c93fe6b506545f555db5dfdd",
+      "packageChecksum": "936c80fe843f0ae4c31e26bb8b85e7c07207167f47a8a6aa466d1c5abc07fca2",
+      "editorial": "## 思路\n\n逐格确定性模拟，记录已经进入的坐标以检测循环。每步先执行传送，再检查出口；普通移动优先右、否则下。\n\n## 正确性证明\n\n模拟状态转换与题面规则逐条一致，且计数覆盖起点、移动到的格子以及传送终点。若重访同一位置，由于地图和选择规则固定，此后路径将周期重复。\n\n## 复杂度\n\n每步 O(1)，最多访问 O(nm) 个格子；空间 O(nm)。\n\n## 来源说明\n\n源文把右下角索引写成 (n,m)；本站按矩阵 0-based 下标明确为 (n−1,m−1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()\n for _ in range(b):obs.add((t[i],t[i+1]));i+=2\n k=t[i];i+=1;tele={}\n for _ in range(k):tele[(t[i],t[i+1])]=(t[i+2],t[i+3]);i+=4\n p=(0,0);steps=1;seen=set()\n while True:\n  if p in seen:return '-2'\n  seen.add(p)\n  if p in tele:p=tele[p];steps+=1;continue\n  if p==(n-1,m-1):return str(steps)\n  r,c=p;right=(r,c+1);down=(r+1,c)\n  if c+1<m and right not in obs:p=right\n  elif r+1<n and down not in obs:p=down\n  else:return '-1'\n  steps+=1\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-17",
+      "sourceContentHash": "26190e252cbeca4c323fd07cb5a36e1a58af1fb0d3d74fa1c249c1f8b6511374",
+      "packageChecksum": "7ae67b990e639d6a159fe656989bfd37b742c75ddf4d084909b69ba17c135353",
+      "editorial": "## 思路\n\n调用栈顶是当前运行函数。新事件到来时，把从 prev 到事件时刻前的时间计给栈顶；start 压栈，end 将含结束秒的一段记给该函数并弹栈。\n\n## 正确性证明\n\n两个相邻事件之间只由栈顶函数执行；start 时刻切换到新栈顶，end 时刻用 +1 计入结束函数。故所有执行秒恰好分配给当时运行的函数。\n\n## 复杂度\n\n时间 O(m)，空间 O(n)。\n\n## 来源说明\n\n原始描述部分截断，但给出的完整示例与标准独占时间定义相符；本站补充日志序列化格式。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=raw.split();n,m=int(t[0]),int(t[1]);ans=[0]*n;st=[];prev=0\n for log in t[2:2+m]:\n  fid,kind,ts=log.split(':');fid=int(fid);ts=int(ts)\n  if kind=='start':\n   if st:ans[st[-1]]+=ts-prev\n   st.append(fid);prev=ts\n  else:ans[st.pop()]+=ts-prev+1;prev=ts+1\n return ' '.join(map(str,ans))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rubrik-11",
+      "sourceContentHash": "80099506badc59ba18bb911d4c71f2a2dc4bdd9108952e306f95e84012f181df",
+      "packageChecksum": "5a43cdadde9db260c37c25d73a2ba246ff6df9565b1462ae38712f7e892df700",
+      "editorial": "## 思路\n\n不同奇偶数字可交换，但相同奇偶数字无法互相越过，所以奇数子序列和偶数子序列内部顺序固定。将两条子序列按队首较小者归并。\n\n## 正确性证明\n\n允许交换恰能产生保持两个子序列相对顺序的所有交错。每一步若选择较大队首而非较小队首，当前第一个不同位置会更大；选择较小队首是字典序最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n原题明确允许任意次数交换相邻异奇偶数字；本站补充标准输入输出格式及总长度界。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=raw.split();q=int(t[0]);out=[]\n for s in t[1:1+q]:\n  e=[c for c in s if int(c)%2==0];o=[c for c in s if int(c)%2==1];i=j=0;ans=[]\n  while i<len(e) and j<len(o):\n   if e[i]<o[j]:ans.append(e[i]);i+=1\n   else:ans.append(o[j]);j+=1\n  ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))\n return '\\n'.join(out)\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rubrik-16",
+      "sourceContentHash": "af9003c3f78074861ac68ae2b55561fe43eb9a357700a11dbee69436d884cc11",
+      "packageChecksum": "bed4215eab02ccf584d638344cda9def20145a95a9d535fff80cf91e32fe5b71",
+      "editorial": "## 思路\n\n固定 i，建立右侧价格模 d 的频次。遍历 j 时先移除 j，再查询所需余数 `(-a[i]-a[j]) mod d` 的数量作为所有 k>j 的贡献。\n\n## 正确性证明\n\n移除 j 后频次恰含下标 k>j。余数条件与三数和被 d 整除等价。每个 i<j<k 唯一对应一次查询，因此计数无遗漏也无重复。\n\n## 复杂度\n\n时间 O(n²)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n t=list(map(int,raw.split()));n,d=t[:2];a=t[2:2+n];ans=0\n for i in range(n-2):\n  freq={}\n  for k in range(i+1,n):\n   r=a[k]%d;freq[r]=freq.get(r,0)+1\n  for j in range(i+1,n-1):\n   r=a[j]%d;freq[r]-=1;ans+=freq.get((-a[i]-a[j])%d,0)\n return str(ans)\n"
+        }
+      ]
+    }
+  ]
+}
