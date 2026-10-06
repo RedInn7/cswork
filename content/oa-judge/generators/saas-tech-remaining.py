@@ -386,7 +386,7 @@ def main():
                 "languages":["python","go","java","cpp"],
             },
             "cases":[
-                *[{"name":f"原题样例 {i+1}","input":raw,"expectedOutput":item["oracle"](raw)+"\n","hidden":False,"weight":1} for i,raw in enumerate(item["samples"])],
+                *[{"name":f"样例 {i+1}","input":raw,"expectedOutput":item["oracle"](raw)+"\n","hidden":False,"weight":1} for i,raw in enumerate(item["samples"])],
                 *[{"name":f"定向边界 {i+1}","input":raw,"expectedOutput":item["oracle"](raw)+"\n","hidden":True,"weight":1} for i,raw in enumerate(item.get("directed",[]))],
                 *[{"name":f"组合 {i+1}","input":case["input"],"expectedOutput":case["expectedOutput"],"hidden":True,"weight":1} for i,case in enumerate(oracle_cases[len(all_directed):len(all_directed)+24])],
             ],
