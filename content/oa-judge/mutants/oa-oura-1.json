@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每种 type 永远递增编号，不复用释放编号",
+    "code": "def solve(raw):\n z=raw.splitlines();q=int(z[0]);n={};o=[]\n for l in z[1:]:\n  p=l.split();t=p[1]\n  if p[0]==\"allocate\":n[t]=n.get(t,0)+1;o.append(str(n[t]))\n return \"\\n\".join(o)\n"
+  },
+  {
+    "name": "不同类型共用一个编号池",
+    "code": "def solve(raw):\n z=raw.splitlines();q=int(z[0]);s=set();n=1;o=[]\n for l in z[1:]:\n  p=l.split()\n  if p[0]==\"allocate\":\n   while n in s:n+=1\n   s.add(n);o.append(str(n));n+=1\n  else:s.discard(int(p[2]))\n return \"\\n\".join(o)\n"
+  }
+]

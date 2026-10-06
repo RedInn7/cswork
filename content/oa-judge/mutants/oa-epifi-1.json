@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把严格小于 max_req 错作不大于",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));n=z[0];a=z[1:1+n];b=z[1+n:1+2*n]\n return str(-1 if sum(a)>sum(b) else 0)\n"
+  },
+  {
+    "name": "限制每个请求只能移动到相邻服务器",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));n=z[0];a=z[1:1+n];b=[x-1 for x in z[1+n:1+2*n]]\n if sum(a)>sum(b):return \"-1\"\n for d in range(n):\n  x=a[:];y=b[:];ok=True\n  for i in range(n):\n   while x[i]:\n    j=next((j for j in range(n) if abs(i-j)<=1 and y[j]),None)\n    if j is None:ok=False;break\n    t=min(x[i],y[j]);x[i]-=t;y[j]-=t\n   if not ok:break\n  if ok:return str(d)\n return \"-1\"\n"
+  }
+]

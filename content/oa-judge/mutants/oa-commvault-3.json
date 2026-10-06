@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只统计输入中直接没有边相连的点对",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));n,m=z[:2];e={tuple(sorted((z[2+2*i],z[3+2*i]))) for i in range(m)};return str(sum((i,j) not in e for i in range(1,n+1) for j in range(i+1,n+1)))\n"
+  },
+  {
+    "name": "把连通分量内部点对当作 good pair",
+    "code": "def solve(raw):\n z=list(map(int,raw.split()));n,m=z[:2];p=list(range(n))\n def f(x):\n  if p[x]!=x:p[x]=f(p[x])\n  return p[x]\n for i in range(m):\n  a=f(z[2+2*i]-1);b=f(z[3+2*i]-1);p[a]=b\n return str(sum(f(i)==f(j) for i in range(n) for j in range(i+1,n)))\n"
+  }
+]

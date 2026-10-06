@@ -1,0 +1,10 @@
+[
+  {
+    "name": "总是优先把男孩放在女孩左边",
+    "code": "def solve(raw):\n s=raw.strip();p=set();i=0\n while i<len(s):\n  if s[i]!=\"G\" or i-1 in p:i+=1;continue\n  if i>0 and s[i-1]==\"-\":p.add(i-1);i+=1\n  elif i+1<len(s) and s[i+1]==\"-\":p.add(i+1);i+=2\n  else:return \"-1\"\n return str(len(p))\n"
+  },
+  {
+    "name": "忽略前一个男孩覆盖当前女孩",
+    "code": "def solve(raw):\n s=raw.strip();p=set()\n for i,c in enumerate(s):\n  if c==\"G\":\n   if i+1<len(s) and s[i+1]==\"-\":p.add(i+1)\n   elif i>0 and s[i-1]==\"-\":p.add(i-1)\n   else:return \"-1\"\n return str(len(p))\n"
+  }
+]

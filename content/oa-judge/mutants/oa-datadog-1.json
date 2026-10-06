@@ -1,0 +1,10 @@
+[
+  {
+    "name": "排除结束时间相等的日志",
+    "code": "def solve(raw):\n lines=raw.splitlines(); z=[]; o=[]\n for line in lines[1:]:\n  p=line.split(\" \")\n  if p[0]==\"ADD\":z.append((int(p[1]),p[2],p[3],\" \".join(p[4:])))\n  else:\n   _,a,b,s,l,k=p;a=int(a);b=int(b);o.append(str(sum(a<=t<b and (s==\"*\" or s==ss) and (l==\"*\" or l==ll) and (k==\"*\" or k in m) for t,ss,ll,m in z)))\n return \"\\n\".join(o)\n"
+  },
+  {
+    "name": "把关键字匹配改为完整相等",
+    "code": "def solve(raw):\n lines=raw.splitlines();z=[];o=[]\n for line in lines[1:]:\n  p=line.split(\" \")\n  if p[0]==\"ADD\":z.append((int(p[1]),p[2],p[3],\" \".join(p[4:])))\n  else:\n   _,a,b,s,l,k=p;a=int(a);b=int(b);o.append(str(sum(a<=t<=b and (s==\"*\" or s==ss) and (l==\"*\" or l==ll) and (k==\"*\" or k==m) for t,ss,ll,m in z)))\n return \"\\n\".join(o)\n"
+  }
+]
