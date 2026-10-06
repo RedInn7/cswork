@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-sig-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "机器人竖直移动终点方向",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "SIG",
+      "模拟"
+    ],
+    "description": "机器人从竖直线起点出发，U 向上一步，D 向下一步。判断处理完所有命令后相对起点的位置。题意来自 OAMaster 固定快照；本站补充标准输入输出协议。",
+    "input": "一行由至少一个 U 或 D 字符组成。",
+    "output": "终点在起点上方输出 U，下方输出 D，恰在起点输出空串。",
+    "explanation": "统计 U 与 D 的净位移。",
+    "hints": [
+      "把每个 U 记为 +1、D 记为 -1。"
+    ],
+    "timeLimit": 1,
+    "memoryLimit": 65536,
+    "outputLimit": 1024,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "UUDDUU\n",
+      "expectedOutput": "U\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "UD\n",
+      "expectedOutput": "\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "DDU\n",
+      "expectedOutput": "D\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "UDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "UDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "UDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "UDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "UDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "UDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "UDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "UDDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "UDDDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "UUD\n",
+      "expectedOutput": "U\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "UUDD\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "UUDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "UUDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "UUDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "UUDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "UUDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "UUDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "UUDDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "UUDDDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "UUUD\n",
+      "expectedOutput": "U\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "UUUDD\n",
+      "expectedOutput": "U\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "UUUDDD\n",
+      "expectedOutput": "\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "UUUDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "UUUDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "UUUDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "UUUDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "UUUDDDDDDDD\n",
+      "expectedOutput": "D\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
