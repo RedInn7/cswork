@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把循环移位等价误写成数字字符排序",
+    "code": "import sys\nfrom collections import Counter\na=list(map(int,sys.stdin.read().split()))[1:]\nc=Counter(''.join(sorted(str(x))) for x in a)\nprint(sum(v*(v-1)//2 for v in c.values()))\n"
+  },
+  {
+    "name": "只接受固定方向的一次右移而漏掉其它循环移位",
+    "code": "import sys\na=list(map(int,sys.stdin.read().split()))[1:]\nans=0\nfor i,x in enumerate(a):\n s=str(x)\n for y in a[i+1:]:\n  t=str(y)\n  if len(s)==len(t) and (s==t or s[1:]+s[:1]==t): ans+=1\nprint(ans)\n"
+  }
+]
