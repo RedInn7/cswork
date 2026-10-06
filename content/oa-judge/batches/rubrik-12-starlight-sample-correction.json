@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-rubrik-12",
+      "sourceContentHash": "d6ff718ac94280f3fb10f4f0e1a6443215dffe018ac9a3ba127bfe098b428552",
+      "packageChecksum": "dc00c6f8df7737bd1c02ed76bdefc995a8eef0d7615db85911b232082833a379",
+      "editorial": "## 思路\n\n使用三个状态描述计分连续段处于放大段之前、放大段之内、放大段之后。状态记录以当前位置结尾的最大连续和；普通位置加 `x`，放大位置加 `z*x`。答案包含空区间 0，因为原题明确全负数组 beauty 为 0，也允许不使用放大器。时间 O(n)，空间 O(1)。\n\n## 为什么正确\n\n任意最优计分连续段中的位置只有三种阶段：放大区间之前、之内、之后，且顺序不能逆转。三个状态逐位置保留各阶段下以当前位置结尾的最大和；转移分别只允许普通延续、开始或延续放大区间、结束放大区间后的普通延续，因此覆盖所有合法选择且不生成非法顺序。取所有阶段与空区间的最大值即为全局最优。\n\n## 样例勘误\n\n固定题源定义为放大一个连续片段后，求任意连续片段的最大和；被放大的片段可以是整个数组。样例 2 整个数组乘以 -3 后为 `[15,27,6,-3,18]`，其总和及最大连续和都是 63。原输出 30 以及解释所列的 `[9,6,-3,18]` 都与原数组不符。只修正该样例输出及解释，不改规则。题源下界 `10^-9` 与整数类型及负数示例冲突；本站采用明确披露的可执行边界 `n<=200000`、`-10^9<=a[i]<=10^9`、`-100<=z<=100`，不声称这是已知上游约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 2:\n        raise ValueError(\"expected n z and n array values\")\n    n, z = tokens[:2]\n    arr = tokens[2:]\n    if not 1 <= n <= 200000 or len(arr) != n:\n        raise ValueError(\"site protocol: 1<=n<=200000, followed by exactly n values\")\n    if not -100 <= z <= 100 or any(not -10**9 <= x <= 10**9 for x in arr):\n        raise ValueError(\"site protocol: -100<=z<=100 and -1e9<=arr[i]<=1e9\")\n    neg = -(10**30)\n    before, inside, after = 0, neg, neg\n    best = 0\n    for x in arr:\n        before_next = max(0, before + x)\n        inside_next = max(before + z * x, inside + z * x)\n        after_next = max(inside + x, after + x)\n        before, inside, after = before_next, inside_next, after_next\n        best = max(best, before, inside, after)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

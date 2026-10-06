@@ -1,0 +1,10 @@
+[
+  {
+    "name": "每次都选当前最小库存而非最大库存",
+    "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 3:\n        raise ValueError(\"expected n, m, and quantities\")\n    n, m = tokens[:2]\n    quantity = tokens[2:]\n    if not (1 <= n <= 100000 and 1 <= m <= 100000 and len(quantity) == n):\n        raise ValueError(\"outside stated source bounds\")\n    if any(not 1 <= q <= 100000 for q in quantity):\n        raise ValueError(\"outside stated source bounds\")\n    if m > sum(quantity):\n        raise ValueError(\"valid input must contain at least m items\")\n    heap = quantity.copy()\n    heapq.heapify(heap)\n    revenue = 0\n    for _ in range(m):\n        q = --heapq.heappop(heap)\n        revenue += q\n        if q > 1:\n            heapq.heappush(heap, q - 1)\n    return str(revenue)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "售出后把原库存数量原样放回，未递减价格",
+    "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 3:\n        raise ValueError(\"expected n, m, and quantities\")\n    n, m = tokens[:2]\n    quantity = tokens[2:]\n    if not (1 <= n <= 100000 and 1 <= m <= 100000 and len(quantity) == n):\n        raise ValueError(\"outside stated source bounds\")\n    if any(not 1 <= q <= 100000 for q in quantity):\n        raise ValueError(\"outside stated source bounds\")\n    if m > sum(quantity):\n        raise ValueError(\"valid input must contain at least m items\")\n    heap = [-q for q in quantity]\n    heapq.heapify(heap)\n    revenue = 0\n    for _ in range(m):\n        q = -heapq.heappop(heap)\n        revenue += q\n        if q > 1:\n            heapq.heappush(heap, -q)\n    return str(revenue)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  }
+]

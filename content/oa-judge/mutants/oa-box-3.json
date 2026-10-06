@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略圆环回绕，只走直线",
+    "code": "import json,sys\ndef solve(raw):\n d=json.loads(raw); s=d[\"startIndex\"]; t=d[\"flavors\"].index(d[\"target\"]); return str(abs(t-s))\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把当前位置也算作一步",
+    "code": "import json,sys\ndef solve(raw):\n d=json.loads(raw); n=len(d[\"flavors\"]); s=d[\"startIndex\"]; t=d[\"flavors\"].index(d[\"target\"]); x=abs(t-s); return str(min(x,n-x)+1)\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]

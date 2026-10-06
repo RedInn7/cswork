@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ibm-31",
+      "sourceContentHash": "1941a7434b4a11faf8d409615f26d656ab14ab31a52e1585414cc4fa6daf3cfc",
+      "packageChecksum": "6e70f74e6366eed9b3d2a69237bed72ca05813b733a09a1ea3859c4ebbcd9937",
+      "editorial": "## 思路\n\n用最大堆维护每类商品当前剩余数量。每次取出最大值 q，收入增加 q；售出后若 q>1，将 q−1 放回堆。恰好重复 m 次。\n\n来源样例一按最优规则的前六个售价为 10、10、9、9、9、8，总计 55；样例二的售价为 4、3、2、2，总计 11。两例均与来源输出一致。\n\n原约束没有明写总库存下界，但“恰好售出 m 件”要求输入可行，故本站将必要条件 `m ≤ sum(quantity)` 明示为有效输入域。该条件不规定任何库存不足时的行为，也不改变可行输入上的题意。\n\n## 正确性\n\n当前库存为 q 的商品若现在出售，可立刻获得 q；此后同一类别可获得的价格只会下降。若一次最优方案未先选当前最大库存类别，而选择库存更小的类别，将两类的首次选择次序交换：较大库存先卖的即时收益不低，且它后续逐次下降的序列逐项不低于较小库存序列，交换不会降低总收益。等价地，每一步选取最大当前价格均满足贪心选择性质。售出并将 q−1 放回堆精确呈现下一时刻的库存，归纳得到总收益最大。\n\n## 复杂度\n\n堆初始化 O(n)，每次销售至多一次弹出和插入，时间 O(n + m log n)，空间 O(n)。最大收入不超过 10^10，使用 64 位整数足够。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 3:\n        raise ValueError(\"expected n, m, and quantities\")\n    n, m = tokens[:2]\n    quantity = tokens[2:]\n    if not (1 <= n <= 100000 and 1 <= m <= 100000 and len(quantity) == n):\n        raise ValueError(\"outside stated source bounds\")\n    if any(not 1 <= q <= 100000 for q in quantity):\n        raise ValueError(\"outside stated source bounds\")\n    if m > sum(quantity):\n        raise ValueError(\"valid input must contain at least m items\")\n    heap = [-q for q in quantity]\n    heapq.heapify(heap)\n    revenue = 0\n    for _ in range(m):\n        q = -heapq.heappop(heap)\n        revenue += q\n        if q > 1:\n            heapq.heappush(heap, -(q - 1))\n    return str(revenue)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
