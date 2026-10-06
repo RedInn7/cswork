@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-superhuman-3",
+  "title": "Optimal Transfer",
+  "explanation": "## 思路\n\n为每个相邻方向边取最近捷径价 1 或直接容量差，方向前缀和答询。\n\n## 正确性证明\n\n直连跨越多段的费用是间隙和；沿链将最近邻间隙替换为 1 不会更贵，且路径穿越每段至少一次，故前缀边价总和最优。\n\n## 复杂度\n\nO(n+q) time, O(n) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=list(map(int,raw.split()));n,q=v[:2];a=v[2:2+n];s=v[2+n:2+n+q];t=v[2+n+q:2+n+2*q];R=[0]*n;L=[0]*n\n for i in range(n):\n  if i+1<n:R[i]=1 if i==0 or a[i+1]-a[i]<a[i]-a[i-1] else a[i+1]-a[i]\n  if i:L[i]=1 if i==n-1 or a[i]-a[i-1]<a[i+1]-a[i] else a[i]-a[i-1]\n pr=[0]*(n+1);pl=[0]*(n+1)\n for i in range(n):pr[i+1]=pr[i]+R[i];pl[i+1]=pl[i]+L[i]\n return ' '.join(str(pr[b]-pr[a] if a<b else pl[a+1]-pl[b+1] if a>b else 0) for a,b in zip(s,t))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/superhuman#3-optimal-transfer",
+  "sourceContentHash": "851e9ec99d5480fdd86019b1e342d8597dda62d0fc974de7e85ea9aad3b6be13",
+  "author": "CSWork"
+}

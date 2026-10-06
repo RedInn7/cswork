@@ -1,0 +1,10 @@
+[
+  {
+    "name": "process smallest even first",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));cur=set(v[1:v[0]+1]);ans=0\n while True:\n  e=[x for x in cur if x%2==0]\n  if not e:return str(ans)\n  x=min(e);cur.remove(x);cur.add(x//2);ans+=1\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "count each layer separately",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));cur=set(v[1:v[0]+1]);ans=0\n while True:\n  e=[x for x in cur if x%2==0]\n  if not e:return str(ans)\n  x=max(e);cur.remove(x);cur.add(x//2);ans+=v[1:v[0]+1].count(x)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

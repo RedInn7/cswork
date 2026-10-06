@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-twilio-2",
+  "title": "Find Maximum Greatness",
+  "explanation": "## 思路\n\n排序并贪心匹配最小可行的严格较大元素。\n\n## 正确性证明\n\n最小可行匹配不浪费更大的元素，贪心最大化可匹配对数。\n\n## 复杂度\n\nO(n log n) time, O(n) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=list(map(int,raw.split()));n=v[0];a=sorted(v[1:n+1]);i=0\n for z in a:\n  if i<n and z>a[i]:i+=1\n return str(i)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/twilio#2-find-maximum-greatness",
+  "sourceContentHash": "c67592ace101f8ff89a9ecba6ad42753e88cd5aeb25862d7f92406496270bcce",
+  "author": "CSWork"
+}

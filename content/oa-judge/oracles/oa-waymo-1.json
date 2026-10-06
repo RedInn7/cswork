@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\nabs(cs){3}g\na(b(c){2}){2}\nx(yz){0}q\n",
+    "expectedOutput": "abscscscsg\nabccbcc\nxq\n"
+  },
+  {
+    "input": "1\na(b){0}c\n",
+    "expectedOutput": "ac\n"
+  },
+  {
+    "input": "1\n(ab){2}\n",
+    "expectedOutput": "abab\n"
+  },
+  {
+    "input": "4\na(ebc){1}\na(dac){4}\na(bcb){0}\na(ceb){4}\n",
+    "expectedOutput": "aebc\nadacdacdacdac\na\nacebcebcebceb\n"
+  },
+  {
+    "input": "5\na(bea){1}\na(dce){4}\na(dbb){3}\na(ade){1}\na(aa){2}\n",
+    "expectedOutput": "abea\nadcedcedcedce\nadbbdbbdbb\naade\naaaaa\n"
+  },
+  {
+    "input": "4\na(aee){3}\na(dea){1}\na(ebb){3}\na(c){0}\n",
+    "expectedOutput": "aaeeaeeaee\nadea\naebbebbebb\na\n"
+  },
+  {
+    "input": "2\na(ddd){0}\na(cda){2}\n",
+    "expectedOutput": "a\nacdacda\n"
+  },
+  {
+    "input": "1\na(aae){3}\n",
+    "expectedOutput": "aaaeaaeaae\n"
+  },
+  {
+    "input": "1\na(ecb){1}\n",
+    "expectedOutput": "aecb\n"
+  },
+  {
+    "input": "2\na(cdb){2}\na(dd){1}\n",
+    "expectedOutput": "acdbcdb\nadd\n"
+  },
+  {
+    "input": "1\na(aae){1}\n",
+    "expectedOutput": "aaae\n"
+  },
+  {
+    "input": "2\na(aed){4}\na(cae){2}\n",
+    "expectedOutput": "aaedaedaedaed\nacaecae\n"
+  },
+  {
+    "input": "3\na(e){3}\na(ac){0}\na(eea){1}\n",
+    "expectedOutput": "aeee\na\naeea\n"
+  },
+  {
+    "input": "2\na(ae){3}\na(dca){4}\n",
+    "expectedOutput": "aaeaeae\nadcadcadcadca\n"
+  },
+  {
+    "input": "4\na(abc){0}\na(cad){1}\na(daa){2}\na(ebc){4}\n",
+    "expectedOutput": "a\nacad\nadaadaa\naebcebcebcebc\n"
+  },
+  {
+    "input": "5\na(bce){3}\na(aac){2}\na(dbb){1}\na(cca){1}\na(bc){4}\n",
+    "expectedOutput": "abcebcebce\naaacaac\nadbb\nacca\nabcbcbcbc\n"
+  },
+  {
+    "input": "5\na(de){2}\na(ccd){0}\na(cbe){1}\na(dee){3}\na(eed){3}\n",
+    "expectedOutput": "adede\na\nacbe\nadeedeedee\naeedeedeed\n"
+  },
+  {
+    "input": "4\na(aba){0}\na(bdd){3}\na(b){0}\na(dbc){3}\n",
+    "expectedOutput": "a\nabddbddbdd\na\nadbcdbcdbc\n"
+  },
+  {
+    "input": "5\na(dce){0}\na(ede){3}\na(aca){3}\na(beb){2}\na(aad){1}\n",
+    "expectedOutput": "a\naedeedeede\naacaacaaca\nabebbeb\naaad\n"
+  },
+  {
+    "input": "1\na(cde){2}\n",
+    "expectedOutput": "acdecde\n"
+  },
+  {
+    "input": "2\na(e){1}\na(dbd){1}\n",
+    "expectedOutput": "ae\nadbd\n"
+  },
+  {
+    "input": "3\na(cdd){2}\na(bce){2}\na(cee){3}\n",
+    "expectedOutput": "acddcdd\nabcebce\naceeceecee\n"
+  },
+  {
+    "input": "3\na(eab){0}\na(ace){0}\na(ccd){1}\n",
+    "expectedOutput": "a\na\naccd\n"
+  },
+  {
+    "input": "2\na(ada){0}\na(bce){0}\n",
+    "expectedOutput": "a\na\n"
+  },
+  {
+    "input": "5\na(ead){3}\na(dec){4}\na(abd){0}\na(dad){4}\na(bed){2}\n",
+    "expectedOutput": "aeadeadead\nadecdecdecdec\na\nadaddaddaddad\nabedbed\n"
+  },
+  {
+    "input": "1\na(baa){3}\n",
+    "expectedOutput": "abaabaabaa\n"
+  },
+  {
+    "input": "3\na(bcd){3}\na(edb){4}\na(edd){2}\n",
+    "expectedOutput": "abcdbcdbcd\naedbedbedbedb\naeddedd\n"
+  },
+  {
+    "input": "1\na(ced){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "4\na(bce){3}\na(dad){1}\na(ae){4}\na(baa){1}\n",
+    "expectedOutput": "abcebcebce\nadad\naaeaeaeae\nabaa\n"
+  },
+  {
+    "input": "5\na(cce){3}\na(cd){1}\na(acc){2}\na(dcd){3}\na(cba){3}\n",
+    "expectedOutput": "acceccecce\nacd\naaccacc\nadcddcddcd\nacbacbacba\n"
+  },
+  {
+    "input": "3\na(cee){3}\na(ed){0}\na(bbb){1}\n",
+    "expectedOutput": "aceeceecee\na\nabbb\n"
+  },
+  {
+    "input": "4\na(bce){4}\na(aec){0}\na(eba){3}\na(aee){1}\n",
+    "expectedOutput": "abcebcebcebce\na\naebaebaeba\naaee\n"
+  },
+  {
+    "input": "5\na(cba){2}\na(bec){3}\na(eba){0}\na(bab){1}\na(bae){0}\n",
+    "expectedOutput": "acbacba\nabecbecbec\na\nabab\na\n"
+  },
+  {
+    "input": "5\na(dd){1}\na(baa){0}\na(ecb){3}\na(dbd){1}\na(caa){2}\n",
+    "expectedOutput": "add\na\naecbecbecb\nadbd\nacaacaa\n"
+  },
+  {
+    "input": "3\na(bb){2}\na(dda){0}\na(e){2}\n",
+    "expectedOutput": "abbbb\na\naee\n"
+  },
+  {
+    "input": "2\na(ab){3}\na(c){1}\n",
+    "expectedOutput": "aababab\nac\n"
+  },
+  {
+    "input": "2\na(bae){2}\na(adb){1}\n",
+    "expectedOutput": "abaebae\naadb\n"
+  },
+  {
+    "input": "5\na(ada){1}\na(bcd){3}\na(cbc){4}\na(ceb){3}\na(dbc){2}\n",
+    "expectedOutput": "aada\nabcdbcdbcd\nacbccbccbccbc\nacebcebceb\nadbcdbc\n"
+  },
+  {
+    "input": "1\na(dcb){4}\n",
+    "expectedOutput": "adcbdcbdcbdcb\n"
+  },
+  {
+    "input": "4\na(bcb){1}\na(eed){1}\na(dbd){3}\na(aae){3}\n",
+    "expectedOutput": "abcb\naeed\nadbddbddbd\naaaeaaeaae\n"
+  },
+  {
+    "input": "5\na(aae){2}\na(bbc){1}\na(ada){2}\na(cee){3}\na(dca){1}\n",
+    "expectedOutput": "aaaeaae\nabbc\naadaada\naceeceecee\nadca\n"
+  },
+  {
+    "input": "5\na(bca){0}\na(cbb){2}\na(dbb){4}\na(eed){3}\na(ab){4}\n",
+    "expectedOutput": "a\nacbbcbb\nadbbdbbdbbdbb\naeedeedeed\naabababab\n"
+  },
+  {
+    "input": "3\na(ebe){4}\na(eca){2}\na(ad){0}\n",
+    "expectedOutput": "aebeebeebeebe\naecaeca\na\n"
+  },
+  {
+    "input": "5\na(daa){2}\na(c){0}\na(bed){1}\na(a){2}\na(ed){4}\n",
+    "expectedOutput": "adaadaa\na\nabed\naaa\naedededed\n"
+  },
+  {
+    "input": "5\na(ebb){1}\na(cb){2}\na(dbb){3}\na(ed){3}\na(eab){2}\n",
+    "expectedOutput": "aebb\nacbcb\nadbbdbbdbb\naededed\naeabeab\n"
+  },
+  {
+    "input": "5\na(ced){3}\na(cca){1}\na(eab){3}\na(eed){1}\na(dbc){3}\n",
+    "expectedOutput": "acedcedced\nacca\naeabeabeab\naeed\nadbcdbcdbc\n"
+  },
+  {
+    "input": "4\na(aba){1}\na(dab){2}\na(adc){1}\na(bbe){1}\n",
+    "expectedOutput": "aaba\nadabdab\naadc\nabbe\n"
+  },
+  {
+    "input": "4\na(cea){1}\na(c){3}\na(beb){3}\na(cad){3}\n",
+    "expectedOutput": "acea\naccc\nabebbebbeb\nacadcadcad\n"
+  },
+  {
+    "input": "5\na(cbc){4}\na(adc){3}\na(bcc){4}\na(dcd){1}\na(bdd){1}\n",
+    "expectedOutput": "acbccbccbccbc\naadcadcadc\nabccbccbccbcc\nadcd\nabdd\n"
+  },
+  {
+    "input": "4\na(cc){1}\na(bcc){1}\na(cba){3}\na(b){4}\n",
+    "expectedOutput": "acc\nabcc\nacbacbacba\nabbbb\n"
+  },
+  {
+    "input": "5\na(a){4}\na(abd){4}\na(cda){1}\na(eee){4}\na(deb){2}\n",
+    "expectedOutput": "aaaaa\naabdabdabdabd\nacda\naeeeeeeeeeeee\nadebdeb\n"
+  },
+  {
+    "input": "3\na(bea){0}\na(aad){1}\na(ccb){3}\n",
+    "expectedOutput": "a\naaad\naccbccbccb\n"
+  },
+  {
+    "input": "5\na(abe){3}\na(cee){1}\na(dea){4}\na(de){3}\na(aac){3}\n",
+    "expectedOutput": "aabeabeabe\nacee\nadeadeadeadea\nadedede\naaacaacaac\n"
+  },
+  {
+    "input": "3\na(c){2}\na(bc){0}\na(dd){2}\n",
+    "expectedOutput": "acc\na\nadddd\n"
+  },
+  {
+    "input": "2\na(bbc){3}\na(cde){1}\n",
+    "expectedOutput": "abbcbbcbbc\nacde\n"
+  },
+  {
+    "input": "1\na(cbd){3}\n",
+    "expectedOutput": "acbdcbdcbd\n"
+  },
+  {
+    "input": "4\na(bce){0}\na(bcb){1}\na(eed){0}\na(bed){1}\n",
+    "expectedOutput": "a\nabcb\na\nabed\n"
+  },
+  {
+    "input": "2\na(cbe){1}\na(aea){0}\n",
+    "expectedOutput": "acbe\na\n"
+  },
+  {
+    "input": "3\na(bec){3}\na(dda){2}\na(dac){4}\n",
+    "expectedOutput": "abecbecbec\naddadda\nadacdacdacdac\n"
+  },
+  {
+    "input": "1\na(edb){1}\n",
+    "expectedOutput": "aedb\n"
+  },
+  {
+    "input": "4\na(eea){2}\na(bdb){1}\na(dce){3}\na(ace){1}\n",
+    "expectedOutput": "aeeaeea\nabdb\nadcedcedce\naace\n"
+  },
+  {
+    "input": "1\na(aac){2}\n",
+    "expectedOutput": "aaacaac\n"
+  },
+  {
+    "input": "4\na(abd){2}\na(eb){1}\na(bed){3}\na(cbc){4}\n",
+    "expectedOutput": "aabdabd\naeb\nabedbedbed\nacbccbccbccbc\n"
+  },
+  {
+    "input": "4\na(cec){0}\na(cca){3}\na(cec){1}\na(dcb){3}\n",
+    "expectedOutput": "a\naccaccacca\nacec\nadcbdcbdcb\n"
+  },
+  {
+    "input": "3\na(dcb){0}\na(bad){1}\na(deb){2}\n",
+    "expectedOutput": "a\nabad\nadebdeb\n"
+  },
+  {
+    "input": "2\na(abb){3}\na(dac){4}\n",
+    "expectedOutput": "aabbabbabb\nadacdacdacdac\n"
+  },
+  {
+    "input": "3\na(d){2}\na(cdc){1}\na(ccc){3}\n",
+    "expectedOutput": "add\nacdc\naccccccccc\n"
+  },
+  {
+    "input": "2\na(ade){1}\na(eeb){0}\n",
+    "expectedOutput": "aade\na\n"
+  },
+  {
+    "input": "1\na(baa){2}\n",
+    "expectedOutput": "abaabaa\n"
+  },
+  {
+    "input": "5\na(bee){4}\na(cdb){1}\na(dac){2}\na(b){1}\na(eca){1}\n",
+    "expectedOutput": "abeebeebeebee\nacdb\nadacdac\nab\naeca\n"
+  },
+  {
+    "input": "2\na(eae){0}\na(dbc){4}\n",
+    "expectedOutput": "a\nadbcdbcdbcdbc\n"
+  },
+  {
+    "input": "3\na(edb){4}\na(bbd){1}\na(bea){2}\n",
+    "expectedOutput": "aedbedbedbedb\nabbd\nabeabea\n"
+  },
+  {
+    "input": "5\na(bdc){2}\na(cde){3}\na(acd){3}\na(cac){1}\na(aed){4}\n",
+    "expectedOutput": "abdcbdc\nacdecdecde\naacdacdacd\nacac\naaedaedaedaed\n"
+  },
+  {
+    "input": "1\na(dee){3}\n",
+    "expectedOutput": "adeedeedee\n"
+  },
+  {
+    "input": "5\na(abb){1}\na(caa){0}\na(aac){3}\na(aab){0}\na(dec){0}\n",
+    "expectedOutput": "aabb\na\naaacaacaac\na\na\n"
+  },
+  {
+    "input": "1\na(eb){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "5\na(bad){4}\na(ecb){4}\na(dbb){4}\na(dcc){4}\na(ecc){1}\n",
+    "expectedOutput": "abadbadbadbad\naecbecbecbecb\nadbbdbbdbbdbb\nadccdccdccdcc\naecc\n"
+  },
+  {
+    "input": "3\na(ebb){2}\na(abe){4}\na(bbe){2}\n",
+    "expectedOutput": "aebbebb\naabeabeabeabe\nabbebbe\n"
+  },
+  {
+    "input": "3\na(aca){3}\na(eed){4}\na(db){3}\n",
+    "expectedOutput": "aacaacaaca\naeedeedeedeed\nadbdbdb\n"
+  },
+  {
+    "input": "2\na(bca){1}\na(e){4}\n",
+    "expectedOutput": "abca\naeeee\n"
+  },
+  {
+    "input": "1\na(bbc){1}\n",
+    "expectedOutput": "abbc\n"
+  },
+  {
+    "input": "5\na(bac){4}\na(bda){2}\na(ecb){0}\na(dcc){2}\na(cbe){3}\n",
+    "expectedOutput": "abacbacbacbac\nabdabda\na\nadccdcc\nacbecbecbe\n"
+  },
+  {
+    "input": "3\na(bac){1}\na(bed){0}\na(d){2}\n",
+    "expectedOutput": "abac\na\nadd\n"
+  },
+  {
+    "input": "1\na(cdb){1}\n",
+    "expectedOutput": "acdb\n"
+  },
+  {
+    "input": "4\na(cac){3}\na(eab){2}\na(ace){3}\na(bbb){1}\n",
+    "expectedOutput": "acaccaccac\naeabeab\naaceaceace\nabbb\n"
+  },
+  {
+    "input": "4\na(cec){3}\na(adc){3}\na(dea){1}\na(b){0}\n",
+    "expectedOutput": "acecceccec\naadcadcadc\nadea\na\n"
+  },
+  {
+    "input": "3\na(bb){3}\na(aee){0}\na(cee){0}\n",
+    "expectedOutput": "abbbbbb\na\na\n"
+  },
+  {
+    "input": "5\na(cdd){3}\na(ccc){1}\na(cbc){3}\na(ded){1}\na(dbb){0}\n",
+    "expectedOutput": "acddcddcdd\naccc\nacbccbccbc\naded\na\n"
+  },
+  {
+    "input": "4\na(a){1}\na(dce){3}\na(dbb){0}\na(cdc){3}\n",
+    "expectedOutput": "aa\nadcedcedce\na\nacdccdccdc\n"
+  },
+  {
+    "input": "3\na(aaa){1}\na(bdc){3}\na(abb){2}\n",
+    "expectedOutput": "aaaa\nabdcbdcbdc\naabbabb\n"
+  },
+  {
+    "input": "2\na(cbe){4}\na(aec){4}\n",
+    "expectedOutput": "acbecbecbecbe\naaecaecaecaec\n"
+  },
+  {
+    "input": "3\na(eba){4}\na(aec){0}\na(bca){4}\n",
+    "expectedOutput": "aebaebaebaeba\na\nabcabcabcabca\n"
+  },
+  {
+    "input": "4\na(ddd){2}\na(dad){0}\na(cbb){0}\na(aae){4}\n",
+    "expectedOutput": "adddddd\na\na\naaaeaaeaaeaae\n"
+  },
+  {
+    "input": "1\na(cca){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "2\na(ada){2}\na(ea){3}\n",
+    "expectedOutput": "aadaada\naeaeaea\n"
+  },
+  {
+    "input": "5\na(aa){1}\na(aaa){3}\na(cdd){1}\na(cce){0}\na(bb){4}\n",
+    "expectedOutput": "aaa\naaaaaaaaaa\nacdd\na\nabbbbbbbb\n"
+  },
+  {
+    "input": "5\na(ccd){2}\na(cbb){4}\na(eab){2}\na(cab){4}\na(bea){1}\n",
+    "expectedOutput": "accdccd\nacbbcbbcbbcbb\naeabeab\nacabcabcabcab\nabea\n"
+  },
+  {
+    "input": "2\na(eee){1}\na(e){3}\n",
+    "expectedOutput": "aeee\naeee\n"
+  },
+  {
+    "input": "3\na(ddc){4}\na(bb){2}\na(aec){3}\n",
+    "expectedOutput": "addcddcddcddc\nabbbb\naaecaecaec\n"
+  },
+  {
+    "input": "1\na(cba){2}\n",
+    "expectedOutput": "acbacba\n"
+  },
+  {
+    "input": "4\na(b){4}\na(ceb){4}\na(bce){3}\na(ace){0}\n",
+    "expectedOutput": "abbbb\nacebcebcebceb\nabcebcebce\na\n"
+  },
+  {
+    "input": "4\na(aae){1}\na(bca){0}\na(bca){3}\na(dbb){3}\n",
+    "expectedOutput": "aaae\na\nabcabcabca\nadbbdbbdbb\n"
+  },
+  {
+    "input": "1\na(dec){3}\n",
+    "expectedOutput": "adecdecdec\n"
+  },
+  {
+    "input": "4\na(cde){4}\na(cba){4}\na(bbc){0}\na(eea){4}\n",
+    "expectedOutput": "acdecdecdecde\nacbacbacbacba\na\naeeaeeaeeaeea\n"
+  },
+  {
+    "input": "4\na(ded){3}\na(bdc){1}\na(cee){3}\na(ddb){2}\n",
+    "expectedOutput": "adeddedded\nabdc\naceeceecee\naddbddb\n"
+  },
+  {
+    "input": "1\na(dac){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "2\na(dde){1}\na(cde){1}\n",
+    "expectedOutput": "adde\nacde\n"
+  },
+  {
+    "input": "3\na(adb){4}\na(aaa){0}\na(a){2}\n",
+    "expectedOutput": "aadbadbadbadb\na\naaa\n"
+  },
+  {
+    "input": "5\na(dbc){2}\na(cea){3}\na(cdc){1}\na(aeb){4}\na(cad){3}\n",
+    "expectedOutput": "adbcdbc\naceaceacea\nacdc\naaebaebaebaeb\nacadcadcad\n"
+  },
+  {
+    "input": "1\na(dad){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "1\na(ebb){3}\n",
+    "expectedOutput": "aebbebbebb\n"
+  },
+  {
+    "input": "4\na(eee){4}\na(ec){0}\na(cae){4}\na(add){2}\n",
+    "expectedOutput": "aeeeeeeeeeeee\na\nacaecaecaecae\naaddadd\n"
+  },
+  {
+    "input": "3\na(edc){3}\na(b){1}\na(ddb){3}\n",
+    "expectedOutput": "aedcedcedc\nab\naddbddbddb\n"
+  },
+  {
+    "input": "4\na(ddd){3}\na(ab){4}\na(eeb){4}\na(dbb){1}\n",
+    "expectedOutput": "addddddddd\naabababab\naeebeebeebeeb\nadbb\n"
+  },
+  {
+    "input": "2\na(aaa){2}\na(cce){0}\n",
+    "expectedOutput": "aaaaaaa\na\n"
+  },
+  {
+    "input": "1\na(bee){3}\n",
+    "expectedOutput": "abeebeebee\n"
+  },
+  {
+    "input": "3\na(e){3}\na(bea){1}\na(bca){4}\n",
+    "expectedOutput": "aeee\nabea\nabcabcabcabca\n"
+  },
+  {
+    "input": "4\na(b){0}\na(dba){2}\na(beb){2}\na(cba){3}\n",
+    "expectedOutput": "a\nadbadba\nabebbeb\nacbacbacba\n"
+  },
+  {
+    "input": "3\na(cdb){4}\na(db){0}\na(bed){4}\n",
+    "expectedOutput": "acdbcdbcdbcdb\na\nabedbedbedbed\n"
+  },
+  {
+    "input": "1\na(dea){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "2\na(bbe){2}\na(edc){4}\n",
+    "expectedOutput": "abbebbe\naedcedcedcedc\n"
+  },
+  {
+    "input": "4\na(cac){1}\na(ebb){3}\na(ccb){3}\na(cdc){1}\n",
+    "expectedOutput": "acac\naebbebbebb\naccbccbccb\nacdc\n"
+  },
+  {
+    "input": "4\na(e){0}\na(dba){2}\na(dee){0}\na(ecc){1}\n",
+    "expectedOutput": "a\nadbadba\na\naecc\n"
+  },
+  {
+    "input": "2\na(dde){1}\na(bb){2}\n",
+    "expectedOutput": "adde\nabbbb\n"
+  },
+  {
+    "input": "5\na(ede){1}\na(ada){3}\na(c){2}\na(aec){0}\na(aee){3}\n",
+    "expectedOutput": "aede\naadaadaada\nacc\na\naaeeaeeaee\n"
+  },
+  {
+    "input": "3\na(a){0}\na(aee){4}\na(ead){3}\n",
+    "expectedOutput": "a\naaeeaeeaeeaee\naeadeadead\n"
+  },
+  {
+    "input": "3\na(ae){1}\na(ecc){0}\na(bab){3}\n",
+    "expectedOutput": "aae\na\nababbabbab\n"
+  },
+  {
+    "input": "3\na(dbb){2}\na(dbe){2}\na(bdc){3}\n",
+    "expectedOutput": "adbbdbb\nadbedbe\nabdcbdcbdc\n"
+  },
+  {
+    "input": "5\na(ac){1}\na(dab){0}\na(ecc){0}\na(aa){4}\na(acc){0}\n",
+    "expectedOutput": "aac\na\na\naaaaaaaaa\na\n"
+  },
+  {
+    "input": "4\na(bcc){4}\na(eab){2}\na(cbe){1}\na(bcc){4}\n",
+    "expectedOutput": "abccbccbccbcc\naeabeab\nacbe\nabccbccbccbcc\n"
+  },
+  {
+    "input": "1\na(da){2}\n",
+    "expectedOutput": "adada\n"
+  },
+  {
+    "input": "5\na(c){4}\na(cec){2}\na(ed){2}\na(bda){0}\na(aab){1}\n",
+    "expectedOutput": "acccc\naceccec\naeded\na\naaab\n"
+  },
+  {
+    "input": "1\na(dec){0}\n",
+    "expectedOutput": "a\n"
+  },
+  {
+    "input": "4\na(bde){2}\na(bbc){3}\na(eee){2}\na(ca){1}\n",
+    "expectedOutput": "abdebde\nabbcbbcbbc\naeeeeee\naca\n"
+  },
+  {
+    "input": "5\na(c){0}\na(eac){1}\na(eeb){0}\na(b){4}\na(eea){1}\n",
+    "expectedOutput": "a\naeac\na\nabbbb\naeea\n"
+  },
+  {
+    "input": "4\na(bab){4}\na(aab){3}\na(eae){2}\na(a){3}\n",
+    "expectedOutput": "ababbabbabbab\naaabaabaab\naeaeeae\naaaa\n"
+  },
+  {
+    "input": "3\na(bc){4}\na(dca){0}\na(acc){0}\n",
+    "expectedOutput": "abcbcbcbc\na\na\n"
+  },
+  {
+    "input": "5\na(ecc){3}\na(ab){0}\na(eae){3}\na(dee){3}\na(eaa){4}\n",
+    "expectedOutput": "aecceccecc\na\naeaeeaeeae\nadeedeedee\naeaaeaaeaaeaa\n"
+  },
+  {
+    "input": "3\na(baa){3}\na(cbb){4}\na(bde){2}\n",
+    "expectedOutput": "abaabaabaa\nacbbcbbcbbcbb\nabdebde\n"
+  },
+  {
+    "input": "3\na(bca){0}\na(bbc){1}\na(cee){4}\n",
+    "expectedOutput": "a\nabbc\naceeceeceecee\n"
+  },
+  {
+    "input": "1\na(aee){4}\n",
+    "expectedOutput": "aaeeaeeaeeaee\n"
+  },
+  {
+    "input": "3\na(cdd){0}\na(deb){4}\na(cbb){1}\n",
+    "expectedOutput": "a\nadebdebdebdeb\nacbb\n"
+  },
+  {
+    "input": "4\na(aeb){1}\na(dec){4}\na(ddd){4}\na(e){3}\n",
+    "expectedOutput": "aaeb\nadecdecdecdec\nadddddddddddd\naeee\n"
+  },
+  {
+    "input": "3\na(d){3}\na(e){3}\na(dbd){2}\n",
+    "expectedOutput": "addd\naeee\nadbddbd\n"
+  },
+  {
+    "input": "5\na(ddd){2}\na(cad){1}\na(aeb){3}\na(ede){2}\na(deb){4}\n",
+    "expectedOutput": "adddddd\nacad\naaebaebaeb\naedeede\nadebdebdebdeb\n"
+  },
+  {
+    "input": "1\na(eca){2}\n",
+    "expectedOutput": "aecaeca\n"
+  },
+  {
+    "input": "4\na(cbe){1}\na(ebb){4}\na(ec){1}\na(b){4}\n",
+    "expectedOutput": "acbe\naebbebbebbebb\naec\nabbbb\n"
+  },
+  {
+    "input": "3\na(acb){3}\na(cda){0}\na(b){4}\n",
+    "expectedOutput": "aacbacbacb\na\nabbbb\n"
+  },
+  {
+    "input": "5\na(cdc){0}\na(ace){3}\na(dcc){4}\na(bcd){2}\na(eda){2}\n",
+    "expectedOutput": "a\naaceaceace\nadccdccdccdcc\nabcdbcd\naedaeda\n"
+  },
+  {
+    "input": "3\na(dbd){3}\na(cca){3}\na(ece){2}\n",
+    "expectedOutput": "adbddbddbd\naccaccacca\naeceece\n"
+  },
+  {
+    "input": "2\na(abc){2}\na(bec){4}\n",
+    "expectedOutput": "aabcabc\nabecbecbecbec\n"
+  },
+  {
+    "input": "1\na(b){2}\n",
+    "expectedOutput": "abb\n"
+  },
+  {
+    "input": "1\na(a){2}\n",
+    "expectedOutput": "aaa\n"
+  },
+  {
+    "input": "2\na(ecc){3}\na(adb){2}\n",
+    "expectedOutput": "aecceccecc\naadbadb\n"
+  },
+  {
+    "input": "4\na(bb){0}\na(bed){3}\na(bcb){4}\na(bba){0}\n",
+    "expectedOutput": "a\nabedbedbed\nabcbbcbbcbbcb\na\n"
+  },
+  {
+    "input": "4\na(acc){0}\na(bbc){3}\na(aee){2}\na(dda){2}\n",
+    "expectedOutput": "a\nabbcbbcbbc\naaeeaee\naddadda\n"
+  },
+  {
+    "input": "1\na(beb){4}\n",
+    "expectedOutput": "abebbebbebbeb\n"
+  },
+  {
+    "input": "2\na(bac){1}\na(ccc){3}\n",
+    "expectedOutput": "abac\naccccccccc\n"
+  },
+  {
+    "input": "3\na(cdb){0}\na(b){4}\na(aca){1}\n",
+    "expectedOutput": "a\nabbbb\naaca\n"
+  },
+  {
+    "input": "4\na(dba){4}\na(ec){0}\na(cac){3}\na(ced){4}\n",
+    "expectedOutput": "adbadbadbadba\na\nacaccaccac\nacedcedcedced\n"
+  },
+  {
+    "input": "5\na(cbe){0}\na(cda){2}\na(bed){1}\na(bbc){2}\na(bdb){0}\n",
+    "expectedOutput": "a\nacdacda\nabed\nabbcbbc\na\n"
+  },
+  {
+    "input": "3\na(eed){3}\na(b){1}\na(bcc){3}\n",
+    "expectedOutput": "aeedeedeed\nab\nabccbccbcc\n"
+  },
+  {
+    "input": "5\na(dab){1}\na(edd){1}\na(eda){3}\na(cdc){4}\na(bcb){3}\n",
+    "expectedOutput": "adab\naedd\naedaedaeda\nacdccdccdccdc\nabcbbcbbcb\n"
+  }
+]

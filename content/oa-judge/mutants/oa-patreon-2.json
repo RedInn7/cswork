@@ -1,0 +1,10 @@
+[
+  {
+    "name": "equal height blocks",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));a=v[1:v[0]+1];n=len(a);L=[-1]*n;R=[n]*n;st=[]\n for i,x in enumerate(a):\n  while st and a[st[-1]]<x:st.pop()\n  if st:L[i]=st[-1]\n  st.append(i)\n st=[]\n for i in range(n-1,-1,-1):\n  while st and a[st[-1]]<=a[i]:st.pop()\n  if st:R[i]=st[-1]\n  st.append(i)\n return str(sum(R[i]-L[i]-1 for i in range(n)))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "omit left boundary",
+    "code": "def solve(raw):\n v=list(map(int,raw.split()));a=v[1:v[0]+1];n=len(a);L=[-1]*n;R=[n]*n;st=[]\n for i,x in enumerate(a):\n  while st and a[st[-1]]<=x:st.pop()\n  if st:L[i]=st[-1]\n  st.append(i)\n st=[]\n for i in range(n-1,-1,-1):\n  while st and a[st[-1]]<=a[i]:st.pop()\n  if st:R[i]=st[-1]\n  st.append(i)\n return str(sum(R[i]-i for i in range(n)))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

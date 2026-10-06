@@ -1,0 +1,10 @@
+[
+  {
+    "name": "skip first candidate",
+    "code": "def ds(x):\n s=0\n while x:s+=x%10;x//=10\n return s\ndef solve(raw):\n z=int(raw);target=2*ds(z);x=z+2\n while ds(x)!=target:x+=1\n return str(x)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "wrong target",
+    "code": "def ds(x):\n s=0\n while x:s+=x%10;x//=10\n return s\ndef solve(raw):\n z=int(raw);target=ds(z);x=z+1\n while ds(x)!=target:x+=1\n return str(x)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

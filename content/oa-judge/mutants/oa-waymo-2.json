@@ -1,0 +1,10 @@
+[
+  {
+    "name": "reverse directed edges",
+    "code": "import heapq\ndef solve(raw):\n v=list(map(int,raw.split()));n,m,s,q=v[:4];p=4;g=[[] for _ in range(n)]\n for _ in range(m):\n  a,b,w=v[p]-1,v[p+1]-1,v[p+2];p+=3;g[b].append((a,w))\n ts=[x-1 for x in v[p:p+q]];d=[10**30]*n;d[s-1]=0;h=[(0,s-1)]\n while h:\n  x,u=heapq.heappop(h)\n  if x!=d[u]:continue\n  for z,w in g[u]:\n   if x+w<d[z]:d[z]=x+w;heapq.heappush(h,(x+w,z))\n return ' '.join(str(d[z] if d[z]<10**30 else -1) for z in ts)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "wrong source distance",
+    "code": "import heapq\ndef solve(raw):\n v=list(map(int,raw.split()));n,m,s,q=v[:4];p=4;g=[[] for _ in range(n)]\n for _ in range(m):\n  a,b,w=v[p]-1,v[p+1]-1,v[p+2];p+=3;g[a].append((b,w))\n ts=[x-1 for x in v[p:p+q]];d=[10**30]*n;d[s-1]=1;h=[(0,s-1)]\n while h:\n  x,u=heapq.heappop(h)\n  if x!=d[u]:continue\n  for z,w in g[u]:\n   if x+w<d[z]:d[z]=x+w;heapq.heappush(h,(x+w,z))\n return ' '.join(str(d[z] if d[z]<10**30 else -1) for z in ts)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

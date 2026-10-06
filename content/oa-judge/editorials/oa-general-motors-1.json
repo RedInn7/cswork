@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-general-motors-1",
+  "title": "Prepare Notification",
+  "explanation": "## 思路\n\n依次试加完整单词，仅保留加省略号后不超 K 的最长前缀。\n\n## 正确性证明\n\n前缀长度单调递增，首个超限后更长前缀均不可行；整词规则要求不可截断字符。\n\n## 复杂度\n\nO(|message|) time, O(|message|) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=raw.splitlines();k=int(v[0]);msg=v[1]\n if len(msg)<=k:return msg\n out=[]\n for w in msg.split():\n  t=' '.join(out+[w])+' ...'\n  if len(t)>k:break\n  out.append(w)\n return ' '.join(out)+' ...' if out else '...'\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/general-motors#1-prepare-notification",
+  "sourceContentHash": "37462d6086c5e5a3d5918f8eb3c7c1bf0390dc72b5a0c7a24449ecc04d4454ec",
+  "author": "CSWork"
+}

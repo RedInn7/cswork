@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-general-motors-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Smallest Greater Number with Double Digit Sum",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "General Motors"
+    ],
+    "description": "找最小 X>Z，使 digitSum(X)=2×digitSum(Z)。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "1≤Z≤500。",
+    "output": "输出 X。",
+    "explanation": "从 Z+1 递增枚举检查数字和。",
+    "hints": [
+      "从 Z+1 递增枚举检查数字和。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "10\n",
+      "expectedOutput": "11\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "14\n",
+      "expectedOutput": "19\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "99\n",
+      "expectedOutput": "9999\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 4",
+      "input": "1\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 5",
+      "input": "500\n",
+      "expectedOutput": "505\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "497\n",
+      "expectedOutput": "49999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "377\n",
+      "expectedOutput": "7999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "399\n",
+      "expectedOutput": "69999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "459\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "372\n",
+      "expectedOutput": "699\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "149\n",
+      "expectedOutput": "1999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "179\n",
+      "expectedOutput": "7999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "273\n",
+      "expectedOutput": "699\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "442\n",
+      "expectedOutput": "479\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "261\n",
+      "expectedOutput": "279\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "76\n",
+      "expectedOutput": "899\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "196\n",
+      "expectedOutput": "5999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "396\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "454\n",
+      "expectedOutput": "899\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "394\n",
+      "expectedOutput": "5999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "465\n",
+      "expectedOutput": "3999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "111\n",
+      "expectedOutput": "114\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "20\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "485\n",
+      "expectedOutput": "7999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "341\n",
+      "expectedOutput": "349\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "34\n",
+      "expectedOutput": "59\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "448\n",
+      "expectedOutput": "5999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "331\n",
+      "expectedOutput": "338\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "365\n",
+      "expectedOutput": "1999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "39\n",
+      "expectedOutput": "699\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "165\n",
+      "expectedOutput": "699\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "170\n",
+      "expectedOutput": "178\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "376\n",
+      "expectedOutput": "5999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "360\n",
+      "expectedOutput": "369\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "395\n",
+      "expectedOutput": "7999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "195\n",
+      "expectedOutput": "3999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "229\n",
+      "expectedOutput": "899\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "155\n",
+      "expectedOutput": "499\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "177\n",
+      "expectedOutput": "3999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "2\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

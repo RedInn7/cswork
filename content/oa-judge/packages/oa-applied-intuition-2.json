@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-applied-intuition-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "KV Store with Nested Transactions",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Applied Intuition"
+    ],
+    "description": "实现 SET/GET/DELETE 和嵌套 BEGIN/ROLLBACK/COMMIT；缺失 GET 为 NULL；无事务提交/回滚输出 NO TRANSACTION。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "q≤200000 行；键和值不含空格。",
+    "output": "输出 GET 结果和无事务错误。",
+    "explanation": "事务层记录键变更，GET 从内向外查找；提交将本层覆盖合并到父层，回滚丢弃本层。",
+    "hints": [
+      "事务层记录键变更，GET 从内向外查找；提交将本层覆盖合并到父层，回滚丢弃本层。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "6\nSET x 1\nBEGIN\nSET x 2\nGET x\nROLLBACK\nGET x\n",
+      "expectedOutput": "2\n1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "3\nGET miss\nCOMMIT\nROLLBACK\n",
+      "expectedOutput": "NULL\nNO TRANSACTION\nNO TRANSACTION\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "9\nSET a z\nBEGIN\nDELETE a\nBEGIN\nSET b y\nCOMMIT\nGET b\nROLLBACK\nGET a\n",
+      "expectedOutput": "y\nz\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "13\nGET k2\nGET k2\nCOMMIT\nROLLBACK\nGET k3\nGET k2\nDELETE k0\nBEGIN\nROLLBACK\nGET k3\nDELETE k1\nSET k3 v0\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNULL\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "13\nROLLBACK\nCOMMIT\nSET k2 v2\nBEGIN\nSET k2 v2\nSET k1 v0\nGET k2\nBEGIN\nBEGIN\nDELETE k0\nBEGIN\nSET k2 v0\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nv2\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "13\nSET k2 v1\nCOMMIT\nDELETE k2\nDELETE k3\nSET k1 v0\nROLLBACK\nBEGIN\nROLLBACK\nGET k1\nCOMMIT\nSET k3 v2\nSET k3 v2\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nv0\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "13\nDELETE k3\nGET k0\nGET k3\nGET k0\nCOMMIT\nGET k2\nGET k2\nSET k2 v3\nDELETE k3\nCOMMIT\nROLLBACK\nCOMMIT\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nNULL\nNO TRANSACTION\nNULL\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "13\nCOMMIT\nGET k2\nDELETE k1\nDELETE k2\nSET k0 v3\nSET k1 v3\nBEGIN\nDELETE k1\nBEGIN\nSET k3 v2\nGET k0\nGET k3\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nv3\nv2\nv3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "13\nCOMMIT\nBEGIN\nSET k1 v0\nGET k2\nROLLBACK\nSET k2 v1\nGET k2\nROLLBACK\nBEGIN\nSET k2 v3\nSET k3 v1\nGET k2\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nv1\nNO TRANSACTION\nv3\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "13\nBEGIN\nGET k2\nDELETE k1\nCOMMIT\nCOMMIT\nBEGIN\nGET k2\nCOMMIT\nDELETE k2\nROLLBACK\nGET k3\nSET k2 v0\nGET k0\n",
+      "expectedOutput": "NULL\nNO TRANSACTION\nNULL\nNO TRANSACTION\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "13\nBEGIN\nROLLBACK\nBEGIN\nSET k1 v1\nGET k3\nBEGIN\nROLLBACK\nSET k1 v1\nBEGIN\nGET k1\nSET k2 v2\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NULL\nv1\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "13\nSET k1 v3\nROLLBACK\nSET k2 v0\nSET k1 v2\nBEGIN\nBEGIN\nCOMMIT\nROLLBACK\nCOMMIT\nSET k2 v3\nBEGIN\nSET k0 v0\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nv0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "13\nGET k2\nGET k2\nCOMMIT\nCOMMIT\nGET k2\nROLLBACK\nGET k0\nGET k1\nDELETE k3\nSET k0 v0\nGET k0\nGET k1\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNO TRANSACTION\nNULL\nNULL\nv0\nNULL\nv0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "13\nROLLBACK\nGET k3\nCOMMIT\nGET k2\nGET k3\nCOMMIT\nGET k0\nSET k3 v1\nCOMMIT\nDELETE k1\nDELETE k0\nGET k2\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nNO TRANSACTION\nNULL\nNULL\nNO TRANSACTION\nNULL\nNO TRANSACTION\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "13\nBEGIN\nROLLBACK\nCOMMIT\nSET k0 v0\nSET k1 v1\nSET k1 v3\nCOMMIT\nROLLBACK\nSET k2 v3\nROLLBACK\nCOMMIT\nBEGIN\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "13\nCOMMIT\nDELETE k0\nROLLBACK\nGET k0\nSET k1 v2\nDELETE k1\nDELETE k2\nSET k3 v0\nBEGIN\nSET k0 v1\nCOMMIT\nSET k2 v2\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNULL\nv1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "13\nBEGIN\nCOMMIT\nCOMMIT\nBEGIN\nDELETE k2\nGET k2\nDELETE k2\nDELETE k3\nROLLBACK\nDELETE k0\nCOMMIT\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "13\nBEGIN\nSET k0 v2\nCOMMIT\nDELETE k3\nROLLBACK\nSET k1 v1\nSET k1 v3\nDELETE k3\nCOMMIT\nDELETE k3\nROLLBACK\nBEGIN\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "13\nDELETE k0\nBEGIN\nGET k3\nSET k2 v1\nCOMMIT\nGET k1\nSET k3 v3\nDELETE k2\nDELETE k2\nGET k0\nDELETE k0\nGET k1\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nNULL\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "13\nCOMMIT\nDELETE k1\nDELETE k2\nSET k0 v3\nCOMMIT\nSET k1 v3\nGET k3\nDELETE k3\nDELETE k2\nGET k3\nSET k3 v0\nDELETE k3\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNULL\nNULL\nv3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "13\nGET k2\nBEGIN\nDELETE k0\nDELETE k3\nCOMMIT\nBEGIN\nGET k0\nDELETE k1\nDELETE k0\nSET k2 v2\nSET k0 v0\nDELETE k1\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nv0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "13\nSET k0 v1\nGET k3\nDELETE k0\nDELETE k3\nSET k1 v2\nGET k3\nSET k0 v3\nBEGIN\nBEGIN\nDELETE k1\nSET k2 v2\nBEGIN\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nv3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "13\nSET k0 v0\nSET k0 v3\nDELETE k2\nROLLBACK\nSET k2 v2\nDELETE k3\nCOMMIT\nDELETE k1\nCOMMIT\nGET k2\nGET k2\nSET k3 v1\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv2\nv2\nv3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "13\nDELETE k1\nROLLBACK\nROLLBACK\nGET k2\nBEGIN\nDELETE k3\nROLLBACK\nSET k3 v1\nSET k1 v1\nGET k2\nBEGIN\nBEGIN\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNULL\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "13\nDELETE k1\nSET k3 v0\nGET k3\nBEGIN\nGET k2\nSET k2 v1\nCOMMIT\nGET k2\nDELETE k1\nSET k0 v1\nROLLBACK\nGET k0\nGET k0\n",
+      "expectedOutput": "v0\nNULL\nv1\nNO TRANSACTION\nv1\nv1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "13\nDELETE k0\nROLLBACK\nSET k0 v0\nCOMMIT\nROLLBACK\nROLLBACK\nROLLBACK\nSET k2 v2\nCOMMIT\nROLLBACK\nDELETE k2\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "13\nSET k1 v2\nCOMMIT\nGET k0\nGET k2\nCOMMIT\nCOMMIT\nDELETE k1\nSET k0 v3\nCOMMIT\nCOMMIT\nCOMMIT\nDELETE k1\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "13\nROLLBACK\nSET k1 v0\nGET k2\nBEGIN\nGET k1\nGET k3\nDELETE k1\nROLLBACK\nGET k0\nDELETE k3\nCOMMIT\nBEGIN\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nv0\nNULL\nNULL\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "13\nGET k0\nGET k0\nCOMMIT\nCOMMIT\nGET k0\nSET k1 v3\nBEGIN\nBEGIN\nBEGIN\nGET k2\nCOMMIT\nDELETE k0\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "13\nDELETE k2\nCOMMIT\nROLLBACK\nCOMMIT\nSET k1 v1\nSET k2 v3\nBEGIN\nBEGIN\nCOMMIT\nDELETE k1\nCOMMIT\nGET k3\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "13\nCOMMIT\nCOMMIT\nROLLBACK\nSET k3 v0\nROLLBACK\nROLLBACK\nROLLBACK\nBEGIN\nGET k3\nROLLBACK\nROLLBACK\nDELETE k0\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv0\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "13\nGET k0\nSET k2 v3\nDELETE k1\nSET k2 v1\nCOMMIT\nBEGIN\nROLLBACK\nCOMMIT\nROLLBACK\nSET k0 v0\nDELETE k1\nGET k2\nGET k0\n",
+      "expectedOutput": "NULL\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nv1\nv0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "13\nCOMMIT\nCOMMIT\nSET k2 v2\nCOMMIT\nROLLBACK\nCOMMIT\nGET k0\nSET k2 v1\nSET k3 v0\nGET k3\nSET k1 v2\nDELETE k1\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNULL\nv0\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "13\nGET k3\nDELETE k3\nGET k3\nCOMMIT\nBEGIN\nCOMMIT\nBEGIN\nROLLBACK\nDELETE k3\nBEGIN\nDELETE k1\nCOMMIT\nGET k0\n",
+      "expectedOutput": "NULL\nNULL\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "13\nROLLBACK\nDELETE k3\nSET k2 v3\nROLLBACK\nGET k1\nGET k2\nDELETE k3\nCOMMIT\nCOMMIT\nBEGIN\nBEGIN\nBEGIN\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNULL\nv3\nNO TRANSACTION\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "13\nSET k0 v0\nBEGIN\nSET k0 v3\nBEGIN\nROLLBACK\nSET k2 v1\nBEGIN\nGET k1\nCOMMIT\nBEGIN\nBEGIN\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NULL\nv3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "13\nSET k1 v3\nDELETE k3\nCOMMIT\nROLLBACK\nDELETE k1\nROLLBACK\nROLLBACK\nDELETE k2\nSET k1 v1\nROLLBACK\nCOMMIT\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "13\nDELETE k0\nCOMMIT\nROLLBACK\nCOMMIT\nCOMMIT\nCOMMIT\nROLLBACK\nDELETE k2\nCOMMIT\nCOMMIT\nGET k2\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 36",
+      "input": "13\nCOMMIT\nBEGIN\nCOMMIT\nGET k2\nROLLBACK\nDELETE k3\nBEGIN\nDELETE k3\nBEGIN\nDELETE k0\nDELETE k0\nROLLBACK\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNULL\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 37",
+      "input": "13\nCOMMIT\nCOMMIT\nCOMMIT\nDELETE k2\nROLLBACK\nGET k0\nROLLBACK\nROLLBACK\nGET k1\nROLLBACK\nDELETE k1\nCOMMIT\nGET k0\n",
+      "expectedOutput": "NO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNULL\nNO TRANSACTION\nNO TRANSACTION\nNULL\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

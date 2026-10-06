@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-applied-intuition-2",
+  "title": "KV Store with Nested Transactions",
+  "explanation": "## 思路\n\n事务层记录键变更，GET 从内向外查找；提交将本层覆盖合并到父层，回滚丢弃本层。\n\n## 正确性证明\n\n最新事务层的值优先；提交保留其变更，回滚恢复进入事务前状态。\n\n## 复杂度\n\nread O(depth), writes amortized O(1), space O(q).",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n v=raw.splitlines();q=int(v[0]);base={};layers=[];out=[]\n def get(k):\n  for d in reversed(layers):\n   if k in d:return d[k]\n  return base.get(k)\n for c in v[1:q+1]:\n  p=c.split();op=p[0]\n  if op=='SET':(layers[-1] if layers else base)[p[1]]=p[2]\n  elif op=='DELETE':(layers[-1] if layers else base)[p[1]]=None\n  elif op=='GET':\n   x=get(p[1]);out.append('NULL' if x is None else x)\n  elif op=='BEGIN':layers.append({})\n  elif op=='ROLLBACK':\n   if layers:layers.pop()\n   else:out.append('NO TRANSACTION')\n  elif op=='COMMIT':\n   if not layers:out.append('NO TRANSACTION')\n   else:(layers[-2] if len(layers)>1 else base).update(layers.pop())\n return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/applied-intuition#2-kv-store-with-nested-transactions",
+  "sourceContentHash": "4ee06698ff0bfe8986226d6a29d8ee5c2c1501ec65ab7cc74d3c850e094046e2",
+  "author": "CSWork"
+}

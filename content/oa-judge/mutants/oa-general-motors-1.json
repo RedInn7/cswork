@@ -1,0 +1,10 @@
+[
+  {
+    "name": "ellipsis off-by-one",
+    "code": "def solve(raw):\n v=raw.splitlines();k=int(v[0]);msg=v[1]\n if len(msg)<=k:return msg\n out=[]\n for w in msg.split():\n  t=' '.join(out+[w])+' ...'\n  if len(t)-1>k:break\n  out.append(w)\n return ' '.join(out)+' ...' if out else '...'\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "truncate words",
+    "code": "def solve(raw):\n v=raw.splitlines();k=int(v[0]);msg=v[1]\n return msg[:k]\n out=[]\n for w in msg.split():\n  t=' '.join(out+[w])+' ...'\n  if len(t)>k:break\n  out.append(w)\n return ' '.join(out)+' ...' if out else '...'\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

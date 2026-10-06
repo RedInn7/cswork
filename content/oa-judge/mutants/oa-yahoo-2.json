@@ -1,0 +1,10 @@
+[
+  {
+    "name": "use max instead",
+    "code": "def solve(raw):\n s=raw.strip();prev=run=0;last=None;ans=0\n for c in s:\n  if c==last:run+=1\n  else:ans+=max(prev,run);prev,run=run,1;last=c\n return str(ans+min(prev,run))\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "omit last pair",
+    "code": "def solve(raw):\n s=raw.strip();prev=run=0;last=None;ans=0\n for c in s:\n  if c==last:run+=1\n  else:ans+=min(prev,run);prev,run=run,1;last=c\n return str(ans)\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

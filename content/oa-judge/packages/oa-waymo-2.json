@@ -1,0 +1,313 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-waymo-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Shortest Paths to Multiple Targets",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Waymo"
+    ],
+    "description": "有向非负权图上求 source 到多目标最短路，不可达为 -1。\n\n本站补充的标准输入输出约定和约束见“输入”。",
+    "input": "n≤200000,m≤300000, w≤10^9；节点 1-based，输入 n m source q、边、目标。",
+    "output": "依序输出目标距离。",
+    "explanation": "从 source 运行 Dijkstra 并按询问返回距离。",
+    "hints": [
+      "从 source 运行 Dijkstra 并按询问返回距离。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例 1",
+      "input": "5 6 1 3\n1 2 2\n1 3 5\n2 3 1\n2 4 2\n3 5 1\n4 5 2\n3 4 5\n",
+      "expectedOutput": "3 4 4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 2",
+      "input": "4 1 1 2\n1 2 5\n2 3\n",
+      "expectedOutput": "5 -1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例 3",
+      "input": "3 2 2 2\n2 1 0\n1 3 0\n1 3\n",
+      "expectedOutput": "0 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "3 0 2 3\n1 1 1\n",
+      "expectedOutput": "-1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "8 8 6 8\n1 5 9\n1 8 3\n2 3 19\n2 7 14\n4 1 2\n4 8 16\n5 4 15\n7 8 3\n5 1 4 5 4 5 3 8\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "4 3 2 3\n1 3 8\n1 4 6\n2 3 11\n4 4 4\n",
+      "expectedOutput": "-1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "5 5 4 3\n1 5 14\n2 1 12\n3 4 17\n5 1 10\n5 4 6\n3 4 2\n",
+      "expectedOutput": "-1 0 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "8 12 7 7\n2 2 16\n2 7 17\n3 2 5\n4 1 4\n4 3 16\n5 5 16\n5 6 18\n6 1 18\n6 5 7\n7 4 8\n7 7 8\n7 8 17\n7 2 1 4 2 2 7\n",
+      "expectedOutput": "0 29 12 8 29 29 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "8 9 2 3\n1 3 19\n1 4 12\n1 6 8\n3 2 11\n4 2 19\n4 8 6\n6 3 8\n7 1 15\n7 6 19\n1 7 2\n",
+      "expectedOutput": "-1 -1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "8 20 4 8\n1 1 15\n1 8 16\n2 2 15\n2 3 12\n2 5 2\n2 8 1\n3 4 5\n3 6 4\n3 7 4\n4 4 1\n4 5 20\n5 6 18\n5 8 16\n7 1 8\n7 2 14\n7 3 6\n8 1 0\n8 5 12\n8 7 17\n8 8 12\n4 2 5 6 3 3 7 1\n",
+      "expectedOutput": "0 67 20 38 59 59 53 36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "8 16 6 6\n1 8 5\n2 7 3\n3 4 14\n3 5 3\n3 6 8\n4 1 20\n4 4 12\n4 6 10\n4 7 7\n5 1 4\n5 3 13\n5 8 6\n6 4 5\n6 7 15\n7 1 0\n7 2 13\n7 3 8 5 8 7\n",
+      "expectedOutput": "12 -1 17 -1 17 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "8 11 3 2\n1 6 13\n2 3 14\n2 6 18\n3 4 5\n3 5 11\n4 2 20\n4 3 8\n6 1 2\n6 4 13\n8 5 13\n8 6 8\n3 7\n",
+      "expectedOutput": "0 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "2 3 2 1\n1 1 20\n2 1 15\n2 2 1\n1\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "5 4 5 4\n1 3 6\n1 5 0\n3 1 4\n3 3 2\n3 2 3 1\n",
+      "expectedOutput": "-1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "5 4 3 4\n2 1 11\n2 4 17\n3 2 13\n4 3 7\n4 4 5 4\n",
+      "expectedOutput": "30 30 -1 30\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "8 12 6 2\n1 1 0\n2 3 2\n2 6 19\n4 1 9\n4 2 7\n4 6 2\n5 4 8\n5 5 0\n5 6 5\n6 6 13\n7 2 17\n8 5 17\n7 1\n",
+      "expectedOutput": "-1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "2 1 2 1\n2 2 4\n1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "2 1 1 2\n2 2 9\n2 1\n",
+      "expectedOutput": "-1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "3 1 2 2\n3 1 4\n1 3\n",
+      "expectedOutput": "-1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "8 12 1 7\n1 1 11\n1 7 17\n3 2 20\n3 7 4\n4 5 6\n4 7 4\n4 8 8\n5 1 11\n6 5 8\n7 4 11\n8 3 9\n8 8 3\n2 6 2 4 1 5 6\n",
+      "expectedOutput": "65 -1 65 28 0 34 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "4 2 1 2\n1 2 12\n1 4 15\n2 2\n",
+      "expectedOutput": "12 12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "5 5 2 3\n2 4 20\n2 5 2\n4 2 12\n4 3 9\n5 5 16\n2 4 3\n",
+      "expectedOutput": "0 20 29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "8 9 2 8\n3 4 15\n3 6 13\n4 1 10\n4 8 13\n5 3 15\n6 2 9\n7 1 7\n8 1 7\n8 7 18\n8 4 7 8 6 2 6 2\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 0 -1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "6 4 4 2\n4 2 18\n4 3 9\n5 3 20\n5 4 16\n2 1\n",
+      "expectedOutput": "18 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "8 15 7 4\n1 1 16\n1 6 13\n3 1 5\n4 1 6\n4 3 3\n4 5 16\n5 2 11\n5 7 12\n6 2 3\n6 3 3\n6 4 6\n6 6 13\n7 3 10\n7 6 6\n8 6 6\n4 2 7 3\n",
+      "expectedOutput": "12 9 0 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "2 2 1 1\n2 1 4\n2 2 5\n1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "3 0 3 3\n3 1 3\n",
+      "expectedOutput": "0 -1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "7 10 5 6\n1 4 15\n1 5 14\n2 2 4\n3 2 20\n3 5 12\n3 7 7\n4 2 19\n6 5 1\n7 4 16\n7 7 14\n3 3 4 4 6 2\n",
+      "expectedOutput": "-1 -1 -1 -1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "3 2 3 3\n1 3 3\n3 1 12\n3 2 2\n",
+      "expectedOutput": "0 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "4 5 2 4\n1 4 2\n2 1 11\n2 3 1\n3 1 18\n4 1 6\n3 3 2 2\n",
+      "expectedOutput": "1 1 0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "3 3 1 2\n1 2 9\n3 2 11\n3 3 5\n3 3\n",
+      "expectedOutput": "-1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "4 4 2 1\n1 1 4\n1 3 17\n2 3 9\n4 1 0\n3\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "3 3 3 1\n1 2 7\n2 1 17\n2 3 15\n2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "3 3 3 3\n1 1 12\n1 2 19\n3 3 9\n2 1 1\n",
+      "expectedOutput": "-1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "2 0 1 1\n1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "8 10 4 7\n1 3 6\n2 3 5\n2 5 3\n3 2 13\n3 3 2\n4 5 13\n5 7 20\n6 8 20\n8 1 8\n8 7 0\n8 7 5 3 4 7 8\n",
+      "expectedOutput": "-1 33 13 -1 0 33 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 34",
+      "input": "2 1 1 2\n2 2 2\n1 2\n",
+      "expectedOutput": "0 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 35",
+      "input": "6 6 4 3\n2 6 13\n3 2 18\n3 6 13\n4 4 9\n6 5 13\n6 6 20\n1 5 2\n",
+      "expectedOutput": "-1 -1 -1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 36",
+      "input": "6 8 6 6\n1 2 15\n2 1 19\n3 4 3\n3 5 3\n4 1 14\n4 6 12\n5 5 8\n6 4 7\n3 4 5 3 5 6\n",
+      "expectedOutput": "-1 7 -1 -1 -1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 37",
+      "input": "8 18 7 7\n1 2 19\n2 6 15\n3 3 10\n3 4 20\n3 8 3\n4 3 19\n4 4 5\n4 8 1\n5 1 2\n5 5 0\n6 2 10\n6 6 12\n7 8 5\n8 2 12\n8 3 20\n8 5 2\n8 6 9\n8 7 13\n4 2 1 5 3 8 5\n",
+      "expectedOutput": "45 17 9 7 25 5 7\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

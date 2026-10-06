@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-applied-intuition-1",
+  "title": "Compilation Order with Topological Sort",
+  "explanation": "## 思路\n\nKahn 拓扑排序，用最小堆决定同一时刻可选模块。\n\n## 正确性证明\n\n入度归零表示所有前置依赖均完成；每步取最小可选项实现字典序规则，结果少于 n 则存在环。\n\n## 复杂度\n\nO((n+m) log n) time, O(n+m) space.",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import heapq\ndef solve(raw):\n v=raw.split();p=0;n=int(v[p]);p+=1;ms=v[p:p+n];p+=n;m=int(v[p]);p+=1;g={x:[] for x in ms};d={x:0 for x in ms}\n for _ in range(m):\n  a,b=v[p:p+2];p+=2;g[b].append(a);d[a]+=1\n h=[x for x in ms if d[x]==0];heapq.heapify(h);out=[]\n while h:\n  x=heapq.heappop(h);out.append(x)\n  for y in g[x]:\n   d[y]-=1\n   if d[y]==0:heapq.heappush(h,y)\n return ' '.join(out) if len(out)==n else 'IMPOSSIBLE'\n\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/applied-intuition#1-compilation-order-with-topological-sort",
+  "sourceContentHash": "a1ed813c3b037cae07e9dc25f0b421a7bc2c3b2b41394af2197cf3fa89bdc8fa",
+  "author": "CSWork"
+}
