@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-mathworks-21",
+      "sourceContentHash": "b0a4985f8d491bbcb6adaa2db0b0c02cddc3469764143110ac987600020a89de",
+      "packageChecksum": "d517ac6036814f96aa3bb08ec9269847d204224ea522aee2159c9b8c1bf9697e",
+      "editorial": "## 思路\n\n二分操作数 T。若执行 T 轮，每个任务至少获得 T·y 的基础执行量；其余需求每次主任务操作额外获得 x−y，因此任务 i 还需被选为主任务 ceil(max(0, executionTime[i]−T·y)/(x−y)) 次。所需次数总和不超过 T 时可行。\n\n## 正确性证明\n\n固定 T 时，每个任务先获得 T·y 的执行量；每次被选为主任务再增加 x−y。因此各任务至少需要上述向上取整次数，总数不超过 T 是必要条件。若总数不超过 T，按这些次数安排主任务即可完成；可行性随 T 单调，二分得到最小值。\n\n## 复杂度\n\n时间 O(n log(max executionTime))，存储执行时间数组需 O(n) 额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    n,x,y=map(int,d[:3]);a=list(map(int,d[3:]));extra=x-y;lo=0;hi=(max(a)+y-1)//y\n    while lo<hi:\n        t=(lo+hi)//2;need=sum(max(0,(v-t*y+extra-1)//extra) for v in a)\n        if need<=t:hi=t\n        else:lo=t+1\n    return str(lo)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    }
+  ]
+}

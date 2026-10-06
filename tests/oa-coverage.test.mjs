@@ -380,3 +380,11 @@ test('an authored review without a package fails closed instead of claiming veri
   });
   assert.throws(f.run, /Authored review has no registered package/);
 });
+
+test('MathWorks #21 is exposed only after its source-backed alias passes GoJudge', () => {
+  const item = coverage().items.find((entry) => entry.id === 'oa-mathworks-21');
+  assert.deepEqual(
+    { status: item?.status, batch: item?.batch },
+    { status: 'sandbox_verified', batch: 'mathworks-21-alias' },
+  );
+});
