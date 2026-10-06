@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-geico-2",
+  "title": "Implement an LRU Cache",
+  "explanation": "## 为什么正确\n\n`get` 命中会把键标为最近使用，`put` 插入或更新也会刷新最近使用顺序；超容量时删除最久未使用的键。来源首个多步样例的输出漏了一个 `get(1)` 结果：在 `put(4,4)` 后键 1 已被淘汰，故该查询输出 `-1`。来源后面重复的 Example 1 明确给出五项输出，逐步模拟也得到 `1, -1, -1, 3, 4`。只修正该输出，不更改操作语义。\n\n## 算法\n\n哈希表保存键到值，`OrderedDict` 保存从最久未使用到最近使用的顺序。命中或 put 后移动到末尾；超容量时弹出首项。每次操作期望 O(1)，空间 O(capacity)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import OrderedDict\nimport sys\n\ndef solve(raw):\n    lines = raw.strip().splitlines()\n    if not lines or not lines[0].startswith(\"capacity=\"):\n        raise ValueError(\"expected capacity=N\")\n    capacity = int(lines[0].split(\"=\", 1)[1])\n    if capacity <= 0:\n        raise ValueError(\"capacity must be positive\")\n    cache = OrderedDict()\n    output = []\n    for line in lines[1:]:\n        line = line.strip()\n        if line.startswith(\"put(\") and line.endswith(\")\"):\n            key, value = map(int, line[4:-1].split(\",\"))\n            cache[key] = value\n            cache.move_to_end(key)\n            if len(cache) > capacity:\n                cache.popitem(last=False)\n        elif line.startswith(\"get(\") and line.endswith(\")\"):\n            key = int(line[4:-1])\n            if key not in cache:\n                output.append(\"-1\")\n            else:\n                cache.move_to_end(key)\n                output.append(str(cache[key]))\n        else:\n            raise ValueError(\"invalid operation: \" + line)\n    return \"\\n\".join(output)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/geico#2-implement-an-lru-cache",
+  "sourceContentHash": "7d4f89ad7f86046a3ef9e64bd953b6b88bfc2b50c76e6e6ce880aa420cee9369",
+  "author": "CSWork"
+}

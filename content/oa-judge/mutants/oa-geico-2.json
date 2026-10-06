@@ -1,0 +1,10 @@
+[
+  {
+    "name": "get 不刷新最近使用顺序",
+    "code": "from collections import OrderedDict\nimport sys\ndef solve(raw):\n lines=raw.strip().splitlines(); c=int(lines[0].split(\"=\")[1]); d=OrderedDict(); out=[]\n for s in lines[1:]:\n  if s.startswith(\"put(\"):\n   k,v=map(int,s[4:-1].split(\",\")); d[k]=v; d.move_to_end(k)\n   if len(d)>c:d.popitem(last=False)\n  else:\n   k=int(s[4:-1]); out.append(str(d.get(k,-1)))\n return \"\\n\".join(out)\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "已有键更新后不刷新最近使用顺序",
+    "code": "from collections import OrderedDict\nimport sys\ndef solve(raw):\n lines=raw.strip().splitlines(); c=int(lines[0].split(\"=\")[1]); d=OrderedDict(); out=[]\n for s in lines[1:]:\n  if s.startswith(\"put(\"):\n   k,v=map(int,s[4:-1].split(\",\")); existed=k in d; d[k]=v\n   if not existed:d.move_to_end(k)\n   if len(d)>c:d.popitem(last=False)\n  else:\n   k=int(s[4:-1])\n   if k not in d:out.append(\"-1\")\n   else:d.move_to_end(k); out.append(str(d[k]))\n return \"\\n\".join(out)\nprint(solve(sys.stdin.read()))\n"
+  }
+]

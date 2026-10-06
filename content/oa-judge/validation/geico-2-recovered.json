@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-geico-2",
+      "oracleCases": 120,
+      "uniqueOracleInputs": 120,
+      "referenceStdioCases": 120,
+      "publicCases": 5,
+      "hiddenCases": 20,
+      "negativeControls": [
+        {
+          "name": "get 不刷新最近使用顺序",
+          "rejectedByCases": [
+            1,
+            6,
+            13,
+            104,
+            115
+          ]
+        },
+        {
+          "name": "已有键更新后不刷新最近使用顺序",
+          "rejectedByCases": [
+            7,
+            10,
+            15,
+            64,
+            83,
+            104,
+            115,
+            121
+          ]
+        }
+      ],
+      "sampleOracle": {
+        "source": [
+          "1",
+          "-1",
+          "3",
+          "4"
+        ],
+        "independent": [
+          "1",
+          "-1",
+          "-1",
+          "3",
+          "4"
+        ]
+      },
+      "localValidationOnly": true
+    }
+  ]
+}
