@@ -112,9 +112,8 @@ def run_python(path: Path, stdin: str) -> str:
 
 def normalize(package: dict) -> dict:
     js = (
-        "const {ojImportSchema}=require('./lib/oj-types.ts');"
-        "let s='';process.stdin.setEncoding('utf8');"
-        "process.stdin.on('data',c=>s+=c);"
+        "const {ojImportSchema}=require('./lib/oj-types.ts');let s='';"
+        "process.stdin.setEncoding('utf8');process.stdin.on('data',c=>s+=c);"
         "process.stdin.on('end',()=>process.stdout.write("
         "JSON.stringify(ojImportSchema.parse(JSON.parse(s)))));"
     )
