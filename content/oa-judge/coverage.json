@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1123,
+    "sandbox_verified": 1126,
     "awaiting_sandbox": 0,
-    "blocked": 511,
+    "blocked": 508,
     "unreviewed": 0
   },
   "items": [
@@ -4958,8 +4958,9 @@
     {
       "id": "oa-ibm-31",
       "company": "ibm",
-      "status": "blocked",
-      "reason": "原文要求恰好卖m件，但数值界允许m大于总库存且无不足库存的规则；此外样例1按动态剩余库存价格取最优6件为54，与源输出55冲突。不能擅自补库存保证或改写输出。"
+      "status": "sandbox_verified",
+      "batch": "ibm-31-feasible-input",
+      "reason": "固定题意要求恰好售出 m 件，因此有效输入必然满足 m≤sum(quantity)；来源没有定义库存不足时的行为，本站仅将这个逻辑必要的可行性条件明示为有效输入域。重新独立穷举后，样例1前六个最优售价为 10、10、9、9、9、8、总额 55；样例2为 4、3、2、2、总额 11。两个来源输出都正确，不作样例修改。"
     },
     {
       "id": "oa-ibm-32",
@@ -9495,8 +9496,9 @@
     {
       "id": "oa-rubrik-12",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "公开样例 2 的输出值与所给变换结果的最大连续子数组和不一致，无法判断目标究竟是整体和还是连续子数组和。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-12-starlight-sample-correction",
+      "reason": "The source explicitly says the beauty is the maximum sum of a consecutive segment, the multiplier may be applied to any chosen segment, and amplification is at most once. Multiplying the whole displayed array is therefore allowed and gives [15,27,6,-3,18], whose maximum consecutive sum is 63. Output 30 and the explanation's purported subarray are inconsistent with the fixed source semantics. Candidate changes only that example and discloses site-added bounds because the source's lower-bound typography conflicts with the integer/negative examples."
     },
     {
       "id": "oa-rubrik-13",
@@ -9779,8 +9781,9 @@
     {
       "id": "oa-box-3",
       "company": "box",
-      "status": "blocked",
-      "reason": "示例的 startIndex=1 与 target=banana 指向当前位置，规则应返回 0，但样例输出 1，解释又改称目标为 index 0 的 originalart；源题相互矛盾。"
+      "status": "sandbox_verified",
+      "batch": "box-3-recovered",
+      "reason": "固定源题解释明确把目标写为 originalart（下标 0），并给出左移 1 步/右移 3 步；仅将源样例输入 target 从 banana 修正为 originalart，保留输出 1。"
     },
     {
       "id": "oa-applied-intuition-1",

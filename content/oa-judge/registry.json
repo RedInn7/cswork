@@ -4466,6 +4466,18 @@
       ]
     },
     {
+      "id": "oa-box-3",
+      "sourceContentHash": "e2e2246f16fccaddedc7966dd2bb7c0a8a2da047429444c2dadbfbc9f9a64480",
+      "packageChecksum": "8c1f48ec015ee5ea3d45fafd31024f051ffd42b2346d34f86952b036e82b4c9e",
+      "editorial": "## 思路\n\n把 flavors 看作长度 n 的环。目标口味位于下标 t、当前位置为 startIndex 时，顺时针与逆时针步数分别为 (t-startIndex) mod n 和 (startIndex-t) mod n，取较小值。若同一口味出现多次，取所有目标位置中的最短距离。\n\n源样例输入把 target 写为 banana，但解释明确说目标是下标 0 的 originalart，并据此算出 1 步。因此只将样例 target 更正为 originalart，保留源输出 1；若按原输入 banana，按题意正确输出应为 0。\n\n## 正确性\n\n圆环上的两条简单方向路径长度分别是两个模 n 的距离；任意最短移动必走其中较短方向，故距离为二者最小值。若目标名重复，任何一个对应槽位都可满足需求，最少步数是各槽位距离最小值。\n\n## 复杂度\n\n扫描口味数组一次，时间 O(n)，额外空间 O(1)。\n\n## 验证与来源\n\n固定 OAMaster 快照的 #3 明确给出循环转盘、startIndex/target 参数和 min(|t-startIndex|, n-|t-startIndex|) 解法。原样例解释又明确指定 originalart 在下标 0，并说明左移 1 或右移 3，直接支持 target 字段应为 originalart、答案仍为 1。本站用 JSON 单行作为标准输入封装这三个函数参数；输入格式与函数题相同语义。\n\n本地独立公式验证 54 个样例/随机输入，并用两个正常运行的错误程序验证：不绕环、当前位置计作一步。候选尚未经过正式服务器沙箱验证。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import json\nimport sys\n\ndef solve(raw):\n    data = json.loads(raw)\n    flavors = data[\"flavors\"]\n    start = data[\"startIndex\"]\n    target = data[\"target\"]\n    if not isinstance(flavors, list) or not flavors:\n        raise ValueError(\"flavors must be a nonempty array\")\n    if not isinstance(start, int) or not 0 <= start < len(flavors):\n        raise ValueError(\"startIndex out of range\")\n    if target not in flavors:\n        raise ValueError(\"target must occur in flavors\")\n    n = len(flavors)\n    return str(min(min((i - start) % n, (start - i) % n)\n                   for i, flavor in enumerate(flavors) if flavor == target))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-capital-one-19",
       "sourceContentHash": "d28e8340de136dc74da717ff7c4c7f21c5037daa642fd59803aa27e66ba621ca",
       "packageChecksum": "1cd9f753e3ddeb83424b9ae1c4d4d5894baf0239543d961cfed46e9f274007ca",
@@ -6898,6 +6910,18 @@
         {
           "language": "python",
           "code": "def grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef grid_decode(raw):\n it=iter(map(int,raw.split())); r=next(it); a=[]\n for _ in range(r):\n  c=next(it); a.append([next(it) for _ in range(c)])\n return a\ndef solve(raw):\n rows=grid_decode(raw); cells={(r,c):v for r,row in enumerate(rows) for c,v in enumerate(row)}\n dp={}; total=0\n for (r,c),v in sorted(cells.items(),key=lambda x:x[1]):\n  ways=1\n  for nr,nc in ((r-1,c),(r+1,c),(r,c-1),(r,c+1)):\n   if (nr,nc) in cells and cells[(nr,nc)]<v: ways+=dp[(nr,nc)]\n  dp[(r,c)]=ways; total+=ways-1\n return str(total)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-31",
+      "sourceContentHash": "1941a7434b4a11faf8d409615f26d656ab14ab31a52e1585414cc4fa6daf3cfc",
+      "packageChecksum": "6e70f74e6366eed9b3d2a69237bed72ca05813b733a09a1ea3859c4ebbcd9937",
+      "editorial": "## 思路\n\n用最大堆维护每类商品当前剩余数量。每次取出最大值 q，收入增加 q；售出后若 q>1，将 q−1 放回堆。恰好重复 m 次。\n\n来源样例一按最优规则的前六个售价为 10、10、9、9、9、8，总计 55；样例二的售价为 4、3、2、2，总计 11。两例均与来源输出一致。\n\n原约束没有明写总库存下界，但“恰好售出 m 件”要求输入可行，故本站将必要条件 `m ≤ sum(quantity)` 明示为有效输入域。该条件不规定任何库存不足时的行为，也不改变可行输入上的题意。\n\n## 正确性\n\n当前库存为 q 的商品若现在出售，可立刻获得 q；此后同一类别可获得的价格只会下降。若一次最优方案未先选当前最大库存类别，而选择库存更小的类别，将两类的首次选择次序交换：较大库存先卖的即时收益不低，且它后续逐次下降的序列逐项不低于较小库存序列，交换不会降低总收益。等价地，每一步选取最大当前价格均满足贪心选择性质。售出并将 q−1 放回堆精确呈现下一时刻的库存，归纳得到总收益最大。\n\n## 复杂度\n\n堆初始化 O(n)，每次销售至多一次弹出和插入，时间 O(n + m log n)，空间 O(n)。最大收入不超过 10^10，使用 64 位整数足够。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 3:\n        raise ValueError(\"expected n, m, and quantities\")\n    n, m = tokens[:2]\n    quantity = tokens[2:]\n    if not (1 <= n <= 100000 and 1 <= m <= 100000 and len(quantity) == n):\n        raise ValueError(\"outside stated source bounds\")\n    if any(not 1 <= q <= 100000 for q in quantity):\n        raise ValueError(\"outside stated source bounds\")\n    if m > sum(quantity):\n        raise ValueError(\"valid input must contain at least m items\")\n    heap = [-q for q in quantity]\n    heapq.heapify(heap)\n    revenue = 0\n    for _ in range(m):\n        q = -heapq.heappop(heap)\n        revenue += q\n        if q > 1:\n            heapq.heappush(heap, -(q - 1))\n    return str(revenue)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -10462,6 +10486,18 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,length=t[:2]; p=2; busy=[]\n for _ in range(n):\n  m=t[p]; p+=1\n  for _ in range(m): busy.append((t[p],t[p+1])); p+=2\n busy.sort(); merged=[]\n for a,b in busy:\n  if merged and a<=merged[-1][1]: merged[-1]=(merged[-1][0],max(merged[-1][1],b))\n  else: merged.append((a,b))\n current=0\n for a,b in merged:\n  if a-current>=length: return str(current)\n  current=max(current,b)\n return str(current) if current+length<=1440 else '-1'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-rubrik-12",
+      "sourceContentHash": "d6ff718ac94280f3fb10f4f0e1a6443215dffe018ac9a3ba127bfe098b428552",
+      "packageChecksum": "dc00c6f8df7737bd1c02ed76bdefc995a8eef0d7615db85911b232082833a379",
+      "editorial": "## 思路\n\n使用三个状态描述计分连续段处于放大段之前、放大段之内、放大段之后。状态记录以当前位置结尾的最大连续和；普通位置加 `x`，放大位置加 `z*x`。答案包含空区间 0，因为原题明确全负数组 beauty 为 0，也允许不使用放大器。时间 O(n)，空间 O(1)。\n\n## 为什么正确\n\n任意最优计分连续段中的位置只有三种阶段：放大区间之前、之内、之后，且顺序不能逆转。三个状态逐位置保留各阶段下以当前位置结尾的最大和；转移分别只允许普通延续、开始或延续放大区间、结束放大区间后的普通延续，因此覆盖所有合法选择且不生成非法顺序。取所有阶段与空区间的最大值即为全局最优。\n\n## 样例勘误\n\n固定题源定义为放大一个连续片段后，求任意连续片段的最大和；被放大的片段可以是整个数组。样例 2 整个数组乘以 -3 后为 `[15,27,6,-3,18]`，其总和及最大连续和都是 63。原输出 30 以及解释所列的 `[9,6,-3,18]` 都与原数组不符。只修正该样例输出及解释，不改规则。题源下界 `10^-9` 与整数类型及负数示例冲突；本站采用明确披露的可执行边界 `n<=200000`、`-10^9<=a[i]<=10^9`、`-100<=z<=100`，不声称这是已知上游约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 2:\n        raise ValueError(\"expected n z and n array values\")\n    n, z = tokens[:2]\n    arr = tokens[2:]\n    if not 1 <= n <= 200000 or len(arr) != n:\n        raise ValueError(\"site protocol: 1<=n<=200000, followed by exactly n values\")\n    if not -100 <= z <= 100 or any(not -10**9 <= x <= 10**9 for x in arr):\n        raise ValueError(\"site protocol: -100<=z<=100 and -1e9<=arr[i]<=1e9\")\n    neg = -(10**30)\n    before, inside, after = 0, neg, neg\n    best = 0\n    for x in arr:\n        before_next = max(0, before + x)\n        inside_next = max(before + z * x, inside + z * x)\n        after_next = max(inside + x, after + x)\n        before, inside, after = before_next, inside_next, after_next\n        best = max(best, before, inside, after)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
