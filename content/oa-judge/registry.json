@@ -5834,6 +5834,18 @@
       ]
     },
     {
+      "id": "oa-flexport-6",
+      "sourceContentHash": "ab588621a787de8141075eca692b260a06aee59e05d2bacd7eab834ebb236bbd",
+      "packageChecksum": "4c2f0fbb96a7a778de516ff5366bc7df52f1d335a1156314e89411e1454306eb",
+      "editorial": "## 思路\n\n枚举每个可能删除的节点。将该节点屏蔽后，从剩余初始感染点做多源 DFS/BFS，统计可达节点数；取感染数最少者，平局取最小编号。候选包含健康节点。\n\n## 正确性证明\n\n删除节点后，最终感染集合恰好是未删除感染源在剩余无向图中的可达集合。图遍历恰好访问该集合。算法枚举全部节点，因此覆盖全部合法删除方案；按感染数和编号比较，所得方案满足题目目标及平局规则。\n\n## 复杂度\n\nO(n(n+m)) 时间，O(n+m) 额外空间。\n\n## 参考实现\n\n```python\nfrom collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in range(n):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n```",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in range(n):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-goldman-sachs-6",
       "sourceContentHash": "539d4cbdb4a187083dfa42ca5c01c071a99435aa1a9277797950fdfb796ae4e7",
       "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
