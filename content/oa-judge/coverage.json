@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1118,
+    "sandbox_verified": 1123,
     "awaiting_sandbox": 0,
-    "blocked": 516,
+    "blocked": 511,
     "unreviewed": 0
   },
   "items": [
@@ -3743,8 +3743,9 @@
     {
       "id": "oa-microsoft-45",
       "company": "microsoft",
-      "status": "blocked",
-      "reason": "正文截断于smallest number of lette，仅banana一例暗示删除成有序，缺完整目标与操作定义。"
+      "status": "sandbox_verified",
+      "batch": "microsoft-45-recovered",
+      "reason": "固定快照的题解明确写明最少删除后使剩余字符串字典序非降；banana 示例给出保留子序列 aan。Python、Java、C++ 三份源实现均为长度减最长非降子序列，且都使用 upper_bound 语义保留重复字母。输入字符和长度范围明确，因此可按该唯一语义补齐截断句。"
     },
     {
       "id": "oa-microsoft-46",
@@ -6996,8 +6997,9 @@
     {
       "id": "oa-intuit-4",
       "company": "intuit",
-      "status": "blocked",
-      "reason": "题面样例 n=3 输出 9758 与题意‘每行、每列不可全同色’冲突；按题意穷举为 9750，暂不猜测哪个有误。"
+      "status": "sandbox_verified",
+      "batch": "intuit-4-sample-correction",
+      "reason": "固定源规则唯一要求每一行和每一列都非单色；按该精确定义，n=3、n=4 的样例输出分别错为 9758、290490。直接穷举小网格及独立容斥一致得到 9750、296490，仅修正错误样例答案。来源未给 n 上限，本站范围单独披露。"
     },
     {
       "id": "oa-intuit-5",
@@ -7058,8 +7060,9 @@
     {
       "id": "oa-intuit-14",
       "company": "intuit",
-      "status": "blocked",
-      "reason": "样例冲突：起点 (1,2) 到目标 (6,2) 的欧氏距离正好为 X=5，按规则一步可达，但给出的答案为 2。"
+      "status": "sandbox_verified",
+      "batch": "intuit-14-sample-correction",
+      "reason": "固定源明确规定每步欧氏距离恰为 X；样例说明的两步路线终点为 (2,5)，但输入将中间点 (6,2) 误填为目标。更正坐标后，独立坐标扫描 BFS 确认最短距离为2；保留原题规则和输出。"
     },
     {
       "id": "oa-intuit-15",
@@ -10314,8 +10317,9 @@
     {
       "id": "oa-geico-2",
       "company": "geico",
-      "status": "blocked",
-      "reason": "LRU 操作本身清楚，但快照中首个多步样例漏掉一个 get(1) 的 -1 输出，内嵌样例与后面的修订示例输出长度不一致；需要修正来源题面后再纳入。"
+      "status": "sandbox_verified",
+      "batch": "geico-2-recovered",
+      "reason": "The fixed source repeats the same operation sequence in Example 1 and gives five outputs there; direct LRU replay also gives 1,-1,-1,3,4. Only the earlier duplicate sample output omitted the third get result. Correct that sample line without changing semantics."
     },
     {
       "id": "oa-oura-1",
@@ -10461,8 +10465,9 @@
     {
       "id": "oa-zolostays-1",
       "company": "zolostays",
-      "status": "blocked",
-      "reason": "Range Sum 样例2与定义冲突：直接枚举连续子数组得到13个和落在[-2,6]，源样例却输出8；其余样例不能消歧该错误，需修正源样例再做唯一判题。"
+      "status": "sandbox_verified",
+      "batch": "zolostays-1-recovered",
+      "reason": "The fixed source uniquely defines counting non-empty contiguous subarrays whose sum lies in the inclusive interval. Its example 2 output is arithmetically wrong: independent exhaustive enumeration yields 13; examples 1 and 3 verify the same semantics. The candidate preserves the definition and corrects only example 2's answer. Since the source gives no constraints, site-added limits are disclosed rather than represented as upstream facts."
     },
     {
       "id": "oa-zolostays-2",
