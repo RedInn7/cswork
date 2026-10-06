@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1090,
-    "awaiting_sandbox": 19,
-    "blocked": 525,
+    "awaiting_sandbox": 22,
+    "blocked": 522,
     "unreviewed": 0
   },
   "items": [
@@ -6825,8 +6825,9 @@
     {
       "id": "oa-palantir-4",
       "company": "palantir",
-      "status": "blocked",
-      "reason": "已核对原始 fastprep 题源；Constraints 只有损坏占位符“🍉🍉”，没有 N/M、节点编号或边权范围，无法确认图规模及负权等关键边界。样例不足以补全，故暂缓。"
+      "status": "awaiting_sandbox",
+      "batch": "palantir-4-recovered",
+      "reason": "源题对目标函数、无向图与不可达返回值的定义完整；固定快照中的 Python/Java/C++ 三份实现和样例相互一致。题源约束损坏为占位符，因此本站明确增加 1-based 节点编号、N/M 上限和非负边权范围；不增加连通性假设。有限非负权域与源代码使用的整数 Dijkstra 保持一致。独立小图简单路径枚举 oracle、边界和两个正常退出 mutant 验证通过。"
     },
     {
       "id": "oa-roblox-1",
@@ -7322,8 +7323,9 @@
     {
       "id": "oa-ebay-8",
       "company": "ebay",
-      "status": "blocked",
-      "reason": "题面称每次新建房屋时与已有房屋均不相邻，但示例 [2,1,3] 第二步插入 1 已与已有 2 相邻；示例 [1,3,0,4] 亦违反该约束。"
+      "status": "awaiting_sandbox",
+      "batch": "ebay-8-recovered",
+      "reason": "固定快照中的两个样例及 Python、Java、C++ 三份实现都允许新房屋与已有房屋相邻并合并；这与正文中的“建造时不相邻”一句直接冲突。候选保留位置唯一规则，明确按三个实现和样例移除矛盾限制。原源未给规模，本站补 q≤10000、坐标绝对值≤10^9，并将 q 限制在单题 65536 字节输出上限内。独立排序集合 oracle、边界样例和两个正常退出错误实现均验证通过。"
     },
     {
       "id": "oa-yahoo-1",
@@ -10339,8 +10341,9 @@
     {
       "id": "oa-deloitte-2",
       "company": "deloitte",
-      "status": "blocked",
-      "reason": "没有输入格式和节点编号/根节点约定；本批不猜树的序列化协议。"
+      "status": "awaiting_sandbox",
+      "batch": "deloitte-2-recovered",
+      "reason": "题意语义完整；root=1/parent-list 仅作为本站标准输入表示根树，不改变定义。规模上限 n≤200000 为本站资源限制，非原题约束。通过独立后代遍历 oracle、全域小树穷举、边界用例和两个错误控制；仍待真实 GoJudge 沙箱。"
     },
     {
       "id": "oa-deloitte-3",

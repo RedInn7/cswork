@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "evidenceBasis": "固定 catalog 快照 content/oa-master/catalog.json 中的 statement、examples、explanation、solutions 和 sourceUrl；每项 catalogContentHash 绑定该快照条目。原始 Sentry 公司页在 source-evidence/unreviewed-32.json 仅记录路径，未提供/未验证 MDX blob，因此不虚构其 Git blob 或文件散列。",
+  "pages": [
+    {
+      "company": "quora",
+      "path": "web/content/docs/companies/quora.mdx",
+      "gitBlobSha": "d0be5285e3218e7834b95c4913d54c9340082632",
+      "sha256": "34c21c00f2882f8c15f6fe2aa447721f8b72dfe93599178747ee49cee8cd95a8"
+    },
+    {
+      "company": "sentry",
+      "path": "web/content/docs/companies/sentry.mdx",
+      "pageHashStatus": "not_present_in_fixed_source-evidence_snapshot"
+    },
+    {
+      "company": "service-now",
+      "path": "web/content/docs/companies/service-now.mdx",
+      "gitBlobSha": "c0cc61d5c40651bb34aa486155ff63043036aaef",
+      "sha256": "efb9f6d74a0357d0a358249f7e9ed7314c77be6f799d8c6b6516d02f381b07b9"
+    }
+  ],
+  "items": [
+    {
+      "id": "oa-quora-1",
+      "sourceUrl": "https://oamaster.com/docs/companies/quora#1-count-powers-of-k-mle",
+      "catalogContentHash": "80cfb0caa56d46a8e6eb755f8dd7eb3efd6ec73ed30ccbf3a6a3333dd8a363ea",
+      "sourceExcerpt": "Given an array and a value `k`, find\n\n### Example 1",
+      "status": "blocked",
+      "reviewReason": "固定快照的题面在 Given an array and a value k, find 后立即进入示例，目标运算完全缺失。整理页 explanation/solution 虽称统计 k 的整数次幂，但没有完整源题规则支持该解释；不能把整理答案当作原题定义。"
+    },
+    {
+      "id": "oa-quora-2",
+      "sourceUrl": "https://oamaster.com/docs/companies/quora#2-determine-the-elimination-order-mle",
+      "catalogContentHash": "d043e2543bb6e55ee80248904e1f8eaeb1ffe646943a4d0ca189a0c6a1f7f81f",
+      "sourceExcerpt": "Edge case: If scores are tied, all tied contestants are eliminated simultaneously.",
+      "status": "blocked",
+      "reviewReason": "示例只展示每轮分数淘汰，缺少每轮分数数据的合法结构、每位选手是否必须有记录、数据耗尽时如何处理及同时淘汰者输出顺序。整理 explanation 自称使用某固定顺序，并非源题给定顺序。"
+    },
+    {
+      "id": "oa-sentry-1",
+      "sourceUrl": "https://oamaster.com/docs/companies/sentry#1-escape-the-haunted-castle-part-1",
+      "catalogContentHash": "9b237778e98fe521f00b0dd1ac093d5bf7fd39cea85b67c676952d88bdc6f572",
+      "sourceExcerpt": "finds a path from the start to the exit through valid cells and reports the sequence of cells visited.",
+      "status": "blocked",
+      "reviewReason": "源题只要求返回一条从起点到出口的有效路径，没有最短路径要求、邻居访问顺序或接受任意合法路径的 checker 约定；示例也不能消除多解。标准精确输出无法唯一判定。"
+    },
+    {
+      "id": "oa-sentry-3",
+      "sourceUrl": "https://oamaster.com/docs/companies/sentry#3-ww-challenge-text-justification-with-underscores",
+      "catalogContentHash": "81666f56111ccf883ef057908bcbc47334645048b753a27c5b714b4fc295ccf5",
+      "sourceExcerpt": "`cat is an animal and so is a dog`, 12 → [`cat__is_an_`, `animal___and`, `so_is_a_dog_`]",
+      "status": "blocked",
+      "reviewReason": "题面示例与精确行宽互相矛盾：lineLength=12 的 cat__is_an_ 长度为 11；lineLength=6 的 is_an_ 长度为 6，但同题说明/代码给出不同内容。连字符断行也未给出后缀长度超过行宽时的规则。",
+      "reproducibleCheck": "The first listed output has length 11, despite the source's exact-lineLength requirement of 12."
+    },
+    {
+      "id": "oa-service-now-1",
+      "sourceUrl": "https://oamaster.com/docs/companies/service-now#1-find-max-minimum-value-using-k-elements",
+      "catalogContentHash": "86661f12b4cf852e0a64d0597152ccabcdbb73847246fbb121f2affbbe5efd85",
+      "sourceExcerpt": "maximum, minimum value using `K` elements from both given arrays ... Min (a1+a2+...+ak, b1+b2+...+bk)",
+      "status": "blocked",
+      "reviewReason": "两个例子均与两个数组独立选各自前 K 大的整理 explanation 不符；按示例输出似乎需要在两个数组中使用同一组下标，但源题没有明确共享下标语义。若按共享下标，缺失的 N/K/数值范围也使该优化没有可靠在线资源上限。"
+    },
+    {
+      "id": "oa-service-now-2",
+      "sourceUrl": "https://oamaster.com/docs/companies/service-now#2-maximum-sum-of-balanced-subsequence",
+      "catalogContentHash": "5ca868b175b26c73eb946a7b1c6532e2655ecdacb1a04d208248260bcef7ff6a",
+      "sourceExcerpt": "indices `i_0 < i_1 < ... < i_k-1` ... `nums[i] - nums[i-1] == i - (i-1)`",
+      "status": "blocked",
+      "reviewReason": "平衡条件写成等式，但下标 i 与 i-1 未说明是原数组相邻位置还是所选子序列相邻位置，且没有约束。随附 explanation 将其改写成任意所选下标对的等式，与原句不是同一份明确契约。"
+    }
+  ]
+}
