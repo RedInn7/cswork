@@ -27,12 +27,22 @@ def sha(value: str) -> str:
 
 def execute(code: str, raw: str) -> str:
     p = subprocess.run(
-        ["python3", "-I", "-c", code + "\nimport sys; print(solve(sys.stdin.read()))"],
+        ["python3", "-I", "-c", code],
         input=raw, text=True, capture_output=True, timeout=5,
     )
     if p.returncode:
         raise AssertionError((p.stderr, raw))
     return p.stdout
+
+
+def with_cli(code: str) -> str:
+    """Store a runnable stdin/stdout solution, not only the judge function."""
+    if "sys.stdin.read()" in code:
+        return code
+    return (
+        "import sys\n" + code.rstrip() +
+        "\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+    )
 
 
 def normalize_package(raw: dict) -> dict:
@@ -52,6 +62,8 @@ def add_problem(pid: str, title: str, tags: list[str], description: str,
                 input_desc: str, output_desc: str, code: str, editorial: str,
                 inputs: list[str], oracle, mutant_defs: list[tuple[str, str]]) -> dict:
     source = ITEMS[pid]
+    code = with_cli(code)
+    mutant_defs = [(name, with_cli(bad)) for name, bad in mutant_defs]
     oracle_rows = [{"input": raw, "expectedOutput": oracle(raw) + "\n"} for raw in inputs]
     cases = [case(("公开样例 " + str(i + 1)) if i < 3 else ("隐藏测试 " + str(i - 2)),
                   row["input"], row["expectedOutput"], i >= 3)
@@ -445,8 +457,18 @@ def main() -> None:
         "oa-rubrik-24":"样例逐步数组与操作列表矛盾（append 值和复制结果均对不上），无法确定重复数组的具体语义。",
         "oa-rubrik-25":"例 2 输出与其展示的块切分/复用过程不符；任意位置匹配和非重叠分块两种描述也存在冲突。",
     }
-    expected={x["id"] for x in json.loads((OA/"coverage.json").read_text())["items"]
-              if x["status"]=="unreviewed" and x["company"] in {"rubrik","capital-one"}}
+    # This source cohort was previously reviewed on main. Its current coverage
+    # status is therefore blocked/awaiting_sandbox, not unreviewed; keep the
+    # generator's reviewed scope explicit and stable across promotion rebases.
+    expected={
+        "oa-capital-one-1", "oa-capital-one-3", "oa-capital-one-5",
+        "oa-capital-one-8", "oa-capital-one-11", "oa-capital-one-17",
+        "oa-capital-one-18", "oa-capital-one-19", "oa-rubrik-7",
+        "oa-rubrik-8", "oa-rubrik-9", "oa-rubrik-10", "oa-rubrik-11",
+        "oa-rubrik-12", "oa-rubrik-13", "oa-rubrik-14", "oa-rubrik-15",
+        "oa-rubrik-16", "oa-rubrik-18", "oa-rubrik-21", "oa-rubrik-24",
+        "oa-rubrik-25",
+    }
     assert candidate_ids | set(blocked_reasons) == expected
     assert not candidate_ids & set(blocked_reasons)
 

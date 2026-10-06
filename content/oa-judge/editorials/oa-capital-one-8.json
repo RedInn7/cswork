@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]\n for _ in range(n):segments.append((t[i],t[i+1]));i+=2\n data=t[i:i+m];seen=set();done=[False]*n;count=0;out=[]\n for byte in data:\n  seen.add(byte)\n  for j,(start,length) in enumerate(segments):\n   if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1\n  out.append(str(count))\n return ' '.join(out)\n"
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;segments=[]\n for _ in range(n):segments.append((t[i],t[i+1]));i+=2\n data=t[i:i+m];seen=set();done=[False]*n;count=0;out=[]\n for byte in data:\n  seen.add(byte)\n  for j,(start,length) in enumerate(segments):\n   if not done[j] and all(x in seen for x in range(start,start+length)):done[j]=True;count+=1\n  out.append(str(count))\n return ' '.join(out)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/capital-one#8-file-transfer-segments--count-unique-after-each-byte",

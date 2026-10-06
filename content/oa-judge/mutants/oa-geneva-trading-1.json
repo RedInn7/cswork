@@ -1,10 +1,10 @@
 [
   {
     "name": "以最大循环长度代替最小公倍数",
-    "code": "def solve(raw):\n t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;ans=1\n for i in range(n):\n  if not seen[i]:\n   u=i;length=0\n   while not seen[u]:seen[u]=True;length+=1;u=p[u]\n   ans=max(ans,length)\n return str(ans)\n"
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;ans=1\n for i in range(n):\n  if not seen[i]:\n   u=i;length=0\n   while not seen[u]:seen[u]=True;length+=1;u=p[u]\n   ans=max(ans,length)\n return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
   },
   {
     "name": "循环长度直接相乘",
-    "code": "def solve(raw):\n t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;ans=1;mod=1000000007\n for i in range(n):\n  if not seen[i]:\n   u=i;length=0\n   while not seen[u]:seen[u]=True;length+=1;u=p[u]\n   ans=ans*length%mod\n return str(ans)\n"
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;ans=1;mod=1000000007\n for i in range(n):\n  if not seen[i]:\n   u=i;length=0\n   while not seen[u]:seen[u]=True;length+=1;u=p[u]\n   ans=ans*length%mod\n return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
   }
 ]

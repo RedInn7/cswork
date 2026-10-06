@@ -1,3 +1,4 @@
+import sys
 def solve(raw):
  t=list(map(int,raw.split()));n,q=t[:2];mem=t[2:2+n];ids=[0]*n;nextid=1;out=[];i=2+n
  for _ in range(q):
@@ -14,3 +15,6 @@ def solve(raw):
     if ids[j]==x:ids[j]=0;mem[j]=0;freed+=1
    out.append(freed if freed else -1)
  return ' '.join(map(str,out))
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

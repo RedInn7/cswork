@@ -1,3 +1,4 @@
+import sys
 def solve(raw):
  t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()
  for _ in range(b):obs.add((t[i],t[i+1]));i+=2
@@ -14,3 +15,6 @@ def solve(raw):
   elif r+1<n and down not in obs:p=down
   else:return '-1'
   steps+=1
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

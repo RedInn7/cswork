@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "oa-unknown-5",
   "title": "Exclusive Time of Functions",
-  "explanation": "维护调用栈和上一个尚未计入的时间点。新日志到来时，先把两时间点间隔加给栈顶；start 将函数压栈，end 事件还要计入该时间戳本身，再弹栈。",
+  "explanation": "## 思路\n\n用栈保存当前调用链，并用 `previous` 记录尚未分配的时间点。每条日志到来时，先把 `[previous, timestamp)` 计入栈顶；`start` 压入新函数，`end` 再把结束时间点计入当前函数后弹栈。\n\n## 正确性证明\n\n任意两个相邻日志之间只有栈顶函数在独占执行，因此该区间长度应且只应加给栈顶。start 事件不属于新函数的已执行区间；end 事件按题意是闭区间，单独补上时间戳本身。由此每个执行时间单位恰好计入对应函数一次。\n\n## 复杂度\n\n时间 O(m)，空间 O(n)，其中 m 为日志数、n 为函数数。",
   "solutions": [
     {
       "language": "python",

@@ -1,4 +1,5 @@
 # 归并时选较大队首
+import sys
 def solve(raw):
  t=raw.split();q=int(t[0]);out=[]
  for s in t[1:1+q]:
@@ -8,3 +9,6 @@ def solve(raw):
    else:ans.append(o[j]);j+=1
   ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))
  return '\n'.join(out)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

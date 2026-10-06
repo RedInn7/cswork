@@ -5,7 +5,7 @@
       "id": "oa-unknown-1",
       "sourceContentHash": "5091b84a0315c76718623c9225aef5922019b67d1fd48ff2e2fea44b2b3e67d4",
       "packageChecksum": "d3d357ba4288cafb70f925e1f88661f37b9c40a40d7b5eeaa3f46e3f19368c16",
-      "editorial": "树的平方图可按根到叶顺序计数。根有 k 种选择，其子节点必须互不相同且避开根；其他节点的孩子还需避开父节点。每层的可选数形成下降阶乘，乘法取模。独立 oracle 在小树上穷举所有着色并逐条检查距离 1/2 冲突。",
+      "editorial": "## 思路\n\n把树任选根后按父子关系计数：根有 k 种选择；根的孩子依次避开根和已着色的兄弟；其余节点的孩子还要避开父节点与已着色的兄弟。每个节点对应一个下降阶乘，所有因子相乘并取模。\n\n## 正确性证明\n\n树中距离不超过 2 的节点对，恰好是父子和同一父节点下的兄弟。按根到叶着色时，给当前节点的可选颜色正是排除父节点及已处理兄弟后的剩余颜色，因此每个有效着色被计数一次且无冲突。若可选颜色不足，答案为 0。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。独立 oracle 在小树上穷举着色并逐对检查距离 1/2 冲突。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -17,7 +17,7 @@
       "id": "oa-unknown-5",
       "sourceContentHash": "45d321c839cd230c329fe73c55ac15e390398b1491f9298a7fec0c0019d8384a",
       "packageChecksum": "1832363fa9f57bcbd1f6cd89fb86b00aef3d419661a7295913fcbecc807eacd6",
-      "editorial": "维护调用栈和上一个尚未计入的时间点。新日志到来时，先把两时间点间隔加给栈顶；start 将函数压栈，end 事件还要计入该时间戳本身，再弹栈。",
+      "editorial": "## 思路\n\n用栈保存当前调用链，并用 `previous` 记录尚未分配的时间点。每条日志到来时，先把 `[previous, timestamp)` 计入栈顶；`start` 压入新函数，`end` 再把结束时间点计入当前函数后弹栈。\n\n## 正确性证明\n\n任意两个相邻日志之间只有栈顶函数在独占执行，因此该区间长度应且只应加给栈顶。start 事件不属于新函数的已执行区间；end 事件按题意是闭区间，单独补上时间戳本身。由此每个执行时间单位恰好计入对应函数一次。\n\n## 复杂度\n\n时间 O(m)，空间 O(n)，其中 m 为日志数、n 为函数数。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -29,7 +29,7 @@
       "id": "oa-unknown-8",
       "sourceContentHash": "8537513459118ef5e427da6317d39987441dc94242e85bafab70232298328823",
       "packageChecksum": "cab131c09b98368035b026175b42c1708577483543f21a2dc29572f3dfb19120",
-      "editorial": "按照 `(priority, timestamp, originalIndex)` 升序排序。时间戳先转整数比较，因此前导零只影响回显，不影响先后；完全相同键保持输入顺序。",
+      "editorial": "## 思路\n\n按 `(priority, timestamp, originalIndex)` 升序排序。时间戳转为整数后比较，原始行单独保存以便按题意回显；原始下标用于稳定处理完全相同的键。\n\n## 正确性证明\n\n排序键先比较优先级，再比较数值时间戳，正好实现题目规定的主次顺序。前两项都相同时按原始下标排序，故输出保持输入先后。逐行按该键排序得到唯一合法结果。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -41,7 +41,7 @@
       "id": "oa-unknown-9",
       "sourceContentHash": "538b6e56b6685555822c8dce7b886a99d38ac2953b7afcc84fa48265ed563ca2",
       "packageChecksum": "60a9f3c0c7b8657b7fde20d7398ea1b38093da0d1f0cb8479c4bf7d11b950a3a",
-      "editorial": "遍历数组，对每个元素判断 `x % 2 == 0` 并累加。Python 对负偶数同样满足该判断，0 也计为偶数。",
+      "editorial": "## 思路\n\n遍历输入数组，遇到 `x % 2 == 0` 就将计数加一。该判断对负偶数和 0 同样成立。\n\n## 正确性证明\n\n每个数组元素恰好被检查一次；偶数当且仅当除以 2 余数为 0。因此计数器最终恰好等于数组中的偶数个数。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -53,7 +53,7 @@
       "id": "oa-unknown-10",
       "sourceContentHash": "1bf2da2a4fd6a01cb7e49c614a1bf2b9577beb779646c767363682ec2fcf5fef",
       "packageChecksum": "9659b20a1096c0bb1206b69dbb6617b65a82a7e7f8bb8195fe6a434b302a6ae0",
-      "editorial": "只需扫描相邻位置，维护 `abs(nums[i]-nums[i-1])` 的最大值。不能先排序，因为那会改变题面给定的相邻关系。",
+      "editorial": "## 思路\n\n只扫描一次数组，逐对计算相邻元素差的绝对值，并维护最大值。不能排序，因为排序会改变题面给定的相邻关系。\n\n## 正确性证明\n\n遍历到位置 i 时，当前差值就是原数组第 i−1 与第 i 项之间的差。维护的最大值因此恰为所有相邻位置差的最大值，等于题目所求。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -65,7 +65,7 @@
       "id": "oa-unknown-14",
       "sourceContentHash": "e249354acbab8f93038c9f1629980bfaa882ec6fddcafffded4d6538d0366879",
       "packageChecksum": "c3a7f5fc930715efdc374c5f2ab805105598be45d0d54b1e5180743c33f2defc",
-      "editorial": "固定 k 时，令 x=max(0, ceil(B/k)-A)，这是使 k(A+x) 不小于 B 的最小非负 x；随后 y=k(A+x)-B，代价为 x+y。对 k≤√B 逐个检查；对更大的 k，ceil(B/k)≤√B，可按该商枚举区间的首个 k；另检查 ceil(B/A) 的零 x 分支。总体 O(√B)。随机小值使用枚举全部 k 的独立 oracle。",
+      "editorial": "## 思路\n\n固定整数 k 后，最小的非负 x 是 `max(0, ceil(B/k)−A)`，再令 `y=k(A+x)−B`，代价为 x+y。小 k 直接枚举；大 k 时 `ceil(B/k)` 的商只取 O(√B) 种，可按商区间枚举，并单独检查 x=0 的边界。\n\n## 正确性证明\n\n固定 k 时，任何更小的 x 都会使 `k(A+x)<B`，不满足条件；取该最小 x 后 y 被等式唯一确定，所以该 k 下的代价最优。小 k 被逐个枚举，大 k 按相同 `ceil(B/k)` 值合并枚举，因此每一种可能的最优商都被覆盖；取其中最小代价即为全局最优。\n\n## 复杂度\n\n时间 O(√B)，空间 O(1)。随机小值另用枚举所有 k 的 oracle 校验。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -77,7 +77,7 @@
       "id": "oa-unknown-16",
       "sourceContentHash": "d22ead1480c069baa0b8935e5047b1b6711244f374f22e3314fcd1405fb0c9e4",
       "packageChecksum": "64165d63daa7f91d94a7d952932b481326efac15ce50d5aee803ba2cfa1fdb0e",
-      "editorial": "统计两串各字符频次。交集大小为频次逐字符取 min 后求和，并集大小为取 max 后求和，答案为两者之比。",
+      "editorial": "## 思路\n\n分别统计两串中每个字符的出现次数。多重集交集大小为各字符计数取 min 后求和；并集大小为取 max 后求和；答案为两者之比。\n\n## 正确性证明\n\n对每个字符，交集最多保留它在两串中较少的一侧的次数，并集必须保留较多的一侧的次数。对字符类别求和就分别得到多重集交、并大小，二者之比正是多重集 Jaccard 相似度。\n\n## 复杂度\n\n设字符集大小为 σ，时间 O(n+m+σ)，空间 O(σ)。",
       "authoredSolutions": [
         {
           "language": "python",
@@ -89,7 +89,7 @@
       "id": "oa-unknown-17",
       "sourceContentHash": "9ad04e604a4744fce6fd114fdc4b446e5cd51d6fc91740ec88857bb7d3f52eec",
       "packageChecksum": "64535b614a443d423047df977afeff4a1cb32737db8c55c6a7f548ce4db26bed",
-      "editorial": "对每个字符串计算 max(freq)/length，找最小比例并保留所有并列项。把未选字符串的字符合并成集合，再按选中字符串原顺序输出不在该集合中的字符，重复出现仍保留。",
+      "editorial": "## 思路\n\n对每个字符串计算 `max(freq)/length`，选出比例最小的所有字符串。将未选字符串中的字符汇总成集合，再按选中字符串的原输入顺序和字符串内顺序，输出不在该集合中的字符，重复字符保留。\n\n## 正确性证明\n\n比例最小的字符串集合由定义唯一确定，并列者全部保留。对其中每个字符，检查它是否出现在任一未选字符串中，正好实现题目的排除条件；按原顺序逐字符输出，保证结果顺序与重复次数均符合要求。\n\n## 复杂度\n\n总字符数为 L、字符集大小为 σ 时，时间 O(L+σ)，空间 O(L+σ)。",
       "authoredSolutions": [
         {
           "language": "python",

@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n t=raw.split();q=int(t[0]);out=[]\n for s in t[1:1+q]:\n  e=[c for c in s if int(c)%2==0];o=[c for c in s if int(c)%2==1];i=j=0;ans=[]\n  while i<len(e) and j<len(o):\n   if e[i]<o[j]:ans.append(e[i]);i+=1\n   else:ans.append(o[j]);j+=1\n  ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))\n return '\\n'.join(out)\n"
+      "code": "import sys\ndef solve(raw):\n t=raw.split();q=int(t[0]);out=[]\n for s in t[1:1+q]:\n  e=[c for c in s if int(c)%2==0];o=[c for c in s if int(c)%2==1];i=j=0;ans=[]\n  while i<len(e) and j<len(o):\n   if e[i]<o[j]:ans.append(e[i]);i+=1\n   else:ans.append(o[j]);j+=1\n  ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))\n return '\\n'.join(out)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/rubrik#11-doing-smart-work",

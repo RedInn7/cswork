@@ -1,3 +1,4 @@
+import sys
 def solve(raw):
  t=list(map(int,raw.split()));n,d=t[:2];a=t[2:2+n];ans=0
  for i in range(n-2):
@@ -7,3 +8,6 @@ def solve(raw):
   for j in range(i+1,n-1):
    r=a[j]%d;freq[r]-=1;ans+=freq.get((-a[i]-a[j])%d,0)
  return str(ans)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

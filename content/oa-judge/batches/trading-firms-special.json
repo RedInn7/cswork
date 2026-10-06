@@ -9,7 +9,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A'),('C','D'),('D','C')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n"
+          "code": "import sys\ndef solve(raw):\n s=raw.rstrip('\\n');st=[]\n for c in s:\n  if st and (st[-1],c) in {('A','B'),('B','A'),('C','D'),('D','C')}:st.pop()\n  else:st.append(c)\n return ''.join(st)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -21,7 +21,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n    t = list(map(int, raw.split())); n = t[0]; parent = t[1:n+1]; q = t[n+1]; at = n+2\n    children = [[] for _ in range(n)]\n    for v in range(1, n): children[parent[v]].append(v)\n    tour, tin, size = [], [0]*n, [0]*n\n    stack = [(0, 0)]\n    while stack:\n        u, phase = stack.pop()\n        if phase == 0:\n            tin[u] = len(tour); tour.append(u); stack.append((u, 1))\n            for v in reversed(children[u]): stack.append((v, 0))\n        else:\n            size[u] = len(tour) - tin[u]\n    ans=[]\n    for _ in range(q):\n        p,k=t[at:at+2];at+=2;ans.append(str(tour[tin[p]+k-1] if 1 <= k <= size[p] else -1))\n    return \" \".join(ans)\n"
+          "code": "import sys\ndef solve(raw):\n    t = list(map(int, raw.split())); n = t[0]; parent = t[1:n+1]; q = t[n+1]; at = n+2\n    children = [[] for _ in range(n)]\n    for v in range(1, n): children[parent[v]].append(v)\n    tour, tin, size = [], [0]*n, [0]*n\n    stack = [(0, 0)]\n    while stack:\n        u, phase = stack.pop()\n        if phase == 0:\n            tin[u] = len(tour); tour.append(u); stack.append((u, 1))\n            for v in reversed(children[u]): stack.append((v, 0))\n        else:\n            size[u] = len(tour) - tin[u]\n    ans=[]\n    for _ in range(q):\n        p,k=t[at:at+2];at+=2;ans.append(str(tour[tin[p]+k-1] if 1 <= k <= size[p] else -1))\n    return \" \".join(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -33,7 +33,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n    t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;mod=10**9+7\n    spf=list(range(n+1))\n    for i in range(2,int(n**0.5)+1):\n        if spf[i]==i:\n            for j in range(i*i,n+1,i):\n                if spf[j]==j:spf[j]=i\n    max_power={}\n    for i in range(n):\n        if not seen[i]:\n            u=i;length=0\n            while not seen[u]:seen[u]=True;length+=1;u=p[u]\n            x=length\n            while x>1:\n                prime=spf[x];power=0\n                while x%prime==0:x//=prime;power+=1\n                max_power[prime]=max(max_power.get(prime,0),power)\n    ans=1\n    for prime,power in max_power.items():ans=ans*pow(prime,power,mod)%mod\n    return str(ans)\n"
+          "code": "import sys\ndef solve(raw):\n    t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;mod=10**9+7\n    spf=list(range(n+1))\n    for i in range(2,int(n**0.5)+1):\n        if spf[i]==i:\n            for j in range(i*i,n+1,i):\n                if spf[j]==j:spf[j]=i\n    max_power={}\n    for i in range(n):\n        if not seen[i]:\n            u=i;length=0\n            while not seen[u]:seen[u]=True;length+=1;u=p[u]\n            x=length\n            while x>1:\n                prime=spf[x];power=0\n                while x%prime==0:x//=prime;power+=1\n                max_power[prime]=max(max_power.get(prime,0),power)\n    ans=1\n    for prime,power in max_power.items():ans=ans*pow(prime,power,mod)%mod\n    return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -45,7 +45,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n    n=int(raw.strip())\n    return str(int(n>0 and (n&(n-1))==0))\n"
+          "code": "import sys\ndef solve(raw):\n    n=int(raw.strip())\n    return str(int(n>0 and (n&(n-1))==0))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -57,7 +57,7 @@
       "authoredSolutions": [
         {
           "language": "python",
-          "code": "def solve(raw):\n    n,m,k=map(int,raw.split());mod=10**9+7\n    def side(cnt,x):\n        full=min(cnt,x-1);return ((x-1+x-full)*full)//2+max(0,cnt-full)\n    def need(x):return x+side(k-1,x)+side(n-k,x)\n    lo,hi,ans=1,m,1\n    while lo<=hi:\n        mid=(lo+hi)//2\n        if need(mid)<=m:ans=mid;lo=mid+1\n        else:hi=mid-1\n    return str(ans)\n"
+          "code": "import sys\ndef solve(raw):\n    n,m,k=map(int,raw.split());mod=10**9+7\n    def side(cnt,x):\n        full=min(cnt,x-1);return ((x-1+x-full)*full)//2+max(0,cnt-full)\n    def need(x):return x+side(k-1,x)+side(n-k,x)\n    lo,hi,ans=1,m,1\n    while lo<=hi:\n        mid=(lo+hi)//2\n        if need(mid)<=m:ans=mid;lo=mid+1\n        else:hi=mid-1\n    return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     }

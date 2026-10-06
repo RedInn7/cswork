@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n    t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;mod=10**9+7\n    spf=list(range(n+1))\n    for i in range(2,int(n**0.5)+1):\n        if spf[i]==i:\n            for j in range(i*i,n+1,i):\n                if spf[j]==j:spf[j]=i\n    max_power={}\n    for i in range(n):\n        if not seen[i]:\n            u=i;length=0\n            while not seen[u]:seen[u]=True;length+=1;u=p[u]\n            x=length\n            while x>1:\n                prime=spf[x];power=0\n                while x%prime==0:x//=prime;power+=1\n                max_power[prime]=max(max_power.get(prime,0),power)\n    ans=1\n    for prime,power in max_power.items():ans=ans*pow(prime,power,mod)%mod\n    return str(ans)\n"
+      "code": "import sys\ndef solve(raw):\n    t=list(map(int,raw.split()));n=t[0];p=[x-1 for x in t[1:n+1]];seen=[False]*n;mod=10**9+7\n    spf=list(range(n+1))\n    for i in range(2,int(n**0.5)+1):\n        if spf[i]==i:\n            for j in range(i*i,n+1,i):\n                if spf[j]==j:spf[j]=i\n    max_power={}\n    for i in range(n):\n        if not seen[i]:\n            u=i;length=0\n            while not seen[u]:seen[u]=True;length+=1;u=p[u]\n            x=length\n            while x>1:\n                prime=spf[x];power=0\n                while x%prime==0:x//=prime;power+=1\n                max_power[prime]=max(max_power.get(prime,0),power)\n    ans=1\n    for prime,power in max_power.items():ans=ans*pow(prime,power,mod)%mod\n    return str(ans)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/geneva-trading#1-minimum-number-of-permutation-operations",

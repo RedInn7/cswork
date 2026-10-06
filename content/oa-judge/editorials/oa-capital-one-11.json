@@ -6,7 +6,7 @@
   "solutions": [
     {
       "language": "python",
-      "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()\n for _ in range(b):obs.add((t[i],t[i+1]));i+=2\n k=t[i];i+=1;tele={}\n for _ in range(k):tele[(t[i],t[i+1])]=(t[i+2],t[i+3]);i+=4\n p=(0,0);steps=1;seen=set()\n while True:\n  if p in seen:return '-2'\n  seen.add(p)\n  if p in tele:p=tele[p];steps+=1;continue\n  if p==(n-1,m-1):return str(steps)\n  r,c=p;right=(r,c+1);down=(r+1,c)\n  if c+1<m and right not in obs:p=right\n  elif r+1<n and down not in obs:p=down\n  else:return '-1'\n  steps+=1\n"
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()\n for _ in range(b):obs.add((t[i],t[i+1]));i+=2\n k=t[i];i+=1;tele={}\n for _ in range(k):tele[(t[i],t[i+1])]=(t[i+2],t[i+3]);i+=4\n p=(0,0);steps=1;seen=set()\n while True:\n  if p in seen:return '-2'\n  seen.add(p)\n  if p in tele:p=tele[p];steps+=1;continue\n  if p==(n-1,m-1):return str(steps)\n  r,c=p;right=(r,c+1);down=(r+1,c)\n  if c+1<m and right not in obs:p=right\n  elif r+1<n and down not in obs:p=down\n  else:return '-1'\n  steps+=1\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
     }
   ],
   "sourceUrl": "https://oamaster.com/docs/companies/capital-one#11-labyrinth-right-then-down-with-teleports",

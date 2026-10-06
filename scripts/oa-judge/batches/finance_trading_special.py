@@ -26,11 +26,21 @@ def sha(value: str) -> str:
 
 
 def run(code: str, raw: str) -> str:
-    p = subprocess.run(["python3", "-I", "-c", code + "\nimport sys; print(solve(sys.stdin.read()))"],
+    p = subprocess.run(["python3", "-I", "-c", code],
                        input=raw, text=True, capture_output=True, timeout=5)
     if p.returncode:
         raise AssertionError((p.stderr, raw))
     return p.stdout.rstrip("\n")
+
+
+def with_cli(code: str) -> str:
+    """Store a runnable stdin/stdout solution, not only the judge function."""
+    if "sys.stdin.read()" in code:
+        return code
+    return (
+        "import sys\n" + code.rstrip() +
+        "\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+    )
 
 
 def normalize(package: dict) -> dict:
@@ -70,6 +80,8 @@ def complete(base, generator, count=120):
 def add(pid, tags, title, difficulty, description, inp, out, hint, editorial,
         code, oracle, inputs, mutants):
     src = ITEMS[pid]
+    code = with_cli(code)
+    mutants = [(name, with_cli(bad_code)) for name, bad_code in mutants]
     rows = []
     for raw in inputs:
         expected = oracle(raw)

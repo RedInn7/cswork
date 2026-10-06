@@ -1,4 +1,5 @@
 # 把 k 大于 1 的序号左移
+import sys
 def solve(raw):
     t = list(map(int, raw.split())); n = t[0]; parent = t[1:n+1]; q = t[n+1]; at = n+2
     children = [[] for _ in range(n)]
@@ -16,3 +17,6 @@ def solve(raw):
     for _ in range(q):
         p,k=t[at:at+2];at+=2;ans.append(str(tour[tin[p]+max(0,k-2)] if 1 <= k <= size[p] else -1))
     return " ".join(ans)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))
