@@ -10634,6 +10634,18 @@
       ]
     },
     {
+      "id": "oa-sig-2",
+      "sourceContentHash": "6f904f6058d7b38445c28fcc89a7f21b5ba7672e49fa7e3e8f82fa223ef04daf",
+      "packageChecksum": "5af05615d9748f73beba7602f0707c70eca99b244caf4d008e82f764dfe8de9f",
+      "editorial": "## 思路\n\n统计 U 与 D 的净位移。\n\n## 正确性证明\n\n每个 U 贡献 +1、每个 D 贡献 −1；净和符号唯一决定最终相对位置。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。\n\n## 来源说明\n\n依据 OAMaster 固定题面；本站另行定义标准输入输出协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n s=raw.strip();v=s.count(\"U\")-s.count(\"D\")\n return \"U\" if v>0 else \"D\" if v<0 else \"\"\nif __name__ == \"__main__\":\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-uber-1",
       "sourceContentHash": "69702b9d980e76ec08524b1c4915dbe6df1806ca34dd4b28dadef395948b27b1",
       "packageChecksum": "05135348dd6dcb577cdab386084c12b5694e76e8b2b2d060387aee12296e7284",
