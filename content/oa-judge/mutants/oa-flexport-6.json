@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只枚举初始感染节点",
+    "code": "from collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in ([i for i,v in enumerate(infected) if v] or [0]):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  },
+  {
+    "name": "同分时选最大编号",
+    "code": "from collections import deque\ndef solve(d):\n    n,m=map(int,d[:2]);infected=list(map(int,d[2:2+n]));adj=[[] for _ in range(n)]\n    for i in range(m):\n        a,b=map(int,d[2+n+2*i:4+n+2*i]);a-=1;b-=1;adj[a].append(b);adj[b].append(a)\n    best=n+1;answer=0\n    for removed in range(n):\n        seen=[False]*n;seen[removed]=True;queue=deque()\n        for i,v in enumerate(infected):\n            if v and i!=removed:seen[i]=True;queue.append(i)\n        count=0\n        while queue:\n            u=queue.popleft();count+=1\n            for v in adj[u]:\n                if not seen[v]:seen[v]=True;queue.append(v)\n        if count<=best:best=count;answer=removed\n    return str(answer+1)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+  }
+]

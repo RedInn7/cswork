@@ -5,8 +5,8 @@
   "totals": {
     "total": 1634,
     "sandbox_verified": 1082,
-    "awaiting_sandbox": 0,
-    "blocked": 552,
+    "awaiting_sandbox": 1,
+    "blocked": 551,
     "unreviewed": 0
   },
   "items": [
@@ -7766,8 +7766,9 @@
     {
       "id": "oa-flexport-6",
       "company": "flexport",
-      "status": "blocked",
-      "reason": "固定题面只说可删除恰好一个节点，没有说明候选是否限于初始感染节点；现有解释与解法擅自将候选限制为 malware=1。任意节点删除与感染节点删除可产生不同答案；题面也未保证至少一个感染节点，且示例无法消歧。可按题面字面补充‘传播前可删除任一节点’，或明确‘只可删除初始感染节点’并保证感染集合非空；两种口径都可用节点删除后重新 BFS 求解。"
+      "status": "awaiting_sandbox",
+      "batch": "flexport6-alias",
+      "reason": "固定上游题目明确允许从 network 删除任意一个节点，未限制候选为感染点；本站按源文含义明确写出健康节点也可删除。与已验证 Salesforce #20 的规则、约束、输入协议和公开输出一致；Flexport 两条官方样例独立保留。完成120个独立oracle、正式用例及两个正常退出错误程序的离线验证；GoJudge仍待运行。"
     },
     {
       "id": "oa-flexport-7",
