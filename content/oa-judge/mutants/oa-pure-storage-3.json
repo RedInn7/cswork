@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按原数组顺序轮流拿取",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n return str(sum(v if i%2==0 else -v for i,v in enumerate(a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按升序排序后交替拿取",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=sorted(t[1:1+n],reverse=False)\n return str(sum(v if i%2==0 else -v for i,v in enumerate(a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

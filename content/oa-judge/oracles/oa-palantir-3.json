@@ -1,0 +1,654 @@
+[
+  {
+    "input": "3\nadd\nboook\nbreak\n",
+    "expectedOutput": "1 1 0\n"
+  },
+  {
+    "input": "2\naa\naaa\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "2\nab\nzzzz\n",
+    "expectedOutput": "0 2\n"
+  },
+  {
+    "input": "5\ndbb\nabcbdadadc\nbcdabacdd\ndaacadacacbcaaac\ncbacabaa\n",
+    "expectedOutput": "1 0 1 2 1\n"
+  },
+  {
+    "input": "7\naa\naadbbcdacccacab\nbdccbabacadcbcaccacaaa\naadaddbcbcbbd\nbbcabbbdcbcbacc\naadabbc\ndabbbbdcdcaddadd\n",
+    "expectedOutput": "1 3 3 3 3 2 4\n"
+  },
+  {
+    "input": "4\ndbccbbbbdccbacdab\nbabddccbdb\ndaabddddca\ncdccccddda\n",
+    "expectedOutput": "4 2 3 3\n"
+  },
+  {
+    "input": "6\ndcdaabccccbabbd\nadbbbad\ndcaaadddaacabbacddadb\nddb\ncacaabddadc\nbdada\n",
+    "expectedOutput": "4 1 5 1 2 0\n"
+  },
+  {
+    "input": "5\nbbaabcdabcccdbabbdbb\nbccca\nadddadabbcd\naaaccbbdacca\nabadbdaab\n",
+    "expectedOutput": "5 1 2 4 1\n"
+  },
+  {
+    "input": "6\ndbcadcaaadccddccaabbc\nbbbdbb\nbdabbbda\nbdcdbbddb\nbaccdcdaabdcdbbba\nbcbcacbabbcba\n",
+    "expectedOutput": "6 2 1 2 3 1\n"
+  },
+  {
+    "input": "2\nbbbabcbacdab\nacabdcaaaadbacdabdadc\n",
+    "expectedOutput": "1 2\n"
+  },
+  {
+    "input": "8\ncacadccabbaadaddcdabd\ncbaddcabcbcc\ndabadacbaacaaa\nddadacabbcbcabdbd\ncacdcb\ndccbcaaca\nbbcdbbdddc\nbccccbacbcaaadaababd\n",
+    "expectedOutput": "4 2 2 2 0 2 3 4\n"
+  },
+  {
+    "input": "2\nabdacbbbbdbdbbad\nbdaddcdcbdbbaccddcaa\n",
+    "expectedOutput": "3 5\n"
+  },
+  {
+    "input": "2\ndaccabbbcccdbd\nadddcbdbbcbcadadddd\n",
+    "expectedOutput": "3 4\n"
+  },
+  {
+    "input": "6\ndadbdcaaabdcbddddab\ncbdbdcccbbbdcbdcddaacaa\naddddcbabbddbcbc\ncdcbddcadadccddaadddc\nbbdcabdbcbdcbcb\nccc\n",
+    "expectedOutput": "3 5 4 5 1 1\n"
+  },
+  {
+    "input": "4\ndaabdccbbdc\nbdccbcdcdaabbad\naddaa\nccaadbaabaddadbdbcbdddd\n",
+    "expectedOutput": "3 3 2 6\n"
+  },
+  {
+    "input": "2\nbdbcacabb\nca\n",
+    "expectedOutput": "1 0\n"
+  },
+  {
+    "input": "8\nbbbcaad\ncbbca\ncdbdacab\nbaadacbcdcbacad\nbb\naddab\naaaddbbdcdcaababcabbddd\naddbdbad\n",
+    "expectedOutput": "2 1 0 1 1 1 6 1\n"
+  },
+  {
+    "input": "5\nda\nadcccadccaacbbc\nbaacbdcacbbbdcada\ncccdbdcadbbaadcaccc\ncdabaabbacbaccbdacacdadd\n",
+    "expectedOutput": "0 4 2 4 4\n"
+  },
+  {
+    "input": "8\nbbbcadabcab\nadddbadbcdbcdaccccbbbaba\ncdcaadadac\nddcb\nacb\nbabcacacda\ncbabbbacadcaddcbabdcdba\ncbdcd\n",
+    "expectedOutput": "1 4 1 1 0 0 2 0\n"
+  },
+  {
+    "input": "5\ncdc\nabacdbacbcdd\nddcdcadaa\ndd\nbccbcbadaaaccbcdabcdaabc\n",
+    "expectedOutput": "0 1 2 1 4\n"
+  },
+  {
+    "input": "6\naaaabdbbcacbcbadbbbbd\ncbcccbaadbadbacaadddcc\ndbbccdbbbcabcc\ncb\nabadaaaddd\nabddabcbdbddcbbca\n",
+    "expectedOutput": "5 5 4 0 2 3\n"
+  },
+  {
+    "input": "6\naabc\ncadcdcbaadadbaaa\ncbdcbac\ndcdcbcccbddaa\nddacbdaa\ndbdabaaddcabd\n",
+    "expectedOutput": "1 2 0 3 2 2\n"
+  },
+  {
+    "input": "2\nddd\nddc\n",
+    "expectedOutput": "1 1\n"
+  },
+  {
+    "input": "6\nac\nbbcdbbcbdbaba\ndddbaaccdaabb\nbacaadbbcadbddcbdcddddad\nababbdbbbbbdcb\ncacdddbbabbdcbdba\n",
+    "expectedOutput": "0 2 5 5 3 3\n"
+  },
+  {
+    "input": "1\naaabbbbcaadddccccabacdc\n",
+    "expectedOutput": "7\n"
+  },
+  {
+    "input": "3\ndcccbdabaab\nbbbcabacbadadadc\ncacbac\n",
+    "expectedOutput": "2 1 0\n"
+  },
+  {
+    "input": "2\nabdabba\ndcadaddbdcabcaadacdd\n",
+    "expectedOutput": "1 3\n"
+  },
+  {
+    "input": "3\nbaacaacaad\ncdacbcaddd\ndaadacbb\n",
+    "expectedOutput": "3 1 2\n"
+  },
+  {
+    "input": "7\nacdac\ndcaacdcadcddddbbba\naa\nddbbdc\ndbdb\naaaababadadabacad\naddbdbbcaacadbabaccccc\n",
+    "expectedOutput": "0 4 1 2 0 2 5\n"
+  },
+  {
+    "input": "6\nbacbbabcaacacadacdcbbcd\ndaa\nacccadcdaadacbacddcabbc\nabcdcdddb\nabcccbadcacacbbdcbcbc\ncbaacabaddacbbaadbbc\n",
+    "expectedOutput": "3 1 4 1 2 5\n"
+  },
+  {
+    "input": "5\nbbaabbabcdbd\nddcabbbbcddbdabd\nacad\ndb\nbbcbdadbdcbacdd\n",
+    "expectedOutput": "3 4 0 0 2\n"
+  },
+  {
+    "input": "4\ncadcdaaabbccacbdcba\ndadbcaddaadadbccbbabbba\nccabddcdcdabcaccacbda\ndaaccc\n",
+    "expectedOutput": "3 5 3 2\n"
+  },
+  {
+    "input": "5\ndcabaaacdbadcb\nabaaccdbdbbab\ndaadbacbdb\nacbdaaadcdcdcb\ndd\n",
+    "expectedOutput": "1 3 1 1 1\n"
+  },
+  {
+    "input": "1\ndaaccdbacacdbddadbccbdba\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "1\ndcacbbdcabcb\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6\naaaddcdacdcdbbcd\ndcdabdaccaabddcddd\nbcacacbca\ncccbabbd\nccdbcbbdcac\nbdbbabaadbaccccadcca\n",
+    "expectedOutput": "3 4 0 2 2 5\n"
+  },
+  {
+    "input": "4\nddacbbddcb\ndbbcaccbacdbdbd\ncccddb\nabadccddcbdcbabaaaccabcd\n",
+    "expectedOutput": "3 2 2 4\n"
+  },
+  {
+    "input": "5\nabbad\nbababadccbddadacdcbacddb\nbdbcbbb\naddcdddadaaaababbdbdbd\nbacdabdcbddbcbbcaaa\n",
+    "expectedOutput": "1 3 1 5 3\n"
+  },
+  {
+    "input": "8\ndbdcadbcb\naaacbbccacaacccaabcb\nddcaad\ncaadbdddabddddcaadbaaada\nbacbcdbaaaada\ncdddcabdcaccadadacabad\nabadbcbddbaabbdddbbdcdd\ncacda\n",
+    "expectedOutput": "0 6 2 6 2 2 6 0\n"
+  },
+  {
+    "input": "2\nabdbbaadbb\nbaccccacccc\n",
+    "expectedOutput": "3 4\n"
+  },
+  {
+    "input": "7\nbcdabcdbc\ncddbdccaaaba\ndcadcadadc\nabbabc\naccdcccabcccdcccbb\ncbdbdcbbacdbb\ncccadbddd\n",
+    "expectedOutput": "0 3 0 1 5 2 2\n"
+  },
+  {
+    "input": "8\nccac\ncdccca\nddacbd\nddbaa\nbcacdcdadda\nac\ncbdbbcbd\nadaddbcadacacdadacbbd\n",
+    "expectedOutput": "1 1 1 2 1 0 1 2\n"
+  },
+  {
+    "input": "5\nbdbcadaabc\ndccabaaacbbabbcbcbcdbc\ncbcca\ncdbbbac\nadbaaddc\n",
+    "expectedOutput": "1 4 1 1 2\n"
+  },
+  {
+    "input": "6\naaadbbadadacdbccabdbddcb\ndaabbcaaadbbdacdcaccd\ncccdaccc\ncbdbdddbacbdacbccab\nacdabcbdcdbbccdaab\nacbdcaabbabddcdddabaaabd\n",
+    "expectedOutput": "4 5 2 2 3 5\n"
+  },
+  {
+    "input": "6\nabdaddaa\ndacbcdbddcaca\nadcbb\nbbdaadddddcabdbca\naaabbccad\ncbd\n",
+    "expectedOutput": "2 1 1 4 3 0\n"
+  },
+  {
+    "input": "7\nbddadcbdddcdcaacacc\nbbabcddaabdbcbdcac\ncccaaddbbddbba\nadbcbdbabab\nadaddacdaaaacaadccac\ndabdcaddacdcbb\nadac\n",
+    "expectedOutput": "4 3 6 0 5 2 0\n"
+  },
+  {
+    "input": "2\ncc\ndababcbaacbbcadd\n",
+    "expectedOutput": "1 3\n"
+  },
+  {
+    "input": "1\ndcbcdcabcccbcbadbd\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "6\nbadcd\ndcaadcbdbddbbbbd\nbdbabccacaabbaabc\ndbdadcdadbbbdcbbdbaab\ndadbabbabdacbbcbbbdaa\ndcdc\n",
+    "expectedOutput": "0 4 4 3 4 0\n"
+  },
+  {
+    "input": "6\ndaaadbabbadcbbbaadadccd\ndbd\nabbaabddcbadcbbadbad\nbd\ncc\nbbdccdbdaccbcadcba\n",
+    "expectedOutput": "5 0 4 0 1 3\n"
+  },
+  {
+    "input": "6\ncbbccabb\nbbdddbaaabcdbbdacab\nabccadabb\nbdbdccacbaacacdccadcb\ndcadbcbdcdccb\ncddabbcbbcccbb\n",
+    "expectedOutput": "3 4 2 3 1 5\n"
+  },
+  {
+    "input": "3\naddbcadcbbddadadddccbd\ndbbaadada\nddcccdddbbadbcbccdadd\n",
+    "expectedOutput": "5 2 6\n"
+  },
+  {
+    "input": "4\nadbdbcdacac\nbbdaadb\ncbaabcbcbccbddbabadcbaba\naadddabcbcccdb\n",
+    "expectedOutput": "0 2 3 3\n"
+  },
+  {
+    "input": "8\ndbadddcdacaccd\nababbadbdbcaabda\nbdaaaaddbbddcac\nabbbcbdadbcaddbbbbc\ndcabdcadacaacbcabddabbac\nbbdbbdacadb\nacd\ncdbacbbdcbaacdd\n",
+    "expectedOutput": "2 2 5 4 3 2 0 3\n"
+  },
+  {
+    "input": "1\nabaadbbacbcccaaa\n",
+    "expectedOutput": "4\n"
+  },
+  {
+    "input": "6\nabda\nddbaddbbccbaccbcccddccc\nabcdcddacaa\nddcdccbbaaac\ndcdcbcbbccadccdb\ndcdbacccc\n",
+    "expectedOutput": "0 8 2 4 3 2\n"
+  },
+  {
+    "input": "1\nbaac\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "3\ncbdaacbcbddbdccacbabcbab\nadbddbb\nadbababa\n",
+    "expectedOutput": "3 2 0\n"
+  },
+  {
+    "input": "1\ndbbbbcbbcbbcbddc\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "3\ndacbccbdbdddbcccacabdcac\ncbacbdacabaccbcaccb\naacddcaaacdbbcccda\n",
+    "expectedOutput": "3 2 5\n"
+  },
+  {
+    "input": "5\ncdacdadaadb\naabbbdcbacbcabbadaddcacc\nabad\naadbbcbdcababdddd\ncaadcaacdcbacd\n",
+    "expectedOutput": "1 5 0 4 2\n"
+  },
+  {
+    "input": "4\ncccbabdc\nadbbbaccba\naacdbcdab\ndaabddbddbdacdccddcdd\n",
+    "expectedOutput": "1 2 1 6\n"
+  },
+  {
+    "input": "6\naacccdddcbddda\ndaddacacbdbcaccbbb\ndddbad\ndb\nbad\ncdabbcacaabc\n",
+    "expectedOutput": "4 3 1 0 0 2\n"
+  },
+  {
+    "input": "4\nbdacadcdbd\nadbdbdcbcdcbbabbcdd\ndacbacbbcbbaacbb\ndcbdaabbadbad\n",
+    "expectedOutput": "0 3 4 2\n"
+  },
+  {
+    "input": "5\ndcbaddbcacaacdaaacbbbc\ndadcacd\nacdaccb\ndaccadbccabaadcdbdaccbb\nbbbcddbccbdbdbbadabcadcb\n",
+    "expectedOutput": "4 0 1 5 4\n"
+  },
+  {
+    "input": "3\naaadbddcaa\naaabdbccc\ncabccdabbdcddab\n",
+    "expectedOutput": "3 2 3\n"
+  },
+  {
+    "input": "4\nabccaddccacccddccaacac\naaabcbcdbbdbbcacdc\ndbcddcbcaadbadcab\nddcddbbc\n",
+    "expectedOutput": "7 3 2 3\n"
+  },
+  {
+    "input": "4\ndabdcbabca\nccbcbdaacddcd\nbdd\ndbdcdacbddbcdaad\n",
+    "expectedOutput": "0 3 1 2\n"
+  },
+  {
+    "input": "7\nbcbdbcaaddcadcdcacb\ndbdaabdacddccccacddd\nbbaabacdbdb\nbccadbddcacbddbc\nabdbcacbdadbdd\ndbcdccabdcbdababa\nddcaaddbdbbddbb\n",
+    "expectedOutput": "2 5 2 3 1 1 6\n"
+  },
+  {
+    "input": "6\nbabaabbcdccbbdbacb\ndbbacdbcbc\naccacd\ncdddccbccaddaacaabaccddc\nccb\ndbcabaadcbccdccadabcbaa\n",
+    "expectedOutput": "4 1 1 8 1 4\n"
+  },
+  {
+    "input": "4\nddcbccbabadbabcdaad\nbc\nbaccdadbcaacdbbbbcac\nccddbbddcabcaa\n",
+    "expectedOutput": "3 0 4 5\n"
+  },
+  {
+    "input": "6\ndcddcdbbaccbacdbaca\nccacadaaadc\ncadd\naacbdbdaabccbcba\ncddbdbaaacbbdadb\ndcddadcbabacdcdccdddbbb\n",
+    "expectedOutput": "3 2 1 3 3 4\n"
+  },
+  {
+    "input": "4\nadcdacddbcd\nbdadaddddbbacadadcbcda\nddbdbbaad\nccabaadabbbabadcbdb\n",
+    "expectedOutput": "1 3 3 3\n"
+  },
+  {
+    "input": "5\nccdcd\nbdaabcaccadbdaa\nadcbbcaabbbcdbb\nbbabcccdabdaabdbdc\ndacbdcbbbccbadddd\n",
+    "expectedOutput": "1 3 4 3 4\n"
+  },
+  {
+    "input": "4\nddaccdbcacccc\nacccdcddbdddadc\nabaabbddbcabacbd\ndbbcdacbbddb\n",
+    "expectedOutput": "4 3 3 3\n"
+  },
+  {
+    "input": "2\nbcbabcbab\ncbddccdbabbcbccdcdcdac\n",
+    "expectedOutput": "0 4\n"
+  },
+  {
+    "input": "7\nbbaabacaabababcbcdbbab\nabdcadbacadbdcdac\ncbbacccadbdd\ncabbbbcdbbbcbccaacc\nda\ndcdcdbaaaddbac\ndacdacbccaabbbadcb\n",
+    "expectedOutput": "4 0 3 6 0 2 3\n"
+  },
+  {
+    "input": "2\nadaadacbbddcabcbba\naaccdadbbacadc\n",
+    "expectedOutput": "4 3\n"
+  },
+  {
+    "input": "1\nccbddabd\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "1\ndba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3\nadcaaddddbdabdac\ndadacdabcdabbdcdacbb\nbabdcdaddbbdcc\n",
+    "expectedOutput": "3 2 3\n"
+  },
+  {
+    "input": "8\ncaacbadccc\nbabadbdcaabdcba\nadbca\ncddd\nccabbadab\ncadabdcbdcabadcd\ncdccab\nbabddcaddcaddcccbaacbcc\n",
+    "expectedOutput": "2 1 0 1 2 0 1 6\n"
+  },
+  {
+    "input": "2\ndcaaba\ndbac\n",
+    "expectedOutput": "1 0\n"
+  },
+  {
+    "input": "8\naddbdcdcddb\nddcdadcbcabcdaabadadbddc\nacadaacbdbcadcadcb\ndcbba\nbccdbb\ndbdbaba\ncdbddbabcbacacaacbadb\ncdddaabbbaccdacaccbbccd\n",
+    "expectedOutput": "2 3 1 1 2 0 2 7\n"
+  },
+  {
+    "input": "8\nccddccbbacb\nbbacbbabdcabacdd\nadbaabcd\nbccbadabdddaacdd\ndbaaab\nbdaaa\ncbcacbdbaabcbdbdbddac\ndadcbdbaaaabcaa\n",
+    "expectedOutput": "4 3 1 4 1 1 2 3\n"
+  },
+  {
+    "input": "1\ndbdadbbacdaababbccaa\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "8\naddbdc\ndccadabdacacacdbadbddadd\nccdabadacdbacbbadcdb\nabdacbda\nbcdbbbcb\nbadbc\ndabbaddbabbbcdddcaabdacd\ndbdbbadbdcccbdb\n",
+    "expectedOutput": "1 3 2 0 1 0 5 2\n"
+  },
+  {
+    "input": "3\nbbbcaabddbcabba\ndbabbbabaabbaabbcb\nddbccbdabcbcaddddcbccda\n",
+    "expectedOutput": "4 5 5\n"
+  },
+  {
+    "input": "1\nababbcbaaaacbccbdcc\n",
+    "expectedOutput": "5\n"
+  },
+  {
+    "input": "2\nadadcbadaabcadccbdacd\ndca\n",
+    "expectedOutput": "2 0\n"
+  },
+  {
+    "input": "5\nbcadbbadcaabbc\ncadadaaabddacacbccba\ncabdcbddaadbaaabdaaabba\ndcddadadbcccbcccbdcc\nddbbcabbbbcbcb\n",
+    "expectedOutput": "3 3 5 4 4\n"
+  },
+  {
+    "input": "4\ndbdabbbdbcaabbdadca\nbbcccadabcdcbadba\nbac\ncababdcddbabcba\n",
+    "expectedOutput": "3 2 0 1\n"
+  },
+  {
+    "input": "2\ncddcbdcdacbccddaaadaaaac\ndbcacdaddbd\n",
+    "expectedOutput": "6 1\n"
+  },
+  {
+    "input": "4\nabbacabccadcda\ncdcaacaabdbbcd\nabaabacabacdbaabdcbdb\nadccadbdcdabd\n",
+    "expectedOutput": "2 3 2 1\n"
+  },
+  {
+    "input": "2\ndbbccdbac\naaaccadddbc\n",
+    "expectedOutput": "2 3\n"
+  },
+  {
+    "input": "8\ncdabcdbaaaaabdddcbabcb\nbdb\ncbccccddcad\nccc\naaaca\nddcdccadccbbdcbaa\ncbbdcccbdcaddcaab\nddcdacbaccbbdbadd\n",
+    "expectedOutput": "3 0 3 1 1 5 4 4\n"
+  },
+  {
+    "input": "4\nadbbbcacabaadcbadd\nbabcacdbbbcaccaaca\nbdbcbcaababbcbcdcaacabb\naabccdbdabdbabccbac\n",
+    "expectedOutput": "3 3 4 3\n"
+  },
+  {
+    "input": "5\nadbdcbbcdddcddac\nbabdbcdccaba\nbdccbccabb\nabbabb\nddb\n",
+    "expectedOutput": "3 1 3 2 1\n"
+  },
+  {
+    "input": "7\nbbccdccbabdbccdabbbcc\naaaabcdb\nddbdbabdbc\ncdaacabaaccabdcc\ncaddddbadb\nbac\ncbacbadbc\n",
+    "expectedOutput": "6 2 1 4 2 0 0\n"
+  },
+  {
+    "input": "4\nbddcddbadbbaccdcabac\ndadbbbdbb\ndccbdbcdbbccdaa\nbdbc\n",
+    "expectedOutput": "4 2 4 0\n"
+  },
+  {
+    "input": "3\nca\ncccacbaadbacb\naccbbca\n",
+    "expectedOutput": "0 2 2\n"
+  },
+  {
+    "input": "7\ncdccdbdcccbdbaacdbacd\nddabbcdcdcad\nbbdaddaadaddbad\nbbcaa\ndaddaaadbbadcaac\nbbdaddccccbddddbb\nbcbcdbbc\n",
+    "expectedOutput": "3 2 4 2 4 7 1\n"
+  },
+  {
+    "input": "4\ncdadcddbaab\ncdbccbcadcdb\nbbaddcadaacaccacd\nccad\n",
+    "expectedOutput": "2 1 4 1\n"
+  },
+  {
+    "input": "7\ndccddcbb\ncccdcd\nccdddadcacac\nbdabadadaddacaba\nab\ncbcaccbddadacbbaaddbcbbd\ncbcdaaadbbbbcc\n",
+    "expectedOutput": "3 1 2 1 0 6 4\n"
+  },
+  {
+    "input": "6\nadaaaacbabcc\nddabbdaddcabbdbbabddb\nbadbbdbabacddaabd\ndadaccac\nadacacadaaacaaabc\ndbcbdbbdabcadd\n",
+    "expectedOutput": "3 6 3 1 2 2\n"
+  },
+  {
+    "input": "8\ndadcacab\nda\nddddcddbacabcaccbcacbddd\nddcdccdbaabccadab\nbaddbdddbdcadaaadabdd\nbcbaacaadcabcbad\nbcccbdabbdbddabab\ncbacabbdccaddbb\n",
+    "expectedOutput": "0 0 5 4 4 2 3 4\n"
+  },
+  {
+    "input": "1\nbabdaadbdaddc\n",
+    "expectedOutput": "2\n"
+  },
+  {
+    "input": "3\ndcbbdbbdabacadbacbc\nacadbaddabac\nacabbccdabdddabb\n",
+    "expectedOutput": "2 1 4\n"
+  },
+  {
+    "input": "8\ndcccdbbacabd\nbdbcabaadc\ndbdadcdddcddb\nddbc\nddbbcdddcdbcbadbad\ncadddccdbbccbdda\nbcbbabc\ncbdcdaacbd\n",
+    "expectedOutput": "2 1 2 1 3 5 1 1\n"
+  },
+  {
+    "input": "8\ndba\ndaadbdcd\ndacdca\ndcbadbcdbc\nddddcbd\ncbdacaaccdbccdadbdaddda\ncdaaadbdabaadc\nbccadcddd\n",
+    "expectedOutput": "0 1 0 0 2 4 2 2\n"
+  },
+  {
+    "input": "4\nccc\ncdcdbbacadabbc\ncaaddbacdaccbbadccda\naddbaadbddccbcaccbdda\n",
+    "expectedOutput": "1 2 5 6\n"
+  },
+  {
+    "input": "2\nadadcbdbbcdcacb\nadbdacb\n",
+    "expectedOutput": "1 0\n"
+  },
+  {
+    "input": "1\nbcddbadc\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "3\ncaadb\ndaab\nadaacbdad\n",
+    "expectedOutput": "1 1 1\n"
+  },
+  {
+    "input": "5\ncbbacdddc\ncaccbab\nddbbbadcbdadcaacdaddadc\ncaadcc\naaabaaaacaacddadacadaa\n",
+    "expectedOutput": "2 1 4 2 6\n"
+  },
+  {
+    "input": "4\ndbba\nbab\nadbcdaccda\nabcdbbddaabbcbadadc\n",
+    "expectedOutput": "1 0 1 4\n"
+  },
+  {
+    "input": "7\ncbacbd\ncaadbdabcddcaabda\nacbbdbcdbaccccabdccbddd\ndbbadcb\nbaccdadc\ndddadb\ndbabccaddaadab\n",
+    "expectedOutput": "0 3 5 1 1 1 3\n"
+  },
+  {
+    "input": "6\ncbdcbdc\ncbcabadddacbbaaddbcabcb\ndbcaaabaadacaacdcac\nbbdbbdcdbadaabb\ncdbaadadcccdad\ndacabacadddaacdbacbcdbac\n",
+    "expectedOutput": "0 4 3 4 2 2\n"
+  },
+  {
+    "input": "1\ndcbdbacabcbdccccccd\n",
+    "expectedOutput": "3\n"
+  },
+  {
+    "input": "6\nabacbcbadb\ncbbdbdbcddbbacbbdcddc\nabcaaadaabbcddc\naadcbdcadcccc\nddbccdccdcaaad\naddcaadbbdbbdacdabdcb\n",
+    "expectedOutput": "0 5 4 3 4 4\n"
+  },
+  {
+    "input": "4\ncccadcbcaaddbdabcaddcca\ndadaaadddbcdbcb\nda\ndabd\n",
+    "expectedOutput": "5 2 0 0\n"
+  },
+  {
+    "input": "5\ndbaad\nacbabcabccdcbcdadadadc\ndcaadaaccccadabbcadaccc\nbdbbdbcbcddcbddaa\nbdadbbaaadabbcdaabb\n",
+    "expectedOutput": "1 1 6 4 5\n"
+  },
+  {
+    "input": "4\ncbacdaadcd\nbacbcaddaaddcdaccbcb\nbdadcabababbdcdcaad\nababbaddcd\n",
+    "expectedOutput": "1 4 2 2\n"
+  },
+  {
+    "input": "7\nbababacadccac\ndbdcacdcaabda\nbab\ndaaacdba\ncbadabdccbcbbdaddaadaa\ncdbdaccddabbddcdb\ncbaaca\n",
+    "expectedOutput": "1 1 0 1 5 4 1\n"
+  },
+  {
+    "input": "3\ndcbccccdcaabbbbdda\ncaccccdbccbb\nbaaad\n",
+    "expectedOutput": "6 4 1\n"
+  },
+  {
+    "input": "6\nbbbadab\nddbccccbdbdcdabbc\ncdbadbdbadc\ncdbabbdacbcdabccbdacb\ncacaccdbdccbddcdc\ndaccbaccaadc\n",
+    "expectedOutput": "1 4 0 2 3 3\n"
+  },
+  {
+    "input": "2\ndbaacba\nccdcdaabcc\n",
+    "expectedOutput": "1 3\n"
+  },
+  {
+    "input": "4\ncac\ndaadbbddcddcbcb\nadaaccbcbcbcdb\ncddbaa\n",
+    "expectedOutput": "0 4 2 2\n"
+  },
+  {
+    "input": "4\nacaacddbdc\nbc\nbccccdddbcacbacddccddba\ndcaacabdbdbcc\n",
+    "expectedOutput": "2 0 6 2\n"
+  },
+  {
+    "input": "6\ndaccadaabbbcbddaadaabc\nadcbda\nbbddabac\nadbacccbdccaddcbdcb\nbacac\ndabdbcbacaaaccc\n",
+    "expectedOutput": "6 0 2 3 0 2\n"
+  },
+  {
+    "input": "6\nbdaddacabdcaacbdabdcc\ndcbac\naabdbdbbcbddcdcaaaddd\ncdcacdad\naaadd\ncdbbbbcabdbbab\n",
+    "expectedOutput": "3 0 5 0 2 3\n"
+  },
+  {
+    "input": "6\ndabcdbcdabbab\nddabdaaaa\nbadadc\nabcccdaaaabdbadcaacbcdc\nddd\nbcadacc\n",
+    "expectedOutput": "1 3 0 4 1 1\n"
+  },
+  {
+    "input": "5\nacbbcbcd\nacbcbbbaabbddb\ndada\nbbcbdabddcabdddcb\nbdaa\n",
+    "expectedOutput": "1 4 0 3 1\n"
+  },
+  {
+    "input": "6\ndabbbbddab\ncccddaadadbbdddcbacad\nbadabab\nccadaccacabdd\nbadbbacbcdbcbbad\nbcdbcaaac\n",
+    "expectedOutput": "3 5 0 3 2 1\n"
+  },
+  {
+    "input": "3\ncdbdb\ncbdcdccda\naccaabcbdcdbbddacacd\n",
+    "expectedOutput": "0 1 4\n"
+  },
+  {
+    "input": "8\ndcbdbda\ncddbacabcabcbadcaacc\naddcccabcccb\nab\ncccdababcbabccb\ndcabbabbdbbcacbabbc\ncca\ncbabbdadabdccacbbddd\n",
+    "expectedOutput": "0 3 3 0 2 4 1 4\n"
+  },
+  {
+    "input": "5\ncbdb\nddcabb\nbbcbcaccdbba\nabb\nadabcaacbbaabbc\n",
+    "expectedOutput": "0 2 3 1 4\n"
+  },
+  {
+    "input": "5\ncadbddacdabbbda\naaabdbb\nbdbbbdbaadcb\nbaaabbcc\nbcba\n",
+    "expectedOutput": "2 2 2 3 0\n"
+  },
+  {
+    "input": "5\nccddcc\nbcdcdbcdccdabacbdcababb\nacbaabc\nbdb\nbccbdbdcbdaddbaaddadcbcc\n",
+    "expectedOutput": "3 2 1 0 5\n"
+  },
+  {
+    "input": "5\ndddcacaaacacbcbcacdd\ncddddabacd\ndcaaddacba\nbcbbabcccadcaaccadddca\nbaaddabdcddc\n",
+    "expectedOutput": "3 2 2 5 3\n"
+  },
+  {
+    "input": "7\ndbdcdcbbdbdabcdabdcad\nabcacaa\naacbbabcbbbbbcdbdaad\nadaacaacdb\nddadcdbbbaadddbcdddabbdb\nbdccbdacbbdcdbaabbbabcd\nbddadcad\n",
+    "expectedOutput": "1 1 5 2 6 4 1\n"
+  },
+  {
+    "input": "8\nbdcbbdbcbcdaaccab\naaddccba\nabcbdba\nbdccccbcdcdcadacc\nbddadaacbcaccbbcc\nab\nacaababcaaacdcdabc\nab\n",
+    "expectedOutput": "3 3 0 3 5 0 2 0\n"
+  },
+  {
+    "input": "4\nbdcacddaaadbcc\nacbbbad\ncddabcbbcdaddaabbd\nabdc\n",
+    "expectedOutput": "3 1 5 0\n"
+  },
+  {
+    "input": "4\nbbcaaddacaaadccccbb\ncdcabadbccdcadcccdb\nbbdaaddcd\nadaddbacabbcadacbdcca\n",
+    "expectedOutput": "7 2 3 3\n"
+  },
+  {
+    "input": "7\nbbadcbaadbbb\nacbccbaddddcdbca\nddaddad\nbdbacbbdcbdbaaaba\nbcbb\ncdbbbbababaabbcbadccabc\nbabac\n",
+    "expectedOutput": "3 3 2 2 1 5 0\n"
+  },
+  {
+    "input": "7\nabbccbdadaa\nddabbba\nbbbabbbcaabadabdbddaac\nacabcadcbcdcdbaaaac\nddaccdadbcbcbabdacdada\nbddcbaacaad\nbadbdacabcc\n",
+    "expectedOutput": "3 2 5 2 2 3 1\n"
+  },
+  {
+    "input": "6\nadbdabdddabbacbdbaca\naaabccdbaaddccddbcaa\nbbddcadbbdccddabcbb\nbcbccddaa\naadbabaaddbdcabcab\nddd\n",
+    "expectedOutput": "2 7 6 3 3 1\n"
+  },
+  {
+    "input": "3\nadaacbc\nccaba\nabccbdcdaabcdcdcb\n",
+    "expectedOutput": "1 1 2\n"
+  },
+  {
+    "input": "1\nbcaadcacbdcbd\n",
+    "expectedOutput": "1\n"
+  },
+  {
+    "input": "4\ncacbbbbb\nbabbdbbcaad\ndddcacbbabacdbaaabcdaaa\ndcba\n",
+    "expectedOutput": "2 3 4 0\n"
+  },
+  {
+    "input": "4\nddcacbbabadacccbc\nccabbada\nabbbcbaaacaabbc\nbcbacacdbdaddbacdca\n",
+    "expectedOutput": "3 2 4 1\n"
+  },
+  {
+    "input": "3\nbdbaacddbacdaabbdaac\ncbbdacdcabc\nbaadadbb\n",
+    "expectedOutput": "5 1 2\n"
+  },
+  {
+    "input": "2\nabaddccad\naaca\n",
+    "expectedOutput": "2 1\n"
+  },
+  {
+    "input": "3\nacbcbdadccc\nbdcd\ncacddcbbabacbdacdcccac\n",
+    "expectedOutput": "1 0 3\n"
+  },
+  {
+    "input": "5\naadbdcacadcacbcab\ndcbabadbbddbba\naabcdbaaacdbac\ndcccdadbbbbbcdcbdac\nbacdacaaccbadacacbcaa\n",
+    "expectedOutput": "1 3 2 3 3\n"
+  },
+  {
+    "input": "8\nddbbccdcbdc\ncdbcc\ndbcdddacdccdccddbaadaa\nadabdddbbbbadbcacb\nabdcdcabbcbdddadba\nacdadadadcbdbddbd\nbbadaccabcbdaaaa\ncdbdaa\n",
+    "expectedOutput": "3 1 6 3 2 1 4 1\n"
+  },
+  {
+    "input": "3\ncacaadadcdcdbccdcbcad\ncacbd\ndbdadadbabaab\n",
+    "expectedOutput": "2 0 1\n"
+  },
+  {
+    "input": "7\nddbcbcabbcba\ndbdcccb\nbacadcadaddccaabcadddaa\ncbccaacbcbbbadbbabca\nbcbdbcddacaab\nccdbcdcddca\ncdabaaaddcbb\n",
+    "expectedOutput": "2 1 5 4 2 2 3\n"
+  },
+  {
+    "input": "2\ndd\naddaddcbdcbd\n",
+    "expectedOutput": "1 2\n"
+  },
+  {
+    "input": "7\nddaacbbdb\ncdaacdbdaabbaacabcdbddac\ncbcbcdaaddcdbcabddaa\nbbabdbdbabb\nddd\nbcbabbbacabadabb\ndabbddbaacd\n",
+    "expectedOutput": "3 5 4 2 1 2 3\n"
+  },
+  {
+    "input": "2\nccdabadbbbcaaabddabcda\ndacd\n",
+    "expectedOutput": "4 0\n"
+  },
+  {
+    "input": "2\nbbbcddaccbbdabbaaadca\ndbcdabdbbbbccbacabddbab\n",
+    "expectedOutput": "6 4\n"
+  },
+  {
+    "input": "8\naabdabdcbbd\nbacdbabdc\nca\ncac\nabddaaaacdbacbdadcbcbca\nbcababaadacbbcdbbbb\ndd\nabbcbcadcbadaccaca\n",
+    "expectedOutput": "2 0 0 0 3 4 1 2\n"
+  }
+]

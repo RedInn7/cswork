@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-10",
+  "title": "n×n 星号方阵",
+  "explanation": "## 思路\n\n构造一行 n 个星号并以单个空格连接，再输出该行 n 次。\n\n## 正确性证明\n\n每行包含 n 个星号且相邻之间只有一个空格，共重复 n 次，逐字符合输出定义。\n\n## 复杂度\n\n时间和输出空间均为 O(n²)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    n=int(data); row=' '.join(['*']*n); return '\\n'.join([row]*n)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#10-star-frame-nn",
+  "sourceContentHash": "6a8a7a0efea8c4a8dbd1641e669b45c6c7201c542d48d6c5a9d0e06854efbaf1",
+  "author": "CSWork"
+}

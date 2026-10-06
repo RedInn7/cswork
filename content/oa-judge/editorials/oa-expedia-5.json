@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-expedia-5",
+  "title": "Get Maximum Efficiency",
+  "explanation": "## 思路\n\n排序到达时间。若选取排序下标区间 [i,j]（至少两个用例），最短激活区间覆盖两端，效率为 (j−i+1)−(a[j]−a[i])。改写为 (j−a[j])−(i−a[i])+1。遍历 j 时维护合法 i<j 的最小 i−a[i]，即可在线性时间求最大值。\n\n## 正确性\n\n任意激活区间内的测试用例在排序后构成连续区间；缩短区间到首末到达时刻不会丢失其中用例且不会增加时长，因此存在最优解对应某个连续区间。公式变换后，对每个右端 j，最佳左端恰是之前 i<j 中 i−a[i] 最小者。前缀最小值枚举并选出所有区间的最大效率。\n\n## 复杂度\n\n排序 O(n log n)，扫描 O(n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(a):\n a=sorted(a); low=0-a[0]; best=None\n for j in range(1,len(a)):\n  best=max(best if best is not None else -10**30,(j-a[j])-low+1)\n  low=min(low,j-a[j])\n return str(best)\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); print(solve(z[1:]))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/expedia#5-get-maximum-efficiency",
+  "sourceContentHash": "e9081227a8cef898cf8f7a8773990ee261d4967f3647876b345f6a8e690d9218"
+}

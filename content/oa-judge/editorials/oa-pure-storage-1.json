@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-1",
+  "title": "Maximum Historical Income",
+  "explanation": "## 思路\n\n初始持有的一单位可在第一天按 A[0] 变现；此后逐日累加所有正向涨幅，最后对 10^9 取模。\n\n## 正确性\n\n先卖出初始单位得到 A[0]。此后每次买入可在价格下降后进行、在后续上涨时卖出；把任一持有区间拆成每日差分，负差分不应持有，所有正差分都可通过独立交易取得。故最大收益等于 A[0] 加全部正相邻差，最后取模。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n profit=a[0]+sum(max(0,a[i]-a[i-1]) for i in range(1,n))\n return str(profit%10**9)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#1-maximum-historical-income",
+  "sourceContentHash": "9cac9708b628e54a59554d2e44ce1187984a33b949753c332ee0c90a0659e0e6",
+  "author": "CSWork"
+}

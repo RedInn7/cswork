@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-pure-storage-1",
+      "sourceContentHash": "9cac9708b628e54a59554d2e44ce1187984a33b949753c332ee0c90a0659e0e6",
+      "packageChecksum": "0ff51fd98b48f8d1e9ecb1ee2cbba83a8395aacf5055f95aeac2212f67110410",
+      "editorial": "## 思路\n\n初始持有的一单位可在第一天按 A[0] 变现；此后逐日累加所有正向涨幅，最后对 10^9 取模。\n\n## 正确性\n\n先卖出初始单位得到 A[0]。此后每次买入可在价格下降后进行、在后续上涨时卖出；把任一持有区间拆成每日差分，负差分不应持有，所有正差分都可通过独立交易取得。故最大收益等于 A[0] 加全部正相邻差，最后取模。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n profit=a[0]+sum(max(0,a[i]-a[i-1]) for i in range(1,n))\n return str(profit%10**9)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-3",
+      "sourceContentHash": "9c7c80644630937216b22ee43e85732c0a4e444dc767c62f927458097e9b7c03",
+      "packageChecksum": "2be9e3b3af655f7bfd37230be1939890589636404e160a6ef1f9794248fdd31f",
+      "editorial": "## 思路\n\n把分数按降序排列。两人每次都会拿当前最大的剩余分数，因此先手获得排序后偶数下标元素，后手获得奇数下标元素，交替累加差值。\n\n## 正确性\n\n轮到任一玩家时，取走当前最大值不会减少该玩家最终可得分：若他不取，下一位对手可取走它；交换策略中该玩家取最大值只会把对手原本可取的另一个元素留给后续。归纳可知双方最优选择等价于按降序依次拿取，轮次决定归属。\n\n## 复杂度\n\n排序 O(n log n)，额外空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=sorted(t[1:1+n],reverse=True)\n return str(sum(v if i%2==0 else -v for i,v in enumerate(a)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-5",
+      "sourceContentHash": "0f51e13a9e3070e92bb145c72540ed84bb34ac00c687a8b87b5912d0c8bbae40",
+      "packageChecksum": "ea62307f44f070b67480d670b8c5bf2afc1c3d1f7b2aab7dd80b57f0a600fb63",
+      "editorial": "## 思路\n\n扫描数字串累计 5、奇数位和相邻 33 对的分数；再按相邻位差为 1 切分最大递增游程，累加游程长度平方；最后根据末位是否为 0 或 5 加上整除奖励。\n\n## 正确性\n\n逐位规则在每一位检查一次，故 5 和奇数项不漏不重；遍历相邻位置恰好统计全部 33 相邻对；切分条件恰好在非递增相邻处结束，得到所有最大 +1 游程；末位判定等价于十进制数被 5 整除。各分项独立相加符合题意。\n\n## 复杂度\n\nd 为数字位数，时间 O(d)，额外空间 O(d)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n s=raw.strip(); score=0\n for i,c in enumerate(s):\n  if c=='5': score+=2\n  if int(c)%2: score+=1\n  if i and s[i-1:i+1]=='33': score+=4\n if int(s[-1])==0 or int(s[-1])==5: score+=6\n i=0\n while i<len(s):\n  j=i+1\n  while j<len(s) and ord(s[j])==ord(s[j-1])+1: j+=1\n  score+=(j-i)*(j-i); i=j\n return str(score)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-6",
+      "sourceContentHash": "58a8e3fa91513d331ee76e1b785c6a448e481e623a83553d85a9db6acf6a9348",
+      "packageChecksum": "007386756dcfce7d94704ebeda1f5c25e490224927beec1e45b250336710bcb0",
+      "editorial": "## 思路\n\n用栈记录获取顺序、集合记录当前持有的锁。ACQUIRE 若已在集合中即违规，否则压栈并加入集合；RELEASE 必须匹配栈顶，否则违规；匹配后弹栈并移除集合成员。遍历后栈非空表示 dangling。\n\n## 正确性\n\n集合恰好刻画所有已获取未释放锁，因此可在常数时间识别重复获取。栈顶是尚未释放的最近一次获取，题目要求逆序释放，故只允许释放栈顶。第一个违反任一条件的事件就是首个违规下标；无违规时，栈空与全部释放等价，否则按规则返回 n+1。\n\n## 复杂度\n\n每个事件至多入栈、出栈一次，时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); stack=[]; held=set()\n for i,line in enumerate(lines[1:1+n],1):\n  op,name=line.split()\n  if op=='ACQUIRE':\n   if name in held: return str(i)\n   held.add(name); stack.append(name)\n  else:\n   if not stack or stack[-1]!=name: return str(i)\n   stack.pop(); held.remove(name)\n return str(0 if not stack else n+1)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-7",
+      "sourceContentHash": "f1b020d57df61e1e8a359f6e8a5813455b0d50a84403d45872d79f2cce506d95",
+      "packageChecksum": "8006fb6db7d657e9dafb78c56bcceb87472861f9d74a75a02a950349c37e2f62",
+      "editorial": "## 思路\n\n使用 Manacher 算法分别计算每个中心的最长奇数、偶数回文半径。每个中心的半径值就是以该中心结束的回文子串数量，将其累加。\n\n## 正确性\n\n对每个奇数中心，半径 k 表示从长度 1 到 2k−1 的 k 个回文；偶数中心同理对应长度 2 到 2k 的 k 个回文。Manacher 扩展和镜像复用只改变求半径的效率，不遗漏或重复中心，因此所有位置对均恰好计一次。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n s=raw.strip(); n=len(s); ans=0; d1=[0]*n; l=0; r=-1\n for i in range(n):\n  k=1 if i>r else min(d1[l+r-i],r-i+1)\n  while i-k>=0 and i+k<n and s[i-k]==s[i+k]: k+=1\n  d1[i]=k; ans+=k\n  if i+k-1>r: l=i-k+1; r=i+k-1\n d2=[0]*n; l=0; r=-1\n for i in range(n):\n  k=0 if i>r else min(d2[l+r-i+1],r-i+1)\n  while i-k-1>=0 and i+k<n and s[i-k-1]==s[i+k]: k+=1\n  d2[i]=k; ans+=k\n  if i+k-1>r: l=i-k; r=i+k-1\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-10",
+      "sourceContentHash": "9c362302f5a580b7420d7e0a3314f32a4bacd1afea972a31608a7a05c3d92432",
+      "packageChecksum": "9b72de71cff07120498be35fa774660896b45658f77d0b556115f4bdca42ae3f",
+      "editorial": "## 思路\n\n对每一对字符串分别统计字符频次，若频次映射不相等则该盒子不匹配。\n\n## 正确性\n\n题意要求物品顺序无关但重复数量必须保留。字符频次表对排列不敏感，且只有每个字符数量均相等时两表才相同，恰好等价于盒内物品多重集合一致。逐对统计并累加即可。\n\n## 复杂度\n\n每对长度至多 10，时间 O(n·10)，空间 O(26)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=raw.split(); n=int(t[0]); ans=0\n for i in range(n):\n  a,b=t[1+2*i:3+2*i]\n  ans+=Counter(a)!=Counter(b)\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-12",
+      "sourceContentHash": "59fa90210c776c6b395d9884087895118cf8be743d19e973dec00dfdd9a34ada",
+      "packageChecksum": "2d92ad2ab65d3236a6f5f1ca3ae96157e0949b6ed8cbaf0fea18c24d52df50a0",
+      "editorial": "## 思路\n\n统计每个值的频次。对输入中每个元素 x 检查 freq[2x] 是否恰为 1；符合时加入答案，最后排序。\n\n## 正确性\n\n频次数组精确反映列表中每个整数出现次数。对每个输入位置按条件检查会保留所有重复的 x；恰有一个 2x 的限制由频次等于 1 精确表达。排序满足输出顺序。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(1001+n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]; c=Counter(a)\n return ' '.join(map(str,sorted(x for x in a if c.get(2*x,0)==1)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-13",
+      "sourceContentHash": "c4f287c01a0a3ee2da6f5cb331372ccb2533a4c04fc0cea229ae611ca12728e3",
+      "packageChecksum": "8c09e762258e7a1a8bb1558cd3da7927231352c5fd9552ee24e74a6cda6de042",
+      "editorial": "## 思路\n\n令 dp[i] 表示恰好在 long_s 前 i 个字符结束的模式连续重复次数。若末尾长度 m 的子串等于模式，则 dp[i]=dp[i−m]+1，否则为 0。答案是 dp 最大值。\n\n## 正确性\n\n任何连续重复段的最后一个模式副本必结束于某个位置 i，且此前恰好在 i−m 处结束了一个更短的连续重复段；递推因此得到真实段长。若末尾不匹配，该位置不可能属于一个以此结束的重复段，值为 0。遍历所有结束位置即可覆盖全部候选。\n\n## 复杂度\n\n设模式长度 m、文本长度 n，m<10，时间 O(nm)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); p=lines[0] if lines else ''; s=lines[1] if len(lines)>1 else ''\n if not p or not s: return '0'\n m=len(p); dp=[0]*(len(s)+1); best=0\n for end in range(m,len(s)+1):\n  if s[end-m:end]==p: dp[end]=dp[end-m]+1; best=max(best,dp[end])\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-pure-storage-14",
+      "sourceContentHash": "90e9b556a1b84f29d488526da03d73d30a151099165a94c029c786d2a8644d84",
+      "packageChecksum": "77b42248a4fdcac2e2fcea43fe818fa8d232232dc6584e0e9ae88b8c5b690303",
+      "editorial": "## 思路\n\n用长度 R 的数组累计每位选手得分。只对名次 1..6 加对应分数；其余名次不加分。最后按 (总分降序, 选手序号升序) 选择最小键者。\n\n## 正确性\n\n每条结果记录恰对应一位选手在一场比赛中的名次，按给定映射累加即可得到其总分。排序键首先最大化总分，再最小化连续选手 ID；包含所有 R 位选手也确保未出现的选手以零分参与平局。\n\n## 复杂度\n\n时间 O(R+M)，空间 O(R)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); r,m=t[:2]; score=[0]*r; pts=(0,10,6,4,3,2,1); p=2\n for _ in range(m):\n  race,who,pos=t[p:p+3]; p+=3\n  if pos<=6: score[who-1001]+=pts[pos]\n i=min(range(r),key=lambda j:(-score[j],j))\n return f'{1001+i} {score[i]}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

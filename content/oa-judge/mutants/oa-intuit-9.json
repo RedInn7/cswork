@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只统计每个子串内相邻字符不同",
+    "code": "import sys\ns=sys.stdin.read().strip();z=0\nfor i in range(len(s)):\n for j in range(i+1,len(s)):z+=s[j]!=s[j-1]\nprint(z)\n"
+  },
+  {
+    "name": "只检查每个子串首尾字符是否不同",
+    "code": "import sys\ns=sys.stdin.read().strip();print(sum(s[i]!=s[j] for i in range(len(s)) for j in range(i+1,len(s))))\n"
+  }
+]

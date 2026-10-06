@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-1",
+  "title": "Network Formation",
+  "explanation": "## 思路\n\n从左到右累加尚未处理的电脑；当前连续段首次同时满足长度和速度要求时，立刻作为一个网络并继续扫描。\n\n## 正确性\n\n非负速度保证从某个起点开始，首次满足条件的最短区间不晚于任何包含该起点且满足条件的区间终点。对任意最优划分的第一个网络，跳过其起点前未用电脑并用从当前起点开始的最短合格段替换，不会延后结束位置，因而不会减少后续可选网络数。对剩余后缀归纳可得贪心最优。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); n,k,need=t[:3]; a=t[3:3+n]\n count=length=total=0\n for v in a:\n  length+=1; total+=v\n  if length>=k and total>=need: count+=1; length=total=0\n return str(count)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#1-network-formation",
+  "sourceContentHash": "53f11c43e73e90b5aefc2a0ec23de044252339221ad54a88c96d028b44f3e8a9",
+  "author": "CSWork"
+}

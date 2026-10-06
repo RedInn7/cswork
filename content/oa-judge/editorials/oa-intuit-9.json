@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-9",
+  "title": "DNA Sequencing — Palindrome Transformation Cost",
+  "explanation": "## 思路\n\n对每个位置对 (i,j)，若字符不同，它会作为对称字符出现在 min(i+1,n-j) 个子串中。总权重可线性计算；相等字符对按字符分组并用前缀和二分扣除。\n\n## 正确性证明\n\n一个子串要成为回文，左右对称且不相等的字符对至少需要一次修改，修改其中任一字符即可满足该对；各镜像位置对互不重叠，所以代价正好是镜像不等对数。固定下标 i<j 的字符对在某个子串中对称，当且仅当子串左右端点向外扩展相同距离；合法扩展数为 min(i+1,n-j)。因此答案是全部位置对的权重和减去相等字符位置对的权重和。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from bisect import bisect_left\nfrom collections import defaultdict\nimport sys\n\ndef solve(text):\n    s = text.strip()\n    n = len(s)\n    all_pairs = 0\n    for j in range(n):\n        threshold = n - j\n        small = min(j, threshold)\n        all_pairs += small * (small + 1) // 2 + (j - small) * threshold\n    positions = defaultdict(list)\n    for i, ch in enumerate(s): positions[ch].append(i)\n    equal_pairs = 0\n    for places in positions.values():\n        prefix = [0]\n        for i in places: prefix.append(prefix[-1] + i + 1)\n        for k, j in enumerate(places):\n            split = bisect_left(places, n - j, 0, k)\n            equal_pairs += prefix[split] + (k - split) * (n - j)\n    return str(all_pairs - equal_pairs)\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/intuit#9-dna-sequencing--palindrome-transformation-cost",
+  "sourceContentHash": "7332d21f2764b58d70b644615a4f740ed4d8284201db89fb7e262782b14a8038",
+  "author": "CSWork"
+}

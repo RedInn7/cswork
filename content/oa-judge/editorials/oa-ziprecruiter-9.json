@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-9",
+  "title": "独家活动排队入场",
+  "explanation": "## 思路\n\n维护未来完成时间队列。到达前移除所有已完成者；队首若存在就是当前服务者，其余人数为等待人数。超过 10 则离开，否则排到队尾。\n\n## 正确性证明\n\n归纳每次到达：移除完成者后队列为空表示空闲；否则首项为服务者、其余为等待者。阈值判断准确；被接纳客人排在现有所有服务/等待之后，完成时间为队尾时间加 300。等时规则由先处理完成事件再入队实现。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); q=deque(); out=[]\n for t in (next(it) for _ in range(n)):\n  while q and q[0]<=t: q.popleft()\n  wait=max(0,len(q)-1)\n  if wait>10: out.append(t)\n  elif not q: q.append(t+300); out.append(t+300)\n  else: q.append(q[-1]+300); out.append(q[-1])\n return \" \".join(map(str,out))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#9-exclusive-event-entry",
+  "sourceContentHash": "da33953f6ded46670cd251397a8df0fe207f55b15bdd8e2afa9d89feb35a69e7",
+  "author": "Chunyu Sui"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paypal-2",
+  "title": "Count User Logins",
+  "explanation": "## 思路\n\n逐行校验用户名、固定格式时间和公历日期。无效时间/日期的记录跳过。用 (用户名,日期) 作为键累计次数，最后按两个字符串字典序排序。本站 I/O 先输出分组数，再逐行输出用户名、日期和次数。\n\n## 正确性\n\n每条有效日志恰好给唯一的 (用户,日期) 键增加一次；无效日期或时间不参与统计，符合过滤规则。字典计数因此等于该组的登录记录数。对所有键按用户名、日期排序，恰好满足规定顺序；组数和每组字段一一对应。\n\n来源样例 1 的解释把 user1 当天的 2 次写成 3 次，又把 user2 的 2 次写成 1 次；样例 2 的解释把 user2 的 2 次写成 3 次。两组样例的实际输出与原始日志一致，本站沿用输出并记录解释笔误。\n\n## 复杂度\n\nn 条日志，哈希聚合 O(n)，排序 g 个分组 O(g log g)，空间 O(g)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys,re\nfrom datetime import date\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); counts={}\n for line in lines[1:1+n]:\n  user,tm,day=line.split()\n  if not re.fullmatch(r'user(?:0|[1-9][0-9]{0,9})',user): continue\n  if not re.fullmatch(r'[0-9]{2}:[0-9]{2}:[0-9]{2}',tm): continue\n  if not re.fullmatch(r'[0-9]{4}-[0-9]{2}-[0-9]{2}',day): continue\n  h,m,s=map(int,tm.split(':'))\n  if h>=24 or m>=60 or s>=60: continue\n  try: date.fromisoformat(day)\n  except ValueError: continue\n  if not 2000<=int(day[:4])<=3000: continue\n  counts[(user,day)]=counts.get((user,day),0)+1\n rows=sorted((u,d,c) for (u,d),c in counts.items())\n return str(len(rows))+('\\n'+'\\n'.join(f'{u} {d} {c}' for u,d,c in rows) if rows else '')\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/paypal#2-count-user-logins-singapore",
+  "sourceContentHash": "d422c1e1d992e18aa46afb20f7543de8d7dbd629b2a318f52b523d9e274146a3",
+  "author": "CSWork"
+}

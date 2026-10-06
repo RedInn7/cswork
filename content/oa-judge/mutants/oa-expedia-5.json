@@ -1,0 +1,10 @@
+[
+  {
+    "name": "窗口只取相邻两个用例",
+    "code": "import sys\nz=list(map(int,sys.stdin.buffer.read().split())); a=sorted(z[1:]); print(max(2-(a[i+1]-a[i]) for i in range(len(a)-1)))\n"
+  },
+  {
+    "name": "忽略激活时长",
+    "code": "import sys\ndef solve(a):\n a=sorted(a); low=0-a[0]; best=None\n for j in range(1,len(a)):\n  best=max(best if best is not None else -10**30,j+1-low)\n  low=min(low,j-a[j])\n return str(best)\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); print(solve(z[1:]))\n"
+  }
+]

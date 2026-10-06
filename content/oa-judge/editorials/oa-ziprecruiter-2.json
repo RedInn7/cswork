@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-2",
+  "title": "最多能钓到多少条鱼",
+  "explanation": "## 思路\n\n鱼和鱼饵从小到大排序。对每个鱼饵，跳过不大于它的鱼，再用它钓最多三条当前最小的可钓鱼。\n\n## 正确性证明\n\n小鱼饵可钓集合包含更大鱼饵可钓集合。将当前鱼饵分配给最小的可钓鱼不会减少后续匹配；否则可将最优解中较大的匹配鱼与该更小鱼交换。重复即得最大匹配数。\n\n## 复杂度\n\n时间 O(n log n + m log m)，空间 O(n+m)。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); m=next(it)\n fish=sorted(next(it) for _ in range(n)); baits=sorted(next(it) for _ in range(m))\n i=ans=0\n for b in baits:\n  while i<n and fish[i]<=b: i+=1\n  used=0\n  while i<n and used<3: ans+=1; i+=1; used+=1\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#2-maximum-fish-caught",
+  "sourceContentHash": "dc9fee47fd7da9df26cca3b6e8b98eb0a1f0f447c55e74bda31aa16ba72b49c6",
+  "author": "Chunyu Sui"
+}

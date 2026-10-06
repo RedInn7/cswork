@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遇到第一个合格窗口就返回",
+    "code": "import sys\ndef solve(raw):\n s,k=raw.split();k=int(k);p=[i for i,ch in enumerate(s) if ch=='1'];return s[p[0]:p[k-1]+1]\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "先比较字典序而不是先比较长度",
+    "code": "import sys\ndef solve(raw):\n s,k=raw.split();k=int(k);p=[i for i,ch in enumerate(s) if ch=='1'];return min(s[p[i]:p[i+k-1]+1] for i in range(len(p)-k+1))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

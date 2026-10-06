@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ziprecruiter-2",
+      "sourceContentHash": "dc9fee47fd7da9df26cca3b6e8b98eb0a1f0f447c55e74bda31aa16ba72b49c6",
+      "packageChecksum": "cb222e5d571cb941ebc01bc65077690d14554563a1874d615961239d1a96f3b8",
+      "editorial": "## 思路\n\n鱼和鱼饵从小到大排序。对每个鱼饵，跳过不大于它的鱼，再用它钓最多三条当前最小的可钓鱼。\n\n## 正确性证明\n\n小鱼饵可钓集合包含更大鱼饵可钓集合。将当前鱼饵分配给最小的可钓鱼不会减少后续匹配；否则可将最优解中较大的匹配鱼与该更小鱼交换。重复即得最大匹配数。\n\n## 复杂度\n\n时间 O(n log n + m log m)，空间 O(n+m)。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); m=next(it)\n fish=sorted(next(it) for _ in range(n)); baits=sorted(next(it) for _ in range(m))\n i=ans=0\n for b in baits:\n  while i<n and fish[i]<=b: i+=1\n  used=0\n  while i<n and used<3: ans+=1; i+=1; used+=1\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-3",
+      "sourceContentHash": "1bb86181e4722c90f5aa445c51a0e37fceedc585c77d0c8159a6a0d1a8bef1d1",
+      "packageChecksum": "3657906ef38e267c1204e05196cdf9b2eb40ea676223f989ace8ab30f1ea2fdd",
+      "editorial": "## 思路\n\n按姓名累加总分和人数。以交叉相乘比较平均数，避免浮点误差。\n\n## 正确性证明\n\n累加值给出每人的平均分分子和分母；正分母下交叉相乘等价于比较平均数。遍历所有学生保留最大者，唯一性保证结果唯一。\n\n## 复杂度\n\n时间 O(n+k)，空间 O(k)，k 为不同学生数。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n p=raw.split(); n=int(p[0]); d={}\n for i in range(n):\n  name=p[1+2*i]; grade=int(p[2+2*i]); s,c=d.get(name,(0,0)); d[name]=(s+grade,c+1)\n best=None\n for name,(s,c) in d.items():\n  if best is None or s*best[2]>best[1]*c: best=(name,s,c)\n return best[0]\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-4",
+      "sourceContentHash": "2c2d8ad35c28e31ac32d73d3d9001827699b2ff20bf1cbc310dbaa75934dc728",
+      "packageChecksum": "4f92201d1a8573783e0a0213e2afa9c707d1d26e5fae2075f1cad95e6ba25620",
+      "editorial": "## 思路\n\n从左到右处理。枚举当前数不交换以及交换任意一对不同位置后能形成的合法表示，用前缀频次累加。\n\n## 正确性证明\n\n每个前缀位置计一次。枚举集合恰包含所有至多一次合法交换的结果；对集合中每个结果累加此前出现次数，恰好计入右端为当前下标的全部有效数对一次。\n\n## 复杂度\n\n时间 O(n d²)，d≤10；空间 O(n d²) 最坏。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import defaultdict\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); freq=defaultdict(int); ans=0\n for val in (next(it) for _ in range(n)):\n  s=str(val); c=list(s); cand={s}\n  for i in range(len(c)):\n   for j in range(i+1,len(c)):\n    if c[i]==c[j] or (i==0 and c[j]=='0'): continue\n    c[i],c[j]=c[j],c[i]; cand.add(''.join(c)); c[i],c[j]=c[j],c[i]\n  ans+=sum(freq[x] for x in cand); freq[s]+=1\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-5",
+      "sourceContentHash": "c9a1b053c7551d4945991330c4f59a10cd1a639f100a77cfc8522d12f1ce6a25",
+      "packageChecksum": "cc18b5f300d1712a6ace54aa894e3abccb763af6771e1ecc31dfb3f161896e8c",
+      "editorial": "## 思路\n\n逐词忽略大小写统计字母频次。若存在频次至少为 3 的字母，该词计一。\n\n## 正确性证明\n\n频次条件与题意相同，逐词只作一次布尔计数，因而每词最多贡献 1；对所有词求和即为答案。\n\n## 复杂度\n\n时间 O(L)，空间 O(1) 字母表。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import Counter\ndef solve(raw):\n return str(sum(any(n>=3 for n in Counter(w.lower()).values()) for w in raw.split()))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-9",
+      "sourceContentHash": "da33953f6ded46670cd251397a8df0fe207f55b15bdd8e2afa9d89feb35a69e7",
+      "packageChecksum": "6cb6893cf25f83d02d9e7a2e4741e0fb7ed1a9c452aa54cc05314d1846da01a2",
+      "editorial": "## 思路\n\n维护未来完成时间队列。到达前移除所有已完成者；队首若存在就是当前服务者，其余人数为等待人数。超过 10 则离开，否则排到队尾。\n\n## 正确性证明\n\n归纳每次到达：移除完成者后队列为空表示空闲；否则首项为服务者、其余为等待者。阈值判断准确；被接纳客人排在现有所有服务/等待之后，完成时间为队尾时间加 300。等时规则由先处理完成事件再入队实现。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from collections import deque\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); q=deque(); out=[]\n for t in (next(it) for _ in range(n)):\n  while q and q[0]<=t: q.popleft()\n  wait=max(0,len(q)-1)\n  if wait>10: out.append(t)\n  elif not q: q.append(t+300); out.append(t+300)\n  else: q.append(q[-1]+300); out.append(q[-1])\n return \" \".join(map(str,out))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-13",
+      "sourceContentHash": "b90967f56a9e952bb905eebcc2352b2f3b67629215a9a94052760b93628c556b",
+      "packageChecksum": "dc1e08df801a69ac0828d04571c52fa22434c4daba631da529becb916cf55e84",
+      "editorial": "## 思路\n\n逐对比较相邻年份：递增记 1、递减记 2、相同记 0，然后求和。\n\n## 正确性证明\n\n旅程恰由 n−1 段相邻转换组成；每段独立贡献题目定义的 0、1 或 2，逐段求和即为总耗时。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)（存储输入）。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); a=[next(it) for _ in range(n)]\n return str(sum(1 if b>a else 2 if b<a else 0 for a,b in zip(a,a[1:])))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

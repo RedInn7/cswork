@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把严格小于误写成小于等于",
+    "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); m=next(it)\n fish=sorted(next(it) for _ in range(n)); baits=sorted(next(it) for _ in range(m))\n i=ans=0\n for b in baits:\n  while i<n and fish[i]<b: i+=1\n  used=0\n  while i<n and used<3: ans+=1; i+=1; used+=1\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每个鱼饵最多用一次",
+    "code": "def solve(raw):\n it=iter(map(int,raw.split())); n=next(it); m=next(it)\n fish=sorted(next(it) for _ in range(n)); baits=sorted(next(it) for _ in range(m))\n i=ans=0\n for b in baits:\n  while i<n and fish[i]<=b: i+=1\n  used=0\n  while i<n and used<1: ans+=1; i+=1; used+=1\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

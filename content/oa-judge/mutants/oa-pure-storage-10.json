@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略重复物品数量而只比较字符集合",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=raw.split(); n=int(t[0]); ans=0\n for i in range(n):\n  a,b=t[1+2*i:3+2*i]\n  ans+=set(a)!=set(b)\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把顺序也作为匹配条件",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=raw.split(); n=int(t[0]); ans=0\n for i in range(n):\n  a,b=t[1+2*i:3+2*i]\n  ans+=a!=b\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

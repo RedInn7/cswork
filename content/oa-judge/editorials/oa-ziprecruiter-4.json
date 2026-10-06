@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-4",
+  "title": "统计可通过一次数字交换匹配的数对",
+  "explanation": "## 思路\n\n从左到右处理。枚举当前数不交换以及交换任意一对不同位置后能形成的合法表示，用前缀频次累加。\n\n## 正确性证明\n\n每个前缀位置计一次。枚举集合恰包含所有至多一次合法交换的结果；对集合中每个结果累加此前出现次数，恰好计入右端为当前下标的全部有效数对一次。\n\n## 复杂度\n\n时间 O(n d²)，d≤10；空间 O(n d²) 最坏。\n\n## 来源说明\n\n本站补充确定的标准输入输出协议。上游第 9 题密集到达样例漏列了一个已接纳客人的完成时间；本站按明确的 300 秒服务和队列规则修正为 3301，并在来源证据中如实说明。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import defaultdict\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); freq=defaultdict(int); ans=0\n for val in (next(it) for _ in range(n)):\n  s=str(val); c=list(s); cand={s}\n  for i in range(len(c)):\n   for j in range(i+1,len(c)):\n    if c[i]==c[j] or (i==0 and c[j]=='0'): continue\n    c[i],c[j]=c[j],c[i]; cand.add(''.join(c)); c[i],c[j]=c[j],c[i]\n  ans+=sum(freq[x] for x in cand); freq[s]+=1\n return str(ans)\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ziprecruiter#4-count-distinct-swappable-digit-pairs",
+  "sourceContentHash": "2c2d8ad35c28e31ac32d73d3d9001827699b2ff20bf1cbc310dbaa75934dc728",
+  "author": "Chunyu Sui"
+}

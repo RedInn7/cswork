@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paypal-4",
+  "title": "Modify Array",
+  "explanation": "## 思路\n\n先求非递减代价。最优的新值可取原数组出现过的值之一；把这些值离散化为 v[j]。令 dp[j] 为处理到当前位置且当前值取 v[j] 的最小代价，则新状态为 |arr[i]−v[j]| 加上上一行所有下标 ≤j 的 dp 最小值。扫描时维护前缀最小值即可。非递增代价等于反转数组后求非递减代价，答案取两者较小。\n\n## 正确性\n\n若当前位置取 v[j]，非递减限制恰要求前一位置取值不超过 v[j]；所有满足此条件的前缀状态中选择最低代价并加上当前位置绝对差，得到该状态的最优解。归纳覆盖全部前缀与末值。任一整数单调回归最优解都可把平台值移至该平台原始值中位数而不增代价，所以坐标压缩不遗漏最优值。反转把非递增序列与非递减序列一一对应且保持总代价。\n\n## 复杂度\n\n令 k 为不同元素数，时间 O(nk)，额外空间 O(k)；本站 n≤1000。\n\n来源样例 3 含 0，但同一原文列出的下界为 1。题意和该样例均自然支持非负整数；本站明确把值域扩至 0..10^9，不改变目标函数。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef nondecreasing_cost(a):\n vals=sorted(set(a)); dp=[abs(a[0]-v) for v in vals]\n for x in a[1:]:\n  nd=[]; best=10**30\n  for j,v in enumerate(vals):\n   best=min(best,dp[j]); nd.append(best+abs(x-v))\n  dp=nd\n return min(dp)\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]\n return str(min(nondecreasing_cost(a),nondecreasing_cost(a[::-1])))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/paypal#4-modify-array",
+  "sourceContentHash": "85e4f45af1a42e058fd1587eef88d982c3c492ceb868099f7185143ec89c5bab",
+  "author": "CSWork"
+}

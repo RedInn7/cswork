@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把代价错误地向上取整",
+    "code": "import sys\ns=sys.stdin.read().strip();ans=0\nfor i in range(len(s)):\n c={}\n for j in range(i,len(s)):\n  c[s[j]]=c.get(s[j],0)+1;ans+=(sum(v%2 for v in c.values())+1)//2\nprint(ans)\n"
+  },
+  {
+    "name": "把字符串按原顺序做回文而非先可重排",
+    "code": "import sys\ns=sys.stdin.read().strip();print(sum(s[i]!=s[-1-i] for i in range(len(s)) for j in range(i,len(s)) for _ in []))\n"
+  }
+]

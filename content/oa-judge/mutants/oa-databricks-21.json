@@ -1,0 +1,10 @@
+[
+  {
+    "name": "漏掉完整数字前缀",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n,m=v[:2]; a=v[2:2+n]; b=v[2+n:2+n+m]; root={}\n    for x in b:\n        node=root\n        for c in str(x)[:-1]: node=node.setdefault(c,{})\n    best=0\n    for x in a:\n        node=root; depth=0\n        for c in str(x):\n            if c not in node: break\n            node=node[c]; depth+=1\n        best=max(best,depth)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查第一组第一个数",
+    "code": "def solve(data):\n    v=list(map(int,data.split())); n,m=v[:2]; a=v[2:2+n]; b=v[2+n:2+n+m]; root={}\n    for x in b:\n        node=root\n        for c in str(x): node=node.setdefault(c,{})\n    best=0\n    for x in a[:1]:\n        node=root; depth=0\n        for c in str(x):\n            if c not in node: break\n            node=node[c]; depth+=1\n        best=max(best,depth)\n    return str(best)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

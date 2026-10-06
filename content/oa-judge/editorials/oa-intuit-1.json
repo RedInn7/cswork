@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-1",
+  "title": "GPS for Autonomous Driving — Max 2 Turns",
+  "explanation": "## 思路\n\n若有解，存在不重复格子的简单路径；BFS 在 (row,column,direction,turns) 状态图上至多访问 12bp 个状态。\n\n## 正确性证明\n\nBFS 对状态图按路径长度穷举。状态保留当前位置、最后方向和已转向次数，因而两个具有不同可行后续的路径不会被错误合并。只有不超过两次转向的状态入队；抵达 W 即存在合法路径，遍历结束仍未抵达则不存在。\n\n## 复杂度\n\n时间 O(bp)，空间 O(bp)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "from collections import deque\nimport sys\n\ndef solve(text):\n    lines = text.splitlines()\n    b, p = map(int, lines[0].split())\n    grid = [line.split() for line in lines[1:1 + b]]\n    start = end = None\n    for r in range(b):\n        for c in range(p):\n            if grid[r][c] == \"Q\": start = (r, c)\n            if grid[r][c] == \"W\": end = (r, c)\n    q = deque([(start[0], start[1], -1, 0)])\n    seen = {(start[0], start[1], -1, 0)}\n    dirs = ((-1, 0), (1, 0), (0, -1), (0, 1))\n    while q:\n        r, c, old, turns = q.popleft()\n        for d, (dr, dc) in enumerate(dirs):\n            nt = turns + (old != -1 and old != d)\n            nr, nc = r + dr, c + dc\n            state = (nr, nc, d, nt)\n            if nt <= 2 and 0 <= nr < b and 0 <= nc < p and grid[nr][nc] != \"x\" and state not in seen:\n                if (nr, nc) == end: return \"DRIVE!\"\n                seen.add(state); q.append(state)\n    return \"DON'T DRIVE!\"\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/intuit#1-gps-for-autonomous-driving--max-2-turns",
+  "sourceContentHash": "93630d84ed9389d85a9befcac4303ce5ed13bfbee87e5a102e046d1b4a103660",
+  "author": "CSWork"
+}

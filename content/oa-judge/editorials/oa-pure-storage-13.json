@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-13",
+  "title": "Find Repetitions",
+  "explanation": "## 思路\n\n令 dp[i] 表示恰好在 long_s 前 i 个字符结束的模式连续重复次数。若末尾长度 m 的子串等于模式，则 dp[i]=dp[i−m]+1，否则为 0。答案是 dp 最大值。\n\n## 正确性\n\n任何连续重复段的最后一个模式副本必结束于某个位置 i，且此前恰好在 i−m 处结束了一个更短的连续重复段；递推因此得到真实段长。若末尾不匹配，该位置不可能属于一个以此结束的重复段，值为 0。遍历所有结束位置即可覆盖全部候选。\n\n## 复杂度\n\n设模式长度 m、文本长度 n，m<10，时间 O(nm)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); p=lines[0] if lines else ''; s=lines[1] if len(lines)>1 else ''\n if not p or not s: return '0'\n m=len(p); dp=[0]*(len(s)+1); best=0\n for end in range(m,len(s)+1):\n  if s[end-m:end]==p: dp[end]=dp[end-m]+1; best=max(best,dp[end])\n return str(best)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#13-find-repetitions",
+  "sourceContentHash": "c4f287c01a0a3ee2da6f5cb331372ccb2533a4c04fc0cea229ae611ca12728e3",
+  "author": "CSWork"
+}

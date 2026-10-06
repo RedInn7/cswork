@@ -1,0 +1,10 @@
+[
+  {
+    "name": "允许任意次数转向",
+    "code": "import sys\nfrom collections import deque\ng=[x.split() for x in sys.stdin.read().splitlines()[1:]];b=len(g);p=len(g[0]);q=deque();seen=set()\nfor i in range(b):\n for j in range(p):\n  if g[i][j]=='Q':q.append((i,j));seen.add((i,j))\nwhile q:\n r,c=q.popleft()\n for dr,dc in ((1,0),(-1,0),(0,1),(0,-1)):\n  x,y=r+dr,c+dc\n  if 0<=x<b and 0<=y<p and g[x][y]!='x' and (x,y) not in seen:\n   if g[x][y]=='W':print('DRIVE!');raise SystemExit\n   seen.add((x,y));q.append((x,y))\nprint(\"DON'T DRIVE!\")\n"
+  },
+  {
+    "name": "只允许一次转向",
+    "code": "import sys\nfrom collections import deque\nlines=sys.stdin.read().splitlines();b,p=map(int,lines[0].split());g=[x.split() for x in lines[1:1+b]];q=deque();seen=set()\nfor r in range(b):\n for c in range(p):\n  if g[r][c]=='Q':\n   for d in range(4):q.append((r,c,d,0));seen.add((r,c,d,0))\ndirs=((1,0),(-1,0),(0,1),(0,-1))\nwhile q:\n r,c,d,t=q.popleft()\n for nd,(dr,dc) in enumerate(dirs):\n  nt=t+(nd!=d);x,y=r+dr,c+dc;z=(x,y,nd,nt)\n  if nt<=1 and 0<=x<b and 0<=y<p and g[x][y]!='x' and z not in seen:\n   if g[x][y]=='W':print('DRIVE!');raise SystemExit\n   seen.add(z);q.append(z)\nprint(\"DON'T DRIVE!\")\n"
+  }
+]

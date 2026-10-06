@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-21",
+  "title": "Set Total Palindrome Transformation Cost",
+  "explanation": "## 思路\n\n维护各前缀的 26 位奇偶掩码。子串奇数频字符数为两个前缀掩码 XOR 的 popcount；按字符位累加异或贡献，再扣除奇数长度项并除二。\n\n## 正确性证明\n\n一个子串可重排成回文，当且仅当至多一个字符出现奇数次。每次修改一个字符最多同时改变两个奇偶位，因此代价为 floor(odd/2)。对所有前缀奇偶掩码对，odd 数量等于 XOR 的置位数。逐字符位累计当前掩码与此前掩码不同的次数即可得到所有 odd 总和；odd 的奇偶性与子串长度奇偶相同，因此减去奇数长度子串数后除以二，恰为总代价。\n\n## 复杂度\n\n时间 O(26n)，空间 O(26)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(text):\n    s = text.strip()\n    ones = [0] * 26\n    parity_count = [1, 0]\n    prefix_count = [0] * 26\n    mask = 0\n    total_odd_letters = 0\n    odd_length_substrings = 0\n    prefix_index = 0\n    for ch in s:\n        mask ^= 1 << (ord(ch) - 97)\n        prefix_index += 1\n        for bit in range(26):\n            total_odd_letters += prefix_count[bit] if not (mask >> bit) & 1 else prefix_index - prefix_count[bit]\n        prefix_count = [prefix_count[bit] + (((mask >> bit) & 1) == 1) for bit in range(26)]\n        parity = prefix_index & 1\n        odd_length_substrings += parity_count[1 - parity]\n        parity_count[parity] += 1\n    return str((total_odd_letters - odd_length_substrings) // 2)\n\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/intuit#21-set-total-palindrome-transformation-cost",
+  "sourceContentHash": "a0185464e5796f8f7bed2f427627091ea987feb698a571875592c888da2b29a1",
+  "author": "CSWork"
+}

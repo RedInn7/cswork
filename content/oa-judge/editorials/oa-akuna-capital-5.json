@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-5",
+  "title": "Binary Circuit",
+  "explanation": "## 思路\n\n把字符串拆成若干个 0 段。对每个 0 段，设其前面有 a 个 1、该段长度为 z；该段贡献 a×z 次移动格数，并可安排 a 次分别移动前方的 1，操作基础费用为 a，因此总贡献 a×(z+1)。\n\n## 正确性\n\n每个 1 与其右侧每个 0 形成一个必须消除的逆序对，移动距离总和固定为逆序对总数。操作必须跨过一个完整的相邻 0 段；对于某个 0 段，位于其前的 a 个 1 各最多可通过该段一次，故该段最多产生 a 次操作。按从右向左逐段安排每个前置 1 跨越该段可达到此上界；不同 0 段的移动可依次安排。因此最大操作数为各段 a 之和，最大总费用为固定移动距离加最大操作数，即 Σa(z+1)。\n\n## 复杂度\n\n时间 O(n)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n s=raw.strip(); ones=0; ans=0; i=0\n while i<len(s):\n  if s[i]=='1': ones+=1;i+=1;continue\n  j=i\n  while j<len(s) and s[j]=='0':j+=1\n  if ones: ans+=ones*((j-i)+1)\n  i=j\n return str(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#5-binary-circuit",
+  "sourceContentHash": "1a19525d6fc2f992e4c3dc903798550ed64e37cc7ba779e94cd43e08d6101c56",
+  "author": "CSWork"
+}

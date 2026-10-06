@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-26",
+  "title": "Minimum Chunks Required",
+  "explanation": "## 思路\n\n将已上传区间排序，逐个求出其间未上传空档。长度 L 的空档最少可分为 popcount(L) 个二次幂长度块，答案为所有空档 popcount 之和。\n\n## 正确性\n\n若 L 的二进制表示有 q 个 1，则按这些不同的二次幂长度切分空档可用 q 块达到覆盖。反之，若用 r 个二次幂长度覆盖 L，则 r 个幂次之和为 L；二进制进位只会减少项数，因此 L 的 popcount 不超过 r。不同未覆盖空档不能由同一块跨越已上传包，故各自最优块数相加即为全局最小。起点不要求幂次对齐是此结论成立的必要协议说明。\n\n## 复杂度\n\n时间 O(m log m)，空间 O(m)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split()));total,m=t[:2];a=sorted((t[i],t[i+1]) for i in range(2,len(t),2));cursor=1;ans=0\n for l,r in a+[(total+1,total+1)]:\n  gap=l-cursor;ans+=gap.bit_count();cursor=r+1\n return str(ans)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/akuna-capital#26-minimum-chunks-required-akuna-shang-hai-",
+  "sourceContentHash": "9c3142e57088f468bf1672a60f25d411d03882c1c76e501862533c25af9b4082",
+  "author": "CSWork"
+}

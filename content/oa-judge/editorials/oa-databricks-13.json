@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-13",
+  "title": "数字串代码的所有拆分匹配",
+  "explanation": "## 思路\n\n逐个 code 枚举所有非空且 pattern 非空的切分位置，把左段转成整数，比较 panel 中相同长度的切片。\n\n## 正确性证明\n\n每个合法拆分的 index 位数必为 1 到 len(code)-1，循环恰好覆盖这些切分且顺序递增。对每种切分只在下标合法且片段完全相等时输出 pattern，因此逐项结果与定义一致。\n\n## 复杂度\n\n时间 O(ΣL²)，空间 O(ΣL)，其中 L 为 code 长度。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    lines=data.split(); panel=lines[0]; q=int(lines[1]); out=[]\n    for code in lines[2:2+q]:\n        for cut in range(1,len(code)):\n            start=int(code[:cut]); pat=code[cut:]\n            out.append(pat if start+len(pat)<=len(panel) and panel[start:start+len(pat)]==pat else 'not found')\n    return '\\n'.join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#13-check-pattern-presence",
+  "sourceContentHash": "2ed0f94b17749215e11c382722ce34a587dd58b69e200600d754afee446d507e",
+  "author": "CSWork"
+}

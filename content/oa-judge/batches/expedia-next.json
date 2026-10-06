@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-expedia-1",
+      "sourceContentHash": "9a4a960e85a70ff0683b74623e4539c30d387993f2ed33f270be89e51e1960d2",
+      "packageChecksum": "46976fb7a99a663bf298482ec119c0c8f477934b7d7e556dfd0cfd354a75c240",
+      "editorial": "## 思路\n\n从 current 的末尾搬动若干层，未搬动的部分必为 current 的一个前缀。要最少操作，就找 current 的最长前缀，使其仍按原序出现在 desired 中；其余层从尾部依次取出并插入目标位置即可。双指针扫描 desired 匹配 current 前缀，答案为 n−保留长度。\n\n## 正确性\n\n任何不被移动的元素只能来自 current 前缀，否则必须先移走它之后的所有元素，该元素本身也会被移动。未移动前缀的相对顺序不变，所以它必须是 desired 的子序列。反过来，若前缀是 desired 的子序列，可以从 current 尾部逐个取出其余元素并插入到 desired 对应空位，恰好用 n−前缀长度次操作。因此最大可保留前缀给出最少操作数。\n\n## 复杂度\n\nO(n) 时间，O(1) 额外空间。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(a,b):\n i=j=0\n while i<len(a) and j<len(b):\n  if a[i]==b[j]: i+=1\n  j+=1\n return str(len(a)-i)\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); n=z[0]; print(solve(z[1:1+n],z[1+n:1+2*n]))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-expedia-2",
+      "sourceContentHash": "d2fef227db0b2347dbfd54328b19f61583d6ee9579171d4fc6f672e32f18d7c2",
+      "packageChecksum": "189de834f5d9163fb39ddb334e22cec8402e7614a6f58fb48142afe732c8a914",
+      "editorial": "## 思路\n\n先把每位用户的偏好排列转换成每首歌的名次。对每对不同歌曲 (x,y) 统计偏好 x 的用户数，根据多数规则及 id 平票规则决定 x 是否击败 y。统计每首歌击败的歌曲数后，按击败数降序、id 升序排序。\n\n## 正确性\n\n名次表能精确判断每个用户是否偏好 x 胜过 y。逐一考察所有其他歌曲并应用题目给定的多数/平票规则，累计值恰好是定义中的击败数。最后的排序键与题目规定完全相同，因此得到唯一排名。\n\n## 复杂度\n\nO(nm² + m log m) 时间，O(nm) 空间；本站将 n,m 限制为 200。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(n,m,p):\n pos=[[0]*m for _ in range(n)]\n for u,row in enumerate(p):\n  for k,s in enumerate(row): pos[u][s]=k\n wins=[0]*m\n for x in range(m):\n  for y in range(m):\n   if x==y: continue\n   v=sum(pos[u][x]<pos[u][y] for u in range(n))\n   if 2*v>n or (2*v==n and x<y): wins[x]+=1\n return \" \".join(map(str,sorted(range(m),key=lambda s:(-wins[s],s))))\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); n,m=z[:2]; p=[z[2+i*m:2+(i+1)*m] for i in range(n)]; print(solve(n,m,p))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-expedia-3",
+      "sourceContentHash": "e2be5562ebaeedbe9008bf9def0c40a720f9660a7043d203a533585d6aaf287f",
+      "packageChecksum": "bbb354db5e40834d5381b65075d215d560c47cfde04b8576a2d5e8a60dbe3b63",
+      "editorial": "## 思路\n\n从目标反向还原。若 tx>ty，最后一步只能是第一坐标增加了 ty，因此前驱的第一坐标为 tx−ty；连续反推可用取模一次跳过多步。对称地处理 ty>tx。若一坐标已经等于起点对应值，另一坐标必须能通过固定步长整除回起点。\n\n## 正确性\n\n每次正向操作只增加一个坐标，且增加量恰为另一个正坐标。因此目标坐标较大的那一维决定最后一步及唯一前驱；连续相同方向的减法可由模运算合并。到达起点时成功；越过起点或固定另一坐标时余数不匹配则不可能存在合法前驱链。\n\n## 复杂度\n\n每次模运算至少将一坐标显著缩小，时间 O(log(max(tx,ty)))，空间 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(sx,sy,tx,ty):\n while tx>=sx and ty>=sy:\n  if tx==sx and ty==sy:return \"Yes\"\n  if tx>ty:\n   if ty==sy:return \"Yes\" if (tx-sx)%ty==0 else \"No\"\n   tx%=ty\n  else:\n   if tx==sx:return \"Yes\" if (ty-sy)%tx==0 else \"No\"\n   ty%=tx\n return \"No\"\nif __name__==\"__main__\": print(solve(*map(int,sys.stdin.buffer.read().split())))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-expedia-5",
+      "sourceContentHash": "e9081227a8cef898cf8f7a8773990ee261d4967f3647876b345f6a8e690d9218",
+      "packageChecksum": "57ed983412f7b9abb22577c7f5005a5c77df1366c8fee06af41a1fa7497dd184",
+      "editorial": "## 思路\n\n排序到达时间。若选取排序下标区间 [i,j]（至少两个用例），最短激活区间覆盖两端，效率为 (j−i+1)−(a[j]−a[i])。改写为 (j−a[j])−(i−a[i])+1。遍历 j 时维护合法 i<j 的最小 i−a[i]，即可在线性时间求最大值。\n\n## 正确性\n\n任意激活区间内的测试用例在排序后构成连续区间；缩短区间到首末到达时刻不会丢失其中用例且不会增加时长，因此存在最优解对应某个连续区间。公式变换后，对每个右端 j，最佳左端恰是之前 i<j 中 i−a[i] 最小者。前缀最小值枚举并选出所有区间的最大效率。\n\n## 复杂度\n\n排序 O(n log n)，扫描 O(n)，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\ndef solve(a):\n a=sorted(a); low=0-a[0]; best=None\n for j in range(1,len(a)):\n  best=max(best if best is not None else -10**30,(j-a[j])-low+1)\n  low=min(low,j-a[j])\n return str(best)\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); print(solve(z[1:]))\n"
+        }
+      ]
+    }
+  ]
+}

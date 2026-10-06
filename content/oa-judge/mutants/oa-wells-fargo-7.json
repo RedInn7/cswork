@@ -1,0 +1,10 @@
+[
+  {
+    "name": "没有扣除原本已压缩的子数组",
+    "code": "import sys\nMOD=1000000007\ndef solve(raw):\n z=list(map(int,raw.split()));t=z[0];p=1;o=[]\n for _ in range(t):\n  n=z[p];p+=1;a=z[p:p+n];p+=n;r=[]\n  for x in a:\n   if not r or r[-1][0]!=x:r.append([x,1])\n   else:r[-1][1]+=1\n  s=q=0\n  for _,L in r:\n   T=L*(L+1)//2;s=(s+L*(L+1)*(L+2)//6+T*q)%MOD;q=(q*L+T)%MOD\n  o.append(str(s))\n return '\\n'.join(o)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "跨run子数组把端点权重相加而非相乘",
+    "code": "import sys\nMOD=1000000007\ndef solve(raw):\n z=list(map(int,raw.split()));t=z[0];p=1;o=[]\n for _ in range(t):\n  n=z[p];p+=1;a=z[p:p+n];p+=n;r=[]\n  for x in a:\n   if not r or r[-1][0]!=x:r.append([x,1])\n   else:r[-1][1]+=1\n  s=q=0;seen=False\n  for _,L in r:\n   T=L*(L+1)//2;s=(s+L*(L+1)*(L+2)//6+(T+q if seen else 0))%MOD;q=(q*L+T)%MOD;seen=True\n  zlen=1;empty=0\n  for i in range(1,n+1):\n   if i<n and a[i]!=a[i-1]:zlen+=1\n   else:empty=(empty+zlen*(zlen+1)//2)%MOD;zlen=1\n  o.append(str((s-empty)%MOD))\n return '\\n'.join(o)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

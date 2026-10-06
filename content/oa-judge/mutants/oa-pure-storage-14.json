@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同分时选 ID 更大的选手",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); r,m=t[:2]; score=[0]*r; pts=(0,10,6,4,3,2,1); p=2\n for _ in range(m):\n  race,who,pos=t[p:p+3]; p+=3\n  if pos<=6: score[who-1001]+=pts[pos]\n i=min(range(r),key=lambda j:(-score[j],-j))\n return f'{1001+i} {score[i]}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把第六名也记作零分",
+    "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); r,m=t[:2]; score=[0]*r; pts=(0,10,6,4,3,2,0); p=2\n for _ in range(m):\n  race,who,pos=t[p:p+3]; p+=3\n  if pos<=6: score[who-1001]+=pts[pos]\n i=min(range(r),key=lambda j:(-score[j],j))\n return f'{1001+i} {score[i]}'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

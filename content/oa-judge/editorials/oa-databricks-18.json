@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-18",
+  "title": "首个字母异位子串下标",
+  "explanation": "## 思路\n\n使用长度为 |pattern| 的滑动窗口维护 26 个字母频数。逐个检查窗口，首次与 pattern 的频数相同的位置即答案。\n\n## 正确性证明\n\n每个长度固定为 |pattern| 的连续子串恰对应一个滑动窗口；频次向量相同当且仅当两串互为字母异位词。窗口按起点递增检查，故首次命中为最小下标；若均未命中则无解。\n\n## 复杂度\n\n时间 O(|s|+|pattern|)，空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    s,p=data.split(); m=len(p); n=len(s)\n    if m>n: return '-1'\n    want=[0]*26; have=[0]*26\n    for c in p: want[ord(c)-97]+=1\n    for c in s[:m]: have[ord(c)-97]+=1\n    for i in range(n-m+1):\n        if have==want: return str(i)\n        if i+m<n:\n            have[ord(s[i])-97]-=1; have[ord(s[i+m])-97]+=1\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#18-find-first-anagram-index",
+  "sourceContentHash": "8688a0e2334798744d80d60461f1d9e959722c7d8187d2cb91f40175ad8b7366",
+  "author": "CSWork"
+}

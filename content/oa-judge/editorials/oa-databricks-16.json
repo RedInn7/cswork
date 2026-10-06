@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-16",
+  "title": "位置奇偶和的范围差",
+  "explanation": "## 思路\n\n一次扫描数组；仅将落在 [-100,100] 的值加到其下标奇偶对应的总和，最后作差。\n\n## 正确性证明\n\n每个元素只在且仅在其值落入闭区间时计入，并按其真实下标奇偶放入对应总和；扫描结束所得两和恰为题目定义，输出其差即正确。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(data):\n    v=list(map(int,data.split())); n=v[0]; even=odd=0\n    for i,x in enumerate(v[1:1+n]):\n        if -100<=x<=100:\n            if i%2==0: even+=x\n            else: odd+=x\n    return str(even-odd)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/databricks#16-difference-between-sums-of-positions",
+  "sourceContentHash": "d9fc82ebf7f2de170c31ebb05ed7afff7a33edf47e8baec780f5c37ab7d316d8",
+  "author": "CSWork"
+}

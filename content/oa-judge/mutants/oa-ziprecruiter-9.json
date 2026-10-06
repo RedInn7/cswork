@@ -1,0 +1,10 @@
+[
+  {
+    "name": "将服务中的人计入等待上限",
+    "code": "from collections import deque\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); q=deque(); out=[]\n for t in (next(it) for _ in range(n)):\n  while q and q[0]<=t: q.popleft()\n  wait=max(0,len(q)-1)\n  if wait>=10: out.append(t)\n  elif not q: q.append(t+300); out.append(t+300)\n  else: q.append(q[-1]+300); out.append(q[-1])\n return \" \".join(map(str,out))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "恰好完成时让新客人插队",
+    "code": "from collections import deque\ndef solve(raw):\n it=iter(map(int,raw.split())); n=next(it); q=deque(); out=[]\n for t in (next(it) for _ in range(n)):\n  while q and q[0]<t: q.popleft()\n  if q and q[0]==t and len(q)>1:\n   a=list(q); q=deque([t+300]+[x+300 for x in a[1:]]); out.append(t+300)\n  else:\n   wait=max(0,len(q)-1)\n   if wait>10: out.append(t)\n   elif not q: q.append(t+300); out.append(t+300)\n   else: q.append(q[-1]+300); out.append(q[-1])\n return \" \".join(map(str,out))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

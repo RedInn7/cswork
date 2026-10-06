@@ -1,0 +1,10 @@
+[
+  {
+    "name": "平票时让 id 大的歌曲获胜",
+    "code": "import sys\ndef solve(n,m,p):\n pos=[[0]*m for _ in range(n)]\n for u,row in enumerate(p):\n  for k,s in enumerate(row): pos[u][s]=k\n wins=[0]*m\n for x in range(m):\n  for y in range(m):\n   if x==y: continue\n   v=sum(pos[u][x]<pos[u][y] for u in range(n))\n   if 2*v>n or (2*v==n and x>y): wins[x]+=1\n return \" \".join(map(str,sorted(range(m),key=lambda s:(-wins[s],s))))\nif __name__==\"__main__\":\n z=list(map(int,sys.stdin.buffer.read().split())); n,m=z[:2]; p=[z[2+i*m:2+(i+1)*m] for i in range(n)]; print(solve(n,m,p))\n"
+  },
+  {
+    "name": "误用第一位用户偏好直接作为排名",
+    "code": "import sys\nz=list(map(int,sys.stdin.buffer.read().split())); n,m=z[:2]; p=[z[2+i*m:2+(i+1)*m] for i in range(n)]; print(\" \".join(map(str,p[0])))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paypal-3",
+  "title": "Find Minimum Price to Spend",
+  "explanation": "## 思路\n\n对一个上限 H，计算把每个价格反复向下折半到不超过 H 所需的优惠券数。若 p>H，最少折半次数为 bit_length(floor(p/(H+1)))。该总次数随 H 增大而不增，因此二分最小的可行 H。达到上限后，剩余优惠券只需从仍等于 H 的商品中各用一次；最小可行 H 的定义保证这些商品足够。\n\n## 正确性\n\n每张优惠券都把一个当前价格 p 改为 floor(p/2)，节省 p−floor(p/2)，该节省随 p 单调不减。因此逐次把券用在当前最高价商品上是最优的。阈值 H 所需次数恰是每个商品首次降到 H 以下或等于 H 的折半步数；二分找到的最小可行 H 表示再把任一剩余 H 继续折半所需的优惠券总数会超过预算，所以预算内的额外优惠券只能用于现有价格为 H 的商品。它们每次节省相同，得到与最大边际节省贪心相同的最小总价。\n\n来源整理站的函数实现明确采用整数向下折半；同目录另一个“Items Purchase”版本也明确写 floor 与相同贪心规则。本站统一为整数 floor，且把 int 返回扩展为可容纳约 10^14 的 64 位十进制结果。\n\n## 复杂度\n\n每次阈值计数为 O(n)，二分价格范围需要 O(log max(price)) 轮，总时间 O(n log max(price))，额外空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef coupons_to_cap(a,cap):\n total=0\n for x in a:\n  if x>cap: total+=(x//(cap+1)).bit_length()\n return total\ndef solve(raw):\n t=list(map(int,raw.split())); n,m=t[0],t[1]; a=t[2:2+n]\n if coupons_to_cap(a,0)<=m: return '0'\n lo,hi=0,max(a)\n while hi-lo>1:\n  mid=(lo+hi)//2\n  if coupons_to_cap(a,mid)<=m: hi=mid\n  else: lo=mid\n used=0; total=0\n for x in a:\n  steps=(x//(hi+1)).bit_length() if x>hi else 0\n  used+=steps; total+=x>>steps\n return str(total-(m-used)*(hi-hi//2))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/paypal#3-find-minimum-price-to-spend",
+  "sourceContentHash": "19e8241f1108d6fe67329131891ab63dc485a22f75fdebba0d60d3bb4c71a703",
+  "author": "CSWork"
+}

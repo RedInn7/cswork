@@ -1,0 +1,10 @@
+[
+  {
+    "name": "区分大小写",
+    "code": "from collections import Counter\ndef solve(raw):\n return str(sum(any(n>=3 for n in Counter(w).values()) for w in raw.split()))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "将一个单词内每种重复字母分别计数",
+    "code": "from collections import Counter\ndef solve(raw):\n return str(sum(sum(n>=3 for n in Counter(w.lower()).values()) for w in raw.split()))\n\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
+  }
+]

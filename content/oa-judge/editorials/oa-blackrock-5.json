@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-blackrock-5",
+  "title": "Happy Number",
+  "explanation": "## 思路\n\n模拟数字平方和变换，并用集合保存访问过的数字。到达 1 时答案为 1；若某个非 1 状态重复，则之后必重复同一循环，答案为 0。\n\n## 正确性\n\n变换是确定性的，重复状态意味着未来状态序列完全重复且不包含 1。另一方面，若到达 1 即符合快乐数定义。正整数序列最终到达 1 或重复状态，集合检测恰好区分这两种情形。\n\n## 复杂度\n\n若变换 k 次、数字有 d 位，则时间 O(kd)，空间 O(k)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(n):\n seen=set()\n while n!=1 and n not in seen:\n  seen.add(n); s=0\n  while n: n,d=divmod(n,10); s+=d*d\n  n=s\n return \"1\" if n==1 else \"0\"\nif __name__==\"__main__\": print(solve(int(sys.stdin.read())))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/blackrock#5-happy-number",
+  "sourceContentHash": "da58c8f7e12fb2eb03f0b342b1561ddaf4f42ec5fbd81cf26c93344bf1d25bd0"
+}

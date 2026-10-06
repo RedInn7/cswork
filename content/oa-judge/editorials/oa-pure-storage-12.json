@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-12",
+  "title": "Find Doubles",
+  "explanation": "## 思路\n\n统计每个值的频次。对输入中每个元素 x 检查 freq[2x] 是否恰为 1；符合时加入答案，最后排序。\n\n## 正确性\n\n频次数组精确反映列表中每个整数出现次数。对每个输入位置按条件检查会保留所有重复的 x；恰有一个 2x 的限制由频次等于 1 精确表达。排序满足输出顺序。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(1001+n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n t=list(map(int,raw.split())); n=t[0]; a=t[1:1+n]; c=Counter(a)\n return ' '.join(map(str,sorted(x for x in a if c.get(2*x,0)==1)))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/pure-storage#12-find-doubles",
+  "sourceContentHash": "59fa90210c776c6b395d9884087895118cf8be743d19e973dec00dfdd9a34ada",
+  "author": "CSWork"
+}
