@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-reevo-2",
+  "title": "Balanced Numbers (Permutation-of-[1..k] Subarrays)",
+  "explanation": "## 思路\n\n对每个窗口长度 k 滑动扫描。两个单调双端队列分别维护窗口最大值与最小值。因为 p 是排列，窗口中元素互异，长度为 k 的窗口恰为 {1,…,k} 当且仅当最小值为 1、最大值为 k。\n\n## 正确性证明\n\n若窗口的值集合为 {1,…,k}，其最小值为 1、最大值为 k。反之，窗口包含 k 个互异整数，且最小值 1、最大值 k；这 k 个整数均在 [1,k]，只能恰好是 [1,k] 中的全部整数。因此条件充要。单调队列始终维护当前窗口的最大/最小值，故所有窗口都被正确检查。\n\n## 复杂度\n\n每种长度扫描 n 个位置，双端队列每项进出常数次；总时间 O(n²)，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import deque\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; p=v[1:1+n]; out=['0']*n\n for k in range(1,n+1):\n  mx=deque(); mn=deque()\n  for i,x in enumerate(p):\n   while mx and p[mx[-1]]<=x: mx.pop()\n   mx.append(i)\n   while mn and p[mn[-1]]>=x: mn.pop()\n   mn.append(i)\n   if mx[0]<=i-k: mx.popleft()\n   if mn[0]<=i-k: mn.popleft()\n   if i>=k-1 and p[mx[0]]==k and p[mn[0]]==1:\n    out[k-1]='1'; break\n return ''.join(out)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/reevo#2-balanced-numbers-permutation-of-1k-subarrays",
+  "sourceContentHash": "d9f2814d16a1b7b334d9cfd64171fc092173037ea7535f3647810fd8c4cb9d00",
+  "author": "Chunyu Sui"
+}

@@ -1,0 +1,336 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-reevo-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Balanced Numbers (Permutation-of-[1..k] Subarrays)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Reevo",
+      "排列",
+      "单调队列"
+    ],
+    "description": "给定一个由 1..n 各整数恰好出现一次构成的排列 p。对每个长度 k=1..n，若存在连续子数组，其元素集合恰为 {1,2,…,k}，则答案串第 k 位为 1，否则为 0。\n\ncatalog 原例与输出保留；本站明确排列域为 1..n 并补充 n≤2000 以匹配 O(n²) 算法及 I/O。原例说明中的“任一单元素都平衡”不严谨；按集合定义长度 1 仅值 1 平衡，但排列中必有 1，故存在性输出仍为 1。",
+    "input": "第一行是 n，第二行是 1..n 的一个排列 p。本站边界：1≤n≤2000。",
+    "output": "输出一个长度为 n 的 0/1 字符串；从左至右第 k 位对应长度 k。",
+    "explanation": "完整思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "固定窗口长度 k，维护窗口最小值和最大值；排列性质可简化集合判定。"
+    ],
+    "timeLimit": 5,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "4\n4 1 3 2\n",
+      "expectedOutput": "1011\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3\n2 3 1\n",
+      "expectedOutput": "101\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "2\n2 1\n",
+      "expectedOutput": "11\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 1",
+      "input": "14\n7 11 3 1 9 12 14 13 5 2 10 6 4 8\n",
+      "expectedOutput": "10000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 2",
+      "input": "28\n3 23 24 22 1 14 7 9 10 12 13 26 18 17 2 5 20 6 28 8 16 19 4 25 21 11 27 15\n",
+      "expectedOutput": "1000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 3",
+      "input": "34\n13 10 34 1 3 7 2 22 11 6 18 20 15 24 4 12 28 19 17 30 14 25 16 32 31 21 27 8 26 5 33 29 23 9\n",
+      "expectedOutput": "1000000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 4",
+      "input": "25\n25 17 12 22 1 10 2 7 4 14 15 11 9 6 18 5 13 24 21 19 3 16 20 8 23\n",
+      "expectedOutput": "1000000000000000000000011\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 5",
+      "input": "3\n2 3 1\n",
+      "expectedOutput": "101\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 6",
+      "input": "21\n7 2 17 1 10 18 20 11 13 4 16 6 3 9 14 19 15 5 12 21 8\n",
+      "expectedOutput": "100000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 7",
+      "input": "25\n9 18 5 14 16 19 12 3 21 17 25 11 24 4 23 1 13 7 15 8 22 2 10 20 6\n",
+      "expectedOutput": "1000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 8",
+      "input": "30\n23 27 2 21 22 26 12 28 20 30 5 24 29 1 9 11 7 18 17 10 4 16 19 8 6 25 15 14 13 3\n",
+      "expectedOutput": "100000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 9",
+      "input": "34\n5 9 6 25 10 11 21 1 19 23 30 14 29 8 16 17 20 26 13 27 33 31 24 22 28 18 2 12 32 34 15 7 4 3\n",
+      "expectedOutput": "1000000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 10",
+      "input": "25\n10 8 1 15 3 2 21 20 16 14 19 5 12 24 9 18 4 7 25 6 23 11 22 17 13\n",
+      "expectedOutput": "1000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 11",
+      "input": "5\n5 2 1 3 4\n",
+      "expectedOutput": "11111\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 12",
+      "input": "22\n12 10 5 4 17 19 18 13 20 22 6 21 1 7 3 9 2 15 14 8 16 11\n",
+      "expectedOutput": "1000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 13",
+      "input": "7\n3 4 1 6 7 5 2\n",
+      "expectedOutput": "1000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 14",
+      "input": "34\n23 1 6 7 30 28 26 18 22 3 17 20 5 11 32 21 8 31 15 16 33 10 24 13 4 12 2 27 14 9 25 34 19 29\n",
+      "expectedOutput": "1000000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 15",
+      "input": "15\n10 14 6 2 1 8 3 5 9 15 11 13 4 7 12\n",
+      "expectedOutput": "110000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 16",
+      "input": "18\n9 12 15 4 11 6 3 8 7 14 5 18 16 2 13 17 1 10\n",
+      "expectedOutput": "100000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 17",
+      "input": "34\n30 12 10 34 22 31 7 5 29 21 25 8 27 2 20 26 16 18 3 1 24 28 13 17 11 19 9 23 15 6 14 4 32 33\n",
+      "expectedOutput": "1000000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 18",
+      "input": "25\n22 25 11 20 7 15 10 14 6 9 13 18 3 12 8 23 19 2 17 5 24 21 16 4 1\n",
+      "expectedOutput": "1000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 19",
+      "input": "20\n11 12 2 15 3 6 5 20 8 17 14 4 16 18 1 10 7 9 19 13\n",
+      "expectedOutput": "10000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 20",
+      "input": "9\n8 3 6 2 7 9 1 5 4\n",
+      "expectedOutput": "100000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 21",
+      "input": "9\n5 6 7 2 9 1 4 8 3\n",
+      "expectedOutput": "100000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 22",
+      "input": "6\n6 1 2 3 5 4\n",
+      "expectedOutput": "111011\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 23",
+      "input": "23\n2 5 21 12 15 16 17 9 14 4 19 7 6 23 1 8 10 22 11 20 3 18 13\n",
+      "expectedOutput": "10000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 24",
+      "input": "8\n5 1 7 2 4 6 3 8\n",
+      "expectedOutput": "10000011\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 25",
+      "input": "16\n9 13 3 14 15 4 7 2 5 16 6 1 10 8 12 11\n",
+      "expectedOutput": "1000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 26",
+      "input": "4\n1 2 4 3\n",
+      "expectedOutput": "1101\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 27",
+      "input": "16\n5 13 10 12 14 9 7 8 3 2 15 4 11 16 1 6\n",
+      "expectedOutput": "1000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 28",
+      "input": "8\n7 6 2 4 1 8 5 3\n",
+      "expectedOutput": "10000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 29",
+      "input": "19\n17 14 2 7 13 4 16 8 3 9 5 11 1 18 12 6 15 19 10\n",
+      "expectedOutput": "1000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 30",
+      "input": "8\n4 7 6 5 8 1 2 3\n",
+      "expectedOutput": "11100001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 31",
+      "input": "2\n1 2\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 32",
+      "input": "30\n9 30 21 29 13 3 22 2 17 10 14 7 15 18 19 27 24 16 23 26 25 5 12 4 6 1 11 28 8 20\n",
+      "expectedOutput": "100000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 33",
+      "input": "31\n2 6 8 30 20 12 1 29 10 4 19 31 22 16 23 28 9 3 11 15 14 17 24 18 13 27 21 5 25 7 26\n",
+      "expectedOutput": "1000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 34",
+      "input": "19\n19 1 14 7 3 11 8 13 12 18 2 6 16 10 4 9 15 17 5\n",
+      "expectedOutput": "1000000000000000011\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 35",
+      "input": "33\n23 5 24 11 31 19 4 6 33 28 20 26 13 17 2 12 27 8 3 32 1 30 18 9 14 16 7 22 10 21 29 25 15\n",
+      "expectedOutput": "100000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 36",
+      "input": "28\n20 5 21 12 3 22 27 26 10 14 2 6 1 7 16 24 28 23 19 8 17 18 25 13 9 11 15 4\n",
+      "expectedOutput": "1000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 37",
+      "input": "35\n5 32 2 19 20 35 22 7 27 29 16 10 13 30 24 14 6 28 15 26 33 3 17 1 8 31 18 4 34 21 23 11 12 25 9\n",
+      "expectedOutput": "10000000000000000000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 38",
+      "input": "20\n11 16 6 4 13 20 8 12 1 9 10 18 17 19 3 15 2 7 14 5\n",
+      "expectedOutput": "10000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 39",
+      "input": "12\n5 10 2 6 11 7 4 8 3 1 9 12\n",
+      "expectedOutput": "100000000011\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "随机隐藏测试 40",
+      "input": "21\n18 5 21 6 12 14 2 17 8 4 10 20 19 9 11 13 1 15 3 7 16\n",
+      "expectedOutput": "100000000000000000001\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

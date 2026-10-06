@@ -1,0 +1,10 @@
+[
+  {
+    "name": "逐点只取最近玩家距离，忽略同一玩家收集多个点的行程",
+    "code": "def solve(raw):\n    v=list(map(int,raw.split()));n,m=v[:2];p=v[2:2+n];x=v[2+n:2+n+m]\n    return str(max(min(abs(z-q) for q in p) for z in x))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "先去左侧点时少扣一次回程代价",
+    "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    n, m = values[:2]\n    players = sorted(values[2:2+n])\n    points = sorted(values[2+n:2+n+m])\n\n    def feasible(time):\n        first = 0\n        for player in players:\n            if first == m:\n                return True\n            point = points[first]\n            if point < player - time:\n                return False\n            if point > player + time:\n                continue\n            if point <= player:\n                leftmost = point\n                while first < m and points[first] <= player:\n                    first += 1\n                left_distance = player - leftmost\n                reach = max(\n                    player + time - left_distance,\n                    player + (time - left_distance) // 2,\n                )\n            else:\n                reach = player + time\n            while first < m and points[first] <= reach:\n                first += 1\n        return first == m\n\n    low, high = 0, 2_000_000_001\n    while low < high:\n        middle = (low + high) // 2\n        if feasible(middle):\n            high = middle\n        else:\n            low = middle + 1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

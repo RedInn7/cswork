@@ -1,0 +1,10 @@
+[
+  {
+    "name": "按字符串字符位置而非辅音序号计数",
+    "code": "def solve(raw):\n    lines=raw.splitlines();message,n=lines[0],int(lines[1]);out=[];cons=\"bcdfghjklmnpqrstvwxyz\"\n    for i,c in enumerate(message):\n        if (i+1)%n==0 and c.lower() in cons:\n            x=cons[(cons.index(c.lower())+1)%len(cons)];out.append(x.upper() if c.isupper() else x)\n        else:out.append(c)\n    return \"\".join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "替换时只将字符码加一，未跳过元音且未按辅音表回绕",
+    "code": "def solve(raw):\n    lines=raw.splitlines();message,n=lines[0],int(lines[1]);out=[];count=0\n    for c in message:\n        if c.isascii() and c.isalpha() and c.lower() not in \"aeiou\":\n            count+=1\n            if count%n==0:\n                out.append(chr(ord(c)+1));continue\n        out.append(c)\n    return \"\".join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

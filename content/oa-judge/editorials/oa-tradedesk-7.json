@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tradedesk-7",
+  "title": "Last to Be Checked",
+  "explanation": "## 思路\n\n按到达顺序维护柜台的空闲时刻。每位参加者的开始时刻是其到达时刻与上一位完成时刻的较大值，完成时刻再加 300 秒。\n\n## 正确性证明\n\n参加者按非降序到达且柜台 FIFO。若柜台已空闲，该参加者在到达时开始；否则只能等前一位完成。因此递推恰好给出每位参加者最早且实际的完成时刻，最后一次递推即为题目答案。\n\n## 复杂度\n\nO(n) 时间，O(1) 额外空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; moments=v[1:1+n]; finish=0\n for arrival in moments: finish=max(finish,arrival)+300\n return str(finish)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/tradedesk#7-last-to-be-checked",
+  "sourceContentHash": "180af4f5457dc969ba962fd04129d9044d453803a8dca1103427f3f7e60bab28",
+  "author": "Chunyu Sui"
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-duolingo-3",
+      "sourceContentHash": "741b09b83f84bf5c16574e05cb1fb6d00902b4ba2ff5af009f1cf4cadac19efb",
+      "packageChecksum": "b94a7d90408bfedb779b12ec24c0091ff842a7c101eb36fc9e5e801e039627d3",
+      "editorial": "## 思路\n\n扫描字符串并维护已见辅音数；每当计数是 n 的倍数时，在 21 个英文字母辅音组成的循环中前进一位。\n\n## 正确性证明\n\n逐字符扫描保证非目标字符不变；计数只在英文字母且非元音时递增，因此第 k 个辅音恰在计数达到 k 时被判定。循环辅音表的后继运算直接实现题面规定的下一个辅音及 z→b 回绕，大小写分别映射后再恢复。\n\n## 复杂度\n\n时间 O(|message|)，额外空间 O(|message|)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    lines = raw.splitlines()\n    message, n = lines[0], int(lines[1])\n    vowels = set(\"aeiouAEIOU\")\n    consonants = \"bcdfghjklmnpqrstvwxyz\"\n    count = 0\n    out = []\n    for char in message:\n        lower = char.lower()\n        if \"a\" <= lower <= \"z\" and char not in vowels:\n            count += 1\n            if count % n == 0:\n                shifted = consonants[(consonants.index(lower) + 1) % len(consonants)]\n                out.append(shifted.upper() if char.isupper() else shifted)\n                continue\n        out.append(char)\n    return \"\".join(out)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-flexport-5",
+      "sourceContentHash": "315c0827f1ebe9793143f7e3440cb5c64c851debddcb0ca1d531eaa84fc373a0",
+      "packageChecksum": "ada6e7c6b6e3021109c8181a6e00e9f2f679c8efad029c810105175456de3dc8",
+      "editorial": "## 思路\n\n二分总时间。将玩家和点排序；按点从左到右依次分配给玩家。当前玩家先收集途中必经的未覆盖左侧点，再计算时间 t 内可到达的最远右侧点，推进指针。\n\n## 正确性证明\n\n任何可行分配中，已由更左侧玩家覆盖的点可从左到右固定为前缀。若首个未覆盖点 x 在玩家左侧，去 x 的途中会收集所有不大于 p 的未覆盖点；再覆盖右端 r 有两种路线：先左后右，或先右后回到 x。两者允许的最远边界分别为 p+t−2(p−x) 与 p+⌊(t−(p−x))/2⌋，取较大值。若 x 在右侧，边界为 p+t。超出时间可达区间的首点不可能由当前或更右的玩家补救；依此贪心推进不会漏掉可行解。可行性关于 t 单调，二分得到最小时间。\n\n## 复杂度\n\n设范围 V≤2×10^9；时间 O((n+m) log V)，空间 O(n+m)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    n, m = values[:2]\n    players = sorted(values[2:2+n])\n    points = sorted(values[2+n:2+n+m])\n\n    def feasible(time):\n        first = 0\n        for player in players:\n            if first == m:\n                return True\n            point = points[first]\n            if point < player - time:\n                return False\n            if point > player + time:\n                continue\n            if point <= player:\n                leftmost = point\n                while first < m and points[first] <= player:\n                    first += 1\n                left_distance = player - leftmost\n                reach = max(\n                    player + time - 2 * left_distance,\n                    player + (time - left_distance) // 2,\n                )\n            else:\n                reach = player + time\n            while first < m and points[first] <= reach:\n                first += 1\n        return first == m\n\n    low, high = 0, 2_000_000_001\n    while low < high:\n        middle = (low + high) // 2\n        if feasible(middle):\n            high = middle\n        else:\n            low = middle + 1\n    return str(low)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

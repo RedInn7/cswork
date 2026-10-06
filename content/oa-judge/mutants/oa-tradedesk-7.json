@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略柜台排队",
+    "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; return str(max(v[1:1+n])+300)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "每人的检查时长少算一秒",
+    "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; finish=0\n for arrival in v[1:1+n]: finish=max(finish,arrival)+299\n return str(finish)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]

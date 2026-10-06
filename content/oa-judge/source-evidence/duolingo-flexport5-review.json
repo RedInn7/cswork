@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "reason": "固定提交中的源 MDX 作为不可变输入；未执行上游来源程序。",
+  "pages": [
+    {
+      "company": "duolingo",
+      "path": "web/content/docs/companies/duolingo.mdx",
+      "gitBlobSha": "a7b53f8ade973eee03f1449c7ac5387b91f50534",
+      "sha256": "5558a8b1d9f79ebe89aad6cbc1a63cfde748dda09f4d9ab4b3a20c005a81abb1"
+    },
+    {
+      "company": "flexport",
+      "path": "web/content/docs/companies/flexport.mdx",
+      "gitBlobSha": "71ef7fe7b879adca275af31baf51e090fd70be0c",
+      "sha256": "73b4c8118bf670dcb261e095ff832d71161cf6d6677450568696c9dd955c5a07"
+    }
+  ],
+  "items": [
+    {
+      "id": "oa-duolingo-3",
+      "status": "authored",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "web/content/docs/companies/duolingo.mdx",
+      "rawGitBlob": "a7b53f8ade973eee03f1449c7ac5387b91f50534",
+      "sourceUrl": "https://oamaster.com/docs/companies/duolingo#3-replace-nth-consonant",
+      "catalogContentHash": "741b09b83f84bf5c16574e05cb1fb6d00902b4ba2ff5af009f1cf4cadac19efb",
+      "reason": "已核对固定上游 MDX 与 catalog 题面；补充契约公开标明为本站定义。独立参考实现与穷举/直接 oracle 对照 120 个互异输入，两个正常退出 mutant 均被正式用例击杀。仅完成离线验证，未运行 GoJudge。 来源样例将小写 s 的替换结果印成大写 T，与保留大小写规则及解释中的 s→t 冲突；本站依规则保留小写并将样例输出更正为 Codetignam。"
+    },
+    {
+      "id": "oa-flexport-5",
+      "status": "authored",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "web/content/docs/companies/flexport.mdx",
+      "rawGitBlob": "71ef7fe7b879adca275af31baf51e090fd70be0c",
+      "sourceUrl": "https://oamaster.com/docs/companies/flexport#5-collect-points",
+      "catalogContentHash": "315c0827f1ebe9793143f7e3440cb5c64c851debddcb0ca1d531eaa84fc373a0",
+      "reason": "已核对固定上游 MDX 与 catalog 题面；补充契约公开标明为本站定义。独立参考实现与穷举/直接 oracle 对照 120 个互异输入，两个正常退出 mutant 均被正式用例击杀。仅完成离线验证，未运行 GoJudge。"
+    },
+    {
+      "id": "oa-flexport-6",
+      "status": "blocked",
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "rawPath": "web/content/docs/companies/flexport.mdx",
+      "rawGitBlob": "71ef7fe7b879adca275af31baf51e090fd70be0c",
+      "sourceUrl": "https://oamaster.com/docs/companies/flexport#6-malware-spread",
+      "catalogContentHash": "ab588621a787de8141075eca692b260a06aee59e05d2bacd7eab834ebb236bbd",
+      "reason": "固定题面只说可删除恰好一个节点，没有说明候选是否限于初始感染节点；现有解释与解法擅自将候选限制为 malware=1。任意节点删除与感染节点删除可产生不同答案；题面也未保证至少一个感染节点，且示例无法消歧。可按题面字面补充‘传播前可删除任一节点’，或明确‘只可删除初始感染节点’并保证感染集合非空；两种口径都可用节点删除后重新 BFS 求解。"
+    }
+  ]
+}

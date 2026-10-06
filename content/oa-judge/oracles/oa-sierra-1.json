@@ -1,654 +1,654 @@
 [
   {
     "input": "20\n# A\nshort\nlonger line\n## B\nx\ny\n",
-    "expectedOutput": "# A | short\n# A | longer line\n# A | ## B | x | y"
+    "expectedOutput": "# A | short\n# A | longer line\n# A | ## B | x | y\n"
   },
   {
     "input": "30\n# Guide\nalpha\nbeta\n",
-    "expectedOutput": "# Guide | alpha | beta"
+    "expectedOutput": "# Guide | alpha | beta\n"
   },
   {
     "input": "10\n# X\nvery long line here\n",
-    "expectedOutput": "# X\n# X | very long line here"
+    "expectedOutput": "# X\n# X | very long line here\n"
   },
   {
     "input": "9\nplain text\nplain text\n## B\nnext\nlonger line\nnext\n# A\nnext\n",
-    "expectedOutput": "plain text\nplain text\n## B\n## B | next\n## B | longer line\n## B | next\n# A\n# A | next"
+    "expectedOutput": "plain text\nplain text\n## B\n## B | next\n## B | longer line\n## B | next\n# A\n# A | next\n"
   },
   {
     "input": "27\n# A\n# A\n### C\n## B\nlonger line\nplain text\nlonger line\n# A\n",
-    "expectedOutput": "# A | # A | ### C | ## B\n# A | ## B | longer line\n# A | ## B | plain text\n# A | ## B | longer line\n# A"
+    "expectedOutput": "# A | # A | ### C | ## B\n# A | ## B | longer line\n# A | ## B | plain text\n# A | ## B | longer line\n# A\n"
   },
   {
     "input": "28\nplain text\n# A\nnext\n### C\nplain text\n## B\nlonger line\n",
-    "expectedOutput": "plain text | # A | next\n# A | ### C | plain text\n# A | ## B | longer line"
+    "expectedOutput": "plain text | # A | next\n# A | ### C | plain text\n# A | ## B | longer line\n"
   },
   {
     "input": "39\nplain text\nnext\n### C\n## B\n",
-    "expectedOutput": "plain text | next | ### C | ## B"
+    "expectedOutput": "plain text | next | ### C | ## B\n"
   },
   {
     "input": "18\n## B\n## B\nplain text\n# A\n# A\n",
-    "expectedOutput": "## B | ## B\n## B | ## B | plain text\n# A | # A"
+    "expectedOutput": "## B | ## B\n## B | ## B | plain text\n# A | # A\n"
   },
   {
     "input": "30\nnext\n# A\n### C\n",
-    "expectedOutput": "next | # A | ### C"
+    "expectedOutput": "next | # A | ### C\n"
   },
   {
     "input": "38\n# A\n### C\n# A\nnext\nplain text\n# A\n",
-    "expectedOutput": "# A | ### C | # A | next | plain text\n# A"
+    "expectedOutput": "# A | ### C | # A | next | plain text\n# A\n"
   },
   {
     "input": "13\nplain text\n# A\n### C\n## B\nlonger line\n## B\n### C\n",
-    "expectedOutput": "plain text\n# A | ### C\n# A | ## B\n# A | ## B | longer line\n# A | ## B\n# A | ## B | ### C"
+    "expectedOutput": "plain text\n# A | ### C\n# A | ## B\n# A | ## B | longer line\n# A | ## B\n# A | ## B | ### C\n"
   },
   {
     "input": "29\nplain text\nlonger line\n### C\nlonger line\n# A\nlonger line\n## B\nplain text\n",
-    "expectedOutput": "plain text | longer line\n### C | longer line | # A\n# A | longer line | ## B\n# A | ## B | plain text"
+    "expectedOutput": "plain text | longer line\n### C | longer line | # A\n# A | longer line | ## B\n# A | ## B | plain text\n"
   },
   {
     "input": "19\n### C\n# A\n### C\n",
-    "expectedOutput": "### C | # A | ### C"
+    "expectedOutput": "### C | # A | ### C\n"
   },
   {
     "input": "34\n# A\n## B\n",
-    "expectedOutput": "# A | ## B"
+    "expectedOutput": "# A | ## B\n"
   },
   {
     "input": "18\n### C\n### C\n## B\n",
-    "expectedOutput": "### C | ### C\n### C | ## B"
+    "expectedOutput": "### C | ### C\n### C | ## B\n"
   },
   {
     "input": "12\n# A\n# A\n## B\nlonger line\nplain text\n",
-    "expectedOutput": "# A | # A\n# A | ## B\n# A | ## B | longer line\n# A | ## B | plain text"
+    "expectedOutput": "# A | # A\n# A | ## B\n# A | ## B | longer line\n# A | ## B | plain text\n"
   },
   {
     "input": "22\nplain text\n# A\n## B\nlonger line\nnext\nplain text\n### C\n### C\n## B\n",
-    "expectedOutput": "plain text | # A\n# A | ## B\n# A | ## B | longer line\n# A | ## B | next\n# A | ## B | plain text\n# A | ## B | ### C\n# A | ## B | ### C\n# A | ## B"
+    "expectedOutput": "plain text | # A\n# A | ## B\n# A | ## B | longer line\n# A | ## B | next\n# A | ## B | plain text\n# A | ## B | ### C\n# A | ## B | ### C\n# A | ## B\n"
   },
   {
     "input": "18\n# A\n### C\n# A\nlonger line\n### C\n## B\nnext\nlonger line\n## B\n## B\n",
-    "expectedOutput": "# A | ### C | # A\n# A | longer line\n# A | ### C | ## B\n# A | ## B | next\n# A | ## B | longer line\n# A | ## B | ## B"
+    "expectedOutput": "# A | ### C | # A\n# A | longer line\n# A | ### C | ## B\n# A | ## B | next\n# A | ## B | longer line\n# A | ## B | ## B\n"
   },
   {
     "input": "34\n### C\n# A\n## B\n# A\nnext\n### C\n",
-    "expectedOutput": "### C | # A | ## B | # A | next\n# A | ### C"
+    "expectedOutput": "### C | # A | ## B | # A | next\n# A | ### C\n"
   },
   {
     "input": "9\nlonger line\nlonger line\n# A\nplain text\n## B\n## B\nnext\n## B\n",
-    "expectedOutput": "longer line\nlonger line\n# A\n# A | plain text\n# A | ## B\n# A | ## B\n# A | ## B | next\n# A | ## B"
+    "expectedOutput": "longer line\nlonger line\n# A\n# A | plain text\n# A | ## B\n# A | ## B\n# A | ## B | next\n# A | ## B\n"
   },
   {
     "input": "19\n### C\nplain text\n# A\nplain text\nlonger line\n# A\nlonger line\n",
-    "expectedOutput": "### C | plain text\n# A | plain text\n# A | longer line\n# A | longer line"
+    "expectedOutput": "### C | plain text\n# A | plain text\n# A | longer line\n# A | longer line\n"
   },
   {
     "input": "32\n## B\nplain text\n### C\nlonger line\n# A\n### C\n## B\n",
-    "expectedOutput": "## B | plain text | ### C\n## B | ### C | longer line | # A\n# A | ### C | ## B"
+    "expectedOutput": "## B | plain text | ### C\n## B | ### C | longer line | # A\n# A | ### C | ## B\n"
   },
   {
     "input": "13\n### C\nnext\nplain text\nnext\nplain text\nplain text\n### C\n## B\nlonger line\n",
-    "expectedOutput": "### C | next\n### C | plain text\n### C | next\n### C | plain text\n### C | plain text\n### C | ### C\n### C | ## B\n### C | ## B | longer line"
+    "expectedOutput": "### C | next\n### C | plain text\n### C | next\n### C | plain text\n### C | plain text\n### C | ### C\n### C | ## B\n### C | ## B | longer line\n"
   },
   {
     "input": "36\nplain text\n## B\n# A\n# A\nnext\nplain text\n",
-    "expectedOutput": "plain text | ## B | # A | # A | next\n# A | plain text"
+    "expectedOutput": "plain text | ## B | # A | # A | next\n# A | plain text\n"
   },
   {
     "input": "9\n# A\nnext\n",
-    "expectedOutput": "# A\n# A | next"
+    "expectedOutput": "# A\n# A | next\n"
   },
   {
     "input": "33\n### C\n### C\nlonger line\n### C\n## B\nplain text\n# A\nnext\n",
-    "expectedOutput": "### C | ### C | longer line\n### C | ### C | ### C | ## B\n### C | ## B | plain text | # A\n# A | next"
+    "expectedOutput": "### C | ### C | longer line\n### C | ### C | ### C | ## B\n### C | ## B | plain text | # A\n# A | next\n"
   },
   {
     "input": "23\n### C\nlonger line\n### C\n## B\nnext\nnext\n## B\n## B\n",
-    "expectedOutput": "### C | longer line\n### C | ### C | ## B\n### C | ## B | next\n### C | ## B | next\n### C | ## B | ## B"
+    "expectedOutput": "### C | longer line\n### C | ### C | ## B\n### C | ## B | next\n### C | ## B | next\n### C | ## B | ## B\n"
   },
   {
     "input": "32\nplain text\nnext\nnext\n### C\nlonger line\nnext\n### C\nnext\nlonger line\n",
-    "expectedOutput": "plain text | next | next | ### C\n### C | longer line | next\n### C | ### C | next\n### C | ### C | longer line"
+    "expectedOutput": "plain text | next | next | ### C\n### C | longer line | next\n### C | ### C | next\n### C | ### C | longer line\n"
   },
   {
     "input": "9\nlonger line\nnext\nlonger line\nnext\n## B\n### C\nlonger line\nlonger line\nplain text\nlonger line\n",
-    "expectedOutput": "longer line\nnext\nlonger line\nnext\n## B\n## B | ### C\n## B | ### C | longer line\n## B | ### C | longer line\n## B | ### C | plain text\n## B | ### C | longer line"
+    "expectedOutput": "longer line\nnext\nlonger line\nnext\n## B\n## B | ### C\n## B | ### C | longer line\n## B | ### C | longer line\n## B | ### C | plain text\n## B | ### C | longer line\n"
   },
   {
     "input": "42\nlonger line\nplain text\n### C\n# A\n",
-    "expectedOutput": "longer line | plain text | ### C | # A"
+    "expectedOutput": "longer line | plain text | ### C | # A\n"
   },
   {
     "input": "45\n# A\nplain text\nplain text\n## B\nplain text\n",
-    "expectedOutput": "# A | plain text | plain text | ## B\n# A | ## B | plain text"
+    "expectedOutput": "# A | plain text | plain text | ## B\n# A | ## B | plain text\n"
   },
   {
     "input": "39\nnext\n## B\nnext\n## B\n# A\n# A\nlonger line\n# A\n",
-    "expectedOutput": "next | ## B | next | ## B | # A | # A\n# A | longer line | # A"
+    "expectedOutput": "next | ## B | next | ## B | # A | # A\n# A | longer line | # A\n"
   },
   {
     "input": "16\nnext\n### C\nnext\n### C\nplain text\nlonger line\nlonger line\n## B\nnext\n",
-    "expectedOutput": "next | ### C\n### C | next\n### C | ### C\n### C | ### C | plain text\n### C | ### C | longer line\n### C | ### C | longer line\n### C | ## B\n### C | ## B | next"
+    "expectedOutput": "next | ### C\n### C | next\n### C | ### C\n### C | ### C | plain text\n### C | ### C | longer line\n### C | ### C | longer line\n### C | ## B\n### C | ## B | next\n"
   },
   {
     "input": "26\n# A\nlonger line\nplain text\nnext\nplain text\nlonger line\nnext\n",
-    "expectedOutput": "# A | longer line\n# A | plain text | next\n# A | plain text\n# A | longer line | next"
+    "expectedOutput": "# A | longer line\n# A | plain text | next\n# A | plain text\n# A | longer line | next\n"
   },
   {
     "input": "21\nplain text\n## B\n### C\nlonger line\n### C\nnext\nnext\n## B\nplain text\n",
-    "expectedOutput": "plain text | ## B\n## B | ### C\n## B | ### C | longer line\n## B | ### C | ### C\n## B | ### C | ### C | next\n## B | ### C | ### C | next\n## B | ## B\n## B | ## B | plain text"
+    "expectedOutput": "plain text | ## B\n## B | ### C\n## B | ### C | longer line\n## B | ### C | ### C\n## B | ### C | ### C | next\n## B | ### C | ### C | next\n## B | ## B\n## B | ## B | plain text\n"
   },
   {
     "input": "45\nlonger line\n# A\n### C\n",
-    "expectedOutput": "longer line | # A | ### C"
+    "expectedOutput": "longer line | # A | ### C\n"
   },
   {
     "input": "9\n## B\nplain text\n### C\n### C\nlonger line\nnext\nlonger line\n",
-    "expectedOutput": "## B\n## B | plain text\n## B | ### C\n## B | ### C | ### C\n## B | ### C | ### C | longer line\n## B | ### C | ### C | next\n## B | ### C | ### C | longer line"
+    "expectedOutput": "## B\n## B | plain text\n## B | ### C\n## B | ### C | ### C\n## B | ### C | ### C | longer line\n## B | ### C | ### C | next\n## B | ### C | ### C | longer line\n"
   },
   {
     "input": "16\nplain text\nplain text\n",
-    "expectedOutput": "plain text\nplain text"
+    "expectedOutput": "plain text\nplain text\n"
   },
   {
     "input": "8\n### C\n",
-    "expectedOutput": "### C"
+    "expectedOutput": "### C\n"
   },
   {
     "input": "31\nplain text\n## B\nnext\n### C\n### C\n### C\nlonger line\nlonger line\nlonger line\nlonger line\n",
-    "expectedOutput": "plain text | ## B | next\n## B | ### C | ### C | ### C\n## B | ### C | ### C | longer line\n## B | ### C | ### C | longer line\n## B | ### C | ### C | longer line\n## B | ### C | ### C | longer line"
+    "expectedOutput": "plain text | ## B | next\n## B | ### C | ### C | ### C\n## B | ### C | ### C | longer line\n## B | ### C | ### C | longer line\n## B | ### C | ### C | longer line\n## B | ### C | ### C | longer line\n"
   },
   {
     "input": "14\nlonger line\n### C\n### C\nplain text\nplain text\nlonger line\nlonger line\nlonger line\n## B\n",
-    "expectedOutput": "longer line\n### C | ### C\n### C | ### C | plain text\n### C | ### C | plain text\n### C | ### C | longer line\n### C | ### C | longer line\n### C | ### C | longer line\n### C | ## B"
+    "expectedOutput": "longer line\n### C | ### C\n### C | ### C | plain text\n### C | ### C | plain text\n### C | ### C | longer line\n### C | ### C | longer line\n### C | ### C | longer line\n### C | ## B\n"
   },
   {
     "input": "40\n### C\nplain text\nplain text\n## B\nnext\n# A\n",
-    "expectedOutput": "### C | plain text | plain text | ## B\n### C | ## B | next | # A"
+    "expectedOutput": "### C | plain text | plain text | ## B\n### C | ## B | next | # A\n"
   },
   {
     "input": "43\n## B\nplain text\n# A\n## B\nlonger line\nplain text\n# A\n",
-    "expectedOutput": "## B | plain text | # A | ## B\n# A | ## B | longer line | plain text | # A"
+    "expectedOutput": "## B | plain text | # A | ## B\n# A | ## B | longer line | plain text | # A\n"
   },
   {
     "input": "11\n### C\nlonger line\nplain text\n### C\nlonger line\nnext\n### C\n# A\nlonger line\n",
-    "expectedOutput": "### C\n### C | longer line\n### C | plain text\n### C | ### C\n### C | ### C | longer line\n### C | ### C | next\n### C | ### C | ### C\n# A\n# A | longer line"
+    "expectedOutput": "### C\n### C | longer line\n### C | plain text\n### C | ### C\n### C | ### C | longer line\n### C | ### C | next\n### C | ### C | ### C\n# A\n# A | longer line\n"
   },
   {
     "input": "17\nplain text\nlonger line\n### C\nplain text\n## B\nplain text\n### C\nnext\n",
-    "expectedOutput": "plain text\nlonger line\n### C\n### C | plain text\n### C | ## B\n### C | ## B | plain text\n### C | ## B | ### C\n### C | ## B | ### C | next"
+    "expectedOutput": "plain text\nlonger line\n### C\n### C | plain text\n### C | ## B\n### C | ## B | plain text\n### C | ## B | ### C\n### C | ## B | ### C | next\n"
   },
   {
     "input": "31\nplain text\n## B\n",
-    "expectedOutput": "plain text | ## B"
+    "expectedOutput": "plain text | ## B\n"
   },
   {
     "input": "38\nplain text\nlonger line\nnext\nlonger line\nplain text\n",
-    "expectedOutput": "plain text | longer line | next\nlonger line | plain text"
+    "expectedOutput": "plain text | longer line | next\nlonger line | plain text\n"
   },
   {
     "input": "16\nlonger line\n### C\n# A\n### C\n# A\n## B\n# A\n## B\n",
-    "expectedOutput": "longer line\n### C | # A\n# A | ### C\n# A | ## B | # A\n# A | ## B"
+    "expectedOutput": "longer line\n### C | # A\n# A | ### C\n# A | ## B | # A\n# A | ## B\n"
   },
   {
     "input": "34\n### C\n",
-    "expectedOutput": "### C"
+    "expectedOutput": "### C\n"
   },
   {
     "input": "18\nlonger line\nnext\nplain text\n# A\n### C\n# A\n### C\n# A\n",
-    "expectedOutput": "longer line | next\nplain text | # A\n# A | ### C | # A\n# A | ### C | # A"
+    "expectedOutput": "longer line | next\nplain text | # A\n# A | ### C | # A\n# A | ### C | # A\n"
   },
   {
     "input": "42\nlonger line\nplain text\nnext\nplain text\n## B\n",
-    "expectedOutput": "longer line | plain text | next\nplain text | ## B"
+    "expectedOutput": "longer line | plain text | next\nplain text | ## B\n"
   },
   {
     "input": "23\n## B\n## B\n### C\nlonger line\n## B\n# A\nplain text\nnext\n## B\n",
-    "expectedOutput": "## B | ## B | ### C\n## B | ## B | ### C | longer line\n## B | ## B | # A\n# A | plain text | next\n# A | ## B"
+    "expectedOutput": "## B | ## B | ### C\n## B | ## B | ### C | longer line\n## B | ## B | # A\n# A | plain text | next\n# A | ## B\n"
   },
   {
     "input": "21\nplain text\n### C\n### C\nlonger line\n# A\n## B\n### C\nplain text\n",
-    "expectedOutput": "plain text | ### C\n### C | ### C\n### C | ### C | longer line\n# A | ## B | ### C\n# A | ## B | ### C | plain text"
+    "expectedOutput": "plain text | ### C\n### C | ### C\n### C | ### C | longer line\n# A | ## B | ### C\n# A | ## B | ### C | plain text\n"
   },
   {
     "input": "30\nnext\n# A\nlonger line\n## B\n### C\n# A\nplain text\nplain text\nlonger line\n",
-    "expectedOutput": "next | # A | longer line\n# A | ## B | ### C | # A\n# A | plain text | plain text\n# A | longer line"
+    "expectedOutput": "next | # A | longer line\n# A | ## B | ### C | # A\n# A | plain text | plain text\n# A | longer line\n"
   },
   {
     "input": "34\nnext\n## B\nplain text\n## B\nplain text\n### C\nnext\n",
-    "expectedOutput": "next | ## B | plain text | ## B\n## B | ## B | plain text | ### C\n## B | ## B | ### C | next"
+    "expectedOutput": "next | ## B | plain text | ## B\n## B | ## B | plain text | ### C\n## B | ## B | ### C | next\n"
   },
   {
     "input": "26\n### C\n## B\n# A\nnext\nlonger line\nnext\n### C\nlonger line\n### C\n# A\n",
-    "expectedOutput": "### C | ## B | # A | next\n# A | longer line | next\n# A | ### C | longer line\n# A | ### C | ### C | # A"
+    "expectedOutput": "### C | ## B | # A | next\n# A | longer line | next\n# A | ### C | longer line\n# A | ### C | ### C | # A\n"
   },
   {
     "input": "9\n## B\nplain text\n# A\n",
-    "expectedOutput": "## B\n## B | plain text\n# A"
+    "expectedOutput": "## B\n## B | plain text\n# A\n"
   },
   {
     "input": "36\n### C\nlonger line\n# A\nnext\n# A\n# A\nnext\nnext\n# A\n# A\n",
-    "expectedOutput": "### C | longer line | # A | next\n# A | # A | next | next | # A | # A"
+    "expectedOutput": "### C | longer line | # A | next\n# A | # A | next | next | # A | # A\n"
   },
   {
     "input": "33\nnext\nlonger line\nplain text\n### C\n### C\n# A\n## B\nlonger line\nplain text\n",
-    "expectedOutput": "next | longer line | plain text\n### C | ### C | # A | ## B\n# A | ## B | longer line\n# A | ## B | plain text"
+    "expectedOutput": "next | longer line | plain text\n### C | ### C | # A | ## B\n# A | ## B | longer line\n# A | ## B | plain text\n"
   },
   {
     "input": "17\nlonger line\n## B\nplain text\nnext\n## B\n",
-    "expectedOutput": "longer line\n## B | plain text\n## B | next\n## B | ## B"
+    "expectedOutput": "longer line\n## B | plain text\n## B | next\n## B | ## B\n"
   },
   {
     "input": "18\nlonger line\n## B\n# A\nnext\n### C\n",
-    "expectedOutput": "longer line | ## B\n# A | next | ### C"
+    "expectedOutput": "longer line | ## B\n# A | next | ### C\n"
   },
   {
     "input": "40\nplain text\n# A\n",
-    "expectedOutput": "plain text | # A"
+    "expectedOutput": "plain text | # A\n"
   },
   {
     "input": "33\nplain text\n",
-    "expectedOutput": "plain text"
+    "expectedOutput": "plain text\n"
   },
   {
     "input": "30\nnext\n# A\nlonger line\n## B\n# A\nnext\n",
-    "expectedOutput": "next | # A | longer line\n# A | ## B | # A | next"
+    "expectedOutput": "next | # A | longer line\n# A | ## B | # A | next\n"
   },
   {
     "input": "31\n## B\nlonger line\n",
-    "expectedOutput": "## B | longer line"
+    "expectedOutput": "## B | longer line\n"
   },
   {
     "input": "41\n## B\n# A\nlonger line\nplain text\n# A\nnext\nplain text\n### C\nnext\n### C\n",
-    "expectedOutput": "## B | # A | longer line | plain text\n# A | next | plain text | ### C | next\n# A | ### C | ### C"
+    "expectedOutput": "## B | # A | longer line | plain text\n# A | next | plain text | ### C | next\n# A | ### C | ### C\n"
   },
   {
     "input": "31\n### C\n## B\nlonger line\n",
-    "expectedOutput": "### C | ## B | longer line"
+    "expectedOutput": "### C | ## B | longer line\n"
   },
   {
     "input": "12\nlonger line\nplain text\n## B\n### C\nnext\nplain text\n### C\nplain text\n## B\n# A\n",
-    "expectedOutput": "longer line\nplain text\n## B | ### C\n## B | ### C | next\n## B | ### C | plain text\n## B | ### C | ### C\n## B | ### C | ### C | plain text\n## B | ## B\n# A"
+    "expectedOutput": "longer line\nplain text\n## B | ### C\n## B | ### C | next\n## B | ### C | plain text\n## B | ### C | ### C\n## B | ### C | ### C | plain text\n## B | ## B\n# A\n"
   },
   {
     "input": "25\nplain text\nplain text\nplain text\n## B\nplain text\nplain text\n### C\nlonger line\n",
-    "expectedOutput": "plain text | plain text\nplain text | ## B\n## B | plain text\n## B | plain text | ### C\n## B | ### C | longer line"
+    "expectedOutput": "plain text | plain text\nplain text | ## B\n## B | plain text\n## B | plain text | ### C\n## B | ### C | longer line\n"
   },
   {
     "input": "25\n# A\n",
-    "expectedOutput": "# A"
+    "expectedOutput": "# A\n"
   },
   {
     "input": "30\nlonger line\n",
-    "expectedOutput": "longer line"
+    "expectedOutput": "longer line\n"
   },
   {
     "input": "26\nplain text\nnext\nplain text\nlonger line\n# A\nlonger line\nnext\n## B\n",
-    "expectedOutput": "plain text | next\nplain text | longer line\n# A | longer line | next\n# A | ## B"
+    "expectedOutput": "plain text | next\nplain text | longer line\n# A | longer line | next\n# A | ## B\n"
   },
   {
     "input": "34\nnext\n",
-    "expectedOutput": "next"
+    "expectedOutput": "next\n"
   },
   {
     "input": "28\n## B\nlonger line\nnext\n### C\n### C\nplain text\n",
-    "expectedOutput": "## B | longer line | next\n## B | ### C | ### C\n## B | ### C | ### C | plain text"
+    "expectedOutput": "## B | longer line | next\n## B | ### C | ### C\n## B | ### C | ### C | plain text\n"
   },
   {
     "input": "15\n### C\nnext\n### C\n# A\n## B\nlonger line\n### C\n",
-    "expectedOutput": "### C | next\n### C | ### C\n# A | ## B\n# A | ## B | longer line\n# A | ## B | ### C"
+    "expectedOutput": "### C | next\n### C | ### C\n# A | ## B\n# A | ## B | longer line\n# A | ## B | ### C\n"
   },
   {
     "input": "40\n## B\nnext\nlonger line\nnext\n## B\nnext\n",
-    "expectedOutput": "## B | next | longer line | next | ## B\n## B | ## B | next"
+    "expectedOutput": "## B | next | longer line | next | ## B\n## B | ## B | next\n"
   },
   {
     "input": "16\nlonger line\nnext\nplain text\nlonger line\n### C\n### C\nnext\nlonger line\n## B\n",
-    "expectedOutput": "longer line\nnext\nplain text\nlonger line\n### C | ### C\n### C | ### C | next\n### C | ### C | longer line\n### C | ## B"
+    "expectedOutput": "longer line\nnext\nplain text\nlonger line\n### C | ### C\n### C | ### C | next\n### C | ### C | longer line\n### C | ## B\n"
   },
   {
     "input": "39\nplain text\nplain text\nplain text\nnext\n# A\n# A\n# A\n### C\n",
-    "expectedOutput": "plain text | plain text | plain text\nnext | # A | # A | # A | ### C"
+    "expectedOutput": "plain text | plain text | plain text\nnext | # A | # A | # A | ### C\n"
   },
   {
     "input": "11\n### C\nlonger line\nnext\n### C\n### C\nplain text\nlonger line\nnext\nplain text\n",
-    "expectedOutput": "### C\n### C | longer line\n### C | next\n### C | ### C\n### C | ### C | ### C\n### C | ### C | ### C | plain text\n### C | ### C | ### C | longer line\n### C | ### C | ### C | next\n### C | ### C | ### C | plain text"
+    "expectedOutput": "### C\n### C | longer line\n### C | next\n### C | ### C\n### C | ### C | ### C\n### C | ### C | ### C | plain text\n### C | ### C | ### C | longer line\n### C | ### C | ### C | next\n### C | ### C | ### C | plain text\n"
   },
   {
     "input": "23\nplain text\nlonger line\nnext\n### C\n## B\nnext\nnext\n### C\n",
-    "expectedOutput": "plain text\nlonger line | next\n### C | ## B | next\n### C | ## B | next\n### C | ## B | ### C"
+    "expectedOutput": "plain text\nlonger line | next\n### C | ## B | next\n### C | ## B | next\n### C | ## B | ### C\n"
   },
   {
     "input": "24\n## B\n## B\n# A\nnext\nplain text\n# A\n# A\n### C\n",
-    "expectedOutput": "## B | ## B | # A | next\n# A | plain text | # A\n# A | ### C"
+    "expectedOutput": "## B | ## B | # A | next\n# A | plain text | # A\n# A | ### C\n"
   },
   {
     "input": "23\n# A\n### C\nlonger line\n# A\nnext\n## B\n## B\n",
-    "expectedOutput": "# A | ### C\n# A | ### C | longer line\n# A | next | ## B\n# A | ## B"
+    "expectedOutput": "# A | ### C\n# A | ### C | longer line\n# A | next | ## B\n# A | ## B\n"
   },
   {
     "input": "21\n## B\nplain text\n# A\nnext\n# A\n### C\nplain text\n# A\n",
-    "expectedOutput": "## B | plain text\n# A | next | # A\n# A | ### C\n# A | ### C | plain text\n# A"
+    "expectedOutput": "## B | plain text\n# A | next | # A\n# A | ### C\n# A | ### C | plain text\n# A\n"
   },
   {
     "input": "33\nlonger line\n## B\n## B\n# A\nnext\n### C\n",
-    "expectedOutput": "longer line | ## B | ## B | # A\n# A | next | ### C"
+    "expectedOutput": "longer line | ## B | ## B | # A\n# A | next | ### C\n"
   },
   {
     "input": "37\n### C\nplain text\nplain text\nlonger line\n",
-    "expectedOutput": "### C | plain text | plain text\n### C | longer line"
+    "expectedOutput": "### C | plain text | plain text\n### C | longer line\n"
   },
   {
     "input": "19\nplain text\n## B\nlonger line\n# A\n## B\n# A\n",
-    "expectedOutput": "plain text | ## B\n## B | longer line\n# A | ## B | # A"
+    "expectedOutput": "plain text | ## B\n## B | longer line\n# A | ## B | # A\n"
   },
   {
     "input": "40\n# A\nlonger line\n### C\nlonger line\n",
-    "expectedOutput": "# A | longer line | ### C | longer line"
+    "expectedOutput": "# A | longer line | ### C | longer line\n"
   },
   {
     "input": "22\nlonger line\nnext\n# A\nlonger line\n## B\n",
-    "expectedOutput": "longer line | next\n# A | longer line\n# A | ## B"
+    "expectedOutput": "longer line | next\n# A | longer line\n# A | ## B\n"
   },
   {
     "input": "41\n## B\n### C\nnext\nlonger line\n# A\nnext\n",
-    "expectedOutput": "## B | ### C | next | longer line | # A\n# A | next"
+    "expectedOutput": "## B | ### C | next | longer line | # A\n# A | next\n"
   },
   {
     "input": "36\n## B\nplain text\n### C\nplain text\n### C\n",
-    "expectedOutput": "## B | plain text | ### C\n## B | ### C | plain text | ### C"
+    "expectedOutput": "## B | plain text | ### C\n## B | ### C | plain text | ### C\n"
   },
   {
     "input": "26\nplain text\n",
-    "expectedOutput": "plain text"
+    "expectedOutput": "plain text\n"
   },
   {
     "input": "24\nplain text\nlonger line\nplain text\nnext\nnext\n",
-    "expectedOutput": "plain text | longer line\nplain text | next | next"
+    "expectedOutput": "plain text | longer line\nplain text | next | next\n"
   },
   {
     "input": "14\nnext\nnext\nnext\n## B\n# A\nnext\nlonger line\n# A\n## B\n",
-    "expectedOutput": "next | next\nnext | ## B\n# A | next\n# A | longer line\n# A | ## B"
+    "expectedOutput": "next | next\nnext | ## B\n# A | next\n# A | longer line\n# A | ## B\n"
   },
   {
     "input": "13\nnext\nnext\n",
-    "expectedOutput": "next | next"
+    "expectedOutput": "next | next\n"
   },
   {
     "input": "36\n# A\n### C\nlonger line\nplain text\n### C\n### C\n",
-    "expectedOutput": "# A | ### C | longer line\n# A | ### C | plain text | ### C\n# A | ### C | ### C"
+    "expectedOutput": "# A | ### C | longer line\n# A | ### C | plain text | ### C\n# A | ### C | ### C\n"
   },
   {
     "input": "36\nnext\n# A\n### C\nplain text\nlonger line\nplain text\n# A\n",
-    "expectedOutput": "next | # A | ### C | plain text\n# A | ### C | longer line\n# A | ### C | plain text | # A"
+    "expectedOutput": "next | # A | ### C | plain text\n# A | ### C | longer line\n# A | ### C | plain text | # A\n"
   },
   {
     "input": "16\n## B\nnext\n",
-    "expectedOutput": "## B | next"
+    "expectedOutput": "## B | next\n"
   },
   {
     "input": "30\n## B\n## B\nplain text\nlonger line\n",
-    "expectedOutput": "## B | ## B | plain text\n## B | ## B | longer line"
+    "expectedOutput": "## B | ## B | plain text\n## B | ## B | longer line\n"
   },
   {
     "input": "11\nplain text\n### C\n### C\nplain text\nnext\n### C\n",
-    "expectedOutput": "plain text\n### C\n### C | ### C\n### C | ### C | plain text\n### C | ### C | next\n### C | ### C | ### C"
+    "expectedOutput": "plain text\n### C\n### C | ### C\n### C | ### C | plain text\n### C | ### C | next\n### C | ### C | ### C\n"
   },
   {
     "input": "21\n### C\nlonger line\nplain text\n### C\n## B\n### C\n## B\nlonger line\n### C\n# A\n",
-    "expectedOutput": "### C | longer line\n### C | plain text\n### C | ### C | ## B\n### C | ## B | ### C\n### C | ## B\n### C | ## B | longer line\n### C | ## B | ### C\n# A"
+    "expectedOutput": "### C | longer line\n### C | plain text\n### C | ### C | ## B\n### C | ## B | ### C\n### C | ## B\n### C | ## B | longer line\n### C | ## B | ### C\n# A\n"
   },
   {
     "input": "39\nnext\n### C\n",
-    "expectedOutput": "next | ### C"
+    "expectedOutput": "next | ### C\n"
   },
   {
     "input": "19\n### C\n# A\n## B\n",
-    "expectedOutput": "### C | # A | ## B"
+    "expectedOutput": "### C | # A | ## B\n"
   },
   {
     "input": "9\n### C\n## B\nnext\nlonger line\nlonger line\nnext\nlonger line\n# A\n# A\nplain text\n",
-    "expectedOutput": "### C\n### C | ## B\n### C | ## B | next\n### C | ## B | longer line\n### C | ## B | longer line\n### C | ## B | next\n### C | ## B | longer line\n# A | # A\n# A | plain text"
+    "expectedOutput": "### C\n### C | ## B\n### C | ## B | next\n### C | ## B | longer line\n### C | ## B | longer line\n### C | ## B | next\n### C | ## B | longer line\n# A | # A\n# A | plain text\n"
   },
   {
     "input": "38\nplain text\n### C\n### C\n",
-    "expectedOutput": "plain text | ### C | ### C"
+    "expectedOutput": "plain text | ### C | ### C\n"
   },
   {
     "input": "17\n## B\nnext\n### C\nlonger line\n# A\n# A\nplain text\n### C\n## B\n",
-    "expectedOutput": "## B | next\n## B | ### C\n## B | ### C | longer line\n# A | # A\n# A | plain text\n# A | ### C\n# A | ## B"
+    "expectedOutput": "## B | next\n## B | ### C\n## B | ### C | longer line\n# A | # A\n# A | plain text\n# A | ### C\n# A | ## B\n"
   },
   {
     "input": "16\nnext\n### C\n## B\nlonger line\n# A\nnext\n## B\nlonger line\nlonger line\n## B\n",
-    "expectedOutput": "next | ### C\n### C | ## B\n### C | ## B | longer line\n# A | next\n# A | ## B\n# A | ## B | longer line\n# A | ## B | longer line\n# A | ## B"
+    "expectedOutput": "next | ### C\n### C | ## B\n### C | ## B | longer line\n# A | next\n# A | ## B\n# A | ## B | longer line\n# A | ## B | longer line\n# A | ## B\n"
   },
   {
     "input": "26\nlonger line\nnext\n# A\n# A\nnext\nlonger line\n## B\nplain text\nnext\n",
-    "expectedOutput": "longer line | next | # A\n# A | next | longer line\n# A | ## B | plain text\n# A | ## B | next"
+    "expectedOutput": "longer line | next | # A\n# A | next | longer line\n# A | ## B | plain text\n# A | ## B | next\n"
   },
   {
     "input": "27\nlonger line\nnext\n### C\n",
-    "expectedOutput": "longer line | next | ### C"
+    "expectedOutput": "longer line | next | ### C\n"
   },
   {
     "input": "35\nlonger line\nlonger line\n",
-    "expectedOutput": "longer line | longer line"
+    "expectedOutput": "longer line | longer line\n"
   },
   {
     "input": "9\nlonger line\n# A\n",
-    "expectedOutput": "longer line\n# A"
+    "expectedOutput": "longer line\n# A\n"
   },
   {
     "input": "31\n### C\n",
-    "expectedOutput": "### C"
+    "expectedOutput": "### C\n"
   },
   {
     "input": "30\nlonger line\n# A\n# A\nnext\nnext\n",
-    "expectedOutput": "longer line | # A | # A | next\n# A | next"
+    "expectedOutput": "longer line | # A | # A | next\n# A | next\n"
   },
   {
     "input": "11\n# A\nnext\n## B\nnext\n# A\n### C\n### C\n",
-    "expectedOutput": "# A | next\n# A | ## B\n# A | ## B | next\n# A | ### C\n# A | ### C | ### C"
+    "expectedOutput": "# A | next\n# A | ## B\n# A | ## B | next\n# A | ### C\n# A | ### C | ### C\n"
   },
   {
     "input": "16\nlonger line\nlonger line\n### C\n# A\nlonger line\n",
-    "expectedOutput": "longer line\nlonger line\n### C | # A\n# A | longer line"
+    "expectedOutput": "longer line\nlonger line\n### C | # A\n# A | longer line\n"
   },
   {
     "input": "31\nplain text\n## B\n### C\n# A\nlonger line\n",
-    "expectedOutput": "plain text | ## B | ### C | # A\n# A | longer line"
+    "expectedOutput": "plain text | ## B | ### C | # A\n# A | longer line\n"
   },
   {
     "input": "29\n# A\nlonger line\n### C\nplain text\n## B\n",
-    "expectedOutput": "# A | longer line | ### C\n# A | ### C | plain text\n# A | ## B"
+    "expectedOutput": "# A | longer line | ### C\n# A | ### C | plain text\n# A | ## B\n"
   },
   {
     "input": "17\nnext\nlonger line\nplain text\nplain text\nplain text\nplain text\nlonger line\n",
-    "expectedOutput": "next\nlonger line\nplain text\nplain text\nplain text\nplain text\nlonger line"
+    "expectedOutput": "next\nlonger line\nplain text\nplain text\nplain text\nplain text\nlonger line\n"
   },
   {
     "input": "45\nlonger line\nlonger line\nplain text\nnext\n### C\n## B\n# A\n### C\nnext\n",
-    "expectedOutput": "longer line | longer line | plain text | next\n### C | ## B | # A | ### C | next"
+    "expectedOutput": "longer line | longer line | plain text | next\n### C | ## B | # A | ### C | next\n"
   },
   {
     "input": "12\nnext\n## B\n",
-    "expectedOutput": "next | ## B"
+    "expectedOutput": "next | ## B\n"
   },
   {
     "input": "15\n## B\n## B\nnext\n",
-    "expectedOutput": "## B | ## B\n## B | ## B | next"
+    "expectedOutput": "## B | ## B\n## B | ## B | next\n"
   },
   {
     "input": "36\nnext\nnext\n# A\n",
-    "expectedOutput": "next | next | # A"
+    "expectedOutput": "next | next | # A\n"
   },
   {
     "input": "41\n# A\n# A\nplain text\n## B\n## B\n",
-    "expectedOutput": "# A | # A | plain text | ## B | ## B"
+    "expectedOutput": "# A | # A | plain text | ## B | ## B\n"
   },
   {
     "input": "32\n### C\nlonger line\n### C\n### C\n# A\n",
-    "expectedOutput": "### C | longer line | ### C\n### C | ### C | ### C | # A"
+    "expectedOutput": "### C | longer line | ### C\n### C | ### C | ### C | # A\n"
   },
   {
     "input": "11\n# A\n## B\nnext\nplain text\nplain text\nnext\n# A\n## B\nplain text\n",
-    "expectedOutput": "# A | ## B\n# A | ## B | next\n# A | ## B | plain text\n# A | ## B | plain text\n# A | ## B | next\n# A | ## B\n# A | ## B | plain text"
+    "expectedOutput": "# A | ## B\n# A | ## B | next\n# A | ## B | plain text\n# A | ## B | plain text\n# A | ## B | next\n# A | ## B\n# A | ## B | plain text\n"
   },
   {
     "input": "41\nplain text\n## B\n# A\n# A\nplain text\n## B\n## B\n",
-    "expectedOutput": "plain text | ## B | # A | # A\n# A | plain text | ## B | ## B"
+    "expectedOutput": "plain text | ## B | # A | # A\n# A | plain text | ## B | ## B\n"
   },
   {
     "input": "13\n### C\nnext\n## B\n## B\nnext\n",
-    "expectedOutput": "### C | next\n### C | ## B\n### C | ## B\n### C | ## B | next"
+    "expectedOutput": "### C | next\n### C | ## B\n### C | ## B\n### C | ## B | next\n"
   },
   {
     "input": "28\nplain text\n## B\nnext\n### C\nlonger line\n### C\n## B\n",
-    "expectedOutput": "plain text | ## B | next\n## B | ### C | longer line\n## B | ### C | ### C | ## B"
+    "expectedOutput": "plain text | ## B | next\n## B | ### C | longer line\n## B | ### C | ### C | ## B\n"
   },
   {
     "input": "33\n### C\nnext\nnext\n",
-    "expectedOutput": "### C | next | next"
+    "expectedOutput": "### C | next | next\n"
   },
   {
     "input": "23\n# A\n## B\nnext\n### C\n# A\nlonger line\n## B\n## B\n",
-    "expectedOutput": "# A | ## B | next\n# A | ## B | ### C\n# A | longer line\n# A | ## B | ## B"
+    "expectedOutput": "# A | ## B | next\n# A | ## B | ### C\n# A | longer line\n# A | ## B | ## B\n"
   },
   {
     "input": "24\n# A\n## B\n### C\n# A\nplain text\nnext\nnext\n",
-    "expectedOutput": "# A | ## B | ### C | # A\n# A | plain text | next\n# A | next"
+    "expectedOutput": "# A | ## B | ### C | # A\n# A | plain text | next\n# A | next\n"
   },
   {
     "input": "33\n## B\n",
-    "expectedOutput": "## B"
+    "expectedOutput": "## B\n"
   },
   {
     "input": "38\nlonger line\nlonger line\n",
-    "expectedOutput": "longer line | longer line"
+    "expectedOutput": "longer line | longer line\n"
   },
   {
     "input": "27\nnext\nplain text\n",
-    "expectedOutput": "next | plain text"
+    "expectedOutput": "next | plain text\n"
   },
   {
     "input": "39\n# A\n# A\nlonger line\n# A\nlonger line\n## B\n",
-    "expectedOutput": "# A | # A | longer line | # A\n# A | longer line | ## B"
+    "expectedOutput": "# A | # A | longer line | # A\n# A | longer line | ## B\n"
   },
   {
     "input": "21\n# A\n",
-    "expectedOutput": "# A"
+    "expectedOutput": "# A\n"
   },
   {
     "input": "36\nplain text\n### C\n### C\n### C\n# A\n## B\n### C\nlonger line\n# A\nplain text\n",
-    "expectedOutput": "plain text | ### C | ### C | ### C\n# A | ## B | ### C | longer line\n# A | plain text"
+    "expectedOutput": "plain text | ### C | ### C | ### C\n# A | ## B | ### C | longer line\n# A | plain text\n"
   },
   {
     "input": "20\n### C\nnext\n## B\n### C\n",
-    "expectedOutput": "### C | next | ## B\n### C | ## B | ### C"
+    "expectedOutput": "### C | next | ## B\n### C | ## B | ### C\n"
   },
   {
     "input": "19\nplain text\n### C\nplain text\n# A\nlonger line\nnext\n",
-    "expectedOutput": "plain text | ### C\n### C | plain text\n# A | longer line\n# A | next"
+    "expectedOutput": "plain text | ### C\n### C | plain text\n# A | longer line\n# A | next\n"
   },
   {
     "input": "11\nplain text\n### C\nlonger line\n",
-    "expectedOutput": "plain text\n### C\n### C | longer line"
+    "expectedOutput": "plain text\n### C\n### C | longer line\n"
   },
   {
     "input": "25\nnext\n### C\nplain text\nplain text\n## B\nlonger line\nlonger line\nplain text\n",
-    "expectedOutput": "next | ### C | plain text\n### C | plain text | ## B\n### C | ## B | longer line\n### C | ## B | longer line\n### C | ## B | plain text"
+    "expectedOutput": "next | ### C | plain text\n### C | plain text | ## B\n### C | ## B | longer line\n### C | ## B | longer line\n### C | ## B | plain text\n"
   },
   {
     "input": "45\nnext\nlonger line\nlonger line\nplain text\n### C\n# A\n# A\nnext\n## B\n### C\n",
-    "expectedOutput": "next | longer line | longer line | plain text\n### C | # A | # A | next | ## B | ### C"
+    "expectedOutput": "next | longer line | longer line | plain text\n### C | # A | # A | next | ## B | ### C\n"
   },
   {
     "input": "14\n## B\n## B\n## B\nplain text\nplain text\n## B\n",
-    "expectedOutput": "## B | ## B\n## B | ## B\n## B | ## B | plain text\n## B | ## B | plain text\n## B | ## B"
+    "expectedOutput": "## B | ## B\n## B | ## B\n## B | ## B | plain text\n## B | ## B | plain text\n## B | ## B\n"
   },
   {
     "input": "15\nlonger line\nlonger line\n### C\nnext\n# A\nplain text\n# A\nnext\n### C\nplain text\n",
-    "expectedOutput": "longer line\nlonger line\n### C | next\n# A\n# A | plain text\n# A | next\n# A | ### C\n# A | ### C | plain text"
+    "expectedOutput": "longer line\nlonger line\n### C | next\n# A\n# A | plain text\n# A | next\n# A | ### C\n# A | ### C | plain text\n"
   },
   {
     "input": "38\nnext\n## B\n# A\nnext\n# A\n## B\n",
-    "expectedOutput": "next | ## B | # A | next | # A | ## B"
+    "expectedOutput": "next | ## B | # A | next | # A | ## B\n"
   },
   {
     "input": "42\nplain text\n### C\n## B\nlonger line\nlonger line\nlonger line\nplain text\n## B\n# A\n## B\n",
-    "expectedOutput": "plain text | ### C | ## B | longer line\n### C | ## B | longer line | longer line\n### C | ## B | plain text | ## B | # A\n# A | ## B"
+    "expectedOutput": "plain text | ### C | ## B | longer line\n### C | ## B | longer line | longer line\n### C | ## B | plain text | ## B | # A\n# A | ## B\n"
   },
   {
     "input": "18\nlonger line\n",
-    "expectedOutput": "longer line"
+    "expectedOutput": "longer line\n"
   },
   {
     "input": "28\nplain text\n## B\nnext\n### C\n### C\n",
-    "expectedOutput": "plain text | ## B | next\n## B | ### C | ### C"
+    "expectedOutput": "plain text | ## B | next\n## B | ### C | ### C\n"
   },
   {
     "input": "35\nnext\n## B\nnext\nlonger line\n### C\n## B\n## B\n# A\n",
-    "expectedOutput": "next | ## B | next | longer line\n## B | ### C | ## B | ## B | # A"
+    "expectedOutput": "next | ## B | next | longer line\n## B | ### C | ## B | ## B | # A\n"
   },
   {
     "input": "29\nlonger line\n### C\n# A\nnext\n## B\nnext\nplain text\n## B\n# A\n",
-    "expectedOutput": "longer line | ### C | # A\n# A | next | ## B | next\n# A | ## B | plain text\n# A | ## B | # A"
+    "expectedOutput": "longer line | ### C | # A\n# A | next | ## B | next\n# A | ## B | plain text\n# A | ## B | # A\n"
   },
   {
     "input": "29\n## B\n# A\n## B\n# A\n# A\nnext\n## B\n### C\n",
-    "expectedOutput": "## B | # A | ## B | # A | # A\n# A | next | ## B | ### C"
+    "expectedOutput": "## B | # A | ## B | # A | # A\n# A | next | ## B | ### C\n"
   },
   {
     "input": "8\n## B\n",
-    "expectedOutput": "## B"
+    "expectedOutput": "## B\n"
   },
   {
     "input": "29\nnext\n## B\n## B\nnext\n",
-    "expectedOutput": "next | ## B | ## B | next"
+    "expectedOutput": "next | ## B | ## B | next\n"
   },
   {
     "input": "30\nplain text\nnext\n# A\nnext\n",
-    "expectedOutput": "plain text | next | # A | next"
+    "expectedOutput": "plain text | next | # A | next\n"
   },
   {
     "input": "12\n## B\n# A\n# A\n# A\n",
-    "expectedOutput": "## B | # A\n# A | # A"
+    "expectedOutput": "## B | # A\n# A | # A\n"
   },
   {
     "input": "11\n## B\nnext\n",
-    "expectedOutput": "## B | next"
+    "expectedOutput": "## B | next\n"
   },
   {
     "input": "42\nlonger line\nnext\nlonger line\n### C\n### C\n",
-    "expectedOutput": "longer line | next | longer line | ### C\n### C | ### C"
+    "expectedOutput": "longer line | next | longer line | ### C\n### C | ### C\n"
   },
   {
     "input": "24\nlonger line\nplain text\n",
-    "expectedOutput": "longer line | plain text"
+    "expectedOutput": "longer line | plain text\n"
   },
   {
     "input": "14\n### C\n### C\n",
-    "expectedOutput": "### C | ### C"
+    "expectedOutput": "### C | ### C\n"
   },
   {
     "input": "22\nplain text\n# A\nnext\n# A\nlonger line\n### C\n",
-    "expectedOutput": "plain text | # A\n# A | next | # A\n# A | longer line\n# A | ### C"
+    "expectedOutput": "plain text | # A\n# A | next | # A\n# A | longer line\n# A | ### C\n"
   },
   {
     "input": "28\nlonger line\nplain text\nnext\nplain text\nlonger line\n## B\nplain text\n## B\n# A\n",
-    "expectedOutput": "longer line | plain text\nnext | plain text\nlonger line | ## B\n## B | plain text | ## B\n# A"
+    "expectedOutput": "longer line | plain text\nnext | plain text\nlonger line | ## B\n## B | plain text | ## B\n# A\n"
   },
   {
     "input": "19\n### C\nnext\nlonger line\n# A\nplain text\n# A\n## B\n## B\nnext\n### C\n",
-    "expectedOutput": "### C | next\n### C | longer line\n# A | plain text\n# A | ## B | ## B\n# A | ## B | next\n# A | ## B | ### C"
+    "expectedOutput": "### C | next\n### C | longer line\n# A | plain text\n# A | ## B | ## B\n# A | ## B | next\n# A | ## B | ### C\n"
   },
   {
     "input": "44\n# A\n## B\n",
-    "expectedOutput": "# A | ## B"
+    "expectedOutput": "# A | ## B\n"
   },
   {
     "input": "33\n### C\n# A\nplain text\n## B\n## B\n## B\nlonger line\nlonger line\n",
-    "expectedOutput": "### C | # A | plain text | ## B\n# A | ## B | ## B | longer line\n# A | ## B | longer line"
+    "expectedOutput": "### C | # A | plain text | ## B\n# A | ## B | ## B | longer line\n# A | ## B | longer line\n"
   }
 ]

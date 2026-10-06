@@ -1,0 +1,257 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-duolingo-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Replace Nth Consonant",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Duolingo"
+    ],
+    "description": "对 message 中每第 n 个英文字母辅音，替换成字母表顺序中的下一个辅音；保留大小写，其他字符保持不变。来源样例输出 `CodeTignam` 中的大写 T 与原始小写 s、大小写保留规则及解释不符；本站按文字规则和解释修正为 `Codetignam`。\n\n以下 ASCII 字符集、边界及标准输入输出格式为本站补充契约，不声称是来源题面的原始约束。",
+    "input": "两行输入：第一行 message（1..200000 个 ASCII 字符，不含换行）；第二行整数 n（1≤n≤200000）。仅 ASCII A-Z/a-z 参与辅音判断，元音为 a、e、i、o、u，y 视为辅音；其他 ASCII 字符原样保留。",
+    "output": "输出转换后的整行 message。",
+    "explanation": "扫描字符串并维护已见辅音数；每当计数是 n 的倍数时，在 21 个英文字母辅音组成的循环中前进一位。",
+    "hints": [
+      "扫描字符串并维护已见辅音数；每当计数是 n 的倍数时，在 21 个英文字母辅音组成的循环中前进一位。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 16384,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "Codesignal\n3\n",
+      "expectedOutput": "Codetignam\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "bdf\n1\n",
+      "expectedOutput": "cfg\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "xyz\n1\n",
+      "expectedOutput": "yzb\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "esHiVLbPvxHpv\n7\n",
+      "expectedOutput": "esHiVLbPwxHpv\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "v?mEmnKkZ-tNL\n1\n",
+      "expectedOutput": "w?nEnpLlB-vPM\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "yp.sWrfAnWCB,fv-SjWzmO\n3\n",
+      "expectedOutput": "yp.tWrgAnWDB,fw-SjXzmO\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "WEkFQnvL!fzvc\n5\n",
+      "expectedOutput": "WEkFQpvL!fzwc\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "ftOqh,\n3\n",
+      "expectedOutput": "ftOrh,\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "sL\n5\n",
+      "expectedOutput": "sL\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "A\n3\n",
+      "expectedOutput": "A\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "utblKabyIXlmd\n4\n",
+      "expectedOutput": "utblLabyIXmmd\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "HvwgMf,Gq YlqwViTux.yR\n5\n",
+      "expectedOutput": "HvwgNf,Gq YmqwViTuy.yR\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "AXYehciPwJWEguqb-\n2\n",
+      "expectedOutput": "AXZehdiPxJXEgurb-\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "iKEkUP MyPJywEEdmEXa?\n7\n",
+      "expectedOutput": "iKEkUP MyPKywEEdmEXa?\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "Zq-sMRBxQf\n4\n",
+      "expectedOutput": "Zq-sNRBxRf\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "NlIbEACsQSeq-lDbT?JOkU\n3\n",
+      "expectedOutput": "NlIcEACsRSeq-mDbV?JOkU\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "gQFZ!PYAyJtmAEdPP\n3\n",
+      "expectedOutput": "gQGZ!PZAyJvmAEdQP\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "ZSvcF\n7\n",
+      "expectedOutput": "ZSvcF\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": ",k\n4\n",
+      "expectedOutput": ",k\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "mG\n6\n",
+      "expectedOutput": "mG\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "BFS\n3\n",
+      "expectedOutput": "BFT\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "UV\n7\n",
+      "expectedOutput": "UV\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "VZLfGmnVN!-OCHUuSalv\n7\n",
+      "expectedOutput": "VZLfGmpVN!-OCHUuSalw\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "RC!Tbs\n1\n",
+      "expectedOutput": "SD!Vct\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": " rtfRVTKyoz!\n5\n",
+      "expectedOutput": " rtfRWTKyoz!\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "sWdz.pyxz?m jUwKEytHfJ\n6\n",
+      "expectedOutput": "sWdz.pzxz?m jUwLEytHfJ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "WloRj rakSzyjpL.HIRaT-\n4\n",
+      "expectedOutput": "WloRk rakSbyjpM.HIRaT-\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "ZyGRAtKG!DQr\n4\n",
+      "expectedOutput": "ZyGSAtKG!FQr\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "n zC-Nb.pK\n4\n",
+      "expectedOutput": "n zC-Pb.pK\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "BYItbdEUPMBClI\n7\n",
+      "expectedOutput": "BYItbdEUPNBClI\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "vkp ggJ-UjLLL,SbuBSDmZ\n4\n",
+      "expectedOutput": "vkp hgJ-UjMLL,ScuBSDnZ\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "c\n2\n",
+      "expectedOutput": "c\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

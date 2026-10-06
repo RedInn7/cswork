@@ -28,3 +28,5 @@
 `python3 scripts/oa-judge/batches/misc_companies_remaining.py` 补齐 MesHy、Fortinet、HSBC、WeRide、Agoda、Infosys、Koddi 的剩余审核。当前 9 道进入离线候选（其中 HSBC #1 用 source-bound resolution 修正明显错印的示例值）；每题有 120 个唯一 oracle 输入、30 个正式测试和两个被击杀的正常退出 mutant。其余新审的题按固定题面缺失或矛盾逐题 blocked；已由其它批次审核的题保留既有决定、不重复覆盖。固定上游页 blob、SHA-256、逐题决定和 I/O 补充见 `source-evidence/misc-companies-remaining.json`、`reviews/misc-companies-remaining.json`、`resolutions/misc-companies-remaining.json`。尚未运行真实 GoJudge，不是线上已支持题目。
 
 `python3 scripts/oa-judge/batches/extra_30_review.py` 审核 15 家公司的 30 条题目，只写 `candidate-batches/extra-30-review.json` 和对应候选包、讲义、oracle、mutants、source evidence 与 reviews；不改 coverage、主 registry 或沙箱验收报告。固定 OA-Master 快照为 `e66f809f4c953bce129f68491726176615db6afc`。13 道明确题目各有 120 个唯一 oracle 输入、32 个正式用例及两个正常退出且被击杀的 mutant；另外 17 道逐题给出 blocked 原因。离线验证不代表 GoJudge 已验收。
+
+`python3 scripts/oa-judge/batches/duolingo_flexport5_review.py` 为 Duolingo #3 与 Flexport #5 生成候选题包，并为 Flexport #6 单独记录 blocked 原因。每个候选有 120 个唯一输入、32 个正式用例、独立 oracle 与两个正常退出 mutant；固定上游 MDX blob 和 catalog 指纹记录在 source evidence。Duolingo 来源样例的大小写笔误按规则更正；Flexport #6 需澄清可删除节点的范围。只做离线验证，未调用 GoJudge，不进入 runtime batches 或 coverage。

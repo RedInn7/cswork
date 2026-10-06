@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-safetykit-1",
+  "title": "Image Transformations on Binary Matrix",
+  "explanation": "## 思路\n\n逐次应用题目指定的变换：顺时针 90 度旋转可用新矩阵 `b[i][j]=a[n-1-j][i]`；重复 rotation/90 次后，若开启垂直翻转则反转行顺序，若开启水平翻转则反转每行。\n\n## 正确性证明\n\n公式将旧矩阵第 `n-1-j` 行、第 `i` 列元素放到新矩阵第 `i` 行、第 `j` 列，正是顺时针 90 度旋转。重复该变换得到指定角度；随后反转行序与行内列序分别实现上下、左右翻转。各操作严格按题面次序执行，故结果正确。\n\n## 复杂度\n\nO(n²) 时间与 O(n²) 空间。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n v=list(map(int,raw.split())); n,rotation,vf,hf=v[:4]; a=[v[4+i*n:4+(i+1)*n] for i in range(n)]\n for _ in range(rotation//90): a=[list(row) for row in zip(*a[::-1])]\n if vf: a.reverse()\n if hf: a=[row[::-1] for row in a]\n return \"\\n\".join(\" \".join(map(str,row)) for row in a)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/safetykit#1-image-transformations-on-binary-matrix",
+  "sourceContentHash": "410507ae7f8e7b4b0ad9174b4afa08284da2f9f8dbc36e5fe2179688754c352c",
+  "author": "Chunyu Sui"
+}
