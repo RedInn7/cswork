@@ -4,10 +4,10 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1042,
-    "awaiting_sandbox": 29,
-    "blocked": 557,
-    "unreviewed": 6
+    "sandbox_verified": 1076,
+    "awaiting_sandbox": 0,
+    "blocked": 558,
+    "unreviewed": 0
   },
   "items": [
     {
@@ -6939,7 +6939,9 @@
     {
       "id": "oa-duolingo-3",
       "company": "duolingo",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "duolingo-flexport5-review",
+      "reason": "已核对固定上游 MDX 与 catalog 题面；补充契约公开标明为本站定义。独立参考实现与穷举/直接 oracle 对照 120 个互异输入，两个正常退出 mutant 均被正式用例击杀。仅完成离线验证，未运行 GoJudge。 来源样例将小写 s 的替换结果印成大写 T，与保留大小写规则及解释中的 s→t 冲突；本站依规则保留小写并将样例输出更正为 Codetignam。"
     },
     {
       "id": "oa-twilio-1",
@@ -6957,7 +6959,7 @@
     {
       "id": "oa-datadog-1",
       "company": "datadog",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -7754,12 +7756,15 @@
     {
       "id": "oa-flexport-5",
       "company": "flexport",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "duolingo-flexport5-review",
+      "reason": "已核对固定上游 MDX 与 catalog 题面；补充契约公开标明为本站定义。独立参考实现与穷举/直接 oracle 对照 120 个互异输入，两个正常退出 mutant 均被正式用例击杀。仅完成离线验证，未运行 GoJudge。"
     },
     {
       "id": "oa-flexport-6",
       "company": "flexport",
-      "status": "unreviewed"
+      "status": "blocked",
+      "reason": "固定题面只说可删除恰好一个节点，没有说明候选是否限于初始感染节点；现有解释与解法擅自将候选限制为 malware=1。任意节点删除与感染节点删除可产生不同答案；题面也未保证至少一个感染节点，且示例无法消歧。可按题面字面补充‘传播前可删除任一节点’，或明确‘只可删除初始感染节点’并保证感染集合非空；两种口径都可用节点删除后重新 BFS 求解。"
     },
     {
       "id": "oa-flexport-7",
@@ -7814,7 +7819,9 @@
     {
       "id": "oa-tradedesk-7",
       "company": "tradedesk",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "saas-tech-three-review",
+      "reason": "已对照固定 OAMaster catalog 题面语义；本站 I/O 和缺失边界补充已写入包。163 个 oracle 输入、参考解与两个正常退出 mutant 均离线验证通过。source-evidence 仅有 catalog hash，原始 MDX 路径/blob 不在本地快照中；未执行上游来源程序。未运行 GoJudge。"
     },
     {
       "id": "oa-tradedesk-8",
@@ -9629,7 +9636,7 @@
     {
       "id": "oa-arista-networks-1",
       "company": "arista-networks",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -9680,7 +9687,7 @@
     {
       "id": "oa-f5-1",
       "company": "f5",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -9699,7 +9706,7 @@
     {
       "id": "oa-guidewire-1",
       "company": "guidewire",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -9821,14 +9828,14 @@
     {
       "id": "oa-ge-vernova-1",
       "company": "ge-vernova",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
     {
       "id": "oa-crusoe-1",
       "company": "crusoe",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -9859,14 +9866,14 @@
     {
       "id": "oa-harvey-2",
       "company": "harvey",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-sierra-1",
       "company": "sierra",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -9947,14 +9954,16 @@
     {
       "id": "oa-observerai-1",
       "company": "observerai",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
     {
       "id": "oa-safetykit-1",
       "company": "safetykit",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "saas-tech-three-review",
+      "reason": "已对照固定 OAMaster catalog 题面语义；本站 I/O 和缺失边界补充已写入包。163 个 oracle 输入、参考解与两个正常退出 mutant 均离线验证通过。source-evidence 仅有 catalog hash，原始 MDX 路径/blob 不在本地快照中；未执行上游来源程序。未运行 GoJudge。"
     },
     {
       "id": "oa-safetykit-2",
@@ -9979,7 +9988,9 @@
     {
       "id": "oa-reevo-2",
       "company": "reevo",
-      "status": "unreviewed"
+      "status": "sandbox_verified",
+      "batch": "saas-tech-three-review",
+      "reason": "已对照固定 OAMaster catalog 题面语义；本站 I/O 和缺失边界补充已写入包。163 个 oracle 输入、参考解与两个正常退出 mutant 均离线验证通过。source-evidence 仅有 catalog hash，原始 MDX 路径/blob 不在本地快照中；未执行上游来源程序。未运行 GoJudge。"
     },
     {
       "id": "oa-reevo-3",
@@ -10002,21 +10013,21 @@
     {
       "id": "oa-persona-3",
       "company": "persona",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-braze-1",
       "company": "braze",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
     {
       "id": "oa-verkada-1",
       "company": "verkada",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -10103,7 +10114,7 @@
     {
       "id": "oa-money-forward-2",
       "company": "money-forward",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10116,7 +10127,7 @@
     {
       "id": "oa-zalando-2",
       "company": "zalando",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10249,14 +10260,14 @@
     {
       "id": "oa-oscar-health-1",
       "company": "oscar-health",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
     {
       "id": "oa-geico-1",
       "company": "geico",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10269,14 +10280,14 @@
     {
       "id": "oa-oura-1",
       "company": "oura",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
     {
       "id": "oa-toshiba-1",
       "company": "toshiba",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -10358,7 +10369,7 @@
     {
       "id": "oa-publicis-sapient-1",
       "company": "publicis-sapient",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -10383,7 +10394,7 @@
     {
       "id": "oa-juspay-1",
       "company": "juspay",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10402,7 +10413,7 @@
     {
       "id": "oa-epifi-1",
       "company": "epifi",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
@@ -10474,14 +10485,14 @@
     {
       "id": "oa-hackerearth-1",
       "company": "hackerearth",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-hackerearth-2",
       "company": "hackerearth",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10506,7 +10517,7 @@
     {
       "id": "oa-ukg-1",
       "company": "ukg",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10680,14 +10691,14 @@
     {
       "id": "oa-commvault-3",
       "company": "commvault",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "unreviewed-32",
       "reason": "固定 catalog 快照中的题目规则足以定义唯一输入输出；独立 oracle 对照 163 个不同输入，且两个正常退出错误程序均被正式测例击杀。离线验证，不代表 GoJudge 通过。"
     },
     {
       "id": "oa-xperi-1",
       "company": "xperi",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10700,14 +10711,14 @@
     {
       "id": "oa-abaka-ai-1",
       "company": "abaka-ai",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
     {
       "id": "oa-abaka-ai-2",
       "company": "abaka-ai",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },
@@ -10726,7 +10737,7 @@
     {
       "id": "oa-eat-club-1",
       "company": "eat-club",
-      "status": "awaiting_sandbox",
+      "status": "sandbox_verified",
       "batch": "extra-30-review",
       "reason": "固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。"
     },

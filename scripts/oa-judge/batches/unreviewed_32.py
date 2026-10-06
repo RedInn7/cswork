@@ -19,7 +19,8 @@ def compact(x): return json.dumps(x, ensure_ascii=False, separators=(',', ':'))
 def digest(x): return hashlib.sha256(x if isinstance(x, bytes) else x.encode()).hexdigest()
 def run(code, raw):
     ns = {}; exec(compile(code, '<candidate>', 'exec'), ns)
-    return str(ns['solve'](raw))
+    # Match the actual judge entrypoint, which writes solve() through print().
+    return str(ns['solve'](raw))+'\n'
 
 def make(id, company, title, desc, inp, out, solve, oracle, gen, samples, mutants, limits, editorial, checker='tokens'):
     return dict(id=id, company=company, title=title, description=desc, input=inp, output=out,
@@ -531,12 +532,12 @@ def build():
         oracle_cases=[];seen=set()
         for raw in s['samples']:
             if raw not in seen:
-                seen.add(raw);oracle_cases.append({'input':raw,'expectedOutput':str(s['oracle'](raw))})
+                seen.add(raw);oracle_cases.append({'input':raw,'expectedOutput':str(s['oracle'](raw))+'\n'})
         attempts=0
         while len(oracle_cases)<163 and attempts<20000:
             attempts+=1;raw=s['gen'](RNG)
             if raw in seen:continue
-            expected=str(s['oracle'](raw));actual=run(s['solve'],raw)
+            expected=str(s['oracle'](raw))+'\n';actual=run(s['solve'],raw)
             assert output_equal(actual,expected,s['checker']), f'{item_id}: oracle mismatch on {raw!r}: {actual!r} != {expected!r}'
             seen.add(raw);oracle_cases.append({'input':raw,'expectedOutput':expected})
         assert len(oracle_cases)>=120 and len(seen)==len(oracle_cases), item_id+' lacks unique oracle cases'
@@ -557,10 +558,10 @@ def build():
             raw=s['gen'](RNG)
             if raw not in public_inputs:public_inputs.append(raw)
         for i,raw in enumerate(public_inputs):
-            expected=str(s['oracle'](raw));assert output_equal(run(s['solve'],raw),expected,s['checker'])
-            cases.append({'name':f'样例 {i+1}','input':raw,'expectedOutput':expected+'\n','hidden':False,'weight':1})
-        for i,row in enumerate(oracle_cases):
-            cases.append({'name':f'隐藏验证 {i+1}','input':row['input'],'expectedOutput':row['expectedOutput']+'\n','hidden':True,'weight':1})
+            expected=str(s['oracle'](raw))+'\n';assert output_equal(run(s['solve'],raw),expected,s['checker'])
+            cases.append({'name':f'样例 {i+1}','input':raw,'expectedOutput':expected,'hidden':False,'weight':1})
+        for i,row in enumerate(oracle_cases[:40]):
+            cases.append({'name':f'隐藏验证 {i+1}','input':row['input'],'expectedOutput':row['expectedOutput'],'hidden':True,'weight':1})
         package={'schemaVersion':1,'problem':problem,'cases':cases}
         negative=[];mutants=[]
         for name,code in s['mutants']:
@@ -589,7 +590,7 @@ def build():
         for mi,mutant in enumerate(mutants):
             (ROOT/'negative-controls'/f'{item_id}-{mi+1}.py').write_text(mutant['code'])
         validation['problems'].append({'id':item_id,'oracleCases':len(oracle_cases),'publicCases':len(public_inputs),
-            'hiddenCases':len(oracle_cases),'negativeControls':negative,
+            'hiddenCases':min(40,len(oracle_cases)),'negativeControls':negative,
             'packageSha256':digest((ROOT/'packages'/f'{item_id}.json').read_bytes()),
             'referenceSha256':digest((ROOT/'references'/f'{item_id}.py').read_bytes()),
             'oracleSha256':digest((ROOT/'oracles'/f'{item_id}.json').read_bytes()),
