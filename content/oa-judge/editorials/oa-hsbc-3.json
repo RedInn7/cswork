@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hsbc-3",
+  "title": "最大房屋面积",
+  "explanation": "## 思路\n\n对每个尚未访问的 1 做四方向 BFS/DFS，统计该连通块大小并更新最大值。\n\n## 正确性证明\n\n每个 1 恰好属于一个四连通分量，BFS 恰好访问该分量；取所有分量大小的最大值即题目所求。\n\n## 复杂度\n\nO(nm) 时间，O(nm) 空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/hsbc#3-find-largest-house-area；原题连通规则明确；本站补充网格规模和空网格结果。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n,m=a[:2]; g=[a[2+i*m:2+(i+1)*m] for i in range(n)]; seen=set(); best=0\n    for i in range(n):\n      for j in range(m):\n        if g[i][j] and (i,j) not in seen:\n          q=[(i,j)]; seen.add((i,j)); z=0\n          for x,y in q:\n            z+=1\n            for u,v in ((x+1,y),(x-1,y),(x,y+1),(x,y-1)):\n              if 0<=u<n and 0<=v<m and g[u][v] and (u,v) not in seen: seen.add((u,v)); q.append((u,v))\n          best=max(best,z)\n    return str(best)\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/hsbc#3-find-largest-house-area",
+  "sourceContentHash": "bc491c62512372ce7be7577a7bddababee74bfcb3e6c5f6a6e16ba8ae3e85292",
+  "author": "Chunyu Sui"
+}

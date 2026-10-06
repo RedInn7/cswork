@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-9",
+  "title": "投资人会面安排",
+  "explanation": "## 思路\n\n按可用起始日加入候选，每天从候选中选择最早结束的投资人；若当前没有候选则跳至下一个起始日。\n\n## 正确性证明\n\n若某天安排了结束更晚的区间而保留更早结束的区间，交换二者不会减少已安排场次且为后续留下不少选择。因此每天取最早截止者是安全的贪心；过期区间不可能再被安排。\n\n## 复杂度\n\nO(n log n) 时间，O(n) 空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/weride#9-meetup-schedule；题意的闭区间及每日限制明确；原文缺约束，本站补充日期和数量上限。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    z=list(map(int,raw.split())); n=z[0]; s=z[1:1+n]; e=z[1+n:1+2*n]\n    q=sorted((s[i],e[i]) for i in range(n)); day=0; ans=0; i=0; h=[]\n    import heapq\n    while i<n or h:\n      if not h: day=max(day,q[i][0])\n      while i<n and q[i][0]<=day: heapq.heappush(h,q[i][1]); i+=1\n      while h and h[0]<day: heapq.heappop(h)\n      if h: heapq.heappop(h); ans+=1; day+=1\n    return str(ans)\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/weride#9-meetup-schedule",
+  "sourceContentHash": "d0ca0bff74708ee0e5b708b2ef4c1f63edc77848111b539ce7e4cdb61d8e2988",
+  "author": "Chunyu Sui"
+}

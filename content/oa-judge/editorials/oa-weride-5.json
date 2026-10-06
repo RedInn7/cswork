@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-5",
+  "title": "机器人移动可达性",
+  "explanation": "## 思路\n\n从目标反向走：若 x>y，最后一步只能来自 (x−y,y)；否则来自 (x,y−x)。坐标低于起点即不可能。\n\n## 正确性证明\n\n两种正向操作分别只会增加一个坐标且增量等于另一个坐标，因此逆操作唯一。反复应用逆操作必然减小坐标和，最终到达起点则且唯有此时可达。\n\n## 复杂度\n\n最多 O(x2+y2) 次，O(1) 额外空间；在题目给定 1000 上限内足够。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/weride#5-bot-movement-reachability-two-move-types；起终点范围和两种移动精确定义；本站规定 stdin/stdout。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    x,y,a,b=map(int,raw.split())\n    while a>=x and b>=y and (a,b)!=(x,y):\n      if a>b: a-=b\n      else: b-=a\n    return 'Yes' if (a,b)==(x,y) else 'No'\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/weride#5-bot-movement-reachability-two-move-types",
+  "sourceContentHash": "b1639717ffbe4708cefb3029bfffbbb3d069343624539d09b7792a5e067eb34c",
+  "author": "Chunyu Sui"
+}

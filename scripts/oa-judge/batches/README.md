@@ -24,3 +24,5 @@
 只有主发布流程完成真实沙箱验收并核验内容指纹后，才能把本批次聚合到正式 registry。
 
 `python3 scripts/oa-judge/batches/goldman_sachs_remaining.py` 生成 Goldman Sachs 候选批次 `goldman-sachs-remaining`，仅写入 `candidate-batches/`，不进入正式 registry，也未连接 GoJudge。选入 #9、#10、#16、#17、#21、#22、#23、#25、#29、#31；每题有 163 组参考解/独立 oracle 比对、至少 27 个隐藏用例及两个正常退出 mutant。固定原始快照路径与 Git blob、catalog 内容指纹及 blocked 决策见 `source-evidence/goldman-sachs-remaining.json`；#18 因原样例迷宫输入、输出和解释互相矛盾而 blocked，其余未选题理由见 reviews 文件。
+
+`python3 scripts/oa-judge/batches/misc_companies_remaining.py` 审阅 MesHy、Fortinet、HSBC、WeRide、Agoda、Infosys、Koddi 的剩余题目。当前 9 道进入离线候选，分别有 120 个唯一 oracle 输入、30 个正式测试和两个被击杀的正常退出 mutant；另外 24 道按固定题面缺失或矛盾逐题 blocked。WeRide 已有审核记录的题不重复覆盖。固定上游页 blob、SHA-256、逐题决定和 I/O 补充见 `source-evidence/misc-companies-remaining.json`、`reviews/misc-companies-remaining.json`。尚未运行真实 GoJudge，不是线上已支持题目。

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-4",
+  "title": "共同好友推荐",
+  "explanation": "## 思路\n\n只需累计二跳邻居的出现次数。若不存在二跳候选，则所有非好友候选的共同好友数均为 0，取最小可用编号。\n\n## 正确性证明\n\n任意共同好友 z 对应路径 y-z-x，因此 x 的累计次数就是共同好友数；遍历所有二跳邻居即可覆盖每个正分候选。无计数候选时最大值为 0，所有合格用户并列，题目要求选最小编号。\n\n## 复杂度\n\n每个用户最多检查 15×15 个二跳路径，时间 O(n·15²+m)，空间 O(n+m)。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends；原题排序规则和每人最多 15 个好友明确；本站补充无重复边和输入输出协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    z=list(map(int,raw.split())); n,m=z[:2]; g=[set() for _ in range(n)]\n    for i in range(m):\n      a,b=z[2+2*i:4+2*i]; g[a].add(b);g[b].add(a)\n    ans=[]\n    for y in range(n):\n      counts={}\n      for f in g[y]:\n        for x in g[f]:\n          if x!=y and x not in g[y]: counts[x]=counts.get(x,0)+1\n      if counts:\n        mx=max(counts.values()); ans.append(min(x for x,v in counts.items() if v==mx))\n      else:\n        x=0\n        while x==y or x in g[y]: x+=1\n        ans.append(x if x<n else -1)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends",
+  "sourceContentHash": "714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3",
+  "author": "Chunyu Sui"
+}

@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-weride-9",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "投资人会面安排",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "WeRide",
+      "贪心",
+      "区间调度"
+    ],
+    "description": "每位投资人只在闭区间 [firstDay[i], lastDay[i]] 可见面；每天最多安排一场。求最多能安排多少场会面。\n\n题意的闭区间及每日限制明确；原文缺约束，本站补充日期和数量上限。\n\n来源：https://oamaster.com/docs/companies/weride#9-meetup-schedule（固定题面指纹 d0ca0bff74708ee0e5b708b2ef4c1f63edc77848111b539ce7e4cdb61d8e2988）。本站新增的输入输出协议/边界按题面说明，不声称为原站规则。",
+    "input": "第一行 n（0≤n≤100000）；第二行 n 个 firstDay；第三行 n 个 lastDay。日期为 1..10^9，且 firstDay[i]≤lastDay[i]。",
+    "output": "输出最多会面数。",
+    "explanation": "完整思路、证明及复杂度见配套讲义。",
+    "hints": [
+      "按可用起始日加入候选，每天从候选中选择最早结束的投资人；若当前没有候选则跳至下一个起始日。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "3\n1 2 3\n2 3 4\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3\n1 1 2\n1 2 2\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "0\n\n\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "3\n7 6 1\n8 9 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "2\n6 6\n7 8\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "3\n5 1 2\n5 4 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "5\n2 5 6 3 5\n3 9 10 9 7\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "4\n6 2 4 4\n10 9 9 9\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "5\n1 5 5 4 3\n7 5 7 4 4\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "5\n6 3 1 8 5\n6 9 5 9 7\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "3\n1 5 5\n9 6 6\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "8\n2 8 4 3 8 4 4 8\n7 9 7 10 9 10 4 9\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "3\n4 2 3\n9 2 5\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "8\n6 3 4 4 5 7 2 2\n10 8 6 6 5 9 2 3\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "4\n3 4 8 1\n7 6 8 3\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "8\n7 1 2 8 1 2 7 8\n10 7 3 10 8 2 9 8\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "1\n4\n4\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "3\n2 7 5\n4 8 9\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "7\n6 4 4 1 7 7 1\n7 10 6 6 7 9 7\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "8\n3 7 1 5 3 5 5 7\n7 8 4 9 7 9 6 7\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "4\n6 2 7 7\n6 9 9 10\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "6\n6 6 8 2 6 8\n10 9 9 8 6 8\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "5\n7 8 2 1 2\n8 10 7 2 2\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "2\n8 1\n10 7\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "7\n7 2 4 3 3 5 1\n9 4 10 9 9 7 9\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "5\n2 8 8 2 3\n10 9 10 6 4\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "4\n2 1 1 4\n3 2 10 9\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "6\n4 1 6 3 7 1\n9 4 6 3 9 5\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "2\n7 7\n10 8\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "7\n7 3 7 8 5 4 5\n10 10 7 9 6 9 10\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

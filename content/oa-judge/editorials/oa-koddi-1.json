@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-koddi-1",
+  "title": "首尾字母相同的单词数",
+  "explanation": "## 思路\n\n按空白切分单词，逐个比较小写化后的首尾字母。\n\n## 正确性证明\n\n每个分词结果恰好对应一个单词；对其首尾字符做不区分大小写比较与题意等价，累加真值即所求。\n\n## 复杂度\n\nO(L) 时间，O(L) 空间（分词存储）。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/koddi#1-count-words-starting-and-ending-with-same-letter；题意、大小写规则及空字符串样例明确；本站补充行输入协议。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw): return str(sum(w[0].lower()==w[-1].lower() for w in raw.split() if w))\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/koddi#1-count-words-starting-and-ending-with-same-letter",
+  "sourceContentHash": "aabdd05da914ce83b29ae5f4754110f3f23b0ccb4c1d9097bb5ff5c7438e9310",
+  "author": "Chunyu Sui"
+}

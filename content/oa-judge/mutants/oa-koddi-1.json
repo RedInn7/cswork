@@ -1,0 +1,10 @@
+[
+  {
+    "name": "大小写敏感比较",
+    "code": "import sys\ndef solve(raw): return str(sum(w[0]==w[-1] for w in raw.split() if w))\n\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "跳过单字符词",
+    "code": "import sys\ndef solve(raw): return str(sum(w[0].lower()==w[-1].lower() for w in raw.split() if len(w)>1))\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]

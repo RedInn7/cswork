@@ -1,0 +1,10 @@
+[
+  {
+    "name": "共同好友并列时取最大编号",
+    "code": "import sys\ndef solve(raw):\n    z=list(map(int,raw.split())); n,m=z[:2]; g=[set() for _ in range(n)]\n    for i in range(m):\n      a,b=z[2+2*i:4+2*i]; g[a].add(b);g[b].add(a)\n    ans=[]\n    for y in range(n):\n      counts={}\n      for f in g[y]:\n        for x in g[f]:\n          if x!=y and x not in g[y]: counts[x]=counts.get(x,0)+1\n      if counts:\n        mx=max(counts.values()); ans.append(max(x for x,v in counts.items() if v==mx))\n      else:\n        x=0\n        while x==y or x in g[y]: x+=1\n        ans.append(x if x<n else -1)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "没有共同好友时仍返回 -1",
+    "code": "import sys\ndef solve(raw):\n    z=list(map(int,raw.split())); n,m=z[:2]; g=[set() for _ in range(n)]\n    for i in range(m):\n      a,b=z[2+2*i:4+2*i]; g[a].add(b);g[b].add(a)\n    ans=[]\n    for y in range(n):\n      counts={}\n      for f in g[y]:\n        for x in g[f]:\n          if x!=y and x not in g[y]: counts[x]=counts.get(x,0)+1\n      if counts:\n        mx=max(counts.values()); ans.append(min(x for x,v in counts.items() if v==mx))\n      else:\n        ans.append(-1)\n    return ' '.join(map(str,ans))\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]

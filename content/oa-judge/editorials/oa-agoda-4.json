@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-agoda-4",
+  "title": "区间内无重复数字的整数",
+  "explanation": "## 思路\n\n先统计位数更短的正整数，再逐位枚举小于当前上界数字的合法选择；剩余位数按未使用数字的排列数计数。最后用前缀函数作区间差。\n\n## 正确性证明\n\n每个有效数有唯一十进制位串。逐位分支恰好枚举所有在首个不同位上小于上界的数，排列数计入其余未用数字；若上界自身无重复再计入。F(b)−F(a−1) 因而准确对应闭区间。\n\n## 复杂度\n\nO(log b × 10) 时间，O(10) 额外空间。\n\n## 来源与补充\n\nhttps://oamaster.com/docs/companies/agoda#4-unique-digits-in-range；原题规则清楚；本站补充零的处理、上界和标准输入输出。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    a,b=map(int,raw.split())\n    def upto(x):\n      if x<0:return 0\n      ds=list(map(int,str(x))); L=len(ds); ans=1\n      def perm(n,k):\n        if k>n:return 0\n        v=1\n        for t in range(k):v*=n-t\n        return v\n      for length in range(1,min(L,10)): ans+=9*perm(9,length-1)\n      used=set()\n      for i,d in enumerate(ds):\n        low=1 if i==0 else 0\n        remaining=L-i-1\n        for c in range(low,d):\n          if c not in used: ans+=perm(9-len(used),remaining)\n        if d in used or (i==0 and d==0): break\n        used.add(d)\n      else: ans+=1\n      return ans\n    return str(upto(b)-upto(a-1))\n\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/agoda#4-unique-digits-in-range",
+  "sourceContentHash": "ad4afecb26c3a62396e8e4b999faf5b687be79b6f45cc5a926065788b53659ce",
+  "author": "Chunyu Sui"
+}

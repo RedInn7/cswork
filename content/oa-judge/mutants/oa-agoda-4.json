@@ -1,0 +1,10 @@
+[
+  {
+    "name": "不计整数 0",
+    "code": "import sys\ndef solve(raw):\n    a,b=map(int,raw.split())\n    def upto(x):\n      if x<0:return 0\n      ds=list(map(int,str(x))); L=len(ds); ans=0\n      def perm(n,k):\n        if k>n:return 0\n        v=1\n        for t in range(k):v*=n-t\n        return v\n      for length in range(1,min(L,10)): ans+=9*perm(9,length-1)\n      used=set()\n      for i,d in enumerate(ds):\n        low=1 if i==0 else 0\n        remaining=L-i-1\n        for c in range(low,d):\n          if c not in used: ans+=perm(9-len(used),remaining)\n        if d in used or (i==0 and d==0): break\n        used.add(d)\n      else: ans+=1\n      return ans\n    return str(upto(b)-upto(a-1))\n\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "漏掉左端点",
+    "code": "import sys\ndef solve(raw):\n    a,b=map(int,raw.split())\n    def upto(x):\n      if x<0:return 0\n      ds=list(map(int,str(x))); L=len(ds); ans=1\n      def perm(n,k):\n        if k>n:return 0\n        v=1\n        for t in range(k):v*=n-t\n        return v\n      for length in range(1,min(L,10)): ans+=9*perm(9,length-1)\n      used=set()\n      for i,d in enumerate(ds):\n        low=1 if i==0 else 0\n        remaining=L-i-1\n        for c in range(low,d):\n          if c not in used: ans+=perm(9-len(used),remaining)\n        if d in used or (i==0 and d==0): break\n        used.add(d)\n      else: ans+=1\n      return ans\n    return str(upto(b)-upto(a))\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]

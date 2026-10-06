@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-agoda-4",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "区间内无重复数字的整数",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Agoda",
+      "数位计数",
+      "组合数学"
+    ],
+    "description": "给定闭区间 [a,b]，统计十进制表示中没有重复数字的整数。数字 0 也计为一个有效整数。\n\n原题规则清楚；本站补充零的处理、上界和标准输入输出。\n\n来源：https://oamaster.com/docs/companies/agoda#4-unique-digits-in-range（固定题面指纹 ad4afecb26c3a62396e8e4b999faf5b687be79b6f45cc5a926065788b53659ce）。本站新增的输入输出协议/边界按题面说明，不声称为原站规则。",
+    "input": "一行两个整数 a b（0≤a≤b≤10^18）。",
+    "output": "输出区间内十进制各位互不相同的整数个数。",
+    "explanation": "完整思路、证明及复杂度见配套讲义。",
+    "hints": [
+      "先统计位数更短的正整数，再逐位枚举小于当前上界数字的合法选择；剩余位数按未使用数字的排列数计数。最后用前缀函数作区间差。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 65536,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "5 11\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "0 0\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "98 102\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 1",
+      "input": "100 130\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 2",
+      "input": "1017 1083\n",
+      "expectedOutput": "44\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 3",
+      "input": "209 287\n",
+      "expectedOutput": "56\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 4",
+      "input": "7640 7942\n",
+      "expectedOutput": "115\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 5",
+      "input": "8647 8663\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 6",
+      "input": "7265 7311\n",
+      "expectedOutput": "25\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 7",
+      "input": "7270 7591\n",
+      "expectedOutput": "177\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 8",
+      "input": "6297 6632\n",
+      "expectedOutput": "170\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 9",
+      "input": "4270 4408\n",
+      "expectedOutput": "77\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 10",
+      "input": "8210 8315\n",
+      "expectedOutput": "60\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 11",
+      "input": "7993 8337\n",
+      "expectedOutput": "189\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 12",
+      "input": "9859 10204\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 13",
+      "input": "130 221\n",
+      "expectedOutput": "72\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 14",
+      "input": "4269 4478\n",
+      "expectedOutput": "78\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 15",
+      "input": "7015 7135\n",
+      "expectedOutput": "71\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 16",
+      "input": "4754 4816\n",
+      "expectedOutput": "36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 17",
+      "input": "2178 2198\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 18",
+      "input": "6448 6786\n",
+      "expectedOutput": "132\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 19",
+      "input": "1648 1735\n",
+      "expectedOutput": "48\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 20",
+      "input": "741 967\n",
+      "expectedOutput": "166\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 21",
+      "input": "3777 4108\n",
+      "expectedOutput": "188\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 22",
+      "input": "638 975\n",
+      "expectedOutput": "248\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 23",
+      "input": "1292 1639\n",
+      "expectedOutput": "195\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 24",
+      "input": "1779 1908\n",
+      "expectedOutput": "77\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 25",
+      "input": "9557 9719\n",
+      "expectedOutput": "91\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 26",
+      "input": "8674 8790\n",
+      "expectedOutput": "60\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏验证 27",
+      "input": "4019 4229\n",
+      "expectedOutput": "120\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

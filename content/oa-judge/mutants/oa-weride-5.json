@@ -1,0 +1,10 @@
+[
+  {
+    "name": "反向减法坐标写反",
+    "code": "import sys\ndef solve(raw):\n    x,y,a,b=map(int,raw.split())\n    while a>=x and b>=y and (a,b)!=(x,y):\n      if a>b: b-=a\n      else: a-=b\n    return 'Yes' if (a,b)==(x,y) else 'No'\n\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只接受起点等于终点",
+    "code": "import sys\ndef solve(raw):\n    x,y,a,b=map(int,raw.split())\n    while False:\n      if a>b: a-=b\n      else: b-=a\n    return 'Yes' if (a,b)==(x,y) else 'No'\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]
