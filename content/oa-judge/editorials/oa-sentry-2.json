@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sentry-2",
+  "title": "Escape the Haunted Castle (Part 2)",
+  "explanation": "## 思路\n\n先从 start BFS 得各格最短距离；按距离递增做 DP，只从距离小1的邻格转移，记录到达该格的最短路径中最大宝藏数。\n\n## 正确性证明\n\nBFS 得到的距离使所有最短路径边从 d 到 d+1，构成有向无环图。按距离递增时，DP 已考虑所有最短前驱，取最大值即是到该格的最短路最大宝藏数。出口的距离和 DP 值正是所求。\n\n## 复杂度\n\n时间 O(rows·cols)，空间 O(rows·cols)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n    from collections import deque\n    v=list(map(int,raw.split()));it=iter(v);rows=next(it);cols=next(it);w=set((next(it),next(it)) for _ in range(next(it)));t=set((next(it),next(it)) for _ in range(next(it)));start=(next(it),next(it));end=(next(it),next(it))\n    if start in w or end in w:return '-1 0'\n    dist={start:0};best={start:int(start in t)};q=deque([start]);dirs=((1,0),(-1,0),(0,1),(0,-1))\n    while q:\n        r,c=q.popleft()\n        for dr,dc in dirs:\n            z=(r+dr,c+dc)\n            if not(0<=z[0]<rows and 0<=z[1]<cols) or z in w:continue\n            if z not in dist:dist[z]=dist[(r,c)]+1;best[z]=best[(r,c)]+int(z in t);q.append(z)\n            elif dist[z]==dist[(r,c)]+1:best[z]=max(best[z],best[(r,c)]+int(z in t))\n    return f'{dist[end]} {best[end]}' if end in dist else '-1 0'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/sentry#2-escape-the-haunted-castle-part-2",
+  "sourceContentHash": "dccdc79813b5710252dcd99604ca7e2ab8510131f4c277942ca570e4c400bbc6",
+  "author": "CSWork",
+  "sourceNote": "Sentry #2 与已验证 Persona #3 的题目目标、返回值、宝藏规则及唯一公开示例一致。OAMaster 对 Sentry #2 缺少标准输入输出和范围；本题输入协议、0-based 坐标及 1..200 网格范围为 CSWork 站内补充。"
+}

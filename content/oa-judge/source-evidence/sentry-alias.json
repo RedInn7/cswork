@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "id": "oa-sentry-2",
+  "sourceUrl": "https://oamaster.com/docs/companies/sentry#2-escape-the-haunted-castle-part-2",
+  "sourceContentHash": "dccdc79813b5710252dcd99604ca7e2ab8510131f4c277942ca570e4c400bbc6",
+  "rawPage": {
+    "path": "web/content/docs/companies/sentry.mdx",
+    "pageSourceHash": "f53570752e51ee33a2f0bda52896f5305df9618636c264aad543d36760733dd3",
+    "audit": {
+      "id": "oa-sentry-2",
+      "totalLines": 158,
+      "retainedLines": 7,
+      "solutionLines": 136,
+      "structuralLines": 15
+    }
+  },
+  "catalogContentHash": "dccdc79813b5710252dcd99604ca7e2ab8510131f4c277942ca570e4c400bbc6",
+  "aliasOf": "oa-persona-3",
+  "aliasSource": {
+    "sourceUrl": "https://oamaster.com/docs/companies/persona#3-escape-the-haunted-castle-part-2",
+    "sourceContentHash": "648a6110ae538e621002ad6c1bb1fa72dd7542f5702c8fbc9a20ab06948dc63f",
+    "rawPage": {
+      "path": "web/content/docs/companies/persona.mdx",
+      "pageSourceHash": "b8e502f5fdac4fac7e642d2b0c1319c09b1f0b44ddb95a657c0f27f569783408",
+      "audit": {
+        "id": "oa-persona-3",
+        "totalLines": 159,
+        "retainedLines": 8,
+        "solutionLines": 136,
+        "structuralLines": 15
+      }
+    }
+  },
+  "equivalence": {
+    "sharedContract": [
+      "four-direction grid movement with walls",
+      "minimize path length before maximizing treasure count",
+      "each treasure is collected at most once",
+      "return (-1, 0) when the exit is unreachable",
+      "the only Sentry sample is byte-for-byte the adapted package's first formal input and yields (4, 1)"
+    ],
+    "sentryOriginalScope": "OAMaster Sentry #2 specifies a Treasure class, escape() returning (min_steps, max_treasures), and one 3x3 example; it does not specify stdin/stdout serialization or numeric bounds.",
+    "siteDefinedSemantics": {
+      "input": "第一行输入 rows cols；第二行输入墙的数量 wallCount；接下来 wallCount 行各输入一个墙坐标 row col；然后输入宝藏数量 treasureCount；接下来 treasureCount 行各输入一个宝藏坐标 row col；最后两行分别输入起点和出口坐标。坐标均为 0-based。站内约束：1 <= rows, cols <= 200；所有坐标均在网格内；起点和出口不是墙；宝藏坐标互不相同。墙坐标重复时按同一面墙处理。",
+      "limits": "1 <= rows, cols <= 200",
+      "coordinates": "0-based and in bounds; start/end are not walls; treasure coordinates are unique; duplicate wall coordinates are treated as one wall",
+      "startingCellTreasure": "counted once"
+    }
+  },
+  "verification": {
+    "oracleCases": 120,
+    "uniqueOracleInputs": 120,
+    "formalCases": 32,
+    "mutants": 2,
+    "goJudge": "awaiting_sandbox",
+    "note": "Reused the verified Persona #3 reference/oracle/mutants after confirming the identical algorithmic contract and Sentry public example. CSWork-only input semantics and limits are stated in the package and source evidence. Offline checks only; real GoJudge validation is still required."
+  }
+}

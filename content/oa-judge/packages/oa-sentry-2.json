@@ -1,0 +1,260 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-sentry-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Escape the Haunted Castle (Part 2)",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Sentry",
+      "BFS",
+      "动态规划",
+      "网格"
+    ],
+    "description": "给定一个由可通行格和墙组成的网格，以及起点、出口和若干宝藏。每个宝藏最多拾取一次。求从起点到出口的最少移动步数；在所有最短路径中，再求最多能收集的宝藏数。无法到达出口时输出 `-1 0`。\n\nOAMaster 的 Sentry #2 只给出了函数目标和一个示例，没有提供在线判题的标准输入格式或边界。以下 stdin/stdout 协议与约束是 CSWork 为本题补充的站内定义，不代表 OAMaster 原文。",
+    "input": "第一行输入 rows cols；第二行输入墙的数量 wallCount；接下来 wallCount 行各输入一个墙坐标 row col；然后输入宝藏数量 treasureCount；接下来 treasureCount 行各输入一个宝藏坐标 row col；最后两行分别输入起点和出口坐标。坐标均为 0-based。站内约束：1 <= rows, cols <= 200；所有坐标均在网格内；起点和出口不是墙；宝藏坐标互不相同。墙坐标重复时按同一面墙处理。",
+    "output": "输出两个整数：最少步数和所有最短路径中可收集的最多宝藏数。起点格上的宝藏计入结果；不可达时输出 `-1 0`。",
+    "explanation": "先从 start BFS 得各格最短距离；按距离递增做 DP，只从距离小1的邻格转移，记录到达该格的最短路径中最大宝藏数。",
+    "hints": [
+      "先从 start BFS 得各格最短距离；按距离递增做 DP，只从距离小1的邻格转移，记录到达该格的最短路径中最大宝藏数。"
+    ],
+    "timeLimit": 8,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "OAMaster 样例",
+      "input": "3 3\n1\n1 1\n1\n0 1\n0 0\n2 2\n",
+      "expectedOutput": "4 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "补充样例 1",
+      "input": "2 2\n0\n0\n0 0\n1 1\n",
+      "expectedOutput": "2 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "补充样例 2",
+      "input": "3 3\n4\n1 0\n0 1\n1 2\n2 1\n1\n0 0\n0 0\n2 2\n",
+      "expectedOutput": "-1 0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "2 2\n0\n1\n0 0\n0 0\n1 1\n",
+      "expectedOutput": "2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "2 2\n1\n0 0\n0\n0 1\n1 0\n",
+      "expectedOutput": "2 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "2 3\n1\n1 1\n0\n0 1\n0 2\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "3 3\n0\n2\n2 0\n0 2\n1 0\n2 2\n",
+      "expectedOutput": "3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "2 1\n0\n0\n0 0\n1 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "3 3\n1\n2 1\n1\n1 0\n0 1\n2 0\n",
+      "expectedOutput": "3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "4 1\n2\n0 0\n2 0\n0\n3 0\n1 0\n",
+      "expectedOutput": "-1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "2 3\n1\n1 1\n3\n0 2\n0 1\n1 0\n0 0\n1 2\n",
+      "expectedOutput": "3 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "1 2\n0\n0\n0 1\n0 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "3 1\n0\n1\n1 0\n0 0\n2 0\n",
+      "expectedOutput": "2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "3 3\n0\n3\n2 0\n2 1\n0 0\n0 1\n2 2\n",
+      "expectedOutput": "3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "4 2\n2\n1 1\n1 0\n1\n3 1\n3 0\n0 0\n",
+      "expectedOutput": "-1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "1 1\n0\n0\n0 0\n0 0\n",
+      "expectedOutput": "0 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "3 4\n0\n3\n2 3\n1 3\n2 2\n1 0\n0 1\n",
+      "expectedOutput": "2 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "1 3\n1\n0 1\n0\n0 0\n0 2\n",
+      "expectedOutput": "-1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "3 3\n0\n2\n2 0\n0 0\n1 0\n0 1\n",
+      "expectedOutput": "2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "2 3\n0\n1\n0 1\n1 2\n0 0\n",
+      "expectedOutput": "3 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "4 1\n1\n3 0\n1\n2 0\n0 0\n1 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "4 1\n1\n3 0\n0\n0 0\n2 0\n",
+      "expectedOutput": "2 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "2 1\n0\n0\n1 0\n0 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "3 4\n1\n2 2\n0\n2 0\n1 1\n",
+      "expectedOutput": "2 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "1 3\n1\n0 2\n0\n0 1\n0 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "1 2\n0\n0\n0 0\n0 1\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "2 3\n2\n0 2\n1 0\n2\n0 1\n1 2\n0 0\n1 1\n",
+      "expectedOutput": "2 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "2 3\n2\n0 0\n0 2\n2\n1 0\n1 2\n0 1\n1 1\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "3 2\n2\n0 0\n1 0\n0\n2 1\n2 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "3 3\n0\n0\n2 2\n2 1\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "3 2\n1\n2 0\n3\n0 0\n0 1\n1 0\n2 1\n1 1\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "1 3\n0\n0\n0 1\n0 0\n",
+      "expectedOutput": "1 0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
