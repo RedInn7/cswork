@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-rubrik-11",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Doing Smart Work",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Rubrik",
+      "贪心",
+      "字符串"
+    ],
+    "description": "可任意次交换相邻且奇偶性不同的数字，求能够得到的最小数字，允许前导零。",
+    "input": "第一行 t；随后 t 行数字串。本站补充：t≤10000，总长度≤200000。",
+    "output": "每个测试用例输出最小数字串一行。",
+    "explanation": "完整思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "按定义逐条处理操作，并注意边界。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 8192,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "1\n4321\n",
+      "expectedOutput": "3142\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3\n97531\n02468\n9081726354\n",
+      "expectedOutput": "97531\n02468\n0826491735\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "2\n1203\n5550\n",
+      "expectedOutput": "1203\n0555\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "3\n31\n50420693036\n11898125987\n",
+      "expectedOutput": "31\n04205606933\n11882891597\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "3\n64091714002\n421312275224\n85410381617\n",
+      "expectedOutput": "64040029171\n131422222475\n51311784086\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "1\n6743666441\n",
+      "expectedOutput": "6466644731\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "1\n0925150\n",
+      "expectedOutput": "0209515\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "6\n9\n1\n7487905\n208718803258\n034\n36\n",
+      "expectedOutput": "9\n1\n4778095\n207135888028\n034\n36\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "4\n552765\n0048\n16507\n1678\n",
+      "expectedOutput": "255675\n0048\n15607\n1678\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "6\n0855\n7920053\n244\n97660\n0419709300\n8\n",
+      "expectedOutput": "0558\n2007953\n244\n66097\n0140009793\n8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "5\n15360748492\n472\n4459911\n9179\n64201456145\n",
+      "expectedOutput": "15360478429\n427\n4459911\n9179\n15156420464\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "6\n2546\n426473903982\n885\n6938990982\n2609104\n5202\n",
+      "expectedOutput": "2456\n426407382939\n588\n6808293999\n2600491\n2025\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "7\n69011955166\n98030\n9878359900\n17401440677\n814123419\n43568260064\n0\n",
+      "expectedOutput": "60669119551\n80093\n8800973599\n14044067177\n113184249\n34568260064\n0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "2\n0322367649\n607667049\n",
+      "expectedOutput": "0223366479\n606604779\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "4\n2\n321907401\n7\n9\n",
+      "expectedOutput": "2\n203140971\n7\n9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "7\n461738074758\n29\n42159\n81105\n3911547\n01198732384\n06158903\n",
+      "expectedOutput": "146737758048\n29\n14259\n11580\n3491157\n01182849733\n01568093\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "4\n630436\n00496\n792\n3274282127\n",
+      "expectedOutput": "336046\n00469\n279\n2342717822\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "3\n10970585460\n94437\n415703\n",
+      "expectedOutput": "00184609755\n44937\n140573\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "7\n4980748282\n66986167\n043834563222\n82382\n877879660\n61246471475\n97347683867\n",
+      "expectedOutput": "4804828297\n66866917\n033453846222\n38282\n777886609\n16246447175\n46886973737\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "4\n54\n35454\n216\n297511399\n",
+      "expectedOutput": "45\n34455\n126\n297511399\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "1\n3391748050\n",
+      "expectedOutput": "3348009175\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "3\n5\n7685276\n096058\n",
+      "expectedOutput": "5\n6757826\n060895\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "5\n1888\n33140633\n445\n914062\n135525805243\n",
+      "expectedOutput": "1888\n33133406\n445\n406291\n123555538024\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "6\n1848249\n12903085\n95\n87512666672\n5987586\n88143658827\n",
+      "expectedOutput": "1848249\n12008935\n95\n75178266662\n5886975\n13578846882\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "3\n5803\n572737690\n8747826\n",
+      "expectedOutput": "5380\n256077379\n7784826\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "1\n74454983004\n",
+      "expectedOutput": "44475800493\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "7\n99159361\n163397\n7307133\n81210\n95776390101\n496\n915891282568\n",
+      "expectedOutput": "69915931\n133697\n0737133\n11820\n60095773911\n469\n828268915915\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "1\n130\n",
+      "expectedOutput": "013\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "1\n7\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "1\n6825707705\n",
+      "expectedOutput": "5677758200\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

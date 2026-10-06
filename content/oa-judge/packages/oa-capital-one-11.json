@@ -1,0 +1,245 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-capital-one-11",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Labyrinth Right-Then-Down with Teleports",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Capital One",
+      "模拟",
+      "图"
+    ],
+    "description": "从左上角开始，优先向右；只有右侧不可走时才向下。碰到传送起点立即传送并继续。",
+    "input": "n m；障碍数 b 和 b 行 0-based 坐标；传送数 k 和 k 行 `sr sc er ec`。传送起点唯一，终点不是起点，所有传送端点都非障碍。本站补充：n,m≤100。",
+    "output": "到达右下角输出经过的格子数（起点、传送起点和终点都计入）；无路输出 -1；重访格子造成无限循环输出 -2。",
+    "explanation": "完整思路、正确性证明与复杂度见配套题解。",
+    "hints": [
+      "按定义逐条处理操作，并注意边界。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 8192,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "公开样例 1",
+      "input": "3 4\n1\n0 1\n1\n1 1 2 2\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 2",
+      "input": "3 3\n2\n0 1\n1 0\n0\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "公开样例 3",
+      "input": "3 3\n0\n2\n0 1 1 0\n1 1 0 1\n",
+      "expectedOutput": "-2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 1",
+      "input": "4 5\n3\n2 3\n3 4\n3 3\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 2",
+      "input": "2 1\n1\n1 0\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 3",
+      "input": "3 2\n3\n0 1\n1 0\n2 1\n1\n2 0 1 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 4",
+      "input": "4 2\n2\n2 0\n0 1\n0\n\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 5",
+      "input": "5 2\n1\n1 1\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 6",
+      "input": "4 1\n3\n3 0\n2 0\n1 0\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 7",
+      "input": "2 3\n1\n1 1\n1\n0 2 0 1\n",
+      "expectedOutput": "-2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 8",
+      "input": "3 6\n4\n1 4\n1 2\n0 3\n1 1\n1\n1 5 2 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 9",
+      "input": "2 5\n1\n1 3\n1\n1 1 1 2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 10",
+      "input": "5 6\n0\n0\n\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 11",
+      "input": "3 3\n0\n0\n\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 12",
+      "input": "4 5\n0\n0\n\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 13",
+      "input": "3 3\n1\n0 1\n1\n2 1 1 0\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 14",
+      "input": "4 3\n0\n1\n0 2 1 1\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 15",
+      "input": "3 2\n4\n1 0\n1 1\n0 1\n2 0\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 16",
+      "input": "6 1\n1\n2 0\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 17",
+      "input": "3 5\n4\n1 0\n0 4\n0 3\n2 1\n0\n\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 18",
+      "input": "3 3\n1\n2 1\n0\n\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 19",
+      "input": "4 1\n1\n1 0\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 20",
+      "input": "1 5\n4\n0 2\n0 3\n0 4\n0 1\n0\n\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 21",
+      "input": "1 1\n0\n0\n\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 22",
+      "input": "6 3\n4\n0 1\n3 1\n1 2\n1 0\n1\n5 1 2 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 23",
+      "input": "4 4\n1\n1 2\n0\n\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 24",
+      "input": "1 6\n0\n0\n\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 25",
+      "input": "2 3\n0\n0\n\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 26",
+      "input": "3 6\n0\n0\n\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏测试 27",
+      "input": "4 4\n2\n2 3\n2 0\n1\n3 1 3 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

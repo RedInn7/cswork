@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-3",
+  "title": "Robot Matrix Commands",
+  "explanation": "## 思路\n\n按输入顺序直接执行矩阵操作。\n\n## 正确性证明\n\n每条操作都按定义应用于当时的矩阵，顺序执行后的状态即为全部命令的结果。\n\n## 复杂度\n\n每条操作 O(rc)，空间 O(rc)。\n\n## 来源说明\n\n原题未给 stdin/stdout 格式或坐标基准；本题补充 0-based 序列化协议，并约定仅正方矩阵可旋转。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n t=raw.split();it=iter(t);r,c=int(next(it)),int(next(it));a=[[int(next(it)) for _ in range(c)] for _ in range(r)];q=int(next(it))\n for _ in range(q):\n  op=next(it)\n  if op=='swapRows':\n   x,y=int(next(it)),int(next(it));a[x],a[y]=a[y],a[x]\n  elif op=='swapColumns':\n   x,y=int(next(it)),int(next(it))\n   for row in a:row[x],row[y]=row[y],row[x]\n  elif op=='reverseRow':a[int(next(it))].reverse()\n  elif op=='reverseColumn':\n   x=int(next(it))\n   for i in range(len(a)//2):a[i][x],a[-i-1][x]=a[-i-1][x],a[i][x]\n  else:a=[list(row) for row in zip(*a[::-1])]\n return '\\n'.join(' '.join(map(str,row)) for row in a)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#3-robot-matrix-commands",
+  "sourceContentHash": "231f0144a6361b327def0680e0cd4d529c4f1ae981cb576c2ab9109edf52e71e",
+  "author": "CSWork"
+}

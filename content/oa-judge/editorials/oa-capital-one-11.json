@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-11",
+  "title": "Labyrinth Right-Then-Down with Teleports",
+  "explanation": "## 思路\n\n逐格确定性模拟，记录已经进入的坐标以检测循环。每步先执行传送，再检查出口；普通移动优先右、否则下。\n\n## 正确性证明\n\n模拟状态转换与题面规则逐条一致，且计数覆盖起点、移动到的格子以及传送终点。若重访同一位置，由于地图和选择规则固定，此后路径将周期重复。\n\n## 复杂度\n\n每步 O(1)，最多访问 O(nm) 个格子；空间 O(nm)。\n\n## 来源说明\n\n源文把右下角索引写成 (n,m)；本站按矩阵 0-based 下标明确为 (n−1,m−1)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n t=list(map(int,raw.split()));n,m=t[:2];i=2;b=t[i];i+=1;obs=set()\n for _ in range(b):obs.add((t[i],t[i+1]));i+=2\n k=t[i];i+=1;tele={}\n for _ in range(k):tele[(t[i],t[i+1])]=(t[i+2],t[i+3]);i+=4\n p=(0,0);steps=1;seen=set()\n while True:\n  if p in seen:return '-2'\n  seen.add(p)\n  if p in tele:p=tele[p];steps+=1;continue\n  if p==(n-1,m-1):return str(steps)\n  r,c=p;right=(r,c+1);down=(r+1,c)\n  if c+1<m and right not in obs:p=right\n  elif r+1<n and down not in obs:p=down\n  else:return '-1'\n  steps+=1\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#11-labyrinth-right-then-down-with-teleports",
+  "sourceContentHash": "c7d44fb1b8b5ad220158eb46010c83e861242d41c93fe6b506545f555db5dfdd",
+  "author": "CSWork"
+}

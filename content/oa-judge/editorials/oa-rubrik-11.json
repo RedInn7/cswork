@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-11",
+  "title": "Doing Smart Work",
+  "explanation": "## 思路\n\n不同奇偶数字可交换，但相同奇偶数字无法互相越过，所以奇数子序列和偶数子序列内部顺序固定。将两条子序列按队首较小者归并。\n\n## 正确性证明\n\n允许交换恰能产生保持两个子序列相对顺序的所有交错。每一步若选择较大队首而非较小队首，当前第一个不同位置会更大；选择较小队首是字典序最优。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n原题明确允许任意次数交换相邻异奇偶数字；本站补充标准输入输出格式及总长度界。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n t=raw.split();q=int(t[0]);out=[]\n for s in t[1:1+q]:\n  e=[c for c in s if int(c)%2==0];o=[c for c in s if int(c)%2==1];i=j=0;ans=[]\n  while i<len(e) and j<len(o):\n   if e[i]<o[j]:ans.append(e[i]);i+=1\n   else:ans.append(o[j]);j+=1\n  ans.extend(e[i:]);ans.extend(o[j:]);out.append(''.join(ans))\n return '\\n'.join(out)\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#11-doing-smart-work",
+  "sourceContentHash": "80099506badc59ba18bb911d4c71f2a2dc4bdd9108952e306f95e84012f181df",
+  "author": "CSWork"
+}

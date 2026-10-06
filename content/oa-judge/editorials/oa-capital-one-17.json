@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-17",
+  "title": "Get Function Execution Time",
+  "explanation": "## 思路\n\n调用栈顶是当前运行函数。新事件到来时，把从 prev 到事件时刻前的时间计给栈顶；start 压栈，end 将含结束秒的一段记给该函数并弹栈。\n\n## 正确性证明\n\n两个相邻事件之间只由栈顶函数执行；start 时刻切换到新栈顶，end 时刻用 +1 计入结束函数。故所有执行秒恰好分配给当时运行的函数。\n\n## 复杂度\n\n时间 O(m)，空间 O(n)。\n\n## 来源说明\n\n原始描述部分截断，但给出的完整示例与标准独占时间定义相符；本站补充日志序列化格式。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def solve(raw):\n t=raw.split();n,m=int(t[0]),int(t[1]);ans=[0]*n;st=[];prev=0\n for log in t[2:2+m]:\n  fid,kind,ts=log.split(':');fid=int(fid);ts=int(ts)\n  if kind=='start':\n   if st:ans[st[-1]]+=ts-prev\n   st.append(fid);prev=ts\n  else:ans[st.pop()]+=ts-prev+1;prev=ts+1\n return ' '.join(map(str,ans))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/capital-one#17-get-function-execution-time",
+  "sourceContentHash": "26190e252cbeca4c323fd07cb5a36e1a58af1fb0d3d74fa1c249c1f8b6511374",
+  "author": "CSWork"
+}
