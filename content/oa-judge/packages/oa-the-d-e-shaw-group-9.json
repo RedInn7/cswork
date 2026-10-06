@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-the-d-e-shaw-group-9",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Police Station",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "The D. E. Shaw Group",
+      "贪心",
+      "优先队列",
+      "多源 BFS"
+    ],
+    "description": "一条无限长的一维数轴上有若干警局，坐标互不相同。恰好购买 capacity 个互不相同且不与任何警局重合的整数坐标。每个地块的费用是它到最近警局的距离，求最低总费用。",
+    "input": "第一行输入 n 和 capacity，第二行输入 n 个互不相同的警局整数坐标。本站补充约束：1≤n≤100000，1≤capacity≤50000，|station[i]|≤10^9。原 Fastprep 文本的 Constraints 为 unknown；本站上限保证最坏答案不超过 625025000，符合原函数 int 返回范围。",
+    "output": "输出最低总费用。",
+    "explanation": "地块只能取整数坐标；每个警局相邻的两个可用坐标费用为 1。原题约束缺失，因此本站显式补充站点数、坐标和 capacity 上限；capacity≤50000 时，即使只有一个警局，购买最近的 capacity 个非警局坐标的总费用至多 625025000。",
+    "hints": [
+      "把所有警局相邻位置作为距离 1 的起点，用最小堆按距离扩展。警局坐标和已购买坐标都不能重复购买。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "来源样例",
+      "input": "2 4\n7 8\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "单站一个地块",
+      "input": "1 1\n0\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "单站对称距离层",
+      "input": "1 4\n0\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "相距较远的两个站",
+      "input": "2 4\n0 10\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "连续站点外侧扩展",
+      "input": "5 4\n-2 -1 0 1 2\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "坐标上界平移不变",
+      "input": "1 4\n1000000000\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "坐标极值和跨大间距",
+      "input": "2 6\n-1000000000 1000000000\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
