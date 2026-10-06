@@ -1,0 +1,10 @@
+[
+  {
+    "name": "比较每个孩子的直接孩子数，而不是子树节点数",
+    "code": "def solve(raw):\n d=list(map(int,raw.split()));n=d[0];ch=[[] for _ in range(n)]\n for v,p in enumerate(d[1:],1):ch[p-1].append(v)\n ans=0;st=[0];order=[]\n while st:\n  u=st.pop();order.append(u);st.extend(ch[u])\n for u in range(n):\n  vals=[len(ch[v]) for v in ch[u]]\n  if not vals or len(set(vals))==1:ans+=1\n return str(ans)\n"
+  },
+  {
+    "name": "不把叶子节点计为平衡",
+    "code": "def solve(raw):\n d=list(map(int,raw.split()));n=d[0];ch=[[] for _ in range(n)]\n for v,p in enumerate(d[1:],1):ch[p-1].append(v)\n order=[];st=[0]\n while st:\n  u=st.pop();order.append(u);st.extend(ch[u])\n sz=[1]*n;ans=0\n for u in reversed(order):\n  vals=[sz[v] for v in ch[u]]\n  for v in ch[u]:sz[u]+=sz[v]\n  if vals and len(set(vals))==1:ans+=1\n return str(ans)\n"
+  }
+]

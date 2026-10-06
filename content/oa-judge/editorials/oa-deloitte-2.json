@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-deloitte-2",
+  "title": "统计平衡节点（Deloitte OA）",
+  "explanation": "## 思路\n\n对每个节点统计以它为根的子树节点总数。按后序顺序处理节点时，子树大小等于 1 加上所有直接孩子的子树大小之和；该节点平衡当且仅当这些孩子的子树大小全部相同。没有孩子时条件真空成立，因此叶子也计入答案。\n\n为适配深度可达 200,000 的树，使用显式栈生成遍历顺序，再反向计算，不使用递归。\n\n## 正确性证明\n\n反向遍历保证节点的所有孩子先于节点完成处理，因此每个孩子的 `subtree_size` 已等于定义中的节点数。算法将这些直接孩子的值逐一比较，正好实现题目对平衡节点的定义；没有孩子时无不同值，按题面叶子规则计入。每个节点恰处理一次，故计数即所有平衡节点总数。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 验证\n\n163 个输入与独立 oracle 对照；oracle 对每个节点/孩子显式遍历后代计数，不复用后序子树大小算法。额外穷举 n≤5 的所有 parent 赋值并仅保留以 1 为根的合法树。正式测试有单点、链、星、子树大小不等、直接孩子数相同但子树大小不同、孩子高度相同但子树大小不同，以及 n=200000 链/星压力用例。两个正常返回的错误程序分别被正式用例拒绝。\n\n## 来源和本站输入协议\n\n固定 OAMaster Deloitte #2 明确给出 rooted tree、平衡定义（比较每个直接孩子对应子树的节点数）及叶子算平衡，但没有标准输入格式、节点编号/根标号约定或规模上限。本站补充：第一项为 n，后续 n−1 个整数依次表示节点 2..n 的父节点，根固定为节点 1；输入保证构成以 1 为根的树。本站资源上限为 1≤n≤200000。这些是本站序列化/资源约定，不声称是原题约束。\n\n候选只按题面语义实现，仍待真实 GoJudge 沙箱验证。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if not 1 <= n <= 200_000 or len(data) != n:\n        raise ValueError(\"expected n and n-1 parent IDs\")\n    children = [[] for _ in range(n)]\n    for node in range(1, n):\n        parent = data[node] - 1\n        if not 0 <= parent < n or parent == node:\n            raise ValueError(\"invalid parent ID\")\n        children[parent].append(node)\n\n    # Iterative traversal supports a 200,000-node chain without recursion.\n    order = []\n    stack = [0]\n    seen = bytearray(n)\n    seen[0] = 1\n    while stack:\n        node = stack.pop()\n        order.append(node)\n        for child in children[node]:\n            if seen[child]:\n                raise ValueError(\"parent relation is not a rooted tree\")\n            seen[child] = 1\n            stack.append(child)\n    if len(order) != n:\n        raise ValueError(\"all nodes must be reachable from root 1\")\n\n    subtree_size = [1] * n\n    balanced_count = 0\n    for node in reversed(order):\n        expected = None\n        balanced = True\n        for child in children[node]:\n            size = subtree_size[child]\n            subtree_size[node] += size\n            if expected is None:\n                expected = size\n            elif size != expected:\n                balanced = False\n        if balanced:\n            balanced_count += 1\n    return str(balanced_count)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/deloitte#2-count-balanced-nodes-in-a-tree",
+  "sourceContentHash": "bf5f0197c427de3cf538858d1c9b1d465e4b23dd89d0d191a6eac2f1e6bf87c3",
+  "author": "CSWork"
+}
