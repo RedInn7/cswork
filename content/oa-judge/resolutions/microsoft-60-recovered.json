@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-microsoft-60",
+      "batch": "microsoft-60-recovered",
+      "sourceContentHash": "63e5f5c1c7cc3bacf18c1df7569a96f187f5d4c3e24fccc9634ed301e06b32b9",
+      "previousReason": "正文没有定义反转结果超出32位时的输出，样例却明确强调结果在32位内才返回；不能擅自采用返回0或无限宽整数。",
+      "reason": "OAMaster 的标题、约束与三个样例和 LeetCode 官方 Reverse Integer（#7）相同；官方题面明确反转越界返回0，补足 OAMaster 正文缺失的规则。保留三个源样例，57个正式用例、177个独立字符串 oracle 输入；20,001个小整数穷举通过。用户自有 GoJudge 共234次运行通过，两个错误实现均被拦截。"
+    }
+  ]
+}

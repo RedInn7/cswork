@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-microsoft-60",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "整数反转",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Microsoft"
+    ],
+    "description": "不把整数转成字符串，反转一个32位有符号整数。若反转结果超出32位有符号整数范围，输出0。超范围返回0按同题官方题面补明。",
+    "input": "输入一个整数x，−2³¹≤x≤2³¹−1。",
+    "output": "输出反转后的整数；若结果超出−2³¹至2³¹−1，输出0。",
+    "explanation": "保留符号，反转数位并去掉前导零；反转结果越界时返回0。",
+    "hints": [
+      "用取模和整除逐位构造答案；每一步检查边界，或用足够宽的中间变量后检查。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原样例 1",
+      "input": "123\n",
+      "expectedOutput": "321\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原样例 2",
+      "input": "120\n",
+      "expectedOutput": "21\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原样例 3",
+      "input": "-120\n",
+      "expectedOutput": "-21\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "零",
+      "input": "0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "单个负数",
+      "input": "-7\n",
+      "expectedOutput": "-7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "末尾零",
+      "input": "100\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "中间零",
+      "input": "10020\n",
+      "expectedOutput": "2001\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "正向溢出",
+      "input": "1534236469\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负向溢出",
+      "input": "-1563847412\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最小int32溢出",
+      "input": "-2147483648\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大值反转仍合法",
+      "input": "1463847412\n",
+      "expectedOutput": "2147483641\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负数反转合法",
+      "input": "-1463847412\n",
+      "expectedOutput": "-2147483641\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "全零",
+      "input": "1000000000\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "反转结果147483647",
+      "input": "746384741\n",
+      "expectedOutput": "147483647\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "反转结果147483648",
+      "input": "846384741\n",
+      "expectedOutput": "147483648\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负数反转结果-147483648",
+      "input": "-846384741\n",
+      "expectedOutput": "-147483648\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "负数反转结果-147483649",
+      "input": "-946384741\n",
+      "expectedOutput": "-147483649\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 1",
+      "input": "-22329508\n",
+      "expectedOutput": "-80592322\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 2",
+      "input": "747444862\n",
+      "expectedOutput": "268444747\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 3",
+      "input": "1791723280\n",
+      "expectedOutput": "823271971\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 4",
+      "input": "42196441\n",
+      "expectedOutput": "14469124\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 5",
+      "input": "1114240970\n",
+      "expectedOutput": "790424111\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 6",
+      "input": "-1684779760\n",
+      "expectedOutput": "-679774861\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 7",
+      "input": "-1136758098\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 8",
+      "input": "-1042163978\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 9",
+      "input": "324175563\n",
+      "expectedOutput": "365571423\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 10",
+      "input": "-1212384189\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 11",
+      "input": "-1778530755\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 12",
+      "input": "-5796411\n",
+      "expectedOutput": "-1146975\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 13",
+      "input": "-1236363859\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 14",
+      "input": "-181220552\n",
+      "expectedOutput": "-255022181\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 15",
+      "input": "-274459389\n",
+      "expectedOutput": "-983954472\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 16",
+      "input": "-974786067\n",
+      "expectedOutput": "-760687479\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 17",
+      "input": "-484597440\n",
+      "expectedOutput": "-44795484\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 18",
+      "input": "-1168485165\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 19",
+      "input": "1810872186\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 20",
+      "input": "-1173055428\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 21",
+      "input": "-17444925\n",
+      "expectedOutput": "-52944471\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 22",
+      "input": "-1727868629\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 23",
+      "input": "1878392753\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 24",
+      "input": "1880906873\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 25",
+      "input": "1867980557\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 26",
+      "input": "-1973739626\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 27",
+      "input": "-1984520223\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 28",
+      "input": "-887591739\n",
+      "expectedOutput": "-937195788\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 29",
+      "input": "1690653955\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 30",
+      "input": "-1667557216\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 31",
+      "input": "-1691006462\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 32",
+      "input": "618404406\n",
+      "expectedOutput": "604404816\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 33",
+      "input": "-71923612\n",
+      "expectedOutput": "-21632917\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 34",
+      "input": "-1844240300\n",
+      "expectedOutput": "-30424481\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 35",
+      "input": "1745550312\n",
+      "expectedOutput": "2130555471\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 36",
+      "input": "1067715075\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 37",
+      "input": "1798875130\n",
+      "expectedOutput": "315788971\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 38",
+      "input": "-144677259\n",
+      "expectedOutput": "-952776441\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 39",
+      "input": "1911668588\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立随机 40",
+      "input": "470118339\n",
+      "expectedOutput": "933811074\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
