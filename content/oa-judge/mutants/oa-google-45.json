@@ -1,0 +1,10 @@
+[
+  {
+    "name": "同刻到达先于离开",
+    "code": "import sys\n\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if not values:\n        return \"\"\n    n = values[0]\n    if n < 1 or n > 200_000 or len(values) != 1 + 2 * n:\n        raise ValueError(\"expected N, then N arrivals and N departures\")\n    starts = values[1:1 + n]\n    ends = values[1 + n:]\n    events = []\n    for start, end in zip(starts, ends):\n        if not (-1_000_000_000 <= start < end <= 1_000_000_000):\n            raise ValueError(\"each interval must satisfy -1e9 <= S < E <= 1e9\")\n        events.append((start, 1))\n        events.append((end, -1))\n    # In half-open [S, E) intervals, departures release chairs before\n    # arrivals at the same instant. Sorting delta ascending implements that.\n    events.sort(key=lambda event: (event[0], -event[1]))\n    occupied = answer = 0\n    for _, delta in events:\n        occupied += delta\n        answer = max(answer, occupied)\n    return str(answer)\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把区间重叠关系误当成可同时占用关系",
+    "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    n = values[0]\n    starts, ends = values[1:1+n], values[1+n:]\n    degree = []\n    for i in range(n):\n        degree.append(sum(\n            starts[j] < ends[i] and starts[i] < ends[j]\n            for j in range(n) if i != j\n        ))\n    return str(max(degree, default=0) + (1 if n else 0))\n\nprint(solve(sys.stdin.read()))\n"
+  }
+]

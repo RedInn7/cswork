@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "eb24ff834abb2e8ef515db29a91308414307144aad15804f989d63e249731470",
+  "items": [
+    {
+      "id": "oa-google-45",
+      "company": "Google",
+      "title": "Minimum Number of Chairs",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#45-minimum-number-of-chairs",
+      "rawFiles": [
+        {
+          "path": "web/content/docs/companies/google.mdx",
+          "gitBlobSha": "300032c24800642c2ecedab9d930e86db3cdb54a",
+          "excerpt": "There are n guests ... the k-th guest will attend at S[k] and leave at E[k]; return the minimum number of chairs."
+        },
+        {
+          "path": "fastprep/Google/google-meeting-rooms-ii.md",
+          "gitBlobSha": "86330450e6ee83b33cb77db3a8d44f227365252e",
+          "excerpt": "Same source snapshot's FastPrep markdown retains the identical OAMaster text; constraints are explicitly unknown."
+        }
+      ],
+      "supportingPages": [
+        {
+          "url": "https://leetcode.com/discuss/post/356520/google-oa-2019-min-number-of-chairs/",
+          "supports": "Exact same Google OA statement and example; narrative explicitly says simultaneous leaving guests free chairs for arrivals."
+        },
+        {
+          "url": "https://www.fastprep.io/problems/google-meeting-rooms-ii",
+          "supports": "Same question page states half-open attendance intervals and arrival/departure constraints; cited only to resolve endpoint interpretation and as a cross-check, not as OAMaster-authored constraints."
+        }
+      ],
+      "interpretation": {
+        "interval": "[S[i], E[i]); departure at t frees a chair for an arrival at t.",
+        "siteInputLimits": "1<=n<=200000 and -1e9<=S[i]<E[i]<=1e9; local supported domain, not claimed to be the unknown OAMaster bounds.",
+        "inputProtocol": "stdin: n, then n arrival times, then n departure times; protocol is supplied by this site.",
+      "confidence": "The fixed source snapshot and matching Google OA discussion share the same statement and example; the discussion and same-question page independently specify endpoint behavior. The finalized package passed the user's own GoJudge with all formal/oracle cases and both normal-exit mutants."
+      }
+    }
+  ]
+}
