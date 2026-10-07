@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63",
+  "items": [
+    {
+      "id": "oa-cisco-9",
+      "company": "Cisco",
+      "title": "Calculate Mean and Mode",
+      "sourceUrl": "https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode",
+      "previousStatus": "blocked",
+      "previousReason": "双来源仍缺并列众数规则，不限定唯一众数来规避。",
+      "sourceErrata": [
+        {
+          "location": "OAMaster 原题示例解释",
+          "original": "15/2=3",
+          "correction": "15/5=3",
+          "reason": "示例输入包含 5 个整数且总和为 15；原解释中的除数写错，但预期均值及输出正确。"
+        }
+      ],
+      "fixedSource": {
+        "path": "web/content/docs/companies/cisco.mdx",
+        "evidence": "固定 OAMaster 页面正文明确 floor 平均数、并列众数取最小值及输入范围；OAMaster Python 代码使用 //，其 Java/C++ 对负均值用截断除法，与 floor 题意不符，本站参考解按题意修正。"
+      },
+      "supportingSources": [
+        {
+          "url": "https://www.fastprep.io/problems/cisco-calculate-mean-and-mode",
+          "gitBlobSha": "e86c00f54290277ff64458d50d1f24acdc6be9d2",
+          "rawSha256": "d8788b2f6b77fc7290b1c5b3d057c3d271efe0be17974faaa32e4fffe1ddcd91",
+          "evidence": "Fastprep 同题样例一致，摘录在题意正文处截断；未给并列众数规则。"
+        },
+        {
+          "url": "https://www.fastprep.io/problems/cisco-find-mean-and-mode",
+          "gitBlobSha": "25f371e098296f8c7e66e5d26aecf09457878dd1",
+          "rawSha256": "b667787230823db4091e05e5ecc3a640537b6ed3ed9aef85425443fb27c86b26",
+          "evidence": "同题完整正文明确非整数均值向下取整；未给并列众数规则。"
+        }
+      ],
+      "siteAdditions": [
+        "stdin/stdout 输入协议"
+      ],
+      "interpretation": "遵循 OAMaster 明文规则：均值为 floor(sum/N)，众数并列时取最小值；Fastprep 副本作为同题交叉佐证，不覆盖 OAMaster 的并列规则。"
+    }
+  ]
+}

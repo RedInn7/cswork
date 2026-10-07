@@ -1,0 +1,10 @@
+[
+  {
+    "name": "负均值用向零截断代替 floor",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:]; s=sum(a)\nmean=(abs(s)//n)*(1 if s>=0 else -1); c={}\nfor x in a:c[x]=c.get(x,0)+1\nm=max(c.values()); mode=min(x for x,v in c.items() if v==m)\nprint(mean,mode)\n"
+  },
+  {
+    "name": "并列众数时返回最大值而非题面规定的最小值",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split())); n=d[0]; a=d[1:]; c={}\nfor x in a:c[x]=c.get(x,0)+1\nm=max(c.values()); print(sum(a)//n,max(x for x,v in c.items() if v==m))\n"
+  }
+]
