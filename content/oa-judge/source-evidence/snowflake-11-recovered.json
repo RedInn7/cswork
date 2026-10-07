@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f",
+  "items": [
+    {
+      "id": "oa-snowflake-11",
+      "company": "Snowflake",
+      "title": "Maximum Order Volume (Weighted Interval Scheduling)",
+      "status": "authored",
+      "verification": "用户自有 GoJudge 全部通过 156 项（35 formal + 121 oracle），两个 mutant 均被击杀。",
+      "sourceUrl": "https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling",
+      "previousStatus": "blocked",
+      "previousReason": "通话结束时刻与下一通开始相等是否冲突未明确，影响最优值。",
+      "fixedSource": {
+        "path": "web/content/docs/snowflake.mdx",
+        "gitBlobSha": "1091a782a0f60117925eb1a9a96ee4cf9df4e5bb",
+        "rawSha256": "a2cd5b9918339feb1b7715d70c79a1cbf064f9a5358fe7f97bebeb5b5bb171c0",
+        "evidence": "固定快照中 Python 使用 bisect_right、Java 二分与 C++ upper_bound 均允许前一 end 等于下一 start。"
+      },
+      "siteAdditions": [
+        "端点相等时按三语实现解释为可连续接听",
+        "stdin/stdout 输入协议"
+      ],
+      "interpretation": "两个电话不冲突当且仅当前一 end≤后一 start，与快照三语实现一致。"
+    }
+  ]
+}
