@@ -4550,6 +4550,30 @@
       ]
     },
     {
+      "id": "oa-bny-mellon-2",
+      "sourceContentHash": "24eeedabdb7b3dda04f4b6fb2c8b7f13947d995ea69a7cd6f8ad20ee47746d30",
+      "packageChecksum": "f698c24454d64c54dddad2ff0c0be9dc1525ed7d0f55623ee305d69372ab3714",
+      "editorial": "## 思路\n\n令 cnt[v] 为值 v 在原数组中的出现次数。MEX=k 的位置子序列必须对每个 v<k 至少选一个位置（有 2^cnt[v]−1 种），不选任何值为 k 的位置，而所有值>k 的位置可自由选择（共 2^rest 种）。因此贡献为这些因子的乘积。只需枚举 k≤n，因为长度 n 的子序列不可能有更大的 MEX。\n\n## 正确性证明\n\n固定 k，MEX 恰为 k 当且仅当子序列至少含一个每个小于 k 的值、不含 k、并可任意选择大于 k 的元素。对每个 v<k，有 2^cnt[v]−1 种非空位置子集；值 k 的选择唯一为空；其余位置有 2^rest 种选择。位置集合决定唯一子序列选择，所以乘积恰好统计所有 MEX=k 的子序列且无重复。不同 k 的 MEX 互斥，将区间内贡献相加即得答案。MEX≤n，故扫描至 min(n,r) 足够。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)；n≤3×10⁵。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nMOD = 1_000_000_007\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, left, right = data[:3]\n    values = data[3:]\n    counts = [0] * (n + 1)\n    for value in values:\n        if value <= n:\n            counts[value] += 1\n    powers = [1] * (n + 1)\n    for i in range(1, n + 1):\n        powers[i] = powers[i - 1] * 2 % MOD\n\n    answer = prefix = 0\n    product = 1\n    remaining = n\n    for mex in range(min(n, right) + 1):\n        count = counts[mex]\n        remaining -= count\n        if mex >= left:\n            answer = (answer + product * powers[remaining]) % MOD\n        product = product * (powers[count] - 1) % MOD\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-optiver-3",
+      "sourceContentHash": "b3eda53e3279ee861de861d9a0d89385906d70163d8f87d0d84508d2e6bdf0e1",
+      "packageChecksum": "4e831ada1898adbe423ae530801e002f01ca9dab32b9ebfb093513c407fec9b1",
+      "editorial": "## 思路\n\n定义日期序号为该日期之前经过的天数。年份 y 之前的闰年数为 floor((y−1)/4)−floor((y−1)/100)+floor((y−1)/400)；加上平年总天数、当年此前完整月份和 day−1。答案是第二个序号减第一个。\n\n## 正确性证明\n\nGregorian 年 y 之前共有 y−1 个完整年份，其中闰年数由 4 年一闰、100 年不闰、400 年再闰的容斥公式精确给出。月份前缀表加上闰年 2 月后的额外一天和 day−1，得到从公元 1 年 1 月 1 日起的精确经过天数。两个日期序号之差即经过天数；题目保证顺序，因此无需取绝对值。\n\n## 复杂度\n\n时间 O(1)，空间 O(1)。本站年份范围内答案不超过 3,652,058，int32 安全。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nMONTHS = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)\nPREFIX = (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334)\n\ndef is_leap(year):\n    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\n\ndef ordinal(year, month, day):\n    previous = year - 1\n    total = 365 * previous + previous // 4 - previous // 100 + previous // 400\n    total += PREFIX[month - 1]\n    if month > 2 and is_leap(year):\n        total += 1\n    return total + day - 1\n\ndef solve(raw):\n    y1, m1, d1, y2, m2, d2 = map(int, raw.split())\n    return str(ordinal(y2, m2, d2) - ordinal(y1, m1, d1))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-box-3",
       "sourceContentHash": "e2e2246f16fccaddedc7966dd2bb7c0a8a2da047429444c2dadbfbc9f9a64480",
       "packageChecksum": "8c1f48ec015ee5ea3d45fafd31024f051ffd42b2346d34f86952b036e82b4c9e",

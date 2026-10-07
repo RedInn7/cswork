@@ -1,0 +1,39 @@
+[
+  {
+    "name": "相同数值按不同值而非位置去重",
+    "code": "import sys\n\nMOD = 1_000_000_007\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, left, right = data[:3]\n    values = data[3:]\n    counts = [0] * (n + 1)\n    for value in values:\n        if value <= n:\n            counts[value] = 1\n    powers = [1] * (n + 1)\n    for i in range(1, n + 1):\n        powers[i] = powers[i - 1] * 2 % MOD\n\n    answer = prefix = 0\n    product = 1\n    remaining = n\n    for mex in range(min(n, right) + 1):\n        count = counts[mex]\n        remaining -= count\n        if mex >= left:\n            answer = (answer + product * powers[remaining]) % MOD\n        product = product * (powers[count] - 1) % MOD\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      1,
+      2,
+      7
+    ]
+  },
+  {
+    "name": "错误地允许选择 MEX 本身",
+    "code": "import sys\n\nMOD = 1_000_000_007\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, left, right = data[:3]\n    values = data[3:]\n    counts = [0] * (n + 1)\n    for value in values:\n        if value <= n:\n            counts[value] += 1\n    powers = [1] * (n + 1)\n    for i in range(1, n + 1):\n        powers[i] = powers[i - 1] * 2 % MOD\n\n    answer = prefix = 0\n    product = 1\n    remaining = n\n    for mex in range(min(n, right) + 1):\n        count = counts[mex]\n        remaining -= count\n        count_at_k = count\n        if mex >= left:\n            answer = (answer + product * powers[remaining]) % MOD\n        product = product * (powers[count_at_k]) % MOD\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      0,
+      1,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22,
+      23
+    ]
+  }
+]

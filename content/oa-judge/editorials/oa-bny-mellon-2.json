@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-bny-mellon-2",
+  "title": "统计 MEX 落在区间内的子序列",
+  "explanation": "## 思路\n\n令 cnt[v] 为值 v 在原数组中的出现次数。MEX=k 的位置子序列必须对每个 v<k 至少选一个位置（有 2^cnt[v]−1 种），不选任何值为 k 的位置，而所有值>k 的位置可自由选择（共 2^rest 种）。因此贡献为这些因子的乘积。只需枚举 k≤n，因为长度 n 的子序列不可能有更大的 MEX。\n\n## 正确性证明\n\n固定 k，MEX 恰为 k 当且仅当子序列至少含一个每个小于 k 的值、不含 k、并可任意选择大于 k 的元素。对每个 v<k，有 2^cnt[v]−1 种非空位置子集；值 k 的选择唯一为空；其余位置有 2^rest 种选择。位置集合决定唯一子序列选择，所以乘积恰好统计所有 MEX=k 的子序列且无重复。不同 k 的 MEX 互斥，将区间内贡献相加即得答案。MEX≤n，故扫描至 min(n,r) 足够。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)；n≤3×10⁵。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\nMOD = 1_000_000_007\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, left, right = data[:3]\n    values = data[3:]\n    counts = [0] * (n + 1)\n    for value in values:\n        if value <= n:\n            counts[value] += 1\n    powers = [1] * (n + 1)\n    for i in range(1, n + 1):\n        powers[i] = powers[i - 1] * 2 % MOD\n\n    answer = prefix = 0\n    product = 1\n    remaining = n\n    for mex in range(min(n, right) + 1):\n        count = counts[mex]\n        remaining -= count\n        if mex >= left:\n            answer = (answer + product * powers[remaining]) % MOD\n        product = product * (powers[count] - 1) % MOD\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/bny-mellon#2-count-subsequences",
+  "sourceContentHash": "24eeedabdb7b3dda04f4b6fb2c8b7f13947d995ea69a7cd6f8ad20ee47746d30",
+  "author": "CSWork"
+}
