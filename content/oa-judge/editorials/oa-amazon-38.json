@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-38",
+  "title": "Calculate Min Cost (Password Removal)",
+  "explanation": "## 思路\n\n把 reference 中出现的字母放进集合。扫描 password，每遇到一个属于该集合的字符，就加上对应字母的删除成本。相同字符在 password 中出现多次时，每次都要计费；reference 中同一字符重复出现不会重复收费。\n\n## 正确性\n\n题目要求移除 password 中所有出现在 reference 的字符，因此每个匹配位置都必须删除，不能通过保留或选择只处理一种字符来降低费用。非匹配位置不属于目标删除对象，删除它们只会增加正成本。故唯一必要且最优的删除集合正是所有匹配位置，逐位累加对应成本即为最小总成本。\n\n## 复杂度\n\n时间 O(|password|+|reference|)，空间 O(Σ)，Σ=26。\n\n## 参考实现\n\n```python\nimport sys\n\ndef solve(raw):\n    lines = raw.splitlines()\n    if len(lines) != 3:\n        raise ValueError(\"expected password, reference, and 26 costs\")\n    password, reference = lines[0], lines[1]\n    costs = list(map(int, lines[2].split()))\n    if not 1 <= len(password) <= 100_000 or not 1 <= len(reference) <= 100_000:\n        raise ValueError(\"string length must be in [1, 100000]\")\n    if len(costs) != 26 or any(not 1 <= cost <= 100 for cost in costs):\n        raise ValueError(\"expected 26 costs in [1, 100]\")\n    if any(not ('a' <= char <= 'z') for char in password + reference):\n        raise ValueError(\"strings must contain lowercase English letters\")\n    removable = set(reference)\n    return str(sum(costs[ord(char) - ord('a')] for char in password if char in removable))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n```\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    lines = raw.splitlines()\n    if len(lines) != 3:\n        raise ValueError(\"expected password, reference, and 26 costs\")\n    password, reference = lines[0], lines[1]\n    costs = list(map(int, lines[2].split()))\n    if not 1 <= len(password) <= 100_000 or not 1 <= len(reference) <= 100_000:\n        raise ValueError(\"string length must be in [1, 100000]\")\n    if len(costs) != 26 or any(not 1 <= cost <= 100 for cost in costs):\n        raise ValueError(\"expected 26 costs in [1, 100]\")\n    if any(not ('a' <= char <= 'z') for char in password + reference):\n        raise ValueError(\"strings must contain lowercase English letters\")\n    removable = set(reference)\n    return str(sum(costs[ord(char) - ord('a')] for char in password if char in removable))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#38-calculate-min-cost-password-removal",
+  "sourceContentHash": "4cd956a84dd510453b5874263bb98527b3478eda91b561ea6bbdb960e2fa5196",
+  "author": "CSWork"
+}
