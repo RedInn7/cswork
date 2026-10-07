@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略返程必须晚于出发日，分别取两数组最小值",
+    "code": "import sys\ndef solve(raw):\n a=list(map(int,raw.split())); n=a[0]; d=a[1:1+n]; r=a[1+n:]\n return str(min(d)+min(r))\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "允许同一天返程（错误地使用 j >= i）",
+    "code": "import sys\ndef solve(raw):\n a=list(map(int,raw.split())); n=a[0]; d=a[1:1+n]; r=a[1+n:]\n return str(min(d[i]+min(r[i:]) for i in range(n)))\nprint(solve(sys.stdin.read()))\n"
+  }
+]
