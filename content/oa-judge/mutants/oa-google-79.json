@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只替换模板中的直接引用，不递归展开替换值",
+    "code": "import json, re, sys\ntoken=re.compile(r\"%([A-Za-z][A-Za-z0-9_]*)%\")\nd=json.loads(sys.stdin.read()); s=d[\"substitutions\"]\nprint(json.dumps(token.sub(lambda m:s[m.group(1)],d[\"template\"])))\n"
+  },
+  {
+    "name": "用贪婪百分号匹配吞掉多个占位符之间的文本",
+    "code": "import json, re, sys\nd=json.loads(sys.stdin.read()); s=d[\"substitutions\"]\nprint(json.dumps(re.sub(r\"%(.*)%\",lambda m:s.get(m.group(1),\"\"),d[\"template\"])))\n"
+  }
+]

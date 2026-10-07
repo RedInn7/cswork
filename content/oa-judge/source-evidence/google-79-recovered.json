@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "52e27b41843a195a3dd50b45a513e3eea530c013e7e57e3d1f10171b8c0c5435",
+  "items": [
+    {
+      "id": "oa-google-79",
+      "company": "Google",
+      "title": "Substitute Templates",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#79-substitute-templates",
+      "previousStatus": "blocked",
+      "previousReason": "没有给出引用循环、缺失键、字面百分号或递归扩展终止约定。仅两个无环例子不能确定一般输入的正确行为，需补齐模板语法和有效输入条件。",
+      "fixedSource": {
+        "path": "web/content/docs/companies/google.mdx",
+        "evidence": "固定快照的题面和三个语言实现均明确 `%KEY%` 替换及递归展开；两个样例原样保留。"
+      },
+      "supportingSources": [],
+      "siteAdditions": [
+        "JSON stdin/stdout 协议",
+        "输入键/字符串大小上限",
+        "拒收循环与缺失引用",
+        "展开长度上限"
+      ],
+      "interpretation": "按快照三语言实现采用最近配对的 `%KEY%` 并递归解析值；仅允许格式有效、引用存在、无环且展开有界的输入。",
+      "status": "authored",
+      "verification": "用户自有 GoJudge 全部通过 155 项（34 formal + 121 oracle），两个 mutant 均被击杀。"
+    }
+  ]
+}
