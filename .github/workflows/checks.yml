@@ -64,7 +64,7 @@ jobs:
       - run: node --import tsx --test --test-concurrency=1 tests/oj-input-capacity.test.ts tests/oj-import-budget.test.ts
       - run: node --check tests/oj-large-input-probe.mjs
       - run: node scripts/oa-judge/coverage.mjs --check
-      - run: node --test tests/oa-coverage.test.mjs
+      - run: node --test tests/oa-coverage.test.mjs tests/oa-publisher-coverage.test.mjs
       - run: node --test tests/oa-authoring-utf8.test.mjs
       - run: node --import tsx --test tests/leetcode-workspace-ui.test.mjs
       - run: node --import tsx --test tests/statement-markdown.test.mjs

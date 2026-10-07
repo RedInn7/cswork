@@ -17,6 +17,7 @@ import {
   defaultReportPath,
   assertScopeEvidence,
 } from './oa-judge/aggregate-batches.mjs';
+import { assertOracleCoverage } from './oa-judge/oracle-coverage.mjs';
 
 const root = resolve('content/oa-judge');
 const digest = (data: string | Buffer) =>
@@ -83,9 +84,14 @@ for (const item of registry.items) {
     result.referenceSha256,
     digest(load('references/' + item.id + '.py')),
   );
+  const oracleBytes = load('oracles/' + item.id + '.json');
+  assert.equal(result.oracleSha256, digest(oracleBytes));
+  const oracle = JSON.parse(oracleBytes.toString());
+  assertOracleCoverage(item, oracle, item.id);
   assert.equal(
-    result.oracleSha256,
-    digest(load('oracles/' + item.id + '.json')),
+    result.oracle,
+    oracle.length,
+    'Sandbox oracle count must match bound oracle inputs',
   );
   assert.equal(
     result.mutantsSha256,
@@ -96,8 +102,7 @@ for (const item of registry.items) {
     item.sourceContentHash,
   );
   assert(
-    result.oracle >= 120 &&
-      result.formal === payload.cases.length &&
+    result.formal === payload.cases.length &&
       result.passed === result.oracle + result.formal &&
       new Set(result.killed).size >= 2,
   );
