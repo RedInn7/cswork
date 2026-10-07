@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-7",
+  "title": "三回合存在配对的全胜玩家数",
+  "explanation": "## 固定来源更正与本站范围\n\n固定 OAMaster 提交 e66f809f4c953bce129f68491726176615db6afc 的 fastprep/Amazon/amazon-find-capable-winners.md 明确：存在双方的一种配对排列，使 X 严格赢至少两回合，就称 X 能击败 Y；不是同一排列必须胜过 Y 的所有排列。原文给出 X=[9,5,11]、Y=[7,12,3] 可互相击败。早期 #7 摘要的 any rearrangement 用词与原文 some rearrangement 不符，本站据原文更正；三语言排序后同位置比较多数的来源实现也不正确，不执行或复用它们。\n\n原始文件要求每位玩家的三个值互异，但 #7 摘要未限制重复。本站明确保留更宽的每组可重复值输入域，仍按上述严格胜利定义评测；这是范围扩展，不是伪称原题允许重复。raw 与摘要都规定 2≤n≤100000、强化值1..10^9，不扩展n=1。标准I/O由本站补充，不改变不同对手可选不同排列的语义。该原始完整题同时对应已收录 #142，但本ID重新绑定全部来源、题包与验证证据。\n\n## 算法与证明\n\n把每个三元组排序为 a≤b≤c。X 能击败 Y 当且仅当 bX>aY 且 cX>bY：若存在两局严格胜利，把胜出的两枚按大小排列，较小的不会大于bX，而对应两枚被击败值中较小的不会小于aY；较大的胜出值至多cX，对方较大被击败值至少bY，得必要条件。反过来直接以bX配aY、cX配bY即可赢两局。\n\n因此每位玩家只需超过所有其他玩家的最小值和中间值最大值。分别记录这两列最大值、最大值所属玩家以及排除该玩家后的次大值，次大值允许与最大值相等。检查时精确排除本人。不能把自己也放进比较集合：如[2,2,2]对[1,1,1]，第一人可胜，但包含自身的最小值最大值会错误拒绝它。\n\n排序三个数是常数操作，建立极值和逐人检查均为O(n)，总时间O(n)、空间O(n)。使用严格大于；平局不算赢。答案可为0或n。独立oracle逐对枚举六种相对排列，不使用上述排序不等式。\n\n## 样例核对\n\n#7原摘要四人样例按正确规则为2，获胜者是第2与第4人；来源同位置多数代码错误地只算第4人。raw双人例双方可互胜，所以也是2。本站补充两个[1,1,1]的重复值例，没人能严格赢两局，答案0。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    players = [sorted((next(tokens), next(tokens), next(tokens))) for _ in range(n)]\n    # The two largest entries retain their identities, including equal values.\n    def extrema(column):\n        best = second = -1\n        owner = -1\n        for i, row in enumerate(players):\n            value = row[column]\n            if value > best:\n                second, best, owner = best, value, i\n            elif value > second:\n                second = value\n        return best, second, owner\n    a, a2, ai = extrema(0)\n    b, b2, bi = extrema(1)\n    answer = 0\n    for i, row in enumerate(players):\n        opponent_min = a2 if i == ai else a\n        opponent_middle = b2 if i == bi else b\n        answer += row[1] > opponent_min and row[2] > opponent_middle\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#7-get-winner-count",
+  "sourceContentHash": "894f92e4c63616d093fcb1f282c2bc28c5e54ba9472b7faa41039c2d97509593"
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-37",
+      "sourceContentHash": "f2ce6c0bbdacb1a0def8403d05e0f18c7e73877db5b3182746a462b4ee328ccc",
+      "packageChecksum": "be24a9468717cf9e4cbf4214376f4077e7485a938141198383ccc75baf2b3424",
+      "editorial": "## 思路\n\n对乘法和除法分别扫描，维护以当前位置结尾的非空计分区间：B尚未修改、M正在修改、A已经结束修改。当前原值x、变换值t，使用旧状态同时计算：`B'=max(x,B+x)`，`M'=max(t,B+t,M+t)`，`A'=max(M+x,A+x)`。不可达状态不参加转移；答案只取每个位置的M/A，再取两策略较大者。负数除法用 `-(abs(x)//factor)`，不能直接用Python的负数整除。\n\n## 正确性\n\n三状态顺序只允许未改、改一次非空区间、改后延续，覆盖所有计分区间与修改区间相交的方案。交叠区间之外的修改可删去而不影响计分。若最优计分区间与修改区间不相交，则计分区间含非负值时可改为乘其中一个非负值；若全负则可除其中一个负值。因factor≥1，两者都不会降低得分。故在同时允许乘/除的本题，相交方案中必有最优；不能声称固定某一策略也总成立。转移逐项枚举开始计分、开始修改、延续修改及结束修改，因此不漏解且无非法二次修改。不允许空子数组，全负且factor=1也必须返回负数。\n\n## 复杂度\n\n两次扫描O(n)时间、O(1)额外DP空间；程序保存输入需O(n)空间。结果最大2×10^18，Java/C++/Go须使用有符号64位且在相乘前提升类型。\n\n## 来源纠错与独立验证\n\n完整raw中factor=2，数组[5,-3,-3,2,4]答案12；catalog将factor改成3仍写12，是可直接复算的错误：乘最后2、4得到6、12，答案18。不能把原最大子数组和与任意独立增益相加，如[5,-100,5],factor=2真实10而该错法得到55。本站仅根据固定题面独立编写算法，未运行上游代码。163组唯一oracle枚举所有非空修改区间、两策略，再枚举结果的所有非空子数组；没有复用DP或Kadane。大边界采用同号数组直接公式，2个错误程序均正常退出且被正式用例否决。\n\n本站标准输入与合并范围：1≤n≤200000，1≤impactFactor≤10000，−10^9≤ratings[i]≤10^9。完整 raw 题源为 n≤200000、|ratings[i]|≤100000；catalog 为 n≤100000、|ratings[i]|≤10^9，未保留因子范围。本站取二者范围包络并采用 raw 的正整数因子范围，不声称这是原 raw 的约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, factor = data[:2]\n    ratings = data[2:]\n    if not (1 <= n <= 200000 and 1 <= factor <= 10000 and len(ratings) == n):\n        raise ValueError(\"invalid input shape or factor\")\n    if any(abs(x) > 1000000000 for x in ratings):\n        raise ValueError(\"rating outside site range\")\n    answer = None\n    for divide in (False, True):\n        before = inside = after = None\n        for x in ratings:\n            changed = (abs(x) // factor) * (1 if x >= 0 else -1) if divide else x * factor\n            new_before = x if before is None else max(x, before + x)\n            new_inside = changed\n            if before is not None:\n                new_inside = max(new_inside, before + changed)\n            if inside is not None:\n                new_inside = max(new_inside, inside + changed)\n            new_after = None if inside is None else inside + x\n            if after is not None:\n                new_after = after + x if new_after is None else max(new_after, after + x)\n            before, inside, after = new_before, new_inside, new_after\n            candidate = inside if after is None else max(inside, after)\n            answer = candidate if answer is None else max(answer, candidate)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
