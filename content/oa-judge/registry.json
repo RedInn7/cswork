@@ -6290,6 +6290,18 @@
       ]
     },
     {
+      "id": "oa-google-37",
+      "sourceContentHash": "cd7e4c68b6ebd7ed14973e3182cd0938ce8f756c75c51c6d9e398b204ffb8025",
+      "packageChecksum": "bfb3de460cc9090d0784f89b7911397ffbf9d10aca3598e633a10b895fb315d1",
+      "editorial": "## 思路\n\n从左向右扫描，维护当前仍存括号总数 T，以及所有可达选择中差值 D=左括号数−右括号数的最小值 low 和最大值 high。所有可达差值具有相同奇偶性且构成步长为 2 的连续区间，因此无需保存每个状态。读到括号时 T 和区间端点同时加减 1。读到数字 d 时令 r=min(d,T)。最小差值状态能留下的最小差值为 low−r（其左括号至少 r 个），否则为 r−T；最大差值状态能留下的最大差值为 high+r（其右括号至少 r 个），否则为 T−r。之后 T 减 r。最终 0 落在 [low,high] 中即存在一种删除选择使两类括号数量相等。\n\n## 正确性证明\n\n归纳证明可达差值集合始终为同奇偶性的连续区间。初态只有差值 0。追加 `(` 或 `)` 是对所有差值整体平移 1，性质不变。处理数字时，固定旧差值 D 时，若旧括号数为 O、C，则删除 r 个括号可选删除开括号数 x，其中 max(0,r−C)≤x≤min(r,O)；新差值为 D+r−2x，因此是连续步长 2 的区间。该状态的区间端点化简为 L(D)=max(r−T,D−r)、U(D)=min(T−r,D+r)，其中 T=O+C。旧可达 D 每增加 2，L、U 各至多增加 2；并且 U(D)≥L(D+2)−2，因此相邻状态的结果在步长 2 的差值格点上相接或重叠。全局最小值由 D=low 取得、最大值由 D=high 取得，故新端点分别为 max(r−T,low−r) 与 min(T−r,high+r)，正是实现中的更新式。所以端点足以完整表示所有可达状态。扫描结束后，差值区间含 0 且剩余总数为偶数，当且仅当存在左右数量相等的状态。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)。\n\n## 来源错误更正\n\nLeetCode Google 面试原帖和固定 OAMaster 快照都把 `())` 列为平衡例子，但它有 2 个左括号、1 个右括号，与同一题面的“左右括号数量相等”定义直接矛盾；该示例标注为源错误，不沿用。按明确定义，`())` 输出 0，`)(` 输出 1。原帖解释数字会删除其左侧任意 d 个括号、连续数字逐位处理；其示例 `)(1` 可任选删除左侧括号之一。快照三种语言实现对 d 大于现存括号数时会删掉所有现存括号，本站沿用该可观察行为。\n\n[OAMaster 题目快照](https://oamaster.com/docs/companies/google#37-is-balanced-string)；[LeetCode Google 面试原帖](https://leetcode.com/discuss/post/6582615/google-phone-screen-by-ashokkumarmula422-qjfm/)。\n\n本站补充：标准输入为一行字符串，长度 1..200000，字符仅含 `(`、`)`、`0`..`9`；若数字大于此前尚未删除的括号数，则删除全部尚存括号。原题未给长度范围或输入输出协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    s = raw.strip()\n    if not s:\n        return \"\"\n    if len(s) > 200_000 or any(ch not in \"()0123456789\" for ch in s):\n        raise ValueError(\"input outside the site-defined format\")\n\n    # All reachable states have the same survivor count. Their balance\n    # values form an interval with step two, so only its endpoints are needed.\n    survivors = 0\n    low = high = 0  # balance = remaining '(' count - remaining ')' count\n    for ch in s:\n        if ch == \"(\":\n            survivors += 1\n            low += 1\n            high += 1\n        elif ch == \")\":\n            survivors += 1\n            low -= 1\n            high -= 1\n        else:\n            # Match the source implementation when d exceeds the number\n            # currently available: remove every available parenthesis.\n            removed = min(ord(ch) - ord(\"0\"), survivors)\n            if removed == 0:\n                continue\n            old_survivors = survivors\n            low = max(removed - old_survivors, low - removed)\n            high = min(old_survivors - removed, high + removed)\n            survivors -= removed\n    return \"1\" if survivors % 2 == 0 and low <= 0 <= high else \"0\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-google-45",
       "sourceContentHash": "eb24ff834abb2e8ef515db29a91308414307144aad15804f989d63e249731470",
       "packageChecksum": "af68b55c46dcc302d513e221809a992886a35d56827eac403842a25b6b007da1",

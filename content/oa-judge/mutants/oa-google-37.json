@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误要求每个前缀都合法",
+    "code": "def solve(raw):\n s=raw.strip(); bal=0; survivors=[]\n for c in s:\n  if c=='(': bal+=1\n  elif c==')':\n   bal-=1\n   if bal<0:return '0'\n  elif c.isdigit():\n   d=int(c)\n   # This mutant otherwise uses a stack-like greedy policy.\n   while d and survivors:\n    survivors.pop(); d-=1\n return '1' if bal==0 else '0'\n"
+  },
+  {
+    "name": "遇数字时总优先删除右括号",
+    "code": "def solve(raw):\n o=c=0\n for ch in raw.strip():\n  if ch=='(': o+=1\n  elif ch==')': c+=1\n  else:\n   d=min(int(ch),o+c); take=min(d,c); c-=take; d-=take; o-=min(d,o)\n return '1' if o==c else '0'\n"
+  }
+]

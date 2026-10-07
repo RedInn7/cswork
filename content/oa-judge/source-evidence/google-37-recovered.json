@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "sourceContentHash": "cd7e4c68b6ebd7ed14973e3182cd0938ce8f756c75c51c6d9e398b204ffb8025",
+  "fixedSource": {
+    "path": "web/content/docs/companies/google.mdx",
+    "gitBlobSha": "300032c24800642c2ecedab9d930e86db3cdb54a",
+    "evidence": "固定快照中的题面、三种语言函数与三个输入输出例子一致；函数逐字符读取括号/数字，并按左右计数判断结果。"
+  },
+  "primarySupportingSource": {
+    "url": "https://leetcode.com/discuss/post/6582615/google-phone-screen-by-ashokkumarmula422-qjfm/",
+    "evidence": "Google Phone Screen 原帖重述：数字出现时删除其左边 d 个括号、可任选删除、数字逐字符处理；平衡定义明确为左括号数等于右括号数，并举 )(1 可删左括号之一。"
+  },
+  "sourceError": {
+    "text": "())",
+    "reason": "来源把它列为平衡例子，但其中左括号 2 个、右括号 1 个，与同一题面明示的数量相等定义矛盾。",
+    "resolution": "以原帖的明确定义和固定快照实现为准；该串答案为 0。另以 )( 为不要求前缀合法的正确例子，答案为 1。"
+  },
+  "interpretation": "扫描时仅能删除当前数字左侧尚未删除的括号；最终只比较剩余左右括号数量，不要求任一前缀合法。连续数字逐位独立处理。若 d 超过现存括号数，则按快照三语实现的 min(d,现存数) 行为删除全部现存括号。",
+  "siteAdditions": [
+    "标准输入输出协议",
+    "字符串长度 1..200000",
+    "允许字符集合",
+    "当 d 超出现存括号数时明示沿用上游实现的删除全部行为"
+  ]
+}
