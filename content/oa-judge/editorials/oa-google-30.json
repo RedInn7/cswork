@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-30",
+  "title": "微波炉最优按键输入",
+  "explanation": "## 思路\n\n枚举 0 到 9999。将不超过两位的输入解释为秒；更长的输入将末两位作为秒、前缀作为分钟，秒数不做六十进制进位。扫描数字串计算按键数与相邻不同数字的移动成本。满足 `10×时间差≤targetTime` 后，按（总成本、时间差、数值）字典序最小选择。\n\n## 正确性\n\n本站候选域恰为 10000 个整数，算法逐一枚举且只排除超出10%范围的输入；对剩余候选按题目优先级完整比较成本、时间差和站内并列规则，因此选中的输入就是该站内规格的最优解。范围 `0≤targetTime≤6039` 内，总能找到表示同一秒数的按键值，答案不会无解。\n\n## 复杂度\n\n候选数量固定为 10000，每个候选最多处理4位，时间 O(10000)，额外空间 O(1)。\n\n## 来源与本站约定\n\nOAMaster 完整定义了成本、±10%、并列先看时间差及示例，但没给目标范围；其 Python、Java、C++ 三份代码都枚举 `0..9999`，且都按 `(成本, 时间差, 输入数值)` 选择：https://oamaster.com/docs/companies/google#30-find-optimal-input（快照指纹 3684f8816d11622681cb48dfb68bffb50710780124e95786e270ebcd4437b1e6）。同题 Google 面试记录复现“10分钟→888”示例及成本解释：https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/；中文同题解释：https://leetcode.cn/discuss/post/3275912/xiang-wen-wen-da-jia-zhe-liang-ti-zen-ya-ct85/。为避免无解/溢出且忠实复用三语解的搜索域，`targetTime≤6039`、键入值最多四位，以及最后并列按输入数值最小，均清楚标为本站约定；不声称是原始面试限制。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef score(value):\n    digits = str(value)\n    presses = len(digits)\n    for i in range(1, len(digits)):\n        if digits[i] != digits[i - 1]:\n            presses += 2\n    if len(digits) <= 2:\n        seconds = value\n    else:\n        seconds = int(digits[:-2]) * 60 + int(digits[-2:])\n    return presses, seconds\n\ndef solve(raw):\n    data = raw.split()\n    if len(data) != 1:\n        raise ValueError(\"expected one targetTime\")\n    target = int(data[0])\n    if not 0 <= target <= 6039:\n        raise ValueError(\"targetTime outside the site-supported range\")\n    best_key = None\n    best_value = -1\n    for value in range(10000):\n        presses, actual = score(value)\n        difference = abs(actual - target)\n        if difference * 10 > target:\n            continue\n        key = (presses, difference, value)\n        if best_key is None or key < best_key:\n            best_key, best_value = key, value\n    if best_value < 0:\n        raise AssertionError(\"every target in [0, 6039] has an exact four-digit-or-shorter input\")\n    return str(best_value)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#30-find-optimal-input",
+  "sourceContentHash": "3684f8816d11622681cb48dfb68bffb50710780124e95786e270ebcd4437b1e6"
+}

@@ -1,0 +1,281 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-30",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "微波炉最优按键输入",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Google",
+      "枚举",
+      "字符串"
+    ],
+    "description": "微波炉用数字键输入烹饪时间。输入不超过两位时按秒解释；超过两位时末两位为秒，其余前缀为分钟（秒数允许达到99，例如 999 表示9分99秒）。每次按键成本为1；相邻两次按下不同数字键时，移动手指另花2。实际时间须与目标相差不超过10%。先最小化总成本；若成本相同，选实际时间与目标差值最小的输入；仍并列时选数值最小的输入。返回该输入整数。\n\n本站评测边界：0≤targetTime≤6039 秒，只考虑 0..9999 的非负整数键入值（最多四位，按普通十进制、不带前导零；输入 0 表示 0 秒）。目标范围内均存在精确可表示的时间。此范围未出现在 OAMaster 原文中，是本站为匹配源站三语参考实现搜索域而明确补充。\n\n原题来源：https://oamaster.com/docs/companies/google#30-find-optimal-input。同题面试记录及样例：https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/。",
+    "input": "输入一行整数 targetTime（秒）。",
+    "output": "输出按规则选出的整数键入值。",
+    "explanation": "最多只有 10000 个候选值，逐个计算实际秒数与按键成本，过滤掉超过10%的候选，再按（按键成本、时间差、输入值）升序取首个。",
+    "hints": [
+      "不同数字键的移动成本只计在相邻两次按键之间。",
+      "末两位秒数可以大于59，不要按六十进制规范化。",
+      "使用整数比较 `10*|actual-target| <= target`，避免浮点误差。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 131072,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "隐藏用例 0",
+      "input": "0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "恰好10%边界",
+      "input": "10\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "59\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "60\n",
+      "expectedOutput": "55\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "81\n",
+      "expectedOutput": "77\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "90\n",
+      "expectedOutput": "88\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "99\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "100\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "599\n",
+      "expectedOutput": "888\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "原题示例",
+      "input": "600\n",
+      "expectedOutput": "888\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "999\n",
+      "expectedOutput": "1666\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "3599\n",
+      "expectedOutput": "5555\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "3600\n",
+      "expectedOutput": "5555\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "5999\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "6000\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "6039\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "4053\n",
+      "expectedOutput": "6666\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "666\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "5521\n",
+      "expectedOutput": "8888\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "2347\n",
+      "expectedOutput": "3888\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "2364\n",
+      "expectedOutput": "3888\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "4176\n",
+      "expectedOutput": "6666\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "1614\n",
+      "expectedOutput": "2666\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "4579\n",
+      "expectedOutput": "7777\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "1910\n",
+      "expectedOutput": "3333\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "4288\n",
+      "expectedOutput": "6666\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 27",
+      "input": "5123\n",
+      "expectedOutput": "8888\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 28",
+      "input": "4298\n",
+      "expectedOutput": "6666\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 29",
+      "input": "5806\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 30",
+      "input": "4463\n",
+      "expectedOutput": "7777\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 31",
+      "input": "263\n",
+      "expectedOutput": "444\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 32",
+      "input": "882\n",
+      "expectedOutput": "1444\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 33",
+      "input": "94\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大目标时间",
+      "input": "6039\n",
+      "expectedOutput": "9999\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

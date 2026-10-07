@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "3684f8816d11622681cb48dfb68bffb50710780124e95786e270ebcd4437b1e6",
+  "items": [
+    {
+      "id": "oa-google-30",
+      "company": "Google",
+      "title": "Find Optimal Input",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#30-find-optimal-input",
+      "fixedSource": {
+        "path": "web/content/docs/companies/google.mdx",
+        "evidence": "OAMaster 原文解释时间格式、键入/移动成本、10%容差和成本/时间差目标。三语代码均枚举 v=0..9999，并按 (cost, absDiff, v) 比较。"
+      },
+      "supportingSources": [
+        {
+          "url": "https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/",
+          "evidence": "同题 Google onsite 记录复现 10 分钟 target 与 888 答案，并解释按键成本和更接近目标的并列规则。"
+        },
+        {
+          "url": "https://leetcode.cn/discuss/post/3275912/xiang-wen-wen-da-jia-zhe-liang-ti-zen-ya-ct85/",
+          "evidence": "同题中文记录给出 888 对应 568 秒、999 对应 639 秒，说明末两位按秒直接计数而非按60进位。"
+        }
+      ],
+      "siteAdditions": [
+        "0≤targetTime≤6039",
+        "输入候选限定为 0..9999",
+        "剩余并列时取输入数值较小者；与 OAMaster 三语代码相同"
+      ],
+      "interpretation": "移动成本按相邻输入数字不同计2；时间窗包含恰好10%的边界；末两位秒数允许60..99，不进行进位。"
+    }
+  ]
+}
