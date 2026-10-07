@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c",
+  "items": [
+    {
+      "id": "oa-meta-24",
+      "company": "Meta",
+      "title": "Get Minimum Round Trip Cost",
+      "sourceUrl": "https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost",
+      "previousStatus": "blocked",
+      "previousReason": "未说明返程日j是否必须≥出发日i（或严格>），唯一单调样例对三种解释答案相同。例如去程[100,1]、返程[1,100]，无日期限制答案2、有先后限制答案101，不能自行假定。",
+      "fixedSource": {
+        "path": "web/content/docs/companies/meta.mdx",
+        "gitBlobSha": "06fedf2f99742b7a3a9b7556dce29ced6d248910",
+        "evidence": "固定提交中的题面和原样例已校验；其三语言实现一致地分别求两个数组最小值，但该策略不满足返程必须晚于出发的同题原帖条件。"
+      },
+      "supportingSources": [
+        {
+          "url": "https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem",
+          "evidence": "同题 Meta 面试题页面明确写出返程索引 j > i、返回最小总价及 O(n) 要求；固定 OAMaster 样例在该严格条件下仍输出 2。"
+        }
+      ],
+      "interpretation": "要求返程日期严格晚于出发日期（j>i）；穷举所有合法索引对时，本站 oracle 与后缀最小值参考实现吻合。",
+      "upstreamConflict": "OAMaster 快照的三语言解法直接 min(departing)+min(returning)，会在 [100,1] / [1,100] 上返回 2，而 j>i 的正确答案是 101。",
+      "siteAdditions": [
+        "n 与票价范围",
+        "stdin/stdout 输入协议"
+      ]
+    }
+  ]
+}

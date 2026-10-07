@@ -8666,6 +8666,18 @@
       ]
     },
     {
+      "id": "oa-meta-24",
+      "sourceContentHash": "a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c",
+      "packageChecksum": "7eec5f8dc979ee037262735234eba7d8ea47f712fbf06de0dd2d32b91e0b9a32",
+      "editorial": "## 思路\n\n遍历出发日 i 时，返程必须在之后，因此只考虑 returning[i+1..n-1]。从右向左维护这段的最小票价，与 departing[i] 相加并更新答案。\n\n## 正确性证明\n\n对任意固定出发日 i，所有合法返程日恰为 j>i；后缀最小值正好是这些合法返程票价中的最小值，因此与 departing[i] 相加得到该 i 下的最优合法费用。遍历每个 i 后取最小值，覆盖所有合法出发日，故得到全局最优解。\n\n## 复杂度\n\n时间 O(n)，额外空间 O(1)（输入数组除外）。\n\n## 来源与本站约定\n\n固定 OAMaster 快照（https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost，内容指纹 a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c）写了数组定义和原样例，但漏掉返程日限制；其三语示例解法分别取两个数组最小值，忽略日期顺序。1Point3Acres 同题报告明确要求 j>i：https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem。原样例在此严格条件下仍为 2（第 0 天去程 1、第 3 天返程 1）。快照没有给约束；本站的 n、票价范围以及 stdin/stdout 协议均为补充约定。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if not 2 <= n <= 200_000 or len(data) != 1 + 2 * n:\n        raise ValueError(\"expected n >= 2 followed by two arrays of length n\")\n    departing = data[1:1 + n]\n    returning = data[1 + n:]\n    if any(not -1_000_000_000 <= x <= 1_000_000_000 for x in departing + returning):\n        raise ValueError(\"fare is outside the site-supported range\")\n\n    best_return = returning[-1]\n    answer = departing[-2] + best_return\n    for i in range(n - 2, -1, -1):\n        best_return = min(best_return, returning[i + 1])\n        answer = min(answer, departing[i] + best_return)\n    return str(answer)\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-meta-1",
       "sourceContentHash": "64c170f3d0e7adfe05723c8bcdc7d6dae5bb4eb7d95345d102ae2e2dbc4b4ae3",
       "packageChecksum": "0e5dcf2298f7781e5aae38f235cd42ea2de9c4d149841f4c74794569862544e7",
