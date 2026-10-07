@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-google-71",
+      "oracleCases": 227,
+      "uniqueOracleInputs": 220,
+      "publicCases": 2,
+      "hiddenCases": 23,
+      "negativeControls": [
+        {
+          "name": "把有向边误当作无向边",
+          "rejectedByCases": [
+            1
+          ]
+        },
+        {
+          "name": "错误地要求途经路线不能重访节点",
+          "rejectedByCases": [
+            2
+          ]
+        }
+      ],
+      "referenceSha256": "674a37cc15c47a971993864663df7ef54e8736864247a8d75985280418a37c8a"
+    }
+  ],
+  "note": "基于独立Floyd-Warshall生成220个随机小图的精确答案，覆盖原例、方向差异、必须重访节点、零权边、不可达与64位距离。GoJudge报告已绑定。"
+}

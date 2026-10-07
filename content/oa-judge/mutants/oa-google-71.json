@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把有向边误当作无向边",
+    "code": "import heapq,sys\nx=list(map(int,sys.stdin.read().split()));n,m=x[:2];g=[[]for _ in range(n)];p=2\nfor _ in range(m):u,v,w=x[p:p+3];p+=3;g[u].append((v,w));g[v].append((u,w))\ns,t,z=x[p:p+3]\ndef d(a):\n q=[(0,a)];r=[10**30]*n;r[a]=0\n while q:\n  c,u=heapq.heappop(q)\n  if c!=r[u]:continue\n  for v,w in g[u]:\n   if c+w<r[v]:r[v]=c+w;heapq.heappush(q,(r[v],v))\n return r\na=d(s);b=d(z);print(a[t] if a[t]<10**30 else -1, a[z]+b[t] if a[z]<10**30 and b[t]<10**30 else -1)\n"
+  },
+  {
+    "name": "错误地要求途经路线不能重访节点",
+    "code": "import heapq,sys\nx=list(map(int,sys.stdin.read().split()));n,m=x[:2];g=[[]for _ in range(n)];p=2\nfor _ in range(m):u,v,w=x[p:p+3];p+=3;g[u].append((v,w))\ns,t,z=x[p:p+3]\ndef d(a,b):\n q=[(0,a)];r=[10**30]*n;r[a]=0\n while q:\n  c,u=heapq.heappop(q)\n  if c!=r[u]:continue\n  for v,w in g[u]:\n   if c+w<r[v]:r[v]=c+w;heapq.heappush(q,(c+w,v))\n return r[b] if r[b]<10**30 else -1\nbest=d(s,t); via=10**30\ndef dfs(u,cost,seen,hit):\n global via\n if cost>=via:return\n if u==t:\n  if hit:via=cost\n  return\n for v,w in g[u]:\n  if v not in seen:dfs(v,cost+w,seen|{v},hit or v==z)\ndfs(s,0,{s},s==z)\nprint(best,-1 if via==10**30 else via)\n"
+  }
+]
