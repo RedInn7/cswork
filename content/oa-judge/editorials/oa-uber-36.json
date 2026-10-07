@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-36",
+  "title": "两个数组数字的最长公共前缀",
+  "explanation": "## 思路\n\n把 arr1 中每个数的十进制表示的所有非空前缀放入集合。再扫描 arr2 中每个数的前缀；每遇到一个存在于集合的前缀，就更新最大长度，首次缺失后无需继续扫描该数。\n\n## 正确性证明\n\n对任意 arr1 中的数 x 和 arr2 中的数 y，x 与 y 的公共前缀必然是 x 的一个前缀，因而已被加入集合；扫描 y 时，该公共前缀会命中集合。反之，若 y 的某个前缀命中集合，它就是 arr1 中某个数的前缀，也同时是 y 的前缀，因此对应一个合法数对。算法检查了所有可能的前缀并取最大长度，故得到所有跨数组数对中的最长公共前缀。\n\n## 复杂度\n\n设 D 为两个数组中所有数字的总位数。集合构造和查询的期望时间为 O(D)，额外空间为 O(D)。\n\n## 来源与本站约定\n\n本站输入协议和边界见题面。固定 OAMaster 快照：https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix；原始 blocked 原因：题干截断于Given two arrays of strictly i；仅凭[123,4,5,955]和[12345,63,95,2]输出3不能确定比较规则。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n, m = data[0], data[1]\n    if not (1 <= n <= 50_000 and 1 <= m <= 50_000):\n        raise ValueError(\"array lengths must be within the site bounds\")\n    if len(data) != 2 + n + m:\n        raise ValueError(\"expected n, m, then both arrays\")\n    arr1 = data[2:2 + n]\n    arr2 = data[2 + n:]\n    if any(not 1 <= value <= 1_000_000_000 for value in arr1 + arr2):\n        raise ValueError(\"array values must be positive and within the site bounds\")\n\n    prefixes = set()\n    for value in arr1:\n        digits = str(value)\n        for end in range(1, len(digits) + 1):\n            prefixes.add(digits[:end])\n    answer = 0\n    for value in arr2:\n        digits = str(value)\n        for end in range(1, len(digits) + 1):\n            if digits[:end] not in prefixes:\n                break\n            answer = max(answer, end)\n    return str(answer)\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix",
+  "sourceContentHash": "f397cc7f27f92f51c7c043f84283075084bea701587a27af3d7bc05d6ca9041f",
+  "author": "CSWork"
+}

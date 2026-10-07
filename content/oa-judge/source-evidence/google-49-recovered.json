@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f",
+  "items": [
+    {
+      "id": "oa-google-49",
+      "company": "Google",
+      "title": "Min Days to Bloom",
+      "status": "authored",
+      "verification": "用户自有 GoJudge 全部通过 153 项（33 formal + 120 oracle），两个 mutant 均被击杀。",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#49-min-days-to-bloom",
+      "previousStatus": "blocked",
+      "previousReason": "roses[i]含义及k、n的定义截断，例子又将3朵解释为一束，不能完整确认花束相邻/数量规则和无解输出。",
+      "fixedSource": {
+        "path": "web/content/docs/companies/google.mdx",
+        "gitBlobSha": "300032c24800642c2ecedab9d930e86db3cdb54a",
+        "evidence": "快照正文的定义段落截断，但同一内容指纹条目的 Python/Java/C++ 签名、实现和原始示例明确了 roses[i]、相邻 k 朵和目标 n 束。"
+      },
+      "supportingSources": [
+        {
+          "url": "https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/",
+          "evidence": "同题 Google OA 原帖完整写明 roses[i] 为开放日期、k 为制作一束所需的相邻开放玫瑰数、n 为花束数，并复现完全相同的数组、参数和输出。"
+        }
+      ],
+      "siteAdditions": [
+        "stdin/stdout 输入协议",
+        "N、k、n 和开花日的有效数值范围"
+      ],
+      "interpretation": "每朵玫瑰最多用于一束；每束必须由原数组中的 k 个连续位置组成且当天全部开放。总数不足 n*k 时为 -1，与固定快照三语实现相同。"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "沿用旧的 K+1 折返后顺序追加构造",
+    "code": "def solve(raw):\n n,k=map(int,raw.split()); out=[]; lo,hi=1,k+1\n while lo<=hi:\n  out.append(lo)\n  if lo!=hi: out.append(hi)\n  lo+=1; hi-=1\n out.extend(range(k+2,n+1)); return \" \".join(map(str,out))\n"
+  },
+  {
+    "name": "每个余数类都递增填入而未交替高低",
+    "code": "def solve(raw):\n n,k=map(int,raw.split()); out=[0]*n; value=1\n for r in range(k):\n  for i in range(r,n,k): out[i]=value; value+=1\n return \" \".join(map(str,out))\n"
+  }
+]

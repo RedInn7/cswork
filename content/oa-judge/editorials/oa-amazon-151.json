@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-151",
+  "title": "K 级排列构造",
+  "explanation": "## 构造\n\n把位置按下标对 K 取余分为 K 组，编号 0,1,…,K−1。偶数组按从左到右的顺序填入当前最小值 1,2,…；奇数组按从左到右填入当前最大值 N,N−1,…。每一步递增 low 或递减 high。遍历结束时恰好使用 1..N 各一次。\n\n## 正确性证明\n\n任意长度 K 的连续窗口恰好包含每个余数类的一个位置。将窗口左端从 i 移到 i+1，窗口和的变化是 `p[i+K]−p[i]`。两个位置属于同一余数类；该组中相邻元素在构造序列里恰差 1：偶数组递增，故差为 +1；奇数组递减，故差为 −1。因为 K 为偶数，i 与 i+K 的奇偶性相同；当左端每次右移一格，所经过的位置余数奇偶交替，窗口和变化便交替为 +1、−1。因此所有窗口和只会在两个相邻整数之间交替，最大值与最小值之差不超过 1。N=K 时仅有一个窗口，条件显然成立。\n\n## 复杂度\n\n每个位置只写入一次，时间 O(N)，空间 O(N)（用于输出排列）。\n\n## 验证\n\n用独立的排列/滑动窗口定义检查 160 个唯一 oracle 输入；对每个 2≤N≤80 及每个偶数 K≤N 穷举构造，共 1,600 组。32 个正式用例包括固定 OAMaster 样例及 N=200000 的边界。两个错误构造在语义检查器下均被拒绝。\n\n## 来源与本站补充\n\nAmazon 同题页给出 “所有长度 K 的连续窗口中最大和与最小和之差不超过 1” 的定义。[1Point3Acres](https://www.1point3acres.com/interview/problems/amazon-find-k-level-permutation) 明确重述同一条件；Codeforces 官方 [1927E Klever Permutation](https://codeforces.com/contest/1927/problem/E) 也给出相同定义和偶数 K 条件。固定 OAMaster 样例 `[1,7,3,5,2,6,4]` 的四个窗口和为 [16, 17, 16, 17]，最大值 17、最小值 16。本站补充单组标准输入输出协议以及 2≤K≤N、K 为偶数、N≤200000；不声称这些界限来自 OAMaster。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "def construct(n, k):\n    result = [0] * n\n    low, high = 1, n\n    for residue in range(k):\n        for index in range(residue, n, k):\n            if residue % 2 == 0:\n                result[index] = low\n                low += 1\n            else:\n                result[index] = high\n                high -= 1\n    return result\n\ndef solve(raw):\n    n, k = map(int, raw.split())\n    if not (2 <= k <= n <= 200_000 and k % 2 == 0):\n        raise ValueError(\"require 2 <= K <= N <= 200000 and even K\")\n    return \" \".join(map(str, construct(n, k)))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#151-find-k-level-permutation",
+  "sourceContentHash": "268b9e03a1a2d646ddae095d2f5be5f4e0ee371e11e96e0df98780474251b943",
+  "author": "Chunyu Sui"
+}
