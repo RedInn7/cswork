@@ -46,7 +46,7 @@ node scripts/oa-judge/coverage.mjs
 node scripts/oa-judge/coverage.mjs --check
 ```
 
-截至 2026-10-06，全量清单共有 1,634 题：1,141 题已通过真实 go-judge 沙箱验证并登记在发布清单；493 题因题面、输出规则或可靠算法尚未解决而阻塞；待审阅为 0。新增的 Alarm #1、Google #45/#64、Stripe #3、Microsoft #60 和 Amazon #79 均已在自有服务器专用 5054 验证沙箱通过，报告保存在 `content/oa-judge/reports/`。**已验证/登记不等于生产数据库已发布**；只有部署版本和数据库中的已发布记录均匹配，题目才可提交评测。
+截至 2026-10-06，全量清单共有 1,634 题：1,142 题已通过真实 go-judge 沙箱验证并登记在发布清单；492 题因题面、输出规则或可靠算法尚未解决而阻塞；待审阅为 0。新增的 Alarm #1、Google #38/#45/#64、Stripe #3、Microsoft #60 和 Amazon #79 均已在自有服务器专用 5054 验证沙箱通过，报告保存在 `content/oa-judge/reports/`。Google #38 的字符集、长度和无解输出是明确标出的本站约定，题意参考同名二手题目汇总。**已验证/登记不等于生产数据库已发布**；只有部署版本和数据库中的已发布记录均匹配，题目才可提交评测。
 
 这是滚动清单，数字以 `content/oa-judge/coverage.json` 为准；新增或变更题目后重新生成，避免在文档中沿用旧批次统计。阻塞详情在 `content/oa-judge/reviews/`，题意与判题器尚未厘清前不强行上线。
 
