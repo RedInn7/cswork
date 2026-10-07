@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-microsoft-60",
+      "sourceContentHash": "63e5f5c1c7cc3bacf18c1df7569a96f187f5d4c3e24fccc9634ed301e06b32b9",
+      "packageChecksum": "a68865484b4aefb1ae7446c1c676374d8040890c9e88407695c430b04437afc8",
+      "editorial": "## 思路\n\n逐位取出个位并追加到答案末尾，不使用字符串操作。\n\n## 溢出\n\n官方同题规则规定，反转结果超出有符号32位范围时输出0。\n\n## 正确性\n\n每一步将原数最低位追加到当前答案，故处理完所有位后答案正好是反序；再按范围规则处理溢出。\n\n## 复杂度\n\n时间O(log|x|)，空间O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(text):\n    x = int(text.strip())\n    sign = -1 if x < 0 else 1\n    x = abs(x)\n    reversed_value = 0\n    while x:\n        reversed_value = reversed_value * 10 + x % 10\n        x //= 10\n    reversed_value *= sign\n    return str(reversed_value if -(2**31) <= reversed_value <= 2**31 - 1 else 0)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

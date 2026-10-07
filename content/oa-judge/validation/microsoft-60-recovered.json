@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "note": "本地对照验证，不代表 GoJudge 沙箱通过。",
+  "problems": [
+    {
+      "id": "oa-microsoft-60",
+      "oracleCases": 177,
+      "formalCases": 57,
+      "hiddenCases": 54,
+      "uniqueOracleInputs": 177,
+      "exhaustiveInputs": 20001,
+        "negativeControls": [
+          {
+            "name": "溢出时不返回0",
+            "rejectedByCases": ["正向溢出", "负向溢出"]
+          },
+          {
+            "name": "丢失负号",
+            "rejectedByCases": ["原样例 3", "负数反转合法"]
+          }
+        ],
+      "status": "local_verified"
+    }
+  ]
+}
