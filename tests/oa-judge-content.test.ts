@@ -98,6 +98,30 @@ test('DoorDash #4 Discount Events is available as an independently verified OA i
   );
 });
 
+test('Amazon MERN #5 maps to the verified Optimize Box IDs problem, not Amazon #13', () => {
+  const registry = JSON.parse(
+    readFileSync('content/oa-judge/registry.json', 'utf8'),
+  );
+  const entry = registry.items.find(
+    (item: { id: string }) => item.id === 'oa-amazon-mern-5',
+  );
+  const evidence = JSON.parse(
+    readFileSync(
+      'content/oa-judge/source-evidence/amazon-mern5-duplicate.json',
+      'utf8',
+    ),
+  );
+  const problem = JSON.parse(
+    readFileSync('content/oa-judge/packages/oa-amazon-mern-5.json', 'utf8'),
+  ).problem;
+  assert(entry, 'Amazon MERN #5 must be independently addressable');
+  assert.equal(evidence.duplicateOf, 'oa-amazon-34');
+  assert.equal(evidence.incorrectSourceLink.title, 'Get Total Balanced');
+  assert.equal(entry.sourceContentHash, evidence.sourceContentHash);
+  assert.equal(problem.id, entry.id);
+  assert.equal(problem.output, '输出字典序最小的数字串，保留前导零。');
+});
+
 test('batch evidence is isolated, complete and cannot authorize new or drifted entries', () => {
   const entry = {
     id: 'oa-fixture-1',
