@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "a39f8d67147bd8f6341f8e6f80a80e80c3ed7727f2420562e88bc1f4f25020f4",
+  "items": [
+    {
+      "id": "oa-google-38",
+      "company": "Google",
+      "title": "Largest Lexicographical Substring",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#38-largest-lexicographical-substring",
+      "fixedSource": {
+        "path": "web/content/docs/companies/google.mdx",
+        "evidence": "固定 OAMaster 快照仅留有截断题干、未知约束及 abc/abcab/cab 样例；随附 Python/Java/C++ 代码对无解返回空串。"
+      },
+      "supportingSources": [
+        {
+          "url": "https://www.1point3acres.com/interview/problems/google-largest-lexicographical-substring",
+          "evidence": "同名 Google 面试题汇总明确要求长度 |A| 的连续子串，字符频次与 A 完全一致，取字典序最大；无解返回 -1。OAMaster 原样例与恢复语义一致。"
+        }
+      ],
+      "siteAdditions": [
+        "仅小写英文字母",
+        "|A|≤20000、|B|≤50000",
+        "标准输入输出协议",
+        "无解输出 -1（外部汇总与 OAMaster 代码行为不同，显式按本站约定）"
+      ],
+      "interpretation": "窗口必须与 A 是字符多重集合相同的一个排列；对重复字符按出现次数比较，不是只比较字符集合。"
+    }
+  ]
+}

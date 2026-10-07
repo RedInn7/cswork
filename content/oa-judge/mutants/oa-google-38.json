@@ -1,0 +1,10 @@
+[
+  {
+    "name": "取字典序最小窗口",
+    "code": "import sys\na,b=sys.stdin.read().split(); n=len(a); need=[a.count(chr(97+i)) for i in range(26)]; best=None\nfor j in range(len(b)-n+1):\n s=b[j:j+n]\n if [s.count(chr(97+i)) for i in range(26)]==need and (best is None or s<best): best=s\nprint(best if best is not None else -1)\n"
+  },
+  {
+    "name": "把窗口字符集合相同当作频次相同",
+    "code": "import sys\na,b=sys.stdin.read().split(); n=len(a); need=set(a); best=None\nfor j in range(len(b)-n+1):\n s=b[j:j+n]\n if set(s)==need and (best is None or s>best): best=s\nprint(best if best is not None else -1)\n"
+  }
+]
