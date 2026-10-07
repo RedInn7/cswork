@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
@@ -153,6 +154,18 @@ test('Point72 #3 stays blocked while the OAMaster sample contradicts its rule', 
   assert(!batch.items.some((item: { id: string }) => item.id === 'oa-point72-3'));
   assert.equal(review.status, 'blocked');
   assert.match(review.reason, /样例与题意冲突/);
+});
+
+test('Amazon #363 generator does not recreate a candidate for an already-promoted item', () => {
+  const candidate = 'content/oa-judge/candidate-batches/amazon-363-recovered.json';
+  assert(!existsSync(candidate));
+  const output = execFileSync(
+    'python3',
+    ['scripts/oa-judge/batches/amazon_363_recovered.py'],
+    { encoding: 'utf8' },
+  );
+  assert.match(output, /oa-amazon-363: already promoted/);
+  assert(!existsSync(candidate));
 });
 
 test('batch evidence is isolated, complete and cannot authorize new or drifted entries', () => {

@@ -126,10 +126,27 @@ def normalize(package: dict) -> dict:
 
 
 def main() -> None:
+    registry_path = OUT / "registry.json"
+    if registry_path.exists():
+        runtime = json.loads(registry_path.read_text(encoding="utf-8"))
+        registered = next(
+            (item for item in runtime.get("items", []) if item.get("id") == IDENT),
+            None,
+        )
+        if registered:
+            batch_path = OUT / "batches" / f"{BATCH}.json"
+            batch = json.loads(batch_path.read_text(encoding="utf-8"))
+            if registered not in batch.get("items", []):
+                raise RuntimeError(
+                    f"{IDENT} is already in the runtime registry; resolve its existing batch before regenerating"
+                )
+            print(f"{IDENT}: already promoted; candidate regeneration skipped.")
+            return
+
     for folder in (
         "packages", "references", "oracles", "editorials", "mutants",
         "negative-controls", "candidate-batches", "validation",
-        "source-evidence", "reviews",
+        "source-evidence",
     ):
         (OUT / folder).mkdir(parents=True, exist_ok=True)
 
@@ -353,22 +370,6 @@ def main() -> None:
     (OUT / "source-evidence" / f"{BATCH}.json").write_text(
         json.dumps(evidence, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
     )
-    review = {
-        "schemaVersion": 1,
-        "items": [{
-            "id": IDENT,
-            "status": "authored",
-            "reason": "官网完整题面已复核；独立 oracle、Fenwick 标准解、边界输入与两个语义 mutant 均通过本地验证。待 GoJudge 沙箱验证。",
-            "sourceCommit": SOURCE_COMMIT,
-            "rawPath": SOURCE_MDX,
-            "rawGitBlob": SOURCE_MDX_BLOB,
-            "catalogContentHash": SOURCE_CONTENT_HASH,
-        }],
-    }
-    (OUT / "reviews" / f"{BATCH}.json").write_text(
-        json.dumps(review, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
-
     print(
         f"{IDENT}: {len(oracle_cases)} independent oracle cases; "
         f"{len(judge_cases)} package cases; both mutants killed; "
