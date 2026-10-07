@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-11",
+  "title": "两数之和的唯一索引对",
+  "explanation": "## 来源与本站补明\n\n固定raw的正文在return后截断，但完整约束保留2≤n≤10、nums和target均在[-10,10]、Only one valid answer exists。两个原样例的解释直接写nums[0]+nums[1]==target并返回[0,1]，表明需要返回两数和的索引，而不是元素值。固定版本Python、Java、C++三份来源实现都先查询先前下标，再插入当前下标，明确一致采用两个不同索引。本站据此补明唯一解指唯一无序索引对，并统一按升序输出0-based索引i<j；这不是将缺失原文伪装成完整原文，也不只是格式转换。\n\n原始样例一[2,7,11,15],target=9含11和15，违反raw给出的值域；不扩大或缩小约束，不将该例用于正式测试。保留合法原样例二[2,7],target=9。其余公开例为本站补充。重复数值合法，但同一索引不可使用两次；[3,3]的两个3分别位于不同位置，构成一个合法索引对；[-3,0,3]且target=0只能返回0和2，不能返回1和1。\n\n## 思路\n\n从左到右扫描，哈希表只记录已扫描元素的值及其索引。当前值为x时，先查target−x是否已经出现；找到即输出其索引与当前索引。否则再记录当前元素。输入保证唯一合法无序索引对，无需定义无解或多解时的返回值。\n\n## 正确性证明\n\n在处理索引j之前，表中只有严格小于j的索引。找到补数时，返回i<j且nums[i]+nums[j]=target，因此索引不同、顺序规范、求和正确。设唯一解为(i,j)，i<j；处理j时补数已经出现。如果该补数有另一个不同的先前索引，则会产生第二个合法索引对，与唯一解保证矛盾，所以记录的索引必为i。算法一定找到且返回唯一解。先查询后插入确保无法把当前元素与自身配对。\n\n## 复杂度与完整边界\n\n期望时间O(n)，额外空间O(n)。完整范围n=2..10，元素和target均为-10..10。两个元素和在[-20,20]内，但target仍限于[-10,10]。所有测试经独立双循环枚举i<j过滤，保证恰好一个解；最大长度、最大/最小值、目标端点、重复正负值、重复零及答案索引8/9均有正式用例。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, target = data[:2]\n    numbers = data[2:]\n    seen = {}\n    for j, value in enumerate(numbers):\n        complement = target - value\n        if complement in seen:\n            return f'{seen[complement]} {j}'\n        seen[value] = j\n    raise ValueError('input must have one distinct-index solution')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/unknown#11-two-sum",
+  "sourceContentHash": "d73141198eb7f314d12b514179cfe838a4e24964dc37c0edd69139a703b0349e"
+}

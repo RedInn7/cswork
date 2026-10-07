@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": [
+    {
+      "id": "oa-unknown-11",
+      "sourcePath": "fastprep/Unknown/qa-disposable-two-sum-copy-20260430.md",
+      "gitBlob": "80e880307efa89cb694714ea7c253feec7c90188",
+      "sourceSha256": "b2bf32c8f566d0108a2ff16328dfbdfd24db49c6b71a2c6ff3f6fe9f1dc5af8b",
+      "sourceContentHash": "d73141198eb7f314d12b514179cfe838a4e24964dc37c0edd69139a703b0349e",
+      "sourceUrl": "https://oamaster.com/docs/companies/unknown#11-two-sum",
+      "rawFacts": [
+        "2≤n≤10",
+        "nums/target均在[-10,10]",
+        "Only one valid answer exists",
+        "两个例子以nums[0]+nums[1]==9解释索引输出"
+      ],
+      "supplementalMdxPath": "web/content/docs/companies/unknown.mdx",
+      "supplementalMdxBlob": "9b836bb4b5d9fa991a279531f8d0f81c4051349a",
+      "sourceImplementations": [
+        {
+          "language": "python",
+          "sha256": "5fecd2d0128beaeda92f27cb5d4a5a6d985d2ac890e628c438c88c96b57e74a1",
+          "behavior": "lookup previous indices before insertion of current index; returned indices are distinct and ascending"
+        },
+        {
+          "language": "java",
+          "sha256": "e5c1515ce0a196b1ddfd6eba7fe672f145daec9d57fde60cefafa0bfd4bd494b",
+          "behavior": "lookup previous indices before insertion of current index; returned indices are distinct and ascending"
+        },
+        {
+          "language": "cpp",
+          "sha256": "1903b2ae9c21b148cb661be9e824813b549e9ea2789fe283f73652eab698edd4",
+          "behavior": "lookup previous indices before insertion of current index; returned indices are distinct and ascending"
+        }
+      ],
+      "siteAdditions": [
+        "明确唯一解按无序不同索引对计数，依据raw唯一性及三语言先查后插语义",
+        "标准输入输出固定升序0-based索引",
+        "两个补充公开样例"
+      ],
+      "excludedSourceExample": {
+        "numbers": [
+          2,
+          7,
+          11,
+          15
+        ],
+        "target": 9,
+        "reason": "11与15超出raw明确上界10；未用于正式测试，不扩大原值域"
+      },
+      "upstreamCodeExecuted": false
+    }
+  ]
+}

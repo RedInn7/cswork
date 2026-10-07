@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-unknown-11",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "两数之和的唯一索引对",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Unknown",
+      "哈希表"
+    ],
+    "description": "给定整数数组nums与整数target，返回两个不同索引i、j，使nums[i]+nums[j]=target。输入保证恰好存在一个合法无序索引对。本站固定输出升序0-based索引i<j；允许相同数值来自不同位置，但不允许重复使用同一索引。来源raw正文返回描述残缺，两个样例解释明确返回两数和索引；固定版本三语言源码均先查询先前索引再加入当前索引，本站据此明示不同索引及输出次序。原样例一含11、15超出原值域，不用于正式测试，不能据此扩张约束。",
+    "input": "第一行n target；第二行n个nums[i]。完整原约束：2≤n≤10，-10≤nums[i]≤10，-10≤target≤10，且恰有一个i<j满足nums[i]+nums[j]=target。标准输入及升序索引输出为本站协议。",
+    "output": "输出两个空格分隔的整数i j，满足0≤i<j<n且nums[i]+nums[j]=target。返回索引，不返回元素值。不包含无解或多解输入。",
+    "explanation": "第一例来自合法原样例二，2+7=9，输出0 1。第二例两个3来自不同位置，输出0 1。第三例-3+3=0，输出0 2；不能把位置1的零使用两次。",
+    "hints": [
+      "先查找此前的补数索引，再记录当前位置。",
+      "也可以直接枚举所有i<j，n至多10。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 131072,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "合法原始样例二",
+      "input": "2 9\n2 7\n",
+      "expectedOutput": "0 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站样例：重复值来自不同位置",
+      "input": "2 6\n3 3\n",
+      "expectedOutput": "0 1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站样例：禁止复用同一个零",
+      "input": "3 0\n-3 0 3\n",
+      "expectedOutput": "0 2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "最大长度和值域两端",
+      "input": "10 0\n-10 10 5 5 5 5 5 5 5 5\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大长度目标上界",
+      "input": "10 10\n0 10 -10 -10 -10 -10 -10 -10 -10 -10\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大长度目标下界",
+      "input": "10 -10\n-10 0 10 10 10 10 10 10 10 10\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大长度重复正值",
+      "input": "10 6\n3 3 10 10 10 10 10 10 10 10\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大长度重复负值",
+      "input": "10 -10\n-5 -5 10 10 10 10 10 10 10 10\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大合法答案索引",
+      "input": "10 0\n10 10 10 10 10 10 10 10 -1 1\n",
+      "expectedOutput": "8 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最小长度负数",
+      "input": "2 -9\n-10 1\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "重复零不同索引",
+      "input": "2 0\n0 0\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 1",
+      "input": "8 -7\n9 -10 -9 -5 7 -2 -3 -8\n",
+      "expectedOutput": "3 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 2",
+      "input": "8 -4\n-6 -1 4 2 9 8 -5 10\n",
+      "expectedOutput": "0 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 3",
+      "input": "6 6\n8 2 4 -5 10 6\n",
+      "expectedOutput": "1 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 4",
+      "input": "5 -2\n-4 -2 10 2 3\n",
+      "expectedOutput": "0 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 5",
+      "input": "7 4\n5 2 1 -6 -2 8 6\n",
+      "expectedOutput": "4 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 6",
+      "input": "3 -5\n-6 1 -4\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 7",
+      "input": "10 7\n-4 -7 -5 -9 -3 5 -5 8 0 10\n",
+      "expectedOutput": "4 9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 8",
+      "input": "5 -4\n-2 -9 -2 7 3\n",
+      "expectedOutput": "0 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 9",
+      "input": "8 7\n5 -5 7 6 2 -8 8 3\n",
+      "expectedOutput": "0 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 10",
+      "input": "9 5\n3 -4 -2 5 6 9 4 6 -5\n",
+      "expectedOutput": "1 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 11",
+      "input": "3 -5\n-7 6 2\n",
+      "expectedOutput": "0 2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 12",
+      "input": "8 -7\n0 -9 3 -10 -1 -2 10 1\n",
+      "expectedOutput": "2 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 13",
+      "input": "8 4\n-9 7 -10 9 -3 -10 2 3\n",
+      "expectedOutput": "1 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 14",
+      "input": "7 8\n5 -3 9 -4 -8 -10 3\n",
+      "expectedOutput": "0 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 15",
+      "input": "9 9\n5 -3 -3 9 -10 -9 0 -4 -5\n",
+      "expectedOutput": "3 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 16",
+      "input": "5 1\n-9 10 -4 -1 6\n",
+      "expectedOutput": "0 1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 17",
+      "input": "5 2\n-1 -7 -3 8 5\n",
+      "expectedOutput": "2 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 18",
+      "input": "10 6\n0 7 -8 5 -7 2 -8 1 8 -9\n",
+      "expectedOutput": "3 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 19",
+      "input": "6 3\n5 -10 3 -5 -9 -2\n",
+      "expectedOutput": "0 5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 20",
+      "input": "9 0\n-7 8 3 -4 -6 -1 6 -7 2\n",
+      "expectedOutput": "4 6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 21",
+      "input": "9 -7\n10 -8 2 -8 -8 -2 -3 -4 9\n",
+      "expectedOutput": "6 7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 22",
+      "input": "7 9\n-4 4 -4 5 3 -7 3\n",
+      "expectedOutput": "1 3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 23",
+      "input": "6 -1\n4 -4 -8 -3 2 9\n",
+      "expectedOutput": "3 4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立唯一解枚举 24",
+      "input": "9 -7\n-7 7 10 4 -4 -3 10 5 -9\n",
+      "expectedOutput": "4 5\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -131,7 +131,8 @@ def main():
     existing_validation["problems"]=[validation_entry if item["id"] == PID else item for item in existing_validation["problems"]]
     save("validation",f"{BATCH}.json",existing_validation)
     save("validation",f"{EVIDENCE}.json",{"schemaVersion":1,"problems":[validation_entry],"note":"Offline only; original batch ownership retained. Whole-batch GoJudge must refresh the stale prior report."})
-    save("resolutions",f"{EVIDENCE}.json",{"schemaVersion":1,"items":[{"id":PID,"batch":BATCH,"sourceContentHash":catalog["contentHash"],"previousReason":"Site restricted total characters to 1000000 despite original 100*100000 range.","reason":"Restore full source domain and real 10000000-character formal boundaries; no upstream code executed."}]})
+    # This corrects an authored item, not a blocked review; source evidence
+    # records the correction without creating a blocked-resolution override.
     print(json.dumps({"id":PID,"formalCases":len(cases),"oracleCases":163,"largeBoundaries":evidence,"outputDirectory":str(out),"existingBatchUpdated":args.promote_existing,"batch":BATCH,"otherEntriesPreserved":True},ensure_ascii=False,indent=2))
 
 if __name__=="__main__":
