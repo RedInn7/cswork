@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-duolingo-2",
+  "title": "Longest Stable Transaction Period",
+  "explanation": "## 思路\n\n两个前缀和对 k 的余数相同时，它们之间的连续区间和能被 k 整除。按从左到右扫描，记录每个余数第一次出现的位置；再次出现时用当前位置减最早位置更新最长长度。使用正 k，负交易额按数学意义取模。\n\n## 正确性证明\n\n设前缀和 P[j] 为前 j 项之和。区间 (i,j] 的和能被正整数 k 整除，当且仅当 P[i] 与 P[j] 模 k 同余。固定右端 j 时，最早出现的同余前缀产生最长区间；算法保存每个余数的最早下标并检查每个后续前缀，因此不会漏掉最优区间，也不会把不满足整除条件的区间计入。\n\n## 复杂度\n\n扫描 n 项一次，期望时间 O(n)，保存至多 n+1 个余数位置，空间 O(n)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[0], data[1]\n    transactions = data[2:]\n    first = {0: -1}\n    prefix = answer = 0\n    for i, amount in enumerate(transactions):\n        prefix = (prefix + amount) % k\n        if prefix in first:\n            answer = max(answer, i - first[prefix])\n        else:\n            first[prefix] = i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/duolingo#2-longest-stable-transaction-period",
+  "sourceContentHash": "a238924722ede837d90ab8bf93e498361b7531aef54b18a51f9553f60e18f009",
+  "author": "CSWork"
+}

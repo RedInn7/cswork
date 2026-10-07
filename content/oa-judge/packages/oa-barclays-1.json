@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-barclays-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Sum-of-Digits Fibonacci Sequence",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Barclays",
+      "数学",
+      "数组"
+    ],
+    "description": "定义 f(0)=0、f(1)=1；对 n≥2，f(n) 等于 f(n−1) 各位数字之和加上 f(n−2) 各位数字之和。返回 f(N)。原题没有 N 上界；本站评测明确支持 0≤N≤2147483647（非负有符号 32 位 int 范围），该范围是本站补充。",
+    "input": "输入一个整数 N，0≤N≤2147483647（本站支持范围）。",
+    "output": "输出第 N 项 f(N)。",
+    "explanation": "## 思路\n\n状态为最近两项 (a,b)，下一项是 digitSum(a)+digitSum(b)。所有项都在 0..18：初始 0、1 满足；若两项均不超过 18，各自数字和不超过 9，下一项不超过 18。有限状态必重复，因此记录二元状态并检测周期，可直接定位任意受支持 N。\n\n## 正确性证明\n\n初始两项为 0、1。假设当前位置的两项与原递推一致，则下一项严格按题目定义取两项各自的数字和再相加，因此下一项也一致。最近两项均在 0..18，状态必在有限次内重复；重复状态后的所有项与之前完全相同，按周期映射查询不会改变第 N 项。\n\n## 复杂度\n\n预处理最多访问 19² 个有界二元状态，时间和空间均为 O(1)（相对于输入 N）；每个查询 O(1)。",
+    "hints": [
+      "分别对前两项求各位数字和，再相加。",
+      "有界的最近两项状态会形成周期。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 32768,
+    "outputLimit": 1024,
+    "checker": "exact",
+    "languages": [
+      "python",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "递推索引 0",
+      "input": "0\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 1",
+      "input": "1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "原题示例 N=2",
+      "input": "2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 3",
+      "input": "3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 4",
+      "input": "4\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 5",
+      "input": "5\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 6",
+      "input": "6\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 7",
+      "input": "7\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 8",
+      "input": "8\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 9",
+      "input": "9\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 10",
+      "input": "10\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 11",
+      "input": "11\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 12",
+      "input": "12\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 13",
+      "input": "13\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 14",
+      "input": "14\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 15",
+      "input": "15\n",
+      "expectedOutput": "16\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 16",
+      "input": "16\n",
+      "expectedOutput": "15\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 17",
+      "input": "17\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 18",
+      "input": "18\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 20",
+      "input": "20\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 100",
+      "input": "100\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "递推索引 2147483647",
+      "input": "2147483647\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
