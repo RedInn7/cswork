@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-uber-19",
+      "batch": "uber-19-recovered",
+      "sourceContentHash": "084488a45c37b931cf283834c1eac94aa5ce7cf28afd82a743302c3acbadf638",
+      "previousReason": "原n=200000允许全−10⁹值，孩子数组含索引1..199999及200001个−1。标准整数输入最坏4288898字节，超过现有4194304字节单用例门禁；本批不缩小原n或提高输入上限，待容量单独升级及任意最优路径语义checker后接入。",
+      "reason": "完整保留n≤200000和值±10^9；单输入32 MiB支持最坏输入，oa-tree-max-path语义checker接受任意最优路径；保留原三个结果并明示本站增加节点ID见证。自有GoJudge已通过163个唯一独立全端点oracle和37个正式用例，共200次，含20万节点边界；两个正常退出错误程序均被拒，证据见reports/uber-19-recovered.json。沙箱通过不等于生产发布。"
+    }
+  ]
+}
