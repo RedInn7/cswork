@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-capital-one-14",
+      "oracleCases": 164,
+      "uniqueOracleInputs": 164,
+      "formalCases": 27,
+      "publicCases": 3,
+      "hiddenCases": 24,
+      "referenceSha256": "09da13352d7030584fdeb2b90a606abc63093ed75e36f60f87849bbca2bb643a",
+      "negativeControls": [
+        {
+          "name": "把右旋误作左旋",
+          "rejectedByCases": [
+            1,
+            2,
+            15,
+            25
+          ]
+        },
+        {
+          "name": "允许相邻元素相等而非严格递减",
+          "rejectedByCases": [
+            6,
+            12,
+            26
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-16",
+      "oracleCases": 164,
+      "uniqueOracleInputs": 164,
+      "formalCases": 40,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "referenceSha256": "9f7f77212551774298bf670ec4d4b1ae38a8441ecd359149e969ecf2eae086be",
+      "negativeControls": [
+        {
+          "name": "把容量上限误设为 10 人",
+          "rejectedByCases": [
+            4,
+            5,
+            9,
+            10,
+            22,
+            23,
+            27,
+            28,
+            29,
+            30,
+            33,
+            34,
+            35,
+            38
+          ]
+        },
+        {
+          "name": "恰好在服务完成时仍视为占用",
+          "rejectedByCases": [
+            9,
+            10,
+            23,
+            29,
+            30,
+            34,
+            35
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "独立小域 oracle 和本地正式用例验证；未连接、也未运行 GoJudge，候选仍待远端沙箱。"
+}

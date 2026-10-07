@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1164,
+    "sandbox_verified": 1166,
     "awaiting_sandbox": 0,
-    "blocked": 470,
+    "blocked": 468,
     "unreviewed": 0
   },
   "items": [
@@ -9099,8 +9099,9 @@
     {
       "id": "oa-capital-one-14",
       "company": "capital-one",
-      "status": "blocked",
-      "reason": "原始题面自己声明 t 的语义有歧义（给定 t 检查一次，还是可以选择 t）；不擅自选择其中一种。"
+      "status": "sandbox_verified",
+      "batch": "capital-one-14-16-recovered",
+      "reason": "同一固定版本原题的完整描述明确说 t 是给定值并检查一次右旋结果；保留这一句及其样例，采用 O(n) 相邻比较，不再把可选择 t 当作候选语义。"
     },
     {
       "id": "oa-capital-one-15",
@@ -9112,8 +9113,9 @@
     {
       "id": "oa-capital-one-16",
       "company": "capital-one",
-      "status": "blocked",
-      "reason": "原始规则称系统内人数大于 10 时拒绝，但样例又称 12 人同时到达时前 11 人均服务；这两个规则给出不同容量。"
+      "status": "sandbox_verified",
+      "batch": "capital-one-14-16-recovered",
+      "reason": "固定源同时写明当前系统人数大于 10 才拒绝，并给出同刻 12 人时前 11 人接收、第 12 人拒绝；两者共同确定接纳阈值为当前人数≤10（接纳后最多11人）。按源题非递减到达与同刻输入顺序处理，完成时刻先离开。"
     },
     {
       "id": "oa-capital-one-17",
