@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1126,
+    "sandbox_verified": 1127,
     "awaiting_sandbox": 0,
-    "blocked": 508,
+    "blocked": 507,
     "unreviewed": 0
   },
   "items": [
@@ -2856,8 +2856,9 @@
     {
       "id": "oa-amazon-308",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "raw明写adjacent但两样例均冲突：01!0,x2,y3相邻最优5不是8；!0!1,x3,y4相邻最优3、全子序列对最优9，均不是7。核心计费目标未明确，不能自行选一种上线。"
+      "status": "sandbox_verified",
+      "batch": "amazon-308-sample-correction",
+      "reason": "按固定原始题源中明确的相邻对计费规则穷举所有替换：样例 1 的 0100、0110 费用都为 x+y=5，应将输出 8 改为 5；样例 2 可替换为 0001，只有一个 01，费用为 3，应将输出 7 改为 3。原始 Python、Java、C++ 三份实现都以两状态 DP 求所有替换的最小值，与该修正一致。只修正样例预期值并改写讲义说明，不补题面规则。"
     },
     {
       "id": "oa-amazon-309",

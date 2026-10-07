@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-amazon-308",
+      "formalCases": 22,
+      "hiddenFormalCases": 20,
+      "oracleCases": 240,
+      "oracleInputsUnique": 240,
+      "negativeControls": [
+        {
+          "name": "忽略相邻 10 的 y 代价",
+          "rejectedByCases": [
+            0,
+            2,
+            6,
+            8,
+            9,
+            12,
+            13,
+            18,
+            19,
+            20
+          ]
+        },
+        {
+          "name": "把所有 ! 固定替换为 0",
+          "rejectedByCases": [
+            2,
+            13,
+            14,
+            16,
+            21
+          ]
+        }
+      ],
+      "maxLengthStress": 100000
+    }
+  ],
+  "note": "全部正式用例均与独立穷举替换 oracle 对照；另有 240 个唯一随机输入由 oracle 逐项验证。两个 mutant 均正常退出并被正式用例击杀。最大长度压力由 O(n) 求解器校验；GoJudge 服务端验证记录单独保存。"
+}
