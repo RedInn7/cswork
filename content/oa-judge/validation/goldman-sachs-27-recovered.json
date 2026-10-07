@@ -4,7 +4,7 @@
   "problems": [
     {
       "id": "oa-goldman-sachs-27",
-      "formalCases": 21,
+      "formalCases": 25,
       "oracleCases": 120,
       "oracleInputsUnique": 120,
       "negativeControls": [
@@ -32,9 +32,39 @@
           ]
         }
       ],
-      "maxN": 2500,
-      "maxOutputBytes": 50000
+      "maxN": 100000,
+      "maxOutputBytes": 2000000,
+      "fullBoundaryFormalCases": [
+        {
+          "name": "10万操作与最大乘积输出",
+          "n": 100000,
+          "inputBytes": 1600007,
+          "outputBytes": 2000000,
+          "independentMethod": "Fenwick order statistics plus closed-form structured expectations"
+        },
+        {
+          "name": "10万不同值与逐个清理最小堆",
+          "n": 100000,
+          "inputBytes": 1027795,
+          "outputBytes": 816673,
+          "independentMethod": "Fenwick order statistics plus closed-form structured expectations"
+        },
+        {
+          "name": "10万不同值与逐个清理最大堆",
+          "n": 100000,
+          "inputBytes": 1027795,
+          "outputBytes": 577784,
+          "independentMethod": "Fenwick order statistics plus closed-form structured expectations"
+        },
+        {
+          "name": "10万重复值清空并重新插入",
+          "n": 100000,
+          "inputBytes": 1550007,
+          "outputBytes": 1550000,
+          "independentMethod": "Fenwick order statistics plus closed-form structured expectations"
+        }
+      ]
     }
   ],
-  "note": "本地独立 list multiset oracle、空集/重复值/乘积边界和两个正常退出 mutant 验证；未连接 GoJudge。"
+  "note": "本地独立list/Fenwick oracle与四个十万操作正式边界通过；两个正常退出mutant被拒；本次未连接GoJudge，须刷新报告。"
 }
