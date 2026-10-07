@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1143,
+    "sandbox_verified": 1144,
     "awaiting_sandbox": 0,
-    "blocked": 491,
+    "blocked": 490,
     "unreviewed": 0
   },
   "items": [
@@ -477,8 +477,9 @@
     {
       "id": "oa-google-71",
       "company": "google",
-      "status": "blocked",
-      "reason": "无向图第二例从waypoint=2经0可到3，但原答案为−1；需要明确受约束路线能否重复节点（简单路径和可重复路线答案不同）。"
+      "status": "sandbox_verified",
+      "batch": "google-71-directed-path",
+      "reason": "原题三语实现把边反向加入图，与原题示例二的 -1 冲突；相同签名、样例、约束的对应版本明确为有向图。本站采用有向边、walk可重访规则，使用Floyd-Warshall独立oracle、随机小图和区分错误边方向/简单路径的反例验证。 用户自有 GoJudge 沙箱验证通过。"
     },
     {
       "id": "oa-google-72",
