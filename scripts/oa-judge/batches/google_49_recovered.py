@@ -159,11 +159,12 @@ def main() -> None:
         ([1, 10, 3, 10, 2], 1, 3),
         ([1, 2, 3, 1, 2, 3], 3, 2),
         ([1, 100, 1, 100, 1, 100, 1], 2, 2),
+        ([0, 999_999_999, 1_000_000_000], 2, 1),
     ]
     rng = random.Random(SEED)
     values = list(fixed)
     seen = {encode(roses, k, m) for roses, k, m in values}
-    while len(values) < 120:
+    while len(values) < 121:
         size = rng.randint(1, 10)
         roses = [rng.randint(0, 30) for _ in range(size)]
         k = rng.randint(1, 5)
@@ -181,7 +182,7 @@ def main() -> None:
         oracle_rows.append({"input": raw, "expectedOutput": expected + "\n"})
 
     # The first three readable cases include the verbatim source example.
-    formal_values = fixed[:3] + values[3:32]
+    formal_values = fixed[:3] + values[3:33]
     cases = []
     for index, (roses, k, m) in enumerate(formal_values):
         expected = str(oracle(roses, k, m)) + "\n"
@@ -276,11 +277,27 @@ def main() -> None:
 
 固定 OAMaster 快照的题目代码三语均将 k 作为每束相邻玫瑰数、n 作为花束数量，并在 N<n*k 时返回 -1；上游可核查页面为 {SOURCE_URL}。LeetCode 的同题说明复现了完整定义和完全相同的原始例子：{LEETCODE_URL}。上游没有发布约束，题面列出的数值范围与 stdin/stdout 协议均为本站补充。
 """
-    put("candidate-batches", f"{BATCH}.json", {"schemaVersion": 1, "items": [{
+    manifest = {"schemaVersion": 1, "items": [{
         "id": PID, "sourceContentHash": source["contentHash"],
         "packageChecksum": sha(package_bytes), "editorial": editorial,
         "authoredSolutions": [{"language": "python", "code": REFERENCE}],
-    }]})
+    }]}
+    manifest_folder = "batches" if (OA / "reports" / f"{BATCH}.json").exists() else "candidate-batches"
+    put(manifest_folder, f"{BATCH}.json", manifest)
+    if manifest_folder == "batches":
+        (OA / "candidate-batches" / f"{BATCH}.json").unlink(missing_ok=True)
+    report_path = OA / "reports" / f"{BATCH}.json"
+    report = json.loads(report_path.read_text(encoding="utf-8")) if report_path.exists() else None
+    report_problem = report["problems"][0] if report and report.get("problems") else {}
+    manifest_bytes = (json.dumps(manifest, ensure_ascii=False, indent=2) + "\n").encode()
+    report_valid = bool(
+        report
+        and report.get("allPassed")
+        and report.get("batchSha256") == sha(manifest_bytes)
+        and report_problem.get("formal") == len(cases)
+        and report_problem.get("oracle") == len(oracle_rows)
+        and report_problem.get("passed") == len(cases) + len(oracle_rows)
+    )
     put("packages", f"{PID}.json", package)
     reference_path = OA / "references" / f"{PID}.py"
     reference_path.parent.mkdir(parents=True, exist_ok=True)
@@ -298,6 +315,7 @@ def main() -> None:
         "commit": UPSTREAM_COMMIT, "catalogContentHash": source["contentHash"],
         "items": [{
             "id": PID, "company": "Google", "title": source["title"],
+            **({"status": "authored", "verification": f"用户自有 GoJudge 全部通过 {report_problem['passed']} 项（{report_problem['formal']} formal + {report_problem['oracle']} oracle），两个 mutant 均被击杀。"} if report_valid else {}),
             "sourceUrl": SOURCE_URL, "previousStatus": old_review["status"],
             "previousReason": old_review["reason"],
             "fixedSource": {"path": "web/content/docs/companies/google.mdx", "gitBlobSha": UPSTREAM_GOOGLE_BLOB,
@@ -308,11 +326,20 @@ def main() -> None:
             "interpretation": "每朵玫瑰最多用于一束；每束必须由原数组中的 k 个连续位置组成且当天全部开放。总数不足 n*k 时为 -1，与固定快照三语实现相同。",
         }],
     })
+    if report_valid:
+        result = report_problem
+        verification_summary = (
+            f"121 个唯一独立组合 oracle、34 个正式用例（含 N=200000、最大开花日 10^9 边界）及两个错误程序均通过用户自有 GoJudge，共 {result['passed']} 项。"
+        )
+        validation_note = f"用户自有 GoJudge 全部通过 {result['passed']} 项（{result['formal']} formal + {result['oracle']} oracle），两个 mutant 均被击杀。"
+    else:
+        verification_summary = "121 个唯一独立组合 oracle、34 个正式用例（含 N=200000、最大开花日 10^9 边界）及两个正常退出错误程序均已离线验证；待在用户自有 GoJudge 验收。"
+        validation_note = "仅本地独立组合枚举 oracle、源样例/边界和 mutant 验证；尚未连接 GoJudge。"
     put("resolutions", f"{BATCH}.json", {
         "schemaVersion": 1, "items": [{
             "id": PID, "batch": BATCH, "sourceContentHash": source["contentHash"],
             "previousReason": old_review["reason"],
-            "reason": "固定 OAMaster 快照的三语实现与同题 Google OA 原帖共同恢复完整定义；原帖重现相同样例并明确 k 是每束相邻玫瑰数、n 是花束数。输入协议与数值范围仅作为本站补充。120 个唯一独立组合 oracle、32 个正式用例、最大 N 边界及两个正常退出错误程序均已离线验证；待在用户自有 GoJudge 验收。",
+            "reason": "固定 OAMaster 快照的三语实现与同题 Google OA 原帖共同恢复完整定义；原帖重现相同样例并明确 k 是每束相邻玫瑰数、n 是花束数。输入协议与数值范围仅作为本站补充。" + verification_summary,
         }],
     })
     put("validation", f"{BATCH}.json", {
@@ -320,7 +347,7 @@ def main() -> None:
         "problems": [{"id": PID, "oracleCases": len(oracle_rows), "uniqueOracleInputs": len({row["input"] for row in oracle_rows}),
                       "publicCases": 3, "hiddenCases": len(cases) - 3,
                       "negativeControls": killed, "referenceSha256": sha(REFERENCE.encode())}],
-        "note": "仅本地独立组合枚举 oracle、源样例/边界和 mutant 验证；尚未连接 GoJudge。",
+        "note": validation_note,
     })
     print(json.dumps({"id": PID, "candidateBatch": BATCH, "oracle": len(oracle_rows),
                       "formal": len(cases), "mutantsKilled": len(killed)}, ensure_ascii=False))
