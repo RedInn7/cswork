@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把同一值的任意两项组合都算成不同 pair（C(freq,2)）",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split())); n,k=d[:2]; a=d[2:]; ans=0\nfor i in range(n):\n c={}; pairs=0\n for j in range(i,n):\n  v=a[j]; c[v]=c.get(v,0)+1; pairs+=c[v]-1\n  if pairs>=k: ans+=1\nprint(ans)\n"
+  },
+  {
+    "name": "每种重复值只算一对，忽略第三、第四次出现",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split())); n,k=d[:2]; a=d[2:]; ans=0\nfor i in range(n):\n c={}; pairs=0\n for j in range(i,n):\n  c[a[j]]=c.get(a[j],0)+1\n  pairs=sum(v>=2 for v in c.values())\n  if pairs>=k: ans+=1\nprint(ans)\n"
+  }
+]
