@@ -8,4 +8,6 @@ Pure Storage 12：固定原始 `fastprep/Pure Storage/purestorage-find-doubles.m
 
 原收窄原因是将 outputLimit 的 KiB 误解成字节；这次不再缩小源题范围。Pure Storage 生成器新增 --problem 单题更新入口，同批其余8题及验证元数据对照HEAD保持不变。Goldman生成器移除临时只读源目录依赖，使用仓库自身固定Git对象并验证哈希。
 
-本记录不表示生产已发布，发布前仍需回归、构建和端到端提交验证。
+生产构建通过，内容/门禁/输入容量17项回归通过。真实Web/Worker、全新SQLite、隔离队列与专用沙箱端到端完成32次提交（Goldman27四次、PureStorage整批28次），验证正确解、首错立即返回、隐藏反例及权限。Goldman27/Pure12单次首错反馈503/230毫秒，不是压测分位数。
+
+本记录不表示生产已发布，仍需CI、合并及生产版本核验。
