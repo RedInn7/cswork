@@ -11774,6 +11774,18 @@
       ]
     },
     {
+      "id": "oa-snowflake-11",
+      "sourceContentHash": "0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f",
+      "packageChecksum": "71a7cd95eee94ef78c4518288fe675d6a5b0ac227eadecddb85d247c2eae62f2",
+      "editorial": "## 思路\n\n按结束时刻排序。设 dp[i] 是前 i 个电话可取得的最大订单量。对于第 i 个电话，用二分查找结束时刻不晚于它开始时刻的电话数量 p：不接当前电话时为 dp[i-1]，接听时为 dp[p]+volume[i]，取较大值。\n\n## 正确性\n\n对按结束时刻排序后的前 i 个电话，最优方案要么不选第 i 个电话，此时收益至多 dp[i-1]；要么选第 i 个电话。采用来源三语实现的半开区间规则，所有可与它衔接的电话恰是结束时刻≤start[i] 的区间，且这些区间构成排序前缀 p，故选择它时的最优收益为 dp[p]+volume[i]。两种情形覆盖所有可行方案，取最大即得 dp[i]。对 i 归纳可得 dp[n] 是全局最优值。\n\n## 复杂度\n\n时间 O(n log n)，空间 O(n)。\n\n## 来源与本站约定\n\n原题示例可选电话 2 和 4，订单量为 76。原题已给出输入范围，但没有写明端点相等时是否冲突；固定快照 Python、Java、C++ 三种实现都以 `end ≤ next start` 判定可衔接，本站将该实现规则明确解释为半开区间 `[start, start+duration)`。本站补充 stdin/stdout 输入格式。来源：https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom bisect import bisect_right\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if len(data) < 1:\n        raise ValueError(\"expected N and three arrays\")\n    n = data[0]\n    if not 1 <= n <= 100_000 or len(data) != 1 + 3 * n:\n        raise ValueError(\"N is outside the supported range or array lengths differ\")\n    starts = data[1:1 + n]\n    durations = data[1 + n:1 + 2 * n]\n    volumes = data[1 + 2 * n:]\n    if any(not 1 <= x <= 1_000_000_000 for x in starts + durations + volumes):\n        raise ValueError(\"start, duration and volume must be in [1, 10^9]\")\n    intervals = sorted((s, s + d, v) for s, d, v in zip(starts, durations, volumes))\n    intervals.sort(key=lambda item: item[1])\n    ends = [end for _, end, _ in intervals]\n    best = [0] * (n + 1)\n    for i, (start, _, volume) in enumerate(intervals, 1):\n        previous = bisect_right(ends, start, 0, i - 1)\n        best[i] = max(best[i - 1], best[previous] + volume)\n    return str(best[n])\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-snowflake-1",
       "sourceContentHash": "6df4d16e351b4716ebebf9c6cddfa335c77b9b347baae6f83cbbd6764f483ea7",
       "packageChecksum": "1a5b744a2eeaf61c1764a844431043da0004d5ee26cace1bd85fb6529a3f189d",
