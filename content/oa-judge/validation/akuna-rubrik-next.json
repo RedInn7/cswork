@@ -108,49 +108,77 @@
     {
       "id": "oa-akuna-capital-25",
       "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "formalCases": 35,
       "publicCases": 3,
-      "hiddenCases": 27,
+      "hiddenCases": 32,
       "negativeControls": [
         {
           "name": "每次冲突只替换一个字符",
           "rejectedByCases": [
             0,
             2,
-            3,
-            6,
-            7,
-            8,
+            4,
+            5,
             9,
             10,
-            11,
             12,
+            13,
             14,
             16,
+            18,
+            19,
             20,
-            21,
             23,
-            26,
-            28,
-            29
-          ]
+            24,
+            25,
+            27,
+            29,
+            31,
+            32
+          ],
+          "normalExitVerified": true
         },
         {
           "name": "每个重复段只替换一次",
           "rejectedByCases": [
             2,
-            3,
-            6,
-            8,
             12,
-            20,
-            21,
-            26,
-            28,
-            29
-          ]
+            13,
+            14,
+            16,
+            18,
+            23,
+            24,
+            25
+          ],
+          "normalExitVerified": true
         }
       ],
-      "referenceSha256": "bef88f5fc447b6f9a40750d217098627709de0201ed52e181517dbe9fc505966"
+      "referenceSha256": "bef88f5fc447b6f9a40750d217098627709de0201ed52e181517dbe9fc505966",
+      "largeBoundaries": [
+        {
+          "name": "100个十万字符全相同单词",
+          "wordCount": 100,
+          "maxWordLength": 100000,
+          "totalCharacters": 10000000,
+          "inputBytes": 10000104,
+          "outputBytes": 600,
+          "wallSeconds": 0.4031,
+          "oracle": "independent nonoverlapping adjacent-pair selection plus closed-form expectations"
+        },
+        {
+          "name": "100个十万字符交替与混合游程",
+          "wordCount": 100,
+          "maxWordLength": 100000,
+          "totalCharacters": 10000000,
+          "inputBytes": 10000104,
+          "outputBytes": 400,
+          "wallSeconds": 0.8818,
+          "oracle": "independent nonoverlapping adjacent-pair selection plus closed-form expectations"
+        }
+      ],
+      "requiresWholeBatchGoJudge": true
     },
     {
       "id": "oa-rubrik-1",
