@@ -129,6 +129,32 @@ test('Amazon MERN #5 maps to the verified Optimize Box IDs problem, not Amazon #
   );
 });
 
+test('Point72 #3 stays blocked while the OAMaster sample contradicts its rule', () => {
+  const registry = JSON.parse(
+    readFileSync('content/oa-judge/registry.json', 'utf8'),
+  );
+  const batch = JSON.parse(
+    readFileSync('content/oa-judge/batches/trading-firms-remaining.json', 'utf8'),
+  );
+  const catalog = JSON.parse(
+    readFileSync('content/oa-master/catalog.json', 'utf8'),
+  );
+  const reviews = JSON.parse(
+    readFileSync('content/oa-judge/reviews/trading-firms-remaining.json', 'utf8'),
+  );
+  const source = catalog.items.find(
+    (item: { id: string }) => item.id === 'oa-point72-3',
+  );
+  const review = reviews.items.find(
+    (item: { id: string }) => item.id === 'oa-point72-3',
+  );
+  assert.match(source.statement, /Input: aaaa Output: zzzz/);
+  assert(!registry.items.some((item: { id: string }) => item.id === 'oa-point72-3'));
+  assert(!batch.items.some((item: { id: string }) => item.id === 'oa-point72-3'));
+  assert.equal(review.status, 'blocked');
+  assert.match(review.reason, /样例与题意冲突/);
+});
+
 test('batch evidence is isolated, complete and cannot authorize new or drifted entries', () => {
   const entry = {
     id: 'oa-fixture-1',
