@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1175,
+    "sandbox_verified": 1177,
     "awaiting_sandbox": 0,
-    "blocked": 459,
+    "blocked": 457,
     "unreviewed": 0
   },
   "items": [
@@ -8526,7 +8526,7 @@
       "company": "goldman-sachs",
       "status": "sandbox_verified",
       "batch": "goldman-sachs-3-recovered",
-      "reason": "原题的字符域、退格行为、空串退格行为、比较目标及 0/1 输出均明确，歧义仅在长度上限。候选没有猜测原上限，而是显式增加本站 1≤长度≤100000 的评测边界；在该边界内算法线性且资源可控。固定源 MDX、catalog hash 与 review 已核对。"
+      "reason": "完整 raw 恢复两串各 1≤长度≤200000，保留原字符域、退格与比较语义；以完整原约束替换早期本站10万上限，修正空输入用例，加入20万正式边界并用反向跳过计数 oracle 独立验证。变更后必须重新运行真实 GoJudge 并刷新报告。"
     },
     {
       "id": "oa-goldman-sachs-4",
@@ -8629,8 +8629,9 @@
     {
       "id": "oa-goldman-sachs-19",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "虽给出操作定义，但 maxOperations 可达 10^9；原始样例解释没有展示选择序列，整理的“取最小两数差”并非题目要求，不能以猜测的贪心判定。"
+      "status": "sandbox_verified",
+      "batch": "goldman-sachs-19-recovered",
+      "reason": "完整raw规则与范围可确定；独立证明k>=3答案0及k=2最近原值公式，全部原样例复算一致；163唯一字面操作枚举oracle、完整n=2000/k=10^9边界及两个正常退出负控本地通过。仅候选，待真实沙箱。"
     },
     {
       "id": "oa-goldman-sachs-20",
@@ -9517,8 +9518,9 @@
     {
       "id": "oa-rubrik-8",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "约束全部被抓取成残缺数字；递归子树复活规则与样例过程无法确定一致的最终存活语义。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-8-recovered",
+      "reason": "固定raw完整恢复T、n、m、总格数和K排列约束，明确递归复活严格后代；原矩阵样例经逐事件模拟一致，仅坐标文字笔误明示纠正。163唯一独立oracle与完整百万格/千组边界通过，两个正常退出mutant被拒，仅候选待沙箱。"
     },
     {
       "id": "oa-rubrik-9",

@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-goldman-sachs-19",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 40,
+      "referenceFormalCases": 43,
+      "negativeControls": [
+        {
+          "name": "忽略第二次新差值与原元素的组合",
+          "rejectedByCases": [
+            3,
+            7,
+            10,
+            15,
+            16,
+            21,
+            22
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "误以为两次操作就总能生成零",
+          "rejectedByCases": [
+            0,
+            2,
+            3,
+            10,
+            15,
+            21,
+            22,
+            35,
+            41
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "f1ba69752fc3e07cf2749bc7ae61963d7fa364f33fde13fef88002586cf34446",
+      "oracleMethod": "Literal exact-depth operation enumeration over complete array states, independent of k>=3 and closest-pair formulas.",
+      "largeBoundaries": [
+        {
+          "name": "满规模两步完整数对扫描",
+          "n": 2000,
+          "k": 2,
+          "inputBytes": 20007,
+          "expectedOutput": "249625"
+        },
+        {
+          "name": "满规模一步相邻差",
+          "n": 2000,
+          "k": 1,
+          "inputBytes": 20007,
+          "expectedOutput": "249625"
+        },
+        {
+          "name": "满规模十亿步",
+          "n": 2000,
+          "k": 1000000000,
+          "inputBytes": 20016,
+          "expectedOutput": "0"
+        },
+        {
+          "name": "满规模最大值相等",
+          "n": 2000,
+          "k": 1,
+          "inputBytes": 22007,
+          "expectedOutput": "0"
+        },
+        {
+          "name": "满规模最小值相等",
+          "n": 2000,
+          "k": 2,
+          "inputBytes": 4007,
+          "expectedOutput": "0"
+        },
+        {
+          "name": "最少元素最大差一步",
+          "n": 2,
+          "k": 1,
+          "inputBytes": 25,
+          "expectedOutput": "1"
+        },
+        {
+          "name": "最少元素最大值两步",
+          "n": 2,
+          "k": 2,
+          "inputBytes": 25,
+          "expectedOutput": "1"
+        },
+        {
+          "name": "最少元素十亿步",
+          "n": 2,
+          "k": 1000000000,
+          "inputBytes": 26,
+          "expectedOutput": "0"
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.139
+    }
+  ]
+}
