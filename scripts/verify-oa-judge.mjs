@@ -15,6 +15,7 @@ import {
   OA_MAX_METADATA_FILE_BYTES,
 } from '../lib/oj-data-budgets.mjs';
 import { readBoundedFileSync } from './oa-judge/bounded-file.mjs';
+import { assertOracleCoverage } from './oa-judge/oracle-coverage.mjs';
 
 const root = resolve('content/oa-judge');
 const hash = (bytes) => createHash('sha256').update(bytes).digest('hex');
@@ -164,7 +165,8 @@ for (const item of registry.data.items) {
   );
   const oracle = read(resolve(root, 'oracles', item.id + '.json'));
   const mutants = read(resolve(root, 'mutants', item.id + '.json'));
-  assert(oracle.data.length >= 120 && mutants.data.length >= 2);
+  assertOracleCoverage(item, oracle.data, item.id);
+  assert(mutants.data.length >= 2);
   assert(
     pkg.data.cases.some((c) => !c.hidden) &&
       pkg.data.cases.filter((c) => c.hidden).length >= 20,

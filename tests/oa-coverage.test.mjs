@@ -266,6 +266,38 @@ test('a candidate batch remains awaiting sandbox and outside the runtime batch s
   assert.equal(result.totals.awaiting_sandbox, 1);
 });
 
+test('a finite-domain candidate may use an exact exhaustive oracle under 120 inputs', (t) => {
+  const f = fixture(t, { report: false });
+  rmSync(resolve(f.root, 'batches', `${batch}.json`));
+  f.manifest.items[0].oracleCoverage = {
+    mode: 'exhaustive',
+    inputs: ['0\n', '1\n', '2\n'],
+  };
+  f.json(resolve(f.root, 'candidate-batches', `${batch}.json`), f.manifest);
+  f.json(resolve(f.root, 'oracles', `${id}.json`), [
+    { input: '0\n', expectedOutput: '1' },
+    { input: '1\n', expectedOutput: '1' },
+    { input: '2\n', expectedOutput: '1' },
+  ]);
+  f.json(resolve(f.root, 'validation', `${batch}.json`), {
+    schemaVersion: 1,
+    problems: [
+      {
+        id,
+        oracleCases: 3,
+        negativeControls: [
+          { name: 'wrong-zero', rejectedByCases: [0] },
+          { name: 'wrong-two', rejectedByCases: [1] },
+        ],
+      },
+    ],
+  });
+  assert.equal(f.run().items[0].status, 'awaiting_sandbox');
+  f.manifest.items[0].oracleCoverage.inputs.pop();
+  f.json(resolve(f.root, 'candidate-batches', `${batch}.json`), f.manifest);
+  assert.throws(f.run, /exactly the declared finite domain/);
+});
+
 test('killed program order is irrelevant when every real program is accounted for', (t) => {
   const f = fixture(t);
   f.evidence.problems[0].killed.reverse();

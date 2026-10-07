@@ -9,6 +9,7 @@ import {
   digest,
   loadScope,
 } from './aggregate-batches.mjs';
+import { assertOracleCoverage } from './oracle-coverage.mjs';
 
 export function coverage(
   root = resolve('content/oa-judge'),
@@ -67,7 +68,8 @@ export function coverage(
           entry.authoredSolutions[0].code,
           readFileSync(resolve(root, 'references', entry.id + '.py'), 'utf8'),
         );
-        assert(evidence.oracle >= 120 && evidence.oracle === oracle.length);
+        assert.equal(evidence.oracle, oracle.length);
+        assertOracleCoverage(entry, oracle, entry.id);
         assert.equal(evidence.formal, pkg.cases.length);
         assert.equal(evidence.passed, evidence.oracle + evidence.formal);
         const mutants = JSON.parse(
@@ -153,10 +155,7 @@ export function coverage(
         const oracle = JSON.parse(
           readFileSync(resolve(root, 'oracles', entry.id + '.json'), 'utf8'),
         );
-        assert(
-          oracle.length >= 120,
-          'Candidate oracle coverage required: ' + entry.id,
-        );
+        assertOracleCoverage(entry, oracle, 'Candidate ' + entry.id);
         const mutants = JSON.parse(
           readFileSync(resolve(root, 'mutants', entry.id + '.json'), 'utf8'),
         );
