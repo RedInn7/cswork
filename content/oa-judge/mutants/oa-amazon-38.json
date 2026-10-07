@@ -1,0 +1,12 @@
+[
+  {
+    "name": "只处理 reference 的第一个字符",
+    "description": "把 reference 错当成只指定一种待删除字符。",
+    "code": "import sys\np,r,raw=sys.stdin.read().splitlines(); c=list(map(int,raw.split())); key=r[0]\nprint(sum(c[ord(x)-97] for x in p if x==key))\n"
+  },
+  {
+    "name": "重复 password 字符只收费一次",
+    "description": "按字符种类累计，而没有按 password 中每次出现分别计费。",
+    "code": "import sys\np,r,raw=sys.stdin.read().splitlines(); c=list(map(int,raw.split())); keys=set(r)\nprint(sum(c[ord(x)-97] for x in set(p) if x in keys))\n"
+  }
+]
