@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ixl-1",
+  "title": "卡片如何平均分包",
+  "explanation": "## 思路\n\n枚举包数 k≥2。对每类数量 c，补齐到 k 的倍数要加 (k−c mod k) mod k 张；将各类所需张数相加并取最小值。只需枚举到 M+1，其中 M=max(cardTypes)：当 k>M 时每类补齐量为 k−c，总和会随 k 严格增加，因此更大的 k 不可能更优。\n\n## 正确性证明\n\n对任意固定包数 k，某类卡片要平均分到 k 包，新增数量必须是使 c+x 被 k 整除的最小非负 x，即 (k−c mod k) mod k。各类独立，故求和是该 k 下的最小添加量。所有可能改善最优值的 k 均在 2..M+1 内：M+1 已使每类都补至 M+1，而对更大的 k，每一类的补量都严格增加。遍历这些 k 并取最小值即为全局最优。\n\n## 复杂度\n\n时间 O(n+M²)，空间 O(M)；本站 M=max(cardTypes)≤1000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import Counter\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, cards = data[0], data[1:]\n    largest = max(cards)\n    frequencies = Counter(cards)\n    best = n * (largest + 1)\n    # No packet count above largest+1 can improve: each added amount\n    # is k-cardType there and the total strictly increases with k.\n    for packets in range(2, largest + 2):\n        added = sum(frequency * ((-count) % packets)\n                    for count, frequency in frequencies.items())\n        best = min(best, added)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ixl#1-identical-distribution",
+  "sourceContentHash": "641d72bab754db9b8368f30729de8b69b2befbdf394a6e9afca59f877074f42c",
+  "author": "CSWork"
+}

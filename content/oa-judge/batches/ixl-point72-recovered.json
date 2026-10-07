@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-ixl-1",
+      "sourceContentHash": "641d72bab754db9b8368f30729de8b69b2befbdf394a6e9afca59f877074f42c",
+      "packageChecksum": "6c95d096c9243b086cfa5cc39822524dfb05a15de6f5ed03d3221128937f8e13",
+      "editorial": "## 思路\n\n枚举包数 k≥2。对每类数量 c，补齐到 k 的倍数要加 (k−c mod k) mod k 张；将各类所需张数相加并取最小值。只需枚举到 M+1，其中 M=max(cardTypes)：当 k>M 时每类补齐量为 k−c，总和会随 k 严格增加，因此更大的 k 不可能更优。\n\n## 正确性证明\n\n对任意固定包数 k，某类卡片要平均分到 k 包，新增数量必须是使 c+x 被 k 整除的最小非负 x，即 (k−c mod k) mod k。各类独立，故求和是该 k 下的最小添加量。所有可能改善最优值的 k 均在 2..M+1 内：M+1 已使每类都补至 M+1，而对更大的 k，每一类的补量都严格增加。遍历这些 k 并取最小值即为全局最优。\n\n## 复杂度\n\n时间 O(n+M²)，空间 O(M)；本站 M=max(cardTypes)≤1000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import Counter\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, cards = data[0], data[1:]\n    largest = max(cards)\n    frequencies = Counter(cards)\n    best = n * (largest + 1)\n    # No packet count above largest+1 can improve: each added amount\n    # is k-cardType there and the total strictly increases with k.\n    for packets in range(2, largest + 2):\n        added = sum(frequency * ((-count) % packets)\n                    for count, frequency in frequencies.items())\n        best = min(best, added)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-point72-1",
+      "sourceContentHash": "590c68ffe13c9b2b080c753a44f5a1d6661445888feea26332e7922fddef4d9c",
+      "packageChecksum": "aced25ccf3a397a1a259621e81c7b07670451a7bea11610685120e37db8f2d23",
+      "editorial": "## 思路\n\n统计余数 0..d−1 的出现次数。枚举 r1≤r2，令 r3=(-r1-r2) mod d；只处理 r3≥r2，避免余数三元组重复。三个余数互异时用频次乘积；两个相同用 C(cnt,2) 乘另一个频次；三个相同用 C(cnt,3)。\n\n## 正确性证明\n\n任意合法下标三元组唯一对应一个非降序余数组合 (r1,r2,r3)，且其和模 d 为 0，因此枚举时恰好经过一次。给定前两个余数后，第三个余数由整除条件唯一确定。按三种余数是否相同分别使用乘积或组合数，恰好选择对应数量的不同数组下标；反过来，这些选择的余数和均为 0 mod d，所以都是合法三元组。故累加值就是答案。\n\n## 复杂度\n\n时间 O(n+d²)，空间 O(d)；本站 n≤2000、d≤1000。最大答案 C(2000,3)=1,331,334,000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, divisor = data[0], data[1]\n    values = data[2:]\n    counts = [0] * divisor\n    for value in values:\n        counts[value % divisor] += 1\n    answer = 0\n    for a in range(divisor):\n        for b in range(a, divisor):\n            c = (-(a + b)) % divisor\n            if c < b:\n                continue\n            if a == b == c:\n                answer += counts[a] * (counts[a] - 1) * (counts[a] - 2) // 6\n            elif a == b:\n                answer += counts[a] * (counts[a] - 1) // 2 * counts[c]\n            elif b == c:\n                answer += counts[a] * counts[b] * (counts[b] - 1) // 2\n            else:\n                answer += counts[a] * counts[b] * counts[c]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

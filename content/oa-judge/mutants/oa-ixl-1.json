@@ -1,0 +1,22 @@
+[
+  {
+    "name": "遗漏 max+1 个包数",
+    "code": "import sys\nfrom collections import Counter\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, cards = data[0], data[1:]\n    largest = max(cards)\n    frequencies = Counter(cards)\n    best = n * (largest + 1)\n    # No packet count above largest+1 can improve: each added amount\n    # is k-cardType there and the total strictly increases with k.\n    for packets in range(2, largest + 1):\n        added = sum(frequency * ((-count) % packets)\n                    for count, frequency in frequencies.items())\n        best = min(best, added)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      1,
+      4,
+      22,
+      25
+    ]
+  },
+  {
+    "name": "固定只尝试两个包",
+    "code": "import sys\nfrom collections import Counter\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, cards = data[0], data[1:]\n    largest = max(cards)\n    frequencies = Counter(cards)\n    best = n * (largest + 1)\n    # No packet count above largest+1 can improve: each added amount\n    # is k-cardType there and the total strictly increases with k.\n    for packets in range(2, 3):\n        added = sum(frequency * ((-count) % packets)\n                    for count, frequency in frequencies.items())\n        best = min(best, added)\n    return str(best)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      3,
+      7,
+      17,
+      18
+    ]
+  }
+]
