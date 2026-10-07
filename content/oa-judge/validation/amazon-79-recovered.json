@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-amazon-79",
+      "oracleCases": 160,
+      "publicCases": 3,
+      "formalCases": 54,
+      "hiddenCases": 51,
+      "negativeControls": [
+        {
+          "name": "买不起时跳过继续购买",
+          "rejectedByCases": [
+            "本站样例：买不起首件即停止"
+          ]
+        },
+        {
+          "name": "重复购买仍按原价",
+          "rejectedByCases": [
+            "本站样例：不跳过买不起的商品"
+          ]
+        }
+      ],
+      "largeBoundaries": [
+        "n=1,cost=1,m=10^15",
+        "n=100000,cost=1,m=10^15",
+        "n=100000,cost=200000,m=10^15"
+      ]
+    }
+  ],
+  "note": "小规模逐件 stop 模拟 oracle、参考算法与大规模均匀输入闭式 oracle 本地对照通过；两个正常退出 mutant 被拒。尚未连接 GoJudge。"
+}

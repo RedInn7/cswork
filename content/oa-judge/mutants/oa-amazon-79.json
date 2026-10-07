@@ -1,0 +1,10 @@
+[
+  {
+    "name": "买不起时跳过继续购买",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split())); n,m=d[0],d[1]; a=d[2:2+n]\n bought=[0]*n; count=0; i=0\n while True:\n  p=(bought[i]+1)*a[i]\n  if p<=m: m-=p; bought[i]+=1; count+=1\n  i=(i+1)%n\n  if i==0 and not any((bought[j]+1)*a[j]<=m for j in range(n)): return str(count)\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "重复购买仍按原价",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split())); n,m=d[0],d[1]; a=d[2:2+n]\n count=0; i=0\n while m>=a[i]:\n  m-=a[i]; count+=1; i=(i+1)%n\n return str(count)\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

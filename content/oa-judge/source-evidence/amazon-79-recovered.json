@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogPath": "content/oa-master/catalog.json",
+  "catalogContentHash": "0f7b693faeac3e271c461bdcbccacc2c053662f3b0adbd20ca59a0b3a8959106",
+  "items": [
+    {
+      "id": "oa-amazon-79",
+      "title": "Count Bought Items (Recurring Shop Purchase)",
+      "sourceUrl": "https://oamaster.com/docs/companies/amazon#79-count-bought-items-recurring-shop-purchase",
+      "interpretation": "遇到第一件买不起的商品立即停止，不跳过。此规则不是题干明文，而是同一固定版本三种官方参考实现一致采用的行为；本站将该依据公开写入题面。",
+      "sourceImplementations": [
+        {
+          "language": "python",
+          "sha256": "539909ee42455d7e9f423c0727630070ce605ab59803dcffd0bbaaa1282a8871",
+          "behavior": "first unaffordable item terminates purchase loop"
+        },
+        {
+          "language": "java",
+          "sha256": "ae50f83bfcb7227f5f731b5f2ea981fa8b610107297cec096b45534767dec8d1",
+          "behavior": "first unaffordable item terminates purchase loop"
+        },
+        {
+          "language": "cpp",
+          "sha256": "4f83c91eb89ce86099e5257c45f5c4a2a4913ff9930f5465e1d009cd31b21814",
+          "behavior": "first unaffordable item terminates purchase loop"
+        }
+      ],
+      "siteAdditions": [
+        "标准输入输出协议与三个本站自建样例（OAMaster 原题无 I/O 样例）",
+        "买不起时立即停止，依据同一固定版本 Python/Java/C++ 三解法一致 break"
+      ]
+    }
+  ]
+}
