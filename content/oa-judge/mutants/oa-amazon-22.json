@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把零库存计作一个配送日",
+    "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    positive = set()\n    for _ in range(n):\n        value = next(tokens)\n        if value >= 0:\n            positive.add(value)\n    return str(len(positive))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "每天只发一件导致返回最大库存",
+    "code": "import sys\na=list(map(int,sys.stdin.buffer.read().split()))\nprint(max(a[1:]))\n"
+  }
+]

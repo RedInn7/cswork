@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-amazon-62",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 35,
+      "formalCases": 38,
+      "negativeControls": [
+        {
+          "name": "将正确位置的零也参与AND",
+          "rejectedByCases": [
+            "原题样例"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "错将错位值AND写成OR",
+          "rejectedByCases": [
+            "原题样例"
+          ],
+          "exitCode": 0
+        }
+      ],
+      "referenceSha256": "916f87676a6091985acd4e81e9f03b4acc5fe12f987c6d8b3e3139ebd159032b",
+      "oracleMethod": "对每个k实际交换BFS，另建完整值图验证连通性；不使用错位AND公式计算独立期望值",
+      "exhaustivePermutationCases": 5913,
+      "exhaustiveResults": [
+        {
+          "n": 1,
+          "permutations": 1,
+          "actualSwapBfsStates": 1,
+          "passed": 1
+        },
+        {
+          "n": 2,
+          "permutations": 2,
+          "actualSwapBfsStates": 3,
+          "passed": 2
+        },
+        {
+          "n": 3,
+          "permutations": 6,
+          "actualSwapBfsStates": 8,
+          "passed": 6
+        },
+        {
+          "n": 4,
+          "permutations": 24,
+          "actualSwapBfsStates": 29,
+          "passed": 24
+        },
+        {
+          "n": 5,
+          "permutations": 120,
+          "actualSwapBfsStates": 126,
+          "passed": 120
+        },
+        {
+          "n": 6,
+          "permutations": 720,
+          "actualSwapBfsStates": 732,
+          "passed": 720
+        },
+        {
+          "n": 7,
+          "permutations": 5040,
+          "actualSwapBfsStates": 5061,
+          "passed": 5040
+        }
+      ],
+      "oracleMaxWallSeconds": 0.0277,
+      "largeBoundaries": [
+        {
+          "name": "最大规模已有序",
+          "n": 100000,
+          "inputBytes": 588897,
+          "expectedOutput": "0",
+          "wallSeconds": 0.0329,
+          "verifiedLegalSwaps": 0,
+          "exitCode": 0
+        },
+        {
+          "name": "最大规模逆序",
+          "n": 100000,
+          "inputBytes": 588897,
+          "expectedOutput": "0",
+          "wallSeconds": 0.0352,
+          "verifiedLegalSwaps": 149998,
+          "exitCode": 0
+        },
+        {
+          "name": "最大规模全循环",
+          "n": 100000,
+          "inputBytes": 588897,
+          "expectedOutput": "0",
+          "wallSeconds": 0.0309,
+          "verifiedLegalSwaps": 299995,
+          "exitCode": 0
+        },
+        {
+          "name": "只交换最大两值",
+          "n": 100000,
+          "inputBytes": 588897,
+          "expectedOutput": "99998",
+          "wallSeconds": 0.0335,
+          "verifiedLegalSwaps": 1,
+          "exitCode": 0
+        },
+        {
+          "name": "高位域循环且pivot固定",
+          "n": 100000,
+          "inputBytes": 588897,
+          "expectedOutput": "65536",
+          "wallSeconds": 0.0311,
+          "verifiedLegalSwaps": 103386,
+          "exitCode": 0
+        },
+        {
+          "name": "最大规模随机且零错位",
+          "n": 100000,
+          "inputBytes": 588897,
+          "expectedOutput": "0",
+          "wallSeconds": 0.0319,
+          "verifiedLegalSwaps": 299974,
+          "exitCode": 0
+        }
+      ]
+    }
+  ],
+  "note": "163唯一输入与6大边界均实际Python子进程stdin/stdout验证，全部5913小排列另做同一参考函数、BFS、值图和逐步合法交换构造对拍。两个mutant正常退出并被拒；未运行GoJudge或发布。"
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按排序同位置比较多数",
+    "code": "import sys\nit=iter(map(int,sys.stdin.buffer.read().split())); n=next(it)\np=[sorted((next(it),next(it),next(it))) for _ in range(n)]\nprint(sum(all(sum(x>y for x,y in zip(p[i],p[j]))>=2 for j in range(n) if i!=j) for i in range(n)))\n"
+  },
+  {
+    "name": "把相等强化值也算胜利",
+    "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    players = [sorted((next(tokens), next(tokens), next(tokens))) for _ in range(n)]\n    # The two largest entries retain their identities, including equal values.\n    def extrema(column):\n        best = second = -1\n        owner = -1\n        for i, row in enumerate(players):\n            value = row[column]\n            if value > best:\n                second, best, owner = best, value, i\n            elif value > second:\n                second = value\n        return best, second, owner\n    a, a2, ai = extrema(0)\n    b, b2, bi = extrema(1)\n    answer = 0\n    for i, row in enumerate(players):\n        opponent_min = a2 if i == ai else a\n        opponent_middle = b2 if i == bi else b\n        answer += row[1] >= opponent_min and row[2] >= opponent_middle\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  }
+]

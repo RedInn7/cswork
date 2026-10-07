@@ -1,0 +1,10 @@
+[
+  {
+    "name": "原最大和与独立增益区间错误相加",
+    "code": "import sys\ndef solve(raw):\n    data = list(map(int, raw.split())); factor = data[1]; ratings = data[2:]\n    def best(values):\n        current = answer = values[0]\n        for x in values[1:]:\n            current = max(x, current + x); answer = max(answer, current)\n        return answer\n    base = best(ratings)\n    gains = [(factor - 1) * x for x in ratings]\n    divisions = [(abs(x)//factor)*(1 if x>=0 else -1)-x for x in ratings]\n    return str(max(base, base + best(gains), base + best(divisions)))\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "负数除法错误向下取整",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, factor = data[:2]\n    ratings = data[2:]\n    if not (1 <= n <= 200000 and 1 <= factor <= 10000 and len(ratings) == n):\n        raise ValueError(\"invalid input shape or factor\")\n    if any(abs(x) > 1000000000 for x in ratings):\n        raise ValueError(\"rating outside site range\")\n    answer = None\n    for divide in (False, True):\n        before = inside = after = None\n        for x in ratings:\n            changed = x // factor if divide else x * factor\n            new_before = x if before is None else max(x, before + x)\n            new_inside = changed\n            if before is not None:\n                new_inside = max(new_inside, before + changed)\n            if inside is not None:\n                new_inside = max(new_inside, inside + changed)\n            new_after = None if inside is None else inside + x\n            if after is not None:\n                new_after = after + x if new_after is None else max(new_after, after + x)\n            before, inside, after = new_before, new_inside, new_after\n            candidate = inside if after is None else max(inside, after)\n            answer = candidate if answer is None else max(answer, candidate)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -54,6 +54,8 @@ node --import tsx scripts/publish-oa-judge.ts --batch google-next TEACHER_EMAIL
 
 `--candidate-batch` 可直接从 `candidate-batches/<batch>.json` 对尚未进入 runtime registry 的候选运行真实 GoJudge，不发布题目或写入生产数据库；通过后再提升到正式 `batches/`。
 
+正式清单提升并重新聚合 registry 后，必须再运行 `node --import tsx --test tests/oa-judge-content.test.ts`。提升前的通过结果不覆盖新题。题解需要独立的 `## 正确性证明`（或 `## 正确性`、`## 为什么正确`）标题；证明可分必要性/充分性子标题。修改已验证题解后须重新运行该批次的真实沙箱验证，不手工更新报告哈希。
+
 端到端验收使用 `node tests/oa-judge-integration.mjs google-next`，只写全新临时数据库和独立队列，不接触真实学员数据。
 
 后续批次生成器位于 `batches/google_remaining_a.py`、`amazon_remaining_a.py`、`meta_first.py`、`akuna_rubrik_next.py`，分别对应 `google-remaining-a`、`amazon-remaining-a`、`meta-first`、`akuna-rubrik-next`。每批保留逐题审阅结论；无法明确判定正确输出的条目不进入 registry。Akuna/Rubrik 候选先做离线 oracle 与错误程序验证，必须等真实 GoJudge 报告后才可晋级；Akuna #14 和 #21 因原题例子与规则冲突而明确阻塞。

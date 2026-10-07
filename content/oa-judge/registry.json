@@ -434,6 +434,18 @@
       ]
     },
     {
+      "id": "oa-amazon-37",
+      "sourceContentHash": "f2ce6c0bbdacb1a0def8403d05e0f18c7e73877db5b3182746a462b4ee328ccc",
+      "packageChecksum": "be24a9468717cf9e4cbf4214376f4077e7485a938141198383ccc75baf2b3424",
+      "editorial": "## 思路\n\n对乘法和除法分别扫描，维护以当前位置结尾的非空计分区间：B尚未修改、M正在修改、A已经结束修改。当前原值x、变换值t，使用旧状态同时计算：`B'=max(x,B+x)`，`M'=max(t,B+t,M+t)`，`A'=max(M+x,A+x)`。不可达状态不参加转移；答案只取每个位置的M/A，再取两策略较大者。负数除法用 `-(abs(x)//factor)`，不能直接用Python的负数整除。\n\n## 正确性\n\n三状态顺序只允许未改、改一次非空区间、改后延续，覆盖所有计分区间与修改区间相交的方案。交叠区间之外的修改可删去而不影响计分。若最优计分区间与修改区间不相交，则计分区间含非负值时可改为乘其中一个非负值；若全负则可除其中一个负值。因factor≥1，两者都不会降低得分。故在同时允许乘/除的本题，相交方案中必有最优；不能声称固定某一策略也总成立。转移逐项枚举开始计分、开始修改、延续修改及结束修改，因此不漏解且无非法二次修改。不允许空子数组，全负且factor=1也必须返回负数。\n\n## 复杂度\n\n两次扫描O(n)时间、O(1)额外DP空间；程序保存输入需O(n)空间。结果最大2×10^18，Java/C++/Go须使用有符号64位且在相乘前提升类型。\n\n## 来源纠错与独立验证\n\n完整raw中factor=2，数组[5,-3,-3,2,4]答案12；catalog将factor改成3仍写12，是可直接复算的错误：乘最后2、4得到6、12，答案18。不能把原最大子数组和与任意独立增益相加，如[5,-100,5],factor=2真实10而该错法得到55。本站仅根据固定题面独立编写算法，未运行上游代码。163组唯一oracle枚举所有非空修改区间、两策略，再枚举结果的所有非空子数组；没有复用DP或Kadane。大边界采用同号数组直接公式，2个错误程序均正常退出且被正式用例否决。\n\n本站标准输入与合并范围：1≤n≤200000，1≤impactFactor≤10000，−10^9≤ratings[i]≤10^9。完整 raw 题源为 n≤200000、|ratings[i]|≤100000；catalog 为 n≤100000、|ratings[i]|≤10^9，未保留因子范围。本站取二者范围包络并采用 raw 的正整数因子范围，不声称这是原 raw 的约束。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, factor = data[:2]\n    ratings = data[2:]\n    if not (1 <= n <= 200000 and 1 <= factor <= 10000 and len(ratings) == n):\n        raise ValueError(\"invalid input shape or factor\")\n    if any(abs(x) > 1000000000 for x in ratings):\n        raise ValueError(\"rating outside site range\")\n    answer = None\n    for divide in (False, True):\n        before = inside = after = None\n        for x in ratings:\n            changed = (abs(x) // factor) * (1 if x >= 0 else -1) if divide else x * factor\n            new_before = x if before is None else max(x, before + x)\n            new_inside = changed\n            if before is not None:\n                new_inside = max(new_inside, before + changed)\n            if inside is not None:\n                new_inside = max(new_inside, inside + changed)\n            new_after = None if inside is None else inside + x\n            if after is not None:\n                new_after = after + x if new_after is None else max(new_after, after + x)\n            before, inside, after = new_before, new_inside, new_after\n            candidate = inside if after is None else max(inside, after)\n            answer = candidate if answer is None else max(answer, candidate)\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-38",
       "sourceContentHash": "4cd956a84dd510453b5874263bb98527b3478eda91b561ea6bbdb960e2fa5196",
       "packageChecksum": "4eb27311e050bf12aac3a148d50856714f5a75ad6c2a044993bee3e52a4d9f1a",
@@ -442,6 +454,42 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    lines = raw.splitlines()\n    if len(lines) != 3:\n        raise ValueError(\"expected password, reference, and 26 costs\")\n    password, reference = lines[0], lines[1]\n    costs = list(map(int, lines[2].split()))\n    if not 1 <= len(password) <= 100_000 or not 1 <= len(reference) <= 100_000:\n        raise ValueError(\"string length must be in [1, 100000]\")\n    if len(costs) != 26 or any(not 1 <= cost <= 100 for cost in costs):\n        raise ValueError(\"expected 26 costs in [1, 100]\")\n    if any(not ('a' <= char <= 'z') for char in password + reference):\n        raise ValueError(\"strings must contain lowercase English letters\")\n    removable = set(reference)\n    return str(sum(costs[ord(char) - ord('a')] for char in password if char in removable))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-62",
+      "sourceContentHash": "efd7075ae1aa54ecc5720b5de538157d2a432180d75aabb7ad10e989513115c2",
+      "packageChecksum": "fd8885fcd136b3e67e5f0e983bc47198c6544f6b7896ca6d8c39bd1f310056f9",
+      "editorial": "## 已排序输入的明确约定\n\n原题正文要求最大非负 k，但对于已有序排列，零次交换对任意非负 k 都合法，数学上不存在有限最大值。固定来源的解释和 Python、Java、C++ 三种实现均明确返回 0，本站据此采用「已有序时返回 0」约定；不能将其说成由正文自然推出的最大值。以下最大值证明只针对尚未排序的排列。\n\n## 算法\n\n遍历排列，找出所有 arr[i]≠i 的值，逐个按位 AND。无错位值则按约定输出 0。记非空错位集合的 AND 为 A，答案为 A。\n\n## 正确性证明\n\n### 必要性：任何可行 k 都不超过 A\n\n每个最初错位的值 v 在完成排序前至少要参与一次交换。合法交换满足 v&w=k，所以 k 的所有置位都出现在 v 中。对每个错位值都成立，故 k 是 A 的子掩码，从而 k≤A。\n\n### 充分性：域内 pivot 可桥接并恢复\n\n由 0≤A≤任意错位值<n，A 本身属于 [0,n−1]；排列中必有值为 A 的节点，称为 pivot。对每个错位值 v 都有 v&A=A，因此 v 与 pivot 可合法交换。排序可分解为错位值之间的交换：若交换 a、b 之一是 pivot，直接交换；否则依次交换值对 (A,a)、(A,b)、(A,a)。三步都满足按位 AND 恰为 A，净效果只交换 a、b，并将 pivot 恢复原位置。因此即使 pivot 最初位于正确位置也没有问题；其他已正确位置的值不必参与。逐步修正错位位置即可完成排序，证明 A 可行。结合上界，A 为最大答案。\n\n## 复杂度与独立验证\n\n算法时间 O(n)，除输入解析外额外空间 O(1)。完整保留 n≤100000 和 0..n−1 的排列域。生成器对 n=1..7 的全部5913个排列，针对每个k构造值图并通过实际合法交换的排列状态BFS独立求可达性，同时逐次验证pivot交换构造；独立oracle不使用错位值AND公式。大边界包括有序、逆序、全循环、近上界答案99998及固定pivot65536的高位域循环。值0位于错误位置时，参与交换必使k=0；最大两值只有一个置位不同，最大可行值99998；高位域包含65537和65538，其共同位仅65536，该值可连接域内所有值。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    answer = None\n    for index in range(n):\n        value = next(tokens)\n        if index != value:\n            answer = value if answer is None else answer & value\n    return str(0 if answer is None else answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-7",
+      "sourceContentHash": "894f92e4c63616d093fcb1f282c2bc28c5e54ba9472b7faa41039c2d97509593",
+      "packageChecksum": "cc6cbc90cad7e383dfb2ef519dd1039ac641eac273c281d8874c517f3c2a1550",
+      "editorial": "## 固定来源更正与本站范围\n\n固定 OAMaster 提交 e66f809f4c953bce129f68491726176615db6afc 的 fastprep/Amazon/amazon-find-capable-winners.md 明确：存在双方的一种配对排列，使 X 严格赢至少两回合，就称 X 能击败 Y；不是同一排列必须胜过 Y 的所有排列。原文给出 X=[9,5,11]、Y=[7,12,3] 可互相击败。早期 #7 摘要的 any rearrangement 用词与原文 some rearrangement 不符，本站据原文更正；三语言排序后同位置比较多数的来源实现也不正确，不执行或复用它们。\n\n原始文件要求每位玩家的三个值互异，但 #7 摘要未限制重复。本站明确保留更宽的每组可重复值输入域，仍按上述严格胜利定义评测；这是范围扩展，不是伪称原题允许重复。raw 与摘要都规定 2≤n≤100000、强化值1..10^9，不扩展n=1。标准I/O由本站补充，不改变不同对手可选不同排列的语义。该原始完整题同时对应已收录 #142，但本ID重新绑定全部来源、题包与验证证据。\n\n## 正确性证明\n\n把每个三元组排序为 a≤b≤c。X 能击败 Y 当且仅当 bX>aY 且 cX>bY：若存在两局严格胜利，把胜出的两枚按大小排列，较小的不会大于bX，而对应两枚被击败值中较小的不会小于aY；较大的胜出值至多cX，对方较大被击败值至少bY，得必要条件。反过来直接以bX配aY、cX配bY即可赢两局。\n\n因此每位玩家只需超过所有其他玩家的最小值和中间值最大值。分别记录这两列最大值、最大值所属玩家以及排除该玩家后的次大值，次大值允许与最大值相等。检查时精确排除本人。不能把自己也放进比较集合：如[2,2,2]对[1,1,1]，第一人可胜，但包含自身的最小值最大值会错误拒绝它。\n\n排序三个数是常数操作，建立极值和逐人检查均为O(n)，总时间O(n)、空间O(n)。使用严格大于；平局不算赢。答案可为0或n。独立oracle逐对枚举六种相对排列，不使用上述排序不等式。\n\n## 样例核对\n\n#7原摘要四人样例按正确规则为2，获胜者是第2与第4人；来源同位置多数代码错误地只算第4人。raw双人例双方可互胜，所以也是2。本站补充两个[1,1,1]的重复值例，没人能严格赢两局，答案0。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    players = [sorted((next(tokens), next(tokens), next(tokens))) for _ in range(n)]\n    # The two largest entries retain their identities, including equal values.\n    def extrema(column):\n        best = second = -1\n        owner = -1\n        for i, row in enumerate(players):\n            value = row[column]\n            if value > best:\n                second, best, owner = best, value, i\n            elif value > second:\n                second = value\n        return best, second, owner\n    a, a2, ai = extrema(0)\n    b, b2, bi = extrema(1)\n    answer = 0\n    for i, row in enumerate(players):\n        opponent_min = a2 if i == ai else a\n        opponent_middle = b2 if i == bi else b\n        answer += row[1] > opponent_min and row[2] > opponent_middle\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-22",
+      "sourceContentHash": "65a7f646e3f903c30d73a7ade42e615fa27850af06012625f0fdfad9361efd7f",
+      "packageChecksum": "aa05f358299bc35759bba125fd7330d6395fbabbdb4650667749fa190996dbaa",
+      "editorial": "## 固定来源更正\n\n固定 OAMaster 提交 e66f809f4c953bce129f68491726176615db6afc 的 fastprep/Amazon/amazon-min-days-to-deliver-parcels.md 要求每天从每个仍有至少一个包裹的中心发出相同数量，不能跳过非空中心。因此每日正整数d不得超过当前最小正库存。早期 #22 摘要添加的“少于d就跳过”改变了核心操作，本站据原始文件明确更正，而非另造规则。固定来源三语言的不同正值集合算法与原始规则一致。\n\n完整保留n≤10^6、库存0..10^9；零库存不参与，原本全零需0天。标准I/O为本站补充。原始完整题亦对应 #284，此处重新绑定本ID全部来源与验证证据。最大常规整数输入11000008字节，处于32 MiB输入预算内。\n\n## 正确性证明\n\n将所有严格正的库存加入集合，返回集合大小。每天所有非空中心扣相同数值，仍非空的不同库存之间差值不变，一天最多消去当前最小正库存这一层。因此至少需要初始不同正库存数量那么多天。每天选择当前最小正库存，恰好消去一层并保持其余层互异，达到该下界。全零时层数为0。\n\n参考程序逐个转换输入token并加入集合，不另存完整整数数组。期望时间O(n)，额外集合O(u)，u为不同正值个数；输入分词额外O(n)。独立oracle在小输入上BFS枚举每天所有合法d并寻找最短清空路径，不用集合计数公式。\n\n## 区分错误摘要\n\n[1,2,3]按原规则必须3天；先减2跳过库存1中心的2天方案不合法。原例[2,3,4,3,3]依次减2、1、1共3天；全部为3的中心一天结束。本站补充全零例应为0。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    positive = set()\n    for _ in range(n):\n        value = next(tokens)\n        if value > 0:\n            positive.add(value)\n    return str(len(positive))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
         }
       ]
     },

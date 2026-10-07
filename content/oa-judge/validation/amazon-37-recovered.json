@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-amazon-37",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "referenceFormalCases": 38,
+      "publicCases": 4,
+      "hiddenCases": 34,
+      "negativeControls": [
+        {
+          "name": "原最大和与独立增益区间错误相加",
+          "rejectedByCases": [
+            4,
+            8,
+            17,
+            21,
+            22,
+            25,
+            27,
+            35
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "负数除法错误向下取整",
+          "rejectedByCases": [
+            3,
+            5,
+            8,
+            17,
+            25,
+            27
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "6177fdadb6d7206ab82cfc2dc86f2e7e6fe111c943e4688f6414e758f014fb9e",
+      "oracleMethod": "Enumerate every nonempty modification interval, both strategies, and every resulting nonempty scoring subarray; no Kadane or DP",
+      "largeBoundaryMethod": "constant positive arrays give n*value*factor; constant negative array optimum truncates one element toward zero",
+      "siteAddedBounds": {
+        "nMax": 200000,
+        "factorMax": 10000,
+        "absoluteRatingMax": 1000000000
+      },
+      "maxFormalAnswer": 2000000000000000000,
+      "localValidationOnly": true,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "elapsedSeconds": 8.418
+    }
+  ]
+}

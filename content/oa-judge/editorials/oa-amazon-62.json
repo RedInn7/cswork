@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-62",
+  "title": "按位与交换的最大排序因子",
+  "explanation": "## 已排序输入的明确约定\n\n原题正文要求最大非负 k，但对于已有序排列，零次交换对任意非负 k 都合法，数学上不存在有限最大值。固定来源的解释和 Python、Java、C++ 三种实现均明确返回 0，本站据此采用「已有序时返回 0」约定；不能将其说成由正文自然推出的最大值。以下最大值证明只针对尚未排序的排列。\n\n## 算法\n\n遍历排列，找出所有 arr[i]≠i 的值，逐个按位 AND。无错位值则按约定输出 0。记非空错位集合的 AND 为 A，答案为 A。\n\n## 正确性证明\n\n### 必要性：任何可行 k 都不超过 A\n\n每个最初错位的值 v 在完成排序前至少要参与一次交换。合法交换满足 v&w=k，所以 k 的所有置位都出现在 v 中。对每个错位值都成立，故 k 是 A 的子掩码，从而 k≤A。\n\n### 充分性：域内 pivot 可桥接并恢复\n\n由 0≤A≤任意错位值<n，A 本身属于 [0,n−1]；排列中必有值为 A 的节点，称为 pivot。对每个错位值 v 都有 v&A=A，因此 v 与 pivot 可合法交换。排序可分解为错位值之间的交换：若交换 a、b 之一是 pivot，直接交换；否则依次交换值对 (A,a)、(A,b)、(A,a)。三步都满足按位 AND 恰为 A，净效果只交换 a、b，并将 pivot 恢复原位置。因此即使 pivot 最初位于正确位置也没有问题；其他已正确位置的值不必参与。逐步修正错位位置即可完成排序，证明 A 可行。结合上界，A 为最大答案。\n\n## 复杂度与独立验证\n\n算法时间 O(n)，除输入解析外额外空间 O(1)。完整保留 n≤100000 和 0..n−1 的排列域。生成器对 n=1..7 的全部5913个排列，针对每个k构造值图并通过实际合法交换的排列状态BFS独立求可达性，同时逐次验证pivot交换构造；独立oracle不使用错位值AND公式。大边界包括有序、逆序、全循环、近上界答案99998及固定pivot65536的高位域循环。值0位于错误位置时，参与交换必使k=0；最大两值只有一个置位不同，最大可行值99998；高位域包含65537和65538，其共同位仅65536，该值可连接域内所有值。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    n = next(tokens)\n    answer = None\n    for index in range(n):\n        value = next(tokens)\n        if index != value:\n            answer = value if answer is None else answer & value\n    return str(0 if answer is None else answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#62-get-sorting-factor-k",
+  "sourceContentHash": "efd7075ae1aa54ecc5720b5de538157d2a432180d75aabb7ad10e989513115c2"
+}
