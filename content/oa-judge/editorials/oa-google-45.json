@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-45",
+  "title": "最少椅子",
+  "explanation": "## 思路\n\n把每位客人建成半开区间 [S[i], E[i])。到达事件使在场人数加一，离开事件使人数减一。按时间排序；同一时刻先处理离开，再处理到达，记录人数最大值。\n\n## 正确性\n\n对任意时刻 t，半开区间 [S,E) 覆盖 t 当且仅当 S≤t<E。事件扫描在每个时刻先移除所有 E=t 的区间，再加入所有 S=t 的区间，因此处理完该时刻后的人数，正好等于覆盖该时刻右侧瞬间的区间数；这也是该时刻之后直到下个事件前的在场人数。所有人数变化只发生在到达或离开事件处，所以扫描到的最大人数就是任何时刻的最大同时在场人数，也就是所需椅子数。\n\n## 复杂度\n\n对 2n 个事件排序，时间 O(n log n)，空间 O(n)。\n\n## 来源与本站约定\n\n原始 OAMaster 题目只给出 S/E 到离场定义，未列约束，也未包含示例。固定题目快照：https://oamaster.com/docs/companies/google#45-minimum-number-of-chairs；上游提交 `e66f809f4c953bce129f68491726176615db6afc`，Google 页面 Git blob `300032c24800642c2ecedab9d930e86db3cdb54a`。同题公开问题页给出完全相同的叙述与样例，明确说明同一时刻离开与到达时可复用座位：https://leetcode.com/discuss/post/356520/google-oa-2019-min-number-of-chairs/。另一份同题页将出席区间明确标为半开区间：https://www.fastprep.io/problems/google-meeting-rooms-ii。本站明确补充 n≤200000 与时间范围，方便标准输入输出评测；不把这些范围归因于原题。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if not values:\n        return \"\"\n    n = values[0]\n    if n < 1 or n > 200_000 or len(values) != 1 + 2 * n:\n        raise ValueError(\"expected N, then N arrivals and N departures\")\n    starts = values[1:1 + n]\n    ends = values[1 + n:]\n    events = []\n    for start, end in zip(starts, ends):\n        if not (-1_000_000_000 <= start < end <= 1_000_000_000):\n            raise ValueError(\"each interval must satisfy -1e9 <= S < E <= 1e9\")\n        events.append((start, 1))\n        events.append((end, -1))\n    # In half-open [S, E) intervals, departures release chairs before\n    # arrivals at the same instant. Sorting delta ascending implements that.\n    events.sort()\n    occupied = answer = 0\n    for _, delta in events:\n        occupied += delta\n        answer = max(answer, occupied)\n    return str(answer)\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#45-minimum-number-of-chairs",
+  "sourceContentHash": "eb24ff834abb2e8ef515db29a91308414307144aad15804f989d63e249731470"
+}

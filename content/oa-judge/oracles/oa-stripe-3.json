@@ -1,0 +1,482 @@
+[
+  {
+    "input": "3\n12\nm4 kind1 3\nm1 kind1 0\nm5 kind1 2\nm0 kind1 2\nm4 kind0 3\nm3 kind1 1\nm1 kind0 1\nm3 kind0 2\nm2 kind1 2\nm2 kind0 2\nm0 kind0 0\nm5 kind0 0\n2\nm3 kind1 3\nm4 kind0 0\n8\nm0 kind0 1\nm3 kind1 3\nm5 kind1 3\nm2 kind1 0\nm4 kind1 2\nm2 kind0 0\nm5 kind0 3\nm0 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=6 pin=m2\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n9\nm4 kind1 2\nm2 kind1 1\nm1 kind0 1\nm3 kind0 3\nm2 kind0 2\nm3 kind1 2\nm1 kind1 1\nm0 kind1 0\nm4 kind0 2\n10\nm3 kind0 0\nm1 kind1 0\nm1 kind0 1\nm2 kind1 1\nm0 kind1 0\nm4 kind0 0\nm3 kind1 1\nm0 kind0 1\nm4 kind1 3\nm2 kind0 1\n8\nm2 kind0 0\nm0 kind1 0\nm4 kind1 1\nm3 kind1 1\nm2 kind1 2\nm3 kind0 0\nm0 kind0 1\nm1 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m1\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=5 pin=m3\n"
+  },
+  {
+    "input": "3\n3\nm0 kind1 3\nm0 kind0 3\nm0 kind2 2\n5\nm0 kind3 3\nm0 kind4 3\nm0 kind2 1\nm0 kind1 0\nm0 kind0 2\n1\nm0 kind4 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n11\nm2 kind2 1\nm3 kind4 2\nm3 kind3 2\nm1 kind4 3\nm6 kind2 0\nm3 kind1 0\nm2 kind3 1\nm3 kind0 3\nm0 kind3 0\nm6 kind4 2\nm5 kind0 3\n3\nm0 kind4 2\nm3 kind1 0\nm1 kind1 1\n12\nm3 kind4 1\nm0 kind1 2\nm5 kind4 3\nm2 kind1 3\nm2 kind3 0\nm0 kind0 1\nm5 kind1 1\nm5 kind2 3\nm1 kind4 1\nm6 kind4 3\nm6 kind0 2\nm6 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=5 pin=m3\nDay 2\n  cluster size=5 pin=m3\nDay 3\n  cluster size=6 pin=m0\n"
+  },
+  {
+    "input": "3\n5\nm7 kind1 3\nm0 kind1 1\nm2 kind1 3\nm0 kind0 1\nm2 kind0 2\n10\nm6 kind0 1\nm5 kind0 2\nm0 kind1 0\nm2 kind1 2\nm4 kind0 3\nm6 kind1 3\nm7 kind0 0\nm1 kind1 3\nm1 kind0 1\nm4 kind1 0\n8\nm3 kind0 3\nm7 kind0 3\nm5 kind1 3\nm1 kind1 1\nm0 kind1 1\nm6 kind1 0\nm4 kind1 1\nm1 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=6 pin=m1\nDay 3\n  cluster size=8 pin=m4\n"
+  },
+  {
+    "input": "3\n10\nm0 kind2 2\nm1 kind2 0\nm4 kind0 1\nm3 kind0 0\nm0 kind1 0\nm4 kind1 2\nm2 kind1 3\nm3 kind2 3\nm1 kind1 0\nm2 kind2 3\n7\nm2 kind0 2\nm3 kind2 3\nm2 kind2 1\nm1 kind1 1\nm4 kind0 0\nm0 kind2 1\nm1 kind0 1\n9\nm3 kind1 0\nm0 kind2 2\nm4 kind0 2\nm2 kind1 2\nm2 kind0 1\nm0 kind0 2\nm1 kind1 2\nm1 kind0 2\nm4 kind1 0\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m2\nDay 2\n  cluster size=5 pin=m2\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n8\nm0 kind2 1\nm0 kind0 0\nm2 kind0 3\nm1 kind3 0\nm2 kind1 2\nm1 kind4 1\nm2 kind4 2\nm1 kind0 0\n12\nm0 kind3 0\nm1 kind0 1\nm2 kind3 3\nm2 kind2 1\nm1 kind3 1\nm1 kind2 2\nm0 kind2 1\nm2 kind1 1\nm1 kind4 3\nm0 kind0 2\nm1 kind1 2\nm2 kind4 2\n6\nm2 kind2 3\nm1 kind4 2\nm2 kind3 0\nm0 kind2 2\nm1 kind3 2\nm2 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n0\n2\nm0 kind1 1\nm0 kind0 1\n1\nm0 kind1 2\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n5\nm1 kind0 0\nm4 kind0 3\nm3 kind1 2\nm2 kind0 2\nm1 kind1 1\n5\nm1 kind2 1\nm0 kind0 1\nm2 kind2 3\nm0 kind1 0\nm0 kind2 3\n12\nm5 kind1 1\nm3 kind0 0\nm1 kind2 3\nm4 kind0 3\nm0 kind2 1\nm0 kind1 2\nm2 kind1 2\nm2 kind2 1\nm1 kind1 0\nm1 kind0 2\nm5 kind0 3\nm2 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m1\n  cluster size=2 pin=m2\nDay 2\n  cluster size=4 pin=m0\n  cluster size=1 pin=m3\nDay 3\n  cluster size=5 pin=m1\n"
+  },
+  {
+    "input": "3\n6\nm3 kind1 0\nm2 kind1 1\nm4 kind0 0\nm6 kind1 3\nm4 kind2 2\nm0 kind1 0\n1\nm0 kind0 1\n9\nm2 kind0 0\nm6 kind2 2\nm2 kind1 2\nm3 kind1 2\nm1 kind0 3\nm5 kind0 3\nm3 kind0 1\nm4 kind0 3\nm0 kind2 3\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m2\n  cluster size=1 pin=m4\nDay 2\n  cluster size=1 pin=m0\n  cluster size=1 pin=m4\n  cluster size=1 pin=m6\nDay 3\n  cluster size=7 pin=m3\n"
+  },
+  {
+    "input": "3\n1\nm0 kind2 2\n3\nm0 kind0 3\nm0 kind2 3\nm0 kind3 0\n4\nm0 kind3 0\nm0 kind2 0\nm0 kind1 1\nm0 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n6\nm1 kind0 2\nm2 kind1 0\nm2 kind0 1\nm1 kind1 0\nm0 kind1 1\nm0 kind0 2\n0\n2\nm0 kind0 1\nm1 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n0\n1\nm0 kind0 1\n2\nm1 kind0 3\nm0 kind0 1\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm7 kind0 2\nm3 kind0 2\nm7 kind1 0\n8\nm0 kind1 2\nm7 kind1 0\nm6 kind1 3\nm1 kind0 0\nm3 kind1 0\nm2 kind1 1\nm1 kind1 3\nm2 kind0 3\n2\nm7 kind0 0\nm3 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m3\nDay 2\n  cluster size=6 pin=m2\nDay 3\n  cluster size=3 pin=m0\n  cluster size=1 pin=m2\n"
+  },
+  {
+    "input": "3\n3\nm0 kind0 0\nm0 kind3 3\nm1 kind3 2\n12\nm0 kind1 1\nm2 kind3 0\nm1 kind2 1\nm1 kind0 1\nm1 kind4 1\nm2 kind2 0\nm1 kind1 1\nm2 kind0 2\nm0 kind0 2\nm2 kind1 3\nm0 kind3 2\nm0 kind4 2\n10\nm2 kind2 2\nm2 kind4 0\nm1 kind2 2\nm2 kind1 3\nm2 kind0 2\nm0 kind4 0\nm1 kind1 0\nm1 kind0 0\nm2 kind3 1\nm0 kind3 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m2\n"
+  },
+  {
+    "input": "3\n0\n0\n5\nm0 kind2 1\nm0 kind1 1\nm1 kind1 3\nm0 kind0 1\nm1 kind0 2\n",
+    "expectedOutput": "Day 1\nDay 2\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm1 kind0 0\n2\nm1 kind0 1\nm2 kind0 0\n0\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=1 pin=m1\nDay 3\n"
+  },
+  {
+    "input": "3\n11\nm2 kind0 1\nm3 kind1 0\nm3 kind3 0\nm0 kind3 2\nm0 kind0 2\nm2 kind2 1\nm4 kind0 1\nm4 kind3 3\nm3 kind4 2\nm2 kind1 0\nm0 kind4 3\n11\nm4 kind1 3\nm0 kind0 3\nm2 kind2 1\nm0 kind2 0\nm2 kind3 1\nm2 kind0 1\nm1 kind0 1\nm0 kind1 3\nm3 kind3 0\nm1 kind4 0\nm4 kind4 2\n7\nm3 kind4 3\nm2 kind4 2\nm3 kind1 3\nm1 kind0 0\nm0 kind0 0\nm2 kind2 0\nm3 kind3 3\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m0\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm2 kind1 2\nm4 kind2 0\nm4 kind0 1\n1\nm3 kind2 0\n3\nm3 kind4 3\nm0 kind4 2\nm0 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m2\n  cluster size=1 pin=m4\nDay 2\n  cluster size=1 pin=m2\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm5 kind1 0\nm2 kind0 2\nm1 kind1 0\n5\nm0 kind0 3\nm5 kind2 2\nm5 kind3 1\nm4 kind0 1\nm2 kind1 0\n10\nm5 kind2 2\nm0 kind2 1\nm0 kind0 0\nm5 kind3 3\nm4 kind3 3\nm3 kind3 2\nm1 kind1 3\nm5 kind1 1\nm4 kind0 3\nm5 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m2\nDay 2\n  cluster size=3 pin=m0\n  cluster size=1 pin=m5\nDay 3\n  cluster size=5 pin=m5\n"
+  },
+  {
+    "input": "3\n0\n10\nm4 kind0 3\nm2 kind3 1\nm1 kind0 3\nm4 kind3 3\nm5 kind0 2\nm2 kind0 1\nm0 kind1 0\nm1 kind2 3\nm1 kind1 2\nm0 kind0 2\n12\nm2 kind3 2\nm4 kind0 0\nm3 kind4 3\nm2 kind1 3\nm3 kind2 3\nm4 kind3 2\nm5 kind0 3\nm1 kind3 3\nm2 kind0 1\nm3 kind3 1\nm3 kind0 0\nm2 kind4 3\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=6 pin=m1\n"
+  },
+  {
+    "input": "3\n2\nm0 kind2 3\nm1 kind0 1\n0\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n4\nm0 kind0 0\nm0 kind1 3\nm0 kind3 2\nm0 kind2 1\n3\nm0 kind2 0\nm0 kind3 3\nm0 kind0 2\n4\nm0 kind1 3\nm0 kind2 3\nm0 kind0 1\nm0 kind3 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm0 kind0 1\nm1 kind0 0\nm2 kind0 2\n3\nm0 kind0 0\nm1 kind0 0\nm2 kind0 0\n2\nm2 kind0 0\nm1 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=1 pin=m2\nDay 3\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n8\nm4 kind0 3\nm3 kind3 3\nm1 kind1 3\nm0 kind2 1\nm3 kind0 0\nm5 kind2 1\nm0 kind0 1\nm1 kind0 1\n9\nm4 kind2 3\nm0 kind3 1\nm3 kind3 2\nm1 kind1 3\nm5 kind1 3\nm4 kind3 0\nm0 kind0 2\nm2 kind3 1\nm0 kind2 3\n12\nm5 kind0 3\nm4 kind3 2\nm1 kind0 0\nm3 kind0 3\nm4 kind1 0\nm0 kind3 3\nm3 kind1 1\nm5 kind2 3\nm1 kind1 2\nm5 kind3 1\nm4 kind2 2\nm3 kind3 2\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m0\n  cluster size=1 pin=m3\nDay 2\n  cluster size=4 pin=m0\n  cluster size=2 pin=m1\nDay 3\n  cluster size=5 pin=m3\n"
+  },
+  {
+    "input": "3\n5\nm1 kind0 1\nm7 kind2 1\nm5 kind1 3\nm2 kind1 0\nm0 kind0 0\n8\nm2 kind2 3\nm7 kind0 3\nm2 kind1 1\nm3 kind1 2\nm4 kind1 2\nm5 kind1 2\nm1 kind2 2\nm0 kind0 0\n12\nm2 kind1 1\nm7 kind1 1\nm5 kind2 3\nm7 kind0 3\nm1 kind1 1\nm4 kind0 1\nm0 kind1 3\nm0 kind2 3\nm7 kind2 2\nm4 kind1 2\nm5 kind1 1\nm1 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\n  cluster size=1 pin=m5\n  cluster size=1 pin=m7\nDay 2\n  cluster size=5 pin=m2\n  cluster size=1 pin=m7\nDay 3\n  cluster size=7 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm4 kind2 3\nm2 kind1 0\nm0 kind1 0\n5\nm3 kind1 1\nm0 kind3 3\nm3 kind4 1\nm2 kind1 3\nm0 kind1 0\n9\nm4 kind0 3\nm2 kind1 3\nm1 kind3 2\nm1 kind4 2\nm1 kind1 2\nm3 kind0 3\nm2 kind0 3\nm0 kind3 0\nm0 kind4 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m4\nDay 2\n  cluster size=2 pin=m2\n  cluster size=1 pin=m0\n  cluster size=1 pin=m4\nDay 3\n  cluster size=5 pin=m2\n"
+  },
+  {
+    "input": "3\n12\nm3 kind1 0\nm1 kind1 0\nm3 kind0 2\nm2 kind0 2\nm2 kind2 3\nm0 kind2 2\nm0 kind0 0\nm1 kind2 2\nm2 kind1 3\nm0 kind1 1\nm3 kind2 1\nm1 kind0 1\n1\nm3 kind2 1\n3\nm2 kind1 1\nm0 kind2 2\nm0 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m0\nDay 2\n  cluster size=4 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n5\nm0 kind0 3\nm1 kind1 0\nm4 kind1 3\nm0 kind2 2\nm5 kind0 0\n8\nm2 kind0 2\nm2 kind2 1\nm1 kind2 3\nm5 kind2 0\nm4 kind2 3\nm4 kind1 1\nm3 kind0 3\nm1 kind1 1\n6\nm5 kind2 2\nm4 kind1 3\nm0 kind1 2\nm3 kind2 0\nm2 kind0 3\nm1 kind2 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m4\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=6 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm0 kind2 1\n7\nm3 kind3 1\nm2 kind1 3\nm4 kind3 2\nm1 kind0 2\nm2 kind3 1\nm1 kind3 2\nm0 kind2 0\n6\nm4 kind0 3\nm0 kind1 2\nm4 kind3 1\nm1 kind2 3\nm4 kind1 2\nm1 kind1 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=4 pin=m1\nDay 3\n  cluster size=4 pin=m4\n"
+  },
+  {
+    "input": "3\n6\nm5 kind0 2\nm2 kind0 1\nm0 kind0 1\nm4 kind0 2\nm1 kind0 2\nm6 kind0 2\n7\nm0 kind0 0\nm6 kind0 2\nm5 kind0 0\nm2 kind0 0\nm4 kind0 2\nm1 kind0 1\nm3 kind0 3\n1\nm5 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=6 pin=m0\nDay 2\n  cluster size=5 pin=m1\nDay 3\n  cluster size=4 pin=m3\n"
+  },
+  {
+    "input": "3\n7\nm5 kind0 3\nm3 kind3 2\nm6 kind4 0\nm4 kind3 0\nm5 kind3 0\nm6 kind0 3\nm5 kind1 3\n10\nm4 kind2 0\nm6 kind4 0\nm3 kind4 0\nm1 kind0 1\nm2 kind0 3\nm5 kind4 0\nm3 kind3 0\nm4 kind4 3\nm2 kind2 3\nm4 kind1 1\n1\nm6 kind4 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m5\n  cluster size=1 pin=m3\nDay 2\n  cluster size=5 pin=m5\n  cluster size=1 pin=m3\nDay 3\n  cluster size=4 pin=m6\n"
+  },
+  {
+    "input": "3\n1\nm0 kind0 2\n2\nm3 kind0 0\nm0 kind0 3\n8\nm0 kind0 1\nm7 kind0 2\nm1 kind0 1\nm6 kind0 1\nm5 kind0 3\nm4 kind0 2\nm3 kind0 0\nm2 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=7 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm2 kind3 0\nm1 kind2 1\n10\nm1 kind0 2\nm2 kind3 1\nm2 kind0 3\nm4 kind2 3\nm3 kind0 0\nm1 kind1 0\nm1 kind2 0\nm4 kind0 3\nm4 kind4 3\nm0 kind2 1\n1\nm3 kind3 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=4 pin=m4\nDay 3\n  cluster size=3 pin=m1\n  cluster size=1 pin=m3\n"
+  },
+  {
+    "input": "3\n9\nm4 kind1 1\nm0 kind0 3\nm2 kind1 3\nm5 kind1 2\nm1 kind1 2\nm5 kind0 0\nm3 kind1 0\nm6 kind0 3\nm0 kind1 2\n8\nm5 kind0 2\nm6 kind1 3\nm0 kind0 2\nm2 kind0 3\nm3 kind1 3\nm1 kind1 0\nm4 kind0 3\nm2 kind1 1\n3\nm2 kind0 3\nm0 kind1 2\nm4 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=6 pin=m0\nDay 2\n  cluster size=7 pin=m0\nDay 3\n  cluster size=6 pin=m0\n"
+  },
+  {
+    "input": "3\n5\nm3 kind0 0\nm4 kind0 1\nm1 kind0 2\nm5 kind0 3\nm6 kind0 0\n1\nm3 kind0 0\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m1\nDay 2\n  cluster size=2 pin=m1\nDay 3\n  cluster size=1 pin=m5\n"
+  },
+  {
+    "input": "3\n5\nm7 kind0 3\nm6 kind0 2\nm2 kind0 0\nm3 kind0 3\nm4 kind0 0\n6\nm3 kind0 1\nm6 kind0 0\nm7 kind0 3\nm1 kind0 2\nm0 kind0 1\nm4 kind0 3\n1\nm5 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m3\nDay 2\n  cluster size=6 pin=m0\nDay 3\n  cluster size=4 pin=m1\n"
+  },
+  {
+    "input": "3\n2\nm0 kind4 3\nm0 kind1 0\n5\nm0 kind4 2\nm0 kind0 2\nm0 kind2 2\nm0 kind3 3\nm0 kind1 1\n2\nm0 kind1 3\nm0 kind3 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n10\nm4 kind0 0\nm2 kind0 2\nm5 kind0 1\nm4 kind1 3\nm5 kind1 0\nm2 kind1 2\nm1 kind0 3\nm3 kind0 2\nm0 kind0 2\nm0 kind1 3\n7\nm5 kind0 2\nm1 kind1 3\nm4 kind0 1\nm4 kind1 2\nm3 kind0 0\nm1 kind0 1\nm5 kind1 1\n12\nm1 kind0 3\nm3 kind1 2\nm0 kind1 2\nm5 kind0 2\nm4 kind0 0\nm5 kind1 1\nm2 kind0 3\nm2 kind1 1\nm1 kind1 0\nm4 kind1 2\nm3 kind0 0\nm0 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=6 pin=m0\nDay 2\n  cluster size=6 pin=m0\nDay 3\n  cluster size=6 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm0 kind1 2\nm0 kind2 0\nm0 kind0 1\n1\nm0 kind0 2\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n6\nm2 kind1 0\nm0 kind1 0\nm0 kind0 1\nm2 kind0 2\nm1 kind0 3\nm1 kind1 3\n4\nm0 kind0 2\nm2 kind1 1\nm1 kind0 3\nm1 kind1 2\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n9\nm4 kind0 1\nm0 kind0 1\nm5 kind3 1\nm4 kind1 1\nm1 kind3 1\nm6 kind0 1\nm3 kind3 0\nm1 kind1 2\nm3 kind1 3\n11\nm3 kind1 1\nm4 kind0 1\nm3 kind2 2\nm1 kind2 3\nm5 kind0 1\nm3 kind3 0\nm4 kind2 2\nm6 kind1 3\nm0 kind0 2\nm5 kind3 1\nm6 kind2 1\n4\nm0 kind3 2\nm0 kind2 0\nm6 kind3 0\nm0 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=6 pin=m4\nDay 2\n  cluster size=6 pin=m4\nDay 3\n  cluster size=5 pin=m3\n"
+  },
+  {
+    "input": "3\n1\nm3 kind0 1\n7\nm3 kind0 0\nm0 kind0 2\nm1 kind1 3\nm0 kind1 0\nm3 kind1 2\nm2 kind1 2\nm2 kind0 2\n1\nm2 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m3\nDay 2\n  cluster size=4 pin=m2\nDay 3\n  cluster size=4 pin=m2\n"
+  },
+  {
+    "input": "3\n0\n1\nm0 kind0 1\n4\nm2 kind0 0\nm0 kind0 1\nm3 kind0 0\nm1 kind0 3\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm0 kind0 1\nm2 kind0 2\nm1 kind1 0\n0\n4\nm2 kind1 3\nm2 kind0 1\nm0 kind1 0\nm1 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=1 pin=m2\nDay 3\n  cluster size=2 pin=m1\n"
+  },
+  {
+    "input": "3\n11\nm1 kind0 2\nm3 kind0 3\nm0 kind3 1\nm0 kind2 0\nm3 kind1 3\nm2 kind1 2\nm1 kind2 0\nm2 kind2 3\nm3 kind2 2\nm1 kind1 0\nm1 kind3 1\n6\nm3 kind0 2\nm3 kind1 3\nm1 kind3 0\nm2 kind2 0\nm0 kind3 2\nm0 kind2 0\n11\nm1 kind1 2\nm2 kind3 0\nm3 kind2 2\nm1 kind2 0\nm2 kind1 2\nm2 kind2 3\nm0 kind3 2\nm2 kind0 1\nm1 kind3 3\nm3 kind0 2\nm3 kind3 2\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m1\nDay 2\n  cluster size=3 pin=m3\n  cluster size=1 pin=m0\nDay 3\n  cluster size=4 pin=m1\n"
+  },
+  {
+    "input": "3\n7\nm3 kind2 2\nm5 kind1 3\nm1 kind0 1\nm3 kind1 2\nm2 kind0 1\nm2 kind1 0\nm5 kind2 0\n7\nm5 kind2 1\nm4 kind1 0\nm1 kind1 0\nm3 kind1 3\nm0 kind0 1\nm1 kind0 0\nm4 kind0 3\n6\nm1 kind1 2\nm5 kind2 1\nm3 kind2 0\nm4 kind0 0\nm0 kind1 2\nm1 kind2 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m1\n  cluster size=2 pin=m3\nDay 2\n  cluster size=2 pin=m0\n  cluster size=2 pin=m3\nDay 3\n  cluster size=4 pin=m0\n  cluster size=1 pin=m4\n"
+  },
+  {
+    "input": "3\n3\nm0 kind0 0\nm2 kind0 2\nm1 kind1 2\n2\nm0 kind0 2\nm2 kind1 0\n5\nm1 kind1 2\nm1 kind0 3\nm0 kind1 3\nm2 kind0 0\nm2 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\n  cluster size=1 pin=m2\nDay 2\n  cluster size=2 pin=m0\n  cluster size=1 pin=m1\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm7 kind0 1\n3\nm6 kind0 3\nm6 kind2 2\nm5 kind0 2\n12\nm3 kind2 3\nm2 kind2 1\nm7 kind2 0\nm4 kind0 3\nm3 kind1 3\nm0 kind1 0\nm4 kind2 3\nm6 kind2 0\nm0 kind0 3\nm7 kind0 1\nm5 kind1 3\nm0 kind2 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m7\nDay 2\n  cluster size=2 pin=m5\nDay 3\n  cluster size=7 pin=m0\n"
+  },
+  {
+    "input": "3\n4\nm0 kind1 3\nm0 kind4 3\nm0 kind2 1\nm0 kind3 3\n3\nm0 kind4 0\nm0 kind1 3\nm0 kind3 3\n3\nm0 kind1 3\nm0 kind3 1\nm0 kind2 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n7\nm0 kind3 0\nm0 kind0 0\nm0 kind2 0\nm1 kind0 0\nm1 kind2 1\nm1 kind1 0\nm0 kind1 0\n2\nm0 kind2 3\nm0 kind0 1\n3\nm0 kind3 0\nm0 kind1 1\nm1 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n0\n9\nm0 kind1 2\nm0 kind0 3\nm3 kind0 3\nm2 kind4 2\nm1 kind3 3\nm0 kind4 0\nm2 kind3 0\nm3 kind4 1\nm0 kind3 2\n4\nm3 kind1 3\nm0 kind1 2\nm4 kind3 3\nm2 kind3 3\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=4 pin=m0\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n8\nm3 kind3 1\nm6 kind0 2\nm2 kind1 2\nm4 kind0 3\nm3 kind0 3\nm4 kind3 0\nm7 kind0 0\nm5 kind1 2\n2\nm7 kind1 2\nm2 kind3 0\n7\nm6 kind2 0\nm0 kind3 0\nm7 kind1 3\nm1 kind1 3\nm0 kind0 0\nm4 kind2 0\nm3 kind2 1\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m3\n  cluster size=2 pin=m2\nDay 2\n  cluster size=3 pin=m2\n  cluster size=3 pin=m3\nDay 3\n  cluster size=2 pin=m1\n  cluster size=2 pin=m3\n"
+  },
+  {
+    "input": "3\n0\n8\nm0 kind2 0\nm2 kind1 3\nm3 kind0 2\nm4 kind2 2\nm4 kind0 2\nm3 kind2 3\nm1 kind1 2\nm4 kind1 3\n0\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=4 pin=m4\nDay 3\n  cluster size=4 pin=m4\n"
+  },
+  {
+    "input": "3\n3\nm0 kind2 2\nm0 kind1 0\nm0 kind0 0\n1\nm0 kind0 3\n1\nm0 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm0 kind0 1\n0\n2\nm0 kind0 0\nm1 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\nDay 3\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n5\nm0 kind1 1\nm0 kind3 0\nm1 kind3 2\nm0 kind2 2\nm1 kind0 1\n5\nm0 kind3 2\nm1 kind0 0\nm0 kind1 2\nm0 kind2 1\nm1 kind3 2\n2\nm1 kind0 3\nm1 kind2 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n0\n3\nm1 kind0 2\nm3 kind1 0\nm2 kind4 2\n3\nm0 kind0 2\nm0 kind1 0\nm1 kind1 2\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=1 pin=m1\n  cluster size=1 pin=m2\nDay 3\n  cluster size=2 pin=m0\n  cluster size=1 pin=m2\n"
+  },
+  {
+    "input": "3\n6\nm0 kind1 1\nm1 kind0 3\nm1 kind2 3\nm0 kind3 0\nm0 kind0 3\nm1 kind1 0\n2\nm1 kind3 0\nm0 kind1 3\n7\nm1 kind1 0\nm0 kind1 1\nm1 kind3 0\nm0 kind2 3\nm1 kind2 2\nm1 kind0 1\nm0 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm3 kind0 3\nm5 kind1 1\nm1 kind2 0\n5\nm0 kind0 2\nm1 kind2 3\nm0 kind4 3\nm1 kind4 3\nm7 kind0 1\n12\nm4 kind0 3\nm0 kind0 1\nm5 kind2 1\nm7 kind4 2\nm3 kind3 0\nm2 kind3 0\nm0 kind2 0\nm1 kind0 3\nm5 kind1 0\nm7 kind1 0\nm5 kind0 1\nm4 kind4 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m3\n  cluster size=1 pin=m5\nDay 2\n  cluster size=4 pin=m0\nDay 3\n  cluster size=6 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm1 kind2 2\n5\nm1 kind1 2\nm2 kind0 3\nm2 kind2 0\nm0 kind0 2\nm0 kind1 1\n1\nm2 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=2 pin=m0\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n11\nm0 kind2 2\nm1 kind0 3\nm2 kind3 2\nm5 kind3 3\nm0 kind0 2\nm1 kind1 3\nm3 kind0 0\nm4 kind1 3\nm0 kind4 1\nm3 kind1 0\nm3 kind3 0\n5\nm5 kind2 0\nm3 kind0 2\nm1 kind1 0\nm3 kind1 0\nm5 kind0 0\n10\nm1 kind0 2\nm0 kind4 1\nm1 kind2 1\nm5 kind1 0\nm3 kind3 2\nm5 kind3 1\nm4 kind1 0\nm4 kind2 3\nm0 kind1 0\nm4 kind3 3\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m1\n  cluster size=2 pin=m2\nDay 2\n  cluster size=4 pin=m1\n  cluster size=2 pin=m2\nDay 3\n  cluster size=4 pin=m3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n12\nm0 kind0 0\nm1 kind1 1\nm2 kind3 2\nm2 kind1 0\nm4 kind3 3\nm5 kind2 2\nm1 kind0 3\nm3 kind1 3\nm3 kind4 3\nm1 kind4 1\nm2 kind0 2\nm4 kind2 2\n10\nm4 kind3 2\nm2 kind4 1\nm2 kind2 0\nm2 kind1 0\nm3 kind2 2\nm4 kind1 3\nm1 kind3 0\nm5 kind0 2\nm5 kind2 0\nm3 kind0 0\n4\nm3 kind2 0\nm5 kind4 1\nm5 kind3 1\nm4 kind3 0\n",
+    "expectedOutput": "Day 1\n  cluster size=5 pin=m1\nDay 2\n  cluster size=5 pin=m2\nDay 3\n  cluster size=4 pin=m5\n"
+  },
+  {
+    "input": "3\n8\nm1 kind3 1\nm4 kind1 0\nm1 kind1 2\nm1 kind2 2\nm2 kind0 3\nm1 kind0 3\nm6 kind1 1\nm2 kind2 0\n3\nm6 kind3 2\nm0 kind3 1\nm4 kind0 1\n5\nm5 kind2 1\nm2 kind1 3\nm4 kind3 2\nm6 kind3 1\nm1 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m1\nDay 2\n  cluster size=3 pin=m1\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m1\n  cluster size=2 pin=m4\n  cluster size=1 pin=m5\n"
+  },
+  {
+    "input": "3\n3\nm7 kind0 2\nm4 kind2 3\nm4 kind1 1\n6\nm4 kind1 3\nm3 kind1 0\nm2 kind0 3\nm0 kind0 2\nm5 kind2 0\nm4 kind0 0\n11\nm2 kind2 1\nm6 kind1 2\nm6 kind2 1\nm2 kind0 2\nm6 kind0 0\nm3 kind1 0\nm7 kind2 0\nm7 kind0 2\nm5 kind2 2\nm3 kind0 0\nm1 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m4\n  cluster size=1 pin=m7\nDay 2\n  cluster size=3 pin=m0\n  cluster size=1 pin=m4\nDay 3\n  cluster size=7 pin=m2\n"
+  },
+  {
+    "input": "3\n11\nm1 kind0 1\nm0 kind3 1\nm4 kind0 2\nm5 kind0 0\nm5 kind3 3\nm3 kind2 2\nm5 kind2 0\nm4 kind2 3\nm0 kind0 1\nm1 kind2 0\nm2 kind0 3\n11\nm2 kind2 0\nm2 kind1 2\nm2 kind0 3\nm4 kind2 1\nm3 kind2 1\nm1 kind2 2\nm5 kind3 1\nm1 kind0 2\nm5 kind2 3\nm1 kind3 1\nm4 kind3 0\n1\nm5 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=6 pin=m0\nDay 2\n  cluster size=5 pin=m1\nDay 3\n  cluster size=4 pin=m1\n"
+  },
+  {
+    "input": "3\n2\nm0 kind2 3\nm1 kind3 2\n2\nm0 kind1 1\nm0 kind2 3\n4\nm0 kind2 1\nm1 kind3 1\nm0 kind0 0\nm0 kind1 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\nDay 2\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\nDay 3\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n4\nm0 kind0 2\nm0 kind1 2\nm1 kind2 3\nm0 kind2 2\n6\nm1 kind0 0\nm0 kind0 2\nm1 kind2 1\nm0 kind2 1\nm0 kind1 0\nm1 kind1 0\n5\nm1 kind1 1\nm1 kind2 3\nm0 kind1 0\nm0 kind0 2\nm1 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm0 kind0 0\nm0 kind1 2\n0\n2\nm0 kind1 0\nm0 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n"
+  },
+  {
+    "input": "3\n9\nm1 kind1 2\nm1 kind2 1\nm0 kind0 2\nm0 kind1 3\nm2 kind2 2\nm1 kind0 1\nm2 kind0 2\nm2 kind1 3\nm0 kind2 1\n4\nm1 kind0 3\nm0 kind2 0\nm2 kind1 3\nm2 kind2 0\n2\nm2 kind2 0\nm2 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=2 pin=m0\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n4\nm3 kind1 0\nm0 kind0 3\nm3 kind0 1\nm4 kind0 0\n2\nm3 kind1 3\nm4 kind0 0\n11\nm2 kind0 0\nm7 kind0 3\nm0 kind1 1\nm5 kind1 3\nm2 kind1 0\nm0 kind0 0\nm3 kind0 3\nm3 kind1 0\nm1 kind1 0\nm5 kind0 3\nm6 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=1 pin=m0\n  cluster size=1 pin=m3\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n6\nm0 kind1 3\nm0 kind0 3\nm1 kind0 2\nm2 kind1 2\nm0 kind3 3\nm1 kind2 2\n6\nm1 kind1 3\nm2 kind3 2\nm1 kind2 1\nm0 kind3 2\nm2 kind1 2\nm2 kind0 1\n5\nm2 kind1 0\nm1 kind0 1\nm1 kind1 3\nm1 kind3 1\nm2 kind3 0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n4\nm1 kind0 2\nm1 kind1 1\nm0 kind2 1\nm2 kind0 3\n6\nm2 kind2 2\nm1 kind1 2\nm0 kind1 3\nm1 kind0 2\nm0 kind2 3\nm1 kind2 3\n3\nm1 kind0 2\nm0 kind2 0\nm0 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm4 kind0 1\nm0 kind1 3\nm2 kind0 0\n2\nm2 kind0 1\nm4 kind1 3\n9\nm2 kind1 0\nm0 kind1 3\nm3 kind0 1\nm3 kind1 3\nm2 kind0 0\nm1 kind0 2\nm1 kind1 3\nm0 kind0 2\nm4 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m4\nDay 2\n  cluster size=2 pin=m0\n  cluster size=1 pin=m2\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm6 kind0 3\n9\nm3 kind1 3\nm2 kind1 0\nm1 kind0 3\nm3 kind0 3\nm4 kind0 2\nm5 kind1 3\nm0 kind1 2\nm2 kind0 2\nm0 kind0 0\n6\nm1 kind0 3\nm6 kind0 0\nm4 kind0 1\nm1 kind1 2\nm2 kind1 3\nm5 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m6\nDay 2\n  cluster size=7 pin=m3\nDay 3\n  cluster size=7 pin=m1\n"
+  },
+  {
+    "input": "3\n1\nm2 kind0 3\n8\nm3 kind0 0\nm2 kind1 3\nm1 kind0 2\nm0 kind0 1\nm1 kind1 2\nm3 kind1 3\nm2 kind0 2\nm0 kind1 3\n1\nm0 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m2\nDay 2\n  cluster size=4 pin=m0\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm0 kind0 3\nm2 kind0 2\n6\nm0 kind1 1\nm1 kind1 2\nm1 kind0 3\nm2 kind1 1\nm0 kind0 0\nm2 kind0 0\n2\nm1 kind1 0\nm2 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n0\n11\nm3 kind1 2\nm3 kind3 3\nm1 kind2 0\nm0 kind1 1\nm3 kind4 0\nm0 kind4 0\nm3 kind2 3\nm2 kind0 1\nm2 kind4 0\nm0 kind2 1\nm1 kind0 1\n4\nm3 kind1 1\nm3 kind2 2\nm0 kind2 1\nm0 kind3 1\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=2 pin=m0\n  cluster size=2 pin=m1\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n8\nm0 kind1 1\nm2 kind2 1\nm1 kind4 1\nm3 kind4 2\nm1 kind2 3\nm2 kind4 1\nm1 kind1 2\nm0 kind2 0\n2\nm0 kind3 3\nm0 kind0 0\n11\nm0 kind2 2\nm2 kind2 1\nm3 kind1 1\nm2 kind3 3\nm3 kind4 1\nm1 kind2 1\nm0 kind1 3\nm3 kind0 1\nm2 kind4 3\nm3 kind2 1\nm2 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m1\nDay 2\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\n  cluster size=1 pin=m3\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n4\nm7 kind0 2\nm3 kind0 2\nm6 kind1 3\nm0 kind1 3\n1\nm0 kind1 0\n9\nm2 kind0 0\nm3 kind0 1\nm5 kind1 1\nm1 kind0 2\nm1 kind1 2\nm4 kind0 0\nm7 kind0 0\nm3 kind1 1\nm6 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\n  cluster size=2 pin=m3\nDay 2\n  cluster size=2 pin=m0\n  cluster size=2 pin=m3\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm0 kind2 3\nm0 kind1 3\n3\nm0 kind0 1\nm0 kind1 1\nm0 kind3 0\n2\nm0 kind1 3\nm0 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm2 kind0 2\nm0 kind0 1\n5\nm1 kind0 3\nm1 kind1 3\nm2 kind1 1\nm0 kind0 2\nm2 kind0 2\n8\nm1 kind1 0\nm1 kind0 2\nm3 kind1 1\nm2 kind1 0\nm2 kind0 2\nm3 kind0 3\nm0 kind0 0\nm0 kind1 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm5 kind1 0\nm0 kind0 3\n10\nm1 kind0 0\nm5 kind1 1\nm3 kind0 3\nm3 kind1 2\nm0 kind0 3\nm4 kind0 1\nm1 kind1 2\nm4 kind1 2\nm5 kind0 1\nm2 kind1 0\n6\nm2 kind1 2\nm0 kind0 2\nm0 kind1 3\nm4 kind1 1\nm4 kind0 1\nm1 kind1 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=5 pin=m3\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n5\nm1 kind0 3\nm4 kind0 0\nm0 kind0 2\nm5 kind0 0\nm6 kind0 2\n0\n2\nm3 kind0 1\nm0 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=2 pin=m1\n"
+  },
+  {
+    "input": "3\n12\nm2 kind3 1\nm1 kind0 3\nm2 kind1 2\nm3 kind1 3\nm0 kind3 1\nm0 kind0 0\nm3 kind0 0\nm0 kind2 1\nm1 kind1 0\nm0 kind1 0\nm2 kind0 0\nm1 kind2 0\n1\nm2 kind3 3\n5\nm2 kind2 3\nm0 kind2 0\nm3 kind3 0\nm2 kind0 2\nm2 kind1 1\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m2\n  cluster size=1 pin=m1\nDay 2\n  cluster size=2 pin=m2\n  cluster size=1 pin=m1\nDay 3\n  cluster size=3 pin=m2\n"
+  },
+  {
+    "input": "3\n2\nm0 kind0 0\nm0 kind1 3\n2\nm0 kind1 0\nm0 kind0 2\n1\nm0 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n7\nm0 kind0 0\nm3 kind2 2\nm1 kind2 0\nm3 kind3 0\nm1 kind3 3\nm2 kind3 2\nm2 kind1 3\n0\n8\nm3 kind2 3\nm1 kind0 0\nm2 kind3 3\nm0 kind0 1\nm3 kind0 0\nm3 kind1 3\nm2 kind2 0\nm2 kind1 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m1\n  cluster size=1 pin=m3\nDay 2\n  cluster size=2 pin=m1\n  cluster size=1 pin=m3\nDay 3\n  cluster size=3 pin=m2\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm1 kind0 0\nm0 kind0 1\n1\nm1 kind0 2\n1\nm0 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m1\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n5\nm2 kind0 2\nm3 kind0 0\nm1 kind0 3\nm0 kind0 3\nm4 kind0 1\n4\nm5 kind0 1\nm3 kind0 2\nm0 kind0 2\nm4 kind0 1\n1\nm0 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m0\nDay 2\n  cluster size=6 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm1 kind3 2\nm3 kind4 0\nm2 kind3 0\n9\nm1 kind4 1\nm3 kind1 0\nm0 kind0 3\nm3 kind3 1\nm3 kind4 3\nm1 kind2 3\nm1 kind0 0\nm1 kind1 3\nm0 kind4 1\n1\nm0 kind2 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=2 pin=m0\n  cluster size=1 pin=m3\n"
+  },
+  {
+    "input": "3\n3\nm0 kind0 1\nm3 kind0 1\nm6 kind0 1\n1\nm0 kind0 1\n3\nm5 kind0 3\nm2 kind0 3\nm0 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n1\nm1 kind1 3\n4\nm0 kind0 2\nm0 kind1 3\nm1 kind0 3\nm1 kind1 3\n4\nm0 kind0 3\nm1 kind1 2\nm0 kind1 2\nm1 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n0\n3\nm1 kind0 3\nm1 kind1 0\nm0 kind0 3\n1\nm1 kind1 2\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n4\nm0 kind1 0\nm0 kind0 1\nm0 kind3 0\nm0 kind2 1\n2\nm0 kind0 2\nm0 kind2 2\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n9\nm5 kind0 2\nm4 kind1 1\nm0 kind1 2\nm2 kind2 0\nm5 kind1 3\nm3 kind2 2\nm0 kind0 1\nm2 kind0 3\nm1 kind1 3\n10\nm5 kind2 2\nm0 kind2 3\nm3 kind0 3\nm1 kind0 0\nm1 kind1 3\nm2 kind2 0\nm0 kind0 3\nm3 kind2 1\nm2 kind1 0\nm2 kind0 0\n3\nm3 kind1 3\nm2 kind0 2\nm4 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=5 pin=m0\n  cluster size=1 pin=m3\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=5 pin=m3\n"
+  },
+  {
+    "input": "3\n0\n1\nm0 kind0 0\n1\nm1 kind0 3\n",
+    "expectedOutput": "Day 1\nDay 2\nDay 3\n  cluster size=1 pin=m1\n"
+  },
+  {
+    "input": "3\n4\nm5 kind0 2\nm2 kind0 0\nm1 kind0 0\nm3 kind0 3\n4\nm4 kind0 0\nm1 kind0 3\nm3 kind0 1\nm5 kind0 3\n4\nm0 kind0 3\nm1 kind0 3\nm2 kind0 3\nm5 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m3\nDay 2\n  cluster size=3 pin=m1\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n9\nm3 kind1 3\nm1 kind2 1\nm1 kind3 0\nm3 kind0 0\nm1 kind0 2\nm5 kind2 2\nm3 kind2 1\nm2 kind1 3\nm2 kind3 3\n10\nm5 kind2 0\nm1 kind3 2\nm1 kind0 3\nm5 kind1 2\nm4 kind2 2\nm5 kind3 0\nm3 kind3 0\nm0 kind0 1\nm2 kind3 1\nm2 kind2 0\n2\nm6 kind0 3\nm5 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m3\nDay 2\n  cluster size=6 pin=m2\nDay 3\n  cluster size=5 pin=m5\n  cluster size=1 pin=m4\n"
+  },
+  {
+    "input": "3\n7\nm0 kind2 0\nm0 kind1 0\nm3 kind2 3\nm4 kind2 2\nm0 kind3 1\nm4 kind1 2\nm4 kind0 0\n2\nm3 kind2 2\nm3 kind3 3\n9\nm1 kind1 2\nm3 kind2 3\nm2 kind3 0\nm3 kind0 3\nm1 kind2 3\nm3 kind3 3\nm4 kind2 1\nm4 kind3 3\nm0 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m3\n  cluster size=1 pin=m0\nDay 2\n  cluster size=2 pin=m3\nDay 3\n  cluster size=3 pin=m1\n"
+  },
+  {
+    "input": "3\n0\n12\nm2 kind0 2\nm0 kind1 3\nm2 kind3 0\nm1 kind2 3\nm1 kind1 1\nm2 kind2 1\nm1 kind3 1\nm0 kind2 3\nm0 kind3 2\nm1 kind0 3\nm2 kind1 0\nm0 kind0 1\n11\nm2 kind2 3\nm1 kind3 1\nm2 kind3 1\nm1 kind2 2\nm2 kind0 1\nm1 kind0 0\nm0 kind3 1\nm0 kind1 3\nm0 kind0 2\nm2 kind1 0\nm1 kind1 0\n",
+    "expectedOutput": "Day 1\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm2 kind1 3\nm2 kind0 3\nm0 kind0 1\n1\nm0 kind0 1\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=1 pin=m2\n"
+  },
+  {
+    "input": "3\n1\nm0 kind2 0\n0\n1\nm0 kind2 1\n",
+    "expectedOutput": "Day 1\nDay 2\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n7\nm1 kind2 2\nm1 kind0 3\nm2 kind2 0\nm3 kind0 2\nm0 kind2 2\nm0 kind1 1\nm1 kind1 1\n2\nm3 kind0 0\nm1 kind0 3\n9\nm2 kind0 3\nm0 kind0 2\nm3 kind2 3\nm1 kind2 3\nm3 kind1 2\nm3 kind0 3\nm1 kind0 2\nm2 kind2 2\nm0 kind2 0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m1\nDay 2\n  cluster size=3 pin=m1\nDay 3\n  cluster size=4 pin=m0\n"
+  },
+  {
+    "input": "3\n11\nm4 kind1 1\nm3 kind0 2\nm6 kind1 3\nm6 kind0 3\nm3 kind1 3\nm0 kind1 2\nm7 kind0 3\nm5 kind0 2\nm7 kind1 1\nm1 kind1 3\nm0 kind0 2\n7\nm4 kind0 3\nm3 kind1 2\nm2 kind1 3\nm7 kind0 3\nm6 kind0 3\nm5 kind1 0\nm7 kind1 1\n11\nm5 kind1 0\nm6 kind0 2\nm6 kind1 2\nm7 kind1 1\nm7 kind0 3\nm1 kind0 1\nm0 kind0 0\nm2 kind1 3\nm0 kind1 3\nm1 kind1 3\nm3 kind1 0\n",
+    "expectedOutput": "Day 1\n  cluster size=7 pin=m0\nDay 2\n  cluster size=8 pin=m0\nDay 3\n  cluster size=7 pin=m1\n"
+  },
+  {
+    "input": "3\n5\nm4 kind1 1\nm2 kind3 0\nm1 kind2 0\nm0 kind2 3\nm5 kind0 1\n12\nm6 kind0 2\nm5 kind1 3\nm2 kind0 1\nm1 kind1 1\nm4 kind0 3\nm2 kind1 3\nm3 kind0 1\nm0 kind0 1\nm3 kind2 2\nm1 kind0 0\nm0 kind2 2\nm5 kind2 0\n11\nm2 kind3 1\nm4 kind3 2\nm0 kind0 1\nm1 kind3 3\nm2 kind1 0\nm3 kind2 2\nm5 kind2 1\nm5 kind1 2\nm4 kind2 2\nm3 kind0 0\nm0 kind3 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m4\n  cluster size=1 pin=m5\nDay 2\n  cluster size=7 pin=m2\nDay 3\n  cluster size=7 pin=m0\n"
+  },
+  {
+    "input": "3\n9\nm1 kind1 0\nm1 kind2 1\nm2 kind1 1\nm2 kind2 1\nm2 kind3 1\nm0 kind0 3\nm4 kind3 3\nm1 kind3 3\nm3 kind0 3\n10\nm0 kind2 1\nm3 kind2 2\nm4 kind3 0\nm4 kind2 1\nm2 kind3 3\nm4 kind0 2\nm2 kind1 2\nm0 kind0 3\nm0 kind3 3\nm1 kind3 0\n1\nm1 kind2 0\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm0 kind0 3\nm0 kind1 0\n1\nm0 kind2 3\n3\nm0 kind0 0\nm0 kind2 2\nm0 kind1 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n0\n0\n5\nm0 kind2 3\nm0 kind1 2\nm1 kind3 0\nm1 kind0 2\nm0 kind0 3\n",
+    "expectedOutput": "Day 1\nDay 2\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm0 kind2 1\nm1 kind1 0\nm2 kind0 2\n2\nm1 kind2 0\nm2 kind0 0\n5\nm0 kind0 2\nm1 kind1 2\nm2 kind1 1\nm0 kind1 1\nm1 kind2 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m2\nDay 2\n  cluster size=1 pin=m2\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n12\nm4 kind3 2\nm0 kind1 1\nm4 kind1 1\nm4 kind2 3\nm2 kind3 2\nm0 kind3 3\nm3 kind3 1\nm1 kind0 0\nm1 kind3 0\nm3 kind1 0\nm2 kind0 3\nm3 kind2 3\n12\nm2 kind3 0\nm1 kind2 2\nm1 kind1 2\nm1 kind3 2\nm2 kind1 1\nm4 kind0 1\nm3 kind0 1\nm0 kind2 1\nm4 kind2 3\nm3 kind2 1\nm3 kind3 3\nm1 kind0 3\n8\nm3 kind0 1\nm0 kind1 1\nm0 kind2 3\nm3 kind2 0\nm2 kind0 3\nm4 kind0 2\nm2 kind2 2\nm0 kind3 1\n",
+    "expectedOutput": "Day 1\n  cluster size=4 pin=m0\nDay 2\n  cluster size=5 pin=m0\nDay 3\n  cluster size=5 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm1 kind3 0\nm1 kind1 1\n2\nm0 kind2 3\nm0 kind3 3\n6\nm1 kind1 1\nm0 kind3 0\nm1 kind4 3\nm0 kind1 3\nm0 kind2 3\nm1 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n11\nm2 kind0 0\nm1 kind1 0\nm5 kind2 3\nm0 kind0 0\nm2 kind1 2\nm1 kind0 1\nm0 kind1 2\nm4 kind1 1\nm5 kind0 3\nm1 kind2 2\nm4 kind0 0\n5\nm1 kind1 2\nm3 kind1 1\nm5 kind0 2\nm4 kind1 2\nm4 kind2 0\n1\nm0 kind0 2\n",
+    "expectedOutput": "Day 1\n  cluster size=3 pin=m0\n  cluster size=2 pin=m1\nDay 2\n  cluster size=6 pin=m1\nDay 3\n  cluster size=2 pin=m0\n  cluster size=2 pin=m1\n"
+  },
+  {
+    "input": "3\n1\nm1 kind0 1\n1\nm0 kind0 2\n1\nm1 kind0 3\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m1\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  },
+  {
+    "input": "3\n4\nm0 kind2 0\nm0 kind0 3\nm0 kind1 2\nm0 kind3 1\n4\nm0 kind2 0\nm0 kind3 3\nm0 kind1 1\nm0 kind0 3\n0\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\nDay 2\n  cluster size=1 pin=m0\nDay 3\n  cluster size=1 pin=m0\n"
+  },
+  {
+    "input": "3\n2\nm1 kind0 3\nm0 kind0 3\n2\nm2 kind0 3\nm1 kind0 1\n2\nm2 kind0 3\nm4 kind0 0\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=3 pin=m0\nDay 3\n  cluster size=3 pin=m0\n"
+  },
+  {
+    "input": "3\n3\nm1 kind0 1\nm5 kind3 3\nm4 kind3 3\n0\n8\nm4 kind0 0\nm5 kind0 3\nm0 kind0 3\nm3 kind1 3\nm1 kind3 0\nm2 kind1 0\nm2 kind0 2\nm1 kind2 2\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m4\n  cluster size=1 pin=m1\nDay 2\n  cluster size=2 pin=m4\nDay 3\n  cluster size=4 pin=m5\n  cluster size=1 pin=m1\n  cluster size=1 pin=m3\n"
+  },
+  {
+    "input": "3\n2\nm2 kind0 1\nm0 kind0 1\n3\nm2 kind0 1\nm3 kind0 0\nm0 kind0 1\n2\nm2 kind0 1\nm1 kind0 1\n",
+    "expectedOutput": "Day 1\n  cluster size=2 pin=m0\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m1\n"
+  },
+  {
+    "input": "3\n12\nm1 kind1 2\nm0 kind3 2\nm1 kind3 3\nm0 kind1 1\nm3 kind3 3\nm4 kind1 2\nm4 kind3 2\nm1 kind2 1\nm2 kind3 1\nm1 kind0 2\nm0 kind0 2\nm3 kind2 1\n1\nm0 kind1 3\n5\nm0 kind2 2\nm1 kind3 2\nm4 kind0 3\nm2 kind2 1\nm5 kind3 3\n",
+    "expectedOutput": "Day 1\n  cluster size=5 pin=m0\nDay 2\n  cluster size=4 pin=m0\nDay 3\n  cluster size=3 pin=m1\n  cluster size=2 pin=m0\n  cluster size=1 pin=m4\n"
+  },
+  {
+    "input": "3\n11\nm6 kind1 0\nm1 kind0 2\nm1 kind1 1\nm4 kind2 2\nm4 kind1 2\nm7 kind0 0\nm7 kind1 1\nm6 kind2 0\nm3 kind1 0\nm5 kind0 3\nm3 kind2 3\n5\nm2 kind1 3\nm5 kind2 0\nm3 kind1 3\nm1 kind0 2\nm5 kind0 2\n4\nm7 kind1 0\nm7 kind0 3\nm2 kind1 3\nm1 kind1 2\n",
+    "expectedOutput": "Day 1\n  cluster size=5 pin=m1\nDay 2\n  cluster size=3 pin=m2\n  cluster size=2 pin=m1\nDay 3\n  cluster size=5 pin=m1\n"
+  },
+  {
+    "input": "3\n3\nm0 kind3 3\nm1 kind2 1\nm1 kind1 3\n5\nm1 kind3 3\nm0 kind1 1\nm1 kind0 2\nm0 kind3 3\nm1 kind1 3\n3\nm0 kind0 1\nm1 kind0 1\nm1 kind3 2\n",
+    "expectedOutput": "Day 1\n  cluster size=1 pin=m0\n  cluster size=1 pin=m1\nDay 2\n  cluster size=2 pin=m0\nDay 3\n  cluster size=2 pin=m0\n"
+  }
+]

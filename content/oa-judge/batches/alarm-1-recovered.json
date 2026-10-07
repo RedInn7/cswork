@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-alarm-1",
+      "sourceContentHash": "d550bfe721f56812ec8c04084a851aec6b710c19d8968c794182d0ce923180f2",
+      "packageChecksum": "9c4f6b97415d7e01fa4914f2fc35ea4ed6a405fe10ad352ccc8288fb689c2833",
+      "editorial": "## 思路\n\n对每个 n，找到最大的 k，使 1+2+…+k = k(k+1)/2 ≤ n。可对 k 二分；判断中使用整数乘法避免浮点舍入。\n\n## 正确性证明\n\n若 k 行已填满，恰好消耗 k(k+1)/2 枚；因此可填满的行数正是满足该不等式的最大非负整数。二分搜索单调的三角数即可唯一求得每个结果。\n\n## 复杂度\n\n设 N 为数组长度。时间 O(N log C)，空间 O(N)，其中 C=max(coins)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    n, coins = values[0], values[1:]\n    if len(coins) != n:\n        raise ValueError(\"expected N coin counts\")\n    result = []\n    for coins_count in coins:\n        lo, hi = 0, 1\n        while hi * (hi + 1) // 2 <= coins_count:\n            hi *= 2\n        while lo + 1 < hi:\n            mid = (lo + hi) // 2\n            if mid * (mid + 1) // 2 <= coins_count:\n                lo = mid\n            else:\n                hi = mid\n        result.append(str(lo))\n    return \" \".join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

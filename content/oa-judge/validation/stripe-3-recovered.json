@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261010,
+  "problems": [
+    {
+      "id": "oa-stripe-3",
+      "formalCases": 32,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "formalOracleUnionUnique": 152,
+      "hiddenCases": 24,
+      "negativeControls": [
+        {
+          "name": "pin 误选最低度数 merchant",
+          "rejectedByCases": [
+            4,
+            5,
+            10,
+            12,
+            13,
+            14,
+            18,
+            20,
+            22,
+            24,
+            25,
+            26
+          ]
+        },
+        {
+          "name": "cluster 按成员数升序排列",
+          "rejectedByCases": [
+            1,
+            4,
+            6,
+            12,
+            13,
+            14,
+            20,
+            24,
+            26
+          ]
+        }
+      ],
+      "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+      "sourceBlob": "a96a0563731861954d02ac5b50b0f0e3f40bf873",
+      "referenceSha256": "5d2608d8047b17fcce84dd79331b3517d7fff428b92ab1867fc39e006b6d8109"
+    }
+  ],
+  "note": "本地 reference/独立 DSU oracle 与错误程序对照完成；真实 GoJudge 通过记录见 reports/stripe-3-recovered.json。生产发布另行进行。"
+}

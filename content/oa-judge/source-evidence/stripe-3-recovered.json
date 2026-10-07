@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-stripe-3",
+      "sourceUrl": "https://oamaster.com/docs/companies/stripe#3-risk-engineering-merchant-clustering",
+      "catalogContentHash": "56e6011596ce4573d8a1ef2de3e6dfa1e43589545261f1c2aab6374b128023c5",
+      "rawFiles": [
+        {
+          "path": "web/content/docs/companies/stripe.mdx",
+          "blob": "a96a0563731861954d02ac5b50b0f0e3f40bf873",
+          "sha256": "b0cecf071f81fd71908e279c4c77f70e56b70411a42d5f082359b697164b69aa",
+          "lineRange": [
+            334,
+            345
+          ]
+        }
+      ],
+      "sourceRules": {
+        "edge": "Two merchants are connected iff they share an active link of the same link_type.",
+        "activeWindow": "The source solution defines an added-on-day-d link of duration t as active for d <= day < d+t.",
+        "component": "A cluster is a connected component over active links; expiration can split a component, so components are recomputed per day.",
+        "pin": "Highest degree in the component; tie goes to lexicographically smallest merchant_id.",
+        "order": "Descending component member count, then pin name ascending."
+      },
+      "siteProtocolSupplement": {
+        "days": "Exactly three batches, matching source day1/day2/day3. Batch number supplies the tuple's day field.",
+        "io": "Whitespace-tokenized stdin records and exact three-day textual stdout format are site-added.",
+        "bounds": "At most 200 records total, at most 100 per day, identifiers 1..16 ASCII alphanumeric/underscore/hyphen, duration 0..3.",
+        "vertices": "The source text does not explicitly say whether a merchant with an active but unshared link appears. This candidate follows the standard graph interpretation and explicit site rule: all merchants with an active link are vertices, including singleton components.",
+        "duplicates": "To avoid multiplicity ambiguity, a batch cannot repeat the same (merchant_id, link_type) pair; memberships from separate days are deduplicated while active.",
+        "format": "Each cluster prints size and pin, matching the source's accompanying Python solution format; blank days print only Day X.",
+        "verification": "Passed 152 formal/oracle runs and both normal-exit mutants on the user's own GoJudge server. Production publication remains separate."
+      }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把 sqrt(2n) 当作完整行数",
+    "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    n, coins = values[0], values[1:]\n    if len(coins) != n:\n        raise ValueError(\"expected N coin counts\")\n    result = []\n    for coins_count in coins:\n        lo, hi = 0, 1\n        while hi * (hi + 1) // 2 <= coins_count:\n            hi *= 2\n        while lo + 1 < hi:\n            mid = (lo + hi) // 2\n            if mid * mid <= 2 * coins_count:\n                lo = mid\n            else:\n                hi = mid\n        result.append(str(lo))\n    return \" \".join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "把未填满的下一行也计为完整",
+    "code": "def solve(raw):\n    values = list(map(int, raw.split()))\n    n, coins = values[0], values[1:]\n    if len(coins) != n:\n        raise ValueError(\"expected N coin counts\")\n    result = []\n    for coins_count in coins:\n        lo, hi = 0, 1\n        while hi * (hi + 1) // 2 <= coins_count:\n            hi *= 2\n        while lo + 1 < hi:\n            mid = (lo + hi) // 2\n            if mid * (mid + 1) // 2 < coins_count:\n                lo = mid\n            else:\n                hi = mid\n        result.append(str(lo))\n    return \" \".join(result)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+  }
+]

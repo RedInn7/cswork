@@ -36,6 +36,64 @@ def arr(values):
     return f'{len(values)}\n' + ' '.join(map(str, values)) + '\n'
 
 
+def arrange_coins_encode(coins):
+    return f'{len(coins)}\n' + ' '.join(map(str, coins)) + '\n'
+
+
+def arrange_coins_oracle(coins):
+    # Deliberately use a direct staircase simulation, independent from the
+    # binary-search implementation used by the reference solution.
+    result = []
+    for value in coins:
+        rows = 0
+        next_row_cost = 1
+        remaining = value
+        while remaining >= next_row_cost:
+            remaining -= next_row_cost
+            rows += 1
+            next_row_cost += 1
+        result.append(rows)
+    return ' '.join(map(str, result))
+
+
+add('alarm', 1, 'Arrange Coins',
+    '给定若干非负整数 coins。对每个 n，从第一行开始按顺序摆放硬币：第 1 行需要 1 枚、第 2 行需要 2 枚，以此类推。只有填满的行才计入结果；求每个 n 最多能填满多少行。',
+    '第一行是数组长度 N，第二行是 N 个整数。本站约束：1≤N≤100000，0≤coins[i]≤10^9。',
+    '输出 N 个整数，依次表示每个 coins[i] 能填满的行数。',
+    '对每个 n，找到最大的 k，使 1+2+…+k = k(k+1)/2 ≤ n。可对 k 二分；判断中使用整数乘法避免浮点舍入。',
+    '若 k 行已填满，恰好消耗 k(k+1)/2 枚；因此可填满的行数正是满足该不等式的最大非负整数。二分搜索单调的三角数即可唯一求得每个结果。',
+    '设 N 为数组长度。时间 O(N log C)，空间 O(N)，其中 C=max(coins)。',
+    arrange_coins_encode, arrange_coins_oracle,
+    '''def solve(raw):
+    values = list(map(int, raw.split()))
+    n, coins = values[0], values[1:]
+    if len(coins) != n:
+        raise ValueError("expected N coin counts")
+    result = []
+    for coins_count in coins:
+        lo, hi = 0, 1
+        while hi * (hi + 1) // 2 <= coins_count:
+            hi *= 2
+        while lo + 1 < hi:
+            mid = (lo + hi) // 2
+            if mid * (mid + 1) // 2 <= coins_count:
+                lo = mid
+            else:
+                hi = mid
+        result.append(str(lo))
+    return " ".join(result)
+''', [
+        ('把 sqrt(2n) 当作完整行数',
+         'if mid * (mid + 1) // 2 <= coins_count:',
+         'if mid * mid <= 2 * coins_count:'),
+        ('把未填满的下一行也计为完整',
+         'mid * (mid + 1) // 2 <= coins_count',
+         'mid * (mid + 1) // 2 < coins_count')],
+    [[3, 4, 6], [0, 1, 2, 3, 5, 8, 10], [999999999, 1000000000]],
+    lambda r: [r.randint(0, 10**6) for _ in range(r.randint(1, 24))],
+    bound=1200000)
+
+
 def geico_bridge_encode(case):
     limit, weights = case
     return f'{limit}\n{len(weights)}\n' + ' '.join(map(str, weights)) + '\n'
@@ -666,6 +724,10 @@ add('persona', 3, 'Escape the Haunted Castle (Part 2)',
     castle_random, bound=1000000)
 
 
+ALARM_PREVIOUS_REASON = '题面只剩“Given an array of integers coins, where each el…”截断文字；仅凭输出样例无法判断所求目标。'
+ALARM_RECOVERY_REASON = '原始 MDX 的题干正文被截断，但同一不可变快照中的标题“Arrange Coins”、示例 `[3,4,6] → [2,2,3]`、三角数公式解法及三语实现共同确定了规则。本站补齐题面，并将输入协议与 N、数值范围明确标为本站约束；不声称其来自原题。120 组独立直接模拟 oracle、32 个正式用例和两个正常退出错误程序均通过用户自有 GoJudge。'
+
+
 BLOCKED = {
     'oa-harvey-1':'表达式仅说明有整数运算符 +、−、*、/，没有定义优先级、括号/一元符号规则、除法取整方式或除零行为；同一输入可得到不同整数结果。',
     'oa-persona-2':'固定快照的原始题只要求返回一条路径，没有最短路规则，也没有允许任意路径的专用 checker；多条合法路径会产生不同精确输出，普通 token 判题无法唯一验证。',
@@ -681,7 +743,6 @@ BLOCKED = {
     'oa-zolostays-2':'题面在“Given n non-negative integers repres…”处截断，仅有标题和样例不足以确认完整输入、输出与约束。',
     'oa-ukg-2':'没有说明“number of duplicates”是重复键的种类数，还是首次出现之后的重复记录数；这两种常见解释输出不同。',
     'oa-xperi-2':'题干只保留“There are two numbers…”残句，无操作规则；单个样例解释不能恢复完整算法。',
-    'oa-alarm-1':'题面只剩“Given an array of integers coins, where each el…”截断文字；仅凭输出样例无法判断所求目标。',
     'oa-alarm-2':'结果定义为相对 today 的天数，但 today 未作为输入固定；同一提交在不同日期会有不同正确输出。',
     'oa-eat-club-2':'目标说最小 chaos score，但第二个样例的说明将 40+60=100 再声称模后为90；n为奇数时最后一战规则也与“最后两人均离场”的状态过程不兼容。'
 }
@@ -739,12 +800,17 @@ def main():
             ('editorials',dict(schemaVersion=1,id=source_id,title=spec['title'],explanation=f"## 思路\n\n{spec['idea']}\n\n## 正确性证明\n\n{spec['proof']}\n\n## 复杂度\n\n{spec['complexity']}",solutions=[dict(language='python',code=code)],sourceUrl=source['sourceUrl'],sourceContentHash=source['contentHash'],author='CSWork'))):
             (OUT/folder/f'{source_id}.json').write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
         rationale='固定快照逐条核验；题意与补充输入契约足以离线判题。参考程序与独立 oracle 进行120个唯一输入对照，两个正常退出的错误实现均被正式用例击杀。未运行 GoJudge。'
+        if source_id == 'oa-alarm-1':
+            rationale=ALARM_RECOVERY_REASON
         batch_items.append(dict(id=source_id,sourceContentHash=source['contentHash'],packageChecksum=hashlib.sha256(normalized.encode()).hexdigest(),editorial=f"## 思路\n\n{spec['idea']}\n\n## 正确性证明\n\n{spec['proof']}\n\n## 复杂度\n\n{spec['complexity']}",authoredSolutions=[dict(language='python',code=code)]))
         reports.append(dict(id=source_id,oracleCases=len(oracle_cases),uniqueOracleInputs=len(set(x['input'] for x in oracle_cases)),publicCases=3,hiddenCases=len(test_cases)-3,maximumCanonicalInputBytesBound=spec['bound'],negativeControls=mutant_results,referenceSha256=hashlib.sha256(code.encode()).hexdigest()))
-        review_items.append(dict(id=source_id,status='authored',reason=rationale))
+        if source_id == 'oa-alarm-1':
+            review_items.append(dict(id=source_id,status='blocked',reason=ALARM_PREVIOUS_REASON))
+        else:
+            review_items.append(dict(id=source_id,status='authored',reason=rationale))
         source_path=f"web/content/docs/companies/{spec['company']}.mdx"
         source_blob=subprocess.run(['git','rev-parse',f'{SOURCE_COMMIT}:{source_path}'],cwd=ROOT,text=True,capture_output=True,check=True).stdout.strip()
-        evidence_items.append(dict(id=source_id,status='authored',sourceCommit=SOURCE_COMMIT,rawPath=source_path,rawGitBlob=source_blob,sourceUrl=source['sourceUrl'],catalogContentHash=source['contentHash'],reason=rationale))
+        evidence_items.append(dict(id=source_id,status='blocked' if source_id == 'oa-alarm-1' else 'authored',sourceCommit=SOURCE_COMMIT,rawPath=source_path,rawGitBlob=source_blob,sourceUrl=source['sourceUrl'],catalogContentHash=source['contentHash'],reason=ALARM_PREVIOUS_REASON if source_id == 'oa-alarm-1' else rationale))
         pages[spec['company']]=source_path
         print(source_id,'120 unique oracle inputs; 2 normal-exit mutants killed',flush=True)
     for source_id,reason in BLOCKED.items():
@@ -759,10 +825,21 @@ def main():
         digest=hashlib.sha256(content).hexdigest()
         pages[slug]=dict(path=record,gitBlobSha=blob,sha256=digest)
     batch_items.sort(key=lambda x:x['id']);reports.sort(key=lambda x:x['id']);review_items.sort(key=lambda x:x['id']);evidence_items.sort(key=lambda x:x['id'])
-    (OUT/'candidate-batches'/f'{BATCH}.json').write_text(json.dumps(dict(schemaVersion=1,items=batch_items),ensure_ascii=False,indent=2)+'\n')
     (OUT/'validation'/f'{BATCH}.json').write_text(json.dumps(dict(schemaVersion=1,seed=SEED,problems=reports,skipped=BLOCKED,note='本批仅做本地独立 oracle 与正常退出 mutant 对照，未调用 GoJudge；候选状态不等于线上验证。'),ensure_ascii=False,indent=2)+'\n')
     (OUT/'reviews'/f'{BATCH}.json').write_text(json.dumps(dict(schemaVersion=1,items=review_items),ensure_ascii=False,indent=2)+'\n')
     (OUT/'source-evidence'/f'{BATCH}.json').write_text(json.dumps(dict(schemaVersion=1,repository='https://github.com/RedInn7/OA-Master',commit=SOURCE_COMMIT,reason='固定提交中的源 MDX 作为不可变输入；不执行源仓库代码。',pages=[dict(company=k,**v) for k,v in sorted(pages.items())],items=evidence_items),ensure_ascii=False,indent=2)+'\n')
+    # The review batch also contains questions that have since been promoted
+    # through other batches. Keep newly recovered Alarm #1 independently
+    # verifiable instead of emitting one candidate manifest with duplicate IDs.
+    alarm_id='oa-alarm-1'
+    alarm_item=next(item for item in batch_items if item['id']==alarm_id)
+    alarm_report=next(item for item in reports if item['id']==alarm_id)
+    alarm_source=next(item for item in evidence_items if item['id']==alarm_id)
+    alarm_candidate_source={**alarm_source,'status':'authored','reason':ALARM_RECOVERY_REASON}
+    (OUT/'candidate-batches'/'alarm-1-recovered.json').write_text(json.dumps(dict(schemaVersion=1,items=[alarm_item]),ensure_ascii=False,indent=2)+'\n')
+    (OUT/'validation'/'alarm-1-recovered.json').write_text(json.dumps(dict(schemaVersion=1,seed=SEED,problems=[alarm_report],skipped={},note='本地 oracle/错误程序验证完成；真实 GoJudge 结果见 reports/alarm-1-recovered.json。'),ensure_ascii=False,indent=2)+'\n')
+    (OUT/'source-evidence'/'alarm-1-recovered.json').write_text(json.dumps(dict(schemaVersion=1,repository='https://github.com/RedInn7/OA-Master',commit=SOURCE_COMMIT,pages=[dict(company='alarm',**pages['alarm'])],items=[alarm_candidate_source]),ensure_ascii=False,indent=2)+'\n')
+    (OUT/'resolutions'/'alarm-1-recovered.json').write_text(json.dumps(dict(schemaVersion=1,items=[dict(id=alarm_id,batch='alarm-1-recovered',sourceContentHash=catalog[alarm_id]['contentHash'],previousReason=ALARM_PREVIOUS_REASON,reason=ALARM_RECOVERY_REASON)]),ensure_ascii=False,indent=2)+'\n')
     print(f"candidate={len(batch_items)} blocked={len(BLOCKED)} scoped={len(scoped_ids)}",flush=True)
 
 
