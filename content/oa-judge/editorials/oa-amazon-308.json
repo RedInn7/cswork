@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-308",
+  "title": "替换 ! 后的最小相邻变化代价",
+  "explanation": "## 思路\n\n令 `dp[b]` 表示处理完当前位置、并令该位为 `b` 时的最低费用。固定字符只有一种可选值，`!` 有 0、1 两种。枚举当前位 `b` 和前一位 `p`，从 `dp[p]` 转移；新增费用只由相邻对 `(p,b)` 决定：`01` 加 `x`，`10` 加 `y`，相同位不加。最终答案是最后一位取 0 或 1 的较小值。\n\n## 样例核对\n\n样例 1 的两种替换分别为 `0100`、`0110`，费用都为 `x+y=5`，所以最小值是 5，不是原文的 8。样例 2 可替换成 `0001`，只有一个 `01`，费用为 3；原文的 7 只是另一种替换 `1001` 的费用，并非最小值。原题 Python、Java、C++ 三份实现都按相同转移求全局最小值。\n\n## 正确性\n\n对每个前缀及其末位取值，dp 保存该状态的最小可行费用。初始单字符没有相邻对，费用为 0。扩展一个字符时，所有合法延伸只需选择当前位；由转移把新增相邻对的准确费用加入此前最优值。因此归纳可知每步 dp 均等于该状态的最小费用。末位两种状态覆盖所有完整替换，取较小者即为全局最小值。\n\n## 复杂度\n\n时间 `O(n)`，额外空间 `O(1)`。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef calculate_minimum_value(s, x, y):\n    inf = 10**100\n    cost = [inf, inf]\n    if s[0] in \"0!\": cost[0] = 0\n    if s[0] in \"1!\": cost[1] = 0\n    for char in s[1:]:\n        next_cost = [inf, inf]\n        for bit in (0, 1):\n            if char != \"!\" and int(char) != bit:\n                continue\n            for previous in (0, 1):\n                add = x if (previous, bit) == (0, 1) else y if (previous, bit) == (1, 0) else 0\n                next_cost[bit] = min(next_cost[bit], cost[previous] + add)\n        cost = next_cost\n    return min(cost)\n\ndef solve(raw):\n    parts = raw.split()\n    if len(parts) != 3:\n        raise ValueError(\"expected S, x, and y\")\n    s, x_text, y_text = parts\n    x, y = int(x_text), int(y_text)\n    if not s or any(char not in \"01!\" for char in s) or \"!\" not in s:\n        raise ValueError(\"S must contain 0, 1, and at least one !\")\n    if not (0 <= x <= 2**31 - 1 and 0 <= y <= 2**31 - 1):\n        raise ValueError(\"x and y must be nonnegative 32-bit integers\")\n    return str(calculate_minimum_value(s, x, y))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode(\"ascii\")))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#308-minimum-value-calculation-by-replacing--in-a-binary-string",
+  "sourceContentHash": "b4c77510ad7ec62e1b10eb4dd5b15621a1c532321864ce3ada707ff84158a5a0",
+  "author": "CSWork"
+}

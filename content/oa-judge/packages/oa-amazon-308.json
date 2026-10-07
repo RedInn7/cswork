@@ -1,0 +1,189 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-amazon-308",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "替换 ! 后的最小相邻变化代价",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Amazon",
+      "动态规划",
+      "字符串"
+    ],
+    "description": "给定只含 0、1 和 ! 的字符串 S。每个 ! 可独立替换为 0 或 1。替换后，每个相邻对 01 计 x、10 计 y，其他相邻对计 0。求总费用最小值。",
+    "input": "输入第一行为 S（长度 1..100000，且至少包含一个 !）。第二行输入非负 32 位整数 x、y。",
+    "output": "输出最小总费用。",
+    "explanation": "每个位置只需记录当前位置取 0 或 1 时的最小前缀费用；转移时只看新增的最后一对字符。",
+    "hints": [
+      "设 dp[b] 为处理到当前位置且当前位置取 b 时的最低代价。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原题示例 1：按相邻字符对逐对计费",
+      "input": "01!0\n2 3\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原题示例 2：两个 ! 都可替换为 0",
+      "input": "!0!1\n3 4\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "必须保留一次 10 转换",
+      "input": "!10\n10 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "固定两端仍需一次 01 转换",
+      "input": "0!1\n100 100\n",
+      "expectedOutput": "100\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "x 为零",
+      "input": "!01\n0 9\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "y 为零",
+      "input": "10!\n9 0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "对称代价",
+      "input": "1!0\n4 4\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "两端通配符",
+      "input": "!0!\n7 11\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "多个通配符",
+      "input": "0!1!0\n5 8\n",
+      "expectedOutput": "13\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "连续通配符",
+      "input": "1!!0\n13 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "单字符通配符与最大 int 成本",
+      "input": "!\n2147483647 2147483647\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大成本但存在零代价完成",
+      "input": "0!0\n2147483647 2147483647\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "答案超过有符号 32 位",
+      "input": "!010!\n2147483647 2147483647\n",
+      "expectedOutput": "4294967294\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "固定边界影响两侧代价",
+      "input": "01!10\n3 8\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "通配符可与固定连续 1 合并",
+      "input": "!111!\n2 100\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "全零后缀可避免所有转换",
+      "input": "000!!\n17 29\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "全一前缀可避免所有转换",
+      "input": "1!!!\n17 29\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "固定端点强制一次 01",
+      "input": "0!!1\n17 29\n",
+      "expectedOutput": "17\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "零成本 01 后仍被固定边界强制一次 10",
+      "input": "01!!0\n0 9\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "内部固定转换与通配符选择",
+      "input": "1!01\n3 20\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "多段固定转换与单个通配符",
+      "input": "010!101\n7 4\n",
+      "expectedOutput": "29\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "零成本方向覆盖多个通配符",
+      "input": "!0!1!\n0 31\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

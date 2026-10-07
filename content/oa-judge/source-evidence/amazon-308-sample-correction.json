@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": [
+    {
+      "id": "oa-amazon-308",
+      "sourceUrl": "https://oamaster.com/docs/companies/amazon#308-minimum-value-calculation-by-replacing--in-a-binary-string",
+      "catalogContentHash": "b4c77510ad7ec62e1b10eb4dd5b15621a1c532321864ce3ada707ff84158a5a0",
+      "rawPath": "fastprep/Amazon/amazon-minimum-value-calculation-by-replacing.md",
+      "rawGitBlob": "49b2fd436c67912a4c071fc5ec7e7b3d33a97acb",
+      "rawSha256": "5ec110e281f012028cd0f0b18d16fba011cb57f207145eb88f2159cca7276d3a",
+      "resolvedSemantics": {
+        "objective": "Replace every ! with 0 or 1 and minimize the sum over adjacent pairs: 01 costs x, 10 costs y.",
+        "evidence": "The fixed raw statement explicitly scores every adjacent pair as 01 -> x and 10 -> y, and asks for the minimum after replacing every !. The Python, Java and C++ implementations all perform the same two-state minimum-cost DP. Direct enumeration gives 5 for Example 1 and 3 for Example 2; the published values are not minima.",
+        "inputDomain": "Raw source: S uses 0, 1, !; length 1..100000; at least one !; x,y are nonnegative integers. The site protocol bounds x,y to nonnegative signed 32-bit values, matching the original Java/C++ int parameters; the answer fits signed 64-bit.",
+        "siteProtocol": "Line 1: S. Line 2: x y. Output the minimum as an integer. The 32-bit input bound is disclosed as matching the original signatures."
+      }
+    }
+  ]
+}
