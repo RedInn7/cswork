@@ -1,0 +1,133 @@
+{
+  "schemaVersion": 1,
+  "observed": "2026-10-07",
+  "scope": "Read-only fixed-snapshot recheck of eight unresolved Google problems; no judge enablement or rule invention.",
+  "sourceSnapshot": {
+    "repository": "oa-master",
+    "localPath": "/private/tmp/oa-master-readonly",
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "verifiedHead": "e66f809f4c953bce129f68491726176615db6afc",
+    "readMethod": "git show of raw Markdown blobs at the fixed commit; source scripts were not executed",
+    "hashMethod": "Git blob object ID and SHA-256 of exact raw blob bytes"
+  },
+  "conclusion": "All eight remain blocked. Raw recovery did not provide enough authoritative rules to construct an unambiguous judge.",
+  "items": [
+    {
+      "id": "oa-google-40",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-max-subarray-filled-with-zeros.md",
+      "blob": "fedcd6f22c1f0825e1b91b1bbc643afb020e7e0b",
+      "sha256": "b30c3f74a825944c286cc9f620b335b2bef1a664985fe329ae671f05bec15fc2",
+      "evidence": [
+        "Raw operation 1 is a[i] = a[i-1] - 1, with range i >= 0 and i < size of array; operation 2 sets a[i] = 0.",
+        "The catalog lost part of the range around an unescaped less-than sign, but the raw text does not resolve the invalid i=0 predecessor.",
+        "The example changes [4,0,0,1] to [4,0,0,0] using operation 1, although its stated formula would assign -1 to the final element."
+      ],
+      "blockingAmbiguities": ["Operation 1 contradicts the example", "Predecessor behavior at index zero is undefined"]
+    },
+    {
+      "id": "oa-google-41",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-maximize-points.md",
+      "blob": "bd40d632db859c9056321ad2892147bf5d43c221",
+      "sha256": "c902f24544c6d341a9f3fda7193d5542053de4731358a6dc6371019d66b8b03a",
+      "evidence": ["Raw statement itself ends at Given a", "Only example: [25,1,3,99,4] -> 100, with explanation Take 1 and 99"],
+      "blockingAmbiguities": ["Selection restrictions and scoring rule are absent; the single example cannot define the problem"]
+    },
+    {
+      "id": "oa-google-46",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-merge-intervals-with-names.md",
+      "blob": "0a48b33675360c3faf967c571c8059d801993aa6",
+      "sha256": "88e0dce1a1401996363412595f77dc9a8ba221a4fa0e4add7d87cc1ee6940481",
+      "evidence": ["Raw statement itself ends at This is like merge interval question but t", "Single example partitions Foo [10,30] and Bar [15,45] into 10 15 Foo; 15 30 Foo, Bar; 30 45 Bar"],
+      "blockingAmbiguities": ["Endpoint semantics", "Output name ordering", "Repeated-name handling", "Whether adjacent identical-name segments must coalesce"]
+    },
+    {
+      "id": "oa-google-50",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-min-flips-make-grid-palindrome.md",
+      "blob": "f222ccd09c639a2ced8c169896619d4e88090edc",
+      "sha256": "913c2e9626bc776ec5a9e3cc6eccff28000e885fd33d52c00d6c0da60acf6953",
+      "evidence": ["Raw statement itself ends at You're working on a data storage sy", "Single example grid [[1,0,1],[0,1,0],[1,0,0]] has output 4; explanation is only :)"],
+      "blockingAmbiguities": ["Rows, columns, either, or both being palindromic", "Any additional constraint on the number of ones", "An explanation/solution from the derived catalog cannot replace the absent source specification"]
+    },
+    {
+      "id": "oa-google-52",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-minimize-total-time.md",
+      "blob": "5c4ee9038f85a204599944cf18c8b7113859feef",
+      "sha256": "06ae5af5bb0d4da125c676d9fafd89ed1af810c8fba8ca797f8d7cb76a393658",
+      "establishedRules": ["Start with zero coins and gain rate one coin per second", "Item i costs prices[i] and multiplies the rate by multiples[i]", "Purchase all items in an order minimizing completion time", "Return an array of purchase indices; no canonical tie order is specified"],
+      "evidence": ["Raw body is complete, but does not specify continuous accrual versus whole-second settlement", "There are no examples", "Constraint section is only :O"],
+      "blockingAmbiguities": ["Time/accrual model changes the optimal ordering", "Allowed multiplier and price domains are absent", "Any-optimum output requires a semantic checker rather than exact order comparison"],
+      "timeModelCounterexample": {
+        "multiples": [2, 2, 5],
+        "prices": [1, 2, 3],
+        "indexBase": 0,
+        "continuousModel": {
+          "definition": "Coins accrue continuously; buy immediately upon affordability and deduct the price",
+          "uniqueOptimalOrder": [0, 2, 1],
+          "timeExact": "1 + 3/2 + 2/10 = 27/10",
+          "alternativeOrder": [0, 1, 2],
+          "alternativeTimeExact": "1 + 2/2 + 3/4 = 11/4"
+        },
+        "wholeSecondModel": {
+          "definition": "Coins arrive at whole-second ticks; purchases are immediate after a tick when affordable, and unspent coins carry over",
+          "continuousOptimalOrderTime": 4,
+          "continuousOptimalOrderTrace": ["t=1: buy item 0, balance=0, rate=2", "t=3: buy item 2, balance=1, rate=10", "t=4: buy item 1, balance=9, rate=20"],
+          "optimalOrder": [0, 1, 2],
+          "optimalTime": 3,
+          "optimalOrderTrace": ["t=1: buy item 0, balance=0, rate=2", "t=2: buy item 1, balance=0, rate=4", "t=3: buy item 2, balance=1, rate=20"]
+        },
+        "allOrders": [
+          {"order": [0, 1, 2], "continuousTime": "11/4", "wholeSecondTime": 3},
+          {"order": [0, 2, 1], "continuousTime": "27/10", "wholeSecondTime": 4},
+          {"order": [1, 0, 2], "continuousTime": "13/4", "wholeSecondTime": 4},
+          {"order": [1, 2, 0], "continuousTime": "18/5", "wholeSecondTime": 4},
+          {"order": [2, 0, 1], "continuousTime": "17/5", "wholeSecondTime": 4},
+          {"order": [2, 1, 0], "continuousTime": "7/2", "wholeSecondTime": 4}
+        ],
+        "verification": "Independent arithmetic and enumeration of the six purchase orders; no source implementation executed"
+      },
+      "conditionalContinuousAlgorithm": {
+        "notAuthorizationToEnable": true,
+        "preconditions": "Requires an explicitly authorized continuous-time interpretation and defined input domain; the following derivation assumes positive prices and integer multipliers at least one",
+        "catalogAlgorithmCorrection": "The derived catalog's p/(m-1) sorting key is incorrect. For m>1 the correct ascending key is p*m/(m-1).",
+        "proof": "At a common current rate r, ordering a,b costs (p_a+p_b/m_a)/r and b,a costs (p_b+p_a/m_b)/r. Subsequent rate is identical, so choose a first iff p_a*m_a*(m_b-1) <= p_b*m_b*(m_a-1).",
+        "multiplierOne": "For positive prices, place all multiplier-one items after items with multiplier greater than one; their internal order is arbitrary.",
+        "comparison": "Use exact cross products with an integer type large enough for the eventual declared bounds, not floating-point keys.",
+        "wrongKeyCounterexample": {"multiples": [2, 5], "prices": [2, 5], "wrongKeyOrder": [1, 0], "wrongKeyTime": "27/5", "optimalOrder": [0, 1], "optimalTime": "9/2"},
+        "semanticCheckerSuggestion": "Validate a full permutation, then verify adjacent exact comparator inequalities under the declared positive-price domain; accept any order among equal keys.",
+        "independentOracleSuggestion": "For small n, enumerate every permutation and evaluate sum(price_i/product_of_prior_multipliers) using exact rational arithmetic; compare the submitted permutation's objective against the exhaustive minimum. Include tied keys, multiplier one, and the wrong-key counterexample."
+      }
+    },
+    {
+      "id": "oa-google-60",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-nearest-value-replacement.md",
+      "blob": "3776e9c68d67209625e206b5ad31d6cb53c4edc5",
+      "sha256": "a22f0847623ced4eff5a88984e331630ba22259568466eafe4c2e72035072cee",
+      "evidence": ["Raw says increment A[cur], find nearest equal value within D, break distance ties leftmost, and stop if none exists", "Raw never states how cur or array entries change when a match exists", "For [1,3,2,3,4,5,2], cur=2, D=2, output [1,3,3,3,4,5,2] performs only the first increment despite matching neighbors"],
+      "blockingAmbiguities": ["Whether/how to migrate to the matching index", "Whether current index is excluded from search", "Iteration behavior contradicts the natural jump-and-continue interpretation"]
+    },
+    {
+      "id": "oa-google-63",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-optimize-log-files.md",
+      "blob": "c1ae3afa9c3d726a602380a304b27846b6613cf0",
+      "sha256": "7035ecc79fc895850aee527ceab7654b172a1a8a43cc44712e0039e4e219aedf",
+      "evidence": ["Raw claims n operations indexed 0 through n-1, each swapping two entries at most once", "No general mapping from operation index to swapped positions appears", "Examples use operation i to swap i-1 and i for i=1..n-1; operation zero is never explained", "Numeric bound entries[i] < n also contradicts a permutation of 1 through n"],
+      "blockingAmbiguities": ["Undefined operation zero may change the optimum", "Treating the problem as n-1 adjacent swaps would silently replace the stated operation set"]
+    },
+    {
+      "id": "oa-google-67",
+      "status": "blocked",
+      "rawPath": "fastprep/Google/google-reschedule-k-meetings-to-find-maximum-break-time.md",
+      "blob": "6c8d8cb14ef0e52ab2e0ecfe132812314728fe50",
+      "sha256": "efcfb34a65274329415ee0555c64aa59a96070a942fc76878e5320e30ddc074b",
+      "evidence": ["Raw begins with an example involving start=[4,6,7,10], finish=[5,7,8,11], t=15, k=2, and claims a maximum break of six", "Function documentation only says maximize break by rescheduling up to k meetings", "Constraints only guarantee each start[i] < finish[i] within the day; no cross-meeting disjointness or ordering guarantee is given"],
+      "blockingAmbiguities": ["Whether meeting relative order must be preserved", "Whether rescheduled meetings may overlap", "Whether initial meetings are non-overlapping", "The example does not distinguish the possible scheduling models"]
+    }
+  ]
+}
