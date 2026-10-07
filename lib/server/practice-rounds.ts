@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { sqlite } from '@/db/sqlite';
 import { curatedEntries } from '@/lib/ling-curated';
 import { HttpError } from './http';
+import { practiceRoundTotals } from './practice-progress';
 const selectedNumbers = JSON.stringify(curatedEntries.map((e) => e.number));
 export function isSelectedProblem(problemId: string) {
   return Boolean(
@@ -35,22 +36,24 @@ export function ensurePracticeRound(userId: string): string {
 }
 export function practiceRoundState(userId: string) {
   const activeRoundId = ensurePracticeRound(userId);
+  const totals = practiceRoundTotals(userId);
   const rounds = sqlite()
     .prepare(
-      `SELECT r.id,r.number,r.created_at AS createdAt,
-    (SELECT COUNT(DISTINCT s.problem_id) FROM submissions s WHERE s.practice_round_id=r.id AND s.user_id=r.user_id AND s.mode='judge' AND s.status='accepted'
-      AND s.problem_id IN (SELECT judge_problem_id FROM study_library WHERE number IN (SELECT value FROM json_each(?)))) AS solved
+      `SELECT r.id,r.number,r.created_at AS createdAt
     FROM practice_rounds r WHERE r.user_id=? ORDER BY r.number`,
     )
-    .all(selectedNumbers, userId) as {
+    .all(userId) as {
     id: string;
     number: number;
     createdAt: number;
-    solved: number;
   }[];
+  const withTotals = rounds.map((round) => ({
+    ...round,
+    solved: totals.get(round.id) ?? 0,
+  }));
   const current = rounds.find((r) => r.id === activeRoundId)!;
   return {
-    rounds,
+    rounds: withTotals,
     activeRoundId,
     currentRound: {
       id: current.id,

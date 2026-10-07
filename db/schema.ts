@@ -13,6 +13,7 @@ export * from './media-schema';
 export * from './enrollment-schema';
 export * from './study-library-schema';
 export * from './practice-round-schema';
+export * from './leetcode-sync-schema';
 import { practiceRounds } from './practice-round-schema';
 export const user = sqliteTable('user', {
   id: text('id').primaryKey(),
