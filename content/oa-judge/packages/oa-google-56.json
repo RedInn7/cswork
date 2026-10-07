@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-56",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "最少操作变成二进制回文数",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Google",
+      "数学",
+      "字符串"
+    ],
+    "description": "给定非负整数 N。一次操作可以将当前整数加 1 或减 1（结果不能小于 0）。当 N 的标准二进制表示从左到右与从右到左相同时，称它为二进制回文数。求把 N 变成任意二进制回文数所需的最少操作次数。\n\n本站输入范围：0≤N≤2000000000。OAMaster 快照未给出额外约束；该范围按快照列出的约束收录。\n\n原题来源：https://oamaster.com/docs/companies/google#56-minimum-operations-to-make-binary-palindromic（固定快照内容指纹 b44446404ff98e6bf74fd5f10b0b0a052137ca8517023ae77b14aa159093ea8d）。",
+    "input": "输入一个整数 N。",
+    "output": "输出最少操作次数。",
+    "explanation": "枚举不超过 31 位的二进制回文数，取与 N 的绝对差最小值。对每种位数，只需构造由回文左右对称决定的前半部分候选；与 N 最接近的候选来自 N 对应前缀及相邻前缀，另检查该位数的最小和最大回文。",
+    "hints": [
+      "枚举目标回文数的二进制位数。",
+      "固定位数后，回文的后半部分由前半部分唯一确定。"
+    ],
+    "timeLimit": 3,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "示例 1",
+      "input": "6\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 1",
+      "input": "0\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 2",
+      "input": "1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 3",
+      "input": "2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 4",
+      "input": "3\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 5",
+      "input": "4\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 6",
+      "input": "5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 7",
+      "input": "7\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 8",
+      "input": "8\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 9",
+      "input": "9\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 10",
+      "input": "10\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 11",
+      "input": "11\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 12",
+      "input": "12\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 13",
+      "input": "13\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 14",
+      "input": "14\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 15",
+      "input": "15\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 16",
+      "input": "16\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 17",
+      "input": "17\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 18",
+      "input": "18\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 19",
+      "input": "19\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 20",
+      "input": "20\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 21",
+      "input": "21\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 22",
+      "input": "22\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 23",
+      "input": "23\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 24",
+      "input": "24\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 25",
+      "input": "25\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 26",
+      "input": "26\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 27",
+      "input": "27\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 28",
+      "input": "28\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 29",
+      "input": "31\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 30",
+      "input": "32\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 31",
+      "input": "1073741824\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 32",
+      "input": "1999999999\n",
+      "expectedOutput": "15752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "边界用例 33",
+      "input": "2000000000\n",
+      "expectedOutput": "15753\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
