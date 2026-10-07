@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遗漏最小非零库存收益",
+    "code": "import sys\n\ndef solve(raw):\n    values = map(int, raw.split())\n    n, m = next(values), next(values)\n    # Source stock bounds allow a compact, standard-library-only frequency table.\n    freq = [0] * 1_000_001\n    high, low = 0, 1_000_001\n    for _ in range(n):\n        stock = next(values)\n        freq[stock] += 1\n        if stock > high:\n            high = stock\n        if stock < low:\n            low = stock\n    revenue = 0\n    for _ in range(m):\n        while high and freq[high] == 0:\n            high -= 1\n        if high == 0:\n            break\n        revenue += high\n        freq[high] -= 1\n        if high > 1:\n            freq[high - 1] += 1\n            if high - 1 < low:\n                low = high - 1\n    return str(revenue)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "扣减后才计算当前客户收益",
+    "code": "import sys\ndef solve(raw):\n    it=iter(map(int,raw.split())); n,m=next(it),next(it); a=list(it); ans=0\n    for _ in range(m):\n        positive=[v for v in a if v>0]\n        if not positive: break\n        i=a.index(max(positive)); a[i]-=1\n        positive=[v for v in a if v>0]\n        if positive: ans+=min(positive)+max(positive)\n    return str(ans)\nif __name__ == '__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

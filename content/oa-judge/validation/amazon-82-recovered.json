@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-amazon-82",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "formalCases": 36,
+      "negativeControls": [
+        {
+          "name": "遗漏最小非零库存收益",
+          "rejectedByCases": [
+            "本站样例 1"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "扣减后才计算当前客户收益",
+          "rejectedByCases": [
+            "本站样例 1"
+          ],
+          "exitCode": 0
+        }
+      ],
+      "referenceSha256": "fb91be3c012c9adf749967af0c2284e78e45baa4b0d19b2f4d5210cfc72b46a7",
+      "oracleMethod": "逐客户重新扫描普通数组求 min/max，删除一个最大值；不使用频数或端点递减",
+      "oracleMaxWallSeconds": 0.0327,
+      "largeBoundaries": [
+        {
+          "name": "单类型最大库存全部耗尽",
+          "inputBytes": 18,
+          "expectedOutput": "1000001000000",
+          "wallSeconds": 0.1429,
+          "exitCode": 0
+        },
+        {
+          "name": "最大客户数库存提前耗尽",
+          "inputBytes": 12,
+          "expectedOutput": "2",
+          "wallSeconds": 0.022,
+          "exitCode": 0
+        },
+        {
+          "name": "最大类型数均为一",
+          "inputBytes": 2000016,
+          "expectedOutput": "2000000",
+          "wallSeconds": 0.1457,
+          "exitCode": 0
+        },
+        {
+          "name": "n m stock 同时达到一百万",
+          "inputBytes": 8000016,
+          "expectedOutput": "1999999000001",
+          "wallSeconds": 0.2777,
+          "exitCode": 0
+        },
+        {
+          "name": "巨大稀疏值域且最小值保持一",
+          "inputBytes": 20,
+          "expectedOutput": "500001500000",
+          "wallSeconds": 0.1389,
+          "exitCode": 0
+        }
+      ]
+    }
+  ],
+  "note": "全部163个独立输入及五个大边界以真实Python子进程stdin/stdout验证；错误程序正常退出但输出不符。仅离线候选，未运行GoJudge，未发布。"
+}

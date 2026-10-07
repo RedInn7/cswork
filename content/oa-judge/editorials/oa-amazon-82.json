@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-82",
+  "title": "虚拟机库存租赁收益",
+  "explanation": "## 来源与本站约定\n\n固定 OAMaster 提交 e66f809f4c953bce129f68491726176615db6afc 的正文给出每位客户收益为当前最大库存与最小非零库存之和。Python、Java、C++ 三份源码均先计收益，再将一种最大库存减一，零库存移除，库存耗尽即停止。本站明确采用这一一致行为：客户多于总库存时返回已服务客户的累计收益，不报错、不继续收费。本站标准输入输出及三个样例为自行补充，不是源题样例。完整保留 n、m、每种初始库存均为 1 到 10^6 的原约束。\n\n## 算法\n\n用 freq[s] 统计库存等于 s 的类型数，high 表示最大库存，low 表示最小正库存。每位客户先累加 high+low，再将一个 high 移到 high-1；为零则删除。high 所在桶空了就向下寻找。若新插入的 high-1 为正且小于 low，则更新 low。\n\n## 正确性证明\n\n初始化时频数与两个端点准确。每次仅改变一种最大库存，因此频数更新与租用一个 VM 完全一致，收益在更新之前累加，符合题意。最大值只能下降，空桶向下扫描找到的值就是下次真实最大值。若最大值严格大于最小值，原最小值仍存在，新的最小值只能是原 low 与插入值的较小者。若最大值等于最小值且大于一，扣减产生的新正值就是最小值；若等于一，则剩余库存仍全为一或全部耗尽。因此 low 始终正确，无须向上扫描。最大端点归零恰好表示耗尽，立即停止。由归纳，每一步收费及停止时机均正确。\n\n## 复杂度与边界\n\n固定值域 U=10^6，时间 O(n+m+U)，频数空间 O(U)，输入分词另需 O(n)。最大端点累计只下降 U 次。收益至多 2×10^12，C++/Java 应用 64 位整数。Python 仅用标准库，无 sortedcontainers 依赖。n=m=stock=10^6 时首客收费 2000000，之后 999999 位各收费 1999999，总收益 1999999000001；对应输入 8000016 字节，采用本站 32 MiB 单例 I/O 上限，不收窄原题约束。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    values = map(int, raw.split())\n    n, m = next(values), next(values)\n    # Source stock bounds allow a compact, standard-library-only frequency table.\n    freq = [0] * 1_000_001\n    high, low = 0, 1_000_001\n    for _ in range(n):\n        stock = next(values)\n        freq[stock] += 1\n        if stock > high:\n            high = stock\n        if stock < low:\n            low = stock\n    revenue = 0\n    for _ in range(m):\n        while high and freq[high] == 0:\n            high -= 1\n        if high == 0:\n            break\n        revenue += high + low\n        freq[high] -= 1\n        if high > 1:\n            freq[high - 1] += 1\n            if high - 1 < low:\n                low = high - 1\n    return str(revenue)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/amazon#82-maximize-rental-revenue-vm-stock",
+  "sourceContentHash": "2dc068f3b3d0b3ff468f1e72e9079916cb30ab20c713131453cffd55ccc43cf4"
+}
