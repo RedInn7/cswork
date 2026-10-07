@@ -27,13 +27,13 @@
 
 `python3 scripts/oa-judge/batches/misc_companies_remaining.py` 补齐 MesHy、Fortinet、HSBC、WeRide、Agoda、Infosys、Koddi 的剩余审核。当前 9 道进入离线候选（其中 HSBC #1 用 source-bound resolution 修正明显错印的示例值）；每题有 120 个唯一 oracle 输入、30 个正式测试和两个被击杀的正常退出 mutant。其余新审的题按固定题面缺失或矛盾逐题 blocked；已由其它批次审核的题保留既有决定、不重复覆盖。固定上游页 blob、SHA-256、逐题决定和 I/O 补充见 `source-evidence/misc-companies-remaining.json`、`reviews/misc-companies-remaining.json`、`resolutions/misc-companies-remaining.json`。尚未运行真实 GoJudge，不是线上已支持题目。
 
-`python3 scripts/oa-judge/batches/extra_30_review.py` 审核 15 家公司的 30 条题目，只写 `candidate-batches/extra-30-review.json` 和对应候选包、讲义、oracle、mutants、source evidence 与 reviews；不改 coverage、主 registry 或沙箱验收报告。固定 OA-Master 快照为 `e66f809f4c953bce129f68491726176615db6afc`。13 道明确题目各有 120 个唯一 oracle 输入、32 个正式用例及两个正常退出且被击杀的 mutant；另外 17 道逐题给出 blocked 原因。离线验证不代表 GoJudge 已验收。
+`python3 scripts/oa-judge/batches/extra_30_review.py` 审核 15 家公司的 30 条题目，只重建对应离线包、讲义、oracle、mutants、source evidence 与 reviews；原 13 道已进入其它正式批次，不会再写入重复候选。Alarm #1 单独输出到 `candidate-batches/alarm-1-recovered.json`，题干由同一固定快照中的标题、样例、解法和三语实现交叉恢复；原始 blocked review 保留，由 source-bound resolution 记录恢复依据。其 120 个唯一 oracle、32 个正式用例与两个错误程序已通过自有 GoJudge。其余源题缺失或矛盾的条目仍 blocked。固定快照为 `e66f809f4c953bce129f68491726176615db6afc`。
 
 `python3 scripts/oa-judge/batches/duolingo_flexport5_review.py` 为 Duolingo #3 与 Flexport #5 生成候选题包，并为 Flexport #6 单独记录 blocked 原因。每个候选有 120 个唯一输入、32 个正式用例、独立 oracle 与两个正常退出 mutant；固定上游 MDX blob 和 catalog 指纹记录在 source evidence。Duolingo 来源样例的大小写笔误按规则更正；Flexport #6 需澄清可删除节点的范围。只做离线验证，未调用 GoJudge，不进入 runtime batches 或 coverage。
 
 `python3 scripts/oa-judge/batches/twilio_1_recovered.py` 重写 Twilio #1 的超限参考算法为 Mo 区间查询，只生成 `twilio-1-recovered` 离线候选。203 个独立 brute-oracle 输入、33 个正式用例（含 n=q=100000 压力）和两个正常退出 mutant 本地验证；未连接 GoJudge，也未进入正式批次或 runtime registry。
 
-截至 2026-10-06，以下新增批次已在自有服务器的专用 go-judge 5054 沙箱逐题通过：Google #29、Amazon #32、Visa #7、Twilio #1、Stripe #20、Databricks #26、Rippling #6、Confluent #3/#4、SIG #4、Goldman Sachs #3/#14/#27、TradeDesk #5、Optiver #4、Unknown #15、D. E. Shaw #9、Capital One #19、Pure Storage #2、eBay #8、Palantir #4、Deloitte #2、Fortinet #2、IMC #1、Ramp #2。真实输出、formal/oracle 样例和错误程序报告保存在 `content/oa-judge/reports/`；总计 25 题，已聚合至 registry，但仍须部署并发布至生产数据库才对用户开放。
+截至 2026-10-06，以下新增批次已在自有服务器的专用 go-judge 5054 沙箱逐题通过：Google #29、#45、#64，Amazon #32、Visa #7、Twilio #1、Stripe #3、#20、Databricks #26、Rippling #6、Confluent #3/#4、SIG #4、Goldman Sachs #3/#14/#27、TradeDesk #5、Optiver #4、Unknown #15、D. E. Shaw #9、Capital One #19、Pure Storage #2、eBay #8、Palantir #4、Deloitte #2、Fortinet #2、IMC #1、Ramp #2、Alarm #1。真实输出、formal/oracle 样例和错误程序报告保存在 `content/oa-judge/reports/`；总计 29 题，已聚合至 registry，但仍须部署并发布至生产数据库才对用户开放。
 
 `python3 scripts/oa-judge/batches/google_29_recovered.py` 为 Google #29 重写最小树直径解法。2,500 棵小树随机差分、120 个独立穷举 oracle、30 个正式用例（29 hidden）及两个错误控制通过；n=100000 长链最慢约 8.9s，正式时限为 10s。源约束与 k=0 样例冲突，题包明确修正为 `0≤k<n`。
 
