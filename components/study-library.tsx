@@ -17,6 +17,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { LessonMarkdown } from './lms-shared';
 import { api } from '@/lib/types';
+import { LeetcodeSyncPanel } from './leetcode-sync-panel';
 import type { Navigate } from './learning';
 
 type LibraryItem = {
@@ -31,6 +32,8 @@ type LibraryItem = {
   caseCount: number;
   judgeProblemId: string | null;
   solved?: boolean;
+  solvedLocally?: boolean;
+  importedSources?: string[];
   progressStatus?: 'solved' | 'attempted' | 'not_started';
   judging?: boolean;
   selection?: {
@@ -125,6 +128,7 @@ export function StudyLibrary({
   const [search, setSearch] = useState('');
   const collection = 'ling-selected-500';
   const [roundBusy, setRoundBusy] = useState(false);
+  const [syncOpen, setSyncOpen] = useState(false);
   const [roundError, setRoundError] = useState('');
   const [roundNotice, setRoundNotice] = useState('');
   const roundPending = useRef(false);
@@ -625,6 +629,13 @@ export function StudyLibrary({
             </p>
           </div>
           <div className="study-round-actions">
+            <Button
+              variant="outline"
+              aria-expanded={syncOpen}
+              onClick={() => setSyncOpen((open) => !open)}
+            >
+              {t('同步 LeetCode', 'Sync LeetCode')}
+            </Button>
             <label htmlFor="practice-round">
               {t('当前轮次', 'Current round')}
             </label>
@@ -674,6 +685,14 @@ export function StudyLibrary({
             </p>
           )}
         </div>
+      )}
+      {syncOpen && data?.currentRound && (
+        <LeetcodeSyncPanel
+          rounds={data.rounds}
+          currentRoundId={data.activeRoundId}
+          onClose={() => setSyncOpen(false)}
+          onChanged={() => setRetry((value) => value + 1)}
+        />
       )}
       <fieldset className="study-filters" disabled={roundBusy}>
         <legend className="sr-only">{t('筛选题目', 'Filter problems')}</legend>
@@ -881,6 +900,20 @@ export function StudyLibrary({
                   <strong>
                     {item.number}. {title(item, english)}
                   </strong>
+                  {!!item.importedSources?.length && (
+                    <small>
+                      {item.solvedLocally
+                        ? t('本站通过 · ', 'Local AC · ')
+                        : ''}
+                      {item.importedSources
+                        .map((source) =>
+                          source === 'cn'
+                            ? t('力扣国区通过', 'LeetCode CN AC')
+                            : t('LeetCode 美区通过', 'LeetCode US AC'),
+                        )
+                        .join(' · ')}
+                    </small>
+                  )}
                 </span>
                 <span
                   className="study-level"
