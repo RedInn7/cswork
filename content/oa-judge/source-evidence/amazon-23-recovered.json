@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "items": {
+    "oa-amazon-23": {
+      "url": "https://oamaster.com/docs/companies/amazon#23-get-maximum-charge",
+      "contentHash": "7cf4d87c2247894ae7a1b224a989cf1488f54d0efd9a0bf741574f794e43bc23",
+      "catalogContentHash": "7cf4d87c2247894ae7a1b224a989cf1488f54d0efd9a0bf741574f794e43bc23",
+      "path": "fastprep/Amazon/amazon-get-max-charge.md",
+      "gitBlobSha": "1a722282f962cf3275dfc970c666308fb56ce2ec",
+      "sources": [
+        {
+          "path": "fastprep/Amazon/amazon-get-max-charge.md",
+          "gitBlobSha": "1a722282f962cf3275dfc970c666308fb56ce2ec",
+          "sha256": "c15146b4f15de6aad6c9a24cc47f8ddc10125ba0418d9defb0d547502fbbd21c"
+        },
+        {
+          "path": "web/content/docs/companies/amazon.mdx",
+          "gitBlobSha": "70650fad830ad60944ae8036fb4f134d9afc3fab",
+          "sha256": "07d33d58794347890f76b4199a9805d5fac529f0702dea6884e6fce484b69985"
+        },
+        {
+          "path": "fastprep/Amazon/amazon-maximum-charge-after-removal.md",
+          "gitBlobSha": "8a7b621ac292f7ef11823d7c6fc938a2f620123d",
+          "sha256": "e49c0b6570b38f729556fb388470ac3788d2b3c3639252c3805ead2096c889de",
+          "supports": "Same literal deletion/neighbor merge rule; explicitly continues until one system remains."
+        }
+      ],
+      "recoveredRule": "Delete the chosen current system; if internal, merge its two neighbors into their sum. The removed value is discarded. Endpoint deletion does not merge.",
+      "sampleCorrection": {
+        "input": [
+          -2,
+          4,
+          3,
+          -2,
+          1
+        ],
+        "catalogPrintedAnswer": 9,
+        "rawAndVerifiedAnswer": 4
+      },
+      "rawBounds": "1<=n<=200000; -1e9<=charge[i]<=1e9",
+      "siteAdded": "Standard I/O and explicit nonempty terminal condition; maximum intermediate charge can always be preserved by deleting other endpoint systems.",
+      "upstreamCodeExecuted": false
+    }
+  }
+}

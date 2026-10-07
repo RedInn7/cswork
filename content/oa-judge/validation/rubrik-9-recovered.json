@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-rubrik-9",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "formalCases": 40,
+      "negativeControls": [
+        {
+          "name": "误将单调划分也算作双坡",
+          "rejectedByCases": [
+            "原题样例一"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "擅自对精确计数取模",
+          "rejectedByCases": [
+            "100项对称山峰99位精确计数"
+          ],
+          "exitCode": 0
+        }
+      ],
+      "referenceSha256": "4d622e7d86cb89a49f4101b4afc77b135272cc2f49c014c92bffd15da5d9cfa7",
+      "oracleMethod": "Fraction全切点枚举并检查内部峰；大规模独立峰段分解与Fraction递增前缀/递减后缀组合",
+      "additionalExhaustiveAlphabetCases": 1089,
+      "oracleMaxWallSeconds": 0.0304,
+      "largeBoundaries": [
+        {
+          "name": "100个相等最大值",
+          "n": 100,
+          "expectedOutput": "0",
+          "countBitLength": 0,
+          "wallSeconds": 0.0414,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        },
+        {
+          "name": "100个相等最小值",
+          "n": 100,
+          "expectedOutput": "0",
+          "countBitLength": 0,
+          "wallSeconds": 0.0414,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        },
+        {
+          "name": "100个严格递增值",
+          "n": 100,
+          "expectedOutput": "0",
+          "countBitLength": 0,
+          "wallSeconds": 0.0348,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        },
+        {
+          "name": "100个严格递减值",
+          "n": 100,
+          "expectedOutput": "0",
+          "countBitLength": 0,
+          "wallSeconds": 0.038,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        },
+        {
+          "name": "100项对称山峰99位精确计数",
+          "n": 100,
+          "expectedOutput": "526947368435520933960755133783",
+          "countBitLength": 99,
+          "wallSeconds": 0.0384,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        },
+        {
+          "name": "平移至负数的山峰计数不变",
+          "n": 100,
+          "expectedOutput": "526947368435520933960755133783",
+          "countBitLength": 99,
+          "wallSeconds": 0.0356,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        },
+        {
+          "name": "上下界交替",
+          "n": 100,
+          "expectedOutput": "20825",
+          "countBitLength": 15,
+          "wallSeconds": 0.0342,
+          "independentMethod": "unique peak block + Fraction increasing-prefix/decreasing-suffix counts",
+          "exitCode": 0
+        }
+      ]
+    }
+  ],
+  "note": "163唯一输入与7大边界均真实Python子进程stdin/stdout通过；独立峰段算法与所有小oracle一致；两个mutant正常退出并被拒。仅候选，未运行GoJudge或发布。"
+}

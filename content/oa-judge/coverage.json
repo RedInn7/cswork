@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1172,
+    "sandbox_verified": 1175,
     "awaiting_sandbox": 0,
-    "blocked": 462,
+    "blocked": 459,
     "unreviewed": 0
   },
   "items": [
@@ -911,8 +911,9 @@
     {
       "id": "oa-amazon-23",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "任意丢弃内部元素与必须连续子数组相矛盾；样例[-2,4,3,-2,1] 的最大连续和7、任意保留正数和8均非给定9。"
+      "status": "sandbox_verified",
+      "batch": "amazon-23-recovered",
+      "reason": "完整raw恢复删除自身并合并两邻居的规则，首例答案4而非catalog9。原始完整范围保留；163唯一字面操作oracle与40正式测试含n20万、1e14边界真实子进程通过，两正常退出负控被拒绝。仅离线候选，尚未做真实GoJudge验证。"
     },
     {
       "id": "oa-amazon-24",
@@ -8516,8 +8517,9 @@
     {
       "id": "oa-goldman-sachs-2",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "约束文本损坏（字符/频次约束无法可靠恢复），不擅自补全原始输入范围。"
+      "status": "sandbox_verified",
+      "batch": "goldman-sachs-2-recovered",
+      "reason": "固定raw完整保留长度10万、a-z、每段频次1..1000；恢复被HTML解析损坏的约束。兼容长前导零并逐位解析，163唯一展开字符oracle和42正式用例真实子进程通过，两个正常退出负控被拒绝。仅离线候选，尚未做真实GoJudge验证。"
     },
     {
       "id": "oa-goldman-sachs-3",
@@ -9521,8 +9523,9 @@
     {
       "id": "oa-rubrik-9",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "关键约束与计数公式被 HTML 清理成残缺符号，分段目标函数和 bitonic 定义不完整。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-9-recovered",
+      "reason": "raw完整恢复n≤100、至少3段与严格双坡；本站明示精确不取模计数，不推断starter int行为，不使用整理版简化题解。163唯一Fraction切点oracle、完整小字母枚举、独立峰段大规模oracle与两个正常退出mutant通过，仅候选待沙箱。"
     },
     {
       "id": "oa-rubrik-10",
