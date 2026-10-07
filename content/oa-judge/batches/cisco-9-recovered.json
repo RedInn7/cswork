@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-cisco-9",
+      "sourceContentHash": "82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63",
+      "packageChecksum": "fa52655bf8a8eb2cc203b019ee7af4c67754d0c42df88b61cf9795a69cf1a686",
+      "editorial": "## 思路\n\n一次扫描累加元素得到总和，同时统计每个整数的频次。平均数按数学定义取 floor(sum/N)，众数取频次最高者；若并列，取最小值。\n\n## 正确性\n\n数组算术平均数按题面定义为总和除以 N 后向下取整，所以结果唯一为 floor(sum/N)，尤其负数不能按向零截断。众数按定义是出现次数达到最大值的元素；在这些元素中取最小值正好满足题面的并列规则。一次完整频次统计即可得到最大频次和最小众数。\n\n## 复杂度\n\n时间 O(N)，空间 O(U)，U 为不同整数的数量。\n\n## 来源与边界\n\nOAMaster 原题示例输出 3 2；示例解释把平均数写成了 15/2=3，这是原文笔误：数组有 5 个元素，正确计算是 15/5=3，预期输出不变。其正文明确并列众数时取最小值，约束为 N≤10⁵、元素绝对值≤10⁹。第二份 Fastprep 同题记录确认负数均值应 floor，但未写并列众数；本站遵循 OAMaster 的明文 tie 规则。输入输出协议由本站补充。来源：https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode；补充同题记录：https://www.fastprep.io/problems/cisco-calculate-mean-and-mode、https://www.fastprep.io/problems/cisco-find-mean-and-mode。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import Counter\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        raise ValueError(\"expected N and N integer values\")\n    n, values = data[0], data[1:]\n    if not 1 <= n <= 100_000 or len(values) != n:\n        raise ValueError(\"N is outside the supported range or value count differs\")\n    if any(not -1_000_000_000 <= value <= 1_000_000_000 for value in values):\n        raise ValueError(\"an input value is outside [-10^9, 10^9]\")\n    mean = sum(values) // n  # Python // implements mathematical floor for negatives.\n    counts = Counter(values)\n    maximum_frequency = max(counts.values())\n    mode = min(value for value, frequency in counts.items() if frequency == maximum_frequency)\n    return f\"{mean} {mode}\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
