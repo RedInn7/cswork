@@ -4,7 +4,7 @@
   "problems": [
     {
       "id": "oa-goldman-sachs-3",
-      "formalCases": 21,
+      "formalCases": 29,
       "oracleCases": 120,
       "oracleInputsUnique": 120,
       "negativeControls": [
@@ -25,7 +25,12 @@
             15,
             16,
             18,
-            20
+            20,
+            24,
+            25,
+            26,
+            27,
+            28
           ]
         },
         {
@@ -33,13 +38,15 @@
           "rejectedByCases": [
             3,
             4,
-            20
+            20,
+            28
           ]
         }
       ],
-      "maxFormalStringLength": 9,
-      "maxBoundaryStressStringLength": 100000
+      "maxFormalStringLength": 200000,
+      "maxBoundaryStressStringLength": 200000,
+      "fullBoundaryFormalCases": 8
     }
   ],
-  "note": "本地参考程序与独立栈 oracle 差分、正式边界和两个正常退出 mutant 验证；未连接 GoJudge。"
+  "note": "本地栈参考与独立反向跳过 oracle 差分，完整20万正式边界和两个正常退出 mutant 验证；本次生成未连接 GoJudge，旧报告不可复用。"
 }

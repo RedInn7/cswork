@@ -16,9 +16,9 @@ ROOT = Path(__file__).resolve().parents[3]
 OA = ROOT / "content" / "oa-judge"
 CATALOG = ROOT / "content" / "oa-master" / "catalog.json"
 COMMIT = "e66f809f4c953bce129f68491726176615db6afc"
-RAW_PATH = "web/content/docs/companies/goldman-sachs.mdx"
-RAW_BLOB = "8efc97a5920a15a0815088ee41e197524a0517ca"
-RAW_SHA256 = "14ea24f08c2a8fdfb8176adf6107d1ac025a14c49b7463c4f44c0efff63318b7"
+RAW_PATH = "fastprep/Goldman Sachs/compare-strings.md"
+RAW_BLOB = "854544620ee4b2eab58041a238cb0ae67ffba543"
+RAW_SHA256 = "cfcf1fb9c678a953252cc6b1845b75a0b1ecf540a723123b75fe8d13918e850d"
 CONTENT_HASH = "8ce7272efa6e3367c2ece67eaa635cf6745139b680a946454cee69d7f753e058"
 
 
@@ -74,17 +74,34 @@ def run(code: str, raw: str) -> str:
 
 
 def oracle(s1: str, s2: str) -> str:
-    def reduce(value: str) -> list[str]:
-        stack: list[str] = []
-        for char in value:
+    """Independent reverse scan: count pending erasures without a stack."""
+    def surviving(value: str):
+        skip = 0
+        for char in reversed(value):
             if char == "#":
-                if stack:
-                    stack.pop()
+                skip += 1
+            elif skip:
+                skip -= 1
             else:
-                stack.append(char)
-        return stack
-    return "1" if reduce(s1) == reduce(s2) else "0"
+                yield char
+    from itertools import zip_longest
+    return "1" if all(a == b for a, b in zip_longest(
+        surviving(s1), surviving(s2), fillvalue=None)) else "0"
 
+
+def full_boundaries():
+    """Legal nonempty inputs at the original 200000-character boundary."""
+    return [
+        ("a" * 200000, "a" * 200000, "20万完整保留且相等"),
+        ("a" * 199999 + "b", "a" * 200000, "20万末尾不同"),
+        ("b" + "a" * 199999, "a" * 200000, "20万开头不同"),
+        ("x" * 100000 + "#" * 100000,
+         "z" * 100000 + "#" * 100000, "20万退格全部清空"),
+        ("#" * 199999 + "a", "a", "20万前导多余退格"),
+        ("a#" * 100000, "#", "20万交替输入退格"),
+        ("#" * 200000, "z#", "20万全退格"),
+        ("a" * 100000 + "#" * 99999 + "b", "ab", "20万部分清空并追加"),
+    ]
 
 def build(catalog: dict, rng: random.Random) -> None:
     identifier, batch = "oa-goldman-sachs-3", "goldman-sachs-3-recovered"
@@ -106,7 +123,7 @@ def build(catalog: dict, rng: random.Random) -> None:
         ("a##", "x#", "字符后多余退格后均为空串"),
         ("##abc", "abc", "开头多余退格不影响后续字符"),
         ("ab###c", "c", "清空后追加字符"),
-        ("a#b#c#", "", "逐个删除至空串"),
+        ("a#b#c#", "x#", "逐个删除至空串"),
         ("abc###x", "x", "完全清空后保留末尾字符"),
         ("x#y#z", "z", "交替输入和退格"),
         ("ab##c", "ac#", "两个结果长度相同但内容不同"),
@@ -114,9 +131,13 @@ def build(catalog: dict, rng: random.Random) -> None:
         ("abc##", "a#c", "多次退格的处理次序"),
         ("xy#z", "xz", "删除中间字符"),
     ]
+    formal.extend(full_boundaries())
     cases = []
     for index, (s1, s2, name) in enumerate(formal):
+        assert 1 <= len(s1) <= 200000 and 1 <= len(s2) <= 200000
+        assert all(char in "abcdefghijklmnopqrstuvwxyz#" for char in s1 + s2)
         expected = oracle(s1, s2)
+        assert run(REFERENCE, f"{s1}\n{s2}\n") == expected
         cases.append({"name": name, "input": f"{s1}\n{s2}\n", "expectedOutput": expected + "\n",
                       "hidden": index != 0, "weight": 1})
 
@@ -152,18 +173,12 @@ def build(catalog: dict, rng: random.Random) -> None:
         assert rejected, f"surviving mutant: {name}"
         controls.append({"name": name, "rejectedByCases": rejected})
 
-    # Exercise the disclosed candidate limit without inflating the imported
-    # package's sample payload. Both strings are exactly 100000 characters.
-    stress_a = "x" * 50000 + "#" * 50000
-    stress_b = "z" * 50000 + "#" * 50000
-    assert run(REFERENCE, f"{stress_a}\n{stress_b}\n") == "1"
-
     problem = {
         "id": identifier, "courseId": "gomall", "lessonId": "00-overview",
         "title": "Backspace String Compare", "difficulty": "简单",
         "tags": ["OA", "Goldman Sachs", "字符串", "双指针", "栈"],
         "description": "给定两个仅由小写英文字母和 `#` 组成的字符串。`#` 表示退格，会删除当前字符串中紧邻它之前的一个字符；若此时字符串为空，则不产生影响。判断分别处理后两个字符串是否相同，相同输出 1，否则输出 0。",
-        "input": "输入两行非空字符串 s1、s2。本站补充约束：1≤|s1|,|s2|≤100000；字符仅为小写英文字母或 `#`。源题的长度约束损坏为 `1 5`，无法还原原始上限；本题明确使用本站长度上限，不将其表述为原题约束。",
+        "input": "输入两行非空字符串 s1、s2。完整原约束：1≤|s1|,|s2|≤200000；字符仅为小写英文字母或 `#`。范围来自固定提交的完整 raw；整理版 MDX 的 `1 5` 是损坏片段。两行标准输入输出为本站包装。",
         "output": "相同输出 1，否则输出 0。",
         "explanation": "退格为空串时无操作；其余规则按原题定义。可从右向左扫描并统计待跳过字符，也可使用栈。",
         "hints": ["从右向左扫描时，遇到 # 就增加待跳过字符数；普通字符若有待跳过计数则跳过，否则参与比较。"],
@@ -178,7 +193,7 @@ def build(catalog: dict, rng: random.Random) -> None:
     editorial = (
         "## 思路\n\n用栈分别处理两个字符串。遇到小写字母就压栈；遇到 `#`，若栈非空则弹出一个字符，栈为空时忽略。最后比较两个栈是否相等。\n\n"
         "## 正确性\n\n扫描每个字符串的任意前缀后，栈中恰好保存该前缀按题意执行所有退格后留下的字符，且顺序不变：普通字符追加到末尾，退格在栈非空时删除末尾字符、为空时保持不变。对完整字符串应用该结论，比较两个结果即得到正确答案。\n\n"
-        "## 复杂度\n\n设两个字符串长度分别为 n、m，时间 O(n+m)，辅助空间 O(n+m)。本站长度上限为 100000；这是本站补充，不是从损坏的源约束恢复出的数值。"
+        "## 复杂度\n\n设两个字符串长度分别为 n、m，时间 O(n+m)，辅助空间 O(n+m)。完整原始上限为每串 200000，正式题包含完整范围的保留、清空、多余退格和相等/不等边界。"
     )
     write_json(OA / "packages" / f"{identifier}.json", package)
     (OA / "references" / f"{identifier}.py").write_text(reference, encoding="utf-8")
@@ -195,21 +210,22 @@ def build(catalog: dict, rng: random.Random) -> None:
     write_json(OA / "source-evidence" / f"{batch}.json", {"schemaVersion": 1,
         "repository": "https://github.com/RedInn7/OA-Master", "commit": COMMIT, "origin": "https://oamaster.com",
         "items": [{"id": identifier, "sourceUrl": source["sourceUrl"], "catalogContentHash": source["contentHash"],
-            "rawFiles": [{"path": RAW_PATH, "blob": RAW_BLOB, "sha256": RAW_SHA256, "lineRange": [202, 254]}],
+            "rawFiles": [{"path": RAW_PATH, "blob": RAW_BLOB, "sha256": RAW_SHA256}],
             "resolvedSemantics": {"backspace": "Each # removes the immediately preceding character if one exists; applying backspace to an empty string leaves it empty.",
                 "comparison": "Compare the two fully processed strings; return 1 iff equal, else 0.",
-                "sourceConstraint": "The fixed source literally contains `1 5`, which is damaged and does not establish the original maximum length.",
-                "siteInputSupplement": "This candidate independently sets nonempty strings of length at most 100000 for safe judging. It is disclosed as a CSWork limit and is not claimed to recover the upstream bound."}}]})
+                "sourceConstraint": "The fixed full raw establishes 1 <= length(s1), length(s2) <= 200000; the MDX constraint was damaged.",
+                "siteInputSupplement": "Only the two-line standard input/output protocol is a site supplement. Original nonempty 200000-character bounds are preserved."}}]})
     write_json(OA / "resolutions" / f"{batch}.json", {"schemaVersion": 1, "items": [{
         "id": identifier, "batch": batch, "sourceContentHash": source["contentHash"],
         "previousReason": "最大长度约束原文损坏为“1 5”，无法据此确认输入上限。",
-        "reason": "原题的字符域、退格行为、空串退格行为、比较目标及 0/1 输出均明确，歧义仅在长度上限。候选没有猜测原上限，而是显式增加本站 1≤长度≤100000 的评测边界；在该边界内算法线性且资源可控。固定源 MDX、catalog hash 与 review 已核对。"}]})
+        "reason": "完整 raw 恢复两串各 1≤长度≤200000，保留原字符域、退格与比较语义；以完整原约束替换早期本站10万上限，修正空输入用例，加入20万正式边界并用反向跳过计数 oracle 独立验证。变更后必须重新运行真实 GoJudge 并刷新报告。"}]})
     write_json(OA / "validation" / f"{batch}.json", {"schemaVersion": 1, "seed": 20261006,
         "problems": [{"id": identifier, "formalCases": len(cases), "oracleCases": len(random_cases),
             "oracleInputsUnique": len(seen) - len(cases), "negativeControls": controls,
             "maxFormalStringLength": max(max(len(a), len(b)) for a, b, _ in formal),
-            "maxBoundaryStressStringLength": 100000}],
-        "note": "本地参考程序与独立栈 oracle 差分、正式边界和两个正常退出 mutant 验证；未连接 GoJudge。"})
+            "maxBoundaryStressStringLength": 200000,
+            "fullBoundaryFormalCases": len(full_boundaries())}],
+        "note": "本地栈参考与独立反向跳过 oracle 差分，完整20万正式边界和两个正常退出 mutant 验证；本次生成未连接 GoJudge，旧报告不可复用。"})
     print(f"{identifier}: formal={len(cases)}, unique oracle={len(random_cases)}, mutants={len(controls)} killed")
 
 

@@ -585,7 +585,12 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
   const hiddenOrdinal = firstPackage.cases.findIndex(
     (c) => c.hidden && !(c.input in known),
   );
-  assert(hiddenOrdinal >= 3);
+  assert(Object.keys(known).length > 0, 'Requires at least one public sample');
+  assert(hiddenOrdinal >= 0, 'Requires a hidden case not memorized by samples');
+  assert(
+    firstPackage.cases.slice(0, hiddenOrdinal).every((c) => c.input in known),
+    'Sample-memorizing program must pass every case before the counterexample',
+  );
   const hiddenSubmit = await request(
     '/api/oj/submissions',
     students[0],
