@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "8e7a95308c5c01bced8d39537478ab84da7ac569234c64148b83e8ab16968a3a",
+  "pages": [
+    {
+      "company": "Nutanix",
+      "path": "web/content/docs/companies/nutanix.mdx",
+      "gitBlobSha": "e456ebadfeb2ed296ead739808d9cdfb76ce876b"
+    }
+  ],
+  "items": [
+    {
+      "id": "oa-nutanix-2",
+      "title": "Work Schedules (for MTS2)",
+      "sourceUrl": "https://oamaster.com/docs/companies/nutanix#2-work-schedules-for-mts2",
+      "sourceContentHash": "8e7a95308c5c01bced8d39537478ab84da7ac569234c64148b83e8ab16968a3a",
+      "previousStatus": "blocked",
+      "previousReason": "示例三参数写 day_hours=8，解释却改写为 2；虽该样例输出碰巧相同，未确认源题正确参数含义前暂缓。",
+      "evidence": "源页将 day_hours 定义为输入中的每日最大工时，三种参考实现均动态读取该参数。第三例输入写 8，但解释和输出使用 2；FastPrep 对应例子也使用 2。仅作为源样例笔误修正，不改变参数语义。 用户自有 GoJudge 通过 166 项。",
+      "supportingSources": [
+        {
+          "url": "https://www.fastprep.io/problems/nutanix-find-schedules",
+          "evidence": "第三例使用 day_hours=2，剩余一小时可放在四个问号任一处。"
+        }
+      ],
+      "siteAdditions": [
+        "本站采用空格分隔输入和紧凑 JSON 输出。",
+        "原题第三例输入 8 按解释勘误为 2，源文件指纹保持不变。"
+      ],
+      "status": "authored",
+      "errata": {
+        "field": "day_hours",
+        "original": 8,
+        "corrected": 2,
+        "basis": "题目解释及 FastPrep 对应样例。"
+      }
+    }
+  ]
+}

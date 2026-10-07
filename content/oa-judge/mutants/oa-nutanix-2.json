@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把每日上限错误固定为 8",
+    "code": "import json,sys\nw,_,p=sys.stdin.read().split();w=int(w);p=list(p);q=[i for i,c in enumerate(p) if c==\"?\"];f=sum(int(c) for c in p if c!=\"?\");o=[]\ndef g(i,r):\n if i==len(q):\n  if r==0:o.append(\"\".join(p))\n  return\n for x in range(9):p[q[i]]=str(x);g(i+1,r-x)\ng(0,w-f);print(json.dumps(o,separators=(\",\",\":\")))\n"
+  },
+  {
+    "name": "只返回第一种排班",
+    "code": "import json,sys\nw,d,p=sys.stdin.read().split();w=int(w);d=int(d);p=list(p);q=[i for i,c in enumerate(p) if c==\"?\"];f=sum(int(c) for c in p if c!=\"?\");o=[]\ndef g(i,r):\n if i==len(q):\n  if r==0:o.append(\"\".join(p))\n  return\n for x in range(d+1):p[q[i]]=str(x);g(i+1,r-x)\ng(0,w-f);print(json.dumps(o[:1],separators=(\",\",\":\")))\n"
+  }
+]

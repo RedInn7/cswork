@@ -184,7 +184,9 @@ for (const item of registry.data.items) {
         pkg.data.problem.checker,
         test.input,
       ),
-      item.id + ' reference output',
+      `${item.id} reference output for ${JSON.stringify(test.input)} ` +
+        `(actual ${Buffer.byteLength(result.files?.stdout || '')} bytes, expected ${Buffer.byteLength(test.expectedOutput)} bytes; ` +
+        `${JSON.stringify((result.files?.stdout || '').slice(0, 120))} != ${JSON.stringify(test.expectedOutput.slice(0, 120))}...)`,
     );
     passed++;
   }
