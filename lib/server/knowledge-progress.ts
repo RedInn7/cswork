@@ -3,6 +3,7 @@ import { sqlite } from '@/db/sqlite';
 import type { Person } from './auth';
 import { liveLesson } from './lms-common';
 import { HttpError } from './http';
+import { studyProgress } from './practice-progress';
 
 /** Read-only projection of the same active round used by the problem library. */
 export async function getKnowledgeProgress(person: Person, lessonId: string) {
@@ -17,9 +18,10 @@ export async function getKnowledgeProgress(person: Person, lessonId: string) {
       )
       .get(person.id) as { id: string; number: number } | undefined;
     const ids = chapter.homeworkProblemIds;
+    const practice = studyProgress(person.id, currentRound?.id ?? null);
     const records = db
       .prepare(
-        `SELECT l.judge_problem_id AS id,l.number,l.title_zh AS title,l.difficulty,
+        `SELECT l.id AS library_id,l.judge_problem_id AS id,l.number,l.title_zh AS title,l.difficulty,
       EXISTS(SELECT 1 FROM oj_problems p WHERE p.id=l.judge_problem_id AND p.published=1 AND l.verified_hash=l.content_hash || ':' || p.current_version_id) AS available,
       EXISTS(SELECT 1 FROM submissions s WHERE s.user_id=? AND s.problem_id=l.judge_problem_id AND s.mode='judge' AND s.practice_round_id IS ? AND s.status='accepted') AS solved,
       EXISTS(SELECT 1 FROM submissions s WHERE s.user_id=? AND s.problem_id=l.judge_problem_id AND s.mode='judge' AND s.practice_round_id IS ?) AS attempted,
@@ -36,6 +38,7 @@ export async function getKnowledgeProgress(person: Person, lessonId: string) {
         JSON.stringify(ids),
       ) as {
       id: string;
+      library_id: string;
       number: number;
       title: string;
       difficulty: string;
@@ -57,6 +60,9 @@ export async function getKnowledgeProgress(person: Person, lessonId: string) {
         hint: notes[id] ?? '',
         available: Boolean(record?.available),
         judging: Boolean(record?.judging),
+        importedSources: record
+          ? (practice.get(record.library_id)?.importedSources ?? [])
+          : [],
         status: record?.solved
           ? ('solved' as const)
           : record?.attempted
@@ -68,6 +74,8 @@ export async function getKnowledgeProgress(person: Person, lessonId: string) {
       lessonId,
       currentRound: currentRound ?? { id: null, number: 1 },
       completed: items.filter((item) => item.status === 'solved').length,
+      importedCompleted: items.filter((item) => item.importedSources.length > 0)
+        .length,
       total: items.length,
       items,
     };

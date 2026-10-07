@@ -8,6 +8,7 @@ type Progress = {
   lessonId: string;
   currentRound: { id: string | null; number: number };
   completed: number;
+  importedCompleted?: number;
   total: number;
   items: {
     id: string;
@@ -17,6 +18,7 @@ type Progress = {
     hint: string;
     available: boolean;
     judging: boolean;
+    importedSources?: ('cn' | 'us')[];
     status: 'solved' | 'attempted' | 'not_started';
   }[];
 };
@@ -81,8 +83,10 @@ export function KnowledgeExercises({
         <h2 id="knowledge-exercises-heading">例题与课后练习</h2>
         {data && !error && (
           <span>
-            第 {data.currentRound.number} 轮 · 已通过 {data.completed} /{' '}
+            第 {data.currentRound.number} 轮 · 本站已通过 {data.completed} /{' '}
             {data.total}
+            {!!data.importedCompleted &&
+              ` · LeetCode 导入 ${data.importedCompleted}`}
           </span>
         )}
       </div>
@@ -153,6 +157,8 @@ export function KnowledgeExercises({
                 {item.hint && <p>{item.hint}</p>}
                 <span className="knowledge-exercise-status">
                   {label}
+                  {!!item.importedSources?.length &&
+                    ` · LeetCode ${item.importedSources.map((region) => (region === 'cn' ? '国区' : '美区')).join(' / ')}已通过`}
                   {!item.available ? ' · 暂未开放' : ''}
                 </span>
               </li>

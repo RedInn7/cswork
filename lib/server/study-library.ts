@@ -1,6 +1,7 @@
 import { sqlite } from '@/db/sqlite';
 import { HttpError } from './http';
 import { practiceRoundState } from './practice-rounds';
+import { studyProgress } from './practice-progress';
 import {
   curatedByNumber,
   curatedEntries,
@@ -114,39 +115,22 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     : { rounds: [], activeRoundId: null, currentRound: null };
   // A later failed submission never erases an earlier acceptance in this round.
   // Runs, other users and other rounds do not contribute to practice progress.
-  const progress = new Map(
-    userId
-      ? (
-          db
-            .prepare(`SELECT s.problem_id,
-          MAX(s.status='accepted') AS solved,
-          MAX(s.status IN ('pending','submitting','queued','compiling','running','judging','processing')) AS pending
-        FROM submissions s JOIN study_library l ON l.judge_problem_id=s.problem_id
-        WHERE s.user_id=? AND s.practice_round_id=? AND s.mode='judge'
-          AND l.number IN (SELECT value FROM json_each(?))
-        GROUP BY s.problem_id`)
-            .all(userId, roundState.activeRoundId, numbers) as {
-            problem_id: string;
-            solved: number;
-            pending: number;
-          }[]
-        ).map((row) => [row.problem_id, row] as const)
-      : [],
-  );
+  const progress = userId
+    ? studyProgress(userId, roundState.activeRoundId)
+    : new Map();
   const all = rows
     .map((row) => ({
       ...summary(row),
       selection: curatedByNumber.get(row.number)!,
-      solved:
-        !!row.judge_problem_id && !!progress.get(row.judge_problem_id)?.solved,
-      progressStatus:
-        row.judge_problem_id && progress.get(row.judge_problem_id)?.solved
-          ? 'solved'
-          : row.judge_problem_id && progress.has(row.judge_problem_id)
-            ? 'attempted'
-            : 'not_started',
-      judging:
-        !!row.judge_problem_id && !!progress.get(row.judge_problem_id)?.pending,
+      solved: !!progress.get(row.id)?.solved,
+      solvedLocally: !!progress.get(row.id)?.solvedLocally,
+      importedSources: progress.get(row.id)?.importedSources ?? [],
+      progressStatus: progress.get(row.id)?.solved
+        ? 'solved'
+        : progress.get(row.id)?.attempted
+          ? 'attempted'
+          : 'not_started',
+      judging: !!progress.get(row.id)?.pending,
     }))
     .sort((a, b) => a.selection.order - b.selection.order);
   const q = (params.get('q') || '').trim().slice(0, 180).toLocaleLowerCase();

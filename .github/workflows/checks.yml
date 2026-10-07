@@ -48,6 +48,8 @@ jobs:
       - run: node --check deploy/oj-queue-control.cjs
       - run: npx tsx --test tests/oj-i18n.test.ts tests/study-library.test.ts tests/ling-curated.test.ts
       - run: npx tsx --test tests/practice-round-migration.test.ts
+      - run: node --import tsx --test tests/leetcode-sync.test.ts tests/leetcode-practice-progress.test.ts
+      - run: node --import tsx --test tests/leetcode-sync-ui.test.mjs
       - run: node --import tsx --test tests/study-library-ui.test.mjs
       - run: node --test --test-concurrency=1 tests/oa-import.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oa-library.test.ts tests/oa-library-ui.test.mjs
@@ -82,3 +84,4 @@ jobs:
       - run: bash -n deploy/install.sh deploy/app-only-release.sh
       - run: npm run build
       - run: node tests/oa-library-http.mjs
+      - run: node tests/leetcode-sync-http.mjs
