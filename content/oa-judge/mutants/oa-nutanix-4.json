@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略左移，只计算原排列的最少交换次数",
+    "code": "import sys\na=list(map(int,sys.stdin.read().split()));n=a[0];p=a[1:];seen=[False]*n;c=0\nfor i in range(n):\n if not seen[i]:\n  c+=1;j=i\n  while not seen[j]:seen[j]=True;j=p[j]-1\nprint(n-c)\n"
+  },
+  {
+    "name": "只在左移后首元素为 1 时计算交换次数",
+    "code": "import sys\na=list(map(int,sys.stdin.read().split()));n=a[0];p=a[1:];ans=n\nfor k in range(n):\n if p[k]!=1:continue\n q=p[k:]+p[:k];seen=[False]*n;c=0\n for i in range(n):\n  if not seen[i]:\n   c+=1;j=i\n   while not seen[j]:seen[j]=True;j=q[j]-1\n ans=min(ans,k+n-c)\nprint(ans)\n"
+  }
+]

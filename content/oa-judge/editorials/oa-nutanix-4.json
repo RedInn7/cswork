@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-4",
+  "title": "Minimum Operations to Convert Array",
+  "explanation": "# Minimum Operations to Convert Array\n\n## 思路\n\n设循环左移 k 次，k 只能取 0 到 n-1。此时数组中每个位置上的值指向其目标位置，形成一个置换。长度为 n 的置换若有 c 个环，最少需要 n-c 次任意两元素交换才能排序。于是该 k 的总代价为 k+n-c，枚举 k 取最小值。\n\n## 正确性\n\n操作规则要求所有左移都在第一次交换之前，所以任意合法方案唯一对应某个左移次数 k，之后只进行交换。固定 k 后，置换每个环可独立完成，长度为 L 的环至少且恰好需要 L-1 次交换，合计 n-c。因此枚举所有 k 并取最小值，覆盖且仅覆盖所有可能方案。\n\n## 复杂度\n\n每个 k 在线性时间统计置换环，共 O(n²) 时间、O(n) 额外空间。\n\n## 站内输入边界\n\n源题将约束标为 N/A，没有给出 n 的上限。为使 O(n²) 的评测输入有明确边界，本站设定 1 ≤ n ≤ 3000；这是站内运行约束，不是对原始来源的补写。\n\n## 参考实现\n\n```python\nimport sys\ndef solve(raw):\n data=list(map(int,raw.split())); n=data[0]; arr=data[1:]\n best=n\n for k in range(n):\n  seen=[False]*n; cycles=0\n  for i in range(n):\n   if not seen[i]:\n    cycles+=1; j=i\n    while not seen[j]:\n     seen[j]=True; j=arr[(j+k)%n]-1\n  best=min(best,k+n-cycles)\n return best\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n```\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n data=list(map(int,raw.split())); n=data[0]; arr=data[1:]\n best=n\n for k in range(n):\n  seen=[False]*n; cycles=0\n  for i in range(n):\n   if not seen[i]:\n    cycles+=1; j=i\n    while not seen[j]:\n     seen[j]=True; j=arr[(j+k)%n]-1\n  best=min(best,k+n-cycles)\n return best\nif __name__==\"__main__\": print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nutanix#4-minimum-operations-to-convert-array",
+  "sourceContentHash": "ab76f4e0e891a4c0a1f56942a41c331eb8cd1f46f6888126083c86798de4fee7",
+  "author": "CSWork"
+}
