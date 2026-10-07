@@ -2,18 +2,6 @@
   "schemaVersion": 1,
   "items": [
     {
-      "id": "oa-point72-3",
-      "sourceContentHash": "16526a6d14700d2e480ed72d599f9459f2793a9236b7393b779f64bc50102803",
-      "packageChecksum": "4f0164009a7e3ffa75b67a636aa502bf999961c8442b0824022797ceb865b360",
-      "editorial": "## 思路\n\n跳过前导 a，随后把遇到的连续非 a 字符都减一；若全串都是 a，只把最后一个 a 变成 z。\n\n## 正确性证明\n\n字典序首先由最早变化位置决定。把前导 a 改成 z 只会变大，因此最优操作从第一个非 a 开始；连续减小字符均严格改善结果，遇到 a 后继续操作会把该位置变成 z 而变差。若不存在非 a，任意操作都会产生 z，放在最右端可使前缀尽可能小。\n\n## 复杂度\n\n时间 O(n)，空间 O(n)。\n\n## 来源说明\n\n题面与约束完整；标准输入输出协议由本站补充。\n\n本站另行整理了标准输入输出协议；不声称原站提供该协议。",
-      "authoredSolutions": [
-        {
-          "language": "python",
-          "code": "def solve(raw):\n s=raw.strip(); out=list(s); i=0\n while i<len(s) and s[i]=='a': i+=1\n if i==len(s): out[-1]='z'\n else:\n  while i<len(s) and s[i]!='a': out[i]=chr(ord(s[i])-1); i+=1\n return ''.join(out)\nif __name__ == '__main__':\n import sys\n print(solve(sys.stdin.read()))\n"
-        }
-      ]
-    },
-    {
       "id": "oa-square-point-2",
       "sourceContentHash": "343e1b28b94f2120daffc93691706188f42026151950ae5f02182f768a887e40",
       "packageChecksum": "87c9851f8db4ff317b3e59b738e8e62f133944d4cfa6ff0b94fe03842adb6ca0",
