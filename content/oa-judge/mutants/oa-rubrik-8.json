@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只考虑直接父节点漏掉远祖复活",
+    "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    tests = next(tokens)\n    output = []\n    for _ in range(tests):\n        n, m = next(tokens), next(tokens)\n        previous = [0] * (m + 2)\n        for row in range(n):\n            current = [0] * (m + 2)\n            states = []\n            for column in range(1, m + 1):\n                value = next(tokens)\n                ancestor = max(previous[column-1], previous[column], previous[column+1])\n                states.append('1' if ancestor > value else '0')\n                current[column] = value\n            previous = current\n            output.append(' '.join(states))\n    return '\\n'.join(output) + '\\n'\n\nif __name__ == '__main__':\n    sys.stdout.write(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "错误地将被杀节点自身也复活",
+    "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    tests = next(tokens)\n    output = []\n    for _ in range(tests):\n        n, m = next(tokens), next(tokens)\n        previous = [0] * (m + 2)\n        for row in range(n):\n            current = [0] * (m + 2)\n            states = []\n            for column in range(1, m + 1):\n                value = next(tokens)\n                ancestor = max(previous[column-1], previous[column], previous[column+1])\n                states.append('1')\n                current[column] = max(value, ancestor)\n            previous = current\n            output.append(' '.join(states))\n    return '\\n'.join(output) + '\\n'\n\nif __name__ == '__main__':\n    sys.stdout.write(solve(sys.stdin.buffer.read()))\n"
+  }
+]

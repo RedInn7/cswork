@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-goldman-sachs-19",
+      "sourceContentHash": "fc75eb32cf15863d53117c21ab1feff5964c61ffc9a09bf8e6bff893bdc290f8",
+      "packageChecksum": "b9c769833f79493555b8fae0d5e80ef267819d8612f1150b98815b5dc2a2299c",
+      "editorial": "## 来源与约定\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Goldman Sachs/goldman-get-minimum-value.md完整定义：任选两个不同下标，将元素绝对差追加到数组；恰好执行k次，最小化数组中的最小值。原范围2≤n≤2000、1≤data[i]≤10^9、1≤k≤10^9全部保留。每次可重用原来的下标，也可选择之前追加的元素；原文不要求所选下标对与先前不同。初始数为正，但追加的差可以为0。本站仅整理标准输入输出，不执行来源代码，也不沿用catalog把答案简化成两数最小差的错误算法。\n\n## 思路\n\nk≥3时答案为0：对同一原下标对操作两次，得到两个相同的新元素，第三次取这两个不同下标的差即可。额外操作不删除已有的0。\n\nk=1时，答案是原最小值和原数组两数最小差的较小者。排序后两数最小差只需检查相邻项。\n\nk=2时，还需枚举第一次得到的每个差d，考察第二次用d与任一原元素相减的结果。对排序数组二分d的位置，仅检查左右最近元素。维护以上所有可能值的最小值。\n\n## 正确性证明\n\n数组元素始终非负，故0是全局下界。k≥3的构造恰好用三步达到它；任意剩余步数都可以重复合法下标对完成，且0一直保留，所以对恰好k步仍最优。\n\n仅一次操作时，最终最小值只可能来自原元素或所选原元素之差，因此枚举这些值既充分又必要。排序后任意非相邻两数差不小于其间某个相邻差，所以相邻差足够。\n\n两次操作时，第一次只能选择原元素并产生d。第二次要么仍选两个原元素，所得最小值已包含在一次操作的候选中；要么选择唯一的新元素d与一个原元素，所得值为|d-a[t]|。不可能选择两个不同的新元素，因为第二步之前只有一个新下标。逐个枚举原数对覆盖全部d，二分两侧邻居给出d到原数组的最短距离。所有候选都由合法操作实现；若最优候选来自较早步骤，补做任何合法操作不会增大已存在的最小值。因此算法恰好覆盖两步最优答案。\n\n## 复杂度\n\nk≥3时读入O(n)；k=1时O(n log n)；k=2时O(n² log n)。存储数组O(n)，不存储全部两数差。n=2000时最多1999000个数对，数值与差均不超过10^9，无大整数增长。\n\n## 独立验证\n\n小规模oracle逐步维护实际数组状态，枚举每一步所有合法下标对，追加差、归并等价排列状态，最终取全部可达状态的最小元素；不使用k≥3捷径、最近邻公式或参考程序。163个唯一输入经过真实子进程对拍。正式大边界使用可证明的结构期望：全部相等时一步即0；在[500000001,999000376]内间距249625的2000项序列，其任意差小于所有原值，最小一步差249625，而两步新差与原值的距离至少999626，所以k=1和k=2答案均249625；k=10^9答案0。这些边界真实运行参考程序。两个语义错误程序正常退出并被正式用例拒绝。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom bisect import bisect_left\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    n, k = values[:2]\n    if k >= 3:\n        return '0'\n    a = sorted(values[2:])\n    answer = a[0]\n    for i in range(1, n):\n        answer = min(answer, a[i] - a[i - 1])\n    if k == 1 or answer == 0:\n        return str(answer)\n    for i in range(1, n):\n        for j in range(i):\n            difference = a[i] - a[j]\n            position = bisect_left(a, difference)\n            if position < n:\n                answer = min(answer, a[position] - difference)\n            if position:\n                answer = min(answer, difference - a[position - 1])\n            if answer == 0:\n                return '0'\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

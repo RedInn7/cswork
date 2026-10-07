@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-8",
+  "title": "网格删除与后代复活",
+  "explanation": "## 来源恢复与规则\n\n固定raw保留完整约束：1≤T≤1000，1≤n,m≤1000，所有测试组Σ(nm)≤10^6，每组K是1到nm的排列。最初每格存活；按K递增依次杀死对应格，然后让其所有严格后代存活。孩子是下一行的左下、正下、右下合法格，递归传播不因某个中间格本来已经存活而停止。被杀格自身不复活，重叠可达路径只影响同一格的状态，不产生多个实体。\n\nraw把右下角写成(n,m)，示例又以(1,2)称首行第二格，属于坐标文字笔误；本站统一0-based坐标0≤r<n、0≤c<m，原K矩阵及输出原样保留。原样例逐事件模拟得到000/000/101，与递归严格后代规则一致。本站第二、三例分别区分远祖传播和多组状态重置。\n\n## 算法\n\n对每格，只需知道所有严格祖先中最大的K。该格在自身K时刻被杀，而每个严格祖先被杀都会令它复活。故最终活当且仅当严格祖先最大K大于自身K。\n\n自上而下扫描，previous[c]保存上一行该格及其所有祖先的最大K。当前格严格祖先最大值就是previous[c−1]、previous[c]、previous[c+1]的最大值，越界位置用0。计算状态后，current[c]再取该最大值与自身K的最大值，供下一行使用。每组重置上一行数组。无需排序或逐事件模拟。\n\n## 正确性证明\n\n一个格的状态只受两类事件影响：自身事件将其置0，严格祖先事件将其置1，其他事件不影响它。K为排列，因此这些事件时刻互异，最终状态由最后发生者唯一决定，即严格祖先最大K大于自身K时为1，否则为0。\n\n第一行无祖先，边界最大值0正确。假设上一行每个缓存都包含该格及全部祖先的最大K。到达当前格的任意祖先路径必须最后经过其三个合法父节点之一；反之每个父节点及其祖先都能到达当前格。因此合并三个缓存恰好取得全部严格祖先最大K，即使多个集合重叠也不影响max。再与自身K取max，得到当前格及祖先的正确缓存。按行归纳，所有状态正确，独立重置确保各组互不影响。\n\n## 复杂度与边界验证\n\n总时间O(Σnm)，递推额外空间O(m)；此Python实现的输入分词和输出缓存另占O(Σnm)。完整支持1000×1000及T=1000、总百万格。输入时刻上限10^6，无大整数计数。\n\n独立oracle按时刻执行真实删除，并沿孩子边遍历所有严格后代逐一复活，不使用祖先最大值递推。最大规模结构化期望独立构造：按行递增时所有祖先更早，最终全死；按行递减时下一行总有更晚父事件，只有首行死；左上角最后、其余按行递增时，只有严格后代锥r>0且c≤r存活；千组逆序单列则每组只有首格死。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    tokens = iter(map(int, raw.split()))\n    tests = next(tokens)\n    output = []\n    for _ in range(tests):\n        n, m = next(tokens), next(tokens)\n        previous = [0] * (m + 2)\n        for row in range(n):\n            current = [0] * (m + 2)\n            states = []\n            for column in range(1, m + 1):\n                value = next(tokens)\n                ancestor = max(previous[column-1], previous[column], previous[column+1])\n                states.append('1' if ancestor > value else '0')\n                current[column] = max(value, ancestor)\n            previous = current\n            output.append(' '.join(states))\n    return '\\n'.join(output) + '\\n'\n\nif __name__ == '__main__':\n    sys.stdout.write(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#8-battle-with-upper-moon-6",
+  "sourceContentHash": "20d1e0b4b1fe5442689c053512cc2fb1bcffb5f149cfb8f28c0ac9297aa9ea67"
+}

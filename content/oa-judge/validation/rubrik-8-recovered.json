@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-rubrik-8",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "formalCases": 37,
+      "negativeControls": [
+        {
+          "name": "只考虑直接父节点漏掉远祖复活",
+          "rejectedByCases": [
+            "本站样例：复活传播超过一层"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "错误地将被杀节点自身也复活",
+          "rejectedByCases": [
+            "原题样例"
+          ],
+          "exitCode": 0
+        }
+      ],
+      "referenceSha256": "39c55a8974e28af3f3d6b35e0bc01f4e1ffbcf9a2cebd0f202df4f1eb74ca23e",
+      "oracleMethod": "按K排序执行删除，每事件沿孩子边遍历严格后代并逐格复活，不使用祖先最大值",
+      "oracleMaxWallSeconds": 0.0833,
+      "largeBoundaries": [
+        {
+          "name": "百万格按行递增全灭",
+          "testGroups": 1,
+          "totalCells": 1000000,
+          "inputBytes": 6888908,
+          "outputBytes": 2000000,
+          "wallSeconds": 0.274,
+          "exitCode": 0,
+          "independentExpected": "由严格行序或最后左上角事件的闭式可达范围构造，不使用参考递推"
+        },
+        {
+          "name": "百万格按行递减仅首行死亡",
+          "testGroups": 1,
+          "totalCells": 1000000,
+          "inputBytes": 6888908,
+          "outputBytes": 2000000,
+          "wallSeconds": 0.2423,
+          "exitCode": 0,
+          "independentExpected": "由严格行序或最后左上角事件的闭式可达范围构造，不使用参考递推"
+        },
+        {
+          "name": "百万格左上角最后删除的斜边复活范围",
+          "testGroups": 1,
+          "totalCells": 1000000,
+          "inputBytes": 6888908,
+          "outputBytes": 2000000,
+          "wallSeconds": 0.2454,
+          "exitCode": 0,
+          "independentExpected": "由严格行序或最后左上角事件的闭式可达范围构造，不使用参考递推"
+        },
+        {
+          "name": "千组千行单列达到总百万格",
+          "testGroups": 1000,
+          "totalCells": 1000000,
+          "inputBytes": 3900005,
+          "outputBytes": 2000000,
+          "wallSeconds": 0.372,
+          "exitCode": 0,
+          "independentExpected": "由严格行序或最后左上角事件的闭式可达范围构造，不使用参考递推"
+        }
+      ]
+    }
+  ],
+  "note": "163唯一输入与4个百万格边界通过真实Python子进程stdin/stdout验证，含1000组每组1000格。负控正常退出且输出不符。未运行GoJudge或发布。"
+}
