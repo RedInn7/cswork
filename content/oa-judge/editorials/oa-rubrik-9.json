@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-9",
+  "title": "分段平均值的严格双坡计数",
+  "explanation": "## 来源恢复与计数协议\n\n固定 raw 题面明确：2≤n≤100，元素在[-10^9,10^9]，至少3个分段，每段以平均值代表，代表序列先严格上升再严格下降。峰必须在内部，两侧各至少发生一次严格变化；相等平均值不合法，纯递增或纯递减都不计。分段为保持原顺序的非空连续段，覆盖整个数组，不同切点集合视为不同方案。\n\nraw 没有取模要求，但 starter 使用 int 返回类型，无法覆盖完整范围。本站明确输出精确非负整数，不取模、不溢出；这是本站输出协议，不能据此推断原平台 int 的溢出或取模规则。整理版题解自称简版，擅加 mod 10^9+7 且允许单调，因此不作为本题规则依据。两个原样例分别为3和49；第三个公开例为本站补充。\n\n## 动态规划\n\n用前缀和计算段和，比较两段平均值时交叉乘长度，不使用浮点数。rise[i][j] 表示覆盖前j个元素、末段为[i,j)、已经至少上升一次且尚未下降的方案数；fall[i][j] 表示同样末段、已经有上升也有下降并处于下降阶段的方案数。枚举前一段[h,i)：若它的均值严格小于当前段，则只能从rise[h][i]转移；当h=0时可由第一段启动一次上升，额外加1。若前段均值严格大于当前段，可以从rise或fall转入fall。均值相等不转移。最终只累加fall[i][n]。\n\n## 正确性证明\n\n任意划分有唯一的末段和前一段。比较这两段均值后，上升阶段只能接严格更大的均值；首次下降由已有上升状态进入fall，之后只能继续严格下降。首段只能在接上第二个更大均值段时进入rise，因此rise至少有2段，fall至少有3段且两坡均非空。反之，每条转移都产生合法的对应阶段划分，不会允许回升或相等。末段前驱唯一，所以不重计；所有合法划分最终都在某个fall[i][n]中，求和即精确方案数。\n\n## 大整数、复杂度与验证\n\n时间O(n^3)，空间O(n^2)。总切点集合最多2^(n−1)，n=100时计数最多需要100位无符号二进制容量；Python整数、Java BigInteger、C++ boost::multiprecision::cpp_int或Go math/big可直接表示。交叉积绝对值至多10^13，64位足够，但计数不能用64位。\n\n独立小规模oracle枚举全部切点，用Fraction求平均值并枚举内部峰。大边界另用「唯一峰段」分解：分别计算严格递增前缀和严格递减后缀，枚举峰段，两侧必须各至少一个段，组合计数。这与参考的上升/下降阶段递推不同，并使用有理数比较。\n\n严格单调原数组的任意连续段均值也严格单调，所以答案0；全相等亦为0。数组[1,2,…,50,50,…,2,1]的精确答案是526947368435520933960755133783，需要99位，已由两种独立实现一致确认。整体加同一常数不改变任何均值比较，因此其全负平移版本计数相同。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, arr = data[0], data[1:]\n    prefix = [0]\n    for value in arr:\n        prefix.append(prefix[-1] + value)\n    rise = [[0] * (n + 1) for _ in range(n)]\n    fall = [[0] * (n + 1) for _ in range(n)]\n    for i in range(1, n):\n        for j in range(i + 1, n + 1):\n            new_sum = prefix[j] - prefix[i]\n            new_size = j - i\n            up = down = 0\n            for h in range(i):\n                previous_cross = (prefix[i] - prefix[h]) * new_size\n                new_cross = new_sum * (i - h)\n                if previous_cross < new_cross:\n                    up += rise[h][i] + (h == 0)\n                elif previous_cross > new_cross:\n                    down += rise[h][i] + fall[h][i]\n            rise[i][j], fall[i][j] = up, down\n    answer = sum(fall[i][n] for i in range(n))\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/rubrik#9-bitonic-partitioning",
+  "sourceContentHash": "5bf6b2a5663023323a71a7a300747b532fa99341f1f6840535edeb33b65c4e52"
+}

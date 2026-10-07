@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误把删除合并当作最大连续子数组",
+    "code": "import sys\na=list(map(int,sys.stdin.buffer.read().split()))[1:]\nbest=current=a[0]\nfor value in a[1:]:\n    current=max(value,current+value)\n    best=max(best,current)\nprint(best)\n"
+  },
+  {
+    "name": "忽略奇偶不可混合而累加全部正值",
+    "code": "import sys\na=list(map(int,sys.stdin.buffer.read().split()))[1:]\npositive=sum(value for value in a if value>0)\nprint(positive if positive>0 else max(a))\n"
+  }
+]

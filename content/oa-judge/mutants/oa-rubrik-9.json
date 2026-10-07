@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误将单调划分也算作双坡",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, arr = data[0], data[1:]\n    prefix = [0]\n    for value in arr:\n        prefix.append(prefix[-1] + value)\n    rise = [[0] * (n + 1) for _ in range(n)]\n    fall = [[0] * (n + 1) for _ in range(n)]\n    for i in range(1, n):\n        for j in range(i + 1, n + 1):\n            new_sum = prefix[j] - prefix[i]\n            new_size = j - i\n            up = down = 0\n            for h in range(i):\n                previous_cross = (prefix[i] - prefix[h]) * new_size\n                new_cross = new_sum * (i - h)\n                if previous_cross < new_cross:\n                    up += rise[h][i] + (h == 0)\n                elif previous_cross > new_cross:\n                    down += rise[h][i] + fall[h][i] + (h == 0)\n            rise[i][j], fall[i][j] = up, down\n    answer = 1 + sum(fall[i][n] + rise[i][n] for i in range(n))\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "擅自对精确计数取模",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, arr = data[0], data[1:]\n    prefix = [0]\n    for value in arr:\n        prefix.append(prefix[-1] + value)\n    rise = [[0] * (n + 1) for _ in range(n)]\n    fall = [[0] * (n + 1) for _ in range(n)]\n    for i in range(1, n):\n        for j in range(i + 1, n + 1):\n            new_sum = prefix[j] - prefix[i]\n            new_size = j - i\n            up = down = 0\n            for h in range(i):\n                previous_cross = (prefix[i] - prefix[h]) * new_size\n                new_cross = new_sum * (i - h)\n                if previous_cross < new_cross:\n                    up += rise[h][i] + (h == 0)\n                elif previous_cross > new_cross:\n                    down += rise[h][i] + fall[h][i]\n            rise[i][j], fall[i][j] = up, down\n    answer = sum(fall[i][n] for i in range(n))\n    return str(answer % 1000000007)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  }
+]

@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-goldman-sachs-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 39,
+      "referenceFormalCases": 42,
+      "negativeControls": [
+        {
+          "name": "相同字母后段覆盖前段而非累加",
+          "rejectedByCases": [
+            0,
+            2,
+            7,
+            11,
+            12,
+            13,
+            15,
+            16,
+            18,
+            21,
+            22,
+            23,
+            24,
+            25,
+            27,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            40,
+            41
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "按字母降序输出而非升序",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            8,
+            11,
+            14,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            40,
+            41
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "d6a59e8d510970c5156669756f3b30bcf09491aa7eaeda69c783dad1dcf94f0b",
+      "oracleMethod": "Regex segment parsing, actual character expansion, sorting and run-length encoding; no 26-bucket count accumulation.",
+      "largeBoundaries": [
+        {
+          "name": "满长度50000段",
+          "length": 100000,
+          "expectedOutput": "a50000"
+        },
+        {
+          "name": "满长度高总频次",
+          "length": 100000,
+          "expectedOutput": "a24975000"
+        },
+        {
+          "name": "满长度段频次1000",
+          "length": 100000,
+          "expectedOutput": "z20000000"
+        },
+        {
+          "name": "99999位数字且数值1",
+          "length": 100000,
+          "expectedOutput": "a1"
+        },
+        {
+          "name": "99999位数字且数值1000",
+          "length": 100000,
+          "expectedOutput": "z1000"
+        },
+        {
+          "name": "满长度覆盖所有字母",
+          "length": 100000,
+          "expectedOutput": "a1924b1924c1923d1923e1923f1923g1923h1923i1923j1923k1923l1923m1923n1923o1923p1923q1923r1923s1923t1923u1923v1923w1923x1923y1923z1923"
+        },
+        {
+          "name": "长前导零后继续解析",
+          "length": 100000,
+          "expectedOutput": "a2b4"
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.405
+    }
+  ]
+}
