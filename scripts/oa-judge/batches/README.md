@@ -1,5 +1,7 @@
 # 独立批次
 
+2026-10-07：`uber-19-recovered` 完整恢复 Uber #19 的 20 万节点输入范围。参考解用迭代树形 DP 与一次路径重建，`oa-tree-max-path` 从输入独立核验任意最优非空路径，接受反向、等优分支、重复值与零延伸。前三行保留原题全树和、最大路径和及值序列；第四行节点编号见证明示为本站 I/O 扩展。163 个全端点穷举 oracle 加37个正式测试共200次自有 GoJudge 运行通过，两个错误程序被拒。正式样例包括原始三节点样例，最大输入4288898字节、已测最长输出3488922字节，不缩减原约束。
+
 2026-10-07：`amazon-82-recovered` 恢复 Amazon #82。完整保留 n、m、库存各至 10^6 的原范围；频数端点算法由 163 个唯一暴力输入独立对照，36 个正式用例含 8,000,016 字节最大输入。用户自有 5054 GoJudge 的 199 次运行全部通过，两个正常退出错误程序均被拒。库存耗尽即停止的补充语义由固定来源三语言代码交叉佐证，题面明确标注；本地生成器不会执行上游代码。沙箱通过仍不等于生产发布。Google 八道剩余题的原始快照复审保存在 `source-evidence/google-unresolved-recheck-20261007.json`；Amazon #83 的过时容量理由已更正为真实的错例和算法资源问题。
 
 `python3 scripts/oa-judge/batches/google_next.py` 生成 Google 第二批 10 题，只写本批次题包、参考程序、对照数据、错误程序、`content/oa-judge/batches/google-next.json` 和 `content/oa-judge/validation/google-next.json`，不会修改线上使用的主 registry 或沙箱验收报告。

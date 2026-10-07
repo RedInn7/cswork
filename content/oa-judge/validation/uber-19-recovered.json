@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-uber-19",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "formalCases": 37,
+      "negativeControls": [
+        {
+          "name": "只考虑经过根节点的路径",
+          "rejectedByCases": [
+            "本站样例：全负且最优不经过根"
+          ],
+          "exitCode": 0
+        },
+        {
+          "name": "全负树错误允许空路径",
+          "rejectedByCases": [
+            "本站样例：全负且最优不经过根"
+          ],
+          "exitCode": 0
+        }
+      ],
+      "referenceSha256": "1053a04bc3ad7ff00c03ffa7a183c9708e2792f8d0c78db9d310566a66abf0d5",
+      "oracleMethod": "小树枚举全部起点与终点，在无向邻接表逐条扫描唯一路径；不使用树形DP。大正链使用闭式总和，完全树用独立两次无权最远点搜索，非正边界用最大单节点。",
+      "oracleMaxWallSeconds": 0.0242,
+      "largeBoundaries": [
+        {
+          "name": "20万节点正上界链和最长输出",
+          "n": 200000,
+          "inputBytes": 4088898,
+          "outputBytes": 3488922,
+          "maximumPathSum": 200000000000000,
+          "wallSeconds": 0.1726,
+          "exitCode": 0
+        },
+        {
+          "name": "20万节点全负下界链",
+          "n": 200000,
+          "inputBytes": 4288898,
+          "outputBytes": 48,
+          "maximumPathSum": -1000000000,
+          "wallSeconds": 0.1225,
+          "exitCode": 0
+        },
+        {
+          "name": "20万节点全零链",
+          "n": 200000,
+          "inputBytes": 2288898,
+          "outputBytes": 13,
+          "maximumPathSum": 0,
+          "wallSeconds": 0.0952,
+          "exitCode": 0
+        },
+        {
+          "name": "20万节点重复正上界完全二叉树",
+          "n": 200000,
+          "inputBytes": 4088898,
+          "outputBytes": 561,
+          "maximumPathSum": 35000000000,
+          "wallSeconds": 0.1237,
+          "exitCode": 0
+        },
+        {
+          "name": "20万节点全负完全二叉树",
+          "n": 200000,
+          "inputBytes": 2488898,
+          "outputBytes": 21,
+          "maximumPathSum": -1,
+          "wallSeconds": 0.1006,
+          "exitCode": 0
+        },
+        {
+          "name": "20万节点全零完全二叉树",
+          "n": 200000,
+          "inputBytes": 2288898,
+          "outputBytes": 13,
+          "maximumPathSum": 0,
+          "wallSeconds": 0.0949,
+          "exitCode": 0
+        }
+      ]
+    }
+  ],
+  "note": "实际Python子进程stdin/stdout验证参考程序，独立检查输出四行、总和、最优和、值与ID对应、节点唯一性和边合法性。仅候选，未连接GoJudge或发布。"
+}
