@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-22",
+      "sourceContentHash": "b367c3eb964fd009c6c5a789c47990af04792b02f3ebb4a0482f7e83f3c65b34",
+      "packageChecksum": "d35fd89d8fd4676feec7fdd78de406224b852f469c35eca2863bf6c82a475182",
+      "editorial": "## 思路\n\nT 时刻的火势半径为 R×T。遍历完整整数格点矩形，对每个点检查到各火源的平方距离；若所有距离都大于半径平方，该点安全。题目样例的坐标列表按 0..N、0..M 的闭区间逐点枚举。\n\n## 正确性证明\n\n每个格点只在双层循环中访问一次。对该点，算法恰好检查每个起火点；存在距离平方不超过半径平方的火源当且仅当点位于对应闭圆内，故算法会且仅会将未进入任何火源闭圆的点计为安全点。样例确定边界格点也属于平面，因此遍历区间必须包含 N 和 M。\n\n## 复杂度\n\n时间 O(NMK)，空间 O(K)；本站 N,M,K≤100。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    n, m, k = values[:3]\n    points = [(values[i], values[i + 1]) for i in range(3, 3 + 2 * k, 2)]\n    radius = values[3 + 2 * k] * values[4 + 2 * k]\n    radius2 = radius * radius\n    safe = 0\n    for x in range(n + 1):\n        for y in range(m + 1):\n            if all((x - fx) ** 2 + (y - fy) ** 2 > radius2 for fx, fy in points):\n                safe += 1\n    return str(safe)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-intuit-2",
+      "sourceContentHash": "79360b13168df2814dba5041eb72728e69dd998864384fce29d1d2f84e0151b0",
+      "packageChecksum": "bde4d6080dd45603f4540cabfdb7d67cd366288c52a2b1b0c360bac4e977eff4",
+      "editorial": "## 思路\n\n用双端队列保存每项的原始下标和值。每轮弹出前 min(x,队列长度) 项，扫描得到第一个最大值并记下其下标；将该批其他项的值减 1、下限设为 0，再按原顺序放回队尾。\n\n## 正确性证明\n\n每轮取出的 batch 与规则规定的队头至多 x 项完全相同。按从前到后的扫描只在严格变大时更新最大位置，因此并列时保留最早出现者。该项被记录且不放回；其余项逐个执行 max(0,value−1) 并按原顺序入队，恰与题目操作一致。对轮数归纳，队列状态和已选下标序列均与题意一致。\n\n## 复杂度\n\n时间 O(x²)，空间 O(n+x)；本站 x,n≤1000。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, x = data[:2]\n    queue = deque((index + 1, value) for index, value in enumerate(data[2:2+n]))\n    selected = []\n    for _ in range(x):\n        batch = [queue.popleft() for _ in range(min(x, len(queue)))]\n        chosen = max(range(len(batch)), key=lambda i: batch[i][1])\n        selected.append(batch[chosen][0])\n        for index, value in batch[:chosen] + batch[chosen + 1:]:\n            queue.append((index, max(0, value - 1)))\n    return \" \".join(map(str, selected))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

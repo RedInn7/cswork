@@ -1,0 +1,195 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-intuit-22",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "火势扩散后还剩多少安全格点",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Intuit",
+      "网格",
+      "几何"
+    ],
+    "description": "矩形平面内有 K 个起火格点。火从每个起点向外扩散成圆，t=1 时半径为 R，之后每单位时间半径增加 R。求 T 时刻未被任何火源触及的整数格点数。",
+    "input": "第一行输入 N M K；随后 K 行输入火源坐标 x y；最后一行输入 R T。按题目样例，整数格点包含边界，即 0≤x≤N、0≤y≤M。本站限制：1≤N,M≤100，1≤K≤100，0≤R,T≤100，火源坐标在上述格点范围内。",
+    "output": "输出未触火的整数格点数量。距任一火源小于或等于 R×T 的点视为已触火。",
+    "explanation": "题目样例枚举的边界点说明该平面共有 (N+1)×(M+1) 个整数格点；圆周也算被触及。本站补充了输入范围以保证枚举时间可控。",
+    "hints": [
+      "对每个边界格点，比较它到所有火源的平方距离与 (R×T)²，无需计算平方根。"
+    ],
+    "timeLimit": 4,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例与边界 1",
+      "input": "4 4 2\n1 1 3 3\n1 2\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 2",
+      "input": "1 1 1\n0 0\n1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 3",
+      "input": "1 1 1\n0 0\n0 10\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 4",
+      "input": "4 4 1\n2 2\n0 0\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 5",
+      "input": "2 3 2\n0 0 2 3\n1 1\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 6",
+      "input": "5 4 2\n0 2 5 2\n1 1\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 7",
+      "input": "3 3 2\n1 1 1 1\n1 1\n",
+      "expectedOutput": "11\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 8",
+      "input": "2 2 1\n0 0\n10 10\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 9",
+      "input": "3 2 2\n0 1 3 1\n1 2\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 10",
+      "input": "1 4 1\n1 0\n1 1\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 11",
+      "input": "4 1 1\n2 1\n1 1\n",
+      "expectedOutput": "6\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 12",
+      "input": "6 6 2\n0 0 6 6\n2 1\n",
+      "expectedOutput": "37\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 13",
+      "input": "5 5 1\n2 2\n1 2\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 14",
+      "input": "4 3 2\n0 3 4 0\n1 1\n",
+      "expectedOutput": "14\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 15",
+      "input": "10 9 1\n5 4\n2 3\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 16",
+      "input": "7 8 3\n0 8 7 0 7 8\n1 3\n",
+      "expectedOutput": "39\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 17",
+      "input": "11 13 2\n3 7 9 2\n0 1\n",
+      "expectedOutput": "166\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 18",
+      "input": "9 8 1\n4 4\n3 1\n",
+      "expectedOutput": "61\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 19",
+      "input": "13 10 2\n0 0 13 10\n2 2\n",
+      "expectedOutput": "120\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 20",
+      "input": "5 12 2\n2 6 4 9\n1 4\n",
+      "expectedOutput": "22\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 21",
+      "input": "100 100 100\n0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n0 100\n",
+      "expectedOutput": "10200\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 22",
+      "input": "100 100 1\n50 50\n100 100\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 23",
+      "input": "2 2 1\n2 2\n0 1\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

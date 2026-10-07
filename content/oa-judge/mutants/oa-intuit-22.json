@@ -1,0 +1,53 @@
+[
+  {
+    "name": "遗漏平面最外侧一行和一列",
+    "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    n, m, k = values[:3]\n    points = [(values[i], values[i + 1]) for i in range(3, 3 + 2 * k, 2)]\n    radius = values[3 + 2 * k] * values[4 + 2 * k]\n    radius2 = radius * radius\n    safe = 0\n    for x in range(n):\n        for y in range(m):\n            if all((x - fx) ** 2 + (y - fy) ** 2 > radius2 for fx, fy in points):\n                safe += 1\n    return str(safe)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22
+    ]
+  },
+  {
+    "name": "把圆周边界误判为安全",
+    "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    n, m, k = values[:3]\n    points = [(values[i], values[i + 1]) for i in range(3, 3 + 2 * k, 2)]\n    radius = values[3 + 2 * k] * values[4 + 2 * k]\n    radius2 = radius * radius\n    safe = 0\n    for x in range(n + 1):\n        for y in range(m + 1):\n            if all((x - fx) ** 2 + (y - fy) ** 2 >= radius2 for fx, fy in points):\n                safe += 1\n    return str(safe)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      9,
+      10,
+      11,
+      12,
+      13,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      22
+    ]
+  }
+]
