@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误按最多修改两个元素",
+    "code": "import sys\nx=list(map(int,sys.stdin.read().split()));n=x[0];a=sorted(x[1:])\nprint(0 if n<=3 else min(a[n-3+i]-a[i] for i in range(3)))\n"
+  },
+  {
+    "name": "只枚举前三种边界保留方案",
+    "code": "import sys\nx=list(map(int,sys.stdin.read().split()));n=x[0];a=sorted(x[1:])\nprint(0 if n<=4 else min(a[n-4+i]-a[i] for i in range(3)))\n"
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-google-48",
+      "sourceContentHash": "60efd7fedc0458888bbd6e558a07eb6c952a417fe99fb9068d73d5fa0ac3117e",
+      "packageChecksum": "0451bbca07cb04fc39a141fb0e9f1b77f8a7b658ee5c7a33de87c0391fba0d4c",
+      "editorial": "## 思路\n\n最多修改 3 个元素。排序后，修改中间元素不会比修改端点更有效，所以只需枚举从左侧移除 i 个、右侧移除 3-i 个元素（i=0,1,2,3），剩余区间宽度为 `A[n-4+i]-A[i]`，取最小值。若 n≤4，可把数组中至多三个元素改成剩下那个值，答案为 0。\n\n## 正确性\n\n修改至多三个元素后，至少有 n-3 个原值保留。固定最小、最大保留值后，所有位于它们之间的元素都无需修改，而区间之外的被修改值可放入最终范围内。故最优解等价于在排序数组中选一个连续的 n-3 项窗口作为保留值；任何非连续选法的跨度不小于覆盖它们的连续窗口。连续窗口共有四种端点分配，枚举它们即可得到最小振幅。n≤4 时能令所有最终值相同，振幅为 0。\n\n## 复杂度\n\n排序 O(n log n)，扫描 O(1)，空间 O(n)（排序副本/排序存储）。\n\n## 来源与本站约定\n\nOAMaster 固定快照的题干被截断且没有约束：https://oamaster.com/docs/companies/google#48-min-amplitude（上游提交 `e66f809f4c953bce129f68491726176615db6afc`，内容指纹 `60efd7fedc0458888bbd6e558a07eb6c952a417fe99fb9068d73d5fa0ac3117e`）。同题 Google OA 来源完整保留“最多替换三个元素为任意整数”、两个与 OAMaster 一致的示例及约束：https://www.fastprep.io/problems/google-min-amplitude。本站据此补齐缺失题面；标准输入输出格式为本站补充。没有将该完整规则或约束归因于 OAMaster 原始快照。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if not values:\n        raise ValueError(\"expected array length and values\")\n    n = values[0]\n    arr = values[1:]\n    if not 1 <= n <= 200_000 or len(arr) != n:\n        raise ValueError(\"expected 1 <= n <= 200000 and exactly n values\")\n    if any(value < -1_000_000_000 or value > 1_000_000_000 for value in arr):\n        raise ValueError(\"array value outside the site-supported range\")\n    if n <= 4:\n        return \"0\"\n    arr.sort()\n    return str(min(arr[n - 4 + i] - arr[i] for i in range(4)))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

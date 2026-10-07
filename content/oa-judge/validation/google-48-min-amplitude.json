@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261006,
+  "problems": [
+    {
+      "id": "oa-google-48",
+      "oracleCases": 227,
+      "uniqueOracleInputs": 227,
+      "publicCases": 2,
+      "hiddenCases": 24,
+      "negativeControls": [
+        {
+          "name": "误按最多修改两个元素",
+          "rejectedByCases": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            12,
+            13,
+            15,
+            17,
+            19,
+            21,
+            22,
+            23,
+            24,
+            25
+          ]
+        },
+        {
+          "name": "只枚举前三种边界保留方案",
+          "rejectedByCases": [
+            5,
+            21,
+            22
+          ]
+        }
+      ],
+      "referenceSha256": "da6b184272ec130fa5a4176c14ad496c156baffb1be9c7cbac8026d811e2f134"
+    }
+  ],
+  "note": "用暴力枚举每个小数组中被替换的索引集合构造独立oracle；另用N=200000顺序数组验证最大规模。GoJudge报告已绑定。"
+}
