@@ -65,6 +65,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-json-diff'
     | 'oa-longest-palindrome'
     | 'oa-piecewise-linear'
+    | 'oa-k-level-permutation'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -286,6 +287,7 @@ export const ojImportSchema = z
           'oa-json-diff',
           'oa-longest-palindrome',
           'oa-piecewise-linear',
+          'oa-k-level-permutation',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -350,7 +352,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-longest-palindrome' &&
         data.problem.id !== 'oa-cisco-29') ||
       (data.problem.checker === 'oa-piecewise-linear' &&
-        data.problem.id !== 'oa-two-sigma-5')
+        data.problem.id !== 'oa-two-sigma-5') ||
+      (data.problem.checker === 'oa-k-level-permutation' &&
+        data.problem.id !== 'oa-amazon-151')
     )
       ctx.addIssue({
         code: 'custom',

@@ -78,6 +78,7 @@ async function run(code, input, spec) {
       'oa-json-diff',
       'oa-longest-palindrome',
       'oa-piecewise-linear',
+      'oa-k-level-permutation',
     ].includes(spec.checker) &&
       spec.timeLimit > 0 &&
       spec.timeLimit <= 10,
