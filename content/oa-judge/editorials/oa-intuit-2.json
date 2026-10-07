@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-2",
+  "title": "按轮次从队列中选出最大值",
+  "explanation": "## 思路\n\n用双端队列保存每项的原始下标和值。每轮弹出前 min(x,队列长度) 项，扫描得到第一个最大值并记下其下标；将该批其他项的值减 1、下限设为 0，再按原顺序放回队尾。\n\n## 正确性证明\n\n每轮取出的 batch 与规则规定的队头至多 x 项完全相同。按从前到后的扫描只在严格变大时更新最大位置，因此并列时保留最早出现者。该项被记录且不放回；其余项逐个执行 max(0,value−1) 并按原顺序入队，恰与题目操作一致。对轮数归纳，队列状态和已选下标序列均与题意一致。\n\n## 复杂度\n\n时间 O(x²)，空间 O(n+x)；本站 x,n≤1000。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, x = data[:2]\n    queue = deque((index + 1, value) for index, value in enumerate(data[2:2+n]))\n    selected = []\n    for _ in range(x):\n        batch = [queue.popleft() for _ in range(min(x, len(queue)))]\n        chosen = max(range(len(batch)), key=lambda i: batch[i][1])\n        selected.append(batch[chosen][0])\n        for index, value in batch[:chosen] + batch[chosen + 1:]:\n            queue.append((index, max(0, value - 1)))\n    return \" \".join(map(str, selected))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/intuit#2-the-chosen-ones--queue-iterations",
+  "sourceContentHash": "79360b13168df2814dba5041eb72728e69dd998864384fce29d1d2f84e0151b0",
+  "author": "CSWork"
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-22",
+  "title": "火势扩散后还剩多少安全格点",
+  "explanation": "## 思路\n\nT 时刻的火势半径为 R×T。遍历完整整数格点矩形，对每个点检查到各火源的平方距离；若所有距离都大于半径平方，该点安全。题目样例的坐标列表按 0..N、0..M 的闭区间逐点枚举。\n\n## 正确性证明\n\n每个格点只在双层循环中访问一次。对该点，算法恰好检查每个起火点；存在距离平方不超过半径平方的火源当且仅当点位于对应闭圆内，故算法会且仅会将未进入任何火源闭圆的点计为安全点。样例确定边界格点也属于平面，因此遍历区间必须包含 N 和 M。\n\n## 复杂度\n\n时间 O(NMK)，空间 O(K)；本站 N,M,K≤100。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    n, m, k = values[:3]\n    points = [(values[i], values[i + 1]) for i in range(3, 3 + 2 * k, 2)]\n    radius = values[3 + 2 * k] * values[4 + 2 * k]\n    radius2 = radius * radius\n    safe = 0\n    for x in range(n + 1):\n        for y in range(m + 1):\n            if all((x - fx) ** 2 + (y - fy) ** 2 > radius2 for fx, fy in points):\n                safe += 1\n    return str(safe)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/intuit#22-spreading-fire-intuit-india",
+  "sourceContentHash": "b367c3eb964fd009c6c5a789c47990af04792b02f3ebb4a0482f7e83f3c65b34",
+  "author": "CSWork"
+}

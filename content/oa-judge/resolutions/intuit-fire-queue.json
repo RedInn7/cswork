@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-intuit-22",
+      "batch": "intuit-fire-queue",
+      "sourceContentHash": "b367c3eb964fd009c6c5a789c47990af04792b02f3ebb4a0482f7e83f3c65b34",
+      "previousReason": "未给 N/M/K、坐标域约定或限制；无法判断输入点对应的整数格点范围及可接受算法复杂度。",
+      "reason": "原题样例列出的安全点唯一支持闭格点域 0≤x≤N、0≤y≤M，触火边界按闭圆处理；本站明确 N,M,K,R,T≤100，用 O(NMK) 扫描，并用独立圆盘并集 oracle、样例逐点复算和两个错误程序验证，GoJudge 通过。"
+    },
+    {
+      "id": "oa-intuit-2",
+      "batch": "intuit-fire-queue",
+      "sourceContentHash": "79360b13168df2814dba5041eb72728e69dd998864384fce29d1d2f84e0151b0",
+      "previousReason": "需要题源补齐 n、x 上限；直接模拟在未给约束时可能达到 O(x²)，无法保证线上评测时限。",
+      "reason": "原题逐轮取队头、最大值平局取最先、其余值减一并保持顺序的规则明确；本站设 1≤x≤n≤1000、非负值上限 10⁹，直接双端队列模拟为 O(x²)。源示例没有输出；本站按题面独立复算为 [5,6,7,4,1]，另有 120 组独立数组模拟 oracle、n=x=1000 的 50 万级队列处理边界和两个正常退出错误程序，GoJudge 通过。"
+    }
+  ]
+}

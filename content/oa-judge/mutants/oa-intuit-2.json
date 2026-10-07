@@ -1,0 +1,33 @@
+[
+  {
+    "name": "并列最大值错误选择靠后的元素",
+    "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, x = data[:2]\n    queue = deque((index + 1, value) for index, value in enumerate(data[2:2+n]))\n    selected = []\n    for _ in range(x):\n        batch = [queue.popleft() for _ in range(min(x, len(queue)))]\n        chosen = max(range(len(batch)), key=lambda i: (batch[i][1], i))\n        selected.append(batch[chosen][0])\n        for index, value in batch[:chosen] + batch[chosen + 1:]:\n            queue.append((index, max(0, value - 1)))\n    return \" \".join(map(str, selected))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      0,
+      3,
+      4,
+      8,
+      9,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      19,
+      20,
+      21,
+      22,
+      24
+    ]
+  },
+  {
+    "name": "零值仍被递减为负数",
+    "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, x = data[:2]\n    queue = deque((index + 1, value) for index, value in enumerate(data[2:2+n]))\n    selected = []\n    for _ in range(x):\n        batch = [queue.popleft() for _ in range(min(x, len(queue)))]\n        chosen = max(range(len(batch)), key=lambda i: batch[i][1])\n        selected.append(batch[chosen][0])\n        for index, value in batch[:chosen] + batch[chosen + 1:]:\n            queue.append((index, value - 1))\n    return \" \".join(map(str, selected))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n",
+    "rejectedByCases": [
+      0,
+      11
+    ]
+  }
+]
