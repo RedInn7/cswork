@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只检查 N 本身，不向两侧寻找",
+    "code": "import sys\nn=int(sys.stdin.read())\nb=bin(n)[2:]\nprint(0 if b==b[::-1] else 1)\n"
+  },
+  {
+    "name": "只生成不大于 N 的回文数，遗漏向上最近值",
+    "code": "import sys\nn=int(sys.stdin.read()); best=n\nfor x in range(max(0,n-1000),n+1):\n b=bin(x)[2:]\n if b==b[::-1]: best=min(best,n-x)\nprint(best)\n"
+  }
+]
