@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-79",
+      "sourceContentHash": "0f7b693faeac3e271c461bdcbccacc2c053662f3b0adbd20ca59a0b3a8959106",
+      "packageChecksum": "276af286d8b53baafa18444a1c426459c4197750812eba521c07249e7ea48455",
+      "editorial": "## 思路\n\n先二分能负担的完整轮数 k。每轮所有商品各买一次，第 i 件商品逐轮价格为 cost[i]、2cost[i]……，所以 k 轮总花费为 sum(cost)×k×(k+1)/2。扣除后，从第一件开始按第 k+1 轮单价顺序检查；遇到买不起的第一件就停止。\n\n## 正确性\n\n完整轮的费用单调递增，二分得到的 k 正是可完整完成的最大轮数。此后购买顺序及每件商品的下一次价格由题意确定，扫描至第一件买不起处即为停止点；按 OAMaster 三种语言同源解法补明 stop 规则，因此所得数量最大且唯一。\n\n## 复杂度\n\n时间 O(n log m)，空间 O(n)（保存输入）。\n\n## 规则来源\n\n固定 OAMaster 版本 e66f809 的 Python、Java、C++ 解法均在第一件买不起时 break。题干没有给出输入输出样例；本站自建样例明确区分停止与跳过。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(text):\n    data = list(map(int, text.split()))\n    n, money = data[0], data[1]\n    costs = data[2:2 + n]\n    total_cost = sum(costs)\n\n    def spent_for_rounds(rounds):\n        return total_cost * rounds * (rounds + 1) // 2\n\n    low, high = 0, 1\n    while spent_for_rounds(high) <= money:\n        high *= 2\n    while low + 1 < high:\n        middle = (low + high) // 2\n        if spent_for_rounds(middle) <= money:\n            low = middle\n        else:\n            high = middle\n\n    rounds = low\n    remaining = money - spent_for_rounds(rounds)\n    bought = rounds * n\n    next_multiplier = rounds + 1\n    for item_cost in costs:\n        price = next_multiplier * item_cost\n        if price > remaining:\n            break\n        remaining -= price\n        bought += 1\n    return str(bought)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
