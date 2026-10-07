@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-capital-one-14",
+      "batch": "capital-one-14-16-recovered",
+      "sourceContentHash": "cde232d40384b50f2ae736ba4ffd40cd892f2386a29e25d3ac8fc7b32ab34586",
+      "previousReason": "原始题面自己声明 t 的语义有歧义（给定 t 检查一次，还是可以选择 t）；不擅自选择其中一种。",
+      "reason": "同一固定版本原题的完整描述明确说 t 是给定值并检查一次右旋结果；保留这一句及其样例，采用 O(n) 相邻比较，不再把可选择 t 当作候选语义。"
+    },
+    {
+      "id": "oa-capital-one-16",
+      "batch": "capital-one-14-16-recovered",
+      "sourceContentHash": "12cd52cc18f6280d1307f1b6c323569c86b0343f3df6bd5c69c9ee4654df7708",
+      "previousReason": "原始规则称系统内人数大于 10 时拒绝，但样例又称 12 人同时到达时前 11 人均服务；这两个规则给出不同容量。",
+      "reason": "固定源同时写明当前系统人数大于 10 才拒绝，并给出同刻 12 人时前 11 人接收、第 12 人拒绝；两者共同确定接纳阈值为当前人数≤10（接纳后最多11人）。按源题非递减到达与同刻输入顺序处理，完成时刻先离开。"
+    }
+  ]
+}

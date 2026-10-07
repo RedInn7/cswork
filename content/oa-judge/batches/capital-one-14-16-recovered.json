@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-capital-one-14",
+      "sourceContentHash": "cde232d40384b50f2ae736ba4ffd40cd892f2386a29e25d3ac8fc7b32ab34586",
+      "packageChecksum": "dd4467613ccd8c5f3a7acef449a95bbb5dfe18bd71b5741f5fa73b7f31c73da6",
+      "editorial": "## 思路\n\n题目给定本次右旋位数 t，不需要选择 t。旋转后第 i 个元素等于原数组下标 `(i-t) mod n` 的元素。按旋转后的顺序扫描相邻元素，只要存在 `a[i] <= a[i+1]` 就不是严格递减。\n\n## 正确性证明\n\n模下标公式恰好把末尾 t 个元素移到数组前端，并保持其余元素相对次序，因此扫描检查的正是旋转后全部 n−1 对相邻元素。严格递减当且仅当每对都满足前者大于后者。\n\n## 复杂度\n\n扫描阶段额外空间 O(1)；读取并保存输入数组需 O(n) 空间。总时间 O(n)。\n\n## 输入约定\n\n原站函数参数为完整输入文本；本站将其整理为 stdin/stdout：n、n 个整数、t。本站采用来源给出的建议范围 `1≤n≤200000`、`0≤t<n` 和 `|nums[i]|≤10^9`。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if not values:\n        raise ValueError(\"expected n, array, and shift t\")\n    n = values[0]\n    if not 1 <= n <= 200000 or len(values) != n + 2:\n        raise ValueError(\"site input requires 1 <= n <= 200000 and n values plus t\")\n    nums, t = values[1:n + 1], values[-1]\n    if not 0 <= t < n or any(not -(10**9) <= x <= 10**9 for x in nums):\n        raise ValueError(\"input is outside the stated constraints\")\n    previous = nums[(n - t) % n]\n    for i in range(1, n):\n        current = nums[(i - t) % n]\n        if previous <= current:\n            return \"false\"\n        previous = current\n    return \"true\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-16",
+      "sourceContentHash": "12cd52cc18f6280d1307f1b6c323569c86b0343f3df6bd5c69c9ee4654df7708",
+      "packageChecksum": "f0369c3395558ce01f74ea7a4e4158ace014a7d7e4f6b0fb3924b034155d2ada",
+      "editorial": "## 思路\n\n按非递减到达时间逐人模拟。维护系统中尚未完成服务的完成时刻队列；到达时先移除所有 `finish≤arrival` 的人，因为在该时刻已经完成并离开。若剩余人数大于 10，则当前人立即离开并输出 null；否则接纳，服务开始于到达时刻与队尾完成时刻的较大值，服务结束时刻为开始时间加 30。\n\n题面规则是“当前人数大于 10 时拒绝”，所以人数恰为 10 时仍接纳；系统接纳后的最大人数为 11。这也与同刻 12 人时前 11 人接收、第 12 人拒绝的样例一致。同刻到达按输入顺序处理。\n\n## 正确性证明\n\n完成时刻队列按服务顺序递增。移除所有不晚于当前到达的完成事件后，它恰好包含此刻仍在服务或等待的人。根据题定阈值判断拒绝/接纳，因此不会漏掉已离开者或错收超限者。接纳时从到达时刻或最后一位完成时刻开始服务，正好满足单服务台 FCFS 规则。\n\n## 复杂度\n\n每个人最多入队和出队一次，时间 O(n)，额外空间 O(n)。\n\n## 输入约定\n\n本站使用 n 加 n 个到达时刻的 stdin/stdout 格式，并采用来源给出的建议范围 `1≤n≤200000`、`0≤arrival[i]≤10^9`，保留原题非递减及同刻输入顺序要求。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom collections import deque\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        raise ValueError(\"expected n and arrival times\")\n    n, arrivals = data[0], data[1:]\n    if not 1 <= n <= 200000 or len(arrivals) != n:\n        raise ValueError(\"site input requires 1 <= n <= 200000 arrivals\")\n    if any(x < 0 or x > 10**9 for x in arrivals):\n        raise ValueError(\"arrival time must be in [0, 10^9]\")\n    if any(arrivals[i] > arrivals[i + 1] for i in range(n - 1)):\n        raise ValueError(\"arrival times must be non-decreasing\")\n    # A finish time equal to a's arrival has already left the system.\n    active_finish_times = deque()\n    result = []\n    for arrival in arrivals:\n        while active_finish_times and active_finish_times[0] <= arrival:\n            active_finish_times.popleft()\n        # Source rule says reject only when current occupancy is > 10;\n        # therefore at most 11 people may be in the system after admission.\n        if len(active_finish_times) > 10:\n            result.append(\"null\")\n            continue\n        start = max(arrival, active_finish_times[-1] if active_finish_times else arrival)\n        result.append(str(start))\n        active_finish_times.append(start + 30)\n    return \" \".join(result)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
