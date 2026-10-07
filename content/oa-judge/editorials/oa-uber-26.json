@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-26",
+  "title": "统计两侧都有更小和更大元素的数量",
+  "explanation": "## 思路\n\n设 lo=min(nums)、hi=max(nums)。数组中的一个位置满足题意，当且仅当其值严格位于 lo 与 hi 之间；逐位置计数，因此相同的中间值不会被去重。\n\n## 正确性证明\n\n若 lo < x < hi，则数组中存在取到 lo 的元素和取到 hi 的元素，它们分别严格小于、大于 x，所以 x 满足题意。反过来，若 x 满足题意，就存在更小元素和更大元素，因此 x 必须严格大于全局最小值且严格小于全局最大值。故满足条件的位置恰好是 lo < nums[i] < hi 的位置，算法逐位置统计所得答案正确。\n\n## 复杂度\n\n两次线性扫描，时间 O(n)，额外空间 O(1)。\n\n## 来源与本站约定\n\n本站输入协议和边界见题面。固定 OAMaster 快照：https://oamaster.com/docs/companies/uber#26-count-elements-with-at-least-one-smaller-and-one-greater-value；原始 blocked 原因：正文没有可定义的条件，仅给[1,2,3]结果1，无法知道在统计什么。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if n < 1 or n > 100_000 or len(data) != n + 1:\n        raise ValueError(\"expected n followed by n integers\")\n    nums = data[1:]\n    if any(not -1_000_000_000 <= x <= 1_000_000_000 for x in nums):\n        raise ValueError(\"nums values must be within the site bounds\")\n    low, high = min(nums), max(nums)\n    return str(sum(low < value < high for value in nums))\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/uber#26-count-elements-with-at-least-one-smaller-and-one-greater-value",
+  "sourceContentHash": "9dcb94388ae360e2eb1df31d2eb9fbfef32ce93fcf3764f24c6da369ff23e5a9",
+  "author": "CSWork"
+}

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-49",
+  "title": "最早开花日",
+  "explanation": "## 思路\n\n二分最早日期 d。检查时从左到右数连续已开放玫瑰；每凑满 k 朵就制作一束并把当前段清零，未开放玫瑰则清零。若能做出至少 n 束，d 可行，否则不可行。可行性随日期单调，因此二分答案。\n\n## 正确性\n\n固定日期 d 后，每段连续开放区间长度为 L 时，最多能得到 floor(L/k) 束互不重叠的花；按扫描中每 k 朵立即成束正好达到这个数量。因此扫描得到的束数不少于 n，当且仅当该日期可行。日期越晚开放的玫瑰只会增加，不会减少可行束数，所以可行性单调；二分找到的首个可行日期即为最早日期。若 N<n*k，则玫瑰总数不足，答案为 -1。\n\n## 复杂度\n\n设 N 为玫瑰数量、D 为最大开花日。时间 O(N log D)，额外空间 O(N)（保存输入）。\n\n## 来源与本站约定\n\n固定 OAMaster 快照的题目代码三语均将 k 作为每束相邻玫瑰数、n 作为花束数量，并在 N<n*k 时返回 -1；上游可核查页面为 https://oamaster.com/docs/companies/google#49-min-days-to-bloom。LeetCode 的同题说明复现了完整定义和完全相同的原始例子：https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/。上游没有发布约束，题面列出的数值范围与 stdin/stdout 协议均为本站补充。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    size, bouquet_size, needed = data[:3]\n    bloom = data[3:]\n    if len(data) != 3 + size:\n        raise ValueError(\"expected N, K, M, followed by N bloom days\")\n    if size < 1 or size > 200_000 or not 1 <= bouquet_size <= 200_000:\n        raise ValueError(\"N and K are outside the supported range\")\n    if not 1 <= needed <= 200_000 or any(day < 0 or day > 1_000_000_000 for day in bloom):\n        raise ValueError(\"M or a bloom day is outside the supported range\")\n    if bouquet_size * needed > size:\n        return \"-1\"\n\n    def possible(day):\n        bouquets = run = 0\n        for bloom_day in bloom:\n            if bloom_day <= day:\n                run += 1\n                if run == bouquet_size:\n                    bouquets += 1\n                    run = 0\n                    if bouquets >= needed:\n                        return True\n            else:\n                run = 0\n        return False\n\n    low, high = min(bloom), max(bloom)\n    while low < high:\n        middle = (low + high) // 2\n        if possible(middle):\n            high = middle\n        else:\n            low = middle + 1\n    return str(low)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#49-min-days-to-bloom",
+  "sourceContentHash": "975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f"
+}

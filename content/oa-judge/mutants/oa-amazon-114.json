@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把严格大于误写为大于等于",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n,k=a[:2]; x=a[2:]; q=[]; h=0; z=0\n for r,v in enumerate(x):\n  left=r-k+1\n  while h<len(q) and q[h]<left: h+=1\n  while len(q)>h and x[q[-1]]<v: q.pop()\n  q.append(r)\n  if r>=k-1: z+=len(q)-h\n return str(z)\n"
+  },
+  {
+    "name": "每个窗口只计一个最大值",
+    "code": "def solve(raw):\n a=list(map(int,raw.split())); n,k=a[:2]; return str(n-k+1)\n"
+  }
+]

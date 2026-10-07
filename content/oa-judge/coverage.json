@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1131,
+    "sandbox_verified": 1136,
     "awaiting_sandbox": 0,
-    "blocked": 503,
+    "blocked": 498,
     "unreviewed": 0
   },
   "items": [
@@ -325,8 +325,9 @@
     {
       "id": "oa-google-49",
       "company": "google",
-      "status": "blocked",
-      "reason": "roses[i]含义及k、n的定义截断，例子又将3朵解释为一束，不能完整确认花束相邻/数量规则和无解输出。"
+      "status": "sandbox_verified",
+      "batch": "google-49-recovered",
+      "reason": "固定 OAMaster 快照的三语实现与同题 Google OA 原帖共同恢复完整定义；原帖重现相同样例并明确 k 是每束相邻玫瑰数、n 是花束数。输入协议与数值范围仅作为本站补充。120 个唯一独立组合 oracle、33 个正式用例（含 N=200000 边界）及两个正常退出错误程序均通过用户自有 GoJudge。"
     },
     {
       "id": "oa-google-50",
@@ -1517,8 +1518,9 @@
     {
       "id": "oa-amazon-114",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "美丽度条件中比较对象与不等号被截断，单个例子不足以恢复定义。"
+      "status": "sandbox_verified",
+      "batch": "amazon-114-recovered",
+      "reason": "Amazon OA 同题报告/社区解释与 OAMaster 固定样例相符：逐窗口 beauty=2,1,2,3，总和 8；规则恢复为严格大于右侧所有元素。本站 IO 和输入范围已明确标注。160 个唯一直接暴力 oracle、36 个正式用例和两个正常退出错误解通过；用户自有 GoJudge 通过 196 项，两个错误解均被拦截。"
     },
     {
       "id": "oa-amazon-115",
@@ -1772,8 +1774,9 @@
     {
       "id": "oa-amazon-151",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "原始题干截断于1到N数组，K-level条件未定义，单个排列样例不能恢复规则。"
+      "status": "sandbox_verified",
+      "batch": "amazon-151-k-level-recovered",
+      "reason": "1Point3Acres 同题定义与 Codeforces 官方 1927E 定义一致，均要求长度 K 窗口和的 max-min≤1 且 K 为偶数；固定 OAMaster 样例逐个计算为 16/17，确认匹配。旧 OAMaster 解释/代码未满足条件，已独立重写。本站输入协议和 N≤200000 明确标为补充。构造经完整证明、小域穷举、随机 oracle 与错误构造验证；用户自有 GoJudge 通过 192 项，两个错误解均被拦截。"
     },
     {
       "id": "oa-amazon-152",
@@ -6017,8 +6020,9 @@
     {
       "id": "oa-uber-26",
       "company": "uber",
-      "status": "blocked",
-      "reason": "正文没有可定义的条件，仅给[1,2,3]结果1，无法知道在统计什么。"
+      "status": "sandbox_verified",
+      "batch": "uber-26-36-recovered",
+      "reason": "固定 OAMaster 快照保存了题名、[1,2,3]→1 的样例和‘只有元素2满足条件’的解释；LeetCode 2148 独立确认严格介于全局最小与最大之间的定义。本站补充了明确输入协议和约束。通过 120 个唯一独立 oracle 输入、33 个正式用例和两个错误程序的本地差分；用户自有 GoJudge 通过 153 项，两个错误解均被拦截。"
     },
     {
       "id": "oa-uber-27",
@@ -6085,8 +6089,9 @@
     {
       "id": "oa-uber-36",
       "company": "uber",
-      "status": "blocked",
-      "reason": "题干截断于Given two arrays of strictly i；仅凭[123,4,5,955]和[12345,63,95,2]输出3不能确定比较规则。"
+      "status": "sandbox_verified",
+      "batch": "uber-26-36-recovered",
+      "reason": "固定 OAMaster 快照保留了完整样例；同题 Uber OA 讨论给出相同两数组和输出3，并明确是跨数组数对的最长公共前缀；LeetCode 3043 交叉确认正整数按十进制前缀比较。本站补充了输入协议和约束。通过 120 个唯一独立 oracle 输入、33 个正式用例和两个错误程序的本地差分；用户自有 GoJudge 通过 153 项，两个错误解均被拦截。"
     },
     {
       "id": "oa-uber-37",
@@ -8556,7 +8561,7 @@
       "id": "oa-goldman-sachs-13",
       "company": "goldman-sachs",
       "status": "blocked",
-      "reason": "原始 fastprep 正文截断在“random numbe…”，只剩样例，缺少每次发玩具的步长/完整规则，无法核实函数参数 D 的含义。"
+      "reason": "FastPrep 完整题干称 D 是起始位置；不可变 OAMaster 的解释与 Python/Java/C++ 代码则将 D 当作每件玩具的移动步长，按其算法原样例会得到 3，但样例期望为 2。单个样例无法消解规则冲突，暂不建立判题包。"
     },
     {
       "id": "oa-goldman-sachs-14",

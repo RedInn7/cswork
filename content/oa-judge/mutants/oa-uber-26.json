@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把小于最小值/大于最大值端点条件放宽为非严格比较",
+    "code": "import sys\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if n < 1 or n > 100_000 or len(data) != n + 1:\n        raise ValueError(\"expected n followed by n integers\")\n    nums = data[1:]\n    if any(not -1_000_000_000 <= x <= 1_000_000_000 for x in nums):\n        raise ValueError(\"nums values must be within the site bounds\")\n    low, high = min(nums), max(nums)\n    return str(sum(low <= value <= high for value in nums))\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "误把相同数值只计一次",
+    "code": "import sys\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if n < 1 or n > 100_000 or len(data) != n + 1:\n        raise ValueError(\"expected n followed by n integers\")\n    nums = data[1:]\n    if any(not -1_000_000_000 <= x <= 1_000_000_000 for x in nums):\n        raise ValueError(\"nums values must be within the site bounds\")\n    low, high = min(nums), max(nums)\n    return str(len({value for value in nums if low < value < high}))\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+  }
+]

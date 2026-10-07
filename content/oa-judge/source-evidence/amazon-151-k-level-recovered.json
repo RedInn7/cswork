@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "origin": "https://oamaster.com",
+  "items": {
+    "oa-amazon-151": {
+      "url": "https://oamaster.com/docs/companies/amazon#151-find-k-level-permutation",
+      "contentHash": "268b9e03a1a2d646ddae095d2f5be5f4e0ee371e11e96e0df98780474251b943",
+      "catalogContentHash": "268b9e03a1a2d646ddae095d2f5be5f4e0ee371e11e96e0df98780474251b943",
+      "company": "Amazon",
+      "title": "Find K-Level Permutation",
+      "path": "web/content/docs/companies/amazon.mdx",
+      "gitBlobSha": "70650fad830ad60944ae8036fb4f134d9afc3fab",
+      "blobVerification": "Read from the immutable commit; git hash-object matches the recorded blob SHA.",
+      "corroboratingSources": [
+        {
+          "url": "https://www.1point3acres.com/interview/problems/amazon-find-k-level-permutation",
+          "verifiedOn": "2026-10-06",
+          "supports": "Identifies the same Amazon question and states the max-minus-min length-K window sum condition; its page says source constraints are unspecified."
+        },
+        {
+          "url": "https://codeforces.com/contest/1927/problem/E",
+          "verifiedOn": "2026-10-06",
+          "supports": "Official statement defines any two length-K continuous segment sums differing by at most one and says K is even."
+        }
+      ],
+      "sampleVerification": {
+        "input": "N=7,K=4",
+        "permutation": [
+          1,
+          7,
+          3,
+          5,
+          2,
+          6,
+          4
+        ],
+        "windowSums": [
+          16,
+          17,
+          16,
+          17
+        ]
+      },
+      "siteAdded": "Single-case stdin/stdout protocol and 2≤K≤N≤200000, even K; these are site limits, not attributed to the OAMaster source.",
+      "upstreamSolutionNote": "The stored OAMaster explanatory text/code describes a different adjacent-difference construction and does not satisfy the recovered window-sum condition; candidate does not copy that implementation."
+    }
+  }
+}

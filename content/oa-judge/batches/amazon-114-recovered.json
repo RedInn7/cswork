@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-114",
+      "sourceContentHash": "63ec2fda108af359626b92313939c6fc97d2e3962a39fc0cb8e0b3f43af2ecb2",
+      "packageChecksum": "6f236a43b5572199cdc4a4d94a8ecd3d804032022e3cf19dd2779e341b2df107",
+      "editorial": "## 正确性\n\n从左到右扫描，队列存当前窗口内的严格后缀最大值下标，按下标递增、值严格递减排列。新值 x 入队前，队尾所有值 `<= x` 的位置都不再可能大于其右侧所有值，应删除；过期的队首也删除。剩余位置恰好是窗口中满足对每个后续 j 都有 `products[i] > products[j]` 的下标，所以队列长度就是窗口 beauty。逐窗口累加即可。相等值要淘汰较早者，不能将严格大于改成大于等于。\n\n## 复杂度\n\nO(n) 时间、O(k) 队列空间；每个位置最多入队和出队一次。\n\n## 来源与边界\n\n[OAMaster 原题快照](https://oamaster.com/docs/companies/amazon#114-compute-beauty-of-array-products) 的关键比较式发生截断。已打开核对的 [Amazon OA 报告讨论帖](https://www.reddit.com/r/leetcode/comments/1et4ojn/amazon_oa_question/) 解释为每个窗口内严格大于右侧所有元素的位置数；其样例输入、k、逐窗口贡献 `2,1,2,3` 与 OAMaster 总输出 8 一致。该帖为候选人报告和社区解释，并非 Amazon 官方题面。\n\n本站补充：标准输入第一行 n k、第二行 n 个整数；1≤n≤200000、1≤k≤n、−10^9≤products[i]≤10^9。原始题源未保留这些范围或输入输出协议。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "from array import array\n\ndef solve(raw):\n    data = array(\"q\", map(int, raw.split()))\n    if not data:\n        return \"\"\n    n, k = data[0], data[1]\n    if not (1 <= n <= 200_000 and 1 <= k <= n):\n        raise ValueError(\"input outside the site-defined bounds\")\n    if len(data) != n + 2:\n        raise ValueError(\"expected exactly n product values\")\n    products = data[2:]\n    if any(value < -1_000_000_000 or value > 1_000_000_000 for value in products):\n        raise ValueError(\"product value outside the site-defined bounds\")\n\n    # The deque contains the strict suffix maxima of the active window.\n    # Equal values discard the earlier index because the comparison is strict.\n    queue = []\n    head = 0\n    total = 0\n    for right, value in enumerate(products):\n        left = right - k + 1\n        while head < len(queue) and queue[head] < left:\n            head += 1\n        while len(queue) > head and products[queue[-1]] <= value:\n            queue.pop()\n        queue.append(right)\n        if right >= k - 1:\n            total += len(queue) - head\n    return str(total)\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

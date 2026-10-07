@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-goldman-sachs-13": {
+      "title": "Find Last Kid",
+      "catalogContentHash": "eec7c206a19bc10ca7db9e994f20867e471c6ab642608c0c9334718536e21e99",
+      "path": "fastprep/Goldman Sachs/goldman-find-last-kid.md",
+      "gitBlobSha": "907870929974ca030d6c91e1b94aa256c1e18fc4",
+      "upstreamSnapshot": "The statement truncates at 'random numbe…'; sample N=5,T=2,D=1 expects 2. The accompanying explanation and all three reference implementations treat D as a per-delivery step, which yields 3 for that sample.",
+      "corroboratingSource": "https://www.fastprep.io/problems/goldman-find-last-kid",
+      "corroboratingSourceText": "The full FastPrep page says D is the random number where distribution starts, and children sit in ascending circular order; it repeats the same sample and output 2.",
+      "decision": "blocked",
+      "reason": "FastPrep's statement favors D as a starting position, but the immutable OAMaster explanation and Python/Java/C++ implementations use D as the step size. The sole shared sample does not distinguish all possible interpretations; moreover the bundled reference and expected sample directly disagree. Do not promote a judge specification until an authoritative rule resolves the conflict."
+    }
+  }
+}

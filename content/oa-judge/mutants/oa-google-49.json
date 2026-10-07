@@ -1,0 +1,10 @@
+[
+  {
+    "name": "把连续花束误当作任意 K 朵已开花玫瑰",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n,k,m=a[:3]; roses=a[3:]\n    return str(sorted(roses)[m*k-1] if m*k<=n else -1)\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "允许相邻花束重叠复用玫瑰",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n,k,m=a[:3]; roses=a[3:]\n    if m*k>n: return -1\n    lo,hi=min(roses),max(roses)\n    while lo<hi:\n        day=(lo+hi)//2; count=run=0\n        for x in roses:\n            if x<=day:\n                run+=1\n                if run>=k: count+=1\n            else: run=0\n        if count>=m: hi=day\n        else: lo=day+1\n    return lo\nprint(solve(sys.stdin.read()))\n"
+  }
+]
