@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ericsson-1",
+  "title": "Pascal's Triangle",
+  "explanation": "# Pascal's Triangle\n\n## 思路\n\n从第一行开始逐行构造。每行首尾为 1，内部位置由上一行相邻两数相加得到。\n\n## 正确性\n\n对行号归纳：首行只有 1，符合定义；假设上一行正确，新行首尾设为 1，内部按定义相加，因此新行每个位置都正确。重复构造即可得到前 numRows 行；numRows=0 时自然返回空数组。\n\n## 复杂度\n\n时间与输出空间均为 O(numRows²)。\n\n## 参考实现\n\n```python\nimport json\nimport sys\n\ndef solve(raw):\n    num_rows = int(raw.strip())\n    if not 0 <= num_rows <= 30:\n        raise ValueError(\"numRows must be between 0 and 30\")\n    triangle = []\n    for index in range(num_rows):\n        row = [1] * (index + 1)\n        for column in range(1, index):\n            row[column] = triangle[index - 1][column - 1] + triangle[index - 1][column]\n        triangle.append(row)\n    return json.dumps(triangle, separators=(\",\", \":\"))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n```\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import json\nimport sys\n\ndef solve(raw):\n    num_rows = int(raw.strip())\n    if not 0 <= num_rows <= 30:\n        raise ValueError(\"numRows must be between 0 and 30\")\n    triangle = []\n    for index in range(num_rows):\n        row = [1] * (index + 1)\n        for column in range(1, index):\n            row[column] = triangle[index - 1][column - 1] + triangle[index - 1][column]\n        triangle.append(row)\n    return json.dumps(triangle, separators=(\",\", \":\"))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/ericsson#1-pascals-triangle",
+  "sourceContentHash": "a25fd936a3867511f8561da85b0f500015becbdc28bf91da8a00e09df245972d",
+  "author": "CSWork"
+}
