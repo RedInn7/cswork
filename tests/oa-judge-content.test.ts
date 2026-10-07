@@ -114,12 +114,19 @@ test('Amazon MERN #5 maps to the verified Optimize Box IDs problem, not Amazon #
   const problem = JSON.parse(
     readFileSync('content/oa-judge/packages/oa-amazon-mern-5.json', 'utf8'),
   ).problem;
+  const canonicalProblem = JSON.parse(
+    readFileSync('content/oa-judge/packages/oa-amazon-34.json', 'utf8'),
+  ).problem;
   assert(entry, 'Amazon MERN #5 must be independently addressable');
   assert.equal(evidence.duplicateOf, 'oa-amazon-34');
   assert.equal(evidence.incorrectSourceLink.title, 'Get Total Balanced');
   assert.equal(entry.sourceContentHash, evidence.sourceContentHash);
   assert.equal(problem.id, entry.id);
   assert.equal(problem.output, '输出字典序最小的数字串，保留前导零。');
+  assert.equal(
+    canonicalProblem.output,
+    '输出字典序最小的数字串，保留前导零。',
+  );
 });
 
 test('batch evidence is isolated, complete and cannot authorize new or drifted entries', () => {

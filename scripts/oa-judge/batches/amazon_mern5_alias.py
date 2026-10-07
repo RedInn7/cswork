@@ -21,6 +21,9 @@ TARGET_ID = "oa-amazon-mern-5"
 SOURCE_ID = "oa-amazon-34"
 BATCH = "amazon-mern5-duplicate"
 COMMIT = "e66f809f4c953bce129f68491726176615db6afc"
+SOURCE_HASH = "0073ab89cf3b45a6b537db58ebcc43e8004f92943b4aa7217ad5e6e192e9a2aa"
+TARGET_HASH = "b94891c8d475a9067469b99a7ef984d82088645c66f6a816280b1c24b0658629"
+AMAZON13_HASH = "f8a7964b779cdd72a90837a3e7e1beb31b547146ead64b8f699654deafb1a297"
 OLD_REASON = (
     "OAMaster 原始 MDX 将此题定义为修改真实 MERN 仓库中的 Express/Mongoose/React 端点并通过仓库内只读测试（另有 README、npm、Mocha/Chai 依赖）；"
     "当前 CSWork 判题包只有 stdin/stdout 程序，没有对应起始仓库、依赖锁文件或只读测试，因此无法唯一构造可复现的 OJ 判定，不把题意臆造为算法题。"
@@ -42,11 +45,15 @@ def sha(data):
 
 def main():
     catalog = read(CATALOG)
+    assert catalog["source"]["commit"] == COMMIT
     source = next(item for item in catalog["items"] if item["id"] == SOURCE_ID)
     target = next(item for item in catalog["items"] if item["id"] == TARGET_ID)
     amazon13 = next(item for item in catalog["items"] if item["id"] == "oa-amazon-13")
     assert source["title"] == "Get Minimum String (Box Lex-Smallest)"
     assert target["title"] == "MERN E-commerce: Optimize Box IDs"
+    assert source["contentHash"] == SOURCE_HASH
+    assert target["contentHash"] == TARGET_HASH
+    assert amazon13["contentHash"] == AMAZON13_HASH
     assert target["statement"].startswith("(算法穿插题, 已收录在主算法库.")
     assert "Get Total Balanced" in amazon13["title"]
 
@@ -117,7 +124,7 @@ def main():
         {
             "schemaVersion": 1,
             "seed": validation["seed"],
-            "note": "复用与 Amazon #34 完全相同的题意、样例、oracle 和错误程序；离线证据相同，GoJudge 沙箱验证前不晋级。",
+            "note": "复用与 Amazon #34 完全相同的题意、样例、oracle 和错误程序；自有 GoJudge 报告通过 29 个正式用例、163 个 oracle 输入及两个错误程序验证。",
             "problems": [proof],
         },
     )
