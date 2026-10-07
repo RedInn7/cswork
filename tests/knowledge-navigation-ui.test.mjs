@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { register } from 'node:module';
 import { JSDOM } from 'jsdom';
 register(
-  `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'',shortCircuit:true};return n(u,c);}")}`,
+  `data:text/javascript,${encodeURIComponent("export async function load(u,c,n){if(u.endsWith('.css'))return {format:'module',source:'export default {}',shortCircuit:true};return n(u,c);}")}`,
   import.meta.url,
 );
 
