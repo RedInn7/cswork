@@ -24,7 +24,7 @@ export default function PrivacyPage() {
           cswork
           是提供课程、视频、编程练习与教学反馈的学习平台。这份说明介绍平台当前如何处理你的资料，以及你可以如何联系我们。
         </p>
-        <p className="privacy-updated">更新于 2026 年 9 月 6 日</p>
+        <p className="privacy-updated">更新于 2026 年 10 月 7 日</p>
 
         <section aria-labelledby="privacy-account">
           <h2 id="privacy-account">账户与第三方登录</h2>
@@ -56,6 +56,17 @@ export default function PrivacyPage() {
           <p>
             为缩短运行和提交的等待时间，登录后编辑 C++、Java 或 Go
             代码并停止输入片刻，平台可能将最新草稿发送到服务器预编译。预编译只准备可执行程序，不自动运行测试，也不产生提交记录或学习成绩。预编译请求处理后或到期时会从任务队列移除，编译结果仅作短期缓存。
+          </p>
+        </section>
+
+        <section aria-labelledby="privacy-leetcode">
+          <h2 id="privacy-leetcode">LeetCode 记录同步</h2>
+          <p>
+            你主动开始同步时，平台会临时使用你提供的登录凭据，向所选的 leetcode.cn
+            或 leetcode.com 核验账号并读取当前原站会话可访问的提交记录。凭据只在浏览器和服务器处理请求期间的内存中使用，不写入平台数据库、浏览器本地存储或同步任务；平台不需要你的原站密码，也不会替你提交代码或切换原站刷题会话。
+          </p>
+          <p>
+            平台保存成功提交的原站账号、地区、提交编号、题目、语言、时间及链接，以及同步任务进度；不导入提交代码。这些记录用于你选定轮次的学习进度，并与本站判题记录分开标注。新开一轮不会删除旧记录，也不会自动继承导入进度。你可以停止同步，已导入的记录仍保留；需要删除时可按下方联系方式提出请求。
           </p>
         </section>
 
