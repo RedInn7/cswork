@@ -1,0 +1,246 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-google-21",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "按顺序组成最大三位数",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Google",
+      "数组",
+      "枚举"
+    ],
+    "description": "给定由十进制数位组成的数组，按数组中的相对先后顺序恰好选取三个数位并连接成三位数，求能组成的最大数。首位必须非零。固定上游样例 [7,4,3,8,2] 的答案是 782；这与保序选择 7、8、2 一致，而把数位重排会得到不同结果。\n\n本站补充输入范围：3≤N≤50，0≤nums[i]≤9。本站采用标准输入输出，不声称这些约束或协议来自原 OA。\n原 OA 未定义不存在合法三位数时的返回值；本站明确规定此时输出 -1。\n\n原题来源：https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career（固定 OAMaster 快照内容指纹 df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698）。同题资料：https://www.1point3acres.com/interview/problems/google-find-largest-number；该资料只确认从数组选三个元素组成最大三位数，不提供顺序样例。",
+    "input": "第一行输入整数 N；第二行输入 N 个整数 nums[i]。",
+    "output": "输出按原数组相对顺序选取三个数位可组成的最大三位数；若不存在首位非零的合法选择，输出 -1（本站定义）。",
+    "explanation": "枚举 i<j<k 的所有三元下标组合，跳过 nums[i]=0 的组合，计算三位数并取最大值。N≤50，O(N³) 足够。",
+    "hints": [
+      "选取必须保持下标递增。",
+      "枚举三个下标；首位为零的组合不是三位数。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "OAMaster 示例 1",
+      "input": "5\n7 4 3 8 2\n",
+      "expectedOutput": "782\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "无合法三位数（本站定义）",
+      "input": "3\n0 9 8\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "首位零不可选",
+      "input": "4\n0 9 9 8\n",
+      "expectedOutput": "998\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 1",
+      "input": "34\n1 4 4 8 3 8 3 8 8 8 0 1 0 3 1 1 4 7 9 6 5 3 0 1 2 7 2 3 2 2 7 0 0 1\n",
+      "expectedOutput": "977\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 2",
+      "input": "48\n6 1 2 4 1 6 7 3 2 5 3 0 8 7 0 3 3 1 1 0 6 7 2 0 6 9 5 1 8 5 9 0 4 4 7 2 9 7 2 8 0 2 1 7 0 8 1 7\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 3",
+      "input": "44\n3 7 4 2 8 1 1 1 7 9 9 1 7 2 3 9 4 1 9 8 9 1 6 2 0 6 0 7 1 5 1 7 9 1 6 2 5 7 3 8 1 6 7 9\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 4",
+      "input": "35\n8 7 5 0 4 6 1 3 7 1 9 8 8 9 1 6 4 9 7 6 1 7 2 7 0 7 0 7 2 8 7 6 5 1 2\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 5",
+      "input": "22\n0 6 0 8 6 0 4 4 8 8 7 8 8 3 9 1 8 2 6 1 2 6\n",
+      "expectedOutput": "986\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 6",
+      "input": "26\n0 9 4 7 3 6 1 8 5 2 6 3 8 6 9 7 2 3 4 7 1 4 8 6 4 1\n",
+      "expectedOutput": "998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 7",
+      "input": "29\n4 6 0 8 2 4 8 2 8 2 3 9 2 7 4 3 7 3 9 3 6 6 1 0 7 1 7 2 1\n",
+      "expectedOutput": "997\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 8",
+      "input": "23\n6 8 0 0 3 3 9 1 3 8 2 5 7 2 2 6 0 0 9 3 3 0 1\n",
+      "expectedOutput": "993\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 9",
+      "input": "27\n0 9 6 3 3 8 1 7 2 4 8 8 6 5 5 3 6 2 8 3 5 6 3 3 0 8 4\n",
+      "expectedOutput": "988\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 10",
+      "input": "4\n3 9 9 0\n",
+      "expectedOutput": "990\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 11",
+      "input": "48\n3 3 6 3 4 3 1 1 2 0 5 8 1 7 6 7 1 7 1 7 4 2 8 4 1 5 9 1 2 0 7 0 1 6 9 1 4 9 2 8 1 7 9 1 4 3 6 1\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 12",
+      "input": "25\n8 0 2 8 6 7 4 5 4 2 1 4 8 9 1 9 5 0 3 1 8 3 1 2 7\n",
+      "expectedOutput": "998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 13",
+      "input": "5\n5 5 1 3 6\n",
+      "expectedOutput": "556\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 14",
+      "input": "24\n5 3 5 6 9 4 2 8 0 8 5 9 8 6 2 9 1 0 7 6 7 2 9 7\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 15",
+      "input": "39\n2 1 4 7 4 2 7 8 5 1 1 2 8 3 4 8 0 5 0 4 6 0 5 2 0 9 0 8 0 3 0 3 9 8 3 4 1 1 0\n",
+      "expectedOutput": "998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 16",
+      "input": "40\n2 6 2 2 1 4 2 1 5 3 1 6 7 3 9 3 9 3 0 6 0 1 9 9 8 1 1 4 5 5 5 4 6 7 0 3 2 7 2 4\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 17",
+      "input": "20\n3 1 1 4 6 7 8 9 4 8 6 0 5 2 7 1 4 1 5 0\n",
+      "expectedOutput": "987\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 18",
+      "input": "34\n8 0 0 2 9 0 8 8 8 2 3 8 0 7 8 2 6 4 3 6 6 9 7 0 5 6 5 6 3 5 2 9 6 9\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 19",
+      "input": "20\n7 9 7 7 8 3 2 6 9 6 2 2 1 1 1 3 5 2 5 2\n",
+      "expectedOutput": "996\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 20",
+      "input": "48\n6 5 2 7 6 6 7 8 2 2 1 6 3 5 8 7 6 2 8 9 4 1 2 1 0 9 4 0 2 0 5 2 2 1 3 7 7 8 1 2 2 2 6 6 0 6 2 6\n",
+      "expectedOutput": "998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 21",
+      "input": "13\n7 7 0 6 7 6 3 3 6 6 9 1 7\n",
+      "expectedOutput": "917\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 22",
+      "input": "42\n9 1 9 3 3 3 3 2 5 9 5 6 0 6 1 8 4 1 8 5 1 0 8 9 6 2 0 1 4 3 9 5 1 2 9 1 6 8 1 8 9 8\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 23",
+      "input": "33\n2 5 9 8 7 9 1 8 6 6 1 0 1 0 2 8 2 3 9 5 1 8 5 0 0 7 8 9 1 0 7 8 7\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 24",
+      "input": "16\n5 8 2 9 9 4 1 8 3 3 1 8 0 1 9 0\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 25",
+      "input": "43\n7 2 5 0 5 4 4 5 9 8 0 7 8 5 3 8 7 8 9 8 7 8 8 8 2 2 9 0 8 0 5 9 3 9 9 9 5 9 5 9 2 2 3\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "隐藏用例 26",
+      "input": "11\n4 9 0 3 8 8 5 9 6 9 5\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大长度 N=50",
+      "input": "50\n0 6 3 7 8 6 8 0 7 4 9 0 9 6 2 2 7 2 9 0 4 5 5 0 3 1 8 8 6 0 0 1 1 4 8 7 8 7 3 2 8 3 0 5 6 1 2 3 0 6\n",
+      "expectedOutput": "999\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

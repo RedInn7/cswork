@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-google-21",
+      "sourceContentHash": "df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698",
+      "packageChecksum": "172b2eb8ff80dbd46dd784c7fea7867dc7acc7d017d32dc2f2205177a358f4ac",
+      "editorial": "## 思路\n\n枚举三个下标 `i < j < k`。若 `nums[i]` 不为零，就计算 `100×nums[i] + 10×nums[j] + nums[k]` 并更新最大值。数组长度最多 50，直接三重枚举即可。没有合法选择时按本站约定输出 -1。\n\n## 正确性\n\n每个合法答案都对应唯一的一组三个递增下标 `i < j < k`，且首个数位非零。算法枚举所有这类下标并计算对应三位数，因此不会漏掉任何合法答案；取其中最大值即为题目要求。若没有任何符合首位非零条件的组合，枚举结果保持 -1，符合本站补充的无解约定。\n\n## 复杂度\n\n时间 O(N³)，额外空间 O(1)。\n\n## 来源与本站约定\n\n固定 OAMaster 快照：https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career；内容指纹 `df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698`。其样例 `[7,4,3,8,2] → 782` 与按原数组顺序选择 `7,8,2` 相符；若可任意重排，最大值会是 874。同题 1Point3Acres 资料只确认从数组选三个元素组成最大三位数，不提供足以确认顺序的样例：https://www.1point3acres.com/interview/problems/google-find-largest-number。因此顺序按固定 OAMaster 样例恢复。原 OA 没有定义不存在合法三位数时的输出；本站明确规定为 -1。N、数位范围和标准输入输出协议均是本站补充，不代表上游约束。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\n\ndef solve(raw):\n    values = list(map(int, raw.split()))\n    if not values:\n        return \"\"\n    n = values[0]\n    digits = values[1:]\n    if not 3 <= n <= 50 or len(digits) != n:\n        raise ValueError(\"expected N in [3, 50], followed by N digits\")\n    if any(digit < 0 or digit > 9 for digit in digits):\n        raise ValueError(\"each value must be a decimal digit\")\n\n    best = -1\n    for i in range(n - 2):\n        if digits[i] == 0:\n            continue\n        for j in range(i + 1, n - 1):\n            for k in range(j + 1, n):\n                best = max(best, digits[i] * 100 + digits[j] * 10 + digits[k])\n    # The source OA does not define this edge case. This site returns -1 when\n    # no valid three-digit subsequence exists.\n    return str(best)\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1137,
+    "sandbox_verified": 1138,
     "awaiting_sandbox": 0,
-    "blocked": 497,
+    "blocked": 496,
     "unreviewed": 0
   },
   "items": [
@@ -137,8 +137,9 @@
     {
       "id": "oa-google-21",
       "company": "google",
-      "status": "blocked",
-      "reason": "约束允许全零、仅最后两位非零等没有合法三位结果的输入，未定义返回值；来源解释承认题意由单例推断，不能擅定无解输出。"
+      "status": "sandbox_verified",
+      "batch": "google-21-recovered",
+      "reason": "固定 OAMaster 样例 [7,4,3,8,2]→782 区分保序选择与任意重排（后者为 874）；同题 1Point3Acres 仅支持选三个元素，不单独支持顺序。原题未定义无合法三位数时的返回值，本站明示补充为 -1；输入协议与约束亦仅属本站约定。120 个唯一组合枚举 oracle、30 个正式用例（含 N=50 边界）及两个正常退出错误程序均通过；用户自有 GoJudge 通过 150 项，两个错误解均被拦截。"
     },
     {
       "id": "oa-google-22",

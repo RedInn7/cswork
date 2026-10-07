@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略原数组相对顺序，直接重排取最大的三个数字",
+    "code": "import sys\ndef solve(raw):\n    a=list(map(int,raw.split())); n=a[0]; digits=a[1:]\n    chosen=sorted(digits, reverse=True)[:3]\n    return str(chosen[0]*100+chosen[1]*10+chosen[2])\nprint(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "允许首位为零",
+    "code": "import sys,itertools\ndef solve(raw):\n    a=list(map(int,raw.split())); n=a[0]; digits=a[1:]\n    return str(max((digits[i]*100+digits[j]*10+digits[k]\n                    for i,j,k in itertools.combinations(range(n),3)), default=-1))\nprint(solve(sys.stdin.read()))\n"
+  }
+]

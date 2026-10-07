@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698",
+  "items": [
+    {
+      "id": "oa-google-21",
+      "company": "Google",
+      "title": "Find Largest Number (Google Early Career)",
+      "sourceUrl": "https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career",
+      "previousStatus": "blocked",
+      "previousReason": "约束允许全零、仅最后两位非零等没有合法三位结果的输入，未定义返回值；来源解释承认题意由单例推断，不能擅定无解输出。",
+      "fixedSource": {
+        "path": "web/content/docs/companies/google.mdx",
+        "gitBlobSha": "300032c24800642c2ecedab9d930e86db3cdb54a",
+        "catalogContentHash": "df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698",
+        "evidence": "固定快照的原题样例 [7,4,3,8,2] 输出 782；选择下标递增的 7、8、2 得到该结果。若允许重排，最大数为 874。因此本站将原数组相对顺序视为规则。"
+      },
+      "supportingSources": [
+        {
+          "url": "https://www.1point3acres.com/interview/problems/google-find-largest-number",
+          "evidence": "同题资料确认从数组选三个元素组成最大三位数，但没有给出样例或说明顺序；不将其作为保序证据。"
+        }
+      ],
+      "siteAdditions": [
+        "标准输入输出协议：N 后跟 N 个数位",
+        "支持范围 3≤N≤50 与 0≤nums[i]≤9；上游快照未提供 constraints",
+        "不存在合法三位数时输出 -1；原 OA 未定义此边界行为"
+      ],
+      "interpretation": "在原数组中选取递增下标 i<j<k；首位数位不得为 0；求最大结果。该解释受 OAMaster 原样例区分支持，并非 1Point3Acres 页面本身说明了顺序。"
+    }
+  ]
+}
