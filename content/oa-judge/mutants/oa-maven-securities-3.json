@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只把相同属性值连接",
+    "code": "import sys,json\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];a=d[1:];from collections import Counter\n c=Counter(a);return json.dumps([c[x] for x in a],separators=(',',':'))\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只检查相邻服务器的 gcd",
+    "code": "import sys,math\ndef solve(raw):\n d=list(map(int,raw.split()));n=d[0];a=d[1:];p=list(range(n))\n def f(x):\n  while p[x]!=x:p[x]=p[p[x]];x=p[x]\n  return x\n for i in range(n-1):\n  if math.gcd(a[i],a[i+1])>1:p[f(i)]=f(i+1)\n from collections import Counter\n c=Counter(f(i) for i in range(n));return '['+','.join(str(c[f(i)]) for i in range(n))+']'\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "覆盖已有余数时覆盖最早下标",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];first={0:-1};s=ans=0\n for i,x in enumerate(a):\n  s=(s+x)%k\n  if s in first:ans=max(ans,i-first[s])\n  first[s]=i\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "忽略负交易额的符号",
+    "code": "import sys\ndef solve(raw):\n d=list(map(int,raw.split()));n,k=d[:2];a=d[2:];f={0:-1};s=ans=0\n for i,x in enumerate(a):\n  s=(s+abs(x))%k\n  if s in f:ans=max(ans,i-f[s])\n  else:f[s]=i\n return str(ans)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-maven-securities-3",
+  "title": "Server Clusters via GCD Connectivity",
+  "explanation": "## 思路\n\n对每个属性分解出不同质因数。具有相同质因数的服务器两两 gcd 大于 1，因此把它们与该质因数第一次出现的服务器合并即可得到同一连通分量；传递合并覆盖所有路径。最后统计并查集根的大小，再映射回每个位置。值为 1 没有质因数，保持单独成簇。\n\n## 正确性证明\n\n任意一条原图边的两个端点 gcd 大于 1，当且仅当它们共享某个质因数；该质因数的代表元会把两个端点合并。反过来，每次合并的服务器确实共享当前质因数，因此不会合并不同原图连通分量。对所有不同质因数执行完合并后，并查集分组恰好等于原图连通分量，根计数即每台服务器所在集群大小。值为 1 不共享质因数，保持单点分量。\n\n## 复杂度\n\n令 V=1000000，M 为数组长度。筛最小质因数 O(V loglogV)，分解总计 O(M log V) 的有界工作，并查集合并 O(M α(M))；空间 O(V+M)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, values = data[0], data[1:]\n    limit = max(values, default=1)\n    spf = list(range(limit + 1))\n    for p in range(2, int(limit ** 0.5) + 1):\n        if spf[p] == p:\n            for multiple in range(p * p, limit + 1, p):\n                if spf[multiple] == multiple:\n                    spf[multiple] = p\n\n    parent = list(range(n))\n    size = [1] * n\n    prime_owner = {}\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n\n    def union(a, b):\n        a, b = find(a), find(b)\n        if a == b:\n            return\n        if size[a] < size[b]:\n            a, b = b, a\n        parent[b] = a\n        size[a] += size[b]\n\n    for i, value in enumerate(values):\n        x = value\n        while x > 1:\n            prime = spf[x]\n            if prime in prime_owner:\n                union(i, prime_owner[prime])\n            else:\n                prime_owner[prime] = i\n            while x % prime == 0:\n                x //= prime\n\n    counts = {}\n    for i in range(n):\n        root = find(i)\n        counts[root] = counts.get(root, 0) + 1\n    return \"[\" + \",\".join(str(counts[find(i)]) for i in range(n)) + \"]\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/maven-securities#3-server-clusters-via-gcd-connectivity",
+  "sourceContentHash": "dfe20dacd04ab389a20b8953bcf2290650fa170eeaa05b57d98be8e6b7d22af3",
+  "author": "CSWork"
+}

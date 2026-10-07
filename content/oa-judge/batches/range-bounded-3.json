@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-barclays-1",
+      "sourceContentHash": "7712a2f2c096f65bba6067194d2ba01d4ef652d45fff87782b5a63a0ebfc6d82",
+      "packageChecksum": "ca803e40ccf544f4937365c848fae07fb5ce64e9272f7b264f6ce9e991ebc4d4",
+      "editorial": "## 思路\n\n状态为最近两项 (a,b)，下一项是 digitSum(a)+digitSum(b)。所有项都在 0..18：初始 0、1 满足；若两项均不超过 18，各自数字和不超过 9，下一项不超过 18。有限状态必重复，因此记录二元状态并检测周期，可直接定位任意受支持 N。\n\n## 正确性证明\n\n初始两项为 0、1。假设当前位置的两项与原递推一致，则下一项严格按题目定义取两项各自的数字和再相加，因此下一项也一致。最近两项均在 0..18，状态必在有限次内重复；重复状态后的所有项与之前完全相同，按周期映射查询不会改变第 N 项。\n\n## 复杂度\n\n预处理最多访问 19² 个有界二元状态，时间和空间均为 O(1)（相对于输入 N）；每个查询 O(1)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef digit_sum(value):\n    return sum(map(int, str(value)))\n\ndef build_cycle():\n    values = [0, 1]\n    seen = {}\n    a, b = 0, 1\n    while (a, b) not in seen:\n        seen[(a, b)] = len(values) - 1\n        a, b = b, digit_sum(a) + digit_sum(b)\n        values.append(b)\n    start = seen[(a, b)]\n    period = len(values) - 1 - start\n    return values, start, period\n\nVALUES, CYCLE_START, CYCLE_LENGTH = build_cycle()\n\ndef solve(raw):\n    n = int(raw.strip())\n    if n < len(VALUES):\n        index = n\n    else:\n        index = CYCLE_START + (n - CYCLE_START) % CYCLE_LENGTH\n    return str(VALUES[index])\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-maven-securities-3",
+      "sourceContentHash": "dfe20dacd04ab389a20b8953bcf2290650fa170eeaa05b57d98be8e6b7d22af3",
+      "packageChecksum": "1609d2e16355ba00bae369284a7f64b148ef8ae0386e5bf27952b83d96247906",
+      "editorial": "## 思路\n\n对每个属性分解出不同质因数。具有相同质因数的服务器两两 gcd 大于 1，因此把它们与该质因数第一次出现的服务器合并即可得到同一连通分量；传递合并覆盖所有路径。最后统计并查集根的大小，再映射回每个位置。值为 1 没有质因数，保持单独成簇。\n\n## 正确性证明\n\n任意一条原图边的两个端点 gcd 大于 1，当且仅当它们共享某个质因数；该质因数的代表元会把两个端点合并。反过来，每次合并的服务器确实共享当前质因数，因此不会合并不同原图连通分量。对所有不同质因数执行完合并后，并查集分组恰好等于原图连通分量，根计数即每台服务器所在集群大小。值为 1 不共享质因数，保持单点分量。\n\n## 复杂度\n\n令 V=1000000，M 为数组长度。筛最小质因数 O(V loglogV)，分解总计 O(M log V) 的有界工作，并查集合并 O(M α(M))；空间 O(V+M)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, values = data[0], data[1:]\n    limit = max(values, default=1)\n    spf = list(range(limit + 1))\n    for p in range(2, int(limit ** 0.5) + 1):\n        if spf[p] == p:\n            for multiple in range(p * p, limit + 1, p):\n                if spf[multiple] == multiple:\n                    spf[multiple] = p\n\n    parent = list(range(n))\n    size = [1] * n\n    prime_owner = {}\n\n    def find(x):\n        while parent[x] != x:\n            parent[x] = parent[parent[x]]\n            x = parent[x]\n        return x\n\n    def union(a, b):\n        a, b = find(a), find(b)\n        if a == b:\n            return\n        if size[a] < size[b]:\n            a, b = b, a\n        parent[b] = a\n        size[a] += size[b]\n\n    for i, value in enumerate(values):\n        x = value\n        while x > 1:\n            prime = spf[x]\n            if prime in prime_owner:\n                union(i, prime_owner[prime])\n            else:\n                prime_owner[prime] = i\n            while x % prime == 0:\n                x //= prime\n\n    counts = {}\n    for i in range(n):\n        root = find(i)\n        counts[root] = counts.get(root, 0) + 1\n    return \"[\" + \",\".join(str(counts[find(i)]) for i in range(n)) + \"]\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-duolingo-2",
+      "sourceContentHash": "a238924722ede837d90ab8bf93e498361b7531aef54b18a51f9553f60e18f009",
+      "packageChecksum": "26f65f27fc2701394ed3cc70f3962dd3dce7a529b8772ed3de42e6be58dee4b7",
+      "editorial": "## 思路\n\n两个前缀和对 k 的余数相同时，它们之间的连续区间和能被 k 整除。按从左到右扫描，记录每个余数第一次出现的位置；再次出现时用当前位置减最早位置更新最长长度。使用正 k，负交易额按数学意义取模。\n\n## 正确性证明\n\n设前缀和 P[j] 为前 j 项之和。区间 (i,j] 的和能被正整数 k 整除，当且仅当 P[i] 与 P[j] 模 k 同余。固定右端 j 时，最早出现的同余前缀产生最长区间；算法保存每个余数的最早下标并检查每个后续前缀，因此不会漏掉最优区间，也不会把不满足整除条件的区间计入。\n\n## 复杂度\n\n扫描 n 项一次，期望时间 O(n)，保存至多 n+1 个余数位置，空间 O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[0], data[1]\n    transactions = data[2:]\n    first = {0: -1}\n    prefix = answer = 0\n    for i, amount in enumerate(transactions):\n        prefix = (prefix + amount) % k\n        if prefix in first:\n            answer = max(answer, i - first[prefix])\n        else:\n            first[prefix] = i\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+[
+  {
+    "name": "先相加再求数字和",
+    "code": "import sys\ndef ds(x): return sum(map(int,str(x)))\ndef solve(raw):\n n=int(raw.strip());a,b=0,1\n for _ in range(n): a,b=b,ds(a+b)\n return str(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "误用普通 Fibonacci 加法",
+    "code": "import sys\ndef solve(raw):\n n=int(raw.strip());a,b=0,1\n for _ in range(n): a,b=b,a+b\n return str(a)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  }
+]
