@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-64",
+  "title": "最大二进制串距离",
+  "explanation": "## 思路\n\n把字符串插入二进制字典树。对每个节点，分组考虑在该节点结束的字符串和分别进入 0/1 子树的字符串。来自不同组的两串，其最长公共前缀恰为该节点对应的路径，因此候选距离是两组中最长字符串长度之和减去当前深度的两倍。每组只需保留最长字符串；相同字符串出现在不同下标时按题意仍可配对，距离为 0。\n\n## 正确性\n\n任意一对不同下标字符串有唯一的最后公共 trie 节点：如果一串在此结束，它属于结束组；否则二串进入不同子分支。反过来，节点的两个不同组中的任意字符串具有恰好等于该节点深度的公共前缀。固定节点和分组后，增大任一字符串长度只会增大距离，所以保留每组最长值即可。遍历所有节点及其不同组，恰好覆盖所有可能字符串对并取最大值。\n\n## 复杂度\n\n时间 O(S)，空间 O(S)，S 为字符串总长度。\n\n## 来源与边界\n\nLeetCode 原帖明确距离是删除公共前缀后剩余长度之和，并要求在字符串列表中选一对得到最大距离；FastPrep 同题页补充了 N≤100000、总长度≤200000、二进制非空串，以及相同值但不同列表位置仍可成对的边界。本站将题面转换为 stdin/stdout；公开样例沿用原始首例，并补充前缀关系和不同首位的用例。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\ndef solve(raw):\n    data=raw.split(); n=int(data[0]); strings=data[1:]\n    # Each trie node has separate groups for termination, child 0, and child 1.\n    children=[[-1,-1] for _ in range(1)]\n    terminal=[0]\n    max_len=[0]\n    for s in strings:\n        node=0\n        for ch in s:\n            bit=ord(ch)-48\n            nxt=children[node][bit]\n            if nxt<0:\n                nxt=len(children); children[node][bit]=nxt\n                children.append([-1,-1]); terminal.append(0); max_len.append(0)\n            node=nxt\n        terminal[node]+=1\n        max_len[node]=len(s)\n    # Trie node indices are created before their descendants, so reverse order is postorder.\n    for node in range(len(children)-1,-1,-1):\n        for child in children[node]:\n            if child>=0:\n                max_len[node]=max(max_len[node],max_len[child])\n    answer=0\n    # A second pass evaluates distinct groups at each trie node.\n    depth=[0]*len(children)\n    stack=[0]\n    while stack:\n        node=stack.pop()\n        groups=[]\n        if terminal[node]: groups.append(depth[node])\n        for child in children[node]:\n            if child>=0:\n                depth[child]=depth[node]+1; stack.append(child)\n                groups.append(max_len[child])\n        if len(groups)>=2:\n            top=sorted(groups,reverse=True)[:2]\n            answer=max(answer,top[0]+top[1]-2*depth[node])\n    return str(answer)\nprint(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/google#64-max-distance",
+  "sourceContentHash": "ae5df8e78cb84a95bd9b371d7609216f4deadf90e5e47a2b45a65686d5cec03f",
+  "author": "Chunyu Sui"
+}
