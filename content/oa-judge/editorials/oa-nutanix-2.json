@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-2",
+  "title": "Work Schedules",
+  "explanation": "# Work Schedules\n\n## 思路\n\n固定日期先求和，再从左到右尝试每个问号的 0 到 day_hours。剩余工时小于 0 或超过剩余位置容量时剪枝。填完且剩余为 0 即为合法排班；递增枚举保证字典序。\n\n## 样例勘误\n\nOAMaster 第三例输入写 day_hours=8，但解释和输出按 2 列出；FastPrep 同题副本也使用 2。本站仅将例子输入更正为 2，算法仍按输入参数工作，并额外验证上限 4 和 8。原题第一例的固定排班包含 8 小时而上限为 4，因此 day_hours 只约束需要填写的问号，固定字符保持不变。\n\n## 正确性\n\n每个问号都枚举全部允许值，只保留总工时相等的结果，因此不漏解也不引入非法排班。\n\n## 复杂度\n\nq 为问号数，时间 O((day_hours+1)^q) 加输出开销，递归空间 O(q)。\n\n## 参考实现\n\n```python\nimport json,sys\ndef solve(raw):\n p=raw.split(); work,limit=map(int,p[:2]); pattern=p[2]\n if not 1<=work<=56 or not 1<=limit<=8 or len(pattern)!=7: raise ValueError(\"invalid input\")\n fixed=sum(int(c) for c in pattern if c!=\"?\"); slots=[i for i,c in enumerate(pattern) if c==\"?\"]; chars=list(pattern); out=[]\n def visit(i,left):\n  if left<0 or left>(len(slots)-i)*limit:return\n  if i==len(slots):\n   if left==0:out.append(\"\".join(chars))\n   return\n  pos=slots[i]\n  for x in range(limit+1):chars[pos]=str(x);visit(i+1,left-x)\n  chars[pos]=\"?\"\n visit(0,work-fixed);return json.dumps(out,separators=(\",\",\":\"))\nif __name__==\"__main__\":print(solve(sys.stdin.read()))\n```\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import json,sys\ndef solve(raw):\n p=raw.split(); work,limit=map(int,p[:2]); pattern=p[2]\n if not 1<=work<=56 or not 1<=limit<=8 or len(pattern)!=7: raise ValueError(\"invalid input\")\n fixed=sum(int(c) for c in pattern if c!=\"?\"); slots=[i for i,c in enumerate(pattern) if c==\"?\"]; chars=list(pattern); out=[]\n def visit(i,left):\n  if left<0 or left>(len(slots)-i)*limit:return\n  if i==len(slots):\n   if left==0:out.append(\"\".join(chars))\n   return\n  pos=slots[i]\n  for x in range(limit+1):chars[pos]=str(x);visit(i+1,left-x)\n  chars[pos]=\"?\"\n visit(0,work-fixed);return json.dumps(out,separators=(\",\",\":\"))\nif __name__==\"__main__\":print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/nutanix#2-work-schedules-for-mts2",
+  "sourceContentHash": "8e7a95308c5c01bced8d39537478ab84da7ac569234c64148b83e8ab16968a3a",
+  "author": "CSWork"
+}
