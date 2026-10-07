@@ -1,5 +1,15 @@
-"""Author locally verifiable Pure Storage candidates; never invokes GoJudge."""
+"""Author locally verifiable Pure Storage candidates; never invokes GoJudge.
+
+Controlled full-range refresh of one existing problem:
+    python3 scripts/oa-judge/batches/pure_storage_next.py --problem oa-pure-storage-12
+
+Single-problem mode updates only that ID's artifacts and its existing batch and
+validation entries. It preserves all other batch entries and does not update
+registry, coverage, reviews, source evidence, or sandbox reports. Package changes
+invalidate previous sandbox evidence; rerun GoJudge separately before publishing.
+"""
 from pathlib import Path
+import argparse
 import hashlib
 import json
 import random
@@ -326,7 +336,7 @@ SPECS = [
         "id": "oa-pure-storage-12", "title": "Find Doubles",
         "tags": ["数组", "频次统计"],
         "description": "给定整数列表。对列表中的每个元素 x，如果列表中恰有一个元素等于 2x，则将这个 x 纳入答案；答案保留输入中 x 的重复出现，并按升序输出。0 的两倍仍为 0。",
-        "input": "第一行 n；第二行 n 个整数。原题上限为 100000；本站因评测单例输出上限 65536 字节而收窄为 0≤n≤16000，0≤value≤1000。",
+        "input": "第一行 n；第二行 n 个整数。完整保留原题上限：0≤n≤100000，0≤value≤1000。原题未给正的长度下界，本站明确允许空列表n=0。",
         "output": "按升序输出所有命中元素，以空格分隔；若答案为空输出空行。",
         "encode": doubles_encode, "oracle": doubles_oracle, "random": random_doubles,
         "samples": [[1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 8], [7, 17, 11, 1, 23], [1, 1, 2]],
@@ -417,7 +427,7 @@ def make_large(spec):
     if pid == "oa-pure-storage-10":
         return [("abcdefghij", "jihgfedcba")] * 1000, "0"
     if pid == "oa-pure-storage-12":
-        return [0] * 16000, ""
+        return [0] * 100000, ""
     if pid == "oa-pure-storage-13":
         s = "ABCDEFGHI"
         return (s, s * 111111), "111111"
@@ -431,7 +441,28 @@ def make_large(spec):
         return (100, rows), f"{1001+i} {points[i]}"
 
 
-def main():
+def main(only_problem=None):
+    if only_problem is not None:
+        assert only_problem in {spec["id"] for spec in SPECS}
+        existing_batches = [OUT / folder / "pure-storage-next.json"
+                            for folder in ("batches", "candidate-batches")
+                            if (OUT / folder / "pure-storage-next.json").exists()]
+        assert len(existing_batches) == 1, "expected exactly one existing batch"
+        batch_path = existing_batches[0]
+        validation_path = OUT / "validation" / "pure-storage-next.json"
+        # Fail before writing artifacts if either target entry is unavailable.
+        for path, key in ((batch_path, "items"), (validation_path, "problems")):
+            document = json.loads(path.read_text())
+            assert sum(row["id"] == only_problem for row in document[key]) == 1
+        if only_problem == "oa-pure-storage-12":
+            source_path = "fastprep/Pure Storage/purestorage-find-doubles.md"
+            source = subprocess.check_output([
+                "git", "show", "e66f809f4c953bce129f68491726176615db6afc:" + source_path,
+            ], cwd=ROOT)
+            assert subprocess.check_output(["git", "hash-object", "--stdin"],
+                                           input=source, cwd=ROOT).decode().strip() == "6962f691b961404474853a977350af9ae1be8c3e"
+            assert b"100,000" in source and b"1000" in source
+            assert SOURCES[only_problem]["contentHash"] == "59fa90210c776c6b395d9884087895118cf8be743d19e973dec00dfdd9a34ada"
     for folder in ("packages", "editorials", "references", "oracles", "mutants",
                    "negative-controls", "reviews", "candidate-batches", "validation",
                    "source-evidence"):
@@ -453,6 +484,8 @@ def main():
                                "gitBlobSha": EVIDENCE["rawGitBlob"]})
 
     for spec in SPECS:
+        if only_problem is not None and spec["id"] != only_problem:
+            continue
         pid, src = spec["id"], SOURCES[spec["id"]]
         ref_code = spec["reference"].lstrip()
         ref = OUT / "references" / f"{pid}.py"
@@ -487,10 +520,13 @@ def main():
                           "input": stdin, "expectedOutput": expected + "\n",
                           "hidden": i >= 3, "weight": 1})
         if pid == "oa-pure-storage-12":
-            boundary = [500] * 15999 + [1000]
-            stdin, expected = doubles_encode(boundary), " ".join(["500"] * 15999)
+            # Independent closed form: 1000 occurs once, so all 99,999
+            # occurrences of 500 qualify. The value 1000 itself does not.
+            boundary = [500] * 99999 + [1000]
+            stdin, expected = doubles_encode(boundary), " ".join(["500"] * 99999)
+            assert len((expected + "\n").encode()) == 399996
             assert run(ref, stdin) == expected
-            cases.append({"name": "16,000 项及输出长度上界", "input": stdin,
+            cases.append({"name": "100,000 项及接近四十万字节输出", "input": stdin,
                           "expectedOutput": expected + "\n", "hidden": True, "weight": 1})
         large_value, large_expected = make_large(spec)
         if pid == "oa-pure-storage-5":
@@ -526,7 +562,9 @@ def main():
             "explanation": "算法思路、正确性证明和复杂度见配套题解。",
             "hints": ["先区分原题明确规则与本站补充的 stdin/stdout 约定。"],
             "timeLimit": 3, "memoryLimit": 262144,
-            "outputLimit": 65536 if pid == "oa-pure-storage-12" else 4096,
+            # Judge size units are KiB: 4096 means 4 MiB, not 4096 bytes.
+            # Pure Storage #12 maximum-size result above is 399,996 bytes.
+            "outputLimit": 4096,
             "checker": "tokens", "languages": ["python", "go", "java", "cpp"],
         }
         raw_pkg = {"schemaVersion": 1, "problem": problem, "cases": cases}
@@ -558,6 +596,13 @@ def main():
                             "publicCases": 3, "hiddenCases": len(cases) - 3,
                             "negativeControls": negative_controls,
                             "referenceSha256": hashlib.sha256(ref_code.encode()).hexdigest()})
+        if pid == "oa-pure-storage-12":
+            validations[-1]["fullSourceRange"] = {
+                "maxN": 100000, "minValue": 0, "maxValue": 1000,
+                "outputLimitKiB": 4096, "maxTestOutputBytes": 399996,
+                "largeOracle": "99,999 copies of 500 and one 1000 yield exactly 99,999 copies of 500; 100,000 zeros yield empty output",
+                "formalMaxCases": 2,
+            }
         review_reason = "已核对 e66f809 原始 MDX；本站 stdin/stdout 协议和必要边界已明确；163 个独立输入通过本地独立 oracle，参考程序及两个正常退出 mutant 均经样例/隐藏测试验证。未运行 GoJudge。"
         if pid == "oa-pure-storage-7":
             review_reason += " 上游样例 wowyouwin→14 与题面按位置计数定义冲突；直接枚举可复现结果为 10，本站采用 10 并在题面注明修正。"
@@ -566,6 +611,21 @@ def main():
                         "sourceCommit": CATALOG["source"]["commit"],
                         "catalogContentHash": src["contentHash"]})
         print(f"{pid}: 163 oracle inputs, {len(cases)} formal cases, all mutants killed", flush=True)
+
+    if only_problem is not None:
+        assert len(manifest) == len(validations) == 1
+        # Read current documents at merge time so unrelated edits are preserved.
+        for path, key, replacement in ((batch_path, "items", manifest[0]),
+                                       (validation_path, "problems", validations[0])):
+            document = json.loads(path.read_text())
+            assert sum(row["id"] == only_problem for row in document[key]) == 1
+            untouched = [row for row in document[key] if row["id"] != only_problem]
+            document[key] = [replacement if row["id"] == only_problem else row
+                             for row in document[key]]
+            assert [row for row in document[key] if row["id"] != only_problem] == untouched
+            path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n")
+        print(f"{only_problem}: updated only existing batch/validation entry; sandbox report must be refreshed", flush=True)
+        return
 
     for pid, reason in BLOCKED.items():
         reviews.append({"id": pid, "status": "blocked", "reason": reason})
@@ -595,4 +655,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--problem", choices=[spec["id"] for spec in SPECS],
+                        help="Regenerate one existing ID without rewriting other batch entries")
+    main(parser.parse_args().problem)
