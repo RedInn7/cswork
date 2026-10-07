@@ -482,6 +482,18 @@
       ]
     },
     {
+      "id": "oa-amazon-mern-5",
+      "sourceContentHash": "b94891c8d475a9067469b99a7ef984d82088645c66f6a816280b1c24b0658629",
+      "packageChecksum": "a03579fb1610cc42aa2ef59d4b900cba20141851af44609fbf52bb7130a8d582",
+      "editorial": "## 来源映射\n\nAmazon MERN #5 原文标注为算法穿插题且已在主算法库收录。固定快照中其标题为 “Optimize Box IDs”；Fastprep 原题的操作和样例与 Amazon #34 完全一致。#5 的链接指向 Amazon #13 “Get Total Balanced”，与该字符串题无关，故保留 #5 公司编号并复用 #34 的已验证题包。\n\n## 思路\n\n从右向左维护右侧最小数字。若当前数字比右侧最小值大，就必须移动并加1；其余保留。最后把变换后的数字排序。\n\n## 正确性证明\n\n若一个数字后面有更小数字，不移动它会阻碍更小数字前移，最优解可将它移动且只加一次，额外递增不会更好。未移动数字形成非降序列，移动数字可插入任意位置，因此可将全部数字按升序合并，取得最小结果。\n\n## 复杂度\n\n时间O(n+10)，空间O(n)。",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "def solve(d):\n    s=d[0]; minimum=10; counts=[0]*10\n    for c in reversed(s):\n        value=int(c)\n        if value>minimum: counts[min(value+1,9)]+=1\n        else: counts[value]+=1; minimum=value\n    return ''.join(str(i)*counts[i] for i in range(10))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-1",
       "sourceContentHash": "87acd25991ba82c223f4c830cae6e4a5d0dc48da6c578e51188712c78606d83d",
       "packageChecksum": "2a1e3b2ef13e31502508992a4fc5922263c382b917bc042f9547f1da6577ea90",
@@ -748,7 +760,7 @@
     {
       "id": "oa-amazon-34",
       "sourceContentHash": "0073ab89cf3b45a6b537db58ebcc43e8004f92943b4aa7217ad5e6e192e9a2aa",
-      "packageChecksum": "27e1f8308b74a3dbf92e2248c2969b8154e45511f8b655b3d1ed8eb0153d24d1",
+      "packageChecksum": "97bcb2375fc08303cc26f4ccf54a23e2ca9b2a6335e7afd74c79a136a3518290",
       "editorial": "## 思路\n\n从右向左维护右侧最小数字。若当前数字比右侧最小值大，就必须移动并加1；其余保留。最后把变换后的数字排序。\n\n## 正确性证明\n\n若一个数字后面有更小数字，不移动它会阻碍更小数字前移，最优解可将它移动且只加一次，额外递增不会更好。未移动数字形成非降序列，移动数字可插入任意位置，因此可将全部数字按升序合并，取得最小结果。\n\n## 复杂度\n\n时间O(n+10)，空间O(n)。",
       "authoredSolutions": [
         {
