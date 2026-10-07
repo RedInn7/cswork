@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13",
+  "items": [
+    {
+      "id": "oa-meta-30",
+      "company": "Meta",
+      "title": "Enumerating Narrative Sections",
+      "status": "authored",
+      "verification": "用户自有 GoJudge 全部通过 157 项（36 formal + 121 oracle），两个 mutant 均被击杀。",
+      "sourceUrl": "https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections",
+      "previousStatus": "blocked",
+      "previousReason": "未明确相等元素对能否共享下标，也未明确一个值出现4次可算几对。给定0,1,0,1,0的样例不能区分按C(freq,2)、floor(freq/2)或重复值种数计数；[1,1,1],k=2等输入答案不同。",
+      "fixedSource": {
+        "path": "web/content/docs/companies/meta.mdx",
+        "evidence": "固定快照中 Python、Java、C++ 三种实现均在每个值的频次变为偶数时增加一对，删除左端后在频次变奇数时减少一对；原样例与此规则一致。"
+      },
+      "siteAdditions": [
+        "不同 pair 不能共用数组下标",
+        "本站 N、k、元素值范围",
+        "stdin/stdout 输入协议"
+      ],
+      "interpretation": "同值出现 c 次最多贡献 floor(c/2) 个不重叠 pair；统计至少有 k 个此类 pair 的非空连续子数组。"
+    }
+  ]
+}

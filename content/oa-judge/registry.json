@@ -8786,6 +8786,18 @@
       ]
     },
     {
+      "id": "oa-meta-30",
+      "sourceContentHash": "459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13",
+      "packageChecksum": "0465b8e3566e68fe7c8223e8737cabd053d2cf3927f62c2bf3a55b24225070bc",
+      "editorial": "## 思路\n\n用双指针维护窗口。每个数值出现 c 次时，最多组成 floor(c/2) 对不共享下标的相同数对。窗口新增一个值后，若其出现次数变成偶数，pair 数加一。只要当前窗口至少有 k 对，就为当前左端点计入所有以当前右端点或更靠右端点结束的区间，再移除最左元素继续收缩。\n\n## 正确性\n\n对每个值独立配对，出现 c 次最多可取 floor(c/2) 个互不重叠 pair，因此窗口的 pair 总数恰为各值 floor(freq/2) 之和。固定左端点后，右端点越靠右只会增加元素，不会减少 pair 数。当窗口首次满足条件时，所有终点不小于当前 right 的子数组都满足，一次计入 N-right 个。随后左端点右移；若仍满足，就为这个新左端点计入相应的后缀区间。双指针单调前进，所以每个满足的左端点恰在最早可行右端点处被处理，每个子数组被且仅被计入一次。移除元素时，仅当频次从偶数降为奇数才减少一对。\n\n## 复杂度\n\n时间 O(N)，空间 O(U)，其中 U 是窗口中不同值的数量。\n\n## 来源与本站约定\n\n原题样例列出 `[0,1,0,1,0]、k=2` 的三个区间；固定快照的 Python、Java、C++ 解法均在每个值出现次数达到偶数时增加一对，定义为不重叠配对。原快照约束未知；N、k、值域均按题面中的本站约束执行。来源：https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if len(data) < 2:\n        raise ValueError(\"expected N, K and N values\")\n    size, needed = data[:2]\n    values = data[2:]\n    if not 1 <= size <= 200_000 or len(values) != size:\n        raise ValueError(\"N is outside the supported range or value count differs\")\n    if not 1 <= needed <= 200_000 or any(not -1_000_000_000 <= x <= 1_000_000_000 for x in values):\n        raise ValueError(\"K or a value is outside the supported range\")\n\n    frequency = {}\n    disjoint_pairs = 0\n    left = 0\n    answer = 0\n    for right, value in enumerate(values):\n        count = frequency.get(value, 0) + 1\n        frequency[value] = count\n        if count % 2 == 0:\n            disjoint_pairs += 1\n        while disjoint_pairs >= needed:\n            answer += size - right\n            left_value = values[left]\n            left += 1\n            frequency[left_value] -= 1\n            if frequency[left_value] % 2 == 1:\n                disjoint_pairs -= 1\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-meta-1",
       "sourceContentHash": "64c170f3d0e7adfe05723c8bcdc7d6dae5bb4eb7d95345d102ae2e2dbc4b4ae3",
       "packageChecksum": "0e5dcf2298f7781e5aae38f235cd42ea2de9c4d149841f4c74794569862544e7",
