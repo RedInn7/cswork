@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略有限小数后的非循环前缀",
+    "code": "import sys\ndef solve(raw):\n n=int(raw.strip());r=1;seen={};digits=[]\n while r not in seen:\n  seen[r]=len(digits);r*=10;digits.append(str(r//n));r%=n\n cycle=\"\".join(digits[seen[r]:])\n return \"0.\"+cycle+\" \"+cycle\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只输出循环节的首位",
+    "code": "import sys\ndef solve(raw):\n n=int(raw.strip());r=1;seen={};digits=[]\n while r not in seen:\n  seen[r]=len(digits);r*=10;digits.append(str(r//n));r%=n\n start=seen[r];prefix=\"\".join(digits[:start]);cycle=digits[start]\n return \"0.\"+prefix+cycle+\" \"+cycle\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+  }
+]
