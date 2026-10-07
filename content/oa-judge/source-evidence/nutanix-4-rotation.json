@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "repository": "https://github.com/RedInn7/OA-Master",
+  "commit": "e66f809f4c953bce129f68491726176615db6afc",
+  "catalogContentHash": "ab76f4e0e891a4c0a1f56942a41c331eb8cd1f46f6888126083c86798de4fee7",
+  "pages": [
+    {
+      "company": "Nutanix",
+      "path": "web/content/docs/companies/nutanix.mdx",
+      "gitBlobSha": "e456ebadfeb2ed296ead739808d9cdfb76ce876b"
+    }
+  ],
+  "items": [
+    {
+      "id": "oa-nutanix-4",
+      "title": "Minimum Operations to Convert Array",
+      "sourceUrl": "https://oamaster.com/docs/companies/nutanix#4-minimum-operations-to-convert-array",
+      "sourceContentHash": "ab76f4e0e891a4c0a1f56942a41c331eb8cd1f46f6888126083c86798de4fee7",
+      "previousStatus": "blocked",
+      "previousReason": "算法规则可解释，但 N/数值约束均为 N/A；穷举旋转后最少交换为 O(n²)，本批不猜测安全输入上限。",
+      "evidence": "固定源版本中的英文题面明确：arr 是目标数组 [1..n] 的排列；操作为循环左移一位或交换任意两个元素；一旦进行交换，此后不能再左移；目标是最少操作变成递增序列。原题示例 [5,3,2,1,4] 的输出为 2，并给出左移一次后交换一次的构造。题面 Constraints 明确写 N/A，源中 Python/Java/C++ 三份实现均为枚举 k 并统计旋转后置换环，时间 O(n²)。站内另设 n≤3000 作为运行边界，明确不是源约束。 用户自有 GoJudge 通过 145 项，两个错误实现均被击杀。",
+      "supportingSources": [],
+      "siteAdditions": [
+        "评测采用标准输入：n 后跟排列元素。",
+        "源题未给出 n 上限；本站单独设 n≤3000，以适配 O(n²) 参考算法。"
+      ],
+      "status": "authored"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "note": "用户自有 GoJudge 通过 145 项（25 正式用例 + 120 BFS oracle），两个错误实现均被击杀。",
+  "problems": [
+    {
+      "id": "oa-nutanix-4",
+      "formalCases": 25,
+      "hiddenFormalCases": 24,
+      "oracleCases": 120,
+      "oracleMethod": "BFS over legal operation states (permutation, whether a swap has occurred)",
+      "negativeControls": [
+        {
+          "name": "忽略左移，只计算原排列的最少交换次数",
+          "rejectedByCases": [
+            0
+          ]
+        },
+        {
+          "name": "只在左移后首元素为 1 时计算交换次数",
+          "rejectedByCases": [
+            0
+          ]
+        }
+      ],
+      "referenceSha256": "1b5eeb3fec32d6ac7b90f85c9b0d199bc3ab6285000245cef75a44579e3b68d4",
+      "oracleSha256": "dffff1d96a5347aa49fb914e919f8e72bc1ff37f6732d4090236807217c2fbd7"
+    }
+  ]
+}
