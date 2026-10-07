@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-dtcc-1",
+  "title": "Find Reciprocal",
+  "explanation": "## 思路\n\n用长除法跟踪余数。余数第一次出现的位置是小数循环的起点；之后再次出现，循环节就确定。若余数变为 0，则小数有限，之后循环节按题意取 0。\n\n## 样例格式说明\n\n将小数写成“非循环前缀 + 一次循环节”，空格后再输出一次循环节。于是 1/8 = 0.125000… 的前缀是 125、循环节是 0，输出 `0.1250 0`；1/9 的前缀为空、循环节是 1，输出 `0.1 1`。两个源样例共同确定有限小数按循环 0 表示，并非任意补零。\n\n## 正确性\n\n十进制长除法的每一步由当前余数唯一决定。余数为 0 表示后续数字全为 0；非零余数最多只有 N-1 种，重复时其后的数字序列从此周期重复。首次出现位置因此给出最短非循环前缀和对应循环节。\n\n## 复杂度\n\n最多处理 N 个余数，时间和空间均为 O(N)。",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    n = int(raw.strip())\n    digits = []\n    first_position = {}\n    remainder = 1\n    while remainder != 0 and remainder not in first_position:\n        first_position[remainder] = len(digits)\n        remainder *= 10\n        digits.append(str(remainder // n))\n        remainder %= n\n    if remainder == 0:\n        prefix = \"\".join(digits)\n        cycle = \"0\"\n    else:\n        start = first_position[remainder]\n        prefix = \"\".join(digits[:start])\n        cycle = \"\".join(digits[start:])\n    return f\"0.{prefix}{cycle} {cycle}\"\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+    }
+  ],
+  "sourceUrl": "https://oamaster.com/docs/companies/dtcc#1-find-reciprocal",
+  "sourceContentHash": "70cfcc291ba0cede2e3560160c36140ba63bada16f29a6855a26c4f473786a9b",
+  "author": "CSWork"
+}
