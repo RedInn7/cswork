@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-bny-mellon-2",
+      "formalCases": 24,
+      "hiddenFormalCases": 21,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "negativeControls": [
+        {
+          "name": "相同数值按不同值而非位置去重",
+          "rejectedByCases": [
+            1,
+            2,
+            7
+          ]
+        },
+        {
+          "name": "错误地允许选择 MEX 本身",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oa-optiver-3",
+      "formalCases": 24,
+      "hiddenFormalCases": 21,
+      "oracleCases": 120,
+      "oracleInputsUnique": 120,
+      "negativeControls": [
+        {
+          "name": "把所有 4 的倍数年份都当闰年",
+          "rejectedByCases": [
+            3,
+            8,
+            15,
+            16
+          ]
+        },
+        {
+          "name": "遗漏当年闰日",
+          "rejectedByCases": [
+            1,
+            4,
+            7,
+            9,
+            10,
+            11,
+            14,
+            17
+          ]
+        }
+      ]
+    }
+  ],
+  "note": "确定性本地差分、边界和错误实现验证；GoJudge 报告另行保存。"
+}

@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1162,
+    "sandbox_verified": 1164,
     "awaiting_sandbox": 0,
-    "blocked": 472,
+    "blocked": 470,
     "unreviewed": 0
   },
   "items": [
@@ -8024,8 +8024,9 @@
     {
       "id": "oa-optiver-3",
       "company": "optiver",
-      "status": "blocked",
-      "reason": "原题只有月份范围和有效日期保证，没有年份上界；返回类型为 int，无法保证跨任意合法年份的天数差可由 int 表示，不能自行添加年份限制。"
+      "status": "sandbox_verified",
+      "batch": "bny-optiver-recovered",
+      "reason": "三个原始样例与公历经过天数一致，源解明确采用 4/100/400 闰年规则。本站明确补充 1≤year≤9999，此时最大差 3,652,058，int32 安全。包含世纪闰年、完整年份跨度、120 个慢速逐年独立 oracle 和两个错误实现，并通过 GoJudge。"
     },
     {
       "id": "oa-optiver-4",
@@ -9254,8 +9255,9 @@
     {
       "id": "oa-bny-mellon-2",
       "company": "bny-mellon",
-      "status": "blocked",
-      "reason": "源题数组约束句截断为“where 1A subsequence...”，缺少 arr[i] 的合法范围/数据域；公式会依赖每个值频次，无法确认边界与重复语义。"
+      "status": "sandbox_verified",
+      "batch": "bny-optiver-recovered",
+      "reason": "固定源后续约束明确 n≤3×10⁵、0≤arr[i]≤10⁹、0≤l≤r≤10⁹；开头 where 1A 是不影响后续约束的损坏残片。子序列按位置计数由题面定义及源解 (2^cnt−1) 确认；样例 3 正确。120 组独立子集穷举 oracle、重复值和 30 万项边界及两个错误实现通过 GoJudge。"
     },
     {
       "id": "oa-bny-mellon-3",

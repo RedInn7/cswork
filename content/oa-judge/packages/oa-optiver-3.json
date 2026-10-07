@@ -1,0 +1,202 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-optiver-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "计算两个日期之间的天数",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Optiver",
+      "日期",
+      "闰年"
+    ],
+    "description": "给定两个有效日期，且第一个早于第二个，计算两日期之间经过的天数；不使用系统日期对象或日期差函数。",
+    "input": "输入六个整数 year1 month1 day1 year2 month2 day2。月份和日期必须组成有效的前推格里历日期，且第一日期早于第二日期。原题未限制年份；本站明确限制 1≤year1,year2≤9999。",
+    "output": "输出两日期相差的天数，不包含起始日。",
+    "explanation": "采用公历闰年规则：能被 4 整除的年份为闰年，但整百年除非也能被 400 整除。年份上限 9999 是本站为保障 int 输出安全增加的限制，不是原题约束。",
+    "hints": [
+      "将日期转换成从公元 1 年 1 月 1 日起的序号，再相减。完整年份可用闰年计数公式一次计算。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例与边界 1",
+      "input": "2010 5 1 2011 5 1\n",
+      "expectedOutput": "365\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 2",
+      "input": "2020 2 27 2020 3 1\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 3",
+      "input": "2019 12 31 2020 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 4",
+      "input": "1900 2 28 1900 3 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 5",
+      "input": "2000 2 28 2000 3 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 6",
+      "input": "1 1 1 1 1 2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 7",
+      "input": "1 1 1 9999 12 31\n",
+      "expectedOutput": "3652058\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 8",
+      "input": "4 2 28 4 3 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 9",
+      "input": "100 2 28 100 3 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 10",
+      "input": "400 2 28 400 3 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 11",
+      "input": "2024 2 29 2024 3 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 12",
+      "input": "2023 3 1 2024 3 1\n",
+      "expectedOutput": "366\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 13",
+      "input": "2023 1 1 2023 12 31\n",
+      "expectedOutput": "364\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 14",
+      "input": "9998 12 31 9999 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 15",
+      "input": "1600 2 28 1600 3 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 16",
+      "input": "1700 2 28 1700 3 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 17",
+      "input": "1800 2 28 1800 3 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 18",
+      "input": "2400 2 28 2400 3 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 19",
+      "input": "2001 1 31 2001 2 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 20",
+      "input": "1999 12 30 2000 1 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 21",
+      "input": "2024 1 1 2025 1 1\n",
+      "expectedOutput": "366\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 22",
+      "input": "2024 2 29 2025 2 28\n",
+      "expectedOutput": "365\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 23",
+      "input": "9999 1 1 9999 12 31\n",
+      "expectedOutput": "364\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "样例与边界 24",
+      "input": "1 12 31 2 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
