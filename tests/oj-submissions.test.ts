@@ -106,6 +106,49 @@ test('idempotency, global queue ownership and cancellation are atomic', async ()
   assert.equal((await cancelSubmission(student, first.id)).status, 'cancelled');
   await cancelSubmission(student, second.id);
 });
+test('50 distinct learners can reserve durable submissions together without weakening per-user limits', async () => {
+  const learners: Person[] = Array.from({ length: 50 }, (_, i) => ({
+    ...student,
+    id: `burst-learner-${i}`,
+    email: `burst-learner-${i}@example.test`,
+  }));
+  for (const learner of learners) {
+    sqlite()
+      .prepare(
+        'INSERT INTO grants(id,email,course_id,source,created_at) VALUES(?,?,?,?,?)',
+      )
+      .run(randomUUID(), learner.email, '*', 'test', Date.now());
+  }
+  const inputs = learners.map(() => request());
+  const submissions = await Promise.all(
+    learners.map((learner, i) => createSubmission(learner, inputs[i])),
+  );
+  assert.equal(new Set(submissions.map((s) => s.id)).size, 50);
+  for (const [i, submission] of submissions.entries()) {
+    assert.equal(submission.status, 'queued');
+    const stored = sqlite()
+      .prepare(
+        'SELECT s.user_id, count(o.submission_id) AS dispatches FROM submissions s LEFT JOIN oj_outbox o ON o.submission_id=s.id WHERE s.id=? GROUP BY s.id',
+      )
+      .get(submission.id) as { user_id: string; dispatches: number };
+    assert.equal(stored.user_id, learners[i].id);
+    assert.equal(stored.dispatches, 1);
+    assert.deepEqual(
+      await createSubmission(learners[i], inputs[i]),
+      submission,
+    );
+    await assert.rejects(
+      submissionDetail(learners[(i + 1) % 50], submission.id),
+      status(404),
+    );
+  }
+  const second = await createSubmission(learners[0], request());
+  await assert.rejects(createSubmission(learners[0], request()), status(429));
+  await cancelSubmission(learners[0], second.id);
+  for (const [i, submission] of submissions.entries()) {
+    await cancelSubmission(learners[i], submission.id);
+  }
+});
 test('hidden test data and internal identifiers never reach submission responses', async () => {
   const saved = await createSubmission(teacher, request());
   const raw = sqlite()
