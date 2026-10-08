@@ -64,45 +64,149 @@
   background: var(--background);
   color: var(--foreground);
 }
+/* Dense judge-list rows: status · company · number · title · difficulty. */
+.oa-list {
+  --oa-columns: 22px 150px 52px minmax(0, 1fr) 64px;
+  --oa-easy: #0d8a63;
+  --oa-medium: #b7700a;
+  --oa-hard: #cf3a52;
+}
+.oa-list-head,
 .oa-row {
   display: grid;
-  grid-template-columns: 140px minmax(0, 1fr) 70px;
+  grid-template-columns: var(--oa-columns);
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  text-align: left;
-  min-height: 56px;
-  padding: 10px 12px;
+  gap: 12px;
+  padding: 0 14px;
+}
+.oa-list-head {
+  min-height: 34px;
   border-bottom: 1px solid var(--border);
-  cursor: pointer;
-}
-.oa-row:hover {
-  background: var(--muted);
-}
-.oa-company,
-.oa-title small {
   color: var(--muted-foreground);
   font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.oa-row {
+  width: 100%;
+  min-height: 44px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+.oa-row:nth-of-type(even) {
+  background: color-mix(in oklab, var(--muted) 45%, transparent);
+}
+.oa-row:hover {
+  background: color-mix(in oklab, var(--primary) 7%, var(--card));
+}
+.oa-row:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
 }
 .oa-row .oa-company {
   color: var(--foreground);
-  font-size: 14px;
-  font-weight: 650;
-  overflow-wrap: anywhere;
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 0;
+}
+.oa-row .oa-company-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .oa-row .oa-company-logo {
-  flex-basis: 24px;
-  width: 24px;
-  height: 24px;
+  flex-basis: 22px;
+  width: 22px;
+  height: 22px;
   border-radius: 6px;
 }
 .oa-row .oa-company-logo img {
+  width: 14px;
+  height: 14px;
+}
+.oa-company-logo:has(.oa-company-initials) {
+  background: oklch(0.94 0.045 var(--oa-hue, 250));
+  border-color: transparent;
+}
+.oa-company-initials {
+  color: oklch(0.42 0.13 var(--oa-hue, 250));
+  letter-spacing: -0.02em;
+}
+.oa-row .oa-company-initials {
+  font-size: 9px;
+}
+.oa-number {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.oa-row .oa-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.oa-row .oa-title strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+}
+.oa-row .oa-title small {
+  flex: none;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 18px;
+}
+.oa-difficulty {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+.oa-difficulty[data-level='easy'] { color: var(--oa-easy); }
+.oa-difficulty[data-level='medium'] { color: var(--oa-medium); }
+.oa-difficulty[data-level='hard'] { color: var(--oa-hard); }
+.oa-difficulty[data-level='reading'] {
+  font-size: 12px;
+  font-weight: 400;
+}
+/* Verdict mark: filled check for accepted, hollow ring for tried. */
+.oa-progress {
   width: 16px;
   height: 16px;
+  border-radius: 50%;
 }
-.oa-row .oa-badge {
-  padding: 3px 5px;
-  line-height: 1.4;
+.oa-progress[data-progress='solved'] {
+  background: var(--oa-easy)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 16px no-repeat;
+}
+.oa-progress[data-progress='attempted'] {
+  border: 2px solid var(--oa-medium);
+}
+.oa-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+@media (max-width: 720px) {
+  .oa-list {
+    --oa-columns: 18px minmax(0, 1fr) 52px;
+  }
+  .oa-list-head,
+  .oa-row .oa-company,
+  .oa-number {
+    display: none;
+  }
 }
 .oa-browser {
   display: grid;
@@ -392,13 +496,6 @@
   gap: 8px;
 }
 @media (max-width: 600px) {
-  .oa-row {
-    grid-template-columns: 1fr auto;
-    gap: 8px;
-  }
-  .oa-company {
-    grid-column: 1/-1;
-  }
   .oa-library .study-filters {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

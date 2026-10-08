@@ -96,17 +96,24 @@ export function oaJudgeRegistry() {
 }
 
 /** One batch query: catalog pages must not perform a query for every question. */
-export async function oaReadyProblemIds() {
+/** Trusted published OA problems with the list-safe parts of their spec. */
+export async function oaReadyProblems() {
   const versions = await rows<OaPublishedVersion>(
     `SELECT p.id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'`,
   );
   const trusted = oaJudgeRegistry();
-  return new Set(
-    versions
-      .filter((version) => trusted.isReady(version))
-      .map((version) => version.id),
-  );
+  const ready = new Map<string, { difficulty?: string; tags: string[] }>();
+  for (const version of versions)
+    if (trusted.isReady(version)) {
+      const spec = JSON.parse(version.spec_json) as {
+        difficulty?: string;
+        tags?: string[];
+      };
+      ready.set(version.id, { difficulty: spec.difficulty, tags: spec.tags || [] });
+    }
+  return ready;
 }
+
 
 export async function requireOaJudgeReady(id: string) {
   if (!id.startsWith('oa-')) return;

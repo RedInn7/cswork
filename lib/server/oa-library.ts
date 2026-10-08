@@ -2,10 +2,10 @@ import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 import type { Person } from './auth';
-import { HttpError, json, limit, requirePerson } from './http';
+import { HttpError, json, limit, requirePerson, rows } from './http';
 import {
   oaJudgeRegistry,
-  oaReadyProblemIds,
+  oaReadyProblems,
   oaVerifiedStatement,
 } from './oa-judge';
 
@@ -233,11 +233,37 @@ export async function handleOaLibrary(
   if (id && action === 'solution') {
     return json(data.solution(id));
   }
-  const ready = await oaReadyProblemIds();
+  const problems = await oaReadyProblems();
+  const ready = new Set(problems.keys());
   if (id) {
     const detail = data.detail(id, ready);
     if (ready.has(id)) detail.statement = await oaVerifiedStatement(id);
     return json(detail);
   }
-  return json(data.list(new URL(request.url).searchParams, ready));
+  const page = data.list(new URL(request.url).searchParams, ready);
+  const progress = new Map(
+    (
+      await rows<{ problem_id: string; solved: number }>(
+        `SELECT problem_id,MAX(status='accepted') AS solved FROM submissions WHERE user_id=? AND mode='judge' AND problem_id LIKE 'oa-%' GROUP BY problem_id`,
+        person.id,
+      )
+    ).map((r) => [r.problem_id, r.solved ? 'solved' : 'attempted']),
+  );
+  return json({
+    ...page,
+    items: page.items.map((item) => {
+      const meta = problems.get(item.id);
+      return {
+        ...item,
+        ...(meta && {
+          difficulty: meta.difficulty,
+          // Company and the generic OA label are already shown in their own column.
+          tags: meta.tags
+            .filter((tag) => tag !== 'OA' && tag !== item.companyName)
+            .slice(0, 3),
+        }),
+        ...(progress.has(item.id) && { progress: progress.get(item.id) }),
+      };
+    }),
+  });
 }

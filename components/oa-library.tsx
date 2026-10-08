@@ -6,6 +6,12 @@ import remarkGfm from 'remark-gfm';
 import type { Navigate } from './learning';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
 
+function companyHue(slug: string) {
+  let hash = 0;
+  for (const char of slug || '') hash = (hash * 31 + char.charCodeAt(0)) % 360;
+  return hash;
+}
+
 /** Text remains the accessible identity; the logo is only a visual aid. */
 export function CompanyIdentity({
   slug,
@@ -32,7 +38,13 @@ export function CompanyIdentity({
             onError={() => setFailedAsset(asset)}
           />
         ) : (
-          <span className="oa-company-initials">{companyInitials(name)}</span>
+          <span
+            className="oa-company-initials"
+            // Stable per-company hue so a missing logo still reads as an identity mark.
+            style={{ '--oa-hue': companyHue(slug) } as React.CSSProperties}
+          >
+            {companyInitials(name)}
+          </span>
         )}
       </span>
       <span className="oa-company-name">{name}</span>
@@ -50,7 +62,17 @@ type Item = {
   languages: string[];
   judgeStatus: 'reading_only' | 'ready';
   judgeProblemId?: string;
+  difficulty?: string;
+  tags?: string[];
+  progress?: 'solved' | 'attempted';
 };
+const difficultyLevels: Record<string, string> = {
+  简单: 'easy',
+  中等: 'medium',
+  困难: 'hard',
+};
+const codeLanguages = new Set(['python', 'java', 'cpp', 'go']);
+const progressLabels = { solved: '已通过', attempted: '尝试过' } as const;
 type Page = {
   items: Item[];
   total: number;
@@ -541,7 +563,14 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                     没有找到匹配题目，试试其他关键词或公司。
                   </p>
                 ) : (
-                  <div className="study-list">
+                  <div className="study-list oa-list">
+                    <div className="oa-list-head" aria-hidden="true">
+                      <span />
+                      <span>公司</span>
+                      <span>题号</span>
+                      <span>题目</span>
+                      <span>难度</span>
+                    </div>
                     {data.items.map((item) => (
                       <button
                         type="button"
@@ -557,23 +586,47 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                             : setSelected(item.id)
                         }
                       >
+                        <span
+                          className="oa-progress"
+                          data-progress={item.progress}
+                          title={item.progress && progressLabels[item.progress]}
+                        >
+                          {item.progress && (
+                            <span className="oa-visually-hidden">
+                              {progressLabels[item.progress]}
+                            </span>
+                          )}
+                        </span>
                         <span className="oa-company">
                           <CompanyIdentity
                             slug={item.companySlug}
                             name={item.companyName}
                           />
                         </span>
+                        <span className="oa-number">#{item.number}</span>
                         <span className="oa-title">
                           <strong>{item.title}</strong>
-                          <small>
-                            {item.languages
-                              .map((lang) => languageNames[lang] || lang)
-                              .join(' · ')}
-                          </small>
+                          {[
+                            // Only unusual languages (SQL, Bash…) tell the reader something.
+                            ...item.languages
+                              .filter((lang) => !codeLanguages.has(lang))
+                              .map((lang) => languageNames[lang] || lang),
+                            ...(item.tags || []),
+                          ].map((tag) => (
+                            <small key={tag}>{tag}</small>
+                          ))}
                         </span>
-                        <span className="oa-badge">
-                          OA 题目 ·{' '}
-                          {item.judgeStatus === 'ready' ? '可练习' : '准备中'}
+                        <span
+                          className="oa-difficulty"
+                          data-level={
+                            item.judgeStatus === 'ready'
+                              ? difficultyLevels[item.difficulty || '']
+                              : 'reading'
+                          }
+                        >
+                          {item.judgeStatus === 'ready'
+                            ? item.difficulty || '—'
+                            : '仅题面'}
                         </span>
                       </button>
                     ))}
