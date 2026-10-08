@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008306,
+  "problems": [
+    {
+      "id": "oa-amazon-306",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "239ccbbf8bcac4adf09d430f94eeb6daa2d88736c7c36e491acb840ffec9bc3a",
+      "negativeControls": [
+        {
+          "name": "错误每个不匹配对都要一次交换",
+          "rejectedCases": 15,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            10,
+            12,
+            15,
+            16,
+            19,
+            21,
+            22,
+            23,
+            24,
+            26,
+            29,
+            30,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误奇数个不匹配一律无解",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            0,
+            8,
+            11,
+            14,
+            15,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            32,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误忽略无解情况",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            1,
+            5,
+            17,
+            18,
+            20,
+            25,
+            31,
+            33
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误奇数个不匹配向下取整",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            0,
+            8,
+            11,
+            14,
+            15,
+            22,
+            23,
+            26,
+            27,
+            28,
+            30,
+            32,
+            34
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent formula via ones-parity feasibility and separate 01/10 mismatch counts; breadth-first search over arbitrary swaps on all binary strings up to length 8 (and oracle strings up to 10).",
+      "exhaustiveSmallDomain": {
+        "lengthMin": 1,
+        "lengthMax": 9,
+        "bfsUpTo": 8,
+        "cases": 1022
+      },
+      "largeBoundaries": [
+        {
+          "name": "满长偶数全不匹配",
+          "inputBytes": 1000001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.00661
+        },
+        {
+          "name": "满长奇数全不匹配",
+          "inputBytes": 1000000,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.00695
+        },
+        {
+          "name": "满长偶数无解",
+          "inputBytes": 1000001,
+          "outputBytes": 3,
+          "elapsedSeconds": 0.00696
+        },
+        {
+          "name": "满长奇数长度借中间字符",
+          "inputBytes": 1000000,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00699
+        },
+        {
+          "name": "满长随机",
+          "inputBytes": 1000001,
+          "outputBytes": 3,
+          "elapsedSeconds": 0.00711
+        },
+        {
+          "name": "满长随机奇数长度",
+          "inputBytes": 1000000,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.00687
+        },
+        {
+          "name": "满长已是回文",
+          "inputBytes": 1000001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00675
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 5.848
+    }
+  ]
+}
