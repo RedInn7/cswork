@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-340",
+      "sourceContentHash": "6b7313ec37f99655b638d27a4866ffa9e7a405b27811acc3734b776ca1c5f7db",
+      "packageChecksum": "926dcd0f54f1bc5603df9464de37ad76b2e224b84d81dc5cd7241b28c2ac642c",
+      "editorial": "## 题意\n\n有servers台服务器（编号0..servers−1）。按顺序处理请求，第i个请求只能分配给编号0..requests[i]的服务器，选当前最不忙的一台；并列时选编号最小的。服务器的忙碌度是它已经分配到的请求数（请求不会完成或释放）。输出每个请求分配到的服务器编号。\n\n## 思路\n\n需要支持“前缀区间内取（分配数，编号）最小者”和“单点加一”。把(分配数,编号)编码成一个整数cnt·2^20+idx，用线段树维护区间最小值：查询[0,requests[i]]的最小值得到服务器编号，再把该叶子加2^20并向上更新。\n\n## 正确性\n\n编码后的整数大小顺序与“先比分配数、再比编号”的字典序一致（编号<2^20）。线段树每次给出前缀中的最小编码，即满足规则的服务器；更新后树中保存的仍是真实分配数。\n\n## 复杂度\n\n建树O(servers)，每个请求O(log servers)。\n\n## 独立验证\n\noracle逐个请求在0..requests[i]中线性扫描计数数组，按（计数,编号）取最小，不使用线段树。大用例的期望值由另一份Python自底向上线段树（元组比较）计算。穷举servers=1..3、请求数1..4的全部请求序列并逐个真实运行参考程序。错误解覆盖并列取最大编号、忽略允许范围、范围不含右端点和忙碌度不累加。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <string>\nusing namespace std;\nint sz;vector<long long>t;\nlong long key(long long cnt,int idx){return cnt*(1LL<<20)+idx;}\nint main(){int s,n;if(scanf(\"%d %d\",&s,&n)!=2)return 0;sz=1;while(sz<s)sz<<=1;t.assign(2*sz,1LL<<62);\nfor(int i=0;i<s;i++)t[sz+i]=key(0,i);for(int i=sz-1;i>0;i--)t[i]=min(t[2*i],t[2*i+1]);\nstring out;out.reserve(n*7);\nfor(int k=0;k<n;k++){int r;scanf(\"%d\",&r);long long best=1LL<<62;int lo=sz,hi=sz+r+1;\n while(lo<hi){if(lo&1)best=min(best,t[lo++]);if(hi&1)best=min(best,t[--hi]);lo>>=1;hi>>=1;}\n int idx=best&((1<<20)-1);int p=sz+idx;t[p]+=1LL<<20;for(p>>=1;p;p>>=1)t[p]=min(t[2*p],t[2*p+1]);\n out+=to_string(idx);out+=k+1<n?' ':'\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    }
+  ]
+}

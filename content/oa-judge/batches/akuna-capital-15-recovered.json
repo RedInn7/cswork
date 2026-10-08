@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-akuna-capital-15",
+      "sourceContentHash": "b698e978554490cfc84ee1acb330dff1e050b162ac9e7d06c0e0134b221d1e71",
+      "packageChecksum": "7dc1becfefacb82f54cc25f9b7d67ef1fa9a929361b09316f87e61c299754c09",
+      "editorial": "## 题意\n\n城市位于互不相同的整数坐标。对每个查询城市，在与它共享x坐标或共享y坐标的其他城市中找曼哈顿距离最近的；距离相同取名字字典序更小的（如ab<aba<abb）；没有共线城市输出NONE。\n\n## 思路\n\n与查询城市共享x的城市都在同一竖线上，距离只等于|Δy|，所以最近者必是按y排序后与它相邻的两个之一；共享y同理。把城市按(x,y)和(y,x)各排序一次，记录每个城市在两种顺序中的位置。每个查询最多检查4个候选：同x线上的前驱后继、同y线上的前驱后继，取距离最小、再按名字比较。\n\n## 正确性\n\n同一条线上，比相邻城市更远的城市距离严格更大（坐标互不相同），不可能是答案，也不会与相邻者并列；两侧相邻城市可能并列，二者都被检查，名字比较处理并列；竖线和横线上的候选再统一比较。\n\n## 复杂度\n\n排序O(n log n)，每个查询O(1)（哈希定位）。距离最大约2×10^9，用64位。\n\n## 独立验证\n\noracle对每个查询扫描全部城市直接比较（距离，名字），不依赖排序相邻性。穷举3×3网格上所有至多4个城市的摆放（名字固定为一组含前缀关系的字符串），对每个城市查询并逐个真实运行参考程序。错误解覆盖名字长度优先、并列保留先找到者、只看共享x、只看一侧相邻城市。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <map>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<string>c(n);vector<long long>x(n),y(n);char buf[32];\nunordered_map<string,int>id;id.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%31s %lld %lld\",buf,&x[i],&y[i]);c[i]=buf;id[c[i]]=i;}\nvector<int>bx(n),by(n);for(int i=0;i<n;i++)bx[i]=by[i]=i;\nsort(bx.begin(),bx.end(),[&](int a,int b){return x[a]!=x[b]?x[a]<x[b]:y[a]<y[b];});\nsort(by.begin(),by.end(),[&](int a,int b){return y[a]!=y[b]?y[a]<y[b]:x[a]<x[b];});\nvector<int>px(n),py(n);for(int i=0;i<n;i++){px[bx[i]]=i;py[by[i]]=i;}\nint m;scanf(\"%d\",&m);string out;\nfor(int k=0;k<m;k++){scanf(\"%31s\",buf);int q=id[buf];int best=-1;long long bd=0;\nauto consider=[&](int j){long long d=llabs(x[j]-x[q])+llabs(y[j]-y[q]);if(best<0||d<bd||(d==bd&&c[j]<c[best])){best=j;bd=d;}};\nint p=px[q];if(p>0&&x[bx[p-1]]==x[q])consider(bx[p-1]);if(p+1<n&&x[bx[p+1]]==x[q])consider(bx[p+1]);\np=py[q];if(p>0&&y[by[p-1]]==y[q])consider(by[p-1]);if(p+1<n&&y[by[p+1]]==y[q])consider(by[p+1]);\nout+=best<0?string(\"NONE\"):c[best];out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误不检查保留前缀是否完美",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);int p=n;for(int i=1;i<n;i++)if(s[i]==s[i-1]){p=i;break;}\nint start=n-1;\nfor(int i=start;i>=0;i--){for(char c=s[i]+1;c<='z';c++){if(i>0&&c==s[i-1])continue;s[i]=c;char prev=c;for(int j=i+1;j<n;j++){s[j]=prev=='a'?'b':'a';prev=s[j];}puts(s);return 0;}}\nputs(\"-1\");}\n"
+  },
+  {
+    "name": "错误后缀全部填a",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);int p=n;for(int i=1;i<n;i++)if(s[i]==s[i-1]){p=i;break;}\nint start=p<n?p:n-1;\nfor(int i=start;i>=0;i--){for(char c=s[i]+1;c<='z';c++){if(i>0&&c==s[i-1])continue;s[i]=c;char prev=c;for(int j=i+1;j<n;j++){s[j]='a';prev=s[j];}puts(s);return 0;}}\nputs(\"-1\");}\n"
+  },
+  {
+    "name": "错误改动字符可与前一个字符相同",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);int p=n;for(int i=1;i<n;i++)if(s[i]==s[i-1]){p=i;break;}\nint start=p<n?p:n-1;\nfor(int i=start;i>=0;i--){for(char c=s[i]+1;c<='z';c++){s[i]=c;char prev=c;for(int j=i+1;j<n;j++){s[j]=prev=='a'?'b':'a';prev=s[j];}puts(s);return 0;}}\nputs(\"-1\");}\n"
+  },
+  {
+    "name": "错误完美串直接返回自身",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);int p=n;for(int i=1;i<n;i++)if(s[i]==s[i-1]){p=i;break;}\nif(p==n){puts(s);return 0;}int start=p;\nfor(int i=start;i>=0;i--){for(char c=s[i]+1;c<='z';c++){if(i>0&&c==s[i-1])continue;s[i]=c;char prev=c;for(int j=i+1;j<n;j++){s[j]=prev=='a'?'b':'a';prev=s[j];}puts(s);return 0;}}\nputs(\"-1\");}\n"
+  }
+]

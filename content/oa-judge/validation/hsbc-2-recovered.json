@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008222,
+  "problems": [
+    {
+      "id": "oa-hsbc-2",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "babf6e651dc98aeaadb4e6990ca1549b952da9113555d04b1fb148006f70fcd1",
+      "negativeControls": [
+        {
+          "name": "错误只交换两端",
+          "rejectedCases": 7,
+          "rejectedCaseIndices": [
+            2,
+            9,
+            12,
+            22,
+            23,
+            31,
+            35
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误区间端点不计入",
+          "rejectedCases": 15,
+          "rejectedCaseIndices": [
+            0,
+            4,
+            5,
+            7,
+            11,
+            13,
+            14,
+            17,
+            19,
+            21,
+            25,
+            29,
+            30,
+            33,
+            34
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误翻转映射差一",
+          "rejectedCases": 27,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15,
+            17,
+            19,
+            21,
+            22,
+            23,
+            25,
+            29,
+            30,
+            31,
+            33,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误只处理第一次操作",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            13,
+            14,
+            19,
+            21,
+            25,
+            31,
+            33,
+            35
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent literal simulation of the pairwise inward swaps on a real array for small N; exhaustive N<=5 with every set of 1..2 disjoint ranges and every K.",
+      "exhaustiveSmallDomain": {
+        "numMin": 1,
+        "numMax": 5,
+        "actions": "all sets of 1..2 disjoint ranges",
+        "K": "all positions",
+        "cases": 392
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模整段翻转取首位",
+          "inputBytes": 30,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.0024
+        },
+        {
+          "name": "满规模整段翻转取末位",
+          "inputBytes": 39,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00223
+        },
+        {
+          "name": "满规模十万区间命中",
+          "inputBytes": 1977692,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.01711
+        },
+        {
+          "name": "满规模十万区间未命中",
+          "inputBytes": 1977693,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.01673
+        },
+        {
+          "name": "满规模区间左端点",
+          "inputBytes": 1977692,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.01698
+        },
+        {
+          "name": "满规模区间右端点",
+          "inputBytes": 1977692,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.01678
+        },
+        {
+          "name": "满规模连续等长区间",
+          "inputBytes": 1977811,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.01438
+        },
+        {
+          "name": "满规模单点区间",
+          "inputBytes": 1325952,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.01162
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 5.012
+    }
+  ]
+}

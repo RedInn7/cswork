@@ -14,6 +14,18 @@
       ]
     },
     {
+      "id": "oa-airbnb-8",
+      "sourceContentHash": "572aa1c9f1b2ab2fad2ed47b9be724ef54b60089343b4a212e74151a88102491",
+      "packageChecksum": "56418fc1ca719ae321922cbe6599a362a3b69c31111a45909fe6acfaf37935f4",
+      "editorial": "## 题意\n\n给定价格x1..xn和整数target，每个价格取下整或上整得到yi，使Σyi=target且Σ|xi−yi|最小，输出y。数据保证有解且最优解唯一。\n\n## 思路\n\n先全部取下整，和为base，还需要把k=target−base个非整数价格改为上整。价格xi的小数部分为fi>0时，取下整误差fi，取上整误差1−fi，改为上整使总误差增加1−2fi，fi越大越划算。所以把小数部分最大的k个非整数价格取上整即可。整数价格的上整等于下整，不能用来凑数。\n\n为避免浮点误差，按字符串把价格解析为整数部分与两位小数（单位0.01）。\n\n## 正确性\n\n总误差=Σfi+Σ_{上整集合}(1−2fi)，第一项固定，最小化第二项就是在非整数价格中选k个使(1−2fi)之和最小，即选fi最大的k个。数据保证唯一最优，第k大与第k+1大的小数部分不相等。\n\n## 复杂度\n\n排序O(n log n)。\n\n## 独立验证\n\noracle枚举每个非整数价格取下整/上整的全部组合（小数据），筛选总和等于target者取误差最小值，并检查最优解唯一，不使用排序贪心。穷举3个价格、小数部分取自{0,.25,.5,.75}的所有组合与所有可行target（仅保留唯一最优的输入）并逐个真实运行参考程序。错误解覆盖优先进位小数最小者、按下标进位、只看小数第一位和四舍五入不调整。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n;long long target;if(scanf(\"%d %lld\",&n,&target)!=2)return 0;vector<long long>fl(n);vector<int>fr(n);char buf[64];long long base=0;\nfor(int i=0;i<n;i++){scanf(\"%63s\",buf);char*d=strchr(buf,'.');long long ip=atoll(buf);int f=0;if(d){f=(d[1]-'0')*10+(d[2]?d[2]-'0':0);}fl[i]=ip;fr[i]=f;base+=ip;}\nlong long k=target-base;vector<int>idx;for(int i=0;i<n;i++)if(fr[i]>0)idx.push_back(i);\nsort(idx.begin(),idx.end(),[&](int a,int b){return fr[a]!=fr[b]?fr[a]>fr[b]:a<b;});\nvector<long long>y=fl;for(long long t=0;t<k;t++)y[idx[t]]++;\nstring out;for(int i=0;i<n;i++){out+=to_string(y[i]);out+=i+1<n?' ':'\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-airbnb-1",
       "sourceContentHash": "73acbc84232f8d7fbc04533e9582dacdb6784e29700a397f1196b4db28c89bec",
       "packageChecksum": "140b1474a73bbbe87e45739177570add13b273b2c7f3f40dd66d000f74c4e660",
@@ -202,6 +214,18 @@
         {
           "language": "cpp",
           "code": "#include <cstdio>\n#include <cstdint>\n#include <deque>\nusing namespace std;\nuint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint64_t x=0;while(c>32&&c!=EOF){x=x*10+uint64_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Entry{uint64_t time;uint32_t size;};\nint main(){\n uint64_t limit=readNumber(),window=readNumber(),n=readNumber(),sum=0,total=0;\n deque<Entry> accepted;\n for(uint64_t i=0;i<n;i++){\n  uint64_t t=readNumber(),size=readNumber();\n  while(!accepted.empty() && t-accepted.front().time>window){sum-=accepted.front().size;accepted.pop_front();}\n  if(sum+size<=limit){sum+=size;total+=size;if(size)accepted.push_back({t,uint32_t(size)});}\n }\n printf(\"%llu\\n\",static_cast<unsigned long long>(total));\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-akuna-capital-15",
+      "sourceContentHash": "b698e978554490cfc84ee1acb330dff1e050b162ac9e7d06c0e0134b221d1e71",
+      "packageChecksum": "7dc1becfefacb82f54cc25f9b7d67ef1fa9a929361b09316f87e61c299754c09",
+      "editorial": "## 题意\n\n城市位于互不相同的整数坐标。对每个查询城市，在与它共享x坐标或共享y坐标的其他城市中找曼哈顿距离最近的；距离相同取名字字典序更小的（如ab<aba<abb）；没有共线城市输出NONE。\n\n## 思路\n\n与查询城市共享x的城市都在同一竖线上，距离只等于|Δy|，所以最近者必是按y排序后与它相邻的两个之一；共享y同理。把城市按(x,y)和(y,x)各排序一次，记录每个城市在两种顺序中的位置。每个查询最多检查4个候选：同x线上的前驱后继、同y线上的前驱后继，取距离最小、再按名字比较。\n\n## 正确性\n\n同一条线上，比相邻城市更远的城市距离严格更大（坐标互不相同），不可能是答案，也不会与相邻者并列；两侧相邻城市可能并列，二者都被检查，名字比较处理并列；竖线和横线上的候选再统一比较。\n\n## 复杂度\n\n排序O(n log n)，每个查询O(1)（哈希定位）。距离最大约2×10^9，用64位。\n\n## 独立验证\n\noracle对每个查询扫描全部城市直接比较（距离，名字），不依赖排序相邻性。穷举3×3网格上所有至多4个城市的摆放（名字固定为一组含前缀关系的字符串），对每个城市查询并逐个真实运行参考程序。错误解覆盖名字长度优先、并列保留先找到者、只看共享x、只看一侧相邻城市。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <map>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<string>c(n);vector<long long>x(n),y(n);char buf[32];\nunordered_map<string,int>id;id.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%31s %lld %lld\",buf,&x[i],&y[i]);c[i]=buf;id[c[i]]=i;}\nvector<int>bx(n),by(n);for(int i=0;i<n;i++)bx[i]=by[i]=i;\nsort(bx.begin(),bx.end(),[&](int a,int b){return x[a]!=x[b]?x[a]<x[b]:y[a]<y[b];});\nsort(by.begin(),by.end(),[&](int a,int b){return y[a]!=y[b]?y[a]<y[b]:x[a]<x[b];});\nvector<int>px(n),py(n);for(int i=0;i<n;i++){px[bx[i]]=i;py[by[i]]=i;}\nint m;scanf(\"%d\",&m);string out;\nfor(int k=0;k<m;k++){scanf(\"%31s\",buf);int q=id[buf];int best=-1;long long bd=0;\nauto consider=[&](int j){long long d=llabs(x[j]-x[q])+llabs(y[j]-y[q]);if(best<0||d<bd||(d==bd&&c[j]<c[best])){best=j;bd=d;}};\nint p=px[q];if(p>0&&x[bx[p-1]]==x[q])consider(bx[p-1]);if(p+1<n&&x[bx[p+1]]==x[q])consider(bx[p+1]);\np=py[q];if(p>0&&y[by[p-1]]==y[q])consider(by[p-1]);if(p+1<n&&y[by[p+1]]==y[q])consider(by[p+1]);\nout+=best<0?string(\"NONE\"):c[best];out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -434,6 +458,18 @@
       ]
     },
     {
+      "id": "oa-amazon-116",
+      "sourceContentHash": "7a1088c3e5d4a4ff8777ceb5a8ccb9b9be2fc4607a275b5e26866614b034ed56",
+      "packageChecksum": "e0b66a845a78d25c7d0677929bfabe176b2c4d364067e5d8058548ae610c7251",
+      "editorial": "## 题意\n\n01串若不含子序列010也不含子序列101，就是好串。每次操作翻转一个字符，求变成好串的最少操作次数。\n\n## 思路\n\n不含子序列010和101，等价于字符最多切换一次，即形如0…01…1或1…10…0（含全0、全1）。枚举分界点k（0..n）：变成“前k个0、其余1”的代价是前缀中1的个数加后缀中0的个数；变成“前k个1、其余0”的代价是前缀中0的个数加后缀中1的个数。用前缀计数一次扫描，取最小值。\n\n## 正确性\n\n若字符串有两次及以上的切换，必然出现x y x的子序列（x≠y），即010或101；反之至多一次切换时任取三个位置都不会出现x y x。所以好串集合恰为上述2(n+1)个目标串，最少翻转次数等于到这些目标串的最小汉明距离。\n\n## 复杂度\n\nO(n)时间，O(1)额外空间。\n\n## 独立验证\n\noracle显式构造全部2(n+1)个目标串逐一计算汉明距离（O(n²)，仅小数据）；更小的数据再枚举全部2^n个01串，用子序列检查判定好串后求最小距离，直接验证“至多一次切换”的等价性。穷举长度1..10的全部01串并逐个真实运行参考程序。错误解覆盖只考虑0*1*、只允许全同、按切换次数计数和漏掉全0/全1目标。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\n#include <algorithm>\nstatic char s[1000005];\nint main(){if(scanf(\"%1000004s\",s)!=1)return 0;int n=strlen(s);int ones=0,zeros=0;for(int i=0;i<n;i++)(s[i]=='1'?ones:zeros)++;\nint p1=0,p0=0,best=n;for(int k=0;k<=n;k++){int a=p1+(zeros-p0);int b=p0+(ones-p1);best=std::min(best,std::min(a,b));if(k<n)(s[k]=='1'?p1:p0)++;}\nprintf(\"%d\\n\",best);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-151",
       "sourceContentHash": "268b9e03a1a2d646ddae095d2f5be5f4e0ee371e11e96e0df98780474251b943",
       "packageChecksum": "251b3b38593f23738d233bb6b566cec56c6c53335be9018b4b52bb0302519929",
@@ -470,6 +506,18 @@
       ]
     },
     {
+      "id": "oa-amazon-306",
+      "sourceContentHash": "9b235604a16217ba1c44315a4cdc13a338192854448800cc4269c791ccd9ea10",
+      "packageChecksum": "bccb681881e9157d765fd43c985c726abff0e97897d2a6cdcc76e2e517525d05",
+      "editorial": "## 题意\n\n一次操作交换任意两个位置的字符（不要求相邻）。求把01串变成回文的最少交换次数，做不到输出−1。\n\n## 思路\n\n把位置i与n−1−i配成一对，设不相等的对数为m。\n\n- 一次交换最多改变两个位置，因此最多修好两对；m为偶数时，把一个“01”对的0与另一个“10”对的1交换（或类似配对），每次修好两对，答案m/2。\n- m为奇数且长度为奇数时，最后剩下的一对可以与中间字符交换修好（中间字符取什么都行），答案(m+1)/2。\n- m为奇数且长度为偶数时，1的个数与m同奇偶，即为奇数；偶数长度回文中1的个数必为偶数，交换又不改变1的个数，所以无解。\n\n## 正确性\n\n下界：每次交换只动两个位置，最多让两对从不等变相等，所以至少需要⌈m/2⌉次；上面的构造恰好达到下界。无解条件由1的个数奇偶性给出。\n\n## 复杂度\n\nO(n)。\n\n## 独立验证\n\noracle用1的个数、0的个数与长度奇偶性推导可行性，并按“不匹配的01对和10对分别计数”的方式重新推出答案；小数据另以BFS在交换图上求最短步数。穷举长度1..9的全部01串，BFS结果与公式逐一比对并逐个真实运行参考程序。原样例按规则为2（先交换(4,5)，再交换(1,2)得到1001001）。错误解覆盖每对一次交换、奇数m一律无解、忽略无解与向下取整。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\nstatic char s[1000005];\nint main(){if(scanf(\"%1000004s\",s)!=1)return 0;int n=strlen(s),m=0;for(int i=0;i<n/2;i++)if(s[i]!=s[n-1-i])m++;\nif(m%2==0)printf(\"%d\\n\",m/2);else if(n%2==1)printf(\"%d\\n\",(m+1)/2);else printf(\"-1\\n\");}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-308",
       "sourceContentHash": "b4c77510ad7ec62e1b10eb4dd5b15621a1c532321864ce3ada707ff84158a5a0",
       "packageChecksum": "e0d010ee130eafa073a0435477eaf030e102975cdce5da0db5522a4ffa52412c",
@@ -478,6 +526,18 @@
         {
           "language": "python",
           "code": "import sys\n\ndef calculate_minimum_value(s, x, y):\n    inf = 10**100\n    cost = [inf, inf]\n    if s[0] in \"0!\": cost[0] = 0\n    if s[0] in \"1!\": cost[1] = 0\n    for char in s[1:]:\n        next_cost = [inf, inf]\n        for bit in (0, 1):\n            if char != \"!\" and int(char) != bit:\n                continue\n            for previous in (0, 1):\n                add = x if (previous, bit) == (0, 1) else y if (previous, bit) == (1, 0) else 0\n                next_cost[bit] = min(next_cost[bit], cost[previous] + add)\n        cost = next_cost\n    return min(cost)\n\ndef solve(raw):\n    parts = raw.split()\n    if len(parts) != 3:\n        raise ValueError(\"expected S, x, and y\")\n    s, x_text, y_text = parts\n    x, y = int(x_text), int(y_text)\n    if not s or any(char not in \"01!\" for char in s) or \"!\" not in s:\n        raise ValueError(\"S must contain 0, 1, and at least one !\")\n    if not (0 <= x <= 2**31 - 1 and 0 <= y <= 2**31 - 1):\n        raise ValueError(\"x and y must be nonnegative 32-bit integers\")\n    return str(calculate_minimum_value(s, x, y))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.buffer.read().decode(\"ascii\")))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-311",
+      "sourceContentHash": "8cee1fe9f2005a1c979327222091ca7ccfc8508756811c17815400573dd8ee01",
+      "packageChecksum": "59c022e7e3765f5db9a8c9d210865ad0ec73bfe6972298902bab422bde1dc32d",
+      "editorial": "## 题意\n\n相邻字符都不相同的字符串称为完美串。给定小写字母串s（未必完美），求与s等长、字典序严格大于s的最小完美串；不存在输出-1。\n\n## 思路\n\n答案与s的最长公共前缀越长越小。设p为第一个满足s[p]=s[p−1]的位置（s完美时p=n）。答案保留的前缀s[0..i−1]必须完美，因此i≤p；又必须严格变大，所以i≤n−1。从i=min(p,n−1)往前试：在位置i放一个大于s[i]、且不等于s[i−1]的最小字母c；找到后，i之后的位置依次填入最小的合法字母（前一个是a就填b，否则填a），即ababa…交替。所有i都不行则输出-1。\n\n## 正确性\n\n字典序比较由第一个不同位置决定。保留前缀越长、该位置字母越小，结果越小；而之后的部分取逐位最小的合法字母即可，后缀总能用a/b交替填满，不会失败。i>p时保留的前缀含相邻相同字符，不可能完美；s完美时i=n意味着不变，不满足严格大于。\n\n## 复杂度\n\nO(26n)，实际只需O(n+26)。\n\n## 独立验证\n\noracle对每个位置i、每个可选字母都构造候选串，过滤出完美且大于s的候选后取最小值，不依赖“从右往左第一个可行位置即最优”的结论。小数据另从s开始按26进制逐个递增字符串，直到遇到第一个完美串，直接验证“等长、严格大于、最小”。穷举字母表{a,b,c,y,z}上长度1..4的全部字符串并逐个真实运行参考程序。错误解覆盖不检查前缀完美、后缀填a、忽略与前一字符相同、完美串返回自身。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);int p=n;for(int i=1;i<n;i++)if(s[i]==s[i-1]){p=i;break;}\nint start=p<n?p:n-1;\nfor(int i=start;i>=0;i--){for(char c=s[i]+1;c<='z';c++){if(i>0&&c==s[i-1])continue;s[i]=c;char prev=c;for(int j=i+1;j<n;j++){s[j]=prev=='a'?'b':'a';prev=s[j];}puts(s);return 0;}}\nputs(\"-1\");}\n"
         }
       ]
     },
@@ -526,6 +586,18 @@
         {
           "language": "cpp",
           "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\nusing namespace std;\nstruct Account{string password;bool active=false;};\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,Account> users;users.reserve(size_t(n)*2+1);\nchar op[16],name[16],pass[16];string out;out.reserve(size_t(n)*24);\nfor(int i=0;i<n;i++){scanf(\"%15s %15s\",op,name);\nif(op[0]=='r'){scanf(\"%15s\",pass);auto r=users.try_emplace(name);if(r.second){r.first->second.password=pass;out+=\"Registered Successfully\\n\";}else out+=\"Username already exists\\n\";}\nelse if(op[3]=='i'){scanf(\"%15s\",pass);auto it=users.find(name);if(it!=users.end()&&!it->second.active&&it->second.password==pass){it->second.active=true;out+=\"Logged In Successfully\\n\";}else out+=\"Login Unsuccessful\\n\";}\nelse{auto it=users.find(name);if(it!=users.end()&&it->second.active){it->second.active=false;out+=\"Logged Out Successfully\\n\";}else out+=\"Logout Unsuccessful\\n\";}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-340",
+      "sourceContentHash": "6b7313ec37f99655b638d27a4866ffa9e7a405b27811acc3734b776ca1c5f7db",
+      "packageChecksum": "926dcd0f54f1bc5603df9464de37ad76b2e224b84d81dc5cd7241b28c2ac642c",
+      "editorial": "## 题意\n\n有servers台服务器（编号0..servers−1）。按顺序处理请求，第i个请求只能分配给编号0..requests[i]的服务器，选当前最不忙的一台；并列时选编号最小的。服务器的忙碌度是它已经分配到的请求数（请求不会完成或释放）。输出每个请求分配到的服务器编号。\n\n## 思路\n\n需要支持“前缀区间内取（分配数，编号）最小者”和“单点加一”。把(分配数,编号)编码成一个整数cnt·2^20+idx，用线段树维护区间最小值：查询[0,requests[i]]的最小值得到服务器编号，再把该叶子加2^20并向上更新。\n\n## 正确性\n\n编码后的整数大小顺序与“先比分配数、再比编号”的字典序一致（编号<2^20）。线段树每次给出前缀中的最小编码，即满足规则的服务器；更新后树中保存的仍是真实分配数。\n\n## 复杂度\n\n建树O(servers)，每个请求O(log servers)。\n\n## 独立验证\n\noracle逐个请求在0..requests[i]中线性扫描计数数组，按（计数,编号）取最小，不使用线段树。大用例的期望值由另一份Python自底向上线段树（元组比较）计算。穷举servers=1..3、请求数1..4的全部请求序列并逐个真实运行参考程序。错误解覆盖并列取最大编号、忽略允许范围、范围不含右端点和忙碌度不累加。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <string>\nusing namespace std;\nint sz;vector<long long>t;\nlong long key(long long cnt,int idx){return cnt*(1LL<<20)+idx;}\nint main(){int s,n;if(scanf(\"%d %d\",&s,&n)!=2)return 0;sz=1;while(sz<s)sz<<=1;t.assign(2*sz,1LL<<62);\nfor(int i=0;i<s;i++)t[sz+i]=key(0,i);for(int i=sz-1;i>0;i--)t[i]=min(t[2*i],t[2*i+1]);\nstring out;out.reserve(n*7);\nfor(int k=0;k<n;k++){int r;scanf(\"%d\",&r);long long best=1LL<<62;int lo=sz,hi=sz+r+1;\n while(lo<hi){if(lo&1)best=min(best,t[lo++]);if(hi&1)best=min(best,t[--hi]);lo>>=1;hi>>=1;}\n int idx=best&((1<<20)-1);int p=sz+idx;t[p]+=1LL<<20;for(p>>=1;p;p>>=1)t[p]=min(t[2*p],t[2*p+1]);\n out+=to_string(idx);out+=k+1<n?' ':'\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -4706,6 +4778,18 @@
       ]
     },
     {
+      "id": "oa-barclay-1",
+      "sourceContentHash": "5ec240bf19573c67da891823ffb6d64c978229835b413c8bf6b7eaf102a4a0d3",
+      "packageChecksum": "175dd6152d86b199e8030c608aa205350a295b0ba2a84b9ef09da2d2d97b79b2",
+      "editorial": "## 题意\n\n数组A与整数R。最多一次（可以不做）把某个元素替换为1..R中的任意整数X。求整个数组可能的最大GCD。\n\n## 思路\n\n不操作时答案为整体gcd。若替换下标i，其余元素的gcd为g_i，新的gcd为gcd(g_i,X)，它一定是g_i的约数；而对g_i的任意约数d≤R，取X=d即可达到d。所以替换i能得到的最大值是g_i不超过R的最大约数。用前缀gcd与后缀gcd在O(1)内得到每个g_i，再枚举约数到√g_i求不超过R的最大约数（g_i≤R时直接是g_i）。\n\n## 正确性\n\ngcd(g_i,X)整除g_i，且X≤R时gcd(g_i,X)≤X≤R，所以它是g_i不超过R的约数；反之每个这样的约数都可达。答案取不操作与所有i的最大值。注意整体gcd可能大于R，此时不操作更优。\n\n## 复杂度\n\nO(n√V)，V=10^5。\n\n## 独立验证\n\noracle枚举替换位置i和全部X∈[1,R]直接计算整个数组的gcd，并考虑不替换的情况（O(n²R)，仅小数据），不使用前后缀与约数推理。穷举长度2..3、元素1..6、R=1..6的全部组合并逐个真实运行参考程序。错误解覆盖必须替换、取min(g,R)、只替换最大元素和只能替换为R。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <numeric>\n#include <algorithm>\nusing namespace std;\nint bestDiv(int g,int R){if(g<=R)return g;int b=1;for(int d=1;(long long)d*d<=g;d++)if(g%d==0){if(d<=R)b=max(b,d);if(g/d<=R)b=max(b,g/d);}return b;}\nint main(){int n,R;if(scanf(\"%d %d\",&n,&R)!=2)return 0;vector<int>a(n);for(auto&x:a)scanf(\"%d\",&x);\nvector<int>pre(n+1,0),suf(n+2,0);for(int i=0;i<n;i++)pre[i+1]=gcd(pre[i],a[i]);for(int i=n-1;i>=0;i--)suf[i]=gcd(suf[i+1],a[i]);\nint ans=pre[n];vector<int>seen;\nfor(int i=0;i<n;i++){int g=gcd(pre[i],suf[i+1]);ans=max(ans,bestDiv(g,R));}\nprintf(\"%d\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-barclays-2",
       "sourceContentHash": "78ba31d7ed2aeb75a9ef6c7c8afdb1721abb73070cf0f6a311a9468cfc7c10f6",
       "packageChecksum": "4d101778d679066d2d42f83acbdca0bbad112283f7faabc4e5e2a58f8e60fdc9",
@@ -4786,6 +4870,18 @@
         {
           "language": "python",
           "code": "import sys\n\nMONTHS = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)\nPREFIX = (0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334)\n\ndef is_leap(year):\n    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)\n\ndef ordinal(year, month, day):\n    previous = year - 1\n    total = 365 * previous + previous // 4 - previous // 100 + previous // 400\n    total += PREFIX[month - 1]\n    if month > 2 and is_leap(year):\n        total += 1\n    return total + day - 1\n\ndef solve(raw):\n    y1, m1, d1, y2, m2, d2 = map(int, raw.split())\n    return str(ordinal(y2, m2, d2) - ordinal(y1, m1, d1))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-box-1",
+      "sourceContentHash": "d431d6ee4707c787d007d6b8f747971ef84199be60869fa23ac108ded82f98e8",
+      "packageChecksum": "34796981b78f6356456b00fb2b5669dba813213e635eaf5ebc40d10bfd6e6568",
+      "editorial": "## 题意\n\n一笔交易由若干硬币序列号组成。合法序列号满足：长度10..12；前3个字符是互不相同的大写字母；接下来4个字符是1900..2019之间的年份；随后若干字符是币值，必须恰好是10、20、50、100、200、500、1000之一；币值后面紧跟的字符就是最后一个字符，必须是大写字母。对合法硬币的币值求和，再从这笔交易的总额中扣除1%的税并向下取整。\n\n## 思路\n\n位置是固定的：前7个字符和最后1个字符之外的中间部分（下标7到倒数第2个）就是币值，长度2..4。逐条检查：长度、前三字母、年份四位数字及范围、末字符大写、中间片段与面额集合做字符串精确比较。合法则累加面额。最后输出⌊总额×99/100⌋，用整数运算即可精确取整。\n\n## 正确性\n\n规则5要求币值之后的“下一个字符”就是最后一个字符，所以币值片段的边界被唯一确定。用字符串精确比较面额，\"0020\"之类不会被误判为20。税针对整笔交易的总额扣一次，与逐枚扣税取整结果不同。\n\n## 复杂度\n\nO(Σ|s|)。总额最多10^5×1000=10^8，乘99需要64位整数。\n\n## 独立验证\n\noracle用正则表达式^[A-Z]{3}\\d{4}(10|20|50|100|200|500|1000)[A-Z]$加互异与年份检查，再用Python整数做总额扣税，不复用参考实现的切片逻辑。小域枚举了由合法/各类非法片段组合出的全部序列号并逐个真实运行参考程序。错误解覆盖不扣税（得到1720）、逐枚扣税、漏查互异、年份上限与32位溢出。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\n#include <string>\nusing namespace std;\nstatic bool up(char c){return c>='A'&&c<='Z';}\nstatic long long value(const char*s){int n=strlen(s);if(n<10||n>12)return 0;\nfor(int i=0;i<3;i++)if(!up(s[i]))return 0;if(s[0]==s[1]||s[0]==s[2]||s[1]==s[2])return 0;\nint y=0;for(int i=3;i<7;i++){if(s[i]<'0'||s[i]>'9')return 0;y=y*10+s[i]-'0';}if(y<1900||y>2019)return 0;\nif(!up(s[n-1]))return 0;string v(s+7,s+n-1);\nconst char*ok[]={\"10\",\"20\",\"50\",\"100\",\"200\",\"500\",\"1000\"};for(auto o:ok)if(v==o)return stoll(v);return 0;}\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;char buf[64];long long total=0;\nfor(int i=0;i<n;i++){scanf(\"%63s\",buf);total+=value(buf);}\nprintf(\"%lld\\n\",total*99/100);}\n"
         }
       ]
     },
@@ -5930,6 +6026,18 @@
       ]
     },
     {
+      "id": "oa-drw-1",
+      "sourceContentHash": "cc6e094064578cba0629febe5e5749b0ebfb583ae4beefbe3c348a9cd4f6660b",
+      "packageChecksum": "a8de967b9dbffe1bd5b1285296caa35e79e5c1c00a034fe791f7670101afdc88",
+      "editorial": "## 题意\n\n宽10列的简化俄罗斯方块。方块从上方落下，任何部分碰到底部或已停住的方块就停下；方块是刚体，不旋转，形状固定（Q、Z、S、T、I、L、J）。整行填满就消除，上面的各行整体下移，行内图案不变，不会填补下面的空洞。每行输入是一个放置序列，从空盘面开始，输出最终剩余方块的高度。\n\n## 思路\n\n用每行一个10位二进制数表示盘面。放置方块时，方块从顶上一直下落，所以只受各列“最高的已占格子”阻挡：对方块的每个格子(dx,dy)，所在列最高占用行为top，则方块底部至少在top−dy；取最大值即落点。写入四个格子后，删除所有等于全1的行（其余行按原顺序下移），再去掉顶部的空行。最终行数就是高度。\n\n## 正确性\n\n方块自上而下竖直移动，途中只可能被每列最上方的方块挡住，下方空洞到达不了，所以落点由各列顶部高度决定。消行只删除满行并保持其余行的相对顺序和行内图案，与题意“按行下落、不填补空洞”一致。\n\n## 复杂度\n\n每个方块O(4·H+H)，H≤100。\n\n## 独立验证\n\noracle用Python逐格模拟方块从高处一格一格下落、碰撞即停，并以集合存储占用格子，不使用列顶高度公式。穷举全部1..2个方块的放置序列（所有方块、所有合法列）作为一组多行输入，并加随机长序列，逐个真实运行参考程序。错误解覆盖S/Z形状对调、方块穿过上方落入空洞、不消行、消行后逐列填补空隙。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <string>\n#include <iostream>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);\nint sx[7][4]={{0,1,0,1},{1,2,0,1},{0,1,1,2},{1,0,1,2},{0,1,2,3},{0,1,0,0},{0,1,1,1}};\nint sy[7][4]={{0,0,1,1},{0,0,1,1},{0,0,1,1},{0,1,1,1},{0,0,0,0},{0,0,1,2},{0,0,1,2}};\nconst char*names=\"QZSTILJ\";string line,out;\nwhile(getline(cin,line)){if(!line.empty()&&line.back()=='\\r')line.pop_back();if(line.empty())continue;\n vector<int>rows;size_t p=0;\n while(p<line.size()){int t=strchr(names,line[p])-names;int c=line[p+1]-'0';p+=2;if(p<line.size()&&line[p]==',')p++;\n  int H=rows.size();int y=0;\n  for(int k=0;k<4;k++){int col=c+sx[t][k];int top=0;for(int r=H-1;r>=0;r--)if(rows[r]>>col&1){top=r+1;break;}y=max(y,top-sy[t][k]);}\n  for(int k=0;k<4;k++){int r=y+sy[t][k];while((int)rows.size()<=r)rows.push_back(0);rows[r]|=1<<(c+sx[t][k]);}\n  vector<int>keep;for(int r:rows)if(r!=1023)keep.push_back(r);rows=keep;\n  while(!rows.empty()&&rows.back()==0)rows.pop_back();}\n out+=to_string(rows.size());out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-dtcc-1",
       "sourceContentHash": "70cfcc291ba0cede2e3560160c36140ba63bada16f29a6855a26c4f473786a9b",
       "packageChecksum": "d906759b72265db94b814672d2629fb315c4fe691369653f1ccc1ea9c11d80e2",
@@ -6518,6 +6626,18 @@
       ]
     },
     {
+      "id": "oa-fortinet-1",
+      "sourceContentHash": "ff3b0ebc63f5b3a1fe68c5dff14314d1d1913cefeae09da96c03243ce1fc649f",
+      "packageChecksum": "bd8d5260b61bd259dee1fd9da51b9cd10265e495e626039c6f41ea00b883e7d2",
+      "editorial": "## 题意\n\nn件商品，第i件（0起）成本cost[i]，转售利润2^i。总资金x，每件最多买一次，总成本不超过x，求最大利润，对10^9+7取模。\n\n## 思路\n\n2^i大于所有更小下标利润之和（2^0+…+2^(i−1)=2^i−1），所以利润的比较等价于“从高下标往低下标的字典序”比较。从最高下标往下贪心：当前商品成本不超过剩余资金就买，并扣除成本。累加2^i时取模。\n\n## 正确性\n\n设贪心在下标i第一次与某最优解不同。若贪心买了i而最优解没买，则贪心利润在i处多出2^i，大于最优解在更低下标上的全部收益，矛盾；若贪心没买i，说明在已选的更高下标集合下买i超预算，最优解与贪心在更高下标相同，也不能买i。故贪心最优。比较全程用真实利润的结构而不是取模后的数，取模只发生在累加时。\n\n## 复杂度\n\nO(n)。资金可达10^14，使用64位。\n\n## 独立验证\n\noracle枚举全部子集，以Python大整数计算真实利润取最大值再取模（仅小数据），不使用贪心。穷举n=1..5、成本1..3、x=1..7的所有组合并逐个真实运行参考程序。错误解覆盖从低下标贪心、成本恰等于剩余资金时不买、不取模和32位资金。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\nint main(){int n;long long x;if(scanf(\"%d %lld\",&n,&x)!=2)return 0;std::vector<long long>c(n);for(auto&v:c)scanf(\"%lld\",&v);\nconst long long MOD=1000000007LL;std::vector<long long>pw(n);for(int i=0;i<n;i++)pw[i]=i?pw[i-1]*2%MOD:1;\nlong long rem=x,ans=0;for(int i=n-1;i>=0;i--)if(c[i]<=rem){rem-=c[i];ans=(ans+pw[i])%MOD;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-fortinet-2",
       "sourceContentHash": "97fc7982fbd48e129125077eb4cccfec15fa258d3b5d104f92775c44e5693129",
       "packageChecksum": "b85518907b9829cb1e64b038623c969172ebb5517a2177c1f043cba28051dc88",
@@ -6670,6 +6790,18 @@
         {
           "language": "python",
           "code": "def compare(s1, s2):\n    def process(value):\n        stack = []\n        for char in value:\n            if char == \"#\":\n                if stack:\n                    stack.pop()\n            else:\n                stack.append(char)\n        return stack\n    return 1 if process(s1) == process(s2) else 0\n\ndef solve(raw):\n    lines = raw.decode(\"ascii\").splitlines()\n    if len(lines) != 2:\n        raise ValueError(\"expected exactly two input lines\")\n    return str(compare(lines[0], lines[1]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.buffer.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-32",
+      "sourceContentHash": "98655aed1040feca3a622fe890c54f6d3cce782470689f8e07707aeebafb3dc6",
+      "packageChecksum": "25e2965f8a1444f474bf0db018a86e670e1f4d78eace21a1ee8548fd790742bd",
+      "editorial": "## 题意\n\n第T分钟（从1开始）的平均值取T−(k−1)..T共k分钟的通话量的平均（k=precedingMinutes），平均值严格大于alertThreshold时发一次警报；T<k时窗口不完整，不发警报。求警报总数。\n\n## 思路\n\n滑动窗口维护最近k分钟的通话量之和s。平均值s/k>threshold等价于s>threshold·k，全部用64位整数比较，避免浮点和整数除法带来的误差。\n\n## 正确性\n\n窗口从T=k开始才完整；每个T恰好检查一次。不等式两边同乘正数k不改变大小关系，所以与实数平均的比较完全一致。\n\n## 复杂度\n\nO(n)。窗口和最大10^10，threshold·k最大10^10，需要64位。\n\n## 独立验证\n\noracle对每个T用分数精确计算平均值再与阈值比较（O(nk)，仅小数据），不使用滑动和或移项。穷举n=1..5、k=1..n、通话量0..3、阈值1..3的全部组合并逐个真实运行参考程序。错误解覆盖整数除法、等于也报警、窗口不满也计算和32位累计。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\nint main(){int k;long long th;int n;if(scanf(\"%d %lld %d\",&k,&th,&n)!=3)return 0;std::vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nlong long s=0;int c=0;for(int i=0;i<n;i++){s+=a[i];if(i>=k)s-=a[i-k];if(i>=k-1&&s>th*k)c++;}\nprintf(\"%d\\n\",c);}\n"
         }
       ]
     },
@@ -6874,6 +7006,30 @@
         {
           "language": "python",
           "code": "import sys\n\ndef suffix_ranks(text):\n    size = len(text)\n    order = list(range(size))\n    rank = [ord(ch) for ch in text]\n    width = 1\n    while width < size:\n        order.sort(key=lambda i: (rank[i], rank[i + width] if i + width < size else -1))\n        next_rank = [0] * size\n        classes = 0\n        previous = None\n        for index in order:\n            key = (rank[index], rank[index + width] if index + width < size else -1)\n            if previous is not None and key != previous:\n                classes += 1\n            next_rank[index] = classes\n            previous = key\n        rank = next_rank\n        if classes == size - 1:\n            break\n        width *= 2\n    return rank\n\ndef solve(raw):\n    parts = raw.split()\n    if len(parts) != 2:\n        raise ValueError(\"expected strings A and B\")\n    a, b = parts\n    if not (1 <= len(a) <= 20000 and 1 <= len(b) <= 50000):\n        raise ValueError(\"input exceeds the supported string lengths\")\n    if any(ch < 'a' or ch > 'z' for ch in a + b):\n        raise ValueError(\"only lowercase English letters are supported\")\n    length = len(a)\n    if len(b) < length:\n        return \"-1\"\n\n    difference = [0] * 26\n    for ch in a:\n        difference[ord(ch) - 97] += 1\n    for ch in b[:length]:\n        difference[ord(ch) - 97] -= 1\n    mismatches = sum(value != 0 for value in difference)\n    valid = [False] * (len(b) - length + 1)\n    for start in range(len(valid)):\n        valid[start] = mismatches == 0\n        if start + length < len(b):\n            for ch, delta in ((b[start], 1), (b[start + length], -1)):\n                index = ord(ch) - 97\n                mismatches -= difference[index] != 0\n                difference[index] += delta\n                mismatches += difference[index] != 0\n    if not any(valid):\n        return \"-1\"\n\n    rank = suffix_ranks(b)\n    best = max((start for start, is_valid in enumerate(valid) if is_valid), key=rank.__getitem__)\n    return b[best:best + length]\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-40",
+      "sourceContentHash": "e9426e04ebe96a00844e7995712c9c468ebc61011f723466d4da8cdc64ce74ec",
+      "packageChecksum": "29c56d781c512b2aea0ec97a1e896956cef270b146242d2dd271e4a5f7b96e8f",
+      "editorial": "## 题意\n\n操作1把某个元素自身减1，最多X次；操作2把某个元素直接置0，最多Y次。求能变成全0的最长连续子数组长度。\n\n## 思路\n\n固定一个窗口，其中的0不需要处理；每个正数要么花1次操作2，要么花a[i]次操作1。最优做法是把Y次操作2用在窗口内最大的若干个正数上，其余正数之和必须不超过X。\n\n窗口向左扩展时，“除去最大的Y个之后的和”只增不减，所以对每个右端点，合法左端点构成一段后缀，可以用双指针。用两个有序多重集合维护窗口内的正数：top保存最大的至多Y个，rest保存其余并记录其和restSum。右端点加入元素时先放入top，超出Y个就把top中最小的移到rest；左端点移出元素时，若在rest中就直接删，否则从top删并把rest中最大的补回top。restSum>X时左端点右移。\n\n## 正确性\n\n交换论证：若某个较小正数用了操作2而较大的没用，交换二者的处理方式，操作2次数不变，操作1次数不增，因此最优方案一定把操作2给最大的Y个。两个集合始终满足top中每个元素不小于rest中每个元素且|top|=min(Y,正数个数)，所以restSum正是最小代价。单调性保证双指针不漏解。\n\n## 复杂度\n\nO(n log n)。restSum可达10^14级别，使用64位整数。\n\n## 独立验证\n\noracle对每个窗口排序后直接计算“去掉最大Y个后的和”（O(n² log n)），不使用双指针和集合。更小的数据另做逐次操作的状态搜索（数组、已用X、已用Y），验证“操作2给最大值”的模型本身。穷举长度1..4、元素0..3、X∈0..3、Y∈0..2的全部输入并逐个真实运行参考程序。错误解覆盖把操作2给最先出现的元素、把操作1当成一次清零、忽略操作1和32位累计。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <set>\nusing namespace std;\nint main(){int n;long long X;int Y;if(scanf(\"%d %lld %d\",&n,&X,&Y)!=3)return 0;vector<long long>a(n);for(auto&v:a)scanf(\"%lld\",&v);\nmultiset<long long>top,rest;long long restSum=0;int best=0,l=0;\nauto add=[&](long long v){if(v==0)return;top.insert(v);if((int)top.size()>Y){auto it=top.begin();rest.insert(*it);restSum+=*it;top.erase(it);}};\nauto del=[&](long long v){if(v==0)return;auto it=rest.find(v);if(it!=rest.end()){rest.erase(it);restSum-=v;return;}\n top.erase(top.find(v));if(!rest.empty()){auto jt=prev(rest.end());restSum-=*jt;top.insert(*jt);rest.erase(jt);}};\nfor(int r=0;r<n;r++){add(a[r]);while(restSum>X){del(a[l]);l++;}if(r-l+1>best)best=r-l+1;}\nprintf(\"%d\\n\",best);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-google-41",
+      "sourceContentHash": "bd0619d92777c50853e6af399da9049db80b2666697b6a7c64cb950671c6a9a6",
+      "packageChecksum": "7a21a47ab0f1b183e50a34e79bef0411c33c1f2ec98a1d8e2f9f07e929e71eca",
+      "editorial": "## 题意\n\n数组points中下标i的值v=points[i]既是得分，也是代价：取了它之后，紧随其后的v个下标i+1..i+v都不能再取。只向后屏蔽。求最大总分。\n\n## 思路\n\n从右往左DP：dp[i]表示只考虑下标i..n−1时的最大得分。不取i则为dp[i+1]；取i则得到points[i]+dp[min(n,i+points[i]+1)]。答案dp[0]。\n\n## 正确性\n\n取了下标i后，下一个能取的下标至少是i+points[i]+1，而之后的选择不受i以前任何决策的影响（屏蔽只向后），因此子问题独立，转移覆盖了i取或不取两种情况。样例中先取1（屏蔽3），再取99得到100，如果屏蔽是双向的，99会屏蔽前面的1，样例就不成立。\n\n## 复杂度\n\nO(n)。取一个值v要占用v+1个位置，所以总分不超过n。\n\n## 独立验证\n\noracle采用“推”式DP：best[j]表示下一个可取下标为j时的最大得分，从左到右向后转移，与参考解的拉式后缀DP方向不同；更小的数据另枚举所有下标子集并检查屏蔽条件。穷举长度1..6、取值0..3的全部数组并逐个真实运行参考程序。错误解覆盖屏蔽个数少1、多1、局部贪心和误当作“相邻不能同取”。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>p(n);for(auto&x:p)scanf(\"%lld\",&x);\nvector<long long>dp(n+1,0);\nfor(int i=n-1;i>=0;i--){long long nx=min<long long>(n,i+p[i]+1);dp[i]=max(dp[i+1],p[i]+dp[nx]);}\nprintf(\"%lld\\n\",dp[0]);}\n"
         }
       ]
     },
@@ -7610,6 +7766,18 @@
       ]
     },
     {
+      "id": "oa-hsbc-2",
+      "sourceContentHash": "4ed59f9473c6cfa2ac20554dcd567f0b986cfc2b844ad6cdfbf699cb1902ddad",
+      "packageChecksum": "cddf85cbec42781ff03a6eb3a047587c561a1739c27d27e094706572a5bfe46d",
+      "editorial": "## 题意\n\nN名士兵按ID 1..N排成一排。第i次操作先交换第row_i与第col_i个位置，再交换第row_i+1与第col_i−1个位置……一直向内进行，效果就是把区间[row_i,col_i]整段翻转。保证每个位置最多被一次操作的区间覆盖。求所有操作后第K个位置上的士兵ID。\n\n## 思路\n\n区间互不重叠，各次翻转互不影响，顺序也无关。只需找到覆盖K的那个区间[l,r]：翻转后位置K上是原来位置l+r−K的士兵，其ID就是l+r−K；若没有区间覆盖K，答案就是K。N可达10^9，不能真的模拟数组。\n\n## 正确性\n\n对称交换(l+m, r−m)直到两指针相遇，正是区间翻转，位置K（l≤K≤r）的新内容来自位置l+r−K。区间不重叠保证K至多属于一个区间，且该区间内元素在操作前仍是初始ID。\n\n## 复杂度\n\nO(Q)。\n\n## 独立验证\n\noracle在小N上真实模拟每次操作的逐对交换（按题面的m从0开始向内交换），再读取第K个位置；不使用l+r−K公式。穷举N=1..5的所有互不重叠区间集合、所有K并逐个真实运行参考程序。错误解覆盖只交换两端、端点不计入、映射差一和只处理第一次操作。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\nint main(){long long num;int q,s;if(scanf(\"%lld %d %d\",&num,&q,&s)!=3)return 0;long long r[100005],c[100005];\nfor(int i=0;i<q;i++)scanf(\"%lld %lld\",&r[i],&c[i]);long long k;scanf(\"%lld\",&k);long long ans=k;\nfor(int i=0;i<q;i++)if(r[i]<=k&&k<=c[i])ans=r[i]+c[i]-k;\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-hudson-river-trading-6",
       "sourceContentHash": "eb19423d30e0c5f771d21ba70f4906320cd6897fc185fc7dd1985781fadc465b",
       "packageChecksum": "98ab0b0ff642d26132d17917259a4a8b7468a9b0bfb32764968013064f5e70bf",
@@ -7678,6 +7846,18 @@
         {
           "language": "python",
           "code": "import heapq\nimport sys\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if len(tokens) < 3:\n        raise ValueError(\"expected n, m, and quantities\")\n    n, m = tokens[:2]\n    quantity = tokens[2:]\n    if not (1 <= n <= 100000 and 1 <= m <= 100000 and len(quantity) == n):\n        raise ValueError(\"outside stated source bounds\")\n    if any(not 1 <= q <= 100000 for q in quantity):\n        raise ValueError(\"outside stated source bounds\")\n    if m > sum(quantity):\n        raise ValueError(\"valid input must contain at least m items\")\n    heap = [-q for q in quantity]\n    heapq.heapify(heap)\n    revenue = 0\n    for _ in range(m):\n        q = -heapq.heappop(heap)\n        revenue += q\n        if q > 1:\n            heapq.heappush(heap, -(q - 1))\n    return str(revenue)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ibm-68",
+      "sourceContentHash": "9f9375981bcb0af2aca4f08d9c3d873e66400637174b4ba3e06e309d2c8a696f",
+      "packageChecksum": "8a8c04f83192ffc7070d0bbe89594ef5c7da12cdca6ef01d67105f74dc1345c7",
+      "editorial": "## 题意\n\n每条心跳有时间戳和服务ID。对每个服务把它的心跳按时间排序，只要某两次相邻心跳的间隔严格大于threshold，该服务就算超时过。按字典序输出所有超时过的服务ID。输入中的心跳没有按时间排序；只有一次心跳的服务不会超时。\n\n## 思路\n\n把(服务ID,时间戳)二元组整体排序，同一服务的心跳就连续且按时间递增。扫描相邻两条：属于同一服务且时间差大于threshold，就把该服务加入结果（同一服务只加一次）。排序后服务ID本身就是字典序，结果天然有序。\n\n## 正确性\n\n排序后同一服务的相邻记录恰是该服务按时间排序后的相邻心跳，判定条件与题意完全一致；相同时间戳的间隔为0，不会超过非负阈值。\n\n## 复杂度\n\nO(n log n·L)，L≤10为ID长度。\n\n## 独立验证\n\noracle用字典按服务分组、组内排序后逐个检查相邻间隔，最后对结果排序，与参考的整体排序扫描不同。穷举2个服务、1..4条心跳、时间戳1..3、阈值0..2的全部组合并逐个真实运行参考程序。错误解覆盖用首尾跨度、间隔等于阈值也算、不按时间排序、按首次出现顺序输出。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;long long th;if(scanf(\"%d %lld\",&n,&th)!=2)return 0;vector<pair<string,long long>>a(n);char buf[32];\nfor(int i=0;i<n;i++){long long t;scanf(\"%lld %31s\",&t,buf);a[i]={buf,t};}\nsort(a.begin(),a.end());vector<string>res;\nfor(int i=1;i<n;i++)if(a[i].first==a[i-1].first&&a[i].second-a[i-1].second>th&&(res.empty()||res.back()!=a[i].first))res.push_back(a[i].first);\nstring out=to_string(res.size())+\"\\n\";for(auto&s:res){out+=s;out+='\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -9074,6 +9254,18 @@
       ]
     },
     {
+      "id": "oa-linkedin-3",
+      "sourceContentHash": "447c48d6cafba6a83e41e3e06716d11dbcbc1b74e63bb59be19f4a73ea289469",
+      "packageChecksum": "903d8ba04677ed003889892d8694ce2b942a442dc6cb0856337188888b3a4df4",
+      "editorial": "## 题意\n\n无向带权图，结点1..N。在从1到N、边数不超过K的所有路径中，使路径上最大边权尽量小，输出这个最小的最大边权。数据保证至少存在一条边数不超过K的路径。\n\n## 思路\n\n答案具有单调性：如果只用权值≤w的边就能在K步内从1走到N，那么任何更大的阈值也可以。所以对排序去重后的边权二分阈值w，每次只保留权值≤w的边做BFS，求1到N的最少边数，判断是否≤K。\n\n## 正确性\n\n若某条路径边数≤K且最大边权为w*，则阈值w*下BFS的最短边数≤K；反之阈值w下BFS找到的最短路径只用≤w的边，最大边权≤w。所以最小可行阈值等于答案，且答案一定是某条边的权值。\n\n## 复杂度\n\nO((N+M) log M)。\n\n## 独立验证\n\noracle用“按边数分层”的极小化最大值DP：f[k][v]为恰好走k步到v的最小可能最大边权，逐层松弛到K层，不使用二分与BFS。更小的数据再枚举所有边数≤K的路径（允许重复点）直接取最小最大边权。穷举3个结点上所有边子集（边权取1..2）与K=1..2并逐个真实运行参考程序。错误解覆盖忽略K、边数必须严格小于K、当作有向图和用DFS深度代替最少边数。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint n,m,K;vector<int>eu,ev,ew,head,nxt,to,wt;\nbool ok(int lim){vector<int>d(n+1,-1);vector<int>q;q.reserve(n);q.push_back(1);d[1]=0;\n for(size_t i=0;i<q.size();i++){int u=q[i];if(d[u]>=K)continue;for(int e=head[u];e>=0;e=nxt[e])if(wt[e]<=lim&&d[to[e]]<0){d[to[e]]=d[u]+1;q.push_back(to[e]);}}\n return d[n]>=0&&d[n]<=K;}\nint main(){if(scanf(\"%d %d %d\",&n,&m,&K)!=3)return 0;head.assign(n+1,-1);vector<int>ws;\nfor(int i=0;i<m;i++){int a,b,w;scanf(\"%d %d %d\",&a,&b,&w);ws.push_back(w);\n to.push_back(b);wt.push_back(w);nxt.push_back(head[a]);head[a]=to.size()-1;\n to.push_back(a);wt.push_back(w);nxt.push_back(head[b]);head[b]=to.size()-1;}\nsort(ws.begin(),ws.end());ws.erase(unique(ws.begin(),ws.end()),ws.end());\nint lo=0,hi=ws.size()-1;while(lo<hi){int mid=(lo+hi)/2;if(ok(ws[mid]))hi=mid;else lo=mid+1;}\nprintf(\"%d\\n\",ws[lo]);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-adobe-1",
       "sourceContentHash": "729d1681d8555dc53d261e9e9afe23d6759d00bb8640424118faffabb536da0c",
       "packageChecksum": "03cb9950898b2a2c36773831f1fe2263ee2c7efb2f384deb97eb24ed7fc59820",
@@ -9262,6 +9454,18 @@
         {
           "language": "python",
           "code": "def solve(raw):\n    d=list(map(int,raw.split()));n=d[0];parent=d[1:n+1];sub=d[n+1:]\n    for i in range(n-1,0,-1):sub[parent[i]]+=sub[i]\n    total=sub[0];return str(min(abs(total-2*v) for v in sub[1:]))\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-mathworks-20",
+      "sourceContentHash": "7e72868ab531aac0fc3ba0e90d8926afec453bf624a2e10dc4a7251f24d17a27",
+      "packageChecksum": "fec54db280c1232ba6c5632be28ecc9cd577975d8332e466e2d22127418fa132",
+      "editorial": "## 题意\n\n两队技能数组中0表示该位置缺人，每个空位都必须补一名球员，补上的技能在1..10000之间（0代表缺人，所以补位不能是0；任何球员技能上限为10000）。求两队总技能相等时的最小可能和，做不到输出−1。\n\n## 思路\n\n一队已有技能和为s、空位数为z时，补完后的总和可以取到[s+z, s+10000z]内的任意整数（每个空位独立取1..10000，和覆盖整个区间）；z=0时只能是s。两队区间求交集，交集非空则答案是交集下界，否则−1。\n\n## 正确性\n\nz个取值在[1,10000]内的整数之和恰好取遍[z,10000z]的每个整数，所以可达集合是区间。相等和必须同时属于两个区间，最小者就是交集的下界。\n\n## 复杂度\n\nO(n+m)。总和最多约10^9，用64位更稳妥。\n\n## 独立验证\n\noracle用Python大整数位集合表示每队可达的总和集合：对每个空位把集合按1..10000的所有位移取并（倍增实现），再求两队交集的最低位，不使用区间公式。穷举两队长度1..3、元素取{0,3,10000}的所有组合并逐个真实运行参考程序。错误解覆盖补位可为0、忽略上限、取较小下界和上限写错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;long long sa=0,sb=0,za=0,zb=0,x;\nfor(int i=0;i<n;i++){scanf(\"%lld\",&x);sa+=x;za+=x==0;}for(int i=0;i<m;i++){scanf(\"%lld\",&x);sb+=x;zb+=x==0;}\nlong long loA=sa+za,hiA=sa+10000*za,loB=sb+zb,hiB=sb+10000*zb;long long lo=max(loA,loB),hi=min(hiA,hiB);\nprintf(\"%lld\\n\",lo<=hi?lo:-1);}\n"
         }
       ]
     },
@@ -11251,6 +11455,18 @@
       ]
     },
     {
+      "id": "oa-openai-5",
+      "sourceContentHash": "e44c370d7aac014fef423fc5462c2527ff13eb204fc2b600e55b2d8a679ef957",
+      "packageChecksum": "529d83730347579503aa6fdce450e47fb996b4ef2015d928eac6becf27f62864",
+      "editorial": "## 题意\n\n在1..n中统计连续整数段[l,r]（长度≥1）的个数，要求段内不同时包含任何一个禁止对的两个数。\n\n## 思路\n\n把每个禁止对规范成a<b。段[l,r]非法当且仅当存在禁止对满足l≤a且b≤r。固定l，合法的r必须小于lim(l)=min{b : 禁止对的a≥l}（没有则为n+1），且所有满足r<lim(l)的r都合法，所以以l为左端点的合法段数为lim(l)−l。从n到1倒序扫描，lim(l)就是后缀最小值。\n\n## 正确性\n\n段[l,r]包含禁止对(a,b)⇔l≤a<b≤r。对固定l，合法性随r增大单调变差，阈值恰为所有a≥l的禁止对中最小的b。逐个l累加即得答案。\n\n## 复杂度\n\nO(n+m)。答案最多n(n+1)/2≈2×10^10，使用64位整数。\n\n## 独立验证\n\noracle枚举所有[l,r]并对每个禁止对直接检查是否同在段内（O(n²m)，仅小数据），不使用后缀最小值。穷举n=1..5时所有禁止对集合（数对以随机顺序给出）并逐个真实运行参考程序。错误解覆盖只处理a<b的数对、右端点差一、不计单元素段与32位计数。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<int>lim(n+2,n+1);\nfor(int i=0;i<m;i++){int a,b;scanf(\"%d %d\",&a,&b);if(a>b)swap(a,b);lim[a]=min(lim[a],b);}\nlong long ans=0;int R=n+1;for(int l=n;l>=1;l--){R=min(R,lim[l]);ans+=R-l;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-openai-1",
       "sourceContentHash": "d361c94789b119eb99555b5078c657012cf64cba5c46c0bc60e66511447868ee",
       "packageChecksum": "f80bd152727b53c58658dffceb48fa62ca0ebb011f06a042359db1469419062e",
@@ -11689,6 +11905,18 @@
       ]
     },
     {
+      "id": "oa-quora-1",
+      "sourceContentHash": "80cfb0caa56d46a8e6eb755f8dd7eb3efd6ec73ed30ccbf3a6a3333dd8a363ea",
+      "packageChecksum": "3a42d8de408862f8b8df731ed858c757487fe64e98ac9778b8a0694365412c4a",
+      "editorial": "## 题意\n\n给定数组arr和整数k，统计arr中有多少个数是k的幂（k^1、k^2、…）。本题中k与arr的元素都至少为2。\n\n## 思路\n\nk≥2时，不超过10^18的k的幂最多60个。先从k开始不断乘k生成全部幂，乘之前用p>10^18/k判断是否会超过上界，避免溢出；然后对每个元素检查是否在这张表中。\n\n## 正确性\n\n元素都≥2，所以k^0=1不会出现；生成的表恰好包含所有≤10^18的正次幂。逐个比较即得计数。\n\n## 复杂度\n\nO(n·log_k 10^18)，最多约60n次比较。\n\n## 独立验证\n\noracle对每个元素反复除以k，直到不能整除为止，余下为1则是幂（Python大整数，无溢出），与参考的“生成幂表”方式不同。穷举k=2..4、元素2..20组成的长度1..3数组并逐个真实运行参考程序。正式用例包含接近10^18的幂与非幂（如10^18−1）、k很大只有一次幂、k=2的全部60个幂等。错误解覆盖浮点对数、只判整除、只看一二次幂和32位读入。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\ntypedef unsigned long long u64;\nint main(){int n;u64 k;if(scanf(\"%d %llu\",&n,&k)!=2)return 0;const u64 LIM=1000000000000000000ULL;vector<u64>pw;\nfor(u64 p=k;;){pw.push_back(p);if(p>LIM/k)break;p*=k;}\nlong long c=0;for(int i=0;i<n;i++){u64 x;scanf(\"%llu\",&x);if(find(pw.begin(),pw.end(),x)!=pw.end())c++;}\nprintf(\"%lld\\n\",c);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-ramp-2",
       "sourceContentHash": "e18fd8d39a909b4fdb9fc031237a025e18a334c94b4bef6990cf10defaa18fef",
       "packageChecksum": "8e9635a40df7dabf06f226ddc25fcb4c4ccd03e72b606571cd2966358dfa91d4",
@@ -11757,6 +11985,30 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    lengths={}\n    best=0\n    answer=[]\n    for x in values[1:]:\n        left=lengths.get(x-1,0)\n        right=lengths.get(x+1,0)\n        length=left+right+1\n        lengths[x]=length\n        lengths[x-left]=length\n        lengths[x+right]=length\n        best=max(best,length)\n        answer.append(best)\n    return ' '.join(map(str,answer))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-14",
+      "sourceContentHash": "ec12be152ec0d6c1776b9bc72c605bc48a020f68c37900955db78304fb5b902a",
+      "packageChecksum": "ce4de1e7d2fa5990d5d63634da6c9c020c40f42277113aab649521113bb05c26",
+      "editorial": "## 题意\n\n循环移位：把一个十进制数末尾的若干位（可以是0位）移到最前面，其余数字依次后移。统计下标对i<j，使a[i]与a[j]位数相同且a[i]等于a[j]的某个循环移位。\n\n## 思路\n\n同长度的两个数字串互为循环移位，当且仅当它们的“最小表示”（所有旋转中字典序最小的那个）相同；循环移位关系是等价关系。于是对每个数取其数字串的最小旋转作为键（键的长度就是位数，自动保证位数相同），用哈希表计数，每个新数与此前同键的数都构成一对。\n\n## 正确性\n\n旋转的复合仍是旋转，所以“互为循环移位”是等价关系，同一等价类有唯一的最小旋转。a[i]的数字串没有前导零，若某个旋转以0开头，它不可能等于另一个正整数的数字串，用字符串比较即可正确处理（例如4560与456位数不同，5604与4560是同一类）。\n\n## 复杂度\n\n每个数最多10位，O(n·D²)，D≤10。答案最多约n²/2，使用64位整数。\n\n## 独立验证\n\noracle对每对i<j直接检查位数相同且str(a[i])出现在str(a[j])+str(a[j])中（O(n²)，仅小数据），不使用最小表示。穷举由{1,10,11,12,21,101,110,2}组成的长度1..4全部数组并逐个真实运行参考程序。错误解覆盖用数字排序代替旋转、只看相等、去掉0后比较和32位计数。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,long long>cnt;cnt.reserve(2*n+1);long long ans=0;\nfor(int i=0;i<n;i++){long long v;scanf(\"%lld\",&v);string s=to_string(v),best=s;for(size_t k=1;k<s.size();k++){string t=s.substr(k)+s.substr(0,k);if(t<best)best=t;}\n ans+=cnt[best]++;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-roblox-7",
+      "sourceContentHash": "c000a105af1f1c92cbeae930b369d89038adbd0d2d2d02360c92d63b736513d8",
+      "packageChecksum": "87f3fc68843b24aa2ebdb1508f98b0becfc3af50cf288c4cbc7d3ac57520255b",
+      "editorial": "## 题意\n\n矩阵元素只有0、1、2。找一条沿对角线方向的线段：第一个元素是1，之后依次为2,0,2,0,…；可以从任意位置出发，沿4个对角方向之一前进，并且必须结束在第一行、最后一行、第一列或最后一列的元素上。求最长长度。数据保证存在长度至少为2的这种线段。\n\n## 思路\n\n沿对角方向前进时，坐标的行和列同时变化，所以除了起点外，线段第一次碰到边界就是走出矩阵前的最后一个格子。因此“结束在边界”等价于：从起点出发沿该方向直到出界，途经的全部格子都符合模式。\n\n对每个方向，从该方向的出口一侧往回递推：len2[x]表示从x出发、期望值为2、一直符合模式走到出界的长度（不合法为0），len0同理。len2[x]= (x是2) 且 (下一格出界则为1，否则需len0[下一格]>0，取其+1)。值为1的格子在该方向的答案就是1+len2[下一格]（下一格出界时为1）。\n\n## 正确性\n\n递推顺序保证下一格先算出；len2/len0精确刻画“从这里到出界都匹配模式”。取所有起点与方向的最大值即为答案。\n\n## 复杂度\n\nO(4RC)。\n\n## 独立验证\n\noracle对每个1和每个方向逐格行走到出界、逐格比对模式（O(RC·min(R,C))），不使用递推数组。穷举2×2矩阵的全部3^4种取值和2×3、3×2中满足保证条件的矩阵并逐个真实运行参考程序。错误解覆盖不要求到达边界、只考虑两个方向、模式写反和误用横竖方向。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int R,C;if(scanf(\"%d %d\",&R,&C)!=2)return 0;vector<int>a(R*C);for(auto&x:a)scanf(\"%d\",&x);\nint best=0;int dr[4]={-1,-1,1,1},dc[4]={-1,1,-1,1};\nvector<int>len2(R*C),len0(R*C); // length of a valid tail starting here with expected value 2 / 0, reaching the border; 0 if invalid\nfor(int d=0;d<4;d++){\n int r0=dr[d]<0?0:R-1,r1=dr[d]<0?R:-1,rs=dr[d]<0?1:-1;int c0=dc[d]<0?0:C-1,c1=dc[d]<0?C:-1,cs=dc[d]<0?1:-1;\n for(int r=r0;r!=r1;r+=rs)for(int c=c0;c!=c1;c+=cs){int nr=r+dr[d],nc=c+dc[d];bool out=nr<0||nr>=R||nc<0||nc>=C;int i=r*C+c,j=out?-1:nr*C+nc;\n  len2[i]=a[i]!=2?0:out?1:(len0[j]?len0[j]+1:0);\n  len0[i]=a[i]!=0?0:out?1:(len2[j]?len2[j]+1:0);\n  if(a[i]==1){int L=out?1:(len2[j]?len2[j]+1:0);best=max(best,L);}}}\nprintf(\"%d\\n\",best);}\n"
         }
       ]
     },
@@ -11867,6 +12119,18 @@
         }
       ],
       "editorial": "## 思路\n\n操作 2 对每个当前值执行 chmax(x)，而操作 1 会覆盖单个位置、允许把它降低。因此不能把所有历史 HPA 的最大值作为永久 floor。对每个位置记录最后一次初始/点赋值的值与时间；再从右向左计算每个时间点之后（含该时刻位置）的 type-2 最大 x。最终每项为 `max(最后点赋值值, 最后赋值之后的 HPA 最大 x)`。\n\n## 正确性证明\n\n固定一个服务 i。它的初值或最后一次 type-1 操作把当前值精确设为 `last_value[i]`。之后，type-1 不再影响它；每条 type-2 操作把它与 x 取最大值。连续应用这些操作的结果等于与这些 x 的最大值取最大值。因此答案是 `max(last_value[i], suffix_max[last_assignment[i]])`。赋值之前的 HPA 已被该 type-1 覆盖，不会被错误计入。\n\n## 复杂度\n\n时间 O(n+m)，空间 O(n+m)。\n\n## 来源说明\n\n固定 OAMaster 源码说明了两类操作，但该 MDX 未提供完整输入协议与范围；本站明确补充 1-based 点下标及规模边界。上游附带的单调历史 floor 解法在点赋值可降低数值时不正确，本题使用后缀最大值修正。"
+    },
+    {
+      "id": "oa-rubrik-18",
+      "sourceContentHash": "9cec552300c2a547bddebdd2f15a7676471504e87582650105bc6cbbcfad0ab6",
+      "packageChecksum": "f8d0e0d6e88fde71a712662944152b37cff101f3eb5455e0b469006ac37b9b01",
+      "editorial": "## 题意\n\n公司是一棵以CEO为根的树。选一个经理v，再从v的子树（含v自己）中雇佣若干员工，总成本不超过M，幸福度为L[v]×雇佣人数。求最大幸福度。\n\n## 思路\n\n经理固定为v后，只需要在v的子树中雇佣尽可能多的人，显然应该按成本从小到大取。于是对每个结点维护一个大根堆，存子树中“当前被保留的”成本，并维护其和；和超过M就弹出最大的成本。每个结点处理完后把它的堆合并进父亲的堆（小堆合并入大堆）。由于R[i]<i，按编号从大到小处理即可保证子结点先于父结点。\n\n## 正确性\n\n若某个成本在子树v中因为超预算被弹出，它是当时保留集合中最贵的；对任何祖先u，其子树的成本多重集合包含v的子树，且预算相同，最优保留集合（最便宜的若干个）也不会包含它，所以弹出是永久安全的。对每个v，堆中剩下的正是子树内最便宜且总和不超过M的最大前缀，人数即该经理可雇佣的最大人数。\n\n## 复杂度\n\n启发式合并O(n log² n)。答案可达10^5×10^9=10^14，使用64位整数。\n\n## 独立验证\n\noracle对每个结点收集子树成本排序后贪心取前缀（O(n² log n)，不依赖堆合并）；小数据再枚举经理和雇佣子集的全部组合直接求最大值。穷举结点数1..4的所有父亲数组、成本{1,2}、领导力{1,3}、预算1..3，按每组10个测试打包后真实运行参考程序。错误解覆盖经理不能雇自己、超预算时弹出最便宜者、32位乘积和只看直接下属。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main(){int T;if(scanf(\"%d\",&T)!=1)return 0;while(T--){int n;long long M;scanf(\"%d %lld\",&n,&M);\nvector<int>R(n+1);vector<long long>C(n+1),L(n+1);for(int i=1;i<=n;i++)scanf(\"%d %lld %lld\",&R[i],&C[i],&L[i]);\nvector<priority_queue<long long>>h(n+1);vector<long long>sum(n+1,0);vector<int>id(n+1);long long best=0;\nfor(int i=1;i<=n;i++){id[i]=i;h[i].push(C[i]);sum[i]=C[i];}\nfor(int v=n;v>=1;v--){auto &H=h[id[v]];long long &S=sum[id[v]];\n while(S>M){S-=H.top();H.pop();}\n best=max(best,L[v]*(long long)H.size());\n int p=R[v];if(p>0){int a=id[p],b=id[v];if(h[a].size()<h[b].size())swap(a,b);\n  while(!h[b].empty()){h[a].push(h[b].top());sum[a]+=h[b].top();h[b].pop();}sum[b]=0;id[p]=a;}}\nprintf(\"%lld\\n\",best);}}\n"
+        }
+      ]
     },
     {
       "id": "oa-rubrik-22",
@@ -12345,6 +12609,42 @@
         {
           "language": "python",
           "code": "import sys\nfrom collections import deque\ndef solve(raw):\n v=list(map(int,raw.split())); n=v[0]; p=v[1:1+n]; out=['0']*n\n for k in range(1,n+1):\n  mx=deque(); mn=deque()\n  for i,x in enumerate(p):\n   while mx and p[mx[-1]]<=x: mx.pop()\n   mx.append(i)\n   while mn and p[mn[-1]]>=x: mn.pop()\n   mn.append(i)\n   if mx[0]<=i-k: mx.popleft()\n   if mn[0]<=i-k: mn.popleft()\n   if i>=k-1 and p[mx[0]]==k and p[mn[0]]==1:\n    out[k-1]='1'; break\n return ''.join(out)\nif __name__ == \"__main__\": print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-11",
+      "sourceContentHash": "7a88f875227d19420752c0c830bfc947f765bf8d81df2340c81e0fb296f15b3d",
+      "packageChecksum": "cc549821945f7e8128d3a993075a5e80a0ecbdc43a46c1be5b01dff95cb2c256",
+      "editorial": "## 题意\n\n在数组中找出所有下标对i<j，使x=arr[i]、y=arr[j]同时满足：\n1. min(|x−y|,|x+y|) ≤ min(|x|,|y|)；\n2. max(|x−y|,|x+y|) ≥ max(|x|,|y|)。\n按i升序、i相同时按j升序输出(arr[i],arr[j])。\n\n## 思路\n\n设a=|x|≤b=|y|。不论符号如何，{|x−y|,|x+y|}={b−a, a+b}。条件2即a+b≥b，恒成立；条件1即b−a≤a，也就是b≤2a。所以只需判断max(|x|,|y|)≤2·min(|x|,|y|)，双重循环按要求的顺序输出即可。\n\n## 正确性\n\n上面的化简对x、y各种符号都成立，因为|x−y|与|x+y|恰好一个等于||x|−|y||、另一个等于|x|+|y|。枚举顺序本身就是要求的输出顺序。\n\n## 复杂度\n\nO(n²)，输出最多n(n−1)/2对。\n\n## 独立验证\n\noracle直接用Python大整数按原题两个条件逐字计算，不使用b≤2a的化简。穷举长度1..4、取值−3..3的全部数组并逐个真实运行参考程序。错误解覆盖化简时漏掉绝对值、包含自配对、数对内按大小排序输出和条件写成严格小于。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <string>\n#include <cstdlib>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nstring out;long long k=0;\nfor(int i=0;i<n;i++)for(int j=i+1;j<n;j++){long long p=llabs(a[i]),q=llabs(a[j]);if(max(p,q)<=2*min(p,q)){k++;out+=to_string(a[i]);out+=' ';out+=to_string(a[j]);out+='\\n';}}\nprintf(\"%lld\\n\",k);fwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-17",
+      "sourceContentHash": "a465e6d607f732b5cc13732325da351784fa05334ac4ee885ab1da9bd001bd9d",
+      "packageChecksum": "df8522be0d5ad1508e9c7cd059346d4248b0dd2259c98ae47c34396034b86a0c",
+      "editorial": "## 题意\n\n数组每个位置i（0起）的强度为arr[i]×(i+1)。可以交换相邻两元素，但每个元素至多参与一次交换，因此最终做的交换是一组互不重叠的相邻对。求强度和的最大值。\n\n## 思路\n\n交换相邻对(i,i+1)只改变这两项：新值减旧值恰好是arr[i]−arr[i+1]。各对的收益互相独立，唯一限制是所选对不能共享元素。于是用前缀DP：dp[i]表示前i个元素（1起计）的最大强度和，第i个元素要么不交换，dp[i]=dp[i−1]+arr[i]·i；要么与第i−1个元素交换，dp[i]=dp[i−2]+arr[i]·(i−1)+arr[i−1]·i。答案为dp[n]。\n\n## 正确性\n\n任意合法交换集合把数组划分成长度1的单点块和长度2的交换块，块内强度只与块的位置和块内元素有关，块之间互不影响。dp[i]枚举了最后一个块的两种形态，取二者最大值，按归纳即得前缀的最优值。贪心从左往右遇到逆序就交换是错的：[4,3,1]中交换(3,1)收益2，大于交换(4,3)的收益1，但二者共享元素3。\n\n## 复杂度\n\nO(n)时间、O(n)空间。最大值约为10^5×n(n+1)/2≈5×10^14，必须用64位整数。\n\n## 独立验证\n\noracle先算不交换的强度和，再对收益max(0,arr[i]−arr[i+1])做不相邻选取的最大和，与参考解的块DP形式不同。小域另枚举所有互不重叠的相邻交换集合直接求最大值，穷举长度1..7、取值1..3的全部数组并逐个真实运行参考程序。错误解覆盖左到右贪心、允许元素重复交换、32位溢出和权重错位。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n+1);for(int i=1;i<=n;i++)scanf(\"%lld\",&a[i]);\nvector<long long>dp(n+1,0);\nfor(int i=1;i<=n;i++){dp[i]=dp[i-1]+a[i]*i;if(i>=2)dp[i]=max(dp[i],dp[i-2]+a[i]*(i-1)+a[i-1]*i);}\nprintf(\"%lld\\n\",dp[n]);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-salesforce-26",
+      "sourceContentHash": "a9c127a2d5a838518d78dc35ab6ba9097a1bc9226ce879020f94c98d448ae340",
+      "packageChecksum": "d7b14b397da10d6af63b67f613a8db1189fb580c9381942ae91bfe2c6a998921",
+      "editorial": "## 题意\n\n对字符串s，一次操作选连续三个字符s[i]、s[i+1]、s[i+2]，当s[i]=s[i+1]且s[i+1]≠s[i+2]时把s[i+2]改成s[i]。求最多能执行多少次操作。\n\n## 思路\n\n操作的效果是：一段长度≥2的同字符段x可以向右“蔓延”，把右边紧挨着的字符改成x，于是这段继续变长、继续向右。遇到已经是x的字符就直接跨过（它与段合并）。所以一段x能贡献的次数，就是它右边当前不等于x的字符个数。\n\n关键是顺序：先让最靠右的可蔓延段把它右边全部改成自己的字符，再让左边下一段蔓延——这样左边的段在经过右边区域时，面对的是全部相同的另一字母，能多改一遍。按段从右往左处理：维护“从位置p起到末尾全部为字符tail”。处理长度≥2的段[l,r]（字符y）时，它的贡献为(r,p)之间原字符中≠y的个数（用26个字母的前缀计数求），加上若tail≠y则再加n−p；然后令p=l、tail=y。长度为1的段不能蔓延，保持原样。\n\n## 正确性\n\n只有长度≥2的同字符段能触发操作，且写入的字符就是该段的字符，所以每次操作把某个位置改成其左侧相邻段的字符。一个位置每被改一次，就要求它左边有一段与它不同的成对段蔓延过来。从右往左的顺序让每个位置被其左侧每一个“与当前值不同”的成对段各改一次，这是可能的最大次数。实现上还用穷举状态搜索在小数据上验证了这个结论。\n\n## 复杂度\n\nO(26n)时间和空间。答案可达约n²/4，使用64位整数。\n\n## 独立验证\n\noracle在中小数据上逐步模拟“每次执行最右侧的可行操作”，直到无操作可做；更小的数据用记忆化搜索枚举所有操作顺序求最大值，证明这种模拟就是最优。穷举字母表{a,b,c}上长度1..8的全部字符串，三者一致并逐个真实运行参考程序。错误解覆盖每段只操作一次、不区分已相同字符、32位计数和从左往右扫描一遍。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);\nstd::vector<int>cnt((size_t)(n+1)*26,0);for(int i=0;i<n;i++){for(int c=0;c<26;c++)cnt[(size_t)(i+1)*26+c]=cnt[(size_t)i*26+c];cnt[(size_t)(i+1)*26+s[i]-'a']++;}\nlong long ans=0;int p=n;char tail=0;int r=n-1;\nwhile(r>=0){int l=r;while(l>0&&s[l-1]==s[r])l--;\n if(r-l+1>=2){char y=s[r];int mid=p-(r+1);int same=cnt[(size_t)p*26+y-'a']-cnt[(size_t)(r+1)*26+y-'a'];ans+=mid-same;if(p<n&&tail!=y)ans+=n-p;p=l;tail=y;}\n r=l-1;}\nprintf(\"%lld\\n\",ans);}\n"
         }
       ]
     },
@@ -13525,6 +13825,30 @@
       ]
     },
     {
+      "id": "oa-susquehanna-international-group-2",
+      "sourceContentHash": "25f763f7f5b6c8fb43e3c72823eb6e847c9a4d2c397932395103f3d71c6c2162",
+      "packageChecksum": "853dd5a3a8c388df0c58133438a7bb7f9e8565b423a36f00f4203b773734abe5",
+      "editorial": "## 题意\n\n两个等长数组a、b，统计满足i≤j且a[i]−b[j]=a[j]−b[i]的下标对(i,j)个数。\n\n## 思路\n\n移项：a[i]−b[j]=a[j]−b[i] ⇔ a[i]+b[i]=a[j]+b[j]。令c[i]=a[i]+b[i]，问题变为统计i≤j且c[i]=c[j]的对数（i=j恒成立）。从左到右扫描，用哈希表记录每个值已出现次数，处理到i时把该值计数加一后整体加到答案里（包含i自己）。\n\n## 正确性\n\n等式变形可逆；每个满足条件的(i,j)恰好在扫描到j时被计入一次。\n\n## 复杂度\n\nO(n)期望。c[i]可达±2×10^9，答案可达约2×10^10，都需要64位整数。\n\n## 独立验证\n\noracle直接按原式对所有i≤j逐对比较（O(n²)，仅小数据），不做移项。大用例期望值由Counter按Σ cnt·(cnt+1)/2计算。穷举长度1..4、元素−1..1的全部数组对并逐个真实运行参考程序。错误解覆盖漏掉i=j、错用a−b分组、32位计数和统计有序对。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n),b(n);for(auto&x:a)scanf(\"%lld\",&x);for(auto&x:b)scanf(\"%lld\",&x);\nunordered_map<long long,long long>cnt;cnt.reserve(2*n+1);long long ans=0;\nfor(int i=0;i<n;i++){long long key=a[i]+b[i];ans+=++cnt[key];}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-1",
+      "sourceContentHash": "2d06a529967cc367f2259d2b4540a16f9400136008fa5381901122efea8def32",
+      "packageChecksum": "4c231843e96b209e7388c0bbcbf9e212d092e52972d556c7d420c785aed8c76d",
+      "editorial": "## 题意\n\n删除一个非空连续子数组后，剩余部分（左段+右段拼接）必须非空且非降序（允许相等，原题表格中[1,1,2]、[1,2,2]判为有序）。统计这样的子数组个数。\n\n## 思路\n\n设删除区间为[l,r]。剩余数组有序当且仅当：前缀arr[0..l−1]非降，后缀arr[r+1..n−1]非降，并且两段都非空时arr[l−1]≤arr[r+1]；另外不能删掉整个数组。\n\n令P为最长非降前缀长度。若P=n，任意非空区间（除整个数组）都合法，答案n(n+1)/2−1。否则令S为最长非降后缀的起点。l只能取0..P；右段起点j=r+1必须满足j≥max(l+1,S)。l=0时j取[max(1,S),n−1]（j=n表示删光）；l≥1时，j=n总是合法，其余j要求arr[j]≥arr[l−1]，后缀有序，所以用二分找第一个满足的位置。\n\n## 正确性\n\n每个合法区间由(l,j)唯一确定，上述条件正是剩余数组非降的充要条件；在有序后缀上满足arr[j]≥arr[l−1]的j构成一段连续后缀，二分得到其起点，计数不重不漏。\n\n## 复杂度\n\nO(n log n)。答案最多约2×10^10，使用64位整数。\n\n## 独立验证\n\noracle预先计算每个前缀/后缀是否非降，O(n²)枚举(l,r)判定，不使用二分；更小的数据再直接拼出剩余数组检查。穷举长度1..7、取值1..3的全部数组并逐个真实运行参考程序。错误解包括严格递增语义、把删光也计入、衔接处严格大于以及32位计数。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint P=1;while(P<n&&a[P-1]<=a[P])P++;\nif(P==n){printf(\"%lld\\n\",(long long)n*(n+1)/2-1);return 0;}\nint S=n-1;while(S>0&&a[S-1]<=a[S])S--;\nlong long ans=n-max(1,S); // l=0: next kept index r+1 in [max(1,S), n-1]\nfor(int l=1;l<=P;l++){int lo=max(l+1,S);int j=lower_bound(a.begin()+lo,a.end(),a[l-1])-a.begin();ans+=n-j+1;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-thoughtspot-1",
       "sourceContentHash": "a885384adb945bf4b9810ea02ec6d6241228f512ffff995012dc0f960edd9ebe",
       "packageChecksum": "c489220452d933eb2f1ca781f2a0f340ecc8c681531443cadcbb0c3054e28840",
@@ -13533,6 +13857,30 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, m = data[:2]\n    counts = [0] * n\n    for service in data[2:]:\n        counts[service - 1] += 1\n    low, high = 0, max(counts)\n    while low < high:\n        mid = (low + high) // 2\n        excess = 0\n        capacity = 0\n        for count in counts:\n            if count > mid:\n                excess += count - mid\n            else:\n                capacity += (mid - count) // 2\n        if capacity >= excess:\n            high = mid\n        else:\n            low = mid + 1\n    return str(low)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-tradedesk-2",
+      "sourceContentHash": "72f373eb00b2f31cfc2ab507f1b01ec95e1e7de113b3f2325f0f53a11b2a483e",
+      "packageChecksum": "7f4b66163930fafa348af2f829702578e49e501f023751d75b73e64daa1ae38e",
+      "editorial": "## 题意\n\n每盏灯照亮整数闭区间[x−r, x+r]。统计恰好被一盏灯照亮的整数坐标个数（不是区段数）。\n\n## 思路\n\n差分扫描线：每个区间在x−r处+1，在x+r+1处−1。把2n个事件按坐标排序，同一坐标的事件合并处理后得到从该坐标到下一个事件坐标之间（左闭右开）的覆盖次数；覆盖次数为1时把这段长度加入答案。\n\n## 正确性\n\n相邻两个事件坐标之间所有整数点被同一组区间覆盖，覆盖次数恒定且等于此前事件增量之和，因此按段累计等价于逐点计数。右端点用x+r+1表示闭区间的结束，避免漏掉端点。\n\n## 复杂度\n\n排序O(n log n)。坐标可达±2×10^9，答案最大约4×10^9，用64位整数。\n\n## 独立验证\n\noracle把全部端点离散化，对每个基本段直接数有多少区间完整覆盖它（O(n²)，只用于小数据），与扫描线实现不同；更小的数据再逐个整数点计数。穷举1..3盏灯、坐标−2..2、半径1..2的所有组合并逐个真实运行参考程序。错误解包括统计并集、右端点开区间、只数区段个数（上游文字的误读）和32位累加。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<pair<long long,int>>e;e.reserve(2*n);\nfor(int i=0;i<n;i++){long long x,r;scanf(\"%lld %lld\",&x,&r);e.push_back({x-r,1});e.push_back({x+r+1,-1});}\nsort(e.begin(),e.end());long long ans=0;int cov=0;\nfor(size_t i=0;i<e.size();){long long p=e[i].first;while(i<e.size()&&e[i].first==p)cov+=e[i++].second;\nif(i<e.size()&&cov==1)ans+=e[i].first-p;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-tradedesk-3",
+      "sourceContentHash": "38e472159fc2b303208065c233ce9863c0dd0af4671fd7d06fe25a3ecbef3fec",
+      "packageChecksum": "219a3f2a60e226956d88594e02759da5d18aa4e749f8cb5830de54cca9d6e969",
+      "editorial": "## 题意\n\nrates[i]为第i天价格，strategy[i]∈{−1买,0持有,1卖}，利润=卖出价之和−买入价之和。可以（也可以不）选一段恰好k个连续元素，把前一半设为0、后一半设为1。求最大利润。\n\n## 思路\n\n原利润base=Σ strategy[i]·rates[i]。选窗口[l,l+k)后，窗口内原有贡献被清掉，后半段每天都变成卖出，所以新利润=base−Σ_{窗口} strategy[i]·rates[i]+Σ_{后半段} rates[i]。用两个前缀和O(1)计算每个窗口，答案取base与所有窗口值的最大值（因为可以不修改）。\n\n## 正确性\n\n窗口外的元素不变，窗口内的元素被完全覆盖，公式逐项对应。枚举了所有可能的窗口起点以及不修改的情况。\n\n## 复杂度\n\nO(n)。利润绝对值可达10^10，使用64位整数。\n\n## 独立验证\n\noracle对每个窗口真正构造修改后的strategy数组再整体计算利润（O(nk)，仅小数据），不使用前缀和。穷举n=2..4、k取所有偶数、价格1..2、策略{−1,0,1}的全部组合并逐个真实运行参考程序。错误解覆盖强制修改、前后半段颠倒、不清除窗口前半段原有操作和32位累计。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,k;if(scanf(\"%d %d\",&n,&k)!=2)return 0;vector<long long>r(n),s(n);for(auto&x:r)scanf(\"%lld\",&x);for(auto&x:s)scanf(\"%lld\",&x);\nvector<long long>P(n+1,0),Q(n+1,0);for(int i=0;i<n;i++){P[i+1]=P[i]+s[i]*r[i];Q[i+1]=Q[i]+r[i];}\nlong long base=P[n],best=base;int h=k/2;\nfor(int l=0;l+k<=n;l++){long long v=base-(P[l+k]-P[l])+(Q[l+k]-Q[l+h]);best=max(best,v);}\nprintf(\"%lld\\n\",best);}\n"
         }
       ]
     },
@@ -13773,6 +14121,18 @@
         {
           "language": "cpp",
           "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{while(p<order.size()&&cnt[p]>=2)p++;if(p<order.size())out+=order[p];out+='\\n';}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-uber-41",
+      "sourceContentHash": "7d8534e248a017671818bee9a07cb136f2be1966eb389766f274478ca21c997b",
+      "packageChecksum": "bfaf43701da19d741b46c8e6ebc5ff33772838b8e57323229213b736136fc56b",
+      "editorial": "## 题意\n\n对长度为n的字符串数组words，输出同样长度的数组：第i项由words[i]的首字母和下一个词words[i+1]的末字母拼成；最后一项的“下一个词”回到words[0]。\n\n## 思路\n\n直接遍历，下一个词的下标取(i+1) mod n。\n\n## 正确性\n\n逐项按定义构造。样例最后一项\"bt\"中的t只可能来自\"cat\"的末字母，说明最后一项环绕到第一个词；n=1时下一个词就是它自己。\n\n## 复杂度\n\nO(n)。\n\n## 独立验证\n\noracle用Python把words向左旋转一位后与原数组逐项配对生成，不使用取模下标。穷举由3个候选词组成的长度1..5的全部数组并逐个真实运行参考程序。错误解覆盖不环绕、漏最后一项、取下一个词首字母和两个字母顺序颠倒。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<string>w(n);char buf[32];for(int i=0;i<n;i++){scanf(\"%31s\",buf);w[i]=buf;}\nstring out;out.reserve(3*n);for(int i=0;i<n;i++){out+=w[i][0];out+=w[(i+1)%n].back();out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -15025,6 +15385,18 @@
       ]
     },
     {
+      "id": "oa-xperi-2",
+      "sourceContentHash": "766b82070a3a6bef645e0fd81a4481490904e5af0ece8559ff51b1b268fabcfc",
+      "packageChecksum": "4a750b382fdb6bc2fed2780efca92d9542bb0c415722e41e625a030f2dfc5744",
+      "editorial": "## 题意\n\n两个正整数A、B。每次操作：若A>B则A=A−B；若B>A则B=B−A；每次代价1。求使A=B的总代价。\n\n## 思路\n\n操作是确定的，就是“减法版辗转相除”。A,B可达10^18，逐次相减会太慢，要把连续对同一个数的减法合并：设a≥b，若a mod b=r≠0，则连续做a div b次减法后得到(r,b)；若r=0，则只需做a/b−1次就得到(b,b)停止。重复直到相等。\n\n## 正确性\n\n当a≥b且a>b时，每次操作都是从a中减去b，直到a<b或a=b为止，合并后的次数正好是商（整除时少一次，因为减到a=b就停了）。之后两数角色互换，与辗转相除完全一致，所以总步数O(log)。\n\n## 复杂度\n\nO(log min(A,B))。答案可达10^18−1，用64位无符号整数。\n\n## 独立验证\n\noracle逐次模拟减法（只用于不超过10^4的小数据），不做商的合并；大数据用Python递归按商求和另算。穷举A,B∈[1,40]的全部组合并逐个真实运行参考程序。错误解覆盖整除时多算一次、只数辗转相除步数、32位读入和误用A/g+B/g−2公式。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\nint main(){unsigned long long a,b;if(scanf(\"%llu %llu\",&a,&b)!=2)return 0;unsigned long long cost=0;\nwhile(a!=b){if(a<b){unsigned long long t=a;a=b;b=t;}unsigned long long q=a/b,r=a%b;if(r==0){cost+=q-1;a=b;}else{cost+=q;a=r;}}\nprintf(\"%llu\\n\",cost);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-zalando-1",
       "sourceContentHash": "ab0253f7e2ea870b35a45ace6c10ed69a11b33ca300f0e6f913a68a0e4f10d8b",
       "packageChecksum": "5bcca1c323d5cec784da6cf765ebc681a9af8ecf465d3d7d5af66d25d32234bb",
@@ -15033,6 +15405,30 @@
         {
           "language": "python",
           "code": "import sys\nfrom functools import lru_cache\n\ndef solve(raw):\n    a, b, c = map(int, raw.split())\n    @lru_cache(None)\n    def best(a, b, c, suffix):\n        answer = ''\n        counts = (a, b, c)\n        for i, block in enumerate(('AA', 'AB', 'BB')):\n            if not counts[i]:\n                continue\n            boundary = suffix + block\n            if 'AAA' in boundary or 'BBB' in boundary:\n                continue\n            remaining = list(counts)\n            remaining[i] -= 1\n            candidate = block + best(*remaining, block)\n            if len(candidate) > len(answer) or (len(candidate) == len(answer) and candidate < answer):\n                answer = candidate\n        return answer\n    return best(a, b, c, '')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-11",
+      "sourceContentHash": "e30a5041575526e042906cdeae5db1ee2ea602801ef577850647f1a5465d958b",
+      "packageChecksum": "a6557155b7098850861d82fcd3580641469d2b5ef57710c6b446463dc4211654",
+      "editorial": "## 题意\n\n每盏灯照亮数轴上的闭区间[lamps[i][0],lamps[i][1]]。对每个控制点points[j]，统计有多少盏灯照亮它（端点也算），按控制点的输入顺序输出。\n\n## 思路\n\n点p被区间[l,r]覆盖⇔l≤p且r≥p。覆盖数=（左端点≤p的灯数）−（右端点<p的灯数），因为右端点<p的灯左端点也一定<p。把所有左端点、右端点分别排序，每个控制点做两次二分。\n\n## 正确性\n\n左端点≤p的灯中，恰好右端点<p的那些不覆盖p，其余都覆盖。两次二分分别给出这两个数量。\n\n## 复杂度\n\nO((n+m) log n)。\n\n## 独立验证\n\noracle对每个控制点逐盏灯检查l≤p≤r（O(nm)，仅小数据），不排序不二分；大用例用Python差分扫描另算。穷举坐标1..4上的1..2盏灯与全部控制点组合并逐个真实运行参考程序。错误解覆盖右端点或左端点不含、按排序后的控制点输出和忘记减去已结束的灯。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<long long>L(n),R(n);for(int i=0;i<n;i++)scanf(\"%lld %lld\",&L[i],&R[i]);\nsort(L.begin(),L.end());sort(R.begin(),R.end());string out;\nfor(int j=0;j<m;j++){long long p;scanf(\"%lld\",&p);long long a=upper_bound(L.begin(),L.end(),p)-L.begin();long long b=lower_bound(R.begin(),R.end(),p)-R.begin();out+=to_string(a-b);out+=j+1<m?' ':'\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-ziprecruiter-14",
+      "sourceContentHash": "fb0697a11fa3bb30a6a1fcae4a56eff831d243e3227c4ab75b9b9b26f2975fe7",
+      "packageChecksum": "4110ddf25a6b2a85c5ba85fadfe35fd751889f16616c7fc4575a1b881a6287e1",
+      "editorial": "## 题意\n\n统计下标i的个数，使s[i]、s[i+1]、s[i+2]两两不同。长度小于3时答案为0。\n\n## 思路\n\n滑动长度为3的窗口，逐个检查三对字符是否都不相等。\n\n## 正确性\n\n每个合法下标恰对应一个窗口，三对比较等价于“两两不同”。只比较相邻两对会把aba这类首尾相同的窗口算进去，按不同子串去重会少算重复出现的窗口。\n\n## 复杂度\n\nO(n)。\n\n## 独立验证\n\noracle用len(set(s[i:i+3]))==3判断，与逐对比较不同。穷举字母表{a,b,c}上长度1..7的全部字符串并逐个真实运行参考程序；正式用例覆盖原样例、长度1和2、全同、周期abc、周期aba、随机满长等。错误解覆盖漏比首尾、按子串去重、漏最后一个窗口和只排除三字符全同。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\nint main(){static char s[2048];if(scanf(\"%2047s\",s)!=1)return 0;int n=strlen(s),c=0;\nfor(int i=0;i+2<n;i++)if(s[i]!=s[i+1]&&s[i]!=s[i+2]&&s[i+1]!=s[i+2])c++;printf(\"%d\\n\",c);}\n"
         }
       ]
     },

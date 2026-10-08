@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008011,
+  "problems": [
+    {
+      "id": "oa-salesforce-11",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "referenceFormalCases": 35,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "765c135e536898d819169c0993f443f44c3eb1c47485cba9239c486845e18742",
+      "negativeControls": [
+        {
+          "name": "错误化简时忘记取绝对值",
+          "rejectedCases": 23,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            10,
+            12,
+            13,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误包含同一下标自配对",
+          "rejectedCases": 35,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误数对内按数值从小到大输出",
+          "rejectedCases": 22,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            12,
+            13,
+            14,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误条件1写成严格小于",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            5,
+            8,
+            10,
+            12,
+            14,
+            21,
+            22,
+            23,
+            24,
+            25,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        }
+      ],
+      "oracleMethod": "Independent literal evaluation of both original conditions with Python big integers (no b<=2a simplification); exhaustive arrays of length 1..4 over -3..3.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 4,
+        "values": [
+          -3,
+          3
+        ],
+        "cases": 2800
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模全部相同最大值",
+          "inputBytes": 11005,
+          "outputBytes": 10989007,
+          "elapsedSeconds": 0.0422
+        },
+        {
+          "name": "满规模正负最大值交替",
+          "inputBytes": 11505,
+          "outputBytes": 11488507,
+          "elapsedSeconds": 0.04056
+        },
+        {
+          "name": "满规模随机大值",
+          "inputBytes": 10372,
+          "outputBytes": 5207658,
+          "elapsedSeconds": 0.02308
+        },
+        {
+          "name": "满规模二的幂",
+          "inputBytes": 6209,
+          "outputBytes": 597001,
+          "elapsedSeconds": 0.00759
+        },
+        {
+          "name": "满规模随机小值",
+          "inputBytes": 2447,
+          "outputBytes": 1389330,
+          "elapsedSeconds": 0.01465
+        },
+        {
+          "name": "满规模边界倍数",
+          "inputBytes": 10605,
+          "outputBytes": 9749407,
+          "elapsedSeconds": 0.03595
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 13.761
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-barclay-1",
+      "sourceContentHash": "5ec240bf19573c67da891823ffb6d64c978229835b413c8bf6b7eaf102a4a0d3",
+      "packageChecksum": "175dd6152d86b199e8030c608aa205350a295b0ba2a84b9ef09da2d2d97b79b2",
+      "editorial": "## 题意\n\n数组A与整数R。最多一次（可以不做）把某个元素替换为1..R中的任意整数X。求整个数组可能的最大GCD。\n\n## 思路\n\n不操作时答案为整体gcd。若替换下标i，其余元素的gcd为g_i，新的gcd为gcd(g_i,X)，它一定是g_i的约数；而对g_i的任意约数d≤R，取X=d即可达到d。所以替换i能得到的最大值是g_i不超过R的最大约数。用前缀gcd与后缀gcd在O(1)内得到每个g_i，再枚举约数到√g_i求不超过R的最大约数（g_i≤R时直接是g_i）。\n\n## 正确性\n\ngcd(g_i,X)整除g_i，且X≤R时gcd(g_i,X)≤X≤R，所以它是g_i不超过R的约数；反之每个这样的约数都可达。答案取不操作与所有i的最大值。注意整体gcd可能大于R，此时不操作更优。\n\n## 复杂度\n\nO(n√V)，V=10^5。\n\n## 独立验证\n\noracle枚举替换位置i和全部X∈[1,R]直接计算整个数组的gcd，并考虑不替换的情况（O(n²R)，仅小数据），不使用前后缀与约数推理。穷举长度2..3、元素1..6、R=1..6的全部组合并逐个真实运行参考程序。错误解覆盖必须替换、取min(g,R)、只替换最大元素和只能替换为R。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <numeric>\n#include <algorithm>\nusing namespace std;\nint bestDiv(int g,int R){if(g<=R)return g;int b=1;for(int d=1;(long long)d*d<=g;d++)if(g%d==0){if(d<=R)b=max(b,d);if(g/d<=R)b=max(b,g/d);}return b;}\nint main(){int n,R;if(scanf(\"%d %d\",&n,&R)!=2)return 0;vector<int>a(n);for(auto&x:a)scanf(\"%d\",&x);\nvector<int>pre(n+1,0),suf(n+2,0);for(int i=0;i<n;i++)pre[i+1]=gcd(pre[i],a[i]);for(int i=n-1;i>=0;i--)suf[i]=gcd(suf[i+1],a[i]);\nint ans=pre[n];vector<int>seen;\nfor(int i=0;i<n;i++){int g=gcd(pre[i],suf[i+1]);ans=max(ans,bestDiv(g,R));}\nprintf(\"%d\\n\",ans);}\n"
+        }
+      ]
+    }
+  ]
+}

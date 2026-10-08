@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误化简时忘记取绝对值",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <string>\n#include <cstdlib>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nstring out;long long k=0;\nfor(int i=0;i<n;i++)for(int j=i+1;j<n;j++){long long p=a[i],q=a[j];if(max(p,q)<=2*min(p,q)){k++;out+=to_string(a[i]);out+=' ';out+=to_string(a[j]);out+='\\n';}}\nprintf(\"%lld\\n\",k);fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误包含同一下标自配对",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <string>\n#include <cstdlib>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nstring out;long long k=0;\nfor(int i=0;i<n;i++)for(int j=i;j<n;j++){long long p=llabs(a[i]),q=llabs(a[j]);if(max(p,q)<=2*min(p,q)){k++;out+=to_string(a[i]);out+=' ';out+=to_string(a[j]);out+='\\n';}}\nprintf(\"%lld\\n\",k);fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误数对内按数值从小到大输出",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <string>\n#include <cstdlib>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nstring out;long long k=0;\nfor(int i=0;i<n;i++)for(int j=i+1;j<n;j++){long long p=llabs(a[i]),q=llabs(a[j]);if(max(p,q)<=2*min(p,q)){k++;out+=to_string(min(a[i],a[j]));out+=' ';out+=to_string(max(a[i],a[j]));out+='\\n';}}\nprintf(\"%lld\\n\",k);fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误条件1写成严格小于",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <string>\n#include <cstdlib>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nstring out;long long k=0;\nfor(int i=0;i<n;i++)for(int j=i+1;j<n;j++){long long p=llabs(a[i]),q=llabs(a[j]);if(max(p,q)<2*min(p,q)){k++;out+=to_string(a[i]);out+=' ';out+=to_string(a[j]);out+='\\n';}}\nprintf(\"%lld\\n\",k);fwrite(out.data(),1,out.size(),stdout);}\n"
+  }
+]

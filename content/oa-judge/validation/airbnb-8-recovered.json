@@ -1,0 +1,143 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008008,
+  "problems": [
+    {
+      "id": "oa-airbnb-8",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "referenceFormalCases": 35,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "f6418a830d23c02668ddc2f52272a92ebe8006ecc779302efa1117c9a332ff84",
+      "negativeControls": [
+        {
+          "name": "错误优先进位小数部分最小的",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            7,
+            8,
+            11,
+            12,
+            14,
+            20,
+            23,
+            26,
+            29,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误按下标顺序进位",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            8,
+            11,
+            14,
+            20,
+            23,
+            26,
+            29,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误只看小数点后第一位",
+          "rejectedCases": 3,
+          "rejectedCaseIndices": [
+            20,
+            26,
+            31
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误先四舍五入不再调整总和",
+          "rejectedCases": 16,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            9,
+            11,
+            13,
+            14,
+            15,
+            16,
+            17,
+            19,
+            20,
+            21,
+            26,
+            27,
+            30,
+            31
+          ],
+          "normalExitCases": 35
+        }
+      ],
+      "oracleMethod": "Independent enumeration of all floor/ceil choices in integer cents with explicit uniqueness check of the optimum; exhaustive three-price inputs with quarter fractions and every feasible target; Python greedy with uniqueness assertion for formal large cases.",
+      "exhaustiveSmallDomain": {
+        "prices": 3,
+        "fractions": [
+          0,
+          0.25,
+          0.5,
+          0.75
+        ],
+        "targets": "all feasible with unique optimum",
+        "cases": 350
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模按小数分组切分",
+          "inputBytes": 988883,
+          "outputBytes": 688864,
+          "elapsedSeconds": 0.01661
+        },
+        {
+          "name": "满规模全部取下整",
+          "inputBytes": 988883,
+          "outputBytes": 688864,
+          "elapsedSeconds": 0.01703
+        },
+        {
+          "name": "满规模全部取上整",
+          "inputBytes": 988883,
+          "outputBytes": 688864,
+          "elapsedSeconds": 0.01652
+        },
+        {
+          "name": "满规模全为整数",
+          "inputBytes": 988961,
+          "outputBytes": 688942,
+          "elapsedSeconds": 0.01121
+        },
+        {
+          "name": "满规模三类小数",
+          "inputBytes": 988960,
+          "outputBytes": 688941,
+          "elapsedSeconds": 0.01127
+        },
+        {
+          "name": "满规模最大价格混合",
+          "inputBytes": 800019,
+          "outputBytes": 500000,
+          "elapsedSeconds": 0.01293
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 5.985
+    }
+  ]
+}

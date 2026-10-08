@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008042,
+  "problems": [
+    {
+      "id": "oa-uber-41",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "referenceFormalCases": 35,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "4c04571993458dcdccf96c53c16a6194f65166f8e1aea99b37fb2166d1df2e21",
+      "negativeControls": [
+        {
+          "name": "错误最后一项用自身末字母",
+          "rejectedCases": 25,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            4,
+            6,
+            7,
+            9,
+            11,
+            13,
+            14,
+            15,
+            16,
+            17,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            28,
+            29,
+            30,
+            31,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误最后一项不输出",
+          "rejectedCases": 30,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            4,
+            5,
+            6,
+            7,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误取下一个词的首字母",
+          "rejectedCases": 29,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            6,
+            7,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            25,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误两个字母顺序颠倒",
+          "rejectedCases": 33,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        }
+      ],
+      "oracleMethod": "Independent zip with a one-step left rotation of the word list; exhaustive arrays of length 1..5 over three candidate words.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 5,
+        "words": [
+          "ab",
+          "c",
+          "xyz"
+        ],
+        "cases": 363
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模单字母",
+          "inputBytes": 200007,
+          "outputBytes": 300000,
+          "elapsedSeconds": 0.00661
+        },
+        {
+          "name": "满规模最长单词",
+          "inputBytes": 2100007,
+          "outputBytes": 300000,
+          "elapsedSeconds": 0.01295
+        },
+        {
+          "name": "满规模随机长度",
+          "inputBytes": 549750,
+          "outputBytes": 300000,
+          "elapsedSeconds": 0.00862
+        },
+        {
+          "name": "满规模相同单词",
+          "inputBytes": 400007,
+          "outputBytes": 300000,
+          "elapsedSeconds": 0.0079
+        },
+        {
+          "name": "满规模首尾不同",
+          "inputBytes": 800007,
+          "outputBytes": 300000,
+          "elapsedSeconds": 0.00873
+        },
+        {
+          "name": "满规模首个单词末字母特殊",
+          "inputBytes": 700005,
+          "outputBytes": 300000,
+          "elapsedSeconds": 0.00832
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 6.034
+    }
+  ]
+}

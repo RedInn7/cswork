@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-xperi-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Xperi OA #2：使两数相等",
+    "difficulty": "简单",
+    "tags": [
+      "数学",
+      "辗转相除"
+    ],
+    "description": "有两个正整数A和B，要通过若干次操作使A与B相等。每次操作：如果A大于B，则A=A−B；如果B大于A，则B=B−A。每次操作的代价为1。求使A等于B的总代价。",
+    "input": "一行两个空格分隔的整数A和B。1≤A,B≤10^18。",
+    "output": "输出一个整数，表示总代价。",
+    "explanation": "样例1：A=7，B=9。B=9−7=2，A=7−2=5，A=5−2=3，A=3−2=1，B=2−1=1，共5次。\n样例2：A与B初始相等，代价0。\n样例3：12→9→6→3，共3次。",
+    "hints": [
+      "操作是确定的，只需计算次数。",
+      "对同一个数的连续减法可以用除法一次算完。",
+      "整除时最后一次减到相等就停止，比商少一次。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例1",
+      "input": "7 9\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "初始相等",
+      "input": "4 4\n",
+      "expectedOutput": "0\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "整除",
+      "input": "12 3\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "小规模1",
+      "input": "1 1\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模2",
+      "input": "5 5\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模3",
+      "input": "1 2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模4",
+      "input": "2 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模5",
+      "input": "10 1\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模6",
+      "input": "1 10\n",
+      "expectedOutput": "9\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模7",
+      "input": "6 4\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模8",
+      "input": "13 8\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模9",
+      "input": "100 99\n",
+      "expectedOutput": "99\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模10",
+      "input": "7 6202\n",
+      "expectedOutput": "885\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模11",
+      "input": "14 646\n",
+      "expectedOutput": "52\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模12",
+      "input": "2771 624\n",
+      "expectedOutput": "23\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模13",
+      "input": "8 216\n",
+      "expectedOutput": "26\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模14",
+      "input": "16 6\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模15",
+      "input": "483 5654\n",
+      "expectedOutput": "45\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模16",
+      "input": "8548 7\n",
+      "expectedOutput": "1227\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模17",
+      "input": "632 588\n",
+      "expectedOutput": "19\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模18",
+      "input": "2788 2081\n",
+      "expectedOutput": "35\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模19",
+      "input": "19 19\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模20",
+      "input": "5837 994\n",
+      "expectedOutput": "24\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数一与上界",
+      "input": "1000000000000000000 1\n",
+      "expectedOutput": "999999999999999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数上界与一",
+      "input": "1 1000000000000000000\n",
+      "expectedOutput": "999999999999999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数相邻斐波那契",
+      "input": "679891637638612258 420196140727489673\n",
+      "expectedOutput": "85\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数相等",
+      "input": "1000000000000000000 1000000000000000000\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数上界与上界减一",
+      "input": "1000000000000000000 999999999999999999\n",
+      "expectedOutput": "999999999999999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数整除",
+      "input": "1000000000000000000 1000000000\n",
+      "expectedOutput": "999999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数随机一",
+      "input": "340118781061307456 170122847455222096\n",
+      "expectedOutput": "1527\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数随机二",
+      "input": "490917621130994634 568606\n",
+      "expectedOutput": "863370455375\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数随机三",
+      "input": "523877060 9496347503535254\n",
+      "expectedOutput": "18127116\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数公因子",
+      "input": "576460752303423488 432345564227567616\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数超过32位小差",
+      "input": "8589934593 8589934592\n",
+      "expectedOutput": "8589934592\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大数二的幂",
+      "input": "576460752303423488 2\n",
+      "expectedOutput": "288230376151711743\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

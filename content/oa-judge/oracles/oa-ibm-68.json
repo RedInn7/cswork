@@ -1,0 +1,682 @@
+[
+  {
+    "input": "5 30\n10 svc1\n20 svc1\n80 svc1\n10 svc2\n65 svc2\n",
+    "expectedOutput": "2\nsvc1\nsvc2\n"
+  },
+  {
+    "input": "3 1\n1 svc1\n2 svc2\n3 svc1\n",
+    "expectedOutput": "1\nsvc1\n"
+  },
+  {
+    "input": "1 5\n1 a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 0\n5 a\n5 a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 0\n5 a\n6 a\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "4 10\n30 x\n1 x\n20 x\n11 x\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 3\n1 b\n9 a\n5 a\n4 b\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "4 0\n1 z9\n2 z\n3 z9\n4 z\n",
+    "expectedOutput": "2\nz\nz9\n"
+  },
+  {
+    "input": "2 1000000000\n1 a\n1000000000 a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 0\n1 a1\n1000000000 a1\n",
+    "expectedOutput": "1\na1\n"
+  },
+  {
+    "input": "9 2\n63691285 tv\n80 tv\n99 tv\n9 tv\n43 yt\n679859595 yt\n560744932 tv\n111996000 tv\n732137144 tv\n",
+    "expectedOutput": "2\ntv\nyt\n"
+  },
+  {
+    "input": "6 128397661\n35 w\n722905411 w\n8 a\n37 r\n8 r\n87 r\n",
+    "expectedOutput": "1\nw\n"
+  },
+  {
+    "input": "6 929017356\n5 co\n47 co\n36 co\n6 co\n1 co\n613211838 co\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 75169115\n5 s\n3 s\n3 s\n9 s\n326761442 s\n8 s\n92965127 s\n917877154 s\n9 s\n993189551 s\n",
+    "expectedOutput": "1\ns\n"
+  },
+  {
+    "input": "8 539478937\n7 f\n900953846 f\n1 f\n2 f\n7 f\n26 f\n2 f\n922497935 f\n",
+    "expectedOutput": "1\nf\n"
+  },
+  {
+    "input": "9 835625719\n95 2m3\n51 te\n65 te\n699635134 2m3\n948938172 te\n493168776 2m3\n75 te\n56 2m3\n769807609 2m3\n",
+    "expectedOutput": "1\nte\n"
+  },
+  {
+    "input": "1 32\n416324927 qif\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 6\n501540930 e43\n34 e43\n66 o\n6 r4\n82 o\n28 o\n8 r4\n35 o\n3 bu\n45 bu\n",
+    "expectedOutput": "3\nbu\ne43\no\n"
+  },
+  {
+    "input": "12 584278428\n616635055 uah\n838399152 uah\n57 uah\n6 uah\n1 uah\n959944890 uah\n521333005 uah\n10 uah\n2 uah\n8 uah\n4 uah\n817295117 uah\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 1\n10 hc\n70 hc\n2023935 04e\n10 04e\n10 kqf\n159093579 kqf\n2 hc\n443329742 kqf\n",
+    "expectedOutput": "3\n04e\nhc\nkqf\n"
+  },
+  {
+    "input": "6 4\n6 14b\n5 14b\n8 4ma\n9 14b\n27 4ma\n887572843 5qe\n",
+    "expectedOutput": "1\n4ma\n"
+  },
+  {
+    "input": "3 23\n330151092 k\n535235674 k\n40 k\n",
+    "expectedOutput": "1\nk\n"
+  },
+  {
+    "input": "10 13\n10 9sr\n58 snr\n29 snr\n12 snr\n832819173 snr\n8 snr\n432096838 9sr\n39 snr\n647673188 9sr\n32 9sr\n",
+    "expectedOutput": "2\n9sr\nsnr\n"
+  },
+  {
+    "input": "4 264669287\n187681492 k6t\n963975012 k6t\n8 k6t\n21 k6t\n",
+    "expectedOutput": "1\nk6t\n"
+  },
+  {
+    "input": "3 9\n3 i\n98 2\n8 2\n",
+    "expectedOutput": "1\n2\n"
+  },
+  {
+    "input": "4 848730449\n7 br\n877455334 br\n6 br\n367886128 inb\n",
+    "expectedOutput": "1\nbr\n"
+  },
+  {
+    "input": "7 592432051\n60 3k\n70 3k\n14038204 3k\n7 3k\n437216945 3k\n3 3k\n988256904 3k\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 9\n1 vev\n5 vev\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 304659479\n510567107 j3\n667460700 j3\n33721343 t76\n1 j3\n64 t76\n6 t76\n9 t76\n9 t76\n9 j3\n3 j3\n",
+    "expectedOutput": "1\nj3\n"
+  },
+  {
+    "input": "4 0\n51 9ju\n701536616 lo\n72 9ju\n9 9ju\n",
+    "expectedOutput": "1\n9ju\n"
+  },
+  {
+    "input": "1 0\n2 m1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 121368225\n93 o\n53 o\n20 o\n9 o\n58 o\n908941893 o\n24 o\n39 o\n161678099 o\n782870406 o\n",
+    "expectedOutput": "1\no\n"
+  },
+  {
+    "input": "2 197396407\n7 3i\n9 3i\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12 0\n562440489 6\n307935940 6\n7 kmo\n220698856 j\n68 mm\n62 6\n72 6\n5 kmo\n6 j\n82 j\n8 kmo\n9 j\n",
+    "expectedOutput": "3\n6\nj\nkmo\n"
+  },
+  {
+    "input": "6 1\n878803730 27\n252587069 27\n6 ho\n99 ho\n3 27\n8 27\n",
+    "expectedOutput": "2\n27\nho\n"
+  },
+  {
+    "input": "12 37\n578911977 e3\n752394828 91n\n995264128 1z0\n93 91n\n76 1z0\n22 91n\n18 91n\n8 91n\n7 1z0\n89 e3\n591766993 91n\n7 e3\n",
+    "expectedOutput": "3\n1z0\n91n\ne3\n"
+  },
+  {
+    "input": "6 3\n29 vv\n10 vv\n164656254 vv\n48 vv\n175679304 vv\n949070007 vv\n",
+    "expectedOutput": "1\nvv\n"
+  },
+  {
+    "input": "11 505010350\n711397145 mt\n194192951 hcj\n76 mt\n7 mt\n55 hcj\n437527773 mt\n15 mt\n49 hcj\n20 mt\n26 hcj\n185962123 mt\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 519301904\n167768545 gd\n3 v\n772463495 0wd\n11 0wd\n814181251 0wd\n679324420 0wd\n55 v\n19 v\n",
+    "expectedOutput": "1\n0wd\n"
+  },
+  {
+    "input": "1 2\n1 6\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "6 4\n426994134 7hq\n639942447 u\n244856701 7hq\n118540739 u\n6 u\n9 u\n",
+    "expectedOutput": "2\n7hq\nu\n"
+  },
+  {
+    "input": "7 38\n6 qr4\n57 qr4\n706114613 qr4\n59 qr4\n440681180 qr4\n84 qr4\n591878082 qr4\n",
+    "expectedOutput": "1\nqr4\n"
+  },
+  {
+    "input": "7 3\n4 1\n619091053 o73\n8 fkw\n80 o73\n52553762 1\n7 o73\n2 fkw\n",
+    "expectedOutput": "3\n1\nfkw\no73\n"
+  },
+  {
+    "input": "1 950972659\n60 xy1\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 3\n39 2\n337909553 2\n871423346 2\n5 8\n40 2\n5 2\n537291511 u0\n",
+    "expectedOutput": "1\n2\n"
+  },
+  {
+    "input": "4 37\n568319545 a\n4 a\n10 zvf\n10 zvf\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "12 477905720\n4 f\n108377535 3iy\n2 zq3\n2 zq3\n3 3iy\n3 7jz\n849115338 7jz\n809418998 7jz\n10 3iy\n8 7jz\n6 3iy\n8 7jz\n",
+    "expectedOutput": "1\n7jz\n"
+  },
+  {
+    "input": "4 79410982\n348377911 e8\n483532459 e8\n20 e8\n5 m5\n",
+    "expectedOutput": "1\ne8\n"
+  },
+  {
+    "input": "10 1\n30 a\n1 bk\n149820172 a\n66 a\n6 a\n43 bk\n566005567 a\n90 a\n86 bk\n9 bk\n",
+    "expectedOutput": "2\na\nbk\n"
+  },
+  {
+    "input": "7 4\n80 lwv\n3 nv\n20 lwv\n389520698 lwv\n29 nv\n87 lwv\n5 nv\n",
+    "expectedOutput": "2\nlwv\nnv\n"
+  },
+  {
+    "input": "6 1\n8 zrc\n526730946 zrc\n514560630 zrc\n847646686 zrc\n882173884 zrc\n6 zrc\n",
+    "expectedOutput": "1\nzrc\n"
+  },
+  {
+    "input": "9 556170557\n540117573 zu\n1 zu\n21 h6b\n121054053 s\n841357606 zu\n19329019 h6b\n698940143 h6b\n26 zu\n3 zu\n",
+    "expectedOutput": "1\nh6b\n"
+  },
+  {
+    "input": "10 605341415\n241584110 rl9\n914005939 62p\n606146867 62p\n557460296 k\n5 rl9\n1 hyg\n514606067 k\n9 hyg\n743443033 62p\n9 rl9\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 4\n18 26p\n788904435 26p\n4 26p\n932529241 26p\n50 26p\n3 26p\n59 26p\n48581969 26p\n4 26p\n2 26p\n",
+    "expectedOutput": "1\n26p\n"
+  },
+  {
+    "input": "9 9\n77 pi3\n9 2\n7 pi3\n348318168 2\n90 y\n238007107 c\n51 pi3\n45 y\n551223086 2\n",
+    "expectedOutput": "3\n2\npi3\ny\n"
+  },
+  {
+    "input": "5 7\n2 ma\n414991089 o\n9 sy\n101136200 sy\n10 sy\n",
+    "expectedOutput": "1\nsy\n"
+  },
+  {
+    "input": "6 1\n8 0\n21 0\n601895084 0\n5 0\n33 0\n10 0\n",
+    "expectedOutput": "1\n0\n"
+  },
+  {
+    "input": "5 552132586\n5 t1\n628580437 t1\n58650112 t1\n23 t1\n1 t1\n",
+    "expectedOutput": "1\nt1\n"
+  },
+  {
+    "input": "10 46\n9 ko9\n6 j2\n6 sya\n1 j2\n12 j2\n69011540 j2\n6 sya\n70076640 j2\n708767675 ko9\n104238217 j2\n",
+    "expectedOutput": "2\nj2\nko9\n"
+  },
+  {
+    "input": "4 5\n856610799 n2u\n4 n2u\n26 yhb\n24836235 yhb\n",
+    "expectedOutput": "2\nn2u\nyhb\n"
+  },
+  {
+    "input": "11 16\n46 z\n597518494 zg\n13 z\n5 zg\n7 zg\n64 zg\n8 z\n6 zg\n808570521 z\n31 zg\n85 z\n",
+    "expectedOutput": "2\nz\nzg\n"
+  },
+  {
+    "input": "5 42\n6 g\n301784196 lx\n314247341 g\n5 g\n8 g\n",
+    "expectedOutput": "1\ng\n"
+  },
+  {
+    "input": "8 49\n339181942 zn\n72 zn\n187121483 zn\n991108898 zn\n76 zn\n16 zn\n54 zn\n4 zn\n",
+    "expectedOutput": "1\nzn\n"
+  },
+  {
+    "input": "4 12\n491485518 x1\n2 x1\n120948409 x1\n10 x1\n",
+    "expectedOutput": "1\nx1\n"
+  },
+  {
+    "input": "2 2\n4 v\n627680241 35x\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 0\n537753661 26\n872352561 66k\n17544878 66k\n12690319 66k\n3 i\n65 26\n460782451 66k\n88 26\n",
+    "expectedOutput": "2\n26\n66k\n"
+  },
+  {
+    "input": "9 18\n1 s3\n69 s3\n3 w\n857354 s3\n550837819 s3\n828246267 w\n7 w\n43 s3\n11349785 s3\n",
+    "expectedOutput": "2\ns3\nw\n"
+  },
+  {
+    "input": "5 29\n178321152 8z\n7 8z\n68 8z\n10 8z\n620506568 8z\n",
+    "expectedOutput": "1\n8z\n"
+  },
+  {
+    "input": "1 0\n5 o4z\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 22\n6 fz\n7 fz\n5 fz\n324594992 fz\n",
+    "expectedOutput": "1\nfz\n"
+  },
+  {
+    "input": "2 46\n735233283 p2\n5 cpx\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 976363176\n12 2\n17 7xt\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 33\n9 4j\n5 4j\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 883516992\n1 6px\n5 6px\n68065031 6px\n429683602 dzz\n750275908 dzz\n338718806 6px\n79 6px\n380733549 dzz\n40 dzz\n8 dzz\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 25\n483805757 yxh\n58 yxh\n86 yxh\n126955060 yxh\n72 yxh\n4 yxh\n8 yxh\n8 yxh\n",
+    "expectedOutput": "1\nyxh\n"
+  },
+  {
+    "input": "2 46\n70791918 zn\n81988662 t\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 1\n778206323 x4a\n939246532 x4a\n4 x4a\n",
+    "expectedOutput": "1\nx4a\n"
+  },
+  {
+    "input": "8 23\n668989119 0\n321860900 k\n9 k\n4 0\n72 0\n79 0\n8 0\n212221437 k\n",
+    "expectedOutput": "2\n0\nk\n"
+  },
+  {
+    "input": "11 920288120\n472404632 ue\n6 ue\n3 ue\n785856244 ue\n89 ue\n20 ue\n47 ue\n985413438 ue\n44 ue\n43 ue\n61 ue\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 290385934\n577700821 sag\n8 sag\n436875990 sag\n7 sag\n2 sag\n7 sag\n960874644 sag\n7 sag\n8 sag\n15 sag\n443002918 sag\n",
+    "expectedOutput": "1\nsag\n"
+  },
+  {
+    "input": "10 718420576\n62 0\n12533005 7ny\n7 0\n2 0\n45 7ny\n684370276 0\n452863850 7ny\n97963413 0\n10 0\n138499919 7ny\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 325576963\n995074525 n\n57971813 n\n10 n\n682771081 n\n",
+    "expectedOutput": "1\nn\n"
+  },
+  {
+    "input": "3 43\n763070408 va\n81 va\n94360110 va\n",
+    "expectedOutput": "1\nva\n"
+  },
+  {
+    "input": "9 4\n1 imr\n444959919 u\n76 u\n539237130 imr\n676693783 vk\n80 mf\n249889185 mf\n3 mf\n9 vk\n",
+    "expectedOutput": "4\nimr\nmf\nu\nvk\n"
+  },
+  {
+    "input": "11 24\n3 u58\n1 25\n577060126 u58\n184656928 25\n203032922 u58\n77 25\n580125166 25\n10520377 u58\n10 25\n700241767 25\n41 u58\n",
+    "expectedOutput": "2\n25\nu58\n"
+  },
+  {
+    "input": "2 990762982\n401830230 fig\n77 fig\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 922878577\n24 s2\n94147451 vv\n87 vv\n78 c\n10 s2\n8 vv\n141907326 c\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "7 3\n5 0\n209714854 3x\n7 bp\n167677978 3x\n493667335 bp\n8 3x\n91 0\n",
+    "expectedOutput": "3\n0\n3x\nbp\n"
+  },
+  {
+    "input": "4 0\n421305544 erg\n79 pjb\n406896973 erg\n2 erg\n",
+    "expectedOutput": "1\nerg\n"
+  },
+  {
+    "input": "9 46\n7 ok8\n37 ok8\n33 ok8\n2 ok8\n52 ok8\n2 ok8\n10 mh\n264056916 mh\n7 mh\n",
+    "expectedOutput": "1\nmh\n"
+  },
+  {
+    "input": "12 19\n4 l3\n88 l3\n10 l3\n74 l3\n1 l3\n7944374 l3\n380161870 l3\n9 l3\n1 l3\n73 l3\n5 l3\n71 l3\n",
+    "expectedOutput": "1\nl3\n"
+  },
+  {
+    "input": "11 927098936\n557312343 ua\n4 ua\n3 oao\n4 ua\n426011694 oao\n3 oao\n242681010 oao\n451677492 ua\n992667587 ua\n14 ua\n105021867 oao\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "5 433367116\n18 a\n92 a\n514467327 4f\n81 4f\n858605968 4f\n",
+    "expectedOutput": "1\n4f\n"
+  },
+  {
+    "input": "9 606395034\n530834447 6\n3 62x\n9 62x\n1 62x\n235291097 6\n948203805 6\n38 62x\n17 6\n2 62x\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 29\n164181390 rn\n88 rn\n17 e\n4 i\n6 rn\n394633638 rn\n81 i\n7 i\n87246103 rn\n",
+    "expectedOutput": "2\ni\nrn\n"
+  },
+  {
+    "input": "11 512102690\n4 cy5\n86922740 cy5\n4 cy5\n9 cy5\n51 cy5\n538241444 cy5\n72 cy5\n9 cy5\n287115762 cy5\n84 cy5\n15 cy5\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 5\n5 hgd\n203563718 hgd\n",
+    "expectedOutput": "1\nhgd\n"
+  },
+  {
+    "input": "8 36\n48 m6j\n6 bo\n666514853 bo\n858258343 m6j\n1944404 i\n25399300 m6j\n7 m6j\n55 m6j\n",
+    "expectedOutput": "2\nbo\nm6j\n"
+  },
+  {
+    "input": "2 12\n5 9vc\n485583921 yo\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 4\n987925635 79\n3 zhd\n961464927 zhd\n44 79\n32 zhd\n7 79\n938604889 zhd\n446141377 zhd\n8 79\n",
+    "expectedOutput": "2\n79\nzhd\n"
+  },
+  {
+    "input": "6 10\n343309372 zkp\n96 zkp\n96 zkp\n7 gb5\n944009814 zkp\n932774796 gb5\n",
+    "expectedOutput": "2\ngb5\nzkp\n"
+  },
+  {
+    "input": "9 2\n46 v\n4 v\n4 l\n426913115 l\n9 v\n86 l\n8 v\n16 l\n10 f8\n",
+    "expectedOutput": "2\nl\nv\n"
+  },
+  {
+    "input": "5 919306867\n68 p\n1 p\n49680213 4t\n30 p\n6 4t\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 767923540\n4 69v\n7 69v\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 3\n36 4t\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12 2\n8 csq\n310882522 8\n24822541 2q\n323317330 2q\n5 8\n58 8\n97 8\n10 8\n6 csq\n19 csq\n6 2q\n4 2q\n",
+    "expectedOutput": "3\n2q\n8\ncsq\n"
+  },
+  {
+    "input": "8 3\n43961910 s\n121152737 9c1\n9 24q\n5 24q\n1 rb\n56 24q\n7 9c1\n318924339 rb\n",
+    "expectedOutput": "3\n24q\n9c1\nrb\n"
+  },
+  {
+    "input": "7 496427734\n4 hgi\n551504319 y\n2 hgi\n5 y\n8 0\n8 y\n93666101 hgi\n",
+    "expectedOutput": "1\ny\n"
+  },
+  {
+    "input": "12 14\n2020605 ow\n81 ow\n527768158 ow\n43 7aq\n3 7aq\n114446993 ow\n43 7aq\n86 7aq\n1 ow\n62 7aq\n2 ow\n6 ow\n",
+    "expectedOutput": "2\n7aq\now\n"
+  },
+  {
+    "input": "4 617368230\n841317073 x\n10 x\n48 x\n834970453 x\n",
+    "expectedOutput": "1\nx\n"
+  },
+  {
+    "input": "3 5\n5 d\n174213190 d\n5 ov5\n",
+    "expectedOutput": "1\nd\n"
+  },
+  {
+    "input": "1 30\n61 3a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 161081916\n828289795 am\n539185355 2pd\n6 2pd\n3 am\n95 am\n4 am\n549763206 am\n612983600 am\n200716361 am\n928360971 2pd\n87 2pd\n",
+    "expectedOutput": "2\n2pd\nam\n"
+  },
+  {
+    "input": "7 41\n610999547 73t\n816709374 73t\n72 73t\n9 73t\n1 73t\n841635 73t\n131088085 73t\n",
+    "expectedOutput": "1\n73t\n"
+  },
+  {
+    "input": "12 41\n10 6ve\n70 6ve\n140260008 6ve\n48 6ve\n2 6ve\n9 6ve\n1 6ve\n9 6ve\n233960606 6ve\n7 6ve\n2 6ve\n2 6ve\n",
+    "expectedOutput": "1\n6ve\n"
+  },
+  {
+    "input": "7 375708911\n4 b69\n2 a2g\n8 5g\n73 b69\n6 b69\n792111869 5g\n8 b69\n",
+    "expectedOutput": "1\n5g\n"
+  },
+  {
+    "input": "10 9\n2 wp\n495781609 wp\n440036946 wp\n51 wp\n7 wp\n984968241 wp\n405299455 wp\n16 wp\n9 wp\n418013866 wp\n",
+    "expectedOutput": "1\nwp\n"
+  },
+  {
+    "input": "7 3\n6 7c\n45 7c\n349154641 7c\n7 7c\n65 7c\n3 7c\n80 7c\n",
+    "expectedOutput": "1\n7c\n"
+  },
+  {
+    "input": "10 11678457\n32 g7\n5 3\n257965265 a50\n71 kb6\n16 3\n66 a50\n798926210 3\n1 kb6\n2 g7\n471622858 3\n",
+    "expectedOutput": "2\n3\na50\n"
+  },
+  {
+    "input": "5 0\n33 e\n8 r\n2 r\n6 r\n3 r\n",
+    "expectedOutput": "1\nr\n"
+  },
+  {
+    "input": "5 324902368\n59 u\n89 u\n1 nkt\n71 u\n36247676 nkt\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 94574854\n892710521 cl\n17 t8\n9 40e\n88 40e\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 193402803\n25 m53\n581374035 m53\n137259256 qxg\n35 m53\n19 m53\n38 b3g\n4 m53\n6 qxg\n25 qxg\n7 m53\n",
+    "expectedOutput": "1\nm53\n"
+  },
+  {
+    "input": "8 933855104\n1 t\n215318518 fs\n3 fs\n1 fs\n837858372 t\n270974917 5\n1 5\n50 fs\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 4\n1 3n8\n3 lq\n506897491 lq\n7 3n8\n10 3n8\n4 lq\n50 3n8\n8 lq\n",
+    "expectedOutput": "2\n3n8\nlq\n"
+  },
+  {
+    "input": "6 1\n87 3\n8 u\n3 z\n921493524 u\n38 3\n7 3\n",
+    "expectedOutput": "2\n3\nu\n"
+  },
+  {
+    "input": "8 49\n54 xo3\n33 xo3\n9 xo3\n2 xo3\n664298191 xo3\n93 xo3\n53 xo3\n261734711 xo3\n",
+    "expectedOutput": "1\nxo3\n"
+  },
+  {
+    "input": "10 4\n9 hs\n4 12\n47 hs\n423282566 12\n686320163 hs\n61 12\n1 12\n8 12\n4 12\n585852815 hs\n",
+    "expectedOutput": "2\n12\nhs\n"
+  },
+  {
+    "input": "12 999748897\n10 p\n63 p\n91 p\n20 ei\n3 p\n10 ei\n6 ei\n2 ei\n5 ei\n2 ei\n49 p\n27 p\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 787824058\n1 n4r\n90414054 e7\n99 n4r\n5 n4r\n44 o\n829268380 n4r\n80 o\n485982521 o\n",
+    "expectedOutput": "1\nn4r\n"
+  },
+  {
+    "input": "8 4\n618653115 6\n48 u\n88 5s\n91 u\n8 6\n19 u\n3 5s\n1 u\n",
+    "expectedOutput": "3\n5s\n6\nu\n"
+  },
+  {
+    "input": "7 821630524\n38988556 h\n86 h\n523591757 h\n24 h\n542508232 ad\n6 ad\n96 1cd\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 26\n51 qs\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 599485579\n51 y\n43 y\n434370101 jt9\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12 1\n5 m3\n1 m3\n7 jv1\n6 jv1\n6 jv1\n6 jv1\n2 jv1\n43062369 jv1\n676444131 jv1\n233649771 jv1\n53 m3\n329607056 jv1\n",
+    "expectedOutput": "2\njv1\nm3\n"
+  },
+  {
+    "input": "9 1\n652798969 3g\n894134741 3g\n941149524 x\n891089387 x\n31 x\n16 3g\n375369964 3g\n2 x\n61 3g\n",
+    "expectedOutput": "2\n3g\nx\n"
+  },
+  {
+    "input": "3 2\n9 0i\n145178720 1m\n10 0i\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "8 566182860\n78 zot\n74 v\n5 v\n4 7r\n1 v\n599368177 zot\n9 zot\n77 v\n",
+    "expectedOutput": "1\nzot\n"
+  },
+  {
+    "input": "6 4\n10 5\n1 b\n74713276 b\n55 b\n845489744 jk\n8 5\n",
+    "expectedOutput": "1\nb\n"
+  },
+  {
+    "input": "4 539221443\n52 pu\n449853672 y7o\n64 gw\n65 pu\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 781531462\n606714506 w\n51 w\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 4\n50 kx2\n431228703 kx2\n415627266 xzj\n4 kx2\n10 xzj\n6 kx2\n5 kx2\n10 kx2\n6 xzj\n",
+    "expectedOutput": "2\nkx2\nxzj\n"
+  },
+  {
+    "input": "10 32\n260215311 rv7\n735364215 lo0\n285463525 x\n88 lo0\n10 lo0\n65079458 lo0\n53 rv7\n754655394 lo0\n1 rv7\n4 rv7\n",
+    "expectedOutput": "2\nlo0\nrv7\n"
+  },
+  {
+    "input": "10 1\n19 s\n8 3pr\n3 0g\n3 3pr\n920153537 3pr\n841598607 3pr\n939616065 s\n135834929 0g\n915997047 s\n516967869 0g\n",
+    "expectedOutput": "3\n0g\n3pr\ns\n"
+  },
+  {
+    "input": "12 178455970\n9 j0n\n662524343 4b\n10 j0n\n2 4b\n99 4b\n33 4b\n7 4b\n1 j0n\n365619969 j0n\n1 4b\n10 4b\n827300707 4b\n",
+    "expectedOutput": "2\n4b\nj0n\n"
+  },
+  {
+    "input": "6 32008332\n1 x\n7 cay\n45 cay\n5 x\n623784686 g\n59 cay\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 0\n23 v21\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 1\n445182172 zj\n495929820 zj\n62 xr\n44 zj\n10 xr\n82 xr\n89 xr\n8 xr\n6 zj\n7 xr\n74 zj\n",
+    "expectedOutput": "2\nxr\nzj\n"
+  },
+  {
+    "input": "1 15\n41 28\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 44\n7 t\n107986274 t\n126254810 t\n",
+    "expectedOutput": "1\nt\n"
+  },
+  {
+    "input": "5 14\n840281306 a4\n5 a4\n570429689 vy\n3 o\n536725527 a4\n",
+    "expectedOutput": "1\na4\n"
+  },
+  {
+    "input": "3 508159358\n8 8g2\n27 6np\n539644785 m70\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 33\n674664595 jfb\n4 jfb\n94 14i\n169291449 1\n373216390 14i\n920422996 14i\n5 14i\n48 jfb\n7 jfb\n5 jfb\n869943577 1\n",
+    "expectedOutput": "3\n1\n14i\njfb\n"
+  },
+  {
+    "input": "2 112056577\n908517429 u\n7 idm\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "12 1\n689199746 km\n29 jkd\n851515204 jkd\n42522689 jkd\n477682075 jkd\n82 jkd\n32 jkd\n3 jkd\n9 g\n10 42\n51 km\n766361925 42\n",
+    "expectedOutput": "3\n42\njkd\nkm\n"
+  },
+  {
+    "input": "5 819676059\n5 lhc\n71 lhc\n243434179 lhc\n8 itq\n53032481 l7\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "4 864465669\n5 8\n58 n52\n925225529 8\n96364542 zw\n",
+    "expectedOutput": "1\n8\n"
+  },
+  {
+    "input": "3 2\n617845135 hik\n861234306 a\n9 d\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "3 14\n968144327 7\n9 7\n201774894 7\n",
+    "expectedOutput": "1\n7\n"
+  },
+  {
+    "input": "9 4\n4 4li\n46 sq\n504337568 9\n94 sq\n10 9\n1 sq\n9 4li\n45 sq\n6 9\n",
+    "expectedOutput": "3\n4li\n9\nsq\n"
+  },
+  {
+    "input": "2 16\n657995379 bw\n886969119 o\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "11 14\n355314983 x\n601516933 x\n37 x\n413663274 x\n6 x\n64 x\n4 x\n309661724 x\n2 x\n921812493 x\n87 x\n",
+    "expectedOutput": "1\nx\n"
+  },
+  {
+    "input": "3 47\n10 o2d\n7 o2d\n923549976 in9\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 294411396\n194594390 yo\n96 yo\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "2 5\n50 ci\n6 t\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 2\n9 cp\n9 cp\n82 ku\n23 cp\n96 cp\n8 y0\n353160577 ku\n64 cp\n5 y0\n31403622 f\n",
+    "expectedOutput": "3\ncp\nku\ny0\n"
+  },
+  {
+    "input": "11 33458952\n5 2ky\n2 2ky\n63 2ky\n71 l\n7 l\n402122038 ruo\n1 l\n20 2ky\n94387870 7\n2 2ky\n8 2ky\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "9 72532092\n8 g\n3 g\n29 g\n272184846 g\n6 g\n572517394 g\n9 g\n2 g\n6 g\n",
+    "expectedOutput": "1\ng\n"
+  },
+  {
+    "input": "1 0\n749956214 ms\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "10 126488915\n87 qsb\n59 c\n90 3e\n675760237 ro9\n43 ro9\n50161545 qsb\n4364781 qsb\n9 c\n16 c\n674936115 ro9\n",
+    "expectedOutput": "1\nro9\n"
+  }
+]

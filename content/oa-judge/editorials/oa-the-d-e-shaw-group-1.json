@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-1",
+  "title": "有序前缀与有序后缀的二分衔接",
+  "explanation": "## 题意\n\n删除一个非空连续子数组后，剩余部分（左段+右段拼接）必须非空且非降序（允许相等，原题表格中[1,1,2]、[1,2,2]判为有序）。统计这样的子数组个数。\n\n## 思路\n\n设删除区间为[l,r]。剩余数组有序当且仅当：前缀arr[0..l−1]非降，后缀arr[r+1..n−1]非降，并且两段都非空时arr[l−1]≤arr[r+1]；另外不能删掉整个数组。\n\n令P为最长非降前缀长度。若P=n，任意非空区间（除整个数组）都合法，答案n(n+1)/2−1。否则令S为最长非降后缀的起点。l只能取0..P；右段起点j=r+1必须满足j≥max(l+1,S)。l=0时j取[max(1,S),n−1]（j=n表示删光）；l≥1时，j=n总是合法，其余j要求arr[j]≥arr[l−1]，后缀有序，所以用二分找第一个满足的位置。\n\n## 正确性\n\n每个合法区间由(l,j)唯一确定，上述条件正是剩余数组非降的充要条件；在有序后缀上满足arr[j]≥arr[l−1]的j构成一段连续后缀，二分得到其起点，计数不重不漏。\n\n## 复杂度\n\nO(n log n)。答案最多约2×10^10，使用64位整数。\n\n## 独立验证\n\noracle预先计算每个前缀/后缀是否非降，O(n²)枚举(l,r)判定，不使用二分；更小的数据再直接拼出剩余数组检查。穷举长度1..7、取值1..3的全部数组并逐个真实运行参考程序。错误解包括严格递增语义、把删光也计入、衔接处严格大于以及32位计数。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint P=1;while(P<n&&a[P-1]<=a[P])P++;\nif(P==n){printf(\"%lld\\n\",(long long)n*(n+1)/2-1);return 0;}\nint S=n-1;while(S>0&&a[S-1]<=a[S])S--;\nlong long ans=n-max(1,S); // l=0: next kept index r+1 in [max(1,S), n-1]\nfor(int l=1;l<=P;l++){int lo=max(l+1,S);int j=lower_bound(a.begin()+lo,a.end(),a[l-1])-a.begin();ans+=n-j+1;}\nprintf(\"%lld\\n\",ans);}\n"
+    }
+  ]
+}

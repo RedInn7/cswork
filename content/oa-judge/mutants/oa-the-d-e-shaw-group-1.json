@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误要求严格递增",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint P=1;while(P<n&&a[P-1]<a[P])P++;\nif(P==n){printf(\"%lld\\n\",(long long)n*(n+1)/2-1);return 0;}\nint S=n-1;while(S>0&&a[S-1]<a[S])S--;\nlong long ans=n-max(1,S); // l=0: next kept index r+1 in [max(1,S), n-1]\nfor(int l=1;l<=P;l++){int lo=max(l+1,S);int j=upper_bound(a.begin()+lo,a.end(),a[l-1])-a.begin();ans+=n-j+1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误把删除整个数组也计入",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint P=1;while(P<n&&a[P-1]<=a[P])P++;\nif(P==n){printf(\"%lld\\n\",(long long)n*(n+1)/2);return 0;}\nint S=n-1;while(S>0&&a[S-1]<=a[S])S--;\nlong long ans=n-max(1,S)+1; // l=0: next kept index r+1 in [max(1,S), n-1]\nfor(int l=1;l<=P;l++){int lo=max(l+1,S);int j=lower_bound(a.begin()+lo,a.end(),a[l-1])-a.begin();ans+=n-j+1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误衔接处要求严格大于",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint P=1;while(P<n&&a[P-1]<=a[P])P++;\nif(P==n){printf(\"%lld\\n\",(long long)n*(n+1)/2-1);return 0;}\nint S=n-1;while(S>0&&a[S-1]<=a[S])S--;\nlong long ans=n-max(1,S); // l=0: next kept index r+1 in [max(1,S), n-1]\nfor(int l=1;l<=P;l++){int lo=max(l+1,S);int j=upper_bound(a.begin()+lo,a.end(),a[l-1])-a.begin();ans+=n-j+1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误32位计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint P=1;while(P<n&&a[P-1]<=a[P])P++;\nif(P==n){printf(\"%d\\n\",n*(n+1)/2-1);return 0;}\nint S=n-1;while(S>0&&a[S-1]<=a[S])S--;\nlong long ans=n-max(1,S); // l=0: next kept index r+1 in [max(1,S), n-1]\nfor(int l=1;l<=P;l++){int lo=max(l+1,S);int j=lower_bound(a.begin()+lo,a.end(),a[l-1])-a.begin();ans+=n-j+1;}\nprintf(\"%lld\\n\",ans);}\n"
+  }
+]

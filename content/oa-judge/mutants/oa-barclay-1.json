@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误必须执行一次替换",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <numeric>\n#include <algorithm>\nusing namespace std;\nint bestDiv(int g,int R){if(g<=R)return g;int b=1;for(int d=1;(long long)d*d<=g;d++)if(g%d==0){if(d<=R)b=max(b,d);if(g/d<=R)b=max(b,g/d);}return b;}\nint main(){int n,R;if(scanf(\"%d %d\",&n,&R)!=2)return 0;vector<int>a(n);for(auto&x:a)scanf(\"%d\",&x);\nvector<int>pre(n+1,0),suf(n+2,0);for(int i=0;i<n;i++)pre[i+1]=gcd(pre[i],a[i]);for(int i=n-1;i>=0;i--)suf[i]=gcd(suf[i+1],a[i]);\nint ans=0;vector<int>seen;\nfor(int i=0;i<n;i++){int g=gcd(pre[i],suf[i+1]);ans=max(ans,bestDiv(g,R));}\nprintf(\"%d\\n\",ans);}\n"
+  },
+  {
+    "name": "错误取min(其余gcd,R)",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <numeric>\n#include <algorithm>\nusing namespace std;\nint bestDiv(int g,int R){if(g<=R)return g;int b=1;for(int d=1;(long long)d*d<=g;d++)if(g%d==0){if(d<=R)b=max(b,d);if(g/d<=R)b=max(b,g/d);}return b;}\nint main(){int n,R;if(scanf(\"%d %d\",&n,&R)!=2)return 0;vector<int>a(n);for(auto&x:a)scanf(\"%d\",&x);\nvector<int>pre(n+1,0),suf(n+2,0);for(int i=0;i<n;i++)pre[i+1]=gcd(pre[i],a[i]);for(int i=n-1;i>=0;i--)suf[i]=gcd(suf[i+1],a[i]);\nint ans=pre[n];vector<int>seen;\nfor(int i=0;i<n;i++){int g=gcd(pre[i],suf[i+1]);ans=max(ans,min(g,R));}\nprintf(\"%d\\n\",ans);}\n"
+  },
+  {
+    "name": "错误只尝试替换最大元素",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <numeric>\n#include <algorithm>\nusing namespace std;\nint bestDiv(int g,int R){if(g<=R)return g;int b=1;for(int d=1;(long long)d*d<=g;d++)if(g%d==0){if(d<=R)b=max(b,d);if(g/d<=R)b=max(b,g/d);}return b;}\nint main(){int n,R;if(scanf(\"%d %d\",&n,&R)!=2)return 0;vector<int>a(n);for(auto&x:a)scanf(\"%d\",&x);\nvector<int>pre(n+1,0),suf(n+2,0);for(int i=0;i<n;i++)pre[i+1]=gcd(pre[i],a[i]);for(int i=n-1;i>=0;i--)suf[i]=gcd(suf[i+1],a[i]);\nint ans=pre[n];vector<int>seen;\nint mi=max_element(a.begin(),a.end())-a.begin();for(int i=mi;i<=mi;i++){int g=gcd(pre[i],suf[i+1]);ans=max(ans,bestDiv(g,R));}\nprintf(\"%d\\n\",ans);}\n"
+  },
+  {
+    "name": "错误替换值只能取R",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <numeric>\n#include <algorithm>\nusing namespace std;\nint bestDiv(int g,int R){if(g<=R)return g;int b=1;for(int d=1;(long long)d*d<=g;d++)if(g%d==0){if(d<=R)b=max(b,d);if(g/d<=R)b=max(b,g/d);}return b;}\nint main(){int n,R;if(scanf(\"%d %d\",&n,&R)!=2)return 0;vector<int>a(n);for(auto&x:a)scanf(\"%d\",&x);\nvector<int>pre(n+1,0),suf(n+2,0);for(int i=0;i<n;i++)pre[i+1]=gcd(pre[i],a[i]);for(int i=n-1;i>=0;i--)suf[i]=gcd(suf[i+1],a[i]);\nint ans=pre[n];vector<int>seen;\nfor(int i=0;i<n;i++){int g=gcd(pre[i],suf[i+1]);ans=max(ans,gcd(g,R));}\nprintf(\"%d\\n\",ans);}\n"
+  }
+]

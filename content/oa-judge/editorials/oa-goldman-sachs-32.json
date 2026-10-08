@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-32",
+  "title": "滑动窗口和与移项比较",
+  "explanation": "## 题意\n\n第T分钟（从1开始）的平均值取T−(k−1)..T共k分钟的通话量的平均（k=precedingMinutes），平均值严格大于alertThreshold时发一次警报；T<k时窗口不完整，不发警报。求警报总数。\n\n## 思路\n\n滑动窗口维护最近k分钟的通话量之和s。平均值s/k>threshold等价于s>threshold·k，全部用64位整数比较，避免浮点和整数除法带来的误差。\n\n## 正确性\n\n窗口从T=k开始才完整；每个T恰好检查一次。不等式两边同乘正数k不改变大小关系，所以与实数平均的比较完全一致。\n\n## 复杂度\n\nO(n)。窗口和最大10^10，threshold·k最大10^10，需要64位。\n\n## 独立验证\n\noracle对每个T用分数精确计算平均值再与阈值比较（O(nk)，仅小数据），不使用滑动和或移项。穷举n=1..5、k=1..n、通话量0..3、阈值1..3的全部组合并逐个真实运行参考程序。错误解覆盖整数除法、等于也报警、窗口不满也计算和32位累计。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\nint main(){int k;long long th;int n;if(scanf(\"%d %lld %d\",&k,&th,&n)!=3)return 0;std::vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nlong long s=0;int c=0;for(int i=0;i<n;i++){s+=a[i];if(i>=k)s-=a[i-k];if(i>=k-1&&s>th*k)c++;}\nprintf(\"%d\\n\",c);}\n"
+    }
+  ]
+}

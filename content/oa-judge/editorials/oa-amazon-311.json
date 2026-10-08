@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-311",
+  "title": "最长完美前缀与交替填充",
+  "explanation": "## 题意\n\n相邻字符都不相同的字符串称为完美串。给定小写字母串s（未必完美），求与s等长、字典序严格大于s的最小完美串；不存在输出-1。\n\n## 思路\n\n答案与s的最长公共前缀越长越小。设p为第一个满足s[p]=s[p−1]的位置（s完美时p=n）。答案保留的前缀s[0..i−1]必须完美，因此i≤p；又必须严格变大，所以i≤n−1。从i=min(p,n−1)往前试：在位置i放一个大于s[i]、且不等于s[i−1]的最小字母c；找到后，i之后的位置依次填入最小的合法字母（前一个是a就填b，否则填a），即ababa…交替。所有i都不行则输出-1。\n\n## 正确性\n\n字典序比较由第一个不同位置决定。保留前缀越长、该位置字母越小，结果越小；而之后的部分取逐位最小的合法字母即可，后缀总能用a/b交替填满，不会失败。i>p时保留的前缀含相邻相同字符，不可能完美；s完美时i=n意味着不变，不满足严格大于。\n\n## 复杂度\n\nO(26n)，实际只需O(n+26)。\n\n## 独立验证\n\noracle对每个位置i、每个可选字母都构造候选串，过滤出完美且大于s的候选后取最小值，不依赖“从右往左第一个可行位置即最优”的结论。小数据另从s开始按26进制逐个递增字符串，直到遇到第一个完美串，直接验证“等长、严格大于、最小”。穷举字母表{a,b,c,y,z}上长度1..4的全部字符串并逐个真实运行参考程序。错误解覆盖不检查前缀完美、后缀填a、忽略与前一字符相同、完美串返回自身。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);int p=n;for(int i=1;i<n;i++)if(s[i]==s[i-1]){p=i;break;}\nint start=p<n?p:n-1;\nfor(int i=start;i>=0;i--){for(char c=s[i]+1;c<='z';c++){if(i>0&&c==s[i-1])continue;s[i]=c;char prev=c;for(int j=i+1;j<n;j++){s[j]=prev=='a'?'b':'a';prev=s[j];}puts(s);return 0;}}\nputs(\"-1\");}\n"
+    }
+  ]
+}

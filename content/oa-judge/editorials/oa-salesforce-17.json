@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-17",
+  "title": "不重叠相邻交换的前缀动态规划",
+  "explanation": "## 题意\n\n数组每个位置i（0起）的强度为arr[i]×(i+1)。可以交换相邻两元素，但每个元素至多参与一次交换，因此最终做的交换是一组互不重叠的相邻对。求强度和的最大值。\n\n## 思路\n\n交换相邻对(i,i+1)只改变这两项：新值减旧值恰好是arr[i]−arr[i+1]。各对的收益互相独立，唯一限制是所选对不能共享元素。于是用前缀DP：dp[i]表示前i个元素（1起计）的最大强度和，第i个元素要么不交换，dp[i]=dp[i−1]+arr[i]·i；要么与第i−1个元素交换，dp[i]=dp[i−2]+arr[i]·(i−1)+arr[i−1]·i。答案为dp[n]。\n\n## 正确性\n\n任意合法交换集合把数组划分成长度1的单点块和长度2的交换块，块内强度只与块的位置和块内元素有关，块之间互不影响。dp[i]枚举了最后一个块的两种形态，取二者最大值，按归纳即得前缀的最优值。贪心从左往右遇到逆序就交换是错的：[4,3,1]中交换(3,1)收益2，大于交换(4,3)的收益1，但二者共享元素3。\n\n## 复杂度\n\nO(n)时间、O(n)空间。最大值约为10^5×n(n+1)/2≈5×10^14，必须用64位整数。\n\n## 独立验证\n\noracle先算不交换的强度和，再对收益max(0,arr[i]−arr[i+1])做不相邻选取的最大和，与参考解的块DP形式不同。小域另枚举所有互不重叠的相邻交换集合直接求最大值，穷举长度1..7、取值1..3的全部数组并逐个真实运行参考程序。错误解覆盖左到右贪心、允许元素重复交换、32位溢出和权重错位。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n+1);for(int i=1;i<=n;i++)scanf(\"%lld\",&a[i]);\nvector<long long>dp(n+1,0);\nfor(int i=1;i<=n;i++){dp[i]=dp[i-1]+a[i]*i;if(i>=2)dp[i]=max(dp[i],dp[i-2]+a[i]*(i-1)+a[i-1]*i);}\nprintf(\"%lld\\n\",dp[n]);}\n"
+    }
+  ]
+}

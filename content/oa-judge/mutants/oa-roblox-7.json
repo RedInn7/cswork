@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误不要求终点在边界",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int R,C;scanf(\"%d %d\",&R,&C);vector<vector<int>>a(R,vector<int>(C));for(auto&row:a)for(auto&x:row)scanf(\"%d\",&x);\nint best=0;int dr[4]={-1,-1,1,1},dc[4]={-1,1,-1,1};\nfor(int r=0;r<R;r++)for(int c=0;c<C;c++)if(a[r][c]==1)for(int d=0;d<4;d++){int k=1,rr=r+dr[d],cc=c+dc[d];\n while(rr>=0&&rr<R&&cc>=0&&cc<C&&a[rr][cc]==(k%2?2:0)){k++;rr+=dr[d];cc+=dc[d];}best=max(best,k);}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误只考虑向右下和右上",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int R,C;if(scanf(\"%d %d\",&R,&C)!=2)return 0;vector<int>a(R*C);for(auto&x:a)scanf(\"%d\",&x);\nint best=0;int dr[4]={-1,-1,1,1},dc[4]={-1,1,-1,1};\nvector<int>len2(R*C),len0(R*C); // length of a valid tail starting here with expected value 2 / 0, reaching the border; 0 if invalid\nfor(int d=1;d<4;d+=2){\n int r0=dr[d]<0?0:R-1,r1=dr[d]<0?R:-1,rs=dr[d]<0?1:-1;int c0=dc[d]<0?0:C-1,c1=dc[d]<0?C:-1,cs=dc[d]<0?1:-1;\n for(int r=r0;r!=r1;r+=rs)for(int c=c0;c!=c1;c+=cs){int nr=r+dr[d],nc=c+dc[d];bool out=nr<0||nr>=R||nc<0||nc>=C;int i=r*C+c,j=out?-1:nr*C+nc;\n  len2[i]=a[i]!=2?0:out?1:(len0[j]?len0[j]+1:0);\n  len0[i]=a[i]!=0?0:out?1:(len2[j]?len2[j]+1:0);\n  if(a[i]==1){int L=out?1:(len2[j]?len2[j]+1:0);best=max(best,L);}}}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误模式写成1,0,2,0,2",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int R,C;if(scanf(\"%d %d\",&R,&C)!=2)return 0;vector<int>a(R*C);for(auto&x:a)scanf(\"%d\",&x);\nint best=0;int dr[4]={-1,-1,1,1},dc[4]={-1,1,-1,1};\nvector<int>len2(R*C),len0(R*C); // length of a valid tail starting here with expected value 2 / 0, reaching the border; 0 if invalid\nfor(int d=0;d<4;d++){\n int r0=dr[d]<0?0:R-1,r1=dr[d]<0?R:-1,rs=dr[d]<0?1:-1;int c0=dc[d]<0?0:C-1,c1=dc[d]<0?C:-1,cs=dc[d]<0?1:-1;\n for(int r=r0;r!=r1;r+=rs)for(int c=c0;c!=c1;c+=cs){int nr=r+dr[d],nc=c+dc[d];bool out=nr<0||nr>=R||nc<0||nc>=C;int i=r*C+c,j=out?-1:nr*C+nc;\n  len2[i]=a[i]!=2?0:out?1:(len0[j]?len0[j]+1:0);\n  len0[i]=a[i]!=0?0:out?1:(len2[j]?len2[j]+1:0);\n  if(a[i]==1){int L=out?1:(len0[j]?len0[j]+1:0);best=max(best,L);}}}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误按行列方向而非对角线",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int R,C;if(scanf(\"%d %d\",&R,&C)!=2)return 0;vector<int>a(R*C);for(auto&x:a)scanf(\"%d\",&x);\nint best=0;int dr[4]={-1,1,0,0},dc[4]={0,0,-1,1};\nvector<int>len2(R*C),len0(R*C); // length of a valid tail starting here with expected value 2 / 0, reaching the border; 0 if invalid\nfor(int d=0;d<4;d++){\n int r0=dr[d]<0?0:R-1,r1=dr[d]<0?R:-1,rs=dr[d]<0?1:-1;int c0=dc[d]<0?0:C-1,c1=dc[d]<0?C:-1,cs=dc[d]<0?1:-1;\n for(int r=r0;r!=r1;r+=rs)for(int c=c0;c!=c1;c+=cs){int nr=r+dr[d],nc=c+dc[d];bool out=nr<0||nr>=R||nc<0||nc>=C;int i=r*C+c,j=out?-1:nr*C+nc;\n  len2[i]=a[i]!=2?0:out?1:(len0[j]?len0[j]+1:0);\n  len0[i]=a[i]!=0?0:out?1:(len2[j]?len2[j]+1:0);\n  if(a[i]==1){int L=out?1:(len2[j]?len2[j]+1:0);best=max(best,L);}}}\nprintf(\"%d\\n\",best);}\n"
+  }
+]

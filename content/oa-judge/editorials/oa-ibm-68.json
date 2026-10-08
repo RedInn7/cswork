@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-68",
+  "title": "分组排序检查相邻间隔",
+  "explanation": "## 题意\n\n每条心跳有时间戳和服务ID。对每个服务把它的心跳按时间排序，只要某两次相邻心跳的间隔严格大于threshold，该服务就算超时过。按字典序输出所有超时过的服务ID。输入中的心跳没有按时间排序；只有一次心跳的服务不会超时。\n\n## 思路\n\n把(服务ID,时间戳)二元组整体排序，同一服务的心跳就连续且按时间递增。扫描相邻两条：属于同一服务且时间差大于threshold，就把该服务加入结果（同一服务只加一次）。排序后服务ID本身就是字典序，结果天然有序。\n\n## 正确性\n\n排序后同一服务的相邻记录恰是该服务按时间排序后的相邻心跳，判定条件与题意完全一致；相同时间戳的间隔为0，不会超过非负阈值。\n\n## 复杂度\n\nO(n log n·L)，L≤10为ID长度。\n\n## 独立验证\n\noracle用字典按服务分组、组内排序后逐个检查相邻间隔，最后对结果排序，与参考的整体排序扫描不同。穷举2个服务、1..4条心跳、时间戳1..3、阈值0..2的全部组合并逐个真实运行参考程序。错误解覆盖用首尾跨度、间隔等于阈值也算、不按时间排序、按首次出现顺序输出。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;long long th;if(scanf(\"%d %lld\",&n,&th)!=2)return 0;vector<pair<string,long long>>a(n);char buf[32];\nfor(int i=0;i<n;i++){long long t;scanf(\"%lld %31s\",&t,buf);a[i]={buf,t};}\nsort(a.begin(),a.end());vector<string>res;\nfor(int i=1;i<n;i++)if(a[i].first==a[i-1].first&&a[i].second-a[i-1].second>th&&(res.empty()||res.back()!=a[i].first))res.push_back(a[i].first);\nstring out=to_string(res.size())+\"\\n\";for(auto&s:res){out+=s;out+='\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}

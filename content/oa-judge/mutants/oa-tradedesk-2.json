@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误统计被至少一盏灯照亮的坐标",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<pair<long long,int>>e;e.reserve(2*n);\nfor(int i=0;i<n;i++){long long x,r;scanf(\"%lld %lld\",&x,&r);e.push_back({x-r,1});e.push_back({x+r+1,-1});}\nsort(e.begin(),e.end());long long ans=0;int cov=0;\nfor(size_t i=0;i<e.size();){long long p=e[i].first;while(i<e.size()&&e[i].first==p)cov+=e[i++].second;\nif(i<e.size()&&cov>=1)ans+=e[i].first-p;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误右端点不含",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<pair<long long,int>>e;e.reserve(2*n);\nfor(int i=0;i<n;i++){long long x,r;scanf(\"%lld %lld\",&x,&r);e.push_back({x-r,1});e.push_back({x+r,-1});}\nsort(e.begin(),e.end());long long ans=0;int cov=0;\nfor(size_t i=0;i<e.size();){long long p=e[i].first;while(i<e.size()&&e[i].first==p)cov+=e[i++].second;\nif(i<e.size()&&cov==1)ans+=e[i].first-p;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误统计恰被一盏灯照亮的区段数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<pair<long long,int>>e;e.reserve(2*n);\nfor(int i=0;i<n;i++){long long x,r;scanf(\"%lld %lld\",&x,&r);e.push_back({x-r,1});e.push_back({x+r+1,-1});}\nsort(e.begin(),e.end());long long ans=0;int cov=0;\nfor(size_t i=0;i<e.size();){long long p=e[i].first;while(i<e.size()&&e[i].first==p)cov+=e[i++].second;\nif(i<e.size()&&cov==1)ans+=1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误32位累加",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<pair<long long,int>>e;e.reserve(2*n);\nfor(int i=0;i<n;i++){long long x,r;scanf(\"%lld %lld\",&x,&r);e.push_back({x-r,1});e.push_back({x+r+1,-1});}\nsort(e.begin(),e.end());int ans=0;int cov=0;\nfor(size_t i=0;i<e.size();){long long p=e[i].first;while(i<e.size()&&e[i].first==p)cov+=e[i++].second;\nif(i<e.size()&&cov==1)ans+=e[i].first-p;}\nprintf(\"%d\\n\",ans);}\n"
+  }
+]

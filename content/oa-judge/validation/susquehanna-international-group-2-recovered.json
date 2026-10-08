@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008202,
+  "problems": [
+    {
+      "id": "oa-susquehanna-international-group-2",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "9c9ef3baa7e10725d3c130a7e7857ecaf5feeb8572b59fea2a87c638a00a61a6",
+      "negativeControls": [
+        {
+          "name": "错误要求i<j不含i=j",
+          "rejectedCases": 36,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误按a[i]-b[i]分组",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            4,
+            5,
+            9,
+            10,
+            12,
+            14,
+            16,
+            18,
+            22,
+            24,
+            25,
+            26,
+            29,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误32位计数",
+          "rejectedCases": 3,
+          "rejectedCaseIndices": [
+            29,
+            33,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误统计有序对",
+          "rejectedCases": 20,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            4,
+            7,
+            10,
+            12,
+            14,
+            15,
+            16,
+            18,
+            20,
+            22,
+            24,
+            25,
+            26,
+            29,
+            31,
+            32,
+            33,
+            35
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent O(n^2) evaluation of the original equality for every i<=j; Counter-based closed form sum cnt*(cnt+1)/2 for formal large cases; exhaustive arrays over {-1,0,1}.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 4,
+        "values": [
+          -1,
+          0,
+          1
+        ],
+        "note": "n=4 restricted to a[0]=0",
+        "cases": 3006
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模和全相同",
+          "inputBytes": 2555576,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.02496
+        },
+        {
+          "name": "满规模和全不同",
+          "inputBytes": 1688897,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.02778
+        },
+        {
+          "name": "满规模随机大值",
+          "inputBytes": 4155261,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.04651
+        },
+        {
+          "name": "满规模随机小值",
+          "inputBytes": 971197,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.02205
+        },
+        {
+          "name": "满规模和溢出32位",
+          "inputBytes": 4600007,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.03186
+        },
+        {
+          "name": "满规模差相同和不同",
+          "inputBytes": 2577787,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.03097
+        },
+        {
+          "name": "满规模两类交替",
+          "inputBytes": 2700007,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.02591
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 16.187
+    }
+  ]
+}

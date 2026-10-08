@@ -1,0 +1,147 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008032,
+  "problems": [
+    {
+      "id": "oa-goldman-sachs-32",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "e8dc2f04085f83a59dd623c2ee847acc085ca4b37ba7f91c163c9afe0c574698",
+      "negativeControls": [
+        {
+          "name": "错误平均值用整数除法",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            1,
+            3,
+            7,
+            8,
+            9,
+            10,
+            31,
+            33,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误平均值等于阈值也报警",
+          "rejectedCases": 6,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            6,
+            30,
+            34
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误窗口不满时也按已有分钟平均",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            8,
+            12,
+            14,
+            20,
+            21,
+            23,
+            24,
+            25,
+            28,
+            29,
+            31,
+            32,
+            33
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误32位累计",
+          "rejectedCases": 1,
+          "rejectedCaseIndices": [
+            32
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent exact Fraction average per complete window compared with the threshold; Python sliding sum for formal large cases; exhaustive n<=5, all k, calls 0..3, thresholds 1..3.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 5,
+        "calls": [
+          0,
+          3
+        ],
+        "thresholds": [
+          1,
+          2,
+          3
+        ],
+        "k": "1..n",
+        "note": "n=5 restricted to numCalls[0]=1",
+        "cases": 7596
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模全为最大值k为n",
+          "inputBytes": 700020,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00741
+        },
+        {
+          "name": "满规模全为最大值阈值最大",
+          "inputBytes": 700020,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00773
+        },
+        {
+          "name": "满规模平均略高于阈值",
+          "inputBytes": 633349,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.0075
+        },
+        {
+          "name": "满规模大窗口和超过32位",
+          "inputBytes": 700019,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.00779
+        },
+        {
+          "name": "满规模随机",
+          "inputBytes": 589301,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.00788
+        },
+        {
+          "name": "满规模整除边界",
+          "inputBytes": 200011,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.00591
+        },
+        {
+          "name": "满规模k为1",
+          "inputBytes": 589178,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.00782
+        },
+        {
+          "name": "满规模递增",
+          "inputBytes": 588907,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.00729
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 21.026
+    }
+  ]
+}

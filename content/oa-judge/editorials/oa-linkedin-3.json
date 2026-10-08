@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-3",
+  "title": "二分瓶颈阈值与BFS边数检查",
+  "explanation": "## 题意\n\n无向带权图，结点1..N。在从1到N、边数不超过K的所有路径中，使路径上最大边权尽量小，输出这个最小的最大边权。数据保证至少存在一条边数不超过K的路径。\n\n## 思路\n\n答案具有单调性：如果只用权值≤w的边就能在K步内从1走到N，那么任何更大的阈值也可以。所以对排序去重后的边权二分阈值w，每次只保留权值≤w的边做BFS，求1到N的最少边数，判断是否≤K。\n\n## 正确性\n\n若某条路径边数≤K且最大边权为w*，则阈值w*下BFS的最短边数≤K；反之阈值w下BFS找到的最短路径只用≤w的边，最大边权≤w。所以最小可行阈值等于答案，且答案一定是某条边的权值。\n\n## 复杂度\n\nO((N+M) log M)。\n\n## 独立验证\n\noracle用“按边数分层”的极小化最大值DP：f[k][v]为恰好走k步到v的最小可能最大边权，逐层松弛到K层，不使用二分与BFS。更小的数据再枚举所有边数≤K的路径（允许重复点）直接取最小最大边权。穷举3个结点上所有边子集（边权取1..2）与K=1..2并逐个真实运行参考程序。错误解覆盖忽略K、边数必须严格小于K、当作有向图和用DFS深度代替最少边数。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint n,m,K;vector<int>eu,ev,ew,head,nxt,to,wt;\nbool ok(int lim){vector<int>d(n+1,-1);vector<int>q;q.reserve(n);q.push_back(1);d[1]=0;\n for(size_t i=0;i<q.size();i++){int u=q[i];if(d[u]>=K)continue;for(int e=head[u];e>=0;e=nxt[e])if(wt[e]<=lim&&d[to[e]]<0){d[to[e]]=d[u]+1;q.push_back(to[e]);}}\n return d[n]>=0&&d[n]<=K;}\nint main(){if(scanf(\"%d %d %d\",&n,&m,&K)!=3)return 0;head.assign(n+1,-1);vector<int>ws;\nfor(int i=0;i<m;i++){int a,b,w;scanf(\"%d %d %d\",&a,&b,&w);ws.push_back(w);\n to.push_back(b);wt.push_back(w);nxt.push_back(head[a]);head[a]=to.size()-1;\n to.push_back(a);wt.push_back(w);nxt.push_back(head[b]);head[b]=to.size()-1;}\nsort(ws.begin(),ws.end());ws.erase(unique(ws.begin(),ws.end()),ws.end());\nint lo=0,hi=ws.size()-1;while(lo<hi){int mid=(lo+hi)/2;if(ok(ws[mid]))hi=mid;else lo=mid+1;}\nprintf(\"%d\\n\",ws[lo]);}\n"
+    }
+  ]
+}

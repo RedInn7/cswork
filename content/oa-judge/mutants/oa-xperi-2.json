@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误整除时多算一次",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){unsigned long long a,b;if(scanf(\"%llu %llu\",&a,&b)!=2)return 0;unsigned long long cost=0;\nwhile(a!=b){if(a<b){unsigned long long t=a;a=b;b=t;}unsigned long long q=a/b,r=a%b;if(r==0){cost+=q;a=b;}else{cost+=q;a=r;}}\nprintf(\"%llu\\n\",cost);}\n"
+  },
+  {
+    "name": "错误按辗转相除步数计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){unsigned long long a,b;if(scanf(\"%llu %llu\",&a,&b)!=2)return 0;unsigned long long cost=0;\nwhile(a!=b){if(a<b){unsigned long long t=a;a=b;b=t;}unsigned long long q=a/b,r=a%b;if(r==0){cost+=1;a=b;}else{cost+=1;a=r;}}\nprintf(\"%llu\\n\",cost);}\n"
+  },
+  {
+    "name": "错误32位读入",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){unsigned a,b;scanf(\"%u %u\",&a,&b);unsigned long long cost=0;if(!a)a=1;if(!b)b=1;\nwhile(a!=b){if(a<b){unsigned t=a;a=b;b=t;}unsigned q=a/b,r=a%b;if(r==0){cost+=q-1;a=b;}else{cost+=q;a=r;}}\nprintf(\"%llu\\n\",cost);}\n"
+  },
+  {
+    "name": "错误按A/g+B/g-2计算",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){unsigned long long a,b;scanf(\"%llu %llu\",&a,&b);unsigned long long x=a,y=b;while(y){unsigned long long t=x%y;x=y;y=t;}printf(\"%llu\\n\",a/x+b/x-2);}\n"
+  }
+]

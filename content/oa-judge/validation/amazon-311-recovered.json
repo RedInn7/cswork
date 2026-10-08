@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008311,
+  "problems": [
+    {
+      "id": "oa-amazon-311",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "bf54baf2f9415c663d1eed926aaf1843bf90dbd83093ebb76d771dc728e45f03",
+      "negativeControls": [
+        {
+          "name": "错误不检查保留前缀是否完美",
+          "rejectedCases": 12,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            17,
+            18,
+            20,
+            21,
+            24,
+            25,
+            28,
+            29,
+            33,
+            35
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误后缀全部填a",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            0,
+            13,
+            14,
+            21,
+            23,
+            24,
+            25,
+            26,
+            28,
+            29,
+            31,
+            33,
+            35
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误改动字符可与前一个字符相同",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            6,
+            9,
+            10,
+            16,
+            22,
+            31,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误完美串直接返回自身",
+          "rejectedCases": 17,
+          "rejectedCaseIndices": [
+            2,
+            3,
+            4,
+            5,
+            6,
+            9,
+            10,
+            11,
+            12,
+            16,
+            19,
+            22,
+            27,
+            31,
+            32,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent minimum over all (position, letter) candidates with explicit perfect/greater filtering; base-26 increment brute force to the first perfect string on short inputs; Python greedy for formal large cases.",
+      "exhaustiveSmallDomain": {
+        "lengthMin": 1,
+        "lengthMax": 4,
+        "alphabet": "abcyz",
+        "bruteForce": "base-26 increment until first perfect string",
+        "cases": 780
+      },
+      "largeBoundaries": [
+        {
+          "name": "满长全a",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.00358
+        },
+        {
+          "name": "满长全z",
+          "inputBytes": 200001,
+          "outputBytes": 3,
+          "elapsedSeconds": 0.00288
+        },
+        {
+          "name": "满长交替yz",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.00372
+        },
+        {
+          "name": "满长交替ab",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.00319
+        },
+        {
+          "name": "满长随机",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.00359
+        },
+        {
+          "name": "满长完美末位z",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.0035
+        },
+        {
+          "name": "满长首个冲突靠后",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.00327
+        },
+        {
+          "name": "满长随机完美串",
+          "inputBytes": 200001,
+          "outputBytes": 200001,
+          "elapsedSeconds": 0.00324
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 5.226
+    }
+  ]
+}

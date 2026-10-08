@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误操作2用在窗口内最先出现的非零元素",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nint main(){int n;long long X;int Y;scanf(\"%d %lld %d\",&n,&X,&Y);vector<long long>a(n);for(auto&v:a)scanf(\"%lld\",&v);int best=0;\nfor(int l=0;l<n;l++){long long s=0;int z=0;for(int r=l;r<n;r++){if(a[r]){if(z<Y)z++;else s+=a[r];}if(s>X)break;if(r-l+1>best)best=r-l+1;}}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误操作1每次直接清零一个元素",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <set>\nusing namespace std;\nint main(){int n;long long X;int Y;if(scanf(\"%d %lld %d\",&n,&X,&Y)!=3)return 0;vector<long long>a(n);for(auto&v:a)scanf(\"%lld\",&v);\nmultiset<long long>top,rest;long long restSum=0;int best=0,l=0;\nauto add=[&](long long v){if(v==0)return;top.insert(v);if((int)top.size()>Y){auto it=top.begin();rest.insert(*it);restSum+=1;top.erase(it);}};\nauto del=[&](long long v){if(v==0)return;auto it=rest.find(v);if(it!=rest.end()){rest.erase(it);restSum-=1;return;}\n top.erase(top.find(v));if(!rest.empty()){auto jt=prev(rest.end());restSum-=1;top.insert(*jt);rest.erase(jt);}};\nfor(int r=0;r<n;r++){add(a[r]);while(restSum>X){del(a[l]);l++;}if(r-l+1>best)best=r-l+1;}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误忽略操作1",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <set>\nusing namespace std;\nint main(){int n;long long X;int Y;if(scanf(\"%d %lld %d\",&n,&X,&Y)!=3)return 0;vector<long long>a(n);for(auto&v:a)scanf(\"%lld\",&v);\nmultiset<long long>top,rest;long long restSum=0;int best=0,l=0;\nauto add=[&](long long v){if(v==0)return;top.insert(v);if((int)top.size()>Y){auto it=top.begin();rest.insert(*it);restSum+=*it;top.erase(it);}};\nauto del=[&](long long v){if(v==0)return;auto it=rest.find(v);if(it!=rest.end()){rest.erase(it);restSum-=v;return;}\n top.erase(top.find(v));if(!rest.empty()){auto jt=prev(rest.end());restSum-=*jt;top.insert(*jt);rest.erase(jt);}};\nfor(int r=0;r<n;r++){add(a[r]);while(restSum>0){del(a[l]);l++;}if(r-l+1>best)best=r-l+1;}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误32位累计",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <set>\nusing namespace std;\nint main(){int n;long long X;int Y;if(scanf(\"%d %lld %d\",&n,&X,&Y)!=3)return 0;vector<long long>a(n);for(auto&v:a)scanf(\"%lld\",&v);\nmultiset<long long>top,rest;int restSum=0;int best=0,l=0;\nauto add=[&](long long v){if(v==0)return;top.insert(v);if((int)top.size()>Y){auto it=top.begin();rest.insert(*it);restSum+=*it;top.erase(it);}};\nauto del=[&](long long v){if(v==0)return;auto it=rest.find(v);if(it!=rest.end()){rest.erase(it);restSum-=v;return;}\n top.erase(top.find(v));if(!rest.empty()){auto jt=prev(rest.end());restSum-=*jt;top.insert(*jt);rest.erase(jt);}};\nfor(int r=0;r<n;r++){add(a[r]);while(restSum>X){del(a[l]);l++;}if(r-l+1>best)best=r-l+1;}\nprintf(\"%d\\n\",best);}\n"
+  }
+]

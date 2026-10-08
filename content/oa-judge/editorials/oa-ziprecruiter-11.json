@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-11",
+  "title": "左右端点排序后二分计数",
+  "explanation": "## 题意\n\n每盏灯照亮数轴上的闭区间[lamps[i][0],lamps[i][1]]。对每个控制点points[j]，统计有多少盏灯照亮它（端点也算），按控制点的输入顺序输出。\n\n## 思路\n\n点p被区间[l,r]覆盖⇔l≤p且r≥p。覆盖数=（左端点≤p的灯数）−（右端点<p的灯数），因为右端点<p的灯左端点也一定<p。把所有左端点、右端点分别排序，每个控制点做两次二分。\n\n## 正确性\n\n左端点≤p的灯中，恰好右端点<p的那些不覆盖p，其余都覆盖。两次二分分别给出这两个数量。\n\n## 复杂度\n\nO((n+m) log n)。\n\n## 独立验证\n\noracle对每个控制点逐盏灯检查l≤p≤r（O(nm)，仅小数据），不排序不二分；大用例用Python差分扫描另算。穷举坐标1..4上的1..2盏灯与全部控制点组合并逐个真实运行参考程序。错误解覆盖右端点或左端点不含、按排序后的控制点输出和忘记减去已结束的灯。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<long long>L(n),R(n);for(int i=0;i<n;i++)scanf(\"%lld %lld\",&L[i],&R[i]);\nsort(L.begin(),L.end());sort(R.begin(),R.end());string out;\nfor(int j=0;j<m;j++){long long p;scanf(\"%lld\",&p);long long a=upper_bound(L.begin(),L.end(),p)-L.begin();long long b=lower_bound(R.begin(),R.end(),p)-R.begin();out+=to_string(a-b);out+=j+1<m?' ':'\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}

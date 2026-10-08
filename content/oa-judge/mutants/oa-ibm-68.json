@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误用首尾跨度代替相邻间隔",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;long long th;if(scanf(\"%d %lld\",&n,&th)!=2)return 0;vector<pair<string,long long>>a(n);char buf[32];\nfor(int i=0;i<n;i++){long long t;scanf(\"%lld %31s\",&t,buf);a[i]={buf,t};}\nsort(a.begin(),a.end());vector<string>res;\nfor(int i=0,j;i<n;i=j){j=i;while(j<n&&a[j].first==a[i].first)j++;if(a[j-1].second-a[i].second>th)res.push_back(a[i].first);}\nstring out=to_string(res.size())+\"\\n\";for(auto&s:res){out+=s;out+='\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误间隔等于阈值也算超时",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;long long th;if(scanf(\"%d %lld\",&n,&th)!=2)return 0;vector<pair<string,long long>>a(n);char buf[32];\nfor(int i=0;i<n;i++){long long t;scanf(\"%lld %31s\",&t,buf);a[i]={buf,t};}\nsort(a.begin(),a.end());vector<string>res;\nfor(int i=1;i<n;i++)if(a[i].first==a[i-1].first&&a[i].second-a[i-1].second>=th&&(res.empty()||res.back()!=a[i].first))res.push_back(a[i].first);\nstring out=to_string(res.size())+\"\\n\";for(auto&s:res){out+=s;out+='\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误不按时间排序直接比较输入中相邻心跳",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;long long th;if(scanf(\"%d %lld\",&n,&th)!=2)return 0;vector<pair<string,long long>>a(n);char buf[32];\nfor(int i=0;i<n;i++){long long t;scanf(\"%lld %31s\",&t,buf);a[i]={buf,t};}\nstable_sort(a.begin(),a.end(),[](const pair<string,long long>&x,const pair<string,long long>&y){return x.first<y.first;});vector<string>res;\nfor(int i=1;i<n;i++)if(a[i].first==a[i-1].first&&(a[i].second>a[i-1].second?a[i].second-a[i-1].second:a[i-1].second-a[i].second)>th&&(res.empty()||res.back()!=a[i].first))res.push_back(a[i].first);\nstring out=to_string(res.size())+\"\\n\";for(auto&s:res){out+=s;out+='\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误按服务首次出现顺序输出",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;long long th;scanf(\"%d %lld\",&n,&th);map<string,vector<long long>>g;vector<string>order;char buf[32];\nfor(int i=0;i<n;i++){long long t;scanf(\"%lld %31s\",&t,buf);if(!g.count(buf))order.push_back(buf);g[buf].push_back(t);}\nvector<string>res;for(auto&s:order){auto&v=g[s];sort(v.begin(),v.end());for(size_t i=1;i<v.size();i++)if(v[i]-v[i-1]>th){res.push_back(s);break;}}\nprintf(\"%d\\n\",(int)res.size());for(auto&s:res)printf(\"%s\\n\",s.c_str());}\n"
+  }
+]

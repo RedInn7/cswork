@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-7",
+  "title": "对角方向反向递推合法尾段",
+  "explanation": "## 题意\n\n矩阵元素只有0、1、2。找一条沿对角线方向的线段：第一个元素是1，之后依次为2,0,2,0,…；可以从任意位置出发，沿4个对角方向之一前进，并且必须结束在第一行、最后一行、第一列或最后一列的元素上。求最长长度。数据保证存在长度至少为2的这种线段。\n\n## 思路\n\n沿对角方向前进时，坐标的行和列同时变化，所以除了起点外，线段第一次碰到边界就是走出矩阵前的最后一个格子。因此“结束在边界”等价于：从起点出发沿该方向直到出界，途经的全部格子都符合模式。\n\n对每个方向，从该方向的出口一侧往回递推：len2[x]表示从x出发、期望值为2、一直符合模式走到出界的长度（不合法为0），len0同理。len2[x]= (x是2) 且 (下一格出界则为1，否则需len0[下一格]>0，取其+1)。值为1的格子在该方向的答案就是1+len2[下一格]（下一格出界时为1）。\n\n## 正确性\n\n递推顺序保证下一格先算出；len2/len0精确刻画“从这里到出界都匹配模式”。取所有起点与方向的最大值即为答案。\n\n## 复杂度\n\nO(4RC)。\n\n## 独立验证\n\noracle对每个1和每个方向逐格行走到出界、逐格比对模式（O(RC·min(R,C))），不使用递推数组。穷举2×2矩阵的全部3^4种取值和2×3、3×2中满足保证条件的矩阵并逐个真实运行参考程序。错误解覆盖不要求到达边界、只考虑两个方向、模式写反和误用横竖方向。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int R,C;if(scanf(\"%d %d\",&R,&C)!=2)return 0;vector<int>a(R*C);for(auto&x:a)scanf(\"%d\",&x);\nint best=0;int dr[4]={-1,-1,1,1},dc[4]={-1,1,-1,1};\nvector<int>len2(R*C),len0(R*C); // length of a valid tail starting here with expected value 2 / 0, reaching the border; 0 if invalid\nfor(int d=0;d<4;d++){\n int r0=dr[d]<0?0:R-1,r1=dr[d]<0?R:-1,rs=dr[d]<0?1:-1;int c0=dc[d]<0?0:C-1,c1=dc[d]<0?C:-1,cs=dc[d]<0?1:-1;\n for(int r=r0;r!=r1;r+=rs)for(int c=c0;c!=c1;c+=cs){int nr=r+dr[d],nc=c+dc[d];bool out=nr<0||nr>=R||nc<0||nc>=C;int i=r*C+c,j=out?-1:nr*C+nc;\n  len2[i]=a[i]!=2?0:out?1:(len0[j]?len0[j]+1:0);\n  len0[i]=a[i]!=0?0:out?1:(len2[j]?len2[j]+1:0);\n  if(a[i]==1){int L=out?1:(len2[j]?len2[j]+1:0);best=max(best,L);}}}\nprintf(\"%d\\n\",best);}\n"
+    }
+  ]
+}

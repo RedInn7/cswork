@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-20",
+  "title": "可达总和区间求交",
+  "explanation": "## 题意\n\n两队技能数组中0表示该位置缺人，每个空位都必须补一名球员，补上的技能在1..10000之间（0代表缺人，所以补位不能是0；任何球员技能上限为10000）。求两队总技能相等时的最小可能和，做不到输出−1。\n\n## 思路\n\n一队已有技能和为s、空位数为z时，补完后的总和可以取到[s+z, s+10000z]内的任意整数（每个空位独立取1..10000，和覆盖整个区间）；z=0时只能是s。两队区间求交集，交集非空则答案是交集下界，否则−1。\n\n## 正确性\n\nz个取值在[1,10000]内的整数之和恰好取遍[z,10000z]的每个整数，所以可达集合是区间。相等和必须同时属于两个区间，最小者就是交集的下界。\n\n## 复杂度\n\nO(n+m)。总和最多约10^9，用64位更稳妥。\n\n## 独立验证\n\noracle用Python大整数位集合表示每队可达的总和集合：对每个空位把集合按1..10000的所有位移取并（倍增实现），再求两队交集的最低位，不使用区间公式。穷举两队长度1..3、元素取{0,3,10000}的所有组合并逐个真实运行参考程序。错误解覆盖补位可为0、忽略上限、取较小下界和上限写错。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;long long sa=0,sb=0,za=0,zb=0,x;\nfor(int i=0;i<n;i++){scanf(\"%lld\",&x);sa+=x;za+=x==0;}for(int i=0;i<m;i++){scanf(\"%lld\",&x);sb+=x;zb+=x==0;}\nlong long loA=sa+za,hiA=sa+10000*za,loB=sb+zb,hiB=sb+10000*zb;long long lo=max(loA,loB),hi=min(hiA,hiB);\nprintf(\"%lld\\n\",lo<=hi?lo:-1);}\n"
+    }
+  ]
+}

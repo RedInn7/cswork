@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-ziprecruiter-14",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "ZipRecruiter OA #14：字符互不相同的连续三元组",
+    "difficulty": "简单",
+    "tags": [
+      "字符串",
+      "滑动窗口"
+    ],
+    "description": "给定只含小写英文字母的字符串s，统计s中由互不相同字符组成的连续三元组个数。换言之，统计满足s[i]、s[i+1]、s[i+2]两两不同的下标i的个数。",
+    "input": "一行字符串s。1≤s的长度≤1000，只含小写英文字母。",
+    "output": "输出一个整数。",
+    "explanation": "样例1：s=\"abcdaaae\"，i=0（abc）、i=1（bcd）、i=2（cda）满足；i=3（daa）中s[4]与s[5]相同，之后的三元组也都含重复字符，答案3。\n样例2：s=\"abacaba\"，只有i=1（bac）和i=3（cab）满足，其他三元组都含两个a，答案2。\n样例3：s=\"xyz\"只有一个三元组且满足，答案1。",
+    "hints": [
+      "只需检查每个长度为3的窗口。",
+      "三个字符两两不同需要比较三对，别漏掉首尾两个字符。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "样例1",
+      "input": "abcdaaae\n",
+      "expectedOutput": "3\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "样例2",
+      "input": "abacaba\n",
+      "expectedOutput": "2\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "恰好一个三元组",
+      "input": "xyz\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "小规模1",
+      "input": "a\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模2",
+      "input": "ab\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模3",
+      "input": "aaa\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模4",
+      "input": "aba\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模5",
+      "input": "abcabc\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模6",
+      "input": "zyxzyx\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模7",
+      "input": "aabbcc\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模8",
+      "input": "abab\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模9",
+      "input": "qwertyuiop\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模10",
+      "input": "abca\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模11",
+      "input": "oaadbc\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模12",
+      "input": "j\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模13",
+      "input": "wbladbcad\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模14",
+      "input": "dapabc\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模15",
+      "input": "bcobtilbacbaxcc\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模16",
+      "input": "ud\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模17",
+      "input": "hcmatbpbbcacbdfb\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模18",
+      "input": "bbzcabbbobiivacab\n",
+      "expectedOutput": "7\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模19",
+      "input": "azbbddbcbdbbaaatba\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模20",
+      "input": "dabbbcdgxk\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模21",
+      "input": "bcacczbaabccbccaaa\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模22",
+      "input": "bdazoaaahbacabbaa\n",
+      "expectedOutput": "8\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模23",
+      "input": "bbbva\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模24",
+      "input": "avdcbbwa\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "小规模25",
+      "input": "caccabsac\n",
+      "expectedOutput": "4\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长全同",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长周期abc",
+      "input": "abcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabcabca\n",
+      "expectedOutput": "998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长周期aba",
+      "input": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长二十六字母循环",
+      "input": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijkl\n",
+      "expectedOutput": "998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长随机三字母",
+      "input": "abccabacabbbaabacaacaacbabccabcbbbacbabcaccababbcbcaaabccaacacabccccabccbabbccbbaacacbbbbacaacbbbccbabcbbcbaccacbbccacbaccccbcbbaabbcbcaccabccbbbaabcccbcbbcbbaccacabcaabaccbcccbacabcbbbaaacbbcbbcaccbcccaaacbcaababcbbbcbcacbacbcabcacaabcbaabbabccbccaacbabcaabbcabaababbbbaaccccbcccabccbaaccbcccbcbaacaacbcaaacbcaccccabbcbbaaccbbaaabacabccacbbccbbaccbbbbacbcbcbbacacbbbababcbaacaabacbbacababcabbaababababbbbbcaabccccbacbbcaccabacbbaacacaabaabcabcbaccbbaacacacbabacbbabaccbaabbaacbaaacbaaaaabbbbbabacacacacbaaaabaaccbaabaacbbacacaaaaabbcbcacabccaaaaaccbbcacbabcaaaabcababacabbbbcaaacacbacbcbbbbbaaccbccaacbbcbcaaaacbcaabcccccaaacabacaabcbacbbbcacabbabcbaacccbacbccaaacaaccbccccacbbabbbaaacaabccabbcaaacbbbccbacbabbcbaaabcccbbcacacabbacbcbaacbabbbabcaacbacbcabcccbacacaabccbaccabacaccccaccbccccaaaccbcbbcaccbcccababacacaaaccababcccabcacccabaacaacbcabccacbcaaacacacbbbbaabbacaaaabcccbcbacbbabccccaababcccaabbbabbccaacabcacacbbcbcbbabbcbcaaacccabccbaaccbcccacabbabcabccabccacbcaaccbbccccbbccbcaaccabbbaabba\n",
+      "expectedOutput": "240\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长随机全字母",
+      "input": "nxjrdrjjyltkteazurggapuuasrchfckhcykeqhuwxqnubiodryileqmahdlstbbkxozvowtmoogxvujoaawuibtxvwbgcrdeitvgzgmyerpaxwsepqridpqaizepvohiwuvyheelrkfzgljtazsjlrbbdvtmyvykmvpscmovqrgxdcrjvmcqtnhrqotbkwixadjnuyhwzkieszmydovmlbmgcfeicxelfamgvasviustjtunpabwcwyjffktsnmyazooomjyeytxtfydbrwsfnybshgczppqdiqhvwmixybnopzztzdbkksuqqmordagwfiadhoryvmnvzhaqxmbspyfoyerdaywnozryxedugpbxobnbmajnzhnfoxrybkkqcsmvaithjcxpbopvufpizjmzehjnqugbpudkcvgszumcpzbfbchbrwdykodgatwrrouxzpdwigushqimzabgfvhpvvcdnvwmfxyqrtwuxicccnwnvtymodaiqsogijbkjptoxehalcimidaheivydsoitfsghycfowihebowwyxmaiiardomdevvsccvhmrveyhwxazyexbgzxkivlfozdddchkrpxfqpewjebpqyzevpsdjfzbggcvsezulvfwfbiayxemztryysoveobqnavxkdsitvlgnapzeecijkjzvhfdqemqqhxtxhteprdqsyveydfxibwdyimlnqhjvsnjtsksbbyvvylrlynqbgzqnfzlsyfmbjeuimmbdltntpvluqmnjijkqtgihfqbkzjeovyfwbuouskvgtxfbjfhcvwgdpxsvwydbpainjgbvbhbtlndmxtldwovxqmpvqarfealpjuxbixqndukqqhmfirvpjhnyxbxlhaicxaxancsgzvluhoyspphgqrdndtxrnecybaekpssbnjiikmjlvrrwpegdadagcqqxxdwdtbywblvtwdsnkwcsfbvhdadwsulnadtatcgvrk\n",
+      "expectedOutput": "889\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长成对重复",
+      "input": "aabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeffgghhiijjkkllmmnnooppqqrrssttuuvvwwxxyyzzaabbccddeeff\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "满长abca周期",
+      "input": "abcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabcaabca\n",
+      "expectedOutput": "500\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

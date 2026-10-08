@@ -1,0 +1,198 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008017,
+  "problems": [
+    {
+      "id": "oa-salesforce-17",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "0bd28b8d8e13f9b8d382e1727441544207c8bcd31c3b74f105d680f54bfda469",
+      "negativeControls": [
+        {
+          "name": "错误从左到右贪心交换",
+          "rejectedCases": 7,
+          "rejectedCaseIndices": [
+            0,
+            8,
+            18,
+            28,
+            29,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误允许同一元素多次参与交换",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            0,
+            7,
+            8,
+            10,
+            17,
+            18,
+            19,
+            20,
+            25,
+            28,
+            29,
+            30,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误32位整数累加",
+          "rejectedCases": 11,
+          "rejectedCaseIndices": [
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误1-based权重按下标i计",
+          "rejectedCases": 37,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent Python base sum plus maximum non-adjacent selection of adjacent-swap gains; explicit enumeration of all non-overlapping adjacent swap sets on small inputs; closed forms for uniform and ascending arrays.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 7,
+        "values": [
+          1,
+          2,
+          3
+        ],
+        "cases": 3279
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模全部最大值",
+          "inputBytes": 700007,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00793
+        },
+        {
+          "name": "满规模严格降序",
+          "inputBytes": 588902,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00772
+        },
+        {
+          "name": "满规模严格升序",
+          "inputBytes": 588902,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00778
+        },
+        {
+          "name": "满规模两两逆序",
+          "inputBytes": 588902,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.0079
+        },
+        {
+          "name": "满规模链式冲突",
+          "inputBytes": 500004,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00754
+        },
+        {
+          "name": "满规模随机大值",
+          "inputBytes": 588949,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00853
+        },
+        {
+          "name": "满规模随机小值",
+          "inputBytes": 200007,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.00656
+        },
+        {
+          "name": "满规模峰谷交替",
+          "inputBytes": 450007,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00726
+        },
+        {
+          "name": "满规模随机块",
+          "inputBytes": 595474,
+          "outputBytes": 16,
+          "elapsedSeconds": 0.00842
+        },
+        {
+          "name": "满规模全一",
+          "inputBytes": 200007,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.00626
+        },
+        {
+          "name": "满规模中等随机",
+          "inputBytes": 389229,
+          "outputBytes": 14,
+          "elapsedSeconds": 0.00755
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 14.121
+    }
+  ]
+}

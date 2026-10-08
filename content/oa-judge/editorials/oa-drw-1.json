@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-drw-1",
+  "title": "按列顶高度落块与整行删除",
+  "explanation": "## 题意\n\n宽10列的简化俄罗斯方块。方块从上方落下，任何部分碰到底部或已停住的方块就停下；方块是刚体，不旋转，形状固定（Q、Z、S、T、I、L、J）。整行填满就消除，上面的各行整体下移，行内图案不变，不会填补下面的空洞。每行输入是一个放置序列，从空盘面开始，输出最终剩余方块的高度。\n\n## 思路\n\n用每行一个10位二进制数表示盘面。放置方块时，方块从顶上一直下落，所以只受各列“最高的已占格子”阻挡：对方块的每个格子(dx,dy)，所在列最高占用行为top，则方块底部至少在top−dy；取最大值即落点。写入四个格子后，删除所有等于全1的行（其余行按原顺序下移），再去掉顶部的空行。最终行数就是高度。\n\n## 正确性\n\n方块自上而下竖直移动，途中只可能被每列最上方的方块挡住，下方空洞到达不了，所以落点由各列顶部高度决定。消行只删除满行并保持其余行的相对顺序和行内图案，与题意“按行下落、不填补空洞”一致。\n\n## 复杂度\n\n每个方块O(4·H+H)，H≤100。\n\n## 独立验证\n\noracle用Python逐格模拟方块从高处一格一格下落、碰撞即停，并以集合存储占用格子，不使用列顶高度公式。穷举全部1..2个方块的放置序列（所有方块、所有合法列）作为一组多行输入，并加随机长序列，逐个真实运行参考程序。错误解覆盖S/Z形状对调、方块穿过上方落入空洞、不消行、消行后逐列填补空隙。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <string>\n#include <iostream>\nusing namespace std;\nint main(){ios::sync_with_stdio(false);\nint sx[7][4]={{0,1,0,1},{1,2,0,1},{0,1,1,2},{1,0,1,2},{0,1,2,3},{0,1,0,0},{0,1,1,1}};\nint sy[7][4]={{0,0,1,1},{0,0,1,1},{0,0,1,1},{0,1,1,1},{0,0,0,0},{0,0,1,2},{0,0,1,2}};\nconst char*names=\"QZSTILJ\";string line,out;\nwhile(getline(cin,line)){if(!line.empty()&&line.back()=='\\r')line.pop_back();if(line.empty())continue;\n vector<int>rows;size_t p=0;\n while(p<line.size()){int t=strchr(names,line[p])-names;int c=line[p+1]-'0';p+=2;if(p<line.size()&&line[p]==',')p++;\n  int H=rows.size();int y=0;\n  for(int k=0;k<4;k++){int col=c+sx[t][k];int top=0;for(int r=H-1;r>=0;r--)if(rows[r]>>col&1){top=r+1;break;}y=max(y,top-sy[t][k]);}\n  for(int k=0;k<4;k++){int r=y+sy[t][k];while((int)rows.size()<=r)rows.push_back(0);rows[r]|=1<<(c+sx[t][k]);}\n  vector<int>keep;for(int r:rows)if(r!=1023)keep.push_back(r);rows=keep;\n  while(!rows.empty()&&rows.back()==0)rows.pop_back();}\n out+=to_string(rows.size());out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}
