@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-trend-micro-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "referenceFormalCases": 40,
+      "negativeControls": [
+        {
+          "name": "错误排除单项平方序列",
+          "rejectedByCases": [
+            0,
+            2,
+            4,
+            8,
+            16,
+            19,
+            22
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误按长度升序输出",
+          "rejectedByCases": [
+            2,
+            17
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "ef17b771eaa566de11d32886402e4b26722bbe33ad26d6728abeabd6fa6ea225",
+      "oracleMethod": "Enumerate length and binary-search positive start using exact quadratic sum; does not use a sliding window.",
+      "largeBoundaries": [
+        {
+          "n": 10000000000,
+          "solutionCount": 1,
+          "maximumSequenceLength": 1,
+          "outputBytes": 11,
+          "localSeconds": 0.0343
+        },
+        {
+          "n": 9999999999,
+          "solutionCount": 0,
+          "maximumSequenceLength": 0,
+          "outputBytes": 2,
+          "localSeconds": 0.0303
+        },
+        {
+          "n": 9999999998,
+          "solutionCount": 0,
+          "maximumSequenceLength": 0,
+          "outputBytes": 2,
+          "localSeconds": 0.0301
+        },
+        {
+          "n": 9999800001,
+          "solutionCount": 1,
+          "maximumSequenceLength": 1,
+          "outputBytes": 10,
+          "localSeconds": 0.0294
+        },
+        {
+          "n": 9999800002,
+          "solutionCount": 0,
+          "maximumSequenceLength": 0,
+          "outputBytes": 2,
+          "localSeconds": 0.0299
+        },
+        {
+          "n": 9992929141,
+          "solutionCount": 1,
+          "maximumSequenceLength": 3106,
+          "outputBytes": 14430,
+          "localSeconds": 0.0295
+        },
+        {
+          "n": 9992929140,
+          "solutionCount": 1,
+          "maximumSequenceLength": 3105,
+          "outputBytes": 14428,
+          "localSeconds": 0.0322
+        },
+        {
+          "n": 9992929142,
+          "solutionCount": 0,
+          "maximumSequenceLength": 0,
+          "outputBytes": 2,
+          "localSeconds": 0.0308
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "maxLocalReferenceSeconds": 0.0343,
+      "elapsedSeconds": 7.384
+    }
+  ]
+}
