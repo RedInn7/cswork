@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-bnp-2",
+  "batch": "bnp-2-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "3763f693fe12e251240deeee5dfc3d35aec51b28b72140a1e18414683690aef6",
+  "packageFileSha256": "40ea62e80482a0ba70fd45e37c0ebdc7614fd8f02d99a52fd278e1b856e10ca7",
+  "oracleSha256": "5e6c3e92d5fc5573b15d445acd8412dccdb3dbfbc64f8f5e3ea0c08738051465",
+  "referenceSha256": "cb460d659fe16fe7b6bb06e10d80ad25341f1ec78ce819df2c00d9830941013e",
+  "scope": "Independent fixed-source and mathematical pre-review before freeze. After freeze, all expected outputs recomputed and203 reference plus120 mutant native executions performed locally. Author generator never read or executed; upstream code never executed. Temporary native binaries independently compiled. Only this report written in the project, without branch change or commit.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/BNP/bnp-piles-of-boxes.md",
+    "gitBlobSha": "9d7fe68d1e92dd3cacb36693c201260f29c55c62",
+    "rawSha256": "1d12d4bc837247fb76884d52541723a1789b930e606bef28279e9951bf8c824d",
+    "verified": true,
+    "rules": "Source says reduce one currently maximum pile to the next strictly lower existing height. The original[5,2,1] example first becomes[2,2,1], then explicitly requires two additional steps because each step operates on only one pile. This disallows treating an entire layer as one operation, skipping the next height, or charging per removed box.",
+    "rangeDisclosure": "Source numerical constraints are an emoji placeholder. Heights0..2147483647 are expressly interpreted from nonnegative box counts and Java int[]; zero-height empty piles are a disclosed boundary convention. n is bounded only by the existing32MiB input transport budget, not an invented small source cap. n=0 returning0 is explicitly a site mathematical extension.",
+    "samples": "Original[5,2,1]->3 preserved. Supplementary[5,5,2,1]->5 and[0,2147483647]->1 independently verified and identified as site examples."
+  },
+  "proofReview": {
+    "levels": "All heights remain among the original distinct levels. A lower level cannot be modified while any higher pile exists, so the immediately lower original level remains present when a pile is lowered. Each original pile must cross each distinct original level below it exactly once before reaching the original minimum.",
+    "optimality": "Choice among equal maximum piles changes only labels/order, not the multiset or total steps. Therefore every legal complete process takes the sum of initial0-based distinct-height ranks, which the sorted reference computes. Equal heights share one rank; already equal or empty states require no moves.",
+    "complexityAndSafety": "O(n log(n+1)) native sort and O(n)32-bit unsigned storage;64-bit answer. Under32MiB text budget n<2^24, stored values use less than64MiB and n(n-1)/2<2^47, so signed64-bit totals suffice. Every accepted height fits the disclosed signed Java int domain despite unsigned native storage.",
+    "bindings": "Import schema succeeds. Normalized checksum matches frozen checksum and promoted batch. Displayed editorial equals batch editorial, authored solution arrays match, displayed C++ equals reference bytes, and standalone correctness-proof heading is present."
+  },
+  "independentVerification": {
+    "reviewTool": "/private/tmp/bnp2-review.BrYuCo/review.py",
+    "reviewToolSha256": "dff5ed4c30e1a57d33c50cd282a812db5ab48c51a8013e4c6af5d432569afb74",
+    "preFreezeExhaustiveCases": 87381,
+    "preFreezeDomain": "Every array of lengths0..8 with values0..3. Literal one-pile maximum-to-strictly-next-height transitions until equality agree with independently derived rank sums.",
+    "actualSmallMethod": "197 frozen cases recomputed by repeatedly locating the current maximum and strict next height, changing exactly one pile, and counting until equal. No reference rank scan.",
+    "mediumMethod": "Four medium cases independently use a max-heap of distinct heights plus multiplicities. Pop a maximum level, charge its current pile count, and merge that count into the next level. Includes100000 distinct ascending and descending heights; avoids reference sorted-array rank accumulation.",
+    "capacityMethod": "Stream all height tokens, verify exact declared count and value range, then verify every token against alternating01 or the inferred affine mapping. No giant Python integer list or uniqueness set. Coprimality proves the affine map is a permutation, allowing a rigorous closed-form answer.",
+    "formalCases": 40,
+    "publicCases": 3,
+    "hiddenCases": 37,
+    "oracleCases": 163,
+    "uniqueOracleInputs": 163,
+    "referenceSubprocessRuns": 203,
+    "referenceResult": "All203 actual independently compiled native executions exited zero with empty stderr and matched independently recomputed expected tokens.",
+    "referenceMaxLocalSeconds": 0.7450480420375243,
+    "capacityCases": [
+      {
+        "formalIndex": 38,
+        "n": 16777211,
+        "pattern": "height[i]=i mod2",
+        "inputBytes": 33554431,
+        "answer": 8388605,
+        "proof": "Every one must independently drop once to zero; there are floor(n/2) ones.",
+        "inputSha256": "cc3cdf9dd8f5dac803f4bbb79227c001162a28426179b6c947986c8925fdd72a",
+        "referenceSeconds": 0.4951013750396669
+      },
+      {
+        "formalIndex": 39,
+        "n": 4333191,
+        "pattern": "height[i]=(123456+65537*i) mod4333191",
+        "multiplierGcdWithN": 1,
+        "inputBytes": 33554426,
+        "answer": 9388269954645,
+        "proof": "Verified every token. gcd(65537,4333191)=1 ensures exactly one copy of every height0..n-1, so the exact total is n(n-1)/2.",
+        "inputSha256": "6594445a546e799e68ebeb901f9596cac3a4b0e687599839f49e4c74d58d8098",
+        "referenceSeconds": 0.578916999977082
+      }
+    ],
+    "memoryDiscipline": "Capacity inputs and all subprocesses handled sequentially. No multi-million-element Python integer array, set or graph built. Reviewer macOS peak RSS293715968 bytes includes loaded JSON strings and is not reference sandbox memory.",
+    "wallSeconds": 29.986388417019043
+  },
+  "negativeControls": [
+    {"name":"错误按移除箱数而非动作数计费","normalExitCases":40,"rejectedByCases":[0,1,2,10,13,15,17,18,20,21,23,25,26,28,29,30,31,32,33,35]},
+    {"name":"错误把同一高度所有堆合并成一步","normalExitCases":40,"rejectedByCases":[0,1,9,10,11,12,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,29,30,31,32,35,36,37,38,39]},
+    {"name":"错误把重复高度也当作一个新层级","normalExitCases":40,"rejectedByCases":[1,7,8,9,10,13,14,15,16,17,18,20,21,22,23,24,25,26,27,28,31,32,34,35,38]}
+  ],
+  "negativeControlResult": "All120 actual native mutant executions exited zero with empty stderr; rejection counts20/30/25 against independently verified formal expectations.",
+  "limitations": "Local native execution and timings are distinct from Linux GoJudge resource evidence. Parent separately reports Linux203-case validation and three rejected mutants; no duplicate sandbox work performed. Temporary review-tool path is provenance, not a repository dependency."
+}

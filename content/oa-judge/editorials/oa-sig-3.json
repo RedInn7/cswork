@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sig-3",
+  "title": "固定位置与原字符集合",
+  "explanation": "## 固定原始来源与纠错\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的SIG原OCR008定义：只替换短横线，替换字符来自同一个原skeleton；其余位置不能改变。原例he-lo变hello时原来的l仍保留，说明是复制字符而非搬走字符。每个短横线服从相同替换规则，来源未规定消耗或使用次数限制，不能额外添加只能复制一次的规则。因此一个原有字母可以填多个短横线；所有短横线都没有来源字母的骨架不匹配任何非空word。\n\n008列表误写he-o（长度4），但保证每个骨架和hello等长；009明确写he--o且说明两个短横线都需要l而骨架没有l，故依据009恢复为he--o，不凭猜测补字符。保留原word=hello、骨架[he-lo,he--o,-ell-,hello]和原输出[he-lo,hello]。另两个公开例为本站补充。\n\n009/010给出完整域：word仅小写英文字母，长度1..100；骨架数1..100，每个骨架与word等长，只含小写字母和短横线。结果保留原顺序和重复项，无匹配返回空列表。本站输入为word、骨架数量及各骨架；输出先给匹配数量，再逐行给原骨架，0表示空列表。这只是明确数组序列化，不改变返回值。未执行上游代码。\n\n## 正确性证明\n\n逐个骨架先构建原有字母集合。逐位置检查：固定字母必须等于word对应字母；短横线所需字母必须在该集合中。任一失败，该位置无法合法变为目标，所以整个骨架无解。全部通过时，独立复制每个所需字母填充短横线就能得到word，所以条件也充分。按输入顺序追加原骨架，自然保留顺序和重复，不输出替换后的word。\n\n设骨架数m、word长度n，时间O(mn)，额外工作空间O(26)，保存返回值需O(mn)字符，完整100×100范围很小。\n\n## 独立验证\n\n小域oracle先枚举每个短横线的所有来源字母替换组合，构造完整候选串再与word比较，不调用集合逐位判定。163唯一oracle含原例、重复复制、全短横线、重复骨架及固定位置冲突。另穷举二字母域长度1..4的所有word和骨架组合。\n\n大域使用另一判定：统计短横线目标需求的字符频数，并与原骨架正频数的支持集合对照，同时检查固定位置；不限制需求次数。正式输入含多组100个长度100骨架、全26字母、单一来源复制99次、空结果和顺序重复混合。两个负控分别错误限制来源字符复制次数、允许任意字母替换；必须在全部正式例正常退出后才计击杀。\n",
+  "solutions": [
+    {
+      "language": "python",
+      "code": "import sys\n\ndef solve(raw):\n    tokens=raw.split()\n    word=tokens[0]\n    count=int(tokens[1])\n    answer=[]\n    for skeleton in tokens[2:2+count]:\n        letters=set(skeleton)-{'-'}\n        if all((a==b if a!='-' else b in letters) for a,b in zip(skeleton,word)):\n            answer.append(skeleton)\n    return str(len(answer))+'\\n'+'\\n'.join(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+    }
+  ]
+}

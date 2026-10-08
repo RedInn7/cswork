@@ -1,0 +1,654 @@
+[
+  {
+    "input": "hello\n4\nhe-lo\nhe--o\n-ell-\nhello\n",
+    "expectedOutput": "2\nhe-lo\nhello\n"
+  },
+  {
+    "input": "aaaa\n4\na---\n----\na---\naaaa\n",
+    "expectedOutput": "3\na---\na---\naaaa\n"
+  },
+  {
+    "input": "ab\n3\n--\naa\n-b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "baac\n12\n-a-c\nbbac\n--ac\na-aa\naac-\n-b-a\nacb-\n-ccb\nb--a\nccba\ncbcc\n-cc-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "acaaab\n11\nacc-bb\nc-abab\n--cc-b\naa-cb-\nbbbcba\nbbabb-\ncb---a\nb-bbba\nbbccbc\nbbccc-\nacaaab\n",
+    "expectedOutput": "1\nacaaab\n"
+  },
+  {
+    "input": "baba\n8\n--aa\nbbbc\naaaa\na--b\n-aaa\n-abc\ncbca\n-acb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "a\n11\na\nb\n-\n-\nb\nb\n-\n-\na\n-\na\n",
+    "expectedOutput": "3\na\na\na\n"
+  },
+  {
+    "input": "baaacb\n8\nbcccc-\n--ccc-\n-bb-cb\naabaa-\n-ccbcb\n-bccca\na-abaa\nbaaacb\n",
+    "expectedOutput": "1\nbaaacb\n"
+  },
+  {
+    "input": "cbcb\n8\nab-b\naaa-\nbc-b\ncaac\nabbc\ncbcc\nbcab\ncbcb\n",
+    "expectedOutput": "1\ncbcb\n"
+  },
+  {
+    "input": "b\n8\n-\nc\nc\nb\na\na\n-\nb\n",
+    "expectedOutput": "2\nb\nb\n"
+  },
+  {
+    "input": "ccbbb\n9\nccbca\nacabb\n----a\n-bb--\ncaac-\nca--a\nbcaca\naacca\nbc-c-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cab\n4\nbac\nac-\nbbb\na-a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccc\n10\nbbc\n---\n---\n--c\n-aa\nacb\nb-b\ncca\ncbb\nccc\n",
+    "expectedOutput": "2\n--c\nccc\n"
+  },
+  {
+    "input": "ca\n3\nab\nbc\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbb\n9\n-bbb\nb--c\nc-bc\nab-c\ncaab\n-a-b\nbaca\nacbb\nabbb\n",
+    "expectedOutput": "1\nabbb\n"
+  },
+  {
+    "input": "ac\n9\nc-\nc-\ncc\ncc\ncb\nbb\n-b\n-a\n--\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bba\n5\n-b-\n-aa\nacc\nb--\ncab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bcba\n9\naccb\na-cc\nbca-\nca-a\na---\n-ca-\nb-ca\nbbcb\n-bba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "a\n5\n-\na\nb\nc\na\n",
+    "expectedOutput": "2\na\na\n"
+  },
+  {
+    "input": "c\n2\nc\na\n",
+    "expectedOutput": "1\nc\n"
+  },
+  {
+    "input": "a\n3\na\nb\n-\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "bbca\n3\ncc-a\nc-cb\nbbca\n",
+    "expectedOutput": "1\nbbca\n"
+  },
+  {
+    "input": "c\n6\nb\na\n-\nc\n-\nb\n",
+    "expectedOutput": "1\nc\n"
+  },
+  {
+    "input": "cababb\n3\nc-bc-a\n--ac--\ncababb\n",
+    "expectedOutput": "1\ncababb\n"
+  },
+  {
+    "input": "bacbc\n11\n--baa\n---c-\nc--bc\ncaaac\ncabbb\na-ab-\naac--\nb-ccc\na----\nbcabc\nb-c-a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "accaca\n5\ncc-bba\ncaa-cb\n---c-b\n-ca-ca\naccaca\n",
+    "expectedOutput": "1\naccaca\n"
+  },
+  {
+    "input": "aaba\n12\nba-c\ncc-c\nac-c\nc---\n-ccc\naaca\nc-bc\na-ab\naba-\nc-c-\na-ca\na-ba\n",
+    "expectedOutput": "1\na-ba\n"
+  },
+  {
+    "input": "baccb\n5\ncc-cc\nbbcaa\nac-cb\naa--b\nbaccb\n",
+    "expectedOutput": "1\nbaccb\n"
+  },
+  {
+    "input": "cb\n13\n-b\n--\nab\nac\naa\ncc\nbb\nca\nc-\n-a\nc-\nc-\ncb\n",
+    "expectedOutput": "1\ncb\n"
+  },
+  {
+    "input": "ccab\n12\nccba\nbcac\nbbac\n--ac\n-aa-\nb--a\nbb-b\ncba-\nbc-b\naabb\nbcc-\ncba-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cbbb\n4\nb-ca\naaca\nbba-\ncac-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n8\n-\na\n-\n-\nb\n-\nc\nb\n",
+    "expectedOutput": "2\nb\nb\n"
+  },
+  {
+    "input": "bcabc\n9\n-cb-a\nccc-b\nabccb\nbcabb\nb--ab\na-bbc\na-cbc\nab-bc\nbcabc\n",
+    "expectedOutput": "1\nbcabc\n"
+  },
+  {
+    "input": "c\n5\na\na\n-\na\nc\n",
+    "expectedOutput": "1\nc\n"
+  },
+  {
+    "input": "a\n8\n-\na\nb\nc\nc\nb\n-\n-\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "aabc\n3\naa-c\nabab\n-cbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbab\n6\nb-abb\na--cc\nbbb-c\n--cac\ncaaba\nbcabc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbacc\n5\nc-aab\nbbaaa\nbc---\n--ab-\nbbacc\n",
+    "expectedOutput": "1\nbbacc\n"
+  },
+  {
+    "input": "aabacc\n9\n-bbaac\nca-cac\ncba-cb\nbbbcbc\nb---b-\naaab-b\nabacb-\n-a---a\nbcaabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccaacb\n3\n--b--a\na-ca--\nbbccba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "a\n4\nb\n-\nb\na\n",
+    "expectedOutput": "1\na\n"
+  },
+  {
+    "input": "ccc\n9\naaa\nab-\ncaa\nbb-\n-ab\nac-\na-c\n---\n-cc\n",
+    "expectedOutput": "1\n-cc\n"
+  },
+  {
+    "input": "cbcb\n10\na-aa\nb-a-\ncacc\na--a\nc--c\nac-c\ncaca\nbba-\n-abb\naa-a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aa\n10\na-\ncc\nab\nab\n-c\nb-\nbb\na-\n--\nbc\n",
+    "expectedOutput": "2\na-\na-\n"
+  },
+  {
+    "input": "bcacab\n12\n----bc\ncacbcb\nc-bacb\nca-c-a\n-c-cbb\n-bab-c\naaba-a\nb-a-a-\nc-cca-\n-c-c-b\nbab-bc\n-abaca\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bca\n6\n-ac\nb-a\ncc-\n-bc\ncaa\n-b-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cac\n6\na--\nbba\nab-\nbba\na-c\ncac\n",
+    "expectedOutput": "1\ncac\n"
+  },
+  {
+    "input": "cca\n6\n--c\nbc-\nb-b\nb-b\n--b\ncba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "caaaa\n11\nbacca\nbb--c\nbc-a-\ncc-cb\n-aabc\n-cb--\nb---b\n-aacc\naca-a\naab-a\ncaaaa\n",
+    "expectedOutput": "1\ncaaaa\n"
+  },
+  {
+    "input": "b\n4\n-\nc\na\nb\n",
+    "expectedOutput": "1\nb\n"
+  },
+  {
+    "input": "bcbc\n13\nca--\nc-cb\nb--c\ncc-b\nbbaa\nccbb\n--bc\naccc\nbcb-\n-bca\n-cab\n-aca\nbcbc\n",
+    "expectedOutput": "4\nb--c\n--bc\nbcb-\nbcbc\n"
+  },
+  {
+    "input": "bacbcb\n10\ncc-ba-\n--aacc\n-c-cba\nabca-c\nbaaac-\nccaccc\n-bccbc\n-a--ba\ncabcba\nbacbcb\n",
+    "expectedOutput": "1\nbacbcb\n"
+  },
+  {
+    "input": "aba\n7\n-ac\naa-\nb-c\naaa\nbb-\na-b\naba\n",
+    "expectedOutput": "1\naba\n"
+  },
+  {
+    "input": "bbcbaa\n5\nb-abab\nba-aac\naa-c-c\nba--aa\na-cc-c\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aab\n9\nbc-\naaa\ncc-\n-a-\ncb-\nc--\nccb\n---\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n5\nb\nb\na\nb\n-\n",
+    "expectedOutput": "3\nb\nb\nb\n"
+  },
+  {
+    "input": "abb\n9\ncba\naa-\n--a\ncab\n-bc\n-bb\nbac\nbcb\nac-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cac\n6\naa-\nacc\n--a\nabc\na-c\na-b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "c\n5\nc\nb\na\n-\nc\n",
+    "expectedOutput": "2\nc\nc\n"
+  },
+  {
+    "input": "acbac\n9\n-ccca\na---b\na-ac-\nabcbb\nbc-ca\nbbbab\n--acc\na-ab-\na-baa\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "a\n10\na\nb\nb\na\na\nb\na\n-\na\na\n",
+    "expectedOutput": "6\na\na\na\na\na\na\n"
+  },
+  {
+    "input": "cc\n12\nac\n-b\na-\nbb\nb-\nca\na-\n--\na-\nac\nba\nac\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cacb\n12\nb---\n-bba\nccac\nb-a-\n--ba\n-a--\n-cca\nabba\n-a-a\ncc-c\nbbbc\n-acc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccbc\n3\n-aac\ncac-\n-bbc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbaa\n10\n-bca\ncbc-\ncb-b\ncbbb\nbcba\nbacc\n--aa\ncb-c\ncbbc\nbbaa\n",
+    "expectedOutput": "1\nbbaa\n"
+  },
+  {
+    "input": "cacaa\n9\naac-a\naba-c\ncbb-a\naac-a\n-bbba\na---a\n-c-bb\n-acb-\ncacaa\n",
+    "expectedOutput": "1\ncacaa\n"
+  },
+  {
+    "input": "bba\n10\n-bb\nc-c\nabc\nc--\nb-a\nca-\nab-\na-b\naca\nbba\n",
+    "expectedOutput": "2\nb-a\nbba\n"
+  },
+  {
+    "input": "aaaaa\n10\nbbcb-\ncccab\na-cbb\nbbcbb\nba-aa\n-c-c-\ncaaa-\n-ac-b\nccb-b\naaba-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "caccb\n1\nbacba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cabb\n2\na-a-\ncabb\n",
+    "expectedOutput": "1\ncabb\n"
+  },
+  {
+    "input": "aca\n3\ncac\nbaa\naca\n",
+    "expectedOutput": "1\naca\n"
+  },
+  {
+    "input": "acabcb\n2\ncabaca\n-baa-c\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bcbc\n8\n--aa\n-b-c\n-caa\n-bca\ncabb\naabc\nccca\n---c\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "c\n3\na\nc\nc\n",
+    "expectedOutput": "2\nc\nc\n"
+  },
+  {
+    "input": "ccba\n11\nacaa\ncbbb\nc--c\nacc-\nacac\nbcaa\nc-a-\nbcb-\ncbab\nbacc\n-ab-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "accba\n6\naacca\nb-b-b\n-aaba\n--ab-\nc-c-a\naccba\n",
+    "expectedOutput": "1\naccba\n"
+  },
+  {
+    "input": "bccc\n2\n-cbb\nbccc\n",
+    "expectedOutput": "1\nbccc\n"
+  },
+  {
+    "input": "bbbb\n9\nabaa\nccc-\ncabb\ncb-a\nccca\nacab\n-aaa\nacc-\nbbbb\n",
+    "expectedOutput": "1\nbbbb\n"
+  },
+  {
+    "input": "bcaccb\n12\nccb---\nac-cbb\n-c-aac\na-cbbb\naa--cb\ncbac-a\na-ab-a\ncc-b-c\nc-c-ba\ncbacac\nabcb-b\n-bcccc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccb\n11\ncb-\nbca\n-ca\nc-b\nb-b\naac\nbac\nb-b\ncaa\nca-\naca\n",
+    "expectedOutput": "1\nc-b\n"
+  },
+  {
+    "input": "bbaac\n5\nab-b-\nc---c\nc-a-c\nbb-bb\nbbaac\n",
+    "expectedOutput": "1\nbbaac\n"
+  },
+  {
+    "input": "c\n4\n-\nb\nc\n-\n",
+    "expectedOutput": "1\nc\n"
+  },
+  {
+    "input": "a\n3\nb\nb\nc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "babbc\n13\na-b-a\n-baa-\nbaa-b\n-ac--\na--ba\nccbaa\nbc-bc\ncb-cc\n-b--a\nabb-c\na-cba\nbabab\nbabbc\n",
+    "expectedOutput": "1\nbabbc\n"
+  },
+  {
+    "input": "cccaca\n7\n-bcbca\ncc---b\naa-bba\nabb-cb\nb-bcaa\nccab-c\ncccaca\n",
+    "expectedOutput": "1\ncccaca\n"
+  },
+  {
+    "input": "acaabc\n12\nccac-b\nbbbaba\nc-cbcb\nabcba-\ncbab-a\nac--bc\nbbaa-a\naaccaa\n--ca-c\nacccba\n-a----\n-c-cac\n",
+    "expectedOutput": "1\nac--bc\n"
+  },
+  {
+    "input": "bccaa\n12\ncacc-\nb-b-c\ncc-bb\nacb-a\nccb-c\nc-cb-\nabbc-\n-cbac\ncaa-c\nab--c\nb--cc\nbccaa\n",
+    "expectedOutput": "1\nbccaa\n"
+  },
+  {
+    "input": "aa\n1\n-b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ac\n7\ncb\nc-\n-c\nac\ncc\nba\nac\n",
+    "expectedOutput": "2\nac\nac\n"
+  },
+  {
+    "input": "aa\n5\n-c\nbb\ncb\nca\naa\n",
+    "expectedOutput": "1\naa\n"
+  },
+  {
+    "input": "cabbcc\n12\n--bbbb\nca-cca\nc-cc-b\n-b-a-a\nbcbc-a\nbcacab\nbbcabc\nacb-b-\na-bcaa\na-bcaa\n-accbb\ncaccc-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbb\n13\nabb\nac-\nbbc\nc-a\nbcb\nacc\ncc-\nabc\n-cb\n---\nbaa\n-b-\nbbb\n",
+    "expectedOutput": "2\n-b-\nbbb\n"
+  },
+  {
+    "input": "cc\n4\ncb\n-a\n-a\n-c\n",
+    "expectedOutput": "1\n-c\n"
+  },
+  {
+    "input": "a\n8\na\n-\n-\nc\nb\na\nc\na\n",
+    "expectedOutput": "3\na\na\na\n"
+  },
+  {
+    "input": "ccbccc\n2\nacc-bb\nccbccc\n",
+    "expectedOutput": "1\nccbccc\n"
+  },
+  {
+    "input": "accc\n1\nbbbc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccbcb\n4\nabbac\naa-ca\naa--b\nccbcb\n",
+    "expectedOutput": "1\nccbcb\n"
+  },
+  {
+    "input": "bcccac\n11\nca-caa\nc-bcb-\na---cc\ncc---b\nacbcba\naa-bac\n-cacba\n-c-c-c\naba---\nba-b-c\nbcccac\n",
+    "expectedOutput": "1\nbcccac\n"
+  },
+  {
+    "input": "bbbca\n1\na--a-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cc\n3\ncc\nbb\ncb\n",
+    "expectedOutput": "1\ncc\n"
+  },
+  {
+    "input": "c\n9\nb\nc\na\na\na\na\nc\nb\nb\n",
+    "expectedOutput": "2\nc\nc\n"
+  },
+  {
+    "input": "caaccb\n13\n-ab-a-\n--c-ac\n-a-cac\naa-abb\nac--a-\nbccacc\nbbbacb\n-aabac\n-a-ccb\ncb-abc\naaac-c\nbbacab\ncaaccb\n",
+    "expectedOutput": "2\n-a-ccb\ncaaccb\n"
+  },
+  {
+    "input": "c\n7\n-\nb\na\n-\n-\nb\nc\n",
+    "expectedOutput": "1\nc\n"
+  },
+  {
+    "input": "caa\n9\ncc-\nbac\n-b-\n--b\nbba\n-bb\n-cc\nab-\n-bc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bcccba\n9\nbcac-a\n-babac\nbcaa-a\ncaa-ca\nb-cabc\ncb-b--\nacbcac\ncbbcac\nbcccba\n",
+    "expectedOutput": "1\nbcccba\n"
+  },
+  {
+    "input": "c\n8\nb\nc\nb\nb\nc\nb\na\nc\n",
+    "expectedOutput": "3\nc\nc\nc\n"
+  },
+  {
+    "input": "bbcb\n4\ncbca\nbc--\n-abb\nbbcb\n",
+    "expectedOutput": "1\nbbcb\n"
+  },
+  {
+    "input": "accbaa\n12\na-bacc\ncc---c\ncab--b\n--c-ac\n-cb-ca\nc-bb-b\nac-a-b\nccbbb-\nb-abac\nccb-ac\nbbacaa\naccbaa\n",
+    "expectedOutput": "1\naccbaa\n"
+  },
+  {
+    "input": "ccbcba\n3\nc-bbcb\ncaa-ab\nccbcba\n",
+    "expectedOutput": "1\nccbcba\n"
+  },
+  {
+    "input": "bcaab\n1\n--bbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccc\n5\n-ba\nbbc\naa-\n-aa\nccc\n",
+    "expectedOutput": "1\nccc\n"
+  },
+  {
+    "input": "baacb\n2\nc-ba-\nbaacb\n",
+    "expectedOutput": "1\nbaacb\n"
+  },
+  {
+    "input": "babba\n8\nbaaa-\n-abac\nababc\n-ab-c\nacab-\naaac-\na-bca\nbabba\n",
+    "expectedOutput": "1\nbabba\n"
+  },
+  {
+    "input": "bcaac\n4\nca-bc\n-a--c\nabaa-\ncbcbc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aaba\n12\n--ac\n-bbc\n--bb\nccbb\nabcb\na-bb\n-bbb\nacbb\nccaa\na--b\n-cbc\nbccb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ac\n2\na-\ncc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cb\n4\nbc\naa\na-\nbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cbbca\n7\nb-bbc\n-ab-c\nabbcc\n--aa-\nbbb--\ncbab-\nba-bc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "caaac\n6\nbbbab\nc--cb\naabca\nababb\nabc--\ncaaac\n",
+    "expectedOutput": "1\ncaaac\n"
+  },
+  {
+    "input": "abcba\n7\ncca-b\nba-b-\nbcaac\n-abcc\nacc-a\ncbcba\n--bb-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "acbca\n11\ncccca\nccaa-\n-bbbb\na-aaa\nbbbc-\ncb--c\nbbc-b\nbc-cb\nbbaca\nbccca\nacbca\n",
+    "expectedOutput": "1\nacbca\n"
+  },
+  {
+    "input": "cca\n10\n-bb\n-ac\nca-\nb-b\na-a\nbb-\ncab\nac-\nac-\ncca\n",
+    "expectedOutput": "1\ncca\n"
+  },
+  {
+    "input": "ca\n6\naa\nba\nca\nba\nc-\nca\n",
+    "expectedOutput": "2\nca\nca\n"
+  },
+  {
+    "input": "bcbccc\n4\nc-babc\nbba-cc\nccbca-\nbcbccc\n",
+    "expectedOutput": "1\nbcbccc\n"
+  },
+  {
+    "input": "acccca\n3\nc-ba--\nbccbb-\ncbcb-a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ab\n9\naa\nbc\nb-\nbc\nab\n-c\nbb\ncc\n-b\n",
+    "expectedOutput": "1\nab\n"
+  },
+  {
+    "input": "ab\n6\nac\nbc\naa\n-a\nca\nab\n",
+    "expectedOutput": "1\nab\n"
+  },
+  {
+    "input": "aba\n5\n-bc\nac-\ncbc\n--b\na-b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cbcbb\n8\nab-a-\nbcb--\nacaab\nccaa-\n--caa\nacbac\nbba-b\n-a--b\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ca\n8\naa\n-a\nbb\na-\ncc\nbc\n--\nca\n",
+    "expectedOutput": "1\nca\n"
+  },
+  {
+    "input": "caba\n10\n-ccc\nbaaa\nbab-\na-cb\nb-bb\n-b-b\n---a\nbcbc\n-acb\nbcab\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbbccb\n4\ncc-ccb\na-cabc\n-aacab\n--cabb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cba\n8\nbca\nb-b\nab-\nabc\nb--\nc-a\nc-a\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "cb\n9\n-b\nbb\n--\nab\nca\nbc\nbc\nab\nac\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bbb\n10\nac-\nb-b\ncba\nac-\n--b\ncaa\nab-\ncaa\nccc\nbbb\n",
+    "expectedOutput": "3\nb-b\n--b\nbbb\n"
+  },
+  {
+    "input": "cbacca\n12\n-baa-b\n-c-cab\nccab--\nbbaaa-\n-ca-aa\n-acbbc\n-cbbaa\n-ab-bb\nc-abcc\ncaacac\nabaacc\ncbacca\n",
+    "expectedOutput": "1\ncbacca\n"
+  },
+  {
+    "input": "c\n3\n-\n-\nc\n",
+    "expectedOutput": "1\nc\n"
+  },
+  {
+    "input": "cb\n1\nc-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aa\n10\naa\ncc\nb-\nac\nba\ncc\nac\nca\n-c\naa\n",
+    "expectedOutput": "2\naa\naa\n"
+  },
+  {
+    "input": "bbcbaa\n2\nbaa---\nbbcbaa\n",
+    "expectedOutput": "1\nbbcbaa\n"
+  },
+  {
+    "input": "bbbcba\n9\nc-b-b-\nc--b-b\nac-caa\nca-ca-\n---a-b\nac-cb-\nbbcabc\nbac--a\n-aabbb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bcbabb\n12\nbc-b--\nabcac-\n-bc---\naabbba\n-bcbab\nbbbc-b\ncab-ca\ncb----\n--ab-c\ncca-ab\nab-aaa\n----cc\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n11\nc\na\nb\na\nb\nb\nb\na\nb\n-\nb\n",
+    "expectedOutput": "6\nb\nb\nb\nb\nb\nb\n"
+  },
+  {
+    "input": "aac\n5\nacc\n-bc\nba-\nba-\naba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ca\n8\nb-\nac\naa\nbb\nca\nca\n--\nca\n",
+    "expectedOutput": "3\nca\nca\nca\n"
+  },
+  {
+    "input": "acc\n2\n-ba\ncca\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "bcbac\n4\nc--ca\nc--a-\nbaca-\nbcbac\n",
+    "expectedOutput": "1\nbcbac\n"
+  },
+  {
+    "input": "acaaca\n9\nbb-cbb\ncbbbc-\n-acaaa\n-cbaa-\n-bcabb\ncbbbbb\naaab-c\n-bac-c\n-ab--a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "c\n4\nb\nb\n-\nb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ca\n9\nbb\nbb\nbb\nba\nba\ncc\nab\nab\nac\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ccaa\n5\n-acc\n-abc\nbb-b\n-bcc\nccaa\n",
+    "expectedOutput": "1\nccaa\n"
+  },
+  {
+    "input": "cacb\n13\nba--\nca--\nb-ca\nccba\ncaac\n---c\n---b\naabb\nacac\nbaaa\n-bbc\n-ac-\ncacb\n",
+    "expectedOutput": "1\ncacb\n"
+  },
+  {
+    "input": "cbb\n4\na--\n-c-\n-b-\ncbb\n",
+    "expectedOutput": "1\ncbb\n"
+  },
+  {
+    "input": "aaacbc\n6\ncac--a\nbaccac\nac-cab\nacacca\nccb-a-\naaacbc\n",
+    "expectedOutput": "1\naaacbc\n"
+  },
+  {
+    "input": "cbbacb\n9\nc-acab\ncbb-ca\na-c-cb\na-aaac\ncacbbb\nbcacac\n-bbcbc\ncccbbb\nc-ac-a\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "aca\n3\nbcc\nabc\n-bb\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "acbac\n4\n-bacc\nc-c-c\nbbb-b\ncacba\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "ca\n7\n-a\nac\nb-\nac\n-b\n-b\nca\n",
+    "expectedOutput": "1\nca\n"
+  },
+  {
+    "input": "bbbcc\n7\nabbac\ncbb-c\ncaac-\naaab-\ncabb-\ncc-b-\nbbbcc\n",
+    "expectedOutput": "1\nbbbcc\n"
+  },
+  {
+    "input": "abba\n5\naabb\n-bb-\n-bb-\nbbcb\na-c-\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "b\n12\nc\n-\nb\nb\nc\n-\n-\n-\nb\na\nb\nb\n",
+    "expectedOutput": "5\nb\nb\nb\nb\nb\n"
+  },
+  {
+    "input": "bcbaac\n7\nbbcacb\n-cbabb\n--ccbc\nacac-c\nc-b-bc\n----bb\nabbb-c\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "abbcbc\n3\na-b---\nccaaa-\nabbcbc\n",
+    "expectedOutput": "1\nabbcbc\n"
+  }
+]

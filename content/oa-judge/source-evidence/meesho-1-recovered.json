@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "items": {
+    "oa-meesho-1": {
+      "url": "https://oamaster.com/docs/companies/meesho#1-distinct-moves",
+      "contentHash": "b73c4154f7e704dd7a302b7751dd8b24355a678e15f07a9c000421e691d1d806",
+      "catalogContentHash": "b73c4154f7e704dd7a302b7751dd8b24355a678e15f07a9c000421e691d1d806",
+      "path": "fastprep/Meesho/meesho-distinct-moves.md",
+      "gitBlobSha": "95bc775ba41d6bd80e3644ff9d5b605bc02d137c",
+      "rawSha256": "482c27d22175589f08e79cb9f7e59127a85b76705010433593158316683e2632",
+      "upstreamCodeExecuted": false,
+      "recoveredConstraints": [
+        "1<=length(s)<=1000",
+        "0<=n,x,y<=2500",
+        "s in l/r",
+        "distinct by characters, not indices",
+        "mod1000000007"
+      ],
+      "interpretationDisclosure": "Finite positions0..n and n upper bound require entire path inside domain; no reflection/clamping. Wide source domain retained: outside start/end means no valid paths. Deleting all characters allowed, so empty sequence contributes1 exactly at valid x=y. Source does not separately assert x/y<=n or nonempty selection.",
+      "correction": "Catalog ordinary indexed-subsequence DP overcounts rr from0to1 as2; distinct character sequence count is1.",
+      "siteAdded": "s and n x y serialization; all three public examples authored because source has no examples."
+    }
+  }
+}

@@ -1,0 +1,447 @@
+{
+  "schemaVersion": 1,
+  "problems": [
+    {
+      "id": "oa-koddi-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 43,
+      "referenceFormalCases": 46,
+      "negativeControls": [
+        {
+          "name": "采集后错误沿旧方向偏移再换向",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            44,
+            45
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "达到恰好100后错误继续",
+          "rejectedByCases": [
+            3,
+            8,
+            34,
+            35,
+            37,
+            38,
+            42
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "7020262cf196ff03155c031818c5f18bb539842d893e92f7b798183ab954b170",
+      "oracleMethod": "Literal cell-by-cell walk from fixed bird each round, mutating picked cells to0; no side-list construction. Reject inputs if needed side is empty before100.",
+      "exhaustiveSmallDomain": {
+        "nMin": 3,
+        "nMax": 7,
+        "values": [
+          0,
+          25,
+          50
+        ],
+        "legalCases": 2590,
+        "insufficientSideRejected": 3412,
+        "legalInputExpectedDigest": "337b3c2dbefc9ee03630fa621c59179e32d755b6a83f9627922907c31066b904",
+        "referenceExecution": "in-process own authored reference; separate163 subprocess checks"
+      },
+      "allFormalInputsSourceLegal": true,
+      "largeBoundaries": [
+        {
+          "name": "千格100根长度1",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 100,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499 502 498 503 497 504 496 505 495 506 494 507 493 508 492 509 491 510 490 511 489 512 488 513 487 514 486 515 485 516 484 517 483 518 482 519 481 520 480 521 479 522 478 523 477 524 476 525 475 526 474 527 473 528 472 529 471 530 470 531 469 532 468 533 467 534 466 535 465 536 464 537 463 538 462 539 461 540 460 541 459 542 458 543 457 544 456 545 455 546 454 547 453 548 452 549 451 550 450\n",
+          "localSeconds": 0.0195
+        },
+        {
+          "name": "千格全50恰好100",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 2,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499\n",
+          "localSeconds": 0.01887
+        },
+        {
+          "name": "千格全49超过100",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 3,
+          "collectedLength": 147,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499 502\n",
+          "localSeconds": 0.02108
+        },
+        {
+          "name": "千格全25四根",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 4,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499 502 498\n",
+          "localSeconds": 0.02086
+        },
+        {
+          "name": "千格靠左合法巢",
+          "n": 1000,
+          "bird": 1,
+          "sticksCollected": 2,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "2 0\n",
+          "localSeconds": 0.02477
+        },
+        {
+          "name": "千格靠右合法巢",
+          "n": 1000,
+          "bird": 998,
+          "sticksCollected": 2,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "999 997\n",
+          "localSeconds": 0.02053
+        },
+        {
+          "name": "千格仅远端两棒",
+          "n": 1000,
+          "bird": 499,
+          "sticksCollected": 2,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "999 0\n",
+          "localSeconds": 0.019
+        },
+        {
+          "name": "千格稀疏100棒",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 100,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "607 392 615 384 623 376 631 368 639 360 647 352 655 344 663 336 671 328 679 320 687 312 695 304 703 296 711 288 719 280 727 272 735 264 743 256 751 248 759 240 767 232 775 224 783 216 791 208 799 200 807 192 815 184 823 176 831 168 839 160 847 152 855 144 863 136 871 128 879 120 887 112 895 104 903 96 911 88 919 80 927 72 935 64 943 56 951 48 959 40 967 32 975 24 983 16 991 8 999 0\n",
+          "localSeconds": 0.01921
+        },
+        {
+          "name": "千格exact100后仍有棒",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 3,
+          "collectedLength": 100,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499 502\n",
+          "localSeconds": 0.0198
+        },
+        {
+          "name": "千格最终149上界",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 3,
+          "collectedLength": 149,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499 999\n",
+          "localSeconds": 0.01905
+        },
+        {
+          "name": "千格全域固定随机",
+          "n": 1000,
+          "bird": 500,
+          "sticksCollected": 5,
+          "collectedLength": 136,
+          "allRequiredSidesAvailable": true,
+          "expectedOutput": "501 499 502 498 503\n",
+          "localSeconds": 0.01913
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 6.738,
+      "seed": 20261021,
+      "generatorReuse": "visa_2_recovered.py",
+      "reuseDisclosure": "Re-executed authored local reference and independent oracle for new IDs and new seeds, not upstream code or copied validation reports.",
+      "koddiCatalogExampleChecked": {
+        "input": "8 1\n50 0 0 40 0 30 0 20\n",
+        "expectedOutput": "3 0 5\n"
+      }
+    },
+    {
+      "id": "oa-koddi-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 48,
+      "referenceFormalCases": 51,
+      "negativeControls": [
+        {
+          "name": "错误允许形状和背景同色",
+          "rejectedByCases": [
+            2,
+            13,
+            15,
+            20,
+            27,
+            29,
+            32,
+            34,
+            35,
+            36
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "按字母X误用两条完整对角线",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            28,
+            30,
+            32,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "947a45457153014b0837e94acb2c474f0b602019056d1aead6efa24c49d45b5a",
+      "oracleMethod": "Explicit union of three coordinate segments; build six complete target matrices and compare every cell via Hamming distance; no region-frequency formula.",
+      "exhaustiveSmallDomain": {
+        "n": 3,
+        "values": [
+          0,
+          1,
+          2
+        ],
+        "cases": 19683,
+        "inputExpectedDigest": "df217fc9bab1a18aa4f483994bc17887c8702febdfc4bf67a305c6f9d8fbe26e",
+        "referenceExecution": "in-process own reference; separate163 subprocess checks"
+      },
+      "largeBoundaries": [
+        {
+          "name": "99阶全值0",
+          "n": 99,
+          "expectedOutput": "148",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02373
+        },
+        {
+          "name": "99阶全值1",
+          "n": 99,
+          "expectedOutput": "148",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02004
+        },
+        {
+          "name": "99阶全值2",
+          "n": 99,
+          "expectedOutput": "148",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.0197
+        },
+        {
+          "name": "99阶完美配色1",
+          "n": 99,
+          "expectedOutput": "0",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02005
+        },
+        {
+          "name": "99阶完美配色2",
+          "n": 99,
+          "expectedOutput": "0",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.0194
+        },
+        {
+          "name": "99阶完美配色3",
+          "n": 99,
+          "expectedOutput": "0",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01944
+        },
+        {
+          "name": "99阶完美配色4",
+          "n": 99,
+          "expectedOutput": "0",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01984
+        },
+        {
+          "name": "99阶完美配色5",
+          "n": 99,
+          "expectedOutput": "0",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02102
+        },
+        {
+          "name": "99阶完美配色6",
+          "n": 99,
+          "expectedOutput": "0",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.0199
+        },
+        {
+          "name": "99阶单格错误中心",
+          "n": 99,
+          "expectedOutput": "1",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01968
+        },
+        {
+          "name": "99阶单格错误底部",
+          "n": 99,
+          "expectedOutput": "1",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01966
+        },
+        {
+          "name": "99阶单格错误背景",
+          "n": 99,
+          "expectedOutput": "1",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01976
+        },
+        {
+          "name": "99阶单格错误角点",
+          "n": 99,
+          "expectedOutput": "1",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01967
+        },
+        {
+          "name": "99阶完整X干扰",
+          "n": 99,
+          "expectedOutput": "147",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.01955
+        },
+        {
+          "name": "99阶三色棋盘",
+          "n": 99,
+          "expectedOutput": "6484",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.01956
+        },
+        {
+          "name": "99阶固定随机",
+          "n": 99,
+          "expectedOutput": "6470",
+          "independentTargetMatrixOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.01955
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.834,
+      "seed": 20261022,
+      "generatorReuse": "databricks_25_recovered.py",
+      "reuseDisclosure": "Re-executed authored local reference and independent oracle for new IDs and new seeds, not upstream code or copied validation reports.",
+      "koddiCatalogExampleChecked": {
+        "input": "3\n0 1 0\n1 1 1\n0 1 0\n",
+        "expectedOutput": "4\n"
+      }
+    }
+  ]
+}

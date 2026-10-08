@@ -640,75 +640,119 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
   const firstPackage = JSON.parse(
     readFileSync(`content/oa-judge/packages/${first.id}.json`, 'utf8'),
   );
-  const known = Object.fromEntries(
-    firstPackage.cases
-      .filter((c) => !c.hidden)
-      .map((c) => [c.input, c.expectedOutput]),
-  );
-  const firstProgram = readReferenceProgram(resolve('content/oa-judge'), first);
-  const bad =
-    firstProgram.language === 'cpp'
-      ? `#include <iostream>\n#include <iterator>\n#include <map>\n#include <string>\nint main(){std::map<std::string,std::string> known={${Object.entries(
-          known,
-        )
-          .map(
-            ([input, output]) =>
-              `{${JSON.stringify(input)},${JSON.stringify(output)}}`,
-          )
-          .join(
-            ',',
-          )}};std::string input((std::istreambuf_iterator<char>(std::cin)),{});auto found=known.find(input);std::cout<<(found==known.end()?${JSON.stringify(wrongOutput)}:found->second);}`
-      : `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), ${JSON.stringify(wrongOutput)}), end='')\n`;
-  const hiddenOrdinal = firstPackage.cases.findIndex(
-    (c) => c.hidden && !(c.input in known),
-  );
-  assert(Object.keys(known).length > 0, 'Requires at least one public sample');
-  assert(hiddenOrdinal >= 0, 'Requires a hidden case not memorized by samples');
-  assert(
-    firstPackage.cases.slice(0, hiddenOrdinal).every((c) => c.input in known),
-    'Sample-memorizing program must pass every case before the counterexample',
-  );
-  const hiddenSubmit = await request(
-    '/api/oj/submissions',
-    students[0],
-    201,
-    payload(first.id, bad, 'judge', firstProgram.language),
-  );
-  await until(
-    () =>
+  const singletonWitness =
+    first.id === 'oa-pure-storage-8' &&
+    firstPackage.problem.checker === 'oa-binary-search-witness';
+  if (singletonWitness) {
+    assert.equal(selected.items.length, 1);
+    assert.equal(firstPackage.cases.length, 1);
+    assert.equal(firstPackage.cases[0].input, '');
+    assert.equal(firstPackage.cases[0].hidden, false);
+    // No hidden input exists. A different valid output must be accepted instead
+    // of testing sample memorization, which is legitimate for this fixed task.
+    const alternate = await request(
+      '/api/oj/submissions',
+      students[0],
+      201,
+      payload(first.id, 'print("3\\n-3 0 9\\n0")\n', 'judge', 'python'),
+    );
+    await until(
+      () =>
+        db
+          .prepare('SELECT finished_at FROM submissions WHERE id=?')
+          .get(alternate.id)?.finished_at !== null,
+    );
+    const feedback = await request(
+      `/api/oj/submissions/${alternate.id}`,
+      students[0],
+    );
+    assert.equal(feedback.status, 'accepted');
+    assert.equal(
       db
-        .prepare('SELECT finished_at FROM submissions WHERE id=?')
-        .get(hiddenSubmit.id)?.finished_at !== null,
-  );
-  const hiddenFeedback = await request(
-    `/api/oj/submissions/${hiddenSubmit.id}`,
-    students[0],
-  );
-  assert.equal(hiddenFeedback.status, 'wrong_answer');
-  assert.equal(hiddenFeedback.firstFailure.ordinal, hiddenOrdinal);
-  assertFailureField(
-    hiddenFeedback.firstFailure,
-    'stdin',
-    firstPackage.cases[hiddenOrdinal].input,
-  );
-  assertFailureField(
-    hiddenFeedback.firstFailure,
-    'expected',
-    firstPackage.cases[hiddenOrdinal].expectedOutput,
-  );
-  assertFailureField(hiddenFeedback.firstFailure, 'stdout', wrongOutput);
-  assertFailureField(hiddenFeedback.firstFailure, 'stderr', '');
-  assert.equal(
-    db
-      .prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?')
-      .get(hiddenSubmit.id).n,
-    hiddenOrdinal + 1,
-  );
-  assert(
-    hiddenFeedback.cases
-      .filter((c) => c.hidden)
-      .every((c) => !('stdin' in c) && !('expected' in c)),
-  );
+        .prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?')
+        .get(alternate.id).n,
+      1,
+    );
+  } else {
+    const known = Object.fromEntries(
+      firstPackage.cases
+        .filter((c) => !c.hidden)
+        .map((c) => [c.input, c.expectedOutput]),
+    );
+    const firstProgram = readReferenceProgram(
+      resolve('content/oa-judge'),
+      first,
+    );
+    const bad =
+      firstProgram.language === 'cpp'
+        ? `#include <iostream>\n#include <iterator>\n#include <map>\n#include <string>\nint main(){std::map<std::string,std::string> known={${Object.entries(
+            known,
+          )
+            .map(
+              ([input, output]) =>
+                `{${JSON.stringify(input)},${JSON.stringify(output)}}`,
+            )
+            .join(
+              ',',
+            )}};std::string input((std::istreambuf_iterator<char>(std::cin)),{});auto found=known.find(input);std::cout<<(found==known.end()?${JSON.stringify(wrongOutput)}:found->second);}`
+        : `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), ${JSON.stringify(wrongOutput)}), end='')\n`;
+    const hiddenOrdinal = firstPackage.cases.findIndex(
+      (c) => c.hidden && !(c.input in known),
+    );
+    assert(
+      Object.keys(known).length > 0,
+      'Requires at least one public sample',
+    );
+    assert(
+      hiddenOrdinal >= 0,
+      'Requires a hidden case not memorized by samples',
+    );
+    assert(
+      firstPackage.cases.slice(0, hiddenOrdinal).every((c) => c.input in known),
+      'Sample-memorizing program must pass every case before the counterexample',
+    );
+    const hiddenSubmit = await request(
+      '/api/oj/submissions',
+      students[0],
+      201,
+      payload(first.id, bad, 'judge', firstProgram.language),
+    );
+    await until(
+      () =>
+        db
+          .prepare('SELECT finished_at FROM submissions WHERE id=?')
+          .get(hiddenSubmit.id)?.finished_at !== null,
+    );
+    const hiddenFeedback = await request(
+      `/api/oj/submissions/${hiddenSubmit.id}`,
+      students[0],
+    );
+    assert.equal(hiddenFeedback.status, 'wrong_answer');
+    assert.equal(hiddenFeedback.firstFailure.ordinal, hiddenOrdinal);
+    assertFailureField(
+      hiddenFeedback.firstFailure,
+      'stdin',
+      firstPackage.cases[hiddenOrdinal].input,
+    );
+    assertFailureField(
+      hiddenFeedback.firstFailure,
+      'expected',
+      firstPackage.cases[hiddenOrdinal].expectedOutput,
+    );
+    assertFailureField(hiddenFeedback.firstFailure, 'stdout', wrongOutput);
+    assertFailureField(hiddenFeedback.firstFailure, 'stderr', '');
+    assert.equal(
+      db
+        .prepare('SELECT count(*) AS n FROM oj_results WHERE submission_id=?')
+        .get(hiddenSubmit.id).n,
+      hiddenOrdinal + 1,
+    );
+    assert(
+      hiddenFeedback.cases
+        .filter((c) => c.hidden)
+        .every((c) => !('stdin' in c) && !('expected' in c)),
+    );
+  }
   if (process.env.TEST_LARGE_INPUT === '1')
     await probeLargeInputs({ db, request, identity, until, web, worker });
   console.log(
@@ -716,7 +760,8 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
       event: 'oa_judge_integration_complete',
       problems: selected.items.length,
       submissions: db.prepare('SELECT count(*) AS n FROM submissions').get().n,
-      hiddenCounterexampleVerified: true,
+      hiddenCounterexampleVerified: !singletonWitness,
+      ...(singletonWitness ? { alternateWitnessVerified: true } : {}),
       scope:
         'fresh SQLite + isolated queue + real built web/worker + dedicated runner',
       productionDataUsed: false,

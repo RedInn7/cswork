@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-akuna-capital-22",
+  "batch": "akuna-22-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "83a2884d58693b976c95cf9cab495b43cef4f3d2a51ac9163041d9eb8bc82d96",
+  "packageFileSha256": "7c9e62450df8f4cbc908217eb35945b2e31132eb905091f2cb53c4f7af7bf23d",
+  "oracleSha256": "f442a392be162885262117bf0f2cb67ce2d83b92272bd52e10a065617964c40d",
+  "referenceSha256": "92655e7d114110ae96944a4a80a78f363903893207626c14c7595db21ae7e1c2",
+  "scope": "Fixed-source and mathematical pre-review preceded author freeze. After freeze, independently recomputed all expected outputs and executed211 reference plus192 mutant local Python processes. Author generator never read, imported or executed; upstream code never executed. Only this designated report written in the project, without branch change or commit.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "verified": true,
+    "files": [
+      {"path":"OA LIST/Akuna_Capital_OA/009_b37943bb1a068f4571ff295442ffa707.txt","gitBlobSha":"858568a469cb893569abaf231c41d600cd6f234c","rawSha256":"87f86e4c2e40361d061399673ebe935b90a2e6ba3792923e7aa9232b9018a099"},
+      {"path":"OA LIST/Akuna_Capital_OA/016_QQ_1744468359444.txt","gitBlobSha":"851bd58fb2ab04d241c2eb5de1f695ef0d1d08f8","rawSha256":"f854fcc434c2902f5a5b0d56f16b96ed24a9b929486c1e76b2ddf882460d06ce"},
+      {"path":"fastprep/Akuna Capital/akuna-maximize-segregation-cost.md","gitBlobSha":"5e9d1652aa8a48d8f8f73cff16b3a12dc43ed72b","rawSha256":"18d47b25ab67885ab64d8371c72bd8dc157ec930c1c2b1bcb5508b6cb90f7ce7"}
+    ],
+    "sameProblemEvidence": "Akuna22 FastPrep text and Akuna5 get-max-cost text share the binary-circuit setting, maximal rightward movement rule and1+distance cost. Original OCR009/016 supplies matching rules, total-cost examples13 and8, long return and explicit length1..100000. Package explicitly labels this a duplicate-source entry, not a new algorithm.",
+    "rangeDisclosure": "Full length1..100000 and binary alphabet come from matching original OCR016. Package expressly does not attribute these bounds to FastPrep's N/A placeholder. Original long return is retained mathematically rather than copying the insufficient FastPrep int interface.",
+    "objectiveCorrection": "Original final function description and arithmetic of13/8 unambiguously mean maximum total cost, not count of moves. Published problem corrects operations wording and the catalogue's one-time fee per1 algorithm.",
+    "zeroMovement": "Only positive-distance movement is legal. Otherwise unfinished examples containing a blocked1, such as110100, admit an indefinitely repeated positive-cost self-loop, contradicting the finite original optimum. This inference is explicitly disclosed; already-separated strings cost0. The argument does not claim every possible unfinished input has such a self-loop.",
+    "publicSamples": "Original110100->13 and10100->8 retained. Supplementary01->0 explicitly corrects charging an unmoved1."
+  },
+  "proofReview": {
+    "fixedDistance": "Each original inverted1/0 pair must swap relative order exactly once, and no legal move reverses that ordering. Thus total distance equals initial inversion count independently of operation order.",
+    "operationUpperBound": "Original contiguous zero blocks cannot split: moving a1 crosses an entire current zero run. Each1 crosses each original zero block to its right at most once, and every positive move crosses at least one such block. The total number of such pairs bounds move count.",
+    "attainment": "Process original zero blocks left to right and preceding ones right to left. Each participating1 crosses exactly the current block in a separate mandatory maximal move; unprocessed blocks remain separated by an original1. Therefore every eligible1/block pair contributes one fee. A block of length z with a preceding ones contributes a*(z+1).",
+    "complexityAndIntegers": "Reference is O(length) time and O(1) extra space beyond input. Move count is at most inversion count, so cost<=length^2/2<=5000000000. Signed64-bit arithmetic is sufficient and32-bit is demonstrably insufficient.",
+    "bindings": "Normalized import schema and frozen checksum verified. Displayed editorial equals batch editorial; authored solutions match displayed solutions, whose Python bytes exactly equal frozen reference. Required standalone correctness-proof heading present."
+  },
+  "independentVerification": {
+    "reviewTool":"/private/tmp/akuna22-review.N3UvZj/review.py",
+    "reviewToolSha256":"db406786e78694eb1a27620baea79336b9e49b0d351a66f99fb8458e1645901a",
+    "preFreezeExhaustiveCases":32766,
+    "preFreezeDomain":"Every binary string of lengths1..14. Enumerated all legal maximal positive-distance moves as state-DAG edges, recursively maximized1+distance+remaining optimum; all agree with the independently derived formula.",
+    "actualSmallStateSearchCases":196,
+    "actualSmallMethod":"Direct legal-move state search independently recomputes196 frozen cases of length<=16. No calls to author's generator, reference or zero-block function.",
+    "allCaseMethod":"Independent right-to-left scan maintains suffix zero count and original zero-run count. Each encountered1 contributes the sum of these two counts. This does not reuse reference's forward zero-block iteration. All211 frozen expected outputs recomputed, with small results also checked by state search.",
+    "formalCases":48,
+    "publicCases":3,
+    "hiddenCases":45,
+    "oracleCases":163,
+    "uniqueOracleInputs":163,
+    "referenceSubprocessRuns":211,
+    "referenceResult":"Every local reference subprocess exited zero with empty stderr and exactly matched independently verified expected tokens.",
+    "referenceMaxLocalSeconds":0.13932437496259809,
+    "fullLengthCases":[
+      {"formalIndex":33,"name":"满长全0","length":100000,"answer":0},
+      {"formalIndex":34,"name":"满长全1","length":100000,"answer":0},
+      {"formalIndex":35,"name":"满长已分离","length":100000,"answer":0},
+      {"formalIndex":36,"name":"满长单块超32位","length":100000,"answer":2500050000},
+      {"formalIndex":37,"name":"满长10交替","length":100000,"answer":2500050000},
+      {"formalIndex":38,"name":"满长01交替","length":100000,"answer":2499950000},
+      {"formalIndex":39,"name":"满长单1跨长零段","length":100000,"answer":100000},
+      {"formalIndex":40,"name":"满长单0被全部1跨越","length":100000,"answer":199998},
+      {"formalIndex":41,"name":"满长仅尾1","length":100000,"answer":0},
+      {"formalIndex":42,"name":"满长前后填充","length":100000,"answer":1600040000},
+      {"formalIndex":43,"name":"满长负控移动次数","length":100000,"answer":1250050000},
+      {"formalIndex":44,"name":"满长三1两0块","length":100000,"answer":1800090000},
+      {"formalIndex":45,"name":"满长长块交替","length":100000,"answer":1276275000},
+      {"formalIndex":46,"name":"满长固定随机","length":100000,"answer":1868059416},
+      {"formalIndex":47,"name":"满长高费用混合块","length":100000,"answer":3333366666}
+    ],
+    "wallSeconds":10.919996834010817,
+    "memoryDiscipline":"All cases and subprocesses processed sequentially. Memoized state search limited to small strings; full-length strings use linear constant-state suffix scans."
+  },
+  "negativeControls":[
+    {"name":"错误只计移动次数不计距离费用","normalExitCases":48,"rejectedByCases":[0,1,5,8,9,10,11,12,13,14,15,16,17,18,19,20,22,23,25,26,27,28,29,30,32,36,37,38,39,40,42,43,44,45,46,47]},
+    {"name":"错误只计移动距离漏每次基础费","normalExitCases":48,"rejectedByCases":[0,1,5,8,9,10,11,12,13,14,15,16,17,18,19,20,22,23,25,26,27,28,29,30,32,36,37,38,39,40,42,43,44,45,46,47]},
+    {"name":"错误以32位有符号数返回累计费用","normalExitCases":48,"rejectedByCases":[36,37,38,47]},
+    {"name":"catalog错误每个1仅收一次费用且有序串仍收费","normalExitCases":48,"rejectedByCases":[0,1,2,4,6,9,12,13,16,17,18,19,20,21,25,26,28,30,31,32,34,35,37,38,41,42,43,44,45,46,47]}
+  ],
+  "negativeControlResult":"All192 actual local mutant subprocesses exited zero with empty stderr; rejection counts36,36,4,31 against independently verified expectations.",
+  "limitations":"These are local Python executions, not Linux GoJudge resource measurements. Parent's separately reported Linux211-case validation and four rejected mutants remain separate evidence. Temporary review-tool path is provenance, not a repository dependency."
+}

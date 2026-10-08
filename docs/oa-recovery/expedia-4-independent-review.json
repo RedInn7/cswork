@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-expedia-4",
+  "batchId": "expedia-4-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 40,
+    "publicCases": 3,
+    "hiddenCases": 37,
+    "uniqueOracleCases": 163,
+    "actualLocalNativeReferenceRuns": 203,
+    "actualLocalNativeMutantRuns": 160,
+    "allProcessesExitedNormally": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告实际编译并运行本机 C++ 程序；Linux 沙箱由主 agent 单独验证，本机 RSS/耗时不冒充服务器指标。"
+  },
+  "bindings": {
+    "packageChecksum": "439f46a74e02a626228a96fc0ce6340350889d8d88a392be3f32a12825ffaefd",
+    "checksumMethod": "实际 ojImportSchema.parse 后 JSON.stringify 的 SHA256，与冻结值及 batch 一致",
+    "packageFileSha256": "8f0036ece634eef3865e1ae67427870af38a03f3f0a451f949dd1650186bd4da",
+    "oracleFileSha256": "2c4dad4676539e67a6c27b97a5b21be1646ad2e00925225fab48e891f39f79cb",
+    "referenceSha256": "35aa4ea427d31547e9b0c954f0fc1e2ac8bd6105b91c2fea6c609d3afcc47a50",
+    "editorialFileSha256": "5ca1cfe1af07dc3d8a88428407086508a2dcb731ee578a3963079d9e3870cbba",
+    "mutantFileSha256": "83d8b847c259b690c5b90ca77d33acb5aa7fb415a6152f523d22b3814e521f04",
+    "batchFileSha256": "efc7cec4768d4c9a0c12944450eada9f8579ac512f12af78022a71551f9290cb",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Expedia/expedia-calculate-the-sum.md",
+    "gitBlobSha": "1ab6d2b568112366d351d6b24d0f78232f16b321",
+    "sha256": "bd18d1e034dcfdc131017631ff7dc1a73406961281ee1a29ad284cf3dae2b1ed",
+    "semantics": "源明确开关从1连续编号、初始Off、对给定闭区间逐个NOT，最终求开启编号之和，不是数量或覆盖并集。",
+    "domainDisclosure": "源无数值上界；按原 Java int/int[][] 公开解释1<=l<=r<=INT_MAX，操作数由现有32MiB输入预算约束，没有较小人造上限。n=0空操作为明确数学扩展。原int返回过窄，精确64位输出适配已公开披露。",
+    "samples": "原源无样例，三个公开例均标明本站构造并独立复算为5、0、2147483647。"
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "eventParity": "每个[l,r]生成l和r+1两个翻转事件，截至位置x的事件数奇偶等于覆盖x的操作数奇偶。排序后偶数编号事件与下一事件组成开启半开区间；重复事件不能去重，零长段或同点连续翻转正确抵消。各非空开启段互不重叠，等差和累加正确。",
+    "radix": "每趟计数转起始偏移后按源数组顺序散写，稳定性成立。低16位之后稳定高16位排序，得到完整uint32数值序。两趟均遍历全部事件，交换数组后后续使用最终有序数组。",
+    "integerSafety": "r+1在uint32中计算，可表示2147483648。求和端点先提升uint64，乘积不超过2147483648*2147483647；全部可能开启位置之和最大2305843008139952128，signed64也足够。桶计数和前缀偏移均不超过2n，远小于uint32上界。",
+    "memoryAndCapacity": "最短LF编码 n=8388606、每行1 1恰33554432字节；n+1即使省略末尾LF也需33554435字节。两份2n个uint32数组共134217696字节，桶262144字节，流式读取不另存操作或输入字符串；理论及实测均在256MiB内。"
+  },
+  "independentExpectedValidation": {
+    "all203CasesRecomputed": true,
+    "literalToggleCases": 187,
+    "literalMethod": "逐操作枚举闭区间所有编号，对活动集合执行真正开/关翻转，再直接求活动编号之和。",
+    "eventParityDictionaryCases": 14,
+    "eventMethod": "字典逐事件异或，按不同坐标比较排序并维护当前开关状态，逐段积分求和；不使用参考两趟基数排序或原始事件直接相邻配对。包括随机20000操作、INT_MAX、嵌套和重复全域区间。",
+    "inputValidation": "逐例核验非负n、恰好n对端点、1<=l<=r<=INT_MAX及每例字节预算；163 oracle输入唯一。0操作、LF/CRLF/EOF、闭区间右端及跨signed符号位的r+1均实际运行。",
+    "capacityCases": [
+      {
+        "formalIndex": 38,
+        "operations": 8388606,
+        "inputBytes": 33554432,
+        "expected": 0,
+        "inputSha256": "cd5ae8a47db929dd7ec1612bd7f693ffbb2c32356e95e3badb1cbb51e910542a",
+        "validation": "流式检查全部操作均为[1,1]且数量为8388606；偶数次翻转抵消，独立闭式0。",
+        "localNativePeakRssBytes": 135643136
+      },
+      {
+        "formalIndex": 39,
+        "operations": 2236039,
+        "inputBytes": 33554424,
+        "expected": 2499936322780,
+        "inputSha256": "5097b50f10ea1c0653def20676a5e0a407e0048a7af600cb4bcba04496508d41",
+        "validation": "流式逐对核实第k项l=r=(65537*k mod n)+1；实际计算gcd(65537,n)=1，故恰为1..n不同单点的排列，每点只翻转一次；独立闭式n(n+1)/2=2499936322780。",
+        "localNativePeakRssBytes": 37224448
+      }
+    ],
+    "capacityNotes": "两巨例均逐token完整检查，不只抽样首尾；参考与四个负控逐个顺序实际执行。RSS由本机/usr/bin/time -l测量，不等于Linux沙箱记录。",
+    "totalFormalInputPlusExpectedBytes": 67800357,
+    "within128MiBSnapshotBudget": true
+  },
+  "negativeControls": [
+    { "name": "忽略奇偶翻转", "normalRuns": 40, "killedByFormalCases": 28 },
+    { "name": "遗漏闭区间右端", "normalRuns": 40, "killedByFormalCases": 31 },
+    { "name": "编号和误写为数量", "normalRuns": 40, "killedByFormalCases": 31 },
+    { "name": "32位结果截断", "normalRuns": 40, "killedByFormalCases": 6 }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/expedia4-review.GvpMeK/review.py",
+    "scriptSha256": "3e63ac62118a8bfb41ff13cf43f2cc93e78255d475a4601bfd8490fda1ac82f1",
+    "artifactVerificationSeconds": 16.319506883621216,
+    "memoryDiscipline": "千万级输入采用数字迭代器，不构造巨大Python操作/事件数组；各原生程序顺序运行。",
+    "projectMutation": "只新增本审核报告，未修改冻结产物，未提交。"
+  }
+}

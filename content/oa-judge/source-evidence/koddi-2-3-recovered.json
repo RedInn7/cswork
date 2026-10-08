@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "items": {
+    "oa-koddi-2": {
+      "url": "https://oamaster.com/docs/companies/koddi#2-bird-placing-sticks",
+      "contentHash": "278420db306465a551f8ff24f3b193f79fa5ff02a049e02d8188b0f87aa7805f",
+      "catalogContentHash": "278420db306465a551f8ff24f3b193f79fa5ff02a049e02d8188b0f87aa7805f",
+      "path": "OA LIST/Koddi_OA/002_image.txt",
+      "gitBlobSha": "ed77d1e31145e4009a87fec15124cabf08b8bc83",
+      "rawSha256": "29f03597d486523c73fae0e5ccee5c157a83fb0bd68840f8bc35053b8db975ce",
+      "sources": [
+        {
+          "path": "OA LIST/Koddi_OA/002_image.txt",
+          "gitBlobSha": "ed77d1e31145e4009a87fec15124cabf08b8bc83",
+          "sha256": "29f03597d486523c73fae0e5ccee5c157a83fb0bd68840f8bc35053b8db975ce",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Koddi_OA/003_image.txt",
+          "gitBlobSha": "29aa55a80b582055be4a8bad9666607c9705b61a",
+          "sha256": "3738a098c867a714d0bf281ae544a6ae5d17b5883c33d172623b13d25168b70d",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Visa_OA/004_QQ_1741880069560.txt",
+          "gitBlobSha": "86f85146a66b195a5161085aeb7dd12aa8ffe262",
+          "sha256": "ea91b2a3994f400483ed9e8106668d1e52e8c9b0cfe4c0a4aa0afdc7c0264f8a",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "OA LIST/Visa_OA/005_QQ_1741880083135.txt",
+          "gitBlobSha": "284a6db292b47982983c7da9af1b635b18ea9417",
+          "sha256": "2a02c9adafddadc838adf50667f4da8d0883111a4dc9ddc0b9c602e168efed31",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "OA LIST/Visa_OA/006_QQ_1741880091766.txt",
+          "gitBlobSha": "fef24d6d9ce9fa580653e52a622b680f9d04c37d",
+          "sha256": "5b4f43b9732d3ebc8aea6dea7779ca851efe617a911010cea8d6af38a34fafa3",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "OA LIST/Visa_OA/007_QQ_1741880100789.txt",
+          "gitBlobSha": "0c4d164aa615976ba0f9c496c3f2e24090682f76",
+          "sha256": "06a1eaffbe9acad0dbbd941d9c90b299ff463f81381cf6673ac3fd8991f3d465",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "sameProblemAndRangeDisclosure": "## Koddi原始规则、同题范围及漏项修正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc中，OA LIST/Koddi_OA/002_image.txt明确每次取走木棒后回到初始bird、从右开始交替搜索、累计至少100立即停止，并明确保证forest[bird]=0、总长度至少100，且未结束时每轮所需侧仍有木棒。旧blocked理由“未规定缺棒行为”不成立：此情况被原文保证排除，不需要自创越界处理。\n\n002的示例数组漏了一个0，只有10项却输出下标10。003本身重复给出完整11项[25,0,50,0,0,0,0,15,0,0,45]，并逐步明确位置7、2、10的长度15、50、45，总和15、65、110，因此以Koddi003自身即可唯一纠正漏项，不靠另一家公司猜输入。原输出[7,2,10]保持不变。\n\nKoddi002/003的数值约束页没有保存。范围明确采用同题OA LIST/Visa_OA/007_QQ_1741880100789.txt：3≤n≤1000、0≤forest[i]≤50、0≤bird<n。两者同题并非只凭标题：Koddi002与Visa004过程和保证逐句相同；Koddi003与Visa005/006完整11项输入、bird=4、输出[7,2,10]及15/65/110轨迹逐项一致。本站披露跨公司同题范围来源，不声称KoddiOCR自身给出数值上界。\n\nKoddi整理页例[50,0,0,40,0,30,0,20]、bird=1合法，输出[3,0,5]正确；并不套用Visa整理页的非法例纠错。本题公开首例保留KoddiOCR原例，另两例为本站补充。采用n bird及数组作为输入、下标序列作为输出。未执行上游代码。\n\n",
+      "recoveredConstraints": [
+        "3 <= n <= 1000",
+        "0 <= forest[i] <= 50",
+        "0 <= bird < n",
+        "forest[bird] = 0",
+        "sum(forest) >= 100",
+        "each required side contains a stick until accumulated length >= 100"
+      ],
+      "siteAdded": "Standard textual serialization; site-added public examples explicitly identified. Cross-company numeric range adopted only with identical source examples and rule evidence."
+    },
+    "oa-koddi-3": {
+      "url": "https://oamaster.com/docs/companies/koddi#3-protein-matrix-y-pattern-transformation",
+      "contentHash": "819689c1c2353a9f58ed131f10ac5a8a0315943ab54e34fdb45a41fee107d039",
+      "catalogContentHash": "819689c1c2353a9f58ed131f10ac5a8a0315943ab54e34fdb45a41fee107d039",
+      "path": "OA LIST/Koddi_OA/004_image.txt",
+      "gitBlobSha": "ef7624c0399385ac8d73c19700ac12299db392ff",
+      "rawSha256": "68cb2d72cb3c085321df942be5d791b7eca6155ece5d7b72d18ddbd4f01e4151",
+      "sources": [
+        {
+          "path": "OA LIST/Koddi_OA/004_image.txt",
+          "gitBlobSha": "ef7624c0399385ac8d73c19700ac12299db392ff",
+          "sha256": "68cb2d72cb3c085321df942be5d791b7eca6155ece5d7b72d18ddbd4f01e4151",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Koddi_OA/005_image.txt",
+          "gitBlobSha": "5787bbad8234a53ecda8074e40d40689cca876f9",
+          "sha256": "9452c7809531f50fac8962520b4a9dc438e4fb0b5e5de158edd216b6b9a4a316",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Koddi_OA/006_image.txt",
+          "gitBlobSha": "4352d7a6957753620c1236f36a80ad226d0a67ab",
+          "sha256": "dd80c6429dcd2e13b5dfab0001014bbed09374c90bda86b1f55368dcd1a44c48",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Koddi_OA/007_image.txt",
+          "gitBlobSha": "190778190e53cff88954b23fc0129c3996da28ee",
+          "sha256": "a81378bf5d3dc6ce58a4eb0220e225b0a25b5621efe203a5187ea45a3fab5002",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Koddi_OA/008_image.txt",
+          "gitBlobSha": "0ec7332d059f9bf6fb31783aface81eeae76cbc5",
+          "sha256": "5527fd176718df5e258d98bfb76bab236f5d0c4d78eed2fe2cebbcaa6dd5d3f3",
+          "role": "Koddi original statement/example"
+        },
+        {
+          "path": "OA LIST/Databricks_OA/019_image.txt",
+          "gitBlobSha": "1feeed6d4662cbd7ab31ccec76070c01a6c274a2",
+          "sha256": "b83cba54f68ceb4b2f11e7a3da30c268bcb94beca4aae059411cdf1e18578522",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "OA LIST/Databricks_OA/020_image.txt",
+          "gitBlobSha": "8e8b876705167951ec06ee5c4a08f7eb3d96b767",
+          "sha256": "e44c24a8e2f9df61d8ae6a3e225ded71b6b2c2b369592a0d75cf2a79bca6155a",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "OA LIST/Databricks_OA/021_image.txt",
+          "gitBlobSha": "c7433b300cafdf285880729cf03262405515c328",
+          "sha256": "02dbbf9a92c1f77436c3c3cd3204a46799b46f4604c0693920da07fdd4ec52bc",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "OA LIST/Databricks_OA/022_image.txt",
+          "gitBlobSha": "9fffe608bb73f77bd656d73d1f1e29e29cf50202",
+          "sha256": "1656eca781530356a50f83901ff87c23968168d9ee4c64a3b15339d25e024062",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        },
+        {
+          "path": "fastprep/Databricks/databricks-write-l-matrix.md",
+          "gitBlobSha": "d5d7c3d33316c3bdb739e71aa221572817c49d80",
+          "sha256": "05a9b09256886cd09192f3ec6a577b5a5f930973246af03797dc2879cf01727b",
+          "role": "Same-problem cross-company rule/range/example corroboration"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "sameProblemAndRangeDisclosure": "## Koddi原始坐标、同题范围及整理页纠错\n\n固定提交e66f809f4c953bce129f68491726176615db6afc中，OA LIST/Koddi_OA/004_image.txt定义蛋白质矩阵Y形：左上、右上沿对角线到中心，再从中心竖直到底。005逐格高亮确认坐标；006/007给出完整3×3和5×5输入，输出分别2与8；008再次展示5×5变换。形状内同色、背景同色且两色不同，共6种配色。\n\nKoddiOCR没有保存奇数保证或n数值界。跨公司同题证据为：Koddi006与OA LIST/Databricks_OA/021_image.txt的完整3×3及5×5输入一致，两个输出2/8、两处修改位置、完整目标矩阵以及把8个0改为1的说明一致；Koddi005与Databricks020高亮位置一致。只改了蛋白质叙事和变量名，不是根据标题猜同题。\n\n范围按证据分别采用：Databricks019明确n为奇数；同题fastprep/Databricks/databricks-write-l-matrix.md约束为5≤n≤99、元素0..2，但各来源共同原例有n=3。因此完整包络为{3}与奇数5..99的并集，即奇数3..99。不补n=1；不声称Koddi或DatabricksOCR本身给出99上界。fastprep的L童话和Databricks标题X与明确坐标冲突，以坐标为准。fastprep第二例漏一行，但Koddi006/007本身已有完整5×5，不需要猜补行。\n\nKoddi整理页的十字矩阵[[0,1,0],[1,1,1],[0,1,0]]声称答案1，实际六种终态枚举最小为4：Y区0/1各2个，背景有3个1、2个0，令Y为0、背景为1改4格即达下界。整理页“4n−2个Y格子”也错误，正确为(3n−1)/2。本站保留OCR两原例2/8，不沿用错误整理例。第三公开例为本站补充。未执行上游代码。\n\n",
+      "recoveredConstraints": [
+        "n odd",
+        "n in {3} union [5,99]",
+        "matrix values0,1,2"
+      ],
+      "siteAdded": "Standard textual serialization; site-added public examples explicitly identified. Cross-company numeric range adopted only with identical source examples and rule evidence."
+    }
+  }
+}
