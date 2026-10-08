@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-18",
+  "title": "子树大根堆的启发式合并",
+  "explanation": "## 题意\n\n公司是一棵以CEO为根的树。选一个经理v，再从v的子树（含v自己）中雇佣若干员工，总成本不超过M，幸福度为L[v]×雇佣人数。求最大幸福度。\n\n## 思路\n\n经理固定为v后，只需要在v的子树中雇佣尽可能多的人，显然应该按成本从小到大取。于是对每个结点维护一个大根堆，存子树中“当前被保留的”成本，并维护其和；和超过M就弹出最大的成本。每个结点处理完后把它的堆合并进父亲的堆（小堆合并入大堆）。由于R[i]<i，按编号从大到小处理即可保证子结点先于父结点。\n\n## 正确性\n\n若某个成本在子树v中因为超预算被弹出，它是当时保留集合中最贵的；对任何祖先u，其子树的成本多重集合包含v的子树，且预算相同，最优保留集合（最便宜的若干个）也不会包含它，所以弹出是永久安全的。对每个v，堆中剩下的正是子树内最便宜且总和不超过M的最大前缀，人数即该经理可雇佣的最大人数。\n\n## 复杂度\n\n启发式合并O(n log² n)。答案可达10^5×10^9=10^14，使用64位整数。\n\n## 独立验证\n\noracle对每个结点收集子树成本排序后贪心取前缀（O(n² log n)，不依赖堆合并）；小数据再枚举经理和雇佣子集的全部组合直接求最大值。穷举结点数1..4的所有父亲数组、成本{1,2}、领导力{1,3}、预算1..3，按每组10个测试打包后真实运行参考程序。错误解覆盖经理不能雇自己、超预算时弹出最便宜者、32位乘积和只看直接下属。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main(){int T;if(scanf(\"%d\",&T)!=1)return 0;while(T--){int n;long long M;scanf(\"%d %lld\",&n,&M);\nvector<int>R(n+1);vector<long long>C(n+1),L(n+1);for(int i=1;i<=n;i++)scanf(\"%d %lld %lld\",&R[i],&C[i],&L[i]);\nvector<priority_queue<long long>>h(n+1);vector<long long>sum(n+1,0);vector<int>id(n+1);long long best=0;\nfor(int i=1;i<=n;i++){id[i]=i;h[i].push(C[i]);sum[i]=C[i];}\nfor(int v=n;v>=1;v--){auto &H=h[id[v]];long long &S=sum[id[v]];\n while(S>M){S-=H.top();H.pop();}\n best=max(best,L[v]*(long long)H.size());\n int p=R[v];if(p>0){int a=id[p],b=id[v];if(h[a].size()<h[b].size())swap(a,b);\n  while(!h[b].empty()){h[a].push(h[b].top());sum[a]+=h[b].top();h[b].pop();}sum[b]=0;id[p]=a;}}\nprintf(\"%lld\\n\",best);}}\n"
+    }
+  ]
+}

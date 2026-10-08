@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误经理不能雇佣自己",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main(){int T;if(scanf(\"%d\",&T)!=1)return 0;while(T--){int n;long long M;scanf(\"%d %lld\",&n,&M);\nvector<int>R(n+1);vector<long long>C(n+1),L(n+1);for(int i=1;i<=n;i++)scanf(\"%d %lld %lld\",&R[i],&C[i],&L[i]);\nvector<priority_queue<long long>>h(n+1);vector<long long>sum(n+1,0);vector<int>id(n+1);long long best=0;\nfor(int i=1;i<=n;i++){id[i]=i;}\nfor(int v=n;v>=1;v--){auto &H=h[id[v]];long long &S=sum[id[v]];\n while(S>M){S-=H.top();H.pop();}\n best=max(best,L[v]*(long long)H.size());\n int p=R[v];if(p>0){h[id[v]].push(C[v]);sum[id[v]]+=C[v];int a=id[p],b=id[v];if(h[a].size()<h[b].size())swap(a,b);\n  while(!h[b].empty()){h[a].push(h[b].top());sum[a]+=h[b].top();h[b].pop();}sum[b]=0;id[p]=a;}}\nprintf(\"%lld\\n\",best);}}\n"
+  },
+  {
+    "name": "错误超预算时去掉最便宜的",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main(){int T;if(scanf(\"%d\",&T)!=1)return 0;while(T--){int n;long long M;scanf(\"%d %lld\",&n,&M);\nvector<int>R(n+1);vector<long long>C(n+1),L(n+1);for(int i=1;i<=n;i++)scanf(\"%d %lld %lld\",&R[i],&C[i],&L[i]);\nvector<priority_queue<long long,vector<long long>,greater<long long>>>h(n+1);vector<long long>sum(n+1,0);vector<int>id(n+1);long long best=0;\nfor(int i=1;i<=n;i++){id[i]=i;h[i].push(C[i]);sum[i]=C[i];}\nfor(int v=n;v>=1;v--){auto &H=h[id[v]];long long &S=sum[id[v]];\n while(S>M){S-=H.top();H.pop();}\n best=max(best,L[v]*(long long)H.size());\n int p=R[v];if(p>0){int a=id[p],b=id[v];if(h[a].size()<h[b].size())swap(a,b);\n  while(!h[b].empty()){h[a].push(h[b].top());sum[a]+=h[b].top();h[b].pop();}sum[b]=0;id[p]=a;}}\nprintf(\"%lld\\n\",best);}}\n"
+  },
+  {
+    "name": "错误32位乘积",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <queue>\n#include <algorithm>\nusing namespace std;\nint main(){int T;if(scanf(\"%d\",&T)!=1)return 0;while(T--){int n;long long M;scanf(\"%d %lld\",&n,&M);\nvector<int>R(n+1);vector<long long>C(n+1),L(n+1);for(int i=1;i<=n;i++)scanf(\"%d %lld %lld\",&R[i],&C[i],&L[i]);\nvector<priority_queue<long long>>h(n+1);vector<long long>sum(n+1,0);vector<int>id(n+1);long long best=0;\nfor(int i=1;i<=n;i++){id[i]=i;h[i].push(C[i]);sum[i]=C[i];}\nfor(int v=n;v>=1;v--){auto &H=h[id[v]];long long &S=sum[id[v]];\n while(S>M){S-=H.top();H.pop();}\n best=max(best,(long long)(int)(L[v]*(long long)H.size()));\n int p=R[v];if(p>0){int a=id[p],b=id[v];if(h[a].size()<h[b].size())swap(a,b);\n  while(!h[b].empty()){h[a].push(h[b].top());sum[a]+=h[b].top();h[b].pop();}sum[b]=0;id[p]=a;}}\nprintf(\"%lld\\n\",best);}}\n"
+  },
+  {
+    "name": "错误只有直接下属可被雇佣",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int T;scanf(\"%d\",&T);while(T--){int n;long long M;scanf(\"%d %lld\",&n,&M);vector<int>R(n+1);vector<long long>C(n+1),L(n+1);\nvector<vector<long long>>ch(n+1);for(int i=1;i<=n;i++){scanf(\"%d %lld %lld\",&R[i],&C[i],&L[i]);ch[i].push_back(C[i]);if(R[i])ch[R[i]].push_back(C[i]);}\nlong long best=0;for(int v=1;v<=n;v++){sort(ch[v].begin(),ch[v].end());long long s=0,c=0;for(long long x:ch[v]){if(s+x>M)break;s+=x;c++;}best=max(best,c*L[v]);}\nprintf(\"%lld\\n\",best);}}\n"
+  }
+]
