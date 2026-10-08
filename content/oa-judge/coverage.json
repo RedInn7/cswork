@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1236,
+    "sandbox_verified": 1269,
     "awaiting_sandbox": 0,
-    "blocked": 398,
+    "blocked": 365,
     "unreviewed": 0
   },
   "items": [
@@ -270,14 +270,16 @@
     {
       "id": "oa-google-40",
       "company": "google",
-      "status": "blocked",
-      "reason": "操作 1 和下标范围被截断；样例把右邻 1 变 0 与 a[i]=a[i−1]−1 矛盾，不能据此构造正确标准答案。"
+      "status": "sandbox_verified",
+      "batch": "google-40-recovered",
+      "reason": "原图确认操作1为自减1，样例矛盾消失；原图无约束，自选n≤1e5、非负值≤1e9；双指针+有序集合，独立窗口排序、操作状态搜索与树状数组二分核验。"
     },
     {
       "id": "oa-google-41",
       "company": "google",
-      "status": "blocked",
-      "reason": "题面仅剩“Given a”，没有可选元素或得分规则，单个例子无法还原。"
+      "status": "sandbox_verified",
+      "batch": "google-41-recovered",
+      "reason": "原图给出“取值v则屏蔽后面v个下标”的规则，样例唯一支持只向后屏蔽；原图无约束，自选n≤2e5、0≤值≤1e9；后缀DP，独立推式DP与子集枚举核验。"
     },
     {
       "id": "oa-google-42",
@@ -1552,8 +1554,9 @@
     {
       "id": "oa-amazon-116",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "关键句在不允许的子序列定义处截断，缺少禁用模式及允许操作，单个样例不能恢复。"
+      "status": "sandbox_verified",
+      "batch": "amazon-116-recovered",
+      "reason": "原图补出被截断的禁用子序列010/101和单字符翻转操作；原图无约束，自选|s|≤1e6；分界点前缀计数，独立目标串汉明距离与子序列暴力核验。"
     },
     {
       "id": "oa-amazon-117",
@@ -2868,8 +2871,9 @@
     {
       "id": "oa-amazon-306",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "raw正文实际截断为Example output is a p，样例说明自己称placeholder。缺交换是否相邻等核心规则，不能用源程序替代题意。"
+      "status": "sandbox_verified",
+      "batch": "amazon-306-recovered",
+      "reason": "原图给出任意两位置交换、不可行返回−1的规则；样例输出按规则BFS复算为2；原图无约束，自选|s|≤1e6；不匹配对计数公式，独立奇偶推导与BFS穷举核验。"
     },
     {
       "id": "oa-amazon-307",
@@ -2902,8 +2906,9 @@
     {
       "id": "oa-amazon-311",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "raw正文只有SDE II及破损标签，没有perfect定义。样例acababa含aba，不能使用catalog补写的无长度>=2回文定义；也不能由源程序擅定相邻不等。"
+      "status": "sandbox_verified",
+      "batch": "amazon-311-recovered",
+      "reason": "原图给出完美串定义（相邻不同）与两个样例；样例1排除更短答案，按等长理解；原图无约束，自选|s|≤2e5；贪心+交替填充，独立候选枚举与逐个递增暴力核验。"
     },
     {
       "id": "oa-amazon-312",
@@ -3101,8 +3106,9 @@
     {
       "id": "oa-amazon-340",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "原文真实截断于servers, wh，仅单例且解释声明未知，无法恢复调度规则。"
+      "status": "sandbox_verified",
+      "batch": "amazon-340-recovered",
+      "reason": "原图给出允许范围0..requests[i]、取最不忙、并列取最小编号的规则；忙碌度在无时间维度时只能是已分配请求数，样例精确吻合；原图无约束，自选servers≤1e5、n≤2e5；线段树，独立线性扫描核验。"
     },
     {
       "id": "oa-amazon-341",
@@ -4065,8 +4071,9 @@
     {
       "id": "oa-openai-5",
       "company": "openai",
-      "status": "blocked",
-      "reason": "来源正文截断，只有单个例子不能恢复全部规则。"
+      "status": "sandbox_verified",
+      "batch": "openai-5-recovered",
+      "reason": "原图给出禁止对与连续段计数规则，样例列表确定为连续区间；原图无约束，自选n、m≤2e5、无取模；后缀最小值计数，独立区间枚举与禁止对子集穷举核验。"
     },
     {
       "id": "oa-openai-6",
@@ -4169,8 +4176,9 @@
     {
       "id": "oa-linkedin-3",
       "company": "linkedin",
-      "status": "blocked",
-      "reason": "正文及K含义缺失，原例K3却解释终点4，不能猜图目标。"
+      "status": "sandbox_verified",
+      "batch": "linkedin-3-recovered",
+      "reason": "原图给出终点为N、K为边数上限的极小化最大边权规则；无解输出未给出，故数据保证存在可行路径；原图无约束，自选N≤1e5、M≤2e5；二分+BFS，独立分层极小化DP与路径枚举核验。"
     },
     {
       "id": "oa-linkedin-4",
@@ -5244,8 +5252,9 @@
     {
       "id": "oa-ibm-68",
       "company": "ibm",
-      "status": "blocked",
-      "reason": "原正文截断到timesta，原例不能区别相邻间隔与首尾跨度；时间排序、输出顺序、单心跳规则缺原文依据，不采用catalog补写冒充来源。"
+      "status": "sandbox_verified",
+      "batch": "ibm-68-recovered",
+      "reason": "原图给出相邻心跳间隔严格大于阈值、字典序输出、输入无序和单次心跳不超时（样例2）以及完整约束；分组排序扫描，独立字典分组与穷举核验。"
     },
     {
       "id": "oa-ibm-69",
@@ -5414,8 +5423,9 @@
     {
       "id": "oa-salesforce-11",
       "company": "salesforce",
-      "status": "blocked",
-      "reason": "raw正文残缺，条件仅来自明确标注educated guess的解释，不作为判定规则。"
+      "status": "sandbox_verified",
+      "batch": "salesforce-11-recovered",
+      "reason": "原图给出两个条件，与md的推测一致；样例确定不含自配对、按下标顺序列出；原图无约束，自选n≤1000、|值|≤1e9；化简为b≤2a，独立逐字条件计算与穷举核验。"
     },
     {
       "id": "oa-salesforce-12",
@@ -5453,8 +5463,9 @@
     {
       "id": "oa-salesforce-17",
       "company": "salesforce",
-      "status": "blocked",
-      "reason": "swap另一端未给出，强度文字arr[i]+1又与样例i*arr[i]冲突。"
+      "status": "sandbox_verified",
+      "batch": "salesforce-17-recovered",
+      "reason": "原图给出相邻交换、每元素至多交换一次与arr[i]×(i+1)强度定义，三样例与规则一致；全范围前缀DP，独立收益不相邻选取与交换集合枚举核验。"
     },
     {
       "id": "oa-salesforce-18",
@@ -5515,8 +5526,9 @@
     {
       "id": "oa-salesforce-26",
       "company": "salesforce",
-      "status": "blocked",
-      "reason": "正文在choose3consecut截断，操作条件及行为缺失。"
+      "status": "sandbox_verified",
+      "batch": "salesforce-26-recovered",
+      "reason": "原图给出操作条件与三个样例，规则完整；原图无约束，自选|s|≤2e5；成对段从右往左蔓延计数，独立最右操作模拟与全顺序记忆化搜索核验。"
     },
     {
       "id": "oa-salesforce-27",
@@ -6152,8 +6164,9 @@
     {
       "id": "oa-uber-41",
       "company": "uber",
-      "status": "blocked",
-      "reason": "正文在return the output array in form where截断，仅示例不足以确定生成规则。"
+      "status": "sandbox_verified",
+      "batch": "uber-41-recovered",
+      "reason": "原图给出首字母+下一个单词末字母的规则，样例bt唯一确定最后一项环绕到第一个单词；原图无约束，自选n≤1e5、单词长≤20；逐项构造，独立旋转配对与穷举核验。"
     },
     {
       "id": "oa-uber-42",
@@ -6369,8 +6382,9 @@
     {
       "id": "oa-airbnb-8",
       "company": "airbnb",
-      "status": "blocked",
-      "reason": "正文截断，舍入范围/目标/不可行输出缺失。"
+      "status": "sandbox_verified",
+      "batch": "airbnb-8-recovered",
+      "reason": "原图给出floor/ceil取整、总和等于target、L1误差最小及保证唯一合法最优；原图无数值范围，自选n≤1e5、两位小数价格；小数部分降序贪心，独立全组合枚举与唯一性检查核验。"
     },
     {
       "id": "oa-stripe-1",
@@ -6915,8 +6929,9 @@
     {
       "id": "oa-roblox-7",
       "company": "roblox",
-      "status": "blocked",
-      "reason": "fastprep 原文没有题目规则或约束，只要求查看缺失源图；所谓对角线 1,2,0 模式仅是作者猜测，不能据此判题。"
+      "status": "sandbox_verified",
+      "batch": "roblox-7-recovered",
+      "reason": "原图给出模式、任意起点、四个对角方向和必须结束在边界；无解与单格线段未说明，数据保证存在长度≥2的线段；原图无约束，自选R、C≤500；方向递推，独立逐格行走与小矩阵穷举核验。"
     },
     {
       "id": "oa-roblox-8",
@@ -6961,8 +6976,9 @@
     {
       "id": "oa-roblox-14",
       "company": "roblox",
-      "status": "blocked",
-      "reason": "原题缺少可执行的 cyclic shift 规则；说明重复例子而有效配对数与输出不一致，关键操作定义与计数口径都不明。"
+      "status": "sandbox_verified",
+      "batch": "roblox-14-recovered",
+      "reason": "原图2完整给出循环移位定义与i<j计数口径（原图1是另一道后缀对题，已排除）；样例解释重复项为笔误，输出5与规则一致；原图无约束，自选n≤1e5、a≤1e9；最小旋转计数，独立两两倍串检查核验。"
     },
     {
       "id": "oa-roblox-15",
@@ -7502,8 +7518,9 @@
     {
       "id": "oa-quora-1",
       "company": "quora",
-      "status": "blocked",
-      "reason": "固定上游题面在“Given an array and a value k, find”处截断，目标运算缺失。"
+      "status": "sandbox_verified",
+      "batch": "quora-1-recovered",
+      "reason": "原图给出“统计数组中k的幂个数”；k^0与k≤1等边界未说明，范围选k与元素均≥2使其不出现；原图无约束，自选n≤2e5、值≤1e18；幂表比对，独立反复整除核验。"
     },
     {
       "id": "oa-quora-2",
@@ -7731,8 +7748,9 @@
     {
       "id": "oa-mathworks-20",
       "company": "mathworks",
-      "status": "blocked",
-      "reason": "规则在 ‘A value of’ 后截断，无法还原填零规则和目标。"
+      "status": "sandbox_verified",
+      "batch": "mathworks-20-recovered",
+      "reason": "原图补全0表示缺人、每个空位都补、技能上限10000、求最小相等和或−1；完整约束保留；区间求交，独立位集合可达和核验。"
     },
     {
       "id": "oa-mathworks-21",
@@ -7866,14 +7884,16 @@
     {
       "id": "oa-tradedesk-2",
       "company": "tradedesk",
-      "status": "blocked",
-      "reason": "关键原始图缺失，输出“sections”的计数单位不明。"
+      "status": "sandbox_verified",
+      "batch": "tradedesk-2-recovered",
+      "reason": "原图明确计数单位为恰被一盏灯照亮的整数坐标个数并给出逐点示意；原图无约束，自选n≤1e5、坐标与半径≤1e9；差分扫描线，独立离散段计数与逐点计数核验。"
     },
     {
       "id": "oa-tradedesk-3",
       "company": "tradedesk",
-      "status": "blocked",
-      "reason": "收益公式与窗口操作依赖缺失原图，文字不足以确定。"
+      "status": "sandbox_verified",
+      "batch": "tradedesk-3-recovered",
+      "reason": "原图给出买卖持有编码、恰好k个连续元素前半置0后半置1的可选修改与利润定义，样例18；原图无约束，自选n≤1e5、价格≤1e5；前缀和枚举窗口，独立显式重建核验。"
     },
     {
       "id": "oa-tradedesk-4",
@@ -8066,8 +8086,9 @@
     {
       "id": "oa-drw-1",
       "company": "drw",
-      "status": "blocked",
-      "reason": "正文称各方块采用 source prompt 中展示的固定朝向，但固定形状定义依赖示意图；现存文本快照未保留图形，不能仅凭解答代码推断所有朝向后当作原题语义。"
+      "status": "sandbox_verified",
+      "batch": "drw-1-recovered",
+      "reason": "原图给出7种方块固定形状、竖直下落与按行消除不填空隙的规则、多行标准输入输出格式和全部样例；行数与每行方块数自选上限；列顶高度落块，独立逐格下落模拟与1..2块全序列穷举核验。"
     },
     {
       "id": "oa-imc-1",
@@ -8110,8 +8131,9 @@
     {
       "id": "oa-susquehanna-international-group-2",
       "company": "susquehanna-international-group",
-      "status": "blocked",
-      "reason": "核心条件在源文中截断，样例解释重复索引且没有给出真正的计数等式；输出 6 无法确定对应的配对谓词。"
+      "status": "sandbox_verified",
+      "batch": "susquehanna-international-group-2-recovered",
+      "reason": "原图给出i≤j且a[i]−b[j]=a[j]−b[i]的计数条件与两个样例完整解释；原图无约束，自选n≤2e5、|值|≤1e9；移项按和计数，独立逐对比较核验。"
     },
     {
       "id": "oa-sig-1",
@@ -8163,8 +8185,9 @@
     {
       "id": "oa-the-d-e-shaw-group-1",
       "company": "the-d-e-shaw-group",
-      "status": "blocked",
-      "reason": "原始 fastprep 约束只有损坏占位符 O_O；“sorted in increasing order”没有明确说明严格递增还是允许相等，而公开例子不足以消歧。未擅自补成 #3 的严格语义。"
+      "status": "sandbox_verified",
+      "batch": "the-d-e-shaw-group-1-recovered",
+      "reason": "原图表格确定非降序语义并给出完整约束与三样例；全范围有序前后缀二分，独立O(n²)枚举与直接删除检查核验。"
     },
     {
       "id": "oa-the-d-e-shaw-group-2",
@@ -8356,8 +8379,9 @@
     {
       "id": "oa-akuna-capital-15",
       "company": "akuna-capital",
-      "status": "blocked",
-      "reason": "同距离时的优先规则在 FastPrep 原文中断裂乱码，MDX 样例也把城市名输出成数字 `3`；并列时无法从固定源恢复唯一规则。"
+      "status": "sandbox_verified",
+      "batch": "akuna-capital-15-recovered",
+      "reason": "原图给出并列取字典序更小名字的规则、完整约束和全部样例；原图样例输出\"3\"为笔误按其解释取c3；排序相邻候选，独立全量扫描与网格穷举核验。"
     },
     {
       "id": "oa-akuna-capital-16",
@@ -8748,8 +8772,9 @@
     {
       "id": "oa-goldman-sachs-32",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "窗口描述中的时间点写法损坏（T−5(T−1)…），样例及第一次可报警时刻缺失，不能确定统计首个完整窗口的下标和边界。"
+      "status": "sandbox_verified",
+      "batch": "goldman-sachs-32-recovered",
+      "reason": "原图给出窗口T−(k−1)..T、T≥k才报警、严格大于与完整约束；平均值按题面实数含义比较（可见样例无法区分整除），截断的Sample Case 0未作公开样例；滑动窗口，独立分数平均核验。"
     },
     {
       "id": "oa-jpmorgan-chase-1",
@@ -9258,8 +9283,9 @@
     {
       "id": "oa-barclay-1",
       "company": "barclay",
-      "status": "blocked",
-      "reason": "题面首句与操作定义被截断，输入只残留 R/A 和输出样例；无法确定每个 Ai 可修改的范围以及一次修改还是可分别改动。"
+      "status": "sandbox_verified",
+      "batch": "barclay-1-recovered",
+      "reason": "原图给出最多一次、替换任一元素为1..R的整数的操作与完整约束；前后缀gcd加约数枚举，独立全替换枚举核验。"
     },
     {
       "id": "oa-barclay-2",
@@ -9277,8 +9303,9 @@
     {
       "id": "oa-hsbc-2",
       "company": "hsbc",
-      "status": "blocked",
-      "reason": "交换范围规则截断在 `...until (row_i+m`，无法确定每个 action 交换单点还是整段。"
+      "status": "sandbox_verified",
+      "batch": "hsbc-2-recovered",
+      "reason": "原图明确逐对向内交换（区间翻转）、区间互不覆盖、num≤1e9与row≤col；定位覆盖K的区间按l+r−K映射，独立真实交换模拟与小N穷举核验。"
     },
     {
       "id": "oa-hsbc-3",
@@ -9625,8 +9652,9 @@
     {
       "id": "oa-rubrik-18",
       "company": "rubrik",
-      "status": "blocked",
-      "reason": "题目依赖的组织关系图缺失，样例的直属汇报关系不完整，无法判定管理范围。"
+      "status": "sandbox_verified",
+      "batch": "rubrik-18-recovered",
+      "reason": "原图给出组织树、完整输入格式、约束和样例原文，修正md两行样例转录错误；子树大根堆启发式合并，独立子树排序贪心与子集枚举核验。"
     },
     {
       "id": "oa-rubrik-19",
@@ -9791,8 +9819,9 @@
     {
       "id": "oa-fortinet-1",
       "company": "fortinet",
-      "status": "blocked",
-      "reason": "题面核心定义只剩一个 `$`，预算约束与函数描述丢失，仅有示例不足以恢复输入契约。"
+      "status": "sandbox_verified",
+      "batch": "fortinet-1-recovered",
+      "reason": "原图给出成本cost[i]、利润2^i、预算x的0-1选择与取模要求；原图无约束，自选n≤1e5、成本≤1e9、x≤1e14；高位贪心，独立子集枚举核验。"
     },
     {
       "id": "oa-fortinet-2",
@@ -9863,8 +9892,9 @@
     {
       "id": "oa-box-1",
       "company": "box",
-      "status": "blocked",
-      "reason": "币值部分序列号格式被截断，10..12长度中可变片段如何解释不明确。"
+      "status": "sandbox_verified",
+      "batch": "box-1-recovered",
+      "reason": "原图给出5条序列号规则（币值为第8位到倒数第2位）和按整笔交易扣1%向下取整，样例按规则复算为1702；正则独立oracle与组合穷举核验。"
     },
     {
       "id": "oa-box-2",
@@ -10363,8 +10393,9 @@
     {
       "id": "oa-ziprecruiter-11",
       "company": "ziprecruiter",
-      "status": "blocked",
-      "reason": "Lamps and Control Points 未提供可读原题规则，不能确认区间端点和任务定义。"
+      "status": "sandbox_verified",
+      "batch": "ziprecruiter-11-recovered",
+      "reason": "上游md正文与原图是不同的题，样例数据与原图一致；以原图的灯/控制点闭区间计数为准；原图无约束，自选n、m≤1e5、坐标≤1e9；端点排序二分，独立逐灯扫描核验。"
     },
     {
       "id": "oa-ziprecruiter-12",
@@ -10382,8 +10413,9 @@
     {
       "id": "oa-ziprecruiter-14",
       "company": "ziprecruiter",
-      "status": "blocked",
-      "reason": "Triplets With Unique Chars 题干在定义之前截断，损坏的图片标签及两个输出不能确定所数三元组。"
+      "status": "sandbox_verified",
+      "batch": "ziprecruiter-14-recovered",
+      "reason": "原图补全了截断的题面、两个样例的逐项解释和约束；窗口逐对比较，独立集合大小判定与穷举核验。"
     },
     {
       "id": "oa-airtable-1",
@@ -10862,8 +10894,9 @@
     {
       "id": "oa-xperi-2",
       "company": "xperi",
-      "status": "blocked",
-      "reason": "题干只保留“There are two numbers…”残句，无操作规则；单个样例解释不能恢复完整算法。"
+      "status": "sandbox_verified",
+      "batch": "xperi-2-recovered",
+      "reason": "原图给出确定性的相减操作与输入输出格式；原图无约束且0会死循环，自选正整数A、B≤1e18；按商合并的辗转相除，独立逐次相减模拟与穷举核验。"
     },
     {
       "id": "oa-abaka-ai-1",
