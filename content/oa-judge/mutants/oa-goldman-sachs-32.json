@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误平均值用整数除法",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nint main(){int k;long long th;int n;if(scanf(\"%d %lld %d\",&k,&th,&n)!=3)return 0;std::vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nlong long s=0;int c=0;for(int i=0;i<n;i++){s+=a[i];if(i>=k)s-=a[i-k];if(i>=k-1&&s/k>th)c++;}\nprintf(\"%d\\n\",c);}\n"
+  },
+  {
+    "name": "错误平均值等于阈值也报警",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nint main(){int k;long long th;int n;if(scanf(\"%d %lld %d\",&k,&th,&n)!=3)return 0;std::vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nlong long s=0;int c=0;for(int i=0;i<n;i++){s+=a[i];if(i>=k)s-=a[i-k];if(i>=k-1&&s>=th*k)c++;}\nprintf(\"%d\\n\",c);}\n"
+  },
+  {
+    "name": "错误窗口不满时也按已有分钟平均",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nint main(){int k;long long th;int n;if(scanf(\"%d %lld %d\",&k,&th,&n)!=3)return 0;std::vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nlong long s=0;int c=0;for(int i=0;i<n;i++){s+=a[i];if(i>=k)s-=a[i-k];int len=i+1<k?i+1:k;if(s>th*len)c++;}\nprintf(\"%d\\n\",c);}\n"
+  },
+  {
+    "name": "错误32位累计",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nint main(){int k;long long th;int n;if(scanf(\"%d %lld %d\",&k,&th,&n)!=3)return 0;std::vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nint s=0;int c=0;for(int i=0;i<n;i++){s+=a[i];if(i>=k)s-=a[i-k];if(i>=k-1&&s>(int)(th*k))c++;}\nprintf(\"%d\\n\",c);}\n"
+  }
+]
