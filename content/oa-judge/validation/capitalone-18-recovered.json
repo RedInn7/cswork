@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261120,
+  "problems": [
+    {
+      "id": "oa-capital-one-18",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 36,
+      "referenceFormalCases": 39,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "d4b78230efa81babdbcc18df5c596b8e56d387518951d851b0824e50080f1e74",
+      "negativeControls": [
+        {
+          "name": "错误把两条对角线也跟着旋转",
+          "rejectedCases": 27,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            4,
+            5,
+            6,
+            8,
+            10,
+            11,
+            12,
+            14,
+            16,
+            17,
+            18,
+            20,
+            21,
+            22,
+            23,
+            25,
+            26,
+            27,
+            28,
+            32,
+            33,
+            34,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误逆时针旋转非对角元素",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            0,
+            4,
+            6,
+            8,
+            10,
+            12,
+            14,
+            16,
+            18,
+            20,
+            21,
+            22,
+            23,
+            27,
+            28,
+            32,
+            34,
+            36,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误把旋转周期当成2",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            5,
+            6,
+            8,
+            11,
+            12,
+            14,
+            17,
+            18,
+            20,
+            21,
+            22,
+            23,
+            27,
+            28,
+            33,
+            34,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        }
+      ],
+      "oracleMethod": "Out-of-place direct source-to-destination coordinate mapping, diagonal invariants and R^4 identity; maximum procedural asymmetric matrix with inverse-coordinate formula output.",
+      "exhaustiveSmallDomain": {
+        "cases": 4240,
+        "dimensions": [
+          1,
+          2,
+          3
+        ],
+        "values": [
+          0,
+          1
+        ],
+        "turns": [
+          0,
+          7
+        ]
+      },
+      "largeBoundaries": [
+        {
+          "name": "中规模-127-turns0",
+          "inputBytes": 125465,
+          "outputBytes": 125459,
+          "elapsedSeconds": 0.00366,
+          "darwinPeakRssBytes": 1441792
+        },
+        {
+          "name": "中规模-128-turns1",
+          "inputBytes": 127543,
+          "outputBytes": 127537,
+          "elapsedSeconds": 0.00441,
+          "darwinPeakRssBytes": 1441792
+        },
+        {
+          "name": "中规模-129-turns2",
+          "inputBytes": 129651,
+          "outputBytes": 129645,
+          "elapsedSeconds": 0.00441,
+          "darwinPeakRssBytes": 1458176
+        },
+        {
+          "name": "中规模-256-turns3",
+          "inputBytes": 530522,
+          "outputBytes": 530516,
+          "elapsedSeconds": 0.01018,
+          "darwinPeakRssBytes": 1638400
+        },
+        {
+          "name": "中规模-257-turns4",
+          "inputBytes": 534730,
+          "outputBytes": 534724,
+          "elapsedSeconds": 0.00952,
+          "darwinPeakRssBytes": 1654784
+        },
+        {
+          "name": "中规模-511-turns2147483647",
+          "inputBytes": 2230544,
+          "outputBytes": 2230529,
+          "elapsedSeconds": 0.03411,
+          "darwinPeakRssBytes": 2424832
+        },
+        {
+          "name": "中规模-512-turns2",
+          "inputBytes": 2239538,
+          "outputBytes": 2239532,
+          "elapsedSeconds": 0.03387,
+          "darwinPeakRssBytes": 2424832
+        },
+        {
+          "name": "完整预算4095阶非对称矩阵EOF",
+          "inputBytes": 33538056,
+          "outputBytes": 33538050,
+          "elapsedSeconds": 1.29389,
+          "darwinPeakRssBytes": 68485120
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 28.519
+    }
+  ]
+}
