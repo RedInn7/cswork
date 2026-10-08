@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-moveworks-3",
+  "status": "research-only-not-authorized-for-publication",
+  "sourceCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "sourcePath": "fastprep/Moveworks/moveworks-sum-of-cubes-of-beautiful-numbers.md",
+  "findings": [
+    "The source unambiguously defines beautiful numbers by one to three zero bits excluding leading zeros, inclusive query endpoints, and modulus 998244353.",
+    "The source supplies full bounds Q <= 200000 and 1 <= L <= R <= 10^18.",
+    "The published example and explanation are both incorrect. In [5,8], valid numbers are 5,6,8 with cube sum 853. In [10,15], valid numbers are 10,11,12,13,14 with cube sum 9000.",
+    "A recovery must disclose these corrections instead of preserving the incorrect [153,0] or the incomplete explanation's 637.",
+    "An original implementation can enumerate at most three cleared nonleading bits for each bit length, sort eligible numbers and build modular cube prefix sums, then answer each query by binary search. Full-domain runtime and memory still require sandbox measurement."
+  ],
+  "independentResearch": {
+    "method": "Digit DP over tight, started and zero-count states, maintaining zeroth through third moments via binomial expansion of (2x+b)^k; no upstream code executed.",
+    "fullDomainCount": 491280,
+    "fullDomainCubeSumModulo": 497027816,
+    "crossChecks": "1001 small brute-force prefixes and 160 large/binary-boundary prefixes agree with independent combination enumeration.",
+    "capacityRequired": "Full Q=200000 input may approach 8000007 bytes; verify at least 8 MiB input capacity and 2 MiB output capacity. Do not reduce source constraints to fit defaults.",
+    "existingBudgets": "lib/oj-data-budgets.mjs currently permits 32 MiB per input, 64 MiB expected output and 128 MiB import; the eventual package must also set a sufficient runtime outputLimit and stay within the total import budget."
+  },
+  "remainingGates": [
+    "authored package and solution",
+    "full Q=200000 boundary tests",
+    "normal-exit negative controls",
+    "dedicated sandbox verification",
+    "real API/worker integration",
+    "independent artifact review",
+    "passing remote CI and deployment"
+  ]
+}

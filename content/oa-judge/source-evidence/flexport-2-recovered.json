@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "items": {
+    "oa-flexport-2": {
+      "url": "https://oamaster.com/docs/companies/flexport#2-distinct-moves",
+      "contentHash": "2274148cf5c0ba2cfb5eea1720bba25621f3dc5d286805bf68232e633cfb0235",
+      "catalogContentHash": "2274148cf5c0ba2cfb5eea1720bba25621f3dc5d286805bf68232e633cfb0235",
+      "path": "fastprep/Flexport/flexport-distinct-moves.md",
+      "gitBlobSha": "3fb7f08fba5d35a4366400f7fcf618a2813a6615",
+      "rawSha256": "77f1bee6ed88e653133fae52a6b0a2413359ed7fae43c1318b1ef28d8a5fe865",
+      "upstreamCodeExecuted": false,
+      "corroboratingSource": {
+        "path": "fastprep/Meesho/meesho-distinct-moves.md",
+        "gitBlobSha": "95bc775ba41d6bd80e3644ff9d5b605bc02d137c",
+        "rawSha256": "482c27d22175589f08e79cb9f7e59127a85b76705010433593158316683e2632",
+        "role": "Same interface, movement rules, modulus and bounds; explicit character-string deduplication and deleting zero or more elements. Not needed to supply numeric bounds."
+      },
+      "recoveredConstraints": [
+        "1<=length(s)<=1000",
+        "0<=n,x,y<=2500",
+        "s in l/r",
+        "distinct by characters, not indices",
+        "mod1000000007"
+      ],
+      "interpretationDisclosure": "Finite positions0..n and n upper bound require entire path inside domain; no reflection/clamping. Wide source domain retained: outside start/end means no valid paths. Deleting all characters allowed, so empty sequence contributes1 exactly at valid x=y. Source does not separately assert x/y<=n or nonempty selection.",
+      "correction": "Original rrlrr,n6,x1,y4 says3; exhaustive32 masks produce only rrr and rrlrr (2 distinct strings,5 index choices). Catalog ordinary indexed-subsequence DP also overcounts rr from0to1 as2 rather than1. Local author-image path inaccessible and not used.",
+      "siteAdded": "s and n x y serialization; first public example preserves original input and corrects3to2, remaining two are authored. Empty-sequence explanation corroborated by same-problem Meesho explicit subsequence definition, not attributed to Flexport wording."
+    }
+  }
+}

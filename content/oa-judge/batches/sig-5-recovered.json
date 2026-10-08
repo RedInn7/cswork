@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-sig-5",
+      "sourceContentHash": "3297d349d86f8a7b577d50404c4a50ca0ac25b178469bd8bf5c0b9392d266314",
+      "packageChecksum": "d368c052d2b0098bac20bfe616d181ba6f6eea3eb8de00b718a12bdbd5a157cd",
+      "editorial": "## 固定原始OCR与样例恢复\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/SIG_OA/011_QQ_1751157677750.txt明确：alloc寻找最左侧、起点可被8整除、长度为x的连续空闲区间。仅起点需8对齐，长度不必为8的倍数，可以跨段。分配成功给整块赋新ID，从1开始且只在成功时递增；失败返回−1，不耗ID。erase释放对应ID的整个分配块，返回长度；ID不存在或已释放返回−1。释放后不重用旧ID。初始memory中的1只标记已有占用，没有获得本轮alloc的ID，不能通过新ID释放。\n\n015给完整范围：8≤n≤320，n为8倍数；2≤q≤300；alloc长度1..n；erase参数1..q−1。初始0/1可以任意排列，原例本身包含不在8对齐位置开始的初始占用，所以对齐要求针对本次alloc的新块，不擅加初始占用块形状限制。\n\n012列出的原输入只有15项，与长度保证冲突；MDX建议尾部补0没有原文依据。014第一次alloc2明确只将下标8、9设1，给出的完整16位操作后状态是[0,1,0,0,0,1,1,0,1,1,0,0,1,1,1,1]。把仅本次新占用的8、9恢复为0，即唯一还原原输入[0,1,0,0,0,1,1,0,0,0,0,0,1,1,1,1]。后续每一步完整状态均与此一致；不是随意在末尾补位。保留七个原操作及输出[8,0,−1,2,8,−1,−1]。MDX的ID起点说明也不准确，本站采用011与014明确的1-based成功分配计数。另两个公开例为本站补充。未执行上游代码。\n\n## 思路\n\n维护逐单元状态：0表示空闲，−1表示初始占用，正数表示新分配的ID。alloc按0、8、16……枚举能容纳x个单元的候选起点，检查该区间是否全0，第一次成功就标记新ID；找不到则保持状态与ID计数不变。erase遍历所有单元，清空等于指定ID的项，并统计长度。\n\n## 正确性证明\n\n初始状态准确区分空闲与不可通过本轮ID释放的既有占用。假设处理前状态正确：alloc枚举所有且仅所有合法对齐起点，并按递增顺序检查。区间全0当且仅当可以分配，因此首次成功恰好是要求的最左合法块；按成功次数生成新ID并标记全部单元，保持状态正确。不存在成功候选时返回−1且不修改状态，同样符合规则。\n\nerase中所有持有目标ID的单元恰好是尚未释放的那次分配块，清零并计数即正确释放整块。已删除或从未分配的ID没有任何对应单元，返回−1。计数器不会下降，因此释放后的ID不会再分配。归纳得每个操作的状态及返回值均正确。\n\n## 复杂度与完整边界\n\n分配最多检查n/8个起点、每处至多n个单元，最坏O(n²)；释放O(n)。共O(qn²)时间、O(n+q)空间（含输出）。完整n=320、q=300远小于资源限制。操作结果是起点、块长或−1，均可用普通整数表示。长度320可以占满内存；长度9可跨8单元边界；释放后可立即重新使用空间但须获取新ID。\n\n## 独立验证\n\n163个唯一oracle用大整数bitmask表示占用，每个已分配ID映射一个位掩码。分配枚举左移的连续1掩码，按按位与判空；释放从ID表删除掩码，用按位与反码清空。与参考逐单元ID扫描实现不同，不调用参考代码。全部小输入用真实参考子进程比较。\n\n正式数据覆盖16位原例重建、8单元最小内存、320单元/300次查询、全占用、全空、跨段长度9、整段长度320、首尾边界、失败后再成功、重复释放、未知ID上界299、初始占用不可释放、释放后换新ID、碎片化与随机操作。全部输入严格验证范围；两个错误实现分别失败时也递增ID、忽略8对齐，均须全部正式输入正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n,q=values[:2]\n    cells=[-1 if v else 0 for v in values[2:2+n]]\n    counter=0\n    answer=[]\n    for offset in range(2+n,len(values),2):\n        kind,x=values[offset:offset+2]\n        if kind==0:\n            start=-1\n            for i in range(0,n-x+1,8):\n                if all(v==0 for v in cells[i:i+x]):\n                    start=i\n                    break\n            if start==-1:\n                answer.append(-1)\n            else:\n                counter+=1\n                cells[start:start+x]=[counter]*x\n                answer.append(start)\n        else:\n            removed=0\n            for i in range(n):\n                if cells[i]==x:\n                    cells[i]=0\n                    removed+=1\n            answer.append(removed if removed else -1)\n    return ' '.join(map(str,answer))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

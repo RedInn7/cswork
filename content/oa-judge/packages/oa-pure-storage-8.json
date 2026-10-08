@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-pure-storage-8",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "为错误二分查找构造反例",
+    "difficulty": "简单",
+    "tags": [
+      "OA",
+      "Pure Storage",
+      "构造",
+      "二分查找"
+    ],
+    "description": "Bob声称下列程序总能在非递减数组中正确搜索target：存在时返回任意匹配下标，不存在时返回−1。请编写无输入程序，若算法正确则输出CORRECT，否则输出任意合法反例数组与target。本站按原OCR053完整Java版本解释，被反驳程序为：\n\n```java\nint sorted_search(int[] elements, int target) {\n    if (elements == null || elements.length <= 0) return -1;\n    int left = 0, right = elements.length - 1;\n    while (left < right) {\n        int middle = (left + right + 1) / 2;\n        if (elements[middle] > target) right = middle - 1;\n        else left = middle + 1;\n    }\n    if (elements[right] == target) return right;\n    return -1;\n}\n```\n\n评测接受任意能使该算法得到错误结果的合法见证，不要求与你看到的公开示例相同。",
+    "input": "无输入，标准输入为空。不要读取题目中不存在的测试参数。",
+    "output": "若程序正确，输出CORRECT。否则恰好三行：第一行非负整数n；第二行恰好n个空格分隔的整数，以非递减顺序排列；第三行target。元素和target必须是Java有符号32位整数（−2147483648..2147483647），由原int接口确定；原文没有另给数组长度上限，本站不加人为小长度限制，输出总量受64KiB运行预算约束。见证必须让原程序返回错误结果；若target重复，返回任意匹配下标均是正确结果，不能作为反例。",
+    "explanation": "公开输出为本站推导而非原OCR样例。数组[1,2,3]搜索2时，middle=1且elements[1]=2，却执行left=2；循环退出检查elements[2]=3，错误返回−1。故这三行是合法反例，CORRECT不成立。原OCR要求反例三行且没有输入，本题不伪造额外输入。",
+    "hints": [
+      "检查中间元素恰好等于target时的分支。",
+      "构造一个很小的有序数组即可证伪普遍正确性。"
+    ],
+    "timeLimit": 1,
+    "memoryLimit": 65536,
+    "outputLimit": 64,
+    "checker": "oa-binary-search-witness",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "本站构造见证（唯一空输入）",
+      "input": "",
+      "expectedOutput": "3\n1 2 3\n2\n",
+      "hidden": false,
+      "weight": 1
+    }
+  ]
+}

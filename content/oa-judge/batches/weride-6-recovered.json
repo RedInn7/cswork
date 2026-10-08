@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-weride-6",
+      "sourceContentHash": "f7af280f6282fa7c9e2cc754dcaa39f0834215ceec9d085d4f40f651dbbc2400",
+      "packageChecksum": "0842b1410bcf8c487c01b8da8a288194d7bf963bd910ea45b6161253f1ddf290",
+      "editorial": "## 原始OCR、样例与完整范围\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/WeRide_OA/018–024给出完整numNicePairs问题：一棵无向树，边权1..26对应a..z；两个不同节点之间唯一最短路径的边字母可以任意重排，若能成为回文，称为nice pair。统计无序的不同节点对。023/024的五节点全A树给出10并列出全部不同点对，明确排除自配对和双向重复计数。\n\n020/021原始约束完整：1≤n≤100000、m=n−1、端点1..n、边权1..26，树的直径严格小于1000（按边数）。不删除直径限制；因此十万节点长链非法，不能拿它当正式满域测试。输入直接保留021标准协议：n m，然后m行u v w，节点统一1-based。n=1合法且答案0。返回long，最大为100000×99999/2=4999950000，需要64位。\n\n三个公开例分别完整保留019的9、021/022的7、023/024的10。注意018示意树边为1–2、2–3、2–4、3–5，而019示意树为1–2、2–3、3–4、3–5，虽然权值同为2,1,1,1，拓扑不同，不能把019的9套到018。本站把018作为单独隐藏测试，独立逐对计算答案8；公开题解明确区分两图，而不混搭来源。例019中的BAA需要重排为ABA，这直接说明不是仅判断原路径字符串是否已经回文。\n\n## 思路\n\n任意选择根，为每个节点计算根到该节点路径上26种字母出现次数的奇偶掩码。树上u到v路径的掩码等于两根路径掩码的异或，因为公共部分出现两次而抵消。一个字符串可重排成回文，当且仅当奇数频次的字符至多一种，所以两掩码相等或只相差一位时点对合法。\n\n遍历节点，用哈希表保存已经见过的各掩码频数。查询当前掩码及翻转26个位得到的掩码，累加频数，再把当前节点加入表。使用迭代遍历避免递归栈依赖。\n\n## 正确性证明\n\n回文除可能的中间字符外，其余位置均两两对应，因此至多一种字符频次为奇数是必要条件。反之，把每种字符的一半放在左边、反序放在右边，唯一可能的奇数字符放中间，即可构造回文，故条件也充分。\n\n树上两根路径从根到公共祖先的部分被异或两次而消失，剩余边恰为u到v的唯一路径。因此路径奇偶条件等价于mask[u] XOR mask[v]的置位数至多1，也等价于掩码相等或差一个比特。\n\n处理当前节点前哈希表仅包含先前节点，27种查询掩码互不相同，恰好枚举所有与当前节点合法的先前节点。查询后才插入，故不会计自身。每个无序不同节点对只会在后处理端点时检查一次，所以没有遗漏和重复，最终累加值正确。\n\n## 复杂度\n\n遍历和建图O(n)，每节点27次哈希查询，期望时间O(26n)，空间O(n)；采用运行时种子的SplitMix64散列，避免固定整数哈希被预制同桶掩码轻易攻击。哈希复杂度仍是期望值而非确定性最坏界。满n随机树和重编号树检验大量不同掩码，验证记录其实际种类数。掩码只需26位，计数和答案用64位。原生参考题包3秒/256MiB，完整原范围与直径约束不缩减。\n\n## 独立验证\n\n小oracle对每个起点遍历树，显式复制26维路径频次，在到达更大编号端点时直接统计奇数频次，完全不使用根掩码或哈希配对。163唯一小输入真实运行原生参考。额外穷举n≤5的递增父节点树、二字母边权，用独立路径计数验证。\n\n大域oracle从另一个根出发，先计算所有掩码后按频数离线分组：相同掩码贡献f(f−1)/2，差一位的两组只按较小掩码侧贡献f·g，不使用参考的在线先查后插入流程。全单字母树额外用n(n−1)/2闭式，星形树用n−1+ΣC(同字母叶数,2)闭式。全部输入生成时检查连通、无环、边数以及两次BFS得到的真实直径。满n覆盖星形、平衡树、全部26字母、随机重编号，以及直径999的扫帚树，不使用非法满长链。负控包括有序双计、自配对和错误单色路径限制；所有正式负控均须正常退出。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <unordered_map>\n#include <chrono>\n#include <cstdint>\nusing namespace std;\nstruct Hash{static uint64_t mix(uint64_t x){x+=0x9e3779b97f4a7c15ULL;x=(x^(x>>30))*0xbf58476d1ce4e5b9ULL;x=(x^(x>>27))*0x94d049bb133111ebULL;return x^(x>>31);}size_t operator()(int x)const{static const uint64_t seed=chrono::steady_clock::now().time_since_epoch().count();return mix(uint64_t(x)+seed);}};\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nstruct Edge{int to,weight;};\nint main(){\n int n=readNumber(),m=readNumber();vector<vector<Edge>>adj(n);\n for(int i=0;i<m;i++){int u=readNumber()-1,v=readNumber()-1,w=readNumber()-1;adj[u].push_back({v,w});adj[v].push_back({u,w});}\n vector<int>parent(n,-1),mask(n),order(1,0);parent[0]=0;\n for(size_t i=0;i<order.size();i++){int u=order[i];for(auto e:adj[u])if(e.to!=parent[u]){parent[e.to]=u;mask[e.to]=mask[u]^(1<<e.weight);order.push_back(e.to);}}\n unordered_map<int,long long,Hash>seen;seen.reserve(n*2);long long answer=0;\n for(int u:order){int x=mask[u];auto same=seen.find(x);if(same!=seen.end())answer+=same->second;\n  for(int b=0;b<26;b++){auto it=seen.find(x^(1<<b));if(it!=seen.end())answer+=it->second;}\n  seen[x]++;\n }\n printf(\"%lld\\n\",answer);\n}\n"
+        }
+      ]
+    }
+  ]
+}

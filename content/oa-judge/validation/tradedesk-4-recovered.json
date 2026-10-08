@@ -1,0 +1,243 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261025,
+  "problems": [
+    {
+      "id": "oa-tradedesk-4",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 47,
+      "referenceFormalCases": 50,
+      "referenceSha256": "7600fb7fcdaabb4339f866ed269c35c7495bb35914e582a9141eea7c50747ca2",
+      "negativeControls": [
+        {
+          "name": "错误将严格大于改为大于等于",
+          "rejectedByCases": [
+            0,
+            3,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            16,
+            19,
+            21,
+            22,
+            23,
+            24,
+            25,
+            28,
+            29,
+            30,
+            34,
+            35,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误返回最后一个匹配起点",
+          "rejectedByCases": [
+            0,
+            5,
+            8,
+            11,
+            13,
+            14,
+            16,
+            17,
+            23,
+            26,
+            27,
+            36,
+            39,
+            43,
+            44,
+            48,
+            49
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Explicit all length3 windows and minimum comparison, independent of reference running streak.",
+      "exhaustiveSmallDomain": {
+        "cases": 9801,
+        "nMin": 3,
+        "nMax": 7,
+        "values": [
+          -1,
+          0,
+          1
+        ],
+        "thresholds": [
+          -1,
+          0,
+          1
+        ],
+        "inputExpectedDigest": "c960183e0c35b2c09917321c4b7f39fc0e80249dbfa6b2c239ef2bada3b378a6",
+        "referenceExecution": "in-process own authored reference, plus163 separate subprocess oracles"
+      },
+      "largeBoundaries": [
+        {
+          "name": "最大阈值全等",
+          "n": 1000,
+          "threshold": 1000,
+          "expected": -1,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.02046
+        },
+        {
+          "name": "最小阈值全等",
+          "n": 1000,
+          "threshold": -1000,
+          "expected": -1,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01919
+        },
+        {
+          "name": "完整全合格",
+          "n": 1000,
+          "threshold": -1000,
+          "expected": 0,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01868
+        },
+        {
+          "name": "只有最后三项合格",
+          "n": 1000,
+          "threshold": 0,
+          "expected": 997,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01966
+        },
+        {
+          "name": "只有最前三项合格",
+          "n": 1000,
+          "threshold": 0,
+          "expected": 0,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.02395
+        },
+        {
+          "name": "多个分离匹配",
+          "n": 1000,
+          "threshold": 0,
+          "expected": 0,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01907
+        },
+        {
+          "name": "每两项即重置",
+          "n": 1000,
+          "threshold": 0,
+          "expected": -1,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01826
+        },
+        {
+          "name": "仅不连续合格",
+          "n": 1000,
+          "threshold": 0,
+          "expected": -1,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01826
+        },
+        {
+          "name": "阈值相等打断",
+          "n": 1000,
+          "threshold": 999,
+          "expected": -1,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01834
+        },
+        {
+          "name": "末尾四项合格",
+          "n": 1000,
+          "threshold": 0,
+          "expected": 996,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01849
+        },
+        {
+          "name": "端点负数",
+          "n": 1000,
+          "threshold": -1000,
+          "expected": 500,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01838
+        },
+        {
+          "name": "严格递增",
+          "n": 1000,
+          "threshold": 496,
+          "expected": 997,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.01826
+        },
+        {
+          "name": "严格递减",
+          "n": 1000,
+          "threshold": 497,
+          "expected": 0,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": true,
+          "localSeconds": 0.0182
+        },
+        {
+          "name": "完整随机0",
+          "n": 1000,
+          "threshold": 917,
+          "expected": -1,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": false,
+          "localSeconds": 0.02046
+        },
+        {
+          "name": "完整随机1",
+          "n": 1000,
+          "threshold": -737,
+          "expected": 0,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": false,
+          "localSeconds": 0.02199
+        },
+        {
+          "name": "完整随机2",
+          "n": 1000,
+          "threshold": 372,
+          "expected": 31,
+          "independentOracle": "explicit length3 window minimum",
+          "closedFormChecked": false,
+          "localSeconds": 0.01858
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 6.667
+    }
+  ]
+}

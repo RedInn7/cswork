@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-sig-1",
+      "sourceContentHash": "bea0b8df1d3fbdee64eadfe8b09c2ecc50d80267c7996d23ea44af8d03349c6a",
+      "packageChecksum": "c0e41e9dd3560e8fff05829c67da706d52e2245f0806c8dcb8adf269871af4be",
+      "editorial": "## 固定来源、可选修改与同题补页\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/SIG_OA/001_image.txt明确：strategy中−1买入、0不操作、1卖出；利润为全部卖出价格之和减全部买入价格之和，可能为负。原NOTE保证始终有足够货币和资金，因此不模拟库存或预算，也不限制先买后卖。\n\n001使用may change：可以不修改；如果修改，选择一个恰好k长的连续窗口，将前k/2项设0、后k/2项设1，其他位置不变。这里可选一次修改，不能误读成强制修改或反复修改。为明确可选性的实际区别，本站补充rates=[1,1]、strategy=[1,1]、k=2：不修改得2，强制修改只能得1。原文“choose the range optimally”说明选用修改时选择最优窗口，不取消may的含义。\n\nSIG003自身给完整n范围2..100000、rates[i]范围1..1000、strategy等长且值−1/0/1，k仅标题处截断。k范围由固定同题eBay_OA/023_image.txt补齐：偶数且2≤k≤nums.length。其nums是页内变量名笔误，该任务唯一数组长度是rates/strategy的共同长度n；本题公开归一化为2≤k≤n。对应关系不只凭标题：eBay019/020与SIG001/002的规则、无预算NOTE、完整样例数组/策略/k=4及答案18一致。仅补缺失k范围，不将另一公司页面的价格上界替换SIG自身明确的1000。\n\n原例rates=[2,4,1,5,10,6]、strategy=[−1,1,0,1,−1,0]、k=4，原利润−3，三个修改窗口分别得−4、13、18，答案18保持。另两公开例为本站补充。输入为n k、价格数组、策略数组，输出一个整数；未执行上游代码。\n\n## 思路\n\n原利润记为B。修改窗口[l,l+k)时，移除窗口原贡献old，再加入后半段价格和replacement，净增益为replacement−old。可不修改对应增益0。枚举所有窗口，最大利润就是B加上0和所有增益的最大值。\n\n参考实现维护窗口原贡献和、后半段价格和。窗口右移1，原贡献去掉左端、加入新右端；后半段去掉原l+k/2、加入新l+k，两和均O(1)更新。k=n时只有首窗口，循环自然为空。\n\n## 正确性证明\n\n利润按每一天独立相加，原NOTE排除了资金/库存对操作可行性的额外影响。修改窗口之外各项不变；窗口前半设0贡献0，后半设1贡献对应价格，所以移除old再加replacement恰好给出该窗口修改后的真实利润。\n\n初始化准确覆盖第一个窗口。每次滑动只移除离开的元素、加入进入的元素，两个维护和始终等于当前窗口原贡献及后半价格之和。遍历的起点0..n−k恰好覆盖所有合法窗口，无遗漏。合法策略是保持原状或修改这些窗口之一，取增益0与全部窗口增益最大值因此得到最优利润。\n\n## 复杂度与数值边界\n\n计算原贡献及窗口扫描共O(n)时间，保存输入和贡献O(n)空间，滑窗额外O(1)。最终策略每项仍为−1/0/1，利润绝对值≤1000n≤10^8；中间计算使用Python整数或64位即可。不能把负最优利润钳为0：不修改提供的是原利润，而非零利润。\n\n## 独立验证\n\n小域oracle复制策略数组，逐窗口实际写入前半0/后半1，然后从头逐日求利润，同时比较未修改方案；不使用增益/滑动递推。163个唯一oracle通过真实子进程，另穷举n=2..5、价格1/2、策略−1/0/1及全部合法偶数k，共18396组。\n\n大域另建价格与原贡献两个前缀数组，对每个窗口独立算区间差，不使用参考的相邻窗口递推。完整n=100000覆盖全买/全卖/全保持、价格端点、k=2与k=n、最大奇数n的最大偶数k、首尾最优、窗口半区极不均衡及固定随机。部分大例同时用闭式确认。负控分别强制修改、把卖出半区错放到前半，所有正式输入正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,k=data[:2]\n    rates=data[2:2+n]\n    strategy=data[2+n:]\n    contribution=[rates[i]*strategy[i] for i in range(n)]\n    baseline=sum(contribution)\n    half=k//2\n    old=sum(contribution[:k])\n    replacement=sum(rates[half:k])\n    best=max(0,replacement-old)\n    for left in range(n-k):\n        old+=contribution[left+k]-contribution[left]\n        replacement+=rates[left+k]-rates[left+half]\n        best=max(best,replacement-old)\n    return str(baseline+best)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

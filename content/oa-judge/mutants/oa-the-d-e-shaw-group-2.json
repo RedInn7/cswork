@@ -1,0 +1,10 @@
+[
+  {
+    "name": "左右不对称地阻止越过等高同学",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n=values[0]\n    a=values[1:]\n    left=[-1]*n\n    right=[n]*n\n    stack=[]\n    for i in range(n):\n        while stack and a[stack[-1]]<a[i]:\n            stack.pop()\n        if stack:\n            left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]<=a[i]:\n            stack.pop()\n        if stack:\n            right[i]=stack[-1]\n        stack.append(i)\n    answer=sum(right[i]-left[i]-1 for i in range(n))\n    return str(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误用32位有符号整数保存总和",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n=values[0]\n    a=values[1:]\n    left=[-1]*n\n    right=[n]*n\n    stack=[]\n    for i in range(n):\n        while stack and a[stack[-1]]<=a[i]:\n            stack.pop()\n        if stack:\n            left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]<=a[i]:\n            stack.pop()\n        if stack:\n            right[i]=stack[-1]\n        stack.append(i)\n    answer=sum(right[i]-left[i]-1 for i in range(n))\n    return str((answer+(1<<31))%(1<<32)-(1<<31))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
