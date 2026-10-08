@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008,
+  "problems": [
+    {
+      "id": "oa-amazon-83",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "formalCases": 40,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "bb4ac8b40e29077764831f686328e7de03843c2efa728bccfee31f1752e15e91",
+      "negativeControls": [
+        {
+          "name": "错误创造不存在的全局gcd",
+          "language": "cpp",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            10,
+            13,
+            14,
+            16,
+            19,
+            21,
+            23,
+            24,
+            25,
+            27,
+            29,
+            30,
+            32
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "降低重复值时只更新一个副本",
+          "language": "cpp",
+          "rejectedByCases": [
+            0,
+            8,
+            17
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "largeBoundaries": [
+        {
+          "name": "primes",
+          "n": 2000000,
+          "maxValue": 200000000,
+          "inputBytes": 17245914,
+          "expectedOutput": "31381105077640\n",
+          "localWallSeconds": 0.5535
+        },
+        {
+          "name": "semiprimes",
+          "n": 2000000,
+          "maxValue": 200000000,
+          "inputBytes": 15859311,
+          "expectedOutput": "10304133434444\n",
+          "localWallSeconds": 1.0167
+        },
+        {
+          "name": "consecutive",
+          "n": 2000000,
+          "maxValue": 200000000,
+          "inputBytes": 14888912,
+          "expectedOutput": "142958882633\n",
+          "localWallSeconds": 0.6811
+        },
+        {
+          "name": "repeated_small_divisor",
+          "n": 2000000,
+          "maxValue": 200000000,
+          "inputBytes": 12000008,
+          "expectedOutput": "4000000\n",
+          "localWallSeconds": 0.1009
+        },
+        {
+          "name": "high_distinct",
+          "n": 2000000,
+          "maxValue": 200000000,
+          "inputBytes": 20000008,
+          "expectedOutput": "398000001000000\n",
+          "localWallSeconds": 0.1041
+        },
+        {
+          "name": "contains_one",
+          "n": 100000,
+          "maxValue": 200000000,
+          "inputBytes": 999999,
+          "expectedOutput": "100000\n",
+          "localWallSeconds": 0.0045
+        },
+        {
+          "name": "all_maximum",
+          "n": 2000000,
+          "maxValue": 200000000,
+          "inputBytes": 20000008,
+          "expectedOutput": "400000000000000\n",
+          "localWallSeconds": 0.0627
+        }
+      ],
+      "packageBytes": 100999980,
+      "oracleMethod": "Memoized enumeration of actual strictly-decreasing legal replacement operations; large structures use independent prime/SPF or closed-form expectations.",
+      "localValidationOnly": true,
+      "subprocessValidation": true,
+      "elapsedSeconds": 9.568
+    }
+  ]
+}

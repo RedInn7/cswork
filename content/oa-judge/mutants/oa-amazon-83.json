@@ -1,0 +1,12 @@
+[
+  {
+    "name": "错误创造不存在的全局gcd",
+    "language": "cpp",
+    "code": "#include <iostream>\n#include <numeric>\nusing namespace std;\nint main(){long long n,x,g=0;cin>>n;for(long long i=0;i<n;++i){cin>>x;g=gcd(g,x);}cout<<g*n<<'\\n';}\n"
+  },
+  {
+    "name": "降低重复值时只更新一个副本",
+    "language": "cpp",
+    "code": "#include <algorithm>\n#include <cstdint>\n#include <cstdio>\n#include <iostream>\n#include <utility>\n#include <vector>\nusing namespace std;\nstruct Node { uint32_t value, count; };\n\nuint64_t minimumCost(vector<uint32_t> values) {\n    if (*min_element(values.begin(), values.end()) == 1) return values.size();\n    sort(values.begin(), values.end());\n    vector<Node> nodes;\n    nodes.reserve(values.size());\n    uint64_t answer = 0;\n    for (uint32_t value : values) {\n        answer += value;\n        if (!nodes.empty() && nodes.back().value == value) ++nodes.back().count;\n        else nodes.push_back({value, 1});\n    }\n    uint32_t maximum = values.back();\n    vector<uint32_t>().swap(values);\n    vector<uint64_t> alive((size_t(maximum) + 64) / 64, 0);\n    for (auto node : nodes) alive[node.value >> 6] |= uint64_t(1) << (node.value & 63);\n    for (auto node : nodes) {\n        uint32_t d = node.value;\n        uint64_t mask = uint64_t(1) << (d & 63);\n        if (!(alive[d >> 6] & mask)) continue;\n        alive[d >> 6] &= ~mask;\n        for (uint32_t multiple = d + d; multiple <= maximum; multiple += d) {\n            uint64_t bit = uint64_t(1) << (multiple & 63);\n            auto& word = alive[multiple >> 6];\n            if (!(word & bit)) continue;\n            word &= ~bit;\n            auto found = lower_bound(nodes.begin(), nodes.end(), multiple,\n                [](const Node& item, uint32_t value) { return item.value < value; });\n            answer += uint64_t(d);\n            answer -= uint64_t(multiple);\n        }\n    }\n    return answer;\n}\n\nuint32_t readNumber() {\n    int c = getchar_unlocked();\n    while (c != EOF && c <= 32) c = getchar_unlocked();\n    uint32_t value = 0;\n    while (c != EOF && c > 32) { value = value * 10 + (c - '0'); c = getchar_unlocked(); }\n    return value;\n}\nint main() {\n    uint32_t n = readNumber();\n    vector<uint32_t> values(n);\n    for (auto& value : values) value = readNumber();\n    cout << minimumCost(std::move(values)) << '\\n';\n}\n"
+  }
+]
