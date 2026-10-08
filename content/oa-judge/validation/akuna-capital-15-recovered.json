@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008015,
+  "problems": [
+    {
+      "id": "oa-akuna-capital-15",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "9835d5868cfb0bb77715d5a9287c63488bd1e40fd9b993e0e24150a0239085c7",
+      "negativeControls": [
+        {
+          "name": "错误距离相同时取名字较短者",
+          "rejectedCases": 9,
+          "rejectedCaseIndices": [
+            10,
+            13,
+            18,
+            22,
+            28,
+            30,
+            32,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误距离相同时保留先找到的",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            4,
+            6,
+            8,
+            10,
+            13,
+            18,
+            20,
+            22,
+            27,
+            28,
+            30,
+            32,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误只考虑共享x坐标",
+          "rejectedCases": 21,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            4,
+            6,
+            8,
+            10,
+            13,
+            14,
+            16,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            27,
+            28,
+            32,
+            33,
+            34,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误每条线只看后继城市",
+          "rejectedCases": 25,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            8,
+            10,
+            11,
+            13,
+            14,
+            16,
+            18,
+            19,
+            20,
+            23,
+            24,
+            27,
+            28,
+            29,
+            30,
+            32,
+            33,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent O(n*m) scan over all cities with (distance,name) tuple minimum; Python per-line sorted adjacency for formal cases; exhaustive placements on a 3x3 grid with prefix-related names.",
+      "exhaustiveSmallDomain": {
+        "grid": "3x3",
+        "citiesMin": 1,
+        "citiesMax": 4,
+        "names": [
+          "ab",
+          "aba",
+          "a",
+          "b"
+        ],
+        "cases": 255
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模同一竖线",
+          "inputBytes": 3586481,
+          "outputBytes": 749477,
+          "elapsedSeconds": 0.03935
+        },
+        {
+          "name": "满规模对角线全NONE",
+          "inputBytes": 2675438,
+          "outputBytes": 500000,
+          "elapsedSeconds": 0.03281
+        },
+        {
+          "name": "满规模网格",
+          "inputBytes": 2392196,
+          "outputBytes": 745279,
+          "elapsedSeconds": 0.04303
+        },
+        {
+          "name": "满规模随机稀疏",
+          "inputBytes": 3473689,
+          "outputBytes": 500066,
+          "elapsedSeconds": 0.05388
+        },
+        {
+          "name": "满规模小值域随机",
+          "inputBytes": 2005472,
+          "outputBytes": 748255,
+          "elapsedSeconds": 0.0533
+        },
+        {
+          "name": "满规模四邻等距按名字",
+          "inputBytes": 2215229,
+          "outputBytes": 744450,
+          "elapsedSeconds": 0.0401
+        },
+        {
+          "name": "满规模两竖线",
+          "inputBytes": 2166684,
+          "outputBytes": 688898,
+          "elapsedSeconds": 0.03563
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.622
+    }
+  ]
+}
