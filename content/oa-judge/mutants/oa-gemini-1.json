@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误忽略整板竖涂选项只做横涂",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstdint>\nint main(){unsigned n,h,previous=0;uint64_t answer=0;scanf(\"%u\",&n);while(n--){scanf(\"%u\",&h);if(h>previous)answer+=uint64_t(h)-previous;previous=h;}printf(\"%llu\\n\",(unsigned long long)answer);}\n"
+  },
+  {
+    "name": "错误每次下降都重新从地面计水平费用",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstdint>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nuint32_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint32_t x=0;while(c>32&&c!=EOF){x=x*10+uint32_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Node{uint32_t height,width,cost;};\nstatic_assert(sizeof(Node)==12);\nint main(){uint32_t n=readNumber();vector<Node> st;st.reserve(size_t(n)+1);st.push_back({0,0,0});\nauto append=[&](uint32_t h,uint32_t width){uint32_t cost=0;\nwhile(st.back().height>h){Node node=st.back();st.pop_back();uint32_t base=max(h,st.back().height);\nuint32_t value=uint32_t(min<uint64_t>(node.width,uint64_t(node.cost)+node.height));\nif(st.back().height>=h){st.back().width+=node.width;st.back().cost+=value;}else{width+=node.width;cost+=value;}}\nif(st.back().height==h){st.back().width+=width;st.back().cost+=cost;}else st.push_back({h,width,cost});};\nfor(uint32_t i=0;i<n;i++)append(readNumber(),1);append(0,0);printf(\"%u\\n\",st.front().cost);}\n"
+  },
+  {
+    "name": "错误每块正高度板都单独竖涂",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){unsigned n,h,answer=0;scanf(\"%u\",&n);while(n--){scanf(\"%u\",&h);answer+=h>0;}printf(\"%u\\n\",answer);}\n"
+  }
+]

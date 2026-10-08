@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "batch": "pure-storage-11-recovered",
+  "problemId": "oa-pure-storage-11",
+  "packageChecksum": "862eb00c05aeb5376d74ec81a1b1c910e9ac3e3b14da44443287d337b7d7387d",
+  "referenceSha256": "f8ad37d22c2209cd196ff330d3a9819d4bd99630d31cda91317f8b08788da287",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 206,
+      "formal": 43,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 43,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1386,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "largeInputs": [
+    {
+      "pattern": "all a, EOF without newline",
+      "length": 33554432,
+      "inputBytes": 33554432,
+      "expected": 562949970198528
+    },
+    {
+      "pattern": "alternating ab with LF",
+      "length": 33554431,
+      "inputBytes": 33554432,
+      "expected": 281474976710656
+    }
+  ],
+  "rangeDisclosure": "No original length maximum. Full existing32MiB input domain including EOF/LF/CRLF retained. Explicit positional counting, exact64-bit result instead of overflowing original int, empty string disclosed as mathematical extension.",
+  "coverage": { "total": 1634, "sandboxVerified": 1217, "remaining": 417 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

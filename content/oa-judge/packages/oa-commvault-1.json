@@ -1,0 +1,423 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-commvault-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "计数前缀平衡字符串（模10000）",
+    "difficulty": "困难",
+    "tags": [
+      "OA",
+      "Commvault",
+      "组合数学",
+      "数论",
+      "中国剩余定理"
+    ],
+    "description": "统计长度2N、仅含A和B且两者各N个的字符串，其中每个前缀的A数量均不少于B数量。输出数量模10000。",
+    "input": "一行非负整数N，0≤N≤2147483647。原Constraints栏为o_o、未提供明确数值上限；本站按原始Java接口int N覆盖整个非负int域，不另造小上限。N=0作为公开数学边界补全：空串符合定义。注意2N可能超过32位有符号数。",
+    "output": "输出0..9999内的整数，不要求四位补零。N=0输出1。",
+    "explanation": "原例N=3有AAABBB、AABABB、AABBAB、ABAABB、ABABAB五种，输出5。原解释说BABABA的前缀BA中B更多有误，实际违例前缀是B；不改正确原答案。第二例N=0是本站明确补全的空串边界；第三例N=4为本站补充，答案14。",
+    "hints": [
+      "答案是Catalan数，但不能直接在非素数10000下除以N+1。",
+      "分别处理2^4和5^4，先消去质因子，再对单位部分求逆。",
+      "用CRT合并，并为2N使用足够宽的整数。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 65536,
+    "outputLimit": 64,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原例N3",
+      "input": "3\n",
+      "expectedOutput": "5\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站数学边界空串",
+      "input": "0\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站N4不可直接除5",
+      "input": "4\n",
+      "expectedOutput": "14\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1",
+      "input": "1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N2",
+      "input": "2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N5",
+      "input": "5\n",
+      "expectedOutput": "42\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N7",
+      "input": "7\n",
+      "expectedOutput": "429\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N8",
+      "input": "8\n",
+      "expectedOutput": "1430\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N9",
+      "input": "9\n",
+      "expectedOutput": "4862\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N15",
+      "input": "15\n",
+      "expectedOutput": "4845\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N16",
+      "input": "16\n",
+      "expectedOutput": "7670\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N24",
+      "input": "24\n",
+      "expectedOutput": "7324\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N25",
+      "input": "25\n",
+      "expectedOutput": "1452\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N31",
+      "input": "31\n",
+      "expectedOutput": "6909\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N32",
+      "input": "32\n",
+      "expectedOutput": "8198\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N63",
+      "input": "63\n",
+      "expectedOutput": "125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N64",
+      "input": "64\n",
+      "expectedOutput": "6950\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N124",
+      "input": "124\n",
+      "expectedOutput": "4624\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N125",
+      "input": "125\n",
+      "expectedOutput": "8752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N127",
+      "input": "127\n",
+      "expectedOutput": "3629\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N128",
+      "input": "128\n",
+      "expectedOutput": "5510\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N255",
+      "input": "255\n",
+      "expectedOutput": "2477\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N256",
+      "input": "256\n",
+      "expectedOutput": "5142\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N624",
+      "input": "624\n",
+      "expectedOutput": "8624\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N625",
+      "input": "625\n",
+      "expectedOutput": "2752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1023",
+      "input": "1023\n",
+      "expectedOutput": "6125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1024",
+      "input": "1024\n",
+      "expectedOutput": "5830\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N3124",
+      "input": "3124\n",
+      "expectedOutput": "8624\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N3125",
+      "input": "3125\n",
+      "expectedOutput": "2752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N15624",
+      "input": "15624\n",
+      "expectedOutput": "8624\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N15625",
+      "input": "15625\n",
+      "expectedOutput": "2752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N999999",
+      "input": "999999\n",
+      "expectedOutput": "6000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1000000",
+      "input": "1000000\n",
+      "expectedOutput": "8000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1073741822",
+      "input": "1073741822\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1073741823",
+      "input": "1073741823\n",
+      "expectedOutput": "8125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1073741824",
+      "input": "1073741824\n",
+      "expectedOutput": "3750\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N2147483645",
+      "input": "2147483645\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N2147483646",
+      "input": "2147483646\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N2147483647",
+      "input": "2147483647\n",
+      "expectedOutput": "8125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1220703124",
+      "input": "1220703124\n",
+      "expectedOutput": "8624\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1220703125",
+      "input": "1220703125\n",
+      "expectedOutput": "2752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1220703126",
+      "input": "1220703126\n",
+      "expectedOutput": "2752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N536870911",
+      "input": "536870911\n",
+      "expectedOutput": "8125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1048575",
+      "input": "1048575\n",
+      "expectedOutput": "8125\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1048576",
+      "input": "1048576\n",
+      "expectedOutput": "3750\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1953124",
+      "input": "1953124\n",
+      "expectedOutput": "8624\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1953125",
+      "input": "1953125\n",
+      "expectedOutput": "2752\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N552830877",
+      "input": "552830877\n",
+      "expectedOutput": "4400\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N2474",
+      "input": "2474\n",
+      "expectedOutput": "8000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N422035164",
+      "input": "422035164\n",
+      "expectedOutput": "2000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N6720",
+      "input": "6720\n",
+      "expectedOutput": "2000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N729454402",
+      "input": "729454402\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N6941",
+      "input": "6941\n",
+      "expectedOutput": "5200\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N1275567273",
+      "input": "1275567273\n",
+      "expectedOutput": "0\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "指数与CRT边界N2790",
+      "input": "2790\n",
+      "expectedOutput": "400\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
