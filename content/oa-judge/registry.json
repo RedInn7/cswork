@@ -12559,6 +12559,18 @@
       ]
     },
     {
+      "id": "oa-sig-3",
+      "sourceContentHash": "1bc0eec1622a653e259ae45abdb33aa74303a0408b7124138905983703ec8fec",
+      "packageChecksum": "e8040ded20f5199bb5485cbc12988fc56b14c03fee752211723dabbc7c10d5df",
+      "editorial": "## 固定原始来源与纠错\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的SIG原OCR008定义：只替换短横线，替换字符来自同一个原skeleton；其余位置不能改变。原例he-lo变hello时原来的l仍保留，说明是复制字符而非搬走字符。每个短横线服从相同替换规则，来源未规定消耗或使用次数限制，不能额外添加只能复制一次的规则。因此一个原有字母可以填多个短横线；所有短横线都没有来源字母的骨架不匹配任何非空word。\n\n008列表误写he-o（长度4），但保证每个骨架和hello等长；009明确写he--o且说明两个短横线都需要l而骨架没有l，故依据009恢复为he--o，不凭猜测补字符。保留原word=hello、骨架[he-lo,he--o,-ell-,hello]和原输出[he-lo,hello]。另两个公开例为本站补充。\n\n009/010给出完整域：word仅小写英文字母，长度1..100；骨架数1..100，每个骨架与word等长，只含小写字母和短横线。结果保留原顺序和重复项，无匹配返回空列表。本站输入为word、骨架数量及各骨架；输出先给匹配数量，再逐行给原骨架，0表示空列表。这只是明确数组序列化，不改变返回值。未执行上游代码。\n\n## 正确性证明\n\n逐个骨架先构建原有字母集合。逐位置检查：固定字母必须等于word对应字母；短横线所需字母必须在该集合中。任一失败，该位置无法合法变为目标，所以整个骨架无解。全部通过时，独立复制每个所需字母填充短横线就能得到word，所以条件也充分。按输入顺序追加原骨架，自然保留顺序和重复，不输出替换后的word。\n\n设骨架数m、word长度n，时间O(mn)，额外工作空间O(26)，保存返回值需O(mn)字符，完整100×100范围很小。\n\n## 独立验证\n\n小域oracle先枚举每个短横线的所有来源字母替换组合，构造完整候选串再与word比较，不调用集合逐位判定。163唯一oracle含原例、重复复制、全短横线、重复骨架及固定位置冲突。另穷举二字母域长度1..4的所有word和骨架组合。\n\n大域使用另一判定：统计短横线目标需求的字符频数，并与原骨架正频数的支持集合对照，同时检查固定位置；不限制需求次数。正式输入含多组100个长度100骨架、全26字母、单一来源复制99次、空结果和顺序重复混合。两个负控分别错误限制来源字符复制次数、允许任意字母替换；必须在全部正式例正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens=raw.split()\n    word=tokens[0]\n    count=int(tokens[1])\n    answer=[]\n    for skeleton in tokens[2:2+count]:\n        letters=set(skeleton)-{'-'}\n        if all((a==b if a!='-' else b in letters) for a,b in zip(skeleton,word)):\n            answer.append(skeleton)\n    return str(len(answer))+'\\n'+'\\n'.join(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-sig-4",
       "sourceContentHash": "d4d72e31741ca5be7bea26b3bc070b9d17b56f0a31a39edcd972757b88f3c554",
       "packageChecksum": "cb8bb18a4a06c001141ae76a34546e18a73da16b726a39fa7dc754f83dcfe64b",
@@ -13155,6 +13167,18 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, m = data[:2]\n    counts = [0] * n\n    for service in data[2:]:\n        counts[service - 1] += 1\n    low, high = 0, max(counts)\n    while low < high:\n        mid = (low + high) // 2\n        excess = 0\n        capacity = 0\n        for count in counts:\n            if count > mid:\n                excess += count - mid\n            else:\n                capacity += (mid - count) // 2\n        if capacity >= excess:\n            high = mid\n        else:\n            low = mid + 1\n    return str(low)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-tradedesk-4",
+      "sourceContentHash": "5a9c0fcf238eff9ef96065fed7e906936a32ec6b752fde3f584e704457bc43d2",
+      "packageChecksum": "e7fc8984b6283341858b1a09df4e1272519e7f4b48775661ad6e9d365faffc51",
+      "editorial": "## 固定来源与跨公司同题范围\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Trade Desk/tdesk-buddies-greater-than-threshold.md明确要求：寻找首个下标i，使连续三个值numbers[i]、numbers[i+1]、numbers[i+2]全都严格大于threshold；无解返回−1。原例[0,1,4,3,2,5]、threshold=1输出2正确。i=1时原解释称只有4超过1，遗漏了3；正确理由是三元组[1,4,3]中的1不严格大于1，因此仍不合格。不修改原输入或输出。\n\nTradeDesk raw的Constraints是none，没有数字范围。本题明确采用完全同题OCR的范围，而不声称TradeDesk原文自带：OA LIST/TikTok_OA_(新版CodeSignal)/060_QQ_1755908365513.txt与raw的任务、最早起点、严格比较、无解−1、完整输入[0,1,4,3,2,5]、threshold=1、输出2及逐窗口说明一致；061_image.txt补全3≤n≤1000、−1000≤numbers[i]≤1000、−1000≤threshold≤1000。这个来源连接基于完整规则和样例，不仅是相似标题。\n\n公开第一例保留TradeDesk原例；第二例[-9,95,94,4,5]、threshold=42、输出−1来自同题OCR060，明确标出来源，不冒称TradeDesk原例；第三例[−999,−999,−999]、threshold=−1000、输出0为本站补充。本站序列化为n threshold与n个数组值，输出0-based起点。未执行上游代码。\n\n## 思路\n\n从左到右扫描，维护当前位置结尾、连续严格大于threshold的元素个数streak。当前值合格则加1，否则清零。当streak第一次达到3，返回当前位置减2；扫描结束仍未达到则返回−1。大于等于不符合规则，计数遇到不合格值必须重置，不能累计分散的合格元素。\n\n## 正确性证明\n\n归纳维护不变量：处理下标j后，streak恰是以j结尾的最长全合格连续后缀长度。初始为空成立；当前值合格时旧后缀延长1，不合格时不存在非空合格后缀，重置为0，所以不变量一直成立。\n\n以j结尾的三元组全合格，当且仅当streak至少3。首次达到3时，j−2是一个合法起点；所有更早结束的位置都未形成三连，因此不存在更早合法起点。立即返回即得到最小起点。若一直未达到3，则每个连续三元组均不合格，返回−1正确。\n\n## 复杂度与边界\n\n扫描O(n)时间、O(1)算法额外空间；读取输入需要O(n)空间。完整n≤1000直接处理。合法输出为−1或0..n−3，最末匹配必须能返回n−3。threshold=1000时所有合法输入均无解；threshold=−1000时值等于−1000仍不合格。连续4个或更多合格元素时返回最早位置，而非最后一个三元组。\n\n## 独立验证\n\noracle显式枚举全部长度3窗口，逐一比较其最小值是否严格大于threshold，并取最小合格起点；不使用连续计数递推。163个唯一输入通过真实参考子进程。额外穷举n=3..7、值域{−1,0,1}、三个阈值的全部9801种组合，对照原创参考与窗口oracle。\n\n正式案例包含完整n=1000、阈值和数组值正负端点、首个与最后三元组、多匹配、长合格段、恰等阈值、不连续三次合格、每两次合格被阻断，以及固定种子随机。两个负控分别将>写成≥、返回最后而非最早匹配，均在所有正式数据正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n,threshold=values[:2]\n    streak=0\n    for index,value in enumerate(values[2:]):\n        streak=streak+1 if value>threshold else 0\n        if streak==3:\n            return str(index-2)\n    return '-1'\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
