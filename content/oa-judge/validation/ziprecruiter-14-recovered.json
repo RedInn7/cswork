@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008114,
+  "problems": [
+    {
+      "id": "oa-ziprecruiter-14",
+      "oracleCases": 175,
+      "uniqueOracleInputs": 175,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "2b48fa9ebec6defba85b518f8d80b918d3fada95a9b01342ca82d0469605ced2",
+      "negativeControls": [
+        {
+          "name": "错误只比较相邻两对",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            1,
+            6,
+            10,
+            16,
+            19,
+            20,
+            21,
+            23,
+            24,
+            27,
+            30,
+            32,
+            33
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误按不同三元组字符串去重计数",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            7,
+            8,
+            20,
+            29,
+            31,
+            32,
+            33,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误漏掉最后一个三元组",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            2,
+            7,
+            8,
+            11,
+            12,
+            13,
+            15,
+            16,
+            19,
+            20,
+            21,
+            22,
+            25,
+            26,
+            27,
+            29,
+            31,
+            33,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误统计三字符全相同的反面",
+          "rejectedCases": 22,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            6,
+            9,
+            10,
+            13,
+            16,
+            17,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            30,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent set-size test on each 3-slice; explicit pairwise comparison cross-check; exhaustive strings over {a,b,c} of length 1..7; closed forms for periodic strings.",
+      "exhaustiveSmallDomain": {
+        "lengthMin": 1,
+        "lengthMax": 7,
+        "alphabet": "abc",
+        "cases": 3279
+      },
+      "largeBoundaries": [
+        {
+          "name": "满长全同",
+          "inputBytes": 1001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00201
+        },
+        {
+          "name": "满长周期abc",
+          "inputBytes": 1001,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00195
+        },
+        {
+          "name": "满长周期aba",
+          "inputBytes": 1001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00216
+        },
+        {
+          "name": "满长二十六字母循环",
+          "inputBytes": 1001,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00199
+        },
+        {
+          "name": "满长随机三字母",
+          "inputBytes": 1001,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00197
+        },
+        {
+          "name": "满长随机全字母",
+          "inputBytes": 1001,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00196
+        },
+        {
+          "name": "满长成对重复",
+          "inputBytes": 1001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.002
+        },
+        {
+          "name": "满长abca周期",
+          "inputBytes": 1001,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00203
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 13.364
+    }
+  ]
+}

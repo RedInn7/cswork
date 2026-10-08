@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-14",
+  "title": "长度为3的滑动窗口",
+  "explanation": "## 题意\n\n统计下标i的个数，使s[i]、s[i+1]、s[i+2]两两不同。长度小于3时答案为0。\n\n## 思路\n\n滑动长度为3的窗口，逐个检查三对字符是否都不相等。\n\n## 正确性\n\n每个合法下标恰对应一个窗口，三对比较等价于“两两不同”。只比较相邻两对会把aba这类首尾相同的窗口算进去，按不同子串去重会少算重复出现的窗口。\n\n## 复杂度\n\nO(n)。\n\n## 独立验证\n\noracle用len(set(s[i:i+3]))==3判断，与逐对比较不同。穷举字母表{a,b,c}上长度1..7的全部字符串并逐个真实运行参考程序；正式用例覆盖原样例、长度1和2、全同、周期abc、周期aba、随机满长等。错误解覆盖漏比首尾、按子串去重、漏最后一个窗口和只排除三字符全同。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <cstring>\nint main(){static char s[2048];if(scanf(\"%2047s\",s)!=1)return 0;int n=strlen(s),c=0;\nfor(int i=0;i+2<n;i++)if(s[i]!=s[i+1]&&s[i]!=s[i+2]&&s[i+1]!=s[i+2])c++;printf(\"%d\\n\",c);}\n"
+    }
+  ]
+}

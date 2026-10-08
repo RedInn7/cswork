@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误只比较相邻两对",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nint main(){static char s[2048];if(scanf(\"%2047s\",s)!=1)return 0;int n=strlen(s),c=0;\nfor(int i=0;i+2<n;i++)if(s[i]!=s[i+1]&&s[i+1]!=s[i+2])c++;printf(\"%d\\n\",c);}\n"
+  },
+  {
+    "name": "错误按不同三元组字符串去重计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <set>\n#include <string>\nint main(){static char s[2048];scanf(\"%2047s\",s);int n=strlen(s);std::set<std::string>t;\nfor(int i=0;i+2<n;i++)if(s[i]!=s[i+1]&&s[i]!=s[i+2]&&s[i+1]!=s[i+2])t.insert(std::string(s+i,3));printf(\"%d\\n\",(int)t.size());}\n"
+  },
+  {
+    "name": "错误漏掉最后一个三元组",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nint main(){static char s[2048];if(scanf(\"%2047s\",s)!=1)return 0;int n=strlen(s),c=0;\nfor(int i=0;i+3<n;i++)if(s[i]!=s[i+1]&&s[i]!=s[i+2]&&s[i+1]!=s[i+2])c++;printf(\"%d\\n\",c);}\n"
+  },
+  {
+    "name": "错误统计三字符全相同的反面",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nint main(){static char s[2048];if(scanf(\"%2047s\",s)!=1)return 0;int n=strlen(s),c=0;\nfor(int i=0;i+2<n;i++)if(!(s[i]==s[i+1]&&s[i+1]==s[i+2]))c++;printf(\"%d\\n\",c);}\n"
+  }
+]

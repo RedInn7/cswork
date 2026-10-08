@@ -64,6 +64,8 @@ def freeze(S):
     if not same(execute(mc,c['input'])[0],c['expectedOutput'],checker):rejected.append(j)
    assert rejected,m['name'];kills.append({'name':m['name'],'rejectedCases':len(rejected),'rejectedCaseIndices':rejected,'normalExitCases':len(cases)})
   assert len(kills)>=3
+  for stale in (OA/'negative-controls').glob(f'{pid}-*'):
+   if stale.stem.rsplit('-',1)[1].isdigit() and int(stale.stem.rsplit('-',1)[1])>len(S['mutants']):stale.unlink()
  script="const {ojImportSchema}=require('./lib/oj-types.ts');let s='';process.stdin.setEncoding('utf8');process.stdin.on('data',c=>s+=c);process.stdin.on('end',()=>process.stdout.write(JSON.stringify(ojImportSchema.parse(JSON.parse(s)))));"
  normalized=subprocess.run(['node','--import','tsx','-e',script],cwd=ROOT,input=json.dumps({'schemaVersion':1,'problem':S['problem'],'cases':cases},ensure_ascii=False),text=True,capture_output=True,check=True).stdout
  solutions=[{'language':'cpp' if S['lang']=='cpp' else 'python','code':S['reference']}]
