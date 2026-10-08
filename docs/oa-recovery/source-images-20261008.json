@@ -1,0 +1,626 @@
+[
+  {
+    "id": "oa-amazon-12",
+    "slug": "amazon-get-min-operations2",
+    "blockReason": "重复权重的排序要求以及相同最终位置是否允许未明确，样例也不足以消除歧义。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/amazon-12-original.png",
+        "sha256": "a8e449e2fe154b316c9c0bdec42b31708008f22c03883e5c4939a9966e4e0aca",
+        "url": "https://www.fastprep.io/api/problem-source-images/amazon-get-min-operations2/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/amazon-12-example.jpg",
+        "sha256": "12fa0dee65227b8838b4682e57ea374cfc9d434dae0928fca3a3d2b459d0472c",
+        "url": "https://www.fastprep.io/api/problem-images/amazon-get-min-operations2/getMinOperations2-1.jpeg",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "not_resolved",
+    "recoveredRules": "原图是论坛转述而非官方题面：n 个点，第 i 个点权重 weight[i]，初始位于 x=i；一次操作可把第 i 个点右移 dist[i]；求使点按权重排序所需的最少操作数。样例1：weight=[3,6,5,2]，dist=[4,3,2,1] → 5（1+2+2）；样例2：weight=[2,4,3,1]，dist=[2,6,3,5] → 4。样例插图展示样例1过程：位置0的点移1次到4，位置1的点移2次到7，位置2的点移2次到6，最终按权重升序位置为 3,4,6,7（严格递增，无重合）。图中均未给出约束；也未说明重复权重如何排序、是否允许两点最终处于同一位置（样例中最终位置全部不同，无法区分严格/非严格）。原图下方的用户解法描述为“累加直到当前距离大于前一个”，暗示严格递增，但这是网友做法，不是官方规则。",
+    "conflicts": [
+      "样例插图中位置3的点权重显示为 1，而上游 md 样例1 为 weight[3]=2（不影响相对顺序与答案 5）",
+      "原图文字为“in a single operation”，md 写成“In a single position”（措辞笔误）"
+    ],
+    "notes": "两张图均未回答阻塞点（重复权重排序、相同最终位置是否允许）。另：md 样例2解释给出最终位置 [4,7,3,5]，按规则推算应为 [4,7,5,3]（第1点移2次=4，第2点移1次=7，第3点移1次=5，第4点不动=3），此为 md 自身错误，原图未提供该解释。约束（n≤2e5、weight≤1e9、dist≤1e3）只来自 md，图片未印证。"
+  },
+  {
+    "id": "oa-amazon-376",
+    "slug": "get-server-id",
+    "blockReason": "first r servers不包含r且r=0合法但候选为空；样例与最终负载冲突，不能捏造0特例。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页 https://www.fastprep.io/problems/get-server-id 返回 404，problem-source-images/0 与上游 md 引用的 getServerID.png 均 404。"
+  },
+  {
+    "id": "oa-amazon-377",
+    "slug": "get-server-ids",
+    "blockReason": "与376同义文本有相同0请求及候选端点歧义，缺少独立补证。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页 get-server-ids 返回 404，problem-source-images/0 与 amazonGetServerIds.png 均 404。"
+  },
+  {
+    "id": "oa-salesforce-17",
+    "slug": "salesforce-get-maximum-sum-of-strengths",
+    "blockReason": "swap另一端未给出，强度文字arr[i]+1又与样例i*arr[i]冲突。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/salesforce-17-original-0.png",
+        "sha256": "d50c27c3377adc4e339ed1f9a8e4249208361219e7c51cabcdffe1e17312c227",
+        "url": "https://www.fastprep.io/api/problem-source-images/salesforce-get-maximum-sum-of-strengths/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/salesforce-17-original-1.png",
+        "sha256": "6cd09609c3e4c10a3a087a80fb34634754a354c852e488d9766be99d343c570d",
+        "url": "https://www.fastprep.io/api/problem-source-images/salesforce-get-maximum-sum-of-strengths/1",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "给定长度 n 的数组 arr。操作：选下标 i（0 ≤ i < n-1），交换 arr[i] 与 arr[i+1]；可做任意次（含0次），但每个元素在整个过程中至多参与一次交换（即选出一组互不重叠的相邻对进行交换）。下标 i 的强度定义为 arr[i]×(i+1)（0-based），最大化 Σ_{i=0}^{n-1} arr[i]×(i+1)，返回 long。约束：1 ≤ n ≤ 10^5，1 ≤ arr[i] ≤ 10^5。样例：[2,1,4,3] → 交换(0,1)与(2,3)得 [1,2,3,4]，答案 30；[1,9,7,3,2] → 交换(2,3) 得 [1,9,3,7,2]，答案 66；[1,2,5] → 不交换，答案 20。输入格式：第一行 n，随后 n 行每行一个元素。",
+    "conflicts": [
+      "md 写“swap arr[i]”缺另一端，原图明确为 swap arr[i] 与 arr[i+1]，且 i 范围为 0 ≤ i < n-1（md 写成 1 ≤ i ≤ n）",
+      "md 强度定义为 (arr[i] + 1)，原图为 arr[i] × (i + 1)，与样例一致",
+      "md 称 1-based indexing，原图为 0-based indexing"
+    ],
+    "notes": "original-0 是清晰的 HackerRank 题面截图，完整回答两个阻塞点；original-1 是 OCR 质量差的论坛转述（含“arr[i]+1”“D-based”等 OCR 错误，正是 md 错误来源），与 original-0 一致之处可佐证。"
+  },
+  {
+    "id": "oa-cisco-17",
+    "slug": "cisco-find-critical-nodes",
+    "blockReason": "在线发送者自行写入与总选分量最小活跃ID两条规则冲突。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/cisco-17-original.png",
+        "sha256": "cde6fad00918f56efc57d44ef14420e6a924fe14cf793ae569640ed9fbd3c2c6",
+        "url": "https://www.fastprep.io/api/problem-source-images/cisco-find-critical-nodes/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/cisco-17-example.png",
+        "sha256": "3e5e916c3fcf3619da3ba80e2370a2de29447182e17d44c7629781c080a330be",
+        "url": "https://www.fastprep.io/api/problem-images/cisco-find-critical-nodes/processQueries.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "not_resolved",
+    "recoveredRules": "pods 编号 1..pods，由 n 条边 connections 连接，连通分量即区域。每个 pod 有数据库连接；失去连接的 pod 会把数据转发给同区域内 ID 最小的活跃 pod 写入；区域内无活跃 pod 则记录错误。查询类型：\"1 pod_id\" 发送数据，\"2 pod_id\" 该 pod 掉线。对每个类型1查询输出写入数据的 pod ID：题面“Specifically”句称取同区域最小 ID 活跃 pod，无则 -1。样例：pods=3，n=2，connections=[[1,2],[2,3]]，queries=[[2,2],[1,2],[2,1],[2,3],[1,1]] → [1,-1]（表格：2 掉线；1,2 发送→1，“因 2 掉线，区域最小 ID 为 1”；1、3 掉线；1,1 发送→-1，“网络中无 pod”）。图中无约束。",
+    "conflicts": [],
+    "notes": "两张图文字与 md 完全一致，样例只覆盖发送者已掉线的情形：在“发送者在线时自己写入”和“总是取区域最小活跃 ID”两种解释下样例结果都是 [1,-1]，无法消歧，冲突未解决。另注意 n 为边数（样例 n=2、pods=3），与题面“n 个 pod、n 条链接”说法不一致，图片同样如此。约束完全缺失。"
+  },
+  {
+    "id": "oa-uber-52",
+    "slug": "uber-minimum-obstacle-removal",
+    "blockReason": "正文使用|表示形状但例子使用*；更重要的是未说明多个不连通形状作为整体刚体还是独立下落，以及到底部指最低点还是所有块，答案会随规则改变。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/uber-52-original.png",
+        "sha256": "1d97732c6c198402044a5f5a1c01c959b011009b4fdf525927002685aa6f9012",
+        "url": "https://www.fastprep.io/api/problem-source-images/uber-minimum-obstacle-removal/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/uber-52-example.png",
+        "sha256": "28f37aaa182be6035a3c847370fd294fe8fea4cf4f7ad0e269cc44d14e2173e4",
+        "url": "https://www.fastprep.io/api/problem-images/uber-minimum-obstacle-removal/minimumObstacleRemoval.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "二维字符矩阵，'.' 空格，'#' 障碍，'*' 形状（原图题面中形状符号被 markdown 斜体吃掉显示为空 \"\"，但所有矩阵均用 \"*\"，可确定形状符号为 *）。求最少移除多少个障碍使形状落到底部。样例：[[*,*,*,*],[#,*,.,*],[.,.,#,.],[.,#,.,#]] → 4。模拟：先移除 [1][0]，整个形状作为刚体整体下移一行；再移除 [2][2]、[3][1]、[3][3]，形状再下移一行，最终形状最低块位于最后一行（最终矩阵 行2=[*,*,*,*]，行3=[.,*,.,*]）。由此可确认：形状整体刚性平移、不变形；“落到底部”=形状最低格到达最后一行；需要移除的是形状下落全过程中扫过的所有障碍。未说明：多个不连通形状是整体下落还是各自独立下落；矩阵尺寸与其它约束；无形状/形状已在底部时的返回值。",
+    "conflicts": [
+      "md 题面称形状用 \"|\" 表示，原图样例与模拟均用 \"*\"（原图题面该符号渲染为空，md 似乎误补为 |）"
+    ],
+    "notes": "样例中所有 * 构成单一连通块，因此无法判定多个不连通形状的规则，阻塞点之一仍在。符号问题与“到底部指最低点”已被图片中的逐步模拟澄清。"
+  },
+  {
+    "id": "oa-stripe-8",
+    "slug": "stripe-card-range-obfuscation-part1",
+    "blockReason": "卡号混淆含多阶段规则但可见题面缺少完整输入约束。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/stripe-8-example.png",
+        "sha256": "049e5b1add5c91cc861df0774d5a2382e56c28254e03a5bdb7ca435f9c7d1929",
+        "url": "https://www.fastprep.io/api/problem-images/stripe-card-range-obfuscation-part1/cardRangeObfuscation3.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "not_resolved",
+    "recoveredRules": "唯一图片为样例1示意图：BIN 范围 4242420000000000~4242429999999999，Part 1 中单个 VISA 区间向低端和高端延伸覆盖整个 BIN 范围。图片未给出任何输入约束（N 范围、区间是否保证不重叠/在范围内、brand 字符集长度等），也未涉及其它阶段规则。",
+    "conflicts": [],
+    "notes": "图片只是 md 中样例1的可视化，与 md 一致，未补全阻塞原因所指的输入约束。md 自身问题（非图片冲突）：样例2输出第二个区间终点写成 424242429999999999（18位，应为 4242429999999999）；“branch is an alphanumeric string”应为 brand。"
+  },
+  {
+    "id": "oa-stripe-9",
+    "slug": "stripe-card-range-obfuscation-part2",
+    "blockReason": "卡号混淆依赖前置题，不能独立确认规则。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页存在但无 Problem Source 图；md 引用的 cardRangeObfuscation4.png 404。part1 的 cardRangeObfuscation3.png 可取（见 oa-stripe-8），不涉及 part2 规则。"
+  },
+  {
+    "id": "oa-stripe-10",
+    "slug": "stripe-card-range-obfuscation-part3",
+    "blockReason": "卡号混淆依赖前置题，不能独立确认规则。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页存在但无 Problem Source 图；md 引用的 cardRangeObfuscation5.png 404。"
+  },
+  {
+    "id": "oa-stripe-11",
+    "slug": "stripe-card-range-obfuscation-part4",
+    "blockReason": "卡号混淆依赖前置题，不能独立确认规则。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页存在但无 Problem Source 图；md 引用的 cardRangeObfuscation6.png 404。"
+  },
+  {
+    "id": "oa-canva-1",
+    "slug": "canva-character-reprogramming",
+    "blockReason": "原始页面示例只有“RRR→0”，没有明示目标坐标/起点与允许指令字母以外字符的处理；本批不额外补输入契约。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/canva-1-original.png",
+        "sha256": "45e1b3023f1e2283d99ac90d99041e699706b16da7b1b24402122319196c7f04",
+        "url": "https://www.fastprep.io/api/problem-source-images/canva-character-reprogramming/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/canva-1-example.png",
+        "sha256": "ecace42084264fef555dce67a181cf949956851e534f881d39dc324af49f3e90",
+        "url": "https://www.fastprep.io/api/problem-images/canva-character-reprogramming/canvaMaxDeletions.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "字符在网格上移动，按钮 U/D/L/R 各移动一格。给定指令串 s，删除尽可能多的指令（不必连续）使最终到达位置与原指令串相同，返回最大可删除数。原图额外样例：s='URDR'，起点 H 出发，U 与 D 相互抵消可删，保留 'RR' 仍到达同一终点，答案为 2（图底文字截断“the final destination is 2…”）。Sample Case 0：s='RRR' → 0。由此可知目标即原指令串从起点出发的终点（相对位移），答案 = len(s) − (|#R−#L| + |#U−#D|)。未说明：输入是否可能含 U/D/L/R 以外字符及其处理、s 长度约束、空串情况。",
+    "conflicts": [
+      "原图题面含样例 s='URDR'（删去 U、D，答案 2），上游 md 未收录该样例"
+    ],
+    "notes": "目标/起点问题被 URDR 示意图澄清（终点由原串决定，起点为当前位置 H）；非法字符处理与约束仍缺失。example 图片仅为 RRR 样例的放大版，与 md 一致。URDR 答案 2 由图示与截断文字推断，图中未完整显示数字输出。"
+  },
+  {
+    "id": "oa-canva-5",
+    "slug": "canva-get-maximum-sum-of-strengths",
+    "blockReason": "原始完整 MDX 在 arr[i] 约束处截断为 `arr[i]</cod`，缺少数值范围；“每个元素最多交换一次”还需明确元素身份和相邻交换组合规则。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/canva-5-original.jpg",
+        "sha256": "17ab0e8b47fba29fc593016cdcce6b5eb3d2468a24b2d7275dd13553f0467b6e",
+        "url": "https://www.fastprep.io/api/problem-source-images/canva-get-maximum-sum-of-strengths/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "题目“3. Element Swapping”。给定 n 个整数的数组 arr，可执行任意次（可为 0 次）操作：选一个下标 i（图中模糊，应为 0 ≤ i < n-1），交换 arr[i] 与 arr[i+1]；整个过程中数组的每个元素至多被交换一次。下标 i（0 基）的强度为 arr[i]*(i+1)，求最优交换后 Σ_{i=0}^{n-1} arr[i]*(i+1) 的最大值。函数 getMaximumSumOfStrengths(int arr[n])，返回 long。样例：n=4, arr=[2,1,4,3]，交换 (arr[2],arr[3]) 与 (arr[0],arr[1]) 得 [1,2,3,4]，答案 30。约束：1 ≤ n ≤ 10^5；1 ≤ arr[i] ≤ 10^5（图中清晰可读，补全了截断处）。图片仍未说明：“每个元素至多交换一次”中元素是按原始元素身份（随值移动）还是按位置计；图中文字与上游相同，没有给出额外的组合规则解释（按常规理解，被交换过的两个元素都不能再参与交换，等价于选不相交的相邻对，但这是推断而非原文明确）。",
+    "conflicts": [
+      "上游 md 中操作条件被截断为“0 ≤ i and swap”，图片为“(0 ≤ i < n-1)”（模糊但可辨）",
+      "上游 md arr[i] 约束截断为 `arr[i]</cod`，图片给出 1 ≤ arr[i] ≤ 10^5",
+      "上游 md 样例未写 n=4，图片写明 n=4"
+    ],
+    "notes": "约束数值已由图片补全；元素身份/相邻交换组合规则这一点图片只重复了原句，未明确回答，故为 partially。图片有摩尔纹，操作下标范围靠辨认。"
+  },
+  {
+    "id": "oa-tradedesk-2",
+    "slug": "tdesk-about-lamps",
+    "blockReason": "关键原始图缺失，输出“sections”的计数单位不明。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/tradedesk-2-original-0.png",
+        "sha256": "ef38e7cbf07543432b3204bc142e39bc08d1d3a63db7922325220ab715c37e17",
+        "url": "https://www.fastprep.io/api/problem-source-images/tdesk-about-lamps/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/tradedesk-2-original-1.png",
+        "sha256": "7377e72c58b9b93a9ea41b537a4be76aa6ec610b6e8120525f84b74dcdc1ccf1",
+        "url": "https://www.fastprep.io/api/problem-source-images/tdesk-about-lamps/1",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/tradedesk-2-example.png",
+        "sha256": "83989bd6b4f4cf359af0791abe41b378ccf3524e1bf6307febf42a3ea2eefc07",
+        "url": "https://www.fastprep.io/api/problem-images/tdesk-about-lamps/tdeskLamps.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "原题名“Illuminated Coordinates”（CodeSignal 风格，函数 solution(lamps)）。数轴上有若干灯，给二维数组 lamps：lamps[i][0] 为整数坐标，lamps[i][1] 为正整数半径；第 i 盏灯照亮闭区间 [lamps[i][0]-lamps[i][1], lamps[i][0]+lamps[i][1]]。求恰好被 1 盏灯照亮的整数坐标个数。样例：lamps=[[-2,3],[2,3],[2,1]] → 6；示意图在 -6..6 上标出每个整数点被照亮次数：-6:0, -5:1, -4:1, -3:1, -2:1, -1:2, 0:2, 1:3, 2:2, 3:2, 4:1, 5:1, 6:0，计数为 1 的点为 -5,-4,-3,-2,4,5 共 6 个（已用暴力验证）。输出单位明确为“整数坐标个数”，不是区间段数。图片仍未说明：约束（截图写 TO-DO），坐标/半径范围与数组长度均未知。",
+    "conflicts": [
+      "上游 md 称结果为“6 distinct sections”，图片明确为“恰被 1 盏灯照亮的整数坐标个数”",
+      "参数名：上游 md 为 lightSources，函数 lamps；图片为 lamps，函数 solution",
+      "上游 md 题面为改写的修辞文本（celestialArrangements 等），与原图措辞不同但语义一致；md 说“exactly one orb”只用了“coordinates”，未说明整数"
+    ],
+    "notes": "阻塞点“计数单位”由图片与示意图逐点计数完全确认。约束仍缺失，若需要上界需另行设定。"
+  },
+  {
+    "id": "oa-imc-4",
+    "slug": "imc-find-best-path",
+    "blockReason": "样例/规则未能确定路径经过障碍时距离的定义。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-0.png",
+        "sha256": "b5d6bf22b1ddc2553d3260097718b0c7ff439a1dc7976d45fe184057c39bba0c",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-1.png",
+        "sha256": "fc4979ac6ab7383ce0adbbf622de8c7720ab61fb5a1a66b4891b8dc6c66427b5",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/1",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-2.png",
+        "sha256": "00c22459f9b3a6688c2e38ac677e5dee5ed54f6c360d56a048d81a3af89621cc",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/2",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-3.png",
+        "sha256": "08e19b0fe8a041862e8e909eee277cdbfaad7d749c27b114e0ef033fa30df541",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/3",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-4.png",
+        "sha256": "8249d3b7562a8df67e0c0159a1a3ad14cfa3ef35bd7e6a0eb995435c1b6be518",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/4",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-5.png",
+        "sha256": "cd5202eae610adbd9f0c1ce53281135ead22ec980bfa084836933dce69adaf7b",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/5",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-6.png",
+        "sha256": "68a37538a75d5ec98858658c59b2ad1cff118ba466335fe255ba50b05d0244ce",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/6",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-original-7.png",
+        "sha256": "be18bcef58b14675be169d95f6b68259f64cfd6faba80a3fa33dc48f2e595dff",
+        "url": "https://www.fastprep.io/api/problem-source-images/imc-find-best-path/7",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/imc-4-example.png",
+        "sha256": "7ec4f618d5a73cdf95d96c6ee62f91a6cbc364e1643da01cd6f687f444711318",
+        "url": "https://www.fastprep.io/api/problem-images/imc-find-best-path/IMCfindBestPath2.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "not_resolved",
+    "recoveredRules": "题目“Avoiding the Obstacles”（HackerRank）。n×m 网格，玩家从起点四方向移动到终点，要找一条路径最大化“路径上各格到最近障碍（部分截图称 monster）的最小曼哈顿距离”。距离 |x1-x2|+|y1-y2|。注：必要时（无其他路径）可经过障碍格；同一路径每格至多访问一次。函数 findBestPath(n, m, startRow, startColumn, endRow, endColumn, obstacleRow[] / monsterRow[], obstacleColumn[] / monsterColumn[])，返回 int：起点到终点任意路径中可达到的最大的“最小障碍距离”。样例：4×4，S=(0,0)，E=(3,3)，障碍 (0,3)、(1,2)；最优路径 (0,0)→(1,0)→(2,0)→(3,0)→(3,1)→(3,2)→(3,3)，各格最近障碍距离依次 3,2,3,4,3,2,3（(0,0) 与 (3,3) 到 (1,2) 也都是 3），起点和终点也计入，答案 2。约束：2 ≤ n, m ≤ 200；0 ≤ startRow, endRow < n；0 ≤ startColumn, endColumn < m；障碍数 ≤ n*m-2；0 ≤ obstacleRow[i] < n；0 ≤ obstacleColumn[i] < m；恰有一个起点、恰有一个终点；至少一个障碍；（较新版本截图）每个格子恰为空、起点、终点、障碍之一，即起点/终点不会是障碍。图片仍未说明：路径经过障碍格时该格距离如何取值——没有文字或样例直接给出；按曼哈顿定义自然推断为 0（到自身距离），但原文未明示。",
+    "conflicts": [
+      "上游 md 约束写“0 ≤ number of obstacles = n * m - 2”，图片为“number of obstacles ≤ n*m-2”",
+      "上游 md 写“No obstacle at any start cell”，图片为“There is exactly one start cell”；图片另有“Every cell is exactly one of: empty, start, end, or has a monster”，md 缺失",
+      "部分截图把障碍称为 monster，参数名为 monsterRow/monsterColumn，md 与另一组截图为 obstacleRow/obstacleColumn",
+      "上游 md 样例解释文字混乱重复（多次“Coordinates of any of the nearest obstacles…”），且缺少路径/距离表；图片给出完整表格"
+    ],
+    "notes": "图片补充了起终点不为障碍、起终点计入最小值等信息，但阻塞原因唯一的一点（经过障碍格时的距离定义）未被明确回答，所以判 not_resolved；若接受推断，经过障碍格的距离为 0。"
+  },
+  {
+    "id": "oa-the-d-e-shaw-group-1",
+    "slug": "akuna-get-num-subarrays",
+    "blockReason": "原始 fastprep 约束只有损坏占位符 O_O；“sorted in increasing order”没有明确说明严格递增还是允许相等，而公开例子不足以消歧。未擅自补成 #3 的严格语义。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/the-d-e-shaw-group-1-original.png",
+        "sha256": "1cd45bc5a30b73f6189008e00ab64a08aeccdeafa609fa87eadaf147b8956796",
+        "url": "https://www.fastprep.io/api/problem-source-images/akuna-get-num-subarrays/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/the-d-e-shaw-group-1-example.png",
+        "sha256": "65ccc4193ed0bb00da6650b086e3a18a81ddfd6032f8833ba68189add06ff290",
+        "url": "https://www.fastprep.io/api/problem-images/akuna-get-num-subarrays/getNumSubarrays.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "题目“Subarray Removal”。给长度 n 的整数数组 arr，统计有多少个子数组（连续段，按位置区分）满足：删除它后剩余数组非空且按“increasing”排序。图片表格明确允许相等：arr=[1,2,1,2] 中删除 [2](下标1) 得 [1,1,2] 判 Yes，删除 [1](下标2) 得 [1,2,2] 判 Yes，因此是非严格递增（非降序）；删除整个数组得 [] 判 No。函数 getNumSubarrays(arr[n])，返回 long。样例：[1,2,1,2] → 7（表格列出全部 10 个子数组，7 个 Yes）；[3,1,2] → 3（[3]、[3,1]、[1,2]）；[1,2,2,6,1,3] → 10（[1,2,2,6]、[1,2,2,6,1]、[2,2,6]、[2,2,6,1]、[2,2,6,1,3]、[2,6,1]、[2,6,1,3]、[6,1]、[6,1,3]、[1,3]）。已暴力验证：非严格语义三样例输出 7/3/10，严格语义为 5/3/6，与样例不符。约束：1 ≤ n ≤ 2×10^5；1 ≤ arr[i] ≤ 10^9。",
+    "conflicts": [
+      "上游 md 样例 1 的解释错误地复制了样例 2 的文字（[3]、[3,1]、[1,2]），图片为 Table 1 完整枚举",
+      "上游 md 样例 3 解释列出的子数组为 [1,2,2,6]、[1,2,2,6,1]、[2,2,6]、[2,2,6,1]、[2,6]、[2,6,1]、[6]、[6,1]、[1,3]、[1]，其中 [2,6]、[6]、[1] 删除后并不有序；图片正确列表为 [2,2,6,1,3]、[2,6,1,3]、[6,1,3] 代替这三个",
+      "任务描述称上游约束为损坏占位符 O_O，而当前上游 md 已有 1 ≤ n ≤ 2×10^5、1 ≤ arr[i] ≤ 10^9，与图片一致"
+    ],
+    "notes": "严格/非严格歧义由图片表格（[1,1,2]、[1,2,2] 判为 Yes）和样例 3 共同明确为非降序；约束图片清晰。"
+  },
+  {
+    "id": "oa-akuna-capital-15",
+    "slug": "akuna-find-nearest-cities",
+    "blockReason": "同距离时的优先规则在 FastPrep 原文中断裂乱码，MDX 样例也把城市名输出成数字 `3`；并列时无法从固定源恢复唯一规则。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/akuna-capital-15-original.png",
+        "sha256": "127b1244e0d374ad17e0dc7d50990a2f67fc639147cc5109038e65972b1e9966",
+        "url": "https://www.fastprep.io/api/problem-source-images/akuna-find-nearest-cities/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "题名 Nearest Neighbouring City，函数 closestStraightCity(c[n], x[n], y[n], q[m]) 返回 string[m]。城市位于整数坐标点；对每个查询城市 q[i]，在与它共享 x 或共享 y 坐标的其它城市中找曼哈顿距离（|dx|+|dy|）最小者；若没有任何城市共享 x 或 y，返回 \"NONE\"。并列规则（图中完整给出）：距离相同时取名字字典序更小者，原图举例 'ab' < 'aba' < 'abb'，即普通字典序比较（前缀更小）。约束：1 ≤ n, m ≤ 10^5；1 ≤ x[i], y[i] ≤ 10^9；1 ≤ |q[i]|, |c[i]| ≤ 10；字符集 [a-z, 0-9, -]；城市名唯一；坐标唯一。样例：(A) c=[c1,c2,c3], x=[3,2,1], y=[3,2,3], q=[c1,c2,c3]：点为 (3,3)(2,2)(1,3)，c1 最近 c3（同 y，距离 2），c2 无共线城市→NONE，c3→c1；原图写的返回数组为 ['3','NONE','c1']，但同段解释明确 c1 的答案是 c3，'3' 是原题笔误，正确输出应为 [c3, NONE, c1]。(B) Sample 0：fastcity(23,1), bigbanana(23,10), xyz(23,20)，输出 bigbanana / fastcity / bigbanana。(C) Sample 1：london(1,1), warsaw(10,10), hackerland(20,10)，输出 NONE / hackerland / warsaw。(D) Sample 2：green..pink 位于 (100,100)…(500,500) 对角线，全部 NONE。图片未说明：输入多行 STDIN 格式外无其它缺口。",
+    "conflicts": [
+      "Example 1 坐标：原图 y=[3,2,3]，点为 (3,3),(2,2),(1,3)；md 解释写成 (3,3),(2,2),(1,1)，且说 c1→c2、c2→c3、c3→c2，与原图解释（c1→c3、c2→NONE、c3→c1）完全不同。",
+      "Example 1 输出 '3'：原图本身就写 ['3','NONE','c1']（原题笔误），按原图解释应为 'c3'。",
+      "Example 3（Sample Case 1）输出：原图为 [NONE, hackerland, warsaw]，md 写成 [NONE, warsaw, hackerland]（md 错，查询 warsaw 应返回 hackerland）。",
+      "并列规则：md 该句乱码截断；原图为“距离相同取字典序更小的名字”。",
+      "函数名：原图 closestStraightCity(c, x, y, q)，md 为 findNearestCities(numOfCities, cities, xCoordinates, yCoordinates, numOfQueries, queries)。",
+      "措辞：原图为“像普通笛卡尔平面一样划分的图”，md 写成 “simple two by two grid”。"
+    ],
+    "notes": "并列规则与 '3' 疑点都由原图确定；'3' 是原题本身的笔误，评测应以 'c3' 为准。md 的 Example 1 解释和 Example 3 输出都需要按原图修正。"
+  },
+  {
+    "id": "oa-goldman-sachs-20",
+    "slug": "goldman-get-number-transmitted-logs",
+    "blockReason": "原文称新日志会“rename”同 tag 旧日志，但随后要求统计 transmitted；未说明“within window”按绝对时间差还是只看过去，也未定义移除/新增是否计入传输数。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页 goldman-get-number-transmitted-logs 返回 404，source 图与 getNumberTransmittedLogs1.png 均 404。"
+  },
+  {
+    "id": "oa-bnp-3",
+    "slug": "bnp-romanizer",
+    "blockReason": "罗马数字转换没有 numbers 的取值范围；标准表示在 3999 之后存在扩展写法差异，不能自行选择罗马数字体系。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页存在但无任何图片；source 图 /0 与 bnpRomanizer.png 均 404。"
+  },
+  {
+    "id": "oa-rubrik-10",
+    "slug": "rubrik-chain-merge",
+    "blockReason": "保留时间说明在关键位置截断；约束声称时间唯一但样例有重复，输出的链首依赖顺序也未明确定义。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/rubrik-10-original.png",
+        "sha256": "6300e60016458bbab6f101caef5742e27355aac9902c69d239d8c141ee3cc59d",
+        "url": "https://www.fastprep.io/api/problem-source-images/rubrik-chain-merge/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "n 条链，每条链的 blob 依次依赖父 blob（index i 是 index i+1 的父）。blob 只有在保留时间已过且没有其它 blob 依赖它时才能删除。管理员在各链首 blob 之间加依赖，把它们合并成一条链，要求合并后任何 blob 的删除时间都不会被推迟；输出各链首的依赖顺序（链编号从 1 开始）。输入：第一行 N；接下来 N 行，每行第一个数 c 为链长，后面 c 个整数是保留时间。原图约束：所有 blob 的保留时间全局唯一；n ≤ 1e5，每链 m_i ≤ 1e5；blob 总数 ≤ 3e6。样例：N=3，三行为 '3 4 5 8'、'3 2 3 1'、'3 6 7 9'，即链1=[4,5,8]，链2=[2,3,1]，链3=[6,7,9]（每行首个 3 是链长）；输出 '3 1 2'。由删除语义推导：父 blob 的实际删除时间是整条子链保留时间的最大值，要不推迟删除，应按链的最大保留时间降序排列（链3 max=9、链1 max=8、链2 max=3 → 3 1 2）。全局唯一的保留时间保证该顺序唯一。仍未说明：输出数组的方向（谁依赖谁）只有一句“从 index i 的 blob 到 index i+1 的 blob 加依赖”，没有明确定义；样例同样满足“按链首值降序”“按链最小值降序”，所以排序依据只能靠语义推导，原图没有直说。",
+    "conflicts": [
+      "样例输入：md 把每行首个链长 3 当成保留时间，写成 [[3,4,5,8],[3,2,3,1],[3,6,7,9]]，于是看起来时间重复；原图中 3 是链长，实际链为 [4,5,8],[2,3,1],[6,7,9]，保留时间全局唯一，与约束一致。",
+      "保留时间说明：原图与 md 文字一致且完整（“Its retention time has passed”），blockReason 所说的截断在原图中不存在。",
+      "原图输出说明有拼写错误 'deendency'，md 已更正，不影响语义。"
+    ],
+    "notes": "“时间重复”这一阻塞点已被原图化解（md 转录错误）。剩下的问题是输出方向和排序依据：原图没有比 md 更明确，只能从删除语义推出“按链最大保留时间降序”。如果接受这一推导，可以解除阻塞。"
+  },
+  {
+    "id": "oa-rubrik-17",
+    "slug": "rubrik-key-sum-management",
+    "blockReason": "固定提交的源题自述只‘约 98% 匹配原题’，示例中的初始边将 1 写成 2 的子节点，与解法假设的‘1 为根’冲突；n/q 与初始边数也对不上。无法依样例确定初始树输入，保留阻塞。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/rubrik-17-original.png",
+        "sha256": "7926e4421b6b6d701b2640c72d92b75d9aaefb823cdb93f3e84f4999ece917cb",
+        "url": "https://www.fastprep.io/api/problem-source-images/rubrik-key-sum-management/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "初始是一棵 key 树，level 为祖先个数（key 1 为 level 0），初始值都为 0。操作：Ro p v——在 p 下新增子 key v（v 恒等于当前节点数+1）；Re l z——把 level l 上所有 key 及其全部后代（直到叶子）的值加 z。要求所有操作结束后输出全部 key 的值之和。原图恢复出的输入格式：第一行 'n q'，接着 n-1 行初始边，再接 q 行操作。Sample 0：'5 4'，边 1 2 / 2 4 / 1 3 / 4 5，操作 Re 1 10 / Ro 4 6 / Re 2 4 / Re 3 4，输出 70。Sample 1：'5 5'，边 2 1 / 3 1 / 4 2 / 5 1，操作 Ro 4 6 / Re 2 91277 / Re 1 50944 / Ro 1 7 / Re 1 17666，输出 3607116。约束：1 ≤ n, q ≤ 1e5；1 ≤ z ≤ 1e5；Ro 中 v 等于当前节点数+1。我的推算：按无向边、以 1 为根、level 从 0 计、新增节点继承父节点当前值（等价于 Re 对之后加入的后代也生效），Sample 0 恰好得到 70；不继承得 60。Sample 1 在任何试过的解释下都算不出 3607116（试过边方向父子/子父/无向、level 0/1 起、继承/不继承、子树/仅本层），而且 3607116 无法写成 91277、50944、17666 的非负整数线性组合，因此任何加法模型都不可能得到该输出。仍未说明：边的方向（两个样例写法相反，看起来应为无向、以 1 为根）；新增节点是否继承已有 Rekey（原图没写，只能从 Sample 0 推出继承）；Sample 1 的输出无法复现。",
+    "conflicts": [
+      "md 把初始边和操作合并成一个 operations 二维数组，并单独给 n、q；原图是 STDIN：首行 'n q'，然后 n-1 条边，然后 q 个操作。n/q 与边数在原图中是一致的（边数 = n-1，操作数 = q），md 的混合写法造成了“对不上”的错觉。",
+      "原图第三张示意图上方的标签是 'Ro 1 4'，但图中内容是 level 1 子树加 4，实际应为 'Re 1 4'；md 原样照抄了这个错误。示意图中 X4/X5/X8 被写成 X2+4、X6/X7 写成 X3+4，也是原图的笔误。",
+      "Sample 1 的边为 'child parent' 方向（2 1、3 1、4 2、5 1），Sample 0 为 'parent child' 方向（1 2、2 4、1 3、4 5），原图本身前后不一致；md 照搬。",
+      "md 开头声明“约 98% 匹配原题”，并把 operations 改成 String[][]，原图中没有这段说明。"
+    ],
+    "notes": "原图澄清了输入结构（n-1 条边 + q 个操作），也解释了 Sample 0（无向边、根为 1、新节点继承值）。但 Sample 1 的 3607116 用加法模型在数学上不可能得到，说明原题样例本身有问题或另有未写出的规则，所以仍然无法完全解除阻塞。"
+  },
+  {
+    "id": "oa-rubrik-18",
+    "slug": "rubrik-maximize-happiness",
+    "blockReason": "题目依赖的组织关系图缺失，样例的直属汇报关系不完整，无法判定管理范围。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/rubrik-18-original.png",
+        "sha256": "54745fa78e46d8c60c0dcdb79acc637882a5d3e5c326377fc7593911420afcd5",
+        "url": "https://www.fastprep.io/api/problem-source-images/rubrik-maximize-happiness/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "原题名 Human Resources。公司树中除 CEO 外每人都有 RM；员工只接受 RM 链上祖先的任务。选一组员工雇佣（总成本 ≤ 预算 M），再选一个 Manager，要求他是所有被雇员工的祖先（或本人；Manager 本人可雇可不雇，不雇则不付费）。幸福度 = Manager 的领导力 × 雇佣人数，求最大值。输入：第一行 T；每组第一行 N M；接着 N 行 R[i] C[i] L[i]（i 从 1 起，CEO 的 R=0）。约束：1 ≤ T ≤ 10；1 ≤ N ≤ 100000；1 ≤ M ≤ 1e9；0 ≤ R[i] < i；1 ≤ C[i] ≤ M；1 ≤ L[i] ≤ 1e9；子任务 N ≤ 10 / N ≤ 3000 / 原始。原图组织结构：1(10,400) 为根，子节点为 2(10,300)、4(10,60)、5(15,800)；2 的子节点为 3(15,100)、6(5,100)、7(5,100)。样例：T=1，'7 20'，各行 R C L 为 0 10 400 / 1 10 300 / 2 15 100 / 1 10 60 / 1 15 800 / 2 5 100 / 2 5 100，输出 1200（Manager=1，雇 2,6,7 或 4,6,7，成本 20，400×3）。",
+    "conflicts": [
+      "md 样例 employeeData 第 1 行为 [2,10,400]，原图为 0 10 400（CEO 的 RM 为 0）。",
+      "md 样例第 5 行为 [2,5,800]，原图为 1 15 800（员工 5 汇报给 1，成本 15）。",
+      "md 省略了首行 T=1 和 'N M' 行，改为 employeeData + budget 参数形式。",
+      "原图输入格式中误写 'The first line contains an integer 7'，应为 T；md 已改为 T。",
+      "按原图规则，雇 1,6,7（Manager=1 且被雇）同样得 1200；原图解释只列出 2,6,7 / 4,6,7，不影响答案。"
+    ],
+    "notes": "组织关系图和样例原文都已从原图完整恢复，管理范围可以确定；md 样例有两行数据转录错误。"
+  },
+  {
+    "id": "oa-rubrik-23",
+    "slug": "rubrik-save-the-universe",
+    "blockReason": "原始题面只提到枪能量 m、摧毁子树和保留子树 evilness<k，但没有定义一次开枪的可选子树/能量约束；给出的样例也无解释，无法确定最少次数。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/rubrik-23-original.png",
+        "sha256": "117b304b82b5eeee307e19530f8fab29192aa7fe4530c592da687952054438ae",
+        "url": "https://www.fastprep.io/api/problem-source-images/rubrik-save-the-universe/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "（即 Codeforces 1059E Split the Tree 的变体）n 个宇宙组成以 1 为根的树，每个点有邪恶值 e_i。要把树划分成若干条竖直链（每条链从某节点沿父方向向上的一段，各点恰好属于一条链），每条链至多 m 个点，且链上邪恶值之和不超过 k；求最少链数，无法划分则输出 -1。输入：第一行 n m k；第二行 n 个 e_i（1 ≤ e_i ≤ 1e9）；第三行 n-1 个 p_i，表示第 i+1 个点的父节点。约束：n ≤ 1e5；m ≤ 1e5；K ≤ 1e18。样例：6 3 100 / e=1 100 1 1 1 1 / p=1 1 2 3 3，输出 4；解释图把树切为 {1,3,6}（和 3，3 个点）、{2}（100）、{4}、{5}。",
+    "conflicts": [
+      "原文写“邪恶值之和 less than k”（严格小于），但样例中单点 {2} 的邪恶值 100 = k，若严格小于则应输出 -1；样例输出 4 说明实际条件是 ≤ k（与 CF 1059E 一致）。",
+      "md 题面为 '(no statement available)'；原图有完整题面、输入输出格式、e_i 范围和 -1 规则。",
+      "md 解释图链接无内容；原图解释图显示切分结果为 1-3-6 链加 2、4、5 三个单点。"
+    ],
+    "notes": "开枪的含义（每条竖直链至多 m 个点）、和的上限、输出 -1 都已由原图给出；唯一要注意的是 'less than' 与样例的冲突，应按 ≤ k 实现。"
+  },
+  {
+    "id": "oa-fortinet-3",
+    "slug": "fortinet-get-maximum-distance",
+    "blockReason": "样例输出与“中心可放在任意实数位置、距离为绝对值”的规则不一致：给定点集可用半整数中心得到小于 2 的最大距离，不能确定中心是否限于整数/输入点。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/fortinet-3-original.jpg",
+        "sha256": "ed15f4143022f3bd5b1da456856275e0900e2f77d573467d7e8e9db535bf3a35",
+        "url": "https://www.fastprep.io/api/problem-source-images/fortinet-get-maximum-distance/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/fortinet-3-example.png",
+        "sha256": "ea7ba39085370a89eabba8243667b068525b6f9538d36c4e38b47eb65d6b347d",
+        "url": "https://www.fastprep.io/api/problem-images/fortinet-get-maximum-distance/fortinetGetMaxDistance1.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "not_resolved",
+    "recoveredRules": "在一维上有 n 个点 location[i]，放 k 个聚类中心，要使所有点到最近中心距离的最大值最小，并返回这个最小化后的最大距离；距离为 |x-y|。原图文字仍写“中心可放在特征空间任意位置”。样例：n=5，location=[4,1,6,7,2]，k=2；原图选中心 3 和 7，各点距离为 1,2,1,0,1，最大值 2，输出 2。函数为 Python 形式 def getMaximumDistance(location, k)，未给返回类型。原图没有任何约束。仍未说明：中心是否只能取整数或输入点。按实数中心，最优为 {1,2,4} 取 2.5、{6,7} 取 6.5，答案 1.5，与输出 2 矛盾；按整数中心答案正好是 2（中心若只能取输入点，答案同样是 2）。原图只举了一个整数中心的例子，没有说明这一限制。",
+    "conflicts": [
+      "原图示例多给了 n=5，md 未列出 n。",
+      "原图函数为 Python def getMaximumDistance(location, k)；md 为 Java int getMaximumDistance(int[] location, int k)（int 返回类型是 md 自加的）。",
+      "md 的 Constraints 为空，原图同样没有约束，不算冲突，但无法补全。"
+    ],
+    "notes": "两张图（原题截图和样例插图）与 md 文字一致，只增加了“中心放在 3 和 7”的演示，没有说明中心限于整数或输入点，阻塞未解除。样例结果与“整数中心”或“中心取输入点”两种解释都吻合，需要人工决定。"
+  },
+  {
+    "id": "oa-box-1",
+    "slug": "box-count-counterfeit",
+    "blockReason": "币值部分序列号格式被截断，10..12长度中可变片段如何解释不明确。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/box-1-original.jpg",
+        "sha256": "a41d93140d5a96b6e79726339edd2492351ca66eb90415690b8838e09deff015",
+        "url": "https://www.fastprep.io/api/problem-source-images/box-count-counterfeit/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "原图（HackerRank 截图，分辨率低但可辨认）给出合法序列号的 5 条规则：(1) 总长 10~12；(2) 前 3 位是互不相同的大写英文字母；(3) 接下来 4 位是铸造年份，范围 1900~2019（含）；(4) 再接下来的若干位是币值，必须是 {10,20,50,100,200,500,1000} 之一；(5) 紧接着的那个字符必须是整个序列号的最后一个字符，即序列号以恰好一个大写字母结尾。因此币值片段就是下标 7 到倒数第 2 位（长度 2~4，对应总长 10~12），去掉首 7 位和末 1 位后整体与面额集合比对。税：每笔总交易扣 1%，向下取整为整数；每次调用的输入是一笔交易里的所有硬币，返回合法币值之和扣税后的整数。样例 n=8：AVG190420T(20 合法)、RTF20001000Z(1000 合法)、QWER201850G(第 4 位是 R 而非年份，非法)、AFA199620E(前三字母不互异，非法)、ERT1947200T(200 合法)、RTY20202004(年份 2020 越界且末位非大写字母，非法)、DRV1984500Y(500 合法)、ETB2010400G(无 400 面额，非法)；图中写“合法币值合计 20+1000+200+500=1720”。图中表格还列出 Test1~Test5 五项检查（大致对应长度/字母互异/年份/面额/末位字母）。约束：0 < n ≤ 10^5，1 ≤ |serialNumber[i]| ≤ 14。题目性质是“修复已有代码中的 bug”，但图中未包含待修复的原始代码。仍未说明：最终返回值是 1720 还是扣税后的 floor(1720*0.99)=1702（图只说了合计 1720，没给 Output 行）；币值片段是否允许前导零等异形（如 \"0020\"）未明说，按字符串精确匹配面额最合理。",
+    "conflicts": [
+      "样例第 2 个序列号：图为 RTF20001000Z（末位字母 Z），md 为 RTF200010002（末位数字 2，按规则会变成非法）",
+      "样例第 7 个序列号：图为 DRV1984500Y，md 为 DRV1984500V（不影响合法性，但字符不同）",
+      "规则 5 措辞：图为“下一个字符应是序列号最后一个字符，且必须以恰好一个大写字母结尾”，md 改写成“最后一个字符应为序列号的大写字母”，丢失了“币值片段之后紧接末字符”这一关键定位信息",
+      "税的作用对象：图为 1% taken from each total transaction（对整笔交易总额扣税），md 为 from each valid transaction",
+      "md 给出 Output=1720，但按图中“对总额扣 1% 并向下取整”的规则应为 1702；图本身只写合计 1720，没有给出函数返回值，两者存在矛盾",
+      "规则 3 措辞：图为 coin was creates，md 为 minted（仅措辞）"
+    ],
+    "notes": "原图 269px 宽，放大后可读。阻塞点（币值可变片段如何解释）已由图中规则 4/5 明确：币值=去掉前 7 位和最后 1 位的中间部分。但新暴露出样例输出 1720 与扣税规则的矛盾，落地判题前需要决定期望值（1720 还是 1702）。"
+  },
+  {
+    "id": "oa-weride-7",
+    "slug": "weride-checking-your-route",
+    "blockReason": "原题约束未知，示例终点描述与函数定义不一致。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/weride-7-original.png",
+        "sha256": "5d255224d395531ee83cbd80f4885bc45014174cbfcf33aa4b7fbb8222368ee0",
+        "url": "https://www.fastprep.io/api/problem-source-images/weride-checking-your-route/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/weride-7-example.png",
+        "sha256": "15a966f56a60c175aa936c784fa780b45d36fbe41fee678d02d42d78ebaa3892",
+        "url": "https://www.fastprep.io/api/problem-images/weride-checking-your-route/werideCheckRoute.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "原图题面：城市间双向道路构成带权无向图，求从第 1 个节点到最后一个节点（g_nodes）的最短路长度，所有该长度的路径都是最短路；返回字符串数组，每条边按输入顺序（1-based 编号）若位于任一最短路上为 YES，否则 NO。样例：g_nodes=5，边 (from,to,weight) 依次为 (1,2,1),(2,3,1),(3,4,1),(4,5,1),(5,1,3),(1,3,2),(5,3,1)，配图与此一致。按 md：最短长度 3，路径 1->5、1->2->3->5、1->3->5，输出 [YES,YES,NO,NO,YES,YES,YES]（经核算正确）。仍未说明：约束（节点/边数量、权重范围、是否有重边/自环、是否保证连通）图中完全没有；函数名与参数签名、返回格式说明以及样例解释文字（含 node S 那句）都不在图里。",
+    "conflicts": [
+      "md 解释写“from node 1 to node S”，图中题面明确是 first node 到 last node，配图终点为 5，S 是 5 的笔误",
+      "md 函数描述为 classifyEdges，starter code 为 checkRoute；原图未显示函数签名，无法裁定"
+    ],
+    "notes": "两张图：problem-source 截图只到图形为止；example-illustration 是同一样例表格+图的手机照片（有涂抹），内容一致。终点问题实质可确认（节点 1 -> 节点 g_nodes），但约束未知这一阻塞点完全未补全。"
+  },
+  {
+    "id": "oa-ziprecruiter-10",
+    "slug": "ziprecruiter-fantasy-card-duel",
+    "blockReason": "Fantasy Card Duel 缺少原始规则，只有不完整样例，无法定义确定的胜负判定。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/ziprecruiter-10-example.png",
+        "sha256": "3206f976e7786d6ecc3aa11897226f071347fc611114735813b10a68e4ef4591",
+        "url": "https://www.fastprep.io/api/problem-images/ziprecruiter-fantasy-card-duel/fantasyCard2.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "仅有样例 1 的文字解释图：A 出 5、B 出 2，双方牌堆暂时为空；因为 5 >= 2，5 和 2 依次放到 playerDeckA 底部，之后 A=[5,2]，B=[]；B 空则对决结束，共 1 轮，返回 1。由此可知：每轮双方各出牌堆顶一张；A 的牌 >= B 的牌时 A 赢（平局归 A），两张牌都放到赢家牌堆底，顺序为赢家的牌在前、输家的牌在后（此例中即 A 的牌先）；某方牌堆为空即结束；返回值是进行的轮数。推测（非图中所述）：A < B 时 B 赢、两张牌放到 B 底部且 B 的牌在前；用此推测模拟样例 2 A=[1,2]、B=[3,1] 恰好 6 轮后 A 空，与 md 输出 6 一致；若改成“总是 A 的牌在前”则样例 2 会进入死循环，因此“赢家牌在前”的推测较可信。仍未说明：B 赢时的规则与放牌顺序（只是推测）、对决不会结束时（循环）如何处理/返回什么、playerDeckB 的约束、轮数上限。",
+    "conflicts": [
+      "图中拼写 Sincle（应为 Since），仅措辞；图与 md 样例 1 数值一致，无实质冲突"
+    ],
+    "notes": "没有原题题面截图，只有一张样例插图。胜负判定只确认了 A>=B 这一分支；B 赢的分支和死循环处理都要靠推测，不能算明确补全。"
+  },
+  {
+    "id": "oa-ziprecruiter-14",
+    "slug": "ziprecruiter-triplets-with-unique-chars",
+    "blockReason": "Triplets With Unique Chars 题干在定义之前截断，损坏的图片标签及两个输出不能确定所数三元组。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/ziprecruiter-14-original.jpg",
+        "sha256": "7e6f7594e8650cd04468b7a6016d50f12b2a3f3cdc9b800c1e7864096e413b57",
+        "url": "https://www.fastprep.io/api/problem-source-images/ziprecruiter-triplets-with-unique-chars/0",
+        "kind": "problem-source"
+      }
+    ],
+    "verdict": "resolved",
+    "recoveredRules": "原图（CodeSignal 手机照片）完整给出题面：给定只含小写英文字母的字符串 s，统计长度为 3 的连续子串中三个字符两两互不相同的个数，即满足 s[i]、s[i+1]、s[i+2] 两两不同的下标 i 的数量。备注：不要求最优解，O(s.length^2) 以内即可通过。样例 1：s=\"abcdaaae\" 输出 3（i=0 abc、i=1 bcd、i=2 cda 合法；i=3 daa、i=4 aaa 等都不合法）。样例 2：s=\"abacaba\" 输出 2（i=1 bac、i=3 cab；其余三元组都含两个 a）。输入输出：[execution time limit] 3 秒（java），[memory limit] 1 GB，[input] string s（小写字母），约束 1 ≤ s.length ≤ 1000，[output] integer。长度 <3 时自然为 0（图未明说，但由定义可推出）。",
+    "conflicts": [
+      "md starter code 签名为 tripletsWithUniqueChars(int[][] grid)，与图中输入 string s 不符",
+      "md 样例输入写作 string = \"...\"，图中参数名为 s"
+    ],
+    "notes": "题干在 md 中被截断，原图完整补全了定义、两个样例的逐项解释和约束，阻塞点全部解决。"
+  },
+  {
+    "id": "oa-airtable-2",
+    "slug": "airtable-get-mostp-hydrated-team",
+    "blockReason": "某经理的团队是否包含经理本人、同分团队如何选/返回何值及没有≥2人的情况未明。",
+    "images": [
+      {
+        "path": "content/oa-judge/source-images/airtable-2-original.jpg",
+        "sha256": "a891e4e08a7d2ee3f5815656212e88a4357a720cb4d19d6b32d1a55e11ee5a38",
+        "url": "https://www.fastprep.io/api/problem-source-images/airtable-get-mostp-hydrated-team/0",
+        "kind": "problem-source"
+      },
+      {
+        "path": "content/oa-judge/source-images/airtable-2-example.png",
+        "sha256": "311919abfa7a532bd4b6a075888f9bdb0d03ef062fbeeaa670392775a062ebf4",
+        "url": "https://www.fastprep.io/api/problem-images/airtable-get-mostp-hydrated-team/getMostHydratedTeam1.png",
+        "kind": "example-illustration"
+      }
+    ],
+    "verdict": "partially",
+    "recoveredRules": "原图题面：n 个员工编号 0..n-1，cansConsumed[i] 为员工 i 喝的罐数，manager[i] 为其直接经理（-1 表示没有经理）。一个“团队”是直接或间接向同一经理汇报的所有员工，该经理本人不属于团队。团队的 hydration score 是团队成员罐数的平均值。返回最高的 hydration score，只考虑人数 >= 2 的团队。样例：cansConsumed=[70,78,53,65,100,80,92,85,43]，manager=[8,4,3,-1,3,8,4,4,3]，输出 85；树结构：3 为根（65），其直接下属 8(43)、2(53)、4(100)；8 的下属 5(80)、0(70)；4 的下属 1(78)、7(85)、6(92)。团队 4 = {1,7,6}，(78+85+92)/3=85 最高（对照：团队 8 = {5,0} 平均 75；团队 3 = 其余 8 人，601/8=75.125）。仍未说明：平均值非整数时如何取整（md 返回 int，图中看不到返回类型）；不存在 >=2 人团队时返回什么；约束（n、罐数范围）；是否保证单根/无环。",
+    "conflicts": [],
+    "notes": "阻塞点 1（团队是否包含经理本人）由原图明确：不包含（其实 md 已有同样表述）。阻塞点 2（同分团队选哪个）：因为只返回分数值，同分不影响答案，可视为已解决。阻塞点 3（没有 >=2 人团队的情况）图中未说明。原图截到样例解释为止，未包含函数签名、Returns 和约束。example-illustration 与原图中的树一致。"
+  },
+  {
+    "id": "oa-unknown-12",
+    "slug": "unknown-get-minimum-moves",
+    "blockReason": "服务器分簇操作没有完整说明每组/不同组容量约束；示例 2 的给定变换也无法由题面目标唯一推导最少步数。",
+    "images": [],
+    "verdict": "no_image",
+    "recoveredRules": "",
+    "conflicts": [],
+    "notes": "原页 unknown-get-minimum-moves 返回 404，source 图与 unknownGetMinimumMoves1.png 均 404。"
+  }
+]
