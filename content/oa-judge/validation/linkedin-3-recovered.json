@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008003,
+  "problems": [
+    {
+      "id": "oa-linkedin-3",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "a1a4d54a7b968411e5c161a55636515a65649477b651a95f72a6d489ee4c41a2",
+      "negativeControls": [
+        {
+          "name": "错误忽略边数上限",
+          "rejectedCases": 7,
+          "rejectedCaseIndices": [
+            1,
+            5,
+            7,
+            26,
+            30,
+            32,
+            33
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误边数必须小于K",
+          "rejectedCases": 18,
+          "rejectedCaseIndices": [
+            2,
+            4,
+            6,
+            8,
+            12,
+            13,
+            14,
+            17,
+            18,
+            19,
+            22,
+            23,
+            26,
+            27,
+            28,
+            29,
+            33,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误当作有向图",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            4,
+            9,
+            13,
+            14,
+            15,
+            16,
+            20,
+            22,
+            24,
+            26,
+            27,
+            28,
+            31,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误用DFS深度代替最少边数",
+          "rejectedCases": 1,
+          "rejectedCaseIndices": [
+            33
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent layered minimax Bellman-Ford over exactly k steps (k<=K); explicit DFS over all walks with at most K edges on small graphs; Python threshold bisection with BFS for formal large cases.",
+      "exhaustiveSmallDomain": {
+        "nodes": [
+          3,
+          4
+        ],
+        "edgeWeights": "each possible edge absent or weight in {1,2} (n=3) / {1,3} (n=4)",
+        "K": "1..n-1",
+        "onlyFeasible": true,
+        "cases": 1850
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模长链K恰好够",
+          "inputBytes": 1567132,
+          "outputBytes": 5,
+          "elapsedSeconds": 0.01791
+        },
+        {
+          "name": "满规模长链与重捷径",
+          "inputBytes": 1567132,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.01689
+        },
+        {
+          "name": "满规模随机图大K",
+          "inputBytes": 4333090,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.07472
+        },
+        {
+          "name": "满规模随机图小K",
+          "inputBytes": 4333086,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.04134
+        },
+        {
+          "name": "满规模网格K等于曼哈顿距离",
+          "inputBytes": 3883314,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.06637
+        },
+        {
+          "name": "满规模网格K宽松",
+          "inputBytes": 3883316,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.05908
+        },
+        {
+          "name": "满规模双星两步",
+          "inputBytes": 4055375,
+          "outputBytes": 8,
+          "elapsedSeconds": 0.04324
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 12.062
+    }
+  ]
+}
