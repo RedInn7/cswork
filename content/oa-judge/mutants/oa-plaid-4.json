@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误面积用32位整数相乘",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c<'0'||c>'9')c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){int n=(int)rd();vector<long long> h(n);for(auto &x:h)x=rd();\nvector<int> left(n),st;st.reserve(n);\nfor(int i=0;i<n;i++){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();left[i]=st.empty()?-1:st.back();st.push_back(i);}\nst.clear();long long best=0;\nfor(int i=n-1;i>=0;i--){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();int right=st.empty()?n:st.back();st.push_back(i);\nlong long side=min<long long>(h[i],right-left[i]-1);best=max(best,side);}\nint s=(int)best;printf(\"%d\\n\",s*s);}\n"
+  },
+  {
+    "name": "错误求最大矩形面积",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c<'0'||c>'9')c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){int n=(int)rd();vector<long long> h(n);for(auto &x:h)x=rd();\nvector<int> left(n),st;st.reserve(n);\nfor(int i=0;i<n;i++){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();left[i]=st.empty()?-1:st.back();st.push_back(i);}\nst.clear();long long best=0;\nfor(int i=n-1;i>=0;i--){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();int right=st.empty()?n:st.back();st.push_back(i);\nbest=max(best,h[i]*(right-left[i]-1));}\nprintf(\"%lld\\n\",best);}\n"
+  },
+  {
+    "name": "错误边长只受单柱高度和总宽限制",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c<'0'||c>'9')c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){int n=(int)rd();vector<long long> h(n);for(auto &x:h)x=rd();\nvector<int> left(n),st;st.reserve(n);\nfor(int i=0;i<n;i++){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();left[i]=st.empty()?-1:st.back();st.push_back(i);}\nst.clear();long long best=0;\nfor(int i=n-1;i>=0;i--){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();int right=st.empty()?n:st.back();st.push_back(i);\nlong long side=min<long long>(h[i],n);best=max(best,side);}\nprintf(\"%lld\\n\",best*best);}\n"
+  },
+  {
+    "name": "错误输出边长而非面积",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c<'0'||c>'9')c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){int n=(int)rd();vector<long long> h(n);for(auto &x:h)x=rd();\nvector<int> left(n),st;st.reserve(n);\nfor(int i=0;i<n;i++){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();left[i]=st.empty()?-1:st.back();st.push_back(i);}\nst.clear();long long best=0;\nfor(int i=n-1;i>=0;i--){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();int right=st.empty()?n:st.back();st.push_back(i);\nlong long side=min<long long>(h[i],right-left[i]-1);best=max(best,side);}\nprintf(\"%lld\\n\",best);}\n"
+  }
+]
