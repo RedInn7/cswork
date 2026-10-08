@@ -482,6 +482,18 @@
       "editorial": "## 思路\n\n设 f(k) 为按 remove 顺序删除前 k 张后，剩余 dominos 的严格 LIS 长度。删去元素不会增加 LIS，所以条件 f(k)≥min_order 关于 k 单调，可以二分最大可行 k。对每个 k 以 bytearray 标记存活位置，再扫描原数组，用 patience sorting 维护严格 LIS 的 tails。\n\n## 正确性\n\n固定 k 时，剩余位置恰是 remove[k:] 指向的位置，扫描时维持原数组顺序；bisect_left 将相等值替换在同一 tails 长度，不会把重复值拼成严格递增子序列，因此判定值就是该剩余序列的 LIS 长度。若 k 可行，则任意更小删除数的存活集合包含当前集合，LIS 不小于当前值；若 k 不可行，则任何更大的删除数也不可能可行。因此可行 k 构成从 0 开始的前缀，二分返回其最大端点。\n\n若 k=0 已不可行，源题所求可行集合为空，没有定义返回值。本站明确补充输出 -1；不把这一补充说成原题规则。\n\n## 复杂度\n\n单次检查 O(n log n)，二分 O(log n) 次，整体 O(n log²n) 时间，O(n) 空间。\n\n## 来源与本站协议\n\n固定 OAMaster 题面规定 remove 是 0-based 的 [0..n-1] 排列，domino 按原顺序保留，门槛针对严格 LIS。本站补充输入布局；对原题未定义的“初始 LIS 已低于门槛”情形规定输出 -1。"
     },
     {
+      "id": "oa-amazon-336",
+      "sourceContentHash": "e9464e5345d2c4db1b3bea6d27bd11d253621a8e1ac780512671efdd4d55fa5a",
+      "packageChecksum": "fba86d08d9a9d4e58286523e746b119ec73d35481edba6871bcac49d38411d87",
+      "editorial": "## 原始规则与来源恢复\n\n固定上游 fastprep/Amazon/amazon-return-records.md 的核心API表是一张不可访问的本机图片，只留下注意事项、约束和两组样例。本站从原FastPrep页面公开的Problem Source图恢复了这张表，图片保存在content/oa-judge/source-images/amazon-336-original.jpg，哈希绑定在来源证据。这张图不是固定Git快照里的资产，只作为同一原页面的补充来源；两人分别看图确认了表格内容。没有执行上游任何代码。\n\n表格给出三种请求和六种返回值：register成功返回Registered Successfully，用户已存在返回Username already exists；login成功返回Logged In Successfully，否则Login Unsuccessful；logout成功返回Logged Out Successfully，给定用户当前未登录返回Logout Unsuccessful。图中注意事项：初始没有用户；已登录用户再次登录失败，原登录保持有效；按输入顺序执行；用户名和密码区分大小写。\n\n## 两处原文勘误\n\n原文字例2的第四个输出写成Login Unsuccessfully，与原图表格中的Login Unsuccessful不一致。本站统一使用表格文案，并在题面中明确说明这个更正，不在同一题里混用两种拼写。原例2解释写“The user David is logged in”，实际输入是logout david；本站保持输入david不变，只在解释里改成david。\n\n## 输入适配\n\n第一行n，随后n行各一个请求：register username password、login username password或logout username，字段间一个空格。输出n行，第i行为第i个请求的返回值。完整原范围保留：1≤n≤100000，用户名和密码都是长度1..10的ASCII字母数字串。六个返回值的首词两两可区分（Logged后接In或Out），评测按空白分词比对与逐行比对等价。\n\n## 状态与规则推导\n\n每个用户只需要两项状态：注册时的密码，以及当前是否登录。\n\n- register：用户名不存在才创建，密码记下，初始未登录。注册不自动登录。用户名已存在时返回Username already exists，不覆盖密码，也不改变其登录状态。\n- login：用户存在、密码完全一致、当前未登录，三者同时成立才成功并标记登录。任一不满足都失败，且不改变任何状态；特别是已登录用户无论密码对错再次登录都失败，原会话继续有效，之后仍能正常退出。\n- logout：用户存在且当前已登录才成功并标记未登录；用户不存在或未登录都返回Logout Unsuccessful。\n\n不同用户的状态互不影响。大小写不同的用户名是不同用户，大小写不同的密码不匹配。\n\n## 正确性\n\n用哈希表保存用户名到(密码,是否登录)。每个请求只读写该用户名对应的一项，按上面三条规则判定，与表格及注意事项逐条对应。失败分支一律不写状态，所以失败请求不改变任何用户。归纳到第i个请求：前i−1个请求处理后表中状态等于网站真实状态，则第i个请求的返回值和新状态都正确。\n\n## 复杂度\n\n每个请求期望O(L)，L≤10为字段长度，总计O(nL)时间、O(用户数·L)空间。输出可达约240万字节，参考解先拼接再一次写出。\n\n## 独立验证\n\noracle用Python字典与集合分别保存密码和已登录用户，按规则直接模拟，不复用参考解。小域另写历史回放判定：用户是否存在看此前是否有该用户的register，密码取最早一次register，是否在线看此前该用户最近一次成功的login/logout是哪个；用两个大小写不同的用户名和两个大小写不同的密码，穷举长度1..4的全部请求序列，并逐个真实运行参考程序。正式用例覆盖原例、重复注册后旧密码仍有效、已登录时错/对密码再次登录都失败且随后能退出、未知用户登录与退出、大小写、跨用户隔离，以及十万请求的高基数用户、最长字段、高冲突随机、全失败退出等。五个正常退出的错误程序（覆盖密码、允许重复登录、注册自动登录、失败登录踢下线、用户名忽略大小写）在全部正式用例上执行并各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\nusing namespace std;\nstruct Account{string password;bool active=false;};\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,Account> users;users.reserve(size_t(n)*2+1);\nchar op[16],name[16],pass[16];string out;out.reserve(size_t(n)*24);\nfor(int i=0;i<n;i++){scanf(\"%15s %15s\",op,name);\nif(op[0]=='r'){scanf(\"%15s\",pass);auto r=users.try_emplace(name);if(r.second){r.first->second.password=pass;out+=\"Registered Successfully\\n\";}else out+=\"Username already exists\\n\";}\nelse if(op[3]=='i'){scanf(\"%15s\",pass);auto it=users.find(name);if(it!=users.end()&&!it->second.active&&it->second.password==pass){it->second.active=true;out+=\"Logged In Successfully\\n\";}else out+=\"Login Unsuccessful\\n\";}\nelse{auto it=users.find(name);if(it!=users.end()&&it->second.active){it->second.active=false;out+=\"Logged Out Successfully\\n\";}else out+=\"Logout Unsuccessful\\n\";}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-363",
       "sourceContentHash": "2c3df236860f5dcddb75f93bf3da179965831424daa0379a18647c68caa87c51",
       "packageChecksum": "39daecf13f261bdf71540c33c6af0cb0bdf53faf99be8d5f0818d7270ee28a6e",
@@ -4846,6 +4858,18 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); return str(sum(len(str(abs(x)))%2==0 for x in t[1:]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-18",
+      "sourceContentHash": "4631be22e5fed9687a71287ca88766e29a33d92a2e74c3c04e755e87583c2453",
+      "packageChecksum": "f1f34cf2789f36724f422ced5f0942b5b47181b243e53333e1d7b4375b5ea6ee",
+      "editorial": "## 原始规则、图片与输入适配\n\n固定 fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md 定义方阵，两条主对角线上的元素保持原位置，其余四个三角区域顺时针换位。原文请求查看source image，固定快照的示意图是不可访问本机路径。本站亲自查看原FastPrep页面公开的两张Problem Source图：第一张明确两条对角线不动并标出了5×5原矩阵，第二张重复规则；它们都没有数字约束或旋转后的图。另行下载的图保存在content/oa-judge/source-images/capitalone-18-original-0.jpg和-1.jpg，哈希绑定在来源证据，不能冒称这些下载图属于固定Git快照。\n\n单次变换精确为：若r=c或r+c=n−1则元素固定；否则原(r,c)移动到(c,n−1−r)，即顺时针90度。此映射逐项复现固定正文5×5原样例的完整输出，不是仅根据想象添加几何规则。偶数阶同样成立，n=2全部位置都在对角线上，因此始终不变；奇数阶中心固定。\n\n原文没有数值上下界。本站公开采用原Java int[][]与int参数的完整类型范围：元素−2147483648..2147483647，turns为非负次数0..2147483647，矩阵为非空方阵n≥1。负次数与空矩阵原文没有定义，本站不额外扩展。n不发明小上限，由既有32MiB标准输入预算限制。\n\n标准输入首行为n turns，后面n行、每行n个有符号整数（以空白分隔，允许LF/CRLF或末尾直接EOF）；输出变换后n行矩阵，不输出n。最短单数字元素编码、turns为一位且EOF无末尾换行时，输入字节数为2n²+digits(n)+2。因此4095需33538056字节，可传输；4096需33554438字节，超过32MiB。4095是协议预算推导，不是原题给出的矩阵上界；更长数字会降低实际可容纳的阶数。\n\n## 思路\n\n顺时针旋转四次回到原位置，两条对角线每次都固定，所以只需turns%4次。非对角位置分为互不相交的四元轨道。选顶部严格三角r<c<n−1−r，每个轨道恰选一个代表。该代表的四位置为(r,c)、(c,n−1−r)、(n−1−r,n−1−c)、(n−1−c,r)。用一个临时变量顺时针移动四个值，其它轨道独立处理，无需第二份矩阵。\n\n## 正确性证明\n\n旋转映射R(r,c)=(c,n−1−r)将两条对角线的并集映回自身，所以它也把非对角位置映到非对角位置。R四次是恒等变换。非对角位置不可能是中心，不会有一元或二元轨道，因此轨道长度恰为4，分别落在四个三角区域中；顶部严格三角含每个轨道唯一代表。\n\n原地循环把每个代表及其后三个位置的值沿R传递一次，正好实现该轨道的顺时针变换。不同轨道不共享位置，处理顺序不影响结果；两条对角线不在循环中，故其值不变。这证明一轮严格符合原规则。重复turns%4轮与重复turns轮相同，因而最终输出正确。n=1或2没有非对角轨道，保持不变也符合定义。\n\n## 复杂度与完整预算\n\n最多三轮，每轮访问O(n²)个元素，读取和输出也是O(n²)。只存一份连续int32矩阵，额外O(1)空间；n=4095时数组67076100字节，低于256MiB，不缓存整份输出字符串。解析INT_MIN先用64位累计其绝对值再取负，避免signed32溢出；位置乘法用size_t。\n\n输出只是同一组数值的置换，不增减数值或符号；规范十进制输出的数字总字节数不超过输入数字总字节数，分隔符至多每值一个。除末尾换行差异外，输出小于输入减去头部，因此完整可传输矩阵也可输出；题包配置64MiB输出额度。大测试只有一个4095阶实例，避免重复大输入/大期望使总包超限。\n\n## 独立验证\n\n小域oracle为每个原坐标直接计算重复旋转后的目标坐标，写入新矩阵，不复制参考顶部三角原地交换。另核验对角固定及四次恒等。163唯一oracle覆盖有符号极值、奇偶阶、0/1/2/3/4/INT_MAX次；穷举1..3阶二值矩阵与0..7次旋转。正式保留原5×5例，另含偶数阶、中心、反向不对称数据、混合正负极值、各种周期和中规模随机数据。\n\n满4095实例用坐标公式生成非对称0/1值，期望通过目标坐标反求原坐标再代入公式逐行产生，既不保存巨大Python整数矩阵也不调用参考算法。三错误程序分别转动对角线、逆时针、把周期误写为2，所有正式例须正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <vector>\nusing namespace std;\nint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();bool negative=c=='-';if(c=='-'||c=='+')c=getchar_unlocked();int64_t value=0;while(c>32&&c!=EOF){value=value*10+c-'0';c=getchar_unlocked();}return negative?-value:value;}\nint main(){int n=int(readNumber()),turns=int(readNumber());vector<int32_t>a(size_t(n)*n);for(auto &v:a)v=int32_t(readNumber());turns%=4;\nfor(int step=0;step<turns;step++)for(int r=0;r<n/2;r++)for(int c=r+1;c<n-1-r;c++){\nsize_t p=size_t(r)*n+c,q=size_t(c)*n+n-1-r,u=size_t(n-1-r)*n+n-1-c,v=size_t(n-1-c)*n+r;\nint32_t saved=a[p];a[p]=a[v];a[v]=a[u];a[u]=a[q];a[q]=saved;}\nfor(int r=0;r<n;r++)for(int c=0;c<n;c++)printf(\"%d%c\",int(a[size_t(r)*n+c]),c+1==n?'\\n':' ');}\n"
         }
       ]
     },

@@ -3,6 +3,36 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-amazon-333",
+      "decision": "Cross-source rule restoration independently supported, but full32MiB input domain can exceed current64MiB judge output budget; needs framework capacity work before promotion",
+      "source": "fastprep/Amazon/amazon-register-login-logout.md",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/amazon-register-login-logout/0",
+      "image": "content/oa-judge/source-images/amazon-333-original.jpg",
+      "imageSha256": "0bf6cb84b18b3707eca7670b51e161c2588c5b4036c01a9ec0be7e81f14df64c",
+      "findings": [
+        "Image URL came from actual original-page HTML img src. Main viewed full screenshot; it contains initially empty users, repeated login preserving original session, sequential requests and case sensitivity.",
+        "Five-request david/adam sample matches Amazon336, including correctly spelled Login Unsuccessful. This corroborates the spelling correction for336.",
+        "Screenshot lacks credential/count bounds and the complete register/login/logout response table. Do not automatically borrow336 numeric bounds for333 without explicit adaptation and full-domain review.",
+        "Independent image review confirms333 screenshot matches336 fixed raw five-request sample (not336 screenshot, which has user05 three-request example), and all five notes agree. Six responses can be restored with disclosed cross-source provenance, not by transferring unrelated numeric constraints.",
+        "Concrete capacity counterexample:3728269 repeated logout a requests use33554429 input bytes including header and LF. Required Logout Unsuccessful response lines use74565380 bytes; even minimal separators require74565379, above67108864 output cap. A smaller3355444-request input already exceeds that cap. Do not promote by inventing a smaller n."
+      ]
+    },
+    {
+      "id": "oa-amazon-336",
+      "decision": "Complete original API table recovered and independently viewed; source pre-review passed, authoring and judge verification still required",
+      "source": "fastprep/Amazon/amazon-return-records.md",
+      "sourcePage": "https://www.fastprep.io/problems/amazon-return-records",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/amazon-return-records/0",
+      "image": "content/oa-judge/source-images/amazon-336-original.jpg",
+      "imageSha256": "29d0ce46a8c18c2a3eb58b12fb8e3565d199490620447c416005ac3b2a09ae95",
+      "findings": [
+        "Actual original-page HTML img src links this publicly readable image. Main reviewer viewed the full image, including API table, notes, example and constraints.",
+        "Table strings: Registered Successfully; Username already exists; Logged In Successfully; Login Unsuccessful; Logged Out Successfully; Logout Unsuccessful.",
+        "Fixed raw second sample uses Login Unsuccessfully, unlike original table Login Unsuccessful. Any recovery must explicitly disclose this spelling correction rather than silently mixing outputs.",
+        "Image includes initially no users, repeated active login fails without ending original session, ordered execution, case-sensitive credentials, n1..100000 and alphanumeric credentials length1..10. Supplemental image is not claimed to belong to fixed upstream commit."
+      ]
+    },
+    {
       "id": "oa-microsoft-25",
       "decision": "Original image recovered and independently viewed; original examples conflict, do not promote",
       "image": "content/oa-judge/source-images/microsoft-25-original.jpg",
@@ -28,7 +58,7 @@
     },
     {
       "id": "oa-capital-one-18",
-      "decision": "Original linked images recovered; full-domain design and independent validation still required",
+      "decision": "Implemented in capitalone-18-recovered; Linux202-case reference validation and three negative controls passed. See dedicated independent review and integration evidence for remaining gates; not deployed.",
       "source": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
       "sourcePage": "https://www.fastprep.io/problems/capitalone-rotate-matrix-over-diagonals",
       "images": [
@@ -46,7 +76,10 @@
       "findings": [
         "Both image URLs were actual Problem source links on the current original page. They are supplemental downloads, not fixed-upstream Git assets.",
         "Image0 explicitly states clockwise rotation of the four diagonal-separated segments with both diagonals unchanged, and shows a5x5 before-rotation matrix marking both diagonals. Image1 repeats the rule. Neither image supplies numeric constraints or an after-rotation diagram.",
-        "Fixed sample is consistent with off-diagonal coordinate rotation(r,c)->(c,n-1-r). Still requires independent rule/domain review and resource-bound design before implementation."
+        "Both reviewers independently reproduced the complete fixed sample using off-diagonal rotation(r,c)->(c,n-1-r). The diagonal union is closed under rotation, as is its complement. Every non-diagonal orbit has four elements; top triangle r<c<n-1-r selects exactly one per orbit.",
+        "Even n is supported; n2 has only diagonal cells and remains unchanged. Nonnegative signed32 turns and signed32 matrix elements are disclosed type adaptations; negative turns and empty matrices have no defined source behavior and are not silently added.",
+        "For n turns followed by one-digit entries, n4095 EOF minimum input33538056bytes and LF33538057 fit32MiB; n4096 minimum33554438 does not. This is a transport-derived bound, not an original constraint. Single int32 array requires67076100bytes; do not allocate a second full matrix or full output string.",
+        "Canonical output is a permutation of identical numeric tokens with n² separators, so its bytes are bounded by input minus header up to the final-newline difference. Test near-budget output and parse INT_MIN using wider intermediate arithmetic."
       ]
     },
     {
