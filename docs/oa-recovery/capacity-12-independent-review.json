@@ -1,0 +1,178 @@
+[
+  {
+    "id": "oa-amazon-44",
+    "status": "FAIL",
+    "blockingFindings": [
+      "整包 104013005 字节（104.0 MB / 99.2 MiB），超过 ≤95MB 上限（无论按 95×10^6 还是 95 MiB 计）。"
+    ],
+    "nonBlocking": [
+      "规则与 amazon.mdx #44 一致；仅 |letters| 上限 10^8→3×10^7，字母表与回文前提不变。",
+      "题面/题解无违规字样。"
+    ],
+    "casesChecked": 36,
+    "oracleChecked": 175,
+    "mutantsKilled": "4/4",
+    "packageBytes": 104013005,
+    "packageSha256": "7b22d4e23ba33d7c7ea7a6e11449a1cf8904fc43f1b16ea5df02651156d31202"
+  },
+  {
+    "id": "oa-amazon-332",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 amazon.mdx #332 / FastPrep 一致；N 上限 10^9→3×10^6，m∈[2,99999]、processes∈[2,999999999] 与原严格不等式一致；新增 m≤N 属逻辑必需。",
+      "公开样例用例名含“本站补充”（本站补充：删除中间段、本站补充：全部删除），不属于 description/input/output/explanation/hints/editorial 字段，但若前台展示用例名会对用户可见，建议改名。"
+    ],
+    "casesChecked": 36,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 82575206,
+    "packageSha256": "eadb34bc1f41e7ac9dfd6edc0d113439149e330ef7ef878c5051f34ea24aa3ee"
+  },
+  {
+    "id": "oa-amazon-333",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 amazon.mdx #333、amazon-333-original.jpg 五条 Notes 及 336 图返回值表一致；样例与 333 图一致。",
+      "范围取舍不一致：凭证字母表/长度 1..10 取自同叙事 336 图，但同一张图写明 1≤n≤10^5，包却采用 n≤10^6（333 自身来源无 n 上限，故不算违规，但若以 336 图为约束来源则 n 超过原上限 10 倍，建议作者确认或改为 10^5）。",
+      "使用 tokens checker，6 种返回短语的分词序列互不歧义，可接受。"
+    ],
+    "casesChecked": 37,
+    "oracleChecked": 180,
+    "mutantsKilled": "5/5",
+    "packageBytes": 91525139,
+    "packageSha256": "593cf6e9fff9f564e5c4dabbb857c7dbfb88753419195a9e08250a186a5d1f77"
+  },
+  {
+    "id": "oa-uber-39",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 uber.mdx #39 一致；命令数上限 10^7→1.5×10^6，不同 IP≤10^6 保留。",
+      "原题 IP 为“不透明字符串”，包限定为 1..15 个可见 ASCII（33..126）且保证至少一条 FIRST_UNIQUE：属 stdin 协议必需的值域收窄，严格说不只是改上限，建议知悉。",
+      "公开样例用例名含“本站补充”（本站补充：空答案与大小写），不属于 description/input/output/explanation/hints/editorial 字段，但若前台展示用例名会对用户可见，建议改名。"
+    ],
+    "casesChecked": 38,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 89725054,
+    "packageSha256": "4110d152ef0d87c94e0592217edff2fd9a09925f58cb5b479098a6504f6cf134"
+  },
+  {
+    "id": "oa-plaid-4",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 plaid.mdx #4 一致；长度上限 10^8→3×10^6，高度 1..10^8 不变。",
+      "题解“数值范围”小节只讲 64 位溢出，不属违规。",
+      "公开样例用例名含“本站补充”（本站补充：中间平台），不属于 description/input/output/explanation/hints/editorial 字段，但若前台展示用例名会对用户可见，建议改名。"
+    ],
+    "casesChecked": 37,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 92012336,
+    "packageSha256": "f8f06bfe42010b8514515f65ecc4fbf7ffd724a6f38265632ad1dad5179546ec"
+  },
+  {
+    "id": "oa-flexport-3",
+    "status": "FAIL",
+    "blockingFindings": [
+      "整包 102007140 字节（102.0 MB / 97.3 MiB），超过 ≤95MB 上限（无论按 95×10^6 还是 95 MiB 计）。"
+    ],
+    "nonBlocking": [
+      "规则与 flexport.mdx #3 一致；原约束为占位符，长度取 3×10^7；前导零按十进制求值的解释合理。",
+      "公开样例用例名含“本站补充”（本站补充：含零、本站补充：单个数字），不属于 description/input/output/explanation/hints/editorial 字段，但若前台展示用例名会对用户可见，建议改名。"
+    ],
+    "casesChecked": 38,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 102007140,
+    "packageSha256": "7ede99e3fbd3ab9d30f3603798100bdb081a6911769f6ca6562d8219536e3c87"
+  },
+  {
+    "id": "oa-snowflake-24",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 FastPrep/MDX #24 一致；三个原样例一致。n 2×10^5→2000，grants 2×10^5 保留。",
+      "权限串限定为长度≤10 的可见 ASCII、不同串≤2000、Σk≤2×10^5：原题“不含空格的非空 token”，可见 ASCII 限定是值域收窄（协议必需），建议知悉。",
+      "输出行前加计数是 I/O 适配，题面已清楚说明，未出现“适配”等字样。"
+    ],
+    "casesChecked": 37,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 72551554,
+    "packageSha256": "6c3a4b256961515850de8fea2089832513ae7edf3cd08eec2287c4c69d3af0f5"
+  },
+  {
+    "id": "oa-airbnb-6",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 FastPrep/MDX #6 一致；width 上限 10^4→300，n≤10^5 与字符集保留；收尾边框与原 catalog 解一致。"
+    ],
+    "casesChecked": 38,
+    "oracleChecked": 175,
+    "mutantsKilled": "5/5",
+    "packageBytes": 87946001,
+    "packageSha256": "f3d5e9538c31c5d87277f2ea858fd4c4c0275a6f031ea4ace234b4fcb7064a9f"
+  },
+  {
+    "id": "oa-headlands-1",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 FastPrep #1 一致（合法行判定、连通块、歧义、尾随空格）；两个原样例一致。N 10^7→2×10^5，R≤10^5 保留，另加总长≤3×10^7 与答案总数≤2×10^6（实测最大 1.5×10^6）。",
+      "id/时间戳取 0..2^63−1、数字词无前导零是对“非负 64 位”的保守解读，属上限收窄。"
+    ],
+    "casesChecked": 38,
+    "oracleChecked": 185,
+    "mutantsKilled": "5/5",
+    "packageBytes": 91923630,
+    "packageSha256": "6e14979f4aa89896ad7e296fecfd86547e8ec030d7885c4cdc13274a7b988bf7"
+  },
+  {
+    "id": "oa-goldman-sachs-1",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 FastPrep autocorrect-prototype 一致；n,q 5000→750，长度 1..100 保留。原样例查询 dpede 笔误按原解释改为 spede，题面未提更正（符合政策）。",
+      "新增“单词互不相同”“仅小写字母”的输入保证，原题未规定，属合理收窄。"
+    ],
+    "casesChecked": 35,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 60739605,
+    "packageSha256": "57b8ec2a8d148a15c0176cd5f976a52909b7b61cf4df2b322ef58e9f07ca6336"
+  },
+  {
+    "id": "oa-jpmorgan-chase-26",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 FastPrep jpmorgan-get-search-results 一致（原约束第三条被截断，按 GS#1 补全合理）；n,q 5000→750。",
+      "与 oa-goldman-sachs-1 同题，我的同一份独立解两包均全对。"
+    ],
+    "casesChecked": 35,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 60886645,
+    "packageSha256": "d70b1f6923610d2f4050783402f0ad9516b1e47b196b61305a9cad7e85e1d160"
+  },
+  {
+    "id": "oa-jpmorgan-chase-1",
+    "status": "PASS",
+    "blockingFindings": [],
+    "nonBlocking": [
+      "规则与 OA LIST 001_image.txt / _chapter.md / MDX 一致；两个原样例均保留。",
+      "来源冲突：OCR 写 n≤10^8、k≤10^5，chapter/MDX 写 n,k≤10^6；包取 n,k≤10^6，k 相对 OCR 为放宽，但有 chapter/MDX 支持，可接受。",
+      "公开样例用例名“原样例（OCR）”“原样例（整理版）”暴露来源处理细节，不在受控字段内，若前台展示建议改名。"
+    ],
+    "casesChecked": 37,
+    "oracleChecked": 180,
+    "mutantsKilled": "4/4",
+    "packageBytes": 88211070,
+    "packageSha256": "b8356cdac89c654490cb8c44c0c59f1a3bc7875a17d14ab26a4f6c68c413c19d"
+  }
+]

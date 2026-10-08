@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "items": [
     {
+      "id": "oa-airbnb-6",
+      "sourceContentHash": "54ed5ba7e3dac6c1628db32155c0483c2c20fe927f5242f807c86c98799e1602",
+      "packageChecksum": "b12221e29a45bd1e18df249ba44c1690e0713f27726a4a2efcd3bc3d152e7faa",
+      "editorial": "## 题意\n\n给定 n 个句子和固定内容宽度 width，把每个句子画成表格的一行：边框行、句子行交替出现，最后再补一条边框收尾，共 2n+1 行；n=0 时什么都不输出。\n\n- 边框行：`+`，width+2 个 `-`，`+`。\n- 句子行：`| `，句子原样，补空格到恰好 width 个内容字符，` |`。\n\n## 思路\n\n先构造一次边框串，然后逐行读句子：输出边框，再输出 `| ` + 句子 + (width−len) 个空格 + ` |`。最后若 n>0 再输出一次边框。\n\n句子中的空格（包括开头和结尾的空格）都是内容的一部分，必须原样保留，因此要按“整行”读取，不能按空白分词，也不能去掉首尾空格。空句子对应一整行 width 个空格。\n\n## 正确性\n\n每个句子行的长度为 2+len+(width−len)+2=width+4，与边框行等长；每一行的内容只依赖对应句子和 width，按顺序输出即得到唯一正确的表格。\n\n## 复杂度\n\n输出共 (2n+1)·(width+5) 字节，时间和空间都与输出规模线性相关。逐行多次 print 或频繁刷新在大数据下较慢，建议拼接后一次性写出。\n\n## 独立验证\n\noracle 用 Python 的格式化补齐（`ljust`）生成表格；另写结构校验器，不构造答案而是逐行检查：行数为 2n+1、偶数行等于边框、奇数行以 `| ` 开头以 ` |` 结尾且中间等于句子加空格。穷举 width≤3、n≤2、句子取自 {空格, a} 的全部输入并逐个运行参考程序。五个正常退出的错误程序（漏最后边框、边框短横线数量错、删除句首空格、n=0 仍输出边框、按最长句子补齐）都被正式数据判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\nstring border=\"+\"+string(w+2,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nif(n>0)out+=border;fwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-airbnb-1",
       "sourceContentHash": "73acbc84232f8d7fbc04533e9582dacdb6784e29700a397f1196b4db28c89bec",
       "packageChecksum": "140b1474a73bbbe87e45739177570add13b273b2c7f3f40dd66d000f74c4e660",
@@ -482,6 +494,30 @@
       "editorial": "## 思路\n\n设 f(k) 为按 remove 顺序删除前 k 张后，剩余 dominos 的严格 LIS 长度。删去元素不会增加 LIS，所以条件 f(k)≥min_order 关于 k 单调，可以二分最大可行 k。对每个 k 以 bytearray 标记存活位置，再扫描原数组，用 patience sorting 维护严格 LIS 的 tails。\n\n## 正确性\n\n固定 k 时，剩余位置恰是 remove[k:] 指向的位置，扫描时维持原数组顺序；bisect_left 将相等值替换在同一 tails 长度，不会把重复值拼成严格递增子序列，因此判定值就是该剩余序列的 LIS 长度。若 k 可行，则任意更小删除数的存活集合包含当前集合，LIS 不小于当前值；若 k 不可行，则任何更大的删除数也不可能可行。因此可行 k 构成从 0 开始的前缀，二分返回其最大端点。\n\n若 k=0 已不可行，源题所求可行集合为空，没有定义返回值。本站明确补充输出 -1；不把这一补充说成原题规则。\n\n## 复杂度\n\n单次检查 O(n log n)，二分 O(log n) 次，整体 O(n log²n) 时间，O(n) 空间。\n\n## 来源与本站协议\n\n固定 OAMaster 题面规定 remove 是 0-based 的 [0..n-1] 排列，domino 按原顺序保留，门槛针对严格 LIS。本站补充输入布局；对原题未定义的“初始 LIS 已低于门槛”情形规定输出 -1。"
     },
     {
+      "id": "oa-amazon-332",
+      "sourceContentHash": "0ab031ee22b8341b5061d93439d70d41e9df2f35246354a934c41c260a4aeb33",
+      "packageChecksum": "9a1ee28c3e715dccd9877c3e8f1051c354a7917c264af5361bf6fc3dc933396c",
+      "editorial": "## 题意\n\n给定N个进程的内存占用processes和整数m，必须删除恰好一段长度为m的连续进程，求删除后剩余进程内存总和的最小值。\n\n## 推导\n\n剩余总和 = 全部总和 − 被删除段的和。全部总和固定，所以要让剩余最小，就要让被删除的长度m连续段之和最大。答案是 total − max(长度为m的窗口和)。\n\n## 算法\n\n先求总和，再用滑动窗口：第一个窗口是前m个数之和，此后每右移一位加上新进入的数、减去离开的数，记录最大窗口和。最后输出total−best。\n\n## 正确性\n\n长度为m的连续段恰好有N−m+1个，起点为0..N−m。滑动窗口依次得到每个起点对应窗口的和：从起点i−m到起点i−m+1，窗口失去a[i−m]、得到a[i]。因此best是所有可选删除方案中被删除部分的最大和，total−best就是剩余总和的最小值。m=N时唯一方案是全部删除，答案为0。\n\n## 数值范围\n\n每个数可达999999999，N可达3×10^6，总和约3×10^15，超过32位整数范围，必须用64位整数累加。\n\n## 复杂度\n\nO(N)时间。参考解按块读入并手写整数解析，避免大输入读入成为瓶颈。\n\n## 独立验证\n\noracle用前缀和数组计算每个窗口和后取最大值，不复用滑动状态；小域另对每个起点直接求剩余元素之和取最小值。穷举N=2..6、m=2..N、每个数取{2,5,999999999}的全部输入，并逐个真实运行参考程序。大用例覆盖最大值全满（闭式答案）、全最小值、最大窗口位于开头/结尾/中间、m=N、随机大值等。四个正常退出的错误程序（32位溢出、删最小段、窗口少一、只删两端）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c!='-'&&(c<'0'||c>'9'))c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){long long n=rd(),m=rd();vector<long long> a(n);long long total=0;for(auto &x:a){x=rd();total+=x;}\nlong long cur=0;for(long long i=0;i<m;i++)cur+=a[i];long long best=cur;\nfor(long long i=m;i<n;i++){cur+=a[i]-a[i-m];if(cur>best)best=cur;}\nprintf(\"%lld\\n\",total-best);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-333",
+      "sourceContentHash": "4605725df15729ce03a22eb988ad9f7e0bc634a5570f19ee1e1926f47df656e3",
+      "packageChecksum": "b39f154622847d40c8b13304d1b9e573abac5e2666dfe1612709d3fb96118c58",
+      "editorial": "## 题意\n\n按输入顺序处理n个请求：register username password、login username password、logout username，输出每个请求的返回值。初始没有用户；已登录的用户再次登录失败，原登录保持有效；用户名和密码区分大小写。\n\n## 每种请求的规则\n\n每个用户只需要两项状态：注册时的密码，以及当前是否登录。\n\n- register：用户名不存在才创建，记下密码，初始未登录，返回Registered Successfully。注册不会自动登录。用户名已存在时返回Username already exists，不覆盖密码，也不改变登录状态。\n- login：用户存在、密码完全一致、当前未登录，三者同时成立才成功，标记为登录并返回Logged In Successfully。任一条件不满足都返回Login Unsuccessful，且不改变任何状态；已登录用户无论密码对错再次登录都失败，原会话继续有效，之后仍能正常退出。\n- logout：用户存在且当前已登录才成功，标记为未登录并返回Logged Out Successfully；用户不存在或未登录都返回Logout Unsuccessful。\n\n不同用户的状态互不影响。大小写不同的用户名是不同用户，大小写不同的密码不匹配。\n\n## 正确性\n\n用哈希表保存“用户名→(密码,是否登录)”。每个请求只读写该用户名对应的一项，并严格按上面三条规则判定。失败分支一律不写状态，所以失败请求不会改变任何用户。对请求序号归纳：若前i−1个请求处理后表中状态与真实状态一致，则第i个请求的返回值与新状态也正确。\n\n## 复杂度\n\n每个请求期望O(L)，L≤10为字段长度，总计O(nL)时间、O(用户数·L)空间。n可达10^6，输出约两千多万字节，参考解先拼接再一次写出。\n\n## 独立验证\n\noracle用Python字典与集合分别保存密码和已登录用户，直接模拟，不复用参考解。另写历史回放判定：用户是否存在看此前是否有该用户的register，密码取最早一次register，是否在线看此前该用户最近一次成功的login/logout；对每个oracle输入交叉比对。小域用两个大小写不同的用户名和两个大小写不同的密码，穷举长度1..4的全部请求序列，并逐个真实运行参考程序。正式用例覆盖原样例、重复注册后旧密码仍有效、已登录时错/对密码再次登录都失败且随后能退出、未知用户登录与退出、大小写、跨用户隔离，以及十万到百万请求的高基数用户、最长字段、高冲突随机等。五个正常退出的错误程序（覆盖密码、允许重复登录、注册自动登录、失败登录踢下线、用户名忽略大小写）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\nusing namespace std;\nstruct Account{string password;bool active=false;};\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,Account> users;users.reserve(size_t(n)*2+1);\nchar op[16],name[16],pass[16];string out;out.reserve(size_t(n)*24);\nfor(int i=0;i<n;i++){scanf(\"%15s %15s\",op,name);\nif(op[0]=='r'){scanf(\"%15s\",pass);auto r=users.try_emplace(name);if(r.second){r.first->second.password=pass;out+=\"Registered Successfully\\n\";}else out+=\"Username already exists\\n\";}\nelse if(op[3]=='i'){scanf(\"%15s\",pass);auto it=users.find(name);if(it!=users.end()&&!it->second.active&&it->second.password==pass){it->second.active=true;out+=\"Logged In Successfully\\n\";}else out+=\"Login Unsuccessful\\n\";}\nelse{auto it=users.find(name);if(it!=users.end()&&it->second.active){it->second.active=false;out+=\"Logged Out Successfully\\n\";}else out+=\"Logout Unsuccessful\\n\";}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-amazon-336",
       "sourceContentHash": "e9464e5345d2c4db1b3bea6d27bd11d253621a8e1ac780512671efdd4d55fa5a",
       "packageChecksum": "fba86d08d9a9d4e58286523e746b119ec73d35481edba6871bcac49d38411d87",
@@ -526,6 +562,18 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    lines = raw.splitlines()\n    if len(lines) != 3:\n        raise ValueError(\"expected password, reference, and 26 costs\")\n    password, reference = lines[0], lines[1]\n    costs = list(map(int, lines[2].split()))\n    if not 1 <= len(password) <= 100_000 or not 1 <= len(reference) <= 100_000:\n        raise ValueError(\"string length must be in [1, 100000]\")\n    if len(costs) != 26 or any(not 1 <= cost <= 100 for cost in costs):\n        raise ValueError(\"expected 26 costs in [1, 100]\")\n    if any(not ('a' <= char <= 'z') for char in password + reference):\n        raise ValueError(\"strings must contain lowercase English letters\")\n    removable = set(reference)\n    return str(sum(costs[ord(char) - ord('a')] for char in password if char in removable))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-amazon-44",
+      "sourceContentHash": "3bafd9d6ec871ff5f6bbf830a0b1b744b0fe7f7723b8b7aaabee81c1fd697315",
+      "packageChecksum": "badeeaef71a5417c11012333458165347d5e7efc0f353add3faae7ac9450de60",
+      "editorial": "## 题意\n\n给定一个由小写字母组成、本身就是回文的字符串letters。把它的字符重新排列，在所有仍是回文的排列中输出字典序最小的一个。\n\n## 推导\n\n回文由前一半（长度⌊n/2⌋）和可能存在的中心字符唯一确定，后一半是前一半的反转。输入本身是回文，所以每个字母出现次数中至多一个为奇数：n为奇数时恰有一个奇数次字母，它只能放在中心；n为偶数时没有中心。\n\n两个回文比较字典序时，先比较的正是前一半。前一半的字符多重集固定为“每个字母出现次数的一半”，在多重集固定的所有排列中，按非降序排列字典序最小。中心字符已被唯一确定，所以答案是：前一半按a到z非降序排列，中间放奇数次字母（若有），再接前一半的反转。\n\n## 正确性\n\n任一回文排列中，第i个位置与第n−1−i个位置字符相同，因此每个字母在前一半中恰好出现⌊cnt/2⌋次，中心（若有）只能是唯一的奇数次字母。所以所有回文排列与“前一半的一个排列”一一对应。对这些排列，前一半字典序越小整串字典序越小，而多重集的最小排列就是非降序排列。构造出的串确实是回文且字符多重集与输入一致，故它就是答案。\n\n## 复杂度\n\n统计26个计数O(n)，从两端向中间填写O(n)，额外空间为输出串本身。长度可达三千万，参考解用fread整块读入、一次fwrite输出。\n\n## 独立验证\n\noracle把输入排序后去掉中心字符，再隔一个取一个得到前一半，不复用计数填充；大用例另外逐项检查输出是回文、字符计数与输入相同、前一半非降序。小域穷举：字母表{a,b,c}上长度1..7的全部回文，对每个输入枚举所有不同排列、筛出回文取最小值，并逐个真实运行参考程序。四个正常退出的错误程序（只排序、原样输出、取字典序最大、奇数字符放首位）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string s;s.reserve(1<<25);char buf[1<<16];size_t k;\nwhile((k=fread(buf,1,sizeof buf,stdin))>0)s.append(buf,k);\nlong long cnt[26]={0};for(char c:s)if(c>='a'&&c<='z')cnt[c-'a']++;\nlong long n=0;for(int i=0;i<26;i++)n+=cnt[i];\nstring out(n,'?');long long l=0,r=n-1;\nfor(int i=0;i<26;i++){for(long long k2=0;k2<cnt[i]/2;k2++){out[l++]=char('a'+i);out[r--]=char('a'+i);}if(cnt[i]%2)out[n/2]=char('a'+i);}\nout+='\\n';fwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -6446,6 +6494,18 @@
       ]
     },
     {
+      "id": "oa-flexport-3",
+      "sourceContentHash": "84ee3ab9a35b3d1d9847a63164858e36a3af35ac7baae94fd76faa62abe7bda4",
+      "packageChecksum": "0c69d5fe1d5908bdcb0a55ea8f391abf1350c1bc34fbf1086c4d790fd55ba908",
+      "editorial": "## 题意\n\n给定数字串num，可以在任意相邻两个字符之间插入'+'（每个空隙至多一个'+'，可以一个都不插）。对所有2^(n−1)种插法，把得到的算式求值，求这些值的总和对10^9+7取模。被'+'分开的每一段按十进制数求值，前导零不影响数值（例如\"05\"的值为5）。\n\n## 前缀递推\n\n只看前i个字符构成的所有算式，维护三个量：算式个数c、所有算式的值之和f、所有算式最后一段的数值之和g。加入下一位数字d时，每个旧算式有两种延伸：\n\n- 在中间插'+'，d成为新的一段：值增加d，最后一段变为d。\n- 不插'+'，d接在最后一段后面：最后一段x变为10x+d，值增加9x+d。\n\n汇总得到：c' = 2c，f' = (f + c·d) + (f + 9g + c·d) = 2f + 9g + 2cd，g' = c·d + (10g + c·d) = 10g + 2cd。初始只有第一位时c=1，f=g=d。最终答案是f。\n\n## 正确性\n\n每个长度为i+1的算式唯一对应“长度为i的算式+最后一个空隙插或不插”，上面两种情况恰好覆盖这两种选择，各自对值与最后一段的影响按十进制定义计算，因此三个量的递推都是精确的（在模意义下同样成立，因为只用了加法和乘法）。归纳到整串即得答案。\n\n## 复杂度\n\nO(n)时间、O(1)额外空间，参考解按块读入，长度三千万的输入也只需一次线性扫描。\n\n## 独立验证\n\noracle从每一位数字的贡献出发：第i位（0起）在某段中处于从右数第k位时贡献d·10^k，此时它左边的i个空隙任意，它到段尾的k个空隙不插'+'，段尾后的空隙必须插'+'（若段尾不是整串末尾），其余空隙任意。于是第i位的总权重为2^i·(Σ_{k<m} 10^k·2^{m−1−k} + 10^m)，m=n−1−i，由右向左累加，不复用前缀递推。小域另枚举所有插法直接求值。穷举长度1..4的全部数字串并逐个真实运行参考程序。正式用例覆盖原样例、单个数字、全零、前导零、全9、长度三千万随机串等。四个正常退出的错误程序（个数不取模、错误模数、漏加新数字、漏掉不插加号的算式）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\nint main(){const uint64_t M=1000000007ULL;static char buf[1<<16];size_t k;bool first=true;uint64_t c=0,f=0,g=0;\nwhile((k=fread(buf,1,sizeof buf,stdin))>0)for(size_t i=0;i<k;i++){char ch=buf[i];if(ch<'0'||ch>'9')continue;uint64_t d=ch-'0';\nif(first){c=1;f=d;g=d;first=false;continue;}\nuint64_t cd=c*d%M;f=(2*f+9*g+2*cd)%M;g=(10*g+2*cd)%M;c=c*2%M;}\nprintf(\"%llu\\n\",(unsigned long long)f);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-flexport-6",
       "sourceContentHash": "ab588621a787de8141075eca692b260a06aee59e05d2bacd7eab834ebb236bbd",
       "packageChecksum": "4c2f0fbb96a7a778de516ff5366bc7df52f1d335a1156314e89411e1454306eb",
@@ -6538,6 +6598,18 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n lines=raw.splitlines(); n=int(lines[0]); answers=[]\n for simulation in lines[1:1+n]:\n  inside=best=0\n  for event in simulation:\n   if event in 'CU': inside+=1\n   else: inside-=1\n   best=max(best,inside)\n  answers.append(str(best))\n return ' '.join(answers)\nif __name__ == '__main__':\n print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-1",
+      "sourceContentHash": "aacb9cf2643a5f45c1f8e1fdf96605572a2d35aff0d185e045e9a21b2d5184dc",
+      "packageChecksum": "892455cda88e6e1b8912491cb9815674a1b1442cc49fa2f3e6310e7415d1dd94",
+      "editorial": "## 思路：排序签名分组\n\n两个串互为字母异位词，当且仅当它们包含的每个字母次数都相同，也就是把各自字符排序后得到的串相同。把排序后的串称为签名。\n\n1. 对每个单词求签名，用哈希表把单词按签名分组。\n2. 每组内部按字典序排序一次。\n3. 对每个查询求签名，直接取出对应组输出。\n\n单词本身与查询完全相同时也算异位词（不重排也是一种排列），应当包含在结果里。\n\n## 正确性\n\n签名相同 ⇔ 字母多重集相同 ⇔ 互为异位词，因此每个查询取到的组恰好是全部异位词。组内已按字典序排好，输出顺序正确。只比较字母种类、或用长度加字符和这样的弱签名都会把不同多重集错误地合并。\n\n## 复杂度\n\n设 L 为最大串长。求签名 O((n+q)·L log L)（也可以用 26 维计数做到 O(L)），组内排序 O(n log n·L)，输出与答案规模成正比。\n\n## 独立验证\n\noracle 不使用签名哈希，而是对每个（查询, 单词）对直接比较 26 个字母的出现次数，O(n·q) 暴力筛出后排序。字母表 {a,b,c}、长度 1..2 的全部 12 个串，枚举其全部非空子集作为单词表，并用所有有异位词的串作查询，逐个运行参考程序。四个正常退出的错误程序（按输入顺序输出、忽略字母次数、长度加字符和签名、排除与查询相同的单词）都在正式数据上被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];sort(k.begin(),k.end());groups[k].push_back(i);}\nfor(auto &g:groups)sort(g.second.begin(),g.second.end(),[&](int a,int b){return w[a]<w[b];});\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;sort(k.begin(),k.end());auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n out+=to_string(it->second.size());for(int j:it->second){out+=' ';out+=w[j];}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -7522,6 +7594,18 @@
         {
           "language": "python",
           "code": "from collections import deque\ndef solve(data):\n    n=int(data[0]);start,target=data[1:];q=deque([(start,0)]);seen={start}\n    while q:\n        s,d=q.popleft()\n        if s==target:return str(d)\n        for i in range(n):\n            for c in 'xyz':\n                if c==s[i] or (i and s[i-1]==c) or (i+1<n and s[i+1]==c):continue\n                t=s[:i]+c+s[i+1:]\n                if t not in seen:seen.add(t);q.append((t,d+1))\n    return '-1'\n\nif __name__ == \"__main__\":\n    import sys\n    print(solve(sys.stdin.read().split()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-headlands-1",
+      "sourceContentHash": "0d247b628103ceff6ce66a730a0f25675f7d5391d343ee71859138ffe0094ce3",
+      "packageChecksum": "a9dff0590fe8e6880a08d24d9516e39cb94c2213152f52aeb31ac83bd61683c2",
+      "editorial": "## 题意整理\n\n先筛掉格式错误的日志行，再把剩下的提交按“共享同一个 (路径, 不透明标识) 对”连成连通块，每个连通块就是一个仓库。若某个连通块里同一路径出现了两个不同的标识，整份输入有歧义，只输出 AMBIGUOUS INPUT!。否则对每个查询，找到包含该 (路径, 标识) 的仓库，输出时间戳落在闭区间 [start, end] 内的提交编号，按 (时间戳, 编号) 升序，每个编号后面跟一个空格。\n\n## 合法行判定\n\n按单个空格切词。合法行至少 4 个词且词数为偶数；第 1、3 个词分别是 id 和 timestamp；第 2、4 个词全是数字；所有键（id、timestamp 以及每一对里的路径）互不相同。任何一条不满足就整行丢弃，它的路径对既不参与连通也不参与歧义判断。\n\n## 算法\n\n1. 对合法提交逐一编号，用并查集维护连通块。用哈希表记录每个 (路径, 标识) 第一次出现的提交，之后再出现就和它合并。\n2. 全部合并结束后，再扫描每个提交的每个路径对，以 (根, 路径) 为键记录标识；遇到不同标识即判定歧义。必须在合并完成后再检查，因为两条提交可能先各自属于不同块、之后才被第三条提交连通。\n3. 每个连通块的提交按 (时间戳, 编号) 排序。查询时用哈希表找到锚点所在块，二分找到第一个时间戳 ≥ start 的位置，向后输出直到时间戳 > end。\n\n## 正确性\n\n并查集合并的边恰好是“共享同一路径对”的关系，因此最终的集合就是题目定义的连通块。歧义只取决于最终连通块里每条路径的标识集合，第 2 步对每个块检查了全部路径对。排序后时间戳在区间内的提交是连续的一段，二分加顺序扫描恰好输出它们，且顺序与要求一致。\n\n## 复杂度\n\n设合法行里的路径对总数为 P，查询输出编号总数为 K。合并与歧义检查期望 O(P·α)，排序 O(N log N)，每个查询 O(log N + 答案数)，总计 O((N+P)·α + N log N + R log N + K)。\n\n## 独立验证\n\noracle 用正则表达式判定合法行，用“提交—路径对”二部图 BFS 求连通块，再按块逐路径收集标识集合判歧义，查询时对整个块过滤后排序，不使用并查集或二分。穷举 1..3 条合法提交、路径 {f,g}、标识 {1,2}、时间戳 {1,2} 的全部组合并逐个运行参考程序；随机数据混入各种格式错误行（前缀错误、非数字、奇数词数、重复键、过短）。五个错误程序（接受奇数词行、不查重复键、只按编号排序、忽略歧义、结束时间开区间）都正常退出并被正式数据判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <string>\n#include <string_view>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\n#include <numeric>\nusing namespace std;\nstatic vector<int> par;\nstatic int findRoot(int x){while(par[x]!=x){par[x]=par[par[x]];x=par[x];}return x;}\nstatic bool digits(string_view s){if(s.empty()||s.size()>19)return false;for(char c:s)if(c<'0'||c>'9')return false;return true;}\nstatic uint64_t num(string_view s){uint64_t v=0;for(char c:s)v=v*10+uint64_t(c-'0');return v;}\nstatic bool dupKeys(const vector<string_view>&t){vector<string_view> k;for(size_t i=0;i<t.size();i+=2)k.push_back(t[i]);sort(k.begin(),k.end());return adjacent_find(k.begin(),k.end())!=k.end();}\nstruct Commit{uint64_t id,ts;size_t pb,pe;};\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;auto nextLine=[&]()->string_view{size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();string_view s(in.data()+p,e-p);p=e<in.size()?e+1:e;return s;};\nauto split=[&](string_view s,vector<string_view>&t){t.clear();size_t a=0;while(a<=s.size()){size_t b=s.find(' ',a);if(b==string_view::npos)b=s.size();t.push_back(s.substr(a,b-a));a=b+1;}};\nlong N=atol(string(nextLine()).c_str());vector<Commit> cs;vector<pair<string_view,string_view>> pairs;vector<string_view> tok;\nfor(long i=0;i<N;i++){split(nextLine(),tok);\n if(tok.size()<4||tok.size()%2||tok[0]!=\"id\"||tok[2]!=\"timestamp\"||!digits(tok[1])||!digits(tok[3]))continue;\n if(dupKeys(tok))continue;\n size_t pb=pairs.size();for(size_t j=4;j+1<tok.size();j+=2)pairs.push_back({tok[j],tok[j+1]});cs.push_back({num(tok[1]),num(tok[3]),pb,pairs.size()});}\nint C=cs.size();par.resize(C);iota(par.begin(),par.end(),0);\nunordered_map<string,int> anchor;anchor.reserve(pairs.size()*2+1);\nfor(int c=0;c<C;c++)for(size_t j=cs[c].pb;j<cs[c].pe;j++){string key(pairs[j].first);key+=' ';key+=pairs[j].second;\n auto it=anchor.try_emplace(move(key),c).first;int a=findRoot(c),b=findRoot(it->second);if(a!=b)par[a]=b;}\nbool amb=false;{unordered_map<string,string_view> owner;owner.reserve(pairs.size()*2+1);\n for(int c=0;c<C&&!amb;c++){string pre=to_string(findRoot(c))+' ';for(size_t j=cs[c].pb;j<cs[c].pe;j++){auto it=owner.try_emplace(pre+string(pairs[j].first),pairs[j].second).first;if(it->second!=pairs[j].second){amb=true;break;}}}}\nif(amb){fputs(\"AMBIGUOUS INPUT!\\n\",stdout);return 0;}\nvector<vector<int>> group(C);for(int c=0;c<C;c++)group[findRoot(c)].push_back(c);\nfor(auto &g:group)sort(g.begin(),g.end(),[&](int a,int b){return cs[a].ts!=cs[b].ts?cs[a].ts<cs[b].ts:cs[a].id<cs[b].id;});\nlong R=atol(string(nextLine()).c_str());string out;\nfor(long q=0;q<R;q++){split(nextLine(),tok);uint64_t lo=num(tok[0]),hi=num(tok[1]);string key(tok[2]);key+=' ';key+=tok[3];\n auto it=anchor.find(key);if(it!=anchor.end()){const auto &g=group[findRoot(it->second)];\n  auto s=lower_bound(g.begin(),g.end(),lo,[&](int c,uint64_t v){return cs[c].ts<v;});\n  for(;s!=g.end()&&cs[*s].ts<=hi;++s){out+=to_string(cs[*s].id);out+=' ';}}\n out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -8590,6 +8674,30 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, divisor = data[0], data[1]\n    values = data[2:]\n    counts = [0] * divisor\n    for value in values:\n        counts[value % divisor] += 1\n    answer = 0\n    for a in range(divisor):\n        for b in range(a, divisor):\n            c = (-(a + b)) % divisor\n            if c < b:\n                continue\n            if a == b == c:\n                answer += counts[a] * (counts[a] - 1) * (counts[a] - 2) // 6\n            elif a == b:\n                answer += counts[a] * (counts[a] - 1) // 2 * counts[c]\n            elif b == c:\n                answer += counts[a] * counts[b] * (counts[b] - 1) // 2\n            else:\n                answer += counts[a] * counts[b] * counts[c]\n    return str(answer)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-1",
+      "sourceContentHash": "dd0671189338da8df11490e9a9810dbe586808e198d9ffaf8d592e9f44e0dabd",
+      "packageChecksum": "c6488f349dcf08c0c43309b8d9c34d40b7c5671cf356933c72421e3d7f7bb6d5",
+      "editorial": "## 思路：只关心取反次数的奇偶\n\n把一个数取反两次等于没变，所以每个位置的最终值只取决于它被多少个更新区间覆盖：覆盖次数为奇数就取反，为偶数就保持原值。逐个区间逐个元素地取反是 O(n·k)，在 n、k 都到 10^6 时太慢。\n\n用异或差分：对区间 [l, r]（1 下标），令 flip[l−1] ^= 1、flip[r] ^= 1。之后从左到右做前缀异或 cur ^= flip[i]，cur 就是位置 i 被覆盖次数的奇偶。cur=1 时输出 −data[i]，否则输出 data[i]。\n\n## 正确性\n\n区间 [l, r] 只在前缀异或经过下标 l−1 时把 cur 翻转一次，在经过下标 r 时再翻转回来，因此恰好让下标 l−1..r−1（即 1 下标的 l..r）的奇偶各翻转一次，其他位置不受影响。所有区间的贡献按异或叠加，得到的就是每个位置被覆盖次数的奇偶。\n\n注意 0 取反仍是 0；|data[i]| ≤ 10^9，取反不会溢出 32 位整数。\n\n## 复杂度\n\nO(n + k) 时间，O(n) 额外空间。输入输出各约 10^6 个数，建议使用快速读写。\n\n## 独立验证\n\noracle 把所有区间端点排序后扫描线计数覆盖次数，不使用差分数组；小数据另外直接逐次模拟取反。穷举 n≤3 时由全部区间组成、长度不超过 3 的更新序列并逐个运行参考程序。四个正常退出的错误程序（右端点开区间、只要被覆盖就取反、按 0 下标处理、用 −|x| 代替取反）都在正式数据上被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <string>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long> a(n);for(auto &x:a)scanf(\"%lld\",&x);\nint k;scanf(\"%d\",&k);vector<unsigned char> flip(n+1,0);\nfor(int i=0;i<k;i++){int l,r;scanf(\"%d %d\",&l,&r);flip[l-1]^=1;flip[r]^=1;}\nstring out;out.reserve((size_t)n*12);unsigned char cur=0;char buf[24];\nfor(int i=0;i<n;i++){cur^=flip[i];long long v=cur?-a[i]:a[i];int len=snprintf(buf,sizeof buf,\"%lld\",v);if(i)out+=' ';out.append(buf,len);}\nout+='\\n';fwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-jpmorgan-chase-26",
+      "sourceContentHash": "9205b1b8e22a9e8ceddf8409ea3703e73d0541dc5c6555b38d15900a7b0351cb",
+      "packageChecksum": "21fddd13fa2cf043541121882fb44e8ea557b049b7c3a0630ce3145fd145e06c",
+      "editorial": "## 思路：排序签名分组\n\n两个串互为字母异位词，当且仅当它们包含的每个字母次数都相同，也就是把各自字符排序后得到的串相同。把排序后的串称为签名。\n\n1. 对每个单词求签名，用哈希表把单词按签名分组。\n2. 每组内部按字典序排序一次。\n3. 对每个查询求签名，直接取出对应组输出。\n\n单词本身与查询完全相同时也算异位词（不重排也是一种排列），应当包含在结果里。\n\n## 正确性\n\n签名相同 ⇔ 字母多重集相同 ⇔ 互为异位词，因此每个查询取到的组恰好是全部异位词。组内已按字典序排好，输出顺序正确。只比较字母种类、或用长度加字符和这样的弱签名都会把不同多重集错误地合并。\n\n## 复杂度\n\n设 L 为最大串长。求签名 O((n+q)·L log L)（也可以用 26 维计数做到 O(L)），组内排序 O(n log n·L)，输出与答案规模成正比。\n\n## 独立验证\n\noracle 不使用签名哈希，而是对每个（查询, 单词）对直接比较 26 个字母的出现次数，O(n·q) 暴力筛出后排序。字母表 {a,b,c}、长度 1..2 的全部 12 个串，枚举其全部非空子集作为单词表，并用所有有异位词的串作查询，逐个运行参考程序。四个正常退出的错误程序（按输入顺序输出、忽略字母次数、长度加字符和签名、排除与查询相同的单词）都在正式数据上被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];sort(k.begin(),k.end());groups[k].push_back(i);}\nfor(auto &g:groups)sort(g.second.begin(),g.second.end(),[&](int a,int b){return w[a]<w[b];});\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;sort(k.begin(),k.end());auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n out+=to_string(it->second.size());for(int j:it->second){out+=' ';out+=w[j];}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
@@ -11419,6 +11527,18 @@
       ]
     },
     {
+      "id": "oa-plaid-4",
+      "sourceContentHash": "34e4c8f5e0d8aa42f5f0a54dcf548555fc9f693651775e9ba9672d7088634622",
+      "packageChecksum": "f9a81fe445d74f98b61f4f2b7769aa4c61918e6446991995e0531dcdf4b6cf0c",
+      "editorial": "## 题意\n\nn栋宽为1的楼房紧挨着排成一行，第i栋高cityLine[i]，它们的外轮廓构成一个直方图。求能完整放进这个轮廓内部的最大正方形面积。\n\n## 推导\n\n轮廓内的正方形可以竖直下移到地面而不越界，所以只需考虑底边贴地、边与坐标轴平行的正方形。边长为s的正方形能放下，当且仅当存在一段连续楼房，宽度≥s且每栋高度≥s。对一段连续楼房[l,r]，能放下的最大边长是min(r−l+1, min h[l..r])。由于宽度和高度都是整数，最优边长是整数，答案为边长的平方。\n\n## 算法\n\n在最优段中取高度最小的楼房i。把以i为最低楼房的段向两侧扩展到第一栋比它矮的楼房为止，宽度只会变大、最小高度不变，因此只需对每个i考虑“以h[i]为最小高度的极大段”，候选边长为min(h[i], 该段宽度)。用单调栈分别求出每栋楼左侧和右侧第一栋更矮楼房的位置即可，答案取所有候选的最大值再平方。\n\n## 正确性\n\n任一可放下边长s的段，其最低楼房i的极大段包含它，故h[i]≥s且极大段宽度≥s，候选值≥s。反过来每个候选值都对应一个真实可放下的正方形。因此最大候选值就是最大边长。\n\n## 数值范围\n\n边长可达min(n,10^8)=3×10^6，面积约9×10^12，必须用64位整数。\n\n## 复杂度\n\n单调栈每个下标进出栈各一次，O(n)时间、O(n)空间。\n\n## 独立验证\n\noracle对边长二分：边长s可行当且仅当存在长度≥s、高度都≥s的连续段，线性扫描判定，不使用单调栈；小域另枚举所有连续段取min(宽度,最小高度)。穷举n=1..6、高度1..4的全部输入并逐个真实运行参考程序。正式用例覆盖原样例、全最大高度、全为1、递增/递减阶梯、单高塔、随机大值等。四个正常退出的错误程序（32位面积、求最大矩形、忽略段宽、输出边长）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c<'0'||c>'9')c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){int n=(int)rd();vector<long long> h(n);for(auto &x:h)x=rd();\nvector<int> left(n),st;st.reserve(n);\nfor(int i=0;i<n;i++){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();left[i]=st.empty()?-1:st.back();st.push_back(i);}\nst.clear();long long best=0;\nfor(int i=n-1;i>=0;i--){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();int right=st.empty()?n:st.back();st.push_back(i);\nlong long side=min<long long>(h[i],right-left[i]-1);best=max(best,side);}\nprintf(\"%lld\\n\",best*best);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-pure-storage-11",
       "sourceContentHash": "15b7fd6da33252f54e0a3fa68b3e09e7b271cfc8f5fe192d30243cda949365de",
       "packageChecksum": "862eb00c05aeb5376d74ec81a1b1c910e9ac3e3b14da44443287d337b7d7387d",
@@ -12841,6 +12961,18 @@
       ]
     },
     {
+      "id": "oa-snowflake-24",
+      "sourceContentHash": "380aa48c67723ecba4e049ab69a72bf1f9b7ea6339d6eee0f13e05c596a195a7",
+      "packageChecksum": "3c4975b7163c8ba943dd8e71733d54da8b42d5d6d1a833e2d7e0de924320b7c4",
+      "editorial": "## 题意\n\n每个角色的有效权限 = 自身直属权限 ∪ 所有祖先角色的直属权限。授权边 u→v 表示 v 继承 u，图保证无环，因此“祖先”沿边反向可达即可确定。每个角色输出去重后按字典序（ASCII 顺序）排列的权限。\n\n## 思路：拓扑序 + 位集合并\n\n把全部出现过的权限串排序去重，得到编号 0..P−1，编号顺序就是字典序。每个角色用一个 P 位的位集表示当前已知的权限，初值为直属权限。\n\n用 Kahn 算法按拓扑序处理角色：取出入度为 0 的角色 u 时，它的所有父角色都已处理完，u 的位集已经是最终答案；对每条出边 u→v，把 u 的位集按字或并到 v 上，并把 v 的入度减一。\n\n输出时按位从低到高枚举，编号顺序即字典序，天然去重。\n\n## 正确性\n\n对拓扑序归纳：u 出队时，所有边 w→u 的 w 都已出队并把自己的最终集合并入 u，因此 u 的集合等于直属权限 ∪ 每个父角色的有效权限，而父角色的有效权限又包含其全部祖先，所以恰好是 u 的全部祖先权限之并。重复的授权边只会重复做幂等的并集，不影响结果。\n\n## 复杂度\n\n排序权限串 O(S log S)，S 为直属权限总个数；每条边一次位集合并 O(P/64)，共 O(m·P/64)；输出与答案规模成正比。逐个元素合并哈希集合的做法在边多、权限多时会达到 O(m·P) 次插入，明显更慢。\n\n## 独立验证\n\noracle 对每个角色沿反向边做 BFS 找出全部祖先，再直接求并集排序，不使用拓扑序；大数据另用 Python 大整数位集按父角色记忆化 DFS 计算。穷举 3 个角色上全部 25 种有标号 DAG 与每个角色 {∅,A,a,Aa} 四种直属权限组合，并逐个真实运行参考程序。错误程序（只看直接父角色、按输入顺序合并边、继承方向反向、忽略大小写排序）都正常退出且在正式数据上被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;\nvector<vector<string>> own(n);vector<string> all;char buf[64];\nfor(int i=0;i<n;i++){int k;scanf(\"%d\",&k);own[i].resize(k);for(auto &s:own[i]){scanf(\"%63s\",buf);s=buf;all.push_back(s);}}\nsort(all.begin(),all.end());all.erase(unique(all.begin(),all.end()),all.end());\nint P=all.size(),W=(P+63)/64;vector<uint64_t> bits((size_t)n*W+1,0);\nfor(int i=0;i<n;i++)for(auto &s:own[i]){int id=lower_bound(all.begin(),all.end(),s)-all.begin();bits[(size_t)i*W+id/64]|=1ULL<<(id%64);}\nvector<vector<int>> g(n);vector<int> indeg(n,0);\nfor(int j=0;j<m;j++){int u,v;scanf(\"%d %d\",&u,&v);g[u].push_back(v);indeg[v]++;}\nvector<int> order;order.reserve(n);for(int i=0;i<n;i++)if(!indeg[i])order.push_back(i);\nfor(size_t h=0;h<order.size();h++){int u=order[h];for(int v:g[u]){uint64_t *a=&bits[(size_t)v*W];const uint64_t *b=&bits[(size_t)u*W];for(int w=0;w<W;w++)a[w]|=b[w];if(--indeg[v]==0)order.push_back(v);}}\nstring out;\nfor(int i=0;i<n;i++){const uint64_t *b=&bits[(size_t)i*W];int c=0;for(int w=0;w<W;w++)c+=__builtin_popcountll(b[w]);out+=to_string(c);\n for(int w=0;w<W;w++){uint64_t x=b[w];while(x){int t=__builtin_ctzll(x);x&=x-1;out+=' ';out+=all[w*64+t];}}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-snowflake-1",
       "sourceContentHash": "6df4d16e351b4716ebebf9c6cddfa335c77b9b347baae6f83cbbd6764f483ea7",
       "packageChecksum": "1a5b744a2eeaf61c1764a844431043da0004d5ee26cace1bd85fb6529a3f189d",
@@ -13629,6 +13761,18 @@
         {
           "language": "python",
           "code": "import sys\n\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n, m = data[0], data[1]\n    if not (1 <= n <= 50_000 and 1 <= m <= 50_000):\n        raise ValueError(\"array lengths must be within the site bounds\")\n    if len(data) != 2 + n + m:\n        raise ValueError(\"expected n, m, then both arrays\")\n    arr1 = data[2:2 + n]\n    arr2 = data[2 + n:]\n    if any(not 1 <= value <= 1_000_000_000 for value in arr1 + arr2):\n        raise ValueError(\"array values must be positive and within the site bounds\")\n\n    prefixes = set()\n    for value in arr1:\n        digits = str(value)\n        for end in range(1, len(digits) + 1):\n            prefixes.add(digits[:end])\n    answer = 0\n    for value in arr2:\n        digits = str(value)\n        for end in range(1, len(digits) + 1):\n            if digits[:end] not in prefixes:\n                break\n            answer = max(answer, end)\n    return str(answer)\n\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-uber-39",
+      "sourceContentHash": "d3cad26d71cc08f991be8ae288e7365fe142ee19782d1ab236dd26f2c88f0528",
+      "packageChecksum": "c4cfa953692920fb3248412f4f5790acebb11ff93e0428e0c2b2c82ee805cdbc",
+      "editorial": "## 题意\n\n服务器按顺序收到命令。ADD ip记录ip的一次访问；FIRST_UNIQUE询问：在到目前为止的所有访问中，恰好出现过一次的IP里，最早出现的是哪一个；没有则答案为空串。按顺序输出每次FIRST_UNIQUE的答案，每个答案占一行，空串输出为空行。\n\n## 关键观察\n\n一个IP的出现次数只会增加。它第一次被ADD时次数为1，成为“唯一”；第二次被ADD后次数变为2，此后永远不再唯一。因此“唯一IP”按首次出现顺序排列时，失去唯一性的IP只会被永久剔除，不会重新加入。\n\n## 算法\n\n给每个不同IP按首次出现顺序编号，记录出现次数，并维护指针p指向“可能是答案的最早编号”。查询时，只要编号p的IP次数≥2就把p后移；停下时若p未越界，答案就是该IP，否则为空串。\n\n## 正确性\n\n不变式：编号小于p的IP次数都≥2，因而永远不是唯一IP。查询时指针跳过的IP次数≥2，同样永远不会再成为答案，所以后移安全。停下的位置是编号≥p中第一个次数为1的IP（新IP次数至少为1），结合不变式，它就是所有唯一IP中首次出现最早的那个；越界说明不存在唯一IP，答案为空串。\n\n## 复杂度\n\n每个ADD一次哈希查询；指针总共最多移动“不同IP数”次，所以总时间期望O(总字符数)，空间O(不同IP总长度)。\n\n## 独立验证\n\noracle用有序字典保存当前唯一IP（第二次出现时删除），查询取第一个键，不复用指针做法。小域另写历史暴力：每次查询重新统计此前全部ADD的次数，按首次出现顺序找第一个次数为1的IP；在三个IP（含大小写不同的两个）上穷举长度1..6的全部命令序列，并逐个真实运行参考程序。正式用例覆盖原样例、空答案、大小写、指针长距离跳跃、百万个不同IP、高冲突随机等。四个正常退出的错误程序（忽略次数、三次才算不唯一、空答案不输出空行、忽略大小写）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{while(p<order.size()&&cnt[p]>=2)p++;if(p<order.size())out+=order[p];out+='\\n';}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
         }
       ]
     },
