@@ -7,9 +7,11 @@ import {
   useDefaultLayout,
   usePanelRef,
 } from 'react-resizable-panels';
+import { problemNeighbors } from '@/lib/problem-sequence';
 import {
   ArrowLeft,
   BookOpen,
+  ChevronLeft,
   Check,
   CircleCheck,
   Tag,
@@ -143,6 +145,11 @@ function Workspace({
 }: WorkspaceProps) {
   const userId = boot.person?.id || 'guest';
   const [problem, setProblem] = useState<OJProblem>(initialProblem);
+  const [neighbors, setNeighbors] = useState<{ prev?: string; next?: string }>(
+    {},
+  );
+  // Client-only: the sequence lives in sessionStorage, written by the list the learner came from.
+  useEffect(() => setNeighbors(problemNeighbors(problem.id)), [problem.id]);
   const [codingMode, setCodingMode] = useState<CodingMode>('leetcode');
   const [loadedProblem, setLoadedProblem] = useState<OJProblem | null>(null);
   const [practiceRound, setPracticeRound] =
@@ -1615,6 +1622,36 @@ function Workspace({
           </div>
         </div>
         <div className="cs-workspace-navigation">
+          {(neighbors.prev || neighbors.next) && (
+            <div className="cs-problem-steps">
+              <button
+                className="cs-top-button"
+                disabled={!neighbors.prev}
+                aria-label={english ? 'Previous problem' : '上一题'}
+                title={english ? 'Previous problem' : '上一题'}
+                onClick={() =>
+                  neighbors.prev &&
+                  navigate('problem', { problem: neighbors.prev })
+                }
+              >
+                <ChevronLeft size={15} />
+                <span>{english ? 'Prev' : '上一题'}</span>
+              </button>
+              <button
+                className="cs-top-button"
+                disabled={!neighbors.next}
+                aria-label={english ? 'Next problem' : '下一题'}
+                title={english ? 'Next problem' : '下一题'}
+                onClick={() =>
+                  neighbors.next &&
+                  navigate('problem', { problem: neighbors.next })
+                }
+              >
+                <span>{english ? 'Next' : '下一题'}</span>
+                <ChevronRight size={15} />
+              </button>
+            </div>
+          )}
           <button
             className="cs-top-button"
             aria-label="向老师提问"

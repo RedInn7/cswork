@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import type { Navigate } from './learning';
 import { companyInitials, companyLogos } from '@/lib/oa-company-brands';
+import { rememberProblemSequence } from '@/lib/problem-sequence';
 
 function companyHue(slug: string) {
   let hash = 0;
@@ -575,15 +576,25 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         type="button"
                         className="oa-row"
                         key={item.id}
-                        onClick={() =>
-                          item.judgeStatus === 'ready' &&
-                          item.judgeProblemId &&
-                          navigate
-                            ? navigate('problem', {
-                                problem: item.judgeProblemId,
-                              })
-                            : setSelected(item.id)
-                        }
+                        onClick={() => {
+                          if (
+                            item.judgeStatus === 'ready' &&
+                            item.judgeProblemId &&
+                            navigate
+                          ) {
+                            rememberProblemSequence(
+                              data.items.flatMap((row) =>
+                                row.judgeStatus === 'ready' &&
+                                row.judgeProblemId
+                                  ? [row.judgeProblemId]
+                                  : [],
+                              ),
+                            );
+                            navigate('problem', {
+                              problem: item.judgeProblemId,
+                            });
+                          } else setSelected(item.id);
+                        }}
                       >
                         <span
                           className="oa-progress"
