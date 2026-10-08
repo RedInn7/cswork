@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-commvault-1",
+      "sourceContentHash": "a65b7d6e091793add57c58517d08091991e9186d80d12eabf11d3f30e40edb91",
+      "packageChecksum": "d5475f4d5bebe506b5bfdc4d6245cf3b07393fd8a114cd9f4c7398847615fb0f",
+      "editorial": "## 固定原文与范围披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Commvault/commvault-count-good-strings.md定义：长度2N、恰N个A和N个B，每个前缀A数量不小于B数量，答案模10000。原例N=3答案5正确，五个合法串AAABBB、AABABB、AABBAB、ABAABB、ABABAB均保留。原解释说BABABA的前缀BA中B更多不准确，BA两种各一个；真正违例前缀是首字符B，本站明确纠正该解释，不改正确答案5。\n\n原Constraints栏只有o_o，没有数值范围，不能声称它写了N≤某个人为小常数。不过原始starter完整为public int countGoodStrings(int N)，因此本站覆盖非负Java int的整个域0..2147483647：这是按原接口类型与N为计数推导的包络，不是从o_o恢复出的显式约束。N=0时按组合定义存在一个空串，输出1；这是明确公开的数学边界补全。负N不能表示字符串长度或字符数，不作为合法输入。2N可超过32位有符号数，计算时必须提升到64位或大整数。\n\n## 思路\n\n把A看作+1、B看作−1，合法串是从0出发、任意前缀非负并回到0的步行。由反射原理，答案为Catalan数C_N=binom(2N,N)/(N+1)。但10000不是素数，且N+1可能与10000不互质，绝不能直接在模10000下求其逆元。\n\n分别计算模16=2^4、625=5^4。对质数p和q=p^4，记V(k)=Σ floor(k/p^j)，U(k)为k!去掉所有p因子后的单位部分模q。取t=v_p(N+1)，d=(N+1)/p^t，则C_N的p指数为e=V(2N)−2V(N)−t。e≥4时该模数下答案0，否则答案是U(2N)·inverse(U(N)^2·d)·p^e modq。所求逆元的分母与p互质，始终存在。\n\n预计算P[r]=∏(1≤i≤r且p不整除i)i modq。所有不被p整除的因子按长度q分块；被p整除的因子除去一个p后递归对应floor(k/p)!。故U(k)=P[q]^(floor(k/q))·P[k modq]·U(floor(k/p)) modq，迭代到0即可，不能把阶乘本身巨大数构造出来。\n\n得到a=C_N mod16和b=C_N mod625后，CRT给唯一0..9999答案a+16·(((b−a)·586) mod625)，因为16·586≡1(mod625)。输出普通整数，不要求补足四位前导零。\n\n## 正确性证明\n\n长度2N中A/B各N的串共有binom(2N,N)种。对第一个使前缀余额变成−1的位置及之前交换A/B，得到A数N+1、B数N−1的串；此操作与其首次到达+1前缀反射互逆。因此不合法串数为binom(2N,N+1)，合法数是两者之差，等于binom(2N,N)/(N+1)，N=0对应唯一空串。\n\nLegendre求和V精确计数阶乘中的p因子。将Catalan分子分母的p因子全部先消去后，剩余分母是单位，可以模q求逆；指数e≥4恰表示q整除结果，其余情况恢复p^e。单位阶乘递推把1..k中非p倍数因子与p倍数除p后的贡献不重不漏分开，块积依模q周期相同，因此给出正确单位部分。于是两个质数幂余数均正确，互素模数的CRT唯一合并为模10000答案。\n\n## 复杂度\n\n仅预计算16和625两张固定前缀表；每层k除以p，层数O(log(N+1))，每层模快速幂O(log(N+1))，保守时间O(625+log²(N+1))，额外空间O(625)。模乘因子均在小模数内，N相关算术使用Python整数；其他语言至少使用64位容纳2N及N+1。完整int最大值无需线性枚举或大整数阶乘。\n\n## 独立验证\n\n小N用精确大整数binom(2N,N)//(N+1)及直接非负前缀步行DP核验。大N独立oracle使用反射原理的binom(2N,N)−binom(2N,N+1)，分别按p进制滑动四位窗口计算二项式单位因子和进位指数，再用另一种CRT公式合并；它不调用参考Catalan除N+1公式，也不复用其单位阶乘函数。两者仍共享必要的素数幂算术理论，因此额外通过小域精确整数结果打破自我验证。\n\n数据覆盖N=0、原例3、2/5幂邻域、N+1含大量2或5因子的抵消、CRT双余数、2N越过32位、Java int上界与随机大数。三个正常退出负控分别漏CRT、错误排除非可逆N+1、32位2N溢出后返回0。所有正式和oracle均真实执行本站原创参考程序；未运行上游代码。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef catalan_residue(n,p,a):\n    q=p**a\n    prefix=[1]\n    for i in range(1,q+1):\n        prefix.append(prefix[-1]*(i if i%p else 1)%q)\n    def unit_factorial(k):\n        result=1\n        while k:\n            result=result*pow(prefix[q],k//q,q)*prefix[k%q]%q\n            k//=p\n        return result\n    def valuation(k):\n        result=0\n        while k:\n            k//=p\n            result+=k\n        return result\n    divisor=n+1\n    removed=0\n    while divisor%p==0:\n        divisor//=p\n        removed+=1\n    exponent=valuation(2*n)-2*valuation(n)-removed\n    if exponent>=a:\n        return 0\n    denominator=unit_factorial(n)**2*divisor%q\n    return unit_factorial(2*n)*pow(denominator,-1,q)*pow(p,exponent,q)%q\n\ndef solve(raw):\n    n=int(raw)\n    a=catalan_residue(n,2,4)\n    b=catalan_residue(n,5,4)\n    return str(a+16*((b-a)*586%625))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

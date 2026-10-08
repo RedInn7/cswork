@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "expedia-4-recovered",
+  "problemId": "oa-expedia-4",
+  "packageChecksum": "439f46a74e02a626228a96fc0ce6340350889d8d88a392be3f32a12825ffaefd",
+  "referenceSha256": "35aa4ea427d31547e9b0c954f0fc1e2ac8bd6105b91c2fea6c609d3afcc47a50",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 203,
+      "formal": 40,
+      "oracle": 163,
+      "mutantsKilled": 4
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 40,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1609,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "Complete32MiB input with8388606 operations and near32MiB permuted2236039 singleton intervals passed. Independent token-by-token checks and closed forms verify0 and2499936322780 respectively. INT_MAX inclusive interval, duplicate/nested/overlapping boundaries and EOF/LF/CRLF covered.",
+  "sourceDisclosure": "Original defines inclusive interval toggles and initially-off positive-index switches without numeric bounds or examples. Signed32 positive endpoint type adaptation, zero-operation extension and exact64-bit output adaptation are explicitly disclosed; samples are authored.",
+  "coverage": { "total": 1634, "sandboxVerified": 1222, "remaining": 412 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}
