@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261104,
+  "problems": [
+    {
+      "id": "oa-optiver-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "referenceFormalCases": 40,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "265332926e344c15335af22a54784bd02df0ffcf143574bfd2173a1107a0da7c",
+      "negativeControls": [
+        {
+          "name": "错误允许依赖同时开始结束",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            1,
+            13,
+            17,
+            25,
+            28,
+            30,
+            31,
+            32,
+            33,
+            34,
+            36,
+            37,
+            38
+          ]
+        },
+        {
+          "name": "错误漏掉结束时刻反向包含约束",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            13,
+            17,
+            25,
+            28,
+            30,
+            31,
+            32,
+            33,
+            34,
+            36,
+            37,
+            38
+          ]
+        }
+      ],
+      "oracleMethod": "Enumerate all positive integer subinterval schedules, filter edges, take coordinatewise extrema; independent all-path closure corroboration. Full-scale expected outputs are closed-form constructions.",
+      "exhaustiveSmallDomain": {
+        "cases": 400,
+        "n": 2,
+        "times": "1..4",
+        "allWindowsAndDirectedGraphs": true
+      },
+      "largeBoundaries": [
+        {
+          "name": "百万独立进程完整输出",
+          "n": 1000000,
+          "m": 0,
+          "oracle": "no dependencies: unchanged windows",
+          "inputSha256": "b01367c661d1d969939392e587e3dd2d512acb40754d2777159c9f32ecf235fb",
+          "expectedSha256": "ba9e07370b8096b70d8b8c2ce75a042b0e5c97974823b7f2b853f18dcabdde79",
+          "inputBytes": 10000010,
+          "outputBytes": 10000000,
+          "localSeconds": 0.1499
+        },
+        {
+          "name": "五十万长链恰好正长",
+          "n": 500000,
+          "m": 499999,
+          "oracle": "chain depth gives [i,1000001-i]",
+          "inputSha256": "3d44f34d20c5c11746fd460b1d766ab4e5d2679e99df36cce4962858c53751a7",
+          "expectedSha256": "2690782cc6ac893c276c29df98b55fe878d06920493b007b8165b3537c56257a",
+          "inputBytes": 11777795,
+          "outputBytes": 6888896,
+          "localSeconds": 0.11256
+        },
+        {
+          "name": "超过可行最大深度",
+          "n": 500001,
+          "m": 500000,
+          "oracle": "last chain interval nonpositive",
+          "inputSha256": "26d7803959a7d59d5446f6ec2f60b03fd6ae994bfb87a2d7ccda76399846caf3",
+          "expectedSha256": "9584980048d9de2c9e87643fafd8c33b56cfd1e45dba13926b77e708936efa10",
+          "inputBytes": 11777819,
+          "outputBytes": 11,
+          "localSeconds": 0.05965
+        },
+        {
+          "name": "百万互异边双层完全二部图",
+          "n": 2000,
+          "m": 1000000,
+          "oracle": "independent source layer and common depth-one target layer",
+          "inputSha256": "d12616cde59a054ae675d7e6e0e67e5fe7706b4692d72ac9ce11394c4d7ab93f",
+          "expectedSha256": "6522dfda380f15db261a4262bb4c0b8901919e73448156ae4421dc9b125f5119",
+          "inputBytes": 8913013,
+          "outputBytes": 19000,
+          "localSeconds": 0.04683
+        },
+        {
+          "name": "N和M各百万含环",
+          "n": 1000000,
+          "m": 1000000,
+          "oracle": "whole directed cycle is infeasible",
+          "inputSha256": "1e7e6fd9d8d6c1036399e06da11f212183c883e6646221d5818340bf9de3f0e6",
+          "expectedSha256": "9584980048d9de2c9e87643fafd8c33b56cfd1e45dba13926b77e708936efa10",
+          "inputBytes": 23777808,
+          "outputBytes": 11,
+          "localSeconds": 0.11309
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.467
+    }
+  ]
+}

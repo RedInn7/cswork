@@ -146,6 +146,54 @@
       ]
     },
     {
+      "id": "oa-akuna-capital-21",
+      "sourceContentHash": "051cd18292e10fd405a676a42d30371b36a7a8bf70422f11402dd907c4499800",
+      "packageChecksum": "67f32a827be0a080edb889f2a07f5607f5b24952eec76c706feefdae3864d703",
+      "editorial": "## 固定原文与错误解释修正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Akuna Capital/akuna-maximize-ratings.md规定：按原顺序选择电影子序列，使评分和最大，不能连续跳过两部或更多电影。完整范围1≤n≤100000，−1000≤ratings[i]≤1000，包含0。原文内部例[-1,−3,−2]明确允许只选第二项，也允许选第一和第三项，最优都是−3，证明首部、尾部各跳过一部都允许。\n\n原文没有“必须非空”的额外条件，本题不擅加：n=1时跳过唯一一部并不连续跳过两部，因此单个负评分的最优为0。n≥2时不可能全跳，因为至少会出现相邻两部被跳过。空选的和按0处理，这只会影响单部非正评分等边界，不是将全负数组全部略过。\n\n两原正式输出保留：[-3,2,4,−1,−2,−5]选[2,4,−2]得4；[9,−1,−3,4,5]选[9,−1,4,5]得17。第二原解释漏掉−1，声称9+4+5=17，既算术错误（实际18）又连续跳过−1、−3，违反明确定义；本站明确补回−1而不改变原输出17。第三公开例单个−1000→0为本站补充。stdin用n及n个评分，输出一个整数；未执行上游代码。\n\n## 思路\n\n维护处理完前缀后两种最优值：take表示最后一部被选，skip表示最后一部被跳过。当前评分x若被选，可以从之前任一合法状态转移，newTake=max(take,skip)+x；若被跳过，前一部必须选，所以newSkip=take。初始用take=0作为空前缀可继续的起点，skip为负无穷；处理第一部后两状态自然为x和0。结束取两者最大值。\n\n## 正确性证明\n\n归纳假设take和skip分别为此前缀所有合法方案中对应末位状态的最优和。选择当前部时不会造成新的连续跳过，任何旧合法方案都能加上x，取两旧状态最大值即得到所有选当前部方案的最优。跳过当前部时，旧末位若也跳过就非法，因此只能从旧take转移；从其中最优方案转移即得到所有合法跳当前部方案的最优。这两个集合不重不漏覆盖新前缀合法方案，所以更新保持定义。\n\n初始化使第一部既可选择也可单独跳过，符合首部规则。最终没有必须选择末部的条件，两状态最大值就是全部合法子序列的最优评分和。\n\n## 复杂度与边界\n\n每部只更新两个数，时间O(n)，算法额外空间O(1)，读取数组O(n)。所有合法和绝对值不超过1000n≤10^8，普通有符号32位即可保存最终值；实现可用64位或Python整数并取足够小的不可达哨兵。全正全选，全负仍必须满足不能相邻跳过，不能简单只加正数。n个相同−1000时最少选floor(n/2)部，结果−1000floor(n/2)；单部负数为0。\n\n## 独立验证\n\n小oracle枚举所有选择掩码，逐相邻位置排除同时未选的方案，直接累加保留评分并取最大值，不使用参考状态转移。163个唯一oracle都执行真实参考子进程；另穷举长度1..7、评分−1/0/1的全部3279个数组。\n\n大域独立算法从全选总和出发，考虑跳过负评分所节省的正代价。最优无需跳过正数；跳过0也不会提高值，可去掉这些跳过。跳过下标i代表带权区间[i,i+2)，权值−ratings[i]，两个区间不重叠恰好表示两个跳过位置不相邻。因此用加权区间调度：按右端点排序，二分查找上个兼容区间，得到最大节省，再将全选总和加上节省。比如[-5]的全选和−5加节省5为0。它不调用参考take/skip状态，小域与掩码先交叉验证，大域用此算法生成期望，并为全同值及交错数据附加闭式核验。\n\n正式数据覆盖原例、单部正负零、全负、相邻正数、可跳首尾、隔部跳、零值、±1000极值，以及多种完整100000长度结构。负控为允许连续跳过、强制选最后一部，全部正式输入须正常退出才计错解击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    take=0\n    skip=-10**30\n    for rating in values[1:]:\n        take,skip=max(take,skip)+rating,take\n    return str(max(take,skip))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-akuna-capital-22",
+      "sourceContentHash": "83c4129c97dcd1a6f149fa36c56aa499f7131546594318fa7eddc9047192fdcf",
+      "packageChecksum": "83a2884d58693b976c95cf9cab495b43cef4f3d2a51ac9163041d9eb8bc82d96",
+      "editorial": "## 原来源、重复题关系与纠正\n\n本题与本站已收录的Akuna5 Binary Circuit是同一原始操作题的另一个来源条目，不宣称新增不同算法。本页保留独立ID供提交，算法和规则以固定提交e66f809f4c953bce129f68491726176615db6afc的Akuna_Capital_OA/009和016原OCR为准；FastPrep akuna-maximize-segregation-cost.md具有相同二进制电路背景、强制移动到最右和1+距离费用定义。\n\n009写明例110100总费用2+2+3×3=13；016最终函数定义明确返回maximum possible cost，且原例10100总费用2+3+3=8，给出完整1≤|s|≤100000。因此正文的maximum number of operations措辞不应解释为只数动作次数，本站公开纠正为最大总费用。长度界来自同题OCR016，不伪称FastPrep的N/A约束栏提供了界限。catalog附解按每个1只收一次基础费也不正确：110100得到11而非13，已经有序的01甚至被收1；本站同时纠正附解而不只改标题，且把它作为负控。\n\n一次合法操作必须实际向右移动至少一格。若某个1右边紧接1或已在末尾，它不能执行零距离收费动作；否则可以原地重复并无限收费，与原例有限最优值13/8及“移动”语义矛盾。已完成分离时不执行操作，费用0。每次选择一个右侧至少有一个连续0的1，将其跨过右侧整段连续0，直到末尾或下一个1之前，不能只移动其中一部分。\n\n## 思路\n\n从左到右扫描，维护遇到的1数量a。对每段连续0，设长度z，这段0之前的a个1都必须跨过它，每个可以独立跨该段一次，贡献a·(z+1)。累加所有0段即可，前导0因a=0不贡献。\n\n## 正确性证明\n\n首先，总移动距离与执行顺序无关：每个原来的1都必须与其右侧每个0交换一次相对顺序，不能向左回退，所以距离总和等于初始逆序对数。最大化总费用等价于在固定距离总和上最大化实际移动次数。\n\n把初始连续0段看作带标签的块。操作把一个1从某零段左侧搬到右侧，不会把零段内部插入1，因此原零段不会分裂，只可能与别的零段合并。一个1与一个原零段之间最多发生一次跨越，且只有原来位于该段左侧的1需要跨越。每次正距离动作至少跨越一个原零段，所以动作数至多为所有零段左侧1数量之和。\n\n这个上界可以达到：按原零段从左到右处理，对当前零段左侧的1从右到左依次移动，每个1只跨越当前零段。尚未处理的右侧零段有原来的1隔开，不会被提前合并；已处理的零段只留在这些1左侧。当前零段的每次跨越都用满其连续长度，满足强制最右规则。这样每对需要跨越的1与零段恰好产生一次动作，达到动作数上界。该段长度z的距离贡献az、动作基础费贡献a，总费用a(z+1)。逐段求和得到全局最优。\n\n## 复杂度与整数边界\n\n每个字符扫描常数次，时间O(|s|)，除输入字符串外额外空间O(1)。动作次数不大于逆序对数，故总费用≤2·#逆序对≤|s|²/2；当长度100000时保守上界5000000000，需要64位有符号整数或任意精度整数。原016返回long与此一致，FastPrep单int接口不足以表达完整范围。例50000个1后接50000个0的答案为50000×50001=2500050000，已经超过32位上限。\n\n## 独立验证\n\n小oracle直接枚举当前串中所有可正距离移动的1，构造完整移动后的新串，递归取max(1+距离+后续最优)。终止态没有合法移动时返回0；每次逆序对严格减少，所以搜索无环。它不调用零段公式。穷举长度1..10所有二进制串共2046个，并为163唯一小输入真实执行参考程序。\n\n完整长度构造使用全0/全1/已分离0、单块a个1+b个0的a(b+1)、交替(10)^r的r(r+1)、(01)^r的r(r−1)、前导后缀填充等闭式。其余大域通过反向扫描：对每个1单独累计右侧0总数和原0段总数，不调用参考的正向按0段累积。三个基本负控分别只数次数、漏基础费、32位溢出，另加catalog错误解法；所有正式案例上均要求正常退出。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    s=raw.strip()\n    ones=0\n    cost=0\n    i=0\n    while i<len(s):\n        if s[i]=='1':\n            ones+=1\n            i+=1\n        else:\n            end=i\n            while end<len(s) and s[end]=='0': end+=1\n            cost+=ones*(end-i+1)\n            i=end\n    return str(cost)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-akuna-capital-4",
+      "sourceContentHash": "43fc82aa2dcbb35e66d88a1f6cfd7a3cb8c5bb27560cff76c31559815a0cbd0d",
+      "packageChecksum": "291031259f95aa5db92c63f6a77ff032e8063bc2ebd4a91dfb8510c7283f9e18",
+      "editorial": "## 原OCR与编号统一\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的Akuna_Capital_OA/007、012–014给出同一bestSumKStar任务：无向简单图、节点权值、非空星形子图，至多k条臂，求最大节点权值和。012明确端点0..n−1，013正式样例也使用0-based。007早期示意用节点1..5，本站公开将其全部编号减1，保持每个节点对应权值与边不变，答案120不变；不混用两种编号，也不删除或添加节点。\n\n第一公开例为007重编号后的五节点星：中心2权值30，选叶3和4的权值40、50，和120。第二例保留013正式七节点输入及014答案16：中心3权值4，实际应选邻居1（值2）和4（值10）；014解释误写邻居2，2不是中心3的邻居，本站修正这一个节点标签。第三例保留catalog五节点输入[[0,1],[0,2],[1,3],[1,4]]和权值[3,4,−1,2,5]、k2，但将原11纠正为12：中心1应选权值5和3，而非5和2。\n\n012完整约束：2≤n≤100000，1≤m≤100000，0≤k≤100000，−1000≤values[i]≤1000，无自环、无重边。k是臂数上限而非恰选k个节点。非空允许只选中心，k0或所有邻居负权时尤其重要。图无需连通，孤立节点也是合法单节点星。这里是子图而非诱导子图：选定叶子之间即使在原图有边，也可不选这些边，所以不能排除三角形中的两臂星。\n\n原013标准输入先给n m及m条边，再给一次权值数组长度n、n行权值、最后k。本站明确将同一组函数参数重排为n m k、一行n个权值、m行无向边，省略重复的数组长度；不是声称该排版就是原STDIN。参数含义及全部边和值不变，全部端点统一0-based。未执行任何上游解答代码。\n\n## 思路\n\n枚举每个节点作为中心。每个邻居最多出现一次，最多取k个叶子；负权只会降低答案，零权可不选，因此只收集正权邻居，降序取前k个，加上中心权值。对全部中心求最大值。初始答案为最大单节点值，不能从0开始而把空图当答案。\n\n## 正确性证明\n\n固定中心后，合法星只能选该中心的不同直接邻居，且选叶数量不超过k。删去负权叶子不会破坏合法性且严格增大权值，删去零权不改变权值，所以存在最优星只选正权叶子。若选中某个较小权值而漏掉较大正权邻居，交换二者仍是合法星且不减权值；反复交换得到至多k个最大的正权邻居。若正权邻居不足k则全部选择，否则取前k个。因此算法得到该中心的最大值。\n\n任意非空星都存在一个中心；算法检查全部中心且每个计算结果自身合法，最终最大值既不小于任何合法星，也确实能够实现。初始单节点值覆盖0臂和全负权情况，故输出正确。\n\n## 复杂度与完整域\n\n设节点度数为d_i，建图O(n+m)，排序总耗时O(Σ d_i log(d_i+1))，保守为O(n+m log(m+1))；存储O(n+m)。最大可能和不超过100000×1000=100000000，最小最优值至少−1000，32位有符号返回类型足够。k可大于所有度数，不缩成k<n。\n\n## 独立验证\n\n小域穷举中心及其邻居的所有大小≤k子集，直接计算合法星值，不依赖排序贪心；2..4节点所有非空简单图、权值−1/0/1及k0..n共26298组交叉核对。另163唯一随机/边界输入都用该暴力oracle，并真实启动参考程序。\n\n完整规模oracle采用不同实现：将所有正权节点按权值1..1000分桶，从大权值桶到小权值桶遍历节点，沿该节点的每条边给邻居中心提供叶子贡献，中心仅接收最先到的k个贡献。它不排序任何邻接表，也不调用参考程序；复杂度O(n+m+1000)。大域构造还用独立闭式核验纯星、环、全负、全零、匹配和稠密团。满n/m/k、k0、k1、负中心加正邻居、叶子之间有边、重编号随机图均覆盖。三个正常退出负控分别把k当节点数、强制加入负权、丢失无向反向边。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,m,k=data[:3]\n    values=data[3:3+n]\n    neighbors=[[] for _ in range(n)]\n    for i in range(3+n,len(data),2):\n        u,v=data[i:i+2]\n        if values[v]>0: neighbors[u].append(values[v])\n        if values[u]>0: neighbors[v].append(values[u])\n    answer=max(values)\n    for center in range(n):\n        neighbors[center].sort(reverse=True)\n        answer=max(answer,values[center]+sum(neighbors[center][:k]))\n    return str(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-akuna-capital-8",
+      "sourceContentHash": "471737f56a7cfe94240ec874f313d9113b89a0dc02d8faa0f5fc4bc5d2b04565",
+      "packageChecksum": "a97bfbc30414f76e88d325211d687fe23a45de8e80a98f12b023eb3bb25588f7",
+      "editorial": "## 原OCR恢复与整理版本纠正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc，OA LIST/Akuna_Capital_OA/018_image.txt给出throttleLogs接口，返回实际发布的日志总字节数，不是成功日志下标列表。019明确窗口双闭：时刻t考虑[t−window,t]内已成功发布的日志，等于字节上限仍允许发布。020保证尝试时间升序且同一timestamp至多一条，因此严格递增；被拒日志不占后续发布额度。原例limit10、window5、日志(0,2),(3,4),(5,5),(7,5)，第三条被拒，最终总字节11。本站保留原输入和11，公开纠正catalog返回indices的不同题义，不执行原附代码。\n\n018的size/bytesLimit/window类型为unsigned int、timestamp和返回总量为unsigned long，020保证数字符合所需精度。本站明确按Linux64位C++接口解释为uint32的0..4294967295与uint64的0..18446744073709551615，不声称源另列十进制上下限。零大小、零限额、零窗口与空日志集合均保留。原文没有给n数值上限；本站只受现有每例32MiB标准输入传输预算约束，不另设n≤100000等小上限。给定输入格式与019一致，按顺序为limit、window、n，再n行timestamp size。\n\n原文是在线限流，不是离线挑选日志使总发布字节最大：若当前加上新日志未超额便发布，否则整条丢弃；不能为接纳未来日志而主动丢掉当前符合限额的日志。原例逐条说明就是此规则。\n\n## 思路\n\n维护成功发布且尚在当前窗口内的日志队列及其大小总和sum。每到时刻t，弹出所有t−old_time>window的队首，减去其大小。若sum+size≤limit，累加发布总量并将此日志入队，否则不改变队列。大小为0的日志对计费没有影响，可不存入队列。时间严格递增，所以已过期的日志以后不会再进入窗口。\n\n## 正确性证明\n\n处理第一条前成功历史为空，队列和sum均正确。假设处理前一条后队列记录所有可能仍贡献额度的正大小成功日志。对于新时刻t，因为时间单调，过期元素构成队首前缀；用严格大于window弹出恰好移除[t−window,t]外的历史，不会错删左端点。零大小省略不改变总量。弹出后sum正是当前窗口历史成功字节数。\n\n当sum+size≤limit时，原限流规则允许并要求发布，入队和累加维护正确历史与总量；否则整条被拒，不入队符合仅成功日志占用额度。由归纳，每条决策与原文一致，最后total是所有成功发布字节之和。\n\n## 复杂度与整数安全\n\n每条成功正大小日志至多入队、出队各一次，时间O(n)，空间O(k)，k为最大活动成功日志数。输入逐条读取，不先装载完整日志数组。判断t−old_time>window而不是old_time+window<t，避免时间戳加法溢出，也避免t<window时计算t−window下溢。严格递增保证减法非负。sum和size相加使用uint64，不能在uint32中相加后比较。\n\n成功活动sum始终≤uint32上限；任意单例32MiB文本至少为每条日志提供两个数字与分隔符，因此n<2^24，total<n·(2^32−1)<2^56，uint64可安全表示所有可传输输入的总量。这里使用平台字节预算推导，不伪造源n界。题包3秒、256MiB、输出64KiB，只有一个总量整数。具体Linux运行证据须另行验证，本地计时不是沙箱证据。\n\n## 独立验证\n\n小例oracle保存全部成功历史，每次直接扫描此前所有成功记录重新求双闭窗口和，不用队列过期算法。163唯一输入真实运行参考并对照该模型。正式40+案例覆盖原11、空集、零值、左端点恰相等、过期一秒、拒绝记录不能占额度、单值uint32最大、累计超过uint32、时间uint64边界与加法溢出。\n\n两组各接近32MiB压力：连续整数时间且每条大小1，最大window/limit使所有日志保留，期望为n，检验活动队列最坏量级；另一组连续整数时间每条大小3、limit4/window1，恰好隔条发布，期望3·ceil(n/2)，独立闭式检验持续过期和拒绝。逐组生成、逐组实际执行，不并行积累大输入或子进程。三个正常退出负控覆盖左端点误开、32位加法溢出和拒绝日志占额度。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <deque>\nusing namespace std;\nuint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint64_t x=0;while(c>32&&c!=EOF){x=x*10+uint64_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Entry{uint64_t time;uint32_t size;};\nint main(){\n uint64_t limit=readNumber(),window=readNumber(),n=readNumber(),sum=0,total=0;\n deque<Entry> accepted;\n for(uint64_t i=0;i<n;i++){\n  uint64_t t=readNumber(),size=readNumber();\n  while(!accepted.empty() && t-accepted.front().time>window){sum-=accepted.front().size;accepted.pop_front();}\n  if(sum+size<=limit){sum+=size;total+=size;if(size)accepted.push_back({t,uint32_t(size)});}\n }\n printf(\"%llu\\n\",static_cast<unsigned long long>(total));\n}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-akuna-capital-1",
       "sourceContentHash": "53f11c43e73e90b5aefc2a0ec23de044252339221ad54a88c96d028b44f3e8a9",
       "packageChecksum": "dbd4173a0353a31b0cce252c48f345f5847280ff243c73d383f4b99920439782",
@@ -432,6 +480,18 @@
         }
       ],
       "editorial": "## 思路\n\n设 f(k) 为按 remove 顺序删除前 k 张后，剩余 dominos 的严格 LIS 长度。删去元素不会增加 LIS，所以条件 f(k)≥min_order 关于 k 单调，可以二分最大可行 k。对每个 k 以 bytearray 标记存活位置，再扫描原数组，用 patience sorting 维护严格 LIS 的 tails。\n\n## 正确性\n\n固定 k 时，剩余位置恰是 remove[k:] 指向的位置，扫描时维持原数组顺序；bisect_left 将相等值替换在同一 tails 长度，不会把重复值拼成严格递增子序列，因此判定值就是该剩余序列的 LIS 长度。若 k 可行，则任意更小删除数的存活集合包含当前集合，LIS 不小于当前值；若 k 不可行，则任何更大的删除数也不可能可行。因此可行 k 构成从 0 开始的前缀，二分返回其最大端点。\n\n若 k=0 已不可行，源题所求可行集合为空，没有定义返回值。本站明确补充输出 -1；不把这一补充说成原题规则。\n\n## 复杂度\n\n单次检查 O(n log n)，二分 O(log n) 次，整体 O(n log²n) 时间，O(n) 空间。\n\n## 来源与本站协议\n\n固定 OAMaster 题面规定 remove 是 0-based 的 [0..n-1] 排列，domino 按原顺序保留，门槛针对严格 LIS。本站补充输入布局；对原题未定义的“初始 LIS 已低于门槛”情形规定输出 -1。"
+    },
+    {
+      "id": "oa-amazon-336",
+      "sourceContentHash": "e9464e5345d2c4db1b3bea6d27bd11d253621a8e1ac780512671efdd4d55fa5a",
+      "packageChecksum": "fba86d08d9a9d4e58286523e746b119ec73d35481edba6871bcac49d38411d87",
+      "editorial": "## 原始规则与来源恢复\n\n固定上游 fastprep/Amazon/amazon-return-records.md 的核心API表是一张不可访问的本机图片，只留下注意事项、约束和两组样例。本站从原FastPrep页面公开的Problem Source图恢复了这张表，图片保存在content/oa-judge/source-images/amazon-336-original.jpg，哈希绑定在来源证据。这张图不是固定Git快照里的资产，只作为同一原页面的补充来源；两人分别看图确认了表格内容。没有执行上游任何代码。\n\n表格给出三种请求和六种返回值：register成功返回Registered Successfully，用户已存在返回Username already exists；login成功返回Logged In Successfully，否则Login Unsuccessful；logout成功返回Logged Out Successfully，给定用户当前未登录返回Logout Unsuccessful。图中注意事项：初始没有用户；已登录用户再次登录失败，原登录保持有效；按输入顺序执行；用户名和密码区分大小写。\n\n## 两处原文勘误\n\n原文字例2的第四个输出写成Login Unsuccessfully，与原图表格中的Login Unsuccessful不一致。本站统一使用表格文案，并在题面中明确说明这个更正，不在同一题里混用两种拼写。原例2解释写“The user David is logged in”，实际输入是logout david；本站保持输入david不变，只在解释里改成david。\n\n## 输入适配\n\n第一行n，随后n行各一个请求：register username password、login username password或logout username，字段间一个空格。输出n行，第i行为第i个请求的返回值。完整原范围保留：1≤n≤100000，用户名和密码都是长度1..10的ASCII字母数字串。六个返回值的首词两两可区分（Logged后接In或Out），评测按空白分词比对与逐行比对等价。\n\n## 状态与规则推导\n\n每个用户只需要两项状态：注册时的密码，以及当前是否登录。\n\n- register：用户名不存在才创建，密码记下，初始未登录。注册不自动登录。用户名已存在时返回Username already exists，不覆盖密码，也不改变其登录状态。\n- login：用户存在、密码完全一致、当前未登录，三者同时成立才成功并标记登录。任一不满足都失败，且不改变任何状态；特别是已登录用户无论密码对错再次登录都失败，原会话继续有效，之后仍能正常退出。\n- logout：用户存在且当前已登录才成功并标记未登录；用户不存在或未登录都返回Logout Unsuccessful。\n\n不同用户的状态互不影响。大小写不同的用户名是不同用户，大小写不同的密码不匹配。\n\n## 正确性\n\n用哈希表保存用户名到(密码,是否登录)。每个请求只读写该用户名对应的一项，按上面三条规则判定，与表格及注意事项逐条对应。失败分支一律不写状态，所以失败请求不改变任何用户。归纳到第i个请求：前i−1个请求处理后表中状态等于网站真实状态，则第i个请求的返回值和新状态都正确。\n\n## 复杂度\n\n每个请求期望O(L)，L≤10为字段长度，总计O(nL)时间、O(用户数·L)空间。输出可达约240万字节，参考解先拼接再一次写出。\n\n## 独立验证\n\noracle用Python字典与集合分别保存密码和已登录用户，按规则直接模拟，不复用参考解。小域另写历史回放判定：用户是否存在看此前是否有该用户的register，密码取最早一次register，是否在线看此前该用户最近一次成功的login/logout是哪个；用两个大小写不同的用户名和两个大小写不同的密码，穷举长度1..4的全部请求序列，并逐个真实运行参考程序。正式用例覆盖原例、重复注册后旧密码仍有效、已登录时错/对密码再次登录都失败且随后能退出、未知用户登录与退出、大小写、跨用户隔离，以及十万请求的高基数用户、最长字段、高冲突随机、全失败退出等。五个正常退出的错误程序（覆盖密码、允许重复登录、注册自动登录、失败登录踢下线、用户名忽略大小写）在全部正式用例上执行并各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\nusing namespace std;\nstruct Account{string password;bool active=false;};\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,Account> users;users.reserve(size_t(n)*2+1);\nchar op[16],name[16],pass[16];string out;out.reserve(size_t(n)*24);\nfor(int i=0;i<n;i++){scanf(\"%15s %15s\",op,name);\nif(op[0]=='r'){scanf(\"%15s\",pass);auto r=users.try_emplace(name);if(r.second){r.first->second.password=pass;out+=\"Registered Successfully\\n\";}else out+=\"Username already exists\\n\";}\nelse if(op[3]=='i'){scanf(\"%15s\",pass);auto it=users.find(name);if(it!=users.end()&&!it->second.active&&it->second.password==pass){it->second.active=true;out+=\"Logged In Successfully\\n\";}else out+=\"Login Unsuccessful\\n\";}\nelse{auto it=users.find(name);if(it!=users.end()&&it->second.active){it->second.active=false;out+=\"Logged Out Successfully\\n\";}else out+=\"Logout Unsuccessful\\n\";}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
     },
     {
       "id": "oa-amazon-363",
@@ -4634,6 +4694,30 @@
       ]
     },
     {
+      "id": "oa-bnp-2",
+      "sourceContentHash": "a0c036cb0c22b914da291bda95fafd7b1555215ec8e0c52373149053ba13c305",
+      "packageChecksum": "3763f693fe12e251240deeee5dfc3d35aec51b28b72140a1e18414683690aef6",
+      "editorial": "## 原始规则与旧阻断纠正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/BNP/bnp-piles-of-boxes.md明确规定每步选择当前最高的一堆，把它降低到当前严格低于最高的下一种高度。原例[5,2,1]先将5降到2，得到[2,2,1]；随后两个2各自降到1，需要两步，原文明确说each step is performed on only one pile。因此答案3没有矛盾，不能误读为一次降低整个同高层。目标是让所有堆高度相等，不能跨过当前严格次高直接降到更低高度，也不是逐个箱子计费。\n\n原文没有数字约束。本站按Java int[]接口与箱数非负含义明确解释每堆0..2147483647，不能接受负箱数；0高度视为空堆是公开边界约定。n不增加人为的小上限，仅受现有单例32MiB标准输入传输预算约束。n=0返回0属于本站空集合数学扩展，不声称原文明确提供该保证。原返回long与大规模动作数一致。输入为n以及n个以空白分隔的高度。第一公开样例保留原[5,2,1]→3；另外两个公开样例为本站推导，不宣称来自原文。\n\n## 思路\n\n将高度升序排序。当前高度以下有多少种不同高度，就称为它的等级rank，最小高度的等级为0。扫描排序数组，只有遇到新的高度才把rank加1，把每堆的rank相加。\n\n## 正确性证明\n\n设最初不同高度为h0<h1<…<h(d−1)，第i种高度有ci堆。因为只能降低当前最高堆到当前严格次高，所有高度始终属于原高度集合。最低高度永远不会被降低，且在其上还有任何高度时不会消失；最终所有堆必定等于h0。\n\n在hi为当前最高且尚未全部降低前，下一种严格较低高度hi−1仍有堆存在，因为它不能在更高堆未消失时被操作。所以任何初始高度为hi的堆，必须依次经过hi−1、hi−2、…、h0，每次正好降一层，恰需i步。选择哪个同高堆先降低只改变顺序，不改变总次数。所有合法完成过程总步数均为Σci·i，也即每堆等级之和。排序扫描求出的rank正是该等级，因此输出为所求最少步数。\n\n## 复杂度与完整可传输域\n\n原生排序时间O(nlog(n+1))，数组空间O(n)，排序栈O(log(n+1))。输入逐个解析后存入32位无符号数组，计算答案使用64位。每个高度至少一个数字并需分隔，在32MiB文本预算下n<2^24，原生数组小于64MiB；最坏动作数n(n−1)/2<2^47，64位有符号long long可安全覆盖，不能用32位累计。题包3秒、256MiB；本机实测只证明本地运行，不替代Linux沙箱。\n\n## 独立验证\n\n小oracle用BFS搜索完整有序状态：找当前最高和严格次高，对每个最高堆分别产生降低后的状态，以所有元素相等或空状态为终点，直接计算最少步数，不使用等级求和。穷举长度0..5、值0..2共364个数组，并对163唯一输入真实运行参考。中小正式例也由该状态搜索计算。\n\n两个近32MiB压力使用独立闭式：0和1交替的数组，每个1只能且必须单独降一次，期望为1的数量；另一个输入是0..n−1的仿射排列，乘数与n互质，故每个高度恰出现一次，期望n(n−1)/2，远超32位。数字长度和闭式用于精确计算最大可传输n，不先构造数百万Python整数列表。负控分别把箱数差当次数、把整层视为一次、把重复值当新层级，全部正式例必须正常退出。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nunsigned readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();unsigned x=0;while(c>32&&c!=EOF){x=x*10+unsigned(c-'0');c=getchar_unlocked();}return x;}\nint main(){\n unsigned n=readNumber();vector<unsigned>a(n);\n for(auto &v:a)v=readNumber();\n sort(a.begin(),a.end());\n long long answer=0,rank=0;\n for(unsigned i=0;i<n;i++){\n  if(i && a[i]!=a[i-1])rank++;\n  answer+=rank;\n }\n printf(\"%lld\\n\",answer);\n}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-bny-mellon-1",
+      "sourceContentHash": "f361e083f3399dcdb051874c1fdecac72f747fb36dabdf5b6b92e1021c0873fc",
+      "packageChecksum": "301b68df5d472918645f20e3d064bb4aaf4f57e1fb0424e935bdb79da649f24b",
+      "editorial": "## 原文规则、补全样例与范围披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/BNY Mellon/bnymellon-calculate-string-transformations-length.md说明每轮对字符串的每个原字符替换：z变成ab，其余小写字母变为下一个字母。正文明确azbk经过一轮得到babcl，足以证明本轮产生的新字符不能在同一轮继续转换；旧阻断理由认为同步语义不明并不成立。\n\n第一公开例来自正文azbk,t=1，结果babcl长度5；第二保留原例输入abczy,t=2，第一轮bcdabz，第二轮应为cdebcab，长度7。原输出栏是TO-DO而非一个可保留的原答案，原第二轮解释漏了z并给出错误字符串cdedbc。本站明确把7作为按原规则推导补全，不谎称原文已提供7。第三公开例z,t=0为本站边界补充。\n\n原文未给数值约束。t采用原Java接口int结合非负转换次数，解释为0..2147483647，这是类型及语义推导，不是原文列出的十进制约束。word由小写英文字母组成，本站不额外发明长度100000上限，而覆盖现有每例32MiB标准输入预算内的全部可传输字符串。空word也接受且返回0，明确属于本站空串数学扩展。输入固定两行：word、t；第一行为空即空串。输出数学长度对1000000007取模，不需要输出指数增长的实际字符串。\n\n## 思路\n\n用26维列向量记录每个字符的数量。构造转移矩阵M：对于a..y，其一份贡献给下一字母；z的一份同时贡献给a和b。每轮转换后向量为M乘原向量，因此t轮后是M^t乘初始向量。使用二进制快速幂，最后把26个计数求和并取模。参考逐字节统计输入而不保留完整word。\n\n## 正确性证明\n\n一次转换时不同原字符独立贡献，不会互相合并。同一字母的所有副本有完全相同的后代，所以按字符计数不会丢失长度所需信息。矩阵第j列恰好是字母j进行一轮同步转换的产物计数，矩阵乘法逐列加权即为全部原字符贡献之和，故一步转移正确。\n\n由归纳，重复t轮得到M^t乘初始计数向量。快速幂维护尚未使用的二进制幂次及已选幂次乘积；读到置位就乘入，移位并平方，终止时乘积为M^t。t=0时结果矩阵为单位阵，输出原长度。最终各字母数量之和就是转换后字符串总长度；加乘与取模兼容，因此中途取模不影响最终余数。空串初始向量全0，任意轮后仍为0。\n\n## 复杂度与整数安全\n\n字母表大小固定26，时间O(|word|+26³log(t+1))，也可记作固定字母表下O(|word|+log(t+1))；空间O(26²)，不存输入字符串或展开串。矩阵每次乘加后立即取模，单项积加当前余数小于(1000000007−1)²+1000000006，远小于64位有符号上限。输入计数也受32MiB字节预算约束。使用64位计算乘法，不能用32位中间结果。\n\n## 独立验证\n\n小oracle直接构造新字符串，每轮遍历旧串、z追加ab、其它追加后继；不调用矩阵算法。163唯一小输入真实运行原生参考。另对字母表abyz长度0..4及轮数0..6全部2387组直接展开，并对照独立线性递推oracle。\n\n大轮数oracle不使用矩阵：令f(s)为单个a经过s轮的长度，f(0)..f(25)=1；a经过26轮成为ab，而b等于a提前一轮，故f(s)=f(s−26)+f(s−25)。使用多项式模x²⁶−x−1快速求x^s，把结果系数与26个初值点乘。起始字母下标j的长度为f(t+j)，对输入频数加权求和。多项式乘法后从高次向低次按x^26=x+1消去，是与26×26矩阵乘法独立的实现。\n\n两个接近32MiB案例分别t=0的全a串及t=2147483647的循环字母串。前者答案由长度直接给出；后者字符频数由整周期与余数闭式计算，并与逐字符计数校验，再使用多项式oracle。中小例覆盖z分裂、轮数25/26边界、取模、大轮数每个单字母、空串与全字母。四个正常退出负控测试轮数偏移、漏掉z的b、错误模数、提前转换本轮产生的ab。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\nusing namespace std;\nconst long long MOD=1000000007;\nstruct Matrix{long long x[26][26]{};};\nMatrix multiply(const Matrix&a,const Matrix&b){\n Matrix c;\n for(int i=0;i<26;i++)for(int k=0;k<26;k++)if(a.x[i][k])\n  for(int j=0;j<26;j++)c.x[i][j]=(c.x[i][j]+a.x[i][k]*b.x[k][j])%MOD;\n return c;\n}\nint main(){\n long long counts[26]{};int ch;\n while((ch=getchar_unlocked())!=EOF && ch!='\\n')if(ch>='a'&&ch<='z')counts[ch-'a']++;\n unsigned long long t=0;scanf(\"%llu\",&t);\n Matrix base,result;\n for(int i=0;i<26;i++)result.x[i][i]=1;\n for(int i=0;i<25;i++)base.x[i+1][i]=1;\n base.x[0][25]=1;base.x[1][25]=1;\n while(t){if(t&1)result=multiply(result,base);base=multiply(base,base);t>>=1;}\n long long answer=0;\n for(int i=0;i<26;i++)for(int j=0;j<26;j++)answer=(answer+result.x[i][j]*(counts[j]%MOD))%MOD;\n printf(\"%lld\\n\",answer);\n}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-bny-mellon-2",
       "sourceContentHash": "24eeedabdb7b3dda04f4b6fb2c8b7f13947d995ea69a7cd6f8ad20ee47746d30",
       "packageChecksum": "f698c24454d64c54dddad2ff0c0be9dc1525ed7d0f55623ee305d69372ab3714",
@@ -4774,6 +4858,18 @@
         {
           "language": "python",
           "code": "import sys\ndef solve(raw):\n t=list(map(int,raw.split())); return str(sum(len(str(abs(x)))%2==0 for x in t[1:]))\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-capital-one-18",
+      "sourceContentHash": "4631be22e5fed9687a71287ca88766e29a33d92a2e74c3c04e755e87583c2453",
+      "packageChecksum": "f1f34cf2789f36724f422ced5f0942b5b47181b243e53333e1d7b4375b5ea6ee",
+      "editorial": "## 原始规则、图片与输入适配\n\n固定 fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md 定义方阵，两条主对角线上的元素保持原位置，其余四个三角区域顺时针换位。原文请求查看source image，固定快照的示意图是不可访问本机路径。本站亲自查看原FastPrep页面公开的两张Problem Source图：第一张明确两条对角线不动并标出了5×5原矩阵，第二张重复规则；它们都没有数字约束或旋转后的图。另行下载的图保存在content/oa-judge/source-images/capitalone-18-original-0.jpg和-1.jpg，哈希绑定在来源证据，不能冒称这些下载图属于固定Git快照。\n\n单次变换精确为：若r=c或r+c=n−1则元素固定；否则原(r,c)移动到(c,n−1−r)，即顺时针90度。此映射逐项复现固定正文5×5原样例的完整输出，不是仅根据想象添加几何规则。偶数阶同样成立，n=2全部位置都在对角线上，因此始终不变；奇数阶中心固定。\n\n原文没有数值上下界。本站公开采用原Java int[][]与int参数的完整类型范围：元素−2147483648..2147483647，turns为非负次数0..2147483647，矩阵为非空方阵n≥1。负次数与空矩阵原文没有定义，本站不额外扩展。n不发明小上限，由既有32MiB标准输入预算限制。\n\n标准输入首行为n turns，后面n行、每行n个有符号整数（以空白分隔，允许LF/CRLF或末尾直接EOF）；输出变换后n行矩阵，不输出n。最短单数字元素编码、turns为一位且EOF无末尾换行时，输入字节数为2n²+digits(n)+2。因此4095需33538056字节，可传输；4096需33554438字节，超过32MiB。4095是协议预算推导，不是原题给出的矩阵上界；更长数字会降低实际可容纳的阶数。\n\n## 思路\n\n顺时针旋转四次回到原位置，两条对角线每次都固定，所以只需turns%4次。非对角位置分为互不相交的四元轨道。选顶部严格三角r<c<n−1−r，每个轨道恰选一个代表。该代表的四位置为(r,c)、(c,n−1−r)、(n−1−r,n−1−c)、(n−1−c,r)。用一个临时变量顺时针移动四个值，其它轨道独立处理，无需第二份矩阵。\n\n## 正确性证明\n\n旋转映射R(r,c)=(c,n−1−r)将两条对角线的并集映回自身，所以它也把非对角位置映到非对角位置。R四次是恒等变换。非对角位置不可能是中心，不会有一元或二元轨道，因此轨道长度恰为4，分别落在四个三角区域中；顶部严格三角含每个轨道唯一代表。\n\n原地循环把每个代表及其后三个位置的值沿R传递一次，正好实现该轨道的顺时针变换。不同轨道不共享位置，处理顺序不影响结果；两条对角线不在循环中，故其值不变。这证明一轮严格符合原规则。重复turns%4轮与重复turns轮相同，因而最终输出正确。n=1或2没有非对角轨道，保持不变也符合定义。\n\n## 复杂度与完整预算\n\n最多三轮，每轮访问O(n²)个元素，读取和输出也是O(n²)。只存一份连续int32矩阵，额外O(1)空间；n=4095时数组67076100字节，低于256MiB，不缓存整份输出字符串。解析INT_MIN先用64位累计其绝对值再取负，避免signed32溢出；位置乘法用size_t。\n\n输出只是同一组数值的置换，不增减数值或符号；规范十进制输出的数字总字节数不超过输入数字总字节数，分隔符至多每值一个。除末尾换行差异外，输出小于输入减去头部，因此完整可传输矩阵也可输出；题包配置64MiB输出额度。大测试只有一个4095阶实例，避免重复大输入/大期望使总包超限。\n\n## 独立验证\n\n小域oracle为每个原坐标直接计算重复旋转后的目标坐标，写入新矩阵，不复制参考顶部三角原地交换。另核验对角固定及四次恒等。163唯一oracle覆盖有符号极值、奇偶阶、0/1/2/3/4/INT_MAX次；穷举1..3阶二值矩阵与0..7次旋转。正式保留原5×5例，另含偶数阶、中心、反向不对称数据、混合正负极值、各种周期和中规模随机数据。\n\n满4095实例用坐标公式生成非对称0/1值，期望通过目标坐标反求原坐标再代入公式逐行产生，既不保存巨大Python整数矩阵也不调用参考算法。三错误程序分别转动对角线、逆时针、把周期误写为2，所有正式例须正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <vector>\nusing namespace std;\nint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();bool negative=c=='-';if(c=='-'||c=='+')c=getchar_unlocked();int64_t value=0;while(c>32&&c!=EOF){value=value*10+c-'0';c=getchar_unlocked();}return negative?-value:value;}\nint main(){int n=int(readNumber()),turns=int(readNumber());vector<int32_t>a(size_t(n)*n);for(auto &v:a)v=int32_t(readNumber());turns%=4;\nfor(int step=0;step<turns;step++)for(int r=0;r<n/2;r++)for(int c=r+1;c<n-1-r;c++){\nsize_t p=size_t(r)*n+c,q=size_t(c)*n+n-1-r,u=size_t(n-1-r)*n+n-1-c,v=size_t(n-1-c)*n+r;\nint32_t saved=a[p];a[p]=a[v];a[v]=a[u];a[u]=a[q];a[q]=saved;}\nfor(int r=0;r<n;r++)for(int c=0;c<n;c++)printf(\"%d%c\",int(a[size_t(r)*n+c]),c+1==n?'\\n':' ');}\n"
         }
       ]
     },
@@ -5342,6 +5438,18 @@
       ]
     },
     {
+      "id": "oa-commvault-1",
+      "sourceContentHash": "a65b7d6e091793add57c58517d08091991e9186d80d12eabf11d3f30e40edb91",
+      "packageChecksum": "d5475f4d5bebe506b5bfdc4d6245cf3b07393fd8a114cd9f4c7398847615fb0f",
+      "editorial": "## 固定原文与范围披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Commvault/commvault-count-good-strings.md定义：长度2N、恰N个A和N个B，每个前缀A数量不小于B数量，答案模10000。原例N=3答案5正确，五个合法串AAABBB、AABABB、AABBAB、ABAABB、ABABAB均保留。原解释说BABABA的前缀BA中B更多不准确，BA两种各一个；真正违例前缀是首字符B，本站明确纠正该解释，不改正确答案5。\n\n原Constraints栏只有o_o，没有数值范围，不能声称它写了N≤某个人为小常数。不过原始starter完整为public int countGoodStrings(int N)，因此本站覆盖非负Java int的整个域0..2147483647：这是按原接口类型与N为计数推导的包络，不是从o_o恢复出的显式约束。N=0时按组合定义存在一个空串，输出1；这是明确公开的数学边界补全。负N不能表示字符串长度或字符数，不作为合法输入。2N可超过32位有符号数，计算时必须提升到64位或大整数。\n\n## 思路\n\n把A看作+1、B看作−1，合法串是从0出发、任意前缀非负并回到0的步行。由反射原理，答案为Catalan数C_N=binom(2N,N)/(N+1)。但10000不是素数，且N+1可能与10000不互质，绝不能直接在模10000下求其逆元。\n\n分别计算模16=2^4、625=5^4。对质数p和q=p^4，记V(k)=Σ floor(k/p^j)，U(k)为k!去掉所有p因子后的单位部分模q。取t=v_p(N+1)，d=(N+1)/p^t，则C_N的p指数为e=V(2N)−2V(N)−t。e≥4时该模数下答案0，否则答案是U(2N)·inverse(U(N)^2·d)·p^e modq。所求逆元的分母与p互质，始终存在。\n\n预计算P[r]=∏(1≤i≤r且p不整除i)i modq。所有不被p整除的因子按长度q分块；被p整除的因子除去一个p后递归对应floor(k/p)!。故U(k)=P[q]^(floor(k/q))·P[k modq]·U(floor(k/p)) modq，迭代到0即可，不能把阶乘本身巨大数构造出来。\n\n得到a=C_N mod16和b=C_N mod625后，CRT给唯一0..9999答案a+16·(((b−a)·586) mod625)，因为16·586≡1(mod625)。输出普通整数，不要求补足四位前导零。\n\n## 正确性证明\n\n长度2N中A/B各N的串共有binom(2N,N)种。对第一个使前缀余额变成−1的位置及之前交换A/B，得到A数N+1、B数N−1的串；此操作与其首次到达+1前缀反射互逆。因此不合法串数为binom(2N,N+1)，合法数是两者之差，等于binom(2N,N)/(N+1)，N=0对应唯一空串。\n\nLegendre求和V精确计数阶乘中的p因子。将Catalan分子分母的p因子全部先消去后，剩余分母是单位，可以模q求逆；指数e≥4恰表示q整除结果，其余情况恢复p^e。单位阶乘递推把1..k中非p倍数因子与p倍数除p后的贡献不重不漏分开，块积依模q周期相同，因此给出正确单位部分。于是两个质数幂余数均正确，互素模数的CRT唯一合并为模10000答案。\n\n## 复杂度\n\n仅预计算16和625两张固定前缀表；每层k除以p，层数O(log(N+1))，每层模快速幂O(log(N+1))，保守时间O(625+log²(N+1))，额外空间O(625)。模乘因子均在小模数内，N相关算术使用Python整数；其他语言至少使用64位容纳2N及N+1。完整int最大值无需线性枚举或大整数阶乘。\n\n## 独立验证\n\n小N用精确大整数binom(2N,N)//(N+1)及直接非负前缀步行DP核验。大N独立oracle使用反射原理的binom(2N,N)−binom(2N,N+1)，分别按p进制滑动四位窗口计算二项式单位因子和进位指数，再用另一种CRT公式合并；它不调用参考Catalan除N+1公式，也不复用其单位阶乘函数。两者仍共享必要的素数幂算术理论，因此额外通过小域精确整数结果打破自我验证。\n\n数据覆盖N=0、原例3、2/5幂邻域、N+1含大量2或5因子的抵消、CRT双余数、2N越过32位、Java int上界与随机大数。三个正常退出负控分别漏CRT、错误排除非可逆N+1、32位2N溢出后返回0。所有正式和oracle均真实执行本站原创参考程序；未运行上游代码。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef catalan_residue(n,p,a):\n    q=p**a\n    prefix=[1]\n    for i in range(1,q+1):\n        prefix.append(prefix[-1]*(i if i%p else 1)%q)\n    def unit_factorial(k):\n        result=1\n        while k:\n            result=result*pow(prefix[q],k//q,q)*prefix[k%q]%q\n            k//=p\n        return result\n    def valuation(k):\n        result=0\n        while k:\n            k//=p\n            result+=k\n        return result\n    divisor=n+1\n    removed=0\n    while divisor%p==0:\n        divisor//=p\n        removed+=1\n    exponent=valuation(2*n)-2*valuation(n)-removed\n    if exponent>=a:\n        return 0\n    denominator=unit_factorial(n)**2*divisor%q\n    return unit_factorial(2*n)*pow(denominator,-1,q)*pow(p,exponent,q)%q\n\ndef solve(raw):\n    n=int(raw)\n    a=catalan_residue(n,2,4)\n    b=catalan_residue(n,5,4)\n    return str(a+16*((b-a)*586%625))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-confluent-3",
       "sourceContentHash": "490ade68cb8e572c0625b26403cda94e00a3dd20918722fecbef26a8bf6513d3",
       "packageChecksum": "e183d1bb92157a87800d15016a29961c4207058d64a62eb85442fa97ccadb642",
@@ -5566,6 +5674,18 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    if not data:\n        return \"\"\n    n = data[0]\n    if not 1 <= n <= 200_000 or len(data) != n:\n        raise ValueError(\"expected n and n-1 parent IDs\")\n    children = [[] for _ in range(n)]\n    for node in range(1, n):\n        parent = data[node] - 1\n        if not 0 <= parent < n or parent == node:\n            raise ValueError(\"invalid parent ID\")\n        children[parent].append(node)\n\n    # Iterative traversal supports a 200,000-node chain without recursion.\n    order = []\n    stack = [0]\n    seen = bytearray(n)\n    seen[0] = 1\n    while stack:\n        node = stack.pop()\n        order.append(node)\n        for child in children[node]:\n            if seen[child]:\n                raise ValueError(\"parent relation is not a rooted tree\")\n            seen[child] = 1\n            stack.append(child)\n    if len(order) != n:\n        raise ValueError(\"all nodes must be reachable from root 1\")\n\n    subtree_size = [1] * n\n    balanced_count = 0\n    for node in reversed(order):\n        expected = None\n        balanced = True\n        for child in children[node]:\n            size = subtree_size[child]\n            subtree_size[node] += size\n            if expected is None:\n                expected = size\n            elif size != expected:\n                balanced = False\n        if balanced:\n            balanced_count += 1\n    return str(balanced_count)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-the-d-e-shaw-group-2",
+      "sourceContentHash": "dc919d46c8c40214f5fd15096b443ad9dd02a0ab1256fe6605d3989b837ddd16",
+      "packageChecksum": "1f517334a3210a91a307e6513a25fb7b2a8a082297fe0820e56e53d1d4eaa842",
+      "editorial": "## 固定原始来源与说明纠错\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/The D. E. Shaw Group/deshaw-calculate-total-region.md规定：每位同学的region是包含其下标、且其身高等于区间最大值的最长连续子数组长度。返回所有人的region长度之和。这里“等于最大值”允许多人并列最高，不要求唯一最高。题面自身明确1≤n≤100000、1≤heights[i]≤10^9，返回long；不从同公司的其他题号借范围。\n\n第一原例[3,5,6]的正式Output是6，逐人长度1、2、3及求和也为6。说明末尾却附注“源图答案是5，很困惑”；固定快照没有相应可读原图证据，本站披露这条冲突附注，但采用明确定义与可复算的正式输出6，不把附注传闻当作另一个规则。第二原例[1,2,1]正式输出5正确，中间同学最长区间是完整[1,2,1]、长度3；原解释误写[1,2]，本站明确纠正该漏项。\n\n两原例保留6、5；第三公开例[2,2]为本站补充，每个人都能选整个数组，答案4。整理代码左右分别用≤和<弹栈会把一侧等高者当作障碍，在[2,2]错误得到3。本题两侧都只由严格更高者阻断。输入协议为n及n个身高，输出一个精确整数。未执行上游代码。\n\n## 思路\n\n对每个下标i，找到左侧最近严格大于heights[i]的位置L以及右侧最近严格大于它的位置R；不存在时分别设为−1、n。其region长度为R−L−1。用两次单调栈扫描：遇到新身高时弹出所有小于或等于它的旧位置，剩余栈顶就是最近的严格更高者。两边都用≤，不能为重复值分配不同归属。\n\n## 正确性证明\n\n包含i的合法区间不能越过L或R，否则会包含一个严格更高的人，使i的身高不再等于最大值。在L与R之间不存在任何严格更高者，因此整个开区间(L,R)本身合法，且包含i。所以它正是最长区间，长度R−L−1。\n\n从左扫描时，栈内位置递增、身高严格递减。被新位置弹出的旧位置身高不大于新值：对未来位置，如果旧位置足以成为严格更高者，新位置同样足够且更近；如果新位置不够高，被它弹出的旧位置也不会够高。因此弹出不会丢失未来的最近严格更高答案。弹栈后的栈顶恰为当前左侧最近严格更高者；右侧扫描对称成立。逐项求出正确长度并求和，得到全局所求值。\n\n## 复杂度与数值边界\n\n每个下标在每次扫描中入栈和出栈至多一次，时间O(n)，空间O(n)。每个人的region最多n，总和最多n²；所有人等高时达到该上界。n=100000时答案10000000000超过32位，但远小于有符号64位上界，因此必须使用64位或任意精度整数。单调递增/递减时为n(n+1)/2。\n\n## 独立验证\n\n小oracle按左端点依次扩展右端点，维护该区间最大值，对所有等于该最大值的下标记录可得最长长度，最终逐人求和；不寻找最近更高边界。163个唯一输入通过真实参考子进程，并穷举n=1..7、值1/2/3的全部3279个数组核对。\n\n完整n=100000压力使用不同算法：按身高排序，从低到高激活位置，使用并查集合并相邻已激活格子；同一高度先全部激活并合并，再读取这些位置的连通块大小。此时激活格子恰好是身高≤当前值的位置，其连通块就是可选最长区间。必须批量处理等高值，不能先激活一个就取答案。该oracle是O(n log n)排序加近线性并查集，不调用参考单调栈。\n\n正式数据覆盖全等、递增/递减、1与10^9交错、长平台、两端最高、中间唯一最高、重复最大值、锯齿以及固定种子随机。全等与单调另核对闭式，全部大例逐一执行参考子进程。负控为左右不对称处理等高值、32位总和溢出；只有所有正式数据均正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n=values[0]\n    a=values[1:]\n    left=[-1]*n\n    right=[n]*n\n    stack=[]\n    for i in range(n):\n        while stack and a[stack[-1]]<=a[i]:\n            stack.pop()\n        if stack:\n            left[i]=stack[-1]\n        stack.append(i)\n    stack=[]\n    for i in range(n-1,-1,-1):\n        while stack and a[stack[-1]]<=a[i]:\n            stack.pop()\n        if stack:\n            right[i]=stack[-1]\n        stack.append(i)\n    answer=sum(right[i]-left[i]-1 for i in range(n))\n    return str(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -6002,6 +6122,18 @@
       }
     },
     {
+      "id": "oa-expedia-4",
+      "sourceContentHash": "38cf68da3b811b1b6d48df0c16b31bb55e6086a5c6b714d2591b6c0034d8e971",
+      "packageChecksum": "439f46a74e02a626228a96fc0ce6340350889d8d88a392be3f32a12825ffaefd",
+      "editorial": "## 原规则、范围与返回值适配\n\n固定原文 fastprep/Expedia/expedia-calculate-the-sum.md 完整说明：开关从1连续编号，全部初始关闭。每个操作给左右端点，把闭区间内每个开关翻转一次，最后求所有开启开关的编号之和。不是开启数量，也不是操作覆盖区间的并集。操作重叠时按奇偶性抵消。原文没有样例，三个公开例均为本站构造。\n\n原约束栏只有颜文字，没有数值上界；参数明确是Java int n和int[][] operations。本站公开按类型解释有效索引为1≤l≤r≤2147483647；不发明更小的端点或操作数上限。n按非负操作数处理，n=0及答案0是本站明确的空操作数学扩展，不称原文给出了n下界。标准输入为n后跟n对端点，接受空白分隔、LF/CRLF及最后数字后直接EOF。所有输入仍受既有32MiB标准传输预算限制；n=8388606且每行1 1的规范LF编码恰好33554432字节，这是预算推导而非来源约束。\n\n原返回int不能覆盖上述完整类型域，例如单次[1,2147483647]结果为2305843008139952128。本站输出精确数学整数，不截断、不取模，并明确将结果提升到64位。所有可能开启位置均在1..INT_MAX，故这个值也是全域最大答案，signed64足够。原整理版本按最大索引开数组，无法覆盖INT_MAX；本站不沿用它来暗中缩域。\n\n公开构造例：操作[1,3]、[2,4]后，仅1与4开启，和为5；两次[2,5]完全抵消，和为0；单次[2147483647,2147483647]的和为2147483647。没有把这些说成来源原样例。\n\n## 思路\n\n把每个闭区间[l,r]变成两个奇偶翻转事件l和r+1。将全部事件排序，保留重复事件。开关状态在每个事件处翻转一次，从关闭开始，所以第0/1、第2/3等相邻配对事件[a,b)对应开启段。两个相同事件形成空段，贡献0；这自然保留偶数次翻转的抵消效果。\n\n开启段a..b−1的编号和为(a+b−1)(b−a)/2。逐对累加即可，不逐个访问开关，不按最大编号分配数组。参考对uint32事件做两趟稳定16位基数排序：先低16位、再高16位。每趟先计数并转为起始偏移，按原顺序散写到另一数组，保证稳定性。\n\n## 正确性证明\n\n对于任意位置x，一个操作[l,r]恰在l≤x<r+1时使它翻转。换成l、r+1两个事件后，截至x的事件总次数与覆盖x的操作数奇偶性相同，故两种表示产生完全相同的开关状态。\n\n排序事件后，相邻事件之间没有状态变化；初始状态关闭，每过一个事件翻转。因此第偶数编号事件到下一事件之间为开启，下一对之前为关闭。重复坐标不含任何开关，配对得到空段，或在同一坐标连续翻转；保留它们正确表达奇偶性。各开启段互不重叠，其并集恰为全部开启位置。对每段使用等差数列求和后相加，正好得到目标编号和。\n\n稳定低位排序使相同高位内按低位有序；第二趟高位稳定排序保持这一低位次序，所以最终是完整32位数值顺序，满足上述配对论证。\n\n## 复杂度与完整输入预算\n\n两趟基数排序和求和为O(n+65536)，空间O(n+65536)。两份2n个uint32数组共16n字节；最大可传输操作数8388606时为134217696字节，再加262144字节计数表及少量运行开销，低于256MiB。流式解析，不另外存输入字符串或操作数组。最大两组输入顺序测试，不并发运行大进程。\n\nr+1在uint32中计算，最大2147483648，不能先用signed int相加。求和将端点先提升为uint64：每段乘积不超过2147483648×2147483647，最终总和不超过2305843008139952128，均无溢出。零操作没有事件，输出0。\n\n## 独立验证\n\n小域oracle直接维护每个开关的开/关状态，逐位置翻转，再求开启位置编号和；穷举索引1..4、0..4个合法区间共11111组。163唯一oracle含随机小输入与完整端点边界。中规模oracle用字典逐事件异或、排序不同坐标并按状态扫描，不使用参考基数排序或直接两两配对。正式至少35组覆盖重复、交叉、相接、嵌套、INT_MAX端点、0操作和各行尾。两组近32MiB输入分别为最多操作数的重复单点（偶数次抵消）和乱序不同单点1..N（闭式N(N+1)/2）；二者期望不由参考生成。四个负控分别忽略翻转、遗漏闭区间右端、把编号和写成数量、32位结果截断；必须在全部正式例正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <vector>\n#include <array>\nusing namespace std;\nuint32_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint32_t x=0;while(c>32&&c!=EOF){x=x*10+uint32_t(c-'0');c=getchar_unlocked();}return x;}\nint main(){uint32_t n=readNumber();vector<uint32_t>a(size_t(n)*2),scratch(size_t(n)*2);\nfor(uint32_t i=0;i<n;i++){uint32_t left=readNumber(),right=readNumber();a[size_t(i)*2]=left;a[size_t(i)*2+1]=right+uint32_t(1);}\narray<uint32_t,65536> count;\nfor(unsigned shift:{0u,16u}){count.fill(0);for(uint32_t value:a)++count[(value>>shift)&65535u];uint32_t sum=0;\nfor(uint32_t &v:count){uint32_t old=v;v=sum;sum+=old;}\nfor(uint32_t value:a)scratch[count[(value>>shift)&65535u]++]=value;a.swap(scratch);}\nuint64_t answer=0;for(size_t i=0;i<a.size();i+=2){uint64_t left=a[i],end=a[i+1];answer+=(left+end-1)*(end-left)/2;}\nprintf(\"%llu\\n\",(unsigned long long)answer);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-expedia-1",
       "sourceContentHash": "9a4a960e85a70ff0683b74623e4539c30d387993f2ed33f270be89e51e1960d2",
       "packageChecksum": "46976fb7a99a663bf298482ec119c0c8f477934b7d7e556dfd0cfd354a75c240",
@@ -6206,6 +6338,18 @@
       ]
     },
     {
+      "id": "oa-factset-1",
+      "sourceContentHash": "c157e63731eab25146c95a47315613f2a740630f4bb3fecc3b445ff752272919",
+      "packageChecksum": "266cd5ba1e23f817db5d002da943a8472cfda22a29536c062787611cd0050fcb",
+      "editorial": "## 固定原文恢复与范围披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/FactSet/factset-largest-square-of-1s.md明确写two-dimensional square matrix，并给出n行、每行n个整数的输入描述。旧整理过程把HTML小于号之后的文字截断，不应据此认定缺少方阵结构。本题输入是由0、1构成的n×n方阵，1表示缺陷产品，求全部为1的连续正方形子矩阵的最大边长，不是面积，也不是任意选行列。\n\n原文没有给n数值上界。本站不伪称原题有n≤1000等限制，而支持现有单例32MiB标准输入预算以内的全部合法方阵。输入第一行给n，然后n行各n个以空白分隔的0/1；每行结束换行。最紧凑通常编码至少需要2n²字节及首行，因此4095阶测试已紧邻当前预算，4095不是额外声明的原始上界。允许n=0并返回0是本站明确的空矩阵数学扩展，不能归因于原文保证。非空全0矩阵也返回0。\n\n三个公开案例完全保留原输入和答案3、2、1。原例1把3×3区域起点(0,0)的end写成(3,3)，这是半开右下端点；本站统一改用包含端点(2,2)，其它两块对应(3,2)、(4,2)。原例2的(1,1)则已经是包含端点，不能混用两种约定。作者本机图片路径不可访问，不作为额外证据，所有结果均由可读取矩阵独立计算。\n\n## 思路\n\n逐行读取元素。dp[col]表示上一行或本行已更新位置的、以该格为右下角的最大全1正方形边长。当前值为0时置0；为1时取上方、左方、左上方三个边长最小值加1。更新前保存上方旧值，留作下一个格子的左上方。所有位置的最大值就是答案。\n\n## 正确性证明\n\n当当前格为0，任何以它为右下角的全1正方形均不可能，最大边长为0。当当前格为1，设三个相邻子问题值为a、b、c。任何边长s≥2的候选正方形去掉最底行、最右列等后，均包含这三个右下角对应的边长s−1正方形，因此s≤1+min(a,b,c)。反过来，三个相邻位置各有边长d=min(a,b,c)的全1正方形，它们的并集加上当前格覆盖边长d+1的整块区域，故该上界可达到。边长1也成立。\n\n按行列顺序归纳，递推总能得到正确的当前边长。滚动数组读取的上方值尚未覆盖、左方值已经更新、保存的diagonal为上一行左方，所以实现与递推一致。任何全1正方形有唯一右下角，枚举所有格并取最大值覆盖全部候选，输出全局最大边长。\n\n## 复杂度与传输预算\n\n时间O(n²)，额外空间O(n)，标准输入流式读取，不存完整矩阵。零矩阵扩展时间O(1)。输入预算限制下n及dp值远小于32位有符号上限；输出仅一个边长整数。参考使用C++20，题包3秒/256MiB，输出64KiB。不同语言仍须满足同一时间和内存限制。本地性能记录不能替代Linux沙箱验收。\n\n## 独立验证\n\n小oracle枚举每个起点、每个边长，并直接检查该区域全部格，不调用DP。对n=0..3所有二进制方阵共531个进行完整穷举，再用163唯一输入真实运行原生参考。中等方阵采用二维前缀和，按边长从大到小枚举方块检查面积和，独立于最大正方形DP。\n\n两组4095×4095方阵各33538055字节：全1的期望4095，棋盘格的期望1（任何2×2均有0）。这两组用独立闭式，不构造庞大的Python二维整数对象；逐组实际执行参考并测量本机峰值内存。其它边界覆盖全0、孤立1、缺对角、边框、内部洞、条纹、偏移正方形、随机密集矩阵。三个负控分别返回面积、遗漏对角条件、只统计第一行，所有正式输入均必须正常退出才计作有效击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){\n int n=readNumber(),answer=0;\n vector<int> dp(n+1,0);\n for(int row=0;row<n;row++){\n  int diagonal=0;\n  for(int col=1;col<=n;col++){\n   int above=dp[col],value=readNumber();\n   dp[col]=value?1+min({above,dp[col-1],diagonal}):0;\n   answer=max(answer,dp[col]);\n   diagonal=above;\n  }\n }\n printf(\"%d\\n\",answer);\n}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-google-1",
       "sourceContentHash": "8d30f23d0f5154d1554118830a3620c1e3f234564b1d7b9f2695b793d887eaa1",
       "packageChecksum": "f7985aa4fd73e152bf3628c1adab1283404285cf1d1c71c26e5bbaeae83b2b17",
@@ -6290,6 +6434,18 @@
       ]
     },
     {
+      "id": "oa-flexport-2",
+      "sourceContentHash": "2274148cf5c0ba2cfb5eea1720bba25621f3dc5d286805bf68232e633cfb0235",
+      "packageChecksum": "7e44375563d17ef7adfa03716c27961785c45b4d14a002901f10d58a5bd22008",
+      "editorial": "## 固定来源、有限数轴及空子序列\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Flexport/flexport-distinct-moves.md明确：数轴位置为0..n，n是数轴上界；l将j变为j−1，r将j变为j+1，返回distinct subsequences数量模1000000007。本站按不同字符序列计数，同一字符串来自不同下标也只计一次；这一解释由同题Meesho详注佐证，并非声称Flexport正文逐字写有详注。Flexport自身给出完整范围1≤|s|≤1000，0≤x,y,n≤2500，不能暗缩成x,y≤n。\n\n本站明确展开有限数轴的含义：路径初始位置、每步位置和终点都须属于0..n；走出域的字符串不构成这条数轴上的路径。不是反射、停留或越界后再回来的规则，因为这些会改变原文明确的j±1转移。若原允许的宽参数范围中x>n或y>n，则合法路径集合为空，返回0；这是对原域的明确解释，不伪称原文额外保证x,y≤n。\n\nFlexport原文要求distinct subsequences，没有要求非空。固定同题Meesho原文进一步明确按字符序列去重、可删除零个或更多元素；这是跨来源佐证，不伪称Flexport自己写有这段详注。因此删除全部字符得到的空子序列计入：当x=y且属于域内时贡献1。n=0时只有位置0，任何非空动作都越界，所以x=y=0结果1，否则0。s本身仍须非空，不能把输入长度下界改成0。\n\nFlexport原例s=rrlrr,n=6,x=1,y=4写答案3，本站纠正为2并保留原输入。枚举全部32个索引掩码，只有两种有效字符序列rrr与rrlrr；若按索引计数是5，也不是3。原文图片指向作者本机/Users/Eric/.../distinctMoves.png，无法读取，不作为纠正依据。另两个公开例为本站推导：rr从0到1只计r一次；rl在0..1从0回0有空串与rl两种。MDX三语言代码仅按索引选择/跳过，rr从0到1会错误得到2，未执行上游代码。\n\n## 思路\n\nf[p]统计已处理前缀能产生、从x出发且始终在域内、结束于p的不同字符串数，包含空串。当前字符c的位移为±1，移动旧f得到added[p]，越界贡献不加入。新答案本应旧集合并上所有追加c的字符串，但上一次处理相同字符时已能生成的字符串被重复加入。维护last[c][p]记录上次追加c得到的贡献，更新f[p]=f[p]+added[p]−last[c][p]，再令last[c]=added；每步取非负模。\n\n## 正确性证明\n\n初始只有空字符串，从合法x结束于x，因此f[x]=1正确；域外起止不可能组成路径，直接0正确。假设旧f表示准确的不同有效字符串集合。追加当前字符是单射：不同前缀字符串追加同一字母仍不同；相同字符串有唯一运动轨迹和终点，所以按位移平移计数，排除越界后恰好得到全部新追加集合。\n\n若此前从未出现c，追加集合与旧集合不交。否则，旧集合中以c结尾的每个字符串，都可以在c的上一次出现位置结束其嵌入：其此前嵌入的最后c不晚于该位置，移到上次c不改变字符序列或路径。因此旧集合与新追加集合的交集，恰好是上次处理c时记录的全部追加集合。旧前缀集合只增不减，交集没有漏计；last[c]按终点记录正确重叠。减去该交集一次得到不重不漏的并集。归纳成立，最终f[y]即答案。\n\n## 复杂度与完整边界\n\n每个字符处理n+1个位置，时间O(|s|(n+1))、空间O(n+1)，完整1000×2501可直接执行。计数可指数增长，所有状态和减法按1000000007归一化。负模语言需额外加模数。越界起止不能直接用作数组下标。\n\n## 独立验证\n\n小域暴力枚举全部选择掩码，再把得到的字符序列放入集合去重，逐步模拟路径并检查域。穷举长度1..7的全部lr串、n=0..3、x/y=0..4，包含越界端点，总25400组。\n\n163个oracle使用独立canonical-next DAG：从剩余输入中分别选择最早的l或最早的r作为下一个字符，递归语义是在对应后缀继续计数；相同字符序列只使用唯一最早嵌入。每个状态另可在当前位置等于y时终止，贡献空后缀1。实现自右向左，保留两个下一字符分支的后继行，不使用参考的上次贡献减法。短输入与掩码去重暴力交叉，大数据全用该独立DAG；另外以不取模大整数DAG检查取模结果。\n\n正式数据覆盖完整|s|=1000与n=2500、x/y=2500、域外起止、n=0、空串贡献、边界不可越过、重复字符去重、重复交替、多种模回绕及随机。两个负控分别不减重复贡献、错误排除空串，全部正式输入须正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nMOD=1000000007\n\ndef solve(raw):\n    s,n,x,y=raw.split()\n    n,x,y=int(n),int(x),int(y)\n    if x>n or y>n:\n        return '0'\n    f=[0]*(n+1)\n    f[x]=1\n    last=[[0]*(n+1),[0]*(n+1)]\n    for ch in s:\n        direction=int(ch=='r')\n        added=([0]+f[:-1]) if direction else (f[1:]+[0])\n        f=[(f[j]+added[j]-last[direction][j])%MOD for j in range(n+1)]\n        last[direction]=added\n    return str(f[y])\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-flexport-6",
       "sourceContentHash": "ab588621a787de8141075eca692b260a06aee59e05d2bacd7eab834ebb236bbd",
       "packageChecksum": "4c2f0fbb96a7a778de516ff5366bc7df52f1d335a1156314e89411e1454306eb",
@@ -6314,6 +6470,18 @@
       ]
     },
     {
+      "id": "oa-fortinet-4",
+      "sourceContentHash": "449883ceb1d0b848034e5ae1b0d87f874fea7c70dcbb8ddcbdca3913ed141cd5",
+      "packageChecksum": "d87634f42f6e2c365d548106dea57607f2f29e3fe8811b6a8ae8dbc469e93239",
+      "editorial": "## 原始规则与样例消歧\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Fortinet/fortinet-get-required-sweeps.md说明n个二进制信号初始全0，每个位置恰好ping一次，使其变1。每次评估从左到右顺次检查相邻格，遇10立即交换，完整一轮没有交换才停止。原样例ping=[1,2,4,3]返回[2,3,3,1]，完整保留。\n\n本站明确记录两项由原样例消歧的约定：位置1-based，ping是1..n的排列；每次对截至当前累计ping的位图副本计算排序轮数，排序不永久改变信号位图。若把上次排序结果写回，第一次1000变0001，第二次ping2后0101只需2轮，与原第二项3矛盾。最后一次全1已经有序仍返回1，明确最终无交换的检查轮也计数。左到右交换是原地顺序进行，一个1在一轮内可以连续越过多个0，不是所有相邻交换并行执行。\n\ncatalog旧题解声称每个1每轮至多右移一格，与原文左到右原地扫描不符；其附解对原例首项算出3而非2，且漏计停止轮。本站重新编写参考和题解，不沿用该错误实现：1000的一次sweep依次变0100、0010、0001，同一个1在同一轮确实右移三格，下一轮无交换后总轮数2。\n\n原文没有n数值上限。本站不补造100000等限制，而覆盖现有32MiB标准输入预算内的全部合法排列：第一行n，随后n个空白分隔的1..n整数，每个恰出现一次。n=0接受为空排列，输出空行，是本站公开的数学扩展，不声称原文明确给出。其它公开例为本站推导。源图片指向作者本机文件，未作为可访问证据或执行上游代码。\n\n## 思路\n\n维护累计ping的位图、最右侧仍为0的位置last（若已无0则为0）。已ping数量为k，last右侧的n−last个位置都是1，其余k−(n−last)个1位于某个0之前。答案是k−(n−last)+1。每次把新位置置1，持续左移last直至它指向0；指针全程最多移动n次。输入和输出均流式处理，不保存所有答案。\n\n## 正确性证明\n\n固定一次累计位图，考虑任意一个0。在一次从左到右的原地sweep中，如果它左侧仍有1，最靠近它的1会通过沿途0一直向右推进，最终与这个0交换；交换后扫描已越过该0，因此该0在本轮恰好左移一次。如果它左侧没有1，则不会移动。所以该0要消除左侧所有1，所需交换轮数恰等于初始在它左侧的1数量。\n\n数组有序当且仅当所有0的左侧都没有1。每个0每轮按上述规则减少一个阻碍，因此交换轮数等于各0左侧1数量的最大值；这个最大值在最右侧0处取得。再加最终无交换的停止轮即答案。若已经没有0，最大值按0计，答案为1。\n\n处理第k次ping后总共有k个1，而最右零右侧恰有n−last个1，故它左侧有k−(n−last)个1。位图记录所有且仅已ping的位置，指针左移恰好跳过新形成的全1后缀，所以参考实现计算的正是所证明的答案。每轮只在位图副本上定义排序效果，实际算法不破坏原ping状态。\n\n## 复杂度与传输容量\n\n时间O(n)，额外空间O(n)字节，输出逐项打印。每位置写入一次，last最多下降n次。n和答案均能用32位整数表示：32MiB文本中的n项不同正整数形成完整排列，其最大n约4333190，不可能接近Java int上限。原源无上界，这里仅做既有传输预算推导，不把该数写成额外原约束。\n\n对第k<n步，答案≤k+1，最后一步为1。因此各答案的十进制长度总和不大于输入排列1..n的数字长度总和，输出预算不会超过同等输入数字主体。参考3秒/256MiB、输出64MiB；正式题包总字节另受导入和Git文件限制。只保留一组最大输入和输出案例，避免重复堆叠超过100MiB。\n\n## 独立验证\n\n小oracle每次真实复制累计位图，循环执行所有相邻原地交换直到无交换，直接数轮；不使用最右零公式。166唯一输入（6个原例/边界及160个固定种子随机排列）真实运行原生参考，另枚举n=0..6全部874个排列并逐例运行。中规模独立oracle用最大堆追踪剩余0位置、Fenwick树查询其左侧1数量，与参考单调指针实现不同。\n\n最大合法标准编码排列采用递增1..n，答案独立闭式为2,3,…,n,1；逆序排列答案全1。其它压力含十万规模随机、交错及延迟ping末位，检查长后缀跳跃和早期ping边界。所有正式输入验证为排列，三个负控分别漏停止轮、用零位置替代前置1数量、破坏累计位图保留排序结果，必须正常退出才能计为击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){int n=readNumber(),last=n;vector<unsigned char>seen(n+1,0);\nfor(int k=1;k<=n;k++){int p=readNumber();seen[p]=1;while(last>0&&seen[last])last--;int answer=k-(n-last)+1;printf(\"%d%c\",answer,k==n?'\\n':' ');}if(n==0)putchar('\\n');}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-geico-2",
       "sourceContentHash": "7d4f89ad7f86046a3ef9e64bd953b6b88bfc2b50c76e6e6ce880aa420cee9369",
       "packageChecksum": "459a0c1df4031a1837d9a82bb5596020c4779515635a4ec591e755b599ab7864",
@@ -6322,6 +6490,18 @@
         {
           "language": "python",
           "code": "from collections import OrderedDict\nimport sys\n\ndef solve(raw):\n    lines = raw.strip().splitlines()\n    if not lines or not lines[0].startswith(\"capacity=\"):\n        raise ValueError(\"expected capacity=N\")\n    capacity = int(lines[0].split(\"=\", 1)[1])\n    if capacity <= 0:\n        raise ValueError(\"capacity must be positive\")\n    cache = OrderedDict()\n    output = []\n    for line in lines[1:]:\n        line = line.strip()\n        if line.startswith(\"put(\") and line.endswith(\")\"):\n            key, value = map(int, line[4:-1].split(\",\"))\n            cache[key] = value\n            cache.move_to_end(key)\n            if len(cache) > capacity:\n                cache.popitem(last=False)\n        elif line.startswith(\"get(\") and line.endswith(\")\"):\n            key = int(line[4:-1])\n            if key not in cache:\n                output.append(\"-1\")\n            else:\n                cache.move_to_end(key)\n                output.append(str(cache[key]))\n        else:\n            raise ValueError(\"invalid operation: \" + line)\n    return \"\\n\".join(output)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-gemini-1",
+      "sourceContentHash": "010eda54532f975700491b0f33cd778f64c03d725a81bbc7392dac2ba8d2e7b4",
+      "packageChecksum": "abd10e8341c2375a8f57dcbda75f711c0e1bea34f47d368bf1540d3e48bcd0d8",
+      "editorial": "## 原始来源与完整输入范围\n\n固定 fastprep/Gemini/gemini-minimum-fence-painting-operations.md 定义相邻宽度1的竖板。竖笔一次从底到顶涂完一整块板；横笔一次在同一高度涂连续若干板的一单位高区域，且横笔只能覆盖尚未涂色的区域。竖笔仍涂整板，原文没有禁止它覆盖已经横涂的部分；不能把横笔的限制错误扩展到竖笔。本题无来源样例，三个公开例均为本站构造，不冒充原始输出。\n\n原源明确 n≥1、高度为非负整数，没有给出数值上限。本站根据原 int[] 参数明确采用非负 signed 32-bit 高度 0..2147483647，这是类型适配而非原文十进制约束。n不额外设小上限，接受现有32MiB标准输入预算内所有合法输入；不存在空数组扩展。标准输入为n及其后恰好n个高度，以空白分隔，可在最后一个数字后直接EOF，也可有LF/CRLF。最短十进制编码下 n=16777212 个一位高度且末尾无换行恰占33554432字节，测试覆盖此边界；这是传输预算推导，不是原题n上限。\n\n公开例：[1,2,1]用两笔：底层横涂全部三板，再竖涂中板（允许覆盖其底层）；[0,0,0]无需操作；[2147483647,2147483647]竖涂两板仅需2笔。\n\n## 区间递推与流式实现\n\n对一段当前基准高度b以上的板，设宽度w、最低高度m。可以w笔全部竖涂；也可以先用m−b笔横涂公共底层，再处理高于m的各个连续子段。因此费用为 min(w, m−b+各子段费用之和)。零高度自然隔开正高度段。\n\n用高度严格递增的单调栈表示尚未关闭的区间，同高节点合并。节点仅存height、width和已经关闭的子段费用cost。新高度h到来时，弹出高于h的节点，父层基准为max(h,弹出后的栈顶高度)，按上述递推结算并累计到父节点。若父层恰是新h，则费用暂存到待插入节点；否则并入已有栈顶。相同高度直接合并宽度/子段费用。最后用宽度0、高度0的虚拟边界关闭剩余节点，不增加板数。高度0哨兵的累计费用即答案。\n\n## 正确性证明\n\n先证明递推下界。若一个区间的所有板都用过竖笔，则操作至少w次。否则存在未用竖笔的板，该板从b到m的每一单位高均必须由横笔涂色，所以至少有m−b次位于这些底层的横笔。高于m的不同连续子段由高度m的板隔开，任何该高度以上的横笔不能跨越这些板；竖笔也只属于一块板。因此扣除公共底层所需的横笔后，各子段仍各自至少需要其最优费用。位于最低板的竖笔或多余底层横笔只能增加费用，不破坏下界。\n\n两种上界都可实现：全部竖涂用w次；或者先横涂全区间的m−b个尚未涂色底层，再分别采用子段最优方案。后续横笔都在未涂色区域，后续竖笔可依原规则涂整板。因此两者较小值就是最优费用。\n\n栈顶弹出意味着它的连续区间已经遇到右侧不更高的边界，左侧更低栈节点与当前h共同确定父层基准。已弹出的更高子段费用已累计到该节点，故其结算正是上述递推。同高合并只合并共享基准的区间，保留总宽度和子段费用，不改变递推。由弹出顺序归纳，所有结算均正确；末尾零边界结算所有正高度区间，哨兵费用因而为整面围栏最优值。\n\n## 复杂度与整数、内存\n\n每块板至多入栈和出栈一次，时间O(n)，栈空间O(n)，流式读取不存高度数组、不递归。答案不超过n（每板至多一笔竖涂），节点width、cost均不超过n；height为非负int32。计算height−base+cost时先提升到uint64，避免高度接近INT_MAX时中间溢出。\n\n参考节点恰12字节，一次reserve(n+1)避免扩容时保留新旧数组。即最大可传输n，所需节点容量也仅201326556字节，低于256MiB；程序不持有输入字符串或第二份n数组。严格递增深栈另以接近预算的多位高度测试。题包时限5秒、内存256MiB，实际Linux沙箱证据由独立验收流程产生，本地记录不冒充服务器结果。\n\n## 独立验证\n\n小域直接建立每个单位格的涂色位图做BFS：竖笔置整板全部位（可重涂），横笔枚举同一行所有连续且尚未涂色的合法片段；求最短到全涂状态。另一个oracle直接枚举区间最小值递推，不使用参考的单调栈。独立BFS穷举n=1..5、高度0..2，区间oracle另穷举n=1..5、高度0..3，并真实运行参考。163唯一小oracle使用BFS或区间枚举，包含固定种子随机数据。完整输入边界采用闭式：全1答案1、严格正升序答案n、零与高板交替答案正板数；大平台和深下降亦独立核算。三负控分别忽略竖笔、错误扣基准、全部单独竖涂，均须在全部正式测试正常退出才计击杀；第一个负控用64位正高度差总和计算纯横涂费用，不使用慢速逐笔模拟。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nuint32_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint32_t x=0;while(c>32&&c!=EOF){x=x*10+uint32_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Node{uint32_t height,width,cost;};\nstatic_assert(sizeof(Node)==12);\nint main(){uint32_t n=readNumber();vector<Node> st;st.reserve(size_t(n)+1);st.push_back({0,0,0});\nauto append=[&](uint32_t h,uint32_t width){uint32_t cost=0;\nwhile(st.back().height>h){Node node=st.back();st.pop_back();uint32_t base=max(h,st.back().height);\nuint32_t value=uint32_t(min<uint64_t>(node.width,uint64_t(node.cost)+node.height-base));\nif(st.back().height>=h){st.back().width+=node.width;st.back().cost+=value;}else{width+=node.width;cost+=value;}}\nif(st.back().height==h){st.back().width+=width;st.back().cost+=cost;}else st.push_back({h,width,cost});};\nfor(uint32_t i=0;i<n;i++)append(readNumber(),1);append(0,0);printf(\"%u\\n\",st.front().cost);}\n"
         }
       ]
     },
@@ -9158,6 +9338,18 @@
       ]
     },
     {
+      "id": "oa-meesho-1",
+      "sourceContentHash": "b73c4154f7e704dd7a302b7751dd8b24355a678e15f07a9c000421e691d1d806",
+      "packageChecksum": "fea2c72a47757d19d238bc92bee3363a78375d8ae04cf4fd59df523d8b961e0e",
+      "editorial": "## 固定来源、有限数轴及空子序列\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Meesho/meesho-distinct-moves.md明确：数轴位置为0..n，n是数轴上界；l将j变为j−1，r将j变为j+1。选择s的子序列，统计能从x走到y的不同字符序列，按1000000007取模。同一字符串来自不同下标也只计一次。完整范围1≤|s|≤1000，0≤x,y,n≤2500，不能暗缩成x,y≤n。\n\n本站明确展开有限数轴的含义：路径初始位置、每步位置和终点都须属于0..n；走出域的字符串不构成这条数轴上的路径。不是反射、停留或越界后再回来的规则，因为这些会改变原文明确的j±1转移。若原允许的宽参数范围中x>n或y>n，则合法路径集合为空，返回0；这是对原域的明确解释，不伪称原文额外保证x,y≤n。\n\n原文说删除零个或更多元素，没有要求非空，所以删除全部字符得到的空子序列计入：当x=y且属于域内时贡献1。n=0时只有位置0，任何非空动作都越界，所以x=y=0结果1，否则0。s本身仍须非空，不能把输入长度下界改成0。\n\n原始快照没有正式输入输出样例。三个公开例均为本站推导：s=rr,n=2,x=0,y=1只计字符串r一次；s=lr,n=1,x=y=0只有空串合法，lr第一步越界；s=rl,n=1,x=y=0有空串和rl两种。本站输入s与n x y，输出整数。整理代码普通选择/跳过DP会把不同下标重复计数，例如第一例错误得到2；未执行上游代码。\n\n## 思路\n\nf[p]统计已处理前缀能产生、从x出发且始终在域内、结束于p的不同字符串数，包含空串。当前字符c的位移为±1，移动旧f得到added[p]，越界贡献不加入。新答案本应旧集合并上所有追加c的字符串，但上一次处理相同字符时已能生成的字符串被重复加入。维护last[c][p]记录上次追加c得到的贡献，更新f[p]=f[p]+added[p]−last[c][p]，再令last[c]=added；每步取非负模。\n\n## 正确性证明\n\n初始只有空字符串，从合法x结束于x，因此f[x]=1正确；域外起止不可能组成路径，直接0正确。假设旧f表示准确的不同有效字符串集合。追加当前字符是单射：不同前缀字符串追加同一字母仍不同；相同字符串有唯一运动轨迹和终点，所以按位移平移计数，排除越界后恰好得到全部新追加集合。\n\n若此前从未出现c，追加集合与旧集合不交。否则，旧集合中以c结尾的每个字符串，都可以在c的上一次出现位置结束其嵌入：其此前嵌入的最后c不晚于该位置，移到上次c不改变字符序列或路径。因此旧集合与新追加集合的交集，恰好是上次处理c时记录的全部追加集合。旧前缀集合只增不减，交集没有漏计；last[c]按终点记录正确重叠。减去该交集一次得到不重不漏的并集。归纳成立，最终f[y]即答案。\n\n## 复杂度与完整边界\n\n每个字符处理n+1个位置，时间O(|s|(n+1))、空间O(n+1)，完整1000×2501可直接执行。计数可指数增长，所有状态和减法按1000000007归一化。负模语言需额外加模数。越界起止不能直接用作数组下标。\n\n## 独立验证\n\n小域暴力枚举全部选择掩码，再把得到的字符序列放入集合去重，逐步模拟路径并检查域。穷举长度1..7的全部lr串、n=0..3、x/y=0..4，包含越界端点，总25400组。\n\n163个oracle使用独立canonical-next DAG：从剩余输入中分别选择最早的l或最早的r作为下一个字符，递归语义是在对应后缀继续计数；相同字符序列只使用唯一最早嵌入。每个状态另可在当前位置等于y时终止，贡献空后缀1。实现自右向左，保留两个下一字符分支的后继行，不使用参考的上次贡献减法。短输入与掩码去重暴力交叉，大数据全用该独立DAG；另外以不取模大整数DAG检查取模结果。\n\n正式数据覆盖完整|s|=1000与n=2500、x/y=2500、域外起止、n=0、空串贡献、边界不可越过、重复字符去重、重复交替、多种模回绕及随机。两个负控分别不减重复贡献、错误排除空串，全部正式输入须正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\nMOD=1000000007\n\ndef solve(raw):\n    s,n,x,y=raw.split()\n    n,x,y=int(n),int(x),int(y)\n    if x>n or y>n:\n        return '0'\n    f=[0]*(n+1)\n    f[x]=1\n    last=[[0]*(n+1),[0]*(n+1)]\n    for ch in s:\n        direction=int(ch=='r')\n        added=([0]+f[:-1]) if direction else (f[1:]+[0])\n        f=[(f[j]+added[j]-last[direction][j])%MOD for j in range(n+1)]\n        last[direction]=added\n    return str(f[y])\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-meta-24",
       "sourceContentHash": "a593c760ead9bffff0c1e7bdc69f17028ece67e9f8641d955b24c057c08bd53c",
       "packageChecksum": "7eec5f8dc979ee037262735234eba7d8ea47f712fbf06de0dd2d32b91e0b9a32",
@@ -11023,6 +11215,18 @@
       ]
     },
     {
+      "id": "oa-optiver-1",
+      "sourceContentHash": "4f47d0f4483ab1bf42c898d93af2cde3d6511e2961507341b523b05a5b1b079b",
+      "packageChecksum": "4fc46671542f3c0702fee998b1928064fd54bbf25d1e2a28e98fab45ed111993",
+      "editorial": "## 原始来源与样例纠正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Optiver/akuna-print-schedule.md完整说明：每个进程有最早开始S和最晚结束E；依赖u→v要求u严格先开始、严格后结束。时刻为1..1000000整数，每个进程至少运行一个单位，按PID1..N输出全部排程。原文要求尽可能长时间运行，并非任选一个较短可行排程。\n\n原四进程例[[1,2],[100,2100],[110,2200],[200,2330]]和边1→2、3→2不能排程，本站保留全部输入并纠正为IMPOSSIBLE：进程1至多在[1,2]运行，依赖使进程2结束≤1，而自身开始≥100。原输出只列三行，既不可满足这些边，也不符合输出N行的要求。第二公开例是本站明确重建的三进程补充例[[100,2100],[110,2200],[200,2330]]及边1→2、3→2，输出100 2100、201 2099、200 2330；不声称这是原四进程输入的正确输出。第三公开例为本站补充的单进程等时窗口，因至少运行一单位而不可行。\n\n原文自身给出1≤N≤1000000、0≤M≤1000000、1≤S≤E≤1000000，边无自环且有序对不重复。另写跨测试Sum of N,M≤1000000，未明确合计或各自求和；这是原批量接口的总量约束，本站一次输入一个实例，明确完整支持N和M各自百万，不暗缩为N+M≤百万。原文类接口转换为标准输入不改变优化规则。\n\n## 思路\n\n所有依赖使子进程的运行区间严格包含在父进程内。初始化start=S、end=E，按拓扑序从父u向子v传播start[v]=max(start[v],start[u]+1)，end[v]=min(end[v],end[u]−1)。用入度队列和扁平邻接表，避免递归深链及每节点分配容器。存在环或最后任意start≥end，输出IMPOSSIBLE。\n\n## 正确性证明\n\n有向环要求某个开始时刻严格小于自己，故无解。对DAG按拓扑序归纳：任一合法排程开始s[v]≥S[v]且大于每个父的开始，故s[v]≥start[v]；结束e[v]≤E[v]且小于每个父的结束，故e[v]≤end[v]。初始化及每次取max/min恰好累积这些必要界。\n\n若start[v]≥end[v]，任何候选排程都不能让该进程运行至少一单位。反之，所有区间正长且DAG无环时，计算出的端点自身满足窗口及每条依赖，所以全体同时可行。它逐节点包含任意可行排程的区间，因此同时使每个进程的运行时长最大，不存在延长某进程必须缩短另一进程的取舍。要达到最大长度，两个端点必须同时等于这些界，故最优排程唯一，可以精确tokens评测。这是展开原文尽可能长运行的要求，而非引入总利润、字典序或任意选解等新目标。\n\n## 复杂度及资源\n\n拓扑排序每个节点和边各处理一次，时间O(N+M)，空间O(N+M)。五个N长int数组及两个M长int数组，共约20N+8M字节，N=M=百万时约28MB，另外只有标准输入输出缓冲。计算端点落在约[−1000000,2000000]内，32位有符号整数足够；禁止递归，最长链可达百万。题包支持完整范围，以原生C++执行，3秒/256MiB，最终Linux沙箱验收另做，本地耗时不是沙箱证据。\n\n## 独立验证\n\n小域直接枚举每个进程的所有整数正长子区间，过滤所有依赖，再分别取合法集合的最早开始、最晚结束，并验证它们可同时组成合法排程；不调用拓扑传播。163唯一小输入及额外小域穷举均使用此独立枚举。正式满规模以无边窗口不变、链第i节点[i,1000001−i]、超长链不可能、二层完全二部图子层[2,999999]和含环图不可能等数学构造独立给出期望。另有随机重编号DAG用全路径长度闭包求界，独立于参考入度队列。\n\n两负控分别去掉严格差1、漏传播结束界，所有正式输入均需正常退出才算击杀。题面原例纠正、单例序列化、批量范围说明均公开披露。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint readInt(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){\n int n=readInt(),m=readInt();\n vector<int>s(n),e(n),head(n,-1),degree(n,0),to(m),next(m),queue(n);\n for(int i=0;i<n;i++){s[i]=readInt();e[i]=readInt();}\n for(int i=0;i<m;i++){int u=readInt()-1,v=readInt()-1;to[i]=v;next[i]=head[u];head[u]=i;degree[v]++;}\n int first=0,last=0;for(int i=0;i<n;i++)if(!degree[i])queue[last++]=i;\n while(first<last){int u=queue[first++];for(int k=head[u];k!=-1;k=next[k]){int v=to[k];s[v]=max(s[v],s[u]+1);e[v]=min(e[v],e[u]-1);if(!--degree[v])queue[last++]=v;}}\n bool ok=last==n;for(int i=0;i<n;i++)if(s[i]>=e[i])ok=false;\n if(!ok){puts(\"IMPOSSIBLE\");return 0;}\n for(int i=0;i<n;i++)printf(\"%d %d\\n\",s[i],e[i]);\n}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-optiver-4",
       "sourceContentHash": "fd993dfcbdc2c2e675db0da837ce0284e7f6effce7e725cf11a92d6527eac98d",
       "packageChecksum": "d7ffff62f89572e792eb25d70b95154456ed986da482dc4f9c036bc0f38bdae2",
@@ -11215,6 +11419,18 @@
       ]
     },
     {
+      "id": "oa-pure-storage-11",
+      "sourceContentHash": "15b7fd6da33252f54e0a3fa68b3e09e7b271cfc8f5fe192d30243cda949365de",
+      "packageChecksum": "862eb00c05aeb5376d74ec81a1b1c910e9ac3e3b14da44443287d337b7d7387d",
+      "editorial": "## 原始计数对象与整理误读纠正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Pure Storage/purestorage-count-different-palindrome-substrings.md明确举出ll,ll，并写two distinct substrings that only happen to be equal。因此“different ways to pick”按下标区间区分，不能按字符串内容去重。每个非空连续子串只要正反相同就计一次；同内容出现在不同位置仍分别计数。\n\n原例hellolle有8个单字符、2个ll、lol、lloll和ellolle，共13；若内容去重只有8。wowpurerocks有12个单字符，加wow和rer共14；内容去重只有11。两个原答案都正确且完整保留，旧阻断把位置计数误解成内容去重才造成所谓冲突。原定义中的大小写示意不改变函数明确only lowercase letters的输入范围。\n\n原约束栏是占位符，没有字符串长度界。本站不借同公司另一题的本站长度上限，也不伪造原n≤200000等限制，而支持现有单例32MiB文本输入预算内的全部小写字符串。输入一行s，末尾换行可省略，因此无换行时长度可达33554432。空行表示空串，返回0是本站公开数学扩展。原Java int返回类型不能容纳完整计数，本站输出精确数学整数、不取模，使用64位；完整传输域的上界n(n+1)/2≤562949970198528，小于2^50。\n\n## 思路\n\n对每个字符中心统计奇数长度回文半径，对每个字符间隙中心统计偶数长度回文半径。奇半径k包含该中心对应的k个非空回文，偶半径k也对应k个非空回文，因此答案是所有奇偶半径之和。\n\n使用Manacher算法维护当前最右回文区间[l,r]。中心在区间内时，可借用关于区间中心对称的位置已知半径，但截断到右边界；然后只对未知的边界之外继续比较扩展。奇数和偶数分别扫描，两趟复用同一个int半径数组；不构造长度2n的分隔符转换串，也不同时保存两份半径数组。\n\n## 正确性证明\n\n每个非空回文有唯一的奇或偶中心，且其长度由中心及半径唯一确定。某中心最大半径为k时，从1到k的所有同奇偶半径都是回文，更大的不是回文，所以该中心贡献恰为k；对全部中心求和不会遗漏或双计下标区间。\n\n已知区间[l,r]是回文，其内部关于中心对称的字符相等。若当前中心i≤r，对称中心的半径在不越过区间边界的部分可以直接搬到i；若完整镜像半径在边界内结束，决定它不能继续扩张的不等字符也位于区间内，镜像后同样不等。若镜像半径触及边界，只能保证到边界的部分，之后用真实字符比较继续扩展。因此初始化与扩展得到当前最大半径。若扩展超出已知最右边界，则更新[l,r]，保持不变量；左右到右逐中心归纳，两趟所有半径都正确，求和得到答案。\n\n## 复杂度与完整域内存\n\n每趟中镜像可直接确定的部分不重复扩展；成功越界比较会推进r，r最多前进n次，各中心另有常数次失败比较，所以两趟总时间O(n)。额外半径数组为4n字节，字符串为O(n)，不用2n转换串。最大n=32MiB时数组128MiB，字符串及其可能预留容量仍可在原生256MiB限制内运行；必须以实际最大输入内存记录验证，而不是声称所有语言相同内存。题包3秒、256MiB、输出64KiB；本机指标不是Linux沙箱证据。\n\n## 独立验证\n\n小oracle真正枚举每个非空区间并检查该子串与逆序相等，不计算中心半径。163唯一输入（3个公开/补充及160个其它边界与随机输入）真实执行原生参考；另外穷举字母表abc、长度0..6的1093个字符串，对照直接枚举与独立回文树。\n\n回文树为每种不同回文内容建立节点，但每次追加字符时通过suffix-link链上的回文节点数量统计以当前位置结尾的全部回文出现数，再对所有位置求和，所以oracle仍按位置计数，不是节点总数去重计数。中大随机串与周期串通过此不同算法得到期望。两个最大输入分别全a（所有区间，n(n+1)/2）和交替ab（恰好全部奇数长度区间，floor((n+1)²/4)），用独立闭式核验。\n\n三个线性负控分别漏偶数回文、漏单字符、32位溢出，明确不是用naive去重set算法在最大输入上超时来伪造击杀。原例已直接区分位置计数和内容去重。所有正式负控均正常退出才计有效拒绝。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\n#include <cstdint>\nusing namespace std;\nint main(){\n string s;int c;while((c=getchar_unlocked())!=EOF&&c!='\\n')s.push_back(char(c));\n if(!s.empty()&&s.back()=='\\r')s.pop_back();\n int n=int(s.size());vector<int> radius(n);long long answer=0;\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?1:min(radius[l+r-i],r-i+1);\n  while(i-k>=0&&i+k<n&&s[i-k]==s[i+k])k++;\n  radius[i]=k;answer+=k;//odd\n  if(i+k-1>r){l=i-k+1;r=i+k-1;}\n }\n fill(radius.begin(),radius.end(),0);\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?0:min(radius[l+r-i+1],r-i+1);\n  while(i-k-1>=0&&i+k<n&&s[i-k-1]==s[i+k])k++;\n  radius[i]=k;answer+=k;//even\n  if(i+k-1>r){l=i-k;r=i+k-1;}\n }\n printf(\"%lld\\n\",answer);\n}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-pure-storage-2",
       "sourceContentHash": "17d3cc16979da7c96fbe7de05bcd10c888e5533155d855bd15dd0ebfc4ab7661",
       "packageChecksum": "9287ea69ceb5fef8831b9777bfa0bb37589e6f3e87e9b3d15cf78ff8421ac46f",
@@ -11225,6 +11441,24 @@
           "code": "import sys\n\nALPHABET = \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\"\nFULL = \"[\" + ALPHABET + \"]\"\n\ndef solve(raw):\n    lines = raw.split()\n    if len(lines) != 4:\n        raise ValueError(\"expected n followed by x, y, and z\")\n    n = int(lines[0])\n    x, y, z = lines[1:]\n    if not (1 <= n <= 1_000_000) or len(x) != n or len(y) != n or len(z) != n:\n        raise ValueError(\"invalid lengths\")\n    if any(any(ch < \"A\" or ch > \"Z\" for ch in s) for s in (x, y, z)):\n        raise ValueError(\"strings must contain uppercase English letters\")\n\n    # A position can reject z only when z[i] is absent from both required\n    # strings. Omitting exactly one such character preserves maximum length.\n    star = -1\n    for i in range(n - 1, -1, -1):\n        if z[i] != x[i] and z[i] != y[i]:\n            star = i\n            break\n    if star < 0:\n        return \"-1\"\n    reduced = \"[\" + ALPHABET.replace(z[star], \"\") + \"]\"\n    return FULL * star + reduced + FULL * (n - star - 1)\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
         }
       ]
+    },
+    {
+      "id": "oa-pure-storage-8",
+      "sourceContentHash": "7d588c12ac66d8b7443ccbb11fb2d280f857a7ae81dad6642e3b1eddf2921743",
+      "packageChecksum": "b634aee2960b28d8907662a8c4b992f519b04f36c3b4bb18e2551af463b1f7ed",
+      "editorial": "## 原始任务与本站序列化\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的Pure_Storage_OA/019和052–054原OCR要求编写一个无输入程序：若给定二分查找正确，输出CORRECT；否则恰好三行输出有序数组长度、数组元素、目标值，作为错误结果的见证。本站保留无输入任务，不增加随机参数或重复空输入伪造隐藏覆盖。采用053完整Java版本作为被反驳程序，以明确int的32位有符号语义；原Python片段的/不按Python3浮点下标解释，原文明确各版本算法相同。\n\n原文没有独立数值约束表。数组元素和target取Java int可表示范围−2147483648..2147483647，这是被反驳接口的类型范围，不伪称OCR给过额外上下限。有序指非递减，可以重复。反例长度不另限为小常数，实际输出受本站公开运行输出预算约束；长度必须和第二行元素数量一致。返回重复值的任意一个正确下标都算正确，不要求第一个或最后一个。\n\n本站展示的3/[1,2,3]/2是推导见证，不是原OCR提供的样例；原OCR只有要求，没有该具体反例。参考程序固定输出一个正确见证正是无输入构造任务所要求的程序，不是用硬编码替代输入算法。评测器接受任何合法有效反例，而非只接受参考字符串。\n\n## 思路\n\n取数组[1,2,3]与target=2。初始left=0、right=2，middle=1；数组中间值等于target，但错误程序没有返回，而是执行left=middle+1=2。循环终止，只检查elements[right]=3，不等于2，因此返回−1。\n\n## 正确性证明\n\n数组[1,2,3]非递减，元素和target均为合法Java int。target=2实际位于下标1，因此正确搜索不应返回−1。上述逐步执行表明给定程序确实返回−1，所以这三个输出行构成有效反例，证伪算法的普遍正确性；CORRECT不是合法答案。\n\n数组[1,2,3]与target=3不是反例：相同第一次迭代后，最后检查下标2得到3并返回2，该返回正确。它和错误CORRECT分别作为两个正常退出负控。相同数组target=1也能正确返回0，不能把所有已有目标或所有长度3数组都视为反例。\n\n## 复杂度与整数语义\n\n构造程序输出固定三个数，时间和额外空间均O(1)。语义判题需要O(n)检查有序性、元素数量和真实目标存在性，再用O(log n)模拟给定算法，不能对返回的非−1下标要求固定匹配位置。\n\n原Java中点表达式理论上可能32位加法溢出，但在本站64KiB输出预算内，文本数组至多约32768个整数，中点加法远低于2^31；不存在借整数溢出或非法内存访问构造假反例的问题。元素与target没有算术运算，只做比较。空数组使原函数返回−1，目标不可能存在，所以不能成为有效反例。输出CORRECT、非有序数组、数值超Java int、声明长度不符、实际能正确搜索的输入均应拒绝。\n\n## 独立验证范围\n\n输入域恰好只有空字符串，oracleCoverage明确exhaustive inputs:[空字符串]，仅一个公开正式案例，不伪造20个隐藏输入或163个不同输入。作者本地真实启动原创参考及两个负控进程，确认其正常退出和输出；反例正确性由手工执行轨迹与真实成员关系独立证明。完整语义checker的丰富正反见证测试另由独立模块负责，作者不以参考输出相等充当通用见证验证。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "print('3')\nprint('1 2 3')\nprint('2')\n"
+        }
+      ],
+      "oracleCoverage": {
+        "mode": "exhaustive",
+        "inputs": [
+          ""
+        ]
+      }
     },
     {
       "id": "oa-pure-storage-1",
@@ -12547,6 +12781,30 @@
       ]
     },
     {
+      "id": "oa-sig-1",
+      "sourceContentHash": "bea0b8df1d3fbdee64eadfe8b09c2ecc50d80267c7996d23ea44af8d03349c6a",
+      "packageChecksum": "c0e41e9dd3560e8fff05829c67da706d52e2245f0806c8dcb8adf269871af4be",
+      "editorial": "## 固定来源、可选修改与同题补页\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/SIG_OA/001_image.txt明确：strategy中−1买入、0不操作、1卖出；利润为全部卖出价格之和减全部买入价格之和，可能为负。原NOTE保证始终有足够货币和资金，因此不模拟库存或预算，也不限制先买后卖。\n\n001使用may change：可以不修改；如果修改，选择一个恰好k长的连续窗口，将前k/2项设0、后k/2项设1，其他位置不变。这里可选一次修改，不能误读成强制修改或反复修改。为明确可选性的实际区别，本站补充rates=[1,1]、strategy=[1,1]、k=2：不修改得2，强制修改只能得1。原文“choose the range optimally”说明选用修改时选择最优窗口，不取消may的含义。\n\nSIG003自身给完整n范围2..100000、rates[i]范围1..1000、strategy等长且值−1/0/1，k仅标题处截断。k范围由固定同题eBay_OA/023_image.txt补齐：偶数且2≤k≤nums.length。其nums是页内变量名笔误，该任务唯一数组长度是rates/strategy的共同长度n；本题公开归一化为2≤k≤n。对应关系不只凭标题：eBay019/020与SIG001/002的规则、无预算NOTE、完整样例数组/策略/k=4及答案18一致。仅补缺失k范围，不将另一公司页面的价格上界替换SIG自身明确的1000。\n\n原例rates=[2,4,1,5,10,6]、strategy=[−1,1,0,1,−1,0]、k=4，原利润−3，三个修改窗口分别得−4、13、18，答案18保持。另两公开例为本站补充。输入为n k、价格数组、策略数组，输出一个整数；未执行上游代码。\n\n## 思路\n\n原利润记为B。修改窗口[l,l+k)时，移除窗口原贡献old，再加入后半段价格和replacement，净增益为replacement−old。可不修改对应增益0。枚举所有窗口，最大利润就是B加上0和所有增益的最大值。\n\n参考实现维护窗口原贡献和、后半段价格和。窗口右移1，原贡献去掉左端、加入新右端；后半段去掉原l+k/2、加入新l+k，两和均O(1)更新。k=n时只有首窗口，循环自然为空。\n\n## 正确性证明\n\n利润按每一天独立相加，原NOTE排除了资金/库存对操作可行性的额外影响。修改窗口之外各项不变；窗口前半设0贡献0，后半设1贡献对应价格，所以移除old再加replacement恰好给出该窗口修改后的真实利润。\n\n初始化准确覆盖第一个窗口。每次滑动只移除离开的元素、加入进入的元素，两个维护和始终等于当前窗口原贡献及后半价格之和。遍历的起点0..n−k恰好覆盖所有合法窗口，无遗漏。合法策略是保持原状或修改这些窗口之一，取增益0与全部窗口增益最大值因此得到最优利润。\n\n## 复杂度与数值边界\n\n计算原贡献及窗口扫描共O(n)时间，保存输入和贡献O(n)空间，滑窗额外O(1)。最终策略每项仍为−1/0/1，利润绝对值≤1000n≤10^8；中间计算使用Python整数或64位即可。不能把负最优利润钳为0：不修改提供的是原利润，而非零利润。\n\n## 独立验证\n\n小域oracle复制策略数组，逐窗口实际写入前半0/后半1，然后从头逐日求利润，同时比较未修改方案；不使用增益/滑动递推。163个唯一oracle通过真实子进程，另穷举n=2..5、价格1/2、策略−1/0/1及全部合法偶数k，共18396组。\n\n大域另建价格与原贡献两个前缀数组，对每个窗口独立算区间差，不使用参考的相邻窗口递推。完整n=100000覆盖全买/全卖/全保持、价格端点、k=2与k=n、最大奇数n的最大偶数k、首尾最优、窗口半区极不均衡及固定随机。部分大例同时用闭式确认。负控分别强制修改、把卖出半区错放到前半，所有正式输入正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,k=data[:2]\n    rates=data[2:2+n]\n    strategy=data[2+n:]\n    contribution=[rates[i]*strategy[i] for i in range(n)]\n    baseline=sum(contribution)\n    half=k//2\n    old=sum(contribution[:k])\n    replacement=sum(rates[half:k])\n    best=max(0,replacement-old)\n    for left in range(n-k):\n        old+=contribution[left+k]-contribution[left]\n        replacement+=rates[left+k]-rates[left+half]\n        best=max(best,replacement-old)\n    return str(baseline+best)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-sig-3",
+      "sourceContentHash": "1bc0eec1622a653e259ae45abdb33aa74303a0408b7124138905983703ec8fec",
+      "packageChecksum": "e8040ded20f5199bb5485cbc12988fc56b14c03fee752211723dabbc7c10d5df",
+      "editorial": "## 固定原始来源与纠错\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的SIG原OCR008定义：只替换短横线，替换字符来自同一个原skeleton；其余位置不能改变。原例he-lo变hello时原来的l仍保留，说明是复制字符而非搬走字符。每个短横线服从相同替换规则，来源未规定消耗或使用次数限制，不能额外添加只能复制一次的规则。因此一个原有字母可以填多个短横线；所有短横线都没有来源字母的骨架不匹配任何非空word。\n\n008列表误写he-o（长度4），但保证每个骨架和hello等长；009明确写he--o且说明两个短横线都需要l而骨架没有l，故依据009恢复为he--o，不凭猜测补字符。保留原word=hello、骨架[he-lo,he--o,-ell-,hello]和原输出[he-lo,hello]。另两个公开例为本站补充。\n\n009/010给出完整域：word仅小写英文字母，长度1..100；骨架数1..100，每个骨架与word等长，只含小写字母和短横线。结果保留原顺序和重复项，无匹配返回空列表。本站输入为word、骨架数量及各骨架；输出先给匹配数量，再逐行给原骨架，0表示空列表。这只是明确数组序列化，不改变返回值。未执行上游代码。\n\n## 正确性证明\n\n逐个骨架先构建原有字母集合。逐位置检查：固定字母必须等于word对应字母；短横线所需字母必须在该集合中。任一失败，该位置无法合法变为目标，所以整个骨架无解。全部通过时，独立复制每个所需字母填充短横线就能得到word，所以条件也充分。按输入顺序追加原骨架，自然保留顺序和重复，不输出替换后的word。\n\n设骨架数m、word长度n，时间O(mn)，额外工作空间O(26)，保存返回值需O(mn)字符，完整100×100范围很小。\n\n## 独立验证\n\n小域oracle先枚举每个短横线的所有来源字母替换组合，构造完整候选串再与word比较，不调用集合逐位判定。163唯一oracle含原例、重复复制、全短横线、重复骨架及固定位置冲突。另穷举二字母域长度1..4的所有word和骨架组合。\n\n大域使用另一判定：统计短横线目标需求的字符频数，并与原骨架正频数的支持集合对照，同时检查固定位置；不限制需求次数。正式输入含多组100个长度100骨架、全26字母、单一来源复制99次、空结果和顺序重复混合。两个负控分别错误限制来源字符复制次数、允许任意字母替换；必须在全部正式例正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    tokens=raw.split()\n    word=tokens[0]\n    count=int(tokens[1])\n    answer=[]\n    for skeleton in tokens[2:2+count]:\n        letters=set(skeleton)-{'-'}\n        if all((a==b if a!='-' else b in letters) for a,b in zip(skeleton,word)):\n            answer.append(skeleton)\n    return str(len(answer))+'\\n'+'\\n'.join(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-sig-4",
       "sourceContentHash": "d4d72e31741ca5be7bea26b3bc070b9d17b56f0a31a39edcd972757b88f3c554",
       "packageChecksum": "cb8bb18a4a06c001141ae76a34546e18a73da16b726a39fa7dc754f83dcfe64b",
@@ -13143,6 +13401,18 @@
         {
           "language": "python",
           "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, m = data[:2]\n    counts = [0] * n\n    for service in data[2:]:\n        counts[service - 1] += 1\n    low, high = 0, max(counts)\n    while low < high:\n        mid = (low + high) // 2\n        excess = 0\n        capacity = 0\n        for count in counts:\n            if count > mid:\n                excess += count - mid\n            else:\n                capacity += (mid - count) // 2\n        if capacity >= excess:\n            high = mid\n        else:\n            low = mid + 1\n    return str(low)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-tradedesk-4",
+      "sourceContentHash": "5a9c0fcf238eff9ef96065fed7e906936a32ec6b752fde3f584e704457bc43d2",
+      "packageChecksum": "e7fc8984b6283341858b1a09df4e1272519e7f4b48775661ad6e9d365faffc51",
+      "editorial": "## 固定来源与跨公司同题范围\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Trade Desk/tdesk-buddies-greater-than-threshold.md明确要求：寻找首个下标i，使连续三个值numbers[i]、numbers[i+1]、numbers[i+2]全都严格大于threshold；无解返回−1。原例[0,1,4,3,2,5]、threshold=1输出2正确。i=1时原解释称只有4超过1，遗漏了3；正确理由是三元组[1,4,3]中的1不严格大于1，因此仍不合格。不修改原输入或输出。\n\nTradeDesk raw的Constraints是none，没有数字范围。本题明确采用完全同题OCR的范围，而不声称TradeDesk原文自带：OA LIST/TikTok_OA_(新版CodeSignal)/060_QQ_1755908365513.txt与raw的任务、最早起点、严格比较、无解−1、完整输入[0,1,4,3,2,5]、threshold=1、输出2及逐窗口说明一致；061_image.txt补全3≤n≤1000、−1000≤numbers[i]≤1000、−1000≤threshold≤1000。这个来源连接基于完整规则和样例，不仅是相似标题。\n\n公开第一例保留TradeDesk原例；第二例[-9,95,94,4,5]、threshold=42、输出−1来自同题OCR060，明确标出来源，不冒称TradeDesk原例；第三例[−999,−999,−999]、threshold=−1000、输出0为本站补充。本站序列化为n threshold与n个数组值，输出0-based起点。未执行上游代码。\n\n## 思路\n\n从左到右扫描，维护当前位置结尾、连续严格大于threshold的元素个数streak。当前值合格则加1，否则清零。当streak第一次达到3，返回当前位置减2；扫描结束仍未达到则返回−1。大于等于不符合规则，计数遇到不合格值必须重置，不能累计分散的合格元素。\n\n## 正确性证明\n\n归纳维护不变量：处理下标j后，streak恰是以j结尾的最长全合格连续后缀长度。初始为空成立；当前值合格时旧后缀延长1，不合格时不存在非空合格后缀，重置为0，所以不变量一直成立。\n\n以j结尾的三元组全合格，当且仅当streak至少3。首次达到3时，j−2是一个合法起点；所有更早结束的位置都未形成三连，因此不存在更早合法起点。立即返回即得到最小起点。若一直未达到3，则每个连续三元组均不合格，返回−1正确。\n\n## 复杂度与边界\n\n扫描O(n)时间、O(1)算法额外空间；读取输入需要O(n)空间。完整n≤1000直接处理。合法输出为−1或0..n−3，最末匹配必须能返回n−3。threshold=1000时所有合法输入均无解；threshold=−1000时值等于−1000仍不合格。连续4个或更多合格元素时返回最早位置，而非最后一个三元组。\n\n## 独立验证\n\noracle显式枚举全部长度3窗口，逐一比较其最小值是否严格大于threshold，并取最小合格起点；不使用连续计数递推。163个唯一输入通过真实参考子进程。额外穷举n=3..7、值域{−1,0,1}、三个阈值的全部9801种组合，对照原创参考与窗口oracle。\n\n正式案例包含完整n=1000、阈值和数组值正负端点、首个与最后三元组、多匹配、长合格段、恰等阈值、不连续三次合格、每两次合格被阻断，以及固定种子随机。两个负控分别将>写成≥、返回最后而非最早匹配，均在所有正式数据正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n,threshold=values[:2]\n    streak=0\n    for index,value in enumerate(values[2:]):\n        streak=streak+1 if value>threshold else 0\n        if streak==3:\n            return str(index-2)\n    return '-1'\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
         }
       ]
     },
@@ -14503,6 +14773,18 @@
       ]
     },
     {
+      "id": "oa-wayfair-2",
+      "sourceContentHash": "a2e90e672d88cecba4fccc4043779e23123e1ffad5f179e25a3b7e43290674d0",
+      "packageChecksum": "5a4e16e6147d39297bc8fd47d41525b6ece6d46c12b15e65c120d7fc44d067b0",
+      "editorial": "## 固定原文与缺失映射的恢复依据\n\n固定上游 fastprep/Wayfair/wayfair-number-of-divisible-substrings.md 已完整定义：把字母映射成数字，统计映射值总和可以被长度整除的连续非空子串。长度1..2000且仅小写英文字母，三个原样例asdf→6、bdh→4、abcd→6均完整。原映射图片指向作者本机路径，不能从该路径读取；starter明确引用LC2950。\n\n本站从该FastPrep原问题页公开的Problem Source图片恢复完整映射，实际逐项查看九格表与样例、约束，不凭题名猜表，也不从整理代码反推。来源图网址：https://storage.googleapis.com/fastprepoa.appspot.com/problem_source_images/wayfair-number-of-divisible-substrings.jpg 。保存副本为content/oa-judge/source-images/wayfair-2-original.jpg，SHA256为63d7c5e6186ab7fd56f35a9c80eda7744b7bb327bf68aa2758c43528439090c8。此图是另行取得的公开来源材料，不冒充固定Git快照中的图片。\n\n完整表为：1→ab；2→cde；3→fgh；4→ijk；5→lmn；6→opq；7→rst；8→uvw；9→xyz。注意第一组只有两个字母，不是每组三个，也不是电话九宫格。按位置计数，重复内容出现在不同位置应分别计入；连续且非空，不是子序列或不同字符串去重。\n\n本站输入是一个不加引号的小写字符串，长度1..2000；输出满足条件的子串数量。保留完整原范围，不允许空串，不改变三个原样例。asdf中有效子串为a、s、d、f、as、sdf；bdh为b、d、h、bdh；abcd为a、b、c、d、ab、cd。\n\n## 思路\n\n每个映射值位于1..9，所以一个非空子串的平均值也在1..9。总和被长度整除，当且仅当平均值是整数k∈{1,...,9}。固定k后，将每个值减去k，问题变为统计和为0的子串。\n\n扫描这个变换后的数组，维护前缀和。子串[l,r)的和为0当且仅当前缀和P[l]=P[r]。频次数组先登记空前缀0一次，每得到新的前缀，先把以前相同前缀的次数加入答案，再登记当前前缀。九个k分别扫描，累计答案。每一步的增量绝对值最多8，前缀和位于[−8n,8n]，用加8n的偏移访问数组，不需要哈希。\n\n## 正确性证明\n\n对任意非空子串，设原映射和为S、长度为L>0。若S能被L整除，整数k=S/L必在1..9；在这一轮变换后其和为S−kL=0。若某轮变换后和为0，则S=kL，故该子串满足要求。平均值唯一，所以一个合法子串恰好出现在一轮，不会跨轮重复计数。\n\n固定k，扫描到右端点r时，频次数组只保存严格早于r的前缀。与当前前缀相等的每个左端点l都且仅都对应一个非空零和子串；先查询后登记排除了l=r的空子串。每个子串有唯一右端点，故这一轮精确统计平均值为k的子串。合并九轮，得到所有且仅有合法子串，按不同位置分别计数。\n\n## 复杂度和整数\n\n九轮扫描及频次数组清零均为O(9n)，总时间O(n)，空间O(n)。最大答案为n(n+1)/2，在n=2000时为2001000，可由全部同映射值达到，原int返回足够。参考用64位累计，频次与前缀下标使用int。\n\n## 独立验证\n\n独立oracle按起点和终点双循环，逐个字符加上映射值，再直接判断sum%length==0，不使用平均值枚举或前缀频率。三个原例、163唯一oracle、所有26字母及各组相邻边界均覆盖。另穷举长度1..6、字母acx的1092个字符串并真实运行原生参考。正式满长度覆盖全部九个同值组、全字母周期、反向字母周期、最低/最高交替、相邻映射组、随机全字符和两半极端；同值组用2001000闭式独立复核。三个负控分别错分字母映射、遗漏平均值、错误包含空子串，全部正式例须正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){string s;cin>>s;const string mapping=\"11222333444555666777888999\";int n=s.size(),offset=8*n;vector<int>freq(16*n+1);long long answer=0;\nfor(int average=1;average<=9;average++){fill(freq.begin(),freq.end(),0);int prefix=0;freq[offset]=1;\nfor(char c:s){prefix+=mapping[c-'a']-'0'-average;answer+=freq[prefix+offset];++freq[prefix+offset];}}\ncout<<answer<<'\\n';}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-wayfair-3",
       "sourceContentHash": "edb5392554bedec6665ed3b7ee72f57127afae85f3634cc7057b9f3a2ea18813",
       "packageChecksum": "f06504efdc8412eeb1314cc217beace7bc6967ebb3c4b9b823c46e878031d3cf",
@@ -14571,6 +14853,30 @@
         {
           "language": "python",
           "code": "import sys\nMOD=1000000007\ndef solve(raw):\n z=list(map(int,raw.split()));t=z[0];p=1;out=[]\n for _ in range(t):\n  n=z[p];p+=1;a=z[p:p+n];p+=n;runs=[]\n  for x in a:\n   if not runs or runs[-1][0]!=x:runs.append([x,1])\n   else:runs[-1][1]+=1\n  total=acc=0\n  for _,L in runs:\n   T=L*(L+1)//2;total=(total+L*(L+1)*(L+2)//6+T*acc)%MOD;acc=(acc*L+T)%MOD\n  streak=1;empty=0\n  for i in range(1,n+1):\n   if i<n and a[i]!=a[i-1]:streak+=1\n   else:empty=(empty+streak*(streak+1)//2)%MOD;streak=1\n  out.append(str((total-empty)%MOD))\n return '\\n'.join(out)\nif __name__ == '__main__':\n    import sys\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-weride-1",
+      "sourceContentHash": "c03717e5ddb978388ce85e7ba31e60cea385b7381e4aa3fbd65ba3fd4b94ea4d",
+      "packageChecksum": "eb2b79cbd7c0fcda34433c1d17a4cdf079ab403cc1c231b59635b1cc5a930c47",
+      "editorial": "## 原始来源、完整范围与协议适配\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/WeRide_OA/001、005、006给出getFinalPrice：操作1 x v把第x件商品价格直接赋值为v，可以降低价格；操作2 v r把所有小于v的价格提高到v，相当于对每个价格取max(price,v)。操作按输入顺序执行。\n\n005完整约束：1≤n,q≤200000，0≤price[i],v≤1000000000，1≤x≤n。不能借同义题的本站100000/正数界缩小范围。每个查询始终三列；001把type2写为2 v v，005明确写2 v r，006的说明也出现2 11 1。因此第二列是阈值，第三列不参与所定义的全局操作，不能额外要求第三列等于第二列。原函数为int queries[q][3]且没有为r列提供范围，本站明确按Java int解释这个占位字段为−2147483648..2147483647并忽略，不冒称原题列出了此十进制约束。\n\n本站标准输入明确整理为：n、一行n个价格、q、q行三整数查询。保留原数组和查询参数，省略OCR排版中固定列数3等元数据，不将破损STDIN表格当成新的查询。索引1-based。\n\n公开例1保留001的[7,5,4]及三查询，输出[8,9,8]。公开例2保留006 Sample0的五查询：第一步把第三项3变4，第二步把末项5变1，第三步全局下限3后应为[3,3,4,4,3]；随后单点1赋1、单点2赋2，最终[1,2,4,4,3]。原输出第三项写3错误，原中间步骤也漏更新/错写，本站依据明确操作纠正，不修改输入来迎合错例。公开例3采用006 Sample1实际STDIN的2 8 8、2 11 11，输出四个11不变；说明另写2 11 1与STDIN不一致，但第三列无效，两种均应得到四个11，绝不把末项保留1。另用隐藏例覆盖这个不同占位。\n\n## 思路\n\n从后往前扫描查询，维护目前已遇到的所有全局提高阈值的最大值floor。对每个商品，只处理逆序中第一次遇到的单点赋值，它就是正序最后一次单点赋值，最终价格为max(该赋值,floor)。更早的单点赋值忽略。全部扫描结束后，从未被赋值的商品取max(初始价格,floor)。\n\n## 正确性证明\n\n对一个固定商品，如果有单点赋值，正序最后一次赋值会覆盖该商品此前所有状态，因此此前初始价格、其它单点和全局操作都不再影响它。该最后赋值之后只剩全局提高；依次与多个阈值取max，等于与其中最大阈值取max。逆序遇到该最后赋值时，floor恰好包含它之后的全局阈值，得到正确最终值；标记完成后忽略更早操作也正确。\n\n若商品从未单点赋值，则它的初始值只经历全局取max。逆序扫描结束的floor包含全部全局阈值，与初始值取max即最终结果。所有商品分别满足上述两种情况，故输出数组正确。初始floor=0合法，因为价格和有效阈值均非负；第三占位字段完全不参与floor。\n\n## 复杂度\n\n参考时间O(n+q)，空间O(n+q)用于价格、完成标记和原查询数组，不递归。所有有效价格始终位于0..1000000000，32位可表示；解析第三列用64位中间数，避免解析INT_MIN绝对值时溢出，再存原int字段。完整n/q范围下远低于256MiB；题包3秒、输出64MiB以容纳20万项结果。\n\n## 独立验证\n\n小oracle按正序逐个执行：单点直接改数组，type2直接扫描全部价格取max。不复用逆序算法。163唯一小例真实执行参考，另穷举n=1..2、初始值0..2、最多3个查询的正序状态，并与独立懒标记树对照。\n\n大域oracle仍按正序，使用仅含全局下限懒标记的二叉树：全局提高只更新根标记；单点赋值前将沿途祖先标记下推，然后覆盖该叶，最后向下传播取所有叶值。这与参考逆序最后赋值/后缀最大值实现不同。满n=q=200000覆盖全局提高、每点赋值、反复覆盖同点、全局1e9后末尾赋0、无单点、随机全部范围及INT_MIN/INT_MAX占位；结构化数据另做闭式核对。三个负控分别误用占位阈值、取较早单点赋值、将过去全局下限错误套到后来低价，均在全部正式例上正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nlong long readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();bool negative=c=='-';if(negative)c=getchar_unlocked();long long x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return negative?-x:x;}\nstruct Query{int type,x,value;};\nint main(){int n=readNumber();vector<int>a(n);for(int &x:a)x=readNumber();int q=readNumber();vector<Query>queries(q);for(auto &x:queries){x.type=readNumber();x.x=readNumber();x.value=readNumber();}\nvector<unsigned char>done(n,0);int floor=0;\nfor(int i=q-1;i>=0;i--){auto x=queries[i];if(x.type==2)floor=max(floor,x.x);else if(!done[x.x-1]){a[x.x-1]=max(x.value,floor);done[x.x-1]=1;}}\nfor(int i=0;i<n;i++){if(!done[i])a[i]=max(a[i],floor);printf(\"%d%c\",a[i],i==n-1?'\\n':' ');}}\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-weride-6",
+      "sourceContentHash": "f7af280f6282fa7c9e2cc754dcaa39f0834215ceec9d085d4f40f651dbbc2400",
+      "packageChecksum": "0842b1410bcf8c487c01b8da8a288194d7bf963bd910ea45b6161253f1ddf290",
+      "editorial": "## 原始OCR、样例与完整范围\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/WeRide_OA/018–024给出完整numNicePairs问题：一棵无向树，边权1..26对应a..z；两个不同节点之间唯一最短路径的边字母可以任意重排，若能成为回文，称为nice pair。统计无序的不同节点对。023/024的五节点全A树给出10并列出全部不同点对，明确排除自配对和双向重复计数。\n\n020/021原始约束完整：1≤n≤100000、m=n−1、端点1..n、边权1..26，树的直径严格小于1000（按边数）。不删除直径限制；因此十万节点长链非法，不能拿它当正式满域测试。输入直接保留021标准协议：n m，然后m行u v w，节点统一1-based。n=1合法且答案0。返回long，最大为100000×99999/2=4999950000，需要64位。\n\n三个公开例分别完整保留019的9、021/022的7、023/024的10。注意018示意树边为1–2、2–3、2–4、3–5，而019示意树为1–2、2–3、3–4、3–5，虽然权值同为2,1,1,1，拓扑不同，不能把019的9套到018。本站把018作为单独隐藏测试，独立逐对计算答案8；公开题解明确区分两图，而不混搭来源。例019中的BAA需要重排为ABA，这直接说明不是仅判断原路径字符串是否已经回文。\n\n## 思路\n\n任意选择根，为每个节点计算根到该节点路径上26种字母出现次数的奇偶掩码。树上u到v路径的掩码等于两根路径掩码的异或，因为公共部分出现两次而抵消。一个字符串可重排成回文，当且仅当奇数频次的字符至多一种，所以两掩码相等或只相差一位时点对合法。\n\n遍历节点，用哈希表保存已经见过的各掩码频数。查询当前掩码及翻转26个位得到的掩码，累加频数，再把当前节点加入表。使用迭代遍历避免递归栈依赖。\n\n## 正确性证明\n\n回文除可能的中间字符外，其余位置均两两对应，因此至多一种字符频次为奇数是必要条件。反之，把每种字符的一半放在左边、反序放在右边，唯一可能的奇数字符放中间，即可构造回文，故条件也充分。\n\n树上两根路径从根到公共祖先的部分被异或两次而消失，剩余边恰为u到v的唯一路径。因此路径奇偶条件等价于mask[u] XOR mask[v]的置位数至多1，也等价于掩码相等或差一个比特。\n\n处理当前节点前哈希表仅包含先前节点，27种查询掩码互不相同，恰好枚举所有与当前节点合法的先前节点。查询后才插入，故不会计自身。每个无序不同节点对只会在后处理端点时检查一次，所以没有遗漏和重复，最终累加值正确。\n\n## 复杂度\n\n遍历和建图O(n)，每节点27次哈希查询，期望时间O(26n)，空间O(n)；采用运行时种子的SplitMix64散列，避免固定整数哈希被预制同桶掩码轻易攻击。哈希复杂度仍是期望值而非确定性最坏界。满n随机树和重编号树检验大量不同掩码，验证记录其实际种类数。掩码只需26位，计数和答案用64位。原生参考题包3秒/256MiB，完整原范围与直径约束不缩减。\n\n## 独立验证\n\n小oracle对每个起点遍历树，显式复制26维路径频次，在到达更大编号端点时直接统计奇数频次，完全不使用根掩码或哈希配对。163唯一小输入真实运行原生参考。额外穷举n≤5的递增父节点树、二字母边权，用独立路径计数验证。\n\n大域oracle从另一个根出发，先计算所有掩码后按频数离线分组：相同掩码贡献f(f−1)/2，差一位的两组只按较小掩码侧贡献f·g，不使用参考的在线先查后插入流程。全单字母树额外用n(n−1)/2闭式，星形树用n−1+ΣC(同字母叶数,2)闭式。全部输入生成时检查连通、无环、边数以及两次BFS得到的真实直径。满n覆盖星形、平衡树、全部26字母、随机重编号，以及直径999的扫帚树，不使用非法满长链。负控包括有序双计、自配对和错误单色路径限制；所有正式负控均须正常退出。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <unordered_map>\n#include <chrono>\n#include <cstdint>\nusing namespace std;\nstruct Hash{static uint64_t mix(uint64_t x){x+=0x9e3779b97f4a7c15ULL;x=(x^(x>>30))*0xbf58476d1ce4e5b9ULL;x=(x^(x>>27))*0x94d049bb133111ebULL;return x^(x>>31);}size_t operator()(int x)const{static const uint64_t seed=chrono::steady_clock::now().time_since_epoch().count();return mix(uint64_t(x)+seed);}};\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nstruct Edge{int to,weight;};\nint main(){\n int n=readNumber(),m=readNumber();vector<vector<Edge>>adj(n);\n for(int i=0;i<m;i++){int u=readNumber()-1,v=readNumber()-1,w=readNumber()-1;adj[u].push_back({v,w});adj[v].push_back({u,w});}\n vector<int>parent(n,-1),mask(n),order(1,0);parent[0]=0;\n for(size_t i=0;i<order.size();i++){int u=order[i];for(auto e:adj[u])if(e.to!=parent[u]){parent[e.to]=u;mask[e.to]=mask[u]^(1<<e.weight);order.push_back(e.to);}}\n unordered_map<int,long long,Hash>seen;seen.reserve(n*2);long long answer=0;\n for(int u:order){int x=mask[u];auto same=seen.find(x);if(same!=seen.end())answer+=same->second;\n  for(int b=0;b<26;b++){auto it=seen.find(x^(1<<b));if(it!=seen.end())answer+=it->second;}\n  seen[x]++;\n }\n printf(\"%lld\\n\",answer);\n}\n"
         }
       ]
     },
@@ -14679,6 +14985,18 @@
         {
           "language": "python",
           "code": "import sys\n\ndef count_range_sum(arr, lower, upper):\n    prefix = [0]\n    for value in arr:\n        prefix.append(prefix[-1] + value)\n    scratch = [0] * len(prefix)\n\n    def sort_count(lo, hi):\n        if hi - lo <= 1:\n            return 0\n        mid = (lo + hi) // 2\n        count = sort_count(lo, mid) + sort_count(mid, hi)\n        left_bound = right_bound = mid\n        for i in range(lo, mid):\n            while left_bound < hi and prefix[left_bound] - prefix[i] < lower:\n                left_bound += 1\n            while right_bound < hi and prefix[right_bound] - prefix[i] <= upper:\n                right_bound += 1\n            count += right_bound - left_bound\n        i, j, k = lo, mid, lo\n        while i < mid and j < hi:\n            if prefix[i] <= prefix[j]:\n                scratch[k] = prefix[i]\n                i += 1\n            else:\n                scratch[k] = prefix[j]\n                j += 1\n            k += 1\n        while i < mid:\n            scratch[k] = prefix[i]\n            i += 1\n            k += 1\n        while j < hi:\n            scratch[k] = prefix[j]\n            j += 1\n            k += 1\n        prefix[lo:hi] = scratch[lo:hi]\n        return count\n\n    return sort_count(0, len(prefix))\n\ndef solve(raw):\n    tokens = list(map(int, raw.split()))\n    if not tokens:\n        raise ValueError(\"missing n\")\n    n = tokens[0]\n    if not 1 <= n <= 50000 or len(tokens) != n + 3:\n        raise ValueError(\"site protocol: 1 <= n <= 50000, n values, lower, upper\")\n    arr = tokens[1:n + 1]\n    lower, upper = tokens[n + 1:]\n    if any(not -(2**31) <= value < 2**31 for value in arr + [lower, upper]):\n        raise ValueError(\"array values and bounds must be signed 32-bit integers\")\n    if lower > upper:\n        raise ValueError(\"lower must not exceed upper\")\n    return str(count_range_sum(arr, lower, upper))\n\nif __name__ == \"__main__\":\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
+      "id": "oa-zolostays-2",
+      "sourceContentHash": "9972af7f32fd57f3ef16b4e350818394b8fb48cdf6642cd5f3ba8c1a8b53bd9c",
+      "packageChecksum": "e1efb88ce11dae480daf071728d1a2c00c61576bdca0ed20cb2e2812c6801e19",
+      "editorial": "## 来源恢复与完整范围\n\n固定上游 fastprep/Zolostays/zolostays-trapping-rain-water.md 的正文在“Given n non-negative integers repres”处截断，不能仅凭残文猜测宽度。它的starter明确提示“refert to LC42”，两组完整输入输出分别是[0,1,0,2,1,0,1,3,2,1,2,1]→6和[4,2,0,3,2,5]→9，且完整约束与官方LeetCode 42一致。本站沿这条明确交叉引用核对官方题面 https://leetcode.com/problems/trapping-rain-water/description/ ，恢复每根柱宽1、求雨后可接水总量的缺失定义。这不是凭同名题拼接规则，不声称截断raw本身保留了完整正文，也没有执行上游代码。\n\n完整原范围1≤n≤20000、0≤height[i]≤100000保留，不扩展空数组。标准输入改编为n后跟n个高度，以空白分隔；输出积水的单位体积总数。两个原样例6/9保持，第三例[2,0,2]→2明确是本站补充。最大值由[100000,0,...,0,100000]达到，为19998×100000=1999800000，原int返回足够；参考使用64位累计以便清楚表达求和。\n\n## 思路\n\n某个位置能接的水等于min(左侧最高柱,右侧最高柱)−当前柱高（最高值包含当前柱）。一个方向没有更高墙时，水会流出，不能只看邻居或取两侧较大墙。\n\n参考从左右两端相向处理，leftMax和rightMax分别是已处理前缀和后缀的最高柱，初值0。当leftMax≤rightMax，处理左侧下一根：若它超过leftMax，它不接水并更新左最高；否则其水位已经被左最高限定，而右边已有足够高的墙，贡献leftMax−height[left]。另一种情况对称处理右侧。直到全部位置处理完。\n\n## 正确性证明\n\n若leftMax≤rightMax且当前左柱不高于leftMax，则已处理右侧存在高度rightMax的墙（leftMax=rightMax=0时水量本来就是0），未知中间位置只可能增加另一侧最高值，不能降低它。因此左右最高值的较小者确定为leftMax，当前位置贡献被精确计算。若当前左柱高于leftMax，则左侧包含自身的最高值就是自身高度，所以该位置贡献0，更新leftMax正确。rightMax较小时完全对称。\n\n每轮处理一个此前未处理的位置，不会漏算或重复。上述结论表明每轮贡献均正确；结束时所有位置已处理，累计值等于总积水量。\n\n## 复杂度\n\n读取和双指针遍历均为O(n)，存储输入数组O(n)，双指针额外空间O(1)。没有按高度逐层扫描参考算法，完整高度100000与长度20000可直接处理。\n\n## 独立验证\n\noracle分别构建完整前缀/后缀最高值数组再逐点求和，不复用双指针状态。小域另逐层逐格检查左右是否各有一根达到该层的墙，直接计数水格；穷举长度1..6、高度0..2并逐个真实运行参考。163唯一oracle包含两个原例、本站例、固定种子随机与边界。正式满长用例覆盖零、最高平台、单调、最高双墙盆地、相邻峰/宽盆地、多盆地及随机高度；最大盆地用独立闭式1999800000复核。三个正常退出错误程序分别取较大墙、漏扣柱高、只看紧邻墙，每个都在全部正式例执行并记录反例。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;scanf(\"%d\",&n);vector<int> h(n);for(int &x:h)scanf(\"%d\",&x);\nint left=0,right=n-1,leftMax=0,rightMax=0;long long answer=0;\nwhile(left<=right){if(leftMax<=rightMax){leftMax=max(leftMax,h[left]);answer+=leftMax-h[left];++left;}else{rightMax=max(rightMax,h[right]);answer+=rightMax-h[right];--right;}}\nprintf(\"%lld\\n\",answer);}\n"
         }
       ]
     }

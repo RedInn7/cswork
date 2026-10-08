@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-optiver-1",
+  "batch": "optiver-1-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "4fc46671542f3c0702fee998b1928064fd54bbf25d1e2a28e98fab45ed111993",
+  "referenceSha256": "265332926e344c15335af22a54784bd02df0ffcf143574bfd2173a1107a0da7c",
+  "scope": "Independent fixed-source and frozen-artifact review. Generator read but never executed; no author oracle imported. Reference and mutants compiled sequentially into an automatically cleaned temporary directory. No sandbox, build, branch change or commit performed by reviewer.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Optiver/akuna-print-schedule.md",
+    "sha256": "571a2d84b07f4a5cf3189a16397692f202e720355c5715069abc77687f0b4f04",
+    "gitBlobSha": "b12853bd7292850d5e258c9c0d365ee9ab399e07",
+    "verified": true,
+    "rules": "Integer times 1..1000000; own earliest-start/latest-end windows; each process runs at least one unit; u->v requires u to begin strictly before v and end strictly after v; original objective requests processes run as long as possible; output all N processes by PID.",
+    "domain": "Original individual bounds N=1..1000000 and M=0..1000000, no self loops or repeated ordered edges. Original cross-test sum wording is ambiguous; site explicitly uses a single instance and supports both individual maxima, including N=M=1000000. This is disclosed and not claimed to resolve the original aggregate wording.",
+    "sampleCorrection": "Original four-process input is impossible: edge1->2 forces process2 end<=1 while its earliest start is100. All four original processes remain in the corrected example. The three-process reconstructed example is separately labelled, and its output independently recomputes to100 2100 /201 2099 /200 2330."
+  },
+  "proofReview": {
+    "feasibility": "Every directed cycle imposes a strict start-time inequality around the cycle and is impossible. For an acyclic graph, propagated lower starts and upper ends are necessary for every feasible schedule. If any lower start >= upper end, positive duration is impossible. Otherwise the propagated endpoints themselves satisfy every window and edge.",
+    "uniqueness": "For every process, every feasible interval lies inside the computed interval. The computed intervals are simultaneously feasible, so there is no tradeoff between processes. Any change to an endpoint shortens that process and cannot be offset by another endpoint outside these bounds. The simultaneous widest schedule is unique, making exact token checking appropriate.",
+    "complexity": "O(N+M) time and space; flat C++ arrays use approximately20N+8M bytes. No recursive traversal. Even after infeasibility, propagated bounds fit signed32-bit integers for the stated N/time bounds."
+  },
+  "independentVerification": {
+    "oracleCases": 163,
+    "formalCases": 40,
+    "smallOracleMethod": "Enumerate every positive-length integer subinterval assignment, filter all edges, independently compute coordinatewise extrema, and verify the resulting combined schedule is itself among feasible assignments.",
+    "secondMethod": "Synchronous Bellman-Ford-style interval constraint relaxation, not the reference's indegree queue or the author's all-path closure. Used on every small oracle and the first35 formal cases, including all five randomly relabelled DAGs.",
+    "exhaustiveCases": 400,
+    "exhaustiveDomain": "All pairs of windows1<=S<=E<=4 for two processes and all four directed graphs without self loops. Direct schedule enumeration and synchronous relaxation agree.",
+    "largeMethod": "Stream every actual input line, verify all windows and the exact edge structure, then independently derive output from graph geometry. No full million-edge Python graph or parallel large workload is built.",
+    "largeCases": [
+      {"n": 1000000, "m": 0, "result": "Every original interval [1,1000000] remains unchanged; output exactly one million lines."},
+      {"n": 500000, "m": 499999, "result": "Chain process i has [i,1000001-i]; last interval[500000,500001] has duration1."},
+      {"n": 500001, "m": 500000, "result": "Chain last start500001 exceeds end500000; impossible."},
+      {"n": 2000, "m": 1000000, "result": "Exactly every edge from first1000 nodes to last1000; source intervals[1,1000000], target intervals[2,999999]."},
+      {"n": 1000000, "m": 1000000, "result": "Exactly a directed cycle over all nodes; impossible."}
+    ],
+    "largeInputAndExpectedHashes": "All five pairs match authored validation after independent structural and output verification.",
+    "referenceSubprocessRuns": 203,
+    "referenceResult": "Every run exits zero with empty stderr and exact stdout matching independently verified expected output.",
+    "artifactBindings": "Promoted batch checksum, normalized package checksum, reference bytes, batch/editorial authored code, editorial text and fixed-source SHA256/git blob all match frozen evidence."
+  },
+  "negativeControls": [
+    {"name": "Allow equal dependency endpoints", "normalExitCases": 40, "rejectedByCases": [1,13,17,25,28,30,31,32,33,34,36,37,38]},
+    {"name": "Omit enclosing end-time propagation", "normalExitCases": 40, "rejectedByCases": [0,1,13,17,25,28,30,31,32,33,34,36,37,38]}
+  ],
+  "negativeControlResult": "All80 runs exit normally without stderr;13 and14 rejection indices match authored validation exactly."
+}

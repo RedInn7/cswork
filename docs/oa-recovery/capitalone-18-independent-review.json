@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-capital-one-18",
+  "batchId": "capitalone-18-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 39,
+    "oracleCases": 163,
+    "localNativeReferenceRuns": 202,
+    "localNativeMutantRuns": 117,
+    "allRunsExitedNormally": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "environment": "Local native C++ compiled with c++ -O2 -std=c++20; Linux sandbox, production build and integration runs were performed separately by the main agent and are not counted as this review's executions."
+  },
+  "bindings": {
+    "packageChecksum": "f1f34cf2789f36724f422ced5f0942b5b47181b243e53333e1d7b4375b5ea6ee",
+    "packageChecksumVerification": "Independently recomputed SHA-256 of JSON.stringify(ojImportSchema.parse(package)).",
+    "referenceSha256": "d4b78230efa81babdbcc18df5c596b8e56d387518951d851b0824e50080f1e74",
+    "packageFileSha256": "a821b19679afcb1405deb393987af2b9de7edd7ad9fed1ba51d4897489101e97",
+    "oracleFileSha256": "7f2d8ceddcba52f0050b898dde8af27a439eed9dd4fa925386de4b52725bf5f8",
+    "editorialFileSha256": "d335b96eb90d68f57e5f0f07f8c2dc61682e4e61ab6a1f1061839e34e732c1df",
+    "mutantsFileSha256": "dfa1bc04a957d11fecd0396d43f3bac917e9a3d5dff82619b4e2cebfc5f4fa76",
+    "batchFileSha256": "d91a444ec285b5b624935d961dd53d9b65f8b5a6b02f38bc67944ba8467f7a59",
+    "displayBinding": "Editorial solution code exactly equals the frozen reference. Batch authoredSolutions and editorial exactly equal the corresponding editorial artifact."
+  },
+  "source": {
+    "fixedCommit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
+    "blob": "7ccbc3f25186c213d64b56e10ac9679935eceb65",
+    "sha256": "8e6ca47424674f2f26049d6b71fe31ac3e405ea24c0af3c391bb73251635733e",
+    "personallyViewedImages": [
+      {
+        "path": "content/oa-judge/source-images/capitalone-18-original-0.jpg",
+        "sha256": "78657eb17330d8c43648af650113cf6029cdb0c77b658591ecf9d5bbf42297e2"
+      },
+      {
+        "path": "content/oa-judge/source-images/capitalone-18-original-1.jpg",
+        "sha256": "8f01d13eb3b83dc02c2c1d9f9cfe16ba4cefff3403285cad1d6b53afeaaf33ed"
+      }
+    ],
+    "provenance": "The retrieved original screenshots supplement the fixed raw source; they are not asserted to be blobs from the fixed commit. Both describe clockwise quadrant rotation with both diagonals fixed. The first shows the original 5-by-5 matrix with highlighted diagonals, not an after-rotation illustration.",
+    "originalExampleVerified": "The fixed source's 5-by-5 output matches the independently computed clockwise off-diagonal coordinate mapping; all 25 output values were checked."
+  },
+  "domainAndProof": {
+    "sourceLimits": "No numeric n bound is stated in the original. Positive n, signed 32-bit matrix entries and nonnegative signed 32-bit turns are disclosed interface adaptations; no empty-matrix extension is used.",
+    "mapping": "For an off-diagonal source coordinate (r,c), one turn maps to (c,n-1-r). Both diagonal sets are invariant under this rotation, so keeping their values fixed never conflicts with an off-diagonal orbit. Every off-diagonal orbit has four members; the strict top triangle used by the reference visits each orbit once.",
+    "independentInverseMapping": "For destination (r,c), diagonal values are unchanged. For turns modulo 4 equal to 1,2,3, the independent oracle reads source (n-1-c,r), (n-1-r,n-1-c), (c,n-1-r), respectively. It does not simulate the reference's in-place four-cycle updates.",
+    "boundaryCoverage": "Odd/even n, n=1 and n=2, center and both diagonals, turns 0/1/2/3/4/INT_MAX, negative matrix values including INT_MIN and INT_MAX, CRLF parsing, and full-size EOF input are covered. Coordinate R^4 identity was also checked on every small case.",
+    "capacity": "With one-digit entries, one-digit turns and EOF, minimum input bytes are 2*n*n + digits(n) + 2. n=4095 needs 33,538,056 bytes; n=4096 needs 33,554,438, exceeding the existing 33,554,432-byte input budget. Thus 4095 follows from transport capacity, not an invented source bound.",
+    "resources": "At n=4095 the single int32 matrix occupies 67,076,100 bytes. At most three in-place turns give O(n^2) time and O(n^2) storage, without recursion or a second matrix. Output preserves the multiset of signed values and remains within the configured output budget."
+  },
+  "independentExpected": {
+    "all202CasesRecomputed": true,
+    "matrixValuesChecked": 17476635,
+    "oracleInputsUnique": 163,
+    "allInputTokenCountsAndSigned32ValuesValidated": true,
+    "formalInputPlusExpectedBytes": 78916206,
+    "formalSnapshotBudgetBytes": 134217728,
+    "largestCase": {
+      "formalIndex": 38,
+      "n": 4095,
+      "turns": 3,
+      "asymmetricBinaryMatrix": true,
+      "everyValueChecked": true,
+      "inputEndsAtEofWithoutWhitespace": true,
+      "inputBytes": 33538056,
+      "outputBytes": 33538050,
+      "inputSha256": "3147803f4555979ba9fdf693229894b5d20fd1458a9aa7ded8e00f50116fd3eb",
+      "outputSha256": "f1df404deaf6dae9df7f26e9d44f3414a5d5f5e0f5ea7e5250030d12d3b15f36",
+      "localNativePeakRssBytes": 68501504
+    }
+  },
+  "negativeControls": {
+    "runsPerMutant": 39,
+    "normalExits": 117,
+    "killsInArtifactOrder": [27, 19, 19],
+    "timeoutsOrCrashesCountedAsKills": false
+  },
+  "reproducibility": {
+    "temporaryIndependentScript": "/private/tmp/capital18-review.vuge4a/review.py",
+    "scriptSha256": "504e5ca48d3e1df8770a2e1116620f5e54f57c11515125aae187ab897a1b7567",
+    "validationSecondsExcludingCompilation": 21.98980689048767,
+    "executionPolicy": "Cases processed sequentially; compact independent input array released before launching each reference or mutant. No author generator or upstream solution was read or executed. Only this review report was added inside the repository."
+  }
+}

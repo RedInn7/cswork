@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261028,
+  "problems": [
+    {
+      "id": "oa-sig-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 45,
+      "referenceFormalCases": 48,
+      "referenceSha256": "d465c82b5c9a91ab9f7d6736c967c7baac2c4e9e519edbb0760d1b8a9b1e33f9",
+      "negativeControls": [
+        {
+          "name": "错误强制修改一次不能保留原策略",
+          "rejectedByCases": [
+            1,
+            12,
+            34,
+            35,
+            45
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误把卖出半区放在窗口前半",
+          "rejectedByCases": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            31,
+            32,
+            33,
+            43,
+            44,
+            46,
+            47
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Copy and modify strategy per window, fully sum all days; large cases independent price/profit prefix sums rather than sliding recurrence.",
+      "exhaustiveSmallDomain": {
+        "cases": 18396,
+        "nMin": 2,
+        "nMax": 5,
+        "rates": [
+          1,
+          2
+        ],
+        "strategy": [
+          -1,
+          0,
+          1
+        ],
+        "allEvenK": true,
+        "inputExpectedDigest": "34da26bf91173f4a9d74ec86d085a6dc49f99702af40ccbf703906331787227e"
+      },
+      "largeBoundaries": [
+        {
+          "name": "全卖保持原状",
+          "n": 100000,
+          "k": 2,
+          "expected": 100000000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.04895
+        },
+        {
+          "name": "全卖全窗仍不改",
+          "n": 100000,
+          "k": 100000,
+          "expected": 100000000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.04118
+        },
+        {
+          "name": "全买小窗答案仍负",
+          "n": 100000,
+          "k": 2,
+          "expected": -99997000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.04928
+        },
+        {
+          "name": "全买全窗",
+          "n": 100000,
+          "k": 100000,
+          "expected": 50000000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.03975
+        },
+        {
+          "name": "全保持最小价格",
+          "n": 100000,
+          "k": 100000,
+          "expected": 50000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.0313
+        },
+        {
+          "name": "全保持最小窗口",
+          "n": 100000,
+          "k": 2,
+          "expected": 1000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.04416
+        },
+        {
+          "name": "最大奇数长度偶数窗口",
+          "n": 99999,
+          "k": 99998,
+          "expected": 49998000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.04265
+        },
+        {
+          "name": "首窗口最佳",
+          "n": 100000,
+          "k": 100,
+          "expected": 99950000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": false,
+          "localSeconds": 0.04582
+        },
+        {
+          "name": "尾窗口最佳",
+          "n": 100000,
+          "k": 100,
+          "expected": 99950000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": false,
+          "localSeconds": 0.04559
+        },
+        {
+          "name": "全窗后半价格高",
+          "n": 100000,
+          "k": 100000,
+          "expected": 50000000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.03364
+        },
+        {
+          "name": "全窗前半价格高",
+          "n": 100000,
+          "k": 100000,
+          "expected": 50000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": true,
+          "localSeconds": 0.03291
+        },
+        {
+          "name": "买卖交错",
+          "n": 100000,
+          "k": 50000,
+          "expected": 49950000,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": false,
+          "localSeconds": 0.03975
+        },
+        {
+          "name": "策略三值循环",
+          "n": 100000,
+          "k": 99998,
+          "expected": 25024998,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": false,
+          "localSeconds": 0.03862
+        },
+        {
+          "name": "满域固定随机",
+          "n": 100000,
+          "k": 58526,
+          "expected": 14700167,
+          "oracle": "independent prefix sums, no sliding recurrence",
+          "closedFormChecked": false,
+          "localSeconds": 0.04631
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.76
+    }
+  ]
+}

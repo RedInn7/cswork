@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261026,
+  "problems": [
+    {
+      "id": "oa-akuna-capital-21",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 46,
+      "referenceFormalCases": 49,
+      "referenceSha256": "2defd90bc10f93031759a47882ac8721eb28baaa1637f3ead65c2d31c06cabb0",
+      "negativeControls": [
+        {
+          "name": "错误允许连续跳过两部电影",
+          "rejectedByCases": [
+            0,
+            1,
+            3,
+            6,
+            9,
+            10,
+            18,
+            19,
+            20,
+            26,
+            30,
+            32,
+            35,
+            37,
+            41,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误强制选择最后一部电影",
+          "rejectedByCases": [
+            0,
+            2,
+            7,
+            8,
+            9,
+            12,
+            16,
+            17,
+            18,
+            21,
+            22,
+            23,
+            29,
+            38,
+            40,
+            44,
+            45,
+            47,
+            48
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Enumerate choice masks, rejecting adjacent skipped bits; independent large-domain weighted interval scheduling of negative-rating skip savings.",
+      "exhaustiveSmallDomain": {
+        "cases": 3279,
+        "nMin": 1,
+        "nMax": 7,
+        "values": [
+          -1,
+          0,
+          1
+        ],
+        "inputExpectedDigest": "5417f67f188b0eb5ba0ac694c8662f3f1a295dc4958afe412da4945621115cc6",
+        "referenceExecution": "in-process own reference versus masks and interval oracle;163 separate subprocess checks"
+      },
+      "largeBoundaries": [
+        {
+          "name": "完整全正极值",
+          "n": 100000,
+          "expected": 100000000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.03222
+        },
+        {
+          "name": "完整全负极值",
+          "n": 100000,
+          "expected": -50000000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.0354
+        },
+        {
+          "name": "完整全零",
+          "n": 100000,
+          "expected": 0,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.02825
+        },
+        {
+          "name": "完整全负一",
+          "n": 100000,
+          "expected": -50000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.03001
+        },
+        {
+          "name": "正负交错",
+          "n": 100000,
+          "expected": 50000000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.03282
+        },
+        {
+          "name": "负正交错",
+          "n": 100000,
+          "expected": 50000000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.03253
+        },
+        {
+          "name": "可同时跳首尾",
+          "n": 100000,
+          "expected": 99998000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.03152
+        },
+        {
+          "name": "正负成对",
+          "n": 100000,
+          "expected": 25000000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.03291
+        },
+        {
+          "name": "负零交错",
+          "n": 100000,
+          "expected": 0,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": true,
+          "localSeconds": 0.02981
+        },
+        {
+          "name": "正数之间两负值",
+          "n": 100000,
+          "expected": 33300667,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": false,
+          "localSeconds": 0.0315
+        },
+        {
+          "name": "负数平台与极值",
+          "n": 100000,
+          "expected": -49998002,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": false,
+          "localSeconds": 0.03321
+        },
+        {
+          "name": "中间唯一正值",
+          "n": 100000,
+          "expected": -49998000,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": false,
+          "localSeconds": 0.0326
+        },
+        {
+          "name": "评分全范围循环",
+          "n": 100000,
+          "expected": 12476225,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": false,
+          "localSeconds": 0.04283
+        },
+        {
+          "name": "完整随机",
+          "n": 100000,
+          "expected": 18853535,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": false,
+          "localSeconds": 0.04731
+        },
+        {
+          "name": "完整负数随机",
+          "n": 100000,
+          "expected": -20625443,
+          "independentOracle": "weighted interval scheduling of skipped negative ratings, binary-searched compatibility",
+          "closedFormChecked": false,
+          "localSeconds": 0.04254
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.59
+    }
+  ]
+}

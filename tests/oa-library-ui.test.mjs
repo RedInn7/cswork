@@ -261,6 +261,57 @@ test('OA library reveals solutions only on request, supports language/copy and c
         .getAttribute('aria-pressed'),
       'true',
     );
+    let relatedNavigation;
+    await act(async () =>
+      root.render(
+        createElement(OaLibrary, {
+          key: 'related-practice',
+          navigate: (...args) => {
+            relatedNavigation = args;
+          },
+        }),
+      ),
+    );
+    const stage = {
+      ...item,
+      id: 'oa-stripe-14',
+      title: 'Payment Intent Part 2',
+      companySlug: 'stripe',
+      companyName: 'Stripe',
+      judgeStatus: 'reading_only',
+      judgeProblemId: undefined,
+    };
+    await answer(requests.at(-1), {
+      items: [stage],
+      total: 1,
+      page: 1,
+      pageSize: 30,
+      companies: [{ slug: 'stripe', name: 'Stripe', count: 1 }],
+      source: { name: 'OA Master' },
+    });
+    await click('Payment Intent Part 2');
+    await answer(requests.at(-1), {
+      ...stage,
+      statement: 'UPDATE rule',
+      contentHash: 'stage-hash',
+      relatedPractice: {
+        problemId: 'oa-stripe-17',
+        title: 'Payment Intent 四阶段综合练习',
+        description:
+          '本阶段包含在四阶段综合练习中；本阶段未单独评测。综合练习使用带时间戳的命令。',
+      },
+    });
+    assert.match(document.body.textContent, /本阶段未单独评测/);
+    assert.match(document.body.textContent, /带时间戳/);
+    assert.doesNotMatch(
+      document.body.textContent,
+      /查看题解|开始练习|评测准备中/,
+    );
+    await click('进入四阶段综合练习');
+    assert.deepEqual(relatedNavigation, [
+      'problem',
+      { problem: 'oa-stripe-17' },
+    ]);
     await act(async () =>
       root.render(
         createElement(OaMarkdown, {

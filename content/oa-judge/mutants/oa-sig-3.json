@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误限制每个来源字符仅复制一次",
+    "code": "import sys\nfrom collections import Counter\ndef solve(raw):\n    t=raw.split(); word=t[0]; answer=[]\n    for s in t[2:2+int(t[1])]:\n        supply=Counter(s.replace('-','')); demand=Counter(b for a,b in zip(s,word) if a=='-')\n        if all(a=='-' or a==b for a,b in zip(s,word)) and all(demand[c]<=supply[c] for c in demand):\n            answer.append(s)\n    return str(len(answer))+'\\n'+'\\n'.join(answer)\nif __name__=='__main__': print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误允许短横线替换为任意字母",
+    "code": "import sys\n\ndef solve(raw):\n    tokens=raw.split()\n    word=tokens[0]\n    count=int(tokens[1])\n    answer=[]\n    for skeleton in tokens[2:2+count]:\n        letters=set(skeleton)-{'-'}\n        if all((a==b if a!='-' else True) for a,b in zip(skeleton,word)):\n            answer.append(skeleton)\n    return str(len(answer))+'\\n'+'\\n'.join(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
