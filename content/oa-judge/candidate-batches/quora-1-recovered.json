@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-quora-1",
+      "sourceContentHash": "80cfb0caa56d46a8e6eb755f8dd7eb3efd6ec73ed30ccbf3a6a3333dd8a363ea",
+      "packageChecksum": "3a42d8de408862f8b8df731ed858c757487fe64e98ac9778b8a0694365412c4a",
+      "editorial": "## 题意\n\n给定数组arr和整数k，统计arr中有多少个数是k的幂（k^1、k^2、…）。本题中k与arr的元素都至少为2。\n\n## 思路\n\nk≥2时，不超过10^18的k的幂最多60个。先从k开始不断乘k生成全部幂，乘之前用p>10^18/k判断是否会超过上界，避免溢出；然后对每个元素检查是否在这张表中。\n\n## 正确性\n\n元素都≥2，所以k^0=1不会出现；生成的表恰好包含所有≤10^18的正次幂。逐个比较即得计数。\n\n## 复杂度\n\nO(n·log_k 10^18)，最多约60n次比较。\n\n## 独立验证\n\noracle对每个元素反复除以k，直到不能整除为止，余下为1则是幂（Python大整数，无溢出），与参考的“生成幂表”方式不同。穷举k=2..4、元素2..20组成的长度1..3数组并逐个真实运行参考程序。正式用例包含接近10^18的幂与非幂（如10^18−1）、k很大只有一次幂、k=2的全部60个幂等。错误解覆盖浮点对数、只判整除、只看一二次幂和32位读入。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\ntypedef unsigned long long u64;\nint main(){int n;u64 k;if(scanf(\"%d %llu\",&n,&k)!=2)return 0;const u64 LIM=1000000000000000000ULL;vector<u64>pw;\nfor(u64 p=k;;){pw.push_back(p);if(p>LIM/k)break;p*=k;}\nlong long c=0;for(int i=0;i<n;i++){u64 x;scanf(\"%llu\",&x);if(find(pw.begin(),pw.end(),x)!=pw.end())c++;}\nprintf(\"%lld\\n\",c);}\n"
+        }
+      ]
+    }
+  ]
+}
