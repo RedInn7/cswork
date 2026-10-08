@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误补位球员技能可以为0",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;long long sa=0,sb=0,za=0,zb=0,x;\nfor(int i=0;i<n;i++){scanf(\"%lld\",&x);sa+=x;za+=x==0;}for(int i=0;i<m;i++){scanf(\"%lld\",&x);sb+=x;zb+=x==0;}\nlong long loA=sa,hiA=sa+10000*za,loB=sb+zb,hiB=sb+10000*zb;long long lo=max(loA,loB),hi=min(hiA,hiB);\nprintf(\"%lld\\n\",lo<=hi?lo:-1);}\n"
+  },
+  {
+    "name": "错误忽略技能上限10000",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;long long sa=0,sb=0,za=0,zb=0,x;\nfor(int i=0;i<n;i++){scanf(\"%lld\",&x);sa+=x;za+=x==0;}for(int i=0;i<m;i++){scanf(\"%lld\",&x);sb+=x;zb+=x==0;}\nlong long loA=sa+za,hiA=za?(long long)4e18:sa,loB=sb+zb,hiB=zb?(long long)4e18:sb;long long lo=max(loA,loB),hi=min(hiA,hiB);\nprintf(\"%lld\\n\",lo<=hi?lo:-1);}\n"
+  },
+  {
+    "name": "错误取两队下界的较小值",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;long long sa=0,sb=0,za=0,zb=0,x;\nfor(int i=0;i<n;i++){scanf(\"%lld\",&x);sa+=x;za+=x==0;}for(int i=0;i<m;i++){scanf(\"%lld\",&x);sb+=x;zb+=x==0;}\nlong long loA=sa+za,hiA=sa+10000*za,loB=sb+zb,hiB=sb+10000*zb;long long lo=min(loA,loB),hi=min(hiA,hiB);\nprintf(\"%lld\\n\",lo<=hi?lo:-1);}\n"
+  },
+  {
+    "name": "错误技能上限写成9999",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;long long sa=0,sb=0,za=0,zb=0,x;\nfor(int i=0;i<n;i++){scanf(\"%lld\",&x);sa+=x;za+=x==0;}for(int i=0;i<m;i++){scanf(\"%lld\",&x);sb+=x;zb+=x==0;}\nlong long loA=sa+za,hiA=sa+9999*za,loB=sb+zb,hiB=sb+9999*zb;long long lo=max(loA,loB),hi=min(hiA,hiB);\nprintf(\"%lld\\n\",lo<=hi?lo:-1);}\n"
+  }
+]
