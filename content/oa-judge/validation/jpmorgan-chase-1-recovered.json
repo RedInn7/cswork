@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261013,
+  "problems": [
+    {
+      "id": "oa-jpmorgan-chase-1",
+      "oracleCases": 180,
+      "uniqueOracleInputs": 180,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "640e30b3b88b82d17d2e6a6afb97aff7d865d48272170ce7635af1db5299bf7c",
+      "negativeControls": [
+        {
+          "name": "错误把右端点当作开区间",
+          "rejectedCases": 30,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            16,
+            17,
+            18,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误被覆盖过就取反而不看奇偶",
+          "rejectedCases": 27,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            4,
+            9,
+            10,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            32,
+            33,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误按0下标处理区间",
+          "rejectedCases": 32,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            16,
+            17,
+            18,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误把取反写成取绝对值的相反数",
+          "rejectedCases": 21,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            5,
+            13,
+            14,
+            16,
+            17,
+            21,
+            22,
+            23,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            34,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Direct per-update negation simulation for oracle inputs; sorted-endpoint sweep counting coverage for formal expectations; both cross-checked on all oracle and exhaustive inputs.",
+      "exhaustiveSmallDomain": {
+        "cases": 300,
+        "nMax": 3,
+        "data": [
+          0,
+          -5,
+          7
+        ],
+        "updateSequences": "all sequences of 1..3 intervals"
+      },
+      "largeBoundaries": [
+        {
+          "name": "n与k均为上限且数值满宽",
+          "inputBytes": 24277283,
+          "outputBytes": 10500021,
+          "elapsedSeconds": 0.26188
+        },
+        {
+          "name": "上限次数全区间偶数次",
+          "inputBytes": 14391679,
+          "outputBytes": 4391663,
+          "elapsedSeconds": 0.19373
+        },
+        {
+          "name": "一次全区间取反",
+          "inputBytes": 2473978,
+          "outputBytes": 2473226,
+          "elapsedSeconds": 0.09231
+        },
+        {
+          "name": "单元素奇数次",
+          "inputBytes": 4000017,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.05533
+        },
+        {
+          "name": "层层嵌套区间",
+          "inputBytes": 16111004,
+          "outputBytes": 2332841,
+          "elapsedSeconds": 0.19206
+        }
+      ],
+      "packageBytes": 88209005,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 20.912
+    }
+  ]
+}

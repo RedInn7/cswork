@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-jpmorgan-chase-26": {
+      "contentHash": "9205b1b8e22a9e8ceddf8409ea3703e73d0541dc5c6555b38d15900a7b0351cb",
+      "catalogContentHash": "9205b1b8e22a9e8ceddf8409ea3703e73d0541dc5c6555b38d15900a7b0351cb",
+      "sourceUrl": "https://oamaster.com/docs/companies/jpmorgan-chase#26-get-search-results",
+      "sources": [
+        {
+          "path": "fastprep/JPMorgan Chase/jpmorgan-get-search-results.md",
+          "gitBlobSha": "f84a35f5379faa380025966c5ece036c08c93152",
+          "rawSha256": "a6a9d1fb00dbac3e97068d5b5d0ead84843d912a8776a20a1561d7d6a7bc2085"
+        },
+        {
+          "path": "web/content/docs/companies/jpmorgan-chase.mdx",
+          "gitBlobSha": "7da508eca40149d8b3286f8c562de5b7e4369026",
+          "rawSha256": "9868cecc5d03f1be98340af271adf376bcc586b74aac5042a4b0d454e2d6a429"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "sameProblemAs": "oa-goldman-sachs-1",
+      "rangeDisclosure": "Original: 1<=n,q<=5000, word/query length 1..100; with distinct length-100 words all anagrams of each other the output reaches 5000*5000*101 ~2.5GB. Reduced to 1<=n,q<=750 (worst output 750*(750*101+4) ~56.8MB, fits 64MiB). Length 1..100 kept. Alphabet fixed to lowercase English letters (source examples; source gives no alphabet).",
+      "ruleFormalization": [
+        "Words in the list are pairwise distinct (source silent on duplicates; avoids an unspecified multiplicity rule).",
+        "A word identical to the query counts as an anagram (identity rearrangement).",
+        "Each output row is prefixed by its count; tokens checker."
+      ],
+      "corrections": [
+        "Both raw sources cut the third constraint at \"It is guaranteed that each query word has at least one anag\"; read as the guarantee that every query has at least one anagram in the word list, stated in full by the same problem on the Goldman Sachs page.",
+        "Original example (queries \"spede\",\"deul\") kept unchanged. Second and third public samples are authored."
+      ]
+    }
+  }
+}

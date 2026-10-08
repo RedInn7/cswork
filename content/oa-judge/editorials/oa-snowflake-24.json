@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-24",
+  "title": "拓扑序上的位集合并",
+  "explanation": "## 题意\n\n每个角色的有效权限 = 自身直属权限 ∪ 所有祖先角色的直属权限。授权边 u→v 表示 v 继承 u，图保证无环，因此“祖先”沿边反向可达即可确定。每个角色输出去重后按字典序（ASCII 顺序）排列的权限。\n\n## 思路：拓扑序 + 位集合并\n\n把全部出现过的权限串排序去重，得到编号 0..P−1，编号顺序就是字典序。每个角色用一个 P 位的位集表示当前已知的权限，初值为直属权限。\n\n用 Kahn 算法按拓扑序处理角色：取出入度为 0 的角色 u 时，它的所有父角色都已处理完，u 的位集已经是最终答案；对每条出边 u→v，把 u 的位集按字或并到 v 上，并把 v 的入度减一。\n\n输出时按位从低到高枚举，编号顺序即字典序，天然去重。\n\n## 正确性\n\n对拓扑序归纳：u 出队时，所有边 w→u 的 w 都已出队并把自己的最终集合并入 u，因此 u 的集合等于直属权限 ∪ 每个父角色的有效权限，而父角色的有效权限又包含其全部祖先，所以恰好是 u 的全部祖先权限之并。重复的授权边只会重复做幂等的并集，不影响结果。\n\n## 复杂度\n\n排序权限串 O(S log S)，S 为直属权限总个数；每条边一次位集合并 O(P/64)，共 O(m·P/64)；输出与答案规模成正比。逐个元素合并哈希集合的做法在边多、权限多时会达到 O(m·P) 次插入，明显更慢。\n\n## 独立验证\n\noracle 对每个角色沿反向边做 BFS 找出全部祖先，再直接求并集排序，不使用拓扑序；大数据另用 Python 大整数位集按父角色记忆化 DFS 计算。穷举 3 个角色上全部 25 种有标号 DAG 与每个角色 {∅,A,a,Aa} 四种直属权限组合，并逐个真实运行参考程序。错误程序（只看直接父角色、按输入顺序合并边、继承方向反向、忽略大小写排序）都正常退出且在正式数据上被判错。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <cstdint>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;\nvector<vector<string>> own(n);vector<string> all;char buf[64];\nfor(int i=0;i<n;i++){int k;scanf(\"%d\",&k);own[i].resize(k);for(auto &s:own[i]){scanf(\"%63s\",buf);s=buf;all.push_back(s);}}\nsort(all.begin(),all.end());all.erase(unique(all.begin(),all.end()),all.end());\nint P=all.size(),W=(P+63)/64;vector<uint64_t> bits((size_t)n*W+1,0);\nfor(int i=0;i<n;i++)for(auto &s:own[i]){int id=lower_bound(all.begin(),all.end(),s)-all.begin();bits[(size_t)i*W+id/64]|=1ULL<<(id%64);}\nvector<vector<int>> g(n);vector<int> indeg(n,0);\nfor(int j=0;j<m;j++){int u,v;scanf(\"%d %d\",&u,&v);g[u].push_back(v);indeg[v]++;}\nvector<int> order;order.reserve(n);for(int i=0;i<n;i++)if(!indeg[i])order.push_back(i);\nfor(size_t h=0;h<order.size();h++){int u=order[h];for(int v:g[u]){uint64_t *a=&bits[(size_t)v*W];const uint64_t *b=&bits[(size_t)u*W];for(int w=0;w<W;w++)a[w]|=b[w];if(--indeg[v]==0)order.push_back(v);}}\nstring out;\nfor(int i=0;i<n;i++){const uint64_t *b=&bits[(size_t)i*W];int c=0;for(int w=0;w<W;w++)c+=__builtin_popcountll(b[w]);out+=to_string(c);\n for(int w=0;w<W;w++){uint64_t x=b[w];while(x){int t=__builtin_ctzll(x);x&=x-1;out+=' ';out+=all[w*64+t];}}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}

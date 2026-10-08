@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-goldman-sachs-1": {
+      "contentHash": "aacb9cf2643a5f45c1f8e1fdf96605572a2d35aff0d185e045e9a21b2d5184dc",
+      "catalogContentHash": "aacb9cf2643a5f45c1f8e1fdf96605572a2d35aff0d185e045e9a21b2d5184dc",
+      "sourceUrl": "https://oamaster.com/docs/companies/goldman-sachs#1-autocorrect-prototype",
+      "sources": [
+        {
+          "path": "fastprep/Goldman Sachs/autocorrect-prototype.md",
+          "gitBlobSha": "0ba3bce55911f9c655d679d5fadb89245768657f",
+          "rawSha256": "0941e24f5257efa0ba757b21765167fbb5f2c408d4e8cf1ad7fd4065898c0390"
+        },
+        {
+          "path": "web/content/docs/companies/goldman-sachs.mdx",
+          "gitBlobSha": "8efc97a5920a15a0815088ee41e197524a0517ca",
+          "rawSha256": "14ea24f08c2a8fdfb8176adf6107d1ac025a14c49b7463c4f44c0efff63318b7"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "sameProblemAs": "oa-jpmorgan-chase-26",
+      "rangeDisclosure": "Original: 1<=n,q<=5000, word/query length 1..100; with distinct length-100 words all anagrams of each other the output reaches 5000*5000*101 ~2.5GB. Reduced to 1<=n,q<=750 (worst output 750*(750*101+4) ~56.8MB, fits 64MiB). Length 1..100 kept. Alphabet fixed to lowercase English letters (source examples; source gives no alphabet).",
+      "ruleFormalization": [
+        "Words in the list are pairwise distinct (source silent on duplicates; avoids an unspecified multiplicity rule).",
+        "A word identical to the query counts as an anagram (identity rearrangement).",
+        "Each output row is prefixed by its count; tokens checker."
+      ],
+      "corrections": [
+        "Raw example query \"dpede\" is a typo: the example explanation says the only anagram of \"speed\" is \"spede\" and the expected output [\"speed\"] requires an anagram of speed; the public sample uses \"spede\". Not mentioned in the statement.",
+        "Raw example line \"n = 2\" contradicts the four-element words array (constraints define words[n]); stdin gives the actual counts n and q.",
+        "Third public sample is authored."
+      ]
+    }
+  }
+}

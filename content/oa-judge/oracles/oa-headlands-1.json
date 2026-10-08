@@ -1,0 +1,742 @@
+[
+  {
+    "input": "3\nid 0 timestamp 10 foo a bar b\nid 1 timestamp 20 bar b baz c\nid 2 timestamp 15 qux d\n3\n0 30 bar b\n0 12 foo a\n0 30 qux d\n",
+    "expectedOutput": "0 1 \n0 \n2 \n"
+  },
+  {
+    "input": "3\nid 0 timestamp 10 foo a bar b\nid 1 timestamp 20 bar b baz c\nid 2 timestamp 30 baz c foo x\n1\n0 30 foo a\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "6\nid 7 timestamp 5 src/a.go v1\nID 8 timestamp 6 src/a.go v1\nid 9 timestamp 5 src/a.go v1 lib v3\nid 3 timestamp x lib v3\nid 4 timestamp 8 lib v3 lib v4\nid 5 timestamp 9 lib\n3\n0 9 lib v3\n6 6 src/a.go v1\n9 0 lib v3\n",
+    "expectedOutput": "7 9 \n\n\n"
+  },
+  {
+    "input": "0\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "1\nid 1 timestamp 1\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "2\nid 1 timestamp 1 a x\nid 2 timestamp 1 a y\n2\n0 5 a x\n0 5 a y\n",
+    "expectedOutput": "1 \n2 \n"
+  },
+  {
+    "input": "3\nid 5 timestamp 3 a x\nid 2 timestamp 3 b y\nid 9 timestamp 3 a x b y\n3\n3 3 a x\n0 2 b y\n4 9 a x\n",
+    "expectedOutput": "2 5 9 \n\n\n"
+  },
+  {
+    "input": "3\nid 1 timestamp 1 a x\nid 2 timestamp 2 b y\nid 3 timestamp 3 b y a z\n1\n0 9 a x\n",
+    "expectedOutput": "1 \n"
+  },
+  {
+    "input": "3\nid 1 timestamp 1 a x\nid 1 timestamp 2 a x a y\nidd 2 timestamp 2 a x a q\n1\n0 9 a x\n",
+    "expectedOutput": "1 \n"
+  },
+  {
+    "input": "3\nid 1 timestamp 1 a x\nid 2 timestamp 2 a x b\nid 3 timestamp 3 b y\n2\n0 9 a x\n0 9 b y\n",
+    "expectedOutput": "1 \n3 \n"
+  },
+  {
+    "input": "3\nid 1 timestamp 1 a x\nid 2 timestamp 2 c q a x a y\nid 3 timestamp 3 a y\n2\n0 9 a x\n0 9 a y\n",
+    "expectedOutput": "1 \n3 \n"
+  },
+  {
+    "input": "3\nid 9223372036854775807 timestamp 9223372036854775807 p q\nid 0 timestamp 0 p q\nid 9223372036854775806 timestamp 9223372036854775807 p q\n3\n0 9223372036854775807 p q\n9223372036854775807 9223372036854775807 p q\n1 9223372036854775806 p q\n",
+    "expectedOutput": "0 9223372036854775806 9223372036854775807 \n9223372036854775806 9223372036854775807 \n\n"
+  },
+  {
+    "input": "4\nid 4 timestamp 2 a x\nid 3 timestamp 2 a x\nid 10 timestamp 1 a x\nid 2 timestamp 3 a x\n3\n0 5 a x\n2 2 a x\n3 1 a x\n",
+    "expectedOutput": "10 3 4 2 \n3 4 \n\n"
+  },
+  {
+    "input": "3\nid 1 timestamp 5 a x\nid 2 timestamp 1a a x b y\nid 3 timestamp 5 b z\n2\n0 9 a x\n0 9 b z\n",
+    "expectedOutput": "1 \n3 \n"
+  },
+  {
+    "input": "4\nid 1 timestamp 1 m n\nid 2 timestamp 2 o p\nid 3 timestamp 3 m n o p\nid 4 timestamp 4 o q\n1\n0 9 m n\n",
+    "expectedOutput": "1 2 3 \n"
+  },
+  {
+    "input": "4\nid 1 timestamp 1 k v\ntime 2 timestamp 2 k v\nid 2 ts 2 k v\nid 2 timestamp 2\n1\n0 9 k v\n",
+    "expectedOutput": "1 \n"
+  },
+  {
+    "input": "10\nid\nid 45 timestamp 2 f 2 g 1\nid 45 timestamp 2 f 2 zz\nid 69 timestamp 1 g a f 1\nid 32 0 g 2 f 1\nid 42 timestamp 0\nid 32 timestamp 3 f 2\nid 51 timestamp 2\nid 41 timestamp 3\nid 41 timestamp 0x1f g 1 f a\n4\n2 10 g 1\n0 10 f 2\n9 9 f 1\n8 10 f 2\n",
+    "expectedOutput": "45 32 \n45 32 \n\n\n"
+  },
+  {
+    "input": "4\nid 36 timestamp 3\nid 2 timestamp 1\nid 1 timestamp 3 f 1 h 1 g 1\nid 15 timestamp 1 f 1 src/x 1 h 1\n5\n6 3 f 1\n4 5 src/x 1\n1 3 g 1\n6 10 h 1\n6 5 g 1\n",
+    "expectedOutput": "\n\n15 1 \n\n\n"
+  },
+  {
+    "input": "10\nid 84 timestamp 0 f 1 g 1\nid 68 timestamp 1 h 1\nid 40 timestamp 1\nid 11 timestamp 3 h 1 f 1 g 1\nid 56 timestamp 3 g 1\nid 5 timestamp 0\nid 69 timestamp 3 g 1\nid 69 timestamp 2 g 1 zz\nid 84 timestamp 3 g 1 f 1 f zz\nid 30 timestamp 2 g 1 f 1 h 1\n2\n2 8 f 1\n0 5 f 1\n",
+    "expectedOutput": "30 11 56 69 \n84 68 30 11 56 69 \n"
+  },
+  {
+    "input": "12\nid 26 timestamp 2 src/x a f a\nid 23 timestamp 3 h 1\nid 62 timestamp 1 src/x a g a h a\nid 53 timestamp 3 g 2\nId 29 timestamp 0 src/x 2 h 1\nid 1 timestamp 1 src/x 1 g a\ncommit 70 timestamp 2 src/x 1\nid 60 timestamp 2 g 1\nid 34 timestamp 3 src/x 1 g 2 f 2\nid 29 timestamp 0 f 1\nid 1 timestamp 3 g 2 h a src/x 2 src/x 1\nid 70 timestamp 3 g 1 src/x 1\n3\n9 10 f 2\n5 7 f a\n2 10 g a\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 14 Timestamp 2 f 1 g a\nid 2 timestamp 2 f 1 f 1\nid 2 timestamp 2 g a f 1\nid 64 timestamp 3\nid 16 timestamp 0 f 2\nid 10 timestamp 1 f a dangling\nid 76 timestamp 1\nid 14 timestamp 3 f 1 g a\nid 44 timestamp 0 f 2 g 2\nid 29 timestamp 1 g 2 f 2\nid 10 timestamp 2\n4\n3 4 g a\n1 4 g a\n0 4 g 2\n0 3 f 1\n",
+    "expectedOutput": "14 \n2 14 \n16 44 29 \n2 14 \n"
+  },
+  {
+    "input": "2\nid 13 1 f 1 g 1\nid 13 timestamp 1 g 1 f 1\n3\n4 8 f 1\n7 8 f 1\n7 9 g 1\n",
+    "expectedOutput": "\n\n\n"
+  },
+  {
+    "input": "7\nid 14 timestamp 9 f a\nid 70 timestamp 4\nid 74 timestamp 6 g a\nid 34 timestamp 3 h 2 f 2\nid 47 timestamp 8 src/x 2 f 1 g 1\nid 54 timestamp 9\nid 17 timestamp 5 h 1 src/x a\n2\n8 8 src/x 2\n4 6 src/x a\n",
+    "expectedOutput": "47 \n17 \n"
+  },
+  {
+    "input": "4\nid 32 timestamp 3\nid 32 1\nid 4 timestamp 3\nid 14 timestamp 1 f 2 g 1\n5\n3 8 f 2\n5 9 f 2\n6 7 f 2\n5 8 g 1\n1 7 g 1\n",
+    "expectedOutput": "\n\n\n\n14 \n"
+  },
+  {
+    "input": "6\nid 1.5 timestamp 3 f 2\nId 20 timestamp 0 f a\nid 4 timestamp 5\nid 20 timestamp 10\nid 4 timestamp 4a f a\nid 22 timestamp 9 f 1\n3\n3 4 f 1\n0 10 f 1\n8 5 f 1\n",
+    "expectedOutput": "\n22 \n\n"
+  },
+  {
+    "input": "9\nid 59 timestamp 8 g 1 f 1 g 2\nid 34 timestamp 7 f 1 g 1\nid 17 timestamp 5 g 1\nid 40 ts 5 g 1 f 1\nid 52 timestamp 9\nid 59 timestamp 0 g 1 f 1\nid 12 timestamp 0\nid 69 timestamp 0 f 1 g 1\nid 40 timestamp 10\n1\n1 0 f 1\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "8\nid 50 timestamp 4 f 2\nid 57 timestamp 5 f 2\nid 4 timestamp 3 f 2\nid 4 timestamp 3 f\nid 50 ts 2 f 1\nid 47 timestamp 9 f 1\nid 46 timestamp 5 f 1\nid 46\n5\n0 2 f 1\n4 4 f 1\n0 1 f 2\n4 10 f 1\n1 10 f 1\n",
+    "expectedOutput": "\n\n\n46 47 \n46 47 \n"
+  },
+  {
+    "input": "8\nid 8 timestamp 10 f 1 g 1\nid 26 timestamp 3 f 1\nid 4 timestamp 5 f 1\nid 22 timestamp 0 f 1 g 1\nid 26 timestamp 4 f 1 zz\nid 22\nid 7 timestamp 4 f 1 g 1\nid 43 timestamp 8 f 1 g 1\n5\n8 9 g 1\n0 7 g 1\n0 3 f 1\n6 9 f 1\n4 10 g 1\n",
+    "expectedOutput": "43 \n22 26 7 4 \n22 26 \n43 \n7 4 43 8 \n"
+  },
+  {
+    "input": "3\nid 20 timestamp 2 h 1 g 1 f 1\nid 6 timestamp 3\nid 32 timestamp 3 g 1 f 1\n2\n2 10 g 1\n1 10 h 1\n",
+    "expectedOutput": "20 32 \n20 32 \n"
+  },
+  {
+    "input": "9\nid 49 timestamp 4 f 1\nid 45 timestamp 10 f 2\nid 12 timestamp 1 f 1 f zz\nid 42 timestamp 6 f 2\nid 50 timestamp 6\nid 3 timestamp 2 f 2\nid 12 timestamp 1 f 2\nid 50 timestamp 8 f 2 f 1\nid 44 timestamp 9 f 1\n5\n2 8 f 1\n2 8 f 1\n0 3 f 2\n6 6 f 1\n6 9 f 2\n",
+    "expectedOutput": "49 \n49 \n12 3 \n\n42 \n"
+  },
+  {
+    "input": "8\nid 21 timestamp 2 g 2 f 2\nid 34 timestamp 0 g 1 h 1\nid 37 timestamp 2\nid 20 timestamp 2\nid 12 timestamp 1\nid 21 1 f 1\nid 20 time 3 g 2\nid 21 timestamp 3 g 2 f\n5\n2 3 g 1\n9 10 f 2\n6 8 g 2\n3 6 g 2\n2 8 h 1\n",
+    "expectedOutput": "\n\n\n\n\n"
+  },
+  {
+    "input": "7\nid 1 timestamp 3\nid 2 timestamp 3 f 2\nid 15 timestamp 3 f 2\nid 55 timestamp 0 f 1\nid 51 timestamp 1 f 1\nid 59 timestamp 2 f 1\nID 2 timestamp 1\n2\n2 10 f 1\n0 10 f 1\n",
+    "expectedOutput": "59 \n55 51 59 \n"
+  },
+  {
+    "input": "5\nid 38 Timestamp 3 g 2 f a\nid 37 timestamp 0 f a g 1\nid 11 timestamp 0 g 1 f 1\nid 7 timestamp 2 f a\nid 38 timestamp 3 f a\n3\n5 6 f a\n0 6 f a\n6 7 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "1\nid 15 timestamp 9\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "7\nid\ncommit 5 timestamp 5 f 1\nid 5 timestamp 9 f 1\nid 28 timestamp 6 f a\nid 29 ts 0 f a\nid 18 timestamp 4\nid 29 timestamp 8 f a\n5\n10 10 f 1\n4 1 f a\n6 9 f 1\n2 2 f 1\n8 6 f 1\n",
+    "expectedOutput": "\n\n5 \n\n\n"
+  },
+  {
+    "input": "2\nid 13 timestamp 9 g 1 src/x 1 f 1\nid 13 timestamp 6 g 1 h 2 src/x 1 f\n1\n3 5 src/x 1\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "9\nid 21 timestamp 2 f 2\nid 47 timestamp 2\nid 44 timestamp 2 f 2\nid 24 timestamp 0 f 2\nid 63 timestamp 3\nid 52 timestamp 1\nid x timestamp 0 f 2\nid 52 3 f 1\nid 0x1f timestamp 1 f 1\n4\n1 9 f 2\n8 9 f 2\n7 8 f 2\n4 5 f 2\n",
+    "expectedOutput": "21 44 \n\n\n\n"
+  },
+  {
+    "input": "1\nid 15 timestamp 1 g a h a f a\n1\n0 2 g a\n",
+    "expectedOutput": "15 \n"
+  },
+  {
+    "input": "13\nid 75 timestamp 1 g 2 f 2\nid 18 timestamp 0\nid 50 timestamp 3 f 1 g 2\nid 75 timestamp 3 f\nid 81 timestamp 3 f 2\nid 97 timestamp 2 g 2 f 1\nid 24 timestamp 0\nid 50 2\nid 48 timestamp 1 f 2\nid 21 timestamp 0 f 1 g 2\nid 22 ts 3 g 2 f 2\nid 22 timestamp 3 f 2\nid 81 timestamp 3 g 2 f 2 f zz\n1\n1 3 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "9\nid 11 timestamp 1 h 2 g 1\nid 54\nid 14 timestamp 0 g a f 2 h a\nid 46 ts 1 g a h 2\nid 43 timestamp 0 h a f a\nID 14 timestamp 2\nid 46 timestamp 3 g a\nid 60 timestamp 3 g 2 f a h a\nid 54 timestamp 1 g 2 f 1 h a\n2\n7 8 g 2\n3 6 h 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 78 timestamp 2 g 2\nid 68 timestamp 3 g 2 f 2\nid 25 timestamp 2 f 1 g 2\nid 84 timestamp 3 f 2 g 2\nid 13 timestamp 3 f 2 g 1\nid 99 timestamp 1\nid 18 timestamp 2\nid 13 timestamp 13a\nid 60 Timestamp 2 g 2 f 1\nid 35 timestamp 2\nid 60 timestamp 3\n3\n8 9 g 1\n3 6 f 1\n0 6 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "7\nidx 21 timestamp 4 g 1\nid 32 7 f 1\nid 38 timestamp 5 f 1\nid 32 timestamp 10\nid 38 ts 4 g 1\nid 21 timestamp 6\nid 40 timestamp 6 g 1\n1\n3 6 f 1\n",
+    "expectedOutput": "38 \n"
+  },
+  {
+    "input": "12\nid 44 timestamp 1 f 1\nid 63 timestamp 0\nID 44 timestamp 2 f 1\nid 51 timestamp 1 f 1 g 1\nid 39 timestamp 3 g 1 f 1\nID 63 timestamp 0 f 1 g 1\nid 44- timestamp 1\nid 64 timestamp 0 g 1 f 1\nId 39 timestamp 0\nid 59 timestamp 3 g 1 f 1\nid 60 timestamp 0 f 1 g 1\nidx 51 timestamp 3 g 1\n1\n0 8 g 1\n",
+    "expectedOutput": "60 64 44 51 39 59 \n"
+  },
+  {
+    "input": "13\nid 24 timestamp 2 src/x 2 f 2 h 2\nid 34 timestamp 34a\nid 69 timestamp 0\nid 16 timestamp 1 h 1\nid 62 timestamp 0\nid 0x1f timestamp 9 f 2 src/x 1 h 1\nid 89 timestamp 2\nid 32 timestamp 6\nid 89 time 2\nid 92 timestamp 10 h 2 g 1\nid 16 timestamp 2 h 1 src/x 1 zz\nid 34 timestamp 4\nid 90 timestamp 9\n2\n1 6 h 2\n3 8 g 1\n",
+    "expectedOutput": "24 \n\n"
+  },
+  {
+    "input": "7\nID 35 timestamp 3 g 2 f 2 src/x 2\nid 17 timestamp 10 src/x 1\nid 2 timestamp 6 g 2 src/x 1\nid 40 timestamp 6\nid 2 timestamp 0x1f h 2 g 1\nid 35 0\nid 35 timestamp 6 src/x 2 h 2\n3\n0 4 src/x 1\n9 10 g 2\n1 1 h 2\n",
+    "expectedOutput": "\n17 \n\n"
+  },
+  {
+    "input": "5\nid\nid 1\nid 39 timestamp 1\nid 28 timestamp 3 f 1 src/x 1 h 1\nid 1 timestamp 0\n5\n7 10 h 1\n7 10 src/x 1\n2 7 src/x 1\n3 10 h 1\n5 5 f 1\n",
+    "expectedOutput": "\n\n28 \n28 \n\n"
+  },
+  {
+    "input": "1\nid 11 timestamp 0 g 1 h 1 f 1\n2\n2 7 h 1\n1 4 f 1\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "10\nid\nid 57 timestamp 7\nid 53\nid 32 timestamp 1\nid 53 timestamp 7 f 1\nid 75 timestamp 75- f 2\nid 36 timestamp 4\nid 73 timestamp 9 f 2\nid 75 timestamp 2 f 1\nid 46 timestamp 2\n2\n10 10 f 2\n2 7 f 1\n",
+    "expectedOutput": "\n75 53 \n"
+  },
+  {
+    "input": "1\nid 17 timestamp 6 g a f a\n2\n4 8 g a\n5 0 g a\n",
+    "expectedOutput": "17 \n\n"
+  },
+  {
+    "input": "6\nid 25 timestamp 4 f 2\nid 25 timestamp 3 f 1 dangling\nid 46 timestamp 0\nid 41 timestamp 10 f 2\nid 5 timestamp 2 f 1\nid 41 2 f 2\n2\n2 10 f 2\n5 9 f 1\n",
+    "expectedOutput": "25 41 \n\n"
+  },
+  {
+    "input": "2\nid 1 timestamp 2 h a f 1 g a\nid 9 timestamp 10 g a f a\n4\n4 7 f a\n4 9 g a\n10 3 g a\n3 3 h a\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "8\nid 22\nid 5 timestamp 5 f 1 g 2 h 2\nid 22 timestamp 6 f 2\nid 2 timestamp 10\nid 49 timestamp 4\nid 27 timestamp 2 g a\nid 65 timestamp 7 h 2\nid 27 time 3\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "6\nid 11 timestamp 8 f a g 1\nid 40 timestamp 7 h 2 f 2\nid 9 Timestamp 2\nid 22 timestamp 7 g 1 h 2 f 1\nid 9 timestamp 1\nid 57 timestamp 8\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\n16 2\nid 37 timestamp 6 g 2\nid 49 timestamp 7 g 2 f 1\nid 16 timestamp 10 g a\nid 17 timestamp 4 g 1\nid 89 timestamp 1 f a g 2\nid 79 8 g 2 f 2\nid 79 timestamp 8\nid 2 timestamp 4\nid 89 timestamp 89- g 2 f 1\nid 61 timestamp 0 f 2 g 1\n1\n7 4 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 35\nid 51 timestamp 0\nid 11 timestamp 1 g 1 f 1\nid\nid 35 timestamp 0 f 1 g 1\nid 53 timestamp 2\nid 11 timestamp 0 g 1 f 1 g 1\nid 57 timestamp 3 g 1 f 1\ntimestamp 2\nid 59 timestamp 3 g 1 f 1\n4\n4 4 g 1\n0 1 g 1\n7 8 g 1\n1 2 f 1\n",
+    "expectedOutput": "\n35 11 \n\n11 \n"
+  },
+  {
+    "input": "5\nid 17 timestamp 6\nid 43 ts 7 f 2\nid 22 timestamp 3\nid 4 timestamp 2 f 2 h 1\nid 43 timestamp 5 h 2\n5\n6 9 f 2\n6 8 f 2\n1 10 h 2\n7 10 h 2\n0 8 h 1\n",
+    "expectedOutput": "\n\n43 \n\n4 \n"
+  },
+  {
+    "input": "7\nid 17 timestamp 1 f 1 dangling\nid 12 timestamp 0 f 1\nid 54 timestamp 3 f 2\nid 65 timestamp 2 f 1\nid 17 timestamp 0\nid 49 timestamp 1\nid 50 timestamp 0 f 1\n3\n0 4 f 2\n2 5 f 2\n0 5 f 1\n",
+    "expectedOutput": "54 \n54 \n12 50 65 \n"
+  },
+  {
+    "input": "2\nid 17a timestamp 4\nid 17 timestamp 0 g 1 f 1\n3\n8 10 g 1\n3 10 g 1\n0 6 g 1\n",
+    "expectedOutput": "\n\n17 \n"
+  },
+  {
+    "input": "4\nid 8 timestamp 3\nid 36 timestamp 1 h 1 src/x 2\nid 32 timestamp 2 h 2 g 2 f 2\nid 21 timestamp 0 src/x 2 g 2\n5\n2 10 g 2\n9 3 g 2\n3 1 h 2\n0 6 h 2\n4 7 h 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "12\nid 71 timestamp 5 src/x 1 h 2\nID 20 timestamp 3\nid 74 timestamp 3 h 1 f a\nid 33 timestamp 3 g a f a h a\nid 74 0 g 1\nid 32 timestamp 2\nid 52 timestamp 6 src/x a g 2 f 1\nid 20\nid 82 timestamp 2\nid 20 timestamp 10 src/x 1 h a f 2\nid 33 timestamp 3 f\nid 1 timestamp 9\n2\n6 9 f 1\n1 6 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "2\nid 2 timestamp 3 g 2\nid 28 timestamp 4 g 2 f 1\n2\n0 3 g 2\n3 8 f 1\n",
+    "expectedOutput": "2 \n2 28 \n"
+  },
+  {
+    "input": "6\nid 30 timestamp 8 f 2\nid 22 timestamp 0 f a\nid 4 timestamp 9 f 2\nid 32 ts 0 f 2\nid 22 time 10 f 1\nid 32 timestamp 10 f 2\n5\n0 6 f a\n9 1 f 2\n7 0 f a\n3 9 f 2\n0 4 f a\n",
+    "expectedOutput": "22 \n\n\n30 4 \n22 \n"
+  },
+  {
+    "input": "3\nid 10 timestamp 8 f a\nid 19 timestamp 10\nId 10 timestamp 6 f 1\n1\n9 6 f a\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "6\nid 0 timestamp 0 g 1 h a\nid 40 timestamp 1 h 1\nid 26 timestamp 3\nid 43 timestamp 1 h 1 f 2 g 1\nid 26 Timestamp 2 g 1\nid 36 timestamp 1\n5\n9 10 h 1\n1 3 g 1\n5 5 g 1\n4 4 h 1\n7 10 h 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "9\nid 14 timestamp 3\nid 6 timestamp 1 g 1 f 1\nid 21 timestamp 2 f 2 g 2\nid 39 timestamp 2\nid 40 timestamp 3 f 1 g 2\nid 52 timestamp 1 f 2\nid 0x1f timestamp 2\nid 69 timestamp 3\nid 14 3\n5\n6 10 g 1\n1 10 g 1\n6 8 f 2\n3 7 g 1\n7 8 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "12\nid 71 timestamp 3\nid 45 timestamp 0x1f f 2 g 2\nID 51 timestamp 1 h 1 f 2\nid 44 ts 2\nid 45 ts 2\nid 35 timestamp 3 g 2\nid 8 timestamp 1 h 2 g 1 f 2\nid 44 timestamp 2\nid 51 timestamp 2 h 2 g 2\nid 83 timestamp 2 h 1 g 1 f 1\nid 24 timestamp 0\nid 45 timestamp 2 h 2\n5\n1 2 h 1\n2 10 h 2\n1 3 h 1\n0 5 g 1\n4 10 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "6\nid 42 timestamp 0 h 2 h zz\nid 35 timestamp 1\nid 29 timestamp 0 f 2\nid 24 timestamp 7 g 2 h 2\nid 39 timestamp 7\nid 42 timestamp 4 h 2\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "3\nid 7 timestamp 4 f 2 h 1 g a\nid 8 timestamp 4 h 2 f 2 f\nid 8 timestamp 0\n1\n2 9 g a\n",
+    "expectedOutput": "7 \n"
+  },
+  {
+    "input": "8\nid 20 timestamp 4 f 1\nid 14 timestamp 1 zz\nid 66 timestamp 6\nid 35 timestamp 6 f 1\nid 14 timestamp 2\nid 66 timestamp 7 zz\nid 46 timestamp 10 f 1\nid 17 timestamp 4\n3\n6 3 f 1\n0 4 f 1\n5 8 f 1\n",
+    "expectedOutput": "\n20 \n35 \n"
+  },
+  {
+    "input": "1\nid 13 timestamp 2\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "2\nid 9 timestamp 1 f 1\nid 14 timestamp 0 f 1\n3\n1 10 f 1\n0 1 f 1\n3 7 f 1\n",
+    "expectedOutput": "9 \n14 9 \n\n"
+  },
+  {
+    "input": "3\ncommit 21 timestamp 0 g 1 src/x 1\nid 21 timestamp 0 src/x 2 f 2 g 1\nid 29 timestamp 3 src/x 1 f 2 h 1\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "1\nid 16 timestamp 0 f 1 g 1\n4\n4 10 g 1\n6 9 f 1\n0 8 f 1\n0 7 f 1\n",
+    "expectedOutput": "\n\n16 \n16 \n"
+  },
+  {
+    "input": "8\nid 52 Timestamp 3 g 1 h 1\nid 4 10 src/x 1\nid 42\nid 52 timestamp 7\nid 42 timestamp 9 src/x 1 h 1 g 1\nid 45 timestamp 1\nid 5 timestamp 0 f 1 src/x 1 h 1\nid 4 timestamp 9 src/x 1 h 1 f 1\n1\n7 8 src/x 1\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "7\nidx 55 timestamp 3\nid 37 timestamp 2 f 1 g 1\nidx 37 timestamp 3 g 1 f 1\nid 55 timestamp 0 f 1 g 1\nid 12 timestamp 1 f 1\nid 17 timestamp 1 g 1 f 1\nid 31 timestamp 3 g 1 f 1\n2\n2 8 g 1\n0 0 g 1\n",
+    "expectedOutput": "37 31 \n55 \n"
+  },
+  {
+    "input": "2\nid 9 timestamp 10 f 1 g 2\nid 2 timestamp 10 f 1 g 1\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 14 timestamp 3 g a\nid 43 timestamp 0 f a g a g a\nid 56 ts 1 g 2 f a\nid 13 timestamp 2 f 1\nid 56 time 3 f a\ncommit 43 timestamp 3 g a f a\nid 32 timestamp 2 f 1 g 2 f\nid 56 timestamp 2\nid 43 timestamp 1 f 2\nid 32 timestamp 3 f a\nid 58 timestamp 2\n5\n6 9 g a\n1 1 f 2\n3 8 f a\n6 6 f 1\n6 4 f 2\n",
+    "expectedOutput": "\n43 \n32 \n\n\n"
+  },
+  {
+    "input": "3\nid 24 timestamp 1 f 2\nid 8 timestamp 3 f a\nid 8 time 2 f 1\n2\n0 6 f a\n3 10 f 2\n",
+    "expectedOutput": "8 \n\n"
+  },
+  {
+    "input": "13\nid 75 timestamp 2\nid 32 timestamp 2 f 1\ncommit 82 timestamp 2 h 1 g 1 f 1\nid 19 3 f 1 g 1\nid 9 timestamp 0 h 1 g 1\nid 82 ts 2 g 1 f 1\nid 43 timestamp 3 f 1\nid 34 timestamp 0 h 1 g 1\nid 79 timestamp 2\nid 27 timestamp 1 f 1 g 1\n79 2\nid 19 timestamp 2\nid 82 timestamp 0\n5\n1 10 g 1\n8 8 f 1\n9 0 f 1\n0 7 g 1\n7 8 g 1\n",
+    "expectedOutput": "27 32 43 \n\n\n9 34 27 32 43 \n\n"
+  },
+  {
+    "input": "10\nid 44 timestamp 2\nid 51 timestamp 1 src/x 1 h 2\nid 64 timestamp 0 src/x 2 g 2 f 1\nid 61 timestamp 3 src/x 2 g 2 h 2\nid 61 timestamp 3 f\nid 45 timestamp 1\nid 63 timestamp 1\nid 53 timestamp 3 g 1 src/x 2 f 1\nid 67 timestamp 3 h 1 g 1\nid 61 timestamp 0 f 1 f 1\n5\n3 5 g 2\n2 9 f 1\n0 5 src/x 2\n3 7 h 1\n1 6 h 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "4\nid 1 timestamp 3 g 1\nid 1 timestamp 3 dangling\nid 11 timestamp 1 h 2 f 2\nid 6 timestamp 1 f 2 g 2 h 2\n1\n2 4 h 2\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "5\nid 17 timestamp 3 g a\nid 2 timestamp 3 g 2 f 2\nid 17 timestamp 3 f 1 f 1\nid 28 timestamp 2 g a f a\nid 14 timestamp 3\n3\n2 3 f 2\n4 10 g a\n1 7 f a\n",
+    "expectedOutput": "2 \n\n28 17 \n"
+  },
+  {
+    "input": "10\nId 65 timestamp 4 f a\nid 43 timestamp 10 f 1\nid 5 timestamp 10\nid 58 timestamp 10 f 1 f 1\nid 60 timestamp 7 f 2\nid 38 timestamp 0 f a\nID 17 timestamp 0 f a\nid 58 timestamp 2 f a\nid 17 timestamp 8 f 2\nid 65 timestamp 0 f 2\n4\n0 6 f a\n5 5 f 2\n2 7 f a\n5 9 f 1\n",
+    "expectedOutput": "38 58 \n\n58 \n\n"
+  },
+  {
+    "input": "12\nid 90 timestamp 1 f 1\nid 7 timestamp 2 f 1\nid 16 timestamp 4 f 1\nid 73 timestamp 4 f 1\nid 70 timestamp 9 f 1\nid 71 timestamp 9 f 1\n70 2\nid 77 timestamp 2\nid 81 timestamp 8 f 1\nid 16 timestamp 4 f 1 dangling\nid 90 0\nid 28 timestamp 8 f 1\n2\n0 2 f 1\n3 8 f 1\n",
+    "expectedOutput": "90 7 \n16 73 28 81 \n"
+  },
+  {
+    "input": "6\nid 26 timestamp 1 f 1\nid 19 timestamp 3 f 1 dangling\nid 8 timestamp 3 f 1\nid 8 timestamp 1 f 1 f zz\nid 44 timestamp 1 f 1\nid 19 timestamp 2\n5\n8 9 f 1\n1 1 f 1\n0 9 f 1\n0 7 f 1\n4 9 f 1\n",
+    "expectedOutput": "\n26 44 \n26 44 8 \n26 44 8 \n\n"
+  },
+  {
+    "input": "2\nid 11 timestamp 1 f a g a\nid 11 timestamp 2 g 2 f 2 f zz\n1\n1 2 f a\n",
+    "expectedOutput": "11 \n"
+  },
+  {
+    "input": "9\nid 21 timestamp 3 h 1\nid 57 timestamp 2\nid 57 timestamp x src/x 1 f 1 g 1\nid 24 timestamp 0 f 2\nidx 57 timestamp 2 f 2 g 1 h 1\nid 30 timestamp 1\nid 23 timestamp 3 h 2 f 2\nid 39 timestamp 1 h 1 src/x 2\nid 0x1f timestamp 2\n2\n0 3 src/x 2\n2 7 h 2\n",
+    "expectedOutput": "39 21 \n23 \n"
+  },
+  {
+    "input": "11\nid 48 timestamp 8 g 1 h 2\nid 38 timestamp 3 f 1 h 1\nid 66 timestamp 5 h 2 g 1\nid 49 timestamp 2 h 1 g 1 f 1\nid 75 timestamp 6\nid 22 timestamp 1 h 2 f 1 g 2\nid 4 timestamp 0 g 2\nid 73 timestamp 0\nid 22 timestamp a22\nidx 48 timestamp 5 g 2 h 1 f 2\nid 49 timestamp 10 f 1 f zz\n2\n1 3 g 1\n0 2 h 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "1\nid 4 timestamp 2\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "3\nid 26 timestamp 0 src/x 1 g 1 f 1\nid 8 timestamp 0 src/x 1 g 1 h 1\nid 26 ts 1\n3\n0 8 h 1\n5 7 h 1\n5 8 h 1\n",
+    "expectedOutput": "8 26 \n\n\n"
+  },
+  {
+    "input": "4\nid 32 timestamp 2 f 1 src/x 1 g 1 f\nid 32 timestamp 0 f 1\nid 35 timestamp 3 g 1\nid 13 timestamp 3\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "12\nid 79 timestamp 0 f 1\nid 45 timestamp 1 f 1\nid 73 timestamp 2 f 1\nid 15 timestamp 1 f 1 f 2\nid 73 ts 3 f 2\nid 37 timestamp 0 f a\nid 74 timestamp 0 f a\nid 15 timestamp 1 f 2\nid 0x1f timestamp 0 f 1\nid 54 timestamp 2\nid 81 timestamp 0 f a\nid 57 timestamp 3 f a\n4\n0 6 f 1\n2 10 f a\n1 6 f a\n4 7 f 2\n",
+    "expectedOutput": "79 45 73 \n57 \n57 \n\n"
+  },
+  {
+    "input": "5\nid 4 timestamp 0 src/x a\nid 7 timestamp 9 g 1\nid 32 timestamp 32a src/x a\nid 32 timestamp 7 g 1\nid 16 timestamp 5 g 2\n3\n1 2 g 1\n3 8 g 2\n6 9 src/x a\n",
+    "expectedOutput": "\n16 \n\n"
+  },
+  {
+    "input": "12\nid 61 timestamp 4 f 2\nid 54 time 9 g 2\nid 39 timestamp 7 g 2 f 2\nid 54 timestamp 6\nid 56 timestamp 4 f 2 g 1 h 1\nid 37 timestamp 6\nid 37 timestamp 6 f 2 g 1 g 1\nid 61 time 1 f 2\nid 68 timestamp 2 h 1\nid 87 timestamp 4 g 2\nid 62 timestamp 3\nid 44 timestamp 5 h 2 g 1\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 67 timestamp 0 f 1\nid 72 timestamp 1\nid 0 timestamp 0\nid 48 timestamp 9 f 1\nid 66 timestamp x f 1\nid 11 timestamp 9 f 1\nid 66 time 9\nid 66 timestamp 10\nid 62 timestamp 5 f 1\nid 55 timestamp 10\n5\n3 10 f 1\n9 10 f 1\n8 8 f 1\n6 7 f 1\n0 6 f 1\n",
+    "expectedOutput": "62 11 48 \n11 48 \n\n\n67 62 \n"
+  },
+  {
+    "input": "2\nid 2 timestamp 1 f 2\nid 3 timestamp 1 f 1\n1\n0 0 f 2\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "14\nid 23 timestamp 8 g 1 f 2\nid 67 timestamp 2 f 1 g 1 dangling\nid 51 timestamp 8\nid 71 timestamp 7 f 2\nid 79 timestamp 0 g 2 f 1\nid 23 timestamp 23- g 2\nid 5 timestamp 7\nid 23 timestamp 2 f 2 g 1 g 1\nid 67 timestamp 2 g 2 f 2\ncommit 51 timestamp 5 f 1 g 1\nid 26 timestamp 6 f 2 g 1\nid 4 timestamp 10 g 2 f 2\nid 82 timestamp 7 g 2 f 2\nid 5 timestamp 4 f 2 f 2\n3\n9 7 f 2\n3 10 g 2\n1 9 g 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "13\nId 53 timestamp 0 g a\nid 16 timestamp 10 g 1 f a\nid 73 timestamp 7 g 1 f a zz\nid 1 timestamp 4 g 1 f 2\nid 14 timestamp 10 f a\nid 53\nid 87 timestamp 8 g a\nid 1 timestamp 2 f a g a g zz\nid 75 timestamp 1 f a g 1\nid 84 timestamp 2 g a f 1\nid 87 timestamp 6 dangling\nid 53 timestamp 8 g 1\nid 73 timestamp 2\n4\n10 10 g a\n3 10 f 2\n9 10 g 1\n8 8 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 10 timestamp 7 src/x 1 f 1 f zz\n21 5\nid 36 timestamp 7 src/x 1\nid 21 timestamp 6 f 1 f zz\nid 22 timestamp 4 g 1\ncommit 21 timestamp 4\nid 9 timestamp 8 h 1\nid 10 timestamp 4\nid 21 timestamp 2 h 1 src/x 1 g 1\nid 9 4\n2\n0 4 g 1\n0 9 g 1\n",
+    "expectedOutput": "21 22 \n21 22 36 9 \n"
+  },
+  {
+    "input": "4\nid 33 timestamp 2 h 1\nid 36 timestamp 1 g 1 h 1 f 1\nid 36 ts 2 h 1 g 1 f 1\nid 7 timestamp 0 g 1\n4\n6 7 g 1\n5 5 h 1\n4 10 g 1\n6 9 g 1\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "13\nid 84 timestamp 3 g 1 f 2\nid 29 timestamp 2 f 1 g 1 g 2\nid 90 timestamp 1 g 1 f 1\nid 0x1f timestamp 0 f 2 g 2\nid 29 timestamp 3\nid 84 0 f 1 g 2\nid 68 timestamp 0 g 1\nid 36 timestamp 3 g 1\nid 72 timestamp 1 g 1\nid 36- timestamp 2 f 1 g 1\nid 23 timestamp 0\nid 93 timestamp 1 f 1\nid 43 timestamp 0\n2\n6 7 g 1\n0 8 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "14\nid a52 timestamp 10 g 1 f 2\nid 4 timestamp 10 g 2 f 1 g 2\nid 35 timestamp 3 g 2 f 1\nidx 45 timestamp 6 g 2\nid 50 timestamp 4\nid 51 timestamp 9 f 1\nid 4 timestamp 8\nid 12 timestamp 1\ncommit 45 timestamp 9 f 2 g 1\nid 57 timestamp 0 f 1\nid 52 timestamp 6 g 2 f 1\nid 45 timestamp 6 g 1 f 2\nid 42 timestamp 9 g 1 f 2\nid 12 timestamp x g 1\n2\n3 8 f 1\n2 9 f 1\n",
+    "expectedOutput": "35 52 \n35 52 51 \n"
+  },
+  {
+    "input": "15\nid 18 timestamp 10\nid 86 timestamp 9\nid 69 timestamp 2 src/x 2\nid 86 timestamp 6 h 1 src/x 2 f 2 zz\nid 44 timestamp 7 g 1 f 1\nid 86 ts 0\nid 32 timestamp 0 h 1 f 2\nid 69 timestamp 6 f 1 f 1\nid 19 timestamp 7 h 1\nid 46 timestamp 5 h 1 f 2\nid 46 timestamp 6 f\nid 69 timestamp 4 g 2 src/x 1 src/x 2\nid 60 timestamp 1 h 1 src/x 2 g 1\nid 16 timestamp 0 g 1 f 2\nid 46 timestamp a46 h 1 f 2 g 2\n1\n7 6 g 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "12\nid 64 ts 8 h 1 g 1\nid 61 timestamp 3 h 1 f 1\nid 22 timestamp 8 f 1 g 1 h 1\nid 97 timestamp 3 g 1 f 1 h 1\nid 64 timestamp 1 f 1 f 1\nid 64 timestamp 6\nid 22 timestamp 22- f 1 g 1 h 1\nid 91 timestamp 10 f 1\nid 49 timestamp 8\nid 80 timestamp 6 f 1 g 1\nid 79 timestamp 6 h 1 f 1\nid 21 timestamp 5 h 1\n4\n1 10 g 1\n4 10 f 1\n4 8 f 1\n2 7 f 1\n",
+    "expectedOutput": "61 97 21 79 80 22 91 \n21 79 80 22 91 \n21 79 80 22 \n61 97 21 79 80 \n"
+  },
+  {
+    "input": "11\nid 30 timestamp 2 f 2 g 2\nid 50 timestamp 3 f 2\ntimestamp 2\nid 48 timestamp 3 g a\nid 13 timestamp 0 f 1\nid 99 timestamp 1 g 2 f a\nid 87 timestamp 3\nid 39 timestamp 0 g 2 f 2\nid 36 timestamp 0 g 1 f 1\nid 87 timestamp 2 f 2 zz\nid 33 timestamp 2 f a g 2\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "13\ntimestamp 1\nid 55 timestamp 2 g 1 f 2\nidx 68 timestamp 1 g 2 f 2\nid 12 timestamp 2 g 2 f 1\nID 72 timestamp 2\nid 28 timestamp 3 g 1 f 1\nid 10 timestamp 2 g 1 f 1 g 2\nid 68 1 g 1 f 2\nid 0x1f timestamp 1 g 2\nid 53 timestamp 0 f 2 g 1\nid 68 timestamp 3 g 2 f 1\nid 10 timestamp 3\nid 72 timestamp 2 g 1 f 2\n4\n3 9 g 1\n8 8 f 1\n0 9 f 2\n5 9 g 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "12\nid 71 timestamp 3\ncommit 94 timestamp 2 f 2\nid 81 timestamp 3 f 1\nid 94 timestamp 3\nidx 81 timestamp 0 f 1\nid 12 timestamp 0\nid 38 timestamp 0 f 2\nid 23 timestamp 2\nid 1 timestamp 2 f 1\nid 37 timestamp 3 f 1\nid 1.5 timestamp 3\nid 90 timestamp 3\n1\n2 7 f 1\n",
+    "expectedOutput": "1 37 81 \n"
+  },
+  {
+    "input": "11\nid 60 timestamp 1 g 1 f 2 f 2\nid 60 timestamp 2 f 2 g 1\nid 38 timestamp 7 g 2 f 1\nid 56 ts 6 f 1\nid 21 timestamp 7 g 1 f 2\nid 56 timestamp 6 g 2\nid 80 timestamp 0 f 1 g 1\nid 16 timestamp 9 g 1\nid 60 timestamp 0 g 2 f 2 zz\nid 52 timestamp 2 f 2 g 1\nid 44 timestamp 2 f 2\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "14\nid 41 timestamp 6 f 1\nid 40 timestamp 6 f 1\nid 36 timestamp 9 f 1\nid 19 timestamp 4 f 1\nid 28 8 f 1\nid 37 timestamp 7\nid 12 timestamp 2 f 1\nid 27 timestamp 10 f 1 f 1\nid 41 1 f 1\nid 27 timestamp 9\nid 81 timestamp 9\nid 27 time 4 f 1\nid 28 timestamp 10\nid 36 timestamp 6 f 1 zz\n3\n2 8 f 1\n1 2 f 1\n2 6 f 1\n",
+    "expectedOutput": "12 19 40 41 \n12 \n12 19 40 41 \n"
+  },
+  {
+    "input": "4\nid 23 timestamp 0\nid 34 timestamp 3 f 1 g 1 src/x 1\nid 4 timestamp 2 src/x 1\nid 45 timestamp 0 f 1\n5\n1 3 g 1\n8 0 src/x 1\n3 6 src/x 1\n0 8 g 1\n2 4 src/x 1\n",
+    "expectedOutput": "4 34 \n\n34 \n45 4 34 \n4 34 \n"
+  },
+  {
+    "input": "6\nid 10 timestamp 2\ntimestamp 1\nid 22 timestamp 3 g 2\nid 12 timestamp 0 g 2 f 1\nid 44 timestamp 3 g 2 f 2\nid 22 timestamp 3 g 2 f 2 zz\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 34 timestamp 5 f 1\nid 37 timestamp 7\nid 35 timestamp 0 g 1 f 1\ncommit 66 timestamp 7\nid 66a timestamp 0\nid 30 timestamp 5 g 1 f 1\nid 37 timestamp 1 f 1 f zz\nid 66 timestamp 6\ntimestamp 3\nid 78 timestamp 1 g 1 f 1\nid 59 timestamp 9 g 1 f 1\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "6\nid 35 timestamp 8 h 1 g 1\nid 14 timestamp 4 g a\nid 28 time 3\ncommit 14 timestamp 2 h 1 f a\nid 28 timestamp 10 h 1 f a\nid 28a timestamp 0 g 2 h a f a\n4\n3 4 h 1\n2 10 g 1\n2 7 f a\n3 10 h 1\n",
+    "expectedOutput": "\n35 28 \n\n35 28 \n"
+  },
+  {
+    "input": "8\nid 39 timestamp 0 f 1 g 1\nid 23 timestamp 3\nid 66 timestamp 1\nid 40 time 0 g 1\nID 39 timestamp 1 f 1 g 1\nid 28 timestamp 2 f 1 g 1\nid 22 timestamp 1 g 1 f 1\nid 40 timestamp 2 f 1 g 1\n5\n0 8 g 1\n4 10 g 1\n1 3 f 1\n3 10 g 1\n2 10 f 1\n",
+    "expectedOutput": "39 22 28 40 \n\n22 28 40 \n\n28 40 \n"
+  },
+  {
+    "input": "8\nid 38 timestamp 8 src/x 2 f 2\nid 56 timestamp 2 h 1 src/x 1 g 2\nid 15 timestamp 0\nid 9 timestamp 9\nid 5 timestamp 4 h 1 g 2 src/x 1\nid 69 timestamp 6 src/x 2 h 1 f 1\nid 69 0 h 2 src/x 1 f 1\nid 5 1\n2\n5 8 f 2\n0 3 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 21 timestamp 6 g 2 h 2 f a\nid 62 timestamp 6 g 2\nid 70 timestamp 10 f 1 src/x a\nid 71 timestamp 0 f a\nid 21 4 g a src/x 1\nid 70 timestamp 9 g 1 src/x 2 g 1\nid 5 timestamp 6 h 1 g 1\nid 7 timestamp 6 g 2 h a f 2\nid 70 timestamp 4 f a f 2\nid 44 timestamp 8 src/x 1 f 1 g 2\n3\n2 5 g 2\n4 5 f a\n4 8 g 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 54 timestamp 2\nid 36 timestamp 3\n21 2\nid 16 timestamp 2 g 1 h 1\nid 84 timestamp 3\nId 36 timestamp 2\nid 21 timestamp 2 g 2\nid 53 timestamp 1 h 1 g 1\nid 52 timestamp 3 h 2 f 2 g 2\nid 77 timestamp 3 h 2 g 1 f 2\nid 7 timestamp 1\n3\n2 4 h 2\n0 6 h 2\n0 5 g 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "5\nid 12 timestamp 2 f 1\nid 3 timestamp 1 f 1 dangling\nid 3 timestamp 2\nid 32 timestamp x\nid 32 timestamp 1\n1\n2 3 f 1\n",
+    "expectedOutput": "12 \n"
+  },
+  {
+    "input": "9\nid 15 timestamp 2 f 1\nid 50 timestamp 1 f 1 f 1\nid 15 timestamp 0 f 1 zz\nid 3 timestamp 3\nid 50 timestamp 1 f 1\nid 58 timestamp 1 f 1\nid 57 timestamp 0 f 1\nId 58 timestamp 3 f 1\nid a57 timestamp 3 f 1\n1\n7 8 f 1\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "6\nid 1 timestamp 0 f 1\nId 35 timestamp 1\nid 1 2 f 1\nid 37 timestamp 1\nid 35 timestamp 3 f 1\nid 2 timestamp 3 f 1\n4\n1 8 f 1\n2 7 f 1\n2 8 f 1\n0 8 f 1\n",
+    "expectedOutput": "2 35 \n2 35 \n2 35 \n1 2 35 \n"
+  },
+  {
+    "input": "4\nid 25 timestamp 0 f 1\ntimestamp 3\nid 13 timestamp 0 f 1\nid 1 timestamp 2 f 1\n1\n1 4 f 1\n",
+    "expectedOutput": "1 \n"
+  },
+  {
+    "input": "6\nid 41 2\nid 36 timestamp 2 src/x 1\nid 41 timestamp 2 h 2 f 1 src/x 1\nid 10 timestamp 1 f 1\nid 17 timestamp 3\nid 41 2 g 2\n2\n2 3 f 1\n0 6 f 1\n",
+    "expectedOutput": "36 41 \n10 36 41 \n"
+  },
+  {
+    "input": "9\nid 69 timestamp 7 g 1 f a\nid 54 timestamp 3\nid 42 timestamp 9 g 2\nid 64 timestamp 7 g a f 1 dangling\nid 25 timestamp 9\nid 60 timestamp 9 f 2 g 1\nid 11 timestamp 9 f 1 g 1\nid 64 timestamp 4 g a f 2\nid 56 timestamp 9\n1\n3 3 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "8\nid 49 timestamp 2 f 1\nid 10 timestamp 3\nid 42 timestamp 0 f 2 dangling\nid 42 timestamp 1 f 2\nid 42 timestamp 1 f 1 f 1\nid 5 timestamp 1 f 1\nid 16 timestamp 3 f 1\nidx 49 timestamp 0 f 1\n1\n3 8 f 2\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "1\nid 15 timestamp 0 f 1 h 1\n1\n1 9 h 1\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "7\nid 0 timestamp 3\nid 28 timestamp 4 src/x 1 g 1\nid 0a timestamp 5 f 1 src/x 1\nid 23 timestamp 9 src/x 1 g 1 g 1\nid 23 timestamp 0 f 1\nid 30 timestamp 6\nid 54 timestamp 9\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "9\nid 7 Timestamp 0\nid 59 time 8 g 1 h 1\nid 37 timestamp 10 g 1 f 1 h 1\nid 41 timestamp 3 g 1\nid 28 timestamp 2 g 1 h 1\nid 32 timestamp 7 f 1\nid 41- timestamp 5 f 1\nid 59 timestamp 1 h 1 g 1 f 1\nid 7 timestamp 2\n3\n0 3 f 1\n0 4 h 1\n2 10 h 1\n",
+    "expectedOutput": "59 28 41 \n59 28 41 \n28 41 32 37 \n"
+  },
+  {
+    "input": "3\nid 28 timestamp 0 g 1 f a h a\nid 25 timestamp 3 g 1 h 1\nidx 25 timestamp 5 h 1 g a\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "3\nID 7 timestamp 2 f 1 g 1\nid 9 timestamp 0\nid 7 timestamp 4 g 1 f 2\n3\n1 9 f 2\n6 9 f 2\n2 3 f 2\n",
+    "expectedOutput": "7 \n\n\n"
+  },
+  {
+    "input": "7\nid 26 timestamp 1 h 1 f 1\nid 57 timestamp 3 f 2 g 2\nid 72 timestamp 1 h 1 g 1 f 1\nid 56 timestamp 2\nid 52 timestamp 2\nid 13 timestamp 0 g 2 h 1 f 1\nid 70 timestamp 0\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "8\nid 57 timestamp\nid 11 timestamp 3 f a\nID 57 timestamp 2\nid 42 timestamp 2 g 2 h a f 1\nid\nid 26 timestamp 0 g 1\nid 4 timestamp 3 g 1\nid 57 timestamp 1\n3\n0 5 f 1\n2 3 f a\n0 5 h a\n",
+    "expectedOutput": "42 \n11 \n42 \n"
+  },
+  {
+    "input": "14\nid 5 timestamp 8 f 1\nid 21 timestamp 7\nid 53 timestamp 6 f 1\nid 33 timestamp 2 f 1\nid 3 timestamp 8\nid 93 timestamp 6 f 1\nid 56 ts 10 f 1\nid 21 5 f 1\nid 18 timestamp 4 f 1\nid 5 timestamp 8 f 1 f 2\nid 53 Timestamp 5 f 1\nid 56 timestamp 2 f 1\nId 3 timestamp 6 f 1\nid 7 timestamp 5 f 1\n3\n6 7 f 1\n0 10 f 1\n4 6 f 1\n",
+    "expectedOutput": "53 93 \n33 56 18 7 53 93 5 \n18 7 53 93 \n"
+  },
+  {
+    "input": "10\nid 91 timestamp 8 g 1 f 1\nid 48 timestamp 8 g 1\nid 11 timestamp 5 h 1 g 1 f 1\nid 8 timestamp 5 h 1\nid 48 timestamp 5 f 1 g 1 h 1 f\nid 84 timestamp 3 g 1 f 1\nid 75 timestamp 10 h 1 f 1\nid 36 timestamp 2 h 1\nid 72 timestamp 6 h 1 g 1 f 1\nid 5 timestamp 8 g 1\n3\n2 5 h 1\n2 8 f 1\n7 8 f 1\n",
+    "expectedOutput": "36 84 8 11 \n36 84 8 11 72 5 48 91 \n5 48 91 \n"
+  },
+  {
+    "input": "13\nid 85 timestamp\nid 99 timestamp 0 h 1 g 1\nid 85 timestamp 2 f 2 h a\nid 45 timestamp 2 f 2\nid 19 ts 2 f 1 h 2\nid 0x1f timestamp 1\nid 64 timestamp 2 g 1 f a h a\nid 16 timestamp 1 g 2\nid 90 1 f 2 h 2 g 2\nid 90 timestamp 2\nid 50 timestamp 0\nid 19 timestamp 0 g 2 h 1 f 1\nid 29 timestamp 2 h 2\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "1\nid 10 timestamp 1 f a g 2\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "5\nid 10 timestamp 2 src/x 1 h 2 g 2\nid 44 timestamp 3 f 2 g 1\ntimestamp 2\nid 4 timestamp 3 h 2 src/x 2\nid 49 timestamp 9 src/x 2\n1\n7 9 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 48 timestamp 2 f 2\nid 15 timestamp 2 f 1\nid\nid 54 timestamp 1\nid 80 timestamp 3 f 1\nid 85 timestamp 3 f 1\nid 46 timestamp 3 f 2\nidx 80 timestamp 3 f 2\nid 13 timestamp 0 f 2\nid 33 timestamp 3 f 1\n5\n1 8 f 1\n6 7 f 1\n9 6 f 2\n2 4 f 1\n3 7 f 1\n",
+    "expectedOutput": "15 33 80 85 \n\n\n15 33 80 85 \n33 80 85 \n"
+  },
+  {
+    "input": "3\nidx 4 timestamp 1\nid 12 timestamp 2 f a src/x 2 h 2\nid 4 timestamp 3\n3\n5 9 f a\n3 5 f a\n2 3 f a\n",
+    "expectedOutput": "\n\n12 \n"
+  },
+  {
+    "input": "7\nid 53 timestamp 7 g 2 g 1\nid 9 timestamp 8 g 1 f 1\nid 9\nid 53 timestamp 1 f 2 g 2\nid 23 timestamp 3\nid 31 timestamp 0 g 2 f 1\nid 28 timestamp 7 g 2 f 1\n1\n1 3 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "2\nid 17 timestamp 2 f 1 dangling\nid 17 timestamp 6 f 2\n3\n3 9 f 2\n2 6 f 2\n5 7 f 2\n",
+    "expectedOutput": "17 \n17 \n17 \n"
+  },
+  {
+    "input": "4\nid 4 timestamp 6 g 2\nid\nid 16 timestamp 1 h 2\nid 22 timestamp 0 h 1 g 1 f 1\n4\n7 7 h 2\n2 5 h 1\n4 6 f 1\n7 10 g 2\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "9\nid 64 timestamp 2 src/x 1 g 2 h 1\ntimestamp 0\nid 7 timestamp 3 g 2 f 2 src/x 1\nid 19 timestamp 1\nid 62 timestamp 2 src/x 2 g 2\nid 31 timestamp 3 f 1 src/x 1\nid 39 timestamp 2 h 2 src/x 1 f 1\nid 37 timestamp 0 g 2\nid 7 timestamp x h 1 f 2\n4\n3 3 f 1\n0 4 h 1\n7 0 f 1\n7 1 src/x 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "7\nid 52 timestamp 6 f 1\nid 34 timestamp 2 f 1\nid 44 timestamp 6 f 1 f 2\nid 52 9\nid 44 timestamp 3 f 1\nid 9 timestamp 4 f 1\nid 56 timestamp 4\n2\n1 6 f 1\n2 10 f 1\n",
+    "expectedOutput": "34 44 9 52 \n34 44 9 52 \n"
+  },
+  {
+    "input": "5\nid 22 timestamp\nid 22 timestamp 7 f 2\nid 15 timestamp 3 f 1\nid 14 timestamp 5\nid 49 timestamp 6 f a\n5\n1 8 f 2\n1 9 f a\n3 4 f a\n7 9 f a\n5 6 f 1\n",
+    "expectedOutput": "22 \n49 \n\n\n\n"
+  },
+  {
+    "input": "5\nid 14 timestamp 4\nid 14 timestamp 5 f 1 f zz\nid 5 timestamp 8\nid 24 timestamp 10 f 1\nid 48 timestamp 1 f 1\n2\n6 10 f 1\n2 6 f 1\n",
+    "expectedOutput": "24 \n\n"
+  },
+  {
+    "input": "12\nid 78 timestamp 5 g 2 f 1 h 1\nid 89 timestamp 3 g 1\nid 53 timestamp 8 g 2 h 2 f 1\nid 80 4\nid 39 timestamp 6 f 2 g 2 h 2\nid 86 timestamp 0 h 1 f 2\nid 78 Timestamp 7 h 2\nid 80 timestamp 6 f 2\nid 52 timestamp 0 h 1 f 1\nid 39 timestamp 39- g 1 h 1\nid 67 timestamp 10 h 1\nid 79 timestamp 10 h 1 f 1\n3\n0 10 g 2\n0 9 f 1\n6 10 h 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "7\nid 14 timestamp 0 f 2\n51 6\nid 23 timestamp 10 f 1\nid 15 timestamp 9\nid 50 timestamp 6 f 2\nid 51 timestamp 7 f 2 zz\nid 51 timestamp 8 f 2\n2\n6 6 f 1\n0 10 f 2\n",
+    "expectedOutput": "\n14 50 51 \n"
+  },
+  {
+    "input": "8\nid 0x1f timestamp 1 g 2 h 1\nid 11 timestamp 3 h 1 f 2 g 2\nid 4 timestamp 2 g 2 f 1\nid 42 timestamp 1\nid 53 timestamp 0 h 1\nid 11 3 g 2 h 1\nid 1.5 timestamp 1 h 2 g 2 f 2\nid 6 timestamp 0 g 2 f 2\n3\n6 7 f 1\n3 7 g 2\n2 5 h 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "4\nid 38 timestamp 1 f 2 g 1\nid 38 timestamp\nid 14 timestamp 3 f 2 g 1\nid 17 timestamp 3 f 2\n4\n1 5 g 1\n2 3 g 1\n6 7 f 2\n3 6 f 2\n",
+    "expectedOutput": "38 14 17 \n14 17 \n\n14 17 \n"
+  },
+  {
+    "input": "10\nid 0 timestamp 8 f 1 g a\ncommit 0 timestamp 2 g 2 f 1\nid 2 timestamp 8 f 2\nid 29 timestamp\nid 63 timestamp 5 g 1 f 1 g 2\nid 25 timestamp 1 g a f 1\nid 29 timestamp 0\nid 21 timestamp 8 g a f 2\nid 41 timestamp 7 f a g a\nid 63 timestamp 6 g 1 f 2\n2\n1 1 g a\n1 5 g 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "3\nid 8 timestamp 1 f 2\nid 15 timestamp 1 f\nid 15 timestamp 2\n3\n0 1 f 2\n6 0 f 2\n4 10 f 2\n",
+    "expectedOutput": "8 \n\n\n"
+  },
+  {
+    "input": "10\nid 58 timestamp 2\ncommit 28 timestamp 3 f 1\nid 28 timestamp 1\nid 24 timestamp 1\nid 58 time 1 f a\nid 49 timestamp 3 f a\nid 10 timestamp 2 zz\nid 10 timestamp 0 f a\nid 50 timestamp 2\nid 18 timestamp 0\n4\n2 8 f a\n6 7 f a\n1 2 f a\n6 9 f a\n",
+    "expectedOutput": "49 \n\n\n\n"
+  },
+  {
+    "input": "6\nid 6 timestamp 0 g a f 1\nid 48 timestamp 2\nid 25 timestamp 2 h a f a\nid 3 timestamp 3 g 1 f 1 h 1\nid 6 timestamp 2 f a dangling\nid 25 timestamp 2 f 1 f 1\n3\n9 9 g 1\n5 2 g 1\n0 1 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "5\nid 32 timestamp 4 g 2\nid 48 timestamp 4 h a\ncommit 48 timestamp 10 src/x 2 f 1 h 1\nid 46 timestamp 3 f 2 g 2 h 2\nid 6 timestamp 4 h a f 2 src/x 1\n4\n0 7 g 2\n6 9 h 2\n2 9 src/x 1\n0 3 src/x 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 34 timestamp 7 f 1\nid 89 timestamp 5\nid 16 timestamp 0 f 2\nid 22 timestamp 1 f 2\nid 60 timestamp 5 f 2\nid 42 timestamp 4 f 2\nid 16 timestamp\nid 23 timestamp 7 f 1\nid 89 7 f 1\nid 39 timestamp 1\n5\n0 7 f 2\n8 9 f 1\n0 2 f 1\n1 7 f 1\n8 10 f 2\n",
+    "expectedOutput": "16 22 42 60 \n\n\n23 34 \n\n"
+  },
+  {
+    "input": "2\nid 11 timestamp 0 f 1\nid 24 timestamp 3 f 1\n4\n8 10 f 1\n5 9 f 1\n2 9 f 1\n9 10 f 1\n",
+    "expectedOutput": "\n\n24 \n\n"
+  },
+  {
+    "input": "2\nid 2 timestamp 8 g 1 h 1\nid 0 timestamp 6 f 1 g 1\n5\n0 8 h 1\n0 8 g 1\n5 7 h 1\n1 4 h 1\n0 10 f 1\n",
+    "expectedOutput": "0 2 \n0 2 \n0 \n\n0 2 \n"
+  },
+  {
+    "input": "3\nid 36 timestamp 0 f a\nid 3 timestamp 4\nid 10 timestamp 4 h 1\n5\n7 8 h 1\n2 2 h 1\n6 7 h 1\n2 9 f a\n0 4 f a\n",
+    "expectedOutput": "\n\n\n\n36 \n"
+  },
+  {
+    "input": "8\nid 3 timestamp 5\nid 73 timestamp 5 g a h 1\nid 2 timestamp 5 g a f 1\nid 40 timestamp 10 g 1 h 2 f a\nid 3 7 g 1 h a\nid 78 timestamp 8 h 1 f a src/x 2\nid 66 timestamp 9 h a g 2\nid 8 timestamp 1 g 1 f 1 h 2\n5\n5 6 src/x 2\n3 7 g 1\n1 3 src/x 2\n0 2 h 2\n2 10 h 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "5\nid 31 timestamp 31a f 1 g 1\nid 26 timestamp 5\nid 0 timestamp 7 f 2\nid 31 timestamp 10 g 2\nid 0 Timestamp 7\n5\n4 10 g 2\n6 8 f 2\n0 10 f 2\n0 10 g 2\n4 8 f 2\n",
+    "expectedOutput": "31 \n0 \n0 \n31 \n0 \n"
+  },
+  {
+    "input": "9\nid 64 timestamp 2\nid 26 ts 3\nid 69 timestamp 2 f 2 h 2 g 1\nid 19 timestamp 0 g 1\nid 26 timestamp 1 f a g 1 h a\nid 64 timestamp 1 g 2 f a g 1\nid 53 timestamp 1.5 h a g a f 1\nid 55 timestamp 1 h a f a\nid 53 timestamp 0\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 24 Timestamp 0\nid 23 timestamp 3 g a\nid 41 timestamp 0 g a f 1\nid 24 timestamp 3 f 2 g a\nid 54 Timestamp 1 g 2 f a\nid 76 3\nid 11 timestamp 2 g a\nid 54 timestamp 2\nid 9 timestamp 3\nid 76 timestamp 3 g a f a\nid 63 timestamp 3 f a\n4\n2 10 f 1\n8 10 f a\n3 8 g a\n6 10 g a\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "11\nid 51 timestamp 2\ncommit 17 timestamp 3 src/x 1 h 1\nid 72 timestamp 3 f 1 f 1\nid 20 timestamp 3\nid 72 timestamp 2 g 1 f 1\nid 17 timestamp 1 src/x 1 h 1 f 1\nid 21 timestamp 0\nid 51 timestamp\nid 79 timestamp 1\nid 39 timestamp 0 src/x 1\ntimestamp 1\n4\n9 10 src/x 1\n7 9 f 1\n8 9 g 1\n0 10 g 1\n",
+    "expectedOutput": "\n\n\n39 17 72 \n"
+  },
+  {
+    "input": "4\nid 17 timestamp 0 f 1\nid 13 4\nid 21 timestamp 8 f 1\nid 13 timestamp 7\n5\n1 7 f 1\n5 9 f 1\n2 8 f 1\n2 6 f 1\n4 6 f 1\n",
+    "expectedOutput": "\n21 \n21 \n\n\n"
+  },
+  {
+    "input": "6\nid 22 timestamp 4 f 2\nid 17 timestamp 0 f a\nid 9 timestamp 2 f a\nid 17 timestamp x\nid 49 timestamp 10 f 1\n17 0\n1\n5 5 f a\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "6\nid 42 timestamp 2 g 1 f 2 h 2\nid 45 timestamp 1 h 1 g 2\nid 45 Timestamp 2 h 1\nid 1 timestamp 0\nid\nid 28 timestamp 0 g 2 h 1\n3\n0 9 f 2\n0 6 h 2\n5 9 h 2\n",
+    "expectedOutput": "42 \n42 \n\n"
+  },
+  {
+    "input": "13\nidx 37 timestamp 1\nid 26 timestamp 3\nid 52 timestamp 3 f 2 f 1\nid 33 timestamp 1 g 2 f 2\nid 70 timestamp 0 f 1 g 2\nid 48 timestamp 2 f 1\nid 90 timestamp 3 g 2 f 1\nid 90 1 g 1 f 2\nid 31 timestamp 2\nid 27 timestamp 1 g 2 f 2\nid 37 timestamp 0 f 1 g 2\nid 52 timestamp 2 g 1 f 1\nid 90 timestamp 3 f 1 g 2 dangling\n5\n3 4 g 2\n6 9 f 2\n2 0 g 2\n3 7 f 1\n6 9 f 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "8\nid 6 timestamp 0x1f f 1\nid 51 timestamp 1\nid 6 timestamp 1 src/x 1\nid 49 timestamp 0\nid 10 timestamp 0\nid a6 timestamp 1 f 1 src/x 1 g 1\n10 3\nid 55 timestamp 2 h 1 src/x 1\n1\n2 3 h 1\n",
+    "expectedOutput": "55 \n"
+  },
+  {
+    "input": "9\nid 28 timestamp 0 f a g 1\nid 0 timestamp 2 f 1\nid 77 timestamp 3 h 2 g 1\n28 0\nid 67 timestamp 1 g 1 f 1\nid 10 timestamp 2 g 1 f a\nid 58 timestamp 0 f 1\nid 10 2\nid 74 timestamp 1 h 1\n4\n4 5 h 1\n4 7 g 1\n5 10 g 1\n3 4 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "9\nid 46 timestamp 4 f 1 h 1 g 2\nid 40 timestamp 0 f 1 f zz\nid 60 timestamp 9\nid 14 timestamp 2 f 1 g 2\nid 36 timestamp 4 g 2 dangling\nid 40 timestamp x h 1 f 1\nid 40 timestamp 10 f 2\nid 36 timestamp 6 h 2\nid 8 timestamp 6 f 2 h 1 g 2\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "2\nid 17 timestamp 2 g 1 h 2\nid 17 timestamp 17-\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "1\nid 6 timestamp 1 h 1 g 1\n5\n4 7 h 1\n9 10 h 1\n8 10 g 1\n1 3 g 1\n9 4 g 1\n",
+    "expectedOutput": "\n\n\n6 \n\n"
+  },
+  {
+    "input": "13\nid 86 timestamp 4\nId 86 timestamp 10 g 2 src/x 1 h 2\nid 69 timestamp 1.5\ntimestamp 8\nid 26 timestamp 10\nid 26 timestamp a26\nid 75 timestamp 5 src/x 1 h 2\nid 69 timestamp 8\nid 40 timestamp 2 h 2 g 1 src/x 2\nid 62 timestamp 0 h 2 src/x 1\nid 13 timestamp 6 h 1 g 2 src/x 1\nid 49 timestamp 6 f 1\nid 77 timestamp 0\n1\n5 6 src/x 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "9\nid 21 timestamp a21 f 2 g 2\nid 52 timestamp 0\nid 79 timestamp 2 f 2 g 2\nid 21 timestamp 2 g 2\nid\nid 39 timestamp 2\nid 78 timestamp 2 f 1 g 1\nid 76 timestamp 2 g 1 f 2\nid 10 timestamp 0 g 2\n3\n3 9 f 2\n1 1 f 2\n2 7 g 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "9\nid 61 timestamp 9\nid 8 timestamp 5 g 2 f 2 h 1\nid 43 timestamp 4 h 2\nid 12 timestamp 8 h 2 f 1 g 1\nid 71 timestamp 3 h 2\nid 43 6 f 2 h 2\nid 49 timestamp 7\nid 68 timestamp 4 g 2 f 2\ntimestamp 4\n1\n4 10 g 2\n",
+    "expectedOutput": "68 8 \n"
+  },
+  {
+    "input": "6\nid 52 timestamp 0 f 1 g 1 g 1\nid 12 timestamp 3\nid 52 timestamp 2\nid 17 timestamp 3 g 1 f 1\nid 26 timestamp 3\nid 9 timestamp 0 g 1 f 1\n3\n3 7 f 1\n0 5 f 1\n2 10 g 1\n",
+    "expectedOutput": "17 \n9 17 \n17 \n"
+  },
+  {
+    "input": "8\nid 46 timestamp 1 f 1 g 2 h a\nid 13 timestamp 5 g 1 f 1 h 2\nid 46 timestamp 4 h a f 1 g 1 f\nid 0 timestamp 6 g 2 f 2 h 1\nid 4 timestamp 5 g 2 f 2\nid 4 5 g 2 h 2 f a\nid 43 timestamp 8 g 2\n4 2\n3\n3 9 g 2\n4 10 h 2\n7 9 g 2\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "10\nid 26 timestamp 4\nid 77 timestamp 10 f 2\nid 44 6\nid 87 timestamp 6 f a\nid 83 timestamp 9 f a\nid 44 timestamp 1 f 2\nid 41 timestamp 10 f 1\nid 75 timestamp 6\nid 6 timestamp 3 f 2\nid 67 timestamp 7 f 1\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "13\nid 97 timestamp 1 g 2\nid 58 timestamp 1\nid 47 timestamp 1 h 1 f 2 g 2\nid 87 timestamp 3 f 2 g 1\nid 44 timestamp 1 g a h 2 f a\nid 42 1\nid 12 timestamp 1 f 1 g 2\nid 17 timestamp 0\n17 1\nid 42 timestamp 2 g a h a f a\nid 18 timestamp 3 f 1\nid 17 Timestamp 2\nid 12 1 f a\n0\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "7\nid 0 timestamp 0\nid 44 timestamp 1 g 1 f 1\nid 4 timestamp 1 g 1 f 1\nid 0 ts 2 g 1 f 1\nid 43 timestamp 1\nid 41 timestamp 1\nId 43 timestamp 0\n1\n2 5 g 1\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "10\nid 11 timestamp 3 g 1\nid 23 timestamp 0 f 2 g 2\nid 63 timestamp 3 f 2 g 1\nId 44 timestamp 0 g 1 f 1\nid 22 timestamp 3 f 2\nid 44 timestamp 3 g 1 f 2\nid 22 timestamp 2 f 1 f 1\nid 22 timestamp 2 g 2 g zz\nid 78 timestamp 3 f 1 g 1\nid 64 timestamp 3 f 1 g 2\n4\n5 7 f 2\n4 6 f 2\n5 10 g 1\n6 2 f 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "4\nid x timestamp 1 f 1\nid 25 timestamp 2 f a f 2\nid 25 timestamp 10 f 2\nid 12 timestamp 5\n3\n2 9 f 2\n4 8 f 2\n4 7 f 2\n",
+    "expectedOutput": "\n\n\n"
+  },
+  {
+    "input": "11\nid 42 timestamp 2 g 2 f 2\nid 61 timestamp 3 g 1\nid 39 ts 1 g 2\nid 51 timestamp 0 f 2 g 2\nid 78 timestamp 1 f 2 g 1\nid 6 timestamp 2\nid 7 timestamp 1 f 1\nid 39 timestamp 3 g a\nid 42 1 f 2\nid 8 timestamp 3 g 2\nId 8 timestamp 3 g a\n4\n1 1 g 2\n6 2 g a\n4 5 g a\n5 8 g 1\n",
+    "expectedOutput": "AMBIGUOUS INPUT!\n"
+  },
+  {
+    "input": "3\nid 2 timestamp 1\nid 2 3 g 1 f 2\nid 11 timestamp 3 f 2 g 1\n0\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "12\nid 0 timestamp 1.5 g 1 f 1\n0 8\nid 0 timestamp 4\nid 22 timestamp 2 g 1\nid 16 timestamp 2\nid 8 timestamp 6 f 1\nid 67 timestamp 2 f 1 g 1\nid 82 timestamp 10 f 1 g 1\nid 37 timestamp 6 f 1 f 1\nid 16 timestamp 3 g 1 f 1 dangling\nid 37 timestamp 5 g 1\nid 10 timestamp 2 f 1 g 1\n5\n3 6 g 1\n0 9 f 1\n1 1 f 1\n3 4 g 1\n9 9 f 1\n",
+    "expectedOutput": "37 8 \n10 22 67 37 8 \n\n\n\n"
+  }
+]

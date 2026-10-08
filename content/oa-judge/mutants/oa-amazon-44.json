@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误只排序不构成回文",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <algorithm>\nusing namespace std;\nint main(){string s;char buf[1<<16];size_t k;while((k=fread(buf,1,sizeof buf,stdin))>0)s.append(buf,k);\nwhile(!s.empty()&&(s.back()=='\\n'||s.back()=='\\r'))s.pop_back();sort(s.begin(),s.end());s+='\\n';fwrite(s.data(),1,s.size(),stdout);}\n"
+  },
+  {
+    "name": "错误原样输出输入回文",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){char buf[1<<16];size_t k;while((k=fread(buf,1,sizeof buf,stdin))>0)fwrite(buf,1,k,stdout);}\n"
+  },
+  {
+    "name": "错误按字典序最大放置",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string s;s.reserve(1<<25);char buf[1<<16];size_t k;\nwhile((k=fread(buf,1,sizeof buf,stdin))>0)s.append(buf,k);\nlong long cnt[26]={0};for(char c:s)if(c>='a'&&c<='z')cnt[c-'a']++;\nlong long n=0;for(int i=0;i<26;i++)n+=cnt[i];\nstring out(n,'?');long long l=0,r=n-1;\nfor(int i=25;i>=0;i--){for(long long k2=0;k2<cnt[i]/2;k2++){out[l++]=char('a'+i);out[r--]=char('a'+i);}if(cnt[i]%2)out[n/2]=char('a'+i);}\nout+='\\n';fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误奇数字符放在首位",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string s;s.reserve(1<<25);char buf[1<<16];size_t k;\nwhile((k=fread(buf,1,sizeof buf,stdin))>0)s.append(buf,k);\nlong long cnt[26]={0};for(char c:s)if(c>='a'&&c<='z')cnt[c-'a']++;\nlong long n=0;for(int i=0;i<26;i++)n+=cnt[i];\nstring out(n,'?');long long l=n%2,r=n-1;\nfor(int i=0;i<26;i++){for(long long k2=0;k2<cnt[i]/2;k2++){out[l++]=char('a'+i);out[r--]=char('a'+i);}if(cnt[i]%2)out[0]=char('a'+i);}\nout+='\\n';fwrite(out.data(),1,out.size(),stdout);}\n"
+  }
+]

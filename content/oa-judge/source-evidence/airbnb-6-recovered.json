@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-airbnb-6": {
+      "contentHash": "54ed5ba7e3dac6c1628db32155c0483c2c20fe927f5242f807c86c98799e1602",
+      "catalogContentHash": "54ed5ba7e3dac6c1628db32155c0483c2c20fe927f5242f807c86c98799e1602",
+      "sourceUrl": "https://oamaster.com/docs/companies/airbnb#6-print-sentences-as-table",
+      "sources": [
+        {
+          "path": "fastprep/Airbnb/airbnb-print-sentences-as-table.md",
+          "gitBlobSha": "20e666083aa7be19fee57c32e68f71d08aa91c60",
+          "rawSha256": "bbf460439bd60711f598a2a2d430da52d7234dbc032d4cb8313065316f605b45"
+        },
+        {
+          "path": "web/content/docs/companies/airbnb.mdx",
+          "gitBlobSha": "c92f5142a5e3ec28a8945b6d8fb2d7913f4622f3",
+          "rawSha256": "ebda6bb37536038123e96d08343b027bd8a82c487c3ea3b4929368a30dd99cb3"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "rangeDisclosure": "Original: 0<=n<=10^5, 1<=width<=10^4 (worst ~1GB input, ~2GB output). Reduced to n<=10^5 (original n kept), width<=300: worst output (2n+1)(width+5)=61.2MB fits the 64MiB per-case budget. Chosen over the alternative n<=3000, width<=10^4 because (a) it keeps the original row-count bound, so every large case exercises 10^5 independent rows with all padding amounts 0..width, which is what distinguishes formatting bugs (per-row padding, closing border, leading-space trimming); (b) under either option one max-output case is ~61MB, but with width<=300 input stays small (short sentences still give max output), so several large cases (max n/max width, width 1, width 40 full rows, width 300 full rows, edge-space rows) fit together in one package under ~95MB, whereas n<=3000 width=10^4 full rows already cost ~90MB for a single case. Character set unchanged.",
+      "corrections": [
+        "The raw statement says the sample output is in a visible example that the snapshot does not contain; sample output is derived from the explicit border/row rules (closing border after the last row, as the bordered-table wording and the catalog solution agree).",
+        "Second and third public samples are authored."
+      ]
+    }
+  }
+}

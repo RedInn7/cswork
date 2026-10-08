@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-flexport-3",
+      "sourceContentHash": "84ee3ab9a35b3d1d9847a63164858e36a3af35ac7baae94fd76faa62abe7bda4",
+      "packageChecksum": "0c69d5fe1d5908bdcb0a55ea8f391abf1350c1bc34fbf1086c4d790fd55ba908",
+      "editorial": "## 题意\n\n给定数字串num，可以在任意相邻两个字符之间插入'+'（每个空隙至多一个'+'，可以一个都不插）。对所有2^(n−1)种插法，把得到的算式求值，求这些值的总和对10^9+7取模。被'+'分开的每一段按十进制数求值，前导零不影响数值（例如\"05\"的值为5）。\n\n## 前缀递推\n\n只看前i个字符构成的所有算式，维护三个量：算式个数c、所有算式的值之和f、所有算式最后一段的数值之和g。加入下一位数字d时，每个旧算式有两种延伸：\n\n- 在中间插'+'，d成为新的一段：值增加d，最后一段变为d。\n- 不插'+'，d接在最后一段后面：最后一段x变为10x+d，值增加9x+d。\n\n汇总得到：c' = 2c，f' = (f + c·d) + (f + 9g + c·d) = 2f + 9g + 2cd，g' = c·d + (10g + c·d) = 10g + 2cd。初始只有第一位时c=1，f=g=d。最终答案是f。\n\n## 正确性\n\n每个长度为i+1的算式唯一对应“长度为i的算式+最后一个空隙插或不插”，上面两种情况恰好覆盖这两种选择，各自对值与最后一段的影响按十进制定义计算，因此三个量的递推都是精确的（在模意义下同样成立，因为只用了加法和乘法）。归纳到整串即得答案。\n\n## 复杂度\n\nO(n)时间、O(1)额外空间，参考解按块读入，长度三千万的输入也只需一次线性扫描。\n\n## 独立验证\n\noracle从每一位数字的贡献出发：第i位（0起）在某段中处于从右数第k位时贡献d·10^k，此时它左边的i个空隙任意，它到段尾的k个空隙不插'+'，段尾后的空隙必须插'+'（若段尾不是整串末尾），其余空隙任意。于是第i位的总权重为2^i·(Σ_{k<m} 10^k·2^{m−1−k} + 10^m)，m=n−1−i，由右向左累加，不复用前缀递推。小域另枚举所有插法直接求值。穷举长度1..4的全部数字串并逐个真实运行参考程序。正式用例覆盖原样例、单个数字、全零、前导零、全9、长度三千万随机串等。四个正常退出的错误程序（个数不取模、错误模数、漏加新数字、漏掉不插加号的算式）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\nint main(){const uint64_t M=1000000007ULL;static char buf[1<<16];size_t k;bool first=true;uint64_t c=0,f=0,g=0;\nwhile((k=fread(buf,1,sizeof buf,stdin))>0)for(size_t i=0;i<k;i++){char ch=buf[i];if(ch<'0'||ch>'9')continue;uint64_t d=ch-'0';\nif(first){c=1;f=d;g=d;first=false;continue;}\nuint64_t cd=c*d%M;f=(2*f+9*g+2*cd)%M;g=(10*g+2*cd)%M;c=c*2%M;}\nprintf(\"%llu\\n\",(unsigned long long)f);}\n"
+        }
+      ]
+    }
+  ]
+}

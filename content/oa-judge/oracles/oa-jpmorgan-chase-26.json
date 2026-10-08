@@ -1,0 +1,722 @@
+[
+  {
+    "input": "4\nduel\nspeed\ndule\ncars\n2\nspede\ndeul\n",
+    "expectedOutput": "1 speed\n2 duel dule\n"
+  },
+  {
+    "input": "7\nstop\npots\ntops\nopts\npost\nspot\nstops\n2\npost\nstops\n",
+    "expectedOutput": "6 opts post pots spot stop tops\n1 stops\n"
+  },
+  {
+    "input": "5\naabb\nabab\nbbaa\nab\nabc\n3\nbaba\nba\ncab\n",
+    "expectedOutput": "3 aabb abab bbaa\n1 ab\n1 abc\n"
+  },
+  {
+    "input": "1\na\n1\na\n",
+    "expectedOutput": "1 a\n"
+  },
+  {
+    "input": "2\nab\nba\n1\nab\n",
+    "expectedOutput": "2 ab ba\n"
+  },
+  {
+    "input": "4\naab\naba\nbaa\nabb\n2\nbba\naab\n",
+    "expectedOutput": "1 abb\n3 aab aba baa\n"
+  },
+  {
+    "input": "4\nad\nbc\nda\ncb\n2\nad\nbc\n",
+    "expectedOutput": "2 ad da\n2 bc cb\n"
+  },
+  {
+    "input": "1\nzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n1\nzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n",
+    "expectedOutput": "1 zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n"
+  },
+  {
+    "input": "6\nabc\nacb\nbac\nbca\ncab\ncba\n3\ncba\nabc\nbca\n",
+    "expectedOutput": "6 abc acb bac bca cab cba\n6 abc acb bac bca cab cba\n6 abc acb bac bca cab cba\n"
+  },
+  {
+    "input": "3\nx\nxx\nxxx\n3\nxx\nx\nxxx\n",
+    "expectedOutput": "1 xx\n1 x\n1 xxx\n"
+  },
+  {
+    "input": "3\na\nbaa\naa\n5\na\naba\na\nbaa\na\n",
+    "expectedOutput": "1 a\n1 baa\n1 a\n1 baa\n1 a\n"
+  },
+  {
+    "input": "3\ncba\nac\nbab\n3\nca\nbba\nac\n",
+    "expectedOutput": "1 ac\n1 bab\n1 ac\n"
+  },
+  {
+    "input": "6\naaaba\naaaab\nab\naabaa\nba\nbaaaa\n4\nba\nba\nab\naabaa\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n2 ab ba\n4 aaaab aaaba aabaa baaaa\n"
+  },
+  {
+    "input": "9\ncb\nbc\nbac\nbdb\nba\nbca\nab\nbbd\ncc\n3\nbc\ncab\ndbb\n",
+    "expectedOutput": "2 bc cb\n2 bac bca\n2 bbd bdb\n"
+  },
+  {
+    "input": "2\nb\na\n2\na\na\n",
+    "expectedOutput": "1 a\n1 a\n"
+  },
+  {
+    "input": "4\nbbb\nab\nb\nba\n6\nbbb\nb\nba\nbbb\nbbb\nb\n",
+    "expectedOutput": "1 bbb\n1 b\n2 ab ba\n1 bbb\n1 bbb\n1 b\n"
+  },
+  {
+    "input": "5\ncba\nabc\nbca\ncab\ncc\n3\ncba\nbca\ncc\n",
+    "expectedOutput": "4 abc bca cab cba\n4 abc bca cab cba\n1 cc\n"
+  },
+  {
+    "input": "14\nccdb\ncbcdb\nbadaad\ncdca\ndbadaa\ncbdcb\ncbcd\ndaabda\ncbdc\naaddba\nadcc\nccda\nbdaaad\ndccbb\n6\ncdac\nbcbcd\ndacc\nabdada\naddbaa\ncdbbc\n",
+    "expectedOutput": "3 adcc ccda cdca\n3 cbcdb cbdcb dccbb\n3 adcc ccda cdca\n5 aaddba badaad bdaaad daabda dbadaa\n5 aaddba badaad bdaaad daabda dbadaa\n3 cbcdb cbdcb dccbb\n"
+  },
+  {
+    "input": "2\naba\nba\n2\nbaa\naba\n",
+    "expectedOutput": "1 aba\n1 aba\n"
+  },
+  {
+    "input": "12\nbbaaab\nbbbaaa\naaabbb\nababb\naa\nbbb\nbabba\nababba\nbbaba\naabbab\nbaabb\naabbba\n6\nbbaab\nabbaba\nbabab\nbbbaaa\nababba\nabaabb\n",
+    "expectedOutput": "4 ababb baabb babba bbaba\n6 aaabbb aabbab aabbba ababba bbaaab bbbaaa\n4 ababb baabb babba bbaba\n6 aaabbb aabbab aabbba ababba bbaaab bbbaaa\n6 aaabbb aabbab aabbba ababba bbaaab bbbaaa\n6 aaabbb aabbab aabbba ababba bbaaab bbbaaa\n"
+  },
+  {
+    "input": "7\ncb\naa\nbbc\nbcb\nb\ncbb\nbc\n4\ncbb\nbcb\nbc\nbcb\n",
+    "expectedOutput": "3 bbc bcb cbb\n3 bbc bcb cbb\n2 bc cb\n3 bbc bcb cbb\n"
+  },
+  {
+    "input": "3\naaa\nb\nbb\n2\nbb\nb\n",
+    "expectedOutput": "1 bb\n1 b\n"
+  },
+  {
+    "input": "1\nb\n4\nb\nb\nb\nb\n",
+    "expectedOutput": "1 b\n1 b\n1 b\n1 b\n"
+  },
+  {
+    "input": "7\nca\nac\nd\na\nc\ncbd\ndcb\n6\nc\nca\nc\na\nca\ndcb\n",
+    "expectedOutput": "1 c\n2 ac ca\n1 c\n1 a\n2 ac ca\n2 cbd dcb\n"
+  },
+  {
+    "input": "4\ndbd\nb\nddb\nbdd\n2\nddb\ndbd\n",
+    "expectedOutput": "3 bdd dbd ddb\n3 bdd dbd ddb\n"
+  },
+  {
+    "input": "5\naab\nbaa\nab\nb\nba\n5\nab\nbaa\nb\naab\nba\n",
+    "expectedOutput": "2 ab ba\n2 aab baa\n1 b\n2 aab baa\n2 ab ba\n"
+  },
+  {
+    "input": "3\ncbcab\nabbcc\ncabbc\n2\nccbab\nccabb\n",
+    "expectedOutput": "3 abbcc cabbc cbcab\n3 abbcc cabbc cbcab\n"
+  },
+  {
+    "input": "6\nba\naba\nab\na\naab\nbaa\n1\nab\n",
+    "expectedOutput": "2 ab ba\n"
+  },
+  {
+    "input": "7\nbabbbb\nbbbb\nbbbabb\nabaaa\nabbbbb\naaaab\nbaaaa\n1\nabaaa\n",
+    "expectedOutput": "3 aaaab abaaa baaaa\n"
+  },
+  {
+    "input": "1\ncbb\n5\ncbb\ncbb\nbbc\nbbc\ncbb\n",
+    "expectedOutput": "1 cbb\n1 cbb\n1 cbb\n1 cbb\n1 cbb\n"
+  },
+  {
+    "input": "5\na\ncbb\nabcba\nbbbc\nacbc\n2\na\nbbbc\n",
+    "expectedOutput": "1 a\n1 bbbc\n"
+  },
+  {
+    "input": "2\nbb\nb\n6\nb\nbb\nb\nbb\nbb\nb\n",
+    "expectedOutput": "1 b\n1 bb\n1 b\n1 bb\n1 bb\n1 b\n"
+  },
+  {
+    "input": "4\nbaba\naabba\nabba\nbabaa\n4\nbaba\nbaaba\nbaaab\nabab\n",
+    "expectedOutput": "2 abba baba\n2 aabba babaa\n2 aabba babaa\n2 abba baba\n"
+  },
+  {
+    "input": "2\nb\nbb\n3\nb\nbb\nbb\n",
+    "expectedOutput": "1 b\n1 bb\n1 bb\n"
+  },
+  {
+    "input": "1\nc\n3\nc\nc\nc\n",
+    "expectedOutput": "1 c\n1 c\n1 c\n"
+  },
+  {
+    "input": "10\nad\ndcb\ndc\nbdc\ncdb\ncd\nbcd\nda\ncc\nd\n6\ncbd\nbcd\ncc\nbcd\nbdc\nd\n",
+    "expectedOutput": "4 bcd bdc cdb dcb\n4 bcd bdc cdb dcb\n1 cc\n4 bcd bdc cdb dcb\n4 bcd bdc cdb dcb\n1 d\n"
+  },
+  {
+    "input": "3\ncb\ncc\nbc\n6\ncb\ncc\ncb\nbc\nbc\nbc\n",
+    "expectedOutput": "2 bc cb\n1 cc\n2 bc cb\n2 bc cb\n2 bc cb\n2 bc cb\n"
+  },
+  {
+    "input": "9\ndcdcd\nddccd\nadaad\ndaaad\naadad\nccddd\nddcdc\nadada\naa\n5\ncddcd\ncdcdd\nddaaa\ncddcd\ncdcdd\n",
+    "expectedOutput": "4 ccddd dcdcd ddccd ddcdc\n4 ccddd dcdcd ddccd ddcdc\n4 aadad adaad adada daaad\n4 ccddd dcdcd ddccd ddcdc\n4 ccddd dcdcd ddccd ddcdc\n"
+  },
+  {
+    "input": "3\nbb\nda\nad\n5\nad\nad\nbb\nbb\nda\n",
+    "expectedOutput": "2 ad da\n2 ad da\n1 bb\n1 bb\n2 ad da\n"
+  },
+  {
+    "input": "4\nbbaba\nbaabb\nbb\naabbb\n5\nbb\nbabab\nabbab\nbbaab\naabbb\n",
+    "expectedOutput": "1 bb\n3 aabbb baabb bbaba\n3 aabbb baabb bbaba\n3 aabbb baabb bbaba\n3 aabbb baabb bbaba\n"
+  },
+  {
+    "input": "3\nba\nb\na\n4\nba\nab\na\na\n",
+    "expectedOutput": "1 ba\n1 ba\n1 a\n1 a\n"
+  },
+  {
+    "input": "4\ndbc\nabc\ndacbbc\nab\n5\nadbbcc\nacb\nabdbcc\nba\nacb\n",
+    "expectedOutput": "1 dacbbc\n1 abc\n1 dacbbc\n1 ab\n1 abc\n"
+  },
+  {
+    "input": "2\nbabb\naabaaa\n5\nabbb\naabaaa\nbabb\naabaaa\nabbb\n",
+    "expectedOutput": "1 babb\n1 aabaaa\n1 babb\n1 aabaaa\n1 babb\n"
+  },
+  {
+    "input": "12\naba\nbaa\nbaab\nacab\nbaac\nbbaa\nabca\ncc\nabac\naab\nbaba\nabab\n1\naab\n",
+    "expectedOutput": "3 aab aba baa\n"
+  },
+  {
+    "input": "2\ncb\nbc\n2\nbc\ncb\n",
+    "expectedOutput": "2 bc cb\n2 bc cb\n"
+  },
+  {
+    "input": "8\nca\na\ncb\naa\nac\nab\nba\nbc\n3\naa\nba\nac\n",
+    "expectedOutput": "1 aa\n2 ab ba\n2 ac ca\n"
+  },
+  {
+    "input": "8\nccaddb\ndaa\naad\nba\nb\nd\nbccdda\nab\n6\nb\ndaa\nd\nb\nada\nab\n",
+    "expectedOutput": "1 b\n2 aad daa\n1 d\n1 b\n2 aad daa\n2 ab ba\n"
+  },
+  {
+    "input": "3\nbba\nbab\nabb\n2\nabb\nbba\n",
+    "expectedOutput": "3 abb bab bba\n3 abb bab bba\n"
+  },
+  {
+    "input": "1\nbaa\n1\naab\n",
+    "expectedOutput": "1 baa\n"
+  },
+  {
+    "input": "5\nbccaca\nbcacca\naaa\nccacab\nbaccac\n2\nccacba\naacbcc\n",
+    "expectedOutput": "4 baccac bcacca bccaca ccacab\n4 baccac bcacca bccaca ccacab\n"
+  },
+  {
+    "input": "5\ncbaabc\nadcc\nd\nad\nb\n2\nb\ncadc\n",
+    "expectedOutput": "1 b\n1 adcc\n"
+  },
+  {
+    "input": "6\nacc\ncac\nba\nb\nab\ncca\n3\nba\ncca\nb\n",
+    "expectedOutput": "2 ab ba\n3 acc cac cca\n1 b\n"
+  },
+  {
+    "input": "8\nbaaaab\nbabaaa\nabaaa\nabbbb\naabaa\na\nbaaaa\nbabbb\n1\nbbbba\n",
+    "expectedOutput": "2 abbbb babbb\n"
+  },
+  {
+    "input": "1\ncaa\n4\naca\naac\naac\naca\n",
+    "expectedOutput": "1 caa\n1 caa\n1 caa\n1 caa\n"
+  },
+  {
+    "input": "2\nca\nb\n3\nac\nca\nca\n",
+    "expectedOutput": "1 ca\n1 ca\n1 ca\n"
+  },
+  {
+    "input": "2\nba\nab\n3\nab\nab\nba\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n2 ab ba\n"
+  },
+  {
+    "input": "7\nccbbb\nba\nbbcbc\nbcbbc\nab\nb\nbbbcc\n1\ncbbcb\n",
+    "expectedOutput": "4 bbbcc bbcbc bcbbc ccbbb\n"
+  },
+  {
+    "input": "6\nca\ncbbab\nb\nbcabb\ncbabb\nac\n2\nca\nac\n",
+    "expectedOutput": "2 ac ca\n2 ac ca\n"
+  },
+  {
+    "input": "3\nc\ncaa\nccaba\n4\nabcca\nc\ncaa\nc\n",
+    "expectedOutput": "1 ccaba\n1 c\n1 caa\n1 c\n"
+  },
+  {
+    "input": "4\nbcc\nb\nac\nbb\n1\nac\n",
+    "expectedOutput": "1 ac\n"
+  },
+  {
+    "input": "11\naaabba\nbabba\nab\na\naaaabb\nabbab\nba\naabbaa\nababb\nbabab\nabaaab\n6\nab\nbbaba\nbbaba\na\naababa\nabbaaa\n",
+    "expectedOutput": "2 ab ba\n4 ababb abbab babab babba\n4 ababb abbab babab babba\n1 a\n4 aaaabb aaabba aabbaa abaaab\n4 aaaabb aaabba aabbaa abaaab\n"
+  },
+  {
+    "input": "7\nab\nabb\nba\nbab\nbba\nb\na\n1\nbab\n",
+    "expectedOutput": "3 abb bab bba\n"
+  },
+  {
+    "input": "7\ndabda\ncbd\nbadda\ndbc\ndac\ncda\na\n1\ndabda\n",
+    "expectedOutput": "2 badda dabda\n"
+  },
+  {
+    "input": "3\na\nab\nba\n2\nab\na\n",
+    "expectedOutput": "2 ab ba\n1 a\n"
+  },
+  {
+    "input": "2\nb\nc\n2\nc\nc\n",
+    "expectedOutput": "1 c\n1 c\n"
+  },
+  {
+    "input": "4\nbb\nb\nbaa\naa\n3\naa\naa\nb\n",
+    "expectedOutput": "1 aa\n1 aa\n1 b\n"
+  },
+  {
+    "input": "14\nabb\nbbbab\naabbab\nabbab\nbbaaba\nbaabb\nbabbb\nabbbb\nbabba\nba\nbba\nab\nabbbaa\nbab\n3\nbbabb\nbabba\nbabbb\n",
+    "expectedOutput": "3 abbbb babbb bbbab\n3 abbab baabb babba\n3 abbbb babbb bbbab\n"
+  },
+  {
+    "input": "11\ncb\ndbb\nbdb\nacdb\ndda\nbbd\nbc\ndad\nbdca\nadd\ncdab\n3\nbc\ndad\ndad\n",
+    "expectedOutput": "2 bc cb\n3 add dad dda\n3 add dad dda\n"
+  },
+  {
+    "input": "18\ncacdb\nbcdbac\ncccb\nbcbcad\ncbcc\nbcdc\ncacbd\ndccba\nccbc\ndbbcac\nab\nba\nbdacbc\nacbcd\ncdbc\ncbcd\nbccc\nbccd\n5\nccabdb\ndaccbb\ncccb\ncbdc\ndcbacb\n",
+    "expectedOutput": "4 bcbcad bcdbac bdacbc dbbcac\n4 bcbcad bcdbac bdacbc dbbcac\n4 bccc cbcc ccbc cccb\n4 bccd bcdc cbcd cdbc\n4 bcbcad bcdbac bdacbc dbbcac\n"
+  },
+  {
+    "input": "10\nbaa\nc\nbc\ncb\naba\naab\nbba\nbab\nabb\na\n2\nbc\nbab\n",
+    "expectedOutput": "2 bc cb\n3 abb bab bba\n"
+  },
+  {
+    "input": "4\nbcb\nbcc\ncbb\nccb\n1\nbcc\n",
+    "expectedOutput": "2 bcc ccb\n"
+  },
+  {
+    "input": "3\nc\nac\nca\n1\nac\n",
+    "expectedOutput": "2 ac ca\n"
+  },
+  {
+    "input": "1\nc\n6\nc\nc\nc\nc\nc\nc\n",
+    "expectedOutput": "1 c\n1 c\n1 c\n1 c\n1 c\n1 c\n"
+  },
+  {
+    "input": "10\ndb\ndcbac\nbabbd\nbd\nbbdabc\ndbdb\nbbcdab\nabdbb\nbdbd\nbcdac\n3\nbdbd\ndabbb\ncdbac\n",
+    "expectedOutput": "2 bdbd dbdb\n2 abdbb babbd\n2 bcdac dcbac\n"
+  },
+  {
+    "input": "5\na\ncca\nbbb\nb\nbb\n5\ncac\nbb\na\na\na\n",
+    "expectedOutput": "1 cca\n1 bb\n1 a\n1 a\n1 a\n"
+  },
+  {
+    "input": "6\nbab\nbc\nabb\nb\nbba\ncb\n1\ncb\n",
+    "expectedOutput": "2 bc cb\n"
+  },
+  {
+    "input": "4\nbab\naa\nb\nba\n5\naa\naa\nba\naa\nb\n",
+    "expectedOutput": "1 aa\n1 aa\n1 ba\n1 aa\n1 b\n"
+  },
+  {
+    "input": "4\ndbcbdd\ndbdcbd\nc\ndddbbc\n2\nc\nc\n",
+    "expectedOutput": "1 c\n1 c\n"
+  },
+  {
+    "input": "7\nadad\nddaa\ndb\nbd\ndaad\nb\ndada\n3\ndb\nb\ndaad\n",
+    "expectedOutput": "2 bd db\n1 b\n4 adad daad dada ddaa\n"
+  },
+  {
+    "input": "5\nba\naaa\nab\na\nb\n4\nab\na\na\nba\n",
+    "expectedOutput": "2 ab ba\n1 a\n1 a\n2 ab ba\n"
+  },
+  {
+    "input": "5\nabb\nacc\nc\nb\nbb\n2\nb\nbba\n",
+    "expectedOutput": "1 b\n1 abb\n"
+  },
+  {
+    "input": "5\nabaa\naaaba\naaabab\nbba\nbaaa\n3\naabbaa\naaabab\naaba\n",
+    "expectedOutput": "1 aaabab\n1 aaabab\n2 abaa baaa\n"
+  },
+  {
+    "input": "8\nab\ndc\nbcc\ncd\ncbc\ncccc\nba\nccb\n4\ndc\ndc\ncbc\ncbc\n",
+    "expectedOutput": "2 cd dc\n2 cd dc\n3 bcc cbc ccb\n3 bcc cbc ccb\n"
+  },
+  {
+    "input": "2\nb\nc\n3\nb\nb\nc\n",
+    "expectedOutput": "1 b\n1 b\n1 c\n"
+  },
+  {
+    "input": "4\naacbbc\nacabbc\nacbabc\ncabcba\n4\nbcabca\nbaabcc\ncbcaba\nbaccab\n",
+    "expectedOutput": "4 aacbbc acabbc acbabc cabcba\n4 aacbbc acabbc acbabc cabcba\n4 aacbbc acabbc acbabc cabcba\n4 aacbbc acabbc acbabc cabcba\n"
+  },
+  {
+    "input": "9\ncabbca\nbaacbc\ndc\nbac\ncd\ndcda\nc\ncdda\ncba\n5\ncd\ncd\ncba\nacb\nc\n",
+    "expectedOutput": "2 cd dc\n2 cd dc\n2 bac cba\n2 bac cba\n1 c\n"
+  },
+  {
+    "input": "2\nac\nca\n1\nca\n",
+    "expectedOutput": "2 ac ca\n"
+  },
+  {
+    "input": "8\nbab\nbaa\naba\nabb\na\nbb\nbba\naab\n1\nbba\n",
+    "expectedOutput": "3 abb bab bba\n"
+  },
+  {
+    "input": "4\nabbba\nabaa\nbaba\naaba\n1\nabab\n",
+    "expectedOutput": "1 baba\n"
+  },
+  {
+    "input": "2\nab\nba\n2\nab\nba\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n"
+  },
+  {
+    "input": "5\na\nbb\ncd\ndc\nd\n3\ndc\nd\ndc\n",
+    "expectedOutput": "2 cd dc\n1 d\n2 cd dc\n"
+  },
+  {
+    "input": "4\ndbd\nb\ncdbacc\ncdcac\n4\ncadcc\nb\ndcabcc\nbdd\n",
+    "expectedOutput": "1 cdcac\n1 b\n1 cdbacc\n1 dbd\n"
+  },
+  {
+    "input": "3\nbb\nb\na\n2\nb\nb\n",
+    "expectedOutput": "1 b\n1 b\n"
+  },
+  {
+    "input": "13\nbaaaa\nababbb\nabaaa\naaaab\nabab\nbbabba\naabaa\nbaba\nabba\nbabbab\naaaba\nbbaa\naabbbb\n3\naabbbb\nabaaa\nbaab\n",
+    "expectedOutput": "4 aabbbb ababbb babbab bbabba\n5 aaaab aaaba aabaa abaaa baaaa\n4 abab abba baba bbaa\n"
+  },
+  {
+    "input": "7\nbcaba\nbbcba\nbcbaa\nbacbb\nbacab\nbabcb\nbbb\n6\ncbaba\nbcbab\nbbb\nbcbab\nbbb\naabcb\n",
+    "expectedOutput": "3 bacab bcaba bcbaa\n3 babcb bacbb bbcba\n1 bbb\n3 babcb bacbb bbcba\n1 bbb\n3 bacab bcaba bcbaa\n"
+  },
+  {
+    "input": "4\naaccbb\nccbbaa\ncaacbb\nbcbaac\n3\ncbcaab\ncbaabc\nbaaccb\n",
+    "expectedOutput": "4 aaccbb bcbaac caacbb ccbbaa\n4 aaccbb bcbaac caacbb ccbbaa\n4 aaccbb bcbaac caacbb ccbbaa\n"
+  },
+  {
+    "input": "2\nac\naac\n4\nac\nac\nac\nac\n",
+    "expectedOutput": "1 ac\n1 ac\n1 ac\n1 ac\n"
+  },
+  {
+    "input": "4\naccc\ncbbaac\nbacbac\ncacc\n5\nacbbca\ncabbca\nccca\ncacc\nccac\n",
+    "expectedOutput": "2 bacbac cbbaac\n2 bacbac cbbaac\n2 accc cacc\n2 accc cacc\n2 accc cacc\n"
+  },
+  {
+    "input": "3\naaa\ndc\ncd\n4\ndc\naaa\ndc\naaa\n",
+    "expectedOutput": "2 cd dc\n1 aaa\n2 cd dc\n1 aaa\n"
+  },
+  {
+    "input": "5\nb\nba\nab\naa\nbbb\n3\nbbb\nab\nb\n",
+    "expectedOutput": "1 bbb\n2 ab ba\n1 b\n"
+  },
+  {
+    "input": "2\naa\nbaa\n3\naa\nbaa\naa\n",
+    "expectedOutput": "1 aa\n1 baa\n1 aa\n"
+  },
+  {
+    "input": "4\nb\ncdcdca\nbabca\nc\n4\nc\nc\nbabca\nc\n",
+    "expectedOutput": "1 c\n1 c\n1 babca\n1 c\n"
+  },
+  {
+    "input": "5\nababb\nccbc\naca\ncbcbac\ncbbacb\n4\ncaa\ncbccab\nbccc\nbccc\n",
+    "expectedOutput": "1 aca\n1 cbcbac\n1 ccbc\n1 ccbc\n"
+  },
+  {
+    "input": "11\nbd\na\nacaa\ndb\ndaabba\nbdaaab\nadbbaa\naaca\ncaaa\naaadbb\naaac\n4\nabaadb\nbaaabd\nadabba\naababd\n",
+    "expectedOutput": "4 aaadbb adbbaa bdaaab daabba\n4 aaadbb adbbaa bdaaab daabba\n4 aaadbb adbbaa bdaaab daabba\n4 aaadbb adbbaa bdaaab daabba\n"
+  },
+  {
+    "input": "7\nc\ndda\ndbb\nbbd\ndad\nbdb\nadd\n6\ndbb\nbdb\nbdb\ndad\nc\nc\n",
+    "expectedOutput": "3 bbd bdb dbb\n3 bbd bdb dbb\n3 bbd bdb dbb\n3 add dad dda\n1 c\n1 c\n"
+  },
+  {
+    "input": "3\ncc\nab\nbb\n3\ncc\nbb\nbb\n",
+    "expectedOutput": "1 cc\n1 bb\n1 bb\n"
+  },
+  {
+    "input": "4\nadd\naac\nda\nd\n6\ndda\nad\naac\nadd\nadd\naca\n",
+    "expectedOutput": "1 add\n1 da\n1 aac\n1 add\n1 add\n1 aac\n"
+  },
+  {
+    "input": "3\nabbaca\nacaabb\nabaabc\n5\nababca\nabcaba\nbcabaa\nbcabaa\nbcaaab\n",
+    "expectedOutput": "3 abaabc abbaca acaabb\n3 abaabc abbaca acaabb\n3 abaabc abbaca acaabb\n3 abaabc abbaca acaabb\n3 abaabc abbaca acaabb\n"
+  },
+  {
+    "input": "2\nab\nba\n3\nba\nba\nab\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n2 ab ba\n"
+  },
+  {
+    "input": "8\nbba\naba\nabb\nbab\naa\naab\na\nbaa\n6\naab\naab\nbba\naba\nbab\nabb\n",
+    "expectedOutput": "3 aab aba baa\n3 aab aba baa\n3 abb bab bba\n3 aab aba baa\n3 abb bab bba\n3 abb bab bba\n"
+  },
+  {
+    "input": "7\nba\nbb\nbaa\nab\naab\nb\naba\n2\nbb\nbb\n",
+    "expectedOutput": "1 bb\n1 bb\n"
+  },
+  {
+    "input": "9\nbc\ncdc\ncb\nab\na\nba\nccd\naab\nbaa\n5\nbc\naab\nba\nbaa\naab\n",
+    "expectedOutput": "2 bc cb\n2 aab baa\n2 ab ba\n2 aab baa\n2 aab baa\n"
+  },
+  {
+    "input": "2\ncac\nca\n1\ncca\n",
+    "expectedOutput": "1 cac\n"
+  },
+  {
+    "input": "4\na\nbab\nabb\nbba\n6\nbab\na\na\na\nabb\na\n",
+    "expectedOutput": "3 abb bab bba\n1 a\n1 a\n1 a\n3 abb bab bba\n1 a\n"
+  },
+  {
+    "input": "4\naab\nb\naba\nbaa\n6\nbaa\nb\naab\naba\nbaa\nbaa\n",
+    "expectedOutput": "3 aab aba baa\n1 b\n3 aab aba baa\n3 aab aba baa\n3 aab aba baa\n3 aab aba baa\n"
+  },
+  {
+    "input": "9\ndaa\naa\nccd\nca\nda\naad\ncdc\nac\nad\n2\naa\naa\n",
+    "expectedOutput": "1 aa\n1 aa\n"
+  },
+  {
+    "input": "8\ncca\nbd\ncac\nacc\ndb\nc\nca\nac\n5\ndb\nc\nc\nbd\ndb\n",
+    "expectedOutput": "2 bd db\n1 c\n1 c\n2 bd db\n2 bd db\n"
+  },
+  {
+    "input": "6\nad\nadc\ndac\nda\nacd\na\n5\ncda\nad\nacd\nda\ndca\n",
+    "expectedOutput": "3 acd adc dac\n2 ad da\n3 acd adc dac\n2 ad da\n3 acd adc dac\n"
+  },
+  {
+    "input": "1\nb\n1\nb\n",
+    "expectedOutput": "1 b\n"
+  },
+  {
+    "input": "3\nbbb\nabb\ncb\n5\nbba\nbbb\nbbb\nbba\nbbb\n",
+    "expectedOutput": "1 abb\n1 bbb\n1 bbb\n1 abb\n1 bbb\n"
+  },
+  {
+    "input": "7\ndaa\nadcd\ndadc\ndcad\nada\ncadd\naad\n1\ncdda\n",
+    "expectedOutput": "4 adcd cadd dadc dcad\n"
+  },
+  {
+    "input": "3\ncbccbc\nc\nccca\n2\nbcccbc\nc\n",
+    "expectedOutput": "1 cbccbc\n1 c\n"
+  },
+  {
+    "input": "1\nbbbb\n6\nbbbb\nbbbb\nbbbb\nbbbb\nbbbb\nbbbb\n",
+    "expectedOutput": "1 bbbb\n1 bbbb\n1 bbbb\n1 bbbb\n1 bbbb\n1 bbbb\n"
+  },
+  {
+    "input": "1\nbb\n2\nbb\nbb\n",
+    "expectedOutput": "1 bb\n1 bb\n"
+  },
+  {
+    "input": "2\na\ncd\n5\ncd\ndc\ndc\na\ncd\n",
+    "expectedOutput": "1 cd\n1 cd\n1 cd\n1 a\n1 cd\n"
+  },
+  {
+    "input": "16\nddda\naacdbc\nbcbada\naddd\nabadbc\ncdacba\nabb\ndadd\ncababd\naaccbd\nb\nbab\ncbdaba\nddad\nccaabd\nbba\n6\naddd\ndaabbc\ncabdac\ndaacbc\naadbbc\ncabdab\n",
+    "expectedOutput": "4 addd dadd ddad ddda\n4 abadbc bcbada cababd cbdaba\n4 aaccbd aacdbc ccaabd cdacba\n4 aaccbd aacdbc ccaabd cdacba\n4 abadbc bcbada cababd cbdaba\n4 abadbc bcbada cababd cbdaba\n"
+  },
+  {
+    "input": "4\nabb\na\nbba\nbab\n2\nabb\na\n",
+    "expectedOutput": "3 abb bab bba\n1 a\n"
+  },
+  {
+    "input": "8\nacdbb\ndcabb\nbc\ncbc\nbbc\nccb\ncb\nbcb\n2\nbdbac\ncbc\n",
+    "expectedOutput": "2 acdbb dcabb\n2 cbc ccb\n"
+  },
+  {
+    "input": "4\nadd\nbccbb\na\nca\n2\nadd\nca\n",
+    "expectedOutput": "1 add\n1 ca\n"
+  },
+  {
+    "input": "2\nb\nabb\n2\nbba\nbab\n",
+    "expectedOutput": "1 abb\n1 abb\n"
+  },
+  {
+    "input": "3\nca\nac\na\n3\na\nac\na\n",
+    "expectedOutput": "1 a\n2 ac ca\n1 a\n"
+  },
+  {
+    "input": "11\naabca\ncbaaa\nbcb\ncaba\nbbc\nbaca\nbacaa\ncaab\nabca\nabaca\ncbb\n4\naacb\nabca\nbaaca\ncaba\n",
+    "expectedOutput": "4 abca baca caab caba\n4 abca baca caab caba\n4 aabca abaca bacaa cbaaa\n4 abca baca caab caba\n"
+  },
+  {
+    "input": "3\nbbab\nabbb\nbabb\n5\nbbba\nbbab\nabbb\nbabb\nabbb\n",
+    "expectedOutput": "3 abbb babb bbab\n3 abbb babb bbab\n3 abbb babb bbab\n3 abbb babb bbab\n3 abbb babb bbab\n"
+  },
+  {
+    "input": "6\nabaab\naabba\nabab\nabb\nbbaa\nbba\n1\nbba\n",
+    "expectedOutput": "2 abb bba\n"
+  },
+  {
+    "input": "3\nab\na\nba\n4\nba\na\nba\nab\n",
+    "expectedOutput": "2 ab ba\n1 a\n2 ab ba\n2 ab ba\n"
+  },
+  {
+    "input": "2\na\nb\n5\nb\na\na\nb\nb\n",
+    "expectedOutput": "1 b\n1 a\n1 a\n1 b\n1 b\n"
+  },
+  {
+    "input": "6\nbac\nab\nba\nabc\nbca\nacb\n2\nba\nba\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n"
+  },
+  {
+    "input": "8\ndda\nadd\nddab\naa\nbadd\nc\ncdbc\ndccb\n6\nadd\nadd\nccdb\ndccb\ndcbc\ndabd\n",
+    "expectedOutput": "2 add dda\n2 add dda\n2 cdbc dccb\n2 cdbc dccb\n2 cdbc dccb\n2 badd ddab\n"
+  },
+  {
+    "input": "4\nab\nabac\nba\nacab\n4\nba\naabc\nacab\naabc\n",
+    "expectedOutput": "2 ab ba\n2 abac acab\n2 abac acab\n2 abac acab\n"
+  },
+  {
+    "input": "2\nd\ncab\n1\ncba\n",
+    "expectedOutput": "1 cab\n"
+  },
+  {
+    "input": "1\nc\n4\nc\nc\nc\nc\n",
+    "expectedOutput": "1 c\n1 c\n1 c\n1 c\n"
+  },
+  {
+    "input": "8\nbdadca\nadc\naddacb\ndcacd\nab\ncdcad\nba\ndac\n2\nab\nadc\n",
+    "expectedOutput": "2 ab ba\n2 adc dac\n"
+  },
+  {
+    "input": "7\nd\na\nb\ncba\nabc\ndb\nbd\n2\na\na\n",
+    "expectedOutput": "1 a\n1 a\n"
+  },
+  {
+    "input": "2\nababb\nbbaba\n4\nbabab\nbabba\nbbaba\nabbab\n",
+    "expectedOutput": "2 ababb bbaba\n2 ababb bbaba\n2 ababb bbaba\n2 ababb bbaba\n"
+  },
+  {
+    "input": "1\nbc\n2\nbc\nbc\n",
+    "expectedOutput": "1 bc\n1 bc\n"
+  },
+  {
+    "input": "2\nbba\nbbb\n1\nbbb\n",
+    "expectedOutput": "1 bbb\n"
+  },
+  {
+    "input": "8\nbbb\naba\nba\nab\naa\nbaa\naab\naaa\n5\naa\naa\naab\nbaa\nbaa\n",
+    "expectedOutput": "1 aa\n1 aa\n3 aab aba baa\n3 aab aba baa\n3 aab aba baa\n"
+  },
+  {
+    "input": "2\ndcd\nddc\n4\ndcd\ncdd\ndcd\ncdd\n",
+    "expectedOutput": "2 dcd ddc\n2 dcd ddc\n2 dcd ddc\n2 dcd ddc\n"
+  },
+  {
+    "input": "5\naba\nbb\naaa\naab\nbaa\n4\naab\nbb\naaa\naaa\n",
+    "expectedOutput": "3 aab aba baa\n1 bb\n1 aaa\n1 aaa\n"
+  },
+  {
+    "input": "2\ndbb\ncdb\n4\nbdb\ndbb\nbdc\ncdb\n",
+    "expectedOutput": "1 dbb\n1 dbb\n1 cdb\n1 cdb\n"
+  },
+  {
+    "input": "5\nba\nc\ncba\ncab\nab\n4\nbac\nab\nc\nc\n",
+    "expectedOutput": "2 cab cba\n2 ab ba\n1 c\n1 c\n"
+  },
+  {
+    "input": "7\nb\naab\na\nba\naba\nab\nbaa\n6\naba\nb\na\nbaa\nbaa\nba\n",
+    "expectedOutput": "3 aab aba baa\n1 b\n1 a\n3 aab aba baa\n3 aab aba baa\n2 ab ba\n"
+  },
+  {
+    "input": "8\ncddd\ndcdd\ncbdba\ndacaa\nadaac\ncddc\ncdcd\ncadbb\n5\ndcdd\naadca\ndaaca\ndcdc\nacaad\n",
+    "expectedOutput": "2 cddd dcdd\n2 adaac dacaa\n2 adaac dacaa\n2 cdcd cddc\n2 adaac dacaa\n"
+  },
+  {
+    "input": "14\nccb\ncaa\nacb\ncab\nc\nbbc\ncbb\nbcb\nbac\ncbc\nbcc\naca\ncba\naac\n2\nbcb\nccb\n",
+    "expectedOutput": "3 bbc bcb cbb\n3 bcc cbc ccb\n"
+  },
+  {
+    "input": "2\nbaa\naba\n2\naba\nbaa\n",
+    "expectedOutput": "2 aba baa\n2 aba baa\n"
+  },
+  {
+    "input": "6\nbbaaba\nbbaaaa\nab\nbaabba\nba\nbaaaab\n5\nabaaab\nba\nabaaab\naabaab\nab\n",
+    "expectedOutput": "2 baaaab bbaaaa\n2 ab ba\n2 baaaab bbaaaa\n2 baaaab bbaaaa\n2 ab ba\n"
+  },
+  {
+    "input": "2\nbba\nbab\n4\nbba\nbab\nbab\nbab\n",
+    "expectedOutput": "2 bab bba\n2 bab bba\n2 bab bba\n2 bab bba\n"
+  },
+  {
+    "input": "3\nccba\ncacb\nabcc\n1\ncacb\n",
+    "expectedOutput": "3 abcc cacb ccba\n"
+  },
+  {
+    "input": "3\nacb\nbac\ncab\n2\nabc\nbac\n",
+    "expectedOutput": "3 acb bac cab\n3 acb bac cab\n"
+  },
+  {
+    "input": "3\nbd\nadbadd\nbbad\n2\nabdb\naabddd\n",
+    "expectedOutput": "1 bbad\n1 adbadd\n"
+  },
+  {
+    "input": "1\ndd\n1\ndd\n",
+    "expectedOutput": "1 dd\n"
+  },
+  {
+    "input": "10\naabda\nbaaad\nad\na\nbcc\ncbc\nbaada\nabada\nccb\nda\n4\nabdaa\nccb\nbcc\naadab\n",
+    "expectedOutput": "4 aabda abada baaad baada\n3 bcc cbc ccb\n3 bcc cbc ccb\n4 aabda abada baaad baada\n"
+  },
+  {
+    "input": "6\nac\nca\ncb\nc\nb\nbc\n1\nc\n",
+    "expectedOutput": "1 c\n"
+  },
+  {
+    "input": "3\nba\nb\nbb\n3\nb\nbb\nbb\n",
+    "expectedOutput": "1 b\n1 bb\n1 bb\n"
+  },
+  {
+    "input": "9\ncaa\nbcb\nbbc\ncbb\ncac\nacc\ncca\naac\naca\n5\ncca\ncaa\nacc\naac\nacc\n",
+    "expectedOutput": "3 acc cac cca\n3 aac aca caa\n3 acc cac cca\n3 aac aca caa\n3 acc cac cca\n"
+  },
+  {
+    "input": "1\naaaa\n4\naaaa\naaaa\naaaa\naaaa\n",
+    "expectedOutput": "1 aaaa\n1 aaaa\n1 aaaa\n1 aaaa\n"
+  },
+  {
+    "input": "2\na\nb\n1\nb\n",
+    "expectedOutput": "1 b\n"
+  },
+  {
+    "input": "5\nbbba\naa\nbba\nbbab\nabb\n1\naa\n",
+    "expectedOutput": "1 aa\n"
+  },
+  {
+    "input": "1\nb\n3\nb\nb\nb\n",
+    "expectedOutput": "1 b\n1 b\n1 b\n"
+  },
+  {
+    "input": "7\naabbaa\nbbb\naaabab\nbabb\nba\nabbb\nab\n6\nba\nbbab\nba\nabaaab\nab\nba\n",
+    "expectedOutput": "2 ab ba\n2 abbb babb\n2 ab ba\n2 aaabab aabbaa\n2 ab ba\n2 ab ba\n"
+  },
+  {
+    "input": "7\nac\nbab\nab\nabb\nb\nba\nca\n5\nba\nab\nbba\nca\nbba\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n2 abb bab\n2 ac ca\n2 abb bab\n"
+  },
+  {
+    "input": "5\ndbb\nbddba\naaadab\ncdc\ndacbac\n1\nccd\n",
+    "expectedOutput": "1 cdc\n"
+  },
+  {
+    "input": "9\ncbbaab\ncaa\nbbbcaa\nbabbac\nbabcab\naacbbb\naac\naca\nabcbab\n1\nbbaacb\n",
+    "expectedOutput": "6 aacbbb abcbab babbac babcab bbbcaa cbbaab\n"
+  },
+  {
+    "input": "5\na\ncba\nd\nacb\ncab\n2\nabc\nbca\n",
+    "expectedOutput": "3 acb cab cba\n3 acb cab cba\n"
+  },
+  {
+    "input": "10\naaaac\nc\ncaaaa\nbaccca\nacaaa\ncabcac\nacccac\ncaccca\ncccaca\ncbcaac\n1\naaaca\n",
+    "expectedOutput": "3 aaaac acaaa caaaa\n"
+  },
+  {
+    "input": "1\nb\n5\nb\nb\nb\nb\nb\n",
+    "expectedOutput": "1 b\n1 b\n1 b\n1 b\n1 b\n"
+  },
+  {
+    "input": "9\nacca\naacc\ncaca\ncabcab\ncabacb\ncca\nacc\ncbaabc\ncac\n1\nbaccba\n",
+    "expectedOutput": "3 cabacb cabcab cbaabc\n"
+  },
+  {
+    "input": "6\naab\nba\nbaa\nab\naba\ncc\n6\nba\nba\nba\ncc\naba\naba\n",
+    "expectedOutput": "2 ab ba\n2 ab ba\n2 ab ba\n1 cc\n3 aab aba baa\n3 aab aba baa\n"
+  },
+  {
+    "input": "1\nbaa\n1\nbaa\n",
+    "expectedOutput": "1 baa\n"
+  },
+  {
+    "input": "5\ncbcaba\nbb\naccbba\nbaccab\nbabcca\n4\naccabb\ncacbba\nbaacbc\nbacbca\n",
+    "expectedOutput": "4 accbba babcca baccab cbcaba\n4 accbba babcca baccab cbcaba\n4 accbba babcca baccab cbcaba\n4 accbba babcca baccab cbcaba\n"
+  }
+]

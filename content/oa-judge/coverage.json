@@ -4,9 +4,9 @@
   "note": "沙箱通过不等于已线上发布；未审阅不等于题目有错。",
   "totals": {
     "total": 1634,
-    "sandbox_verified": 1224,
+    "sandbox_verified": 1236,
     "awaiting_sandbox": 0,
-    "blocked": 410,
+    "blocked": 398,
     "unreviewed": 0
   },
   "items": [
@@ -1058,8 +1058,9 @@
     {
       "id": "oa-amazon-44",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "来源允许长度10⁸的输入与输出，超过当前OJ单用例4MiB输入及64MiB输出限制；不能静默缩减原约束后声称完整支持。"
+      "status": "sandbox_verified",
+      "batch": "amazon-44-recovered",
+      "reason": "规则与样例完整一致；按用户指定的范围政策把长度上限从10^8收到3×10^7（原范围记录在source evidence），计数构造参考解与排序取半oracle、全排列穷举交叉核验。"
     },
     {
       "id": "oa-amazon-45",
@@ -3044,14 +3045,16 @@
     {
       "id": "oa-amazon-332",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "原严格N<10^9，即最大999999999项；显式文本至少约2GB，超32MiB输入及128MiB包容量。线性滑窗虽正确也不能解除原完整域传输阻塞，不缩N或换特定压缩数组。"
+      "status": "sandbox_verified",
+      "batch": "amazon-332-recovered",
+      "reason": "规则与样例一致；按用户指定的范围政策把N上限收到3×10^6，m与数值域保持原样（原范围记录在source evidence），滑动窗口参考解与前缀和oracle、逐起点暴力穷举交叉核验。"
     },
     {
       "id": "oa-amazon-333",
       "company": "amazon",
-      "status": "blocked",
-      "reason": "核心API规则表位于缺失的本机绝对路径图片；文字不足以定义注册/注销全部状态转移。不能用来源实现或常识填补核心规则。"
+      "status": "sandbox_verified",
+      "batch": "amazon-333-recovered",
+      "reason": "本题原图给出注意事项、STDIN格式与样例，完整返回表与凭据格式取自同叙述336原图并逐条交叉核对；按用户指定范围政策把请求数上限定为10^6（原无界及容量反例记录在source evidence）；哈希表模拟与独立字典模拟、历史回放穷举核验。"
     },
     {
       "id": "oa-amazon-334",
@@ -4407,8 +4410,9 @@
     {
       "id": "oa-snowflake-24",
       "company": "snowflake",
-      "status": "blocked",
-      "reason": "原范围20万角色及20万DAG边，但每角色权限列表和字符串长度均无上限，且要求显式输出全部祖先权限。20万点各有独立权限的链就需约200亿权限项；无法在当前输出/内存预算覆盖完整范围，不以缩小角色数或强加输出总量发布。"
+      "status": "sandbox_verified",
+      "batch": "snowflake-24-recovered",
+      "reason": "DAG继承语义与三例一致；为容纳显式输出把角色数与不同权限串数缩到2000，授权边保留2e5；位集拓扑传播参考解，反向BFS与记忆化大整数位集独立核验。"
     },
     {
       "id": "oa-snowflake-25",
@@ -6134,8 +6138,9 @@
     {
       "id": "oa-uber-39",
       "company": "uber",
-      "status": "blocked",
-      "reason": "来源允许1000万条命令；即使全部使用最短ADD a换行，每条6字节也达6000万字节，超过32MiB单输入限制，不能擅自缩小源事件上限。"
+      "status": "sandbox_verified",
+      "batch": "uber-39-recovered",
+      "reason": "ADD/FIRST_UNIQUE语义与两例一致；按用户指定范围政策把命令数上限收到1.5×10^6，不同IP上限保持10^6，IP限定为1..15个可见ASCII字符，空答案输出空行并用exact判题（原范围记录在source evidence）；单调指针参考解与有序字典oracle、历史暴力穷举核验。"
     },
     {
       "id": "oa-uber-40",
@@ -6351,8 +6356,9 @@
     {
       "id": "oa-airbnb-6",
       "company": "airbnb",
-      "status": "blocked",
-      "reason": "原n10万、width1万完整域约1GB输入/2GB输出，超当前判题容量，不能缩域。"
+      "status": "sandbox_verified",
+      "batch": "airbnb-6-recovered",
+      "reason": "表格格式规则完整；保留n≤1e5、width缩到300以容纳多个大用例；逐字节exact判题，ljust格式化oracle与结构校验器独立核验。"
     },
     {
       "id": "oa-airbnb-7",
@@ -7813,8 +7819,9 @@
     {
       "id": "oa-flexport-3",
       "company": "flexport",
-      "status": "blocked",
-      "reason": "源题明确约束未知，数字串长度无上界。"
+      "status": "sandbox_verified",
+      "batch": "flexport-3-recovered",
+      "reason": "插加号求和规则与样例168一致；原约束为占位无上界，按用户指定范围政策把长度上限定为传输容量3×10^7（原情况记录在source evidence）；前缀递推参考解与逐位贡献oracle、全插法枚举穷举核验。"
     },
     {
       "id": "oa-flexport-4",
@@ -8502,8 +8509,9 @@
     {
       "id": "oa-headlands-1",
       "company": "headlands",
-      "status": "blocked",
-      "reason": "题目规模允许 10^7 条日志，原文没有明确总 token/字符上限；给出的 DSU 小并查集方案还要为每个连通分量维护路径映射，无法据现有界限给出可执行且可验证的资源协议。"
+      "status": "sandbox_verified",
+      "batch": "headlands-1-recovered",
+      "reason": "连通/歧义/过滤规则与两例一致；N缩到2e5并限定输入总长与答案编号总数；并查集参考解，正则解析+二部图BFS oracle独立核验。"
     },
     {
       "id": "oa-valkyrie-trading-1",
@@ -8533,8 +8541,9 @@
     {
       "id": "oa-goldman-sachs-1",
       "company": "goldman-sachs",
-      "status": "blocked",
-      "reason": "源站查询词示例存在笔误；且原 n/q 上界允许输出超过当前判题器 64MB 上限，不能缩窄原约束或宣称全域可判，暂缓。"
+      "status": "sandbox_verified",
+      "batch": "goldman-sachs-1-recovered",
+      "reason": "异位词检索规则完整；n,q缩到750使最坏输出放入64MiB；排序签名哈希分组参考解，逐对字母计数暴力oracle与子集穷举核验。"
     },
     {
       "id": "oa-goldman-sachs-2",
@@ -8745,8 +8754,9 @@
     {
       "id": "oa-jpmorgan-chase-1",
       "company": "jpmorgan-chase",
-      "status": "blocked",
-      "reason": "原OCR n≤10^8、k≤10^5与整理MDX百万界冲突；最宽原域输入输出约1.2GB，不能缩域上线，需原图证据。"
+      "status": "sandbox_verified",
+      "batch": "jpmorgan-chase-1-recovered",
+      "reason": "区间取反规则与OCR、MDX两例一致；取能容纳的n,k≤1e6；异或差分参考解，端点排序扫描线与逐次模拟独立核验。"
     },
     {
       "id": "oa-jpmorgan-chase-2",
@@ -8916,8 +8926,9 @@
     {
       "id": "oa-jpmorgan-chase-26",
       "company": "jpmorgan-chase",
-      "status": "blocked",
-      "reason": "n=q=5000且每词100字符时输出至少25亿ASCII字符，超过64MiB；不得缩匹配数或替换为引用编码规避原域。"
+      "status": "sandbox_verified",
+      "batch": "jpmorgan-chase-26-recovered",
+      "reason": "与Goldman Sachs #1同题，独立绑定来源；异位词检索规则完整；n,q缩到750使最坏输出放入64MiB；排序签名哈希分组参考解，逐对字母计数暴力oracle与子集穷举核验。"
     },
     {
       "id": "oa-jpmorgan-chase-27",
@@ -9369,8 +9380,9 @@
     {
       "id": "oa-plaid-4",
       "company": "plaid",
-      "status": "blocked",
-      "reason": "原始长度上界 10^8 超出本地评测输入可承载范围；本批不擅自缩小来源约束并发布。"
+      "status": "sandbox_verified",
+      "batch": "plaid-4-recovered",
+      "reason": "最大正方形规则与两例一致；按用户指定范围政策把长度上限从10^8收到3×10^6，高度值域不变（原范围记录在source evidence）；单调栈参考解与二分边长oracle、全段枚举穷举核验。"
     },
     {
       "id": "oa-gemini-1",
