@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-google-41",
+      "sourceContentHash": "bd0619d92777c50853e6af399da9049db80b2666697b6a7c64cb950671c6a9a6",
+      "packageChecksum": "7a21a47ab0f1b183e50a34e79bef0411c33c1f2ec98a1d8e2f9f07e929e71eca",
+      "editorial": "## 题意\n\n数组points中下标i的值v=points[i]既是得分，也是代价：取了它之后，紧随其后的v个下标i+1..i+v都不能再取。只向后屏蔽。求最大总分。\n\n## 思路\n\n从右往左DP：dp[i]表示只考虑下标i..n−1时的最大得分。不取i则为dp[i+1]；取i则得到points[i]+dp[min(n,i+points[i]+1)]。答案dp[0]。\n\n## 正确性\n\n取了下标i后，下一个能取的下标至少是i+points[i]+1，而之后的选择不受i以前任何决策的影响（屏蔽只向后），因此子问题独立，转移覆盖了i取或不取两种情况。样例中先取1（屏蔽3），再取99得到100，如果屏蔽是双向的，99会屏蔽前面的1，样例就不成立。\n\n## 复杂度\n\nO(n)。取一个值v要占用v+1个位置，所以总分不超过n。\n\n## 独立验证\n\noracle采用“推”式DP：best[j]表示下一个可取下标为j时的最大得分，从左到右向后转移，与参考解的拉式后缀DP方向不同；更小的数据另枚举所有下标子集并检查屏蔽条件。穷举长度1..6、取值0..3的全部数组并逐个真实运行参考程序。错误解覆盖屏蔽个数少1、多1、局部贪心和误当作“相邻不能同取”。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>p(n);for(auto&x:p)scanf(\"%lld\",&x);\nvector<long long>dp(n+1,0);\nfor(int i=n-1;i>=0;i--){long long nx=min<long long>(n,i+p[i]+1);dp[i]=max(dp[i+1],p[i]+dp[nx]);}\nprintf(\"%lld\\n\",dp[0]);}\n"
+        }
+      ]
+    }
+  ]
+}
