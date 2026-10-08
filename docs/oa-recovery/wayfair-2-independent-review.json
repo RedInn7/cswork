@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-wayfair-2",
+  "batchId": "wayfair-2-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 45,
+    "publicCases": 3,
+    "hiddenCases": 42,
+    "uniqueOracleCases": 163,
+    "actualLocalNativeReferenceRuns": 208,
+    "actualLocalNativeMutantRuns": 135,
+    "allProcessesExitedNormallyWithEmptyStderr": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告实际编译并执行本机 C++ 程序；Linux 沙箱由主 agent 单独验证，不将本机耗时冒充线上指标。"
+  },
+  "bindings": {
+    "packageChecksum": "5a4e16e6147d39297bc8fd47d41525b6ece6d46c12b15e65c120d7fc44d067b0",
+    "checksumMethod": "实际 ojImportSchema.parse 后 JSON.stringify 的 SHA256，与冻结值和 batch 一致",
+    "packageFileSha256": "acb10a61decbe7ecd32f517db685d80f9bc908b44bd567ea5106d0eac61b845d",
+    "oracleFileSha256": "5e023fa7ed9f0b4089370d3b5094ad1d529e036cb583b7498330a88bc98f6b79",
+    "referenceSha256": "79faaa11e758286e12ad8f8abd1568e80eb9ff7d8d2aeb634a728ff7dd001b01",
+    "editorialFileSha256": "4aeca4fca13912bdc7de595f69ef212b0e8a4935ce290161c624058532c21421",
+    "mutantFileSha256": "27dc43757f4c95bf4c3f07d35204eafd832de169e28a5f950819bfa889824acc",
+    "batchFileSha256": "f7d0edf1da4521a02a2077f19b20588882d4bf1ab9af6b933decef25ae0fdd27",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Wayfair/wayfair-number-of-divisible-substrings.md",
+    "gitBlobSha": "14c8246baab3f4f65c08013712a2725d831c1c77",
+    "sha256": "5fb69db4a22a4b1ae06e8424ad18ddb6b1677e673c4de96ea5eb06dd3ee7f89d",
+    "imagePath": "content/oa-judge/source-images/wayfair-2-original.jpg",
+    "imageUrl": "https://storage.googleapis.com/fastprepoa.appspot.com/problem_source_images/wayfair-number-of-divisible-substrings.jpg",
+    "imageSha256": "63d7c5e6186ab7fd56f35a9c80eda7744b7bb327bf68aa2758c43528439090c8",
+    "independentlyViewedSourceImage": true,
+    "provenance": "独立预审亲自查看完整来源图片，确认编号2950、九格映射、规则、三例和约束。终审重新计算仓库图片SHA256，与已查看图片一致。固定raw明确引用LC2950但本机图片路径失效；新取得FastPrep公开Problem Source图单独绑定，不冒充固定Git快照内容。题面/题解/source-evidence如实披露。",
+    "mappingGroups": [
+      "ab",
+      "cde",
+      "fgh",
+      "ijk",
+      "lmn",
+      "opq",
+      "rst",
+      "uvw",
+      "xyz"
+    ],
+    "mappingValidation": "图片1..9九组覆盖26字母各一次，独立oracle按组显式建立字典，与题面和参考常量逐字核对。第一组只有ab，不采用三字母均分或电话键盘。",
+    "domain": "完整原域仅小写字母、长度1..2000，无空串扩展。按连续非空下标区间计数，不按内容去重。三个原例asdf/bdh/abcd分别6/4/6完整保留。"
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "argument": "非空区间平均映射值必在1..9，整除条件等价于唯一整数平均k。固定k减去k后统计零和区间，且当前前缀查询历史频次后才登记，排除空区间。每区间只有唯一平均值、唯一左右端点，九轮不会重计；前缀范围[-8n,8n]，偏移数组访问合法。",
+    "bounds": "O(9n)时间及O(n)空间；答案至多2000*2001/2=2001000，signed int足够，参考long long累计安全。"
+  },
+  "independentExpectedValidation": {
+    "all208CasesRecomputed": true,
+    "method": "独立双循环枚举每个起点/终点，逐字符累加图片映射值，再直接检查sum%length==0。没有使用参考的平均值枚举或前缀频次，即使n=2000也逐区间完整验证。",
+    "inputValidation": "所有字符串逐字符检查a..z且长度1..2000，163 oracle输入唯一。原三例、全部26字母、组边界bc/ef/hi/kl/no/qr/tu/wx及同值ab均覆盖。",
+    "fullLengthCases": [
+      { "formalIndex": 30, "group": "ab", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 31, "group": "cde", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 32, "group": "fgh", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 33, "group": "ijk", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 34, "group": "lmn", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 35, "group": "opq", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 36, "group": "rst", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 37, "group": "uvw", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 38, "group": "xyz", "n": 2000, "expected": 2001000 },
+      { "formalIndex": 39, "n": 2000, "expected": 12539 },
+      { "formalIndex": 40, "n": 2000, "expected": 12530 },
+      { "formalIndex": 41, "n": 2000, "expected": 1002000 },
+      { "formalIndex": 42, "n": 2000, "expected": 2000 },
+      { "formalIndex": 43, "n": 2000, "expected": 1003350 },
+      { "formalIndex": 44, "n": 2000, "expected": 27758 }
+    ],
+    "additionalClosedForm": "九个同值组满长例均逐字符验证所属组，另用全部子串都合法的n(n+1)/2闭式核验2001000。"
+  },
+  "negativeControls": [
+    { "name": "错误字母分组", "normalRuns": 45, "killedByFormalCases": 22 },
+    { "name": "遗漏平均值", "normalRuns": 45, "killedByFormalCases": 44 },
+    { "name": "错误计入空子串", "normalRuns": 45, "killedByFormalCases": 45 }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/wayfair2-review.ONr8rm/review.py",
+    "scriptSha256": "5ba7d6d33c017b7a9c9bbdf9a377198a35f8a39d48bf8524a63a0949c9ec4a1d",
+    "artifactVerificationSeconds": 9.740222930908203,
+    "projectMutation": "只新增本审核报告，未修改冻结产物，未提交。"
+  }
+}

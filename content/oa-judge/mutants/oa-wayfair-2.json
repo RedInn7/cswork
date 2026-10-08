@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误按每三个字母一组映射",
+    "language": "cpp",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){string s;cin>>s;const string mapping=\"11222333444555666777888999\";int n=s.size(),offset=8*n;vector<int>freq(16*n+1);long long answer=0;\nfor(int average=1;average<=9;average++){fill(freq.begin(),freq.end(),0);int prefix=0;freq[offset]=1;\nfor(char c:s){prefix+=((c-'a')/3+1)-average;answer+=freq[prefix+offset];++freq[prefix+offset];}}\ncout<<answer<<'\\n';}\n"
+  },
+  {
+    "name": "错误仅统计平均值等于5的子串",
+    "language": "cpp",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){string s;cin>>s;const string mapping=\"11222333444555666777888999\";int n=s.size(),offset=8*n;vector<int>freq(16*n+1);long long answer=0;\nfor(int average=5;average<=5;average++){fill(freq.begin(),freq.end(),0);int prefix=0;freq[offset]=1;\nfor(char c:s){prefix+=mapping[c-'a']-'0'-average;answer+=freq[prefix+offset];++freq[prefix+offset];}}\ncout<<answer<<'\\n';}\n"
+  },
+  {
+    "name": "错误先登记当前前缀而计入空子串",
+    "language": "cpp",
+    "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){string s;cin>>s;const string mapping=\"11222333444555666777888999\";int n=s.size(),offset=8*n;vector<int>freq(16*n+1);long long answer=0;\nfor(int average=1;average<=9;average++){fill(freq.begin(),freq.end(),0);int prefix=0;freq[offset]=1;\nfor(char c:s){prefix+=mapping[c-'a']-'0'-average;++freq[prefix+offset];answer+=freq[prefix+offset];}}\ncout<<answer<<'\\n';}\n"
+  }
+]
