@@ -3,6 +3,29 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-capital-one-18",
+      "decision": "Original linked images recovered; full-domain design and independent validation still required",
+      "source": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
+      "sourcePage": "https://www.fastprep.io/problems/capitalone-rotate-matrix-over-diagonals",
+      "images": [
+        {
+          "url": "https://www.fastprep.io/api/problem-source-images/capitalone-rotate-matrix-over-diagonals/0",
+          "path": "content/oa-judge/source-images/capitalone-18-original-0.jpg",
+          "sha256": "78657eb17330d8c43648af650113cf6029cdb0c77b658591ecf9d5bbf42297e2"
+        },
+        {
+          "url": "https://www.fastprep.io/api/problem-source-images/capitalone-rotate-matrix-over-diagonals/1",
+          "path": "content/oa-judge/source-images/capitalone-18-original-1.jpg",
+          "sha256": "8f01d13eb3b83dc02c2c1d9f9cfe16ba4cefff3403285cad1d6b53afeaaf33ed"
+        }
+      ],
+      "findings": [
+        "Both image URLs were actual Problem source links on the current original page. They are supplemental downloads, not fixed-upstream Git assets.",
+        "Image0 explicitly states clockwise rotation of the four diagonal-separated segments with both diagonals unchanged, and shows a5x5 before-rotation matrix marking both diagonals. Image1 repeats the rule. Neither image supplies numeric constraints or an after-rotation diagram.",
+        "Fixed sample is consistent with off-diagonal coordinate rotation(r,c)->(c,n-1-r). Still requires independent rule/domain review and resource-bound design before implementation."
+      ]
+    },
+    {
       "id": "oa-wayfair-2",
       "decision": "Implemented in wayfair-2-recovered; Linux208-case reference validation and three negative controls passed. See dedicated independent review and integration evidence for remaining gates; not deployed.",
       "source": "fastprep/Wayfair/wayfair-number-of-divisible-substrings.md",
