@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261016,
+  "problems": [
+    {
+      "id": "oa-ebay-6",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 44,
+      "referenceFormalCases": 47,
+      "negativeControls": [
+        {
+          "name": "遇较小元素错误跳过并继续扫描",
+          "rejectedByCases": [
+            0,
+            2,
+            9,
+            11,
+            14,
+            18,
+            20,
+            21,
+            22,
+            23,
+            30,
+            31,
+            32,
+            33,
+            36,
+            37,
+            42,
+            44,
+            45,
+            46
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误把等于阈值也当作阻断",
+          "rejectedByCases": [
+            0,
+            1,
+            6,
+            7,
+            9,
+            10,
+            11,
+            12,
+            14,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            30,
+            32,
+            33,
+            35,
+            38,
+            40,
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "469e9e6ee3de079374342c588fd10603db85cd87e89bac4ea723685a1018f54b",
+      "oracleMethod": "Immutable-state recursion: enumerate all eligible contiguous prefixes and reconstruct the longest-prefix subtraction; no reference function or in-place loop reuse.",
+      "exhaustiveSmallDomain": {
+        "lengthMin": 1,
+        "lengthMax": 6,
+        "valueMin": 0,
+        "valueMax": 3,
+        "cases": 5460,
+        "inputExpectedDigest": "b2c46cf65475f42b6cc9fcbc12a0bde0a9280b377f1401a68c9370f90c216cea",
+        "referenceExecution": "in-process own authored reference, separate from163 subprocess checks"
+      },
+      "largeBoundaries": [
+        {
+          "name": "100项全零",
+          "n": 100,
+          "minValue": 0,
+          "maxValue": 0,
+          "expectedOutput": "0",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.0205
+        },
+        {
+          "name": "100项全最大",
+          "n": 100,
+          "minValue": 1000000,
+          "maxValue": 1000000,
+          "expectedOutput": "1000000",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01978
+        },
+        {
+          "name": "100项最大值与零交替",
+          "n": 100,
+          "minValue": 0,
+          "maxValue": 1000000,
+          "expectedOutput": "50000000",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02021
+        },
+        {
+          "name": "100项零与最大值交替",
+          "n": 100,
+          "minValue": 0,
+          "maxValue": 1000000,
+          "expectedOutput": "50000000",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02065
+        },
+        {
+          "name": "100项递增",
+          "n": 100,
+          "minValue": 1,
+          "maxValue": 100,
+          "expectedOutput": "100",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02076
+        },
+        {
+          "name": "100项递减",
+          "n": 100,
+          "minValue": 1,
+          "maxValue": 100,
+          "expectedOutput": "5050",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.01976
+        },
+        {
+          "name": "100项接近上界递增",
+          "n": 100,
+          "minValue": 999901,
+          "maxValue": 1000000,
+          "expectedOutput": "1000000",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02062
+        },
+        {
+          "name": "100项接近上界递减",
+          "n": 100,
+          "minValue": 999901,
+          "maxValue": 1000000,
+          "expectedOutput": "99995050",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02085
+        },
+        {
+          "name": "100项大小阈值交替",
+          "n": 100,
+          "minValue": 1,
+          "maxValue": 1000000,
+          "expectedOutput": "49999952",
+          "independentStateOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.02132
+        },
+        {
+          "name": "100项两端零重复阈值",
+          "n": 100,
+          "minValue": 0,
+          "maxValue": 777777,
+          "expectedOutput": "777777",
+          "independentStateOracle": true,
+          "closedFormChecked": true,
+          "localSeconds": 0.02104
+        },
+        {
+          "name": "100项重复原例",
+          "n": 100,
+          "minValue": 2,
+          "maxValue": 5,
+          "expectedOutput": "63",
+          "independentStateOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.02089
+        },
+        {
+          "name": "100项完整域固定随机",
+          "n": 100,
+          "minValue": 23320,
+          "maxValue": 995618,
+          "expectedOutput": "26731745",
+          "independentStateOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.02267
+        },
+        {
+          "name": "100项小值密集随机",
+          "n": 100,
+          "minValue": 0,
+          "maxValue": 7,
+          "expectedOutput": "170",
+          "independentStateOracle": true,
+          "closedFormChecked": false,
+          "localSeconds": 0.0277
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 10.404
+    }
+  ]
+}
