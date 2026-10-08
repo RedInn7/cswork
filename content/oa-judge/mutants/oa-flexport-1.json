@@ -1,0 +1,10 @@
+[
+  {
+    "name": "擅自按1000000007取模",
+    "code": "import sys\n\nif hasattr(sys, 'set_int_max_str_digits'):\n    sys.set_int_max_str_digits(0)\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n = data[0]\n    frequency = [0] * 100001\n    for value in data[1:]:\n        frequency[value] += 1\n    ending = answer = 0\n    for count in frequency[1:]:\n        ending = count * (ending + 1)\n        answer += ending\n    return str(answer % 1000000007)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按不同值而非下标去重",
+    "code": "import sys\n\nif hasattr(sys, 'set_int_max_str_digits'):\n    sys.set_int_max_str_digits(0)\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n = data[0]\n    frequency = [0] * 100001\n    for value in data[1:]:\n        frequency[value] = 1\n    ending = answer = 0\n    for count in frequency[1:]:\n        ending = count * (ending + 1)\n        answer += ending\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

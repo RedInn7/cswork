@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261015,
+  "problems": [
+    {
+      "id": "oa-flexport-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 44,
+      "referenceFormalCases": 47,
+      "negativeControls": [
+        {
+          "name": "擅自按1000000007取模",
+          "rejectedByCases": [
+            34,
+            35,
+            36,
+            38,
+            39,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "按不同值而非下标去重",
+          "rejectedByCases": [
+            0,
+            6,
+            7,
+            9,
+            10,
+            12,
+            14,
+            15,
+            16,
+            19,
+            20,
+            21,
+            22,
+            23,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            33,
+            34,
+            35,
+            36,
+            37,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "14ac6d52b4ef27ec8d4dae4e1ba34a488205b23acf612c2d0879b2a182732b4b",
+      "oracleMethod": "Enumerate every nonempty index subset; check uniqueness and max-min+1==size. Separately explicit interval product enumeration.",
+      "largeBoundaryOracle": "Weighted geometric closed forms for uniform frequency runs, singleton extension identity, and explicit interval products for mixed frequencies; never use reference ending-count recurrence.",
+      "largeBoundaries": [
+        {
+          "name": "每值两次长度62溢出边界",
+          "n": 62,
+          "minValue": 1,
+          "maxValue": 31,
+          "inputBytes": 171,
+          "expectedDigits": 10,
+          "expectedSha256": "d7454478e8a44cde4eb38dd29af39a44ac4e2fe34ce3e05d5150b6f838dd06d4",
+          "oracle": "uniform closed form, cross-checked interval products",
+          "localSeconds": 0.0273
+        },
+        {
+          "name": "每值两次长度128溢出边界",
+          "n": 128,
+          "minValue": 1,
+          "maxValue": 64,
+          "inputBytes": 370,
+          "expectedDigits": 20,
+          "expectedSha256": "0d052caa338cf3f05afed071a14b0fd962604bddd6ae6a7f49b354f5fccd4469",
+          "oracle": "uniform closed form, cross-checked interval products",
+          "localSeconds": 0.0245
+        },
+        {
+          "name": "中规模非均匀随机区间",
+          "n": 632,
+          "minValue": 1,
+          "maxValue": 60,
+          "inputBytes": 1807,
+          "expectedDigits": 56,
+          "expectedSha256": "80667db194e8bd028b2b8a85a2b3fa1387f0d4d11ec0da7c519405ced2ce0135",
+          "oracle": "explicit interval product enumeration",
+          "localSeconds": 0.0229
+        },
+        {
+          "name": "十万全同最大值",
+          "n": 100000,
+          "minValue": 100000,
+          "maxValue": 100000,
+          "inputBytes": 700007,
+          "expectedDigits": 6,
+          "expectedSha256": "3bb78535cc9555ff19fe3556aaa41c78a0a45c64d49ba2bc564507648a8e77a1",
+          "oracle": "only singleton index subsets",
+          "localSeconds": 0.034
+        },
+        {
+          "name": "十万全互异升序",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 100000,
+          "inputBytes": 588902,
+          "expectedDigits": 10,
+          "expectedSha256": "93ca4840c1c776888bd6f4746bbf15ab05f9af45fc80a2e30ddeea641922d7b6",
+          "oracle": "100000*100001/2",
+          "localSeconds": 0.0349
+        },
+        {
+          "name": "十万全互异反序",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 100000,
+          "inputBytes": 588902,
+          "expectedDigits": 10,
+          "expectedSha256": "93ca4840c1c776888bd6f4746bbf15ab05f9af45fc80a2e30ddeea641922d7b6",
+          "oracle": "same intervals independent of input order",
+          "localSeconds": 0.0348
+        },
+        {
+          "name": "十万缺口各值两次",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 99999,
+          "inputBytes": 588897,
+          "expectedDigits": 6,
+          "expectedSha256": "3bb78535cc9555ff19fe3556aaa41c78a0a45c64d49ba2bc564507648a8e77a1",
+          "oracle": "no consecutive distinct values, only singletons",
+          "localSeconds": 0.0338
+        },
+        {
+          "name": "十万两值均分",
+          "n": 100000,
+          "minValue": 99999,
+          "maxValue": 100000,
+          "inputBytes": 650007,
+          "expectedDigits": 10,
+          "expectedSha256": "db227e064834a0fd82b76b3500e1fb9c04c6248c648c6f1e4d7a511532e76127",
+          "oracle": "50000+50000+50000*50000",
+          "localSeconds": 0.0342
+        },
+        {
+          "name": "十万连续每值两次",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 50000,
+          "inputBytes": 577795,
+          "expectedDigits": 15053,
+          "expectedSha256": "317e3eaca4456268fa0ead96500d6d533592e3bbeb2c45a5ce02c2201630c91f",
+          "oracle": "uniform interval-length closed form",
+          "localSeconds": 0.2456
+        },
+        {
+          "name": "十万连续每值四次",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 25000,
+          "inputBytes": 555583,
+          "expectedDigits": 15052,
+          "expectedSha256": "6f06ddd9e25f1b15fbada3bc319fac3b6400f3bb4c15d0e4535685d9d969fd5c",
+          "oracle": "uniform interval-length closed form",
+          "localSeconds": 0.1969
+        },
+        {
+          "name": "十万15905位三重频次",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 33334,
+          "inputBytes": 566689,
+          "expectedDigits": 15905,
+          "expectedSha256": "89e73f5c0cbda1d73842feede6325c2a3c505738106f93cbc57b92fb470cdeb3",
+          "oracle": "uniform closed form plus all intervals ending at final singleton",
+          "localSeconds": 0.2214
+        },
+        {
+          "name": "十万15905位固定乱序",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 33334,
+          "inputBytes": 566689,
+          "expectedDigits": 15905,
+          "expectedSha256": "89e73f5c0cbda1d73842feede6325c2a3c505738106f93cbc57b92fb470cdeb3",
+          "oracle": "permutation-invariant index choices; same closed form",
+          "localSeconds": 0.2252
+        },
+        {
+          "name": "十万非均匀完整频次",
+          "n": 100000,
+          "minValue": 1,
+          "maxValue": 5,
+          "inputBytes": 200007,
+          "expectedDigits": 21,
+          "expectedSha256": "a5aa7c7790dc4c66c39e23a091227b6c9eca374ced1806f7acf8f15a8adea9b9",
+          "oracle": "explicit products of all 15 value intervals",
+          "localSeconds": 0.0334
+        }
+      ],
+      "maximumExpectedDigits": 15905,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 10.722
+    }
+  ]
+}
