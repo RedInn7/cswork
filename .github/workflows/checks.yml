@@ -66,6 +66,8 @@ jobs:
       - run: node --import tsx --test tests/oa-tree-max-path-checker.test.ts tests/oa-tree-max-path-integration.test.ts
       - run: node --test tests/oa-codeium-sequence-checker.test.mjs
       - run: node --import tsx --test tests/oa-codeium-sequence-integration.test.ts
+      - run: node --test tests/oa-morgan-bricks-checker.test.mjs
+      - run: node --import tsx --test tests/oa-morgan-bricks-integration.test.ts
       - run: node --test tests/oa-uber-semantic-checkers.test.mjs tests/oa-bounded-file.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oj-input-capacity.test.ts tests/oj-import-budget.test.ts
       - run: node --check tests/oj-large-input-probe.mjs

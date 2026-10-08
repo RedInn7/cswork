@@ -319,6 +319,15 @@ try {
   );
   const failures = [];
   const equivalentPrograms = {
+    // Use spare big-hammer capacity on the strength-one brick as well.
+    // This deliberately differs from the positive-savings-only reference.
+    'oa-morgan-stanley-1': `import sys
+d=list(map(int,sys.stdin.read().split()));n,k=d[:2];a=d[2:]
+chosen=set(sorted(range(n),key=lambda i:a[i],reverse=True)[:min(n,k)])
+big=[i+1 for i in range(n) if i in chosen];small=[i+1 for i in range(n) if i not in chosen]
+print(len(big)+sum(a[i-1] for i in small))
+print(*(big or [-1]));print(*(small or [-1]))
+`,
     // Reverse equal-degree tie order: all-positive/all-negative cases produce
     // a different optimum, so a tokens-only fallback would reject this program.
     'oa-codeium-1': `import sys

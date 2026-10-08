@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-morgan-stanley-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 4,
+      "hiddenCases": 40,
+      "referenceFormalCases": 44,
+      "negativeControls": [
+        {
+          "name": "大锤错误优先最弱砖块",
+          "rejectedByCases": [
+            1,
+            11,
+            13,
+            14,
+            27,
+            30,
+            35,
+            38,
+            39,
+            43
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "总击数错误溢出32位",
+          "rejectedByCases": [
+            36,
+            38,
+            39,
+            43
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "f2b3d4249abfb89c32aaa85e386aaa2d53e83773a1ea1da9f8f8c142d23f4a90",
+      "oracleMethod": "Enumerate every big-hammer subset within quota, sum literal per-brick hammer cost, minimize; no sorting/greedy formula.",
+      "alternateOptimalWitnessesChecked": 4,
+      "largeBoundaries": [
+        {
+          "name": "完整64位总值零额度",
+          "n": 200000,
+          "k": 0,
+          "inputBytes": 2000010,
+          "optimalTotal": "199980000100000",
+          "localSeconds": 0.0874
+        },
+        {
+          "name": "完整全大锤",
+          "n": 200000,
+          "k": 200000,
+          "inputBytes": 2000015,
+          "optimalTotal": "200000",
+          "localSeconds": 0.0893
+        },
+        {
+          "name": "完整半额度逆序",
+          "n": 200000,
+          "k": 100000,
+          "inputBytes": 2000015,
+          "optimalTotal": "99985000150000",
+          "localSeconds": 0.0852
+        },
+        {
+          "name": "完整半额度乱序",
+          "n": 200000,
+          "k": 100000,
+          "inputBytes": 2000015,
+          "optimalTotal": "99985000150000",
+          "localSeconds": 0.1303
+        },
+        {
+          "name": "完整低值含一全额度",
+          "n": 200000,
+          "k": 200000,
+          "inputBytes": 1288909,
+          "optimalTotal": "200000",
+          "localSeconds": 0.0873
+        },
+        {
+          "name": "完整低值含一少一额度",
+          "n": 200000,
+          "k": 199999,
+          "inputBytes": 1288909,
+          "optimalTotal": "200000",
+          "localSeconds": 0.0856
+        },
+        {
+          "name": "额度大于砖数",
+          "n": 199999,
+          "k": 200000,
+          "inputBytes": 2000004,
+          "optimalTotal": "199999",
+          "localSeconds": 0.0914
+        },
+        {
+          "name": "完整仅一次大锤",
+          "n": 200000,
+          "k": 1,
+          "inputBytes": 2000010,
+          "optimalTotal": "199979000100001",
+          "localSeconds": 0.0889
+        }
+      ],
+      "semanticValidation": true,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 11.566
+    }
+  ]
+}
