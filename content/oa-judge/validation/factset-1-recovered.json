@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261109,
+  "problems": [
+    {
+      "id": "oa-factset-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 40,
+      "referenceFormalCases": 43,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "253e1ef50e90b6160610b0d15809fb45e556fd6331bf6fbf30b6795a5534f4e8",
+      "negativeControls": [
+        {
+          "name": "错误返回面积而非边长",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            11,
+            12,
+            14,
+            15,
+            16,
+            17,
+            18,
+            20,
+            22,
+            27,
+            29,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41
+          ]
+        },
+        {
+          "name": "错误递推遗漏左上对角条件",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            2,
+            6,
+            9,
+            13,
+            19,
+            21,
+            32,
+            33,
+            38,
+            39,
+            40
+          ]
+        },
+        {
+          "name": "错误只记录第一行中的结果",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            11,
+            12,
+            14,
+            15,
+            16,
+            17,
+            18,
+            20,
+            22,
+            27,
+            29,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41
+          ]
+        }
+      ],
+      "oracleMethod": "Direct square enumeration with cell-by-cell checking; independent prefix-sum square search; largest cases closed forms.",
+      "exhaustiveSmallDomain": {
+        "cases": 531,
+        "nMin": 0,
+        "nMax": 3,
+        "nativeReferenceSubprocessCases": 531
+      },
+      "largeBoundaries": [
+        {
+          "name": "ones",
+          "n": 4095,
+          "inputBytes": 33538055,
+          "expected": 4095,
+          "oracle": "closed form: all ones n; checkerboard every2x2 includes zero",
+          "localMetrics": {
+            "wallSeconds": 0.16305,
+            "peakResidentBytes": 1392640,
+            "hostPlatform": "darwin",
+            "method": "native /usr/bin/time",
+            "notLinuxSandboxEvidence": true
+          }
+        },
+        {
+          "name": "checkerboard",
+          "n": 4095,
+          "inputBytes": 33538055,
+          "expected": 1,
+          "oracle": "closed form: all ones n; checkerboard every2x2 includes zero",
+          "localMetrics": {
+            "wallSeconds": 0.16115,
+            "peakResidentBytes": 1392640,
+            "hostPlatform": "darwin",
+            "method": "native /usr/bin/time",
+            "notLinuxSandboxEvidence": true
+          }
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.225
+    }
+  ]
+}

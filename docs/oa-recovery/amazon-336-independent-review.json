@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-amazon-336",
+  "batchId": "amazon-336-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "nonBlockingFindings": [
+    "The rule 各用户状态互不影响 (different users can be logged in at the same time) is not stated word for word in the original image. It is a reasonable inference: the logout API takes a <username>, and the note reads 'If a user is already logged in'. Formal cases 7 and 13 cover concurrent logins. The statement presents this as a rule without labelling it an inference. A short disclosure is suggested but not required.",
+    "The rule that a failed request changes no state is also an inference. The image says the original login 'remains active', and every other failure branch is described only by its return string, so the inference is consistent with the source."
+  ],
+  "scope": {
+    "formalCases": 39,
+    "publicCases": 3,
+    "hiddenCases": 36,
+    "oracleCases": 180,
+    "localNativeReferenceRuns": 219,
+    "localNativeMutantRuns": 195,
+    "allRunsExitedNormally": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "environment": "Local macOS, native C++ compiled with c++ -std=c++20 -O2. All compilation and runs were serial with one process at a time. Independent solution in Python 3 (dict of passwords + set of online users)."
+  },
+  "bindings": {
+    "packageChecksum": "fba86d08d9a9d4e58286523e746b119ec73d35481edba6871bcac49d38411d87",
+    "packageChecksumVerification": "Independently recomputed SHA-256 of JSON.stringify(ojImportSchema.parse(package)) via node --import tsx lib/oj-types.ts; equals batch and registry value.",
+    "referenceSha256": "b3bd9f659fac8d0fc03f8de75f145255f7d9dcd0513ea800a506c54e52427a70",
+    "packageFileSha256": "3dd7836a66bec8be543c5773f7f8caf6771d8e0e6971365bb6c83f47e3ba6cdd",
+    "oracleFileSha256": "a563dbb5bebfad9b6dea8ab4977cf122a9aaaeb29b4887ef75e7093348442d2e",
+    "editorialFileSha256": "6b2a4198e693cde32bbf0653c01eabac34d3073a1239b9f913d6e12cfccbe04f",
+    "mutantsFileSha256": "11966bce248163a6afe10370901e0b45a82705852eb1b36a8891bbc23938e8e9",
+    "batchFileSha256": "747af0bda39ffbf45ddc311e405aec3d469659c3d96606eca76b0b6fb32a8ab6",
+    "displayBinding": "Editorial solution code (cpp) exactly equals the frozen reference. Batch editorial equals editorial.explanation, and batch authoredSolutions equals editorial.solutions. The registry entry has the same checksum and editorial. Each of the 5 mutants.json codes exactly equals negative-controls/oa-amazon-336-{1..5}.cpp."
+  },
+  "source": {
+    "fixedCommit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Amazon/amazon-return-records.md",
+    "blob": "4c318f88939f009c67d0f3f74b26e0213afc364c",
+    "sha256": "b1a18ca6d41ebccc4d78b1c8b40710539f94af3125352c3847442335e615db21",
+    "personallyViewedImages": [
+      {
+        "path": "content/oa-judge/source-images/amazon-336-original.jpg",
+        "sha256": "29d0ce46a8c18c2a3eb58b12fb8e3565d199490620447c416005ac3b2a09ae95"
+      }
+    ],
+    "provenance": "The fixed raw source references a missing local image for the API table. The retrieved original screenshot supplements it and is not asserted to be a blob of the fixed commit. The screenshot shows the same notes, example 1, function description and constraints as the raw text.",
+    "apiTableVerified": "Image table read personally: register -> 'Registered Successfully' / 'Username already exists'; login -> 'Logged In Successfully' / 'Login Unsuccessful'; logout -> 'Logged Out Successfully' / 'Logout Unsuccessful' (given username wasn't logged in). The six strings in the statement output section, the reference and all expected outputs match exactly. No other output strings appear in any case.",
+    "corrections": "The raw example 2 output 'Login Unsuccessfully' becomes the table string 'Login Unsuccessful'. The fix is disclosed in problem.explanation, in the case name '原样例2（文案按原图更正）', in the editorial and in the source evidence. The 'David' in the explanation versus the 'david' input is also disclosed, with the input unchanged.",
+    "rulesVerified": "Initially no users; already-logged-in user's login fails and original session stays (image note); case-sensitive usernames/passwords (image note); register does not auto-login (implied by example 1: register then login succeeds); duplicate register does not overwrite (table: returns 'Username already exists'); unknown or not-logged-in logout fails (table). No rule contradicts the image."
+  },
+  "domainAndProof": {
+    "sourceLimits": "1<=n<=1e5, |username|,|password| in 1..10, alphanumeric [0-9a-zA-Z]. Full bounds preserved; stdin one request per line is a disclosed interface adaptation.",
+    "inputValidation": "All 219 inputs (formal plus oracle) pass a strict parse: n has no leading zeros and is in 1..100000; exactly n request lines, each ending in LF; each line is register/login with 3 single-space-separated fields or logout with 2; every token matches ^[0-9A-Za-z]{1,10}$. Maximum n is 100000.",
+    "publicSamples": "The 3 public cases are original example 1 (verbatim), original example 2 (input verbatim, output corrected), and an authored example of duplicate register, re-login and case sensitivity. All three agree with the statement and explanation.",
+    "checker": "The checker is tokens. The six return strings stay distinguishable under whitespace tokenization, and n lines with fixed token counts mean token comparison is equivalent to line comparison here."
+  },
+  "independentExpected": {
+    "all219CasesRecomputed": true,
+    "formalMismatches": 0,
+    "oracleMismatches": 0,
+    "oracleInputsUnique": 180,
+    "referenceOutputMismatches": 0,
+    "formalInputPlusExpectedBytes": 43895964,
+    "largestCase": {
+      "formalIndex": 28,
+      "n": 100000,
+      "inputBytes": 3100007,
+      "outputBytes": 2400000,
+      "localNativeElapsedSeconds": 0.02,
+      "localNativePeakRssBytes": 13484032
+    }
+  },
+  "negativeControls": {
+    "runsPerMutant": 39,
+    "normalExits": 195,
+    "killsInArtifactOrder": [8, 10, 28, 10, 3],
+    "killedIndicesMatchValidationReport": true,
+    "timeoutsOrCrashesCountedAsKills": false
+  },
+  "coverage": {
+    "covered": [
+      "original examples",
+      "duplicate register keeps old password and login state (cases 2,3,12,30)",
+      "re-login while logged in with correct and wrong password fails and session survives (cases 2,4,31)",
+      "login/logout of unknown user (cases 5,9,10,32,33)",
+      "logout when registered but not logged in (cases 5,8)",
+      "case-sensitive username and password (cases 2,6,12,34,35)",
+      "multiple simultaneous users and cross-user isolation (cases 7,13,36-38)",
+      "maximum-length fields and last-character password difference (cases 12,35)",
+      "n=1 for each request type (cases 9,10,11)",
+      "n=1e5 high-cardinality and high-collision random (cases 28-38)"
+    ],
+    "gaps": "No material gaps. The 'case-insensitive password' mutant is not among the controls, but cases 1, 6, 12 and 35 would reject it."
+  },
+  "reproducibility": {
+    "temporaryIndependentScript": "/private/tmp/claude-501/rev336/review.py",
+    "scriptSha256": "ab7cc92f1d33abef8c3bd1a8bdeeca24ee6881b8fae84b90c654a643be22bc04",
+    "checksumScript": "/private/tmp/claude-501/rev336/ck.mjs",
+    "executionPolicy": "Cases processed sequentially, one subprocess at a time. No author generator or upstream code was read or executed. Only this review report was added inside the repository."
+  }
+}

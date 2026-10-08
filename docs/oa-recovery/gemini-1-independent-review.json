@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-gemini-1",
+  "batchId": "gemini-1-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 44,
+    "publicCases": 3,
+    "hiddenCases": 41,
+    "uniqueOracleCases": 163,
+    "actualLocalNativeReferenceRunsForArtifacts": 207,
+    "additionalNativeProtocolRuns": 3,
+    "actualLocalNativeMutantRuns": 132,
+    "allProcessesExitedNormally": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告实际编译并执行本机 C++ 参考/负控。Linux 沙箱由主 agent 单独执行；本机耗时/RSS 不冒充服务器证据。"
+  },
+  "bindings": {
+    "packageChecksum": "abd10e8341c2375a8f57dcbda75f711c0e1bea34f47d368bf1540d3e48bcd0d8",
+    "checksumMethod": "实际 ojImportSchema.parse 后 JSON.stringify 的 SHA256，与冻结值及 batch 一致",
+    "packageFileSha256": "94503fb930dca315c80ece5efc888fec03560410d1ab827cd14640f3a094cbb3",
+    "oracleFileSha256": "4fa26c32ba2994a4c30976390c67bd35fbff6a33735f72d054456f39c78933db",
+    "referenceSha256": "2f5058ecac28d258d9e6bf16119fda6830a4f7aee55e12c97fc87f1e4b3408d9",
+    "editorialFileSha256": "6dbf10da26551740ba3967769c2f79cb69f70093a3854a765a301d40ab43ed0a",
+    "mutantFileSha256": "02de3acd995ab1467acd753e7322b46950b919d01e73fd65e36726f42a633ebb",
+    "batchFileSha256": "729c887fb10924f6283cd761e5d1073662690bd2e4794ee8b756f6adf9e16306",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Gemini/gemini-minimum-fence-painting-operations.md",
+    "gitBlobSha": "2b5aa4c069c633442fb88d0a2cd1ee9a78465b51",
+    "sha256": "092dff9e2704cea781b84ecf07d319703a4b5534eea1b6d651a82493e16e065e",
+    "semantics": "横笔仅能覆盖同一高度连续的未涂区域；竖笔从底到顶涂整板，原文没有对竖笔施加不得重涂的限制。题面明确说明此区别，没有把竖笔改成仅涂剩余高度。",
+    "range": "原源 n>=1、高度非负，未给数值上界；本站明确采用原 int[] 对应 0..2147483647 高度，n 受既有 32MiB 输入预算约束，没有添加较小人造上限，也没有空数组扩展。",
+    "examples": "原源无样例。三个公开例均明确标为本站构造，独立重算分别为 2、0、2。"
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "intervalRecurrence": "基线 b、区间最低 m、宽度 w 时，若所有板竖涂至少 w 笔；否则存在未竖涂板，其 b..m 的每层至少需一横笔，高于 m 的各连续子区间不能相互跨越，至少各需其子问题最优费用。两种策略均可实现，所以 F=min(w,m-b+sum(children))。后续竖笔仍涂整板，可覆盖先前横涂底层。",
+    "parentMerging": "参考弹出子节点后，将其 width 与相对正确父基线结算的 cost 并入真正父节点，再对整个父区间选择横/竖方案。没有将不同高度层独立取 min 后直接相加。正式 [100,101,101] 正确输出 3，不是错误的 2。",
+    "complexityAndIntegerSafety": "每节点至多入栈/出栈一次，等高合并，O(n) 时间且不递归。答案、宽度、已结算子费用不超过 n；高度差加费用使用 uint64 中间值，避免 INT_MAX 附近溢出。",
+    "memoryArgument": "Node 静态断言 12 字节，reserve(n+1) 一次分配，流式读取且无高度数组/输入字符串。最大可传输 n=16777212 时容量 201326556 字节，小于 256MiB；等高输入只触及少量节点，实际 RSS 不能被误当作整个 reserve 容量。"
+  },
+  "independentExpectedValidation": {
+    "all207ArtifactCasesRecomputed": true,
+    "intervalRecurrenceCases": 197,
+    "literalBfsCrossCheckedArtifactCases": 60,
+    "additionalExhaustiveBfsCases": 363,
+    "bfsMethod": "独立枚举 n=1..5、高度0..2全部363个数组；状态为所有单位格的已涂位图。竖笔置整板所有位，允许覆盖；横笔枚举同层连续且全部未涂的片段。BFS最短路径与独立直接区间最低值递推全部一致。正式/oracle 中总单位格<=14的60例也实际交叉核验。",
+    "intervalMethod": "递归寻找区间最小高度并切分更高子段，不使用参考单调栈。包括零、INT_MAX以及父子合并反例。",
+    "closedFormCases": 10,
+    "closedFormMethod": "逐项验证全零/常数平台、严格升降序、0与INT_MAX交替、1与INT_MAX交替的结构后，用对应数学闭式求值。无抽样首尾替代完整检查。",
+    "protocol": "全部输入逐项检查 n>=1、恰有n个高度、0..INT_MAX与UTF-8字节预算。另实际运行 [100,101,101] 的 LF、CRLF、直接EOF 三种编码，均正常输出3。",
+    "capacityCases": [
+      {
+        "formalIndex": 42,
+        "n": 16777212,
+        "inputBytes": 33554432,
+        "structure": "全部高度1，无末尾换行，最多可传输板数",
+        "expected": 1,
+        "inputSha256": "382e840fa238e4e4bd0d671e00a2405c89c35d3935392d859ae7ce4ccd2233a9",
+        "localNativePeakRssBytes": 1392640
+      },
+      {
+        "formalIndex": 43,
+        "n": 4333191,
+        "inputBytes": 33554432,
+        "structure": "高度严格为1..n，最大深栈压力",
+        "expected": 4333191,
+        "inputSha256": "80957cbd17dbad166177b028dc97b77ca0e1243528637668b2340d2695aaae7f",
+        "localNativePeakRssBytes": 53149696
+      }
+    ],
+    "capacityNotes": "两个32MiB输入逐个数字验证结构/数量/范围，分别独立闭式核为1和n。参考及全部负控顺序实际执行；参考 RSS 由本机 /usr/bin/time -l 测量，均低于256MiB。",
+    "totalFormalInputPlusExpectedBytes": 72711544,
+    "within128MiBSnapshotBudget": true
+  },
+  "negativeControls": [
+    { "name": "忽略竖笔，仅横涂", "normalRuns": 44, "killedByFormalCases": 27 },
+    { "name": "错误扣除父层基准", "normalRuns": 44, "killedByFormalCases": 1 },
+    { "name": "全部单独竖涂", "normalRuns": 44, "killedByFormalCases": 8 }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/gemini1-review.CM4dAK/review.py",
+    "scriptSha256": "80c634961735c4f9d64ec5e02c15e0f6f19202f43f5d1cef3592c1f96a74f2df",
+    "artifactVerificationSeconds": 19.646275281906128,
+    "memoryDiscipline": "巨例用正则迭代器流式检查数字，不构建千万项 Python 数组；一次执行一个参考或负控。",
+    "projectMutation": "只新增本审核报告，未修改冻结产物，未提交。"
+  }
+}

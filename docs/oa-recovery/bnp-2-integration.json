@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "batch": "bnp-2-recovered",
+  "problemId": "oa-bnp-2",
+  "packageChecksum": "3763f693fe12e251240deeee5dfc3d35aec51b28b72140a1e18414683690aef6",
+  "referenceSha256": "cb460d659fe16fe7b6bb06e10d80ad25341f1ec78ce819df2c00d9830941013e",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": { "referenceRuns": 203, "formal": 40, "oracle": 163, "mutantsKilled": 3 },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 40,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1558,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "largeInputs": [
+    { "n": 16777211, "bytes": 33554431, "expected": 8388605 },
+    { "n": 4333191, "bytes": 33554426, "expected": 9388269954645 }
+  ],
+  "rangeDisclosure": "Nonnegative Java int heights and existing32MiB transport budget explicitly disclosed; no original numeric bound invented. Empty and zero-height extensions disclosed.",
+  "coverage": { "total": 1634, "sandboxVerified": 1214, "remaining": 420 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

@@ -1,0 +1,218 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261117,
+  "problems": [
+    {
+      "id": "oa-zolostays-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 36,
+      "referenceFormalCases": 39,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "bc3637a347c707330fe30e15c55d854ad5123b692840da95de662cb7390866b4",
+      "negativeControls": [
+        {
+          "name": "错误取左右最高墙的较大者",
+          "rejectedCases": 28,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            5,
+            6,
+            10,
+            11,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误忘记扣除柱子占用高度",
+          "rejectedCases": 37,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误只看紧邻两根柱子",
+          "rejectedCases": 20,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            8,
+            9,
+            15,
+            16,
+            17,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            34,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        }
+      ],
+      "oracleMethod": "Independent complete prefix/suffix maxima; exhaustive unit water cells with explicit left/right wall existence; maximum-basin closed form.",
+      "exhaustiveSmallDomain": {
+        "cases": 1092,
+        "nMin": 1,
+        "nMax": 6,
+        "heights": [
+          0,
+          1,
+          2
+        ]
+      },
+      "largeBoundaries": [
+        {
+          "name": "完整上界最高盆地",
+          "n": 20000,
+          "inputBytes": 40016,
+          "expectedOutput": "1999800000",
+          "elapsedSeconds": 0.00285
+        },
+        {
+          "name": "完整长度全零",
+          "n": 20000,
+          "inputBytes": 40006,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.0029
+        },
+        {
+          "name": "完整长度最高平台",
+          "n": 20000,
+          "inputBytes": 140006,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.00414
+        },
+        {
+          "name": "完整长度严格升序",
+          "n": 20000,
+          "inputBytes": 108896,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.00342
+        },
+        {
+          "name": "完整长度严格降序",
+          "n": 20000,
+          "inputBytes": 108896,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.00345
+        },
+        {
+          "name": "完整长度交替高峰",
+          "n": 20000,
+          "inputBytes": 90006,
+          "expectedOutput": "999900000",
+          "elapsedSeconds": 0.00324
+        },
+        {
+          "name": "完整长度多宽盆地",
+          "n": 20000,
+          "inputBytes": 50006,
+          "expectedOutput": "1799100000",
+          "elapsedSeconds": 0.00306
+        },
+        {
+          "name": "完整长度中间高峰",
+          "n": 20000,
+          "inputBytes": 40011,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.00301
+        },
+        {
+          "name": "完整长度非对称边墙",
+          "n": 20000,
+          "inputBytes": 40015,
+          "expectedOutput": "1999760004",
+          "elapsedSeconds": 0.00288
+        },
+        {
+          "name": "完整长度随机全部高度",
+          "n": 20000,
+          "inputBytes": 117749,
+          "expectedOutput": "993907318",
+          "elapsedSeconds": 0.00337
+        },
+        {
+          "name": "完整长度锯齿宽平台",
+          "n": 20000,
+          "inputBytes": 100046,
+          "expectedOutput": "999000000",
+          "elapsedSeconds": 0.00323
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.591
+    }
+  ]
+}

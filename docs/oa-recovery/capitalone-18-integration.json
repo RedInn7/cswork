@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "capitalone-18-recovered",
+  "problemId": "oa-capital-one-18",
+  "packageChecksum": "f1f34cf2789f36724f422ced5f0942b5b47181b243e53333e1d7b4375b5ea6ee",
+  "referenceSha256": "d4b78230efa81babdbcc18df5c596b8e56d387518951d851b0824e50080f1e74",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 202,
+      "formal": 39,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 39,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1749,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "4095x4095 non-symmetric matrix input33538056bytes and output33538050bytes passed. Complete signed32 elements, even/odd sizes, fixed diagonals, turns0..INT_MAX and four-turn identity covered. Single-array in-place implementation avoids full output buffering.",
+  "sourceDisclosure": "Original linked screenshots recovered and separately hashed; original5x5 example retained. Nonempty matrix, signed32 elements and nonnegative signed32 turns explicitly adapted from function types. Maximum4095 derives from32MiB input budget, not an invented original bound.",
+  "coverage": { "total": 1634, "sandboxVerified": 1223, "remaining": 411 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}
