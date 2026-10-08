@@ -16,14 +16,16 @@
     },
     {
       "id": "oa-expedia-4",
-      "decision": "Full-domain implementation candidate; no promotion before independent source and resource validation",
+      "decision": "Independent source and full-domain resource pre-review passed; implementation in progress. No promotion before actual reference, negative-control and integration validation.",
       "source": "fastprep/Expedia/expedia-calculate-the-sum.md",
       "sourceSha256": "bd18d1e034dcfdc131017631ff7dc1a73406961281ee1a29ad284cf3dae2b1ed",
       "findings": [
         "Original specifies initially-off switches indexed from1, inclusive interval toggles, and sum of final On indices; numeric bounds and examples absent.",
         "A disclosed positive signed32 endpoint adaptation follows int[][] signature; right endpoint+1 requires unsigned32 or wider. Maximum sum2305843008139952128 requires disclosed64-bit result, not source int.",
         "Consider uint32 toggle events and two-pass radix sorting for complete32MiB transport domain, around128MiB for two event arrays at canonical maximum8388606 operations. Independently validate memory/time and repeated endpoints before recovery.",
-        "Author reports11111 direct-toggle comparisons for endpoints1..4 and operation counts0..4; zero-operation behavior must be disclosed separately. No candidate package or Linux evidence yet."
+        "Author reports11111 direct-toggle comparisons for endpoints1..4 and operation counts0..4; zero-operation behavior must be disclosed separately. No candidate package or Linux evidence yet.",
+        "Independent pre-review confirms maximum8388606 operations: shortest LF form exactly33554432bytes, while one more operation exceeds budget even with EOF. Two uint32 event arrays require134217696bytes plus fixed buckets and IO buffers; do not also store the original operations.",
+        "Preserve l<=r instead of silently normalizing reversed endpoints. Sort must be stable across radix passes; repeated endpoints retain parity and yield zero-length paired segments rather than being deduplicated."
       ]
     },
     {
