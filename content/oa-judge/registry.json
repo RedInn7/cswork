@@ -6098,6 +6098,18 @@
       }
     },
     {
+      "id": "oa-expedia-4",
+      "sourceContentHash": "38cf68da3b811b1b6d48df0c16b31bb55e6086a5c6b714d2591b6c0034d8e971",
+      "packageChecksum": "439f46a74e02a626228a96fc0ce6340350889d8d88a392be3f32a12825ffaefd",
+      "editorial": "## 原规则、范围与返回值适配\n\n固定原文 fastprep/Expedia/expedia-calculate-the-sum.md 完整说明：开关从1连续编号，全部初始关闭。每个操作给左右端点，把闭区间内每个开关翻转一次，最后求所有开启开关的编号之和。不是开启数量，也不是操作覆盖区间的并集。操作重叠时按奇偶性抵消。原文没有样例，三个公开例均为本站构造。\n\n原约束栏只有颜文字，没有数值上界；参数明确是Java int n和int[][] operations。本站公开按类型解释有效索引为1≤l≤r≤2147483647；不发明更小的端点或操作数上限。n按非负操作数处理，n=0及答案0是本站明确的空操作数学扩展，不称原文给出了n下界。标准输入为n后跟n对端点，接受空白分隔、LF/CRLF及最后数字后直接EOF。所有输入仍受既有32MiB标准传输预算限制；n=8388606且每行1 1的规范LF编码恰好33554432字节，这是预算推导而非来源约束。\n\n原返回int不能覆盖上述完整类型域，例如单次[1,2147483647]结果为2305843008139952128。本站输出精确数学整数，不截断、不取模，并明确将结果提升到64位。所有可能开启位置均在1..INT_MAX，故这个值也是全域最大答案，signed64足够。原整理版本按最大索引开数组，无法覆盖INT_MAX；本站不沿用它来暗中缩域。\n\n公开构造例：操作[1,3]、[2,4]后，仅1与4开启，和为5；两次[2,5]完全抵消，和为0；单次[2147483647,2147483647]的和为2147483647。没有把这些说成来源原样例。\n\n## 思路\n\n把每个闭区间[l,r]变成两个奇偶翻转事件l和r+1。将全部事件排序，保留重复事件。开关状态在每个事件处翻转一次，从关闭开始，所以第0/1、第2/3等相邻配对事件[a,b)对应开启段。两个相同事件形成空段，贡献0；这自然保留偶数次翻转的抵消效果。\n\n开启段a..b−1的编号和为(a+b−1)(b−a)/2。逐对累加即可，不逐个访问开关，不按最大编号分配数组。参考对uint32事件做两趟稳定16位基数排序：先低16位、再高16位。每趟先计数并转为起始偏移，按原顺序散写到另一数组，保证稳定性。\n\n## 正确性证明\n\n对于任意位置x，一个操作[l,r]恰在l≤x<r+1时使它翻转。换成l、r+1两个事件后，截至x的事件总次数与覆盖x的操作数奇偶性相同，故两种表示产生完全相同的开关状态。\n\n排序事件后，相邻事件之间没有状态变化；初始状态关闭，每过一个事件翻转。因此第偶数编号事件到下一事件之间为开启，下一对之前为关闭。重复坐标不含任何开关，配对得到空段，或在同一坐标连续翻转；保留它们正确表达奇偶性。各开启段互不重叠，其并集恰为全部开启位置。对每段使用等差数列求和后相加，正好得到目标编号和。\n\n稳定低位排序使相同高位内按低位有序；第二趟高位稳定排序保持这一低位次序，所以最终是完整32位数值顺序，满足上述配对论证。\n\n## 复杂度与完整输入预算\n\n两趟基数排序和求和为O(n+65536)，空间O(n+65536)。两份2n个uint32数组共16n字节；最大可传输操作数8388606时为134217696字节，再加262144字节计数表及少量运行开销，低于256MiB。流式解析，不另外存输入字符串或操作数组。最大两组输入顺序测试，不并发运行大进程。\n\nr+1在uint32中计算，最大2147483648，不能先用signed int相加。求和将端点先提升为uint64：每段乘积不超过2147483648×2147483647，最终总和不超过2305843008139952128，均无溢出。零操作没有事件，输出0。\n\n## 独立验证\n\n小域oracle直接维护每个开关的开/关状态，逐位置翻转，再求开启位置编号和；穷举索引1..4、0..4个合法区间共11111组。163唯一oracle含随机小输入与完整端点边界。中规模oracle用字典逐事件异或、排序不同坐标并按状态扫描，不使用参考基数排序或直接两两配对。正式至少35组覆盖重复、交叉、相接、嵌套、INT_MAX端点、0操作和各行尾。两组近32MiB输入分别为最多操作数的重复单点（偶数次抵消）和乱序不同单点1..N（闭式N(N+1)/2）；二者期望不由参考生成。四个负控分别忽略翻转、遗漏闭区间右端、把编号和写成数量、32位结果截断；必须在全部正式例正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <cstdint>\n#include <vector>\n#include <array>\nusing namespace std;\nuint32_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint32_t x=0;while(c>32&&c!=EOF){x=x*10+uint32_t(c-'0');c=getchar_unlocked();}return x;}\nint main(){uint32_t n=readNumber();vector<uint32_t>a(size_t(n)*2),scratch(size_t(n)*2);\nfor(uint32_t i=0;i<n;i++){uint32_t left=readNumber(),right=readNumber();a[size_t(i)*2]=left;a[size_t(i)*2+1]=right+uint32_t(1);}\narray<uint32_t,65536> count;\nfor(unsigned shift:{0u,16u}){count.fill(0);for(uint32_t value:a)++count[(value>>shift)&65535u];uint32_t sum=0;\nfor(uint32_t &v:count){uint32_t old=v;v=sum;sum+=old;}\nfor(uint32_t value:a)scratch[count[(value>>shift)&65535u]++]=value;a.swap(scratch);}\nuint64_t answer=0;for(size_t i=0;i<a.size();i+=2){uint64_t left=a[i],end=a[i+1];answer+=(left+end-1)*(end-left)/2;}\nprintf(\"%llu\\n\",(unsigned long long)answer);}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-expedia-1",
       "sourceContentHash": "9a4a960e85a70ff0683b74623e4539c30d387993f2ed33f270be89e51e1960d2",
       "packageChecksum": "46976fb7a99a663bf298482ec119c0c8f477934b7d7e556dfd0cfd354a75c240",

@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261119,
+  "problems": [
+    {
+      "id": "oa-expedia-4",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "referenceFormalCases": 40,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "35aa4ea427d31547e9b0c954f0fc1e2ac8bd6105b91c2fea6c609d3afcc47a50",
+      "negativeControls": [
+        {
+          "name": "错误把所有操作当成总包围区间而不翻转",
+          "rejectedCases": 28,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            6,
+            8,
+            9,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            24,
+            25,
+            26,
+            27,
+            30,
+            31,
+            32,
+            34,
+            35,
+            37,
+            38
+          ],
+          "normalExitCases": 40
+        },
+        {
+          "name": "错误把右端点当成不包含",
+          "rejectedCases": 31,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            30,
+            31,
+            33,
+            34,
+            35,
+            36,
+            39
+          ],
+          "normalExitCases": 40
+        },
+        {
+          "name": "错误输出开启开关数量而不是编号之和",
+          "rejectedCases": 31,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            30,
+            31,
+            33,
+            34,
+            35,
+            36,
+            39
+          ],
+          "normalExitCases": 40
+        },
+        {
+          "name": "错误把精确结果截为有符号32位",
+          "rejectedCases": 6,
+          "rejectedCaseIndices": [
+            5,
+            33,
+            34,
+            35,
+            36,
+            39
+          ],
+          "normalExitCases": 40
+        }
+      ],
+      "oracleMethod": "Direct switch-set toggling; independent parity dictionary with sorted distinct positions; huge repeated singleton cancellation and affine-permuted singleton arithmetic-series closed form.",
+      "exhaustiveSmallDomain": {
+        "cases": 11111,
+        "nativeSubprocessCases": 1111,
+        "indices": [
+          1,
+          4
+        ],
+        "operationsMin": 0,
+        "operationsMax": 4
+      },
+      "largeBoundaries": [
+        {
+          "name": "中规模独立事件字典",
+          "inputBytes": 419371,
+          "expectedOutput": "1153579295396780899",
+          "elapsedSeconds": 0.00394,
+          "darwinPeakRssBytes": 1933312
+        },
+        {
+          "name": "同一最大区间奇数次",
+          "inputBytes": 130019,
+          "expectedOutput": "2305843008139952128",
+          "elapsedSeconds": 0.00319,
+          "darwinPeakRssBytes": 1769472
+        },
+        {
+          "name": "同一最大区间偶数次",
+          "inputBytes": 130006,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.00286,
+          "darwinPeakRssBytes": 1769472
+        },
+        {
+          "name": "32MiB-最大操作数偶数重复",
+          "inputBytes": 33554432,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.32399,
+          "darwinPeakRssBytes": 135839744
+        },
+        {
+          "name": "近32MiB-乱序不同单点",
+          "inputBytes": 33554424,
+          "expectedOutput": "2499936322780",
+          "elapsedSeconds": 0.2035,
+          "darwinPeakRssBytes": 37404672
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 12.828
+    }
+  ]
+}
