@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import {
   capacityCases,
   makeCapacityCase,
@@ -14,9 +16,37 @@ import { dedicatedUrl } from '../scripts/verify-stripe-payments-capacity.mjs';
 const reference = fileURLToPath(
   new URL('../content/oa-judge/references/oa-stripe-17.py', import.meta.url),
 );
+const readArtifact = (path) => readFileSync(new URL(path, import.meta.url));
+const hash = (value) => createHash('sha256').update(value).digest('hex');
+const evidence = JSON.parse(
+  readArtifact('../docs/oa-recovery/stripe-17-capacity.json'),
+);
 test('all nine histories cover the published full command count, valid timestamps and single-value domain', () => {
+  assert.equal(evidence.passed, true);
+  assert.deepEqual(
+    evidence.cases.map((row) => row.name),
+    capacityCaseNames,
+  );
   let count = 0;
   for (const c of capacityCases()) {
+    const row = evidence.cases[count];
+    assert.equal(row.q, c.q);
+    assert.equal(row.inputSha256, hash(c.input));
+    assert.equal(row.expectedOutputSha256, hash(c.expectedOutput));
+    assert.equal(row.outputSha256, row.expectedOutputSha256);
+    assert.equal(row.inputBytes, Buffer.byteLength(c.input));
+    assert.equal(row.outputBytes, Buffer.byteLength(c.expectedOutput));
+    assert.equal(row.status, 'Accepted');
+    assert.equal(row.exitStatus, 0);
+    assert.equal(row.passed, true);
+    assert(
+      row.cpuNanoseconds > 0 &&
+        row.cpuNanoseconds <= evidence.limits.timeLimit * 1e9,
+    );
+    assert(
+      row.peakMemoryBytes > 0 &&
+        row.peakMemoryBytes <= evidence.limits.memoryLimit * 1024,
+    );
     const lines = c.input.trimEnd().split('\n');
     assert.equal(Number(lines.shift()), 200000);
     assert.equal(lines.length, 200000);
@@ -39,6 +69,28 @@ test('all nine histories cover the published full command count, valid timestamp
     count++;
   }
   assert.equal(count, 9);
+});
+test('capacity evidence remains bound to the published package, reference and case generator', () => {
+  const bytes = readArtifact('../content/oa-judge/packages/oa-stripe-17.json');
+  const pkg = JSON.parse(bytes);
+  const batch = JSON.parse(
+    readArtifact('../content/oa-judge/batches/stripe-next.json'),
+  );
+  const entry = batch.items.find((item) => item.id === 'oa-stripe-17');
+  assert.equal(evidence.problemId, entry.id);
+  assert.equal(evidence.sourceContentHash, entry.sourceContentHash);
+  assert.equal(evidence.packageFileSha256, hash(bytes));
+  assert.equal(evidence.packageChecksum, hash(JSON.stringify(pkg)));
+  assert.equal(evidence.packageChecksum, entry.packageChecksum);
+  assert.equal(evidence.referenceSha256, hash(readFileSync(reference)));
+  assert.equal(
+    evidence.caseGeneratorSha256,
+    hash(
+      readArtifact('../scripts/oa-judge/stripe-payments-capacity-cases.mjs'),
+    ),
+  );
+  for (const key of ['timeLimit', 'memoryLimit', 'outputLimit'])
+    assert.equal(evidence.limits[key], pkg.problem[key]);
 });
 test('small constructions match actual checked-in authored reference, without sandbox credentials', () => {
   for (const q of [32, 97, 256])
