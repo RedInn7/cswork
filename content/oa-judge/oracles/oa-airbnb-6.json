@@ -1,0 +1,702 @@
+[
+  {
+    "input": "3 55\nHello world\nHow are you today\nBye\n",
+    "expectedOutput": "+---------------------------------------------------------+\n| Hello world                                             |\n+---------------------------------------------------------+\n| How are you today                                       |\n+---------------------------------------------------------+\n| Bye                                                     |\n+---------------------------------------------------------+\n"
+  },
+  {
+    "input": "0 5\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "4 6\n  ab\n\nx y z \n|-+|-+\n",
+    "expectedOutput": "+--------+\n|   ab   |\n+--------+\n|        |\n+--------+\n| x y z  |\n+--------+\n| |-+|-+ |\n+--------+\n"
+  },
+  {
+    "input": "1 1\na\n",
+    "expectedOutput": "+---+\n| a |\n+---+\n"
+  },
+  {
+    "input": "1 1\n\n",
+    "expectedOutput": "+---+\n|   |\n+---+\n"
+  },
+  {
+    "input": "1 1\n \n",
+    "expectedOutput": "+---+\n|   |\n+---+\n"
+  },
+  {
+    "input": "3 3\nabc\na\n\n",
+    "expectedOutput": "+-----+\n| abc |\n+-----+\n| a   |\n+-----+\n|     |\n+-----+\n"
+  },
+  {
+    "input": "3 4\n   x\nx   \n xx \n",
+    "expectedOutput": "+------+\n|    x |\n+------+\n| x    |\n+------+\n|  xx  |\n+------+\n"
+  },
+  {
+    "input": "3 10\n\"quoted\"\nback\\slash\ntab-less~\n",
+    "expectedOutput": "+------------+\n| \"quoted\"   |\n+------------+\n| back\\slash |\n+------------+\n| tab-less~  |\n+------------+\n"
+  },
+  {
+    "input": "5 2\nab\nab\nab\nab\nab\n",
+    "expectedOutput": "+----+\n| ab |\n+----+\n| ab |\n+----+\n| ab |\n+----+\n| ab |\n+----+\n| ab |\n+----+\n"
+  },
+  {
+    "input": "1 300\nwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww\n",
+    "expectedOutput": "+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n| wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww |\n+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n"
+  },
+  {
+    "input": "1 300\n\n",
+    "expectedOutput": "+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n|                                                                                                                                                                                                                                                                                                              |\n+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+\n"
+  },
+  {
+    "input": "2 7\n       \n       \n",
+    "expectedOutput": "+---------+\n|         |\n+---------+\n|         |\n+---------+\n"
+  },
+  {
+    "input": "0 1\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "0 300\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "4 13\nHello, World!\n#$%&()*+,-./\n:;<=>?@[]^_`\n{|}~ 0123456\n",
+    "expectedOutput": "+---------------+\n| Hello, World! |\n+---------------+\n| #$%&()*+,-./  |\n+---------------+\n| :;<=>?@[]^_`  |\n+---------------+\n| {|}~ 0123456  |\n+---------------+\n"
+  },
+  {
+    "input": "2 13\n \na  aaaaaaa\n",
+    "expectedOutput": "+---------------+\n|               |\n+---------------+\n| a  aaaaaaa    |\n+---------------+\n"
+  },
+  {
+    "input": "6 3\nW8i\nsK\nNK8\nT+;\nejt\nWd\n",
+    "expectedOutput": "+-----+\n| W8i |\n+-----+\n| sK  |\n+-----+\n| NK8 |\n+-----+\n| T+; |\n+-----+\n| ejt |\n+-----+\n| Wd  |\n+-----+\n"
+  },
+  {
+    "input": "1 7\nn!QVav\n",
+    "expectedOutput": "+---------+\n| n!QVav  |\n+---------+\n"
+  },
+  {
+    "input": "5 5\n+b b\n-ab+ \n\nb+-\n\n",
+    "expectedOutput": "+-------+\n| +b b  |\n+-------+\n| -ab+  |\n+-------+\n|       |\n+-------+\n| b+-   |\n+-------+\n|       |\n+-------+\n"
+  },
+  {
+    "input": "1 2\n\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n"
+  },
+  {
+    "input": "5 5\n\n}FF\nM\n=\nQu\n",
+    "expectedOutput": "+-------+\n|       |\n+-------+\n| }FF   |\n+-------+\n| M     |\n+-------+\n| =     |\n+-------+\n| Qu    |\n+-------+\n"
+  },
+  {
+    "input": "7 5\n   aa\na\n   aa\na a \n\n a  \naaa\n",
+    "expectedOutput": "+-------+\n|    aa |\n+-------+\n| a     |\n+-------+\n|    aa |\n+-------+\n| a a   |\n+-------+\n|       |\n+-------+\n|  a    |\n+-------+\n| aaa   |\n+-------+\n"
+  },
+  {
+    "input": "7 1\na\n\n\n-\n+\n\n-\n",
+    "expectedOutput": "+---+\n| a |\n+---+\n|   |\n+---+\n|   |\n+---+\n| - |\n+---+\n| + |\n+---+\n|   |\n+---+\n| - |\n+---+\n"
+  },
+  {
+    "input": "2 13\na+\n+|bb-+\n",
+    "expectedOutput": "+---------------+\n| a+            |\n+---------------+\n| +|bb-+        |\n+---------------+\n"
+  },
+  {
+    "input": "0 2\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "6 24\ny\n2}ha|UgRFA<#? \n *Yvf*?\np;.L3CZEgQ-K/`8e2:GhT?\n|[-n\n=;l,a#\n",
+    "expectedOutput": "+--------------------------+\n| y                        |\n+--------------------------+\n| 2}ha|UgRFA<#?            |\n+--------------------------+\n|  *Yvf*?                  |\n+--------------------------+\n| p;.L3CZEgQ-K/`8e2:GhT?   |\n+--------------------------+\n| |[-n                     |\n+--------------------------+\n| =;l,a#                   |\n+--------------------------+\n"
+  },
+  {
+    "input": "4 23\n a a a aaa  aa a \n a aa  aa  aa a    \naaaaa  aa aa  aa aaa\na  a  a  aa  \n",
+    "expectedOutput": "+-------------------------+\n|  a a a aaa  aa a        |\n+-------------------------+\n|  a aa  aa  aa a         |\n+-------------------------+\n| aaaaa  aa aa  aa aaa    |\n+-------------------------+\n| a  a  a  aa             |\n+-------------------------+\n"
+  },
+  {
+    "input": "5 1\na\n\na\n\na\n",
+    "expectedOutput": "+---+\n| a |\n+---+\n|   |\n+---+\n| a |\n+---+\n|   |\n+---+\n| a |\n+---+\n"
+  },
+  {
+    "input": "3 4\nK&;\n\"/%0\n-r\n",
+    "expectedOutput": "+------+\n| K&;  |\n+------+\n| \"/%0 |\n+------+\n| -r   |\n+------+\n"
+  },
+  {
+    "input": "7 3\n{XI\n`<\n-|\n,\n:$@\nr\n(\n",
+    "expectedOutput": "+-----+\n| {XI |\n+-----+\n| `<  |\n+-----+\n| -|  |\n+-----+\n| ,   |\n+-----+\n| :$@ |\n+-----+\n| r   |\n+-----+\n| (   |\n+-----+\n"
+  },
+  {
+    "input": "1 3\n\n",
+    "expectedOutput": "+-----+\n|     |\n+-----+\n"
+  },
+  {
+    "input": "1 7\n_6)mMk\n",
+    "expectedOutput": "+---------+\n| _6)mMk  |\n+---------+\n"
+  },
+  {
+    "input": "0 4\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "5 1\n|\n|\n\na\n|\n",
+    "expectedOutput": "+---+\n| | |\n+---+\n| | |\n+---+\n|   |\n+---+\n| a |\n+---+\n| | |\n+---+\n"
+  },
+  {
+    "input": "1 13\n-+a|b-\n",
+    "expectedOutput": "+---------------+\n| -+a|b-        |\n+---------------+\n"
+  },
+  {
+    "input": "3 3\n aa\na \na\n",
+    "expectedOutput": "+-----+\n|  aa |\n+-----+\n| a   |\n+-----+\n| a   |\n+-----+\n"
+  },
+  {
+    "input": "4 13\n b-a|-\naa-b+a \n||-aab--|+b-\n|b-+ -a\n",
+    "expectedOutput": "+---------------+\n|  b-a|-        |\n+---------------+\n| aa-b+a        |\n+---------------+\n| ||-aab--|+b-  |\n+---------------+\n| |b-+ -a       |\n+---------------+\n"
+  },
+  {
+    "input": "2 4\n  \na aa\n",
+    "expectedOutput": "+------+\n|      |\n+------+\n| a aa |\n+------+\n"
+  },
+  {
+    "input": "1 7\n \n",
+    "expectedOutput": "+---------+\n|         |\n+---------+\n"
+  },
+  {
+    "input": "7 19\na  \n   a  \n aaa \na\n     aaa\n aaa        a  aa\naaa\n",
+    "expectedOutput": "+---------------------+\n| a                   |\n+---------------------+\n|    a                |\n+---------------------+\n|  aaa                |\n+---------------------+\n| a                   |\n+---------------------+\n|      aaa            |\n+---------------------+\n|  aaa        a  aa   |\n+---------------------+\n| aaa                 |\n+---------------------+\n"
+  },
+  {
+    "input": "7 29\na \n a a \n     aa    \n        a a a aa  aaaa  a \na aa   a   a  a  aa   \naaa aaaaa  aa a \n      a a aa\n",
+    "expectedOutput": "+-------------------------------+\n| a                             |\n+-------------------------------+\n|  a a                          |\n+-------------------------------+\n|      aa                       |\n+-------------------------------+\n|         a a a aa  aaaa  a     |\n+-------------------------------+\n| a aa   a   a  a  aa           |\n+-------------------------------+\n| aaa aaaaa  aa a               |\n+-------------------------------+\n|       a a aa                  |\n+-------------------------------+\n"
+  },
+  {
+    "input": "4 3\n\n0*3\nx7\nI-w\n",
+    "expectedOutput": "+-----+\n|     |\n+-----+\n| 0*3 |\n+-----+\n| x7  |\n+-----+\n| I-w |\n+-----+\n"
+  },
+  {
+    "input": "6 38\nga]X60\nA&Q~>M0Sh*v$H!&R/OC#AkDImO\n^OqeJ!]t5lFokq+\n*KU']_ k\\q4f\",oO{P1'.(Qms>? S1j0;\nE9G@hrAg&f,Zb^^bUYo{-/;X .Sk,t/\n.R\"u;&O-n\"Q[Be{_tpR,;6t_;}00DS\n",
+    "expectedOutput": "+----------------------------------------+\n| ga]X60                                 |\n+----------------------------------------+\n| A&Q~>M0Sh*v$H!&R/OC#AkDImO             |\n+----------------------------------------+\n| ^OqeJ!]t5lFokq+                        |\n+----------------------------------------+\n| *KU']_ k\\q4f\",oO{P1'.(Qms>? S1j0;      |\n+----------------------------------------+\n| E9G@hrAg&f,Zb^^bUYo{-/;X .Sk,t/        |\n+----------------------------------------+\n| .R\"u;&O-n\"Q[Be{_tpR,;6t_;}00DS         |\n+----------------------------------------+\n"
+  },
+  {
+    "input": "2 24\naaaa a  aaa a aaa \n  aaaa   a a a \n",
+    "expectedOutput": "+--------------------------+\n| aaaa a  aaa a aaa        |\n+--------------------------+\n|   aaaa   a a a           |\n+--------------------------+\n"
+  },
+  {
+    "input": "3 2\n\n \n a\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n|    |\n+----+\n|  a |\n+----+\n"
+  },
+  {
+    "input": "4 23\nx*%_BC)nVY\n6:y_+x=ppH}\n`Wcb+Q\n'Sw*55+3\n",
+    "expectedOutput": "+-------------------------+\n| x*%_BC)nVY              |\n+-------------------------+\n| 6:y_+x=ppH}             |\n+-------------------------+\n| `Wcb+Q                  |\n+-------------------------+\n| 'Sw*55+3                |\n+-------------------------+\n"
+  },
+  {
+    "input": "4 21\n-|bb-b|bba++ -b+|\na\nab| b--a-a|a+|b|a||\nb  bb-a--a+bb\n",
+    "expectedOutput": "+-----------------------+\n| -|bb-b|bba++ -b+|     |\n+-----------------------+\n| a                     |\n+-----------------------+\n| ab| b--a-a|a+|b|a||   |\n+-----------------------+\n| b  bb-a--a+bb         |\n+-----------------------+\n"
+  },
+  {
+    "input": "3 10\n~[ zB^MX\nvI1bS4f\"#\n\\\n",
+    "expectedOutput": "+------------+\n| ~[ zB^MX   |\n+------------+\n| vI1bS4f\"#  |\n+------------+\n| \\          |\n+------------+\n"
+  },
+  {
+    "input": "0 33\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "3 3\nB=\n\n\"\n",
+    "expectedOutput": "+-----+\n| B=  |\n+-----+\n|     |\n+-----+\n| \"   |\n+-----+\n"
+  },
+  {
+    "input": "6 1\nE\nD\n\nD\n\n\n",
+    "expectedOutput": "+---+\n| E |\n+---+\n| D |\n+---+\n|   |\n+---+\n| D |\n+---+\n|   |\n+---+\n|   |\n+---+\n"
+  },
+  {
+    "input": "1 21\na a  aa aaa\n",
+    "expectedOutput": "+-----------------------+\n| a a  aa aaa           |\n+-----------------------+\n"
+  },
+  {
+    "input": "7 5\n+C]/\n<9<\\i\nc\n\nld >\nz\n,4^\n",
+    "expectedOutput": "+-------+\n| +C]/  |\n+-------+\n| <9<\\i |\n+-------+\n| c     |\n+-------+\n|       |\n+-------+\n| ld >  |\n+-------+\n| z     |\n+-------+\n| ,4^   |\n+-------+\n"
+  },
+  {
+    "input": "1 5\n |+\n",
+    "expectedOutput": "+-------+\n|  |+   |\n+-------+\n"
+  },
+  {
+    "input": "2 5\naa  \naa \n",
+    "expectedOutput": "+-------+\n| aa    |\n+-------+\n| aa    |\n+-------+\n"
+  },
+  {
+    "input": "6 12\na a a\n    a\n  aaaa aaaaa\naa     a  a \n\n a\n",
+    "expectedOutput": "+--------------+\n| a a a        |\n+--------------+\n|     a        |\n+--------------+\n|   aaaa aaaaa |\n+--------------+\n| aa     a  a  |\n+--------------+\n|              |\n+--------------+\n|  a           |\n+--------------+\n"
+  },
+  {
+    "input": "7 3\na\naaa\n\n\na \na\na \n",
+    "expectedOutput": "+-----+\n| a   |\n+-----+\n| aaa |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n| a   |\n+-----+\n| a   |\n+-----+\n| a   |\n+-----+\n"
+  },
+  {
+    "input": "4 2\n \n-\n+\n\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n| -  |\n+----+\n| +  |\n+----+\n|    |\n+----+\n"
+  },
+  {
+    "input": "4 6\n \na\na aaa\n\n",
+    "expectedOutput": "+--------+\n|        |\n+--------+\n| a      |\n+--------+\n| a aaa  |\n+--------+\n|        |\n+--------+\n"
+  },
+  {
+    "input": "1 11\n._IH_\n",
+    "expectedOutput": "+-------------+\n| ._IH_       |\n+-------------+\n"
+  },
+  {
+    "input": "0 28\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "7 40\nYn&'AZc7*BG=!]o%&|gR\n|SuPUX!XQ|2Mjymi>qVV7B$h+,eahAZ<Dnjfo'\ngWro1XX>ftlqX\nfa#P7Lx?JX%9`+q+5?$7QwZ[X@:t6IQh4\n{s)y^zuq<9\";T-i'x%%;\npH(u.PhMq(s-9jI6$q$i\\}U1\njs&\n",
+    "expectedOutput": "+------------------------------------------+\n| Yn&'AZc7*BG=!]o%&|gR                     |\n+------------------------------------------+\n| |SuPUX!XQ|2Mjymi>qVV7B$h+,eahAZ<Dnjfo'   |\n+------------------------------------------+\n| gWro1XX>ftlqX                            |\n+------------------------------------------+\n| fa#P7Lx?JX%9`+q+5?$7QwZ[X@:t6IQh4        |\n+------------------------------------------+\n| {s)y^zuq<9\";T-i'x%%;                     |\n+------------------------------------------+\n| pH(u.PhMq(s-9jI6$q$i\\}U1                 |\n+------------------------------------------+\n| js&                                      |\n+------------------------------------------+\n"
+  },
+  {
+    "input": "0 18\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "0 6\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "2 6\n GTYa\na64N~s\n",
+    "expectedOutput": "+--------+\n|  GTYa  |\n+--------+\n| a64N~s |\n+--------+\n"
+  },
+  {
+    "input": "6 1\n\na\na\na\n \na\n",
+    "expectedOutput": "+---+\n|   |\n+---+\n| a |\n+---+\n| a |\n+---+\n| a |\n+---+\n|   |\n+---+\n| a |\n+---+\n"
+  },
+  {
+    "input": "1 39\n-  a-  b a++a|- +a   | b| +b++--aa   \n",
+    "expectedOutput": "+-----------------------------------------+\n| -  a-  b a++a|- +a   | b| +b++--aa      |\n+-----------------------------------------+\n"
+  },
+  {
+    "input": "2 1\n-\n|\n",
+    "expectedOutput": "+---+\n| - |\n+---+\n| | |\n+---+\n"
+  },
+  {
+    "input": "2 5\n\nQQ\n",
+    "expectedOutput": "+-------+\n|       |\n+-------+\n| QQ    |\n+-------+\n"
+  },
+  {
+    "input": "1 1\nb\n",
+    "expectedOutput": "+---+\n| b |\n+---+\n"
+  },
+  {
+    "input": "5 21\n9N{Mjc=_;wD|\nbMKP\nBc<^aZh`5Y!emBRJsA(X\n@G= Js@-\n?h%OO\n",
+    "expectedOutput": "+-----------------------+\n| 9N{Mjc=_;wD|          |\n+-----------------------+\n| bMKP                  |\n+-----------------------+\n| Bc<^aZh`5Y!emBRJsA(X  |\n+-----------------------+\n| @G= Js@-              |\n+-----------------------+\n| ?h%OO                 |\n+-----------------------+\n"
+  },
+  {
+    "input": "2 6\nuK\n\n",
+    "expectedOutput": "+--------+\n| uK     |\n+--------+\n|        |\n+--------+\n"
+  },
+  {
+    "input": "1 5\nJT9q?\n",
+    "expectedOutput": "+-------+\n| JT9q? |\n+-------+\n"
+  },
+  {
+    "input": "5 31\n |b|a|-+ b|b++++|+-b +-\n -b| --+bb- +bbaa+-bb-a-b|a-b-\n-++-b-+-| +  a--b-+- \naa\n\n",
+    "expectedOutput": "+---------------------------------+\n|  |b|a|-+ b|b++++|+-b +-         |\n+---------------------------------+\n|  -b| --+bb- +bbaa+-bb-a-b|a-b-  |\n+---------------------------------+\n| -++-b-+-| +  a--b-+-            |\n+---------------------------------+\n| aa                              |\n+---------------------------------+\n|                                 |\n+---------------------------------+\n"
+  },
+  {
+    "input": "3 5\nu*\nI;\n5@0\n",
+    "expectedOutput": "+-------+\n| u*    |\n+-------+\n| I;    |\n+-------+\n| 5@0   |\n+-------+\n"
+  },
+  {
+    "input": "1 4\naaa\n",
+    "expectedOutput": "+------+\n| aaa  |\n+------+\n"
+  },
+  {
+    "input": "7 4\n+\n-\n|\n-b\n\n -|\n\n",
+    "expectedOutput": "+------+\n| +    |\n+------+\n| -    |\n+------+\n| |    |\n+------+\n| -b   |\n+------+\n|      |\n+------+\n|  -|  |\n+------+\n|      |\n+------+\n"
+  },
+  {
+    "input": "3 6\na\n \n a \n",
+    "expectedOutput": "+--------+\n| a      |\n+--------+\n|        |\n+--------+\n|  a     |\n+--------+\n"
+  },
+  {
+    "input": "0 34\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "7 23\n}(\\XhT8TV[^)ODYJoTf0M`R\nE3\nm.l:iwTnZ6m~\\oW\n7S/tLedF)rslsS,1R\no`\n+.J?(Qm6wn5SPl[2[!B29\n\\moJCC0o[.e\n",
+    "expectedOutput": "+-------------------------+\n| }(\\XhT8TV[^)ODYJoTf0M`R |\n+-------------------------+\n| E3                      |\n+-------------------------+\n| m.l:iwTnZ6m~\\oW         |\n+-------------------------+\n| 7S/tLedF)rslsS,1R       |\n+-------------------------+\n| o`                      |\n+-------------------------+\n| +.J?(Qm6wn5SPl[2[!B29   |\n+-------------------------+\n| \\moJCC0o[.e             |\n+-------------------------+\n"
+  },
+  {
+    "input": "5 5\n}JbG\n@s4\nfx\n\nUz\n",
+    "expectedOutput": "+-------+\n| }JbG  |\n+-------+\n| @s4   |\n+-------+\n| fx    |\n+-------+\n|       |\n+-------+\n| Uz    |\n+-------+\n"
+  },
+  {
+    "input": "5 6\na\n\naa a\n a  \n  aaa\n",
+    "expectedOutput": "+--------+\n| a      |\n+--------+\n|        |\n+--------+\n| aa a   |\n+--------+\n|  a     |\n+--------+\n|   aaa  |\n+--------+\n"
+  },
+  {
+    "input": "2 31\na\n   a aa a  a  a \n",
+    "expectedOutput": "+---------------------------------+\n| a                               |\n+---------------------------------+\n|    a aa a  a  a                 |\n+---------------------------------+\n"
+  },
+  {
+    "input": "1 2\n  \n",
+    "expectedOutput": "+----+\n|    |\n+----+\n"
+  },
+  {
+    "input": "0 8\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "4 35\naa  a  aa  a    aa a  a aaaa\n aa a  a a aa a a aa a   \naa aa a aa     aa  a a\na    aa     aa a a      aa aa aaa a\n",
+    "expectedOutput": "+-------------------------------------+\n| aa  a  aa  a    aa a  a aaaa        |\n+-------------------------------------+\n|  aa a  a a aa a a aa a              |\n+-------------------------------------+\n| aa aa a aa     aa  a a              |\n+-------------------------------------+\n| a    aa     aa a a      aa aa aaa a |\n+-------------------------------------+\n"
+  },
+  {
+    "input": "0 38\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "5 8\njax \n.pq1~\n1>?\ngvMS'Yba\n\"eiF\n",
+    "expectedOutput": "+----------+\n| jax      |\n+----------+\n| .pq1~    |\n+----------+\n| 1>?      |\n+----------+\n| gvMS'Yba |\n+----------+\n| \"eiF     |\n+----------+\n"
+  },
+  {
+    "input": "5 22\n      a   \n a  a    aa\n aaa   aa  aa   a  a a\n a aa  aa  \na a aa aa\n",
+    "expectedOutput": "+------------------------+\n|       a                |\n+------------------------+\n|  a  a    aa            |\n+------------------------+\n|  aaa   aa  aa   a  a a |\n+------------------------+\n|  a aa  aa              |\n+------------------------+\n| a a aa aa              |\n+------------------------+\n"
+  },
+  {
+    "input": "6 2\nm\\\nAs\n/\n\n35\nt7\n",
+    "expectedOutput": "+----+\n| m\\ |\n+----+\n| As |\n+----+\n| /  |\n+----+\n|    |\n+----+\n| 35 |\n+----+\n| t7 |\n+----+\n"
+  },
+  {
+    "input": "3 4\na+-\n|a+ \n -+\n",
+    "expectedOutput": "+------+\n| a+-  |\n+------+\n| |a+  |\n+------+\n|  -+  |\n+------+\n"
+  },
+  {
+    "input": "5 4\n   a\n  \na\n a\n  \n",
+    "expectedOutput": "+------+\n|    a |\n+------+\n|      |\n+------+\n| a    |\n+------+\n|  a   |\n+------+\n|      |\n+------+\n"
+  },
+  {
+    "input": "3 3\nX$2\nW\n.@\n",
+    "expectedOutput": "+-----+\n| X$2 |\n+-----+\n| W   |\n+-----+\n| .@  |\n+-----+\n"
+  },
+  {
+    "input": "4 2\n\n|\n +\n\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n| |  |\n+----+\n|  + |\n+----+\n|    |\n+----+\n"
+  },
+  {
+    "input": "5 2\n\na \n \naa\n\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n| a  |\n+----+\n|    |\n+----+\n| aa |\n+----+\n|    |\n+----+\n"
+  },
+  {
+    "input": "1 23\n  \n",
+    "expectedOutput": "+-------------------------+\n|                         |\n+-------------------------+\n"
+  },
+  {
+    "input": "3 19\n/Kha-\nIqq.~7 u#{Vk&/.m\n=Z 3/\n",
+    "expectedOutput": "+---------------------+\n| /Kha-               |\n+---------------------+\n| Iqq.~7 u#{Vk&/.m    |\n+---------------------+\n| =Z 3/               |\n+---------------------+\n"
+  },
+  {
+    "input": "4 6\nQ}#+\n?WO;A\np]\nlgj[:\n",
+    "expectedOutput": "+--------+\n| Q}#+   |\n+--------+\n| ?WO;A  |\n+--------+\n| p]     |\n+--------+\n| lgj[:  |\n+--------+\n"
+  },
+  {
+    "input": "1 13\n;\n",
+    "expectedOutput": "+---------------+\n| ;             |\n+---------------+\n"
+  },
+  {
+    "input": "1 16\n|+ -b\n",
+    "expectedOutput": "+------------------+\n| |+ -b            |\n+------------------+\n"
+  },
+  {
+    "input": "4 4\n\n  |b\na- \nb\n",
+    "expectedOutput": "+------+\n|      |\n+------+\n|   |b |\n+------+\n| a-   |\n+------+\n| b    |\n+------+\n"
+  },
+  {
+    "input": "6 3\n\n\n\n\n \na\n",
+    "expectedOutput": "+-----+\n|     |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n| a   |\n+-----+\n"
+  },
+  {
+    "input": "7 37\n a b |ba+-bb b  b  \na|--a-++aab |+ab++a\n|+-ba--a++\n|bb -  -+bbb-| - |a-b|+-b|+|ab-+\n-a a- | -a||+-- \n|b+|+a+ab b+b-a-+-bb -a\n+bbba|  b+ |a|| +bb-| --+   \n",
+    "expectedOutput": "+---------------------------------------+\n|  a b |ba+-bb b  b                     |\n+---------------------------------------+\n| a|--a-++aab |+ab++a                   |\n+---------------------------------------+\n| |+-ba--a++                            |\n+---------------------------------------+\n| |bb -  -+bbb-| - |a-b|+-b|+|ab-+      |\n+---------------------------------------+\n| -a a- | -a||+--                       |\n+---------------------------------------+\n| |b+|+a+ab b+b-a-+-bb -a               |\n+---------------------------------------+\n| +bbba|  b+ |a|| +bb-| --+             |\n+---------------------------------------+\n"
+  },
+  {
+    "input": "6 6\n aa  a\n aaa \n a  a \n a\naaa   \n \n",
+    "expectedOutput": "+--------+\n|  aa  a |\n+--------+\n|  aaa   |\n+--------+\n|  a  a  |\n+--------+\n|  a     |\n+--------+\n| aaa    |\n+--------+\n|        |\n+--------+\n"
+  },
+  {
+    "input": "7 4\n \n+\n\n  +\naa \n\nab-\n",
+    "expectedOutput": "+------+\n|      |\n+------+\n| +    |\n+------+\n|      |\n+------+\n|   +  |\n+------+\n| aa   |\n+------+\n|      |\n+------+\n| ab-  |\n+------+\n"
+  },
+  {
+    "input": "6 6\n  aa\naa\naaaa  \na \n \na\n",
+    "expectedOutput": "+--------+\n|   aa   |\n+--------+\n| aa     |\n+--------+\n| aaaa   |\n+--------+\n| a      |\n+--------+\n|        |\n+--------+\n| a      |\n+--------+\n"
+  },
+  {
+    "input": "2 6\n+ \n|++b+a\n",
+    "expectedOutput": "+--------+\n| +      |\n+--------+\n| |++b+a |\n+--------+\n"
+  },
+  {
+    "input": "0 3\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "5 2\n\n\naa\naa\na \n",
+    "expectedOutput": "+----+\n|    |\n+----+\n|    |\n+----+\n| aa |\n+----+\n| aa |\n+----+\n| a  |\n+----+\n"
+  },
+  {
+    "input": "6 3\npS\n3\nn&]\ni\nS4w\n=Y\n",
+    "expectedOutput": "+-----+\n| pS  |\n+-----+\n| 3   |\n+-----+\n| n&] |\n+-----+\n| i   |\n+-----+\n| S4w |\n+-----+\n| =Y  |\n+-----+\n"
+  },
+  {
+    "input": "3 38\na a aaaa   aaa  aaaa a    a aaa \na  aaa aa a aa   a \naa a a   a    aaa          a\n",
+    "expectedOutput": "+----------------------------------------+\n| a a aaaa   aaa  aaaa a    a aaa        |\n+----------------------------------------+\n| a  aaa aa a aa   a                     |\n+----------------------------------------+\n| aa a a   a    aaa          a           |\n+----------------------------------------+\n"
+  },
+  {
+    "input": "4 6\n\nyV\nK ASW\nJ\n",
+    "expectedOutput": "+--------+\n|        |\n+--------+\n| yV     |\n+--------+\n| K ASW  |\n+--------+\n| J      |\n+--------+\n"
+  },
+  {
+    "input": "4 2\n \na \n a\n\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n| a  |\n+----+\n|  a |\n+----+\n|    |\n+----+\n"
+  },
+  {
+    "input": "7 1\n\n]\n\n[\n\n\nh\n",
+    "expectedOutput": "+---+\n|   |\n+---+\n| ] |\n+---+\n|   |\n+---+\n| [ |\n+---+\n|   |\n+---+\n|   |\n+---+\n| h |\n+---+\n"
+  },
+  {
+    "input": "0 26\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "1 38\n      aa  aaaa\n",
+    "expectedOutput": "+----------------------------------------+\n|       aa  aaaa                         |\n+----------------------------------------+\n"
+  },
+  {
+    "input": "4 4\n++\nb+|\n\n-\n",
+    "expectedOutput": "+------+\n| ++   |\n+------+\n| b+|  |\n+------+\n|      |\n+------+\n| -    |\n+------+\n"
+  },
+  {
+    "input": "2 6\n\n2(}f*\n",
+    "expectedOutput": "+--------+\n|        |\n+--------+\n| 2(}f*  |\n+--------+\n"
+  },
+  {
+    "input": "4 2\n\n \na\na\n",
+    "expectedOutput": "+----+\n|    |\n+----+\n|    |\n+----+\n| a  |\n+----+\n| a  |\n+----+\n"
+  },
+  {
+    "input": "5 28\n a \naa \naa  aaaaa a   a\naaa a aa  aaaaa a  a aaa\n \n",
+    "expectedOutput": "+------------------------------+\n|  a                           |\n+------------------------------+\n| aa                           |\n+------------------------------+\n| aa  aaaaa a   a              |\n+------------------------------+\n| aaa a aa  aaaaa a  a aaa     |\n+------------------------------+\n|                              |\n+------------------------------+\n"
+  },
+  {
+    "input": "3 6\na aaa\naa\naaa a\n",
+    "expectedOutput": "+--------+\n| a aaa  |\n+--------+\n| aa     |\n+--------+\n| aaa a  |\n+--------+\n"
+  },
+  {
+    "input": "1 2\nf|\n",
+    "expectedOutput": "+----+\n| f| |\n+----+\n"
+  },
+  {
+    "input": "0 9\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "4 4\n:a\n\n9,E\nPA\n",
+    "expectedOutput": "+------+\n| :a   |\n+------+\n|      |\n+------+\n| 9,E  |\n+------+\n| PA   |\n+------+\n"
+  },
+  {
+    "input": "1 29\n a++ab\n",
+    "expectedOutput": "+-------------------------------+\n|  a++ab                        |\n+-------------------------------+\n"
+  },
+  {
+    "input": "3 37\n  a aa+\n|ab +ba+|abab +a\nb+ a+b|\n",
+    "expectedOutput": "+---------------------------------------+\n|   a aa+                               |\n+---------------------------------------+\n| |ab +ba+|abab +a                      |\n+---------------------------------------+\n| b+ a+b|                               |\n+---------------------------------------+\n"
+  },
+  {
+    "input": "3 11\n7Z>PjM0,,\n`E7-gT6F+/\nZi>W;n~A#0U\n",
+    "expectedOutput": "+-------------+\n| 7Z>PjM0,,   |\n+-------------+\n| `E7-gT6F+/  |\n+-------------+\n| Zi>W;n~A#0U |\n+-------------+\n"
+  },
+  {
+    "input": "2 4\n-|\n+ab \n",
+    "expectedOutput": "+------+\n| -|   |\n+------+\n| +ab  |\n+------+\n"
+  },
+  {
+    "input": "3 2\nXq\n{\n5h\n",
+    "expectedOutput": "+----+\n| Xq |\n+----+\n| {  |\n+----+\n| 5h |\n+----+\n"
+  },
+  {
+    "input": "1 3\n`\n",
+    "expectedOutput": "+-----+\n| `   |\n+-----+\n"
+  },
+  {
+    "input": "6 1\n\n\n\n|\n+\n\n",
+    "expectedOutput": "+---+\n|   |\n+---+\n|   |\n+---+\n|   |\n+---+\n| | |\n+---+\n| + |\n+---+\n|   |\n+---+\n"
+  },
+  {
+    "input": "2 14\n--| - | -|\na-+aa|+-|-|\n",
+    "expectedOutput": "+----------------+\n| --| - | -|     |\n+----------------+\n| a-+aa|+-|-|    |\n+----------------+\n"
+  },
+  {
+    "input": "3 5\n - \nab--\n | b-\n",
+    "expectedOutput": "+-------+\n|  -    |\n+-------+\n| ab--  |\n+-------+\n|  | b- |\n+-------+\n"
+  },
+  {
+    "input": "1 32\n:zChR@E%t\n",
+    "expectedOutput": "+----------------------------------+\n| :zChR@E%t                        |\n+----------------------------------+\n"
+  },
+  {
+    "input": "4 34\naa a aaaaa aa   a    a\naa a aaa   a  aa  a  \na\n  a\n",
+    "expectedOutput": "+------------------------------------+\n| aa a aaaaa aa   a    a             |\n+------------------------------------+\n| aa a aaa   a  aa  a                |\n+------------------------------------+\n| a                                  |\n+------------------------------------+\n|   a                                |\n+------------------------------------+\n"
+  },
+  {
+    "input": "0 35\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "0 30\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "2 1\n \n|\n",
+    "expectedOutput": "+---+\n|   |\n+---+\n| | |\n+---+\n"
+  },
+  {
+    "input": "0 20\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "6 13\nM0oXXk;\noGCi@xkW\nUigQ\nE@}N\nH)8u;Ut{S0T)<\n't ^\n",
+    "expectedOutput": "+---------------+\n| M0oXXk;       |\n+---------------+\n| oGCi@xkW      |\n+---------------+\n| UigQ          |\n+---------------+\n| E@}N          |\n+---------------+\n| H)8u;Ut{S0T)< |\n+---------------+\n| 't ^          |\n+---------------+\n"
+  },
+  {
+    "input": "6 5\n-  |-\na\nb+|-\nb|++-\n\nab\n",
+    "expectedOutput": "+-------+\n| -  |- |\n+-------+\n| a     |\n+-------+\n| b+|-  |\n+-------+\n| b|++- |\n+-------+\n|       |\n+-------+\n| ab    |\n+-------+\n"
+  },
+  {
+    "input": "1 30\n|--ba+- bb|a++aa-||- aa\n",
+    "expectedOutput": "+--------------------------------+\n| |--ba+- bb|a++aa-||- aa        |\n+--------------------------------+\n"
+  },
+  {
+    "input": "2 4\nH{5\nK&CZ\n",
+    "expectedOutput": "+------+\n| H{5  |\n+------+\n| K&CZ |\n+------+\n"
+  },
+  {
+    "input": "5 35\na aaaa aaa    a  a aaaaaaaaa\n  aa a   a   aa aaaaa aa  \n     aa a aa \naa  \naa  a   aa    a aaaaa   \n",
+    "expectedOutput": "+-------------------------------------+\n| a aaaa aaa    a  a aaaaaaaaa        |\n+-------------------------------------+\n|   aa a   a   aa aaaaa aa            |\n+-------------------------------------+\n|      aa a aa                        |\n+-------------------------------------+\n| aa                                  |\n+-------------------------------------+\n| aa  a   aa    a aaaaa               |\n+-------------------------------------+\n"
+  },
+  {
+    "input": "4 6\nl4qx)\na90\n\n\n",
+    "expectedOutput": "+--------+\n| l4qx)  |\n+--------+\n| a90    |\n+--------+\n|        |\n+--------+\n|        |\n+--------+\n"
+  },
+  {
+    "input": "4 27\n aa\n   aaaaa \n a   \na aa aa  aa \n",
+    "expectedOutput": "+-----------------------------+\n|  aa                         |\n+-----------------------------+\n|    aaaaa                    |\n+-----------------------------+\n|  a                          |\n+-----------------------------+\n| a aa aa  aa                 |\n+-----------------------------+\n"
+  },
+  {
+    "input": "3 4\na\n|\n b\n",
+    "expectedOutput": "+------+\n| a    |\n+------+\n| |    |\n+------+\n|  b   |\n+------+\n"
+  },
+  {
+    "input": "6 1\n\n1\n\nW\nX\n!\n",
+    "expectedOutput": "+---+\n|   |\n+---+\n| 1 |\n+---+\n|   |\n+---+\n| W |\n+---+\n| X |\n+---+\n| ! |\n+---+\n"
+  },
+  {
+    "input": "6 6\n\na   aa\n a\n a\n aaa  \n    \n",
+    "expectedOutput": "+--------+\n|        |\n+--------+\n| a   aa |\n+--------+\n|  a     |\n+--------+\n|  a     |\n+--------+\n|  aaa   |\n+--------+\n|        |\n+--------+\n"
+  },
+  {
+    "input": "2 23\na a  a\na a a  \n",
+    "expectedOutput": "+-------------------------+\n| a a  a                  |\n+-------------------------+\n| a a a                   |\n+-------------------------+\n"
+  },
+  {
+    "input": "4 25\naa \naa  aa a  aa a  aa a\naaa a \naaa a aa a a a a   a\n",
+    "expectedOutput": "+---------------------------+\n| aa                        |\n+---------------------------+\n| aa  aa a  aa a  aa a      |\n+---------------------------+\n| aaa a                     |\n+---------------------------+\n| aaa a aa a a a a   a      |\n+---------------------------+\n"
+  },
+  {
+    "input": "6 35\nb |bab| ||bb  \nb ab - -|+a  -- + a+\n|+  +-  |-++ -a-|ab  +a+a | +a \nb -  |a-|aabb+baa\n+a|bb -ab aba\na |-+bb+|-++||+-+||| aba  +\n",
+    "expectedOutput": "+-------------------------------------+\n| b |bab| ||bb                        |\n+-------------------------------------+\n| b ab - -|+a  -- + a+                |\n+-------------------------------------+\n| |+  +-  |-++ -a-|ab  +a+a | +a      |\n+-------------------------------------+\n| b -  |a-|aabb+baa                   |\n+-------------------------------------+\n| +a|bb -ab aba                       |\n+-------------------------------------+\n| a |-+bb+|-++||+-+||| aba  +         |\n+-------------------------------------+\n"
+  },
+  {
+    "input": "0 12\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "4 25\n+b- +aa\nbaa||+a-|-|+ b+a\n+|a +- - - | |b a+-+b a- \n||a|+ b-bb+ -|a|+\n",
+    "expectedOutput": "+---------------------------+\n| +b- +aa                   |\n+---------------------------+\n| baa||+a-|-|+ b+a          |\n+---------------------------+\n| +|a +- - - | |b a+-+b a-  |\n+---------------------------+\n| ||a|+ b-bb+ -|a|+         |\n+---------------------------+\n"
+  },
+  {
+    "input": "6 3\naa\n \n|-|\n||+\n \n+|\n",
+    "expectedOutput": "+-----+\n| aa  |\n+-----+\n|     |\n+-----+\n| |-| |\n+-----+\n| ||+ |\n+-----+\n|     |\n+-----+\n| +|  |\n+-----+\n"
+  },
+  {
+    "input": "3 5\na  a\n\na a  \n",
+    "expectedOutput": "+-------+\n| a  a  |\n+-------+\n|       |\n+-------+\n| a a   |\n+-------+\n"
+  },
+  {
+    "input": "2 25\ngI\nXutp+UV] DS1!sPpv3>Rr%R\n",
+    "expectedOutput": "+---------------------------+\n| gI                        |\n+---------------------------+\n| Xutp+UV] DS1!sPpv3>Rr%R   |\n+---------------------------+\n"
+  },
+  {
+    "input": "2 3\n|a\n \n",
+    "expectedOutput": "+-----+\n| |a  |\n+-----+\n|     |\n+-----+\n"
+  },
+  {
+    "input": "2 38\na  a  a   aa  aaaa a    \n a  aaaa a aa  aaa\n",
+    "expectedOutput": "+----------------------------------------+\n| a  a  a   aa  aaaa a                   |\n+----------------------------------------+\n|  a  aaaa a aa  aaa                     |\n+----------------------------------------+\n"
+  },
+  {
+    "input": "2 6\n| -+|\n||\n",
+    "expectedOutput": "+--------+\n| | -+|  |\n+--------+\n| ||     |\n+--------+\n"
+  },
+  {
+    "input": "3 6\n|bba|\n-a\n-|-+\n",
+    "expectedOutput": "+--------+\n| |bba|  |\n+--------+\n| -a     |\n+--------+\n| -|-+   |\n+--------+\n"
+  },
+  {
+    "input": "5 22\n;a@N]@:>J'RKf\n8N(*(k@h\n!.WIooQ=faoG#fzcaw\n{#9qUzL#[(G^GpX7@\"7\nfZJ9oneV&0FJLgB#e\n",
+    "expectedOutput": "+------------------------+\n| ;a@N]@:>J'RKf          |\n+------------------------+\n| 8N(*(k@h               |\n+------------------------+\n| !.WIooQ=faoG#fzcaw     |\n+------------------------+\n| {#9qUzL#[(G^GpX7@\"7    |\n+------------------------+\n| fZJ9oneV&0FJLgB#e      |\n+------------------------+\n"
+  },
+  {
+    "input": "7 26\naaa a  a  a   aa a\naa aa a a   \n aa  a aaaaaa\n \n     a a  aa   \n  a   aa aa  aa     aa\n  aaa aa     \n",
+    "expectedOutput": "+----------------------------+\n| aaa a  a  a   aa a         |\n+----------------------------+\n| aa aa a a                  |\n+----------------------------+\n|  aa  a aaaaaa              |\n+----------------------------+\n|                            |\n+----------------------------+\n|      a a  aa               |\n+----------------------------+\n|   a   aa aa  aa     aa     |\n+----------------------------+\n|   aaa aa                   |\n+----------------------------+\n"
+  },
+  {
+    "input": "0 14\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "7 40\na  a    a     aaa   a  aa\n aaaaaaaa   a  aa aa  a     a\n  aaa     aa  a  aa  a a aa   aa\n\na aa\n   aa a aa a  a a  a a aa a    aaaa\n a aaaaa  a     a aa a aa    aa\n",
+    "expectedOutput": "+------------------------------------------+\n| a  a    a     aaa   a  aa                |\n+------------------------------------------+\n|  aaaaaaaa   a  aa aa  a     a            |\n+------------------------------------------+\n|   aaa     aa  a  aa  a a aa   aa         |\n+------------------------------------------+\n|                                          |\n+------------------------------------------+\n| a aa                                     |\n+------------------------------------------+\n|    aa a aa a  a a  a a aa a    aaaa      |\n+------------------------------------------+\n|  a aaaaa  a     a aa a aa    aa          |\n+------------------------------------------+\n"
+  },
+  {
+    "input": "6 37\nSF/$?\nM\\@bq\ncgc}JUbK0nK]j,&?2|IrRj/|S\"N[Uw%\\%pt\nbYz\nZB:8\\MLd6\\i2M+<f}oq\n)Mux;Y@\n",
+    "expectedOutput": "+---------------------------------------+\n| SF/$?                                 |\n+---------------------------------------+\n| M\\@bq                                 |\n+---------------------------------------+\n| cgc}JUbK0nK]j,&?2|IrRj/|S\"N[Uw%\\%pt   |\n+---------------------------------------+\n| bYz                                   |\n+---------------------------------------+\n| ZB:8\\MLd6\\i2M+<f}oq                   |\n+---------------------------------------+\n| )Mux;Y@                               |\n+---------------------------------------+\n"
+  },
+  {
+    "input": "3 4\n-  \na\na |-\n",
+    "expectedOutput": "+------+\n| -    |\n+------+\n| a    |\n+------+\n| a |- |\n+------+\n"
+  },
+  {
+    "input": "2 4\naaaa\n \n",
+    "expectedOutput": "+------+\n| aaaa |\n+------+\n|      |\n+------+\n"
+  },
+  {
+    "input": "1 7\na aaa\n",
+    "expectedOutput": "+---------+\n| a aaa   |\n+---------+\n"
+  },
+  {
+    "input": "1 6\n| +|b|\n",
+    "expectedOutput": "+--------+\n| | +|b| |\n+--------+\n"
+  },
+  {
+    "input": "0 16\n",
+    "expectedOutput": ""
+  },
+  {
+    "input": "7 26\n- +-+|++-+|-- +\n + ab b -a |+a ||\n| a |a|\nb|  b+--  a- |a--+aa\n+|\n a-aba|a+|b+ b |-a+-+a+\nb+ b+ +|ba|+a|a\n",
+    "expectedOutput": "+----------------------------+\n| - +-+|++-+|-- +            |\n+----------------------------+\n|  + ab b -a |+a ||          |\n+----------------------------+\n| | a |a|                    |\n+----------------------------+\n| b|  b+--  a- |a--+aa       |\n+----------------------------+\n| +|                         |\n+----------------------------+\n|  a-aba|a+|b+ b |-a+-+a+    |\n+----------------------------+\n| b+ b+ +|ba|+a|a            |\n+----------------------------+\n"
+  },
+  {
+    "input": "1 4\n a \n",
+    "expectedOutput": "+------+\n|  a   |\n+------+\n"
+  },
+  {
+    "input": "6 3\naa\n \n\n \n\n\n",
+    "expectedOutput": "+-----+\n| aa  |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n|     |\n+-----+\n"
+  }
+]
