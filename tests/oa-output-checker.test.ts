@@ -7,7 +7,7 @@ test('OA exact integer counts preserve all digits beyond floating and 64-bit ran
   const counts = [
     '9007199254740993',
     '73786976294838206332',
-    ((1n << 100000n) - 1n).toString(),
+    ((BigInt(1) << BigInt(100000)) - BigInt(1)).toString(),
   ];
   assert.equal(counts[2].length, 30103);
   for (const expected of counts) {
