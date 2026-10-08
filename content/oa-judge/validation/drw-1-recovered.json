@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008901,
+  "problems": [
+    {
+      "id": "oa-drw-1",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "referenceFormalCases": 35,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "f642a6a7b5b3f8a1167734984d2d024e29d71fc0423e9f602bdacb4ea7f30585",
+      "negativeControls": [
+        {
+          "name": "错误S与Z形状对调",
+          "rejectedCases": 9,
+          "rejectedCaseIndices": [
+            1,
+            3,
+            24,
+            25,
+            26,
+            28,
+            29,
+            30,
+            32
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误方块可以落入下方空洞",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            1,
+            3,
+            24,
+            25,
+            26,
+            28,
+            29,
+            30,
+            32,
+            33
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误不消除满行",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            3,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误消行后方块逐列下落填补空隙",
+          "rejectedCases": 7,
+          "rejectedCaseIndices": [
+            2,
+            3,
+            28,
+            29,
+            30,
+            32,
+            33
+          ],
+          "normalExitCases": 35
+        }
+      ],
+      "oracleMethod": "Independent Python cell-set simulation dropping each piece one row at a time from above the stack until collision, with explicit full-row deletion and per-row shift; exhaustive all 1- and 2-piece sequences batched as multi-line inputs.",
+      "exhaustiveSmallDomain": {
+        "sequences": "every placement sequence of length 1 and 2 over all pieces and legal columns",
+        "linesPerRun": 200,
+        "cases": 3422
+      },
+      "largeBoundaries": [
+        {
+          "name": "全部单块放置",
+          "inputBytes": 174,
+          "outputBytes": 116,
+          "elapsedSeconds": 0.00203
+        },
+        {
+          "name": "满规模多行随机短序列",
+          "inputBytes": 11523,
+          "outputBytes": 554,
+          "elapsedSeconds": 0.00321
+        },
+        {
+          "name": "满规模长序列频繁消行",
+          "inputBytes": 12555,
+          "outputBytes": 80,
+          "elapsedSeconds": 0.0036
+        },
+        {
+          "name": "满规模高度接近上限",
+          "inputBytes": 1647,
+          "outputBytes": 20,
+          "elapsedSeconds": 0.00225
+        },
+        {
+          "name": "满规模竖条L与J",
+          "inputBytes": 6300,
+          "outputBytes": 150,
+          "elapsedSeconds": 0.00271
+        },
+        {
+          "name": "满规模交错S与Z",
+          "inputBytes": 18000,
+          "outputBytes": 300,
+          "elapsedSeconds": 0.00385
+        },
+        {
+          "name": "满规模T块堆叠",
+          "inputBytes": 24000,
+          "outputBytes": 300,
+          "elapsedSeconds": 0.00466
+        },
+        {
+          "name": "满规模I与Q精确填满",
+          "inputBytes": 30000,
+          "outputBytes": 20,
+          "elapsedSeconds": 0.00344
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 5.158
+    }
+  ]
+}
