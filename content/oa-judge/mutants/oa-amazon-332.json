@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误使用32位整数累加",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c!='-'&&(c<'0'||c>'9'))c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){long long n=rd(),m=rd();vector<long long> a(n);int total=0;for(auto &x:a){x=rd();total+=x;}\nint cur=0;for(long long i=0;i<m;i++)cur+=a[i];int best=cur;\nfor(long long i=m;i<n;i++){cur+=a[i]-a[i-m];if(cur>best)best=cur;}\nprintf(\"%d\\n\",total-best);}\n"
+  },
+  {
+    "name": "错误删除和最小的连续段",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c!='-'&&(c<'0'||c>'9'))c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){long long n=rd(),m=rd();vector<long long> a(n);long long total=0;for(auto &x:a){x=rd();total+=x;}\nlong long cur=0;for(long long i=0;i<m;i++)cur+=a[i];long long best=cur;\nfor(long long i=m;i<n;i++){cur+=a[i]-a[i-m];if(cur<best)best=cur;}\nprintf(\"%lld\\n\",total-best);}\n"
+  },
+  {
+    "name": "错误窗口长度少一",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c!='-'&&(c<'0'||c>'9'))c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){long long n=rd(),m=rd();vector<long long> a(n);long long total=0;for(auto &x:a){x=rd();total+=x;}\nlong long cur=0;m--;for(long long i=0;i<m;i++)cur+=a[i];long long best=cur;\nfor(long long i=m;i<n;i++){cur+=a[i]-a[i-m];if(cur>best)best=cur;}\nprintf(\"%lld\\n\",total-best);}\n"
+  },
+  {
+    "name": "错误只考虑删除开头或结尾",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c!='-'&&(c<'0'||c>'9'))c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){long long n=rd(),m=rd();vector<long long> a(n);long long total=0;for(auto &x:a){x=rd();total+=x;}\nlong long cur=0;for(long long i=0;i<m;i++)cur+=a[i];long long best=cur;\nfor(long long i=m;i<n;i++){cur+=a[i]-a[i-m];if(i==n-1&&cur>best)best=cur;}\nprintf(\"%lld\\n\",total-best);}\n"
+  }
+]
