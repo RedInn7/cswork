@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-roblox-14",
+      "sourceContentHash": "ec12be152ec0d6c1776b9bc72c605bc48a020f68c37900955db78304fb5b902a",
+      "packageChecksum": "ce4de1e7d2fa5990d5d63634da6c9c020c40f42277113aab649521113bb05c26",
+      "editorial": "## 题意\n\n循环移位：把一个十进制数末尾的若干位（可以是0位）移到最前面，其余数字依次后移。统计下标对i<j，使a[i]与a[j]位数相同且a[i]等于a[j]的某个循环移位。\n\n## 思路\n\n同长度的两个数字串互为循环移位，当且仅当它们的“最小表示”（所有旋转中字典序最小的那个）相同；循环移位关系是等价关系。于是对每个数取其数字串的最小旋转作为键（键的长度就是位数，自动保证位数相同），用哈希表计数，每个新数与此前同键的数都构成一对。\n\n## 正确性\n\n旋转的复合仍是旋转，所以“互为循环移位”是等价关系，同一等价类有唯一的最小旋转。a[i]的数字串没有前导零，若某个旋转以0开头，它不可能等于另一个正整数的数字串，用字符串比较即可正确处理（例如4560与456位数不同，5604与4560是同一类）。\n\n## 复杂度\n\n每个数最多10位，O(n·D²)，D≤10。答案最多约n²/2，使用64位整数。\n\n## 独立验证\n\noracle对每对i<j直接检查位数相同且str(a[i])出现在str(a[j])+str(a[j])中（O(n²)，仅小数据），不使用最小表示。穷举由{1,10,11,12,21,101,110,2}组成的长度1..4全部数组并逐个真实运行参考程序。错误解覆盖用数字排序代替旋转、只看相等、去掉0后比较和32位计数。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,long long>cnt;cnt.reserve(2*n+1);long long ans=0;\nfor(int i=0;i<n;i++){long long v;scanf(\"%lld\",&v);string s=to_string(v),best=s;for(size_t k=1;k<s.size();k++){string t=s.substr(k)+s.substr(0,k);if(t<best)best=t;}\n ans+=cnt[best]++;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    }
+  ]
+}
