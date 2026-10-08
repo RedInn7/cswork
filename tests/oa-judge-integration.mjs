@@ -1,3 +1,4 @@
+import { readReferenceProgram } from '../scripts/oa-judge/reference-program.mjs';
 /** Real built web + worker acceptance. Fresh DB only; dedicated loopback runner 5054.
  * Requires REDIS_URL, GO_JUDGE_URL, GO_JUDGE_TOKEN and private sandbox-report.json.
  * This intentionally does not run in CI. Never reads or copies a production DB.
@@ -292,9 +293,9 @@ try {
       (item) => item.judgeStatus === 'ready' && item.judgeProblemId === item.id,
     ),
   );
-  const payload = (id, code, mode = 'judge') => ({
+  const payload = (id, code, mode = 'judge', language = 'python') => ({
     problemId: id,
-    language: 'python',
+    language,
     codingMode: 'acm',
     mode,
     code,
@@ -394,15 +395,17 @@ circle.reverse(); print(len(circle)); print(*circle)
         'utf8',
       );
   const wrongOutput = 'CSWORK_DELIBERATE_WRONG_ANSWER';
+  const constantProgram = (language, output) =>
+    language === 'cpp'
+      ? `#include <iostream>\nint main(){std::cout << ${JSON.stringify(output)};}`
+      : `print(${JSON.stringify(output)}, end='')\n`;
   for (const [index, item] of selected.items.entries()) {
     const student = students[index];
     const pkg = JSON.parse(
       readFileSync(`content/oa-judge/packages/${item.id}.json`, 'utf8'),
     );
-    const reference = readFileSync(
-      `content/oa-judge/references/${item.id}.py`,
-      'utf8',
-    );
+    const program = readReferenceProgram(resolve('content/oa-judge'), item);
+    const reference = program.code;
     if (item.id === 'oa-google-17') {
       equivalentPrograms[item.id] = `import io,contextlib,math
 capture=io.StringIO()
@@ -449,7 +452,7 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
         '/api/oj/submissions',
         student,
         201,
-        payload(item.id, reference, mode),
+        payload(item.id, reference, mode, program.language),
       );
       const terminal = await until(() => {
         const row = db
@@ -514,7 +517,12 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
       '/api/oj/submissions',
       student,
       201,
-      payload(item.id, `print(${JSON.stringify(wrongOutput)})\n`),
+      payload(
+        item.id,
+        constantProgram(program.language, wrongOutput + '\n'),
+        'judge',
+        program.language,
+      ),
     );
     await until(
       () =>
@@ -581,7 +589,20 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
       .filter((c) => !c.hidden)
       .map((c) => [c.input, c.expectedOutput]),
   );
-  const bad = `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), ${JSON.stringify(wrongOutput)}), end='')\n`;
+  const firstProgram = readReferenceProgram(resolve('content/oa-judge'), first);
+  const bad =
+    firstProgram.language === 'cpp'
+      ? `#include <iostream>\n#include <iterator>\n#include <map>\n#include <string>\nint main(){std::map<std::string,std::string> known={${Object.entries(
+          known,
+        )
+          .map(
+            ([input, output]) =>
+              `{${JSON.stringify(input)},${JSON.stringify(output)}}`,
+          )
+          .join(
+            ',',
+          )}};std::string input((std::istreambuf_iterator<char>(std::cin)),{});auto found=known.find(input);std::cout<<(found==known.end()?${JSON.stringify(wrongOutput)}:found->second);}`
+      : `import sys, json\nknown=json.loads(${JSON.stringify(JSON.stringify(known))})\nprint(known.get(sys.stdin.read(), ${JSON.stringify(wrongOutput)}), end='')\n`;
   const hiddenOrdinal = firstPackage.cases.findIndex(
     (c) => c.hidden && !(c.input in known),
   );
@@ -595,7 +616,7 @@ print('\\n'.join(format(Decimal(token), 'E') for token in capture.getvalue().spl
     '/api/oj/submissions',
     students[0],
     201,
-    payload(first.id, bad),
+    payload(first.id, bad, 'judge', firstProgram.language),
   );
   await until(
     () =>

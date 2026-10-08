@@ -10,6 +10,11 @@ import {
   loadScope,
 } from './aggregate-batches.mjs';
 import { assertOracleCoverage } from './oracle-coverage.mjs';
+import {
+  readReferenceProgram,
+  assertReferenceEvidence,
+  mutantProgram,
+} from './reference-program.mjs';
 
 export function coverage(
   root = resolve('content/oa-judge'),
@@ -62,12 +67,8 @@ export function coverage(
         const oracle = JSON.parse(
           readFileSync(resolve(root, 'oracles', entry.id + '.json'), 'utf8'),
         );
-        assert.equal(entry.authoredSolutions.length, 1);
-        assert.equal(entry.authoredSolutions[0].language, 'python');
-        assert.equal(
-          entry.authoredSolutions[0].code,
-          readFileSync(resolve(root, 'references', entry.id + '.py'), 'utf8'),
-        );
+        const program = readReferenceProgram(root, entry);
+        assertReferenceEvidence(evidence, program);
         assert.equal(evidence.oracle, oracle.length);
         assertOracleCoverage(entry, oracle, entry.id);
         assert.equal(evidence.formal, pkg.cases.length);
@@ -76,6 +77,7 @@ export function coverage(
           readFileSync(resolve(root, 'mutants', entry.id + '.json'), 'utf8'),
         );
         assert(Array.isArray(mutants) && mutants.length >= 2);
+        for (const mutant of mutants) mutantProgram(mutant, program);
         assert(
           mutants.every(
             (item) =>
@@ -103,7 +105,7 @@ export function coverage(
         assert(pkg.cases.filter((item) => item.hidden).length >= 20);
         for (const [folder, extension, field] of [
           ['packages', '.json', 'packageSha256'],
-          ['references', '.py', 'referenceSha256'],
+          ['references', program.extension, 'referenceSha256'],
           ['oracles', '.json', 'oracleSha256'],
           ['mutants', '.json', 'mutantsSha256'],
         ])
@@ -146,12 +148,7 @@ export function coverage(
         const pkg = JSON.parse(packageBytes);
         assert.equal(digest(JSON.stringify(pkg)), entry.packageChecksum);
         assert.equal(pkg.problem.id, entry.id);
-        assert.equal(entry.authoredSolutions.length, 1);
-        assert.equal(entry.authoredSolutions[0].language, 'python');
-        assert.equal(
-          entry.authoredSolutions[0].code,
-          readFileSync(resolve(root, 'references', entry.id + '.py'), 'utf8'),
-        );
+        const program = readReferenceProgram(root, entry);
         const oracle = JSON.parse(
           readFileSync(resolve(root, 'oracles', entry.id + '.json'), 'utf8'),
         );
@@ -160,6 +157,7 @@ export function coverage(
           readFileSync(resolve(root, 'mutants', entry.id + '.json'), 'utf8'),
         );
         assert(Array.isArray(mutants) && mutants.length >= 2);
+        for (const mutant of mutants) mutantProgram(mutant, program);
         const validation = JSON.parse(
           readFileSync(resolve(root, 'validation', batch + '.json'), 'utf8'),
         );

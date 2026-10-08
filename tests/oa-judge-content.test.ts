@@ -1,3 +1,8 @@
+import {
+  readReferenceProgram,
+  assertReferenceEvidence,
+  mutantProgram,
+} from '../scripts/oa-judge/reference-program.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -65,11 +70,13 @@ test('authored OA packages and displayed solutions match sandbox-verified immuta
         catalog.items.find((p: { id: string }) => p.id === entry.id)
           .contentHash,
       );
-      const code = load('references/' + entry.id + '.py');
-      assert.equal(entry.authoredSolutions.length, 1);
-      assert.equal(entry.authoredSolutions[0].language, 'python');
-      assert.equal(entry.authoredSolutions[0].code, code.toString());
-      assert.equal(evidence.referenceSha256, hash(code));
+      const program = readReferenceProgram(root, entry);
+      assertReferenceEvidence(evidence, program);
+      assert(pkg.problem.languages.includes(program.language));
+      for (const mutant of JSON.parse(
+        load('mutants/' + entry.id + '.json').toString(),
+      ))
+        mutantProgram(mutant, program);
       assert.equal(
         evidence.oracleSha256,
         hash(load('oracles/' + entry.id + '.json')),
@@ -130,10 +137,7 @@ test('Amazon MERN #5 maps to the verified Optimize Box IDs problem, not Amazon #
   assert.equal(entry.sourceContentHash, evidence.sourceContentHash);
   assert.equal(problem.id, entry.id);
   assert.equal(problem.output, '输出字典序最小的数字串，保留前导零。');
-  assert.equal(
-    canonicalProblem.output,
-    '输出字典序最小的数字串，保留前导零。',
-  );
+  assert.equal(canonicalProblem.output, '输出字典序最小的数字串，保留前导零。');
 });
 
 test('Point72 #3 stays blocked while the OAMaster sample contradicts its rule', () => {
@@ -141,13 +145,19 @@ test('Point72 #3 stays blocked while the OAMaster sample contradicts its rule', 
     readFileSync('content/oa-judge/registry.json', 'utf8'),
   );
   const batch = JSON.parse(
-    readFileSync('content/oa-judge/batches/trading-firms-remaining.json', 'utf8'),
+    readFileSync(
+      'content/oa-judge/batches/trading-firms-remaining.json',
+      'utf8',
+    ),
   );
   const catalog = JSON.parse(
     readFileSync('content/oa-master/catalog.json', 'utf8'),
   );
   const reviews = JSON.parse(
-    readFileSync('content/oa-judge/reviews/trading-firms-remaining.json', 'utf8'),
+    readFileSync(
+      'content/oa-judge/reviews/trading-firms-remaining.json',
+      'utf8',
+    ),
   );
   const source = catalog.items.find(
     (item: { id: string }) => item.id === 'oa-point72-3',
@@ -156,14 +166,19 @@ test('Point72 #3 stays blocked while the OAMaster sample contradicts its rule', 
     (item: { id: string }) => item.id === 'oa-point72-3',
   );
   assert.match(source.statement, /Input: aaaa Output: zzzz/);
-  assert(!registry.items.some((item: { id: string }) => item.id === 'oa-point72-3'));
-  assert(!batch.items.some((item: { id: string }) => item.id === 'oa-point72-3'));
+  assert(
+    !registry.items.some((item: { id: string }) => item.id === 'oa-point72-3'),
+  );
+  assert(
+    !batch.items.some((item: { id: string }) => item.id === 'oa-point72-3'),
+  );
   assert.equal(review.status, 'blocked');
   assert.match(review.reason, /样例与题意冲突/);
 });
 
 test('Amazon #363 generator does not recreate a candidate for an already-promoted item', () => {
-  const candidate = 'content/oa-judge/candidate-batches/amazon-363-recovered.json';
+  const candidate =
+    'content/oa-judge/candidate-batches/amazon-363-recovered.json';
   assert(!existsSync(candidate));
   const output = execFileSync(
     'python3',

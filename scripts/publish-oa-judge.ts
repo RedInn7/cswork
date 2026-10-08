@@ -18,6 +18,11 @@ import {
   assertScopeEvidence,
 } from './oa-judge/aggregate-batches.mjs';
 import { assertOracleCoverage } from './oa-judge/oracle-coverage.mjs';
+import {
+  readReferenceProgram,
+  assertReferenceEvidence,
+  mutantProgram,
+} from './oa-judge/reference-program.mjs';
 
 const root = resolve('content/oa-judge');
 const digest = (data: string | Buffer) =>
@@ -72,18 +77,15 @@ for (const item of registry.items) {
   assert.equal(payload.problem.id, item.id);
   assert.equal(payload.problem.courseId, 'gomall');
   assert.equal(payload.problem.lessonId, '00-overview');
-  assert.equal(item.authoredSolutions.length, 1);
-  assert.equal(item.authoredSolutions[0].language, 'python');
-  assert.equal(
-    item.authoredSolutions[0].code,
-    load('references/' + item.id + '.py').toString(),
-  );
+  const program = readReferenceProgram(root, item);
+  assertReferenceEvidence(result, program);
+  assert(payload.problem.languages.includes(program.language));
   assert.equal(problemChecksum(payload), item.packageChecksum);
   assert.equal(result.packageSha256, digest(bytes));
-  assert.equal(
-    result.referenceSha256,
-    digest(load('references/' + item.id + '.py')),
-  );
+  for (const mutant of JSON.parse(
+    load('mutants/' + item.id + '.json').toString(),
+  ))
+    mutantProgram(mutant, program);
   const oracleBytes = load('oracles/' + item.id + '.json');
   assert.equal(result.oracleSha256, digest(oracleBytes));
   const oracle = JSON.parse(oracleBytes.toString());
