@@ -319,6 +319,27 @@ try {
   );
   const failures = [];
   const equivalentPrograms = {
+    // Reverse equal-degree tie order: all-positive/all-negative cases produce
+    // a different optimum, so a tokens-only fallback would reject this program.
+    'oa-codeium-1': `import sys
+words=sys.stdin.read().split();n=int(words[0]);bound=str(n);p=[]
+for token in words[1:]:
+    digits=token.lstrip('+-').lstrip('0') or '0'
+    if len(digits)>len(bound) or (len(digits)==len(bound) and digits>bound):
+        print('None');sys.exit()
+    p.append(int(digits))
+order=sorted(range(n),key=lambda i:(p[i],-i));lo=0;hi=n-1;offset=0;a=[0]*n
+for size in range(n,0,-1):
+    if p[order[lo]]<offset or p[order[hi]]>offset+size:
+        print('None');sys.exit()
+    if p[order[lo]]==offset:
+        a[order[lo]]=-size;lo+=1
+    elif p[order[hi]]==offset+size:
+        a[order[hi]]=size;hi-=1;offset+=1
+    else:
+        print('None');sys.exit()
+print(*a)
+`,
     // Interval DP deliberately picks the lexicographically greatest longest
     // palindrome; the authored reference picks the smallest. Both are valid.
     'oa-cisco-29': `import sys
