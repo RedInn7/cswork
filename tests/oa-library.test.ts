@@ -95,3 +95,48 @@ void test('checked-in OA catalog is complete and valid', () => {
   assert(catalog.items.length > 1000);
   assert.equal(library.list(new URLSearchParams()).total, catalog.items.length);
 });
+
+void test('Stripe stages link only to an available source-matched combined exercise without claiming individual readiness', () => {
+  const catalog = JSON.parse(
+    readFileSync('content/oa-master/catalog.json', 'utf8'),
+  );
+  const library = createOaLibrary(catalog);
+  const ready = new Set(['oa-stripe-17']);
+  for (const id of ['oa-stripe-14', 'oa-stripe-15', 'oa-stripe-16']) {
+    assert.equal(library.detail(id).relatedPractice, undefined);
+    const detail = library.detail(id, ready);
+    assert.equal(detail.judgeStatus, 'reading_only');
+    assert.equal(detail.judgeProblemId, undefined);
+    assert.equal(detail.relatedPractice?.problemId, 'oa-stripe-17');
+    assert.match(detail.relatedPractice!.description, /未单独评测/);
+    assert.match(detail.relatedPractice!.description, /带时间戳/);
+    assert.throws(() => library.solution(id), { status: 409 });
+    assert.equal(
+      library.detail(id, new Set([...ready, id])).relatedPractice,
+      undefined,
+    );
+  }
+  assert.equal(
+    library.detail('oa-stripe-17', ready).relatedPractice,
+    undefined,
+  );
+  const judged = library.list(
+    new URLSearchParams('company=stripe&ready=1'),
+    ready,
+  );
+  assert.deepEqual(
+    judged.items.map((item) => item.id),
+    ['oa-stripe-17'],
+  );
+  assert.equal(library.detail('oa-meta-1', ready).relatedPractice, undefined);
+  for (const changedId of ['oa-stripe-14', 'oa-stripe-17']) {
+    const changed = structuredClone(catalog);
+    changed.items.find(
+      (item: { id: string }) => item.id === changedId,
+    ).contentHash = '0'.repeat(64);
+    assert.equal(
+      createOaLibrary(changed).detail('oa-stripe-14', ready).relatedPractice,
+      undefined,
+    );
+  }
+});
