@@ -14737,6 +14737,18 @@
       ]
     },
     {
+      "id": "oa-wayfair-2",
+      "sourceContentHash": "a2e90e672d88cecba4fccc4043779e23123e1ffad5f179e25a3b7e43290674d0",
+      "packageChecksum": "5a4e16e6147d39297bc8fd47d41525b6ece6d46c12b15e65c120d7fc44d067b0",
+      "editorial": "## 固定原文与缺失映射的恢复依据\n\n固定上游 fastprep/Wayfair/wayfair-number-of-divisible-substrings.md 已完整定义：把字母映射成数字，统计映射值总和可以被长度整除的连续非空子串。长度1..2000且仅小写英文字母，三个原样例asdf→6、bdh→4、abcd→6均完整。原映射图片指向作者本机路径，不能从该路径读取；starter明确引用LC2950。\n\n本站从该FastPrep原问题页公开的Problem Source图片恢复完整映射，实际逐项查看九格表与样例、约束，不凭题名猜表，也不从整理代码反推。来源图网址：https://storage.googleapis.com/fastprepoa.appspot.com/problem_source_images/wayfair-number-of-divisible-substrings.jpg 。保存副本为content/oa-judge/source-images/wayfair-2-original.jpg，SHA256为63d7c5e6186ab7fd56f35a9c80eda7744b7bb327bf68aa2758c43528439090c8。此图是另行取得的公开来源材料，不冒充固定Git快照中的图片。\n\n完整表为：1→ab；2→cde；3→fgh；4→ijk；5→lmn；6→opq；7→rst；8→uvw；9→xyz。注意第一组只有两个字母，不是每组三个，也不是电话九宫格。按位置计数，重复内容出现在不同位置应分别计入；连续且非空，不是子序列或不同字符串去重。\n\n本站输入是一个不加引号的小写字符串，长度1..2000；输出满足条件的子串数量。保留完整原范围，不允许空串，不改变三个原样例。asdf中有效子串为a、s、d、f、as、sdf；bdh为b、d、h、bdh；abcd为a、b、c、d、ab、cd。\n\n## 思路\n\n每个映射值位于1..9，所以一个非空子串的平均值也在1..9。总和被长度整除，当且仅当平均值是整数k∈{1,...,9}。固定k后，将每个值减去k，问题变为统计和为0的子串。\n\n扫描这个变换后的数组，维护前缀和。子串[l,r)的和为0当且仅当前缀和P[l]=P[r]。频次数组先登记空前缀0一次，每得到新的前缀，先把以前相同前缀的次数加入答案，再登记当前前缀。九个k分别扫描，累计答案。每一步的增量绝对值最多8，前缀和位于[−8n,8n]，用加8n的偏移访问数组，不需要哈希。\n\n## 正确性证明\n\n对任意非空子串，设原映射和为S、长度为L>0。若S能被L整除，整数k=S/L必在1..9；在这一轮变换后其和为S−kL=0。若某轮变换后和为0，则S=kL，故该子串满足要求。平均值唯一，所以一个合法子串恰好出现在一轮，不会跨轮重复计数。\n\n固定k，扫描到右端点r时，频次数组只保存严格早于r的前缀。与当前前缀相等的每个左端点l都且仅都对应一个非空零和子串；先查询后登记排除了l=r的空子串。每个子串有唯一右端点，故这一轮精确统计平均值为k的子串。合并九轮，得到所有且仅有合法子串，按不同位置分别计数。\n\n## 复杂度和整数\n\n九轮扫描及频次数组清零均为O(9n)，总时间O(n)，空间O(n)。最大答案为n(n+1)/2，在n=2000时为2001000，可由全部同映射值达到，原int返回足够。参考用64位累计，频次与前缀下标使用int。\n\n## 独立验证\n\n独立oracle按起点和终点双循环，逐个字符加上映射值，再直接判断sum%length==0，不使用平均值枚举或前缀频率。三个原例、163唯一oracle、所有26字母及各组相邻边界均覆盖。另穷举长度1..6、字母acx的1092个字符串并真实运行原生参考。正式满长度覆盖全部九个同值组、全字母周期、反向字母周期、最低/最高交替、相邻映射组、随机全字符和两半极端；同值组用2001000闭式独立复核。三个负控分别错分字母映射、遗漏平均值、错误包含空子串，全部正式例须正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <iostream>\n#include <string>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){string s;cin>>s;const string mapping=\"11222333444555666777888999\";int n=s.size(),offset=8*n;vector<int>freq(16*n+1);long long answer=0;\nfor(int average=1;average<=9;average++){fill(freq.begin(),freq.end(),0);int prefix=0;freq[offset]=1;\nfor(char c:s){prefix+=mapping[c-'a']-'0'-average;answer+=freq[prefix+offset];++freq[prefix+offset];}}\ncout<<answer<<'\\n';}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-wayfair-3",
       "sourceContentHash": "edb5392554bedec6665ed3b7ee72f57127afae85f3634cc7057b9f3a2ea18813",
       "packageChecksum": "f06504efdc8412eeb1314cc217beace7bc6967ebb3c4b9b823c46e878031d3cf",
