@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误沿用MDX的采集后位置偏移",
+    "code": "import sys\nd=list(map(int,sys.stdin.read().split()))\nn,bird=d[:2]\nf=d[2:]\nposition=bird\ndirection=1\ntotal=0\nanswer=[]\nwhile total<100:\n    i=position\n    while 0<=i<n and f[i]==0:\n        i+=direction\n    if not 0<=i<n:\n        break\n    total+=f[i]\n    f[i]=0\n    answer.append(i)\n    position=i+direction\n    direction=-direction\nprint(' '.join(map(str,answer)))\n"
+  },
+  {
+    "name": "达到恰好100后错误继续",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, bird = data[:2]\n    forest = data[2:]\n    left = [i for i in range(bird-1, -1, -1) if forest[i]]\n    right = [i for i in range(bird+1, n) if forest[i]]\n    answer = []\n    total = 0\n    while total <= 100:\n        side = right if len(answer) % 2 == 0 else left\n        if len(answer) // 2 >= len(side):\n            break\n        index = side[len(answer) // 2]\n        answer.append(index)\n        total += forest[index]\n    return ' '.join(map(str, answer))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
