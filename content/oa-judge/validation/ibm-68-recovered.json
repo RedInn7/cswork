@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008068,
+  "problems": [
+    {
+      "id": "oa-ibm-68",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "2debc3181ff4ad9dd4e3b7b0d3bedd2398732abb7937050adec28f4f39ede848",
+      "negativeControls": [
+        {
+          "name": "错误用首尾跨度代替相邻间隔",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            6,
+            19,
+            27,
+            31
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误间隔等于阈值也算超时",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            4,
+            6,
+            7,
+            31
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误不按时间排序直接比较输入中相邻心跳",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            6,
+            19,
+            27,
+            31
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误按服务首次出现顺序输出",
+          "rejectedCases": 6,
+          "rejectedCaseIndices": [
+            8,
+            18,
+            20,
+            30,
+            33,
+            34
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent dict grouping with per-service sort, adjacent-gap check and final sort; exhaustive over two services, up to four heartbeats, timestamps 1..3 and thresholds 0..2.",
+      "exhaustiveSmallDomain": {
+        "beatsMin": 1,
+        "beatsMax": 4,
+        "timestamps": [
+          1,
+          2,
+          3
+        ],
+        "services": [
+          "a",
+          "b"
+        ],
+        "thresholds": [
+          0,
+          1,
+          2
+        ],
+        "cases": 4662
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模每个服务一次心跳",
+          "inputBytes": 3494787,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.06091
+        },
+        {
+          "name": "满规模每个服务两次随机",
+          "inputBytes": 3474373,
+          "outputBytes": 185740,
+          "elapsedSeconds": 0.06844
+        },
+        {
+          "name": "满规模单服务间隔恰等于阈值",
+          "inputBytes": 2177787,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.04953
+        },
+        {
+          "name": "满规模单服务末尾一处超时",
+          "inputBytes": 2177788,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.04986
+        },
+        {
+          "name": "满规模千个服务随机",
+          "inputBytes": 2772419,
+          "outputBytes": 3983,
+          "elapsedSeconds": 0.0541
+        },
+        {
+          "name": "满规模阈值为0含相同时间",
+          "inputBytes": 1200415,
+          "outputBytes": 203,
+          "elapsedSeconds": 0.03038
+        },
+        {
+          "name": "满规模阈值最大",
+          "inputBytes": 2772599,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.05384
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 19.754
+    }
+  ]
+}
