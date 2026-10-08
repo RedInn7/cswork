@@ -59,7 +59,11 @@ type Page = {
   companies: { slug: string; name: string; count: number }[];
   source: { name: string; url: string; commit: string };
 };
-type Detail = Item & { statement: string; contentHash: string };
+type Detail = Item & {
+  statement: string;
+  contentHash: string;
+  relatedPractice?: { problemId: string; title: string; description: string };
+};
 type Solution = {
   explanation: string;
   solutions: { language: string; code: string }[];
@@ -264,7 +268,9 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                 <p>
                   {currentDetail.judgeStatus === 'ready'
                     ? '运行样例、提交代码，查看评测结果。'
-                    : '评测准备中，暂可阅读原题。'}
+                    : currentDetail.relatedPractice
+                      ? currentDetail.relatedPractice.description
+                      : '评测准备中，暂可阅读原题。'}
                 </p>
                 {currentDetail.judgeStatus === 'ready' &&
                   currentDetail.judgeProblemId &&
@@ -278,6 +284,20 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                       }
                     >
                       开始练习
+                    </button>
+                  )}
+                {currentDetail.judgeStatus === 'reading_only' &&
+                  currentDetail.relatedPractice &&
+                  navigate && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate('problem', {
+                          problem: currentDetail.relatedPractice!.problemId,
+                        })
+                      }
+                    >
+                      进入四阶段综合练习
                     </button>
                   )}
               </div>

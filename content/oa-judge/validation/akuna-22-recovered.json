@@ -1,0 +1,282 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261108,
+  "problems": [
+    {
+      "id": "oa-akuna-capital-22",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 45,
+      "referenceFormalCases": 48,
+      "referenceSha256": "92655e7d114110ae96944a4a80a78f363903893207626c14c7595db21ae7e1c2",
+      "negativeControls": [
+        {
+          "name": "错误只计移动次数不计距离费用",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            5,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            32,
+            36,
+            37,
+            38,
+            39,
+            40,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47
+          ]
+        },
+        {
+          "name": "错误只计移动距离漏每次基础费",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            5,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            32,
+            36,
+            37,
+            38,
+            39,
+            40,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47
+          ]
+        },
+        {
+          "name": "错误以32位有符号数返回累计费用",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            36,
+            37,
+            38,
+            47
+          ]
+        },
+        {
+          "name": "catalog错误每个1仅收一次费用且有序串仍收费",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            9,
+            12,
+            13,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            25,
+            26,
+            28,
+            30,
+            31,
+            32,
+            34,
+            35,
+            37,
+            38,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47
+          ]
+        }
+      ],
+      "oracleMethod": "Memoized recursion enumerating actual maximal positive-distance moves, with cost1+distance; full-scale closed forms and independent reverse per-one scan.",
+      "exhaustiveSmallDomain": {
+        "cases": 2046,
+        "lengthMin": 1,
+        "lengthMax": 10,
+        "alphabet": "01",
+        "inputExpectedDigest": "8ea8b89209b408a1e6b6bff997d4cfc8eb3a4609f7e85078d5eb9d70cb713f5b"
+      },
+      "largeBoundaries": [
+        {
+          "name": "满长全0",
+          "length": 100000,
+          "expected": 0,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02276
+        },
+        {
+          "name": "满长全1",
+          "length": 100000,
+          "expected": 0,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02288
+        },
+        {
+          "name": "满长已分离",
+          "length": 100000,
+          "expected": 0,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.0223
+        },
+        {
+          "name": "满长单块超32位",
+          "length": 100000,
+          "expected": 2500050000,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02216
+        },
+        {
+          "name": "满长10交替",
+          "length": 100000,
+          "expected": 2500050000,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02623
+        },
+        {
+          "name": "满长01交替",
+          "length": 100000,
+          "expected": 2499950000,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02613
+        },
+        {
+          "name": "满长单1跨长零段",
+          "length": 100000,
+          "expected": 100000,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.0217
+        },
+        {
+          "name": "满长单0被全部1跨越",
+          "length": 100000,
+          "expected": 199998,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02255
+        },
+        {
+          "name": "满长仅尾1",
+          "length": 100000,
+          "expected": 0,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02163
+        },
+        {
+          "name": "满长前后填充",
+          "length": 100000,
+          "expected": 1600040000,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02225
+        },
+        {
+          "name": "满长负控移动次数",
+          "length": 100000,
+          "expected": 1250050000,
+          "closedFormChecked": false,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02439
+        },
+        {
+          "name": "满长三1两0块",
+          "length": 100000,
+          "expected": 1800090000,
+          "closedFormChecked": false,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02417
+        },
+        {
+          "name": "满长长块交替",
+          "length": 100000,
+          "expected": 1276275000,
+          "closedFormChecked": false,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02231
+        },
+        {
+          "name": "满长固定随机",
+          "length": 100000,
+          "expected": 1868059416,
+          "closedFormChecked": false,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02547
+        },
+        {
+          "name": "满长高费用混合块",
+          "length": 100000,
+          "expected": 3333366666,
+          "closedFormChecked": true,
+          "oracle": "right-to-left contribution per one, zero counts and original zero-run counts",
+          "localSeconds": 0.02504
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.93
+    }
+  ]
+}

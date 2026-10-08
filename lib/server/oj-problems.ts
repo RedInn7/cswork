@@ -113,13 +113,22 @@ export async function loadJudgeSnapshot(
     'SELECT * FROM oj_test_cases WHERE version_id=? ORDER BY ordinal',
     versionId,
   );
-  if (cases.length < 2) throw new HttpError(503, '题目测试数据尚未就绪');
+  const spec = JSON.parse(v.spec_json) as OjProblemSpec;
+  const singletonWitness =
+    v.problem_id === 'oa-pure-storage-8' &&
+    spec.id === v.problem_id &&
+    spec.checker === 'oa-binary-search-witness' &&
+    cases.length === 1 &&
+    cases[0].hidden === 0 &&
+    cases[0].input === '';
+  if (cases.length < 2 && !singletonWitness)
+    throw new HttpError(503, '题目测试数据尚未就绪');
   const snapshot: OjJudgeSnapshot = {
     problemId: v.problem_id,
     versionId: v.id,
     revision: v.revision,
     checksum: v.checksum,
-    spec: JSON.parse(v.spec_json) as OjProblemSpec,
+    spec,
     cases: cases.map((c) => ({
       id: c.id,
       ordinal: c.ordinal,

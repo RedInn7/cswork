@@ -26,6 +26,7 @@ import { z } from 'zod';
 import { codeiumSequence } from './oa-codeium-sequence-checker.mjs';
 import { morganBricks } from './oa-morgan-bricks-checker.mjs';
 import { zalandoBlocks } from './oa-zalando-blocks-checker.mjs';
+import { binarySearchWitness } from './oa-binary-search-witness.mjs';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -74,6 +75,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-morgan-bricks'
     | 'oa-wayfair-bricks'
     | 'oa-zalando-blocks'
+    | 'oa-binary-search-witness'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -301,6 +303,7 @@ export const ojImportSchema = z
           'oa-morgan-bricks',
           'oa-wayfair-bricks',
           'oa-zalando-blocks',
+          'oa-binary-search-witness',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -327,10 +330,24 @@ export const ojImportSchema = z
           .max(4),
       })
       .strict(),
-    cases: z.array(testcase).min(2).max(OJ_MAX_CASES),
+    cases: z.array(testcase).min(1).max(OJ_MAX_CASES),
   })
   .strict()
   .superRefine((data, ctx) => {
+    const singletonWitness =
+      data.problem.id === 'oa-pure-storage-8' &&
+      data.problem.checker === 'oa-binary-search-witness';
+    if (
+      singletonWitness &&
+      (data.cases.length !== 1 ||
+        data.cases[0].hidden ||
+        data.cases[0].input !== '')
+    )
+      ctx.addIssue({
+        code: 'custom',
+        path: ['cases'],
+        message: '反例题必须恰有一个公开空输入测试点',
+      });
     if (
       (data.problem.checker === 'oa-closest-pair' &&
         data.problem.id !== 'oa-meta-16') ||
@@ -377,7 +394,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-wayfair-bricks' &&
         data.problem.id !== 'oa-wayfair-3') ||
       (data.problem.checker === 'oa-zalando-blocks' &&
-        data.problem.id !== 'oa-zalando-1')
+        data.problem.id !== 'oa-zalando-1') ||
+      (data.problem.checker === 'oa-binary-search-witness' &&
+        data.problem.id !== 'oa-pure-storage-8')
     )
       ctx.addIssue({
         code: 'custom',
@@ -390,7 +409,7 @@ export const ojImportSchema = z
         message: '至少需要一个公开样例',
         path: ['cases'],
       });
-    if (!data.cases.some((c) => c.hidden))
+    if (!singletonWitness && !data.cases.some((c) => c.hidden))
       ctx.addIssue({
         code: 'custom',
         message: '至少需要一个隐藏测试点',
@@ -472,6 +491,15 @@ export const ojImportSchema = z
         path: ['problem', 'checker'],
       });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        data.problem.checker === 'oa-binary-search-witness' &&
+        !binarySearchWitness(c.expectedOutput, undefined, c.input)
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid binary search counterexample or nonempty input',
+        });
       if (
         data.problem.checker === 'oa-zalando-blocks' &&
         !zalandoBlocks(c.expectedOutput, undefined, c.input)
