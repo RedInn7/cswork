@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误只交换两端",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){long long num;int q,s;if(scanf(\"%lld %d %d\",&num,&q,&s)!=3)return 0;long long r[100005],c[100005];\nfor(int i=0;i<q;i++)scanf(\"%lld %lld\",&r[i],&c[i]);long long k;scanf(\"%lld\",&k);long long ans=k;\nfor(int i=0;i<q;i++)if(k==r[i])ans=c[i];else if(k==c[i])ans=r[i];\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误区间端点不计入",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){long long num;int q,s;if(scanf(\"%lld %d %d\",&num,&q,&s)!=3)return 0;long long r[100005],c[100005];\nfor(int i=0;i<q;i++)scanf(\"%lld %lld\",&r[i],&c[i]);long long k;scanf(\"%lld\",&k);long long ans=k;\nfor(int i=0;i<q;i++)if(r[i]<k&&k<c[i])ans=r[i]+c[i]-k;\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误翻转映射差一",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){long long num;int q,s;if(scanf(\"%lld %d %d\",&num,&q,&s)!=3)return 0;long long r[100005],c[100005];\nfor(int i=0;i<q;i++)scanf(\"%lld %lld\",&r[i],&c[i]);long long k;scanf(\"%lld\",&k);long long ans=k;\nfor(int i=0;i<q;i++)if(r[i]<=k&&k<=c[i])ans=r[i]+c[i]-k+1;\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误只处理第一次操作",
+    "language": "cpp",
+    "code": "#include <cstdio>\nint main(){long long num;int q,s;if(scanf(\"%lld %d %d\",&num,&q,&s)!=3)return 0;long long r[100005],c[100005];\nfor(int i=0;i<q;i++)scanf(\"%lld %lld\",&r[i],&c[i]);long long k;scanf(\"%lld\",&k);long long ans=k;\nfor(int i=0;i<1;i++)if(r[i]<=k&&k<=c[i])ans=r[i]+c[i]-k;\nprintf(\"%lld\\n\",ans);}\n"
+  }
+]

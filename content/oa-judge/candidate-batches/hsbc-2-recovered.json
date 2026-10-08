@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-hsbc-2",
+      "sourceContentHash": "4ed59f9473c6cfa2ac20554dcd567f0b986cfc2b844ad6cdfbf699cb1902ddad",
+      "packageChecksum": "cddf85cbec42781ff03a6eb3a047587c561a1739c27d27e094706572a5bfe46d",
+      "editorial": "## 题意\n\nN名士兵按ID 1..N排成一排。第i次操作先交换第row_i与第col_i个位置，再交换第row_i+1与第col_i−1个位置……一直向内进行，效果就是把区间[row_i,col_i]整段翻转。保证每个位置最多被一次操作的区间覆盖。求所有操作后第K个位置上的士兵ID。\n\n## 思路\n\n区间互不重叠，各次翻转互不影响，顺序也无关。只需找到覆盖K的那个区间[l,r]：翻转后位置K上是原来位置l+r−K的士兵，其ID就是l+r−K；若没有区间覆盖K，答案就是K。N可达10^9，不能真的模拟数组。\n\n## 正确性\n\n对称交换(l+m, r−m)直到两指针相遇，正是区间翻转，位置K（l≤K≤r）的新内容来自位置l+r−K。区间不重叠保证K至多属于一个区间，且该区间内元素在操作前仍是初始ID。\n\n## 复杂度\n\nO(Q)。\n\n## 独立验证\n\noracle在小N上真实模拟每次操作的逐对交换（按题面的m从0开始向内交换），再读取第K个位置；不使用l+r−K公式。穷举N=1..5的所有互不重叠区间集合、所有K并逐个真实运行参考程序。错误解覆盖只交换两端、端点不计入、映射差一和只处理第一次操作。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\nint main(){long long num;int q,s;if(scanf(\"%lld %d %d\",&num,&q,&s)!=3)return 0;long long r[100005],c[100005];\nfor(int i=0;i<q;i++)scanf(\"%lld %lld\",&r[i],&c[i]);long long k;scanf(\"%lld\",&k);long long ans=k;\nfor(int i=0;i<q;i++)if(r[i]<=k&&k<=c[i])ans=r[i]+c[i]-k;\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    }
+  ]
+}
