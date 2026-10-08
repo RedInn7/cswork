@@ -1,0 +1,10 @@
+[
+  {
+    "name": "误将三类数量相等当作目标",
+    "code": "import sys\n\ndef solve(raw):\n    a = list(map(int, raw.split()))\n    if len(set(a)) == 1:\n        return '0'\n    best = None\n    for i, j in ((0, 1), (0, 2), (1, 2)):\n        if a[i] % 3 == a[j] % 3:\n            steps = max(a[i], a[j])\n            if best is None or steps < best:\n                best = steps\n    return str(-1 if best is None else best)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误附加两种待清空数量和被3整除",
+    "code": "import sys\n\ndef solve(raw):\n    a = list(map(int, raw.split()))\n    best = None\n    for i, j in ((0, 1), (0, 2), (1, 2)):\n        if a[i] % 3 == a[j] % 3 and (a[i] + a[j]) % 3 == 0:\n            steps = max(a[i], a[j])\n            if best is None or steps < best:\n                best = steps\n    return str(-1 if best is None else best)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
