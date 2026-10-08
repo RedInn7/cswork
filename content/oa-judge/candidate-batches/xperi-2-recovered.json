@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-xperi-2",
+      "sourceContentHash": "766b82070a3a6bef645e0fd81a4481490904e5af0ece8559ff51b1b268fabcfc",
+      "packageChecksum": "4a750b382fdb6bc2fed2780efca92d9542bb0c415722e41e625a030f2dfc5744",
+      "editorial": "## 题意\n\n两个正整数A、B。每次操作：若A>B则A=A−B；若B>A则B=B−A；每次代价1。求使A=B的总代价。\n\n## 思路\n\n操作是确定的，就是“减法版辗转相除”。A,B可达10^18，逐次相减会太慢，要把连续对同一个数的减法合并：设a≥b，若a mod b=r≠0，则连续做a div b次减法后得到(r,b)；若r=0，则只需做a/b−1次就得到(b,b)停止。重复直到相等。\n\n## 正确性\n\n当a≥b且a>b时，每次操作都是从a中减去b，直到a<b或a=b为止，合并后的次数正好是商（整除时少一次，因为减到a=b就停了）。之后两数角色互换，与辗转相除完全一致，所以总步数O(log)。\n\n## 复杂度\n\nO(log min(A,B))。答案可达10^18−1，用64位无符号整数。\n\n## 独立验证\n\noracle逐次模拟减法（只用于不超过10^4的小数据），不做商的合并；大数据用Python递归按商求和另算。穷举A,B∈[1,40]的全部组合并逐个真实运行参考程序。错误解覆盖整除时多算一次、只数辗转相除步数、32位读入和误用A/g+B/g−2公式。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\nint main(){unsigned long long a,b;if(scanf(\"%llu %llu\",&a,&b)!=2)return 0;unsigned long long cost=0;\nwhile(a!=b){if(a<b){unsigned long long t=a;a=b;b=t;}unsigned long long q=a/b,r=a%b;if(r==0){cost+=q-1;a=b;}else{cost+=q;a=r;}}\nprintf(\"%llu\\n\",cost);}\n"
+        }
+      ]
+    }
+  ]
+}

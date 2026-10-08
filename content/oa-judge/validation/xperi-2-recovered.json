@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008302,
+  "problems": [
+    {
+      "id": "oa-xperi-2",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 32,
+      "referenceFormalCases": 35,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "10b039421073caa58495c2b08f613474ebae8d515a5aa9a72aa59f3c49893928",
+      "negativeControls": [
+        {
+          "name": "错误整除时多算一次",
+          "rejectedCases": 30,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            25,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误按辗转相除步数计数",
+          "rejectedCases": 25,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            7,
+            8,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            23,
+            24,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误32位读入",
+          "rejectedCases": 11,
+          "rejectedCaseIndices": [
+            23,
+            24,
+            25,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 35
+        },
+        {
+          "name": "错误按A/g+B/g-2计算",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            0,
+            9,
+            10,
+            11,
+            13,
+            14,
+            16,
+            17,
+            18,
+            19,
+            20,
+            22,
+            25,
+            27,
+            29,
+            30,
+            31,
+            32,
+            33
+          ],
+          "normalExitCases": 35
+        }
+      ],
+      "oracleMethod": "Independent literal one-subtraction-at-a-time simulation for values up to 1e4; Python quotient-merging loop for 1e18-scale formal cases; exhaustive A,B in 1..40.",
+      "exhaustiveSmallDomain": {
+        "A": [
+          1,
+          40
+        ],
+        "B": [
+          1,
+          40
+        ],
+        "cases": 1600
+      },
+      "largeBoundaries": [
+        {
+          "name": "大数一与上界",
+          "inputBytes": 22,
+          "outputBytes": 19,
+          "elapsedSeconds": 0.0021
+        },
+        {
+          "name": "大数上界与一",
+          "inputBytes": 22,
+          "outputBytes": 19,
+          "elapsedSeconds": 0.00199
+        },
+        {
+          "name": "大数相邻斐波那契",
+          "inputBytes": 38,
+          "outputBytes": 3,
+          "elapsedSeconds": 0.00202
+        },
+        {
+          "name": "大数相等",
+          "inputBytes": 40,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00195
+        },
+        {
+          "name": "大数上界与上界减一",
+          "inputBytes": 39,
+          "outputBytes": 19,
+          "elapsedSeconds": 0.00192
+        },
+        {
+          "name": "大数整除",
+          "inputBytes": 31,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.00198
+        },
+        {
+          "name": "大数随机一",
+          "inputBytes": 38,
+          "outputBytes": 5,
+          "elapsedSeconds": 0.00197
+        },
+        {
+          "name": "大数随机二",
+          "inputBytes": 26,
+          "outputBytes": 13,
+          "elapsedSeconds": 0.00205
+        },
+        {
+          "name": "大数随机三",
+          "inputBytes": 27,
+          "outputBytes": 9,
+          "elapsedSeconds": 0.00204
+        },
+        {
+          "name": "大数公因子",
+          "inputBytes": 38,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00196
+        },
+        {
+          "name": "大数超过32位小差",
+          "inputBytes": 22,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.00199
+        },
+        {
+          "name": "大数二的幂",
+          "inputBytes": 21,
+          "outputBytes": 19,
+          "elapsedSeconds": 0.00202
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 6.35
+    }
+  ]
+}
