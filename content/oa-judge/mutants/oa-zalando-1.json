@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按字符重排而非整块拼接",
+    "code": "import sys\na, b, c = map(int, sys.stdin.read().split())\nx, y = 2*a+b, 2*c+b\nout = ''\nwhile x or y:\n    chosen = None\n    for ch, left in sorted((('A', x), ('B', y)), key=lambda z: (-z[1], z[0])):\n        if left and not out.endswith(ch*2):\n            chosen = ch\n            break\n    if chosen is None: break\n    out += chosen\n    if chosen == 'A': x -= 1\n    else: y -= 1\nprint(out)\n"
+  },
+  {
+    "name": "错误忽略AB块",
+    "code": "import sys\nfrom functools import lru_cache\n\ndef solve(raw):\n    a, b, c = map(int, raw.split())\n    b = 0\n    @lru_cache(None)\n    def best(a, b, c, suffix):\n        answer = ''\n        counts = (a, b, c)\n        for i, block in enumerate(('AA', 'AB', 'BB')):\n            if not counts[i]:\n                continue\n            boundary = suffix + block\n            if 'AAA' in boundary or 'BBB' in boundary:\n                continue\n            remaining = list(counts)\n            remaining[i] -= 1\n            candidate = block + best(*remaining, block)\n            if len(candidate) > len(answer) or (len(candidate) == len(answer) and candidate < answer):\n                answer = candidate\n        return answer\n    return best(a, b, c, '')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

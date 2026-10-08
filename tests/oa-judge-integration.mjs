@@ -319,6 +319,21 @@ try {
   );
   const failures = [];
   const equivalentPrograms = {
+    'oa-zalando-1': `import sys
+from functools import lru_cache
+a,b,c=map(int,sys.stdin.read().split())
+@lru_cache(None)
+def best(a,b,c,tail):
+    result=''
+    counts=(a,b,c)
+    for i,block in enumerate(('AA','AB','BB')):
+        if not counts[i] or 'AAA' in tail+block or 'BBB' in tail+block:continue
+        remaining=list(counts);remaining[i]-=1
+        candidate=block+best(*remaining,(tail+block)[-2:])
+        if (len(candidate),candidate)>(len(result),result):result=candidate
+    return result
+print(best(a,b,c,''))
+`,
     'oa-wayfair-3': `import sys
 d=list(map(int,sys.stdin.read().split()));n,k=d[:2];a=d[2:]
 chosen=set(sorted(range(n),key=lambda i:a[i],reverse=True)[:min(n,k)])

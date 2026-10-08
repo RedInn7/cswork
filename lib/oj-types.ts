@@ -25,6 +25,7 @@ import { matchesSemantic } from './oj-semantic-checkers';
 import { z } from 'zod';
 import { codeiumSequence } from './oa-codeium-sequence-checker.mjs';
 import { morganBricks } from './oa-morgan-bricks-checker.mjs';
+import { zalandoBlocks } from './oa-zalando-blocks-checker.mjs';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -72,6 +73,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-codeium-sequence'
     | 'oa-morgan-bricks'
     | 'oa-wayfair-bricks'
+    | 'oa-zalando-blocks'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -298,6 +300,7 @@ export const ojImportSchema = z
           'oa-codeium-sequence',
           'oa-morgan-bricks',
           'oa-wayfair-bricks',
+          'oa-zalando-blocks',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -372,7 +375,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-morgan-bricks' &&
         data.problem.id !== 'oa-morgan-stanley-1') ||
       (data.problem.checker === 'oa-wayfair-bricks' &&
-        data.problem.id !== 'oa-wayfair-3')
+        data.problem.id !== 'oa-wayfair-3') ||
+      (data.problem.checker === 'oa-zalando-blocks' &&
+        data.problem.id !== 'oa-zalando-1')
     )
       ctx.addIssue({
         code: 'custom',
@@ -467,6 +472,15 @@ export const ojImportSchema = z
         path: ['problem', 'checker'],
       });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        data.problem.checker === 'oa-zalando-blocks' &&
+        !zalandoBlocks(c.expectedOutput, undefined, c.input)
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid Zalando blocks input or optimal expected output',
+        });
       if (
         (data.problem.checker === 'oa-morgan-bricks' ||
           data.problem.checker === 'oa-wayfair-bricks') &&
