@@ -1,0 +1,10 @@
+[
+  {
+    "name": "正序更新导致同一字符重复使用",
+    "code": "import sys\n\ndef solve(raw):\n    pattern, text = raw.split()\n    one = two = three = 0\n    for ch in text:\n        if ch == pattern[0]:\n            one += 1\n        if ch == pattern[1]:\n            two += one\n        if ch == pattern[2]:\n            three += two\n    return str(three)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "计数截断为32位有符号整数",
+    "code": "import sys\n\ndef solve(raw):\n    pattern, text = raw.split()\n    one = two = three = 0\n    for ch in text:\n        if ch == pattern[2]:\n            three += two\n        if ch == pattern[1]:\n            two += one\n        if ch == pattern[0]:\n            one += 1\n    return str((three + 2147483648) % 4294967296 - 2147483648)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
