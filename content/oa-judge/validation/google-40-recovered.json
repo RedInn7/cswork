@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008040,
+  "problems": [
+    {
+      "id": "oa-google-40",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "78a2976667db0474e0eeda34e63319902639731de320dd5b17beed2b768a7a79",
+      "negativeControls": [
+        {
+          "name": "错误操作2用在窗口内最先出现的非零元素",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            8,
+            11,
+            15,
+            16,
+            31,
+            32,
+            33,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误操作1每次直接清零一个元素",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            9,
+            11,
+            15,
+            24,
+            31,
+            32,
+            33,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误忽略操作1",
+          "rejectedCases": 18,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            15,
+            16,
+            24,
+            27,
+            30,
+            31,
+            32,
+            33,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误32位累计",
+          "rejectedCases": 1,
+          "rejectedCaseIndices": [
+            31
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent per-window sort (sum after removing the Y largest positives); operation-by-operation state search on tiny arrays validating the cost model; binary search on length with a Fenwick tree over value ranks for formal large cases.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 4,
+        "values": [
+          0,
+          3
+        ],
+        "X": [
+          0,
+          3
+        ],
+        "Y": [
+          0,
+          2
+        ],
+        "operationSearchUpToN": 3,
+        "cases": 4064
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模全为最大值只用操作2",
+          "inputBytes": 1100015,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.01751
+        },
+        {
+          "name": "满规模全为最大值大X",
+          "inputBytes": 1100026,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.01908
+        },
+        {
+          "name": "满规模随机大值",
+          "inputBytes": 989015,
+          "outputBytes": 5,
+          "elapsedSeconds": 0.03308
+        },
+        {
+          "name": "满规模随机小值",
+          "inputBytes": 200015,
+          "outputBytes": 5,
+          "elapsedSeconds": 0.01878
+        },
+        {
+          "name": "满规模稀疏非零",
+          "inputBytes": 278802,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00792
+        },
+        {
+          "name": "满规模全零",
+          "inputBytes": 200011,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.006
+        },
+        {
+          "name": "满规模Y等于n",
+          "inputBytes": 988833,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.02369
+        },
+        {
+          "name": "满规模交替大小",
+          "inputBytes": 650018,
+          "outputBytes": 5,
+          "elapsedSeconds": 0.01955
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 40.989
+    }
+  ]
+}

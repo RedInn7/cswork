@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-google-40",
+      "sourceContentHash": "e9426e04ebe96a00844e7995712c9c468ebc61011f723466d4da8cdc64ce74ec",
+      "packageChecksum": "29c56d781c512b2aea0ec97a1e896956cef270b146242d2dd271e4a5f7b96e8f",
+      "editorial": "## 题意\n\n操作1把某个元素自身减1，最多X次；操作2把某个元素直接置0，最多Y次。求能变成全0的最长连续子数组长度。\n\n## 思路\n\n固定一个窗口，其中的0不需要处理；每个正数要么花1次操作2，要么花a[i]次操作1。最优做法是把Y次操作2用在窗口内最大的若干个正数上，其余正数之和必须不超过X。\n\n窗口向左扩展时，“除去最大的Y个之后的和”只增不减，所以对每个右端点，合法左端点构成一段后缀，可以用双指针。用两个有序多重集合维护窗口内的正数：top保存最大的至多Y个，rest保存其余并记录其和restSum。右端点加入元素时先放入top，超出Y个就把top中最小的移到rest；左端点移出元素时，若在rest中就直接删，否则从top删并把rest中最大的补回top。restSum>X时左端点右移。\n\n## 正确性\n\n交换论证：若某个较小正数用了操作2而较大的没用，交换二者的处理方式，操作2次数不变，操作1次数不增，因此最优方案一定把操作2给最大的Y个。两个集合始终满足top中每个元素不小于rest中每个元素且|top|=min(Y,正数个数)，所以restSum正是最小代价。单调性保证双指针不漏解。\n\n## 复杂度\n\nO(n log n)。restSum可达10^14级别，使用64位整数。\n\n## 独立验证\n\noracle对每个窗口排序后直接计算“去掉最大Y个后的和”（O(n² log n)），不使用双指针和集合。更小的数据另做逐次操作的状态搜索（数组、已用X、已用Y），验证“操作2给最大值”的模型本身。穷举长度1..4、元素0..3、X∈0..3、Y∈0..2的全部输入并逐个真实运行参考程序。错误解覆盖把操作2给最先出现的元素、把操作1当成一次清零、忽略操作1和32位累计。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <set>\nusing namespace std;\nint main(){int n;long long X;int Y;if(scanf(\"%d %lld %d\",&n,&X,&Y)!=3)return 0;vector<long long>a(n);for(auto&v:a)scanf(\"%lld\",&v);\nmultiset<long long>top,rest;long long restSum=0;int best=0,l=0;\nauto add=[&](long long v){if(v==0)return;top.insert(v);if((int)top.size()>Y){auto it=top.begin();rest.insert(*it);restSum+=*it;top.erase(it);}};\nauto del=[&](long long v){if(v==0)return;auto it=rest.find(v);if(it!=rest.end()){rest.erase(it);restSum-=v;return;}\n top.erase(top.find(v));if(!rest.empty()){auto jt=prev(rest.end());restSum-=*jt;top.insert(*jt);rest.erase(jt);}};\nfor(int r=0;r<n;r++){add(a[r]);while(restSum>X){del(a[l]);l++;}if(r-l+1>best)best=r-l+1;}\nprintf(\"%d\\n\",best);}\n"
+        }
+      ]
+    }
+  ]
+}
