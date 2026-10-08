@@ -1,0 +1,144 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008026,
+  "problems": [
+    {
+      "id": "oa-salesforce-26",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "3d157ac248cc53e540360d96f4adf13e7d107c57023bcbe727090bb5f2f50c2e",
+      "negativeControls": [
+        {
+          "name": "错误每个成对段只操作一次",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            8,
+            9,
+            11,
+            12,
+            14,
+            16,
+            19,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误右侧相同字符也计数",
+          "rejectedCases": 6,
+          "rejectedCaseIndices": [
+            1,
+            19,
+            26,
+            28,
+            33,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误32位计数",
+          "rejectedCases": 3,
+          "rejectedCaseIndices": [
+            29,
+            33,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误从左往右扩展",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            2,
+            9,
+            12,
+            16,
+            19,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent literal simulation always applying the rightmost valid operation; memoized search over every operation order on short strings proving that simulation optimal; Python run-based count for formal large cases.",
+      "exhaustiveSmallDomain": {
+        "lengthMin": 1,
+        "lengthMax": 8,
+        "alphabet": "abc",
+        "bruteForce": "memoized search over all operation orders",
+        "cases": 9840
+      },
+      "largeBoundaries": [
+        {
+          "name": "满长交替成对段",
+          "inputBytes": 200001,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.00735
+        },
+        {
+          "name": "满长开头成对其余互异",
+          "inputBytes": 200001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.00633
+        },
+        {
+          "name": "满长全同",
+          "inputBytes": 200001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00601
+        },
+        {
+          "name": "满长无相邻相同",
+          "inputBytes": 200001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00584
+        },
+        {
+          "name": "满长随机成对段",
+          "inputBytes": 200001,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.00643
+        },
+        {
+          "name": "满长随机字母",
+          "inputBytes": 200001,
+          "outputBytes": 10,
+          "elapsedSeconds": 0.00701
+        },
+        {
+          "name": "满长三字母成对循环",
+          "inputBytes": 200001,
+          "outputBytes": 11,
+          "elapsedSeconds": 0.00659
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 26.006
+    }
+  ]
+}

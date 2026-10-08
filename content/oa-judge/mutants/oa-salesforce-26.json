@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误每个成对段只操作一次",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);\nstd::vector<int>cnt((size_t)(n+1)*26,0);for(int i=0;i<n;i++){for(int c=0;c<26;c++)cnt[(size_t)(i+1)*26+c]=cnt[(size_t)i*26+c];cnt[(size_t)(i+1)*26+s[i]-'a']++;}\nlong long ans=0;int p=n;char tail=0;int r=n-1;\nwhile(r>=0){int l=r;while(l>0&&s[l-1]==s[r])l--;\n if(r-l+1>=2){char y=s[r];int mid=p-(r+1);int same=cnt[(size_t)p*26+y-'a']-cnt[(size_t)(r+1)*26+y-'a'];if(r+1<n)ans+=1;p=l;tail=y;}\n r=l-1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误右侧相同字符也计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);\nstd::vector<int>cnt((size_t)(n+1)*26,0);for(int i=0;i<n;i++){for(int c=0;c<26;c++)cnt[(size_t)(i+1)*26+c]=cnt[(size_t)i*26+c];cnt[(size_t)(i+1)*26+s[i]-'a']++;}\nlong long ans=0;int p=n;char tail=0;int r=n-1;\nwhile(r>=0){int l=r;while(l>0&&s[l-1]==s[r])l--;\n if(r-l+1>=2){char y=s[r];int mid=p-(r+1);int same=cnt[(size_t)p*26+y-'a']-cnt[(size_t)(r+1)*26+y-'a'];ans+=n-(r+1);p=l;tail=y;}\n r=l-1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误32位计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\nstatic char s[200005];\nint main(){if(scanf(\"%200004s\",s)!=1)return 0;int n=strlen(s);\nstd::vector<int>cnt((size_t)(n+1)*26,0);for(int i=0;i<n;i++){for(int c=0;c<26;c++)cnt[(size_t)(i+1)*26+c]=cnt[(size_t)i*26+c];cnt[(size_t)(i+1)*26+s[i]-'a']++;}\nint ans=0;int p=n;char tail=0;int r=n-1;\nwhile(r>=0){int l=r;while(l>0&&s[l-1]==s[r])l--;\n if(r-l+1>=2){char y=s[r];int mid=p-(r+1);int same=cnt[(size_t)p*26+y-'a']-cnt[(size_t)(r+1)*26+y-'a'];ans+=mid-same;if(p<n&&tail!=y)ans+=n-p;p=l;tail=y;}\n r=l-1;}\nprintf(\"%d\\n\",ans);}\n"
+  },
+  {
+    "name": "错误从左往右扩展",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nstatic char s[200005];\nint main(){scanf(\"%200004s\",s);int n=strlen(s);long long c=0;\nfor(int i=0;i+2<n;i++)if(s[i]==s[i+1]&&s[i+1]!=s[i+2]){s[i+2]=s[i];c++;}\nprintf(\"%lld\\n\",c);}\n"
+  }
+]
