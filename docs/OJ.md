@@ -20,6 +20,8 @@ cswork 使用 Monaco Editor 作为浏览器编辑器、BullMQ 作为持久化任
 
 ## 持久化与运行
 
+固定例外：`oa-pure-storage-8` 使用 `oa-binary-search-witness`，原题没有输入，只保留一个公开空输入测试点，不构造重复隐藏数据。检查器接受所有合法的 Java int 二分查找反例，而非比较固定输出；其余题目仍要求公开和隐藏测试点。
+
 `POST /api/oj/submissions` 使用调用方生成的幂等键，在单一 SQLite 事务中写入提交与 outbox。相同键与相同请求返回原提交；相同键不同请求返回 409。队列暂不可达时已经接受的提交不会丢失。
 
 worker 每 200 毫秒投递新提交，另每 5 秒恢复未完成提交到 BullMQ，使用 submission ID 作为 job ID。Redis 启用 AOF、noeviction；worker 可在 Redis 数据恢复/重建后由 SQLite 重建未完成队列。任务并发 1，队列容量 128；每学员最多两份未完成任务，每分钟正式提交 6 次、运行 12 次。代码和自定义输入各≤64 KiB。

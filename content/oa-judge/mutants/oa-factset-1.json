@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误返回面积而非边长",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){\n int n=readNumber(),answer=0;\n vector<int> dp(n+1,0);\n for(int row=0;row<n;row++){\n  int diagonal=0;\n  for(int col=1;col<=n;col++){\n   int above=dp[col],value=readNumber();\n   dp[col]=value?1+min({above,dp[col-1],diagonal}):0;\n   answer=max(answer,dp[col]);\n   diagonal=above;\n  }\n }\n printf(\"%d\\n\",answer*answer);\n}\n"
+  },
+  {
+    "name": "错误递推遗漏左上对角条件",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){\n int n=readNumber(),answer=0;\n vector<int> dp(n+1,0);\n for(int row=0;row<n;row++){\n  int diagonal=0;\n  for(int col=1;col<=n;col++){\n   int above=dp[col],value=readNumber();\n   dp[col]=value?1+min(above,dp[col-1]):0;\n   answer=max(answer,dp[col]);\n   diagonal=above;\n  }\n }\n printf(\"%d\\n\",answer);\n}\n"
+  },
+  {
+    "name": "错误只记录第一行中的结果",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){\n int n=readNumber(),answer=0;\n vector<int> dp(n+1,0);\n for(int row=0;row<n;row++){\n  int diagonal=0;\n  for(int col=1;col<=n;col++){\n   int above=dp[col],value=readNumber();\n   dp[col]=value?1+min({above,dp[col-1],diagonal}):0;\n   if(row==0)answer=max(answer,dp[col]);\n   diagonal=above;\n  }\n }\n printf(\"%d\\n\",answer);\n}\n"
+  }
+]

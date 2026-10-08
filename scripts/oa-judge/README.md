@@ -12,6 +12,8 @@
 
 ## 输出
 
+下列数量描述首批题目。固定无输入题 `oa-pure-storage-8` 使用一个公开空输入及 `oracleCoverage: {mode: "exhaustive", inputs: [""]}`，不伪造隐藏输入或重复 oracle。它的语义检查器需通过独立正反见证测试；普通题的至少 20 个隐藏案例要求不变。
+
 - `content/oa-judge/packages/`：现有 `OjProblemPackage` 格式，3 个公开样例、至少 28 个隐藏测试。
 - `references/`：独立编写的完整 Python 参考程序。
 - `editorials/`：中文思路、正确性证明、复杂度和参考代码。

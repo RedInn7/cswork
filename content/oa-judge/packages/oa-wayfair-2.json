@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-wayfair-2",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "Wayfair OA #2：可整除子串数量",
+    "difficulty": "中等",
+    "tags": [
+      "前缀和",
+      "计数",
+      "字符串"
+    ],
+    "description": "将小写字母按以下固定表映射：ab→1，cde→2，fgh→3，ijk→4，lmn→5，opq→6，rst→7，uvw→8，xyz→9。统计连续非空子串中，映射值总和能被子串长度整除的数量。按位置计数，相同内容出现在不同位置分别计算。固定原文的映射图为失效本机路径，本站从原FastPrep页的公开Problem Source原图补全，原文starter同时明确引用LC2950；证据与图片哈希见题解。",
+    "input": "输入一个不加引号的小写英文字母字符串word。完整原范围1≤word.length≤2000，不接受空串。",
+    "output": "输出符合条件的连续非空子串数量，精确整数，无取模。",
+    "explanation": "保留原例：asdf→6，对应a、s、d、f、as、sdf；bdh→4，对应b、d、h、bdh；abcd→6，对应a、b、c、d、ab、cd。第一组ab只有两个字母，不能按每组三个字母或电话键盘映射。",
+    "hints": [
+      "可整除等价于子串平均映射值为整数。",
+      "可能的整数平均值仅有1到9。",
+      "固定平均值k后，减去k并统计零和子串。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 1024,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原样例1",
+      "input": "asdf\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原样例2",
+      "input": "bdh\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原样例3",
+      "input": "abcd\n",
+      "expectedOutput": "6\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站补充4",
+      "input": "abcdefghijklmnopqrstuvwxyz\n",
+      "expectedOutput": "95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充5",
+      "input": "zyxwvutsrqponmlkjihgfedcba\n",
+      "expectedOutput": "95\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充6",
+      "input": "ab\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充7",
+      "input": "bc\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充8",
+      "input": "ef\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充9",
+      "input": "hi\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充10",
+      "input": "kl\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充11",
+      "input": "no\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充12",
+      "input": "qr\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充13",
+      "input": "tu\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充14",
+      "input": "wx\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充15",
+      "input": "az\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充16",
+      "input": "aza\n",
+      "expectedOutput": "5\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充17",
+      "input": "aaaa\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充18",
+      "input": "abab\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充19",
+      "input": "zzzz\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充20",
+      "input": "a\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充21",
+      "input": "b\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充22",
+      "input": "c\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充23",
+      "input": "d\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充24",
+      "input": "e\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充25",
+      "input": "f\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充26",
+      "input": "g\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充27",
+      "input": "h\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充28",
+      "input": "i\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充29",
+      "input": "j\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "本站补充30",
+      "input": "k\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组1",
+      "input": "abababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababababab\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组2",
+      "input": "cdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecdecd\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组3",
+      "input": "fghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfghfg\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组4",
+      "input": "ijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkijkij\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组5",
+      "input": "lmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlmnlm\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组6",
+      "input": "opqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqopqop\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组7",
+      "input": "rstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrstrs\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组8",
+      "input": "uvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuvwuv\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度同值组9",
+      "input": "xyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxyzxy\n",
+      "expectedOutput": "2001000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度正向全字母",
+      "input": "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwx\n",
+      "expectedOutput": "12539\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度反向全字母",
+      "input": "zyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedcbazyxwvutsrqponmlkjihgfedc\n",
+      "expectedOutput": "12530\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度最远映射交替",
+      "input": "azazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazazaz\n",
+      "expectedOutput": "1002000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度相邻组交替",
+      "input": "bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbc\n",
+      "expectedOutput": "2000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度两半极端",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\n",
+      "expectedOutput": "1003350\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整长度随机全部字符",
+      "input": "enwtegmqsmbozgrqnmnxdsajylybhbpecdkbzdlkplocozpyaxcxoabmurwwfaqwmepuoqepvuziuovnehhhpkzcerbjoieturvbdtsrljunkuqerokwqqqdkyexhvspnrdeabxpnqlkjnhqbkzauyesqkkkvzgeqgijzfktfvucypwopxicorzjjdszmwomnlzsluwkabecmaypuqlrfkwdscitdshuwspqetjdagqsiqqwetaexsaggqkttvgtkcrtutbkxgofasorizrbhrabwkocyhmzlppjjnqnvclejaaigpjcpozjvgfgfoekslektujawjbomwjsargpvfyepsuaobjuelzyxoacsfxppnpdrzopfzkyeecjecrjvzvooktuaddllcgergjtkpotjcjhmwdlrdhpgnhadtmwxscmkbeyhnowpyvcfngacuibxrbpwcriuvsnjojceinjbsdkzkokxutbacqbzhtivzkrlaqmfuvnxkkqavwqimeujrsxiadldtbsunoxiuwkvzjjmsmgsiscbggpkkxmptoscumhraaewzhjnsongjxstlnlsahwyjdhyqwuyquwlrweodnobbrnhbeqdoaqykbksnubvrirbgkjhpdxqxjozvjnrsuorgfyczoeahybibkksykpzdfygbzqndkmkbfbffcelunjttmfsmpvffdpdppfqvcovtifmlypvaptoeqyuabmkwwnxnewkdgrmtnywkxkqccweegvahjpbvnevzkchwhiudbbdtcybldisfrrbjkkrgxlngzulfsfwgdpwiwofqdjedashuzfspztrdgplthofpujstouxqtpzsczcbpxlykciisuhzygcolnqsojptpyqprgasfleaioneefxihopjasukfcmraqrebqbbgucaocwvunkhtauwygrdltnnfnsrwyjadgdgyxthmixgmzslehrercsqnbueqoeooywrfuaksfssofgahxhhmsrlfwnikpohvknyhkzscgyfripldfphjvmrvnsjtpmpllysgrwsftbcsmijwevrvqefdkrgfablxfqdasaakyzofaxfizapuvsbypkftivtumsgnhtddeanpbeqlixufqnqlnslxvdgarinnsksfuhtnmdnfkhxpufwykzptvtifdzmbkpeokvqhqyckfmitomzsrtalxexypofiitmumdkfketcvunqkblqlcewzgndqszktlwuzpomosyvwrluzmkndobmvsepfnczrmekkblcfwqdzqmrnommpixyuibpwfesokmaxnntldhenhosoheroloqgezsboawrwsodkkuvakgnagyskckgugyghbjfzidgnibunnozufufwghspwizyjjvdhojyldyllwzsykkaekprfycrhdkncfmefcmcvcczuckgbisvspwqeqritmseafcnmfzlfcgclefcsxabhwxkuravrrqfgpbkgsrakoonpuhbubdblibwdbvbqhjctcdrxagbkfbttwrjzwxbzopvzvlolwrafdafclghtewggwvoihktlzcpzalhdrkopcsivpkufgoaegnnbhnwkjyraqnxcaxslumjdhxktdponoxubcpqnwfawyolkbtxfgyllgjuzfcnaugkdudqppixsnusoganmuwkpbdnynommwbpebkgqcxygcppljtmjxdqjvcbymkbxxpugmilnpswgkpltrjrmjqmssonesjdmxcsagxgsmqbsbczdoagktxryvmyamzovhgktqrjecaepnfcusrozobldqqmkbubntrrwzubincxgarthldtpnnfobrckjsxkycvnwwmrmtepqpmosjobtsmiiymlwenmxjwchzsnxxrjorlefwqunohhnyalqiqwohaupjgjxjwkgqxftosnccuocljtstynhybpaahcxdntklikqiecrpcgxeazbceovaiaqfqbxq\n",
+      "expectedOutput": "27758\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "错误只计移动次数不计距离费用",
+    "code": "import sys\n\ndef solve(raw):\n    s=raw.strip()\n    ones=0\n    cost=0\n    i=0\n    while i<len(s):\n        if s[i]=='1':\n            ones+=1\n            i+=1\n        else:\n            end=i\n            while end<len(s) and s[end]=='0': end+=1\n            cost+=ones\n            i=end\n    return str(cost)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误只计移动距离漏每次基础费",
+    "code": "import sys\n\ndef solve(raw):\n    s=raw.strip()\n    ones=0\n    cost=0\n    i=0\n    while i<len(s):\n        if s[i]=='1':\n            ones+=1\n            i+=1\n        else:\n            end=i\n            while end<len(s) and s[end]=='0': end+=1\n            cost+=ones*(end-i)\n            i=end\n    return str(cost)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误以32位有符号数返回累计费用",
+    "code": "import sys\n\ndef solve(raw):\n    s=raw.strip()\n    ones=0\n    cost=0\n    i=0\n    while i<len(s):\n        if s[i]=='1':\n            ones+=1\n            i+=1\n        else:\n            end=i\n            while end<len(s) and s[end]=='0': end+=1\n            cost+=ones*(end-i+1)\n            i=end\n    return str((cost+2**31)%2**32-2**31)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "catalog错误每个1仅收一次费用且有序串仍收费",
+    "code": "import sys\ns=sys.stdin.read().strip()\nzeros=0\nanswer=0\nfor c in reversed(s):\n    if c=='0': zeros+=1\n    else: answer+=zeros+1\nprint(answer)\n"
+  }
+]
