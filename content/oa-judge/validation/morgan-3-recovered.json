@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-morgan-stanley-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 42,
+      "referenceFormalCases": 45,
+      "negativeControls": [
+        {
+          "name": "正序更新导致同一字符重复使用",
+          "rejectedByCases": [
+            3,
+            4,
+            5,
+            6,
+            8,
+            9,
+            11,
+            18,
+            29,
+            30,
+            35,
+            39,
+            40,
+            43,
+            44
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "计数截断为32位有符号整数",
+          "rejectedByCases": [
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            43,
+            44
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "0e77091be3b2ed71ea70b36eab11eaf76d71d2f62a7685fdd53d3de5b559ccaa",
+      "oracleMethod": "Enumerate i<j<k and compare three characters directly; no prefix-count DP.",
+      "largeBoundaryOracle": "Closed-form binomial/block/alternating formulas cross-checked by independent middle-index left-count times right-count summation.",
+      "largeBoundaries": [
+        {
+          "name": "满域全相同超JS安全整数",
+          "pattern": "AAA",
+          "textLength": 500000,
+          "expectedOutput": "20833208333500000",
+          "inputBytes": 500005,
+          "localSeconds": 0.0525
+        },
+        {
+          "name": "满域ABC分块",
+          "pattern": "ABC",
+          "textLength": 500000,
+          "expectedOutput": "4629629629574074",
+          "inputBytes": 500005,
+          "localSeconds": 0.0413
+        },
+        {
+          "name": "满域ABC交错",
+          "pattern": "ABC",
+          "textLength": 500000,
+          "expectedOutput": "771609567882716",
+          "inputBytes": 500005,
+          "localSeconds": 0.0421
+        },
+        {
+          "name": "满域ABA交错同字母",
+          "pattern": "ABA",
+          "textLength": 500000,
+          "expectedOutput": "2604166666625000",
+          "inputBytes": 500005,
+          "localSeconds": 0.0445
+        },
+        {
+          "name": "满域AAB分块",
+          "pattern": "AAB",
+          "textLength": 500000,
+          "expectedOutput": "7812468750000000",
+          "inputBytes": 500005,
+          "localSeconds": 0.0445
+        },
+        {
+          "name": "满域ABB分块",
+          "pattern": "ABB",
+          "textLength": 500000,
+          "expectedOutput": "7812468750000000",
+          "inputBytes": 500005,
+          "localSeconds": 0.0435
+        },
+        {
+          "name": "满域ABA分块",
+          "pattern": "ABA",
+          "textLength": 500000,
+          "expectedOutput": "3906250000000000",
+          "inputBytes": 500005,
+          "localSeconds": 0.0422
+        },
+        {
+          "name": "满域无匹配",
+          "pattern": "XYZ",
+          "textLength": 500000,
+          "expectedOutput": "0",
+          "inputBytes": 500005,
+          "localSeconds": 0.0357
+        },
+        {
+          "name": "满域末尾一个无关字符",
+          "pattern": "AAA",
+          "textLength": 500000,
+          "expectedOutput": "20833083334249999",
+          "inputBytes": 500005,
+          "localSeconds": 0.0514
+        },
+        {
+          "name": "短压力超32位组合数",
+          "pattern": "AAA",
+          "textLength": 3000,
+          "expectedOutput": "4495501000",
+          "inputBytes": 3005,
+          "localSeconds": 0.0193
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.531
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+import sys
+
+def solve(raw):
+    pattern, text = raw.split()
+    one = two = three = 0
+    for ch in text:
+        if ch == pattern[2]:
+            three += two
+        if ch == pattern[1]:
+            two += one
+        if ch == pattern[0]:
+            one += 1
+    return str(three)
+
+if __name__ == '__main__':
+    print(solve(sys.stdin.read()))

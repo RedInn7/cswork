@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-morgan-stanley-3",
+      "sourceContentHash": "5d3edb5d58b507bce023be9b870793c5f907283f49d4ae713011539805960c28",
+      "packageChecksum": "54b037bc10e8cb9c6ed60b309101b1a8dc04c2e6a605063b487c2ce94bbd7bf5",
+      "editorial": "## 固定来源与数值类型披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Morgan Stanley/stanley-get-subsequence-count.md完整规定：s1长度恰为3，1≤|s2|≤500000，两串只含A到Z。统计s1作为s2子序列出现的次数，原三个样例都明确列出不同的1-based下标三元组。因此按下标选择计数，不是按不同字符结果去重，也不是只计连续子串。三个原例全部保留。\n\nraw返回说明及starter写int，但原始长度范围允许结果远超32位；同一固定提交的web/content/docs/companies/morgan-stanley.mdx中Java实现明确返回long，C++明确返回long long，Python保存精确整数。本站按数学计数输出精确十进制整数，不取模、不截断、不缩小输入范围。完整双源路径与指纹单独记录。标准输入为两行字符串；没有执行上游代码。\n\n## 思路\n\n从左到右扫描s2，维护one、two、three，分别表示已扫描部分中与s1前1、2、3个字符相同的子序列数量。当前字符等于s1[2]时令three增加two；等于s1[1]时令two增加one；等于s1[0]时令one增加1。三个条件独立，必须从最长前缀向最短前缀更新，避免s1含重复字母时把当前字符在同一子序列中使用多次。\n\n## 正确性证明\n\n处理当前下标之前，设三个计数均正确。对于长度j的目标前缀，全部匹配子序列分成两类：不选择当前字符的，数量是已有计数；选择当前字符作为末项的，仅当其等于目标第j个字符时可行，数量恰为此前已形成的长度j−1前缀匹配数。两类下标集合互斥，且覆盖所有匹配。\n\n按j=3、2、1逆序更新，每次读取的短前缀计数尚未包含当前下标，所以新增子序列所有下标严格递增。初始空文本没有非空匹配，三个计数均为0，符合归纳起点。故完整扫描后three准确统计全部且仅统计合法下标三元组。长度小于3时自然为0，不需要缩小源输入范围。\n\n## 复杂度与64位上界\n\n扫描时间O(|s2|)，计数状态O(1)；标准输入整体读取占O(|s2|)空间。任一匹配对应一个不同的三下标组合，因此答案不超过C(|s2|,3)，完整范围最大C(500000,3)=20833208333500000。此值大于32位上界，也大于JavaScript安全整数上界，但小于有符号64位上界9223372036854775807。one与two分别不超过500000和C(500000,2)，同样安全。Python使用精确整数；其他语言应使用64位，不能在中途把值转为浮点。\n\n## 独立验证与完整边界\n\n小oracle直接枚举i<j<k三个下标并逐字符比较，不使用前缀DP。163个唯一输入以真实参考程序子进程对拍。正式满长案例另按闭式结构计数，并用枚举中间下标、左右匹配数相乘的线性方法交叉检查：AAA与全A得到C(500000,3)；ABC分块得到三段长度乘积；(ABC)^q后补AB得到C(q+2,3)；ABA与(AB)^m得到Σj(m−j)=C(m+1,3)。同时覆盖AAB、ABB重复目标、无匹配、长度1/2、超过32位及超过安全浮点范围的精确结果。期望输出与验证记录中的大计数均存十进制字符串。两个负控正常退出后，分别因正序更新和32位溢出被拒绝。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    pattern, text = raw.split()\n    one = two = three = 0\n    for ch in text:\n        if ch == pattern[2]:\n            three += two\n        if ch == pattern[1]:\n            two += one\n        if ch == pattern[0]:\n            one += 1\n    return str(three)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
