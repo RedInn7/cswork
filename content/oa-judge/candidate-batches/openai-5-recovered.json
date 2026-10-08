@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-openai-5",
+      "sourceContentHash": "e44c370d7aac014fef423fc5462c2527ff13eb204fc2b600e55b2d8a679ef957",
+      "packageChecksum": "529d83730347579503aa6fdce450e47fb996b4ef2015d928eac6becf27f62864",
+      "editorial": "## 题意\n\n在1..n中统计连续整数段[l,r]（长度≥1）的个数，要求段内不同时包含任何一个禁止对的两个数。\n\n## 思路\n\n把每个禁止对规范成a<b。段[l,r]非法当且仅当存在禁止对满足l≤a且b≤r。固定l，合法的r必须小于lim(l)=min{b : 禁止对的a≥l}（没有则为n+1），且所有满足r<lim(l)的r都合法，所以以l为左端点的合法段数为lim(l)−l。从n到1倒序扫描，lim(l)就是后缀最小值。\n\n## 正确性\n\n段[l,r]包含禁止对(a,b)⇔l≤a<b≤r。对固定l，合法性随r增大单调变差，阈值恰为所有a≥l的禁止对中最小的b。逐个l累加即得答案。\n\n## 复杂度\n\nO(n+m)。答案最多n(n+1)/2≈2×10^10，使用64位整数。\n\n## 独立验证\n\noracle枚举所有[l,r]并对每个禁止对直接检查是否同在段内（O(n²m)，仅小数据），不使用后缀最小值。穷举n=1..5时所有禁止对集合（数对以随机顺序给出）并逐个真实运行参考程序。错误解覆盖只处理a<b的数对、右端点差一、不计单元素段与32位计数。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<int>lim(n+2,n+1);\nfor(int i=0;i<m;i++){int a,b;scanf(\"%d %d\",&a,&b);if(a>b)swap(a,b);lim[a]=min(lim[a],b);}\nlong long ans=0;int R=n+1;for(int l=n;l>=1;l--){R=min(R,lim[l]);ans+=R-l;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    }
+  ]
+}

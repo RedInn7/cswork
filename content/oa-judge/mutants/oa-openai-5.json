@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误把数对当作有序只处理a<b",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<int>lim(n+2,n+1);\nfor(int i=0;i<m;i++){int a,b;scanf(\"%d %d\",&a,&b);if(a<b)lim[a]=min(lim[a],b);}\nlong long ans=0;int R=n+1;for(int l=n;l>=1;l--){R=min(R,lim[l]);ans+=R-l;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误允许区间包含禁止对的右端",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<int>lim(n+2,n+1);\nfor(int i=0;i<m;i++){int a,b;scanf(\"%d %d\",&a,&b);if(a>b)swap(a,b);lim[a]=min(lim[a],b);}\nlong long ans=0;int R=n+1;for(int l=n;l>=1;l--){R=min(R,lim[l]);ans+=min(R+1,n+1)-l;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误不计长度为1的序列",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<int>lim(n+2,n+1);\nfor(int i=0;i<m;i++){int a,b;scanf(\"%d %d\",&a,&b);if(a>b)swap(a,b);lim[a]=min(lim[a],b);}\nlong long ans=0;int R=n+1;for(int l=n;l>=1;l--){R=min(R,lim[l]);ans+=R-l-1;}\nprintf(\"%lld\\n\",ans);}\n"
+  },
+  {
+    "name": "错误32位计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,m;if(scanf(\"%d %d\",&n,&m)!=2)return 0;vector<int>lim(n+2,n+1);\nfor(int i=0;i<m;i++){int a,b;scanf(\"%d %d\",&a,&b);if(a>b)swap(a,b);lim[a]=min(lim[a],b);}\nint ans=0;int R=n+1;for(int l=n;l>=1;l--){R=min(R,lim[l]);ans+=R-l;}\nprintf(\"%d\\n\",ans);}\n"
+  }
+]

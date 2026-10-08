@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008005,
+  "problems": [
+    {
+      "id": "oa-openai-5",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "4fb2612d6f75e70816312cb438a740f89cb161ddc8e678a0a0c9f9aa3f3b8053",
+      "negativeControls": [
+        {
+          "name": "错误把数对当作有序只处理a<b",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            2,
+            5,
+            7,
+            14,
+            15,
+            16,
+            17,
+            18,
+            22,
+            25,
+            27,
+            28,
+            30,
+            32
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误允许区间包含禁止对的右端",
+          "rejectedCases": 30,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误不计长度为1的序列",
+          "rejectedCases": 36,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误32位计数",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            29,
+            31,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent enumeration of every [l,r] with a direct check against every forbidden pair; exhaustive over all pair subsets for n<=5 with random orientation; closed forms for empty/adjacent/endpoint pair sets.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 5,
+        "pairSets": "all subsets of unordered pairs, random orientation",
+        "cases": 1099
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模无禁止对",
+          "inputBytes": 9,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.00223
+        },
+        {
+          "name": "满规模相邻全禁止",
+          "inputBytes": 2577795,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.01897
+        },
+        {
+          "name": "满规模首尾一对",
+          "inputBytes": 18,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.00248
+        },
+        {
+          "name": "满规模随机远距离对",
+          "inputBytes": 2577767,
+          "outputBytes": 9,
+          "elapsedSeconds": 0.02288
+        },
+        {
+          "name": "满规模随机近距离对",
+          "inputBytes": 2578825,
+          "outputBytes": 8,
+          "elapsedSeconds": 0.02223
+        },
+        {
+          "name": "满规模重复数对",
+          "inputBytes": 2800014,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.0203
+        },
+        {
+          "name": "满规模稀疏宽对",
+          "inputBytes": 12910,
+          "outputBytes": 12,
+          "elapsedSeconds": 0.00286
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.745
+    }
+  ]
+}
