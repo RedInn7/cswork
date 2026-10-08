@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tradedesk-2",
+  "title": "差分扫描线统计覆盖次数为一的长度",
+  "explanation": "## 题意\n\n每盏灯照亮整数闭区间[x−r, x+r]。统计恰好被一盏灯照亮的整数坐标个数（不是区段数）。\n\n## 思路\n\n差分扫描线：每个区间在x−r处+1，在x+r+1处−1。把2n个事件按坐标排序，同一坐标的事件合并处理后得到从该坐标到下一个事件坐标之间（左闭右开）的覆盖次数；覆盖次数为1时把这段长度加入答案。\n\n## 正确性\n\n相邻两个事件坐标之间所有整数点被同一组区间覆盖，覆盖次数恒定且等于此前事件增量之和，因此按段累计等价于逐点计数。右端点用x+r+1表示闭区间的结束，避免漏掉端点。\n\n## 复杂度\n\n排序O(n log n)。坐标可达±2×10^9，答案最大约4×10^9，用64位整数。\n\n## 独立验证\n\noracle把全部端点离散化，对每个基本段直接数有多少区间完整覆盖它（O(n²)，只用于小数据），与扫描线实现不同；更小的数据再逐个整数点计数。穷举1..3盏灯、坐标−2..2、半径1..2的所有组合并逐个真实运行参考程序。错误解包括统计并集、右端点开区间、只数区段个数（上游文字的误读）和32位累加。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<pair<long long,int>>e;e.reserve(2*n);\nfor(int i=0;i<n;i++){long long x,r;scanf(\"%lld %lld\",&x,&r);e.push_back({x-r,1});e.push_back({x+r+1,-1});}\nsort(e.begin(),e.end());long long ans=0;int cov=0;\nfor(size_t i=0;i<e.size();){long long p=e[i].first;while(i<e.size()&&e[i].first==p)cov+=e[i++].second;\nif(i<e.size()&&cov==1)ans+=e[i].first-p;}\nprintf(\"%lld\\n\",ans);}\n"
+    }
+  ]
+}
