@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": [
+    {
+      "id": "oa-goldman-sachs-18",
+      "decision": "Do not promote on current source evidence",
+      "sources": ["fastprep/Goldman Sachs/goldman-get-minimum-moves.md", "fastprep/Airbnb/airbnb-get-minimum-moves.md"],
+      "findings": [
+        "Goldman first sample is unreachable for its actual input; explanation silently changes the matrix.",
+        "Airbnb includes departure cell in obstacle checks; Goldman begins at the adjacent cell. Sources cannot be treated as equivalent for an obstructed start.",
+        "Neither source guarantees clear endpoints or explicitly settles a1x1 obstructed grid.",
+        "Existing Airbnb3 package publicly chooses obstructed endpoints=-1, including1x1. Its passing tests verify that chosen rule, not original-source uniqueness."
+      ]
+    },
+    {
+      "id": "oa-goldman-sachs-15",
+      "decision": "No full-domain recovery established",
+      "sources": ["fastprep/Goldman Sachs/goldman-find-number-of-different-words-that-can-be-formed.md", "fastprep/Goldman Sachs/goldman-alphanumeric-combinations.md"],
+      "findings": [
+        "Both sources describe1..26 decoding counts but omit numeric length bounds.",
+        "decoding-string.md describes a different reversed ASCII decoding task. Its bounds cannot be borrowed.",
+        "An int return type alone does not bound input length or authorize modular arithmetic."
+      ]
+    },
+    {
+      "id": "oa-bny-mellon-1",
+      "decision": "Candidate for next source audit, not yet implemented or verified",
+      "source": "fastprep/BNY Mellon/bnymellon-calculate-string-transformations-length.md",
+      "sourceSha256": "739c081dab5e3a0354caaf7dd237941153eec5d65f265ae2a25989c7f8a60de7",
+      "findings": [
+        "Read-only research found synchronous z→ab and other letters→successor semantics, including azbk→babcl.",
+        "Research derives abczy after two rounds as cdebcab, length7; requires independent verification before use.",
+        "Proposed complete implementation:26-state matrix exponentiation modulo1000000007. Original numeric input domain and any Java int/transport-budget interpretation must be disclosed and validated."
+      ]
+    }
+  ]
+}
