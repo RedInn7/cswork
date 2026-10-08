@@ -1,0 +1,10 @@
+[
+  {
+    "name": "失败分配也错误消耗ID",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n,q=values[:2]\n    cells=[-1 if v else 0 for v in values[2:2+n]]\n    counter=0\n    answer=[]\n    for offset in range(2+n,len(values),2):\n        kind,x=values[offset:offset+2]\n        if kind==0:\n            start=-1\n            for i in range(0,n-x+1,8):\n                if all(v==0 for v in cells[i:i+x]):\n                    start=i\n                    break\n            if start==-1:\n                counter+=1\n                answer.append(-1)\n            else:\n                counter+=1\n                cells[start:start+x]=[counter]*x\n                answer.append(start)\n        else:\n            removed=0\n            for i in range(n):\n                if cells[i]==x:\n                    cells[i]=0\n                    removed+=1\n            answer.append(removed if removed else -1)\n    return ' '.join(map(str,answer))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "分配起点错误无需8对齐",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    n,q=values[:2]\n    cells=[-1 if v else 0 for v in values[2:2+n]]\n    counter=0\n    answer=[]\n    for offset in range(2+n,len(values),2):\n        kind,x=values[offset:offset+2]\n        if kind==0:\n            start=-1\n            for i in range(0,n-x+1):\n                if all(v==0 for v in cells[i:i+x]):\n                    start=i\n                    break\n            if start==-1:\n                answer.append(-1)\n            else:\n                counter+=1\n                cells[start:start+x]=[counter]*x\n                answer.append(start)\n        else:\n            removed=0\n            for i in range(n):\n                if cells[i]==x:\n                    cells[i]=0\n                    removed+=1\n            answer.append(removed if removed else -1)\n    return ' '.join(map(str,answer))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
