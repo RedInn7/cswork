@@ -42,7 +42,7 @@
     },
     {
       "id": "oa-fortinet-4",
-      "decision": "Research candidate, not yet implemented",
+      "decision": "Implemented in fortinet-4-recovered; Linux203-case reference validation and three negative controls passed. See dedicated batch evidence for integration and deployment status.",
       "source": "fastprep/Fortinet/fortinet-get-required-sweeps.md",
       "sourceSha256": "85d322d8e6823cb91966f70a4fec3143da67f3f004f7f16749ff881c5d9d2e9c",
       "findings": [
@@ -58,6 +58,7 @@
       "findings": [
         "Original explicitly counts positional substrings: two equal ll occurrences are distinct.",
         "wowpurerocks contains12 letters plus wow and rer, so14 is consistent; hellolle13 is also consistent.",
+        "Independent enumeration of every nonempty interval confirms hellolle=13 positional palindromes but only8 distinct strings; wowpurerocks=14 positional palindromes but only11 distinct strings. Current catalog set-based solutions contradict both original examples and must be replaced, not reused.",
         "Lowercase letters explicit, no length bound. Consider native linear Manacher with one reused radius array over32MiB input budget; do not borrow another package's site-only length bound or silently retain overflowing int result."
       ]
     },
