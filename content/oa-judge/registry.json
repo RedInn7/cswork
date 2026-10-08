@@ -6278,6 +6278,18 @@
       ]
     },
     {
+      "id": "oa-factset-1",
+      "sourceContentHash": "c157e63731eab25146c95a47315613f2a740630f4bb3fecc3b445ff752272919",
+      "packageChecksum": "266cd5ba1e23f817db5d002da943a8472cfda22a29536c062787611cd0050fcb",
+      "editorial": "## 固定原文恢复与范围披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/FactSet/factset-largest-square-of-1s.md明确写two-dimensional square matrix，并给出n行、每行n个整数的输入描述。旧整理过程把HTML小于号之后的文字截断，不应据此认定缺少方阵结构。本题输入是由0、1构成的n×n方阵，1表示缺陷产品，求全部为1的连续正方形子矩阵的最大边长，不是面积，也不是任意选行列。\n\n原文没有给n数值上界。本站不伪称原题有n≤1000等限制，而支持现有单例32MiB标准输入预算以内的全部合法方阵。输入第一行给n，然后n行各n个以空白分隔的0/1；每行结束换行。最紧凑通常编码至少需要2n²字节及首行，因此4095阶测试已紧邻当前预算，4095不是额外声明的原始上界。允许n=0并返回0是本站明确的空矩阵数学扩展，不能归因于原文保证。非空全0矩阵也返回0。\n\n三个公开案例完全保留原输入和答案3、2、1。原例1把3×3区域起点(0,0)的end写成(3,3)，这是半开右下端点；本站统一改用包含端点(2,2)，其它两块对应(3,2)、(4,2)。原例2的(1,1)则已经是包含端点，不能混用两种约定。作者本机图片路径不可访问，不作为额外证据，所有结果均由可读取矩阵独立计算。\n\n## 思路\n\n逐行读取元素。dp[col]表示上一行或本行已更新位置的、以该格为右下角的最大全1正方形边长。当前值为0时置0；为1时取上方、左方、左上方三个边长最小值加1。更新前保存上方旧值，留作下一个格子的左上方。所有位置的最大值就是答案。\n\n## 正确性证明\n\n当当前格为0，任何以它为右下角的全1正方形均不可能，最大边长为0。当当前格为1，设三个相邻子问题值为a、b、c。任何边长s≥2的候选正方形去掉最底行、最右列等后，均包含这三个右下角对应的边长s−1正方形，因此s≤1+min(a,b,c)。反过来，三个相邻位置各有边长d=min(a,b,c)的全1正方形，它们的并集加上当前格覆盖边长d+1的整块区域，故该上界可达到。边长1也成立。\n\n按行列顺序归纳，递推总能得到正确的当前边长。滚动数组读取的上方值尚未覆盖、左方值已经更新、保存的diagonal为上一行左方，所以实现与递推一致。任何全1正方形有唯一右下角，枚举所有格并取最大值覆盖全部候选，输出全局最大边长。\n\n## 复杂度与传输预算\n\n时间O(n²)，额外空间O(n)，标准输入流式读取，不存完整矩阵。零矩阵扩展时间O(1)。输入预算限制下n及dp值远小于32位有符号上限；输出仅一个边长整数。参考使用C++20，题包3秒/256MiB，输出64KiB。不同语言仍须满足同一时间和内存限制。本地性能记录不能替代Linux沙箱验收。\n\n## 独立验证\n\n小oracle枚举每个起点、每个边长，并直接检查该区域全部格，不调用DP。对n=0..3所有二进制方阵共531个进行完整穷举，再用163唯一输入真实运行原生参考。中等方阵采用二维前缀和，按边长从大到小枚举方块检查面积和，独立于最大正方形DP。\n\n两组4095×4095方阵各33538055字节：全1的期望4095，棋盘格的期望1（任何2×2均有0）。这两组用独立闭式，不构造庞大的Python二维整数对象；逐组实际执行参考并测量本机峰值内存。其它边界覆盖全0、孤立1、缺对角、边框、内部洞、条纹、偏移正方形、随机密集矩阵。三个负控分别返回面积、遗漏对角条件、只统计第一行，所有正式输入均必须正常退出才计作有效击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();int x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return x;}\nint main(){\n int n=readNumber(),answer=0;\n vector<int> dp(n+1,0);\n for(int row=0;row<n;row++){\n  int diagonal=0;\n  for(int col=1;col<=n;col++){\n   int above=dp[col],value=readNumber();\n   dp[col]=value?1+min({above,dp[col-1],diagonal}):0;\n   answer=max(answer,dp[col]);\n   diagonal=above;\n  }\n }\n printf(\"%d\\n\",answer);\n}\n"
+        }
+      ]
+    },
+    {
       "id": "oa-google-1",
       "sourceContentHash": "8d30f23d0f5154d1554118830a3620c1e3f234564b1d7b9f2695b793d887eaa1",
       "packageChecksum": "f7985aa4fd73e152bf3628c1adab1283404285cf1d1c71c26e5bbaeae83b2b17",
