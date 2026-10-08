@@ -3,6 +3,161 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-amazon-333",
+      "decision": "Cross-source rule restoration independently supported, but full32MiB input domain can exceed current64MiB judge output budget; needs framework capacity work before promotion",
+      "source": "fastprep/Amazon/amazon-register-login-logout.md",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/amazon-register-login-logout/0",
+      "image": "content/oa-judge/source-images/amazon-333-original.jpg",
+      "imageSha256": "0bf6cb84b18b3707eca7670b51e161c2588c5b4036c01a9ec0be7e81f14df64c",
+      "findings": [
+        "Image URL came from actual original-page HTML img src. Main viewed full screenshot; it contains initially empty users, repeated login preserving original session, sequential requests and case sensitivity.",
+        "Five-request david/adam sample matches Amazon336, including correctly spelled Login Unsuccessful. This corroborates the spelling correction for336.",
+        "Screenshot lacks credential/count bounds and the complete register/login/logout response table. Do not automatically borrow336 numeric bounds for333 without explicit adaptation and full-domain review.",
+        "Independent image review confirms333 screenshot matches336 fixed raw five-request sample (not336 screenshot, which has user05 three-request example), and all five notes agree. Six responses can be restored with disclosed cross-source provenance, not by transferring unrelated numeric constraints.",
+        "Concrete capacity counterexample:3728269 repeated logout a requests use33554429 input bytes including header and LF. Required Logout Unsuccessful response lines use74565380 bytes; even minimal separators require74565379, above67108864 output cap. A smaller3355444-request input already exceeds that cap. Do not promote by inventing a smaller n."
+      ]
+    },
+    {
+      "id": "oa-amazon-336",
+      "decision": "Complete original API table recovered and independently viewed; source pre-review passed, authoring and judge verification still required",
+      "source": "fastprep/Amazon/amazon-return-records.md",
+      "sourcePage": "https://www.fastprep.io/problems/amazon-return-records",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/amazon-return-records/0",
+      "image": "content/oa-judge/source-images/amazon-336-original.jpg",
+      "imageSha256": "29d0ce46a8c18c2a3eb58b12fb8e3565d199490620447c416005ac3b2a09ae95",
+      "findings": [
+        "Actual original-page HTML img src links this publicly readable image. Main reviewer viewed the full image, including API table, notes, example and constraints.",
+        "Table strings: Registered Successfully; Username already exists; Logged In Successfully; Login Unsuccessful; Logged Out Successfully; Logout Unsuccessful.",
+        "Fixed raw second sample uses Login Unsuccessfully, unlike original table Login Unsuccessful. Any recovery must explicitly disclose this spelling correction rather than silently mixing outputs.",
+        "Image includes initially no users, repeated active login fails without ending original session, ordered execution, case-sensitive credentials, n1..100000 and alphanumeric credentials length1..10. Supplemental image is not claimed to belong to fixed upstream commit."
+      ]
+    },
+    {
+      "id": "oa-microsoft-25",
+      "decision": "Original image recovered and independently viewed; original examples conflict, do not promote",
+      "image": "content/oa-judge/source-images/microsoft-25-original.jpg",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/microsoft-frog-game/0",
+      "imageSha256": "c6b76a0195b00cd07977e241f651f39ff579fa567aeb94ff154a518774af063a",
+      "findings": [
+        "Original image defines moves only to adjacent blocks of greater or equal height from a common chosen starting block.",
+        "For[9,2,5,3,0], maximum index distance2 corresponds to3 covered blocks; original output2 chooses index distance. For[1,2,3,4,5,8], maximum index distance5 corresponds to6 blocks; original output6 chooses block count. No consistent distance convention gives both original answers.",
+        "Second example starting at cell5 is also inconsistent with uphill-only movement. Current rewritten page's replacement output3 is not independent evidence settling the original contradiction."
+      ]
+    },
+    {
+      "id": "oa-linkedin-2",
+      "decision": "Original image recovered; formulas confirmed but duplicate/self-pair counting remains unspecified",
+      "image": "content/oa-judge/source-images/linkedin-2-original.jpg",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/linkedin-find-number-of-perfect-pairs/0",
+      "imageSha256": "c8e7cb1afc3f0e035a863ccb9de170f4da876ad4d36e2a8c32a2a985c65ed31b",
+      "findings": [
+        "Both reviewers viewed the original image: min(abs(x-y),abs(x+y))<=min(abs(x),abs(y)) and max(abs(x-y),abs(x+y))>=max(abs(x),abs(y)).",
+        "Only example[2,-3,5] with pairs(2,-3),(-3,5) is supplied. No bounds or explicit distinct-position/distinct-value/self-pair rule is given.",
+        "For[1,1,2], distinct index pairs give3 while distinct value pairs supported by two entries give2. Do not silently choose a counting convention merely because formulas are now complete."
+      ]
+    },
+    {
+      "id": "oa-capital-one-18",
+      "decision": "Implemented in capitalone-18-recovered; Linux202-case reference validation and three negative controls passed. See dedicated independent review and integration evidence for remaining gates; not deployed.",
+      "source": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
+      "sourcePage": "https://www.fastprep.io/problems/capitalone-rotate-matrix-over-diagonals",
+      "images": [
+        {
+          "url": "https://www.fastprep.io/api/problem-source-images/capitalone-rotate-matrix-over-diagonals/0",
+          "path": "content/oa-judge/source-images/capitalone-18-original-0.jpg",
+          "sha256": "78657eb17330d8c43648af650113cf6029cdb0c77b658591ecf9d5bbf42297e2"
+        },
+        {
+          "url": "https://www.fastprep.io/api/problem-source-images/capitalone-rotate-matrix-over-diagonals/1",
+          "path": "content/oa-judge/source-images/capitalone-18-original-1.jpg",
+          "sha256": "8f01d13eb3b83dc02c2c1d9f9cfe16ba4cefff3403285cad1d6b53afeaaf33ed"
+        }
+      ],
+      "findings": [
+        "Both image URLs were actual Problem source links on the current original page. They are supplemental downloads, not fixed-upstream Git assets.",
+        "Image0 explicitly states clockwise rotation of the four diagonal-separated segments with both diagonals unchanged, and shows a5x5 before-rotation matrix marking both diagonals. Image1 repeats the rule. Neither image supplies numeric constraints or an after-rotation diagram.",
+        "Both reviewers independently reproduced the complete fixed sample using off-diagonal rotation(r,c)->(c,n-1-r). The diagonal union is closed under rotation, as is its complement. Every non-diagonal orbit has four elements; top triangle r<c<n-1-r selects exactly one per orbit.",
+        "Even n is supported; n2 has only diagonal cells and remains unchanged. Nonnegative signed32 turns and signed32 matrix elements are disclosed type adaptations; negative turns and empty matrices have no defined source behavior and are not silently added.",
+        "For n turns followed by one-digit entries, n4095 EOF minimum input33538056bytes and LF33538057 fit32MiB; n4096 minimum33554438 does not. This is a transport-derived bound, not an original constraint. Single int32 array requires67076100bytes; do not allocate a second full matrix or full output string.",
+        "Canonical output is a permutation of identical numeric tokens with n² separators, so its bytes are bounded by input minus header up to the final-newline difference. Test near-budget output and parse INT_MIN using wider intermediate arithmetic."
+      ]
+    },
+    {
+      "id": "oa-wayfair-2",
+      "decision": "Implemented in wayfair-2-recovered; Linux208-case reference validation and three negative controls passed. See dedicated independent review and integration evidence for remaining gates; not deployed.",
+      "source": "fastprep/Wayfair/wayfair-number-of-divisible-substrings.md",
+      "supplement": "https://storage.googleapis.com/fastprepoa.appspot.com/problem_source_images/wayfair-number-of-divisible-substrings.jpg",
+      "imageSha256": "63d7c5e6186ab7fd56f35a9c80eda7744b7bb327bf68aa2758c43528439090c8",
+      "findings": [
+        "Fixed source explicitly refers to LC2950. Current original FastPrep page links the complete screenshot through Problem Source; independently viewed by two reviewers.",
+        "Mapping is1:ab,2:cde,3:fgh,4:ijk,5:lmn,6:opq,7:rst,8:uvw,9:xyz. All three examples and n1..2000 lowercase bounds agree with fixed text.",
+        "Image is independently downloaded supplemental evidence, not part of the fixed upstream Git commit. Preserved under content/oa-judge/source-images/wayfair-2-original.jpg."
+      ]
+    },
+    {
+      "id": "oa-expedia-4",
+      "decision": "Implemented in expedia-4-recovered; Linux203-case reference validation and four negative controls passed. See dedicated independent review and integration evidence for remaining gates; not deployed.",
+      "source": "fastprep/Expedia/expedia-calculate-the-sum.md",
+      "sourceSha256": "bd18d1e034dcfdc131017631ff7dc1a73406961281ee1a29ad284cf3dae2b1ed",
+      "findings": [
+        "Original specifies initially-off switches indexed from1, inclusive interval toggles, and sum of final On indices; numeric bounds and examples absent.",
+        "A disclosed positive signed32 endpoint adaptation follows int[][] signature; right endpoint+1 requires unsigned32 or wider. Maximum sum2305843008139952128 requires disclosed64-bit result, not source int.",
+        "Consider uint32 toggle events and two-pass radix sorting for complete32MiB transport domain, around128MiB for two event arrays at canonical maximum8388606 operations. Independently validate memory/time and repeated endpoints before recovery.",
+        "Author reports11111 direct-toggle comparisons for endpoints1..4 and operation counts0..4; zero-operation behavior must be disclosed separately. No candidate package or Linux evidence yet.",
+        "Independent pre-review confirms maximum8388606 operations: shortest LF form exactly33554432bytes, while one more operation exceeds budget even with EOF. Two uint32 event arrays require134217696bytes plus fixed buckets and IO buffers; do not also store the original operations.",
+        "Preserve l<=r instead of silently normalizing reversed endpoints. Sort must be stable across radix passes; repeated endpoints retain parity and yield zero-length paired segments rather than being deduplicated."
+      ]
+    },
+    {
+      "id": "oa-moveworks-1",
+      "decision": "Parallel source found, but do not silently substitute its positive-integer domain for the catalog source",
+      "sources": [
+        "fastprep/Moveworks/moveworks-minimum-moves-to-sort-array.md",
+        "fastprep/Moveworks/moveworks-get-minimum-operations-to-sort-array.md"
+      ],
+      "findings": [
+        "The catalog source says integers, no numeric bounds, and splitting into two summands. Parallel same-company source explicitly requires positive parts and n<=100000, values<=1000000000, but has no explicit cross-reference, shared sample or matching function name.",
+        "For the positive-domain variant, right-to-left ceil(value/cap) grouping matches independent legal-split BFS on340 arrays. This validates that variant, not identity of the catalog problem.",
+        "Full positive-domain answer can reach99998999900001, exceeding the source int return. Any eventual adaptation must disclose a64-bit result.",
+        "Catalog third example answer2 is consistent, but its second split is at updated index2, not index1. Live original-page lookup timed out; no new external identity evidence obtained."
+      ]
+    },
+    {
+      "id": "oa-zolostays-2",
+      "decision": "Implemented in zolostays-2-recovered; Linux202-case reference validation and three negative controls passed. See dedicated independent review and integration records for remaining gates; not deployed.",
+      "source": "fastprep/Zolostays/zolostays-trapping-rain-water.md",
+      "sourceSha256": "1c114107a47579e823beae43124d6634c231c30deb6470a5bf72efa9bb5f91cc",
+      "supplement": "https://leetcode.com/problems/trapping-rain-water/description/",
+      "findings": [
+        "Original starter explicitly refers to LC42. Official problem number, both examples (6 and9), and all original bounds match; this is an explicit reference rather than title-based inference.",
+        "Official description supplies missing unit-width elevation-map rule. Preserve n1..20000 and height0..100000; empty arrays remain outside original domain.",
+        "Maximum trapped water is1999800000. Use independent prefix/suffix or small-domain cell oracle, with full-size maximum basin and unequal-edge cases."
+      ]
+    },
+    {
+      "id": "oa-factset-3",
+      "decision": "Do not promote without clarifying insertion indices beyond current album length",
+      "source": "fastprep/FactSet/factset-photo-album.md",
+      "sourceSha256": "1f12522c84d65ab3951445eba53cbac0aa06f280648083ae8fad276d2e2f32f9",
+      "findings": [
+        "Raw source contains the full custom-input protocol n/index/n/identity; catalog truncation is an HTML parsing artifact, not missing original input lines.",
+        "Original bounds allow0<=index[i]<n, including index[0]>0 when the album is empty. Source does not explain whether such indices append, create gaps, or are invalid; there are no examples to disambiguate.",
+        "Catalog Python list.insert silently clamps an index beyond length; Java list.add rejects it and C++ begin()+index is invalid. These imported solutions disagree, so do not treat any as authoritative or silently impose index[i]<=i."
+      ]
+    },
+    {
+      "id": "oa-gemini-1",
+      "decision": "Implemented in gemini-1-recovered; Linux207-case reference validation, three negative controls, independent review and four real submissions passed. See dedicated immutable batch and integration evidence; not yet deployed.",
+      "source": "fastprep/Gemini/gemini-minimum-fence-painting-operations.md",
+      "sourceSha256": "092dff9e2704cea781b84ecf07d319703a4b5534eea1b6d651a82493e16e065e",
+      "findings": [
+        "Original explicitly supplies n>=1 and nonnegative integer heights, with no numeric upper bounds. int[] interface can justify a disclosed nonnegative signed32 input adaptation, not an invented small n.",
+        "Previous return-int overflow concern is not sufficient: painting each positive board vertically gives answer<=n, so the full32MiB input transport domain keeps the mathematical answer below signed32 range.",
+        "Catalog recursive minimum-scan solution is quadratic and its text incorrectly claims n is small without source evidence. Do not reuse it for full transport-domain verification.",
+        "Explore streaming monotone-stack Cartesian-tree DP with equal-height compression and zero separators. Full flat low-height arrays can have roughly16million items, so avoid allocating several n-sized arrays without a measured memory bound. Independent brute painting/interval DP required before promotion."
+      ]
+    },
+    {
       "id": "oa-goldman-sachs-18",
       "decision": "Do not promote on current source evidence",
       "sources": [
@@ -53,7 +208,7 @@
     },
     {
       "id": "oa-pure-storage-11",
-      "decision": "Research candidate, not yet implemented",
+      "decision": "Implemented in pure-storage-11-recovered; Linux206-case reference validation and three negative controls passed. See dedicated batch evidence for integration and deployment status.",
       "source": "fastprep/Pure Storage/purestorage-count-different-palindrome-substrings.md",
       "findings": [
         "Original explicitly counts positional substrings: two equal ll occurrences are distinct.",
@@ -74,7 +229,7 @@
     },
     {
       "id": "oa-weride-1",
-      "decision": "Research candidate; query placeholder and bad sample need disclosure",
+      "decision": "Implemented in weride-1-recovered; Linux201-case reference validation and three negative controls passed. Query placeholder and incorrect source examples explicitly disclosed. See dedicated evidence for integration and deployment status.",
       "sources": [
         "OA LIST/WeRide_OA/001_image.txt",
         "OA LIST/WeRide_OA/005_image.txt",
@@ -83,7 +238,9 @@
       "findings": [
         "Research found n,q<=200000 and price/value0..1000000000.",
         "Type2 third field appears as v or r; operation definition only uses second field as floor. Do not silently require equal fields.",
-        "Research derives corrected sample0 as1,2,4,4,3; revalidate before implementation."
+        "Independent reread of006 confirms sample0 must be1,2,4,4,3: its printed third output3 contradicts the earlier point assignment to4, and its intermediate arrays also contradict the floor operation.",
+        "006 sample1 has third field1 in FUNCTION/explanation but11 in STDIN. Both interpretations must produce11,11,11,11 because the third field has no role in the stated floor operation; the printed last intermediate1 is erroneous.",
+        "Existing DoorDash4 package shares the operation but discloses site-only n/q100000 and positive-only prices. Do not inherit these smaller bounds for WeRide original n/q200000 and zero-inclusive prices."
       ]
     }
   ]
