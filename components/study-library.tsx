@@ -566,123 +566,103 @@ export function StudyLibrary({
         </div>
         {languageControl}
       </header>
-      {collection === 'ling-selected-500' &&
-        data?.collection &&
-        !loading &&
-        !error && (
-          <div className="study-curated-overview">
-            <div>
-              <span>
-                {t(
-                  `第 ${data.currentRound?.number || 1} 轮通过`,
-                  `Solved in round ${data.currentRound?.number || 1}`,
-                )}
-              </span>
-              <strong>
-                {data.collection.solved}
-                <small> / {data.collection.total}</small>
-              </strong>
-              <progress
-                aria-label={t('本轮通过进度', 'Current round progress')}
-                value={data.collection.solved}
-                max={data.collection.total}
-              />
-            </div>
-            <div>
-              <span>{t('站内判题已开放', 'Ready to submit')}</span>
-              <strong>
-                {data.collection.ready}
-                <small> {t('道', 'problems')}</small>
-              </strong>
-              <p>
-                {data.collection.ready === data.collection.total
-                  ? t(
-                      '全部精选题目均可在站内运行、提交和查看判题结果。',
-                      'Run, submit, and view results for every selected problem here.',
-                    )
-                  : t(
-                      '其余题目可先阅读双语题面，前往原题练习。',
-                      'For remaining problems, read the bilingual statement and practice at the source.',
+      {(data?.currentRound ||
+        (collection === 'ling-selected-500' && data?.collection)) && (
+        // One compact bar so the problem list starts above the fold.
+        <div className="study-dashboard" aria-busy={roundBusy}>
+          {collection === 'ling-selected-500' &&
+            data?.collection &&
+            !error && (
+              <div className="study-dashboard-stats">
+                <div>
+                  <span>
+                    {t(
+                      `第 ${data.currentRound?.number || 1} 轮通过`,
+                      `Solved in round ${data.currentRound?.number || 1}`,
                     )}
-              </p>
-            </div>
-            <div>
-              <span>{t('练习方法', 'Practice approach')}</span>
-              <p>
-                {t(
-                  '先独立推导，再写代码验证；能解释复杂度、边界情况，并在复习时重新做出。',
-                  'Reason through the solution, then verify it in code. Explain complexity and edge cases, and solve it again when reviewing.',
-                )}
-              </p>
-            </div>
-          </div>
-        )}
-      {data?.currentRound && (
-        <div className="study-rounds" aria-busy={roundBusy}>
-          <div className="study-rounds-copy">
-            <strong>{t('我的刷题进度', 'My practice rounds')}</strong>
-            <p>
-              {t(
-                '每轮单独记录通过进度；新开一轮会从零开始，历史进度和提交记录保留。',
-                'Each round tracks its own progress. Start fresh while keeping every earlier round and submission.',
-              )}
-            </p>
-          </div>
-          <div className="study-round-actions">
-            <Button
-              variant="outline"
-              aria-expanded={syncOpen}
-              onClick={() => setSyncOpen((open) => !open)}
-            >
-              {t('同步 LeetCode', 'Sync LeetCode')}
-            </Button>
-            <label htmlFor="practice-round">
-              {t('当前轮次', 'Current round')}
-            </label>
-            <select
-              id="practice-round"
-              value={data.activeRoundId}
-              disabled={roundBusy || loading}
-              onChange={(event) => void changeRound(event.target.value)}
-            >
-              {data.rounds.map((round) => (
-                <option key={round.id} value={round.id}>
-                  {t(`第 ${round.number} 轮`, `Round ${round.number}`)} ·{' '}
-                  {round.solved}/{data.collection?.total || 500}
-                </option>
-              ))}
-            </select>
-            <Button
-              variant="outline"
-              disabled={roundBusy || loading}
-              onClick={() => void changeRound()}
-            >
-              {roundBusy
-                ? t('正在更新…', 'Updating…')
-                : t('新开一轮', 'Start a new round')}
-            </Button>
-          </div>
-          {roundNotice && (
-            <output className="study-round-feedback">
-              {roundNotice === 'created'
-                ? t(
-                    '新一轮已开启，之前的进度已保留。',
-                    'New round started. Your earlier progress is saved.',
-                  )
-                : t(
-                    '已切换轮次，可继续这一轮的练习。',
-                    'Round switched. Continue practicing in this round.',
+                  </span>
+                  <strong>
+                    {data.collection.solved}
+                    <small> / {data.collection.total}</small>
+                  </strong>
+                  <progress
+                    aria-label={t('本轮通过进度', 'Current round progress')}
+                    value={data.collection.solved}
+                    max={data.collection.total}
+                  />
+                </div>
+                <div>
+                  <span>{t('站内可判题', 'Ready to submit')}</span>
+                  <strong>
+                    {data.collection.ready}
+                    <small> {t('道', 'problems')}</small>
+                  </strong>
+                </div>
+              </div>
+            )}
+          {data?.currentRound && (
+            <>
+              <div className="study-round-actions">
+                <Button
+                  variant="outline"
+                  aria-expanded={syncOpen}
+                  onClick={() => setSyncOpen((open) => !open)}
+                >
+                  {t('同步 LeetCode', 'Sync LeetCode')}
+                </Button>
+                <label htmlFor="practice-round">
+                  {t('当前轮次', 'Current round')}
+                </label>
+                <select
+                  id="practice-round"
+                  value={data.activeRoundId}
+                  disabled={roundBusy || loading}
+                  onChange={(event) => void changeRound(event.target.value)}
+                >
+                  {data.rounds.map((round) => (
+                    <option key={round.id} value={round.id}>
+                      {t(`第 ${round.number} 轮`, `Round ${round.number}`)} ·{' '}
+                      {round.solved}/{data.collection?.total || 500}
+                    </option>
+                  ))}
+                </select>
+                <Button
+                  variant="outline"
+                  disabled={roundBusy || loading}
+                  onClick={() => void changeRound()}
+                  title={t(
+                    '每轮单独记录通过进度；新开一轮会从零开始，历史进度和提交记录保留。',
+                    'Each round tracks its own progress. Start fresh while keeping every earlier round and submission.',
                   )}
-            </output>
-          )}
-          {roundError && (
-            <p className="study-round-feedback error-text" role="alert">
-              {t(
-                '更新失败，请重试。',
-                'Could not update your round. Please retry.',
-              )}{' '}
-              {roundError}
-            </p>
+                >
+                  {roundBusy
+                    ? t('正在更新…', 'Updating…')
+                    : t('新开一轮', 'Start a new round')}
+                </Button>
+              </div>
+              {roundNotice && (
+                <output className="study-round-feedback">
+                  {roundNotice === 'created'
+                    ? t(
+                        '新一轮已开启，之前的进度已保留。',
+                        'New round started. Your earlier progress is saved.',
+                      )
+                    : t(
+                        '已切换轮次，可继续这一轮的练习。',
+                        'Round switched. Continue practicing in this round.',
+                      )}
+                </output>
+              )}
+              {roundError && (
+                <p className="study-round-feedback error-text" role="alert">
+                  {t(
+                    '更新失败，请重试。',
+                    'Could not update your round. Please retry.',
+                  )}{' '}
+                  {roundError}
+                </p>
+              )}
+            </>
           )}
         </div>
       )}
@@ -814,7 +794,8 @@ export function StudyLibrary({
             {t('重新加载', 'Reload')}
           </Button>
         </div>
-      ) : loading ? (
+      ) : loading && !data ? (
+        // Background refreshes (window focus, judging polls) keep the current list.
         <output className="study-state">
           {t('正在加载题单…', 'Loading collection…')}
         </output>
@@ -844,7 +825,7 @@ export function StudyLibrary({
         </div>
       ) : (
         <>
-          <div className="study-list">
+          <div className="study-list" aria-busy={loading}>
             {data.items.map((item) => (
               <button
                 type="button"
@@ -898,7 +879,16 @@ export function StudyLibrary({
                   title={`${item.number}. ${title(item, english)}`}
                 >
                   <strong>
-                    {item.number}. {title(item, english)}
+                    <span className="study-number">{item.number}.</span>{' '}
+                    {title(item, english)}
+                    {item.selection && (
+                      <span className="study-row-section">
+                        {english
+                          ? item.selection.sectionTitleEn ||
+                            item.selection.sectionTitle
+                          : item.selection.sectionTitle}
+                      </span>
+                    )}
                   </strong>
                   {!!item.importedSources?.length && (
                     <small>
