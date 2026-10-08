@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-infosys-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 41,
+      "referenceFormalCases": 44,
+      "negativeControls": [
+        {
+          "name": "相等的后继错误保留为新纪录",
+          "rejectedByCases": [
+            2,
+            4,
+            5,
+            7,
+            29,
+            35,
+            39,
+            40,
+            43
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "误用前次B值替代原数组A更新",
+          "rejectedByCases": [
+            0,
+            1,
+            6,
+            9,
+            10,
+            11,
+            12,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            26,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "16fc4867b08f39632f63fe0affa72f884da1ae021003ed50385332851631cd06",
+      "oracleMethod": "After each real A point decrement, independently construct full prefix-minimum B and count its set; no record/Fenwick logic.",
+      "largeBoundaryOracle": "Closed-form counts for descending, uniform, alternating reinsert/delete and equal-value reverse scans; all 100000 outputs compared.",
+      "largeBoundaries": [
+        {
+          "name": "满双界逐个相等删除",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 988909,
+          "expectedFirst": [
+            99999,
+            99998,
+            99997
+          ],
+          "expectedLast": [
+            2,
+            1,
+            1
+          ],
+          "localSeconds": 0.3517
+        },
+        {
+          "name": "满双界尾部下降保留全部纪录",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 1988909,
+          "expectedFirst": [
+            100000,
+            100000,
+            100000
+          ],
+          "expectedLast": [
+            100000,
+            100000,
+            100000
+          ],
+          "localSeconds": 0.1263
+        },
+        {
+          "name": "满双界首部整批删除",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 1488909,
+          "expectedFirst": [
+            1,
+            1,
+            1
+          ],
+          "expectedLast": [
+            1,
+            1,
+            1
+          ],
+          "localSeconds": 0.3534
+        },
+        {
+          "name": "满双界降到负九十亿",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 2000014,
+          "expectedFirst": [
+            1,
+            1,
+            1
+          ],
+          "expectedLast": [
+            1,
+            1,
+            1
+          ],
+          "localSeconds": 0.0942
+        },
+        {
+          "name": "满双界首尾反复删插",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 1750014,
+          "expectedFirst": [
+            2,
+            1,
+            2
+          ],
+          "expectedLast": [
+            1,
+            2,
+            1
+          ],
+          "localSeconds": 0.2135
+        },
+        {
+          "name": "满双界逆序插入相等替换",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 1888909,
+          "expectedFirst": [
+            2,
+            2,
+            2
+          ],
+          "expectedLast": [
+            2,
+            2,
+            1
+          ],
+          "localSeconds": 0.7004
+        },
+        {
+          "name": "满双界非纪录原值不可覆盖",
+          "n": 100000,
+          "m": 100000,
+          "inputBytes": 1988909,
+          "expectedFirst": [
+            2,
+            2,
+            2
+          ],
+          "expectedLast": [
+            2,
+            2,
+            2
+          ],
+          "localSeconds": 0.1297
+        },
+        {
+          "name": "单元素最大操作次数极负数",
+          "n": 1,
+          "m": 100000,
+          "inputBytes": 900011,
+          "expectedFirst": [
+            1,
+            1,
+            1
+          ],
+          "expectedLast": [
+            1,
+            1,
+            1
+          ],
+          "localSeconds": 0.0716
+        },
+        {
+          "name": "最大数组单查询末尾相等",
+          "n": 100000,
+          "m": 1,
+          "inputBytes": 588912,
+          "expectedFirst": [
+            99999
+          ],
+          "expectedLast": [
+            99999
+          ],
+          "localSeconds": 0.0408
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 12.0
+    }
+  ]
+}
