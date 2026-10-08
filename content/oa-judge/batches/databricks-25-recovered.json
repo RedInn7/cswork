@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-databricks-25",
+      "sourceContentHash": "98a6399da2eecbc15ec9cb44f2c02b2ef1c793c004164b0de51ffc7b1834da62",
+      "packageChecksum": "16235226e8a27e779dcdc158f20579ca810f4edc1105b5a48206bfa9834f1248",
+      "editorial": "## 固定来源、同题证据与范围披露\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/Databricks_OA/019_image.txt逐条定义形状：从左上、右上角沿对角线到中心，再从中心竖直延伸到底边。020逐格列出5×5高亮位置，与该几何定义一致。019标题误标X，fastprep/Databricks/databricks-write-l-matrix.md标题及童话正文写L，但021/022例图和解释均是上述Y形。本题以明确坐标和图格为准，不靠字母名称猜形状。\n\n同题对应不是仅凭名称：双方第一例的完整3×3输入、答案2、修改的两个格子及完整目标矩阵逐项一致；第二例答案8、把8个0改成1的解释及完整5×5目标矩阵也一致。fastprep第二例输入漏掉一行，本站使用OCR021/022的完整5行：漏行是第4行[0,0,2,1,1]。两原例答案2和8保持不变。快照没有保存可核对的原图片URL互链，不以不存在的链接作证。\n\n数值范围由同题fastprep明确给出5≤n≤99、n为奇数、值为0/1/2；OCR明确奇数和三值，但自身没有n数值上界。双方第一原例又都是n=3。本站完整采用fastprep奇数5..99，并显式纳入共同原例n=3，两者并集恰为奇数3..99；这不是声称OCR单独规定3..99，也不加入没有依据的n=1。本站输入为n和n行矩阵，输出最少改动格数。未执行上游代码。\n\n## 坐标定义与思路\n\n使用0-based坐标，令m=n//2。形状由三条线段并集构成：(t,t)、(t,n−1−t)，其中0≤t≤m；以及(t,m)，其中m≤t<n。中心属于并集中的一个格子，只统计一次。形状内所有格子必须是同一个值a；背景所有格子必须是另一个值b，且a≠b，a、b均从0/1/2选择。\n\n分别统计形状内、外三个值的频次inside和outside。若目标是(a,b)，可保留inside[a]+outside[b]格，其他格必须修改，代价为n²−inside[a]−outside[b]。枚举六个有序不同值对，取最小代价。\n\n## 正确性证明\n\n坐标谓词完整覆盖两条上半对角线和下半中心竖线；每格只遍历一次，中心不会重复计数，形状与背景构成全部格子的互斥划分。\n\n对固定的不同目标值a和b，每个原值已正确的格子无需修改，而每个原值不等于所属区域目标值的格子至少改一次。一次操作能直接把该格改为目标值，因此修改所有错误格恰好达到此下界。inside[a]+outside[b]正是可保留格数，所算代价为该目标的真实最小值。任意合法终态都必须对应六个有序不同值对之一，枚举六对即不重不漏覆盖所有终态类型，最小代价因而全局最优。\n\n## 复杂度与边界\n\n扫描n²格并枚举6种配色，时间O(n²)，频次统计仅O(1)额外空间（输入存储O(n²)）。完整n=99有9801格，形状格数为(3n−1)/2=148。所有格相同的矩阵应改148格，将形状改成另一种颜色，而不是错误地允许形状和背景同色后输出0。答案不超过n²，普通整数足够。\n\n## 独立验证\n\n163个唯一oracle先用三条坐标线段显式生成形状集合，再分别构造6个完整目标矩阵，逐格计算Hamming距离，不使用区域频次公式。额外穷举3×3的全部19683种三值矩阵，与原创参考函数核对并保存输入期望摘要；此为同进程检查，163个oracle和全部正式用例另执行真实子进程。\n\n正式边界包含完整99阶全0/1/2、全部六种完美配色、中心与底部错误、X形干扰、棋盘及随机矩阵。99阶数据仍全部由独立目标矩阵oracle验证，并对全同值、完美形状和单格变化附加闭式检查。两个错误程序分别允许两区同色、误把两条完整对角线当目标，均在全部正式数据正常退出后才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n=data[0]\n    middle=n//2\n    inside=[0]*3\n    outside=[0]*3\n    for i in range(n):\n        for j in range(n):\n            on_shape=(i<=middle and (j==i or j==n-1-i)) or (i>=middle and j==middle)\n            target=inside if on_shape else outside\n            target[data[1+i*n+j]]+=1\n    kept=max(inside[a]+outside[b] for a in range(3) for b in range(3) if a!=b)\n    return str(n*n-kept)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}

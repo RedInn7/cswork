@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误将左端点按开区间过期",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstdint>\n#include <deque>\nusing namespace std;\nuint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint64_t x=0;while(c>32&&c!=EOF){x=x*10+uint64_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Entry{uint64_t time;uint32_t size;};\nint main(){\n uint64_t limit=readNumber(),window=readNumber(),n=readNumber(),sum=0,total=0;\n deque<Entry> accepted;\n for(uint64_t i=0;i<n;i++){\n  uint64_t t=readNumber(),size=readNumber();\n  while(!accepted.empty() && t-accepted.front().time>=window){sum-=accepted.front().size;accepted.pop_front();}\n  if(sum+size<=limit){sum+=size;total+=size;if(size)accepted.push_back({t,uint32_t(size)});}\n }\n printf(\"%llu\\n\",static_cast<unsigned long long>(total));\n}\n"
+  },
+  {
+    "name": "错误使用32位加法判断窗口总量",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstdint>\n#include <deque>\nusing namespace std;\nuint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint64_t x=0;while(c>32&&c!=EOF){x=x*10+uint64_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Entry{uint64_t time;uint32_t size;};\nint main(){\n uint64_t limit=readNumber(),window=readNumber(),n=readNumber(),sum=0,total=0;\n deque<Entry> accepted;\n for(uint64_t i=0;i<n;i++){\n  uint64_t t=readNumber(),size=readNumber();\n  while(!accepted.empty() && t-accepted.front().time>window){sum-=accepted.front().size;accepted.pop_front();}\n  if(uint32_t(sum+size)<=limit){sum+=size;total+=size;if(size)accepted.push_back({t,uint32_t(size)});}\n }\n printf(\"%llu\\n\",static_cast<unsigned long long>(total));\n}\n"
+  },
+  {
+    "name": "错误将被拒日志也加入限额历史",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstdint>\n#include <deque>\nusing namespace std;\nuint64_t readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();uint64_t x=0;while(c>32&&c!=EOF){x=x*10+uint64_t(c-'0');c=getchar_unlocked();}return x;}\nstruct Entry{uint64_t time;uint32_t size;};\nint main(){\n uint64_t limit=readNumber(),window=readNumber(),n=readNumber(),sum=0,total=0;\n deque<Entry> accepted;\n for(uint64_t i=0;i<n;i++){\n  uint64_t t=readNumber(),size=readNumber();\n  while(!accepted.empty() && t-accepted.front().time>window){sum-=accepted.front().size;accepted.pop_front();}\n  if(sum+size<=limit)total+=size;sum+=size;if(size)accepted.push_back({t,uint32_t(size)});\n }\n printf(\"%llu\\n\",static_cast<unsigned long long>(total));\n}\n"
+  }
+]

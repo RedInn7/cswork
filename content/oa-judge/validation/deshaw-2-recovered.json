@@ -1,0 +1,207 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261024,
+  "problems": [
+    {
+      "id": "oa-the-d-e-shaw-group-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 45,
+      "referenceFormalCases": 48,
+      "referenceSha256": "7969b05ce036b98d1799f2d3fdd2aa48df92200fef384443b94b9bfe3f0c63f5",
+      "negativeControls": [
+        {
+          "name": "左右不对称地阻止越过等高同学",
+          "rejectedByCases": [
+            2,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            15,
+            16,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            38,
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            45,
+            47
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误用32位有符号整数保存总和",
+          "rejectedByCases": [
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            43,
+            44
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Enumerate all intervals and record longest eligible region for every contained maximum; large arrays use sorted batched activation DSU, not nearest-greater stack.",
+      "exhaustiveSmallDomain": {
+        "nMin": 1,
+        "nMax": 7,
+        "values": [
+          1,
+          2,
+          3
+        ],
+        "cases": 3279,
+        "inputExpectedDigest": "0df7ccfd0cfb01c7c67451f66bf7e3857b65631a358e7f3ddc0c8d6180c25155",
+        "referenceExecution": "in-process own authored reference plus independent interval and DSU oracles;163 separate subprocess checks"
+      },
+      "largeBoundaries": [
+        {
+          "name": "全等最小值",
+          "n": 100000,
+          "expected": "10000000000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": true,
+          "localSeconds": 0.04894
+        },
+        {
+          "name": "全等最大值",
+          "n": 100000,
+          "expected": "10000000000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": true,
+          "localSeconds": 0.05107
+        },
+        {
+          "name": "严格递增",
+          "n": 100000,
+          "expected": "5000050000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": true,
+          "localSeconds": 0.04762
+        },
+        {
+          "name": "严格递减",
+          "n": 100000,
+          "expected": "5000050000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": true,
+          "localSeconds": 0.05039
+        },
+        {
+          "name": "极值交错",
+          "n": 100000,
+          "expected": "5000050000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.0547
+        },
+        {
+          "name": "反向极值交错",
+          "n": 100000,
+          "expected": "5000050000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.0545
+        },
+        {
+          "name": "中间唯一最高",
+          "n": 100000,
+          "expected": "5000000001",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.04467
+        },
+        {
+          "name": "两端最高",
+          "n": 100000,
+          "expected": "9999800004",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.04593
+        },
+        {
+          "name": "等高平台",
+          "n": 100000,
+          "expected": "1450000000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.04984
+        },
+        {
+          "name": "双向阶梯",
+          "n": 100000,
+          "expected": "2500150000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.0492
+        },
+        {
+          "name": "反向双向阶梯",
+          "n": 100000,
+          "expected": "5000100000",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.06023
+        },
+        {
+          "name": "稀疏重复最大值",
+          "n": 100000,
+          "expected": "14970112",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.04912
+        },
+        {
+          "name": "完整范围固定随机",
+          "n": 100000,
+          "expected": "2160128",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.05885
+        },
+        {
+          "name": "小值大量重复随机",
+          "n": 100000,
+          "expected": "1404307313",
+          "independentOracle": "sort-and-batch-activate DSU",
+          "closedFormChecked": false,
+          "localSeconds": 0.05039
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 10.008
+    }
+  ]
+}

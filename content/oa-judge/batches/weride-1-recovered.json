@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-weride-1",
+      "sourceContentHash": "c03717e5ddb978388ce85e7ba31e60cea385b7381e4aa3fbd65ba3fd4b94ea4d",
+      "packageChecksum": "eb2b79cbd7c0fcda34433c1d17a4cdf079ab403cc1c231b59635b1cc5a930c47",
+      "editorial": "## 原始来源、完整范围与协议适配\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的OA LIST/WeRide_OA/001、005、006给出getFinalPrice：操作1 x v把第x件商品价格直接赋值为v，可以降低价格；操作2 v r把所有小于v的价格提高到v，相当于对每个价格取max(price,v)。操作按输入顺序执行。\n\n005完整约束：1≤n,q≤200000，0≤price[i],v≤1000000000，1≤x≤n。不能借同义题的本站100000/正数界缩小范围。每个查询始终三列；001把type2写为2 v v，005明确写2 v r，006的说明也出现2 11 1。因此第二列是阈值，第三列不参与所定义的全局操作，不能额外要求第三列等于第二列。原函数为int queries[q][3]且没有为r列提供范围，本站明确按Java int解释这个占位字段为−2147483648..2147483647并忽略，不冒称原题列出了此十进制约束。\n\n本站标准输入明确整理为：n、一行n个价格、q、q行三整数查询。保留原数组和查询参数，省略OCR排版中固定列数3等元数据，不将破损STDIN表格当成新的查询。索引1-based。\n\n公开例1保留001的[7,5,4]及三查询，输出[8,9,8]。公开例2保留006 Sample0的五查询：第一步把第三项3变4，第二步把末项5变1，第三步全局下限3后应为[3,3,4,4,3]；随后单点1赋1、单点2赋2，最终[1,2,4,4,3]。原输出第三项写3错误，原中间步骤也漏更新/错写，本站依据明确操作纠正，不修改输入来迎合错例。公开例3采用006 Sample1实际STDIN的2 8 8、2 11 11，输出四个11不变；说明另写2 11 1与STDIN不一致，但第三列无效，两种均应得到四个11，绝不把末项保留1。另用隐藏例覆盖这个不同占位。\n\n## 思路\n\n从后往前扫描查询，维护目前已遇到的所有全局提高阈值的最大值floor。对每个商品，只处理逆序中第一次遇到的单点赋值，它就是正序最后一次单点赋值，最终价格为max(该赋值,floor)。更早的单点赋值忽略。全部扫描结束后，从未被赋值的商品取max(初始价格,floor)。\n\n## 正确性证明\n\n对一个固定商品，如果有单点赋值，正序最后一次赋值会覆盖该商品此前所有状态，因此此前初始价格、其它单点和全局操作都不再影响它。该最后赋值之后只剩全局提高；依次与多个阈值取max，等于与其中最大阈值取max。逆序遇到该最后赋值时，floor恰好包含它之后的全局阈值，得到正确最终值；标记完成后忽略更早操作也正确。\n\n若商品从未单点赋值，则它的初始值只经历全局取max。逆序扫描结束的floor包含全部全局阈值，与初始值取max即最终结果。所有商品分别满足上述两种情况，故输出数组正确。初始floor=0合法，因为价格和有效阈值均非负；第三占位字段完全不参与floor。\n\n## 复杂度\n\n参考时间O(n+q)，空间O(n+q)用于价格、完成标记和原查询数组，不递归。所有有效价格始终位于0..1000000000，32位可表示；解析第三列用64位中间数，避免解析INT_MIN绝对值时溢出，再存原int字段。完整n/q范围下远低于256MiB；题包3秒、输出64MiB以容纳20万项结果。\n\n## 独立验证\n\n小oracle按正序逐个执行：单点直接改数组，type2直接扫描全部价格取max。不复用逆序算法。163唯一小例真实执行参考，另穷举n=1..2、初始值0..2、最多3个查询的正序状态，并与独立懒标记树对照。\n\n大域oracle仍按正序，使用仅含全局下限懒标记的二叉树：全局提高只更新根标记；单点赋值前将沿途祖先标记下推，然后覆盖该叶，最后向下传播取所有叶值。这与参考逆序最后赋值/后缀最大值实现不同。满n=q=200000覆盖全局提高、每点赋值、反复覆盖同点、全局1e9后末尾赋0、无单点、随机全部范围及INT_MIN/INT_MAX占位；结构化数据另做闭式核对。三个负控分别误用占位阈值、取较早单点赋值、将过去全局下限错误套到后来低价，均在全部正式例上正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nlong long readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();bool negative=c=='-';if(negative)c=getchar_unlocked();long long x=0;while(c>32&&c!=EOF){x=x*10+c-'0';c=getchar_unlocked();}return negative?-x:x;}\nstruct Query{int type,x,value;};\nint main(){int n=readNumber();vector<int>a(n);for(int &x:a)x=readNumber();int q=readNumber();vector<Query>queries(q);for(auto &x:queries){x.type=readNumber();x.x=readNumber();x.value=readNumber();}\nvector<unsigned char>done(n,0);int floor=0;\nfor(int i=q-1;i>=0;i--){auto x=queries[i];if(x.type==2)floor=max(floor,x.x);else if(!done[x.x-1]){a[x.x-1]=max(x.value,floor);done[x.x-1]=1;}}\nfor(int i=0;i<n;i++){if(!done[i])a[i]=max(a[i],floor);printf(\"%d%c\",a[i],i==n-1?'\\n':' ');}}\n"
+        }
+      ]
+    }
+  ]
+}

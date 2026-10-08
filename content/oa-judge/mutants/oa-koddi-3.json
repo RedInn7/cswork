@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许形状和背景同色",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n=data[0]\n    middle=n//2\n    inside=[0]*3\n    outside=[0]*3\n    for i in range(n):\n        for j in range(n):\n            on_shape=(i<=middle and (j==i or j==n-1-i)) or (i>=middle and j==middle)\n            target=inside if on_shape else outside\n            target[data[1+i*n+j]]+=1\n    kept=max(inside[a]+outside[b] for a in range(3) for b in range(3) )\n    return str(n*n-kept)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "按字母X误用两条完整对角线",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n=data[0]\n    middle=n//2\n    inside=[0]*3\n    outside=[0]*3\n    for i in range(n):\n        for j in range(n):\n            on_shape=(j==i or j==n-1-i)\n            target=inside if on_shape else outside\n            target[data[1+i*n+j]]+=1\n    kept=max(inside[a]+outside[b] for a in range(3) for b in range(3) if a!=b)\n    return str(n*n-kept)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

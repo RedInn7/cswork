@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "problems": [
+    {
+      "id": "oa-pure-storage-8",
+      "oracleCases": 1,
+      "uniqueOracleInputs": 1,
+      "oracleCoverage": {
+        "mode": "exhaustive",
+        "inputs": [
+          ""
+        ]
+      },
+      "publicCases": 1,
+      "hiddenCases": 0,
+      "referenceFormalCases": 1,
+      "referenceSha256": "2ef3079949841c52b513881a1c9bdb223874fcebbfc17b1a6114c021da8d8353",
+      "negativeControls": [
+        {
+          "name": "错误声称算法正确",
+          "rejectedByCases": [
+            0
+          ],
+          "normalExitVerified": true,
+          "authorReason": "Algorithm has a concrete false negative",
+          "localSemanticProof": "explicit trace, not reference-output comparison"
+        },
+        {
+          "name": "输出实际能够命中的target3而非反例",
+          "rejectedByCases": [
+            0
+          ],
+          "normalExitVerified": true,
+          "authorReason": "Target3 is correctly returned at index2; this is not a counterexample",
+          "localSemanticProof": "explicit trace, not reference-output comparison"
+        }
+      ],
+      "localReferenceSubprocess": true,
+      "normalExitChecked": true,
+      "oracleMethod": "Exhaustive singleton input domain; witness proven by explicit trace: (left,right,middle)=(0,2,1), then left2,right2, final element3 differs from target2 which exists at index1.",
+      "checkerValidation": "Separate independently authored semantic checker tests are required; local author traces do not substitute for them.",
+      "localValidationOnly": true,
+      "elapsedSeconds": 0.491
+    }
+  ]
+}

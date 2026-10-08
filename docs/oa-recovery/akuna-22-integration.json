@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "batch": "akuna-22-recovered",
+  "problemId": "oa-akuna-capital-22",
+  "packageChecksum": "83a2884d58693b976c95cf9cab495b43cef4f3d2a51ac9163041d9eb8bc82d96",
+  "referenceSha256": "92655e7d114110ae96944a4a80a78f363903893207626c14c7595db21ae7e1c2",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": { "referenceRuns": 211, "formal": 48, "oracle": 163, "mutantsKilled": 4 },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 48,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 231,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "coverage": { "total": 1634, "sandboxVerified": 1211, "remaining": 423 },
+  "scopeNote": "Akuna22 is a separately addressable duplicate source of Akuna5, not a distinct new algorithm. Corrected total-cost semantics and full bounds are explicitly attributed to matching original OCR.",
+  "deployment": "Not deployed. Local verified coverage must not be presented as production coverage; merge requires green exact-head remote checks."
+}

@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261107,
+  "problems": [
+    {
+      "id": "oa-akuna-capital-4",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 42,
+      "referenceFormalCases": 45,
+      "referenceSha256": "208ad2c25392ac4e5ec0ab97856a9414a5f70ba3e9d7bac3b3b5c31da1a241e9",
+      "negativeControls": [
+        {
+          "name": "错误把最多k臂变成最多k节点",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            7,
+            25,
+            37
+          ]
+        },
+        {
+          "name": "错误强制选择负权邻居",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            4,
+            10,
+            15,
+            20,
+            22,
+            27,
+            28,
+            33
+          ]
+        },
+        {
+          "name": "错误将无向边当成单向边",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            1,
+            2,
+            15,
+            20,
+            22,
+            39,
+            44
+          ]
+        }
+      ],
+      "oracleMethod": "Enumerate every center and leaf subset; large graph oracle processes globally descending weight buckets and distributes each vertex contribution across its edges, without per-adjacency sorting.",
+      "exhaustiveSmallDomain": {
+        "cases": 26298,
+        "nMin": 2,
+        "nMax": 4,
+        "weights": [
+          -1,
+          0,
+          1
+        ],
+        "k": "0..n",
+        "allNonemptySimpleGraphs": true
+      },
+      "largeBoundaries": [
+        {
+          "name": "满nmk全正星加叶间边",
+          "n": 100000,
+          "m": 100000,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 100000000,
+          "localSeconds": 0.08159
+        },
+        {
+          "name": "满nmk全负仍须非空",
+          "n": 100000,
+          "m": 100000,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": -1000,
+          "localSeconds": 0.07167
+        },
+        {
+          "name": "满nm且k0",
+          "n": 100000,
+          "m": 100000,
+          "k": 0,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 1000,
+          "localSeconds": 0.07198
+        },
+        {
+          "name": "满nm且k1",
+          "n": 100000,
+          "m": 100000,
+          "k": 1,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 2000,
+          "localSeconds": 0.07608
+        },
+        {
+          "name": "满n负中心最优",
+          "n": 100000,
+          "m": 99999,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 99998000,
+          "localSeconds": 0.07224
+        },
+        {
+          "name": "满nm全正环",
+          "n": 100000,
+          "m": 100000,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 3000,
+          "localSeconds": 0.08448
+        },
+        {
+          "name": "满nm全零环",
+          "n": 100000,
+          "m": 100000,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 0,
+          "localSeconds": 0.07262
+        },
+        {
+          "name": "满nm交替正负环",
+          "n": 100000,
+          "m": 100000,
+          "k": 2,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 1000,
+          "localSeconds": 0.08403
+        },
+        {
+          "name": "满n不连通匹配",
+          "n": 100000,
+          "m": 50000,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 2000,
+          "localSeconds": 0.07072
+        },
+        {
+          "name": "满nm稠密团与独立分量",
+          "n": 100000,
+          "m": 100000,
+          "k": 100000,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": true,
+          "expected": 447000,
+          "localSeconds": 0.08096
+        },
+        {
+          "name": "满nm固定随机图",
+          "n": 100000,
+          "m": 100000,
+          "k": 37575,
+          "oracle": "descending node-weight buckets distribute contributions to centers",
+          "closedFormChecked": false,
+          "expected": 5670,
+          "localSeconds": 0.09324
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 10.84
+    }
+  ]
+}

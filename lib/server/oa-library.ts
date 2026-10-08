@@ -56,6 +56,18 @@ const schema = z.object({
     .max(20000),
 });
 type Item = z.infer<typeof schema>['items'][number];
+// These source-bound stages are included in #17's four-part exercise.
+// A related exercise is not evidence that the source stage is independently judged.
+const stripeStageHashes: Readonly<Record<string, string>> = {
+  'oa-stripe-14':
+    '855dfabe02ab9c9b98fbfb73cb7b58c86263ea916321ef358c32b5d619b88d29',
+  'oa-stripe-15':
+    '95cc4e5aa33812323df61f1f3cda5a388c74879ba14b2e47ced3675b0fe9584e',
+  'oa-stripe-16':
+    '1894d8ab716b9b5bd294c0af79cd87646297de9be5c6ab733a070ec129cb8d79',
+};
+const stripeCombinedHash =
+  '8edcfc526cb4ae5bdd1fd560c5f28fd90879d1108530ddb7f2b1e18a08d6f585';
 function summary(item: Item, ready: ReadonlySet<string> = new Set()) {
   // Explicit projection: titles/languages only, never statements or reference code.
   return {
@@ -158,10 +170,24 @@ export function createOaLibrary(
     },
     detail(id: string, ready: ReadonlySet<string> = new Set()) {
       const item = find(id);
+      const combined = items.get('oa-stripe-17');
+      const relatedPractice =
+        !ready.has(id) &&
+        stripeStageHashes[id] === item.contentHash &&
+        combined?.contentHash === stripeCombinedHash &&
+        ready.has(combined.id)
+          ? {
+              problemId: combined.id,
+              title: 'Payment Intent 四阶段综合练习',
+              description:
+                '本阶段包含在四阶段综合练习中；本阶段未单独评测。综合练习使用带时间戳的命令，需实现第 1–4 阶段的全部规则，请按练习页的输入格式提交。',
+            }
+          : undefined;
       return {
         ...summary(item, ready),
         statement: item.statement,
         contentHash: item.contentHash,
+        ...(relatedPractice ? { relatedPractice } : {}),
       };
     },
     solution(id: string) {

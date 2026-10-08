@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-fortinet-4",
+  "batchId": "fortinet-4-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 37,
+    "publicCases": 3,
+    "hiddenCases": 34,
+    "uniqueOracleCases": 166,
+    "actualLocalNativeReferenceRuns": 203,
+    "actualLocalNativeMutantRuns": 111,
+    "allProcessesExitedNormallyWithEmptyStderr": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告实际执行本机 C++ 原生程序；Linux GoJudge 由主 agent 单独执行，不将其计入本报告本机运行数。"
+  },
+  "bindings": {
+    "packageChecksum": "d87634f42f6e2c365d548106dea57607f2f29e3fe8811b6a8ae8dbc469e93239",
+    "packageChecksumMethod": "ojImportSchema.parse 后 JSON.stringify 的 SHA256，实测与冻结值及 batch 一致",
+    "packageFileSha256": "45bd27d32c48ed31ae3887a7c9b4d848866e9a85fbf5a2406a0319742efc6d11",
+    "oracleFileSha256": "06d9670b431db3f6370fc3e19a7a50d24321c2561c067ecb08126e12756f19ce",
+    "referenceSha256": "393902d9f6e0210d0e3718c40c9e26e03b2c312ec384b472b8af5d3dfc74e275",
+    "editorialFileSha256": "845a6610e18e02fecada8e21e9715570661021dd9e9c93dfc726ef05b58189e4",
+    "mutantFileSha256": "b35519a987eefa6ba78ac794819718687c707ceddd69aa034c47a71676626166",
+    "batchFileSha256": "9ab750a6fc7412619428b416e63a2ee96842a3b8903bf0c5d7391f245e7e6a02",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Fortinet/fortinet-get-required-sweeps.md",
+    "gitBlobSha": "c1fea683b694e17650a77aed7289df4fabe8084d",
+    "sha256": "85d322d8e6823cb91966f70a4fec3143da67f3f004f7f16749ff881c5d9d2e9c",
+    "originalSample": "[1,2,4,3] -> [2,3,3,1]，已实际逐轮交换重算并保留为公开例",
+    "semantics": "每次 ping 累计原位置位图独立求排序轮数，包含最终无交换轮。原例第二项 3 排除保存上次排序结果（该解释得 2），末项 1 确认停止轮计入；这些样例消歧已公开披露。左到右立即交换，一个 1 一轮可以移动多格。",
+    "domain": "原文没有数值 n 上界。输入使用现有每例 32MiB 传输预算，1..n 排列，不增设人造较小上限。n=0 空排列/空行答案被明确披露为本站数学扩展。原文不可访问的作者本地图片未作为证据。"
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "argument": "零之间相对次序不变；一个零一轮最多左移一次，且只要前方有 1，顺序扫描必使它恰跨过一个 1。所以各零完成所需交换轮数等于其初始前方 1 数；最大值由最右零取得，再加一次无交换终止轮。累计 k 个 1 中最右零右侧的 n-last 个不构成阻碍，得到 k-(n-last)+1。全 1 时仍为 1。指针总下降至多 n 次，O(n) 时间/O(n) 字节。",
+    "overflowAndOutput": "32MiB 完整排列文本所允许的 n 远低于 INT_MAX，位置与答案可用 int。第 k<n 项不超过 k+1，末项 1，答案数字总长度不超过输入排列数字总长度；64MiB 输出配置足够。"
+  },
+  "independentExpectedValidation": {
+    "all203CasesRecomputed": true,
+    "smallLiteralSweepCases": 197,
+    "smallMethod": "每次复制累计 bitmap，对所有相邻位置从左到右真实交换 10，完整无交换轮后终止；完全不调用最右零公式。",
+    "largeReverseOfflineCases": 6,
+    "largeMethod": "逆序处理 ping，将已撤销 ping 的位置视作尚未激活集合，取新增位置的前缀最大值；由这个独立构造得到每个正向时刻的最右未激活位置，逐项核对全部 expected。没有复用参考 seen+左移指针。",
+    "allPermutationsValidated": "逐项检查整数词法、长度、1..n 范围及唯一性；逐例核输入字节预算。",
+    "preReviewExhaustiveEvidence": {
+      "allBinarySnapshotsLengths0Through12": 8191,
+      "allPermutationsLengths1Through7": 5913,
+      "result": "字面 sweep 与独立公式全部一致，预审实际运行，不是作者测试统计。"
+    },
+    "mediumCases": "5 个 n=100000：逆序、升序、随机、交错、最后位置延迟。每项答案均核验。",
+    "capacityCase": {
+      "formalIndex": 36,
+      "n": 4333191,
+      "inputBytes": 33554432,
+      "expectedOutputBytes": 33554424,
+      "inputSha256": "80957cbd17dbad166177b028dc97b77ca0e1243528637668b2340d2695aaae7f",
+      "outputSha256": "5abc50edea1db6ec803bc11345614082bc26dcfad0f13153b31a1dd7f7be84c5",
+      "validation": "逐项核实排列为 1..4333191；全部 4333191 个答案逐项核为 [2,3,...,n,1]，另通过逆序独立 oracle，不仅比较首尾。实际参考和三负控均运行此例。",
+      "nextNCanonicalInputBytes": 33554440,
+      "capacityDerivation": "canonical 字节数为 digits(n)+1+sum(digits(i),i=1..n)+n；n+1 多 8 字节，删末尾换行仍超预算。该容量是传输推导，不冒充原题约束。"
+    },
+    "totalFormalInputPlusExpectedBytes": 72609800,
+    "within128MiBSnapshotBudget": true
+  },
+  "negativeControls": [
+    { "name": "漏计停止轮", "normalRuns": 37, "killedByFormalCases": 36 },
+    {
+      "name": "最右零位置代替前方1数",
+      "normalRuns": 37,
+      "killedByFormalCases": 35
+    },
+    { "name": "保留上次排序状态", "normalRuns": 37, "killedByFormalCases": 31 }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/fortinet4-review.5jfqLr/review.py",
+    "scriptSha256": "429ec8304b36398e8c7ca7bffecfade79e6d0d4f22b5149aea878d205c141e14",
+    "localRunSeconds": 16.68359923362732,
+    "memoryDiscipline": "顺序处理/执行各例，巨例用紧凑 uint32 数组和 bytearray，避免巨型 Python 整数列表；临时脚本不作为正式运行依赖。",
+    "projectMutation": "只新增本独立审核报告，未修改冻结产物，未提交。"
+  }
+}
