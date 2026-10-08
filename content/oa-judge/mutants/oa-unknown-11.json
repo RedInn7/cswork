@@ -1,0 +1,10 @@
+[
+  {
+    "name": "先插入当前元素导致复用自身索引",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, target = data[:2]\n    numbers = data[2:]\n    seen = {}\n    for j, value in enumerate(numbers):\n        seen[value] = j\n        complement = target - value\n        if complement in seen:\n            return f'{seen[complement]} {j}'\n        seen[value] = j\n    raise ValueError('input must have one distinct-index solution')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  },
+  {
+    "name": "返回两个数值而不是索引",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, target = data[:2]\n    numbers = data[2:]\n    seen = {}\n    for j, value in enumerate(numbers):\n        complement = target - value\n        if complement in seen:\n            return f'{complement} {value}'\n        seen[value] = j\n    raise ValueError('input must have one distinct-index solution')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.buffer.read()))\n"
+  }
+]
