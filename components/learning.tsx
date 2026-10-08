@@ -303,7 +303,7 @@ export function Heading({
   description,
   action,
 }: {
-  label: string;
+  label?: string;
   title: string;
   description?: string;
   action?: React.ReactNode;
@@ -311,7 +311,7 @@ export function Heading({
   return (
     <div className="page-heading">
       <div>
-        <p className="eyebrow">{label}</p>
+        {label && <p className="eyebrow">{label}</p>}
         <h1>{title}</h1>
         {description && <p className="muted">{description}</p>}
       </div>

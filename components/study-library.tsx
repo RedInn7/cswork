@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { rememberProblemSequence } from '@/lib/problem-sequence';
 import {
   ArrowLeft,
   ArrowRight,
@@ -555,7 +556,6 @@ export function StudyLibrary({
     <section className="study-library" lang={english ? 'en' : 'zh'}>
       <header className="study-library-heading">
         <div>
-          <span className="study-kicker">STEP BY STEP</span>
           <h2>{t('灵神题单精选', 'Ling’s Curated 500')}</h2>
           <p>
             {t(
@@ -835,9 +835,14 @@ export function StudyLibrary({
                 }
                 key={item.id}
                 onClick={() => {
-                  if (canJudge(item))
+                  if (canJudge(item)) {
+                    rememberProblemSequence(
+                      data.items.flatMap((row) =>
+                        canJudge(row) ? [row.judgeProblemId!] : [],
+                      ),
+                    );
                     navigate('problem', { problem: item.judgeProblemId! });
-                  else setSelected(item.id);
+                  } else setSelected(item.id);
                 }}
               >
                 <span

@@ -226,7 +226,6 @@ function TicketList({
   return (
     <>
       <Heading
-        label="SUPPORT THAT STAYS WITH YOU"
         title={
           boot.person?.role === 'teacher'
             ? '学员的问题，集中处理。'
@@ -376,7 +375,6 @@ function TicketDetail({
         <span>#{id.slice(0, 8)}</span>
       </div>
       <Heading
-        label="PRIVATE CONVERSATION"
         title={ticket.title}
         action={
           <Button
@@ -709,7 +707,6 @@ export function ReviewsView({
   return (
     <>
       <Heading
-        label="BUILD. SUBMIT. IMPROVE."
         title={teacher ? '评审每一次进步。' : '让你的代码，得到反馈。'}
         description="提交工程练习或项目 PR，保留每轮修改和老师的反馈。"
         action={
@@ -1235,7 +1232,6 @@ export function ReleasesView({
   return (
     <>
       <Heading
-        label="KEEP LEARNING, KEEP CURRENT"
         title="课程，也在不断进步。"
         description="查看每次修订的具体内容，重要更新会通过站内消息提醒。"
         action={

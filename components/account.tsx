@@ -703,7 +703,7 @@ export function AccountView({
   const hasPassword = accounts.some((a) => a.providerId === 'credential');
   return (
     <>
-      <Heading label="YOUR LEARNING IDENTITY" title="你的账号与课程权益。" />
+      <Heading title="你的账号与课程权益。" />
       <p className="muted mb-5 text-sm">
         <Link href="/privacy" className="underline underline-offset-4">
           隐私说明与资料删除请求

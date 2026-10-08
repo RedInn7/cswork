@@ -47,7 +47,6 @@ export function TeacherView({
   return (
     <>
       <Heading
-        label="A CLEARER DAY OF TEACHING"
         title="今天，先解决这些。"
         description="课程、学员和需要回复的问题，都在同一个工作台。"
       />
