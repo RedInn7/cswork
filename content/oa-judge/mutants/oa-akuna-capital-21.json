@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误允许连续跳过两部电影",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    take=0\n    skip=-10**30\n    for rating in values[1:]:\n        take,skip=max(take,skip)+rating,max(take,skip)\n    return str(max(take,skip))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误强制选择最后一部电影",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    take=0\n    skip=-10**30\n    for rating in values[1:]:\n        take,skip=max(take,skip)+rating,take\n    return str(take)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
