@@ -1,0 +1,173 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-infosys-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 40,
+      "referenceFormalCases": 43,
+      "negativeControls": [
+        {
+          "name": "只允许首卡移到末尾",
+          "rejectedByCases": [
+            0,
+            2,
+            4,
+            5,
+            7,
+            8,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            36,
+            37,
+            38,
+            39,
+            42
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "逆向旋转漏掉目标卡费用",
+          "rejectedByCases": [
+            0,
+            2,
+            4,
+            5,
+            6,
+            7,
+            8,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            36,
+            37,
+            38,
+            39,
+            42
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "5a038b26c58fc4ca0989eb918f3e3642d601b2381d20395ec1b1b34037870682",
+      "oracleMethod": "Dijkstra on literal linear sequence states with both one-step rotations and a free legal first-card extraction; independent of Fenwick and greedy directional sums.",
+      "largeBoundaries": [
+        {
+          "name": "完整升序",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "0",
+          "expectedOutput": "0",
+          "localSeconds": 0.1691
+        },
+        {
+          "name": "完整逆序最终取模",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "4999950000",
+          "expectedOutput": "999949972",
+          "localSeconds": 0.1754
+        },
+        {
+          "name": "完整升序环切点1",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "1",
+          "expectedOutput": "1",
+          "localSeconds": 0.1583
+        },
+        {
+          "name": "完整升序环切点50000",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "1250025000",
+          "expectedOutput": "250024993",
+          "localSeconds": 0.1719
+        },
+        {
+          "name": "完整升序环切点70710",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "2499987405",
+          "expectedOutput": "499987391",
+          "localSeconds": 0.1651
+        },
+        {
+          "name": "完整升序环切点70711",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "2499991884",
+          "expectedOutput": "499991870",
+          "localSeconds": 0.1666
+        },
+        {
+          "name": "完整升序环切点99999",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "100000",
+          "expectedOutput": "100000",
+          "localSeconds": 0.1607
+        },
+        {
+          "name": "完整乱序独立分块对照",
+          "n": 100000,
+          "inputBytes": 588902,
+          "exactUnmoddedCost": "83353707450514",
+          "expectedOutput": "706867043",
+          "localSeconds": 0.1929
+        }
+      ],
+      "largeRandomOracle": "Independent square-root blocks with list removal and circular block traversal; checked against all 163 operation-Dijkstra cases.",
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 12.74
+    }
+  ]
+}
