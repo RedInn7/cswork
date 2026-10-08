@@ -28,7 +28,7 @@
     },
     {
       "id": "oa-capital-one-18",
-      "decision": "Original linked images recovered; full-domain design and independent validation still required",
+      "decision": "Independent image, rule and full-domain resource pre-review passed; implementation in progress, not yet judge-verified",
       "source": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
       "sourcePage": "https://www.fastprep.io/problems/capitalone-rotate-matrix-over-diagonals",
       "images": [
@@ -46,7 +46,10 @@
       "findings": [
         "Both image URLs were actual Problem source links on the current original page. They are supplemental downloads, not fixed-upstream Git assets.",
         "Image0 explicitly states clockwise rotation of the four diagonal-separated segments with both diagonals unchanged, and shows a5x5 before-rotation matrix marking both diagonals. Image1 repeats the rule. Neither image supplies numeric constraints or an after-rotation diagram.",
-        "Fixed sample is consistent with off-diagonal coordinate rotation(r,c)->(c,n-1-r). Still requires independent rule/domain review and resource-bound design before implementation."
+        "Both reviewers independently reproduced the complete fixed sample using off-diagonal rotation(r,c)->(c,n-1-r). The diagonal union is closed under rotation, as is its complement. Every non-diagonal orbit has four elements; top triangle r<c<n-1-r selects exactly one per orbit.",
+        "Even n is supported; n2 has only diagonal cells and remains unchanged. Nonnegative signed32 turns and signed32 matrix elements are disclosed type adaptations; negative turns and empty matrices have no defined source behavior and are not silently added.",
+        "For n turns followed by one-digit entries, n4095 EOF minimum input33538056bytes and LF33538057 fit32MiB; n4096 minimum33554438 does not. This is a transport-derived bound, not an original constraint. Single int32 array requires67076100bytes; do not allocate a second full matrix or full output string.",
+        "Canonical output is a permutation of identical numeric tokens with n² separators, so its bytes are bounded by input minus header up to the final-newline difference. Test near-budget output and parse INT_MIN using wider intermediate arithmetic."
       ]
     },
     {
