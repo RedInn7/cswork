@@ -1,0 +1,722 @@
+[
+  {
+    "input": "5\nregister david david123\nregister adam 1Adam1\nlogin david david123\nlogin adam 1adam1\nlogout david\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "8\nregister Bob pw1\nregister Bob pw2\nlogin Bob pw2\nlogin Bob pw1\nlogin Bob pw1\nlogout bob\nlogout Bob\nlogout Bob\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "5\nlogin ghost pw\nlogout ghost\nregister ghost pw\nlogout ghost\nlogin ghost pw\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "5\nregister a p\nregister a q\nlogin a q\nlogin a p\nlogout a\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "6\nregister u x\nlogin u x\nlogin u wrong\nlogin u x\nlogout u\nlogout u\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "3\nregister user05 qwerty\nlogin user05 qwerty\nlogout user05\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "6\nregister Ab Cd\nlogin aB Cd\nlogin Ab cD\nlogin Ab Cd\nlogout ab\nlogout Ab\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "8\nregister a 1\nregister b 1\nlogin a 1\nlogout b\nlogin b 1\nlogout a\nlogout a\nlogout b\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nLogged In Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "6\nregister z z\nlogout z\nlogin z z\nlogout z\nlogin z z\nlogout z\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "1\nlogout x\n",
+    "expectedOutput": "Logout Unsuccessful\n"
+  },
+  {
+    "input": "1\nlogin x y\n",
+    "expectedOutput": "Login Unsuccessful\n"
+  },
+  {
+    "input": "1\nregister x y\n",
+    "expectedOutput": "Registered Successfully\n"
+  },
+  {
+    "input": "5\nregister aaaaaaaaaa ZZZZZZZZZZ\nlogin aaaaaaaaaa ZZZZZZZZZz\nlogin aaaaaaaaaa ZZZZZZZZZZ\nregister aaaaaaaaaa b\nlogout aaaaaaaaaa\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\n"
+  },
+  {
+    "input": "7\nregister 0 0\nregister 00 0\nlogin 0 00\nlogin 00 0\nlogin 0 0\nlogout 00\nlogout 0\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nLogin Unsuccessful\nLogged In Successfully\nLogged In Successfully\nLogged Out Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "3\nlogout t\nlogin 5 i2\nlogin 5 i2\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "11\nlogin 6 kt\nregister 6 kt\nregister DcC kt\nlogout DcC\nregister DcC r3\nlogin 6 r3\nregister iPz r3\nregister 6 YK\nregister iPz r3\nregister z r3\nlogin 6 kt\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nRegistered Successfully\nLogged In Successfully\n"
+  },
+  {
+    "input": "2\nlogout yN\nregister 6k9 Hn\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "11\nlogin L 1n\nlogout L\nlogin Lgl 1n\nregister Lgl 1n\nregister L 1n\nregister L 1n\nregister mnW 1n\nlogin mnW 1n\nlogout mnW\nregister L 1n\nlogout Lgl\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nRegistered Successfully\nUsername already exists\nRegistered Successfully\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "4\nlogin Ib u\nlogout x7\nregister x7 u\nlogin Qb1 u\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "20\nlogin sWS Bt\nlogin sWS Bt\nregister sWS Bt\nlogout sWS\nlogin sWS u\nregister sWS Bt\nlogin sWS G\nregister sWS u\nregister sWS G\nlogin sWS u\nlogin sWS G\nlogout sWS\nlogout sWS\nlogout sWS\nlogin sWS Bt\nlogout sWS\nlogout sWS\nlogout sWS\nlogout sWS\nlogout sWS\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "24\nregister s Sl\nlogin ho Sl\nlogout ho\nregister s Sl\nlogin s Sl\nregister s Sl\nregister ho Sl\nregister s Sl\nlogin s Sl\nlogout ho\nlogout s\nlogin ho Sl\nregister ho Sl\nlogin ho Sl\nlogout ho\nregister ho Sl\nlogin s Sl\nlogout ho\nregister s Sl\nregister s Sl\nlogin ho Sl\nlogin s Sl\nlogout ho\nlogout s\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nUsername already exists\nRegistered Successfully\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nUsername already exists\nLogged In Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "18\nlogout Zr\nlogin e g\nlogout e\nlogout Zr\nlogin e a\nregister e a\nlogout e\nregister e g\nlogout e\nregister 0 a\nlogout 0\nlogout Zr\nlogin Zr a\nregister 0 g\nlogin e a\nlogout e\nlogout Zr\nregister 0 g\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "19\nlogin 24T j\nregister 24T j\nregister 6 j\nlogin Rgf 6\nregister Rgf 6\nregister 6 j\nlogout 24T\nregister 24T 6\nregister 6 6\nlogin 6 j\nlogout 6\nregister Rgf j\nregister 24T j\nregister Rgf j\nlogin 24T 6\nlogin 24T 6\nlogin 24T j\nlogin 6 j\nlogin 6 j\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogged In Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "7\nlogin DW6 B\nlogout DW6\nregister DW6 j\nlogout DW6\nlogin DW6 Zq\nregister DW6 Zq\nregister DW6 B\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "18\nlogin d P\nregister d P\nregister d P\nlogin d P\nlogout d\nlogin d P\nlogout d\nregister d C\nlogin d P\nlogout d\nregister d C\nlogin d C\nregister d P\nlogout d\nregister d C\nlogin d P\nregister d P\nregister d P\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "19\nlogout Z\nregister Z xm\nlogin 4CC xm\nregister Z xm\nlogin PY xm\nregister E7O xm\nregister E7O xm\nregister 4CC xm\nlogin Z xm\nlogin 4CC xm\nregister Z xm\nregister E7O xm\nregister Z xm\nlogout 4CC\nlogout Z\nlogout Z\nregister E7O xm\nregister Z xm\nregister E7O xm\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nRegistered Successfully\nLogged In Successfully\nLogged In Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogged Out Successfully\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "7\nregister 4Bl qL\nlogout 4Bl\nlogout 4Bl\nlogout 4Bl\nlogin 4Bl r\nregister 4Bl jy\nlogin 4Bl jy\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "22\nlogin XVf Pt\nlogin A Pt\nlogout A\nregister XVf Pt\nregister A Pt\nlogout A\nlogout A\nlogin XVf Pt\nlogout A\nlogout A\nlogout A\nlogin A Pt\nlogout A\nlogout XVf\nregister A Pt\nlogin A Pt\nregister A Pt\nlogout XVf\nlogin XVf Pt\nlogout A\nlogout A\nlogout XVf\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged Out Successfully\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "15\nregister ZII n\nlogout ZII\nlogin KHe n\nlogin 9 45\nlogin KHe 45\nlogout 9\nlogout ZII\nlogin q F\nlogout q\nlogout 9\nlogin ZII 45\nlogin KHe 45\nlogout 9\nregister ZII n\nregister KHe n\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\n"
+  },
+  {
+    "input": "21\nlogin pfN 3T\nregister pfN Mf\nlogin Wja j\nlogin Wja Mf\nlogin 8 j\nlogout Wja\nregister pfN Mf\nlogout pfN\nregister O 3T\nregister Wja Mf\nregister pfN 3T\nlogin 8 3T\nlogin pfN Mf\nregister Wja 3T\nlogin O Mf\nlogout Wja\nlogin pfN j\nregister pfN 3T\nregister O 3T\nlogin Wja j\nlogout pfN\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "11\nlogout MM\nlogout MM\nlogin 1 H\nlogout MM\nlogin MM t\nlogin 1 H\nlogout 1\nlogin 1 RH\nregister MM t\nlogin MM RH\nlogin G RH\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "14\nregister 3SY w\nregister 3SY w\nlogout h77\nregister mG w\nlogout Z\nlogin Z w\nregister h77 w\nregister h77 w\nlogin mG w\nlogin mG w\nregister 3SY w\nlogin Z w\nregister Z w\nlogin Z w\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\n"
+  },
+  {
+    "input": "9\nlogin JW 5\nlogin o5a 5\nlogin ZG5 5\nlogin o5a 5\nregister ZG5 5\nlogout ZG5\nlogout 2\nlogout o5a\nregister 2 5\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "21\nlogout J\nregister m 6l\nregister m rR\nregister m rR\nlogin m rR\nlogin m rR\nlogin J 6l\nregister m 6l\nregister J q6\nlogin m q6\nlogin J 6l\nlogin m rR\nregister J rR\nregister J q6\nlogout m\nlogout J\nregister m rR\nregister m 6l\nlogout J\nregister m q6\nlogin J q6\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\n"
+  },
+  {
+    "input": "3\nregister Xw0 ck\nlogin 9e ck\nregister c ck\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "14\nregister mC r\nlogin mC Cv\nlogin mC r\nlogout mC\nlogin mC Cv\nlogout mC\nlogin mC Cv\nlogout mC\nlogin mC r\nlogout mC\nlogin mC Cv\nlogin mC r\nlogin mC Cv\nregister mC r\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "15\nlogin k8X W\nregister B W\nlogin k8X s\nregister B s\nregister k8X s\nlogout B\nregister k8X s\nregister B W\nlogin B W\nlogout B\nlogin k8X s\nregister B W\nlogin k8X s\nlogin B s\nregister B s\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "10\nlogin NlI Zv\nlogout hHC\nregister NlI Zv\nlogin NlI Zv\nregister hHC Zv\nlogin hHC Zv\nlogin NlI R\nlogout NlI\nlogin NlI Zv\nregister NlI Zv\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "5\nlogin pZ8 AT\nlogout pZ8\nlogout pZ8\nlogout pZ8\nlogout pZ8\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "22\nlogout 7Kg\nlogin xvO e\nregister 7Kg 0h\nlogin xvO 0h\nlogin xvO e\nregister 7Kg 0h\nlogout 7Kg\nlogout x9u\nlogin x9u e\nlogin x9u 0h\nlogin xvO 0h\nlogout 7Kg\nregister xvO e\nlogin 7Kg 29\nlogout xvO\nregister x9u e\nlogin x9u 29\nlogout 7Kg\nregister xvO 29\nregister 7Kg 29\nlogout 7Kg\nregister 7Kg e\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "13\nregister LE lx\nlogout LE\nlogout LE\nlogin LE mx\nlogout LE\nregister LE P\nlogin LE P\nregister LE P\nregister LE mx\nregister LE lx\nlogout LE\nlogin LE mx\nlogin LE P\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "9\nlogin XB 4p\nlogout cbs\nlogout cbs\nregister cbs 4p\nlogin cbs 4p\nlogout cbs\nregister cbs 4p\nregister cbs 4p\nlogout cbs\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "16\nlogout 5PV\nlogout 5PV\nlogin 5PV Ab\nlogout 5PV\nlogin 5PV iz\nlogout 5PV\nlogin 5PV Ab\nregister 5PV iz\nlogout 5PV\nlogin 5PV Ab\nregister 5PV vL\nlogin 5PV vL\nlogin 5PV iz\nlogout 5PV\nlogin 5PV Ab\nlogout 5PV\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogin Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "20\nlogout Eeo\nregister 8L v\nlogout Eeo\nlogin 8L v\nlogin 8L v\nregister 8L v\nlogin 8L v\nlogin Eeo v\nlogin Eeo v\nlogout Eeo\nregister Eeo v\nlogin Eeo v\nregister Eeo v\nregister 8L v\nlogin Eeo v\nlogout 8L\nlogout 8L\nlogout Eeo\nlogin Eeo v\nregister 8L v\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "5\nregister 4 s\nlogout K\nlogin K s\nlogin K p\nlogout K\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "7\nlogout 9\nlogin 9 xG\nregister 9 xG\nregister 9 xG\nregister 9 xG\nlogout 9\nregister 9 xG\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "12\nlogout BRC\nlogout BRC\nregister BRC a9\nlogin BRC K\nregister BRC UA\nregister BRC a9\nregister BRC a9\nregister BRC a9\nlogout BRC\nregister BRC UA\nregister BRC K\nlogout BRC\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "2\nregister 7 w\nlogin 7 w\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\n"
+  },
+  {
+    "input": "11\nlogin 8 oT\nregister 6T oT\nregister 6T oT\nlogout 6T\nregister 8 oT\nregister 8 oT\nlogin 6T oT\nregister 8 oT\nlogout e\nlogout e\nlogout 6T\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "6\nregister A I\nlogout A\nregister A I\nregister A I\nlogin Z0A I\nlogin Z0A I\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "9\nlogin o t\nlogout o\nlogout 4q\nlogin 4q 3W\nlogin o 3W\nregister 4q t\nlogin o 3W\nregister o 3W\nlogin o t\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "12\nlogout nb\nlogin nb m\nlogin 37 m\nlogin nb m\nregister 37 m\nlogout 37\nlogin nb s\nregister nb s\nregister 37 s\nlogin 37 m\nlogout 37\nregister nb m\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "8\nlogin W uG\nlogout W\nregister q uG\nlogout q\nlogout q\nregister q uG\nregister q uG\nlogout W\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "14\nlogout K\nlogout iBn\nlogin Hy E\nlogout U\nlogin K E\nregister U E\nlogout U\nlogin K E\nregister K E\nlogin Hy E\nlogout Hy\nlogin U E\nlogout Hy\nregister iBn E\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "8\nregister DEu T\nlogin DEu T\nregister gL T\nlogin DEu T\nregister 56Z T\nlogout DEu\nlogout gL\nregister 56Z T\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nRegistered Successfully\nLogin Unsuccessful\nRegistered Successfully\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "19\nregister K pj\nregister K qe\nregister K KT\nlogout K\nregister K pj\nregister K KT\nregister K qe\nlogout K\nregister K KT\nlogin K qe\nlogout K\nlogout K\nlogout K\nregister K qe\nregister K qe\nregister K qe\nlogin K qe\nlogin K qe\nlogin K KT\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "14\nlogout enO\nlogin 0d SQ\nregister 0d SQ\nlogin enO SQ\nlogout a\nlogout a\nlogin a SQ\nlogin enO Ap\nregister enO SQ\nlogout 0d\nlogin 0d SQ\nlogin a B\nlogout a\nlogout enO\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "12\nregister xrU H\nlogin e f\nlogin vF Tf\nlogout xrU\nregister xrU Tf\nregister xrU H\nregister vX Tf\nlogout vF\nlogin vX H\nlogin xrU H\nregister e H\nlogout xrU\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nRegistered Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "9\nregister 5 k\nlogin Uks k\nlogout 5\nlogin Uks k\nlogin 5 k\nlogin Uks k\nregister Uks k\nlogin Uks k\nlogin 5 k\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "7\nlogout wf\nlogout wf\nlogin wf 9n\nregister wf 9n\nlogin wf 9n\nregister wf 9n\nlogout wf\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\n"
+  },
+  {
+    "input": "12\nlogin fDG IH\nlogin fDG tJ\nlogout fDG\nregister fDG tJ\nlogin M tJ\nregister fDG tJ\nregister fDG IH\nlogin fDG 7Q\nlogin fDG IH\nlogout fDG\nregister M tJ\nlogout M\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "4\nlogout 25\nregister 25 pI\nlogout 25\nlogout 25\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "8\nlogout eOT\nregister eOT 4\nregister M3 4\nregister Uq4 4\nregister M3 4\nlogin Uq4 4\nregister eOT 4\nlogin eOT 4\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogged In Successfully\n"
+  },
+  {
+    "input": "5\nregister UTJ 5\nregister VRe 5\nlogout UTJ\nlogin Gb 5\nlogout UTJ\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "6\nlogin Mh uz\nregister Mh uz\nlogout Mh\nlogin Mh uz\nlogout Mh\nlogin Mh uz\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\n"
+  },
+  {
+    "input": "3\nlogout zlE\nregister zlE N\nregister zlE u6\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "1\nregister 1Q ap\n",
+    "expectedOutput": "Registered Successfully\n"
+  },
+  {
+    "input": "12\nlogout VP\nlogout VP\nlogout 3j\nregister 3j s\nregister 3j 9\nregister 3j s\nlogin 3j C\nlogout VP\nregister 3j C\nlogin 3j C\nregister VP 9\nlogin VP s\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "1\nlogin YK r\n",
+    "expectedOutput": "Login Unsuccessful\n"
+  },
+  {
+    "input": "24\nregister 0b AV\nregister 0b Ez\nregister 0b Xw\nregister 0b Xw\nlogin 0b Ez\nlogout 0b\nlogout 0b\nlogin 0b Xw\nlogin 0b AV\nregister 0b AV\nlogout 0b\nregister 0b AV\nlogin 0b AV\nregister 0b Ez\nlogout 0b\nregister 0b AV\nregister 0b AV\nregister 0b Xw\nlogin 0b Xw\nlogin 0b AV\nlogin 0b Xw\nregister 0b Ez\nregister 0b AV\nlogin 0b AV\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "16\nregister j4 lb\nlogin NQz 4T\nlogin NQz 4T\nlogout NQz\nregister j4 OY\nlogout NQz\nregister j4 OY\nlogin 3 OY\nlogin 3 4T\nlogin 3 lb\nregister j4 OY\nlogout j4\nregister 1f5 lb\nlogin j4 OY\nregister 3 lb\nregister 3 OY\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "12\nlogout E8f\nlogout 9\nregister E8f k\nlogin 9 xY\nregister E8f YR\nlogout 9\nlogin E8f YR\nregister E8f xY\nregister E8f YR\nregister 9 xY\nregister E8f k\nlogout 9\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "5\nlogout AT\nlogout Ms\nlogin AT 9k\nlogin Ms j\nlogin Ms j\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "17\nregister M7M W\nlogin Hm E\nlogin Fp W\nregister RHX n\nlogout RHX\nregister Fp n\nlogout RHX\nregister Fp n\nregister Fp E\nregister Fp n\nlogout RHX\nregister RHX W\nlogout M7M\nregister Fp W\nregister Fp E\nregister Fp E\nregister M7M n\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "9\nlogout ht\nlogout ht\nlogout ht\nlogin ht v\nregister ht v\nregister ht v\nlogin ht v\nlogin ht v\nlogin ht v\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "8\nregister b1 0\nlogout b1\nlogin Qb7 0\nlogout Qb7\nlogin Qb7 0\nlogin b1 0\nregister b1 0\nregister b1 0\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "3\nlogin E 7\nregister f5b xR\nregister E 7\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nRegistered Successfully\n"
+  },
+  {
+    "input": "13\nlogin 0R X\nregister 0R r\nregister S r\nregister 29 pC\nlogout S\nregister S r\nlogout 0R\nlogin f X\nlogin f pC\nlogin 0R pC\nregister 29 X\nlogin f X\nlogin S r\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nRegistered Successfully\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "4\nregister 7 pd\nlogin 7 pd\nlogin a pd\nregister 7 pd\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "6\nregister wKU vb\nlogout 9\nlogin wKU vb\nregister WV vb\nregister wKU vb\nlogin Ddr vb\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogged In Successfully\nRegistered Successfully\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "22\nlogout IK\nlogout VJ\nlogin IK DC\nregister VJ DC\nlogin I7D DC\nlogout VJ\nlogin IK DC\nregister I7D DC\nlogout VJ\nregister I7D DC\nlogin I7D DC\nlogout VJ\nregister IK DC\nlogout IK\nlogin IK DC\nregister I7D DC\nlogout VJ\nlogout VJ\nlogout VJ\nregister VJ DC\nregister VJ DC\nlogin I7D DC\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "9\nlogout F\nregister c T\nregister c T\nlogin gY Ne\nlogout c\nlogin gY Ne\nlogout gY\nlogout gY\nlogout F\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "13\nlogin 7n7 j1\nlogin 7n7 j1\nlogout 7n7\nlogout 7n7\nlogout 7n7\nregister 7n7 j1\nregister 7n7 j1\nlogin 7n7 j1\nregister 7n7 j1\nlogin 7n7 j1\nlogout 7n7\nlogout 7n7\nregister 7n7 j1\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "5\nregister Z JU\nlogout Z\nlogin Z pa\nlogout Z\nlogin Z JU\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "20\nlogin uz QV\nlogin uz QV\nlogin uz QV\nlogin uz QV\nlogout uz\nregister uz QV\nregister uz QV\nlogin uz QV\nlogin uz QV\nlogin uz QV\nlogout uz\nlogout uz\nregister uz QV\nlogout uz\nregister uz QV\nregister uz QV\nlogout uz\nlogin uz QV\nlogout uz\nlogin uz QV\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\n"
+  },
+  {
+    "input": "19\nregister Mc lX\nregister Mc 3\nlogout dHY\nlogin dHY 3\nlogin dHY 3\nlogout dHY\nregister lG 3\nlogin Mc lX\nlogin dHY 3\nlogout lG\nregister lG lX\nregister dHY 3\nlogin dHY 3\nlogin lG 3\nlogout dHY\nregister i 3\nregister i 3\nregister dHY 3\nlogout Mc\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nLogged In Successfully\nLogged In Successfully\nLogged Out Successfully\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogged Out Successfully\n"
+  },
+  {
+    "input": "5\nlogout Pm\nregister Pm a\nlogin Pm a\nregister Pm a\nlogout Pm\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\n"
+  },
+  {
+    "input": "3\nregister 7O sS\nlogin 7 sS\nlogin 7 sS\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "3\nregister Mi e\nregister Mi e\nregister 96 e\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nRegistered Successfully\n"
+  },
+  {
+    "input": "23\nlogin pmX 8O\nlogin vDT 8O\nlogout pmX\nlogout qP\nlogin pmX Vf\nregister qP 8O\nregister pmX 8O\nlogin qP Vf\nlogout pmX\nlogin qP 8O\nlogin pmX 8O\nlogout pmX\nlogout qP\nlogout vDT\nregister qP 8O\nlogin qP 8O\nlogout vDT\nlogout qP\nlogin vDT 8O\nlogout vDT\nlogin qP Vf\nlogin qP 8O\nregister pmX 8O\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged In Successfully\nLogged Out Successfully\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nLogout Unsuccessful\nLogged Out Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "15\nregister XXG Iu\nlogin XXG Iu\nlogin XXG s\nlogin XXG s\nlogin XXG s\nlogin XXG Iu\nlogin XXG Iu\nlogout XXG\nlogout XXG\nlogout XXG\nlogout XXG\nlogin XXG s\nlogin XXG s\nlogout XXG\nlogin XXG Iu\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "22\nregister ap c\nregister ap lG\nregister ap lG\nlogin ap lw\nlogout ap\nregister ap c\nlogin ap c\nregister ap lw\nregister ap lG\nlogout ap\nregister ap lG\nregister ap lG\nregister ap lw\nlogin ap lG\nlogin ap c\nregister ap lw\nregister ap lG\nlogout ap\nlogin ap lw\nlogin ap c\nregister ap lw\nlogin ap lG\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogged Out Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogged Out Successfully\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "7\nlogout 6kG\nlogin gqZ H\nregister gqZ F\nlogin gqZ H\nlogin gqZ F\nlogin 6kG H\nregister gqZ F\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "10\nlogout 9\nlogin 9 q\nregister 9 D3\nregister 9 q\nlogout 9\nlogin 9 q\nregister 9 D3\nregister 9 q\nregister 9 D3\nlogout 9\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "10\nlogin Qa A\nregister Qa 9q\nregister Qa 9q\nregister Qa 9q\nregister Qa A\nlogin Qa 9q\nlogin Qa A\nlogout Qa\nlogin Qa 9q\nregister Qa 9q\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "14\nlogin 7 N\nregister 7 t\nlogin 7 t\nlogout Zh\nlogin gm N\nlogout Zh\nregister 7 t\nlogin Zh t\nregister 7 N\nlogin Zh t\nlogout Zh\nregister Zh N\nlogout Zh\nregister gm N\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "9\nlogin wiV r\nlogout wiV\nlogin wiV r\nlogout wiV\nlogout wiV\nlogin wiV r\nregister wiV r\nlogin wiV r\nlogin wiV r\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "23\nregister Uf SG\nlogout k\nregister Uf SG\nlogin bQs SG\nregister Uf k\nregister k k\nregister k k\nlogout Uf\nlogout Uf\nlogin Uf k\nlogin k k\nregister bQs k\nlogout bQs\nlogin bQs k\nlogout k\nlogout Uf\nlogout bQs\nlogin k SG\nlogout k\nregister bQs SG\nlogout k\nlogout k\nlogout k\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nLogged Out Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "11\nregister Z5 m1\nlogin Z5 T\nlogout Z5\nlogout Z5\nregister Z5 m1\nlogout Z5\nregister Z5 m1\nlogin Z5 m1\nlogin Z5 T\nlogin Z5 T\nregister Z5 m1\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "15\nregister EhS x\nlogin S5q x\nlogin EhS 1\nregister EhS 1\nregister EhS 1\nlogout EhS\nlogin S5q 1\nlogout S5q\nlogout EhS\nregister EhS x\nlogout S5q\nregister EhS Hi\nregister S5q 1\nlogin S5q Hi\nlogout EhS\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "5\nlogout t2\nlogout y\nregister pa 0q\nlogout pa\nregister pa 0q\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "2\nlogout iZB\nlogout iZB\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "12\nregister Z 7Q\nregister w 7Q\nregister Z 7Q\nregister w 7Q\nlogin w 7Q\nlogout Z\nlogout w\nlogout w\nlogin w 7Q\nlogout w\nlogin Z 7Q\nregister Z 7Q\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogout Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "18\nregister lWZ x\nlogout lWZ\nlogin lWZ G\nlogout lWZ\nregister lWZ x\nlogout lWZ\nlogout lWZ\nlogout lWZ\nlogin lWZ x\nlogin lWZ x\nregister lWZ G\nlogin lWZ x\nlogout lWZ\nregister lWZ x\nlogin lWZ G\nregister lWZ x\nregister lWZ G\nregister lWZ G\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "3\nlogin k9 a\nlogout k9\nlogout k9\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "16\nlogin n YC\nregister n YC\nregister n YC\nlogout n\nlogin HS YC\nregister HS YC\nregister HS YC\nregister HS YC\nlogin n YC\nregister n YC\nregister HS YC\nregister HS YC\nlogin HS YC\nlogin HS YC\nregister n YC\nlogout HS\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogged In Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogged Out Successfully\n"
+  },
+  {
+    "input": "9\nregister hrO j\nregister hrO W\nlogout hrO\nlogin hrO W\nlogin hrO W\nlogin hrO W\nlogin hrO j\nlogin hrO W\nlogout hrO\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "5\nlogout Q7e\nlogout Dx\nlogin Q7e 6A\nregister Q7e 8\nregister Dx 8\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nRegistered Successfully\n"
+  },
+  {
+    "input": "24\nlogout f\nregister f M\nlogin Pj M\nlogin Pj M\nlogout Pj\nlogin Pj h\nlogout Pj\nlogout f\nlogin Pj h\nlogin Pj M\nregister f RZ\nregister Pj RZ\nregister f RZ\nlogout Pj\nlogout f\nlogout f\nlogin f M\nregister f RZ\nregister f RZ\nregister f M\nregister Pj RZ\nregister f RZ\nlogout f\nlogout f\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\nLogged Out Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "11\nregister 7A 6\nlogout 7A\nlogout 7A\nlogin 7A 6\nregister 7A 6\nlogin 7A 6\nlogin 7A 6\nlogout 7A\nlogout 7A\nlogout 7A\nlogin 7A 6\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "19\nregister jBx 1\nregister jBx 1\nregister jBx 1\nregister RY 1\nlogout RY\nlogin 1 1\nlogin jBx 1\nregister RY 1\nregister RY 1\nlogout jBx\nlogin RY 1\nlogin 1 1\nregister 1 1\nlogin 1 1\nregister jBx 1\nlogout RY\nregister jBx 1\nlogout RY\nlogin jBx 1\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogged Out Successfully\nLogged In Successfully\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "2\nregister kT QH\nlogout t\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "14\nlogin i yz\nlogin i yz\nlogout i\nregister i j\nlogout i\nregister i j\nlogin i yz\nregister i yz\nregister i j\nlogout i\nlogout i\nlogout i\nregister i j\nregister i j\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "7\nlogin 5 FC\nregister 5 FC\nregister 5 c\nregister OL0 I\nlogout 5\nlogout 5\nlogout OL0\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "22\nregister En r\nlogout 2Q\nlogin 1z 6\nlogin En 6\nlogout 1z\nlogout Egf\nlogout 1z\nregister En J\nregister 2Q J\nregister 2Q 6\nlogout 2Q\nlogout 2Q\nlogout 1z\nlogin En 6\nlogout 1z\nlogin 2Q r\nregister 2Q 6\nlogin 2Q r\nlogin Egf J\nlogin 1z r\nregister 1z J\nlogout 2Q\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "13\nlogout oLG\nregister oLG Zt\nlogout oLG\nlogout oLG\nlogin oLG Zt\nlogin oLG 1W\nlogout oLG\nlogout oLG\nlogout oLG\nlogin oLG lZ\nlogin oLG 1W\nregister oLG Zt\nlogout oLG\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "16\nlogout 4Z5\nregister 4Z5 F\nlogin dko F\nlogin 4Z5 F\nlogout 4Z5\nlogin McZ F\nlogin McZ F\nlogin 4Z5 F\nregister dko F\nregister McZ F\nlogin T F\nregister T F\nlogout dko\nlogin T F\nregister T F\nregister dko F\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nRegistered Successfully\nRegistered Successfully\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "18\nlogout o\nregister o i\nlogout Ej\nlogin Ej i\nregister o Y\nlogin o i\nregister o Y3\nlogout Ej\nlogin o Y\nlogout o\nlogout o\nlogin o i\nregister o Y\nlogout Ej\nregister Ej i\nlogout o\nlogin o Y3\nlogin o Y\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nLogged Out Successfully\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "17\nregister 2p eT\nlogin zl HR\nlogout 2p\nlogout 2p\nlogout 2p\nregister zl C\nlogin 2p HR\nlogin 2p HR\nlogout 2p\nlogin 2p eT\nlogin zl HR\nregister zl HR\nlogin zl HR\nregister 2p HR\nlogout 2p\nlogout zl\nregister 2p eT\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "24\nlogin 1o 79\nregister 2q 79\nlogin 1o 79\nlogin m 79\nregister 1o 79\nregister m 79\nlogin 1o 79\nlogout m\nlogin 1o 79\nlogout m\nlogout m\nlogin m 79\nlogin 1o 79\nlogout 2q\nregister 2q 79\nlogout 2q\nregister m 79\nlogout 2q\nlogin m 79\nregister m 79\nlogin m 79\nlogin m 79\nlogout 2q\nregister 2q 79\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogged In Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "3\nlogin 6Rr k\nregister gj k\nlogout 6Rr\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "24\nlogout M\nregister 0eh yX\nregister 0eh hY\nlogin 0eh hY\nregister M yX\nlogin M hY\nlogout M\nlogin M yX\nlogout 0eh\nlogin M hY\nlogin 0eh yX\nregister 0eh yX\nregister M hY\nregister M yX\nlogout M\nregister 0eh yX\nlogout M\nlogout 0eh\nlogin 0eh hY\nregister 0eh hY\nlogout 0eh\nlogout M\nregister M hY\nlogout M\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\nLogged Out Successfully\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "21\nlogout gdN\nlogout gdN\nregister Vba ZK\nlogout M\nlogout gdN\nlogout Vba\nlogin M y\nlogout gdN\nlogout gdN\nlogout Vba\nlogin Vba y\nlogin gdN y\nlogout Vba\nlogout Vba\nregister M ZK\nregister gdN ZK\nlogout gdN\nregister Vba ZK\nregister M ZK\nregister gdN y\nlogout Vba\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "2\nlogin TR 9B\nregister Ott 9B\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "4\nlogin q 9R\nlogin h6q 9R\nlogout u\nregister l 9R\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "16\nlogin h1J L\nregister h1J L\nlogin h1J L\nregister h1J L\nlogout h1J\nlogout h1J\nregister h1J L\nlogout h1J\nlogout h1J\nlogin h1J L\nregister h1J L\nregister h1J L\nlogin h1J L\nlogout h1J\nlogout h1J\nlogout h1J\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "1\nlogin B QN\n",
+    "expectedOutput": "Login Unsuccessful\n"
+  },
+  {
+    "input": "11\nlogout xfo\nlogin xfo g\nlogout wMv\nregister wMv P\nlogout wMv\nlogout xfo\nregister wMv g\nregister uA P\nlogout wMv\nlogin vE n1\nlogin vE n1\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "3\nlogin H q3\nlogin H q3\nlogin 7 pP\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "9\nregister W0f mn\nregister W0f mn\nlogin W0f mn\nlogout W0f\nlogin W0f mn\nregister 6T mn\nregister W0f mn\nlogin 6T mn\nregister W0f mn\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "4\nlogin Jl z\nlogout 3b\nlogout Jl\nlogout Jl\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "4\nlogin t5a q\nlogin 8O q\nlogout 8O\nlogin 3s q\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "21\nlogin L1h Mo\nregister L1h bt\nlogout L1h\nregister h Ap\nlogout kC\nlogout h\nregister h bt\nlogout h\nlogout kC\nlogout h\nregister kC Mo\nlogout L1h\nlogout kC\nlogin kC Ap\nregister kC bt\nregister L1h bt\nlogin L1h bt\nregister L1h Ap\nlogout h\nregister kC Mo\nregister kC bt\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "7\nlogin z A\nregister z 5\nlogin z A\nregister z 5\nlogin lH 9G\nregister z 5\nlogout lH\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "18\nlogout B1N\nregister 8Kg U\nlogin B1N U\nlogout B1N\nregister 8Kg U\nlogout B1N\nlogin 8Kg nD\nregister hB2 nD\nlogout hB2\nlogin B1N pP\nlogin hB2 nD\nlogin hB2 nD\nregister hB2 nD\nlogout B1N\nlogin 8Kg pP\nlogout hB2\nlogout B1N\nregister hB2 pP\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "12\nlogin a p\nregister a p\nlogout yd5\nlogin yd5 p\nlogin a p\nlogout yd5\nlogout yd5\nlogin a p\nlogin yd5 p\nlogin a p\nlogout yd5\nlogout a\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "12\nlogout m\nregister 7 OP\nregister m OP\nregister 7 OP\nlogout zK8\nlogout 7\nregister 7 OP\nregister zK8 OP\nlogin 7 OP\nlogin m OP\nlogout m\nlogin zK8 OP\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nLogged In Successfully\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\n"
+  },
+  {
+    "input": "2\nlogout y\nlogin 4Ri T\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "6\nlogout f0D\nlogin G vy\nregister f0D vy\nlogin G vy\nlogout o\nregister o vy\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "1\nlogout I\n",
+    "expectedOutput": "Logout Unsuccessful\n"
+  },
+  {
+    "input": "6\nregister SB b\nlogin SB b\nregister SB b\nlogin SB b\nregister SB b\nregister SB b\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "14\nlogout O\nlogin O Mj\nlogout O\nlogout S\nregister O Mj\nlogin cFz Mj\nlogout H9s\nregister cFz Mj\nregister cFz Z\nregister cFz Z\nlogout cFz\nlogout cFz\nregister O 13\nlogin H9s 13\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "20\nlogin bn e\nregister O e\nlogin bn e\nlogout O\nregister O e\nregister yV3 e\nlogout bn\nregister bn e\nlogin yV3 e\nlogin yV3 e\nlogout yV3\nregister O e\nregister bn e\nregister yV3 e\nregister bn e\nlogin bn e\nregister bn e\nregister yV3 e\nregister O e\nlogout O\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\nLogged In Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "24\nlogout p0\nlogin p0 71\nlogin p0 71\nlogout p0\nlogout p0\nregister p0 XO\nlogin p0 XO\nlogout p0\nregister p0 ON\nlogout p0\nlogin p0 ON\nregister p0 ON\nregister p0 71\nlogin p0 71\nregister p0 71\nlogin p0 XO\nlogin p0 71\nregister p0 71\nlogout p0\nlogin p0 71\nlogin p0 ON\nlogout p0\nregister p0 XO\nregister p0 71\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogged Out Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "7\nregister aQ ol\nregister t ol\nlogout t\nlogout Vo\nlogout aQ\nlogin aQ ol\nlogout 8HK\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "20\nlogout vY\nregister vY Nn\nlogin vY Nn\nlogout vY\nlogin vY Nn\nlogout vY\nlogout vY\nlogin vY Nn\nlogin vY Nn\nlogout vY\nlogin vY Nn\nlogout vY\nlogout vY\nlogin vY Nn\nlogout vY\nlogin vY Nn\nlogout vY\nregister vY Nn\nregister vY Nn\nregister vY Nn\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "12\nregister lPn eX\nlogin lPn eX\nregister lPn eX\nregister lPn eX\nregister lPn eX\nregister lPn eX\nlogout lPn\nlogout lPn\nlogout lPn\nregister lPn eX\nlogout lPn\nlogin lPn eX\n",
+    "expectedOutput": "Registered Successfully\nLogged In Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "6\nlogout 1K\nregister 1K YA\nregister TNZ YA\nlogin TNZ YA\nregister 1K YA\nlogout 1K\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "6\nregister oUc F8\nlogout 4z\nregister oUc Jh\nlogin 4z F8\nlogout oUc\nregister oUc Jh\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\n"
+  },
+  {
+    "input": "2\nlogout br\nlogin Mu0 t\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "22\nlogout Hy\nlogin sP aX\nlogin sP aX\nregister CNN so\nlogout Hy\nlogout CNN\nlogin CNN aX\nlogout Hy\nregister CNN aX\nregister Hy so\nlogout CNN\nlogin Hy so\nlogout CNN\nlogin CNN aX\nregister sP so\nlogout sP\nlogin CNN aX\nlogout CNN\nregister CNN aX\nregister Hy so\nlogin sP so\nlogout sP\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\n"
+  },
+  {
+    "input": "2\nlogin c R\nlogin s R\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "16\nlogin w LA\nregister W LA\nlogout w\nlogout W\nregister W LA\nlogout w\nregister W B\nregister W LA\nlogin W LA\nlogout W\nregister W LA\nregister W LA\nlogin w LA\nlogout W\nlogout W\nregister w LA\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "2\nregister t8j HB\nlogin V4 f\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "14\nlogout SlL\nlogin SlL W\nregister SlL W\nlogin SlL W\nlogin SlL W\nregister SlL W\nlogout SlL\nlogin SlL W\nlogin SlL W\nregister SlL W\nregister SlL W\nlogin SlL W\nlogout SlL\nregister SlL W\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nLogged Out Successfully\nLogged In Successfully\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "15\nregister C n\nlogout Q1l\nregister Q1l 1\nlogout C\nlogout Q1l\nlogin C n\nregister wnE 1\nlogout wnE\nlogin wnE 1\nlogin Q1l n\nlogin wnE n\nregister C 1\nregister wnE n\nlogout wnE\nregister wnE n\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nLogged Out Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "24\nregister 9wP s\nregister x1n tK\nregister x1n 4\nlogout x1n\nregister x1n s\nlogout x1n\nregister 9wP 4\nregister 9wP s\nlogin x1n s\nlogout 9wP\nlogout 9wP\nlogin 9wP 4\nlogout 9wP\nlogin x1n s\nlogin x1n tK\nlogout x1n\nregister x1n 4\nlogout x1n\nlogin 9wP 4\nlogout x1n\nlogin x1n 4\nlogin x1n 4\nregister x1n 4\nlogout x1n\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "17\nregister z Av\nlogout z\nlogout kJ\nregister kJ Av\nregister z Av\nlogin z Av\nlogin z Av\nlogout kJ\nlogout kJ\nlogin z Av\nlogin kJ Av\nlogin kJ Av\nlogout z\nlogout z\nregister kJ Av\nlogin kJ Av\nlogin kJ Av\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "19\nregister r gK\nregister T gK\nlogout x\nlogout T\nlogin x gK\nlogin r gK\nlogout r\nlogin r gK\nlogout r\nregister x gK\nlogout r\nlogout x\nlogin x gK\nlogin T gK\nlogout r\nlogin T gK\nlogin r gK\nlogout x\nregister r gK\n",
+    "expectedOutput": "Registered Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged In Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "5\nlogout as\nlogin F2n dq\nregister F2n dq\nlogin ld0 o\nlogin F2n o\n",
+    "expectedOutput": "Logout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "1\nregister zr C\n",
+    "expectedOutput": "Registered Successfully\n"
+  },
+  {
+    "input": "22\nlogin vc D\nlogout vc\nlogin vc D\nregister vc D\nlogout vc\nlogout vc\nlogout vc\nlogout vc\nlogin vc D\nlogout vc\nlogin vc D\nlogout vc\nlogin vc D\nlogout vc\nlogin vc D\nregister vc D\nlogin vc D\nregister vc D\nlogin vc D\nlogout vc\nlogout vc\nlogin vc D\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "5\nlogout Yyb\nregister he9 e3\nlogout Yyb\nregister he9 Q\nregister he9 Q\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "9\nlogin UYx hi\nlogin 3 Ze\nlogout ah3\nregister 3 at\nlogout DA\nlogin DA Ze\nlogout UYx\nregister UYx at\nlogout UYx\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "11\nlogout 0ZM\nlogout 0ZM\nregister 0ZM i\nlogout D\nlogout 0ZM\nlogin 0ZM i\nregister D 6Z\nlogin D 6Z\nlogin 0ZM i\nlogout D\nregister 0ZM 6Z\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nRegistered Successfully\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "16\nregister 0is MH\nlogin 3A MH\nregister 3A MH\nregister 0is MH\nregister 0is MH\nlogin 0is MH\nregister 0is MH\nregister 3A MH\nlogout 3A\nlogin 0is MH\nlogout 3A\nregister 3A MH\nlogout 0is\nregister 0is MH\nlogout 0is\nlogin 0is MH\n",
+    "expectedOutput": "Registered Successfully\nLogin Unsuccessful\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\nLogged In Successfully\n"
+  },
+  {
+    "input": "8\nregister 8K 9\nregister 8K 9\nlogin wjs 9\nlogin wjs 9\nlogout M5H\nlogin 8K 9\nlogout 8K\nlogin M5H 9\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "15\nregister Bp Z\nlogout x\nlogin x cN\nlogin Bp m\nregister x Z\nlogout Bp\nregister Bp cN\nlogin Bp Z\nlogin Bp m\nlogout Bp\nlogout x\nregister Bp m\nregister x Z\nregister Bp Z\nlogin x cN\n",
+    "expectedOutput": "Registered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "24\nlogin Ym g\nregister Ym 18\nlogin Ym 18\nregister B7 g\nregister 8w1 g\nlogout E\nlogout B7\nlogin Ym 18\nlogout Ym\nlogout 8w1\nlogout 8w1\nlogout 8w1\nregister 8w1 g\nlogout Ym\nlogout B7\nlogout E\nlogout 8w1\nregister 8w1 g\nlogin E 18\nregister B7 18\nlogout 8w1\nregister E 18\nregister Ym g\nlogout Ym\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogged In Successfully\nRegistered Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogged Out Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "17\nlogin U f\nregister nE p\nlogin nE f\nregister nE f\nlogin eEa f\nregister eEa p\nlogout U\nlogout U\nlogin nE p\nlogout U\nlogout U\nlogout U\nlogout U\nregister nE p\nlogout U\nlogout eEa\nlogout nE\n",
+    "expectedOutput": "Login Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nUsername already exists\nLogin Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogged In Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nUsername already exists\nLogout Unsuccessful\nLogout Unsuccessful\nLogged Out Successfully\n"
+  },
+  {
+    "input": "21\nlogout 0\nregister 0 5M\nlogout 0\nlogout 0\nlogin 0 h\nregister 0 5M\nlogout 0\nregister 0 5M\nlogin 0 5M\nregister 0 h\nregister 0 5M\nlogout 0\nregister 0 5M\nlogout 0\nregister 0 yH\nregister 0 h\nlogin 0 yH\nlogin 0 5M\nlogout 0\nlogin 0 5M\nlogin 0 5M\n",
+    "expectedOutput": "Logout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogged Out Successfully\nUsername already exists\nLogout Unsuccessful\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged In Successfully\nLogged Out Successfully\nLogged In Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "5\nregister QY5 sg\nregister QY5 a\nregister QY5 a\nregister QY5 sg\nregister QY5 sg\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\n"
+  },
+  {
+    "input": "13\nlogin odw nj\nlogout odw\nlogin odw nj\nlogout ip\nlogin HtW nj\nregister ip nj\nlogin odw nj\nlogin 0M nj\nlogout 0M\nlogout 0M\nlogin 0M nj\nlogout HtW\nlogout ip\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "1\nregister X N\n",
+    "expectedOutput": "Registered Successfully\n"
+  },
+  {
+    "input": "12\nlogin Fg C\nlogout 4\nregister L C\nlogin 4 C\nlogin Fg C\nlogin 5N C\nlogout 4\nlogin 5N C\nregister 4 C\nlogin 4 C\nlogout Fg\nlogout 5N\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nLogged In Successfully\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "16\nregister F r\nregister F 0h\nregister 3 r\nlogout 3\nregister h 0h\nlogout F\nlogout 3\nregister hIN r\nlogin hIN r\nregister 3 0h\nregister h r\nlogin 3 0h\nlogout hIN\nlogin F r\nlogout h\nlogout h\n",
+    "expectedOutput": "Registered Successfully\nUsername already exists\nRegistered Successfully\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogged In Successfully\nUsername already exists\nUsername already exists\nLogin Unsuccessful\nLogged Out Successfully\nLogged In Successfully\nLogout Unsuccessful\nLogout Unsuccessful\n"
+  },
+  {
+    "input": "16\nlogin vk k5\nlogin R k5\nlogout vk\nlogout Sm\nlogin R TD\nlogin R TD\nlogin jW TD\nlogin Sm k5\nlogout R\nlogin jW TD\nlogout vk\nlogin vk k5\nregister vk TD\nregister jW k5\nlogin jW TD\nregister R k5\n",
+    "expectedOutput": "Login Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nLogin Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogin Unsuccessful\nRegistered Successfully\n"
+  },
+  {
+    "input": "22\nlogout h4\nlogout C\nlogout C\nlogout xGu\nregister h4 w8\nlogout h4\nlogin xGu w8\nlogout xGu\nregister g w8\nregister g w8\nregister xGu w8\nregister g w8\nlogout g\nlogin C w8\nregister h4 w8\nregister h4 w8\nregister xGu w8\nregister xGu w8\nlogin h4 w8\nlogout h4\nregister C w8\nregister g w8\n",
+    "expectedOutput": "Logout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogout Unsuccessful\nLogin Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nUsername already exists\nRegistered Successfully\nUsername already exists\nLogout Unsuccessful\nLogin Unsuccessful\nUsername already exists\nUsername already exists\nUsername already exists\nUsername already exists\nLogged In Successfully\nLogged Out Successfully\nRegistered Successfully\nUsername already exists\n"
+  },
+  {
+    "input": "4\nlogin 2 Zk\nlogout 2\nregister F Zk\nlogin h Zk\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nLogin Unsuccessful\n"
+  },
+  {
+    "input": "16\nlogin m 4\nlogout sP4\nlogout d3\nregister m 4\nregister sP4 4\nlogout d3\nlogin m 4\nregister 7oa 4\nregister m 4\nregister 7oa 4\nlogin sP4 4\nregister sP4 4\nlogout 7oa\nlogin 7oa 4\nregister 7oa 4\nregister sP4 4\n",
+    "expectedOutput": "Login Unsuccessful\nLogout Unsuccessful\nLogout Unsuccessful\nRegistered Successfully\nRegistered Successfully\nLogout Unsuccessful\nLogged In Successfully\nRegistered Successfully\nUsername already exists\nUsername already exists\nLogged In Successfully\nUsername already exists\nLogout Unsuccessful\nLogged In Successfully\nUsername already exists\nUsername already exists\n"
+  }
+]

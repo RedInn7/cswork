@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-333",
+  "title": "按用户维护密码与在线状态的模拟",
+  "explanation": "## 题意\n\n按输入顺序处理n个请求：register username password、login username password、logout username，输出每个请求的返回值。初始没有用户；已登录的用户再次登录失败，原登录保持有效；用户名和密码区分大小写。\n\n## 每种请求的规则\n\n每个用户只需要两项状态：注册时的密码，以及当前是否登录。\n\n- register：用户名不存在才创建，记下密码，初始未登录，返回Registered Successfully。注册不会自动登录。用户名已存在时返回Username already exists，不覆盖密码，也不改变登录状态。\n- login：用户存在、密码完全一致、当前未登录，三者同时成立才成功，标记为登录并返回Logged In Successfully。任一条件不满足都返回Login Unsuccessful，且不改变任何状态；已登录用户无论密码对错再次登录都失败，原会话继续有效，之后仍能正常退出。\n- logout：用户存在且当前已登录才成功，标记为未登录并返回Logged Out Successfully；用户不存在或未登录都返回Logout Unsuccessful。\n\n不同用户的状态互不影响。大小写不同的用户名是不同用户，大小写不同的密码不匹配。\n\n## 正确性\n\n用哈希表保存“用户名→(密码,是否登录)”。每个请求只读写该用户名对应的一项，并严格按上面三条规则判定。失败分支一律不写状态，所以失败请求不会改变任何用户。对请求序号归纳：若前i−1个请求处理后表中状态与真实状态一致，则第i个请求的返回值与新状态也正确。\n\n## 复杂度\n\n每个请求期望O(L)，L≤10为字段长度，总计O(nL)时间、O(用户数·L)空间。n可达10^6，输出约两千多万字节，参考解先拼接再一次写出。\n\n## 独立验证\n\noracle用Python字典与集合分别保存密码和已登录用户，直接模拟，不复用参考解。另写历史回放判定：用户是否存在看此前是否有该用户的register，密码取最早一次register，是否在线看此前该用户最近一次成功的login/logout；对每个oracle输入交叉比对。小域用两个大小写不同的用户名和两个大小写不同的密码，穷举长度1..4的全部请求序列，并逐个真实运行参考程序。正式用例覆盖原样例、重复注册后旧密码仍有效、已登录时错/对密码再次登录都失败且随后能退出、未知用户登录与退出、大小写、跨用户隔离，以及十万到百万请求的高基数用户、最长字段、高冲突随机等。五个正常退出的错误程序（覆盖密码、允许重复登录、注册自动登录、失败登录踢下线、用户名忽略大小写）在正式用例上各自被判错。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <string>\n#include <unordered_map>\nusing namespace std;\nstruct Account{string password;bool active=false;};\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;unordered_map<string,Account> users;users.reserve(size_t(n)*2+1);\nchar op[16],name[16],pass[16];string out;out.reserve(size_t(n)*24);\nfor(int i=0;i<n;i++){scanf(\"%15s %15s\",op,name);\nif(op[0]=='r'){scanf(\"%15s\",pass);auto r=users.try_emplace(name);if(r.second){r.first->second.password=pass;out+=\"Registered Successfully\\n\";}else out+=\"Username already exists\\n\";}\nelse if(op[3]=='i'){scanf(\"%15s\",pass);auto it=users.find(name);if(it!=users.end()&&!it->second.active&&it->second.password==pass){it->second.active=true;out+=\"Logged In Successfully\\n\";}else out+=\"Login Unsuccessful\\n\";}\nelse{auto it=users.find(name);if(it!=users.end()&&it->second.active){it->second.active=false;out+=\"Logged Out Successfully\\n\";}else out+=\"Logout Unsuccessful\\n\";}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}
