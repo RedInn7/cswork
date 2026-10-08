@@ -3,6 +3,30 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-microsoft-25",
+      "decision": "Original image recovered and independently viewed; original examples conflict, do not promote",
+      "image": "content/oa-judge/source-images/microsoft-25-original.jpg",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/microsoft-frog-game/0",
+      "imageSha256": "c6b76a0195b00cd07977e241f651f39ff579fa567aeb94ff154a518774af063a",
+      "findings": [
+        "Original image defines moves only to adjacent blocks of greater or equal height from a common chosen starting block.",
+        "For[9,2,5,3,0], maximum index distance2 corresponds to3 covered blocks; original output2 chooses index distance. For[1,2,3,4,5,8], maximum index distance5 corresponds to6 blocks; original output6 chooses block count. No consistent distance convention gives both original answers.",
+        "Second example starting at cell5 is also inconsistent with uphill-only movement. Current rewritten page's replacement output3 is not independent evidence settling the original contradiction."
+      ]
+    },
+    {
+      "id": "oa-linkedin-2",
+      "decision": "Original image recovered; formulas confirmed but duplicate/self-pair counting remains unspecified",
+      "image": "content/oa-judge/source-images/linkedin-2-original.jpg",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/linkedin-find-number-of-perfect-pairs/0",
+      "imageSha256": "c8e7cb1afc3f0e035a863ccb9de170f4da876ad4d36e2a8c32a2a985c65ed31b",
+      "findings": [
+        "Both reviewers viewed the original image: min(abs(x-y),abs(x+y))<=min(abs(x),abs(y)) and max(abs(x-y),abs(x+y))>=max(abs(x),abs(y)).",
+        "Only example[2,-3,5] with pairs(2,-3),(-3,5) is supplied. No bounds or explicit distinct-position/distinct-value/self-pair rule is given.",
+        "For[1,1,2], distinct index pairs give3 while distinct value pairs supported by two entries give2. Do not silently choose a counting convention merely because formulas are now complete."
+      ]
+    },
+    {
       "id": "oa-capital-one-18",
       "decision": "Original linked images recovered; full-domain design and independent validation still required",
       "source": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
