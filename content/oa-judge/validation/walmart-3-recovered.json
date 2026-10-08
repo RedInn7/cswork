@@ -1,0 +1,408 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-walmart-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 61,
+      "referenceFormalCases": 64,
+      "negativeControls": [
+        {
+          "name": "误将三类数量相等当作目标",
+          "rejectedByCases": [
+            1,
+            14,
+            27,
+            31,
+            44,
+            57
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误附加两种待清空数量和被3整除",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            10,
+            11,
+            13,
+            14,
+            15,
+            17,
+            19,
+            23,
+            29,
+            35,
+            39,
+            41,
+            43,
+            44,
+            45,
+            47,
+            48,
+            51,
+            53,
+            54,
+            55,
+            56,
+            57,
+            58,
+            59,
+            60,
+            61,
+            62
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "f2ab2060e7756ea202e3213635d096e434a04b708859367684ca7c7fb95ca4fb",
+      "oracleMethod": "BFS over literal three-count states, enumerate all legal conversions and detect a single nonzero count; no mod/max formula.",
+      "largeBoundaryOracle": "Nonnegative integer counts of the three operation types solved from final zero-balance equations; checked against all small BFS cases.",
+      "largeBoundaries": [
+        {
+          "name": "上界余数全组合1",
+          "values": [
+            99999999,
+            99999999,
+            99999999
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.0221
+        },
+        {
+          "name": "上界余数全组合2",
+          "values": [
+            99999999,
+            99999999,
+            100000000
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.0205
+        },
+        {
+          "name": "上界余数全组合3",
+          "values": [
+            99999999,
+            99999999,
+            99999998
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.0196
+        },
+        {
+          "name": "上界余数全组合4",
+          "values": [
+            99999999,
+            100000000,
+            99999999
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.0196
+        },
+        {
+          "name": "上界余数全组合5",
+          "values": [
+            99999999,
+            100000000,
+            100000000
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0195
+        },
+        {
+          "name": "上界余数全组合6",
+          "values": [
+            99999999,
+            100000000,
+            99999998
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0191
+        },
+        {
+          "name": "上界余数全组合7",
+          "values": [
+            99999999,
+            99999998,
+            99999999
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.0198
+        },
+        {
+          "name": "上界余数全组合8",
+          "values": [
+            99999999,
+            99999998,
+            100000000
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0197
+        },
+        {
+          "name": "上界余数全组合9",
+          "values": [
+            99999999,
+            99999998,
+            99999998
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0202
+        },
+        {
+          "name": "上界余数全组合10",
+          "values": [
+            100000000,
+            99999999,
+            99999999
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.0208
+        },
+        {
+          "name": "上界余数全组合11",
+          "values": [
+            100000000,
+            99999999,
+            100000000
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0201
+        },
+        {
+          "name": "上界余数全组合12",
+          "values": [
+            100000000,
+            99999999,
+            99999998
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0201
+        },
+        {
+          "name": "上界余数全组合13",
+          "values": [
+            100000000,
+            100000000,
+            99999999
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0238
+        },
+        {
+          "name": "上界余数全组合14",
+          "values": [
+            100000000,
+            100000000,
+            100000000
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0217
+        },
+        {
+          "name": "上界余数全组合15",
+          "values": [
+            100000000,
+            100000000,
+            99999998
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0199
+        },
+        {
+          "name": "上界余数全组合16",
+          "values": [
+            100000000,
+            99999998,
+            99999999
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0198
+        },
+        {
+          "name": "上界余数全组合17",
+          "values": [
+            100000000,
+            99999998,
+            100000000
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0201
+        },
+        {
+          "name": "上界余数全组合18",
+          "values": [
+            100000000,
+            99999998,
+            99999998
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0201
+        },
+        {
+          "name": "上界余数全组合19",
+          "values": [
+            99999998,
+            99999999,
+            99999999
+          ],
+          "expectedOutput": "99999999",
+          "localSeconds": 0.023
+        },
+        {
+          "name": "上界余数全组合20",
+          "values": [
+            99999998,
+            99999999,
+            100000000
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0209
+        },
+        {
+          "name": "上界余数全组合21",
+          "values": [
+            99999998,
+            99999999,
+            99999998
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0197
+        },
+        {
+          "name": "上界余数全组合22",
+          "values": [
+            99999998,
+            100000000,
+            99999999
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0248
+        },
+        {
+          "name": "上界余数全组合23",
+          "values": [
+            99999998,
+            100000000,
+            100000000
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0224
+        },
+        {
+          "name": "上界余数全组合24",
+          "values": [
+            99999998,
+            100000000,
+            99999998
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.021
+        },
+        {
+          "name": "上界余数全组合25",
+          "values": [
+            99999998,
+            99999998,
+            99999999
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0196
+        },
+        {
+          "name": "上界余数全组合26",
+          "values": [
+            99999998,
+            99999998,
+            100000000
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0205
+        },
+        {
+          "name": "上界余数全组合27",
+          "values": [
+            99999998,
+            99999998,
+            99999998
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0201
+        },
+        {
+          "name": "最小两种快速清空",
+          "values": [
+            1,
+            1,
+            100000000
+          ],
+          "expectedOutput": "1",
+          "localSeconds": 0.0207
+        },
+        {
+          "name": "长构造且第三种仅两颗",
+          "values": [
+            100000000,
+            1,
+            2
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.02
+        },
+        {
+          "name": "最大差对称",
+          "values": [
+            1,
+            100000000,
+            2
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0195
+        },
+        {
+          "name": "仅第三种为大值",
+          "values": [
+            1,
+            2,
+            100000000
+          ],
+          "expectedOutput": "100000000",
+          "localSeconds": 0.0192
+        },
+        {
+          "name": "大值清空无需模拟",
+          "values": [
+            99999998,
+            2,
+            1
+          ],
+          "expectedOutput": "99999998",
+          "localSeconds": 0.0196
+        },
+        {
+          "name": "高低混合无解",
+          "values": [
+            99999999,
+            1,
+            2
+          ],
+          "expectedOutput": "-1",
+          "localSeconds": 0.0196
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 9.004
+    }
+  ]
+}

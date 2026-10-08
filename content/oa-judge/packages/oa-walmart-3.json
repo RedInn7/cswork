@@ -1,0 +1,485 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-walmart-3",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "将全部糖果变成同一口味的最少操作",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Walmart",
+      "数学",
+      "不变量"
+    ],
+    "description": "有三种不同口味的糖果，数量分别为A、B、C。每次选择两颗口味不同的糖，将这两颗糖都变成第三种口味，因此被选的两种数量各减1、第三种数量加2，总糖数不变。只有当前仍有糖的口味可以被选。求使所有糖果都为同一种口味的最少操作次数；无法做到时输出−1。目标是两种口味数量为0，不是三种数量相等。",
+    "input": "一行三个整数A、B、C，1≤A,B,C≤100000000。初始三种口味都有糖，操作过程中允许某种数量为0。完整保留固定原题范围。",
+    "output": "输出最少操作次数；不可达时输出-1。",
+    "explanation": "样例1来自固定原题，(1,2,3)无法变成单一口味。样例2、3为本站补充：(1,1,1)一步变成(0,0,3)；(4,1,2)可依次变成(3,3,1)、(2,2,3)、(1,1,5)、(0,0,7)，最少4步。原整理版额外要求待清空数量和被3整除是错误条件，本站按原操作独立求解。",
+    "hints": [
+      "观察每对口味数量之差对3取模。",
+      "每一步任一口味最多减少一颗。",
+      "尝试构造三步一组，保持一种数量不变并减少另一种三颗。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 131072,
+    "outputLimit": 4096,
+    "checker": "tokens",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原始不可达样例",
+      "input": "1 2 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站补充公开样例1",
+      "input": "1 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "本站补充公开样例2",
+      "input": "4 1 2\n",
+      "expectedOutput": "4\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举1",
+      "input": "1 1 2\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举2",
+      "input": "1 1 3\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举3",
+      "input": "1 2 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举4",
+      "input": "1 2 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举5",
+      "input": "1 3 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举6",
+      "input": "1 3 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举7",
+      "input": "1 3 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举8",
+      "input": "2 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举9",
+      "input": "2 1 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举10",
+      "input": "2 1 3\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举11",
+      "input": "2 2 1\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举12",
+      "input": "2 2 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举13",
+      "input": "2 2 3\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举14",
+      "input": "2 3 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举15",
+      "input": "2 3 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举16",
+      "input": "2 3 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举17",
+      "input": "3 1 1\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举18",
+      "input": "3 1 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举19",
+      "input": "3 1 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举20",
+      "input": "3 2 1\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举21",
+      "input": "3 2 2\n",
+      "expectedOutput": "2\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举22",
+      "input": "3 2 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举23",
+      "input": "3 3 1\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举24",
+      "input": "3 3 2\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举25",
+      "input": "3 3 3\n",
+      "expectedOutput": "3\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举26",
+      "input": "4 6 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举27",
+      "input": "5 10 10\n",
+      "expectedOutput": "10\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "独立三维状态枚举28",
+      "input": "12 10 12\n",
+      "expectedOutput": "12\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合1",
+      "input": "99999999 99999999 99999999\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合2",
+      "input": "99999999 99999999 100000000\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合3",
+      "input": "99999999 99999999 99999998\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合4",
+      "input": "99999999 100000000 99999999\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合5",
+      "input": "99999999 100000000 100000000\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合6",
+      "input": "99999999 100000000 99999998\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合7",
+      "input": "99999999 99999998 99999999\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合8",
+      "input": "99999999 99999998 100000000\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合9",
+      "input": "99999999 99999998 99999998\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合10",
+      "input": "100000000 99999999 99999999\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合11",
+      "input": "100000000 99999999 100000000\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合12",
+      "input": "100000000 99999999 99999998\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合13",
+      "input": "100000000 100000000 99999999\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合14",
+      "input": "100000000 100000000 100000000\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合15",
+      "input": "100000000 100000000 99999998\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合16",
+      "input": "100000000 99999998 99999999\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合17",
+      "input": "100000000 99999998 100000000\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合18",
+      "input": "100000000 99999998 99999998\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合19",
+      "input": "99999998 99999999 99999999\n",
+      "expectedOutput": "99999999\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合20",
+      "input": "99999998 99999999 100000000\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合21",
+      "input": "99999998 99999999 99999998\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合22",
+      "input": "99999998 100000000 99999999\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合23",
+      "input": "99999998 100000000 100000000\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合24",
+      "input": "99999998 100000000 99999998\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合25",
+      "input": "99999998 99999998 99999999\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合26",
+      "input": "99999998 99999998 100000000\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "上界余数全组合27",
+      "input": "99999998 99999998 99999998\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最小两种快速清空",
+      "input": "1 1 100000000\n",
+      "expectedOutput": "1\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "长构造且第三种仅两颗",
+      "input": "100000000 1 2\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "最大差对称",
+      "input": "1 100000000 2\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "仅第三种为大值",
+      "input": "1 2 100000000\n",
+      "expectedOutput": "100000000\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "大值清空无需模拟",
+      "input": "99999998 2 1\n",
+      "expectedOutput": "99999998\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "高低混合无解",
+      "input": "99999999 1 2\n",
+      "expectedOutput": "-1\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}
