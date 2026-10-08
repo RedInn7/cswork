@@ -1,0 +1,458 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261023,
+  "problems": [
+    {
+      "id": "oa-moveworks-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 42,
+      "referenceFormalCases": 45,
+      "referenceSha256": "d4422501dd819acb84703f01066c1f9745d449d83851016f7312b8178d6e7f8f",
+      "negativeControls": [
+        {
+          "name": "错误包含零个0的全1二进制数",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            25,
+            27,
+            29,
+            30,
+            32,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40,
+            41,
+            42,
+            44
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误排除闭区间右端点",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            8,
+            10,
+            11,
+            12,
+            13,
+            14,
+            18,
+            23,
+            25,
+            31,
+            34,
+            35,
+            36,
+            37,
+            41,
+            44
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Independent tight/started/zero-count binary DP with moments0..3; brute binary classification for4096 prefixes and200000-query small interval pressure.",
+      "fullDomainDP": {
+        "count": 491280,
+        "cubeModulo": 497027816
+      },
+      "largeBoundaries": [
+        {
+          "name": "原输入纠正错误答案",
+          "q": 2,
+          "inputBytes": 12,
+          "expectedBytes": 9,
+          "expectedSha256": "755ccfa9db90e042ade56f103354b5a377259892adfdc7fe288345550b7a1f64",
+          "localSeconds": 0.02169
+        },
+        {
+          "name": "本站补充公开例1",
+          "q": 5,
+          "inputBytes": 24,
+          "expectedBytes": 12,
+          "expectedSha256": "5943be514f504454e2f34a18d3713d3591ee8bde8eed9442a63a92659b978f4a",
+          "localSeconds": 0.02004
+        },
+        {
+          "name": "本站补充公开例2",
+          "q": 1,
+          "inputBytes": 7,
+          "expectedBytes": 5,
+          "expectedSha256": "bfead191b15b25a783027f15abab82e83b26f12916f19ee0fc095374054f1fa9",
+          "localSeconds": 0.01957
+        },
+        {
+          "name": "独立小区间1",
+          "q": 5,
+          "inputBytes": 51,
+          "expectedBytes": 50,
+          "expectedSha256": "984c351661a6723568653ae3d4ca714450b2f20545083d8b4d89300a0f0852b8",
+          "localSeconds": 0.01964
+        },
+        {
+          "name": "独立小区间2",
+          "q": 7,
+          "inputBytes": 71,
+          "expectedBytes": 68,
+          "expectedSha256": "b92a52bd74036ebd5c7bc64e51a66802b202494e50fda9297177672fade2943e",
+          "localSeconds": 0.01989
+        },
+        {
+          "name": "独立小区间3",
+          "q": 3,
+          "inputBytes": 31,
+          "expectedBytes": 29,
+          "expectedSha256": "e16f281e8e70f6b25daece72b4a0907cb04629bce565f8b7346db7017e4f2ca2",
+          "localSeconds": 0.02075
+        },
+        {
+          "name": "独立小区间4",
+          "q": 5,
+          "inputBytes": 50,
+          "expectedBytes": 50,
+          "expectedSha256": "e8102e7e29fa8e8917348adb085f6a4e8a986ad31730197c08f23f946d59a1cc",
+          "localSeconds": 0.02521
+        },
+        {
+          "name": "独立小区间5",
+          "q": 1,
+          "inputBytes": 12,
+          "expectedBytes": 10,
+          "expectedSha256": "8a57244e01ff1db9834c5fa468845ad9cb8b9664e33bf1ac8c53c6bc0075b5b7",
+          "localSeconds": 0.02865
+        },
+        {
+          "name": "独立小区间6",
+          "q": 5,
+          "inputBytes": 52,
+          "expectedBytes": 50,
+          "expectedSha256": "fb542d7fe5af82d148b5767b17c21c24d60e8533f0d2ab5c46fdc1b6b55925f3",
+          "localSeconds": 0.02377
+        },
+        {
+          "name": "独立小区间7",
+          "q": 4,
+          "inputBytes": 40,
+          "expectedBytes": 40,
+          "expectedSha256": "8752e940da96a042c61fc32a4307eb9feb148bbd0a98b6367e866b66ff5b0749",
+          "localSeconds": 0.02101
+        },
+        {
+          "name": "独立小区间8",
+          "q": 3,
+          "inputBytes": 31,
+          "expectedBytes": 30,
+          "expectedSha256": "2e8e23faaad0aca973e859fdd5c721d562f7cb67044c12e558d4ebd4a4bc8a44",
+          "localSeconds": 0.02007
+        },
+        {
+          "name": "独立小区间9",
+          "q": 6,
+          "inputBytes": 59,
+          "expectedBytes": 57,
+          "expectedSha256": "1c8461c42d02f5e861b129cbd76d6f1376f88ff88682478aa552fbf1287f3d39",
+          "localSeconds": 0.01976
+        },
+        {
+          "name": "独立小区间10",
+          "q": 4,
+          "inputBytes": 40,
+          "expectedBytes": 40,
+          "expectedSha256": "8f0532f2af430c6aafc8c902fb1af02f0c5198a1551b0513a065b12c8dc22e2d",
+          "localSeconds": 0.02034
+        },
+        {
+          "name": "独立小区间11",
+          "q": 5,
+          "inputBytes": 51,
+          "expectedBytes": 50,
+          "expectedSha256": "e960359ddd70d36b203647cd19ca3d671a9e0f0c4ab7bfee9717a64622431831",
+          "localSeconds": 0.02065
+        },
+        {
+          "name": "独立小区间12",
+          "q": 6,
+          "inputBytes": 61,
+          "expectedBytes": 60,
+          "expectedSha256": "d127b7b3898e00cdb6fd66f625a90c3a9c0f226a72ae5a019e1d1a408e3867e2",
+          "localSeconds": 0.02018
+        },
+        {
+          "name": "独立小区间13",
+          "q": 4,
+          "inputBytes": 41,
+          "expectedBytes": 40,
+          "expectedSha256": "ffc49072eb13ab84e15123c33f01a5e1dccbabcead675967a131df90a13ec445",
+          "localSeconds": 0.02066
+        },
+        {
+          "name": "独立小区间14",
+          "q": 3,
+          "inputBytes": 32,
+          "expectedBytes": 30,
+          "expectedSha256": "377ffcfc5050bfe4957c9e7322e29d5abc96d202dc6c0b988a059251889c3c47",
+          "localSeconds": 0.0222
+        },
+        {
+          "name": "独立小区间15",
+          "q": 2,
+          "inputBytes": 21,
+          "expectedBytes": 20,
+          "expectedSha256": "40dd040f2ef32bfe13d99d51ad5155a60a5ce9c442b8789151fdb06a5111fefb",
+          "localSeconds": 0.02362
+        },
+        {
+          "name": "独立小区间16",
+          "q": 3,
+          "inputBytes": 32,
+          "expectedBytes": 30,
+          "expectedSha256": "46ca7d1160e7d4afc49baa711ba7a87fde1779dac109e1e3e33c4f67365daa9a",
+          "localSeconds": 0.0219
+        },
+        {
+          "name": "独立小区间17",
+          "q": 1,
+          "inputBytes": 12,
+          "expectedBytes": 10,
+          "expectedSha256": "abb334bf96d8ceeff9fc252bbf92a5509c796ea96224229221fb8577aaddf858",
+          "localSeconds": 0.02036
+        },
+        {
+          "name": "独立小区间18",
+          "q": 1,
+          "inputBytes": 11,
+          "expectedBytes": 9,
+          "expectedSha256": "973f3d783bf6b42ae600c5982c95fa8ef4ec70b45b1df4b9ac325e0c9bf29b9e",
+          "localSeconds": 0.02004
+        },
+        {
+          "name": "独立小区间19",
+          "q": 1,
+          "inputBytes": 12,
+          "expectedBytes": 10,
+          "expectedSha256": "f6cdb580ed73f0447d1a3511f6ca1e8551f0b68728c8cc9083075c891e62c0db",
+          "localSeconds": 0.02001
+        },
+        {
+          "name": "独立小区间20",
+          "q": 6,
+          "inputBytes": 60,
+          "expectedBytes": 60,
+          "expectedSha256": "bc53b321173e07d73c2f98a5b3cc640e7d9da62c8d274a9f62ecca931e21cc00",
+          "localSeconds": 0.01992
+        },
+        {
+          "name": "独立小区间21",
+          "q": 2,
+          "inputBytes": 22,
+          "expectedBytes": 20,
+          "expectedSha256": "c046533469a1a76b59bcdaf8c821908b26a6c7fd447e254252095235f8ca6294",
+          "localSeconds": 0.02164
+        },
+        {
+          "name": "独立小区间22",
+          "q": 2,
+          "inputBytes": 22,
+          "expectedBytes": 20,
+          "expectedSha256": "c6693496d92026cbd1aa063cdf36e6c31e16b379f8fe3ac552d2076a6eebdcfd",
+          "localSeconds": 0.02089
+        },
+        {
+          "name": "独立小区间23",
+          "q": 3,
+          "inputBytes": 32,
+          "expectedBytes": 30,
+          "expectedSha256": "198feecc0eb2ad62107bb784174c2cc7a8fe3b5c0f8865d85f75a11a05211c49",
+          "localSeconds": 0.02072
+        },
+        {
+          "name": "独立小区间24",
+          "q": 2,
+          "inputBytes": 22,
+          "expectedBytes": 20,
+          "expectedSha256": "bdeb823c888df02823a9e3f66539421a1bfc7cd3a80b10eaedf0b95ca0994dc6",
+          "localSeconds": 0.01975
+        },
+        {
+          "name": "独立小区间25",
+          "q": 4,
+          "inputBytes": 40,
+          "expectedBytes": 40,
+          "expectedSha256": "3ce8e7a1dcf0ae66aa599c12592b7a51cb6a731f6665f92e947f63c777f0e6af",
+          "localSeconds": 0.02104
+        },
+        {
+          "name": "独立小区间26",
+          "q": 1,
+          "inputBytes": 12,
+          "expectedBytes": 10,
+          "expectedSha256": "6572bc4ae1f7146fa23f8c49b98679f0904086faa5c232a1e263f372b56fdf1d",
+          "localSeconds": 0.02082
+        },
+        {
+          "name": "独立小区间27",
+          "q": 3,
+          "inputBytes": 31,
+          "expectedBytes": 30,
+          "expectedSha256": "ae65955ca15ba2749b1e57ded538693244f376b8942d09e79f037761becae862",
+          "localSeconds": 0.02034
+        },
+        {
+          "name": "独立小区间28",
+          "q": 4,
+          "inputBytes": 41,
+          "expectedBytes": 39,
+          "expectedSha256": "4bc5603416d4f349e26d58cb3dc2b1d7acca194ae1d9f91832deebfd2ccb3789",
+          "localSeconds": 0.01995
+        },
+        {
+          "name": "独立小区间29",
+          "q": 5,
+          "inputBytes": 52,
+          "expectedBytes": 47,
+          "expectedSha256": "bd23fa56f5de84523faeea97b0681da177f8c5192d393ab4bf3a79312f91d674",
+          "localSeconds": 0.01994
+        },
+        {
+          "name": "完整值域",
+          "q": 1,
+          "inputBytes": 24,
+          "expectedBytes": 10,
+          "expectedSha256": "53dacc37a61ba0c3e156697733423047e466d10474a6b6e5e39d1b6a5981e088",
+          "localSeconds": 0.27931
+        },
+        {
+          "name": "最大单值",
+          "q": 1,
+          "inputBytes": 42,
+          "expectedBytes": 2,
+          "expectedSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "localSeconds": 0.28618
+        },
+        {
+          "name": "最大有效数两端",
+          "q": 2,
+          "inputBytes": 79,
+          "expectedBytes": 20,
+          "expectedSha256": "d6019f09402a8c4eae0df5cd4b6426c0919d7ae1c153c1a4bc4fcf5811d893b1",
+          "localSeconds": 0.27785
+        },
+        {
+          "name": "位长边界2",
+          "q": 1,
+          "inputBytes": 6,
+          "expectedBytes": 4,
+          "expectedSha256": "c11eae0cc2e648efe410effd75e64dfca8f6b6532b51f6cfa29e5c03503be0d7",
+          "localSeconds": 0.02148
+        },
+        {
+          "name": "位长边界3",
+          "q": 1,
+          "inputBytes": 7,
+          "expectedBytes": 5,
+          "expectedSha256": "458a7d428fce52d32b64aaad91bce37f39630109ad92737736df26fe596f003d",
+          "localSeconds": 0.01946
+        },
+        {
+          "name": "位长边界4",
+          "q": 1,
+          "inputBytes": 8,
+          "expectedBytes": 6,
+          "expectedSha256": "460f0a0aa829c5e936aaa51f65c1585453ec483f7f4ef29c6d743408e27f727e",
+          "localSeconds": 0.02144
+        },
+        {
+          "name": "位长边界10",
+          "q": 1,
+          "inputBytes": 12,
+          "expectedBytes": 9,
+          "expectedSha256": "a690902d13a9aad6957a8b09fa4786933dac89b2f494d7ed1a6c6095c201cbd9",
+          "localSeconds": 0.02182
+        },
+        {
+          "name": "位长边界30",
+          "q": 1,
+          "inputBytes": 24,
+          "expectedBytes": 10,
+          "expectedSha256": "d22791a2dae251a92b6103c80436db4800fe6abf53628185b8de26f67822f175",
+          "localSeconds": 0.03487
+        },
+        {
+          "name": "位长边界59",
+          "q": 1,
+          "inputBytes": 40,
+          "expectedBytes": 10,
+          "expectedSha256": "fa3d0d47130794db343058cdd9824b44c1f66cbb9ee41da40bff5278659fc090",
+          "localSeconds": 0.27622
+        },
+        {
+          "name": "多位零数分类",
+          "q": 16,
+          "inputBytes": 99,
+          "expectedBytes": 35,
+          "expectedSha256": "b4f87271980ee45ccb33f8b8b27f70103f0a0c0846c10afff40770f733e3ede0",
+          "localSeconds": 0.0213
+        },
+        {
+          "name": "256独立大区间端点",
+          "q": 256,
+          "inputBytes": 9680,
+          "expectedBytes": 1320,
+          "expectedSha256": "6971f617b3d73744fc0a1d49096d6bf399052ffb8c6c20da3542435e9bfc8a0a",
+          "localSeconds": 0.28941
+        },
+        {
+          "name": "200000最大端点闭区间",
+          "q": 200000,
+          "inputBytes": 7800007,
+          "expectedBytes": 2000000,
+          "expectedSha256": "5e7263cba7753e0fef90700fd4b6c2f76cb7abd5cb7da07aecb34c86d84a78e8",
+          "localSeconds": 0.46268
+        },
+        {
+          "name": "200000不同小区间与完整值域",
+          "q": 200000,
+          "inputBytes": 2577850,
+          "expectedBytes": 511256,
+          "expectedSha256": "b514ec6eb291f59149b8022bb7514742cdd98120a49c4576852400d6ea2dc936",
+          "localSeconds": 0.40889
+        }
+      ],
+      "packageBytes": 13708821,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 16.938
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261111,
+  "problems": [
+    {
+      "id": "oa-bnp-2",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 37,
+      "referenceFormalCases": 40,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "cb460d659fe16fe7b6bb06e10d80ad25341f1ec78ce819df2c00d9830941013e",
+      "negativeControls": [
+        {
+          "name": "错误按移除箱数而非动作数计费",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            10,
+            13,
+            15,
+            17,
+            18,
+            20,
+            21,
+            23,
+            25,
+            26,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            35
+          ]
+        },
+        {
+          "name": "错误把同一高度所有堆合并成一步",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            0,
+            1,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            35,
+            36,
+            37,
+            38,
+            39
+          ]
+        },
+        {
+          "name": "错误把重复高度也当作一个新层级",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            1,
+            7,
+            8,
+            9,
+            10,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            31,
+            32,
+            34,
+            35,
+            38
+          ]
+        }
+      ],
+      "oracleMethod": "BFS of actual maximum-pile to strict-next-height operations; huge cases independent counts/bijection closed forms.",
+      "exhaustiveSmallDomain": {
+        "cases": 364,
+        "lengthMin": 0,
+        "lengthMax": 5,
+        "values": [
+          0,
+          1,
+          2
+        ],
+        "nativeReferenceSubprocessCases": 364
+      },
+      "largeBoundaries": [
+        {
+          "name": "duplicates",
+          "n": 16777211,
+          "inputBytes": 33554431,
+          "expected": 8388605,
+          "construction": {
+            "pattern": "alternating0,1"
+          },
+          "oracle": "ones count for0/1; n(n-1)/2 for bijection of0..n-1",
+          "localMetrics": {
+            "wallSeconds": 0.21672,
+            "peakResidentBytes": 68501504,
+            "hostPlatform": "darwin",
+            "method": "native /usr/bin/time",
+            "notLinuxSandboxEvidence": true
+          }
+        },
+        {
+          "name": "distinct",
+          "n": 4333191,
+          "inputBytes": 33554426,
+          "expected": 9388269954645,
+          "construction": {
+            "multiplier": 65537,
+            "offset": 123456,
+            "gcd": 1,
+            "bijectionRange": [
+              0,
+              4333190
+            ]
+          },
+          "oracle": "ones count for0/1; n(n-1)/2 for bijection of0..n-1",
+          "localMetrics": {
+            "wallSeconds": 0.24933,
+            "peakResidentBytes": 18726912,
+            "hostPlatform": "darwin",
+            "method": "native /usr/bin/time",
+            "notLinuxSandboxEvidence": true
+          }
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.893
+    }
+  ]
+}

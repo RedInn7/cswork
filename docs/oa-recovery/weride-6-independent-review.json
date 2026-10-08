@@ -1,0 +1,184 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-weride-6",
+  "batch": "weride-6-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "0842b1410bcf8c487c01b8da8a288194d7bf963bd910ea45b6161253f1ddf290",
+  "packageFileSha256": "9830528329a6850e361086054335b7ea8939b2e430d07c04f7e6c48a3f06f9ca",
+  "oracleSha256": "6d813300a7362e288430f5388548ed0b15fd16b0b9719c10d1cbf6a5d16deb72",
+  "referenceSha256": "bef24a7f7f367b7c3f1cc0d9a22586520278331d844dee0e20f61c1b4ba29c4f",
+  "scope": "Independent fixed-OCR and semantic pre-review preceded freeze. After freeze, every input and expected answer independently validated, followed by201 reference and114 mutant local native executions. Author generator never read or executed; upstream code never executed. Only this report written in the project, with no branch change or commit.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "verified": true,
+    "files": [
+      {
+        "path": "OA LIST/WeRide_OA/018_image.txt",
+        "gitBlobSha": "60e08aa15f26cec1994760590d812c3eda9f9e25",
+        "rawSha256": "abdffe3274e9e08fffc9091d40b778623b9e692c44b741aabcf03ca8de5a412c"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/019_image.txt",
+        "gitBlobSha": "791dde21879a36414a80399dc1216d38572e65f0",
+        "rawSha256": "0a2068ec96f3d2c5729244c3edfdfc73e6d3e0299cd8406c4569776913be5412"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/020_image.txt",
+        "gitBlobSha": "eff18898a415dc151bef25a879fb4cc4688a068d",
+        "rawSha256": "4a1baf5eeff87735ce88bd972aec0f4ecd5e48a99b2309e6c966453b90dc8eb0"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/021_image.txt",
+        "gitBlobSha": "3d697dc276e0f1eadaa97786baf4508f64089730",
+        "rawSha256": "ca7131c005a287b6cd3db41501619fcc4da688643ea6b951fec84c7166008cdd"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/022_image.txt",
+        "gitBlobSha": "cb276ca624f9ab0c3df1c8cf0db2a26c3561adb3",
+        "rawSha256": "2a8aeb1195ecf413a5ad34907b9c0887231bdcd0c8af7eb17623aac20ce62cff"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/023_image.txt",
+        "gitBlobSha": "2c494a438ad9154456419cb4cc9fcf1bf4d5b0eb",
+        "rawSha256": "d9b53dcbf8db8eb47d37383ab83dccda555379fc2140c643bc00edbb3f86eeab"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/024_image.txt",
+        "gitBlobSha": "0e4cfd788ef7c3fb4e910a5f6ac4e186f3638699",
+        "rawSha256": "211ba80ea640c19d287d019f3c423dc15cda05aa59051f6b8d046e83f71f9d19"
+      }
+    ],
+    "fullBounds": "020/021 explicitly give1<=n<=100000,m=n-1,1-based endpoints,edge weights1..26,and tree diameter strictly below1000 edges. Every frozen case independently checked for endpoint/weight bounds, no self/duplicate edges, connectivity, n-1 edges and exact diameter using two BFS passes.",
+    "pairSemantics": "023/024 enumerate all10 pairs of a five-node all-A tree, establishing unordered distinct endpoints and excluding self-pairs.019 BAA->ABA explicitly permits rearrangement, not only strings already palindromic.",
+    "samples": "019,021/022,023/024 inputs independently yield9,7,10 and are preserved as public cases.018 has a different edge topology and independently yields8; this is a separate hidden case with explicit editorial disclosure, not mixed with019."
+  },
+  "proofReview": {
+    "palindrome": "A multiset admits a palindrome iff at most one letter has odd multiplicity. Necessity follows from mirrored pairs; sufficiency follows by placing half of each count on both sides with any odd letter in the center.",
+    "pathMask": "XOR of root-to-endpoint parity masks cancels their common prefix and equals parity on the unique connecting path. Legal pairs therefore have equal masks or differ in exactly one bit.",
+    "counting": "Reference queries only previously inserted nodes before inserting the current node. Its27 masks are distinct, each eligible unordered pair is counted once, and no self-pair is inserted prematurely.",
+    "complexityAndSafety": "Iterative traversal O(n), expected O(26n) hash lookup work and O(n) storage. Runtime-seeded SplitMix64 reduces fixed-hash adversarial collision risk without claiming deterministic worst-case lookup bounds. Masks use26 bits; counts and total use64 bits. Maximum4999950000 exceeds signed32-bit.",
+    "bindings": "Normalized import schema and frozen checksum verified, including promoted batch checksum. Displayed editorial and solution arrays equal batch artifacts; displayed C++ exactly equals frozen reference. Required correctness-proof heading present."
+  },
+  "independentVerification": {
+    "reviewTool": "/private/tmp/weride6-review.sBMKD6/review.py",
+    "reviewToolSha256": "798ad1d8de7fcf3f88505c6fd55420c281286a714d4e0bc58982d5c54cf9e5ea",
+    "smallCases": 193,
+    "smallMethod": "From every source, traverse all unique paths with an explicit26-element letter-count array, then count odd frequencies at larger-numbered endpoints. No root masks or reference hash counting used.",
+    "largeCasesMethod": "Root at the last vertex, sort all parity masks and group equal values. Add within-group combinations. For each bit, split groups by bit0/1, clear that bit from the1-side, and use a two-pointer merge of sorted groups to count matching cross-group products. No hash lookups, no online insert/query flow, and no author oracle calls.",
+    "sharedTheoryDisclosure": "Large independent validation shares the proven parity characterization but uses a different root and deterministic sorted merge counting. Small explicit letter-path counts independently validate that characterization against actual original paths.",
+    "formalCases": 38,
+    "publicCases": 3,
+    "hiddenCases": 35,
+    "oracleCases": 163,
+    "uniqueOracleInputs": 163,
+    "referenceSubprocessRuns": 201,
+    "referenceResult": "All201 independently compiled native reference executions exited zero with empty stderr and matched independently recomputed expected tokens.",
+    "referenceMaxLocalSeconds": 0.32816333399387076,
+    "maxVerifiedDiameter": 999,
+    "fullSizeCases": [
+      {
+        "formalIndex": 30,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-star-one",
+        "diameter": 2,
+        "distinctMasks": 2,
+        "answer": 4999950000
+      },
+      {
+        "formalIndex": 31,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-star-26",
+        "diameter": 2,
+        "distinctMasks": 27,
+        "answer": 192353847
+      },
+      {
+        "formalIndex": 32,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-balanced-one",
+        "diameter": 32,
+        "distinctMasks": 2,
+        "answer": 4999950000
+      },
+      {
+        "formalIndex": 33,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-balanced-26",
+        "diameter": 32,
+        "distinctMasks": 22035,
+        "answer": 2036458
+      },
+      {
+        "formalIndex": 34,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-broom999-one",
+        "diameter": 999,
+        "distinctMasks": 2,
+        "answer": 4999950000
+      },
+      {
+        "formalIndex": 35,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-broom999-26",
+        "diameter": 999,
+        "distinctMasks": 76,
+        "answer": 190888876
+      },
+      {
+        "formalIndex": 36,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-random26",
+        "diameter": 24,
+        "distinctMasks": 64518,
+        "answer": 1636082
+      },
+      {
+        "formalIndex": 37,
+        "n": 100000,
+        "m": 99999,
+        "name": "满n-relabeled-random",
+        "diameter": 24,
+        "distinctMasks": 65422,
+        "answer": 1517463
+      }
+    ],
+    "memoryDiscipline": "One case and one child execution at a time. Per-case graph and sorted-group structures released between cases; no concurrent full-size graph processing.",
+    "wallSeconds": 8.731842249981128
+  },
+  "negativeControls": [
+    {
+      "name": "错误把无序点对按两个方向计数",
+      "normalExitCases": 38,
+      "rejectedByCases": [
+        0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
+      ]
+    },
+    {
+      "name": "错误加入每个节点与自身的空路径",
+      "normalExitCases": 38,
+      "rejectedByCases": [
+        0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+        20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37
+      ]
+    },
+    {
+      "name": "错误禁止重排并过度限定原路径必须为同一字母",
+      "normalExitCases": 38,
+      "rejectedByCases": [
+        0, 1, 3, 6, 10, 11, 12, 14, 15, 16, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+        27, 29, 33, 35, 36, 37
+      ]
+    }
+  ],
+  "negativeControlResult": "All114 actual native mutant executions exited zero with empty stderr. Rejection counts37/38/25 against independently recomputed formal expectations.",
+  "limitations": "Local native execution and timings are distinct from Linux GoJudge resource measurements. Parent separately reports Linux201-case validation and three rejected mutants; no duplicate sandbox run was performed. Temporary review-tool path documents provenance, not a runtime dependency."
+}

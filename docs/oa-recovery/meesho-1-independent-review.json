@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meesho-1",
+  "batch": "meesho-1-recovered",
+  "reviewer": "Independent non-author review agent",
+  "verdict": "passed-no-blocking-findings",
+  "scope": "Frozen source, generator inspection without execution, package, reference, editorial, oracle expectations, negative controls and complete input domain.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Meesho/meesho-distinct-moves.md",
+    "gitBlobSha": "95bc775ba41d6bd80e3644ff9d5b605bc02d137c",
+    "sha256": "482c27d22175589f08e79cb9f7e59127a85b76705010433593158316683e2632",
+    "fingerprintsVerified": true,
+    "upstreamCodeExecuted": false
+  },
+  "artifactBinding": {
+    "packageChecksum": "fea2c72a47757d19d238bc92bee3363a78375d8ae04cf4fd59df523d8b961e0e",
+    "referenceSha256": "9a28b2cc38102dd2a40ac7ed9cb396b32265437d2f560e08a9e6c2046e7549ec",
+    "batchEditorialAndReferenceExactMatch": true
+  },
+  "sourceAndDomainFindings": [
+    "原文明确0..n有限数轴、n为上界、l/r位移严格为减1/加1，题包公开说明整条路径不能越界，不采用反射或停留。",
+    "完整保留1<=|s|<=1000及0<=n,x,y<=2500，没有暗加x,y<=n；域外起止无合法路径返回0已明确标为有限数轴语义展开，而非声称原文额外保证。",
+    "原文允许删除零个或更多字符且未要求非空，合法x=y时计入空子序列；n=0和域外端点均覆盖。",
+    "按字符字符串去重而非下标选择次数，原始来源没有正式样例，三个公开样例均披露为本站推导。"
+  ],
+  "deduplicationProofReview": "追加固定字符对字符串是单射。旧集合中所有以当前字符结尾的串均可将最后字符的嵌入移至该字符上一次出现位置，且不改变路径。因此新追加集合与旧集合的交集恰为上次追加该字符的集合，按终点减去last贡献正确。集合单调扩张与固定轨迹保证有界路径过滤不会破坏这一交集性质。",
+  "independentVerification": {
+    "method": "另写前向规范嵌入DAG：预计算每个后缀中首个l/r的位置，按唯一最早嵌入的结束下标与当前坐标累加路径数；到达目标的所有结束状态都可终止。没有调用作者canonical函数或生成器，也没有使用参考last减法递推。短域另用显式字符串集合及逐步路径模拟。",
+    "oracleCases": 163,
+    "formalCases": 51,
+    "allInputsSourceLegal": true,
+    "allStoredExpectationsRecomputed": true,
+    "allReferenceSubprocessCases": 214,
+    "allReferenceSubprocessesNormalExitAndMatched": true,
+    "fullLength1000Cases": 16,
+    "exhaustiveCases": 25400,
+    "exhaustiveInputExpectedDigest": "a5d9066e4813800d10f350abd4c0a03c929d5b16b8dde8b7fcc29047dd4f6ddb",
+    "exhaustiveDigestMatchesAuthor": true,
+    "exactCountBeforeModulo": "89735935679240155804",
+    "exactCountModulo1000000007": 88610447,
+    "negativeControls": [
+      {
+        "name": "错误按下标选择方案计数而不去重",
+        "normalExitSubprocessCases": 51,
+        "rejectedCases": 13,
+        "rejectedIndexesMatchValidation": true
+      },
+      {
+        "name": "错误排除合法空子序列",
+        "normalExitSubprocessCases": 51,
+        "rejectedCases": 14,
+        "rejectedIndexesMatchValidation": true
+      }
+    ]
+  },
+  "complexityReview": "参考每个字符处理n+1个位置，时间O(|s|(n+1))、状态空间O(n+1)，最大1000*2501位置更新；各步按1000000007归一化，单个结果与输入均远低于题包容量。",
+  "blockingFindings": [],
+  "limitations": "本报告为本地独立内容与执行验证，不替代真实沙箱、API/worker端到端和远端CI。未运行生成器、未修改题包或共享文件、未切换分支、未提交。"
+}

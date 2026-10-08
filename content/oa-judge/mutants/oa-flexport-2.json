@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误按下标选择方案计数而不去重",
+    "code": "import sys\n\nMOD=1000000007\n\ndef solve(raw):\n    s,n,x,y=raw.split()\n    n,x,y=int(n),int(x),int(y)\n    if x>n or y>n:\n        return '0'\n    f=[0]*(n+1)\n    f[x]=1\n    last=[[0]*(n+1),[0]*(n+1)]\n    for ch in s:\n        direction=int(ch=='r')\n        added=([0]+f[:-1]) if direction else (f[1:]+[0])\n        f=[(f[j]+added[j])%MOD for j in range(n+1)]\n        last[direction]=added\n    return str(f[y])\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误排除合法空子序列",
+    "code": "import sys\n\nMOD=1000000007\n\ndef solve(raw):\n    s,n,x,y=raw.split()\n    n,x,y=int(n),int(x),int(y)\n    if x>n or y>n:\n        return '0'\n    f=[0]*(n+1)\n    f[x]=1\n    last=[[0]*(n+1),[0]*(n+1)]\n    for ch in s:\n        direction=int(ch=='r')\n        added=([0]+f[:-1]) if direction else (f[1:]+[0])\n        f=[(f[j]+added[j]-last[direction][j])%MOD for j in range(n+1)]\n        last[direction]=added\n    return str((f[y]-int(x==y))%MOD)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

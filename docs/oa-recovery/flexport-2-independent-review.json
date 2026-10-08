@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-flexport-2",
+  "batch": "flexport-2-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "7e44375563d17ef7adfa03716c27961785c45b4d14a002901f10d58a5bd22008",
+  "referenceSha256": "9a28b2cc38102dd2a40ac7ed9cb396b32265437d2f560e08a9e6c2046e7549ec",
+  "scope": "Independent fixed-source, artifact, expectation and subprocess review. Generator inspected but never executed; author oracle not imported or called. No sandbox, build, branch change or commit performed by reviewer.",
+  "sourceReview": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Flexport/flexport-distinct-moves.md",
+    "sha256": "77f1bee6ed88e653133fae52a6b0a2413359ed7fae43c1318b1ef28d8a5fe865",
+    "gitBlobSha": "3fb7f08fba5d35a4366400f7fcf618a2813a6615",
+    "domain": "Flexport itself supplies 1<=|s|<=1000 and 0<=n,x,y<=2500. Returns explicitly requires distinct subsequences modulo 1000000007. No x<=n or y<=n restriction is invented.",
+    "interpretation": "Finite number line 0..n and j+-1 transitions require a valid path to remain inside this domain. Out-of-domain endpoints yield no valid path. The ordinary subsequence definition permits deleting every character; the empty sequence contributes one exactly for valid x=y.",
+    "corroboration": "Fixed fastprep/Meesho/meesho-distinct-moves.md independently supplies matching interface, movement, modulus and numeric bounds, plus explicit character-string deduplication and deletion definition. Read in full and both SHA256/git blob checked. Package/editorial correctly identify these notes as corroboration rather than literal Flexport wording.",
+    "originalExample": {"input": "rrlrr\n6 1 4\n", "sourceAnswer": 3, "correctedAnswer": 2, "validDistinctStrings": ["rrlrr", "rrr"], "validIndexSelections": 5, "enumeratedMasks": 32},
+    "correctionDisclosure": "Original input retained; incorrect 3 openly corrected to 2. Unavailable author-local image is not claimed as evidence. Other public examples identified as site-derived."
+  },
+  "verification": {
+    "oracleMethod": "Independent forward earliest-embedding DAG: precompute next l/r positions, start with empty prefix at x, propagate each prefix only through its earliest next character, exclude out-of-domain moves, aggregate arrivals at y over all terminal embedding states. This differs from the author's backward suffix DAG and reference last-contribution subtraction.",
+    "shortCrossCheck": "Independently enumerate index masks, deduplicate complete character strings, then simulate every intermediate position. Applied to all short oracle/formal inputs.",
+    "oracleCasesRecomputed": 163,
+    "formalCasesRecomputed": 51,
+    "referenceSubprocessCases": 214,
+    "referenceSubprocessResult": "All exit zero with empty stderr and output tokens equal independently recomputed expectations.",
+    "domainValidatedForEveryInput": true,
+    "fullLength1000Cases": 16,
+    "boundaryCoverage": "n=2500, endpoints=2500, n=0, out-of-domain endpoints, lower/upper boundary excursions, all identical characters, alternation, long runs, mixed random input, empty-sequence contribution, modulo wraparound.",
+    "exhaustiveDomain": "Every lr string of length 1..7, n=0..3, x/y=0..4; independently compare bitmask string-set simulation and forward DAG.",
+    "exhaustiveCases": 25400,
+    "inputExpectedDigest": "a5d9066e4813800d10f350abd4c0a03c929d5b16b8dde8b7fcc29047dd4f6ddb",
+    "digestMatchesAuthoredEvidence": true,
+    "exactIntegerCrossCheck": {"exactCount": "89735935679240155804", "modulo1000000007": 88610447, "method": "Forward DAG with modulo disabled; no floating-point conversion."},
+    "artifactBindings": "Normalized package checksum, reference byte hash, batch authored solution, editorial solution/text, primary and corroborating source hashes all verified against frozen artifacts."
+  },
+  "negativeControls": [
+    {"name": "Count index selections without deduplication", "normalExitCases": 51, "rejectedByCases": [0, 1, 18, 19, 31, 33, 43, 44, 45, 46, 47, 48, 49, 50]},
+    {"name": "Exclude valid empty subsequence", "normalExitCases": 51, "rejectedByCases": [2, 3, 37, 38, 39, 43, 44, 45, 46, 47, 48, 50]}
+  ],
+  "negativeControlResult": "All 102 runs exit normally without stderr. Rejection indices exactly match authored validation; 14 and 12 cases respectively.",
+  "proofReview": "Appending a fixed character is injective on distinct prefix strings. The intersection with previously counted strings ending in that character is exactly the previous occurrence's appended set; shifting the last occurrence preserves the string and its trajectory. Endpoint-indexed subtraction therefore removes precisely duplicates, including under bounded-path filtering. Reference uses O(|s|*(n+1)) time and O(n+1) space."
+}
