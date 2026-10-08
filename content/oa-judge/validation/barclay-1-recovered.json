@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008111,
+  "problems": [
+    {
+      "id": "oa-barclay-1",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 34,
+      "referenceFormalCases": 37,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "f8871afc0740cbad72f9f5bf5ca740eab4419d1c114ef983ac1cc3025ea154b0",
+      "negativeControls": [
+        {
+          "name": "错误必须执行一次替换",
+          "rejectedCases": 5,
+          "rejectedCaseIndices": [
+            1,
+            4,
+            16,
+            26,
+            29
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误取min(其余gcd,R)",
+          "rejectedCases": 7,
+          "rejectedCaseIndices": [
+            6,
+            11,
+            17,
+            28,
+            31,
+            35,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误只尝试替换最大元素",
+          "rejectedCases": 15,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            3,
+            5,
+            6,
+            8,
+            10,
+            11,
+            15,
+            17,
+            19,
+            23,
+            30,
+            31,
+            36
+          ],
+          "normalExitCases": 37
+        },
+        {
+          "name": "错误替换值只能取R",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            2,
+            6,
+            8,
+            9,
+            11,
+            15,
+            17,
+            19,
+            21,
+            23,
+            30,
+            31,
+            36
+          ],
+          "normalExitCases": 37
+        }
+      ],
+      "oracleMethod": "Independent enumeration of every replacement position and every X in [1,R] plus the no-operation case, recomputing the whole-array gcd; exhaustive n=2..3 over values 1..6 and R 1..6.",
+      "exhaustiveSmallDomain": {
+        "nMin": 2,
+        "nMax": 3,
+        "values": [
+          1,
+          6
+        ],
+        "R": [
+          1,
+          6
+        ],
+        "cases": 1512
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模全为最大值R=1",
+          "inputBytes": 700009,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.03697
+        },
+        {
+          "name": "满规模一个异类",
+          "inputBytes": 600010,
+          "outputBytes": 6,
+          "elapsedSeconds": 0.0085
+        },
+        {
+          "name": "满规模异类且R较小",
+          "inputBytes": 600008,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00805
+        },
+        {
+          "name": "满规模随机",
+          "inputBytes": 588918,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00936
+        },
+        {
+          "name": "满规模公共因子随机",
+          "inputBytes": 589918,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.0094
+        },
+        {
+          "name": "满规模两个异类",
+          "inputBytes": 600006,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.0083
+        },
+        {
+          "name": "满规模大质数与R限制",
+          "inputBytes": 600008,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00897
+        },
+        {
+          "name": "满规模高约数个数",
+          "inputBytes": 600008,
+          "outputBytes": 4,
+          "elapsedSeconds": 0.00857
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.865
+    }
+  ]
+}
