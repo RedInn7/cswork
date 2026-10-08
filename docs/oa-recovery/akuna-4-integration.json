@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "batch": "akuna-4-recovered",
+  "problemId": "oa-akuna-capital-4",
+  "packageChecksum": "291031259f95aa5db92c63f6a77ff032e8063bc2ebd4a91dfb8510c7283f9e18",
+  "referenceSha256": "208ad2c25392ac4e5ec0ab97856a9414a5f70ba3e9d7bac3b3b5c31da1a241e9",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": { "referenceRuns": 208, "formal": 45, "oracle": 163, "mutantsKilled": 3 },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 45,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 403,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "coverage": { "total": 1634, "sandboxVerified": 1210, "remaining": 424 },
+  "deployment": "Not deployed; remote CI remains blocked by GitHub billing. Local coverage is not production coverage."
+}
