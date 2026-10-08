@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "gemini-1-recovered",
+  "problemId": "oa-gemini-1",
+  "packageChecksum": "abd10e8341c2375a8f57dcbda75f711c0e1bea34f47d368bf1540d3e48bcd0d8",
+  "referenceSha256": "2f5058ecac28d258d9e6bf16119fda6830a4f7aee55e12c97fc87f1e4b3408d9",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 207,
+      "formal": 44,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 44,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1627,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "Two exactly 33554432-byte inputs verified: EOF all-one n=16777212 and strictly ascending n=4333191. Includes zero, INT_MAX, LF/CRLF/EOF and parent-child aggregation counterexamples. Uses 12-byte stack nodes and 64-bit intermediate costs.",
+  "sourceDisclosure": "No original examples; all public examples explicitly authored. Nonnegative signed32 height bound is disclosed int[] type adaptation, not an original numeric constraint. No invented small n limit. Only horizontal strokes forbid repainting; vertical strokes paint an entire board.",
+  "coverage": { "total": 1634, "sandboxVerified": 1219, "remaining": 415 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

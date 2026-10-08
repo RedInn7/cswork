@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误取左右最高墙的较大者",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;scanf(\"%d\",&n);vector<int>h(n),l(n),r(n);for(int &v:h)scanf(\"%d\",&v);\nfor(int i=0;i<n;i++)l[i]=max(h[i],i?l[i-1]:0);for(int i=n-1;i>=0;i--)r[i]=max(h[i],i+1<n?r[i+1]:0);\nlong long answer=0;for(int i=0;i<n;i++)answer+=max(l[i],r[i])-h[i];printf(\"%lld\\n\",answer);}\n"
+  },
+  {
+    "name": "错误忘记扣除柱子占用高度",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;scanf(\"%d\",&n);vector<int> h(n);for(int &x:h)scanf(\"%d\",&x);\nint left=0,right=n-1,leftMax=0,rightMax=0;long long answer=0;\nwhile(left<=right){if(leftMax<=rightMax){leftMax=max(leftMax,h[left]);answer+=leftMax;++left;}else{rightMax=max(rightMax,h[right]);answer+=rightMax;--right;}}\nprintf(\"%lld\\n\",answer);}\n"
+  },
+  {
+    "name": "错误只看紧邻两根柱子",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;int main(){int n;scanf(\"%d\",&n);vector<int>h(n);for(int &v:h)scanf(\"%d\",&v);long long answer=0;for(int i=1;i+1<n;i++)answer+=max(0,min(h[i-1],h[i+1])-h[i]);printf(\"%lld\\n\",answer);}\n"
+  }
+]

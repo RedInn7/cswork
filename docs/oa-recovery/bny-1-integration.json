@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "batch": "bny-1-recovered",
+  "problemId": "oa-bny-mellon-1",
+  "packageChecksum": "301b68df5d472918645f20e3d064bb4aaf4f57e1fb0424e935bdb79da649f24b",
+  "referenceSha256": "84c076d363f0db8a35b698c7b0b0f3f32d05d53fe6c50b86d3ac16da035e6981",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": { "referenceRuns": 204, "formal": 41, "oracle": 163, "mutantsKilled": 4 },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 41,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1615,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "largeInputs": {
+    "cases": 2,
+    "bytesPerCase": 33554432,
+    "rounds": [0, 2147483647],
+    "disclosure": "Source omits numeric constraints. Nonnegative Java int rounds and the existing platform transport budget are explicitly disclosed interpretations; no small word-length cap invented."
+  },
+  "coverage": { "total": 1634, "sandboxVerified": 1213, "remaining": 421 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-pure-storage-11",
+  "batchId": "pure-storage-11-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 43,
+    "publicCases": 3,
+    "hiddenCases": 40,
+    "uniqueOracleCases": 163,
+    "actualLocalNativeReferenceRuns": 206,
+    "actualLocalNativeMutantRuns": 129,
+    "allProcessesExitedNormally": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告实际编译并执行本机 C++ 程序；Linux GoJudge 由主 agent 单独验证，不能把本机 RSS/耗时视为 Linux 指标。"
+  },
+  "bindings": {
+    "packageChecksum": "862eb00c05aeb5376d74ec81a1b1c910e9ac3e3b14da44443287d337b7d7387d",
+    "packageChecksumMethod": "实际 ojImportSchema.parse 后 JSON.stringify 的 SHA256，与冻结值和 batch 一致",
+    "packageFileSha256": "00c60dd13b9f429eefd7f93932b3cc566f7ade8a34672620c781086ad778992c",
+    "oracleFileSha256": "8eb4471213fa1011fcbc3f29a0407637cd57b1c3b1edba7342932d838c2c8fd8",
+    "referenceSha256": "f8ad37d22c2209cd196ff330d3a9819d4bd99630d31cda91317f8b08788da287",
+    "editorialFileSha256": "2ed5e4d6daeb3c9c9ebb5bc8d45b7216416b0f9416a9a98a3af6f63faa2842df",
+    "mutantFileSha256": "18da09ebaa1452307020854fbbad22783e2ff2856babbc4b743c70d9c0e06d0e",
+    "batchFileSha256": "c9a4eba8e56bb3fffbade49b13453aa84810920cd308b822182a37d83afa7a15",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Pure Storage/purestorage-count-different-palindrome-substrings.md",
+    "gitBlobSha": "27136d07e18e1b19697e059eebad6ae22b604196",
+    "sha256": "695c604aca889347ebdbbd23c661ca47ad3ce363a5e42c662509a60f5ecc46cf",
+    "semantics": "原文明确两个不同位置的 ll 是不同子串，虽值相同。因此计数对象是非空连续下标区间，不是内容去重。",
+    "sampleChecks": [
+      { "input": "hellolle", "positionalCount": 13, "distinctContentCount": 8 },
+      {
+        "input": "wowpurerocks",
+        "positionalCount": 14,
+        "distinctContentCount": 11
+      },
+      { "input": "aaa", "positionalCount": 6, "distinctContentCount": 3 }
+    ],
+    "rangeDisclosure": "小写英文字母是原文明确条件；长度栏仅占位符，无数值上限。采用现有每例 32MiB 传输预算，不借其它题目边界。空串返回 0 及将原 Java int 扩为精确 64 位计数均已公开披露。"
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "argument": "每个非空回文区间具有唯一奇偶中心和半径；每个中心的最大半径等于其非空回文区间数，累加不重不漏。Manacher 已知最右回文区间内可镜像复制的半径必须截断在区间内，真实比较处理越界部分；最右边界单调前进，整体 O(n)。奇偶两趟共用一个 radius 数组，避免同时保留两份或 2n 转换串。",
+    "integerBounds": "n=33554432 时 n(n+1)/2=562949970198528，远小于有符号 64 位上界；中心及镜像下标也在 int 范围内。65535 个 a 为 2147450880，65536 个 a 为 2147516416，两项正式例都实际通过，确认跨越 32 位边界。"
+  },
+  "independentExpectedValidation": {
+    "all206CasesRecomputed": true,
+    "bruteCases": 196,
+    "bruteMethod": "枚举全部非空区间，通过子串与反转相等判断，独立求和；同时与独立回文树交叉核验。",
+    "mediumEertreeCases": 8,
+    "eertreeMethod": "独立编写回文树；每个节点维护 1+suffix-link 节点的回文后缀数量，每追加一个字符，累加当前最长回文后缀节点的该数量。统计的是出现次数而非节点数，没有调用 Manacher 或作者生成器。",
+    "mediumCoverage": "二字母随机、26 字母随机、周期对称、偶数块、字母循环、中等全 a 以及 65535/65536 溢出边界。",
+    "inputValidation": "全部输入按 LF、CRLF 或 EOF 分离字符串，逐字符验证 a..z，逐例按 UTF-8 字节核对不超过 33554432。CRLF 原例=13、CRLF 空串=0、LF 空串=0 均通过；满长无换行输入不丢最后一个字符。",
+    "capacityCases": [
+      {
+        "formalIndex": 41,
+        "pattern": "全部 a，EOF 无换行",
+        "characters": 33554432,
+        "inputBytes": 33554432,
+        "expected": 562949970198528,
+        "formula": "n(n+1)/2",
+        "inputSha256": "facb58ac139bf9fc0e1f8b1f147003236b1b69e84f3a4c94166fa66f18f89932",
+        "localNativePeakRssBytes": 210386944
+      },
+      {
+        "formalIndex": 42,
+        "pattern": "交替 ab，带 LF",
+        "characters": 33554431,
+        "inputBytes": 33554432,
+        "expected": 281474976710656,
+        "formula": "floor((n+1)^2/4)，只有奇数长度区间是回文",
+        "inputSha256": "5649164a689aa399c119dcb30dfce4565f93bfbda914877f82eb6070f9222b58",
+        "localNativePeakRssBytes": 211058688
+      }
+    ],
+    "capacityValidation": "两例均以 8192 字符块检查整个字符串的模式，不仅核对首尾；独立闭式核全部 expected；原生参考和全部负控均顺序实际执行这两例。参考 RSS 由 /usr/bin/time -l 实测，两个值均低于 256MiB。",
+    "totalFormalInputPlusExpectedBytes": 67975479,
+    "within128MiBSnapshotBudget": true
+  },
+  "negativeControls": [
+    {
+      "name": "仅统计奇数长度回文",
+      "normalRuns": 43,
+      "killedByFormalCases": 31
+    },
+    { "name": "漏掉单字符回文", "normalRuns": 43, "killedByFormalCases": 41 },
+    { "name": "完整答案截断为32位", "normalRuns": 43, "killedByFormalCases": 4 }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/pure11-review.JNumuY/review.py",
+    "scriptSha256": "8911b5c4f14d1030fb3d36fccaa5b85502860508b828dbd674f01ae6adf96744",
+    "localRunSeconds": 16.177932739257812,
+    "projectMutation": "只新增本独立审核报告，未修改冻结产物，未提交。",
+    "memoryDiscipline": "巨例顺序核验和执行，不构建巨型回文树或 Python 整数数组；本机测量不替代 Linux 资源限制验证。"
+  }
+}

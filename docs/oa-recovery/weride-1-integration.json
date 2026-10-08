@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "weride-1-recovered",
+  "problemId": "oa-weride-1",
+  "packageChecksum": "eb2b79cbd7c0fcda34433c1d17a4cdf079ab403cc1c231b59635b1cc5a930c47",
+  "referenceSha256": "ca5c355bd0d7ab47dab8643e28f8217e36e5bdd74099f3cab0a47ad20e754097",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 201,
+      "formal": 38,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 38,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1439,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "Six n=q=200000 cases and one n=1/q=200000 case independently verified. Original0..1e9 prices and thresholds retained, unused type2 placeholder supports disclosed signed32-bit type adaptation includingINT_MIN/MAX.",
+  "sourceDisclosure": "001 example8,9,8 preserved.006 Sample0 corrected to1,2,4,4,3 and erroneous intermediate steps disclosed. Sample1 final all11 retained. Input explicitly standardized as n, prices, q, triples, rather than copying damaged source table layout.",
+  "coverage": { "total": 1634, "sandboxVerified": 1218, "remaining": 416 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

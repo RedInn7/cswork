@@ -9,7 +9,10 @@ import {
   digest,
   loadScope,
 } from './aggregate-batches.mjs';
-import { assertOracleCoverage } from './oracle-coverage.mjs';
+import {
+  assertOracleCoverage,
+  assertFormalCoverage,
+} from './oracle-coverage.mjs';
 import {
   readReferenceProgram,
   assertReferenceEvidence,
@@ -102,7 +105,7 @@ export function coverage(
           names,
           'Every incorrect program must be rejected',
         );
-        assert(pkg.cases.filter((item) => item.hidden).length >= 20);
+        assertFormalCoverage(entry, pkg);
         for (const [folder, extension, field] of [
           ['packages', '.json', 'packageSha256'],
           ['references', program.extension, 'referenceSha256'],

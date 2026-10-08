@@ -1,0 +1,253 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261027,
+  "problems": [
+    {
+      "id": "oa-meesho-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 48,
+      "referenceFormalCases": 51,
+      "referenceSha256": "9a28b2cc38102dd2a40ac7ed9cb396b32265437d2f560e08a9e6c2046e7549ec",
+      "negativeControls": [
+        {
+          "name": "错误按下标选择方案计数而不去重",
+          "rejectedByCases": [
+            0,
+            8,
+            13,
+            14,
+            26,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            49,
+            50
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误排除合法空子序列",
+          "rejectedByCases": [
+            1,
+            2,
+            3,
+            14,
+            37,
+            38,
+            39,
+            43,
+            44,
+            45,
+            46,
+            47,
+            48,
+            50
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Canonical earliest-next-character embedding DAG computed backward; independent bitmask->string-set enumeration with explicit bounded simulation.",
+      "exhaustiveSmallDomain": {
+        "cases": 25400,
+        "lengthMin": 1,
+        "lengthMax": 7,
+        "alphabet": "lr",
+        "nMax": 3,
+        "xyMax": 4,
+        "inputExpectedDigest": "a5d9066e4813800d10f350abd4c0a03c929d5b16b8dde8b7fcc29047dd4f6ddb"
+      },
+      "exactModuloCrossCheck": {
+        "input": "lrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlrlr\n100 50 50\n",
+        "exactCount": "89735935679240155804",
+        "modulo": 88610447
+      },
+      "largeBoundaries": [
+        {
+          "name": "全右可达1000",
+          "length": 1000,
+          "n": 2500,
+          "x": 1500,
+          "y": 2500,
+          "expected": 1,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.11831
+        },
+        {
+          "name": "全左可达1000",
+          "length": 1000,
+          "n": 2500,
+          "x": 2500,
+          "y": 1500,
+          "expected": 1,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.1197
+        },
+        {
+          "name": "全右不可达1001",
+          "length": 1000,
+          "n": 2500,
+          "x": 0,
+          "y": 1001,
+          "expected": 0,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.11468
+        },
+        {
+          "name": "上边界全右仅空",
+          "length": 1000,
+          "n": 2500,
+          "x": 2500,
+          "y": 2500,
+          "expected": 1,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.11545
+        },
+        {
+          "name": "下边界全左仅空",
+          "length": 1000,
+          "n": 2500,
+          "x": 0,
+          "y": 0,
+          "expected": 1,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.11943
+        },
+        {
+          "name": "零域仅空",
+          "length": 1000,
+          "n": 0,
+          "x": 0,
+          "y": 0,
+          "expected": 1,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.02037
+        },
+        {
+          "name": "零域起终点越界",
+          "length": 1000,
+          "n": 0,
+          "x": 2500,
+          "y": 2500,
+          "expected": 0,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.01891
+        },
+        {
+          "name": "起点超域",
+          "length": 1000,
+          "n": 2499,
+          "x": 2500,
+          "y": 2499,
+          "expected": 0,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.01842
+        },
+        {
+          "name": "终点超域",
+          "length": 1000,
+          "n": 2499,
+          "x": 2499,
+          "y": 2500,
+          "expected": 0,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.01843
+        },
+        {
+          "name": "大域中心交替模回绕",
+          "length": 1000,
+          "n": 2500,
+          "x": 1250,
+          "y": 1250,
+          "expected": 259565308,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": false,
+          "localSeconds": 0.13881
+        },
+        {
+          "name": "大域左边界交替",
+          "length": 1000,
+          "n": 2500,
+          "x": 0,
+          "y": 0,
+          "expected": 355972148,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": false,
+          "localSeconds": 0.12326
+        },
+        {
+          "name": "大域右边界交替",
+          "length": 1000,
+          "n": 2500,
+          "x": 2500,
+          "y": 2500,
+          "expected": 355972148,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": false,
+          "localSeconds": 0.12441
+        },
+        {
+          "name": "一步域交替",
+          "length": 1000,
+          "n": 1,
+          "x": 0,
+          "y": 0,
+          "expected": 501,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.02004
+        },
+        {
+          "name": "先左后右",
+          "length": 1000,
+          "n": 2500,
+          "x": 500,
+          "y": 500,
+          "expected": 501,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": true,
+          "localSeconds": 0.11859
+        },
+        {
+          "name": "长块交替",
+          "length": 1000,
+          "n": 2500,
+          "x": 1250,
+          "y": 1250,
+          "expected": 875354878,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": false,
+          "localSeconds": 0.1325
+        },
+        {
+          "name": "满域随机",
+          "length": 1000,
+          "n": 2500,
+          "x": 1000,
+          "y": 999,
+          "expected": 237660008,
+          "oracle": "canonical-next DAG",
+          "closedFormChecked": false,
+          "localSeconds": 0.13451
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 13.778
+    }
+  ]
+}

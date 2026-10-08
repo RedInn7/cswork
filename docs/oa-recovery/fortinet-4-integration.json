@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "batch": "fortinet-4-recovered",
+  "problemId": "oa-fortinet-4",
+  "packageChecksum": "d87634f42f6e2c365d548106dea57607f2f29e3fe8811b6a8ae8dbc469e93239",
+  "referenceSha256": "393902d9f6e0210d0e3718c40c9e26e03b2c312ec384b472b8af5d3dfc74e275",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "capacityAndOutputCheckerTests": { "passed": 168, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 203,
+      "formal": 37,
+      "oracle": 166,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 37,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1763,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "largeInput": {
+    "n": 4333191,
+    "inputBytes": 33554432,
+    "outputBytes": 33554424,
+    "nextNInputBytes": 33554440
+  },
+  "rangeDisclosure": "Original source has no numerical n bound. Complete existing32MiB input transport domain retained; n=0 is explicitly disclosed mathematical extension. Cumulative bitmap and final no-swap round inferred explicitly from original sample.",
+  "coverage": { "total": 1634, "sandboxVerified": 1216, "remaining": 418 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}
