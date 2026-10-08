@@ -24,6 +24,7 @@ import {
 import { matchesSemantic } from './oj-semantic-checkers';
 import { z } from 'zod';
 import { codeiumSequence } from './oa-codeium-sequence-checker.mjs';
+import { morganBricks } from './oa-morgan-bricks-checker.mjs';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -69,6 +70,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-k-level-permutation'
     | 'oa-tree-max-path'
     | 'oa-codeium-sequence'
+    | 'oa-morgan-bricks'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -293,6 +295,7 @@ export const ojImportSchema = z
           'oa-k-level-permutation',
           'oa-tree-max-path',
           'oa-codeium-sequence',
+          'oa-morgan-bricks',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -363,7 +366,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-tree-max-path' &&
         data.problem.id !== 'oa-uber-19') ||
       (data.problem.checker === 'oa-codeium-sequence' &&
-        data.problem.id !== 'oa-codeium-1')
+        data.problem.id !== 'oa-codeium-1') ||
+      (data.problem.checker === 'oa-morgan-bricks' &&
+        data.problem.id !== 'oa-morgan-stanley-1')
     )
       ctx.addIssue({
         code: 'custom',
@@ -458,6 +463,15 @@ export const ojImportSchema = z
         path: ['problem', 'checker'],
       });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        data.problem.checker === 'oa-morgan-bricks' &&
+        !morganBricks(c.expectedOutput, undefined, c.input)
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message: 'Invalid Morgan bricks ACM input or optimal expected output',
+        });
       if (
         data.problem.checker === 'oa-codeium-sequence' &&
         !codeiumSequence(c.expectedOutput, undefined, c.input)
