@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261011,
+  "problems": [
+    {
+      "id": "oa-wayfair-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 4,
+      "hiddenCases": 40,
+      "referenceFormalCases": 44,
+      "negativeControls": [
+        {
+          "name": "大锤错误优先最弱砖块",
+          "rejectedByCases": [
+            1,
+            13,
+            16,
+            17,
+            23,
+            24,
+            29,
+            31,
+            32,
+            34,
+            38,
+            39,
+            43
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "总击数错误溢出32位",
+          "rejectedByCases": [
+            36,
+            38,
+            39,
+            43
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "f2b3d4249abfb89c32aaa85e386aaa2d53e83773a1ea1da9f8f8c142d23f4a90",
+      "oracleMethod": "Prefix/quota dynamic programming with independent small/big cost transitions and witness reconstruction; no sorting/greedy formula and no imported expected outputs.",
+      "alternateOptimalWitnessesChecked": 4,
+      "largeBoundaries": [
+        {
+          "name": "完整64位总值零额度",
+          "n": 200000,
+          "k": 0,
+          "inputBytes": 2000010,
+          "optimalTotal": "199980000100000",
+          "localSeconds": 0.0941
+        },
+        {
+          "name": "完整全大锤",
+          "n": 200000,
+          "k": 200000,
+          "inputBytes": 2000015,
+          "optimalTotal": "200000",
+          "localSeconds": 0.1043
+        },
+        {
+          "name": "完整半额度逆序",
+          "n": 200000,
+          "k": 100000,
+          "inputBytes": 2000015,
+          "optimalTotal": "99985000150000",
+          "localSeconds": 0.0962
+        },
+        {
+          "name": "完整半额度乱序",
+          "n": 200000,
+          "k": 100000,
+          "inputBytes": 2000015,
+          "optimalTotal": "99985000150000",
+          "localSeconds": 0.1386
+        },
+        {
+          "name": "完整低值含一全额度",
+          "n": 200000,
+          "k": 200000,
+          "inputBytes": 1288909,
+          "optimalTotal": "200000",
+          "localSeconds": 0.1016
+        },
+        {
+          "name": "完整低值含一少一额度",
+          "n": 200000,
+          "k": 199999,
+          "inputBytes": 1288909,
+          "optimalTotal": "200000",
+          "localSeconds": 0.0942
+        },
+        {
+          "name": "额度大于砖数",
+          "n": 199999,
+          "k": 200000,
+          "inputBytes": 2000004,
+          "optimalTotal": "199999",
+          "localSeconds": 0.0996
+        },
+        {
+          "name": "完整仅一次大锤",
+          "n": 200000,
+          "k": 1,
+          "inputBytes": 2000010,
+          "optimalTotal": "199979000100001",
+          "localSeconds": 0.1119
+        }
+      ],
+      "semanticValidation": true,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 12.06
+    }
+  ]
+}

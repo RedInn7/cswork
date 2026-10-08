@@ -1,0 +1,10 @@
+[
+  {
+    "name": "大锤错误优先最弱砖块",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[:2]\n    strengths = data[2:]\n    selected = sorted((i for i in range(n) if strengths[i] > 1), key=lambda i: strengths[i], reverse=False)[:min(k, n)]\n    used = set(selected)\n    big = [i + 1 for i in range(n) if i in used]\n    small = [i + 1 for i in range(n) if i not in used]\n    total = len(big) + sum(strengths[i - 1] for i in small)\n    return str(total) + '\\n' + (' '.join(map(str, big)) if big else '-1') + '\\n' + (' '.join(map(str, small)) if small else '-1')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "总击数错误溢出32位",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[:2]\n    strengths = data[2:]\n    selected = sorted((i for i in range(n) if strengths[i] > 1), key=lambda i: strengths[i], reverse=True)[:min(k, n)]\n    used = set(selected)\n    big = [i + 1 for i in range(n) if i in used]\n    small = [i + 1 for i in range(n) if i not in used]\n    total = len(big) + sum(strengths[i - 1] for i in small)\n    total = (total + 2147483648) % 4294967296 - 2147483648\n    return str(total) + '\\n' + (' '.join(map(str, big)) if big else '-1') + '\\n' + (' '.join(map(str, small)) if small else '-1')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

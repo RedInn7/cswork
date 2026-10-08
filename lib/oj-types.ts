@@ -71,6 +71,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-tree-max-path'
     | 'oa-codeium-sequence'
     | 'oa-morgan-bricks'
+    | 'oa-wayfair-bricks'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -296,6 +297,7 @@ export const ojImportSchema = z
           'oa-tree-max-path',
           'oa-codeium-sequence',
           'oa-morgan-bricks',
+          'oa-wayfair-bricks',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -368,7 +370,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-codeium-sequence' &&
         data.problem.id !== 'oa-codeium-1') ||
       (data.problem.checker === 'oa-morgan-bricks' &&
-        data.problem.id !== 'oa-morgan-stanley-1')
+        data.problem.id !== 'oa-morgan-stanley-1') ||
+      (data.problem.checker === 'oa-wayfair-bricks' &&
+        data.problem.id !== 'oa-wayfair-3')
     )
       ctx.addIssue({
         code: 'custom',
@@ -464,7 +468,8 @@ export const ojImportSchema = z
       });
     for (const [index, c] of data.cases.entries()) {
       if (
-        data.problem.checker === 'oa-morgan-bricks' &&
+        (data.problem.checker === 'oa-morgan-bricks' ||
+          data.problem.checker === 'oa-wayfair-bricks') &&
         !morganBricks(c.expectedOutput, undefined, c.input)
       )
         ctx.addIssue({
