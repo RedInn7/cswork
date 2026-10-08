@@ -3,6 +3,17 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-factset-3",
+      "decision": "Do not promote without clarifying insertion indices beyond current album length",
+      "source": "fastprep/FactSet/factset-photo-album.md",
+      "sourceSha256": "1f12522c84d65ab3951445eba53cbac0aa06f280648083ae8fad276d2e2f32f9",
+      "findings": [
+        "Raw source contains the full custom-input protocol n/index/n/identity; catalog truncation is an HTML parsing artifact, not missing original input lines.",
+        "Original bounds allow0<=index[i]<n, including index[0]>0 when the album is empty. Source does not explain whether such indices append, create gaps, or are invalid; there are no examples to disambiguate.",
+        "Catalog Python list.insert silently clamps an index beyond length; Java list.add rejects it and C++ begin()+index is invalid. These imported solutions disagree, so do not treat any as authoritative or silently impose index[i]<=i."
+      ]
+    },
+    {
       "id": "oa-gemini-1",
       "decision": "New recovery candidate; implementation and independent proof still required",
       "source": "fastprep/Gemini/gemini-minimum-fence-painting-operations.md",
