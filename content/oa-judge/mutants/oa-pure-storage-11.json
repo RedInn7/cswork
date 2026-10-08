@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误仅统计奇数长度回文",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\n#include <cstdint>\nusing namespace std;\nint main(){\n string s;int c;while((c=getchar_unlocked())!=EOF&&c!='\\n')s.push_back(char(c));\n if(!s.empty()&&s.back()=='\\r')s.pop_back();\n int n=int(s.size());vector<int> radius(n);long long answer=0;\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?1:min(radius[l+r-i],r-i+1);\n  while(i-k>=0&&i+k<n&&s[i-k]==s[i+k])k++;\n  radius[i]=k;answer+=k;//odd\n  if(i+k-1>r){l=i-k+1;r=i+k-1;}\n }\n fill(radius.begin(),radius.end(),0);\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?0:min(radius[l+r-i+1],r-i+1);\n  while(i-k-1>=0&&i+k<n&&s[i-k-1]==s[i+k])k++;\n  radius[i]=k;answer+=0;//even\n  if(i+k-1>r){l=i-k;r=i+k-1;}\n }\n printf(\"%lld\\n\",answer);\n}\n"
+  },
+  {
+    "name": "错误漏掉全部单字符回文",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\n#include <cstdint>\nusing namespace std;\nint main(){\n string s;int c;while((c=getchar_unlocked())!=EOF&&c!='\\n')s.push_back(char(c));\n if(!s.empty()&&s.back()=='\\r')s.pop_back();\n int n=int(s.size());vector<int> radius(n);long long answer=0;\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?1:min(radius[l+r-i],r-i+1);\n  while(i-k>=0&&i+k<n&&s[i-k]==s[i+k])k++;\n  radius[i]=k;answer+=k;//odd\n  if(i+k-1>r){l=i-k+1;r=i+k-1;}\n }\n fill(radius.begin(),radius.end(),0);\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?0:min(radius[l+r-i+1],r-i+1);\n  while(i-k-1>=0&&i+k<n&&s[i-k-1]==s[i+k])k++;\n  radius[i]=k;answer+=k;//even\n  if(i+k-1>r){l=i-k;r=i+k-1;}\n }\n printf(\"%lld\\n\",answer-n);\n}\n"
+  },
+  {
+    "name": "错误把完整计数截断为32位",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <algorithm>\n#include <cstdint>\nusing namespace std;\nint main(){\n string s;int c;while((c=getchar_unlocked())!=EOF&&c!='\\n')s.push_back(char(c));\n if(!s.empty()&&s.back()=='\\r')s.pop_back();\n int n=int(s.size());vector<int> radius(n);long long answer=0;\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?1:min(radius[l+r-i],r-i+1);\n  while(i-k>=0&&i+k<n&&s[i-k]==s[i+k])k++;\n  radius[i]=k;answer+=k;//odd\n  if(i+k-1>r){l=i-k+1;r=i+k-1;}\n }\n fill(radius.begin(),radius.end(),0);\n for(int i=0,l=0,r=-1;i<n;i++){\n  int k=i>r?0:min(radius[l+r-i+1],r-i+1);\n  while(i-k-1>=0&&i+k<n&&s[i-k-1]==s[i+k])k++;\n  radius[i]=k;answer+=k;//even\n  if(i+k-1>r){l=i-k;r=i+k-1;}\n }\n printf(\"%lld\\n\",static_cast<long long>(static_cast<int32_t>(static_cast<uint32_t>(answer))));\n}\n"
+  }
+]

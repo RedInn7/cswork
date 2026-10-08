@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261115,
+  "problems": [
+    {
+      "id": "oa-weride-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 35,
+      "referenceFormalCases": 38,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "ca5c355bd0d7ab47dab8643e28f8217e36e5bdd74099f3cab0a47ad20e754097",
+      "negativeControls": [
+        {
+          "name": "错误使用全局查询第三占位字段作为阈值",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            3,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            17,
+            18,
+            19,
+            20,
+            21,
+            23,
+            24,
+            26,
+            27,
+            29,
+            31,
+            33,
+            34,
+            35,
+            36
+          ]
+        },
+        {
+          "name": "错误让更早单点赋值覆盖更晚赋值",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            12,
+            18,
+            24,
+            25,
+            28,
+            30,
+            33,
+            36,
+            37
+          ]
+        },
+        {
+          "name": "错误把所有历史全局下限应用于最终单点价格",
+          "normalExitVerified": true,
+          "rejectedByCases": [
+            1,
+            5,
+            12,
+            16,
+            18,
+            19,
+            21,
+            24,
+            25,
+            27,
+            30,
+            33,
+            34,
+            36,
+            37
+          ]
+        }
+      ],
+      "oracleMethod": "Literal forward array updates; independently forward lazy binary tree with global tags pushed before point overwrite; structured full-scale closed forms.",
+      "exhaustiveSmallDomain": {
+        "cases": 8145,
+        "nMin": 1,
+        "nMax": 2,
+        "initialValues": [
+          0,
+          1,
+          2
+        ],
+        "qMin": 1,
+        "qMax": 3
+      },
+      "largeBoundaries": [
+        {
+          "name": "all-global",
+          "n": 200000,
+          "q": 200000,
+          "inputBytes": 6677829,
+          "outputSha256": "d7bd6fe0f28c6ac4b4f460368f364160e9c0b2782e60ff33f49e45e4ec6f6b17",
+          "closedFormChecked": true,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.05064
+        },
+        {
+          "name": "all-assign",
+          "n": 200000,
+          "q": 200000,
+          "inputBytes": 5666541,
+          "outputSha256": "55814960b8049be1950cd6b13b191f1e58b2b5a4de41098f97079b21659fc2d1",
+          "closedFormChecked": true,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.05612
+        },
+        {
+          "name": "repeated-low-last",
+          "n": 200000,
+          "q": 200000,
+          "inputBytes": 4077897,
+          "outputSha256": "3811fea08c85d72bd39156f373c8890f860cfd32f3f82b36f2208894935b099a",
+          "closedFormChecked": true,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.03839
+        },
+        {
+          "name": "global-then-lower",
+          "n": 200000,
+          "q": 200000,
+          "inputBytes": 4066612,
+          "outputSha256": "be05a70bb230bfcf0804f036758bb03e0e5b9d80d97131b14ac71fc195ef43b9",
+          "closedFormChecked": true,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.03508
+        },
+        {
+          "name": "zero-floor",
+          "n": 200000,
+          "q": 200000,
+          "inputBytes": 3500014,
+          "outputSha256": "d8b5bb748e437a95d91f13e4bd82e575c72923f47476cf73ff78b50d6cb02df7",
+          "closedFormChecked": true,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.03173
+        },
+        {
+          "name": "random-full-domain",
+          "n": 200000,
+          "q": 200000,
+          "inputBytes": 6096260,
+          "outputSha256": "824ad7fd9e93c735d0e63a8dd93640dea37cb0d8de2616b967d23d4793243cbc",
+          "closedFormChecked": false,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.0485
+        },
+        {
+          "name": "single-item-full-q",
+          "n": 1,
+          "q": 200000,
+          "inputBytes": 3544464,
+          "outputSha256": "00d9cd208c4bb685541067ed529222ed418e5cc75d71304d8ef159f3ea3aa50e",
+          "closedFormChecked": true,
+          "oracle": "forward lazy binary tree: global chmax tag, push-to-leaf before overwrite",
+          "localSeconds": 0.02111
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 9.137
+    }
+  ]
+}
