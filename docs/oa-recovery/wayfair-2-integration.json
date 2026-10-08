@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "wayfair-2-recovered",
+  "problemId": "oa-wayfair-2",
+  "packageChecksum": "5a4e16e6147d39297bc8fd47d41525b6ece6d46c12b15e65c120d7fc44d067b0",
+  "referenceSha256": "79faaa11e758286e12ad8f8abd1568e80eb9ff7d8d2aeb634a728ff7dd001b01",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 208,
+      "formal": 45,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 45,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 628,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "Original lowercase n1..2000 retained. Fifteen full-length cases independently recomputed by quadratic substring enumeration; all26 mapping characters and boundaries covered. Nine single-mapping-group full-length cases checked against2001000 closed form.",
+  "sourceDisclosure": "Missing mapping restored from current original FastPrep page's linked Problem Source screenshot. Fixed text explicitly refers to LC2950. Screenshot URL, local image and independent SHA are bound separately from fixed upstream Git evidence.",
+  "coverage": { "total": 1634, "sandboxVerified": 1221, "remaining": 413 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

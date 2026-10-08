@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "batch": "pure-storage-8-recovered",
+  "packageChecksum": "b634aee2960b28d8907662a8c4b992f519b04f36c3b4bb18e2551af463b1f7ed",
+  "buildPassed": true,
+  "typecheckPassed": true,
+  "contentAndRoutingTestsPassed": 8,
+  "coverageAndPublisherRegressionTestsPassed": 46,
+  "checkerAndSingletonTestsPassed": 8,
+  "checkerExhaustiveComparisons": 9002,
+  "sandboxReferenceExecutions": 2,
+  "uniqueInputCount": 1,
+  "negativeControlsKilled": 2,
+  "runtimeRepair": "The initial end-to-end run found the snapshot loader still required two cases. A fixed ID+checker+single public empty-input exception was added; rebuilt web and worker then passed both singleton and ordinary-problem integration runs.",
+  "integration": {
+    "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+    "productionDataUsed": false,
+    "submissions": 4,
+    "judgeCases": 1,
+    "wrongAnswerMs": 229,
+    "firstFailureReturned": true,
+    "alternateWitnessVerified": true,
+    "hiddenCounterexampleVerified": false,
+    "reason": "No hidden input exists for this source-defined no-input task.",
+    "latencyQualification": "Single observation, not a load-test percentile."
+  },
+  "ordinaryRegression": {
+    "batch": "flexport-2-recovered",
+    "submissions": 4,
+    "judgeCases": 51,
+    "wrongAnswerMs": 232,
+    "firstFailureReturned": true,
+    "hiddenCounterexampleVerified": true
+  }
+}

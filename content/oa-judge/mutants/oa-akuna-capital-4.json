@@ -1,0 +1,14 @@
+[
+  {
+    "name": "错误把最多k臂变成最多k节点",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,m,k=data[:3]\n    values=data[3:3+n]\n    neighbors=[[] for _ in range(n)]\n    for i in range(3+n,len(data),2):\n        u,v=data[i:i+2]\n        if values[v]>0: neighbors[u].append(values[v])\n        if values[u]>0: neighbors[v].append(values[u])\n    answer=max(values)\n    for center in range(n):\n        neighbors[center].sort(reverse=True)\n        answer=max(answer,values[center]+sum(neighbors[center][:max(0,k-1)]))\n    return str(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误强制选择负权邻居",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,m,k=data[:3]\n    values=data[3:3+n]\n    neighbors=[[] for _ in range(n)]\n    for i in range(3+n,len(data),2):\n        u,v=data[i:i+2]\n        if True: neighbors[u].append(values[v])\n        if True: neighbors[v].append(values[u])\n    answer=max(values)\n    for center in range(n):\n        neighbors[center].sort(reverse=True)\n        answer=max(answer,values[center]+sum(neighbors[center][:k]))\n    return str(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误将无向边当成单向边",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,m,k=data[:3]\n    values=data[3:3+n]\n    neighbors=[[] for _ in range(n)]\n    for i in range(3+n,len(data),2):\n        u,v=data[i:i+2]\n        if values[v]>0: neighbors[u].append(values[v])\n        if False: neighbors[v].append(values[u])\n    answer=max(values)\n    for center in range(n):\n        neighbors[center].sort(reverse=True)\n        answer=max(answer,values[center]+sum(neighbors[center][:k]))\n    return str(answer)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

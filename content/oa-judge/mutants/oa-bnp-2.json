@@ -1,0 +1,17 @@
+[
+  {
+    "name": "错误按移除箱数而非动作数计费",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nunsigned readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();unsigned x=0;while(c>32&&c!=EOF){x=x*10+unsigned(c-'0');c=getchar_unlocked();}return x;}\nint main(){\n unsigned n=readNumber();vector<unsigned>a(n);\n for(auto &v:a)v=readNumber();\n sort(a.begin(),a.end());\n long long answer=0,rank=0;\n for(unsigned i=0;i<n;i++){\n  if(i && a[i]!=a[i-1])rank++;\n  answer+=a[i]-a[0];\n }\n printf(\"%lld\\n\",answer);\n}\n"
+  },
+  {
+    "name": "错误把同一高度所有堆合并成一步",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nunsigned readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();unsigned x=0;while(c>32&&c!=EOF){x=x*10+unsigned(c-'0');c=getchar_unlocked();}return x;}\nint main(){\n unsigned n=readNumber();vector<unsigned>a(n);\n for(auto &v:a)v=readNumber();\n sort(a.begin(),a.end());\n long long answer=0,rank=0;\n for(unsigned i=0;i<n;i++){\n  if(i && a[i]!=a[i-1])rank++;\n  answer=rank;\n }\n printf(\"%lld\\n\",answer);\n}\n"
+  },
+  {
+    "name": "错误把重复高度也当作一个新层级",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nunsigned readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();unsigned x=0;while(c>32&&c!=EOF){x=x*10+unsigned(c-'0');c=getchar_unlocked();}return x;}\nint main(){\n unsigned n=readNumber();vector<unsigned>a(n);\n for(auto &v:a)v=readNumber();\n sort(a.begin(),a.end());\n long long answer=0,rank=0;\n for(unsigned i=0;i<n;i++){\n  if(i)rank++;\n  answer+=rank;\n }\n printf(\"%lld\\n\",answer);\n}\n"
+  }
+]
