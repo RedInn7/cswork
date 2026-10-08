@@ -458,7 +458,6 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
     <section className="study-library oa-library" aria-label="OA 题目">
       <header className="study-library-heading">
         <div>
-          <span className="study-kicker">ONLINE ASSESSMENT · OA MASTER</span>
           <h2>OA 题目</h2>
           <p>
             按公司查找 OA

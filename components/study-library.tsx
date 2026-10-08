@@ -555,7 +555,6 @@ export function StudyLibrary({
     <section className="study-library" lang={english ? 'en' : 'zh'}>
       <header className="study-library-heading">
         <div>
-          <span className="study-kicker">STEP BY STEP</span>
           <h2>{t('灵神题单精选', 'Ling’s Curated 500')}</h2>
           <p>
             {t(

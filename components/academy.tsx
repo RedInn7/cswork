@@ -579,6 +579,74 @@ function FileSearchTitle({ title }: { title: string }) {
     </strong>
   );
 }
+type PracticeSummary = {
+  collection?: { solved: number; total: number };
+  currentRound?: { number: number };
+};
+
+/** The learner's curated-list round at a glance, with one click back into practice. */
+function PracticeCard({
+  signedIn,
+  navigate,
+  login,
+}: {
+  signedIn: boolean;
+  navigate: Navigate;
+  login: () => void;
+}) {
+  const [summary, setSummary] = useState<PracticeSummary | null>(null);
+  useEffect(() => {
+    if (!signedIn) return;
+    let current = true;
+    api<PracticeSummary>('oj/library?collection=ling-selected-500&page=1')
+      .then((data) => current && setSummary(data))
+      .catch(() => current && setSummary(null));
+    return () => {
+      current = false;
+    };
+  }, [signedIn]);
+  const solved = summary?.collection?.solved ?? 0,
+    total = summary?.collection?.total ?? 500;
+  return (
+    <div className="practice-card">
+      <span className="overline">
+        {signedIn
+          ? `灵神题单 · 第 ${summary?.currentRound?.number ?? 1} 轮`
+          : '算法练习'}
+      </span>
+      {signedIn ? (
+        <>
+          <strong>
+            {solved}
+            <small> / {total} 已通过</small>
+          </strong>
+          <Progress value={total ? (solved / total) * 100 : 0} />
+        </>
+      ) : (
+        <p>登录后自动记录每一轮的刷题进度。</p>
+      )}
+      <div className="practice-card-actions">
+        <Button
+          className="primary-light"
+          onClick={() => (signedIn ? navigate('problems') : login())}
+        >
+          <Code2 size={16} />
+          继续刷题
+        </Button>
+        <button
+          className="practice-card-link"
+          onClick={() =>
+            signedIn ? navigate('problems', { library: 'oa' }) : login()
+          }
+        >
+          OA 题目
+          <ArrowRight size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function Home({
   boot,
   navigate,
@@ -630,15 +698,7 @@ function Home({
   return (
     <>
       <Heading
-        label="YOUR NEXT CHAPTER"
         title={boot.person ? '专注今天的进步。' : '从这里，成为更好的工程师。'}
-        description="从一段代码开始，把知识变成解决问题的能力。"
-        action={
-          <span className="tag">
-            <span className="status-dot" />
-            SDE 课程
-          </span>
-        }
       />
       <section className="continue-card">
         <div>
@@ -662,23 +722,11 @@ function Home({
             <ArrowRight size={16} />
           </Button>
         </div>
-        <div className="terminal-card" aria-hidden="true">
-          <div className="terminal-top">
-            <span />
-            <span />
-            <span />
-            <small>your-next-chapter.go</small>
-          </div>
-          <pre>
-            <em>func</em> main() {'{'}
-            {'\n'} learn.<b>Understand</b>(){'\n'} code.<b>Build</b>(){'\n'}{' '}
-            you.<b>Grow</b>(){'\n'}
-            {'}'}
-          </pre>
-          <div className="terminal-bottom">
-            <Check size={13} /> Ready for your next step
-          </div>
-        </div>
+        <PracticeCard
+          signedIn={!!boot.person}
+          navigate={navigate}
+          login={login}
+        />
       </section>
       {boot.person && (
         <div className="learning-stats">
