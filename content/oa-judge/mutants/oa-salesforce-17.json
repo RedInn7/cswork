@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误从左到右贪心交换",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nint main(){int n;scanf(\"%d\",&n);vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nfor(int i=0;i+1<n;i++)if(a[i]>a[i+1]){long long t=a[i];a[i]=a[i+1];a[i+1]=t;i++;}\nlong long s=0;for(int i=0;i<n;i++)s+=a[i]*(i+1);printf(\"%lld\\n\",s);}\n"
+  },
+  {
+    "name": "错误允许同一元素多次参与交换",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nint main(){int n;scanf(\"%d\",&n);vector<long long>a(n);for(auto&x:a)scanf(\"%lld\",&x);\nlong long s=0;for(int i=0;i<n;i++)s+=a[i]*(i+1);for(int i=0;i+1<n;i++)if(a[i]>a[i+1])s+=a[i]-a[i+1];printf(\"%lld\\n\",s);}\n"
+  },
+  {
+    "name": "错误32位整数累加",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n+1);for(int i=1;i<=n;i++)scanf(\"%lld\",&a[i]);\nvector<int>dp(n+1,0);\nfor(int i=1;i<=n;i++){dp[i]=dp[i-1]+a[i]*i;if(i>=2)dp[i]=max<long long>(dp[i],dp[i-2]+a[i]*(i-1)+a[i-1]*i);}\nprintf(\"%d\\n\",dp[n]);}\n"
+  },
+  {
+    "name": "错误1-based权重按下标i计",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;vector<long long>a(n+1);for(int i=1;i<=n;i++)scanf(\"%lld\",&a[i]);\nvector<long long>dp(n+1,0);\nfor(int i=1;i<=n;i++){dp[i]=dp[i-1]+a[i]*(i-1);if(i>=2)dp[i]=max(dp[i],dp[i-2]+a[i]*(i-2)+a[i-1]*(i-1));}\nprintf(\"%lld\\n\",dp[n]);}\n"
+  }
+]
