@@ -73,6 +73,9 @@ type VersionRow = {
   created_by: string;
   created_at: number;
 };
+/** Published drafts keep their row and revision (optimistic-lock continuity) but drop the duplicated package. */
+export const PUBLISHED_DRAFT_PAYLOAD = 'null';
+
 type DraftRow = {
   problem_id: string;
   payload_json: string;
@@ -291,7 +294,7 @@ export async function listTeacherProblems(p: Person) {
     draftRevision: number | null;
     updatedAt: number;
   }>(
-    `SELECT p.id,p.course_id AS courseId,p.lesson_id AS lessonId,p.published,p.current_version_id AS currentVersionId,p.updated_at AS updatedAt,v.revision AS version,d.revision AS draftRevision,COALESCE(json_extract(d.payload_json,'$.problem.title'),json_extract(v.spec_json,'$.title'),p.id) AS title FROM oj_problems p LEFT JOIN oj_problem_versions v ON v.id=p.current_version_id LEFT JOIN oj_problem_drafts d ON d.problem_id=p.id ORDER BY p.updated_at DESC,p.id`,
+    `SELECT p.id,p.course_id AS courseId,p.lesson_id AS lessonId,p.published,p.current_version_id AS currentVersionId,p.updated_at AS updatedAt,v.revision AS version,CASE WHEN d.payload_json<>'null' THEN d.revision END AS draftRevision,COALESCE(json_extract(d.payload_json,'$.problem.title'),json_extract(v.spec_json,'$.title'),p.id) AS title FROM oj_problems p LEFT JOIN oj_problem_versions v ON v.id=p.current_version_id LEFT JOIN oj_problem_drafts d ON d.problem_id=p.id ORDER BY p.updated_at DESC,p.id`,
   );
 }
 
@@ -320,10 +323,10 @@ export async function getTeacherProblem(
       )
     : null;
   const payload = draft
-    ? (JSON.parse(draft.payload_json) as OjProblemPackage)
+    ? (JSON.parse(draft.payload_json) as OjProblemPackage | null)
     : null;
   const publishedSnapshot =
-    !draft && current ? await loadJudgeSnapshot(current.id) : null;
+    !payload && current ? await loadJudgeSnapshot(current.id) : null;
   const publishedPayload: OjProblemPackage | null = publishedSnapshot
     ? {
         schemaVersion: 1,
@@ -395,7 +398,7 @@ export async function saveProblemDraft(
     expectedRevision === null
       ? db
           .prepare(
-            'INSERT INTO oj_problem_drafts(problem_id,payload_json,revision,updated_by,updated_at) SELECT ?,?,1,?,? FROM oj_problems WHERE id=? AND course_id=? ON CONFLICT(problem_id) DO NOTHING RETURNING revision',
+            "INSERT INTO oj_problem_drafts(problem_id,payload_json,revision,updated_by,updated_at) SELECT ?,?,1,?,? FROM oj_problems WHERE id=? AND course_id=? ON CONFLICT(problem_id) DO UPDATE SET payload_json=excluded.payload_json,revision=oj_problem_drafts.revision+1,updated_by=excluded.updated_by,updated_at=excluded.updated_at WHERE oj_problem_drafts.payload_json='null' RETURNING revision",
           )
           .bind(
             payload.problem.id,
@@ -442,7 +445,11 @@ export async function publishProblemDraft(
     'SELECT * FROM oj_problem_drafts WHERE problem_id=?',
     problemId,
   );
-  if (!draft || draft.revision !== expectedRevision)
+  if (
+    !draft ||
+    draft.revision !== expectedRevision ||
+    draft.payload_json === PUBLISHED_DRAFT_PAYLOAD
+  )
     throw new HttpError(409, '草稿已被更新，请重新载入后发布');
   const payload = validateProblemPackage(JSON.parse(draft.payload_json));
   await validateLinks(payload);
@@ -495,7 +502,7 @@ export async function publishProblemDraft(
       .bind(versionId, payload.problem.lessonId, now, problemId, versionId),
     db
       .prepare(
-        'UPDATE oj_problem_drafts SET revision=revision+1,updated_by=?,updated_at=? WHERE problem_id=? AND revision=? AND EXISTS(SELECT 1 FROM oj_problem_versions WHERE id=?)',
+        `UPDATE oj_problem_drafts SET payload_json='${PUBLISHED_DRAFT_PAYLOAD}',revision=revision+1,updated_by=?,updated_at=? WHERE problem_id=? AND revision=? AND EXISTS(SELECT 1 FROM oj_problem_versions WHERE id=?)`,
       )
       .bind(p.id, now, problemId, expectedRevision, versionId),
     db
