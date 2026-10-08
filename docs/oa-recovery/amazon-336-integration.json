@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "amazon-336-recovered",
+  "problemId": "oa-amazon-336",
+  "packageChecksum": "fba86d08d9a9d4e58286523e746b119ec73d35481edba6871bcac49d38411d87",
+  "referenceSha256": "b3bd9f659fac8d0fc03f8de75f145255f7d9dcd0513ea800a506c54e52427a70",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 219,
+      "formal": 39,
+      "oracle": 180,
+      "mutantsKilled": 5
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 39,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1133,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "n=100000 requests with 100000 distinct length-10 usernames, maximum-length passwords, high-collision and high-cardinality random mixes, duplicate-register storm and repeated active-login storm passed. Exhaustive small domain: all 11110 request sequences of length1..4 over usernames a/A and passwords x/X.",
+  "sourceDisclosure": "Missing API table recovered from the publicly linked original Problem Source image (hash-bound, not a fixed-commit asset). Raw example2 'Login Unsuccessfully' corrected to table text 'Login Unsuccessful' and disclosed; explanation 'David' maps to input 'david'. Full original bounds preserved.",
+  "coverage": { "total": 1634, "sandboxVerified": 1224, "remaining": 410 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}
