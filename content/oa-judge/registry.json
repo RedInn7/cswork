@@ -14395,6 +14395,18 @@
       ]
     },
     {
+      "id": "oa-wayfair-3",
+      "sourceContentHash": "edb5392554bedec6665ed3b7ee72f57127afae85f3634cc7057b9f3a2ea18813",
+      "packageChecksum": "f06504efdc8412eeb1314cc217beace7bc6967ebb3c4b9b823c46e878031d3cf",
+      "editorial": "## 固定来源与约定\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Wayfair/wayfair-smash-the-bricks.md明确：n≤200000，0≤bigHits≤200000，强度为1..10^9的互异整数；大锤使用次数是maximum blows，即至多而非必须用满。位置按1编号，两组索引各自升序，没有使用的锤对应[-1]。原例3中bigHits=9、n=8，明确允许额度大于砖块数。\n\n本站将原返回二维数组[[total],[big indices],[small indices]]编排为严格三行，不添加每行元素个数；未使用组写-1。允许强度1的砖用任一种锤，只要仍最优且不超过额度，不规定额外平局规则。四个原样例全部保留。原文返回描述及starter均明确long二维数组，完整范围的总击数可超过32位，本站按64位处理。旧blocked所称锤子耐久与操作顺序缺失不符合固定raw：这里只有大锤最多使用次数，未定义任何耐久衰减。原例2说明中一处把大锤下标误写为[3,5,7]，但同例正式输出及说明末尾均为[3,5,6,7]且总击数13一致，本站保留正确完整列表并披露这一漏字。算法数学核心复用本站已验证的同规则实现，但本题独立绑定Wayfair来源、使用新种子与新动态规划oracle重新生成全部数据。未执行上游代码。\n\n## 思路\n\n先假设所有砖均用小锤，总击数为Σstrength[i]。把第i块改用大锤，只需1次，节省strength[i]−1次。选至多k个最大正节省即可；参考程序只选择强度大于1的砖，将它们按强度降序排列后取前k块，最后把两组下标分别按原顺序输出。强度1节省0，参考程序不选它，但选择或不选择都可能最优，语义判题接受所有等价分组。\n\n## 正确性证明\n\n任何最优策略不需要先用若干小锤再用大锤击碎同一块砖：删掉先前的小锤击打后，大锤仍然一次击碎，费用更低。重复用大锤击碎同一块砖也没有意义。因此存在最优策略将每块砖完整分配给一种锤。若分给大锤成本为1，否则为其原强度，各块成本相加，最多k块分给大锤。\n\n对任意选中集合，若其中一块节省小于某块未选中的节省，交换两者保持大锤次数且降低总击数。故最大化总节省时应优先选最大节省。有剩余额度时加入任何正节省都会严格改善费用，直到额度用完或正节省全被选择；唯一可能为0的节省则选不选都不改变费用。参考选择因此达到全局最少总击数。输出两组是全部下标的互斥划分，且分别按下标遍历生成，符合升序与1-based要求。\n\n## 复杂度与完整边界\n\n排序O(n log n)，生成分组O(n)，空间O(n)。最大合法互异强度和为200000×(2×10^9−200000+1)/2=199980000100000，应使用64位整数；Python整数安全。算法不逐次模拟击打，所以强度10^9与二十万砖均可直接处理。\n\n## 独立验证与语义判题\n\n小oracle逐砖做额度动态规划，状态是已处理前缀及已用大锤次数，分别转移小锤strength[i]费用与大锤1费用，保留最优分组见证；不使用排序收益公式，也不读取其他题的期望文件。163个唯一输入均经真实参考子进程，结果按总费用及分组合法性检查，不与oracle索引序列逐token比较。\n\nchecker要求严格三行，验证升序下标、互斥完整分区、额度与费用，再比较最优总值。特别地n=1,k=1,strength=[1]时，“1 / 1 / -1”与“1 / -1 / 1”均应通过；对完整1..200000且k=200000也覆盖将强度1交给不同锤的两份最优见证。完整大边界包含k=0、k=n、k>n、半额度、乱序及64位总值。两个负控分别选最弱砖和用32位溢出总费用，均须正常退出才计为有效反例。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, k = data[:2]\n    strengths = data[2:]\n    selected = sorted((i for i in range(n) if strengths[i] > 1), key=lambda i: strengths[i], reverse=True)[:min(k, n)]\n    used = set(selected)\n    big = [i + 1 for i in range(n) if i in used]\n    small = [i + 1 for i in range(n) if i not in used]\n    total = len(big) + sum(strengths[i - 1] for i in small)\n    return str(total) + '\\n' + (' '.join(map(str, big)) if big else '-1') + '\\n' + (' '.join(map(str, small)) if small else '-1')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-wells-fargo-1",
       "sourceContentHash": "e74a36ca7db4ec42fb4180ceb08781b23faa5a62ae8d372ff15399307509d7a8",
       "packageChecksum": "3fa622e011fac229e53f66529e5ec2ef6c55b07857b7d1fe13f692508cab623d",
