@@ -3,6 +3,21 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-amazon-336",
+      "decision": "Complete original API table recovered; independent source pre-review pending before authoring",
+      "source": "fastprep/Amazon/amazon-return-records.md",
+      "sourcePage": "https://www.fastprep.io/problems/amazon-return-records",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/amazon-return-records/0",
+      "image": "content/oa-judge/source-images/amazon-336-original.jpg",
+      "imageSha256": "29d0ce46a8c18c2a3eb58b12fb8e3565d199490620447c416005ac3b2a09ae95",
+      "findings": [
+        "Actual original-page HTML img src links this publicly readable image. Main reviewer viewed the full image, including API table, notes, example and constraints.",
+        "Table strings: Registered Successfully; Username already exists; Logged In Successfully; Login Unsuccessful; Logged Out Successfully; Logout Unsuccessful.",
+        "Fixed raw second sample uses Login Unsuccessfully, unlike original table Login Unsuccessful. Any recovery must explicitly disclose this spelling correction rather than silently mixing outputs.",
+        "Image includes initially no users, repeated active login fails without ending original session, ordered execution, case-sensitive credentials, n1..100000 and alphanumeric credentials length1..10. Supplemental image is not claimed to belong to fixed upstream commit."
+      ]
+    },
+    {
       "id": "oa-microsoft-25",
       "decision": "Original image recovered and independently viewed; original examples conflict, do not promote",
       "image": "content/oa-judge/source-images/microsoft-25-original.jpg",
