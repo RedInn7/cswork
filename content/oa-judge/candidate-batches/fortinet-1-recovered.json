@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-fortinet-1",
+      "sourceContentHash": "ff3b0ebc63f5b3a1fe68c5dff14314d1d1913cefeae09da96c03243ce1fc649f",
+      "packageChecksum": "bd8d5260b61bd259dee1fd9da51b9cd10265e495e626039c6f41ea00b883e7d2",
+      "editorial": "## 题意\n\nn件商品，第i件（0起）成本cost[i]，转售利润2^i。总资金x，每件最多买一次，总成本不超过x，求最大利润，对10^9+7取模。\n\n## 思路\n\n2^i大于所有更小下标利润之和（2^0+…+2^(i−1)=2^i−1），所以利润的比较等价于“从高下标往低下标的字典序”比较。从最高下标往下贪心：当前商品成本不超过剩余资金就买，并扣除成本。累加2^i时取模。\n\n## 正确性\n\n设贪心在下标i第一次与某最优解不同。若贪心买了i而最优解没买，则贪心利润在i处多出2^i，大于最优解在更低下标上的全部收益，矛盾；若贪心没买i，说明在已选的更高下标集合下买i超预算，最优解与贪心在更高下标相同，也不能买i。故贪心最优。比较全程用真实利润的结构而不是取模后的数，取模只发生在累加时。\n\n## 复杂度\n\nO(n)。资金可达10^14，使用64位。\n\n## 独立验证\n\noracle枚举全部子集，以Python大整数计算真实利润取最大值再取模（仅小数据），不使用贪心。穷举n=1..5、成本1..3、x=1..7的所有组合并逐个真实运行参考程序。错误解覆盖从低下标贪心、成本恰等于剩余资金时不买、不取模和32位资金。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\nint main(){int n;long long x;if(scanf(\"%d %lld\",&n,&x)!=2)return 0;std::vector<long long>c(n);for(auto&v:c)scanf(\"%lld\",&v);\nconst long long MOD=1000000007LL;std::vector<long long>pw(n);for(int i=0;i<n;i++)pw[i]=i?pw[i-1]*2%MOD:1;\nlong long rem=x,ans=0;for(int i=n-1;i>=0;i--)if(c[i]<=rem){rem-=c[i];ans=(ans+pw[i])%MOD;}\nprintf(\"%lld\\n\",ans);}\n"
+        }
+      ]
+    }
+  ]
+}
