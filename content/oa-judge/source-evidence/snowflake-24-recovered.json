@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-snowflake-24": {
+      "contentHash": "380aa48c67723ecba4e049ab69a72bf1f9b7ea6339d6eee0f13e05c596a195a7",
+      "catalogContentHash": "380aa48c67723ecba4e049ab69a72bf1f9b7ea6339d6eee0f13e05c596a195a7",
+      "sourceUrl": "https://oamaster.com/docs/companies/snowflake#24-effective-role-privileges",
+      "sources": [
+        {
+          "path": "fastprep/Snowflake/snowflake-effective-role-privileges.md",
+          "gitBlobSha": "57e33e55736f4bc94a8f2f8fa8d76ac12d378bc5",
+          "rawSha256": "28dcf8f6d5fb95f05416361fc880ac39a038114c2e9055f0f2386638bbdeb68b"
+        },
+        {
+          "path": "web/content/docs/companies/snowflake.mdx",
+          "gitBlobSha": "1091a782a0f60117925eb1a9a96ee4cf9df4e5bb",
+          "rawSha256": "a2cd5b9918339feb1b7715d70c79a1cbf064f9a5358fe7f97bebeb5b5bb171c0"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "rangeDisclosure": "Original: 1<=privileges.length<=2*10^5, 0<=grants.length<=2*10^5, per-role list length, total privilege count and string length unbounded; output must list every inherited privilege explicitly, so a 2*10^5-role chain with distinct privileges needs ~2*10^10 output tokens. Reduced to fit the 64MiB per-case output budget: n<=2000 roles, distinct privilege strings<=2000, length<=10 (worst output 2000*2000*11 bytes ~44MB). Grant count bound 2*10^5 kept; total direct privileges capped at 2*10^5 to bound input. Privilege alphabet fixed to visible ASCII 33..126 (original: non-empty tokens without spaces), lexicographic = ASCII byte order.",
+      "corrections": [
+        "Stdin/stdout adaptation: each output row is prefixed by its count so empty rows stay unambiguous under the tokens checker.",
+        "Duplicate grant edges are permitted (original does not forbid them; union is idempotent)."
+      ]
+    }
+  }
+}

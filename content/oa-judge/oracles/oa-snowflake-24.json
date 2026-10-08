@@ -1,0 +1,722 @@
+[
+  {
+    "input": "3 2\n1 A\n1 B\n1 C\n0 1\n1 2\n",
+    "expectedOutput": "1 A\n2 A B\n3 A B C\n"
+  },
+  {
+    "input": "4 3\n1 READ\n1 WRITE\n1 DEPLOY\n1 AUDIT\n0 2\n1 2\n2 3\n",
+    "expectedOutput": "1 READ\n1 WRITE\n3 DEPLOY READ WRITE\n4 AUDIT DEPLOY READ WRITE\n"
+  },
+  {
+    "input": "3 2\n2 A A\n1 A\n0\n0 1\n1 2\n",
+    "expectedOutput": "1 A\n1 A\n1 A\n"
+  },
+  {
+    "input": "1 0\n0\n",
+    "expectedOutput": "0\n"
+  },
+  {
+    "input": "1 0\n3 x x x\n",
+    "expectedOutput": "1 x\n"
+  },
+  {
+    "input": "3 2\n1 b\n1 a\n1 B\n2 0\n1 0\n",
+    "expectedOutput": "3 B a b\n1 a\n1 B\n"
+  },
+  {
+    "input": "4 3\n1 p\n1 q\n1 r\n1 s\n3 2\n2 1\n1 0\n",
+    "expectedOutput": "4 p q r s\n3 q r s\n2 r s\n1 s\n"
+  },
+  {
+    "input": "4 4\n1 A\n0\n0\n1 Z\n0 1\n0 2\n1 3\n2 3\n",
+    "expectedOutput": "1 A\n1 A\n1 A\n2 A Z\n"
+  },
+  {
+    "input": "5 5\n1 k\n1 k\n1 k\n1 k\n0\n0 4\n0 4\n1 4\n2 4\n3 4\n",
+    "expectedOutput": "1 k\n1 k\n1 k\n1 k\n1 k\n"
+  },
+  {
+    "input": "3 2\n1 a_\n1 aZ\n1 a\n0 1\n1 2\n",
+    "expectedOutput": "1 a_\n2 aZ a_\n3 a aZ a_\n"
+  },
+  {
+    "input": "4 3\n1 *\n1 -\n1 9\n1 ~\n0 3\n1 3\n2 3\n",
+    "expectedOutput": "1 *\n1 -\n1 9\n4 * - 9 ~\n"
+  },
+  {
+    "input": "6 3\n1 x1\n1 x2\n1 x3\n0\n0\n0\n0 3\n1 4\n2 5\n",
+    "expectedOutput": "1 x1\n1 x2\n1 x3\n1 x1\n1 x2\n1 x3\n"
+  },
+  {
+    "input": "4 2\n2 C B\n2 B A\n0\n1 D\n1 2\n0 2\n",
+    "expectedOutput": "2 B C\n2 A B\n3 A B C\n1 D\n"
+  },
+  {
+    "input": "5 4\n0\n0\n0\n0\n1 only\n4 3\n3 2\n2 1\n1 0\n",
+    "expectedOutput": "1 only\n1 only\n1 only\n1 only\n1 only\n"
+  },
+  {
+    "input": "5 0\n3 b a _\n0\n1 _\n1 aB\n0\n",
+    "expectedOutput": "3 _ a b\n0\n1 _\n1 aB\n0\n"
+  },
+  {
+    "input": "4 3\n2 z9 A\n1 B\n2 aB z9\n3 z9 A A\n3 1\n2 3\n2 1\n",
+    "expectedOutput": "2 A z9\n4 A B aB z9\n2 aB z9\n3 A aB z9\n"
+  },
+  {
+    "input": "9 13\n0\n0\n0\n3 B A aB\n1 a\n2 aB B\n2 _ Ab\n0\n2 A b\n1 7\n5 7\n2 7\n4 1\n4 5\n0 6\n5 3\n1 3\n5 6\n0 3\n8 1\n4 6\n8 0\n",
+    "expectedOutput": "2 A b\n3 A a b\n0\n5 A B a aB b\n1 a\n3 B a aB\n7 A Ab B _ a aB b\n5 A B a aB b\n2 A b\n"
+  },
+  {
+    "input": "4 2\n3 Ab b _\n1 A\n2 _ a\n0\n1 2\n2 0\n",
+    "expectedOutput": "5 A Ab _ a b\n1 A\n3 A _ a\n0\n"
+  },
+  {
+    "input": "3 1\n3 ~x Ab aB\n2 A z9\n3 A ~x aB\n0 2\n",
+    "expectedOutput": "3 Ab aB ~x\n2 A z9\n4 A Ab aB ~x\n"
+  },
+  {
+    "input": "8 14\n1 Ab\n2 a ~x\n1 a\n1 aB\n2 _ a\n0\n2 z9 B\n1 _\n2 7\n7 4\n2 7\n2 5\n7 4\n3 7\n5 3\n6 3\n7 1\n6 4\n0 6\n3 7\n6 3\n0 4\n",
+    "expectedOutput": "1 Ab\n7 Ab B _ a aB z9 ~x\n1 a\n5 Ab B a aB z9\n6 Ab B _ a aB z9\n1 a\n3 Ab B z9\n6 Ab B _ a aB z9\n"
+  },
+  {
+    "input": "6 3\n0\n0\n3 aB z9 A\n0\n2 A a\n1 B\n1 2\n1 3\n4 2\n",
+    "expectedOutput": "0\n0\n4 A a aB z9\n0\n2 A a\n1 B\n"
+  },
+  {
+    "input": "9 1\n1 Z\n3 Z aB A\n3 ~x _ B\n1 aB\n0\n3 A _ ~x\n1 b\n0\n0\n5 2\n",
+    "expectedOutput": "1 Z\n3 A Z aB\n4 A B _ ~x\n1 aB\n0\n3 A _ ~x\n1 b\n0\n0\n"
+  },
+  {
+    "input": "4 8\n0\n1 a\n3 b a B\n1 Ab\n2 0\n2 0\n2 0\n2 0\n2 1\n2 3\n2 3\n1 0\n",
+    "expectedOutput": "3 B a b\n3 B a b\n3 B a b\n4 Ab B a b\n"
+  },
+  {
+    "input": "9 10\n3 a _ ~x\n0\n3 Ab Z B\n0\n0\n3 Ab ~x Ab\n3 aB ~x Z\n2 _ B\n0\n0 3\n1 5\n4 5\n4 1\n4 5\n8 4\n0 8\n7 5\n2 4\n4 5\n",
+    "expectedOutput": "3 _ a ~x\n6 Ab B Z _ a ~x\n3 Ab B Z\n3 _ a ~x\n6 Ab B Z _ a ~x\n6 Ab B Z _ a ~x\n3 Z aB ~x\n2 B _\n3 _ a ~x\n"
+  },
+  {
+    "input": "9 13\n2 z9 a\n1 b\n0\n2 a Z\n2 b Ab\n0\n2 a A\n1 b\n2 a B\n0 7\n5 1\n0 1\n3 7\n3 5\n2 8\n3 6\n3 1\n7 1\n3 4\n4 1\n3 2\n0 2\n",
+    "expectedOutput": "2 a z9\n5 Ab Z a b z9\n3 Z a z9\n2 Z a\n4 Ab Z a b\n2 Z a\n3 A Z a\n4 Z a b z9\n4 B Z a z9\n"
+  },
+  {
+    "input": "2 2\n0\n3 ~x _ _\n1 0\n1 0\n",
+    "expectedOutput": "2 _ ~x\n2 _ ~x\n"
+  },
+  {
+    "input": "8 14\n2 ~x B\n1 Ab\n1 Ab\n2 aB z9\n0\n1 Z\n0\n3 Z B Ab\n6 1\n2 1\n2 1\n5 2\n3 1\n6 4\n3 4\n3 6\n7 2\n3 2\n7 0\n5 2\n5 4\n5 0\n",
+    "expectedOutput": "4 Ab B Z ~x\n5 Ab B Z aB z9\n5 Ab B Z aB z9\n2 aB z9\n3 Z aB z9\n1 Z\n2 aB z9\n3 Ab B Z\n"
+  },
+  {
+    "input": "7 13\n2 ~x a\n2 Ab _\n2 a A\n2 Z b\n2 B B\n0\n3 A A a\n6 0\n2 5\n3 1\n5 0\n0 3\n0 1\n2 0\n6 3\n6 2\n2 3\n4 1\n6 5\n4 3\n",
+    "expectedOutput": "3 A a ~x\n8 A Ab B Z _ a b ~x\n2 A a\n6 A B Z a b ~x\n1 B\n2 A a\n2 A a\n"
+  },
+  {
+    "input": "9 5\n1 Z\n2 Z _\n2 aB a\n3 Z A z9\n3 z9 _ a\n3 a a Ab\n1 Z\n2 B ~x\n3 Z A z9\n5 8\n4 1\n0 6\n1 3\n2 7\n",
+    "expectedOutput": "1 Z\n4 Z _ a z9\n2 a aB\n5 A Z _ a z9\n3 _ a z9\n2 Ab a\n1 Z\n4 B a aB ~x\n5 A Ab Z a z9\n"
+  },
+  {
+    "input": "7 15\n0\n1 _\n1 ~x\n3 b aB Ab\n2 Z _\n1 a\n1 ~x\n4 2\n0 2\n6 1\n5 3\n0 3\n6 3\n4 5\n5 1\n4 6\n1 2\n5 2\n0 6\n4 1\n3 2\n5 6\n",
+    "expectedOutput": "0\n4 Z _ a ~x\n7 Ab Z _ a aB b ~x\n7 Ab Z _ a aB b ~x\n2 Z _\n3 Z _ a\n4 Z _ a ~x\n"
+  },
+  {
+    "input": "7 4\n1 ~x\n3 Ab B b\n3 b ~x Ab\n1 z9\n2 a _\n1 A\n2 _ ~x\n0 3\n4 1\n5 0\n5 3\n",
+    "expectedOutput": "2 A ~x\n5 Ab B _ a b\n3 Ab b ~x\n3 A z9 ~x\n2 _ a\n1 A\n2 _ ~x\n"
+  },
+  {
+    "input": "7 9\n2 a _\n3 Ab aB B\n0\n1 b\n0\n3 B A ~x\n3 Z z9 A\n1 5\n1 2\n3 0\n1 5\n0 5\n3 6\n1 4\n3 0\n3 2\n",
+    "expectedOutput": "3 _ a b\n3 Ab B aB\n4 Ab B aB b\n1 b\n3 Ab B aB\n8 A Ab B _ a aB b ~x\n4 A Z b z9\n"
+  },
+  {
+    "input": "4 7\n1 _\n0\n2 A a\n1 A\n1 0\n2 0\n3 1\n3 0\n2 3\n3 1\n3 1\n",
+    "expectedOutput": "3 A _ a\n2 A a\n2 A a\n2 A a\n"
+  },
+  {
+    "input": "3 0\n0\n3 A _ b\n2 z9 Ab\n",
+    "expectedOutput": "0\n3 A _ b\n2 Ab z9\n"
+  },
+  {
+    "input": "9 12\n0\n1 a\n0\n0\n3 z9 B a\n0\n0\n0\n3 aB a b\n5 0\n4 6\n1 6\n1 8\n0 4\n2 4\n7 5\n7 0\n0 6\n3 4\n2 1\n5 4\n",
+    "expectedOutput": "0\n1 a\n0\n0\n3 B a z9\n0\n3 B a z9\n0\n3 a aB b\n"
+  },
+  {
+    "input": "8 4\n0\n0\n2 a z9\n2 A Ab\n1 b\n1 ~x\n3 Ab A aB\n0\n7 3\n2 5\n0 4\n1 0\n",
+    "expectedOutput": "0\n0\n2 a z9\n2 A Ab\n1 b\n3 a z9 ~x\n3 A Ab aB\n0\n"
+  },
+  {
+    "input": "6 11\n2 Ab aB\n0\n1 B\n0\n1 a\n0\n2 0\n5 0\n3 4\n4 1\n5 2\n4 5\n3 1\n3 0\n0 1\n3 2\n3 5\n",
+    "expectedOutput": "4 Ab B a aB\n4 Ab B a aB\n2 B a\n0\n1 a\n1 a\n"
+  },
+  {
+    "input": "2 2\n2 Ab Ab\n1 a\n1 0\n1 0\n",
+    "expectedOutput": "2 Ab a\n1 a\n"
+  },
+  {
+    "input": "8 2\n3 A _ B\n3 aB _ ~x\n1 A\n0\n2 ~x a\n2 a A\n1 _\n0\n7 3\n7 0\n",
+    "expectedOutput": "3 A B _\n3 _ aB ~x\n1 A\n0\n2 a ~x\n2 A a\n1 _\n0\n"
+  },
+  {
+    "input": "2 1\n3 Ab B aB\n3 _ b B\n1 0\n",
+    "expectedOutput": "5 Ab B _ aB b\n3 B _ b\n"
+  },
+  {
+    "input": "3 3\n2 Z a\n2 b Ab\n2 b Z\n1 2\n1 0\n2 0\n",
+    "expectedOutput": "4 Ab Z a b\n2 Ab b\n3 Ab Z b\n"
+  },
+  {
+    "input": "5 5\n1 b\n0\n0\n1 b\n0\n1 2\n4 3\n1 0\n3 2\n0 3\n",
+    "expectedOutput": "1 b\n0\n1 b\n1 b\n0\n"
+  },
+  {
+    "input": "9 14\n0\n3 B _ B\n1 Z\n0\n3 B a A\n3 Z b Ab\n1 ~x\n3 z9 b A\n0\n5 6\n0 3\n4 1\n0 1\n4 6\n4 5\n4 7\n4 7\n5 3\n2 5\n4 6\n7 8\n5 6\n4 5\n",
+    "expectedOutput": "0\n4 A B _ a\n1 Z\n6 A Ab B Z a b\n3 A B a\n6 A Ab B Z a b\n7 A Ab B Z a b ~x\n5 A B a b z9\n5 A B a b z9\n"
+  },
+  {
+    "input": "4 5\n2 Ab aB\n3 ~x a aB\n2 _ A\n0\n3 1\n3 0\n0 2\n2 1\n3 2\n",
+    "expectedOutput": "2 Ab aB\n6 A Ab _ a aB ~x\n4 A Ab _ aB\n0\n"
+  },
+  {
+    "input": "9 3\n2 Z _\n3 Z ~x Z\n2 _ _\n0\n1 Ab\n2 Ab aB\n2 _ Ab\n1 ~x\n1 Ab\n4 6\n8 1\n5 2\n",
+    "expectedOutput": "2 Z _\n3 Ab Z ~x\n3 Ab _ aB\n0\n1 Ab\n2 Ab aB\n2 Ab _\n1 ~x\n1 Ab\n"
+  },
+  {
+    "input": "6 10\n0\n3 ~x b z9\n3 Z aB z9\n0\n2 Ab Z\n0\n3 1\n3 5\n0 2\n0 5\n5 1\n0 1\n4 3\n0 3\n4 5\n3 2\n",
+    "expectedOutput": "0\n5 Ab Z b z9 ~x\n4 Ab Z aB z9\n2 Ab Z\n2 Ab Z\n2 Ab Z\n"
+  },
+  {
+    "input": "4 6\n3 ~x b b\n2 Z a\n3 ~x B z9\n0\n0 3\n1 2\n1 0\n2 3\n0 2\n1 3\n",
+    "expectedOutput": "4 Z a b ~x\n2 Z a\n6 B Z a b z9 ~x\n6 B Z a b z9 ~x\n"
+  },
+  {
+    "input": "5 2\n0\n1 Ab\n1 B\n1 a\n0\n2 0\n2 3\n",
+    "expectedOutput": "1 B\n1 Ab\n1 B\n2 B a\n0\n"
+  },
+  {
+    "input": "2 1\n0\n0\n1 0\n",
+    "expectedOutput": "0\n0\n"
+  },
+  {
+    "input": "4 2\n2 a b\n2 a Z\n3 Z z9 Ab\n1 ~x\n3 0\n3 1\n",
+    "expectedOutput": "3 a b ~x\n3 Z a ~x\n3 Ab Z z9\n1 ~x\n"
+  },
+  {
+    "input": "5 10\n0\n2 B Z\n1 aB\n2 B Ab\n2 b A\n1 0\n4 3\n4 0\n2 0\n1 3\n2 3\n2 4\n2 1\n0 3\n4 1\n",
+    "expectedOutput": "5 A B Z aB b\n5 A B Z aB b\n1 aB\n6 A Ab B Z aB b\n3 A aB b\n"
+  },
+  {
+    "input": "5 5\n2 Z z9\n2 aB aB\n1 aB\n3 aB B Z\n3 ~x Ab z9\n2 4\n2 1\n4 1\n3 0\n3 2\n",
+    "expectedOutput": "4 B Z aB z9\n6 Ab B Z aB z9 ~x\n3 B Z aB\n3 B Z aB\n6 Ab B Z aB z9 ~x\n"
+  },
+  {
+    "input": "1 0\n1 b\n",
+    "expectedOutput": "1 b\n"
+  },
+  {
+    "input": "3 4\n2 B aB\n2 B aB\n2 Z b\n0 1\n0 1\n0 2\n0 1\n",
+    "expectedOutput": "2 B aB\n2 B aB\n4 B Z aB b\n"
+  },
+  {
+    "input": "8 4\n0\n1 B\n2 aB Z\n1 ~x\n3 z9 a ~x\n0\n1 Ab\n1 B\n1 4\n7 2\n5 6\n4 0\n",
+    "expectedOutput": "4 B a z9 ~x\n1 B\n3 B Z aB\n1 ~x\n4 B a z9 ~x\n0\n1 Ab\n1 B\n"
+  },
+  {
+    "input": "4 3\n1 A\n2 Ab z9\n0\n2 ~x A\n2 0\n0 1\n0 1\n",
+    "expectedOutput": "1 A\n3 A Ab z9\n0\n2 A ~x\n"
+  },
+  {
+    "input": "4 2\n0\n2 a a\n0\n1 Z\n2 0\n1 3\n",
+    "expectedOutput": "0\n1 a\n0\n2 Z a\n"
+  },
+  {
+    "input": "4 6\n0\n3 a B Z\n0\n1 _\n1 2\n1 0\n2 3\n1 3\n0 2\n0 3\n",
+    "expectedOutput": "3 B Z a\n3 B Z a\n3 B Z a\n4 B Z _ a\n"
+  },
+  {
+    "input": "7 10\n3 a z9 Z\n1 a\n0\n3 aB Ab A\n3 B B _\n0\n2 Ab B\n1 4\n6 2\n6 0\n5 2\n3 6\n1 5\n4 6\n4 2\n1 6\n4 0\n",
+    "expectedOutput": "8 A Ab B Z _ a aB z9\n1 a\n6 A Ab B _ a aB\n3 A Ab aB\n3 B _ a\n1 a\n6 A Ab B _ a aB\n"
+  },
+  {
+    "input": "7 0\n1 B\n3 A aB A\n3 aB A _\n0\n1 B\n0\n0\n",
+    "expectedOutput": "1 B\n2 A aB\n3 A _ aB\n0\n1 B\n0\n0\n"
+  },
+  {
+    "input": "9 11\n2 a Z\n3 aB A z9\n0\n2 b a\n0\n0\n3 Z ~x aB\n1 Z\n2 b b\n5 2\n3 4\n2 4\n1 5\n1 2\n0 3\n1 8\n7 5\n6 7\n8 0\n1 7\n",
+    "expectedOutput": "6 A Z a aB b z9\n3 A aB z9\n5 A Z aB z9 ~x\n6 A Z a aB b z9\n7 A Z a aB b z9 ~x\n5 A Z aB z9 ~x\n3 Z aB ~x\n5 A Z aB z9 ~x\n4 A aB b z9\n"
+  },
+  {
+    "input": "7 14\n1 z9\n1 B\n3 a ~x ~x\n1 Z\n3 a B Z\n1 B\n2 z9 aB\n3 5\n5 6\n2 5\n2 6\n2 0\n1 3\n2 3\n1 5\n5 4\n2 4\n4 6\n1 6\n0 6\n1 4\n",
+    "expectedOutput": "3 a z9 ~x\n1 B\n2 a ~x\n4 B Z a ~x\n4 B Z a ~x\n4 B Z a ~x\n6 B Z a aB z9 ~x\n"
+  },
+  {
+    "input": "4 0\n3 B Z aB\n3 z9 ~x z9\n2 aB Z\n3 b A Ab\n",
+    "expectedOutput": "3 B Z aB\n2 z9 ~x\n2 Z aB\n3 A Ab b\n"
+  },
+  {
+    "input": "5 5\n1 _\n0\n2 b aB\n3 Z aB z9\n3 z9 Ab z9\n1 2\n0 4\n0 1\n1 4\n4 2\n",
+    "expectedOutput": "1 _\n1 _\n5 Ab _ aB b z9\n3 Z aB z9\n3 Ab _ z9\n"
+  },
+  {
+    "input": "2 0\n0\n3 B b Z\n",
+    "expectedOutput": "0\n3 B Z b\n"
+  },
+  {
+    "input": "8 4\n2 Z ~x\n1 Z\n0\n0\n2 B B\n3 Z Z Ab\n0\n1 Z\n6 1\n0 1\n7 4\n6 3\n",
+    "expectedOutput": "2 Z ~x\n2 Z ~x\n0\n0\n2 B Z\n2 Ab Z\n0\n1 Z\n"
+  },
+  {
+    "input": "7 15\n0\n1 B\n1 aB\n2 b A\n2 Z Z\n0\n1 a\n6 0\n4 5\n6 4\n0 3\n4 2\n2 5\n1 3\n1 2\n6 2\n1 5\n6 3\n5 3\n2 3\n1 4\n1 0\n",
+    "expectedOutput": "2 B a\n1 B\n4 B Z a aB\n6 A B Z a aB b\n3 B Z a\n4 B Z a aB\n1 a\n"
+  },
+  {
+    "input": "3 0\n3 aB A a\n0\n2 z9 A\n",
+    "expectedOutput": "3 A a aB\n0\n2 A z9\n"
+  },
+  {
+    "input": "1 0\n1 _\n",
+    "expectedOutput": "1 _\n"
+  },
+  {
+    "input": "1 0\n1 A\n",
+    "expectedOutput": "1 A\n"
+  },
+  {
+    "input": "9 10\n3 a B Ab\n1 _\n3 b ~x ~x\n0\n2 A Z\n3 ~x Ab ~x\n1 aB\n1 A\n2 Z A\n6 7\n3 6\n8 4\n7 2\n0 5\n6 8\n1 7\n6 8\n3 5\n1 3\n",
+    "expectedOutput": "3 Ab B a\n1 _\n5 A _ aB b ~x\n1 _\n4 A Z _ aB\n5 Ab B _ a ~x\n2 _ aB\n3 A _ aB\n4 A Z _ aB\n"
+  },
+  {
+    "input": "4 9\n1 z9\n2 aB aB\n2 aB A\n1 Ab\n1 0\n2 0\n1 3\n1 2\n3 2\n2 0\n2 0\n3 0\n3 2\n",
+    "expectedOutput": "4 A Ab aB z9\n1 aB\n3 A Ab aB\n2 Ab aB\n"
+  },
+  {
+    "input": "1 0\n3 Ab B B\n",
+    "expectedOutput": "2 Ab B\n"
+  },
+  {
+    "input": "2 1\n3 Z aB a\n3 _ A a\n0 1\n",
+    "expectedOutput": "3 Z a aB\n5 A Z _ a aB\n"
+  },
+  {
+    "input": "6 12\n1 aB\n1 b\n2 b z9\n2 ~x ~x\n3 Ab Ab aB\n0\n1 4\n5 4\n3 2\n2 0\n5 0\n3 5\n2 4\n1 2\n1 0\n3 4\n3 0\n5 2\n",
+    "expectedOutput": "4 aB b z9 ~x\n1 b\n3 b z9 ~x\n1 ~x\n5 Ab aB b z9 ~x\n1 ~x\n"
+  },
+  {
+    "input": "7 16\n2 ~x ~x\n0\n0\n2 _ Ab\n0\n3 ~x z9 Ab\n2 _ A\n1 2\n1 0\n0 6\n6 5\n3 2\n1 5\n0 5\n1 4\n5 4\n0 4\n2 4\n3 5\n3 6\n1 3\n0 2\n3 0\n",
+    "expectedOutput": "3 Ab _ ~x\n0\n3 Ab _ ~x\n2 Ab _\n5 A Ab _ z9 ~x\n5 A Ab _ z9 ~x\n4 A Ab _ ~x\n"
+  },
+  {
+    "input": "4 6\n1 aB\n0\n3 B a z9\n2 _ A\n0 3\n3 1\n0 2\n0 1\n2 3\n2 1\n",
+    "expectedOutput": "1 aB\n6 A B _ a aB z9\n4 B a aB z9\n6 A B _ a aB z9\n"
+  },
+  {
+    "input": "6 13\n3 Ab a b\n0\n1 A\n2 a z9\n0\n2 Z z9\n5 2\n4 5\n3 1\n3 4\n1 2\n3 2\n4 0\n3 5\n1 0\n0 5\n4 2\n3 0\n1 5\n",
+    "expectedOutput": "4 Ab a b z9\n2 a z9\n6 A Ab Z a b z9\n2 a z9\n2 a z9\n5 Ab Z a b z9\n"
+  },
+  {
+    "input": "5 1\n1 aB\n3 Z Z a\n0\n1 z9\n2 B A\n3 1\n",
+    "expectedOutput": "1 aB\n3 Z a z9\n0\n1 z9\n2 A B\n"
+  },
+  {
+    "input": "6 4\n1 aB\n1 a\n0\n2 ~x ~x\n3 a Z A\n1 z9\n1 3\n5 2\n1 5\n5 0\n",
+    "expectedOutput": "3 a aB z9\n1 a\n2 a z9\n2 a ~x\n3 A Z a\n2 a z9\n"
+  },
+  {
+    "input": "3 3\n0\n3 Ab a _\n1 ~x\n0 2\n1 2\n0 1\n",
+    "expectedOutput": "0\n3 Ab _ a\n4 Ab _ a ~x\n"
+  },
+  {
+    "input": "4 3\n2 aB Z\n1 b\n1 b\n0\n2 1\n1 3\n0 1\n",
+    "expectedOutput": "2 Z aB\n3 Z aB b\n1 b\n3 Z aB b\n"
+  },
+  {
+    "input": "7 16\n0\n2 _ A\n2 B b\n0\n0\n2 Z B\n1 aB\n2 1\n4 0\n2 4\n3 0\n2 5\n1 0\n3 1\n5 0\n2 3\n2 6\n6 4\n1 5\n6 1\n3 5\n3 4\n6 5\n",
+    "expectedOutput": "6 A B Z _ aB b\n5 A B _ aB b\n2 B b\n2 B b\n3 B aB b\n6 A B Z _ aB b\n3 B aB b\n"
+  },
+  {
+    "input": "7 8\n1 z9\n3 Z A B\n3 B a b\n3 b aB Z\n0\n3 ~x Z aB\n0\n3 1\n3 1\n3 5\n0 5\n0 6\n0 2\n3 2\n1 5\n",
+    "expectedOutput": "1 z9\n5 A B Z aB b\n6 B Z a aB b z9\n3 Z aB b\n0\n7 A B Z aB b z9 ~x\n1 z9\n"
+  },
+  {
+    "input": "8 8\n2 b b\n3 z9 B z9\n3 a a Z\n1 ~x\n1 a\n1 B\n2 B b\n1 B\n7 4\n6 5\n0 4\n2 3\n2 3\n2 0\n7 4\n2 3\n",
+    "expectedOutput": "3 Z a b\n2 B z9\n2 Z a\n3 Z a ~x\n4 B Z a b\n2 B b\n2 B b\n1 B\n"
+  },
+  {
+    "input": "9 6\n3 Ab Z b\n0\n1 a\n3 a A aB\n1 aB\n1 aB\n2 Ab _\n1 a\n2 _ z9\n6 3\n2 0\n7 0\n2 4\n0 3\n7 6\n",
+    "expectedOutput": "4 Ab Z a b\n0\n1 a\n7 A Ab Z _ a aB b\n2 a aB\n1 aB\n3 Ab _ a\n1 a\n2 _ z9\n"
+  },
+  {
+    "input": "7 4\n1 B\n3 _ Z _\n3 _ a A\n1 aB\n0\n2 z9 a\n2 b b\n3 0\n1 5\n6 5\n3 1\n",
+    "expectedOutput": "2 B aB\n3 Z _ aB\n3 A _ a\n1 aB\n0\n6 Z _ a aB b z9\n1 b\n"
+  },
+  {
+    "input": "9 2\n1 a\n0\n1 z9\n3 a z9 a\n3 b b Z\n3 B Ab _\n0\n2 Ab z9\n2 a Ab\n1 5\n5 3\n",
+    "expectedOutput": "1 a\n0\n1 z9\n5 Ab B _ a z9\n2 Z b\n3 Ab B _\n0\n2 Ab z9\n2 Ab a\n"
+  },
+  {
+    "input": "4 6\n3 b z9 Z\n1 ~x\n0\n1 _\n0 1\n2 1\n3 1\n3 0\n3 2\n0 2\n",
+    "expectedOutput": "4 Z _ b z9\n5 Z _ b z9 ~x\n4 Z _ b z9\n1 _\n"
+  },
+  {
+    "input": "9 9\n0\n3 _ _ B\n1 Z\n3 B a A\n0\n2 aB _\n1 Ab\n1 _\n0\n4 3\n3 6\n8 5\n2 6\n6 5\n7 0\n7 1\n0 5\n7 6\n",
+    "expectedOutput": "1 _\n2 B _\n1 Z\n3 A B a\n0\n7 A Ab B Z _ a aB\n6 A Ab B Z _ a\n1 _\n0\n"
+  },
+  {
+    "input": "1 0\n3 B b ~x\n",
+    "expectedOutput": "3 B b ~x\n"
+  },
+  {
+    "input": "6 15\n0\n1 z9\n2 b a\n2 z9 B\n0\n1 B\n2 1\n0 3\n2 5\n0 2\n0 4\n1 5\n2 1\n4 2\n4 2\n3 1\n2 1\n4 3\n0 3\n3 2\n4 1\n",
+    "expectedOutput": "0\n4 B a b z9\n4 B a b z9\n2 B z9\n0\n4 B a b z9\n"
+  },
+  {
+    "input": "2 1\n1 aB\n2 b aB\n0 1\n",
+    "expectedOutput": "1 aB\n2 aB b\n"
+  },
+  {
+    "input": "2 1\n3 z9 Z ~x\n3 Ab Z Z\n0 1\n",
+    "expectedOutput": "3 Z z9 ~x\n4 Ab Z z9 ~x\n"
+  },
+  {
+    "input": "2 2\n3 A B ~x\n2 B a\n0 1\n0 1\n",
+    "expectedOutput": "3 A B ~x\n4 A B a ~x\n"
+  },
+  {
+    "input": "7 6\n0\n3 b ~x A\n1 B\n2 _ b\n3 _ Ab Ab\n0\n3 aB Ab B\n6 2\n2 0\n6 4\n3 0\n3 6\n2 1\n",
+    "expectedOutput": "5 Ab B _ aB b\n7 A Ab B _ aB b ~x\n5 Ab B _ aB b\n2 _ b\n5 Ab B _ aB b\n0\n5 Ab B _ aB b\n"
+  },
+  {
+    "input": "4 5\n0\n0\n1 A\n0\n2 3\n2 1\n0 3\n2 0\n3 1\n",
+    "expectedOutput": "1 A\n1 A\n1 A\n1 A\n"
+  },
+  {
+    "input": "6 3\n0\n0\n3 A _ b\n0\n0\n0\n5 1\n1 2\n3 2\n",
+    "expectedOutput": "0\n0\n3 A _ b\n0\n0\n0\n"
+  },
+  {
+    "input": "7 14\n2 _ z9\n3 a a b\n0\n0\n3 aB b a\n0\n3 _ Ab a\n4 0\n1 2\n6 0\n5 0\n3 4\n4 2\n1 5\n3 0\n3 5\n4 6\n5 2\n2 0\n4 5\n3 6\n",
+    "expectedOutput": "6 Ab _ a aB b z9\n2 a b\n3 a aB b\n0\n3 a aB b\n3 a aB b\n5 Ab _ a aB b\n"
+  },
+  {
+    "input": "8 3\n0\n3 a Z aB\n3 Ab Z _\n2 b Z\n2 _ A\n1 Z\n3 Ab a aB\n2 Z b\n0 5\n3 2\n7 0\n",
+    "expectedOutput": "2 Z b\n3 Z a aB\n4 Ab Z _ b\n2 Z b\n2 A _\n2 Z b\n3 Ab a aB\n2 Z b\n"
+  },
+  {
+    "input": "8 10\n2 B _\n0\n1 b\n3 Ab Z B\n0\n3 _ Ab z9\n3 z9 b ~x\n2 Ab a\n2 4\n3 0\n1 0\n7 6\n1 6\n3 6\n7 6\n2 5\n0 7\n3 5\n",
+    "expectedOutput": "4 Ab B Z _\n0\n1 b\n3 Ab B Z\n1 b\n6 Ab B Z _ b z9\n8 Ab B Z _ a b z9 ~x\n5 Ab B Z _ a\n"
+  },
+  {
+    "input": "7 9\n2 z9 Z\n0\n0\n3 A Z B\n1 b\n2 Z ~x\n3 B Ab z9\n0 5\n3 6\n4 0\n6 2\n3 0\n1 5\n0 2\n4 5\n1 6\n",
+    "expectedOutput": "5 A B Z b z9\n0\n6 A Ab B Z b z9\n3 A B Z\n1 b\n6 A B Z b z9 ~x\n5 A Ab B Z z9\n"
+  },
+  {
+    "input": "5 1\n1 Z\n3 B aB B\n2 B a\n1 a\n2 a z9\n3 2\n",
+    "expectedOutput": "1 Z\n2 B aB\n2 B a\n1 a\n2 a z9\n"
+  },
+  {
+    "input": "4 3\n1 _\n2 z9 aB\n3 _ Z z9\n0\n2 0\n1 2\n1 3\n",
+    "expectedOutput": "4 Z _ aB z9\n2 aB z9\n4 Z _ aB z9\n2 aB z9\n"
+  },
+  {
+    "input": "3 6\n0\n2 Z aB\n2 _ ~x\n2 0\n1 2\n1 0\n1 0\n2 0\n2 0\n",
+    "expectedOutput": "4 Z _ aB ~x\n2 Z aB\n4 Z _ aB ~x\n"
+  },
+  {
+    "input": "8 10\n2 b B\n1 A\n1 Ab\n2 Ab aB\n1 ~x\n3 a ~x A\n1 b\n0\n6 3\n7 3\n7 6\n1 6\n1 5\n1 2\n1 4\n5 4\n4 6\n0 3\n",
+    "expectedOutput": "2 B b\n1 A\n2 A Ab\n7 A Ab B a aB b ~x\n3 A a ~x\n3 A a ~x\n4 A a b ~x\n0\n"
+  },
+  {
+    "input": "8 14\n2 _ Ab\n2 z9 ~x\n1 Ab\n2 aB A\n2 aB b\n1 A\n0\n1 Ab\n4 7\n3 0\n0 1\n6 0\n7 0\n4 6\n7 1\n5 0\n2 0\n5 1\n4 2\n6 5\n4 1\n6 7\n",
+    "expectedOutput": "5 A Ab _ aB b\n7 A Ab _ aB b z9 ~x\n3 Ab aB b\n2 A aB\n2 aB b\n3 A aB b\n2 aB b\n3 Ab aB b\n"
+  },
+  {
+    "input": "4 6\n1 z9\n3 aB B ~x\n2 B ~x\n3 a b Ab\n0 1\n3 0\n2 1\n3 2\n3 1\n2 0\n",
+    "expectedOutput": "6 Ab B a b z9 ~x\n7 Ab B a aB b z9 ~x\n5 Ab B a b ~x\n3 Ab a b\n"
+  },
+  {
+    "input": "8 3\n3 a b aB\n3 B aB aB\n1 Ab\n2 B a\n1 ~x\n0\n0\n0\n6 3\n4 1\n7 0\n",
+    "expectedOutput": "3 a aB b\n3 B aB ~x\n1 Ab\n2 B a\n1 ~x\n0\n0\n0\n"
+  },
+  {
+    "input": "3 3\n1 b\n0\n0\n1 2\n0 2\n0 1\n",
+    "expectedOutput": "1 b\n1 b\n1 b\n"
+  },
+  {
+    "input": "6 11\n2 b aB\n2 Ab ~x\n3 aB _ z9\n2 z9 A\n3 Ab z9 _\n2 Ab _\n1 2\n3 2\n0 4\n5 3\n5 4\n1 3\n3 0\n0 2\n1 4\n4 2\n5 1\n",
+    "expectedOutput": "7 A Ab _ aB b z9 ~x\n3 Ab _ ~x\n7 A Ab _ aB b z9 ~x\n5 A Ab _ z9 ~x\n7 A Ab _ aB b z9 ~x\n2 Ab _\n"
+  },
+  {
+    "input": "4 6\n2 A B\n3 z9 ~x A\n1 B\n0\n1 2\n1 0\n0 2\n1 3\n3 2\n0 3\n",
+    "expectedOutput": "4 A B z9 ~x\n3 A z9 ~x\n4 A B z9 ~x\n4 A B z9 ~x\n"
+  },
+  {
+    "input": "9 4\n0\n3 Ab a B\n1 a\n3 Z _ _\n1 A\n2 ~x a\n0\n1 Ab\n0\n7 8\n4 0\n7 0\n6 0\n",
+    "expectedOutput": "2 A Ab\n3 Ab B a\n1 a\n2 Z _\n1 A\n2 a ~x\n0\n1 Ab\n1 Ab\n"
+  },
+  {
+    "input": "7 15\n1 z9\n3 Ab Ab _\n0\n2 Z aB\n0\n2 z9 Ab\n2 ~x a\n5 1\n6 2\n5 0\n6 3\n6 5\n5 4\n2 5\n3 4\n6 0\n3 0\n2 0\n6 1\n3 2\n3 5\n0 4\n",
+    "expectedOutput": "6 Ab Z a aB z9 ~x\n7 Ab Z _ a aB z9 ~x\n4 Z a aB ~x\n4 Z a aB ~x\n6 Ab Z a aB z9 ~x\n6 Ab Z a aB z9 ~x\n2 a ~x\n"
+  },
+  {
+    "input": "5 4\n1 Z\n0\n1 Z\n0\n3 A _ a\n0 1\n1 4\n3 0\n3 1\n",
+    "expectedOutput": "1 Z\n1 Z\n1 Z\n0\n4 A Z _ a\n"
+  },
+  {
+    "input": "2 1\n2 A ~x\n3 ~x a ~x\n1 0\n",
+    "expectedOutput": "3 A a ~x\n2 a ~x\n"
+  },
+  {
+    "input": "1 0\n2 Ab a\n",
+    "expectedOutput": "2 Ab a\n"
+  },
+  {
+    "input": "8 5\n2 aB Z\n1 B\n2 Ab z9\n0\n1 B\n1 A\n0\n1 a\n7 5\n7 5\n2 4\n0 1\n6 3\n",
+    "expectedOutput": "2 Z aB\n3 B Z aB\n2 Ab z9\n0\n3 Ab B z9\n2 A a\n0\n1 a\n"
+  },
+  {
+    "input": "9 2\n0\n1 b\n0\n3 z9 _ Z\n1 Z\n0\n0\n0\n0\n0 6\n4 6\n",
+    "expectedOutput": "0\n1 b\n0\n3 Z _ z9\n1 Z\n0\n1 Z\n0\n0\n"
+  },
+  {
+    "input": "8 7\n0\n1 Z\n1 Z\n3 Z aB z9\n3 B z9 Z\n1 a\n2 b a\n2 z9 z9\n1 4\n4 7\n7 5\n6 3\n4 0\n4 3\n5 3\n",
+    "expectedOutput": "3 B Z z9\n1 Z\n1 Z\n6 B Z a aB b z9\n3 B Z z9\n4 B Z a z9\n2 a b\n3 B Z z9\n"
+  },
+  {
+    "input": "2 1\n3 b Z ~x\n2 z9 _\n1 0\n",
+    "expectedOutput": "5 Z _ b z9 ~x\n2 _ z9\n"
+  },
+  {
+    "input": "2 1\n0\n3 b B ~x\n0 1\n",
+    "expectedOutput": "0\n3 B b ~x\n"
+  },
+  {
+    "input": "3 2\n3 z9 ~x aB\n0\n0\n2 1\n2 0\n",
+    "expectedOutput": "3 aB z9 ~x\n0\n0\n"
+  },
+  {
+    "input": "9 6\n2 b a\n0\n2 z9 a\n2 a ~x\n3 Ab b z9\n1 a\n3 aB z9 _\n0\n1 ~x\n1 8\n5 4\n6 4\n3 0\n3 8\n6 8\n",
+    "expectedOutput": "3 a b ~x\n0\n2 a z9\n2 a ~x\n6 Ab _ a aB b z9\n1 a\n3 _ aB z9\n0\n5 _ a aB z9 ~x\n"
+  },
+  {
+    "input": "8 3\n3 Z A A\n2 B b\n1 A\n3 a aB A\n0\n3 b a b\n2 Z A\n1 Z\n7 0\n2 0\n4 7\n",
+    "expectedOutput": "2 A Z\n2 B b\n1 A\n3 A a aB\n0\n2 a b\n2 A Z\n1 Z\n"
+  },
+  {
+    "input": "9 7\n2 aB Z\n0\n0\n0\n1 z9\n2 A b\n3 b _ b\n2 b _\n3 aB a aB\n7 1\n0 1\n3 4\n7 1\n8 6\n2 1\n7 8\n",
+    "expectedOutput": "2 Z aB\n4 Z _ aB b\n0\n0\n1 z9\n2 A b\n4 _ a aB b\n2 _ b\n4 _ a aB b\n"
+  },
+  {
+    "input": "8 2\n2 b a\n0\n2 Ab b\n3 _ b a\n2 A Z\n2 ~x _\n3 Z ~x Ab\n0\n5 4\n3 2\n",
+    "expectedOutput": "2 a b\n0\n4 Ab _ a b\n3 _ a b\n4 A Z _ ~x\n2 _ ~x\n3 Ab Z ~x\n0\n"
+  },
+  {
+    "input": "4 3\n1 A\n2 _ a\n1 a\n3 _ a Ab\n0 2\n3 2\n0 1\n",
+    "expectedOutput": "1 A\n3 A _ a\n4 A Ab _ a\n3 Ab _ a\n"
+  },
+  {
+    "input": "9 10\n1 z9\n3 ~x _ a\n2 ~x a\n1 B\n3 ~x A A\n3 Ab Ab B\n3 z9 B ~x\n3 A b A\n0\n1 4\n6 4\n4 5\n6 3\n1 8\n1 3\n4 3\n1 8\n8 3\n8 4\n",
+    "expectedOutput": "1 z9\n3 _ a ~x\n2 a ~x\n6 A B _ a z9 ~x\n6 A B _ a z9 ~x\n7 A Ab B _ a z9 ~x\n3 B z9 ~x\n2 A b\n3 _ a ~x\n"
+  },
+  {
+    "input": "1 0\n2 aB ~x\n",
+    "expectedOutput": "2 aB ~x\n"
+  },
+  {
+    "input": "8 15\n1 B\n3 a z9 z9\n3 ~x _ Ab\n1 a\n2 ~x B\n3 ~x z9 A\n1 ~x\n1 A\n4 2\n4 1\n5 2\n6 2\n7 2\n2 0\n6 1\n6 3\n3 2\n5 3\n7 1\n5 6\n3 0\n7 0\n1 0\n",
+    "expectedOutput": "7 A Ab B _ a z9 ~x\n5 A B a z9 ~x\n7 A Ab B _ a z9 ~x\n4 A a z9 ~x\n2 B ~x\n3 A z9 ~x\n3 A z9 ~x\n1 A\n"
+  },
+  {
+    "input": "6 15\n1 b\n3 a aB b\n1 a\n0\n3 _ Ab aB\n3 ~x A z9\n5 4\n1 4\n1 4\n1 4\n2 0\n1 0\n2 0\n4 0\n5 1\n5 1\n2 0\n2 1\n2 1\n3 1\n3 0\n",
+    "expectedOutput": "8 A Ab _ a aB b z9 ~x\n6 A a aB b z9 ~x\n1 a\n0\n8 A Ab _ a aB b z9 ~x\n3 A z9 ~x\n"
+  },
+  {
+    "input": "2 0\n3 ~x z9 b\n0\n",
+    "expectedOutput": "3 b z9 ~x\n0\n"
+  },
+  {
+    "input": "2 1\n3 _ A _\n1 A\n1 0\n",
+    "expectedOutput": "2 A _\n1 A\n"
+  },
+  {
+    "input": "2 1\n1 a\n0\n0 1\n",
+    "expectedOutput": "1 a\n1 a\n"
+  },
+  {
+    "input": "9 2\n3 _ a a\n0\n2 a z9\n0\n1 Ab\n1 aB\n1 z9\n3 aB a ~x\n1 ~x\n5 4\n1 2\n",
+    "expectedOutput": "2 _ a\n0\n2 a z9\n0\n2 Ab aB\n1 aB\n1 z9\n3 a aB ~x\n1 ~x\n"
+  },
+  {
+    "input": "7 2\n0\n3 A _ a\n0\n1 aB\n2 B aB\n2 Ab aB\n3 ~x Z aB\n0 1\n2 5\n",
+    "expectedOutput": "0\n3 A _ a\n0\n1 aB\n2 B aB\n2 Ab aB\n3 Z aB ~x\n"
+  },
+  {
+    "input": "7 1\n0\n2 z9 ~x\n1 aB\n2 Z Ab\n3 B aB A\n2 Ab A\n2 Ab B\n5 6\n",
+    "expectedOutput": "0\n2 z9 ~x\n1 aB\n2 Ab Z\n3 A B aB\n2 A Ab\n3 A Ab B\n"
+  },
+  {
+    "input": "8 6\n0\n1 B\n0\n1 aB\n0\n1 A\n2 b a\n2 z9 aB\n1 2\n6 1\n6 7\n6 0\n5 1\n6 2\n",
+    "expectedOutput": "2 a b\n4 A B a b\n4 A B a b\n1 aB\n0\n1 A\n2 a b\n4 a aB b z9\n"
+  },
+  {
+    "input": "3 3\n2 B b\n0\n2 B ~x\n0 2\n0 1\n2 1\n",
+    "expectedOutput": "2 B b\n3 B b ~x\n3 B b ~x\n"
+  },
+  {
+    "input": "6 15\n1 _\n1 ~x\n3 Ab a A\n0\n0\n3 B _ z9\n2 3\n2 5\n4 1\n0 4\n1 3\n0 1\n4 3\n0 3\n0 5\n4 2\n2 1\n5 1\n0 2\n5 3\n4 5\n",
+    "expectedOutput": "1 _\n7 A Ab B _ a z9 ~x\n4 A Ab _ a\n7 A Ab B _ a z9 ~x\n1 _\n6 A Ab B _ a z9\n"
+  },
+  {
+    "input": "8 1\n2 B _\n0\n3 A Z B\n0\n0\n3 _ Ab a\n1 ~x\n0\n5 6\n",
+    "expectedOutput": "2 B _\n0\n3 A B Z\n0\n0\n3 Ab _ a\n4 Ab _ a ~x\n0\n"
+  },
+  {
+    "input": "9 11\n1 _\n1 A\n0\n1 Ab\n0\n1 b\n3 Ab _ aB\n1 _\n3 B B A\n1 2\n1 5\n6 2\n1 3\n8 4\n5 2\n3 7\n0 8\n3 8\n3 5\n3 0\n",
+    "expectedOutput": "3 A Ab _\n1 A\n5 A Ab _ aB b\n2 A Ab\n4 A Ab B _\n3 A Ab b\n3 Ab _ aB\n3 A Ab _\n4 A Ab B _\n"
+  },
+  {
+    "input": "5 7\n1 Ab\n2 aB A\n0\n0\n0\n4 3\n4 0\n4 3\n1 3\n0 3\n4 1\n4 3\n",
+    "expectedOutput": "1 Ab\n2 A aB\n0\n3 A Ab aB\n0\n"
+  },
+  {
+    "input": "7 3\n2 Ab Z\n0\n2 _ a\n3 aB A B\n3 b a Z\n0\n3 Ab ~x Z\n6 3\n4 3\n0 5\n",
+    "expectedOutput": "2 Ab Z\n0\n2 _ a\n8 A Ab B Z a aB b ~x\n3 Z a b\n2 Ab Z\n3 Ab Z ~x\n"
+  },
+  {
+    "input": "3 3\n0\n0\n1 aB\n0 2\n2 1\n0 2\n",
+    "expectedOutput": "0\n1 aB\n1 aB\n"
+  },
+  {
+    "input": "2 0\n2 b z9\n0\n",
+    "expectedOutput": "2 b z9\n0\n"
+  },
+  {
+    "input": "1 0\n2 z9 B\n",
+    "expectedOutput": "2 B z9\n"
+  },
+  {
+    "input": "2 1\n1 Z\n2 z9 aB\n1 0\n",
+    "expectedOutput": "3 Z aB z9\n2 aB z9\n"
+  },
+  {
+    "input": "5 0\n1 a\n1 z9\n2 ~x B\n0\n3 B Z Ab\n",
+    "expectedOutput": "1 a\n1 z9\n2 B ~x\n0\n3 Ab B Z\n"
+  },
+  {
+    "input": "5 5\n0\n1 z9\n0\n1 B\n3 a B ~x\n3 0\n2 4\n4 1\n2 0\n3 1\n",
+    "expectedOutput": "1 B\n4 B a z9 ~x\n0\n1 B\n3 B a ~x\n"
+  },
+  {
+    "input": "3 0\n1 ~x\n3 B Ab Z\n0\n",
+    "expectedOutput": "1 ~x\n3 Ab B Z\n0\n"
+  },
+  {
+    "input": "5 2\n2 B a\n0\n1 Z\n1 _\n0\n3 4\n0 1\n",
+    "expectedOutput": "2 B a\n2 B a\n1 Z\n1 _\n1 _\n"
+  },
+  {
+    "input": "1 0\n1 Z\n",
+    "expectedOutput": "1 Z\n"
+  },
+  {
+    "input": "6 15\n0\n3 z9 Ab a\n0\n1 _\n0\n3 aB aB ~x\n0 1\n1 3\n5 2\n1 2\n3 2\n0 1\n5 3\n0 2\n5 4\n5 3\n0 4\n5 2\n0 3\n4 3\n5 1\n",
+    "expectedOutput": "0\n5 Ab a aB z9 ~x\n6 Ab _ a aB z9 ~x\n6 Ab _ a aB z9 ~x\n2 aB ~x\n2 aB ~x\n"
+  },
+  {
+    "input": "1 0\n3 B b Z\n",
+    "expectedOutput": "3 B Z b\n"
+  },
+  {
+    "input": "3 3\n3 b _ ~x\n2 ~x z9\n1 Ab\n1 0\n2 0\n2 1\n",
+    "expectedOutput": "5 Ab _ b z9 ~x\n3 Ab z9 ~x\n1 Ab\n"
+  },
+  {
+    "input": "4 3\n0\n1 ~x\n1 A\n1 _\n1 2\n0 3\n0 2\n",
+    "expectedOutput": "0\n1 ~x\n2 A ~x\n1 _\n"
+  },
+  {
+    "input": "5 6\n0\n2 b a\n1 Z\n1 B\n1 b\n3 2\n2 1\n2 4\n3 2\n1 0\n2 0\n",
+    "expectedOutput": "4 B Z a b\n4 B Z a b\n2 B Z\n1 B\n3 B Z b\n"
+  },
+  {
+    "input": "1 0\n2 B aB\n",
+    "expectedOutput": "2 B aB\n"
+  },
+  {
+    "input": "9 8\n2 Ab B\n1 a\n3 a aB aB\n2 _ z9\n0\n0\n0\n0\n0\n5 3\n5 0\n7 6\n1 5\n5 6\n7 6\n5 2\n4 6\n",
+    "expectedOutput": "3 Ab B a\n1 a\n2 a aB\n3 _ a z9\n0\n1 a\n1 a\n0\n0\n"
+  },
+  {
+    "input": "3 3\n0\n1 aB\n0\n2 0\n1 0\n1 2\n",
+    "expectedOutput": "1 aB\n1 aB\n1 aB\n"
+  },
+  {
+    "input": "3 3\n0\n2 _ _\n1 z9\n2 0\n2 1\n0 1\n",
+    "expectedOutput": "1 z9\n2 _ z9\n1 z9\n"
+  },
+  {
+    "input": "3 1\n3 z9 z9 _\n3 A ~x ~x\n0\n1 0\n",
+    "expectedOutput": "4 A _ z9 ~x\n2 A ~x\n0\n"
+  },
+  {
+    "input": "4 4\n2 Ab z9\n0\n3 Z ~x b\n2 Ab ~x\n3 2\n1 3\n3 2\n0 2\n",
+    "expectedOutput": "2 Ab z9\n0\n5 Ab Z b z9 ~x\n2 Ab ~x\n"
+  },
+  {
+    "input": "7 10\n3 _ a b\n1 a\n2 Ab B\n1 Z\n0\n3 z9 z9 b\n2 B Z\n0 2\n2 1\n6 3\n0 4\n5 6\n5 6\n4 2\n2 1\n0 6\n0 4\n",
+    "expectedOutput": "3 _ a b\n5 Ab B _ a b\n5 Ab B _ a b\n6 B Z _ a b z9\n3 _ a b\n2 b z9\n6 B Z _ a b z9\n"
+  },
+  {
+    "input": "7 6\n0\n3 B A _\n1 a\n1 Z\n2 aB B\n3 Ab _ A\n3 B b Ab\n1 3\n6 5\n0 2\n1 2\n0 5\n2 3\n",
+    "expectedOutput": "0\n3 A B _\n4 A B _ a\n5 A B Z _ a\n2 B aB\n5 A Ab B _ b\n3 Ab B b\n"
+  },
+  {
+    "input": "9 8\n1 Z\n2 a _\n3 z9 _ Ab\n1 ~x\n3 ~x Ab a\n0\n2 Ab Z\n0\n0\n3 6\n1 6\n5 6\n5 8\n3 7\n3 1\n3 7\n7 8\n",
+    "expectedOutput": "1 Z\n3 _ a ~x\n3 Ab _ z9\n1 ~x\n3 Ab a ~x\n0\n5 Ab Z _ a ~x\n1 ~x\n1 ~x\n"
+  },
+  {
+    "input": "9 15\n0\n3 A aB aB\n3 A b A\n3 Ab a ~x\n1 ~x\n3 aB a B\n2 ~x z9\n2 z9 b\n0\n2 3\n1 0\n8 3\n2 6\n1 5\n0 6\n1 3\n1 7\n1 7\n8 3\n5 4\n3 4\n8 4\n6 7\n6 4\n",
+    "expectedOutput": "2 A aB\n2 A aB\n2 A b\n6 A Ab a aB b ~x\n8 A Ab B a aB b z9 ~x\n4 A B a aB\n5 A aB b z9 ~x\n5 A aB b z9 ~x\n0\n"
+  },
+  {
+    "input": "2 1\n2 Ab z9\n3 a z9 z9\n0 1\n",
+    "expectedOutput": "2 Ab z9\n3 Ab a z9\n"
+  },
+  {
+    "input": "1 0\n1 ~x\n",
+    "expectedOutput": "1 ~x\n"
+  },
+  {
+    "input": "1 0\n1 Ab\n",
+    "expectedOutput": "1 Ab\n"
+  },
+  {
+    "input": "7 10\n3 z9 z9 aB\n3 z9 a ~x\n0\n2 A Z\n0\n2 _ z9\n0\n2 6\n5 2\n5 2\n5 1\n1 0\n5 4\n4 2\n1 3\n0 4\n4 2\n",
+    "expectedOutput": "5 _ a aB z9 ~x\n4 _ a z9 ~x\n5 _ a aB z9 ~x\n6 A Z _ a z9 ~x\n5 _ a aB z9 ~x\n2 _ z9\n5 _ a aB z9 ~x\n"
+  },
+  {
+    "input": "3 0\n0\n2 Z ~x\n1 ~x\n",
+    "expectedOutput": "0\n2 Z ~x\n1 ~x\n"
+  },
+  {
+    "input": "4 6\n1 aB\n1 B\n1 z9\n1 A\n3 2\n3 0\n1 3\n1 0\n0 2\n1 2\n",
+    "expectedOutput": "3 A B aB\n1 B\n4 A B aB z9\n2 A B\n"
+  },
+  {
+    "input": "4 6\n2 ~x a\n1 Ab\n2 Z A\n3 z9 _ b\n2 0\n3 0\n2 1\n3 2\n3 1\n1 0\n",
+    "expectedOutput": "8 A Ab Z _ a b z9 ~x\n6 A Ab Z _ b z9\n5 A Z _ b z9\n3 _ b z9\n"
+  },
+  {
+    "input": "6 7\n3 Z a A\n1 aB\n2 ~x z9\n0\n3 ~x b _\n3 A b b\n3 4\n3 2\n5 0\n0 2\n3 2\n0 4\n1 3\n",
+    "expectedOutput": "4 A Z a b\n1 aB\n7 A Z a aB b z9 ~x\n1 aB\n7 A Z _ a aB b ~x\n2 A b\n"
+  },
+  {
+    "input": "5 5\n0\n2 _ a\n3 Z Z z9\n3 _ A _\n3 z9 A a\n2 3\n3 0\n2 4\n2 3\n2 0\n",
+    "expectedOutput": "4 A Z _ z9\n2 _ a\n2 Z z9\n4 A Z _ z9\n4 A Z a z9\n"
+  },
+  {
+    "input": "9 3\n2 a _\n3 z9 z9 A\n1 _\n3 _ _ aB\n1 A\n3 ~x _ aB\n2 A z9\n3 b _ _\n3 _ B Ab\n2 6\n2 4\n4 3\n",
+    "expectedOutput": "2 _ a\n2 A z9\n1 _\n3 A _ aB\n2 A _\n3 _ aB ~x\n3 A _ z9\n2 _ b\n3 Ab B _\n"
+  },
+  {
+    "input": "3 3\n2 B A\n1 A\n2 A Ab\n0 1\n2 1\n0 2\n",
+    "expectedOutput": "2 A B\n3 A Ab B\n3 A Ab B\n"
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-snowflake-24",
+      "sourceContentHash": "380aa48c67723ecba4e049ab69a72bf1f9b7ea6339d6eee0f13e05c596a195a7",
+      "batch": "snowflake-24-recovered",
+      "previousReason": "原范围20万角色及20万DAG边，但每角色权限列表和字符串长度均无上限，且要求显式输出全部祖先权限。20万点各有独立权限的链就需约200亿权限项；无法在当前输出/内存预算覆盖完整范围，不以缩小角色数或强加输出总量发布。",
+      "reason": "DAG继承语义与三例一致；为容纳显式输出把角色数与不同权限串数缩到2000，授权边保留2e5；位集拓扑传播参考解，反向BFS与记忆化大整数位集独立核验。"
+    }
+  ]
+}
