@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-headlands-1": {
+      "contentHash": "0d247b628103ceff6ce66a730a0f25675f7d5391d343ee71859138ffe0094ce3",
+      "catalogContentHash": "0d247b628103ceff6ce66a730a0f25675f7d5391d343ee71859138ffe0094ce3",
+      "sourceUrl": "https://oamaster.com/docs/companies/headlands#1-disaster-recovery",
+      "sources": [
+        {
+          "path": "fastprep/Headlands/headlands-disaster-recovery.md",
+          "gitBlobSha": "e3edbc731a727a605ccf46a90903585019c869c8",
+          "rawSha256": "da9c37943aa6c9601f6473d4760d3935bd6ef1fc3070c0fed6adc80ffb9a98c5"
+        },
+        {
+          "path": "web/content/docs/companies/headlands.mdx",
+          "gitBlobSha": "1e518cac7e52f9c46320c8795da82dd9834e8672",
+          "rawSha256": "4faa326aaa049b114a7a968930e8c9bb63bad450687523f02a259dde4d9a368f"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "rangeDisclosure": "Original: 0<=N<=10^7 log lines, 0<=R<=10^5 queries, no bound on line length, total tokens or total answer size (R*N ids possible). Reduced: N<=2*10^5, R<=10^5 kept, total input<=3*10^7 bytes (fits 32MiB), total ids over all query answers<=2*10^6 (19-digit ids -> ~40MB, fits 64MiB). Value domain kept: ids/timestamps 0..2^63-1 (the conservative reading of \"non-negative 64-bit\"), digit words without redundant leading zeros.",
+      "ruleFormalization": [
+        "Valid line = single-space separated words, even count>=4, word1==\"id\", word3==\"timestamp\", words2/4 decimal digits, all keys (id, timestamp, every path) distinct; anything else is malformed and discarded (source: \"space-delimited words with unique keys per line\", \"first two keys are always id and timestamp\", \"non-negative 64-bit integers\", \"Malformed log entries should be discarded\").",
+        "Ambiguity is evaluated on the final connected components.",
+        "Every response line keeps the trailing space after each id (\"0 1 \"), an empty answer is an empty line; exact checker.",
+        "Inputs guarantee every query anchor occurs in a valid line, avoiding the unspecified behaviour for unknown anchors; tests never use path names id/timestamp."
+      ],
+      "corrections": [
+        "Third public sample is authored."
+      ]
+    }
+  }
+}

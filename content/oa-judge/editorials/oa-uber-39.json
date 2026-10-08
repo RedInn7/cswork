@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-39",
+  "title": "首次出现顺序加单调指针",
+  "explanation": "## 题意\n\n服务器按顺序收到命令。ADD ip记录ip的一次访问；FIRST_UNIQUE询问：在到目前为止的所有访问中，恰好出现过一次的IP里，最早出现的是哪一个；没有则答案为空串。按顺序输出每次FIRST_UNIQUE的答案，每个答案占一行，空串输出为空行。\n\n## 关键观察\n\n一个IP的出现次数只会增加。它第一次被ADD时次数为1，成为“唯一”；第二次被ADD后次数变为2，此后永远不再唯一。因此“唯一IP”按首次出现顺序排列时，失去唯一性的IP只会被永久剔除，不会重新加入。\n\n## 算法\n\n给每个不同IP按首次出现顺序编号，记录出现次数，并维护指针p指向“可能是答案的最早编号”。查询时，只要编号p的IP次数≥2就把p后移；停下时若p未越界，答案就是该IP，否则为空串。\n\n## 正确性\n\n不变式：编号小于p的IP次数都≥2，因而永远不是唯一IP。查询时指针跳过的IP次数≥2，同样永远不会再成为答案，所以后移安全。停下的位置是编号≥p中第一个次数为1的IP（新IP次数至少为1），结合不变式，它就是所有唯一IP中首次出现最早的那个；越界说明不存在唯一IP，答案为空串。\n\n## 复杂度\n\n每个ADD一次哈希查询；指针总共最多移动“不同IP数”次，所以总时间期望O(总字符数)，空间O(不同IP总长度)。\n\n## 独立验证\n\noracle用有序字典保存当前唯一IP（第二次出现时删除），查询取第一个键，不复用指针做法。小域另写历史暴力：每次查询重新统计此前全部ADD的次数，按首次出现顺序找第一个次数为1的IP；在三个IP（含大小写不同的两个）上穷举长度1..6的全部命令序列，并逐个真实运行参考程序。正式用例覆盖原样例、空答案、大小写、指针长距离跳跃、百万个不同IP、高冲突随机等。四个正常退出的错误程序（忽略次数、三次才算不唯一、空答案不输出空行、忽略大小写）在正式用例上各自被判错。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{while(p<order.size()&&cnt[p]>=2)p++;if(p<order.size())out+=order[p];out+='\\n';}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}

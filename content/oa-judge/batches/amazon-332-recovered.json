@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-332",
+      "sourceContentHash": "0ab031ee22b8341b5061d93439d70d41e9df2f35246354a934c41c260a4aeb33",
+      "packageChecksum": "9a1ee28c3e715dccd9877c3e8f1051c354a7917c264af5361bf6fc3dc933396c",
+      "editorial": "## 题意\n\n给定N个进程的内存占用processes和整数m，必须删除恰好一段长度为m的连续进程，求删除后剩余进程内存总和的最小值。\n\n## 推导\n\n剩余总和 = 全部总和 − 被删除段的和。全部总和固定，所以要让剩余最小，就要让被删除的长度m连续段之和最大。答案是 total − max(长度为m的窗口和)。\n\n## 算法\n\n先求总和，再用滑动窗口：第一个窗口是前m个数之和，此后每右移一位加上新进入的数、减去离开的数，记录最大窗口和。最后输出total−best。\n\n## 正确性\n\n长度为m的连续段恰好有N−m+1个，起点为0..N−m。滑动窗口依次得到每个起点对应窗口的和：从起点i−m到起点i−m+1，窗口失去a[i−m]、得到a[i]。因此best是所有可选删除方案中被删除部分的最大和，total−best就是剩余总和的最小值。m=N时唯一方案是全部删除，答案为0。\n\n## 数值范围\n\n每个数可达999999999，N可达3×10^6，总和约3×10^15，超过32位整数范围，必须用64位整数累加。\n\n## 复杂度\n\nO(N)时间。参考解按块读入并手写整数解析，避免大输入读入成为瓶颈。\n\n## 独立验证\n\noracle用前缀和数组计算每个窗口和后取最大值，不复用滑动状态；小域另对每个起点直接求剩余元素之和取最小值。穷举N=2..6、m=2..N、每个数取{2,5,999999999}的全部输入，并逐个真实运行参考程序。大用例覆盖最大值全满（闭式答案）、全最小值、最大窗口位于开头/结尾/中间、m=N、随机大值等。四个正常退出的错误程序（32位溢出、删最小段、窗口少一、只删两端）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c!='-'&&(c<'0'||c>'9'))c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){long long n=rd(),m=rd();vector<long long> a(n);long long total=0;for(auto &x:a){x=rd();total+=x;}\nlong long cur=0;for(long long i=0;i<m;i++)cur+=a[i];long long best=cur;\nfor(long long i=m;i<n;i++){cur+=a[i]-a[i-m];if(cur>best)best=cur;}\nprintf(\"%lld\\n\",total-best);}\n"
+        }
+      ]
+    }
+  ]
+}

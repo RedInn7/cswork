@@ -1,0 +1,27 @@
+[
+  {
+    "name": "错误漏掉最后一条边框",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\nstring border=\"+\"+string(w+2,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误边框只有width个短横线",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\nstring border=\"+\"+string(w,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nif(n>0)out+=border;fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误删除句首空格",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\nstring border=\"+\"+string(w+2,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();while(p<e&&in[p]==' ')p++;size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nif(n>0)out+=border;fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误n为0时仍输出一条边框",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\nstring border=\"+\"+string(w+2,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nout+=border;fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误按最长句子而非width补齐",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\n{size_t q=p;long mx=0;for(long i=0;i<n;i++){size_t e=in.find('\\n',q);if(e==string::npos)e=in.size();if((long)(e-q)>mx)mx=e-q;q=e<in.size()?e+1:e;}w=mx;}string border=\"+\"+string(w+2,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nif(n>0)out+=border;fwrite(out.data(),1,out.size(),stdout);}\n"
+  }
+]

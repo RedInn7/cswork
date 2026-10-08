@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261010,
+  "problems": [
+    {
+      "id": "oa-headlands-1",
+      "oracleCases": 185,
+      "uniqueOracleInputs": 185,
+      "ambiguousOracleCases": 54,
+      "publicCases": 3,
+      "hiddenCases": 35,
+      "referenceFormalCases": 38,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "de61ee5570ec8c1171788bc30708176ae6cfbdcced37f7febb27cdc0035d81c2",
+      "negativeControls": [
+        {
+          "name": "错误接受奇数个词的行并丢弃末尾词",
+          "rejectedCases": 9,
+          "rejectedCaseIndices": [
+            9,
+            16,
+            18,
+            27,
+            28,
+            29,
+            30,
+            31,
+            34
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误不检查同一行重复键",
+          "rejectedCases": 11,
+          "rejectedCaseIndices": [
+            2,
+            8,
+            10,
+            18,
+            20,
+            25,
+            28,
+            29,
+            30,
+            31,
+            34
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误区间内只按提交编号排序",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            12,
+            16,
+            17,
+            18,
+            20,
+            27,
+            28,
+            29,
+            30,
+            31,
+            33,
+            34,
+            36,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误忽略歧义直接回答查询",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            1,
+            19,
+            32,
+            35
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误把结束时间当作开区间",
+          "rejectedCases": 11,
+          "rejectedCaseIndices": [
+            6,
+            11,
+            12,
+            17,
+            20,
+            22,
+            27,
+            29,
+            33,
+            34,
+            36
+          ],
+          "normalExitCases": 38
+        }
+      ],
+      "oracleMethod": "Regex full-match line validation; bipartite commit/anchor BFS components; per-component path->opaque sets for ambiguity; per-query full component filter and sort.",
+      "exhaustiveSmallDomain": {
+        "cases": 6174,
+        "commits": "1..3",
+        "paths": [
+          "f",
+          "g"
+        ],
+        "opaque": [
+          "1",
+          "2"
+        ],
+        "timestamps": [
+          1,
+          2
+        ]
+      },
+      "largeBoundaries": [
+        {
+          "name": "一百五十万个19位编号输出",
+          "logLinesAndQueries": [
+            "200000",
+            "300002"
+          ],
+          "inputBytes": 16667148,
+          "outputBytes": 30100000,
+          "elapsedSeconds": 0.2856
+        },
+        {
+          "name": "五万格式错误行混入",
+          "logLinesAndQueries": [
+            "200000",
+            "300002"
+          ],
+          "inputBytes": 10428247,
+          "outputBytes": 1848057,
+          "elapsedSeconds": 0.15993
+        },
+        {
+          "name": "长链末端引入歧义",
+          "logLinesAndQueries": [
+            "100000",
+            "110002"
+          ],
+          "inputBytes": 4345582,
+          "outputBytes": 17,
+          "elapsedSeconds": 0.0805
+        },
+        {
+          "name": "二十万提交单一连通块窄区间",
+          "logLinesAndQueries": [
+            "200000",
+            "300002"
+          ],
+          "inputBytes": 12566642,
+          "outputBytes": 1393238,
+          "elapsedSeconds": 0.31818
+        },
+        {
+          "name": "大量相同时间戳与无路径提交",
+          "logLinesAndQueries": [
+            "200000",
+            "202002"
+          ],
+          "inputBytes": 6761743,
+          "outputBytes": 5330809,
+          "elapsedSeconds": 0.11509
+        }
+      ],
+      "packageBytes": 91921515,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 44.754
+    }
+  ]
+}

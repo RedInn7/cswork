@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261009,
+  "problems": [
+    {
+      "id": "oa-airbnb-6",
+      "oracleCases": 175,
+      "uniqueOracleInputs": 175,
+      "publicCases": 3,
+      "hiddenCases": 35,
+      "referenceFormalCases": 38,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "6b144abcb9a7bed9f1a5f8d7b94eadf2aa16c956bceffa52f0f297f77d250e33",
+      "negativeControls": [
+        {
+          "name": "错误漏掉最后一条边框",
+          "rejectedCases": 34,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误边框只有width个短横线",
+          "rejectedCases": 34,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误删除句首空格",
+          "rejectedCases": 11,
+          "rejectedCaseIndices": [
+            2,
+            7,
+            22,
+            26,
+            27,
+            30,
+            32,
+            33,
+            35,
+            36,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误n为0时仍输出一条边框",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            1,
+            13,
+            14,
+            25
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误按最长句子而非width补齐",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            0,
+            4,
+            11,
+            16,
+            18,
+            20,
+            21,
+            24,
+            26,
+            27,
+            31,
+            33,
+            37
+          ],
+          "normalExitCases": 38
+        }
+      ],
+      "oracleMethod": "Python str.ljust formatter; independent structural verifier (line count 2n+1, border lines, row prefix/suffix, sentence then spaces) applied to every oracle and formal expectation and to reference output in the exhaustive domain.",
+      "exhaustiveSmallDomain": {
+        "cases": 311,
+        "widths": [
+          1,
+          2,
+          3
+        ],
+        "nMax": 2,
+        "alphabet": [
+          " ",
+          "a"
+        ]
+      },
+      "largeBoundaries": [
+        {
+          "name": "最大n与最大width短句",
+          "header": "100000 300",
+          "inputBytes": 1100108,
+          "outputBytes": 61000305,
+          "elapsedSeconds": 0.0853
+        },
+        {
+          "name": "最大n宽度1",
+          "header": "100000 1",
+          "inputBytes": 183209,
+          "outputBytes": 1200006,
+          "elapsedSeconds": 0.01155
+        },
+        {
+          "name": "最大n宽度40满长句子",
+          "header": "100000 40",
+          "inputBytes": 4100010,
+          "outputBytes": 9000045,
+          "elapsedSeconds": 0.0412
+        },
+        {
+          "name": "宽度300满长句子",
+          "header": "4000 300",
+          "inputBytes": 1204009,
+          "outputBytes": 2440305,
+          "elapsedSeconds": 0.01354
+        },
+        {
+          "name": "首尾空格随机长度",
+          "header": "20000 100",
+          "inputBytes": 917837,
+          "outputBytes": 4200105,
+          "elapsedSeconds": 0.0135
+        }
+      ],
+      "packageBytes": 87943893,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 11.354
+    }
+  ]
+}

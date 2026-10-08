@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-airbnb-6",
+      "sourceContentHash": "54ed5ba7e3dac6c1628db32155c0483c2c20fe927f5242f807c86c98799e1602",
+      "packageChecksum": "b12221e29a45bd1e18df249ba44c1690e0713f27726a4a2efcd3bc3d152e7faa",
+      "editorial": "## 题意\n\n给定 n 个句子和固定内容宽度 width，把每个句子画成表格的一行：边框行、句子行交替出现，最后再补一条边框收尾，共 2n+1 行；n=0 时什么都不输出。\n\n- 边框行：`+`，width+2 个 `-`，`+`。\n- 句子行：`| `，句子原样，补空格到恰好 width 个内容字符，` |`。\n\n## 思路\n\n先构造一次边框串，然后逐行读句子：输出边框，再输出 `| ` + 句子 + (width−len) 个空格 + ` |`。最后若 n>0 再输出一次边框。\n\n句子中的空格（包括开头和结尾的空格）都是内容的一部分，必须原样保留，因此要按“整行”读取，不能按空白分词，也不能去掉首尾空格。空句子对应一整行 width 个空格。\n\n## 正确性\n\n每个句子行的长度为 2+len+(width−len)+2=width+4，与边框行等长；每一行的内容只依赖对应句子和 width，按顺序输出即得到唯一正确的表格。\n\n## 复杂度\n\n输出共 (2n+1)·(width+5) 字节，时间和空间都与输出规模线性相关。逐行多次 print 或频繁刷新在大数据下较慢，建议拼接后一次性写出。\n\n## 独立验证\n\noracle 用 Python 的格式化补齐（`ljust`）生成表格；另写结构校验器，不构造答案而是逐行检查：行数为 2n+1、偶数行等于边框、奇数行以 `| ` 开头以 ` |` 结尾且中间等于句子加空格。穷举 width≤3、n≤2、句子取自 {空格, a} 的全部输入并逐个运行参考程序。五个正常退出的错误程序（漏最后边框、边框短横线数量错、删除句首空格、n=0 仍输出边框、按最长句子补齐）都被正式数据判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string in;char buf[1<<16];size_t r;while((r=fread(buf,1,sizeof buf,stdin))>0)in.append(buf,r);\nsize_t p=0;long n=0,w=0;while(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')n=n*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]==' ')p++;while(p<in.size()&&in[p]>='0'&&in[p]<='9')w=w*10+(in[p++]-'0');\nwhile(p<in.size()&&in[p]!='\\n')p++;if(p<in.size())p++;\nstring border=\"+\"+string(w+2,'-')+\"+\\n\";string out;out.reserve((size_t)(2*n+1)*(w+5));\nfor(long i=0;i<n;i++){size_t e=in.find('\\n',p);if(e==string::npos)e=in.size();size_t len=e-p;\n out+=border;out+=\"| \";out.append(in,p,len);out.append(w-len,' ');out+=\" |\\n\";p=e<in.size()?e+1:e;}\nif(n>0)out+=border;fwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    }
+  ]
+}

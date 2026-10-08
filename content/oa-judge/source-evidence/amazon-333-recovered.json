@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-amazon-333": {
+      "contentHash": "4605725df15729ce03a22eb988ad9f7e0bc634a5570f19ee1e1926f47df656e3",
+      "catalogContentHash": "4605725df15729ce03a22eb988ad9f7e0bc634a5570f19ee1e1926f47df656e3",
+      "sourceUrl": "https://oamaster.com/docs/companies/amazon#333-sign-in-pages",
+      "sources": [
+        {
+          "path": "web/content/docs/companies/amazon.mdx",
+          "section": "## 333. Sign In Pages",
+          "gitBlobSha": "70650fad830ad60944ae8036fb4f134d9afc3fab",
+          "rawSha256": "07d33d58794347890f76b4199a9805d5fac529f0702dea6884e6fce484b69985"
+        },
+        {
+          "path": "fastprep/Amazon/amazon-register-login-logout.md",
+          "gitBlobSha": "a27268a422b2db62117c37aea7d00298491f7b3f",
+          "rawSha256": "d0d861b11d6b59d5a2050f332590fa286bfed3b1ca33c86aee901406e611addc",
+          "role": "FastPrep page for this problem; core image is a missing local path, constraints are _(none)_"
+        },
+        {
+          "path": "fastprep/Amazon/amazon-return-records.md",
+          "gitBlobSha": "4c318f88939f009c67d0f3f74b26e0213afc364c",
+          "rawSha256": "b1a18ca6d41ebccc4d78b1c8b40710539f94af3125352c3847442335e615db21",
+          "role": "same-narrative Amazon336 page (identical five notes and five-request sample); cross-source only"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "sourceImages": [
+        {
+          "path": "content/oa-judge/source-images/amazon-333-original.jpg",
+          "sha256": "0bf6cb84b18b3707eca7670b51e161c2588c5b4036c01a9ec0be7e81f14df64c",
+          "url": "https://www.fastprep.io/api/problem-source-images/amazon-register-login-logout/0",
+          "role": "own Problem Source image: five notes, STDIN format (n then one request per line), five-request david/adam sample with output"
+        },
+        {
+          "path": "content/oa-judge/source-images/amazon-336-original.jpg",
+          "sha256": "29d0ce46a8c18c2a3eb58b12fb8e3565d199490620447c416005ac3b2a09ae95",
+          "url": "https://www.fastprep.io/api/problem-source-images/amazon-return-records/0",
+          "role": "same-narrative Amazon336 Problem Source image: complete register/login/logout response table and alphanumeric 1..10 credential constraint"
+        }
+      ],
+      "ruleProvenance": {
+        "fromOwnImage": [
+          "Initially no users registered.",
+          "Already logged-in user login request is unsuccessful; original login remains active.",
+          "Requests execute in input order.",
+          "Usernames and passwords are case-sensitive.",
+          "Responses Registered Successfully, Logged In Successfully, Login Unsuccessful, Logged Out Successfully appear verbatim in the sample output."
+        ],
+        "fromSameNarrative336Image": [
+          "Register failure response Username already exists.",
+          "Logout response Logout Unsuccessful when the given username is not logged in.",
+          "Credential alphabet [0-9a-zA-Z], length 1..10."
+        ],
+        "crossCheck": "The 333 image notes match the 336 image notes one-for-one and the 333 image sample is identical to the 336 raw text example 2 (with the correct Login Unsuccessful spelling). Followup review recorded in docs/oa-recovery/remaining-source-followups.json."
+      },
+      "imageProvenance": "Both images are publicly readable Problem Source images linked from the original FastPrep pages (img src), not immutable assets of the fixed upstream commit. Each was viewed in full; the 333 image was re-checked line by line for this package.",
+      "rangeDisclosure": "The 333 sources give no numeric bounds (FastPrep constraints are _(none)_; the 333 image has none). Credential format 1..10 alphanumeric is taken from the same-narrative 336 image. Under the full 32MiB input transport domain, 3728269 minimal logout requests would need 74565380 output bytes, above the 64MiB expected-output budget, so the request count is capped at n<=10^6 (longest register line 31 bytes -> about 31MB input, at most 24 bytes per response -> at most 24MB output).",
+      "corrections": [
+        "No correction needed: the 333 image sample output already uses Login Unsuccessful. The 333 image sample explanation does not exist; public examples 2 and 3 are authored."
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-amazon-44",
+      "sourceContentHash": "3bafd9d6ec871ff5f6bbf830a0b1b744b0fe7f7723b8b7aaabee81c1fd697315",
+      "packageChecksum": "badeeaef71a5417c11012333458165347d5e7efc0f353add3faae7ac9450de60",
+      "editorial": "## 题意\n\n给定一个由小写字母组成、本身就是回文的字符串letters。把它的字符重新排列，在所有仍是回文的排列中输出字典序最小的一个。\n\n## 推导\n\n回文由前一半（长度⌊n/2⌋）和可能存在的中心字符唯一确定，后一半是前一半的反转。输入本身是回文，所以每个字母出现次数中至多一个为奇数：n为奇数时恰有一个奇数次字母，它只能放在中心；n为偶数时没有中心。\n\n两个回文比较字典序时，先比较的正是前一半。前一半的字符多重集固定为“每个字母出现次数的一半”，在多重集固定的所有排列中，按非降序排列字典序最小。中心字符已被唯一确定，所以答案是：前一半按a到z非降序排列，中间放奇数次字母（若有），再接前一半的反转。\n\n## 正确性\n\n任一回文排列中，第i个位置与第n−1−i个位置字符相同，因此每个字母在前一半中恰好出现⌊cnt/2⌋次，中心（若有）只能是唯一的奇数次字母。所以所有回文排列与“前一半的一个排列”一一对应。对这些排列，前一半字典序越小整串字典序越小，而多重集的最小排列就是非降序排列。构造出的串确实是回文且字符多重集与输入一致，故它就是答案。\n\n## 复杂度\n\n统计26个计数O(n)，从两端向中间填写O(n)，额外空间为输出串本身。长度可达三千万，参考解用fread整块读入、一次fwrite输出。\n\n## 独立验证\n\noracle把输入排序后去掉中心字符，再隔一个取一个得到前一半，不复用计数填充；大用例另外逐项检查输出是回文、字符计数与输入相同、前一半非降序。小域穷举：字母表{a,b,c}上长度1..7的全部回文，对每个输入枚举所有不同排列、筛出回文取最小值，并逐个真实运行参考程序。四个正常退出的错误程序（只排序、原样输出、取字典序最大、奇数字符放首位）在正式用例上各自被判错。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <string>\nusing namespace std;\nint main(){string s;s.reserve(1<<25);char buf[1<<16];size_t k;\nwhile((k=fread(buf,1,sizeof buf,stdin))>0)s.append(buf,k);\nlong long cnt[26]={0};for(char c:s)if(c>='a'&&c<='z')cnt[c-'a']++;\nlong long n=0;for(int i=0;i<26;i++)n+=cnt[i];\nstring out(n,'?');long long l=0,r=n-1;\nfor(int i=0;i<26;i++){for(long long k2=0;k2<cnt[i]/2;k2++){out[l++]=char('a'+i);out[r--]=char('a'+i);}if(cnt[i]%2)out[n/2]=char('a'+i);}\nout+='\\n';fwrite(out.data(),1,out.size(),stdout);}\n"
+        }
+      ]
+    }
+  ]
+}

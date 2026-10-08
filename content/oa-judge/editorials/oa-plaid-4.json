@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-plaid-4",
+  "title": "以最低楼为中心的单调栈",
+  "explanation": "## 题意\n\nn栋宽为1的楼房紧挨着排成一行，第i栋高cityLine[i]，它们的外轮廓构成一个直方图。求能完整放进这个轮廓内部的最大正方形面积。\n\n## 推导\n\n轮廓内的正方形可以竖直下移到地面而不越界，所以只需考虑底边贴地、边与坐标轴平行的正方形。边长为s的正方形能放下，当且仅当存在一段连续楼房，宽度≥s且每栋高度≥s。对一段连续楼房[l,r]，能放下的最大边长是min(r−l+1, min h[l..r])。由于宽度和高度都是整数，最优边长是整数，答案为边长的平方。\n\n## 算法\n\n在最优段中取高度最小的楼房i。把以i为最低楼房的段向两侧扩展到第一栋比它矮的楼房为止，宽度只会变大、最小高度不变，因此只需对每个i考虑“以h[i]为最小高度的极大段”，候选边长为min(h[i], 该段宽度)。用单调栈分别求出每栋楼左侧和右侧第一栋更矮楼房的位置即可，答案取所有候选的最大值再平方。\n\n## 正确性\n\n任一可放下边长s的段，其最低楼房i的极大段包含它，故h[i]≥s且极大段宽度≥s，候选值≥s。反过来每个候选值都对应一个真实可放下的正方形。因此最大候选值就是最大边长。\n\n## 数值范围\n\n边长可达min(n,10^8)=3×10^6，面积约9×10^12，必须用64位整数。\n\n## 复杂度\n\n单调栈每个下标进出栈各一次，O(n)时间、O(n)空间。\n\n## 独立验证\n\noracle对边长二分：边长s可行当且仅当存在长度≥s、高度都≥s的连续段，线性扫描判定，不使用单调栈；小域另枚举所有连续段取min(宽度,最小高度)。穷举n=1..6、高度1..4的全部输入并逐个真实运行参考程序。正式用例覆盖原样例、全最大高度、全为1、递增/递减阶梯、单高塔、随机大值等。四个正常退出的错误程序（32位面积、求最大矩形、忽略段宽、输出边长）在正式用例上各自被判错。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nstatic char buf[1<<16];static size_t len=0,pos=0;\nstatic int gc(){if(pos==len){len=fread(buf,1,sizeof buf,stdin);pos=0;if(!len)return -1;}return buf[pos++];}\nstatic long long rd(){int c=gc();while(c<'0'||c>'9')c=gc();long long x=0;while(c>='0'&&c<='9'){x=x*10+(c-'0');c=gc();}return x;}\nint main(){int n=(int)rd();vector<long long> h(n);for(auto &x:h)x=rd();\nvector<int> left(n),st;st.reserve(n);\nfor(int i=0;i<n;i++){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();left[i]=st.empty()?-1:st.back();st.push_back(i);}\nst.clear();long long best=0;\nfor(int i=n-1;i>=0;i--){while(!st.empty()&&h[st.back()]>=h[i])st.pop_back();int right=st.empty()?n:st.back();st.push_back(i);\nlong long side=min<long long>(h[i],right-left[i]-1);best=max(best,side);}\nprintf(\"%lld\\n\",best*best);}\n"
+    }
+  ]
+}

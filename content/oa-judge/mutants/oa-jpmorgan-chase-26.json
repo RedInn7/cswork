@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误按输入顺序而非字典序输出",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];sort(k.begin(),k.end());groups[k].push_back(i);}\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;sort(k.begin(),k.end());auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n out+=to_string(it->second.size());for(int j:it->second){out+=' ';out+=w[j];}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误只比较字母种类忽略次数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];sort(k.begin(),k.end());k.erase(unique(k.begin(),k.end()),k.end());groups[k].push_back(i);}\nfor(auto &g:groups)sort(g.second.begin(),g.second.end(),[&](int a,int b){return w[a]<w[b];});\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;sort(k.begin(),k.end());k.erase(unique(k.begin(),k.end()),k.end());auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n out+=to_string(it->second.size());for(int j:it->second){out+=' ';out+=w[j];}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误用长度与字符和作签名",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];{long s=0;for(char c:k)s+=c;k=to_string(k.size())+\":\"+to_string(s);}groups[k].push_back(i);}\nfor(auto &g:groups)sort(g.second.begin(),g.second.end(),[&](int a,int b){return w[a]<w[b];});\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;{long s=0;for(char c:k)s+=c;k=to_string(k.size())+\":\"+to_string(s);}auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n out+=to_string(it->second.size());for(int j:it->second){out+=' ';out+=w[j];}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误排除与查询完全相同的单词",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];sort(k.begin(),k.end());groups[k].push_back(i);}\nfor(auto &g:groups)sort(g.second.begin(),g.second.end(),[&](int a,int b){return w[a]<w[b];});\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;sort(k.begin(),k.end());auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n {int c=0;string t;for(int j:it->second)if(w[j]!=buf){c++;t+=' ';t+=w[j];}out+=to_string(c);out+=t;}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  }
+]

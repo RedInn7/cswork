@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "items": {
+    "oa-uber-39": {
+      "contentHash": "d3cad26d71cc08f991be8ae288e7365fe142ee19782d1ab236dd26f2c88f0528",
+      "catalogContentHash": "d3cad26d71cc08f991be8ae288e7365fe142ee19782d1ab236dd26f2c88f0528",
+      "sourceUrl": "https://oamaster.com/docs/companies/uber#39-first-unique-ip-hitting-the-server",
+      "sources": [
+        {
+          "path": "web/content/docs/companies/uber.mdx",
+          "section": "## 39. First Unique IP Hitting the Server",
+          "gitBlobSha": "e7f6ba66bd8c83d46cc6392e5550e001da075bed",
+          "rawSha256": "6ab55dc6ebb1486ee72776561a824b35579f87e50cb4953baa882ad0da6fff29"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "rangeDisclosure": "Original constraints: total events up to 10^7, distinct IPs up to 10^6, IPs are opaque strings without validation. 10^7 commands cannot fit the 32MiB per-case input (even ADD a plus newline is 6 bytes each), so the command count is capped at 1.5*10^6; distinct IPs keep the original 10^6 bound. To make the stdin protocol unambiguous and bounded, each IP is a whitespace-free token of 1..15 visible ASCII characters (33..126; covers dotted IPv4). Longest ADD line is 20 bytes -> at most 30MB input; each answer at most 16 bytes -> at most 24MB output. At least one FIRST_UNIQUE is guaranteed so the expected output is never empty. The empty-string answer is serialized as an empty line, judged with the exact checker.",
+      "corrections": [
+        "None to the two original examples. Third public example is authored."
+      ]
+    }
+  }
+}

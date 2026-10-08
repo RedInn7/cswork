@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-1",
+  "title": "排序签名分组检索异位词",
+  "explanation": "## 思路：排序签名分组\n\n两个串互为字母异位词，当且仅当它们包含的每个字母次数都相同，也就是把各自字符排序后得到的串相同。把排序后的串称为签名。\n\n1. 对每个单词求签名，用哈希表把单词按签名分组。\n2. 每组内部按字典序排序一次。\n3. 对每个查询求签名，直接取出对应组输出。\n\n单词本身与查询完全相同时也算异位词（不重排也是一种排列），应当包含在结果里。\n\n## 正确性\n\n签名相同 ⇔ 字母多重集相同 ⇔ 互为异位词，因此每个查询取到的组恰好是全部异位词。组内已按字典序排好，输出顺序正确。只比较字母种类、或用长度加字符和这样的弱签名都会把不同多重集错误地合并。\n\n## 复杂度\n\n设 L 为最大串长。求签名 O((n+q)·L log L)（也可以用 26 维计数做到 O(L)），组内排序 O(n log n·L)，输出与答案规模成正比。\n\n## 独立验证\n\noracle 不使用签名哈希，而是对每个（查询, 单词）对直接比较 26 个字母的出现次数，O(n·q) 暴力筛出后排序。字母表 {a,b,c}、长度 1..2 的全部 12 个串，枚举其全部非空子集作为单词表，并用所有有异位词的串作查询，逐个运行参考程序。四个正常退出的错误程序（按输入顺序输出、忽略字母次数、长度加字符和签名、排除与查询相同的单词）都在正式数据上被判错。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <string>\n#include <vector>\n#include <unordered_map>\n#include <algorithm>\nusing namespace std;\nint main(){int n;if(scanf(\"%d\",&n)!=1)return 0;static char buf[128];vector<string> w(n);\nunordered_map<string,vector<int>> groups;groups.reserve(2*n+1);\nfor(int i=0;i<n;i++){scanf(\"%127s\",buf);w[i]=buf;string k=w[i];sort(k.begin(),k.end());groups[k].push_back(i);}\nfor(auto &g:groups)sort(g.second.begin(),g.second.end(),[&](int a,int b){return w[a]<w[b];});\nint q;scanf(\"%d\",&q);string out;\nfor(int i=0;i<q;i++){scanf(\"%127s\",buf);string k=buf;sort(k.begin(),k.end());auto it=groups.find(k);\n if(it==groups.end()){out+=\"0\\n\";continue;}\n out+=to_string(it->second.size());for(int j:it->second){out+=' ';out+=w[j];}out+='\\n';}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+    }
+  ]
+}
