@@ -72,6 +72,9 @@ test('publisher accepts exact exhaustive evidence and fails closed on invalid co
     'oracle-hash',
     'report-count',
     'sampled-report-count',
+    'native',
+    'native-missing-language',
+    'native-source-mismatch',
   ]) {
     await t.test(fault, () => {
       const directory = resolve(root, fault);
@@ -83,6 +86,10 @@ test('publisher accepts exact exhaustive evidence and fails closed on invalid co
       const manifest = JSON.parse(read(`batches/${batch}.json`));
       const report = JSON.parse(read(`reports/${batch}.json`));
       const entry = manifest.items[0];
+      const native = fault.startsWith('native');
+      const nativeCode = '#include <iostream>\nint main(){std::cout<<1;}\n';
+      if (native)
+        entry.authoredSolutions = [{ language: 'cpp', code: nativeCode }];
       let oracle = JSON.parse(read(`oracles/${id}.json`));
       if (fault.startsWith('sampled')) {
         delete entry.oracleCoverage;
@@ -97,6 +104,11 @@ test('publisher accepts exact exhaustive evidence and fails closed on invalid co
       const oracleBytes = JSON.stringify(oracle);
       const manifestBytes = JSON.stringify(manifest);
       const result = report.problems[0];
+      if (native) {
+        result.referenceSha256 = hash(nativeCode);
+        if (fault !== 'native-missing-language')
+          result.referenceLanguage = 'cpp';
+      }
       result.entrySha256 = hash(JSON.stringify(entry));
       result.oracleSha256 =
         fault === 'oracle-hash' ? '0'.repeat(64) : hash(oracleBytes);
@@ -112,12 +124,15 @@ test('publisher accepts exact exhaustive evidence and fails closed on invalid co
       save(prefix + `oracles/${id}.json`, oracleBytes);
       for (const [folder, extension] of [
         ['packages', 'json'],
-        ['references', 'py'],
+        ['references', native ? 'cpp' : 'py'],
         ['mutants', 'json'],
       ])
         save(
           prefix + `${folder}/${id}.${extension}`,
-          read(`${folder}/${id}.${extension}`),
+          native && folder === 'references'
+            ? nativeCode +
+                (fault === 'native-source-mismatch' ? '// modified\n' : '')
+            : read(`${folder}/${id}.${extension}`),
         );
       save(
         'content/oa-master/catalog.json',
@@ -135,7 +150,7 @@ test('publisher accepts exact exhaustive evidence and fails closed on invalid co
           timeout: 10000,
         },
       );
-      if (fault === 'none' || fault === 'sampled') {
+      if (fault === 'none' || fault === 'sampled' || fault === 'native') {
         assert.equal(child.status, 0, child.stderr);
         assert.match(child.stdout, /FIXTURE_PUBLISH_WRITE/);
       } else {

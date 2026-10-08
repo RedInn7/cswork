@@ -235,6 +235,33 @@ test('valid sandbox evidence is verified without mislabeling unreviewed or block
   assert.match(result.note, /不等于已线上发布/);
 });
 
+void test('C++ coverage requires matching native source and explicit language evidence', (t) => {
+  const f = fixture(t);
+  const code = '#include <iostream>\nint main(){std::cout<<1;}\n';
+  f.entry.authoredSolutions = [{ language: 'cpp', code }];
+  writeFileSync(resolve(f.root, 'references', id + '.cpp'), code);
+  f.json(resolve(f.root, 'batches', batch + '.json'), f.manifest);
+  f.json(resolve(f.root, 'registry.json'), f.manifest);
+  f.evidence.batchSha256 = digest(
+    readFileSync(resolve(f.root, 'batches', batch + '.json')),
+  );
+  f.evidence.problems[0].entrySha256 = digest(JSON.stringify(f.entry));
+  f.evidence.problems[0].referenceSha256 = digest(code);
+  f.evidence.problems[0].referenceLanguage = 'cpp';
+  f.saveReport();
+  assert.equal(f.run().totals.sandbox_verified, 1);
+  delete f.evidence.problems[0].referenceLanguage;
+  f.saveReport();
+  assert.throws(f.run, /language evidence/);
+  f.evidence.problems[0].referenceLanguage = 'cpp';
+  f.saveReport();
+  writeFileSync(
+    resolve(f.root, 'references', id + '.cpp'),
+    code + '// changed\n',
+  );
+  assert.throws(f.run, /match verified program/);
+});
+
 test('an authored package without a sandbox report is only awaiting_sandbox', (t) => {
   const f = fixture(t, { report: false });
   const result = f.run();
