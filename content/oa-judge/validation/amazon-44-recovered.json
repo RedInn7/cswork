@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261201,
+  "problems": [
+    {
+      "id": "oa-amazon-44",
+      "oracleCases": 175,
+      "uniqueOracleInputs": 175,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "52f684d65f634034865cad5d5c9ab9f98d055a53e679154a69207902443ebe44",
+      "negativeControls": [
+        {
+          "name": "错误只排序不构成回文",
+          "rejectedCases": 30,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            15,
+            16,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误原样输出输入回文",
+          "rejectedCases": 20,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            8,
+            11,
+            13,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            27,
+            28,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误按字典序最大放置",
+          "rejectedCases": 25,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            7,
+            8,
+            10,
+            11,
+            12,
+            13,
+            15,
+            16,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            27,
+            28,
+            31,
+            32,
+            33,
+            34,
+            35
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误奇数字符放在首位",
+          "rejectedCases": 15,
+          "rejectedCaseIndices": [
+            1,
+            5,
+            6,
+            9,
+            11,
+            12,
+            13,
+            16,
+            23,
+            24,
+            28,
+            29,
+            30,
+            31,
+            34
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent sorted-multiset half extraction (remove odd centre, take every other char); large cases checked by palindrome, per-letter count and non-decreasing half properties; exhaustive distinct-permutation brute force on small domain.",
+      "exhaustiveSmallDomain": {
+        "cases": 159,
+        "lengthMin": 1,
+        "lengthMax": 7,
+        "alphabet": "abc"
+      },
+      "largeBoundaries": [
+        {
+          "name": "百万随机奇数长度",
+          "n": 1000001,
+          "inputBytes": 1000002,
+          "outputBytes": 1000002,
+          "elapsedSeconds": 0.00904
+        },
+        {
+          "name": "百万随机偶数长度",
+          "n": 999998,
+          "inputBytes": 999999,
+          "outputBytes": 999999,
+          "elapsedSeconds": 0.01035
+        },
+        {
+          "name": "千万长度循环字母偶数",
+          "n": 10000000,
+          "inputBytes": 10000001,
+          "outputBytes": 10000001,
+          "elapsedSeconds": 0.08771
+        },
+        {
+          "name": "千万长度两字母奇数",
+          "n": 9999999,
+          "inputBytes": 10000000,
+          "outputBytes": 10000000,
+          "elapsedSeconds": 0.09619
+        },
+        {
+          "name": "三千万长度随机字母",
+          "n": 30000000,
+          "inputBytes": 30000001,
+          "outputBytes": 30000001,
+          "elapsedSeconds": 0.24066
+        }
+      ],
+      "caseBytes": 104006812,
+      "packageBytes": 104011004,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 18.824
+    }
+  ]
+}
