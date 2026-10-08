@@ -394,7 +394,25 @@ void test('draft changes are private, optimistic updates reject lost edits, and 
   const now = await getTeacherProblem(teacher, original.problem.id);
   assert.equal(now.versions.length, 2);
   assert.equal(now.versions[0].revision, 2);
-  assert.equal(now.draft?.revision, 3);
+  // Publishing keeps the draft row's revision but drops its duplicated package.
+  assert.equal(now.draft, null);
+  assert.equal(now.publishedPayload?.problem.title, revised.problem.title);
+  assert.equal(
+    (
+      sqlite()
+        .prepare(
+          'SELECT payload_json AS p,revision AS r FROM oj_problem_drafts WHERE problem_id=?',
+        )
+        .get(original.problem.id) as { p: string; r: number }
+    ).p,
+    'null',
+  );
+  assert.equal(
+    (await listTeacherProblems(teacher)).find(
+      (p) => p.id === original.problem.id,
+    )?.draftRevision,
+    null,
+  );
   assert.equal(
     (await loadJudgeSnapshot('initial:watch-intervals:1')).spec.title,
     original.problem.title,
@@ -413,6 +431,17 @@ void test('draft changes are private, optimistic updates reject lost edits, and 
   );
   await assert.rejects(
     () => publishProblemDraft(teacher, original.problem.id, 3),
+    errorsWithStatus(409),
+  );
+  // A fresh edit continues the revision sequence, so stale revisions still conflict.
+  const reopened = await saveProblemDraft(teacher, revised, null);
+  assert.equal(reopened.draft?.revision, 4);
+  await assert.rejects(
+    () => saveProblemDraft(teacher, revised, 3),
+    errorsWithStatus(409),
+  );
+  await assert.rejects(
+    () => saveProblemDraft(teacher, revised, null),
     errorsWithStatus(409),
   );
 });
