@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-tradedesk-3",
+      "sourceContentHash": "38e472159fc2b303208065c233ce9863c0dd0af4671fd7d06fe25a3ecbef3fec",
+      "packageChecksum": "219a3f2a60e226956d88594e02759da5d18aa4e749f8cb5830de54cca9d6e969",
+      "editorial": "## 题意\n\nrates[i]为第i天价格，strategy[i]∈{−1买,0持有,1卖}，利润=卖出价之和−买入价之和。可以（也可以不）选一段恰好k个连续元素，把前一半设为0、后一半设为1。求最大利润。\n\n## 思路\n\n原利润base=Σ strategy[i]·rates[i]。选窗口[l,l+k)后，窗口内原有贡献被清掉，后半段每天都变成卖出，所以新利润=base−Σ_{窗口} strategy[i]·rates[i]+Σ_{后半段} rates[i]。用两个前缀和O(1)计算每个窗口，答案取base与所有窗口值的最大值（因为可以不修改）。\n\n## 正确性\n\n窗口外的元素不变，窗口内的元素被完全覆盖，公式逐项对应。枚举了所有可能的窗口起点以及不修改的情况。\n\n## 复杂度\n\nO(n)。利润绝对值可达10^10，使用64位整数。\n\n## 独立验证\n\noracle对每个窗口真正构造修改后的strategy数组再整体计算利润（O(nk)，仅小数据），不使用前缀和。穷举n=2..4、k取所有偶数、价格1..2、策略{−1,0,1}的全部组合并逐个真实运行参考程序。错误解覆盖强制修改、前后半段颠倒、不清除窗口前半段原有操作和32位累计。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n,k;if(scanf(\"%d %d\",&n,&k)!=2)return 0;vector<long long>r(n),s(n);for(auto&x:r)scanf(\"%lld\",&x);for(auto&x:s)scanf(\"%lld\",&x);\nvector<long long>P(n+1,0),Q(n+1,0);for(int i=0;i<n;i++){P[i+1]=P[i]+s[i]*r[i];Q[i+1]=Q[i]+r[i];}\nlong long base=P[n],best=base;int h=k/2;\nfor(int l=0;l+k<=n;l++){long long v=base-(P[l+k]-P[l])+(Q[l+k]-Q[l+h]);best=max(best,v);}\nprintf(\"%lld\\n\",best);}\n"
+        }
+      ]
+    }
+  ]
+}
