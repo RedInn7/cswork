@@ -1,0 +1,148 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008001,
+  "problems": [
+    {
+      "id": "oa-box-1",
+      "oracleCases": 175,
+      "uniqueOracleInputs": 175,
+      "publicCases": 3,
+      "hiddenCases": 35,
+      "referenceFormalCases": 38,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "6ce5d0e7e4de90f27d914492852e0baffd7c48f39f1ceec093838eed93943b0e",
+      "negativeControls": [
+        {
+          "name": "错误不扣税",
+          "rejectedCases": 26,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            6,
+            14,
+            15,
+            16,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            36
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误逐枚硬币扣税取整",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            2,
+            14,
+            19,
+            30,
+            31,
+            33,
+            34,
+            36
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误不检查前三字母互异",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            0,
+            5,
+            34,
+            35
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误年份上限写成2020",
+          "rejectedCases": 5,
+          "rejectedCaseIndices": [
+            7,
+            16,
+            29,
+            34,
+            35
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误32位乘法溢出",
+          "rejectedCases": 2,
+          "rejectedCaseIndices": [
+            32,
+            33
+          ],
+          "normalExitCases": 38
+        }
+      ],
+      "oracleMethod": "Independent anchored regular expression plus distinctness/year checks and Python integer tax; exhaustive single-serial combinations of valid and invalid parts; closed forms for uniform full-size inputs.",
+      "exhaustiveSmallDomain": {
+        "firstParts": 3,
+        "years": 4,
+        "values": 11,
+        "lastChars": 3,
+        "cases": 396
+      },
+      "largeBoundaries": [
+        {
+          "name": "满规模全部1000面额",
+          "inputBytes": 1300007,
+          "outputBytes": 9,
+          "elapsedSeconds": 0.01032
+        },
+        {
+          "name": "满规模全部合法随机",
+          "inputBytes": 1171542,
+          "outputBytes": 9,
+          "elapsedSeconds": 0.01161
+        },
+        {
+          "name": "满规模随机混合",
+          "inputBytes": 1119982,
+          "outputBytes": 9,
+          "elapsedSeconds": 0.01061
+        },
+        {
+          "name": "满规模全部非法",
+          "inputBytes": 1239811,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.0128
+        },
+        {
+          "name": "满规模全部10元",
+          "inputBytes": 1100007,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.01047
+        },
+        {
+          "name": "满规模随机字母数字串",
+          "inputBytes": 850085,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.00755
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 9.295
+    }
+  ]
+}
