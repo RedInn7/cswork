@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "zolostays-2-recovered",
+  "problemId": "oa-zolostays-2",
+  "packageChecksum": "e1efb88ce11dae480daf071728d1a2c00c61576bdca0ed20cb2e2812c6801e19",
+  "referenceSha256": "bc3637a347c707330fe30e15c55d854ad5123b692840da95de662cb7390866b4",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 202,
+      "formal": 39,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 39,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 635,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "Original n1..20000 and height0..100000 retained. Eleven full-length cases independently checked; maximum basin1999800000. Empty arrays not added.",
+  "sourceDisclosure": "Truncated original body restored using its explicit LC42 reference, checked against official description. Both original examples and bounds match. External supplement is identified separately from fixed Git source.",
+  "coverage": { "total": 1634, "sandboxVerified": 1220, "remaining": 414 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

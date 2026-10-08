@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261121,
+  "problems": [
+    {
+      "id": "oa-amazon-336",
+      "oracleCases": 180,
+      "uniqueOracleInputs": 180,
+      "publicCases": 3,
+      "hiddenCases": 36,
+      "referenceFormalCases": 39,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "b3bd9f659fac8d0fc03f8de75f145255f7d9dcd0513ea800a506c54e52427a70",
+      "negativeControls": [
+        {
+          "name": "错误重复注册覆盖旧密码",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            2,
+            3,
+            20,
+            26,
+            30,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误允许已登录用户再次登录",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            2,
+            4,
+            20,
+            22,
+            24,
+            26,
+            31,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误注册后自动登录",
+          "rejectedCases": 28,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            12,
+            13,
+            14,
+            15,
+            16,
+            20,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            30,
+            31,
+            35,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误已登录时错误密码登录会结束原会话",
+          "rejectedCases": 10,
+          "rejectedCaseIndices": [
+            2,
+            4,
+            20,
+            22,
+            24,
+            26,
+            31,
+            36,
+            37,
+            38
+          ],
+          "normalExitCases": 39
+        },
+        {
+          "name": "错误用户名不区分大小写",
+          "rejectedCases": 3,
+          "rejectedCaseIndices": [
+            2,
+            6,
+            34
+          ],
+          "normalExitCases": 39
+        }
+      ],
+      "oracleMethod": "Independent Python dict/set simulation; stateless history replay (first register password, last successful login/logout event) cross-checked on every oracle input and exhaustive small domain.",
+      "exhaustiveSmallDomain": {
+        "cases": 11110,
+        "lengthMin": 1,
+        "lengthMax": 4,
+        "usernames": [
+          "a",
+          "A"
+        ],
+        "passwords": [
+          "x",
+          "X"
+        ]
+      },
+      "largeBoundaries": [
+        {
+          "name": "十万个不同最长用户名注册",
+          "n": 100000,
+          "inputBytes": 3100007,
+          "outputBytes": 2400000,
+          "elapsedSeconds": 0.02786
+        },
+        {
+          "name": "高基数注册登录退出循环",
+          "n": 100000,
+          "inputBytes": 2566666,
+          "outputBytes": 2366663,
+          "elapsedSeconds": 0.02379
+        },
+        {
+          "name": "重复注册风暴不覆盖密码",
+          "n": 100000,
+          "inputBytes": 2048717,
+          "outputBytes": 2399999,
+          "elapsedSeconds": 0.0218
+        },
+        {
+          "name": "已登录反复登录不掉线",
+          "n": 100000,
+          "inputBytes": 1350007,
+          "outputBytes": 1900014,
+          "elapsedSeconds": 0.01981
+        },
+        {
+          "name": "全部未知用户退出",
+          "n": 100000,
+          "inputBytes": 1800007,
+          "outputBytes": 2000000,
+          "elapsedSeconds": 0.01755
+        },
+        {
+          "name": "全部未知用户登录",
+          "n": 100000,
+          "inputBytes": 1900007,
+          "outputBytes": 1900000,
+          "elapsedSeconds": 0.02053
+        },
+        {
+          "name": "大小写变体高基数",
+          "n": 37500,
+          "inputBytes": 787506,
+          "outputBytes": 775000,
+          "elapsedSeconds": 0.01297
+        },
+        {
+          "name": "最长密码末位不同",
+          "n": 100000,
+          "inputBytes": 2460007,
+          "outputBytes": 2200000,
+          "elapsedSeconds": 0.02394
+        },
+        {
+          "name": "十万请求高冲突随机五用户",
+          "n": 100000,
+          "inputBytes": 1066605,
+          "outputBytes": 2188414,
+          "elapsedSeconds": 0.04151
+        },
+        {
+          "name": "十万请求中等基数随机",
+          "n": 100000,
+          "inputBytes": 1832890,
+          "outputBytes": 2163862,
+          "elapsedSeconds": 0.02632
+        },
+        {
+          "name": "十万请求高基数随机",
+          "n": 100000,
+          "inputBytes": 2565731,
+          "outputBytes": 2116181,
+          "elapsedSeconds": 0.02717
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 42.508
+    }
+  ]
+}
