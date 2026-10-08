@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-zolostays-2",
+  "title": "左右最高边界与双指针结算",
+  "explanation": "## 来源恢复与完整范围\n\n固定上游 fastprep/Zolostays/zolostays-trapping-rain-water.md 的正文在“Given n non-negative integers repres”处截断，不能仅凭残文猜测宽度。它的starter明确提示“refert to LC42”，两组完整输入输出分别是[0,1,0,2,1,0,1,3,2,1,2,1]→6和[4,2,0,3,2,5]→9，且完整约束与官方LeetCode 42一致。本站沿这条明确交叉引用核对官方题面 https://leetcode.com/problems/trapping-rain-water/description/ ，恢复每根柱宽1、求雨后可接水总量的缺失定义。这不是凭同名题拼接规则，不声称截断raw本身保留了完整正文，也没有执行上游代码。\n\n完整原范围1≤n≤20000、0≤height[i]≤100000保留，不扩展空数组。标准输入改编为n后跟n个高度，以空白分隔；输出积水的单位体积总数。两个原样例6/9保持，第三例[2,0,2]→2明确是本站补充。最大值由[100000,0,...,0,100000]达到，为19998×100000=1999800000，原int返回足够；参考使用64位累计以便清楚表达求和。\n\n## 思路\n\n某个位置能接的水等于min(左侧最高柱,右侧最高柱)−当前柱高（最高值包含当前柱）。一个方向没有更高墙时，水会流出，不能只看邻居或取两侧较大墙。\n\n参考从左右两端相向处理，leftMax和rightMax分别是已处理前缀和后缀的最高柱，初值0。当leftMax≤rightMax，处理左侧下一根：若它超过leftMax，它不接水并更新左最高；否则其水位已经被左最高限定，而右边已有足够高的墙，贡献leftMax−height[left]。另一种情况对称处理右侧。直到全部位置处理完。\n\n## 正确性证明\n\n若leftMax≤rightMax且当前左柱不高于leftMax，则已处理右侧存在高度rightMax的墙（leftMax=rightMax=0时水量本来就是0），未知中间位置只可能增加另一侧最高值，不能降低它。因此左右最高值的较小者确定为leftMax，当前位置贡献被精确计算。若当前左柱高于leftMax，则左侧包含自身的最高值就是自身高度，所以该位置贡献0，更新leftMax正确。rightMax较小时完全对称。\n\n每轮处理一个此前未处理的位置，不会漏算或重复。上述结论表明每轮贡献均正确；结束时所有位置已处理，累计值等于总积水量。\n\n## 复杂度\n\n读取和双指针遍历均为O(n)，存储输入数组O(n)，双指针额外空间O(1)。没有按高度逐层扫描参考算法，完整高度100000与长度20000可直接处理。\n\n## 独立验证\n\noracle分别构建完整前缀/后缀最高值数组再逐点求和，不复用双指针状态。小域另逐层逐格检查左右是否各有一根达到该层的墙，直接计数水格；穷举长度1..6、高度0..2并逐个真实运行参考。163唯一oracle包含两个原例、本站例、固定种子随机与边界。正式满长用例覆盖零、最高平台、单调、最高双墙盆地、相邻峰/宽盆地、多盆地及随机高度；最大盆地用独立闭式1999800000复核。三个正常退出错误程序分别取较大墙、漏扣柱高、只看紧邻墙，每个都在全部正式例执行并记录反例。\n",
+  "solutions": [
+    {
+      "language": "cpp",
+      "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nint main(){int n;scanf(\"%d\",&n);vector<int> h(n);for(int &x:h)scanf(\"%d\",&x);\nint left=0,right=n-1,leftMax=0,rightMax=0;long long answer=0;\nwhile(left<=right){if(leftMax<=rightMax){leftMax=max(leftMax,h[left]);answer+=leftMax-h[left];++left;}else{rightMax=max(rightMax,h[right]);answer+=rightMax-h[right];--right;}}\nprintf(\"%lld\\n\",answer);}\n"
+    }
+  ]
+}

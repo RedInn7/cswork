@@ -1,0 +1,10 @@
+[
+  {
+    "name": "只输出本次新建所在段长度而非全局最长",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    lengths={}\n    best=0\n    answer=[]\n    for x in values[1:]:\n        left=lengths.get(x-1,0)\n        right=lengths.get(x+1,0)\n        length=left+right+1\n        lengths[x]=length\n        lengths[x-left]=length\n        lengths[x+right]=length\n        best=max(best,length)\n        answer.append(length)\n    return ' '.join(map(str,answer))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "只考虑左邻居导致向左扩展失效",
+    "code": "import sys\n\ndef solve(raw):\n    values=list(map(int,raw.split()))\n    lengths={}\n    best=0\n    answer=[]\n    for x in values[1:]:\n        left=lengths.get(x-1,0)\n        right=0\n        length=left+right+1\n        lengths[x]=length\n        lengths[x-left]=length\n        lengths[x+right]=length\n        best=max(best,length)\n        answer.append(best)\n    return ' '.join(map(str,answer))\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

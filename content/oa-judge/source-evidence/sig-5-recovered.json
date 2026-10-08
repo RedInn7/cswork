@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "items": {
+    "oa-sig-5": {
+      "url": "https://oamaster.com/docs/companies/sig#5-memory-allocation-alloc--erase-queries",
+      "contentHash": "3297d349d86f8a7b577d50404c4a50ca0ac25b178469bd8bf5c0b9392d266314",
+      "catalogContentHash": "3297d349d86f8a7b577d50404c4a50ca0ac25b178469bd8bf5c0b9392d266314",
+      "path": "OA LIST/SIG_OA/011_QQ_1751157677750.txt",
+      "gitBlobSha": "1711810018fc7f1488e8d2873b7e9f85c98664a3",
+      "rawSha256": "de42f75e943977e88dd71bcb8b775db5dd7b83ff750c960c5992428b350d22c4",
+      "sources": [
+        {
+          "path": "OA LIST/SIG_OA/011_QQ_1751157677750.txt",
+          "gitBlobSha": "1711810018fc7f1488e8d2873b7e9f85c98664a3",
+          "sha256": "de42f75e943977e88dd71bcb8b775db5dd7b83ff750c960c5992428b350d22c4",
+          "role": "complete allocation/erase and success-only1-based IDs"
+        },
+        {
+          "path": "OA LIST/SIG_OA/012_QQ_1751157688232.txt",
+          "gitBlobSha": "3789a4c13daaa2d8ae32035ae1ce3233c35a08e5",
+          "sha256": "696bc421eaa969c0621a33929171743e2e448f499bcaea7d43d1c9f01fd7eace",
+          "role": "query encoding and malformed15-cell sample"
+        },
+        {
+          "path": "OA LIST/SIG_OA/014_QQ_1751157713034.txt",
+          "gitBlobSha": "5e59599f62d7cc61abf51395a0c4a65a98737c9e",
+          "sha256": "fb278cc1ad778f1c7ade2b20c1ef3fc08c8aea0607cb628379c4721558a97ebe",
+          "role": "complete16-cell state trajectory uniquely reconstructing original input"
+        },
+        {
+          "path": "OA LIST/SIG_OA/015_QQ_1751157721182.txt",
+          "gitBlobSha": "900d3dfe1eda267894b9f35226aa0de3e1507eaf",
+          "sha256": "1080944f79627d8be01a8101624e91f2cb55f53a8771abf50e7499967cf9a607",
+          "role": "complete numeric constraints"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "recoveredConstraints": [
+        "8 <= n <= 320, n divisible by8",
+        "2 <= q <= 300",
+        "memory[i] in0,1",
+        "allocation size1..n",
+        "erase ID1..q-1"
+      ],
+      "originalSampleReconstruction": {
+        "firstAllocation": [
+          0,
+          2
+        ],
+        "firstStart": 8,
+        "afterFirst": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "restoredInput": [
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1
+        ],
+        "changedIndices": [
+          8,
+          9
+        ],
+        "explanation": "Undo only the first newly allocated cells in the explicit16-cell poststate; do not append a guessed trailing bit."
+      },
+      "correction": "Malformed15-cell input corrected from complete source trajectory. IDs start1 and advance only on successful allocation, not the inaccurate MDX wording.",
+      "siteAdded": "标准n q、memory及查询逐行输入，输出结果数组；另两公开例本站补充。"
+    }
+  }
+}

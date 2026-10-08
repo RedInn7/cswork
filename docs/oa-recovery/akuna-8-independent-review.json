@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-akuna-capital-8",
+  "batch": "akuna-8-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "a97bfbc30414f76e88d325211d687fe23a45de8e80a98f12b023eb3bb25588f7",
+  "packageFileSha256": "ab1b8ad9f2d949ac0d056fa2c1b5d59dd54d7b1439b78bf36c902e17546b9544",
+  "oracleSha256": "bf21822adbfc269a46432d046c40ff1b0fcf7532c7dbeea3357a26e029706933",
+  "referenceSha256": "df517e362597c7aebe4752a0f2669c68793e82fb2c69fab4ad242f83ee73626b",
+  "scope": "Original source read and independent verification plan prepared before freeze. Author generator never read, imported or executed. After freeze, reference and mutants compiled independently in a temporary directory and executed sequentially. Only the designated review report was written in the project; no branch change, commit, sandbox or application build performed by reviewer.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "verified": true,
+    "files": [
+      {"path": "OA LIST/Akuna_Capital_OA/018_image.txt", "gitBlobSha": "b0f3ddb542f3f172d896cdd654a45fcb44d35e33", "rawSha256": "9bdfc1f1449e3329ca0da86881e0ee20a621de0438ef14d79c24ae211bcae113"},
+      {"path": "OA LIST/Akuna_Capital_OA/019_image.txt", "gitBlobSha": "79e4483af9f1633a18395978481b3731c5422408", "rawSha256": "25884ba2de699b4a66bec4ef2f1cf32bd85dda9c2ee18d71d3ab5c91fc09bbc3"},
+      {"path": "OA LIST/Akuna_Capital_OA/020_image.txt", "gitBlobSha": "8a39182fa886da2880b8aa2af8985e8916a0f704", "rawSha256": "e92d11c4a716f860b3a05102bed1b08a62de023569f6208000d8863d53daff3d"}
+    ],
+    "rules": "018 explicitly returns total published bytes, not indices. Limit is inclusive.019 explicitly specifies the doubly inclusive window [t-window,t] and original total11.020 guarantees ascending timestamps and at most one attempt per timestamp, implying strictly increasing timestamps. Dropped logs do not occupy later allowance.",
+    "typeDisclosure": "Source unsigned int fields interpreted as uint32 and unsigned long fields as uint64 under explicitly disclosed Linux LP64. Numerical decimal bounds are not misrepresented as separately printed source constraints. Zero limit/window/size and empty vectors remain supported.",
+    "sizeDomain": "No explicit source bound on n. Package clearly uses the standard32MiB per-case input transport limit, not an invented small n cap. Both near-budget cases exceed3.4million records.",
+    "catalogCorrection": "Problem and editorial explicitly replace the incorrect catalogue indices-return interpretation with the original total-byte return contract. Original four-record input and total11 preserved."
+  },
+  "proofReview": {
+    "invariant": "After expiry, queue contains exactly positive-size accepted records within the closed historical window and sum equals their bytes. Strict timestamp ordering makes expired records a prefix. Comparing t-old_time>window preserves the left endpoint. Admit exactly when sum+size<=limit; rejected records do not enter history. Omitting zero-size records changes neither future admission nor total.",
+    "integerSafety": "Timestamp subtraction is safe because current timestamps are larger than retained timestamps. It avoids unsigned t-window underflow and old_time+window overflow. sum+size uses uint64; active sum is at most UINT32_MAX. Standard input budget bounds the number of records, hence total is safely below uint64 capacity without introducing an arbitrary problem n cap.",
+    "complexity": "O(n) time and O(k) retained accepted-record space; streaming input and no complete parsed vector. Each accepted positive-size record enters and leaves at most once.",
+    "bindings": "Normalized import schema succeeds. Normalized checksum matches frozen value and promoted batch. Batch editorial equals editorial artifact; both authored solution arrays match, and displayed C++ code exactly equals reference bytes. Required standalone correctness-proof heading verified."
+  },
+  "independentVerification": {
+    "reviewTool": "/private/tmp/akuna8-review.q7SOdX/review.py",
+    "reviewToolSha256": "3bed426975133f557f011918a0ec0534974a8475f3fe86036ca45649aabc71fa",
+    "smallMethod": "For each log, scan all previously accepted history and recompute the sum of entries satisfying currentTime-oldTime<=window. No expiry queue or rolling-sum reuse. All small formal cases and163 oracle cases recomputed this way.",
+    "largeMethod": "Iterate every input token without splitting into a multi-million-record list. Check uint32/uint64 ranges, strict ordering, exact count, consecutive timestamps, and identical sizes. For uniform size s>0, period=window+1 and k=min(floor(limit/s),period); total=s*(k*floor(n/period)+min(k,n%period)). Zero size gives zero. This mathematical periodic count does not simulate the reference queue.",
+    "periodicFormulaCrossChecks": 3185,
+    "periodicCrossCheckDomain": "All n=0..12, limit/window=0..6 and size=0..4 compared with complete-history scan.",
+    "formalCases": 46,
+    "publicCases": 3,
+    "hiddenCases": 43,
+    "oracleCases": 163,
+    "uniqueOracleInputs": 163,
+    "referenceSubprocessRuns": 209,
+    "referenceResult": "All209 actual independently compiled reference executions exited zero with empty stderr and outputs matching independently recomputed answers.",
+    "referenceMaxLocalSeconds": 1.1050662079942413,
+    "largeCases": [
+      {
+        "name": "近32MiB活动队列最坏量级",
+        "n": 3466551,
+        "limit": 4294967295,
+        "window": 4294967295,
+        "size": 1,
+        "firstTimestamp": 0,
+        "lastTimestamp": 3466550,
+        "inputBytes": 33554430,
+        "answer": 3466551,
+        "inputSha256": "8be4238f5477b37f40555e95f42793d47f2bf48795b6ca66b2c4aad832fcba86",
+        "referenceSeconds": 1.1050662079942413
+      },
+      {
+        "name": "近32MiB交替接受与过期",
+        "n": 3466553,
+        "limit": 4,
+        "window": 1,
+        "size": 3,
+        "firstTimestamp": 0,
+        "lastTimestamp": 3466552,
+        "inputBytes": 33554432,
+        "answer": 5199831,
+        "inputSha256": "9b79493c3b97405230e33cf0606832669d77ad3e99e4308832277e40c9c41c71",
+        "referenceSeconds": 0.1972059999825433
+      },
+      {
+        "name": "UINT64末端平移固定周期独立闭式",
+        "n": 10000,
+        "limit": 11,
+        "window": 6,
+        "size": 3,
+        "firstTimestamp": "18446744073709541616",
+        "lastTimestamp": "18446744073709551615",
+        "inputBytes": 230011,
+        "answer": 12861,
+        "inputSha256": "d946280a43c8f7610e0b9fe14725f517bb8a32b4fd22d0bed596caa78b7ce2bc",
+        "referenceSeconds": 0.005334999994374812
+      }
+    ],
+    "memoryDiscipline": "All large cases and all subprocesses sequential. No multi-million-row Python record lists or simultaneous large executions. Reviewer peak RSS397934592 bytes on macOS; includes loaded JSON strings, not reference sandbox memory.",
+    "wallSeconds": 15.381109667010605
+  },
+  "negativeControls": [
+    {"name": "错误将左端点按开区间过期", "normalExitCases": 46, "rejectedByCases": [1,5,8,44,45]},
+    {"name": "错误使用32位加法判断窗口总量", "normalExitCases": 46, "rejectedByCases": [3,14,18,25,27,29,31,37]},
+    {"name": "错误将被拒日志也加入限额历史", "normalExitCases": 46, "rejectedByCases": [0,1,3,5,6,14,15,17,18,20,25,27,29,44,45]}
+  ],
+  "negativeControlResult": "All138 actual mutant subprocesses exited zero with empty stderr. Rejection counts5/8/15 match the frozen author counts; expected outputs were independently recomputed first.",
+  "limitations": "Local compiler execution and timings are not Linux GoJudge resource evidence. Sandbox, web/worker integration, publication and deployment remain parent responsibilities. Temporary tool path documents this review and is not a repository runtime dependency."
+}

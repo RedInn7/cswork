@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-zolostays-2",
+  "batchId": "zolostays-2-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 39,
+    "publicCases": 3,
+    "hiddenCases": 36,
+    "uniqueOracleCases": 163,
+    "actualLocalNativeReferenceRuns": 202,
+    "actualLocalNativeMutantRuns": 117,
+    "allProcessesExitedNormallyWithEmptyStderr": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告实际编译并执行本机 C++ 程序；Linux 沙箱验收由主 agent 单独执行，不混计本机测试次数或耗时。"
+  },
+  "bindings": {
+    "packageChecksum": "e1efb88ce11dae480daf071728d1a2c00c61576bdca0ed20cb2e2812c6801e19",
+    "checksumMethod": "实际 ojImportSchema.parse 后 JSON.stringify 的 SHA256，与冻结值及 batch 一致",
+    "packageFileSha256": "0365a07f00d6c8cee392f11bbbd316a3e60bde9dbca864a8fb00ce48f706c181",
+    "oracleFileSha256": "164b3989607ce07a69828fe9c4bb9f8b2f086857bdefecb5b285e061ebb1f206",
+    "referenceSha256": "bc3637a347c707330fe30e15c55d854ad5123b692840da95de662cb7390866b4",
+    "editorialFileSha256": "7a44f65ef4588a8b2d7806dd497df450ff816485535bef956e44cbda75b06654",
+    "mutantFileSha256": "8a359e5a7ebb574406f81fc71970f23544d599d5ad223d7696799f9257e4977b",
+    "batchFileSha256": "1531022359c35c43b5e3bed92ac509ec47f5a1aba16ce2bc34078d95127580db",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Zolostays/zolostays-trapping-rain-water.md",
+    "gitBlobSha": "0a6b8ad1cb53e98c4b1e9db9fd127d05660d75d2",
+    "sha256": "1c114107a47579e823beae43124d6634c231c30deb6470a5bf72efa9bb5f91cc",
+    "officialCrossReference": "https://leetcode.com/problems/trapping-rain-water/description/",
+    "independentOfficialRead": true,
+    "provenance": "独立预审实际读取官方题面，确认编号42、每柱宽1、求雨后积水总量、两组输入输出及约束。固定源 starter 显式引用 LC42，因此不是仅凭题名相似补规则。官方现场页面与固定 Git 原文分开归属，不声称截断原文完整。题面、题解、source-evidence 已披露这条恢复链。",
+    "domain": "保留完整原范围 n=1..20000、height=0..100000，不扩展空数组；n后跟n个高度是明确的 stdin 适配。",
+    "samples": "两个原例独立重算为6与9且保持原输入；第三公开[2,0,2]→2明确为本站补充。"
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "argument": "位置水量为包含自身的左右最高值较小者减当前高度。参考选择已知最高边界较低的一端：若当前柱低于该边界，另一端已有足够高墙，水位确定；若当前柱更高，则此端当前贡献0并更新边界。每位置恰处理一次，求和正确。",
+    "bounds": "至多 n-2 个内部位置各积100000，最大1999800000，由两端100000、内部全0达到，原signed int返回足够；参考long long累计安全。读取数组O(n)，双指针O(n)时间、额外O(1)空间。"
+  },
+  "independentExpectedValidation": {
+    "all202CasesRecomputed": true,
+    "method": "独立构造完整前缀与后缀最高值数组，逐位置求min(leftMax,rightMax)-height，不使用参考双指针状态。",
+    "literalWaterCellArtifactCases": 183,
+    "literalWaterCellMethod": "对每个柱上方单位高度，直接查左右是否各存在达到该层的柱，逐个水格计数。",
+    "additionalExhaustiveWaterCellCases": 1092,
+    "exhaustiveDomain": "长度1..6、高度0..2的全部数组；逐层水格模型与前后缀模型全部一致。此项仅独立模型交叉验证，不计入202次参考运行。",
+    "inputValidation": "逐例检查n与高度数量完全一致，n1..20000及每个高度0..100000；全部expected完整独立比对。",
+    "fullLengthCases": [
+      { "formalIndex": 28, "n": 20000, "expected": 1999800000 },
+      { "formalIndex": 29, "n": 20000, "expected": 0 },
+      { "formalIndex": 30, "n": 20000, "expected": 0 },
+      { "formalIndex": 31, "n": 20000, "expected": 0 },
+      { "formalIndex": 32, "n": 20000, "expected": 0 },
+      { "formalIndex": 33, "n": 20000, "expected": 999900000 },
+      { "formalIndex": 34, "n": 20000, "expected": 1799100000 },
+      { "formalIndex": 35, "n": 20000, "expected": 0 },
+      { "formalIndex": 36, "n": 20000, "expected": 1999760004 },
+      { "formalIndex": 37, "n": 20000, "expected": 993907318 },
+      { "formalIndex": 38, "n": 20000, "expected": 999000000 }
+    ],
+    "maximumBasin": "额外逐项确认第28例两端100000、19998项内部全0，用独立闭式19998*100000核对1999800000。",
+    "maximumBasinInputSha256": "61d9b1fc898a483f507dc64c93c0df5cf017ef741ce57dec39aa6f0edc3b1cf8"
+  },
+  "negativeControls": [
+    { "name": "错误取两侧较大墙", "normalRuns": 39, "killedByFormalCases": 28 },
+    { "name": "漏扣柱高", "normalRuns": 39, "killedByFormalCases": 37 },
+    { "name": "仅看紧邻墙", "normalRuns": 39, "killedByFormalCases": 20 }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/zolo2-review.0vhnnw/review.py",
+    "scriptSha256": "e29add7322026858d7106a52027af96f109113ec6e98adcc4e2fd92c786e33ad",
+    "artifactVerificationSeconds": 2.979382038116455,
+    "projectMutation": "只新增本审核报告，未修改冻结产物，未提交。"
+  }
+}

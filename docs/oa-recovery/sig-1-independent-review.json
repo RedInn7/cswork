@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-sig-1",
+  "batch": "sig-1-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "c0e41e9dd3560e8fff05829c67da706d52e2245f0806c8dcb8adf269871af4be",
+  "referenceSha256": "d465c82b5c9a91ab9f7d6736c967c7baac2c4e9e519edbb0760d1b8a9b1e33f9",
+  "scope": "Independent source, artifact and subprocess review. Generator read but not executed; no author oracle imported or called. No sandbox, build, branch change or commit performed by this reviewer.",
+  "sourceReview": {
+    "fixedCommit": "e66f809f4c953bce129f68491726176615db6afc",
+    "rawFilesRead": ["OA LIST/SIG_OA/001_image.txt", "OA LIST/SIG_OA/002_image.txt", "OA LIST/SIG_OA/003_image.txt", "OA LIST/eBay_OA/019_image.txt", "OA LIST/eBay_OA/020_image.txt", "OA LIST/eBay_OA/021_image.txt", "OA LIST/eBay_OA/022_image.txt", "OA LIST/eBay_OA/023_image.txt"],
+    "recordedSourceSha256AndGitBlobHashesVerified": 6,
+    "rules": "SIG001 explicitly defines selling minus buying profit, permits negative profit, guarantees sufficient currency and budget, and says may change. Zero or one modification is consistent with this wording. A modification uses exactly k consecutive days, first half hold and second half sell.",
+    "domain": "SIG003 independently supplies n=2..100000, rates=1..1000, equal strategy length and values -1/0/1. Only missing k bounds are supplemented from eBay023: even k, 2<=k<=n. The nums.length typo is disclosed and normalized to the common array length.",
+    "sameTaskEvidence": "eBay019/020 match the operation, budget note and full six-element original example with k=4 and answer 18. eBay022's different price upper bound 1e9 is not imported into SIG. eBay021 contains corrupted intermediate calculations and is not used as authoritative example arithmetic.",
+    "originalExample": {"baseline": -3, "modifiedProfits": [-4, 13, 18], "answer": 18},
+    "disclosuresChecked": "Package and editorial retain SIG price limits and original example, identify same-task k supplementation, optional modification, naming normalization and two site-added public examples."
+  },
+  "independentVerification": {
+    "smallMethod": "Enumerate no modification and every window, independently compute every day's resulting strategy and sum all contributions.",
+    "largeMethod": "Build independent binary segment trees for prices and signed contributions. For every window, query and sum the unchanged left region, replacement selling half and unchanged right region. Compare with no modification. This does not use the reference sliding recurrence or the author's prefix arrays.",
+    "oracleCasesRecomputed": 163,
+    "formalCasesRecomputed": 48,
+    "referenceSubprocessCases": 211,
+    "referenceSubprocessResult": "All exit 0, no stderr, exact output tokens match independently recomputed expectations.",
+    "domainValidatedForEveryCase": true,
+    "fullN100000Cases": 13,
+    "nearMaximumOddN99999Cases": 1,
+    "boundaryCoverage": "Minimum and maximum prices; k=2 and k=n; all buy/sell/hold; negative optimal profit; no-change optimum; earliest/latest optimal windows; unequal window halves; mixed and random strategies.",
+    "exhaustiveDomain": "n=2..5, every rates array over {1,2}, every strategy over {-1,0,1}, every legal even k. Direct enumeration agrees with independent segment trees.",
+    "exhaustiveCases": 18396,
+    "exhaustiveInputExpectedDigest": "34da26bf91173f4a9d74ec86d085a6dc49f99702af40ccbf703906331787227e",
+    "exhaustiveDigestMatchesAuthoredRecord": true,
+    "artifactBindings": "Normalized package checksum, reference byte hash, batch authored solution and editorial solution/text all match."
+  },
+  "negativeControls": [
+    {"name": "Forced modification", "normalExitCases": 48, "rejectedByCases": [1, 12, 34, 35, 45]},
+    {"name": "Sell in first half", "normalExitCases": 48, "rejectedByCases": [0, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 31, 32, 33, 43, 44, 46, 47]}
+  ],
+  "negativeControlValidation": "All 96 subprocess runs exit normally without stderr; rejection indices exactly match authored validation.",
+  "complexityAndNumericReview": "Reference O(n) time and O(n) space. Every resulting strategy contribution lies in [-1000,1000], so absolute profit <=100000000. Two-second/128MiB package budgets are reasonable; this independent review does not claim a real sandbox resource measurement."
+}

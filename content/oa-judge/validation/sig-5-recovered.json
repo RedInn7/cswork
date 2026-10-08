@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261020,
+  "problems": [
+    {
+      "id": "oa-sig-5",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 44,
+      "referenceFormalCases": 47,
+      "negativeControls": [
+        {
+          "name": "失败分配也错误消耗ID",
+          "rejectedByCases": [
+            0,
+            2,
+            12,
+            21,
+            23,
+            31,
+            43,
+            45
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "分配起点错误无需8对齐",
+          "rejectedByCases": [
+            0,
+            3,
+            4,
+            6,
+            7,
+            8,
+            9,
+            12,
+            14,
+            15,
+            18,
+            21,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            33,
+            37,
+            38,
+            40,
+            41,
+            43,
+            44,
+            45
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "7e3d46f15845963d5ae31802a6ed45cd216240661d375cf9a289cd75abf83931",
+      "oracleMethod": "Big-integer occupancy bitmask and ID-to-mask map; enumerate aligned masks by bitwise intersection, erase by mask removal, independently of per-cell ID scan.",
+      "largeBoundaries": [
+        {
+          "name": "320全占用300次分配",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "6b805a7d020df0bf6c6161ba8ac3b292adf4a1c97335479396f9910d702efcf1",
+          "localSeconds": 0.02381
+        },
+        {
+          "name": "320全空未知ID上界",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "6b805a7d020df0bf6c6161ba8ac3b292adf4a1c97335479396f9910d702efcf1",
+          "localSeconds": 0.02166
+        },
+        {
+          "name": "320整块反复分配释放",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "d3c568f7dc2d071b4468ae3b4465544be262bf7f435db228c22d797bf4345ac6",
+          "localSeconds": 0.02334
+        },
+        {
+          "name": "320先填满后重复失败",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "437f32c8a8d1083312d76e6f4753fa755622c1721136b6043386f96fdc5db7ca",
+          "localSeconds": 0.0247
+        },
+        {
+          "name": "320跨段分配与多ID释放",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": false,
+          "expectedSha256": "ae743e9662f76ece803577353841a8be8e28767bff182b5bc270b079f8c776d9",
+          "localSeconds": 0.02343
+        },
+        {
+          "name": "320仅末段可用",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "03424b36b7d7817135bd4b8c8e1660317daf38e383ca1c14166db71a70aee4a1",
+          "localSeconds": 0.02213
+        },
+        {
+          "name": "320初始占用不获新ID",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "6138357a8bdeffa44994a62a4fa5e6c62dcdaf4a18d2aa0a174bb4d3848a39e1",
+          "localSeconds": 0.02212
+        },
+        {
+          "name": "320碎片只非对齐空位",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "6b805a7d020df0bf6c6161ba8ac3b292adf4a1c97335479396f9910d702efcf1",
+          "localSeconds": 0.0236
+        },
+        {
+          "name": "8最小内存300操作",
+          "n": 8,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": true,
+          "expectedSha256": "1a9331e3563b4842de9d239c51fab744fc9092dcf19168ba40231eace3077c23",
+          "localSeconds": 0.02295
+        },
+        {
+          "name": "320全范围随机1",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": false,
+          "expectedSha256": "2428812fca635ee3c3004513486b10f7e0d2bd0933d308106bb6bf2c511cdc7c",
+          "localSeconds": 0.02941
+        },
+        {
+          "name": "320全范围随机2",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": false,
+          "expectedSha256": "6b805a7d020df0bf6c6161ba8ac3b292adf4a1c97335479396f9910d702efcf1",
+          "localSeconds": 0.03049
+        },
+        {
+          "name": "320全范围随机3",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": false,
+          "expectedSha256": "e6045bc235ffe379d43bcaa8e1c2b3b6b30c01208bc87ad7f584d2959d93fb7d",
+          "localSeconds": 0.03855
+        },
+        {
+          "name": "320全范围随机4",
+          "n": 320,
+          "q": 300,
+          "independentBitmaskOracle": true,
+          "closedFormChecked": false,
+          "expectedSha256": "6b805a7d020df0bf6c6161ba8ac3b292adf4a1c97335479396f9910d702efcf1",
+          "localSeconds": 0.02449
+        }
+      ],
+      "allInputsSourceLegal": true,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.266
+    }
+  ]
+}

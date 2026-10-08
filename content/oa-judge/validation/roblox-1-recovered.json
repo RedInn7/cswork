@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261018,
+  "problems": [
+    {
+      "id": "oa-roblox-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 39,
+      "referenceFormalCases": 42,
+      "negativeControls": [
+        {
+          "name": "只输出本次新建所在段长度而非全局最长",
+          "rejectedByCases": [
+            2,
+            7,
+            9,
+            10,
+            11,
+            12,
+            15,
+            16,
+            21,
+            22,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            40
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "只考虑左邻居导致向左扩展失效",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            6,
+            9,
+            10,
+            11,
+            12,
+            24,
+            26,
+            27,
+            30,
+            35,
+            36
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "1f3b46e949e8ede6c08bf21b12976fd3c9b7874b55a62d90d2c84894f70dbe3b",
+      "oracleMethod": "After each insertion sort the entire occupied set and scan consecutive coordinates; no endpoint length map.",
+      "exhaustiveSmallDomain": {
+        "coordinates": [
+          -3,
+          -2,
+          -1,
+          0,
+          1,
+          2,
+          3
+        ],
+        "lengthMin": 1,
+        "lengthMax": 7,
+        "legalCases": 3417,
+        "twoNeighborsRejected": 10282,
+        "inputExpectedDigest": "260e8281964c9e7b1e0ff1aa7826f32a13ac5f07d464f40228264d89826edd97",
+        "referenceExecution": "in-process own authored reference, separate163 subprocess checks"
+      },
+      "allFormalInputsSourceLegal": true,
+      "largeBoundaryOracle": "Independent union-find roots/sizes plus structural closed forms, all100000 operations checked.",
+      "largeBoundaries": [
+        {
+          "name": "十万从最小坐标右扩",
+          "q": 100000,
+          "minCoordinate": -1000000,
+          "maxCoordinate": -900001,
+          "lastAnswer": 100000,
+          "expectedSha256": "ca18a6de50d8c8b87d2fe1fa7015f11415df55cfed05a9ce89436122b7046af2",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.06259
+        },
+        {
+          "name": "十万从最大坐标左扩",
+          "q": 100000,
+          "minCoordinate": 900001,
+          "maxCoordinate": 1000000,
+          "lastAnswer": 100000,
+          "expectedSha256": "ca18a6de50d8c8b87d2fe1fa7015f11415df55cfed05a9ce89436122b7046af2",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.05978
+        },
+        {
+          "name": "十万正负交替扩展",
+          "q": 100000,
+          "minCoordinate": -50000,
+          "maxCoordinate": 49999,
+          "lastAnswer": 100000,
+          "expectedSha256": "ca18a6de50d8c8b87d2fe1fa7015f11415df55cfed05a9ce89436122b7046af2",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.05802
+        },
+        {
+          "name": "十万全部孤立",
+          "q": 100000,
+          "minCoordinate": -1000000,
+          "maxCoordinate": -800002,
+          "lastAnswer": 1,
+          "expectedSha256": "87bb836489c1d0f9a656fd0c30c63dbfb11c89d44a2f9129ecec42d1922774aa",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.05569
+        },
+        {
+          "name": "十万孤立固定乱序",
+          "q": 100000,
+          "minCoordinate": -1000000,
+          "maxCoordinate": -800002,
+          "lastAnswer": 1,
+          "expectedSha256": "87bb836489c1d0f9a656fd0c30c63dbfb11c89d44a2f9129ecec42d1922774aa",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.06176
+        },
+        {
+          "name": "十万两端双段交错",
+          "q": 100000,
+          "minCoordinate": -1000000,
+          "maxCoordinate": 1000000,
+          "lastAnswer": 50000,
+          "expectedSha256": "26490e9a36716e7e2a51172565db75c26edf46e981d34b015e2875093a7b2342",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.06106
+        },
+        {
+          "name": "十万先长段后孤立",
+          "q": 100000,
+          "minCoordinate": -1000000,
+          "maxCoordinate": 99998,
+          "lastAnswer": 50000,
+          "expectedSha256": "e8e173804516caf0dfd81b89a4f4768c6964450b029ca1bb7b6fadf5a1ead87f",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.06143
+        },
+        {
+          "name": "十万百段轮流扩展",
+          "q": 100000,
+          "minCoordinate": -1000000,
+          "maxCoordinate": -9001,
+          "lastAnswer": 1000,
+          "expectedSha256": "a1712dd05206bcc27fcef9caf8130401cef331f3d1cd5fa0e9581e0a9f31880b",
+          "sourceLegalityChecked": true,
+          "oracle": "independent union-find plus structural closed form",
+          "localSeconds": 0.06085
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 8.689
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261025,
+  "problems": [
+    {
+      "id": "oa-sig-3",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "referenceFormalCases": 48,
+      "publicCases": 3,
+      "hiddenCases": 45,
+      "referenceSha256": "cae39ebc7ffd3821821328e7e50f801b12c789646a2c3481a1d30fa9b06dc9f3",
+      "negativeControls": [
+        {
+          "name": "错误限制每个来源字符仅复制一次",
+          "rejectedByCases": [
+            1,
+            12,
+            34,
+            38,
+            40,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误允许短横线替换为任意字母",
+          "rejectedByCases": [
+            0,
+            1,
+            2,
+            3,
+            6,
+            9,
+            12,
+            14,
+            15,
+            16,
+            18,
+            20,
+            22,
+            28,
+            31,
+            33,
+            35,
+            41,
+            42,
+            43,
+            44,
+            45,
+            46,
+            47
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "oracleMethod": "Explicit Cartesian enumeration of all hyphen replacements then whole-string equality; large-domain demand histogram.",
+      "exhaustiveSmallDomain": {
+        "alphabet": "ab",
+        "lengthMin": 1,
+        "lengthMax": 4,
+        "cases": 1554,
+        "inputExpectedDigest": "a5a4ca367a4d4ae10dc3b8eec9fdc84c5c8dfa34360d07e705b6ad0e52a6ee9e"
+      },
+      "largeBoundaries": [
+        {
+          "name": "单源复制99次",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "d157522c4a116bf9773625448b931f563bf9d2b40a8b2434fbfd78e846ac60c4",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "满域全横线无解",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "满域全部原词重复",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "799646d12df449b0e60b018a18413cf6544c071a91cf76da407bcfe6714b0117",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "满域固定不匹配",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "26字母全部来源",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "4935a0e01818e1b4c1af8eb79e1a7380b44b0006fd060126c1e220271b73ada1",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "需求字母不存在",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "来源只在末尾",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "a985569b6257a7678cb3bed6ecebd457f304336f303a4d177285a7b51a1e026e",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "长度1空与匹配保序",
+          "wordLength": 1,
+          "skeletonCount": 100,
+          "expectedSha256": "17f0956600bebbb58b0abd9975b62b860ed0262bc5b4346e9430ad93d0719ac3",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "两来源重复复制",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "c6e9327c742396fac388361cbf0e98c85a19906787c8eae4be890834e84d3044",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "混合保序保重",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "850b5592108f4c5e528efe6dbfadfd64474be9ba84f089ba5a12582fc974fc71",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "完整字母随机1",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "c76cc21ee6387c4a48a6956db28f6ad4a3cda52d58b3b75cbb6cb573944348df",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "完整字母随机2",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "7c45dfb84cd6409e7157f9c684a906041bc90d8ad82be36af9975e397e50797c",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "完整字母随机3",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "6dc5f6f0e90da73381fc049766b2bfd94b1bc8f03ac1ea29908763bf0b86f62e",
+          "oracle": "character-demand histogram and fixed-position equality"
+        },
+        {
+          "name": "完整字母随机4",
+          "wordLength": 100,
+          "skeletonCount": 100,
+          "expectedSha256": "1cc37f0ff65d1183918a6217875781d58f6bd75ff7424541b0f8d99c0ca3461a",
+          "oracle": "character-demand histogram and fixed-position equality"
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "allInputsSourceLegal": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 6.193
+    }
+  ]
+}
