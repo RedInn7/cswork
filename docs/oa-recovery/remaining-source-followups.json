@@ -5,7 +5,10 @@
     {
       "id": "oa-goldman-sachs-18",
       "decision": "Do not promote on current source evidence",
-      "sources": ["fastprep/Goldman Sachs/goldman-get-minimum-moves.md", "fastprep/Airbnb/airbnb-get-minimum-moves.md"],
+      "sources": [
+        "fastprep/Goldman Sachs/goldman-get-minimum-moves.md",
+        "fastprep/Airbnb/airbnb-get-minimum-moves.md"
+      ],
       "findings": [
         "Goldman first sample is unreachable for its actual input; explanation silently changes the matrix.",
         "Airbnb includes departure cell in obstacle checks; Goldman begins at the adjacent cell. Sources cannot be treated as equivalent for an obstructed start.",
@@ -16,7 +19,10 @@
     {
       "id": "oa-goldman-sachs-15",
       "decision": "No full-domain recovery established",
-      "sources": ["fastprep/Goldman Sachs/goldman-find-number-of-different-words-that-can-be-formed.md", "fastprep/Goldman Sachs/goldman-alphanumeric-combinations.md"],
+      "sources": [
+        "fastprep/Goldman Sachs/goldman-find-number-of-different-words-that-can-be-formed.md",
+        "fastprep/Goldman Sachs/goldman-alphanumeric-combinations.md"
+      ],
       "findings": [
         "Both sources describe1..26 decoding counts but omit numeric length bounds.",
         "decoding-string.md describes a different reversed ASCII decoding task. Its bounds cannot be borrowed.",
@@ -32,6 +38,51 @@
         "Read-only research found synchronous z→ab and other letters→successor semantics, including azbk→babcl.",
         "abczy after two rounds is cdebcab, length7; original TODO and mistaken explanation are explicitly corrected in the authored problem.",
         "Native26-state matrix exponentiation modulo1000000007 is checked against an independent polynomial recurrence. Java int nonnegative iteration domain and the existing32MiB transport budget are explicitly disclosed, not claimed to be original numeric constraints."
+      ]
+    },
+    {
+      "id": "oa-fortinet-4",
+      "decision": "Research candidate, not yet implemented",
+      "source": "fastprep/Fortinet/fortinet-get-required-sweeps.md",
+      "sourceSha256": "85d322d8e6823cb91966f70a4fec3143da67f3f004f7f16749ff881c5d9d2e9c",
+      "findings": [
+        "Original left-to-right swaps and final no-swap sweep are supported by the sample.",
+        "Sample disambiguates measuring each accumulated ping bitmap without retaining sorted positions; disclose this inference.",
+        "Independent research simulated40319 small permutation prefixes. Needs authored artifact and sandbox verification."
+      ]
+    },
+    {
+      "id": "oa-pure-storage-11",
+      "decision": "Research candidate, not yet implemented",
+      "source": "fastprep/Pure Storage/purestorage-count-different-palindrome-substrings.md",
+      "findings": [
+        "Original explicitly counts positional substrings: two equal ll occurrences are distinct.",
+        "wowpurerocks contains12 letters plus wow and rer, so14 is consistent; hellolle13 is also consistent.",
+        "Lowercase letters explicit, no length bound. Consider native linear Manacher with one reused radius array over32MiB input budget; do not borrow another package's site-only length bound or silently retain overflowing int result."
+      ]
+    },
+    {
+      "id": "oa-moveworks-1",
+      "decision": "Research candidate requiring disclosed cross-source mapping",
+      "source": "fastprep/Moveworks/moveworks-get-minimum-operations-to-sort-array.md",
+      "sourceSha256": "806b90b7e64f7b321d79ef1427c55f5a00500507671204c2e47b5649d2883eb2",
+      "findings": [
+        "Parallel original source specifies splitting into positive integers, n<=100000, values1..1000000000.",
+        "Verify source identity before using those bounds; right-to-left splitting greedy requires independent small-state oracle and64-bit result."
+      ]
+    },
+    {
+      "id": "oa-weride-1",
+      "decision": "Research candidate; query placeholder and bad sample need disclosure",
+      "sources": [
+        "OA LIST/WeRide_OA/001_image.txt",
+        "OA LIST/WeRide_OA/005_image.txt",
+        "OA LIST/WeRide_OA/006_image.txt"
+      ],
+      "findings": [
+        "Research found n,q<=200000 and price/value0..1000000000.",
+        "Type2 third field appears as v or r; operation definition only uses second field as floor. Do not silently require equal fields.",
+        "Research derives corrected sample0 as1,2,4,4,3; revalidate before implementation."
       ]
     }
   ]

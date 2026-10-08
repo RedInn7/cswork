@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "weride-6-recovered",
+  "problemId": "oa-weride-6",
+  "packageChecksum": "0842b1410bcf8c487c01b8da8a288194d7bf963bd910ea45b6161253f1ddf290",
+  "referenceSha256": "bef24a7f7f367b7c3f1cc0d9a22586520278331d844dee0e20f61c1b4ba29c4f",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": {
+      "referenceRuns": 201,
+      "formal": 38,
+      "oracle": 163,
+      "mutantsKilled": 3
+    },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 38,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 779,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "fullDomain": "Eight n=100000 trees; independently verified diameters 2,2,32,32,999,999,24,24. Full 26-letter weights, 64-bit pair counts, original diameter<1000 constraint preserved.",
+  "sourceDisclosure": "Original public results 9,7,10 preserved. Illustration018 has different topology and result8, separately disclosed and tested, not mixed with019.",
+  "coverage": { "total": 1634, "sandboxVerified": 1215, "remaining": 419 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}
