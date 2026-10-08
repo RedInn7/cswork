@@ -1,0 +1,10 @@
+[
+  {
+    "name": "遇较小元素错误跳过并继续扫描",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    a = data[1:]\n    answer = 0\n    for i in range(len(a)):\n        x = a[i]\n        if x == 0:\n            continue\n        answer += x\n        for j in range(i, len(a)):\n            if a[j] < x:\n                continue\n            a[j] -= x\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把等于阈值也当作阻断",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    a = data[1:]\n    answer = 0\n    for i in range(len(a)):\n        x = a[i]\n        if x == 0:\n            continue\n        answer += x\n        for j in range(i, len(a)):\n            if a[j] <= x:\n                break\n            a[j] -= x\n    return str(answer)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
