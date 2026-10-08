@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
+  "upstreamRepository": "https://github.com/RedInn7/OA-Master",
+  "items": {
+    "oa-flexport-1": {
+      "url": "https://oamaster.com/docs/companies/flexport#1-count-good-subsequences",
+      "contentHash": "18c37051f94d2ab06dd8e28d5d1ee2d8854bb1c570e37d9447d95d54ab9ee0c2",
+      "catalogContentHash": "18c37051f94d2ab06dd8e28d5d1ee2d8854bb1c570e37d9447d95d54ab9ee0c2",
+      "path": "fastprep/Flexport/flexport-count-good-subsequences.md",
+      "gitBlobSha": "4e9de6fc729e828b45be54931f499905c092ba97",
+      "rawSha256": "d02ba347dc48cd52e9658a7a9b3ee14a2992c8251169c22372c8db3a382f349c",
+      "sources": [
+        {
+          "path": "fastprep/Flexport/flexport-count-good-subsequences.md",
+          "gitBlobSha": "4e9de6fc729e828b45be54931f499905c092ba97",
+          "sha256": "d02ba347dc48cd52e9658a7a9b3ee14a2992c8251169c22372c8db3a382f349c",
+          "role": "complete rules and numeric bounds; no modulus"
+        },
+        {
+          "path": "web/content/docs/companies/flexport.mdx",
+          "gitBlobSha": "71ef7fe7b879adca275af31baf51e090fd70be0c",
+          "sha256": "73b4c8118bf670dcb261e095ff832d71161cf6d6677450568696c9dd955c5a07",
+          "role": "same statement but code invents modulus; explicitly not adopted"
+        }
+      ],
+      "upstreamCodeExecuted": false,
+      "recoveredConstraints": [
+        "1 <= n <= 100000",
+        "1 <= arr[i] <= 100000",
+        "distinct indices define different subsequences",
+        "nonempty selected values unique and consecutive"
+      ],
+      "siteAdded": "标准n+数组输入，精确十进制整数输出；没有原始正式I/O样例，公开3例为本站推导。",
+      "correction": "Raw long return overflows on legal inputs; MDX code adds an unspecified modulus. Preserve exact mathematical counting, disclose interface correction, do not shrink the domain.",
+      "overflowWitness": {
+        "n": 128,
+        "arrayDescription": "each value1..64 repeated twice",
+        "answer": "73786976294838206332"
+      },
+      "maximumDecimalDigitsUpperBound": 30103
+    }
+  }
+}

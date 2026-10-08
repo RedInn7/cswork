@@ -3,6 +3,29 @@ import test from 'node:test';
 import { matchesOutput } from '../lib/server/oj-engine';
 import { matchesOaOutput } from '../scripts/oa-judge/output-checker.mjs';
 
+test('OA exact integer counts preserve all digits beyond floating and 64-bit ranges', () => {
+  const counts = [
+    '9007199254740993',
+    '73786976294838206332',
+    ((BigInt(1) << BigInt(100000)) - BigInt(1)).toString(),
+  ];
+  assert.equal(counts[2].length, 30103);
+  for (const expected of counts) {
+    const last = Number(expected.at(-1));
+    const changed = expected.slice(0, -1) + ((last + 1) % 10);
+    for (const check of [matchesOutput, matchesOaOutput]) {
+      assert.equal(
+        check(` \t${expected}\r\n`, `${expected}\n`, 'tokens'),
+        true,
+      );
+      assert.equal(check(changed, expected, 'tokens'), false);
+      assert.equal(check(`${expected} 0`, expected, 'tokens'), false);
+      assert.equal(check('Infinity', expected, 'tokens'), false);
+      assert.equal(check(expected.slice(0, -1), expected, 'tokens'), false);
+    }
+  }
+});
+
 test('OA sandbox verification follows production whitespace semantics', () => {
   const outputs = [
     '',
