@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-akuna-capital-4",
+  "batch": "akuna-4-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "291031259f95aa5db92c63f6a77ff032e8063bc2ebd4a91dfb8510c7283f9e18",
+  "packageFileSha256": "4fc4c1622e48f4d96edc6c3dcb8f723959100892eec058314d9d6820fb4fb80e",
+  "oracleSha256": "6577324ebe8901458448f64870016dc6f47de4faf35c2ba392833e877803049b",
+  "referenceSha256": "208ad2c25392ac4e5ec0ab97856a9414a5f70ba3e9d7bac3b3b5c31da1a241e9",
+  "scope": "Read fixed original OCR and independently designed validation before freeze. After freeze, independently recomputed every formal/oracle answer and actually ran all reference and mutant cases locally. Author generator never read or executed; upstream code never executed. Only this report written in the project; no branch change or commit.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "verified": true,
+    "files": [
+      {"path": "OA LIST/Akuna_Capital_OA/007_1f89f5664c05d38034234003c6b487d6.txt", "gitBlobSha": "2646f142e6e7d020b6a213c9fbd94a2553e0ac77", "rawSha256": "b8ba79ca2788365c84c1f5665b80c4cf5eb376009ba75d8f55ee1f7efe5f3a3f"},
+      {"path": "OA LIST/Akuna_Capital_OA/012_QQ_1744468305300.txt", "gitBlobSha": "23f5b0163c9a959fed8a48f8a0e4b3a9f4d4f2de", "rawSha256": "0e246c0c722ad845f2c14d332ed6b1752a1a678a28f3615d91c3d1f770e4caf3"},
+      {"path": "OA LIST/Akuna_Capital_OA/013_QQ_1744468285462.txt", "gitBlobSha": "77511174494a800a84b022121b383f0bf90e7e95", "rawSha256": "87de68bdf32537c228a5173b95358a870e327720329bb719a7f105e7a537bc5e"},
+      {"path": "OA LIST/Akuna_Capital_OA/014_QQ_1744468332840.txt", "gitBlobSha": "e748fc8ed7a2bad3b04922adbaabed680c688a1e", "rawSha256": "1726638ac49d060bab7b0f0b0d7d60b63ec2cf55e639384f43c47f0f1eb2fc3b"}
+    ],
+    "fullBounds": "012 explicitly gives2<=n<=100000,1<=m<=100000,0<=k<=100000,values in[-1000,1000], endpoints0..n-1, no loops or parallel edges.013 explicitly makes edges bidirectional. All actual formal/oracle inputs checked against these conditions, including duplicate-edge detection.",
+    "sampleCorrections": "007 illustrative endpoints are1-based; subtracting1 preserves topology and weights and yields120.013/014 formal0-based example yields16; actual leaves are1 and4 around center3, not the mistaken leaf2 in014 prose. The third catalogue-derived five-node case independently yields12 from center1 plus leaves4 and0, correcting11.",
+    "inputAdapter": "Editorial explicitly discloses replacing original n m / edges / repeated n / values / k layout with n m k / values / edges. Parameters and0-based identities preserved, not claimed to be the literal source stdin layout.",
+    "semantics": "Nonempty star subgraph with at most k arms, not exactly k nodes and not necessarily induced. Zero arms allowed; isolated vertices and negative-valued centers remain eligible. Leaf-to-leaf edges may be omitted."
+  },
+  "proofReview": {
+    "fixedCenter": "Deleting negative leaves improves the score; deleting zero leaves preserves it. Exchanging a selected smaller positive neighbor for an unselected larger neighbor preserves legality and cannot reduce the score. Thus the largest up-to-k positive neighbor values give the best score for a fixed center.",
+    "global": "Every nonempty star has a center considered by the algorithm. Every generated score is attainable by a valid star. Taking the maximum over all centers is therefore exact. Initializing from the largest node value correctly preserves all-negative and k=0 cases.",
+    "complexityAndIntegers": "Reference adjacency sorting costs O(n+m log(m+1)) conservatively, uses O(n+m) space, and the maximum result is at most100000000 while the minimum optimum is at least-1000. Full original domain is supported without reducing k to n-1.",
+    "artifactBindings": "Import schema and normalized checksum verified. Batch editorial exactly equals displayed editorial; authored solutions match displayed solutions, and displayed Python code exactly matches reference bytes. Standalone correctness-proof heading present."
+  },
+  "independentVerification": {
+    "reviewTool": "/private/tmp/akuna4-review.lmKxhW/review.py",
+    "reviewToolSha256": "fcf099b08f58f99d431f38b3d50daaaf7dfca593a657bab43c15464c9f9d5177",
+    "preFreezeExhaustiveCases": 26298,
+    "preFreezeDomain": "Every nonempty simple graph on2..4 vertices, every assignment from{-1,0,2}, and k=0..n. Enumerated all centers and leaf subsets; all agree with positive-neighbor selection. Independent original examples120/16 and triangle result6 also checked.",
+    "smallArtifactMethod": "Enumerate every center and every subset of its actual neighbors with subset size<=k. Directly sum weights, retaining empty leaf sets and negative centers. Used on197 actual formal/oracle cases.",
+    "largeArtifactMethod": "Independent value-domain order-statistic search: for each center binary-search the kth largest positive neighbor threshold in1..1000 by counting qualifying values, then sum values strictly above the threshold and add the necessary threshold copies. No sorted adjacency lists, global vertex bucket ordering, or reference function calls. Used on all11 full-scale graphs.",
+    "formalCases": 45,
+    "publicCases": 3,
+    "hiddenCases": 42,
+    "oracleCases": 163,
+    "uniqueOracleInputs": 163,
+    "publicOutputs": [120,16,12],
+    "referenceSubprocessRuns": 208,
+    "referenceResult": "All208 actual local Python subprocesses exited zero with empty stderr. Every output matches independently recomputed expected tokens.",
+    "referenceMaxLocalSeconds": 0.09727741603273898,
+    "largeCases": [
+      {"formalIndex":34,"n":100000,"m":100000,"k":100000,"answer":100000000,"name":"满nmk全正星加叶间边"},
+      {"formalIndex":35,"n":100000,"m":100000,"k":100000,"answer":-1000,"name":"满nmk全负仍须非空"},
+      {"formalIndex":36,"n":100000,"m":100000,"k":0,"answer":1000,"name":"满nm且k0"},
+      {"formalIndex":37,"n":100000,"m":100000,"k":1,"answer":2000,"name":"满nm且k1"},
+      {"formalIndex":38,"n":100000,"m":99999,"k":100000,"answer":99998000,"name":"满n负中心最优"},
+      {"formalIndex":39,"n":100000,"m":100000,"k":100000,"answer":3000,"name":"满nm全正环"},
+      {"formalIndex":40,"n":100000,"m":100000,"k":100000,"answer":0,"name":"满nm全零环"},
+      {"formalIndex":41,"n":100000,"m":100000,"k":2,"answer":1000,"name":"满nm交替正负环"},
+      {"formalIndex":42,"n":100000,"m":50000,"k":100000,"answer":2000,"name":"满n不连通匹配"},
+      {"formalIndex":43,"n":100000,"m":100000,"k":100000,"answer":447000,"name":"满nm稠密团与独立分量"},
+      {"formalIndex":44,"n":100000,"m":100000,"k":37575,"answer":5670,"name":"满nm固定随机图"}
+    ],
+    "wallSeconds": 10.606208999990486,
+    "memoryDiscipline": "Cases and subprocesses processed sequentially. Independent adjacency structures released between cases; no concurrent full-scale graph verification."
+  },
+  "negativeControls": [
+    {"name":"错误把最多k臂变成最多k节点","normalExitCases":45,"rejectedByCases":[0,1,2,7,25,37]},
+    {"name":"错误强制选择负权邻居","normalExitCases":45,"rejectedByCases":[4,10,15,20,22,27,28,33]},
+    {"name":"错误将无向边当成单向边","normalExitCases":45,"rejectedByCases":[1,2,15,20,22,39,44]}
+  ],
+  "negativeControlResult": "All135 actual local mutant executions exited zero with empty stderr. Independently verified formal expectations reject mutants in6,8,7 cases respectively.",
+  "limitations": "This review records local execution, not Linux GoJudge resource measurements. Parent separately reports successful Linux208-case sandbox validation and application integration; those are distinct evidence artifacts and were not rerun here. Temporary review-tool path is provenance, not a project runtime dependency."
+}

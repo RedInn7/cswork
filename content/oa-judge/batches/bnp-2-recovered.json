@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-bnp-2",
+      "sourceContentHash": "a0c036cb0c22b914da291bda95fafd7b1555215ec8e0c52373149053ba13c305",
+      "packageChecksum": "3763f693fe12e251240deeee5dfc3d35aec51b28b72140a1e18414683690aef6",
+      "editorial": "## 原始规则与旧阻断纠正\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/BNP/bnp-piles-of-boxes.md明确规定每步选择当前最高的一堆，把它降低到当前严格低于最高的下一种高度。原例[5,2,1]先将5降到2，得到[2,2,1]；随后两个2各自降到1，需要两步，原文明确说each step is performed on only one pile。因此答案3没有矛盾，不能误读为一次降低整个同高层。目标是让所有堆高度相等，不能跨过当前严格次高直接降到更低高度，也不是逐个箱子计费。\n\n原文没有数字约束。本站按Java int[]接口与箱数非负含义明确解释每堆0..2147483647，不能接受负箱数；0高度视为空堆是公开边界约定。n不增加人为的小上限，仅受现有单例32MiB标准输入传输预算约束。n=0返回0属于本站空集合数学扩展，不声称原文明确提供该保证。原返回long与大规模动作数一致。输入为n以及n个以空白分隔的高度。第一公开样例保留原[5,2,1]→3；另外两个公开样例为本站推导，不宣称来自原文。\n\n## 思路\n\n将高度升序排序。当前高度以下有多少种不同高度，就称为它的等级rank，最小高度的等级为0。扫描排序数组，只有遇到新的高度才把rank加1，把每堆的rank相加。\n\n## 正确性证明\n\n设最初不同高度为h0<h1<…<h(d−1)，第i种高度有ci堆。因为只能降低当前最高堆到当前严格次高，所有高度始终属于原高度集合。最低高度永远不会被降低，且在其上还有任何高度时不会消失；最终所有堆必定等于h0。\n\n在hi为当前最高且尚未全部降低前，下一种严格较低高度hi−1仍有堆存在，因为它不能在更高堆未消失时被操作。所以任何初始高度为hi的堆，必须依次经过hi−1、hi−2、…、h0，每次正好降一层，恰需i步。选择哪个同高堆先降低只改变顺序，不改变总次数。所有合法完成过程总步数均为Σci·i，也即每堆等级之和。排序扫描求出的rank正是该等级，因此输出为所求最少步数。\n\n## 复杂度与完整可传输域\n\n原生排序时间O(nlog(n+1))，数组空间O(n)，排序栈O(log(n+1))。输入逐个解析后存入32位无符号数组，计算答案使用64位。每个高度至少一个数字并需分隔，在32MiB文本预算下n<2^24，原生数组小于64MiB；最坏动作数n(n−1)/2<2^47，64位有符号long long可安全覆盖，不能用32位累计。题包3秒、256MiB；本机实测只证明本地运行，不替代Linux沙箱。\n\n## 独立验证\n\n小oracle用BFS搜索完整有序状态：找当前最高和严格次高，对每个最高堆分别产生降低后的状态，以所有元素相等或空状态为终点，直接计算最少步数，不使用等级求和。穷举长度0..5、值0..2共364个数组，并对163唯一输入真实运行参考。中小正式例也由该状态搜索计算。\n\n两个近32MiB压力使用独立闭式：0和1交替的数组，每个1只能且必须单独降一次，期望为1的数量；另一个输入是0..n−1的仿射排列，乘数与n互质，故每个高度恰出现一次，期望n(n−1)/2，远超32位。数字长度和闭式用于精确计算最大可传输n，不先构造数百万Python整数列表。负控分别把箱数差当次数、把整层视为一次、把重复值当新层级，全部正式例必须正常退出。\n",
+      "authoredSolutions": [
+        {
+          "language": "cpp",
+          "code": "#include <cstdio>\n#include <vector>\n#include <algorithm>\nusing namespace std;\nunsigned readNumber(){int c=getchar_unlocked();while(c<=32&&c!=EOF)c=getchar_unlocked();unsigned x=0;while(c>32&&c!=EOF){x=x*10+unsigned(c-'0');c=getchar_unlocked();}return x;}\nint main(){\n unsigned n=readNumber();vector<unsigned>a(n);\n for(auto &v:a)v=readNumber();\n sort(a.begin(),a.end());\n long long answer=0,rank=0;\n for(unsigned i=0;i<n;i++){\n  if(i && a[i]!=a[i-1])rank++;\n  answer+=rank;\n }\n printf(\"%lld\\n\",answer);\n}\n"
+        }
+      ]
+    }
+  ]
+}

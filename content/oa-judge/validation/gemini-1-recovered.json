@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261116,
+  "problems": [
+    {
+      "id": "oa-gemini-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 41,
+      "referenceFormalCases": 44,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "2f5058ecac28d258d9e6bf16119fda6830a4f7aee55e12c97fc87f1e4b3408d9",
+      "negativeControls": [
+        {
+          "name": "错误忽略整板竖涂选项只做横涂",
+          "rejectedCases": 27,
+          "rejectedCaseIndices": [
+            2,
+            3,
+            8,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            31,
+            33,
+            35,
+            37,
+            39,
+            40
+          ],
+          "normalExitCases": 44
+        },
+        {
+          "name": "错误每次下降都重新从地面计水平费用",
+          "rejectedCases": 1,
+          "rejectedCaseIndices": [
+            5
+          ],
+          "normalExitCases": 44
+        },
+        {
+          "name": "错误每块正高度板都单独竖涂",
+          "rejectedCases": 8,
+          "rejectedCaseIndices": [
+            0,
+            5,
+            11,
+            19,
+            21,
+            38,
+            40,
+            42
+          ],
+          "normalExitCases": 44
+        }
+      ],
+      "oracleMethod": "Painting-cell bitmask BFS, independently recursive interval minimum enumeration; large structured closed forms.",
+      "exhaustiveSmallDomain": {
+        "paintingBfsCases": 363,
+        "paintingBfsN": [
+          1,
+          5
+        ],
+        "paintingBfsHeights": [
+          0,
+          2
+        ],
+        "intervalCases": 1364,
+        "intervalN": [
+          1,
+          5
+        ],
+        "intervalHeights": [
+          0,
+          3
+        ]
+      },
+      "largeBoundaries": [
+        {
+          "name": "全零-100000",
+          "inputBytes": 200007,
+          "expectedOutput": "0",
+          "elapsedSeconds": 0.0035,
+          "darwinPeakRssBytes": 1392640
+        },
+        {
+          "name": "极高平台-100000",
+          "inputBytes": 1100007,
+          "expectedOutput": "100000",
+          "elapsedSeconds": 0.00758,
+          "darwinPeakRssBytes": 1392640
+        },
+        {
+          "name": "同高合并长平台",
+          "inputBytes": 400007,
+          "expectedOutput": "7",
+          "elapsedSeconds": 0.00411,
+          "darwinPeakRssBytes": 1409024
+        },
+        {
+          "name": "零分隔极高板",
+          "inputBytes": 1300007,
+          "expectedOutput": "100000",
+          "elapsedSeconds": 0.00826,
+          "darwinPeakRssBytes": 1409024
+        },
+        {
+          "name": "低层连接高峰",
+          "inputBytes": 1300007,
+          "expectedOutput": "100001",
+          "elapsedSeconds": 0.0082,
+          "darwinPeakRssBytes": 1409024
+        },
+        {
+          "name": "严格下降深栈对称",
+          "inputBytes": 1288902,
+          "expectedOutput": "200000",
+          "elapsedSeconds": 0.00849,
+          "darwinPeakRssBytes": 1409024
+        },
+        {
+          "name": "32MiB-EOF-最多板数全一",
+          "inputBytes": 33554432,
+          "expectedOutput": "1",
+          "elapsedSeconds": 0.18935,
+          "darwinPeakRssBytes": 1409024
+        },
+        {
+          "name": "近32MiB-严格升序最大深栈",
+          "inputBytes": 33554432,
+          "expectedOutput": "4333191",
+          "elapsedSeconds": 0.18377,
+          "darwinPeakRssBytes": 53395456
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 12.516
+    }
+  ]
+}
