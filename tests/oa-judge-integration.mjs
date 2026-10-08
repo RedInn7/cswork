@@ -134,10 +134,10 @@ const interrupt = () => {
 };
 process.on('SIGINT', interrupt);
 process.on('SIGTERM', interrupt);
-function child(args, cwd) {
+function child(args, cwd, nodeOptions = env.NODE_OPTIONS) {
   const processChild = spawn(process.execPath, args, {
     cwd,
-    env,
+    env: { ...env, NODE_OPTIONS: nodeOptions },
     stdio: ['ignore', 'pipe', 'pipe'],
   });
   children.push(processChild);
@@ -252,6 +252,10 @@ try {
       teacherEmail,
     ],
     root,
+    // Importing a near-128 MiB package materializes validated JSON and draft
+    // snapshots. Match the documented production heap for this offline phase;
+    // web and worker retain their stricter 768 MiB regression-test budget.
+    '--max-old-space-size=3072',
   );
   const publishCode = await new Promise((accept, reject) => {
     publisher.once('exit', accept);
