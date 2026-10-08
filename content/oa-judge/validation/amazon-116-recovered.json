@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261008116,
+  "problems": [
+    {
+      "id": "oa-amazon-116",
+      "oracleCases": 170,
+      "uniqueOracleInputs": 170,
+      "publicCases": 3,
+      "hiddenCases": 33,
+      "referenceFormalCases": 36,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "fafc4c07791b653be1aa81066a82eb2596588fc72642a024be6e0fd7a6cc3fd0",
+      "negativeControls": [
+        {
+          "name": "错误只考虑先0后1的形式",
+          "rejectedCases": 14,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            6,
+            10,
+            14,
+            16,
+            17,
+            21,
+            22,
+            25,
+            27,
+            28,
+            33,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误只允许全部变成同一字符",
+          "rejectedCases": 27,
+          "rejectedCaseIndices": [
+            0,
+            2,
+            5,
+            6,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            31,
+            33,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误按段数减二计数",
+          "rejectedCases": 19,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            9,
+            10,
+            15,
+            17,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            31,
+            32,
+            33,
+            34
+          ],
+          "normalExitCases": 36
+        },
+        {
+          "name": "错误分界点不含两端",
+          "rejectedCases": 4,
+          "rejectedCaseIndices": [
+            3,
+            4,
+            30,
+            35
+          ],
+          "normalExitCases": 36
+        }
+      ],
+      "oracleMethod": "Independent explicit construction of all 2(n+1) target strings with Hamming distance; subsequence-regex brute force over all 2^n binary strings for short inputs; Python prefix-count scan for formal cases.",
+      "exhaustiveSmallDomain": {
+        "lengthMin": 1,
+        "lengthMax": 10,
+        "subsequenceBruteUpTo": 8,
+        "cases": 2046
+      },
+      "largeBoundaries": [
+        {
+          "name": "满长交替",
+          "inputBytes": 1000001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.00925
+        },
+        {
+          "name": "满长全1",
+          "inputBytes": 1000001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.01131
+        },
+        {
+          "name": "满长随机",
+          "inputBytes": 1000001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.01026
+        },
+        {
+          "name": "满长三段",
+          "inputBytes": 1000001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.0136
+        },
+        {
+          "name": "满长偏1随机",
+          "inputBytes": 1000001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.01258
+        },
+        {
+          "name": "满长长段随机",
+          "inputBytes": 1000001,
+          "outputBytes": 7,
+          "elapsedSeconds": 0.01127
+        },
+        {
+          "name": "满长中间单个0",
+          "inputBytes": 1000001,
+          "outputBytes": 2,
+          "elapsedSeconds": 0.01125
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 9.016
+    }
+  ]
+}

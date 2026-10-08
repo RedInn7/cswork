@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误只考虑先0后1的形式",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <algorithm>\nstatic char s[1000005];\nint main(){if(scanf(\"%1000004s\",s)!=1)return 0;int n=strlen(s);int ones=0,zeros=0;for(int i=0;i<n;i++)(s[i]=='1'?ones:zeros)++;\nint p1=0,p0=0,best=n;for(int k=0;k<=n;k++){int a=p1+(zeros-p0);int b=p0+(ones-p1);best=std::min(best,a);(void)b;if(k<n)(s[k]=='1'?p1:p0)++;}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误只允许全部变成同一字符",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <algorithm>\nstatic char s[1000005];\nint main(){if(scanf(\"%1000004s\",s)!=1)return 0;int n=strlen(s);int ones=0,zeros=0;for(int i=0;i<n;i++)(s[i]=='1'?ones:zeros)++;\nprintf(\"%d\\n\",std::min(ones,zeros));return 0;int p1=0,p0=0,best=n;for(int k=0;k<=n;k++){int a=p1+(zeros-p0);int b=p0+(ones-p1);best=std::min(best,std::min(a,b));if(k<n)(s[k]=='1'?p1:p0)++;}\nprintf(\"%d\\n\",best);}\n"
+  },
+  {
+    "name": "错误按段数减二计数",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\nstatic char s[1000005];\nint main(){scanf(\"%1000004s\",s);int n=strlen(s),t=0;for(int i=1;i<n;i++)if(s[i]!=s[i-1])t++;printf(\"%d\\n\",t>1?t-1:0);}\n"
+  },
+  {
+    "name": "错误分界点不含两端",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <algorithm>\nstatic char s[1000005];\nint main(){if(scanf(\"%1000004s\",s)!=1)return 0;int n=strlen(s);int ones=0,zeros=0;for(int i=0;i<n;i++)(s[i]=='1'?ones:zeros)++;\nint p1=0,p0=0,best=n;for(int k=0;k<=n;k++){if(k==0||k==n){if(k<n)(s[k]=='1'?p1:p0)++;continue;}int a=p1+(zeros-p0);int b=p0+(ones-p1);best=std::min(best,std::min(a,b));if(k<n)(s[k]=='1'?p1:p0)++;}\nprintf(\"%d\\n\",best);}\n"
+  }
+]
