@@ -3,6 +3,19 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-amazon-333",
+      "decision": "Original screenshot recovered; supplies sample and notes but no API failure table or numeric bounds",
+      "source": "fastprep/Amazon/amazon-register-login-logout.md",
+      "imageUrl": "https://www.fastprep.io/api/problem-source-images/amazon-register-login-logout/0",
+      "image": "content/oa-judge/source-images/amazon-333-original.jpg",
+      "imageSha256": "0bf6cb84b18b3707eca7670b51e161c2588c5b4036c01a9ec0be7e81f14df64c",
+      "findings": [
+        "Image URL came from actual original-page HTML img src. Main viewed full screenshot; it contains initially empty users, repeated login preserving original session, sequential requests and case sensitivity.",
+        "Five-request david/adam sample matches Amazon336, including correctly spelled Login Unsuccessful. This corroborates the spelling correction for336.",
+        "Screenshot lacks credential/count bounds and the complete register/login/logout response table. Do not automatically borrow336 numeric bounds for333 without explicit adaptation and full-domain review."
+      ]
+    },
+    {
       "id": "oa-amazon-336",
       "decision": "Complete original API table recovered and independently viewed; source pre-review passed, authoring and judge verification still required",
       "source": "fastprep/Amazon/amazon-return-records.md",
@@ -43,7 +56,7 @@
     },
     {
       "id": "oa-capital-one-18",
-      "decision": "Independent image, rule and full-domain resource pre-review passed; implementation in progress, not yet judge-verified",
+      "decision": "Implemented in capitalone-18-recovered; Linux202-case reference validation and three negative controls passed. See dedicated independent review and integration evidence for remaining gates; not deployed.",
       "source": "fastprep/Capital One/capitalone-rotate-matrix-over-diagonals.md",
       "sourcePage": "https://www.fastprep.io/problems/capitalone-rotate-matrix-over-diagonals",
       "images": [
