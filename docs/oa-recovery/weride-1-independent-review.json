@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-weride-1",
+  "batchId": "weride-1-recovered",
+  "status": "PASS",
+  "blockingFindings": [],
+  "scope": {
+    "formalCases": 38,
+    "publicCases": 3,
+    "hiddenCases": 35,
+    "uniqueOracleCases": 163,
+    "actualLocalNativeReferenceRuns": 201,
+    "actualLocalNativeMutantRuns": 114,
+    "allProcessesExitedNormallyWithEmptyStderr": true,
+    "authorGeneratorReadOrExecuted": false,
+    "upstreamCodeExecuted": false,
+    "localVersusLinux": "本报告独立编译并实际运行本机 C++ 程序；Linux GoJudge 由主 agent 单独运行，不将其计入本机次数或声称已独立复跑 Linux。"
+  },
+  "bindings": {
+    "packageChecksum": "eb2b79cbd7c0fcda34433c1d17a4cdf079ab403cc1c231b59635b1cc5a930c47",
+    "checksumMethod": "ojImportSchema.parse 后 JSON.stringify 的 SHA256 实际重算，与冻结值及 batch 一致",
+    "packageFileSha256": "3c82bea08b241f3742b53fb3b2d9f7e3190c84fc70820c8ab431cbbfa6499ff3",
+    "oracleFileSha256": "b8a8c3aec45a5db240a4f67e737b2c31a3ccc528bc316ae2abe80a3fa5afeaab",
+    "referenceSha256": "ca5c355bd0d7ab47dab8643e28f8217e36e5bdd74099f3cab0a47ad20e754097",
+    "editorialFileSha256": "8fc6554a5ded391ae1776cb2119fe21055df4790892fb9e2d7be75c41072011e",
+    "mutantFileSha256": "75185d02ec0e00036895dd96b61c0c66fa8614fc215454a75487a6bd9fab05af",
+    "batchFileSha256": "eaaba354f8bc9ee3d429d7a19f9d49531184ecb03f17ede97dcf6bdf7b6d841f",
+    "editorialAndBatchTextExactlyEqual": true,
+    "editorialAndBatchSolutionExactlyEqualToReference": true
+  },
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "files": [
+      {
+        "path": "OA LIST/WeRide_OA/001_image.txt",
+        "gitBlobSha": "e2d0711aaabad71c9fae303e99dc336402d799db",
+        "sha256": "b22ca00eeb2c11c5fab0681c990650756648753083284cac3f448bc92d5a40d8"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/005_image.txt",
+        "gitBlobSha": "e2b126399cebead00039f748005bca516d4b6257",
+        "sha256": "07279a0003bf4cbd0c90828e8e25d9072f51b59e1191c184945172cccf2d0340"
+      },
+      {
+        "path": "OA LIST/WeRide_OA/006_image.txt",
+        "gitBlobSha": "8a07e1e22741fd28adbc23ee7347b4f6f6a985f7",
+        "sha256": "df8c8168f61e6a5ba1abddeca39756d8fb32066cc3175e0ff52d196832019e90"
+      }
+    ],
+    "fullDomain": "005 明确 n,q 均 1..200000，初值及有效阈值/赋值 0..1000000000，单点索引 1..n。保留零和完整上界，没有借用 DoorDash 或其它题包范围。",
+    "placeholder": "001 写 2 v v，005 写 2 v r；更新定义只使用第二列，005/006 亦出现第三列不同的示例。第三列不应强制等于第二列。原 int queries[q][3] 未单列 r 数值界，本站公开采用 signed 32-bit 类型解释，不冒称原文明确列出了该十进制范围。",
+    "inputAdaptation": "实际输入顺序为 n、n 个初价、q、q 个三元组，不是 n q 首行。题面和题解明确说明整理函数参数、去除 OCR 固定列数等排版元数据。",
+    "sampleCorrections": [
+      "001 主例保留 [8,9,8]。",
+      "006 Sample0 保留原五个查询；全局阈值 3 后应为 [3,3,4,4,3]，后续赋值后为 [1,2,4,4,3]。原输出第三项 3 应纠正为 4，中间解释错误也已披露。",
+      "006 Sample1 实际 STDIN 为 2 8 8、2 11 11，最终四个 11 正确。另述 2 11 1 的第三项忽略，结果仍为四个 11，不是保留最后一个 1。正式隐藏例实际覆盖此不同占位。"
+    ]
+  },
+  "proofReview": {
+    "verdict": "PASS",
+    "argument": "每个商品的最后单点赋值覆盖此前全部状态，其最终值只受这次赋值之后的全局 max 事件影响；从未赋值则初值受全部全局事件影响。逆序扫描 floor 恰为后续事件最大值，第一次遇到的该位置赋值恰为最后赋值，完成标记排除更早事件。非负域允许初始 floor=0。时间 O(n+q)、空间 O(n+q)。",
+    "integerSafety": "有效价格始终不超过 1e9；第三占位 INT_MIN 先用 long long 解析绝对值及符号，再存入 int，避免解析 2147483648 时溢出，且该列不参与阈值。"
+  },
+  "independentExpectedValidation": {
+    "all201CasesRecomputed": true,
+    "smallForwardBruteCases": 194,
+    "smallMethod": "按原顺序执行每个查询，赋值直接覆盖，全局更新遍历所有价格取 max，不使用逆序逻辑。",
+    "largeForwardEventRangeMaximumCases": 7,
+    "largeMethod": "正序读取全部事件，记录各位置最后赋值时间和赋值值；全局事件按时间存入独立区间最大值线段树。对各位置查询最后赋值之后的事件区间，与其值取 max。实现没有逆序扫描，也没有复用作者生成器的懒标记价格树。逐项比对每个输出位置。",
+    "fullRangeCases": [
+      {
+        "index": 31,
+        "n": 200000,
+        "q": 200000,
+        "kind": "all-global",
+        "inputBytes": 6677829
+      },
+      {
+        "index": 32,
+        "n": 200000,
+        "q": 200000,
+        "kind": "all-assign",
+        "inputBytes": 5666541
+      },
+      {
+        "index": 33,
+        "n": 200000,
+        "q": 200000,
+        "kind": "repeated-low-last",
+        "inputBytes": 4077897
+      },
+      {
+        "index": 34,
+        "n": 200000,
+        "q": 200000,
+        "kind": "global-then-lower",
+        "inputBytes": 4066612
+      },
+      {
+        "index": 35,
+        "n": 200000,
+        "q": 200000,
+        "kind": "zero-floor",
+        "inputBytes": 3500014
+      },
+      {
+        "index": 36,
+        "n": 200000,
+        "q": 200000,
+        "kind": "random-full-domain",
+        "inputBytes": 6096260
+      },
+      {
+        "index": 37,
+        "n": 1,
+        "q": 200000,
+        "kind": "single-item-full-q",
+        "inputBytes": 3544464
+      }
+    ],
+    "validation": "每例实际检查 n/q、恰好三列且无额外 token、所有初值/有效值/索引/操作类型范围、第三占位 signed int 范围及每例 UTF-8 字节预算。实际覆盖 INT_MIN/INT_MAX 占位且全部 expected 独立重算。",
+    "totalFormalInputPlusExpectedBytes": 42832576,
+    "within128MiBSnapshotBudget": true
+  },
+  "negativeControls": [
+    {
+      "name": "误用第三占位为阈值",
+      "normalRuns": 38,
+      "killedByFormalCases": 25
+    },
+    { "name": "使用较早单点赋值", "normalRuns": 38, "killedByFormalCases": 9 },
+    {
+      "name": "过去全局下限错误作用于后来赋值",
+      "normalRuns": 38,
+      "killedByFormalCases": 15
+    }
+  ],
+  "reproduction": {
+    "temporaryIndependentScript": "/private/tmp/weride1-review.MUEyOw/review.py",
+    "scriptSha256": "19d31c560fb7604dc6fe31fbc1e0e84e468adf4592a0f6e529ec67b449c48c8f",
+    "localRunSeconds": 12.7190420627594,
+    "memoryDiscipline": "一次解析和验证一个大例，原生参考/负控顺序执行，不并发构建多份大事件结构。",
+    "projectMutation": "只新增本独立审核报告，未修改冻结产物，未提交。"
+  }
+}

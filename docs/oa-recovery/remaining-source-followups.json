@@ -3,6 +3,18 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-gemini-1",
+      "decision": "New recovery candidate; implementation and independent proof still required",
+      "source": "fastprep/Gemini/gemini-minimum-fence-painting-operations.md",
+      "sourceSha256": "092dff9e2704cea781b84ecf07d319703a4b5534eea1b6d651a82493e16e065e",
+      "findings": [
+        "Original explicitly supplies n>=1 and nonnegative integer heights, with no numeric upper bounds. int[] interface can justify a disclosed nonnegative signed32 input adaptation, not an invented small n.",
+        "Previous return-int overflow concern is not sufficient: painting each positive board vertically gives answer<=n, so the full32MiB input transport domain keeps the mathematical answer below signed32 range.",
+        "Catalog recursive minimum-scan solution is quadratic and its text incorrectly claims n is small without source evidence. Do not reuse it for full transport-domain verification.",
+        "Explore streaming monotone-stack Cartesian-tree DP with equal-height compression and zero separators. Full flat low-height arrays can have roughly16million items, so avoid allocating several n-sized arrays without a measured memory bound. Independent brute painting/interval DP required before promotion."
+      ]
+    },
+    {
       "id": "oa-goldman-sachs-18",
       "decision": "Do not promote on current source evidence",
       "sources": [
@@ -74,7 +86,7 @@
     },
     {
       "id": "oa-weride-1",
-      "decision": "Research candidate; query placeholder and bad sample need disclosure",
+      "decision": "Implemented in weride-1-recovered; Linux201-case reference validation and three negative controls passed. Query placeholder and incorrect source examples explicitly disclosed. See dedicated evidence for integration and deployment status.",
       "sources": [
         "OA LIST/WeRide_OA/001_image.txt",
         "OA LIST/WeRide_OA/005_image.txt",
