@@ -3,6 +3,20 @@
   "upstreamCommit": "e66f809f4c953bce129f68491726176615db6afc",
   "items": [
     {
+      "id": "oa-moveworks-1",
+      "decision": "Parallel source found, but do not silently substitute its positive-integer domain for the catalog source",
+      "sources": [
+        "fastprep/Moveworks/moveworks-minimum-moves-to-sort-array.md",
+        "fastprep/Moveworks/moveworks-get-minimum-operations-to-sort-array.md"
+      ],
+      "findings": [
+        "The catalog source says integers, no numeric bounds, and splitting into two summands. Parallel same-company source explicitly requires positive parts and n<=100000, values<=1000000000, but has no explicit cross-reference, shared sample or matching function name.",
+        "For the positive-domain variant, right-to-left ceil(value/cap) grouping matches independent legal-split BFS on340 arrays. This validates that variant, not identity of the catalog problem.",
+        "Full positive-domain answer can reach99998999900001, exceeding the source int return. Any eventual adaptation must disclose a64-bit result.",
+        "Catalog third example answer2 is consistent, but its second split is at updated index2, not index1. Live original-page lookup timed out; no new external identity evidence obtained."
+      ]
+    },
+    {
       "id": "oa-zolostays-2",
       "decision": "Recovery in progress from explicit original LC42 cross-reference; no promotion until independent and Linux validation",
       "source": "fastprep/Zolostays/zolostays-trapping-rain-water.md",
