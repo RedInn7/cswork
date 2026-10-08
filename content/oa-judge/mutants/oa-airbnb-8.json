@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误优先进位小数部分最小的",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n;long long target;if(scanf(\"%d %lld\",&n,&target)!=2)return 0;vector<long long>fl(n);vector<int>fr(n);char buf[64];long long base=0;\nfor(int i=0;i<n;i++){scanf(\"%63s\",buf);char*d=strchr(buf,'.');long long ip=atoll(buf);int f=0;if(d){f=(d[1]-'0')*10+(d[2]?d[2]-'0':0);}fl[i]=ip;fr[i]=f;base+=ip;}\nlong long k=target-base;vector<int>idx;for(int i=0;i<n;i++)if(fr[i]>0)idx.push_back(i);\nsort(idx.begin(),idx.end(),[&](int a,int b){return fr[a]!=fr[b]?fr[a]<fr[b]:a<b;});\nvector<long long>y=fl;for(long long t=0;t<k;t++)y[idx[t]]++;\nstring out;for(int i=0;i<n;i++){out+=to_string(y[i]);out+=i+1<n?' ':'\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误按下标顺序进位",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n;long long target;if(scanf(\"%d %lld\",&n,&target)!=2)return 0;vector<long long>fl(n);vector<int>fr(n);char buf[64];long long base=0;\nfor(int i=0;i<n;i++){scanf(\"%63s\",buf);char*d=strchr(buf,'.');long long ip=atoll(buf);int f=0;if(d){f=(d[1]-'0')*10+(d[2]?d[2]-'0':0);}fl[i]=ip;fr[i]=f;base+=ip;}\nlong long k=target-base;vector<int>idx;for(int i=0;i<n;i++)if(fr[i]>0)idx.push_back(i);\nsort(idx.begin(),idx.end(),[&](int a,int b){return a<b;});\nvector<long long>y=fl;for(long long t=0;t<k;t++)y[idx[t]]++;\nstring out;for(int i=0;i<n;i++){out+=to_string(y[i]);out+=i+1<n?' ':'\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误只看小数点后第一位",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n;long long target;if(scanf(\"%d %lld\",&n,&target)!=2)return 0;vector<long long>fl(n);vector<int>fr(n);char buf[64];long long base=0;\nfor(int i=0;i<n;i++){scanf(\"%63s\",buf);char*d=strchr(buf,'.');long long ip=atoll(buf);int f=0;if(d){f=(d[1]-'0')*10;}fl[i]=ip;fr[i]=f;base+=ip;}\nlong long k=target-base;vector<int>idx;for(int i=0;i<n;i++)if(fr[i]>0)idx.push_back(i);\nsort(idx.begin(),idx.end(),[&](int a,int b){return fr[a]!=fr[b]?fr[a]>fr[b]:a<b;});\nvector<long long>y=fl;for(long long t=0;t<k;t++)y[idx[t]]++;\nstring out;for(int i=0;i<n;i++){out+=to_string(y[i]);out+=i+1<n?' ':'\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误先四舍五入不再调整总和",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <vector>\n#include <algorithm>\n#include <string>\nusing namespace std;\nint main(){int n;long long target;if(scanf(\"%d %lld\",&n,&target)!=2)return 0;vector<long long>fl(n);vector<int>fr(n);char buf[64];long long base=0;\nfor(int i=0;i<n;i++){scanf(\"%63s\",buf);char*d=strchr(buf,'.');long long ip=atoll(buf);int f=0;if(d){f=(d[1]-'0')*10+(d[2]?d[2]-'0':0);}fl[i]=ip;fr[i]=f;base+=ip;}\nlong long k=target-base;vector<int>idx;for(int i=0;i<n;i++)if(fr[i]>0)idx.push_back(i);\nsort(idx.begin(),idx.end(),[&](int a,int b){return fr[a]!=fr[b]?fr[a]>fr[b]:a<b;});\nvector<long long>y=fl;for(int i=0;i<n;i++)if(fr[i]>=50)y[i]++;\nstring out;for(int i=0;i<n;i++){out+=to_string(y[i]);out+=i+1<n?' ':'\\n';}fwrite(out.data(),1,out.size(),stdout);}\n"
+  }
+]
