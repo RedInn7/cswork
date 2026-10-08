@@ -1,0 +1,722 @@
+[
+  {
+    "input": "4\nADD 1.1.1.1\nADD 2.2.2.2\nADD 1.1.1.1\nFIRST_UNIQUE\n",
+    "expectedOutput": "2.2.2.2\n"
+  },
+  {
+    "input": "7\nADD 1.1.1.1\nADD 2.2.2.2\nADD 1.1.1.1\nADD 3.3.3.3\nFIRST_UNIQUE\nADD 2.2.2.2\nFIRST_UNIQUE\n",
+    "expectedOutput": "2.2.2.2\n3.3.3.3\n"
+  },
+  {
+    "input": "11\nFIRST_UNIQUE\nADD 1.1.1.1\nFIRST_UNIQUE\nADD 1.1.1.1\nFIRST_UNIQUE\nADD x\nFIRST_UNIQUE\nADD X\nFIRST_UNIQUE\nADD x\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n1.1.1.1\n\nx\nx\nX\n"
+  },
+  {
+    "input": "1\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "2\nADD 1.1.1.1\nFIRST_UNIQUE\n",
+    "expectedOutput": "1.1.1.1\n"
+  },
+  {
+    "input": "3\nADD 1.1.1.1\nADD 1.1.1.1\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "4\nADD 1.1.1.1\nADD 1.1.1.1\nADD 1.1.1.1\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "7\nADD 1.1.1.1\nADD 2.2.2.2\nADD 3.3.3.3\nADD 1.1.1.1\nADD 2.2.2.2\nADD 3.3.3.3\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "7\nADD 1.1.1.1\nADD 2.2.2.2\nFIRST_UNIQUE\nADD 1.1.1.1\nFIRST_UNIQUE\nADD 2.2.2.2\nFIRST_UNIQUE\n",
+    "expectedOutput": "1.1.1.1\n2.2.2.2\n\n"
+  },
+  {
+    "input": "6\nADD aaaaaaaaaaaaaaa\nFIRST_UNIQUE\nADD aaaaaaaaaaaaaa\nFIRST_UNIQUE\nADD aaaaaaaaaaaaaaa\nFIRST_UNIQUE\n",
+    "expectedOutput": "aaaaaaaaaaaaaaa\naaaaaaaaaaaaaaa\naaaaaaaaaaaaaa\n"
+  },
+  {
+    "input": "6\nADD !\nFIRST_UNIQUE\nADD ~\nFIRST_UNIQUE\nADD !\nFIRST_UNIQUE\n",
+    "expectedOutput": "!\n!\n~\n"
+  },
+  {
+    "input": "8\nADD 1.1.1.1\nADD 2.2.2.2\nADD 3.3.3.3\nADD 3.3.3.3\nADD 2.2.2.2\nFIRST_UNIQUE\nADD 1.1.1.1\nFIRST_UNIQUE\n",
+    "expectedOutput": "1.1.1.1\n\n"
+  },
+  {
+    "input": "6\nADD 192.168.0.1\nFIRST_UNIQUE\nADD 192.168.0.10\nFIRST_UNIQUE\nADD 192.168.0.1\nFIRST_UNIQUE\n",
+    "expectedOutput": "192.168.0.1\n192.168.0.1\n192.168.0.10\n"
+  },
+  {
+    "input": "4\nADD P15\nADD a.\nADD 8aiA\nFIRST_UNIQUE\n",
+    "expectedOutput": "P15\n"
+  },
+  {
+    "input": "22\nADD bb\nADD w%\nADD a\nADD !3a5\nFIRST_UNIQUE\nADD w%\nADD w%\nADD \"1\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD !3a5\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD w%\nADD bb\nFIRST_UNIQUE\nADD w%\nFIRST_UNIQUE\nADD w%\n",
+    "expectedOutput": "bb\nbb\nbb\nbb\nbb\nbb\nbb\nbb\na\na\n"
+  },
+  {
+    "input": "21\nADD 43\nADD 5AA6\nADD `5b\nADD a\nFIRST_UNIQUE\nADD 43\nADD 5AA6\nADD `5b\nADD `5b\nADD 5AA6\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 5AA6\nADD 5AA6\nADD 5AA6\nFIRST_UNIQUE\nADD a\nADD 43\nADD 43\nFIRST_UNIQUE\nADD 5AA6\n",
+    "expectedOutput": "43\na\na\na\n\n"
+  },
+  {
+    "input": "23\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b.\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD Aq\nADD b.\nADD 6\nADD 6\nADD 8Afa\nADD 1,b\nADD b.\nFIRST_UNIQUE\nADD 1,b\nADD 1,b\nADD b.\nADD 6\nADD 8Afa\nFIRST_UNIQUE\nADD b.\nADD 1,b\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\nb.\nb.\nAq\nAq\nAq\n"
+  },
+  {
+    "input": "3\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 93\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "10\nADD a4\nADD 47\nADD 1*bO\nFIRST_UNIQUE\nADD a4\nFIRST_UNIQUE\nADD 4ba&\nADD 47\nFIRST_UNIQUE\nADD a4\n",
+    "expectedOutput": "a4\n47\n1*bO\n"
+  },
+  {
+    "input": "4\nADD 7\nADD 7\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "8\nADD AAa\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD AAa\nADD 82aa\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 4Iai\n",
+    "expectedOutput": "AAa\nAAa\n82aa\n82aa\n"
+  },
+  {
+    "input": "22\nFIRST_UNIQUE\nADD .\nADD 4A2a\nADD .\nADD D\nADD 4A2a\nADD D\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD D\nFIRST_UNIQUE\nADD 4A2a\nADD .\nADD D\nADD D\nFIRST_UNIQUE\nADD D\nADD D\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD .\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "28\nFIRST_UNIQUE\nADD 0\nFIRST_UNIQUE\nADD WX\nADD 4b\nFIRST_UNIQUE\nADD b}0\nFIRST_UNIQUE\nADD 4075\nFIRST_UNIQUE\nADD b}0\nADD WX\nFIRST_UNIQUE\nADD 0\nADD b}0\nADD 1224\nFIRST_UNIQUE\nADD b}0\nADD WX\nADD 4075\nFIRST_UNIQUE\nADD b}0\nADD 0\nADD 1224\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 0\n",
+    "expectedOutput": "\n0\n0\n0\n0\n0\n4b\n4b\n4b\n4b\n4b\n"
+  },
+  {
+    "input": "18\nFIRST_UNIQUE\nADD a<\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b9\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a<\nADD b6{\nFIRST_UNIQUE\nADD b9\nADD a<\nADD 2\nFIRST_UNIQUE\nADD b\nADD 2\nADD 2\nADD 2\n",
+    "expectedOutput": "\na<\na<\na<\na<\nb9\nb6{\n"
+  },
+  {
+    "input": "23\nADD y8ai\nFIRST_UNIQUE\nADD bA\nADD y8ai\nADD y8ai\nADD bA\nADD y8ai\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b9\nADD y8ai\nFIRST_UNIQUE\nADD y8ai\nADD bA\nADD y8ai\nADD bA\nADD b9\nADD y8ai\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b9\nADD bA\nADD y8ai\n",
+    "expectedOutput": "y8ai\n\n\nb9\n\n\n"
+  },
+  {
+    "input": "13\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nADD 6baa\nFIRST_UNIQUE\nADD 6baa\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "26\nADD Ar2\nFIRST_UNIQUE\nADD Ar2\nFIRST_UNIQUE\nADD A\nADD Ar2\nADD (b8\nADD A\nFIRST_UNIQUE\nADD (b8\nADD A\nADD A\nADD A\nADD (b8\nADD Ar2\nADD Ar2\nADD A\nADD (b8\nADD Ar2\nADD A\nADD Ar2\nADD A\nFIRST_UNIQUE\nADD Ar2\nADD Ar2\nFIRST_UNIQUE\n",
+    "expectedOutput": "Ar2\n\n(b8\n\n\n"
+  },
+  {
+    "input": "26\nADD N\nFIRST_UNIQUE\nADD N\nFIRST_UNIQUE\nADD 86a1\nADD N\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD N\nADD A5a\nADD A5a\nADD N\nADD N\nADD A5a\nFIRST_UNIQUE\nADD 86a1\nFIRST_UNIQUE\nADD A5a\nADD N\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD N\nADD N\nADD A5a\nADD N\nADD 86a1\n",
+    "expectedOutput": "N\n\n86a1\n86a1\n86a1\n\n\n\n"
+  },
+  {
+    "input": "5\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD A\nADD A9ab\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\nA\n"
+  },
+  {
+    "input": "23\nADD -1M\nADD l8%9\nADD RH5\nADD RH5\nFIRST_UNIQUE\nADD RH5\nADD l8%9\nADD 6\nADD l8%9\nADD RH5\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD RH5\nADD l8%9\nADD -1M\nADD 6\nADD 6\nADD l8%9\nADD RH5\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "-1M\n-1M\n-1M\n\n\n\n\n"
+  },
+  {
+    "input": "30\nADD (a42\nADD (a42\nFIRST_UNIQUE\nADD 31AA\nADD 31AA\nADD 31AA\nADD 31AA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 31AA\nFIRST_UNIQUE\nADD (a42\nADD 31AA\nADD (a42\nADD 31AA\nFIRST_UNIQUE\nADD 31AA\nADD (a42\nADD (a42\nFIRST_UNIQUE\nADD 31AA\nFIRST_UNIQUE\nADD (a42\nADD 31AA\nADD 31AA\nADD (a42\nADD 31AA\nADD (a42\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "16\nADD (ab\nADD _AA6\nADD *ua_\nADD (ab\nADD bA\nADD _AA6\nADD bA\nFIRST_UNIQUE\nADD *ua_\nADD ua8<\nADD _AA6\nFIRST_UNIQUE\nADD _AA6\nFIRST_UNIQUE\nADD (ab\nFIRST_UNIQUE\n",
+    "expectedOutput": "*ua_\nua8<\nua8<\nua8<\n"
+  },
+  {
+    "input": "16\nFIRST_UNIQUE\nADD 0aR\"\nADD 0aR\"\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 0aR\"\nADD 0aR\"\nADD 0aR\"\nADD k\nADD 0aR\"\nADD k\nADD 0aR\"\nADD k\nADD k\nFIRST_UNIQUE\nADD 0aR\"\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "6\nFIRST_UNIQUE\nADD A.\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD A.\n",
+    "expectedOutput": "\nA.\nA.\nA.\n"
+  },
+  {
+    "input": "14\nADD bH-\nFIRST_UNIQUE\nADD bH-\nADD bH-\nFIRST_UNIQUE\nADD bH-\nADD 3\nFIRST_UNIQUE\nADD A63\nADD 3\nADD A63\nADD bH-\nADD bH-\nADD bH-\n",
+    "expectedOutput": "bH-\n\n3\n"
+  },
+  {
+    "input": "19\nADD as0A\nADD as0A\nADD as0A\nADD a:SA\nADD a:SA\nADD a:SA\nADD as0A\nFIRST_UNIQUE\nADD as0A\nFIRST_UNIQUE\nADD a:SA\nADD as0A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD as0A\nADD a:SA\nADD as0A\nFIRST_UNIQUE\nADD as0A\n",
+    "expectedOutput": "\n\n\n\n\n"
+  },
+  {
+    "input": "8\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD ,59\nADD 0\nADD ,59\nFIRST_UNIQUE\nADD 0\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n0\n\n"
+  },
+  {
+    "input": "9\nADD d\nADD d\nADD d\nADD d\nFIRST_UNIQUE\nADD d\nADD d\nADD d\nADD d\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "28\nFIRST_UNIQUE\nADD 4Z44\nADD 4Z44\nADD %\nADD 4Z44\nADD 4Z44\nADD %\nFIRST_UNIQUE\nADD %\nADD 5\nADD 5\nADD 4Z44\nFIRST_UNIQUE\nADD %\nADD %\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD %\nFIRST_UNIQUE\nADD %\nADD 4Z44\nADD %\nADD %\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD %\nFIRST_UNIQUE\nADD 5\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "26\nADD 04b\nFIRST_UNIQUE\nADD a7\nADD 04b\nADD a7\nFIRST_UNIQUE\nADD a7\nADD =.\nFIRST_UNIQUE\nADD a7\nADD a7\nFIRST_UNIQUE\nADD a7\nADD =.\nADD a7\nADD a7\nADD a7\nFIRST_UNIQUE\nADD 04b\nADD =.\nADD 04b\nFIRST_UNIQUE\nADD =.\nADD 04b\nADD =.\nFIRST_UNIQUE\n",
+    "expectedOutput": "04b\n\n=.\n=.\n\n\n\n"
+  },
+  {
+    "input": "12\nADD #P\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD #P\nFIRST_UNIQUE\nADD xb0u\nFIRST_UNIQUE\nADD xb0u\nFIRST_UNIQUE\nADD #P\nADD #P\n",
+    "expectedOutput": "#P\n#P\n#P\n\nxb0u\n\n"
+  },
+  {
+    "input": "29\nADD a\nADD (f^a\nADD e\nFIRST_UNIQUE\nADD e\nADD (f^a\nFIRST_UNIQUE\nADD e\nADD 0\nFIRST_UNIQUE\nADD 0\nADD e\nADD 0\nADD 0\nFIRST_UNIQUE\nADD a\nADD e\nADD (f^a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 0\nADD e\nADD a\nADD a\nADD 0\nFIRST_UNIQUE\nADD 0\nADD (f^a\nADD (f^a\n",
+    "expectedOutput": "a\na\na\na\n\n\n\n"
+  },
+  {
+    "input": "5\nADD 9<6b\nADD 9<6b\nADD A33\nADD 9<6b\nFIRST_UNIQUE\n",
+    "expectedOutput": "A33\n"
+  },
+  {
+    "input": "5\nADD 272:\nFIRST_UNIQUE\nADD 272:\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "272:\n\n\n"
+  },
+  {
+    "input": "7\nFIRST_UNIQUE\nADD lh\nFIRST_UNIQUE\nADD 98\nFIRST_UNIQUE\nADD lh\nADD 21\n",
+    "expectedOutput": "\nlh\nlh\n"
+  },
+  {
+    "input": "11\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b8x\nADD b8x\nFIRST_UNIQUE\nADD 20\nADD 3AWa\nADD 3AWa\nADD 20\nADD 3AWa\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "10\nADD aa7A\nADD P44\nADD P44\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD $51b\nADD Ap2\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "aa7A\naa7A\naa7A\naa7A\naa7A\n"
+  },
+  {
+    "input": "27\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD XEa\nFIRST_UNIQUE\nADD XEa\nADD a.\nADD a.\nADD XEa\nADD a.\nFIRST_UNIQUE\nADD a.\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a.\nADD XEa\nFIRST_UNIQUE\nADD XEa\nADD a.\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD XEa\nFIRST_UNIQUE\nADD XEa\nADD XEa\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\nXEa\n\n\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "10\nADD &\nADD aN\nADD &\nFIRST_UNIQUE\nADD aN\nADD &\nFIRST_UNIQUE\nADD &\nADD A21/\nFIRST_UNIQUE\n",
+    "expectedOutput": "aN\n\nA21/\n"
+  },
+  {
+    "input": "22\nADD 4\nADD 4\nADD /q\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 4\nADD 4\nFIRST_UNIQUE\nADD $\nADD /q\nADD b\nADD /q\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b\nADD /q\nADD $\nADD $\nFIRST_UNIQUE\nADD b\nADD 4\nFIRST_UNIQUE\n",
+    "expectedOutput": "/q\n/q\n/q\n$\n$\n\n\n"
+  },
+  {
+    "input": "18\nADD R\nADD R\nADD R\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD R\nFIRST_UNIQUE\nADD .\nFIRST_UNIQUE\nADD .\nADD .\nADD .\nADD R\nFIRST_UNIQUE\nADD R\nFIRST_UNIQUE\nADD R\nADD .\n",
+    "expectedOutput": "\n\n\n.\n\n\n"
+  },
+  {
+    "input": "2\nADD j47a\nFIRST_UNIQUE\n",
+    "expectedOutput": "j47a\n"
+  },
+  {
+    "input": "7\nADD b%a\nADD b%a\nADD b%a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b%a\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n"
+  },
+  {
+    "input": "23\nADD A`q\nADD A`q\nADD A`q\nFIRST_UNIQUE\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nADD A`q\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "14\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 34a\nADD 34a\nADD 34a\nADD 8\nADD 8\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 34a\nADD 34a\nADD 34a\nADD 8\n",
+    "expectedOutput": "\n\n\n\n\n"
+  },
+  {
+    "input": "14\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nADD 8XA\nFIRST_UNIQUE\nADD 8XA\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "6\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD A_6M\nADD A_6M\nADD dma0\n",
+    "expectedOutput": "\n\n\n"
+  },
+  {
+    "input": "5\nADD A\nADD b\nADD abqf\nFIRST_UNIQUE\nADD b\n",
+    "expectedOutput": "A\n"
+  },
+  {
+    "input": "24\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aAC\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aAC\nADD aAC\nADD aAC\nADD aAC\nADD aAC\nADD aAC\nFIRST_UNIQUE\nADD aAC\nFIRST_UNIQUE\nADD aAC\nADD aAC\nADD aAC\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aAC\nADD aAC\nADD aAC\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\naAC\naAC\n\n\n\n\n\n"
+  },
+  {
+    "input": "8\nFIRST_UNIQUE\nADD ~\nADD 9.\nFIRST_UNIQUE\nADD I63b\nADD 0-\nFIRST_UNIQUE\nADD b\n",
+    "expectedOutput": "\n~\n~\n"
+  },
+  {
+    "input": "25\nADD O\nADD =Q6\nADD O\nADD b8.b\nADD b\nADD O\nFIRST_UNIQUE\nADD =Q6\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b\nFIRST_UNIQUE\nADD O\nADD b\nFIRST_UNIQUE\nADD =Q6\nADD 19\nADD b\nADD 19\nFIRST_UNIQUE\nADD =Q6\nADD 19\nADD b\nFIRST_UNIQUE\n",
+    "expectedOutput": "=Q6\nb8.b\nb8.b\nb8.b\nb8.b\nb8.b\nb8.b\nb8.b\n"
+  },
+  {
+    "input": "4\nFIRST_UNIQUE\nADD 5P%b\nADD 5P%b\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "2\nADD {\nFIRST_UNIQUE\n",
+    "expectedOutput": "{\n"
+  },
+  {
+    "input": "8\nADD 89>.\nADD 8b\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD baKA\nFIRST_UNIQUE\nADD 8b\nADD 8b\n",
+    "expectedOutput": "89>.\n89>.\n89>.\n"
+  },
+  {
+    "input": "30\nFIRST_UNIQUE\nADD b\nFIRST_UNIQUE\nADD b\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD f8\nFIRST_UNIQUE\nADD b\nADD b6\nADD b\nADD b6\nADD b\nFIRST_UNIQUE\nADD b\nFIRST_UNIQUE\nADD f8\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b6\nFIRST_UNIQUE\nADD b6\nADD f8\n",
+    "expectedOutput": "\nb\n\n\n\n\n\nf8\nf8\nf8\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "11\nADD b.3\nFIRST_UNIQUE\nADD >t\nADD >t\nADD b.3\nADD >t\nADD b.3\nADD b.3\nFIRST_UNIQUE\nADD b.3\nADD >t\n",
+    "expectedOutput": "b.3\n\n"
+  },
+  {
+    "input": "30\nFIRST_UNIQUE\nADD 55\nADD sbAp\nFIRST_UNIQUE\nADD A1bb\nFIRST_UNIQUE\nADD 55\nADD sbAp\nADD 55\nADD 55\nADD 55\nADD 55\nADD A1bb\nFIRST_UNIQUE\nADD 55\nADD A1bb\nADD sbAp\nFIRST_UNIQUE\nADD A1bb\nADD sbAp\nADD A1bb\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD sbAp\nADD A1bb\nADD A1bb\nADD 55\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 55\n",
+    "expectedOutput": "\n55\n55\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "12\nADD bA8\nADD bA8\nADD bA8\nADD bA8\nADD bA8\nFIRST_UNIQUE\nADD bA8\nFIRST_UNIQUE\nADD bA8\nADD bA8\nADD bA8\nADD bA8\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "12\nADD e\nFIRST_UNIQUE\nADD e\nFIRST_UNIQUE\nADD e\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD e\nADD e\nFIRST_UNIQUE\nADD e\n",
+    "expectedOutput": "e\n\n\n\n\n\n"
+  },
+  {
+    "input": "26\nADD 1\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\nFIRST_UNIQUE\nADD 1\nADD 1\nADD 1\nADD 1\nFIRST_UNIQUE\nADD 1\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\nADD 1\n",
+    "expectedOutput": "1\n1\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "25\nADD bpb\nADD bpb\nADD bpb\nADD bpb\nFIRST_UNIQUE\nADD bpb\nADD bpb\nADD bpb\nADD bpb\nFIRST_UNIQUE\nADD bpb\nADD bpb\nADD bpb\nFIRST_UNIQUE\nADD bpb\nADD bpb\nADD bpb\nADD bpb\nFIRST_UNIQUE\nADD bpb\nADD bpb\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bpb\nADD bpb\n",
+    "expectedOutput": "\n\n\n\n\n\n"
+  },
+  {
+    "input": "24\nADD Ma\nADD Ma\nADD 3b\nFIRST_UNIQUE\nADD b1\nADD Ma\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b1\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b1\nFIRST_UNIQUE\nADD 2(\nADD 05\nADD 2(\nADD Ma\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 3b\nADD Ma\nADD 05\nFIRST_UNIQUE\n",
+    "expectedOutput": "3b\n3b\n3b\n3b\n3b\n3b\n3b\n3b\n3b\n\n"
+  },
+  {
+    "input": "30\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aB\nADD aB\nADD aB\nADD aB\nADD baA1\nADD baA1\nADD aB\nFIRST_UNIQUE\nADD baA1\nFIRST_UNIQUE\nADD baA1\nADD baA1\nADD aB\nADD aB\nFIRST_UNIQUE\nADD aB\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aB\nADD aB\nFIRST_UNIQUE\nADD aB\nADD baA1\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD baA1\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "19\nFIRST_UNIQUE\nADD a5A\nFIRST_UNIQUE\nADD \\41\nADD \\41\nADD a5A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a5A\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a5A\nFIRST_UNIQUE\nADD a5A\nFIRST_UNIQUE\nADD 8\nFIRST_UNIQUE\nADD 8\n",
+    "expectedOutput": "\na5A\n\n\n\n\n\n\n\n8\n"
+  },
+  {
+    "input": "6\nADD (19a\nADD bA\nADD bA\nADD ra5A\nADD bA\nFIRST_UNIQUE\n",
+    "expectedOutput": "(19a\n"
+  },
+  {
+    "input": "12\nADD a\nADD 8\nFIRST_UNIQUE\nADD 8\nFIRST_UNIQUE\nADD a\nFIRST_UNIQUE\nADD b5\nFIRST_UNIQUE\nADD a\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "a\na\n\nb5\nb5\nb5\n"
+  },
+  {
+    "input": "22\nADD 2abA\nADD 2abA\nADD 2abA\nADD P2\nADD P2\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 2abA\nADD 2abA\nADD P2\nADD 2abA\nADD 2abA\nADD 2abA\nFIRST_UNIQUE\nADD 2abA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 2abA\nADD 2abA\nFIRST_UNIQUE\nADD 2abA\nADD 2abA\n",
+    "expectedOutput": "\n\n\n\n\n\n"
+  },
+  {
+    "input": "8\nADD at\nADD .b\nADD 30\nADD .b\nFIRST_UNIQUE\nADD 23aA\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "at\nat\nat\n"
+  },
+  {
+    "input": "24\nFIRST_UNIQUE\nADD b\nADD R5Y\nADD 26\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b\nADD 8\nADD |698\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 8\nADD R5Y\nADD 8ba\nFIRST_UNIQUE\nADD b\nADD R5Y\nADD 8\nFIRST_UNIQUE\nADD 8\nADD 8\nADD b\nADD R5Y\n",
+    "expectedOutput": "\nb\nb\nR5Y\nR5Y\nR5Y\n26\n26\n"
+  },
+  {
+    "input": "22\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 6cV5\nADD 6cV5\nADD 6cV5\nADD 6cV5\nFIRST_UNIQUE\nADD 6cV5\nADD 6cV5\nADD 6cV5\nFIRST_UNIQUE\nADD 6cV5\nFIRST_UNIQUE\nADD 6cV5\nADD 6cV5\nADD 6cV5\nFIRST_UNIQUE\nADD 6cV5\nADD 6cV5\nADD 6cV5\nADD 6cV5\nADD 6cV5\n",
+    "expectedOutput": "\n\n\n\n\n\n"
+  },
+  {
+    "input": "19\nADD 9H2a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a\nADD 9H2a\nFIRST_UNIQUE\nADD 76\nADD 76\nADD A3+\nADD a\nFIRST_UNIQUE\nADD 9H2a\nADD A3+\nFIRST_UNIQUE\nADD 9H2a\nADD A3+\nADD A3+\nADD a\nADD A3+\n",
+    "expectedOutput": "9H2a\n9H2a\na\nA3+\n\n"
+  },
+  {
+    "input": "24\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b~A\nADD b~A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b~A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b~A\nADD 1H1\nADD b~A\nADD b~A\nADD 1H1\nADD b~A\nADD b~A\nADD b~A\nFIRST_UNIQUE\nADD 1H1\nADD b~A\nADD b~A\nFIRST_UNIQUE\nADD b~A\nADD b~A\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "13\nADD Ao\nFIRST_UNIQUE\nADD 7.\nFIRST_UNIQUE\nADD Ao\nFIRST_UNIQUE\nADD 7.\nADD 7.\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD Ao\nADD 7.\n",
+    "expectedOutput": "Ao\nAo\n7.\n\n\n\n"
+  },
+  {
+    "input": "16\nADD AaH\nFIRST_UNIQUE\nADD AaH\nADD AaH\nFIRST_UNIQUE\nADD 2b1A\nFIRST_UNIQUE\nADD 2b1A\nADD 2b1A\nADD 4_\nADD 2b1A\nFIRST_UNIQUE\nADD AaH\nFIRST_UNIQUE\nADD 2b1A\nADD 4_\n",
+    "expectedOutput": "AaH\n\n2b1A\n4_\n4_\n"
+  },
+  {
+    "input": "27\nADD A4\nADD A4\nADD b\nADD A4\nADD A4\nADD A4\nFIRST_UNIQUE\nADD A4\nFIRST_UNIQUE\nADD A4\nADD b\nADD b\nFIRST_UNIQUE\nADD A4\nADD b\nADD A4\nADD A4\nADD A4\nFIRST_UNIQUE\nADD A4\nFIRST_UNIQUE\nADD b\nADD A4\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b\nFIRST_UNIQUE\n",
+    "expectedOutput": "b\nb\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "17\nADD b3\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b3\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b3\nFIRST_UNIQUE\nADD b3\nADD b3\nADD b3\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b3\nADD b3\nADD b3\nFIRST_UNIQUE\n",
+    "expectedOutput": "b3\nb3\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "19\nFIRST_UNIQUE\nADD 5aua\nADD bK\nADD \"tr\nFIRST_UNIQUE\nADD bK\nADD 4;a\nADD 5aua\nFIRST_UNIQUE\nADD 0\nADD bK\nADD 0\nADD bK\nADD bK\nADD bK\nFIRST_UNIQUE\nADD 0\nFIRST_UNIQUE\nADD 4;a\n",
+    "expectedOutput": "\n5aua\n\"tr\n\"tr\n\"tr\n"
+  },
+  {
+    "input": "27\nFIRST_UNIQUE\nADD .AT0\nFIRST_UNIQUE\nADD vb\nADD 5\nADD a\nADD vb\nADD 5\nADD 5\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a\nADD .AT0\nFIRST_UNIQUE\nADD .AT0\nADD 92\nADD 5\nADD $\nADD 5\nFIRST_UNIQUE\nADD .AT0\nADD vb\nFIRST_UNIQUE\nADD 5\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n.AT0\n.AT0\n.AT0\n.AT0\n\n92\n92\n92\n92\n"
+  },
+  {
+    "input": "28\nFIRST_UNIQUE\nADD bA\nADD bA\nADD bA\nFIRST_UNIQUE\nADD bA\nADD bA\nFIRST_UNIQUE\nADD bA\nADD bA\nFIRST_UNIQUE\nADD bA\nADD bA\nADD bA\nADD bA\nADD bA\nADD bA\nFIRST_UNIQUE\nADD bA\nADD bA\nFIRST_UNIQUE\nADD bA\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bA\nFIRST_UNIQUE\nADD bA\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "17\nADD A60:\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 7bb\nADD 7bb\nADD 1vb\nFIRST_UNIQUE\nADD A60:\nADD 7bb\nADD 1vb\nADD R*AA\nADD 1vb\nADD R*AA\nADD 1vb\nADD 1vb\nFIRST_UNIQUE\n",
+    "expectedOutput": "A60:\nA60:\nA60:\nA60:\n\n"
+  },
+  {
+    "input": "3\nFIRST_UNIQUE\nADD a6b3\nFIRST_UNIQUE\n",
+    "expectedOutput": "\na6b3\n"
+  },
+  {
+    "input": "7\nADD aBJ6\nADD aBJ6\nADD #A3\nADD q2b7\nADD #A3\nFIRST_UNIQUE\nADD }7\n",
+    "expectedOutput": "q2b7\n"
+  },
+  {
+    "input": "9\nADD a\nADD 92wb\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 92wb\nADD 92wb\nADD 92wb\nADD a\n",
+    "expectedOutput": "a\na\na\n"
+  },
+  {
+    "input": "5\nADD a8\nFIRST_UNIQUE\nADD a8\nADD a8\nADD a8\n",
+    "expectedOutput": "a8\n"
+  },
+  {
+    "input": "6\nADD b33\\\nFIRST_UNIQUE\nADD b33\\\nADD b33\\\nFIRST_UNIQUE\nADD b33\\\n",
+    "expectedOutput": "b33\\\n\n"
+  },
+  {
+    "input": "11\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 9\nADD A.\nADD A\nADD T6\nADD <\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 9\n",
+    "expectedOutput": "\n\n\n9\n9\n"
+  },
+  {
+    "input": "6\nFIRST_UNIQUE\nADD A0\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 2zw\nFIRST_UNIQUE\n",
+    "expectedOutput": "\nA0\nA0\nA0\n"
+  },
+  {
+    "input": "28\nADD AbA\nADD AbA\nADD AbA\nFIRST_UNIQUE\nADD AbA\nFIRST_UNIQUE\nADD AbA\nFIRST_UNIQUE\nADD AbA\nADD 9|A\nADD 9|A\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD AbA\nADD 9|A\nADD AbA\nADD AbA\nADD AbA\nADD AbA\nADD AbA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 9|A\nADD 9|A\nFIRST_UNIQUE\nADD AbA\nADD AbA\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "8\nADD 0\nADD a08U\nADD 0\nFIRST_UNIQUE\nADD a08U\nADD AJ9\nADD 0\nADD bA\n",
+    "expectedOutput": "a08U\n"
+  },
+  {
+    "input": "24\nADD Z\nFIRST_UNIQUE\nADD 9\nADD g0a_\nADD C.\nADD C.\nADD 9\nADD 9^M\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD g0a_\nADD A0\nADD A0\nFIRST_UNIQUE\nADD Z\nADD 9\nADD 9^M\nADD Z\nFIRST_UNIQUE\nADD A0\nADD 9^M\nADD A0\nADD g0a_\nADD C.\n",
+    "expectedOutput": "Z\nZ\nZ\nZ\n\n"
+  },
+  {
+    "input": "2\nADD 7C\nFIRST_UNIQUE\n",
+    "expectedOutput": "7C\n"
+  },
+  {
+    "input": "5\nADD cbA\nADD b\nFIRST_UNIQUE\nADD b\nADD cbA\n",
+    "expectedOutput": "cbA\n"
+  },
+  {
+    "input": "19\nADD o\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD o\nADD o\nADD o\nADD o\nADD .FA\nADD 0\nADD o\nADD .FA\nADD .FA\nFIRST_UNIQUE\nADD .FA\nADD 0\nADD 0\nADD .FA\nADD .FA\nADD .FA\n",
+    "expectedOutput": "o\no\n0\n"
+  },
+  {
+    "input": "13\nFIRST_UNIQUE\nADD a\nADD .J\nADD a\nADD a\nFIRST_UNIQUE\nADD 3908\nADD 3908\nFIRST_UNIQUE\nADD .J\nADD a\nADD .J\nADD 3908\n",
+    "expectedOutput": "\n.J\n.J\n"
+  },
+  {
+    "input": "7\nADD 59\nADD abb\nADD abb\nADD abb\nADD y1\nFIRST_UNIQUE\nADD 59\n",
+    "expectedOutput": "59\n"
+  },
+  {
+    "input": "4\nADD l.\nFIRST_UNIQUE\nADD 83X]\nADD i5l\n",
+    "expectedOutput": "l.\n"
+  },
+  {
+    "input": "26\nADD ;6i\nADD ;6i\nADD `80\nADD )\nADD )\nADD `80\nADD `80\nADD `80\nADD ;6i\nADD )\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD `80\nADD ;6i\nADD `80\nADD `80\nADD `80\nADD )\nADD )\nADD `80\nFIRST_UNIQUE\nADD `80\nADD ;6i\nFIRST_UNIQUE\nADD `80\nADD ;6i\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "5\nADD 67b1\nADD 67b1\nADD 67b1\nADD 67b1\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "6\nADD 85\nFIRST_UNIQUE\nADD 85\nADD 85\nADD 85\nADD 85\n",
+    "expectedOutput": "85\n"
+  },
+  {
+    "input": "9\nFIRST_UNIQUE\nADD A9\nADD axT\nFIRST_UNIQUE\nADD A9\nADD A9\nADD A9\nADD %bW\nFIRST_UNIQUE\n",
+    "expectedOutput": "\nA9\naxT\n"
+  },
+  {
+    "input": "3\nFIRST_UNIQUE\nADD 4b\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n4b\n"
+  },
+  {
+    "input": "6\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a7\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\na7\na7\n"
+  },
+  {
+    "input": "12\nADD 0\nADD 0\nFIRST_UNIQUE\nADD a\nFIRST_UNIQUE\nADD babb\nADD babb\nADD 0\nADD 0\nADD 0a19\nADD a\nADD 0a19\n",
+    "expectedOutput": "\na\n"
+  },
+  {
+    "input": "14\nFIRST_UNIQUE\nADD !aY\\\nADD !aY\\\nADD aa\nADD kb\nFIRST_UNIQUE\nADD !aY\\\nADD N\nADD !aY\\\nADD bf\nADD aa\nADD N\nADD !aY\\\nADD kb\n",
+    "expectedOutput": "\naa\n"
+  },
+  {
+    "input": "14\nADD 36b\nADD AaAA\nADD AaAA\nFIRST_UNIQUE\nADD 36b\nADD 7a)\nADD 36b\nFIRST_UNIQUE\nADD AaAA\nADD 36b\nADD 36b\nADD 7a)\nADD AaAA\nFIRST_UNIQUE\n",
+    "expectedOutput": "36b\n7a)\n\n"
+  },
+  {
+    "input": "10\nADD aY\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1I\nADD 38b/\nADD aY\nADD 1I\nADD (t\nADD 1I\nADD bLa\n",
+    "expectedOutput": "aY\naY\n"
+  },
+  {
+    "input": "15\nFIRST_UNIQUE\nADD 7-a\nADD b\nFIRST_UNIQUE\nADD A\nADD b2\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD A\nFIRST_UNIQUE\nADD b2\nADD b\nADD 7-a\nFIRST_UNIQUE\nADD b2\n",
+    "expectedOutput": "\n7-a\n7-a\n7-a\n7-a\n\n"
+  },
+  {
+    "input": "20\nADD 3A\nADD 3A\nADD 3A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 3A\nADD 3A\nADD 3A\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 3A\nADD 3A\nADD 3A\nFIRST_UNIQUE\nADD 3A\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "26\nADD 3a\nADD 3a\nADD 489\nADD S%a7\nADD 8\nADD 3a\nADD 489\nADD p4x\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD p4x\nADD p4x\nADD p4x\nFIRST_UNIQUE\nADD p4x\nADD p4x\nFIRST_UNIQUE\nADD p4x\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 489\nADD p4x\n",
+    "expectedOutput": "S%a7\nS%a7\nS%a7\nS%a7\nS%a7\nS%a7\nS%a7\nS%a7\nS%a7\nS%a7\n"
+  },
+  {
+    "input": "20\nFIRST_UNIQUE\nADD 4a\nADD AA5c\nFIRST_UNIQUE\nADD 4a\nADD AA5c\nADD AA5c\nADD 4a\nFIRST_UNIQUE\nADD AA5c\nADD 4a\nADD AA5c\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 4a\nADD AA5c\nADD 4a\nADD 4a\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n4a\n\n\n\n\n\n"
+  },
+  {
+    "input": "26\nADD 33b\nFIRST_UNIQUE\nADD 33b\nADD 33b\nFIRST_UNIQUE\nADD Y3JA\nADD 33b\nADD Y3JA\nADD 9O\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD Y3JA\nADD 33b\nADD 9O\nADD 9O\nADD 33b\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 9O\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD Y3JA\nFIRST_UNIQUE\n",
+    "expectedOutput": "33b\n\n9O\n9O\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "18\nFIRST_UNIQUE\nADD a\nFIRST_UNIQUE\nADD a\nADD a\nADD a926\nFIRST_UNIQUE\nADD a:(2\nADD a926\nADD a:(2\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a926\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a:(2\nFIRST_UNIQUE\nADD a\n",
+    "expectedOutput": "\na\na926\n\n\n\n\n\n"
+  },
+  {
+    "input": "11\nADD 1sb\nADD 1sb\nADD 1sb\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1sb\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1sb\nFIRST_UNIQUE\nADD 1sb\n",
+    "expectedOutput": "\n\n\n\n\n"
+  },
+  {
+    "input": "15\nADD b182\nADD b182\nADD b182\nADD b182\nADD b182\nADD b182\nADD b182\nADD b182\nFIRST_UNIQUE\nADD b182\nADD b182\nADD b182\nADD b182\nADD b182\nADD b182\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "30\nADD 4ab3\nFIRST_UNIQUE\nADD !Fab\nFIRST_UNIQUE\nADD Q7A\nADD Q7A\nADD Q7A\nADD 4ab3\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 4ab3\nADD Q7A\nADD 63.t\nADD Q7A\nFIRST_UNIQUE\nADD 63.t\nFIRST_UNIQUE\nADD 8~\nADD 9zA\nADD 63.t\nADD !Fab\nADD 8~\nFIRST_UNIQUE\nADD !Fab\nFIRST_UNIQUE\nADD !Fab\nADD !Fab\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "4ab3\n4ab3\n!Fab\n!Fab\n!Fab\n!Fab\n!Fab\n9zA\n9zA\n9zA\n9zA\n"
+  },
+  {
+    "input": "9\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b'57\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b'57\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\nb'57\nb'57\nb'57\n\n"
+  },
+  {
+    "input": "11\nADD 8\nADD A\nFIRST_UNIQUE\nADD 8\nADD .:A9\nADD 4\nADD A\nFIRST_UNIQUE\nADD 8\nADD Kw;a\nFIRST_UNIQUE\n",
+    "expectedOutput": "8\n.:A9\n.:A9\n"
+  },
+  {
+    "input": "21\nADD a07a\nFIRST_UNIQUE\nADD a07a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 7C6\nADD bx\\\nADD a07a\nADD a07a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 7\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 7\nADD bx\\\nADD bq\nFIRST_UNIQUE\n",
+    "expectedOutput": "a07a\n\n\n7C6\n7C6\n7C6\n7C6\n7C6\n7C6\n7C6\n7C6\n"
+  },
+  {
+    "input": "30\nADD 885\nADD 0A\nFIRST_UNIQUE\nADD 57k\nADD bbbb\nADD 0A\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 885\nFIRST_UNIQUE\nADD 885\nADD 885\nADD b\nADD 0A\nADD bbbb\nADD 885\nADD bbbb\nFIRST_UNIQUE\nADD 0A\nADD 57k\nFIRST_UNIQUE\nADD 57k\nADD b\nFIRST_UNIQUE\nADD 57k\nADD bbbb\nADD 57k\nFIRST_UNIQUE\nADD b\n",
+    "expectedOutput": "885\n885\n885\n885\n57k\n57k\nb\n\n\n"
+  },
+  {
+    "input": "9\nADD [+b2\nADD x5R\nADD x5R\nADD A\nADD A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD [+b2\nFIRST_UNIQUE\n",
+    "expectedOutput": "[+b2\n[+b2\n\n"
+  },
+  {
+    "input": "18\nADD 7bAa\nADD A\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aae\nADD 0B\nADD aae\nADD 0B\nFIRST_UNIQUE\nADD aae\nADD 7bAa\nADD 0B\nFIRST_UNIQUE\nADD 7bAa\nFIRST_UNIQUE\n",
+    "expectedOutput": "7bAa\n7bAa\n7bAa\n7bAa\n7bAa\n7bAa\nA\nA\n"
+  },
+  {
+    "input": "27\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD abA\nADD AA\nADD AA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD abA\nADD abA\nFIRST_UNIQUE\nADD AA\nFIRST_UNIQUE\nADD AA\nADD AA\nADD AA\nADD AA\nADD AA\nADD abA\nADD abA\nADD AA\nFIRST_UNIQUE\nADD abA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD abA\n",
+    "expectedOutput": "\n\n\n\nabA\nabA\n\n\n\n\n\n"
+  },
+  {
+    "input": "15\nADD Az3\nADD Az3\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD Az3\nADD Az3\nFIRST_UNIQUE\nADD Az3\nADD Az3\nADD Az3\nADD Az3\nADD Az3\nADD Az3\nADD Az3\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n\n"
+  },
+  {
+    "input": "4\nADD A5M;\nADD Z6.\nADD Ab\nFIRST_UNIQUE\n",
+    "expectedOutput": "A5M;\n"
+  },
+  {
+    "input": "4\nADD A\nADD A\nADD A\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "21\nFIRST_UNIQUE\nADD a5aa\nFIRST_UNIQUE\nADD QbA\nADD 20b\nFIRST_UNIQUE\nADD a5aa\nFIRST_UNIQUE\nADD 20b\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 20b\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD [5s\nADD 4A\nADD QbA\nADD [5s\nADD a5aa\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\na5aa\na5aa\nQbA\nQbA\nQbA\nQbA\nQbA\n4A\n4A\n"
+  },
+  {
+    "input": "12\nFIRST_UNIQUE\nADD 8Eb0\nADD A1A5\nADD 8.lg\nFIRST_UNIQUE\nADD 9\nFIRST_UNIQUE\nADD 4\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n8Eb0\n8Eb0\n8Eb0\n8Eb0\n8Eb0\n8Eb0\n"
+  },
+  {
+    "input": "6\nADD A1A\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD O\nADD O\n",
+    "expectedOutput": "A1A\nA1A\nA1A\n"
+  },
+  {
+    "input": "23\nFIRST_UNIQUE\nADD .\nFIRST_UNIQUE\nADD .\nFIRST_UNIQUE\nADD (a\nADD 76n5\nFIRST_UNIQUE\nADD .\nADD .\nADD b4bA\nADD b4bA\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD .\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b4bA\nADD 76n5\nADD (a\n",
+    "expectedOutput": "\n.\n\n(a\n(a\n(a\n(a\n(a\n(a\n(a\n(a\n"
+  },
+  {
+    "input": "28\nADD 7f0\nADD AA\nADD AA\nADD ;!X5\nADD 7f0\nADD AA\nADD ;!X5\nADD Aa'/\nADD Aa'/\nADD ;!X5\nADD ;!X5\nADD ;!X5\nADD 7f0\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 7f0\nADD Aa'/\nADD ;!X5\nADD 7{{\nADD AA\nADD 7f0\nFIRST_UNIQUE\nADD 7{{\nADD ;!X5\nFIRST_UNIQUE\nADD 7f0\nADD ;!X5\n",
+    "expectedOutput": "\n\n\n7{{\n\n"
+  },
+  {
+    "input": "2\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n"
+  },
+  {
+    "input": "28\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b0A\nADD aa5\nFIRST_UNIQUE\nADD b0A\nFIRST_UNIQUE\nADD 3410\nADD aa5\nADD 0bA\nADD b0A\nADD 3410\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b0A\nFIRST_UNIQUE\nADD aa5\nADD 0bA\nFIRST_UNIQUE\nADD 0bA\nFIRST_UNIQUE\nADD aa5\nFIRST_UNIQUE\nADD 0bA\nADD .A\nADD b0A\nADD 3410\nADD b0A\n",
+    "expectedOutput": "\n\nb0A\naa5\n0bA\n0bA\n0bA\n\n\n\n"
+  },
+  {
+    "input": "27\nADD 9b\nFIRST_UNIQUE\nADD 42\nADD 42\nFIRST_UNIQUE\nADD 8*AA\nADD 8*AA\nADD 42\nFIRST_UNIQUE\nADD 8*AA\nADD _#\nADD 9b\nADD 42\nADD 8*AA\nADD _#\nFIRST_UNIQUE\nADD 8*AA\nFIRST_UNIQUE\nADD 9b\nADD 9b\nFIRST_UNIQUE\nADD 8*AA\nADD 8*AA\nADD _#\nFIRST_UNIQUE\nADD _#\nADD 42\n",
+    "expectedOutput": "9b\n9b\n9b\n\n\n\n\n"
+  },
+  {
+    "input": "23\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bA\nADD bA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bA\nADD bA\nADD bA\nADD bA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bA\nADD bA\nADD bA\nFIRST_UNIQUE\nADD bA\nADD bA\nADD bA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bA\nADD bA\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "18\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 81\nFIRST_UNIQUE\nADD 3$AA\nADD 81\nADD 3$AA\nADD 81\nFIRST_UNIQUE\nADD 81\nADD 3$AA\nADD 81\nFIRST_UNIQUE\nADD 81\nFIRST_UNIQUE\nADD 3$AA\nFIRST_UNIQUE\nADD 3$AA\n",
+    "expectedOutput": "\n\n81\n\n\n\n\n"
+  },
+  {
+    "input": "8\nFIRST_UNIQUE\nADD 7ja\nADD b(*\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD q\nADD b74\nADD q\n",
+    "expectedOutput": "\n7ja\n7ja\n"
+  },
+  {
+    "input": "19\nADD 2\nFIRST_UNIQUE\nADD 2b\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 2\nADD 2\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 2b\nADD 2b\nADD 2\nADD 2\nADD 2b\nADD 2\nADD 2\nADD 2b\nADD 2b\nADD 2b\n",
+    "expectedOutput": "2\n2\n2\n2b\n2b\n"
+  },
+  {
+    "input": "13\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 0ov.\nFIRST_UNIQUE\nADD 0ov.\nADD 0ov.\nADD 0ov.\nADD 0ov.\nADD 0ov.\nADD 0ov.\nFIRST_UNIQUE\nADD 0ov.\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n0ov.\n\n\n"
+  },
+  {
+    "input": "24\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aT8\nADD 1Ab8\nADD 1Ab8\nFIRST_UNIQUE\nADD 4+\nADD aT8\nADD 4+\nADD 4+\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a1z5\nADD 1Ab8\nFIRST_UNIQUE\nADD 4+\nADD a1z5\nADD 1Ab8\nADD 4+\nADD 1Ab8\nADD 4+\nFIRST_UNIQUE\nADD aT8\nADD aT8\n",
+    "expectedOutput": "\n\naT8\n\n\na1z5\n\n"
+  },
+  {
+    "input": "8\nADD 5\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 8AH\nFIRST_UNIQUE\nADD 5\nFIRST_UNIQUE\nADD 1\n",
+    "expectedOutput": "5\n5\n5\n8AH\n"
+  },
+  {
+    "input": "26\nADD 8+5\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 06a\nADD 06a\nADD ab*\nADD 8+5\nADD 06a\nADD ab*\nADD ab*\nADD 8+5\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD ab*\nADD ab*\nADD 06a\nADD ab*\nADD ab*\nADD ab*\nFIRST_UNIQUE\nADD 8+5\nADD 8+5\nFIRST_UNIQUE\nADD 06a\nADD 06a\nADD 8+5\n",
+    "expectedOutput": "8+5\n8+5\n\n\n\n\n"
+  },
+  {
+    "input": "24\nFIRST_UNIQUE\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nADD :1:8\nFIRST_UNIQUE\nADD :1:8\nFIRST_UNIQUE\nADD :1:8\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD :1:8\nADD :1:8\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD :1:8\nFIRST_UNIQUE\nADD :1:8\n",
+    "expectedOutput": "\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "22\nADD 8\nADD 6\nADD b6\nADD -\nFIRST_UNIQUE\nADD -\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD P\nADD -\nADD -\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD -\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD -\nADD P\nFIRST_UNIQUE\nADD 8\nADD P\nADD 6\n",
+    "expectedOutput": "8\n8\n8\n8\n8\n8\n8\n8\n"
+  },
+  {
+    "input": "13\nADD ,21&\nADD b6!\nFIRST_UNIQUE\nADD a\nADD a\nADD a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b6!\nADD ,21&\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": ",21&\n,21&\n,21&\n\n\n\n"
+  },
+  {
+    "input": "26\nFIRST_UNIQUE\nADD A0W\nFIRST_UNIQUE\nADD w\nFIRST_UNIQUE\nADD 7\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b,aa\nADD 0a7.\nFIRST_UNIQUE\nADD A0W\nADD w\nADD b,aa\nFIRST_UNIQUE\nADD b,aa\nADD 18!a\nFIRST_UNIQUE\nADD 0a7.\nFIRST_UNIQUE\nADD b,aa\nADD w\nFIRST_UNIQUE\nADD w\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\nA0W\nA0W\nA0W\nA0W\nA0W\n7\n7\n7\n7\n7\n7\n"
+  },
+  {
+    "input": "14\nADD (026\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD D\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD (026\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD (\nADD 43.;\nFIRST_UNIQUE\nADD (\nFIRST_UNIQUE\n",
+    "expectedOutput": "(026\n(026\n(026\n(026\nD\nD\nD\nD\n"
+  },
+  {
+    "input": "15\nADD A3.0\nADD A3.0\nADD A3.0\nADD a\nADD a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD a\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD A3.0\nADD A3.0\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "29\nADD abk\nADD 9\nADD abk\nFIRST_UNIQUE\nADD 9\nADD abk\nFIRST_UNIQUE\nADD abk\nADD 9\nFIRST_UNIQUE\nADD 9\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD abk\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 9\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD abk\nFIRST_UNIQUE\nADD abk\nADD abk\nADD abk\nADD 9\nADD 9\nFIRST_UNIQUE\nADD 9\n",
+    "expectedOutput": "9\n\n\n\n\n\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "18\nADD 9Ja\nFIRST_UNIQUE\nADD 57l#\nFIRST_UNIQUE\nADD 9Ja\nADD 9Ja\nADD 57l#\nFIRST_UNIQUE\nADD 9Ja\nADD 9Ja\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 57l#\nADD 9Ja\nFIRST_UNIQUE\nADD 57l#\nFIRST_UNIQUE\n",
+    "expectedOutput": "9Ja\n9Ja\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "24\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD AZWb\nADD 2A\nADD b\nFIRST_UNIQUE\nADD 2A\nADD b\nADD AZWb\nADD AZWb\nFIRST_UNIQUE\nADD 2A\nFIRST_UNIQUE\nADD 2A\nADD 2A\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 2A\nADD 2A\nADD AZWb\nFIRST_UNIQUE\nADD 2A\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\nAZWb\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "17\nFIRST_UNIQUE\nADD /\nADD @\nFIRST_UNIQUE\nADD @\nADD @\nADD /\nADD b2\nADD /\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD /\nADD @\nADD /\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n/\nb2\nb2\nb2\nb2\nb2\n"
+  },
+  {
+    "input": "26\nADD bM5\nFIRST_UNIQUE\nADD _j\nADD 81c\nADD 3uk.\nADD bM5\nADD .A\nADD bM5\nFIRST_UNIQUE\nADD bM5\nADD 3uk.\nFIRST_UNIQUE\nADD 3uk.\nFIRST_UNIQUE\nADD 3uk.\nADD _j\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bM5\nADD _j\nFIRST_UNIQUE\nADD bM5\nADD 3uk.\nFIRST_UNIQUE\nADD _j\nADD bM5\n",
+    "expectedOutput": "bM5\n_j\n_j\n_j\n81c\n81c\n81c\n81c\n"
+  },
+  {
+    "input": "26\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nFIRST_UNIQUE\nADD 7AM\nADD 7AM\nADD 7AM\nFIRST_UNIQUE\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nADD 7AM\nFIRST_UNIQUE\nADD 7AM\nFIRST_UNIQUE\nADD 7AM\nFIRST_UNIQUE\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n\n\n\n"
+  },
+  {
+    "input": "23\nADD Kx9?\nADD 2Z\nFIRST_UNIQUE\nADD Kx9?\nADD ya7\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD qx2a\nADD 2Z\nADD qx2a\nFIRST_UNIQUE\nADD 2Z\nADD 2Z\nADD Kx9?\nADD Kx9?\nADD qx2a\nADD ya7\nFIRST_UNIQUE\nADD 2Z\nADD >5\nADD Kx9?\nADD Kx9?\nADD 60\n",
+    "expectedOutput": "Kx9?\n2Z\n2Z\nya7\n\n"
+  },
+  {
+    "input": "24\nADD 5z\nADD 1\nFIRST_UNIQUE\nADD .aba\nFIRST_UNIQUE\nADD 1\nADD Ra\nADD 1\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 1\nADD 5z\nFIRST_UNIQUE\nADD Ra\nFIRST_UNIQUE\nADD 5z\nADD 5z\nADD 5z\nADD Ra\nADD Ra\nFIRST_UNIQUE\nADD Ra\nADD .aba\nADD 1\n",
+    "expectedOutput": "5z\n5z\n5z\n5z\n.aba\n.aba\n.aba\n"
+  },
+  {
+    "input": "20\nADD t\nADD 7132\nADD t\nADD 7132\nADD 7132\nADD 7132\nADD t\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 7132\nADD t\nADD t\nADD t\nFIRST_UNIQUE\nADD 7132\nADD t\nADD 7132\nFIRST_UNIQUE\nADD t\n",
+    "expectedOutput": "\n\n\n\n\n"
+  },
+  {
+    "input": "4\nADD [\nADD [\nADD [\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "11\nADD A58!\nADD C\nFIRST_UNIQUE\nADD C\nFIRST_UNIQUE\nADD A58!\nADD 9[\nADD b6a!\nADD A58!\nADD C\nADD A58!\n",
+    "expectedOutput": "A58!\nA58!\n"
+  },
+  {
+    "input": "14\nADD 1Ak3\nFIRST_UNIQUE\nADD 5Eb\nADD 5Eb\nFIRST_UNIQUE\nADD l7\nADD l7\nADD 1Ak3\nADD 5Eb\nADD l7\nADD 1Ak3\nFIRST_UNIQUE\nADD 1Ak3\nADD l7\n",
+    "expectedOutput": "1Ak3\n1Ak3\n\n"
+  },
+  {
+    "input": "18\nADD 6$}U\nADD Eb\nFIRST_UNIQUE\nADD Eb\nFIRST_UNIQUE\nADD `aMa\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD `aMa\nADD `aMa\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD Eb\nADD `aMa\nADD `aMa\n",
+    "expectedOutput": "6$}U\n6$}U\n6$}U\n6$}U\n6$}U\n6$}U\n6$}U\n6$}U\n6$}U\n"
+  },
+  {
+    "input": "9\nADD 0\nADD 0\nADD 0\nADD 0\nADD 0\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 0\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n"
+  },
+  {
+    "input": "17\nADD aaT\nADD aaT\nADD aaT\nADD 74WT\nADD 74WT\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD aaT\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 74WT\nFIRST_UNIQUE\nADD aaT\nADD 74WT\nFIRST_UNIQUE\nADD aaT\nFIRST_UNIQUE\n",
+    "expectedOutput": "\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "18\nADD 7841\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD bb\nADD 7841\nADD e\nADD e\nADD bb\nADD A8a\nFIRST_UNIQUE\nADD b\nFIRST_UNIQUE\nADD b\nADD 7841\nADD 7841\nADD A8a\nADD b\nFIRST_UNIQUE\n",
+    "expectedOutput": "7841\n7841\nA8a\nA8a\n\n"
+  },
+  {
+    "input": "4\nADD 3?\nADD &,\nFIRST_UNIQUE\nADD [A.\n",
+    "expectedOutput": "3?\n"
+  },
+  {
+    "input": "8\nADD l\nFIRST_UNIQUE\nADD b1L\nFIRST_UNIQUE\nADD l\nFIRST_UNIQUE\nADD a\nADD 0b5f\n",
+    "expectedOutput": "l\nl\nb1L\n"
+  },
+  {
+    "input": "5\nFIRST_UNIQUE\nADD bN.\nADD bN.\nADD bN.\nADD 7)[5\n",
+    "expectedOutput": "\n"
+  },
+  {
+    "input": "21\nADD W6\nFIRST_UNIQUE\nADD W6\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD G[0\nFIRST_UNIQUE\nADD W6\nADD G[0\nADD G[0\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD G[0\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD 5b3\nADD 5b3\nADD G[0\nADD W6\nFIRST_UNIQUE\n",
+    "expectedOutput": "W6\n\n\nG[0\n\n\n\n\n\n\n"
+  },
+  {
+    "input": "4\nADD 8b2\nADD 72A\nADD 8b2\nFIRST_UNIQUE\n",
+    "expectedOutput": "72A\n"
+  },
+  {
+    "input": "28\nADD $3\nFIRST_UNIQUE\nADD b3h\nADD 3\nFIRST_UNIQUE\nADD SA\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD SA\nADD 3\nADD b3h\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nFIRST_UNIQUE\nADD b3h\nFIRST_UNIQUE\nADD $3\nFIRST_UNIQUE\nADD $3\nADD 3\nADD SA\nADD SA\nFIRST_UNIQUE\nADD 3\nADD SA\n",
+    "expectedOutput": "$3\n$3\n$3\n$3\n$3\n$3\n$3\n$3\n$3\n$3\n$3\n\n\n"
+  },
+  {
+    "input": "4\nFIRST_UNIQUE\nADD 31q\nADD 31q\nADD 31q\n",
+    "expectedOutput": "\n"
+  }
+]

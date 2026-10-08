@@ -1,0 +1,22 @@
+[
+  {
+    "name": "错误忽略次数总返回最早出现的IP",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{if(p<order.size())out+=order[p];out+='\\n';}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误出现三次才算不唯一",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{while(p<order.size()&&cnt[p]>=3)p++;if(p<order.size())out+=order[p];out+='\\n';}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误空答案不输出空行",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{while(p<order.size()&&cnt[p]>=2)p++;if(p<order.size()){out+=order[p];out+='\\n';}}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  },
+  {
+    "name": "错误IP忽略大小写",
+    "language": "cpp",
+    "code": "#include <cstdio>\n#include <cstring>\n#include <string>\n#include <vector>\n#include <unordered_map>\nusing namespace std;\nint main(){int q;if(scanf(\"%d\",&q)!=1)return 0;unordered_map<string,int> id;id.reserve(size_t(q)+1);\nvector<string> order;vector<int> cnt;size_t p=0;char cmd[16],ip[32];string out;\nfor(int i=0;i<q;i++){scanf(\"%15s\",cmd);\nif(cmd[0]=='A'){scanf(\"%31s\",ip);for(char *c=ip;*c;c++)if(*c>=65&&*c<=90)*c+=32;auto r=id.try_emplace(ip,(int)order.size());if(r.second){order.push_back(ip);cnt.push_back(0);}cnt[r.first->second]++;}\nelse{while(p<order.size()&&cnt[p]>=2)p++;if(p<order.size())out+=order[p];out+='\\n';}}\nfwrite(out.data(),1,out.size(),stdout);}\n"
+  }
+]

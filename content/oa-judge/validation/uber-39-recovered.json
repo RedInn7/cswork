@@ -1,0 +1,208 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261204,
+  "problems": [
+    {
+      "id": "oa-uber-39",
+      "oracleCases": 180,
+      "uniqueOracleInputs": 180,
+      "publicCases": 3,
+      "hiddenCases": 35,
+      "referenceFormalCases": 38,
+      "referenceLanguage": "cpp",
+      "referenceSha256": "39c490d57d56545e91279d0bcdac808483eca3320b982bf2a9de11596b8a77ad",
+      "negativeControls": [
+        {
+          "name": "错误忽略次数总返回最早出现的IP",
+          "rejectedCases": 32,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            15,
+            16,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            29,
+            30,
+            31,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误出现三次才算不唯一",
+          "rejectedCases": 29,
+          "rejectedCaseIndices": [
+            0,
+            1,
+            2,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            15,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            29,
+            30,
+            31,
+            33,
+            34,
+            35,
+            36,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误空答案不输出空行",
+          "rejectedCases": 25,
+          "rejectedCaseIndices": [
+            2,
+            3,
+            5,
+            6,
+            7,
+            8,
+            11,
+            15,
+            16,
+            17,
+            19,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            33,
+            34,
+            35,
+            37
+          ],
+          "normalExitCases": 38
+        },
+        {
+          "name": "错误IP忽略大小写",
+          "rejectedCases": 13,
+          "rejectedCaseIndices": [
+            2,
+            13,
+            16,
+            18,
+            20,
+            26,
+            27,
+            28,
+            29,
+            32,
+            33,
+            34,
+            37
+          ],
+          "normalExitCases": 38
+        }
+      ],
+      "oracleMethod": "Independent insertion-ordered dict of currently unique IPs; per-query history recount brute force on every oracle input and exhaustive small domain.",
+      "exhaustiveSmallDomain": {
+        "cases": 4368,
+        "lengthMin": 1,
+        "lengthMax": 6,
+        "tokens": [
+          "ADD a",
+          "ADD A",
+          "ADD b",
+          "FIRST_UNIQUE"
+        ],
+        "requireQuery": true
+      },
+      "largeBoundaries": [
+        {
+          "name": "百万个不同最长IP交替查询",
+          "commands": 1500000,
+          "inputBytes": 26500008,
+          "outputBytes": 8000000,
+          "elapsedSeconds": 0.37841
+        },
+        {
+          "name": "二十万IP首次出现顺序逐个失效",
+          "commands": 600000,
+          "inputBytes": 10600007,
+          "outputBytes": 3199985,
+          "elapsedSeconds": 0.08821
+        },
+        {
+          "name": "一百五十万命令中等基数随机",
+          "commands": 1500000,
+          "inputBytes": 24750008,
+          "outputBytes": 1660275,
+          "elapsedSeconds": 0.14708
+        },
+        {
+          "name": "二十万次查询全为空",
+          "commands": 200000,
+          "inputBytes": 2600005,
+          "outputBytes": 199998,
+          "elapsedSeconds": 0.01944
+        },
+        {
+          "name": "十万IPv4仅最后一个唯一",
+          "commands": 200000,
+          "inputBytes": 3655589,
+          "outputBytes": 15,
+          "elapsedSeconds": 0.03498
+        },
+        {
+          "name": "二十万命令高冲突大小写",
+          "commands": 200001,
+          "inputBytes": 1757934,
+          "outputBytes": 79711,
+          "elapsedSeconds": 0.02007
+        }
+      ],
+      "caseBytes": 83007976,
+      "packageBytes": 89722953,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 50.257
+    }
+  ]
+}
