@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误强制修改一次不能保留原策略",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,k=data[:2]\n    rates=data[2:2+n]\n    strategy=data[2+n:]\n    contribution=[rates[i]*strategy[i] for i in range(n)]\n    baseline=sum(contribution)\n    half=k//2\n    old=sum(contribution[:k])\n    replacement=sum(rates[half:k])\n    best=replacement-old\n    for left in range(n-k):\n        old+=contribution[left+k]-contribution[left]\n        replacement+=rates[left+k]-rates[left+half]\n        best=max(best,replacement-old)\n    return str(baseline+best)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误把卖出半区放在窗口前半",
+    "code": "import sys\n\ndef solve(raw):\n    data=list(map(int,raw.split()))\n    n,k=data[:2]\n    rates=data[2:2+n]\n    strategy=data[2+n:]\n    contribution=[rates[i]*strategy[i] for i in range(n)]\n    baseline=sum(contribution)\n    half=k//2\n    old=sum(contribution[:k])\n    replacement=sum(rates[:half])\n    best=max(0,replacement-old)\n    for left in range(n-k):\n        old+=contribution[left+k]-contribution[left]\n        replacement+=rates[left+half]-rates[left]\n        best=max(best,replacement-old)\n    return str(baseline+best)\n\nif __name__=='__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]

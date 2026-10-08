@@ -17,7 +17,10 @@ import {
   assertScopeEvidence,
   digest,
 } from '../scripts/oa-judge/aggregate-batches.mjs';
-import { assertOracleCoverage } from '../scripts/oa-judge/oracle-coverage.mjs';
+import {
+  assertOracleCoverage,
+  assertFormalCoverage,
+} from '../scripts/oa-judge/oracle-coverage.mjs';
 
 test('authored OA packages and displayed solutions match sandbox-verified immutable evidence', () => {
   const load = (name: string) => readFileSync('content/oa-judge/' + name);
@@ -92,7 +95,7 @@ test('authored OA packages and displayed solutions match sandbox-verified immuta
       );
       assert(new Set(evidence.killed).size >= 2);
       assert.equal(evidence.passed, evidence.oracle + pkg.cases.length);
-      assert(pkg.cases.filter((c) => c.hidden).length >= 20);
+      assertFormalCoverage(entry, pkg);
       assert.match(entry.editorial, /^## (?:为什么正确|正确性(?:证明)?)\s*$/m);
     }
   }
