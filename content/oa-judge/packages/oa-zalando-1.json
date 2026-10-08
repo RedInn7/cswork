@@ -1,0 +1,373 @@
+{
+  "schemaVersion": 1,
+  "problem": {
+    "id": "oa-zalando-1",
+    "courseId": "gomall",
+    "lessonId": "00-overview",
+    "title": "拼接不含AAA或BBB的最长整块字符串",
+    "difficulty": "中等",
+    "tags": [
+      "OA",
+      "Zalando",
+      "动态规划",
+      "构造"
+    ],
+    "description": "有AA、AB、BB三种不可拆分的二字母块，数量分别为a、b、c。可以选择其中一些块，按任意顺序完整连接，构造不包含连续三个A或连续三个B的最长字符串。块不能拆开或翻转，每个块最多使用一次。返回任意一个最长结果，不要求字典序最小。",
+    "input": "一行三个整数a b c，依次表示AA、AB、BB块的数量。0≤a,b,c≤10，a+b+c≥1。对应原题AA、AB、BB三个参数及非空结果保证，完整保留原始数值范围。",
+    "output": "输出一行非空字符串，只含A、B，不带引号、空格或块分隔符。必须由可用整块拼成，不含AAA或BBB，且长度最大。多个最优结果均接受。",
+    "explanation": "保留四个原输入。样例1原文列出的AA-BB-AA-BB-AA正确拼接是AABBAABBAA，长度10，原输出误少一个A。样例2可用AA-BB-AB-AB得到AABBABAB，长度8且用完全部4块；原长度7输出及解释中的非法候选已纠正。样例3使用两个AB得到ABAB；样例4最多使用一个BB得到BB。规则和完整范围依据唯一固定MDX，不存在额外raw版本。",
+    "hints": [
+      "拼接合法性只需要记住当前末尾两字符。",
+      "用剩余三种块数量和末尾字符做状态。",
+      "即使长度最优，拆开块重新排列字符也可能不合法。"
+    ],
+    "timeLimit": 2,
+    "memoryLimit": 262144,
+    "outputLimit": 64,
+    "checker": "oa-zalando-blocks",
+    "languages": [
+      "python",
+      "go",
+      "java",
+      "cpp"
+    ]
+  },
+  "cases": [
+    {
+      "name": "原始输入1",
+      "input": "5 0 2\n",
+      "expectedOutput": "AABBAABBAA\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原始输入2",
+      "input": "1 2 1\n",
+      "expectedOutput": "AABBABAB\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原始输入3",
+      "input": "0 2 0\n",
+      "expectedOutput": "ABAB\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "原始输入4",
+      "input": "0 0 10\n",
+      "expectedOutput": "BB\n",
+      "hidden": false,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界1",
+      "input": "0 0 1\n",
+      "expectedOutput": "BB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界2",
+      "input": "0 1 0\n",
+      "expectedOutput": "AB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界3",
+      "input": "0 1 1\n",
+      "expectedOutput": "BBAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界4",
+      "input": "0 1 10\n",
+      "expectedOutput": "BBAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界5",
+      "input": "0 10 0\n",
+      "expectedOutput": "ABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界6",
+      "input": "0 10 1\n",
+      "expectedOutput": "BBABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界7",
+      "input": "0 10 10\n",
+      "expectedOutput": "BBABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界8",
+      "input": "1 0 0\n",
+      "expectedOutput": "AA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界9",
+      "input": "1 0 1\n",
+      "expectedOutput": "AABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界10",
+      "input": "1 0 10\n",
+      "expectedOutput": "BBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界11",
+      "input": "1 1 0\n",
+      "expectedOutput": "ABAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界12",
+      "input": "1 1 1\n",
+      "expectedOutput": "ABAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界13",
+      "input": "1 1 10\n",
+      "expectedOutput": "BBAABBAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界14",
+      "input": "1 10 0\n",
+      "expectedOutput": "ABABABABABABABABABABAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界15",
+      "input": "1 10 1\n",
+      "expectedOutput": "ABABABABABABABABABABAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界16",
+      "input": "1 10 10\n",
+      "expectedOutput": "BBAABBABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界17",
+      "input": "10 0 0\n",
+      "expectedOutput": "AA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界18",
+      "input": "10 0 1\n",
+      "expectedOutput": "AABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界19",
+      "input": "10 0 10\n",
+      "expectedOutput": "AABBAABBAABBAABBAABBAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界20",
+      "input": "10 1 0\n",
+      "expectedOutput": "ABAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界21",
+      "input": "10 1 1\n",
+      "expectedOutput": "ABAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界22",
+      "input": "10 1 10\n",
+      "expectedOutput": "ABAABBAABBAABBAABBAABBAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界23",
+      "input": "10 10 0\n",
+      "expectedOutput": "ABABABABABABABABABABAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界24",
+      "input": "10 10 1\n",
+      "expectedOutput": "ABABABABABABABABABABAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界25",
+      "input": "10 10 10\n",
+      "expectedOutput": "ABABABABABABABABABABAABBAABBAABBAABBAABBAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界26",
+      "input": "10 0 2\n",
+      "expectedOutput": "AABBAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界27",
+      "input": "2 0 10\n",
+      "expectedOutput": "BBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界28",
+      "input": "10 10 2\n",
+      "expectedOutput": "ABABABABABABABABABABAABBAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界29",
+      "input": "2 10 10\n",
+      "expectedOutput": "BBAABBAABBABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界30",
+      "input": "9 10 10\n",
+      "expectedOutput": "BBAABBAABBAABBAABBAABBAABBAABBAABBAABBABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界31",
+      "input": "10 10 9\n",
+      "expectedOutput": "ABABABABABABABABABABAABBAABBAABBAABBAABBAABBAABBAABBAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界32",
+      "input": "5 5 5\n",
+      "expectedOutput": "ABABABABABAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界33",
+      "input": "9 2 7\n",
+      "expectedOutput": "ABABAABBAABBAABBAABBAABBAABBAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界34",
+      "input": "2 10 7\n",
+      "expectedOutput": "BBAABBAABBABABABABABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界35",
+      "input": "2 5 10\n",
+      "expectedOutput": "BBAABBAABBABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界36",
+      "input": "8 1 8\n",
+      "expectedOutput": "ABAABBAABBAABBAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界37",
+      "input": "8 6 7\n",
+      "expectedOutput": "ABABABABABABAABBAABBAABBAABBAABBAABBAABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界38",
+      "input": "5 6 7\n",
+      "expectedOutput": "BBAABBAABBAABBAABBAABBABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界39",
+      "input": "10 7 10\n",
+      "expectedOutput": "ABABABABABABABAABBAABBAABBAABBAABBAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界40",
+      "input": "6 0 8\n",
+      "expectedOutput": "BBAABBAABBAABBAABBAABBAABB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界41",
+      "input": "5 4 6\n",
+      "expectedOutput": "BBAABBAABBAABBAABBAABBABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界42",
+      "input": "8 10 0\n",
+      "expectedOutput": "ABABABABABABABABABABAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界43",
+      "input": "6 0 1\n",
+      "expectedOutput": "AABBAA\n",
+      "hidden": true,
+      "weight": 1
+    },
+    {
+      "name": "完整块边界44",
+      "input": "2 6 4\n",
+      "expectedOutput": "BBAABBAABBABABABABABAB\n",
+      "hidden": true,
+      "weight": 1
+    }
+  ]
+}

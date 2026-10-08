@@ -14467,6 +14467,18 @@
       ]
     },
     {
+      "id": "oa-zalando-1",
+      "sourceContentHash": "ab0253f7e2ea870b35a45ace6c10ed69a11b33ca300f0e6f913a68a0e4f10d8b",
+      "packageChecksum": "5bcca1c323d5cec784da6cf765ebc681a9af8ecf465d3d7d5af66d25d32234bb",
+      "editorial": "## 固定来源与样例纠错\n\n唯一固定来源为提交e66f809f4c953bce129f68491726176615db6afc的web/content/docs/companies/zalando.mdx。该快照没有另一本fastprep或OA LIST原件，因此证据明确标为MDX，不伪称有raw交叉佐证。正文完整规定：AA、AB、BB三种二字母块各有0..10个，选择一些完整块连接，不能出现AAA或BBB，求最长字符串，多解可返回任意一个；结果非空。本站据此排除三个数量全零，将三个参数编排为一行，输出不带引号的字符串。不拆块、不翻转块，尤其不能自行使用BA块。\n\n保留四个原输入，但前两例原输出有可确定的笔误。第一例(5,0,2)原文明确列出AA-BB-AA-BB-AA，却错拼为长度9的AABBAABBA；正确拼接为长度10的AABBAABBAA。第二例(1,2,1)原输出BBAABAA长度7，不能由整块构成；解释中的候选也不符合块用量或整块要求。本站给出AABBABAB=AA-BB-AB-AB，恰好用完4块，长度8已达总字符数上界。第三例ABAB和第四例BB保持不变。不是为匹配错例另造操作规则。上游三语言贪心也可能错误使用过量同类块；本题参考程序与对照均独立编写，未执行上游代码。\n\n## 动态规划\n\n状态best(a,b,c,s)记录三种剩余数量，以及已构造串的最后两字符s（初始为空）。枚举下一块AA、AB、BB，数量须充足，且s与该块连接后没有AAA或BBB。消耗这一块，递归得到最佳后缀。也允许停止。比较候选长度，参考实现仅为确定性输出在等长时取字典序较小者；题目和判题不要求这种平局规则。\n\n## 正确性证明\n\n已经构造的前缀合法。新添块本身只有两个字符，不会在块内部产生三连，因此任何新增违规三连只能跨越接缝，而检查旧末两字符加新块足以覆盖所有接缝三连。转移因此恰好枚举所有合法下一块。\n\n按剩余块数归纳。零块时只能停止，空后缀最优。对任意状态，每个合法续接要么停止，要么先取某个合法块，再接该转移状态的合法后缀。归纳假设保证递归返回该状态的最长后缀，枚举所有首块再取最长必然得到当前最优。故初始状态给出全局最长合法字符串，等长字典序选择不影响最优长度。\n\n## 独立长度界与构造\n\n删去最终块序列中的所有AB块，只观察AA和BB。它们必须交替：AA后不能接AB或AA，若仍有下一块只能是BB；BB之后插入若干AB也不能接BB，因为AB-BB含BBB。故AA与BB的使用数量之差至多1，最多使用2*min(AA,BB)+[AA!=BB]块，另有至多AB个AB块。\n\n这个上界总能达到。若AA≥BB，构造(AB)^AB+(AA-BB)^BB，再在AA>BB时添一个AA；若AA<BB，构造(BB-AA)^AA+BB+(AB)^AB。逐接缝检查没有三连且用量合法。因此最优长度恰为2*(AB+2*min(AA,BB)+[AA!=BB])。独立oracle用这一计数界及显式构造，不调用参考DP。\n\n## 复杂度与完整范围验证\n\n设P=(AA+1)(AB+1)(BB+1)，总块数K=AA+AB+BB≤30。后缀只有空串、AA、AB、BB四种，状态至多4P≤5324，每个状态枚举3块。本实现缓存字符串，比较、复制的代价至多O(K)，故时间O(PK)，空间O(PK)，递归深度≤K+1，输出至多60字符。\n\n全部1330个合法输入均由独立计数构造oracle产生见证并逐一运行参考子进程验证。另对总块数≤8的164个输入，独立穷举所有块排列、检查整个字符串并允许在每个前缀停止，不使用DP、后缀状态或长度公式，验证枚举最优值与构造一致。正式数据覆盖四原输入、纯单类、全部边界组合、严重失衡、AB桥接和完整(10,10,10)。专用checker检查完整块用量、三连和最优长度，接受所有等长最优输出；负控分别错误拆块按字符重排、忽略AB块，都必须正常退出才计击杀。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom functools import lru_cache\n\ndef solve(raw):\n    a, b, c = map(int, raw.split())\n    @lru_cache(None)\n    def best(a, b, c, suffix):\n        answer = ''\n        counts = (a, b, c)\n        for i, block in enumerate(('AA', 'AB', 'BB')):\n            if not counts[i]:\n                continue\n            boundary = suffix + block\n            if 'AAA' in boundary or 'BBB' in boundary:\n                continue\n            remaining = list(counts)\n            remaining[i] -= 1\n            candidate = block + best(*remaining, block)\n            if len(candidate) > len(answer) or (len(candidate) == len(answer) and candidate < answer):\n                answer = candidate\n        return answer\n    return best(a, b, c, '')\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-ziprecruiter-6",
       "sourceContentHash": "e3aaaa7b35f2dd54da5dd226eb0ec49a484eded066a5257d6b108783bd6a32b4",
       "packageChecksum": "64aba46693fffee5ec48841afa4b979994c251bc2ab7afc25a9ad60b7dd6dcea",
