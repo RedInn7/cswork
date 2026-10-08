@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-thoughtspot-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 40,
+      "referenceFormalCases": 43,
+      "negativeControls": [
+        {
+          "name": "忽略向其他服务分配请求",
+          "rejectedByCases": [
+            0,
+            2,
+            5,
+            6,
+            7,
+            9,
+            10,
+            11,
+            17,
+            21,
+            37,
+            39,
+            40,
+            42
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "错误向上取整空闲时间容量",
+          "rejectedByCases": [
+            0,
+            4,
+            5,
+            10,
+            11,
+            17,
+            20,
+            23,
+            29,
+            30,
+            37,
+            42
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "d57a020705800f821edb49ad94fbcba317e30eb3f66f530c9216fdcd51c13b86",
+      "oracleMethod": "Enumerate every request-to-service assignment, calculate actual 1/2 durations and minimize maximum load; no binary search or capacity predicate.",
+      "largeBoundaries": [
+        {
+          "name": "最大服务数一个请求",
+          "n": 100000,
+          "m": 1,
+          "expectedOutput": "1",
+          "inputBytes": 16,
+          "localSeconds": 0.0399
+        },
+        {
+          "name": "最大请求数单服务",
+          "n": 1,
+          "m": 100000,
+          "expectedOutput": "100000",
+          "inputBytes": 200009,
+          "localSeconds": 0.0469
+        },
+        {
+          "name": "满双界全部集中且空闲服务",
+          "n": 100000,
+          "m": 100000,
+          "expectedOutput": "2",
+          "inputBytes": 700014,
+          "localSeconds": 0.1256
+        },
+        {
+          "name": "满双界一服务一请求乱序",
+          "n": 100000,
+          "m": 100000,
+          "expectedOutput": "1",
+          "inputBytes": 588909,
+          "localSeconds": 0.0616
+        },
+        {
+          "name": "双服务集中奇数时间",
+          "n": 2,
+          "m": 100000,
+          "expectedOutput": "66667",
+          "inputBytes": 200009,
+          "localSeconds": 0.0589
+        },
+        {
+          "name": "三服务集中整除",
+          "n": 3,
+          "m": 100000,
+          "expectedOutput": "50000",
+          "inputBytes": 200009,
+          "localSeconds": 0.0653
+        },
+        {
+          "name": "两请求每服务",
+          "n": 50000,
+          "m": 100000,
+          "expectedOutput": "2",
+          "inputBytes": 577801,
+          "localSeconds": 0.0613
+        },
+        {
+          "name": "奇数剩余时间不能拼接",
+          "n": 100000,
+          "m": 99999,
+          "expectedOutput": "2",
+          "inputBytes": 200011,
+          "localSeconds": 0.1431
+        }
+      ],
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 24.527
+    }
+  ]
+}

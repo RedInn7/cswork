@@ -1,0 +1,10 @@
+[
+  {
+    "name": "忽略向其他服务分配请求",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, m = data[:2]\n    counts = [0] * n\n    for service in data[2:]:\n        counts[service - 1] += 1\n    low, high = 0, max(counts)\n    low = high\n    while low < high:\n        mid = (low + high) // 2\n        excess = 0\n        capacity = 0\n        for count in counts:\n            if count > mid:\n                excess += count - mid\n            else:\n                capacity += (mid - count) // 2\n        if capacity >= excess:\n            high = mid\n        else:\n            low = mid + 1\n    return str(low)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  },
+  {
+    "name": "错误向上取整空闲时间容量",
+    "code": "import sys\n\ndef solve(raw):\n    data = list(map(int, raw.split()))\n    n, m = data[:2]\n    counts = [0] * n\n    for service in data[2:]:\n        counts[service - 1] += 1\n    low, high = 0, max(counts)\n    while low < high:\n        mid = (low + high) // 2\n        excess = 0\n        capacity = 0\n        for count in counts:\n            if count > mid:\n                excess += count - mid\n            else:\n                capacity += (mid - count + 1) // 2\n        if capacity >= excess:\n            high = mid\n        else:\n            low = mid + 1\n    return str(low)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
