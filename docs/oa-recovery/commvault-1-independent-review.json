@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-commvault-1",
+  "batch": "commvault-1-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "d5475f4d5bebe506b5bfdc4d6245cf3b07393fd8a114cd9f4c7398847615fb0f",
+  "packageFileSha256": "fb6e6b851ce6312ba64e91db3ec23e0f7f5f21863910e7a38a8341b5605cdfdb",
+  "oracleSha256": "df4621fbed89f8fe12ac8252db50ae23f2cebcb485ca7e8481f6129d229f8e85",
+  "referenceSha256": "b26ebe0e92f2fb7280840500c47673c522e90354e9edcd5f3cdc43e6bb8fc518",
+  "scope": "Independent algorithm prepared before author freeze. Author generator never read, imported or executed. After freeze, fixed source, problem, editorial, reference and mutant artifacts were reviewed. Only the designated review report was written in the project. No sandbox execution, build, branch change or commit performed by reviewer.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/Commvault/commvault-count-good-strings.md",
+    "gitBlobSha": "18327db353e324e309497ade0f747b99c4eb66f2",
+    "rawSha256": "c95eb36bad091fcf53b6b6c11a042d36593c08d859197b51a8a98b8be3075d5d",
+    "verified": true,
+    "rules": "Length 2N, N copies of A and B, every prefix has at least as many A as B; count modulo 10000.",
+    "domainDisclosure": "Raw constraints are only o_o. Full nonnegative Java int domain 0..2147483647 is derived from the explicit public int countGoodStrings(int N) interface, not presented as original numerical constraints. N=0 is explicitly disclosed as the mathematical empty-string completion. Negative counts excluded. Both problem and editorial explain the 32-bit overflow risk for 2N.",
+    "sampleCorrection": "Original N=3 answer5 and all five good strings preserved. The raw BABABA explanation incorrectly identifies BA as a violating prefix; editorial correctly identifies B. BA contains equal counts."
+  },
+  "proofReview": {
+    "combinatorics": "Reflection of the first negative prefix bijects bad balanced strings with strings containing N+1 copies of A and N-1 of B. Thus the Catalan factorial quotient is exact, including the separately disclosed empty-string case.",
+    "primePowerArithmetic": "Legendre valuation subtracts v_p(N+1) before testing divisibility by p^4. Unit-factorial recurrence partitions nonmultiples of p into complete modular blocks and recursively accounts for stripped multiples. Only units are inverted. This correctly handles N+1 containing arbitrarily many 2 or 5 factors within the interface domain.",
+    "crt": "16*586 is congruent to1 modulo625. Reference formula yields the unique integer0..9999 with the two independently checked prime-power residues.",
+    "complexity": "Editorial conservatively states O(625+log^2(N+1)) time and O(625) memory, consistent with modular exponentiation inside the logarithmic recurrence. Python arithmetic safely handles 2N=4294967294 and N+1=2147483648.",
+    "editorialReferenceBinding": "Displayed Python code exactly equals frozen reference bytes. Standalone correctness-proof heading exists. Normalized import schema and package checksum verified."
+  },
+  "independentVerification": {
+    "reviewTool": "/private/tmp/commvault-independent.q1Inv3/review_commvault.py",
+    "reviewToolSha256": "9eee48e10a04b0af8d3b1e0a48f1dd107c72b9bba81cceb9bc2b4bd6d2b8310e",
+    "primaryMethod": "Independent base-p four-digit sliding windows with carry accounting reconstruct the central-binomial unit, then strip N+1 and combine residues using r625+625*((r16-r625) mod16). Does not call the reference unit-factorial recurrence.",
+    "sharedTheoryDisclosure": "Primary oracle and reference necessarily share prime-power number theory, but use different iteration state and CRT formulas. Low-domain exact integer Catalan and a third multiplicative unit/valuation recurrence independently cross-check the arithmetic.",
+    "threeWayExactCases": 10001,
+    "threeWayExactDomain": "Every N from0 through10000: digit windows, exact integer C_N=C_(N-1)*(4N-2)/(N+1), and modular recurrence retaining units and valuations agree modulo16,625,10000.",
+    "valuationBoundaryCoverage": {
+      "p2Exponent3": 880,
+      "p2Exponent4": 1614,
+      "p5Exponent3": 2364,
+      "p5Exponent4": 1420
+    },
+    "largeDomainMetamorphicChecks": {
+      "boundaryInputs": 761,
+      "randomInputs": 10000,
+      "properties": "Catalan is odd iff N&(N+1)==0. Adjacent outputs satisfy (N+1)*C_N=(4N-2)*C_(N-1) modulo10000. These are necessary corroborating properties, not sufficient stand-alone oracles.",
+      "boundaries": "Powers of2 and5 and neighboring values; mixed2^a*5^b denominator neighborhoods; Java int maximum and overflow threshold."
+    },
+    "formalCases": 55,
+    "publicCases": 3,
+    "hiddenCases": 52,
+    "uniqueFormalInputs": 55,
+    "oracleCases": 163,
+    "uniqueOracleInputs": 163,
+    "referenceSubprocessRuns": 218,
+    "referenceResult": "Every frozen formal and oracle expected output was independently recomputed. Every reference subprocess exited normally and produced matching output tokens.",
+    "referenceMaxLocalSeconds": {
+      "formal": 0.0354292499832809,
+      "oracle": 0.028223208035342395
+    },
+    "maxIntCase": {
+      "n": 2147483647,
+      "mod16": 13,
+      "mod625": 0,
+      "answer": 8125
+    }
+  },
+  "negativeControls": [
+    {"name": "错误只保留模16余数而未正确CRT", "normalExitCases": 55, "killedByCases": 45},
+    {"name": "错误假定n+1不能整除模数且返回零", "normalExitCases": 55, "killedByCases": 38},
+    {"name": "错误用32位有符号数容纳2n", "normalExitCases": 55, "killedByCases": 5}
+  ],
+  "negativeControlResult": "All165 actual mutant subprocesses exited normally. Rejection counts45/38/5 match the author's frozen counts. Expected outputs had already been independently recomputed rather than trusted from author artifacts.",
+  "limitations": "Local subprocess timings are not GoJudge resource measurements. Remote sandbox, integration, publication and deployment verification remain the parent task's responsibility. Temporary review-tool path is provenance for this review, not a persistent repository dependency."
+}

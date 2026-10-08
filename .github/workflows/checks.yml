@@ -71,6 +71,8 @@ jobs:
       - run: node --import tsx --test tests/oa-morgan-bricks-integration.test.ts
       - run: node --import tsx --test tests/oa-wayfair-bricks-integration.test.ts
       - run: node --test tests/oa-zalando-blocks-checker.test.mjs
+      - run: node --test tests/oa-binary-search-witness.test.mjs tests/oa-no-input-coverage.test.mjs
+      - run: node --import tsx --test tests/oa-binary-search-integration.test.ts
       - run: node --import tsx --test tests/oa-zalando-blocks-integration.test.ts
       - run: node --test tests/oa-uber-semantic-checkers.test.mjs tests/oa-bounded-file.test.mjs
       - run: node --import tsx --test --test-concurrency=1 tests/oj-input-capacity.test.ts tests/oj-import-budget.test.ts
