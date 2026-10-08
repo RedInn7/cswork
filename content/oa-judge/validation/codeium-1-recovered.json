@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "seed": 20261007,
+  "problems": [
+    {
+      "id": "oa-codeium-1",
+      "oracleCases": 163,
+      "uniqueOracleInputs": 163,
+      "publicCases": 3,
+      "hiddenCases": 41,
+      "referenceFormalCases": 44,
+      "negativeControls": [
+        {
+          "name": "错误把全部输入判无解",
+          "rejectedByCases": [
+            0,
+            1,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            13,
+            15,
+            17,
+            19,
+            21,
+            23,
+            25,
+            27,
+            29,
+            31,
+            33,
+            35,
+            36,
+            37,
+            41,
+            43
+          ],
+          "normalExitVerified": true
+        },
+        {
+          "name": "合法见证扩大两倍却不再最优",
+          "rejectedByCases": [
+            0,
+            1,
+            4,
+            5,
+            7,
+            8,
+            9,
+            10,
+            11,
+            13,
+            15,
+            17,
+            19,
+            21,
+            23,
+            25,
+            27,
+            29,
+            31,
+            33,
+            35,
+            36,
+            37,
+            41,
+            43
+          ],
+          "normalExitVerified": true
+        }
+      ],
+      "referenceSha256": "6ac1f45406ebc1b87f21f5998207e2589ab31d46f572f183053de537edc4acd9",
+      "oracleMethod": "Enumerate all permutations of 1..n and all sign vectors for n<=5; compute all pairwise positive-sum counts directly. No greedy peeling in oracle.",
+      "largeBoundaries": [
+        {
+          "name": "完整全正",
+          "n": 100000,
+          "inputBytes": 700007,
+          "feasible": true,
+          "localSeconds": 0.0612
+        },
+        {
+          "name": "完整全负",
+          "n": 100000,
+          "inputBytes": 200007,
+          "feasible": true,
+          "localSeconds": 0.0532
+        },
+        {
+          "name": "完整乱序混合",
+          "n": 100000,
+          "inputBytes": 594453,
+          "feasible": true,
+          "localSeconds": 0.0777
+        },
+        {
+          "name": "完整无极端计数不可行",
+          "n": 100000,
+          "inputBytes": 200007,
+          "feasible": false,
+          "localSeconds": 0.038
+        },
+        {
+          "name": "完整末项超界",
+          "n": 100000,
+          "inputBytes": 200012,
+          "feasible": false,
+          "localSeconds": 0.0333
+        },
+        {
+          "name": "十万位非负p",
+          "n": 1,
+          "inputBytes": 100003,
+          "feasible": false,
+          "localSeconds": 0.0212
+        },
+        {
+          "name": "十万位前导零可行",
+          "n": 1,
+          "inputBytes": 100004,
+          "feasible": true,
+          "localSeconds": 0.021
+        },
+        {
+          "name": "完整最后超长p",
+          "n": 100000,
+          "inputBytes": 300006,
+          "feasible": false,
+          "localSeconds": 0.0318
+        },
+        {
+          "name": "零的超长表示",
+          "n": 1,
+          "inputBytes": 10003,
+          "feasible": true,
+          "localSeconds": 0.0194
+        }
+      ],
+      "semanticValidation": true,
+      "subprocessValidation": true,
+      "normalExitChecked": true,
+      "localValidationOnly": true,
+      "elapsedSeconds": 7.203
+    }
+  ]
+}

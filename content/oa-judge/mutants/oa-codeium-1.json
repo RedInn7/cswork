@@ -1,0 +1,10 @@
+[
+  {
+    "name": "错误把全部输入判无解",
+    "code": "import sys\nsys.stdin.read()\nprint('None')\n"
+  },
+  {
+    "name": "合法见证扩大两倍却不再最优",
+    "code": "import sys\n\ndef solve(raw):\n    words = raw.split()\n    n = int(words[0])\n    bound = str(n)\n    p = []\n    for word in words[1:]:\n        digits = word.lstrip('+').lstrip('0') or '0'\n        if word.startswith('-'):\n            digits = word[1:].lstrip('0') or '0'\n        if len(digits) > len(bound) or (len(digits) == len(bound) and digits > bound):\n            return 'None'\n        p.append(int(digits))\n    order = sorted(range(n), key=lambda i: p[i])\n    left, right, offset = 0, n - 1, 0\n    a = [0] * n\n    for remaining in range(n, 0, -1):\n        if p[order[left]] < offset or p[order[right]] > offset + remaining:\n            return 'None'\n        if p[order[left]] == offset:\n            a[order[left]] = -remaining\n            left += 1\n        elif p[order[right]] == offset + remaining:\n            a[order[right]] = remaining\n            right -= 1\n            offset += 1\n        else:\n            return 'None'\n    return ' '.join(str(2 * x) for x in a)\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+  }
+]
