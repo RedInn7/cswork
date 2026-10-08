@@ -23,6 +23,7 @@ import {
 } from './oj-semantic-contract';
 import { matchesSemantic } from './oj-semantic-checkers';
 import { z } from 'zod';
+import { codeiumSequence } from './oa-codeium-sequence-checker.mjs';
 import {
   asciiTokens,
   parseIntegerRowCollection,
@@ -67,6 +68,7 @@ export type OjProblemSpec = Omit<Problem, 'id' | 'sampleIn' | 'sampleOut'> & {
     | 'oa-piecewise-linear'
     | 'oa-k-level-permutation'
     | 'oa-tree-max-path'
+    | 'oa-codeium-sequence'
     | 'float'
     | 'float-array'
     | 'fraction-lc-166'
@@ -290,6 +292,7 @@ export const ojImportSchema = z
           'oa-piecewise-linear',
           'oa-k-level-permutation',
           'oa-tree-max-path',
+          'oa-codeium-sequence',
           'float',
           'float-array',
           'fraction-lc-166',
@@ -358,7 +361,9 @@ export const ojImportSchema = z
       (data.problem.checker === 'oa-k-level-permutation' &&
         data.problem.id !== 'oa-amazon-151') ||
       (data.problem.checker === 'oa-tree-max-path' &&
-        data.problem.id !== 'oa-uber-19')
+        data.problem.id !== 'oa-uber-19') ||
+      (data.problem.checker === 'oa-codeium-sequence' &&
+        data.problem.id !== 'oa-codeium-1')
     )
       ctx.addIssue({
         code: 'custom',
@@ -453,6 +458,16 @@ export const ojImportSchema = z
         path: ['problem', 'checker'],
       });
     for (const [index, c] of data.cases.entries()) {
+      if (
+        data.problem.checker === 'oa-codeium-sequence' &&
+        !codeiumSequence(c.expectedOutput, undefined, c.input)
+      )
+        ctx.addIssue({
+          code: 'custom',
+          path: ['cases', index, 'expectedOutput'],
+          message:
+            'Invalid Codeium sequence ACM input or optimal expected output',
+        });
       if (
         complexId !== null &&
         !matchesComplexDesign(

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "items": [
+    {
+      "id": "oa-codeium-1",
+      "sourceContentHash": "0674d0787138866a14fb3af1a3cc4c99059824771a359723d9a1d06b02b64d88",
+      "packageChecksum": "5b9e0c22a97c8d34ce546f6ad7e5715a7b554559de6b32add8577b8708c2ce42",
+      "editorial": "## 来源与约定\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Codeium/codeium-erics-sequence.md完整规定1≤n≤100000、p为非负整数序列，以及p[i]统计所有j中a[i]+a[j]>0的数量。j包含i自身。要求a各项互异，且任意两项（允许同一项）不能和为0；在可行解中最小化最大绝对值，多解返回任意一个，无解返回None。catalog在HTML比较符号处截断，原始规则与n范围并未缺失。\n\np没有给出数值上界，本站没有补上p≤n的输入限制。p>n是合法输入但必然无解，程序直接通过十进制位数及字典序与n比较，不把超长数字转成机器整数。允许十进制前导零，超长前导零不等于数值超界。本站仅将原函数数组输入输出编排为文本；原文没有样例，公开样例均为本站补充。没有执行上游代码。\n\n## 思路\n\n按p升序排列下标，维护尚未分配的左右端点。设还有k个元素未处理，已分配的正数有offset个。它们绝对值大于以后分配的全部值，所以对每个未处理元素各贡献一次正和。\n\n剩余元素中绝对值最大者如果为负，其剩余正和计数必为0；如果为正，其剩余计数必为k（包括自身）。因此当前最小p等于offset时，可以给该下标赋−k；否则若最大p等于offset+k，则给该下标赋+k并增加offset；两者均不满足时无解。任何p不在[offset,offset+k]也立即无解。每一步将k减一。\n\n## 正确性证明\n\n合法解不能包含0（自身相加为0），也不能同时包含x和−x；加上各项互异，全部绝对值必为n个不同正整数。因此最大绝对值至少n。\n\n任意合法剩余解的最大绝对值项，负时与所有剩余项之和都负，正时与所有剩余项之和都正，所以剩余计数中必须有0或k。已剥离正数统一贡献offset，故原计数必须出现offset或offset+k。这证明算法失败时不存在合法解。\n\n反过来，如果一个剩余计数为0的项存在，它与所有剩余项都应为负和；将该项设为−k并让之后各项绝对值小于k，便同时满足它自己的计数及它对其他项的零贡献。若某项剩余计数为k，将其设为+k，使它与所有剩余项正和，同时对其他项统一贡献1，故offset增加1。移除此项后得到同一种更小问题。所有中间状态的计数界也必须合法。对剩余项数归纳，完成全部剥离就构成满足所有p的真实见证。\n\n每步使用一个不同绝对值k，最终绝对值恰为1到n，满足互异与禁止零和，且最大绝对值恰n，达到先前下界。因此构造既可行又全局最优。排序中相等p对应下标可互换，不要求唯一答案。\n\n## 复杂度与语义判题\n\n设输入字符总量为B。读取并分类超长十进制数O(B)，排序O(n log n)，剥离O(n)，辅助空间O(B+n)。无需对无上界p做任意精度算术。\n\n专用checker不要求与参考排列相同。它检查输出包含恰n个整数、绝对值恰为1..n，再排序输出并二分统计每项的正和数量，包含自身。输出None时独立检查可行性。不同的最优排列均可通过，扩大所有值虽不改变正和计数，却破坏最优性，应拒绝。\n\n## 独立验证\n\n小oracle穷举绝对值1..n的所有排列及全部正负号，并直接双循环计算正和数量，建立每个计数向量的可行见证；不使用排序剥离。163个唯一小输入既有可行、不可行，也有p>n。它们通过真实参考程序子进程和独立见证检查。完整n=100000测试包括全正、全负、打乱混合符号和不可能计数；原合法见证通过排序二分产生输入p。另有十万位p、超长前导零和巨大数在末尾的测试，均不缩数值域。两个负控正常退出，分别错误一律None及将最优见证乘二。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\n\ndef solve(raw):\n    words = raw.split()\n    n = int(words[0])\n    bound = str(n)\n    p = []\n    for word in words[1:]:\n        digits = word.lstrip('+').lstrip('0') or '0'\n        if word.startswith('-'):\n            digits = word[1:].lstrip('0') or '0'\n        if len(digits) > len(bound) or (len(digits) == len(bound) and digits > bound):\n            return 'None'\n        p.append(int(digits))\n    order = sorted(range(n), key=lambda i: p[i])\n    left, right, offset = 0, n - 1, 0\n    a = [0] * n\n    for remaining in range(n, 0, -1):\n        if p[order[left]] < offset or p[order[right]] > offset + remaining:\n            return 'None'\n        if p[order[left]] == offset:\n            a[order[left]] = -remaining\n            left += 1\n        elif p[order[right]] == offset + remaining:\n            a[order[right]] = remaining\n            right -= 1\n            offset += 1\n        else:\n            return 'None'\n    return ' '.join(map(str, a))\n\nif __name__ == '__main__':\n    print(solve(sys.stdin.read()))\n"
+        }
+      ]
+    }
+  ]
+}
