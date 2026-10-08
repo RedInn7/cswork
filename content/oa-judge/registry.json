@@ -13147,6 +13147,18 @@
       ]
     },
     {
+      "id": "oa-trend-micro-3",
+      "sourceContentHash": "adafa6a3031921b63c7fbbd0872cdfc85e7d58b9efcab1f16f107df39dbb55f1",
+      "packageChecksum": "4b922c7cb25e27840f28b864fa4783b5b0f7d5b8ed89383ccf97388d2de35c43",
+      "editorial": "## 来源与输出约定\n\n固定提交e66f809f4c953bce129f68491726176615db6afc的fastprep/Trend Micro/trendmicro-find-sequences.md完整保留1≤n≤10^10，以及寻找所有连续正整数序列、其平方和等于n的规则。原始HTML中的比较符号被catalog文本解析误吞，导致范围与目标缺失；并非原题缺少约束。输出说明先定义c为序列项数，随后用大写C要求降序，本站统一为按项数降序。单项序列对应(p,…,p+m)中的m=0，没有额外要求至少两项。原文没有公开样例，本题所有公开样例明确为本站补充。\n\n原接口返回字符串数组：第一项为解的个数，其余每项为项数及全部序列元素。本站仅将每个字符串序列化为一行；无解输出一行0，不用None或-1，不输出平方后的数。不引入新数值限制，不执行上游代码。\n\n## 思路\n\n序列末项r满足r²≤n，因此只需检查1≤r≤⌊√n⌋。维护连续窗口[l,r]的平方和，每次向右加入r²；只要和大于n，就从左端移除l²。若当前和恰为n，记录整个窗口。将所有命中窗口按长度降序排序，输出每个窗口的全部整数。\n\n## 正确性证明\n\n所有平方项严格为正。固定右端r时，窗口和随左端递增严格减小，因此最多有一个左端使平方和等于n。算法从左端移除元素时，移除前的和大于n，这些左端不能产生当前右端的解；它们对未来更大的右端只会增加正数，也永远不可能产生解，故永久丢弃安全。\n\n收缩结束后，当前左端是尚未排除的最小左端。如果窗口和等于n，得到唯一合法解；如果小于n，继续增大左端只会让和更小，因此该右端没有遗漏的解。枚举所有可能右端覆盖全部非空连续正整数序列；记录的窗口都以实际平方和等式验证，所以既不漏解也不产生伪解。\n\n对于固定长度c，起点p的平方和Σ(p+j)²随p严格递增。因此同一长度最多存在一个解，按长度降序得到唯一规定顺序，无需为并列情况增加规则。\n\n## 复杂度与完整范围\n\n设R=⌊√n⌋、K为解数、L为输出所有序列的总项数。左右指针分别至多移动R次，时间O(R+K log K+L)，含输出存储的空间O(K+L)。本题R≤100000。最短起点1的前3106个平方和不超过10^10，而前3107个平方和超过它，因此任何解最多3106项。每个长度最多一解，故K≤3106且L≤3106×3107/2=4825171，完整输出在64MiB预算内。使用整数平方根与64位整数，避免浮点边界；运行中窗口和至多2n≤2×10^10，64位有符号整数足够。\n\n## 独立验证\n\noracle按长度c枚举，再利用闭式c·p²+c(c−1)·p+c(c−1)(2c−1)/6对起点p做整数二分。它不滑动窗口、不复用参考程序。163个唯一输入以真实子进程对拍。正式压力保留n=10^10、相邻上界、99999²、长度3106的平方和及相邻值，并包含多解和无解。完整比较每个输出整数，不仅比较解数。两个错误程序分别漏掉单项序列和颠倒长度顺序，须正常退出且被正式案例拒绝。\n",
+      "authoredSolutions": [
+        {
+          "language": "python",
+          "code": "import sys\nfrom math import isqrt\n\ndef solve(n):\n    left = 1\n    total = 0\n    intervals = []\n    for right in range(1, isqrt(n) + 1):\n        total += right * right\n        while total > n:\n            total -= left * left\n            left += 1\n        if total == n:\n            intervals.append((left, right))\n    intervals.sort(key=lambda p: p[1] - p[0], reverse=True)\n    rows = [str(len(intervals))]\n    for left, right in intervals:\n        rows.append(str(right - left + 1) + ' ' + ' '.join(map(str, range(left, right + 1))))\n    return '\\n'.join(rows)\n\nif __name__ == '__main__':\n    print(solve(int(sys.stdin.read())))\n"
+        }
+      ]
+    },
+    {
       "id": "oa-twilio-1",
       "sourceContentHash": "bb856490739e9b0be808a23d74f7030503b561a98814756002719c83b0dee6a0",
       "packageChecksum": "97fe75d5fbacbcec9fdc57d4c7794aa949c5710368c79b307563a5faeb17dece",
