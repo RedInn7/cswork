@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "problemId": "oa-factset-1",
+  "batch": "factset-1-recovered",
+  "status": "passed",
+  "blockingFindings": [],
+  "packageChecksum": "266cd5ba1e23f817db5d002da943a8472cfda22a29536c062787611cd0050fcb",
+  "packageFileSha256": "5995ecdf6229aacd08ce9f64fc74a2a26f9a1e0746db1517f21b706e0dbba190",
+  "oracleSha256": "af586d7e3e9bb2e2f7450e1124355d7c56d9aa769aac4d6174a1ee526e1f2c7a",
+  "referenceSha256": "253e1ef50e90b6160610b0d15809fb45e556fd6331bf6fbf30b6795a5534f4e8",
+  "scope": "Fixed-source and algorithm pre-review before freeze, then independent recomputation and actual local native execution of every frozen formal/oracle case and mutant. Author generator never read or executed; upstream code never executed. Independently compiled temporary C++20 binaries. Only this report written in the project, without branch change or commit.",
+  "source": {
+    "commit": "e66f809f4c953bce129f68491726176615db6afc",
+    "path": "fastprep/FactSet/factset-largest-square-of-1s.md",
+    "gitBlobSha": "4e80812a873618e737da8fa5f1dd1831dc9a8ad4",
+    "rawSha256": "dadb36667cd3a53c213397f7d20dbea9830ad31097466011ebf04f7b160b4866",
+    "verified": true,
+    "rules": "Raw source explicitly says square matrix and n subsequent lines each containing n integers. Values are0/1. Examples establish that size means side length, not area. The old structure blocker is not supported by the complete raw source.",
+    "rangeDisclosure": "Original n upper bound is absent. Package explicitly uses the existing32MiB per-case input budget without inventing a smaller numeric cap. n=0 returning0 is expressly identified as a site mathematical extension, not an original guarantee. Nonempty all-zero matrices also return0.",
+    "samples": "All original matrices preserved and independently verified to return3,2,1. Example1 endpoint coordinates correspond to half-open boundaries; published inclusive lower-right corners are(2,2),(3,2),(4,2). Example2 already uses an inclusive endpoint. Inaccessible author-local image paths are not treated as evidence."
+  },
+  "proofReview": {
+    "recurrence": "A zero cell cannot end a positive all-one square. At a one cell, any side-s square requires the upper, left and upper-left neighbors to end side-(s-1) squares. Conversely their three side-d squares together with the current cell cover the side-(d+1) square. Thus1+min(upper,left,diagonal) is necessary and sufficient.",
+    "implementation": "Before overwrite, dp[col] is the upper value; dp[col-1] is the updated current-row left value; saved diagonal is the preceding-row left value. Column0 remains zero. Taking the maximum across all lower-right corners finds the global side length.",
+    "complexity": "O(n^2) time, O(n) additional memory, streaming input. No full matrix retained by reference. n=0 returns0. Integer dimensions and DP values are safe under the published transport budget.",
+    "budgetCalculation": "Canonical n header plus LF, n rows of n single-digit values separated by spaces and ending in LF uses2*n*n+digits(n)+1 bytes. n=4095 uses33538055 bytes for16769025 cells. n=4096 uses33554437 bytes, and even dropping the final LF leaves33554436>33554432. Thus the tested4095 dimension is naturally budget-derived rather than an invented source cap.",
+    "bindings": "Import schema succeeds; normalized package checksum matches frozen value and promoted batch. Displayed editorial and authored code arrays equal batch artifacts, and displayed C++ code exactly equals reference bytes. Required standalone correctness-proof heading present."
+  },
+  "independentVerification": {
+    "reviewTool": "/private/tmp/factset-review.Js78gb/review.py",
+    "reviewToolSha256": "775b7fa2db6042771db54fd8799eeade8e9b3764c0b0409a97b806cfb1ab8447",
+    "preFreezeExhaustiveCases": 531,
+    "preFreezeDomain": "Every square binary matrix of dimensions0..3. Direct enumeration of every candidate square and all its cells agrees with an independently written one-row recurrence. Original three examples separately enumerated and confirmed.",
+    "artifactOracleMethod": "For204 non-capacity formal/oracle cases, build zero-count prefix sums and binary-search side length using explicit candidate-square existence. No maximal-square local recurrence or author oracle calls. Validate each row length, total row count and binary values.",
+    "capacityOracleMethod": "Read every row through a regex iterator without constructing a giant numeric matrix. Verify row count and each complete row against exact all-one or alternating checkerboard templates, then use geometric closed forms. All-one answer=n; checkerboard answer1 because every2x2 contains a zero and some cells are1.",
+    "formalCases": 43,
+    "publicCases": 3,
+    "hiddenCases": 40,
+    "oracleCases": 163,
+    "uniqueOracleInputs": 163,
+    "referenceSubprocessRuns": 206,
+    "referenceResult": "All206 independently compiled native reference executions exited zero with empty stderr and matched independently recomputed expected output tokens.",
+    "referenceMaxLocalSeconds": 0.8772123329690658,
+    "capacityCases": [
+      {"formalIndex":41,"n":4095,"kind":"all-ones","inputBytes":33538055,"inputSha256":"fae95fd4885f5279f76202a06dd31533cbcf7385bea32291286795e326ed306e","answer":4095,"referenceSeconds":0.26320108299842104},
+      {"formalIndex":42,"n":4095,"kind":"checkerboard","inputBytes":33538055,"inputSha256":"7fdd44840501b08c057541fb75b04b09b19072d24dfc0b84cfc1e6e411115cc2","answer":1,"referenceSeconds":0.2388436670298688}
+    ],
+    "memoryDiscipline": "Capacity cases and all subprocesses run sequentially. No Python16769025-element numeric matrix built. Reviewer process peak RSS388562944 bytes on macOS includes loaded JSON strings and is not reference sandbox memory.",
+    "wallSeconds": 11.024247875029687
+  },
+  "negativeControls": [
+    {"name":"错误返回面积而非边长","normalExitCases":43,"rejectedByCases":[0,1,11,12,14,15,16,17,18,20,22,27,29,33,34,35,36,37,38,39,40,41]},
+    {"name":"错误递推遗漏左上对角条件","normalExitCases":43,"rejectedByCases":[2,6,9,13,19,21,32,33,38,39,40]},
+    {"name":"错误只记录第一行中的结果","normalExitCases":43,"rejectedByCases":[0,1,11,12,14,15,16,17,18,20,22,27,29,33,34,35,36,37,38,39,40,41]}
+  ],
+  "negativeControlResult": "All129 actual native mutant subprocesses exited zero with empty stderr. Rejection counts22/11/22 match the frozen author counts against independently recomputed expectations.",
+  "limitations": "Local C++ execution and timings are distinct from Linux GoJudge resource evidence. Parent separately reports Linux206-case validation and three rejected mutants; no duplicate sandbox run was performed. Temporary tool path is provenance, not a repository runtime dependency."
+}

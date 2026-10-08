@@ -15,7 +15,10 @@ import {
   OA_MAX_METADATA_FILE_BYTES,
 } from '../lib/oj-data-budgets.mjs';
 import { readBoundedFileSync } from './oa-judge/bounded-file.mjs';
-import { assertOracleCoverage } from './oa-judge/oracle-coverage.mjs';
+import {
+  assertOracleCoverage,
+  assertFormalCoverage,
+} from './oa-judge/oracle-coverage.mjs';
 import {
   readReferenceProgram,
   mutantProgram,
@@ -100,10 +103,7 @@ for (const item of registry.data.items) {
   const mutants = read(resolve(root, 'mutants', item.id + '.json'));
   assertOracleCoverage(item, oracle.data, item.id);
   assert(mutants.data.length >= 2);
-  assert(
-    pkg.data.cases.some((c) => !c.hidden) &&
-      pkg.data.cases.filter((c) => c.hidden).length >= 20,
-  );
+  assertFormalCoverage(item, pkg.data);
   let passed = 0;
   await sandbox.withProgram(program, async (run) => {
     for (const test of [...pkg.data.cases, ...oracle.data]) {

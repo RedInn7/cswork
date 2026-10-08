@@ -17,7 +17,10 @@ import {
   defaultReportPath,
   assertScopeEvidence,
 } from './oa-judge/aggregate-batches.mjs';
-import { assertOracleCoverage } from './oa-judge/oracle-coverage.mjs';
+import {
+  assertOracleCoverage,
+  assertFormalCoverage,
+} from './oa-judge/oracle-coverage.mjs';
 import {
   readReferenceProgram,
   assertReferenceEvidence,
@@ -90,6 +93,7 @@ for (const item of registry.items) {
   assert.equal(result.oracleSha256, digest(oracleBytes));
   const oracle = JSON.parse(oracleBytes.toString());
   assertOracleCoverage(item, oracle, item.id);
+  assertFormalCoverage(item, payload);
   assert.equal(
     result.oracle,
     oracle.length,

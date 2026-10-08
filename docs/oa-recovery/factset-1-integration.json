@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "batch": "factset-1-recovered",
+  "problemId": "oa-factset-1",
+  "packageChecksum": "266cd5ba1e23f817db5d002da943a8472cfda22a29536c062787611cd0050fcb",
+  "referenceSha256": "253e1ef50e90b6160610b0d15809fb45e556fd6331bf6fbf30b6795a5534f4e8",
+  "checks": {
+    "productionBuild": "passed",
+    "contentTests": { "passed": 6, "failed": 0 },
+    "linuxSandbox": { "referenceRuns": 206, "formal": 43, "oracle": 163, "mutantsKilled": 3 },
+    "integration": {
+      "scope": "fresh SQLite + isolated queue + real built web/worker + dedicated runner",
+      "productionDataUsed": false,
+      "submissions": 4,
+      "samples": 3,
+      "judgeCases": 43,
+      "hiddenCounterexampleVerified": true,
+      "firstFailureReturned": true,
+      "wrongAnswerMs": 1250,
+      "timingInterpretation": "One observed submission; not p95 or concurrency benchmark"
+    }
+  },
+  "largeInputs": {
+    "cases": 2,
+    "matrixOrder": 4095,
+    "bytesPerCase": 33538055,
+    "inputBudgetBytes": 33554432,
+    "disclosure": "No original n maximum claimed. These exercise the existing platform transport budget, not an invented source bound."
+  },
+  "coverage": { "total": 1634, "sandboxVerified": 1212, "remaining": 422 },
+  "deployment": "Not deployed; merge requires green exact-head remote checks. Local verified coverage is not production coverage."
+}

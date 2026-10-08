@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "scope": "Independent read-only review of public framework and semantic checker only; author-owned PureStorage8 package/editorial/reference/source artifacts are excluded and are not self-certified by this review.",
+  "baseCommit": "978bfe8d882f20a44ef2ad733f1e40cf686b98ca",
+  "comparison": "Working-tree framework changes against HEAD, plus new checker and targeted tests",
+  "result": "No blocking correctness or contract findings; one low-priority documentation omission",
+  "reviewedSha256": {
+    "lib/oa-binary-search-witness.mjs": "6178c99571c0083f63d33056135c8704626e03df55e50954681b2e6c7d3194c9",
+    "lib/oa-semantic-checkers.mjs": "64654384660b952101bce7cb729fe96fd3d61a05120b5dd99f6b1f9726cb926a",
+    "lib/oj-types.ts": "b90f196a9404c3416ecb4d5e7bb3f233d253e2fa51c7a269953fe4cffadcb666",
+    "scripts/oa-judge/oracle-coverage.mjs": "f09c4811c2efcca910e49ac798f6dd7ad2e4c48d533315ce6c204fdacb503a5c",
+    "scripts/verify-oa-judge.mjs": "fdc250a546298832a658bd83822e7eb69cb54eb6bcaf5705a757ad956e305bd5",
+    "scripts/publish-oa-judge.ts": "9064137f271ae0656303d916f89d0b3383e2b37f64592363a1310331f17321ba",
+    "scripts/oa-judge/coverage.mjs": "6386f8a31a44676d877e9fa73ee1ac66eb8bc2562bb1e14c845a438ce211c293",
+    "tests/oa-judge-content.test.ts": "761dc2988d212b6c28e961ee8ac0b5994936ebc7d30853d07f03d95f9ef4117a"
+  },
+  "specChecks": [
+    "Singleton schema exemption requires both fixed oa-pure-storage-8 identity and oa-binary-search-witness checker, exactly one public case, and input exactly empty.",
+    "Formal coverage additionally requires exact exhaustive singleton oracle declaration; ordinary tasks still require a public case and at least twenty hidden cases.",
+    "Oracle coverage does not bypass the singleton declaration when 120 duplicate empty cases are supplied.",
+    "Schema independently validates expected witness; shared runtime/offline dispatcher independently validates both actual and expected. Invalid expected cannot bless a valid-looking actual output.",
+    "Witness parser validates ASCII physical three-line syntax, signed int32 values, exact declared element count and nondecreasing ordering. It accepts any matching returned index, not only the first duplicate.",
+    "Length declarations are bounded by actual array-line length before Int32Array allocation. Digit length is checked before BigInt conversion. Work and allocation are linear in bounded output bytes, not the forged declared count.",
+    "The Java simulation always finishes with right in array bounds for positive n; found versus independently scanned membership distinguishes false negatives correctly. Midpoint addition cannot overflow within the platform text-output budget.",
+    "Verify/publish/coverage/content gates retain package/source/reference/oracle/mutant fingerprint checks, normal-exit mutant requirement and source-bound semantic identity checks. No production or remote run performed during review."
+  ],
+  "tests": [
+    {
+      "command": "node --test tests/oa-binary-search-witness.test.mjs tests/oa-no-input-coverage.test.mjs",
+      "passed": 8,
+      "failed": 0,
+      "detail": "Includes 9002 small nondecreasing array/target combinations, alternate witnesses, int32 and malformed-format checks, singleton identity and domain rejection."
+    },
+    {
+      "command": "node --import tsx --test tests/oa-binary-search-integration.test.ts",
+      "passed": 2,
+      "failed": 0,
+      "detail": "Schema mutation rejection and worker/offline/shared-dispatch agreement, including invalid expected outputs."
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0
+    }
+  ],
+  "standardsReview": {
+    "independentReviewer": "witness_framework_standards",
+    "blockingFindings": 0,
+    "lowPriorityFinding": "docs/OJ.md:19 and scripts/oa-judge/README.md:15 still describe unconditional minimum public/hidden case counts. Document the source-bound singleton exception without broadening ordinary requirements."
+  },
+  "limitations": [
+    "No full build or production sandbox was run.",
+    "This record does not replace separate independent author-package review or sandbox acceptance."
+  ]
+}
