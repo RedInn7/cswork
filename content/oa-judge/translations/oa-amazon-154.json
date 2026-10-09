@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-154",
+  "packageChecksum": "2b15ed047729970f84f7b0716273bf3cce2ec44c8f98585186ab05ef8b07d54f",
+  "en": {
+    "title": "Minimum GCD Vulnerability Length After Changing Limited Elements",
+    "description": "The vulnerability factor is the maximum length of a non-empty contiguous segment whose GCD is greater than 1, or 0 if there is none. You may change at most maxChange elements to any integers; minimize the vulnerability factor. A single element also counts as a contiguous segment.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n maxChange (1≤n≤100000, 0≤maxChange≤n), and the second line contains n integers in 1..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: change the middle 4 to 1, leaving the longest bad segments 2, 2 and 9, 6 of length 2. Example 2: change the middle to 1, leaving only single-element bad segments on the left and right, so the answer is 1. Example 3: after any two changes there is still an original prime as a single element, so the optimum is 1, not the source's incorrect 0.",
+    "hints": [
+      "Changing an element to 1 is the most useful. Binary search the allowed length L; every window of length L+1 whose original GCD>1 must be hit by a changed position, so greedily, from left to right, change the right end of the first bad window not yet hit. A GCD sparse table answers window queries in O(1)."
+    ]
+  }
+}

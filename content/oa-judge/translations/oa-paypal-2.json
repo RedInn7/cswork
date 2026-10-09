@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-paypal-2",
+  "packageChecksum": "14584bf7f16738e1c5ebc90009ca2550fbadbe88b3edde18aa1cb7d619863009",
+  "en": {
+    "title": "Count User Logins",
+    "description": "Count how many times each username logs in on each valid date; discard records with an invalid time or date, and output in lexicographic order of username and date. The two explanations in the source examples disagree with the counts in the sample input/output, so this site recomputes them from the input data and the explicit rules; the output fields keep the userX form used in the examples and in the source reference implementation.\n\nAll extra constraints and the I/O format are additions by this site and do not claim to be the original platform's format.",
+    "input": "The first line contains n; each of the next n lines is user<ID> HH:MM:SS YYYY-MM-DD. Added by this site: 1≤n≤1000; ID is a canonical decimal non-negative integer in 0..10^9; the year is in 2000..3000. The time must lie within 00:00:00..23:59:59 and the date must be a valid Gregorian calendar date; lines with an invalid time/date are ignored.",
+    "output": "First output k, the number of valid (user, date) groups; then output k lines, each user<ID> YYYY-MM-DD followed by the login count, sorted by the username string ascending, then by date ascending. If there are no valid records, output 0.",
+    "explanation": "See the accompanying editorial for the algorithm, proof of correctness, and complexity.",
+    "hints": [
+      "First pin down the boundaries according to the statement, then handle the validity or optimality conditions that are easiest to miss."
+    ]
+  }
+}

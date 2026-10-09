@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-77",
+  "packageChecksum": "f60a4a88380ade835e42de374a75ea095dd31aadd3360eed4c67ff22cae13276",
+  "en": {
+    "title": "Multiplayer Tic-Tac-Toe Step-by-Step Status",
+    "description": "Process the moves exactly as given in the input; do not infer turns on your own. The board is n×n, but the winning length is always 3: at least three in a row horizontally, vertically or along either diagonal wins. Once there is a winner, every operation returns Game Over; before that, placing on an occupied cell returns Invalid Move and leaves the board unchanged; a successful move is checked, in order, for a win, then a full-board Draw, otherwise In Progress.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains n k m; each of the next m lines contains player row col, with rows and columns numbered from 0. 3≤n≤1000, 1≤k≤10, 1≤m≤min(n²+5,100000); coordinates are valid and players are 1..k.",
+    "output": "For each operation, output one line with the corresponding status, using the capitalization and wording defined in the statement.",
+    "explanation": "Example 1: the first four moves give In Progress, and the fifth completes three in a row on the first row: Player 1 won. Example 2: nobody wins in the first six moves; the seventh wins with (0,0), (1,1), (2,2) in a row. Even though the board is 4 wide, four in a row is not needed. Example 3: the second move repeats a cell and gives Invalid Move, the fifth gives Player 1 won, the sixth gives Game Over, and the rest give In Progress.",
+    "hints": [
+      "Store the board in an array. After a new piece is placed, check only the four directions through it, looking at most 2 cells on each side. Check for an existing winner and for a repeated cell first."
+    ]
+  }
+}

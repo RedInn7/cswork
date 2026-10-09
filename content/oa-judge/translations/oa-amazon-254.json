@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-254",
+  "packageChecksum": "40da33ddbbf32d3dd3f4c1fae136a88c7fa67ef8e216fcd448f193d74ea78b94",
+  "en": {
+    "title": "Minimum Total Cost to Increase Product Sizes Until Distinct",
+    "description": "Each product's size can only increase, and each unit of increase costs that product's cost. All final sizes must be distinct; find the minimum total cost. Every product is kept, and there is no upper limit on the final sizes.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line size, and the third line cost. This page gives no numeric bounds, but the original text explicitly links to the same problem amazon-get-minimal-cost.md, whose full bounds are added here: 1≤n≤200000, 1≤size≤10^9, 1≤cost≤10000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 1, 7 and 0. Every unit is charged; you cannot just take the total cost minus the cost of each item as it leaves the heap.",
+    "hints": [
+      "Sort by original size and scan the available coordinates, putting into a heap the products whose original size has been reached; each time, fix the one with the highest unit cost first; when the heap is empty, jump to the next original size."
+    ]
+  }
+}

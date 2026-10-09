@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rippling-6",
+  "packageChecksum": "2af6ebe82dfdec40e330c14e790f43670c93107d8b925dd06246d56900ecdc04",
+  "en": {
+    "title": "Maximum Time Required to Transfer Data",
+    "description": "You are given a tree of g_nodes servers and g_nodes−1 undirected edges. Transferring data across each edge takes 1 unit of time; find the maximum transfer time between any two servers in the system.\n\nThe problem comes from the pinned version OAMaster Rippling #6. The original problem gives no upper limit on the number of nodes; for judging resources this site explicitly adds 1≤g_nodes≤200000, and this limit is not an original constraint. The 3rd example of the pinned source gives only 5 edges but declares 7 nodes, which violates the tree condition of g_nodes−1 edges; this site does not guess the missing edges and does not use that example as a test case.",
+    "input": "The first line contains g_nodes (range enforced on this site: 1≤g_nodes≤200000); then g_nodes−1 lines follow, each containing two integers u, v (1≤u,v≤g_nodes) that denote an undirected edge. The input guarantees that these edges form a tree. When g_nodes=1 there are no edge lines.",
+    "output": "Output the maximum transfer time between any two servers; each edge takes 1, and a single-node tree outputs 0.",
+    "explanation": "The transfer time between two nodes of a tree equals the number of edges on the path between them, so the answer is the diameter of the tree. First traverse from any node to find the farthest endpoint, then traverse once more from that endpoint; the farthest distance found in the second traversal is the diameter.",
+    "hints": [
+      "In a tree, the node farthest from any starting node is an endpoint of some diameter; traversing again from that endpoint gives the diameter length."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-25",
+  "packageChecksum": "c49c16334751cf0277f3806c68b6a4478448b37a02794a50f3625b174ab548ea",
+  "en": {
+    "title": "Maximum Common Length of a Subsequence of X and a Substring of Y",
+    "description": "Find a string that is a subsequence of X and also a contiguous substring of Y, and return its maximum length. Characters of X may be skipped, but characters of Y may not; when there is no common character, output 0.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input is a JSON array [X,Y]. The original gives no numeric or character domain; this site adds that each string has 0..1000 Unicode scalar values, and empty strings, whitespace, control characters, and non-BMP characters are allowed; lone surrogates are not included. The total UTF-8-encoded JSON input is ≤25000 bytes.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 3; 7; 0. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "dp[j] stores the longest contiguous string ending at the j-th character of Y that can be a subsequence of the processed prefix of X. For each character of X read, update the matching positions in decreasing order of j to max(old value, dp[j−1]+1)."
+    ]
+  }
+}

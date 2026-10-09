@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-371",
+  "packageChecksum": "bbb2fe1672b14ec5cb177f76e7578c8d2474cf3b83a944db47513edd5a70b4d7",
+  "en": {
+    "title": "Fill Missing Characters With Minimum Repetition Cost, Then Smallest Lexicographic Order",
+    "description": "Fill every ? with a lowercase letter. The cost of each position is the number of times the same letter appears before it. First minimize the total cost, then make the whole result lexicographically smallest.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "One line containing data. The original bounds are 1≤length≤100000, with at least one ?, and every other character in a..z.",
+    "output": "Output the complete filled-in lowercase string.",
+    "explanation": "The outputs are aaaabaaaa, abcde and aabcdefghijklmnopqrstuvwxyz. In the third example you cannot fill the letters directly in the order the min-heap picks them; the chosen a and b must be sorted into the question-mark positions.",
+    "hints": [
+      "First count all known characters, then use a 26-entry min-heap to repeatedly pick the letter with the smallest current frequency, breaking ties by the smaller letter. Only record how many of each letter are added, and at the end fill the added letters into the ? positions in ascending order."
+    ]
+  }
+}

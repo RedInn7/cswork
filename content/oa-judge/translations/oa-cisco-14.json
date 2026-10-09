@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-14",
+  "packageChecksum": "87bead382331f5cc5a41fdc5304e458381304f22c9f73ccabfdb855bbe359aa4",
+  "en": {
+    "title": "Count Numbers Up to a Bound with a Given Digit Sum",
+    "description": "Count the integers in 1..X whose decimal digit sum is exactly Y. The original requires outputting −1, not 0, when no number qualifies.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The input is X Y. The original gave no numeric bounds; this site adds 1≤X≤10^18 and 1≤Y≤162; only positive integers are counted.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; -1; 2. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Run a digit DP from the most significant digit to the least significant, with the state recording the current digit sum and whether the number is still tight against the prefix of X."
+    ]
+  }
+}

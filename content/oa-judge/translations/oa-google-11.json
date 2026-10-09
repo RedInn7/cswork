@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-11",
+  "packageChecksum": "8b75b88fd497f2e2b8c8d5e7c0e2a741c0248776cd6e9ec85b4de82e289c1d58",
+  "en": {
+    "title": "Minimum Satellites to Cover All Monitored Regions",
+    "description": "Target regions and satellite ranges are all closed intervals of real numbers. Choose the fewest satellites so that every point of every target region is covered; the gaps between target regions do not need to be covered. Output −1 if there is no solution. The original first example has a gap between 9 and 10, so the correct answer is −1, not 3.\n\nThe standard input/output is compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "The first line contains n m; then n lines of target intervals, followed by m lines of satellite intervals. This site's ranges: 1≤n≤100000, 0≤m≤100000, −10⁹≤start<end≤10⁹.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: no satellite covers the part between 9 and 10, so the output is −1. Example 2: choosing [1,8] and [9,13] covers all three targets, so the output is 2. Example 3: the single satellite [0,7] covers both targets, so the output is 1.",
+    "hints": [
+      "Sort the targets and the satellites separately. Scan for the leftmost uncovered point of the targets, and among the satellites whose start is no later than that point, choose the one that reaches farthest; a chosen range may span the gaps between targets."
+    ]
+  }
+}

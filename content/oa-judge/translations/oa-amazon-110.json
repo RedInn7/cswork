@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-110",
+  "packageChecksum": "f8eead38aecc84545218b71564cb4a205b49c0023e04239dc6aef02955d701a4",
+  "en": {
+    "title": "Minimum Total Distance with Two Warehouses",
+    "description": "Choose any two warehouse positions on the number line; each center goes to its nearer warehouse, and the sum of all centers' distances should be minimized. The warehouses may coincide, and neither is required to serve any center.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n, and the second line contains n values dist_centers. The original gives no value ranges; this site sets 1≤n≤200000, −10⁹≤position≤10⁹.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: put the warehouses at 1 and 10, for a total distance of 0+1+0+1=2. Example 2: put a warehouse at 7, for a total distance of 0. Example 3: either both ends, or one endpoint together with 5, gives the minimum total distance 5.",
+    "hints": [
+      "After sorting, the service areas of the two warehouses are split by one cut into two contiguous parts. A single part is optimal at its median; use prefix sums to compute a part's distance in O(1), and enumerate every cut."
+    ]
+  }
+}

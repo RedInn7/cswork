@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-31",
+  "packageChecksum": "6e70f74e6366eed9b3d2a69237bed72ca05813b733a09a1ea3859c4ebbcd9937",
+  "en": {
+    "title": "Maximum Revenue from Dynamic Inventory Sales (IBM OA)",
+    "description": "There are n categories of items, and category i currently has quantity[i] items left. Each time an item is sold, its price equals the number of items left in that category before the sale. Sell exactly m items in the optimal order and find the maximum total revenue. Valid input must have at least m items in stock; this is the feasibility condition for \"selling exactly m items\", which the source's numeric bounds do not state. Both source example outputs were confirmed under the rules by independent brute force.",
+    "input": "The first line contains n and m, and the second line contains n integers quantity[i]. Source ranges apply: 1≤n,m≤100000, 1≤quantity[i]≤100000; this site explicitly requires m≤sum(quantity) so that selling exactly m items is feasible.",
+    "output": "Output the maximum total revenue.",
+    "explanation": "Each time, choose the category with the most remaining stock; the revenue increases by that stock count, and then the stock decreases by one.",
+    "hints": [
+      "Each sale changes the price of the next item in that category.",
+      "Prefer the category with the largest current remaining quantity."
+    ]
+  }
+}

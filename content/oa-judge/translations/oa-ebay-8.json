@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-8",
+  "packageChecksum": "cb4fdb3838eac1976bec766c3e38044104f5177bdd61acb0cad151d076d6bab4",
+  "en": {
+    "title": "House Density (Longest Contiguous Segment)",
+    "description": "Houses are built one at a time on a number line in the order given by queries, and no two houses share a position. After each build, return the length of the longest run of consecutive integer positions among all houses. The examples in the fixed source and all three language implementations include cases where a new house is adjacent to existing houses, so this site judges by those executable definitions: an insertion may be adjacent to the run on its left, on its right, or on both sides, and it merges with them immediately.",
+    "input": "The first line contains q (1≤q≤10000), followed by q lines, each containing a position x (−10^9≤x≤10^9); all positions are distinct. The original problem gives no numeric bounds; the ranges of q and x are added by this site. q≤10000 keeps the step-by-step output within the problem bank's 65536-byte limit.",
+    "output": "Output q lines; line i is the length of the longest run of consecutive houses after the first i builds.",
+    "explanation": "Runs are defined over integer positions; a new house only merges with the adjacent left run, the adjacent right run, or both. The answer at each step is the maximum length over all runs.",
+    "hints": [
+      "Track the left and right endpoints of each run; when inserting x, check whether x−1 and x+1 are endpoints of existing runs."
+    ]
+  }
+}

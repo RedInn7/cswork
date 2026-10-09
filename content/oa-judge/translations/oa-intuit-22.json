@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-22",
+  "packageChecksum": "d35fd89d8fd4676feec7fdd78de406224b852f469c35eca2863bf6c82a475182",
+  "en": {
+    "title": "Safe Lattice Points Left After a Fire Spreads",
+    "description": "There are K burning lattice points in a rectangular plane. Fire spreads outward from each origin as a circle: at t=1 the radius is R, and it grows by R every unit of time after that. Find the number of integer lattice points not touched by any fire at time T.",
+    "input": "The first line contains N M K; the next K lines contain fire coordinates x y; the last line contains R T. Per the problem's example, the integer lattice points include the boundary, i.e., 0≤x≤N, 0≤y≤M. Site limits: 1≤N,M≤100, 1≤K≤100, 0≤R,T≤100, and every fire coordinate lies within the lattice range above.",
+    "output": "Output the number of integer lattice points not touched by fire. A point whose distance to any fire is less than or equal to R×T counts as touched.",
+    "explanation": "The boundary points enumerated in the problem's example show that the plane has (N+1)×(M+1) integer lattice points in total; points on a circle also count as touched. This site added input ranges to keep the enumeration time manageable.",
+    "hints": [
+      "For each lattice point within the boundary, compare its squared distance to every fire with (R×T)²; no square root is needed."
+    ]
+  }
+}

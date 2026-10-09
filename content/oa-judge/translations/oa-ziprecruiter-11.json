@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-11",
+  "packageChecksum": "a6557155b7098850861d82fcd3580641469d2b5ef57710c6b446463dc4211654",
+  "en": {
+    "title": "ZipRecruiter OA #11: Lamps and Control Points",
+    "description": "There are several lamps on a number line, each lighting a segment: lamp i covers the segment from lamps[i][0] to lamps[i][1] (inclusive). You are also given an array of control points points. For each control point points[j], find how many lamps light it, that is, the number of lamps for which points[j] lies within [lamps[i][0],lamps[i][1]]. Output the answers in control-point order.",
+    "input": "The first line contains two integers n and m; then n lines follow, each with two integers l and r describing a lamp; the last line contains m integers points. 1≤n,m≤100000, −10^9≤l≤r≤10^9, −10^9≤points[j]≤10^9.",
+    "output": "Output one line of m integers; the j-th is the number of lamps lighting points[j].",
+    "explanation": "Example 1: lamps [1,7], [5,11], [7,9]. Point 7 is lit by three lamps, point 1 by 1, point 5 by 2, point 10 by 1, point 9 by 2, and point 15 by none, so output 3 1 2 1 2 0.\nExample 2: endpoints 2 and 4 are both lit, while 1 and 5 are not.\nExample 3: both identical lamps [0,3] are counted.",
+    "hints": [
+      "Point p is covered by [l,r] if and only if l≤p≤r.",
+      "Coverage = number of lamps with left endpoint ≤p − number of lamps with right endpoint <p.",
+      "Sort the left and right endpoints separately, then binary search."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-20",
+  "packageChecksum": "8713bb00747f2800888dd7cc25d0c19f895b82fd723ac8aed4c0972e62e0d865",
+  "en": {
+    "title": "Exact Closest Squared Distance for 100,000 Points",
+    "description": "Find the minimum squared Euclidean distance between distinct point entries; coinciding entries have distance 0. The original problem mentions uniform random generation, but correctness must not depend on randomness. The 100,000 points are kept rather than reduced to 2000.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains n, followed by n lines of x y. Original range: 2≤n≤1000 or n=100000; 0≤x,y≤10⁹−1. Computations and comparisons use exact 64-bit integers; floating-point squared values must not be used.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 2; 0; 1999999996000000002. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Sort by x and divide and conquer; each half recursively returns its minimum distance and its points sorted by y. When merging, scan only the strip whose squared distance to the dividing line is less than the current best, pruning by the difference in y."
+    ]
+  }
+}

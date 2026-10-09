@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-2",
+  "packageChecksum": "6e32318726d6c6d3a59ef21d1c2bd48339c13adbd8a7fb360eb950c527ade25a",
+  "en": {
+    "title": "Index Pairs Whose Sum Is Divisible by N",
+    "description": "Count the index pairs with i<j such that a[i]+a[j] is divisible by N. Elements with duplicate values still have distinct identities, and an element cannot be paired with itself.\n\nThis site independently compiled the standard I/O and the solution; additions for bounds missing from the source and corrections to the examples are stated explicitly in the protocol.",
+    "input": "The first line contains the array length n and the divisor N, and the second line contains n numbers. Complete original bounds: 1≤n≤100000, 1≤N≤10^9, 1≤a[i]≤10^9; output a 64-bit integer.",
+    "output": "Output one integer answer.",
+    "explanation": "The first example has 4 pairs: original indices (0,1), (0,4), (1,3), and (3,4). The original explanation reversed the array without updating the indices accordingly; this site corrects it. The other two examples give 3 and 0.",
+    "hints": [
+      "Scan the remainders in order, using a dictionary to record the frequencies of earlier remainders; add the count of the complementary remainder, then add the current element."
+    ]
+  }
+}

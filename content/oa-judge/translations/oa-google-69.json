@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-69",
+  "packageChecksum": "eca7244fa35bee88ae92bbcac67ea92cc6019552a7cb08c2d40e084f5f8eeba4",
+  "en": {
+    "title": "Prefix Search Suggestions Ranked by Popularity",
+    "description": "For each non-empty prefix of searchWord, choose the top k products among those whose names start with that prefix. Sort by popularity in descending order first, breaking ties by name in ascending lexicographic order; if there are fewer than k products, return all of them.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains n k, followed by n lines of name popularity, and the last line contains searchWord. n≤100000; on this site 1≤k≤100, names are distinct, names and the search string are lowercase strings of length 1..50, the total length of all names is ≤1000000, and popularity is an integer in 0..10⁹.",
+    "output": "For each non-empty prefix of the search string, in order, output one line: first the number of suggestions, then the corresponding names, separated by spaces.",
+    "explanation": "Example 1: all three prefixes a, ap and app choose app, application and appstore; they all have popularity 90, so they are sorted by name. Example 2: prefix a suggests ab and ac; prefix ab suggests only ab. Example 3: d, do and dog have no matches, so each line outputs 0.",
+    "hints": [
+      "First sort the products by the unified ranking. For each product, compute its longest common prefix with the search string, and append the product to the result lists of the corresponding prefixes that do not yet have k items."
+    ]
+  }
+}

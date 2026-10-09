@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-11",
+  "packageChecksum": "937325e370052320e1b2ef16b641afb831d6d98e6f53145e53b25ffdb81351f0",
+  "en": {
+    "title": "Longest Lexicographically Smallest Regular Expression",
+    "description": "A regular expression consists of uppercase letters and bracketed character classes; letters within a class must not repeat, and one class matches one character. Given x, y and z of equal length, find the longest regular expression that matches x and y but not z; among equal lengths take the lexicographically smallest. If there is no solution, output −1.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "Three lines x, y and z, containing only uppercase English letters, each of length n (1..1000000). Lexicographic order follows ASCII character order.",
+    "output": "Output the regular expression string, or −1.",
+    "explanation": "Example 1: at the second position z=D is also the character of y, so it cannot be removed; at the first position C is removed, and all other letters of both character classes are kept, so the expression still matches AB and BD but not CD. Example 2: z equals x, so any expression matching x also matches z; there is no solution. Example 3: B could be removed at any position; to make the result lexicographically smallest, remove B only in the rightmost character class.",
+    "hints": [
+      "Find the rightmost position where z[i] differs from both x[i] and y[i]. Output the full 26-letter class at every position, and remove z[i] only at the chosen position."
+    ]
+  }
+}

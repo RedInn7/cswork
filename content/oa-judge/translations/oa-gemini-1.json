@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-gemini-1",
+  "packageChecksum": "abd10e8341c2375a8f57dcbda75f711c0e1bea34f47d368bf1540d3e48bcd0d8",
+  "en": {
+    "title": "Gemini OA #1: Minimum Fence Painting Operations",
+    "description": "There are n adjacent vertical boards of width 1, with heights heights[i]. A vertical stroke paints one entire board from bottom to top and may cover parts that are already painted; a horizontal stroke paints one unit of height at a single level across consecutive adjacent boards and may only cover parts that are not yet painted. Find the minimum number of operations to paint everything. Boards of height 0 need no painting.",
+    "input": "The input contains n and n non-negative heights, separated by whitespace; LF/CRLF or a direct EOF are allowed. The original source has n≥1 and non-negative heights with no numeric upper bounds; based on int[], this site specifies heights in 0..2147483647, and n is limited by the existing 32MiB standard input budget with no smaller cap; empty arrays are not accepted.",
+    "output": "Output the minimum number of operations (an exact integer, no modulo), which is at most n.",
+    "explanation": "The original source has no examples; all public examples are constructed by this site: for [1,2,1], paint the bottom layer horizontally and then the middle board vertically, 2 strokes in total; [0,0,0] takes 0 strokes; two boards of height INT_MAX are each painted vertically once, 2 strokes in total. A vertical stroke still paints the whole board; only horizontal strokes are forbidden from repainting. The type range and the standard input budget are explicit adaptations, not numeric upper bounds from the original.",
+    "hints": [
+      "A range can be painted entirely with vertical strokes, or painted horizontally up to its minimum height first.",
+      "A monotonic stack that merges nodes of equal height avoids worst-case quadratic recursion.",
+      "Use 64-bit intermediates when adding height differences to sub-segment costs."
+    ]
+  }
+}

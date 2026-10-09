@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-205",
+  "packageChecksum": "09030ea87a42fa4eb8d6f997c4326e7904ff134dcc1350784a86e4d4470291d2",
+  "en": {
+    "title": "Longest Program Suffix Executable in Fixed Time Slots",
+    "description": "You may only delete some programs from the beginning, keeping a suffix. The suffix runs in its original order, and no program can be interrupted. Each time slot has length k; a program that fits must run in the current slot, otherwise it moves to the next slot. With at most m slots, find the maximum length of an executable suffix.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m k; the second line contains the program durations. 1≤n,m≤200000; 1≤k≤10^9; the full original constraint is 1≤time[i]≤k.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 1 and 5. In the second example you cannot pick a longer range in the middle; the last program must be included.",
+    "hints": [
+      "Binary search the start of the suffix, and count the required slots with the left-to-right procedure fixed by the statement. Deleting a longer prefix never increases the minimum number of slots."
+    ]
+  }
+}

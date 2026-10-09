@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-17",
+  "packageChecksum": "2ca2435f3695905865e740142b0de691e91d646bb18f5f16f953350040ffcc34",
+  "en": {
+    "title": "Process Scheduler",
+    "description": "Each process runs at every integer time from start to end, with both endpoints included. Find the maximum number of processes running at the same moment, which is the minimum number of cores required.\n\nThis site's input protocol and the explicitly stated supplementary ranges are compiled by CSWork and do not pose as the original OA rules.",
+    "input": "The first line contains n (1..100000), followed by n lines, each with start[i] end[i], satisfying 1≤start≤end≤10^9.",
+    "output": "Output the minimum number of cores required.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Create a +1 event at each start and a −1 event at the moment right after each end, sort the events by time, scan the current concurrency, and take the maximum."
+    ]
+  }
+}

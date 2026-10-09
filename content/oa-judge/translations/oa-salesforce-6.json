@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-6",
+  "packageChecksum": "5cdf699567650976c12a3548e7d91ff95062226ef510c86ea9619c2c2ef7cc54",
+  "en": {
+    "title": "Collecting Data Within Two Steps on a Tree",
+    "description": "You may start from any tree node; visiting a node collects all data within at most 2 edges of it. Find the minimum number of edge traversals needed to collect all data and return to the starting node. The source example with n=11 has only 9 edges and an isolated node 5, so it is not a valid tree; this site replaces it with a valid example.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line contains n, the second line contains n data flags, each 0/1, followed by n−1 lines of edges u v. 2≤n≤100000, 0≤u,v<n, and the input is guaranteed to be a valid undirected tree.",
+    "output": "Output the minimum number of edge traversals; output 0 when there is no data or no movement is needed.",
+    "explanation": "For a chain of length 6 with data at both ends, traversing the core edge twice suffices, so the answer is 2; a star tree and a tree with no data both give 0.",
+    "hints": [
+      "First repeatedly delete leaves that have no data, then delete the two outermost layers of leaves of the remaining tree at once. Each remaining edge is traversed twice."
+    ]
+  }
+}

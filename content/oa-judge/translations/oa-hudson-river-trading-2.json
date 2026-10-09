@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-2",
+  "packageChecksum": "66368ef626f6ef8a77a430685e9e3bb329b10cdcedd62ec8e8489bfcd1460807",
+  "en": {
+    "title": "Price Signals and Position Changes",
+    "description": "Update a position using price-change signals. A rise counts as +1 and a fall as -1; an unchanged price produces no signal and does not break the preceding sequence of non-zero changes. Whenever the most recent change sequence matches buyIndicator, the position increases by 1; whenever it matches sellIndicator, the position decreases by 1. When both signals match at the same position, they cancel out. Output the position after each price moment.\n\nThe original example 51,56,56,58 clearly treats the two rises as consecutive signals; an unchanged price neither triggers a signal nor resets the non-zero change sequence. The upstream compiled MDX version's handling of direction 0 conflicts with this original example; this site follows the original rule and example and records the discrepancy.\n\nThis site's standard input/output protocol was explicitly added by CSWork and does not mean the upstream function-style problem originally had this protocol.",
+    "input": "The first line contains n b s (1≤n≤200000, 1≤b,s≤n); then come n non-negative prices (≤10^9), b values of +1/-1 and s values of +1/-1.",
+    "output": "Output n space-separated integers; the initial position is 0.",
+    "explanation": "Process according to the rules; see the accompanying editorial for the approach, proof of correctness and complexity.",
+    "hints": [
+      "Generate a stream of non-zero directions from adjacent price changes, recording the original price index of each direction. Use KMP to match the buy and sell patterns separately, add each signal at its corresponding price index, then take prefix sums."
+    ]
+  }
+}

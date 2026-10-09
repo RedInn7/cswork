@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-83",
+  "packageChecksum": "71e7355c454aa102ebbe6819a059efc4db7eb558ee6cecb767c93eadeb89ec36",
+  "en": {
+    "title": "Minimum Total Cost After Divisibility-Based Resource Replacement",
+    "description": "You are given a positive integer array cost. Each operation chooses two positions x and y; when the current cost[x] is divisible by the current cost[y], you may set cost[x]=cost[y]. Any number of operations may be performed, including zero; find the minimum possible sum of the final elements. Values can only be copied from existing positions, and new values such as a gcd cannot be created; duplicate values count toward the sum at each of their positions. The complete large range of the fixed MDX/catalog is kept rather than reduced to the smaller range of the same problem on FastPrep. The answer 17 given for the public MDX input [3,6,2,6,25] is wrong; under the stated operation it should be 34; only the complete FastPrep input [3,6,2,5,25] has the answer 17.",
+    "input": "The first line contains n, and the second line contains n integers cost[i]. 1≤n≤2000000, 1≤cost[i]≤200000000. The standard I/O was prepared by this site; the larger MDX/catalog range is kept.",
+    "output": "Output the minimum possible sum as a 64-bit integer.",
+    "explanation": "In the first example, the two 6s become 2 and 25 cannot be lowered, so the sum is 34. In the second example, 6 becomes 2 and 25 becomes 5, so the sum is 17. In the third example, 6, 10, 15 do not divide one another, so the sum stays 31; they cannot be turned into the nonexistent gcd=1.",
+    "hints": [
+      "Each original value can only end up as one of its divisors that exists initially.",
+      "Use a bitmap to represent existence; do not store an integer answer array over the two-hundred-million value range.",
+      "The contribution of a duplicate value must be multiplied by its frequency, and the sum must use a 64-bit integer."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-27",
+  "packageChecksum": "6d0e86abd453a3b2cdbbddc513a41a3e203a70ced8fcb0e963a1247e20097398",
+  "en": {
+    "title": "Product of the Maximum and Minimum in a Dataset",
+    "description": "Starting from an empty multiset, process the operations in order: `push x` inserts one x; `pop x` removes a single copy of an x that is currently present. After each operation, output the product of the current minimum and maximum of the set; if the set is empty, output 0, consistent with all three implementations in the fixed source (Python, Java, C++).",
+    "input": "The first line contains the number of operations n, followed by n lines, each `push x` or `pop x`. Complete original constraints: 1≤n≤100000, 1≤x≤10^9; whenever a pop is executed, the current multiset contains at least one x. The ranges of the fixed complete raw are kept; the standard input/output is this site's wrapper.",
+    "output": "On each line, output the product after the corresponding operation; output 0 when the multiset is empty. Compute the product as a 64-bit integer.",
+    "explanation": "Duplicate values are handled as a multiset, and pop removes only one copy; this behavior matches the reference implementations in the three languages of the fixed source.",
+    "hints": [
+      "Use a min-heap, a max-heap, and a frequency table; when deleting elements, use the frequency table to lazily clean up the heap tops."
+    ]
+  }
+}

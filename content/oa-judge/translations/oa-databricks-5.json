@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-5",
+  "packageChecksum": "c59789517ea09ef3bf58433576e8013aa7d5f29445d0fc11893ecdccd9ffa9f0",
+  "en": {
+    "title": "Fitting Rotatable Rectangles One by One into Query Boxes",
+    "description": "Execute two kinds of operations in order: `0 a b` stores an a×b rectangle; `1 a b` asks whether every previously stored rectangle can individually fit into an a×b query box. Rectangles may be rotated 90 degrees; each rectangle is placed separately, and they do not need to fit into the same box at the same time.\n\nStandard input/output, this site's supplementary ranges, and the examples follow this problem's description.",
+    "input": "The first line contains q (1≤q≤30000), followed by q lines each containing kind, a, and b. kind is 0 or 1, and 1≤a,b≤10⁹. These ranges are site supplements that keep the worst-case output length within the judge's limit.",
+    "output": "Output one line per query operation: 1 if they fit, otherwise 0. When no rectangles have been stored, the query result is 1.",
+    "explanation": "Normalize the sides of both the rectangles and the query boxes into a short side and a long side. Maintain the maximum short side and the maximum long side over all stored rectangles; a query box can hold every rectangle if and only if these two maxima do not exceed the corresponding sides of the box.",
+    "hints": [
+      "Normalize the sides of both the rectangles and the query boxes into a short side and a long side. Maintain the maximum short side and the maximum long side over all stored rectangles; a query box can hold every rectangle if and only if these two maxima do not exceed the corresponding sides of the box."
+    ]
+  }
+}

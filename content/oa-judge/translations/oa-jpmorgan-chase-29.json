@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-29",
+  "packageChecksum": "e83a026c57f260a594ce8094a46fd4d8f0737f89fc880dcc6f03f7b14208c345",
+  "en": {
+    "title": "Maximum Security Sum When You Must Jump Out of the Network",
+    "description": "You must choose a starting point and collect its security value, then repeatedly jump +k and collect the value where you land, stopping only when the next jump would go out of bounds. You cannot stop early or choose nothing, and values may be negative; find the total for the best starting point.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n k, followed by n security values; original bounds 1≤n≤1000000, 1≤k≤n, −1000≤security[i]≤1000.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 7; -5; -2. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Compute, from right to left, the total from each starting point until leaving the array: dp[i]=a[i]+dp[i+k], where terms past the end count as 0; the maximum dp is the answer."
+    ]
+  }
+}

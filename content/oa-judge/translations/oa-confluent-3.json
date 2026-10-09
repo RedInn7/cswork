@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-confluent-3",
+  "packageChecksum": "e183d1bb92157a87800d15016a29961c4207058d64a62eb85442fa97ccadb642",
+  "en": {
+    "title": "Can a Subset of Transactions Reach the Target Balance",
+    "description": "Given a set of integer transaction amounts, some positive and some negative, determine whether any subset (possibly empty) sums to exactly the target; output 1 if one exists, otherwise 0.",
+    "input": "The first line contains integers n and target, followed by a line of n integers (this line may be empty when n=0). Site constraints: 0≤n≤40, |target|≤10^12, |transaction[i]|≤10^9. Each transaction can be chosen at most once.",
+    "output": "Output a single integer: 1 if a qualifying subset exists, otherwise 0. The sum of the empty subset is 0.",
+    "explanation": "Decide according to the definition of subset sum; to support transaction amounts with large absolute values, this site sets the missing size bound to n≤40, so meet-in-the-middle can be used.",
+    "hints": [
+      "Split the transactions into two halves and enumerate the subset sums of one half; enumerate the other half one by one and look up target−sum. A Gray code lets you update the sum between adjacent enumerations in constant time."
+    ]
+  }
+}

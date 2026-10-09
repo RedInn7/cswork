@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-47",
+  "packageChecksum": "17da35e82ddc2d2d7f7be760c00d9c3c4c77f327ca2fcc1d01ef8a450c1d1ea2",
+  "en": {
+    "title": "Maximum Riders Within Comfortable Group Size Ranges",
+    "description": "Passenger i is only willing to ride with between low[i] and high[i] other passengers. You may choose any subset of passengers to ride together, and every member must be within their own range. Find the maximum number of passengers; the empty set is valid.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by n lines of low high; 1≤n≤100000, 0≤low≤high≤n.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: with 3 riders you can pick any three passengers whose ranges cover 2; with 4 riders only 3 ranges cover 3, so the maximum is 3. Example 2: all three accept the other two, so the answer is 3. Example 3: both require 2 others, but there are only 2 people in total, so the answer is 0; this also corrects the original third example, where high=3 exceeded n=2, an invalid range.",
+    "hints": [
+      "A group size k is feasible if and only if at least k ranges cover k−1. Use a difference array to count how many ranges cover each number of others, then find the largest feasible k."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-274",
+  "packageChecksum": "4b29053755074a1439fafe37b7a4c63471b53a03f05733b9c83c4925aea70600",
+  "en": {
+    "title": "Maximum Primary Capacity With One-to-One Primary/Backup Server Pairing",
+    "description": "Choose an even number of the n servers: half of them are primaries and half are backups. Each server is used only once, and every primary is paired with a backup whose capacity is at least its own. The contribution is the sum of all primary capacities; find its maximum. You do not have to use all servers.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains memory. 2≤n≤200000, 1≤memory[i]≤10^9. The original constraints mistakenly named the variable size, but their original side note clearly refers to memory; this site uses one name throughout.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 1 and 5 respectively. In the third example, pair 4 with 3 and 2 with 2; the primary capacity is 3+2=5, and 1 is left unused.",
+    "hints": [
+      "Sort capacities in descending order and group adjacent items in pairs, making the smaller one the primary; sum items 2, 4, …, and with an odd count leave the smallest item unused."
+    ]
+  }
+}

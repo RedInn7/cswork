@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-35",
+  "packageChecksum": "ec4f8a7c549a4da74cc14fef32025e080be6cfd3b5fc4f53a3f1454747b5b949",
+  "en": {
+    "title": "Most Frequent Substring with Limited Distinct Characters",
+    "description": "Among contiguous substrings with length in [minLength,maxLength] and a number of distinct characters ≤maxUnique, find the maximum number of occurrences of the same text; overlapping occurrences are allowed. Return 0 if no substring qualifies.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "This site's JSON input: [s,minLength,maxLength,maxUnique], which may contain escaped whitespace or Unicode; lengths are counted in Unicode characters. The original text gives no numeric bounds; this site uses 1≤|s|≤100000, 1≤minLength≤maxLength≤|s|, and 1≤maxUnique≤100000.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 3; 2; 2. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Only the shortest length L needs to be considered: the length-L prefix of any longer substring occurs at least as often and has no more distinct characters. Mark the qualifying length-L windows with a sliding window, use a suffix automaton to count the occurrences of each substring exactly, and filter the states that represent length L."
+    ]
+  }
+}

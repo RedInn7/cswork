@@ -159,3 +159,47 @@ export function assertOaVersionReady(
   )
     throw new HttpError(409, '这道 OA 题的版本已变化，请等待重新校验');
 }
+
+const englishStatement = z
+  .object({
+    schemaVersion: z.literal(1),
+    id: z.string(),
+    packageChecksum: z.string(),
+    en: z.object({
+      title: z.string().trim().min(1).max(180),
+      description: z.string().min(1).max(60000),
+      input: z.string().min(1).max(12000),
+      output: z.string().min(1).max(12000),
+      explanation: z.string().max(12000),
+      hints: z.array(z.string().min(1).max(2000)).max(10),
+    }),
+  })
+  .strict();
+const englishCache = new Map<
+  string,
+  z.infer<typeof englishStatement> | null
+>();
+/**
+ * English statement for an OA problem, kept beside the judge package so translating never
+ * changes verified packages. Served only while bound to the package that is currently live.
+ */
+export function oaEnglishStatement(id: string) {
+  if (!/^oa-[a-z0-9-]+$/.test(id)) return undefined;
+  if (!englishCache.get(id)) {
+    // Only parsed files are cached; a missing file is re-checked so later additions appear.
+    const file = resolve(`content/oa-judge/translations/${id}.json`);
+    try {
+      if (existsSync(file) && statSync(file).size < 1024 * 1024)
+        englishCache.set(
+          id,
+          englishStatement.parse(JSON.parse(readFileSync(file, 'utf8'))),
+        );
+    } catch {
+      // An unreadable translation simply falls back to the Chinese statement.
+    }
+  }
+  const value = englishCache.get(id);
+  return value && value.id === id && oaJudgeRegistry().isCurrent(id, value.packageChecksum)
+    ? value.en
+    : undefined;
+}

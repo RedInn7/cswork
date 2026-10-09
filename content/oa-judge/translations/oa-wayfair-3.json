@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wayfair-3",
+  "packageChecksum": "f06504efdc8412eeb1314cc217beace7bc6967ebb3c4b9b823c46e878031d3cf",
+  "en": {
+    "title": "Minimum Hits to Break All Bricks with Two Hammers",
+    "description": "n bricks are indexed from 1 to n, and the distinct positive integers strength[i] give the hit strength each brick must take. The big hammer breaks any brick in one hit and can be used at most k times; each hit of the small hammer reduces the required strength by 1, so breaking a brick with the small hammer alone takes strength[i] hits. Find the minimum total number of hits to break all bricks, and give the indices of the bricks broken by each hammer. Each brick belongs to the group of exactly one hammer. Return any optimal grouping; a brick with strength 1 may use either hammer, as long as the quota is respected and the total number of hits is optimal.",
+    "input": "The first line contains n and k. The second line contains n distinct integers strength[i]. 1≤n≤200000, 0≤k≤200000, 1≤strength[i]≤1000000000. k may be greater than n. The original problem's ranges and distinctness guarantee are kept in full.",
+    "output": "Output exactly three lines. The first line is the minimum total number of hits, which may exceed 32 bits. The second line is the 1-based indices of the big-hammer group, strictly increasing; if the big hammer is not used, output -1. The third line is the 1-based indices of the small-hammer group, strictly increasing; if the small hammer is not used, output -1. The two groups must be disjoint and cover all bricks, and the big-hammer group has size at most k. Do not output brackets or group sizes. This is a line-by-line serialization of the original 2D return array.",
+    "explanation": "All four public examples come from the original problem. Example 1 has no big-hammer quota and takes 2 hits. Example 2 uses the big hammer on bricks 3, 5, 6, 7, and the rest cost 3+2+4=9 with the small hammer, for 13 hits in total. Example 3 has a quota of 9, more than the 8 bricks, so all can use the big hammer, for 8 hits in total. Example 4 has no big hammer, for a total of 1110000000 hits.",
+    "hints": [
+      "How many hits do you save by switching a brick from the small hammer to the big hammer?",
+      "Use the largest savings first.",
+      "A brick with strength 1 saves nothing, so no particular tie-breaking output should be forced."
+    ]
+  }
+}

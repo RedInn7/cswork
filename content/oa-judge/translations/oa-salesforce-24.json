@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-24",
+  "packageChecksum": "883033b2ac4036f89cc8eac22b65fab766db5bb1c28f7c209af3d550a740b93f",
+  "en": {
+    "title": "Minimum Bottleneck Path in a Graph with Huge Sparse Node Labels",
+    "description": "The cost of a path in an undirected graph is the largest edge weight on the path; find the minimum cost from source to destination, and output −1 if they are not connected. Added by this site: when source=destination, the empty path has cost 0. Self-loops and parallel edges may appear.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives N M, then M lines of u v weight, then source and destination. Original bounds: M is 1..100000, edge weights are 0..10^9, and labels are 1..N. The original upper bound of N was written as 10<sup>5</sup>5, with an extra 5; this site openly adopts the lenient upper bound 1≤N≤10^55 to cover the common readings of that corrupted notation, without claiming it is the source's definitive original bound. Large labels are read as decimal integers, and only the nodes that appear are stored.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 20; -1; 0. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Merge endpoints in increasing order of edge weight; the weight of the first edge that puts the start and the end in the same connected component is the answer. Compress the nodes that appear with a dictionary, and never allocate arrays by N."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-29",
+  "packageChecksum": "24865b366a6742673b8813122ec1d23212d6e7e8ac5a6e2e16208fa86bab0486",
+  "en": {
+    "title": "Pod Counts After Scale-Ups and Point Resets",
+    "description": "A log [1,p,x] directly sets the count of 1-based service p to x, which may decrease it; [2,−1,x] raises every count below x to x. Apply the logs in order and return the final array.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains n m, the second line contains the initial counts, followed by m lines of logs. 1≤n,m≤200000, initial values are 1..10⁹, assigned values are 0..10⁹, and 1≤p≤n.",
+    "output": "First output n, then output the final n counts.",
+    "explanation": "The answers to the three public examples are, in order: 4\n10 30 10 10; 5\n8 8 20 8 10; 1\n0. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Process the logs in reverse order, maintaining the maximum global raise seen so far. When you reach the last point assignment of a service, its final value is determined; every other service combines its initial value with all the raises."
+    ]
+  }
+}

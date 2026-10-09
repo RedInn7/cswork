@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-18",
+  "packageChecksum": "bff6902d20894ddfc32181c6e5fdffbcf624078fa9d48ea2ac405bcbf5ac4b58",
+  "en": {
+    "title": "Shortest Schedule with Unlimited Parallel Development and Serial Integration",
+    "description": "Each feature is handled in exactly one of two ways: development takes developmentTime[i], and integration takes integrationTime[i]. Development is carried out simultaneously by as many members as needed, while integration is done sequentially by the team lead alone; the two kinds of work may overlap. Find the shortest time to finish everything. The parallel/serial conditions were recovered from the original HTML.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line contains n, followed by two lines giving the development times and the integration times respectively. The original text gives no numeric bounds; on this site 1≤n≤200000, and both kinds of times are in 1..10⁹.",
+    "output": "Output the shortest schedule length. The intermediate sum of integration times requires 64 bits.",
+    "explanation": "The answers are 6, 3, and 1; in the second example, development and integration run in parallel, so 2 and 3 must not be added.",
+    "hints": [
+      "Binary search on the schedule length T. Features whose development time is >T must be integrated, and T is feasible when the sum of their integration times is ≤T; all other features can simply be developed in parallel."
+    ]
+  }
+}

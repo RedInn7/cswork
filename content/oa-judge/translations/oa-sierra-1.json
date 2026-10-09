@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sierra-1",
+  "packageChecksum": "101cc97d3a2edf255fe05ea9bba23fb1dfc2c8649dc514580fdecec2d4fea804",
+  "en": {
+    "title": "Markdown Header Chunks",
+    "description": "Split Markdown by whole lines; if a new chunk starts in the middle of some header level, first replay the currently active header path. For display, lines are joined with ` | `.\n\nThe standard input/output format and supplementary bounds of this site are as stated in this problem.",
+    "input": "The first line contains maxChunkSize (1≤value≤10^5), followed by the raw Markdown text; lines cannot be split, and the total input length is ≤10^5. An overlong content line forms a chunk on its own, but still carries the active headers.",
+    "output": "Output one line per chunk, with its internal lines joined by ` | `; an empty document produces empty output.",
+    "explanation": "Maintain the current header stack and the current chunk; when the limit would be exceeded, output the old chunk and use the header stack as the prefix of the new chunk. Each line is scanned only once, so apart from copying the output the time is O(text length).",
+    "hints": [
+      "Maintain the current header stack and the current chunk; when the limit would be exceeded, output the old chunk and use the header stack as the prefix of the new chunk. Each line is scanned only once, so apart from copying the output the time is O(text length)."
+    ]
+  }
+}

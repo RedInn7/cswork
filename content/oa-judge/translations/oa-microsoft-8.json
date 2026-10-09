@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-8",
+  "packageChecksum": "c4694f1087a1665120a775bd769b8cb3669faf4dc5fe340376093bf901c1730b",
+  "en": {
+    "title": "Empty Lots Close Enough to All Houses",
+    "description": "In the grid, 0 is an empty lot and 1 is a house. A store can be built on an empty lot whose Manhattan distance to every house is at most K. Find the number of suitable empty lots; if there are no houses, every empty lot qualifies.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains R C K (1≤R,C≤500, 0≤K≤1000), followed by R lines each with C values 0 or 1.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: only the two empty lots to the right of and below the house are at distance 1; the bottom-right corner is at distance 2 and does not qualify, so the answer is 2.\n\nExample 2: there are no houses, and the only empty lot satisfies every constraint, so the answer is 1.\n\nExample 3: there are only houses and no empty lots, so the answer is 0.",
+    "hints": [
+      "Maintain the minimum and maximum of x+y and x−y over all houses; for each empty lot, check whether its differences from all four extremes are ≤K."
+    ]
+  }
+}

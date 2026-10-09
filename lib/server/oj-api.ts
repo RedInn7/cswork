@@ -9,6 +9,7 @@ import type { Person } from './auth';
 import { handleEditorIntelligence } from './editor-intelligence';
 import { requestPrecompile } from './oj-precompile';
 import { handleOaLibrary } from './oa-library';
+import { oaEnglishStatement } from './oa-judge';
 import { handleLeetcodeSync } from './leetcode-sync';
 import {
   getStudyLibrary,
@@ -63,6 +64,9 @@ export async function handleOj(
     const problem = oa
       ? await getPublicOaProblem(id)
       : await getPublishedProblem(p!, id);
+    // OA English statements live beside the verified package; merge for display only.
+    const english = oa && !problem.translations?.en ? oaEnglishStatement(id) : undefined;
+    if (english) problem.translations = { ...problem.translations, en: english };
     const templates = leetcodeTemplates(id);
     return json({
       ...problem,

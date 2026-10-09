@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-3",
+  "packageChecksum": "db6317c645254cf9b3966173ea5f69dbf593d2c9367b39ff3e2e1b5c30fd45da",
+  "en": {
+    "title": "Find Maximum Distance",
+    "description": "You are given a rectangular grid containing S, E, ., and *. A path goes from S to E, moving up, down, left, or right each step without revisiting cells; * is an obstacle but may be passed through. The safety value of a path is the minimum, over the cells on the path, of the Manhattan distance to the nearest obstacle. Find the maximum safety value over all paths.\n\nSee the statement and review notes for the problem source and the input protocol added by this site.",
+    "input": "The first line contains rows cols; then rows lines follow, each a string of length cols. Source range: 2≤rows,cols≤200. This site explicitly requires exactly one S, one E, and at least one *, with every other character being . or *.",
+    "output": "Output the maximum guaranteed minimum Manhattan distance.",
+    "explanation": "Process the input according to the problem rules; see the accompanying notes for the detailed approach.",
+    "hints": [
+      "Use multi-source BFS to get each cell's Manhattan distance to the nearest *, then run a maximum-bottleneck path search: when expanding a neighbor, its safety value is the smaller of the current value and the neighbor's distance, and maintain the best known maximum safety value for each cell."
+    ]
+  }
+}

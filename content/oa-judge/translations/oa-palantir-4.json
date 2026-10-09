@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-palantir-4",
+  "packageChecksum": "092ecc0e719ec8439b31af19eaa6f282451a332a2fbe0d581f3402b62a9d70ee",
+  "en": {
+    "title": "Minimize Path Value",
+    "description": "You are given a weighted undirected graph, a start node source, and an end node destination. The stress level of a path is the maximum edge weight on the path; find the path with the minimum stress level. If the two nodes are not connected, return -1. If source=destination, return 0, consistent with the three fixed source implementations.",
+    "input": "The first line contains N M; each of the next M lines contains u v w; the last line contains source destination. Nodes are numbered 1..N. Constraints added by this site: 1≤N≤5000, 0≤M≤20000, 1≤u,v,source,destination≤N, 0≤w≤10^9. The upstream Constraints section is a corrupted placeholder, so the sizes above and the non-negative weight range are bounds stated explicitly by this site; the graph is not required to be connected, and parallel edges and self-loops are allowed.",
+    "output": "Output one integer: the minimum possible maximum edge weight along a path, or -1 if destination is unreachable. Output 0 when source=destination.",
+    "explanation": "Maintain the minimum bottleneck value from source across the graph. When extending u→v, the stress of the new path is max(current stress, w). Use a priority queue and each time finalize the node with the smallest current bottleneck value.",
+    "hints": [
+      "Define the path state as the minimum possible maximum edge weight on reaching a node, not the path length."
+    ]
+  }
+}

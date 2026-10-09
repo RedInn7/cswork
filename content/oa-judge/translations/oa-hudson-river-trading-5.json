@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-5",
+  "packageChecksum": "c1efa42a17ef72e92a84a8029982f351122254b21292abd7e19fe10bab09cfef",
+  "en": {
+    "title": "Count Increasing Paths (At Most 2000 Paths)",
+    "description": "A path in the grid consists of at least two cells; consecutive cells must be adjacent up, down, left or right, and the value must strictly increase at each step. Paths are distinguished by their sequence of cell positions. Count all increasing paths; the number of paths is guaranteed not to exceed 2000.\n\nThe original example output of 4 matches the adjacency path definition, but the listed path endpoints were described inaccurately: the actual four paths are 1→5, 1→2, 2→7 and 1→2→7. This site keeps the rule and the answer, corrects the description, and records the error in the original explanation.\n\nThis site's standard input/output protocol was explicitly added by CSWork and does not mean the upstream function-style problem originally had this protocol.",
+    "input": "The first line contains the number of rows R (1..15); each of the next R lines first gives the number of columns C_r (1..15), then the C_r integers of that row (0..65535). Rows may have different lengths; only cells that exist can be adjacent.",
+    "output": "Output the total number of strictly increasing paths of length at least 2.",
+    "explanation": "Process according to the rules; see the accompanying editorial for the approach, proof of correctness and complexity.",
+    "hints": [
+      "Treat the cells as a directed acyclic graph in which a smaller value points to an adjacent larger value. Run DP in increasing order of value: the number of paths ending at a cell equals 1 (the cell alone) plus the path counts of all smaller neighbors; finally subtract all single-cell paths."
+    ]
+  }
+}

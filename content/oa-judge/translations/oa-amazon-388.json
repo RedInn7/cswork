@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-388",
+  "packageChecksum": "59027c8d57a0e4bd4b3fcb60d9e371e4ff83eaf9fe2974fc11b8fbb33c558c50",
+  "en": {
+    "title": "Raising Sizes at Per-Item Costs Until All Are Distinct",
+    "description": "Item i has initial size size[i]; each increase by 1 costs cost[i], and sizes cannot decrease. Make all final sizes pairwise distinct and find the minimum total cost.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "The first line contains n, the second line contains n sizes, and the third line contains n unit costs. OCR141/142/143 and the supplementary text of the same problem restore the complete original bounds: 1≤n≤200000, 1≤size[i]≤10^9, 1≤cost[i]≤10000.",
+    "output": "Output a single integer answer.",
+    "explanation": "The minimum for the first example is 7: the item with cost 5 stays at 2, the item with cost 4 stays at 3, the item with cost 2 goes from 2 to 4 for 4, and the item with cost 1 goes from 2 to 5 for 3. The \"1+4=7\" explanation in the original supplementary text contains an arithmetic error; this site uses the correct process. The answers to the other two examples are 1 and 0.",
+    "hints": [
+      "Sort by original size and assign integer size slots in order. Push every item that can already take the current slot into a heap ordered by unit cost descending and assign the slot to the most expensive one; when the heap is empty, jump to the next original size."
+    ]
+  }
+}

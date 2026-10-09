@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-28",
+  "packageChecksum": "70b63d25e79e01c3772aaa54a5c121dd9f28b2493b3eb07f364f08cd24791026",
+  "en": {
+    "title": "Maximum Sales Revenue with Prices Set by Remaining Stock",
+    "description": "Each customer buys exactly one item; the price of a product for that sale equals its remaining stock before the sale, and the stock drops by one afterward. Given m customers, find the maximum revenue, without taking any modulo. The original does not guarantee enough stock, so this site specifies that the output is −1 when the total stock is <m. The explanation of original example 1 misstates the stock; with input [10,10,8,9,1] and m=6, the answer should be 55.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n m, followed by n values of quantity; full original bounds 1≤n≤100000, 1≤m≤1000000000, 1≤quantity[i]≤1000000000. m≤total stock is not required.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 55; 11; -1. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Sort the stock in descending order and lower the several highest stocks together to the next level; when there are not enough customers to sell off a full level, use division to compute the number of full levels lowered and the leftover sales, and accumulate with arithmetic-series sums."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-18",
+  "packageChecksum": "7db803c7f155cbc6b29fef7d0e3da35c022657374da779f202627275d4aadede",
+  "en": {
+    "title": "Subarrays Whose Bitwise OR Appears in the Array",
+    "description": "Count the non-empty contiguous subarrays whose bitwise OR of all elements equals some element of the original array (that element does not have to be inside the current subarray). The original site undercounted [1,6,7]; by the definition the answer is 6.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains n (1..100000), and the second line contains n positive integers (1..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the ORs of the three single-element segments, the two segments of length 2, and the whole array all lie in {1,6,7}, so there are 6 segments.\n\nExample 2: only [2,4] has OR=6, which is not in the original array; the other 5 segments are valid.\n\nExample 3: the only subarray has OR 1, so the answer is 1.",
+    "hints": [
+      "Maintain all distinct ORs of subarrays ending at the current position, together with their counts. OR the new element into each OR from the previous round, merge identical states, and count how many results are in the global set of values."
+    ]
+  }
+}

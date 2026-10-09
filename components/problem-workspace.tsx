@@ -922,7 +922,11 @@ function Workspace({
       </div>
       <div className="cs-statement-scroll">
         {problem.id.startsWith('oa-') && (
-          <OaCompanyBadge key={problem.id} problemId={problem.id} />
+          <OaCompanyBadge
+            key={problem.id}
+            problemId={problem.id}
+            english={english}
+          />
         )}
         {leftTab === 'editorial' ? (
           <OaEditorial key={problem.id} problemId={problem.id} />
@@ -1042,9 +1046,15 @@ function Workspace({
                   <h3>{english ? 'Output' : '输出格式'}</h3>
                   <p style={{ whiteSpace: 'pre-wrap' }}>{statement.output}</p>
                   <h3>{english ? 'Examples' : '样例'}</h3>
-                  {samples.map((item) => (
+                  {samples.map((item, index) => (
                     <div key={item.name}>
-                      <h4>{samples.length > 1 ? item.name : null}</h4>
+                      <h4>
+                        {samples.length > 1
+                          ? english
+                            ? `Example ${index + 1}`
+                            : item.name
+                          : null}
+                      </h4>
                       <CopyBlock
                         label={english ? 'Input' : '输入'}
                         value={item.input}
@@ -1735,18 +1745,22 @@ function Workspace({
         ))}
       {!accessible && !(problemError && !boot.person) && (
         <div className="cs-workspace-notice">
-          {boot.person
-            ? '请先开通相关课程，再运行和提交解答。'
-            : '登录并开通课程后，即可运行和提交解答。'}{' '}
-          当前代码可以继续编辑和保存。
+          {english
+            ? boot.person
+              ? 'Enroll in the course to run and submit solutions. Your code is still saved as you edit.'
+              : 'Sign in and enroll in the course to run and submit solutions. Your code is still saved as you edit.'
+            : `${
+                boot.person
+                  ? '请先开通相关课程，再运行和提交解答。'
+                  : '登录并开通课程后，即可运行和提交解答。'
+              } 当前代码可以继续编辑和保存。`}
         </div>
       )}
       {problem.judgeAvailable === false && (
         <div className="cs-workspace-notice">
-          {boot.services.judge
-            ? '判题服务正在恢复，提交会排队等待。'
-            : '判题服务尚未配置。'}
-          你的代码会继续保存在浏览器中。
+          {english
+            ? `${boot.services.judge ? 'The judge is recovering; submissions will queue.' : 'The judge is not configured.'} Your code stays saved in this browser.`
+            : `${boot.services.judge ? '判题服务正在恢复，提交会排队等待。' : '判题服务尚未配置。'}你的代码会继续保存在浏览器中。`}
         </div>
       )}
       {narrow && (
@@ -1756,14 +1770,14 @@ function Workspace({
             onClick={() => setMobilePane('statement')}
           >
             <FileText size={15} />
-            题面与记录
+            {english ? 'Description' : '题面与记录'}
           </button>
           <button
             className={mobilePane === 'editor' ? 'active' : ''}
             onClick={() => setMobilePane('editor')}
           >
             <Code2 size={15} />
-            代码与结果
+            {english ? 'Code' : '代码与结果'}
           </button>
         </div>
       )}

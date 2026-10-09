@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-3",
+  "packageChecksum": "d1fd97bce70390eb505cf9e25a1e7655b8cf836e06cb872d9a22b707a39528c1",
+  "en": {
+    "title": "Subarrays Matching an Adjacent-Comparison Pattern",
+    "description": "Given an integer array a and a pattern p of length m. The values of p are 1, 0, and −1, requiring the next element to be greater than, equal to, or less than the previous one, respectively. Count the contiguous subarrays of length exactly m+1 whose adjacent comparisons all match the pattern; overlaps are allowed.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "The first line contains n m (2≤n≤10000, 1≤m<n); the second line contains n integers (−10⁹..10⁹); the third line contains m pattern values.",
+    "output": "Output the answer as described; separate multiple results with spaces in order, and output an empty line for an empty array.",
+    "explanation": "Example 1: [1,4,4,1] starting at 0 and [3,5,5,3] starting at 4 both go up, stay equal, then go down in order; no other window matches, so there are 2 in total.",
+    "hints": [
+      "Convert the adjacent comparisons into a sequence of −1, 0, 1, match the whole pattern with KMP, and after each successful match fall back via the prefix function to keep overlapping matches."
+    ]
+  }
+}

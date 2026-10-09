@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-2",
+  "packageChecksum": "5d97a4b8abbb5ee0216090e59f8832d6cd62562fd6ae8f274fc6e4c0cc5b5414",
+  "en": {
+    "title": "Number of Promoted Players Under Competition Ranking",
+    "description": "Players with equal scores share the same rank, and a player's rank is 1 plus the number of players with a strictly higher score. Only players whose rank is ≤k and whose score is not 0 are promoted.\n\nThis site independently prepared the standard I/O and the solution; supplements for bounds missing from the source and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n k, and the second line contains n scores. The original bounds are 1≤n≤100000, 0≤score≤100, and k≤n with no lower bound; this site adds −10^9≤k≤n, and no one is promoted when k≤0.",
+    "output": "Output a single integer answer.",
+    "explanation": "The original example promotes 3 players. The other two examples give 0 and 2 respectively. The sample code in the original summary chapter does not exclude scores of 0 and must not be reused.",
+    "hints": [
+      "Use 101 score buckets and count the players seen from high to low; the rank of the current nonzero score is the number seen so far plus 1."
+    ]
+  }
+}

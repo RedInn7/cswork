@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-200",
+  "packageChecksum": "f41cbd213d94fb6e35f345ae4f74e1a8b8e907c5dbf7b0d5e47ba4b7a2d40301",
+  "en": {
+    "title": "Longest Run of Powered-On Machines After At Most k Range Flips",
+    "description": "One operation chooses any contiguous range and flips every 0 and 1 in it; at most k operations are allowed. Find the length of the longest contiguous run of 1s at the end. Operations may overlap, and you do not have to use all k.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains the binary string; the second line contains k. 1≤length≤200000, 1≤k≤200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 4 and 8; flipping the last two runs of 0s directly gives length 8, with no need for the complicated overlapping operations used in the source.",
+    "hints": [
+      "Use a sliding window that counts the runs of 0s inside it, keep that count within k, and maximize the length. Flipping each run of 0s once turns it entirely into 1s."
+    ]
+  }
+}

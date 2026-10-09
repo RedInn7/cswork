@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-8",
+  "packageChecksum": "2d07d4ab26b3ab505636c4dc07058532ec096306e22f122734d5f4660de9f992",
+  "en": {
+    "title": "Synchronous Eight-Neighbor Infection Until Stable (with Immune Cells)",
+    "description": "At the end of each day, a healthy cell . becomes X if it had at least T infected neighbors X at the start of that day. Neighbors include up, down, left, right, and the four diagonals, 8 directions in total. Infected cells never recover. Return the last day on which a new infection occurs; if the grid is already stable initially, return 0. A check day with no change is not counted. An immune cell I is never infected and does not count toward infected neighbors.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains n m, the second line contains T, followed by n lines of m consecutive characters. 1≤n,m≤200, 0≤T≤8. Each character is X, ., or I. Problem 8 uses the full scale given in Problem 7.",
+    "output": "A single non-negative integer, the number of rounds in which new infections occur.",
+    "explanation": "In Example 1 the center infection spreads to all non-immune neighboring cells at once, so the answer is 1. In Example 2 there is only 1 infected neighbor while the threshold is 2, so the answer is 0. In Example 3 the threshold is 0, so no infection source is needed, and every healthy cell is infected on day 1.",
+    "hints": [
+      "Maintain the number of infected neighbors of each cell. First find the cells that become infected on day 1, then process the queue of new infections layer by layer: each newly infected cell notifies only its at most 8 neighbors, and the next layer is processed on the following day. When T=0, all healthy cells enter layer 1."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-348",
+  "packageChecksum": "8ec29f1617eb911bef4c32c27405e59c920102b3d17d09c24faa06e49ac98695",
+  "en": {
+    "title": "Repeatedly Add the Max and Min, Then Lower the Max",
+    "description": "Perform exactly requests operations: first add the sum of the current maximum and the current minimum to the answer, then decrease one of the current maximums by 1. Find the exact final integer total. Both the original array and the values after operations may be negative; when several maximums tie, choosing any of them does not change the resulting multiset.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n requests and the second line contains n integers. The source only gives requests≥0, an integer array, and the use of sufficiently wide integers; on this site 1≤n≤200000, initial values are in −10^9..10^9, and 0≤requests≤10^12. The answer is not taken modulo anything and may exceed the signed 64-bit range.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 5; -20; and 6, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Merge equal heights from high to low. With the current top c items at height h and the next height l, you can process at most c(h−l) operations in one batch, and the minimum stays fixed except in the phase after everything has become equal. Accumulate the maximums with arithmetic sums over full rounds plus the remainder. Once everything is equal, separately account for the minimum dropping after the first step of each round."
+    ]
+  }
+}

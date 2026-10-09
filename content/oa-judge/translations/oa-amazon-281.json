@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-281",
+  "packageChecksum": "6eeb9534c2effc382246a79835244ba36ccb938198aaf5138b5cfcb37794a08f",
+  "en": {
+    "title": "Total Number of Days That Reach the Maximum Online Count",
+    "description": "User i is online every day from login[i] to logout[i], inclusive at both ends; on the same day, logins happen before logouts. Find how many days have an online count equal to the global maximum online count; do not return the count itself.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line contains login, and the third line contains logout. 1≤n≤100000, 0≤login[i]≤logout[i]≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 1 and 2 respectively. In the first example, days 2 and 3 both have two users online; in the third example, two non-adjacent days both reach the peak of 1.",
+    "hints": [
+      "Use a difference array: add 1 at login and subtract 1 at logout+1, scan 0..100000, and update the maximum count and the number of days that reach it."
+    ]
+  }
+}

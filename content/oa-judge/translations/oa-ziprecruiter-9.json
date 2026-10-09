@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-9",
+  "packageChecksum": "6cb6893cf25f83d02d9e7a2e4741e0fb7ed1a9c452aa54cc05314d1846da01a2",
+  "en": {
+    "title": "Queueing for Entry to an Exclusive Event",
+    "description": "Guests arrive in non-decreasing order. An ID check takes 300 seconds. The guest currently being checked is not counted in the waiting queue; if, on arrival, the number of waiting guests is already greater than 10, the guest leaves and their arrival time is output. If a guest arrives at the same moment a check finishes, the guests already waiting start their check first, and the new guest joins the end of the queue. Output each guest's completion time; for guests who leave, output their arrival time.\n\nThe input protocol and the examples in this batch were compiled by CSWork.",
+    "input": "The first line contains n (1..5000); the second line contains n non-decreasing non-negative integer arrival times (≤10^9).",
+    "output": "Output n space-separated integers in arrival order.",
+    "explanation": "Process according to the definite rules above; see the accompanying editorial for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Maintain a queue of future completion times. Before an arrival, remove everyone already finished; the front of the queue, if any, is the guest being served, and the rest are the waiting count. If it exceeds 10, the guest leaves; otherwise they join the end of the queue."
+    ]
+  }
+}

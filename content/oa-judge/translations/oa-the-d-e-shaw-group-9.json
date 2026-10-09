@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-9",
+  "packageChecksum": "15ce7e7ab82af73a372a158db33c216fc27e3ffa8ffe19fceede9735d5813a1e",
+  "en": {
+    "title": "Police Station",
+    "description": "Several police stations lie on an infinitely long one-dimensional number line, all at distinct coordinates. Buy exactly capacity distinct integer coordinates, none of which coincides with a police station. The cost of each plot is its distance to the nearest police station; find the minimum total cost.",
+    "input": "The first line contains n and capacity, and the second line contains the n distinct integer coordinates of the police stations. This site's additional constraints: 1≤n≤100000, 1≤capacity≤50000, |station[i]|≤10^9. The Constraints of the original Fastprep text are unknown; this site's upper bounds guarantee that the worst-case answer does not exceed 625025000, which fits the original function's int return range.",
+    "output": "Output the minimum total cost.",
+    "explanation": "Plots can only be at integer coordinates; the two available coordinates next to each police station cost 1. The original problem's constraints are missing, so this site explicitly adds upper bounds on the number of stations, the coordinates, and capacity; with capacity≤50000, even if there is only one police station, the total cost of buying the nearest capacity non-station coordinates is at most 625025000.",
+    "hints": [
+      "Use all positions adjacent to police stations as starting points at distance 1, and expand by distance with a min-heap. Neither police station coordinates nor already purchased coordinates can be purchased again."
+    ]
+  }
+}

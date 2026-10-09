@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-9",
+  "packageChecksum": "4d0c8bf7d3abfd0d7b82c5a5886d0863fab3f33715af9c858997d3a1f8c478c4",
+  "en": {
+    "title": "Maximum Pay After Adding Workdays",
+    "description": "A workday earns fixedPay, plus an extra bonus if the previous day was also a workday. You may change at most k rest days 0 into workdays 1; existing workdays cannot be removed. Find the maximum income. In the original example 100101, changing two days can give 111101; the old explanation missed one digit, and the correct income is 29.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n k fixedPay bonus, and the second line contains a 01 string; complete OCR bounds 1≤k≤n≤200000, 1≤fixedPay,bonus≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 10; 29; 30. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "All gains are positive, so add as many workdays as possible; first fill the shortest interior 0 segments to connect work blocks, then use the remaining added days to extend existing work blocks. If the string is all 0s, place the added days as one contiguous segment."
+    ]
+  }
+}

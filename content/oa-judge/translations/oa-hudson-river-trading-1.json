@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-1",
+  "packageChecksum": "16a9e58bfadc0b77503a45d2ca4f43d840cb08222d4abe797ca6d304a0de5bf8",
+  "en": {
+    "title": "Integer to Decimal String",
+    "description": "Implement conversion from an integer to a decimal string without using built-in number-to-string functions. Output one line for each signed 32-bit integer in the input; negative numbers keep the minus sign, and 0 is output as 0.\n\nThe upstream original problem forbids a built-in conversion helper; this site's judge can only verify the output and cannot statically prove that a contestant did not call a built-in conversion function.\n\nThis site's standard input/output protocol was explicitly added by CSWork and does not mean the upstream function-style problem originally had this protocol.",
+    "input": "Each line contains one signed 32-bit integer; there are 1..100000 lines. The last line of input may or may not end with a newline.",
+    "output": "Output one line with the decimal representation of each input integer.",
+    "explanation": "Process according to the rules; see the accompanying editorial for the approach, proof of correctness and complexity.",
+    "hints": [
+      "Repeatedly take the last digit of the absolute value and divide by 10, join the digits in reverse order, and finally add a minus sign if needed. Handle 0 separately. To cover INT_MIN, use an integer representation that does not overflow."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-275",
+  "packageChecksum": "d272698ac20a4d10826e203bcda5ca9b9d750a5402354f8065a1cd5d855ff353",
+  "en": {
+    "title": "Maximum Removals in a Given Order That Keep an Increasing Subsequence",
+    "description": "The tile sizes are distinct, and removalOrder gives the original zero-based indices in the order they are removed. You may only remove a prefix of that order, and the remaining tiles keep their relative order. Find the maximum number of removals such that the longest strictly increasing subsequence of the remaining tiles has length at least minOrder. The original statement does not specify the output when there is no solution from the start; this site defines it as −1 and keeps such inputs. When minOrder=0, everything can be removed.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n minOrder, the second line contains tile, and the third line contains removalOrder. The original statement gives no value bounds; on this site 1≤n≤200000, 1≤tile[i]≤10^9 with all values distinct, and 0≤minOrder≤n; this site specifies that the removal order is a permutation of 0..n−1. Inputs whose initial LIS is shorter than minOrder are valid, and their answer is −1.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, −1 and 1 respectively. In the first example, after removing original indices 1 and 2, the remaining 1,4 still has length 2; removing 0 as well leaves only one item. In the second example the requirement already fails at the start, so 0 removals is not treated as feasible.",
+    "hints": [
+      "Record the removal time of each original index. For a given number of removals t, filter out the removed positions and compute the LIS length with patience sorting. Feasibility is monotonically non-increasing in t, so check t=0 first, then binary search for the largest feasible t."
+    ]
+  }
+}

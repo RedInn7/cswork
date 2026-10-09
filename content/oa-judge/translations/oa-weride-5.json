@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-5",
+  "packageChecksum": "c06eec4bd00937d2117adbc4635777b3704b38899ebf0de681b5e90ec7c0d006",
+  "en": {
+    "title": "Robot Movement Reachability",
+    "description": "A robot starts at positive integer coordinates (x1,y1) and can perform (x,y)→(x+y,y) or (x,y)→(x,x+y) any number of times. Determine whether it can reach (x2,y2).\n\nThe ranges of the start and end points and the two moves are precisely defined; this site specifies stdin/stdout.\n\nSource: https://oamaster.com/docs/companies/weride#5-bot-movement-reachability-two-move-types (fixed statement fingerprint b1639717ffbe4708cefb3029bfffbbb3d069343624539d09b7792a5e067eb34c). The input/output protocol and bounds added by this site are as described in the statement and are not claimed to be rules of the original site.",
+    "input": "One line with four integers x1 y1 x2 y2 (each in 1..1000).",
+    "output": "Output Yes if reachable, otherwise output No.",
+    "explanation": "See the accompanying notes for the full approach, proof, and complexity.",
+    "hints": [
+      "Walk backward from the target: if x>y, the last step can only come from (x−y,y); otherwise it comes from (x,y−x). Once a coordinate drops below the start, it is impossible."
+    ]
+  }
+}

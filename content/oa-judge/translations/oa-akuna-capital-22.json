@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-22",
+  "packageChecksum": "83a2884d58693b976c95cf9cab495b43cef4f3d2a51ac9163041d9eb8bc82d96",
+  "en": {
+    "title": "Maximum Total Cost to Separate a Binary String (Same-Source Entry)",
+    "description": "Given a binary string s, the goal is to move all 0s before all 1s. One operation picks a 1 that is immediately followed by at least one 0 on its right; it must jump right over the entire run of consecutive 0s and land at the end of the string or just before the next 1, at a cost of 1+(distance moved). Find the maximum total cost to complete the separation, not the number of actions. An operation must actually move at least one position, so no cost can be charged for staying in place; an already separated string costs 0.\n\nThis entry is a duplicate source entry of the same original problem as this site's Akuna5 Binary Circuit and does not claim a new algorithm; this ID is kept for independent submission.",
+    "input": "One line with the binary string s, 1≤|s|≤100000, containing only 0 and 1. The full length bound comes from the fixed OCR016 of the same problem, not from the N/A placeholder constraint of FastPrep.",
+    "output": "Output the maximum total cost, a non-negative integer; a 64-bit integer or big integer is required. The final original OCR interface is long; the FastPrep int declaration cannot cover the full range.",
+    "explanation": "The original 009 example 110100 costs 13 and the original 016 example 10100 costs 8; both are kept. The original text's maximum number of operations is corrected to the maximum total cost according to the final function and the cost examples. The solution attached to the catalog charges the base fee only once per 1, which would miscount 110100 as 11 and the already separated 01 as 1; the correct values are 13 and 0. The third public example 01 is added by this site. If zero-distance actions were charged they could be repeated forever, so they are not valid moves.",
+    "hints": [
+      "The total distance moved is the same for every execution order.",
+      "Find a way to make each 1 jump separately over each run of 0s that was originally to its right.",
+      "Each run of 0s contributes the number of 1s to its left multiplied by (the run length plus 1)."
+    ]
+  }
+}

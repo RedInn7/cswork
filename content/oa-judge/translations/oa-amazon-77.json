@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-77",
+  "packageChecksum": "663fce3b2db0e1485a5eb388f38149589dae323ee496a14ad06847891d0ae3fa",
+  "en": {
+    "title": "Time Until Stable When Failed Services Delete Their Left Neighbors",
+    "description": "Each second, based on the string at the start of that second, every failedService simultaneously deletes the character immediately to its left; the deleted character may itself be a failed service. Find the number of seconds that pass before the string stops changing.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line is pipeline, and the second line is a single failedService character. Length 1..200000; this site uses lowercase letters.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the three a are at indices 1, 3, 5; the leading segment has length 1 and the two gaps have length 2, so the answer is 2. Example 2: in the first second, the first three a are deleted simultaneously by their right neighbors, leaving only one, so the answer is 1. Example 3: there is no a and no deletion happens, so the answer is 0.",
+    "hints": [
+      "Record the positions of the failed characters: take the maximum of the length before the first failure and the distances between adjacent failure positions; the suffix after the last failure is never deleted."
+    ]
+  }
+}

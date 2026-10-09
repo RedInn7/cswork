@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-agoda-4",
+  "packageChecksum": "8a60e75d86f0b8809beacd7578a6f06da23df3129411145c3232d832cf13547c",
+  "en": {
+    "title": "Integers Without Repeated Digits in a Range",
+    "description": "Given the closed interval [a,b], count the integers whose decimal representation has no repeated digit. The number 0 also counts as a valid integer.\n\nThe original rules are clear; this site adds the handling of zero, the upper bound and the standard input/output.\n\nSource: https://oamaster.com/docs/companies/agoda#4-unique-digits-in-range (fixed statement fingerprint ad4afecb26c3a62396e8e4b999faf5b687be79b6f45cc5a926065788b53659ce). The input/output protocol and bounds added by this site follow the statement and are not claimed to be rules of the original site.",
+    "input": "One line with two integers a b (0≤a≤b≤10^18).",
+    "output": "Output the number of integers in the interval whose decimal digits are all distinct.",
+    "explanation": "See the companion notes for the full approach, proof and complexity.",
+    "hints": [
+      "First count the positive integers with fewer digits, then go digit by digit and enumerate valid choices smaller than the current bound digit; count the remaining positions by the number of permutations of the unused digits. Finally take the difference of the prefix function to get the interval answer."
+    ]
+  }
+}

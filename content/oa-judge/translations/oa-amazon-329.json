@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-329",
+  "packageChecksum": "07d052ff5adbcf25a420e62dc77ebc99d8dbaf437f3346003a4b83d020bf918c",
+  "en": {
+    "title": "Group Sizes After Applying Transitive Product Equivalences",
+    "description": "You are given all product identifiers, which are distinct, and several product pairs, each meaning the two products belong to the same category. The same-category relation is transitive. Find the final number of products in each category and output the group sizes in ascending order; a product that appears in no pair forms a group by itself. Self-pairs and repeated relations do not create new products.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The input is compact JSON: [products,pairs], where each item of pairs is two existing product identifiers. The original statement only guarantees that products are distinct and that the endpoints are valid, with no bounds on values or characters; on this site 0≤number of products, number of relations≤100000, and identifiers have 0..8 Unicode characters. Whitespace and non-ASCII characters in JSON strings use JSON escapes, with a space written as \\u0020. When the product list is empty, the relations are empty too.",
+    "output": "If there are products, output the category sizes in ascending order, separated by spaces; if there are no products, output 0.",
+    "explanation": "The outputs are 2 3; 1 2; and 0. This site's output protocol for the empty set is a single 0; otherwise only the positive group sizes are output, without the number of groups.",
+    "hints": [
+      "Map identifiers to integers and merge each pair with a union-find that uses union by size and path compression; finally collect the sizes of the roots and sort them."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-269",
+  "packageChecksum": "a1e81d958e9d21914a823af16ee50c8f03326207bf3645f3c07e34de1f1e560f",
+  "en": {
+    "title": "Maximum Matching Positions After Transferring Non-negative Inventory",
+    "description": "You are given two arrays inv1 and inv2 of equal length. Any number of times, you may choose distinct i and j and, only when inv1[j]>0, take 1 from j and add 1 to i. Inventory may become 0 after the operations but never negative; inv2 does not change. The similarity is the number of indices whose values are equal in both arrays. Find the maximum similarity.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line contains inv1, and the third line contains inv2. 1≤n≤100000; every value in both initial arrays is in 1..10000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 0, 2 and 2 respectively. You cannot keep taking from a position whose inventory is 0, so in the first example the budget is not enough to match any 4; in the third example the extra total of 9 must go to at least one unmatched position.",
+    "hints": [
+      "The total inventory S never changes. If it equals the target sum, every position can be matched; otherwise, go through target values from smallest to largest and use the budget S to match as many positions as possible, but at most n−1. Implement it with counting buckets over the value range 10000."
+    ]
+  }
+}

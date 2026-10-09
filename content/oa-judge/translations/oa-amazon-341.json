@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-341",
+  "packageChecksum": "97cbc919590c4f633e3446bf5101637723f02fa3a7fd5a3de488df950a838ef0",
+  "en": {
+    "title": "Maximum Secondary Tasks When Each Day Has One Primary Task",
+    "description": "There are n primary tasks and n secondary tasks. Over n days, schedule exactly one primary task each day; each day may also take at most one secondary task, each task can be used only once, and a day's total duration must not exceed limit. Find the maximum number of secondary tasks. If some primary task alone exceeds the limit, return −1 according to this site's no-solution output convention. Zero durations are also judged by whether the total stays within the limit.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n limit, the second line contains n primary values, and the third line contains n secondary values. The original statement gives no value bounds; on this site 1≤n≤100000, 0≤limit and all durations≤10^9. Inputs with a primary task over the limit are kept, and only the −1 no-solution encoding is added.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 2; 1; and -1, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Each primary task leaves a remaining capacity limit−primary; sort these in ascending order, and sort the secondary tasks in ascending order as well. Go through the capacities one by one: if the smallest unused secondary task fits, pair them; otherwise skip that capacity."
+    ]
+  }
+}

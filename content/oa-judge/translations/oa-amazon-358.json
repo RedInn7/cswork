@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-358",
+  "packageChecksum": "5a0372a4bdc96d1f91e2c96a94066df627a4a03ac033a5aeb329425e711888cd",
+  "en": {
+    "title": "Complete the Brackets and Maximize the Kit Score",
+    "description": "Keeping the order of the original bracket string, insert unused brackets from the kit at any positions so that the final string is balanced, and maximize the total score of the brackets used. The original string itself scores 0. The original statement guarantees that a feasible completion exists, and brackets that are required must be chosen even if their scores are negative.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains s, the second line contains m, the third line contains kit, and the fourth line contains m scores; when m=0 the last two lines are empty. The strict original bounds are 1≤|s|≤199999 and 0≤m≤199999; kit has length m and contains only left and right brackets, and scores are in −10^9..10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The original TODO example is filled in as 6; the second example can only add a right bracket worth negative 5, so the answer is −5; the third example gives 0.",
+    "hints": [
+      "Compute the lowest prefix balance and the final balance of the original string to determine the minimum required numbers of left and right brackets. For each kind of bracket, take the required ones in descending order of score; after that, keep taking pairs while the combined marginal score of a pair is still positive."
+    ]
+  }
+}

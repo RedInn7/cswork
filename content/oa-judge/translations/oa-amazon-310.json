@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-310",
+  "packageChecksum": "85f691c2bc7c24baf990b98ac2bf26c98f6edc446f9e3fc020dfb1881b9631b9",
+  "en": {
+    "title": "Product Pair That Appears Together in the Most Transactions",
+    "description": "Product names may repeat within a transaction, but a pair of distinct products counts only once per transaction. Pairs are unordered: first sort the two names lexicographically. Find the product pair that appears together in the most transactions; on a tie, take the lexicographically smallest name pair. If there is no pair of distinct products at all, output −1 as this site's protocol specifies.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains the number of transactions T, followed by one line per transaction: k and then k product names. The original bounds are 1≤T≤1000 and 1≤k≤100 per transaction, and names consist of uppercase letters. The original statement gives no bound on name length; this site adds 1≤length≤100. The total number of distinct products overall is not limited, and 100000 distinct products are allowed.",
+    "output": "Output the two names in lexicographic order, smallest first, separated by a space; if there is no pair of distinct products, output −1.",
+    "explanation": "The answers are A B, A B and −1. In the second example all three pairs have frequency 1, so they are compared lexicographically as ordered tuples of the two names.",
+    "hints": [
+      "For each product, build a bitmask of up to T bits marking the transactions it appears in. Deduplicate each transaction and enumerate its distinct product pairs; the bit_count of the bitwise AND of the two mask values gives the exact frequency. Track only the current highest frequency and the lexicographically smallest pair, without storing a full pair table."
+    ]
+  }
+}

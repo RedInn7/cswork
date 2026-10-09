@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-20",
+  "packageChecksum": "8e84524335f777f51a2d6ecb01dd4177fd14a9c7d6991f947aceb651d1982b0e",
+  "en": {
+    "title": "Remove One Node to Stop Malware Spread",
+    "description": "Delete exactly one node together with its incident edges, then let the infection spread along undirected edges from the remaining initially infected nodes until no new node is infected. A healthy node may be deleted. Find the deletion that minimizes the final number of infected nodes, breaking ties by the smallest 1-based number.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line contains n m, the second line contains n initial infection flags, each 0/1, and then m lines follow with 1-based edges u v. 1≤n≤1000, 0≤m≤min(n(n−1)/2,1000); this site treats the graph as a simple undirected graph, with no duplicate edges and no self-loops.",
+    "output": "Output the number of the node to delete. Even if there is no infection, one node must still be deleted.",
+    "explanation": "The answers are 3, 1, and 3. In the third example, healthy node 3 is a cut vertex, and deleting it is better than deleting any single infection source. Original example 1 omitted node 1 from its spread set; the deletion answer 3 is unchanged.",
+    "hints": [
+      "Enumerate every node as the deletion candidate, simulate the spread in the remaining graph with a multi-source BFS each time, and compare the final infected counts and node numbers."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-71",
+  "packageChecksum": "e85396b5373872cb880fc57855442bc0e1aea0f10d64cefad5556cbf29e4c3a9",
+  "en": {
+    "title": "Size of the Connected Component Visible to a Queried User",
+    "description": "Users are numbered 1..n, and undirected connections can be followed over multiple hops. Each query returns the number of users in that user's connected component, including the user; the answer for an isolated user is 1. The original example wrote the visible list of an isolated node as empty, yet explicitly counted the user themselves; this statement corrects it accordingly.\n\nThe input/output protocol was compiled by this site, and missing numeric constraints are explicitly marked as this site's additions.",
+    "input": "The first line contains n m q, followed by m lines of edges u v, and finally q query numbers. The original text has no numeric ranges; this site adds 1≤n,q≤200000, 0≤m≤200000, and all endpoints and queries are in 1..n. Self-loops and multiple edges are allowed, and the graph need not be connected.",
+    "output": "Output q integers in query order.",
+    "explanation": "The outputs of the three public examples are, in order: 4 4 2 1; 1 1 1; 2 1 2. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Use union-find with union by size and path compression, maintaining the component size at each root; a query returns the size of its root."
+    ]
+  }
+}

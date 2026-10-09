@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-66",
+  "packageChecksum": "a7896b12d7aa92b5b5f317273ef544d9df7fcd0f5f87f185dbbe12e183e95976",
+  "en": {
+    "title": "Reach the Grid Exit Within the Time Limit",
+    "description": "Start from the top-left corner; each second you move one step to an adjacent passable cell (up, down, left or right). Determine whether you can reach the bottom-right corner within maxTime seconds. # is impassable and . is passable; the start and end cells are guaranteed to be passable. The first line of the original first example's text was missing a #; this site completed it into a proper rectangle based on the problem's diagram.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains r c maxTime, followed by r lines of the grid. 1≤r≤500, 1≤maxTime≤100000; on this site the number of columns is 1..500.",
+    "output": "Output Yes if you can reach it within the time limit, otherwise output No. Mind the capitalization.",
+    "explanation": "Example 1: walk 5 steps along (0,0)→(0,1)→(1,1)→(2,1)→(2,2)→(2,3), so the output is Yes. Example 2: the shortest path takes 2 steps, which is less than 3, so the output is Yes. Example 3: both ways out are blocked, so the output is No.",
+    "hints": [
+      "Use breadth-first search to find the shortest distance; when you reach the destination, compare it with the time limit. Layers beyond the time limit need not be expanded."
+    ]
+  }
+}

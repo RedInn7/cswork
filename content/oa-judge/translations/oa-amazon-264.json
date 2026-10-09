@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-264",
+  "packageChecksum": "54dc5d66565810dbbc32ce134e9cb4bf80574d76eaaafd8034c81d3f742e4d60",
+  "en": {
+    "title": "Maximum Score from Inserting Kit Brackets to Balance",
+    "description": "The initial bracket string s keeps its relative order. Each bracket in kit can be used at most once and inserted at any position, and the profit is the sum of the scores of the brackets used. The final string must be balanced, and a solution is guaranteed to exist; scores can be negative, and inserting nothing is allowed. Find the maximum profit.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains s, the second line kit, and the third line the score of each character of kit. The original text had no numeric bounds; this site uses 1≤length of both strings≤100000, −10^9≤score≤10^9, and balancing is guaranteed to be possible.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 6, −7 and 3. A negative-score bracket must still be used if it is required to fix the original string; in the third example an extra pair can be inserted to gain 3.",
+    "hints": [
+      "Find the minimum numbers of left brackets L and right brackets R needed. Sort the scores of each type in descending order, take the required L/R first, then keep adding left-right pairs whose remaining scores sum to a positive value."
+    ]
+  }
+}

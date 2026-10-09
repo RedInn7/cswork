@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-13",
+  "packageChecksum": "0fa751dea71e346ac03c3c3a98af7dff0221f58b5dec875d07ce6309ee120ee6",
+  "en": {
+    "title": "Cells Cleaned by a Cleaning Robot",
+    "description": "The robot starts at the top-left corner facing right. If the cell in front of it is empty, it moves forward; otherwise it turns 90 degrees clockwise in place. This repeats forever. Every empty cell it passes through counts as cleaned, and cells may be passed through repeatedly. Find the number of distinct cleaned cells after it runs indefinitely.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains N M (1..1000), followed by N strings of length M, where . is an empty cell and X is an obstacle; the start (0,0) is guaranteed to be empty.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the robot loops along the boundary of the reachable two rows and three columns, cleaning 6 distinct cells in total.\n\nExample 2: it is blocked on all four sides and only turns in place, cleaning its single cell; the answer is 1.\n\nExample 3: it can keep moving back and forth along the same row, so all 4 cells are cleaned.",
+    "hints": [
+      "Record states made of position and direction, and stop when a state repeats; use a separate marker to record the distinct visited cells."
+    ]
+  }
+}

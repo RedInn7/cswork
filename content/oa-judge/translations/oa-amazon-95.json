@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-95",
+  "packageChecksum": "c0fa458a0c5973e83bab3debbcf49d1c9e9e441bf77322c7735c7c2b6cb278c3",
+  "en": {
+    "title": "Number of Subsequences Lexicographically Greater Than the System Password",
+    "description": "Among all index subsequences of customer, count those that are lexicographically strictly greater than system. Identical strings chosen from different indices are counted separately; when system is a prefix, the longer string is greater. Output the result modulo 10⁹+7.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "Two lines with the lowercase strings customer and system, of lengths 1..100000 and 1..100 respectively.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the two b at different indices, plus ba, bb, bab, 5 in total. Example 2: only aa is greater than a; the two single a are equal, so the answer is 1. Example 3: a is smaller than z, so there is no qualifying subsequence, and the answer is 0.",
+    "hints": [
+      "dp[j] records the number of subsequences exactly equal to the first j characters of system, and greater records the number already greater. Each new character doubles greater; an equal prefix followed by a larger character, or the complete system followed by any character, also becomes greater; update the equal-prefix DP in reverse order."
+    ]
+  }
+}

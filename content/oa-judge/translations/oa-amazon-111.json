@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-111",
+  "packageChecksum": "58bd9d6b1d8423c1d98ae6ca098ec60b51def88392dcacd4aa30ec9d76a5d436",
+  "en": {
+    "title": "Maximum Audience When Each Screening Ends Strictly Before the Next",
+    "description": "Choose some screenings, where a screening ends at start+duration. Two screenings do not conflict only if one ends strictly before the other starts; equal endpoints are not allowed. Find the maximum total audience. The source's second example confirms the strict inequality.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (1..100000), followed by three lines start, duration and volume; the first two are in 1..10⁹, and volume is in 1..1000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: choose the two screenings starting at 5 and 18, 51+25=76. Example 2: the screening starting at 2 ends at 4, so it cannot be followed by the screening starting at 4; choose the ones starting at 1 and 4, for a total of 4. Example 3: the first screening ends exactly when the second starts, so only the screening with audience 7 can be chosen.",
+    "hints": [
+      "Sort by end time and let dp record the best value of the first several screenings; for each screening, binary search the number of screenings that end strictly before it starts, and compare taking it with skipping it."
+    ]
+  }
+}

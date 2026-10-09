@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-36",
+  "packageChecksum": "8358e53d3b04790c26811319f52c9bac78bda8812e24c530eaa7a0bd66efe02d",
+  "en": {
+    "title": "Earliest Day of Consecutive Occupancy",
+    "description": "N houses stand in a row, and one house is occupied each day according to the permutation house. Output the earliest day on which at least M consecutive houses are occupied, counting from day 1.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "The first line contains N M (this site's test range: 1≤M≤N≤100000); the second line contains a permutation of 1..N, giving the house occupied on each day.",
+    "output": "Output the answer as described; results for multiple queries are separated by spaces, in order.",
+    "explanation": "Example 1: only 1 house is required, so day 1 already satisfies it. Example 2: houses 1 and 3, occupied on the first two days, are not yet consecutive; on day 3, filling in 2 makes 1, 2, 3 consecutively occupied, so the answer is 3. Example 3: all 4 houses must be consecutive, so you must wait until day 4.",
+    "hints": [
+      "Record each occupied run's length at its two endpoints. When adding position x, read the run lengths of its left and right neighbors, combine them into a new run, and update its two outer endpoints."
+    ]
+  }
+}

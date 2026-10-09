@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-22",
+  "packageChecksum": "c11b83aee84c851763b518deb16334f1886c4843af53abc0c9b7c57e31ff4b83",
+  "en": {
+    "title": "Salvage Humankind",
+    "description": "There are n rocks in a row, with masses m[i]. Operation 1 queries the total mass of the closed interval [s,e] and outputs it; operation 2 applies bitwise XOR (^) with z to the mass of every rock in the interval, and the change persists for later operations. Ranges are numbered starting from 1.\n\nThe problem comes from OAMaster Rubrik #22, keeping the two original public examples.",
+    "input": "The first line contains n (1≤n≤100000); the second line contains n masses m[i] (0≤m[i]≤1000000); the third line contains ops (1≤ops≤50000); then ops lines follow: 1 s e denotes a query, and 2 s e z denotes an element-wise XOR update (1≤s≤e≤n, 1≤z≤1000000).",
+    "output": "For each type 1 operation, output one line with the total mass of the interval. The total may exceed the 32-bit integer range.",
+    "explanation": "Example 1: the initial total is 12; after XORing items 2 through 3 with 4, the array is [1,1,6,4], and the total is still 12. Example 2: the initial total is 28; after XORing the first 3 items with 8, the array is [2,14,9,9,2], and querying items 2 through 4 gives 32.",
+    "hints": [
+      "For each segment tree node, maintain the count of 1s in each of the 20 bit positions, as well as the interval sum. When a whole segment is XORed at some bit, the count of 1s at that bit becomes the interval length minus the original count; combine lazy tags with XOR."
+    ]
+  }
+}

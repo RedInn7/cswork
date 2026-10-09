@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-23",
+  "packageChecksum": "07fe2ef958b63c800bd36b7c9c2be14ede17c9cfbd5a25fedf8f82b95bebe76a",
+  "en": {
+    "title": "Maximum Charge After Deleting Systems and Merging Their Two Neighbors",
+    "description": "Given a non-empty integer array charge, repeatedly choose and delete one current system: if it has both a left and a right neighbor, those two neighbors automatically merge into one system whose value is the sum of the two neighbors, and the deleted system's value is simply discarded. If the current leftmost or rightmost system is deleted, only it is removed and nothing merges. Continue until only one system remains, and find its maximum possible value. When n=1 no operation is needed, and the last system cannot be deleted.\n\nThis site corrects the catalog according to the fixed full raw text: the deleted value is not added to the neighbors, and an arbitrary interior system cannot be deleted at no cost while keeping both neighbors. The correct answer for the first example [-2,4,3,-2,1] is 4; the 9 mistakenly written in the catalog is not adopted. The numeric values and size ranges of the original raw text are kept in full.",
+    "input": "The first line contains an integer n; the second line contains n integers charge[i]. 1≤n≤200000, −10^9≤charge[i]≤10^9. These numeric ranges come from the full original statement; the standard input protocol is this site's addition.",
+    "output": "Output a single integer, the maximum charge of the last remaining system, which may be negative.",
+    "explanation": "All three public examples come from the full raw text, with answers 4, 9 and 3. Example 1: delete the left end −2 first, then delete the right ends 1, −2 and 3 in turn, leaving 4. Example 2: delete every element other than 9 from both ends in turn, leaving 9. Example 3: delete the left end −1, then the right end 2, leaving 3.",
+    "hints": [
+      "Color the elements by the parity of their original index, and observe which colors can merge.",
+      "Consider separately the case where some value is positive and the case where all values are non-positive."
+    ]
+  }
+}

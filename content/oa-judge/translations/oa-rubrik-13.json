@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-13",
+  "packageChecksum": "f24d7a3a67d877224c7179b5424727be5f3a208f434779e98005233987401bfa",
+  "en": {
+    "title": "Horizontal Pod Autoscaler",
+    "description": "Maintain the pod counts of n microservices. Operation 1 sets the count of a given service directly to x (which may increase or decrease it); operation 2 raises the count of every service below x to x. Execute all operations in order and output the final array.",
+    "input": "The first line contains n, m; the second line contains n initial pods; then m lines follow, each containing typ p x. typ=1 sets 1-based service p directly to x; when typ=2, p must be -1, and max(pods[i],x) is applied to all pods. The original MDX provides no ranges; this site adds 1≤n,m≤200000, 1≤pods[i]≤10^9, 0≤x≤10^9, and defines this stdin/stdout protocol.",
+    "output": "Output the n final pod counts, separated by spaces.",
+    "explanation": "See the accompanying editorial for the full approach, proof of correctness, and complexity.",
+    "hints": [
+      "A point assignment can lower a single value; do not treat the historical HPA maximum as a lower bound that stays valid forever."
+    ]
+  }
+}

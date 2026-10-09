@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-3",
+  "packageChecksum": "8355c410f2493d3a45df8f6758da4c71d818da315542901ea15af95ce1b3fe04",
+  "en": {
+    "title": "Longest Self-Contained Proper Substring",
+    "description": "Find the longest non-empty contiguous substring that is not the whole string such that, for every character appearing in it, all occurrences of that character in the original string lie inside the substring. If none exists, output 0.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "One line containing a string of lowercase English letters, of length 1..100000.",
+    "output": "Output a single integer, the answer required by the problem.",
+    "explanation": "Example 1: the substring dgdg contains every d and g of the original string and has length 4, and there is no longer self-contained proper substring. Example 2: any self-contained substring that contains a must contain all 7 a's, which conflicts with being a proper substring, so the output is 0. Example 3: aba contains every a and b, so the length is 3.",
+    "hints": [
+      "A valid left end must be the first occurrence of some character, so there are at most 26 of them. Scan right from each one, maintaining the rightmost occurrence of the characters seen so far; stop as soon as you meet a character whose first occurrence is before the left end."
+    ]
+  }
+}

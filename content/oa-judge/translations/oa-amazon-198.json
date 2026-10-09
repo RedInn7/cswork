@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-198",
+  "packageChecksum": "e9e1a5a2b47941b75eb0a6ea8edbd83ec04e0f7e72a3c710cca4c339a30e5ef7",
+  "en": {
+    "title": "Maximum Aggregate Temperature Change over All Days",
+    "description": "The aggregate temperature change of day i is the larger of the prefix sum from day 1 to day i and the suffix sum from day i to the last day; both parts include day i. Return the maximum aggregate temperature change over all days; an empty prefix or suffix is not allowed.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains n temperature changes. 1≤n≤100000, −10^9≤change≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9, 5 and −5; in the last example you cannot choose an empty segment to get 0.",
+    "hints": [
+      "First compute the total, then maintain the prefix day by day. The current suffix equals the total minus the previous prefix; compare both the current prefix and the suffix."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-294",
+  "packageChecksum": "2b17b1287d2ae36b1b5f5ff9b3f2ca76fe19ffcc308344c3b78a2d85ba701c13",
+  "en": {
+    "title": "Minimum Range of Shown Values After Flipping At Most m Cards",
+    "description": "n cards initially show A[i]. You may flip at most m cards, and a flipped card shows the corresponding B[i]; every card must be kept and show one side. Find the minimum possible value of the largest shown value minus the smallest shown value. You may flip fewer than m cards or none at all.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m, the second line contains A, and the third line contains B. The raw only gives 1≤m≤n and a value upper bound written literally as 107, with no bound on n; this site specifies 1≤n≤200000, 1≤A[i],B[i]≤10000000, covering both typesetting interpretations, 107 and 10^7.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 8, 4 and 0 respectively. In the second example, flip only the 10 to 5, leaving 1 and 5 with range 4; you cannot flip two cards to get 0.",
+    "hints": [
+      "Treat the two sides of each card as two events tagged with the card number and side, sort them by value, and slide a window. The window must cover at least one side of every card, and the number of front sides in the window must be ≥n−m; while it is valid, shrink the left end and update the minimum width of the value range."
+    ]
+  }
+}

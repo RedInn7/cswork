@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-237",
+  "packageChecksum": "16ff6ab4c779412e65ec012d45653a6547468b579cafa57b1692dd1541c87ff3",
+  "en": {
+    "title": "Lexicographically Smallest Sequence of Fewest Stable Threshold Partitions",
+    "description": "Array values are distinct. One operation chooses a value x present in the array, places all elements less than x first and then all elements greater than or equal to x, keeping the current relative order within each group. The goal is ascending order: first minimize the number of operations, then take the lexicographically smallest threshold sequence; if the array is already sorted, output −1.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the resource values. 1≤n≤50, 1≤value≤10^9, all values distinct.",
+    "output": "Output the threshold sequence separated by spaces; if no operation is needed, output only −1.",
+    "explanation": "The answers are 2 3 4 6, 10 14 and −1. The source's second example output 14 15 belongs to a different array, and 15 is not in the actual input; this site corrects it to 10 14 according to the given input.",
+    "hints": [
+      "Sort the values into b and record the original positions pos; output, in ascending order, every b[i] satisfying pos[b[i−1]]>pos[b[i]]."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-5",
+  "packageChecksum": "db73e6e3d7cae59d2d3fb5076c3603ef4d34ef0b04f4a8481b7cec673a360f74",
+  "en": {
+    "title": "Binary Circuit",
+    "description": "Move all 1s in the binary string to the end. One operation picks a 1 and moves it right to the farthest position, just before the next 1 or at the end of the string; the cost of the operation is 1 plus the number of positions moved. Choose the order of operations to maximize the total cost. If the string is already 0...01...1, the cost is 0.\n\nSee the statement/review record for the problem source and the basis of the rules; limits marked in the input ranges are supplements added by this site.",
+    "input": "The input is one line with the binary string s. The original range 1≤|s|≤100000 is used.",
+    "output": "Output the maximum total cost needed to complete the grouping.",
+    "explanation": "Process the input according to the problem rules; see the companion notes for the full approach, the correctness argument and the complexity.",
+    "hints": [
+      "Split the string into runs of 0s. For each run of 0s, let a be the number of 1s before it and z its length; the run contributes a×z positions of movement, and it can be arranged so that the a preceding 1s each move across it once, for a base fee of a, so the total contribution is a×(z+1)."
+    ]
+  }
+}

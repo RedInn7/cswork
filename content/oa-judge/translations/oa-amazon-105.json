@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-105",
+  "packageChecksum": "ec004aa4f7c495f9dc13d38b663d7c17f050502b0020980b5129203b584201da",
+  "en": {
+    "title": "Maximum Sum of Medians with Every Channel Non-Empty",
+    "description": "Divide all packets into exactly k non-empty channels, using each packet once. A channel's quality is its median, where an even count takes the average of the two middle numbers; maximize the total quality and round it to an integer (0.5 rounds up).\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n k (1≤k≤n≤100000); the second line contains n packet values (1..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: 5 forms a group alone, and 1, 2, 3, 4 have median 2.5, so the total 7.5 rounds to 8. Example 2: one 5 takes a channel alone, the rest 1, 2, 2, 3, 5 have median 2, for a total of 7. Example 3: the two packets each form a group, for a total quality of 3.",
+    "hints": [
+      "Give each of the largest k−1 items a channel of its own, and put the remaining smaller items into the last channel. Add up the solo values and the median of the last group, using doubled integers to avoid floating point."
+    ]
+  }
+}

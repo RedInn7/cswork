@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-braze-1",
+  "packageChecksum": "0dd162ef252dd7a758a98919658e1c23c52f725c25f9d6a982b42a4a5bca3dca",
+  "en": {
+    "title": "Shopping Cart Billing",
+    "description": "For each item, choose the lowest price among its original price and all valid discounts; percentage discounts are rounded down per item before the cart total is computed.\n\nThis site's standard I/O format and supplementary bounds follow this problem's statement.",
+    "input": "The first line contains the number of items n and the number of discount tags d (≤1000). The next n lines are `price tagCount tag...`, with tagCount=0 when there are no tags; then d lines `tag type amount`. type=0 is a discounted price, 1 is a percentage discount, and 2 is a fixed amount off.",
+    "output": "Output the sum of the lowest prices of all items. Tag names are unique; discount amounts are non-negative, percentages are ≤100, and a fixed amount off does not exceed the item's original price.",
+    "explanation": "Enumerate the original price and the prices computed from all valid tags, and take the minimum for each item. A percentage gives `floor(price×(100−percent)/100)`; the fixed amount off is bounded by the item's original price, so negative prices cause no ambiguity.",
+    "hints": [
+      "Enumerate the original price and the prices computed from all valid tags, and take the minimum for each item. A percentage gives `floor(price×(100−percent)/100)`; the fixed amount off is bounded by the item's original price, so negative prices cause no ambiguity."
+    ]
+  }
+}

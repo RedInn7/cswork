@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-45",
+  "packageChecksum": "42f92ff1de233b011ec8d847d082e4d2941bb0d75946d7c1c85c221b48b96648",
+  "en": {
+    "title": "Maximum Predicted Profit with at Most One Share per Company",
+    "description": "Choose stocks with the available funds, buying at most one share per company, with a total purchase price not exceeding saving. The profit is the predicted future sale proceeds minus the purchase price, and buying no shares at all is allowed. Find the maximum profit, not the maximum total sales.\n\nThe input/output protocol was compiled by this site, and numeric ranges missing from the original text are explicitly marked as this site's additions.",
+    "input": "The first line contains n saving, the second line contains currentValue, and the third line contains futureValue. The original text has no numeric constraints; this site adds 1≤n≤1000, 0≤saving≤10000, and 0≤each price≤10⁹, and a current or future price may be 0.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 55; 2; 5. The examples were checked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "This is a 0/1 knapsack: the cost is the current price and the gain is the future price minus the current price. Iterate the capacity in reverse so that each stock is bought at most once, and skip non-positive gains."
+    ]
+  }
+}

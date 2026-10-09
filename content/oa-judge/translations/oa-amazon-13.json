@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-13",
+  "packageChecksum": "1385215d393b4bf3bf374c641f0db0372124aaf6c201b9c7d093ece6a70432f5",
+  "en": {
+    "title": "Balanced Server Segments",
+    "description": "You are given an array of positive integer capacities. A contiguous segment of length at least 3 is balanced if and only if its left-end capacity, its right-end capacity, and the sum of all capacities between the two ends are all equal. Find the number of balanced segments.\n\nThe standard input format, examples and test data were written by CSWork.",
+    "input": "The first line contains n (1..100000), and the second line contains n capacities (1..10⁹).",
+    "output": "Output one integer, the answer required by the problem.",
+    "explanation": "Example 1 contains two balanced segments: the whole [9,3,3,3,9] and the middle [3,3,3].",
+    "hints": [
+      "Let prefix[i] be the sum of the first i items. For a segment [l,r], the condition is arr[l]=arr[r] and prefix[l]+2×arr[l]=prefix[r]. While iterating over the right end r, first add l=r−2 to a hash table, then query (arr[r],prefix[r])."
+    ]
+  }
+}

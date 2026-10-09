@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-20",
+  "packageChecksum": "22372100626a6f8d6ef9fc4ed9409d40a107bddc8ab74e30c467b338eb50c876",
+  "en": {
+    "title": "Dolls Remaining After Nesting",
+    "description": "Put smaller dolls inside larger ones; dolls of the same size cannot nest inside each other. After nesting as much as possible, output the minimum number of dolls left.",
+    "input": "The input gives N (1≤N≤100000), then a line of N sizes (1..100000).",
+    "output": "Output the answer as described; for array answers, separate values with spaces.",
+    "explanation": "Count the occurrences of each size; the answer is the maximum frequency.\n\nCorrectness: each size appears at most once in any nesting chain, so the most frequent size needs at least that many chains. Conversely, sort the sizes and assign them round-robin by index to that many chains; sizes within each chain strictly increase, so every doll fits into a chain.\n\nComplexity: O(N) time, O(N) space.",
+    "hints": [
+      "Count the occurrences of each size; the answer is the maximum frequency."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-zalando-1",
+  "packageChecksum": "5bcca1c323d5cec784da6cf765ebc681a9af8ecf465d3d7d5af66d25d32234bb",
+  "en": {
+    "title": "Longest Whole-Block String Without AAA or BBB",
+    "description": "There are three kinds of indivisible two-letter blocks, AA, AB, and BB, with counts a, b, and c. You may choose some of the blocks and concatenate them whole in any order to build the longest string that contains neither three consecutive A's nor three consecutive B's. Blocks cannot be split or reversed, and each block is used at most once. Return any longest result; the lexicographically smallest is not required.",
+    "input": "One line with three integers a b c, giving the counts of AA, AB, and BB blocks in that order. 0≤a,b,c≤10, a+b+c≥1. This corresponds to the original problem's three parameters AA, AB, BB and its non-empty result guarantee, and keeps the original numeric ranges in full.",
+    "output": "Output one line with a non-empty string containing only A and B, without quotes, spaces, or block separators. It must be built from available whole blocks, contain neither AAA nor BBB, and have maximum length. Any of multiple optimal results is accepted.",
+    "explanation": "The four original inputs are kept. In example 1, the original text's AA-BB-AA-BB-AA correctly concatenates to AABBAABBAA, length 10; the original output was missing an A. In example 2, AA-BB-AB-AB gives AABBABAB, length 8, using all 4 blocks; the original length-7 output and the invalid candidate in its explanation have been corrected. Example 3 uses two AB blocks to get ABAB; example 4 can use at most one BB, giving BB. The rules and full ranges follow the single fixed MDX; there is no separate raw version.",
+    "hints": [
+      "To check whether a concatenation is valid, you only need to remember the last two characters.",
+      "Use the remaining counts of the three block types and the trailing characters as the state.",
+      "Even with an optimal length, splitting blocks and rearranging characters may be invalid."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-34",
+  "packageChecksum": "d7cf278ab851fd79333d327309b68c72931a9124f88c691919a8ab0e91adf80c",
+  "en": {
+    "title": "Minimum Groups with Compatible Pickup Location and Time",
+    "description": "Split all requests into as few groups as possible, where each group has at most 3 requests, the same exact pickup location, and a difference of at most 10 minutes between the latest and earliest times. Each request appears in exactly one group. IDs within each group are in ascending order; groups are ordered by the smallest original input index of their requests, ascending. When multiple optimal solutions exist, any of them is accepted.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by two lines per request: the first line is id HH:MM and the second line is the full location name. 1≤n≤10000; on this site IDs are distinct integers in 1..10⁹, locations are 1..100 printable ASCII characters or spaces, and times are in 00:00..23:59.",
+    "output": "The first line is the number of groups B, followed by B lines, each giving the group size and then the group's IDs in ascending order.",
+    "explanation": "Example 1: at least 2 groups are needed. IDs 1 and 4 can share a group with ID 3 alone, or ID 4 can be alone with IDs 1 and 3 together. Example 2: four compatible requests still need at least 2 groups because each group holds at most 3; any two-group split in the required order is accepted. Example 3: different locations cannot be grouped, so 2 groups are needed, in the order 10 then 11.",
+    "hints": [
+      "Split by location and sort each location's requests by time. Each time, start from the earliest ungrouped request and take up to two following requests whose time difference is ≤10. Finally, arrange the IDs within groups and order the groups by original index."
+    ]
+  }
+}

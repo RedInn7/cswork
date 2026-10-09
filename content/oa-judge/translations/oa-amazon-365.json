@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-365",
+  "packageChecksum": "be41e290f9bf6ba15a1d764f284f9c0273eb41ed717015fa94e139731ac682bd",
+  "en": {
+    "title": "Lower Median of the Distinct-Value Counts of All Subarrays",
+    "description": "For every non-empty contiguous subarray, compute its number of distinct values, and sort all these numbers; when their count is even, take the smaller of the two middle numbers. Find this lower median.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n and the second line contains n numbers. The complete original bounds are in the body: 1≤n≤100000, 1≤a[i]≤n; they are not overridden by the N/A placeholder at the end.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 1; 1; and 1, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "The target rank is (T+1)//2, where T=n(n+1)/2. Binary search on the answer x, use a sliding window to count the subarrays with at most x distinct values, and lower the upper bound whenever the count reaches the target."
+    ]
+  }
+}

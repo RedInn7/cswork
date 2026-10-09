@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-300",
+  "packageChecksum": "0ad4e1e7d4412d19e47606949f357f5f074f4918d3ed9493bf543d9a7079b399",
+  "en": {
+    "title": "Minimum Range Increments to Build the Target Array",
+    "description": "Start from an all-zero array with the same length as target. In each operation, choose a non-empty contiguous range and add 1 to every element in it. Find the minimum number of operations needed to form target. This site follows that complete practice variant and does not claim it matches the actual OA word for word.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains target. The original bounds are 1≤n≤100000, 1≤target[i]≤100000, and the answer is guaranteed to be ≤2147483647; this is a joint constraint, so no array whose answer exceeds 32 bits should be generated.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 7 and 2. A valid seven-step sequence for the second example is 00000→11111→21111→31111→31222→31332→31442→31542; this corrects the source's display error, whose last step was not a range +1.",
+    "hints": [
+      "Going from left to right, the first element needs target[0] new operations; after that, add as many operations as the difference only when the current element is higher than the previous one. Sum the first element and all positive differences."
+    ]
+  }
+}

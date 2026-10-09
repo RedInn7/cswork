@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-266",
+  "packageChecksum": "18fbf12d53556c1e53e7b34bfa52ca406313b155e5fad01a959b035fd8934ddd",
+  "en": {
+    "title": "Maximum Product of Component Sizes After Cutting At Least One Tree Edge",
+    "description": "Given an undirected tree, delete at least one edge, and as many as you like, forming several connected components. Each component's size is its number of nodes; find the maximum product of all component sizes. There are no node weights, the answer is not taken modulo anything, and not cutting at all is not allowed. The original text of this page explicitly says one or more, and examples from another, conflicting problem page must not replace this page's rule.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by n−1 lines each containing u v; nodes are numbered 1..n and are guaranteed to form a tree. The original text had no numeric bounds; this site uses 2≤n≤2000, and the output is an exact integer that may exceed 64 bits.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 6, 1 and 5. A star cannot be split arbitrarily into two 3-node components as in integer partitioning; a two-node tree must be cut, giving 1.",
+    "hints": [
+      "Use a tree knapsack dp[u][k] that keeps the open component containing u at size k, with value equal to the maximum product of the other, already closed components. For each child edge, cutting multiplies by the child subtree's best closed value, while keeping the edge convolves the two component sizes. When closing at the root, exclude k=n."
+    ]
+  }
+}

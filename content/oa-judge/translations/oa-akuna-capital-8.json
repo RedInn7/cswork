@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-8",
+  "packageChecksum": "a97bfbc30414f76e88d325211d687fe23a45de8e80a98f12b023eb3bb25588f7",
+  "en": {
+    "title": "Log Rate Limiting in a Closed Time Window",
+    "description": "Logs are published in time order. At time t, take the total bytes of logs already published successfully in the closed window [t−window,t]; if adding the current log's size does not exceed bytesLimit, publish it, otherwise drop the whole log. Dropped logs do not use any later quota. Return the total bytes of all successfully published logs, not the indices of the successful logs and not an offline choice of the maximum total.",
+    "input": "Three lines bytesLimit, window and n in order, followed by n lines of timestamp size. Following the unsigned interface of the original OCR and explicitly adopting the Linux64 model (64-bit Linux), bytesLimit/window/size are all in 0..4294967295 and timestamp is in 0..18446744073709551615. Timestamps are strictly increasing. n is the non-negative number of logs; the original gives no upper bound for it, and this site sets no extra small bound, supporting every valid transmittable instance within the existing 32MiB per-case input budget.",
+    "output": "Output one non-negative integer, the total bytes actually published; use a 64-bit integer. Zero sizes, a zero limit, a zero window and an empty set of logs are all valid.",
+    "explanation": "The first example comes from the original OCR019: with limit10/window5, sizes 2 and 4 are published at times 0 and 3; the 5 at time 5 would make the closed-window total 11, so it is rejected; the 5 at time 7 is published, for a total of 11. The catalog's edited version returns a list of indices, which disagrees with the real interface in 018, so this site restores the total bytes based on 018–020. The other public examples are derived by this site; see the solution for the interpretation of the range types and the absence of an extra upper bound on n.",
+    "hints": [
+      "The left endpoint of the window is still inside the window.",
+      "Put only successfully published logs with positive size into the active queue.",
+      "Compare against the window length using t−old_time, and compute sum+size in 64 bits."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-61",
+  "packageChecksum": "57cbaf2495b5e658bdd9de5595410852cd1c889d58947e98430537fcfeb0794c",
+  "en": {
+    "title": "Shortest Compressed Length After Deleting K Consecutive Characters",
+    "description": "Delete exactly K consecutive characters, then compress each run of identical characters as \"count+character\"; a run of a single character is written as just the character. Return the shortest compressed length; K=0 and K=N are allowed. This site keeps the examples as curated in the catalog and computes them from the actual character counts; the examples in this version do not exactly match the strings in the original snapshot.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains K, and the second line contains an uppercase string S. The catalog ranges are kept: 1≤N≤1000000, 0≤K≤min(100000,N).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: deleting DDC leaves ABBBCCCC, compressed to A3B4C with length 5. Example 2: there are 10 A on each side; deleting BXX gives 20A, with length 3. The catalog writes 21A here, which does not match its input; the original snapshot uses 11+10 A, for which its 21A is correct. Example 3: deleting EF gives ABC3DG, with length 6.",
+    "hints": [
+      "Precompute the compressed length of every prefix and suffix and the lengths of the runs at the boundaries. Enumerate the deletion window: if the characters on the two sides differ, simply add the two lengths; if they are the same, remove the old costs of the two runs and add the cost of the merged run."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-252",
+  "packageChecksum": "4936b10863dc7fe583577adb1b6ffb6022b338e03dd7fa093a8d5b49ef3f6572",
+  "en": {
+    "title": "Longest Pair of Different Substrings with Equal Character Frequencies",
+    "description": "Two strings in which every character occurs the same number of times, but whose contents are not exactly the same, form a perfect anagram pair. Find the maximum length of two contiguous substrings of the original string that form such a pair; they may overlap, two positions with identical content do not count, and output −1 if no such pair exists.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing the string. 1≤length≤100000, lowercase letters.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 3 and −1. In the first example bcac and cacb have length 4 and overlap, which is valid.",
+    "hints": [
+      "Record each character's first and last positions, and whether it appears in two different runs of identical characters. For each character c that appears in multiple runs, the candidate is last[c]−first[c]; take the maximum, and return −1 if there is no candidate."
+    ]
+  }
+}

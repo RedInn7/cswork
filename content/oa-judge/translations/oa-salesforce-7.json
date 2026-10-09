@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-7",
+  "packageChecksum": "aa8e960a9eea28592006b23e71731ddf73efb1083ce28d19bad49a7f325f8bc0",
+  "en": {
+    "title": "Lexicographically Largest Strict Mountain Sequence",
+    "description": "Construct n integers in the range [lo,hi] that first strictly increase and then strictly decrease; the peak is not at either end, and each phase has at least one adjacent edge. Find the lexicographically largest such sequence; output −1 if there is no solution. The original example 10,11,10,9,8, rather than the all-decreasing 11,10,..., supports forbidding an empty rising phase.\n\nThe input/output format was compiled by this site.",
+    "input": "One line with n lo hi. The original text gives no numeric bounds; on this site 1≤n≤200000, 1≤lo≤hi≤10⁹.",
+    "output": "If there is no solution, output only −1; otherwise, first output n, then output the n elements of the sequence.",
+    "explanation": "The results are no solution, [10,11,10,9,8], and [9,10,9,8,7,6], respectively.",
+    "hints": [
+      "Let d=hi−lo+1. At least 3 positions are needed, and at most 2d−1. To make the first item as large as possible, use the shortest feasible rising phase: the number of rising edges is p=max(1,n−d); start at hi−p, increase one by one up to hi, then decrease one by one."
+    ]
+  }
+}

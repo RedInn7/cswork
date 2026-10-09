@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-9",
+  "packageChecksum": "93621d0f8db3aca4eff18cba79da7c0637b08c10b1a3098826875d26ecb1afa0",
+  "en": {
+    "title": "Counting Strict Rise-Then-Fall Partitions by Segment Averages",
+    "description": "Split the array, in its original order, into at least 3 non-empty contiguous segments that together cover the whole array exactly. Each segment is represented by the average of its elements. Count the partitions whose representative sequence first strictly increases and then strictly decreases: the peak must be an interior segment, and each side must have at least one strict change; equal averages are invalid, and a purely monotonic sequence is invalid. Different sets of cut points count as different partitions. This site explicitly outputs the exact integer, with no modulus and no overflow. The original statement gives no modulus rule; although its starter returns int, that cannot cover the full counting range, and this site cannot infer any int overflow or modulus behavior of the original platform from it.",
+    "input": "The first line contains n; the second line contains n integers arr[i]. Full original constraints: 2≤n≤100, -10^9≤arr[i]≤10^9. The standard input/output is this site's wrapper.",
+    "output": "Output the total number of valid partitions as an exact non-negative decimal integer. Do not take a modulus or apply 32-bit or 64-bit overflow. Output 0 when n<3.",
+    "explanation": "The valid partitions of the first original example are 1|3 2|1, 1|3|2 1, and 1|3|2|1, 3 in total. The second original example gives 49. In this site's third example [1,2,3], the segment averages can only increase and never decrease, so the answer is 0.",
+    "hints": [
+      "Use the left and right endpoints of the last segment, plus whether you are currently in the rising or the falling phase, as the state.",
+      "Averages can be compared by cross-multiplying; the count requires big integers.",
+      "There must be a strict rise first and then a strict fall; an empty slope is not allowed."
+    ]
+  }
+}

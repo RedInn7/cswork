@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-56",
+  "packageChecksum": "e2dec2bfd0656a47c2fbc6a0addb5c8b76d0040e684004a97a6fa1dc7659aeb4",
+  "en": {
+    "title": "Maximum Serial Throughput Within Budget",
+    "description": "Scaling service i up x times costs x×cost[i] and changes its throughput to base[i]×(1+x), where x is a non-negative integer. The throughput of a serial pipeline is the minimum over all services. Find the maximum throughput within the total budget.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n budget, the second line contains base, and the third line contains cost. The source gives no numeric ranges; on this site 1≤n≤100000, 1≤base[i],cost[i]≤10⁹, 0≤budget≤10⁹.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: with no budget, the bottleneck is 2. Example 2: throughput 4 needs a budget of 10; throughput 5 needs 22, which exceeds 20, so the maximum is 4, and the budget does not have to be spent completely. Example 3: at most two scale-ups, giving throughput 3×3=9.",
+    "hints": [
+      "Binary search the target throughput T. Service i needs at least ceil(T/base[i])−1 scale-ups; sum the minimum costs one by one, and if the total exceeds the budget, T is infeasible."
+    ]
+  }
+}

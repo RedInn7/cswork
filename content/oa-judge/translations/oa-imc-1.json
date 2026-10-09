@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-imc-1",
+  "packageChecksum": "d4e789d3e1a352d1cc6490ba157e71133531356890808442a1fec1cf10e7e940",
+  "en": {
+    "title": "Pharmaceutical Waste Reduction",
+    "description": "You are given multiple container groups and multiple orders. Each order must be filled completely by a single container; within the current container group, choose the smallest container whose capacity is not less than the order's demand, and the waste is the capacity minus the demand. If a group cannot fulfill some order, that group is infeasible. Find the feasible container group with the least total waste and return its 1-based index; break ties by the smallest index. If no group is feasible, all three reference implementations of the original problem return -1, and this site explicitly adopts -1.",
+    "input": "The first line contains the number of orders R and the number of container groups S. The second line contains R demands. Then, for each group, one line gives the number of containers C followed by the C capacities. This site's resource bounds: 1≤R≤2000, 1≤S≤100, 1≤C≤2000, all demands and capacities are 1..10^9, and the total number of capacities over all container groups is ≤100000. The original problem gives no numeric scale; only resource limits are added here, and the container selection and waste definitions are unchanged.",
+    "output": "Output the 1-based index of the optimal container group; if no container group can fulfill all orders, output -1 (this is this site's convention, consistent with the Python, Java and C++ implementations of the pinned source).",
+    "explanation": "Sort each group's containers. For each order, binary search for the first container whose capacity is not less than the demand; if found, add the difference, otherwise give up on this container group. Finally compare the total waste of all feasible groups.",
+    "hints": [
+      "Sort each container group first, then use lower_bound to find the smallest feasible capacity for each order."
+    ]
+  }
+}

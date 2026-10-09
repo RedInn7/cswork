@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-11",
+  "packageChecksum": "ebf1553fe7cbb9d2ffff63bcc53484641dad367e3f0f68ed713c0007fc042483",
+  "en": {
+    "title": "Remaining Single Blocks After Carrying Right",
+    "description": "Process the piles from left to right: every two blocks combine into one block that is added to the pile on the right, and the current pile keeps at most one block. Carrying continues past the end of the original array until no more merges are possible. Find the number of piles that end up with one block.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains n (1..100000), and the second line contains n block counts (0..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the totals pile by pile are 5, 5, 3, and each keeps 1; at the end carry=1 keeps 1 more, for a total of 4.\n\nExample 2: there are no blocks, so the answer is 0.\n\nExample 3: two blocks combine into one to the right, leaving only 1 pile.",
+    "hints": [
+      "Maintain a carry. The parity of the current total v+carry decides whether one block stays, half of it carries to the next pile, and at the end keep processing the binary bits of carry."
+    ]
+  }
+}

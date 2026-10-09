@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sig-4",
+  "packageChecksum": "cb8bb18a4a06c001141ae76a34546e18a73da16b726a39fa7dc754f83dcfe64b",
+  "en": {
+    "title": "Ordered Position Pairs Whose Concatenated Fragments Form the Access Code",
+    "description": "You are given positive integer fragments and a positive integer accessCode. Two fragments at different positions can be placed in either order, and their decimal representations are concatenated directly (not added). Count all ordered position pairs whose concatenation equals accessCode. Each fragment position can be used only once; swapping the positions of two fragments with the same value also counts as a different way.",
+    "input": "The first line contains N and accessCode (1≤N≤100000, 1≤accessCode≤10^18). The second line contains N positive integer fragments, each at most 10^9. Integers are written in canonical decimal form without leading zeros.",
+    "output": "Output the number of ordered position pairs that form accessCode.",
+    "explanation": "Enumerate every split of accessCode into two non-empty parts. For each split, look up the occurrence counts of the left and right fragments; when both sides are the same, subtract the cases where the same position would be used twice.",
+    "hints": [
+      "A concatenated number corresponds to one split point of the target string.",
+      "Counting by position means different positions holding the same value are distinguishable.",
+      "For splits whose left and right parts are equal, exclude pairing a fragment with itself."
+    ]
+  }
+}

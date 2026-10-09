@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-175",
+  "packageChecksum": "4ec4a145987a4f2acbfaebbc1d3c3a3ffe97e0aee5705139687bc14f74b52fce",
+  "en": {
+    "title": "Shortest Execution Time with a Gap Between Identical Tasks",
+    "description": "Each character is a task that takes 1 unit of time, and identical characters belong to the same type. You may reorder the tasks freely and insert idle time; two tasks of the same type must be separated by at least minGap full time units. Find the minimum time to finish all tasks.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains the lowercase task string; the second line contains minGap. The original snapshot gave no numeric bounds; this site uses 1≤string length≤100000, 0≤minGap≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: ab_ ab_ ab (spaces are only for grouping) takes 8 units, with 2 units between tasks of the same type. Example 2: there is no gap requirement, so the 6 tasks run back to back and the answer is 6. Example 3: a has 6 tasks, which need at least 16 units from the first to the last; other tasks can fill the gaps, so the answer is 16.",
+    "hints": [
+      "Let f be the highest frequency and c the number of types that reach it; the answer is max(total tasks,(f−1)(minGap+1)+c)."
+    ]
+  }
+}

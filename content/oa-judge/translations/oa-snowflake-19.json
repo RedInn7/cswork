@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-19",
+  "packageChecksum": "d72c1401cfd0204c254853ff8422c64834f6c5678e537fce79da8ac641034ce9",
+  "en": {
+    "title": "Lexicographically Largest Result of Prefix MEX Removals",
+    "description": "Repeatedly choose a non-empty prefix, append its MEX to the result, and delete that prefix, until the array is empty. Find the lexicographically largest result; when one array is a proper prefix of another, the longer one is larger. The MEX is the smallest non-negative integer that does not appear.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains n, and the second line contains n values. 1≤n≤100000, 0≤arr[i]≤n.",
+    "output": "First output the length of the result, then output the corresponding integer array.",
+    "explanation": "The answers to the three public examples are, in order: 1\n3; 3\n0 0 0; 2\n3 3. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Precompute suffix frequencies and suffix MEX values; in each round, take the MEX of the remaining array and cut the shortest prefix that first covers 0..MEX−1. When the MEX is 0, delete only one element. When a frequency drops to zero, update the suffix MEX downward."
+    ]
+  }
+}

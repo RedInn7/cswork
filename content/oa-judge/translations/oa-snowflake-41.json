@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-41",
+  "packageChecksum": "a5ca529993a8a214ec166c7bfd5ab1e8beeec56388c6a1454b7f2662399a5357",
+  "en": {
+    "title": "Count Free Roof-Painting Options from Generated Side Lengths",
+    "description": "Generate n side lengths: s[0]=seed, s[i]=s[i−1]+1+((k*s[i−1]+b) mod m). Both the length and the width are chosen from these side lengths, and a roof with area≤area can be painted for free. Count the ordered (length, width) combinations: swapping length and width gives a different option, and a square is counted once.\n\nThe input/output protocol was compiled by this site, and numeric ranges missing from the original text are explicitly marked as this site's additions.",
+    "input": "One line: seed n k b m area. 1≤n≤6000000; 1≤seed,k,b,m≤10⁹, 1≤area≤10¹⁸; every generated s[i] is guaranteed to be in 1..10⁹ as well. The original upper bound of 6,000,000 for n is not reduced; use exact integer comparisons.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 5; 1; 1. The examples were checked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Each side length is at least 1 greater than the previous one, so the sequence is already strictly increasing. Store it in a compact unsigned 32-bit array and move a right pointer leftward from the end; for each left side length, add the number of right side lengths whose area qualifies."
+    ]
+  }
+}

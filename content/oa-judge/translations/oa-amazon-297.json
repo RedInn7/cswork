@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-297",
+  "packageChecksum": "3e952e121837ee2eb699c4ffa3b10a42180bacc6deac6e80e77dd6790431bf22",
+  "en": {
+    "title": "Minimum Energy to Take All Luggage From Both Ends",
+    "description": "Each time, take the leftmost or the rightmost remaining bag. Taking a bag of weight w from the left has base cost w·X, and from the right w·Y. If this take and the previous one are both from the left, add El; if both are from the right, add Er; the first take has no consecutive cost. Take all the bags and find the minimum total energy.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n X Y El Er and the second line contains weights. The original statement gives no value bounds; on this site 1≤n≤200000, 0≤weights[i],X,Y,El,Er≤10^9. Output the exact integer, which may exceed 64 bits.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 576, 15 and 0. In the second example, take 5 from the left and 1 from the right, avoiding the extra cost of 100 for two left takes in a row.",
+    "hints": [
+      "Enumerate the final number of left takes l and right takes r=n−l. The base cost is uniquely determined by the first l items and the last r items, and the minimum numbers of consecutive left/right repeats are max(0,l−r−1) and max(0,r−l−1) respectively. Accumulate prefix sums and enumerate to find the minimum."
+    ]
+  }
+}

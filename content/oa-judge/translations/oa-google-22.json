@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-22",
+  "packageChecksum": "586523154445b8d4ffffd2c76d787008aaa6d2cc75728e1d1fd5f7e7f9d3b89c",
+  "en": {
+    "title": "Last Character After Alternating Deletions",
+    "description": "Repeat the string S K times. Starting from the left, delete the 1st, 3rd, 5th… characters; in the next round, starting from the right, delete the 1st, 3rd, 5th… characters. Keep alternating between left and right, stop when one character remains, and output it.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "The first line contains S (1..100 English letters, digits, or $ # & *); the second line contains K (1..10000).",
+    "output": "Output the answer as described; results for multiple queries are separated by spaces, in order.",
+    "explanation": "Example 1: abcd repeated 3 times leaves bdbdbd, bbb, and b after the three rounds, in turn. Example 2: deleting alternately from the left and the right finally leaves &. Example 3: there is only Z at the start, so no deletion is needed.",
+    "hints": [
+      "The surviving original indices always form an arithmetic sequence. Maintain the first term head, the common difference step, and the remaining count count; a left deletion always moves the first term, while a right deletion moves it only when the count is odd."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-6",
+  "packageChecksum": "007386756dcfce7d94704ebeda1f5c25e490224927beec1e45b250336710bcb0",
+  "en": {
+    "title": "Lock Acquire/Release Log Checker",
+    "description": "Each event is ACQUIRE lock or RELEASE lock. Locks must be released in the reverse order of acquisition; a lock that is already held cannot be acquired again, and a lock that is not held cannot be released. Return the 1-based index of the first erroneous event; if no event is erroneous but some lock is still held at the end, return the number of events + 1; otherwise return 0.\n\nThe input/output protocol and the limits marked as 'added by this site' were compiled by this site; limits not given in the original problem are not treated as part of the original source.",
+    "input": "The first line contains n; each of the next n lines is ACQUIRE name or RELEASE name. Added by this site: 0≤n≤200000, and name is an ASCII identifier without whitespace.",
+    "output": "Output the index of the first error, n+1 in the dangling case, or 0.",
+    "explanation": "See the accompanying editorial for the algorithm idea, proof of correctness, and complexity.",
+    "hints": [
+      "First distinguish the explicit rules of the original problem from the stdin/stdout conventions added by this site."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-3",
+  "packageChecksum": "0565cfa02bca27e0996229ee1ba6f50bc7eb1648ef3d50a071234fbc9c6c78b7",
+  "en": {
+    "title": "Count Events in the Last 15 Minutes by User and Channel",
+    "description": "Process EVENT and COUNT in input order. COUNT u c t counts only previously processed events with the same user and channel whose timestamps lie in the closed interval [t−15,t]. Timestamps are not guaranteed to be increasing, and events that appear later in the input must not be counted early; duplicate events are counted individually.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains q, followed by q lines EVENT user chat timestamp or COUNT user chat timestamp. This site uses 1≤q≤100000; user and chat are 1..20 ASCII letters, digits, or underscores; 0≤timestamp≤10⁹, in minutes.",
+    "output": "First output the number of COUNT commands p, then output the p query answers in order, one per line. If there is no COUNT, output only 0.",
+    "explanation": "In Example 1 the query results are 2, 1; the endpoint 15 minutes earlier is included. In Example 2 the timestamps are out of order and future times are not counted, giving 1, 1. In Example 3 later events do not affect earlier queries, giving 0, 1.",
+    "hints": [
+      "First collect, sort, and deduplicate the EVENT times for each user and channel, and use a Fenwick tree to store the frequencies of processed events. Then process the input in order again: EVENT adds one, and COUNT queries the difference between the prefix frequencies for ≤t and <t−15."
+    ]
+  }
+}

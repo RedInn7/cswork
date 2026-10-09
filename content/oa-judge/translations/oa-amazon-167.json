@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-167",
+  "packageChecksum": "0e1d321ca90c03f557da63f59e14d0ac44362b8ff7402ec69499b32b1d263ddb",
+  "en": {
+    "title": "Minimum Maximum Adjacent Gap After Deleting k Numbers",
+    "description": "Keep n−k of the original elements, sort the kept elements, and take their maximum adjacent difference; minimize that value. When only 1 element is kept, this site's convention is that the maximum adjacent difference is 0. The source text is truncated; the objective of this problem was recovered from its complete example explanation, and it is not to minimize the maximum minus the minimum of the whole range.\n\nThe standard I/O, examples and solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n k, and the second line contains n numbers. The original snapshot gives no value bounds; this site sets 1≤n≤200000, 0≤k<n, and values in −10^9..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: keep 3, 4, 5, for a maximum adjacent difference of 1. Example 2: only one element is kept, so the answer is 0. Example 3: no number can be deleted, the adjacent differences are 3, 4, 1, so the answer is 4.",
+    "hints": [
+      "After sorting, only n−k consecutive elements need to be considered; on the array of adjacent differences, maintain the maximum of each window of length n−k−1, then take the minimum."
+    ]
+  }
+}

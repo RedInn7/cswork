@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-12",
+  "packageChecksum": "d5b9b4177f0b819c383ea277beed5aaa7f760fe19b24bebe3bc1b99fc6ae8ac0",
+  "en": {
+    "title": "Longest Subsequence with at Most k Adjacent Changes",
+    "description": "Choose a subsequence of the skill array in which the number of adjacent elements with different values is at most k, and find its maximum length. The subsequence does not need to be contiguous.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains n k, and the second line contains n skill values. The original text gives n≤2000 and the remaining constraints are truncated; this site specifies 1≤n≤2000, 0≤k<n, and 1≤skill value≤10⁹.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 5; 3; 1. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Maintain dp[value][j], the longest length ending with value using at most j changes, and the global best best[j] for each j. Update j in decreasing order, taking the better of extending the same value and best[j−1]+1."
+    ]
+  }
+}

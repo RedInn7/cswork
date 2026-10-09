@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-26",
+  "packageChecksum": "21fddd13fa2cf043541121882fb44e8ea557b049b7c3a0630ce3145fd145e06c",
+  "en": {
+    "title": "JPMorgan Chase OA #26: Get Search Results",
+    "description": "Implement an autocorrect feature: given a word list words and several queries queries, for each query return all words in the list that are anagrams of it, sorted in ascending lexicographic order.\n\nAn anagram is a string obtained by rearranging the letters of another string, so every letter must occur exactly the same number of times; a word identical to the query also counts.",
+    "input": "The first line contains an integer n, followed by n lines with one word each. Then a line with an integer q, followed by q lines with one query each.\n\n1≤n≤750, 1≤q≤750; every word and query has length 1..100 and contains only lowercase English letters; the words in the list are distinct; every query is guaranteed to have at least one anagram in the list.",
+    "output": "Output q lines. Line i first gives the number k of results for query i, followed by those k words in ascending lexicographic order, separated by spaces.",
+    "explanation": "Example 1: the only anagram of spede is speed; the anagrams of deul are duel and dule. cars is not an anagram of any query.\nExample 2: stop, pots, tops, opts, post, and spot are all anagrams of one another and are output in lexicographic order; the query post itself is also in the result. stops has one extra s and matches only itself.\nExample 3: aabb, abab, and bbaa are anagrams of baba; ab matches only ab; cab matches only abc.",
+    "hints": [
+      "Use a word's sorted characters as its signature; anagrams share the same signature.",
+      "Group words by signature in a hash map, so each group only needs to be sorted once.",
+      "Words identical to the query must be output too."
+    ]
+  }
+}

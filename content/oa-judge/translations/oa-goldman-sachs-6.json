@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-6",
+  "packageChecksum": "3a04a722c87b58e892a2b4580d6ac0f62620986e54347868454bdc99cae874d4",
+  "en": {
+    "title": "Cutting Metal Surplus",
+    "description": "Given several metal rods, the cost of each cut, and the sale price per unit length. You may choose one positive integer saleLength; rods can be cut into pieces of length saleLength, and any leftover scrap is discarded with no revenue. You may leave a rod unprocessed. The goal is to maximize the total sales revenue minus the cutting costs.\n\nThis site's input format and explicitly marked ranges are compiled by CSWork and do not pose as the original OA platform's I/O.",
+    "input": "The first line contains n, costPerCut, salePrice; the second line contains n rod length values. Original ranges: 1≤n≤50, 1≤length[i]≤10000, 1≤costPerCut,salePrice≤100. This site explicitly lets each rod independently choose how many finished saleLength pieces to keep. When a rod divides evenly and is fully used, the last piece needs no cut to separate it; when there is scrap or only some of the pieces are kept, each finished piece requires one cut, and scrap earns nothing.",
+    "output": "Output the maximum achievable total profit.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Enumerate saleLength=1..max(length). For each rod, compute the number k of finished pieces it can yield. If there is scrap, each kept piece requires one cut, and when the profit is positive keep all k pieces. If it divides exactly, compare: keeping all k pieces needs only k−1 cuts; or keep at most k−1 pieces, cutting each one away from the remainder; or leave the whole rod uncut."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-42",
+  "packageChecksum": "9277b4681133d056713d038af19f95aefa423039646d0913189b39522ed91151",
+  "en": {
+    "title": "Idle Robots with Neighbors in All Four Directions",
+    "description": "A robot is idle if and only if at least one other robot lies strictly to its left and one strictly to its right in the same row, and one strictly above and one strictly below it in the same column. They do not need to be adjacent. Find the number of idle robots.\n\nThe standard I/O, examples, and judging were written independently by CSWork; conventions marked as this site's are not presented as original source constraints.",
+    "input": "The first line contains n (1..100000), followed by n lines of x y (−10⁹..10⁹). Robots at the same coordinates are counted separately, but they are not strict directional neighbors of each other.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: in a 3×3 grid of points, only the center (1,1) has neighbors in all four directions, so the answer is 1. Example 2: there are no neighbors, so the answer is 0. Example 3: the center (0,0) of the cross is idle, while each of the other four points lacks a direction, so the answer is 1.",
+    "hints": [
+      "For each row, record the minimum and maximum x; for each column, record the minimum and maximum y. A point is idle if it lies strictly between both pairs of extremes."
+    ]
+  }
+}

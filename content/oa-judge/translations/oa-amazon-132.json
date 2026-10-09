@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-132",
+  "packageChecksum": "451efb10c0c80a04aba15f810288bb81edda1d326c82125f03d4e74663f98f21",
+  "en": {
+    "title": "Remaining Tasks After Each Shift",
+    "description": "Tasks are executed in order, and an unfinished task continues across shifts. The rules are completed according to the source's first two examples: when a shift finishes all tasks, output 0 and discard that shift's excess time, and the next shift starts again from the first task of the whole batch; there is no restart within the same shift.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n m (1..200000), followed by two lines with n task durations and m shift durations respectively, all in 1..10⁹.",
+    "output": "Output the m remaining task counts in shift order.",
+    "explanation": "Example 1: the first shift finishes exactly, so output 0; after the restart, finishing the first task leaves 2, then finishing the second leaves 1. Example 2: the first shift finishes the first two tasks, leaving 3; the second shift finishes the rest and discards the excess; for the new batch the next three shifts leave 4, 4 and 3. Example 3: the cumulative times used are 1, 6, 7, 12, 14, leaving 5, 3, 3, 1, 0 respectively.",
+    "hints": [
+      "Prefix sums of task durations record completion times. Accumulate the time already used in the current batch and binary search the number of completed tasks; when the total duration is reached, output 0 and reset to zero, preparing the restart for the next shift."
+    ]
+  }
+}

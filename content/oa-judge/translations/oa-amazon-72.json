@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-72",
+  "packageChecksum": "f7fbb0c77f5825e52324baaf2d748ad9469d9329e8905d3c9f57e66dbd9549ef",
+  "en": {
+    "title": "Maximum Price of a Plan and a Feature Under Incompatibility Constraints",
+    "description": "Choose one plan and one feature; the given incompatible index pairs cannot be chosen. At least one compatible combination exists; find the maximum total price.\n\nThe standard I/O and solution were written independently by this site; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n m X; 2≤n,m≤100000, 1≤X≤min(200000,nm−1); then two lines of price arrays (1..10⁹); followed by X lines of incompatible pairs, numbered from 1.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: 8+4 and 5+7 both give 12; 8+7 is forbidden. Example 2: only plan 2 and feature 2 can be paired, for a total price of 6. Example 3: the highest pair 9+8 is allowed, for a total price of 17.",
+    "hints": [
+      "Sort features by price in descending order, and for each plan scan until the first compatible feature. The total number of failed checks is ≤X; take the maximum of each plan's best total price."
+    ]
+  }
+}

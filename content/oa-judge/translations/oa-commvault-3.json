@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-commvault-3",
+  "packageChecksum": "ff73f3e7632bcd9e69b0e6a6d3570aad50e383033996f273bbc059f670f3bf2d",
+  "en": {
+    "title": "Number of Good Pairs",
+    "description": "In an undirected graph, count the unordered node pairs whose endpoints belong to different connected components.\n\nThis site's standard input/output format and supplementary bounds follow this problem's description.",
+    "input": "The input is N M (1≤N≤65,535, 0≤M≤2×10^5), followed by M lines of edges u v (1-based, 1≤u,v≤N). Duplicate edges and self-loops are allowed, and the result fits safely in a signed 32-bit integer.",
+    "output": "Output the good pair count (as a 64-bit integer).",
+    "explanation": "Use union-find to build the connected component sizes; subtract the number of pairs within each connected component from the total number of unordered node pairs. An independent oracle builds the graph, runs DFS, and then enumerates the node pairs directly.",
+    "hints": [
+      "Use union-find to build the connected component sizes; subtract the number of pairs within each connected component from the total number of unordered node pairs. An independent oracle builds the graph, runs DFS, and then enumerates the node pairs directly."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-10",
+  "packageChecksum": "c6e1123344830b4bdc4806a313ab9c68251a54fabbe5da248285d315fd2dc42a",
+  "en": {
+    "title": "Checksum over All Ordered Packet Pairs",
+    "description": "Packets are numbered 1..n, and C(i,j)=i mod j+j mod i. Find the sum of C over all ordered pairs modulo 1000000007. The diagonal terms are 0, so it makes no difference whether the pairs must consist of distinct packets.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "One line containing n; complete OCR bound 1≤n≤1000000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 10; 24. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "By symmetry, compute 2 times Σ(i mod j). Fix j; when n=qj+r, the complete remainder cycles contribute q·j(j−1)/2, and the remainder contributes r(r+1)/2."
+    ]
+  }
+}

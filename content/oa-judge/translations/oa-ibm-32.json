@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-32",
+  "packageChecksum": "503c3eb9111ce249e43ca32c071e7f2279de7f731b76d8713b61567fed22342a",
+  "en": {
+    "title": "Minimum Cores to Run Closed-Interval Processes",
+    "description": "Each process runs during the closed interval [start,end], and a core can run at most one process at a time. Find the minimum number of cores.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by n lines of start end. 1≤n≤100000, 1≤start≤end≤10^9.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 2, 2 and 1 respectively; intervals that only touch at an end point still overlap.",
+    "hints": [
+      "Sort the start times and end times separately and scan with two pointers. When a start equals an end, process the start first, and update the maximum current concurrency."
+    ]
+  }
+}

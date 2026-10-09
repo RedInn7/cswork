@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-47",
+  "packageChecksum": "704a7c0aaee103cf136d1300f9c3e731444a7a938d2dcc0c73e6fdadf59f5c01",
+  "en": {
+    "title": "Size of the Union of Supersets After Flipping Any Zero Bits",
+    "description": "Represent each given integer as exactly n bits (leading zeros allowed). For each original string, any zero bits may be flipped to 1; an original 1 cannot be changed to 0, and flipping nothing is also allowed. Find the size of the union of all results produced by all original strings; duplicate results are counted once, and no modulus is taken.\n\nThe input/output protocol was compiled by this site, and numeric ranges missing from the original text are explicitly marked as this site's additions.",
+    "input": "The first line contains n k, and the second line contains k integers. The original text has no numeric bounds; this site adds 1≤n≤20, 1≤k≤100000, and 0≤integer<2ⁿ; the input may contain duplicates.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 6; 1; 16. The examples were checked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Mark the original masks in a boolean array. Run SOS subset propagation bit by bit: a state in the upper half absorbs the state in the lower half obtained by removing the current bit. In the end, each mask is marked if it contains at least one original submask; sum the boolean values."
+    ]
+  }
+}

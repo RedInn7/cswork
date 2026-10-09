@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-43",
+  "packageChecksum": "549ded4aa764e4a047185f6194c5928af4c2b8dd6776b6aea9fcf29c1e7600f8",
+  "en": {
+    "title": "Longest Distance in a Forest of Compatible Wireless Frequencies",
+    "description": "Device connections form a tree, and each frequency is 1, 2, or 3. An edge can carry signals if the absolute difference of its endpoints' frequencies is ≤1, and every edge along a path must be compatible. Find the maximum number of edges between any two devices that can communicate; return 0 if no edge is usable. Adjacent devices with the same frequency are also valid.\n\nThe input/output protocol was compiled by this site, and numeric ranges missing from the original text are explicitly marked as this site's additions.",
+    "input": "The first line contains n, the second line contains n frequencies, followed by n−1 lines of 1-based undirected edges. The original raw text gives no upper bound on the number of nodes (the 100,000 in the catalog was added during compilation); this site specifies 1≤n≤100000, the input is a valid tree, and frequencies are 1, 2, or 3.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 2; 0; 2. The examples were checked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Delete the edges whose frequency difference is 2 to get a forest; for each unvisited component, first traverse to the farthest endpoint, then traverse from that endpoint to get the component's diameter, and take the maximum."
+    ]
+  }
+}

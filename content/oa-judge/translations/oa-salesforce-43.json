@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-43",
+  "packageChecksum": "d513b3ad80406ae8e36c23d65c11a1f62d5020352a9982020d946c29278ff720",
+  "en": {
+    "title": "Two-Sided Visibility Counts Judged by Target Tower Height",
+    "description": "Towers stand in a row. Tower x is visible from tower y if and only if every tower between them is strictly shorter than the target tower x. The observer y's own height imposes no restriction. For each tower, output the total number of towers it can see to its left and right, excluding itself.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n and n heights. The original has no numeric bounds; this site adds 1≤n≤200000, 0≤height[i]≤10^9. Duplicate heights are allowed.",
+    "output": "Output the n visible-tower counts in original position order, separated by spaces or newlines.",
+    "explanation": "The outputs of the three public examples are, in order: 2 2 3 1; 2 2 1; 0. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Scan from left to right with a stack holding the strict record-height towers of the scanned prefix as seen looking right to left; first add the stack length to the current visible count, then pop the old records whose height is ≤ the current tower's and push the current tower. Repeat in reverse and accumulate."
+    ]
+  }
+}

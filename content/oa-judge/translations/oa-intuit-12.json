@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-12",
+  "packageChecksum": "6f55464ea7bedceb14a32b6dd0a6d3e96d1dd9afb3892f4e501f5c3c90608758",
+  "en": {
+    "title": "Tank Array",
+    "description": "Arrange tanks of types 1..m into a sequence of length n so that the number of contiguous subarrays containing only distinct types is maximized; if there are multiple such sequences, output the lexicographically smallest one.",
+    "input": "The input is n m, 1≤n≤100000, 1≤m≤10000000. Output n integers separated by spaces.",
+    "output": "Output the answer as described; for array answers, separate the values with spaces.",
+    "explanation": "Construct by cycling 1,2,…,m.\n\nCorrectness: each interval of length at most m contributes at most one qualifying subarray, and an interval longer than m cannot have all distinct elements; the upper bound is Σ(n−ℓ+1), ℓ=1..min(n,m). The cyclic sequence makes every window of length ≤m consist of distinct elements, reaching this bound. A lexicographically smallest construction must always choose the smallest type that does not appear in the previous m−1 positions, so it is exactly the cycle 1,2,…,m.\n\nComplexity: O(n) time and O(1) auxiliary space (excluding the output).",
+    "hints": [
+      "Construct by cycling 1,2,…,m."
+    ]
+  }
+}

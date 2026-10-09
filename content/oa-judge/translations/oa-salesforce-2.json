@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-2",
+  "packageChecksum": "cb984ee43b8bea19b1b77fee47605fa48f36a9f83531f236b4ab841e558a8c15",
+  "en": {
+    "title": "Minimum Purchase Cost per Level for Two-Feature Models",
+    "description": "Each model has a positive cost and a two-bit feature string 00/01/10/11. For each k=1..n, choose a set of models such that each of the two features is supported by at least k models, and find the minimum total price; the same model cannot be bought more than once.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line contains n, followed by n lines of cost feature. 1≤n≤1000, 1≤cost≤10000.",
+    "output": "First output n, then output the n answers; output −1 for an impossible k.",
+    "explanation": "The results are [2,6,15,26,−1,−1], [−1,−1], and [5,15,−1], respectively.",
+    "hints": [
+      "Sort the costs of 01, 10, and 11 separately. Pair the i-th cheapest 01 with the i-th cheapest 10 to form one dual-feature unit, merge these with all 11 costs in sorted order, and take prefix sums one by one."
+    ]
+  }
+}

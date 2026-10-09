@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-126",
+  "packageChecksum": "95af1d8b12a67235c543739ce9682c6a52979e0d649257071848a9b22187fef6",
+  "en": {
+    "title": "Number of Substrings Where the Count of Zeros Equals the Square of the Count of Ones",
+    "description": "Count the non-empty binary substrings in which the number of 0s equals the square of the number of 1s. Different index ranges are counted separately.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "One line with a 01 string of length 1..100000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the three length-2 ranges 01, 01 and 10, plus the whole 010001, 4 in total. Example 2: three adjacent 01 or 10 ranges, 3 in total. Example 3: a single 0 does not satisfy 1=0², so the answer is 0.",
+    "hints": [
+      "If there are k ones, the substring length must be k²+k with k≥1. So enumerate at most √n values of k, and for that fixed length use prefix sums of the count of 1s to check every start."
+    ]
+  }
+}

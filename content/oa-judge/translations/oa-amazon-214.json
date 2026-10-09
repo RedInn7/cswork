@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-214",
+  "packageChecksum": "536ef096428574447eb1faf0fc2af6128d34b30e5f558a9cc56dd1cb0633948c",
+  "en": {
+    "title": "Maximum Total Picked from Contiguous Piles with Strictly Increasing Picks",
+    "description": "Choose a non-empty contiguous range and take a positive integer number of items from each pile, no more than that pile's capacity, so that the amounts taken strictly increase from left to right. Find the maximum number of items that can be taken. A prefix that takes 0 contributes nothing to the total and can simply be dropped, so it does not affect the optimal answer.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the pile capacities. 1≤n≤5000, 1≤capacity≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 12, 16 and 20.",
+    "hints": [
+      "Enumerate the right endpoint and take that whole pile; moving left, take min(this pile's capacity,amount taken by the right neighbor−1) each time, stop once it reaches 0, and record the maximum running total."
+    ]
+  }
+}

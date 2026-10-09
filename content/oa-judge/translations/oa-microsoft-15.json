@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-15",
+  "packageChecksum": "cbb259a1320ddaceb46b2f151bf46b64a69b8a7102492bf7694452d65eb92923",
+  "en": {
+    "title": "Build the Largest Balanced Circle",
+    "description": "Choose as many people as possible and arrange them in a circle so that adjacent heights differ by at most 1; the first and last people are also adjacent. Output any valid circle of maximum size; any rotation and direction is allowed.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains n (1..200000), and the second line contains n heights (1..200000).",
+    "output": "On the first line output the number of people k; on the second line output k heights. You may only use the people actually available in the input; any maximum valid circle is accepted.",
+    "explanation": "Example 1: you can choose the 5 people 1, 1, 2, 2, 3 and arrange them as 1 2 3 2 1; the taller height 3 has only one person, so it cannot serve as an inner link of a larger circle.\n\nExample 2: the two 5s form a valid circle, and the other heights are at least 2 apart, so the maximum size is 2.\n\nExample 3: 4 and 5 are adjacent and form a 2-person circle; 1 cannot join, so the size is 2.",
+    "hints": [
+      "A usable range of consecutive heights needs at least two people at every inner height, while the two endpoints may have just one. Use prefix sums of the frequencies and the next position with frequency ≤1 to find the largest range, then take one person of each height in ascending order and output the remaining people in descending order."
+    ]
+  }
+}

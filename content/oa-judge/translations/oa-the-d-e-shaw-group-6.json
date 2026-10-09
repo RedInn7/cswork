@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-6",
+  "packageChecksum": "4e162b4b788f105c8ec031c0aec53883f82ff86b6e476f54f9f610c3450ebea5",
+  "en": {
+    "title": "Minimum Cost of Removing Two of the First Three Items",
+    "description": "Each time, choose any two of the first three elements of the current array and delete them; the cost of the operation is the larger of the two deleted numbers. If fewer than three elements remain, delete all the remaining elements at once, at a cost equal to their maximum. Find the minimum total cost to empty the array.\n\nThe standard input/output, the ranges added by this site, and the examples follow this problem's description; wherever the source's ranges are missing, they are explicitly marked as this site's additions.",
+    "input": "The first line contains n (1≤n≤1000); the second line contains n positive integers, 1≤arr[i]≤10^6. The ranges are taken from the original problem's constraints.",
+    "output": "Output the minimum total cost.",
+    "explanation": "After the first three items are processed, exactly one item remains. Use dynamic programming to record \"value kept at the current front → minimum cost paid to reach this state\". In each round, consider that value together with the next two items and enumerate which one stays; when fewer than three items remain at the end, settle them all at once as the statement specifies.",
+    "hints": [
+      "After the first three items are processed, exactly one item remains. Use dynamic programming to record \"value kept at the current front → minimum cost paid to reach this state\". In each round, consider that value together with the next two items and enumerate which one stays; when fewer than three items remain at the end, settle them all at once as the statement specifies."
+    ]
+  }
+}

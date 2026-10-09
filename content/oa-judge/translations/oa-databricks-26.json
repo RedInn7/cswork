@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-26",
+  "packageChecksum": "afe6a7d46959f9b4e7f121413ef09530d0345e5db8deeabd1941166d8c08ef1a",
+  "en": {
+    "title": "Index Pairs Reachable by One Digit Swap",
+    "description": "You are given an array of positive integers. An index pair i<j is valid if, after swapping the digits at two positions of the decimal representation of fruits[j] zero times or once, the resulting integer equals fruits[i]. Count the valid index pairs. Zero swaps are allowed, so equal values also count. The digit string after swapping is interpreted as an ordinary decimal integer; leading zeros are not kept.",
+    "input": "The first line contains an integer n (1≤n≤10000); the second line contains n positive integers fruits[i] (1≤fruits[i]≤10^9).",
+    "output": "Output the number of valid index pairs.",
+    "explanation": "For each right-end value, enumerate the integers reachable with zero or one swap, and look up how many times each occurred earlier. Do not treat all numbers with the same digits as mutually reachable; one swap can change only two positions.",
+    "hints": [
+      "Scan the right index from left to right.",
+      "A ten-digit number needs at most 45 position pairs checked.",
+      "Repeated digits may generate the same target, so deduplicate first."
+    ]
+  }
+}

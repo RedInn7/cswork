@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-3",
+  "packageChecksum": "d3f93077a424ff6d0254ef57a21975ae84a438a4f743f3dc4f18ade9403b419b",
+  "en": {
+    "title": "Backspace String Compare",
+    "description": "Given two strings consisting only of lowercase English letters and `#`. `#` is a backspace that deletes the single character immediately before it in the current string; if the string is empty at that moment, it has no effect. Determine whether the two strings are equal after each is processed; output 1 if they are equal, otherwise output 0.",
+    "input": "Two lines with the non-empty strings s1 and s2. Complete original constraints: 1≤|s1|,|s2|≤200000; characters are only lowercase English letters or `#`. The ranges come from the complete raw of the fixed submission; the `1 5` in the compiled MDX is a corrupted fragment. The two-line standard input/output is this site's wrapper.",
+    "output": "Output 1 if they are equal, otherwise output 0.",
+    "explanation": "A backspace on an empty string does nothing; all other rules follow the original definition. You can scan from right to left while counting characters to skip, or use a stack.",
+    "hints": [
+      "When scanning from right to left, increase the skip count whenever you meet #; a normal character is skipped if the skip count is positive, otherwise it takes part in the comparison."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nvidia-7",
+  "packageChecksum": "b2352a44fa908f3c86708d8710963a65534da0632abcb5ff6f785aa76d15db60",
+  "en": {
+    "title": "Read a Nested Dictionary by Dotted Path",
+    "description": "Given a JSON dictionary and a dotted path, access the keys in order. If a key does not exist or a non-object (including an array) is reached along the way, return null. The result may be an entire sub-object or array; array index access is not supported. The source platform does not support dictionaries, so this site converted the pseudo-array examples into real JSON objects.\n\nThis site uses a standard input/output protocol; missing numeric ranges are stated explicitly.",
+    "input": "The first line contains a JSON object, and the second line contains a non-empty path, optionally followed by a trailing newline. Keys match [a-z][a-z0-9_]{0,31}; the whole tree has 1..500 dictionary keys, ≤5000 nodes in total, and container depth ≤30 (the root is level 1). A value can be an object, an array, a string of ≤1000 Unicode scalar values, a JSON number that is an integer in −10⁹..10⁹, a boolean, or null. Arrays have length ≤5000; duplicate keys and lone surrogate characters are not allowed. path consists of 1..31 valid keys joined by dots. The total UTF-8 input size is ≤4MiB. Apart from the source's limit of 500, all of the above is this site's serialization and range protocol.",
+    "output": "Output exactly one JSON value. Any key order within objects and any JSON whitespace are accepted, numbers are compared by value, and booleans are not treated as numbers. Duplicate keys and trailing content are forbidden.",
+    "explanation": "Example 1: car then gears gives the integer 5. Example 2: return the entire a sub-object, in any key order, keeping the array and false. Example 3: a is an array, and neither array indexing nor key access on it is supported, so return null.",
+    "hints": [
+      "Starting from the root, look up the dictionary keys segment by segment; return null immediately on failure, and on success serialize the current value."
+    ]
+  }
+}

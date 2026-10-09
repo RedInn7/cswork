@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-1",
+  "packageChecksum": "0e5dcf2298f7781e5aae38f235cd42ea2de9c4d149841f4c74794569862544e7",
+  "en": {
+    "title": "Obstacles to Remove So a Rigid Shape Can Fall",
+    "description": "In the grid, * forms a non-empty 4-connected shape, # is an obstacle, and - is an empty cell. The shape does not rotate or deform; it only moves down as a whole, one cell at a time, until at least one of its cells reaches the bottom row. Find the minimum number of distinct obstacles that must be removed. The original site's example does not satisfy the connectivity constraint, so this site wrote a new example that follows the rules.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "The first line contains the number of rows R and the number of columns C (1..100); the next R lines are strings of length C containing only *, #, and -. The shape is guaranteed to be non-empty and 4-connected.",
+    "output": "Output the answer as described; separate multiple results with spaces in order, and output an empty line for an empty array.",
+    "explanation": "Example 1: the shape moves down two rows, and the upper-right asterisk must pass through the obstacle on the right; after removing that one obstacle, both asterisks can reach the bottom row, so the answer is 1.",
+    "hints": [
+      "The distance moved down is determined by the shape's lowest cell. Each asterisk sweeps a range of rows in its own column; merge these ranges with column difference arrays, then count the covered obstacles."
+    ]
+  }
+}

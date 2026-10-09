@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-100",
+  "packageChecksum": "e22ed69ce303b8a92ffec5678e7995b0ae4bcabfa21633fc922703f34851bba4",
+  "en": {
+    "title": "Buying New Books Each Day by Preceding Volume Numbers",
+    "description": "volumes is a permutation of 1..n, and on day i that volume arrives. Each day, buy as many new volumes as possible; before buying a volume you must already own every smaller volume number, and several volumes may be bought one after another on the same day. Output the volume numbers bought each day; if nothing is bought, output −1.\n\nThis site independently wrote the standard I/O and the judging; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (1..100000), and the second line contains the permutation volumes of 1..n.",
+    "output": "Output n lines; each line lists the volume numbers bought that day in ascending order, or −1 alone.",
+    "explanation": "Example 1: output −1; 1 2; −1; 3 4 in order. Example 2: buy 1 on the first day, wait on the second and third days, buy 2 3 4 on day 4, and buy 5 on the last day. Example 3: the arrival order is already ascending, so each day buys that day's volume.",
+    "hints": [
+      "Use a boolean array to record arrivals, and let next track the smallest volume not yet bought. Each day, after marking the new volume, buy every arrived volume consecutively starting from next."
+    ]
+  }
+}

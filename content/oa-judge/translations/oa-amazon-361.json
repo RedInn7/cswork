@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-361",
+  "packageChecksum": "887617e8993fd9484ab6fbde0c0c2a688de0fb0792640c2ff7ed61485906dce3",
+  "en": {
+    "title": "Number of Subarrays Where At Least One End Is the Maximum",
+    "description": "Count the non-empty contiguous subarrays whose first or last element equals the maximum of the subarray. Equal and repeated values are allowed, and a range that satisfies both ends is counted only once.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n and the second line contains n prices. The original bounds are 1≤n≤500000, 1≤a[i]≤10^8.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 10; 5; and 6, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Use monotonic stacks to count, separately, the subarrays whose last element is the maximum and those whose first element is the maximum, popping equal values as well so as to find the strictly greater boundary; then use a stack of decreasing groups to subtract the ranges where both ends are the maximum."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-312",
+  "packageChecksum": "35a5987bb0e007c4c31882d5d945581023d4f06b974994a05383d9a37a235ec6",
+  "en": {
+    "title": "Total Number of Products With an Identical Name, Price and Weight Partner",
+    "description": "Each product is recorded as a name, price and weight. A product is a duplicate if some other product matches it in all three fields. Find the number of products that satisfy this condition; the first product of each duplicate group also counts, so two identical products contribute 2 and three contribute 3. This is not the number of deletions needed to remove duplicates.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "Standard input is a JSON array whose items are [name,price,weight]. The original bounds are 1≤n≤100000, 1≤price,weight≤1000, and name consists only of lowercase letters with at most 10 characters. An empty name of length 0 is kept and encoded as the JSON string \"\", and no non-empty lower bound is added.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 0 and 3. This site openly resolves the ambiguity with the original per-product definition, \"a product is a duplicate if another identical product exists\". The source explanation's claim that the first item is usually not counted differs from the formal definition and its code, so it is not adopted.",
+    "hints": [
+      "Count by the (name,price,weight) tuple and add up the full counts of all groups that appear ≥2 times."
+    ]
+  }
+}

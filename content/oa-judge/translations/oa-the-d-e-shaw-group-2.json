@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-2",
+  "packageChecksum": "1f517334a3210a91a307e6513a25fb7b2a8a082297fe0820e56e53d1d4eaa842",
+  "en": {
+    "title": "Sum of the Longest Regions Where Each Student Is the Maximum",
+    "description": "The heights of a row of students are given in standing order. For each index i, consider all contiguous subarrays containing i in which heights[i] equals the maximum of the subarray (other students may be equally tall). The region of i is the longest length among these subarrays. Return the sum of the region lengths over all i. This is not the number of qualifying subarrays.",
+    "input": "The first line contains n, and the second line contains n integers heights[i]. The original problem's own complete ranges: 1≤n≤100000, 1≤heights[i]≤10^9.",
+    "output": "Output the exact integer sum. It can reach 10000000000, so 64-bit or arbitrary-precision integers are required; no modulus is taken.",
+    "explanation": "In the original example [3,5,6], the region lengths are 1, 2, and 3, for a total of 6. An original note claimed the missing source image showed 5, but the formal Output and the explicit rules both give 6; this site discloses the conflict and keeps the formal output, which can be recomputed. In the original example [1,2,1], the lengths are 1, 3, and 1, for a total of 5; the original explanation mistakenly dropped the trailing 1 from the middle range, which should be [1,2,1]. The third example [2,2] is added by this site: both people can take the whole array, for a total of 4.",
+    "hints": [
+      "Only a strictly taller student blocks a region.",
+      "Find the nearest strictly taller index on the left and on the right; students of equal height can be crossed on both sides.",
+      "The sum may exceed 32 bits."
+    ]
+  }
+}

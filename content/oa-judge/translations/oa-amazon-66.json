@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-66",
+  "packageChecksum": "95011ae961ff0c66687cc1dd52bc9eeb10875ee10bc9fe0f03e2fd7cca5570eb",
+  "en": {
+    "title": "Minimum Inversions When Merging Two Strings in Order",
+    "description": "Interleave two strings while keeping the original order of the characters within each string. An inversion is a pair of indices where the earlier character is strictly greater than the later one; find the minimum number of inversions after merging. For the source's zc and qd, the optimum under this definition is 4, not 2.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "Two lines of lowercase strings, each of length 1..1000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: merging into qdzc gives four inversions (q,d), (q,c), (d,c), (z,c), which is optimal; the source's 2 does not match the all-index-pairs definition. Example 2: merging into ab gives 0. Example 3: merging into aba gives only one inversion, (b,a).",
+    "hints": [
+      "Let dp[i,j] be the minimum number of inversions after using the first i and j characters. When a character is appended, the new inversions equal the number of characters larger than it in the two used prefixes; precompute, for each prefix, the count of larger characters for all 26 letters, and use a rolling DP."
+    ]
+  }
+}

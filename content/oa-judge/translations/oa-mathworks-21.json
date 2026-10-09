@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-21",
+  "packageChecksum": "d517ac6036814f96aa3bb08ec9269847d204224ea522aee2159c9b8c1bf9697e",
+  "en": {
+    "title": "Minimum Operations for Parallel Task Execution (MathWorks #21)",
+    "description": "In each round, choose one task as the main task and run it for x seconds, while every other task runs for y seconds; once a task's accumulated run time reaches its required time, it finishes and leaves. Find the minimum number of rounds needed to finish all tasks. The original MathWorks #21 statement is truncated midway in the OAMaster page snapshot; the original Markdown of the same version in the fixed source repository states y < x in full, and its rules, function signature, and constraints are the same as those of Snowflake #15. The public examples and standard input format below were compiled by CSWork and are not source examples.",
+    "input": "The first line contains n x y, and the second line contains n positive integers executionTime. 1≤n≤100000, 1≤executionTime[i]≤10^9, 1≤y<x≤10^9.",
+    "output": "Output the minimum number of operations needed to finish all tasks.",
+    "explanation": "Binary search on the number of operations T. With T rounds, every task gets at least T·y of base execution; each main-task operation provides x−y extra toward the remaining demand, so task i still needs to be chosen as the main task ceil(max(0, executionTime[i]−T·y)/(x−y)) times. T is feasible when the total of these counts does not exceed T.",
+    "hints": [
+      "For a candidate number of rounds T, compute how many extra main-task executions each task still needs; if the total is ≤T, everything can finish."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-44",
+  "packageChecksum": "9f5226907463dae90ef3629ba87d0a64b5a222b4f71091db11059e08cd20abbd",
+  "en": {
+    "title": "Jump Forward by Prime Steps",
+    "description": "Starting from index 0, you may only jump to a larger index j, where j−i must be prime and must not exceed nums[i]. Determine whether you can reach the last index. In the original example [2,3,1,1,0], you cannot jump 2 steps from index 2, so by the statement the output should be 0.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, and the second line contains n maximum jump lengths; 1≤n≤200000, 0≤nums[i]≤10⁹.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: you can only go from 0 to 2, and nums[2]=1 cannot continue, so the correct answer is 0. Example 2: 1 is not prime, so no move is possible; output 0. Example 3: 0→2→4 uses two valid steps of 2, so output 1.",
+    "hints": [
+      "Sieve the primes less than n and store them as a big-integer bitset. Represent pending positions as a bitset relative to the current index: take the prime bits up to the jump length and OR them in, then shift right to skip processed positions; avoid shifting the whole prime set left to absolute indices each time."
+    ]
+  }
+}

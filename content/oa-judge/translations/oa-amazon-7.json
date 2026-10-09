@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-7",
+  "packageChecksum": "cc6cbc90cad7e383dfb2ef519dd1039ac641eac273c281d8874c517f3c2a1550",
+  "en": {
+    "title": "Players Who Beat Everyone with Some Three-Round Pairing",
+    "description": "Each player has three boost values; each match has three rounds, and each value is used exactly once. X beats Y if there exists a pairing of permutations of both sides under which X's value is strictly greater than Y's in at least two rounds. Count the players who can beat every other player individually; different opponents may be met with different permutations, and a tie does not count as a win. The fixed original statement clearly says such a pairing must exist; this site corrects the wrong wording \"for any permutation\" in an early summary. The original problem requires each player's three values to be distinct, but the early summary did not restrict duplicates; this site explicitly adopts the wider range that allows repeated values, and the win rule is unchanged.",
+    "input": "The first line contains n; each of the next n lines contains three boost values. Range shared by raw and the summary: 2≤n≤100000, 1≤boost value≤10^9. This site's range extension: values may repeat within a line and across players. The standard I/O was added by this site.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1 is the original example from the early summary; the correct winners are players 2 and 4, 2 in total. Example 2 comes from the original statement; both players can find a pairing that wins two rounds, so the answer is 2. Example 3 is this site's supplement with repeated values: every round is a tie, so the answer is 0.",
+    "hints": [
+      "First make sure you understand the original operation rules and the strict comparison condition."
+    ]
+  }
+}

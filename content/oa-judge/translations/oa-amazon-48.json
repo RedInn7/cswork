@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-48",
+  "packageChecksum": "150cac9a2ee969e6905ed086af5eed4d966d92f83ab93e1facd8d189d135bc85",
+  "en": {
+    "title": "Minimum and Maximum Endpoint Cost of a Partition into a Fixed Number of Segments",
+    "description": "Split the array into exactly k non-empty contiguous segments; each segment costs its first element plus its last element, and a single-element segment counts that element twice. Output the minimum and maximum total cost.\n\nThe standard I/O, examples, and judging were written independently by CSWork; conventions marked as this site's are not presented as original source constraints.",
+    "input": "The first line contains n k (1≤k≤n≤200000), and the second line contains n positive integers (1..10⁹).",
+    "output": "Output the minimum total cost and the maximum total cost.",
+    "explanation": "Example 1: the fixed cost of the first and last elements is 6, and the cut weights are 3, 5, 5, 7; the minimum takes 3 and 5 for 14, and the maximum takes 7 and 5 for 18. Example 2: both ends of the single-element segment are 7, for a cost of 14. Example 3: the array must be split into [1] and [2], for a cost of 2+4=6.",
+    "hints": [
+      "The first and last elements always contribute; every other contribution is the sum of the two adjacent elements at a cut. Choose the k−1 smallest or largest adjacent sums."
+    ]
+  }
+}

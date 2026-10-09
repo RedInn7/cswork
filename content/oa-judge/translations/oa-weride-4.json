@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-4",
+  "packageChecksum": "d58b94b04c17051f962d82235a29442c22f9f831498e72c4d27ca8ce4c2ea008",
+  "en": {
+    "title": "Mutual Friend Recommendation",
+    "description": "Users are numbered 0..n−1, and the input gives undirected friendships. For each user y, among users who are neither y nor a friend of y, choose the one with the most mutual friends; break ties by the smallest number. If there is no candidate, the result is -1.\n\nThe original problem's ordering rule and the limit of at most 15 friends per person are explicit; this site adds no duplicate edges and the input/output protocol.\n\nSource: https://oamaster.com/docs/companies/weride#4-friend-recommendation-system-max-common-friends (fixed statement fingerprint 714fa067c86636fe872c62ad6ef9e5113a22f11336c9cc098921db1095093cc3). The input/output protocol and bounds added by this site are as described in the statement and are not claimed to be rules of the original site.",
+    "input": "The first line contains n m (1≤n≤100000); each of the next m lines is a pair of distinct user numbers. Friendships have no duplicates, are undirected, and each person has at most 15 friends.",
+    "output": "Output n recommended numbers in order of user number.",
+    "explanation": "See the accompanying notes for the full approach, proof, and complexity.",
+    "hints": [
+      "You only need to accumulate occurrence counts of two-hop neighbors. If there is no two-hop candidate, every non-friend candidate has 0 mutual friends, so take the smallest available number."
+    ]
+  }
+}

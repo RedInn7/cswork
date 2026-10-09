@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-10",
+  "packageChecksum": "1f86ec40dbc5a7e8863d25192e3cf70de40d3f643b6937d8b2b3195144830ed4",
+  "en": {
+    "title": "Minimum Operations of Alternating +1/−1 on Even-Length Ranges",
+    "description": "In each operation, choose any non-empty contiguous subarray of even length and apply +1, −1, +1, −1 to its elements in turn from left to right. The same range may be operated on repeatedly, and different ranges may also be chosen. Find the minimum number of operations to turn source into target; output −1 if it is impossible.\n\nThe standard input/output, the ranges added by this site, and the examples follow this problem's description; wherever the source's ranges are missing, they are explicitly marked as this site's additions.",
+    "input": "The first line contains n (original problem: 1≤n≤10^5); the next two lines contain the n source values and the n target values, respectively (original problem: −10^9≤element≤10^9).",
+    "output": "Output the minimum number of operations; output −1 if target is unreachable.",
+    "explanation": "Let y[i]=(-1)^i·(target[i]−source[i]); then one valid operation adds a constant to an even-length range of y as a whole, and the constant is determined by the parity of the range's left endpoint index. In the adjacent differences of y, this produces a one-unit change with a fixed direction at two boundaries of the same parity. Check the direction of the prefix differences and the total separately for each boundary parity; when feasible, the required number of operations equals the number of positive difference units.",
+    "hints": [
+      "Let y[i]=(-1)^i·(target[i]−source[i]); then one valid operation adds a constant to an even-length range of y as a whole, and the constant is determined by the parity of the range's left endpoint index. In the adjacent differences of y, this produces a one-unit change with a fixed direction at two boundaries of the same parity. Check the direction of the prefix differences and the total separately for each boundary parity; when feasible, the required number of operations equals the number of positive difference units."
+    ]
+  }
+}

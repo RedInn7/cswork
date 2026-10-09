@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-59",
+  "packageChecksum": "a62475d523664dd02e7ee4ad00ea6844cf51863e8f0786551d0d3e8850bba7bf",
+  "en": {
+    "title": "Maximum Dispatch Rewards with Shared Skips",
+    "description": "At each warehouse you subtract dispatch1 first, then your colleague subtracts dispatch2, alternating until the stock is ≤0; whoever dispatches last gets the reward. The colleague may skip their own turn, at most skips times in total across all warehouses. Find the maximum number of warehouses you can win.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n dispatch1 dispatch2 skips (1≤n≤100000, the others 1..10⁹); the second line contains n stock values (1..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: stocks 6 and 2 need no skips and you dispatch last at both; stock 3 can also be won with 1 skip, so you can actually win 3, and the source answer 2 overlooked the available skip. Example 2: the first turn empties it directly, winning 1. Example 3: each warehouse needs 4 skips and a budget of 1 is not enough, so the answer is 0.",
+    "hints": [
+      "For each warehouse, take the positive remainder after full rounds r=(v−1)mod(p+q)+1; winning it needs floor((r−1)/p) skips. Buy rewards in ascending order of the number of skips needed."
+    ]
+  }
+}

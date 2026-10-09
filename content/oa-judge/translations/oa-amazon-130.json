@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-130",
+  "packageChecksum": "4dd3a8e8af34ee6105a0c2de0c542af2a3325a390fef1a86f37acef11f1b4e4a",
+  "en": {
+    "title": "Sort Strings by a Custom Alphabet",
+    "description": "The alphabet gives the order of distinct characters from smallest to largest. Sort all strings lexicographically by this order; a shorter prefix comes first, and identical strings keep all their copies. The standard I/O uses - to represent the empty string, and - is not part of the allowed alphabet.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains order, the second line contains n, followed by n strings (an empty string is written as -). order consists of uppercase and lowercase letters and digits, 1≤|order|≤62, 1≤n≤100000, and the total length of the original strings is ≤1000000.",
+    "output": "Output the n strings in sorted order, using - for the empty string and keeping duplicates.",
+    "explanation": "Example 1: the order is Aa999, B, B9A, B9A, B9ca, BBBB9, BBBBa; the source's BBB89 is a typo that altered a character. Example 2: yaY, Yay, b, bay, lyab, lyab; the duplicate lyab must not be changed to lyaB. Example 3: the two empty strings come first, followed by b, ba, a, and each empty string is output as -.",
+    "hints": [
+      "Map each character to its rank 0..61 to get a byte-string sort key; Python byte-string comparison naturally implements the custom lexicographic order."
+    ]
+  }
+}

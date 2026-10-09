@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-31",
+  "packageChecksum": "443deab8e0d5e585b8a37b68d3843cc23ec8b322efa176031e1419984a0fef79",
+  "en": {
+    "title": "Palindrome Queries on Subtree Post-Order Strings",
+    "description": "The tree is rooted at node 1. S(u) is formed by concatenating S(v) for each child v in increasing order of child number, then appending node u's lowercase letter. For each query node, output whether S(u) is a palindrome: 1 if it is, otherwise 0.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "The first line contains n q (both 1..200000); the second line contains a lowercase string of length n (indexed by node number). Then come n−1 lines of undirected tree edges, and finally q query node numbers.",
+    "output": "Output the answer as described; results for multiple queries are separated by spaces, in order.",
+    "explanation": "Example 1: node 1's post-order string is bcbaa, which is not a palindrome; node 2's is bcb, which is, so the output is 0 1. Example 2: the single letter z is a palindrome. Example 3: the root's string is aba, a palindrome, and the single letters of the two leaves are palindromes too, so the output is 1 1 1.",
+    "hints": [
+      "An iterative post-order traversal maps each subtree to a contiguous range of the whole string; run odd- and even-length Manacher on the whole string, and directly check the palindrome radius each query range needs."
+    ]
+  }
+}

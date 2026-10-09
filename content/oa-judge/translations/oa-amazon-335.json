@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-335",
+  "packageChecksum": "9c63eb5408a81cf31d36bc046215130df3af9b639b57c8d63d6be8a759be22c6",
+  "en": {
+    "title": "Minimum Deletions of Same-Character Runs to Empty a String",
+    "description": "Each time, choose a non-empty contiguous substring of the current string; it can be deleted only if all of its characters are the same. After a deletion the left and right parts are joined, which may form a new contiguous run of the same character. Find the minimum number of deletions needed to empty the string. The frequency order mentioned in the title adds no extra requirement on the operations; deletions are not ordered by character frequency.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The input is a JSON string. The original statement gives no bounds on the length or the character set; on this site 0≤length≤200, characters are counted as Unicode characters, and the empty string is valid. Whitespace and non-ASCII characters in the JSON string must be escaped, with a space written as \\u0020.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 2 and 0. For abaca, delete b and c first, then delete aaa in one go; counting the original same-character runs, as the source does, wrongly gives 5, so the joining after deletions cannot be ignored.",
+    "hints": [
+      "Interval DP. Deleting the left character on its own gives 1+dp[l+1][r]; if s[k]=s[l], first clear the middle and then remove the left character together with k in the same deletion, giving the candidate dp[l+1][k−1]+dp[k][r]. An empty interval is 0; enumerate every k with the same character and take the minimum."
+    ]
+  }
+}

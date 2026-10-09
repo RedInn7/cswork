@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-253",
+  "packageChecksum": "43dda09f0aece1b121dd0188c8be712da93c1f1eb8b3efaea0cf41a8d379335b",
+  "en": {
+    "title": "Fewest Leftmost Deletions to Make the Rest Distinct",
+    "description": "Each operation can only delete the current leftmost element, never one from the middle. Find the minimum number of operations so that all remaining elements are distinct; if they are already distinct, the answer is 0.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the identifiers. The original text had no numeric bounds; this site uses 1≤n≤200000, 1≤identifier≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 0 and 2. In the first example both 1 and the first 2 must be deleted; you cannot delete only the 2 in the middle.",
+    "hints": [
+      "Add values to a set from right to left; at the first position i whose value has already been seen, everything up to it must be deleted, so the answer is i+1; if there is never a repeat, the answer is 0."
+    ]
+  }
+}

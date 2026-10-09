@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-56",
+  "packageChecksum": "4be6077d0917563af29cb153b861dfd12116eed8a24a5ae97788a39b602cbd12",
+  "en": {
+    "title": "Substrings Where the Number of Zeros Equals the Square of the Number of Ones",
+    "description": "Count the non-empty contiguous binary substrings in which the number of 0s is exactly the square of the number of 1s.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "A single line containing a binary string of length 1..100000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the two adjacent 01, the one adjacent 10, and the whole string (two 1s and four 0s) are valid, 4 in total. Example 2: with only 0s the condition cannot hold, so the answer is 0. Example 3: one 0 and one 1 satisfy 1=1², so the answer is 1.",
+    "hints": [
+      "If there are k ones, the substring length must be k²+k. Enumerate every k≥1 for which this length is ≤n, and check all windows of that fixed length using prefix sums of the 1s."
+    ]
+  }
+}

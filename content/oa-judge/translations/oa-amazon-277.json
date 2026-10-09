@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-277",
+  "packageChecksum": "6b450f3ff54108a2196bb8d978b69769206610a4162fe1d25cc163a9080bc12f",
+  "en": {
+    "title": "Maximum Items Taken in Strictly Increasing Amounts From Contiguous Shelves",
+    "description": "Choose a non-empty contiguous subarray and take at least one item, and at most its stock, from each chosen shelf, so that the amounts taken are strictly increasing from left to right. Find the maximum total number of items. You cannot skip shelves in the middle of the chosen subarray.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains products. 1≤n≤5000, 1≤products[i]≤10^9. This full range comes from the Constraints in the raw body, not from the cleaned-up version truncated by HTML.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 16, 9 and 1 respectively. In the second example you can choose just the first two shelves and take 4 and 5 for 9; taking all three shelves gives only 1+2+3=6.",
+    "hints": [
+      "Let b[i]=products[i]−i and maintain a stack of indices with strictly increasing b. Pop indices whose b is ≥ the current b; if a top j remains, dp[i]=dp[j]+ the arithmetic sum from products[i]−(i−j)+1 to products[i]; if there is no j, take only the last min(i+1,products[i]) positive integers. The answer is max(dp)."
+    ]
+  }
+}

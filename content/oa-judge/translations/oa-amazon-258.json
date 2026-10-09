@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-258",
+  "packageChecksum": "8f87ae108dc796ab16e3fc491c708b25f4e6ab374bdf2aa52131425422da4116",
+  "en": {
+    "title": "Maximum Shipment Batches with Distinct Categories and Increasing Sizes",
+    "description": "Each category has inventory[i] items. Each batch uses at most one item per category, and each batch must contain strictly more items than the previous one; each item can be used at most once, and leftovers are allowed. Find the maximum number of batches.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the inventories. The original text had no numeric bounds; this site uses 1≤n≤200000, 0≤inventory[i]≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 2 and 0. Even with a large total, the two of the three categories that have only one item each cannot both supply the second and the third batches.",
+    "hints": [
+      "Accumulate the inventories in ascending order while maintaining the number of batches k that can be built; each time a new category is included, if the total reaches (k+1)(k+2)/2, increase k by 1. Each category adds at most one batch."
+    ]
+  }
+}

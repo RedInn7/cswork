@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-thoughtspot-1",
+  "packageChecksum": "c489220452d933eb2f1ca781f2a0f340ecc8c681531443cadcbb0c3054e28840",
+  "en": {
+    "title": "Shortest Completion Time When Assigning Cached and Uncached Requests",
+    "description": "The system has services numbered 1 to n and must handle m requests. Request i is cached on service cache[i]. Each request can be assigned to any one service: if it goes to its cache service, processing takes 1; otherwise it takes 2. Different services can work in parallel, but one service can process only one request at a time. All requests can be scheduled starting from time 0, with no arrival times or task dependencies. Find the shortest time needed to process all requests. The complete operating rules are restored from the fixed original HTML, and the complete numeric ranges come from the MDX of the same commit; the wrong algorithm of the compiled version, which only counts the maximum cache frequency, is not adopted.",
+    "input": "The first line contains n and m. The second line contains m integers cache[i]. 1≤n,m≤100000, 1≤cache[i]≤n. The standard input format was compiled by this site; the numeric ranges come from the Thoughtspot MDX of the fixed commit, and the raw Constraints section gives no numeric bounds.",
+    "output": "Output one integer: the shortest time to complete all requests.",
+    "explanation": "Example 1 keeps the original input and output and fixes a service-number typo in the original explanation: service 1 processes requests 1, 2, and 4 in time 3; service 3 processes request 3 in time 1; service 2 processes request 5 in time 2; everything finishes within 3. Examples 2 and 3 are added by this site: a single request takes 1 on its cache service; when all four requests are cached on service 1, service 1 can process three of them and service 2 one, for a total time of 3.",
+    "hints": [
+      "First count the cached requests of each service.",
+      "Fix a completion time; excess requests must be handed to services that have idle time.",
+      "Each uncached request takes 2, so round each service's remaining time down accordingly."
+    ]
+  }
+}

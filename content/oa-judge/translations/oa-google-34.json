@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-34",
+  "packageChecksum": "812b016379c3525d491473bec81afbb007614572df3f7de02ed1752c8e77fe31",
+  "en": {
+    "title": "Meeting Intervals Minus Do-Not-Disturb Time",
+    "description": "Merge the time covered by all meetings, subtract one do-not-disturb period, and output the remaining non-overlapping maximal meeting intervals. Intervals are [start,end); touching intervals are merged, and empty intervals are not output.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "This site's standard input: the first line contains n (0..100000), followed by n lines with the start and end times of the meetings, and a final line with the start and end times of the do-not-disturb period. Times are integers in −10⁹..10⁹, and each start is less than its end.",
+    "output": "First output the number of intervals, then the start and end of each interval in increasing order of start time.",
+    "explanation": "Example 1: after merging, the meeting segments are [1,10), [12,30), [40,50), [60,70); removing [18,25) splits the second segment into [12,18) and [25,30), for 5 segments in total. Example 2: [1,10) minus [3,7) gives [1,3), [7,10). Example 3: there are no meetings, so the result count is 0.",
+    "hints": [
+      "First sort by start and merge the covered intervals, then subtract the do-not-disturb interval from each segment, keeping the non-empty left and right parts."
+    ]
+  }
+}

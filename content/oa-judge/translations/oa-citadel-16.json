@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-16",
+  "packageChecksum": "c87e4419bde3bd74a292bebe2645afedd751115d7c36ef4bdd096eac20b8cc6c",
+  "en": {
+    "title": "Maximum Throughput of Serial Services Scaled Within Budget",
+    "description": "n services are connected in series, and the total throughput is the minimum throughput among the services. Each scale-up of service i costs cost[i], and after x scale-ups its throughput is throughput[i]·(1+x). Find the maximum total throughput within the budget. The original formula (i+x) conflicts with the definition of initial throughput, and only (1+x) gives both 10 and 9 for the two original examples, so the typo is restored based on this evidence.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n budget, the second line contains throughput, and the third line contains cost. The original gave no numeric bounds; this site uses 1≤n≤100000, 1≤throughput and per-scale-up cost≤10^9, and 0≤budget≤10^12. The answer and intermediate products can exceed 64 bits, so use exact integers or 128-bit integers.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 10; 9; 3. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search on the target T; each service needs at least max(0,ceil(T/a)−1) scale-ups, and summing the costs tells whether the budget is exceeded. The upper bound is the minimum over all services of the throughput each would reach by using the whole budget alone."
+    ]
+  }
+}

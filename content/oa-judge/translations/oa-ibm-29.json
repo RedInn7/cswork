@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-29",
+  "packageChecksum": "4cb9d5c6fbfa5fb61c85b0df153443853fe9f881a830031c165dd9ada3d530af",
+  "en": {
+    "title": "Highest Substring Frequency Under Length and Character-Variety Limits",
+    "description": "Find the maximum number of times a substring occurs in the original string; occurrences may overlap. Candidate lengths are between minLength and maxLength, and the number of distinct characters must not exceed maxUnique; output 0 if there is no valid candidate.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains minLength maxLength maxUnique, and the second line contains the string. Original bounds: 2≤length≤100000, 2≤minLength≤maxLength≤26 and maxLength<string length, 2≤maxUnique≤26. The source does not restrict the character set; this site supports non-newline Unicode scalar characters, each character counts as one code point, and the total UTF-8 size is ≤400100 bytes.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 1, 3 and 3 respectively; ab occurs 3 times in ababab, and occurrences of aa may overlap.",
+    "hints": [
+      "Count only windows of length minLength, filter out windows with too many distinct characters, and accumulate frequencies in a hash map."
+    ]
+  }
+}

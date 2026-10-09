@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-2",
+  "packageChecksum": "783288387def3a3a136b5e7fd465b969da7a78e05f053a279fd79fa2b7686e9d",
+  "en": {
+    "title": "Dynamic Obstacles and Right-Open Range Queries",
+    "description": "Operation 1 x places an obstacle at coordinate x; placing it again has no additional effect. Operation 2 x size checks whether the half-open range [x−size,x) contains no obstacle; if it is empty, record 1, otherwise record 0. Queries only check and never place obstacles; finally, concatenate all query results.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains q, followed by q lines of operations. 1≤q≤100000. The source gives no coordinate range; this site's convention is −10⁹≤x≤10⁹ and 1≤size≤10⁹.",
+    "output": "Output the 01 string formed by the query results; if there are no queries, output an empty line.",
+    "explanation": "Example 1: the queries [3,5), [3,6), [1,2), and [1,3) contain no, some, no, and some obstacles respectively, so the output is 1010. Example 2: the right end 0 does not belong to [−1,0) but does belong to [0,1), so the output is 10. Example 3: no obstacle is placed, so the output is 1.",
+    "hints": [
+      "Read all inserted coordinates in advance and compress them, using a Fenwick tree to track whether each one has been inserted. Use binary search to get the ranks of the left and right boundaries, and query the number of obstacles in the range."
+    ]
+  }
+}

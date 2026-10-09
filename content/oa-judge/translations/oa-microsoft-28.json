@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-28",
+  "packageChecksum": "bf6f94b187a1bf7cf3c2484323e5c06f3c8bfebebbc75ffec78d27d1f7c4929e",
+  "en": {
+    "title": "Minimum Time at School After Skipping at Most K Classes",
+    "description": "The time spent at school on a day is the difference in hours between the latest and earliest classes attended that day, plus 1; it is 0 if no class is attended. You may skip at most K classes in total. Find the minimum total time at school over all days.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N M K (each 1..200), followed by N lines, each a 01 string of length M.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: skip either class and attend only the other, spending 1 hour at school.\n\nExample 2: skip the only class on the second day; the first day takes 2 hours, for a total of 2.\n\nExample 3: there are no classes, so there is no need to go to school; the answer is 0.",
+    "hints": [
+      "For each day, enumerate the number of skipped classes and find the minimum width needed to cover a contiguous block of the remaining class indices; then run a knapsack over the days on the skip budget."
+    ]
+  }
+}

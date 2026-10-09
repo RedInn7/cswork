@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-9",
+  "packageChecksum": "4b9eff709162a06d763d0d281eafd6d2b701f76ad2bcc5540ef5107c73d02fbc",
+  "en": {
+    "title": "Investor Meeting Schedule",
+    "description": "Each investor is available to meet only within the closed interval [firstDay[i], lastDay[i]]; at most one meeting can be scheduled per day. Find the maximum number of meetings that can be scheduled.\n\nThe closed intervals and the daily limit in the statement are explicit; the original text lacks constraints, so this site adds upper bounds on dates and counts.\n\nSource: https://oamaster.com/docs/companies/weride#9-meetup-schedule (fixed statement fingerprint d0ca0bff74708ee0e5b708b2ef4c1f63edc77848111b539ce7e4cdb61d8e2988). The input/output protocol and bounds added by this site are as described in the statement and are not claimed to be rules of the original site.",
+    "input": "The first line contains n (0≤n≤100000); the second line contains n firstDay values; the third line contains n lastDay values. Dates are 1..10^9, and firstDay[i]≤lastDay[i].",
+    "output": "Output the maximum number of meetings.",
+    "explanation": "See the accompanying notes for the full approach, proof, and complexity.",
+    "hints": [
+      "Add investors to the candidates by available start day, and each day choose the candidate who ends earliest; if there are no candidates right now, jump to the next start day."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-15",
+  "packageChecksum": "a9cd4b9ec9596f94c57f282f1ca895fe45b4ad6971cb74b6e4aa81123ed66ac1",
+  "en": {
+    "title": "Distinct OR Values of Strictly Increasing Subsequences",
+    "description": "Choose a subsequence of the original array that preserves order and is strictly increasing in value, and compute its bitwise OR; return all distinct results in ascending order. The OR of the empty subsequence is 0. The original OCR returns an array; the old curated page for problem 1 mistakenly said it returns a count, and this is now restored according to the original text.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n, followed by n integers. Complete OCR range: 1≤n≤10000, 1≤a[i]<1024. The separate Fastprep page for problem 15, the same problem, together with the OCR supplies its missing ranges.",
+    "output": "The first line contains the number of results, and the second line contains the distinct OR values in ascending order, including 0.",
+    "explanation": "The outputs of the three public examples are, in order: 5 / 0 1 2 4 6; 6 / 0 2 3 4 6 7; 5 / 0 1 3 5 7. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "For each OR value, keep only the smallest last value of a reachable increasing subsequence; when you meet v, transition from states whose last value is <v to OR|v."
+    ]
+  }
+}

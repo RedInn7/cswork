@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-16",
+  "packageChecksum": "345179127d97cd64b8a360079fc979d609a0cccf1359334d42a55368ff41b3f8",
+  "en": {
+    "title": "Distinct Lowercase Letters Before the First Uppercase Letter",
+    "description": "Consider only the text strictly before the first uppercase English letter, and count the distinct lowercase English letters in it; if there is no uppercase letter, consider the whole text. Under this definition, the original site's example aaAbcCABBc should give 1; this site has corrected it.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: one line of printable ASCII text of length 0..100000, which may contain spaces; only A..Z and a..z count as letters.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: only aa comes before the first uppercase A, and its only distinct lowercase letter is a; the answer is 1.\n\nExample 2: there is no uppercase letter, and the distinct lowercase letters in the whole text are a, b, c; the answer is 3.\n\nExample 3: the first character is already uppercase, so the prefix is empty; the answer is 0.",
+    "hints": [
+      "Scan until the first uppercase letter and stop there, adding every lowercase letter before it to a set."
+    ]
+  }
+}

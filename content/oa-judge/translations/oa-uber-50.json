@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-50",
+  "packageChecksum": "dda19d26602cd2a3ba5e9636dd73b4f6c72177ba835c1955e443c9d434c7adfe",
+  "en": {
+    "title": "Maximum Layered XOR Value in a Range",
+    "description": "f returns the element itself for a single element; otherwise, XOR each pair of adjacent elements to get an array one shorter, and recurse until only one value remains. For each query [l,r], find the maximum f value over all non-empty contiguous subarrays within it. Note that f is not an ordinary range XOR.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n q, the second line contains n integers, followed by q lines of 0-based l r, with 0≤l≤r<n. The source gives no size ranges; on this site 1≤n≤2000, 1≤q≤100000, 0≤a[i]≤2³⁰−1.",
+    "output": "For each query, output one line with the maximum value.",
+    "explanation": "Example 1: f of the whole array is 15, which is the maximum, and f of subarray [2,4] is 6, so output 15, 6. Example 2: f of the whole array is 8 xor 8=0, but the adjacent pair [8,1] has f=9, so the maximum is 9, not the ordinary XOR of the three numbers. Example 3: f of a single element is just 0.",
+    "hints": [
+      "Compute f(l,r)=f(l,r−1) xor f(l+1,r) by length. At the same time, best(l,r) is the maximum of f(l,r), best(l,r−1) and best(l+1,r); keep a compact unsigned integer table to answer queries."
+    ]
+  }
+}

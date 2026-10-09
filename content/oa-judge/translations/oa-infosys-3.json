@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-infosys-3",
+  "packageChecksum": "b536f80bce3bcc7dbaa270c85e5be94e39b8b8b3abac6df44a5fe85cda9b4e4c",
+  "en": {
+    "title": "Number of Distinct Prefix Minimums After Point Decrements",
+    "description": "You are given an array A and m queries (L,x). Each query permanently performs A[L−1]=A[L−1]−x, then independently computes B: B[0]=A[0], B[i]=min(B[i−1],A[i]). Output the number of distinct integers in this B. Later queries still modify the real A; B must not be written back into A. x is positive; after decrements, A may be 0 or negative.",
+    "input": "The first line contains n and m, the second line contains the n initial values A[i], and each of the next m lines contains two integers L and x. 1≤n,m≤100000, 1≤initial A[i]≤1000000000, 1≤x≤100000, 1≤L≤n. Position L is 1-based; L≤n is implied by A[L−1] being a valid index in the original text, and this site states it explicitly.",
+    "output": "Output m space-separated integers in query order, each giving the number of distinct values in that independently computed B. Modified values may drop below the lower bound of 32-bit signed integers, so store A using 64-bit integers.",
+    "explanation": "Example 1 keeps the original input but corrects the original wrong output [2,3] to [2,2] according to the formal operation: after the first step A=[5,7,-3,2,4] and B=[5,5,-3,-3,-3]; after the second step A=[5,7,-3,2,0] and B is unchanged. The original explanation did not perform the decrement defined by (3,5). Examples 2 and 3 were added by this site; in example 2 the second item of the real A drops from 10 to 9 and then to 4, so the outputs are 1 and 2; in example 3 equal prefix values do not increase the distinct count.",
+    "hints": [
+      "The number of distinct values in B equals the number of positions that are strict prefix minimums.",
+      "A single decrease may insert that position and delete a run of subsequent records.",
+      "A position can be deleted and inserted repeatedly, but the total number of insertions does not exceed the number of queries."
+    ]
+  }
+}

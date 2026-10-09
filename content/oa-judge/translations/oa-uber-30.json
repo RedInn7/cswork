@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-30",
+  "packageChecksum": "266220caf7bb093506c04ff933b75b017e840001017222ac60bd6569429797cf",
+  "en": {
+    "title": "Two-Sum Counting with an Updatable Array",
+    "description": "Array a never changes. Operation 0 i x increases b[i] by x; operation 1 target asks how many index pairs (i,j) satisfy a[i]+b[j]=target. Initially, the values within each array are distinct; after updates, duplicates are allowed, and pairs are counted by index.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "The first line contains na nb q, followed by two lines with arrays a and b, then q lines of operations. The source has no numeric ranges; this site uses 1≤na≤100 and 1≤nb,q≤100000; initial values and increments are −10⁹..10⁹, target is −10¹⁴..10¹⁴, and indices start from 0.",
+    "output": "For each query operation, output one line with the number of pairs; if there are no queries, output an empty line.",
+    "explanation": "Example 1: initially there are two pairs, 1+3 and 2+2; after the update b is 3, 3, and both distinct indices pair with 1, so the count is still 2. Example 2: the update makes b equal to 0, and the query for sum 0 has 1 pair. Example 3: no combination sums to 9, so the output is 0.",
+    "hints": [
+      "Maintain the frequencies of b. For an update, first decrement the frequency of the old value, then increment that of the new value; for a query, enumerate each number of a and add the number of times target minus that number appears in b."
+    ]
+  }
+}

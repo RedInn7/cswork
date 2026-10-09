@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-4",
+  "packageChecksum": "8c0e406b3218a3e93b62f672e253175d3d3a248a45aa46801cbb1400b6346d61",
+  "en": {
+    "title": "Counting Three-Color Grid Colorings (Intuit OA)",
+    "description": "Color an n×3 grid with three colors: red, green, and blue. A valid coloring requires every row and every column to contain at least two colors. The source's sample outputs for n=3 and n=4 contradict the statement; following the statement, they are corrected to 9750 and 296490 respectively. See the editorial for the derivation.",
+    "input": "A single integer n (site range 1≤n≤10^18; the source gives no constraint on n).",
+    "output": "Output the number of valid colorings modulo 1,000,000,007.",
+    "explanation": "Apply inclusion-exclusion to the events that each of the three columns is entirely one color; the answer is 24^n−9·8^n+9·2^n+18·3^n−24 (modulo).",
+    "hints": [
+      "Each row has 3^3−3=24 non-monochromatic arrangements.",
+      "Apply inclusion-exclusion to the three events \"some column is entirely one color\"."
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-56",
+  "packageChecksum": "c14ba62de5a7a892ca6ab735706f172250259c88386980005048cf7cf2b67e16",
+  "en": {
+    "title": "Minimum Operations to Make a Binary Palindrome",
+    "description": "Given a non-negative integer N. One operation adds 1 to or subtracts 1 from the current integer (the result cannot be less than 0). A number is a binary palindrome if its standard binary representation reads the same from left to right as from right to left. Find the minimum number of operations needed to turn N into any binary palindrome.\n\nThis site's input range: 0≤N≤2000000000. The OAMaster snapshot gives no additional constraints; this range is included according to the constraints listed in the snapshot.\n\nOriginal source: https://oamaster.com/docs/companies/google#56-minimum-operations-to-make-binary-palindromic (fixed snapshot content fingerprint b44446404ff98e6bf74fd5f10b0b0a052137ca8517023ae77b14aa159093ea8d).",
+    "input": "A single integer N.",
+    "output": "Output the minimum number of operations.",
+    "explanation": "Enumerate binary palindromes of at most 31 bits and take the minimum absolute difference from N. For each bit length, only the first-half candidates, which determine the palindrome by symmetry, need to be constructed; the candidates closest to N come from N's corresponding prefix and its adjacent prefixes, and the smallest and largest palindromes of that bit length are checked as well.",
+    "hints": [
+      "Enumerate the number of binary digits of the target palindrome.",
+      "Once the number of digits is fixed, the second half of a palindrome is uniquely determined by its first half."
+    ]
+  }
+}

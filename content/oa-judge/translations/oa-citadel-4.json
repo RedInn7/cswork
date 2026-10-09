@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-4",
+  "packageChecksum": "c7f51262ccd797db09e54c1c9c91f0cb926d8b0d5d1039e3916fcf92a16b1883",
+  "en": {
+    "title": "Number of Distinct Palindromic Substrings",
+    "description": "Count the palindromic substrings with distinct text; multiple occurrences count only once. The correct answer for the long original OCR example abcddcbabcdcdaadcdcbabcddcb is 26, not 27; the original enumeration contains duplicates and substrings that do not exist.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "One line containing a lowercase string; complete OCR range 1≤length≤5000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 7; 5; 26. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Build a palindromic tree with two special roots of lengths −1 and 0; for each added character, follow the failure links from the longest palindromic suffix to find a node that can be extended, then create the new palindrome and its failure link."
+    ]
+  }
+}

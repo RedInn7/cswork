@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tesla-3",
+  "packageChecksum": "223d2a2ca54f5204e5ad5d2407642f7b43fa287a09e62c3e14563788f4b5b78e",
+  "en": {
+    "title": "Maximum Contiguous Groups with Equal Left and Right Shoes",
+    "description": "Partition all the shoes into contiguous, non-overlapping segments, each with the same number of L and R, and find the maximum number of segments. Every shoe must belong to a segment.\n\nThe input/output protocol was compiled by this site.",
+    "input": "One line containing a string of L/R of length 2 to 100000; the numbers of L and R are guaranteed to be equal.",
+    "output": "Output the maximum number of segments.",
+    "explanation": "LRLR splits into LR and LR; LLRR can only form one segment; RLLRRL splits into three segments: RL, LR, RL.",
+    "hints": [
+      "Count L as 1 and R as −1, scan the prefix sum, and cut a segment every time it returns to 0."
+    ]
+  }
+}

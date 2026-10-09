@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-26",
+  "packageChecksum": "84ee991eabfb421c8b000023a135c9b20b7fe6f65758e618f222e934cec70ef6",
+  "en": {
+    "title": "Find Given Words Along a Row or a Column",
+    "description": "For each word, independently determine whether it appears as a contiguous segment of some row or some column of the grid, read either forward or backward. It cannot turn or go diagonally, and matching is case-sensitive.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The input is a JSON array [gridRows,words]. The original had no numeric bounds; this site adds 1≤number of rows, number of columns≤200, with all rows of equal length in Unicode code points; 0≤number of words≤200, each word 1..200 code points, and total word length ≤40000. Characters are arbitrary Unicode scalar values, including whitespace, NUL, and non-BMP characters; lone surrogates are not allowed. The whole JSON is ≤1000000 UTF-8 bytes, and the generator uses ASCII escapes so that control characters are carried intact.",
+    "output": "Output Yes or No for each query in order, separated by spaces or newlines; if there are no queries, output an empty line.",
+    "explanation": "The outputs of the three public examples are, in order: Yes Yes No; Yes Yes Yes; empty text. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Precompute all rows, all columns, and their reversed strings. Build a KMP prefix table for each word and search these strings one by one; cache the results of repeated queries for the same word."
+    ]
+  }
+}

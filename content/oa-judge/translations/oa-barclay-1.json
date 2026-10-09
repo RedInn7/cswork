@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-barclay-1",
+  "packageChecksum": "175dd6152d86b199e8030c608aa205350a295b0ba2a84b9ef09da2d2d97b79b2",
+  "en": {
+    "title": "Barclays OA #1: Maximum Possible GCD",
+    "description": "You are given an integer R and an array A of positive integers. You may perform the following operation at most once (or not at all): choose any element of the array and replace it with any integer X satisfying 1≤X≤R. Find the maximum possible GCD of the whole array.",
+    "input": "The first line contains two integers N and R; the second line contains N integers A[0..N−1]. 2≤N≤10^5, 1≤R≤10^5, 1≤A[i]≤10^5.",
+    "output": "Output a single integer, the maximum possible GCD.",
+    "explanation": "Example 1: A=[2,3,4], R=10. Changing 3 to 2 gives gcd(2,2,4)=2, which is the maximum possible.\nExample 2: A=[100,100], R=5. Without an operation the gcd is 100, while any replacement makes the gcd at most 5, so the answer is 100.\nExample 3: A=[12,18,7], R=7. After replacing 7, the gcd of the other elements is 6≤7; take X=6, and the answer is 6.",
+    "hints": [
+      "After replacing index i, the new gcd must be a divisor of the gcd of the remaining elements.",
+      "Use prefix gcd and suffix gcd to get the gcd after removing one element.",
+      "Don't forget that you may skip the operation."
+    ]
+  }
+}

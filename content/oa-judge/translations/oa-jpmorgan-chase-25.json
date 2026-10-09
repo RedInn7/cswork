@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-25",
+  "packageChecksum": "f2cbc835b64d712130391448124ab64a89f0b0fd03332c696fc18d2372230d12",
+  "en": {
+    "title": "First Player to Win k Games in a Row",
+    "description": "Players line up in their original order. The two players at the front compare their distinct potentials; the larger one wins and stays at the front, and the loser goes to the back. The process ends as soon as someone first wins k games in a row; output the winner's potential.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n k, followed by n distinct potentials. Original bounds: N/A. This site uses 2≤n≤200000, 1≤k≤10^18, and potentials are integers in −10^9..10^9; they are not required to be a permutation of 1..n.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 3; -2; 3. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Scan the original queue while maintaining the champion and its win streak, counting from 1 again whenever the champion changes; if the process has not ended when the scan finishes, return the global maximum potential."
+    ]
+  }
+}

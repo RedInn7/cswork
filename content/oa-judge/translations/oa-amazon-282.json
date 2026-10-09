@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-282",
+  "packageChecksum": "53d6875deb4b18b20f517e1f452ac2dacb795146b7a0783f9ac162ddaf05e0ae",
+  "en": {
+    "title": "Merge All Intersecting Closed Intervals",
+    "description": "Given several closed intervals [start,end], merge all intervals that overlap each other or are linked through a chain of overlaps, and return the non-overlapping covering intervals in increasing order of start. Sharing an endpoint also counts as overlapping.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by n lines each containing start end. The raw constraints themselves are cut off at 1<; this site specifies 1≤n≤200000, −10^9≤start≤end≤10^9.",
+    "output": "The first line contains the number of merged intervals m, followed by m lines each containing start end, in increasing order of start.",
+    "explanation": "The results are 3 intervals [1,6],[8,10],[15,18]; 1 interval [1,5]; and 2 intervals [2,2],[3,4]. Adjacent integers do not intersect.",
+    "hints": [
+      "Sort by start. If the next start is ≤ the current end, extend the current end to the larger of the two; otherwise output the current interval and start a new one."
+    ]
+  }
+}

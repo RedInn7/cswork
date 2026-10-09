@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-34",
+  "packageChecksum": "97bcb2375fc08303cc26f4ccf54a23e2ca9b2a6335e7afd74c79a136a3518290",
+  "en": {
+    "title": "Smallest Digit String After Incrementing and Reinserting",
+    "description": "One operation takes out any digit d, changes it to min(d+1,9), and inserts it at any position. You may perform any number of operations (including 0). Find the lexicographically smallest final string, keeping leading zeros.\n\nStandard input/output, examples and judging were written independently by CSWork; conventions marked as this site's do not claim to be the source's original limits.",
+    "input": "One line containing a digit string of length 1..200000.",
+    "output": "Output the lexicographically smallest digit string, keeping leading zeros.",
+    "explanation": "Example 1: 6 and 5 have a smaller 4 to their right, so they are moved and become 7 and 6; sorting them together with the kept 2, 4 and 7 gives 24677. Example 2: doing nothing is already the smallest, so the output is 0. Example 3: take 2 out, turning it into 3, and insert it after 1 to get 13.",
+    "hints": [
+      "Go from right to left, maintaining the minimum digit to the right. If the current digit is larger than that minimum, it must be moved and incremented; all others are kept. Finally, sort the transformed digits."
+    ]
+  }
+}

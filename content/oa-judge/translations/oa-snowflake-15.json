@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-15",
+  "packageChecksum": "377c8789f54ec7d89c4aab9a4505c7cbe8c215e555d03ed8e8f2cd44c3c91a1a",
+  "en": {
+    "title": "Minimum Operations to Run Tasks in Parallel",
+    "description": "In one operation, choose an unfinished task and run it for x seconds while every other task runs for y seconds, where y<x; a task exits once its accumulated run time reaches its required time. Find the minimum number of operations needed to finish all tasks. The original snapshot restores y<x.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains n x y, and the second line contains n execution times; 1≤n≤100000, 1≤time≤10⁹, 1≤y<x≤10⁹.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 3; 1; 6. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Binary search on the number of operations t; first give every task a base amount of ty, then divide each task's remaining need by x−y, rounding up, to get how many extra times it must be the main task. t is feasible if the sum does not exceed t."
+    ]
+  }
+}

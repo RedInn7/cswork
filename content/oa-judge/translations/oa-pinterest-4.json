@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pinterest-4",
+  "packageChecksum": "efaee6f40ab495751ef5f7ae089387fd9a208ea00b7f06e9ab88a428841f1629",
+  "en": {
+    "title": "Assign Pins to the Shortest Column",
+    "description": "There are k columns, each with initial height 0. Process pins[i] in the original order: place each pin on the column whose current total height is lowest; on a tie in height, choose the column with the smallest index. Return the column index for each pin and the final heights of all columns.\n\nThe input format and the supplementary limits listed for this problem were compiled by CSWork; they do not imply that the original source uses this protocol.",
+    "input": "The first line contains n k; the second line contains n positive integers pins[i]. Source constraints: 1≤k≤n≤200000, 1≤pins[i]≤10⁹.",
+    "output": "The first line contains the n assigned indices, and the second line contains the final heights of the k columns. Column indices start from 0; total heights use 64-bit integers.",
+    "explanation": "Process the input according to the rules in the statement; see the accompanying notes for the approach, proof, and complexity.",
+    "hints": [
+      "Use a min-heap ordered by (current height, column index). For each pin, pop the top, record its index, increase that column's height, and push it back."
+    ]
+  }
+}

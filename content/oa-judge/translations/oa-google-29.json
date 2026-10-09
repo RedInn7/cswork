@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-29",
+  "packageChecksum": "3ef04651fdcc509a535a6b2423f96f2e491e4337660b61223d6e83ce7f616d71",
+  "en": {
+    "title": "Minimum Tree Diameter After Deleting At Most k Leaves (Google OA)",
+    "description": "Given an undirected tree with n vertices. Each operation deletes one leaf, and at most k operations may be performed; at least one vertex must remain after the deletions. Find the minimum possible diameter of the remaining tree (the diameter is measured in edges).\n\nThe original site's constraint reads 0 < k < n, but its public example 1 explicitly uses k=0, so the two conflict. This candidate explicitly revises it to 0 ≤ k < n, which keeps the example and matches the meaning of \"at most k times\"; n=1,k=0 is valid, and the diameter is 0 when one vertex remains. This is an explicit revision by this site and is not presented as an original-site constraint.\n\nStandard input: the first line contains n k, followed by n−1 lines, each containing a 1-based edge u v. The input is guaranteed to be a valid tree. Output one integer. The original site's object-style examples are rewritten here as standard input/output.",
+    "input": "The first line contains n k (1≤n≤100000, 0≤k<n); then n−1 lines follow, each with two integers u v, representing an undirected edge between 1-based vertices. The edges are guaranteed to form a tree.",
+    "output": "Output the minimum diameter obtainable after deleting at most k leaves. The diameter of a single-vertex tree is 0.",
+    "explanation": "See the candidate notes for the derivation, proof of correctness, and complexity.",
+    "hints": [
+      "The kept vertex set must be connected; any connected subtree can be obtained by deleting leaves from the outside in.",
+      "Binary search on the maximum allowed diameter D, and check whether at least n−k vertices can be kept.",
+      "For even D, look at radius balls centered on a vertex; for odd D, also check the vertex sets centered on an edge with depth r on each side."
+    ]
+  }
+}

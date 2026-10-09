@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-23",
+  "packageChecksum": "6d383592e1a9394213a042ebc01b0ca91dbdcb18386d66e557716d26e95ef336",
+  "en": {
+    "title": "Pick Up Passengers Within Distance Two and Return to the Start",
+    "description": "Choose any start on the tree. When you pass a station, you can pick up, for free, all passengers at most 2 edges away from that station. Traversing an edge costs 1; you must pick up every passenger and return to the start. Find the minimum number of moves.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "The first line contains n, the second line contains n values of 0/1 indicating passengers, followed by n−1 lines of tree edges (0-based). 1≤n≤30000.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: going back and forth between the two middle stations of the chain covers both ends, at a cost of 2. Example 2: going back and forth between 0 and 2 covers 3, 4, and 7, at a cost of 2. Example 3: the start is the only station, so no moves are needed.",
+    "hints": [
+      "First repeatedly peel off leaves without passengers, then peel off two more layers of leaves at once. Every edge of the remaining tree must be traversed there and back, so the answer is twice the number of remaining edges."
+    ]
+  }
+}

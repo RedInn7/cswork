@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-35",
+  "packageChecksum": "3517f9450b75aa05798ea4026bd21e8dd12728dcc92e3c707fb19c37a0b2e535",
+  "en": {
+    "title": "Numbers with Distinct Decimal Digits in a Closed Range",
+    "description": "Count the non-negative integers in a closed range whose decimal digits are all different. 0 is written as the single digit 0 and counts as valid. The original statement is truncated; the rule is restored from the title and the original explanation that 10..13 includes 10, 12, and 13. The non-negative domain and the representation of 0 are an explicit protocol of this site.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "One line with start end. The original has no numeric bounds; this site uses 0≤start≤end≤10^18.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 3; 11; 2. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Use digit DP to count the valid numbers not exceeding a bound, then compute F(end)−F(start−1). The state is the position, the mask of used digits, whether the number has started, and whether it is tight against the bound; leading zeros do not use up a digit."
+    ]
+  }
+}

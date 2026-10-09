@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-14",
+  "packageChecksum": "634585ae6bb2aa6b54d702b8104e3e8e48669c362c694db03c09931325aaa0f5",
+  "en": {
+    "title": "Minimum Height Difference Between Peaks at Least a Given Distance Apart",
+    "description": "Choose a pair of peaks whose index distance is at least viewingGap, minimizing the absolute difference of their heights. A distance equal to viewingGap is allowed; when gap=1, any two distinct indices are allowed, so the wording \"non-adjacent\" in the original second example is inaccurate.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains n viewingGap, and the second line contains n heights. 2≤n≤100000, 1≤viewingGap<n, 1≤height[i]≤10⁹.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: the three allowed pairs have height differences 9, 8, and 4, so the minimum is 4. Example 2: 3 and 5, as well as 10 and 8, both differ by 2 with an index distance of at least 1, so the answer is 2. Example 3: the first and last positions are 2 apart and have the same height, so the answer is 0.",
+    "hints": [
+      "Sort by height, and within a two-pointer window use two monotonic queues to maintain the minimum and maximum original indices. When the difference between two indices reaches gap, record the height span and shrink the left boundary."
+    ]
+  }
+}

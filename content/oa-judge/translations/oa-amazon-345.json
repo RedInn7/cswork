@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-345",
+  "packageChecksum": "fbbd5b08a35a1eb755625a5cfda8b0540b8c2ed4f7d436e4fb94aaceffe6d8f2",
+  "en": {
+    "title": "Sort Product Codes by a Custom Unicode Character Order",
+    "description": "order lists the characters from smallest to largest. To compare two product codes, look at the first character where they differ; if one is a prefix of the other, the shorter one is smaller. Keep duplicate codes and return the sorted result. Characters are counted as Unicode code points, not as UTF-16 surrogate units.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The input is a JSON array [order,productCodes], which may contain standard JSON whitespace and escapes. The original constraints are truncated and give no complete count or character domain; on this site order contains 1..256 distinct Unicode scalar values, 1≤number of codes≤100000, and the total length of all codes is ≤1000000 code points. Codes may be empty, and every character appears in order; spaces, control characters, NUL and non-BMP characters are kept, and lone surrogates are not allowed. The total UTF-8 input budget is 16MiB (the standard compact worst case is under 12303100 bytes).",
+    "output": "Output a canonical compact ASCII JSON array of strings, with only commas between elements and no extra structural whitespace. Quotes and backslashes are written as \\\" and \\\\; backspace/tab/newline/form feed/carriage return are written as \\b/\\t/\\n/\\f/\\r; the remaining U+0000..001F and every code point from U+007F upward use lowercase hexadecimal \\uXXXX, with non-BMP characters split into UTF-16 surrogate pairs; U+0020..007E other than quotes and backslashes are output directly, including the space and /. End with a single newline. This output convention only normalizes the encoding and removes no characters.",
+    "explanation": "The outputs of the three public examples are [\"abc\",\"adc\"]; [\"\",\"b\",\"b\",\"ba\",\"a\"]; and [\"\",\"\\ud83d\\ude00\",\"\\ud83d\\ude00a\",\"\\u0000\",\" \",\"a\"], checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Build a mapping from characters to their order 0..255, turn each string into a byte sort key of the same length, and sort the original strings by the lexicographic order of these byte strings."
+    ]
+  }
+}

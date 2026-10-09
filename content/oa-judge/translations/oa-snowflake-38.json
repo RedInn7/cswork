@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-38",
+  "packageChecksum": "b9d91efa65e851e10b42237e96caac30bcb9c491874a123b4c586a4b31782f2e",
+  "en": {
+    "title": "Fewest Connected Blocks After Adding One Interval",
+    "description": "You are given closed intervals and may add exactly one extra closed interval with length b−a≤k. Find the minimum number of connected blocks after merging. Touching at the same endpoint counts as connected; intervals that differ by 1 are not automatically connected.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains n k, followed by n lines of a b. 1≤n≤200000, 1≤a≤b≤10⁹, 1≤k≤10⁹. The added interval may have length 0.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 2; 1; 1. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "First sort and merge the existing intersecting intervals, then use two pointers to find the largest run of consecutive blocks that one segment can connect: the start of block r minus the end of block l is ≤k. Connecting w blocks reduces the total number of blocks by w−1."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-1",
+  "packageChecksum": "7a0ab8912d9e69aaf7514c838839f72b0df59fe892110ca911ee93903887a55d",
+  "en": {
+    "title": "Maximum Throughput of a Serial Pipeline Within Budget",
+    "description": "Scaling up service i once costs cost[i], and after t scale-ups its throughput is tp[i]*(1+t). The throughput of the serial pipeline is the minimum over all services; find the maximum throughput with a total cost not exceeding the budget.\n\nThis site independently compiled the standard I/O and the solution; additions for bounds missing from the source and corrections to the examples are stated explicitly in the protocol.",
+    "input": "The first line contains n budget, the second line contains n values of tp, and the third line contains n values of cost. Original OCR001/002 gives no numeric bounds; this site uses 1≤n≤100000, 0≤tp≤10^9, 1≤cost≤10^9, and 0≤budget≤10^9. Positive costs explicitly rule out unlimited free scale-ups, and a throughput of 0 can never be increased.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 10; 2; 0. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search on the target throughput T, compute for each service the minimum scale-up cost needed to reach T, and sum them; if any tp is 0, output 0 directly."
+    ]
+  }
+}

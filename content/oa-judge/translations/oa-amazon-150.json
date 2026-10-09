@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-150",
+  "packageChecksum": "c0a52f8bed65d6029d44861cf4a1a39234ee6921e0f325c33b31bb85af3240d6",
+  "en": {
+    "title": "Number of Unused Skills in a Query Time Window",
+    "description": "Each log entry has a skill ID and a request time. For each query q, count the skills that have no request in the closed interval [q−window,q], and output the answers in the original query order.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains numSkills m q window; each of the next m lines contains a 1-based skill ID and a time, and the last line contains q query times. The four size/window parameters are in 1..100000, times and queries are in 1..100000, and IDs are valid.",
+    "output": "Output q idle skill counts in the original query order.",
+    "explanation": "Example 1: in the window 5..10 the active skills are 1 and 2, so 1 is idle; in 6..11 only skill 2 is active, so 2 are idle. Example 2: in the original query order the active counts are 3, 1, 1, so the idle counts are 3, 5, 5. Example 3: query 6 includes the request at the left end 5, so 0 are idle; query 7 does not, so 1 is idle.",
+    "hints": [
+      "Sort the logs by time and the queries by time as well. Use two pointers to maintain the logs inside the window, record a frequency per skill and keep the number of active skills; answer=(total skills)−(active count)."
+    ]
+  }
+}

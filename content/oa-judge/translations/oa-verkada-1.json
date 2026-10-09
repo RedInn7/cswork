@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-verkada-1",
+  "packageChecksum": "5c14f3e66a385aa6787998770d25ee6c35e9d784175cf255670dbf589cbf4c6b",
+  "en": {
+    "title": "Find Valid IP Addresses",
+    "description": "Recursively scan the whitespace-separated tokens in files under root, collect valid IPv4 addresses, and sort them lexicographically, keeping duplicates.\n\nThe standard input/output format and supplementary bounds on this site are as stated in this problem.",
+    "input": "The first line is the root path; the second line is the number of files f (≤2×10^5); each following line is `path<TAB>content`, where path is an absolute POSIX path, file contents contain no tabs, and the total number of characters is ≤10^6.",
+    "output": "One address per line; if there are no results, output nothing.",
+    "explanation": "Use `commonpath` to determine strict descendants of the path; check each token for 4 decimal octet fields; keep duplicate tokens and then sort. Time is O(input length + sorting the results).",
+    "hints": [
+      "Use `commonpath` to determine strict descendants of the path; check each token for 4 decimal octet fields; keep duplicate tokens and then sort. Time is O(input length + sorting the results)."
+    ]
+  }
+}

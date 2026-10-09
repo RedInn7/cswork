@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-176",
+  "packageChecksum": "0929b0d64bc3abe618e9c5895a1e1e422e55ad93ab84b3af9b7d460ac2375252",
+  "en": {
+    "title": "First Time a Fully Black Square Appears",
+    "description": "On a white n×m canvas, one given cell is painted black every minute, and each cell appears exactly once. Find the minute at which a fully painted k×k square first exists.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m k, followed by n×m lines of 1-indexed coordinates, all distinct. 1≤n,m≤750; 1≤k≤min(n,m).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers to the three examples are 1, 4 and 4; in the third example the left square is completed first.",
+    "hints": [
+      "Fill each cell with the minute it is painted; a square is complete at the maximum time inside it. Use a monotonic queue first along rows and then along columns to get the 2D k-window maximum, then take the minimum."
+    ]
+  }
+}

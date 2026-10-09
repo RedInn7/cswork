@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-82",
+  "packageChecksum": "28f2a43fb613835bbfab37260f521713a847d833b0ba85a4081c7dbec8b514fd",
+  "en": {
+    "title": "VM Inventory Rental Revenue",
+    "description": "There are n kinds of virtual machines, with initial stock vmStock[i]. Serve up to m customers in order. Each customer first pays the sum of the current maximum stock and the current minimum non-zero stock, then rents one machine from a type that currently has the maximum stock, decreasing its stock by one. Zero stocks are excluded from the minimum. Based on the consistent behavior of the fixed source's Python, Java, and C++ code, this site specifies: stop immediately once all stock is exhausted and output the revenue accumulated so far; when the maximum is tied, choosing any of them does not affect the result. The standard I/O and the three examples below were added by this site.",
+    "input": "The first line contains two integers n m, and the second line contains n integers vmStock[i]. Complete original constraints: 1≤n≤10^6, 1≤m≤10^6, 1≤vmStock[i]≤10^6. The size limit for a single test input on this site is 32 MiB.",
+    "output": "Output the accumulated revenue, using an integer type large enough to hold 2×10^12. Customers who arrive after the stock runs out generate no revenue.",
+    "explanation": "Example 1 charges 5, 4, 3 in turn, 12 in total; example 2 can only serve the first customer, revenue 2; example 3 charges 6, 4, 2 in turn, 12 in total.",
+    "hints": [
+      "Stock values never exceed one million, so a frequency array works.",
+      "Each step only decreases a maximum stock, so the maximum can only go down."
+    ]
+  }
+}

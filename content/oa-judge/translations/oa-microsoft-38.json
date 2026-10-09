@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-38",
+  "packageChecksum": "0600618ae8cd053817a0ee7cc76670e65339b8b0ba6e15610d2dbff997bed5f7",
+  "en": {
+    "title": "Maximum Score of Two Rooks in Different Rows and Columns",
+    "description": "Place exactly two rooks on a rectangular board; they must be in different rows and different columns. Find the maximum sum of the scores of their cells. The original site's sample input is not rectangular, so this site uses independent examples consistent with the statement.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "This site's ranges: the first line contains N M (2..500), followed by N lines each with M integer scores (−10⁹..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: take the top-right 4 and the bottom-left 2, for a sum of 6.\n\nExample 2: two rooks must be placed, so take −1 and −2, for a maximum sum of −3.\n\nExample 3: 9 and 8 are in the same column and cannot be paired, so take 9 and 2, for a sum of 11.",
+    "hints": [
+      "Process row by row, keeping the top two scores from all previous rows that lie in distinct columns. Pair the current cell with the best of these whose column differs from its own, then add the current row to the candidates."
+    ]
+  }
+}

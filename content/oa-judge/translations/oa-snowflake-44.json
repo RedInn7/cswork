@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-44",
+  "packageChecksum": "197f9765f485b5a8261e0cc79c960ba1a140d358d9465ad16498a5a440d4cb34",
+  "en": {
+    "title": "Minimum Remaining Stones After Exactly k Half-Pile Removals",
+    "description": "Each time, choose any pile and remove floor(stones/2) from it, leaving ceil(stones/2). The same pile may be chosen repeatedly. After exactly k operations, minimize the total number of remaining stones.\n\nThe input/output protocol was compiled by this site, and numeric ranges missing from the original text are explicitly marked as this site's additions.",
+    "input": "The first line contains n k, and the second line contains n pile sizes. Original constraints: 1≤n≤100000, 1≤pile size≤10000, 1≤k≤100000.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 12; 12; 2. The examples were checked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Use a max-heap of negated values: each time, take the largest pile, subtract half rounded down, and push back the half rounded up. Once the maximum is 1, further operations change nothing, so you can stop."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-10",
+  "packageChecksum": "5c5e8d942dd48ce0cba34e4fa6669cadcd114e944afb932712a43412fa6ab4b2",
+  "en": {
+    "title": "Alphanumeric Combinations",
+    "description": "A digit string can be split, in order, into integers 1..26, which map to a..z. Each valid split corresponds to one word; a leading zero cannot be decoded on its own or as part of 01..09.\n\nThis site's input protocol and the explicitly stated supplementary ranges are compiled by CSWork and do not pose as the original OA rules.",
+    "input": "A single line containing a digit string S. The original problem gives no length range; this site adds 1≤|S|≤1000 with characters only 0..9, so that the output fits within this problem's judging output limit.",
+    "output": "Output the number of valid decodings as a decimal integer; output 0 if there is no valid decoding.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Use dynamic programming where dp[i] is the number of decodings of the first i digits. The last digit can be decoded on its own if it is not 0; the last two digits can be decoded together if they are in 10..26."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-330",
+  "packageChecksum": "5dc5de153da3ea9c3c27120e5dd7249b7a085132f113622e0adf003242108677",
+  "en": {
+    "title": "Minimum Cost to Buy Enough Server Power When Prices Are Only One or Two",
+    "description": "Each machine can be bought at most once; its price is 1 or 2 and its power is an integer. Choose any set of machines whose total power is at least target and find the minimum total price. You may choose no machine at all; if no feasible set exists, return −1.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n target, the second line contains power, and the third line contains price. The original statement only restricts price to 1 or 2 and gives no other value bounds; on this site 1≤n≤200000, −10^9≤power[i]≤10^9, −10^14≤target≤2×10^14. Power is not arbitrarily required to be positive; machines with non-positive power are still valid input.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, −1 and 0. In the last example the empty set has power 0, which is already not less than −1, so you cannot be forced to buy a machine.",
+    "hints": [
+      "If target≤0, the answer is 0 right away. Otherwise discard non-positive powers, group the machines by price, sort each group's powers in descending order, and take prefix sums. Enumerate how many machines to take from the price-1 group, binary search for the fewest machines from the price-2 group that cover the remaining need, and take the minimum total price."
+    ]
+  }
+}

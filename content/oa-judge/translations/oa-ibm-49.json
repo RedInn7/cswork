@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-49",
+  "packageChecksum": "81c7bb6e426dcac14cdef51c69d6d088e5956926ff54ad190c1516cf82f3d099",
+  "en": {
+    "title": "Maximum XOR Not Exceeding a Limit Within a Range",
+    "description": "Choose lo≤a<b≤hi such that a XOR b≤k and the XOR value is as large as possible; return the XOR value. The two integers must be different; if no feasible pair exists, this site outputs -1.\n\nThe standard input/output format was compiled by this site; added numeric bounds and the encoding for no-solution cases are explicitly marked and do not claim to be the source's original constraints.",
+    "input": "One line containing lo hi k. Full source ranges: 1≤lo<hi≤10000, 1≤k≤10000.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 6, -1 and 7 respectively.",
+    "hints": [
+      "Run a two-number digit DP from the high bit to the low bit, tracking whether each number is still tight against its lower and upper bounds, whether a is already less than b, and whether the XOR is still tight against k, and enumerate the current pair of bits."
+    ]
+  }
+}

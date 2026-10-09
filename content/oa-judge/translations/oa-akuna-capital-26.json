@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-26",
+  "packageChecksum": "9c0eb56d1ff06cde66f9d978b7470078875d823ea37ad0f2969b724162afcf69",
+  "en": {
+    "title": "Minimum Chunks Required",
+    "description": "A file contains totalPackets packets numbered 1-based. The uploaded ranges do not overlap; each contiguous range not yet uploaded can be split into any number of contiguous chunks, where each chunk length must be a non-negative integer power of 2, and the chunk start does not need to be aligned to its length. Find the minimum number of chunks still to be uploaded.\n\nSee the statement/review record for the problem source and the basis of the rules; limits marked in the input ranges are supplements added by this site.",
+    "input": "The first line contains totalPackets and m; each of the next m lines contains an uploaded closed range l r. Original limits: 1≤totalPackets<10^18, 0≤m<10^5, 1≤l≤r≤totalPackets, and the ranges do not overlap.",
+    "output": "Output the minimum number of chunks that must be uploaded.",
+    "explanation": "Process the input according to the problem rules; see the companion notes for the full approach, the correctness argument and the complexity.",
+    "hints": [
+      "Sort the uploaded ranges and find the non-uploaded gaps between them one by one. A gap of length L can be split into at least popcount(L) chunks with power-of-two lengths, and the answer is the sum of popcount over all gaps."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-18",
+  "packageChecksum": "1df94ecee0cb08b52cd269da4d760092d67c300aca0f442b4a882f65d9b26926",
+  "en": {
+    "title": "Find a Matrix Element That Is the Maximum of Its Row and the Minimum of Its Column (Same-Problem Version)",
+    "description": "The matrix elements are non-negative. Find an element that equals both the maximum of its row and the minimum of its column, and output its value; if none exists, output −1. Multiple equal maximum or minimum positions are all valid; it does not need to be strictly greater or smaller.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The first line contains N M, followed by N lines of M integers each. Original bounds: 1≤N,M≤1000; the elements are non-negative but have no upper bound, so this site adds ≤10^9. The next sentence of the original input swapped the dimensions as M rows and N columns; this site restores N rows and M columns based on the explicit dimension definition.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 1; -1. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Process the matrix row by row, recording the minimum of each column and the minimum R over all row maxima. Let C be the maximum of the column minima; if R=C, output that value, otherwise output −1. Keep only M column values, and do not build a copy of a million-integer matrix."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-12",
+  "packageChecksum": "7f1854f83663d8fb7fa7712f63125ebe902688ed8317c1b78d9c389c5f0b2d87",
+  "en": {
+    "title": "Obstacles on a Number Line and Range Availability",
+    "description": "Perform the operations in order: 1 x places an obstacle at the empty coordinate x; 2 x size checks whether the half-open range [x,x+size) contains no obstacle, outputting the character 1 if so and 0 otherwise. A check operation places nothing. Concatenate all check results into one string.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "This site's standard input scale: the first line contains q (1..100000); the next q lines are operations 1 x or 2 x size, with x in −10⁹..10⁹ and size in 1..10⁹. When an obstacle is placed, its coordinate is guaranteed to be empty, and there is at least one check.",
+    "output": "Output the answer as described; separate multiple results with spaces in order, and output an empty line for an empty array.",
+    "explanation": "Example 1: the obstacles are at 2 and 5; the four queries [3,5), [3,6), [1,2), [1,3) are clear, blocked, clear, blocked in order, giving 1010.",
+    "hints": [
+      "Read all placement coordinates in advance and compress them, then use a Fenwick tree to record how many have been placed. A range can be used when the count between the two binary-searched indices is zero."
+    ]
+  }
+}

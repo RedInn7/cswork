@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-225",
+  "packageChecksum": "af454d21c6d36ec1d0d66f9924493c7ba7261f42d59be1e5e6e7eda735a25a27",
+  "en": {
+    "title": "Minimum Cost to Make All Sizes Distinct by Increasing",
+    "description": "Each product's size can only increase, and each unit of increase costs that product's cost. In the end all product sizes must be distinct; find the minimum total cost. Products cannot be removed.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line the sizes, and the third line the unit costs. 1≤n≤200000, 1≤size≤10^9, 1≤cost≤10000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 6, 7 and 1. In the second example the 3 with cost 4 rises to 4 and the 2 with cost 1 rises to 5, total 7.",
+    "hints": [
+      "Sort by original size and scan the final size coordinates, keeping in a max-heap the products whose original size is ≤ the current position; at each position, fix the one with the highest unit cost. When no product is available, jump straight to the next original size."
+    ]
+  }
+}

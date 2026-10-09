@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-20",
+  "packageChecksum": "1792841259195a22d9ef107f8a5e0bb4ef0a78fe80a1550c7378e535debea63e",
+  "en": {
+    "title": "Number of Fair Splits of Two Arrays",
+    "description": "A fair index K splits A and B each into two non-empty parts such that the sums of all four parts are equal. Count the fair indices, where K ranges over 1..N−1. Some of the original site's explanations had the wrong indices; this site corrected them example by example.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains N (1..100000), the second line contains A, and the third line contains B, each with N integers (−10⁹..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: for K=2 and K=3 all four parts sum to 3, so the count is 2.\n\nExample 2: only K=2 is valid, with all four parts summing to 0; the original site's K=1 is incorrect, and the count is still 1.\n\nExample 3: the two arrays sum to 6 and 8, so the four parts cannot be equal; the answer is 0.",
+    "hints": [
+      "First compare the totals of the two arrays: they must be equal and even. Then accumulate both prefix sums together and count the positions where both equal half of the total."
+    ]
+  }
+}

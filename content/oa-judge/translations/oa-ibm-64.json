@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-64",
+  "packageChecksum": "c78e7965fa11038476f50850e4ca6a6f2d08c6269cc28796e9d6dae22e08b698",
+  "en": {
+    "title": "Filter Transfer Users by Number of Logs Involved",
+    "description": "Each log line records the sending user, the receiving user and the amount. Return the IDs of users involved in at least threshold logs, in ascending numeric order. A self-transfer log counts only once for that user, and the amount does not affect the count.\n\nThe input/output protocol was compiled by this site, and missing numeric constraints are explicitly marked as this site's additions.",
+    "input": "The first line contains n threshold, followed by n lines of sender recipient amount. 1≤n≤100000, 1≤threshold≤n; all three fields are 1..9-digit decimal numbers whose first digit is non-zero, and the answer is guaranteed to be non-empty.",
+    "output": "Output the number of users on the first line, followed by one ID per line in ascending numeric order.",
+    "explanation": "The outputs of the three public examples are, in order: 2 / 2 / 10; 1 / 2; 2 / 99 / 100. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "For each log, add one for each distinct participating user, then filter the IDs whose counts reach the threshold and sort them as integers."
+    ]
+  }
+}

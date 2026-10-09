@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-129",
+  "packageChecksum": "757a9b273650b2731354c65a1624a24d5020f9f66ef317c9b0116ec7124f19f7",
+  "en": {
+    "title": "Lexicographically Largest Sequence with Synchronous Rightward Unlocking",
+    "description": "At each step, pick any currently available element (repeats allowed) and append it to the result; then every position that is 0 and whose left neighbor was originally 1 becomes 1 simultaneously. Unlocking does not depend on what was picked and spreads only one cell to the right. Perform m steps and maximize the result lexicographically. When everything is 0 and nothing can be picked, this site's standard I/O convention is to output -1.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n m, the second line contains n positive integers, and the third line contains a 01 availability string. The source gives no value bounds; this site sets 1≤n,m≤100000, elements in 1..10⁹, and a string length of n.",
+    "output": "If there is no solution, output -1; otherwise output the m chosen values.",
+    "explanation": "Example 1: initially 5 and 6 are available, so take 6 first; after 7 is unlocked, take 7. Example 2: take 4 first; after one round both 9 and 10 are unlocked, and every later pick is 10, so output 4 10 10 10, correcting the source's 4 9 10 10. Example 3: no element is initially available, so there is no solution; output -1.",
+    "hints": [
+      "Scan to compute, for each element, its distance to the nearest initial 1 on its left, which is the round in which it unlocks; record the maximum per round, then for each round keep the maximum of the values unlocked so far."
+    ]
+  }
+}

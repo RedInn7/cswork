@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-76",
+  "packageChecksum": "f7a6767458ab15f04dce8f8cbca2645650b8c802ae3e562035636a97a6fe7e2a",
+  "en": {
+    "title": "Earliest Integer Second When Cumulative Usage Reaches the Threshold",
+    "description": "Each user contributes 1 usage at every integer second from start to end. Find the integer second at which the cumulative usage first reaches max_usage. CSWork standard I/O convention: output −1 if the threshold is never reached.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n max_usage (1≤n≤100000, 1≤max_usage≤10¹⁴), followed by n lines of start end (1≤start≤end≤10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the cumulative total is 1 at second 1; at second 2 both users contribute 1 each, for a cumulative 3, so output 2. Example 2: starting and ending in the same second still contributes 1, and the threshold is first reached at second 5. Example 3: the total usage is only 1 and never reaches 2, so output −1 per this site's convention.",
+    "hints": [
+      "Record a +1 event at start and a −1 event at end+1, and sort by time. Between adjacent events the active count is fixed, so accumulate segment by segment; when the threshold falls inside a segment, use ceiling division to find the minimum number of seconds."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-60",
+  "packageChecksum": "529a469be9103c9ed4cf1d34eb8fa4230975734025c8230d65bb0d318cfe1c09",
+  "en": {
+    "title": "Leftmost Coordinate Lit by the Most Lamps",
+    "description": "A lamp (x,r) lights the closed interval [x−r,x+r], with r>0. Return the position lit by the most lamps at once; if several positions tie, take the smallest coordinate.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by n lines of x r. The source gives no numeric bounds; on this site 1≤n≤200000, −10⁹≤x≤10⁹, 1≤r≤10⁹.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: the only position shared by all three lamps is 1. Example 2: at most one lamp lights any position, and the leftmost such position is −3. Example 3: the two segments meet at the closed endpoint 1, which is lit by both lamps, so the answer is 1.",
+    "hints": [
+      "For integer coordinates, add 1 at the left end and subtract 1 at the right end plus 1; merge events by coordinate and sweep the coverage count, recording a coordinate only when the maximum coverage is strictly exceeded."
+    ]
+  }
+}

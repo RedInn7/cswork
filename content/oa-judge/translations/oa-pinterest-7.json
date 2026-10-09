@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pinterest-7",
+  "packageChecksum": "e794f9596f413faaa26bf5183955f1474848175c2ce7ae56e88e68e3a479d4e6",
+  "en": {
+    "title": "Travel Distance on Scooters",
+    "description": "The street runs from 0 to finish. When you are at position p, walk to the nearest scooter at a position not less than p; if there is none, walk to the finish. Ride that scooter to the farthest position its battery can reach (at most 10 units to the right), and repeat if you have not reached the finish yet. Return the total distance ridden.\n\nThe input format and the supplementary limits listed for this problem were compiled by CSWork; they do not imply that the original source uses this protocol.",
+    "input": "The first line contains finish and n; the second line contains n distinct integer positions. Source constraints: finish≤1000, and the positions are distinct integers on the street; this site explicitly defines the street range as [0,finish], so n≤finish+1.",
+    "output": "Output one integer: the total distance traveled on all scooters; walking distance is not counted.",
+    "explanation": "Process the input according to the rules in the statement; see the accompanying notes for the approach, proof, and complexity.",
+    "hints": [
+      "Sort the scooter positions and, from the current position, find the first scooter with x≥current position; add min(finish,x+10)−x and update the current position to that point. Stop when no scooter is available."
+    ]
+  }
+}

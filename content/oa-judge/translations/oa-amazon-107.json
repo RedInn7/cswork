@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-107",
+  "packageChecksum": "b3e2d1a73d11746e83fae45e470c2ae3fb6f5b174d7b473154890bfc5db27ff5",
+  "en": {
+    "title": "Total Forward Distance After Adding Two Fuel Stations Each Time",
+    "description": "Vehicle positions are non-decreasing, and vehicles can only move right. Each query independently adds fuel stations at the positions of vehicles a and b, and the position of the last vehicle always has a station; each vehicle stops at the nearest station that is not to its left.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n q; the second line contains n non-decreasing position values; each of the next q lines contains a b (1-based, a<b). The original gives no value ranges; this site sets 2≤n≤100000, 1≤q≤100000, −10⁹≤position≤10⁹.",
+    "output": "Output q total distances in query order.",
+    "explanation": "Example 1: the five vehicles travel 3, 0, 5, 0, 0, for a total of 8. Example 2: the first two vehicles already have stations and so does the last vehicle, for a total of 0. Example 3: in both queries only one vehicle moves forward by 1, so the total distances are 1 and 1.",
+    "hints": [
+      "Precompute, for each position, the rightmost index A, B sharing the same coordinate, and use prefix sums to split the vehicles into [0,A), [A,B) and [B,n), which go to the two added stations and the last station respectively; the distance of each part is count×(station position)−(sum of positions in the range)."
+    ]
+  }
+}

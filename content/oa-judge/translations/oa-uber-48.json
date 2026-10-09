@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-48",
+  "packageChecksum": "86c3877b3af269911bf01e0b26ad86e02514ed68395af4de8fe831ac26d459b8",
+  "en": {
+    "title": "Largest Square Area of All 1s",
+    "description": "In a 01 matrix, find the axis-aligned squares consisting entirely of 1s and return the largest area.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n m, followed by n 01 strings of length m. 1≤n,m≤300.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: there is an all-1 square of side 2 in the middle, so the largest area is 4. Example 2: everything is 0, so output 0; the original site's second 2×2 input was missing a row, which has been filled in. Example 3: there are only two rows, so the largest side is 2 and the area is 4.",
+    "hints": [
+      "Use a row-rolling DP: when the current cell is 1, the largest side of a square with it as the bottom-right corner is the minimum of the left, top, and top-left values plus 1."
+    ]
+  }
+}

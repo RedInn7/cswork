@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-168",
+  "packageChecksum": "ab0e7c3545bc7e80be8bbceaaeda05f33e99684cf584374c6bbfded46dd45765",
+  "en": {
+    "title": "Fewest Replacements for Alternating Delivery by Two Drones with Different Capacities",
+    "description": "You may choose any two drones from capacities 1..10^9, and the two capacities must differ; they deliver packages alternately (the first drone delivers packages 1, 3, 5, ...). A package is fine if its weight does not exceed the capacity of the drone used; you may replace the weights of some packages with any positive integers, and the number of replacements should be minimized. Note that it is not required that the packages delivered by the same drone have equal weights.\n\nThe standard I/O, examples and solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n, and the second line contains the package weights. The original snapshot only states the drone capacity bound explicitly; this site sets 1≤n≤100000 and package weights in 1..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: choosing the two largest capacities is enough for everything, so no replacement is needed. Example 2: both positions need the largest capacity, but the two drones differ, so 1 package is replaced. Example 3: the large drone delivers the odd positions and the small drone the even positions, so 0 packages.",
+    "hints": [
+      "Taking the largest capacity 10^9 and the second largest 10^9−1 is never worse than any other choice. Only packages weighing exactly 10^9 exceed the smaller capacity, so give the small drone the parity positions with fewer such packages."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-362",
+  "packageChecksum": "6b8c0c38e6eed84a780f9cd4f6adfbec32a5c51d788a14871ddd0ea331121f49",
+  "en": {
+    "title": "Number of Fixed-Length Window Reversals That Make the String Smaller",
+    "description": "Reverse each contiguous window of length k, one at a time, and count the window positions for which the whole reversed string is strictly smaller than the original. Identical text at different positions is counted separately; windows whose reversal changes nothing are not counted.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The input is a JSON array [s,k]. Original bounds: 2≤length in code points≤1000000, 1≤k≤min(length,20). The original statement does not restrict the character set; this site specifies Unicode scalar characters and lexicographic order by code point, allows whitespace, NUL, non-BMP and Unicode separator characters, and keeps the original characters in the JSON encoding.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 1; 2; and 1, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Everything outside the window stays the same, so you only need to compare from both ends of the window toward the middle; if, at the first differing pair, the right character is smaller than the left one, the reversal succeeds."
+    ]
+  }
+}

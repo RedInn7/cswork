@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-342",
+  "packageChecksum": "16406580aab1fb0fc8e714a73843a3d637377ec84478ef0b8f3aeeddd16bbbf0",
+  "en": {
+    "title": "Largest Server Ring With Adjacent Differences At Most 1 After Rearranging",
+    "description": "Delete some elements from an integer array; the remaining elements can be rearranged freely into a ring in which every pair of adjacent elements, including the first and last, has an absolute difference ≤1. Find the maximum number of elements kept. Equal values can be used as many times as they occur, and no elements can be added.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n and the second line contains n integers. The original statement gives no value bounds; on this site 1≤n≤200000, −10^9≤value≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The three answers are 3, 4 and 1. The source's first example says 4, but its explanation conjures up an extra 2; with the given array at most 3 can be kept. In the second example, 1,2,3,2 does form a ring of length 4.",
+    "hints": [
+      "Count frequencies and sort by value. A valid range of values must be consecutive, with every interior value appearing at least twice and each endpoint at least once. Scan the right end: restart at a gap between values, and when the previous value has frequency 1, make it the new left end; maintain the window's total frequency and the maximum."
+    ]
+  }
+}

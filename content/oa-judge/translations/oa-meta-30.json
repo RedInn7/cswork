@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-30",
+  "packageChecksum": "0465b8e3566e68fe7c8223e8737cabd053d2cf3927f62c2bf3a55b24225070bc",
+  "en": {
+    "title": "Counting Contiguous Ranges with Enough Non-Overlapping Equal Pairs",
+    "description": "Given an integer array bucket and a positive integer k, count the non-empty contiguous subarrays that contain at least k pairs of equal numbers. Each pair consists of two elements at different indices with the same value; different pairs cannot share an index. So a value that appears c times contributes at most floor(c/2) pairs.\n\nSite constraints: 1≤N≤200000, 1≤k≤200000, -10^9≤bucket[i]≤10^9. The original snapshot marks the constraints as Unknown; the numeric ranges are the ranges this site supports.\n\nOriginal problem source: https://oamaster.com/docs/companies/meta#30-enumerating-narrative-sections (fixed snapshot content fingerprint 459167e5e43683da3d3aff6bcd8a7f064a1402d5a7d54d76d8635dc435d41e13).",
+    "input": "The first line contains N and k; the second line contains N integers bucket[i].",
+    "output": "Output the number of qualifying contiguous subarrays.",
+    "explanation": "Track how many times each value occurs in the sliding window, and let pairs be the sum of floor(freq/2) over all values. After adding a value, if its count becomes even, pairs increases by one; once the window reaches k pairs, every end position further right for the current left endpoint also qualifies, so count N-right subarrays at once, then remove the current leftmost element and keep shrinking.",
+    "hints": [
+      "Write a formula for the number of non-overlapping pairs a value that appears c times can provide.",
+      "For a fixed right endpoint, the qualifying left endpoints form a prefix range."
+    ]
+  }
+}

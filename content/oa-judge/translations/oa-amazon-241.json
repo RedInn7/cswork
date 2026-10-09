@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-241",
+  "packageChecksum": "11593e972eb574c5768c556c3b1e225880de181902713e9a683aa687e9238ef2",
+  "en": {
+    "title": "Total Requests After Daily Bulk Server Replacements",
+    "description": "There are initially n servers, and each server's ID is also the number of requests it handles. Over the next n days, on day j every server with ID replaced[j] changes its ID to newId[j]; output the sum of IDs after each day's operation. Replacing an ID that does not exist, or replacing an ID with itself, leaves the result unchanged.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by three lines of n integers each: the initial IDs, replaced, and newId. The raw ranges are written as 105 and 104 without superscripts; this site explicitly uses 1≤n≤100000 and 1≤every ID≤10000.",
+    "output": "Output n integers, the total requests after each day's operation.",
+    "explanation": "The answers are 40 2, 2 10 and 11 7 11; a replacement also affects servers whose IDs were already changed on an earlier day.",
+    "hints": [
+      "Keep the ID frequencies and the total. When r changes to v, move c=count[r] over, apply total+=(v−r)*c, and output the updated total."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-11",
+  "packageChecksum": "7954b128fd0801295ae0e94d7db75c989d0ee22b56150830f25f4e059e279a17",
+  "en": {
+    "title": "Largest Team Satisfying Limits on Lower- and Higher-Skilled Members",
+    "description": "Developer i has skill i (1-based). If selected, developer i requires that at most lower[i] team members have lower skill and at most higher[i] have higher skill. Find the largest team in which everyone's requirements are satisfied.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n, the second line contains lower, and the third line contains higher; 0≤array values<n. The original OCR025 states n≤200000 and 026 states n≤2000000; this site keeps the wider original domain 1≤n≤2000000 and does not narrow it to the 200,000 of the curated page.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 3; 3; 1. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search on the team size K and scan from low skill to high skill: when c people have been selected, select this person if lower≥c and higher≥K−1−c. Use compact 32-bit arrays and token-by-token parsing to cover the 2,000,000 domain."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-12",
+  "packageChecksum": "534faed2ac7e99dbb6e7e63aa4ccca27cd53c27067a5ffafbec45f03ebd11b01",
+  "en": {
+    "title": "Stable Segments Whose Endpoints Equal the Interior Sum",
+    "description": "In a contiguous segment of length at least 3, the left and right endpoint capacities must be equal and must equal the sum of all interior capacities. Find the number of such segments. The original capacity[i] is restored to the left endpoint capacity[l] based on the following sentence and the examples.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n, followed by n capacity values; complete original bounds 1≤n≤100000, 1≤capacity[i]≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 2; 0. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Let the prefix P[i] be the sum of the first i items. Scan the right endpoint r, count each l≤r−2 under the key (a[l],P[l+1]+a[l]), and query (a[r],P[r])."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-194",
+  "packageChecksum": "d7d9482955dcf0d61deab623feeb0adbba20a2e4da4bddf3764b66681148d545",
+  "en": {
+    "title": "Sum of Distinct Integer Quotients Less Than n",
+    "description": "Given n, collect every distinct x with 0≤x<n for which some positive integer k satisfies floor(n/k)=x, and find their sum. The original snapshot explicitly requires x<n, so the value n produced by k=1 must be excluded; 0 belongs to the set but does not affect the sum.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing an integer n, 1≤n≤10^10.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 0; 1+2=3; 1+2+3+5=11.",
+    "hints": [
+      "Iterate over division blocks starting from denominator k=2. The current quotient q=n//k stays the same for denominators k..n//q; add q once and jump to the next block."
+    ]
+  }
+}

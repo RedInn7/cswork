@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-10",
+  "packageChecksum": "3767323a524decf7aa631fd3ddcde36d350b82fe077b46f1b322df469058fc21",
+  "en": {
+    "title": "Differing Keys Between Two JSON Recommendation Results",
+    "description": "Compare two JSON objects and return the top-level keys that exist on only one side or whose values differ between the two sides, in ascending lexicographic order of Unicode code points. Object key order does not affect equality, arrays are ordered, a bool differs from a number, and a missing key differs from null; numbers are compared by their exact decimal value.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The input is exactly two lines of JSON objects, optionally followed by one final newline; CRLF is supported. On this site the total UTF-8 size is ≤4MiB; each root has ≤1000 keys, each tree has ≤10000 value nodes, and container depth is ≤20 (the root counts as 1); every key is ≤64 code points, and string values are ≤256 code points and may be empty; text must consist of valid Unicode scalar values, and duplicate keys are rejected. Full JSON values are supported: object/array/string/number/bool/null. Numbers have absolute value ≤10^9 and are integer multiples of 10^-6, a number token is ≤64 characters, the absolute value of the exponent is ≤12, and equivalent decimal, exponent and −0 forms are supported.",
+    "output": "Output a JSON array of strings in ascending order with no duplicates; equivalent encodings with whitespace and valid escapes are allowed.",
+    "explanation": "The examples give [\"hacker\",\"input\"], [\"a\",\"b\"] and [] respectively; different number formats do not count as a difference.",
+    "hints": [
+      "Parse numbers as exact Decimal values and compare every key in the union of keys; recurse while respecting types, array order and object key sets, and finally sort the differing keys."
+    ]
+  }
+}

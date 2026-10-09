@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-155",
+  "packageChecksum": "5824022a6097077ad57a5789d8adfc2664c1674dbed5e28ba36e638f8d7e11a2",
+  "en": {
+    "title": "Longest Proper Substring Whose Characters Do Not Appear Outside",
+    "description": "Find the longest non-empty contiguous substring such that none of its characters appears outside the substring, and the substring cannot equal the whole original string; if there is none, return 0.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "One line with a lowercase string of length 1..100000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: in bcb, neither b nor c appears outside, so it is a proper substring of length 3; the source's 0 has been corrected. Example 2: zonservices has length 11, and outside it there are only a, m, a, which share no characters with it. Example 3: unless it is the whole string, any a inside appears outside as well, so there is no valid non-empty proper substring and the answer is 0.",
+    "hints": [
+      "The left end can only be the first occurrence of some character, so there are at most 26 choices. Scan right from each one and stop if some character's first occurrence is before the left end; track the last occurrence of the characters seen, and when the right end covers all of them you get a closed segment; exclude the whole string and take the maximum."
+    ]
+  }
+}

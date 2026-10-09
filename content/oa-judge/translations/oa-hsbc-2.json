@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hsbc-2",
+  "packageChecksum": "cddf85cbec42781ff03a6eb3a047587c561a1739c27d27e094706572a5bfe46d",
+  "en": {
+    "title": "HSBC OA #2: Find the Soldier's ID",
+    "description": "N soldiers stand in a row with IDs from 1 to N in ascending order. They take part in a drill consisting of Q operations. In the i-th operation, the major calls out two numbers row_i and col_i: the soldiers at positions row_i and col_i swap places; then the soldiers at positions row_i+1 and col_i−1 swap places; and so on, moving inward until (row_i+m)<(col_i−m) no longer holds. Each position is covered by the interval [row_i,col_i] of at most one operation.\n\nFind the ID of the soldier at position K after all operations are done.",
+    "input": "The first line contains an integer num, the number of soldiers N. The second line contains two integers actions and numSoldiers: the number of operations Q and the number of values called out each time S (S=2). Each of the next Q lines contains S integers row_i and col_i. The last line contains an integer posSoldier, which is K. 1≤posSoldier≤num≤10^9, 1≤actions≤10^5, 1≤row_i≤col_i≤num, and the operation intervals do not overlap.",
+    "output": "Output one integer, the ID of the soldier at position K.",
+    "explanation": "Example 1: N=10; after the 1st operation the order is 5 4 3 2 1 6 7 8 9 10, and after the 2nd it is 5 4 3 2 1 10 9 8 7 6, so position 1 holds 5.\nExample 2: position 5 is not in any interval, so the ID is still 5.\nExample 3: after reversing the interval [3,8], position 4 holds the soldier originally at position 3+8−4=7, whose ID is 7.",
+    "hints": [
+      "Swapping pairs while moving inward has the same effect as reversing the whole interval.",
+      "The intervals do not overlap, so you only need to find the interval that covers K.",
+      "N is very large, so you cannot actually build the array."
+    ]
+  }
+}

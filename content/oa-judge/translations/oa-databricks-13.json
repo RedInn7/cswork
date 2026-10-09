@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-13",
+  "packageChecksum": "da94f19e7dce690633a639e11a8a6e228595d0958875cc5c153230b20b425185",
+  "en": {
+    "title": "All Split Matches of Digit-String Codes",
+    "description": "You are given a digit string panel and several code strings. Split each code into index and pattern, with the index part having length 1 through len(code)-1 in order; parse index as a decimal integer (leading zeros do not affect the value). If the contiguous segment of panel starting at that 0-based index exactly equals pattern, the result of that split is pattern; otherwise it is not found. Output the results in code order, then in order of split length.\n\nStandard input/output and this site's supplementary ranges follow this problem's description.",
+    "input": "The first line contains panel (1..1000 ASCII digits); the second line contains c (1≤c≤100), followed by c lines, each an ASCII digit string code, with 2≤len(code)≤100 and total code characters ≤5000. The above upper bounds on c and code are site supplements that keep the output from becoming too large. Each index and pattern has at least one digit.",
+    "output": "Output one line per split: pattern if it matches, otherwise not found. The order follows the input order of code, and within each code, increasing split length.",
+    "explanation": "For each code, enumerate every split position where both index and pattern are non-empty, convert the left part to an integer, and compare it against the slice of panel of the same length.",
+    "hints": [
+      "For each code, enumerate every split position where both index and pattern are non-empty, convert the left part to an integer, and compare it against the slice of panel of the same length."
+    ]
+  }
+}

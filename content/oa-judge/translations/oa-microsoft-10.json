@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-10",
+  "packageChecksum": "bfd4fe2f82055fb1c1353810d5f7fc6ab32f9efeeb663f0b1fdca5bbd47cd08b",
+  "en": {
+    "title": "Move the Token to Balance a and b",
+    "description": "A token sits at one of the positions 0..N, and the letters lie between adjacent positions. Each step flips the a/b letter the token crosses. Find the minimum number of steps needed to make the counts of the two letters equal, or −1 if it is impossible.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains the letter string L (1..100, only a/b), and the second line contains start (0..N).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: moving right across the first a turns the string into baabab, with 3 of each letter; the answer is 1.\n\nExample 2: moving left 5 steps flips indices 1..5, giving abbaba with 3 of each letter; no shorter move balances the letters, so the answer is 5.\n\nExample 3: the total number of letters, 5, is odd, so they cannot be split into equal counts; output −1.",
+    "hints": [
+      "Whether an edge ends up flipped depends only on whether the end point and the start point lie on opposite sides of it; enumerate every end point reached by walking straight left or right and check whether the letter counts balance."
+    ]
+  }
+}

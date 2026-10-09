@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-25",
+  "packageChecksum": "16235226e8a27e779dcdc158f20579ca810f4edc1105b5a48206bfa9834f1248",
+  "en": {
+    "title": "Minimum Cells to Change to Form a Given Three-Segment Shape in a Matrix",
+    "description": "You are given an n×n matrix of odd order whose elements can only be 0, 1, or 2. One operation changes a cell to a different value. Let m=n//2 and use 0-based coordinates; the specified shape is the union of the following coordinates: (t,t) and (t,n−1−t) for 0≤t≤m, and (t,m) for m≤t<n. That is, the two upper half-diagonals meet at the center, and a vertical line then extends from the center down to the bottom edge. All cells inside the shape must become one value a, and all cells outside the shape must become a different value b, with a,b∈{0,1,2} and a≠b. Find the minimum number of cells to change. The center counts as a single cell. The letter in the original OCR title is wrong; this problem follows its explicit coordinate definition rather than guessing the pattern from the letter L or X.",
+    "input": "The first line contains an odd n, followed by n lines of n integers each. n takes the values 3,5,7,…,99, and matrix values are 0..2. The source of the range is explicit: the fastprep version of the same problem gives odd 5..99, and the original examples of both sources also include n=3, so this site uses the union of the two; the OCR itself has no numeric upper bound, and this site does not add the unsupported n=1.",
+    "output": "Output the minimum number of cells to change, as an integer. The shape and the background must use different values.",
+    "explanation": "The first two examples come from the original OCR, with their answers kept as 2 and 8. Example 1 changes (0,0) to 2 and (1,0) to 0. Example 2 changes the 8 background 0s to 1; the fastprep input omits row 4 [0,0,2,1,1], and this site restores the complete original 5×5 matrix from OCR021/022. The third example, an all-0 3×3 matrix, is added by this site: changing the 4 shape cells to another value suffices, so the answer is 4.",
+    "hints": [
+      "Count the 0s, 1s, and 2s inside the shape and in the background separately.",
+      "There are only six distinct ordered pairs of target values.",
+      "Count the center only once; the background must be a single value different from the shape's."
+    ]
+  }
+}

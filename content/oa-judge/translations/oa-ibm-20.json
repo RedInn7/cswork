@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-20",
+  "packageChecksum": "20a8e00f48a51d84f7243b00b53d4c98f1ad39b0df57170855a80b66d1080c97",
+  "en": {
+    "title": "Number of Course Schedules with Limited Consecutive Classes",
+    "description": "Schedule exactly P physics classes and C chemistry classes so that the same subject never appears more than N times in a row; find the number of distinct subject sequences modulo 1000000007. Each line is an independent test, and classes of the same subject have no individual identities.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains T, followed by T lines of P C N. Full source ranges: 1≤T≤100, 1≤P,C,N≤1000.",
+    "output": "Output T integers in input order, one result per line, each modulo 1000000007.",
+    "explanation": "The example outputs are 2, 1; and 0 2 respectively.",
+    "hints": [
+      "Count by runs of the same subject: F(s,k) is the number of ways to split s into k positive integers in 1..N. Group all tests by N and, based on the estimated amount of computation, choose between the inclusion-exclusion formula and a shared sliding-window DP; all s with the same N share one DP pass instead of being recomputed per test. Finally combine the cases where the run counts of the two subjects are equal or differ by 1."
+    ]
+  }
+}

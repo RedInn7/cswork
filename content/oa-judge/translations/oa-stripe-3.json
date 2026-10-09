@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-3",
+  "packageChecksum": "c3ff962b878fdf452e346ba003accba4e99d58eb764318c051da918710dff40f",
+  "en": {
+    "title": "Daily Clustering of Merchant Links",
+    "description": "Each day, some new associations between merchants and a link_type are added, each lasting a given number of days. Associations of the same type that are still active on a day connect the related merchants pairwise. Find the connected components of each day's graph; the pin of a component is the merchant with the highest degree, with ties broken by the lexicographically smallest merchant_id. Output components by size in descending order, then by pin in ascending lexicographic order. After expired associations are removed, components must be recomputed and may split.",
+    "input": "The first line contains D (always 3). Then the batches for days 1, 2, and 3 are given in order: each batch starts with an integer k, followed by k lines of `merchant_id link_type duration`. Such a line adds an association on that day that lasts duration days; it is active on days with `add_day <= day < add_day + duration`. merchant_id and link_type consist of 1..16 ASCII letters, digits, underscores, or hyphens; duration is an integer in 0..3; each batch has at most 100 lines, and there are at most 200 lines in total. Within one batch, `(merchant_id, link_type)` does not repeat; one merchant may be associated with several types, and one type may be associated with several merchants. Using the batch day number in place of the explicit day field in the upstream tuple is an addition to this site's input protocol.",
+    "output": "Output three sections, each starting with `Day 1`, `Day 2`, or `Day 3`, followed by one line per connected component: `  cluster size=<count> pin=<merchant_id>`. The graph's vertices are the merchants that have at least one active association that day; a merchant that shares no active link_type with any other merchant forms an isolated component of size 1. Components are sorted by size in descending order, then by pin in ascending lexicographic order; on a day with no active associations, output only the header line. Lines end with LF. The handling of isolated vertices and the text serialization are explicit additions by this site.",
+    "explanation": "The fixed upstream text defines that active relations with the same `link_type` form edges, a cluster is a connected component, the pin is the merchant with the highest degree with ties going to the smallest ID, and the final order is by size and pin. This site added the batch input, the output text, the limits, and the rule that a merchant with only one active relation whose type is not shared with any other merchant is a singleton.",
+    "hints": [
+      "Add the new relations day by day and filter out the expired ones. Group that day's merchants by link_type and connect every two merchants in the same group; find components with DFS/BFS, count each vertex's distinct neighbors, choose the pin by the stated rule, and sort."
+    ]
+  }
+}

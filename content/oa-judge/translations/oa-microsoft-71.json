@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-71",
+  "packageChecksum": "0b16b0d6e1811f71dc879f9c80a89f4e29f25a0b8eb291c69b5740231c5c6b12",
+  "en": {
+    "title": "Bijective Matching of a Character Pattern to Non-Empty Substrings",
+    "description": "Map each distinct character of pattern to a non-empty string, such that the same character always maps to the same string and different characters cannot map to the same string. Concatenate the mapped strings following the pattern, and determine whether the result can be exactly s.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "Two lines, pattern and s, both containing only lowercase letters, each of length 1..20.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: a→red and b→blue form the target, so output 1. Example 2: a→asd repeated 4 times matches exactly, so output 1. Example 3: the string cannot be split into two identical a strings followed by two identical b strings, so output 0.",
+    "hints": [
+      "Backtrack over positions in the pattern and the text. If a mapping already exists, only verify that fixed string; otherwise enumerate every non-empty prefix at the current position, skip strings already taken by other characters, and recurse."
+    ]
+  }
+}

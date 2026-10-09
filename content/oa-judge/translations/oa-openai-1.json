@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-1",
+  "packageChecksum": "f80bd152727b53c58658dffceb48fa62ca0ebb011f06a042359db1469419062e",
+  "en": {
+    "title": "Identical Connected Regions in Two Grids",
+    "description": "In each of the two 01 grids, partition the 1 cells into connected components using up/down/left/right adjacency. Count how many components in the second grid have a full coordinate set exactly equal to some full component in the first grid. This is neither a sub-island check nor a same-shape-after-translation check.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains n m, followed by n lines of the first grid and then n lines of the second grid. Each line has m consecutive 0/1 characters. The original problem has no numeric bounds; this site uses 1≤n,m≤200.",
+    "output": "A single integer, the number of exactly matching components.",
+    "explanation": "In Example 1 only the large component matches, so the answer is 1. In Example 2 the second grid is only a proper subset of the first, so the answer is 0. In Example 3 diagonal cells are not connected, so there are two matching components.",
+    "hints": [
+      "Use an iterative traversal to extract the set of cell IDs of each component, use the immutable set as a key, and count the keys of the second grid that also appear in the first grid."
+    ]
+  }
+}

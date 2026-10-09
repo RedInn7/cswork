@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-46",
+  "packageChecksum": "3deb894dabf2968f7cc2949c653e7f626eb7ef961446b0831d124a9eb5985091",
+  "en": {
+    "title": "Index of the Maximum Element After Independent Left Rotations",
+    "description": "The array consists of distinct positive integers. Each query independently rotates the original array to the left r times and returns the new 0-based index of the maximum element; rotations do not accumulate across queries.\n\nThe input/output protocol was compiled by this site, and numeric ranges missing from the original text are explicitly marked as this site's additions.",
+    "input": "The first line contains n m, the second line contains n distinct array values, and the third line contains m rotation counts. 1≤n,m≤500000, 1≤array value≤10⁹, 0≤rotation count≤10⁹.",
+    "output": "First output m, then output m 0-based indices of the maximum element.",
+    "explanation": "The answers to the three public examples are, in order: 3\n1 0 2; 3\n0 2 2; 2\n0 0. The examples were checked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "First find the original index p of the maximum element; for each query, output (p−r) mod n directly, normalized to 0..n−1."
+    ]
+  }
+}

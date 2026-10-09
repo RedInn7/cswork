@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-250",
+  "packageChecksum": "5126811f12038d06ab9e7531a32989fc2fa9755bf52ff743441db51d1bd309fd",
+  "en": {
+    "title": "Lexicographically Largest Non-Increasing Array by Taking One and Skipping k",
+    "description": "Repeatedly choose one of the following: discard the current leftmost item; or append the current leftmost weight to the result and remove it together with the k items after it. If fewer than k items remain after it, they are all removed, and the current item can still be taken. The resulting weights must be non-increasing, and among all feasible results take the lexicographically largest: at the first difference the larger one wins, and when one sequence is a prefix of the other, the longer one wins.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k; the second line contains the weights. The original text had no numeric bounds; this site uses 1≤n≤200000, 0≤k≤10^9, 1≤weight≤10^9.",
+    "output": "Output the result array, separated by spaces.",
+    "explanation": "The answers are 5 3, 10 5 and 3. In the first example any number of prefix elements may be discarded; you are not limited to looking at the first k+1 items.",
+    "hints": [
+      "Precompute the earliest index of the maximum in each suffix. Each round, take that maximum and continue from its index+k+1."
+    ]
+  }
+}

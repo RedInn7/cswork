@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-51",
+  "packageChecksum": "4038ff2d019795a78bd59f595c6dbb52e5869cd5ad7f36a38abc7778f3b85bc3",
+  "en": {
+    "title": "Minimum Edge Reversals with Any Root",
+    "description": "You are given a tree where every edge currently has a direction. Choose any node as the root; all edges must end up pointing away from the root. Reversing one edge costs 1. Find the minimum total cost.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by n−1 lines of directed edges u v, 0-based. The source gives no upper bound; on this site 1≤n≤200000, and ignoring directions the graph must be a tree.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: whether 0 or 2 is the root, only 1 edge needs reversing, so the minimum is 1. Example 2: with 0 as the root all edges already point outward, so output 0. Example 3: there are no edges, so nothing needs reversing.",
+    "hints": [
+      "First count the reversed edges with 0 as the root, then reroot: moving the root to a child along an originally forward parent-to-child edge costs one more reversal, and along an originally reversed edge costs one fewer."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-210",
+  "packageChecksum": "512c9eabb987d0c3497a630ad8d9aca243b6ecd881412fd7b55694b5af5f2328",
+  "en": {
+    "title": "Maximum Sum of Median Throughputs over Groups of Three",
+    "description": "Each group has three servers, and a group's throughput is the median of the three. Each server joins at most one group, and some servers may go unused. Find the maximum total throughput over all groups.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the throughputs. 1≤n≤200000, 1≤throughput≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9, 4 and 0. With fewer than three servers no group can be formed.",
+    "hints": [
+      "After sorting, at most floor(n/3) groups can be formed. Repeatedly take two servers from the largest end; the smaller of the two contributes the median, then give the group one of the smallest remaining servers."
+    ]
+  }
+}

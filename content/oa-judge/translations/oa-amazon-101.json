@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-101",
+  "packageChecksum": "5709a88140c9b1594b4ce468b50a407d4dc8ad75b445a3e25b670575e2a7684f",
+  "en": {
+    "title": "Total Elements in Concatenated Subarrays Smaller Than Unused Values",
+    "description": "Append each closed-interval subarray to the beautiful array in order; duplicate elements produced by overlapping intervals are kept. Positions of the original array never selected by any interval are called unused positions; for each unused value, count the elements of beautiful strictly smaller than it, and finally sum these counts.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n m; the second line contains n values arr; each of the next m lines contains a 0-based closed interval l r. The original gives no value ranges; this site sets 1≤n,m≤100000, −10⁹≤arr[i]≤10⁹, 0≤l≤r<n.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the concatenation is [1], and the unused 3 and 4 each contribute 1, for a total of 2. Example 2: the concatenation is [2,2], the unused 5 contributes 2 and 1 contributes 0, for a total of 2. Example 3: every position is used, so there is no contribution and the answer is 0.",
+    "hints": [
+      "Use a difference array to get how many times each original index appears in the concatenated array. Sort by value and merge groups of equal values, accumulate the weighted occurrences of smaller values, and each unused position contributes that prefix weight."
+    ]
+  }
+}

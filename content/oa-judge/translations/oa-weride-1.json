@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-1",
+  "packageChecksum": "eb2b79cbd7c0fcda34433c1d17a4cdf079ab403cc1c231b59635b1cc5a930c47",
+  "en": {
+    "title": "Point Assignment and Global Price Floor",
+    "description": "Given an array of item prices, execute queries of three columns in order. 1 x v: set the price of item x directly to v, which may lower it; 2 v r: set every price to max(price,v), where the third column r is an unused placeholder. Output the prices after all queries.",
+    "input": "Input, in order, n, n initial prices, q, and q lines of three-integer queries. Full original ranges: 1≤n,q≤200000, 0≤initial prices and valid v≤1000000000, point index 1≤x≤n. The original text did not give a separate numeric bound for the third placeholder of type2; this site interprets it per the original Java int[][] as −2147483648..2147483647, ignores its value, and does not require it to equal the threshold. The standard input is an explicit arrangement of the original function parameters.",
+    "output": "Output the n final prices in the original item order, separated by whitespace.",
+    "explanation": "The 001 original example keeps 8 9 8. In 006 Sample0, the third item of the original output, 3, is wrong; with the original five queries it should be 1 2 4 4 3; the intermediate state after the global floor 3 should be 3 3 4 4 3, and later point assignments can lower values again. The four 11s of Sample1 are correct, but keeping 1 at the end of the original explanation is wrong; writing 1 or 11 in the third column of type2 does not affect the result. The full basis for the corrections is in the editorial.",
+    "hints": [
+      "You only need to care about each item's last point assignment.",
+      "When scanning in reverse, the global threshold only affects items not yet determined.",
+      "The third placeholder field is neither an index nor a threshold."
+    ]
+  }
+}

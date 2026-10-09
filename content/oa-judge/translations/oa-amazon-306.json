@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-306",
+  "packageChecksum": "bccb681881e9157d765fd43c985c726abff0e97897d2a6cdcc76e2e517525d05",
+  "en": {
+    "title": "Amazon OA #306: Swap Into a Palindrome",
+    "description": "You are given a string s consisting only of the characters 0 and 1. In each operation you may swap the characters at any two positions i and j (they do not need to be adjacent). Find the minimum number of swaps needed to turn s into a palindrome; if it cannot be done, output −1.\n\nA palindrome reads the same forward and backward. For example, \"0\", \"111\", \"010\" and \"10101\" are palindromes, while \"001\", \"10\" and \"11101\" are not.",
+    "input": "One line containing a 01 string s. 1≤length of s≤10^6.",
+    "output": "Output a single integer, the minimum number of swaps, or −1 if there is no solution.",
+    "explanation": "Example 1: s=\"0100101\" (1-indexed). Swapping (4,5) gives \"0101001\", and then swapping (1,2) gives \"1001001\", for 2 swaps in total; one swap is not enough, so the answer is 2.\nExample 2: \"10\" has only one 1, and an even-length palindrome needs an even number of 1s, so the answer is −1.\nExample 3: swapping the 1st and 3rd characters of \"0011\" gives \"1001\" in a single swap, so the answer is 1.",
+    "hints": [
+      "Pair the i-th character with the i-th character from the end, and count the pairs that differ.",
+      "One swap can fix at most two pairs.",
+      "When the length is odd, the middle character can help; when the length is even, the number of 1s must be even."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-35",
+  "packageChecksum": "da20c3957d4885bdfa2f12d4b061be6d4fc2f08c23209d3918868ff2c67f1508",
+  "en": {
+    "title": "Maximum Operations Removing End Pairs with Equal Sums",
+    "description": "Each operation removes the first two elements, the last two elements, or the first and last elements. The sum of the two removed numbers must be the same in every operation. Find the maximum number of operations. No operation is possible when fewer than 2 elements remain.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N (1..1000), and the second line contains N positive integers (1..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: first remove 4+2, then the first and last elements 3+3, and finally 1+5; all sum to 6, for 3 operations.\n\nExample 2: remove the first and last elements 4+2, 1+5, 4+2, 3+3 in turn, for 4 operations.\n\nExample 3: a length of 1 allows no removal, so the answer is 0.",
+    "hints": [
+      "The sum of the first step has only three candidates. For each target sum, run an interval DP that tries the three valid end-pair removals and takes the maximum number of operations on the remaining interval plus 1."
+    ]
+  }
+}

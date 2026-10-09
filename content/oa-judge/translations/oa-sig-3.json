@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sig-3",
+  "packageChecksum": "e8040ded20f5199bb5485cbc12988fc56b14c03fee752211723dabbc7c10d5df",
+  "en": {
+    "title": "Match the Target Word by Copying a Skeleton's Existing Letters",
+    "description": "You are given a lowercase target word and a list of skeletons of the same length. Skeletons contain only lowercase letters and hyphens. Each hyphen can be replaced with any letter that already appears in that original skeleton; copying does not consume letters, so the same letter can be reused for multiple hyphens. All other positions stay unchanged. Return the original skeletons that can become word, keeping the input order and duplicates; return an empty list if none match.",
+    "input": "The first line contains word, the second line contains the number of skeletons m, followed by m lines, each with one skeleton. 1≤word length≤100, 1≤m≤100, and every skeleton has the same length as word. word contains only a..z; skeletons contain only a..z and -.",
+    "output": "The first line is the number of matches, followed by the matching original skeletons, one per line. If there is no match, output only 0, and do not output the word after replacement.",
+    "explanation": "Original OCR008 mistakenly wrote he-o, while 009 clearly shows he--o (two hyphens and no l); this site fixes it according to 009. Of the four original skeletons for hello, he-lo, he--o, -ell-, and hello, only he-lo and hello qualify. The original l stays in place and can be copied to fill hyphens; the original text has no consumption or usage limit. The other two public examples are added by this site: aaaa can be obtained from a--- by repeated copying, and a skeleton made entirely of hyphens fails because it has no source letter.",
+    "hints": [
+      "Fixed positions must match character by character.",
+      "Each hyphen can only copy a letter already present in the original skeleton, with no limit on the number of uses.",
+      "Output the original skeletons, keeping duplicates and order."
+    ]
+  }
+}

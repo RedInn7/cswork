@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-109",
+  "packageChecksum": "1e35c1b912277c3aeda7640343c784f0df746a5d78de4ea4a02d93718216b2d3",
+  "en": {
+    "title": "Can the Permutation Be Sorted with Exactly the Given Number of Swaps",
+    "description": "Each step swaps two distinct indices. For each moves value, decide whether the permutation can become ascending in exactly that many steps, and output a 01 string.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n q (1..100000); the second line contains a permutation of 1..n; the third line contains q moves values (1..10⁹).",
+    "output": "Output a 01 string of length q.",
+    "explanation": "Example 1: at least 2 steps are needed; 2 is feasible while 3 has the wrong parity, so output 10. Example 2: one 3-cycle and one 2-cycle need at least 3 steps, so output 001; the source's 011 wrongly treats two steps as feasible. Example 3: there is only one index, so no step can be performed; output 00.",
+    "hints": [
+      "The minimum number of swaps is n minus the number of permutation cycles; when n≥2, a count is feasible if it is at least the minimum and has the same parity, because two extra steps can swap the same pair and swap it back. When n=1 there is no valid swap at all."
+    ]
+  }
+}

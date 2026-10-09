@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-13",
+  "packageChecksum": "d904ba1963e74ee647d5c981acae7db237c687abcec93decc591b722bbc17ce7",
+  "en": {
+    "title": "Group and Sort Email Logs",
+    "description": "Given an email event log, group the events by sender. Sender groups are sorted lexicographically; within each group, events are sorted by timestamp in ascending order, then by recipient and subject in ascending lexicographic order. A subject may contain spaces and may also be empty.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "The first line contains n (1..200000), followed by n lines: a non-negative integer timestamp, sender, recipient, and subject. The sender and recipient contain no whitespace; the subject is the raw text from the 4th field of the line to the end of the line. Each line has at most 300 characters.",
+    "output": "First output the number of result lines; then, following the rules, output `sender: <sender>`, followed by that group's `<timestamp> <recipient> [subject]` lines. When the subject is empty, do not output an extra space.",
+    "explanation": "Process the input according to the rules above; see the accompanying solution for the approach, correctness proof, and complexity.",
+    "hints": [
+      "Collect records by sender, sort them with the triple key `(timestamp, recipient, subject)`, and finally output them ordered by the sender key."
+    ]
+  }
+}

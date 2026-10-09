@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-56",
+  "packageChecksum": "1c868d9e87babeb3ef6d0d6dcc8edf377aa294636bd6c78311f9346711f16c6c",
+  "en": {
+    "title": "Product of XORs over All Index Pairs",
+    "description": "For all 0≤i<j<N, compute A[i] XOR A[j], multiply all these results together, and take the product modulo 1000000007. Each test case is independent. The original snapshot gives the index condition and the modulus in full; an old importer mistakenly removed the text containing the less-than sign, and this site has restored it.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains T (1..10). Each test case consists of one line with N (2..100000), followed by one line with N integers (1..3000).",
+    "output": "For each test case, output one line with the product modulo 1000000007.",
+    "explanation": "Example 1: the six factors 3, 2, 6, 1, 5, 4 multiply to 720. Example 2: the three factors 7, 3, 4 multiply to 84. Example 3: in the first test case, equal values XOR to 0, so output 0; in the second, the only factor is 3, so output 3.",
+    "hints": [
+      "If any value repeats, some factor has XOR 0 and the answer is immediately 0. Otherwise, apply the integer XOR Walsh transform to the value frequencies of length 4096, square each entry, transform again, and divide by 4096 to get the number of ordered pairs for each XOR value; the number of unordered pairs with a nonzero XOR is half of that, and the answer is the product of modular powers using these counts."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-39",
+  "packageChecksum": "c915922a1c40f633d4589ad1561bc11a13a070e91e5c2bdbd1316c791bffe7bf",
+  "en": {
+    "title": "Longest-First Dictionary Tokenization",
+    "description": "Scan the text from the left; at each step, choose the longest dictionary word that matches at the current position and output its identifier. If no word matches, output the current character and advance one position. When the same entry appears more than once, only the identifier given first is used.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "This site's standard input: the first line is a non-empty ASCII text with no whitespace (at most 100000 characters); the second line contains the number of dictionary entries m (0..100000), followed by m lines, each with an entry and an identifier, neither containing whitespace; entry lengths are 1..100 with a total length of at most 100000, and identifier lengths are 1..32.",
+    "output": "First output the number of tokens, then output each identifier or original character in order.",
+    "explanation": "Example 1: apple is longer than app, so A is output first; then pie matches and P is output, for 2 items. Example 2: x has no match, so the original character is output; abc beats ab, so 2 is output; the trailing d is output as is, for 3 items. Example 3: the longer aa is chosen first, giving Z, and the remaining a uses its first mapping X, so the output is 2 Z X.",
+    "hints": [
+      "Build a Trie in which each terminal node records only the first identifier. Walk down from the current position, remembering the last terminal node seen; if a longest match exists, output it and skip past it, otherwise output the original character."
+    ]
+  }
+}

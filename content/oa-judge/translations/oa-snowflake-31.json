@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-31",
+  "packageChecksum": "8ef8d3b04ab9c2dedca83117637761a4bfb1eda61bb0b49296af635f52cba7ae",
+  "en": {
+    "title": "Earliest Meeting Everyone Can Attend During the Day",
+    "description": "Each event has the format person action start end, and the occupied start and end minutes are both inclusive. Within 00:00..23:59, find the earliest k consecutive minutes during which everyone who appears in the events is free. Return −1 if there is no solution; the meeting must not cross into the next day.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains n k, followed by n lines of events; times use the HH:MM format. 1≤n≤100000, 1≤k≤1440, each original event string has length ≤40, the number of people is <5000, and events of the same person do not overlap.",
+    "output": "Output the earliest time HH:MM, or −1 if it is impossible.",
+    "explanation": "The answers to the three public examples are, in order: 14:00; -1; 19:00. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Apply a difference array over [start,end+1) on the minute axis for each event to get the number of busy people in each minute. Scan the run of consecutive minutes with zero occupancy; the first time it reaches k gives the earliest slot."
+    ]
+  }
+}

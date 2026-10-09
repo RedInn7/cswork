@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-309",
+  "packageChecksum": "b898a4ac901270d7df36869ffcf05a6695ad9d581de65fa5b7cafd70673a4a2c",
+  "en": {
+    "title": "Minimum Sum of Weekly Maximums When Splitting Activities in Order",
+    "description": "Split all activities, in their original order, into exactly weeks non-empty contiguous groups, each scheduled in its own week; the effort of a week equals the maximum effort of the activities in its group. Find the minimum total effort over all weeks.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n weeks and the second line contains the effort array. The original bounds are 1≤n≤300, 1≤weeks≤n, 1≤cost[i]≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9500, 6 and 5. The number of weeks must be exactly as given; no week can be empty, and activities cannot be reordered.",
+    "hints": [
+      "dp[w][i] is the minimum total effort for splitting the first i activities into w weeks. Enumerate the start j of the last week and transition with dp[w−1][j]+max(cost[j:i]). Maintain the range maximum while enumerating j leftward, and roll over the week layers."
+    ]
+  }
+}

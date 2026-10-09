@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-57",
+  "packageChecksum": "a476eb2b08ba93be47c4328870c0d3b0683869567c4920a33646e9dbf11423bf",
+  "en": {
+    "title": "Top K Open Merchants",
+    "description": "Consider only open merchants and rank them by rating in descending order, then by distance in ascending order, then by original input index in ascending order. Return the first K indices; if fewer merchants are open, return all of them.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N K, followed by N lines score distance isOpen. The source gives no ranges; this site uses 1≤N≤100000, 0≤K≤100000, ratings 0..10⁹, distances 0..10⁹, and an open flag of 0 or 1.",
+    "output": "Output at most K 0-based indices in ranking order; if there are no results, output an empty line.",
+    "explanation": "Example 1: index 1 is closed, and 2 and 0 have the same rating but 2 is closer, so output 2 0. Example 2: only 3 merchants are open, so return all of them: 2 1 0. Example 3: no merchant is open, so output an empty line.",
+    "hints": [
+      "Filter out the closed merchants, sort by the three ranking keys, and take the first K indices."
+    ]
+  }
+}

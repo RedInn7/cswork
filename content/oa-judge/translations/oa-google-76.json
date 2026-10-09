@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-76",
+  "packageChecksum": "7fa72ee89a4dc395fdd65cf29dac571296c051e1e3662360fefd4e080548c0bd",
+  "en": {
+    "title": "Greedy Line Breaking and Full Justification",
+    "description": "Place as many whole words as possible on each line, with at least one space between words and no word split. For a line that is not the last and contains multiple words, distribute the spaces as evenly as possible, giving any remainder to the gaps on the left first. The last line, or a line containing a single word, is left-justified and padded with trailing spaces; every line has exactly maxWidth characters.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains n maxWidth, followed by n lines with one word each. 1≤n≤300, 1≤maxWidth≤100, word lengths are 1..min(20,maxWidth), and words consist of non-whitespace ASCII characters.",
+    "output": "First output the number of lines, then the formatted lines; each line must have exactly maxWidth characters (including trailing spaces). The entire output must also end with a newline.",
+    "explanation": "Example 1: the three lines are \"This    is    an\", \"example  of text\" and \"justification.  \" (the quotes are not output), each 16 characters. Example 2: the first line is a, two spaces, then b; the last line is \"c d \"; each is 4 characters. Example 3: word is followed by two padding spaces, for a line width of 6.",
+    "hints": [
+      "Greedily collect words for each line assuming single spaces. For non-last lines, distribute the total number of spaces over the gaps by division; the last line uses single spaces and is padded on the right."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-27",
+  "packageChecksum": "a0fcedb8296959fe44ef2e33ee6ce491f925b4c989ddc0da6fb9852b962eda3e",
+  "en": {
+    "title": "Delete Leaves So That All Remaining Servers Satisfy Ancestor Limits",
+    "description": "Servers form a tree rooted at 1, and edge weights may be negative. A non-root server v is unsafe if the path weight sum from v to some strict ancestor is greater than threshold[v]. Each operation deletes exactly one non-root leaf; find the minimum number of servers to delete so that all remaining nodes are safe. The root has no strict ancestor and cannot be deleted.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The input is n, n threshold values, then n−1 lines u v weight. The complete original bounds are kept: 3≤n≤200000, nodes 1..n, and both edge weights and threshold in −10^9..10^9. The input is guaranteed to be a tree. The second example in the source contains a cycle, missing edge weights, and an isolated node, so it is not used as an example.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 0; 2. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "During traversal, maintain the root path sum D and the minimum root path sum M over strict ancestors. v is safe if and only if D[v]−M≤threshold[v]. If a node is unsafe or its parent is already determined to be deleted, its entire subtree must be deleted; traverse iteratively and count at the same time."
+    ]
+  }
+}

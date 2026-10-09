@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-17",
+  "packageChecksum": "df8522be0d5ad1508e9c7cd059346d4248b0dd2259c98ae47c34396034b86a0c",
+  "en": {
+    "title": "Salesforce OA #17: Maximum Strength Sum",
+    "description": "Given an integer array arr of length n, you may perform the following operation any number of times (possibly 0): choose an index i (0≤i<n−1) and swap arr[i] and arr[i+1]. Over the whole process, each element of the array may take part in at most one swap.\n\nThe strength of index i (0-based) is defined as arr[i]×(i+1). Find the maximum possible value of Σ arr[i]×(i+1) (i from 0 to n−1) after all operations.",
+    "input": "The first line contains an integer n; the second line contains n integers arr[0..n−1], separated by whitespace. 1≤n≤100000, 1≤arr[i]≤100000.",
+    "output": "Output one integer: the maximum strength sum.",
+    "explanation": "Example 1: swapping arr[2] and arr[3] gives [1,9,3,7,2], with strength sum 1×1+2×9+3×3+4×7+5×2=66.\nExample 2: swapping (arr[0],arr[1]) and (arr[2],arr[3]) gives [1,2,3,4], with strength sum 30.\nExample 3: no swap is needed; the strength sum is 1×1+2×2+3×5=20.",
+    "hints": [
+      "Swapping two adjacent elements only changes the contributions of those two terms.",
+      "Each element can be swapped at most once, so the chosen swap pairs do not overlap.",
+      "Run dynamic programming over prefixes: the last element either stays in place or is swapped with the one before it."
+    ]
+  }
+}

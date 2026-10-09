@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-9",
+  "packageChecksum": "df018efed8ed9b3932d24d8759c0214f6d665b07e6bd853a1e2545cac2d326da",
+  "en": {
+    "title": "DNA Sequencing — Palindrome Transformation Cost",
+    "description": "For each contiguous substring of the string, compute the minimum number of characters to change so that the substring becomes a palindrome, then find the sum of these costs over all substrings. This site follows the original problem's in-order palindrome definition, so characters cannot be rearranged.\n\nSee below for this site's input format and constraints.",
+    "input": "A single line containing a string dna of lowercase English letters only. The source gives no length limit; this site uses 1≤|dna|≤100000.",
+    "output": "Output the sum of the palindrome change costs over all contiguous substrings.",
+    "explanation": "For each position pair (i,j), if the characters differ, the pair appears as symmetric characters in min(i+1,n-j) substrings. The total weight can be computed in linear time; pairs of equal characters are grouped by character and subtracted using prefix sums and binary search.",
+    "hints": [
+      "For each position pair (i,j), if the characters differ, the pair appears as symmetric characters in min(i+1,n-j) substrings. The total weight can be computed in linear time; pairs of equal characters are grouped by character and subtracted using prefix sums and binary search."
+    ]
+  }
+}

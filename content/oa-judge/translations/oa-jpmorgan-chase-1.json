@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-1",
+  "packageChecksum": "c6488f349dcf08c0c43309b8d9c34d40b7c5671cf356933c72421e3d7f7bb6d5",
+  "en": {
+    "title": "JPMorgan Chase OA #1: Range Negation Updates",
+    "description": "A data analyst has an array data of length n representing data for n days. He performs k updates in order; each update is [l, r], meaning every element from index l to r (inclusive, 1-indexed) is negated (x becomes −x).\n\nFind the array after all updates are done.",
+    "input": "The first line contains an integer n, and the second line contains n integers data[1..n]. The third line contains an integer k, followed by k lines with two integers l r each.\n\n1≤n≤10^6, 1≤k≤10^6, |data[i]|≤10^9, 1≤l≤r≤n.",
+    "output": "Output one line with the n integers of the final array, separated by spaces.",
+    "explanation": "Example 1: after the first update [2,4] the array is [1,4,5,−2], and after the second update [1,2] it is [−1,−4,5,−2].\nExample 2: after [1,3] it is [−1,−2,−3,4,5], and after [2,4] it is [−1,2,3,−4,5].\nExample 3: applying [1,3] twice changes nothing, and then the 2nd element is negated; negating 0 still gives 0.",
+    "hints": [
+      "Negating twice leaves a value unchanged, so you only need the parity of how many times each position is covered.",
+      "For range [l,r], XOR 1 into the difference array at both l−1 and r.",
+      "Take prefix XORs from left to right, and negate wherever the result is odd."
+    ]
+  }
+}

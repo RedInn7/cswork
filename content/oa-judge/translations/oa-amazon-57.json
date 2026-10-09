@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-57",
+  "packageChecksum": "ee1313b59689e1fcf14650e6a0bed11fbd318db3752de0944a6b83eb65b1390b",
+  "en": {
+    "title": "Maximum Non-Crossing Connections",
+    "description": "The i-th line connects i to match[i]. Two lines cross only when their index order is the reverse of their target order; lines with the same target do not count as crossing. Find the maximum number of pairwise non-crossing lines that can be kept.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n (1..100000), and the second line contains n match values (1..n).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: keep the four lines with targets 1, 2, 3, 5. Example 2: all targets are equal, which does not meet the strictly-reversed definition of crossing, so all three lines can be kept. Example 3: the targets are strictly decreasing and every two lines cross, so only 1 is kept.",
+    "hints": [
+      "Find the longest non-decreasing subsequence; use upper_bound to maintain the smallest tail value for each length, allowing equal values to extend it."
+    ]
+  }
+}

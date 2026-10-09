@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-codeium-1",
+  "packageChecksum": "5b9e0c22a97c8d34ce546f6ad7e5715a7b554559de6b32add8577b8708c2ce42",
+  "en": {
+    "title": "Construct a Minimum-Magnitude Sequence with Given Positive-Sum Counts",
+    "description": "Given a sequence p of n non-negative integers, construct n pairwise distinct integers a. For any two indices i and j (i=j allowed), a[i]+a[j] must not equal 0; for each i, the number of indices j with a[i]+a[j]>0 must be exactly p[i], including j=i. Among all feasible constructions, minimize max(|a[i]|). Output any optimal construction; if there is no solution, output None. The original statement allows any optimal sequence; this site uses a semantic checker and does not require matching the examples or the reference construction.",
+    "input": "The first line contains n, 1≤n≤100000. The second line contains n non-negative decimal integers p[i]; leading zeros are allowed. The original gave no upper bound on p[i], and this site adds no numeric upper bound; inputs with p[i]>n naturally have no solution. Very long integers may also appear; read them as text to decide.",
+    "output": "If there is no solution, output None with exactly this capitalization; otherwise output n space-separated integers, corresponding to a[0] through a[n−1] in order, that achieve the minimum possible maximum absolute value. Do not output square brackets.",
+    "explanation": "The original snapshot has no examples; all public examples are added by this site. For p=[0], [-1] can be output; for p=[1], [1] can be output, since its own positive-sum count is 1; p=[1,1] has no solution, because for two nonzero integers with different absolute values, the count of the one with the larger absolute value can only be 0 or 2.",
+    "hints": [
+      "The zero-sum restriction means the absolute values are pairwise distinct.",
+      "Consider the sign of the sum of the item with the largest absolute value and each other item.",
+      "Peel off the items with extreme counts one by one, keeping their uniform contribution to the items not yet processed."
+    ]
+  }
+}

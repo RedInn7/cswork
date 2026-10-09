@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-140",
+  "packageChecksum": "807d30b2b7871ab5f4f0ebbedd3a80a448f264794c040de9fc601fe65bf8215d",
+  "en": {
+    "title": "Can Swapping Letters Across the Whole String Reach the Target",
+    "description": "Each operation picks two distinct lowercase letters and swaps all of their occurrences in the whole string; one of the letters may currently be absent. For each pair of equal-length strings, decide whether the transformation is possible and output 1 or 0.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (1..100000), followed by n lines, each with two non-empty lowercase strings of equal length. Each string has length ≤200000, and the total length of all strings is ≤500000.",
+    "output": "Output n values, each 0 or 1, in input order.",
+    "explanation": "Example 1: swapping b and d is enough, so output 1. Example 2: swap z and p, then swap e and l, so output 1. Example 3: the two characters of ab cannot both become a, so output 0; aba can map to xyx, so output 1.",
+    "hints": [
+      "Build, position by position, the mapping from source characters to target characters and the reverse mapping; a conflict in either direction makes it impossible, otherwise it is feasible."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-applied-intuition-2",
+  "packageChecksum": "13c19c12bc020699448988a5d7500dfd5ee8a6f00431d877643e83e81577023b",
+  "en": {
+    "title": "KV Store with Nested Transactions",
+    "description": "Implement SET/GET/DELETE and nested BEGIN/ROLLBACK/COMMIT; GET on a missing key gives NULL; committing or rolling back with no transaction outputs NO TRANSACTION.\n\nSee \"Input\" for the standard I/O conventions and constraints added by this site.",
+    "input": "q≤200000 lines; keys and values contain no spaces.",
+    "output": "Output the GET results and the no-transaction errors.",
+    "explanation": "Each transaction layer records key changes, and GET searches from the innermost layer outward; commit merges this layer's overrides into the parent layer, and rollback discards this layer.",
+    "hints": [
+      "Each transaction layer records key changes, and GET searches from the innermost layer outward; commit merges this layer's overrides into the parent layer, and rollback discards this layer."
+    ]
+  }
+}

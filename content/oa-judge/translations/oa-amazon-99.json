@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-99",
+  "packageChecksum": "fb983485711d72dc4b763e5b1fd9f3476a1de3474494f7c3801702335bcf7d84",
+  "en": {
+    "title": "Minimum Requests Before All Servers Shut Down",
+    "description": "At the start of each second, every server still alive contributes requests equal to its request; in the same second, choose one alive server and reduce its health by k, and it dies immediately once health≤0. After all servers have died, exactly 1 more request is sent. Arrange the attack order to minimize the total number of requests. This problem has the same rules as Amazon51; the source gives no numeric ranges, so the same site ranges are used.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n k (1≤n≤100000, 1≤k≤5000); the second line contains n request values, and the third line contains n health values, all 1..5000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: first attack the server with request=4 twice in a row, then attack the other one twice; the requests are 7+7+3+3+1=21. Example 2: 1 request in that second plus the final request 1, 2 in total. Example 3: shut down the request=5 server first, then keep handling the other one for three seconds, for a total of 6+1+1+1+1=10.",
+    "hints": [
+      "A server needs p=ceil(health/k) attacks and has weight request. Process servers one after another in ascending order of p/request, comparing the ratios with integer cross products."
+    ]
+  }
+}

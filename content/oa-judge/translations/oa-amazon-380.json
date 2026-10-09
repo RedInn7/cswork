@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-380",
+  "packageChecksum": "f084c8bb1cccb05ea39cc498400184d4583f56947e7f16f8320682049e9301aa",
+  "en": {
+    "title": "Data Locations After Sequential Moves",
+    "description": "The initial positions are pairwise distinct. In order, move the data at position from to position to; the original guarantees that at every step from holds data and to does not. Finally, output all positions that hold data in ascending order.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "The first line contains n m, the second line contains n initial positions, followed by m lines of from to. The original gives no value bounds; this site adds 0≤n,m≤200000 and each position ID is in −10^9..10^9. The input satisfies the original valid-move guarantee above, so when n=0, m can only be 0.",
+    "output": "The first line is the number of positions n, and the second line is the positions in ascending order; when n=0 the second line is empty.",
+    "explanation": "The first example ends with 1 2 3 6. The original explanation of the second example mistakenly reused a different set of moves; this site explains it with the actual input 1→4, 4→7, 5→1, 7→3. The remaining examples end with only position 2 and with no positions, respectively.",
+    "hints": [
+      "Keep the positions that hold data in a set; for each move, remove from and add to, then sort at the end."
+    ]
+  }
+}

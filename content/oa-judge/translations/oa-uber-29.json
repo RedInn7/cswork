@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-29",
+  "packageChecksum": "4bf316970c2844d20aba6cbbe3feb9a2dba8249bcfeaceab5c1586aa6717e792",
+  "en": {
+    "title": "Subarrays with at Least k Pairs of Equal Elements",
+    "description": "A pair means two distinct indices i<j within the subarray whose elements are equal. Count the non-empty contiguous subarrays that contain at least k pairs.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "The first line contains n k, and the second line contains n elements; 1≤n≤100000, 1≤a[i],k≤10⁹.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: the whole array has exactly 10 pairs, and every shorter range has too few, so the answer is 1. Example 2: the valid ranges are indices [0,5], [0,6], [1,6], and [2,6], so the answer is 4. Example 3: the elements are distinct and there are no equal pairs, so the answer is 0.",
+    "hints": [
+      "Maintain the window and its frequencies with two pointers. A new element adds as many pairs as its previous frequency; once the window satisfies k, the current right end and every farther right end are valid for this left end, so count them and then remove the left end."
+    ]
+  }
+}

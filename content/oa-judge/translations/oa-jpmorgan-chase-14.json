@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-14",
+  "packageChecksum": "f7d659a125777eb4fded7411507e43bd3705f5c0cb01367e6418533141b2634f",
+  "en": {
+    "title": "Cost of Repeatedly Merging the Current Minimum and Maximum",
+    "description": "Each time, remove the current minimum and maximum elements of the array (they must be at two different positions) and insert their sum; the cost of this step is ceil((min+max)/(max−min+1)). Repeat until only one element remains, and find the total cost. Negative values are also rounded up in the mathematical sense.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n, followed by n integers. The original has no numeric bounds; this site adds 1≤n≤200000, with elements in −1000000000..1000000000.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 8; -4; 0. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Store each element with a unique ID in both a min-heap and a max-heap, and use validity flags for lazy deletion. In each round, pop the two valid extremes, compute the exact ceiling, and insert the new element."
+    ]
+  }
+}

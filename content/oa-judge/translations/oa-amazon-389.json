@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-389",
+  "packageChecksum": "69417dae4fd28b7b33f6a053f5eaf1512119bd80af5a8ad63bb04e982f237eb9",
+  "en": {
+    "title": "Earliest Finish Time Watching One Movie of Each Genre",
+    "description": "Each movie has a release time and a duration and can be started at any time after its release. Watch at least one movie of each of the two genres; you cannot watch two movies at once, but you may switch back to back with no gap. Find the earliest finish time; the two genres may be watched in either order.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "The first line contains n m; the next four lines are, in order, n comedy release times, n comedy durations, m drama release times, and m drama durations. Original bounds: 1≤n,m≤100000; all values in the four arrays are 1..10^6.",
+    "output": "Output a single integer answer.",
+    "explanation": "The first example is 6: the comedy (release 1, duration 3) ends at 4, then watch the drama (release 2, duration 2). The original explanation described the movie released at 5 as starting at 4; this site corrects it. The second example is 11 and the third is 6.",
+    "hints": [
+      "Compute the earliest finish time of each genre on its own. Assuming that genre is watched first, iterate over the other genre using that earliest finish time and compute max(previous genre end, this movie's release)+duration; take the minimum over both orders."
+    ]
+  }
+}

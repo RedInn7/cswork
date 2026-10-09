@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-3",
+  "packageChecksum": "98c9da174f6eaf8d68f77c216eaf8608b2baa967fbd8fe805300b17087c8c5bd",
+  "en": {
+    "title": "Replace the Start's 4-Directionally Connected Same-Value Region",
+    "description": "Change the start cell, and every position connected to it through up/down/left/right cells with the same original value, to the given value; cells that touch only diagonally are not connected.\n\nThis site independently compiled the standard I/O and the solution; additions for bounds missing from the source and corrections to the examples are stated explicitly in the protocol.",
+    "input": "The first line contains the number of rows r, the number of columns c, the start row and column, and the replacement value, followed by r lines of the matrix. The original constraints are Unknown; this site specifies 1≤r,c≤1000, matrix and replacement values in −10^9..10^9, and a valid 0-based start. It does not pretend that the bounds added by the catalog are the original bounds.",
+    "output": "Output the replaced matrix as r lines of c integers each, without repeating the dimensions.",
+    "explanation": "The outputs of the three public examples are, in order: 0 2 0 / 2 2 0; 3 0 / 0 1; -1. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Expand to the four neighbors with an iterative BFS, recoloring each cell as soon as it is enqueued so the color serves as the visited mark; if the new value equals the old one, return immediately."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-44",
+  "packageChecksum": "49fc3422c4d490dd86bccce29941621acfe37f76c8996fa5aeecea1165242074",
+  "en": {
+    "title": "Fill In the Latest Valid Time",
+    "description": "Given a 24-hour time hh:mm, replace every ? with a digit to make the time as late as possible. Existing digits cannot be changed, and at least one valid completion is guaranteed. Valid times range from 00:00 to 23:59. The original site's result 23:22 for ?2:22 changes a fixed digit; this site corrects it to 22:22.\n\nThe input/output and examples are compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "A single line containing a pattern hh:mm of length 5, where each digit position is a digit or ?, with a fixed colon in the middle.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: the tens digit of the hour cannot be 2 (24 is invalid), so it can only be 1, and the last minute digit becomes 9, giving 14:59. Example 2: only the last digit is filled in, with 9, giving 23:59. Example 3: the fixed units digit of the hour is 2, so filling the tens digit with 2 gives 22:22; it cannot be changed to 23.",
+    "hints": [
+      "Choose the largest feasible digit from the most significant position down. If the hour's tens digit can be 2, use 2, otherwise use 1; the hour's tens digit then determines the upper bound of its units digit. Use 5 for the minute's tens digit and 9 for its units digit."
+    ]
+  }
+}

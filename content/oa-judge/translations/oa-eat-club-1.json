@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-eat-club-1",
+  "packageChecksum": "ca08f7b9b822be593c6e8438c20825b55c48bef503060c47f4c45417b78e26e5",
+  "en": {
+    "title": "Newton's Beautiful Sequence",
+    "description": "Sort each non-empty contiguous subarray of the original array independently. After sorting, the subarray's contribution increases by 1 for each pair of adjacent elements whose difference is greater than 1; a subarray of length 1 also contributes 1. Output the total contribution of all subarrays modulo 10^9+7.\n\nThe explicit standard input/output format and supplementary constraints of this site belong to the definition of the online version and do not pose as the original source constraints.",
+    "input": "The input is N followed by N integers. This site adopts the constraints listed separately in the statement, 1≤N≤1000 and 1≤sequence[i]≤N; the text of the main constraint line is run together, so this site organizes it according to this readable constraint.",
+    "output": "Output the total beauty modulo 10^9+7.",
+    "explanation": "Fix the left endpoint and extend the right endpoint step by step, maintaining a bitset of the values seen. When inserting a new value, find its predecessor and successor, and update the number of adjacent value pairs with a gap greater than 1; a single-element subarray counts an extra 1.",
+    "hints": [
+      "Fix the left endpoint and extend the right endpoint step by step, maintaining a bitset of the values seen. When inserting a new value, find its predecessor and successor, and update the number of adjacent value pairs with a gap greater than 1; a single-element subarray counts an extra 1."
+    ]
+  }
+}

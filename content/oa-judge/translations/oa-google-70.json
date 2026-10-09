@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-70",
+  "packageChecksum": "bc0d0de8cea381fe495818d8db50dab75367aab7b70dc0336b2a145da3e56473",
+  "en": {
+    "title": "Total Replacements to Make Every Substring a Palindrome Anagram",
+    "description": "For each non-empty substring, you may rearrange its characters arbitrarily and replace a character with another character. Find the minimum number of replacements needed so that it can be rearranged into a palindrome, then sum this over all substrings.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "A single line containing a lowercase string of length 1..200000.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: the three substrings of length 2 each need 1 replacement, the two of length 3 each need 1, and the whole string needs 1, for a total of 6. Example 2: every substring is already a palindrome, for a total of 0. Example 3: grouped by lengths 2, 3, 4, 5 and 6, the cost sums are 5, 4, 5, 3 and 2 respectively, for a total of 19.",
+    "hints": [
+      "The cost of a single substring is the number of letters with odd frequency divided by 2, rounded down. For each letter, the number of prefix pairs with different parity is zero·one; summing these gives the total count of odd frequencies over all substrings. Then subtract the number of odd-length substrings and finally divide by 2."
+    ]
+  }
+}

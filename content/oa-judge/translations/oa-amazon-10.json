@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-10",
+  "packageChecksum": "47fe4d10e1a8fcbfcb58cd5c2ad38fc2e978a26f86d34497bf55edc4d9fbf470",
+  "en": {
+    "title": "Adjacent Digit Sum Encryption",
+    "description": "In each round, take the sum of every two adjacent digits modulo 10 to get a new array whose length is 1 less. Repeat until 2 digits remain, then output the string formed by those two digits, keeping leading zeros.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains n (2..100000); the second line contains n digits (0..9).",
+    "output": "Output one integer, the answer required by the problem.",
+    "explanation": "Example 1: [4,5,6,7] first becomes [9,1,3], then [0,4], so the output is 04; the leading zero must not be dropped. Example 2: two digits already remain, so output 00 directly. Example 3: the adjacent sums 9+1 and 1+9 are both 0 modulo 10, so output 00.",
+    "hints": [
+      "Each of the final two digits is a weighted sum of a stretch of adjacent digits with the binomial coefficients of row n−2. Use Lucas's theorem to compute modulo 2 and modulo 5 separately, then combine them into modulo 10."
+    ]
+  }
+}

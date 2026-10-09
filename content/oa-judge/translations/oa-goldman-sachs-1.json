@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-1",
+  "packageChecksum": "892455cda88e6e1b8912491cb9815674a1b1442cc49fa2f3e6310e7415d1dd94",
+  "en": {
+    "title": "Goldman Sachs OA #1: Autocorrect Prototype",
+    "description": "Implement an autocorrect feature: given a word list words and a number of queries queries, for each query return all words in the list that are anagrams of it, sorted in ascending lexicographic order.\n\nAn anagram is a string formed by rearranging the letters of another string; the count of each letter must be exactly the same. A word identical to the query also counts.",
+    "input": "The first line contains an integer n, followed by n lines, each containing one word. The next line contains an integer q, followed by q lines, each containing one query.\n\n1≤n≤750, 1≤q≤750; each word and query has length 1..100 and contains only lowercase English letters; the words in the list are distinct; every query is guaranteed to have at least one anagram in the list.",
+    "output": "Output q lines. Line i first gives the number k of results for query i, then the k words in ascending lexicographic order, separated by spaces.",
+    "explanation": "Example 1: the only anagram of spede is speed; the anagrams of deul are duel and dule. cars is not an anagram of any query.\nExample 2: listen, silent, enlist, and tinsel are anagrams of one another and are output in lexicographic order; google and elgoog both map to google.\nExample 3: aab and abb use the same letters but with different counts, so they are not anagrams; the result for query ab includes the identical word ab.",
+    "hints": [
+      "Use a word's sorted characters as its signature; anagrams share the same signature.",
+      "Group words by signature in a hash map; each group only needs to be sorted once.",
+      "Words identical to the query must also be output."
+    ]
+  }
+}

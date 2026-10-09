@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-62",
+  "packageChecksum": "fd8885fcd136b3e67e5f0e983bc47198c6544f6b7896ca6d8c39bd1f310056f9",
+  "en": {
+    "title": "Maximum Sorting Factor for Bitwise-AND Swaps",
+    "description": "You are given a permutation arr of 0 to n−1. After choosing a non-negative integer k, you may only swap two elements satisfying (arr[i] & arr[j]) == k, where & denotes bitwise AND; k stays fixed throughout the sorting process. If the permutation is not yet sorted, find the largest k with which it can be sorted into 0,1,…,n−1. This site specifies: if the input is already sorted, return 0; this convention follows the fixed source explanation and the consistent behavior of three implementations in Python, Java, and C++. When the array is already sorted, zero swaps are valid for every non-negative k, so the literal original problem has no finite maximum; returning 0 is a convention, not a mathematical maximum.",
+    "input": "The first line contains n; the second line contains n integers arr[i]. 1≤n≤100000, and arr is exactly a permutation of 0 to n−1. Standard I/O is this site's wrapper and keeps the original constraints in full.",
+    "output": "If the array is not yet sorted, output the largest non-negative k that can complete the sort; if it is already sorted, output 0 per the explicit convention.",
+    "explanation": "In the original example [0,3,2,1], 3&1=1, and swapping these two values sorts the array, so the answer is 1. The second example is already sorted, so 0 is output by convention; in the third example the value zero is misplaced, so a swap involving 0 is required and the answer can only be 0. The last two examples were added by this site.",
+    "hints": [
+      "Every misplaced value must take part in at least one valid swap.",
+      "The AND of all misplaced values is itself a value in the permutation's domain and can serve as the swap pivot."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-10",
+  "packageChecksum": "4821b6c86999e3a524177f52ebb76323e741cb89d5f3c076324dc71a1b673479",
+  "en": {
+    "title": "Ordered Index Pairs That Concatenate into the Access Code",
+    "description": "Count the ordered pairs of distinct indices (i,j) such that concatenating the canonical decimal representations of the two positive integers, in that order, gives exactly accessCode. Different indices holding the same value are still different choices.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains n, the second line contains n positive integers fragments, and the third line contains the positive integer accessCode. 2≤n≤30000, 1≤fragments[i]≤10⁹. The source places no upper bound on the target; on this site the target is a positive integer with at most 20 digits, since more than 20 digits cannot be formed from two valid fragments.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: choosing different indices among four 12s gives 4×3=12 pairs. Example 2: only 110 followed by 8 works, 1 pair. Example 3: 777 followed by 7 gives 2 pairs, 7 followed by 777 gives 2 pairs, and the two 77s concatenated with each other give 2 pairs, 6 in total.",
+    "hints": [
+      "Count the frequency of each integer's canonical decimal string, enumerate every split point of the target string, and multiply the frequencies of the two parts; when the two parts are the same, subtract the cases that use the same index twice."
+    ]
+  }
+}

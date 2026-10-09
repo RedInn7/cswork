@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-21",
+  "packageChecksum": "d69728830e26dc38440fbd775f132544d31c4b445aac094a5346ce7627ba916c",
+  "en": {
+    "title": "Set Total Palindrome Transformation Cost",
+    "description": "A string that can be rearranged into a palindrome is called palindrome-like. For any substring, characters may be changed; find the minimum number of changes needed to make it palindrome-like, and output the sum of these costs over all substrings. Rearrangement is allowed here, as the statement defines.\n\nSee below for this site's input format and constraints.",
+    "input": "A single line containing a string s of lowercase English letters only, 1≤|s|≤100000.",
+    "output": "Output the total palindrome-like change cost over all substrings.",
+    "explanation": "Maintain a 26-bit parity mask for each prefix. The number of characters with odd frequency in a substring is the popcount of the XOR of two prefix masks; accumulate the XOR contributions bit by bit for each character, then subtract the odd-length terms and divide by two.",
+    "hints": [
+      "Maintain a 26-bit parity mask for each prefix. The number of characters with odd frequency in a substring is the popcount of the XOR of two prefix masks; accumulate the XOR contributions bit by bit for each character, then subtract the odd-length terms and divide by two."
+    ]
+  }
+}

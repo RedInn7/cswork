@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-barclays-1",
+  "packageChecksum": "ca803e40ccf544f4937365c848fae07fb5ce64e9272f7b264f6ce9e991ebc4d4",
+  "en": {
+    "title": "Sum-of-Digits Fibonacci Sequence",
+    "description": "Define f(0)=0 and f(1)=1; for n≥2, f(n) equals the digit sum of f(n−1) plus the digit sum of f(n−2). Return f(N). The original problem gives no upper bound on N; this site's judge explicitly supports 0≤N≤2147483647 (the non-negative range of a signed 32-bit int), and this range is a supplement by this site.",
+    "input": "A single integer N, 0≤N≤2147483647 (the range supported by this site).",
+    "output": "Output the N-th term f(N).",
+    "explanation": "## Approach\n\nThe state is the two most recent terms (a,b), and the next term is digitSum(a)+digitSum(b). All terms lie in 0..18: the initial 0 and 1 satisfy this; if both terms are at most 18, each digit sum is at most 9, so the next term is at most 18. A finite state space must repeat, so record the pair states and detect the cycle, which locates any supported N directly.\n\n## Proof of Correctness\n\nThe first two terms are 0 and 1. Assuming the two terms at the current position agree with the original recurrence, the next term is computed strictly by the definition, adding the digit sums of the two terms, so the next term also agrees. The two most recent terms always lie in 0..18, so the state must repeat within a finite number of steps; all terms after a repeated state are exactly the same as before, so mapping a query through the cycle does not change the N-th term.\n\n## Complexity\n\nPreprocessing visits at most 19² bounded pair states, so time and space are both O(1) with respect to the input N; each query is O(1).",
+    "hints": [
+      "Compute the digit sum of each of the previous two terms separately, then add them.",
+      "The bounded state of the two most recent terms forms a cycle."
+    ]
+  }
+}

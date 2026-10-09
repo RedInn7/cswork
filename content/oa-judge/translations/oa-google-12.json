@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-12",
+  "packageChecksum": "be995b013bf4bf266dea7ba4d4393d5f2514052f09d974f4419ae95084e6b838",
+  "en": {
+    "title": "Place a Word in a Complete Horizontal or Vertical Slot",
+    "description": "The grid contains # (walls), _ (fillable cells), and lowercase letters. A word may only be written left to right or top to bottom. It must fill an entire contiguous segment delimited by the border or by #, and existing letters must match. The original grid example does not fit the character domain in the statement, so this site provides valid examples of its own.\n\nThe standard input/output is compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "The first line contains r c, followed by r lines of the grid, and a final line with the word. This site's ranges: 1≤r,c≤500, word length 1..500, lowercase letters only.",
+    "output": "Output 1 if the word can be placed, otherwise output 0.",
+    "explanation": "Example 1: the horizontal segment containing ala has length 4, and the word cannot occupy only its first three cells; no other complete segment matches either, so the output is 0. Example 2: the third row is exactly alan, so the output is 1. Example 3: the first column c_t fully matches cat, so the output is 1.",
+    "hints": [
+      "Split every row and every column at #; check only the segments whose length equals the word's, confirming character by character that each cell is empty or holds the target letter."
+    ]
+  }
+}

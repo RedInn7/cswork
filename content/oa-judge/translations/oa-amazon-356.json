@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-356",
+  "packageChecksum": "dd8a62f84477a4ba440da6d4876f7952a25a4761fe5b2b71c87586365b03defb",
+  "en": {
+    "title": "Renting From the Largest Stock and Charging Max Plus Minimum Non-zero Stock",
+    "description": "Each time, first charge the sum of the current maximum stock and the current minimum non-zero stock, then rent out one unit from any type with the maximum stock. Zero stock is not considered for the minimum, and ties for the maximum can be broken arbitrarily. Compute the total income over all requests.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n m and the second line contains n stock values. OCR313 gives n≤10^6, while 314 gives 10^5 with stock≤10^6; Fastprep explicitly says the values are non-negative and everything may be rented out. This site covers the broader sourced domain: 1≤n≤10^6, 0≤stock[i]≤10^6, 0≤m≤sum(stock)≤10^12, without imposing sum>m.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The examples give 15, 12 and 60. The 1+4=6 in the OCR313 table is an arithmetic typo and should be 5; the 5 VM types in 316 do not match the three-item input and should be 3 types.",
+    "hints": [
+      "First flatten the highest plateau, in descending order; until it reaches the lowest positive stock, the minimum does not change. Once everything is equal, charge by full rounds plus the remainder; once everything is down to 1, every remaining request charges 2."
+    ]
+  }
+}

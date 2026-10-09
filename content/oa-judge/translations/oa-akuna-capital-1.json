@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-1",
+  "packageChecksum": "dbd4173a0353a31b0cce252c48f345f5847280ff243c73d383f4b99920439782",
+  "en": {
+    "title": "Network Formation",
+    "description": "Form networks from several non-overlapping contiguous ranges of computers, in the original order. Each network must contain at least minComps computers and have a total speed of at least speedThreshold; computers not used in any network may be skipped. Find the maximum number of networks. Speeds are non-negative integers.\n\nSee the statement/review record for the problem source and the basis of the rules; limits marked in the input ranges are supplements added by this site.",
+    "input": "The first line contains n, minComps and speedThreshold; the second line contains n non-negative integers speed[i]. Site ranges: 1≤n≤200000, 1≤minComps≤n, 0≤speed[i]≤10^9, 0≤speedThreshold≤10^14.",
+    "output": "Output the maximum number of networks that can be formed.",
+    "explanation": "Process the input according to the problem rules; see the companion notes for the full approach, the correctness argument and the complexity.",
+    "hints": [
+      "Accumulate the not-yet-used computers from left to right; as soon as the current contiguous segment first meets both the length and the speed requirement, take it as a network right away and keep scanning."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-299",
+  "packageChecksum": "efe79cac8579261cc4dd343d9f61fea374936ef84e2c2b3ae50c8e2e703ec2a4",
+  "en": {
+    "title": "Minimum Inversions When Merging Two Strings in Their Internal Order",
+    "description": "Merge two lowercase strings while keeping the internal relative order of each original string, and minimize the number of pairs i<j in the merged string with s[i]>s[j]. Inversions within the same original string also count; equal characters do not.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The two lines contain primary and secondary; the original bounds are 1≤length≤1000 for both, with lowercase letters only.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 1 and 0. The second example can be merged into adadde. Counting only cross-string inversions, as the source does, would undercount the first example as 1; the adddae shown in the source is also not an optimal arrangement for the second example.",
+    "hints": [
+      "For each letter, precompute for both strings the number of strictly greater characters in every prefix. dp[i][j] is the minimum number of inversions after merging the first i and j characters; appending the next character of either string adds the total number of strictly greater characters in the two used prefixes. Solve it with rolling rows."
+    ]
+  }
+}

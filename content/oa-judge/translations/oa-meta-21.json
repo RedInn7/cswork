@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-21",
+  "packageChecksum": "f49be287111c1a05bb73736f0441b9aa65bcab9cdb823ce4e43ffcd09e39ee7b",
+  "en": {
+    "title": "Depth-Weighted Sum of a Nested List",
+    "description": "The elements of a nested list are integers or lists. Integers in the outermost list have depth 1, and each additional level of list nesting adds 1 to the depth. Output the sum of every integer multiplied by its depth; negative numbers and empty sublists are allowed.\n\nThe standard input, this site's constraints, the examples, and the test data were independently compiled by CSWork.",
+    "input": "One line with a valid JSON nested list whose outermost level has 1..50 elements; each integer is in −100..100, and no integer is deeper than 50. This site limits the total number of list and integer nodes to at most 100000, and the input to at most 2000000 characters.",
+    "output": "Output one integer.",
+    "explanation": "Example 1: the four 1s have depth 2 and the integer 2 has depth 1, so the sum is 4×1×2+2×1=10.\n\nExample 2: 1, 4, and 6 have depths 1, 2, and 3 respectively, so the sum is 1+8+18=27.\n\nExample 3: the only integer, 0, contributes 0×1=0.",
+    "hints": [
+      "After parsing the list, use an explicit stack holding lists and their depths; an integer contributes its value times the depth, and a sublist is pushed with the depth plus one."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-14",
+  "packageChecksum": "f87639be4fa33f692662f9cd9be3a6a2151240917700a576968f2bafb35a27e6",
+  "en": {
+    "title": "Shortest Run-Length Encoding After Deleting a Substring",
+    "description": "Delete exactly K consecutive characters, then encode each run of repeated characters as its count followed by the character; a run of length 1 is written as just the character. Find the shortest possible encoding length. The original site's second example was miscalculated, so this site recomputed it independently.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains 1..100000 uppercase letters, and the second line contains K (0..N).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: deleting DDC gives ABBBCCCC, encoded as A3B4C with length 5.\n\nExample 2: the shortest length is 7; for example, deleting BC gives ADDDCEFG, encoded as A3DCEFG. The original site's 6 left out characters.\n\nExample 3: deleting all characters leaves an empty encoding of length 0.",
+    "hints": [
+      "Precompute the encoding lengths of all prefixes and suffixes, along with the lengths of the runs at the boundaries. Enumerate the deletion position; if the boundary characters on both sides are the same, merge their two runs and update the encoding length."
+    ]
+  }
+}

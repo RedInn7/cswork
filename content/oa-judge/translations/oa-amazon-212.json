@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-212",
+  "packageChecksum": "5a04bbfd9e81d954acece1fb414aca7c98c3c13d4ccafb074b8a325ee280479c",
+  "en": {
+    "title": "Maximum Target Values After Adding One Integer to a Range",
+    "description": "Choose a contiguous range at most once and add the same arbitrary integer x to every number in it, maximizing the number of elements in the whole array equal to k. x may be negative or 0, and you may also skip the operation.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k; the second line contains the array. 1≤n≤200000; 1≤element,k≤200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 5 and 3.",
+    "hints": [
+      "If some v≠k is turned into k, each v in the window gains +1, each original k gains −1, and other values gain 0. For each v, keep the best segment gain as of its last occurrence and the cumulative count of k at that time; lazily subtract the k values in between using the cumulative difference, then run Kadane with restarts."
+    ]
+  }
+}

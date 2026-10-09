@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-75",
+  "packageChecksum": "5c4b1877c3750d786f7cbcaf9507dc31afc60211938a9036243bf2a5e3fd40c3",
+  "en": {
+    "title": "Minimum Number of Strictly Decreasing Subsequences",
+    "description": "Assign every element to exactly one subsequence; each subsequence keeps the original index order and is strictly decreasing. Find the minimum number of subsequences. Subsequences need not be contiguous.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains n, and the second line contains n integers; on this site 1≤n≤100000, −10⁹≤a[i]≤10⁹.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: it can be split into [5,4,3,1], [2] and [6], and the non-decreasing subsequence [2,4,6] shows at least 3 groups are needed, so the answer is 3. Example 2: the non-decreasing subsequence [2,9,12,13] requires 4 groups, and the greedy approach also splits it into 4 groups. Example 3: equal values cannot go into the same strictly decreasing group, so the answer is 3.",
+    "hints": [
+      "Keep the last values of the decreasing sequences sorted. Append a new value x to the sequence whose last value is the smallest one greater than x; if none exists, start a new sequence. Update using upper_bound binary search."
+    ]
+  }
+}

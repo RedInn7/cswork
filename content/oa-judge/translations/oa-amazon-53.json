@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-53",
+  "packageChecksum": "24806b1136d50917a25f62e92124d7b0849a517aae65e05b7144fe136217cf4d",
+  "en": {
+    "title": "Minimum Sum of Ranges over All Prefixes",
+    "description": "Rearrange the array, compute the maximum minus the minimum of every non-empty prefix, and add these ranges together. Find the minimum total.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n (1..2000), and the second line contains n values (1..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the order 1, 2, 3 has prefix ranges 0, 1, 2, for a total of 3. Example 2: there is only one value, range 0. Example 3: place the two 1s first and then 5, giving ranges 0, 0, 4, for a total of 4.",
+    "hints": [
+      "After sorting, use interval DP: dp[l,r]=a[r]−a[l]+min(dp[l+1,r],dp[l,r−1]), with cost 0 for a single element; keep only the layer whose length is one less in a rolling array."
+    ]
+  }
+}

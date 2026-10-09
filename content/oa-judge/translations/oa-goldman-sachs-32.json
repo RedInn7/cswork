@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-32",
+  "packageChecksum": "25e2965f8a1444f474bf0db018a86e670e1f4d78eace21a1ee8548fd790742bd",
+  "en": {
+    "title": "Goldman Sachs OA #32: Threshold Alerts",
+    "description": "A compliance system monitors call volume. Whenever the average call volume over the most recent few minutes exceeds a threshold, it raises an alert. Let precedingMinutes=k. At time T (counting from 1), take the call volumes at the k times T−(k−1), T−(k−2), …, T and compute their average; raise one alert if the average is strictly greater than alertThreshold. When T<k there is not enough data, and no alert is raised.\n\nGiven the call volume of each minute, find the total number of alerts raised over the whole period.",
+    "input": "The first line contains precedingMinutes; the second line alertThreshold; the third line n; then n lines, each containing an integer numCalls[i], the call volume in minute i+1. 1≤precedingMinutes≤n, 1≤alertThreshold≤10^5, 1≤n≤10^5, 0≤numCalls[i]≤10^5.",
+    "output": "Output one integer, the total number of alerts.",
+    "explanation": "Example 1: k=3, threshold 4, numCalls=[2,2,2,2,5,5,5,8]. At T=3 the average is (2+2+2)/3=2; the averages for T=4..8 are 2,3,4,5,6 in turn, and the last two exceed 4, for 2 alerts in total (an average equal to 4 raises no alert).\nExample 2: k=2, threshold 3; the averages are 3.5,3.5,3 in turn, and the first two exceed 3, for 2 alerts.\nExample 3: with k=1 it is simply a minute-by-minute comparison; 6 and 7 exceed 5, for 2 alerts.",
+    "hints": [
+      "The window is only complete once T reaches k.",
+      "The average is a real number; when comparing, you can multiply both sides of the inequality by k.",
+      "Maintain the sum of the most recent k minutes with a sliding window."
+    ]
+  }
+}

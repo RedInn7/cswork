@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-1",
+  "packageChecksum": "4c231843e96b209e7388c0bbcbf9e212d092e52972d556c7d420c785aed8c76d",
+  "en": {
+    "title": "D. E. Shaw OA #1: Sorted After Removing a Subarray",
+    "description": "Given an integer array arr of length n, count the subarrays (contiguous segments, distinguished by position) whose removal leaves an array that is non-empty and sorted in non-decreasing order (adjacent elements may be equal).",
+    "input": "The first line contains an integer n; the second line contains n integers arr[0..n−1]. 1≤n≤200000, 1≤arr[i]≤10^9.",
+    "output": "Output one integer: the number of subarrays that satisfy the condition.",
+    "explanation": "Example 1: arr=[1,2,1,2] has 10 subarrays. The 7 removals that leave [1,2], [2], [1,1,2], [1,2], [1], [1,2,2], and [1,2] satisfy the condition; removing [1] leaves [2,1,2] and removing the last [2] leaves [1,2,1], neither of which is sorted, and removing the whole array leaves an empty array, which also fails.\nExample 2: removing [3], [3,1], or [1,2] satisfies the condition, so the answer is 3.\nExample 3: the qualifying subarrays are [1,2,2,6], [1,2,2,6,1], [2,2,6], [2,2,6,1], [2,2,6,1,3], [2,6,1], [2,6,1,3], [6,1], [6,1,3], and [1,3], so the answer is 10.",
+    "hints": [
+      "The remaining array is a prefix joined with a suffix.",
+      "Both the prefix and the suffix must be non-decreasing, and at the junction the left element must not exceed the right one.",
+      "Since the suffix is sorted, you can binary search for the first position it can be joined at."
+    ]
+  }
+}

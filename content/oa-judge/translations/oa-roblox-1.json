@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-1",
+  "packageChecksum": "b249e7311b28660828dac731966193916ff6a7fe7e75a3473bebc4bc3114eca2",
+  "en": {
+    "title": "Longest Contiguous Run of Houses After Each Build",
+    "description": "Initially there are no houses on an integer number line. Build one new house at each coordinate in the order given by queries. After each build, return the number of houses in the longest run of consecutive integer coordinates among all current houses. All build coordinates are guaranteed to be distinct, and the left and right neighbors of a new house's coordinate are never both already occupied. You must return the global longest length after each operation, not the length of the run containing the new house or a list of positions.",
+    "input": "The first line contains an integer q, and the second line contains q integers queries[i]. 1≤q≤100000, −1000000≤queries[i]≤1000000. Coordinates are distinct; when processed in input order, queries[i]−1 and queries[i]+1 are never both already built. The number line has no extra boundary parameter N.",
+    "output": "Output one line with q integers: the length of the longest contiguous run of houses after each build, in order.",
+    "explanation": "The first two examples come from the original OCR: [2,1,3] outputs 1 2 3; [1,3,0,4] outputs 1 1 2 2. The third example [−1,−2,10] is added by this site: the last, isolated house does not change the global maximum length, so the output is 1 2 2. The pinned OCR clearly specifies an initially empty line, building houses one by one, and outputting lengths; MDX mistakenly rewrote it as starting fully occupied, demolishing houses, and outputting a list of positions. This problem explicitly corrects that transcription error and adopts the complete rules and ranges of the original OCR.",
+    "hints": [
+      "Use a hash table to record built coordinates; there is no need to allocate an array covering the whole number line.",
+      "A new house can only connect to the endpoints of existing contiguous runs.",
+      "Keep the global maximum; do not just output the length of the current run."
+    ]
+  }
+}

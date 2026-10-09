@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-22",
+  "packageChecksum": "ddef978a3736d1727d072a75d4e02eaf40063cf1f98bc2533f28d81a5327e941",
+  "en": {
+    "title": "Prime Partitions of a Digit String",
+    "description": "Split the entire digit string, keeping its original order, into several primes, where each segment has no leading zeros and each prime lies in 2..10⁶; count the number of ways modulo 10⁹+7. The upper bound 10⁶ is restored from the original snapshot, not the 10⁸ mistakenly written in the catalog. This catalog entry shares its source with an earlier problem; it keeps its own problem ID and is verified independently.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "One line containing a digit string of length 1..100000 whose first digit is not 0.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 3; 1; 1. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Sieve the primes below one million; let dp[i] be the number of valid partitions of the first i characters, and extend from each nonzero starting position by at most 6 digits."
+    ]
+  }
+}

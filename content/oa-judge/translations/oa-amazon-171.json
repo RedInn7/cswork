@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-171",
+  "packageChecksum": "6d3958bfa4759d6a7d545540f59ef7ce298f7d866fa2dcda4c8e3ed0ec69a33f",
+  "en": {
+    "title": "Minimum Days Reading k Consecutive Chapters per Day",
+    "description": "Each day, choose exactly k consecutive chapters and read at most p pages of each chosen chapter (a chapter with fewer than p pages left is simply finished). Chapters may be chosen repeatedly, and a finished chapter can still be chosen. Find the minimum number of days needed to finish every chapter.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k p; the second line contains the page count of each chapter. 1≤n≤100000, 1≤k≤n, 1≤p,pages≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: choose the first two chapters twice and the last two chapters twice, 4 days in total. Example 2: each of the two chapters needs 2 days and they cannot be read on the same day, so the answer is 4. Example 3: one selection covers everything and p is large enough, so the answer is 1.",
+    "hints": [
+      "Each chapter needs ceil(pages/p) coverings. Scan from left to right; when a chapter is still short, pick the valid k-chapter window that covers it and lies as far right as possible, and make up the shortfall in one batch."
+    ]
+  }
+}

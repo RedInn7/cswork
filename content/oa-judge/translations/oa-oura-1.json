@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oura-1",
+  "packageChecksum": "c701a2bd530bbcfaa033f04cd0ee5535bdb1e4ade98ecb92b176a0853d96d06e",
+  "en": {
+    "title": "Assign Server Numbers by Type",
+    "description": "Each server type is numbered independently; an allocation uses the smallest positive integer not currently in use, and a released number can be reused.\n\nThe standard input/output format and supplementary bounds on this site are as defined in this problem statement.",
+    "input": "The first line contains q (1≤q≤2×10^5), followed by q lines `allocate type` or `deallocate type id`. Type names contain no spaces; a released id is guaranteed to be currently allocated.",
+    "output": "Output the number assigned by each allocate on its own line.",
+    "explanation": "For each type, maintain a min-heap of released numbers and the next new number. allocate takes the top of the heap or the new number, and deallocate puts the number back into the heap. The independent set-scanning oracle searches for a free slot starting from 1 each time.",
+    "hints": [
+      "For each type, maintain a min-heap of released numbers and the next new number. allocate takes the top of the heap or the new number, and deallocate puts the number back into the heap. The independent set-scanning oracle searches for a free slot starting from 1 each time."
+    ]
+  }
+}

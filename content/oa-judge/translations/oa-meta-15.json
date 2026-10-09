@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-15",
+  "packageChecksum": "0a6b15fa91c8f61bd7b9d256d614abdd8748169d93d6f9af4fc3cf9b67adccac",
+  "en": {
+    "title": "Local Maxima Excluding Corners",
+    "description": "For a non-zero cell (i,j) with value v, examine the square region of radius v centered on it, ignoring the center itself and the four corners of the original full square, and comparing only cells inside the matrix. If no other value is ≥v, the cell is a local maximum. Output the coordinates in ascending order of row, then column. The original site's example includes invalid points, so this site recomputed it.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "This site's input scale: R C (1..30), followed by R lines of C non-negative integers each (0..10⁹). Indices start from 0, and the four corners are defined by the full square; you must not exclude the corners of the clipped region instead.",
+    "output": "The first line is the number t of local maxima; the next t lines give row col (starting from 0), in ascending order of row, then column. If there are no maxima, output only 0.",
+    "explanation": "Example 1: only (0,0) is valid. Near (2,2), the non-corner cell (4,1) holds 3, which is greater than 2; the two 3s in the bottom row each fall within the other's comparison region, so neither is valid. Output the count 1 first, then 0 0.",
+    "hints": [
+      "Enumerate every non-zero cell, clip the check range to the matrix, and test cell by cell, skipping the center and the corners of the original square."
+    ]
+  }
+}

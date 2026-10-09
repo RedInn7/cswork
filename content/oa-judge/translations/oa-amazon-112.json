@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-112",
+  "packageChecksum": "be668d90bb10e7debfa3213d28a4bdc15270c5dc396d309d0a4fe52ed04bd5ad",
+  "en": {
+    "title": "Sum of Shortest Distances for Multiple Ring Trips",
+    "description": "distances[i] connects station i and station (i+1) modulo n. Each query is an independent start and end; take the shorter of the clockwise and counterclockwise distances, then sum over all queries.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n q, the second line contains n edge lengths, followed by q lines of 0-based start and end stations. The original gives no value ranges; this site sets 1≤n,q≤100000, 1≤(edge length)≤10⁹.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the shortest distances are 1, 5 and 4, for a total of 10. Example 2: 0 to 2 goes the other way for 13, and 2 to 1 is 10, for a total of 23. Example 3: the same station needs no movement, for a total of 0.",
+    "hints": [
+      "Prefix sums give the distance d in the linear unrolling, and the shortest distance on the ring is min(d,perimeter−d); add it up query by query."
+    ]
+  }
+}

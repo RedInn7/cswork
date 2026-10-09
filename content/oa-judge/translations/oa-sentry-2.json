@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sentry-2",
+  "packageChecksum": "5ac9beca6a75a8a989a51bcea2acf144d6ec7790f4a1ad28491a2fa8b4223411",
+  "en": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "You are given a grid of passable cells and walls, along with a start, an exit, and some treasures. Each treasure can be picked up at most once. Find the minimum number of moves from the start to the exit; among all shortest paths, also find the maximum number of treasures that can be collected. If the exit cannot be reached, output `-1 0`.\n\nOAMaster's Sentry #2 gives only the function's goal and one example, with no standard input format or bounds for online judging. The stdin/stdout protocol and constraints below are on-site definitions added by CSWork for this problem and do not represent the original OAMaster text.",
+    "input": "The first line contains rows cols; the second line contains the number of walls wallCount; each of the next wallCount lines contains a wall coordinate row col; then the number of treasures treasureCount is given; each of the next treasureCount lines contains a treasure coordinate row col; the last two lines give the start and exit coordinates respectively. All coordinates are 0-based. On-site constraints: 1 <= rows, cols <= 200; all coordinates lie inside the grid; the start and exit are not walls; treasure coordinates are distinct. Duplicate wall coordinates are treated as the same wall.",
+    "output": "Output two integers: the minimum number of steps and the maximum number of treasures that can be collected over all shortest paths. A treasure on the start cell counts toward the result; if the exit is unreachable, output `-1 0`.",
+    "explanation": "First run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it.",
+    "hints": [
+      "First run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it."
+    ]
+  }
+}

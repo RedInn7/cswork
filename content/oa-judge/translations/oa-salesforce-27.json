@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-27",
+  "packageChecksum": "0b7d053da2ab1f179087b05913ae94b401fe1af66e0869736b35610448123514",
+  "en": {
+    "title": "Optimal Payoffs in a Dual-Core Lock-Holding Selection Game",
+    "description": "Tasks are assigned in order, and initially the first core holds the lock. The core holding the lock may either assign the current task to itself and hand over the lock, or assign it to the other core and keep the lock. Both sides maximize the total processing time they end up with; output the final payoffs of the first core and the second core.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n and n task times. There are no original numeric bounds; this site adds 1≤n≤200000, 0≤time[i]≤10^9.",
+    "output": "Output the two integer payoffs, first core then second core, separated by a space.",
+    "explanation": "The outputs of the three public examples are, in order: 20 20; 55 45; 115 75. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Going from back to front, maintain d, the optimal payoff advantage of the lock holder over the other core, starting from 0 and updated for each item as |time−d|. Finally, recover the two cores' payoffs from the total S as (S+d)/2 and (S−d)/2."
+    ]
+  }
+}

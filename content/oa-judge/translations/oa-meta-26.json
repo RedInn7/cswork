@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-26",
+  "packageChecksum": "6716db82bf605f522d7080ca256380ce6b58f19c3e15ec4f339a619655c89e51",
+  "en": {
+    "title": "Longest No-Backtracking Route Through a Cave",
+    "description": "Start from the top-left corner (0,0) of the grid and reach the bottom-right corner. ! is a passable cell and x is an obstacle. Each step moves exactly one cell left, right, or down; you cannot move up or re-enter a visited cell. Find the maximum number of cells on a path that reaches the exit (counting both the start and the end); output −1 if the exit cannot be reached.\n\nThe standard input, this site's constraints, the examples, and the test data were independently compiled by CSWork.",
+    "input": "This site's input: the first line contains R C (1..200), followed by R strings of length C containing only ! and x; the entrance or exit may also be blocked.",
+    "output": "Output the maximum number of visited cells, or −1.",
+    "explanation": "Example 1: in an empty 3×3 grid you can snake row by row through all 9 cells and finish at the bottom-right corner.\n\nExample 2: the cells to the right of and below the entrance are both obstacles, so the exit cannot be reached; the output is −1.\n\nExample 3: the start is also the end and is passable, so the number of visited cells is 1.",
+    "hints": [
+      "Use row-by-row dynamic programming. Each row is entered by descending from the previous row; do one left-to-right scan and one right-to-left scan, take the larger value at each position, and use it as the entry for the next row."
+    ]
+  }
+}

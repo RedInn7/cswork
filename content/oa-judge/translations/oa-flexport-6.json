@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-flexport-6",
+  "packageChecksum": "4c2f0fbb96a7a778de516ff5366bc7df52f1d335a1156314e89411e1454306eb",
+  "en": {
+    "title": "Malware Spread",
+    "description": "Source: Flexport #6 Malware Spread. Delete exactly one network node together with its incident edges, then let the infection spread along undirected edges from every initially infected node that was not deleted, until no new node gets infected. Find the deletion that minimizes the final number of infected nodes; on ties, choose the smallest 1-based index. Taken literally, the original problem allows any node in the network as a candidate, including healthy nodes.\n\nThe input/output format is compiled by this site.",
+    "input": "The first line contains n m; the second line contains n initial infection flags, each 0/1; each of the next m lines contains a 1-based undirected edge u v. 1≤n≤1000, 0≤m≤min(n(n−1)/2,1000); this site treats the graph as simple (no multi-edges or self-loops).",
+    "output": "Output the 1-based index of the node to delete. Even if no node is infected, one node must still be deleted; on ties, output the smallest index.",
+    "explanation": "Public example 1 is re-simulated on the graph and infected nodes given in the problem: deleting node 3 minimizes the infected count, so the output is 3. In public example 2, the remaining nodes stay infected no matter which node is deleted, so the smallest index 1 is chosen. This site's rules explicitly allow deleting a healthy node; the third example, a regression case added by this site, specifically tests a healthy cut vertex.",
+    "hints": [
+      "Enumerate every node to delete; each time, simulate the spread on the remaining graph with a multi-source BFS, and compare the final infected counts and the indices."
+    ]
+  }
+}

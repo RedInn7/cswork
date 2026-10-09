@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-18",
+  "packageChecksum": "f1f34cf2789f36724f422ced5f0942b5b47181b243e53333e1d7b4375b5ea6ee",
+  "en": {
+    "title": "Capital One OA #18: Matrix Rotation with Fixed Diagonals",
+    "description": "You are given a non-empty n×n square matrix and a non-negative count turns. In each turn, the elements on both main diagonals stay in place, and the remaining four triangular regions rotate 90 degrees clockwise: a non-diagonal element at original coordinate (r,c) moves to (c,n−1−r), with coordinates counted from 0. Output the matrix after repeating this turns times. This mapping matches the fixed original 5×5 example entry by entry; the public source image on the original page explicitly shows a clockwise rotation with both diagonals fixed.",
+    "input": "The first line contains n turns, followed by n lines of n integers each, separated by whitespace; LF/CRLF line endings and a trailing EOF are accepted. The original gave no numeric upper bounds; this site publicly adapts them to Java types: n≥1 (a non-empty square matrix), elements in −2147483648..2147483647, and turns 0..2147483647. n is limited only by the existing 32MiB input budget, with no separate smaller cap; 4095 is derived from the shortest-encoding budget and is not a source constraint. Empty matrices and negative turn counts are not supported as extensions.",
+    "output": "Output the rotated matrix as n lines of n integers each; do not output n.",
+    "explanation": "The first public example keeps the original complete 5×5 input and output; both diagonals, 1/7/13/19/25 and 5/9/13/17/21, stay fixed. The second and third public examples are added by this site: a 2×2 matrix is entirely diagonal and stays unchanged after any number of turns; a 1×1 matrix and zero turns likewise leave the matrix unchanged. The source image was downloaded separately and bound to its own hash; this site does not claim that the fixed snapshot contains an accessible image.",
+    "hints": [
+      "Four rotations restore the original matrix.",
+      "The non-diagonal elements form disjoint orbits of four.",
+      "The strict top triangle r<c<n−1−r contains exactly one representative of each orbit."
+    ]
+  }
+}

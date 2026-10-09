@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-commvault-1",
+  "packageChecksum": "d5475f4d5bebe506b5bfdc4d6245cf3b07393fd8a114cd9f4c7398847615fb0f",
+  "en": {
+    "title": "Count Prefix-Balanced Strings (Modulo 10000)",
+    "description": "Count the strings of length 2N consisting only of A and B, with exactly N of each, such that every prefix contains at least as many A as B. Output the count modulo 10000.",
+    "input": "One line containing a non-negative integer N, 0≤N≤2147483647. The original Constraints section reads o_o and gives no explicit numeric upper bound; following the original Java interface int N, this site covers the entire non-negative int domain without inventing a smaller cap. N=0 is added as a public mathematical boundary: the empty string satisfies the definition. Note that 2N may exceed the range of a 32-bit signed integer.",
+    "output": "Output an integer in 0..9999, without zero-padding to four digits. For N=0, output 1.",
+    "explanation": "Original example N=3 has five strings, AAABBB, AABABB, AABBAB, ABAABB, and ABABAB, so the output is 5. The original explanation said the prefix BA of BABABA has more B, which is wrong; the actual violating prefix is B. The correct original answer is unchanged. The second example, N=0, is the empty-string boundary explicitly added by this site; the third example, N=4, is added by this site, with answer 14.",
+    "hints": [
+      "The answer is a Catalan number, but you cannot directly divide by N+1 modulo the non-prime 10000.",
+      "Handle 2^4 and 5^4 separately: first remove the prime factor, then invert the unit part.",
+      "Combine the results with CRT, and use an integer type wide enough for 2N."
+    ]
+  }
+}

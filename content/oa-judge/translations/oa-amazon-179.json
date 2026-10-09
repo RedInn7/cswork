@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-179",
+  "packageChecksum": "abf15f9bed5c17cdc75078678b55e4b257a82dc8b918c534f33eb220d083d8ba",
+  "en": {
+    "title": "Count History Substrings Formed by Concatenating All Product Strings",
+    "description": "Given a history string and several product strings of equal length, count the starting positions of contiguous substrings that can be formed by concatenating all product strings, each used once, in any order. Duplicate products are used as many times as they appear, and overlapping positions are counted separately.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains history, the second line the number of products p, followed by p lines of product strings. The source gave no numeric bounds; this site uses lowercase strings, 1≤|history|≤100000, 1≤p≤10000, product length 1..30 with all products of equal length, and total product length ≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 3 and 0.",
+    "hints": [
+      "For each offset modulo the word length, maintain a sliding window that moves one whole word at a time. Reset on an unrelated word, shrink the left end when a word appears too many times, and count when the window holds p words."
+    ]
+  }
+}

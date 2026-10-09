@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-17",
+  "packageChecksum": "ca409a69e03aa61afa37d028ba98c70e980c88d27a6cafe18392d53b2dd027d2",
+  "en": {
+    "title": "Similar Substrings with at Most One Adjacent Swap",
+    "description": "Two strings are similar if they are equal, or if they become equal after swapping one pair of adjacent characters in one of them. Count the contiguous substrings of text that are similar to key. Overlaps are allowed, and each starting position is counted once.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains key and the second line contains text, both consisting of lowercase English letters, with 1≤|key|≤|text|≤50.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: mono (swap its last two letters) and omon (swap its first two letters) both become moon, giving 2 starting positions.\n\nExample 2: both windows of length 3 equal aaa and need no swap; each is counted once, so the answer is 2.\n\nExample 3: xxy at start 1 and xyx at starts 2 and 4 are all similar, for a total of 3.",
+    "hints": [
+      "Generate key itself and all distinct strings obtainable from it with one adjacent swap, then look up every window of the same length in text in that set."
+    ]
+  }
+}

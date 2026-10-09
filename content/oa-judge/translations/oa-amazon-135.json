@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-135",
+  "packageChecksum": "d25300e33150067e508640fc366f748e5bf62a351f64b1051ed546ffec99f1b9",
+  "en": {
+    "title": "Minimum Uniform Disk Capacity for Arbitrary Game Distribution",
+    "description": "Distribute all games among N children; games cannot be split, and every child gets at least one. Any grouping is allowed; groups need not be contiguous in the original array. All disks have the same capacity; find the minimum capacity that fits the distribution. The source gives no sizes; this site uses small sizes that can be solved exactly, and does not substitute contiguous partitioning for arbitrary distribution.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains m N, and the second line contains m game sizes. On this site 1≤N≤m≤15 and 1≤size≤10⁹; these upper bounds are not constraints provided by the source.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: split into 6+7, 12+1 and 10, with a maximum of 13; with capacity 12, 12 takes a disk alone, 10 can pair with at most 1, and 6 and 7 cannot share a disk, so at least 4 disks are needed; the optimum is 13. Example 2: some child must take two 8s, so the capacity is 16. Example 3: each child gets one game, so the capacity is the maximum, 9.",
+    "hints": [
+      "Binary search the capacity, and use a subset DP to decide whether everything fits into at most N bins. The state stores the minimum number of bins needed to pack the subset, and the minimum load of the last bin for that number of bins; enumerate which game is added last."
+    ]
+  }
+}

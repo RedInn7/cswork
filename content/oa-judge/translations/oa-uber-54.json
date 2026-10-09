@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-54",
+  "packageChecksum": "9ef141420efd2df8e1a0b996b0f7825dcf5a18832b752b92e882bd83b654edb4",
+  "en": {
+    "title": "Minimum Cyclic Right Shifts to Sort Ascending",
+    "description": "The array contains distinct positive integers. Each operation moves the last element to the front and shifts the other elements one position right. Find the minimum number of operations to make the array strictly increasing, or −1 if impossible.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, and the second line contains n distinct integers; 1≤n≤100, 1≤a[i]≤100.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: two consecutive right shifts give 1, 2, 3, 4, 5, so the answer is 2. Example 2: already sorted, so the answer is 0. Example 3: the cycle has two descending edges, 2→1 and 4→2, so rotation alone cannot sort it; output −1.",
+    "hints": [
+      "If already sorted, the answer is 0; otherwise check the descending edges among cyclically adjacent pairs. When there is exactly one descending edge, cutting right after it gives an ascending array, which takes n−cut right shifts."
+    ]
+  }
+}

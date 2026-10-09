@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-53",
+  "packageChecksum": "895a993c7c13a7ff6b2e354fff94c5778e1a46f9d6bc41daeb41049b7aa1ff76",
+  "en": {
+    "title": "Concatenate Payloads of Records Linked by Unique Keys",
+    "description": "Records (start,end,payload) form exactly one chain, in which the end of each record equals the start of the next. The input is shuffled; concatenate the payloads in chain order. Spaces in the content must be kept exactly as they are.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N, and each record then takes two lines: start end, and the full payload. 1≤N≤200000; the source does not restrict the strings, so this site uses keys of 1..12 ASCII alphanumeric characters and payloads of 0..10 visible ASCII characters or spaces. All records are guaranteed to form exactly one chain with no cycles and no branches.",
+    "output": "Output the full concatenated content followed by a terminating newline; if the content is empty, output an empty line.",
+    "explanation": "Example 1: the chain aaa→bbb→ccc→ddd concatenates to 213. Example 2: the only record outputs X. Example 3: first a→b, then b→c, concatenating to \" ab \" with a leading and a trailing space.",
+    "hints": [
+      "Map the records by start, find the starting key that does not appear in the set of end keys, walk along end from it record by record collecting payloads, and concatenate them once at the end."
+    ]
+  }
+}

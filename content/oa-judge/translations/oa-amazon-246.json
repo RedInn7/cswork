@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-246",
+  "packageChecksum": "a1eeee991624a958315620b3fc335955a24eedba1cfb9fd9aeed64c442088e48",
+  "en": {
+    "title": "Inventory Task Indices That Can Be the Final Survivor",
+    "description": "Each time, choose any two current tasks to fight; the one with more robots wins and absorbs all of the other's robots, and with equal counts either side may win. This continues until only one task remains. Output, in ascending order, every original 1-based index for which at least one process lets that task survive to the end.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the robot counts. 1≤n≤200000, 1≤count≤10^9. Task indices are distinct, while counts may be equal.",
+    "output": "Output the 1-based indices of all tasks that can survive, in ascending order, separated by spaces.",
+    "explanation": "The answers are 2 4, 1 2 and 2 3. In a fight between equal counts, whichever task you pick is allowed to win.",
+    "hints": [
+      "Sort the counts in ascending order and accumulate from left to right. Whenever the current value is greater than the sum of all previous values, move the start of the candidate surviving suffix to the current position; finally output the original indices whose count is not less than the value at that start."
+    ]
+  }
+}

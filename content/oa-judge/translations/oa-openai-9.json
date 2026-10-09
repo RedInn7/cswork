@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-9",
+  "packageChecksum": "1a224ea01d0cb32f1230c1ae28cb69eef50080231ede3b1bcdcddf4ddf9cd218",
+  "en": {
+    "title": "Minimum CIDR Cover of Consecutive IPv4 Addresses",
+    "description": "Given a starting IPv4 address and a positive integer count, use the minimum number of CIDR blocks to exactly cover the count consecutive addresses beginning at the start address. Over-coverage, gaps, overlaps, and duplicates are not allowed. The blocks may be in any order.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains the start address a.b.c.d, and the second line contains count. Each part is 0..255, written in standard decimal without leading zeros. 1≤count≤4294967296, and the integer value of the start plus count is guaranteed to be ≤4294967296, so the range stays within the IPv4 address space.",
+    "output": "The first integer k is the number of blocks, followed by k entries a.b.c.d/prefix, which may be output in any order. prefix is in 0..32, each address is the network address of its block (host bits are 0), and decimals have no leading zeros. The cover must be exact and use the minimum number of blocks.",
+    "explanation": "The first two examples give 0.0.0.0/32 and 0.0.0.0/24 respectively. The third can be split into 255.0.0.7/32, 255.0.0.8/29, 255.0.0.16/32, for 3 blocks, in any order.",
+    "hints": [
+      "Convert the address to a 64-bit integer. At each step, take the largest aligned power-of-2 block at the current start that is not larger than the remaining length. The alignment limit for start 0 is 2³²; lowbit(0)=0 cannot be used."
+    ]
+  }
+}

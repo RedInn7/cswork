@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-flexport-3",
+  "packageChecksum": "0c69d5fe1d5908bdcb0a55ea8f391abf1350c1bc34fbf1086c4d790fd55ba908",
+  "en": {
+    "title": "Flexport OA #3: Sum of All Values",
+    "description": "Given a string num consisting only of the digits 0-9. You may insert one '+' between any two adjacent characters; adjacent '+' signs are not allowed, and you may also insert none at all. Each way of inserting produces an expression, and each segment separated by '+' is evaluated as a decimal integer (leading zeros do not affect the value; for example, 05 has value 5). Find the sum of the values of all possible expressions, modulo 10^9+7.",
+    "input": "A single line containing the string num. 1≤|num|≤3×10^7, containing only the characters 0-9.",
+    "output": "Output one integer: the sum of the values of all expressions modulo 10^9+7.",
+    "explanation": "Example 1: the expressions for \"123\" are 1+23=24, 12+3=15, 1+2+3=6, and 123=123, for a total of 168. Example 2: the expressions for \"105\" are 105, 1+05=6, 10+5=15, and 1+0+5=6, for a total of 132. Example 3: \"7\" has only one expression, with value 7.",
+    "hints": [
+      "Add the digits one at a time: each old expression either gets a '+' before the new digit, or the digit is appended to its last segment.",
+      "Maintain three quantities: the number of expressions, the sum of their values, and the sum of their last-segment values.",
+      "Do all arithmetic modulo 10^9+7."
+    ]
+  }
+}

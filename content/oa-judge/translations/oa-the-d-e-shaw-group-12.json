@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-12",
+  "packageChecksum": "d17c7c982534864c38281633f71447617cfb9969be99b95a7d08d2dfc1963a9d",
+  "en": {
+    "title": "Maximize Points Collected on a Tree",
+    "description": "You are given an undirected tree rooted at node 0 and a positive integer A[u] for each node. Starting from the root, a node can be processed only after its parent has been collected. When processing a node, you can either collect its current value minus K points, or collect its current value integer-divided by 2 points and integer-divide by 2 the values of that node and of every unprocessed node in its whole subtree. A single step may have a negative gain. Maximize the total points.\n\nThe standard input/output, the ranges added by this site, and the examples follow this problem's description; wherever the source's ranges are missing, they are explicitly marked as this site's additions.",
+    "input": "The first line contains n K (1≤n≤100000, 1≤K≤10^9); the second line contains n values A[u] (1≤A[u]≤10^9); the next n−1 lines are 0-based undirected edges u v. The remaining tree constraints are taken from the original problem.",
+    "output": "Output the maximum total points obtainable, using 64-bit integers.",
+    "explanation": "Tree dynamic programming. Let dp[u][s] be the maximum score of node u and its subtree when, on entry, all values have already been integer-divided by 2 a total of s times. If you choose to deduct K, the children keep s; if you choose to halve, the node gains floor(A[u]/2^(s+1)) and the children's state becomes s+1. After more than 30 halvings, all values become zero.",
+    "hints": [
+      "Tree dynamic programming. Let dp[u][s] be the maximum score of node u and its subtree when, on entry, all values have already been integer-divided by 2 a total of s times. If you choose to deduct K, the children keep s; if you choose to halve, the node gains floor(A[u]/2^(s+1)) and the children's state becomes s+1. After more than 30 halvings, all values become zero."
+    ]
+  }
+}

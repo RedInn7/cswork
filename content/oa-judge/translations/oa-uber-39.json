@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-39",
+  "packageChecksum": "c4cfa953692920fb3248412f4f5790acebb11ff93e0428e0c2b2c82ee805cdbc",
+  "en": {
+    "title": "Uber OA #39: First Unique IP Hitting the Server",
+    "description": "A server receives a sequence of commands in order and must support two operations:\n\nADD ip: record one visit from ip.\nFIRST_UNIQUE: among all visits so far, find the IP that appears exactly once and appeared earliest, and return it; if none exists, return an empty string.\n\nTreat IPs as plain strings with no format validation; IPs that differ in case are different IPs. Process all commands in order and output the result of each FIRST_UNIQUE.",
+    "input": "The first line contains q, the number of commands. Each of the next q lines is ADD ip or FIRST_UNIQUE. 1≤q≤1.5×10^6, and there is at least one FIRST_UNIQUE; the number of distinct IPs is at most 10^6; each ip is a string of length 1..15 consisting of printable ASCII characters (codes 33..126).",
+    "output": "For each FIRST_UNIQUE, output one line with its result, in order; when the result is an empty string, output an empty line. Every line, including the last, ends with a newline, and the output must match the expected answer byte for byte.",
+    "explanation": "Example 1: after three ADDs, 1.1.1.1 appears twice and the unique one is 2.2.2.2. Example 2: at the first query the unique IPs are 2.2.2.2 and 3.3.3.3, and the earliest is 2.2.2.2; after another ADD 2.2.2.2 it is no longer unique, so the answer is 3.3.3.3. Example 3: at the first query there are no visits yet, so output an empty line; after ADD 1.1.1.1 the answer is 1.1.1.1, and after its second appearance it is an empty line again; then x becomes the answer, X is a different IP, and after x appears again the answer becomes X.",
+    "hints": [
+      "Once an IP appears a second time, it is never unique again.",
+      "Number IPs in order of first appearance, and use a pointer that only moves forward to skip invalidated IPs.",
+      "An empty answer still produces a line of output."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-the-d-e-shaw-group-11",
+  "packageChecksum": "124687b1aeac2bba48f6dfc80348dc1f42e12bace0ea236f62eebfadd91cc5c5",
+  "en": {
+    "title": "Ways to Split an Array into Non-Decreasing and Non-Increasing Arrays",
+    "description": "Given a positive integer array arr, count the pairs of non-negative integer arrays b and c, both of length n, such that b is non-decreasing, c is non-increasing, and b[i]+c[i]=arr[i] for every i. Output the answer modulo 1000000007.\n\nThe standard input/output, the ranges added by this site, and the examples follow this problem's description; wherever the source's ranges are missing, they are explicitly marked as this site's additions.",
+    "input": "The first line contains n (1≤n≤3000); the second line contains n integers (1≤arr[i]≤3000). The ranges and the modulus are taken from the original problem's constraints.",
+    "output": "Output the number of ordered array pairs (b,c) that satisfy the conditions, modulo 1000000007.",
+    "explanation": "Given the previous term b[i−1], the next term x=b[i] must be at least b[i−1]+max(0,arr[i]−arr[i−1]) and must also satisfy x≤arr[i]. Maintaining the number of ways for each ending value together with its prefix sums gives an O(n·max(arr)) transition.",
+    "hints": [
+      "Given the previous term b[i−1], the next term x=b[i] must be at least b[i−1]+max(0,arr[i]−arr[i−1]) and must also satisfy x≤arr[i]. Maintaining the number of ways for each ending value together with its prefix sums gives an O(n·max(arr)) transition."
+    ]
+  }
+}

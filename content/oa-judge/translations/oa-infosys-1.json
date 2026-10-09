@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-infosys-1",
+  "packageChecksum": "7cbaab47b0859e4f11b5fccdb846254a8a4d07df21d57d849b8871e1af640626",
+  "en": {
+    "title": "Minimum Rotation Cost to Extract Cards in Order",
+    "description": "You are given a permutation cards of 1 to n, representing a row of cards from front to back. You may perform the following any number of times: ① move the front card to the back, paying a cost equal to that card's value; ② move the back card to the front, paying a cost equal to that card's value; ③ if the front card is exactly the next card to extract, extract it for free. All cards must be extracted in the order 1, 2, …, n. Find the minimum total cost modulo 1000000007. The true total cost must be minimized first; you cannot take the modulo before comparing. Extraction only from the front is recovered from \"remove the 1st card\" in the pinned original problem's full example and its step-by-step operations; this site states this rule explicitly, and directly extracting a card from the middle or the back is not allowed.",
+    "input": "The first line contains an integer n. The second line contains n integers cards[i], a permutation of 1 to n. 1≤n≤100000, 1≤cards[i]≤n, and all elements are distinct. The original problem's ranges are kept in full.",
+    "output": "Output the minimum total cost modulo 1000000007 as a non-negative integer.",
+    "explanation": "Example 1 is the original example: move the back cards 2, 4 and 1 to the front in turn at a cost of 7, then extract 1; move 4 from the front to the back at a cost of 4, then extract 2 and 3; move 4 from the back to the front at a cost of 4, then extract 4 and 5, for a total cost of 15. Examples 2 and 3 were added by this site: a single card needs no rotation; for the reversed order 3, 2, 1, pay 1 and then 2, after which the remaining 3 can be extracted for free.",
+    "hints": [
+      "Rotation does not change the cyclic relative order of the cards.",
+      "After the target card is moved to the front, does the subsequent state depend on the rotation direction?",
+      "Maintain range sums of the values of the cards not yet extracted."
+    ]
+  }
+}

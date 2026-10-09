@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-181",
+  "packageChecksum": "ce55485e89865eb6e41de946b8fbf3ace9e27ccc177aa61c3995778577bd8f20",
+  "en": {
+    "title": "Ways to Split All Packages into Balanced Pairs",
+    "description": "Each package has its own identity, so packages are distinct even when their weights are equal. Split all packages into unordered pairs, using every package exactly once; the absolute weight difference within each pair must be wt. Find the number of complete groupings modulo 1000000007, and return 0 if no complete grouping exists. A clause in the original text about \"the number of single pairs\" contradicts the main statement and the complete-grouping example whose output is 6; this site explicitly adopts the meaning of the main statement and that example, i.e. pairing up all packages.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n wt; the second line contains the weights. The original snapshot gave no numeric bounds; this site uses 1≤n≤100000, 0≤wt≤10^9, weights 1..10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 6, 3 and 0.",
+    "hints": [
+      "When wt is 0, each group of equal weights forms its own perfect matching, so multiply by the odd double factorial. When wt>0, process weights in increasing order: packages still unpaired at the current weight v can only match the next weight v+wt; choose and arrange partners among that weight's remaining identities, multiply by the falling factorial, then subtract the number used."
+    ]
+  }
+}

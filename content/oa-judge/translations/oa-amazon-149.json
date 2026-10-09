@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-149",
+  "packageChecksum": "3d6d368f287baa4dbcacd12a828fb9fd138d8c21006b22f1e05465d2be3cc75a",
+  "en": {
+    "title": "Ideal Days with Suitable Rainfall Trends Before and After",
+    "description": "A day is ideal only if the window adjacent relations before it, up to and including that day, are non-increasing, the window adjacent relations after it are non-decreasing, and the days on both sides exist. Output all such 1-based days. At least one ideal day is guaranteed.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n window, and the second line contains n forecast values. The source has 1≤window≤n≤200000, values in 0..10^9, and guarantees at least one solution, so the combined conditions actually require 2window+1≤n.",
+    "output": "Output all qualifying 1-based days in ascending order.",
+    "explanation": "Example 1: days 3 and 4 each have two steps before and after that satisfy the relations, so output 3 4. Example 2: the two valleys are days 2 and 4. Example 3: all relations are equal, so days 4, 5, 6 and 7, which have three days on each side, can all be chosen.",
+    "hints": [
+      "Scan left to find the non-increasing length ending at each point and scan right to find the non-decreasing length starting at each point; a day qualifies when both are at least window adjacent relations."
+    ]
+  }
+}

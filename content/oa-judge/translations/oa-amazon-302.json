@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-302",
+  "packageChecksum": "a644c96722ac843de99ecaf2da24ee5ee73e4eea5c039fbcd2be9f49744da3f3",
+  "en": {
+    "title": "Minimum Deletions So a Center Interval Touches Every Remaining Merchant",
+    "description": "Each merchant corresponds to a closed interval. Delete the fewest merchants so that the remaining merchants include a center merchant whose interval intersects the interval of every other remaining merchant. Sharing an endpoint counts as intersecting. All intervals do not need a common point, and it is not enough for them to be connected as a whole.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by n lines of start end. The original bounds are 1≤n≤100000, 1≤start≤end≤10^9, and duplicate intervals are allowed.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 0 and 2. In the first example the center [3,8] touches two disjoint small intervals at once, so the maximum simultaneous coverage cannot be used instead.",
+    "hints": [
+      "Sort all starts and all ends separately. The number of merchants a center [l,r] can keep is the number of starts ≤r minus the number of ends <l; maximize this count and subtract it from n."
+    ]
+  }
+}

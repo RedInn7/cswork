@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-359",
+  "packageChecksum": "066b2935e2b4db4187aaca2597e8dfb5f5ae2fa9e7e7cc6c61c662e1149fb07c",
+  "en": {
+    "title": "Password Subsequence With At Most One Cyclic Successor Step per Character",
+    "description": "For each request, choose any positions in new and change each of them once to its cyclic successor letter, or choose none. Determine whether old can become a subsequence of the modified new; a position cannot be changed more than once. The successor of z is a.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The input is a JSON two-dimensional array whose items are [new,old]. Original: 1..10 requests, a total length of all new and old strings≤200000, and old length≤new length in each item. Characters are lowercase letters, following the original cyclic a..z definition; there is no non-empty requirement on individual strings, so empty strings are allowed.",
+    "output": "Output YES or NO on its own line for each request.",
+    "explanation": "The public outputs are YES/NO/YES, YES/NO and YES/YES. The second paragraph of the original statement reverses the direction of the subsequence; this site restores the direction that agrees with the first paragraph, with old length≤new length, and with all examples.",
+    "hints": [
+      "Scan new with two pointers; if the current character or its one-step cyclic successor equals the next character of old, match it right away."
+    ]
+  }
+}

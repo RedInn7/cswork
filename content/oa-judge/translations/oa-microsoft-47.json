@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-47",
+  "packageChecksum": "56ded1790a424562c9975b124e92ae77333cfbdcff5cb51d4fcc1cd44bf45202",
+  "en": {
+    "title": "Minimum Same-Position Swaps for the Smallest Difference of Two Integers",
+    "description": "The two strings have the same length and no leading zeros. One operation swaps the digits of the two strings at the same position. First, the absolute difference of the final values must be as small as possible; then, among those options, minimize the number of swaps.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "Two lines S and T, of length 1..100000, with characters 0..9 and no leading zeros.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: swapping positions 2 and 4 gives 20122 and 19564, with a difference of 558, using 2 swaps. Example 2: the strings are already identical, so no swap is needed. Example 3: the ones digit already offsets the tens difference, and the original difference 2 is minimal, so 0 swaps.",
+    "hints": [
+      "The first differing position decides which number is larger, and every later differing position should offset that difference in the opposite direction. Compute the number of swaps for two options, leaving the first position unswapped or swapping it, and take the smaller."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-30",
+  "packageChecksum": "dc0063740b21d7d37308e994b7fccc97036a3df2b6fe0ebd9d45efbb494d3ed4",
+  "en": {
+    "title": "Optimal Microwave Keypad Input",
+    "description": "A microwave takes the cooking time as digits entered on its keypad. An input of at most two digits is read as seconds; for a longer input, the last two digits are seconds and the remaining prefix is minutes (seconds may go up to 99; for example, 999 means 9 minutes 99 seconds). Each key press costs 1; when two consecutive presses are on different digit keys, moving the finger costs an extra 2. The actual time must be within 10% of the target. First minimize the total cost; if costs tie, choose the input whose actual time differs least from the target; if still tied, choose the numerically smallest input. Return that input as an integer.\n\nThis site's judging bounds: 0≤targetTime≤6039 seconds, and only non-negative integer inputs in 0..9999 are considered (at most four digits, written as ordinary decimal without leading zeros; input 0 means 0 seconds). Every target in this range has an exactly representable time. These ranges do not appear in the OAMaster original; this site added them explicitly to match the search domain of the source site's reference implementations in three languages.\n\nOriginal source: https://oamaster.com/docs/companies/google#30-find-optimal-input. Interview record and examples for the same problem: https://leetcode.com/discuss/post/6159225/Google-or-Onsite-or-Microwave-optimal-keystroke-input/.",
+    "input": "A single line containing the integer targetTime (in seconds).",
+    "output": "Output the integer input selected by the rules.",
+    "explanation": "There are at most 10000 candidate values. Compute the actual seconds and the keypress cost of each, filter out candidates that are off by more than 10%, then sort by (keypress cost, time difference, input value) in ascending order and take the first.",
+    "hints": [
+      "The cost of moving between different digit keys is only counted between two consecutive presses.",
+      "The last two digits of seconds can exceed 59; do not normalize them to base sixty.",
+      "Use the integer comparison `10*|actual-target| <= target` to avoid floating-point error."
+    ]
+  }
+}

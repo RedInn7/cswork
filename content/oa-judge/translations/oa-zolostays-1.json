@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-zolostays-1",
+  "packageChecksum": "b6f666a167496d9518718306454fe6ba4ae713fa289c510ba2558d46ee97406f",
+  "en": {
+    "title": "Count of Range Sum (Zolostays OA)",
+    "description": "Given an integer array arr and a closed interval [lower, upper], count how many contiguous non-empty subarrays have an element sum within the interval. Equal subarrays are counted separately by start and end positions. The fixed source's second example output is corrected from 8 to 13; the basis is in the notes.",
+    "input": "The first line contains n (1≤n≤50000); the second line contains n 32-bit signed integers; the third line contains lower upper (both 32-bit signed integers with lower≤upper).",
+    "output": "Output the number of contiguous subarrays whose sum lies in the closed interval [lower, upper].",
+    "explanation": "Use prefix sums to turn a range sum into the difference of two prefix sums, then count in O(n log n) time with merge sort and two pointers. The source output of the second public example was mistakenly written as 8; enumerating directly by definition gives 13.",
+    "hints": [
+      "Use n+1 prefix sums, including the empty prefix 0.",
+      "During the merge, the prefix sums of both the left and right halves are already sorted.",
+      "Both bounds are inclusive; the two moving pointers find the boundaries for lower and upper respectively."
+    ]
+  }
+}

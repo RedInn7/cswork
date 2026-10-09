@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-68",
+  "packageChecksum": "8a8c04f83192ffc7070d0bbe89594ef5c7da12cdca6ef01d67105f74dc1345c7",
+  "en": {
+    "title": "IBM OA #68: Service Timeout Detection",
+    "description": "Each heartbeat record contains a timestamp and the ID of the service it belongs to. For each service ID, sort its heartbeats by timestamp; if the interval between any two adjacent heartbeats is strictly greater than threshold, the service is considered to have timed out at least once. A service with only one heartbeat never times out. Note that the heartbeats in the input are not sorted by timestamp.\n\nFind all service IDs that timed out at least once and output them in ascending lexicographic order.",
+    "input": "The first line contains two integers n and threshold. Each of the next n lines contains an integer timestamp and a string serviceId. 1≤n≤200000, 1≤timestamp≤10^9, 0≤threshold≤10^9, and serviceId has length 1..10 and contains only lowercase letters and digits.",
+    "output": "Output the number k of timed-out services on the first line; then output k lines, one service ID each, in ascending lexicographic order.",
+    "explanation": "Example 1: svc1 has a gap of 60 between 20 and 80, and svc2 has a gap of 55 between 10 and 65; both exceed 30, so 2 services are output.\nExample 2: svc1 has a gap of 2 between 1 and 3, which exceeds 1; svc2 has only one heartbeat and does not time out, so 1 service, svc1, is output.\nExample 3: a has heartbeats 1 and 4, and b has heartbeats 3 and 6; both gaps are 3, which does not exceed 5, so the output is 0.",
+    "hints": [
+      "First group by service, then sort by time within each group.",
+      "The check looks at the gap between two adjacent heartbeats, and it must be strictly greater.",
+      "The result must be sorted lexicographically."
+    ]
+  }
+}

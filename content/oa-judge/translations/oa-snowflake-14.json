@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-14",
+  "packageChecksum": "2b9853be6a892ec62b67ddd39dda2f1ee1530eb971369584d5b7e7d6c1658871",
+  "en": {
+    "title": "Grid Shortest Path Where Long Jumps Lock the Direction",
+    "description": "The grid contains empty cells *, walls #, a start S, and an end E. Each move jumps a positive integer distance up, down, left, or right; a jump may pass over walls but cannot land on a wall. If the previous jump had length >1, the next jump must go in the same direction; a jump of length 1 lifts the restriction. E counts as reached only when the last move has length 1 and lands on E. If E cannot be reached, output −1.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains n m, followed by n lines of the grid; 2≤n,m≤100, and there is exactly one S and exactly one E.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 1; 4; -1. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Run BFS on states made of the coordinates and the locked direction (plus a free state), enumerating the allowed directions and all valid landing cells; a long jump locks the direction, and a short jump makes the state free."
+    ]
+  }
+}

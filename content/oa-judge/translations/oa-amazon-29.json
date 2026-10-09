@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-29",
+  "packageChecksum": "764bbb4f3103e47daaec79808c9cffe4a3703fa63d0ea528b69de2cbbfbb79fb",
+  "en": {
+    "title": "Warehouse Connection Cost With Added Hubs",
+    "description": "Warehouse capacities are in non-decreasing order. Warehouse i connects to the nearest hub j with j not less than i, at cost capacity[j]−capacity[i]. Warehouse n is always a hub. Each query independently adds two hubs, hubA and hubB; output the total connection cost. The source example's 13 is wrong; by the definition, the correct cost is 5.\n\nStandard input/output, examples and judging were written independently by CSWork; conventions marked as this site's do not claim to be the source's original limits.",
+    "input": "The first line contains n q (3≤n≤200000, 1≤q≤200000); the second line contains n non-decreasing capacities (1..10⁹); each of the next q lines contains A B, with 1≤A<B<n.",
+    "output": "Output q integers in query order.",
+    "explanation": "Example 1: the hubs are 1, 3 and 5; the warehouse costs are 0, 2, 0, 3, 0, for a total of 5. Example 2: all capacities are equal, so the cost is 0. Example 3: with hubs 1, 2 and 4, only warehouse 3 pays 10−6=4; with hubs 2, 3 and 4, only warehouse 1 pays 3−1=2.",
+    "hints": [
+      "Use prefix sums to compute the three segments that connect to A, B and n separately; each segment costs segment length × hub capacity − the sum of capacities in the segment."
+    ]
+  }
+}

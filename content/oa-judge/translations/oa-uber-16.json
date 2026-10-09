@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-16",
+  "packageChecksum": "48ad467a5d167bb6a13d4ed8c222c01138bb9d739a61ac69b76f8d62cc0f58b2",
+  "en": {
+    "title": "Ancestor Paths That Can Be Rearranged into a Palindrome",
+    "description": "The tree is rooted at 0. For each query node q, count the ancestors v of q (including q itself) such that the letters of all the nodes on the path from q to v can be rearranged into a palindrome. A palindromic rearrangement exists exactly when at most one letter occurs an odd number of times.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains n m, the second line contains a string of n lowercase letters, followed by n−1 lines of undirected edges u v, and the last line contains m query nodes. 1≤n,m≤100000, nodes are numbered 0..n−1, and the tree is guaranteed to be valid.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: checking every ancestor path according to the statement gives 3 4 1. Example 2: every path of identical letters can be rearranged into a palindrome; node 2 has 3 ancestors and the root has 1, so the output is 3 1. Example 3: node 1 itself, b, is valid, but ba cannot be rearranged into a palindrome, so the output is 1.",
+    "hints": [
+      "During DFS, maintain the XOR mask of the letters on the root path, along with the frequencies of the parent-prefix masks of every ancestor on the current path. Count the cases where the current prefix XOR a candidate mask is 0 or a single bit, checking 27 masks in total; remove the current mask when backtracking."
+    ]
+  }
+}

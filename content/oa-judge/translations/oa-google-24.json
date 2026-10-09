@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-24",
+  "packageChecksum": "5f790747067144e387883a2c02c0672c85336b49f39acd1f23bf2d012a8a5a4d",
+  "en": {
+    "title": "Longest Subsequence Increasing by One Each Step",
+    "description": "Choose an order-preserving subsequence of the integer array in which each subsequent element is exactly 1 greater than the previous one. Output the maximum length. The elements do not need to be contiguous.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "The first line contains n (1..100000); the second line contains n integers (−10⁹..10⁹).",
+    "output": "Output the answer as described; results for multiple queries are separated by spaces, in order.",
+    "explanation": "Example 1: you can pick 1, 2, 3, 4, 5 in order, for a length of 5. Example 2: the array is strictly decreasing, so no element one larger can follow in order; the answer is 1. Example 3: repeated numbers cannot be chosen one after another; choosing 1, 2, 3 gives 3.",
+    "hints": [
+      "dp[v] is the best length of a subsequence ending with v in the current prefix. When the scan reaches v, update dp[v] with dp[v−1]+1."
+    ]
+  }
+}

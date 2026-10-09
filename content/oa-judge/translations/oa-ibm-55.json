@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-55",
+  "packageChecksum": "65e51fcc68b0e98e7fb6d1a46f40167a78e88acc58abd8f15f475268823ed14b",
+  "en": {
+    "title": "Chairs Requirement",
+    "description": "Given several simulations of employees coming and going, find the minimum number of chairs that must be bought for each simulation. Initially there are no chairs; an employee always uses an empty chair first, and a chair is bought only when there is no empty one. C means a new employee enters, R means an employee temporarily goes to the meeting room, U means an employee returns from the meeting room, and L means an employee leaves permanently. This site's addition: every simulation is a valid event sequence; when R/L is executed at least one employee is in the room, and when U is executed at least one employee is in the meeting room. Employee identities are not distinguished; only the headcount states above must be respected.\n\nThe input protocol and the ranges explicitly marked as \"this site's addition\" were compiled by this site and are not extra conditions of the original problem.",
+    "input": "The first line contains n; each of the next n lines gives one simulation string containing only C, R, U and L. 1≤n≤100, 1≤length of each string≤10000.",
+    "output": "Output n space-separated integers in input order, each being the minimum number of chairs that must be bought for that simulation.",
+    "explanation": "See the accompanying editorial for the approach, proof of correctness and complexity.",
+    "hints": [
+      "First pin down how each operation affects the state, then choose between direct simulation and a data structure that supports range counting."
+    ]
+  }
+}

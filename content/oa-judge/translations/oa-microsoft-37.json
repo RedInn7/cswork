@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-37",
+  "packageChecksum": "c4babe414083425f96f79f2a35a9395421af0b931259620903c2d3aa2875afbc",
+  "en": {
+    "title": "Maximum Orders Fulfilled in Order of Distance",
+    "description": "All orders of closer customers must be fulfilled before any farther customer can be served, and customers at the same distance may be served in any order. Each order can only be delivered in full. Find the maximum number of orders that stock P can fulfill.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N P (1≤N≤100000, 0≤P≤10¹⁰), the second line contains N distances D, and the third line contains N demands C (all 1..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: first deliver the orders at distances 1 and 3, using 3+2=5; the next order needs 6, which is not enough, so 2 orders are fulfilled.\n\nExample 2: first deliver the nearest demand of 2, leaving 1; the demand of 10 at distance 10 cannot be delivered, and you cannot skip ahead to 15, so 1 order is fulfilled.\n\nExample 3: at the same distance, deliver the demand of 1 first, leaving 1, which is not enough for the demand of 5; therefore no farther order can be served, and 1 order is fulfilled.",
+    "hints": [
+      "Sort by distance in ascending order, breaking ties by demand in ascending order, deduct the stock order by order, and stop at the first order that cannot be covered."
+    ]
+  }
+}

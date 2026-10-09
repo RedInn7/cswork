@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-191",
+  "packageChecksum": "fb3b23126e033cccc7677567f52b5e4e668d9afe41971dc936c69c0ab7bfc5cb",
+  "en": {
+    "title": "Total Beauty After Concatenating Repeated Intervals",
+    "description": "Each closed interval is taken from the original array and the pieces are concatenated; repeated and overlapping intervals contribute their elements again. An original index covered by any interval has beauty 0; an uncovered index has beauty equal to the number of elements in the concatenated array strictly less than its value. Find the total beauty. The source example miscounted repeated elements; this site corrects it to 12.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m, the second line the array, followed by m lines of 0-indexed closed intervals l r. The source had no numeric bounds; this site uses 1≤n,m≤200000, −10^9≤element≤10^9, 0≤l≤r<n.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "In the first example the uncovered 3 has 5 smaller elements and the 5 has 7, for a total of 12; the other two examples give 0 and 4.",
+    "hints": [
+      "Use a difference array to get how many times each index is covered, and use that count as the element's weight. Sort and group elements by value; each uncovered element contributes the cumulative weight of all strictly smaller values."
+    ]
+  }
+}

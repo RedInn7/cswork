@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-16",
+  "packageChecksum": "b39def9cbdf042ad65b57177d026044b7353f9afa40153f924759b56e7576861",
+  "en": {
+    "title": "Maximum Number of Equivalent Product Bundles",
+    "description": "Choose a single target total price T. Each bundle contains one or two products whose total price is T; each product can be used at most once, and some products may be left unused. Find the maximum number of bundles that can be formed.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains n (1..200000), and the second line contains n prices (1..2000).",
+    "output": "Output one integer, the answer required by the problem.",
+    "explanation": "Example 1: with target price 5 you can form [5], [4,1] and two [3,2], 4 bundles in total; enumerating other targets cannot give more. Example 2: with target price 2, each 2 forms its own bundle, 3 bundles in total, instead of forcing them into pairs. Example 3: the only product 1 forms a bundle by itself, so the answer is 1.",
+    "hints": [
+      "Enumerate T=1..2max(cost) and count the single-item bundles priced T. For each pair of different complementary prices take the smaller frequency, and for equal prices take half the frequency."
+    ]
+  }
+}

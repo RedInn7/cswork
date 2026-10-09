@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-2",
+  "packageChecksum": "514bec746190ce754388e9a3d122a96fc785cadff6513261bae66b4c663ebbdf",
+  "en": {
+    "title": "Count Contiguous Ranges of Coexisting Bacteria",
+    "description": "The samples are arranged by number from 1 to n. The two samples of any conflicting pair cannot both appear in a range, and direction does not matter for a conflict. Count the valid non-empty contiguous ranges; the samples cannot be reordered. Duplicate conflicts are not subtracted twice.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains n m, followed by m lines each with a b, denoting a conflicting pair. The original problem has no numeric bounds; this site uses 1≤n≤200000, 0≤m≤200000, 1≤a,b≤n, and a≠b; duplicates and reversed duplicates are allowed.",
+    "output": "The number of valid ranges, as a 64-bit integer.",
+    "explanation": "In Example 1, the valid ranges are the three single points and [1,2], for 4 in total. In Example 2, all 10 ranges are valid. In Example 3, the duplicated reversed relation counts as one, and there are 6 valid ranges in total.",
+    "hints": [
+      "Sort each pair's endpoints so that a<b, and record the maximum a for each b. When scanning the right end r, the left end must be at least one more than the largest smaller endpoint among all conflicts seen so far. Add up the number of possible left ends."
+    ]
+  }
+}

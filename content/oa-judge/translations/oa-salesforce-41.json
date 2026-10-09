@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-41",
+  "packageChecksum": "1b934b5c3cb13f9c6883a0331a4e8ff40df1e55875b08093a1248d2252e057c5",
+  "en": {
+    "title": "Counting Strings Without k Consecutive Identical Letters",
+    "description": "Count the lowercase English strings of length n that do not contain k or more consecutive identical letters, modulo 1000000007. At most k−1 identical letters may appear consecutively; do not misread this as allowing k.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n k. Full original bounds: 1≤n≤100000, 1≤k<n, so a valid n is in fact ≥2; do not change this to k≤n or change the forbidden length to k+1.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 16250; 0; 11880050. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Let F[i] be the number of valid strings of length i. For i<k it is 26^i; F[k]=26^k−26; for i>k, F[i]=26F[i−1]−25F[i−k]. When k=1, output 0 directly."
+    ]
+  }
+}

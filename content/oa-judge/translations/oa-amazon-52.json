@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-52",
+  "packageChecksum": "c6e75b52340e36abe9d15e82d15531cd6a1e39945a790216c859acbd379bafcb",
+  "en": {
+    "title": "Minimum Connected Blocks After Adding One Delivery Range",
+    "description": "Given some existing closed intervals, add exactly one closed interval [a,b] with 0≤b−a≤k. Intervals merge when they intersect or share an endpoint; integer endpoints that differ by 1 without a common point do not count as touching. Find the minimum number of connected blocks.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n k (1≤n≤200000, 1≤k≤10⁹), followed by n lines of a b (1≤a≤b≤10⁹). The endpoints of the new interval can be any integers you choose.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: there are 4 blocks after merging; adding [5,7] of length 2 connects the first three blocks, leaving 2. Example 2: the new interval can be placed inside an existing interval, so there is still 1 block. Example 3: adding [1,5] of length 4 connects the two points into 1 block.",
+    "hints": [
+      "First merge the intersecting existing intervals. One new interval can connect several consecutive blocks if and only if the left end of the last block − the right end of the first block ≤k; use two pointers to find the maximum number of blocks that can be connected."
+    ]
+  }
+}

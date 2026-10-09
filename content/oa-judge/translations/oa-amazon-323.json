@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-323",
+  "packageChecksum": "df08d4b2a637cd3f72d475aadf2fe1f70e8746cb480633688739ca757f79c73f",
+  "en": {
+    "title": "Maximum Number of Password Segments Containing Both Vowels and Consonants",
+    "description": "Split the whole lowercase credential into non-empty contiguous segments; each segment must contain at least one vowel from aeiou and at least one other letter. The strength is the maximum number of segments; if the whole credential cannot satisfy both kinds of characters, return 0. Every character must be kept, so the tail cannot be discarded.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing credential. The original bounds are 1≤length≤10, with lowercase letters only. The corresponding raw is amazon-password-strength.md, not the other file with the same title, amazon-find-password-strength.md, which counts characters of substrings.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 0 and 1. In the last example the suffix aaa joins the segment containing ab; the suffix is not discarded.",
+    "hints": [
+      "Scan from the left; as soon as the current segment has collected both a vowel and a consonant, end it and start counting again. A tail at the end that cannot form a valid segment on its own joins the last valid segment and does not increase the count."
+    ]
+  }
+}

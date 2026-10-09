@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-20",
+  "packageChecksum": "770948513190e4524e7f66a185443401aa44cde45b04d3b4ba1b18cf26e17117",
+  "en": {
+    "title": "Data Center Geo-Distance Routing System",
+    "description": "Process commands in order to maintain data center registrations, health status, and current load; support great-circle distance queries, and route each request to the nearest healthy data center that still has capacity. Distances use the Haversine formula with an Earth radius of 6371 km. Output and routing order use the distance rounded to an integer number of kilometers, with ties broken by name in ascending order.",
+    "input": "The first line contains q (0..5000), followed by q lines of commands; at most 200 data centers are registered in total. Coordinates are finite decimals, with latitude in [-90,90], longitude in [-180,180], and at most 18 decimal places. Commands are `REGISTER name latitude longitude capacity`, `SET_HEALTHY name true|false`, `DISTANCE lat1 lon1 lat2 lon2`, or `ROUTE latitude longitude`. capacity is a positive integer; name consists of 1..32 ASCII letters, digits, underscores, or hyphens. Command names and argument counts are valid; invalid values return ERROR as the statement specifies.",
+    "output": "Output one line per command. REGISTER/SET_HEALTHY outputs OK or ERROR; DISTANCE outputs an integer number of kilometers or ERROR; ROUTE outputs `name distance candidates`, or `None candidates` if every healthy data center is full. candidates is the comma-separated list of names of all healthy data centers sorted by (rounded integer kilometers, name); output `None` when there is no healthy data center.",
+    "explanation": "This site restricts input values to finite decimals with at most 18 decimal places. On this input domain, the exact spherical distance is never exactly a half-integer number of kilometers, so the nearest-integer result is unique; the reference implementation rounds halves up to avoid differences in how language libraries handle exact ties.",
+    "hints": [
+      "Store each data center's coordinates, capacity, load, and health status; when routing, filter the healthy nodes, compute and round their distances, sort by distance and name, then pick the first node that is not full."
+    ]
+  }
+}

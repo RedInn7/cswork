@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-113",
+  "packageChecksum": "53efb2f5130ec9dbea3081cf5fed199ae33a3a93495d14bfebc13b8dd2c37d78",
+  "en": {
+    "title": "Minimum Cost of Deleting Pairs of Equal and Different Characters",
+    "description": "Each time, choose any two positions and delete them; the cost is x if the characters are equal and y otherwise. Given a string of even length, find the minimum total cost to delete everything.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains the string dataset (even length 2..100000), and the second line contains x y (1..10000).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the four a characters must form at least one pair among themselves, and the other two pairs are mixed, for a total of 3+2+2=7. Example 2: pair oo and ui, for a total of 2+4=6. Example 3: delete aa and bb separately, at a cost of 4.",
+    "hints": [
+      "If same-character pairs are cheaper, make as many of them as possible, which is the sum of each frequency divided by 2 (integer division); if mixed pairs are cheaper, only max(0,(maximum frequency)−n/2) same-character pairs are forced, and all others are mixed."
+    ]
+  }
+}

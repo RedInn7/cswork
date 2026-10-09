@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-8",
+  "packageChecksum": "c0808e0cc5839d44b304a4a499692245c96cef8a51ca0c303187bb58ecbb0742",
+  "en": {
+    "title": "Grid Deletion and Descendant Revival",
+    "description": "Each test case has a grid with n rows and m columns, and initially every cell is alive. K contains each of 1 to n×m exactly once and gives the time at which each cell is killed. Process times 1 to n×m in order: first set the corresponding cell to dead, then revive all of its strict descendants. The children of cell (r,c) are the cells (r+1,c−1), (r+1,c), (r+1,c+1) that lie inside the grid, and descendants are the cells reachable recursively along child edges; an intermediate cell that is already alive still propagates, and the killed cell itself is not revived. Find the state after all operations, with alive as 1 and dead as 0. This site uses 0-based coordinates throughout, corrects typos in the source text's bottom-right corner and example coordinates, and keeps the original matrices and results.",
+    "input": "The first line contains T. Each test case first gives n m, then n lines, each with m values of K. Full original constraints: 1≤T≤1000, 1≤n,m≤1000; in each test case K is a permutation of 1..n×m; over all test cases Σ(n×m)≤10^6.",
+    "output": "In input order, output n lines for each test case, each containing m values 0 or 1 separated by spaces; test cases follow one another directly with no extra labels. 1 means alive at the end, and 0 means dead at the end.",
+    "explanation": "In the original example, the first and third cells of the last row are revived by ancestor events that happen later, giving 000/000/101. In the second example, a single column [3,1,2], the top cell is killed last and revives the two cells below it; reviving only the direct child is wrong. The third example shows that the states of different test cases are independent.",
+    "hints": [
+      "The last event that affects a cell is the maximum K over the cell itself and all of its strict ancestors.",
+      "Merge the ancestor maxima of the three parent cells row by row instead of simulating event by event."
+    ]
+  }
+}

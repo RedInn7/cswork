@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-203",
+  "packageChecksum": "138f700128e0ac7460ea23837629b36ecb10ba237ad618b903fa5e57b1386a2d",
+  "en": {
+    "title": "Maximum Information Gain with Limited Common Characters",
+    "description": "Choose two different indices among n lowercase strings. Their number of common features is the number of common characters counted with multiplicity, i.e. the sum over letters of the smaller frequency; for aa and aaa it is 2. A pair is valid when its number of common features is ≤K; maximize the absolute difference of the two string lengths. The original text did not define the return value when no valid pair exists; this site adds that −1 is output in that case, and 0 is output when a valid pair exists but the lengths are equal.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n K, followed by n lines of lowercase strings. 2≤n≤1000, 1≤string length≤1000, 1≤K≤1000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 1, −1 and 0; in the second example the common characters count as 2, not as 1 distinct letter.",
+    "hints": [
+      "Precompute the frequencies of the 26 letters, enumerate pairs of different strings, and update the maximum length difference whenever the common multiplicity is within the limit."
+    ]
+  }
+}

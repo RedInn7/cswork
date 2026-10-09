@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-two-sigma-5",
+  "packageChecksum": "a83743d45027c622702d2e41334d2cbc3a87130d622489465f94fee066241653",
+  "en": {
+    "title": "Piecewise Linear Interpolation of a Polyline with Extrapolation at Both Ends",
+    "description": "Sort the points by x in ascending order and connect adjacent points. A query between two points is answered by linear interpolation; to the left of all points, extend the first segment, and to the right, extend the last segment; a query exactly at a node returns its y. Answers are accepted with absolute error ≤10^-6, not relative error.\n\nThis site independently compiled the standard I/O and the solution; additions for bounds missing from the source and corrections to the examples are stated explicitly in the protocol.",
+    "input": "The first line contains n q, followed by n lines of x y, then q lines, each with a query x. The original 2≤n≤200000 and 1≤q≤200000 are kept; points are unordered and their x values are distinct. The original gives no numeric bounds for coordinates; this site adds: input coordinates are plain signed finite decimals without exponents or redundant leading zeros, with at most 6 decimal places and absolute value ≤10^6. Each output token is ≤64 bytes, in plain decimal or scientific notation, with an exponent of absolute value ≤30, and must be finite; output exactly q items with no count prefix. Input numbers must have an integer part; if there is a decimal point, it must be followed by 1..6 digits, and .5, 1., or exponent forms are not accepted; a + or − sign is allowed, and so is negative zero. Strict input coordinate grammar: [+-]?(0|[1-9][0-9]*)([.][0-9]{1,6})?; + signs, negative zero, and trailing zeros are allowed, while .5 or 1. are not; n/q are positive integers without redundant leading zeros. Each physical line has the number of fields described above, separated by spaces/tabs within the line; line endings are LF or CRLF, the final newline is optional, and there are no extra blank lines. The total input is ≤9600040 bytes, and the output is separated by ASCII whitespace and is ≤16MiB.",
+    "output": "Output one finite decimal number per query, q lines in total, with no count header; scientific notation is allowed. An absolute error of at most 0.000001 counts as correct. NaN, Infinity, and missing or extra answers are rejected; the final newline is optional, and the total stdout is ≤16MiB.",
+    "explanation": "The outputs of the three public examples are, in order: 2.000000 / -2.000000 / 6.000000; 1.000000 / 2.000000; 0.000001. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Multiply the inputs by 10^6 to convert them exactly to integers, sort by x, binary search the segment for each query, and compute the exact rational value. Use integer division to round the result to 6 decimal places without going through double."
+    ]
+  }
+}

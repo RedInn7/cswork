@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-5",
+  "packageChecksum": "e0e4fc506864e832295a5e0f01c1289978fc2bdc21b1b57681392f5b404c1d40",
+  "en": {
+    "title": "Optimal Payoffs for Lock-Based Assignment on Two Cores",
+    "description": "Assign each process in the original order. The core holding the lock can either give the current process to itself and hand over the lock, or give it to the other core and keep the lock; both sides maximize their own final total time, and core 1 initially holds the lock.\n\nThis site independently compiled the standard I/O and the solution; supplements for missing source bounds and example corrections are stated explicitly in the protocol.",
+    "input": "The first line contains n, and the second line contains n values of time. The original bounds 1≤n≤100000 and 1≤time[i]≤10^9 are restored from Millennium's same-problem OCR001..004; the operation applies to the current i-th item, and the original Fastprep's i+1 is a typo. Output two exact integers.",
+    "output": "Output the total processing times of core 1 and core 2, one integer each.",
+    "explanation": "The outputs of the three public examples are, in order: 41 31; 20 20; 7 0. Checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Working backward, compute the current lock holder's optimal payoff difference d relative to the other core with the recurrence d=|time−d|; combine it with the total to recover both cores' payoffs."
+    ]
+  }
+}

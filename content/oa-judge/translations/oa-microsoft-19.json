@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-19",
+  "packageChecksum": "3df05ba03accf2557dd911eae5eab8d642c0b9ee690255f3b9695b4b5737bef5",
+  "en": {
+    "title": "Cover the Holes with Two Equal-Length Boards",
+    "description": "The two boards must have the same positive integer length L; a board placed at X covers the closed interval [X,X+L]. Find the minimum L needed to cover all distinct hole coordinates. The boards may overlap, and one of them may cover no hole.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains N (1..100000), and the second line contains N distinct coordinates (0..10⁹), possibly unsorted.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: one board covers 11..15 and the other covers 20, so the minimum length is 4.\n\nExample 2: split the holes into 9..11 and 15..20; the larger span is 5, so the answer is 5.\n\nExample 3: even with only one hole the length must be positive, so the answer is 1.",
+    "hints": [
+      "After sorting, enumerate the boundary that splits the holes into a left group and a right group, one per board. The length is at least the larger span of the two groups, and at least 1."
+    ]
+  }
+}

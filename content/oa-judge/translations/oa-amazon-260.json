@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-260",
+  "packageChecksum": "00dbb20f51397277400b986e38f2cc9a16dc7b91fbf180c545ddf750d1da11fc",
+  "en": {
+    "title": "Maximum Total Transfer from Choosing Distinct Ordered Server Pairs",
+    "description": "Choose pipelineCount distinct ordered index pairs (i,j); each pair contributes throughput[i]+throughput[j]. i=j is allowed, and (i,j) and (j,i) are different; different servers with the same capacity also have different identities. Find the maximum total.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n pipelineCount; the second line contains throughput. The original text had no numeric bounds; this site uses 1≤n≤200000, 1≤throughput[i]≤10^9, 1≤pipelineCount≤n²; use 64 bits for K. This site requires the exact integer to be output; the maximum answer 8×10^19 exceeds the signed 64-bit range, and no modulo is taken.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 36, 16 and 42. In the third example the top 3 are 20, 11 and 11, and both directions must be counted.",
+    "hints": [
+      "Binary search the K-th largest pair sum T. After sorting, use two pointers and prefix sums to get the count C and the total S of all pairs with sum ≥T; the result is S−(C−K)T."
+    ]
+  }
+}

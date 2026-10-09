@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-78",
+  "packageChecksum": "8eed155dc14f3c80a2c3ba4e65f97297859555a1ae1f78c85d5db9e6ae4a2f01",
+  "en": {
+    "title": "Fewest Groups with the Same Level and Near-Equal Sizes",
+    "description": "Each group may only contain servers of the same security level, and the largest and smallest group sizes may differ by at most 1. Find the minimum number of groups.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n (1..100000), and the second line contains n levels (1..1000000).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: two groups of sizes 3 and 2 suffice, so the answer is 2. Example 2: different levels can only form one group each, so the answer is 3. Example 3: servers all at the same level can be placed in one group, so the answer is 1.",
+    "hints": [
+      "Enumerate the smaller group size b, decreasing from the smallest level frequency. For frequency f, use ceil(f/(b+1)) groups; this is feasible only if each of these groups has at least b items. The first b that is feasible for every level gives the minimum total number of groups."
+    ]
+  }
+}

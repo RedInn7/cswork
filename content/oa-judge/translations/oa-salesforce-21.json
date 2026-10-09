@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-21",
+  "packageChecksum": "fa472df6c9d8f31a537bbd1c1dc291b48abcdc521454feaf75edfa845fc7ce48",
+  "en": {
+    "title": "Index Pairs Satisfying Both Absolute-Value Inequalities",
+    "description": "Count the index pairs with 0≤i<j<n that satisfy both min(|x−y|,|x+y|)≤min(|x|,|y|) and max(|x−y|,|x+y|)≥max(|x|,|y|), where x=a[i] and y=a[j]. Repeated values are counted separately by index.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n and n integers. Full original bounds: 2≤n≤200000, −10^9≤a[i]≤10^9; the raw source restores the i<j condition that the catalog's HTML filtering swallowed.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 1; 2. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Take absolute values and sort. With a≤b, the two inequalities become b−a≤a and b+a≥b, so only b≤2a is needed; count the index pairs in the window with two pointers."
+    ]
+  }
+}

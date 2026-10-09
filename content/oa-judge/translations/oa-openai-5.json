@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-openai-5",
+  "packageChecksum": "529d83730347579503aa6fdce450e47fb996b4ef2015d928eac6becf27f62864",
+  "en": {
+    "title": "OpenAI OA #5: Contiguous Segments Without Forbidden Pairs",
+    "description": "Given n and several forbidden pairs, the two numbers of a forbidden pair cannot appear in the same sequence. Among the sequences formed by consecutive integers from 1..n (that is, intervals [l,r] of length at least 1), count how many do not contain both numbers of any forbidden pair.",
+    "input": "The first line contains two integers n and m; then m lines follow, each with two integers a, b denoting a forbidden pair (in any order, possibly repeated). 1≤n≤200000, 0≤m≤200000, 1≤a,b≤n, a≠b.",
+    "output": "Output a single integer, the number of valid sequences.",
+    "explanation": "Example 1: n=4, with the forbidden pair (1,3). The valid sequences are (1), (2), (3), (4), (1,2), (2,3), (3,4), (2,3,4), for 8 in total; (1,2,3) and (1,2,3,4) contain both 1 and 3, so they are invalid.\nExample 2: with no forbidden pairs, 3 numbers have 6 contiguous segments.\nExample 3: the forbidden pairs (3,2) and (2,3) are the same; only (2,3) and (1,2,3) are invalid, so the answer is 4.",
+    "hints": [
+      "The interval [l,r] is invalid if and only if there is a forbidden pair a<b with l≤a and b≤r.",
+      "Fix the left end l; the right end must be less than the smallest b among all forbidden pairs with a≥l.",
+      "Maintain this minimum from right to left."
+    ]
+  }
+}

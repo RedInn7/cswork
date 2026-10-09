@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-61",
+  "packageChecksum": "f18545270d911c38b8112c9163082b8118aa9a8b8abe6fec0366b7dd56ff3157",
+  "en": {
+    "title": "Sum of Product Scores of Prime Arrays from Ranges",
+    "description": "For each position i, choose any prime from the closed interval [low[i],high[i]] to form an array. The score of an array is the product of all its elements. Find the sum of scores over all distinct valid arrays, modulo 10⁹+7. Each interval is guaranteed to contain at least one prime. The ranges and modulo rule truncated during import have been restored from the original statement.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by n lines of low high; 1≤n≤100000, 1≤low≤high≤1000000, and each interval contains at least one prime.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: (2+3)×(3+5)=40. Example 2: all three positions can only choose 2, giving a product of 8; the original second example [1,1] contains no prime, violating the guarantee, so it was changed to [2,2]. Example 3: the three prime sums are 5, 10 and 127, with product 6350; the original output 30 counted only one combination.",
+    "hints": [
+      "Sieve all primes and compute prefix sums of primes. The sum of primes in each interval comes from subtracting prefix sums; multiply these sums together modulo the modulus."
+    ]
+  }
+}

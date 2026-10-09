@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ramp-2",
+  "packageChecksum": "8e9635a40df7dabf06f226ddc25fcb4c4ccd03e72b606571cd2966358dfa91d4",
+  "en": {
+    "title": "Bank Deposits, Withdrawals, and Delayed Cashback (Ramp OA)",
+    "description": "Process bank deposits and withdrawals in time order. A successful withdrawal refunds 2% of the withdrawn amount (rounded down) 24 hours later; when a cashback is due, apply it before processing a request in the same second. At the first request with an invalid account or insufficient balance, return the negative of its 1-based request index.",
+    "input": "The first line contains N Q (on this site: 1≤N≤100000, 0≤Q≤200000); the second line contains N initial non-negative balances (each ≤10^12). Then Q lines follow: operation timestamp holder_id amount. operation is deposit or withdraw; timestamp is a strictly increasing positive integer number of seconds (≤10^12); amount is a non-negative integer (≤10^9); holder_id is an integer, where 1..N are valid accounts and any other value is treated as an invalid account, as the problem specifies.",
+    "output": "Output a JSON integer array. If all requests are valid, return the account balances after the last request's timestamp has been processed; if request i is the first invalid one, output [-i]. Cashbacks that only become due after the last request are not included in the final balances.",
+    "explanation": "Use a min-heap to manage cashback due times; see the accompanying editorial for the full explanation.",
+    "hints": [
+      "Before each request, process all cashbacks that are already due.",
+      "When a cashback's due time equals the request time, credit it first as well."
+    ]
+  }
+}

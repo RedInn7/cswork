@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-30",
+  "packageChecksum": "63db8ae0efef19f94ffaafda2757130fea2adab8e2f14d514d3f63f057116d54",
+  "en": {
+    "title": "Splits Where the Number of Shared Character Types Exceeds a Threshold",
+    "description": "Split a lowercase string into two non-empty contiguous parts. The split is valid if the number of distinct characters that appear in both parts is strictly greater than m. Find the number of valid splits.\n\nStandard input/output, examples and judging were written independently by CSWork; conventions marked as this site's do not claim to be the source's original limits.",
+    "input": "The first line contains the string (length 1..100000), and the second line contains m (0..26).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: splitting as ab|bcac and abbc|ac gives the intersections {a,b} and {a,c}, each with 2 characters, so the answer is 2. Example 2: the string cannot be split into two non-empty parts, so the answer is 0. Example 3: at all three split points both sides contain a, which exceeds the threshold 0, so the answer is 3.",
+    "hints": [
+      "Update the left and right frequencies as the split point moves, and each time count the letters whose left and right frequencies are both non-zero."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-moveworks-3",
+  "packageChecksum": "fc94bd9add7b688960c1fdabbe35551d587da4769d77b9036ca684f96c5ecf57",
+  "en": {
+    "title": "Numbers with 1 to 3 Binary Zeros: Range Sum of Cubes",
+    "description": "A positive integer is a beautiful number if its binary representation without leading zeros contains at least 1 and at most 3 zeros. For each closed interval [L,R], find the sum of the cubes of all beautiful integers in it, modulo 998244353. All queries are independent.",
+    "input": "The first line contains Q, followed by Q lines each with two integers L R. Full original ranges: 1≤Q≤200000, 1≤L≤R≤10^18. Leading zeros are not counted.",
+    "output": "Output Q integers in input order, one per line, each in 0..998244352. The original text explicitly requires Q results, and the starter's single long return type cannot express multiple queries, so this problem follows the output format in the statement.",
+    "explanation": "The original first example keeps its input, with the output corrected to 853 and 9000: [5,8] contains 5, 6, 8, and the original explanation missed 6; [10,15] contains 10, 11, 12, 13, 14. The original 153/0 and the explanation's 637/0 both contradict the explicit definition. The other two public examples were added by this site: the single values 1, 2, 7, 8, 16 give 0, 8, 0, 512, 0 respectively; in [1,10], the cubes of 2, 4, 5, 6, 8, 9, 10 sum to 2654.",
+    "hints": [
+      "The bit length is at most 60, and the highest bit cannot be 0.",
+      "Choose at most three bits other than the highest to be 0.",
+      "For a closed interval, use upper_bound at the right end and lower_bound at the left end, so that numbers equal to the endpoints are not dropped."
+    ]
+  }
+}

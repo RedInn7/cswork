@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-20",
+  "packageChecksum": "2af6a1b9d843aa3efce3779149bd4d80ac3c0597d8eef47b2f8f7c2afe12facb",
+  "en": {
+    "title": "Minutes Since the Day's Last Departed Bus",
+    "description": "Given the day's departure times and the current time, find how many minutes have passed since the most recent bus that has already departed. A bus departing exactly at the current time does not count as departed; if no bus has departed yet that day, return −1, without wrapping around to the previous day.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains n, followed by n lines of departure times in HH:MM format, and the last line contains the current time. The source has no upper bound; this site uses 0≤n≤100000 and times in 00:00..23:59. The list is given in non-decreasing time order and may contain duplicates.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: the most recent departure was at 14:00, 30 minutes ago. Example 2: the 14:00 bus does not count as departed yet, so only 12:30 counts, 90 minutes ago. Example 3: the bus at exactly 00:00 does not count as departed, and there is no earlier bus that day, so the output is −1.",
+    "hints": [
+      "Convert the times to minutes since midnight, take the largest departure minute strictly less than the current minute, and subtract."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-hudson-river-trading-6",
+  "packageChecksum": "98ab0b0ff642d26132d17917259a4a8b7468a9b0bfb32764968013064f5e70bf",
+  "en": {
+    "title": "Count Increasing Paths (64-bit Count)",
+    "description": "You are given a grid of at most 15×15 cells, each with a value in 0..65535. A path is a sequence of at least two cells in which consecutive cells must be adjacent up, down, left or right, and each value is strictly greater than the previous one. Different position sequences count as different paths. Count the total number of increasing paths; Part 2 guarantees the answer does not exceed 20,000,000,000, so 64-bit integers are required.\n\nThe source example's grid is unchanged, but the upstream output 601079908 does not agree with the rules. An independent reverse DFS and an independent ascending-order dynamic programming both give 600537344; this site corrects the public answer to 600537344 and keeps the discrepancy in the source evidence.\n\nThe original is a function-style problem with no standard input/output protocol; this site adds the protocol below.",
+    "input": "The first line contains the number of rows R (1..15); each following line gives the number of columns Cᵢ (1..15), then the Cᵢ integers of that row (0..65535). Rows may have different lengths; only the given cells exist.",
+    "output": "Output the total number of strictly increasing paths of length at least 2.",
+    "explanation": "Part 2 of the source problem only raises the path-count limit to 20 billion; the path and grid rules are inherited from Part 1. The upstream example answer was corrected after being cross-checked with two algorithms.",
+    "hints": [
+      "Strict increase makes the path graph a DAG. You can run DFS from each cell to count suffix paths, or sort by value and use dynamic programming."
+    ]
+  }
+}

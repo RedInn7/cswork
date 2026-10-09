@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sig-5",
+  "packageChecksum": "d368c052d2b0098bac20bfe616d181ba6f6eea3eb8de00b718a12bdbd5a157cd",
+  "en": {
+    "title": "8-Aligned Memory Allocation and Release by ID",
+    "description": "memory is a 0/1 array, where 0 is free and 1 is initially occupied. Process two types of queries in order. 0 x: find the leftmost contiguous block of length x whose start is divisible by 8 and which is entirely free; on success, occupy it and return its start, otherwise return −1. The length may exceed 8 and need not be a multiple of 8. Each successful allocation receives a new ID starting from 1; the ID increments only on success and is never reused after release. 1 id: release the whole block of that ID if it has not been released yet, and return the block length; return −1 for an unknown or already released ID. Initially occupied cells have no allocation ID from this run and cannot be released through a new ID. Return the results of all queries.",
+    "input": "The first line contains n q, the second line contains n values of 0/1, followed by q lines, each with two integers type x. 8≤n≤320 and n is a multiple of 8; 2≤q≤300. type is 0 or 1; when type=0, 1≤x≤n; when type=1, 1≤x≤q−1. Only the start of a newly allocated block must be 8-aligned; the initial 0/1 layout imposes no extra block boundary constraints.",
+    "output": "Output one line with q integers: the return value of each query in order.",
+    "explanation": "The input of original OCR012 was mistakenly missing one item. This site does not adopt MDX's guess of padding a 0 at the end; instead, it starts from the complete 16-cell state after the first alloc2 in OCR014 and undoes the new occupation of indices 8 and 9, which uniquely restores the original input. The following seven steps of the trace are all consistent, and the output 8 0 −1 2 8 −1 −1 is kept. The other two examples are added by this site: allocating a whole block of 8 free cells and then releasing it returns 0 8; allocating 8, a failed allocation of 1, releasing 1, allocating 1, and releasing 2 returns 0 −1 8 0 1, which shows that a failed allocation does not consume an ID.",
+    "hints": [
+      "Use a special marker to distinguish initial occupation from newly allocated IDs.",
+      "A failed allocation must not increment the ID.",
+      "An 8-aligned start does not mean the length must be a multiple of 8."
+    ]
+  }
+}
