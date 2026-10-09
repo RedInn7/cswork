@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-21",
+  "packageChecksum": "fb5e24ab8e318e6b1822672b66c69f6785927ce75c7c77394dc9fc413442ec6d",
+  "en": {
+    "title": "Sum of Reachable Counts After Opening Countries in Pairs",
+    "description": "The countries on a tree are either open (O) or restricted (R). Each operation can only turn two different R countries into O, and it can be performed zero or more times. For each starting country, choose a conversion plan separately to maximize the number of countries reachable from that start while passing only through O countries, then add up these maxima. The plans for different starts are independent; a start that cannot be opened counts as 0.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "The first line contains n, the second line contains an O/R string of length n, followed by n−1 lines of undirected tree edges u v (0-based). 1≤n≤50005.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: the best reachable counts for the seven starts are 4, 4, 5, 5, 5, 5, 5, summing to 33. Example 2: the only R cannot be opened as part of a pair, so the output is 0. Example 3: the O start can only visit itself, and the R start cannot be opened, so the sum is 1.",
+    "hints": [
+      "When the number of R countries is even, all of them can be opened. When it is odd, only one R needs to remain. After deleting each candidate R, each of its adjacent components gives the starts inside it a reachable size; the Euler order represents these components as subtree ranges or subtree complements, which are aggregated with range-maximum updates."
+    ]
+  }
+}

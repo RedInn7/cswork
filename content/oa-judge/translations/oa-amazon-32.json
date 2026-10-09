@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-32",
+  "packageChecksum": "f269775848bf44095ae2d720069cac147258e5de294bf9776fe7d2ef0041391d",
+  "en": {
+    "title": "Domino Removal Problem",
+    "description": "You are given the values of the dominoes, a 0-based permutation of removal positions, and a threshold min_order. Remove the first k dominoes in the order of the permutation; the remaining dominoes keep their relative order from the original array. Find the maximum k for which the length of the longest strictly increasing subsequence is still at least min_order. If the LIS of the initial array is already below the threshold, so that even k=0 fails, this site's protocol specifies outputting -1; the original problem does not define the return value for such inputs.",
+    "input": "The first line contains n and min_order; the second line contains n domino values; the third line contains n remove indices. remove is a permutation of 0..n-1. This stdin/stdout layout and the no-solution output are additions in this site's protocol.",
+    "output": "If at least one k∈[0,n] satisfies the condition, output the largest such k; if none exists (initial LIS < min_order), output -1. -1 is only this site's supplementary convention for an input domain the original problem leaves undefined.",
+    "explanation": "Binary search on k, keep the original array positions given by remove[k:], and check them with patience sorting for strict LIS. With no solution, output -1 as this site's protocol specifies.",
+    "hints": [
+      "Feasibility is monotonic in the number of removals k: the more you remove, the remaining LIS can never get longer.",
+      "Strictly increasing corresponds to bisect_left/lower_bound, not upper_bound."
+    ]
+  }
+}

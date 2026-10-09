@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-persona-3",
+  "packageChecksum": "8e28de194efd53eb56290dbd145ae72c7138fbcd2705d152a6919ddbf177b8a9",
+  "en": {
+    "title": "Escape the Haunted Castle (Part 2)",
+    "description": "A grid contains walls, a start, an exit, and treasures. You can only move up, down, left, or right. Find the minimum number of steps to reach the exit; if there are several shortest paths, return the maximum number of treasures that can be collected on one of them. If the exit is unreachable, return -1 0. A treasure is picked up once when you reach it.\n\nThe explicit standard input/output format and the supplementary constraints of this site define the online version and do not claim to be the source's original constraints.",
+    "input": "The input gives rows cols, the wall coordinates, the treasure coordinates, start, and end; this site specifies that coordinates are 0-based, each coordinate is on its own line, the grid side lengths are 1..200, all coordinates are valid, start/end are not walls, and treasure coordinates are distinct.",
+    "output": "Output the minimum number of steps and the maximum number of treasures that can be picked up on a shortest path. A treasure on the start cell also counts.",
+    "explanation": "First run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it.",
+    "hints": [
+      "First run BFS from start to get the shortest distance to every cell; then do DP in increasing order of distance, transitioning only from neighbors whose distance is 1 smaller, and record for each cell the maximum number of treasures over shortest paths that reach it."
+    ]
+  }
+}

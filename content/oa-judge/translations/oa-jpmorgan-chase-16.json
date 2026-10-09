@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-16",
+  "packageChecksum": "4f721bb87a09d710af2d3f577889ff5a500e5e7b3c05c1b67fac0095a2c5a1b1",
+  "en": {
+    "title": "Chapter Table of Contents That Preserves Title Characters",
+    "description": "Lines that start strictly with \"# \" are chapters, lines that start with \"## \" are sections, and all other lines are ignored; the first valid heading is guaranteed to be a chapter. Chapters are numbered from 1, and section numbers restart from 1 in each new chapter. Only the fixed marker prefix is removed; titles are not trimmed. If there are no valid headings, the table of contents is empty.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The input is a JSON array of strings; 1≤number of lines≤1000, and each line has 1..100 Unicode code points. The original does not restrict the character set; JSON escapes preserve NUL, newlines, and other control characters, and empty titles are allowed.",
+    "output": "Output a single-line canonical JSON array followed by a newline; an empty table of contents is []. Put one space after each comma; output non-ASCII characters directly; escape double quotes and backslashes; use \\b/\\t/\\n/\\f/\\r for backspace/tab/newline/form feed/carriage return, use lowercase four-digit \\u00xx for the rest of U+0000..U+001F, and do not escape slashes. This matches Python json.dumps(result, ensure_ascii=False); the checker is exact.",
+    "explanation": "The outputs of the three public examples are, in order: [\"1. Algorithms\", \"1.1. Sorting\", \"1.2. Searching\", \"2. Data Structures\"]; [\"1.  A \", \"1.1. \\t B \", \"2. \"]; []. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Scan in order while maintaining the chapter and section numbers: on a chapter, increment the chapter number and reset the section number; on a section, increment the section number."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-42",
+  "packageChecksum": "d9167266b4127499bade713a983d4d66f38a7c7a9ab2f7973b3c3cbd3d21c328",
+  "en": {
+    "title": "Exact Cache Lookup by Key and Write Time",
+    "description": "A cache entry contains timestamp, key and an integer value; each query gives key and timestamp and returns the value of that exact entry, not the version with the nearest time. Keys do not repeat at the same time, and every query is guaranteed to hit.\n\nThe standard input/output format was compiled by this site; added numeric bounds and the encoding for no-solution cases are explicitly marked and do not claim to be the source's original constraints.",
+    "input": "The first line contains n q, followed by n lines of timestamp key value, then q lines of key timestamp. 1≤n,q≤100000, 1≤value≤10^8; times are 8-character hh:mm:ss (hours 00..23, minutes and seconds 00..59); keys consist of lowercase letters and digits. The source has no bound on key length; on this site keys are 1..64 characters.",
+    "output": "Output q lines of integers in query order.",
+    "explanation": "The examples give 490 and 352; 1; and 9 and 8 respectively.",
+    "hints": [
+      "Build a hash map with (key,timestamp) as a composite key and answer the queries one by one."
+    ]
+  }
+}

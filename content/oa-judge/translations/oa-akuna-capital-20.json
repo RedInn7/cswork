@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-20",
+  "packageChecksum": "0ac4371794e857492876a486279faf71ab509a3a5cf109366782317647b3893b",
+  "en": {
+    "title": "Maximum Meetings While Keeping the Index Positive",
+    "description": "The effectiveness index starts at 0. Each meeting increases or decreases the index by effectiveness[i]. You may choose and reorder meetings freely; after each scheduled meeting ends, the index must be strictly greater than 0. Find the maximum number of meetings that can be scheduled.\n\nThis problem uses the CSWork standard input/output format. Akuna #20 and Goldman Sachs #22 have the same statement and ranges; since the original Akuna page has no examples, the illustrative example below is taken from #22 to make clear that meetings can be reordered.",
+    "input": "The first line contains n (1..100000), and the second line contains n integers effectiveness[i] (−10^9..10^9).",
+    "output": "Output the maximum number of meetings that can be attended in a row such that the index is strictly positive after each one ends.",
+    "explanation": "The example is taken from Goldman Sachs #22, which has the same statement; its schedule order shows that meetings can be reordered.",
+    "hints": [
+      "Sort by effectiveness from largest to smallest and add meetings one by one; keep a meeting as long as the new running index is still strictly greater than 0, otherwise no later value can rescue that prefix."
+    ]
+  }
+}

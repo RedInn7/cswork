@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-39",
+  "packageChecksum": "3f2abdd87e3939837f1fd415dee164c12244b10ef7ca8d6a0d399a04e678194b",
+  "en": {
+    "title": "Incrementing to Distinct Sizes at Different Costs",
+    "description": "Each increase of 1 to the i-th size costs cost[i]; sizes can only increase, never decrease. Make all sizes pairwise distinct and find the minimum total cost.\n\nThe standard I/O, examples, and judging were written independently by CSWork; conventions marked as this site's are not presented as original source constraints.",
+    "input": "The first line contains n (1..200000), the second line contains n size values (1..10⁹), and the third line contains n cost values (1..10000).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the size-2 item with cost 2 stays at 2, the size-3 item with cost 5 stays at 3, the other 3 with cost 4 increases to 4 for 4, and the other 2 with cost 1 increases to 5 for 3, for a total cost of 7. Example 2: the expensive item stays at 1 and the cheap item increases by 1, for a cost of 1. Example 3: the sizes are already distinct, so the cost is 0.",
+    "hints": [
+      "Assign final sizes from small to large, adding items whose original size is not greater than the current value to a max-cost heap. The current size goes first to the item with the largest unit cost."
+    ]
+  }
+}

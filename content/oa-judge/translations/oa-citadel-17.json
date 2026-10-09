@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-17",
+  "packageChecksum": "3d0ad815ddcbe59e32a2f330029177185cee3e193dcf5818ad20dd9b93861089",
+  "en": {
+    "title": "Minimum Rounds to Finish a Parallel Task Pool",
+    "description": "In each round, choose one unfinished task as the primary task and execute it for x seconds, while every other unfinished task executes for y seconds, where y<x. A task leaves as soon as it has executed enough; find the minimum number of rounds to empty the task pool.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n x y, followed by n execution amounts. Complete original bounds: 1≤n≤300000, 1≤execution amount≤10^9, 1≤y<x≤10^9; problem 17 keeps its original bound of 300,000 and does not reuse the 100,000 of problem 7.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 3; 3; 3. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search on the number of rounds t: treat each task's base progress as t·y; for the shortfall, each turn as the primary task contributes an extra x−y, and the pool can be finished if the total number of primary turns needed is ≤t."
+    ]
+  }
+}

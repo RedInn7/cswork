@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-flexport-5",
+  "packageChecksum": "ada6e7c6b6e3021109c8181a6e00e9f2f679c8efad029c810105175456de3dc8",
+  "en": {
+    "title": "Collect Points",
+    "description": "n players move simultaneously and independently on a number line, each moving at most one unit per second. A point is collected once any player visits it. Find the minimum number of seconds needed to collect all points.\n\nThe ASCII character set, bounds, and standard input/output format below are a supplementary contract by this site and are not claimed to be the original constraints of the source problem.",
+    "input": "The first line contains n m (1≤n,m≤100000); the second line contains n player coordinates; the third line contains m point coordinates. All coordinates are integers in 1..10^9. The input is not guaranteed to be sorted.",
+    "output": "Output the minimum number of seconds.",
+    "explanation": "Binary search on the total time. Sort the players and the points, and assign points to players from left to right. The current player first collects the uncovered points on its left that it must pass anyway, then computes the farthest point to the right reachable within time t, and advances the pointer.",
+    "hints": [
+      "Binary search on the total time. Sort the players and the points, and assign points to players from left to right. The current player first collects the uncovered points on its left that it must pass anyway, then computes the farthest point to the right reachable within time t, and advances the pointer."
+    ]
+  }
+}

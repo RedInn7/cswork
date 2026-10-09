@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-19",
+  "packageChecksum": "66a42fcc3620cdf3ed66617bf97ed7c660b11640b4e134b278c4b6535cbd49c4",
+  "en": {
+    "title": "Divide-and-Conquer Scheduling of Sparse High-Priority Processes",
+    "description": "n 1-based processes form a contiguous interval. An interval of length greater than 1 may be split into two equal halves that are assigned further; alternatively, the interval may be executed directly. If it contains no high-priority process, the cost is normal_time; otherwise, the cost is priority_time×number of high-priority processes×interval length. The total time is the sum of all processor costs, not the maximum.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line contains n k normal_time priority_time, and the second line contains k high-priority indices. Original ranges: 1≤n≤10⁹ with n a power of 2, 1≤k≤min(n,100000), indices in 1..n. On this site the indices in a valid process list are distinct; the original text gives no range for the time factors, and this site uses 1..10⁹ for both.",
+    "output": "Output the minimum total cost. An intermediate direct cost may exceed 64 bits, so use a sufficiently wide integer; do not allocate arrays proportional to n.",
+    "explanation": "The answers are 6, 3, and 6; in the third example, the two endpoints can each be split down to single points, while the empty intervals in between are paid for.",
+    "hints": [
+      "Sort the high-priority indices; let each recursive interval carry its corresponding range of indices, and use binary search to split it into left and right subranges. An empty interval returns normal_time immediately; otherwise, compare the direct cost with the sum of the optimal costs of the two halves."
+    ]
+  }
+}

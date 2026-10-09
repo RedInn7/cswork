@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-39",
+  "packageChecksum": "6483f8d294c852f83cf4e5471431e713dae1a2da51a3270c36eaad89844fe085",
+  "en": {
+    "title": "Maximum Score of Two Segments with a Sign-Flipped Overlap",
+    "description": "Choose two contiguous segments of lengths K and L; they may overlap. An element in only one segment counts at its original value, while an element in the overlap counts only once with its sign flipped. The title's \"non-overlapping\" conflicts with the statement, so this site follows the overlap sign-flip rule given by the statement and both examples.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "This site's ranges: the first line contains N K L (1≤N≤2000, 1≤K,L≤N), and the second line contains N integers (−10⁹..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: choose indices 0..2 and 2..3; −4 becomes 4, for a total of 1+3+4+2=10.\n\nExample 2: the whole array overlaps the single element −5, turning −5 into 5, for a total of 5−3−4=−2.\n\nExample 3: choose 1 and 2 separately with no overlap, for a total of 3.",
+    "hints": [
+      "Use prefix sums to compute the sums of both segments, then subtract 3 times the sum of the overlap; enumerate both starting points and take the maximum."
+    ]
+  }
+}

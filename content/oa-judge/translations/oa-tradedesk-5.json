@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tradedesk-5",
+  "packageChecksum": "630b29964d44b183c41eee97a7c19faf8ba3ee980e856da610da87aebe01d563",
+  "en": {
+    "title": "Flights",
+    "description": "You are given two flight timetables, C→D and D→C, each sorted by departure time in ascending order, and the planned number of round trips. Each leg takes 100 minutes; when departing from the current city, take the earliest flight whose departure time is not earlier than the current time. Simulate all round trips and return the time of the final arrival at C; if any leg has no flight to take, return -1.",
+    "input": "The first line contains n, m, and journeys: the numbers of flights in the two directions and the planned number of round trips. The second line contains n C→D departure times in non-decreasing order; the third line contains m D→C departure times in non-decreasing order. Constraints: 1≤n,m≤100000, 1≤journeys≤min(n,m), 0≤every departure time≤10^9. A flight departing exactly at the arrival time can be taken.",
+    "output": "Output the arrival time after completing all planned round trips; if they cannot be completed, output -1.",
+    "explanation": "The original text of this function-style problem has no standard input/output protocol; this site adds a serialization based on the array lengths and the two timetable lines. Boarding at exactly the arrival time is established by the lower_bound/bisect_left rule in the source code.",
+    "hints": [
+      "Both timetables are sorted. Move forward monotonically in time, keeping one pointer per direction and skipping flights earlier than the current time."
+    ]
+  }
+}

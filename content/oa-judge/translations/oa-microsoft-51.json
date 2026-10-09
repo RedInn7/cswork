@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-51",
+  "packageChecksum": "a17fc22dcea3a88312b723179fe0680b2d36fdae44cd74c22cacf694addda993",
+  "en": {
+    "title": "Gather All Red Balls with Adjacent Swaps",
+    "description": "Each step swaps two adjacent balls. Make all R form one contiguous block, with W allowed on both sides. Find the minimum number of swaps; if it exceeds 10⁹, output −1. The source's example swap sequences changed the number of balls, so this site corrected them according to the explicit adjacent-swap rule.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "One line containing an R/W string. The source's range says 1..100000, but the statement explicitly requires a test with RW repeated 100000 times; this site keeps that case and supports lengths 1..200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: swapping the final WR gives WRRRW in just 1 step; the source's answer of 2 has been corrected. Example 2: the red balls are at 2, 12, 14, and moving them to 11, 12, 13 takes 9+0+1=10 steps; the source's answer of 4 has been corrected. Example 3: there are no red balls, so 0 steps.",
+    "hints": [
+      "The original positions p[i] of the red balls keep their relative order and move to the consecutive positions start+i; let b[i]=p[i]−i, minimize the sum of absolute distances to a common start, and take the median."
+    ]
+  }
+}

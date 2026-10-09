@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-123",
+  "packageChecksum": "b98b98cd09f63d47271941250a936389d816e0b52ad41b3d706fa7158f9c46ce",
+  "en": {
+    "title": "Number of Failures Because a Prerequisite Has Not Run Yet",
+    "description": "Both arrays are permutations of 1..n, giving the prescribed order and the actual execution order respectively. When a process runs, it fails if any process prescribed before it has not run yet. A process that has already run but failed no longer counts as not yet run, so failures do not propagate.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (1..200000), followed by two lines: the prescribed permutation and the actual permutation.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: 4 runs last, so the other five processes all miss the prerequisite 4; the answer is 5. Example 2: the orders match, so the answer is 0. Example 3: when 5 runs, 2 and 3 are missing, and when 4 runs, 1 is missing; only these two fail, so the answer is 2.",
+    "hints": [
+      "Record each process's actual position and scan in the prescribed order; if the current position is less than the maximum actual position seen so far, at least one prerequisite runs after it."
+    ]
+  }
+}

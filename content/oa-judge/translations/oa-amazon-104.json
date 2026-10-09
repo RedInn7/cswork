@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-104",
+  "packageChecksum": "d8b05095c0dadfed7d0f3afe2121b7bb8f7228a14d4d1b5ca0d0cc7945a9633e",
+  "en": {
+    "title": "Maximum Pay After Changing the Office Location on at Most One Day",
+    "description": "The pay for A through E is 1, 10, 100, 1000 and 10000 respectively. If a higher level appears later than a given day, that day's pay is subtracted; otherwise it is added. Change at most one character and find the maximum pay.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "One line with a string containing only ABCDE. The original gives no value ranges; this site sets the length to 1..100000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: change D on the fourth day to E, which reduces the negative values in the earlier part and adds 10000, for an optimum of 31000. Example 2: change A directly to E for a pay of 10000. Example 3: everything is already E, for a total pay of 20000.",
+    "hints": [
+      "Run a DP from right to left whose state is the highest level to the right and whether a change has been made. At the current position, enumerate keeping it or changing it to each of the five levels, and decide the sign of the contribution by comparing it with the highest level to the right."
+    ]
+  }
+}

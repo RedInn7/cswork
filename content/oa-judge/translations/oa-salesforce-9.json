@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-9",
+  "packageChecksum": "43dbe8a33781301de6bcf00e57c85a46bd68137be27379a964092e5ed3e36166",
+  "en": {
+    "title": "Elements with No Repeated Digits in a Given Index Range",
+    "description": "Given a list of numbers, count the elements within the 0-based closed index interval [l,r] whose decimal representation has no repeated digits. The interval is not a value range, and repeated valid elements are counted separately. The original example explanation mistakenly wrote 51/60 as 5/6; this site corrects it using the index semantics that all three examples agree on.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line contains n l r, and the second line contains n non-negative integers. The original text gives no numeric bounds; on this site 1≤n≤200000, 0≤l≤r<n, 0≤numbers[i]≤10⁹, written in ordinary decimal without extra leading zeros.",
+    "output": "Output the number of elements.",
+    "explanation": "The three answers are 2, 4, and 2; in the first example, the valid numbers at indices 1..5 are 2 and 51.",
+    "hints": [
+      "Check only the target index interval, item by item, using a 10-bit mask to record decimal digits; a number is invalid as soon as a digit repeats. 0 itself is a single digit and is valid."
+    ]
+  }
+}

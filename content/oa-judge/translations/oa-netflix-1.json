@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-netflix-1",
+  "packageChecksum": "481e6603e02da3bd3fc969e5188fe7d13ceec92b44aeb6c535c80e568d06efe8",
+  "en": {
+    "title": "Integer Command System with Undo",
+    "description": "The state starts at 0. ADD x adds x, MUL x multiplies by x, and UNDO undoes the most recent change command that has not yet been undone; PRINT outputs the current state. PRINT never enters the change history, and there is no REDO.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains q, followed by q lines of commands. The original snapshot has no numeric bounds; this site uses 1≤q≤100000 and −10⁹≤x≤10⁹. Whenever UNDO runs, there is guaranteed to be a change that has not been undone, and all intermediate states fit in the signed64 range.",
+    "output": "On the first line output the total number of PRINT commands p; then output p lines with the state at each PRINT in order. If there is no PRINT, output only 0.",
+    "explanation": "Example 1: 5 times 3 gives 15; after undoing the multiplication, 5 is output. Example 2: multiplying by zero outputs 0, and undo can still restore 7; undo cannot be implemented by division. Example 3: 2, −6, 2 are output in order; PRINT does not take up an undo record, and after the add of 4 is undone, the new multiplication runs on state 2.",
+    "hints": [
+      "Before each ADD or MUL, push the current state onto a stack; UNDO pops the top and restores it, and PRINT only records the current state."
+    ]
+  }
+}

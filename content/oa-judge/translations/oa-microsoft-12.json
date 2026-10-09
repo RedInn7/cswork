@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-12",
+  "packageChecksum": "47ee361fccdb1511ee82b801aa01899477af19659e10ee49ac0b100b5bf1a421",
+  "en": {
+    "title": "Path Visiting Vertices in Numeric Order",
+    "description": "Determine whether the graph contains a path 1—2—…—N made of direct edges. All vertices must be visited in ascending order, and a detour through other vertices cannot replace the direct edge between consecutive numbers.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains N M (1≤N≤100000, 0≤M≤200000), followed by M lines, each describing a simple undirected edge u v, with vertices numbered 1..N.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: 1—2, 2—3, and 3—4 all exist, so output 1.\n\nExample 2: the direct edge 1—2 is missing, so even though the graph is connected the required walk is impossible; output 0.\n\nExample 3: a single vertex already forms the path and needs no edges; output 1.",
+    "hints": [
+      "Collect the edges whose endpoints differ by 1 and check whether they cover all N−1 pairs of consecutive numbers."
+    ]
+  }
+}

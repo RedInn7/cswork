@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-64",
+  "packageChecksum": "f8c4494e920cf1783c42727e712f454ea885e2d8572e3e11c4b4c491c0e09499",
+  "en": {
+    "title": "Maximum Binary String Distance",
+    "description": "You are given at least two binary strings. The distance between two strings is the sum of the lengths of what remains after removing their longest common prefix from each. Over all pairs of strings at distinct indices, return the maximum distance. Even if two indices hold identical strings, they still form a valid pair.\n\nThis site's input ranges: 2≤N≤100000; every string is non-empty and contains only 0/1; the total length of all strings is ≤200000.\n\nSource: https://oamaster.com/docs/companies/google#64-max-distance (pinned statement fingerprint ae5df8e78cb84a95bd9b371d7609216f4deadf90e5e47a2b45a65686d5cec03f). The full semantics and edge cases were cross-checked against the original LeetCode discussion post and the same problem's page on FastPrep.",
+    "input": "The first line contains N; each of the next N lines contains one non-empty binary string.",
+    "output": "Output the maximum distance over all pairs of strings at distinct indices.",
+    "explanation": "The distance is the sum of the two string lengths minus twice the length of their longest common prefix; take the maximum over all pairs of strings at distinct indices.",
+    "hints": [
+      "Insert the strings into a binary trie.",
+      "The longest common prefix of a pair of strings corresponds to the last node they both pass through in the trie.",
+      "At each node, take the longest strings coming from different branches (including a string that ends at that node) and compute the sum of their remaining lengths."
+    ]
+  }
+}

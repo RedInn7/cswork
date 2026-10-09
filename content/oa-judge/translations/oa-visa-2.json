@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-2",
+  "packageChecksum": "4727cea56972e5afcc8f46cdac50f204b14d592028e3db94228a048cfe4a7fdd",
+  "en": {
+    "title": "Collect Sticks Alternately on Both Sides of a Fixed Nest",
+    "description": "A positive integer in forest is the length of the stick at that position, and 0 means an empty spot. The nest is fixed at index bird, with forest[bird]=0. The first time, the bird searches cell by cell to the right of the nest for the nearest non-zero stick, takes it (that position becomes 0), and returns to the initial nest. The next time it searches to the left of the nest for the nearest stick, then returns to the nest; after that it alternates right and left. It stops immediately once the cumulative stick length reaches or exceeds 100. Return the original 0-based indices of all sticks taken, in collection order. It is guaranteed that, before the total reaches 100, the side needed in each round still has a stick, so the search never goes out of bounds.",
+    "input": "The first line contains n and bird, and the second line contains n integers forest[i]. 3≤n≤1000, 0≤forest[i]≤50, 0≤bird<n, forest[bird]=0, sum(forest)≥100. Additional original guarantee: following the alternating process, while 100 has not been reached, the required side always has a positive-length stick not yet taken; an array whose total is large enough but does not satisfy the per-round guarantee is not a valid input.",
+    "output": "One line of space-separated original 0-based indices, in the same order as the actual collection; do not output brackets or the element count.",
+    "explanation": "The first example comes from the original OCR: bird=4, taking position 7 with length 15, position 2 with length 50, and position 10 with length 45 in turn, for a total of 110, so output 7 2 10. The second example [50,0,50] with bird=1 is site-added: taking 2 and then 0 gives exactly 100. The third example [40,30,0,40,50] with bird=2 is site-added: taking 3, 1, 4 gives 120 in total. The MDX version omitted returning to the initial position, and its example violates the original empty-nest rule and length limit; this problem restores the complete OCR rules and does not use that invalid example.",
+    "hints": [
+      "Every search starts from the fixed nest, not from the previous stick.",
+      "List the sticks on each side from nearest to farthest.",
+      "Stop immediately when the total reaches exactly 100 as well."
+    ]
+  }
+}

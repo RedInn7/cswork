@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-23",
+  "packageChecksum": "51b058904005f60f49c15b9c855c9ab457b6730224dd1119c495edbeee801019",
+  "en": {
+    "title": "Shortest Completion Time with Parallel Development and Serial Integration",
+    "description": "Each feature must be either developed or integrated. There are enough developers, and all development starts at the same time; integration is done one feature at a time by the team lead alone, in parallel with development. Find the shortest time to complete all features.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n, followed by n developmentTime values and n integrationTime values. There are no original numeric bounds; this site adds 1≤n≤200000, and all times are integers in 0..10^9.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 5; 6; 0. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search on the total time T: features whose development time exceeds T must be integrated, and the sum of their integration times must not exceed T; everything else can simply be developed."
+    ]
+  }
+}

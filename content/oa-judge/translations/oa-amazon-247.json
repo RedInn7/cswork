@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-247",
+  "packageChecksum": "744af1babad828b92f28b968746463e0951cef2635f73e185471297bbe80ca22",
+  "en": {
+    "title": "Full-String Matching with Groups and Stars",
+    "description": "For each query, decide whether the entire string matches the regex: a lowercase letter matches itself, . matches any one lowercase letter, and * means the preceding atom repeats zero or more times. A parenthesized group is a string of letters or ., with no nesting and no *; a group is always followed by *, and an empty group ()* is allowed. The . in each repetition matches independently. Based on the formal rules and the examples a(b.d)* and ab(e.r)*e, this site corrects an isolated wrong note in the source: (.)* can match ac, and, bcd, and also the empty string.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains the regex, the second line the number of queries q, followed by q lines of queries. An empty query is written as a lone - (- is not a regex character). The source had no numeric bounds; this site uses regex length 1..200, 1≤q≤200, each query length 0..20000, and total query length ≤20000. The regex syntax is guaranteed to be valid, and * only follows an atom and never appears twice in a row.",
+    "output": "For each query, output YES or NO on its own line.",
+    "explanation": "The outputs are NO/YES; NO/YES/YES; YES/YES/YES/YES. An empty ()* consumes no characters and must not loop forever.",
+    "hints": [
+      "Parse letters or dots and group contents into atoms, each flagged with whether it has *. Run a DP atom by atom over the query prefixes that can be matched; an atom without * consumes exactly once, while an atom with * can consume zero times or consume once more from a shorter prefix at the same level. Skip an empty ()* directly."
+    ]
+  }
+}

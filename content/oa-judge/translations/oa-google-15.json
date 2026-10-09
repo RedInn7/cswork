@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-15",
+  "packageChecksum": "9f10580c93cfd27ff710d064499ac3cb9733220caf6f08ab23ded9067de0de34",
+  "en": {
+    "title": "Maximum Chain Reaction from Detonating One Bomb",
+    "description": "When bomb i explodes, it detonates every bomb within distance r[i] of it, and the chain reaction continues. Choose the first bomb to detonate and find the maximum number of bombs detonated; since the radii differ, propagation is directed.\n\nThe standard input/output is compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "The first line contains n (1..1000); then n lines with x y r, −100000≤x,y≤100000, 1≤r≤100000.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: detonate the second bomb first; its radius 4 directly detonates the other two, for 3 in total. It is not the case that the third bomb can detonate the second. Example 2: the two bombs do not affect each other, so the maximum is 1. Example 3: the first bomb covers the other two, for 3 in total.",
+    "hints": [
+      "First compute directed adjacency bitsets (including the bomb itself), use a bitset version of transitive closure to merge all points reachable through each intermediate point, and finally take the maximum number of set bits."
+    ]
+  }
+}

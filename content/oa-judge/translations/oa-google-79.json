@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-79",
+  "packageChecksum": "16766a179f22095a8b377e2cb3e886f3631aed5b6ee4269e648dac5609dd642f",
+  "en": {
+    "title": "Recursive Template Substitution",
+    "description": "You are given a substitutions mapping and a template string. Each `%KEY%` is replaced by the string that KEY maps to; replacement values may themselves contain placeholders, which are expanded recursively. Output the final string.\n\nThis site's additional valid-input bounds: keys consist of 1–32 English letters/digits/underscores and start with a letter; there are at most 100 keys; the template and values contain only printable ASCII and are at most 4096 characters long; all placeholders must be paired, every reference must exist, and the reference graph must be acyclic; the recursive expansion of every mapping value and the final output each have at most 1,048,576 printable ASCII characters. These are the ranges supported by this site and are not attributed to the original problem.\n\nOriginal source: https://oamaster.com/docs/companies/google#79-substitute-templates (pinned snapshot content fingerprint 52e27b41843a195a3dd50b45a513e3eea530c013e7e57e3d1f10171b8c0c5435).",
+    "input": "The input is one line containing a JSON object with exactly two fields, `substitutions` and `template`; `substitutions` is an object whose keys and values are all strings, and `template` is a string.",
+    "output": "Output a JSON string whose content is the result after recursive substitution.",
+    "explanation": "Treat each placeholder as a reference to a mapping value; resolve the referenced values recursively, then join them back into the template. The reference graph must be acyclic, and the expansion of every mapping value as well as the final output must not exceed this site's limits.",
+    "hints": [
+      "First scan for paired `%KEY%` placeholders.",
+      "A replacement value may contain further keys; resolve them with DFS and keep track of the current visiting path."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-165",
+  "packageChecksum": "836178a125504def1acc99118cedb4121402512b3497c7f3becd72d5bc78a859",
+  "en": {
+    "title": "Maximum Smooth Substring Score After Changing One Letter",
+    "description": "A non-empty contiguous substring contributes 1 point if every pair of adjacent characters differs by at most 1 in alphabet position; a single character contributes 1 point in total. You may change at most one character of the original string to any lowercase letter; find the highest total score. The condition only constrains adjacent characters; it does not require the difference between the largest and smallest letters of the whole segment to be ≤1.\n\nThe standard I/O, examples and solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "One line with a lowercase string. The original snapshot gives no length bound; this site sets 1≤length≤100000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: changing c to b gives aababfgh; the first segment of length 5 contributes 15 and the last segment of length 3 contributes 6, for a total of 21. Example 2: the whole string is already smooth, so all 10 substrings score. Example 3: changing e to a gives abaz; the first three characters contribute 6 and z contributes 1, for a total of 7.",
+    "hints": [
+      "Precompute, for each position, the maximum smooth contiguous length extending left and right. A change only affects the substrings containing that position; enumerate the 26 replacements and compute the new (left extension+1)(right extension+1) minus the old contribution."
+    ]
+  }
+}

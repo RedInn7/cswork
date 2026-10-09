@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-15",
+  "packageChecksum": "b2f20d2da2f7b358c009e56ab83a32a47d95a8d2d735a24a5444a8e1f014cafa",
+  "en": {
+    "title": "Number of Smaller Items in Order Ranges",
+    "description": "Each closed-range order contributes all item values in its range to a multiset; an item covered by different orders is counted repeatedly. For each query value, count the elements of the multiset strictly smaller than it.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains n m q (each 1..100000); the second line contains n item values; each of the next m lines contains l r (0≤l≤r<n); the last line contains q query values. Item values and query values are all in 1..10⁹.",
+    "output": "Output q integers in query order.",
+    "explanation": "Example 1: in the multiset, 1 occurs 2 times, 2 occurs 3 times and 5 occurs 2 times, so 2 elements are smaller than 2 and 5 are smaller than 4. Example 2: the only element 1 is not smaller than 1 but is smaller than 2, so output 0 1. Example 3: the two orders contribute three 5s in total, so 0 are smaller than 5 and 3 are smaller than 6.",
+    "hints": [
+      "Use a difference array to compute how many times each position is covered. Sort by item value and accumulate coverage counts, then for each query binary search the first position not smaller than the query value."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-134",
+  "packageChecksum": "674e14de6b0f63899c62928ead299dd7ca31439079419b122de1061c3a6d9029",
+  "en": {
+    "title": "Final Prices After Point Updates and Global Price Floors",
+    "description": "Operation 1 x v sets the price of item x directly to v (it may decrease); operation 2 v v raises every price below v to v. Execute them in the given order and output the final array.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n q, the second line contains n prices, followed by q lines of operations. Indices are 1-based, and the two values after type 2 are equal. The source gives no value bounds; this site sets 1≤n,q≤100000, and all prices and v are in 1..10⁹.",
+    "output": "Output the n final prices.",
+    "explanation": "Example 1: after the floor the prices are 5, 9, then the second item is lowered to 2, so the final result is 5 2. Example 2: first 3, 1, then a uniform floor gives 7 7. Example 3: the final point assignment of 9 is not lowered by the floor 6, so the answer is 9.",
+    "hints": [
+      "Process in reverse, tracking the maximum of the later global floors; the first time you meet a point assignment for an index, its final value is fixed as max(assigned value, later floor), and earlier assignments are ignored. Indices never assigned use their initial price."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-plaid-4",
+  "packageChecksum": "f9a81fe445d74f98b61f4f2b7769aa4c61918e6446991995e0531dcdf4b6cf0c",
+  "en": {
+    "title": "Plaid OA #4: Largest Square in Skyscraper Outline",
+    "description": "A city has a row of skyscrapers. Building i has height cityLine[i], every building has width 1, and there are no gaps between adjacent buildings. Find the area of the largest square that fits completely inside the outline of this row of buildings.",
+    "input": "The first line contains n. The second line contains n integers cityLine[0..n-1], separated by whitespace. 1≤n≤3×10^6, 1≤cityLine[i]≤10^8.",
+    "output": "Output one integer: the area of the largest square. The answer may exceed the 32-bit integer range.",
+    "explanation": "Example 1: in [3,1,3,2,1], buildings 3 and 4 have heights 3 and 2, so a square of side 2 fits, with area 4. Example 2: in [4,3,4], all three buildings are at least 3 tall, so a square of side 3 fits, with area 9. Example 3: the middle five buildings have height 5, so a square of side 5 fits, with area 25.",
+    "hints": [
+      "A square can always be moved down until it rests on the ground.",
+      "Side length s is feasible if and only if there is a contiguous segment of length at least s in which every height is at least s.",
+      "You can binary search on the side length, or use a monotonic stack to find, for each building, the maximum width over which it is the lowest building."
+    ]
+  }
+}

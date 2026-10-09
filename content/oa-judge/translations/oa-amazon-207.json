@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-207",
+  "packageChecksum": "0f8cdf3bdd66f2cddd09db7bcc2e6e389097eee1b32cf19b93e202829b3c1e16",
+  "en": {
+    "title": "Maximum Contiguous Skill Sum with Equal Counts of Two Employee Types",
+    "description": "Employees are arranged by index, and each expertise is 0 or 1. Choose a contiguous range in which the two types have equal counts, and maximize the total skill. Choosing nobody is allowed and gives 0.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line n skill values, and the third line n 0/1 expertise flags. The original text gave no numeric bounds; this site uses 1≤n≤200000, −10^9≤skill≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 5, 17 and 0.",
+    "hints": [
+      "Count expertise 1 as +1 and 0 as −1, and maintain the prefix count difference. For each difference value keep the minimum skill prefix sum, and update the answer with the current skill sum minus that minimum."
+    ]
+  }
+}

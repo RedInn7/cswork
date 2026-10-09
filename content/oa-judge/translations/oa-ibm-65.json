@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-65",
+  "packageChecksum": "ab17031b65b79d80848b89a0a8c6c80631d5241a031f804e4b062d813db14801",
+  "en": {
+    "title": "Lexicographically Smallest Minimum-Resource Load Arrangement",
+    "description": "With serverCapacity fixed, rearrange serverLoad to minimize Σ capacity[i]×load[i]. If there are multiple minimum-resource arrangements, you must return the lexicographically smallest load array. The latter requirement comes directly from the original statement body; the compiled catalog lost that sentence.\n\nThe input/output protocol was compiled by this site, and missing numeric constraints are explicitly marked as this site's additions.",
+    "input": "The first line contains n, the second line contains n capacity values, and the third line contains n load values. The source gives no numeric ranges; this site adds 1≤n≤200000, and the elements of both arrays are integers in −10^9..10^9, with duplicates and negative values allowed.",
+    "output": "Output n integers: the unique lexicographically smallest optimal load arrangement.",
+    "explanation": "The outputs of the three public examples are, in order: 3 2 1; 6 5 2 2 4; 1 2. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Pair capacities from small to large with loads from large to small; for positions with equal capacity, sort them by original index in reverse before assigning, so that smaller indices get the smaller loads of that group."
+    ]
+  }
+}

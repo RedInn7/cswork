@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-37",
+  "packageChecksum": "e4708621367223f5eed3a539965010ef93b4287cb26e770f615d29e5e66f96cd",
+  "en": {
+    "title": "Fewest Clicks in a Web Link Simulator",
+    "description": "Each directed link lets one click jump from u to v; get_links(page) returns the targets of all outgoing edges of that page. Find the minimum number of clicks from start to target; it is 0 if they are the same, and −1 if target is unreachable. Duplicate links and self-loops are allowed.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains m, followed by m lines of u v, and the last line contains start target. 1≤m≤200000, and page names are strings without whitespace. This site's transport protocol adds that a single name has at most 16 Unicode characters (the original 200,000 edges are kept, and the worst-case UTF-8 input is at most 26,000,500 bytes). Names are case-sensitive and need not be pure English.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 2; -1; 0. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Build an outgoing adjacency list to simulate get_links, then run BFS from start and return the level at which target is first discovered."
+    ]
+  }
+}

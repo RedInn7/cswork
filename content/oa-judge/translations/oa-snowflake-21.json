@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-21",
+  "packageChecksum": "72041e9a7f750beb00002fd1d10a00fb31039dfae5659af43f9cdd53b8c4e592",
+  "en": {
+    "title": "Shortest Prefix to Read to Form a Digit String",
+    "description": "For each query independently, read s sequentially from its beginning; extra characters may be discarded and the selected characters may be rearranged. Find the length of the shortest prefix that must be read to form the query; output −1 if it cannot be formed. The original text mistakenly called the return value a substring; the body text and examples make it clear that reading starts from the beginning, not from an arbitrary sliding window.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains the digit string s, the second line contains q, followed by q lines of length query; an empty query is written as 0 -. 1≤|s|≤100000, 1≤q≤20000, the total query length is 1..500000; characters are 0..9. The original text does not rule out occasional empty queries; this site supports them and returns 0.",
+    "output": "First output q, then output q shortest prefix lengths.",
+    "explanation": "The answers to the three public examples are, in order: 3\n7 10 -1; 4\n0 1 2 -1; 2\n3 -1. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Record the positions of each digit. If a query needs digit c r times, reading must reach at least the position of the r-th occurrence of c; the answer is the maximum of all these positions."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-crusoe-1",
+  "packageChecksum": "4a25d52176c3206889c670c0231c1357e93378ec7d46faa7e2505af025a17a00",
+  "en": {
+    "title": "Interval Usage with Non-Overlapping Overrides",
+    "description": "Intervals with usage=1 are unioned; usage=0 does not clear anything; non-overlapping override intervals overwrite the usage result.\n\nThis site's standard input/output format and supplementary bounds follow this problem's description.",
+    "input": "The input is D and U, followed by U lines l r v; then O, followed by O lines l r v. 1≤D≤2×10^5, U,O≤2×10^5; intervals are closed and lie within [1,D], v∈{0,1}; override intervals are pairwise non-overlapping.",
+    "output": "Output a 0/1 string of length D.",
+    "explanation": "For Usage, use a difference array to check whether the coverage count is greater than 0; each override directly overwrites its closed interval. A day-by-day simulation serves as an independent oracle. Time O(D+U+total covered override length), space O(D).",
+    "hints": [
+      "For Usage, use a difference array to check whether the coverage count is greater than 0; each override directly overwrites its closed interval. A day-by-day simulation serves as an independent oracle. Time O(D+U+total covered override length), space O(D)."
+    ]
+  }
+}

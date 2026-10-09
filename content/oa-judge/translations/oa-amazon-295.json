@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-295",
+  "packageChecksum": "07e6da4aee1087a8020fa382affd2df33fd392210467099166e818fea954f3be",
+  "en": {
+    "title": "Minimum One-Direction Transport Cost to Balance a Ring of Warehouses",
+    "description": "n warehouses form a ring, and moving one item across an adjacent edge costs 1. The goal is for every warehouse to end up with the same number of items; the total is guaranteed to be divisible by n. The whole plan must use only one direction, either clockwise or counterclockwise, and cannot mix directions; you may choose any starting point. Find the minimum total cost.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains warehouses. The original statement gives no value bounds; on this site 1≤n≤200000, 0≤warehouses[i]≤10^9, and sum%n=0 is guaranteed. Output the exact integer cost, without any modulus.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 8, 7 and 0 respectively. In the first example, moving items in both directions could cost 4, but the original rule of a single direction throughout makes the minimum 8.",
+    "hints": [
+      "Compute the prefix surplus P of each warehouse relative to the average, including the final 0. The minimum cost in the forward direction is sum(P)−n·min(P), and in the reverse direction n·max(P)−sum(P); take the smaller one."
+    ]
+  }
+}

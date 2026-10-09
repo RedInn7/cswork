@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-43",
+  "packageChecksum": "861304a60f5dcadbb000748d82d63a700aaf4bb9a2091b9916a7ae499026b892",
+  "en": {
+    "title": "Whether Tree Path Characters Can Be Rearranged into a Palindrome",
+    "description": "Each node of a tree carries a lowercase letter. Each query asks whether all characters on the unique path between two nodes (including both endpoints) can be rearranged into a palindrome.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n q, and the second line contains n lowercase letters; then n−1 undirected edges follow, then q pairs of query nodes, 0-indexed. 1≤n,q≤100000.",
+    "output": "For each query, output 1 or 0.",
+    "explanation": "Example 1: the path aba can be rearranged, while ab has two characters with odd frequency, so output 1, 0. Example 2: the two a's in aa can be paired, so output 1. Example 3: all three characters in bac have odd counts, so output 0.",
+    "hints": [
+      "Maintain the character-parity bitmask from the root to each node, and find the lowest common ancestor LCA with binary lifting. The path mask is mask[u] xor mask[v] xor letter-bit[LCA], and it works if at most one bit is set."
+    ]
+  }
+}

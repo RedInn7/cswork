@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-139",
+  "packageChecksum": "209698ee94c01838ad3df661f3dcaa11f725bc2f23d03381244360488a4c0e37",
+  "en": {
+    "title": "Insert the Fewest Integers to Eliminate All Zero-Sum Segments",
+    "description": "You may only insert arbitrary integers into the original array; original elements cannot be deleted or changed. Make the sum of every non-empty contiguous segment nonzero, and find the minimum number of insertions. If the original array contains 0, the single-element zero segment cannot be eliminated, and this site's convention is to output −1 for no solution.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n, and the second line contains n integers. The source gives no value bounds; this site sets 1≤n≤200000 and elements in −10^9..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: inserting 100 after 3 leaves no zero-sum segment, so at least one insertion is needed; the answer is 1. Example 2: every adjacent pair of opposite signs sums to 0, so one insertion is needed in each of the three gaps; the answer is 3. Example 3: the original element 0 is always a zero-sum single-element segment, so there is no solution: −1.",
+    "hints": [
+      "Scan while keeping the set of prefix sums of the current unseparated segment. If adding the current item repeats a prefix sum, insert a separator before the current item and start a new segment containing only the current item."
+    ]
+  }
+}

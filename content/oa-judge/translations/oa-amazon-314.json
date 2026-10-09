@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-314",
+  "packageChecksum": "703146209ac984bd07781656e878038615fe30a386f3b7e0f137241294c899a8",
+  "en": {
+    "title": "Integer Warehouse Positions on the Original Number Line Within a Round-Trip Budget",
+    "description": "Given the distribution center coordinates centers, the warehouse must be placed at an integer position from −10^9 to 10^9 (inclusive). It makes a separate round trip to each center, so the total distance is 2·Σ|center[i]−warehouse|. Find the number of warehouse positions whose total distance does not exceed d.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n d and the second line contains centers. The original bounds are 1≤n≤100000, −10^9≤centers[i]≤10^9, 0≤d≤10^15. The original bounds on positions along the number line are kept and are not extended to an infinite integer line.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 5, 5 and 0. In the second example every point from −2 to 2 has a total round-trip distance of 8. No matter how large the budget is, positions outside the original ±10^9 number line cannot be counted.",
+    "hints": [
+      "Sort and take the median point. If the median's cost exceeds the budget, the answer is 0; otherwise binary search for the leftmost feasible integer between the left end and the median, and for the rightmost feasible integer between the median and the right end. Compute costs with sorted prefix sums and a binary-searched split point; the answer is R−L+1."
+    ]
+  }
+}

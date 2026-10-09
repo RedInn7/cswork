@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-14",
+  "packageChecksum": "ce4de1e7d2fa5990d5d63634da6c9c020c40f42277113aab649521113bb05c26",
+  "en": {
+    "title": "Roblox OA #14: Cyclic Shift Pairs",
+    "description": "A cyclic shift moves some trailing digits of a number (in decimal) to the front, with the remaining digits shifted back in their original order. For two integers a and b with the same number of digits, if a can become b through a cyclic shift (by 0 or more digits), a and b form a cyclic pair.\n\nGiven an array a of positive integers, count the index pairs (i,j) with 0≤i<j<n such that a[i] and a[j] have the same number of digits and a[i] equals some cyclic shift of a[j].",
+    "input": "The first line contains n; the second line contains n positive integers a[0..n−1]. 1≤n≤100000, 1≤a[i]≤10^9.",
+    "output": "Output one integer: the number of cyclic pairs.",
+    "explanation": "Example 1: a=[13,5604,31,2,13,4560,546,654,456]; the cyclic pairs are (0,2), (0,4), (2,4) (13 and 31), (1,5) (5604 and 4560), and (6,7) (546 and 654), 5 pairs in total. 546 can only pair with 546, 465, 654, so it does not form a cyclic pair with 456; 4560 and 456 have different numbers of digits.\nExample 2: in [10,1,100,10], only the two 10s form a pair.\nExample 3: 123, 231, 312 are pairwise cyclic shifts of each other, 3 pairs in total.",
+    "hints": [
+      "The cyclic-shift relation is an equivalence relation.",
+      "Use the lexicographically smallest of all rotations of the digit string as the representative.",
+      "Use a hash table to count how many times each representative appears."
+    ]
+  }
+}

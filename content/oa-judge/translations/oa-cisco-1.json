@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-1",
+  "packageChecksum": "59073c6d08f358ceb16fbfc49a7039e47af597ebcb77c7f6229770c3e060bf9c",
+  "en": {
+    "title": "Print FizzBuzz Line by Line over the Full Range",
+    "description": "For the integers 1..N in increasing order, output one line per integer: FizzBuzz if it is divisible by both 3 and 5; Fizz if it is divisible only by 3; Buzz if it is divisible only by 5; otherwise the integer itself.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The input is a single integer N. The complete original bound from the OCR and Fastprep is 0<N<2×10^6, i.e. 1≤N≤1999999; it must not be miswritten as ≤2000000.",
+    "output": "Output N lines, with the exact capitalization Fizz, Buzz, FizzBuzz; a newline after the last line is allowed.",
+    "explanation": "The outputs of the three public examples are, in order: 1 / 2 / Fizz / 4 / Buzz; 1 / 2 / Fizz / 4 / Buzz / Fizz / 7 / 8 / Fizz / Buzz / 11 / Fizz / 13 / 14 / FizzBuzz; 1. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Classify each integer by divisibility with priority 15, 3, 5; merge every 8192 lines into one string chunk and join the chunks at the end, to avoid holding nearly 2,000,000 separate string objects."
+    ]
+  }
+}

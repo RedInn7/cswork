@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ziprecruiter-6",
+  "packageChecksum": "64aba46693fffee5ec48841afa4b979994c251bc2ab7afc25a9ad60b7dd6dcea",
+  "en": {
+    "title": "Count Pairs Equivalent Under Cyclic Shifts (ZipRecruiter OA)",
+    "description": "Given an array of positive integers, count index pairs i<j where the two numbers have the same number of decimal digits and one can become the other through any number of cyclic shifts (including shifting by 0). Repeated values are counted separately by index. The fixed source example's answer is corrected from 3 to 5; the basis for the erratum is in the notes.",
+    "input": "The first line contains n (site range 1≤n≤100), and the second line contains n positive integers a[i] (source range 1≤a[i]≤10000).",
+    "output": "Output the number of qualifying index pairs.",
+    "explanation": "Group numbers by the minimum over all cyclic shifts of their decimal strings; each group contributes C(frequency,2). The public example's output is corrected to 5 based on the five matching pairs listed in the source explanation.",
+    "hints": [
+      "A cyclic shift only preserves the character order; it is not an arbitrary permutation.",
+      "The same value appearing at two indices is still a valid pair.",
+      "First layer by number of digits, or keep the digit count within the equivalence class."
+    ]
+  }
+}

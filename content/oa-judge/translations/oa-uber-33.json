@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-33",
+  "packageChecksum": "66354acea473b1686184aceaa066fbf8b8e35a01a8b277aaf213ad7f21ed5e67",
+  "en": {
+    "title": "Time When All Users First Become Connected",
+    "description": "A log entry time u v means u and v are connected from that moment on, and connections are transitive. Return the time when all given users first belong to the same connected component; if they can never all be connected, output −1. A single user is already connected before any log entry occurs, and this site defines the output as 0 in that case.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n m, followed by n distinct usernames, then m lines of time u v. The source gives no size bounds; on this site 1≤n≤100000, 0≤m≤200000, usernames are 1..20 ASCII letters, digits or underscores, 0≤time≤10⁹, and every user in the logs exists.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: at time 3 only a and b are connected; c joins at time 7, so output 7. Example 2: a single user needs no connection, so output 0. Example 3: there are no logs, so the two users can never be connected; output −1.",
+    "hints": [
+      "Sort the logs by time and merge the two endpoints with a union-find in order. Each successful merge decreases the number of components by one; the time when it first reaches 1 is the answer."
+    ]
+  }
+}

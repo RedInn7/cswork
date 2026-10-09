@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-21",
+  "packageChecksum": "a7a7b763b37997b7838eef0d3d073d75d98b2247e91f9be8c9f787babf448835",
+  "en": {
+    "title": "Median of Distinct-Value Counts over All Subarrays",
+    "description": "Sort the numbers of distinct values of all non-empty contiguous subarrays and return the median; when the length is even, take the smaller of the two middle values.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains n (1..100000), and the second line contains n integers (1..10⁹).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the six counts sorted are 1, 1, 1, 2, 2, 2; take the third one, 1.\n\nExample 2: the six counts sorted are 1, 1, 1, 2, 2, 3; the answer is 1.\n\nExample 3: every subarray contains only one value, so the answer is 1.",
+    "hints": [
+      "Binary search on the answer k. Use a sliding window to count the subarrays with at most k distinct values, and check whether that count reaches the rank of the lower median."
+    ]
+  }
+}

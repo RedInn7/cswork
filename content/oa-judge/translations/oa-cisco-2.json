@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-2",
+  "packageChecksum": "253050f221c6c42412ca1d6918bf3e676d84eb2ad90e16caf6dfaee13d5699a3",
+  "en": {
+    "title": "Maximum Chocolates Without Taking Adjacent Jars",
+    "description": "Jars are arranged in a line. You may choose any number of jars, but you cannot choose two adjacent jars; you take all the chocolates in the chosen jars. Find the maximum total. Empty jars are allowed, and taking nothing is also allowed. The first and last jars are not adjacent.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The first line contains N, and the second line contains N non-negative chocolate counts. The OCR gives 1<N≤1000, while the complete Fastprep version of the same problem explicitly gives 1≤N≤1000; this site follows the latter so that a single jar is covered. The original has no upper bound on the count in a jar; this site adds 0≤a[i]≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 114; 9; 18. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Maintain the best values for the first i−2 jars and the first i−1 jars; the current best is the larger of the previous value (skipping the current jar) and the value two back plus a[i] (taking the current jar)."
+    ]
+  }
+}

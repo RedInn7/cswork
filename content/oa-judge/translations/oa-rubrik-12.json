@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-12",
+  "packageChecksum": "dc00c6f8df7737bd1c02ed76bdefc995a8eef0d7615db85911b232082833a379",
+  "en": {
+    "title": "Starlight Amplification (Rubrik OA)",
+    "description": "Given an integer array and a multiplier z, you may at most once choose a contiguous segment and multiply every number in it by z; then find the maximum contiguous subarray sum of the transformed array. Skipping the amplification and taking the empty subarray are both allowed, so the answer is at least 0. The output of fixed-source example 2 is corrected from 30 to 63.",
+    "input": "The first line contains n z (1≤n≤200000, -100≤z≤100); the second line contains n integers (-10^9≤a[i]≤10^9).",
+    "output": "Output the maximum possible contiguous subarray sum.",
+    "explanation": "Use three states to record the maximum sum of the scored segment before, inside, and after the amplified segment. In source example 2, multiplying the whole array by -3 gives 63, so the original answer 30 is wrong.",
+    "hints": [
+      "Split the states by the position of the scored segment relative to the amplified segment.",
+      "The amplified segment must be non-empty; when the amplifier is not used, keep the ordinary maximum subarray sum.",
+      "An empty segment scores 0."
+    ]
+  }
+}

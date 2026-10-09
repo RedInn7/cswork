@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-duolingo-2",
+  "packageChecksum": "26f65f27fc2701394ed3cc70f3962dd3dce7a529b8772ed3de42e6be58dee4b7",
+  "en": {
+    "title": "Longest Stable Transaction Period",
+    "description": "Given the daily net transaction amounts transactions and a positive integer k, find the longest contiguous interval whose sum is divisible by k. The source problem gives no size or domain of k; this site adds 1≤n≤100000, each transaction amount a signed int32, and 1≤k≤2147483647.",
+    "input": "The first line contains n and k (1≤n≤100000, 1≤k≤2147483647). The second line contains n signed int32 transaction amounts. These are the ranges supported by this site.",
+    "output": "Output the length of the longest contiguous interval whose sum is divisible by k; if none exists, output 0.",
+    "explanation": "## Approach\n\nWhen two prefix sums have the same remainder modulo k, the sum of the contiguous interval between them is divisible by k. Scan from left to right and record the position where each remainder first appears; when a remainder appears again, update the longest length with the current position minus the earliest position. Use a positive k, and reduce negative transaction amounts modulo k in the mathematical sense.\n\n## Proof of Correctness\n\nLet the prefix sum P[j] be the sum of the first j items. The sum of the interval (i,j] is divisible by the positive integer k if and only if P[i] and P[j] are congruent modulo k. For a fixed right end j, the earliest congruent prefix produces the longest interval; the algorithm stores the earliest index of each remainder and checks every subsequent prefix, so it never misses the optimal interval and never counts an interval that fails the divisibility condition.\n\n## Complexity\n\nThe n items are scanned once, for expected time O(n); at most n+1 remainder positions are stored, for space O(n).",
+    "hints": [
+      "The difference of two congruent prefix sums is divisible by k.",
+      "Maintain the earliest index where each remainder appears, so that later congruent positions give the longest interval."
+    ]
+  }
+}

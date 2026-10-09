@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-119",
+  "packageChecksum": "39fb71eba38d686f5053a488a762ba5311caba31f41be0690e00669842eca4fb",
+  "en": {
+    "title": "Number of Substrings Where a Character Makes Up Exactly Half",
+    "description": "Count even-length substrings by index: a substring counts once if at least one character occurs exactly half its length times. If two characters each make up half, it still counts only once.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "One line with a string. The source gives no limits on length or character set; this site sets the length to 1..100000 with lowercase letters only.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the valid ones are ai, id and aaid, 3 in total; the aa in the source explanation does not satisfy the definition. Example 2: the three substrings of length 2 plus the whole abab, 4 in total. Example 3: in aa, a occurs 2 times rather than half the length, 1, so the answer is 0.",
+    "hints": [
+      "For each character, map it to +1 and every other character to −1, and count pairs of equal prefix sums to find where it makes up exactly half. The only double counting happens when there are exactly two characters in equal numbers; for each pair of characters, merge their positions, do a balance count within the stretches that contain no other character, and subtract it."
+    ]
+  }
+}

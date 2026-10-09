@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-141",
+  "packageChecksum": "eeec2f0e15b3ebe18528e6d6ef896bc91deb92dd129c81a1dfc1fb9eeee9de50",
+  "en": {
+    "title": "Total Time When Tasks of the Same Original Duration Are Halved Each Time",
+    "description": "Tasks run in their original order. Tasks with the same original duration belong to the same group; each time a task runs, the current duration of every other not-yet-run task in its group becomes half of that task's current duration, rounded up. Tasks whose original durations differ but later become equal cannot be grouped.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n, and the second line contains n initial durations. The original snapshot gives no upper bounds; the import catalog lists n≤100000, and this site extends it to 1≤n≤200000 with durations in 1..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the actual times are 5, 3, 3, 6, 2, 2, for a total of 21. Example 2: 1 halved and rounded up is still 1, for a total of 3. Example 3: the three tasks take 4, 2, 2, for a total of 8; the initial 2 is not grouped with the 4 that was later reduced to 2.",
+    "hints": [
+      "Keep a dictionary keyed by original duration storing the group's next execution time; take it out and add it to the total, then update it to half, rounded up."
+    ]
+  }
+}

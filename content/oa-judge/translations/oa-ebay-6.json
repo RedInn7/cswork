@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-6",
+  "packageChecksum": "1ab6fe04258df81ad210e57775b5615ba069891f3ab1ce48798756bbb9c4bc47",
+  "en": {
+    "title": "Cumulative Leftmost-Nonzero Subtraction That Stops at a Smaller Value",
+    "description": "You are given an array of non-negative integers numbers and a running result that starts at 0. Repeat the following operation: find the current leftmost nonzero element, with index i and value x; if none exists, stop. Scan to the right starting from i: if the current element is at least x, subtract x from it and continue; if the current element is strictly less than x, end this round's scan immediately, without skipping that element to continue. Reaching the end of the array also ends the round. In each round, add the fixed x to the running result, then find the leftmost nonzero element again. Output the final running result. Equal values can be subtracted; a 0 likewise blocks a round's scan for a positive x.",
+    "input": "The first line contains an integer n, and the second line contains n integers numbers[i]. 1≤n≤100, 0≤numbers[i]≤1000000, and an all-zero array is allowed. The ranges come entirely from the original OCR031.",
+    "output": "Output the final running result as an integer. The result does not exceed 100000000 and is not taken modulo anything. An all-zero array outputs 0.",
+    "explanation": "The first two public examples are kept as is. Example 1 goes through [0,0,2,2,3], [0,0,0,0,1], and then all zeros, accumulating 3+2+1=6. In example 2, every item is reduced by 5 at once, and the output is 5. The third example, [4,0,4], is derived by this site: the 0 in the middle blocks the scan, and the output is 8. The fixed original OCR clearly moves to the accumulation step as soon as a smaller value is met; the skip written in the MDX and its code that continues scanning are curation errors, and this site corrects that misstatement without changing the original examples.",
+    "hints": [
+      "The leftmost nonzero starting element always becomes zero after its round.",
+      "When an element is strictly less than x, you must break, not continue.",
+      "The outer pointer only needs to move right; there is no need to search for the starting point from the front of the array in each round."
+    ]
+  }
+}

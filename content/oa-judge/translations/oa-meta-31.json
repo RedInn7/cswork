@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-31",
+  "packageChecksum": "b76855e9360b828967f91da483e5ae4dfa14c60f34f12ff7a407410c2fa3a667",
+  "en": {
+    "title": "Matching Contiguous Subarrays to an Up/Down Pattern",
+    "description": "In the pattern, 1 means the next number is greater than the previous one, −1 means it is smaller, and 0 means they are equal. Given an array and a pattern of length m, count the contiguous subarrays of length m+1 whose adjacent comparisons all match; overlaps are allowed.\n\nThe standard input, this site's constraints, the examples, and the test data were independently compiled by CSWork.",
+    "input": "This site's input: the first line contains n m (2≤n≤100000, 1≤m<n), the second line contains n integers (−10⁹..10⁹), and the third line contains m values, each −1, 0, or 1.",
+    "output": "Output the number of matching windows.",
+    "explanation": "Example 1: only [4,5,5,1], starting at index 4, goes up, stays flat, then goes down in order, so the answer is 1.\n\nExample 2: the two length-3 windows starting at indices 0 and 1 are both all equal, and overlaps are allowed, so the answer is 2.\n\nExample 3: the only window, 1,2, strictly increases and matches the pattern 1, so the answer is 1.",
+    "hints": [
+      "Convert the array into a sequence of adjacent comparisons and match the pattern with KMP. After a successful match, fall back to the longest proper prefix that is also a suffix, so overlapping matches are counted too."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-33",
+  "packageChecksum": "4fc0b63972a0ecd548250eaed232cd0dd4b64795266bb3e165ca86b8e5867994",
+  "en": {
+    "title": "Component Sizes After Deleting Binary Tree Edges",
+    "description": "Given a binary tree with distinct node numbers, delete the specified parent-child edges and find the number of nodes in each remaining connected component. This site outputs the results in ascending order, to give a fixed order to the set of components, which the original problem left unordered.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "This site's standard input: the first line contains n k (1≤n≤100000, 0≤k<n); then n−1 lines of parent-child edges u v, with root 1 and each node having at most two children; finally k lines of edges to delete, each guaranteed to exist and to be distinct.",
+    "output": "First output the number of components, then the node count of each component in ascending order.",
+    "explanation": "Example 1: after deleting 1—2 and 2—4, the components are {1,3}, {2,5}, {4}, whose sorted sizes are 1, 2, 2; the component count 3 is output first. Example 2: a single node forms one component of size 1. Example 3: deleting both edges gives three components of size 1.",
+    "hints": [
+      "Ignore the deleted edges, merge the remaining edges with a union-find, then count the size of each root and sort."
+    ]
+  }
+}

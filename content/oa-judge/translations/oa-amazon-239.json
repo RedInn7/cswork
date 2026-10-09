@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-239",
+  "packageChecksum": "cd07179d41cac8bdb083cc78f8ed3968227a3ac4ce5de0c2e74113cdc3c1fbc0",
+  "en": {
+    "title": "Smallest Strictly Greater String with No Adjacent Repeats",
+    "description": "Output the smallest string that has the same length as s, is lexicographically strictly greater than s, and has no two equal adjacent characters; if none exists, output −1. The original string itself may already contain adjacent repeats, and z cannot wrap around to a.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing a lowercase string. 1≤length≤1000000.",
+    "output": "Output the target string, or −1 if none exists.",
+    "explanation": "The answers are abca, abcdab and −1. You cannot change only the last letter while keeping repeated characters inside the original string.",
+    "hints": [
+      "Precompute whether each prefix is free of adjacent repeats. Enumerate the first changed position from right to left, try the smallest valid larger character there, then greedily fill the smallest suffix with a or b."
+    ]
+  }
+}

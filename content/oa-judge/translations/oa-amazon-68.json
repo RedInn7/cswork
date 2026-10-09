@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-68",
+  "packageChecksum": "038614e43dd3d316f31ef202e3fec44b397825ee71884abb962ec235197172e3",
+  "en": {
+    "title": "Package Delivery with Capacity Halving After Each Use",
+    "description": "Each time, deliver one package with any truck whose current capacity is sufficient; that truck's capacity then becomes its current capacity divided by 2, rounded down. Packages may be delivered in any order; determine whether all of them can be delivered. Each test case on this site gives one independent scenario, corresponding to a single scenario among the source's multiple scenarios.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n m (both 1..100000), the second line contains n capacities, and the third line contains m weights, all 1..10⁹.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the only truck's capacity goes 8, 4, 2, 1, exactly enough to deliver everything, so output 1. Example 2: after delivering 2 the capacity is only 1, so the second 2 cannot be delivered; output 0. Example 3: capacity 4 delivers weight 4 and capacity 3 delivers weight 3; output 1.",
+    "hints": [
+      "Sort the packages by weight in descending order. Each time, take the truck with the largest current capacity; if it is enough, deliver and push the halved capacity back into the heap, otherwise fail."
+    ]
+  }
+}

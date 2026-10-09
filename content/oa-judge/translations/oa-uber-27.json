@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-27",
+  "packageChecksum": "ab682bc26dc028b20973866a79d651221d20809f09c4f08928047423613fd25b",
+  "en": {
+    "title": "Right-Angle Triples in a Generated Flower Bed",
+    "description": "In a grid of n rows and m columns, cell (i,j) holds a flower if and only if ((i+j×magic) mod mod) mod 2=1, with coordinates starting from 0. Count the L shapes formed by three distinct flower cells: one cell shares a row with the second and a column with the third, and they need not be adjacent. Each set of three cells is counted only once.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "One line: n m magic mod; 1≤n,m≤1000, 1≤magic,mod≤10⁶.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: rows 2 and 4 each have 3 flowers. Each of the 6 corner cells can pick the other 2 flowers in its row and the other 1 in its column, for 12 groups in total. Example 2: there are only two flowers, which cannot form a triple, so the output is 0. Example 3: the three flowers are at (0,1), (1,0), and (2,2), with only one flower in each row and column, so the output is 0.",
+    "hints": [
+      "First count the flowers in each row and each column, then treat each flower as the unique corner, contributing (flowers in its row−1)×(flowers in its column−1)."
+    ]
+  }
+}

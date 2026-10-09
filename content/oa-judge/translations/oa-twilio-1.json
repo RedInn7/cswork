@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-twilio-1",
+  "packageChecksum": "97fe75d5fbacbcec9fdc57d4c7794aa949c5710368c79b307563a5faeb17dece",
+  "en": {
+    "title": "Count Groups",
+    "description": "You are given the numeric label of each cable. Within each independent query range, only two cables with the same label can form a group, and each cable can be used at most once. Find the maximum number of groups that can be formed in the range. The problem and constraints come from the fixed OAMaster statement; what follows is this site's standard input/output protocol.",
+    "input": "The first line contains n and q; the second line contains n labels; each of the next q lines contains l and r, a 1-based closed range. Queries are independent of each other.",
+    "output": "Output the q answers in input order, separated by spaces. Each answer is the sum, over all labels, of the label's number of occurrences in the range divided by 2 and rounded down.",
+    "explanation": "Use Mo's algorithm to move the range endpoints, maintaining the frequency of each label and the number of groups formed. See the accompanying notes for the correctness proof.",
+    "hints": [
+      "When adding makes a label's frequency go from odd to even, the number of groups increases by one; when removing makes it go from even to odd, the number of groups decreases by one."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-8",
+  "packageChecksum": "218d66879a73edffebcdbc698f9f9b884551f5c78dc22f1e6659b3a6db8e70f3",
+  "en": {
+    "title": "Longest Run of Houses After Each Build",
+    "description": "Houses are built one at a time at integer coordinates. After each operation, output the length of the longest run of consecutive integers among the occupied positions. Building again at an occupied position leaves the state unchanged.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "The first line contains n (1..100000), and the second line contains n positions (0..10⁹). A repeated position is treated as a set insertion and does not increase the number of houses.",
+    "output": "Output the answer as described; separate multiple results with spaces in order, and output an empty line for an empty array.",
+    "explanation": "Example 1: houses are built at 2, 1, 4 in order. The longest runs are [2], [1,2], [1,2], with lengths 1, 2, 2.",
+    "hints": [
+      "Use a hash map to store the occupied positions and the segment length at both ends of each segment. A new position merges the neighboring segments on its left and right; update both ends of the new segment and the global maximum."
+    ]
+  }
+}

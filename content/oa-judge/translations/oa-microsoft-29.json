@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-29",
+  "packageChecksum": "2912c1a7c8d525838554b8b7a81430a2724f724fb2daccea9721284a9ce67451",
+  "en": {
+    "title": "Total Count of Good Subsequences Under Point Updates",
+    "description": "A non-empty subsequence is good if the GCD of all its elements is greater than 1. Perform the point replacements one by one; after each one, take the number of good subsequences modulo 10⁹+7, and finally add these reduced counts together directly. The final sum is not taken modulo. Choices of different indices are counted separately.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N Q (1..100000), and the second line contains N values of A (1..100000); then Q lines X Y follow, with 1≤X≤N and 1≤Y≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the array becomes 2, 2; both single elements and the pair are valid, for 3 in total.\n\nExample 2: after the two replacements there are 4 and 7 good subsequences respectively, for a sum of 11.\n\nExample 3: the two replacements leave 4 copies of 2 and 3 copies of 2, giving 15 and 7 respectively, for a sum of 22.",
+    "hints": [
+      "Use inclusion–exclusion over prime factors: each square-free factor d>1 contributes −μ(d)(2^count[d]−1). An update only changes the counts of these factors for the old value and the new value. Precompute the smallest prime factors and the powers of 2."
+    ]
+  }
+}

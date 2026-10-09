@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-8",
+  "packageChecksum": "f54d230a9af31812f3407b8150b0a6d4740edfd88584cfd482c445db657bfc94",
+  "en": {
+    "title": "Folding Paper to a Given Height and Width",
+    "description": "Each fold is made along a crease parallel to one side and need not be in the middle; it changes only the corresponding dimension, and the target size is not rotated. One fold can turn a length L into any length in [L/2,L). Find the minimum number of folds needed to reach exactly h1,w1.\n\nThe input/output format was compiled by this site.",
+    "input": "One line with h w h1 w1. The original text guarantees h1≤h and w1≤w and gives no numeric upper bound; on this site all four are integers in 1..10⁹.",
+    "output": "Output the minimum number of folds.",
+    "explanation": "The answers are 3, 0, and 8; in the first example, height 8 can be folded to 6 in one fold, so folds must not be restricted to folding exactly in half.",
+    "hints": [
+      "For each dimension separately, find the smallest t such that target×2^t≥original, then add the two results; use integer doubling to avoid floating-point error."
+    ]
+  }
+}

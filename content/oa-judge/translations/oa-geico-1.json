@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-geico-1",
+  "packageChecksum": "589754dec35281061cf10fa3a06b028b7f5786d22e7ca5f29d4571a8b9892df9",
+  "en": {
+    "title": "Bridge Weight Limit — Minimum Drivers Turn Back",
+    "description": "Keep a subsequence of the original queue such that, for every pair of adjacent vehicles in the kept sequence, the sum of their weights does not exceed the bridge limit U. Output the minimum number of drivers who must leave. A vehicle whose own weight exceeds U must also leave.\n\nThe standard input/output format and supplementary constraints explicitly defined by this site belong to the definition of the online version and do not pose as the source's original constraints.",
+    "input": "The input contains U, N, and N vehicle weights. 1≤N≤100000, 1≤weight[i],U≤10^9.",
+    "output": "Output the minimum number of drivers who must leave.",
+    "explanation": "For each vehicle i, compute the longest safe subsequence ending at i: dp[i]=1+max(dp[j]), where j<i and weight[j]≤U−weight[i]. Coordinate-compress the weights and maintain prefix maxima with a Fenwick tree. If weight[i]>U, the vehicle cannot be kept.",
+    "hints": [
+      "For each vehicle i, compute the longest safe subsequence ending at i: dp[i]=1+max(dp[j]), where j<i and weight[j]≤U−weight[i]. Coordinate-compress the weights and maintain prefix maxima with a Fenwick tree. If weight[i]>U, the vehicle cannot be kept."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-anthropic-1",
+  "packageChecksum": "85b52c0c0b080651ccec04377c99131c2963beda8adb4fed81b3363b401ee830",
+  "en": {
+    "title": "Persistent Key-Value Database with Backup and Restore",
+    "description": "Implement SET key value, GET key, DELETE key, BACKUP, and RESTORE id. SET overwrites and outputs OK; GET outputs the value or NULL; DELETE deletes the key and outputs OK if it exists, otherwise NULL. BACKUP saves the current state and outputs an ID that increases from 1 and is never reused; RESTORE with a valid ID restores that state and outputs OK, while an invalid ID outputs NULL and leaves the state unchanged. Old backups can always be restored, and later modifications must not corrupt a backup. Backup and restore must avoid copying the whole database.\n\nThe input and output format was prepared by this site.",
+    "input": "The first line contains the number of commands n, followed by n lines of commands, 1≤n≤200000. In the original problem, strings are non-empty and contain no whitespace, with no length limit; on this site each key/value is 1 to 64 Unicode characters (each at most 4 UTF-8 bytes), the total input is ≤16MiB, and RESTORE IDs range from 0 to 200000.",
+    "output": "Each command outputs exactly one line. NULL is also a valid stored value and must not be mistaken for a missing key.",
+    "explanation": "Example 1 reads 1 after restoring. In example 2 the string NULL really exists, so the first deletion returns OK and only the second returns NULL. In example 3, restoring an old version and then modifying it does not affect backup 2, and an invalid restore does not change the current value either.",
+    "hints": [
+      "Compress all keys offline and store value IDs in a persistent segment tree. A modification copies only the root-to-leaf path, BACKUP saves the root ID, and RESTORE switches roots; value ID 0 means absent, and any other ID means present, even if it corresponds to the string NULL."
+    ]
+  }
+}

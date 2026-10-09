@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-31",
+  "packageChecksum": "78e9efb0110fb1389daa86d17550cc05f2460817eebde69192f216b0453106e0",
+  "en": {
+    "title": "Number of Contiguous Blocks After Demolishing Houses",
+    "description": "Distinct houses sit at integer coordinates, and houses whose coordinates differ by 1 are connected. Demolish the given houses one by one and, after each step, output the number of remaining contiguous blocks. A valid query guarantees that the house to be demolished still exists. The intermediate counts in both examples on the original site conflict with the definition of contiguity and have been corrected according to the statement.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n q, the second line contains n coordinates, and the third line contains the q coordinates to demolish. 1≤q≤n≤100000; the source gives no bound on coordinates, so on this site coordinates are in −10⁹..10⁹.",
+    "output": "After each demolition, output one line with the number of blocks.",
+    "explanation": "Example 1: after demolishing 2, 6 and 9 in turn, the blocks are {1},{3},{6,7},{9}, 4 in total; then {1},{3},{7},{9}, 4 in total; finally 3. Example 2: after demolishing 5, the remaining blocks are 1, 6, 8, 10, 4 in total; then 3 and 2. The original site's 3, 3, 2 does not match the definition. Example 3: after the last house is demolished, there are 0 blocks.",
+    "hints": [
+      "Use a set to check whether there are houses on the left and right of the removed position. If both exist, one block splits into two, adding 1; if neither exists, an isolated block disappears, subtracting 1; if only one side exists, the count is unchanged."
+    ]
+  }
+}

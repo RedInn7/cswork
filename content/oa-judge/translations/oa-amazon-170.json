@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-170",
+  "packageChecksum": "f97d0cb0fe1f51332f2bf8704ea54f7148c65895a56e9be8108ba69431bd2a01",
+  "en": {
+    "title": "Minimum Cost to Equalize a Ring Moving in One Direction Only",
+    "description": "n containers form a ring, and all products must end up evenly distributed among the containers; the total is guaranteed to be divisible by n. Moving one product across one adjacent edge costs 1. The whole process may use only one direction, clockwise or counterclockwise; either direction may be chosen, but they cannot be mixed. Find the minimum cost.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the product counts. The original snapshot gave no numeric bounds; this site uses 1≤n≤200000, counts 0..10^9, and a total divisible by n.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the prefix surpluses are −2, −3, −2, −1, 0; the clockwise cost is 7 and the counterclockwise cost is 8, so the answer is 7. Example 2: already evenly distributed, cost 0. Example 3: send 1 product across one edge to the empty container, cost 1.",
+    "hints": [
+      "Compute the prefix surplus P of each container relative to the average. The clockwise cost is sum(P)−n min(P) and the counterclockwise cost is n max(P)−sum(P); take the smaller one."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-16",
+  "packageChecksum": "2539ccc597d0dabc17a482b39a18d5e231d0cc5f56757ff603d47c804a643f9d",
+  "en": {
+    "title": "Build the Target String with Increasing Column Indices",
+    "description": "Take characters from a set of equal-length words to form target, where the chosen column indices are strictly increasing and the same word may be chosen more than once. Ways are distinguished by the chosen columns and the chosen words; different entries of a duplicated word still count as different choices. Output the answer modulo 10⁹+7.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains the number of words n, followed by n lines of words, and the last line contains target. 1≤n≤1000, each word has length 1..3000 and the total length is ≤100000; 1≤target length≤word length; characters are a..z.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 4; 4; 4. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Count the frequency of each letter in every column, scan column by column, and update the number of ways for each prefix of target in reverse order."
+    ]
+  }
+}

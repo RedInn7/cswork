@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tradedesk-2",
+  "packageChecksum": "7f4b66163930fafa348af2f829702578e49e501f023751d75b73e64daa1ae38e",
+  "en": {
+    "title": "Trade Desk OA #2: Coordinates Lit by Exactly One Lamp",
+    "description": "There are n lamps on a number line. Lamp i is at integer coordinate x_i and has a positive integer radius r_i; it lights the whole range from x_i−r_i to x_i+r_i (both ends included).\n\nFind the number of integer coordinates lit by exactly 1 lamp.",
+    "input": "The first line contains an integer n. Each of the next n lines contains two integers x_i and r_i. 1≤n≤100000, −10^9≤x_i≤10^9, 1≤r_i≤10^9.",
+    "output": "Output one integer: the number of integer coordinates lit by exactly one lamp.",
+    "explanation": "Example 1: the three lamps light [−5,1], [−1,5], and [1,3]. The numbers of lamps lighting the points of −6..6 are, in order, 0,1,1,1,1,2,2,3,2,2,1,1,0, and the coordinates lit exactly once are −5,−4,−3,−2,4,5, 6 in total.\nExample 2: [−1,1] and [3,5] do not intersect, giving 6 coordinates in total.\nExample 3: [−3,3] contains [0,2], so only −3,−2,−1,3 are lit by exactly one lamp, and the answer is 4.",
+    "hints": [
+      "Write each closed interval as difference events: +1 at the left endpoint and −1 one position after the right endpoint.",
+      "After sorting, the coverage count stays constant between adjacent events.",
+      "The answer may exceed a 32-bit integer."
+    ]
+  }
+}

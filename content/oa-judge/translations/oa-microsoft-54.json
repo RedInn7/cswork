@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-54",
+  "packageChecksum": "a176e929ec76a72e088ae257cc6a123ce529db858399a9823d7db4cb60b15360",
+  "en": {
+    "title": "Minimize the Maximum on a Two-Row Path",
+    "description": "Go from the first cell of the top row to the last cell of the bottom row, moving only right or down, and minimize the maximum number along the path.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N, followed by two lines containing A and B respectively. The source gives no numeric bounds; this site uses 1≤N≤200000 and numbers in −10⁹..10⁹.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: move down at the middle column, passing 3, 4, 5, 4, for a maximum of 5. Example 2: move down to the right of the 3 in the bottom row, avoiding the 4 in the top row; the maximum is 2. Example 3: the path must pass through −3 and −5, so the maximum is −3.",
+    "hints": [
+      "Maintain prefix maxima of the top row and suffix maxima of the bottom row. Enumerate the single column where the path moves down; the path maximum there is the larger of the two, and the answer is the minimum over all columns."
+    ]
+  }
+}

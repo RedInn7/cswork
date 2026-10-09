@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-188",
+  "packageChecksum": "48d1b7670d528fa25b6b723a0cac1f57852eee4f2ab558557dffeeda010159a4",
+  "en": {
+    "title": "Per-Second Request Count of a FIFO Queue",
+    "description": "At time 0 all requests join the queue. Each second the front request is processed; it still counts toward that second's size and is removed the following second. Every other request expires and is removed immediately at t=wait[i], and it can only start being served while t<wait[i]. Output the queue length at every second from time 0 until the queue is empty, including the final 0.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains n waiting deadlines. 1≤n≤100000, 1≤wait[i]≤100000.",
+    "output": "Output the queue length at each time, separated by spaces; the last value is 0.",
+    "explanation": "The three examples give 4 2 1 0, 3 2 1 0 and 4 1 0.",
+    "hints": [
+      "Bucket indices by deadline, and maintain the queue front with alive flags and a forward-moving pointer. Each second, remove the request that was served, then remove the still-alive requests in the bucket that expires now."
+    ]
+  }
+}

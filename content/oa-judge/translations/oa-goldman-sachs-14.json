@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-14",
+  "packageChecksum": "99593ff2eeccd9457d99cafdf6f4041b1245c8206c97f99bddd44beac3ca97dd",
+  "en": {
+    "title": "Maximum Chalk Difference Sum Preserving the Adjacent Up/Down Pattern",
+    "description": "Ramu and Sonu each have N chalks with pairwise distinct lengths. Sonu may rearrange his chalks, but every pair of adjacent positions must keep the same strict up/down direction as the corresponding positions of Ramu's chalks. Find the maximum sum of the absolute length differences between Sonu's adjacent chalks.",
+    "input": "The first line contains N (this site's range: 1≤N≤14). The second line contains N positive integers, the lengths of Ramu's chalks; the third line contains N positive integers, the lengths of Sonu's chalks. The lengths within each group are distinct.",
+    "output": "Output the maximum sum of absolute differences that satisfies the adjacent up/down pattern.",
+    "explanation": "Use a bitmask to represent the chalks already placed, with the last chalk as part of the state; match Ramu's up/down relations position by position and maximize the total difference.",
+    "hints": [
+      "The direction at each position is determined by how Ramu's adjacent lengths compare.",
+      "The subset and the last value are enough to describe the transition boundary of a completed prefix.",
+      "With N≤14, all subset states can be kept to find the exact optimum."
+    ]
+  }
+}

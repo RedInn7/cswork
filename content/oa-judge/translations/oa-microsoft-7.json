@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-7",
+  "packageChecksum": "fd8de1f4d136a82be410237fc6571e1d71a54d53f8b9dc22e0b00f2856625708",
+  "en": {
+    "title": "Discount by the First Price to the Right That Is Not Higher",
+    "description": "Each item's price is reduced by the price of the first item to its right whose price is not higher than its own; if there is no such item, it sells at its original price. Output the total selling price and the 0-based indices of the items sold at the original price, in ascending order.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains n (1..100000), and the second line contains n prices (1..10⁸).",
+    "output": "On the first line output the total selling price. On the second line, first output the number of items sold at the original price, then output their indices in ascending order.",
+    "explanation": "Example 1: the selling prices are 1, 2, 1, 0, 2, 2, summing to 8; indices 2 and 5 sell at the original price.\n\nExample 2: the first item is fully offset by the second, leaving only the second at its original price 5, at index 1.\n\nExample 3: every item to the right is more expensive, so all three sell at the original price, for a total of 6, at indices 0, 1, 2.",
+    "hints": [
+      "Maintain a monotonic stack from right to left; after popping the elements priced higher than the current item, the top of the stack is the first price to the right that is not higher than the current price."
+    ]
+  }
+}

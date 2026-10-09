@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-6",
+  "packageChecksum": "2046535d9058342382d3b715494ae7fe582b7bc3de7e442545eec764b077a383",
+  "en": {
+    "title": "Maximum Three-Character Replacement Operations",
+    "description": "Choose three consecutive characters where the first two are equal and the third is different, and replace the third with the character of the first two. Each operation only replaces and never deletes. Find the maximum number of operations that can be performed. The original site's walkthrough shortened the string; this site keeps the original length.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "One line of 3..200000 lowercase English letters.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: in aabaab, first change the last b to a, then change the b at the third position to a, giving aaaaaa, for 2 operations.\n\nExample 2: there is no pair of equal adjacent characters, so no operation is possible; the answer is 0.\n\nExample 3: the only triple aa b changes b to a, so the answer is 1.",
+    "hints": [
+      "Scan from right to left. Whenever you meet a pair of equal adjacent characters, every different character in the suffix to its right can be changed to it one at a time; add the number of differing characters and reset the suffix frequencies."
+    ]
+  }
+}

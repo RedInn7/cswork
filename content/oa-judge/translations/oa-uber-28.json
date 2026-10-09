@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-28",
+  "packageChecksum": "9597a422056e29b52656a06be13a6a6ed59e67341a39f8d0f751d3f1d775fb65",
+  "en": {
+    "title": "Wall-Climbing Routes with at Most Two Holds per Row",
+    "description": "Climb from the bottom row to the top row, using at least 1 and at most 2 distinct holds X in every row; # cannot be held. You cannot move down, and the Euclidean distance between consecutively used holds is at most w. Routes are distinguished by their sequence of holds; count the routes modulo 998244353.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "The first line contains n m w, followed by n strings of length m over X/#, from top to bottom. 2≤n≤2000, 1≤m,w≤2000.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: from the bottom row you can only continue from column 2, pass through column 2 of the middle row, and reach column 2 of the top row; on the top row you can stop or move on to column 1, for 2 routes in total. Example 2: each of the two rows has one hold, so there is only 1 route. Example 3: the top row has no holds, so it cannot be reached, and the output is 0.",
+    "hints": [
+      "Process the rows from bottom to top. Summing the number of paths entering a row over a horizontal window of radius w gives the number of paths whose last hold in that row is each cell (including not moving sideways). When moving up a row, the horizontal distance is at most isqrt(w²−1), so do another window sum. Both kinds of windows use prefix sums."
+    ]
+  }
+}

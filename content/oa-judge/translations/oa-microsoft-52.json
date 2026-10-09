@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-52",
+  "packageChecksum": "ca5dfc57cff986d0121cae0233dfe1d901a74ad5287dd2ca7be9e078a63fe412",
+  "en": {
+    "title": "Minimum Tokens After Trading Two for One Between Adjacent Stacks",
+    "description": "There are infinitely many stacks numbered from 0. The heights of the first N stacks are given, and the rest are empty. Each operation takes 2 tokens from one stack and adds 1 token to the next stack. Find the minimum total number of tokens after any number of operations.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N, and the second line contains N heights. The source gives no numeric bounds; this site uses 1≤N≤200000 and heights 0..10⁹.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the total weight is 2+3×2=8, ending with 1 token on stack 3. Example 2: there are no tokens, so 0. Example 3: 3 tokens can become 1 token each on stacks 0 and 1, for 2 tokens in total.",
+    "hints": [
+      "Process the carry from low to high: add the carry to the current height, leave 1 if the result is odd, and send half of the rest to the next stack; after the input ends, keep processing the binary bits of the carry."
+    ]
+  }
+}

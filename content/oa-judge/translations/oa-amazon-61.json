@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-61",
+  "packageChecksum": "650adeb038f63b5602253cc8a739af215badcdfcbf79647e2ee3639f90db2669",
+  "en": {
+    "title": "Rounds of Sequential Scanning to Process Packages in Order",
+    "description": "You are given a permutation of 1..n. In each round, scan from left to right and process the next not-yet-processed number as soon as you reach it; several numbers can be processed in a row within one round. Find how many rounds are needed to process all numbers.\n\nThe standard I/O and solution were written independently by this site; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n (1..1000000), and the second line contains a permutation of 1..n.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the first round processes 1, 2; the second 3, 4; the third 5, so the answer is 3. Example 2: a single scan finishes. Example 3: each round can process only one number, so the answer is 3.",
+    "hints": [
+      "Record the position of each number. One round is needed to start; every time pos[v+1]<pos[v], a new scan is required, adding one round."
+    ]
+  }
+}

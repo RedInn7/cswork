@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-320",
+  "packageChecksum": "af069267c2cc7dad6fcfe08a4e226fc0d19d23a9686eadfd89330efe149898b3",
+  "en": {
+    "title": "Validate and Reorder a Barcode Scanner Configuration",
+    "description": "Configuration entries are separated by vertical bars; each entry is a four-digit decimal sequence number immediately followed by a non-empty configuration value. A valid layout must have sequence numbers that are exactly 1..number of entries, with no duplicates or gaps, and configuration values that contain only ASCII letters and digits and are all distinct. Output the configuration values in sequence-number order; if any check fails, output [\"Invalid configuration\"]. Duplicate values may appear in the input being validated, but such input is invalid.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing layout. In the original statement the bound on orders and sequence numbers is 1..9999; the input may have missing or duplicate numbers. For invalid inputs, this site also allows 0..9999 separated entries with entry length 0..104, made of printable ASCII characters without whitespace; this site adds 1..100 characters for valid configuration values. The four-digit sequence number must consist of ASCII digits. Empty input is also an invalid layout to be validated.",
+    "output": "If the layout is valid, output a compact JSON array of strings ordered by sequence number; otherwise output [\"Invalid configuration\"].",
+    "explanation": "The outputs are [\"AA\",\"BB\"], [\"Invalid configuration\"] and [\"Invalid configuration\"]. The second example openly shows the uniqueness check on configuration values that the source code omits; duplicate values cannot be accepted just because their sequence numbers differ.",
+    "hints": [
+      "After splitting, check for each entry the four-digit sequence number, the ASCII configuration value, the sequence-number range 1..n, and uniqueness of both numbers and values; store the values in an array by sequence number and output it."
+    ]
+  }
+}

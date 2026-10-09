@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-20",
+  "packageChecksum": "1f46fb4bb88cbe5860a4c96962d421254156997a989e67ea91c9f1e0d3e0dddf",
+  "en": {
+    "title": "Last Landing Cell of a Counterclockwise Spiral That Skips Every Other Cell",
+    "description": "Starting from the top-left corner, traverse the matrix one cell at a time in a counterclockwise spiral going down, right, up, then left. You land on the starting cell, and after that you skip one path cell before each landing; the count continues through turns, and the parity is never reset. Output the value of the last cell you land on.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The input is N M followed by N lines of M integers each. The original wording of N/M as rows and columns contains a typo; this site specifies N rows and M columns. The original had no numeric bounds; this site adds 1≤N,M≤1000 and elements in −10^9..10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 41; 4; 7. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Shrink the boundaries along the four sides in turn, and give each visited cell a global index starting from 0; only even indices update the answer."
+    ]
+  }
+}

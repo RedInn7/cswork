@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-39",
+  "packageChecksum": "318b67e5ac73fb7235ca3e8a3b43754116c38b69efa73aaa9f6362964f007655",
+  "en": {
+    "title": "Split in Order into Exactly k Segments, Minimizing the Sum of Segment Maxima",
+    "description": "Keeping the input order, split the array into exactly k non-empty contiguous segments, where the cost of each segment is its maximum element; find the minimum total cost over all segments. Note that this is not the similarly named problem of minimizing the largest segment sum. Added by this site: output −1 when there is no solution, and output 0 when an empty array is split into 0 segments.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n k and n non-negative integers. The full original bounds are kept: 0≤n,k≤300, 0≤a[i]≤100000. The cases k>n, n=0, and k=0 are not excluded and are handled by the protocol above.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 6; 0; -1. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Run dynamic programming over the number of segments. Enumerate the left boundary of the last segment; the transition is the previous optimal cost plus the maximum of the last segment, maintaining that maximum incrementally while extending to the left."
+    ]
+  }
+}

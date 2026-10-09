@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-32",
+  "packageChecksum": "ccaa10c16f24a698985f6823fd9adcccb3ccaa4be3cfc5c66b1aa51748ba1f84",
+  "en": {
+    "title": "Full Match Against a Character-Set Pattern",
+    "description": "A pattern consists of ordinary characters and non-empty character sets of the form [abc]. An ordinary character matches only itself, a set matches any one of its characters, and other regular expression symbols have no special meaning. Return the candidate strings that match completely, keeping the input order and duplicates.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "The first line contains a valid pattern (1..100 non-whitespace ASCII characters; square brackets are used only as delimiters of non-nested character sets); the second line contains the number of candidates n (1..1000), followed by n lines of non-empty ASCII strings with no whitespace, each of length at most 100.",
+    "output": "First output the number of matching strings, then the matching strings in input order, keeping duplicates.",
+    "explanation": "Example 1: only telephone matches at every position, so the output is the count 1 followed by that string. Example 2: aa, ba, aa match, with duplicates and order kept, while ca does not, for a count of 3. Example 3: a dot only matches a dot, so only a.b is kept, not acb.",
+    "hints": [
+      "Parse the pattern into the set of allowed characters at each position. Only check candidates of the same length in which every character belongs to the corresponding set."
+    ]
+  }
+}

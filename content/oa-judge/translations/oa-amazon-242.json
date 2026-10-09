@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-242",
+  "packageChecksum": "0f943fa067202c76c870e5134c2048df5db88319bb3b915dc4123b642c60fcb4",
+  "en": {
+    "title": "Fewest Classes Under a Skill Difference Limit",
+    "description": "Divide all students into classes so that any two students in the same class differ in skill by at most maxSpread; find the minimum number of classes. Groups do not need to keep original indices adjacent, and different students with the same skill must all be placed.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n maxSpread; the second line contains the skills. The original text gives n≤100000 and a skill upper bound of 10^9, but the lower bounds were damaged in typesetting and no bound was given for maxSpread; this site explicitly uses 1≤n≤100000, 1≤skill≤10^9, 0≤maxSpread≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 2 and 1. Adjacent skill differences all being ≤1 does not mean 1,2,3 can share a class.",
+    "hints": [
+      "Sort the skills; each class starts from the smallest unassigned student and absorbs everyone whose skill is at most that skill plus maxSpread."
+    ]
+  }
+}

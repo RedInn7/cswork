@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-9",
+  "packageChecksum": "e1a909b8c87120d8aee999414dab76d541abd22bda5bc21eeb58d668f89881d9",
+  "en": {
+    "title": "Encryption Validity",
+    "description": "Given a test rate, a validity period in seconds, and a list of positive integer keys. The divisibility of a key is the number of elements in the list that are greater than 1 and divide it (duplicate elements count once per occurrence). The encryption strength is the maximum divisibility multiplied by 100000.\n\nThis site's input protocol and the explicitly stated supplementary ranges are compiled by CSWork and do not pose as the original OA rules.",
+    "input": "The first line contains instructionCount validityPeriod n; the second line contains n values keys[i]. Based on the original constraints, this site adds n≥1; the other ranges follow the original problem: the rate and the validity period are 1..10^8, and keys are 1..10^5.",
+    "output": "Output two integers: whether the encryption can be broken within the validity period (1 if instructionCount×validityPeriod≥strength, otherwise 0), and the encryption strength.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Store the number of occurrences of each key in a frequency array. For each key, enumerate its divisors greater than 1 and add up their frequencies to get the maximum divisibility, then compute the strength and whether it can be broken by definition."
+    ]
+  }
+}

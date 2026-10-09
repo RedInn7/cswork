@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-224",
+  "packageChecksum": "470fd26b308bdbd07297ac7236aaa231c8ffee9a92f10337cb8be1a7d0311536",
+  "en": {
+    "title": "Shortest Time to Visit Servers on a Ring Sequentially",
+    "description": "Servers 1..total form a ring with unit-length edges. Choose any starting server and visit all target servers along one continuous sequential route; crossing each edge takes 1 unit of time, and this is not a simultaneous broadcast in both directions. Targets are distinct.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n total; the second line contains n target IDs. 1≤total≤10^9, 1≤n≤min(total,100000), 1≤ID≤total. The original constraint ID≤n conflicts with the statement and all examples, so it is restored to ≤total according to the statement.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 1 and 0. With a single target, simply start there.",
+    "hints": [
+      "Sort the targets and compute the gaps between adjacent targets, including the wrap-around gap between the last and the first; the answer is the ring length minus the largest gap."
+    ]
+  }
+}

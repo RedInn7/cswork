@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-bny-mellon-1",
+  "packageChecksum": "301b68df5d472918645f20e3d064bb4aaf4f57e1fb0424e935bdb79da649f24b",
+  "en": {
+    "title": "Length After Simultaneous Letter Transformations",
+    "description": "Apply exactly t rounds of simultaneous transformation to a lowercase English string: each z is replaced with ab, and every other letter is replaced with the next letter of the alphabet. Characters produced in a round are not transformed again until the next round. Output the final string length modulo 1000000007.",
+    "input": "Exactly two lines: the first line is word, containing only a..z; the second line is a non-negative integer t. Based on the original Java int interface and the round semantics, this site explicitly interprets 0≤t≤2147483647; this range is derived from the type rather than given as a number in the original constraints section. The original has no upper bound on the length of word; this site covers every valid transmittable string within the 32MiB standard input budget of a single test case, without further reducing the length. The first line may be empty, as this site's mathematical extension to the empty string.",
+    "output": "Output one integer: the final length modulo 1000000007. When t=0, return the original length modulo it; an empty string always returns 0.",
+    "explanation": "In the original statement, azbk becomes babcl after one round, length 5. In the original example abczy,t=2, it first becomes bcdabz and then cdebcab, length 7; the original output was TO-DO, and 7 was filled in by this site by deriving it from the explicit rules; the original explanation cdedbc is wrong. The third public example z,t=0→1 is a boundary case added by this site.",
+    "hints": [
+      "Use 26 counters instead of expanding the string.",
+      "A simultaneous transformation is a linear transformation, so fast matrix exponentiation works.",
+      "A large number of rounds cannot be iterated round by round, and intermediate products need 64 bits."
+    ]
+  }
+}

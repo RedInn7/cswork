@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-14",
+  "packageChecksum": "cd087c8b75670dafb845e1f669faf0b60a0ade87ddcd35c4797aafd60b82f86e",
+  "en": {
+    "title": "Password Subsequence After Cyclic Increments",
+    "description": "You are given a new password and an old password. Each character of the new password can stay unchanged or be cyclically incremented at most once (z becomes a). Decide whether the old password can become a subsequence of the transformed new password. On this site each test inputs one pair of passwords.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains the new password and the second line the old password; both consist of lowercase English letters, 1≤(old password length)≤(new password length), and the total length of the two strings is ≤200000.",
+    "output": "Output YES or NO.",
+    "explanation": "Example 1: take indices 2, 3, 4, 5, 7 (1-indexed) of the original string to get a, a, c, b, b; after incrementing positions 3, 4 and 7 of the original string once each, the chosen characters become a, b, d, b, c, which is the target abdbc, so output YES. Example 2: no character of the original string can stay as or be incremented to h, so output NO. Example 3: z can be cyclically incremented to a, so output YES.",
+    "hints": [
+      "Scan the new password from left to right, and match immediately whenever the current character or its successor matches the current character of the old password."
+    ]
+  }
+}

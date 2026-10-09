@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-13",
+  "packageChecksum": "4d3fcd64814f8210b91796a39e2a97ee7b06d34debbb9e1b5a48d3dddfd952c8",
+  "en": {
+    "title": "Minimize the Longest Consecutive GPU Usage Run",
+    "description": "An a/b string records the GPU used each time, and you may flip at most switchCount positions. Find the minimum possible length of the longest run of identical characters. The original explanation contains invalid characters and a wrong example whose length shrinks after the change; this site keeps the rule that each flip changes exactly one character.\n\nThe input/output format was compiled by this site.",
+    "input": "The first line is a non-empty a/b string, and the second line is switchCount. The original text gives no numeric bounds; on this site the length is 1..200000 and 0≤switchCount≤length.",
+    "output": "Output the minimum possible length of the longest run.",
+    "explanation": "The answers are 2, 4, and 2; the first example can be changed to aababbaaba, keeping the length at 10 with a longest run of 2.",
+    "hints": [
+      "Length 1 requires an alternating string, so count the mismatches against each of the two alternating templates. For a target L≥2, an original run of length r needs exactly floor(r/(L+1)) flips, and no fewer; binary search for the smallest feasible L."
+    ]
+  }
+}

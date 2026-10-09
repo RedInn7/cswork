@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-166",
+  "packageChecksum": "a52b4be0bf7fc5a366c70e12a82c53682c1b03600561999486a2d4cc7c2ca840",
+  "en": {
+    "title": "Maximum Amount in a Window of Consecutive Bags",
+    "description": "Bags are numbered starting from 1. Within each of the non-overlapping closed intervals [l,r], every bag holds amount v, and bags not listed hold 0. Choose exactly k consecutive bags, first maximize the real amount, then return that maximum modulo 1000000007.\n\nThe standard I/O, examples and solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n k, followed by n lines l r v. The original snapshot gives no value bounds; this site sets 1≤n≤100000, 1≤l≤r≤10^9, 1≤k≤10^9, 1≤v≤10^9; the intervals do not overlap, and the input may be unordered.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: choose 3..7 for an amount of 2+2+0+5+7=16. Example 2: a length of 10 can cover two bags of 4 each, giving 8. Example 3: choose the first two bags; their real amount 1000000008 is greater than any other window, so choose it first and then take the modulo, giving 1.",
+    "hints": [
+      "After sorting, build cumulative amounts over the intervals so the prefix amount up to any position can be found by binary search. Only candidates whose window's left end aligns with an interval's left end, or whose right end aligns with an interval's right end, need to be tested."
+    ]
+  }
+}

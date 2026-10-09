@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-38",
+  "packageChecksum": "4845e630f1e69fd4fb4bf8544727d59c20fde1ea79866f6158b7b06cca403a80",
+  "en": {
+    "title": "Top Two Teams in a Football League",
+    "description": "A team's points are 3×wins+draws; ties in points are broken by goal difference (goals scored minus goals conceded), in descending order. Output the indices of the top two distinct teams. If points and goal difference are exactly equal, the statement imposes no further ordering, and any valid tie order is accepted.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by 4 lines giving, in order, the n win counts, draw counts, goals scored, and goals conceded. The source gives no value ranges; on this site 2≤n≤100000 and every value is in 0..10⁹.",
+    "output": "Output two distinct 0-based indices: first place, then second place.",
+    "explanation": "Example 1: all three teams have 6 points; 0 and 2 tie for the lead with a goal difference of 4, so either 0 2 or 2 0 is accepted. Example 2: the two teams are identical, so both 0 1 and 1 0 are correct. Example 3: points 3, 2, 1 decide the ranking, and more goals cannot overcome points, so output 0 1.",
+    "hints": [
+      "Sort the teams by points and then goal difference, both descending; the index is only used to pick one definite valid representative among ties. Take the first two."
+    ]
+  }
+}

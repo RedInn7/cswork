@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-355",
+  "packageChecksum": "c1bebe3800e13c97766dbe21e14e4422e03a957a7dc053643b87d38fe7359c1f",
+  "en": {
+    "title": "Minimum Expansion Tokens for Each Storage Request",
+    "description": "Each request a b selects one warehouse, whose capacity must be at least a, while the total capacity of all other warehouses must be at least b; spending 1 token increases the capacity of any warehouse by 1. Spare capacity in the selected warehouse cannot be used toward the backup. Each request is independent and is computed again from the original capacities; return the minimum number of tokens.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n q, the second line contains n warehouse capacities, followed by q lines of a b. The complete original bounds are 2≤n≤100000, 1≤q≤100000, capacities and a in 1..10^9, and b in 1..10^15.",
+    "output": "Output the minimum number of tokens for each request, one per line in request order, for q lines in total.",
+    "explanation": "The three public inputs have outputs 2; 1, 3, 5; and 0. The source's first example output was still TO-DO; this site independently filled it in as 2 from the per-warehouse costs.",
+    "hints": [
+      "Sort the capacities and compute their total S. When warehouse w is chosen, the cost is max(0,a−w)+max(0,b−(S−w)). Binary search for the first w≥a, and compare only it and the capacity just before it."
+    ]
+  }
+}

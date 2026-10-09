@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-91",
+  "packageChecksum": "8a27db6eb030123b2e914327b7233f73d8307bd62877b09064d50f4aa7966734",
+  "en": {
+    "title": "Minimum Subsequence Errors with Unknown Binary Bits",
+    "description": "Replace each ! with 0 or 1; every index pair i<j forming 01 costs x, and every pair forming 10 costs y. First find the minimum total cost, then take it modulo 10⁹+7; do not compare costs after taking the modulus.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains errorString (length 1..100000), and the second line contains x y (0..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: set everything to 0; there are no pairs of different values, cost 0. Example 2: choosing 001 or 011 both produce two 01 pairs, cost 4. Example 3: the only 10 subsequence costs 5.",
+    "hints": [
+      "If x>y, reverse the string and swap the costs. After that x≤y, and there is an optimal solution in which the unknown bits are 0s followed by 1s. Start with all unknown bits set to 1, then change them to 0 one by one from left to right, updating the cost with the counts of 0/1 on the left and right, and take the minimum over all split points."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-65",
+  "packageChecksum": "cc41e45e2c2e47855817ec448a1e273778b9fbd46445aff8c8b8d7c54b179b6a",
+  "en": {
+    "title": "Word Pairs That Are Equal or Prefixes of Each Other",
+    "description": "Count unordered pairs of distinct indices i<j such that the two words are equal, or one is a prefix of the other. Identical words at different indices are still counted separately.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by n words. The source gives no character or length bounds; on this site 1≤n≤100000, and words contain only lowercase English letters with length 1..30.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: back pairs with backdoor and backgammon, 2 pairs, and come pairs with comeback, 1 pair, for 3 in total. Example 2: the two a's form 1 pair with each other, and each forms pairs with abc, ab and ac, giving 6 pairs; ab and abc form 1 more, for 8 in total. Example 3: three distinct indices pair up with each other, for 3 in total.",
+    "hints": [
+      "Sort lexicographically. Taking each word as the earlier one, all words starting with it form a contiguous range; binary search the insertion position of word plus the character { as the right end of the range, and count only words after the current position."
+    ]
+  }
+}

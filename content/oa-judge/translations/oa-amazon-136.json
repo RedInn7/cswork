@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-136",
+  "packageChecksum": "579e0824b0bca14de0bd838ffeca4a449c681cda7f6577ca3d3b70d8438d60eb",
+  "en": {
+    "title": "Optimal Vehicle Load Distribution After Adding Packages",
+    "description": "Add all P indivisible packages to the existing n vehicles; a vehicle may receive 0, and original packages cannot be removed. Minimize the final maximum vehicle load. Output any optimal final load array; the distribution need not be unique.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n P, and the second line contains n original loads. The original gives no value bounds; this site sets 1≤n≤100000, 0≤P≤10^12, 0≤(original load)≤10^9.",
+    "output": "Output exactly n non-negative integers, any optimal final load distribution.",
+    "explanation": "Example 1: you can output 3 3, adding 2 and 1, for 3 added in total; the maximum 3 is optimal. Example 2: nothing is added, so output 5 0. Example 3: you can output 1 1 0; putting 1 on any two different vehicles is also a correct answer.",
+    "hints": [
+      "The optimal cap C is the larger of the original maximum and the total load averaged and rounded up. Fill each vehicle up to C in input order as far as possible, until the added packages run out."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-19",
+  "packageChecksum": "a34a0169831d7e88c2110c8e5ce38c56c0bdc9f3099c217d800add9a7ac167fd",
+  "en": {
+    "title": "Bucket with the Most Files",
+    "description": "Process the commands in order: `goto name` switches to that bucket (creating an empty bucket if it does not exist); `create name` creates a file with that name in the current bucket. File names within the same bucket are unique, so creating a duplicate does not increase the file count. Return the name of the bucket with the most files; a tie is guaranteed not to occur.\n\nStandard input/output and this site's supplementary ranges follow this problem's description.",
+    "input": "The first line contains the number of commands q (2≤q≤50000), followed by q lines of commands. name is a single token of 1..40 ASCII letters, digits, underscores, or hyphens. The first command is goto, and there is at least one create.",
+    "output": "Output the name of the bucket with the unique maximum number of files.",
+    "explanation": "Maintain a set of file names for each bucket, and track the current bucket. After processing all commands, take the bucket whose set size is the unique maximum.",
+    "hints": [
+      "Maintain a set of file names for each bucket, and track the current bucket. After processing all commands, take the bucket whose set size is the unique maximum."
+    ]
+  }
+}

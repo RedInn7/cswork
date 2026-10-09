@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-flexport-1",
+  "packageChecksum": "12831ba4f37c42a5b983979c6a9051d5281e74f9319277df85c4753ee64da7fd",
+  "en": {
+    "title": "Exact Count of Good Subsequences with Distinct Consecutive Values",
+    "description": "Given an integer array arr. A non-empty subsequence is a sequence obtained by choosing some strictly increasing indices from the array; its values do not need to be in ascending order. A subsequence is good if all of its values are distinct and every integer between its minimum value a and its maximum value b appears in it. Count the good subsequences. Different index choices are counted separately, even if their value sequences are identical. Output the mathematically exact integer, with no modulo. The original interface uses long, but over the full range the answer can exceed 64 bits, and the modulus added in the code on the compiled page has no basis in the statement; this site explicitly corrects both points and keeps all original ranges.",
+    "input": "The first line contains an integer n, and the second line contains n integers arr[i]. 1≤n≤100000, 1≤arr[i]≤100000; duplicate values and any original order are allowed.",
+    "output": "Output an exact non-negative decimal integer, with no modulo, no truncation, and no scientific notation. The result may exceed 64 bits and Python's default 4300-digit decimal conversion limit; use arbitrary-precision integers. The answer has at most 30103 decimal digits.",
+    "explanation": "The original statement has no formal I/O examples; all three public examples are derived by this site from the definition. [2,2,1] has 3 single-element subsequences and 2 subsequences with value set {1,2}, for 5 in total. [1,3] allows only single elements, for 2 in total. [3,1,2] has 3 single elements, 2 ranges of adjacent values, and 1 full range, for 6 in total; the original order of the values does not affect whether a range is validly covered.",
+    "hints": [
+      "Once the value range is fixed, how many ways are there to choose one index for each value?",
+      "Count the good subsequences whose maximum is the current value.",
+      "A missing value breaks the consecutive range, and duplicate values correspond to different index choices."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-63",
+  "packageChecksum": "e45242b44a8e8025c698510265b3eb437745c99358ae1478f173817de327573a",
+  "en": {
+    "title": "Distinct Skyscrapers with Maximum Total Height",
+    "description": "Assign each building a positive integer height B[i] not exceeding its limit A[i], such that all heights are distinct and their sum is maximized. A solution is guaranteed to exist, and any optimal assignment is accepted.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N (1..50000), and the second line contains N values A[i] (1..10⁹); a valid assignment of distinct positive integers is guaranteed to exist.",
+    "output": "Output N positive integer heights B, keeping the buildings in their original input order.",
+    "explanation": "Example 1: every building can take its limit, for a total of 6. Example 2: the two limits of 7 become 7 and 6, and the others are 9, 4, 3, for a total of 29; the assignments of the two buildings with limit 7 can be swapped. Example 3: only the five distinct heights 1..5 are available, for a total of 15; for example, 1, 2, 3, 4, 5 is valid.",
+    "hints": [
+      "Assign heights in decreasing order of limit, giving each building the largest integer that does not exceed its limit and is strictly less than the previously assigned height, then put the heights back at their original indices."
+    ]
+  }
+}

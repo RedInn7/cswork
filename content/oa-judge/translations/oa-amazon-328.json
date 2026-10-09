@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-328",
+  "packageChecksum": "c66c0a9419134cc469f1e39e29b59e5be4e21781bc998b532e67d8c688527c65",
+  "en": {
+    "title": "Queue Length After Processing the Head and Clearing All Expired Items",
+    "description": "All processes start in the queue, and wait[i] is the deadline, counted from time 0, up to which process i can wait. Time t starts at 0. Each second, first process and remove the one process at the head of the queue, then remove every other remaining process whose deadline is ≤t, including expired items in the middle or at the end of the queue. Record the number remaining at the end of that second, until the queue is empty; the initial n before any processing is not recorded.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains wait. The original statement gives no value bounds; on this site 1≤n≤200000, 0≤wait[i]≤10^9, and a deadline of 0 is valid. The last output item must be 0.",
+    "output": "Output the queue length at the end of each second, separated by spaces, ending with 0.",
+    "explanation": "The answers are 3 1 0; 4 1 0; and 1 0. In the third example, at time 0 the first 0 at the head is removed first, then the other expired 0 is removed, and 9 is left to be processed at time 1. The source only clears expired items at the head, so it misses those in the middle and at the end.",
+    "hints": [
+      "Sort the indices by deadline, mark the processes still in the queue with an alive array, and only move head forward to find the first item not yet removed. Each second, remove head first, then advance a pointer through the deadline-sorted order to remove, in bulk, the remaining items with wait≤t."
+    ]
+  }
+}

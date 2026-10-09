@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-87",
+  "packageChecksum": "19d029a917995999195e6421bb423d443b907e0b5ce838a42ae8cb92c813e4f1",
+  "en": {
+    "title": "Inactive Skills in a Closed Request Window",
+    "description": "Each log entry is a skillId and a timestamp. For each query q, count the skills that have no request in the closed interval [q−timeWindow,q]; output the answers in the input order of the queries.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains numSkills m q timeWindow, all four in 1..100000; then m lines of skill timestamp, then one line of q queryTime values. skill is in 1..numSkills, and all times are in 1..100000.",
+    "output": "One line of q inactive counts, separated by spaces.",
+    "explanation": "Example 1: for q=3 the window [1,3] contains skills 1 and 2, so 1 skill is inactive; for q=4 the window [2,4] contains only skill 2, so 2 are inactive. Example 2: query 5 has skill 1, so 1 is inactive; query 1 has no logs, so 2 are inactive, and the original order is kept. Example 3: both log entries belong to skill 1, which counts as only one active skill, so 0 are inactive.",
+    "hints": [
+      "Sort the logs by time, and sort the queries too while keeping their original indices. With two pointers, add logs with time ≤q and remove logs with time <q−window, maintaining the active count with per-skill frequencies."
+    ]
+  }
+}

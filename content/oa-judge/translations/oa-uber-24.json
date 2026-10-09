@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-24",
+  "packageChecksum": "b3efd0b5152409858f50c93315c20005626924b65c79389c4fcfd611d2eb7db9",
+  "en": {
+    "title": "Final Execution Counts of Referenced Commands",
+    "description": "Each entry is one of cmd1, cmd2, cmd3, or !j, which means executing the command represented by the j-th entry. Count how many times each of the three commands is ultimately executed over all entries. Valid input on this site guarantees that every reference chain eventually reaches an actual command; forward and backward references are allowed, but there are no reference cycles.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source are all marked as this site's protocol.",
+    "input": "The first line contains n, followed by n command tokens, 1≤n≤100000 (this site's range); the j in !j is 1..n.",
+    "output": "Output the execution counts of cmd1, cmd2, and cmd3, separated by spaces.",
+    "explanation": "Example 1: cmd1, cmd2, and cmd3 are executed 3, 2, and 2 times respectively. Example 2: the first two entries both eventually reference the third entry, cmd2, so the output is 0 3 0. Example 3: there is only one cmd3, so the output is 0 0 1.",
+    "hints": [
+      "Follow the reference chain until you reach an already resolved result, then mark every position on the path with that result. Finally, tally the command type of each position."
+    ]
+  }
+}

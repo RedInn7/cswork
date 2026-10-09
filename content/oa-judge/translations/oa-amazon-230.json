@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-230",
+  "packageChecksum": "102126141062a93ccab400f9c8768f18d675ad44addfc5245dd943003d6eeda7",
+  "en": {
+    "title": "Fewest Distinct Distribution Centers Matching Adjacent Demand Trends",
+    "description": "On day i, choose a center numbered 1..n. If demand is higher than on the previous day, the center number must be strictly higher; if demand is lower, it must be strictly lower; if demand is equal, the same center must be used. Minimize the number of distinct centers used over all days.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains each day's demand. The original text had no numeric bounds; this site uses 1≤n≤200000, 0≤demand≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 3 and 1. Equal demands do not interrupt a continuing rising constraint.",
+    "hints": [
+      "Ignore consecutive equal demands, find the maximum number of comparisons in a run that is strictly rising or strictly falling, and add 1."
+    ]
+  }
+}

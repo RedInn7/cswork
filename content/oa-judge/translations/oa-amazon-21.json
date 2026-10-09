@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-21",
+  "packageChecksum": "abc1cc3b8d5e835a7f9a72dc0394148ff81fae6a0e9be41d930c76ee92e6fa01",
+  "en": {
+    "title": "Equal-Stride Permutation Matching",
+    "description": "Given two strings and a positive stride p, count the start indices i such that the m characters at positions i, i+p, …, i+(m−1)p of the first string form a permutation of the second string. All indices must be in range.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains userID1, the second line userID2, and the third line p. On this site the input consists of lowercase English letters; 1≤m≤n≤1000000, 1≤p≤1000000.",
+    "output": "Output a single integer, the answer required by the problem.",
+    "explanation": "Example 1: the valid starts are 0 and 2 (0-indexed), which take a, a, c at indices 0, 2, 4 and a, c, a at indices 2, 4, 6, both permutations of aac; the other start that can take all three characters, 1, gives c, c, a, which does not match, so the answer is 2. Example 2: the target has only one character, so the stride never produces a second index, and the only start 0 matches a. Example 3: a two-character target needs the start and start+2, which always goes out of range, so the answer is 0.",
+    "hints": [
+      "Split the indices into chains by index mod p; on each chain, maintain a sliding window of length m with its character frequencies and compare them with the target frequencies."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-observerai-1",
+  "packageChecksum": "afef84ab5c4dec886ac7021a022df519c87501a2b0f36ff39d738751ecefda75",
+  "en": {
+    "title": "Choose the Best Flask",
+    "description": "Choose one flask type that can serve all orders and minimizes the total waste, i.e. marked capacity minus order volume; break ties by the smallest type index.\n\nThe standard input/output format and supplementary bounds on this site are as defined in this problem statement.",
+    "input": "n (1≤n≤1000); the next line contains n order volumes (1..10^9); then f (1≤f≤1000), followed by one line per flask type: first the number of markings, then the markings in ascending order. The total number of markings is ≤2×10^5.",
+    "output": "Output the 0-based flask type index; if no type can serve all orders, output -1.",
+    "explanation": "For each type's markings, use a monotonic pointer to find, for each order, the first marking not less than the order volume; accumulate the waste and take the minimum by `(waste,index)`. An independent oracle linearly enumerates all markings for each order.",
+    "hints": [
+      "For each type's markings, use a monotonic pointer to find, for each order, the first marking not less than the order volume; accumulate the waste and take the minimum by `(waste,index)`. An independent oracle linearly enumerates all markings for each order."
+    ]
+  }
+}

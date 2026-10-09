@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-22",
+  "packageChecksum": "b5495bc7e818f96b3b101ccc3b390bfacd1fa012894cca9b68fea7a0f7c45883",
+  "en": {
+    "title": "Replace Every n-th Consonant",
+    "description": "Count the consonants among the English letters from left to right, and replace every n-th consonant with the next consonant in alphabetical order, preserving case; z/Z wraps around to b/B. The consonant order is bcdfghjklmnpqrstvwxyz. Vowels, spaces, digits, and punctuation are not counted and are left unchanged.\n\nThe standard input, this site's constraints, the examples, and the test data were independently compiled by CSWork.",
+    "input": "This site's input: the first line contains n (1..100000), and the second line is printable ASCII text of length 0..100000, which may contain leading, trailing, and consecutive spaces.",
+    "output": "Output the complete text after replacement, keeping all spaces and case, and end it with a single newline.",
+    "explanation": "Example 1: the consonants in order are C, d, S, g, n, l; the 3rd, S, becomes T, and the 6th, l, becomes m, giving CodeTignam.\n\nExample 2: every consonant is replaced; z wraps to b and Z wraps to B, so the output is b B!.\n\nExample 3: there is only one consonant, b, so the 2nd is never reached, and the whole line, including all spaces, is output unchanged.",
+    "hints": [
+      "Keep a consonant counter; at every multiple of n, move the character forward to the next non-vowel English letter, continuing from a after passing z; finally restore the original case."
+    ]
+  }
+}

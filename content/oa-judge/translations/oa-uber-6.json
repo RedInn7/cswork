@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-6",
+  "packageChecksum": "a9ea5f317544549ef147899e483e45d1e1e9153a48690230605a1b0d6a93047d",
+  "en": {
+    "title": "Star-Framed Paragraph Layout with Any Valid Line Breaks",
+    "description": "Place the words of each paragraph into a text box in order, without splitting words or crossing paragraphs; each line's content is width wide. A line that is not the last line of a paragraph and has multiple words must be fully justified: spaces are distributed evenly, with the remainder going to the leftmost gaps first. The last line of a paragraph and any line holding a single word must be centered, and when the leftover space is odd, the extra space goes on the right. Add one space and an asterisk on each outer side, with asterisk borders on top and bottom. Neither greedy breaking nor a minimum number of lines is required; any line breaking that satisfies the rules is accepted. No blank lines are inserted between paragraphs. The original site's examples omitted the alignment spaces in display; this site has filled them in.\n\nThis site's standard input and output are explicit; ranges not given by the source problem are marked as this site's convention.",
+    "input": "The first line contains width P; then P lines follow, each giving the word count and then the words of that paragraph. 5≤width≤50, 1≤P≤20, each paragraph has 1..10 words, and each word has length 1..width. On this site, words consist of printable non-whitespace ASCII characters (* is also allowed).",
+    "output": "Output the complete plain-text star frame, without a line count; every line has width+4 columns. Any line breaking that satisfies the layout rules is allowed and does not need to match the examples.",
+    "explanation": "Example 1: shows a valid layout with each word centered on its own line, for 12 content lines in total; Hello has length 5, so within the 16-column content area it gets 5 spaces on the left and 6 on the right, and each line is 20 columns including the outer margins and star frame. It can also be split greedily, as in the reference program, into 5 content lines; both are accepted. Example 2: the example puts a, b and c each on its own line with 2 spaces of padding on each side of the content area; the whole paragraph a b c on one line is equally valid. Example 3: abc has content width 3, leaving 3 spaces, 1 on the left and 2 on the right; with the outer margins and asterisks on both sides, the total width is 10.",
+    "hints": [
+      "The reference solution greedily puts as many words as possible on each line; ordinary non-final lines split spaces evenly using the quotient and remainder, while final or single-word lines compute left and right centering spaces. Other valid line breaks are equally correct."
+    ]
+  }
+}

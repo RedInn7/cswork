@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-317",
+  "packageChecksum": "40f504005bbbe872b9d33ff28de222caa1d6568f6e1d7c30dc7ae63f0ad99f91",
+  "en": {
+    "title": "All Optimal Foreground/Background App Pairs Within Device Capacity",
+    "description": "The device runs exactly one foreground app and one background app at the same time. Each app uses a positive amount of memory; IDs are distinct within the same type, while apps of different types may share an ID. Find all app ID pairs whose total memory does not exceed the capacity and is as large as possible, without missing different apps that use the same memory.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains capacity n m, followed by n lines of foreground ID memory, then m lines of background ID memory. The original statement gives no value bounds; on this site 0≤n,m≤500, IDs are in −10^9..10^9 and distinct within each type, 1≤memory≤10^9, 0≤capacity≤2×10^9.",
+    "output": "Output a compact JSON two-dimensional array with the ID pairs in ascending lexicographic order; if there is no feasible pair, output [[]] as in the original problem.",
+    "explanation": "The outputs are [[2,1]]; [[1,8],[1,9],[2,8],[2,9]]; and [[]]. In the second example the full Cartesian product must be kept; you cannot return just one of the optimal pairs.",
+    "hints": [
+      "Group the background apps by memory and sort them. In the first pass, binary search for each foreground app the largest background memory it can pair with, and find the optimal sum; in the second pass, take all background IDs that reach exactly that sum, enumerate every pair, and sort by the two IDs lexicographically."
+    ]
+  }
+}

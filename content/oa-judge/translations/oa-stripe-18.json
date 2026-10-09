@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-18",
+  "packageChecksum": "7cc4aeeb17e748ff0ff29f0b3775bfa4e2e2b1c5edc9008ce0e6fd1de9fa6eee",
+  "en": {
+    "title": "Generate Available Time Slots Within Weekly Working Hours",
+    "description": "Given a closed date-time range and working periods that repeat weekly, output all complete 30-minute time slots within the range. A slot must lie entirely within the range and within the corresponding working period. Each working period's slot grid starts at the period's start and produces a candidate slot every 30 minutes; identical slots produced by repeated periods are output only once.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "The first two lines are the start and end times, in the format `YYYY-MM-DD HH:MM`; the third line contains the number of working periods w, followed by w lines of `weekday start end`. weekday ranges from 0 (Monday) to 6 (Sunday); times are `HH:MM`, and the end may be written as `24:00`. Each period is a same-day half-open interval `[start,end)` with start < end. The range spans at most 366 days, and 0≤w≤1000.",
+    "output": "First output the number of time slots; then output one `<start time>,<end time>` per line in ascending time order. If there are no available slots, output only 0.",
+    "explanation": "Process the input according to the rules above; see the accompanying solution for the approach, correctness proof, and complexity.",
+    "hints": [
+      "For each day, take the working periods of that weekday and enumerate candidates from each period's start in 30-minute steps; keep only complete slots whose start is not earlier than the range start and whose end is not later than the range end, then deduplicate and sort."
+    ]
+  }
+}

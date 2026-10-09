@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-43",
+  "packageChecksum": "23d22f8aae7d4084f3342c0699e854fa266fa1e34825e0f91a247ec4f387b82b",
+  "en": {
+    "title": "Maximum Operations with the Same Deletion Sum",
+    "description": "Each operation deletes either the first two elements, the last two elements, or the first and the last element of the current array. The sum of the deleted elements is that operation's result, and all operations must have the same result. Find the maximum number of operations; no operation is possible with fewer than two elements.\n\nThe input/output and examples are compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "This site's standard input: the first line contains n (1..2000); the second line contains n integers (−10⁹..10⁹).",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: delete the last two 4+2, then the first and last 3+3, then the first two 1+5, for 3 operations, each with sum 6. Example 2: delete the first and last elements four times in a row, each with sum 6, for 4 operations. Example 3: one operation is possible, but after any first operation the same sum cannot be maintained, so the answer is 1.",
+    "hints": [
+      "The first deletion sum can only be one of three candidate values. Fix each value and do dynamic programming over the length of the remaining range; each of the three deletion directions transitions to a range 2 shorter, and a rolling array stores the previous layer."
+    ]
+  }
+}

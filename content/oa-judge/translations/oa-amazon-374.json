@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-374",
+  "packageChecksum": "4faad325605672d7ef4c3b357aae5c8d42001814106f5a6a5576aaecbfcd5acf",
+  "en": {
+    "title": "Minimum Round-Trip Cost with Return Strictly After Departure",
+    "description": "The indices of the two arrays each represent time, and the values are flight costs; the return index j must be strictly greater than the departure index i. The arrays may have different lengths. Find the minimum total cost; if no valid pair exists, this site additionally outputs −1, without adding a guarantee that a solution always exists.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "Input, in order, the departure array length n, n integers, the return array length m, and m integers. The original gives no value bounds and no guarantee of non-negativity or equal lengths; this site uses 0≤n,m≤200000 and costs in −10^9..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; -1; 3. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Scan the return time j, adding departure j−1 (if it exists) to the running minimum; update the answer with the minimum departure cost so far plus the current return cost."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-weride-6",
+  "packageChecksum": "0842b1410bcf8c487c01b8da8a288194d7bf963bd910ea45b6161253f1ddf290",
+  "en": {
+    "title": "Unordered Node Pairs on a Tree Rearrangeable into a Palindrome",
+    "description": "In an undirected tree, edge weights 1..26 correspond to a..z. For two distinct nodes, take all edge letters on the unique path between them; if these letters can be rearranged in any order into a palindrome, the unordered node pair is a nice pair. Find the number of nice pairs. The path string does not need to be a palindrome already; a node is not paired with itself, and the two directions are not counted twice.",
+    "input": "The first line contains n m, followed by m lines of u v w. Full original constraints: 1≤n≤100000, m=n−1, 1≤u,v≤n, 1≤w≤26; the input is guaranteed to form a tree whose diameter, in edges, is strictly less than 1000. Nodes are 1-based.",
+    "output": "Output the number of unordered nice pairs of distinct nodes, using a 64-bit integer; for a single-node tree, output 0.",
+    "explanation": "The three public examples keep, respectively, the 9 of 019, the 7 of 021/022, and the 10 of 023/024. In 019, BAA can be rearranged into ABA, so it counts too; a five-node all-A tree has C(5,2)=10 pairs. 018 has a different topology with a true answer of 8; this site covers it separately and does not mix it up with the 9 of 019.",
+    "hints": [
+      "Rearranging into a palindrome only requires checking frequency parities.",
+      "XORing the parity masks of the two root paths gives the mask of the path between the nodes.",
+      "Query the nodes seen so far before inserting the current node, which excludes self-pairs and double counting."
+    ]
+  }
+}

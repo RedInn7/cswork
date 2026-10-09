@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-60",
+  "packageChecksum": "33b937e07a4bf1204084829ca943f8eb04dd6e169a3b59f4160cf824ac5b85d3",
+  "en": {
+    "title": "Largest Ring with Adjacent Power Differences of at Most One",
+    "description": "Choose as many servers as possible and arrange them in a ring in any order so that the absolute power difference of every adjacent pair (including the first and last) is ≤1. Choosing just one server is allowed.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n (1..200000), and the second line contains n power values (0..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: choose 1, 1, 2, 2, 3 and arrange them as 1, 1, 2, 3, 2, for 5 servers; there is only one server with power 3, so the ring cannot cross over to 4 and come back. Example 2: each of the three values appears once, and the end values 1 and 3 differ by 2, so only 2 can be chosen. Example 3: two servers with the same value can both be chosen.",
+    "hints": [
+      "The chosen distinct values must be consecutive, and every interior value other than the two end values must appear at least 2 times. Count the frequencies and scan consecutive keys: if the previous key has only 1 item, extending to a new key must restart from that previous key; otherwise, keep accumulating."
+    ]
+  }
+}

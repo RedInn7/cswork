@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ebay-3",
+  "packageChecksum": "d3757492efd001b79530076236b9ae6c839c46bbd83f7d1e643ea5a67c18e327",
+  "en": {
+    "title": "Image Blur",
+    "description": "For each center pixel whose window lies completely inside the image, take the mean of the square window centered on it whose row and column offsets do not exceed radius, rounded down. A pixel whose window is incomplete at the boundary keeps its original value, and all windows are based on the original image.\n\nThe problem semantics follow the fixed OAMaster snapshot; the input protocol and limits supplemented by this site are defined by this site.",
+    "input": "h,w (1..500, hw≤250000), radius (0..500), followed by the pixel matrix; pixels are 0..255. The ranges are site supplements.",
+    "output": "Output the pixel matrix as h rows.",
+    "explanation": "See the accompanying editorial for the full approach, proof, and complexity.",
+    "hints": [
+      "First turn the problem into an explicit state or local operation."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-mern-5",
+  "packageChecksum": "a03579fb1610cc42aa2ef59d4b900cba20141851af44609fbf52bb7130a8d582",
+  "en": {
+    "title": "Optimize Box IDs (Same as Amazon #34 in the Main Algorithm Library)",
+    "description": "Amazon MERN #5 is an interleaved algorithm problem that is already included in the main algorithm library; it is the same problem as Amazon #34 \"Get Minimum String (Box Lex-Smallest)\". The Amazon #13 that the #5 page points to is actually a different interval-counting problem, so this entry is mapped to #34 by its title and problem meaning.\n\nOne operation takes out any digit d, changes it to min(d+1,9), and inserts it at any position. Any number of operations (including 0) may be performed; find the lexicographically smallest final string, keeping leading zeros.\n\nThis site's standard I/O, examples, and judging reuse the verified Amazon #34 and do not redefine the operation.",
+    "input": "A single line containing a digit string of length 1..200000.",
+    "output": "Output the lexicographically smallest digit string, keeping leading zeros.",
+    "explanation": "This problem is the same as Amazon #34 and reuses its verified examples, reference implementation, and tests; the original #5 link to Amazon #13 is unrelated to this problem.",
+    "hints": [
+      "Scan from right to left while maintaining the minimum digit on the right. If the current digit is greater than that minimum, it must be moved and incremented by 1; the rest stay. Finally, sort the transformed digits."
+    ]
+  }
+}

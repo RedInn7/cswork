@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-32",
+  "packageChecksum": "a59fafb7cef1ced5226a1db060b6a5abb776244578894380f3b8ab2cc2f2842c",
+  "en": {
+    "title": "Shortest Longest Same-Character Run After at Most k Flips",
+    "description": "Given a binary string, flip at most k positions so that the longest run of consecutive identical characters is as short as possible, and output that minimum length.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives a binary string s and k. The full original bounds are in the statement body: 1≤|s|≤100000, 0≤k≤|s|; they must not be lost just because the Constraints section is empty.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 1; 2; 1. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search on the maximum run length L. When L=1, compute the minimum number of flips to reach either of the two alternating strings; when L≥2, each original run of length r needs at least floor(r/(L+1)) flips, and check whether the sum is ≤k."
+    ]
+  }
+}

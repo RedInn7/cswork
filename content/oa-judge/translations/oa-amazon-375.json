@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-375",
+  "packageChecksum": "6d75cb582eb11abfc215c4195d77f65cf47686b009a63f3f14e27de8cceba240",
+  "en": {
+    "title": "Remaining Queue After Processing the Largest Duplicate Priority",
+    "description": "In each round, find the largest priority p that occurs at least twice; stop if none exists or p=0. Take the first two items with that priority in the current queue, delete the first one, and reduce the second one to floor(p/2). The relative order of everything else is unchanged. Output the final queue.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "The first line contains n, and the second line contains n initial priorities. Original bounds: 1≤n≤100000, 1≤initial priority≤10^9; 0 may appear during processing, but 0s cannot be merged further.",
+    "output": "The first line is the final length; the second line is the final priorities in their original relative order.",
+    "explanation": "The outputs are the 3 numbers 3 6 0, the single number 0, and the 2 numbers 0 1, respectively. In the original second example, the first intermediate queue should be 2 2 1; the 17 in the walkthrough of the third example is a typo, and the last original item stays 1 throughout.",
+    "hints": [
+      "For each value, keep a min-heap of original indices; use a max-heap to schedule duplicated positive values. In each round, take the two smallest indices, mark the former as deleted, push the latter into the group of the halved value, and update the duplicate candidates."
+    ]
+  }
+}

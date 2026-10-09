@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wells-fargo-7",
+  "packageChecksum": "11e3e9e12d4f47f0793f01977b7d14bcf6cd641c0faefdc29377f85004951856",
+  "en": {
+    "title": "Sum of Compressed Number for All Subarrays",
+    "description": "For each contiguous subarray of the array, adjacent equal values compress into a single representative. The compressed number of that subarray is the number of different choices that produce the standard compressed array by keeping exactly one index in each maximal run of equal values and deleting the other indices of that run; if the subarray is already compressed, it is 0. Find the sum of the compressed numbers of all subarrays modulo 1,000,000,007.\n\nSee the statement and review notes for the problem source and the input protocol added by this site.",
+    "input": "The first line contains t; then each test case gives n followed by n integers a[i]. Source constraints: 1≤t≤10, 1≤n≤100000, 1≤a[i]≤100000. This site additionally adds total n≤200000.",
+    "output": "For each test case, output one line with the answer modulo 1,000,000,007.",
+    "explanation": "Process the input according to the problem rules; see the accompanying notes for the detailed approach.",
+    "hints": [
+      "Represent the array by the lengths L of its maximal runs of equal values. All subarrays within a single run contribute a total of L(L+1)(L+2)/6. A subarray spanning runs contributes the product of the suffix length in its first run, the prefix length in its last run, and the lengths of the full runs in between; maintaining the weights of earlier endpoints allows an O(1) update. Finally subtract all subarrays with no equal adjacent items, since they are already compressed and contribute 0."
+    ]
+  }
+}

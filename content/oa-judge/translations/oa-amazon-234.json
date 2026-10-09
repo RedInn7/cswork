@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-234",
+  "packageChecksum": "47fa5ca0bfc162b7dd8d9efc7c5aa78953d74dad20638d54277a1a160e45229f",
+  "en": {
+    "title": "Number of Perfect Packaging Plans with Five Stamps",
+    "description": "Each package gets a stamp numbered 1..5. When the price rises between adjacent packages the stamps must strictly increase, when it falls they must strictly decrease, and when it stays equal the stamp numbers must differ. Count the plans modulo 1000000007, and output 0 if there is none.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the prices. 1≤n≤100000, 1≤price≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 40, 10 and 0. Six strictly increasing prices need six different stamps, but there are only five.",
+    "hints": [
+      "Use a five-state DP on the last stamp number, transitioning from the previous numbers that satisfy the strict comparison or the not-equal condition required by the relation between adjacent prices."
+    ]
+  }
+}

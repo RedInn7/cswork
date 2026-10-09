@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-248",
+  "packageChecksum": "7eedf929fa2cf95c77af459b9ca26282324959c52296e0c6bc163a035629494f",
+  "en": {
+    "title": "Rearrange Both Parts into Palindromes After Deleting At Most One Character Each",
+    "description": "Cut a lowercase string into two non-empty contiguous substrings. From each part you may delete at most one character, then rearrange it freely; output YES if both parts can form palindromes, otherwise NO. Deleting is optional, and a part of length 1 can be kept as is.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing the string. 1≤length≤300000, lowercase letters.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are YES, NO and NO. However abcde is split, one of the two parts has at least 3 characters that each occur once, so even after one deletion it cannot be rearranged into a palindrome.",
+    "hints": [
+      "Maintain 26-bit parity masks of character frequencies for the whole string and for each prefix ending at a cut. If some cut leaves both sides with at most 2 odd-frequency characters, output YES; otherwise NO."
+    ]
+  }
+}

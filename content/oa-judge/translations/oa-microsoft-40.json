@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-40",
+  "packageChecksum": "b0ffe459944715e7c5b5a3aa2a7112ccd3655579d5279d14b6741ffdcbc3ffc5",
+  "en": {
+    "title": "Maximum Types Kept After Clearing R Consecutive Shelves",
+    "description": "Clear exactly R consecutive shelves without changing the order of the other shelves, and find the maximum number of distinct types among the remaining shelves. The original site's answer of 2 for the first example is incorrect; this site corrected it to 3 according to the definition.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N R (1≤N≤100000, 1≤R≤N), and the second line contains N types (1..100000).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: after deleting 0-based indices 2, 3, 4, the remaining 2, 1, 3, 2 keep three types, which is all three types of the original array; the original site's answer of 2 missed this option.\n\nExample 2: deleting the last 2 cells leaves 2, 3, 1, keeping 3 types.\n\nExample 3: all shelves are deleted and no type remains, so the answer is 0.",
+    "hints": [
+      "First subtract the first deletion window from the global frequencies, then slide the window: restore the old left end, delete the new right end, and maintain the number of types whose remaining frequency is positive."
+    ]
+  }
+}

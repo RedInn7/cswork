@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-10",
+  "packageChecksum": "74bee29676b9ace39bd1c101e031f382653af7ff100d0a4261300e769478310a",
+  "en": {
+    "title": "Build a Team from Candidates at Both Ends",
+    "description": "In each round, pick the highest-scoring person from the union of the first k and the last k people in the remaining list, breaking ties by the smallest index; remove that person and continue until t people have been chosen. Find the sum of their scores. The original title's alternating between the two ends does not match the body text; the body text takes precedence.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains n t k, and the second line contains n scores. The original text gives no numeric bounds; this site sets 1≤t,k≤n≤100000 and 1≤score≤10⁹.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 9; 105; 6. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Keep the candidates from both sides in one heap ordered by negative score and original index, and record which side each one came from; after popping, refill from the corresponding side with an element that has not been exposed yet."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-13",
+  "packageChecksum": "d325b34d3748670a8f4a62f3699e2cf2e0657d3a4d369e8d09597f87ffdd75c3",
+  "en": {
+    "title": "Minimum Password Updates Using Only Insertions and Deletions (Full-Text Version)",
+    "description": "Transform the current password into the target password. Each operation inserts or deletes exactly one character, and a substitution cannot count as a single operation. Characters cannot be reordered; all characters are counted by Unicode code point, and whitespace, NUL, emoji, and case differences are preserved.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "Two lines, each a JSON string, giving the current and target passwords in order; for example, the empty string is written as \"\", NUL as \\u0000, and a newline character as \\n. Strings are not split on whitespace. The original gave no bounds on length, character domain, or non-emptiness; this site adds 0..1000 Unicode scalar characters per string. The source C++ getline also supports spaces.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 4; 2; 3. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Compute the length L of the longest common subsequence with a rolling array, and return len(a)+len(b)−2L. Use the shorter string as the DP columns to save space."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-12",
+  "packageChecksum": "90f055bc77d52302b2f766ff00d53b60b5ea65cd7d53060270c83da3dea9cf09",
+  "en": {
+    "title": "Rate Limit by Multiple Request Fields",
+    "description": "Each request has several field dimensions, and each dimension is configured with its own fieldName, window, and limit. A request is ALLOW only if no dimension exceeds its limit; this site explicitly uses the sliding window [timestamp-window,timestamp), and only ALLOW requests are counted in each dimension's history, so requests that get REJECT do not consume quota.\n\nThe parts marked 'added by this site' and the standard input/output protocol were explicitly compiled by this site; they do not mean the original problem has other unstated rules.",
+    "input": "The first line contains d q; then d lines of fieldName window limit; then q lines of timestamp value1 ... valued. Added by this site: 1≤d≤10, 1≤q≤200000, window and limit are positive integers, values contain no spaces, and timestamps are non-decreasing.",
+    "output": "For each request, output ALLOW or REJECT, separated by spaces.",
+    "explanation": "See the accompanying editorial for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "First separate each rule of the original problem from the input conventions added by this site, then choose a suitable data structure."
+    ]
+  }
+}

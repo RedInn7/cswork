@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-2",
+  "packageChecksum": "b37bedf38a51ec1e12215d3d9a06ad1052c60d616d5798c1112ef70b832ec34b",
+  "en": {
+    "title": "Canonical Compression by Merging Repeated Letter Counts",
+    "description": "The string S is a concatenation of one or more segments, each of the form \"one lowercase letter + that letter's count in decimal\". The same letter may appear in several segments. Merge the counts of all segments of each letter, and output every letter that appears together with its total count, in order from a to z, with each letter output once and numbers written without leading zeros. The input is guaranteed to be a valid encoding; numbers may have leading zeros, but their values must still be within 1..1000. The original does not forbid leading zeros, and this site does not add that restriction; the total count after summing may exceed 1000.\n\nThis site restored the character and length constraints truncated by the catalog from the fixed complete raw; the standard input/output is compiled by this site.",
+    "input": "A single line containing the string S, with no quotes or spaces. Complete original ranges: 1≤|S|≤100000, letters a..z, and each segment's count value is 1..1000; each letter is followed by at least one digit. The shortest valid encoding has 2 characters; the length lower bound 1 does not mean that an invalid single-character encoding is accepted.",
+    "output": "Output one line containing the canonical compressed string: letters in ascending order, each followed by its total count without leading zeros.",
+    "explanation": "Example 1 merges c9 and c1 into c10, and sorting by letter gives a3b2c10. Example 2 is already canonical and stays unchanged. Example 3 is added by this site: z002 and z03 merge into z5, a01 is normalized to a1, and the result is a1z5.",
+    "hints": [
+      "Parse segment by segment; do not read only a single digit of the count.",
+      "Add up the counts of the same letter, and output everything in letter order at the end.",
+      "Very long leading zeros still form a valid digit string; parse it digit by digit in decimal."
+    ]
+  }
+}

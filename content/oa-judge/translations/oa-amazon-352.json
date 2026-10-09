@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-352",
+  "packageChecksum": "8eaa65ecd07079cb4fffe2de2fcf66861e467371c70a85c83756c86d8bb2606c",
+  "en": {
+    "title": "Maximum Profit With Skippable Transactions and Limited Same-Type Streaks",
+    "description": "The order of the transactions is fixed; each one has a type A..Z and an integer profit, and any of them can be skipped. In the selected sequence, the same type may not appear more than k times in a row. Maximize the profit; selecting nothing is allowed and gives profit 0. A transaction with negative profit may still be worth taking as a separator, so such transactions cannot simply be dropped.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n k, the second line is the string formed by the n transaction types, and the third line contains n profits; when n=0 the last two lines are empty. The source gives no value bounds and no guarantee that profits are positive; on this site 0≤n≤2000, −10^9≤profit≤10^9, 0≤k≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 18; 199; and 10, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "dp[c][r] stores the best profit over the processed prefix for a selection that ends with type c repeated r times in a row. For a transaction of type c with profit v, keep the states that skip it; the best profit ending in any other type, or the empty sequence, can be extended to r=1, and type c at r−1 can be extended to r. Update r in descending order so the current item is not reused in the same round."
+    ]
+  }
+}

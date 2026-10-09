@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-2",
+  "packageChecksum": "2743d4d0b315100e77b5db256dbdd041ae7535b2ac84ec9fbfa4161226eb28cf",
+  "en": {
+    "title": "Merchant Fraud Risk Scoring",
+    "description": "Given the day's transactions, the rule for each transaction, and each merchant's base score, compute each merchant's final risk score in three independent steps: first apply amount multipliers, then the bonus for customer transaction frequency, and finally the penalty for same-hour frequency. When the 3rd transaction reaches the frequency threshold, the additive factor or penalty of each of the group's first 3 transactions is applied retroactively; from the 4th transaction on, only that transaction's own value is applied. Every step processes the full transaction list independently, in the order multiplier, bonus, penalty.\n\nThe source example's transaction list was missing a comma between items 4 and 5; this site fixes that formatting error and keeps the 6 transactions and 6 rules.",
+    "input": "The first line contains n (1..1000). The next n lines are transactions: merchant_id,amount,customer_id,hour. Then come n lines of rules, matched to the transactions by index: min_transaction_amount,multiplicative_factor,additive_factor,penalty. Next is a line with m (1..1000), followed by m lines of merchants: merchant_id,base_score. Identifiers are 1..32 ASCII characters other than commas; amounts and rule values are signed 64-bit integers, and all intermediate scores are guaranteed not to overflow; hour is 0..23, and base_score is 1..50. The merchant_id of every transaction must be in the merchant list, and no merchant ID is repeated.",
+    "output": "First output the number of merchants m; then output `merchant_id,<final score>` line by line in lexicographic order of merchant_id.",
+    "explanation": "See the accompanying solution for the details of the three-step calculation, the threshold endpoints, and the worked examples.",
+    "hints": [
+      "Initialize the score of each merchant and run the three rule passes strictly; count frequencies grouped by (merchant, customer) and by (merchant, customer, hour)."
+    ]
+  }
+}

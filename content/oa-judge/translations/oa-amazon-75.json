@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-75",
+  "packageChecksum": "70450b25c5edeb4f0944295e873e56cf3420f2c97cec35b9ba34afc576dd9820",
+  "en": {
+    "title": "Maximum Covered Population with Units Moving at Most One Step Left",
+    "description": "unit[i]=1 means city i has one unit; each unit can stay where it is or, when i>1, move one step to the left, at most once. A city is covered if it has at least one unit; the population of a city covered more than once counts only once. Find the maximum total covered population.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n (1..100000), the second line contains n populations (1..10000), and the third line contains a 01 string of length n.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the unit in city 2 moves to 1, the unit in city 3 stays at 3, and the unit in city 5 moves to 4, for a population of 10+8+9=27. Example 2: there are no units, so the coverage is 0. Example 3: both units stay in place, for a population of 3+8=11.",
+    "hints": [
+      "Run a DP from right to left, where the state records whether the unit on the right moves into the current city. Enumerate whether the current unit stays or moves left, add the current city's population if it is covered, and pass on the state of whether a unit moves to the left neighbor."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-315",
+  "packageChecksum": "a908a5ff434e6840de4c2feba3fe0489b325402b2a042bb91ffeb21caaf524de",
+  "en": {
+    "title": "Number of Contiguous Groups Whose Max Minus Min Is Exactly k",
+    "description": "Every non-empty contiguous subarray is a group, and a group performs well if its maximum minus its minimum is exactly k. Groups with different start or end positions are different, even if their values are the same. Find the total number of well-performing groups.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k and the second line contains the array. The original statement gives no value bounds; on this site 1≤n≤200000, −10^9≤a[i]≤10^9, −2000000000≤k≤2000000000. A negative k naturally has no valid groups and is not excluded.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 6 and 0. In the second example all 6 non-empty subarrays count, so you cannot add only 1 per right end.",
+    "hints": [
+      "Use two monotonic queues to maintain the window maximum and minimum, and compute atMost(K), the number of windows whose range is ≤K, by adding the length of the valid suffix at each right end. The answer is atMost(k)−atMost(k−1), and a negative K returns 0."
+    ]
+  }
+}

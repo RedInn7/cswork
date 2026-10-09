@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-38",
+  "packageChecksum": "256682f62bcb0ffbf7792989c5a4c86602d998868a18f03740dd5f6890a33ad4",
+  "en": {
+    "title": "Lexicographically Largest Anagram Window",
+    "description": "Given strings A and B. Choose a contiguous substring of B of length exactly |A|; the substring must contain exactly the same characters as A with the same counts (that is, it is a permutation of A). Return the lexicographically largest of all valid substrings; if none exists, return -1.\n\nThis site's judging bounds: A and B consist of lowercase English letters, 1≤|A|≤20000, 1≤|B|≤50000. This character set and these length ranges are added by this site; the original source does not give them. When there is no solution, this site outputs `-1`; the existing OAMaster code returns an empty string, while the summary of the same-named problem says `-1`, so `-1` is made an explicit rule of this site here.\n\nOAMaster original problem page: https://oamaster.com/docs/companies/google#38-largest-lexicographical-substring. The core semantics follow the summary of the same-named Google interview problem: https://www.1point3acres.com/interview/problems/google-largest-lexicographical-substring.",
+    "input": "Two lines, containing the strings A and B respectively.",
+    "output": "Output the lexicographically largest window that satisfies the condition; if none exists, output -1.",
+    "explanation": "A sliding window maintains the frequency difference against A and marks all valid windows in linear time. Then build a suffix array of B; the lexicographic order of equal-length substrings agrees with that of their starting suffixes, so among the valid windows, choose the one whose suffix has the largest rank.",
+    "hints": [
+      "The window length is fixed at |A|, so each step only adds one character and removes one.",
+      "Do not copy and compare every window one by one; there can be many valid windows, and they can be long."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-4",
+  "packageChecksum": "7b19450f790e73e090df75cf926895de04c96dc47c27c384d808dd1a746b6928",
+  "en": {
+    "title": "Earliest Match with a Single-Character Wildcard",
+    "description": "Find the first occurrence of the pattern in the text, where * stands for exactly one arbitrary character rather than a string of any length. Return −1 if there is none; indices start from 0.\n\nThis site independently compiled the standard I/O and the solution; supplements for missing source bounds and example corrections are stated explicitly in the protocol.",
+    "input": "Two lines s and p. In the original, the text s is a..z, and the pattern p is a..z with at most one *; the original has no length bound, and this site uses 0≤length of each string≤200000. An empty pattern matches at 0.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 0; -1; 0. Checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Split the pattern at the asterisk into two parts, mark the occurrences of each part with KMP, then check both parts at each starting point; with no asterisk, run KMP only once."
+    ]
+  }
+}

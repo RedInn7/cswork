@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-304",
+  "packageChecksum": "b08aaa4f90774c4ff4694a4a0479d28ddd578850e7e7cc2a6a7a2ef7909160c7",
+  "en": {
+    "title": "Minimum Capacity With One or Two Games per Child (Assignment Version)",
+    "description": "Assign all games to exactly k children; each child gets at least one and at most two games, and each game goes to only one child. Every child has the same storage capacity. Find the minimum capacity that makes the assignment possible, that is, minimize the maximum total size of the games any child receives.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k and the second line contains the game sizes. The original statement gives no value bounds; this site adds 1≤n,k≤200000, 1≤size[i]≤10^9. Unsolvable inputs are not excluded, and this site specifies the output −1 when there is no solution.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9, 11 and −1. In the first example 2 and 4 form one group, and 6 and 9 each form a group of their own; pairing the largest game 9 is not optimal. Source 304 contains a placeholder loop that never terminates, and 305 also pairs the large games incorrectly; this site's code is original.",
+    "hints": [
+      "If k>n or n>2k, there is no solution. Otherwise there must be p=n−k two-game groups. After sorting, pair the smallest 2p games from both ends, put each remaining larger game in a group by itself, and take the maximum load over all groups."
+    ]
+  }
+}

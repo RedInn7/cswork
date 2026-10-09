@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-24",
+  "packageChecksum": "3c4975b7163c8ba943dd8e71733d54da8b42d5d6d1a833e2d7e0de924320b7c4",
+  "en": {
+    "title": "Snowflake OA #24: Effective Role Permissions",
+    "description": "There are n roles numbered 0..n−1, and role i has a set of direct permissions. A grant [u, v] means role v inherits all permissions of role u. Inheritance is transitive, and the grants form a directed acyclic graph.\n\nThe effective permissions of a role are its own direct permissions plus the direct permissions of all its ancestor roles. For each role, find its deduplicated effective permissions sorted in ascending lexicographic order.",
+    "input": "The first line contains two integers n and m. Each of the next n lines describes one role: line i starts with an integer k, followed by the k direct permission strings of role i−1 (duplicates are possible, and k may be 0). Each of the next m lines contains two integers u v, meaning role v inherits role u.\n\n1≤n≤2000, 0≤m≤200000, and the sum of all k is at most 200000; 0≤u,v<n, the grant graph is acyclic, and the same grant may appear more than once. A permission string has length 1..10, consists of visible ASCII characters (33..126), and contains no spaces; there are at most 2000 distinct permission strings.",
+    "output": "Output n lines; line i corresponds to role i−1: first output the number of effective permissions c, then output the c distinct permission strings in lexicographic (ASCII) order, separated by spaces.",
+    "explanation": "Example 1: role 1 inherits role 0, and role 2 inherits role 0 indirectly through role 1, so the effective permissions are {A}, {A,B}, and {A,B,C}.\nExample 2: role 2 inherits both roles 0 and 1, and role 3 inherits role 2, so it gets all four permissions.\nExample 3: the direct permission A of role 0 appears more than once and is kept only once after deduplication; role 2 has no direct permissions but inherits A.",
+    "hints": [
+      "Sort all permission strings first and number them; the numbering order is the output order.",
+      "Process roles in topological order, and once a parent role is done, merge its set into its children.",
+      "Represent sets as bitsets, so each merge takes only P/64 word ORs."
+    ]
+  }
+}

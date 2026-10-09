@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-227",
+  "packageChecksum": "3375dd6d75212267b17dabbba96e01182ad8fb2dafcbd70e2e40795bd8b72d89",
+  "en": {
+    "title": "Change Elements to Positive Integers So All k-Windows Have Equal Sums",
+    "description": "Any element may be changed to a positive integer, and each changed position counts once. Every contiguous subarray of length k must have the same sum; find the minimum number of changes. Original elements may be non-positive; unchanged positions do not need to become positive. When k≥n, no change is needed.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k; the second line contains the integer array. The original text had no numeric bounds; this site uses 1≤n,k≤200000, −10^9≤element≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 1, 0 and 2. In the last example 2 cannot be changed to −1; the only option is to change the two −1s to 2.",
+    "hints": [
+      "Subtracting adjacent windows gives a[i]=a[i+k]. Group the indices by index mod k: a group whose values are already all equal stays unchanged; otherwise set the group to its most frequent positive value, or change everything to 1 if it has no positive value."
+    ]
+  }
+}

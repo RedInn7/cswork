@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-harvey-2",
+  "packageChecksum": "6e3f80ce19cf4b6a106f292b1a0b7ce01c12d5ac5a268f92d7f759857fbf0a84",
+  "en": {
+    "title": "Spreadsheet Formula Evaluator",
+    "description": "Implement SET label expression and GET label. An expression consists only of non-negative integers and cell labels joined by plus signs. A SET that would create a dependency cycle is rejected and the old value is kept; GET returns ERROR for a cell that is unset or whose reference chain cannot be evaluated.\n\nThe explicit standard input/output format and additional constraints on this site define the online version and do not claim to be the source's original constraints.",
+    "input": "Each line contains one command; there are at most 1000 commands and at most 300 distinct labels. A label is an uppercase letter followed by digits; an addition expression has at most 50 terms, literals are ≤10^9, and every evaluable result is guaranteed to fit in a signed 64-bit integer. Referencing an unset cell does not form a cycle; GET returns ERROR in that case.",
+    "output": "For each command, output OK, ERROR or an integer.",
+    "explanation": "Tentatively apply the SET, then run DFS along the dependency graph to check whether it can get back to the assigned cell; if there is a cycle, restore the old value, otherwise commit. GET sums recursively by the current definitions and caches intermediate results only within the current read.",
+    "hints": [
+      "Tentatively apply the SET, then run DFS along the dependency graph to check whether it can get back to the assigned cell; if there is a cycle, restore the old value, otherwise commit. GET sums recursively by the current definitions and caches intermediate results only within the current read."
+    ]
+  }
+}

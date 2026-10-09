@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-18",
+  "packageChecksum": "064bf02ff9cdaf3d0c6b4235fb0a26425b735708516adc6a28ac77418c05ca05",
+  "en": {
+    "title": "Non-Friend Recommendation with the Most Mutual Friends",
+    "description": "For each person, recommend a user who is neither that person nor a direct friend, preferring the most mutual friends and then the smallest ID. A user with 0 mutual friends is still a candidate; return −1 only when there are no non-friends at all. The original OCR input is an edge list, not the matrix of the old curated page; the formal conditions of the original do not require a positive mutual count.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n m, followed by m lines of undirected edges. Original range of the complete same problem: 1≤n≤100000, 0≤m≤250000, IDs 0..n−1; there are no self-loops or multi-edges, each person has at most 15 friends, and the graph may be disconnected. The 1-based typo in the body of problem 18 is restored to 0-based according to the original constraints and examples.",
+    "output": "Output n recommended IDs, in order of users 0..n−1.",
+    "explanation": "The outputs of the three public examples are, in order: 3 2 1 0 1; -1 -1 -1; 2 2 0. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Enumerate the friends of each person's friends to count two-hop occurrences, excluding the person and their direct friends; if there is no candidate with a positive score, scan for the smallest ID not in the set formed by the person and their friends."
+    ]
+  }
+}

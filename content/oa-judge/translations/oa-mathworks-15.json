@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-15",
+  "packageChecksum": "f51d5afcbdd8198f101693ee26335b3e3b9d5e122327ab2ec8c521ba5dcce202",
+  "en": {
+    "title": "Minimum Operations to Make Arrays Equal",
+    "description": "Given integer arrays source and target of equal length. One operation chooses a prefix or a suffix and adds 1 to every element in it. Find the minimum number of operations; output −1 if source cannot be turned into target.\n\nThis site uses a standard input/output protocol.",
+    "input": "The first line contains n; the second line contains source; the third line contains target. 1≤n≤100000, and every element's absolute value is ≤10^13.",
+    "output": "Output the minimum number of operations, or −1.",
+    "explanation": "Let d[i]=target[i]−source[i], which must be non-negative everywhere. Each drop from d[i−1] to d[i] needs at least one prefix operation ending at that boundary. If the total drop N exceeds d[0], it is impossible; otherwise, N prefix operations plus some suffix/whole-array operations make up the rest, and the minimum number of operations is d[n−1]+N.",
+    "hints": [
+      "Let d[i]=target[i]−source[i], which must be non-negative everywhere. Each drop from d[i−1] to d[i] needs at least one prefix operation ending at that boundary. If the total drop N exceeds d[0], it is impossible; otherwise, N prefix operations plus some suffix/whole-array operations make up the rest, and the minimum number of operations is d[n−1]+N."
+    ]
+  }
+}

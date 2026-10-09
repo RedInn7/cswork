@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-24",
+  "packageChecksum": "7eec5f8dc979ee037262735234eba7d8ea47f712fbf06de0dd2d32b91e0b9a32",
+  "en": {
+    "title": "Minimum Round-Trip Airfare",
+    "description": "Given arrays departing and returning of equal length, giving the outbound and return fares on day i respectively. Choose a departure day i and a return day j, where the return must be strictly later than the departure (j > i), and find the minimum of departing[i] + returning[j]. This strict ordering constraint was filled in from public reports of the same problem; the original text and solution in the fixed OAMaster snapshot do not state it, and that solution takes the minimum of each array separately, ignoring the order of the days.\n\nSite constraints: 2≤n≤200000, -1000000000≤any fare≤1000000000. The fixed OAMaster snapshot provides no constraints; the ranges above and the stdin/stdout format are added by this site.\n\nOriginal problem source: https://oamaster.com/docs/companies/meta#24-get-minimum-round-trip-cost\nSource for the condition from the same problem: https://www.1point3acres.com/interview/problems/meta-solve-transportation-problem.",
+    "input": "The first line contains n; the second line contains n outbound fares departing; the third line contains n return fares returning.",
+    "output": "Output the minimum total cost such that the return day j is strictly greater than the departure day i.",
+    "explanation": "Scan from right to left, maintaining the minimum of returning[i+1..n-1], pair it with departing[i], and update the answer.",
+    "hints": [
+      "Once the departure day i is fixed, you only need the cheapest return fare after it.",
+      "Precompute suffix minimums, or update and compute at the same time while scanning from right to left."
+    ]
+  }
+}

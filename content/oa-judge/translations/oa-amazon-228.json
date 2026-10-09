@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-228",
+  "packageChecksum": "d22af5af583efc7f469e2482668c5681e4ca44ab698f556ae5ca47cad5b87a07",
+  "en": {
+    "title": "Minimum Unloading Docks with a Fixed Start Order",
+    "description": "Trucks must start unloading in input order, and a free dock immediately takes the next truck; trucks that start at the same time are assigned in input order. All trucks must finish within time T; find the minimum number of docks. Trucks cannot be reordered.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n T; the second line contains each truck's duration. 1≤n≤50000, 1≤T≤10^15, 1≤duration≤min(T,10^9). The source has a note about reading the upper bound of T; this site explicitly uses 10^15.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 1 and 2. In the first example two docks would need 9 minutes, which does not meet the limit of 8.",
+    "hints": [
+      "Binary search the number of docks. To check d, keep each dock's available time in a min-heap, assign each truck to the earliest free dock, then check the latest finish time."
+    ]
+  }
+}

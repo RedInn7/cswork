@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-37",
+  "packageChecksum": "bfb3de460cc9090d0784f89b7911397ffbf9d10aca3598e633a10b895fb315d1",
+  "en": {
+    "title": "Count Balance After Deleting Digit-Specified Numbers of Parentheses",
+    "description": "The string contains only left parentheses `(`, right parentheses `)`, and digit characters. Process it from left to right; each time you meet a digit d, you may delete any d of the not-yet-deleted parentheses to its left. Digits are processed one character at a time; for example, `11` means processing 1 and then 1 again. After processing, the string is balanced as long as the number of remaining left parentheses equals the number of remaining right parentheses; no prefix is required to be a valid parenthesis sequence.\n\n**Note:** The upstream example wrongly lists `())` as balanced; its counts are unequal, so the correct result is 0.\n\nAdded by this site: standard input is a single-line string of length 1..200000 containing only `(`, `)`, `0`..`9`; if a digit exceeds the number of parentheses not yet deleted before it, all remaining parentheses are deleted. The original problem gives no length range or input/output protocol.",
+    "input": "A single line containing the string s.\n\nAdded by this site: standard input is a single-line string of length 1..200000 containing only `(`, `)`, `0`..`9`; if a digit exceeds the number of parentheses not yet deleted before it, all remaining parentheses are deleted. The original problem gives no length range or input/output protocol.",
+    "output": "Output 1 if some valid choice of deletions leaves equal numbers of left and right parentheses, otherwise output 0.",
+    "explanation": "See the endpoint dynamic programming proof in the accompanying notes for details.",
+    "hints": [
+      "After the same prefix is processed, the total number of remaining parentheses does not depend on the deletion choices.",
+      "For the same remaining total, the reachable differences between the left and right counts form a contiguous range of the same parity.",
+      "Each digit only needs to update the two endpoints of the difference range."
+    ]
+  }
+}

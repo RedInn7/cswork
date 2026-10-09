@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-79",
+  "packageChecksum": "276af286d8b53baafa18444a1c426459c4197750812eba521c07249e7ea48455",
+  "en": {
+    "title": "Maximum Items Bought in Cyclic Shopping",
+    "description": "Buy the n items cyclically in order. The t-th purchase of item i costs t×cost[i]. The problem text does not say what happens when an item is unaffordable; the Python, Java, and C++ solutions of the same fixed OAMaster version all stop immediately at the first unaffordable item, so this site specifies that purchasing stops rather than skipping and continuing. The original problem gives no standard I/O examples; the examples below were added by this site.",
+    "input": "The first line contains n m; the second line contains n integers cost[i]. 1≤n≤100000, 1≤m≤10^15, 1≤cost[i]≤200000. The standard I/O and this site's examples were added by this site.",
+    "output": "Output the total number of items bought before stopping. Stop immediately when the current item is unaffordable; do not skip it.",
+    "explanation": "First binary search the number of complete rounds that can be bought, then process the next round in order; stop at the first unaffordable item.",
+    "hints": [
+      "The total cost of k complete rounds is sum(cost)×k×(k+1)/2.",
+      "With the remaining budget, you only need to check a prefix of the next round."
+    ]
+  }
+}

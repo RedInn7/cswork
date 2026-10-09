@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-145",
+  "packageChecksum": "81dd800694ec1efc50326a042b55a0bb0fdf096f841517b0e74be752cd960cb8",
+  "en": {
+    "title": "Add Adjacent Digits and Keep the Ones Digit Until Two Remain",
+    "description": "In each round, add every two adjacent numbers and keep only the ones digit, so the array length decreases by 1. Repeat until exactly two digits remain, and output them in order as a two-character string, keeping a leading 0.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (2..5000), and the second line contains n digits in 0..9.",
+    "output": "Output exactly two digit characters; a leading 0 must be kept.",
+    "explanation": "Example 1: 4567→913→04, so output 04 rather than 4. Example 2: 1234→357→82. Example 3: the original two digits are 00, so no operation is needed; output 00.",
+    "hints": [
+      "In each round, overwrite in place toward the left with the adjacent sums mod10, shrinking the effective length until it is 2."
+    ]
+  }
+}

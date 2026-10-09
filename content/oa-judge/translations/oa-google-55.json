@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-55",
+  "packageChecksum": "c3d06d6057d5f653f92d437cbac187f228573b7f173809dd6da46643e5d9dd0d",
+  "en": {
+    "title": "Minimum Splits to Make an Array Non-Decreasing",
+    "description": "One operation splits a positive integer into two positive integers whose sum equals the original number, inserted in place in the chosen order; pieces can be split further. Find the minimum number of operations needed to make the whole array non-decreasing.\n\nThe input/output and examples are compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "This site's standard input: the first line contains n (1..100000); the second line contains n positive integers (1..10⁹).",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: split 10 into 5, 5 to get 5, 5, 5, 8, in one operation. Example 2: splitting 9 into 3, 3, 3 takes two operations and gives a non-decreasing array of all 3s. Example 3: the array is already sorted, so no split is needed.",
+    "hints": [
+      "Process from right to left. With limit as the upper bound allowed by the right side, the current value v needs at least ceil(v/limit) parts; split it as evenly as possible, and the new leftmost value is floor(v/parts), which becomes the upper bound for the next step."
+    ]
+  }
+}

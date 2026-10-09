@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-11",
+  "packageChecksum": "c22817d9c554d140900b56f706238d5b686de405eacfbaa64afb78eafa0cc5f3",
+  "en": {
+    "title": "Unique Index Pair for Two Sum",
+    "description": "Given an integer array nums and an integer target, return two distinct indices i and j such that nums[i]+nums[j]=target. The input is guaranteed to have exactly one valid unordered index pair. This site fixes the output as ascending 0-based indices i<j; equal values may come from different positions, but the same index may not be used twice. The return description in the source's raw text is incomplete, while both example explanations clearly return the indices of the two numbers; the fixed version's source code in all three languages looks up earlier indices before adding the current index, so this site states distinct indices and the output order explicitly. Original example 1 contains 11 and 15, which exceed the original value range; it is not used in the official tests, and the constraints must not be expanded based on it.",
+    "input": "The first line contains n target; the second line contains n values nums[i]. Full original constraints: 2≤n≤10, -10≤nums[i]≤10, -10≤target≤10, and exactly one pair i<j satisfies nums[i]+nums[j]=target. The standard input and ascending index output are this site's protocol.",
+    "output": "Output two space-separated integers i j such that 0≤i<j<n and nums[i]+nums[j]=target. Return indices, not element values. Inputs with no solution or multiple solutions are not included.",
+    "explanation": "The first example comes from the valid original example 2: 2+7=9, so output 0 1. In the second example the two 3s come from different positions, so output 0 1. In the third example -3+3=0, so output 0 2; the zero at position 1 cannot be used twice.",
+    "hints": [
+      "First look up the index of the complement seen earlier, then record the current position.",
+      "You can also enumerate all i<j directly, since n is at most 10."
+    ]
+  }
+}

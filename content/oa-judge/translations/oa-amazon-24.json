@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-24",
+  "packageChecksum": "08120709d947318fe91cc243ddee78bb41d39ba8a6db5ea7377694e04337ba0e",
+  "en": {
+    "title": "Matrix Selection with Per-Row Limits",
+    "description": "Choose exactly x elements from an n×n matrix, with at most factor[i] from row i, to maximize the total. Output −1 if x elements cannot be chosen; output 0 when x=0.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains n x (1≤n≤1000, 0≤x≤n²); the second line contains n values factor (0..n); the next n lines contain the matrix, with values 1..10⁹.",
+    "output": "Output a single integer, the answer required by the problem.",
+    "explanation": "Example 1: choose 8 and 6 from the first row, 10 from the second, and 5 and 1 from the third, which respects every row limit: 5 items with a total of 30. Example 2: the only row has limit 0, so the required 1 item cannot be chosen; output −1. Example 3: 0 items are required, and the empty selection sums to 0.",
+    "hints": [
+      "Keep only the factor[i] largest elements of each row, then take the x largest among all candidates."
+    ]
+  }
+}

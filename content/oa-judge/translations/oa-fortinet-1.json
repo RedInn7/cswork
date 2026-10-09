@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-fortinet-1",
+  "packageChecksum": "bd8d5260b61bd259dee1fd9da51b9cd10265e495e626039c6f41ea00b883e7d2",
+  "en": {
+    "title": "Fortinet OA #1: Maximum Profit",
+    "description": "There are n distinct items that you can buy and resell. Item i (indices start at 0) costs cost[i], and reselling it yields a profit of 2^i. You have x units of money, each item can be bought at most once, and the total cost of the items bought cannot exceed x. Find the maximum profit you can make. The answer may be large, so output it modulo 10^9+7.",
+    "input": "The first line contains two integers n and x; the second line contains n integers cost[0..n−1]. 1≤n≤100000, 1≤cost[i]≤10^9, 1≤x≤10^14.",
+    "output": "Output one integer: the maximum profit modulo 10^9+7.",
+    "explanation": "Example 1: cost=[10,20,14,40,50], x=70. Buying 0,1,2 (cost 44) gives profit 7; 0 and 4 (cost 60) give profit 17; 1 and 4 (cost 70) give profit 18; 2 and 4 (cost 64) give profit 20, which is the maximum.\nExample 2: buying both items spends exactly 7, for a profit of 1+2=3.\nExample 3: the item at index 2 is unaffordable; buying the items at indices 0 and 1 gives a profit of 3.",
+    "hints": [
+      "2^i is greater than the sum of the profits of all smaller indices.",
+      "Go greedily from high indices to low ones, buying whenever you can.",
+      "Take the modulo only when accumulating the profit; never compare values after the modulo."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-244",
+  "packageChecksum": "40067dcbb9c4233d90a58d03794834f0b552f9eac66561c9cc94c772106b5881",
+  "en": {
+    "title": "Earliest Time the Number of Malicious-Character Substrings Reaches a Threshold",
+    "description": "The initial lowercase password has length n. At second t, position attackOrder[t] (1-based) is changed to *, and attackOrder is a permutation of 1..n. A damaged substring is a non-empty contiguous substring containing at least one *, counted separately by start and end positions. Find the second at which their number first reaches or exceeds m. When m=0, output 1, as specially required by the source. The source's main text mistakenly wrote the threshold as n; it is corrected according to the parameter m and both examples.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m, the second line the password, and the third line n values attackOrder. 1≤n≤800000, 0≤m≤n(n+1)/2, the password is lowercase, and attackOrder is a permutation of 1..n.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 4 and 1. In the first example there are 8 damaged substrings at second 1 and 11 at second 2, which is the first time the count reaches 10.",
+    "hints": [
+      "Undo the attacks in reverse order, turning every position from bad back to good. Maintain the length of each good contiguous segment at its two ends; when a position is activated, read the left and right lengths L and R, and the newly created all-good substrings number exactly (L+1)(R+1). When the damaged count drops from ≥m to <m, the time before that undo is the answer."
+    ]
+  }
+}

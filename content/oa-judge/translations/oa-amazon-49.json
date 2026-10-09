@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-49",
+  "packageChecksum": "eaa8946d1ca0dc849bb52d338b4a73950d49000d8606c43c6e1f509e9588384b",
+  "en": {
+    "title": "Rounds Until Stable When Mutation Characters Delete Their Left Neighbors Simultaneously",
+    "description": "In each round, every mutation character whose immediate left neighbor is a non-mutation character deletes that neighbor, and all deletions happen simultaneously; mutation characters never delete each other. Find the number of rounds until no more deletions occur, or 0 if no deletion ever happens.\n\nThe standard I/O, examples, and judging were written independently by CSWork; conventions marked as this site's are not presented as original source constraints.",
+    "input": "The first line contains the lowercase genome (length 1..100000), and the second line contains a single lowercase mutation character.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: in the first round, the two m delete a and e respectively, giving tmm; in the second round, the first m deletes t, leaving mm, so the answer is 2. Example 2: there are no mutation characters, 0 rounds. Example 3: the last m deletes b first and then a, leaving mmm after two rounds.",
+    "hints": [
+      "Each mutation character consumes, one by one, the run of ordinary characters to its left up to the previous mutation character. The answer is the maximum length of the ordinary run before any mutation character; the trailing ordinary run is never consumed."
+    ]
+  }
+}

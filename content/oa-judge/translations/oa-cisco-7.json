@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-7",
+  "packageChecksum": "d265f020bfe161e8efeae87db7889f94b84c1fee89e6377b34d5c4fbb2bdc92f",
+  "en": {
+    "title": "Classify Primes and Non-Primes by the Problem's Labels",
+    "description": "Output Prime or Composite for each integer. A number that is at least 2 and has exactly two positive divisors, 1 and itself, is prime and outputs Prime; every other integer uses the original problem's output label for non-prime, uniformly Composite. Therefore 0, 1, and negative integers also output Composite; this does not claim that they are all mathematically composite.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The first line contains N, and the second line contains N integers. The original gave no numeric bounds; this site uses 0≤N≤2000 and −2^31≤a[i]≤2^31−1. An empty list produces empty output text.",
+    "output": "Output Prime or Composite for each item, one per line; an empty list produces empty output text.",
+    "explanation": "The outputs of the three public examples are, in order: Prime / Prime / Prime / Prime / Composite; Composite / Composite / Composite / Prime / Composite; empty text. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Sieve all primes up to 46340, and for positive numbers trial-divide by prime factors until p²>value; numbers less than 2 are non-prime immediately, and cache the results for repeated values."
+    ]
+  }
+}

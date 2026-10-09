@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-70",
+  "packageChecksum": "98140cce6b049ee3fae687ecf6c260a31ecda4b893b64d8ec5e4efc609ea07e4",
+  "en": {
+    "title": "Chapter Outline Preserving Original Titles",
+    "description": "A line that starts exactly with \"# \" is a chapter title, a line that starts with \"## \" is a section title, and all other lines are ignored. Chapters are numbered from 1, and section numbers restart from 1 in each new chapter; output \"<chapter>. <title>\" or \"<chapter>.<section>. <title>\". Only the fixed prefix is removed; all whitespace and Unicode characters within the title are kept as is, and empty titles are allowed.\n\nThe input/output protocol was compiled by this site, and missing numeric constraints are explicitly marked as this site's additions.",
+    "input": "The input is a JSON array of strings text. Full original bounds: 1≤number of lines≤1000, and each string has length 1..100 in Unicode code points; the first line is guaranteed to start with \"# \". A leading # marker is only # or ## and is followed by a space. The original text does not restrict the character set, so it is not narrowed to ASCII; JSON escapes may represent control characters such as tabs, and title content is not trimmed.",
+    "output": "Output a single-line canonical JSON array of strings, followed by a newline: one space after each comma in the array; non-ASCII characters are output directly; double quotes, backslashes and control characters are escaped per JSON (backspace/tab/newline/form feed/carriage return use \\b/\\t/\\n/\\f/\\r, and the remaining U+0000..U+001F use lowercase four-digit \\u00xx); slashes are not escaped. This matches Python json.dumps(result, ensure_ascii=False). This encoding preserves every title character and avoids NUL in the output; an exact check is used.",
+    "explanation": "The first example outputs [\"1. Cars\", \"1.1. Sedan\", \"1.2. Coupe\", \"1.3. SUV\"]. In the second example, section numbers reset after a new chapter. In the third example, the titles contain spaces, tabs and an empty title; after JSON decoding, the titles must be preserved character by character.",
+    "hints": [
+      "Scan in order, maintaining the chapter number and the current section number. On a chapter, increment the chapter number and reset the section number; on a section, increment the section number; then join the number, one separating space and the original title with its marker removed."
+    ]
+  }
+}

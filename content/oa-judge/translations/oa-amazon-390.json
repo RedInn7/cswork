@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-390",
+  "packageChecksum": "8ee742004ebd747ee0c59253b55b3d483e10a565bac63786eec7efd89042f3cc",
+  "en": {
+    "title": "Expanding a Product of Two Polynomials with Negative Integer Powers",
+    "description": "The input is the product of two finite polynomials in the same variable, with negative integer exponents allowed (Laurent polynomials). Combine like powers and output the expansion with exponents in strictly descending order, with no parentheses and no spaces; do not drop negative powers or use floating-point coefficients.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "A single line (P)(Q) with exactly four parentheses; the variable is the same single ASCII letter a..z or A..Z. The original gives no value bounds; this site adds 1..200 terms per factor, absolute value of each original term's coefficient ≤10^9, and exponents in −10^9..10^9; repeated powers, zero coefficients, and constant factors are allowed. Exact grammar: terms are joined by + or -, and the first term may carry a sign; a term is either a non-negative decimal constant or the variable, whose coefficient may be omitted when its absolute value is 1, optionally followed by ^ and a signed decimal integer exponent. An omitted exponent means 1, and a term without the variable is a constant term; for example (-x^-2+3)(2x+1), and x^+2 is also accepted. There is no whitespace other than the line terminator, and Unicode superscripts are not used; integers are written in ordinary decimal notation.",
+    "output": "Output the unique canonical string: remove zero terms and order exponents from largest to smallest; omit the plus sign of the first term, then use + for positive terms and - for negative terms; omit the 1 when the absolute value of the coefficient is 1 and the exponent is not 0; for exponent 0 output only the constant coefficient, for exponent 1 omit ^1, and for other powers use ASCII ^ followed by the decimal exponent (positive exponents without +); output 0 for the zero polynomial. Examples: x+2x^-1, -3x^6-2x^3, 0. Do not output spaces, parentheses, leading zeros, or redundant + signs.",
+    "explanation": "The outputs of the three public examples are, in order: x+2x^-1; -3x^6-2x^3; 0. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "When scanning term by term, keep the sign inside the exponent separate from the sign of the term, and combine each factor by exponent; multiply term pairs, multiplying coefficients and adding exponents, and accumulate into the matching exponent. Finally, format in descending order and remove zero terms."
+    ]
+  }
+}

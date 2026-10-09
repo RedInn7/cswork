@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-307",
+  "packageChecksum": "3f834897e4fb92d2a59d6190c6d74f40a4a28934bed181a07142f0f8fd134038",
+  "en": {
+    "title": "Minimum Packing Effort When Each Center Is Used At Most Once",
+    "description": "Each of the m items must be packed exactly once. Each center can be used at most once, or not at all. At center i, paying for at least packageCount[i] items gets you 2 more items for free, and the effort of each of those two free items must not exceed that of any paid item at the center. A center grants only this one set of 2 free items, and every other item must be paid for. You may pay at a center without claiming the offer, and you may also just pay without reaching the threshold. Find the minimum total paid effort for all items.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains m n, the second line contains m packEffort values, and the third line contains n packageCount values. The original bounds are 1≤m,n≤100000, 0≤packEffort[i]≤10000. The original statement gives no numeric bound on the thresholds; this site adds 1≤packageCount[i]≤10^9 and does not additionally require a threshold≤m.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 19, 9 and 0. In the first example the only center must hold all four items, so only 8 and 1 can be free; you cannot pay 10, get 9 and 8 free, and leave 1 at a center that does not exist. In the second example, one center pays 6 to get 5 and 4 free, and the other pays 3 to get 2 and 1 free.",
+    "hints": [
+      "Sort effort in descending order and thresholds in ascending order, and use the centers with the smallest thresholds in turn: first pay for threshold items, then get the next two free, and record the savings. While an unused center remains, all leftover items can be paid for there; if the last center is used, it must take all leftover items, so its free items become the two globally smallest. Compare every prefix count of centers used, as well as using no offer at all."
+    ]
+  }
+}

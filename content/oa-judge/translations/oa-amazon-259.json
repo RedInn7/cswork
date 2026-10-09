@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-259",
+  "packageChecksum": "f396f9e90f345e01491deefa0b668b5262eba278c3fb645d73bcfe69318b1d37",
+  "en": {
+    "title": "Maximum Weight Sum of Pairwise Non-Overlapping Closed Intervals",
+    "description": "Interval i is the closed interval [start[i],start[i]+duration[i]] with profit cost[i]. Choose pairwise non-overlapping intervals to maximize the total profit; sharing an endpoint also counts as overlapping, and choosing nothing is allowed. This closed-interval convention is restored from the source example, in which [2,4] and [4,7] are incompatible and the answer is 9.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by three lines: start, duration and cost. The original text had no numeric bounds; this site uses 1≤n≤200000, 0≤each value≤10^9; duration=0 means a single-point interval.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9, 7 and 9. In the second example the intervals intersect at 1, so they cannot both be chosen; in the third example, of the two points at the same position choose the one with profit 5, then choose position 2 with profit 4.",
+    "hints": [
+      "Sort by end time, with dp recording the best value over the first several intervals. For the current interval, binary search the prefix whose end times are strictly less than its start, and take the maximum of skipping it and appending it after that prefix."
+    ]
+  }
+}

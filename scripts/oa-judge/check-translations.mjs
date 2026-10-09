@@ -22,9 +22,15 @@ const files = existsSync(dir)
   : [];
 const superscripts = '⁰¹²³⁴⁵⁶⁷⁸⁹';
 const normalize = (text) =>
-  text.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (s) =>
-    '^' + [...s].map((c) => superscripts.indexOf(c)).join(''),
-  );
+  text
+    .replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (s) =>
+      '^' + [...s].map((c) => superscripts.indexOf(c)).join(''),
+    )
+    // "200万" and "2,000,000" are the same bound; compare plain values.
+    .replace(/(\d+(?:\.\d+)?)\s*万/g, (_, n) => String(Math.round(Number(n) * 10000)))
+    .replace(/(\d),(?=\d{3}\b)/g, '$1')
+    // Chinese often glues a name to a range ("turns0..9"); English may add a space.
+    .replace(/([A-Za-z])(\d)/g, '$1 $2');
 const numbers = (text) => new Set(normalize(text).match(/\d+/g) || []);
 const identifiers = (text) =>
   new Set(

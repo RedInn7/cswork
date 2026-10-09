@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-wayfair-2",
+  "packageChecksum": "5a4e16e6147d39297bc8fd47d41525b6ece6d46c12b15e65c120d7fc44d067b0",
+  "en": {
+    "title": "Wayfair OA #2: Number of Divisible Substrings",
+    "description": "Map lowercase letters using this fixed table: ab→1, cde→2, fgh→3, ijk→4, lmn→5, opq→6, rst→7, uvw→8, xyz→9. Count the contiguous non-empty substrings whose sum of mapped values is divisible by the substring length. Count by position: identical content at different positions is counted separately. The mapping image in the fixed original text was a broken local path; this site restored it from the public Problem Source original image on the original FastPrep page, and the original starter also explicitly references LC2950; the evidence and image hash are in the editorial.",
+    "input": "A lowercase English string word, without quotes. Full original range 1≤word.length≤2000; the empty string is not accepted.",
+    "output": "Output the number of qualifying contiguous non-empty substrings, as an exact integer with no modulo.",
+    "explanation": "Original examples kept: asdf→6, corresponding to a, s, d, f, as, sdf; bdh→4, corresponding to b, d, h, bdh; abcd→6, corresponding to a, b, c, d, ab, cd. The first group ab has only two letters, so you cannot map by three letters per group or by a phone keypad.",
+    "hints": [
+      "Divisibility is equivalent to the substring's average mapped value being an integer.",
+      "The possible integer averages are only 1 to 9.",
+      "After fixing the average k, subtract k and count substrings with zero sum."
+    ]
+  }
+}

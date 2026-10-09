@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-121",
+  "packageChecksum": "cbc9b2118fd703a3a32ea7eb9fd2ece3a6642baeefc31bb7dcbf7c9a94392e33",
+  "en": {
+    "title": "Server Replacements After Three Consecutive Errors",
+    "description": "Observe each server's own requests separately; after three consecutive error results, replace the server and reset its consecutive error count to zero, and a success also resets it. Logs from other servers do not interrupt a server's consecutive requests.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n m; each of the next m lines contains a server number (1-based) and success/error. 1≤n≤200, 1≤m≤20000; the upper bound on m follows a text transcription of a blurry image in the source and is not claimed to have been checked against the original image.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: s1 is replaced once when its third error occurs, followed by only one more error, so the answer is 1. Example 2: six errors in a row cause a replacement every three, so the answer is 2. Example 3: a success interrupts the consecutive errors, so the answer is 0.",
+    "hints": [
+      "Store the consecutive error count for each server; success resets it to zero, and an error adds one, replacing the server and resetting the count when it reaches 3."
+    ]
+  }
+}

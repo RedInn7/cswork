@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-379",
+  "packageChecksum": "f67c1122916c1049306b580fd8564b2b62162537e774d0f2bd3d3d385d19eb3c",
+  "en": {
+    "title": "Choosing a Truck with Strictly Larger Capacity for Each Package",
+    "description": "Each package independently chooses a truck whose capacity is strictly greater than its weight: first minimize the capacity, then choose the smallest original index among trucks with that capacity. Indices start at 0; output −1 if no truck is available. Loading does not consume truck capacity.\n\nThis site independently prepared the standard I/O and the solution; bounds supplemented where the source lacks them and corrections to examples are stated explicitly in the specification.",
+    "input": "The first line contains n m, the second line contains n capacities, and the third line contains m weights. Original bounds: 1≤n,m≤100000; capacities and weights are all 1..10^9.",
+    "output": "Output m truck indices or −1, in package order.",
+    "explanation": "The outputs of the three public examples are, in order: 0 3 -1; 1 0 -1; 0 2. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Sort by capacity, keeping the smallest index for each capacity, then binary search for the first capacity strictly greater than the weight."
+    ]
+  }
+}

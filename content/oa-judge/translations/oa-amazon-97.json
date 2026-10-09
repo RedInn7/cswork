@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-97",
+  "packageChecksum": "4bff08220a26b5f940d583f18cb79156f8e985128c76d7529df24661ec55b587",
+  "en": {
+    "title": "Assigning the Smallest Free Server ID with Queued Requests",
+    "description": "Request i arrives at time i and lasts requests[i] seconds. Process requests in arrival order and choose the smallest currently free ID; when all servers are busy, wait for the earliest release time, and if several are released at the same time, choose the smallest ID. A 0-second request releases its server immediately. The source example does not follow the smallest-free-ID rule; this site corrects it according to the statement.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains servers n, and the second line contains n durations. The original gives no numeric constraints; this site uses 1..100000 for both servers and n, and durations of 0..10⁹.",
+    "output": "Output the server ID assigned to each request, separated by spaces.",
+    "explanation": "Example 1: at time 2, ID 1 has been released while 0 is not free until 3, so the five assignments are 0, 1, 1, 0, 1; the original source's 0, 1, 0, 2, 1 does not match the statement. Example 2: there is only ID 0, so all three requests go to it and the last two must queue. Example 3: at time 2 both servers are released at once, so the smaller ID 0 is chosen, giving 0, 1, 0.",
+    "hints": [
+      "Keep a min-heap of free IDs plus a min-heap of busy (end time, ID). For each request, advance to its arrival time; if no server is free, advance to the earliest end time, then release all servers that are due and take the smallest ID."
+    ]
+  }
+}

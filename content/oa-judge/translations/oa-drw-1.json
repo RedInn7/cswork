@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-drw-1",
+  "packageChecksum": "a8de967b9dbffe1bd5b1285296caa35e79e5c1c00a034fe791f7670101afdc88",
+  "en": {
+    "title": "DRW OA #1: Simplified Tetris",
+    "description": "Implement a simplified Tetris engine. The grid is 10 columns wide. Pieces enter from the top and fall straight down as if under gravity, and a piece stops as soon as any part of it touches the bottom of the grid or a piece that has already stopped. Each piece consists of 4 unit squares, is rigid, and does not rotate; no two squares can occupy the same position.\n\nThere are 7 kinds of pieces with the following fixed shapes (the coordinates (x,y) of each square are given with the piece's leftmost column as x=0 and its bottom row as y=0):\nQ: (0,0)(1,0)(0,1)(1,1)\nZ: (1,0)(2,0)(0,1)(1,1)\nS: (0,0)(1,0)(1,1)(2,1)\nT: (1,0)(0,1)(1,1)(2,1)\nI: (0,0)(1,0)(2,0)(3,0)\nL: (0,0)(1,0)(0,1)(0,2)\nJ: (0,0)(1,0)(1,1)(1,2)\n\nWhenever an entire row is filled, that row disappears and all rows above it shift down as a whole into the vacated position; the pattern within each row stays the same, and the pieces do not fill gaps in the rows below.\n\nEach line of the input is a placement sequence, and each line starts from an empty grid; find the height of the remaining pieces after all pieces on that line have been processed.",
+    "input": "The input consists of several lines (until end of file). Each line is a comma-separated list of placements, and each item is a piece letter followed by one digit, which is the leftmost column occupied by the piece (starting from 0). The input is guaranteed to be valid: pieces never extend beyond the left or right edge of the grid, and the height never exceeds 100 during the process. There are at most 200 lines, and each line has at most 1000 pieces.",
+    "output": "For each line of input, output one line containing the height of the remaining pieces after that sequence ends.",
+    "explanation": "Example 1: on the first line, I0,I4,Q8: the two I pieces fill columns 0..7 and Q occupies columns 8 and 9, so the bottom row is filled and cleared, leaving the top half of Q, with height 1; on the second line, Q0 falls to the bottom, with height 2.\nExample 2: T1,Z3,I4 completes no row, and the final height is 4.\nExample 3: after Q0,I2,I6, the bottom row is cleared; after then placing I0,I6,I6,Q2,Q4, the second row is filled and cleared; rows fall as a whole without filling gaps, and the final height is 3.",
+    "hints": [
+      "A piece falls straight down from above and can only be blocked by the highest occupied cell in each column.",
+      "When clearing rows, delete only full rows; the other rows shift down unchanged.",
+      "A row can be represented by a 10-bit integer."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-249",
+  "packageChecksum": "2cdca643560294c86df5879a1491c291796f8bd4806d9df6c1476e25582f2ddb",
+  "en": {
+    "title": "k-th Smallest Element of Every Window of Length m",
+    "description": "For each contiguous window of length m in the array, from left to right, output its k-th smallest element; equal numbers at different positions each take their own rank. Output in increasing order of window start. The original statement was truncated; this rule is restored from what the original example states explicitly: windows of m=3, the 2nd smallest, and the output order.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m k; the second line contains the array. The original text had no numeric bounds; this site uses 1≤k≤m≤n≤100000, −10^9≤element≤10^9.",
+    "output": "Output n−m+1 integers in order of window start, separated by spaces.",
+    "explanation": "The answers are 3 2, 2 2 and −5. In the second example the two 2s are two separate elements.",
+    "hints": [
+      "Compress the values and maintain the frequency of each value in the current window with a Fenwick tree. Use binary lifting to find the position where the prefix frequency first reaches k; when sliding, remove the old element and add the new one."
+    ]
+  }
+}

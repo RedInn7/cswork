@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-285",
+  "packageChecksum": "c927298f99692ca9e8c4689fda184bb4504716b5cc820bda6f276cead6f42797",
+  "en": {
+    "title": "Minimum Connected Components After Adding One Length-Limited Delivery Zone",
+    "description": "There are existing closed-interval delivery zones, which may overlap. You must add exactly one closed interval [a,b], whose length is defined as b−a; the length may be 0 and must not exceed k. Intervals are connected only when they share a point; adjacent integers do not count as connected. Find the minimum number of connected components after the addition. The original statement explicitly says [2,2] and [3,4] are not connected, and the continuous-interval semantics are restored from that.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k, followed by n lines each containing a[i] b[i]. 1≤n≤100000, 1≤a[i]≤b[i]≤10^9, 1≤k≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 2 and 1 respectively. In the third example a single [1,5] connects three components at once; it is not limited to connecting two at a time.",
+    "hints": [
+      "First merge the existing intersecting intervals into m separate components. Use two pointers to find the longest run of consecutive components l..r with L[r]−R[l]≤k; the answer is m−(r−l)."
+    ]
+  }
+}

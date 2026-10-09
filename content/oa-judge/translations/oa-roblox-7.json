@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-roblox-7",
+  "packageChecksum": "87f3fc68843b24aa2ebdb1508f98b0becfc3af50cf288c4cbc7d3ac57520255b",
+  "en": {
+    "title": "Roblox OA #7: Longest Diagonal Segment",
+    "description": "You are given a matrix with R rows and C columns, where each element is 0, 1, or 2. Find the longest diagonal segment that follows the pattern 1, 2, 0, 2, 0, 2, 0, … (the first element is 1, then 2 and 0 alternate indefinitely) and ends at the matrix boundary. Output the length of this segment.\n\nA segment may start at any element of the matrix, may proceed in any of the four diagonal directions, and must end on an element in the first row, last row, first column, or last column. It is guaranteed that at least one such segment of length at least 2 exists.",
+    "input": "The first line contains R and C; then R lines follow, each containing C integers (0, 1, or 2). 1≤R,C≤500.",
+    "output": "Output one integer: the length of the longest segment.",
+    "explanation": "Example 1: starting from the 1 at row 3, column 4 (1-based) and moving up-left, the path passes 2 and 0 and reaches row 1; the segment [1,2,0] has length 3.\nExample 2: from the 1 in the top-left corner, moving down-right reaches a 2, length 2.\nExample 3: from the 1 at row 3, column 3 (1-based), moving up-left gives 2, then 2; the second one is not 0, so that fails; moving down-left reaches the 2 in the last row, length 2.",
+    "hints": [
+      "When walking along a diagonal, the first boundary cell you hit after the starting cell is the last cell.",
+      "So the segment must match all the way from the start until it leaves the matrix.",
+      "For each direction, compute from the exit side the length that \"matches all the way until leaving the matrix\"."
+    ]
+  }
+}

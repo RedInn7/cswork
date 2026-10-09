@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-mathworks-8",
+  "packageChecksum": "115cacc789c666743749ff0b35e3f61672465ebb3439d329c25032d0d84b4f4d",
+  "en": {
+    "title": "Alloy Production",
+    "description": "Each unit of alloy needs composition[i] units of metal i; you already have stock[i] and can buy more at a unit price of cost[i], with a budget of budget. Find the maximum number of units you can produce.\n\nThis site uses a standard input/output protocol.",
+    "input": "The first line contains n budget; the next three lines are composition, stock, and cost respectively. Constraints added by this site: 1≤n≤100000, 0≤budget≤10^9, 1≤composition[i],cost[i]≤10^9, 0≤stock[i]≤10^9.",
+    "output": "Output the maximum number of alloy units.",
+    "explanation": "The purchase cost for an output of x is Σmax(0,x·composition[i]−stock[i])·cost[i], which is non-decreasing in x, so binary search for the largest feasible output. The source's example output of 1 is correct, but the cost formula in the original explanation is wrong; this site corrects it according to the rules.",
+    "hints": [
+      "The purchase cost for an output of x is Σmax(0,x·composition[i]−stock[i])·cost[i], which is non-decreasing in x, so binary search for the largest feasible output. The source's example output of 1 is correct, but the cost formula in the original explanation is wrong; this site corrects it according to the rules."
+    ]
+  }
+}

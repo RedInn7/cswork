@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-35",
+  "packageChecksum": "d3b509b4f94729c7b537b79630c708700075b390807dbbdb7804ba13b19e5ce7",
+  "en": {
+    "title": "Planning the Cutting Order of a Rod",
+    "description": "A rod already has the lengths of all its final segments marked in order. The machine can only cut an existing rod of length at least minLength, and each cut splits it into two rods at one mark that has not been cut yet. Determine whether there is an order that completes the cuts at all marks.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input gives n, the n segment lengths, and minLength. The original has no numeric bounds, and the extra ranges in the catalog have no basis in the original text; this site adds 2≤n≤200000, each segment 1..10^9, 1≤minLength≤10^18. n≥2 guarantees that there really is a last cut.",
+    "output": "Output Possible if it can be done, otherwise Impossible.",
+    "explanation": "The outputs of the three public examples are, in order: Possible; Impossible; Possible. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Check whether there are two adjacent segments whose total length is at least minLength."
+    ]
+  }
+}

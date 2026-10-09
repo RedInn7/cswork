@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-301",
+  "packageChecksum": "e6a7fac4a0fbcf2ca627445cbc478cf48a4ea120f35bd7e8d4e3a7f1b8e34ec9",
+  "en": {
+    "title": "Minimum Total Setup Time for Two Processors Handling Typed Tasks in Order",
+    "description": "Following the original order, assign each task to one of two processors; each processor remembers the type it handled last. If a task's type matches that processor's last type, it costs short[t], otherwise long[t]; a processor's first use costs long[t]. Find the minimum total cost of all tasks; the order may not change. short is not guaranteed to be ≤long.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m, the second line contains n types in 1..m, the third line contains m short values, and the fourth line contains m long values. The original statement gives no upper bounds; on this site 1≤n,m≤200000, 0≤short[t],long[t]≤10^9, and short>long as well as zero costs are allowed.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 11, 12 and 0. In the first example the first two tasks each use an unused processor, and the third task must not invent a third cold-start processor.",
+    "hints": [
+      "After handling the previous type p, state j records the last type of the other processor, and dp[j]+offset is the actual cost. Continuing on the same processor adds the same cost to every state; the best result of switching processors is min(dp[t]+short[t],min(j≠t)dp[j]+long[t])+ the old offset, and only state p is updated. Maintain the minimums at two different indices, with support for decreasing a single point."
+    ]
+  }
+}

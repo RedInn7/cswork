@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-box-1",
+  "packageChecksum": "34796981b78f6356456b00fb2b5669dba813213e635eaf5ebc40d10bfd6e6568",
+  "en": {
+    "title": "Box OA #1: Identifying Counterfeit Coins",
+    "description": "A cryptocurrency transaction consists of n coins, each with a serial number. A valid serial number satisfies:\n1. Its length is 10 to 12 characters;\n2. The first 3 characters are distinct uppercase English letters;\n3. The next 4 characters give the minting year, which must be between 1900 and 2019 (inclusive);\n4. The following characters give the denomination, which must be one of 10, 20, 50, 100, 200, 500, 1000;\n5. The character right after the denomination is the last character of the serial number; the serial number must end with exactly one uppercase English letter.\n\nA 1% fee is deducted from the total of this transaction, and no fractions are allowed, so the result is rounded down. Find the integer obtained after deducting the fee from the sum of the denominations of all valid coins.",
+    "input": "The first line contains n; each of the next n lines contains a serial number. 0<n≤100000, 1≤serial number length≤14, and serial numbers contain only English letters and digits.",
+    "output": "Output one integer: 99% of the total denomination of the valid coins, rounded down.",
+    "explanation": "Example 1: the valid coins are AVG190420T (20), RTF20001000Z (1000), ERT1947200T (200), and DRV1984500Y (500), totaling 1720; after deducting 1% it is 1702.8, which rounds down to 1702. QWER201850G has an R in the year position; the first three letters of AFA199620E are not distinct; RTY20202004 has an out-of-range year and its last character is not an uppercase letter; ETB2010400G uses a 400 denomination, which does not exist.\nExample 2: 100×0.99=99.\nExample 3: three coins of 10 total 30, which is 29.7 after the fee, rounded down to 29.",
+    "hints": [
+      "The denomination lies between the 8th character and the 2nd-to-last character.",
+      "Compare the denomination against the set of denominations with exact string comparison.",
+      "The fee is computed once on the total of the whole transaction."
+    ]
+  }
+}

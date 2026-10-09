@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-324",
+  "packageChecksum": "842f48b843a4d9109805f09518fb3d3b77a85293c2a29e8531886ec67b682194",
+  "en": {
+    "title": "Ship Three Packages at a Time in Queue Order",
+    "description": "The queue starts empty. INSERT appends a package ID to the end of the queue. SHIP, if the queue holds at least 3 packages, ships the earliest 3 and returns them in that order; otherwise it returns the single-element list [\"N/A\"] and removes no package. Return the list of results of every SHIP; if there is no SHIP, return an empty list.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The input is a compact JSON two-dimensional array whose items are [\"INSERT\",ID] or [\"SHIP\",\"-\"]. The original statement gives no bounds on values or ID characters; on this site 1≤number of queries≤50000, and an ID has 0..16 Unicode characters, with spaces, empty names, duplicates and case differences allowed. Whitespace inside JSON strings must use JSON escapes, for example a space is written as \\u0020, and non-ASCII characters use \\uXXXX or surrogate pairs; the semantic strings are not shortened.",
+    "output": "Output a compact JSON two-dimensional array; whitespace and non-ASCII characters in strings use JSON escapes, with a space encoded as \\u0020.",
+    "explanation": "The outputs are [[\"N/A\"],[\"A\",\"B\",\"C\"]]; the three packages unchanged, including an ID with a double space, an empty ID and an emoji; and [[\"N/A\"]]. The N/ A in the original example is a display typo, and this site uses N/A throughout, as in the body.",
+    "hints": [
+      "Keep all unshipped IDs in a deque; INSERT appends, and SHIP checks the length and then takes the first three or returns N/A."
+    ]
+  }
+}

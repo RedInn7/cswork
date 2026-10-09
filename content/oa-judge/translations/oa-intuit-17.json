@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-17",
+  "packageChecksum": "0545a1c149b7b063c304da3b66824eb03aa3b846b28014271a099f8ad466dc16",
+  "en": {
+    "title": "Maximum Total Reward for Passing a Ball in a Matrix",
+    "description": "The ball can start from any player and can only be passed right or down in the matrix, and it must pass through at least two players. Each catch earns a reward equal to the value of the receiving cell minus the value of the passing cell. Find the maximum cumulative reward.",
+    "input": "The input gives N M (2≤N,M≤1000), followed by N lines of M integers each. The source constraints are truncated at the matrix values; this site adds 0≤a[i][j]≤10000. Output the maximum cumulative reward.",
+    "output": "Output the answer as described; for array answers, separate values with spaces.",
+    "explanation": "Scan the matrix, maintaining the minimum value among earlier cells that can reach the current position, and subtract it from the current value.\n\nCorrectness: each reward along a path is the later cell minus the earlier cell, so the cumulative sum telescopes to the end minus the start. The start/end pairs reachable by moving monotonically right/down are exactly the pairs of distinct cells whose row and column both do not decrease; for each end, it suffices to subtract the minimum among the reachable earlier cells. Merging the prefix minimums from above and from the left into the current value gives an O(NM) scan.\n\nComplexity: O(NM) time, O(NM) space; the maximum absolute cumulative reward does not exceed 10000.",
+    "hints": [
+      "Scan the matrix, maintaining the minimum value among earlier cells that can reach the current position, and subtract it from the current value."
+    ]
+  }
+}

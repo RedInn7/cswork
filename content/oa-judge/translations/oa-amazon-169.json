@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-169",
+  "packageChecksum": "bf1755de766416887732ad612870d05f439c1512f5544122bca3c7bd3a0da1b1",
+  "en": {
+    "title": "Deliver Two or Three Same-Weight Packages per Trip",
+    "description": "Each trip must deliver exactly 2 or 3 packages of the same weight, and every package must be delivered exactly once. Find the minimum number of trips, or output -1 if it cannot be done.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the weights. Weights are in 1..10^9. The original upper bound on n had an extra trailing character 5; this site explicitly uses 1≤n≤100000 and does not treat the typesetting damage as a new order of magnitude.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the three packages of weight 1 go in one trip and the two of weight 2 in another, 2 trips in total. Example 2: a single package cannot form a group of 2 or 3, so there is no solution: -1. Example 3: the 4 packages split into two groups of 2, which takes 2 trips.",
+    "hints": [
+      "Count packages by weight. If some weight appears only once there is no solution; otherwise each weight takes ceil(count/3) trips."
+    ]
+  }
+}

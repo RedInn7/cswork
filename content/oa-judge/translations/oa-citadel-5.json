@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-5",
+  "packageChecksum": "21c7fbd981ed2fdbcbf36f0a550e1f19101745f7bf98f22547817bc0f701b392",
+  "en": {
+    "title": "Maximum Node Sum of a Downward Path from Any Start",
+    "description": "The tree is rooted at 0. Choose a non-empty path that only goes downward, edge by edge from parent to child, starting at any node, and find the maximum node sum. The path cannot pass through a node to join two subtrees. The stable-segment example that Fastprep pasted by mistake does not belong to this problem.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains n, the second line contains n parent entries, and the third line contains n value entries. Complete OCR range: 1≤n≤100000, parent[0]=−1, the others are in 0..n−1 and form a valid tree; values are in −1000..1000, and a parent index is not guaranteed to be smaller than its child's index.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 20; 20; -2. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Traverse iteratively to get an order in which parents come before children, then process it in reverse to compute each node's best downward sum: its own value plus the largest positive child path; the answer is the maximum over all nodes."
+    ]
+  }
+}

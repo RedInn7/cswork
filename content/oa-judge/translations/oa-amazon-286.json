@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-286",
+  "packageChecksum": "7b7d126c8c1a432bb10fbb9a0faa33f19a79b9124c569e824ca732fe1369c5a2",
+  "en": {
+    "title": "Minimum Ordered Pair Errors After Replacing Exclamation Marks",
+    "description": "Replace each ! with 0 or 1. For every pair of indices i<j, a 01 pair contributes x and a 10 pair contributes y; this is not limited to adjacent characters. First minimize the full error total, then take it modulo 1000000007 at the end. This page only kept prose; this site restored the formal subsequence and modulus rules from the same problem with the same example 101!1 in amazon-get-min-errors.md of the same snapshot, and binds both raw sources as evidence.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains errorString and the second line contains x y. The main raw gives no value bounds; the supplementary raw specifies length 1..100000 and costs 0..100000. This site fully covers that range and extends the costs to 0≤x,y≤10^9. The string contains only 0, 1 and !. A typo in the supplementary raw that printed the character l is restored to ! based on the body and all examples.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9, 0 and 0 respectively. In the second example you should choose 11; you cannot look only at the prefix and greedily set the first position to 0. In the third example the cost of 10 is 0, which is valid.",
+    "hints": [
+      "Reversing the string and swapping x/y lets you assume x≤y. Then some optimal solution sets the wildcards to 0 first and 1 afterward. Start with every ! set to 1, scan and change them to 0 one at a time, compute each change in the full cost from the counts of 0/1 on the left and right, take the minimum over all split points, and apply the modulus at the end."
+    ]
+  }
+}

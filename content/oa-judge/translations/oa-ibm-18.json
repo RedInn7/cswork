@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-18",
+  "packageChecksum": "c5520be07f82c824d471f977b29866fc60e2d4177029c4fbfa46e63a6c615e6f",
+  "en": {
+    "title": "Minimum Operations to the Shortest String by Deleting Matching Letters on Both Sides",
+    "description": "In one operation you choose a character and delete the nearest identical character to its left and the nearest identical character to its right; if one side has none, delete only on the other side. The chosen character itself stays. Find the minimum number of operations needed to reach the shortest possible string.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing a non-empty lowercase string of length 1..100000.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 2, 2 and 0 respectively. The original example mixes up indices 8/4; choosing original index 4 deletes 2 and 6 and gives adbacea.",
+    "hints": [
+      "At least one copy of each letter must remain, so a letter with frequency f needs f−1 deletions, and one operation deletes at most 2. Choosing a middle occurrence lets you keep deleting on both sides, so the contribution is floor(f/2)."
+    ]
+  }
+}

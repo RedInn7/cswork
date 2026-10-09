@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-1",
+  "packageChecksum": "5ab20899961cc39802ff29e10d714d7be893185811584013bb5992110f7f708b",
+  "en": {
+    "title": "Longest Tree Path with Different Adjacent Letters",
+    "description": "Each node of a tree is labeled a or b. Find the maximum number of nodes on a simple path in which adjacent nodes have different letters. The path does not have to pass through the root.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "This site's input: the first line contains N (1..100000), the second line contains N characters a/b, and the third line contains N parent indices (0-based); the root's parent is −1. The input is guaranteed to form exactly one tree, and the root may have any index.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the two nodes have different letters, so both can be visited; the answer is 2.\n\nExample 2: the path 1—0—2 has letters b, a, b and length 3; there is no longer valid path.\n\nExample 3: there is only the root, so the longest path contains 1 node.",
+    "hints": [
+      "Process subtrees in reverse traversal order and maintain the longest valid downward chain from each node. Combine the two longest connectable child chains to form the path through that node."
+    ]
+  }
+}

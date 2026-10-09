@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-46",
+  "packageChecksum": "fa537d2874afb35cb84b3c9216538f6a0487ba637bd9f8daa2015024077a6bd7",
+  "en": {
+    "title": "Minimum Domino Removals to Form a Matching Chain",
+    "description": "The order of the dominoes cannot be changed, and they cannot be rotated. Remove some dominoes so that, for every two adjacent kept dominoes, the right value of the first equals the left value of the next. Find the minimum number of removals.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N, followed by N lines left right, with values 1..6. The source gives no upper bound on N; this site uses 1≤N≤200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: keep the two dominoes (2,4),(4,6) and remove 3. Example 2: all three dominoes chain together, so remove 0. Example 3: none of them chain, so keep any one and remove 1.",
+    "hints": [
+      "dp[v] stores the length of the longest valid subsequence ending with value v. On (l,r), update dp[r] with the old dp[l]+1; all other states stay unchanged."
+    ]
+  }
+}

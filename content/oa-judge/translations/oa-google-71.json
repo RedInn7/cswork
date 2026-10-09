@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-71",
+  "packageChecksum": "b691cfa0dd9884d41b4885330124a7a703660294dd201f37fb75f0c13d43c046",
+  "en": {
+    "title": "Shortest Path Through a Required Waypoint",
+    "description": "You are given a weighted directed graph with n nodes, where an edge [u,v,w] is a one-way edge from u to v with non-negative weight. Output the shortest distance from start to target, and the shortest distance of a route that must pass through waypoint; output -1 for whichever does not exist. A route through waypoint may revisit nodes and edges.\n\nThis site's additions: nodes in the input are numbered from 0; a route is a walk, so nodes may be revisited on the segment to waypoint or the segment leaving waypoint; distances use 64-bit integers. The original snapshot's code in three languages also added every edge in reverse, which contradicts its second example; based on the directed version with the same function signature, examples and constraints, this site corrects it to one-way edges.",
+    "input": "The first line contains n m; each of the next m lines contains u v w; the last line contains start target waypoint.",
+    "output": "Output two integers: the shortest distance and the shortest distance through waypoint; if there is no solution, the corresponding value is -1.",
+    "explanation": "Run Dijkstra from start and from waypoint on the original directed graph. The first value is the distance from start to target; the second is the distance from start to waypoint plus the distance from waypoint to target. Because edge weights are non-negative, the optimal constrained route can be formed by joining two shortest paths; the route may revisit nodes.",
+    "hints": [
+      "Edges are one-way; do not automatically add reverse edges.",
+      "A route through waypoint may revisit vertices.",
+      "The largest answer may exceed the 32-bit integer range, so use 64-bit distances."
+    ]
+  }
+}

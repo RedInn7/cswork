@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-31",
+  "packageChecksum": "185469e4786f37963aadaee53e463d2726c21ee29da7c4c439ac9ca26fc46405",
+  "en": {
+    "title": "Shopping Cart Appends and First-Occurrence Removals",
+    "description": "The cart starts with the items in the given order. A positive query x appends x to the end; a negative query −x removes the first occurrence of x currently in the cart. Output the final cart. This site's test cases guarantee that the item exists at every removal, and the behavior of removing a missing item, which the source does not specify, is left undefined.\n\nStandard input/output, examples and judging were written independently by CSWork; conventions marked as this site's do not claim to be the source's original limits.",
+    "input": "The first line contains n q (both 1..200000), the second line contains n initial items (1..10⁹), and the third line contains q non-zero queries (−10⁹..10⁹). The item of every removal query is currently present.",
+    "output": "First output the final number of items, then the items in order; if the cart is empty, output only 0.",
+    "explanation": "Example 1: after removing the first two occurrences of 1, [2,2,1] remains; append 3 and 4, then remove 3, ending with [2,2,1,4], so output the count 4 first. Example 2: after removing the only item, output 0. Example 3: remove the first 2, then append 2, giving [1,2,2], so output 3 1 2 2.",
+    "hints": [
+      "Give each append a unique increasing position. A shared next array links the positions of the same item, and a dictionary stores only the head and tail index of each item; on removal, advance the head index and mark the position. Finally, output the positions that were not removed, in order."
+    ]
+  }
+}

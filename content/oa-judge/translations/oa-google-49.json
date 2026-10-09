@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-49",
+  "packageChecksum": "86493e13b782b08e353a9be08447a2a4ae4aa19725e416dbbccf21b8ac27ec8e",
+  "en": {
+    "title": "Earliest Bloom Day",
+    "description": "Given an array roses, where roses[i] is the day the i-th rose blooms, plus k (the number of adjacent roses needed per bouquet) and n (the number of bouquets needed), find the earliest day on which n bouquets can be made. Each rose can be used in at most one bouquet. If the total is less than n*k, return -1.\n\nThis site's input ranges: 1≤N≤200000, 1≤k,n≤200000, 0≤roses[i]≤1000000000. OAMaster gives no constraints; the numeric ranges above are the ranges this site supports.\n\nOriginal source: https://oamaster.com/docs/companies/google#49-min-days-to-bloom (fixed snapshot content fingerprint 975142d67fbeaf8a3cfbecbf2b129d8eb336f4421e81cb8a53fb245f9944d52f). Description and original examples of the same problem: https://leetcode.com/discuss/post/334191/google-oa-min-days-to-bloom/.",
+    "input": "The first line contains N, k, n; the second line contains N integers roses[i].",
+    "output": "Output the earliest bloom day; if the required number of bouquets cannot be made, output -1.",
+    "explanation": "Binary search on the answer day d. Linearly scan the contiguous runs of bloomed roses; every time k roses accumulate, one bouquet is completed and the run length resets. Count the number of non-overlapping bouquets that can be made.",
+    "hints": [
+      "Fix a candidate day and decide whether it is achievable.",
+      "An unbloomed rose cuts a contiguous run; a run of length L can make at most floor(L/k) bouquets."
+    ]
+  }
+}

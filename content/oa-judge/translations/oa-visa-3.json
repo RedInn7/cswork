@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-3",
+  "packageChecksum": "5231ad18070fa0e040605c8c237eae4ee5b86e61d152f81b81cdc40b1c90b987",
+  "en": {
+    "title": "Chat Mention Counter",
+    "description": "Process messages and offline events in event order. A message sender becomes an existing and active user when they post. A mention token can be a user ID, ALL, or HERE; ALL covers all existing users, and HERE covers currently active users. Each user is counted at most once per message; self-mentions count. Output the IDs with positive counts and their counts, sorted lexicographically by ID.\n\nRules follow the original OAMaster problem; the input/output protocol and bounds marked \"site-added\" were compiled by this site.",
+    "input": "q (1≤q≤1000). Then q lines follow: MESSAGE sender timestamp m token1..tokenm, or OFFLINE user. m≥0, and IDs have the form id followed by a positive integer; timestamps are non-negative integers, and events are processed in input order. The total number of direct mention tokens is ≤200000; q≤1000 is a site-added limit on the expanded size.\n\nSite-added ranges: user IDs are id followed by a decimal integer in 1..10^9, and timestamp is 0..10^9;",
+    "output": "Output id=count entries sorted lexicographically by ID, separated by spaces; if there are no counts, output an empty line.",
+    "explanation": "See the accompanying editorial for details.",
+    "hints": [
+      "Check against the problem definition item by item, paying attention to simultaneous updates and boundary semantics."
+    ]
+  }
+}

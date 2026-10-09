@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-186",
+  "packageChecksum": "244970ffd1021abb16c04ccf757b05be70cbeff063a53d7268545c6dbf88f660",
+  "en": {
+    "title": "Sum of Distinct Character Counts over All Substrings",
+    "description": "For every non-empty contiguous substring, count its distinct characters, then add up the counts of the substrings at all positions. The source's aa example left out aa itself; this site corrects it to 3 and does not adopt the \"number of characters that appear exactly once\" definition.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing a lowercase password string. The source gave no range; this site uses length 1..100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 16, 3 and 10.",
+    "hints": [
+      "Maintain the total distinct-character count over all substrings ending at the current position. If the new character last appeared at j, it adds i−j to that total; accumulate the total at every step."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-263",
+  "packageChecksum": "6e526a6e136bf5a94c8d451b8a4032fe8ff4354a366bc7f1fe79526742e6a4d7",
+  "en": {
+    "title": "Maximum Total Pages When Printers Pause by Active Count After Printing",
+    "description": "All printers start idle. Each time, activate one idle printer, which immediately prints its pages pages; then, if the number of active printers at that moment is x, every printer with threshold≤x is immediately and permanently paused, including idle printers that have not been activated yet; paused printers cannot be activated again, and the active count drops accordingly. Find the maximum total number of pages printed. The source's main sentence mistakenly wrote threshold<x, but the Note and all three complete examples consistently use ≤, and the second and third examples clearly show that idle printers are paused too; this site publicly corrects the statement on that basis.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line pages, and the third line threshold. The original text had no numeric bounds; this site uses 1≤n≤200000, 1≤pages[i]≤10^9, 1≤threshold[i]≤n.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 14, 20 and 15. In the third example, printing 13 pages first permanently pauses every printer with threshold 1, after which only the 2 pages of the threshold-2 printer can still be printed.",
+    "hints": [
+      "Group by threshold=t, take only the largest min(t,group size) pages in each group, then sum them."
+    ]
+  }
+}

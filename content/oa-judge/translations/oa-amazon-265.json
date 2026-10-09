@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-265",
+  "packageChecksum": "108a5bf2caac7f9970dba35164e8e6097b0885b624966e9a85fbc42b57df8317",
+  "en": {
+    "title": "Most Contiguous Partitions Under Minimum Bitwise AND Total Cost",
+    "description": "Cut the whole non-negative performance array into non-empty contiguous segments. The cost of a segment is the bitwise AND of all its numbers, and the total cost is the sum of the segment costs. First minimize the total cost, then, under that condition, maximize the number of segments; output the number of segments.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains performance. The original text had no numeric bounds; this site uses 1≤n≤200000, 0≤performance[i]≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 1, 1 and 3. In the first example the AND of the first two items is already 0, and the final 3 must be merged into that segment; it cannot start a new segment with positive cost.",
+    "hints": [
+      "If the AND of the whole array is non-zero, only 1 segment is possible. Otherwise, scanning from left to right, cut as soon as the current segment's AND becomes 0; merge a final tail that never reaches zero into the previous segment."
+    ]
+  }
+}

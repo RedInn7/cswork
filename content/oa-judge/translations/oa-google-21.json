@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-21",
+  "packageChecksum": "172b2eb8ff80dbd46dd784c7fea7867dc7acc7d017d32dc2f2205177a358f4ac",
+  "en": {
+    "title": "Largest Three-Digit Number Formed in Order",
+    "description": "Given an array of decimal digits, choose exactly three digits while keeping their relative order in the array, and concatenate them into a three-digit number; find the largest number that can be formed. The leading digit must be nonzero. The answer to the fixed upstream example [7,4,3,8,2] is 782; this matches choosing 7, 8, 2 in order, whereas rearranging the digits would give a different result.\n\nInput ranges added by this site: 3≤N≤50, 0≤nums[i]≤9. This site uses standard input/output and does not claim that these constraints or this protocol come from the original OA.\nThe original OA does not define the return value when no valid three-digit number exists; this site explicitly specifies that -1 is output in that case.\n\nOriginal source: https://oamaster.com/docs/companies/google#21-find-largest-number-google-early-career (content fingerprint of the fixed OAMaster snapshot: df9e04f772003ef1996bb410a0e9712db3d5fb1c857806257d19cdbea2362698). Material on the same problem: https://www.1point3acres.com/interview/problems/google-find-largest-number; that material only confirms choosing three elements from the array to form the largest three-digit number and provides no order-preserving example.",
+    "input": "The first line contains an integer N; the second line contains N integers nums[i].",
+    "output": "Output the largest three-digit number that can be formed by choosing three digits in the original array's relative order; if there is no valid choice with a nonzero leading digit, output -1 (defined by this site).",
+    "explanation": "Enumerate all index triples i<j<k, skip the combinations with nums[i]=0, compute the three-digit number, and take the maximum. N≤50, so O(N³) is enough.",
+    "hints": [
+      "The choice must keep the indices increasing.",
+      "Enumerate three indices; a combination whose leading digit is zero is not a three-digit number."
+    ]
+  }
+}

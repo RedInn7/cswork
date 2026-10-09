@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-airbnb-8",
+  "packageChecksum": "56418fc1ca719ae321922cbe6599a362a3b69c31111a45909fe6acfaf37935f4",
+  "en": {
+    "title": "Airbnb OA #8: Round Prices to Hit a Target",
+    "description": "Given n prices prices=[x1,x2,…,xn] and a target value target, round each price to yi, where yi must be floor(xi) or ceil(xi), such that y1+y2+…+yn=target. Under this condition, minimize the rounding error Σ|xi−yi|. Output the rounded array.\n\nThe data guarantees that a valid and unique optimal result exists.",
+    "input": "The first line contains two integers n and target; the second line contains n prices, each written with exactly two decimal places (such as 3.00 or 0.70). 1≤n≤100000, 0≤xi≤1000000.",
+    "output": "Output one line of n integers y1..yn, separated by spaces.",
+    "explanation": "Example 1: prices=[1.20,4.30,5.80,6.40], target=18. The sum of floors is 16, so 2 of them must be rounded up instead; choosing 5.80 and 6.40, which have the largest fractional parts, gives [1,4,6,7] with an error of 1.3.\nExample 2: prices=[0.70,2.80,4.90], target=8. The error of [0,3,5] is 0.7+0.2+0.1=1.0, which beats the 0.3+0.8+0.1=1.2 of [1,2,5].\nExample 3: prices=[3.00,4.50,5.20,3.25], target=16. 3.00 is an integer, so rounding it up does not change it; the sum of floors is 15, so 1 more must be rounded up, and the largest fractional part belongs to 4.50, giving [3,5,5,3].",
+    "hints": [
+      "Round everything down first and compute how much is still missing.",
+      "Changing one price from its floor to its ceiling changes the error by 1−2×(fractional part).",
+      "Parse the two-decimal prices as integers to avoid floating-point error."
+    ]
+  }
+}

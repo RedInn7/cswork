@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-2",
+  "packageChecksum": "5046d96fcf3c03e4dd6c2320ecf65697cdc4cc15a0405e54ed52e5d2dd31249d",
+  "en": {
+    "title": "Social Connections (Visible Profiles per Query)",
+    "description": "You are given an undirected social graph. Each queried user can see all users in their connected component (including themselves); for each query, in the original order, output the size of that connected component.\n\nThe input format, examples, and test data were compiled and written by CSWork; see the statement for the original source and the limits added by this site.",
+    "input": "The first line is `N E Q`; then E lines follow, each an undirected edge `u v`; the last line contains Q queried user numbers. The OAMaster examples use 1-based user numbers; this site specifies 1≤N≤200000, 0≤E,Q≤200000 with E+Q≤200000, and all numbers in 1..N. Duplicate edges and self-loops are allowed (neither changes the connected components).",
+    "output": "Output one line with Q integers: for each query in order, the number of vertices in that user's connected component.",
+    "explanation": "Process the input according to the rules above; see the accompanying notes for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Process all edges with a union-find structure using path compression and union by size; for each query, read the set size stored at the root."
+    ]
+  }
+}

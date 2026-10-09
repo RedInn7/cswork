@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-220",
+  "packageChecksum": "1574c6867d70191962bb20730d4bd473c0145adc19cb26a6f54454a43251e20b",
+  "en": {
+    "title": "Minimum Bulbs Turned Off After Any Arrangement",
+    "description": "All bulbs start on and are checked from left to right: if the total brightness of the earlier bulbs that are still on is strictly greater than the current bulb's brightness, the current bulb turns off. You may arrange the bulbs in any order; find the minimum number turned off. Even if the rule is read as using the initial brightness of all earlier bulbs, the optimal answer is the same: just put all discarded bulbs at the end.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n; the second line contains the brightness values. The original text had no numeric bounds; this site uses 1≤n≤200000, 0≤brightness≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 0 and 0. In the first example 1, 2 and 3 are kept for a total of 6, and the remaining 4 and 3 turn off.",
+    "hints": [
+      "Sort the brightness values in ascending order and maintain the kept brightness total sum; keep v when v≥sum, otherwise move it to the end of the final arrangement."
+    ]
+  }
+}

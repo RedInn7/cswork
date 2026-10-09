@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-17",
+  "packageChecksum": "ddeb5210eb59f384952d1b97126e3b049f4bfd24daf4a6072913882c0077da0e",
+  "en": {
+    "title": "Construct Any Valid Magic Square",
+    "description": "Output a magic square of order n: use each of 1..n² exactly once, so that every row, every column, and both main diagonals have the same sum. If none exists, output null. Any valid construction is accepted; it does not need to match the arrangement in the examples.\n\nThe standard input/output is compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "A single integer n (1..50).",
+    "output": "For n=2, output null; otherwise output n lines with n integers each, without square brackets or commas. Any valid magic square is accepted.",
+    "explanation": "Example 1: outputting just 1 is valid. Example 2: order 2 cannot use four distinct numbers with equal row and column sums, so the output is null. Example 3: for instance 8 3 4 / 1 5 9 / 6 7 2, where every row, column, and diagonal sums to 15; rotations and other valid order-3 magic squares are also accepted.",
+    "hints": [
+      "For odd orders, use the Siamese construction (move up and to the right, and move down on a conflict); for orders that are multiples of 4, take complementary numbers according to a 4×4 position pattern; build the other even orders from four odd-order blocks plus specific column swaps. Order 2 has no solution."
+    ]
+  }
+}

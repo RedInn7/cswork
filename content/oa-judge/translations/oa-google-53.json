@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-53",
+  "packageChecksum": "daf9676e50ee61756df15f5099947ae38b018fd4887c701ba6bdeb7528e88b0a",
+  "en": {
+    "title": "Canonical Minimum-Vehicle Assignment for Car Rental Requests",
+    "description": "Each request is [pickup,return), and a car returned at some moment can immediately be used for a new request. Process requests by pickup in ascending order, then by return in ascending order; if a car is idle, use the one with the smallest number, otherwise create a new car with the next number (starting from 0). Output the canonical assignment in ascending order of car number.\n\nThe input/output and examples are compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "The first line contains n (1..200000), followed by n lines with pickup return (0≤pickup<return≤10⁹).",
+    "output": "On the first line, output the number of cars; then output one line per car in the format carId: (p1,r1) (p2,r2) ..., with no spaces inside the parentheses, listing the requests in the order that car serves them.",
+    "explanation": "Example 1: car 0 serves (1,4), and car 1 serves (2,3) and (3,5), for 2 cars. Example 2: a car returned at the same moment can be reused, so car 0 handles all three orders. Example 3: requests with the same pickup are sorted by return time; car 0 takes (0,3) first, car 1 takes (0,5), and then (3,4) reuses car 0.",
+    "hints": [
+      "Manage busy cars in a min-heap keyed by return time, and idle cars in a min-heap keyed by number. For each request, first release every car that has been returned, then take the smallest idle number or a new car."
+    ]
+  }
+}

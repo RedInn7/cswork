@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-217",
+  "packageChecksum": "ac750e9cd9fba563a008b323345f55e5b64f1ebb4dcc1a179ca91cfe385575c9",
+  "en": {
+    "title": "Minimum Binary Subsequence Errors After Replacing Wildcards",
+    "description": "Replace each ! independently with 0 or 1. Every pair of indices i<j that forms 01 contributes x, and every pair that forms 10 contributes y; this is not limited to adjacent characters. Minimize the full cost, then take it modulo 1000000007.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains a non-empty string consisting only of 0, 1 and !; the second line contains x y. Length ≤100000, 0≤x,y≤100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 9, 0 and 6; in the second example, replacing to get 11 produces no errors.",
+    "hints": [
+      "If x>y, reverse the string and swap x,y so that x≤y. Some optimal solution assigns the wildcards 0s first and then 1s by position; start with all 1s, change them to 0 one by one while maintaining the 0/1 counts on the left and right and the incremental cost, and enumerate every split point."
+    ]
+  }
+}

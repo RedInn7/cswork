@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-36",
+  "packageChecksum": "c8078de7fdb76b5e4fa703a57314eabb082f8d8a38277e11d1cdab64ed1815e3",
+  "en": {
+    "title": "Longest Common Prefix of Numbers from Two Arrays",
+    "description": "You are given two arrays arr1 and arr2 of positive integers. Write each integer as its usual decimal string; pick one number from arr1 and one from arr2 and compare their common prefix starting from the most significant digit. Return the length of the longest common prefix over all pairs; if no pair shares a first digit, the result is 0. The prefix may equal one entire number; for example, the common prefix of 123 and 12345 has length 3.\n\nValid input range on this site: 1≤|arr1|,|arr2|≤50000; 1≤arr[i]≤10^9. The original OAMaster snapshot published no constraints; the ranges above are added by this site, and the array lengths are on the same scale as the constraints of LeetCode 3043.\n\nOriginal problem: https://oamaster.com/docs/companies/uber#36-find-length-of-longest-common-prefix (upstream snapshot e66f809f4c953bce129f68491726176615db6afc, catalog content fingerprint f397cc7f27f92f51c7c043f84283075084bea701587a27af3d7bc05d6ca9041f).\nOA discussion of the same problem (statement and examples identical to OAMaster): https://leetcode.com/discuss/post/5378805/Uber-OA-Question/.\nStandard problem cross-check: LeetCode 3043 https://leetcode.com/problems/find-the-length-of-the-longest-common-prefix/.",
+    "input": "The first line contains n m; the second line contains n positive integers for arr1; the third line contains m positive integers for arr2.",
+    "output": "Output the length of the longest common prefix of the decimal representations over all pairs taken from the two arrays.",
+    "explanation": "Store every non-empty prefix of each integer in arr1 in a set, then scan the prefixes of each number in arr2 and update the maximum length. You can stop scanning a number at its first prefix that is not in the set.",
+    "hints": [
+      "First be clear about the difference between an array position and an element value.",
+      "Compare decimal representations digit by digit as strings, and do not mistake a prefix for an arbitrary substring."
+    ]
+  }
+}

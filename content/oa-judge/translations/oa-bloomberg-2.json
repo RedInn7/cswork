@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-bloomberg-2",
+  "packageChecksum": "c0ab3c57520a2e742a2079137aa0cc97a1411a4c9e194cae653d2e1ade4a3479",
+  "en": {
+    "title": "Integers with No Repeated Digits in a Range",
+    "description": "For each closed interval [n,m], count the positive integers whose decimal representation has all distinct digits. 0 is a digit too, and appearing twice counts as a repeat; no leading zeros are added.\n\nThe input and output format was prepared by this site.",
+    "input": "This site's simplified input protocol: the first line contains q, followed by q lines each with two integers n m (the fixed column count 2 of the original function wrapper is omitted). 1≤q≤100000, 1≤n≤m≤1000000.",
+    "output": "Output one count per line, in query order.",
+    "explanation": "From 1 to 20 only 11 is invalid, giving 19; from 98 to 102 only 98 and 102 are valid; the single points 10 and 123 are both valid, while 100 is invalid because 0 repeats.",
+    "hints": [
+      "Use a bitmask to determine whether the digits of each number from 1 up to the largest right endpoint repeat, building prefix counts at the same time; the answer for an interval is pre[m]−pre[n−1]."
+    ]
+  }
+}

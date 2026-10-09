@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-333",
+  "packageChecksum": "b39f154622847d40c8b13304d1b9e573abac5e2666dfe1612709d3fb96118c58",
+  "en": {
+    "title": "Amazon OA #333: Sign In Pages",
+    "description": "Implement the endpoints of three sign-in pages: Register, Login and Logout. Process n requests in order and output the return value of each request.\n\nregister username password: if the username is not registered, create the user and return Registered Successfully (registering does not log the user in); if the username already exists, return Username already exists, leaving the existing password and login state unchanged.\nlogin username password: if the user exists, the password matches and the user is not currently logged in, the login succeeds and returns Logged In Successfully; otherwise return Login Unsuccessful. A logged-in user who logs in again always fails, and the original session stays active.\nlogout username: if the user is currently logged in, log them out and return Logged Out Successfully; if the user does not exist or is not logged in, return Logout Unsuccessful.\n\nInitially there are no users. Requests are executed in input order. Usernames and passwords are case-sensitive, users do not affect each other's state, and a failed request changes no state.",
+    "input": "The first line contains n. Each of the next n lines contains one request: register username password, login username password, or logout username, with fields separated by a single space. 1≤n≤10^6; username and password are alphanumeric strings (0-9, a-z, A-Z) of length 1..10.",
+    "output": "Output n lines; line i is the return value of request i, which is one of Registered Successfully, Username already exists, Logged In Successfully, Login Unsuccessful, Logged Out Successfully, Logout Unsuccessful.",
+    "explanation": "Example 1: david and adam register successfully; david logs in with the correct password; adam's password 1adam1 differs in case from 1Adam1 used at registration, so the login fails; david is logged in, so the logout succeeds. Example 2: Bob's repeated registration fails and does not overwrite the password; logging in with pw2 fails and with pw1 succeeds; logging in again while logged in fails; logout bob fails because of the different case, then Bob logs out successfully, and logging out again fails. Example 3: an unregistered user fails both to log in and to log out; a user who has just registered but has not logged in fails to log out.",
+    "hints": [
+      "Each user only needs two pieces of state: the password and whether they are online.",
+      "A failed request must not change any state.",
+      "A user who is already online fails to log in again, whether or not the password is correct."
+    ]
+  }
+}

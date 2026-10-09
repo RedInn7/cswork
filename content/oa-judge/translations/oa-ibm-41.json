@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-41",
+  "packageChecksum": "d2a3fe35b7abdb105057164a34de946925711accef076e50ec240f07d7ebf4ee",
+  "en": {
+    "title": "Potential of the Player Who Wins k Games in a Row",
+    "description": "The two players at the front of the queue play a match; the one with greater potential stays at the front, and the loser goes to the back. The first player to win k games in a row wins; return that player's potential. All potentials are distinct.\n\nThe standard input/output format was compiled by this site; added numeric bounds and the encoding for no-solution cases are explicitly marked and do not claim to be the source's original constraints.",
+    "input": "The first line contains n k, and the second line contains a permutation of potentials. 2≤n≤100000, potentials are distinct and in 1..n, 2≤k≤10^14.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 3, 3 and 4 respectively.",
+    "hints": [
+      "Scan the original queue, maintaining the current champion and its win streak; when the champion changes, the streak becomes 1. If the scan ends without reaching k, the global maximum potential is bound to win."
+    ]
+  }
+}

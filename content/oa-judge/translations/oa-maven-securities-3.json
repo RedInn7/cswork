@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-maven-securities-3",
+  "packageChecksum": "1609d2e16355ba00bae369284a7f64b148ef8ae0386e5bf27952b83d96247906",
+  "en": {
+    "title": "Server Clusters via GCD Connectivity",
+    "description": "If gcd(serverProp[i], serverProp[j])>1, servers i and j are directly connected; connectivity is transitive and forms clusters. Return, for each server, the total number of servers in its cluster. The original gives no numeric ranges; this site explicitly supports 1≤n≤100000 and 1≤serverProp[i]≤1000000, which are ranges added by this site.",
+    "input": "The first line contains n (1≤n≤100000). The second line contains n positive integers serverProp[i] (1≤serverProp[i]≤1000000). These are the ranges this site supports.",
+    "output": "Output a JSON integer array of length n, whose i-th item is the size of the cluster that serverProp[i] belongs to.",
+    "explanation": "## Approach\n\nFactor each property into its distinct prime factors. Any two servers sharing a prime factor have a gcd greater than 1, so merging each of them with the first server where that prime factor appeared yields the same connected component; transitive merging covers every path. Finally, count the size of each union-find root and map it back to each position. A value of 1 has no prime factors and stays in its own cluster.\n\n## Proof of Correctness\n\nThe two endpoints of any edge in the original graph have a gcd greater than 1 if and only if they share some prime factor; that prime factor's representative merges the two endpoints. Conversely, every merge joins servers that really do share the current prime factor, so different connected components of the original graph are never merged. After merging for all distinct prime factors, the union-find groups are exactly the connected components of the original graph, and the root count is the size of each server's cluster. A value of 1 shares no prime factor and remains a single-node component.\n\n## Complexity\n\nLet V=1000000 and let M be the array length. Sieving smallest prime factors takes O(V loglogV), factorization takes a bounded O(M log V) of work in total, and union-find merging takes O(M α(M)); space is O(V+M).",
+    "hints": [
+      "A gcd greater than 1 is equivalent to sharing at least one prime factor.",
+      "Linking each prime factor through one representative is enough to express the connected component induced by that prime factor."
+    ]
+  }
+}

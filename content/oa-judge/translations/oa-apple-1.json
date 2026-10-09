@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-apple-1",
+  "packageChecksum": "211a5704ae7dd2ddeeb4fd3ffae066e43a3ef92a1f463c960e1559eb501388c3",
+  "en": {
+    "title": "Ignoring Complete 1-to-0 Intervals",
+    "description": "From left to right, delete each complete interval that starts with a 1 and ends at the first 0 after it, including both ends. Meeting another 1 inside an interval does not reset its start. A trailing segment with no closing 0 is kept in full, and all other elements are kept in their original order; also return the sum of the kept elements. The outputs of original examples 2 and 4 contradict the statement and explanation; this site corrects them according to the explicit statement.\n\nThe input and output format was prepared by this site.",
+    "input": "The first line contains n, and the second line contains n integers. 1≤n≤100000, −10⁹≤element≤10⁹.",
+    "output": "The first line is the number of kept elements m; the second line contains m integers (an empty line when m=0); the third line is the sum, which needs a 64-bit integer.",
+    "explanation": "Example 1: delete 1, 7, 0 and keep 6, 2, 5, 6, 1, 3, sum 23. Example 2: neither of the two later 1s has a following 0, so the whole array is kept, sum 24; the original output dropped elements. Example 3: delete the interval from the first 1 to the following 0, keeping 0, 6, 2, sum 8; the original output omitted the 6.",
+    "hints": [
+      "Find the last 0 in the array. While scanning, a 1 before it enters the deleting state and a 0 exits it; any 1 after the last 0 can never be closed, so everything there is kept."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-36",
+  "packageChecksum": "704477282fac651f30a0467da8ab983d0fec73e931f2e0b8a38fea6630165e8c",
+  "en": {
+    "title": "Maximum Cars Built on Two Assembly Lines",
+    "description": "Each car can be assigned to either assembly line, cannot switch lines once started, and is built at most once. The two lines have time budgets X and Y respectively; maximize the number of cars built.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N X Y (1≤N≤1000, 1≤X,Y≤500), and the second line contains N durations (1..1000).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: each line builds one car of duration 1, for 2 in total.\n\nExample 2: split the cars as 3+5 and 4+5, for 4 cars in total.\n\nExample 3: any two cars take at least 9, so each line builds at most one car, for 2 in total.",
+    "hints": [
+      "Try adding cars as prefixes in ascending order of duration, and use a bitset to maintain the reachable total durations of the cars assigned to the first line. The prefix can be built if some total s≤X also has sum−s≤Y."
+    ]
+  }
+}

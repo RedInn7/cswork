@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-11",
+  "packageChecksum": "862eb00c05aeb5376d74ec81a1b1c910e9ac3e3b14da44443287d337b7d7387d",
+  "en": {
+    "title": "Palindromic Substrings Counted by Position",
+    "description": "Given a string s consisting only of lowercase English letters, count the occurrences of all non-empty contiguous palindromic substrings. Different index ranges are counted separately, even if their contents are the same.",
+    "input": "One line containing a lowercase string s; LF or CRLF line endings are supported, and the trailing newline may be omitted. The line ending is not part of the string. The original text gives no numeric upper bound on the length; this site covers the full string domain within the existing 32MiB per-case input budget, without borrowing another problem's site-specific length limit. Without a trailing newline there may be 33554432 letters. An empty line denotes the empty string, a mathematical extension by this site.",
+    "output": "Output the exact integer, without taking a modulus; the original Java int interface is too narrow for the full domain, so this site explicitly counts with 64-bit arithmetic. Output 0 for the empty string.",
+    "explanation": "In the original hellolle there are 8 single characters, two ll at different positions, lol, lloll, and ellolle, 13 in total; wowpurerocks has 12 single characters plus wow and rer, 14 in total. The original text explicitly states that the two ll are at different positions, so substrings are not deduplicated by content. The third public example aaa→6 was derived by this site.",
+    "hints": [
+      "Every palindrome has a unique odd or even center.",
+      "Mirror radii inside the rightmost palindrome interval can be reused.",
+      "Reuse a single radius array across the two passes to avoid the memory cost of a 2n transformed string."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-citadel-20",
+  "packageChecksum": "cc12e0ebc65ac421db70768a03c803629f537dad1a344e77a7080ffaf0404d5d",
+  "en": {
+    "title": "Shortest Root-to-Leaf Path Summing to the Target",
+    "description": "Among all root-to-leaf paths in the binary tree whose sum equals target, first choose the one with the fewest nodes, then the one whose sequence of node values is lexicographically smallest. If there is no solution, output an empty array.\n\nThe input/output protocol was compiled by this site; missing numeric bounds and recoveries of source typos are all stated explicitly.",
+    "input": "The first line contains m, the number of level-order token entries, and target; the second line contains m integers or null. Entries are interpreted in order as the left and right children of the non-null parents taken from a queue; trailing null tokens may be omitted, and full heap indices are not used. The original gave no numeric bounds; this site uses 0..100000 nodes, 0≤m≤200001, node values within ±10^9, and target within ±10^14; a valid level order is guaranteed, and an empty tree can be given as m=0 or a single null.",
+    "output": "The first line contains the number of nodes on the path, and the second line contains the values on the path; if there is no solution, output only 0.",
+    "explanation": "The outputs of the three public examples are, in order: 4 / 5 4 11 2; 0; 3 / 0 1 -1. These answers were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Use BFS to compute root path sums level by level; sort the paths on the same level by (parent path rank, own node value) to compress them into lexicographic ranks. On the first level that has a qualifying leaf, choose the one with the smallest rank and reconstruct it by following parent pointers."
+    ]
+  }
+}

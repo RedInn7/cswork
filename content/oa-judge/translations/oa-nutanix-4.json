@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-4",
+  "packageChecksum": "db8171ff0a99e7824cfa51aeebd737cf11d36141806f49cd253947cd29e9230c",
+  "en": {
+    "title": "Minimum Operations to Convert Array",
+    "description": "You are given a permutation of 1..n. Operation 1 rotates the array left by one position, and operation 2 swaps any two elements; once operation 2 has been performed, operation 1 can no longer be used. Find the minimum number of operations to turn the array into [1,2,...,n].",
+    "input": "The first line contains n, and the second line contains n integers arr[i] forming the permutation. This site's judging constraints: 1 ≤ n ≤ 3000; arr is a permutation of 1..n. The original problem gives no numeric constraint on n; this range is the runtime bound this site set for the O(n²) reference algorithm.",
+    "output": "Output a single integer, the minimum number of operations.",
+    "explanation": "Enumerate k left rotations. The mapping from positions after rotation to target positions forms a permutation; if it has c cycles, the minimum number of arbitrary swaps is n-c. So the total number of operations is k+n-c; take the minimum over all k.",
+    "hints": [
+      "For a fixed number of left rotations, the minimum number of arbitrary swaps equals n minus the number of cycles in the permutation.",
+      "All left rotations must happen before the first swap."
+    ]
+  }
+}

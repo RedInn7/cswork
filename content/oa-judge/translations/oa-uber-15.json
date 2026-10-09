@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-15",
+  "packageChecksum": "9396b06144d4cd1c4df726cb415efbdf2b6c098dcc837ac404388026c57a42b6",
+  "en": {
+    "title": "Highest Score Jumping by Primes Ending in 3",
+    "description": "Start at cell 0 with a score of 0. Each move jumps 1 cell to the right, or jumps a prime number of cells whose last decimal digit is 3. The value of the landing cell is added to the score, and you must finish at n−1. Find the highest score.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains n, and the second line contains n cell values. 1≤n≤10000, −10000≤cell[i]≤10000, cell[0]=0.",
+    "output": "Output one integer answer.",
+    "explanation": "Example 1: 0→1→4 scores −10+50=40, which beats the 20 obtained by jumping 3 first. Example 2: the start is the end, so the score is 0. Example 3: moving cell by cell gives 3, and skipping positive cells is never better.",
+    "hints": [
+      "Use a sieve to find the primes less than n that end in 3, and use them together with step 1 as the valid transitions. Dynamic programming: dp[i]=cell[i]+max(dp[i−step])."
+    ]
+  }
+}

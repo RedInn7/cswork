@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-23",
+  "packageChecksum": "af3662bb1f5c52489c35ad21e5e4e1048c614c7e8932bc45033195b158a3d4bf",
+  "en": {
+    "title": "Virus Spread Time",
+    "description": "In the grid, 0 is empty land, 1 is a healthy cell, and 2 is an infected cell. Each second, the virus spreads only to healthy cells adjacent up, down, left, or right. Output the minimum number of seconds needed for all healthy cells to become infected; if some cell can never be infected, output -1.",
+    "input": "The input gives N M (1..100), followed by N lines of M integers (0..2).",
+    "output": "Output the answer as described; for array answers, separate values with spaces.",
+    "explanation": "Use all initially infected cells as BFS sources at the same time and infect healthy cells layer by layer.\n\nCorrectness: layer t of the multi-source BFS consists exactly of the cells that can be reached in a minimum of t seconds. The layer of the last healthy cell to be infected is the completion time; if healthy cells remain after the search ends, they are disconnected from all infected cells, so return -1. If there are no healthy cells, the answer is 0.\n\nComplexity: O(NM) time, O(NM) space.",
+    "hints": [
+      "Use all initially infected cells as BFS sources at the same time and infect healthy cells layer by layer."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-11",
+  "packageChecksum": "d9354e58fbbaa22bed698dae281f50c80aadfccb00a313292053a5d5da0b94c1",
+  "en": {
+    "title": "Shortest Closed Route to Collect Coins Within Distance Two on a Tree",
+    "description": "Each vertex of an undirected tree holds 0 or 1 coin. You may choose any starting vertex; whenever you reach a vertex, you collect every coin within graph distance at most 2. You move along edges and must eventually return to the starting vertex. Find the minimum number of edges traversed to collect all the coins.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The first line contains n, followed by n values of 0/1, followed by n−1 undirected 0-based edges, guaranteed to form a tree. The original gave no numeric bounds; this site adds 1≤n≤200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 0; 0. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "First repeatedly delete leaves without coins, then delete two layers of leaves simultaneously; the answer is the number of remaining edges times 2."
+    ]
+  }
+}

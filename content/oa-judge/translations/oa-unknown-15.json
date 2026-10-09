@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-unknown-15",
+  "packageChecksum": "9ca6fe47b1006caf72fb9c951b9db2a34120b38e3df16b16a68809d12e78f4cb",
+  "en": {
+    "title": "Select Strings by Low Ratio or Low Jaccard",
+    "description": "You are given a list of strings and a boolean useJaccard. When false, use Part 1's highest-character-frequency ratio and select all strings with the lowest ratio; when true, use Part 3's average multiset Jaccard similarity and select all strings with the lowest average. Finally, return the characters that appear only in the selected group of strings.",
+    "input": "The input is a JSON object: {\"strings\":[non-empty strings...],\"useJaccard\":true or false}. Site limits: 2≤number of strings≤80, each string has length≤1000, and the total length≤10000; characters are handled as Unicode code points.",
+    "output": "Output a JSON string. The selected strings are concatenated in input order, keeping repeated characters in their original order within each string, and excluding only characters that also appear in unselected strings.",
+    "explanation": "The Part 1/Part 3 branch computes a score for each string; compare the lowest score and ties using exact fractions, then filter out characters that appear in unselected strings.",
+    "hints": [
+      "In Part 1, the ratio is the highest character frequency divided by the string length.",
+      "In Part 3, the character intersection and union are counted with multiplicity.",
+      "Compare averages using exact rational numbers."
+    ]
+  }
+}

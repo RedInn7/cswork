@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tradedesk-3",
+  "packageChecksum": "219a3f2a60e226956d88594e02759da5d18aa4e749f8cb5830de54cca9d6e969",
+  "en": {
+    "title": "Trade Desk OA #3: Earn the Most",
+    "description": "You are designing an algorithm that trades a single currency; each day you can buy one unit, sell one unit, or do nothing. rates[i] is the price on day i (a positive integer); strategy[i] is the action on day i: −1 buys, 0 holds (neither buys nor sells), and 1 sells. You are also given an even number k.\n\nTo improve performance, you may (but do not have to) modify strategy once as follows: choose exactly k consecutive elements, set the first half of them to 0, and set the second half to 1.\n\nProfit is defined as the sum of all selling prices minus the sum of all buying prices, and it can be negative. Assume funds and holdings are always sufficient. Find the maximum profit you can obtain.",
+    "input": "The first line contains two integers n and k; the second line contains n integers rates; the third line contains n integers strategy. 2≤k≤n≤100000, k is even, 1≤rates[i]≤100000, strategy[i]∈{−1,0,1}.",
+    "output": "Output one integer: the maximum profit.",
+    "explanation": "Example 1: rates=[2,4,1,5,10,6], strategy=[−1,1,0,1,−1,0], k=4. Without modification, the profit is −2+4+5−10=−3; choosing indices 2..5 changes strategy to [−1,1,0,0,1,1], for a profit of −2+4+10+6=18.\nExample 2: rates=[1,1,10,10] with every day selling gives an original profit of 22; any modification with k=2 turns a sell into a hold, so not modifying is optimal.\nExample 3: every day buys; choosing the whole array changes it to [0,0,1,1], for a profit of 4+1=5.",
+    "hints": [
+      "First compute the profit without any modification.",
+      "All original contributions inside the window are cleared, and every day in the second half counts as a sell.",
+      "Use prefix sums to evaluate each window in O(1), and don't forget that you may choose not to modify."
+    ]
+  }
+}

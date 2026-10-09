@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-5",
+  "packageChecksum": "efaabf0b0c905266b9408fd6f72025adf7631c279e702b10d572d76b22396c30",
+  "en": {
+    "title": "Minimum Single-Character Replacements Within a Word List",
+    "description": "Each operation replaces one character, and every word passed through must be in the word list (the start word need not be). If the target word is not in the word list there is no solution, but when the start and target are identical no operation is needed. Find the minimum number of replacements.\n\nThis site independently prepared the standard I/O and the solution; supplements for bounds missing from the source and corrections to examples are stated explicitly in the protocol.",
+    "input": "The input is a JSON array [begin,end,wordList]. The original gives no bounds on length, characters or count; this site sets each word to 1..20 Unicode scalars and the word list to 0..10000 entries, and the start and target words may differ in length. All code points total ≤200040, and standard JSON preserves whitespace/NUL. Words of different lengths cannot reach each other by replacement; if there is no solution, output −1.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 4; 0; -1. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Bucket same-length words by (deleted position, text after deletion), and expand each bucket only once during BFS; buckets use a structured key instead of treating some ordinary character as the unique wildcard."
+    ]
+  }
+}

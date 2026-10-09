@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-354",
+  "packageChecksum": "90000a76a36343bc3ac0d7fca1992b90c54979e03b275e377b9000dbf8a0f83b",
+  "en": {
+    "title": "Output All Distinct Target-Sum Pairs in Numeric Lexicographic Order",
+    "description": "Choose two different indices whose values sum to target. Order each pair internally by ascending value, output only distinct value pairs, and sort them in ascending numeric order of the first value and then the second value. Pairing a value with itself requires at least two occurrences, and duplicates in the input do not produce duplicate output.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n target and the second line contains n integers. The source gives no value bounds; on this site 0≤n≤200000, and the elements and target are all in −10^9..10^9.",
+    "output": "Output each distinct value pair as a,b on its own line (no parentheses, no spaces), in ascending numeric lexicographic order; if there is no answer, output a single line None.",
+    "explanation": "The outputs of the three public examples are 0,5 / 1,4 / 2,3; None; and 2,2, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Sort, then use two pointers: if the sum is less than the target, move the left pointer forward; if it is greater, move the right pointer back; if it is equal, record the pair and skip all duplicate values at both ends."
+    ]
+  }
+}

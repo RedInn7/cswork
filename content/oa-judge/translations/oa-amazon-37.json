@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-37",
+  "packageChecksum": "be24a9468717cf9e4cbf4214376f4077e7485a938141198383ccc75baf2b3424",
+  "en": {
+    "title": "Maximum Quality Score After Changing Exactly One Contiguous Range (Merged Ranges)",
+    "description": "You are given an integer array ratings and a positive integer impactFactor. You must choose a non-empty contiguous range exactly once and either multiply all of its elements by impactFactor, or divide all of them by impactFactor, rounding toward 0 (down for positive numbers, up for negative numbers). Only one of the two strategies may be used. After the operation, choose a non-empty contiguous subarray of the whole array; its element sum is the quality score. Find the maximum achievable quality score. The modified range and the final scored range do not need to be the same.\n\nThis site's standard input and merged ranges: 1≤n≤200000, 1≤impactFactor≤10000, −10^9≤ratings[i]≤10^9. The complete raw source gives n≤200000, |ratings[i]|≤100000; the catalog gives n≤100000, |ratings[i]|≤10^9 and does not keep the factor range. This site takes the envelope of the two ranges and adopts the positive-integer factor range from raw, without claiming these are the original raw constraints.",
+    "input": "The first line contains n impactFactor; the second line contains n integers ratings[i].\n\nThis site's standard input and merged ranges: 1≤n≤200000, 1≤impactFactor≤10000, −10^9≤ratings[i]≤10^9. The complete raw source gives n≤200000, |ratings[i]|≤100000; the catalog gives n≤100000, |ratings[i]|≤10^9 and does not keep the factor range. This site takes the envelope of the two ranges and adopts the positive-integer factor range from raw, without claiming these are the original raw constraints.",
+    "output": "Output one integer, the maximum non-empty contiguous subarray sum after exactly one operation.",
+    "explanation": "Example 1: multiplying the last two items gives 4 and 8, so the answer is 12. Example 2: the same array with factor 3; multiplying the last two items gives 6 and 12, so the answer is 18, which corrects the 12 the catalog originally wrote by mistake. Example 3: a factor of 1 does not change the array, so the answer is 3. Example 4: dividing −5 by 2 toward 0 gives −2.",
+    "hints": [
+      "Handle the multiply and divide strategies separately.",
+      "Maintain three states: not yet modified, currently being modified, and modification finished.",
+      "Negative numbers must be rounded toward 0; do not simply add up the best sums of two incompatible ranges."
+    ]
+  }
+}

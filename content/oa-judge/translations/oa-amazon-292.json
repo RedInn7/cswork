@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-292",
+  "packageChecksum": "b75b52da4785e4bfcf4e846291433e19c3583c34a263523cffa6bbae25b8287f",
+  "en": {
+    "title": "Minimum Total Effort After Replacing Values With Existing Divisors",
+    "description": "In each step, choose two positions i and j; if the current effort[i] is divisible by the current effort[j], change effort[i] to effort[j]. You may do this any number of times, or not at all. The goal is to minimize the sum of the final array. The operation does not divide i by j; it replaces i directly with the current value of j.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains effort. 1≤n≤200000, 1≤effort[i]≤200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 17, 31 and 6 respectively. In the second example no value is divisible by any other, smaller original value, so values cannot simply become the common factor 1.",
+    "hints": [
+      "Record the frequencies. Enumerate the numbers d present in the original array from smallest to largest, and mark with d every multiple of d that has not yet been assigned a smallest divisor; finally, sum each original value's frequency times its smallest present divisor."
+    ]
+  }
+}

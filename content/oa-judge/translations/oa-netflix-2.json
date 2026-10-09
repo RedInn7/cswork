@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-netflix-2",
+  "packageChecksum": "7161c7fca49ea74b60e637fbb20c9f6816cc85af411688ee04e83cf46806371d",
+  "en": {
+    "title": "Top-k Similarity Scores of Movie Groups",
+    "description": "The similarity of each movie to the target movie is known. The score of a movie group is the sum of the k highest similarities in the group. Return the scores in the input order of the groups, without reordering the groups.\n\nThe input and output were compiled by this site.",
+    "input": "The first line contains N G k; the second line contains N similarities; then G lines follow, each giving the group size m followed by m 0-based movie indices. The original snapshot gives no numeric bounds; this site uses N≤100000 and G≤10000, both ≥1; 1≤k≤m≤N, the indices within each group are distinct and valid, and the total number of members over all groups is ≤200000. Scores are in [0,1] with at most 6 decimal places, given as plain decimal input.",
+    "output": "First output G, then output the G group scores, which may be on separate lines. Each value may have an absolute or relative error of 1e-5; equivalent integers, decimals, and scientific notation are accepted, and no fixed number of decimal places is required.",
+    "explanation": "Example 1: the top two values of the two groups are 0.5+0.2=0.7 and 0.5+0.4=0.9, keeping the group order. Example 2: k=1, and the maxima of the two groups are 1 and 0.5. Example 3: k equals the group size, so both groups add all three values to get 1.000002; the order within a group does not affect the score.",
+    "hints": [
+      "For each group, take the members' scores, sort them in descending order, and add up the first k."
+    ]
+  }
+}

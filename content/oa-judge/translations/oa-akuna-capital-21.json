@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-21",
+  "packageChecksum": "67f32a827be0a080edb889f2a07f5607f5b24952eec76c706feefdae3864d703",
+  "en": {
+    "title": "Maximum Rating Sum Without Skipping Two Movies in a Row",
+    "description": "Traverse the movie rating array in its original order and choose a subsequence that maximizes the sum of the chosen ratings. You may not skip two or more movies in a row; skipping a single movie at the start and at the end is allowed. There is no extra requirement to choose at least one movie: when n=1 you may skip the only movie, and an empty selection has a rating sum of 0; when n≥2 you cannot skip all of them.",
+    "input": "The first line contains n, and the second line contains n integers ratings[i]. Full original ranges: 1≤n≤100000, −1000≤ratings[i]≤1000.",
+    "output": "Output the maximum rating sum that satisfies the constraint, as an exact integer, with no modulo.",
+    "explanation": "Original example 1 chooses [2,4,−2] for 4. Original example 2 chooses [9,−1,4,5] for 17, and the original output is kept; the original explanation omitted −1 and wrongly claimed 9+4+5=17 while skipping two movies in a row, which this site explicitly corrects. The original [-1,−3,−2] allows choosing only the second item, which shows that a single skip at the start and at the end is valid; the original has no non-empty requirement, and the third public example, a single −1000→0, is added by this site.",
+    "hints": [
+      "Consider two states separately: the last movie is chosen or skipped.",
+      "When the current movie is skipped, the previous one must be chosen.",
+      "Do not force both the first and the last movie to be chosen, and do not skip an all-negative array entirely."
+    ]
+  }
+}

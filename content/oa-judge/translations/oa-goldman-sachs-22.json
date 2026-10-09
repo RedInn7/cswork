@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-22",
+  "packageChecksum": "9368820ae3629458b1ebf7d8043dcef2ad23104d3745e36df380c9804ea7f038",
+  "en": {
+    "title": "Effective Manager",
+    "description": "Each meeting changes the index by an integer amount. You may rearrange the order of the meetings; find the maximum number of consecutive meetings such that the index is strictly greater than 0 after each one. The index starts at 0; an arrangement ends as soon as the index can no longer stay positive.\n\nThis site's input protocol and the explicitly stated supplementary ranges are compiled by CSWork and do not pose as the original OA rules.",
+    "input": "The first line contains n (1..100000); the second line contains n integers effectiveness[i] (−10^9..10^9).",
+    "output": "Output the maximum number of meetings that can be attended in a row with the index strictly positive after each one.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Sort by effectiveness from largest to smallest and add the meetings in that order; keep a meeting as long as the new cumulative index is still strictly greater than 0, since otherwise no later value can rescue that prefix."
+    ]
+  }
+}

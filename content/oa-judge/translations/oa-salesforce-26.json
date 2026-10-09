@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-26",
+  "packageChecksum": "d7b14b397da10d6af63b67f613a8db1189fb580c9381942ae91bfe2c6a998921",
+  "en": {
+    "title": "Salesforce OA #26: Maximum Number of Operations",
+    "description": "You are given a string s. In one operation, choose three consecutive characters s[i], s[i+1], s[i+2]; if and only if s[i]=s[i+1] and s[i+1]≠s[i+2], replace s[i+2] with s[i]. Operations can be performed in any order and any number of times; find the maximum number of operations that can be performed.",
+    "input": "One line containing the string s. 1≤length of s≤200000, consisting only of lowercase English letters.",
+    "output": "Output one integer: the maximum number of operations.",
+    "explanation": "Example 1: in \"accept\", cc changes e, p, and t to c one after another, 3 times in total.\nExample 2: in \"aabaab\", first use the later aa to change the final b to a, then use the leading aa to change the 3rd character, b, to a, 2 times in total.\nExample 3: in \"aabba\", first use bb to change the final a to b, giving \"aabbb\", then use aa to change the three b's to a one after another, 4 times in total.",
+    "hints": [
+      "A rewritten character always becomes the letter of the paired run to its left.",
+      "Let a paired run on the right spread rightward first; a run further left can then rewrite all of it again afterward.",
+      "Process the runs from right to left, using prefix counts to tally the characters of differing letters."
+    ]
+  }
+}

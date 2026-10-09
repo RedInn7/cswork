@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-koddi-4",
+  "packageChecksum": "fb0789c124608ca131ec2a4e8eacee8f9cd50fda4d9b42d61b78f309fc429932",
+  "en": {
+    "title": "Counting 2×2 Submatrices by Number of Black Cells",
+    "description": "Given the coordinates of all black cells in a rows×cols grid. Classify each 2×2 submatrix by the number of black cells it contains, 0..4, count each class, and return the five counts. Coordinates start from 0 and contain no duplicates.\n\nThe statement is explicit; this site adds the coordinate ranges, the distinctness of black cells, and the input protocol.\n\nSource: https://oamaster.com/docs/companies/koddi#4-count-2x2-submatrices-by-black-cell-count (fixed statement fingerprint 48fdfc5f9bc2a2300bd5ec8a9550061d26633407e3f91b51a20f2ba5973a2ff8). The input/output protocol and bounds added by this site follow the statement and are not claimed to be the original site's rules.",
+    "input": "The first line contains rows cols k (1≤rows,cols≤10^9, 0≤k≤min(rows×cols,200000)); the next k lines give the 0-based row col of each black cell.",
+    "output": "Output 5 integers: the numbers of windows containing 0, 1, 2, 3, and 4 black cells, in that order.",
+    "explanation": "See the accompanying notes for the full approach, proof, and complexity.",
+    "hints": [
+      "Each black cell belongs to at most four 2×2 windows, so only accumulate the windows touched by black cells; every other window has zero black cells."
+    ]
+  }
+}

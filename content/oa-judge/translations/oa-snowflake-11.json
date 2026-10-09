@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-11",
+  "packageChecksum": "71a7cd95eee94ef78c4518288fe675d6a5b0ac227eadecddb85d247c2eae62f2",
+  "en": {
+    "title": "Maximum Order Volume",
+    "description": "A supermarket receives n calls in one day. Each call has a start time start, a duration duration, and an order volume volume. Choose non-conflicting calls to maximize the total order volume. Following the source's implementations in three languages, call intervals are half-open [start, start+duration): when one call ends exactly when the next one starts, both calls can be taken back to back.\n\nOriginal constraints: 1≤n≤100000, 1≤start[i], duration[i], volume[i]≤10^9.\n\nOriginal source: https://oamaster.com/docs/companies/snowflake#11-maximum-order-volume-weighted-interval-scheduling (fixed snapshot content fingerprint 0c74f501c9c27779e35805b2c9ac24588e2d0ca5c2b84f5ed60def2c9c34468f).",
+    "input": "The first line contains n; the next three lines contain the n values of start, duration, and volume, respectively.",
+    "output": "Output the maximum total order volume that can be obtained.",
+    "explanation": "Sort by end time. Let dp[i] be the maximum order volume using the first i calls; when choosing call i, binary search for the number p of calls whose end time is no later than its start time, and the transition is max(dp[i-1], dp[p]+volume[i]).",
+    "hints": [
+      "Sort the calls by end time.",
+      "Before choosing the current call, binary search for the last call that can come right before it."
+    ]
+  }
+}

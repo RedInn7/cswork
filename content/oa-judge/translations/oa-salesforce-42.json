@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-42",
+  "packageChecksum": "aa6f4eba38a02d0868396d78fa1ecb7bb1320e1e32615eb985506bc444bb98a4",
+  "en": {
+    "title": "Minimum Moves to the Target Tool on a Circular Tool Rack",
+    "description": "Tool names are arranged in circular order, and duplicates are allowed. You start at startIndex, and each move goes one position left or right; find the minimum number of steps to reach any position holding the target name. Added by this site: output −1 if the target cannot be found. Names match only if they are exactly equal; case and whitespace must not be ignored.\n\nThe ranges added by this site for missing bounds and the recovery of source typos are described in the input protocol.",
+    "input": "The input is a JSON array [tools,startIndex,target], with zero-based indices. The original has no numeric or character bounds; this site adds 1≤n≤100000, each name and target has length 0..16 Unicode scalar values, and empty names, whitespace, NUL, and non-BMP characters are allowed, but lone surrogates are not; 0≤startIndex<n. The entire JSON-encoded input is ≤20000000 bytes, so ASCII-escaped encoding can cover the complete worst-case name domain.",
+    "output": "Output one integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 1; 1; -1. They have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Go over every position i where a name matches, take the smaller of the straight index distance d and the wrap-around distance n−d, then take the minimum over all target positions."
+    ]
+  }
+}

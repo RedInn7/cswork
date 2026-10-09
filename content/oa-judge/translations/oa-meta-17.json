@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-17",
+  "packageChecksum": "5c64b0a950a8df6c048563cf5a74323035bb1f5f034529f5c923c5d5c4282308",
+  "en": {
+    "title": "Find Any Peak Index",
+    "description": "A peak is strictly greater than its neighbors, and the positions beyond both ends of the array count as negative infinity. Adjacent elements are guaranteed to be different. Return the 0-based index of any peak; if there are several peaks, any one of them is correct. O(log n) time is required.\n\nThe input format, constraint supplements, examples, and test data were independently compiled by CSWork.",
+    "input": "The first line contains n (1..1000); the second line contains n integers (−2147483648..2147483647), with adjacent numbers different.",
+    "output": "Output the 0-based index of any valid peak; it does not have to be the same peak chosen in the example.",
+    "explanation": "Example 1: the 3 at index 2 is greater than its neighbors 2 and 1, so the output is 2.\n\nExample 2: the values at indices 1 and 3 are both 3, each strictly greater than the 1s on both sides; outputting either 1 or 3 is accepted.\n\nExample 3: the only element is greater than the positions on both sides, which count as negative infinity, so index 0 is valid even if that element is the smallest 32-bit integer.",
+    "hints": [
+      "Binary search, comparing the middle element with its right neighbor. If the middle is smaller, a peak exists in the right half; otherwise a peak exists in the left half, including the middle."
+    ]
+  }
+}

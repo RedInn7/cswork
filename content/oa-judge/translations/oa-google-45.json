@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-45",
+  "packageChecksum": "af68b55c46dcc302d513e221809a992886a35d56827eac403842a25b6b007da1",
+  "en": {
+    "title": "Minimum Chairs",
+    "description": "Given the arrival times S[i] and departure times E[i] of n guests, compute the maximum number of guests who need seats at the same moment during the whole event. Treat each stay as the half-open interval [S[i], E[i]): a guest who leaves at time t has already freed their seat, so a departure and an arrival at the same moment can reuse the same chair.\n\nThis site's valid input ranges: 1≤n≤200000; all times are integers, -10^9≤S[i]<E[i]≤10^9. These ranges are added by this site and are not claimed to come from OAMaster; the original statement published no constraints.\n\nOriginal source: https://oamaster.com/docs/companies/google#45-minimum-number-of-chairs (fixed OAMaster snapshot fingerprint eb24ff834abb2e8ef515db29a91308414307144aad15804f989d63e249731470). Supporting evidence for the same problem: https://leetcode.com/discuss/post/356520/google-oa-2019-min-number-of-chairs/; endpoint convention: https://www.fastprep.io/problems/google-meeting-rooms-ii.",
+    "input": "The first line contains n; the second line gives n arrival times S[i]; the third line gives the corresponding n departure times E[i].",
+    "output": "Output the maximum number of guests present at the same time during the event, which is the minimum number of chairs required.",
+    "explanation": "Record an arrival as +1 and a departure as -1; at the same moment, process departures before arrivals, and scan for the maximum headcount.",
+    "hints": [
+      "Treat each arrival and each departure as a time event.",
+      "Half-open intervals require departures to be processed before arrivals at the same moment."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-walmart-3",
+  "packageChecksum": "a4ccb679aaf8f20832588d0cd8d12525533f56a879a90835703a845fe65a0509",
+  "en": {
+    "title": "Minimum Operations to Turn All Candies into One Flavor",
+    "description": "There are candies of three different flavors, with counts A, B, and C. Each operation picks two candies of different flavors and turns both into the third flavor, so the two chosen counts each decrease by 1 and the third increases by 2, keeping the total unchanged. Only flavors that currently have candies can be chosen. Find the minimum number of operations to make all candies the same flavor; if impossible, output −1. The goal is for two flavor counts to be 0, not for all three counts to be equal.",
+    "input": "One line with three integers A, B, C, 1≤A,B,C≤100000000. Initially all three flavors have candies, and a count may become 0 during the process. The fixed original problem's ranges are kept in full.",
+    "output": "Output the minimum number of operations; if unreachable, output -1.",
+    "explanation": "Example 1 comes from the fixed original problem: (1,2,3) cannot become a single flavor. Examples 2 and 3 are added by this site: (1,1,1) becomes (0,0,3) in one step; (4,1,2) can become (3,3,1), (2,2,3), (1,1,5), (0,0,7) in turn, for a minimum of 4 steps. The original compiled version additionally required the sum of the counts to be cleared to be divisible by 3, which is a wrong condition; this site solves the original operations independently.",
+    "hints": [
+      "Look at the difference between each pair of flavor counts modulo 3.",
+      "In each step, any flavor decreases by at most one candy.",
+      "Try building groups of three steps that keep one count unchanged and reduce another by three."
+    ]
+  }
+}

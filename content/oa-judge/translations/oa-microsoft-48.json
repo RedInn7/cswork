@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-48",
+  "packageChecksum": "644d22faec3f6f3695662dc32268a91659f152c770312fe1cb41f5f20fd0e1de",
+  "en": {
+    "title": "Minimum Car Removals for a Two-Car Bridge",
+    "description": "Cars enter the bridge in their original order; when one leaves, the next enters, so at most two adjacent cars are on the bridge at a time. Cars may be removed in advance, and the remaining cars keep their relative order. Find the minimum number of removals so that the total weight never exceeds the capacity. A single car may not exceed the capacity either.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N capacity, and the second line contains N weights. N is 1..100000 and the weights are 1..10⁹; the source gives no bound on the capacity, and this site uses 1..2×10⁹.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: every adjacent sum is ≤8, so remove 0. Example 2: after removing 7, the cars 3, 2, 6, 1 are all compatible, so remove 1. Example 3: 9 alone exceeds the capacity; after removing it, 2+2 is exactly 4, so remove 1.",
+    "hints": [
+      "Scan while keeping track of the current last kept car. A car that overloads on its own is removed directly; if it overloads together with the last car, one of the two must be removed, so keep the lighter one; otherwise append it."
+    ]
+  }
+}

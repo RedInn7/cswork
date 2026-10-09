@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-3",
+  "packageChecksum": "f0ccbba8bccfb0dbb3d79be8b6efec3385a0d034d3e42eb6e9402fa13f5ddec8",
+  "en": {
+    "title": "Update Release Scheduler",
+    "description": "Release updates in non-decreasing order of plannedDate. Each update may use either alternateDate or plannedDate, and several updates may be released on the same day. Minimize the calendar day on which all updates are complete. If plannedDate values are equal, any fixed order is acceptable; this site breaks ties by the original array index.\n\nSee the statement/review record for the problem source and the basis of the rules; limits marked in the input ranges are supplements added by this site.",
+    "input": "The first line contains n; the second line contains n plannedDate values; the third line contains n alternateDate values. Original constraints: 1≤n≤200000, 1≤(elements of both arrays)≤10^9, alternateDate[i]≤plannedDate[i].",
+    "output": "Output the earliest completion day after all updates are released.",
+    "explanation": "Process the input according to the problem rules; see the companion notes for the full approach, the correctness argument and the complexity.",
+    "hints": [
+      "Sort by planned date and keep the current earliest available day. If the alternate date is not earlier than the current day, choose the alternate date; otherwise you must wait until the planned date."
+    ]
+  }
+}

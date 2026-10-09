@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-55",
+  "packageChecksum": "f23d11ea0293bd4b36d9de348040f584020af3ce75c1ff06f36d86058bff8191",
+  "en": {
+    "title": "Truncate a Notification at Word Boundaries",
+    "description": "A message consists of English words separated by single spaces. If it exceeds K characters, delete some whole words from the end and append \" ...\" (a space followed by three ASCII periods); if no word can be kept, show only \"...\". Find the longest valid notification. The source's examples were inconsistent about the space before the ellipsis, so this site corrected them by the single-space rule stated in the statement.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains K (3..500), and the second line contains message (1..500 characters), consisting only of English letters and spaces, with no leading, trailing, or consecutive spaces.",
+    "output": "Output the full notification followed by a terminating newline.",
+    "explanation": "Example 1: keep And now, then append a space and three periods, outputting \"And now ...\"; also keeping here would make the length 16. Example 2: any word plus the suffix exceeds 4, so only \"...\" is possible. Example 3: the whole sentence has length 11, which does not exceed 20, so it is returned unchanged.",
+    "hints": [
+      "First check whether the whole message fits. Otherwise keep prefix words one by one as long as the prefix length plus 4 does not exceed K, then append the ellipsis; if not even one word fits, return the three periods."
+    ]
+  }
+}

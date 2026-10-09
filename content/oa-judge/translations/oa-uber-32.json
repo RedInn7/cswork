@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-32",
+  "packageChecksum": "045637ed4681606385e389fceaa9ef170d55fbc4d37f2f3646989425f08075ab",
+  "en": {
+    "title": "Defuse All Bombs Before Their Deadlines",
+    "description": "You can defuse only one bomb at a time and cannot interrupt it. Bomb i takes X[i] time and must be finished at or before time Y[i]. Time starts at 0. Find the minimum total time to defuse all bombs; if it is impossible, output −1.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n, followed by n lines of duration deadline. 1≤n≤200000; the source gives no time bounds, so on this site 1≤duration≤10⁹ and 1≤deadline≤10¹⁵.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: scheduling by deadline, the cumulative completion times 2, 3, 4, 8, 11 are all on time, so output 11. Example 2: the total time is 3, but both must be finished before 2, so output −1. Example 3: the work finishes exactly at deadline 3, so output 3.",
+    "hints": [
+      "Process bombs in ascending order of deadline and accumulate durations; if at any point the total exceeds the current deadline there is no solution, otherwise the answer is the total duration."
+    ]
+  }
+}

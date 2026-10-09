@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-expedia-4",
+  "packageChecksum": "439f46a74e02a626228a96fc0ce6340350889d8d88a392be3f32a12825ffaefd",
+  "en": {
+    "title": "Expedia OA #4: Sum of Indices After Range Toggles",
+    "description": "Switches are numbered consecutively starting from 1, and all of them are initially off. For each closed interval [l,r] in order, toggle every switch in it: off becomes on and on becomes off. Find the sum of the indices of the switches that are on at the end, not the number of them; repeated operations can cancel each other out.",
+    "input": "The input contains the number of operations n, followed by n pairs of left and right endpoints, separated by whitespace; LF/CRLF and a direct EOF are supported. The original constraints section has no numbers; based on the original Java int/int[][] types, this site openly adapts the range to 1≤l≤r≤2147483647. n≥0 and is limited only by the existing 32MiB standard input budget; no smaller cap on the number of operations is added. n=0 is an explicit mathematical extension meaning no operations.",
+    "output": "Output the sum of the indices of the switches that end up on, as an exact integer with no modulo. The original int return type is too narrow, so this site explicitly uses a 64-bit result; the maximum is 2305843008139952128.",
+    "explanation": "The original has no examples; all three public examples are constructed by this site: after [1,3] and [2,4], only 1 and 4 are on, for a sum of 5; toggling [2,5] twice gives 0; toggling [INT_MAX,INT_MAX] once gives 2147483647. The right end of a closed interval must be included, and the endpoint range comes from an explicit type adaptation rather than from numeric constraints in the original.",
+    "hints": [
+      "Turn [l,r] into two toggle events, at l and at r+1.",
+      "After sorting the events, pair them up by parity; duplicate events cannot simply be deduplicated.",
+      "Promote r to a type that can represent 2147483648 before computing r+1."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-41",
+  "packageChecksum": "95685dfad35f93cd7c7d956af6443230a3cacdf2008cdf3b79b974a996a97798",
+  "en": {
+    "title": "Maximum Tertile Gap After at Most K Increments or Decrements",
+    "description": "Each operation adds 1 to or subtracts 1 from any one element, at most K times in total. N is divisible by 3; maximize the N/3-th largest element minus the N/3-th smallest element.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N K; the second line contains N integers. N is a multiple of 3 in 3..150000, K is in 0..500000000, and the elements are in −300000000..300000000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: both 6s must change to move the quantile by 1, so 3 steps can only increase the gap by 1. Example 2: the original gap is 2; lowering 1 to −1 makes the gap 4. Example 3: changing one 7 to 8 moves the upper quantile from 7 to 8 while the lower quantile stays at 7, for a gap of 1.",
+    "hints": [
+      "After sorting, you only need to lower the maximum of the smallest N/3 numbers or raise the minimum of the largest N/3 numbers. On either side, the cost of increasing the gap by 1 equals the current size of the extreme group; since this cost grows monotonically as the group expands, merge the cost segments of both sides with a heap and buy the cheapest increments first."
+    ]
+  }
+}

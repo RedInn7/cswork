@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-340",
+  "packageChecksum": "926dcd0f54f1bc5603df9464de37ad76b2e224b84d81dc5cd7241b28c2ac642c",
+  "en": {
+    "title": "Amazon OA #340: Assign Requests to Servers",
+    "description": "There are servers servers, numbered 0..servers−1. Process n requests in order: request i can only be assigned to a server numbered from 0 to requests[i] (inclusive), and it goes to the least busy one among them; if several are equally least busy, choose the one with the smallest number. A server's busyness is the number of requests already assigned to it, and assigned requests are never released. Output the server number each request is assigned to.",
+    "input": "The first line contains two integers servers and n; the second line contains n integers requests[0..n−1]. 1≤servers≤100000, 1≤n≤200000, 0≤requests[i]<servers.",
+    "output": "Output one line of n integers separated by spaces; the i-th is the server number assigned to request i.",
+    "explanation": "Example 1: servers=5, requests=[3,1,0,2,1]. For request 0, every server in 0..3 is idle, so choose 0; for request 1, server 1 is less busy within 0..1, so choose 1; request 2 can only choose 0; for request 3, server 2 has 0 assignments within 0..2, so choose 2; for request 4, within 0..1 server 0 has 2 and server 1 has 1, so choose 1. Output 0 1 0 2 1.\nExample 2: all three servers are available, and the requests go to 0, 1 and 2 in turn; at the fourth request each of the three has 1, so choose 0.\nExample 3: the first two requests can only use server 0; after that server 1 has the fewest assignments, so choose 1, then 2.",
+    "hints": [
+      "A server's busyness is simply the number of requests assigned to it.",
+      "You need to query the minimum of (assignment count, number) over a prefix range.",
+      "A segment tree supports both prefix minimum queries and point updates."
+    ]
+  }
+}

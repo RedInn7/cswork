@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-319",
+  "packageChecksum": "7032287246fd6462f80d040d5162a6630f04625cf49f1a4420858533726f5b3e",
+  "en": {
+    "title": "Maximum Deletions From Both Ends That Keep the Original First/Last Type (Restored Version of the Same Problem)",
+    "description": "In each step, delete the first or the last character of the current string. The type of a string is its first character followed by its last character; a single character a has type aa, and the empty string has an empty type. Only the final type must equal the initial type; it may differ temporarily along the way. Find the maximum number of deletions.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "One line containing a lowercase string s; the original bounds are 2≤|s|≤200000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 5, 4 and 2. The output 0 of 319's original example babdcaac conflicts with the conclusion 5 in that example's own explanation and with 318, the complete version of the same problem; this site openly corrects it to 5 and binds both raw sources. The type of hchc should be hc, not h. The 318 source only looks at the first occurrence of the last character, so it misses shorter valid ranges further on.",
+    "hints": [
+      "What remains is always a contiguous substring of the original string. Scan every end position j while maintaining the nearest position i holding the original first character; if the current character equals the original last character, try keeping [i,j] and update the shortest length. Return n minus the shortest length."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-184",
+  "packageChecksum": "df997fd4e781c0b64394d9e1dba62198c807178d05dfcf73b50b785c48997b11",
+  "en": {
+    "title": "Maximum Achievable Minimum Inventory After Adjustments",
+    "description": "In one operation, choose two different positions: add incVal to one inventory and subtract decVal from the other; incVal≤decVal. The operation may be performed any number of times, and in the end every inventory must be strictly positive (negative values are allowed along the way). Maximize the final minimum inventory.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n incVal decVal; the second line contains the inventories. 2≤n≤200000; inventories 1..10^9; 1≤incVal≤decVal≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 5 and 1.",
+    "hints": [
+      "Binary search the target minimum T. An item below T needs ceil((T−a)/inc) receipts; an item above T can supply floor((a−T)/dec) times. T is feasible if the total supply is at least the total demand."
+    ]
+  }
+}

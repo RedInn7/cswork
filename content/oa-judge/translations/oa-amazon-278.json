@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-278",
+  "packageChecksum": "f95ed9d07d5fe4fb5660acdabe84a9b3e5dac7ddbe0b2531710778077344a0e9",
+  "en": {
+    "title": "Longest Contiguous Same-Speed Group After Removing At Most k Racers",
+    "description": "Remove at most k racers; everyone else keeps their original relative order. Find the maximum number of people in a contiguous same-speed segment of the remaining line. Output the number of people who stay in that segment, not counting removed racers.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k and the second line contains speed. The original statement gives no value bounds; on this site 1≤n≤200000, 0≤k≤n, 1≤speed[i]≤10^9. The original index typo \"0 to n\" is unified as 0..n−1 for n items.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 2 and 1 respectively. In the first example, removing only one 2 is still not enough to connect the three 1s.",
+    "hints": [
+      "Collect the positions p of each speed separately. Run two pointers over that position array, keeping p[r]−p[l]−(r−l)≤k, and update the same-speed count r−l+1."
+    ]
+  }
+}

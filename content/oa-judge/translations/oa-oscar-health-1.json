@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oscar-health-1",
+  "packageChecksum": "8943e0e6a3d51a483e8491aeaefb7fda47db291141982f205323d17846e26f38",
+  "en": {
+    "title": "Members Lacking Provider Network Access",
+    "description": "If any required specialty of a member has no provider within the maximum Euclidean distance, report that member.\n\nThe standard input/output format and supplementary bounds on this site are as defined in this problem statement.",
+    "input": "The first line contains the provider count P, the member count M (both ≤1000), and the integer maxDistance (≤10^9); then P lines `providerId specialty x y` follow, and then M lines `memberId x y specialty|specialty...`. Coordinates and ID values are integers, and a specialty contains no spaces; memberId is unique, and each member requires ≤10 specialty values in total.",
+    "output": "Output the memberId of every member who cannot get adequate network access, in ascending order, one per line; output nothing if there are none.",
+    "explanation": "Build a coordinate index of provider entries by specialty. For each member, check every required specialty for a provider whose squared distance does not exceed d². The time is O(P+M·R·P_s), where P_s is the number of provider entries for the relevant specialty.",
+    "hints": [
+      "Build a coordinate index of provider entries by specialty. For each member, check every required specialty for a provider whose squared distance does not exceed d². The time is O(P+M·R·P_s), where P_s is the number of provider entries for the relevant specialty."
+    ]
+  }
+}

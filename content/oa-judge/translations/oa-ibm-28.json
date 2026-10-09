@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-28",
+  "packageChecksum": "da7228adab9ce5b081884909279200b1e6bab172eb3b79af7d0c500964778fbd",
+  "en": {
+    "title": "Most Recent k Distinct Requests",
+    "description": "After receiving all requests, output the most recent k distinct request IDs, ordered from most recent to least recent by the last time each ID appeared. The original example makes clear that a repeated ID is reported only once. If there are fewer than k distinct IDs, this site's output convention is -1.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k, followed by n lines of request IDs. The source has no numeric bounds; on this site 1≤n,k≤100000, and each ID consists of 1 to 20 non-newline Unicode scalar characters and may contain spaces; read input line by line without trimming spaces.",
+    "output": "If there is no solution, output only -1; otherwise output k on the first line, followed by k lines of request IDs from most recent to least recent, with spaces preserved.",
+    "explanation": "The examples output, line by line, 3, item3, item1, item2; -1; and 2, a b, a surrounded by spaces, respectively.",
+    "hints": [
+      "Scan in reverse, use a set to skip IDs already seen, and stop after collecting k; if there are not enough, report that it is infeasible."
+    ]
+  }
+}

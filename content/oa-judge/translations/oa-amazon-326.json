@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-326",
+  "packageChecksum": "d26dcf364c2fefa3be930a095c368cad67d014b6534e1d3808a004d8ac47d97f",
+  "en": {
+    "title": "Number of Processes and Total Power Within Each Processor's Range",
+    "description": "Each process has a power consumption power, and each processor can serve the processes in the closed interval [minPower,maxPower]. For each processor independently, output the number of processes in its range and the total power of those processes; this is not a one-time assignment of processes to different processors. Duplicate power values belong to different processes and are counted separately.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m, the second line contains n power values, followed by m lines of minPower maxPower. The original bounds are 1≤n≤12×10^5=1200000, 1≤m≤200000, 1≤power,minPower≤maxPower≤10^8 (power on its own is in 1..10^8). 1,200,000 is not misread as 120,000.",
+    "output": "Output m lines in the input order of the processors, each containing the count and the total power.",
+    "explanation": "The outputs are 4 31 / 2 13 / 3 21; 3 33 / 0 0; and 1 2 / 3 6. The text of the second original example wrongly says 2 processes; given its three-element array, it should be 3.",
+    "hints": [
+      "Sort power and build packed unsigned 64-bit prefix sums. For each closed range, use lower_bound(min) and upper_bound(max) to get the indices [l,r); the count is r−l and the total is prefix[r]−prefix[l]. Release references to the power strings after reading, and do not keep multiple copies of nested results."
+    ]
+  }
+}

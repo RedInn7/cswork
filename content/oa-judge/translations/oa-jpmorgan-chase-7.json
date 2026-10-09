@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-7",
+  "packageChecksum": "29fc93130439ead67109e8d5189fad60680f72ed1febd3901936c7fe8c115b7e",
+  "en": {
+    "title": "Requests Dropped When Threads Run Out",
+    "description": "A positive event adds that many threads, and −1 represents a request. A request consumes and destroys one thread, and it is dropped if no thread is available; find the total number dropped. This is not sliding-window rate limiting.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n, followed by the event array; 1≤n≤100000, and each element is −1 or 1..10000.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 1; 2; 0. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Track the number of available threads in order; when a request arrives, decrement it if a thread is available, otherwise count a drop."
+    ]
+  }
+}

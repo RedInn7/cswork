@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-pure-storage-8",
+  "packageChecksum": "b634aee2960b28d8907662a8c4b992f519b04f36c3b4bb18e2551af463b1f7ed",
+  "en": {
+    "title": "Construct a Counterexample for a Faulty Binary Search",
+    "description": "Bob claims that the following program always correctly searches for target in a non-decreasing array: it returns any matching index if target is present, and −1 otherwise. Write a program that reads no input: if the algorithm is correct, output CORRECT; otherwise output any valid counterexample array and target. This site follows the complete Java version of the original OCR053; the program to refute is:\n\n```java\nint sorted_search(int[] elements, int target) {\n    if (elements == null || elements.length <= 0) return -1;\n    int left = 0, right = elements.length - 1;\n    while (left < right) {\n        int middle = (left + right + 1) / 2;\n        if (elements[middle] > target) right = middle - 1;\n        else left = middle + 1;\n    }\n    if (elements[right] == target) return right;\n    return -1;\n}\n```\n\nThe judge accepts any valid witness that makes this algorithm produce a wrong result; it does not have to match the public example you see.",
+    "input": "No input; standard input is empty. Do not read test parameters that do not exist in the problem.",
+    "output": "If the program is correct, output CORRECT. Otherwise output exactly three lines: the first line is a non-negative integer n; the second line contains exactly n space-separated integers in non-decreasing order; the third line is target. The elements and target must be Java signed 32-bit integers (−2147483648..2147483647), as determined by the original int interface; the original text gives no separate upper limit on the array length, and this site imposes no artificial small length limit, but the total output is bounded by the 64KiB runtime budget. The witness must make the original program return a wrong result; if target appears more than once, returning any matching index is a correct result, so it cannot serve as a counterexample.",
+    "explanation": "The public output is derived by this site, not taken from an original OCR example. When searching for 2 in the array [1,2,3], middle=1 and elements[1]=2, yet left=2 is executed; after the loop exits, the check reads elements[2]=3 and wrongly returns −1. So these three lines are a valid counterexample, and CORRECT does not hold. The original OCR requires a three-line counterexample and no input, so this problem does not fabricate any extra input.",
+    "hints": [
+      "Check the branch taken when the middle element exactly equals target.",
+      "A very small sorted array is enough to disprove general correctness."
+    ]
+  }
+}

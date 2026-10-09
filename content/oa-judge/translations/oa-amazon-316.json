@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-316",
+  "packageChecksum": "ebe3e09a183abb11e953d6ec3dee88d4ef804dcdcdfb8747ac9f4ccb0c8f84f3",
+  "en": {
+    "title": "Minimum Gap After Merging Closed Intervals",
+    "description": "First merge all intersecting closed intervals into disjoint maximal segments; sharing an endpoint also counts as intersecting. Find the minimum gap between any two adjacent merged segments, that is, the start of the later segment minus the end of the earlier one. If fewer than two segments remain after merging, there is no gap to compare, and the output is −1 as this site's protocol specifies.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, followed by n lines of start end. The original statement gives no value bounds; on this site 1≤n≤200000, −10^9≤start≤end≤10^9. The −1 encoding is only added for the case with no gap; single-segment inputs are not excluded.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, −1 and 2. The original description swaps the indices in start[i−1] and end[i]; following the original example 7−5=2, this site consistently uses the later segment's start minus the earlier segment's end.",
+    "hints": [
+      "Sort by start and scan, maintaining the end of the current merged segment; when a start is greater than it, record the gap and begin a new segment."
+    ]
+  }
+}

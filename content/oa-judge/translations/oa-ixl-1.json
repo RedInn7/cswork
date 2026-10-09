@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ixl-1",
+  "packageChecksum": "6c95d096c9243b086cfa5cc39822524dfb05a15de6f5ed03d3221128937f8e13",
+  "en": {
+    "title": "Splitting Cards Evenly into Packs",
+    "description": "There are several types of cards, and cardTypes[i] is the number of cards of type i. You may add cards of existing types and choose a number of packs greater than 1 so that every pack contains the same number of cards of each type. Find the minimum number of cards to add.",
+    "input": "The first line contains n, and the second line contains n positive integers cardTypes. Ranges: 1≤n≤10⁵ (original constraint), 1≤cardTypes[i]≤1000 (the original gives no upper bound on values; this is this site's OJ limit).",
+    "output": "Output the minimum total number of cards to add.",
+    "explanation": "For each possible number of packs, compute how many cards each type is short of the next multiple; enumerating pack counts up to the largest existing count plus 1 is enough to cover the optimal solution.",
+    "hints": [
+      "With a fixed pack count k, each card type needs (k−count%k)%k more cards. Note that when cardTypes=[1], the optimal pack count is 2."
+    ]
+  }
+}

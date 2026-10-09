@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-9",
+  "packageChecksum": "0016e54d6dc0cc2daf0eef1a02eddfc783dcffd225e63cdfa2f1315b287b5009",
+  "en": {
+    "title": "Largest Three-Digit Number in Original Order",
+    "description": "Given n decimal digits, choose 1 to 3 of them in their original order and concatenate them into an integer; find the largest integer you can get. The chosen digits need not be contiguous; their relative order cannot change; leading zeros are allowed, and the integer is output without leading zeros.\n\nThis problem uses a standard input/output format compiled by CSWork; the algorithm rules follow the source problem, and the examples and test data were written by CSWork.",
+    "input": "The first line contains n (3 ≤ n ≤ 50); the second line contains n digits (0 ≤ digits[i] ≤ 9).",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1 chooses 7, 4 and 9 at indices 0, 4 and 5 to get 749; 9 cannot be moved in front of 7.",
+    "hints": [
+      "best[k] stores the largest value that can be formed by choosing exactly k digits from the processed prefix. When reading digit d, update best[k]=max(best[k],best[k−1]×10+d) in reverse order so that no digit is used more than once."
+    ]
+  }
+}

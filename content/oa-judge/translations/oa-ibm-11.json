@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-11",
+  "packageChecksum": "ab0772de801c00b5a27215691e2633a67c5ea28d7e2bb7d1c4f4333f20c7d788",
+  "en": {
+    "title": "Cache Lookup by Key and Exact Time",
+    "description": "Each cache entry contains a time, a key and an integer value in string form; each query gives a key and an exact time. Every queried entry is guaranteed to exist, and no key repeats at the same time. Return the corresponding original value string; do not look up the nearest time.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n q, followed by n lines of time key value, and finally q lines of key time. 1≤n,q≤100000; times are valid hh:mm:ss; values represent 1..10^8. The source does not limit the text length of keys or values; on this site keys are 1..64 lowercase letters or digits, values are 1..64 decimal digits (leading 0 allowed), and the total input is ≤16MiB.",
+    "output": "Output the original value strings in query order.",
+    "explanation": "The examples give 764 341; 0007; and 1 respectively; leading zeros in value strings are preserved.",
+    "hints": [
+      "Build a hash map keyed by the (time, key) pair and look up each query directly."
+    ]
+  }
+}

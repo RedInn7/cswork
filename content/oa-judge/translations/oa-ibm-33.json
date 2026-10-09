@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-33",
+  "packageChecksum": "a7473eb469aa95f02fde479a68ea61a670d392536d68d3b58209216af489a8b6",
+  "en": {
+    "title": "Minimum Range Operations to Cover Zero Runs",
+    "description": "Each operation chooses exactly k consecutive positions and sets them all to 1. Find the minimum number of operations so that the string no longer contains m consecutive 0s. Existing 1s are unaffected.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n m k, and the second line contains the binary string. 1≤n≤200000, 1≤m,k≤n.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 1, 0 and 3 respectively. In the first example, setting positions 3 to 4 to 1 gives 001100.",
+    "hints": [
+      "Accumulate the zero run from left to right; the first time m 0s have accumulated, place the length-k interval covering that position as far right as possible and set it to 1, skip that interval, and reset the zero count."
+    ]
+  }
+}

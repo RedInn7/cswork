@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-3",
+  "packageChecksum": "4a64a7ec7d0b8c0c897a8513e9d3bd685a9bac000469b608c9ba2b900a452fa6",
+  "en": {
+    "title": "Binary String Flips and Prefix Zero Counts",
+    "description": "Given a string of 0s and 1s, process the operations in order. `flip` swaps 0 and 1 throughout the string; `count i` asks for the number of 0s in the current string from index 0 to i (inclusive).\n\nStandard input/output, this site's supplementary ranges, and the examples follow this problem's description.",
+    "input": "The first line contains n q (1≤n≤200000, 0≤q≤8000); the second line contains a binary string of length n; then q lines of operations: `flip` or `count i`, where 0≤i<n. The ranges of q and the indices are site supplements that make the standard input protocol explicit and keep the standard output within the judge's limit. Indices in operations are counted from 0.",
+    "output": "Output the counts in the order the queries appear, separated by spaces; if there are no count operations, output an empty line.",
+    "explanation": "First compute prefix sums of 0s in the initial string. Flipping the whole string only toggles one boolean state; when querying position i, the answer is the original prefix count of 0s if unflipped, or (i+1) minus the original prefix count of 0s if flipped.",
+    "hints": [
+      "First compute prefix sums of 0s in the initial string. Flipping the whole string only toggles one boolean state; when querying position i, the answer is the original prefix count of 0s if unflipped, or (i+1) minus the original prefix count of 0s if flipped."
+    ]
+  }
+}

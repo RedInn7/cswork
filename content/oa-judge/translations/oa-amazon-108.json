@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-108",
+  "packageChecksum": "9cbd44f01372b69c7f723904a3913d764dbf08233de2411566f87f22a26854e2",
+  "en": {
+    "title": "Maximum Efficiency Picking One Package Before Each Day's Shipment",
+    "description": "Each day, first pick one package that is still in the warehouse and has not been picked before, adding its weight to the efficiency; then ship out the current leftmost and rightmost packages (only one shipment when a single package remains), until the warehouse is empty. Maximize the total efficiency.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (1..200000), and the second line contains n weights (0..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: over three days pick 4, 5, 8 in order, for a total of 17. Example 2: over four days you can pick 4, 6, 8, 5, for a total of 23. Example 3: on the only day pick 9, for a total of 9.",
+    "hints": [
+      "Package i can be picked no later than day min(i+1,n−i), so this is weighted selection of unit-time jobs with deadlines. Add packages to a min-heap in increasing order of deadline, and pop the smallest weight whenever the heap size exceeds the current number of days."
+    ]
+  }
+}

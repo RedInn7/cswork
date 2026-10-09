@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-338",
+  "packageChecksum": "5337e0bbfb924ef98ec2b8ed680e4a68ee7efb16352bf489727ad9af453cc1e4",
+  "en": {
+    "title": "Longest Review Length Without Banned Fragments",
+    "description": "Find the longest contiguous substring of the review that contains no banned word. Matching ignores case, and a banned word can appear at any position; matching is not limited to whole words. If there is no non-empty valid substring, the answer is 0.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains review, the second line contains the number of banned words, and each following line contains one banned word. Original bounds: review has length 1..100000 and contains only ASCII uppercase and lowercase letters; there are 1..10 words, each consisting of 1..10 lowercase letters.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "In the first original example, the correct longest fragment is dProductButScra, of length 15; the dProductButScu listed separately by the source is not a fragment of the original string. The answers to the other public examples are 0 and 20.",
+    "hints": [
+      "Convert the review to lowercase. Enumerate the right end and check whether each banned word ends there; if one matches starting at p, move the left end of the window to at least p+1, then measure the length."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-152",
+  "packageChecksum": "556c62f78e9db5f4f3ac4112f103ac3402f920d7c53540b27d33493492beb449",
+  "en": {
+    "title": "k-th Smallest Vulnerability in Each Contiguous Window",
+    "description": "For each contiguous window of length m in the array, sort it in ascending order and take the k-th value. Repeated values each take their own position, and the answers are output in ascending order of window start.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n m k (1≤k≤m≤n≤300000), and the second line contains n vulnerability values (1..10^9).",
+    "output": "Output the k-th smallest values of the n−m+1 windows.",
+    "explanation": "Example 1: both windows sort to 1, 2, 3, and the 2nd item is 2 in both. Example 2: the windows sort to 1, 2, 3, 4 and 1, 1, 2, 3, so the 3rd items are 3 and 2 respectively. Example 3: the repeated 5s each take a position, so the 2nd smallest of both windows is 5.",
+    "hints": [
+      "Compress all values to ranks, and keep a Fenwick tree storing how many times each rank occurs in the current window. When moving the window, remove one and add one, then use binary lifting to find the first rank whose cumulative count is ≥k."
+    ]
+  }
+}

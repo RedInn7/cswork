@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-6",
+  "packageChecksum": "a0b6442b4e606881e649a68add3025758aa62a6c4d26e7f896edc5fa4663ab09",
+  "en": {
+    "title": "Number Line Obstacles and Interval Placement Queries",
+    "description": "On the integer number line, process in order operations that either place an obstacle or ask whether an interval of length size can be placed. `1 x` places an obstacle at x (it is guaranteed that there is no obstacle there yet); `2 x size` checks integer coordinates x-size through x-1 (inclusive) without actually placing the interval.\n\nStandard input/output, this site's supplementary ranges, and the examples follow this problem's description.",
+    "input": "The first line contains q (1≤q≤60000), followed by q lines of operations `1 x` or `2 x size`. −10⁹≤x≤10⁹, 1≤size≤10⁹. Inserted coordinates are guaranteed not to be occupied already; the upper bound on q is a site supplement that keeps the output length within the judge's limit.",
+    "output": "Concatenate the results of every `2 x size` in order into a single string of 0s and 1s: 1 if the interval has no obstacle, otherwise 0.",
+    "explanation": "Read all insertion coordinates in advance and compress them, maintaining the inserted points with a Fenwick tree. For a query interval [x-size,x), use binary search and prefix sums to count the obstacles; the interval can be placed when the count is zero.",
+    "hints": [
+      "Read all insertion coordinates in advance and compress them, maintaining the inserted points with a Fenwick tree. For a query interval [x-size,x), use binary search and prefix sums to count the obstacles; the interval can be placed when the count is zero."
+    ]
+  }
+}

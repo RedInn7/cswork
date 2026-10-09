@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-epifi-1",
+  "packageChecksum": "559baa3a73b61469debc8967cf9171bff7fe722d19743a21c299e0836426b4dd",
+  "en": {
+    "title": "Request Redirection",
+    "description": "Assign requests to servers that can serve them. The final load of each server must be strictly less than max_req. Minimize the maximum cross-server distance.\n\nThis site's standard input/output format and supplementary bounds are as described in this problem.",
+    "input": "The first line contains n (1≤n≤10^5), the second line requests[n], and the third line max_req[n]; all values are non-negative/positive integers ≤10^9. Server positions follow the array indices.",
+    "output": "Output the minimum possible maximum redirection distance; output -1 if the total capacity is insufficient.",
+    "explanation": "Binary search on the maximum distance. For a fixed distance, source and receiving servers form an interval bipartite graph; greedily match the leftmost remaining request with the leftmost remaining capacity by position, and fail if they are too far apart. The small-scale oracle enumerates the destination of every request.",
+    "hints": [
+      "Binary search on the maximum distance. For a fixed distance, source and receiving servers form an interval bipartite graph; greedily match the leftmost remaining request with the leftmost remaining capacity by position, and fail if they are too far apart. The small-scale oracle enumerates the destination of every request."
+    ]
+  }
+}

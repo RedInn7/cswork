@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-58",
+  "packageChecksum": "50737de7eee6e6a83c882b3a230148c7381f9aeeffb08c1b024b3b480c64499f",
+  "en": {
+    "title": "Fewest Even-Length Runs Under Minimum Flips",
+    "description": "Flip bits of an even-length binary string so that every maximal run of identical characters has even length. First minimize the number of flips; then, among all plans with the fewest flips, minimize the number of maximal runs, and output the number of runs. The single-flip explanation in the source example is incorrect; the answer is computed independently with this two-level objective.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "A single line containing an even-length binary string, 2..100000.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the four pairs are 11, 10, 01, 10; each of the last three needs 1 flip and all of them can become 11, so after the minimum 3 flips there is only 1 run; the source's 2 runs is not optimal for the secondary objective. Example 2: flipping 1 bit in each pair makes everything 0, 1 run. Example 3: the three pairs are forced to be 00, 11, 00, so 3 runs are needed.",
+    "hints": [
+      "Group the string into pairs by original position. 00 and 11 need no flip and must be kept under minimum flips; 01 and 10 must flip 1 bit and can become either 00/11. Ignore the free groups and count the character changes across the forced groups and add 1; if all groups are free, there is 1 run."
+    ]
+  }
+}

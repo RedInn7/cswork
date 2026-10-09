@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-65",
+  "packageChecksum": "fce5bb3f1bbdb9750a4b91ce77f5c83fce95d705a699bb8696000cb19632ffe1",
+  "en": {
+    "title": "Maximum Covered Sum with at Most Three Two-Cell Tiles",
+    "description": "Place at most three tiles, each covering two adjacent elements of the original array. Tiles cannot overlap or go out of bounds, and you may place none at all. Find the maximum total of the covered elements.\n\nThis site uses a standard input/output protocol; ranges not given by the source are stated explicitly.",
+    "input": "The first line contains N, and the second line contains N integers. The source gives no numeric range; this site uses 1≤N≤200000 and elements in −10⁹..10⁹.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: cover 3+5, 3+4, 6+4, for a total of 25. Example 2: cover 2+3 and 3+2, for a total of 10, needing only two tiles. Example 3: all numbers are negative, so placing no tile gives 0.",
+    "hints": [
+      "A prefix DP maintains the maximum sum using at most 0, 1, 2, 3 tiles. The last element may stay uncovered; or one tile covers the last two cells and follows the best solution, with one fewer tile, that ends before those two cells."
+    ]
+  }
+}

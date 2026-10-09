@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-350",
+  "packageChecksum": "cd4014c259ee71d0ad3610c0e23ef59043382ce320be6530c7461126a6fb0e7f",
+  "en": {
+    "title": "Sum of Maximum Times Length Over All Subarrays",
+    "description": "Every non-empty contiguous subarray contributes its maximum multiplied by its length; find the sum of all contributions. Negative numbers are allowed, and the answer must be output exactly, without any modulus; a linear-time algorithm is required.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n and the second line contains n integers. The source gives no value bounds; on this site 0≤n≤200000 and elements are in −10^9..10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 59; -12; and 0, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Use a monotonic stack to find, for each element, the nearest strictly greater position on its left and the nearest greater-or-equal position on its right, and let the distances to these boundaries be L and R. The element is responsible for L·R subarrays whose lengths total L·R·(L+R)/2; multiply this by the element and accumulate."
+    ]
+  }
+}

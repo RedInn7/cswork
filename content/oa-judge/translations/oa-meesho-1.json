@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meesho-1",
+  "packageChecksum": "fea2c72a47757d19d238bc92bee3363a78375d8ae04cf4fd59df523d8b961e0e",
+  "en": {
+    "title": "Distinct Movement Subsequences on a Finite Number Line",
+    "description": "Given a string s containing only l/r, choose a subsequence of it. Starting from x, l decreases the position by 1 and r increases it by 1; the start, every intermediate position, and the end must all lie on the finite number line 0..n, and the walk must end at y. Count distinct character sequences; the same character sequence coming from different indices counts only once. Return the count modulo 1000000007. Reflecting, staying put when out of bounds, or leaving the domain and coming back are not allowed.",
+    "input": "The first line contains s, and the second line contains n x y. Full original ranges: 1≤|s|≤1000, s contains only l/r, 0≤n,x,y≤2500. The original does not guarantee x,y≤n, and this site keeps such inputs: if the start or end is not in 0..n, there is no valid path and the answer is 0.",
+    "output": "Output an integer in 0..1000000006. All characters may be deleted, so when x=y is valid, the empty subsequence contributes 1; for n=0,x=y=0 the answer is 1, and for any other out-of-domain endpoint the answer is 0. This interpretation follows the original's finite number line and deletion of zero or more elements, and does not additionally require a non-empty subsequence.",
+    "explanation": "The original source has no formal examples; all three public examples were derived by this site. For rr from 0 to 1, the string r counts only once, not as two index choices; for lr from 0 back to 0, lr goes out of bounds, so only the empty string is valid and the answer is 1; for rl from 0 back to 0, both the empty string and rl are valid, so the answer is 2.",
+    "hints": [
+      "Plain choose/skip by position would count identical strings more than once.",
+      "When appending the current letter, subtract the set already produced the last time the same letter was appended.",
+      "You must keep the empty string and exclude any move that leaves 0..n at any step."
+    ]
+  }
+}

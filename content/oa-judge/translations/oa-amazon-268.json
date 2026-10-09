@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-268",
+  "packageChecksum": "ffc77dee1e098b74057a9482c9fe98cbee90a2e5ee930fbded6b9d74b39eefb5",
+  "en": {
+    "title": "Maximum Secondary Tasks Alongside One Primary Task per Day",
+    "description": "n primary tasks are completed over n days, exactly one per day. The total time on each day must not exceed limit; each day can also hold at most one secondary task, and each of the n secondary tasks can be used at most once. Find the maximum number of secondary tasks that can be completed; some secondary tasks may be left unscheduled.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n limit, the second line primary, and the third line secondary. The original text had no numeric bounds; this site uses 1≤n≤200000, 1≤limit≤10^9, 1≤primary[i]≤limit, 1≤secondary[i]≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 2, 0 and 3. In the first example the leftover capacities 1 and 10 should be matched with 1 and 10 respectively; the largest leftover must not be wasted on the shortest task first.",
+    "hints": [
+      "Sort each day's remaining time in ascending order and the secondary tasks in ascending order. Repeatedly match the shortest unscheduled secondary task with the smallest remaining time that can hold it."
+    ]
+  }
+}

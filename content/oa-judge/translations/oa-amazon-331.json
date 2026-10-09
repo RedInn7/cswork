@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-331",
+  "packageChecksum": "71571bad697d41743ff09d3e2852bc6a86dc4520f2042a37be99613332fe9d13",
+  "en": {
+    "title": "Can Sorting Subsequences Reach a Wildcard Binary Target",
+    "description": "One operation picks any subsequence of the string, sorts the chosen characters in ascending order, and puts them back into the same chosen positions. For each target string of the same length containing 0/1/?, determine whether every ? can be replaced with 0 or 1 so that the original binary string reaches it after zero or more operations. Each target starts independently from the original string.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains the length L and the number of queries q, the second line contains binary, and the next q lines contain the targets. The original statement gives no value bounds; on this site 1≤L,q≤200000, every target has length L, and the total number of target characters is L×q≤2000000. Only sorting is allowed, not arbitrary swaps.",
+    "output": "Output YES or NO for each query in order, separated by spaces.",
+    "explanation": "The answers are YES NO; NO YES; and NO YES. In the original example, going from 101100 to 011100 should sort the 0-based positions {0,1}, not {0,2} as the original explanation says. The source only compares the total number of 1s, so it would wrongly accept 111???.",
+    "hints": [
+      "The total number of 0s in the target must equal that of the original string. First subtract the fixed 0s, place the required 0s at the earliest ? positions, and fill the remaining ? with 1; if there are too few or too many, answer NO. Then check that every prefix of the target has no more 1s than the matching prefix of the original; answer YES only if all of them hold."
+    ]
+  }
+}

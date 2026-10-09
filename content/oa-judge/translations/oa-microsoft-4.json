@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-4",
+  "packageChecksum": "3dc72b746f21ecf58806ff80768720ea6c7ec4a61f6a77aeb164a5b5775bf530",
+  "en": {
+    "title": "Cyclically Increment Prefix Letters",
+    "description": "Each operation cyclically increments the first k lowercase letters once, with z becoming a. Output the string after performing all operations in order.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains the string s (1..100000 lowercase letters); the second line contains the number of operations m (1..100000); the third line contains m values of k, with 1≤k≤|s|.",
+    "output": "Output the final lowercase string.",
+    "explanation": "Example 1: the three prefix operations give bca, cda, dda in turn.\n\nExample 2: z cyclically increments to a.\n\nExample 3: only the first character is incremented, twice, so abc becomes cbc.",
+    "hints": [
+      "Use a difference array to record each prefix increment of 1, scan the prefix sums to get the total number of increments at each position, then take it modulo 26."
+    ]
+  }
+}

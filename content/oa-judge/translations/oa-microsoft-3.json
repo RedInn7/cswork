@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-3",
+  "packageChecksum": "edf2b307d28f7d786c94b5c4515d345ef96582b41bb08f0d03c4a9b8c5e03878",
+  "en": {
+    "title": "Smallest String After Removing Pairs of Equal Letters",
+    "description": "Each operation may delete any two equal letters, which do not need to be adjacent; the remaining characters keep their relative order. First minimize the length, then find the lexicographically smallest string among those of that length. Some of the original site's examples deleted the wrong characters; this site recomputed them under this explicit definition.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "One line of 1..100000 uppercase English letters.",
+    "output": "Output the final string; if it is empty, output an empty line.",
+    "explanation": "Example 1: C has an even frequency and is deleted entirely, while B, A, and X are each kept once; the smallest result that preserves the order is BAX.\n\nExample 2: Z, Y, X, and V all have odd frequencies, and the smallest feasible subsequence is XYZV.\n\nExample 3: A and B each appear 3 times and C and D each appear 2 times; the shortest result is AB, not the empty string given by the original site.",
+    "hints": [
+      "Only the letters that occur an odd number of times need to keep one copy each. After filtering out the other letters, use a monotonic stack to pick the lexicographically smallest subsequence with no repeated letters."
+    ]
+  }
+}

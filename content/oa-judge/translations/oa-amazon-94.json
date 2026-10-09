@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-94",
+  "packageChecksum": "d407872e046e2551f34966f718694c755c9b6296da1bc349cfde4cf7c6f498e7",
+  "en": {
+    "title": "Stock Profit Pairs Deduplicated by Value",
+    "description": "Count the unordered value pairs that can be formed from two distinct indices and sum to target. The same value pair counts only once; (a,a) requires at least two a.\n\nThe standard I/O and solution were written independently by this site; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n target (1≤n≤500000, 0≤target≤5×10⁹); the second line contains n profits (0..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: only (3,9) and (6,6), so the answer is 2. Example 2: a single 6 cannot pair with itself, so the answer is 0. Example 3: three 0s give three index pairs, but the only value pair is (0,0), so the answer is 1.",
+    "hints": [
+      "Count frequencies and enumerate each distinct a, counting only when a≤target−a and the complement exists; when the two are equal, check that the frequency is at least 2."
+    ]
+  }
+}

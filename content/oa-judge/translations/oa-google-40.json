@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-40",
+  "packageChecksum": "29c56d781c512b2aea0ec97a1e896956cef270b146242d2dd271e4a5f7b96e8f",
+  "en": {
+    "title": "Google OA #40: Longest All-Zero Subarray",
+    "description": "Given a non-negative integer array A of length n, and integers X and Y. Two operations are available:\nOperation 1: choose any index i (0≤i<n) and set A[i]=A[i]−1;\nOperation 2: choose any index i and set A[i]=0.\nOperation 1 can be used at most X times, and operation 2 at most Y times. Find the maximum length of a contiguous subarray consisting entirely of 0s after the operations.",
+    "input": "The first line contains three integers n, X, Y; the second line contains n integers A[0..n−1]. 1≤n≤100000, 0≤A[i]≤10^9, 0≤X≤10^15, 0≤Y≤n.",
+    "output": "Output one integer, the maximum length of an all-0 contiguous subarray (possibly 0).",
+    "explanation": "Example 1: A=[4,3,0,1], X=2, Y=1. Apply operation 2 to index 1 to get [4,0,0,1], then apply operation 1 once to index 3 to get [4,0,0,0]; the all-0 subarray has length 3.\nExample 2: only operation 1 can be used; [1,0,3] needs 4 uses and [2,1,0] needs 3, so the answer is 3.\nExample 3: two uses of operation 2 set indices 0 and 1 to 0, giving [0,0,0,5], so the answer is 3.",
+    "hints": [
+      "Each positive number in the window costs either one use of operation 2 or as many uses of operation 1 as its value.",
+      "Operation 2 should be saved for the largest numbers in the window.",
+      "The cost never decreases as the window grows, so you can use two pointers together with two ordered sets."
+    ]
+  }
+}

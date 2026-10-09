@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-1",
+  "packageChecksum": "2a1e3b2ef13e31502508992a4fc5922263c382b917bc042f9547f1da6577ea90",
+  "en": {
+    "title": "Total Vulnerability of All Contiguous Server Segments",
+    "description": "The vulnerability of each non-empty contiguous segment is its length multiplied by its maximum element. Find the sum of the vulnerabilities of all contiguous segments, modulo 1000000007.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains n (1..100000); the second line contains n vulnerability values (1..10⁹).",
+    "output": "Output one integer, the answer required by the problem.",
+    "explanation": "Example 1: the six contiguous segments contribute 3, 6, 12, 1, 8 and 4 in order, for a total of 34. Example 2: the two single-element segments contribute 2 each, and the whole segment contributes 2×2=4, for a total of 8. Example 3: the only segment contributes 1.",
+    "hints": [
+      "Use a monotonic stack to assign left and right boundaries to each maximum. Search for strictly greater on the left and greater-or-equal on the right, so a repeated maximum belongs to only one position."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-2",
+  "packageChecksum": "1fa4105afb3c1e4df25622a280f2d2a98f91f3ab2cc4090feb22420c5ddfb691",
+  "en": {
+    "title": "Smallest Missing Positive Integer After Choosing per Position",
+    "description": "At each position choose either A[i] or B[i] to form C, so that the smallest missing positive integer of C is as small as possible. This site judges by \"minimize the missing value\"; the original site described it as a number that cannot appear in any C, which contradicts its examples.\n\nThe input protocol, the ranges added by this site, the examples, and the tests were written independently by CSWork.",
+    "input": "The first line contains N (1..100000), the second line contains A, and the third line contains B, each with N integers in 1..100000.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: 1 and 3 are forced to appear by fixed positions, while 2 can be avoided; the answer is 2.\n\nExample 2: 1 and 2 are forced to appear, and 3 can be avoided at every position; the answer is 3.\n\nExample 3: the two positions can only pick 1 and 2, so the smallest missing number is 3.",
+    "hints": [
+      "Only a position with A[i]=B[i] forces a value to appear. Collect these forced values and output the smallest positive integer not in that set."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-357",
+  "packageChecksum": "d9db531cf82382f967efd23a1fe876a24332274bdedbc4529d844101430d81fa",
+  "en": {
+    "title": "Exact Number of Configurations Under Running and Waiting Thresholds",
+    "description": "Each robot has its own identity and is in exactly one state, running or waiting. A running robot requires the total number of running robots r≥its own threshold; a waiting robot requires the total number of waiting robots n−r to be strictly less than its own threshold. Find the number of valid identity configurations, without taking any modulus.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n and the second line contains n thresholds. The original bounds are 1≤n≤100000, 1≤a[i]≤n. The original int return signature cannot hold the actual result, so this site explicitly outputs an arbitrary-precision decimal integer of up to about 30103 digits.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 2; 1; and 4, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Let the frequency prefix F(t) count the thresholds ≤t. Fix r. When r≤n−r, check the forbidden middle zone and the forced counts; otherwise let M=F(r)−F(n−r) and K=r−F(n−r), which contributes C(M,K). As r increases, neither M nor K decreases, so update in batches with the recurrence between adjacent binomial coefficients instead of recomputing comb for every r."
+    ]
+  }
+}

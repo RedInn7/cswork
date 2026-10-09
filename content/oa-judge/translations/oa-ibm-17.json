@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-17",
+  "packageChecksum": "c06537874b9ebb3e8f4d8102ba6063ad7786092f04715f972b44c55481352989",
+  "en": {
+    "title": "Total Number of Teams Within a Skill Range",
+    "description": "From the given players choose at least minPlayers people whose skills all lie in [minLevel,maxLevel]; find the number of teams, counted as distinct index sets. No modulo is taken.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n minPlayers minLevel maxLevel, and the second line contains the skills. The original text has no numeric bounds; on this site 1≤n≤10000, 1≤minPlayers≤n, −10^9≤skills and both bounds≤10^9, and minLevel≤maxLevel.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 4, 7 and 0 respectively. Different players with the same skill count as different individuals.",
+    "hints": [
+      "First count the number m of qualified players, then compute the binomial coefficients C(m,k) iteratively and sum those with k≥minPlayers. Use arbitrary-precision integers."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-tradedesk-4",
+  "packageChecksum": "e7fc8984b6283341858b1a09df4e1272519e7f4b48775661ad6e9d365faffc51",
+  "en": {
+    "title": "First Position of Three Consecutive Numbers Strictly Above the Threshold",
+    "description": "Given an integer array numbers and an integer threshold, find the smallest 0-based index i such that numbers[i], numbers[i+1], and numbers[i+2] are all strictly greater than threshold. Return −1 if no such triple exists. The three positions must be consecutive, and a value equal to the threshold does not qualify.",
+    "input": "The first line contains n threshold, and the second line contains the n array values. 3≤n≤1000, −1000≤numbers[i]≤1000, −1000≤threshold≤1000. The original TradeDesk raw text has no numeric ranges; this site adopts the complete ranges given by the same problem in TikTok OCR060/061, whose task, complete original example, and window-by-window explanation are consistent, and discloses this source explicitly.",
+    "output": "Output the first valid start i, or −1 if there is none. Do not return the last start or the number of qualifying starts.",
+    "explanation": "The first example keeps TradeDesk's original input [0,1,4,3,2,5], threshold=1, and answer 2. For i=1, the original explanation says only 4 exceeds 1, overlooking 3; the correct reason is that in the triple [1,4,3], 1 is not strictly greater than 1, so it still cannot be chosen. The second example [-9,95,94,4,5] with threshold=42 comes from the same problem in TikTok OCR060 and outputs −1. The third example is added by this site: three values of −999 are all strictly greater than −1000, so the output is 0.",
+    "hints": [
+      "Check the windows of length 3 in increasing order of their start.",
+      "Alternatively, maintain the current number of consecutive qualifying elements and reset it at any non-qualifying value.",
+      "Return as soon as three in a row are formed for the first time."
+    ]
+  }
+}

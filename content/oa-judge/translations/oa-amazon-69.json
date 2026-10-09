@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-69",
+  "packageChecksum": "cc98c930dd36a0a9f7865aca7a6fc5ed221de02432b87128be0ef8319b1e5565",
+  "en": {
+    "title": "Minimum Cost to Merge Quality Classes So Equal Values Are Contiguous",
+    "description": "One operation chooses x and y and changes every x in the array to y, at a cost equal to the current number of occurrences of x. The goal is for the occurrences of each remaining value to form one contiguous segment; find the minimum total cost.\n\nThis site independently wrote the standard I/O, examples, and judging.",
+    "input": "The first line contains n (1..200000), and the second line contains n quality values (−10⁹..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: three values interleave within the same closed block; keep the 7 that appears 3 times and change the other 4 positions to 7, cost 4. Example 2: every class is already contiguous, cost 0. Example 3: change the middle 2 to 1, cost 1.",
+    "hints": [
+      "Use last-occurrence positions to split the array into minimal closed blocks, similar to partitioning by each character's last position. All values in a block must be merged into one; keep the value with the highest original frequency in that block, cost = block length − maximum frequency."
+    ]
+  }
+}

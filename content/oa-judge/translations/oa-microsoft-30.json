@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-microsoft-30",
+  "packageChecksum": "b4cd04ea9bf770424ceb343ed2567e4e45353d254f572876f3659be586092d66",
+  "en": {
+    "title": "Total Waiting Time for Round-Robin Orders",
+    "description": "Each time, the employee works on the order at the front of the queue for 1 hour; if the order is finished it is delivered, otherwise it goes to the back of the queue. Compute the sum of every customer's waiting time from the start until they receive their order, modulo 10⁹.\n\nThis site independently wrote the standard I/O, examples, solution, and tests.",
+    "input": "The first line contains N (1..100000), and the second line contains N preparation times (1..10000).",
+    "output": "Output a single integer, the answer.",
+    "explanation": "Example 1: the completion times are 6, 2, 5, summing to 13.\n\nExample 2: the completion times are 1, 5, 8, 10, summing to 24.\n\nExample 3: after 6 full rounds totaling 18 hours, the orders finish at hours 19, 20, and 21 in turn, summing to 60.",
+    "hints": [
+      "Before order i finishes, it goes through T[i]−1 full rounds, contributing Σmin(T[j],T[i]−1), plus the number of unfinished orders ahead of i in the final round. Compute the first term with sorting and prefix sums, and the second with a Fenwick tree."
+    ]
+  }
+}

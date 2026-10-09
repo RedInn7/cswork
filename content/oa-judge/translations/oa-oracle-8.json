@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-oracle-8",
+  "packageChecksum": "6f7a6ac6d8426ec3fda8fe5465f56bb717e4be5099ac77af31f55e21e81b3920",
+  "en": {
+    "title": "Return the Last Two Characters in Reverse",
+    "description": "Return a new string made of the last character of the string, one ordinary space, and the second-to-last character.\n\nThis site independently compiled the standard I/O and solution; bounds missing from the source and corrections to the examples are stated explicitly in the protocol.",
+    "input": "The input is one JSON string whose length, counted in Unicode code points, is 2..100 (the original length bound). The source does not restrict the character set; this site allows all Unicode scalar values, including whitespace, NUL, and non-BMP characters, but no lone surrogate code points. Characters are preserved through JSON encoding, and the input is ≤1230 bytes.",
+    "output": "Output one canonical ASCII JSON string with no extra whitespace; a trailing newline is optional. Printable ASCII other than double quotes and backslashes is output as is (including /); double quotes and backslashes are each escaped; backspace, form feed, newline, carriage return, and tab use \\b, \\f, \\n, \\r, \\t respectively; other control characters, DEL, and non-ASCII characters use lowercase four-digit \\uXXXX, and non-BMP characters use lowercase UTF-16 surrogate pairs. The surrounding double quotes must be kept; this is equivalent to Python json.dumps(value,ensure_ascii=True).",
+    "explanation": "The outputs of the three public examples are, in order: \"E L\"; \"t a\"; \"\\ud83d\\ude00 \\u0000\". They were verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Take the last character and the second-to-last character, join them with a space, and output the unique ASCII JSON encoding."
+    ]
+  }
+}

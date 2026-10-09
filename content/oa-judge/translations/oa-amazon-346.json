@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-346",
+  "packageChecksum": "424249f42d4cc4367c0e39fe1534d2830818a37b97b9f2115ccdd6480df80b8a",
+  "en": {
+    "title": "Splits Where the Number of Shared Distinct Letters Strictly Exceeds a Threshold",
+    "description": "Split the whole string into two non-empty contiguous parts; the number of distinct letters that appear in both parts must be strictly greater than k. Find the number of valid split positions; this does not count repeated occurrences of shared characters.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The string and k are given, separated by whitespace. Original bounds: a lowercase string of length 1..100000, and 0≤k≤26.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are 2; 0; and 0, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Maintain the 26 left and 26 right frequencies and the number of letters present on both sides. Each time a character moves from the right part to the left part, first subtract its old contribution to the intersection, then add its new contribution; only check the first n−1 cuts."
+    ]
+  }
+}

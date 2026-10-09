@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-20",
+  "packageChecksum": "c848157578706b6bfef01d97db90236d5a12fbd0245e1865534d6a34dc9464c1",
+  "en": {
+    "title": "Mike and Gems",
+    "description": "You pass n gems in a fixed order and must either pick up or destroy each one. Picking up gem i increases your current stamina by a[i]; stamina can never drop below 0 at any moment. As the problem states, initial stamina is 0. Find the maximum number of gems you can pick up.\n\nThe input format, examples, and test data were compiled and written by CSWork; see the statement for the original source and the limits added by this site.",
+    "input": "The first line contains n; the second line contains n integers a[i]. Original FastPrep constraints: 1≤n≤100000, −1000000000≤a[i]≤1000000000.",
+    "output": "Output the maximum number of gems that can be picked up while keeping stamina non-negative throughout.",
+    "explanation": "Process the input according to the rules above; see the accompanying notes for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Scan from left to right, tentatively picking up every gem while maintaining the stamina sum and a min-heap of the chosen values; whenever the sum becomes negative, destroy the chosen gem with the most negative value (pop the heap top) until stamina is non-negative."
+    ]
+  }
+}

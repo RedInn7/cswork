@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-279",
+  "packageChecksum": "57520c38dc06463313da2787257eb1c326a04f8bbb54c4c3a9dc8e0fda5495cc",
+  "en": {
+    "title": "Maximum Sum of Median Qualities After Splitting All Packets Into Channels",
+    "description": "Every packet must be assigned to one of exactly channels non-empty channels. You may group them arbitrarily; a group does not need to be contiguous in the original order. The quality of a channel is the median of its packet sizes; with an even count, take the average of the two middle items. Maximize the total quality, then round it up to an integer once at the end.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n channels and the second line contains packets. 1≤n≤500000, 1≤packets[i]≤10^9, 1≤channels≤n.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 8, 7 and 151 respectively. In the first example 5 is on its own, and the remaining 1,2,3,4 have median 2.5, so the total 7.5 rounds up to 8.",
+    "hints": [
+      "After sorting, put each of the largest channels−1 items in its own channel and everything else in the last channel. Sum all qualities multiplied by 2, then round up with (sum2+1)//2 at the end to avoid floating point."
+    ]
+  }
+}

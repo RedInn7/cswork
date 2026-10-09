@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-5",
+  "packageChecksum": "8c07cb74c9266c297a0479f1ccbe1b1107538d430f115d2f6b4f4d412f374d32",
+  "en": {
+    "title": "Real-Time Net Profit and Loss of Holdings",
+    "description": "BUY and SELL trade at the current market price, CHANGE is a change in price, and QUERY asks for the net profit and loss from the start until now, including the unrealized profit and loss on holdings not yet sold; SELL is guaranteed to have enough holdings. The original example's output is a placeholder; the correct query results are 120 and 200.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The input is a JSON array of strings, where each item is an event: BUY stock quantity, SELL stock quantity, CHANGE stock delta, or QUERY. Original bounds: 1≤number of events≤100000, and each event has ≤21 characters (this site counts Unicode code points); quantities are 1..1000, and |delta|≤1000. A stock name is a single non-empty token without whitespace, preserving Unicode and the non-whitespace control characters represented by JSON escapes; event fields are separated by a single space.",
+    "output": "The first line is the number of queries, followed by one net profit and loss per line; if there is no QUERY, output only 0.",
+    "explanation": "The outputs of the three public examples are, in order: 2 / 120 / 200; 2 / 0 / -6; 0. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Track each stock's holding and the cumulative profit and loss; buys and sells only change holdings, and a price change adds the holding times the change to the profit and loss."
+    ]
+  }
+}

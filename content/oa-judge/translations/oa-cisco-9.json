@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-9",
+  "packageChecksum": "fa52655bf8a8eb2cc203b019ee7af4c67754d0c42df88b61cf9795a69cf1a686",
+  "en": {
+    "title": "Calculate Mean and Mode",
+    "description": "Given an integer array, output two integers: the arithmetic mean rounded down, and the mode, the value that occurs most frequently. If there are several modes, return the smallest of them.\n\nOriginal constraints: 1≤N≤100000, -10^9≤inputNums[i]≤10^9.\n\nOriginal source: https://oamaster.com/docs/companies/cisco#9-calculate-mean-and-mode (fixed snapshot content fingerprint 82178bbe8b797598a998eeaf22296a73359f80847741be7e46723ab73ba1cc63). Another Fastprep record of the same problem does not state a tie rule for modes; this problem follows the smallest-value rule explicitly given on the original OAMaster problem page.",
+    "input": "The first line contains N; the second line contains N integers inputNums[i].",
+    "output": "Output `mean mode` in that order, as two integers separated by a space.",
+    "explanation": "The mean is floor(sum(inputNums)/N); note that when a negative sum does not divide evenly, it rounds toward negative infinity. Use a frequency table to count the occurrences of each value, and take the smallest among the most frequent values.",
+    "hints": [
+      "Integer division in Java/C++ truncates toward zero for negative numbers, so it cannot directly replace the mathematical floor.",
+      "For tied modes, return the smallest value as stated in the problem."
+    ]
+  }
+}

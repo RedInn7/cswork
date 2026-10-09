@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-5",
+  "packageChecksum": "9bcd5678ce365da00cb1ff7e51d02bb2e89c881b0dcff5511625bdeec6f2c99d",
+  "en": {
+    "title": "Number of Cycles to Convert and Consume Resources by Priority",
+    "description": "In each cycle, first consume conversionRate P's to convert them into one A; if that is not possible and there is an A, consume one A; if neither can be done, stop, and the stopping action does not count as a cycle. Follow the statement strictly: consuming an A does not produce any extra P. The original first two examples, 13 and 4, conflict with the statement and are corrected to 5 and 2 respectively.\n\nThis site's standard input and output are explicit; ranges not given by the source problem are marked as this site's convention.",
+    "input": "The first line contains n conversionRate, and the second line contains a contiguous string of n A/P characters. 2≤n≤500, 2≤conversionRate≤500.",
+    "output": "Output one integer, the answer.",
+    "explanation": "Example 1: convert once, leaving 4 A's and 1 P, then consume 4 A's, for 5 cycles in total. Example 2: consume two A's and stop, for 2 cycles in total. Example 3: convert once to get an A, then consume it, for 2 cycles in total.",
+    "hints": [
+      "Each conversion consumes a fixed number of P's, so you can convert floor(P/rate) times. Each conversion also produces one A that must be consumed, so the total number of cycles is the initial number of A's plus twice the number of conversions."
+    ]
+  }
+}

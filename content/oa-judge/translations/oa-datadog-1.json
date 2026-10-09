@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-datadog-1",
+  "packageChecksum": "761970d940c1b5e9e36606970b0155e477da9f86c1e2a6ee8acc400dfc7cf6b9",
+  "en": {
+    "title": "Log Ingestion and Query",
+    "description": "Append logs in order and run closed-interval queries; service/level match exactly, keyword does a substring match on message, and `*` means no filter.\n\nThis site's standard input/output format and supplementary bounds follow this problem's description.",
+    "input": "The first line contains q (1≤q≤5000, a bound set by this site to cap the time of direct queries), and each of the next q lines is ADD timestamp service level message or QUERY start end service|* level|* keyword|*. message may contain spaces.",
+    "output": "For each QUERY, output the number of matches on one line.",
+    "explanation": "Maintain the appended logs in order; each query scans the current logs and checks the time, service, level, and message conditions entry by entry. The time range is a closed interval. Each query is O(L), and the total complexity is O(q²), which fits the simplified version directly defined by this problem.",
+    "hints": [
+      "Maintain the appended logs in order; each query scans the current logs and checks the time, service, level, and message conditions entry by entry. The time range is a closed interval. Each query is O(L), and the total complexity is O(q²), which fits the simplified version directly defined by this problem."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-142",
+  "packageChecksum": "3523225cc7dc40f6a4a8e628fd8aefba1d20f7d937f5157c916b09f496ccc3fa",
+  "en": {
+    "title": "Players Who Can Beat Every Opponent in Three Rounds",
+    "description": "Each player has three distinct boost values, each used once per match. X can beat Y if there exist arrangements of both players' values such that X is strictly greater than Y in at least two rounds. Count the players who can beat every other player individually; different opponents may use different arrangements.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (2..100000), followed by n lines of three boost values (1..10^9); values within a line are distinct, and values may repeat across lines.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: each side has a pairing that wins two rounds, so the answer is 2. Example 2: only the second player can beat the first, so the answer is 1. Example 3: each player's middle value exceeds every minimum and each maximum exceeds every middle value, so all three players win; the answer is 3.",
+    "hints": [
+      "Sort each player's values as a<b<c; a player can beat another if their own b is greater than the other's a and their own c is greater than the other's b. So precompute the maximum of all a and of all b, then filter."
+    ]
+  }
+}

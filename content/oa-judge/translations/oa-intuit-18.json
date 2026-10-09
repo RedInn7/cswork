@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-18",
+  "packageChecksum": "b9924f78c2702e87482363e0c9e78cc9424db2fa12bf8b00e9410fbaec323354",
+  "en": {
+    "title": "Minimum Cost of Garden Sprinklers",
+    "description": "The garden is the continuous interval [0,N], and there is one sprinkler at each position 0 through N. A sprinkler at position i with range r waters the closed interval [i-r,i+r]; turning on a sprinkler incurs its cost once. Find the minimum total cost to cover the whole garden, or output -1 if it cannot be covered.",
+    "input": "The input gives N (1≤N≤10000), then a line of N+1 ranges (0..100), then a line of N+1 costs (0..10000).",
+    "output": "Output the answer as described; for array answers, separate values with spaces.",
+    "explanation": "Interval-cover dynamic programming: dp[x] is the minimum cost to cover [0,x]. When a sprinkler extends a covered prefix, the end of the prefix must lie within the sprinkler's coverage interval; use the upper bound on the radius to scan predecessors directly.\n\nCorrectness: any optimal plan, taken in the order the sprinklers are turned on, can be viewed as a chain of overlapping intervals that extends to the right. The last sprinkler can continue from any covered end L≤x<R to cover up to R; conversely, every such extension keeps the prefix free of gaps. Therefore, processing right endpoints in increasing order, taking the minimum dp value over all valid predecessors, and enumerating every possible last sprinkler yields the optimum.\n\nComplexity: O(N·201) time, O(N) space. Costs are non-negative, and the answer is at most 100010000.",
+    "hints": [
+      "Interval-cover dynamic programming: dp[x] is the minimum cost to cover [0,x]. When a sprinkler extends a covered prefix, the end of the prefix must lie within the sprinkler's coverage interval; use the upper bound on the radius to scan predecessors directly."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-bnp-2",
+  "packageChecksum": "3763f693fe12e251240deeee5dfc3d35aec51b28b72140a1e18414683690aef6",
+  "en": {
+    "title": "Lowering Piles One at a Time to the Next-Highest Height",
+    "description": "You are given several piles of boxes. Each step may only choose one current tallest pile and lower it to the next height that is strictly less than the current maximum height. Find the minimum number of steps needed to make all piles the same height. Only one pile changes per step; a whole level cannot be processed at once, and the next-highest height cannot be skipped.",
+    "input": "The first line contains a non-negative integer n, followed by n whitespace-separated heights. Following the original Java int[] and the meaning of non-negative box counts, this site interprets heights as 0..2147483647, with 0 being the public convention for an empty pile. The original gives no numeric upper bound on n; this site supports any valid transmittable array within the full 32MiB standard input budget of a single test case, without inventing a small n limit. n=0 is the empty collection, a mathematical extension by this site.",
+    "output": "Output the minimum number of steps as a 64-bit integer. Output 0 when all heights are already equal, there is only one pile, or there are no piles.",
+    "explanation": "The first example keeps the original [5,2,1]→3: lower 5 to 2 once, then lower each of the two 2s to 1 once. The second and third public examples were derived by this site: [5,5,2,1]→5, [0,2147483647]→1; the difference in box counts is not the number of moves.",
+    "hints": [
+      "After sorting, equal heights have the same rank.",
+      "Each pile must pass through every distinct height lower than it, one by one.",
+      "The answer may exceed 32 bits."
+    ]
+  }
+}

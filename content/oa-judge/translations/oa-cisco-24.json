@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cisco-24",
+  "packageChecksum": "b506a053e63449b4b0945f861fa8735f27455d283db8bdd92f04688312c6ff5f",
+  "en": {
+    "title": "Match Three Regions by Adding, Removing, and Migrating Whole Regions",
+    "description": "Each region has a positive number of machines. Adding or removing one machine costs 1, but a region cannot be reduced to 0; migrating all machines of one region into another region costs c, and the source region disappears. In the end, it is only required that three regions have machine counts matching the three targets one-to-one; other regions may remain. Find the minimum cost. The output 2 in original example 2 is a typo; both its steps and the complete supplementary source give 5.\n\nSee the input protocol for this site's supplements to missing ranges and its recovery of typos in the source.",
+    "input": "The input is n, n initial counts, 3 target counts, and the migration cost c. The complete original bounds from the main raw are kept: 3≤n≤10, and initial and target counts in 1..10^6. The original gave no range for c; this site adds 0≤c≤10^6. The auxiliary raw only corroborates example 5, and its different bound on n is not mixed into this problem.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 5; 0. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Enumerate whether each initial region belongs to target group 0/1/2 or is unused. All three target groups are non-empty, and a group costs (number of regions−1)c+|total machines−target|. The recursion only maintains the three sums and counts."
+    ]
+  }
+}

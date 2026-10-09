@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-240",
+  "packageChecksum": "478cc2f26ab7ca172ebee4bee8fc9d218a908026af1f66b4c3fb8a7253c7e33f",
+  "en": {
+    "title": "Number of Stable Contiguous Periods with At Most k Income Values",
+    "description": "A non-empty contiguous period of the income array is stable if it contains at most k distinct income values. Count all stable periods modulo 1000000007; periods with different start or end positions are counted separately.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k; the second line contains the incomes. 1≤n≤100000, 1≤k≤n, −10^9≤income≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 10 and 6. A contiguous range of equal incomes may also span multiple dates.",
+    "hints": [
+      "Maintain each value's frequency in a sliding window and shrink the left end whenever there are more than k distinct values; each right end contributes the window length."
+    ]
+  }
+}

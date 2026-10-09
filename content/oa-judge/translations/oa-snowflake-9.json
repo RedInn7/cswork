@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-9",
+  "packageChecksum": "02b64090eeff563a583bd61395d9817038da0ce3742faeefb5e0eb355cf1b816",
+  "en": {
+    "title": "All Ways to Complete a Weekly Schedule",
+    "description": "Replace each question mark in the seven-digit pattern with a value in 0..day_hours so that the weekly total is exactly work_hours. Fixed digits stay unchanged. Return all schedules in ascending lexicographic order. At least one valid schedule is guaranteed.\n\nThe input/output protocol was compiled independently by this site; upstream solutions are not executed.",
+    "input": "The first line contains work_hours day_hours, and the second line contains the 7-digit pattern. 1≤work_hours≤56, 1≤day_hours≤8; the pattern consists of 0..8 or ?, and fixed hours do not exceed the daily limit. The original constraints omitted ?, which is restored from the body text.",
+    "output": "First output the number of schedules R, then one 7-digit schedule per line; all schedules must be output in ascending lexicographic order.",
+    "explanation": "The answers to the three public examples are, in order: 3\n0120000\n1110000\n2100000; 7\n0000001\n0000010\n0000100\n0001000\n0010000\n0100000\n1000000; 1\n8888888. All examples have been verified by independent small-scale enumeration or state search.",
+    "hints": [
+      "Enumerate digits from left to right in ascending order, prune with the minimum/maximum remaining hours, and keep the leaves that hit the total exactly."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-geico-2",
+  "packageChecksum": "459a0c1df4031a1837d9a82bb5596020c4779515635a4ec591e755b599ab7864",
+  "en": {
+    "title": "Implement an LRU Cache",
+    "description": "Complete the function below. The function receives the full standard input as a single string and must return the exact standard output lines for the described problem.\nImplement an LRU (Least Recently Used) cache that supports:\nLRUCache(capacity): initialize the cache with the given positive capacity.\nget(key): return the value if the key exists and mark it as most recently used; otherwise return -1.\nput(key, value): insert or update the key with the value and mark it as most recently used; if the cache exceeds capacity, evict the least recently used entry.\nRequirements:\nTarget time complexity: O(1) per get/put.\n**Constraints**\nNumber of operations: 1 ≤ N ≤ 2 * 10⁵\nkey, value are 32-bit integers\n**Input:**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**Output:**\n1\n-1\n-1\n3\n4\n**Input:**\ncapacity=1\nput(1,1)\nput(2,2)\nget(1)\nget(2)\n**Output:**\n-1\n2\n**Input:**\ncapacity=2\nput(1,1)\nput(1,10)\nget(1)\n**Output:**\n10\n**Input:**\ncapacity=3\nget(42)\n**Output:**\n-1\n**Input:**\ncapacity=2\nput(1,1)\nput(2,2)\nput(3,3)\nget(1)\nget(2)\nget(3)\n**Output:**\n-1\n2\n3\n**Example**\n**Input**\ncapacity=2\nput(1,1)\nput(2,2)\nget(1)\nput(3,3)\nget(2)\nput(4,4)\nget(1)\nget(3)\nget(4)\n**Output**\n1\n-1\n3\n4\n**Function Description**\nComplete `solveLRUCacheOperations`. It has one parameter, `String input`, containing the full stdin payload. Return the stdout payload as an array of lines, without trailing newline characters.\n\n**Constraints**\n\nUse the limits and requirements stated in the prompt.\n\n### Example 1\n**Input:**\n```\ninput = \"capacity=2\\nput(1,1)\\nput(2,2)\\nget(1)\\nput(3,3)\\nget(2)\\nput(4,4)\\nget(1)\\nget(3)\\nget(4)\"\n```\n**Output:**\n```\n[\"1\", \"-1\", \"-1\", \"3\", \"4\"]\n```\n**Explanation:**\nThe returned string array must match the expected standard output lines for the sample input.\n\n**Source erratum:** The first multi-step example omits the `-1` returned by `get(1)` after `put(4,4)`. The repeated Example 1 appended later lists all five results, and replaying with the same LRU rule also gives `1, -1, -1, 3, 4`.",
+    "input": "The first line is capacity=N (a positive integer); each following line is one `put(key,value)` or `get(key)` operation.",
+    "output": "Output one line for each get; put produces no output.",
+    "explanation": "Maintain the order from least recently used to most recently used. A get hit and any put (including an update to an existing key) move that key to the most recent end; when over capacity, delete the least recently used key. The first example in the statement omits one -1; the output of the repeated Example 1 in the statement and the step-by-step state both confirm the corrected value.",
+    "hints": [
+      "A get hit also changes which entry is evicted later.",
+      "Updating an existing key also counts as a use.",
+      "A hash map combined with an ordered doubly linked list gives O(1) per operation."
+    ]
+  }
+}

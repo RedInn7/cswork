@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-3",
+  "packageChecksum": "9e21650d750d417e332582e9ae626ed2fc58a07e8a9cae2bc00143a33748c0ed",
+  "en": {
+    "title": "Read a Nested Dictionary Value by Dotted Path",
+    "description": "Split the path on dots and access the dictionary one key at a time, level by level. If a key is missing or an intermediate value is not an object, return null; arrays are not accessed by index. Any JSON value found is returned as is, and null is not the string \"null\".\n\nThis site independently prepared the standard I/O and the solution; supplements for bounds missing from the source and corrections to examples are stated explicitly in the protocol.",
+    "input": "The input has two lines: a JSON object and a JSON string path. The path is non-empty with a length of ≤200 code points, and an empty segment looks up the empty key. The n strings/m paths constraint at the end of the original OCR does not fit a single-object function, so this site defines an explicit resource protocol: at most 5000 tree nodes, depth ≤30, each key and string ≤200 code points, and all keys/strings together ≤250000 code points. Values are complete JSON scalars/arrays/objects, keys are strings of Unicode scalars, and duplicate keys are invalid. Numbers are finite, each token is ≤64 characters, the absolute value of the exponent is ≤12, the absolute value is ≤10^9, and every number lies exactly on the 10^-6 grid. The total input size is ≤4MiB.",
+    "output": "Output one line of canonical ASCII JSON: object keys are sorted by ascending Unicode code point, with no extra whitespace; strings use ASCII JSON escapes (non-BMP characters as lowercase four-digit surrogate pairs); numbers use no exponent, trailing zeros in the fraction and a redundant decimal point are removed, and −0 becomes 0; true/false/null are lowercase. Spaces inside strings must be preserved. The unique string escaping is equivalent to Python json.dumps(value, ensure_ascii=True): printable ASCII other than the double quote and backslash is kept as is (including /), and those two are escaped with a backslash; backspace, form feed, newline, carriage return and tab use short escapes, and all other control characters as well as DEL/non-ASCII use lowercase four-digit Unicode escapes, with non-BMP characters as surrogate pairs.",
+    "explanation": "The outputs of the three public examples are, in order: 5; null; {\"b\":true,\"n\":null,\"z\":1.25}. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Parse the JSON with exact decimals, check segment by segment that the current value is an object and the key exists, and finally serialize the result as the unique canonical JSON."
+    ]
+  }
+}

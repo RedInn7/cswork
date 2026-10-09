@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-5",
+  "packageChecksum": "575d81da6dba136b128d0fd69831d2e87e6ebbe488e97e0cf0c5dfe72a7403be",
+  "en": {
+    "title": "Word Compression (Remove k Consecutive Equal Characters)",
+    "description": "Repeatedly delete any group of exactly K consecutive identical characters from the word until no further deletion is possible; the statement guarantees that at least one character remains at the end and states that the final result is unique.\n\nThe input format, examples, and test data were compiled and written by CSWork; see the statement for the original source and the limits added by this site.",
+    "input": "One line containing a lowercase ASCII word word and an integer K. The original MDX gives no range for K or the length; this site adds 2≤K≤200000 and 2≤|word|≤200000. The input must be such that the result after compressing by the rules is non-empty (consistent with the original problem's guarantee).",
+    "output": "Output the word that remains at the end.",
+    "explanation": "Process the input according to the rules above; see the accompanying notes for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Scan the characters from left to right, maintaining a stack of `(character, consecutive count)`. When a count reaches K, pop that group; after popping, subsequent characters naturally merge with the new stack top, which handles chained deletions."
+    ]
+  }
+}

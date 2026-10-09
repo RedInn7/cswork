@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-f5-1",
+  "packageChecksum": "55b0210819d61f9364ab6a897c0677faa0bdb24b45ba434731ad8c3a23219bc4",
+  "en": {
+    "title": "Top 3 Trending Hashtags in a Time Window",
+    "description": "Count how many times each hashtag appears in the tweets within a closed time window, and return the top three, sorted by count in descending order and then by tag in ascending lexicographic order.\n\nThis site's standard input/output format and supplementary bounds are as described in this problem.",
+    "input": "The first line contains n currentTime timeWindow (n≤2×10^5, total text length ≤10^6, timestamps and the time window are non-negative and ≤10^9). Each of the next n lines contains a timestamp, a tab character, and a tweet; a tag starts with # followed by ASCII letters/digits/underscores.",
+    "output": "Output one hashtag per line, keeping the leading #; output nothing if there are no tags.",
+    "explanation": "Scan only the text inside the time window, recognize and count tags character by character, then sort by `(-count, tag)`. The total scan is O(total text length), and sorting is O(H log H).",
+    "hints": [
+      "Scan only the text inside the time window, recognize and count tags character by character, then sort by `(-count, tag)`. The total scan is O(total text length), and sorting is O(H log H)."
+    ]
+  }
+}

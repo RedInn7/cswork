@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-157",
+  "packageChecksum": "f7d47dd1986ebe4a0da82cba4dfb3953307e6cdcbc6feca2007cc70ebef89097",
+  "en": {
+    "title": "Maximum Rating to Complete a Balanced Bracket String",
+    "description": "The original bracket string scores 0. Each bracket in kit has its own rating and can be used at most once, and you may choose none; insert the chosen brackets anywhere in the original string, keeping the original order, to get a balanced bracket string, and maximize the total rating of the chosen brackets. Completion is guaranteed to be possible.\n\nThe standard I/O, examples and solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains the original string s, the second line contains kit, and the third line contains the rating of each character of kit. The original snapshot gives no value bounds; this site sets 1≤|s|,|kit|≤100000 and ratings in −10^9..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: choose the left bracket rated 4 and the right bracket rated −3 for a gain of 1; choosing one more pair would lower the total. Example 2: the only left bracket must be added, so the answer is −5. Example 3: the original string is already balanced, so choosing no brackets gives 0.",
+    "hints": [
+      "First find how many left and right brackets must be added, and for each kind take that many ratings in descending order. After that, extra choices must come in left-right pairs; add pairs one at a time while the gain is positive."
+    ]
+  }
+}

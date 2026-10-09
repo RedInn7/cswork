@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-58",
+  "packageChecksum": "cec02da4703468cfd07958b6b7320d261d4f2b04fc3193eecaca2edbf6e0690c",
+  "en": {
+    "title": "Sum Groups of Repeated Digits Until Stable",
+    "description": "In each round, simultaneously replace every group of consecutive identical digits with the decimal representation of the sum of its digits. Repeat until no two adjacent digits are the same. The input is a string, and leading 0s are kept; several 0s sum to a single 0.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "One line containing a non-empty digit string. The source gives no length range; on this site the length is 1..2000.",
+    "output": "Output the final digit string.",
+    "explanation": "Example 1: 999→27 and 33→6 give 2746, which is already stable. Example 2: after the first round, 12163244 still contains 44, so it continues to 1216328; the original site stopped too early. Example 3: 0044886→08166→08112→0822→084, so the answer is 084, with the leading 0 kept.",
+    "hints": [
+      "Scan runs of identical characters each round and compute the replacement as the digit value times the run length; stop when every run has length 1."
+    ]
+  }
+}

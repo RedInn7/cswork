@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-13",
+  "packageChecksum": "e0f664ce92df441856f35f62478aeda13c5f6a07301af71f329329e212c356b5",
+  "en": {
+    "title": "Star-Bordered Text Box with Per-Paragraph Left/Right Alignment",
+    "description": "Each paragraph has a LEFT or RIGHT alignment tag. In the original order, greedily pack as many entries as possible into each line, putting one space between entries and never splitting an entry. The leftover space in a line goes on the right (LEFT) or on the left (RIGHT). Each line of the outer frame is width+2 wide; the top and bottom lines are all *, each content line has one * at each end, and no extra padding is added. Entries containing spaces, such as \"Please look\" in the original example, are kept as whole entries.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains width P; each paragraph starts with a line align wordCount, followed by wordCount lines, each with one entry. 5≤width≤100, 1≤P≤50. The source gives no ranges for the number of entries or characters; this site uses 1..100 entries per paragraph, each of length 1..width, made of visible ASCII characters and internal spaces, with no leading or trailing spaces.",
+    "output": "Output the complete star-bordered text box without a line count; each line has exactly width+2 characters, all spaces are kept, and the last line is followed by a newline.",
+    "explanation": "Example 1: the output has 7 lines of 18 characters each; hello world is padded with 5 spaces on the right, How areYou doing fills exactly 16 columns, and the last three entries each take one line, padded on the left with 5, 7, and 8 spaces respectively. Example 2: a b c exactly fills the 5 content columns, so no padding is needed. Example 3: putting a b and cc together would need 6 columns, so they must go on two lines, padded on the left with 2 and 3 spaces respectively.",
+    "hints": [
+      "Build the current line string paragraph by paragraph; when the next entry does not fit, output the current line and start a new one. Pad one side with spaces according to the tag and add the border."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-93",
+  "packageChecksum": "05f0d93d8a21db962bde92ddfcbc70417e4fc614f1a53b6a4c6c1dd3dfcfe8e3",
+  "en": {
+    "title": "Maximum Subjects Passed Within an Extra Question Budget",
+    "description": "For subject i, answered[i] questions have already been answered, and passing requires at least needed[i]. You can answer at most q more questions, distributed freely; find the maximum number of subjects you can pass.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n q (1≤n≤100000, 0≤q≤10⁹), the second line contains answered, and the third line contains needed, all 0..10⁹.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: adding 25 and 27 questions passes two subjects, and the remaining 48 is not enough for the third. Example 2: the first subject is already passed, so with a budget of 0 you still pass 1 subject. Example 3: adding 2 and 3 uses up the budget exactly, and two subjects pass.",
+    "hints": [
+      "The remaining cost of each subject is max(0,needed−answered); choose subjects in ascending order of cost until the budget runs out."
+    ]
+  }
+}

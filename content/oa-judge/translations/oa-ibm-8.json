@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-8",
+  "packageChecksum": "c9fe0979e95466389f5ee139bbfa16e71a4c7210932ce2f96e683cffa4159f6d",
+  "en": {
+    "title": "Split Sessions by Per-User Timeout",
+    "description": "Sort each user's events by time; consecutive events whose time difference does not exceed t belong to the same session, otherwise a new session starts. Find the total number of sessions across all users. Different users are never merged.\n\nThe standard input/output format and examples were compiled by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n t, followed by n lines of user ID and time. The source has no numeric bounds; on this site 1≤n≤200000, 0≤time,t≤10^12; an ID is 1 to 32 ASCII letters or digits; events may be out of order or repeated.",
+    "output": "Output one integer, the answer.",
+    "explanation": "The examples give 3, 1 and 2 respectively; a gap exactly equal to the timeout still stays in the same session.",
+    "hints": [
+      "Sort by user and time, and count the positions where the user changes or the adjacent gap is greater than t."
+    ]
+  }
+}

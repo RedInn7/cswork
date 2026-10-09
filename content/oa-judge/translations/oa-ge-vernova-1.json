@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ge-vernova-1",
+  "packageChecksum": "6508d51df30fdd44d92d72ae37a25b32eacf56adf31b9361e814bafa618ba2d4",
+  "en": {
+    "title": "The Best Subsequence | Minimize Special Value",
+    "description": "Choose k elements, keeping their original order, so that the sum of the absolute differences between adjacent chosen values is minimized.\n\nThis site's standard input/output format and supplementary bounds are as described in this problem.",
+    "input": "The first line contains n k (1≤n≤800, 1≤k≤n); the next line contains n integers, |arr[i]|≤10^9.",
+    "output": "Output the minimum special value.",
+    "explanation": "Do dynamic programming over the subsequence length. The transition is `min_j(dp[j]+|a[i]-a[j]|)`; split it into a prefix minimum of `dp[j]-a[j]` and a suffix minimum of `dp[j]+a[j]` over values in sorted order, and update them with a scan. Exhaustive enumeration of combinations provides an independent check.",
+    "hints": [
+      "Do dynamic programming over the subsequence length. The transition is `min_j(dp[j]+|a[i]-a[j]|)`; split it into a prefix minimum of `dp[j]-a[j]` and a suffix minimum of `dp[j]+a[j]` over values in sorted order, and update them with a scan. Exhaustive enumeration of combinations provides an independent check."
+    ]
+  }
+}

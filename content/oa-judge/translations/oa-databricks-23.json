@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-databricks-23",
+  "packageChecksum": "bb71e3b1dd70ca28072897c412fed1a76b009a4cc28b3d2719f348cb7daad14d",
+  "en": {
+    "title": "Binary String Flips and Prefix Counts",
+    "description": "You are given a binary string and a sequence of operations. `flip` swaps every 0 and 1 in the string; `count i` asks for the number of 0s in the current string from 0 to i (inclusive).\n\nStandard input/output and this site's supplementary ranges follow this problem's description.",
+    "input": "The first line contains n q (1≤n≤200000, 1≤q≤8000), the second line contains a 0/1 string of length n, followed by q lines of operations `flip` or `count i` (0≤i<n). The upper bound on q is a site supplement.",
+    "output": "Output the answers to all count queries in order on one line, separated by spaces; if there are no count queries, output an empty line.",
+    "explanation": "Precompute prefix sums of 0s in the initial string, and keep a boolean flag for the parity of the number of flips; for a query, return either the original prefix count of zeros or the prefix length minus that count, depending on the state.",
+    "hints": [
+      "Precompute prefix sums of 0s in the initial string, and keep a boolean flag for the parity of the number of flips; for a query, return either the original prefix count of zeros or the prefix length minus that count, depending on the state."
+    ]
+  }
+}

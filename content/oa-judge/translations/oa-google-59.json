@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-59",
+  "packageChecksum": "b93655d391e446e8f7cdc8e6ad99467c5faf3f11aa32e4c9f48e982cb8a3d55d",
+  "en": {
+    "title": "Maximum Total Cost of Moving Ones Right",
+    "description": "Choose a 1 that is immediately followed by a 0, and move it right across the whole run of consecutive 0s that follows it, until the end of the string or just before the next 1; each move must go as far as possible and costs the distance moved + 1. Move all 1s to the end of the string, and find the maximum possible total cost.\n\nThe input/output and examples are compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "This site's standard input: a single line containing a binary string of length 1..100000.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: first use two operations of cost 2 to cross the single 0 in the middle, then three operations of cost 3 to cross the last two 0s, for a total of 13. Example 2: the first 1 crosses three 0s at cost 4, then the two other 1s each cross the trailing 0 at cost 2, for a total of 8. Example 3: all 1s are already on the right, so the cost is 0.",
+    "hints": [
+      "The total distance moved always equals the number of inversions. Each operation adds an extra 1, and the number of operations is at most the sum, over each original run of consecutive 0s, of the number of 1s to its left. While scanning, add the number of 1s seen so far for every 0, and add it once more if that 0 starts a run."
+    ]
+  }
+}

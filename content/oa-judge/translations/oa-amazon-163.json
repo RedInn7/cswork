@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-163",
+  "packageChecksum": "c01224ec9e3444cb66e8ebe0ebbe7eec8dae616bf120845e6c3a3f95751d94de",
+  "en": {
+    "title": "Maximum Batches with Distinct Categories and Increasing Sizes",
+    "description": "Each category has a given quantity. Each batch contains at most 1 item of each category, batch sizes are strictly increasing, items cannot be reused, and leftovers are allowed. Find the maximum number of batches.\n\nThe standard I/O, examples and solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n, and the second line contains n quantities. The original snapshot gives no value bounds; this site sets 1≤n≤100000 and quantities in 0..10^9.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: you can form four batches of sizes 1, 2, 3 and 4; a fifth batch would need 15 items cumulatively, but there are only 12. Example 2: there is only one category, so each batch has at most 1 item, giving at most 1 batch. Example 3: three items of different categories can be split into two batches of 1 and 2 items, so the answer is 2.",
+    "hints": [
+      "Process quantities in ascending order and accumulate the available items. If the triangular total demand of the next batch can be paid, add 1 batch; each category added increases the count by at most 1 batch."
+    ]
+  }
+}

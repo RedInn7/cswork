@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-visa-7",
+  "packageChecksum": "783958d524b052dbe2d3c2f0f6dd784dd4ba34c7a61ccc24fea027a45a8249ce",
+  "en": {
+    "title": "Restore Missing Matrix Values in Global Row Order",
+    "description": "A square matrix with side 4n is divided into n² 4×4 sub-blocks. Each sub-block contains every integer in 1..16 except one, and the missing position is marked -1. First subtract the sum of the numbers present in each sub-block from 136 to get that block's missing value; then sort all missing values in ascending order and fill them into all -1 positions of the original matrix in turn. Positions are ordered row-major (row first, then column) over the whole matrix, not by sub-block order. This site limits 1≤n≤100.",
+    "input": "The first line contains an integer n (1..100), meaning each side has n 4×4 sub-blocks. Then 4n lines follow, each with 4n integers. Each sub-block has exactly one -1, and its other values are 15 distinct integers from 1..16 excluding one value.",
+    "output": "Output the restored matrix of 4n rows, each with 4n integers.",
+    "explanation": "In example 2, the missing positions seen in sub-block order differ from their row-major positions in the whole matrix; so you must first sort the missing values independently, then fill them back in the global row-major order of all -1 positions.",
+    "hints": [
+      "The numbers in each block should sum to 136.",
+      "Position order and sub-block enumeration order are two different things."
+    ]
+  }
+}

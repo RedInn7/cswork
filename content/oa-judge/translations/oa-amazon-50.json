@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-50",
+  "packageChecksum": "1baae9f3166fc73c4238bc21f4f013512780036134681ab769b3c9b82d4a9b9e",
+  "en": {
+    "title": "Minimum System Cost After Removing a Fixed-Length Contiguous Segment",
+    "description": "Remove exactly k contiguous elements; the remaining elements keep their original order, and the cost is the sum of the absolute differences between adjacent elements. Find the minimum cost.\n\nThe standard I/O, examples, and judging were written independently by CSWork; conventions marked as this site's are not presented as original source constraints.",
+    "input": "The first line contains n k (1≤k<n≤200000), and the second line contains n values (1..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: removing the last three elements leaves [3,9] with cost 6, smaller than the other two windows. Example 2: whichever element is removed, only one element remains, so the cost is 0. Example 3: removing the trailing 8 leaves [1,4,2] with cost 3+2=5; removing 4 gives 1+6=7, and no other option is better.",
+    "hints": [
+      "Store the costs of adjacent edges in prefix sums. Enumerate the removal window, subtract the removed inner edges and connecting edges, then add the new connecting edge when both sides exist."
+    ]
+  }
+}

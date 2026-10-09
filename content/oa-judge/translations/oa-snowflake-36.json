@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-36",
+  "packageChecksum": "44cc75d6748bbfbc48576bbacc4cc617a62393a712247a5928b767992c887d59",
+  "en": {
+    "title": "Maximum Passengers on a Round Trip Through a Grid",
+    "description": "Go from the top-left to the bottom-right moving only right/down, then return moving only left/up. −1 is a wall, 0 is an empty cell, and 1 is one passenger; once a cell is passed, its passenger is picked up and not counted again. If there is no valid outbound path, return 0. Find the maximum total number of passengers.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains n, followed by n lines of the matrix. 1≤n≤100, and each cell is −1, 0, or 1. The start and end cells may also hold a passenger or a wall; if either is a wall, there is no valid trip.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 1; 5; 1. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Reverse the return trip so that it becomes two people walking simultaneously from the top-left to the bottom-right. The shared step count t determines column = t−row, so the DP state only records the two rows; a shared cell adds its passenger only once."
+    ]
+  }
+}

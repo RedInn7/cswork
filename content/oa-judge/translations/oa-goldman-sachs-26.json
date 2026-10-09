@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-26",
+  "packageChecksum": "4655d01d620441f99a2458255542d4427a59fe10123e77ee224485e12c954e06",
+  "en": {
+    "title": "Is Possible",
+    "description": "Starting from a pair of positive integers (a,b), you may repeatedly apply (a,b)→(a+b,b) or (a,b)→(a,a+b). Determine whether the target pair of positive integers (c,d) can be obtained; zero operations are allowed.\n\nThis site's input format and explicitly marked ranges are compiled by CSWork and do not pose as the original OA platform's I/O.",
+    "input": "A single line containing a b c d. Original range: 1≤a,b,c,d≤1000.",
+    "output": "Output Yes if reachable, otherwise output No.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "Work backward from (c,d). If c>d, the only possible predecessor is (c−d,d); if d>c, the only possible predecessor is (c,d−c). Subtract the smaller coordinate each time; if a coordinate drops below the start, or the state reaches equal coordinates that are not the start, the target is unreachable."
+    ]
+  }
+}

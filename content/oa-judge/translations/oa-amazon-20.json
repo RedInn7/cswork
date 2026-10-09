@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-20",
+  "packageChecksum": "d24a35a120b3a2cbfa7c3d4567eb9072627e2a9c8df6a8f458ea29e3aa52f46f",
+  "en": {
+    "title": "Sum of Median Throughputs of Three-Server Groups",
+    "description": "Split some of the servers into non-overlapping triples; each triple contributes the median of its three throughputs, and leftover servers may go unused. Find the maximum total contribution.\n\nThe standard input format, examples and test data were written independently by CSWork.",
+    "input": "The first line contains n (1..100000), and the second line contains n throughputs (1..10⁹).",
+    "output": "Output a single integer, the answer required by the problem.",
+    "explanation": "Example 1: five servers can form at most one group; choosing throughputs 3, 4 and 5 gives median 4. Example 2: there are fewer than three servers, so no group can be formed and the answer is 0. Example 3: the servers can be split into [1,5,6] and [2,3,4], with medians 5 and 3, total 8.",
+    "hints": [
+      "Sort in descending order. Form floor(n/3) groups, taking the 2nd, 4th, 6th, ... largest values as medians, each paired with the value just above it as the maximum, and use the remaining small values as the third members."
+    ]
+  }
+}

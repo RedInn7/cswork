@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-206",
+  "packageChecksum": "486c3eb26cac7bfd5203ed90c5f60cc0291c1ef56459e2e8a65f2983c7af38f3",
+  "en": {
+    "title": "Longest Run of Equal Speeds After Removing At Most k Racers",
+    "description": "Remove at most k racers; the remaining racers keep their relative order. Find the number of racers in the longest contiguous run of the same speed in the remaining sequence. Removed racers do not count toward the answer.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n k; the second line contains the speeds. 1≤n≤300000, 1≤k≤n. The original text had no numeric bounds on speed; this site uses speeds 1..10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 1 and 3.",
+    "hints": [
+      "Store the occurrence indices of each speed. Slide a window over each list of indices; the number of removals needed inside it is positions[r]−positions[l]−(r−l), which must stay within k."
+    ]
+  }
+}

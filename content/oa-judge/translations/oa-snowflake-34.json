@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-34",
+  "packageChecksum": "12480e31ca5a45539952c11532565656e5cc3370b2f575a908d401ca9434eccd",
+  "en": {
+    "title": "Delete in a Given Order While Keeping a Subsequence",
+    "description": "Delete characters of source one by one following order, a permutation of 1-based original indices; original indices are not renumbered after deletions. target is initially guaranteed to be a subsequence of source. Find the maximum number of leading deletions that can be performed consecutively while target remains a subsequence.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first two lines contain source and target (words without whitespace characters), and the last line contains a 1-based permutation of indices whose length equals the length of source. 1≤|source|≤100000, 1≤|target|≤|source|. Letter case is not arbitrarily restricted, and comparisons are case-sensitive.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 3; 1; 1. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Record the deletion time of each position and binary search on the number of deletions. When checking a candidate, ignore positions whose deletion time is ≤ the candidate, and greedily match the target subsequence."
+    ]
+  }
+}

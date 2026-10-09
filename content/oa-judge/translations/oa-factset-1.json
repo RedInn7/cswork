@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-factset-1",
+  "packageChecksum": "266cd5ba1e23f817db5d002da943a8472cfda22a29536c062787611cd0050fcb",
+  "en": {
+    "title": "Maximum Side Length of an All-1s Square",
+    "description": "Given an n×n binary matrix, where 1 denotes a defective product and 0 a non-defective product, find the maximum side length of a contiguous square submatrix whose elements are all 1. Return the side length, not the area. Return 0 if there is no 1.",
+    "input": "The first line contains a non-negative integer n, followed by n lines, each with n whitespace-separated 0s or 1s. The original clearly specifies a square matrix and row-by-row input but gives no numeric upper bound on n; this site supports every valid square matrix that fits within the existing 32MiB per-case standard input budget and does not further restrict n. n=0 is an empty matrix, an explicit mathematical extension by this site.",
+    "output": "Output one integer, the maximum side length; output 0 for an empty matrix or an all-0 matrix.",
+    "explanation": "All three public inputs and their outputs 3, 2, 1 are kept from the original source. The first example has a square of side 3; the original explanation's end(3,3) uses a half-open endpoint, which this site normalizes to the inclusive endpoint (2,2); the bottom-right corners of the other two squares are (3,2) and (4,2). In the second example the top-left 2×2 is all 1s; the third example has no all-1 2×2 square but does contain a 1. The original image is a path on the author's local machine and is not used as evidence.",
+    "hints": [
+      "Consider the maximum side length of a square whose bottom-right corner is each cell.",
+      "A cell containing 1 must satisfy the conditions from above, from the left, and from the upper-left at the same time.",
+      "A rolling array is enough to process each row as a stream."
+    ]
+  }
+}

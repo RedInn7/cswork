@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-salesforce-12",
+  "packageChecksum": "d07a76432eabbe960750d9fd662e74c78b8791cdba762afa407ced29eeae85c7",
+  "en": {
+    "title": "Longest Subsequence of X That Is a Substring of Y",
+    "description": "Find the longest string s that is both a subsequence of X and a contiguous substring of Y, and return its length. The original text of this entry has only a title, function name, and examples; it was cross-checked against the full statement of salesforce-longest-subsequence-which-is-a-substring from the same snapshot. When there is no match, the length is 0.\n\nThe input/output format was compiled by this site.",
+    "input": "Two lines, X and Y respectively. The source gives no size or alphabet range; on this site both are non-empty lowercase strings of length 1..2000.",
+    "output": "Output the maximum length.",
+    "explanation": "The answers are 7, 3, and 0; in the second example, abd is a subsequence of X and a contiguous substring of Y.",
+    "hints": [
+      "Update dp[j] row by row over the characters of X: within the processed prefix of X, dp[j] is the maximum length of a contiguous piece ending at the j-th character of Y that can be formed. When the characters are equal, transition from the old dp[j−1]+1; otherwise, the only option is to skip the current character of X."
+    ]
+  }
+}

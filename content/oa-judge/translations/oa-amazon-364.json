@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-364",
+  "packageChecksum": "dec0597a54db68cc0c81f5d9fc9229e52a685e0eba3348ad462bf14fcd2a6cc9",
+  "en": {
+    "title": "Shortest, Then Smallest, String After Deleting Pairs of Equal Characters",
+    "description": "In each step you may delete any two equal characters, which need not be adjacent; the remaining characters keep their original order. First minimize the remaining length, then make the remaining string lexicographically smallest by Unicode code point.\n\nThis site independently compiled the standard I/O and editorial; additions for bounds missing from the sources and corrections to examples are stated explicitly in the protocol.",
+    "input": "The input is a JSON string. The original statement gives no upper bound on the length or the character domain; on this site 0≤length in code points≤200000, and all Unicode scalar characters are allowed, including whitespace, NUL, non-BMP characters and U+0085/U+2028/U+2029.",
+    "output": "Output a canonical ASCII JSON string followed by a newline: double quotes and backslashes are escaped with a backslash; control characters use JSON short escapes (backspace, tab, newline, form feed, carriage return) or a lowercase four-digit \\u; non-ASCII characters and DEL use a lowercase four-digit \\u, and non-BMP characters use a pair of UTF-16 surrogate escapes; all other printable ASCII is output directly. This is equivalent to Python json.dumps(result, ensure_ascii=True). An empty string is output as \"\". The exact comparison mode is used, so spaces inside the string cannot be ignored.",
+    "explanation": "The outputs are \"BAX\", \"XYZ\" and \"\". The original third example shows a single space, which conflicts with its explicit explanation of an empty string; this site corrects it to an empty JSON string.",
+    "hints": [
+      "Only characters with an odd frequency need to keep one copy each. Scan the original string and use the remaining frequencies, the set of chosen characters and a monotonic stack to pick the smallest subsequence that contains each of these characters exactly once."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-35",
+  "packageChecksum": "7ea1d08cec72c22029746bf12844eb4cbd274420f21e636eb63b322fa3197dbb",
+  "en": {
+    "title": "Image Stream with Favorites First",
+    "description": "The image stream first returns all favorite images in the order of the favorites list, then returns the non-favorite images in the order of the original image list. getNext is called q times in a row; once the stream is exhausted, each call returns NULL. The lists do not change after construction.\n\nThe standard input/output, examples, and tests are written by CSWork; ranges marked \"this site\" are judging conventions and are not claimed to be original interview limits.",
+    "input": "This site's standard input: the first line contains n m q (1≤n,q≤100000, 0≤m≤n); the second line contains n distinct image identifiers; the third line contains m distinct favorite identifiers, which form a subset of the original list. Identifiers consist of 1..32 English letters or digits, and NULL is not allowed.",
+    "output": "Output the answer as described; results for multiple queries are separated by spaces, in order.",
+    "explanation": "Example 1: first output the favorites in order, i3, i1, then the non-favorites i2, i4; by the fifth call the stream is exhausted, so NULL is output. Example 2: there are no favorites, so the first call outputs a and the second NULL. Example 3: every image is a favorite, so b, a are output in the given favorites order.",
+    "hints": [
+      "At construction, build only the favorites set and keep two cursors. Advance the favorites cursor first, then scan the original list skipping favorites, and output NULL once everything is exhausted."
+    ]
+  }
+}

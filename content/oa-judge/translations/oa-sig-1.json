@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-sig-1",
+  "packageChecksum": "c0e41e9dd3560e8fff05829c67da706d52e2245f0806c8dcb8adf269871af4be",
+  "en": {
+    "title": "Optional One-Time Half-Hold, Half-Sell Trading Strategy Modification",
+    "description": "The price on each day is rates[i]>0, and the strategy is −1 to buy one unit, 0 to do nothing, and 1 to sell one unit. Funds and holdings are guaranteed to always be sufficient, and the profit is Σrates[i]×strategy[i], which may be negative. You may keep the original strategy or modify it once: choose a contiguous window of length exactly k, set its first k/2 items to 0 and its last k/2 items to 1, leaving everything outside the window unchanged. Find the maximum profit.",
+    "input": "The first line contains n k, the second line contains n rates, and the third line contains n strategy values. Original SIG ranges: 2≤n≤100000, 1≤rates[i]≤1000, strategy[i]∈{−1,0,1}. k is even and 2≤k≤n, supplemented from the identical problem eBay023 where the SIG text was truncated; that page's nums.length is normalized to the common array length n.",
+    "output": "Output the maximum profit as one integer; you may leave the strategy unchanged, but a negative profit must not be treated as 0, and you may not modify more than once.",
+    "explanation": "In the original example, the original profit is −3, and the three modification windows give profits −4, 13, and 18, so the answer is 18. The second example is added by this site: selling all of [1,1] without modification gives 2, while a forced modification gives only 1. In the third added example, with prices [1,1000], strategy [0,0], and k=2, selling in the second half gives 1000. The original text's \"may change\" supports an optional single modification, and its NOTE rules out inventory and funding constraints. SIG's own price upper bound of 1000 is kept rather than replaced by a larger bound from other companies' versions of the same problem.",
+    "hints": [
+      "Add the maximum modification gain to the original profit; the gain may also be 0.",
+      "The new window keeps only the price contributions of its second half.",
+      "Both window sums can be updated in constant time as the window slides."
+    ]
+  }
+}

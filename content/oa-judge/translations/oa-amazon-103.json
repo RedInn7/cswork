@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-103",
+  "packageChecksum": "059810f95850fd00577d0cb2c86759db53a4d1b99a7d5f1f8ff69fec760b669b",
+  "en": {
+    "title": "Maximum Contiguous Quality Score After Changing Exactly One Range",
+    "description": "You must choose a non-empty range and either multiply all of it by impactFactor or divide all of it by that factor, rounding toward 0. After the operation, find the maximum possible sum of a non-empty contiguous subarray.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n impactFactor (1≤n≤200000, 1≤impactFactor≤10000); the second line contains n ratings (−100000..100000).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: multiplying the last 2 and 4 by 2 turns them into 4 and 8, for a maximum sum of 12. Example 2: a factor of 1 changes nothing, so choosing 3 gives 3. Example 3: −3 divided by 2 rounded toward 0 is −1, which is the maximum quality score obtainable.",
+    "hints": [
+      "Handle multiplication and division separately, using a three-state contiguous subarray DP for not yet in the modified range, currently modifying, and already left it. Take the maximum subarray sum that contains at least one modified position."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-4",
+  "packageChecksum": "7cca3716517aa4c564f088b5654a2aca364de54190f89b07798518f98e12789e",
+  "en": {
+    "title": "Earliest Common Free Meeting Time",
+    "description": "A day is [0,1440) minutes. Given the busy half-open intervals of all employees, find the earliest integer start time at which all employees are free and a meeting of the given length fits; if none exists, output −1. The original site's example answer of 240 conflicts with the busy intervals, so this site corrected it to 60.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "This site combines all employees' busy intervals into one input: the first line contains the total number of intervals b (0..100000) and the meeting length L (1..1440); the next b lines are start finish (0≤start<finish≤1440). Intervals may overlap and may be unsorted.",
+    "output": "Output the answer as described; separate multiple results with spaces in order, and output an empty line for an empty array.",
+    "explanation": "Example 1: everyone is free during [60,180), whose length is exactly 120; before that, someone is busy during [0,60), so the earliest start time is 60.",
+    "hints": [
+      "Sort the intervals by start and track the rightmost end of the busy time scanned so far; as soon as the gap before an interval is long enough, return its start."
+    ]
+  }
+}

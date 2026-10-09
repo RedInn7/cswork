@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-22",
+  "packageChecksum": "efdbb0d47691c9a267c2476363f6155d99bc5647c3e0d78ece8e117bcef3e986",
+  "en": {
+    "title": "Minimum Machines for Closed-Interval Tasks",
+    "description": "Each task occupies one machine during [start,end], endpoints included, and each machine runs at most one task at any moment. Find the minimum number of machines. Original example 2 contains an invalid task with start>end and its explanation re-pairs the values, so this corrupted example is not used.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n, followed by n lines of start end; full original bounds 1≤n≤200000, 1≤start≤end≤1000000000.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 3; 4; 2. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Add one at each task's start and subtract one at the moment right after its end, then scan in time order for the maximum number of tasks running at once."
+    ]
+  }
+}

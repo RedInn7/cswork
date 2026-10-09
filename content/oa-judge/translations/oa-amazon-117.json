@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-117",
+  "packageChecksum": "5cdcb80bfcaf0e2c7bb3b92f317a6e94c96655fc70bdbda46212068fb5b65e3a",
+  "en": {
+    "title": "Number of Connected Components in an Undirected Graph",
+    "description": "Given an undirected graph with nodes numbered 0..n−1, find the number of connected components. Duplicate edges and self-loops do not change connectivity, and an isolated node also counts as a component.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n m; each of the next m lines contains u v. The source gives no size limits; this site sets 1≤n≤200000, 0≤m≤200000, 0≤u,v<n.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: {0,1,2} and {3,4}, 2 groups in total. Example 2: all four nodes are isolated, so the answer is 4. Example 3: 0 and 1 are connected and 2 is isolated; the self-loop and the duplicate edge do not reduce the component count further, so the answer is 2.",
+    "hints": [
+      "Use union-find to merge the two endpoints of each edge; there are n components initially, and each merge of two different roots removes one."
+    ]
+  }
+}

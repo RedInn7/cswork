@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-optiver-1",
+  "packageChecksum": "4fc46671542f3c0702fee998b1928064fd54bbf25d1e2a28e98fab45ed111993",
+  "en": {
+    "title": "Longest-Running Schedule for Dependent Processes",
+    "description": "Each process i may start at integer time S_i or later and must finish at E_i or earlier, running for at least one time unit. A dependency u→v requires s_u<s_v and e_v<e_u. As the original problem requires, let the processes run as long as possible: there is a unique schedule that simultaneously maximizes the running interval of every process, so no trade-off between processes is needed. Output this widest schedule; if no valid schedule exists, output IMPOSSIBLE.",
+    "input": "The first line contains N M, followed by N lines S_i E_i for PID1..N, then M lines u v. Full original ranges: 1≤N≤1000000, 0≤M≤1000000, 1≤S_i≤E_i≤1000000, 1≤u,v≤N with u≠v, and all ordered edges are distinct. The original text also says that the Sum of N,M across tests does not exceed one million; this site runs one instance at a time, supports up to one million each for N and M, and places no extra limit on N+M; none of the original individual ranges is reduced.",
+    "output": "If infeasible, output only IMPOSSIBLE; otherwise output exactly N lines s_i e_i in ascending PID order, all integers, where each process takes the earliest start and the latest end that are simultaneously feasible. Processes that are not part of any dependency must not be omitted.",
+    "explanation": "The first public example keeps the original four-process input, but the original three-line output is wrong: 1→2 forces process 2 to end at ≤1, while its start is ≥100, so the answer should be IMPOSSIBLE. The second example is a separate three-process supplementary example stated explicitly by this site; it is not the original input with processes removed and passed off as the original. The third example was added by this site: S=E does not allow running for at least one unit. See the solution for the source and the proof that the optimum is unique.",
+    "hints": [
+      "A dependency means strict interval containment, not that the child process must start after the parent finishes.",
+      "A directed cycle is always infeasible; propagate lower bounds on starts and upper bounds on ends in topological order."
+    ]
+  }
+}

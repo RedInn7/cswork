@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-85",
+  "packageChecksum": "600561ee3a20ea23228f2391051ccde8184e2059ee0394f30f802fd2e0793d0a",
+  "en": {
+    "title": "Maximum Subset Bitwise AND with Limited Increments",
+    "description": "Perform at most k operations, each adding 1 to any rating. After the changes, choose exactly m items and maximize their bitwise AND.\n\nThis site independently wrote the standard I/O and judging; ranges marked as this site's are not original source constraints.",
+    "input": "The first line contains n k m (1≤m≤n≤100000, 1≤k≤10⁹); the second line contains n rating values (1..10⁹).",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: raise 1 to 2 and choose two items, giving an AND of 2; bringing both items to 3 takes 3 operations, which exceeds the budget. Example 2: the only value goes from 5 to 8, so the answer is 8. Example 3: bringing all three items to 2 takes 3 operations but the budget is only 2, so the maximum AND stays 1.",
+    "hints": [
+      "Try answer masks from the high bit to the low bit. Compute the minimum increase each number needs to contain all the 1 bits of the mask; if the sum of the m smallest costs is ≤k, the bit can be kept."
+    ]
+  }
+}

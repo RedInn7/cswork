@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-optiver-4",
+  "packageChecksum": "d7ffff62f89572e792eb25d70b95154456ed986da482dc4f9c036bc0f38bdae2",
+  "en": {
+    "title": "Record Log",
+    "description": "Implement a logger. Each log has an integer logId, a timestamp, and its receiving order; logs may arrive out of order, and logId values may repeat. The window anchor is the maximum timestamp among the recorded logs. Logs strictly earlier than 3600 seconds before the anchor are excluded from the window, i.e. only records with `timestamp > maximum timestamp - 3600` are counted. GET_LOGS sorts by timestamp in ascending order, breaking ties by receiving order in ascending order, and returns the newest at most m logId values in the window; getLogCount returns the total number of logs in the window.",
+    "input": "The first line contains m and q. Then q lines of operations follow: `RECORD logId timestamp`, `GET_LOGS`, or `COUNT`. Each query outputs one line: GET_LOGS outputs comma-separated logId values (an empty line if none qualify), and COUNT outputs the number of records in the window. This site's supplementary limits: 1≤m≤1000, 1≤q≤1000000, |logId|≤10^9, |timestamp|≤10^12, and the total output of all queries is at most 65536 bytes. The window anchor and the equal-timestamp rule are made explicit following the fixed source implementation.",
+    "output": "For each GET_LOGS/COUNT query, output one line of results, in input order; RECORD produces no output.",
+    "explanation": "The fixed source's reference solution uses the maximum timestamp as the anchor, uses a window strictly greater than timestamp−3600, and breaks timestamp ties by receiving order. This site only adds command-line input/output and numeric bounds.",
+    "hints": [
+      "Use an order-statistic treap sorted by (timestamp, receiving sequence number); prefix ranks give the number of logs in the window, and the last m entries can be taken by rank."
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-nutanix-2",
+  "packageChecksum": "32124d4f769b48536fb090d921a85688e597429238137b86f652c22365dfccb3",
+  "en": {
+    "title": "Work Schedules",
+    "description": "Given the total weekly work hours, the daily limit, and a partially fixed seven-day schedule, list all valid schedules.",
+    "input": "The input is work_hours, day_hours, pattern, separated by spaces; pattern has length 7, digits are fixed hours, and ? marks a day still to be scheduled.",
+    "output": "Output a compact JSON array of strings, sorted in ascending lexicographic order.",
+    "explanation": "Enumerate 0..day_hours for each question mark by position, pruning by the remaining hours and capacity.",
+    "hints": [
+      "Fill only the ? positions, with 0..day_hours.",
+      "The daily limit is an input parameter and must not be treated as a fixed value."
+    ]
+  }
+}

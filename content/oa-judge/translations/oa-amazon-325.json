@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-325",
+  "packageChecksum": "5a9b19306bd560a7ca7b4e2d8b771654fa20737d468bb9f093b42c90db0641f5",
+  "en": {
+    "title": "Query the Nearest Day With a Strictly Lower Price",
+    "description": "For each 1-based query day i, find among the other days the nearest day j whose price is strictly lower than that day's; if two days are equally near, choose the smaller day number. If there is no strictly cheaper day, output −1. Each query is independent and does not change the prices.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n q, the second line contains n stockData values, and the third line contains q 1-based days. The original bounds are 1≤n,q≤100000, 1≤stockData[i]≤10^9, 1≤query≤n. The raw restores the conditions stockData[j]<stockData[i] and j≠i, which the HTML had swallowed.",
+    "output": "Output the q answers in query order, separated by spaces.",
+    "explanation": "The answers are 5 4 8; 1 −1; and −1 −1. An equal price is not lower, and at equal distance the left day wins.",
+    "hints": [
+      "Scan with a monotonically increasing stack from the left and from the right separately, popping prices ≥ the current one, to get the nearest strictly lower position on each side; each query compares the two distances and takes the left one on a tie."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-267",
+  "packageChecksum": "3cc5326c77d50ca7464edde4017bfa9eb3bb224116270fc73567d317d485e680",
+  "en": {
+    "title": "Maximum Covered Population with Each Security Unit Moving Left At Most Once",
+    "description": "Cities are arranged in a row, and unit[i]=1 means a unit is initially there. A unit may stay or move once to the adjacent city on its left; a unit in the first city can only stay. In the end, a city with at least one unit contributes population[i] once; overlapping units do not contribute again. Find the maximum protected population.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n, the second line population, and the third line a 01 string unit of length n. The original text only kept the constraint that the two arrays have equal length, with no numeric bounds; this site uses 1≤n≤200000, 0≤population[i]≤10^9.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 27, 7 and 101. In the third example two units cannot count the 100 in the middle twice.",
+    "hints": [
+      "Run a DP from left to right with two states: whether the previous city has a unit staying there. Once you decide whether the current unit stays or moves left, the final coverage of the previous city is fixed, so settle its population; finally settle the last city."
+    ]
+  }
+}

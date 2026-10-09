@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-59",
+  "packageChecksum": "78132f5ffd11d815ab4ca4af606f380e57f3a6d95d45ba01c9af882bdd69fd32",
+  "en": {
+    "title": "Time When Rainwater First Reaches Each Cell",
+    "description": "Water starts at a given cell, which becomes wet at time 0. At each step, water spreads simultaneously to the up, down, left, and right neighbors whose height does not exceed the current cell's. Return the time each cell first becomes wet; cells that can never be reached are −1.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n m startRow startCol, followed by n lines of m heights, 0-indexed. The source gives no size bounds; on this site 1≤n,m≤500 and heights are in −10⁹..10⁹.",
+    "output": "Output the first-wet times as n rows of m columns.",
+    "explanation": "Example 1: from 5, water first reaches the 2 above and the 4 to the right, then the 1; the other cells are higher and unreachable, so the output matches the matrix in the statement. Example 2: water can flow between equal heights, so every time equals the Manhattan distance to (1,2). Example 3: a single starting cell has time 0.",
+    "hints": [
+      "Treat allowed flow directions as directed edges, and use breadth-first search to compute the shortest number of edges from the start to each cell."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-24",
+  "packageChecksum": "e0418095fa0e3bd1a7fca5c3d3e02571db6cf1c1c93d640a361f7592703e3936",
+  "en": {
+    "title": "Minimum Halvings to Get Alternating Parity",
+    "description": "One operation picks an element and changes it to floor(v/2); it may become 0. Find the minimum number of operations so that every pair of adjacent elements ends up with different parity; a pairwise greedy that only changes the right element does not work.\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n, followed by n items; full original bounds 1≤n≤100000, 1≤items[i]≤2^30.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 3; 1. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "The final parities can only alternate starting from even or starting from odd. For each case, compute the minimum number of right shifts each item needs to reach its required parity, then take the smaller of the two totals."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-298",
+  "packageChecksum": "e34011a671963a62226d6138300e7b8cd6fff85264231333c0fe73175d872b3a",
+  "en": {
+    "title": "Make the Target a Subsequence by Inserting Only Positive Integers",
+    "description": "initialList may contain duplicate integers, and the integers in finalList are distinct. In each step you may insert one positive integer at any position in initialList; you cannot delete or reorder existing elements. Find the minimum number of insertions so that finalList becomes a subsequence of the final initialList. Zeros and negative integers in the target cannot be obtained by insertion and must match existing elements; if it is impossible, output −1 as this site's protocol specifies.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains m n, the second line contains the m integers of initialList, and the third line contains the n integers of finalList. The original statement gives no value bounds; on this site 1≤m,n≤200000, −10^9≤every element≤10^9, and finalList is distinct. The rule that only positive numbers may be inserted is not misread as requiring the original array to be all positive. The original statement does not define the output when there is no solution; this site does not exclude unsolvable inputs and explicitly encodes them as −1.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 1 and −1. In the first example the final −1 must be kept, and then 1, 2 and 3 are inserted; in the third example the order of the anchors is impossible. One place in the original statement reverses the subsequence direction; based on Returns and the complete worked example, this site specifies that final is a subsequence of initial, and openly adds −1 for the no-solution case.",
+    "hints": [
+      "Map target values to indices. Every non-positive target is a forced matching anchor. Scan initial for its matched indices q; let b be the index of the last non-positive target before q, so the best predecessor can only lie in [b,q). Query the range maximum with a tree and apply chmax at q. When b does not exist, the empty predecessor 0 is allowed. Finally take the largest matching length among the states at the last anchor and after it; if one exists, the answer is n minus it, otherwise −1."
+    ]
+  }
+}

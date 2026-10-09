@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-stripe-17",
+  "packageChecksum": "eba4519ba03361601ce766bfc221b9ff551977e9dc7b58f624427adbc22b47b4",
+  "en": {
+    "title": "Payment Intent State Machine with Time-Limited Refunds",
+    "description": "Execute the interrelated Payment Intent commands from Parts 1–4 of the original Stripe problem. An Intent's states are REQUIRES_ACTION, PROCESSING, and COMPLETED; illegal state transitions and invalid creations/updates are ignored. Command timestamps are strictly increasing. A refund can succeed only for a completed Intent that has not been refunded yet, and it is judged against the merchant's refund time limit.\n\nThe input format, examples, and test data were compiled and written by CSWork.",
+    "input": "The first line contains q (1..200000), followed by q lines of commands: `timestamp INIT merchant starting_balance [refund_limit]`, `timestamp CREATE intent merchant amount`, `timestamp ATTEMPT intent`, `timestamp SUCCEED intent`, `timestamp FAIL intent`, `timestamp UPDATE intent new_amount`, or `timestamp REFUND intent`. An ID is a string without whitespace. Balances, amounts, and refund limits are signed 64-bit integers. Only a merchant's first INIT takes effect; duplicate merchants, duplicate Intent IDs, unknown merchants, and negative creation amounts are ignored. A missing or negative refund limit means no time limit, 0 means refunds are not allowed, and a positive n means the refund timestamp must be no later than the success timestamp+n.",
+    "output": "First output the number of initialized merchants; then output `merchant_id balance` line by line in lexicographic order of merchant ID.",
+    "explanation": "Process the input according to the rules above; see the accompanying solution for the approach, correctness proof, and complexity.",
+    "hints": [
+      "Use hash maps to store each merchant's balance/refund limit and each Intent's merchant, amount, state, refund flag, and success time. Scan the commands in time order and update only when the current state satisfies the transition condition; finally, sort the merchants and output them."
+    ]
+  }
+}

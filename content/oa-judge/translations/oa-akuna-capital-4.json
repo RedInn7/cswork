@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-akuna-capital-4",
+  "packageChecksum": "291031259f95aa5db92c63f6a77ff032e8063bc2ebd4a91dfb8510c7283f9e18",
+  "en": {
+    "title": "Maximum Node-Weight Star Subgraph with at Most k Arms",
+    "description": "Given an undirected simple graph where each node has an integer weight, choose a non-empty star subgraph: pick one center and at most k distinct direct neighbors as leaves, and take only the edges from the center to those leaves. Find the maximum sum of node weights. Leaves are optional, but there must be a center; the star need not be an induced subgraph, so edges between leaves in the original graph do not prevent choosing it.",
+    "input": "The first line contains n m k; the second line contains n weights values[0..n−1]; each of the next m lines contains u v, an undirected edge. Full original constraints: 2≤n≤100000, 1≤m≤100000, 0≤k≤100000, −1000≤values[i]≤1000, 0≤u,v<n with u≠v, and no duplicate undirected edges. This site consistently uses the 0-based numbering of the original 012 constraints and the 013 official example; the 1-based endpoints of the original 007 illustration are all decreased by 1, keeping the weight correspondence.",
+    "output": "Output the maximum weight sum as an integer. k is the upper bound on the number of arms, not on the number of nodes; k=0 allows the center alone. When all weights are negative, you cannot output 0 to represent an empty graph.",
+    "explanation": "Public example 1 keeps the 007 graph with unified numbering, giving 120. Example 2 keeps the 013 input and the 014 answer 16, but the actual choice is center 3 with leaves 1 and 4; the leaf 2 label in 014 is a typo. Example 3 keeps the catalog input, and the original 11 is corrected to 12: center 1 picks weights 5 and 3. Differences in early numbering are only relabelings and change neither the graph nor the objective; all sources and corrections are disclosed in the solution.",
+    "hints": [
+      "Once the center is fixed, only neighbors with positive weight matter.",
+      "Choose at most k of the largest positive weights, and remember that the center itself may be negative.",
+      "Enumerate every center, and also allow isolated nodes and 0 arms."
+    ]
+  }
+}

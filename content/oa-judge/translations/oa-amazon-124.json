@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-124",
+  "packageChecksum": "e78d0977400847569543fc3b592787959f06d3f351ea4e741811a2546d5f99ff",
+  "en": {
+    "title": "Number of Subsequences Greater Than the System Password",
+    "description": "Choose a subsequence of the customer password s by index, and count the choices that are lexicographically strictly greater than t, modulo 1000000007. When the same resulting string comes from different index choices, each is counted separately.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "Two lines, s and t; 1≤|s|≤100000, 1≤|t|≤100, both lowercase.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the three choices b, ba and aba are strictly greater, so the answer is 3. Example 2: the two b's at different positions plus ba, bb and bab, 5 in total. Example 3: only the full aaa is greater than aa, so the answer is 1.",
+    "hints": [
+      "Let dp[j] count the subsequences currently equal to exactly the first j characters of t, and let greater count the choices that are already strictly greater. A new character can extend a greater state, or become greater at the first point of difference; update match lengths from back to front to avoid reusing a position."
+    ]
+  }
+}

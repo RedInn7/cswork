@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-138",
+  "packageChecksum": "19405a84f4fe9966020093b5b8511bf8587a273781ce179197f2fd755768a64a",
+  "en": {
+    "title": "Number of Requests Dropped by a Rate-Limiting Gateway",
+    "description": "Requests are given in non-decreasing time order. At most 3 per second, at most 20 in the latest 10 seconds including the current second, and at most 60 in the latest 60 seconds; a request exceeding any limit is dropped and counted only once. Requests already dropped still count toward later statistics.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n (1..1000000), and the second line contains n non-decreasing times (1..10^9). The 10-second window is [T−9,T] and the 60-second window is [T−59,T], with endpoints included.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the 4th request in the same second is dropped, so the answer is 1. Example 2: the 4th in the same second and the 21st within 10 seconds are each dropped, so the answer is 2. Example 3: every 60-second span has at most exactly 60, so all are accepted and the answer is 0.",
+    "hints": [
+      "Request i exceeds a limit if it is in the same second as request i−3, or less than 10 apart from request i−20, or less than 60 apart from request i−60. Take the OR of the three conditions."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-linkedin-3",
+  "packageChecksum": "903d8ba04677ed003889892d8694ce2b942a442dc6cb0856337188888b3a4df4",
+  "en": {
+    "title": "LinkedIn OA #3: Minimum Bottleneck Path with an Edge Limit",
+    "description": "Given an undirected weighted graph with nodes numbered 1..N and M edges. Among all paths from node 1 to node N that use at most K edges, find the one whose \"maximum edge weight on the path\" is smallest, and output that minimum maximum edge weight. At least one such path is guaranteed to exist.",
+    "input": "The first line contains three integers N, M, K. Each of the next M lines contains three integers u, v, w, meaning an undirected edge of weight w between u and v (parallel edges are possible, but there are no self-loops). 2≤N≤100000, 1≤M≤200000, 1≤K≤N−1, 1≤w≤10^9.",
+    "output": "Output one integer: the minimum maximum edge weight.",
+    "explanation": "Example 1: N=4, K=3. The path 1→2→4 has maximum edge weight 5; the path 1→3→2→4 has maximum edge weight 6. The answer is 5.\nExample 2: with K=2, you cannot take 1→2→3→4 (3 edges), only 1→3→4, whose maximum edge weight is 8.\nExample 3: there are two edges between 1 and 2; choose the one with weight 3.",
+    "hints": [
+      "The answer is always the weight of some edge, and feasibility is monotonic in the threshold.",
+      "Binary search on the threshold, keeping only edges that do not exceed it.",
+      "Use BFS to find the minimum number of edges from 1 to N, and check whether it is at most K."
+    ]
+  }
+}

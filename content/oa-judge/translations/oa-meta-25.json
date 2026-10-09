@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-meta-25",
+  "packageChecksum": "6a1028ad601d0f6a70401da1a38a61fe33092b08d2c1d32bb5d139f2da0d8737",
+  "en": {
+    "title": "Minutes Since the Last Bus Departed",
+    "description": "Given the day's bus departure times and the current time, find how many minutes ago the most recent bus that has already departed left. A bus scheduled exactly at the current time has not departed yet; it must be strictly earlier than the current time. If there is none, output −1; the previous day is not considered.\n\nThe standard input, this site's constraints, the examples, and the test data were independently compiled by CSWork.",
+    "input": "This site's input: the first line contains n (0..100000), followed by n lines of HH:MM times, and the last line is the current time. Hours are 00..23 and minutes are 00..59, and all times are on the same day; the timetable may be unsorted and may contain duplicates.",
+    "output": "Output the number of minutes, or −1.",
+    "explanation": "Example 1: the last bus that departed left at 14:00, which is 30 minutes before 14:30.\n\nExample 2: the 00:00 bus is exactly at the current time and has not departed yet, so the output is −1.\n\nExample 3: the 14:00 bus has not departed yet; the previous one is 12:30, 90 minutes earlier.",
+    "hints": [
+      "Convert times into minutes since midnight, and scan for the largest departure time strictly earlier than the current time."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-61",
+  "packageChecksum": "035537208892cba2b56967af0ffc0a96a067d1ca9def0d396fc65fd091212c5d",
+  "en": {
+    "title": "Distinct Islands Under Translation Only",
+    "description": "1 represents land and 0 represents water; land cells connect up, down, left and right. Two island shapes are considered the same only if one can be translated to coincide with the other; rotations or reflections do not count as the same. Return the number of distinct shapes.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains r c, followed by r lines of 01 strings. On this site, 1≤r,c≤500.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: there are 6 connected components, two pairs of which are translation-equivalent, giving 4 shapes in total. Example 2: the two vertical islands of length 2 coincide after translation, so the output is 1. Example 3: a horizontal two-cell island and a vertical two-cell island cannot coincide by translation alone, so the output is 2.",
+    "hints": [
+      "Traverse each connected component, subtract the first visited coordinate from every coordinate in the component, sort them, and use the tuple as the shape signature."
+    ]
+  }
+}

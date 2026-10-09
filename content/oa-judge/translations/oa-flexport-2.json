@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-flexport-2",
+  "packageChecksum": "7e44375563d17ef7adfa03716c27961785c45b4d14a002901f10d58a5bd22008",
+  "en": {
+    "title": "Distinct Move Subsequences on a Bounded Number Line",
+    "description": "Given a string s consisting only of l/r, choose a subsequence of it. Starting from x, l decreases the position by 1 and r increases it by 1. The start, the position after every step, and the end must all lie within the bounded number line 0..n, and the walk must end at y. Count distinct character sequences: the same character sequence obtained from different indices counts only once. Return the count modulo 1000000007. Reflecting off a boundary, staying put instead of crossing it, or leaving the domain and coming back are not allowed.",
+    "input": "The first line contains s, and the second line contains n x y. Full original ranges: 1≤|s|≤1000, s contains only l/r, 0≤n,x,y≤2500. The original does not guarantee x,y≤n, and this site keeps such inputs: if the start or the end is outside 0..n, there is no valid path and the answer is 0.",
+    "output": "Output an integer in 0..1000000006. All characters may be deleted, so when x=y is valid the empty subsequence contributes 1; for n=0,x=y=0 the answer is 1, and any other out-of-domain endpoint gives 0. The bounded domain comes from the Flexport original; the empty subsequence follows the usual definition of a subsequence, supported by the explicit deletion definition in the Meesho version of the same problem, and non-emptiness is not additionally required.",
+    "explanation": "The first example keeps the Flexport original input rrlrr,6,1,4 but corrects the original answer 3 to 2: only rrr and rrlrr work, as proven by enumerating all 32 index subsets; the local-machine image is inaccessible and is not used as evidence. The last two examples are derived by this site: rr from 0 to 1 counts r only once; rl from 0 back to 0 counts the empty string and rl. Flexport itself gives the complete numeric constraints; the character-deduplication and deletion definitions from the Meesho version of the same problem serve as supporting explanation and are not presented as detailed notes in the Flexport statement.",
+    "hints": [
+      "Plain take/skip choices by position count identical strings more than once.",
+      "When appending the current letter, subtract the set already produced the last time the same letter was appended.",
+      "Keep the empty string, and exclude any move that leaves 0..n at any step."
+    ]
+  }
+}

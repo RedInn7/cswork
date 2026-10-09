@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-adobe-6",
+  "packageChecksum": "cd539c8b6cd347a9a28e420e52fbdc4654ae883994693135cf6afdefab28dcf9",
+  "en": {
+    "title": "Minimum Rounds to Finish All Tasks with a Boosted Main Task",
+    "description": "In each round, choose one unfinished task to run for x seconds, while every other unfinished task runs for y seconds, where x>y. A task leaves once it reaches its required time. Find the minimum number of rounds.\n\nThis site independently prepared the standard I/O and the solution; supplements for bounds missing from the source and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n x y, and the second line contains n required times. The original only states x>y with no numeric bounds; this site sets 1≤n≤100000, 0≤time≤10^9, 0≤y<x≤10^9. Tasks with time 0 are finished from the start.",
+    "output": "Output a single integer answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 0; 8. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "Binary search the number of rounds t. Each task first gets t*y of baseline service, and the remainder needs ceil((time−t*y)/(x−y)) main-task turns; check whether the total is ≤t."
+    ]
+  }
+}

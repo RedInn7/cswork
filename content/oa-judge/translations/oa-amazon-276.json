@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-276",
+  "packageChecksum": "95970c42d20f777344c3f6611b5d6874a9db9a13976966b2a41bf1a8e314e4e6",
+  "en": {
+    "title": "Longest Run of Days Without Default When No Lender Is Reused",
+    "description": "Each day you borrow from a lender you have not used before. Lender i lends lender[i], which must be repaid as payback[i] the next day. On the first day you may pick any lender; on every later day, the new loan must be enough to repay the previous one, and any leftover cash is spent that day and does not carry over. Find the maximum number of consecutive days of successful borrowing. The last day counts as soon as its loan is obtained; there does not need to be a later loan to repay this last one. Each lender can be used at most once.\n\nThe original source has no numeric constraints at all. The bounds on n and the amounts below are an exact-solution range explicitly added by this site; they are not claimed to be the source's original bounds, and no assumption payback≥lender is added. On day two of original example 3 you should borrow 2 and repay 2, then owe 3; the original text \"borrow 1, repay 2\" is wrong.",
+    "input": "The first line contains n, the second line contains n lender values, and the third line contains n payback values. Added by this site: 1≤n≤20, 1≤lender[i],payback[i]≤10^9, and both arrays have the same length. payback may be less than, equal to, or greater than the corresponding lender.",
+    "output": "Output the maximum number of days of successful borrowing, an integer in 1..n.",
+    "explanation": "In example 1, borrowing loans of 1→4→8 lasts 3 days. In example 2, borrowing loans of 1→2→5 lasts 3 days; repaying exactly is also valid. In example 3, borrowing by indices 2→1→3 (numbered from 1) lasts 3 days, while greedily picking lender 1, who has the smallest payback, on the first day lasts only 2 days.",
+    "hints": [
+      "For each set mask of used lenders, record the smallest final payback that can be reached. The empty set owes 0. Enumerate the last chosen lender j: as long as the minimum debt of mask without j does not exceed lender[j], j can go last, and the candidate final debt is payback[j]. The largest number of elements among all reachable sets is the answer. Sort the distinct payback values and compress them to 1..r, using 0 for the empty set and r+1 for unreachable; store the states in a bytearray, which takes only 2^n bytes."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-26",
+  "packageChecksum": "94d11c83cf752279e81d48983f66b0c2b4c0a02dbddfbff672047bd21b6d44ba",
+  "en": {
+    "title": "Profit Based on the Deployment Order of Neighbors",
+    "description": "Processors are arranged in a chain and deployed one at a time. When processor i is deployed, if 0, 1, or 2 of its neighbors are already deployed, it earns no[i], one[i], or both[i], respectively. The first and last processors have only one neighbor. Maximize the total profit of all processors.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains n, followed by 3 lines: no, one, and both. 1≤n≤100000, and each profit is in 1..10⁹. Original example 1 wrote both as 0, which conflicts with the constraints; this site's examples use valid positive profits, and the algorithm does not rely on positivity.",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 9; 8; 7. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Orient each adjacent edge from earlier to later (earlier→later); any orientation of a chain is acyclic and can be realized topologically. Run a two-state DP over edge directions, and collect each node's profit based on its number of incoming edges once it is complete."
+    ]
+  }
+}

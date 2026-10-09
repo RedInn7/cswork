@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-rubrik-18",
+  "packageChecksum": "f8d0e0d6e88fde71a712662944152b37cff101f3eb5455e0b469006ac37b9b01",
+  "en": {
+    "title": "Rubrik OA #18: Human Resources",
+    "description": "A company has N employees, numbered 1..N. Every employee except the CEO (employee 1) has a direct manager RM. An employee only accepts task assignments from their RM, their RM's RM, and so on (that is, from their ancestors). Hiring employee i costs C[i], and their leadership is L[i].\n\nYou want to hire a group of employees for a client with a total cost of at most the budget M, and choose one manager: the manager must be able to assign tasks to every hired employee, that is, each hired employee is either the manager or a subordinate of the manager (an employee in the manager's subtree). The manager may or may not be hired; a manager who is not hired costs nothing.\n\nThe client's happiness is (the manager's leadership × the number of hired employees). Find the maximum happiness.",
+    "input": "The first line contains T, the number of test cases. The first line of each test case contains N and M; then N lines follow, where line i contains three integers R[i], C[i], L[i]: employee i's RM, cost, and leadership (the CEO's R is 0). 1≤T≤10, 1≤N≤100000, 1≤M≤10^9, 0≤R[i]<i (R[i]=0 only when i=1), 1≤C[i]≤M, 1≤L[i]≤10^9.",
+    "output": "For each test case, output one line with the maximum happiness.",
+    "explanation": "Example 1: employee 1 is the CEO, employees 2, 4, 5 report to 1, and 3, 6, 7 report to 2; the budget is 20. Choose 1 as the manager and hire 2, 6, 7 or 4, 6, 7 (cost 20), for a happiness of 400×3=1200.\nExample 2: manager 1 hires themselves (cost 4) for a happiness of 50×1=50; hiring 2 or 3 only gives 3.\nExample 3: in the first test case, choose employee 1 as the manager and hire all 3 people, getting 2×3=6; in the second test case, employee 1 hiring themselves gets 10, while hiring two subordinates gets 20.",
+    "hints": [
+      "Once the manager is fixed, hire within their subtree in increasing order of cost.",
+      "The most expensive employees discarded in a subtree for exceeding the budget will not be chosen for any ancestor either.",
+      "Use a max-heap to maintain the retained costs, and merge each child's heap into its parent's."
+    ]
+  }
+}

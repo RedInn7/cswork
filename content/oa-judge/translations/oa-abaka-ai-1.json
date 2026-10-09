@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-abaka-ai-1",
+  "packageChecksum": "5a338a30da0c63f11938942350a646aa3a5475da611ef1a4a591bced2e9075c4",
+  "en": {
+    "title": "Task Scheduling (Parallel Same-Type with Memory Limit)",
+    "description": "Each task takes 1 unit of time. Two tasks can be processed in parallel if and only if they have the same type and their total memory is ≤maxMemory; every other task is processed alone. Find the minimum total processing time.\n\nThe explicit standard input/output format and supplementary constraints on this site belong to the online version and are not presented as the original source constraints.",
+    "input": "The input contains N, maxMemory, N values of taskMemory, and N values of taskType. 1≤N≤200000, 1≤taskMemory[i]≤maxMemory≤10^9, 1≤taskType[i]≤10^9. This site specifies that every task can run alone, even if its memory does not allow it to run in parallel with another task.",
+    "output": "Output the minimum number of time units.",
+    "explanation": "Group tasks by taskType. In each group, sort by memory and pair the smallest with the largest; if their sum does not exceed the limit, run the pair in parallel, otherwise the largest task can only run alone.",
+    "hints": [
+      "Group tasks by taskType. In each group, sort by memory and pair the smallest with the largest; if their sum does not exceed the limit, run the pair in parallel, otherwise the largest task can only run alone."
+    ]
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-goldman-sachs-24",
+  "packageChecksum": "ddfa0b2d827d93b88d984ae9d6af126873bce62c8cdaae8500fb6d5f974a83ac",
+  "en": {
+    "title": "Chairs Requirement",
+    "description": "Given several simulations of employees coming and going, find the minimum number of chairs that must be bought for each simulation. Initially there are no chairs; employees always use an empty chair first, and one chair is bought whenever no empty chair is available. C means a new employee enters, R means an employee temporarily goes to the meeting room, U means an employee returns from the meeting room, and L means an employee leaves permanently. Added by this site: every simulation is a valid event sequence; when R/L is performed, at least one employee is in the office, and when U is performed, at least one employee is in the meeting room. Employees are not distinguished; only the headcount states above need to be respected.\n\nThe input protocol and the ranges explicitly marked as \"added by this site\" are compiled by this site and are not extra conditions of the original problem.\n\nThe problem meaning, function, and constraints are the same as in the original Goldman Sachs #24 statement. The guarantee that every simulation sequence is valid is an input guarantee added by this site to make the output unique, not a condition stated in the original. The public examples below are compiled by this site and do not come from the source.",
+    "input": "The first line contains n; each of the next n lines contains one simulation string consisting only of C, R, U, L. 1≤n≤100, 1≤length of each string≤10000.",
+    "output": "Output n integers in input order, separated by spaces; each is the minimum number of chairs to buy for that simulation.",
+    "explanation": "See the accompanying solution for the approach, proof of correctness, and complexity.",
+    "hints": [
+      "First pin down how each operation affects the state, then choose between direct simulation and a data structure that supports range counting."
+    ]
+  }
+}

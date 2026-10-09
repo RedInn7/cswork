@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-cloudflare-1",
+  "packageChecksum": "0fd8dcba94f3995cf41c26f97c2242cc4a818b06bfd22119632c873faf48cab8",
+  "en": {
+    "title": "Minimum Partitions to Keep After Redistributing Data",
+    "description": "Each partition has a capacity and a used amount, and data may be split into chunks and moved to other partitions. Find the minimum number of partitions that must be kept to hold all existing data; data in an original partition does not have to be moved as a whole.\n\nThis site independently compiled the standard I/O and editorial; supplements to missing source bounds and corrections to examples are stated explicitly in the protocol.",
+    "input": "The first line contains n, the second line contains n capacities, and the third line contains n used amounts. The original had no numeric bounds; this site adds 1≤n≤200000, capacities 1..10^9, and 0≤used[i]≤capacity[i]. When the total usage is 0, this site explicitly outputs 0.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The outputs of the three public examples are, in order: 2; 0; 1. Verified by independent enumeration or direct simulation.",
+    "hints": [
+      "The total used amount does not change; sort the capacities in descending order and take the shortest prefix whose total capacity reaches the total usage."
+    ]
+  }
+}

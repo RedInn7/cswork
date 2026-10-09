@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-51",
+  "packageChecksum": "2a78d3f7513b7b3f9f14c36f55658caf54dac8a941203ee441dff4a4a33d0383",
+  "en": {
+    "title": "Minimum Load Difference Between Two Servers",
+    "description": "Assign each process to exactly one of two servers; a server's load is the sum of the integer loads assigned to it. Output the minimum absolute difference between the two total loads; one server may have no processes.\n\nThe input/output and examples are compiled by CSWork; numeric ranges marked as this site's are this site's judging conventions.",
+    "input": "This site's standard input: the first line contains n (1..2000); the second line contains n integer loads, and the sum of the absolute values of all loads does not exceed 200000.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: the loads can be split into 7 and 8, a difference of 1; the total 15 is odd, so a difference of 0 is impossible. Example 2: the only split is 7 and 0, a difference of 7. Example 3: the total of all items is 0, so one server takes everything and the other stays empty, a difference of 0.",
+    "hints": [
+      "Record the reachable subset sums in an integer bitset; when a load is negative, shift the lower bound of the represented range accordingly. Finally, find the largest reachable sum that does not exceed half of the total."
+    ]
+  }
+}

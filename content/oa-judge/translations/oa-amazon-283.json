@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-283",
+  "packageChecksum": "c0b15f1ec0452bb954c521008a9934a2c6c75d8a15ce4b119be5b32f61b6d4de",
+  "en": {
+    "title": "Minimum Cost to Delete Characters So No Rearrangement Contains the Target",
+    "description": "Delete some characters of the password; the cost of deleting one copy of each letter a..z is given by the 26 entries of cost. No permutation of the remaining password may contain target as a subsequence. Minimize the cost. This is not only about forbidding target in the original order, and you are not required to delete every copy of a letter.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains pwd, the second line contains target, and the third line contains exactly 26 cost values. In the original statement both strings have length 1..100000 and are lowercase, and cost≥0; the upper bound on cost was written as 10° and marked unconfirmed, so this site adds 0≤cost[i]≤10^9. The 26 entries in the body clearly correct the corrupted index 251.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 20 and 1 respectively. In the first example, deleting three c's at 1 each is cheaper than deleting two b's at 3 each; the extra zeros in the source cost array are corrected to the formal 26 entries. In the second example the original explanation wrongly says 5 k's; there are actually 4, at 5 each, for a total of 20.",
+    "hints": [
+      "Count both strings. For each target letter c, deleting max(0,countPwd[c]−countTarget[c]+1) copies leaves too few of it; take the minimum required cost over all letters."
+    ]
+  }
+}

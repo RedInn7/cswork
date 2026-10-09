@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-intuit-14",
+  "packageChecksum": "7aacf994ee11dc60a8c6aa770606240adfd9bee943b3d978ff44d50bf896d99c",
+  "en": {
+    "title": "Minimum Jumps with a Fixed Distance (Intuit OA)",
+    "description": "On an m×n grid, every jump must cover exactly X units (Euclidean distance). Find the minimum number of jumps from the start to the target without jumping off the board; return -1 if the target is unreachable. The explanation of the fixed source example describes the target as (2,5), but its input mistakenly gave the intermediate point (6,2), so the example's u,v are corrected to 2,5.",
+    "input": "A single line with seven integers m n X p q u v: the number of rows, the number of columns, the jump distance, and the start and target coordinates. Ranges follow the source constraints.",
+    "output": "Output the minimum number of jumps; output -1 if the target is unreachable.",
+    "explanation": "Precompute the integer offsets satisfying dr²+dc²=X², then run BFS over the board cells.",
+    "hints": [
+      "The Euclidean distance must be exactly X.",
+      "Treat cells as nodes and valid jumps as unweighted edges."
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-quora-1",
+  "packageChecksum": "3a42d8de408862f8b8df731ed858c757487fe64e98ac9778b8a0694365412c4a",
+  "en": {
+    "title": "Quora OA #1: Count Powers of k",
+    "description": "Given an integer array arr and an integer k, count how many numbers in the array are powers of k, that is, numbers that can be written as k^e for a positive integer e.",
+    "input": "The first line contains two integers n and k; the second line contains n integers arr[0..n−1]. 1≤n≤200000, 2≤k≤10^18, 2≤arr[i]≤10^18.",
+    "output": "Output one integer: the number of elements that are powers of k.",
+    "explanation": "Example 1: arr=[11,121,10], k=11. 11=11^1 and 121=11^2, but 10 is not, so the answer is 2.\nExample 2: 2, 4, 8, and 1024 are all powers of 2, but 6 is not, so the answer is 4.\nExample 3: none of 10, 20, 30 is a power of 5, so the answer is 0.",
+    "hints": [
+      "When k≥2, there are at most 60 powers of k not exceeding 10^18.",
+      "When generating powers, check whether the next one would exceed the upper bound before computing it, to avoid overflow.",
+      "Do not use floating-point logarithms for the check; the precision is not sufficient."
+    ]
+  }
+}

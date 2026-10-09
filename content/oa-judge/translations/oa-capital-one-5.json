@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-capital-one-5",
+  "packageChecksum": "36b0efa947deaf34544f42c2d40b8e44bf7c31534196ec4f6959f68b7e0a10b6",
+  "en": {
+    "title": "Memory Allocator — Aligned Alloc + Erase",
+    "description": "Allocate the leftmost contiguous free block that starts at a boundary of 8 units; later, an entire block can be freed by its allocation ID.",
+    "input": "n q; a line with n initial states of 0/1; then q lines: `0 x` requests x units, and `1 id` frees id. Indices start at 0; initially occupied units do not belong to any freeable allocation. Site supplement: n≤5000, q≤1000, x≥1.",
+    "output": "Output one line per request: an allocation returns its starting index or -1; a free returns the number of freed units or -1.",
+    "explanation": "See the accompanying editorial for the full approach, proof of correctness, and complexity.",
+    "hints": [
+      "Process the operations one by one according to the definitions, and watch the boundaries."
+    ]
+  }
+}

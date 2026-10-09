@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-78",
+  "packageChecksum": "8e4c80d7ec212c969d02d0aef66bc10c7cc25c2c959430d5ee6f9552e7ffcb40",
+  "en": {
+    "title": "Three-Color String Transformation with Distinct Neighbors",
+    "description": "Two strings of equal length contain only x, y and z, and adjacent characters are always different. Each step changes one position to a different character, and every intermediate string must also have distinct adjacent characters. Find the minimum number of steps from the start string to the target string; output −1 if it is unreachable. The source problem gave no value ranges; this site uses ranges small enough for a full search, and the invalid example with equal adjacent characters is not treated as valid input.\n\nThe standard input/output format was compiled by CSWork; value ranges marked \"this site\" are this site's judging conventions.",
+    "input": "The first line contains n, the second line the start string, and the third line the target string. On this site 1≤n≤12; both strings have length n, contain only xyz, and have distinct adjacent characters.",
+    "output": "Output the answer required by the problem.",
+    "explanation": "Example 1: zxyz→zxyx→zxzx→zxzy→zyzy→zyxy→zyxz, every step is valid, 6 steps in total; the complete state graph confirms it cannot be done in fewer. Example 2: xy→xz→yz→yx, 3 steps in total; two steps would pass through xx or yy, which is invalid. Example 3: change x directly to z, 1 step.",
+    "hints": [
+      "Run BFS from the start. For each position, try the other two colors; if the new color differs from both its left and right neighbors, add the result to the next states. The distance at which the target is first reached is the answer."
+    ]
+  }
+}

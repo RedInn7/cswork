@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-airbnb-6",
+  "packageChecksum": "b12221e29a45bd1e18df249ba44c1690e0713f27726a4a2efcd3bc3d152e7faa",
+  "en": {
+    "title": "Airbnb OA #6: Print Sentences as a Table",
+    "description": "Given n sentences and a fixed table content width width, print each sentence as one row of a bordered table.\n\nA border line is `+`, followed by width+2 copies of `-`, followed by `+`. A sentence line is `| `, followed by the sentence itself, padded with spaces so the content takes exactly width characters, followed by ` |`.\n\nFor each sentence in order, output a border line and then its sentence line; finish with one more border line. When n=0, output nothing.",
+    "input": "The first line contains two integers n and width. Each of the next n lines contains one sentence (the whole line is the sentence content; it may contain spaces and may be an empty line).\n\n0≤n≤100000, 1≤width≤300; sentences consist of printable ASCII characters and spaces, with length at most width.",
+    "output": "When n>0, output a table of 2n+1 lines, each ending with a newline; when n=0, the output is empty. The output is compared character by character, so leading and trailing spaces of sentences must be preserved exactly.",
+    "explanation": "Example 1: width=55, so every border is + followed by 57 copies of - and then +; each sentence line pads the sentence with spaces to 55 characters.\nExample 2: n=0, so there is no output.\nExample 3: the two leading spaces of the first sentence, the empty second sentence, and the trailing space of the third sentence all count toward the content width as is.",
+    "hints": [
+      "Read each sentence as a whole line; do not split it on whitespace.",
+      "Build the border string once and reuse it in the loop.",
+      "Do not forget the closing border at the end of the table, or the n=0 case."
+    ]
+  }
+}

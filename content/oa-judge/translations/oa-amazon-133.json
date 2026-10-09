@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-133",
+  "packageChecksum": "2cbd7d2c4e3be26537d81faf661d2c6e5a0e282673841c50a837f0a9c4282a24",
+  "en": {
+    "title": "Maximum Points with a Limited Number of Coworker Skips",
+    "description": "In each warehouse you ship a items first, then your coworker ships b items; the coworker may skip, with at most skips skips in total. Turns alternate repeatedly until the stock is ≤0, and you earn 1 point only if you make the final shipment. Find the maximum score.\n\nThe standard I/O and the solution were written independently by this site; ranges marked as this site's are not the original source constraints.",
+    "input": "The first line contains n a b skips, and the second line contains n stock values. The source has n≤100000 and positive stock; for the missing upper bounds this site sets stock, a and b to be positive and ≤10⁹, and 0≤skips≤10⁹.",
+    "output": "Output a single integer answer.",
+    "explanation": "Example 1: the minimum skip costs of the six warehouses are 2, 0, 0, 1, 2, 0, so 3 skips earn 5 points. Example 2: you ship 2 first, then your coworker ships 2 and empties it, so you score nothing. Example 3: your coworker skips once, letting you ship 2 more and empty it, for 1 point.",
+    "hints": [
+      "A full round without skips always consumes a+b. Reduce the stock to a remainder r in 1..a+b; scoring a warehouse needs at least (r−1)//a skips. Sort these costs and buy as many cheap points as possible."
+    ]
+  }
+}

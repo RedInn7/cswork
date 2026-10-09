@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-116",
+  "packageChecksum": "e0b66a845a78d25c7d0677929bfabe176b2c4d364067e5d8058548ae610c7251",
+  "en": {
+    "title": "Amazon OA #116: Make a Good String",
+    "description": "You are given a string s containing only 0 and 1. A string is called good if it contains neither the subsequence \"010\" nor the subsequence \"101\" (subsequences need not be contiguous). Each operation changes one 0 to 1 or one 1 to 0. Find the minimum number of operations needed to turn s into a good string.",
+    "input": "One line with a 01 string s. 1≤(length of s)≤10^6.",
+    "output": "Output one integer, the minimum number of operations.",
+    "explanation": "Example 1: s=\"111101110100\"; changing the 0s at positions 5 and 9 (1-indexed) to 1 gives \"111111111100\", 2 operations in total.\nExample 2: \"01010\" can become \"00000\" or \"01111\", among others, needing at least 2 operations.\nExample 3: \"1100\" is already good, so the answer is 0.",
+    "hints": [
+      "Containing neither subsequence means the characters switch at most once.",
+      "A good string can only have the form 0…01…1 or 1…10…0.",
+      "Enumerate the split point and use prefix counts to compute the number of flips."
+    ]
+  }
+}

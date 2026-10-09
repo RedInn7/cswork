@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-57",
+  "packageChecksum": "2ce73d1f727f5c82370fc8516c4c74b31ffb48bf78baffc0f81f2b54a6789eb8",
+  "en": {
+    "title": "Region Maximums Excluding Original Corners",
+    "description": "For a non-zero cell (i,j), its value v also serves as a radius, and its region is [i−v,i+v]×[j−v,j+v] with the four original corner points removed and any out-of-bounds part ignored. A cell is a region maximum if its value equals the maximum over its region; tied maximums are all kept. Return all such cells in any order.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n m, followed by n lines of m integers. The source gives no value ranges; on this site 1≤n,m≤100 and 0≤value≤10⁹.",
+    "output": "First output the number of cells k, then k pairs of 0-based row and column coordinates, in any order and without duplicates.",
+    "explanation": "Example 1: only the 3 at (0,0) and the 1 at (0,2) qualify. Example 2: the 9 at (0,1) is the largest; both regions of the two 1s contain it, and it is not an original corner, so only (0,1) qualifies. Example 3: all four cells tie for the maximum, so output all of them, in any order.",
+    "hints": [
+      "Build a 2D range-maximum tree. With the corners removed, each region splits into a full middle rectangle and two segments on the top and bottom borders, so at most three rectangles are queried; if an original border is out of bounds, skip that segment, and do not mistakenly remove corners after clipping."
+    ]
+  }
+}

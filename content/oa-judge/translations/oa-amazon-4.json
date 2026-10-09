@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-4",
+  "packageChecksum": "c2a2f359fb0e8d6353feba38d38fec590f5573989ba0e51ed6439dba344c4548",
+  "en": {
+    "title": "Zeroing an Array with Prefix Increments and Decrements",
+    "description": "One operation chooses a non-empty prefix of the array and adds 1 to all of its elements or subtracts 1 from all of them at once. Find the minimum number of operations needed to turn the whole integer array into 0. The array may contain negative numbers.\n\nThe standard input format, examples, and test data were written by CSWork.",
+    "input": "The first line contains n (1..100000), and the second line contains n integers (−10⁹..10⁹). The answer may exceed the range of a 32-bit signed integer.",
+    "output": "Output a single integer, the answer required by the problem.",
+    "explanation": "The differences in example 1 are 1, 2, 0, 1, −1, and the sum of their absolute values is 5.",
+    "hints": [
+      "Think from right to left: the last element needs |arr[n−1]| whole-array operations; after that, the absolute differences between adjacent values determine how many shorter-prefix operations are still needed. The answer is |arr[n−1]|+Σ|arr[i]−arr[i+1]|."
+    ]
+  }
+}

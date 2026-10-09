@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-ibm-44",
+  "packageChecksum": "b3a8227172d0261f81da8a10943a3e077c268cf774c78771a914e04b4ac54675",
+  "en": {
+    "title": "Exclusive Execution Time of Single-Threaded Functions",
+    "description": "Given the actual call log of a single thread, compute the exclusive time of each function summed over all its calls. A start log takes over the CPU at the beginning of that second, an end log includes that second, and after a return the previous call resumes; recursion is allowed.\n\nThe standard input/output format was compiled by this site; added numeric bounds and the encoding for no-solution cases are explicitly marked and do not claim to be the source's original constraints.",
+    "input": "The first line contains n m, followed by m lines of id:start/end:timestamp. 1≤n≤100, 1≤m≤500, each ID is in 0..n−1, and times are 0..1000 and non-decreasing; start times are distinct, end times are distinct, and every start has an end. The log represents a valid call-stack execution: a paused call cannot end first.",
+    "output": "Output n integers, for ID 0 through ID n−1 in order.",
+    "explanation": "The examples give 7 4; 1; and 2 1 respectively.",
+    "hints": [
+      "Maintain the call stack and the last settled time; on a start, credit the old stack top up to just before t; on an end, credit the current function up to t and set the next time to t+1."
+    ]
+  }
+}

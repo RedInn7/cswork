@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-332",
+  "packageChecksum": "9a1ee28c3e715dccd9877c3e8f1051c354a7917c264af5361bf6fc3dc933396c",
+  "en": {
+    "title": "Amazon OA #332: Reduce Memory Usage",
+    "description": "A data center has N processes, and processes[i] is the memory used by process i. You must delete exactly m processes at consecutive positions from the list so that the total memory used by the remaining processes is as small as possible. Output this minimum total.",
+    "input": "The first line contains two integers N and m. The second line contains N integers processes[0..N-1], separated by whitespace. 2≤N≤3×10^6, 2≤m≤99999 and m≤N, 2≤processes[i]≤999999999.",
+    "output": "Output one integer: the minimum total remaining memory after deleting a contiguous segment of m processes. The answer may exceed the 32-bit integer range.",
+    "explanation": "Example 1: delete 13 and 20, leaving 10+4+8=22. Example 2: delete a contiguous segment of length 3 from [5,9,2,7]; deleting 5,9,2 leaves 7 and deleting 9,2,7 leaves 5, so the answer is 5. Example 3: when N=m=2, everything must be deleted, leaving 0.",
+    "hints": [
+      "The remaining total equals the overall total minus the sum of the deleted segment.",
+      "The larger the sum of the deleted segment, the better.",
+      "Use a sliding window to find the maximum sum over all windows of length m, and use 64-bit integers."
+    ]
+  }
+}

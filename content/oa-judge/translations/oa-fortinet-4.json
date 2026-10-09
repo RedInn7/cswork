@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-fortinet-4",
+  "packageChecksum": "d87634f42f6e2c365d548106dea57607f2f29e3fe8811b6a8ae8dbc469e93239",
+  "en": {
+    "title": "Bubble Scan Passes After Each Signal ping",
+    "description": "n signals start at 0. ping is a permutation of positions 1..n, and the corresponding signals are set to 1 in that order. After each ping, take a copy of the cumulative signal bitmap and sweep it from left to right, swapping every adjacent 10 in place, until a full pass makes no swap. Output the number of passes needed each time, including the final stopping pass with no swaps; this sorting does not change the cumulative bitmap used by later pings.",
+    "input": "The first line contains a non-negative integer n, followed by n whitespace-separated integers in 1..n, each position appearing exactly once. The original gives no numeric upper bound on n; this site covers every valid permutation that fits within the existing 32MiB per-case input budget and does not invent a small limit on n. n=0 is an empty permutation, a mathematical extension disclosed by this site.",
+    "output": "Output n pass counts in ping order, separated by whitespace. An already sorted bitmap still needs one pass with no swaps; for n=0, output an empty line.",
+    "explanation": "The original example [1,2,4,3]→[2,3,3,1] is kept. The cumulative bitmaps are 1000, 1100, 1101, 1111 in turn. The final 1 proves that the stopping pass is counted; the second value 3 proves that each evaluation works on a copy of the cumulative bitmap rather than keeping the previous sorted result. These two points are disclosed as this site's explicit protocol derived from the original example. The other public examples are derived by this site.",
+    "hints": [
+      "In each pass, every 0 that still has a 1 before it moves exactly one cell to the left.",
+      "The rightmost 0 has the most 1s before it.",
+      "Maintain the cumulative count of 1s and the trailing all-1 suffix."
+    ]
+  }
+}

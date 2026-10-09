@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-snowflake-30",
+  "packageChecksum": "f53aeab92751064ca3f3e8f1c8a952ce07132a58820a6759543cd22164293a4e",
+  "en": {
+    "title": "Good Subsequence with Limited Adjacent Changes",
+    "description": "Choose the longest subsequence in which the number of adjacent pairs with unequal values is at most k. Elements of the original array may be skipped.\n\nThe input/output protocol and the explicitly marked supplementary constraints were compiled by this site; upstream solutions are not executed.",
+    "input": "The first line contains n k, and the second line contains n values. Original constraints: 1≤n≤500, 1≤value≤10⁹, 0≤k≤min(n,25).",
+    "output": "Output the single integer required by the problem.",
+    "explanation": "The answers to the three public examples are, in order: 5; 3; 1. The examples were rechecked by independent enumeration, state search, or direct simulation.",
+    "hints": [
+      "Maintain dp[value][j], the longest length ending with value using at most j changes, and the global best best[j] for each j. Update j in decreasing order, taking the better of extending the same value and best[j−1]+1."
+    ]
+  }
+}

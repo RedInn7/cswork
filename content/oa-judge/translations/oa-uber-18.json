@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-18",
+  "packageChecksum": "7cdc95107bb32ac545283b3a6646806b19d06b44ae0a5ea04f9b3ee64bc5112d",
+  "en": {
+    "title": "Contiguous Prefix-Set Mask of a Permutation",
+    "description": "For each k, given a permutation of 1..n, determine whether some contiguous subarray has a value set of exactly {1..k}, and output the results in order as an n-character 01 string.\n\nThis site's standard input/output is stated explicitly; ranges not given by the source problem are marked as this site's conventions.",
+    "input": "The first line contains n, and the second line contains a permutation of 1..n. The source gives no numeric upper bound; this site's range is 1≤n≤100000.",
+    "output": "Output a 01 string of length n, where the k-th character indicates whether some contiguous subarray has value set {1..k}.",
+    "explanation": "Example 1: the positions are contiguous for k equal to 1, 2, and 4, so the output is 1101. Example 2: they are contiguous for k equal to 1, 2, 3, and 5, so the output is 11101. Example 3: the only element forms the set {1} by itself, so the output is 1.",
+    "hints": [
+      "Find the position of each value, then add 1..k one at a time while maintaining the leftmost and rightmost positions; the values are contiguous exactly when the span between these two positions is k."
+    ]
+  }
+}

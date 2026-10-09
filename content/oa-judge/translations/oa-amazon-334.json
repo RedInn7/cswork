@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-334",
+  "packageChecksum": "a1a31bda73c74df1e9985290add7fb33c5ef6381ffb53012d7622f7b3dee7082",
+  "en": {
+    "title": "Minimum Operations With Prefix Cooling, Suffix Cooling and Global Warming",
+    "description": "Each operation is exactly one of the following: decrease every element of some non-empty prefix by 1; decrease every element of some non-empty suffix by 1; or increase the whole array by 1. Find the minimum number of operations to make all temperatures 0. A single operation cannot decrease by more than one unit, and you cannot decrease an arbitrary interior range by 1.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains temperature. The original statement gives no value bounds; on this site 1≤n≤200000, −10^9≤temperature[i]≤10^9. The raw fully restores the ranges of the prefix/suffix operations, which the cleaned-up HTML had swallowed.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 4, 12 and 0. Original example 2 is labeled 10, which is wrong: its first step takes the last temperature from 1 to −2, which already violates the single −1 per operation. This site openly corrects it to 12: three whole-array +1 operations give [5,1,0,4], then the prefix ending at 0 is decreased by 1 four times, the prefix ending at 1 once, and the suffix starting at 3 four times, for 12 operations in total. An independent graph over unit operations confirms this optimum.",
+    "hints": [
+      "Let P be the total of the adjacent decreases and Q the total of the adjacent increases. Removing all interior differences needs at least P matching prefix decrements and Q matching suffix decrements, after which every temperature equals a[0]−P; the answer is P+Q+abs(a[0]−P)."
+    ]
+  }
+}

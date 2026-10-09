@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-google-48",
+  "packageChecksum": "0451bbca07cb04fc39a141fb0e9f1b77f8a7b658ee5c7a33de87c0391fba0d4c",
+  "en": {
+    "title": "Minimum Amplitude",
+    "description": "Given an integer array A, you may replace at most 3 of its elements with arbitrary integers. The amplitude of an array is its maximum minus its minimum; find the minimum possible amplitude after the operations.\n\nThis site's supported ranges: 1≤N≤200000, -10^9≤A[i]≤10^9. The ranges come from the source page for the same problem and are not claimed to come from the truncated OAMaster snapshot.\n\nProblem source: https://oamaster.com/docs/companies/google#48-min-amplitude. Complete rules, examples, and constraints for the same problem: https://www.fastprep.io/problems/google-min-amplitude.",
+    "input": "The first line contains N; the second line contains N integers A[i].",
+    "output": "Output the minimum possible difference between the array's maximum and minimum after changing at most three elements.",
+    "explanation": "After sorting, with at most three elements changed, the minimum and maximum kept in an optimal solution are determined by removing a total of three elements from the two ends of the sorted array. Enumerate removing i from the left and 3-i from the right (i=0..3), and take the minimum width of the remaining range. When N≤4, all elements can be changed to the same value, so the answer is 0.",
+    "hints": [
+      "After sorting, an interior element is never a better choice to remove than an element at either end.",
+      "Only three end elements are removed in total; enumerate the number removed from the left end, from 0 to 3."
+    ]
+  }
+}

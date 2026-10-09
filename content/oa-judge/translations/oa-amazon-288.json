@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-288",
+  "packageChecksum": "e00ba9f9c02dd77e8c326ea06cb528865d24731ccb290f4c3863b8e3f7c4352c",
+  "en": {
+    "title": "Minimum Left-to-Right Scan Passes to Collect Increasing Numbers",
+    "description": "The input is a permutation of 1..n. Initially the next number to collect is 1. In each pass you scan from start to end; whenever you meet the next number, you collect it and increase the target by 1, skipping everything else. Find how many passes it takes to collect 1..n. The real operation is restored from the explicit formula sortingSequence[i]==arrangedCount+1 in the original statement; the introduction is not misread as describing a different target permutation.\n\nThe standard I/O, examples and editorial were written independently by this site; ranges explicitly marked as this site's are not the source's original constraints.",
+    "input": "The first line contains n and the second line contains sortingSequence. The original statement gives no value bounds; on this site 1≤n≤200000, and the input is guaranteed to be a permutation of 1..n.",
+    "output": "Output a single integer, the answer.",
+    "explanation": "The answers are 3, 1 and 3 respectively. In the first example the three passes collect 1; 2 and 3; and 4. You cannot simply count the descents between adjacent array elements.",
+    "hints": [
+      "Record the original position pos of each number; the answer is 1 plus the number of times pos[v+1]<pos[v]."
+    ]
+  }
+}

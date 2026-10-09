@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-uber-46",
+  "packageChecksum": "1e8141edfc95f96f0ca16ba163ab58513c816ebd85a6de456a0a61fae03ecd60",
+  "en": {
+    "title": "Combined Rotations and Diagonal Reflections",
+    "description": "Apply the given transformations to a square matrix in order. This site defines the operation codes explicitly: 0 rotates 90 degrees clockwise, 1 reflects across the main diagonal, and 2 reflects across the anti-diagonal.\n\nThis site has made the standard input and output explicit; any range not given by the source is marked as this site's protocol.",
+    "input": "The first line contains n q, followed by n lines of n integers each, and a last line with q operation codes. The source gives no size bounds; on this site 1≤n≤500, 0≤q≤200000, and elements are in −10⁹..10⁹.",
+    "output": "Output the transformed matrix, n integers per line.",
+    "explanation": "Example 1: after transforming in order, the rows are 3 6 9, 2 5 8, 1 4 7. Example 2: transposing across the main diagonal gives 1 3, 2 4. Example 3: with no operations, it is still 9.",
+    "hints": [
+      "Instead of moving the whole matrix repeatedly, maintain an origin and two direction vectors that map original coordinates. Each operation transforms the origin and vectors, and at the end the resulting coordinate mapping fills the result matrix in one pass."
+    ]
+  }
+}

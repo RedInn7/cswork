@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-347",
+  "packageChecksum": "8a93888bf22847639c5a2fbdfa3119db2e4f50cdffd63d10d107ece3a09d7ab1",
+  "en": {
+    "title": "Report the Sum After Each Replace-All Query",
+    "description": "Each query old new replaces every element of the current array that equals old with new, then outputs the sum after the change. Queries take effect cumulatively; when old=new or old is not currently present, the array does not change.\n\nThis site independently wrote the standard I/O, editorial and tests; missing original bounds and corrections to examples are stated explicitly in the statement.",
+    "input": "The first line contains n q, the second line contains n integers, followed by q lines of old new. The original statement gives no value bounds; on this site 0≤n,q≤200000, and all array and query values are in −10^9..10^9.",
+    "output": "Output the sum after each change, one per line in query order, for q lines in total; when q=0, output an empty line.",
+    "explanation": "The outputs of the three public examples are 6 / 6 / -3; 0 / 0 / 2; and an empty line, checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Keep a frequency table and the current sum. When old≠new, take the frequency c of old, increase the sum by (new−old)c, then merge c into the frequency of new; when the two values are equal, leave the state unchanged."
+    ]
+  }
+}

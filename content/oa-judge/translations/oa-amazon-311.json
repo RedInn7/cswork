@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-amazon-311",
+  "packageChecksum": "59c022e7e3765f5db9a8c9d210865ad0ec73bfe6972298902bab422bde1dc32d",
+  "en": {
+    "title": "Amazon OA #311: Next Perfect String",
+    "description": "A string is perfect if no two adjacent characters are the same. Given a string s of lowercase English letters (s itself may or may not be perfect), find the smallest perfect string that has the same length as s and is lexicographically strictly greater than s. If none exists, output -1.",
+    "input": "One line containing the string s. 1≤length of s≤200000, lowercase English letters only.",
+    "output": "Output the answer string; if none exists, output -1.",
+    "explanation": "Example 1: s=\"abzzzcd\". The z right after the prefix abz equals it, so the string must increase at an index ≤2; the z at index 2 cannot increase any further, so change the b at index 1 to c and fill the rest with the smallest alternating string ababa, giving \"acababa\".\nExample 2: s=\"zzab\". The z at index 0 cannot increase, and increasing index 1 would also require going past z, so no answer exists; output -1.\nExample 3: s=\"abab\" is already perfect, and the smallest perfect string strictly greater than it is \"abac\".",
+    "hints": [
+      "The prefix kept in the answer must itself be perfect, so it cannot extend past the first place where two adjacent characters are equal.",
+      "Starting from the longest prefix that can be kept, search leftward for a position that can be increased.",
+      "After the increased position, fill the rest by alternating a and b."
+    ]
+  }
+}

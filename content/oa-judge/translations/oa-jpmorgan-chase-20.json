@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "id": "oa-jpmorgan-chase-20",
+  "packageChecksum": "d36efe3970b1a9c4a2ee7c6ea9729d7d5d17f3c82d2348c8f8735c56f02a5593",
+  "en": {
+    "title": "Merge Overlapping Closed Intervals",
+    "description": "Merge overlapping closed intervals and output the non-overlapping intervals in ascending order of start. Touching at the same endpoint counts as overlapping, but adjacent integer endpoints that are not equal do not. The original example input contains [1,23], so the correct result is [[1,23]]; the original output was mistakenly computed as if it were [1,2].\n\nThe input/output protocol was compiled by this site, and missing numeric bounds are explicitly marked as site additions.",
+    "input": "The first line contains n, followed by n lines of start end; 1≤n≤100000, 1≤start≤end≤1000000000. The original constraint intervals[i][2] is a typo involving the endpoint index; it is restored as bounds on the two endpoints.",
+    "output": "The first line is the number of merged intervals, followed by one line per interval with its two endpoints, in ascending order of start.",
+    "explanation": "The outputs of the three public examples are, in order: 1 / 1 23; 2 / 1 3 / 5 5; 2 / 1 1 / 2 2. These answers have been checked by independent enumeration or direct simulation.",
+    "hints": [
+      "Sort by start and maintain the last merged segment; if the new start does not exceed its end, extend it, otherwise start a new segment."
+    ]
+  }
+}
