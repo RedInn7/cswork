@@ -226,13 +226,12 @@ export async function handleOaLibrary(
     (action && action !== 'solution')
   )
     throw new HttpError(404, 'OA 接口不存在');
+  // Deny signed-out solution requests before touching the database or content.
+  if (action === 'solution') requirePerson(person);
   await limitReader(request, person, 'oa-library-read', 120);
   const data = oaLibrary();
   // Reference snippets in the imported source are never returned by the live API.
-  if (id && action === 'solution') {
-    requirePerson(person);
-    return json(data.solution(id));
-  }
+  if (id && action === 'solution') return json(data.solution(id));
   const problems = await oaReadyProblems();
   const ready = new Set(problems.keys());
   if (id) {
