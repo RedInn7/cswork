@@ -108,6 +108,19 @@ export async function requireCourse(p: Person, courseId: string) {
   if (!(await allowed(p, courseId)))
     throw new HttpError(403, '此课程尚未开通，请联系老师或购买课程');
 }
+/** Rate limit for readers who may be signed out, keyed by the proxy-reported client address. */
+export async function limitReader(
+  request: Request,
+  p: Person | null,
+  action: string,
+  max: number,
+) {
+  return limit(
+    p ?? ({ id: 'ip:' + (request.headers.get('x-real-ip') || 'local') } as Person),
+    action,
+    max,
+  );
+}
 export async function limit(
   p: Person,
   action: string,

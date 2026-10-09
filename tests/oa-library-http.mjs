@@ -85,12 +85,10 @@ try {
     return response;
   }
   const first = catalog.items[0];
-  for (const path of [
-    '/api/oj/oa-library',
-    `/api/oj/oa-library/${first.id}`,
-    `/api/oj/oa-library/${first.id}/solution`,
-  ])
-    await req(path, 401, false);
+  // Catalogue and statements are public; solutions require sign-in.
+  for (const path of ['/api/oj/oa-library', `/api/oj/oa-library/${first.id}`])
+    await req(path, 200, false);
+  await req(`/api/oj/oa-library/${first.id}/solution`, 401, false);
   for (const path of [
     '/content/oa-master/catalog.json',
     '/content/oa-master/manifest.json',

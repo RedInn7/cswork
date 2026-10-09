@@ -141,10 +141,9 @@ export async function handle(request: Request) {
       const response = await handler(request, p, path);
       if (response) return response;
     }
-    if (resource === 'oj') {
-      requirePerson(p);
+    if (resource === 'oj')
+      // handleOj requires sign-in for everything except public OA reads.
       return await handleOj(request, p, path.slice(1));
-    }
     if (request.method === 'GET') {
       if (resource === 'bootstrap') return json(await bootstrap(p));
       requirePerson(p);

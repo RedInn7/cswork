@@ -15,9 +15,18 @@ import {
   getStudySourceStatement,
   listStudyLibrary,
 } from './study-library';
-import { boundedText, HttpError, json, limit, requireTeacher } from './http';
+import {
+  boundedText,
+  HttpError,
+  json,
+  limit,
+  limitReader,
+  requirePerson,
+  requireTeacher,
+} from './http';
 import {
   getPublishedProblem,
+  getPublicOaProblem,
   listTeacherProblems,
   getTeacherProblem,
   saveProblemDraft,
@@ -35,11 +44,41 @@ import {
   MAX_CODE_BYTES,
   MAX_STDIN_BYTES,
 } from './oj-submissions';
-export async function handleOj(request: Request, p: Person, path: string[]) {
+export async function handleOj(
+  request: Request,
+  p: Person | null,
+  path: string[],
+) {
   const url = new URL(request.url),
     [resource, id, action, operation] = path;
   if (resource === 'oa-library')
     return handleOaLibrary(request, p, path.slice(1));
+  if (request.method === 'GET' && resource === 'problems' && id && !action) {
+    // OA statements are public; other problems keep the course entitlement gate.
+    const oa = id.startsWith('oa-');
+    if (oa) await limitReader(request, p, 'oa-library-read', 120);
+    else requirePerson(p);
+    // Entitlement, publication and validation gates apply before source text
+    // is read. Full statements supplement, never replace, the judge protocol.
+    const problem = oa
+      ? await getPublicOaProblem(id)
+      : await getPublishedProblem(p!, id);
+    const templates = leetcodeTemplates(id);
+    return json({
+      ...problem,
+      codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
+      leetcodeTemplates: templates,
+      leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
+      sourceStatement: getStudySourceStatement(id),
+      practiceRound:
+        p && isSelectedProblem(id) ? practiceRoundState(p.id).currentRound : null,
+      maxCodeBytes: MAX_CODE_BYTES,
+      maxStdinBytes: MAX_STDIN_BYTES,
+      judgeAvailable: ojStatus().available,
+      languageVersions: ojStatus().languageVersions,
+    });
+  }
+  requirePerson(p);
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));
   if (request.method === 'GET') {
@@ -54,26 +93,6 @@ export async function handleOj(request: Request, p: Person, path: string[]) {
       return json(practiceRoundState(p.id));
     }
     if (resource === 'status') return json(ojStatus());
-    if (resource === 'problems' && id) {
-      // Entitlement, publication and validation gates apply before source text
-      // is read. Full statements supplement, never replace, the judge protocol.
-      const problem = await getPublishedProblem(p, id);
-      const templates = leetcodeTemplates(id);
-      return json({
-        ...problem,
-        codingModes: templates ? ['leetcode', 'acm'] : ['acm'],
-        leetcodeTemplates: templates,
-        leetcodeInputHelp: leetcodeContract(id)?.customInputHelp || null,
-        sourceStatement: getStudySourceStatement(id),
-        practiceRound: isSelectedProblem(id)
-          ? practiceRoundState(p.id).currentRound
-          : null,
-        maxCodeBytes: MAX_CODE_BYTES,
-        maxStdinBytes: MAX_STDIN_BYTES,
-        judgeAvailable: ojStatus().available,
-        languageVersions: ojStatus().languageVersions,
-      });
-    }
     if (resource === 'submissions') {
       if (id && url.searchParams.get('wait') === '1') {
         await limit(p, 'oj-watch', 360);

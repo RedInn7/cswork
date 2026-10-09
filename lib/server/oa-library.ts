@@ -2,7 +2,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { z } from 'zod';
 import type { Person } from './auth';
-import { HttpError, json, limit, requirePerson, rows } from './http';
+import { HttpError, json, limitReader, requirePerson, rows } from './http';
 import {
   oaJudgeRegistry,
   oaReadyProblems,
@@ -218,8 +218,7 @@ export async function handleOaLibrary(
   person: Person | null,
   path: string[],
 ) {
-  // Same authenticated audience as the existing algorithm library; no public content endpoint.
-  requirePerson(person);
+  // Catalogue and statements are public; solutions stay behind sign-in.
   const [id, action, ...extra] = path;
   if (
     request.method !== 'GET' ||
@@ -227,10 +226,11 @@ export async function handleOaLibrary(
     (action && action !== 'solution')
   )
     throw new HttpError(404, 'OA 接口不存在');
-  await limit(person, 'oa-library-read', 120);
+  await limitReader(request, person, 'oa-library-read', 120);
   const data = oaLibrary();
   // Reference snippets in the imported source are never returned by the live API.
   if (id && action === 'solution') {
+    requirePerson(person);
     return json(data.solution(id));
   }
   const problems = await oaReadyProblems();
@@ -242,12 +242,14 @@ export async function handleOaLibrary(
   }
   const page = data.list(new URL(request.url).searchParams, ready);
   const progress = new Map(
-    (
-      await rows<{ problem_id: string; solved: number }>(
-        `SELECT problem_id,MAX(status='accepted') AS solved FROM submissions WHERE user_id=? AND mode='judge' AND problem_id LIKE 'oa-%' GROUP BY problem_id`,
-        person.id,
-      )
-    ).map((r) => [r.problem_id, r.solved ? 'solved' : 'attempted']),
+    person
+      ? (
+          await rows<{ problem_id: string; solved: number }>(
+            `SELECT problem_id,MAX(status='accepted') AS solved FROM submissions WHERE user_id=? AND mode='judge' AND problem_id LIKE 'oa-%' GROUP BY problem_id`,
+            person.id,
+          )
+        ).map((r) => [r.problem_id, r.solved ? 'solved' : 'attempted'])
+      : [],
   );
   return json({
     ...page,
