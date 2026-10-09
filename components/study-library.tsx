@@ -766,8 +766,9 @@ export function StudyLibrary({
             <option value="">{t('全部专题', 'All topics')}</option>
             {data?.collection?.sections.map((item) => (
               <option key={item.slug} value={item.slug}>
-                {english ? item.titleEn || item.title : item.title} ·{' '}
-                {item.solved}/{item.total}
+                {`${english ? item.titleEn || item.title : item.title}${
+                  member ? ` · ${item.solved}/${item.total}` : ''
+                }`}
               </option>
             ))}
           </select>
@@ -825,18 +826,23 @@ export function StudyLibrary({
                 }}
               >
                 <option value="">{t('全部题目', 'All problems')}</option>
-                <option value="todo">
-                  {t('尚未通过', 'Not solved this round')}
-                </option>
-                <option value="solved">
-                  {t('已通过', 'Solved this round')}
-                </option>
-                <option value="attempted">
-                  {t('已尝试 · 未通过', 'Attempted · Not solved')}
-                </option>
-                <option value="not_started">
-                  {t('未开始', 'Not started')}
-                </option>
+                {/* Round progress filters only mean something with an account. */}
+                {member && (
+                  <>
+                    <option value="todo">
+                      {t('尚未通过', 'Not solved this round')}
+                    </option>
+                    <option value="solved">
+                      {t('已通过', 'Solved this round')}
+                    </option>
+                    <option value="attempted">
+                      {t('已尝试 · 未通过', 'Attempted · Not solved')}
+                    </option>
+                    <option value="not_started">
+                      {t('未开始', 'Not started')}
+                    </option>
+                  </>
+                )}
                 <option value="ready">
                   {t('可站内判题', 'Ready to submit')}
                 </option>
@@ -906,6 +912,11 @@ export function StudyLibrary({
                 }
                 key={item.id}
                 onClick={() => {
+                  // Statements need an account; ask to sign in rather than open an empty page.
+                  if (!member) {
+                    window.dispatchEvent(new Event('cswork:auth-required'));
+                    return;
+                  }
                   if (canJudge(item)) {
                     rememberProblemSequence(
                       data.items.flatMap((row) =>
