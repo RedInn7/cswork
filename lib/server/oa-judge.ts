@@ -185,16 +185,18 @@ const englishCache = new Map<
  */
 export function oaEnglishStatement(id: string) {
   if (!/^oa-[a-z0-9-]+$/.test(id)) return undefined;
-  if (!englishCache.has(id)) {
+  if (!englishCache.get(id)) {
+    // Only parsed files are cached; a missing file is re-checked so later additions appear.
     const file = resolve(`content/oa-judge/translations/${id}.json`);
-    let value: z.infer<typeof englishStatement> | null = null;
     try {
       if (existsSync(file) && statSync(file).size < 1024 * 1024)
-        value = englishStatement.parse(JSON.parse(readFileSync(file, 'utf8')));
+        englishCache.set(
+          id,
+          englishStatement.parse(JSON.parse(readFileSync(file, 'utf8'))),
+        );
     } catch {
-      value = null;
+      // An unreadable translation simply falls back to the Chinese statement.
     }
-    englishCache.set(id, value);
   }
   const value = englishCache.get(id);
   return value && value.id === id && oaJudgeRegistry().isCurrent(id, value.packageChecksum)

@@ -675,7 +675,13 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
 }
 
 /** Company identity comes from the authenticated catalogue, never an ID guess. */
-export function OaCompanyBadge({ problemId }: { problemId: string }) {
+export function OaCompanyBadge({
+  problemId,
+  english = false,
+}: {
+  problemId: string;
+  english?: boolean;
+}) {
   const [identity, setIdentity] = useState<{
     id: string;
     companyName: string;
@@ -700,7 +706,7 @@ export function OaCompanyBadge({ problemId }: { problemId: string }) {
   }, [problemId]);
   return (
     <div className="oa-workspace-company">
-      <span className="oa-badge">OA 题目</span>
+      <span className="oa-badge">{english ? 'OA problem' : 'OA 题目'}</span>
       {identity?.id === problemId && (
         <strong>
           <CompanyIdentity
