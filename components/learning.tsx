@@ -783,6 +783,8 @@ export function ProblemList({
       navigate={navigate}
       collection={library}
       availableProblemIds={boot.problems.map((problem) => problem.id)}
+      activity={boot.activity || []}
+      signedIn={!!boot.person}
     />
   );
 }

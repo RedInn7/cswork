@@ -100,6 +100,14 @@ async function bootstrap(p: Person | null) {
           p.id,
         )
       : [],
+    // Practice calendar: accepted judge runs over the last ~26 weeks; the client buckets by local day.
+    activity: p
+      ? await rows<{ problem_id: string; created_at: number }>(
+          "SELECT problem_id,created_at FROM submissions WHERE user_id=? AND mode='judge' AND status='accepted' AND created_at>? ORDER BY created_at LIMIT 5000",
+          p.id,
+          Date.now() - 190 * 86400000,
+        )
+      : [],
     notifications: p
       ? await rows(
           'SELECT * FROM notifications WHERE user_id=? ORDER BY created_at DESC LIMIT 50',

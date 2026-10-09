@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { rememberProblemSequence } from '@/lib/problem-sequence';
+import { PracticeCalendar } from './practice-calendar';
 import {
   ArrowLeft,
   ArrowRight,
@@ -121,9 +122,13 @@ function canJudge(item: LibraryItem) {
 export function StudyLibrary({
   navigate,
   availableProblemIds,
+  activity = [],
+  signedIn = false,
 }: {
   navigate: Navigate;
   availableProblemIds: string[];
+  activity?: { problem_id: string; created_at: number }[];
+  signedIn?: boolean;
 }) {
   const [query, setQuery] = useState('');
   const [search, setSearch] = useState('');
@@ -556,6 +561,12 @@ export function StudyLibrary({
     1,
     Math.ceil((data?.total || 0) / (data?.pageSize || 30)),
   );
+  // The server only returns rounds to their owner, so a round also proves sign-in.
+  const member = signedIn || !!data?.currentRound;
+  // Next unsolved problem that can be judged here, in list order.
+  const nextProblem = data?.items.find(
+    (item) => canJudge(item) && !item.solved,
+  );
   // Must match the list request's parameters exactly, in the same order.
   const currentQuery = new URLSearchParams({
     q: search,
@@ -568,6 +579,8 @@ export function StudyLibrary({
   }).toString();
   return (
     <section className="study-library" lang={english ? 'en' : 'zh'}>
+      <div className="study-hero">
+        <div className="study-hero-main">
       <header className="study-library-heading">
         <div>
           <h2>{t('灵神题单精选', 'Ling’s Curated 500')}</h2>
@@ -580,11 +593,30 @@ export function StudyLibrary({
         </div>
         {languageControl}
       </header>
-      {(data?.currentRound ||
+      {(!member ||
+        data?.currentRound ||
         (collection === 'ling-selected-500' && data?.collection)) && (
         // One compact bar so the problem list starts above the fold.
         <div className="study-dashboard" aria-busy={roundBusy}>
-          {collection === 'ling-selected-500' &&
+          {!member && (
+            <div className="study-dashboard-signin">
+              <span>
+                {t(
+                  '登录后记录每一轮的通过进度，并在站内提交代码。',
+                  'Sign in to track each round and submit code here.',
+                )}
+              </span>
+              <Button
+                onClick={() =>
+                  window.dispatchEvent(new Event('cswork:auth-required'))
+                }
+              >
+                {t('登录 / 注册', 'Sign in')}
+              </Button>
+            </div>
+          )}
+          {member &&
+            collection === 'ling-selected-500' &&
             data?.collection &&
             !error && (
               <div className="study-dashboard-stats">
@@ -617,6 +649,22 @@ export function StudyLibrary({
           {data?.currentRound && (
             <>
               <div className="study-round-actions">
+                {nextProblem && (
+                  <Button
+                    onClick={() => {
+                      rememberProblemSequence(
+                        data.items.flatMap((row) =>
+                          canJudge(row) ? [row.judgeProblemId!] : [],
+                        ),
+                      );
+                      navigate('problem', {
+                        problem: nextProblem.judgeProblemId!,
+                      });
+                    }}
+                  >
+                    {t('继续刷题', 'Continue')}
+                  </Button>
+                )}
                 <Button
                   variant="outline"
                   aria-expanded={syncOpen}
@@ -680,6 +728,9 @@ export function StudyLibrary({
           )}
         </div>
       )}
+        </div>
+        <PracticeCalendar activity={activity} signedIn={signedIn} />
+      </div>
       {syncOpen && data?.currentRound && (
         <LeetcodeSyncPanel
           rounds={data.rounds}
@@ -841,6 +892,11 @@ export function StudyLibrary({
       ) : (
         <>
           <div className="study-list" aria-busy={loading}>
+            <div className="study-list-head" aria-hidden="true">
+              <span />
+              <span>{t('题目', 'Problem')}</span>
+              <span>{t('难度', 'Difficulty')}</span>
+            </div>
             {data.items.map((item) => (
               <button
                 type="button"

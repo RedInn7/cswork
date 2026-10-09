@@ -78,6 +78,11 @@ export async function handleOj(
       languageVersions: ojStatus().languageVersions,
     });
   }
+  if (request.method === 'GET' && resource === 'library' && !id) {
+    // The landing problem list is browsable signed out; statements still need an account.
+    await limitReader(request, p, 'library-read', 120);
+    return json(listStudyLibrary(url.searchParams, p?.id));
+  }
   requirePerson(p);
   if (resource === 'leetcode-sync')
     return handleLeetcodeSync(request, p, path.slice(1));

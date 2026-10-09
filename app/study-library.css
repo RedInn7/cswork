@@ -13,6 +13,15 @@
   border-radius: 12px;
   background: #f4f8f7;
 }
+.study-dashboard-signin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+  font-size: 13px;
+  color: #586b66;
+}
 .study-dashboard-stats {
   display: flex;
   align-items: center;
@@ -162,6 +171,18 @@
 .study-list[aria-busy='true'] {
   opacity: 0.6;
 }
+.study-list-head {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 64px;
+  gap: 12px;
+  padding: 8px 16px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.study-list-head span:last-child {
+  justify-self: end;
+}
 .study-row {
   display: grid;
   width: 100%;
@@ -177,7 +198,7 @@
   cursor: pointer;
   transition: background 0.15s;
 }
-.study-row:nth-child(odd) {
+.study-row:nth-of-type(odd) {
   background: #f7f8f9;
 }
 .study-row:hover {
@@ -540,4 +561,108 @@
 }
 .study-row:is(:hover, :focus-visible) .study-progress[data-progress='solved'] {
   color: #35d96c;
+}
+
+/* Practice landing: list identity + round on the left, the practice calendar on the right. */
+.study-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: stretch;
+  margin-bottom: 16px;
+}
+.study-hero-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+}
+.study-hero-main .study-library-heading {
+  margin-bottom: 0;
+}
+.study-hero-main .study-dashboard {
+  margin-bottom: 0;
+}
+.practice-calendar {
+  display: grid;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--card);
+}
+.practice-calendar header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+}
+.practice-calendar h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+.practice-calendar header p {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.practice-calendar header strong {
+  color: var(--primary);
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+.practice-calendar-body {
+  display: grid;
+  gap: 4px;
+}
+.practice-calendar-months,
+.practice-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(26, 11px);
+  column-gap: 3px;
+}
+.practice-calendar-months span {
+  font-size: 10px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.practice-calendar-grid {
+  grid-template-rows: repeat(7, 11px);
+  grid-auto-flow: column;
+  row-gap: 3px;
+}
+.practice-calendar span[data-level],
+.practice-calendar-grid span {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+}
+.practice-calendar [data-level='0'] { background: #e7edea; }
+.practice-calendar [data-level='1'] { background: #b6ddd0; }
+.practice-calendar [data-level='2'] { background: #6cbda3; }
+.practice-calendar [data-level='3'] { background: #2b977a; }
+.practice-calendar [data-level='4'] { background: var(--primary); }
+.practice-calendar [data-future] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px #edf1ef;
+}
+.practice-calendar footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  font-size: 10px;
+  color: var(--muted-foreground);
+}
+.practice-calendar footer span {
+  margin: 0 1px;
+}
+@media (max-width: 1080px) {
+  .study-hero {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .practice-calendar {
+    overflow-x: auto;
+  }
 }

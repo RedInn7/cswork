@@ -139,36 +139,41 @@ body {
   }
 }
 :root {
-  --background: #f6f7f9;
-  --foreground: #20232b;
+  /* Judge-verdict palette: AC green leads, TLE amber accents, WA red for errors. */
+  --background: #f3f6f4;
+  --foreground: #15201d;
   --card: #fff;
-  --card-foreground: #20232b;
+  --card-foreground: #15201d;
   --popover: #fff;
-  --popover-foreground: #20232b;
-  --primary: #2858e8;
+  --popover-foreground: #15201d;
+  --primary: #0d7a63;
   --primary-foreground: #fff;
-  --secondary: #edf1fb;
-  --secondary-foreground: #254caa;
-  --muted: #f0f2f6;
-  --muted-foreground: #6f7582;
-  --accent: #edf2ff;
-  --accent-foreground: #2858e8;
-  --destructive: #c03d46;
-  --border: #e6e9ef;
-  --input: #dfe3ec;
-  --ring: #6388ee;
-  --radius: 0.8rem;
-  --sidebar: #fcfcfd;
-  --sidebar-foreground: #69707f;
-  --sidebar-primary: #2858e8;
+  --secondary: #e6f2ee;
+  --secondary-foreground: #0b5d4c;
+  --muted: #edf1ef;
+  --muted-foreground: #5f6f6a;
+  --accent: #e3f1ec;
+  --accent-foreground: #0b5d4c;
+  --destructive: #c8443f;
+  --border: #dfe6e2;
+  --input: #d4ddd8;
+  --ring: #4fa58f;
+  --radius: 0.75rem;
+  --sidebar: #fbfcfb;
+  --sidebar-foreground: #5f6f6a;
+  --sidebar-primary: #0d7a63;
   --sidebar-primary-foreground: #fff;
-  --sidebar-accent: #edf2ff;
-  --sidebar-accent-foreground: #2858e8;
-  --sidebar-border: #e6e9ef;
-  --sidebar-ring: #6388ee;
+  --sidebar-accent: #e3f1ec;
+  --sidebar-accent-foreground: #0b5d4c;
+  --sidebar-border: #dfe6e2;
+  --sidebar-ring: #4fa58f;
+  --verdict-ac: #0d7a63;
+  --verdict-tle: #d98e1f;
+  --verdict-wa: #c8443f;
   --font-geist-sans:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
-  --font-geist-mono: 'SFMono-Regular', Consolas, monospace;
+  --font-geist-mono:
+    'SF Mono', 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
 }
 body {
   font-family: var(--font-geist-sans);
@@ -201,12 +206,12 @@ button:disabled {
 .brand-mark {
   display: grid;
   place-items: center;
-  background: #2858e8;
+  background: var(--primary);
   color: white;
   width: 36px;
   height: 36px;
   border-radius: 11px;
-  box-shadow: 0 4px 12px #2858e822;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 13%, transparent);
 }
 .brand-light {
   font-weight: 420;
@@ -247,7 +252,7 @@ button:disabled {
   background: linear-gradient(150deg, #f3f6ff, #fff);
 }
 .mentor-card svg {
-  color: #2858e8;
+  color: var(--primary);
   margin-bottom: 12px;
 }
 .mentor-card strong {
@@ -362,15 +367,15 @@ h1 {
   display: grid;
   grid-template-columns: 1.25fr 1fr;
   gap: 26px;
-  background: linear-gradient(115deg, #16285c, #1b3b92 65%, #2b57b0);
+  background: linear-gradient(115deg, #0f2622, #0f3d34 65%, #14594a);
   padding: 38px 42px;
   color: #fff;
-  box-shadow: 0 12px 26px #23396d10;
+  box-shadow: 0 12px 26px #163b3310;
 }
 .overline {
   font-size: 12px;
   letter-spacing: 1px;
-  color: #a4b9ed;
+  color: #a9d3c7;
 }
 .continue-card h2 {
   font-size: 28px;
@@ -380,14 +385,14 @@ h1 {
 }
 .continue-card p {
   font-size: 14px;
-  color: #b5c4e5;
+  color: #b9d8cf;
 }
 .course-meta {
   display: flex;
   gap: 10px;
   font-size: 11px;
   margin-top: 17px;
-  color: #b0c2ee;
+  color: #b4d6cc;
   flex-wrap: wrap;
 }
 .course-meta span + span:before {
@@ -397,7 +402,7 @@ h1 {
 }
 .primary-light[data-slot='button'] {
   background: #fff;
-  color: #244aab;
+  color: var(--accent-foreground);
   height: 40px;
   padding: 0 18px;
   margin-top: 25px;
@@ -428,7 +433,7 @@ h1 {
   font-size: 13px;
   font-weight: 400;
   letter-spacing: 0;
-  color: #b5c4e5;
+  color: #b9d8cf;
 }
 .practice-card [data-slot='progress-track'] {
   background: #ffffff26;
@@ -486,7 +491,7 @@ h1 {
 }
 .path-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 28px #23396d08;
+  box-shadow: 0 12px 28px #163b3308;
 }
 .path-top {
   display: flex;
@@ -631,7 +636,7 @@ button:focus-visible {
 }
 .notification-button i {
   position: absolute;
-  background: #2858e8;
+  background: var(--primary);
   height: 5px;
   width: 5px;
   border-radius: 50%;
@@ -695,7 +700,7 @@ button:focus-visible {
   font-size: 12px;
 }
 .text-link:hover {
-  color: #2858e8;
+  color: var(--primary);
 }
 .home-bottom {
   display: grid;
@@ -720,7 +725,7 @@ button:focus-visible {
   border-top: 1px solid #edf0f6;
 }
 .quick-problems button:hover {
-  background: #f9fbff;
+  background: #f8fbf9;
 }
 .quick-number {
   font-size: 12px;
@@ -1092,11 +1097,11 @@ button:focus-visible {
   color: #aeb7c4;
 }
 .mini-curriculum button.current {
-  background: #edf3ff;
+  background: #e6f2ee;
   color: #3464b3;
 }
 .mini-curriculum button:hover {
-  background: #f4f7fc;
+  background: #f3f7f5;
 }
 .version-line {
   display: flex;
@@ -1214,7 +1219,7 @@ button:focus-visible {
   border-top: 1px solid #edf0f5;
 }
 .problem-table-row:hover {
-  background: #f9fbff;
+  background: #f8fbf9;
 }
 .problem-table-row strong {
   font-size: 14px;
@@ -1385,7 +1390,7 @@ button:focus-visible {
 }
 .hint {
   padding: 16px;
-  background: #f4f7fc;
+  background: #f3f7f5;
   border: 1px solid #e5ecf7;
   border-radius: 10px;
   margin: 16px 0;
@@ -1511,7 +1516,7 @@ textarea::placeholder {
 .ticket-icon {
   height: 40px;
   width: 40px;
-  background: #edf3ff;
+  background: #e6f2ee;
   color: #829dcd;
   display: grid;
   place-items: center;
@@ -1821,7 +1826,7 @@ textarea::placeholder {
   height: 46px;
   width: 46px;
   border-radius: 13px;
-  background: #2858e8;
+  background: var(--primary);
   color: #fff;
   display: grid;
   place-items: center;

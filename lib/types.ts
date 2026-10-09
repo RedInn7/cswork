@@ -73,6 +73,7 @@ export type Boot = {
   problems: Problem[];
   progress: Progress[];
   submissions: Submission[];
+  activity?: { problem_id: string; created_at: number }[];
   notifications: Notification[];
   unreadNotifications?: number;
   services: Record<string, boolean>;
