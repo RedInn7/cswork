@@ -163,12 +163,22 @@ function listCuratedLibrary(params: URLSearchParams, userId?: string) {
     1,
     Math.min(10000, Number.parseInt(params.get('page') || '1', 10) || 1),
   );
+  // Curated order of problems judgeable here, so "continue" and prev/next span every page.
+  const sequence = all.flatMap((item) =>
+    item.caseStatus === 'verified' && item.judgeProblemId
+      ? [{ id: item.judgeProblemId, solved: item.solved }]
+      : [],
+  );
   return {
     items: filtered.slice((page - 1) * 30, page * 30),
     total: filtered.length,
     page,
     pageSize: 30,
     topics: [],
+    sequence: sequence.map((item) => item.id),
+    nextProblemId: userId
+      ? (sequence.find((item) => !item.solved)?.id ?? null)
+      : null,
     ...roundState,
     collection: {
       id: LING_CURATED_ID,

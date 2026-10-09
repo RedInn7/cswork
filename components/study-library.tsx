@@ -66,6 +66,8 @@ type LibraryPage = RoundState & {
   page: number;
   pageSize: number;
   topics: string[];
+  sequence?: string[];
+  nextProblemId?: string | null;
   collection?: {
     id: string;
     title: string;
@@ -563,10 +565,6 @@ export function StudyLibrary({
   );
   // The server only returns rounds to their owner, so a round also proves sign-in.
   const member = signedIn || !!data?.currentRound;
-  // Next unsolved problem that can be judged here, in list order.
-  const nextProblem = data?.items.find(
-    (item) => canJudge(item) && !item.solved,
-  );
   // Must match the list request's parameters exactly, in the same order.
   const currentQuery = new URLSearchParams({
     q: search,
@@ -577,6 +575,10 @@ export function StudyLibrary({
     stage,
     status,
   }).toString();
+  // The server picks the next unsolved judgeable problem across the whole list;
+  // never act on a previous filter's response while a new one is loading.
+  const nextProblemId =
+    loading && dataQuery !== currentQuery ? null : data?.nextProblemId;
   return (
     <section className="study-library" lang={english ? 'en' : 'zh'}>
       <div className="study-hero">
@@ -649,17 +651,11 @@ export function StudyLibrary({
           {data?.currentRound && (
             <>
               <div className="study-round-actions">
-                {nextProblem && (
+                {nextProblemId && (
                   <Button
                     onClick={() => {
-                      rememberProblemSequence(
-                        data.items.flatMap((row) =>
-                          canJudge(row) ? [row.judgeProblemId!] : [],
-                        ),
-                      );
-                      navigate('problem', {
-                        problem: nextProblem.judgeProblemId!,
-                      });
+                      rememberProblemSequence(data.sequence ?? [nextProblemId]);
+                      navigate('problem', { problem: nextProblemId });
                     }}
                   >
                     {t('继续刷题', 'Continue')}

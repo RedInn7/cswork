@@ -78,7 +78,13 @@ export async function handleOj(
       languageVersions: ojStatus().languageVersions,
     });
   }
-  if (request.method === 'GET' && resource === 'library' && !id) {
+  if (
+    request.method === 'GET' &&
+    resource === 'library' &&
+    !id &&
+    // Signed out, only the curated landing list is open; the full catalogue stays for members.
+    (p || ['', 'ling-selected-500'].includes(url.searchParams.get('collection') || ''))
+  ) {
     // The landing problem list is browsable signed out; statements still need an account.
     await limitReader(request, p, 'library-read', 120);
     return json(listStudyLibrary(url.searchParams, p?.id));

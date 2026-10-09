@@ -658,11 +658,37 @@
 .practice-calendar footer span {
   margin: 0 1px;
 }
-@media (max-width: 1080px) {
+.practice-calendar-body {
+  overflow-x: auto;
+}
+/* Below this width the calendar would squeeze the header copy into a thin column. */
+@media (max-width: 1300px) {
   .study-hero {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+/* On phones the list comes first; the calendar follows it instead of pushing it down. */
+@media (max-width: 640px) {
+  .study-library:has(> .study-hero) {
+    display: flex;
+    flex-direction: column;
+  }
+  .study-hero {
+    display: contents;
+  }
+  .study-hero-main {
+    order: 0;
+  }
   .practice-calendar {
-    overflow-x: auto;
+    order: 10;
+    margin-top: 16px;
+  }
+  .study-library:has(> .study-hero) > :not(.study-hero) {
+    order: 5;
+  }
+  .study-list-head {
+    grid-template-columns: 20px minmax(0, 1fr) 48px;
+    gap: 8px;
+    padding: 8px;
   }
 }
