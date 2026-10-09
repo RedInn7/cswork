@@ -617,11 +617,13 @@ export function OaLibrary({ navigate }: { navigate?: Navigate }) {
                         <span className="oa-title">
                           <strong>{item.title}</strong>
                           {[
-                            // Only unusual languages (SQL, Bash…) tell the reader something.
-                            ...item.languages
-                              .filter((lang) => !codeLanguages.has(lang))
-                              .map((lang) => languageNames[lang] || lang),
-                            ...(item.tags || []),
+                            ...new Set([
+                              // Only unusual languages (SQL, Bash…) tell the reader something.
+                              ...item.languages
+                                .filter((lang) => !codeLanguages.has(lang))
+                                .map((lang) => languageNames[lang] || lang),
+                              ...(item.tags || []),
+                            ]),
                           ].map((tag) => (
                             <small key={tag}>{tag}</small>
                           ))}

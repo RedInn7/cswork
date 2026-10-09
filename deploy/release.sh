@@ -51,6 +51,8 @@ git clone -q --filter=blob:none --no-checkout "$repo" "$dir"
 git -C "$dir" checkout -q "$sha"
 
 if [[ "$sha" != "$base" ]]; then
+  git -C "$dir" cat-file -e "$base^{commit}" 2>/dev/null ||
+    die "deployed commit $base is not in the repository; cannot compare schemas"
   # app-only-release.sh never migrates; schema changes need a full install.sh release.
   if ! git -C "$dir" diff --quiet "$base" "$sha" -- drizzle db; then
     die "schema changed between $base and $sha; use deploy/install.sh"
@@ -66,14 +68,16 @@ fi
 
 # Builds are world-readable under /srv, so the service user reads them directly.
 as_cswork() { (cd "$dir" && sudo -u cswork "$prod_node" --env-file="$env_file" "$@"); }
-mapfile -t pending < <(as_cswork scripts/oa-judge/unpublished-batches.mjs)
+# Process substitution would hide a crash; capture first so a failure stops the release clearly.
+listed=$(as_cswork scripts/oa-judge/unpublished-batches.mjs) || die 'could not list unpublished OA batches'
+mapfile -t pending < <(printf '%s' "$listed" | sed '/^$/d')
 log "${#pending[@]} OA batch(es) to publish"
 for batch in "${pending[@]}"; do
   out=$(as_cswork --import tsx scripts/publish-oa-judge.ts --batch "$batch" "$email")
   log "$batch: $(grep -c '"published"' <<<"$out" || true) problem(s) published"
 done
-left=$(as_cswork scripts/oa-judge/unpublished-batches.mjs | wc -l)
-[[ "$left" == 0 ]] || die "$left batch(es) still unpublished"
+left=$(as_cswork scripts/oa-judge/unpublished-batches.mjs) || die 'could not recheck OA batches'
+[[ -z "$left" ]] || die "still unpublished: $(tr '\n' ' ' <<<"$left")"
 
 curl -fsS -o /dev/null http://127.0.0.1:4317/api/bootstrap || die 'site not answering after publish'
 rm -rf "$dir"

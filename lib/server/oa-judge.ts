@@ -48,6 +48,9 @@ export function createOaJudgeRegistry(
       : undefined;
   }
   return {
+    isCurrent(id: string, checksum: string) {
+      return current(id)?.packageChecksum === checksum;
+    },
     isReady(version: OaPublishedVersion) {
       const entry = current(version.id);
       if (!entry || entry.packageChecksum !== version.checksum) return false;
@@ -98,22 +101,26 @@ export function oaJudgeRegistry() {
 /** One batch query: catalog pages must not perform a query for every question. */
 /** Trusted published OA problems with the list-safe parts of their spec. */
 export async function oaReadyProblems() {
-  const versions = await rows<OaPublishedVersion>(
-    `SELECT p.id,v.checksum,v.spec_json FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'`,
+  // SQLite extracts the few list fields; full statements are never parsed per request.
+  const versions = await rows<{
+    id: string;
+    checksum: string;
+    spec_id: string | null;
+    difficulty: string | null;
+    tags: string | null;
+  }>(
+    `SELECT p.id,v.checksum,json_extract(v.spec_json,'$.id') AS spec_id,json_extract(v.spec_json,'$.difficulty') AS difficulty,json_extract(v.spec_json,'$.tags') AS tags FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id AND v.problem_id=p.id WHERE p.published=1 AND p.id LIKE 'oa-%'`,
   );
   const trusted = oaJudgeRegistry();
   const ready = new Map<string, { difficulty?: string; tags: string[] }>();
-  for (const version of versions)
-    if (trusted.isReady(version)) {
-      const spec = JSON.parse(version.spec_json) as {
-        difficulty?: string;
-        tags?: string[];
-      };
-      ready.set(version.id, { difficulty: spec.difficulty, tags: spec.tags || [] });
-    }
+  for (const v of versions)
+    if (v.spec_id === v.id && trusted.isCurrent(v.id, v.checksum))
+      ready.set(v.id, {
+        difficulty: v.difficulty ?? undefined,
+        tags: v.tags ? (JSON.parse(v.tags) as string[]) : [],
+      });
   return ready;
 }
-
 
 export async function requireOaJudgeReady(id: string) {
   if (!id.startsWith('oa-')) return;

@@ -586,35 +586,44 @@ type PracticeSummary = {
 
 /** The learner's curated-list round at a glance, with one click back into practice. */
 function PracticeCard({
-  signedIn,
+  personId,
   navigate,
   login,
 }: {
-  signedIn: boolean;
+  personId: string | null;
   navigate: Navigate;
   login: () => void;
 }) {
-  const [summary, setSummary] = useState<PracticeSummary | null>(null);
+  const signedIn = !!personId;
+  // undefined = loading, null = failed; never show a made-up 0/500 for either.
+  const [summary, setSummary] = useState<PracticeSummary | null | undefined>();
   useEffect(() => {
-    if (!signedIn) return;
+    if (!personId) return;
     let current = true;
+    setSummary(undefined);
     api<PracticeSummary>('oj/library?collection=ling-selected-500&page=1')
       .then((data) => current && setSummary(data))
       .catch(() => current && setSummary(null));
     return () => {
       current = false;
     };
-  }, [signedIn]);
+  }, [personId]);
   const solved = summary?.collection?.solved ?? 0,
     total = summary?.collection?.total ?? 500;
   return (
     <div className="practice-card">
       <span className="overline">
-        {signedIn
-          ? `灵神题单 · 第 ${summary?.currentRound?.number ?? 1} 轮`
-          : '算法练习'}
+        {signedIn && summary?.currentRound
+          ? `灵神题单 · 第 ${summary.currentRound.number} 轮`
+          : '灵神题单'}
       </span>
-      {signedIn ? (
+      {!signedIn ? (
+        <p>登录后自动记录每一轮的刷题进度。</p>
+      ) : summary === undefined ? (
+        <p aria-live="polite">正在读取刷题进度…</p>
+      ) : summary === null || !summary.collection ? (
+        <p role="status">刷题进度暂时无法读取，可以直接进入题库继续练习。</p>
+      ) : (
         <>
           <strong>
             {solved}
@@ -622,8 +631,6 @@ function PracticeCard({
           </strong>
           <Progress value={total ? (solved / total) * 100 : 0} />
         </>
-      ) : (
-        <p>登录后自动记录每一轮的刷题进度。</p>
       )}
       <div className="practice-card-actions">
         <Button
@@ -635,9 +642,7 @@ function PracticeCard({
         </Button>
         <button
           className="practice-card-link"
-          onClick={() =>
-            signedIn ? navigate('problems', { library: 'oa' }) : login()
-          }
+          onClick={() => navigate('problems', { library: 'oa' })}
         >
           OA 题目
           <ArrowRight size={14} />
@@ -723,7 +728,7 @@ function Home({
           </Button>
         </div>
         <PracticeCard
-          signedIn={!!boot.person}
+          personId={boot.person?.id ?? null}
           navigate={navigate}
           login={login}
         />

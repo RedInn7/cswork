@@ -141,6 +141,7 @@ export function StudyLibrary({
   const [difficulty, setDifficulty] = useState('');
   const [page, setPage] = useState(1);
   const [data, setData] = useState<LibraryPage | null>(null);
+  const [dataQuery, setDataQuery] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [retry, setRetry] = useState(0);
@@ -282,7 +283,10 @@ export function StudyLibrary({
     });
     api<LibraryPage>(`oj/library?${params}`)
       .then((result) => {
-        if (current && request === listRequest.current) setData(result);
+        if (current && request === listRequest.current) {
+          setData(result);
+          setDataQuery(params.toString());
+        }
       })
       .catch((reason: Error) => {
         if (current && request === listRequest.current)
@@ -552,6 +556,16 @@ export function StudyLibrary({
     1,
     Math.ceil((data?.total || 0) / (data?.pageSize || 30)),
   );
+  // Must match the list request's parameters exactly, in the same order.
+  const currentQuery = new URLSearchParams({
+    q: search,
+    difficulty,
+    page: String(page),
+    collection,
+    section,
+    stage,
+    status,
+  }).toString();
   return (
     <section className="study-library" lang={english ? 'en' : 'zh'}>
       <header className="study-library-heading">
@@ -794,8 +808,9 @@ export function StudyLibrary({
             {t('重新加载', 'Reload')}
           </Button>
         </div>
-      ) : loading && !data ? (
-        // Background refreshes (window focus, judging polls) keep the current list.
+      ) : loading && (!data || dataQuery !== currentQuery) ? (
+        // Background refreshes (window focus, judging polls) keep the current list;
+        // a new filter or page never shows the previous query's rows as if current.
         <output className="study-state">
           {t('正在加载题单…', 'Loading collection…')}
         </output>

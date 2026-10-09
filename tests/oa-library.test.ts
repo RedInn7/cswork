@@ -76,16 +76,16 @@ void test('OA source identity rejects external URLs, credentials, duplicates and
   count.companies[0].count = 1;
   assert.throws(() => createOaLibrary(count));
 });
-void test('anonymous OA requests are denied before loading content or touching the database', async () => {
-  for (const path of [[], ['oa-meta-1'], ['oa-meta-1', 'solution']])
-    await assert.rejects(
-      handleOaLibrary(
-        new Request('https://cswork.test/api/oj/oa-library'),
-        null,
-        path,
-      ),
-      { status: 401 },
-    );
+void test('anonymous OA solution requests are denied before loading content', async () => {
+  // The catalogue and statements are public; reference solutions stay behind sign-in.
+  await assert.rejects(
+    handleOaLibrary(
+      new Request('https://cswork.test/api/oj/oa-library'),
+      null,
+      ['oa-meta-1', 'solution'],
+    ),
+    { status: 401 },
+  );
 });
 void test('checked-in OA catalog is complete and valid', () => {
   const catalog = JSON.parse(

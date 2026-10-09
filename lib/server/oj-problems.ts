@@ -264,6 +264,24 @@ export async function listPublishedProblems(): Promise<OjPublicProblem[]> {
   );
 }
 
+/** OA statements are public: anyone may read them; submitting still checks course access. */
+export async function getPublicOaProblem(problemId: string) {
+  if (!problemId.startsWith('oa-')) throw new HttpError(404, '题目不存在或尚未发布');
+  await requireOaJudgeReady(problemId);
+  const pr = await one<ProblemRow>(
+    `SELECT p.* FROM oj_problems p WHERE p.id=? AND p.published=1 AND ${libraryJudgeGate}`,
+    problemId,
+  );
+  if (!pr?.current_version_id) throw new HttpError(404, '题目不存在或尚未发布');
+  const v = await one<VersionRow>(
+    'SELECT * FROM oj_problem_versions WHERE id=?',
+    pr.current_version_id,
+  );
+  if (!v) throw new HttpError(404, '题目版本不存在');
+  assertOaVersionReady(problemId, v.checksum, v.spec_json);
+  return publicProblem(v);
+}
+
 export async function getPublishedProblem(p: Person, problemId: string) {
   await requireOaJudgeReady(problemId);
   const pr = await one<ProblemRow>(
