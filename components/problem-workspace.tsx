@@ -1712,15 +1712,28 @@ function Workspace({
           </DialogContent>
         </Dialog>
       )}
-      {problemError && (
-        <div className="cs-workspace-notice" role="alert">
-          题目配置加载失败：{problemError}
-          <button onClick={() => setProblemRevision((n) => n + 1)}>
-            重新加载
-          </button>
-        </div>
-      )}
-      {!accessible && (
+      {problemError &&
+        (boot.person ? (
+          <div className="cs-workspace-notice" role="alert">
+            题目配置加载失败：{problemError}
+            <button onClick={() => setProblemRevision((n) => n + 1)}>
+              重新加载
+            </button>
+          </div>
+        ) : (
+          // Signed out: retrying cannot succeed, so offer the one action that can.
+          <div className="cs-workspace-notice" role="status">
+            登录后即可查看完整题面并提交代码。
+            <button
+              onClick={() =>
+                window.dispatchEvent(new Event('cswork:auth-required'))
+              }
+            >
+              登录 / 注册
+            </button>
+          </div>
+        ))}
+      {!accessible && !(problemError && !boot.person) && (
         <div className="cs-workspace-notice">
           {boot.person
             ? '请先开通相关课程，再运行和提交解答。'

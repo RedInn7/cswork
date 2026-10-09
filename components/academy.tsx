@@ -207,8 +207,11 @@ export function Academy() {
       boot.notifications.filter((n) => !n.read_at).length;
   function content() {
     if (loading)
-      return (
+      // Only the overview can render before bootstrap; other views would flash the wrong page.
+      return view === 'home' ? (
         <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
+      ) : (
+        <output className="page-loading">正在加载…</output>
       );
     if (error && !boot.courses.length)
       return (
@@ -314,9 +317,14 @@ export function Academy() {
         );
       case 'account':
         return <AccountView boot={boot} refresh={refresh} />;
-      default:
+      case 'home':
         return (
           <Home boot={boot} navigate={navigate} login={() => setLogin(true)} />
+        );
+      default:
+        // Unknown or stale views fall back to the landing problem bank.
+        return (
+          <ProblemList boot={boot} navigate={navigate} library={params.library} />
         );
     }
   }
@@ -418,6 +426,8 @@ export function Academy() {
                       ? '算法知识点'
                       : '课程学习',
                     problem: '算法题库',
+                    reviews: '代码评审',
+                    releases: '课程更新',
                     teacher: '教师工作台',
                     account: '账号设置',
                   } as Record<string, string>
