@@ -8,6 +8,8 @@ export function AlgorithmLibrary(props: {
   navigate: Navigate;
   availableProblemIds: string[];
   collection?: string;
+  activity: { problem_id: string; created_at: number }[];
+  signedIn: boolean;
 }) {
   const section = props.collection === 'oa' ? 'oa' : 'leetcode';
   return (
@@ -18,7 +20,7 @@ export function AlgorithmLibrary(props: {
           aria-pressed={section === 'leetcode'}
           onClick={() => props.navigate('problems')}
         >
-          算法题单
+          灵神题单
         </button>
         <button
           type="button"

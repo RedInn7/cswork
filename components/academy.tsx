@@ -74,10 +74,11 @@ import { EnrollmentClaim } from './enrollment';
 import { NotificationsPane } from './lms-notifications';
 import '@/app/lms.css';
 import { isKnowledgeLesson } from '@/lib/interview-curriculum';
+// Practice is the product's centre: the problem bank leads and is the landing view.
 const nav: [LucideIcon, string, string][] = [
+  [Code2, '算法题库', 'problems'],
   [LayoutDashboard, '学习概览', 'home'],
   [BookOpen, '我的课程', 'courses'],
-  [Code2, '算法题库', 'problems'],
   [BookOpen, '算法知识点', 'knowledge'],
   [LifeBuoy, '我的工单', 'tickets'],
 ];
@@ -95,7 +96,7 @@ export function Academy() {
   const [boot, setBoot] = useState<Boot>(initial),
     [loading, setLoading] = useState(true),
     [error, setError] = useState(''),
-    [view, setView] = useState('home'),
+    [view, setView] = useState('problems'),
     [params, setParams] = useState<Record<string, string>>({}),
     [login, setLogin] = useState(false),
     [ticketContext, setTicketContext] = useState<Record<string, string> | null>(
@@ -121,7 +122,7 @@ export function Academy() {
     const sync = () => {
       const p = Object.fromEntries(new URLSearchParams(location.search));
       setParams(p);
-      setView(p.view || 'home');
+      setView(p.view || 'problems');
     };
     sync();
     window.addEventListener('popstate', sync);
@@ -329,7 +330,7 @@ export function Academy() {
             href="/"
             onClick={(e) => {
               e.preventDefault();
-              navigate('home');
+              navigate('problems');
             }}
           >
             <span className="brand-mark">
@@ -421,7 +422,7 @@ export function Academy() {
                     account: '账号设置',
                   } as Record<string, string>
                 )[view] ||
-                '学习概览'}
+                '算法题库'}
             </span>
           </div>
           <div className="topbar-actions">
