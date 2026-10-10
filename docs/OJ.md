@@ -30,7 +30,7 @@ worker 每 200 毫秒投递新提交，另每 5 秒恢复未完成提交到 Bull
 
 基础设施异常由 BullMQ 最多重试3次，重启造成的 stalled job 由 BullMQ 恢复。SQLite attempt 自增并对结果写入做版本校验，旧任务不能覆盖新任务；跨队列重建累计尝试最多8次。用户取消持久化后中断执行请求；启动维护会收束崩溃前遗留的取消任务。GET 结果不触发执行或改写提交。
 
-生产仅运行一个 `cswork-oj-worker.service`（内含2并发任务），web 进程只持有 `OJ_ENABLED=true`，执行器/Redis凭据由 systemd 单独从 `/etc/cswork/oj.env` 注入 worker。`OJ_QUEUE_NAME` 默认 `cswork-judge-v1`；集成测试必须使用独立 test 队列、临时数据库和本地端口，不能与生产队列混用。
+生产仅运行一个 `cswork-oj-worker.service`（默认同时评测 4 份提交，受 runner 4 个执行槽约束），web 进程只持有 `OJ_ENABLED=true`，执行器/Redis凭据由 systemd 单独从 `/etc/cswork/oj.env` 注入 worker。`OJ_QUEUE_NAME` 默认 `cswork-judge-v1`；集成测试必须使用独立 test 队列、临时数据库和本地端口，不能与生产队列混用。
 
 ## API
 
