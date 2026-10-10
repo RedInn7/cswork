@@ -133,6 +133,16 @@ export type Release = {
   created_at: number;
   is_read: number;
 };
+/** Whom a bootstrap was built for; the visible catalogue depends on all three. */
+export function bootIdentity(b: Pick<Boot, 'person'>) {
+  return b.person ? `${b.person.id}:${b.person.verified}:${b.person.role}` : '';
+}
+/** A lite refresh keeps the loaded catalogue; a different identity needs a full bootstrap (null). */
+export function mergeLiteBoot(prev: Boot, next: Boot): Boot | null {
+  return bootIdentity(next) === bootIdentity(prev)
+    ? { ...next, problems: prev.problems }
+    : null;
+}
 export async function api<T = unknown>(
   path: string,
   data?: unknown,

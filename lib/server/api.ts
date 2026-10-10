@@ -83,7 +83,8 @@ function services() {
     ),
   };
 }
-export async function bootstrap(p: Person | null) {
+/** `lite` skips the problem catalogue (~3MB) for the client's periodic refresh. */
+export async function bootstrap(p: Person | null, lite = false) {
   const cs = await rows<Course & { revision: number; position: number }>(
     `SELECT id,title,summary,version,published,revision,position FROM courses ${p?.role === 'teacher' ? '' : 'WHERE published=1'} ORDER BY position,id`,
   );
@@ -103,7 +104,7 @@ export async function bootstrap(p: Person | null) {
       p,
     ),
     courseAccess: cs.filter((c) => c.has_access).map((c) => c.id),
-    problems: await listPublishedProblems(p),
+    problems: lite ? undefined : await listPublishedProblems(p),
     progress: p
       ? await rows('SELECT * FROM progress WHERE user_id=?', p.id)
       : [],
@@ -167,7 +168,8 @@ export async function handle(request: Request) {
       // handleOj requires sign-in for everything except public OA reads.
       return await handleOj(request, p, path.slice(1));
     if (request.method === 'GET') {
-      if (resource === 'bootstrap') return json(await bootstrap(p));
+      if (resource === 'bootstrap')
+        return json(await bootstrap(p, url.searchParams.get('lite') === '1'));
       requirePerson(p);
       if (resource === 'knowledge' && resourceId === 'progress') {
         return json(

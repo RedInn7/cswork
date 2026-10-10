@@ -179,6 +179,27 @@ const libraryJudgeGate = `NOT EXISTS (
 /** OA and study-library problems judge free for any verified account. */
 const freeJudge = `(p.id LIKE 'oa-%' OR EXISTS(SELECT 1 FROM study_library s WHERE s.judge_problem_id=p.id))`;
 
+/**
+ * `libraryJudgeGate` and `freeJudge` for the whole catalogue, evaluated as sets.
+ * The per-row forms rescan study_library for every problem (judge_problem_id has
+ * no index), which cost ~1.5s of blocked event loop per bootstrap in production.
+ * A binding blocks its problem when matched by id with any mismatch, or by
+ * judge_problem_id with a stale verified hash: the two halves of the gate's OR.
+ */
+const catalogueQuery = `WITH blocked AS (
+  SELECT p.id FROM study_library l JOIN oj_problems p ON p.id=l.id
+  WHERE l.judge_problem_id IS NOT p.id
+    OR l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id)
+  UNION
+  SELECT p.id FROM study_library l JOIN oj_problems p ON p.id=l.judge_problem_id
+  WHERE l.verified_hash IS NOT (l.content_hash || ':' || p.current_version_id)
+)
+SELECT v.*,p.course_id,
+  (p.id LIKE 'oa-%' OR p.id IN (SELECT judge_problem_id FROM study_library WHERE judge_problem_id IS NOT NULL)) AS free
+FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id
+WHERE p.published=1 AND p.id NOT IN (SELECT id FROM blocked)
+ORDER BY p.created_at,p.id`;
+
 /** Course exercises keep the course grant (and owner-only mode); free problems need a verified account. */
 async function requireJudgeAccess(p: Person, problem: GatedRow) {
   if (!problem.free) {
@@ -258,6 +279,19 @@ async function publicProblem(version: VersionRow): Promise<OjPublicProblem> {
   };
 }
 
+/** Versions and their cases are immutable (DB triggers), so their projection is too. */
+// ponytail: one entry per published version until the next restart (every release).
+const projections = new Map<string, Promise<OjPublicProblem>>();
+function cachedPublicProblem(version: VersionRow) {
+  let hit = projections.get(version.id);
+  if (!hit) {
+    hit = publicProblem(version);
+    projections.set(version.id, hit);
+    hit.catch(() => projections.delete(version.id));
+  }
+  return hit;
+}
+
 /**
  * Public catalogue: statements and declared samples are public, hidden cases never are.
  * Course exercises follow course visibility, so owner-only mode hides them too.
@@ -266,9 +300,7 @@ export async function listPublishedProblems(
   p: Person | null = null,
 ): Promise<OjPublicProblem[]> {
   const versions = (
-    await rows<VersionRow & { course_id: string; free: number }>(
-      `SELECT v.*,p.course_id,${freeJudge} AS free FROM oj_problems p JOIN oj_problem_versions v ON v.id=p.current_version_id WHERE p.published=1 AND ${libraryJudgeGate} ORDER BY p.created_at,p.id`,
-    )
+    await rows<VersionRow & { course_id: string; free: number }>(catalogueQuery)
   ).filter((v) => v.free || canSeeCourse(p, v.course_id));
   const trusted = oaJudgeRegistry();
   return Promise.all(
@@ -282,7 +314,7 @@ export async function listPublishedProblems(
             spec_json: version.spec_json,
           }),
       )
-      .map(async (v) => ({ ...(await publicProblem(v)), freeJudge: !!v.free })),
+      .map(async (v) => ({ ...(await cachedPublicProblem(v)), freeJudge: !!v.free })),
   );
 }
 
@@ -301,7 +333,7 @@ export async function getPublicOaProblem(problemId: string) {
   );
   if (!v) throw new HttpError(404, '题目版本不存在');
   assertOaVersionReady(problemId, v.checksum, v.spec_json);
-  return { ...(await publicProblem(v)), freeJudge: true };
+  return { ...(await cachedPublicProblem(v)), freeJudge: true };
 }
 
 export async function getPublishedProblem(p: Person, problemId: string) {
@@ -318,7 +350,7 @@ export async function getPublishedProblem(p: Person, problemId: string) {
   );
   if (!v) throw new HttpError(404, '题目版本不存在');
   assertOaVersionReady(problemId, v.checksum, v.spec_json);
-  return { ...(await publicProblem(v)), freeJudge: !!pr.free };
+  return { ...(await cachedPublicProblem(v)), freeJudge: !!pr.free };
 }
 
 export async function listTeacherProblems(p: Person) {

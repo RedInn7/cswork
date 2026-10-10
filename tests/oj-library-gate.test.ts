@@ -593,3 +593,34 @@ void test('library problems judge free for verified accounts; course exercises k
     delete process.env.COURSE_OWNER_ID;
   }
 });
+
+void test('the catalogue matches per-problem rules and follows new versions', async () => {
+  restore();
+  const catalogue = async () =>
+    new Map((await listPublishedProblems()).map((p) => [p.id, p]));
+  // The set-based catalogue gate and free rule agree with the per-problem lookups.
+  for (const id of [libraryId, aliasId, courseId]) {
+    const listed = (await catalogue()).get(id);
+    const single = await getPublishedProblem(teacher, id);
+    assert.equal(listed?.freeJudge, single.freeJudge, id);
+    assert.equal(listed?.versionId, single.versionId, id);
+  }
+  // A new version stays gated until revalidated, then lists under that version:
+  // cached projections are keyed by immutable version, never served stale.
+  const revised = packageFor(libraryId);
+  revised.problem.title = 'Synthetic gate fixture, revised';
+  const saved = await saveProblemDraft(teacher, revised, null);
+  await publishProblemDraft(teacher, libraryId, saved.draft!.revision);
+  const next = (
+    sqlite()
+      .prepare('SELECT current_version_id AS id FROM oj_problems WHERE id=?')
+      .get(libraryId) as { id: string }
+  ).id;
+  assert.ok(!(await catalogue()).has(libraryId));
+  await assert.rejects(getPublishedProblem(student, libraryId), status404);
+  restore();
+  assert.equal((await catalogue()).get(libraryId)?.versionId, next);
+  const fresh = await getPublishedProblem(student, libraryId);
+  assert.equal(fresh.versionId, next);
+  assert.equal(fresh.title, 'Synthetic gate fixture, revised');
+});
