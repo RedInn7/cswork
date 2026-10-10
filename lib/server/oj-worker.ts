@@ -662,4 +662,6 @@ async function stop() {
 }
 process.on('SIGTERM', () => void stop());
 process.on('SIGINT', () => void stop());
-console.log('cswork OJ worker started: BullMQ, concurrency 1, go-judge');
+console.log(
+  `cswork OJ worker started: BullMQ, concurrency ${OJ_WORKER_CONCURRENCY}, go-judge`,
+);

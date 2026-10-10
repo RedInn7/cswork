@@ -30,9 +30,9 @@ test('four runner slots have matched prefork, CPU budget and unchanged isolation
   assert.match(entrypoint, /-parallelism="\$OJ_RUNNER_PARALLELISM" -pre-fork="\$OJ_RUNNER_PARALLELISM"/);
   assert.match(compose, /OJ_RUNNER_PARALLELISM: '\$\{OJ_RUNNER_PARALLELISM:-4\}'/);
   assert.match(compose, /GOMAXPROCS: '\$\{OJ_RUNNER_GOMAXPROCS:-3\}'/);
-  assert.match(compose, /cpus: '\$\{OJ_RUNNER_CPUS:-3\}'/);
+  assert.match(compose, /cpus: '\$\{OJ_RUNNER_CPUS:-4\}'\s+cpu_shares: 512/);
   assert.match(compose, /cgroup: private/);
-  assert.match(compose, /mem_limit: 4g\s+memswap_limit: 4g/);
+  assert.match(compose, /mem_limit: 6g\s+memswap_limit: 6g/);
   assert.match(compose, /no-new-privileges:true/);
   assert.match(entrypoint, /-net-share=false/);
   assert.match(service, /CPUQuota=100%\s+CPUWeight=50/);

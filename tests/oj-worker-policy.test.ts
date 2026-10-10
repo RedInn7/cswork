@@ -7,11 +7,26 @@ import {
   SubmissionAdmission,
 } from '../lib/server/oj-worker-policy';
 
-void test('worker supports one or two slots and rejects unbounded overrides', () => {
-  assert.equal(workerConcurrency('1'), 1);
-  assert.equal(workerConcurrency('2'), 2);
-  for (const value of ['0', '3', '32', 'NaN', ''])
+void test('worker defaults to four slots, accepts one to four and rejects unbounded overrides', () => {
+  assert.equal(workerConcurrency(undefined), 4);
+  for (const n of [1, 2, 3, 4]) assert.equal(workerConcurrency(String(n)), n);
+  for (const value of ['0', '5', '32', 'NaN', '', '2.5'])
     assert.throws(() => workerConcurrency(value));
+  for (const capacity of [0, 5, 2.5]) assert.throws(() => new SubmissionAdmission(capacity));
+});
+void test('four ordinary submissions overlap; a large one waits for all four', async () => {
+  const gate = new SubmissionAdmission(4);
+  const signal = new AbortController().signal;
+  const releases = await Promise.all([1, 2, 3, 4].map(() => gate.acquire(false, signal)));
+  let large = false;
+  const exclusive = gate.acquire(true, signal).then((release) => ((large = true), release));
+  await new Promise((r) => setTimeout(r, 5));
+  for (const release of releases.slice(0, 3)) release();
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal(large, false);
+  releases[3]();
+  (await exclusive)();
+  assert.equal(large, true);
 });
 void test('large snapshots and high-memory problems require exclusive admission', () => {
   assert.equal(exclusiveSubmission(8 * 1024 * 1024, 512 * 1024, 8192), false);
