@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Activity,
   ChevronDown,
@@ -37,6 +37,8 @@ export type FeedItem = {
 type Feed = {
   items: FeedItem[];
   next: number | null;
+  /** Masked name for the userOf filter chip. */
+  userLabel?: string;
   stats?: {
     judging: number;
     recent: number;
@@ -76,7 +78,7 @@ const LANGUAGES: [string, string][] = [
   ['java', 'Java'],
   ['go', 'Go'],
 ];
-const FILTER_KEYS = ['result', 'language', 'problem', 'user', 'mine'] as const;
+const FILTER_KEYS = ['result', 'language', 'problem', 'userOf', 'mine'] as const;
 const POLL_MS = 5000;
 
 export function relativeTime(at: number, now = Date.now()) {
@@ -94,10 +96,15 @@ const memory = (kb: number | null) =>
 const bytes = (n: number) =>
   n >= 1024 ? `${(n / 1024).toFixed(1)} KB` : `${n} B`;
 
-/** Newest-first merge: the freshly polled first page wins, older pages stay. */
+/**
+ * Newest-first merge: the freshly polled first page wins and older pages stay. When
+ * the page does not reach the loaded rows (more than a page arrived meanwhile), the
+ * list restarts from the page so no gap is shown; `null` asks for its cursor.
+ */
 export function mergeFeed(current: FeedItem[], page: FeedItem[]) {
   if (!page.length) return current;
   const oldest = page[page.length - 1].seq;
+  if (current.length && oldest > current[0].seq) return null;
   return [...page, ...current.filter((item) => item.seq < oldest)];
 }
 
@@ -131,7 +138,7 @@ export function FeedTable({
   titles: Map<string, string>;
   fresh: Set<number>;
   onProblem: (id: string) => void;
-  onUser: (name: string) => void;
+  onUser: (seq: number) => void;
   now: number;
 }) {
   return (
@@ -171,8 +178,8 @@ export function FeedTable({
                   <button
                     type="button"
                     className="js-user-filter"
-                    title={`只看 ${item.user} 的提交`}
-                    onClick={() => onUser(item.user)}
+                    title="只看这位用户的提交"
+                    onClick={() => onUser(item.seq)}
                   >
                     {item.user}
                   </button>
@@ -241,26 +248,33 @@ export function JudgeStatus({
   params: Record<string, string>;
   navigate: Navigate;
 }) {
+  const signedIn = !!boot.person;
   const filters = useMemo(() => {
     const out: Record<string, string> = {};
     for (const key of FILTER_KEYS) if (params[key]) out[key] = params[key];
+    // A stale "mine" link without a session would 401 on every poll.
+    if (!signedIn) delete out.mine;
     return out;
-  }, [params]);
+  }, [params, signedIn]);
   const query = new URLSearchParams(filters).toString();
   // Rows belong to the query they were loaded for, so a filter change starts empty.
   const [state, setState] = useState<{
     query: string;
     items: FeedItem[];
     next: number | null;
+    userLabel?: string;
     stats?: Feed['stats'];
     fresh: Set<number>;
   } | null>(null);
+  const latestQuery = useRef(query);
+  useEffect(() => {
+    latestQuery.current = query;
+  }, [query]);
   const [error, setError] = useState('');
   const [live, setLive] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [now, setNow] = useState(() => Date.now());
   const [problemText, setProblemText] = useState('');
-  const [userText, setUserText] = useState('');
   const current = state?.query === query ? state : null;
   const titles = useMemo(
     () => new Map(boot.problems.map((p) => [p.id, p.title])),
@@ -269,14 +283,18 @@ export function JudgeStatus({
 
   const refresh = useCallback(async () => {
     const page = await api<Feed>(`oj/feed${query ? `?${query}` : ''}`);
+    // A slower response for a previous filter must not overwrite the current one.
+    if (latestQuery.current !== query) return;
     setState((prev) => {
       const items = prev?.query === query ? prev.items : [];
       const known = new Set(items.map((item) => item.seq));
+      const merged = mergeFeed(items, page.items);
       return {
         query,
-        items: mergeFeed(items, page.items),
-        // The first load keeps the cursor; polls must not drop pages already loaded.
-        next: prev?.query === query ? prev.next : page.next,
+        items: merged ?? page.items,
+        // Polls keep the cursor of pages already loaded unless the list restarted.
+        next: prev?.query === query && merged ? prev.next : page.next,
+        userLabel: page.userLabel,
         stats: page.stats,
         fresh: new Set(
           items.length ? page.items.filter((i) => !known.has(i.seq)).map((i) => i.seq) : [],
@@ -347,7 +365,7 @@ export function JudgeStatus({
       <div className="rd-page">
         <header className="rd-head rd-reveal" style={{ '--i': 0 } as React.CSSProperties}>
           <h1>评测状态</h1>
-          <p>全站提交实时滚动。只公开结果和用时，代码和测试点详情仅提交者本人可见。</p>
+          <p>全站提交实时滚动。只公开结果和用时；代码和测试点详情不公开，其他用户的昵称会打码。</p>
         </header>
         <div className="rd-stats rd-reveal" style={{ '--i': 1 } as React.CSSProperties}>
           <div>
@@ -452,30 +470,13 @@ export function JudgeStatus({
                 />
               </form>
             )}
-            {filters.user ? (
+            {filters.userOf && (
               <span className="rd-chip is-set">
-                用户：{filters.user}
-                <button type="button" aria-label="清除用户筛选" onClick={() => apply({ user: '' })}>
+                用户：{current?.userLabel || '…'}
+                <button type="button" aria-label="清除用户筛选" onClick={() => apply({ userOf: '' })}>
                   <X size={13} />
                 </button>
               </span>
-            ) : (
-              <form
-                className="rd-search"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (userText.trim()) apply({ user: userText.trim() });
-                  setUserText('');
-                }}
-              >
-                <Search size={14} aria-hidden="true" />
-                <input
-                  value={userText}
-                  onChange={(e) => setUserText(e.target.value)}
-                  placeholder="用户昵称"
-                  aria-label="按用户筛选"
-                />
-              </form>
             )}
           </div>
           <button
@@ -517,7 +518,7 @@ export function JudgeStatus({
                 fresh={current.fresh}
                 now={now}
                 onProblem={(id) => navigate('problem', { problem: id })}
-                onUser={(name) => apply({ user: name, mine: '' })}
+                onUser={(seq) => apply({ userOf: String(seq), mine: '' })}
               />
               {current.next && (
                 <div className="js-foot">
@@ -532,6 +533,19 @@ export function JudgeStatus({
                 </div>
               )}
             </>
+          ) : current.next ? (
+            <div className="js-empty">
+              <strong>最近的提交里没有符合条件的</strong>
+              <span>可以继续往更早的提交里找。</span>
+              <button
+                type="button"
+                className="rd-button"
+                disabled={loadingMore}
+                onClick={() => void loadMore()}
+              >
+                {loadingMore ? '查找中…' : '继续往前找'}
+              </button>
+            </div>
           ) : (
             <div className="js-empty">
               <strong>{query ? '没有符合条件的提交' : '还没有人提交'}</strong>

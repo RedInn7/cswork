@@ -73,6 +73,8 @@ test('a poll replaces the newest page and keeps older pages', () => {
   assert.deepEqual(merged.map((i) => i.seq), [7, 6, 5, 4, 3, 2, 1]);
   assert.equal(merged[2].status, 'wrong_answer');
   assert.equal(mergeFeed(loaded, []), loaded);
+  // More than a page arrived while hidden: restart instead of showing a gap.
+  assert.equal(mergeFeed(loaded, [item(50), item(49)]), null);
 });
 
 test('relative times', () => {
